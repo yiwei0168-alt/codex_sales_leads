@@ -12,8 +12,10 @@ venv/
 
 # Node.js
 node_modules/
+.next/
 dist/
 build/
+*.tsbuildinfo
 
 # Editors and operating systems
 .idea/
@@ -25,4 +27,3 @@ Thumbs.db
 *.log
 tmp/
 temp/
-
