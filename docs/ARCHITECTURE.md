@@ -19,6 +19,21 @@ Public sources → curated snapshot → domain rules → application state → w
 | AI pipeline | Deterministic role-aware development-plan rule | `AiProvider` with structured output, timeout and retry |
 | Application | Next.js App Router client workspace | Authenticated server actions/API routes |
 
+## RAG knowledge architecture
+
+```text
+User upload (industry / Cudy company / Cudy product)
+  → authority and source metadata
+  → heading-aware chunks + SHA-256 idempotency
+  → OpenAI text-embedding-3-small
+  → PostgreSQL pgvector HNSW + FTS GIN
+  → reciprocal-rank fusion
+  → Responses API with store=false
+  → answer + verified [KB:chunk-uuid] citations
+```
+
+The three collections start empty. The existing 36-company channel-discovery snapshot is intentionally not copied into the company knowledge base: that collection is reserved for Cudy Technology's own company information. Raw user knowledge files are ignored by Git.
+
 Provider boundaries are defined in `src/providers/contracts.ts`; neither pages nor domain rules depend on a particular search, LLM, or database vendor.
 
 ## Key domain decisions

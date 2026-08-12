@@ -27,3 +27,9 @@ Thumbs.db
 *.log
 tmp/
 temp/
+
+# User-supplied knowledge files (keep instructions only)
+knowledge/industry/*
+knowledge/company/*
+knowledge/product/*
+!knowledge/README.md

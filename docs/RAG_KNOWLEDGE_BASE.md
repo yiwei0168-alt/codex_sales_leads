@@ -1,0 +1,94 @@
+# RAG 知识库指南
+
+## 数据边界
+
+| 知识库 | 内容 | 固定范围 |
+|---|---|---|
+| 行业 | 行业知识、渠道结构、主要品牌、市场研究、术语与规则 | 用户上传，可按市场标记 |
+| 公司 | 公司简介、产品线、当前业务、战略、区域覆盖、经营资料 | 品牌方固定为 Cudy Technology |
+| 产品 | 产品信息、技术规格、兼容性、认证、生命周期、限制 | Cudy Technology 产品 |
+
+渠道发现页的 36 家公开候选企业是独立数据快照，不会进入公司知识库。
+
+## 本地配置
+
+1. 安装 Docker Desktop 和 Node.js 20.9+。
+2. 复制 `.env.example` 为 `.env.local`。
+3. 填写 `OPENAI_API_KEY`；生产或共享环境必须更换 `KNOWLEDGE_ADMIN_TOKEN`。
+4. 启动 PostgreSQL 并执行迁移。
+
+```powershell
+docker compose up -d
+npm run db:migrate
+npm run dev
+```
+
+OpenAI API Key 只在服务端读取，不使用 `NEXT_PUBLIC_` 前缀。Embedding 默认使用 `text-embedding-3-small`；生成模型通过 `OPENAI_GENERATION_MODEL` 配置。
+
+## 上传方式
+
+### 管理界面
+
+进入“知识库 & RAG”，选择知识库、填写标题和来源 URL，选择文件，然后点击“上传并建立索引”。当前支持 UTF-8 `.md`、`.txt`、`.csv`、`.json`，单文档最多 2 MB。
+
+开发环境在未设置 `KNOWLEDGE_ADMIN_TOKEN` 时允许本机上传；生产环境必须通过 Bearer Token 授权。Token 只保存在当前页面内存，不写入浏览器持久存储。
+
+### 命令行
+
+```powershell
+npm run kb:ingest -- --type=industry --file=research.md --source-url=https://source.example
+npm run kb:ingest -- --type=company --file=cudy-profile.md --external-id=cudy-profile-2026
+npm run kb:ingest -- --type=product --file=wr3000.md --external-id=cudy-wr3000 --product-id=WR3000
+```
+
+重复导入相同 `external-id` 和相同内容时会跳过。内容变化时会重新分块和生成向量，并在事务内替换旧 chunks。
+
+## 推荐文档结构
+
+用 Markdown 标题组织内容，便于保留语义路径：
+
+```markdown
+# WR3000
+## Hardware
+### Ethernet ports
+...
+## Wireless
+### Supported standards
+...
+## Certifications
+...
+## Known limitations
+...
+```
+
+产品规格必须写明版本、生效日期和来源。未知参数应明确写 `Unknown`，不要根据同类产品补写。
+
+## 检索与回答
+
+查询先生成向量，同时执行 pgvector cosine search 与 PostgreSQL FTS，使用 reciprocal-rank fusion 合并。只有超过 `RAG_MIN_SCORE` 的 chunks 会进入模型上下文。
+
+模型被要求：
+
+- 只能使用检索上下文；
+- 区分事实、建议和推断；
+- 事实句使用 `[KB:chunk-uuid]` 引用；
+- 资料不足或冲突时明确说明；
+- 不编造公司业务、产品规格、价格、联系人或关系。
+
+服务端会再次解析引用；没有有效 chunk UUID 的回答标记为 `Needs review`。
+
+## 数据治理
+
+- 内部经营资料上传前应确认访问授权和保密等级。
+- 不上传个人敏感信息、私人联系方式、密钥或客户机密，除非已建立相应权限体系。
+- 当前 Demo 没有用户级行权限；共享部署前必须增加身份认证、RBAC 和审计策略。
+- 删除、版本管理和 PDF/DOCX 解析尚未实现，应在生产化阶段补充。
+- Responses API 调用设置 `store: false`；仍需根据企业政策确认第三方模型数据处理要求。
+
+## API
+
+- `GET /api/knowledge/status`：三类知识库文档、chunk、向量统计和配置状态。
+- `POST /api/knowledge/documents`：导入文本知识，生产环境要求 Bearer Token。
+- `POST /api/rag/query`：执行混合检索与基于证据的生成。
+
+参考实现基于官方 OpenAI [Embeddings model documentation](https://developers.openai.com/api/docs/models/text-embedding-3-small) 和 [API quickstart](https://platform.openai.com/docs/quickstart/make-your-first-api-request)。

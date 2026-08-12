@@ -57,10 +57,39 @@ docs/                    架构、数据、Schema 与 PRD 验收说明
 
 当前快照 Demo 无需密钥即可运行。未来接入真实搜索或 LLM 时，复制 `.env.example` 为 `.env.local` 并填入对应 Provider 凭证。任何密钥不得提交。
 
+## 建立 RAG 知识库
+
+RAG 使用 PostgreSQL + pgvector、OpenAI Embeddings 和 Responses API。三个知识库初始为空，内容完全由用户上传：
+
+- 行业知识库：行业知识、渠道结构、主要品牌、市场研究；
+- 公司知识库：Cudy Technology 公司简介、产品线、当前业务、战略与经营资料；
+- 产品知识库：Cudy Technology 产品信息、技术规格、兼容性、认证和使用限制。
+
+首次配置：
+
+```powershell
+Copy-Item .env.example .env.local
+# 在 .env.local 中填写 OPENAI_API_KEY，并修改生产环境管理 Token
+docker compose up -d
+npm run db:migrate
+npm run dev
+```
+
+打开左侧“知识库 & RAG”，可上传 UTF-8 Markdown、TXT、CSV 或 JSON 文件。公司类资料会固定归属 `Cudy Technology`。也可以使用命令行导入：
+
+```powershell
+npm run kb:ingest -- --type=industry --file=knowledge/industry/research.md --source-url=https://example.com/source
+npm run kb:ingest -- --type=company --file=knowledge/company/cudy-profile.md --external-id=cudy-profile-2026
+npm run kb:ingest -- --type=product --file=knowledge/product/wr3000.md --external-id=cudy-wr3000
+```
+
+用户原始知识文件不会被 Git 跟踪。详细操作和治理规则见 [RAG 知识库指南](docs/RAG_KNOWLEDGE_BASE.md)。
+
 ## 文档
 
 - [架构与关键决策](docs/ARCHITECTURE.md)
 - [公开数据快照说明](docs/DATA_SNAPSHOT.md)
+- [RAG 知识库指南](docs/RAG_KNOWLEDGE_BASE.md)
 - [Postgres 参考 Schema](docs/schema.sql)
 - [PRD 验收报告](docs/PRD_ACCEPTANCE.md)
 
@@ -70,4 +99,5 @@ docs/                    架构、数据、Schema 与 PRD 验收说明
 - 关系图中的虚线是演示用的角色适配假设，不代表真实供货关系。
 - 修改保存在当前浏览器会话内；尚未接入登录、Postgres 或跨会话持久化。
 - 开发草稿由确定性规则生成，用于演示证据引用与节点差异化，不调用真实 LLM。
+- RAG 仅支持可读取为 UTF-8 文本的 Markdown、TXT、CSV 和 JSON；PDF/DOCX 解析尚未接入。
 - 不实现真实邮件、LinkedIn、WhatsApp 或电话发送。
