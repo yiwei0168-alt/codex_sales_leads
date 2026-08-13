@@ -2,21 +2,31 @@ import OpenAI from "openai";
 import { getRagConfig } from "./config";
 import type { RetrievedChunk } from "./types";
 
-let client: OpenAI | undefined;
+let generationClient: OpenAI | undefined;
+let embeddingClient: OpenAI | undefined;
 
-function getClient(): OpenAI {
+function getGenerationClient(): OpenAI {
   const config = getRagConfig();
   if (!config.openaiApiKey) throw new Error("OPENAI_API_KEY is not configured");
-  client ??= new OpenAI({ apiKey: config.openaiApiKey });
-  return client;
+  generationClient ??= new OpenAI({ apiKey: config.openaiApiKey, baseURL: config.openaiBaseUrl });
+  return generationClient;
+}
+
+function getEmbeddingClient(): OpenAI {
+  const config = getRagConfig();
+  if (!config.embeddingApiKey) throw new Error("EMBEDDING_API_KEY is not configured");
+  if (!config.embeddingBaseUrl) throw new Error("EMBEDDING_BASE_URL is not configured");
+  embeddingClient ??= new OpenAI({ apiKey: config.embeddingApiKey, baseURL: config.embeddingBaseUrl });
+  return embeddingClient;
 }
 
 export async function embedTexts(inputs: string[]): Promise<number[][]> {
   if (inputs.length === 0) return [];
   const config = getRagConfig();
-  const response = await getClient().embeddings.create({
+  const response = await getEmbeddingClient().embeddings.create({
     model: config.embeddingModel,
     input: inputs,
+    dimensions: config.embeddingDimensions,
     encoding_format: "float",
   });
   return response.data.sort((a, b) => a.index - b.index).map((item) => item.embedding);
@@ -34,7 +44,7 @@ function buildContext(chunks: RetrievedChunk[]): string {
 
 export async function generateGroundedAnswer(question: string, chunks: RetrievedChunk[]): Promise<string> {
   const config = getRagConfig();
-  const response = await getClient().responses.create({
+  const response = await getGenerationClient().responses.create({
     model: config.generationModel,
     store: false,
     instructions: [

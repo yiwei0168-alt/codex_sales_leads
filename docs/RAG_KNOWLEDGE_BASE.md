@@ -14,7 +14,7 @@
 
 1. 安装 Docker Desktop 和 Node.js 20.9+。
 2. 复制 `.env.example` 为 `.env.local`。
-3. 填写 `OPENAI_API_KEY`；生产或共享环境必须更换 `KNOWLEDGE_ADMIN_TOKEN`。
+3. 填写生成服务的 `OPENAI_API_KEY`，以及阿里云百炼的 `EMBEDDING_API_KEY` 和 `EMBEDDING_BASE_URL`；生产或共享环境必须更换 `KNOWLEDGE_ADMIN_TOKEN`。
 4. 启动 PostgreSQL 并执行迁移。
 
 ```powershell
@@ -23,7 +23,7 @@ npm run db:migrate
 npm run dev
 ```
 
-OpenAI API Key 只在服务端读取，不使用 `NEXT_PUBLIC_` 前缀。Embedding 默认使用 `text-embedding-3-small`；生成模型通过 `OPENAI_GENERATION_MODEL` 配置。
+所有 API Key 只在服务端读取，不使用 `NEXT_PUBLIC_` 前缀。Embedding 默认使用 Qwen `text-embedding-v4`，并显式输出 1536 维以匹配现有 pgvector Schema；生成模型通过 `OPENAI_GENERATION_MODEL` 配置。更换 Embedding 模型或维度后必须重建全部文档向量，并同步修改数据库向量维度。
 
 ## 上传方式
 
@@ -91,4 +91,4 @@ npm run kb:ingest -- --type=product --file=wr3000.md --external-id=cudy-wr3000 -
 - `POST /api/knowledge/documents`：导入文本知识，生产环境要求 Bearer Token。
 - `POST /api/rag/query`：执行混合检索与基于证据的生成。
 
-参考实现基于官方 OpenAI [Embeddings model documentation](https://developers.openai.com/api/docs/models/text-embedding-3-small) 和 [API quickstart](https://platform.openai.com/docs/quickstart/make-your-first-api-request)。
+Embedding 接入参考阿里云百炼 `text-embedding-v4` 的 OpenAI 兼容接口；生成接入使用 OpenAI SDK 的兼容服务端点。

@@ -59,7 +59,7 @@ docs/                    架构、数据、Schema 与 PRD 验收说明
 
 ## 建立 RAG 知识库
 
-RAG 使用 PostgreSQL + pgvector、OpenAI Embeddings 和 Responses API。三个知识库初始为空，内容完全由用户上传：
+RAG 使用 PostgreSQL + pgvector、Qwen `text-embedding-v4` 和兼容 Responses API 的生成模型。Embedding 与生成服务使用独立的 API Key 和 Base URL。三个知识库初始为空，内容完全由用户上传：
 
 - 行业知识库：行业知识、渠道结构、主要品牌、市场研究；
 - 公司知识库：Cudy Technology 公司简介、产品线、当前业务、战略与经营资料；

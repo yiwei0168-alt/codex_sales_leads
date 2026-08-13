@@ -25,7 +25,7 @@ Public sources → curated snapshot → domain rules → application state → w
 User upload (industry / Cudy company / Cudy product)
   → authority and source metadata
   → heading-aware chunks + SHA-256 idempotency
-  → OpenAI text-embedding-3-small
+  → Qwen text-embedding-v4 (1536 dimensions)
   → PostgreSQL pgvector HNSW + FTS GIN
   → reciprocal-rank fusion
   → Responses API with store=false
