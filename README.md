@@ -85,6 +85,21 @@ npm run kb:ingest -- --type=product --file=knowledge/product/wr3000.md --externa
 
 用户原始知识文件不会被 Git 跟踪。详细操作和治理规则见 [RAG 知识库指南](docs/RAG_KNOWLEDGE_BASE.md)。
 
+### 产品数据库
+
+数据库同时包含三个知识域：行业知识、Cudy Technology 公司知识和 Cudy Technology 产品知识。产品域额外包含结构化 `product_catalog` 主表，用于按型号和类别筛选；Datasheet 则进入产品 RAG 集合并保留型号、版本、文件名和页码结构。
+
+将 `Cudy products list.xlsx` 与 Datasheet 放入 `knowledge/product` 后执行：
+
+```powershell
+python -m pip install -r requirements-product.txt
+npm run products:extract
+npm run db:migrate
+npm run products:ingest
+```
+
+当前抽取器会读取 Excel 全产品清单，并优先把 `knowledge/product/Wi-Fi Router` 下的 PDF Datasheet 转成逐页证据文档。原始文件和生成的中间知识文件都不会被 Git 跟踪。
+
 ## 文档
 
 - [架构与关键决策](docs/ARCHITECTURE.md)

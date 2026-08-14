@@ -8,6 +8,8 @@
 | 公司 | 公司简介、产品线、当前业务、战略、区域覆盖、经营资料 | 品牌方固定为 Cudy Technology |
 | 产品 | 产品信息、技术规格、兼容性、认证、生命周期、限制 | Cudy Technology 产品 |
 
+这三类集合会由数据库迁移统一创建。公司知识库已经存在，集合标识为 `company`，品牌方固定为 `Cudy Technology`；它与渠道候选企业快照相互独立。
+
 渠道发现页的 36 家公开候选企业是独立数据快照，不会进入公司知识库。
 
 ## 本地配置
@@ -40,6 +42,24 @@ npm run kb:ingest -- --type=industry --file=research.md --source-url=https://sou
 npm run kb:ingest -- --type=company --file=cudy-profile.md --external-id=cudy-profile-2026
 npm run kb:ingest -- --type=product --file=wr3000.md --external-id=cudy-wr3000 --product-id=WR3000
 ```
+
+### 批量建立产品数据库
+
+产品数据库分成两层：
+
+- `product_catalog`：从 `Cudy products list.xlsx` 提取的结构化型号、名称、类别和描述；
+- 产品知识集合：从 Datasheet 提取的逐页文本证据，用于向量检索和有引用回答。
+
+首轮 Wi-Fi Router 验证流程：
+
+```powershell
+python -m pip install -r requirements-product.txt
+npm run products:extract
+npm run db:migrate
+npm run products:ingest
+```
+
+`products:extract` 不修改原始文件，生成内容位于 `knowledge/product/processed`。`products:ingest` 可以重复执行：结构化产品按型号更新，知识文档按型号和 Datasheet 版本幂等更新。
 
 重复导入相同 `external-id` 和相同内容时会跳过。内容变化时会重新分块和生成向量，并在事务内替换旧 chunks。
 

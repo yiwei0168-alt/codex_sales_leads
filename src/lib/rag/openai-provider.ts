@@ -23,13 +23,18 @@ function getEmbeddingClient(): OpenAI {
 export async function embedTexts(inputs: string[]): Promise<number[][]> {
   if (inputs.length === 0) return [];
   const config = getRagConfig();
-  const response = await getEmbeddingClient().embeddings.create({
-    model: config.embeddingModel,
-    input: inputs,
-    dimensions: config.embeddingDimensions,
-    encoding_format: "float",
-  });
-  return response.data.sort((a, b) => a.index - b.index).map((item) => item.embedding);
+  const embeddings: number[][] = [];
+  // Alibaba Cloud text-embedding-v4 accepts at most 10 inputs per synchronous request.
+  for (let offset = 0; offset < inputs.length; offset += 10) {
+    const response = await getEmbeddingClient().embeddings.create({
+      model: config.embeddingModel,
+      input: inputs.slice(offset, offset + 10),
+      dimensions: config.embeddingDimensions,
+      encoding_format: "float",
+    });
+    embeddings.push(...response.data.sort((a, b) => a.index - b.index).map((item) => item.embedding));
+  }
+  return embeddings;
 }
 
 function buildContext(chunks: RetrievedChunk[]): string {

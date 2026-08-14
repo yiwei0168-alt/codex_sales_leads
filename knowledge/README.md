@@ -19,3 +19,5 @@ npm run kb:ingest -- --type=product --file=knowledge/product/wr3000.md --externa
 公司类文档在导入脚本中会自动标记为 `companyId=cudy-technology`。产品类文档的 `productId` 默认取 `external-id`。
 
 原始内部文件可能包含敏感商业信息。本目录仅用于本地暂存，默认子目录内容已被 `.gitignore` 忽略，不会上传到 GitHub。
+
+数据库最终包含三个独立知识集合：`industry`、`company` 和 `product`。产品批量处理使用 `npm run products:extract` 和 `npm run products:ingest`；第一阶段支持 `product/Cudy products list.xlsx` 以及 `product/Wi-Fi Router/*.pdf`。
