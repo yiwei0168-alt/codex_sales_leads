@@ -1,9 +1,10 @@
 import { readFile } from "node:fs/promises";
 import { resolve, basename } from "node:path";
-import { loadEnvConfig } from "@next/env";
+import nextEnv from "@next/env";
 import { upsertKnowledgeDocument } from "../src/lib/rag/repository";
 import type { KnowledgeBaseType } from "../src/lib/rag/types";
 
+const { loadEnvConfig } = nextEnv;
 loadEnvConfig(process.cwd());
 
 function argument(name: string): string | undefined {

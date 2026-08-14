@@ -1,10 +1,11 @@
 import { readFile, readdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { loadEnvConfig } from "@next/env";
+import nextEnv from "@next/env";
 import { Pool } from "pg";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
+const { loadEnvConfig } = nextEnv;
 loadEnvConfig(root);
 
 const databaseUrl = process.env.DATABASE_URL;

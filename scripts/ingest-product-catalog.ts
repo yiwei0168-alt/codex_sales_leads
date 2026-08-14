@@ -1,9 +1,10 @@
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import { loadEnvConfig } from "@next/env";
+import nextEnv from "@next/env";
 import { getPool, query } from "../src/lib/rag/db";
 import { upsertKnowledgeDocument } from "../src/lib/rag/repository";
 
+const { loadEnvConfig } = nextEnv;
 loadEnvConfig(process.cwd());
 
 interface ProductRecord {
