@@ -35,3 +35,12 @@ Keep raw source files under the matching directory; these files and generated ex
 
 Industry documents retain their source page/slide boundaries. Time-sensitive market research is assigned a lower
 authority level and marked for periodic review in document metadata.
+
+## Company pipeline
+
+1. Put official company PDF files in `knowledge/company/`.
+2. Extract sources: `npm run company:extract`
+3. Ingest and embed documents: `npm run company:ingest`
+4. Verify retrieval: `npm run company:verify`
+
+Company documents retain page boundaries and are tagged separately as company/brand or OEM/ODM manufacturing knowledge.

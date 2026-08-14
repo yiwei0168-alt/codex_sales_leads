@@ -17,7 +17,10 @@
     "products:verify": "tsx scripts/verify-product-rag.ts",
     "industry:extract": "python scripts/extract-industry-knowledge.py",
     "industry:ingest": "tsx scripts/ingest-industry-knowledge.ts",
-    "industry:verify": "tsx scripts/verify-industry-rag.ts"
+    "industry:verify": "tsx scripts/verify-industry-rag.ts",
+    "company:extract": "python scripts/extract-company-knowledge.py",
+    "company:ingest": "tsx scripts/ingest-company-knowledge.ts",
+    "company:verify": "tsx scripts/verify-company-rag.ts"
   },
   "dependencies": {
     "next": "^16.1.6",
