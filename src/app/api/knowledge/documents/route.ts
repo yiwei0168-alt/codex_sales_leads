@@ -1,5 +1,6 @@
 import { upsertKnowledgeDocument } from "@/lib/rag/repository";
 import type { KnowledgeBaseType, KnowledgeDocumentInput } from "@/lib/rag/types";
+import { requireApiSession } from "@/lib/auth/session";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -13,6 +14,8 @@ function authorized(request: Request): boolean {
 }
 
 export async function POST(request: Request) {
+  const session = await requireApiSession();
+  if (session instanceof Response) return session;
   if (!authorized(request)) return Response.json({ error: "Unauthorized" }, { status: 401 });
   let input: Partial<KnowledgeDocumentInput>;
   try {

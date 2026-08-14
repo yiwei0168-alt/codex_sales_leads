@@ -2,10 +2,10 @@
 
 ## Demo strategy
 
-The implementation is a snapshot-driven validation prototype. It runs as a statically rendered Next.js application and keeps the first demo deterministic, fast, and credential-free. The UI never labels snapshot replay as a live web search.
+The implementation is moving from a snapshot-driven demo to a single-user production pilot. The active Mexico workspace is persisted in PostgreSQL and populated from Tavily live-search runs; the historical snapshot remains test/reference data and is not seeded into the active workspace.
 
 ```text
-Public sources → curated snapshot → domain rules → application state → workspace UI
+Tavily live search → quality filters and deduplication → PostgreSQL workspace → review UI
                                       ↘ evidence IDs ↗
 ```
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { mexicoCompanies, mexicoRelationships, snapshotMeta } from "@/data/mexico-snapshot";
+import { useRouter } from "next/navigation";
 import { KnowledgeBase } from "@/components/knowledge-base";
 import {
   buildDevelopmentPlan,
@@ -10,10 +10,12 @@ import {
   type AccountTier,
   type ChannelRole,
   type CompanyRecord,
+  type ChannelRelationship,
   type Evidence,
   type OpportunityStage,
   type SupplyModel,
 } from "@/lib/domain";
+import type { CompanyEditablePatch, MarketWorkspaceDto } from "@/lib/sales/types";
 
 type View = "overview" | "results" | "map" | "opportunities" | "assistant" | "knowledge";
 type Mode = "new-market" | "growth";
@@ -25,6 +27,7 @@ const roleOptions: ChannelRole[] = [
 const supplyOptions: SupplyModel[] = ["Distributor Supply", "Brand Direct", "Co-sell/Co-supply", "TBD"];
 const tierOptions: AccountTier[] = ["KA", "Priority", "Standard", "Long-tail"];
 const stageOptions: OpportunityStage[] = ["Discovered", "Qualified", "Priority", "Contact Prepared", "Engaged", "Excluded"];
+const liveRelationships: ChannelRelationship[] = [];
 
 const icons: Record<string, React.ReactNode> = {
   overview: <><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z" /></>,
@@ -63,10 +66,11 @@ function MiniBar({ value, tone = "mint" }: { value: number; tone?: "mint" | "blu
   return <div className="mini-bar" aria-label={`${value}%`}><span className={tone} style={{ width: `${value}%` }} /></div>;
 }
 
-export function CopilotDemo() {
+export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner" }: { initialWorkspace?: MarketWorkspaceDto; userName?: string }) {
+  const router = useRouter();
   const [view, setView] = useState<View>("overview");
-  const [mode, setMode] = useState<Mode>("new-market");
-  const [companies, setCompanies] = useState<CompanyRecord[]>(mexicoCompanies);
+  const [mode, setMode] = useState<Mode>(initialWorkspace?.mode ?? "new-market");
+  const [companies, setCompanies] = useState<CompanyRecord[]>(initialWorkspace?.companies ?? []);
   const [selectedId, setSelectedId] = useState("syscom");
   const [detailOpen, setDetailOpen] = useState(false);
   const [evidenceOpen, setEvidenceOpen] = useState<Evidence | null>(null);
@@ -75,9 +79,12 @@ export function CopilotDemo() {
   const [tierFilter, setTierFilter] = useState<"All" | AccountTier>("All");
   const [searchState, setSearchState] = useState<SearchState>("idle");
   const [draft, setDraft] = useState("");
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const sourceCount = companies.reduce((total, company) => total + company.evidence.length, 0);
+  const searchDate = initialWorkspace?.latestSearch?.finishedAt?.slice(0, 10) ?? "Not searched";
 
   const selectedCompany = companies.find((item) => item.id === selectedId) ?? companies[0];
-  const selectedPlan = useMemo(() => buildDevelopmentPlan(selectedCompany), [selectedCompany]);
+  const selectedPlan = useMemo(() => selectedCompany ? buildDevelopmentPlan(selectedCompany) : null, [selectedCompany]);
   const shortlist = companies.filter((company) => !["Discovered", "Excluded"].includes(company.opportunityStage));
 
   const filteredCompanies = useMemo(() => {
@@ -90,8 +97,19 @@ export function CopilotDemo() {
       .sort((a, b) => priorityIndex(b) - priorityIndex(a));
   }, [companies, mode, query, roleFilter, tierFilter]);
 
-  function updateCompany(id: string, patch: Partial<CompanyRecord>) {
+  async function updateCompany(id: string, patch: CompanyEditablePatch) {
     setCompanies((items) => items.map((item) => item.id === id ? { ...item, ...patch, manuallyEdited: true } : item));
+    setSaveState("saving");
+    try {
+      const response = await fetch(`/api/workspaces/current/companies/${encodeURIComponent(id)}`, {
+        method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify(patch),
+      });
+      if (!response.ok) throw new Error("保存失败");
+      setSaveState("saved");
+      window.setTimeout(() => setSaveState("idle"), 1600);
+    } catch {
+      setSaveState("error");
+    }
   }
 
   function selectCompany(id: string, openDrawer = true) {
@@ -100,15 +118,24 @@ export function CopilotDemo() {
     if (openDrawer) setDetailOpen(true);
   }
 
-  function replaySnapshot() {
-    if (searchState === "retrieving") return;
-    setSearchState("retrieving");
-    window.setTimeout(() => setSearchState("complete"), 900);
+  function showLiveResults() {
+    setSearchState("complete");
   }
 
-  function chooseMode(nextMode: Mode) {
+  async function chooseMode(nextMode: Mode) {
     setMode(nextMode);
     setSearchState("idle");
+    setSaveState("saving");
+    try {
+      const response = await fetch("/api/workspaces/current", { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ mode: nextMode }) });
+      if (!response.ok) throw new Error("保存失败");
+      setSaveState("saved"); window.setTimeout(() => setSaveState("idle"), 1600);
+    } catch { setSaveState("error"); }
+  }
+
+  async function logout() {
+    await fetch("/api/auth/logout", { method: "POST" });
+    router.refresh();
   }
 
   const navItems: Array<{ id: View; label: string; meta?: string }> = [
@@ -124,7 +151,7 @@ export function CopilotDemo() {
     <div className="app-shell">
       <aside className="sidebar">
         <div className="brand-mark"><span className="brand-glyph">N</span><div><strong>Network Copilot</strong><small>Channel Intelligence</small></div></div>
-        <div className="workspace-switcher"><span className="market-flag">MX</span><div><strong>Mexico · SMB</strong><small>Active workspace</small></div><Icon name="chevron" size={14} /></div>
+        <div className="workspace-switcher"><span className="market-flag">MX</span><div><strong>Mexico · All segments</strong><small>Tavily live workspace</small></div><Icon name="chevron" size={14} /></div>
         <nav aria-label="主导航">
           <p className="nav-label">Workspace</p>
           {navItems.map((item) => (
@@ -135,23 +162,23 @@ export function CopilotDemo() {
         </nav>
         <div className="sidebar-spacer" />
         <div className="snapshot-card">
-          <div className="snapshot-title"><span className="live-dot" /> Public snapshot</div>
-          <strong>{snapshotMeta.companyCount} companies · {snapshotMeta.sourceCount} sources</strong>
-          <small>Captured {snapshotMeta.capturedAt}</small>
+          <div className="snapshot-title"><span className="live-dot" /> Tavily live search</div>
+          <strong>{companies.length} leads · {sourceCount} sources</strong>
+          <small>Last run {searchDate} · {initialWorkspace?.latestSearch?.creditsUsed ?? 0} credits</small>
         </div>
-        <div className="user-row"><span className="avatar">MC</span><div><strong>María Chen</strong><small>Regional Sales Lead</small></div><button aria-label="打开用户菜单">•••</button></div>
+        <div className="user-row"><span className="avatar">{userName.slice(0, 2).toUpperCase()}</span><div><strong>{userName}</strong><small>Single-user pilot</small></div><button aria-label="退出登录" onClick={logout}>退出</button></div>
       </aside>
 
       <main className="main-shell">
         <header className="topbar">
           <div className="breadcrumbs"><span>Markets</span><Icon name="chevron" size={13}/><strong>Mexico</strong><Icon name="chevron" size={13}/><span>{navItems.find((item) => item.id === view)?.label}</span></div>
-          <div className="top-actions"><span className="snapshot-badge"><span className="live-dot"/> Public data · {snapshotMeta.capturedAt}</span><button className="icon-button" aria-label="通知">2</button><button className="avatar small">MC</button></div>
+          <div className="top-actions"><span className={`snapshot-badge ${saveState === "error" ? "save-error" : ""}`}><span className="live-dot"/>{saveState === "saving" ? "正在保存…" : saveState === "saved" ? "已保存到 RDS" : saveState === "error" ? "保存失败，请重试" : `Tavily live · ${searchDate}`}</span><button className="icon-button" aria-label="通知">2</button><button className="avatar small">{userName.slice(0, 2).toUpperCase()}</button></div>
         </header>
 
         <div className="workspace-content">
           <section className="workspace-heading">
             <div>
-              <div className="eyebrow">MEXICO MARKET / SMB NETWORKING</div>
+              <div className="eyebrow">MEXICO MARKET / ALL CUDY SALES SEGMENTS</div>
               <h1>{view === "overview" ? "市场渠道工作台" : navItems.find((item) => item.id === view)?.label}</h1>
               <p>{view === "knowledge" ? "统一管理行业、公司和产品知识，以可追溯 RAG 支撑 AI 决策。" : mode === "new-market" ? "同步建立一级供货能力与下级渠道需求。" : "激活现有供货体系，主动发现未覆盖的下级增长节点。"}</p>
             </div>
@@ -160,23 +187,22 @@ export function CopilotDemo() {
                 <button className={mode === "new-market" ? "active" : ""} onClick={() => chooseMode("new-market")}>新市场并行开发</button>
                 <button className={mode === "growth" ? "active" : ""} onClick={() => chooseMode("growth")}>已有分销商增长</button>
               </div>
-              <button className="primary-button" onClick={() => { setView("results"); replaySnapshot(); }}><Icon name="spark" />{searchState === "retrieving" ? "载入快照…" : "运行节点检索"}</button>
+              <button className="primary-button" onClick={() => { setView("results"); showLiveResults(); }}><Icon name="spark" />查看实时线索</button>
             </div>
           </section>
 
-          {searchState === "retrieving" && <div className="pipeline-progress"><span/><div><strong>正在重放稳定数据快照</strong><small>实体归一 → 角色分类 → 规则评分 → 关系假设</small></div><em>72%</em></div>}
-          {searchState === "complete" && <div className="inline-notice success"><Icon name="check"/><span>快照已载入：{snapshotMeta.companyCount} 家真实企业，{snapshotMeta.sourceCount} 条公开来源。未执行实时全网搜索。</span><button onClick={() => setSearchState("idle")} aria-label="关闭"><Icon name="close" size={15}/></button></div>}
+          {searchState === "complete" && <div className="inline-notice success"><Icon name="check"/><span>当前工作区包含 {companies.length} 个 Tavily 实时候选、{sourceCount} 条来源；角色和适配度在证据复核前均为 Inferred。</span><button onClick={() => setSearchState("idle")} aria-label="关闭"><Icon name="close" size={15}/></button></div>}
 
           {view === "overview" && <Overview mode={mode} companies={companies} onMode={(next) => { chooseMode(next); setView("results"); }} onSelect={selectCompany} />}
           {view === "results" && <Results companies={filteredCompanies} query={query} setQuery={setQuery} roleFilter={roleFilter} setRoleFilter={setRoleFilter} tierFilter={tierFilter} setTierFilter={setTierFilter} onSelect={selectCompany} onToggle={(company) => updateCompany(company.id, { opportunityStage: company.opportunityStage === "Discovered" ? "Qualified" : "Discovered" })} />}
           {view === "map" && <ChannelMap companies={companies} onSelect={selectCompany} />}
           {view === "opportunities" && <OpportunityWorkspace companies={shortlist} onSelect={selectCompany} onUpdate={updateCompany} />}
-          {view === "assistant" && <DevelopmentAssistant company={selectedCompany} plan={selectedPlan} draft={draft || selectedPlan.draft} setDraft={setDraft} onEvidence={setEvidenceOpen} onChoose={() => setDetailOpen(true)} />}
+          {view === "assistant" && selectedCompany && selectedPlan && <DevelopmentAssistant company={selectedCompany} plan={selectedPlan} draft={draft || selectedPlan.draft} setDraft={setDraft} onEvidence={setEvidenceOpen} onChoose={() => setDetailOpen(true)} />}
           {view === "knowledge" && <KnowledgeBase />}
         </div>
       </main>
 
-      {detailOpen && <CompanyDrawer company={selectedCompany} onClose={() => setDetailOpen(false)} onUpdate={(patch) => updateCompany(selectedCompany.id, patch)} onEvidence={setEvidenceOpen} onOpenAssistant={() => { setDetailOpen(false); setView("assistant"); }} />}
+      {detailOpen && selectedCompany && <CompanyDrawer company={selectedCompany} onClose={() => setDetailOpen(false)} onUpdate={(patch) => updateCompany(selectedCompany.id, patch)} onEvidence={setEvidenceOpen} onOpenAssistant={() => { setDetailOpen(false); setView("assistant"); }} />}
       {evidenceOpen && <EvidenceModal evidence={evidenceOpen} onClose={() => setEvidenceOpen(null)} />}
     </div>
   );
@@ -277,7 +303,7 @@ function Results({ companies, query, setQuery, roleFilter, setRoleFilter, tierFi
           ))}</tbody>
         </table>
       </div>
-      <div className="table-footer"><span>Public Data Snapshot · {snapshotMeta.capturedAt}</span><span>事实与推断分开展示；请在外联前人工复核。</span></div>
+      <div className="table-footer"><span>Tavily live search · Mexico</span><span>事实与推断分开展示；请在外联前人工复核。</span></div>
     </section>
   );
 }
@@ -289,7 +315,7 @@ function ChannelMap({ companies, onSelect }: { companies: CompanyRecord[]; onSel
   const positions = new Map<string, { x: number; y: number }>();
   distributors.forEach((item, index) => positions.set(item.id, { x: 165, y: 92 + index * 88 }));
   downstream.forEach((item, index) => positions.set(item.id, { x: 725, y: 54 + index * 54 }));
-  const lines = mexicoRelationships.filter((rel) => positions.has(rel.fromNode) && positions.has(rel.toNode));
+  const lines = liveRelationships.filter((rel) => positions.has(rel.fromNode) && positions.has(rel.toNode));
   const extraLines = downstream.slice(0, 5).map((item, index) => ({ id: `suggested-${item.id}`, fromNode: distributors[index % distributors.length].id, toNode: item.id, status: "Hypothesis" as const }));
   return (
     <div className="map-layout">
@@ -305,7 +331,7 @@ function ChannelMap({ companies, onSelect }: { companies: CompanyRecord[]; onSel
             return <path key={rel.id} d={`M ${from.x + 94} ${from.y} C 390 ${from.y}, 510 ${to.y}, ${to.x - 94} ${to.y}`} className={`map-link ${rel.status === "Hypothesis" ? "hypothesis" : "verified"}`} />;
           })}
           <circle cx="450" cy="260" r="72" className="brand-node"/>
-          <text x="450" y="252" textAnchor="middle" className="brand-node-title">NORTHSTAR</text><text x="450" y="273" textAnchor="middle" className="brand-node-sub">SMB NETWORKING</text>
+          <text x="450" y="252" textAnchor="middle" className="brand-node-title">CUDY</text><text x="450" y="273" textAnchor="middle" className="brand-node-sub">MEXICO MARKET</text>
           {mapCompanies.map((company) => {
             const position = positions.get(company.id)!;
             return <g key={company.id} className="map-node" role="button" tabIndex={0} onClick={() => onSelect(company.id)} onKeyDown={(event) => { if (event.key === "Enter") onSelect(company.id); }}>
@@ -320,11 +346,11 @@ function ChannelMap({ companies, onSelect }: { companies: CompanyRecord[]; onSel
         <div className="map-footnote"><Icon name="spark"/><span>图中虚线为基于角色适配生成的供货假设，不代表已验证商业关系。</span></div>
       </section>
       <aside className="panel map-inspector">
-        <div className="panel-header"><div><span className="section-kicker">HYPOTHESIS QUEUE</span><h2>待人工确认</h2></div><StatusTag tone="amber">{mexicoRelationships.filter((item) => item.status === "Hypothesis").length} 条</StatusTag></div>
-        <div className="relationship-list">{mexicoRelationships.map((relationship) => {
+        <div className="panel-header"><div><span className="section-kicker">HYPOTHESIS QUEUE</span><h2>待人工确认</h2></div><StatusTag tone="amber">{liveRelationships.filter((item) => item.status === "Hypothesis").length} 条</StatusTag></div>
+        <div className="relationship-list">{liveRelationships.map((relationship) => {
           const from = companies.find((item) => item.id === relationship.fromNode); const to = companies.find((item) => item.id === relationship.toNode);
           return <div key={relationship.id} className="relationship-card"><div><StatusTag tone={relationship.status === "Verified" ? "green" : "amber"}>{relationship.status}</StatusTag><small>{relationship.type}</small></div><strong>{from?.displayName} <span>→</span> {to?.displayName}</strong><p>{relationship.status === "Verified" ? "有公开来源支持该组织关联。" : "角色与供货适配推断；尚无直接关系证据。"}</p><div className="relationship-actions"><button>确认</button><button>拒绝</button><button onClick={() => to && onSelect(to.id)}>查看节点</button></div></div>;
-        })}</div>
+        })}{liveRelationships.length === 0 && <p className="subtle">实时线索尚未建立公司间关系；待证据抽取与关系分析后生成。</p>}</div>
       </aside>
     </div>
   );
@@ -356,5 +382,5 @@ function CompanyDrawer({ company, onClose, onUpdate, onEvidence, onOpenAssistant
 }
 
 function EvidenceModal({ evidence, onClose }: { evidence: Evidence; onClose: () => void }) {
-  return <div className="modal-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}><section className="evidence-modal" role="dialog" aria-modal="true" aria-label="证据详情"><header><div><span className="section-kicker">EVIDENCE RECORD</span><h2>{evidence.id}</h2></div><button className="close-button" onClick={onClose} aria-label="关闭证据"><Icon name="close"/></button></header><div className="evidence-metadata"><div><span>Status</span><StatusTag tone={evidence.status === "Verified" || evidence.status === "Corroborated" ? "green" : "amber"}>{evidence.status}</StatusTag></div><div><span>Confidence</span><strong>{evidence.confidence}%</strong></div><div><span>Source type</span><strong>{evidence.sourceType}</strong></div><div><span>Captured</span><strong>{evidence.capturedAt}</strong></div></div><div className="claim-box"><span>SUPPORTED CLAIM</span><p>{evidence.claim}</p></div><div className="summary-box"><span>PUBLIC SOURCE SUMMARY</span><p>{evidence.summary}</p></div><a className="source-link" href={evidence.sourceUrl} target="_blank" rel="noreferrer"><Icon name="external"/>打开公开来源<span>{evidence.title}</span></a><p className="evidence-disclaimer">来源摘要用于 Demo 快照与可追溯展示；在商业决策或外联前应重新核验页面新鲜度。</p></section></div>;
+  return <div className="modal-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}><section className="evidence-modal" role="dialog" aria-modal="true" aria-label="证据详情"><header><div><span className="section-kicker">EVIDENCE RECORD</span><h2>{evidence.id}</h2></div><button className="close-button" onClick={onClose} aria-label="关闭证据"><Icon name="close"/></button></header><div className="evidence-metadata"><div><span>Status</span><StatusTag tone={evidence.status === "Verified" || evidence.status === "Corroborated" ? "green" : "amber"}>{evidence.status}</StatusTag></div><div><span>Confidence</span><strong>{evidence.confidence}%</strong></div><div><span>Source type</span><strong>{evidence.sourceType}</strong></div><div><span>Captured</span><strong>{evidence.capturedAt}</strong></div></div><div className="claim-box"><span>SUPPORTED CLAIM</span><p>{evidence.claim}</p></div><div className="summary-box"><span>PUBLIC SOURCE SUMMARY</span><p>{evidence.summary}</p></div><a className="source-link" href={evidence.sourceUrl} target="_blank" rel="noreferrer"><Icon name="external"/>打开公开来源<span>{evidence.title}</span></a><p className="evidence-disclaimer">来源来自 Tavily 实时搜索；在商业决策、角色确认或外联前应再次核验官网身份与页面新鲜度。</p></section></div>;
 }

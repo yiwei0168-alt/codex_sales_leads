@@ -20,7 +20,10 @@
     "industry:verify": "tsx scripts/verify-industry-rag.ts",
     "company:extract": "python scripts/extract-company-knowledge.py",
     "company:ingest": "tsx scripts/ingest-company-knowledge.ts",
-    "company:verify": "tsx scripts/verify-company-rag.ts"
+    "company:verify": "tsx scripts/verify-company-rag.ts",
+    "auth:hash-password": "tsx scripts/hash-app-password.mjs",
+    "leads:discover": "tsx scripts/discover-mexico-leads.ts",
+    "leads:verify": "tsx scripts/verify-live-leads.ts"
   },
   "dependencies": {
     "next": "^16.1.6",

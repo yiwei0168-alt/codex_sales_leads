@@ -1,11 +1,11 @@
-# Network Channel Copilot Demo
+# Network Channel Copilot
 
-面向 Networking 品牌海外销售团队的 B2B 渠道开发工作台。Demo 根据 PRD v0.3 实现墨西哥 SMB Networking 市场的两条 P0 主流程：
+面向 Networking 品牌海外销售团队的 B2B 渠道开发工作台。当前产品化试点使用 Tavily 实时发现墨西哥全市场的渠道与战略客户线索：
 
 - 新市场同时发现和开发一级分销商与下级渠道；
 - 已有一级分销商时，由品牌主动发现新的下级增长节点。
 
-Demo 内置 36 家真实公开企业的稳定数据快照，覆盖 Distributor/VAD、Retail/E-tail、SI/MSP 和 ISP。所有公司身份均保留公开来源、采集日期、证据状态和置信度；角色、评分和供货关系假设与事实分开显示。
+首轮验证从 Tavily 实时结果中筛选 50 个唯一墨西哥域名，不把历史 36 家快照写入业务工作区。搜索候选在完成网页证据复核前统一标记为 `Inferred`。
 
 ## 启动
 
@@ -35,7 +35,7 @@ npm run build
 ## Demo 操作路径
 
 1. 在顶部切换“新市场并行开发”或“已有分销商增长”。
-2. 点击“运行节点检索”，重放稳定公开数据快照。
+2. 点击“查看实时线索”，查看最近一次 Tavily 搜索写入 RDS 的候选。
 3. 在“节点发现”按角色、Account Tier 或关键字筛选。
 4. 打开公司详情，查看 Evidence，并修改 Account Tier、Supply Model、参与深度或机会状态。
 5. 在“渠道关系图”区分已验证关系和虚线关系假设。
@@ -55,7 +55,27 @@ docs/                    架构、数据、Schema 与 PRD 验收说明
 
 ## 环境变量
 
-当前快照 Demo 无需密钥即可运行。未来接入真实搜索或 LLM 时，复制 `.env.example` 为 `.env.local` 并填入对应 Provider 凭证。任何密钥不得提交。
+复制 `.env.example` 为 `.env.local`，配置 RDS、Tavily、Embedding、生成模型与单用户密码哈希。任何密钥不得提交。
+
+生成单用户密码哈希（PowerShell）：
+
+```powershell
+$env:APP_PASSWORD_SETUP='use-a-long-unique-password'
+npm run auth:hash-password
+Remove-Item Env:APP_PASSWORD_SETUP
+```
+
+把输出写入 `.env.local` 的 `APP_PASSWORD_HASH`。开发环境未配置时允许本地绕过；生产环境不会允许绕过。
+
+## Tavily 实时线索发现
+
+```powershell
+npm run db:migrate
+npm run leads:discover -- --target=50 --replace
+npm run leads:verify
+```
+
+`--replace` 只替换当前工作区中的上一批 Tavily 活动候选；历史查询、原始结果和质量筛选记录保留用于审计。
 
 ## 建立 RAG 知识库
 
@@ -110,9 +130,9 @@ npm run products:ingest
 
 ## 已知限制
 
-- 当前“检索”重放 2026-08-11 采集的稳定快照，不执行实时全网搜索。
-- 关系图中的虚线是演示用的角色适配假设，不代表真实供货关系。
-- 修改保存在当前浏览器会话内；尚未接入登录、Postgres 或跨会话持久化。
+- 当前首轮 Tavily 搜索通过结构化查询脚本执行，UI 内启动后台搜索任务将在下一阶段接入。
+- Tavily 候选仅完成域名级基础筛选；企业身份、角色和适配度仍需网页证据抽取与人工确认。
+- 实时线索尚未建立公司间供货关系，关系图在证据分析前保持为空。
 - 开发草稿由确定性规则生成，用于演示证据引用与节点差异化，不调用真实 LLM。
 - RAG 仅支持可读取为 UTF-8 文本的 Markdown、TXT、CSV 和 JSON；PDF/DOCX 解析尚未接入。
 - 不实现真实邮件、LinkedIn、WhatsApp 或电话发送。

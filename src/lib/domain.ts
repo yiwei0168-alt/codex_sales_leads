@@ -70,6 +70,8 @@ export interface CompanyRecord {
   risks: string[];
   unknowns: string[];
   evidence: Evidence[];
+  leadType?: "Channel" | "Strategic Customer";
+  searchRunId?: string;
   manuallyEdited?: boolean;
 }
 

@@ -1,6 +1,7 @@
 import { getMissingRagConfig } from "@/lib/rag/config";
 import { answerWithRag } from "@/lib/rag/service";
 import type { KnowledgeBaseType, RagQuery } from "@/lib/rag/types";
+import { requireApiSession } from "@/lib/auth/session";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -8,6 +9,8 @@ export const dynamic = "force-dynamic";
 const types: KnowledgeBaseType[] = ["industry", "company", "product"];
 
 export async function POST(request: Request) {
+  const session = await requireApiSession();
+  if (session instanceof Response) return session;
   const missing = getMissingRagConfig();
   if (missing.length > 0) return Response.json({ error: `RAG 尚未配置：${missing.join(", ")}` }, { status: 503 });
 

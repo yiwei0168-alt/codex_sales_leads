@@ -1,6 +1,7 @@
 import { getMissingRagConfig } from "@/lib/rag/config";
 import { getKnowledgeStats } from "@/lib/rag/repository";
 import type { KnowledgeBaseType, KnowledgeStats } from "@/lib/rag/types";
+import { requireApiSession } from "@/lib/auth/session";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -10,6 +11,8 @@ const emptyCollections: KnowledgeStats["collections"] = (["industry", "company",
 }));
 
 export async function GET() {
+  const session = await requireApiSession();
+  if (session instanceof Response) return session;
   const missing = getMissingRagConfig();
   if (missing.includes("DATABASE_URL")) {
     return Response.json({
