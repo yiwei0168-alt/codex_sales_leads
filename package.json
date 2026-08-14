@@ -13,7 +13,8 @@
     "db:migrate": "tsx scripts/migrate.ts",
     "kb:ingest": "tsx scripts/ingest-knowledge.ts",
     "products:extract": "python scripts/extract-product-knowledge.py",
-    "products:ingest": "tsx scripts/ingest-product-catalog.ts"
+    "products:ingest": "tsx scripts/ingest-product-catalog.ts",
+    "products:verify": "tsx scripts/verify-product-rag.ts"
   },
   "dependencies": {
     "next": "^16.1.6",

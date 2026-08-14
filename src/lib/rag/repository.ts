@@ -72,7 +72,7 @@ export async function hybridSearch(question: string, queryEmbedding: number[], f
   }>(
     `with eligible as (
        select ch.*, d.title, d.source_url, d.source_type, d.authority_level, d.captured_at,
-              d.market, d.company_id, d.product_id, d.metadata, c.slug as collection
+              d.market, d.company_id, d.product_id, d.metadata as document_metadata, c.slug as collection
        from knowledge_chunk ch
        join knowledge_document d on d.id = ch.document_id
        join knowledge_collection c on c.id = d.collection_id
@@ -97,7 +97,7 @@ export async function hybridSearch(question: string, queryEmbedding: number[], f
             v.similarity as vector_similarity,
             (greatest(coalesce(v.similarity, 0), 0) * 0.85 +
              least((coalesce(1.0 / (60 + v.rank), 0) + coalesce(1.0 / (60 + k.rank), 0)) * 10, 0.15))::float8 as score,
-            e.metadata
+            e.document_metadata as metadata
      from eligible e
      left join vector_results v on v.id = e.id
      left join keyword_results k on k.id = e.id
