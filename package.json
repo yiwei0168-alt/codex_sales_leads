@@ -14,12 +14,13 @@
     "kb:ingest": "tsx scripts/ingest-knowledge.ts",
     "products:extract": "python scripts/extract-product-knowledge.py",
     "products:ingest": "tsx scripts/ingest-product-catalog.ts",
-    "products:verify": "tsx scripts/verify-product-rag.ts"
+    "products:verify": "tsx scripts/verify-product-rag.ts",
+    "industry:extract": "python scripts/extract-industry-knowledge.py",
+    "industry:ingest": "tsx scripts/ingest-industry-knowledge.ts",
+    "industry:verify": "tsx scripts/verify-industry-rag.ts"
   },
   "dependencies": {
     "next": "^16.1.6",
-    "openai": "^6.0.0",
-    "pg": "^8.0.0",
     "openai": "^7.4.0",
     "pg": "^8.23.0",
     "react": "^19.2.4",
@@ -27,14 +28,12 @@
   },
   "devDependencies": {
     "@types/node": "^24.10.0",
-    "@types/pg": "^8.21.0",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@types/pg": "^8.0.0",
     "eslint": "^9.39.0",
     "eslint-config-next": "^16.1.6",
     "tsx": "^4.23.12",
-    "tsx": "^4.0.0",
     "typescript": "^5.9.3",
     "vitest": "^4.0.18"
   }

@@ -21,3 +21,17 @@ npm run kb:ingest -- --type=product --file=knowledge/product/wr3000.md --externa
 原始内部文件可能包含敏感商业信息。本目录仅用于本地暂存，默认子目录内容已被 `.gitignore` 忽略，不会上传到 GitHub。
 
 数据库最终包含三个独立知识集合：`industry`、`company` 和 `product`。产品批量处理使用 `npm run products:extract` 和 `npm run products:ingest`；第一阶段支持 `product/Cudy products list.xlsx` 以及 `product/Wi-Fi Router/*.pdf`。
+# Knowledge base layout
+
+The PostgreSQL/pgvector knowledge base has three collections: `company`, `product`, and `industry`.
+Keep raw source files under the matching directory; these files and generated extraction output are ignored by Git.
+
+## Industry pipeline
+
+1. Install extractors: `python -m pip install -r requirements-product.txt`
+2. Extract PDF/PPTX sources: `npm run industry:extract`
+3. Ingest and embed the generated documents: `npm run industry:ingest`
+4. Verify retrieval: `npm run industry:verify`
+
+Industry documents retain their source page/slide boundaries. Time-sensitive market research is assigned a lower
+authority level and marked for periodic review in document metadata.
