@@ -1,6 +1,12 @@
 import type { CompanyRecord } from "@/lib/domain";
 import { query, transaction } from "@/lib/rag/db";
-import type { CompanyEditablePatch, MarketWorkspaceDto } from "./types";
+import type {
+  CompanyContactDetailsDto,
+  CompanyEditablePatch,
+  ContactStatus,
+  EmailCandidateStatus,
+  MarketWorkspaceDto,
+} from "./types";
 
 const WORKSPACE_SLUG = "mexico-pilot";
 
@@ -13,22 +19,102 @@ export async function getCurrentWorkspace(): Promise<MarketWorkspaceDto | null> 
   );
   const workspace = workspaces[0];
   if (!workspace) return null;
-  const rows = await query<{
-    record: CompanyRecord; account_tier: CompanyRecord["accountTier"]; supply_model: CompanyRecord["supplyModel"];
-    brand_involvement: CompanyRecord["brandInvolvement"]; opportunity_stage: CompanyRecord["opportunityStage"];
-    priority: CompanyRecord["priority"]; owner_name: string | null; next_action: string | null; manually_edited: boolean;
-  }>(
-    `select c.record, wc.account_tier, wc.supply_model, wc.brand_involvement, wc.opportunity_stage,
-            wc.priority, wc.owner_name, wc.next_action, wc.manually_edited
-     from workspace_company wc join sales_company c on c.id = wc.company_id
-     where wc.workspace_id = $1 order by c.canonical_name`,
-    [workspace.id],
-  );
-  const searches = await query<{ provider: string; accepted_count: number; credits_used: number; finished_at: string }>(
-    `select provider, accepted_count, credits_used, finished_at::text from lead_search_run
-     where workspace_id = $1 and status = 'completed' order by finished_at desc limit 1`,
-    [workspace.id],
-  );
+  const [rows, searches, contacts, emails, enrichmentSummaries] = await Promise.all([
+    query<{
+      record: CompanyRecord; account_tier: CompanyRecord["accountTier"]; supply_model: CompanyRecord["supplyModel"];
+      brand_involvement: CompanyRecord["brandInvolvement"]; opportunity_stage: CompanyRecord["opportunityStage"];
+      priority: CompanyRecord["priority"]; owner_name: string | null; next_action: string | null; manually_edited: boolean;
+    }>(
+      `select c.record, wc.account_tier, wc.supply_model, wc.brand_involvement, wc.opportunity_stage,
+              wc.priority, wc.owner_name, wc.next_action, wc.manually_edited
+       from workspace_company wc join sales_company c on c.id = wc.company_id
+       where wc.workspace_id = $1 order by c.canonical_name`,
+      [workspace.id],
+    ),
+    query<{ provider: string; accepted_count: number; credits_used: number; finished_at: string }>(
+      `select provider, accepted_count, credits_used, finished_at::text from lead_search_run
+       where workspace_id = $1 and status = 'completed' order by finished_at desc limit 1`,
+      [workspace.id],
+    ),
+    query<{
+      external_id: string; id: string; full_name: string; job_title: string | null; public_profile_url: string | null;
+      source_url: string; source_provider: string; status: ContactStatus; confidence: number;
+    }>(
+      `select c.external_id, ct.id, ct.full_name, ct.job_title, ct.public_profile_url, ct.source_url,
+              ct.source_provider, ct.status, ct.confidence
+       from company_contact ct join sales_company c on c.id = ct.company_id
+       join workspace_company wc on wc.company_id = c.id
+       where wc.workspace_id = $1 order by c.external_id, ct.confidence desc, ct.full_name`,
+      [workspace.id],
+    ),
+    query<{
+      external_id: string; id: string; contact_id: string | null; email: string; status: EmailCandidateStatus;
+      source_url: string | null; source_provider: string; derivation: string | null; confidence: number;
+    }>(
+      `select c.external_id, em.id, em.contact_id, em.email, em.status, em.source_url, em.source_provider,
+              em.derivation, em.confidence
+       from company_email_candidate em join sales_company c on c.id = em.company_id
+       join workspace_company wc on wc.company_id = c.id
+       where wc.workspace_id = $1 order by c.external_id,
+         case em.status when 'Verified' then 1 when 'Public' then 2 when 'Pattern-guessed' then 3 when 'Unknown' then 4 else 5 end,
+         em.confidence desc, em.email`,
+      [workspace.id],
+    ),
+    query<{ external_id: string; evidence_count: number; provider_mix: string[]; enriched_at: string }>(
+      `with latest as (
+         select distinct on (e.company_id) e.company_id, e.run_id
+         from company_web_evidence e join company_enrichment_run r on r.id = e.run_id
+         where r.workspace_id = $1 and r.status = 'completed'
+         order by e.company_id, r.finished_at desc nulls last, r.started_at desc
+       )
+       select c.external_id, count(e.id)::int as evidence_count, r.provider_mix,
+              coalesce(r.finished_at, r.started_at)::text as enriched_at
+       from latest l join company_web_evidence e on e.company_id = l.company_id and e.run_id = l.run_id
+       join company_enrichment_run r on r.id = l.run_id
+       join sales_company c on c.id = l.company_id
+       group by c.external_id, r.provider_mix, r.finished_at, r.started_at`,
+      [workspace.id],
+    ),
+  ]);
+
+  const contactsByCompanyId: Record<string, CompanyContactDetailsDto> = {};
+  for (const summary of enrichmentSummaries) {
+    contactsByCompanyId[summary.external_id] = {
+      contacts: [],
+      emails: [],
+      evidenceCount: summary.evidence_count,
+      providerMix: summary.provider_mix,
+      enrichedAt: summary.enriched_at,
+    };
+  }
+  for (const contact of contacts) {
+    const details = contactsByCompanyId[contact.external_id];
+    if (!details) continue;
+    details.contacts.push({
+      id: contact.id,
+      fullName: contact.full_name,
+      jobTitle: contact.job_title ?? undefined,
+      publicProfileUrl: contact.public_profile_url ?? undefined,
+      sourceUrl: contact.source_url,
+      sourceProvider: contact.source_provider,
+      status: contact.status,
+      confidence: contact.confidence,
+    });
+  }
+  for (const email of emails) {
+    const details = contactsByCompanyId[email.external_id];
+    if (!details) continue;
+    details.emails.push({
+      id: email.id,
+      contactId: email.contact_id ?? undefined,
+      email: email.email,
+      status: email.status,
+      sourceUrl: email.source_url ?? undefined,
+      sourceProvider: email.source_provider,
+      derivation: email.derivation ?? undefined,
+      confidence: email.confidence,
+    });
+  }
   return {
     id: workspace.id,
     slug: workspace.slug,
@@ -48,6 +134,7 @@ export async function getCurrentWorkspace(): Promise<MarketWorkspaceDto | null> 
       nextAction: row.next_action ?? row.record.nextAction,
       manuallyEdited: row.manually_edited,
     })),
+    contactsByCompanyId,
     latestSearch: searches[0] ? {
       provider: searches[0].provider,
       acceptedCount: searches[0].accepted_count,

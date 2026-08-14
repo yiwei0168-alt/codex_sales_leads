@@ -15,7 +15,13 @@ import {
   type OpportunityStage,
   type SupplyModel,
 } from "@/lib/domain";
-import type { CompanyEditablePatch, MarketWorkspaceDto } from "@/lib/sales/types";
+import type {
+  CompanyContactDetailsDto,
+  CompanyEditablePatch,
+  ContactStatus,
+  EmailCandidateStatus,
+  MarketWorkspaceDto,
+} from "@/lib/sales/types";
 
 type View = "overview" | "results" | "map" | "opportunities" | "assistant" | "knowledge";
 type Mode = "new-market" | "growth";
@@ -64,6 +70,29 @@ function StatusTag({ children, tone = "neutral" }: { children: React.ReactNode; 
 
 function MiniBar({ value, tone = "mint" }: { value: number; tone?: "mint" | "blue" | "amber" }) {
   return <div className="mini-bar" aria-label={`${value}%`}><span className={tone} style={{ width: `${value}%` }} /></div>;
+}
+
+function contactStatusTone(status: ContactStatus): "green" | "blue" | "amber" {
+  return status === "Verified" ? "green" : status === "Public" ? "blue" : "amber";
+}
+
+function emailStatusTone(status: EmailCandidateStatus): "green" | "blue" | "amber" | "violet" | "red" {
+  if (status === "Verified") return "green";
+  if (status === "Public") return "blue";
+  if (status === "Pattern-guessed") return "violet";
+  if (status === "Invalid") return "red";
+  return "amber";
+}
+
+function providerLabel(provider: string): string {
+  return ({
+    snov: "Snov.io",
+    "official-website": "官网",
+    "tavily-web-search": "网页搜索",
+    "deterministic-pattern": "邮箱规则猜测",
+    "tavily-search": "Tavily Search",
+    "tavily-extract": "Tavily Extract",
+  } as Record<string, string>)[provider] ?? provider;
 }
 
 export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner" }: { initialWorkspace?: MarketWorkspaceDto; userName?: string }) {
@@ -202,7 +231,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner" }: 
         </div>
       </main>
 
-      {detailOpen && selectedCompany && <CompanyDrawer company={selectedCompany} onClose={() => setDetailOpen(false)} onUpdate={(patch) => updateCompany(selectedCompany.id, patch)} onEvidence={setEvidenceOpen} onOpenAssistant={() => { setDetailOpen(false); setView("assistant"); }} />}
+      {detailOpen && selectedCompany && <CompanyDrawer company={selectedCompany} contactDetails={initialWorkspace?.contactsByCompanyId[selectedCompany.id]} onClose={() => setDetailOpen(false)} onUpdate={(patch) => updateCompany(selectedCompany.id, patch)} onEvidence={setEvidenceOpen} onOpenAssistant={() => { setDetailOpen(false); setView("assistant"); }} />}
       {evidenceOpen && <EvidenceModal evidence={evidenceOpen} onClose={() => setEvidenceOpen(null)} />}
     </div>
   );
@@ -369,12 +398,30 @@ function DevelopmentAssistant({ company, plan, draft, setDraft, onEvidence, onCh
   </div>;
 }
 
-function CompanyDrawer({ company, onClose, onUpdate, onEvidence, onOpenAssistant }: { company: CompanyRecord; onClose: () => void; onUpdate: (patch: Partial<CompanyRecord>) => void; onEvidence: (evidence: Evidence) => void; onOpenAssistant: () => void }) {
+function ContactPanel({ details }: { details?: CompanyContactDetailsDto }) {
+  if (!details) return <section className="drawer-section contact-section"><div className="section-line"><span className="section-kicker">CONTACT INTELLIGENCE</span><StatusTag tone="neutral">Not enriched</StatusTag></div><div className="contact-empty"><Icon name="results" size={20}/><strong>尚未搜索联系人</strong><p>该公司不在当前 10 家验证批次中。运行联系人 enrichment 后，这里会显示公开姓名、职位、邮箱状态和来源。</p></div></section>;
+
+  const publicEmails = details.emails.filter((email) => email.status === "Public").length;
+  const verifiedEmails = details.emails.filter((email) => email.status === "Verified").length;
+  const guessedEmails = details.emails.filter((email) => email.status === "Pattern-guessed").length;
+  return <section className="drawer-section contact-section">
+    <div className="section-line"><div><span className="section-kicker">CONTACT INTELLIGENCE</span><small className="contact-meta">更新于 {details.enrichedAt.slice(0, 10)} · {details.evidenceCount} 条网页证据</small></div><StatusTag tone={details.contacts.length || details.emails.length ? "green" : "amber"}>{details.contacts.length || details.emails.length ? "Enriched" : "No match"}</StatusTag></div>
+    <div className="contact-stats" aria-label="联系人数据摘要"><div><strong>{details.contacts.length}</strong><span>公开姓名</span></div><div><strong>{publicEmails}</strong><span>公开邮箱</span></div><div><strong>{verifiedEmails}</strong><span>已验证</span></div><div><strong>{guessedEmails}</strong><span>猜测邮箱</span></div></div>
+    <div className="contact-provider-row"><span>数据源</span>{details.providerMix.map((provider) => <StatusTag key={provider} tone={provider === "snov" ? "violet" : "neutral"}>{providerLabel(provider)}</StatusTag>)}</div>
+    {details.contacts.length > 0 && <div className="contact-group"><h3>公开联系人</h3>{details.contacts.map((contact) => <article className="contact-card" key={contact.id}><span className="contact-avatar">{contact.fullName.split(/\s+/).slice(0, 2).map((part) => part[0]).join("").toUpperCase()}</span><div><div className="contact-name-line"><strong>{contact.fullName}</strong><StatusTag tone={contactStatusTone(contact.status)}>{contact.status}</StatusTag></div><p>{contact.jobTitle || "职位尚待确认"}</p><small>{providerLabel(contact.sourceProvider)} · confidence {contact.confidence}%</small></div><a href={contact.publicProfileUrl || contact.sourceUrl} target="_blank" rel="noreferrer" aria-label={`打开 ${contact.fullName} 的公开来源`}><Icon name="external" size={15}/></a></article>)}</div>}
+    {details.emails.length > 0 && <div className="contact-group"><h3>邮箱候选</h3>{details.emails.map((email) => <article className={`email-card ${email.status === "Pattern-guessed" ? "guessed" : ""}`} key={email.id}><div className="email-main"><code>{email.email}</code><div><StatusTag tone={emailStatusTone(email.status)}>{email.status}</StatusTag><span>{email.confidence}%</span></div></div><div className="email-actions"><span>{providerLabel(email.sourceProvider)}</span><button onClick={() => navigator.clipboard?.writeText(email.email)} aria-label={`复制 ${email.email}`}>复制</button>{email.sourceUrl && <a href={email.sourceUrl} target="_blank" rel="noreferrer">来源 <Icon name="external" size={12}/></a>}</div>{email.derivation && <p>{email.derivation}</p>}</article>)}</div>}
+    {details.contacts.length === 0 && details.emails.length === 0 && <div className="contact-empty compact"><strong>本轮未找到可靠联系人</strong><p>已保留 {details.evidenceCount} 条搜索证据；不会为了填满字段而生成姓名或邮箱。</p></div>}
+    <div className="contact-safety"><Icon name="spark" size={14}/><span>`Pattern-guessed` 不是公开或已验证邮箱，必须人工复核；系统不会自动发送邮件。</span></div>
+  </section>;
+}
+
+function CompanyDrawer({ company, contactDetails, onClose, onUpdate, onEvidence, onOpenAssistant }: { company: CompanyRecord; contactDetails?: CompanyContactDetailsDto; onClose: () => void; onUpdate: (patch: Partial<CompanyRecord>) => void; onEvidence: (evidence: Evidence) => void; onOpenAssistant: () => void }) {
   return <div className="drawer-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}><aside className="company-drawer" aria-label={`${company.displayName} 公司详情`}>
     <header className="drawer-header"><div className="drawer-title"><span className="company-avatar large">{company.displayName.slice(0, 2).toUpperCase()}</span><div><span className="layer-label">{company.layer}</span><h2>{company.displayName}</h2><a href={`https://${company.domain}`} target="_blank" rel="noreferrer">{company.domain} <Icon name="external" size={13}/></a></div></div><button className="close-button" onClick={onClose} aria-label="关闭详情"><Icon name="close"/></button></header>
     <div className="drawer-body"><div className="drawer-score-row"><ScoreRing value={company.fitScore}/><div><span>Opportunity Fit</span><strong>{company.fitScore} / 100</strong><small>Evidence confidence {company.evidenceConfidence}%</small></div><StatusTag tone={company.accountTier === "KA" ? "amber" : "blue"}>{company.accountTier}</StatusTag></div><p className="company-summary">{company.summary}</p>
       <section className="drawer-section"><div className="section-line"><span className="section-kicker">CHANNEL CLASSIFICATION</span>{company.manuallyEdited && <StatusTag tone="blue">Manual override</StatusTag>}</div><div className="role-tags large-tags">{company.roles.map((role) => <StatusTag key={role} tone={role === "ISP" ? "violet" : "neutral"}>{role}</StatusTag>)}</div><div className="edit-grid"><label>Account Tier<select value={company.accountTier} onChange={(event) => onUpdate({ accountTier: event.target.value as AccountTier })}>{tierOptions.map((tier) => <option key={tier}>{tier}</option>)}</select></label><label>Supply Model<select value={company.supplyModel} onChange={(event) => onUpdate({ supplyModel: event.target.value as SupplyModel })}>{supplyOptions.map((supply) => <option key={supply}>{supply}</option>)}</select></label><label>Opportunity Stage<select value={company.opportunityStage} onChange={(event) => onUpdate({ opportunityStage: event.target.value as OpportunityStage })}>{stageOptions.map((stage) => <option key={stage}>{stage}</option>)}</select></label><label>Brand Involvement<select value={company.brandInvolvement} onChange={(event) => onUpdate({ brandInvolvement: event.target.value as CompanyRecord["brandInvolvement"] })}>{["Light", "Standard", "Deep"].map((value) => <option key={value}>{value}</option>)}</select></label></div></section>
       <section className="drawer-section"><span className="section-kicker">ROLE-SPECIFIC ASSESSMENT</span><div className="assessment-grid"><div><span>Fit score</span><MiniBar value={company.fitScore}/><b>{company.fitScore}</b></div><div><span>Account value</span><MiniBar value={company.accountValue} tone="blue"/><b>{company.accountValue}</b></div><div><span>Reachability</span><MiniBar value={company.reachability} tone="amber"/><b>{company.reachability}</b></div><div><span>Evidence</span><MiniBar value={company.evidenceConfidence}/><b>{company.evidenceConfidence}</b></div></div></section>
+      <ContactPanel details={contactDetails}/>
       <section className="drawer-section"><span className="section-kicker">EVIDENCE · FACTS</span><div className="evidence-stack">{company.evidence.map((item) => <button key={item.id} className="evidence-card" onClick={() => onEvidence(item)}><div><StatusTag tone={item.status === "Verified" || item.status === "Corroborated" ? "green" : "amber"}>{item.status}</StatusTag><span>{item.id}</span></div><strong>{item.claim}</strong><small>{item.title} · captured {item.capturedAt}</small></button>)}</div></section>
       <section className="drawer-section"><span className="section-kicker">RISKS & UNKNOWNS</span><ul className="risk-list">{company.risks.map((risk) => <li key={risk}><span>Risk</span>{risk}</li>)}{company.unknowns.map((unknown) => <li key={unknown}><span className="unknown">Unknown</span>{unknown}</li>)}</ul></section>
     </div><footer className="drawer-footer"><button className="secondary-button" onClick={onClose}>关闭</button><button className="primary-button" onClick={onOpenAssistant}><Icon name="spark"/>生成开发计划</button></footer>
