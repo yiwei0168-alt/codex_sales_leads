@@ -6,15 +6,16 @@ The implementation is moving from a snapshot-driven demo to a single-user produc
 
 ```text
 Tavily live search → quality filters and deduplication → PostgreSQL workspace → review UI
-                                      ↘ evidence IDs ↗
+        ↓                              ↘ evidence IDs ↗
+public web search + extraction → contacts/email candidates
 ```
 
 ## Layers
 
 | Layer | Current implementation | Production extension |
 |---|---|---|
-| Search/import | Curated TypeScript snapshot | `SearchProvider` plus compliant import jobs |
-| Evidence | Evidence records embedded with each company | Postgres evidence and source snapshot metadata |
+| Search/import | Tavily live-search and enrichment jobs | SerpAPI adapter and scheduled refresh jobs |
+| Evidence | PostgreSQL search runs, URLs and captured excerpts | Source refresh and change detection |
 | Domain | Typed Company, ChannelNode context, scoring inputs, relationships and plans | Repository-backed services and audit log |
 | AI pipeline | Deterministic role-aware development-plan rule | `AiProvider` with structured output, timeout and retry |
 | Application | Next.js App Router client workspace | Authenticated server actions/API routes |
@@ -47,15 +48,16 @@ Provider boundaries are defined in `src/providers/contracts.ts`; neither pages n
 
 ## State and synchronization
 
-The demo keeps normalized company records in the top-level `CopilotDemo` component. All views read the same record array. Editing Account Tier, Supply Model, Brand Involvement, priority or stage updates that shared state, so the list, drawer, opportunity workspace and generated plan stay consistent without duplicating data.
+The server loads the active workspace and live-search companies from PostgreSQL. The client keeps a normalized working array, and company edits are persisted through authenticated API routes with audit events.
 
 ## Failure behavior
 
-The current demo uses a bundled snapshot, so it has no external runtime dependency. The provider contract defines `ProviderUnavailableError` for a future integration; the UI must show a degraded state and must never substitute mock companies into real results.
+Search and enrichment jobs fail explicitly when a provider is unavailable. Tavily requests use limited retries for transient network failures, and contact replacement happens per company only after the new evidence is ready. Mock companies are never substituted into live results.
 
 ## Security and privacy
 
 - No secrets are shipped to the browser or repository.
-- No private contacts or guessed email addresses are stored.
+- Only public business-page/profile contacts are collected; private or login-gated data is not scraped.
+- Public, verified and pattern-guessed emails have distinct statuses. Pattern guesses require a public name and a public same-domain personalized pattern.
 - External links open public business sources only.
 - No outbound communication is executed.

@@ -23,7 +23,9 @@
     "company:verify": "tsx scripts/verify-company-rag.ts",
     "auth:hash-password": "tsx scripts/hash-app-password.mjs",
     "leads:discover": "tsx scripts/discover-mexico-leads.ts",
-    "leads:verify": "tsx scripts/verify-live-leads.ts"
+    "leads:verify": "tsx scripts/verify-live-leads.ts",
+    "contacts:enrich": "tsx scripts/enrich-lead-contacts.ts",
+    "contacts:verify": "tsx scripts/verify-contact-enrichment.ts"
   },
   "dependencies": {
     "next": "^16.1.6",

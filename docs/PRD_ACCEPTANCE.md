@@ -8,7 +8,7 @@
 | AC-02 existing-distributor growth | Growth mode keeps Exel as the supply anchor and focuses results on downstream opportunities with Distributor Supply as the normal path. |
 | AC-03 large ISP handling | Large ISPs render as Downstream + ISP + KA with Deep involvement and Brand Direct or Co-supply recommendations. |
 | AC-04 manual edits stay consistent | Account Tier, Supply Model, Brand Involvement and stage update shared state used by list, detail, opportunities and plan. |
-| AC-D01 real company identity | 36 real public companies; every company has source evidence. |
+| AC-D01 real company identity | 50 Tavily live-search candidates; every company has source evidence and requires identity review. |
 | AC-D02 role coverage | Distributor/VAD, resale/retail, SI/MSP and ISP are included. |
 | AC-D03 evidence metadata | URL, title, capture date, evidence state, confidence and supported claim are available. |
 | AC-A01 taxonomy | Automated tests enforce KA outside ChannelRole and ISP inside Downstream Channel. |
@@ -23,18 +23,18 @@
 ## Simplified for Demo
 
 - The pages in PRD section 9 are presented as one persistent desktop workspace with navigable views rather than separate URLs.
-- Search uses a stable snapshot replay and visual pipeline state, not a live search provider.
+- Search uses Tavily live API runs persisted in PostgreSQL; SerpAPI remains a planned next-version provider.
 - Role-aware scoring inputs are stored in the snapshot and priority is deterministically recomputed; a production scoring configuration UI is not included.
 - The map provides verified and hypothesis states; confirmation buttons are visual Demo controls and do not yet persist relationship decisions.
-- Manual edits persist only for the current page session.
+- Manual edits persist in the authenticated single-user PostgreSQL workspace.
 - The development assistant uses deterministic role rules instead of a live LLM so the Demo needs no credential and remains reproducible.
 
 ## Not implemented
 
-- Postgres/Supabase runtime persistence, authentication and multi-user ownership
-- Live compliant crawling/search, source refresh jobs and source-failure recovery
+- Multi-user ownership and authorization
+- Scheduled source refresh and change detection
 - Production AI adapter calls, model telemetry and prompt audit persistence
-- Real contacts or any outbound message sending
+- Snov-backed verified contact enrichment and any outbound message sending
 - Full responsive mobile layout; the PRD's 1280px desktop target is the primary layout
 - Browser E2E automation in CI; unit/domain tests are included
 
