@@ -73,7 +73,7 @@ Remove-Item Env:APP_PASSWORD_SETUP
 npm run db:migrate
 npm run leads:discover -- --target=100 --replace
 npm run leads:verify
-npm run contacts:enrich -- --limit=100 --replace
+npm run contacts:enrich -- --limit=100 --concurrency=4 --replace
 npm run contacts:verify
 npm run contacts:classify -- --company-limit=100 --candidate-limit=1000
 npm run contacts:classify:report
@@ -83,6 +83,9 @@ npm run contacts:classify:eval
 The contact pilot enriches ten live-search companies from public webpages only. Publicly displayed emails are stored
 as `Public`; deterministic guesses require both a public named contact and a public same-domain personalized email
 pattern, and are always stored as `Pattern-guessed`. Nothing in this workflow sends email.
+
+Contact enrichment uses four bounded workers by default. Each company is committed independently, failures are
+collected for targeted retry, and run-level credit counters use atomic increments.
 
 Contact classification runs in shadow mode: DeepSeek assesses retained evidence, deterministic rules produce the
 three-category recommendation, and the result is stored for evaluation without changing the active contact records.

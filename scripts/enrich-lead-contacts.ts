@@ -10,6 +10,8 @@ const workspaceId = "00000000-0000-4000-8000-000000000100";
 const requestedDomains = process.argv.find((value) => value.startsWith("--domains="))?.slice("--domains=".length).split(",").map((value) => value.trim().toLowerCase()).filter(Boolean);
 const requestedLimit = Number(process.argv.find((value) => value.startsWith("--limit="))?.slice("--limit=".length) ?? 100);
 const limit = Math.max(1, Math.min(Number.isFinite(requestedLimit) ? Math.floor(requestedLimit) : 100, 100));
+const requestedConcurrency = Number(process.argv.find((value) => value.startsWith("--concurrency="))?.slice("--concurrency=".length) ?? 4);
+const concurrency = Math.max(1, Math.min(Number.isFinite(requestedConcurrency) ? Math.floor(requestedConcurrency) : 4, 6));
 const targetDomains = requestedDomains?.length ? requestedDomains.slice(0, 100) : null;
 const replaceExisting = process.argv.includes("--replace");
 const tavily = new TavilySearchProvider();
@@ -134,15 +136,16 @@ const providerMix = ["tavily-search", "tavily-extract"];
 const [run] = await query<{ id: string }>(
   `insert into company_enrichment_run (workspace_id, provider_mix, target_count, metadata)
    values ($1, $2, $3, $4) returning id`,
-  [workspaceId, providerMix, companies.length, JSON.stringify({ domains: companies.map((company) => company.domain), enrichmentMode: "public-web-only", noAutomaticSending: true })],
+  [workspaceId, providerMix, companies.length, JSON.stringify({ domains: companies.map((company) => company.domain), enrichmentMode: "public-web-only",
+    concurrency, noAutomaticSending: true })],
 );
 
 let searchCredits = 0;
 let extractCredits = 0;
 let processed = 0;
+const failures: Array<{ domain: string; error: string }> = [];
 
-try {
-  for (const company of companies) {
+async function enrichCompany(company: CompanyRow): Promise<void> {
     const official = await tavily.search({
       query: `site:${company.domain} contacto ventas equipo nosotros correo email telefono`,
       country: "mexico",
@@ -166,7 +169,7 @@ try {
       includeRawContent: true,
       includeDomains: [company.domain],
     });
-    searchCredits += official.creditsUsed + publicWeb.creditsUsed + domainEmails.creditsUsed;
+    const companySearchCredits = official.creditsUsed + publicWeb.creditsUsed + domainEmails.creditsUsed;
 
     const resultMap = new Map<string, { result: TavilySearchResult; kind: "official-website" | "web-search" }>();
     for (const result of official.results) resultMap.set(result.url, { result, kind: "official-website" });
@@ -175,7 +178,7 @@ try {
     const combined = [...resultMap.values()];
     const officialUrls = combined.filter((item) => item.kind === "official-website").slice(0, 5).map((item) => item.result.url);
     const extracted = await tavily.extract(officialUrls);
-    extractCredits += extracted.creditsUsed;
+    const companyExtractCredits = extracted.creditsUsed;
     const extractedByUrl = new Map(extracted.results.map((item) => [item.url, item.rawContent]));
 
     const contacts = combined.flatMap((item) => contactsFromSearch(company, item.result));
@@ -236,23 +239,48 @@ try {
         );
       }
       await client.query(`update company_enrichment_run set processed_count = processed_count + 1,
-        search_credits_used = $2, extract_credits_used = $3 where id = $1`, [run.id, searchCredits, extractCredits]);
+        search_credits_used = search_credits_used + $2, extract_credits_used = extract_credits_used + $3 where id = $1`,
+      [run.id, companySearchCredits, companyExtractCredits]);
     });
+    searchCredits += companySearchCredits;
+    extractCredits += companyExtractCredits;
     processed += 1;
     process.stdout.write(`${processed}/${companies.length} ${company.canonical_name}: ${contacts.length} named contacts, ${new Set(emailFindings.map((item) => item.email)).size} emails\n`);
+}
+
+try {
+  let nextIndex = 0;
+  async function worker(): Promise<void> {
+    while (true) {
+      const index = nextIndex;
+      nextIndex += 1;
+      if (index >= companies.length) return;
+      const company = companies[index];
+      try {
+        await enrichCompany(company);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "Unknown company enrichment error";
+        failures.push({ domain: company.domain, error: message });
+        process.stderr.write(`FAILED ${company.canonical_name} (${company.domain}): ${message}\n`);
+      }
+    }
   }
+  await Promise.all(Array.from({ length: Math.min(concurrency, companies.length) }, () => worker()));
+  if (failures.length > 0) throw new Error(`${failures.length} companies failed enrichment: ${failures.map((item) => item.domain).join(", ")}`);
 
   await query(
     `update company_enrichment_run set status = 'completed', processed_count = $2, search_credits_used = $3,
      extract_credits_used = $4, finished_at = now() where id = $1`,
     [run.id, processed, searchCredits, extractCredits],
   );
-  console.log(JSON.stringify({ runId: run.id, companies: processed, providerMix, searchCredits, extractCredits, enrichmentMode: "public-web-only" }, null, 2));
+  console.log(JSON.stringify({ runId: run.id, companies: processed, providerMix, concurrency, searchCredits, extractCredits,
+    enrichmentMode: "public-web-only" }, null, 2));
 } catch (error) {
   await query(
     `update company_enrichment_run set status = 'failed', processed_count = $2, search_credits_used = $3,
      extract_credits_used = $4, error_message = $5, finished_at = now() where id = $1`,
-    [run.id, processed, searchCredits, extractCredits, error instanceof Error ? error.message : "Unknown enrichment error"],
+    [run.id, processed, searchCredits, extractCredits,
+      JSON.stringify({ message: error instanceof Error ? error.message : "Unknown enrichment error", failures })],
   );
   throw error;
 } finally {

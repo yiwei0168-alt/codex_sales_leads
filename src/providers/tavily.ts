@@ -4,7 +4,15 @@ async function fetchWithRetry(url: string, init: RequestInit): Promise<Response>
   let lastError: unknown;
   for (let attempt = 0; attempt < 3; attempt += 1) {
     try {
-      return await fetch(url, init);
+      const response = await fetch(url, init);
+      if (![429, 500, 502, 503, 504].includes(response.status) || attempt === 2) return response;
+      lastError = new Error(`Retryable HTTP ${response.status}`);
+      const retryAfterSeconds = Number(response.headers.get("retry-after"));
+      const retryDelay = Number.isFinite(retryAfterSeconds) && retryAfterSeconds > 0
+        ? Math.min(retryAfterSeconds * 1_000, 10_000)
+        : 500 * (2 ** attempt) + Math.floor(Math.random() * 200);
+      await new Promise((resolve) => setTimeout(resolve, retryDelay));
+      continue;
     } catch (error) {
       lastError = error;
       if (attempt < 2) await new Promise((resolve) => setTimeout(resolve, 500 * (2 ** attempt)));
