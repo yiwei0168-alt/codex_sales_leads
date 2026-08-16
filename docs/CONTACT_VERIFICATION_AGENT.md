@@ -339,5 +339,5 @@ Minimum release gates:
 Before implementation begins, confirm:
 
 1. Whether the proposed company-size bands should use local employee count as the primary measure.
-2. Whether LinkedIn evidence will enter through manual/user-supplied records only for the first release, with automated LinkedIn crawling excluded.
+2. LinkedIn evidence enters through manual/user-supplied or other authorized records in the first release; proactive LinkedIn crawling is excluded. Confirmed.
 3. Whether to use `deepseek-v4-flash` for routine work and escalate conflicts to `deepseek-v4-pro`, or use one model for every assessment.

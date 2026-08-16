@@ -1,7 +1,6 @@
 import nextEnv from "@next/env";
 import { extractDomainEmails, guessPersonalEmail, personNameFromPersonalEmail, personalizedEmailPattern } from "../src/lib/leads/contact-extraction";
 import { getPool, query, transaction } from "../src/lib/rag/db";
-import { SnovProvider, type SnovDomainEmail } from "../src/providers/snov";
 import { TavilySearchProvider, type TavilySearchResult } from "../src/providers/tavily";
 
 const { loadEnvConfig } = nextEnv;
@@ -22,10 +21,8 @@ const preferredDomains = [
 ];
 const requestedDomains = process.argv.find((value) => value.startsWith("--domains="))?.slice("--domains=".length).split(",").map((value) => value.trim().toLowerCase()).filter(Boolean);
 const targetDomains = requestedDomains?.length ? requestedDomains.slice(0, 10) : preferredDomains;
-const useSnov = !process.argv.includes("--no-snov");
 const replaceExisting = process.argv.includes("--replace");
 const tavily = new TavilySearchProvider();
-const snov = new SnovProvider();
 
 interface CompanyRow {
   id: string;
@@ -125,32 +122,6 @@ function guessedEmails(company: CompanyRow, contacts: ContactFinding[], publicEm
   });
 }
 
-function snovFindings(items: SnovDomainEmail[]): { contacts: ContactFinding[]; emails: EmailFinding[] } {
-  const contacts: ContactFinding[] = [];
-  const emails: EmailFinding[] = [];
-  for (const item of items) {
-    const fullName = cleanPersonName(`${item.firstName ?? ""} ${item.lastName ?? ""}`);
-    if (fullName) contacts.push({
-      fullName,
-      jobTitle: item.position,
-      sourceUrl: item.sourceUrl ?? "https://app.snov.io/",
-      provider: "snov",
-      status: item.status === "Verified" ? "Verified" : "Inferred",
-      confidence: item.status === "Verified" ? 90 : 65,
-    });
-    emails.push({
-      email: item.email,
-      status: item.status,
-      sourceUrl: item.sourceUrl,
-      provider: "snov",
-      derivation: "Returned by Snov.io domain email search.",
-      confidence: item.status === "Verified" ? 92 : item.status === "Invalid" ? 95 : 55,
-      contactName: fullName ?? undefined,
-    });
-  }
-  return { contacts, emails };
-}
-
 const companies = await query<CompanyRow>(
   `select c.id, c.canonical_name, lower(c.domain) as domain
    from workspace_company wc join sales_company c on c.id = wc.company_id
@@ -163,11 +134,11 @@ if (companies.length !== targetDomains.length) {
   throw new Error(`Missing active live leads: ${targetDomains.filter((domain) => !found.has(domain)).join(", ")}`);
 }
 
-const providerMix = ["tavily-search", "tavily-extract", ...(useSnov && snov.isConfigured() ? ["snov"] : [])];
+const providerMix = ["tavily-search", "tavily-extract"];
 const [run] = await query<{ id: string }>(
   `insert into company_enrichment_run (workspace_id, provider_mix, target_count, metadata)
    values ($1, $2, $3, $4) returning id`,
-  [workspaceId, providerMix, companies.length, JSON.stringify({ domains: targetDomains, snovConfigured: snov.isConfigured(), noAutomaticSending: true })],
+  [workspaceId, providerMix, companies.length, JSON.stringify({ domains: targetDomains, enrichmentMode: "public-web-only", noAutomaticSending: true })],
 );
 
 let searchCredits = 0;
@@ -224,11 +195,6 @@ try {
       }
     }
 
-    if (useSnov && snov.isConfigured()) {
-      const findings = snovFindings(await snov.domainEmails(company.domain));
-      contacts.push(...findings.contacts);
-      emailFindings.push(...findings.emails);
-    }
     emailFindings.push(...guessedEmails(company, contacts, emailFindings));
 
     await transaction(async (client) => {
@@ -285,7 +251,7 @@ try {
      extract_credits_used = $4, finished_at = now() where id = $1`,
     [run.id, processed, searchCredits, extractCredits],
   );
-  console.log(JSON.stringify({ runId: run.id, companies: processed, providerMix, searchCredits, extractCredits, snovConfigured: snov.isConfigured() }, null, 2));
+  console.log(JSON.stringify({ runId: run.id, companies: processed, providerMix, searchCredits, extractCredits, enrichmentMode: "public-web-only" }, null, 2));
 } catch (error) {
   await query(
     `update company_enrichment_run set status = 'failed', processed_count = $2, search_credits_used = $3,

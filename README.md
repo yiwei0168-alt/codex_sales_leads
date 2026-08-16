@@ -73,14 +73,13 @@ Remove-Item Env:APP_PASSWORD_SETUP
 npm run db:migrate
 npm run leads:discover -- --target=50 --replace
 npm run leads:verify
-npm run contacts:enrich -- --no-snov --replace
+npm run contacts:enrich -- --replace
 npm run contacts:verify
 ```
 
-The contact pilot enriches ten live-search companies from public webpages. Publicly displayed emails are stored as
-`Public`; deterministic guesses require both a public named contact and a public same-domain personalized email
-pattern, and are always stored as `Pattern-guessed`. Nothing in this workflow sends email. To add Snov.io as a
-contact-platform source, configure `SNOV_USER_ID` and `SNOV_API_SECRET` and omit `--no-snov`.
+The contact pilot enriches ten live-search companies from public webpages only. Publicly displayed emails are stored
+as `Public`; deterministic guesses require both a public named contact and a public same-domain personalized email
+pattern, and are always stored as `Pattern-guessed`. Nothing in this workflow sends email.
 
 `--replace` 只替换当前工作区中的上一批 Tavily 活动候选；历史查询、原始结果和质量筛选记录保留用于审计。
 
