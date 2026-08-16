@@ -8,6 +8,10 @@ The implementation is moving from a snapshot-driven demo to a single-user produc
 Tavily live search → quality filters and deduplication → PostgreSQL workspace → review UI
         ↓                              ↘ evidence IDs ↗
 public web search + extraction → contacts/email candidates
+                                   ↓
+                              verification agent
+                              (DeepSeek evidence assessment
+                               + deterministic decisions)
 ```
 
 ## Layers
@@ -61,3 +65,9 @@ Search and enrichment jobs fail explicitly when a provider is unavailable. Tavil
 - Public, verified and pattern-guessed emails have distinct statuses. Pattern guesses require a public name and a public same-domain personalized pattern.
 - External links open public business sources only.
 - No outbound communication is executed.
+
+## Contact verification direction
+
+The planned Contact Verification Agent consumes crawler findings and retained source evidence. DeepSeek performs structured evidence assessment, while deterministic rules assign `Official`, `HighConfidence`, or `NeedsReview`; invalid addresses use a separate lifecycle state. Accuracy, role relevance, reachability, and delivery state remain separate dimensions. Company size affects the reachability of general official channels but never reduces their source authenticity. See [CONTACT_VERIFICATION_AGENT.md](./CONTACT_VERIFICATION_AGENT.md).
+
+Outbound delivery verification is a separate, disabled-by-default future boundary and requires explicit approval before implementation and activation.
