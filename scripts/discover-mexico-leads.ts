@@ -29,6 +29,7 @@ const directoryTitlePattern = /\b(top\s*\d+|mejores empresas|lista de empresas|d
 const strategicContentPathPattern = /\/(blog|noticias?|news|articulos?|guia|recursos?)\//i;
 const nonCompanyPagePattern = /(\.pdf(?:$|\?)|\/download(?:\/|$)|\/bitstreams?\/|\/tesis(?:\/|$)|\/blogs?(?:\/|$)|\/articulos?(?:\/|$)|\/guia(?:\/|$))/i;
 const contentSubdomainPattern = /^(blog|tesis|rinacional|mkt|revista)\./i;
+const mexicoSignalPattern = /\b(m[eé]xico|mexico|mexicana?|cdmx|ciudad de m[eé]xico|monterrey|nuevo le[oó]n|guadalajara|jalisco|puebla|quer[eé]taro|tijuana|baja california|yucat[aá]n|m[eé]rida|guanajuato|chihuahua|oaxaca|chiapas)\b/i;
 
 interface Candidate {
   spec: MexicoSearchQuery;
@@ -114,7 +115,7 @@ let creditsUsed = 0;
 
 try {
   for (const spec of mexicoSearchPlan) {
-    const response = await provider.search({ query: spec.query, country: "mexico", searchDepth: "basic", maxResults: 20, includeDomains: ["*.mx"] });
+    const response = await provider.search({ query: spec.query, country: "mexico", searchDepth: "basic", maxResults: 20 });
     creditsUsed += response.creditsUsed;
     rawResultCount += response.results.length;
     const [searchQuery] = await query<{ id: string }>(
@@ -125,7 +126,8 @@ try {
     for (const result of response.results) {
       const domain = domainFromUrl(result.url);
       let rejectionReason: string | null = null;
-      if (!domain || blocked(domain) || !domain.endsWith(".mx")) rejectionReason = "blocked-or-non-mexico-domain";
+      if (!domain || blocked(domain)) rejectionReason = "blocked-domain";
+      else if (!domain.endsWith(".mx") && !mexicoSignalPattern.test(`${result.title} ${result.content}`)) rejectionReason = "missing-mexico-signal";
       else if (contentSubdomainPattern.test(domain) || nonCompanyPagePattern.test(result.url)) rejectionReason = "non-company-content-page";
       else if (directoryTitlePattern.test(result.title)) rejectionReason = "directory-or-list-page";
       else if (spec.leadType === "channel" && !relevancePattern.test(`${result.title} ${result.content}`)) rejectionReason = "insufficient-networking-relevance";
