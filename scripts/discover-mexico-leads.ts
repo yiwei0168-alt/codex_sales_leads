@@ -9,6 +9,7 @@ const { loadEnvConfig } = nextEnv;
 loadEnvConfig(process.cwd());
 
 const target = Math.max(1, Math.min(Number(process.argv.find((value) => value.startsWith("--target="))?.split("=")[1] ?? 50), 100));
+const reuseRecentOnly = process.argv.includes("--reuse-recent-only");
 const workspaceId = "00000000-0000-4000-8000-000000000100";
 const provider = new TavilySearchProvider();
 
@@ -37,6 +38,19 @@ interface Candidate {
   queryId: string;
   domain: string;
   displayName: string;
+}
+
+interface HistoricalCandidateRow {
+  url: string;
+  domain: string;
+  title: string;
+  snippet: string;
+  provider_score: number | null;
+  query_text: string;
+  role_hint: ChannelRole;
+  lead_type: "channel" | "strategic-customer";
+  language: "es" | "en";
+  region: string;
 }
 
 function domainFromUrl(value: string): string | null {
@@ -112,9 +126,10 @@ const [run] = await query<{ id: string }>(
 const candidates: Candidate[] = [];
 let rawResultCount = 0;
 let creditsUsed = 0;
+let queryCount = 0;
 
 try {
-  for (const spec of mexicoSearchPlan) {
+  for (const spec of reuseRecentOnly ? [] : mexicoSearchPlan) {
     const response = await provider.search({ query: spec.query, country: "mexico", searchDepth: "basic", maxResults: 20 });
     creditsUsed += response.creditsUsed;
     rawResultCount += response.results.length;
@@ -141,6 +156,44 @@ try {
       if (!rejectionReason && inserted[0]) candidates.push({ spec, result, queryId: searchQuery.id, domain: domain!, displayName: displayNameFromTitle(result.title, domain!) });
     }
     process.stdout.write(`Searched ${spec.role}/${spec.leadType}: ${response.results.length} results\n`);
+    queryCount += 1;
+  }
+
+  if (new Set(candidates.map((candidate) => candidate.domain)).size < target) {
+    const historical = await query<HistoricalCandidateRow>(
+      `select r.url, r.domain, r.title, r.snippet, r.provider_score, q.query_text, q.role_hint, q.lead_type, q.language, q.region
+       from lead_search_result r join lead_search_query q on q.id = r.query_id
+       join lead_search_run lr on lr.id = r.run_id
+       where lr.workspace_id = $1 and lr.provider = 'tavily' and lr.id <> $2
+         and r.rejection_reason is null and q.role_hint <> 'Mixed' and r.captured_at >= now() - interval '30 days'
+       order by r.captured_at desc, r.provider_score desc nulls last limit 1000`,
+      [workspaceId, run.id],
+    );
+    if (historical.length > 0) {
+      const [reuseQuery] = await query<{ id: string }>(
+        `insert into lead_search_query (run_id, query_text, role_hint, lead_type, language, region, result_count, credits_used)
+         values ($1, 'Retained qualifying Tavily candidates from the previous 30 days', 'Mixed', 'channel', 'es', 'Mexico', $2, 0)
+         returning id`,
+        [run.id, historical.length],
+      );
+      queryCount += 1;
+      for (const item of historical) {
+        const inserted = await query<{ id: string }>(
+          `insert into lead_search_result (run_id, query_id, url, domain, title, snippet, provider_score)
+           values ($1, $2, $3, $4, $5, $6, $7) on conflict (run_id, url) do nothing returning id`,
+          [run.id, reuseQuery.id, item.url, item.domain, item.title, item.snippet, item.provider_score],
+        );
+        if (!inserted[0]) continue;
+        candidates.push({
+          spec: { query: item.query_text, role: item.role_hint, leadType: item.lead_type, language: item.language, region: item.region },
+          result: { title: item.title, url: item.url, content: item.snippet, score: item.provider_score ?? 0 },
+          queryId: reuseQuery.id,
+          domain: item.domain,
+          displayName: displayNameFromTitle(item.title, item.domain),
+        });
+      }
+      process.stdout.write(`Reused ${historical.length} retained qualifying Tavily results\n`);
+    }
   }
 
   const byType = new Map<string, Candidate[]>();
@@ -190,17 +243,18 @@ try {
     await client.query(
       `update lead_search_run set status = 'completed', query_count = $2, raw_result_count = $3,
          unique_candidate_count = $4, accepted_count = $5, credits_used = $6, finished_at = now() where id = $1`,
-      [run.id, mexicoSearchPlan.length, rawResultCount, new Set(candidates.map((item) => item.domain)).size, selected.length, creditsUsed],
+      [run.id, queryCount, rawResultCount, new Set(candidates.map((item) => item.domain)).size, selected.length, creditsUsed],
     );
   });
-  console.log(JSON.stringify({ runId: run.id, provider: provider.id, queries: mexicoSearchPlan.length, rawResults: rawResultCount,
+  console.log(JSON.stringify({ runId: run.id, provider: provider.id, queries: queryCount, rawResults: rawResultCount,
     uniquePassingDomains: new Set(candidates.map((item) => item.domain)).size, accepted: selected.length, creditsUsed,
+    reuseRecentOnly,
     leadTypes: selected.reduce<Record<string, number>>((counts, item) => { counts[item.spec.leadType] = (counts[item.spec.leadType] ?? 0) + 1; return counts; }, {}) }, null, 2));
 } catch (error) {
   await query(
     `update lead_search_run set status = 'failed', query_count = $2, raw_result_count = $3, unique_candidate_count = $4,
        credits_used = $5, error_message = $6, finished_at = now() where id = $1`,
-    [run.id, mexicoSearchPlan.length, rawResultCount, new Set(candidates.map((item) => item.domain)).size, creditsUsed,
+    [run.id, queryCount, rawResultCount, new Set(candidates.map((item) => item.domain)).size, creditsUsed,
       error instanceof Error ? error.message : "Unknown discovery error"],
   );
   throw error;
