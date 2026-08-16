@@ -37,6 +37,13 @@ interface ItemRow {
   updated_at: string;
 }
 
+interface CoverageRow {
+  target_count: number;
+  covered_count: number;
+  contact_count: number;
+  email_count: number;
+}
+
 export async function GET() {
   const session = await requireApiSession();
   if (session instanceof Response) return session;
@@ -49,9 +56,9 @@ export async function GET() {
        order by started_at desc limit 1`,
       [workspaceId],
     );
-    if (!run) return Response.json({ run: null, items: [], counts: { pending: 0, running: 0, completed: 0, failed: 0 } });
+    if (!run) return Response.json({ run: null, items: [], counts: { pending: 0, running: 0, completed: 0, failed: 0 }, workspaceCoverage: null });
 
-    const items = await query<ItemRow>(
+    const [items, coverageRows] = await Promise.all([query<ItemRow>(
       `select i.id, i.company_id, c.canonical_name, c.domain, i.status, i.phase,
        i.worker_id, i.attempts, i.named_contact_count, i.email_count,
        i.search_credits_used, i.extract_credits_used, i.error_message,
@@ -61,7 +68,18 @@ export async function GET() {
        order by case i.status when 'running' then 0 when 'failed' then 1 when 'completed' then 2 else 3 end,
          i.updated_at desc`,
       [run.id],
-    );
+    ), query<CoverageRow>(
+      `with targets as (
+         select c.id from workspace_company wc join sales_company c on c.id = wc.company_id
+         where wc.workspace_id = $1 and c.source_kind = 'tavily-live'
+       )
+       select count(*)::int as target_count,
+         count(*) filter (where exists (select 1 from company_web_evidence e where e.company_id = t.id))::int as covered_count,
+         (select count(*)::int from company_contact ct where ct.company_id in (select id from targets)) as contact_count,
+         (select count(*)::int from company_email_candidate em where em.company_id in (select id from targets) and em.status <> 'Invalid') as email_count
+       from targets t`,
+      [workspaceId],
+    )]);
     const counts = { pending: 0, running: 0, completed: 0, failed: 0 };
     for (const item of items) counts[item.status] += 1;
 
@@ -96,6 +114,12 @@ export async function GET() {
         updatedAt: item.updated_at,
       })),
       counts,
+      workspaceCoverage: coverageRows[0] ? {
+        targetCount: coverageRows[0].target_count,
+        coveredCount: coverageRows[0].covered_count,
+        contactCount: coverageRows[0].contact_count,
+        emailCount: coverageRows[0].email_count,
+      } : null,
     });
   } catch (error) {
     return Response.json({ error: error instanceof Error ? error.message : "无法读取联系人搜索进度" }, { status: 503 });

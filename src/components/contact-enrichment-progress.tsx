@@ -32,6 +32,12 @@ interface ProgressPayload {
   };
   items: ProgressItem[];
   counts: Record<ItemStatus, number>;
+  workspaceCoverage: null | {
+    targetCount: number;
+    coveredCount: number;
+    contactCount: number;
+    emailCount: number;
+  };
   error?: string;
 }
 
@@ -91,8 +97,8 @@ export function ContactEnrichmentProgress() {
     ? data.counts.completed + data.counts.failed
     : data.run.processedCount;
   const percent = Math.min(100, Math.round((terminalCount / data.run.targetCount) * 100));
-  const contactTotal = data.items.reduce((sum, item) => sum + item.namedContactCount, 0);
-  const emailTotal = data.items.reduce((sum, item) => sum + item.emailCount, 0);
+  const contactTotal = data.workspaceCoverage?.contactCount ?? data.items.reduce((sum, item) => sum + item.namedContactCount, 0);
+  const emailTotal = data.workspaceCoverage?.emailCount ?? data.items.reduce((sum, item) => sum + item.emailCount, 0);
   const legacyRun = data.items.length === 0;
 
   return (
@@ -108,7 +114,7 @@ export function ContactEnrichmentProgress() {
       </section>
 
       <section className="enrichment-metrics">
-        <article><span>成功公司</span><strong>{legacyRun ? data.run.processedCount : data.counts.completed}</strong><small>不重复搜索</small></article>
+        <article><span>整体已搜索</span><strong>{data.workspaceCoverage?.coveredCount ?? (legacyRun ? data.run.processedCount : data.counts.completed)}<small> / {data.workspaceCoverage?.targetCount ?? data.run.targetCount}</small></strong><small>整个实时线索工作区</small></article>
         <article><span>发现联系人</span><strong>{contactTotal}</strong><small>具名联系人</small></article>
         <article><span>发现邮箱</span><strong>{emailTotal}</strong><small>含待验证邮箱</small></article>
         <article><span>搜索消耗</span><strong>{data.run.searchCreditsUsed + data.run.extractCreditsUsed}</strong><small>{data.run.searchCreditsUsed} search · {data.run.extractCreditsUsed} extract</small></article>
