@@ -3,6 +3,7 @@ import { ProviderUnavailableError } from "./contracts";
 async function fetchWithRetry(url: string, init: RequestInit): Promise<Response> {
   let lastError: unknown;
   for (let attempt = 0; attempt < 3; attempt += 1) {
+    if (init.signal?.aborted) throw init.signal.reason ?? new DOMException("Aborted", "AbortError");
     try {
       const response = await fetch(url, init);
       if (![429, 500, 502, 503, 504].includes(response.status) || attempt === 2) return response;

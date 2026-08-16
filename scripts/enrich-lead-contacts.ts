@@ -12,6 +12,7 @@ const requestedLimit = Number(process.argv.find((value) => value.startsWith("--l
 const limit = Math.max(1, Math.min(Number.isFinite(requestedLimit) ? Math.floor(requestedLimit) : 100, 100));
 const requestedConcurrency = Number(process.argv.find((value) => value.startsWith("--concurrency="))?.slice("--concurrency=".length) ?? 4);
 const concurrency = Math.max(1, Math.min(Number.isFinite(requestedConcurrency) ? Math.floor(requestedConcurrency) : 4, 6));
+const tavilyTimeoutMs = Math.max(5_000, Math.min(Number(process.env.TAVILY_REQUEST_TIMEOUT_MS ?? 30_000), 120_000));
 const targetDomains = requestedDomains?.length ? requestedDomains.slice(0, 100) : null;
 const replaceExisting = process.argv.includes("--replace");
 const tavily = new TavilySearchProvider();
@@ -137,7 +138,7 @@ const [run] = await query<{ id: string }>(
   `insert into company_enrichment_run (workspace_id, provider_mix, target_count, metadata)
    values ($1, $2, $3, $4) returning id`,
   [workspaceId, providerMix, companies.length, JSON.stringify({ domains: companies.map((company) => company.domain), enrichmentMode: "public-web-only",
-    concurrency, noAutomaticSending: true })],
+    concurrency, tavilyTimeoutMs, noAutomaticSending: true })],
 );
 
 let searchCredits = 0;
@@ -153,14 +154,14 @@ async function enrichCompany(company: CompanyRow): Promise<void> {
       maxResults: 5,
       includeRawContent: true,
       includeDomains: [company.domain],
-    });
+    }, AbortSignal.timeout(tavilyTimeoutMs));
     const publicWeb = await tavily.search({
       query: `"${company.canonical_name}" "${company.domain}" director gerente ventas compras founder LinkedIn email`,
       country: "mexico",
       searchDepth: "advanced",
       maxResults: 8,
       includeRawContent: true,
-    });
+    }, AbortSignal.timeout(tavilyTimeoutMs));
     const domainEmails = await tavily.search({
       query: `site:${company.domain} "@${company.domain}"`,
       country: "mexico",
@@ -168,7 +169,7 @@ async function enrichCompany(company: CompanyRow): Promise<void> {
       maxResults: 8,
       includeRawContent: true,
       includeDomains: [company.domain],
-    });
+    }, AbortSignal.timeout(tavilyTimeoutMs));
     const companySearchCredits = official.creditsUsed + publicWeb.creditsUsed + domainEmails.creditsUsed;
 
     const resultMap = new Map<string, { result: TavilySearchResult; kind: "official-website" | "web-search" }>();
@@ -177,7 +178,7 @@ async function enrichCompany(company: CompanyRow): Promise<void> {
     for (const result of domainEmails.results) if (!resultMap.has(result.url)) resultMap.set(result.url, { result, kind: "official-website" });
     const combined = [...resultMap.values()];
     const officialUrls = combined.filter((item) => item.kind === "official-website").slice(0, 5).map((item) => item.result.url);
-    const extracted = await tavily.extract(officialUrls);
+    const extracted = await tavily.extract(officialUrls, AbortSignal.timeout(tavilyTimeoutMs));
     const companyExtractCredits = extracted.creditsUsed;
     const extractedByUrl = new Map(extracted.results.map((item) => [item.url, item.rawContent]));
 
