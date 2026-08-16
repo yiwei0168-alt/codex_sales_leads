@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { KnowledgeBase } from "@/components/knowledge-base";
+import { ContactEnrichmentProgress } from "@/components/contact-enrichment-progress";
 import {
   buildDevelopmentPlan,
   primaryRole,
@@ -23,7 +24,7 @@ import type {
   MarketWorkspaceDto,
 } from "@/lib/sales/types";
 
-type View = "overview" | "results" | "map" | "opportunities" | "assistant" | "knowledge";
+type View = "overview" | "results" | "map" | "opportunities" | "assistant" | "tasks" | "knowledge";
 type Mode = "new-market" | "growth";
 type SearchState = "idle" | "retrieving" | "complete";
 
@@ -41,6 +42,7 @@ const icons: Record<string, React.ReactNode> = {
   map: <><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="12" cy="18" r="2"/><path d="m7 7 4 9m6-9-4 9M7 6h10"/></>,
   opportunities: <><path d="M4 7h16v13H4zM8 7V4h8v3M4 12h16M10 12v2h4v-2" /></>,
   assistant: <><path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1m0-12.8-2.1 2.1m-8.6 8.6-2.1 2.1"/><circle cx="12" cy="12" r="4"/></>,
+  tasks: <><path d="M5 4h14v16H5zM8 8h8M8 12h5M8 16h3"/><path d="m15 16 1.5 1.5L20 14"/></>,
   knowledge: <><path d="M4 5c3-1.4 5.7-1.2 8 .6V20c-2.3-1.8-5-2-8-.6V5Zm16 0c-3-1.4-5.7-1.2-8 .6V20c2.3-1.8 5-2 8-.6V5Z"/><path d="M8 9h1m-1 3h1m6-3h1m-1 3h1"/></>,
   spark: <><path d="m12 2 1.6 5.4L19 9l-5.4 1.6L12 16l-1.6-5.4L5 9l5.4-1.6L12 2Zm7 13 .8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15Z"/></>,
   external: <><path d="M14 4h6v6m0-6-9 9M18 13v7H4V6h7" /></>,
@@ -173,6 +175,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner" }: 
     { id: "map", label: "渠道关系图" },
     { id: "opportunities", label: "机会工作区", meta: String(shortlist.length) },
     { id: "assistant", label: "开发助手" },
+    { id: "tasks", label: "任务进程" },
     { id: "knowledge", label: "知识库 & RAG" },
   ];
 
@@ -209,7 +212,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner" }: 
             <div>
               <div className="eyebrow">MEXICO MARKET / ALL CUDY SALES SEGMENTS</div>
               <h1>{view === "overview" ? "市场渠道工作台" : navItems.find((item) => item.id === view)?.label}</h1>
-              <p>{view === "knowledge" ? "统一管理行业、公司和产品知识，以可追溯 RAG 支撑 AI 决策。" : mode === "new-market" ? "同步建立一级供货能力与下级渠道需求。" : "激活现有供货体系，主动发现未覆盖的下级增长节点。"}</p>
+              <p>{view === "knowledge" ? "统一管理行业、公司和产品知识，以可追溯 RAG 支撑 AI 决策。" : view === "tasks" ? "实时查看联系人搜索进度、当前公司、worker 状态和任务产出。" : mode === "new-market" ? "同步建立一级供货能力与下级渠道需求。" : "激活现有供货体系，主动发现未覆盖的下级增长节点。"}</p>
             </div>
             <div className="heading-actions">
               <div className="segmented" aria-label="市场开发模式">
@@ -227,6 +230,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner" }: 
           {view === "map" && <ChannelMap companies={companies} onSelect={selectCompany} />}
           {view === "opportunities" && <OpportunityWorkspace companies={shortlist} onSelect={selectCompany} onUpdate={updateCompany} />}
           {view === "assistant" && selectedCompany && selectedPlan && <DevelopmentAssistant company={selectedCompany} plan={selectedPlan} draft={draft || selectedPlan.draft} setDraft={setDraft} onEvidence={setEvidenceOpen} onChoose={() => setDetailOpen(true)} />}
+          {view === "tasks" && <ContactEnrichmentProgress />}
           {view === "knowledge" && <KnowledgeBase />}
         </div>
       </main>

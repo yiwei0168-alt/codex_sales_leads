@@ -141,12 +141,31 @@ const [run] = await query<{ id: string }>(
     concurrency, tavilyTimeoutMs, noAutomaticSending: true })],
 );
 
+await query(
+  `insert into company_enrichment_run_item (run_id, company_id)
+   select $1, unnest($2::uuid[])
+   on conflict (run_id, company_id) do nothing`,
+  [run.id, companies.map((company) => company.id)],
+);
+
 let searchCredits = 0;
 let extractCredits = 0;
 let processed = 0;
 const failures: Array<{ domain: string; error: string }> = [];
 
-async function enrichCompany(company: CompanyRow): Promise<void> {
+async function markPhase(companyId: string, workerId: string, phase: string): Promise<void> {
+  await query(
+    `update company_enrichment_run_item
+     set status = 'running', phase = $4, worker_id = $3,
+       attempts = case when status = 'pending' then attempts + 1 else attempts end,
+       started_at = coalesce(started_at, now()), updated_at = now(), error_message = null
+     where run_id = $1 and company_id = $2`,
+    [run.id, companyId, workerId, phase],
+  );
+}
+
+async function enrichCompany(company: CompanyRow, workerId: string): Promise<void> {
+    await markPhase(company.id, workerId, "official-search");
     const official = await tavily.search({
       query: `site:${company.domain} contacto ventas equipo nosotros correo email telefono`,
       country: "mexico",
@@ -155,6 +174,7 @@ async function enrichCompany(company: CompanyRow): Promise<void> {
       includeRawContent: true,
       includeDomains: [company.domain],
     }, AbortSignal.timeout(tavilyTimeoutMs));
+    await markPhase(company.id, workerId, "contact-search");
     const publicWeb = await tavily.search({
       query: `"${company.canonical_name}" "${company.domain}" director gerente ventas compras founder LinkedIn email`,
       country: "mexico",
@@ -162,6 +182,7 @@ async function enrichCompany(company: CompanyRow): Promise<void> {
       maxResults: 8,
       includeRawContent: true,
     }, AbortSignal.timeout(tavilyTimeoutMs));
+    await markPhase(company.id, workerId, "email-search");
     const domainEmails = await tavily.search({
       query: `site:${company.domain} "@${company.domain}"`,
       country: "mexico",
@@ -178,6 +199,7 @@ async function enrichCompany(company: CompanyRow): Promise<void> {
     for (const result of domainEmails.results) if (!resultMap.has(result.url)) resultMap.set(result.url, { result, kind: "official-website" });
     const combined = [...resultMap.values()];
     const officialUrls = combined.filter((item) => item.kind === "official-website").slice(0, 5).map((item) => item.result.url);
+    await markPhase(company.id, workerId, "extract");
     const extracted = await tavily.extract(officialUrls, AbortSignal.timeout(tavilyTimeoutMs));
     const companyExtractCredits = extracted.creditsUsed;
     const extractedByUrl = new Map(extracted.results.map((item) => [item.url, item.rawContent]));
@@ -196,6 +218,9 @@ async function enrichCompany(company: CompanyRow): Promise<void> {
     }
 
     emailFindings.push(...guessedEmails(company, contacts, emailFindings));
+
+    await markPhase(company.id, workerId, "persist");
+    const uniqueEmailCount = new Set(emailFindings.map((item) => item.email)).size;
 
     await transaction(async (client) => {
       if (replaceExisting) {
@@ -242,46 +267,68 @@ async function enrichCompany(company: CompanyRow): Promise<void> {
       await client.query(`update company_enrichment_run set processed_count = processed_count + 1,
         search_credits_used = search_credits_used + $2, extract_credits_used = extract_credits_used + $3 where id = $1`,
       [run.id, companySearchCredits, companyExtractCredits]);
+      await client.query(
+        `update company_enrichment_run_item set status = 'completed', phase = 'completed',
+         named_contact_count = $3, email_count = $4, search_credits_used = $5,
+         extract_credits_used = $6, finished_at = now(), updated_at = now()
+         where run_id = $1 and company_id = $2`,
+        [run.id, company.id, contacts.length, uniqueEmailCount, companySearchCredits, companyExtractCredits],
+      );
     });
     searchCredits += companySearchCredits;
     extractCredits += companyExtractCredits;
     processed += 1;
-    process.stdout.write(`${processed}/${companies.length} ${company.canonical_name}: ${contacts.length} named contacts, ${new Set(emailFindings.map((item) => item.email)).size} emails\n`);
+    process.stdout.write(`${processed}/${companies.length} ${company.canonical_name}: ${contacts.length} named contacts, ${uniqueEmailCount} emails\n`);
 }
 
 try {
   let nextIndex = 0;
-  async function worker(): Promise<void> {
+  async function worker(workerNumber: number): Promise<void> {
+    const workerId = `worker-${workerNumber}`;
     while (true) {
       const index = nextIndex;
       nextIndex += 1;
       if (index >= companies.length) return;
       const company = companies[index];
       try {
-        await enrichCompany(company);
+        await enrichCompany(company, workerId);
       } catch (error) {
         const message = error instanceof Error ? error.message : "Unknown company enrichment error";
         failures.push({ domain: company.domain, error: message });
+        await query(
+          `update company_enrichment_run_item set status = 'failed', phase = 'failed', error_message = $3,
+           finished_at = now(), updated_at = now() where run_id = $1 and company_id = $2`,
+          [run.id, company.id, message],
+        );
         process.stderr.write(`FAILED ${company.canonical_name} (${company.domain}): ${message}\n`);
       }
     }
   }
-  await Promise.all(Array.from({ length: Math.min(concurrency, companies.length) }, () => worker()));
+  await Promise.all(Array.from({ length: Math.min(concurrency, companies.length) }, (_, index) => worker(index + 1)));
   if (failures.length > 0) throw new Error(`${failures.length} companies failed enrichment: ${failures.map((item) => item.domain).join(", ")}`);
 
   await query(
-    `update company_enrichment_run set status = 'completed', processed_count = $2, search_credits_used = $3,
-     extract_credits_used = $4, finished_at = now() where id = $1`,
-    [run.id, processed, searchCredits, extractCredits],
+    `update company_enrichment_run r set status = 'completed',
+     processed_count = totals.processed_count, search_credits_used = totals.search_credits,
+     extract_credits_used = totals.extract_credits, finished_at = now()
+     from (select count(*) filter (where status = 'completed')::int as processed_count,
+       coalesce(sum(search_credits_used), 0)::int as search_credits,
+       coalesce(sum(extract_credits_used), 0)::int as extract_credits
+       from company_enrichment_run_item where run_id = $1) totals where r.id = $1`,
+    [run.id],
   );
   console.log(JSON.stringify({ runId: run.id, companies: processed, providerMix, concurrency, searchCredits, extractCredits,
     enrichmentMode: "public-web-only" }, null, 2));
 } catch (error) {
   await query(
-    `update company_enrichment_run set status = 'failed', processed_count = $2, search_credits_used = $3,
-     extract_credits_used = $4, error_message = $5, finished_at = now() where id = $1`,
-    [run.id, processed, searchCredits, extractCredits,
-      JSON.stringify({ message: error instanceof Error ? error.message : "Unknown enrichment error", failures })],
+    `update company_enrichment_run r set status = 'failed',
+     processed_count = totals.processed_count, search_credits_used = totals.search_credits,
+     extract_credits_used = totals.extract_credits, error_message = $2, finished_at = now()
+     from (select count(*) filter (where status = 'completed')::int as processed_count,
+       coalesce(sum(search_credits_used), 0)::int as search_credits,
+       coalesce(sum(extract_credits_used), 0)::int as extract_credits
+       from company_enrichment_run_item where run_id = $1) totals where r.id = $1`,
+    [run.id, JSON.stringify({ message: error instanceof Error ? error.message : "Unknown enrichment error", failures })],
   );
   throw error;
 } finally {
