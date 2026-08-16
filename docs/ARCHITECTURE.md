@@ -68,6 +68,6 @@ Search and enrichment jobs fail explicitly when a provider is unavailable. Tavil
 
 ## Contact verification direction
 
-The planned Contact Verification Agent consumes crawler findings and retained source evidence. DeepSeek performs structured evidence assessment, while deterministic rules assign `Official`, `HighConfidence`, or `NeedsReview`; invalid addresses use a separate lifecycle state. Accuracy, role relevance, reachability, and delivery state remain separate dimensions. Company size affects the reachability of general official channels but never reduces their source authenticity. See [CONTACT_VERIFICATION_AGENT.md](./CONTACT_VERIFICATION_AGENT.md).
+The Contact Verification Agent core consumes crawler findings and retained source evidence. DeepSeek performs structured evidence assessment in shadow mode, while deterministic rules assign `Official`, `HighConfidence`, or `NeedsReview`; invalid addresses use a separate lifecycle state. Accuracy, role relevance, reachability, and delivery state remain separate dimensions. Company size affects the reachability of general official channels but never reduces their source authenticity. Proactive LinkedIn crawling is excluded from the first release. See [CONTACT_VERIFICATION_AGENT.md](./CONTACT_VERIFICATION_AGENT.md).
 
 Outbound delivery verification is a separate, disabled-by-default future boundary and requires explicit approval before implementation and activation.

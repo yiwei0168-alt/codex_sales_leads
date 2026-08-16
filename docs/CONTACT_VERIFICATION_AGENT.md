@@ -338,6 +338,6 @@ Minimum release gates:
 
 Before implementation begins, confirm:
 
-1. Whether the proposed company-size bands should use local employee count as the primary measure.
+1. Local operating-unit employee count is the primary company-size measure. Confirmed.
 2. LinkedIn evidence enters through manual/user-supplied or other authorized records in the first release; proactive LinkedIn crawling is excluded. Confirmed.
-3. Whether to use `deepseek-v4-flash` for routine work and escalate conflicts to `deepseek-v4-pro`, or use one model for every assessment.
+3. Use `deepseek-v4-flash` for routine work and escalate material conflicts to `deepseek-v4-pro`. Confirmed.

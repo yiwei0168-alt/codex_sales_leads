@@ -29,7 +29,7 @@ export interface SearchProvider {
 }
 
 export interface StructuredAiRequest<TInput> {
-  task: "market-playbook" | "evidence-extraction" | "classification" | "relationship" | "development-plan";
+  task: "market-playbook" | "evidence-extraction" | "classification" | "relationship" | "development-plan" | "contact-verification";
   modelVersion: string;
   promptVersion: string;
   input: TInput;
@@ -42,6 +42,13 @@ export interface StructuredAiResponse<TOutput> {
   promptVersion: string;
   latencyMs: number;
   warnings: string[];
+  providerRequestId?: string;
+  usage?: {
+    promptTokens: number;
+    completionTokens: number;
+    reasoningTokens: number;
+    totalTokens: number;
+  };
 }
 
 export interface AiProvider {
