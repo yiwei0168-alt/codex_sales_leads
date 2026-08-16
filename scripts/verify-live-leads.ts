@@ -38,8 +38,9 @@ try {
       score: lead.record.fitScore, source: lead.record.evidence[0]?.sourceUrl })),
   };
   console.log(JSON.stringify(result, null, 2));
-  if (run?.status !== "completed" || run.accepted_count !== 50 || counts.live !== 50 || counts.snapshot !== 0 ||
-      counts.workspace !== 50 || result.quality.uniqueDomains !== 50 || invalidEvidence.length > 0) process.exitCode = 1;
+  const expected = run?.target_count ?? 0;
+  if (run?.status !== "completed" || run.accepted_count !== expected || counts.live !== expected || counts.snapshot !== 0 ||
+      counts.workspace !== expected || result.quality.uniqueDomains !== expected || invalidEvidence.length > 0) process.exitCode = 1;
 } finally {
   await getPool().end();
 }

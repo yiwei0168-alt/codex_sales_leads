@@ -13,8 +13,10 @@ const routineModel = process.env.DEEPSEEK_MODEL?.trim() || "deepseek-v4-flash";
 const escalationModel = process.env.DEEPSEEK_ESCALATION_MODEL?.trim() || "deepseek-v4-pro";
 const promptVersion = "contact-evidence-v1";
 const timeoutMs = Math.max(1_000, Math.min(Number(process.env.CONTACT_VERIFICATION_TIMEOUT_MS ?? 30_000), 120_000));
-const requestedLimit = Number(process.argv.find((value) => value.startsWith("--limit="))?.slice("--limit=".length) ?? 50);
-const limit = Math.max(1, Math.min(Number.isFinite(requestedLimit) ? Math.floor(requestedLimit) : 50, 50));
+const requestedCompanyLimit = Number(process.argv.find((value) => value.startsWith("--company-limit="))?.slice("--company-limit=".length) ?? 100);
+const companyLimit = Math.max(1, Math.min(Number.isFinite(requestedCompanyLimit) ? Math.floor(requestedCompanyLimit) : 100, 100));
+const requestedCandidateLimit = Number(process.argv.find((value) => value.startsWith("--candidate-limit="))?.slice("--candidate-limit=".length) ?? 1_000);
+const candidateLimit = Math.max(1, Math.min(Number.isFinite(requestedCandidateLimit) ? Math.floor(requestedCandidateLimit) : 1_000, 1_000));
 
 interface CandidateRow {
   email_candidate_id: string;
@@ -111,16 +113,21 @@ if (!provider.isConfigured()) throw new Error("DEEPSEEK_API_KEY is required to r
 const agent = new ContactVerificationAgent(provider, { routineModel, escalationModel, promptVersion });
 
 const candidates = await query<CandidateRow>(
-  `select em.id as email_candidate_id, em.company_id, em.contact_id, c.canonical_name, lower(c.domain) as domain,
+  `with target_companies as (
+     select c.id from workspace_company wc join sales_company c on c.id = wc.company_id
+     where wc.workspace_id = $1 and c.source_kind = 'tavily-live'
+     order by c.canonical_name limit $2
+   )
+   select em.id as email_candidate_id, em.company_id, em.contact_id, c.canonical_name, lower(c.domain) as domain,
           c.record, ct.full_name, ct.job_title, lower(em.email) as email, em.status as email_status, em.derivation
    from company_email_candidate em
    join sales_company c on c.id = em.company_id
-   join workspace_company wc on wc.company_id = c.id and wc.workspace_id = $1
+   join target_companies tc on tc.id = c.id
    left join company_contact ct on ct.id = em.contact_id
    where em.status <> 'Invalid'
    order by em.confidence desc, em.last_seen_at desc
-   limit $2`,
-  [workspaceId, limit],
+   limit $3`,
+  [workspaceId, companyLimit, candidateLimit],
 );
 if (candidates.length === 0) throw new Error("No active contact candidates are available for verification.");
 
@@ -129,7 +136,9 @@ const [run] = await query<{ id: string }>(
      (workspace_id, mode, routine_model, escalation_model, prompt_version, target_count, timeout_ms, max_calls_per_contact, metadata)
    values ($1, 'shadow', $2, $3, $4, $5, $6, 2, $7) returning id`,
   [workspaceId, routineModel, escalationModel, promptVersion, candidates.length, timeoutMs,
-    JSON.stringify({ requestedLimit, effectiveLimit: limit, linkedinProactiveCrawl: false, outboundVerification: false })],
+    JSON.stringify({ requestedCompanyLimit, companyLimit, requestedCandidateLimit, candidateLimit,
+      representedCompanyCount: new Set(candidates.map((candidate) => candidate.company_id)).size,
+      linkedinProactiveCrawl: false, outboundVerification: false })],
 );
 
 let processed = 0;

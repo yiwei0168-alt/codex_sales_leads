@@ -23,7 +23,13 @@ try {
      join contact_verification_decision d on d.id = q.decision_id where d.run_id = $1 and q.status = 'open'`,
     [run.id],
   );
-  console.log(JSON.stringify({ run, categories, openReviewCount: review?.open_count ?? 0 }, null, 2));
+  const [coverage] = await query<{ company_count: number; named_contact_count: number; email_count: number }>(
+    `select count(distinct d.company_id)::int as company_count, count(distinct d.contact_id)::int as named_contact_count,
+            count(distinct d.email_candidate_id)::int as email_count
+     from contact_verification_decision d where d.run_id = $1`,
+    [run.id],
+  );
+  console.log(JSON.stringify({ run, coverage, categories, openReviewCount: review?.open_count ?? 0 }, null, 2));
   if (run.status !== "completed" || run.processed_count !== run.target_count) process.exitCode = 1;
 } finally {
   await getPool().end();

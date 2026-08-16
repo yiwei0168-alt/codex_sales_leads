@@ -7,20 +7,10 @@ const { loadEnvConfig } = nextEnv;
 loadEnvConfig(process.cwd());
 
 const workspaceId = "00000000-0000-4000-8000-000000000100";
-const preferredDomains = [
-  "astratelecom.com.mx",
-  "bexadata.com.mx",
-  "ethergroup.mx",
-  "mcs.com.mx",
-  "quattrocom.mx",
-  "regiosis.com.mx",
-  "sily.mx",
-  "tecnopatch.com.mx",
-  "netflow.mx",
-  "cintegra.mx",
-];
 const requestedDomains = process.argv.find((value) => value.startsWith("--domains="))?.slice("--domains=".length).split(",").map((value) => value.trim().toLowerCase()).filter(Boolean);
-const targetDomains = requestedDomains?.length ? requestedDomains.slice(0, 10) : preferredDomains;
+const requestedLimit = Number(process.argv.find((value) => value.startsWith("--limit="))?.slice("--limit=".length) ?? 100);
+const limit = Math.max(1, Math.min(Number.isFinite(requestedLimit) ? Math.floor(requestedLimit) : 100, 100));
+const targetDomains = requestedDomains?.length ? requestedDomains.slice(0, 100) : null;
 const replaceExisting = process.argv.includes("--replace");
 const tavily = new TavilySearchProvider();
 
@@ -125,20 +115,26 @@ function guessedEmails(company: CompanyRow, contacts: ContactFinding[], publicEm
 const companies = await query<CompanyRow>(
   `select c.id, c.canonical_name, lower(c.domain) as domain
    from workspace_company wc join sales_company c on c.id = wc.company_id
-   where wc.workspace_id = $1 and c.source_kind = 'tavily-live' and lower(c.domain) = any($2::text[])
-   order by array_position($2::text[], lower(c.domain))`,
-  [workspaceId, targetDomains],
+   where wc.workspace_id = $1 and c.source_kind = 'tavily-live'
+     and ($2::text[] is null or lower(c.domain) = any($2::text[]))
+   order by case when $2::text[] is null then null else array_position($2::text[], lower(c.domain)) end,
+     c.canonical_name
+   limit $3`,
+  [workspaceId, targetDomains, targetDomains?.length ?? limit],
 );
-if (companies.length !== targetDomains.length) {
+const expectedCompanyCount = targetDomains?.length ?? limit;
+if (companies.length !== expectedCompanyCount) {
   const found = new Set(companies.map((company) => company.domain));
-  throw new Error(`Missing active live leads: ${targetDomains.filter((domain) => !found.has(domain)).join(", ")}`);
+  const missing = targetDomains?.filter((domain) => !found.has(domain));
+  throw new Error(missing?.length ? `Missing active live leads: ${missing.join(", ")}`
+    : `Only ${companies.length} active live leads are available; requested ${expectedCompanyCount}.`);
 }
 
 const providerMix = ["tavily-search", "tavily-extract"];
 const [run] = await query<{ id: string }>(
   `insert into company_enrichment_run (workspace_id, provider_mix, target_count, metadata)
    values ($1, $2, $3, $4) returning id`,
-  [workspaceId, providerMix, companies.length, JSON.stringify({ domains: targetDomains, enrichmentMode: "public-web-only", noAutomaticSending: true })],
+  [workspaceId, providerMix, companies.length, JSON.stringify({ domains: companies.map((company) => company.domain), enrichmentMode: "public-web-only", noAutomaticSending: true })],
 );
 
 let searchCredits = 0;

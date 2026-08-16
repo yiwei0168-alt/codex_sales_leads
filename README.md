@@ -71,11 +71,11 @@ Remove-Item Env:APP_PASSWORD_SETUP
 
 ```powershell
 npm run db:migrate
-npm run leads:discover -- --target=50 --replace
+npm run leads:discover -- --target=100 --replace
 npm run leads:verify
-npm run contacts:enrich -- --replace
+npm run contacts:enrich -- --limit=100 --replace
 npm run contacts:verify
-npm run contacts:classify -- --limit=50
+npm run contacts:classify -- --company-limit=100 --candidate-limit=1000
 npm run contacts:classify:report
 npm run contacts:classify:eval
 ```
@@ -86,7 +86,8 @@ pattern, and are always stored as `Pattern-guessed`. Nothing in this workflow se
 
 Contact classification runs in shadow mode: DeepSeek assesses retained evidence, deterministic rules produce the
 three-category recommendation, and the result is stored for evaluation without changing the active contact records.
-Each candidate receives at most one routine call and one conflict-escalation call; the batch limit is 50.
+Each candidate receives at most one routine call and one conflict-escalation call. The production-pilot batch covers
+up to 100 companies and 1,000 resulting email candidates.
 
 `--replace` 只替换当前工作区中的上一批 Tavily 活动候选；历史查询、原始结果和质量筛选记录保留用于审计。
 

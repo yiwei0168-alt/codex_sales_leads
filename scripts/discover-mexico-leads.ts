@@ -114,7 +114,7 @@ let creditsUsed = 0;
 
 try {
   for (const spec of mexicoSearchPlan) {
-    const response = await provider.search({ query: spec.query, country: "mexico", searchDepth: "basic", maxResults: 15, includeDomains: ["*.mx"] });
+    const response = await provider.search({ query: spec.query, country: "mexico", searchDepth: "basic", maxResults: 20, includeDomains: ["*.mx"] });
     creditsUsed += response.creditsUsed;
     rawResultCount += response.results.length;
     const [searchQuery] = await query<{ id: string }>(
