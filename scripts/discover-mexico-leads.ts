@@ -21,8 +21,10 @@ const blockedDomains = [
   "glassdoor.com.mx", "adzuna.com.mx", "scielo.org.mx", "indeed.com", "computrabajo.com.mx", "jooble.org",
   "occ.com.mx", "redalyc.org", "researchgate.net", "academia.edu",
   "ift.org.mx", "eleconomista.com.mx", "eluniversal.com.mx", "milenio.com", "forbes.com.mx", "expansion.mx",
-  "xataka.com.mx", "elfinanciero.com.mx", "reforma.com", "proceso.com.mx",
+  "xataka.com.mx", "elfinanciero.com.mx", "reforma.com", "proceso.com.mx", "oem.com.mx", "informador.mx",
+  "hotelespormexico.org", "directorioleon.com.mx", "amazon.com.mx", "winncom.com",
   "cisco.com", "huawei.com", "tp-link.com", "fortinet.com", "ui.com", "ubiquiti.com", "dell.com", "hp.com",
+  "fortinet.com.mx",
 ];
 
 const relevancePattern = /\b(red(?:es)?|network(?:ing)?|wifi|wi-fi|router|switch|telecom|internet|fibra|cableado|integrador|tecnolog(?:í|i)a|conectividad|infraestructura|digital|campus|hotel|retail|log(?:í|i)stica|industrial)\b/i;
@@ -71,6 +73,19 @@ function displayNameFromTitle(title: string, domain: string): string {
 
 function uniqueId(value: string): string {
   return createHash("sha256").update(value).digest("hex").slice(0, 16);
+}
+
+function rejectionReason(spec: MexicoSearchQuery, result: TavilySearchResult, domain: string | null): string | null {
+  if (!domain || blocked(domain)) return "blocked-domain";
+  if (!domain.endsWith(".mx") && !mexicoSignalPattern.test(`${result.title} ${result.content}`)) return "missing-mexico-signal";
+  if (contentSubdomainPattern.test(domain) || nonCompanyPagePattern.test(result.url)) return "non-company-content-page";
+  if (directoryTitlePattern.test(result.title)) return "directory-or-list-page";
+  if (spec.leadType === "channel" && !relevancePattern.test(`${result.title} ${result.content}`)) return "insufficient-networking-relevance";
+  if (spec.leadType === "strategic-customer" && strategicContentPathPattern.test(new URL(result.url).pathname)) return "strategic-customer-content-page";
+  if (spec.requiredTerms?.length && !spec.requiredTerms.some((term) => `${result.title} ${result.content}`.toLocaleLowerCase("es").includes(term))) {
+    return "missing-strategic-sector-signal";
+  }
+  return null;
 }
 
 function candidateRecord(candidate: Candidate, runId: string): CompanyRecord {
@@ -140,20 +155,13 @@ try {
     );
     for (const result of response.results) {
       const domain = domainFromUrl(result.url);
-      let rejectionReason: string | null = null;
-      if (!domain || blocked(domain)) rejectionReason = "blocked-domain";
-      else if (!domain.endsWith(".mx") && !mexicoSignalPattern.test(`${result.title} ${result.content}`)) rejectionReason = "missing-mexico-signal";
-      else if (contentSubdomainPattern.test(domain) || nonCompanyPagePattern.test(result.url)) rejectionReason = "non-company-content-page";
-      else if (directoryTitlePattern.test(result.title)) rejectionReason = "directory-or-list-page";
-      else if (spec.leadType === "channel" && !relevancePattern.test(`${result.title} ${result.content}`)) rejectionReason = "insufficient-networking-relevance";
-      else if (spec.leadType === "strategic-customer" && strategicContentPathPattern.test(new URL(result.url).pathname)) rejectionReason = "strategic-customer-content-page";
-      else if (spec.requiredTerms?.length && !spec.requiredTerms.some((term) => `${result.title} ${result.content}`.toLocaleLowerCase("es").includes(term))) rejectionReason = "missing-strategic-sector-signal";
+      const resultRejectionReason = rejectionReason(spec, result, domain);
       const inserted = await query<{ id: string }>(
         `insert into lead_search_result (run_id, query_id, url, domain, title, snippet, provider_score, rejection_reason)
          values ($1, $2, $3, $4, $5, $6, $7, $8) on conflict (run_id, url) do nothing returning id`,
-        [run.id, searchQuery.id, result.url, domain ?? "invalid", result.title, result.content, result.score, rejectionReason],
+        [run.id, searchQuery.id, result.url, domain ?? "invalid", result.title, result.content, result.score, resultRejectionReason],
       );
-      if (!rejectionReason && inserted[0]) candidates.push({ spec, result, queryId: searchQuery.id, domain: domain!, displayName: displayNameFromTitle(result.title, domain!) });
+      if (!resultRejectionReason && inserted[0]) candidates.push({ spec, result, queryId: searchQuery.id, domain: domain!, displayName: displayNameFromTitle(result.title, domain!) });
     }
     process.stdout.write(`Searched ${spec.role}/${spec.leadType}: ${response.results.length} results\n`);
     queryCount += 1;
@@ -178,6 +186,11 @@ try {
       );
       queryCount += 1;
       for (const item of historical) {
+        const spec: MexicoSearchQuery = {
+          query: item.query_text, role: item.role_hint, leadType: item.lead_type, language: item.language, region: item.region,
+        };
+        const result: TavilySearchResult = { title: item.title, url: item.url, content: item.snippet, score: item.provider_score ?? 0 };
+        if (rejectionReason(spec, result, item.domain)) continue;
         const inserted = await query<{ id: string }>(
           `insert into lead_search_result (run_id, query_id, url, domain, title, snippet, provider_score)
            values ($1, $2, $3, $4, $5, $6, $7) on conflict (run_id, url) do nothing returning id`,
@@ -185,8 +198,8 @@ try {
         );
         if (!inserted[0]) continue;
         candidates.push({
-          spec: { query: item.query_text, role: item.role_hint, leadType: item.lead_type, language: item.language, region: item.region },
-          result: { title: item.title, url: item.url, content: item.snippet, score: item.provider_score ?? 0 },
+          spec,
+          result,
           queryId: reuseQuery.id,
           domain: item.domain,
           displayName: displayNameFromTitle(item.title, item.domain),
