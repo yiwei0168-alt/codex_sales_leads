@@ -324,9 +324,9 @@ Minimum release gates:
 
 ## 13. Implementation stages and approval checkpoints
 
-1. **Decision contract checkpoint**: approve categories, hard gates, scores, company-size bands, and LinkedIn evidence policy.
+1. **Decision contract checkpoint**: approve categories, hard gates, scores, company-size bands, and LinkedIn evidence policy. Local operating-unit size is confirmed as the primary size measure; direct LinkedIn acquisition remains subject to an authorization-method decision.
 2. Implement types, deterministic rules, benchmark fixtures, and tests without DeepSeek or outbound mail.
-3. **DeepSeek checkpoint**: approve Flash-only versus Flash/Pro escalation, prompt, budget, retry, and evidence retention.
+3. **DeepSeek checkpoint**: approve prompt, budget, retry, and evidence retention. Flash for routine work with Pro escalation for conflicts is confirmed.
 4. Implement the DeepSeek provider and model-assessment orchestration in shadow mode.
 5. Evaluate against the human-labelled benchmark and tune deterministic rules.
 6. **Automation checkpoint**: approve whether high-confidence decisions may auto-publish or require review.
@@ -341,4 +341,3 @@ Before implementation begins, confirm:
 1. Whether the proposed company-size bands should use local employee count as the primary measure.
 2. Whether LinkedIn evidence will enter through manual/user-supplied records only for the first release, with automated LinkedIn crawling excluded.
 3. Whether to use `deepseek-v4-flash` for routine work and escalate conflicts to `deepseek-v4-pro`, or use one model for every assessment.
-
