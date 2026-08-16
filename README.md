@@ -75,11 +75,18 @@ npm run leads:discover -- --target=50 --replace
 npm run leads:verify
 npm run contacts:enrich -- --replace
 npm run contacts:verify
+npm run contacts:classify -- --limit=50
+npm run contacts:classify:report
+npm run contacts:classify:eval
 ```
 
 The contact pilot enriches ten live-search companies from public webpages only. Publicly displayed emails are stored
 as `Public`; deterministic guesses require both a public named contact and a public same-domain personalized email
 pattern, and are always stored as `Pattern-guessed`. Nothing in this workflow sends email.
+
+Contact classification runs in shadow mode: DeepSeek assesses retained evidence, deterministic rules produce the
+three-category recommendation, and the result is stored for evaluation without changing the active contact records.
+Each candidate receives at most one routine call and one conflict-escalation call; the batch limit is 50.
 
 `--replace` 只替换当前工作区中的上一批 Tavily 活动候选；历史查询、原始结果和质量筛选记录保留用于审计。
 

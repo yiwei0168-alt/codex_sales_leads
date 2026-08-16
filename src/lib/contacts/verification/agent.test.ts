@@ -56,6 +56,7 @@ describe("ContactVerificationAgent", () => {
     expect(result.publish).toBe(false);
     expect(result.decision.category).toBe("HighConfidence");
     expect(result.totalTokens).toBe(20);
+    expect(result.modelTraces).toHaveLength(1);
   });
 
   it("escalates a conflicting Flash assessment to Pro", async () => {
@@ -80,6 +81,7 @@ describe("ContactVerificationAgent", () => {
     expect(result.escalated).toBe(true);
     expect(result.modelVersion).toBe("deepseek-v4-pro");
     expect(execute).toHaveBeenCalledTimes(2);
+    expect(result.modelTraces).toHaveLength(2);
   });
 
   it("fails closed when model output omits evidence", async () => {
@@ -91,5 +93,6 @@ describe("ContactVerificationAgent", () => {
 
     expect(result.decision.category).toBe("NeedsReview");
     expect(result.decision.reviewFlags).toContain("model-assessment-failed");
+    expect(result.modelTraces).toEqual([]);
   });
 });

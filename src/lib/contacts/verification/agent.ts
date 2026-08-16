@@ -25,7 +25,7 @@ export interface ContactVerificationAgentInput extends Omit<ContactVerificationI
   evidence: ContactEvidenceDocument[];
 }
 
-interface ModelFinding {
+export interface ModelFinding {
   evidenceId: string;
   personPresent: boolean;
   rolePresent: boolean;
@@ -36,7 +36,7 @@ interface ModelFinding {
   rationale: string;
 }
 
-interface ContactModelAssessment {
+export interface ContactModelAssessment {
   findings: ModelFinding[];
   needsEscalation: boolean;
   conflicts: string[];
@@ -60,6 +60,15 @@ export interface ContactVerificationShadowResult {
   providerWarnings: string[];
   providerRequestIds: string[];
   totalTokens: number;
+  modelTraces: Array<{
+    modelVersion: string;
+    promptVersion: string;
+    latencyMs: number;
+    warnings: string[];
+    providerRequestId?: string;
+    usage?: StructuredAiResponse<unknown>["usage"];
+    output: ContactModelAssessment;
+  }>;
 }
 
 interface ContactVerificationAgentOptions {
@@ -215,11 +224,19 @@ export class ContactVerificationAgent {
       const routine = await this.provider.execute<ContactModelRequest, ContactModelAssessment>(this.request(input, this.routineModel), signal);
       responses.push(routine);
       let assessment = parseModelAssessment(routine.output, input.evidence.map((item) => item.evidenceId));
+      const modelTraces: ContactVerificationShadowResult["modelTraces"] = [{
+        modelVersion: routine.modelVersion, promptVersion: routine.promptVersion, latencyMs: routine.latencyMs,
+        warnings: routine.warnings, providerRequestId: routine.providerRequestId, usage: routine.usage, output: assessment,
+      }];
       let escalated = false;
       if (assessment.needsEscalation || assessment.conflicts.length > 0 || assessment.findings.some((item) => item.conflict)) {
         const escalation = await this.provider.execute<ContactModelRequest, ContactModelAssessment>(this.request(input, this.escalationModel), signal);
         responses.push(escalation);
         assessment = parseModelAssessment(escalation.output, input.evidence.map((item) => item.evidenceId));
+        modelTraces.push({
+          modelVersion: escalation.modelVersion, promptVersion: escalation.promptVersion, latencyMs: escalation.latencyMs,
+          warnings: escalation.warnings, providerRequestId: escalation.providerRequestId, usage: escalation.usage, output: assessment,
+        });
         escalated = true;
       }
       const decision = verifyContact({ ...input, evidence: assessmentsFromModel(input, assessment) });
@@ -232,6 +249,7 @@ export class ContactVerificationAgent {
         providerWarnings: [...responses.flatMap((item) => item.warnings), ...assessment.warnings],
         providerRequestIds: responses.flatMap((item) => item.providerRequestId ? [item.providerRequestId] : []),
         totalTokens: responses.reduce((total, item) => total + (item.usage?.totalTokens ?? 0), 0),
+        modelTraces,
       };
     } catch (error) {
       const decision = verifyContact({ ...input, evidence: unknownAssessments(input) });
@@ -243,6 +261,7 @@ export class ContactVerificationAgent {
         providerWarnings: [error instanceof Error ? error.message : "Unknown model-assessment failure"],
         providerRequestIds: responses.flatMap((item) => item.providerRequestId ? [item.providerRequestId] : []),
         totalTokens: responses.reduce((total, item) => total + (item.usage?.totalTokens ?? 0), 0),
+        modelTraces: [],
       };
     }
   }

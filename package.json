@@ -25,7 +25,10 @@
     "leads:discover": "tsx scripts/discover-mexico-leads.ts",
     "leads:verify": "tsx scripts/verify-live-leads.ts",
     "contacts:enrich": "tsx scripts/enrich-lead-contacts.ts",
-    "contacts:verify": "tsx scripts/verify-contact-enrichment.ts"
+    "contacts:verify": "tsx scripts/verify-contact-enrichment.ts",
+    "contacts:classify": "tsx scripts/run-contact-verification.ts",
+    "contacts:classify:report": "tsx scripts/report-contact-verification.ts",
+    "contacts:classify:eval": "tsx scripts/evaluate-contact-verification.ts"
   },
   "dependencies": {
     "next": "^16.1.6",
