@@ -25,7 +25,7 @@ export async function upsertMailboxConnection(userId: string, email: string, pas
      returning id`,
     [userId, email, ALIMAIL_IMAP_HOST, ALIMAIL_IMAP_PORT, encrypted],
   );
-  if (!rows[0]) throw new Error("邮箱同步任务未能启动");
+  if (!rows[0]) throw new Error("邮箱连接未能保存");
   return rows[0].id;
 }
 
@@ -76,12 +76,13 @@ export async function getMailboxCursors(userId: string, connectionId: string): P
   }]));
 }
 
-export async function startMailboxSyncRun(userId: string, connectionId: string, model: string): Promise<string> {
+export async function startMailboxSyncRun(userId: string, connectionId: string, model?: string): Promise<string> {
   const rows = await query<{ id: string }>(
     `insert into mailbox_sync_run (user_id, connection_id, phase, model)
      values ($1, $2, 'queued', $3) returning id`,
     [userId, connectionId, model],
   );
+  if (!rows[0]) throw new Error("邮箱同步任务未能启动");
   return rows[0].id;
 }
 
@@ -162,7 +163,7 @@ export async function persistMailboxImport(input: {
     }
     const skipped = input.messages.length - imported;
     await client.query(
-      `update mailbox_sync_run set phase = 'learning', folder_count = $2, discovered_count = $3,
+      `update mailbox_sync_run set phase = 'awaiting-review', folder_count = $2, discovered_count = $3,
        processed_count = $6, imported_count = $4, skipped_count = $5,
        learning_total = $6, current_subject = null, updated_at = now()
        where id = $1 and user_id = $7`,
@@ -261,5 +262,83 @@ export async function failMailboxSyncRun(runId: string, userId: string, error: s
      current_subject = null, finished_at = now(), updated_at = now()
      where id = $1 and user_id = $2`,
     [runId, userId, error.slice(0, 2_000)],
+  );
+}
+
+export async function completeMailboxImport(runId: string, userId: string, pending: number): Promise<void> {
+  await query(
+    `update mailbox_sync_run set status = 'completed', phase = 'awaiting-review',
+     learning_total = $3, learning_processed = 0, learning_failed = 0, candidate_count = 0,
+     current_subject = null, finished_at = now(), updated_at = now()
+     where id = $1 and user_id = $2`,
+    [runId, userId, pending],
+  );
+}
+
+export async function getMailboxMessageForLearning(userId: string, messageId: string): Promise<ImportedMailboxMessage | null> {
+  const rows = await query<{
+    folder_path: string; uid_validity: string; message_uid: string; internet_message_id: string | null;
+    direction: ImportedMailboxMessage["direction"]; sender: ImportedMailboxMessage["sender"];
+    recipients: ImportedMailboxMessage["recipients"]; subject: string; sent_at: string | null;
+    body_text: string; content_sha256: string; metadata: Record<string, unknown>;
+  }>(
+    `select folder_path, uid_validity, message_uid::text, internet_message_id, direction, sender,
+            recipients, subject, sent_at::text, body_text, content_sha256, metadata
+     from mailbox_message where id = $1 and user_id = $2 and learning_status in ('pending', 'failed') limit 1`,
+    [messageId, userId],
+  );
+  const row = rows[0];
+  return row ? {
+    folderPath: row.folder_path, uidValidity: row.uid_validity, uid: Number(row.message_uid),
+    internetMessageId: row.internet_message_id ?? undefined, direction: row.direction,
+    sender: row.sender, recipients: row.recipients, subject: row.subject,
+    sentAt: row.sent_at ?? undefined, bodyText: row.body_text,
+    contentSha256: row.content_sha256, metadata: row.metadata,
+  } : null;
+}
+
+export async function recordMailboxOutboundStart(input: {
+  userId: string; messageId: string; model: string; inputSha256?: string;
+  originalCharCount: number; disclosedCharCount: number; redactionCounts: Record<string, number>;
+  decision: "authorized" | "skipped" | "blocked"; status: "started" | "not-sent";
+}): Promise<string> {
+  const rows = await query<{ id: string }>(
+    `insert into mailbox_outbound_audit
+       (user_id, message_id, provider, model, decision, status, input_sha256,
+        original_char_count, disclosed_char_count, redaction_counts, finished_at)
+     values ($1, $2, 'kimi', $3, $4, $5, $6, $7, $8, $9,
+       case when $5 = 'not-sent' then now() else null end) returning id`,
+    [input.userId, input.messageId, input.model, input.decision, input.status,
+      input.inputSha256 ?? null, input.originalCharCount, input.disclosedCharCount,
+      JSON.stringify(input.redactionCounts)],
+  );
+  if (!rows[0]) throw new Error("邮件外发审计未能创建");
+  return rows[0].id;
+}
+
+export async function finishMailboxOutboundAudit(auditId: string, userId: string, input: {
+  status: "completed" | "failed"; error?: string;
+}): Promise<void> {
+  await query(
+    `update mailbox_outbound_audit set status = $3, error_message = $4, finished_at = now()
+     where id = $1 and user_id = $2`,
+    [auditId, userId, input.status, input.error?.slice(0, 1_000) ?? null],
+  );
+}
+
+export async function skipMailboxMessageLearning(userId: string, messageId: string): Promise<boolean> {
+  const rows = await query<{ id: string }>(
+    `update mailbox_message set learning_status = 'skipped', learning_error = null, learned_at = now(), updated_at = now()
+     where id = $1 and user_id = $2 and learning_status in ('pending', 'failed') returning id`,
+    [messageId, userId],
+  );
+  return Boolean(rows[0]);
+}
+
+export async function blockMailboxMessageLearning(userId: string, messageId: string, reason: string): Promise<void> {
+  await query(
+    `update mailbox_message set learning_status = 'blocked', learning_error = $3, learned_at = now(), updated_at = now()
+     where id = $1 and user_id = $2`,
+    [messageId, userId, reason.slice(0, 1_000)],
   );
 }

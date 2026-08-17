@@ -1,12 +1,15 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { learnMailboxMessageWithKimi } from "./kimi";
+import { kimiApiBaseUrl, learnMailboxMessageWithKimi } from "./kimi";
 import type { ImportedMailboxMessage } from "./alimail-imap";
 
 const previousKey = process.env.KIMI_API_KEY;
+const previousBaseUrl = process.env.KIMI_BASE_URL;
 
 afterEach(() => {
   if (previousKey === undefined) delete process.env.KIMI_API_KEY;
   else process.env.KIMI_API_KEY = previousKey;
+  if (previousBaseUrl === undefined) delete process.env.KIMI_BASE_URL;
+  else process.env.KIMI_BASE_URL = previousBaseUrl;
 });
 
 const message: ImportedMailboxMessage = {
@@ -39,5 +42,12 @@ describe("learnMailboxMessageWithKimi", () => {
     }), { status: 200 }));
     const result = await learnMailboxMessageWithKimi(message, fetchMock);
     expect(result.artifacts).toEqual([]);
+  });
+
+  it("rejects non-HTTPS and untrusted Kimi API hosts", () => {
+    process.env.KIMI_BASE_URL = "http://api.moonshot.cn/v1";
+    expect(() => kimiApiBaseUrl()).toThrow("HTTPS");
+    process.env.KIMI_BASE_URL = "https://attacker.example/v1";
+    expect(() => kimiApiBaseUrl()).toThrow("受信任");
   });
 });

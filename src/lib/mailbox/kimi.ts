@@ -22,6 +22,7 @@ interface IndexedMailboxLearningResult extends KimiMailboxLearningResult {
 }
 
 interface KimiResponse {
+  id?: string;
   model?: string;
   choices?: Array<{ message?: { content?: string | null } }>;
   error?: { message?: string };
@@ -29,6 +30,16 @@ interface KimiResponse {
 
 const PROMPT_VERSION = "mailbox-learning-v1";
 const KINDS = new Set<MailboxArtifactKind>(["company-policy", "customer-signal", "email-template"]);
+
+export function kimiApiBaseUrl(): string {
+  const configured = process.env.KIMI_BASE_URL?.trim() || "https://api.moonshot.cn/v1";
+  const url = new URL(configured);
+  const allowedHosts = new Set(["api.moonshot.cn", "api.moonshot.ai"]);
+  if (url.protocol !== "https:" || !allowedHosts.has(url.hostname) || url.username || url.password) {
+    throw new Error("KIMI_BASE_URL 必须是受信任的 Moonshot HTTPS API 地址");
+  }
+  return url.toString().replace(/\/$/, "");
+}
 
 export function kimiMailboxModel(): string {
   return process.env.KIMI_MODEL?.trim() || "kimi-k3";
@@ -53,7 +64,7 @@ export async function learnMailboxMessagesWithKimi(
   if (messages.length > 5) throw new Error("Kimi mailbox batch is limited to 5 messages");
   const apiKey = process.env.KIMI_API_KEY?.trim();
   if (!apiKey) throw new Error("KIMI_API_KEY is not configured");
-  const baseUrl = (process.env.KIMI_BASE_URL?.trim() || "https://api.moonshot.ai/v1").replace(/\/$/, "");
+  const baseUrl = kimiApiBaseUrl();
   const model = kimiMailboxModel();
   const response = await fetchImplementation(`${baseUrl}/chat/completions`, {
     method: "POST",
@@ -88,8 +99,6 @@ export async function learnMailboxMessagesWithKimi(
               direction: message.direction,
               subject: message.subject,
               sentAt: message.sentAt,
-              sender: message.sender,
-              recipients: message.recipients,
               body: message.bodyText.slice(0, 60_000),
             })),
           }),

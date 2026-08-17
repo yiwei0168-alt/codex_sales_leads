@@ -1,9 +1,11 @@
 import { readAliMailMessages, verifyAliMailCredentials } from "./alimail-imap";
-import { kimiMailboxModel, learnMailboxMessagesWithKimi } from "./kimi";
+import { kimiMailboxModel, learnMailboxMessageWithKimi } from "./kimi";
+import { prepareMailboxDisclosure } from "./privacy";
 import {
-  completeMailboxSyncRun, connectionPassword, failMailboxMessageLearning, failMailboxSyncRun,
-  getMailboxConnection, getMailboxCursors, markMailboxMessageAnalyzing, persistMailboxImport,
-  persistMailboxLearning, startMailboxSyncRun, updateMailboxLearningProgress,
+  blockMailboxMessageLearning, completeMailboxImport, connectionPassword, failMailboxMessageLearning,
+  failMailboxSyncRun, finishMailboxOutboundAudit, getMailboxConnection, getMailboxCursors,
+  getMailboxMessageForLearning, markMailboxMessageAnalyzing, persistMailboxImport,
+  persistMailboxLearning, recordMailboxOutboundStart, skipMailboxMessageLearning, startMailboxSyncRun,
   updateMailboxSyncProgress, upsertMailboxConnection,
 } from "./repository";
 
@@ -15,10 +17,10 @@ export async function connectAliMail(userId: string, email: string, password: st
 export async function syncAliMail(userId: string, connectionId: string, options: {
   lookbackDays?: number;
   maxMessages?: number;
-} = {}): Promise<{ runId: string; imported: number; skipped: number; discovered: number; candidates: number; learningFailed: number }> {
+} = {}): Promise<{ runId: string; imported: number; skipped: number; discovered: number; awaitingReview: number }> {
   const connection = await getMailboxConnection(userId, connectionId);
   if (!connection || connection.status === "disabled") throw new Error("Mailbox connection not found");
-  const runId = await startMailboxSyncRun(userId, connectionId, kimiMailboxModel());
+  const runId = await startMailboxSyncRun(userId, connectionId);
   try {
     const lookbackDays = Math.min(Math.max(options.lookbackDays ?? 365, 1), 3650);
     const maxMessages = Math.min(Math.max(options.maxMessages ?? 200, 1), 1000);
@@ -39,47 +41,59 @@ export async function syncAliMail(userId: string, connectionId: string, options:
       messages: result.messages, cursors: result.cursors,
       folders: result.folders, discovered: result.discovered,
     });
-    let processed = 0;
-    let learningFailed = 0;
-    let candidates = 0;
-    for (let offset = 0; offset < persisted.storedMessages.length; offset += 5) {
-      const batch = persisted.storedMessages.slice(offset, offset + 5);
-      await Promise.all(batch.map((stored) => markMailboxMessageAnalyzing(userId, stored.id)));
-      await updateMailboxLearningProgress({
-        runId, userId, processed, failed: learningFailed, candidates,
-        currentSubject: batch[0].message.subject || `Email ${batch[0].message.uid}`,
-      });
-      try {
-        const results = await learnMailboxMessagesWithKimi(batch.map((stored) => stored.message));
-        for (const [index, stored] of batch.entries()) {
-          candidates += await persistMailboxLearning({
-            userId, messageId: stored.id, message: stored.message, learning: results[index],
-          });
-          processed += 1;
-          await updateMailboxLearningProgress({ runId, userId, processed, failed: learningFailed, candidates });
-        }
-      } catch (error) {
-        const message = error instanceof Error ? error.message : "Kimi mailbox learning failed";
-        for (const stored of batch) {
-          learningFailed += 1;
-          processed += 1;
-          await failMailboxMessageLearning(userId, stored.id, message);
-          await updateMailboxLearningProgress({ runId, userId, processed, failed: learningFailed, candidates });
-        }
-      }
-    }
-    await completeMailboxSyncRun({ runId, userId, processed, failed: learningFailed, candidates });
+    const awaitingReview = persisted.storedMessages.filter((item) => item.learningStatus === "pending").length;
+    await completeMailboxImport(runId, userId, awaitingReview);
     return {
       runId,
       imported: persisted.imported,
       skipped: persisted.skipped,
       discovered: result.discovered,
-      candidates,
-      learningFailed,
+      awaitingReview,
     };
   } catch (error) {
     const message = error instanceof Error ? error.message : "Mailbox sync failed";
     await failMailboxSyncRun(runId, userId, message).catch(() => undefined);
+    throw error;
+  }
+}
+
+export async function reviewMailboxMessageForLearning(userId: string, messageId: string, action: "authorize" | "skip") {
+  const message = await getMailboxMessageForLearning(userId, messageId);
+  if (!message) throw new Error("待处理邮件不存在或已完成处理");
+  if (action === "skip") {
+    await skipMailboxMessageLearning(userId, messageId);
+    await recordMailboxOutboundStart({
+      userId, messageId, model: kimiMailboxModel(), decision: "skipped", status: "not-sent",
+      originalCharCount: 0, disclosedCharCount: 0, redactionCounts: {},
+    });
+    return { status: "skipped" as const, candidates: 0 };
+  }
+  const disclosure = prepareMailboxDisclosure(message);
+  if (disclosure.blockedReasons.length > 0) {
+    const reason = `检测到高风险敏感信息：${disclosure.blockedReasons.join(", ")}，未发送给 Kimi`;
+    await blockMailboxMessageLearning(userId, messageId, reason);
+    await recordMailboxOutboundStart({
+      userId, messageId, model: kimiMailboxModel(), decision: "blocked", status: "not-sent",
+      inputSha256: disclosure.inputSha256, originalCharCount: disclosure.originalCharCount,
+      disclosedCharCount: 0, redactionCounts: disclosure.redactionCounts,
+    });
+    return { status: "blocked" as const, candidates: 0, reason };
+  }
+  const auditId = await recordMailboxOutboundStart({
+    userId, messageId, model: kimiMailboxModel(), decision: "authorized", status: "started",
+    inputSha256: disclosure.inputSha256, originalCharCount: disclosure.originalCharCount,
+    disclosedCharCount: disclosure.disclosedCharCount, redactionCounts: disclosure.redactionCounts,
+  });
+  await markMailboxMessageAnalyzing(userId, messageId);
+  try {
+    const learning = await learnMailboxMessageWithKimi(disclosure.message);
+    const candidates = await persistMailboxLearning({ userId, messageId, message: disclosure.message, learning });
+    await finishMailboxOutboundAudit(auditId, userId, { status: "completed" });
+    return { status: "completed" as const, candidates, redactions: disclosure.redactionCounts };
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : "Kimi mailbox learning failed";
+    await failMailboxMessageLearning(userId, messageId, detail);
+    await finishMailboxOutboundAudit(auditId, userId, { status: "failed", error: detail });
     throw error;
   }
 }
