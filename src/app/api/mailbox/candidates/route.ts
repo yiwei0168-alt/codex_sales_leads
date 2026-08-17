@@ -1,5 +1,5 @@
 import { requireApiSession } from "@/lib/auth/session";
-import { query } from "@/lib/rag/db";
+import { tenantQuery } from "@/lib/rag/db";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -7,10 +7,10 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   const session = await requireApiSession();
   if (session instanceof Response) return session;
-  const rows = await query<{
+  const rows = await tenantQuery<{
     id: string; kind: string; title: string; excerpt: string; structured_data: Record<string, unknown>;
     review_status: string; created_at: string; confidence: number | null; rationale: string | null; model: string | null;
-  }>(
+  }>(session.userId,
     `select id, kind, title, left(content, 1200) as excerpt, structured_data,
             review_status, confidence, rationale, model, created_at::text
      from mailbox_artifact_candidate

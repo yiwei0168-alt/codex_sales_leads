@@ -6,6 +6,7 @@ import { SESSION_COOKIE, SESSION_TTL_SECONDS } from "./config";
 export interface AppSession {
   userId: string;
   displayName: string;
+  role: "admin" | "member";
   developmentBypass?: boolean;
 }
 
@@ -40,14 +41,14 @@ export async function deleteSession(): Promise<void> {
 export async function getSession(): Promise<AppSession | null> {
   const token = (await cookies()).get(SESSION_COOKIE)?.value;
   if (!token) return null;
-  const sessions = await query<{ user_id: string; display_name: string }>(
+  const sessions = await query<{ user_id: string; display_name: string; role: "admin" | "member" }>(
     `update app_session s set last_seen_at = now()
      from app_user u
      where s.user_id = u.id and s.token_sha256 = $1 and s.expires_at > now()
-     returning s.user_id, u.display_name`,
+     returning s.user_id, u.display_name, u.role`,
     [tokenHash(token)],
   );
-  return sessions[0] ? { userId: sessions[0].user_id, displayName: sessions[0].display_name } : null;
+  return sessions[0] ? { userId: sessions[0].user_id, displayName: sessions[0].display_name, role: sessions[0].role } : null;
 }
 
 export async function requireApiSession(): Promise<AppSession | Response> {

@@ -1,5 +1,5 @@
 import { requireApiSession } from "@/lib/auth/session";
-import { query } from "@/lib/rag/db";
+import { tenantQuery } from "@/lib/rag/db";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -8,7 +8,7 @@ export async function GET() {
   const session = await requireApiSession();
   if (session instanceof Response) return session;
   const [counts, latestRun] = await Promise.all([
-    query<{ message_count: number; pending_count: number; policy_count: number; customer_count: number; template_count: number }>(
+    tenantQuery<{ message_count: number; pending_count: number; policy_count: number; customer_count: number; template_count: number }>(session.userId,
       `select
          (select count(*)::int from mailbox_message where user_id = $1) as message_count,
          count(*) filter (where review_status = 'pending')::int as pending_count,
@@ -18,12 +18,12 @@ export async function GET() {
        from mailbox_artifact_candidate where user_id = $1`,
       [session.userId],
     ),
-    query<{
+    tenantQuery<{
       id: string; status: string; phase: string; folder_count: number; imported_count: number;
       skipped_count: number; discovered_count: number; processed_count: number; learning_total: number;
       learning_processed: number; learning_failed: number; candidate_count: number; current_subject: string | null;
       model: string | null; error_message: string | null; started_at: string; updated_at: string; finished_at: string | null;
-    }>(
+    }>(session.userId,
       `select id, status, phase, folder_count, imported_count, skipped_count, discovered_count,
               processed_count, learning_total, learning_processed, learning_failed, candidate_count,
               current_subject, model, error_message, started_at::text, updated_at::text, finished_at::text
@@ -33,10 +33,10 @@ export async function GET() {
   ]);
   const count = counts[0];
   const run = latestRun[0] ?? null;
-  const recentMessages = run ? await query<{
+  const recentMessages = run ? await tenantQuery<{
     id: string; subject: string; excerpt: string; direction: string; learning_status: string;
     learning_error: string | null; updated_at: string;
-  }>(
+  }>(session.userId,
     `select id, subject, left(body_text, 600) as excerpt, direction, learning_status, learning_error, updated_at::text
      from mailbox_message where user_id = $1 and sync_run_id = $2
      order by updated_at desc limit 16`,

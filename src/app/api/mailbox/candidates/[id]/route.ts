@@ -1,5 +1,5 @@
 import { requireApiSession } from "@/lib/auth/session";
-import { query } from "@/lib/rag/db";
+import { tenantQuery } from "@/lib/rag/db";
 import { upsertKnowledgeDocument } from "@/lib/rag/repository";
 
 export const runtime = "nodejs";
@@ -13,7 +13,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   if (body.status !== "approved" && body.status !== "rejected") return Response.json({ error: "status 无效" }, { status: 400 });
   const { id } = await params;
   if (!/^[0-9a-f-]{36}$/i.test(id)) return Response.json({ error: "候选 ID 无效" }, { status: 400 });
-  const rows = await query<{ id: string; kind: string; title: string; content: string; structured_data: Record<string, unknown> }>(
+  const rows = await tenantQuery<{ id: string; kind: string; title: string; content: string; structured_data: Record<string, unknown> }>(session.userId,
     `select id, kind, title, content, structured_data from mailbox_artifact_candidate
      where id = $1 and user_id = $2 and review_status = 'pending' limit 1`,
     [id, session.userId],
@@ -36,7 +36,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       visibility: "private",
     });
   }
-  await query(
+  await tenantQuery(session.userId,
     `update mailbox_artifact_candidate set review_status = $3, reviewed_at = now()
      where id = $1 and user_id = $2 and review_status = 'pending'`,
     [id, session.userId, body.status],

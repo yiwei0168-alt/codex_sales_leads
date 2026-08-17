@@ -1,4 +1,4 @@
-import { query, transaction } from "@/lib/rag/db";
+import { tenantQuery, tenantTransaction } from "@/lib/rag/db";
 import { decryptMailboxCredential, encryptMailboxCredential } from "./crypto";
 import { ALIMAIL_IMAP_HOST, ALIMAIL_IMAP_PORT, type ImportedMailboxMessage, type MailboxCursor } from "./alimail-imap";
 import type { KimiMailboxLearningResult } from "./kimi";
@@ -15,7 +15,7 @@ export interface MailboxConnectionRecord {
 
 export async function upsertMailboxConnection(userId: string, email: string, password: string): Promise<string> {
   const encrypted = encryptMailboxCredential(password);
-  const rows = await query<{ id: string }>(
+  const rows = await tenantQuery<{ id: string }>(userId,
     `insert into mailbox_connection
        (user_id, provider, email, host, port, credential_ciphertext, status, last_verified_at, last_error)
      values ($1, 'alimail-imap', $2, $3, $4, $5, 'active', now(), null)
@@ -30,10 +30,10 @@ export async function upsertMailboxConnection(userId: string, email: string, pas
 }
 
 export async function listMailboxConnections(userId: string): Promise<Array<Omit<MailboxConnectionRecord, "credentialCiphertext">>> {
-  const rows = await query<{
+  const rows = await tenantQuery<{
     id: string; user_id: string; email: string; status: MailboxConnectionRecord["status"];
     last_verified_at: string | null; last_error: string | null;
-  }>(
+  }>(userId,
     `select id, user_id, email, status, last_verified_at::text, last_error
      from mailbox_connection where user_id = $1 order by created_at`,
     [userId],
@@ -45,10 +45,10 @@ export async function listMailboxConnections(userId: string): Promise<Array<Omit
 }
 
 export async function getMailboxConnection(userId: string, connectionId: string): Promise<MailboxConnectionRecord | null> {
-  const rows = await query<{
+  const rows = await tenantQuery<{
     id: string; user_id: string; email: string; status: MailboxConnectionRecord["status"];
     credential_ciphertext: string; last_verified_at: string | null; last_error: string | null;
-  }>(
+  }>(userId,
     `select id, user_id, email, status, credential_ciphertext, last_verified_at::text, last_error
      from mailbox_connection where user_id = $1 and id = $2 limit 1`,
     [userId, connectionId],
@@ -66,7 +66,7 @@ export function connectionPassword(connection: MailboxConnectionRecord): string 
 }
 
 export async function getMailboxCursors(userId: string, connectionId: string): Promise<Map<string, MailboxCursor>> {
-  const rows = await query<{ folder_path: string; uid_validity: string; last_uid: string }>(
+  const rows = await tenantQuery<{ folder_path: string; uid_validity: string; last_uid: string }>(userId,
     `select folder_path, uid_validity, last_uid::text from mailbox_sync_cursor
      where user_id = $1 and connection_id = $2`,
     [userId, connectionId],
@@ -77,7 +77,7 @@ export async function getMailboxCursors(userId: string, connectionId: string): P
 }
 
 export async function startMailboxSyncRun(userId: string, connectionId: string, model?: string): Promise<string> {
-  const rows = await query<{ id: string }>(
+  const rows = await tenantQuery<{ id: string }>(userId,
     `insert into mailbox_sync_run (user_id, connection_id, phase, model)
      values ($1, $2, 'queued', $3) returning id`,
     [userId, connectionId, model],
@@ -95,7 +95,7 @@ export async function updateMailboxSyncProgress(input: {
   processed?: number;
   currentSubject?: string;
 }): Promise<void> {
-  await query(
+  await tenantQuery(input.userId,
     `update mailbox_sync_run set phase = $3,
        folder_count = greatest(folder_count, coalesce($4, folder_count)),
        discovered_count = greatest(discovered_count, coalesce($5, discovered_count)),
@@ -110,7 +110,7 @@ export async function updateMailboxSyncProgress(input: {
 export interface StoredMailboxMessage {
   id: string;
   inserted: boolean;
-  learningStatus: "pending" | "analyzing" | "completed" | "failed";
+  learningStatus: "pending" | "analyzing" | "completed" | "failed" | "skipped" | "blocked";
   message: ImportedMailboxMessage;
 }
 
@@ -123,7 +123,7 @@ export async function persistMailboxImport(input: {
   folders: number;
   discovered: number;
 }): Promise<{ imported: number; skipped: number; storedMessages: StoredMailboxMessage[] }> {
-  return transaction(async (client) => {
+  return tenantTransaction(input.userId, async (client) => {
     let imported = 0;
     const storedMessages: StoredMailboxMessage[] = [];
     for (const message of input.messages) {
@@ -174,7 +174,7 @@ export async function persistMailboxImport(input: {
 }
 
 export async function markMailboxMessageAnalyzing(userId: string, messageId: string): Promise<void> {
-  await query(
+  await tenantQuery(userId,
     `update mailbox_message set learning_status = 'analyzing', learning_error = null, updated_at = now()
      where id = $1 and user_id = $2`,
     [messageId, userId],
@@ -187,7 +187,7 @@ export async function persistMailboxLearning(input: {
   message: ImportedMailboxMessage;
   learning: KimiMailboxLearningResult;
 }): Promise<number> {
-  return transaction(async (client) => {
+  return tenantTransaction(input.userId, async (client) => {
     let candidates = 0;
     for (const artifact of input.learning.artifacts) {
       const result = await client.query(
@@ -216,7 +216,7 @@ export async function persistMailboxLearning(input: {
 }
 
 export async function failMailboxMessageLearning(userId: string, messageId: string, error: string): Promise<void> {
-  await query(
+  await tenantQuery(userId,
     `update mailbox_message set learning_status = 'failed', learning_error = $3,
      learned_at = now(), updated_at = now() where id = $1 and user_id = $2`,
     [messageId, userId, error.slice(0, 1_000)],
@@ -231,7 +231,7 @@ export async function updateMailboxLearningProgress(input: {
   candidates: number;
   currentSubject?: string;
 }): Promise<void> {
-  await query(
+  await tenantQuery(input.userId,
     `update mailbox_sync_run set phase = 'learning', learning_processed = $3,
      learning_failed = $4, candidate_count = $5, current_subject = $6, updated_at = now()
      where id = $1 and user_id = $2 and status = 'running'`,
@@ -246,7 +246,7 @@ export async function completeMailboxSyncRun(input: {
   failed: number;
   candidates: number;
 }): Promise<void> {
-  await query(
+  await tenantQuery(input.userId,
     `update mailbox_sync_run set status = 'completed',
      phase = case when $4 > 0 then 'completed-with-errors' else 'completed' end,
      learning_processed = $3, learning_failed = $4, candidate_count = $5,
@@ -257,7 +257,7 @@ export async function completeMailboxSyncRun(input: {
 }
 
 export async function failMailboxSyncRun(runId: string, userId: string, error: string): Promise<void> {
-  await query(
+  await tenantQuery(userId,
     `update mailbox_sync_run set status = 'failed', phase = 'failed', error_message = $3,
      current_subject = null, finished_at = now(), updated_at = now()
      where id = $1 and user_id = $2`,
@@ -266,7 +266,7 @@ export async function failMailboxSyncRun(runId: string, userId: string, error: s
 }
 
 export async function completeMailboxImport(runId: string, userId: string, pending: number): Promise<void> {
-  await query(
+  await tenantQuery(userId,
     `update mailbox_sync_run set status = 'completed', phase = 'awaiting-review',
      learning_total = $3, learning_processed = 0, learning_failed = 0, candidate_count = 0,
      current_subject = null, finished_at = now(), updated_at = now()
@@ -276,12 +276,12 @@ export async function completeMailboxImport(runId: string, userId: string, pendi
 }
 
 export async function getMailboxMessageForLearning(userId: string, messageId: string): Promise<ImportedMailboxMessage | null> {
-  const rows = await query<{
+  const rows = await tenantQuery<{
     folder_path: string; uid_validity: string; message_uid: string; internet_message_id: string | null;
     direction: ImportedMailboxMessage["direction"]; sender: ImportedMailboxMessage["sender"];
     recipients: ImportedMailboxMessage["recipients"]; subject: string; sent_at: string | null;
     body_text: string; content_sha256: string; metadata: Record<string, unknown>;
-  }>(
+  }>(userId,
     `select folder_path, uid_validity, message_uid::text, internet_message_id, direction, sender,
             recipients, subject, sent_at::text, body_text, content_sha256, metadata
      from mailbox_message where id = $1 and user_id = $2 and learning_status in ('pending', 'failed') limit 1`,
@@ -302,7 +302,7 @@ export async function recordMailboxOutboundStart(input: {
   originalCharCount: number; disclosedCharCount: number; redactionCounts: Record<string, number>;
   decision: "authorized" | "skipped" | "blocked"; status: "started" | "not-sent";
 }): Promise<string> {
-  const rows = await query<{ id: string }>(
+  const rows = await tenantQuery<{ id: string }>(input.userId,
     `insert into mailbox_outbound_audit
        (user_id, message_id, provider, model, decision, status, input_sha256,
         original_char_count, disclosed_char_count, redaction_counts, finished_at)
@@ -319,7 +319,7 @@ export async function recordMailboxOutboundStart(input: {
 export async function finishMailboxOutboundAudit(auditId: string, userId: string, input: {
   status: "completed" | "failed"; error?: string;
 }): Promise<void> {
-  await query(
+  await tenantQuery(userId,
     `update mailbox_outbound_audit set status = $3, error_message = $4, finished_at = now()
      where id = $1 and user_id = $2`,
     [auditId, userId, input.status, input.error?.slice(0, 1_000) ?? null],
@@ -327,7 +327,7 @@ export async function finishMailboxOutboundAudit(auditId: string, userId: string
 }
 
 export async function skipMailboxMessageLearning(userId: string, messageId: string): Promise<boolean> {
-  const rows = await query<{ id: string }>(
+  const rows = await tenantQuery<{ id: string }>(userId,
     `update mailbox_message set learning_status = 'skipped', learning_error = null, learned_at = now(), updated_at = now()
      where id = $1 and user_id = $2 and learning_status in ('pending', 'failed') returning id`,
     [messageId, userId],
@@ -336,7 +336,7 @@ export async function skipMailboxMessageLearning(userId: string, messageId: stri
 }
 
 export async function blockMailboxMessageLearning(userId: string, messageId: string, reason: string): Promise<void> {
-  await query(
+  await tenantQuery(userId,
     `update mailbox_message set learning_status = 'blocked', learning_error = $3, learned_at = now(), updated_at = now()
      where id = $1 and user_id = $2`,
     [messageId, userId, reason.slice(0, 1_000)],

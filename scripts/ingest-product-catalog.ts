@@ -66,7 +66,7 @@ for (const product of catalog.wifiRouters) {
       pageCount: product.pageCount,
     },
     visibility: "shared",
-  });
+  }, "admin");
   console.log(`${result.skipped ? "Unchanged" : "Ingested"}: ${product.model} (${result.chunks} chunks)`);
 }
 

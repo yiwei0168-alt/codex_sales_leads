@@ -44,7 +44,7 @@ try {
         temporalReviewRequired: document.topic === "brand-market-landscape",
       },
       visibility: "shared",
-    });
+    }, "admin");
     console.log(`${result.skipped ? "Unchanged" : "Ingested"}: ${document.title} (${result.chunks} chunks)`);
   }
 } finally {

@@ -30,6 +30,10 @@ export async function POST(request: Request) {
   if (input.content.length > 2_000_000) return Response.json({ error: "单文档上限为 2 MB 文本" }, { status: 413 });
 
   try {
+    const visibility = input.visibility === "shared" ? "shared" : "private";
+    if (visibility === "shared" && session.role !== "admin") {
+      return Response.json({ error: "只有管理员可以写入共享知识库" }, { status: 403 });
+    }
     const result = await upsertKnowledgeDocument(session.userId, {
       collection: input.collection,
       externalId: input.externalId.trim(),
@@ -45,8 +49,8 @@ export async function POST(request: Request) {
       capturedAt: input.capturedAt,
       publishedAt: input.publishedAt,
       metadata: input.metadata ?? {},
-      visibility: input.visibility === "shared" ? "shared" : "private",
-    });
+      visibility,
+    }, session.role);
     return Response.json(result, { status: result.skipped ? 200 : 201 });
   } catch (error) {
     return Response.json({ error: error instanceof Error ? error.message : "文档导入失败" }, { status: 500 });

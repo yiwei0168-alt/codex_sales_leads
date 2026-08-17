@@ -39,7 +39,7 @@ try {
       capturedAt: document.capturedAt,
       metadata: { topic: document.topic, sourceFile: document.sourceFile, sourcePageCount: document.pageCount },
       visibility: "shared",
-    });
+    }, "admin");
     console.log(`${result.skipped ? "Unchanged" : "Ingested"}: ${document.title} (${result.chunks} chunks)`);
   }
 } finally {

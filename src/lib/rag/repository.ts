@@ -1,5 +1,5 @@
 import type { PoolClient } from "pg";
-import { query, transaction } from "./db";
+import { tenantQuery, tenantTransaction, type AppDatabaseRole } from "./db";
 import { sha256, chunkDocument } from "./chunker";
 import { embedTexts } from "./openai-provider";
 import type { KnowledgeBaseType, KnowledgeDocumentInput, KnowledgeStats, KnowledgeVisibility, RetrievedChunk, RetrievalFilters } from "./types";
@@ -8,17 +8,17 @@ function vectorLiteral(vector: number[]): string {
   return `[${vector.join(",")}]`;
 }
 
-export async function upsertKnowledgeDocument(userId: string, input: KnowledgeDocumentInput): Promise<{ documentId: string; chunks: number; skipped: boolean }> {
+export async function upsertKnowledgeDocument(userId: string, input: KnowledgeDocumentInput, actorRole: AppDatabaseRole = "member"): Promise<{ documentId: string; chunks: number; skipped: boolean }> {
   const contentHash = sha256(input.content);
   const visibility = input.visibility ?? "private";
-  const existing = await query<{ id: string; content_sha256: string; visibility: KnowledgeVisibility }>(
+  const existing = await tenantQuery<{ id: string; content_sha256: string; visibility: KnowledgeVisibility }>(userId,
     `select d.id, d.content_sha256, d.visibility from knowledge_document d
      join knowledge_collection c on c.id = d.collection_id
      where c.slug = $1 and d.external_id = $2 and d.owner_id = $3`,
     [input.collection, input.externalId, userId],
   );
   if (existing[0]?.content_sha256 === contentHash && existing[0]?.visibility === visibility) {
-    const count = await query<{ count: string }>("select count(*) from knowledge_chunk where document_id = $1", [existing[0].id]);
+    const count = await tenantQuery<{ count: string }>(userId, "select count(*) from knowledge_chunk where document_id = $1", [existing[0].id], actorRole);
     return { documentId: existing[0].id, chunks: Number(count[0]?.count ?? 0), skipped: true };
   }
 
@@ -26,7 +26,7 @@ export async function upsertKnowledgeDocument(userId: string, input: KnowledgeDo
   if (chunks.length === 0) throw new Error(`Document ${input.externalId} has no ingestible content`);
   const embeddings = await embedTexts(chunks.map((chunk) => chunk.content));
 
-  return transaction(async (client: PoolClient) => {
+  return tenantTransaction(userId, async (client: PoolClient) => {
     const result = await client.query<{ id: string }>(
       `insert into knowledge_document (
         collection_id, external_id, title, source_url, source_type, authority_level,
@@ -61,18 +61,18 @@ export async function upsertKnowledgeDocument(userId: string, input: KnowledgeDo
       );
     }
     return { documentId, chunks: chunks.length, skipped: false };
-  });
+  }, actorRole);
 }
 
 export async function hybridSearch(userId: string, question: string, queryEmbedding: number[], filters: RetrievalFilters = {}, limit = 8): Promise<RetrievedChunk[]> {
   const collections = filters.collections?.length ? filters.collections : ["industry", "company", "product"];
-  const rows = await query<{
+  const rows = await tenantQuery<{
     id: string; document_id: string; collection: KnowledgeBaseType; title: string; content: string;
     source_url: string | null; source_type: string; authority_level: number; captured_at: string | null;
     visibility: KnowledgeVisibility;
     heading_path: string[]; vector_rank: string | null; keyword_rank: string | null;
     vector_similarity: number | null; score: number; metadata: Record<string, unknown>;
-  }>(
+  }>(userId,
     `with eligible as (
        select ch.*, d.title, d.source_url, d.source_type, d.authority_level, d.captured_at,
               d.market, d.company_id, d.product_id, d.metadata as document_metadata,
@@ -124,9 +124,9 @@ export async function hybridSearch(userId: string, question: string, queryEmbedd
 }
 
 export async function getKnowledgeStats(userId: string): Promise<KnowledgeStats> {
-  const rows = await query<{
+  const rows = await tenantQuery<{
     type: KnowledgeBaseType; document_count: string; chunk_count: string; embedded_count: string; last_updated: string | null;
-  }>(
+  }>(userId,
     `select c.slug as type, count(distinct d.id) as document_count, count(ch.id) as chunk_count,
             count(ch.embedding) as embedded_count, max(d.updated_at)::text as last_updated
      from knowledge_collection c
@@ -151,7 +151,7 @@ export async function logRagQuery(input: {
   queryText: string; collections: string[]; filters: RetrievalFilters; chunkIds: string[];
   answer?: string; embeddingModel: string; generationModel: string; latencyMs: number;
 }): Promise<void> {
-  await query(
+  await tenantQuery(input.userId,
     `insert into rag_query_log (user_id, query, collection_slugs, filters, retrieved_chunk_ids, answer, embedding_model, generation_model, latency_ms)
      values ($1, $2, $3, $4, $5::uuid[], $6, $7, $8, $9)`,
     [input.userId, input.queryText, input.collections, JSON.stringify(input.filters), input.chunkIds,
