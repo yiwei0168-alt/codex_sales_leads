@@ -61,6 +61,9 @@ Search and enrichment jobs fail explicitly when a provider is unavailable. Tavil
 ## Security and privacy
 
 - No secrets are shipped to the browser or repository.
+- Users have independent database sessions and owner-scoped workspaces, knowledge documents, RAG retrieval, contacts and mailbox records.
+- Alibaba Mail uses per-user read-only IMAP credentials encrypted with AES-256-GCM; mailbox tables enforce composite user ownership across connections, cursors, messages and derived candidates.
+- Mail-derived policies, customer signals and templates require human review before promotion; no mailbox content is shared across users.
 - Only public business-page/profile contacts are collected; private or login-gated data is not scraped.
 - Public, verified and pattern-guessed emails have distinct statuses. Pattern guesses require a public name and a public same-domain personalized pattern.
 - External links open public business sources only.
