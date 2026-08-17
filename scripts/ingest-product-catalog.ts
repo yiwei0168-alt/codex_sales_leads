@@ -3,6 +3,7 @@ import { resolve } from "node:path";
 import nextEnv from "@next/env";
 import { getPool, query } from "../src/lib/rag/db";
 import { upsertKnowledgeDocument } from "../src/lib/rag/repository";
+import { OWNER_USER_ID } from "../src/lib/auth/config";
 
 const { loadEnvConfig } = nextEnv;
 loadEnvConfig(process.cwd());
@@ -48,7 +49,7 @@ for (const product of catalog.allProducts) {
 for (const product of catalog.wifiRouters) {
   if (!product.knowledgeFile) continue;
   const content = await readFile(resolve(product.knowledgeFile), "utf8");
-  const result = await upsertKnowledgeDocument({
+  const result = await upsertKnowledgeDocument(OWNER_USER_ID, {
     collection: "product",
     externalId: `product:${product.model.toLowerCase()}:datasheet:${(product.datasheetVersion ?? "unknown").toLowerCase()}`,
     title: `${product.model} ${product.productName} Datasheet ${product.datasheetVersion ?? "Unknown"}`,

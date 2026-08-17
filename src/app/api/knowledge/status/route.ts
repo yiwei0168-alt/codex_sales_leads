@@ -24,7 +24,7 @@ export async function GET() {
   }
 
   try {
-    const stats = await getKnowledgeStats();
+    const stats = await getKnowledgeStats(session.userId);
     if (missing.length > 0) {
       stats.configured = false;
       stats.error = `数据库已连接，但缺少：${missing.join(", ")}`;

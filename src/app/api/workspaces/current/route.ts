@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   const session = await requireApiSession();
   if (session instanceof Response) return session;
-  const workspace = await getCurrentWorkspace();
+  const workspace = await getCurrentWorkspace(session.userId);
   return workspace ? Response.json(workspace) : Response.json({ error: "Workspace not found" }, { status: 404 });
 }
 

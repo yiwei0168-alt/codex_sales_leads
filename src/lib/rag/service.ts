@@ -7,12 +7,12 @@ export function extractCitedChunkIds(answer: string): Set<string> {
   return new Set(Array.from(answer.matchAll(/\[KB:([0-9a-f-]{36})\]/gi)).map((match) => match[1].toLowerCase()));
 }
 
-export async function answerWithRag(input: RagQuery): Promise<RagAnswer> {
+export async function answerWithRag(userId: string, input: RagQuery): Promise<RagAnswer> {
   const startedAt = Date.now();
   const config = getRagConfig();
   const maxChunks = Math.min(Math.max(input.maxChunks ?? config.maxContextChunks, 1), 12);
   const [embedding] = await embedTexts([input.question]);
-  const retrieved = await hybridSearch(input.question, embedding, input.filters, maxChunks);
+  const retrieved = await hybridSearch(userId, input.question, embedding, input.filters, maxChunks);
   const chunks = retrieved.filter((chunk) => chunk.score >= config.minScore);
   const warnings: string[] = [];
 
@@ -37,6 +37,7 @@ export async function answerWithRag(input: RagQuery): Promise<RagAnswer> {
   }));
   const latencyMs = Date.now() - startedAt;
   await logRagQuery({
+    userId,
     queryText: input.question,
     collections: input.filters?.collections ?? ["industry", "company", "product"],
     filters: input.filters ?? {}, chunkIds: chunks.map((chunk) => chunk.id), answer,

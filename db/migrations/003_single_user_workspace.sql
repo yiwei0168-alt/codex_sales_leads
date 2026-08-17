@@ -55,7 +55,7 @@ values (
   'MX',
   'Discover and develop all qualified Cudy Technology sales leads in Mexico.'
 )
-on conflict (slug) do update set objective = excluded.objective, updated_at = now();
+on conflict (id) do update set objective = excluded.objective, updated_at = now();
 
 create table if not exists sales_company (
   id uuid primary key default gen_random_uuid(),

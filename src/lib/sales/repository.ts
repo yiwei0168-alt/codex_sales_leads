@@ -10,12 +10,13 @@ import type {
 
 const WORKSPACE_SLUG = "mexico-pilot";
 
-export async function getCurrentWorkspace(): Promise<MarketWorkspaceDto | null> {
+export async function getCurrentWorkspace(userId: string): Promise<MarketWorkspaceDto | null> {
   const workspaces = await query<{
     id: string; slug: string; name: string; market: string; country_code: string; mode: "new-market" | "growth"; objective: string;
   }>(
-    `select id, slug, name, market, country_code, mode, objective from market_workspace where slug = $1 and status = 'active'`,
-    [WORKSPACE_SLUG],
+    `select id, slug, name, market, country_code, mode, objective from market_workspace
+     where owner_id = $1 and slug = $2 and status = 'active'`,
+    [userId, WORKSPACE_SLUG],
   );
   const workspace = workspaces[0];
   if (!workspace) return null;
@@ -147,8 +148,9 @@ export async function getCurrentWorkspace(): Promise<MarketWorkspaceDto | null> 
 export async function updateWorkspaceMode(mode: "new-market" | "growth", userId: string): Promise<void> {
   await transaction(async (client) => {
     const result = await client.query<{ id: string }>(
-      `update market_workspace set mode = $1, updated_at = now() where slug = $2 returning id`,
-      [mode, WORKSPACE_SLUG],
+      `update market_workspace set mode = $1, updated_at = now()
+       where owner_id = $2 and slug = $3 returning id`,
+      [mode, userId, WORKSPACE_SLUG],
     );
     if (!result.rows[0]) throw new Error("Workspace not found");
     await client.query(
@@ -168,8 +170,9 @@ export async function updateCompanyState(externalId: string, patch: CompanyEdita
       `select wc.workspace_id, wc.company_id, wc.account_tier, wc.supply_model, wc.brand_involvement,
               wc.opportunity_stage, wc.priority, wc.owner_name, wc.next_action
        from workspace_company wc join market_workspace w on w.id = wc.workspace_id
-       join sales_company c on c.id = wc.company_id where w.slug = $1 and c.external_id = $2`,
-      [WORKSPACE_SLUG, externalId],
+       join sales_company c on c.id = wc.company_id
+       where w.owner_id = $1 and w.slug = $2 and c.external_id = $3`,
+      [userId, WORKSPACE_SLUG, externalId],
     );
     const row = current.rows[0];
     if (!row) throw new Error("Company not found in current workspace");

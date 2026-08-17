@@ -8,13 +8,13 @@ function vectorLiteral(vector: number[]): string {
   return `[${vector.join(",")}]`;
 }
 
-export async function upsertKnowledgeDocument(input: KnowledgeDocumentInput): Promise<{ documentId: string; chunks: number; skipped: boolean }> {
+export async function upsertKnowledgeDocument(userId: string, input: KnowledgeDocumentInput): Promise<{ documentId: string; chunks: number; skipped: boolean }> {
   const contentHash = sha256(input.content);
   const existing = await query<{ id: string; content_sha256: string }>(
     `select d.id, d.content_sha256 from knowledge_document d
      join knowledge_collection c on c.id = d.collection_id
-     where c.slug = $1 and d.external_id = $2`,
-    [input.collection, input.externalId],
+     where c.slug = $1 and d.external_id = $2 and d.owner_id = $3`,
+    [input.collection, input.externalId, userId],
   );
   if (existing[0]?.content_sha256 === contentHash) {
     const count = await query<{ count: string }>("select count(*) from knowledge_chunk where document_id = $1", [existing[0].id]);
@@ -30,11 +30,11 @@ export async function upsertKnowledgeDocument(input: KnowledgeDocumentInput): Pr
       `insert into knowledge_document (
         collection_id, external_id, title, source_url, source_type, authority_level,
         language, market, company_id, product_id, content_sha256, metadata, status,
-        captured_at, published_at, updated_at
+        captured_at, published_at, updated_at, owner_id
       ) values (
         (select id from knowledge_collection where slug = $1), $2, $3, $4, $5, $6,
-        $7, $8, $9, $10, $11, $12, 'active', $13, $14, now()
-      ) on conflict (collection_id, external_id) do update set
+        $7, $8, $9, $10, $11, $12, 'active', $13, $14, now(), $15
+      ) on conflict (owner_id, collection_id, external_id) do update set
         title = excluded.title, source_url = excluded.source_url, source_type = excluded.source_type,
         authority_level = excluded.authority_level, language = excluded.language, market = excluded.market,
         company_id = excluded.company_id, product_id = excluded.product_id,
@@ -44,7 +44,7 @@ export async function upsertKnowledgeDocument(input: KnowledgeDocumentInput): Pr
       [input.collection, input.externalId, input.title, input.sourceUrl ?? null, input.sourceType,
         input.authorityLevel, input.language ?? "zh-CN", input.market ?? null, input.companyId ?? null,
         input.productId ?? null, contentHash, JSON.stringify(input.metadata ?? {}),
-        input.capturedAt ?? null, input.publishedAt ?? null],
+        input.capturedAt ?? null, input.publishedAt ?? null, userId],
     );
     const documentId = result.rows[0].id;
     await client.query("delete from knowledge_chunk where document_id = $1", [documentId]);
@@ -62,7 +62,7 @@ export async function upsertKnowledgeDocument(input: KnowledgeDocumentInput): Pr
   });
 }
 
-export async function hybridSearch(question: string, queryEmbedding: number[], filters: RetrievalFilters = {}, limit = 8): Promise<RetrievedChunk[]> {
+export async function hybridSearch(userId: string, question: string, queryEmbedding: number[], filters: RetrievalFilters = {}, limit = 8): Promise<RetrievedChunk[]> {
   const collections = filters.collections?.length ? filters.collections : ["industry", "company", "product"];
   const rows = await query<{
     id: string; document_id: string; collection: KnowledgeBaseType; title: string; content: string;
@@ -76,7 +76,7 @@ export async function hybridSearch(question: string, queryEmbedding: number[], f
        from knowledge_chunk ch
        join knowledge_document d on d.id = ch.document_id
        join knowledge_collection c on c.id = d.collection_id
-       where d.status = 'active' and ch.embedding is not null
+       where d.status = 'active' and ch.embedding is not null and d.owner_id = $9
          and c.slug = any($3::text[])
          and ($4::text is null or d.market = $4)
          and ($5::text is null or d.company_id = $5)
@@ -104,7 +104,7 @@ export async function hybridSearch(question: string, queryEmbedding: number[], f
      where v.id is not null or k.id is not null
      order by score desc limit $8`,
     [vectorLiteral(queryEmbedding), question, collections, filters.market ?? null, filters.companyId ?? null,
-      filters.productId ?? null, filters.minAuthority ?? 1, limit],
+      filters.productId ?? null, filters.minAuthority ?? 1, limit, userId],
   );
   return rows.map((row) => ({
     id: row.id, documentId: row.document_id, collection: row.collection, title: row.title,
@@ -116,16 +116,17 @@ export async function hybridSearch(question: string, queryEmbedding: number[], f
   }));
 }
 
-export async function getKnowledgeStats(): Promise<KnowledgeStats> {
+export async function getKnowledgeStats(userId: string): Promise<KnowledgeStats> {
   const rows = await query<{
     type: KnowledgeBaseType; document_count: string; chunk_count: string; embedded_count: string; last_updated: string | null;
   }>(
     `select c.slug as type, count(distinct d.id) as document_count, count(ch.id) as chunk_count,
             count(ch.embedding) as embedded_count, max(d.updated_at)::text as last_updated
      from knowledge_collection c
-     left join knowledge_document d on d.collection_id = c.id and d.status = 'active'
+     left join knowledge_document d on d.collection_id = c.id and d.status = 'active' and d.owner_id = $1
      left join knowledge_chunk ch on ch.document_id = d.id
      group by c.slug order by c.slug`,
+    [userId],
   );
   return {
     configured: true,
@@ -138,13 +139,14 @@ export async function getKnowledgeStats(): Promise<KnowledgeStats> {
 }
 
 export async function logRagQuery(input: {
+  userId: string;
   queryText: string; collections: string[]; filters: RetrievalFilters; chunkIds: string[];
   answer?: string; embeddingModel: string; generationModel: string; latencyMs: number;
 }): Promise<void> {
   await query(
-    `insert into rag_query_log (query, collection_slugs, filters, retrieved_chunk_ids, answer, embedding_model, generation_model, latency_ms)
-     values ($1, $2, $3, $4::uuid[], $5, $6, $7, $8)`,
-    [input.queryText, input.collections, JSON.stringify(input.filters), input.chunkIds,
+    `insert into rag_query_log (user_id, query, collection_slugs, filters, retrieved_chunk_ids, answer, embedding_model, generation_model, latency_ms)
+     values ($1, $2, $3, $4, $5::uuid[], $6, $7, $8, $9)`,
+    [input.userId, input.queryText, input.collections, JSON.stringify(input.filters), input.chunkIds,
       input.answer ?? null, input.embeddingModel, input.generationModel, input.latencyMs],
   );
 }

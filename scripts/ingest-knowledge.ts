@@ -3,6 +3,7 @@ import { resolve, basename } from "node:path";
 import nextEnv from "@next/env";
 import { upsertKnowledgeDocument } from "../src/lib/rag/repository";
 import type { KnowledgeBaseType } from "../src/lib/rag/types";
+import { OWNER_USER_ID } from "../src/lib/auth/config";
 
 const { loadEnvConfig } = nextEnv;
 loadEnvConfig(process.cwd());
@@ -25,7 +26,7 @@ if (!type || !["industry", "company", "product"].includes(type) || !file) {
 const absolutePath = resolve(file);
 const content = await readFile(absolutePath, "utf8");
 const id = externalId ?? `${type}:${basename(file).replace(/\.[^.]+$/, "")}`;
-const result = await upsertKnowledgeDocument({
+const result = await upsertKnowledgeDocument(OWNER_USER_ID, {
   collection: type,
   externalId: id,
   title: title ?? basename(file),

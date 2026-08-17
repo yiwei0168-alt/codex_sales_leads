@@ -5,7 +5,3 @@ export const SESSION_TTL_SECONDS = 60 * 60 * 24 * 7;
 export function isAuthConfigured(): boolean {
   return Boolean(process.env.APP_PASSWORD_HASH?.trim());
 }
-
-export function allowDevelopmentBypass(): boolean {
-  return process.env.NODE_ENV === "development" && !isAuthConfigured();
-}

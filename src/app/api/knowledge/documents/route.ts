@@ -30,7 +30,7 @@ export async function POST(request: Request) {
   if (input.content.length > 2_000_000) return Response.json({ error: "单文档上限为 2 MB 文本" }, { status: 413 });
 
   try {
-    const result = await upsertKnowledgeDocument({
+    const result = await upsertKnowledgeDocument(session.userId, {
       collection: input.collection,
       externalId: input.externalId.trim(),
       title: input.title.trim(),

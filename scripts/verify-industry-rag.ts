@@ -2,6 +2,7 @@ import nextEnv from "@next/env";
 import { getPool } from "../src/lib/rag/db";
 import { embedTexts } from "../src/lib/rag/openai-provider";
 import { getKnowledgeStats, hybridSearch } from "../src/lib/rag/repository";
+import { OWNER_USER_ID } from "../src/lib/auth/config";
 
 const { loadEnvConfig } = nextEnv;
 loadEnvConfig(process.cwd());
@@ -13,12 +14,12 @@ const checks = [
 ];
 
 try {
-  const stats = await getKnowledgeStats();
+  const stats = await getKnowledgeStats(OWNER_USER_ID);
   const industry = stats.collections.find((item) => item.type === "industry");
   const results = [];
   for (const check of checks) {
     const [embedding] = await embedTexts([check.question]);
-    const matches = await hybridSearch(check.question, embedding, { collections: ["industry"] }, 3);
+    const matches = await hybridSearch(OWNER_USER_ID, check.question, embedding, { collections: ["industry"] }, 3);
     results.push({
       question: check.question,
       expectedTopic: check.expectedTopic,

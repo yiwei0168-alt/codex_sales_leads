@@ -3,6 +3,7 @@ import { resolve } from "node:path";
 import nextEnv from "@next/env";
 import { getPool } from "../src/lib/rag/db";
 import { upsertKnowledgeDocument } from "../src/lib/rag/repository";
+import { OWNER_USER_ID } from "../src/lib/auth/config";
 
 const { loadEnvConfig } = nextEnv;
 loadEnvConfig(process.cwd());
@@ -27,7 +28,7 @@ const manifest = JSON.parse(await readFile(resolve("knowledge/industry/processed
 try {
   for (const document of manifest.documents) {
     const content = await readFile(resolve(document.knowledgeFile), "utf8");
-    const result = await upsertKnowledgeDocument({
+    const result = await upsertKnowledgeDocument(OWNER_USER_ID, {
       collection: "industry",
       externalId: document.externalId,
       title: document.title,

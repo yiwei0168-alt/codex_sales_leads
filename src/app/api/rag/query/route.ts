@@ -30,7 +30,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const answer = await answerWithRag({ ...input, question });
+    const answer = await answerWithRag(session.userId, { ...input, question });
     return Response.json(answer);
   } catch (error) {
     return Response.json({ error: error instanceof Error ? error.message : "RAG 查询失败" }, { status: 500 });

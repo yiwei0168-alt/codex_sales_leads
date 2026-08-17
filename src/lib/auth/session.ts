@@ -1,7 +1,7 @@
 import { createHash, randomBytes } from "node:crypto";
 import { cookies } from "next/headers";
 import { query } from "@/lib/rag/db";
-import { allowDevelopmentBypass, isAuthConfigured, OWNER_USER_ID, SESSION_COOKIE, SESSION_TTL_SECONDS } from "./config";
+import { SESSION_COOKIE, SESSION_TTL_SECONDS } from "./config";
 
 export interface AppSession {
   userId: string;
@@ -13,12 +13,12 @@ function tokenHash(value: string): string {
   return createHash("sha256").update(value).digest("hex");
 }
 
-export async function createSession(): Promise<void> {
+export async function createSession(userId: string): Promise<void> {
   const token = randomBytes(32).toString("base64url");
   const expiresAt = new Date(Date.now() + SESSION_TTL_SECONDS * 1000);
   await query(
     `insert into app_session (user_id, token_sha256, expires_at) values ($1, $2, $3)`,
-    [OWNER_USER_ID, tokenHash(token), expiresAt.toISOString()],
+    [userId, tokenHash(token), expiresAt.toISOString()],
   );
   const cookieStore = await cookies();
   cookieStore.set(SESSION_COOKIE, token, {
@@ -38,8 +38,6 @@ export async function deleteSession(): Promise<void> {
 }
 
 export async function getSession(): Promise<AppSession | null> {
-  if (allowDevelopmentBypass()) return { userId: OWNER_USER_ID, displayName: "Development Owner", developmentBypass: true };
-  if (!isAuthConfigured()) return null;
   const token = (await cookies()).get(SESSION_COOKIE)?.value;
   if (!token) return null;
   const sessions = await query<{ user_id: string; display_name: string }>(
