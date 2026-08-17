@@ -43,6 +43,7 @@ try {
         sourceUnitCount: document.unitCount,
         temporalReviewRequired: document.topic === "brand-market-landscape",
       },
+      visibility: "shared",
     });
     console.log(`${result.skipped ? "Unchanged" : "Ingested"}: ${document.title} (${result.chunks} chunks)`);
   }

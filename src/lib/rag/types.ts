@@ -1,4 +1,5 @@
 export type KnowledgeBaseType = "industry" | "company" | "product";
+export type KnowledgeVisibility = "shared" | "private";
 
 export interface KnowledgeDocumentInput {
   collection: KnowledgeBaseType;
@@ -15,6 +16,7 @@ export interface KnowledgeDocumentInput {
   capturedAt?: string;
   publishedAt?: string;
   metadata?: Record<string, unknown>;
+  visibility?: KnowledgeVisibility;
 }
 
 export interface TextChunk {
@@ -48,6 +50,7 @@ export interface RetrievedChunk {
   keywordRank?: number;
   score: number;
   metadata: Record<string, unknown>;
+  visibility: KnowledgeVisibility;
 }
 
 export interface RagQuery {

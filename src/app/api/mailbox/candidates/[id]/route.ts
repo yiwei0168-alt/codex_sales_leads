@@ -33,6 +33,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       companyId: "cudy-technology",
       capturedAt: new Date().toISOString(),
       metadata: { mailboxArtifactKind: candidate.kind, privateToUser: true },
+      visibility: "private",
     });
   }
   await query(

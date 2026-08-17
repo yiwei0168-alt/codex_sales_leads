@@ -65,6 +65,7 @@ for (const product of catalog.wifiRouters) {
       sourceFile: product.datasheetFile,
       pageCount: product.pageCount,
     },
+    visibility: "shared",
   });
   console.log(`${result.skipped ? "Unchanged" : "Ingested"}: ${product.model} (${result.chunks} chunks)`);
 }

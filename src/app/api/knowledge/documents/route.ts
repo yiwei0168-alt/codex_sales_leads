@@ -45,6 +45,7 @@ export async function POST(request: Request) {
       capturedAt: input.capturedAt,
       publishedAt: input.publishedAt,
       metadata: input.metadata ?? {},
+      visibility: input.visibility === "shared" ? "shared" : "private",
     });
     return Response.json(result, { status: result.skipped ? 200 : 201 });
   } catch (error) {

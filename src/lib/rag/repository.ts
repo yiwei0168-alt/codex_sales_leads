@@ -2,7 +2,7 @@ import type { PoolClient } from "pg";
 import { query, transaction } from "./db";
 import { sha256, chunkDocument } from "./chunker";
 import { embedTexts } from "./openai-provider";
-import type { KnowledgeBaseType, KnowledgeDocumentInput, KnowledgeStats, RetrievedChunk, RetrievalFilters } from "./types";
+import type { KnowledgeBaseType, KnowledgeDocumentInput, KnowledgeStats, KnowledgeVisibility, RetrievedChunk, RetrievalFilters } from "./types";
 
 function vectorLiteral(vector: number[]): string {
   return `[${vector.join(",")}]`;
@@ -10,13 +10,14 @@ function vectorLiteral(vector: number[]): string {
 
 export async function upsertKnowledgeDocument(userId: string, input: KnowledgeDocumentInput): Promise<{ documentId: string; chunks: number; skipped: boolean }> {
   const contentHash = sha256(input.content);
-  const existing = await query<{ id: string; content_sha256: string }>(
-    `select d.id, d.content_sha256 from knowledge_document d
+  const visibility = input.visibility ?? "private";
+  const existing = await query<{ id: string; content_sha256: string; visibility: KnowledgeVisibility }>(
+    `select d.id, d.content_sha256, d.visibility from knowledge_document d
      join knowledge_collection c on c.id = d.collection_id
      where c.slug = $1 and d.external_id = $2 and d.owner_id = $3`,
     [input.collection, input.externalId, userId],
   );
-  if (existing[0]?.content_sha256 === contentHash) {
+  if (existing[0]?.content_sha256 === contentHash && existing[0]?.visibility === visibility) {
     const count = await query<{ count: string }>("select count(*) from knowledge_chunk where document_id = $1", [existing[0].id]);
     return { documentId: existing[0].id, chunks: Number(count[0]?.count ?? 0), skipped: true };
   }
@@ -30,21 +31,22 @@ export async function upsertKnowledgeDocument(userId: string, input: KnowledgeDo
       `insert into knowledge_document (
         collection_id, external_id, title, source_url, source_type, authority_level,
         language, market, company_id, product_id, content_sha256, metadata, status,
-        captured_at, published_at, updated_at, owner_id
+        captured_at, published_at, updated_at, owner_id, visibility
       ) values (
         (select id from knowledge_collection where slug = $1), $2, $3, $4, $5, $6,
-        $7, $8, $9, $10, $11, $12, 'active', $13, $14, now(), $15
+        $7, $8, $9, $10, $11, $12, 'active', $13, $14, now(), $15, $16
       ) on conflict (owner_id, collection_id, external_id) do update set
         title = excluded.title, source_url = excluded.source_url, source_type = excluded.source_type,
         authority_level = excluded.authority_level, language = excluded.language, market = excluded.market,
         company_id = excluded.company_id, product_id = excluded.product_id,
         content_sha256 = excluded.content_sha256, metadata = excluded.metadata, status = 'active',
-        captured_at = excluded.captured_at, published_at = excluded.published_at, updated_at = now()
+        captured_at = excluded.captured_at, published_at = excluded.published_at,
+        visibility = excluded.visibility, updated_at = now()
       returning id`,
       [input.collection, input.externalId, input.title, input.sourceUrl ?? null, input.sourceType,
         input.authorityLevel, input.language ?? "zh-CN", input.market ?? null, input.companyId ?? null,
         input.productId ?? null, contentHash, JSON.stringify(input.metadata ?? {}),
-        input.capturedAt ?? null, input.publishedAt ?? null, userId],
+        input.capturedAt ?? null, input.publishedAt ?? null, userId, visibility],
     );
     const documentId = result.rows[0].id;
     await client.query("delete from knowledge_chunk where document_id = $1", [documentId]);
@@ -67,16 +69,19 @@ export async function hybridSearch(userId: string, question: string, queryEmbedd
   const rows = await query<{
     id: string; document_id: string; collection: KnowledgeBaseType; title: string; content: string;
     source_url: string | null; source_type: string; authority_level: number; captured_at: string | null;
+    visibility: KnowledgeVisibility;
     heading_path: string[]; vector_rank: string | null; keyword_rank: string | null;
     vector_similarity: number | null; score: number; metadata: Record<string, unknown>;
   }>(
     `with eligible as (
        select ch.*, d.title, d.source_url, d.source_type, d.authority_level, d.captured_at,
-              d.market, d.company_id, d.product_id, d.metadata as document_metadata, c.slug as collection
+              d.market, d.company_id, d.product_id, d.metadata as document_metadata,
+              d.visibility, c.slug as collection
        from knowledge_chunk ch
        join knowledge_document d on d.id = ch.document_id
        join knowledge_collection c on c.id = d.collection_id
-       where d.status = 'active' and ch.embedding is not null and d.owner_id = $9
+       where d.status = 'active' and ch.embedding is not null
+         and (d.visibility = 'shared' or (d.visibility = 'private' and d.owner_id = $9))
          and c.slug = any($3::text[])
          and ($4::text is null or d.market = $4)
          and ($5::text is null or d.company_id = $5)
@@ -93,6 +98,7 @@ export async function hybridSearch(userId: string, question: string, queryEmbedd
        order by ts_rank_cd(search_vector, websearch_to_tsquery('simple', $2)) desc limit 30
      )
      select e.id, e.document_id, e.collection, e.title, e.content, e.source_url, e.source_type,
+            e.visibility,
             e.authority_level, e.captured_at, e.heading_path, v.rank as vector_rank, k.rank as keyword_rank,
             v.similarity as vector_similarity,
             (greatest(coalesce(v.similarity, 0), 0) * 0.85 +
@@ -112,7 +118,8 @@ export async function hybridSearch(userId: string, question: string, queryEmbedd
     authorityLevel: row.authority_level, capturedAt: row.captured_at ?? undefined,
     headingPath: row.heading_path, vectorRank: row.vector_rank ? Number(row.vector_rank) : undefined,
     keywordRank: row.keyword_rank ? Number(row.keyword_rank) : undefined,
-    score: Math.max(0, Math.min(row.score, 1)), metadata: { ...row.metadata, vectorSimilarity: row.vector_similarity },
+    score: Math.max(0, Math.min(row.score, 1)), visibility: row.visibility,
+    metadata: { ...row.metadata, visibility: row.visibility, vectorSimilarity: row.vector_similarity },
   }));
 }
 
@@ -123,7 +130,8 @@ export async function getKnowledgeStats(userId: string): Promise<KnowledgeStats>
     `select c.slug as type, count(distinct d.id) as document_count, count(ch.id) as chunk_count,
             count(ch.embedding) as embedded_count, max(d.updated_at)::text as last_updated
      from knowledge_collection c
-     left join knowledge_document d on d.collection_id = c.id and d.status = 'active' and d.owner_id = $1
+     left join knowledge_document d on d.collection_id = c.id and d.status = 'active'
+       and (d.visibility = 'shared' or (d.visibility = 'private' and d.owner_id = $1))
      left join knowledge_chunk ch on ch.document_id = d.id
      group by c.slug order by c.slug`,
     [userId],

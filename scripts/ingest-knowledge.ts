@@ -39,5 +39,6 @@ const result = await upsertKnowledgeDocument(OWNER_USER_ID, {
   companyId: type === "company" ? "cudy-technology" : undefined,
   productId: type === "product" ? (argument("product-id") ?? id) : undefined,
   metadata: { importedFrom: absolutePath },
+  visibility: "shared",
 });
 console.log(`${result.skipped ? "Unchanged" : "Ingested"}: ${id} (${result.chunks} chunks)`);
