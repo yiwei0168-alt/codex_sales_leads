@@ -4,10 +4,9 @@ import { query } from "@/lib/rag/db";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const workspaceId = "00000000-0000-4000-8000-000000000100";
-
 interface RunRow {
   id: string;
+  workspace_id: string;
   status: "running" | "completed" | "failed" | "cancelled";
   target_count: number;
   processed_count: number;
@@ -50,11 +49,12 @@ export async function GET() {
 
   try {
     const [run] = await query<RunRow>(
-      `select id, status, target_count, processed_count, search_credits_used,
+      `select r.id, r.workspace_id, r.status, r.target_count, r.processed_count, r.search_credits_used,
        extract_credits_used, error_message, started_at, finished_at
-       from company_enrichment_run where workspace_id = $1
-       order by started_at desc limit 1`,
-      [workspaceId],
+       from company_enrichment_run r join market_workspace w on w.id = r.workspace_id
+       where w.owner_id = $1 and w.slug = 'mexico-pilot'
+       order by r.started_at desc limit 1`,
+      [session.userId],
     );
     if (!run) return Response.json({ run: null, items: [], counts: { pending: 0, running: 0, completed: 0, failed: 0 }, workspaceCoverage: null });
 
@@ -74,11 +74,11 @@ export async function GET() {
          where wc.workspace_id = $1 and c.source_kind = 'tavily-live'
        )
        select count(*)::int as target_count,
-         count(*) filter (where exists (select 1 from company_web_evidence e where e.company_id = t.id))::int as covered_count,
-         (select count(*)::int from company_contact ct where ct.company_id in (select id from targets)) as contact_count,
-         (select count(*)::int from company_email_candidate em where em.company_id in (select id from targets) and em.status <> 'Invalid') as email_count
+         count(*) filter (where exists (select 1 from company_web_evidence e where e.workspace_id = $1 and e.company_id = t.id))::int as covered_count,
+         (select count(*)::int from company_contact ct where ct.workspace_id = $1 and ct.company_id in (select id from targets)) as contact_count,
+         (select count(*)::int from company_email_candidate em where em.workspace_id = $1 and em.company_id in (select id from targets) and em.status <> 'Invalid') as email_count
        from targets t`,
-      [workspaceId],
+      [run.workspace_id],
     )]);
     const counts = { pending: 0, running: 0, completed: 0, failed: 0 };
     for (const item of items) counts[item.status] += 1;

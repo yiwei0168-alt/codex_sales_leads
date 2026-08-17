@@ -45,7 +45,7 @@ export async function getCurrentWorkspace(userId: string): Promise<MarketWorkspa
               ct.source_provider, ct.status, ct.confidence
        from company_contact ct join sales_company c on c.id = ct.company_id
        join workspace_company wc on wc.company_id = c.id
-       where wc.workspace_id = $1 order by c.external_id, ct.confidence desc, ct.full_name`,
+       where wc.workspace_id = $1 and ct.workspace_id = $1 order by c.external_id, ct.confidence desc, ct.full_name`,
       [workspace.id],
     ),
     query<{
@@ -56,7 +56,7 @@ export async function getCurrentWorkspace(userId: string): Promise<MarketWorkspa
               em.derivation, em.confidence
        from company_email_candidate em join sales_company c on c.id = em.company_id
        join workspace_company wc on wc.company_id = c.id
-       where wc.workspace_id = $1 order by c.external_id,
+       where wc.workspace_id = $1 and em.workspace_id = $1 order by c.external_id,
          case em.status when 'Verified' then 1 when 'Public' then 2 when 'Pattern-guessed' then 3 when 'Unknown' then 4 else 5 end,
          em.confidence desc, em.email`,
       [workspace.id],

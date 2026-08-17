@@ -16,4 +16,20 @@ describe("sales workspace tenant isolation", () => {
     expect(sql).toContain("owner_id = $1");
     expect(parameters).toEqual(["user-a", "mexico-pilot"]);
   });
+
+  it("scopes contacts and email candidates to the selected workspace", async () => {
+    queryMock.mockImplementation((sql?: string) => {
+      if (String(sql).includes("from market_workspace")) {
+        return Promise.resolve([{
+          id: "workspace-a", slug: "mexico-pilot", name: "A", market: "Mexico",
+          country_code: "MX", mode: "new-market", objective: "A only",
+        }]);
+      }
+      return Promise.resolve([]);
+    });
+    await getCurrentWorkspace("user-a");
+    const statements = queryMock.mock.calls.map(([sql]) => String(sql));
+    expect(statements.some((sql) => sql.includes("ct.workspace_id = $1"))).toBe(true);
+    expect(statements.some((sql) => sql.includes("em.workspace_id = $1"))).toBe(true);
+  });
 });

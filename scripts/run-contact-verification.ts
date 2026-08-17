@@ -125,8 +125,8 @@ const candidates = await query<CandidateRow>(
    from company_email_candidate em
    join sales_company c on c.id = em.company_id
    join target_companies tc on tc.id = c.id
-   left join company_contact ct on ct.id = em.contact_id
-   where em.status <> 'Invalid'
+   left join company_contact ct on ct.id = em.contact_id and ct.workspace_id = em.workspace_id
+   where em.workspace_id = $1 and em.status <> 'Invalid'
    order by em.confidence desc, em.last_seen_at desc
    limit $3`,
   [workspaceId, companyLimit, candidateLimit],
@@ -149,8 +149,8 @@ const failures: Array<{ email: string; error: string }> = [];
 async function verifyCandidate(candidate: CandidateRow): Promise<void> {
   const evidenceRows = await query<EvidenceRow>(
     `select id, provider, source_kind, url, title, excerpt, captured_at
-     from company_web_evidence where company_id = $1 order by captured_at desc limit 10`,
-    [candidate.company_id],
+     from company_web_evidence where workspace_id = $1 and company_id = $2 order by captured_at desc limit 10`,
+    [workspaceId, candidate.company_id],
   );
   const counts = employeeCounts(candidate.record);
   const routing = await mailRouting(emailDomain(candidate.email));

@@ -224,26 +224,26 @@ async function enrichCompany(company: CompanyRow, workerId: string): Promise<voi
 
     await transaction(async (client) => {
       if (replaceExisting) {
-        await client.query(`delete from company_email_candidate where company_id = $1`, [company.id]);
-        await client.query(`delete from company_contact where company_id = $1`, [company.id]);
+        await client.query(`delete from company_email_candidate where workspace_id = $1 and company_id = $2`, [workspaceId, company.id]);
+        await client.query(`delete from company_contact where workspace_id = $1 and company_id = $2`, [workspaceId, company.id]);
       }
       for (const item of combined) {
         const content = extractedByUrl.get(item.result.url) ?? item.result.rawContent ?? item.result.content;
         await client.query(
-          `insert into company_web_evidence (run_id, company_id, provider, source_kind, url, title, excerpt, provider_score)
-           values ($1, $2, $3, $4, $5, $6, $7, $8) on conflict (run_id, company_id, url) do nothing`,
-          [run.id, company.id, item.kind === "official-website" ? "tavily-extract" : "tavily-search", item.kind,
+          `insert into company_web_evidence (workspace_id, run_id, company_id, provider, source_kind, url, title, excerpt, provider_score)
+           values ($1, $2, $3, $4, $5, $6, $7, $8, $9) on conflict (run_id, company_id, url) do nothing`,
+          [workspaceId, run.id, company.id, item.kind === "official-website" ? "tavily-extract" : "tavily-search", item.kind,
             item.result.url, item.result.title, normalizeText(content).slice(0, 2_000), item.result.score],
         );
       }
       const contactIds = new Map<string, string>();
       for (const contact of contacts) {
         const inserted = await client.query<{ id: string }>(
-          `insert into company_contact (company_id, full_name, job_title, public_profile_url, source_url, source_provider, status, confidence)
-           values ($1, $2, $3, $4, $5, $6, $7, $8)
-           on conflict (company_id, full_name, source_url) do update set job_title = coalesce(excluded.job_title, company_contact.job_title),
+          `insert into company_contact (workspace_id, company_id, full_name, job_title, public_profile_url, source_url, source_provider, status, confidence)
+           values ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+           on conflict (workspace_id, company_id, full_name, source_url) do update set job_title = coalesce(excluded.job_title, company_contact.job_title),
              status = excluded.status, confidence = excluded.confidence, last_seen_at = now() returning id`,
-          [company.id, contact.fullName, contact.jobTitle ?? null, contact.profileUrl ?? null, contact.sourceUrl, contact.provider, contact.status, contact.confidence],
+          [workspaceId, company.id, contact.fullName, contact.jobTitle ?? null, contact.profileUrl ?? null, contact.sourceUrl, contact.provider, contact.status, contact.confidence],
         );
         contactIds.set(contact.fullName.toLocaleLowerCase("es"), inserted.rows[0].id);
       }
@@ -255,12 +255,12 @@ async function enrichCompany(company: CompanyRow, workerId: string): Promise<voi
       }
       for (const item of bestByEmail.values()) {
         await client.query(
-          `insert into company_email_candidate (company_id, contact_id, email, status, source_url, source_provider, derivation, confidence)
-           values ($1, $2, $3, $4, $5, $6, $7, $8)
-           on conflict (company_id, email) do update set contact_id = coalesce(excluded.contact_id, company_email_candidate.contact_id),
+          `insert into company_email_candidate (workspace_id, company_id, contact_id, email, status, source_url, source_provider, derivation, confidence)
+           values ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+           on conflict (workspace_id, company_id, email) do update set contact_id = coalesce(excluded.contact_id, company_email_candidate.contact_id),
              status = excluded.status, source_url = coalesce(excluded.source_url, company_email_candidate.source_url),
              source_provider = excluded.source_provider, derivation = excluded.derivation, confidence = excluded.confidence, last_seen_at = now()`,
-          [company.id, item.contactName ? contactIds.get(item.contactName.toLocaleLowerCase("es")) ?? null : null,
+          [workspaceId, company.id, item.contactName ? contactIds.get(item.contactName.toLocaleLowerCase("es")) ?? null : null,
             item.email, item.status, item.sourceUrl ?? null, item.provider, item.derivation ?? null, item.confidence],
         );
       }
