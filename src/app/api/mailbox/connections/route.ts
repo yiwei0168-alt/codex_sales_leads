@@ -2,6 +2,7 @@ import { requireApiSession } from "@/lib/auth/session";
 import { isValidEmail, normalizeEmail } from "@/lib/auth/users";
 import { connectAliMail } from "@/lib/mailbox/service";
 import { listMailboxConnections } from "@/lib/mailbox/repository";
+import { mailboxConnectionErrorMessage } from "@/lib/mailbox/errors";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -28,6 +29,6 @@ export async function POST(request: Request) {
     const connectionId = await connectAliMail(session.userId, email, password);
     return Response.json({ connectionId, connected: true }, { status: 201 });
   } catch (error) {
-    return Response.json({ error: error instanceof Error ? error.message : "阿里邮箱连接失败" }, { status: 502 });
+    return Response.json({ error: mailboxConnectionErrorMessage(error) }, { status: 502 });
   }
 }
