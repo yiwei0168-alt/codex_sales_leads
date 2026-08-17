@@ -5,7 +5,7 @@ import {
   blockMailboxMessageLearning, completeMailboxImport, connectionPassword, failMailboxMessageLearning,
   failMailboxSyncRun, finishMailboxOutboundAudit, getMailboxConnection, getMailboxCursors,
   getMailboxMessageForLearning, markMailboxMessageAnalyzing, persistMailboxImport,
-  persistMailboxLearning, recordMailboxOutboundStart, skipMailboxMessageLearning, startMailboxSyncRun,
+  persistMailboxLearning, purgeExpiredMailboxContent, recordMailboxOutboundStart, skipMailboxMessageLearning, startMailboxSyncRun,
   updateMailboxSyncProgress, upsertMailboxConnection,
 } from "./repository";
 
@@ -22,6 +22,8 @@ export async function syncAliMail(userId: string, connectionId: string, options:
   if (!connection || connection.status === "disabled") throw new Error("Mailbox connection not found");
   const runId = await startMailboxSyncRun(userId, connectionId);
   try {
+    const retentionDays = Math.min(Math.max(Number(process.env.MAILBOX_RAW_RETENTION_DAYS ?? 365) || 365, 30), 3650);
+    await purgeExpiredMailboxContent(userId, connectionId, retentionDays);
     const lookbackDays = Math.min(Math.max(options.lookbackDays ?? 365, 1), 3650);
     const maxMessages = Math.min(Math.max(options.maxMessages ?? 200, 1), 1000);
     const result = await readAliMailMessages({

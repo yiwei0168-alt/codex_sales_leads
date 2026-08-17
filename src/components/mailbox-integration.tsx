@@ -88,6 +88,7 @@ export function MailboxIntegration() {
   const [busy, setBusy] = useState<"connect" | "sync" | null>(null);
   const [reviewingId, setReviewingId] = useState<string | null>(null);
   const [learningId, setLearningId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [message, setMessage] = useState("");
 
   const refresh = useCallback(async () => {
@@ -180,6 +181,22 @@ export function MailboxIntegration() {
     finally { setReviewingId(null); }
   }
 
+  async function deleteConnection(connection: Connection) {
+    if (!window.confirm(`确定删除 ${connection.email} 的连接、已导入邮件、候选和由这些候选生成的私有知识吗？此操作不可撤销。`)) return;
+    setDeletingId(connection.id); setMessage("");
+    try {
+      const response = await fetch(`/api/mailbox/connections/${connection.id}`, {
+        method: "DELETE", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ confirm: "DELETE_MAILBOX_DATA" }),
+      });
+      const body = await response.json() as { error?: string };
+      if (!response.ok) throw new Error(body.error ?? "邮箱数据删除失败");
+      setMessage("该邮箱连接及其私有邮件、候选和关联知识已永久删除。");
+      await refresh();
+    } catch (error) { setMessage(error instanceof Error ? error.message : "邮箱数据删除失败"); }
+    finally { setDeletingId(null); }
+  }
+
   const run = status?.latestRun ?? null;
   const percent = run ? progressPercent(run) : 0;
 
@@ -237,7 +254,7 @@ export function MailboxIntegration() {
       <div className="mailbox-connections">
         {connections.map((connection) => <article key={connection.id}>
           <div><strong>{connection.email}</strong><small>{connection.status === "active" ? "连接有效" : connection.lastError ?? connection.status}</small></div>
-          <button className="secondary-button" disabled={busy !== null || run?.status === "running"} onClick={() => sync(connection.id)}>{busy === "sync" || run?.status === "running" ? "本地同步中…" : "仅本地同步最近一年"}</button>
+          <div className="mailbox-connection-actions"><button className="secondary-button" disabled={busy !== null || deletingId !== null || run?.status === "running"} onClick={() => sync(connection.id)}>{busy === "sync" || run?.status === "running" ? "本地同步中…" : "仅本地同步最近一年"}</button><button className="secondary-button mailbox-delete-button" disabled={busy !== null || deletingId !== null || run?.status === "running"} onClick={() => deleteConnection(connection)}>{deletingId === connection.id ? "删除中…" : "删除邮箱数据"}</button></div>
         </article>)}
         {connections.length === 0 && <p className="subtle">尚未连接邮箱。</p>}
       </div>

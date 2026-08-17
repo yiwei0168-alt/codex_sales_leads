@@ -1,5 +1,6 @@
 import { requireApiSession } from "@/lib/auth/session";
 import { tenantQuery } from "@/lib/rag/db";
+import { listMailboxMessagesForReview } from "@/lib/mailbox/repository";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -33,15 +34,7 @@ export async function GET() {
   ]);
   const count = counts[0];
   const run = latestRun[0] ?? null;
-  const recentMessages = run ? await tenantQuery<{
-    id: string; subject: string; excerpt: string; direction: string; learning_status: string;
-    learning_error: string | null; updated_at: string;
-  }>(session.userId,
-    `select id, subject, left(body_text, 600) as excerpt, direction, learning_status, learning_error, updated_at::text
-     from mailbox_message where user_id = $1 and sync_run_id = $2
-     order by updated_at desc limit 16`,
-    [session.userId, run.id],
-  ) : [];
+  const recentMessages = run ? await listMailboxMessagesForReview(session.userId, run.id, 16) : [];
   return Response.json({
     configured: Boolean(process.env.MAILBOX_CREDENTIAL_KEY?.trim()),
     kimiConfigured: Boolean(process.env.KIMI_API_KEY?.trim()),

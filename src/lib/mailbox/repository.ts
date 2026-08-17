@@ -1,5 +1,5 @@
 import { tenantQuery, tenantTransaction } from "@/lib/rag/db";
-import { decryptMailboxCredential, encryptMailboxCredential } from "./crypto";
+import { decryptMailboxContent, decryptMailboxCredential, encryptMailboxContent, encryptMailboxCredential } from "./crypto";
 import { ALIMAIL_IMAP_HOST, ALIMAIL_IMAP_PORT, type ImportedMailboxMessage, type MailboxCursor } from "./alimail-imap";
 import type { KimiMailboxLearningResult } from "./kimi";
 
@@ -127,15 +127,20 @@ export async function persistMailboxImport(input: {
     let imported = 0;
     const storedMessages: StoredMailboxMessage[] = [];
     for (const message of input.messages) {
+      const contentCiphertext = encryptMailboxContent(input.userId, {
+        subject: message.subject, bodyText: message.bodyText,
+        sender: message.sender, recipients: message.recipients,
+      });
       const result = await client.query<{ id: string; inserted: boolean; learning_status: StoredMailboxMessage["learningStatus"] }>(
         `insert into mailbox_message
            (user_id, connection_id, folder_path, uid_validity, message_uid, internet_message_id,
-            direction, sender, recipients, subject, sent_at, body_text, content_sha256, metadata, sync_run_id)
-         values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+            direction, sender, recipients, subject, sent_at, body_text, content_sha256, metadata, sync_run_id,
+            content_ciphertext)
+         values ($1, $2, $3, $4, $5, $6, $7, '[]', '[]', '', $8, '', $9, $10, $11, $12)
          on conflict (user_id, connection_id, folder_path, uid_validity, message_uid) do update set
            internet_message_id = excluded.internet_message_id, direction = excluded.direction,
            sender = excluded.sender, recipients = excluded.recipients, subject = excluded.subject,
-           sent_at = excluded.sent_at, body_text = excluded.body_text,
+           sent_at = excluded.sent_at, body_text = excluded.body_text, content_ciphertext = excluded.content_ciphertext,
            learning_status = case when mailbox_message.content_sha256 <> excluded.content_sha256
              then 'pending' else mailbox_message.learning_status end,
            learning_error = case when mailbox_message.content_sha256 <> excluded.content_sha256
@@ -144,9 +149,8 @@ export async function persistMailboxImport(input: {
            sync_run_id = excluded.sync_run_id, updated_at = now()
          returning id, (xmax = 0) as inserted, learning_status`,
         [input.userId, input.connectionId, message.folderPath, message.uidValidity, message.uid,
-          message.internetMessageId ?? null, message.direction, JSON.stringify(message.sender),
-          JSON.stringify(message.recipients), message.subject, message.sentAt ?? null, message.bodyText,
-          message.contentSha256, JSON.stringify(message.metadata), input.runId],
+          message.internetMessageId ?? null, message.direction, message.sentAt ?? null,
+          message.contentSha256, JSON.stringify(message.metadata), input.runId, contentCiphertext],
       );
       const stored = result.rows[0];
       if (stored.inserted) imported += 1;
@@ -280,21 +284,96 @@ export async function getMailboxMessageForLearning(userId: string, messageId: st
     folder_path: string; uid_validity: string; message_uid: string; internet_message_id: string | null;
     direction: ImportedMailboxMessage["direction"]; sender: ImportedMailboxMessage["sender"];
     recipients: ImportedMailboxMessage["recipients"]; subject: string; sent_at: string | null;
-    body_text: string; content_sha256: string; metadata: Record<string, unknown>;
+    body_text: string; content_ciphertext: string | null; content_sha256: string; metadata: Record<string, unknown>;
   }>(userId,
     `select folder_path, uid_validity, message_uid::text, internet_message_id, direction, sender,
-            recipients, subject, sent_at::text, body_text, content_sha256, metadata
+            recipients, subject, sent_at::text, body_text, content_ciphertext, content_sha256, metadata
      from mailbox_message where id = $1 and user_id = $2 and learning_status in ('pending', 'failed') limit 1`,
     [messageId, userId],
   );
   const row = rows[0];
-  return row ? {
+  if (!row) return null;
+  const content = row.content_ciphertext ? decryptMailboxContent(userId, row.content_ciphertext) : {
+    subject: row.subject, bodyText: row.body_text, sender: row.sender, recipients: row.recipients,
+  };
+  return {
     folderPath: row.folder_path, uidValidity: row.uid_validity, uid: Number(row.message_uid),
     internetMessageId: row.internet_message_id ?? undefined, direction: row.direction,
-    sender: row.sender, recipients: row.recipients, subject: row.subject,
-    sentAt: row.sent_at ?? undefined, bodyText: row.body_text,
+    sender: content.sender as ImportedMailboxMessage["sender"], recipients: content.recipients as ImportedMailboxMessage["recipients"], subject: content.subject,
+    sentAt: row.sent_at ?? undefined, bodyText: content.bodyText,
     contentSha256: row.content_sha256, metadata: row.metadata,
-  } : null;
+  };
+}
+
+export interface MailboxMessageReviewItem {
+  id: string;
+  subject: string;
+  excerpt: string;
+  direction: ImportedMailboxMessage["direction"];
+  learning_status: StoredMailboxMessage["learningStatus"];
+  learning_error: string | null;
+  updated_at: string;
+}
+
+export async function listMailboxMessagesForReview(userId: string, runId: string, limit = 16): Promise<MailboxMessageReviewItem[]> {
+  const rows = await tenantQuery<{
+    id: string; subject: string; body_text: string; content_ciphertext: string | null;
+    direction: ImportedMailboxMessage["direction"]; learning_status: StoredMailboxMessage["learningStatus"];
+    learning_error: string | null; updated_at: string;
+  }>(userId,
+    `select id, subject, body_text, content_ciphertext, direction, learning_status, learning_error, updated_at::text
+     from mailbox_message where user_id = $1 and sync_run_id = $2 order by updated_at desc limit $3`,
+    [userId, runId, Math.min(Math.max(limit, 1), 50)],
+  );
+  return rows.map((row) => {
+    const content = row.content_ciphertext ? decryptMailboxContent(userId, row.content_ciphertext) : { subject: row.subject, bodyText: row.body_text };
+    return { id: row.id, subject: content.subject, excerpt: content.bodyText.slice(0, 600), direction: row.direction,
+      learning_status: row.learning_status, learning_error: row.learning_error, updated_at: row.updated_at };
+  });
+}
+
+export async function deleteMailboxConnectionData(userId: string, connectionId: string): Promise<boolean> {
+  return tenantTransaction(userId, async (client) => {
+    await client.query(
+      `delete from knowledge_document where owner_id = $1 and external_id in (
+         select 'mailbox-artifact:' || c.id::text from mailbox_artifact_candidate c
+         join mailbox_message m on m.id = c.message_id and m.user_id = c.user_id
+         where c.user_id = $1 and m.connection_id = $2
+       )`,
+      [userId, connectionId],
+    );
+    const result = await client.query(
+      `delete from mailbox_connection where id = $1 and user_id = $2`,
+      [connectionId, userId],
+    );
+    return (result.rowCount ?? 0) > 0;
+  });
+}
+
+export async function purgeExpiredMailboxContent(userId: string, connectionId: string, retentionDays: number): Promise<number> {
+  return tenantTransaction(userId, async (client) => {
+    const rows = await client.query<{ id: string }>(
+      `select id from mailbox_message
+       where user_id = $1 and connection_id = $2
+         and coalesce(sent_at, captured_at) < now() - ($3::text || ' days')::interval
+         and coalesce((metadata->>'rawContentPurged')::boolean, false) = false`,
+      [userId, connectionId, retentionDays],
+    );
+    for (const row of rows.rows) {
+      const ciphertext = encryptMailboxContent(userId, {
+        subject: "[已按保留策略删除]", bodyText: "", sender: [], recipients: [],
+      });
+      await client.query(
+        `update mailbox_message set content_ciphertext = $3,
+           metadata = metadata || '{"rawContentPurged":true}'::jsonb,
+           learning_status = case when learning_status in ('pending', 'failed') then 'skipped' else learning_status end,
+           learning_error = case when learning_status in ('pending', 'failed') then '原始内容已按保留策略删除' else learning_error end,
+           updated_at = now() where id = $1 and user_id = $2`,
+        [row.id, userId, ciphertext],
+      );
+    }
+    return rows.rows.length;
+  });
 }
 
 export async function recordMailboxOutboundStart(input: {

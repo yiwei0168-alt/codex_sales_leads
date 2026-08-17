@@ -1,6 +1,6 @@
 import { randomBytes } from "node:crypto";
 import { afterEach, describe, expect, it } from "vitest";
-import { decryptMailboxCredential, encryptMailboxCredential } from "./crypto";
+import { decryptMailboxContent, decryptMailboxCredential, encryptMailboxContent, encryptMailboxCredential } from "./crypto";
 
 const previousKey = process.env.MAILBOX_CREDENTIAL_KEY;
 
@@ -21,5 +21,13 @@ describe("mailbox credential encryption", () => {
     process.env.MAILBOX_CREDENTIAL_KEY = randomBytes(32).toString("base64url");
     const sealed = encryptMailboxCredential("secret");
     expect(() => decryptMailboxCredential(`${sealed.slice(0, -1)}A`)).toThrow();
+  });
+
+  it("derives isolated authenticated content keys per user", () => {
+    process.env.MAILBOX_CREDENTIAL_KEY = randomBytes(32).toString("base64url");
+    const sealed = encryptMailboxContent("user-a", { subject: "Private", bodyText: "Policy", sender: [], recipients: [] });
+    expect(sealed).not.toContain("Private");
+    expect(decryptMailboxContent("user-a", sealed).bodyText).toBe("Policy");
+    expect(() => decryptMailboxContent("user-b", sealed)).toThrow();
   });
 });
