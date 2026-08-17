@@ -7,6 +7,9 @@ export const dynamic = "force-dynamic";
 export async function POST(request: Request) {
   const session = await requireApiSession();
   if (session instanceof Response) return session;
+  if (!process.env.KIMI_API_KEY?.trim()) {
+    return Response.json({ error: "KIMI_API_KEY 尚未配置，无法启动私有邮件学习" }, { status: 503 });
+  }
   let body: { connectionId?: string; lookbackDays?: number; maxMessages?: number };
   try { body = await request.json() as typeof body; } catch { return Response.json({ error: "请求体必须是 JSON" }, { status: 400 }); }
   if (!body.connectionId || !/^[0-9a-f-]{36}$/i.test(body.connectionId)) {

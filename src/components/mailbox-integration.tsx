@@ -12,13 +12,38 @@ interface Connection {
 
 interface MailboxStatus {
   configured: boolean;
+  kimiConfigured: boolean;
+  kimiModel: string;
   messages: number;
+  pendingCandidates: number;
   candidates: { policies: number; customers: number; templates: number };
   latestRun: null | {
+    id: string;
     status: string;
+    phase: string;
+    folder_count: number;
     imported_count: number;
+    skipped_count: number;
     discovered_count: number;
+    processed_count: number;
+    learning_total: number;
+    learning_processed: number;
+    learning_failed: number;
+    candidate_count: number;
+    current_subject: string | null;
+    model: string | null;
+    error_message: string | null;
+    started_at: string;
+    finished_at: string | null;
   };
+  recentMessages: Array<{
+    id: string;
+    subject: string;
+    direction: "inbound" | "outbound";
+    learning_status: "pending" | "analyzing" | "completed" | "failed";
+    learning_error: string | null;
+    updated_at: string;
+  }>;
 }
 
 interface Candidate {
@@ -27,6 +52,29 @@ interface Candidate {
   title: string;
   excerpt: string;
   created_at: string;
+  confidence: number | null;
+  rationale: string | null;
+  model: string | null;
+}
+
+const phaseLabels: Record<string, string> = {
+  queued: "等待启动", connecting: "连接阿里邮箱", discovering: "发现邮件文件夹",
+  fetching: "安全导入邮件", learning: "Kimi-K3 学习提取", completed: "导入与学习完成",
+  "completed-with-errors": "完成（部分邮件学习失败）", failed: "同步失败",
+};
+
+function progressPercent(run: NonNullable<MailboxStatus["latestRun"]>): number {
+  if (run.status === "completed") return 100;
+  if (run.phase === "queued") return 2;
+  if (run.phase === "connecting") return 7;
+  if (run.phase === "discovering") return 14;
+  if (run.phase === "fetching") {
+    return Math.min(48, 18 + Math.round((run.processed_count / Math.max(run.discovered_count, 1)) * 30));
+  }
+  if (run.phase === "learning") {
+    return Math.min(98, 50 + Math.round((run.learning_processed / Math.max(run.learning_total, 1)) * 48));
+  }
+  return run.status === "failed" ? Math.max(5, Math.min(99, run.processed_count)) : 0;
 }
 
 export function MailboxIntegration() {
@@ -36,6 +84,7 @@ export function MailboxIntegration() {
   const [email, setEmail] = useState("");
   const [securityPassword, setSecurityPassword] = useState("");
   const [busy, setBusy] = useState<"connect" | "sync" | null>(null);
+  const [reviewingId, setReviewingId] = useState<string | null>(null);
   const [message, setMessage] = useState("");
 
   const refresh = useCallback(async () => {
@@ -53,6 +102,13 @@ export function MailboxIntegration() {
     const timer = window.setTimeout(() => { void refresh(); }, 0);
     return () => window.clearTimeout(timer);
   }, [refresh]);
+
+  useEffect(() => {
+    if (busy !== "sync" && status?.latestRun?.status !== "running") return;
+    let active = true;
+    const timer = window.setInterval(() => { if (active) void refresh(); }, 1_000);
+    return () => { active = false; window.clearInterval(timer); };
+  }, [busy, refresh, status?.latestRun?.status]);
 
   async function connect(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -77,9 +133,9 @@ export function MailboxIntegration() {
         method: "POST", headers: { "content-type": "application/json" },
         body: JSON.stringify({ connectionId, lookbackDays: 365, maxMessages: 200 }),
       });
-      const body = await response.json() as { error?: string; imported?: number; skipped?: number };
+      const body = await response.json() as { error?: string; imported?: number; skipped?: number; candidates?: number; learningFailed?: number };
       if (!response.ok) throw new Error(body.error ?? "同步失败");
-      setMessage(`同步完成：新增 ${body.imported ?? 0} 封，已存在 ${body.skipped ?? 0} 封。`);
+      setMessage(`同步完成：新增 ${body.imported ?? 0} 封，已存在 ${body.skipped ?? 0} 封，生成 ${body.candidates ?? 0} 条候选${body.learningFailed ? `，${body.learningFailed} 封学习失败` : ""}。`);
       await refresh();
     } catch (error) { setMessage(error instanceof Error ? error.message : "同步失败"); }
     finally { setBusy(null); }
@@ -87,6 +143,7 @@ export function MailboxIntegration() {
 
   async function review(candidateId: string, kind: Candidate["kind"], reviewStatus: "approved" | "rejected") {
     setMessage("");
+    setReviewingId(candidateId);
     try {
       const response = await fetch(`/api/mailbox/candidates/${candidateId}`, {
         method: "PATCH", headers: { "content-type": "application/json" },
@@ -96,11 +153,15 @@ export function MailboxIntegration() {
       if (!response.ok) throw new Error(body.error ?? "审核失败");
       setCandidates((items) => items.filter((item) => item.id !== candidateId));
       setMessage(reviewStatus === "approved"
-        ? kind === "customer-signal" ? "客户信号已确认为当前用户的私有数据。" : "候选已批准并写入当前用户的私有知识范围。"
+        ? kind === "customer-signal" ? "客户信号已写入当前用户的私有知识库。" : "候选已批准并写入当前用户的私有知识范围。"
         : "候选已拒绝。");
       await refresh();
     } catch (error) { setMessage(error instanceof Error ? error.message : "审核失败"); }
+    finally { setReviewingId(null); }
   }
+
+  const run = status?.latestRun ?? null;
+  const percent = run ? progressPercent(run) : 0;
 
   return <div className="mailbox-grid">
     <section className="panel mailbox-connect-panel">
@@ -123,15 +184,37 @@ export function MailboxIntegration() {
         <div><strong>{status?.candidates.customers ?? 0}</strong><span>客户信号</span></div>
         <div><strong>{status?.candidates.templates ?? 0}</strong><span>模板候选</span></div>
       </div>
+      {run && <div className="mailbox-pipeline">
+        <div className="mailbox-pipeline-head">
+          <div><span className={`run-state ${run.status}`}><i />{phaseLabels[run.phase] ?? run.phase}</span><strong>邮件导入与私有学习</strong><small>模型 {run.model ?? "kimi-k3"} · 批次 {run.id.slice(0, 8)}</small></div>
+          <b>{percent}<small>%</small></b>
+        </div>
+        <div className="mailbox-progress-track" aria-label={`邮箱学习完成 ${percent}%`}><span style={{ width: `${percent}%` }} /></div>
+        <div className="mailbox-stage-grid">
+          <div className={run.phase === "connecting" || run.phase === "discovering" || run.phase === "fetching" ? "active" : run.learning_total > 0 || run.status === "completed" ? "done" : ""}><span>1</span><strong>发现与导入</strong><small>{run.processed_count} / {run.discovered_count} 封</small></div>
+          <div className={run.phase === "learning" ? "active" : run.status === "completed" ? "done" : ""}><span>2</span><strong>Kimi 学习</strong><small>{run.learning_processed} / {run.learning_total} 封</small></div>
+          <div className={run.candidate_count > 0 ? "active" : run.status === "completed" ? "done" : ""}><span>3</span><strong>人工审核</strong><small>{status?.pendingCandidates ?? 0} 条待决定</small></div>
+        </div>
+        {run.current_subject && <div className="mailbox-current"><i /><span>正在处理</span><strong>{run.current_subject}</strong></div>}
+        {run.error_message && <div className="mailbox-run-error">{run.error_message}</div>}
+        {(status?.recentMessages.length ?? 0) > 0 && <div className="mailbox-live-list">
+          {status?.recentMessages.slice(0, 6).map((item) => <div key={item.id}>
+            <span className={`mail-learning-state ${item.learning_status}`}>{item.learning_status === "completed" ? "已学习" : item.learning_status === "analyzing" ? "Kimi分析" : item.learning_status === "failed" ? "失败" : "待处理"}</span>
+            <strong>{item.subject || "无主题邮件"}</strong>
+            <small>{item.direction === "inbound" ? "收件" : "已发送"}</small>
+          </div>)}
+        </div>}
+      </div>}
       <p className="mailbox-description">所有提取结果先进入当前用户的待审核区，不会自动写入其他用户知识库或客户库。</p>
+      {status && !status.kimiConfigured && <div className="login-config-error"><strong>Kimi 学习服务未配置</strong><p>请先设置 <code>KIMI_API_KEY</code>，再启动邮箱学习。</p></div>}
       <div className="mailbox-connections">
         {connections.map((connection) => <article key={connection.id}>
           <div><strong>{connection.email}</strong><small>{connection.status === "active" ? "连接有效" : connection.lastError ?? connection.status}</small></div>
-          <button className="secondary-button" disabled={busy !== null} onClick={() => sync(connection.id)}>{busy === "sync" ? "同步中…" : "同步最近一年"}</button>
+          <button className="secondary-button" disabled={busy !== null || run?.status === "running" || status?.kimiConfigured === false} onClick={() => sync(connection.id)}>{busy === "sync" || run?.status === "running" ? "同步学习中…" : "同步最近一年"}</button>
         </article>)}
         {connections.length === 0 && <p className="subtle">尚未连接邮箱。</p>}
       </div>
-      {status?.latestRun && <small className="mailbox-last-run">最近同步：{status.latestRun.status} · 发现 {status.latestRun.discovered_count} · 新增 {status.latestRun.imported_count}</small>}
+      {run && <small className="mailbox-last-run">最近同步：{phaseLabels[run.phase] ?? run.status} · 发现 {run.discovered_count} · 新增 {run.imported_count} · Kimi失败 {run.learning_failed}</small>}
     </section>
     <section className="panel mailbox-review-panel">
       <div className="panel-header"><div><span className="section-kicker">HUMAN REVIEW</span><h2>待审核内容</h2></div><span className="tag amber">{candidates.length}</span></div>
@@ -139,7 +222,9 @@ export function MailboxIntegration() {
         {candidates.map((candidate) => <article key={candidate.id}>
           <div className="mailbox-candidate-head"><span className="tag neutral">{{ "company-policy": "公司政策", "customer-signal": "客户信号", "email-template": "邮件模板" }[candidate.kind]}</span><small>{candidate.created_at.slice(0, 10)}</small></div>
           <strong>{candidate.title || "无主题邮件"}</strong><p>{candidate.excerpt}</p>
-          <div><button className="secondary-button" onClick={() => review(candidate.id, candidate.kind, "rejected")}>拒绝</button><button className="primary-button" onClick={() => review(candidate.id, candidate.kind, "approved")}>批准</button></div>
+          <div className="mailbox-ai-meta"><span>{candidate.model ?? "kimi-k3"}</span>{candidate.confidence !== null && <span>置信度 {Math.round(candidate.confidence * 100)}%</span>}</div>
+          {candidate.rationale && <small className="mailbox-rationale">{candidate.rationale}</small>}
+          <div><button className="secondary-button" disabled={reviewingId === candidate.id} onClick={() => review(candidate.id, candidate.kind, "rejected")}>拒绝</button><button className="primary-button" disabled={reviewingId === candidate.id} onClick={() => review(candidate.id, candidate.kind, "approved")}>{reviewingId === candidate.id ? "处理中…" : "批准进入私有知识库"}</button></div>
         </article>)}
         {candidates.length === 0 && <p className="subtle">暂无待审核候选。同步邮箱后，系统会在这里展示提取结果。</p>}
       </div>

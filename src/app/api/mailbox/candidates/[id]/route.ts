@@ -21,7 +21,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   const candidate = rows[0];
   if (!candidate) return Response.json({ error: "候选不存在" }, { status: 404 });
 
-  if (body.status === "approved" && (candidate.kind === "company-policy" || candidate.kind === "email-template")) {
+  if (body.status === "approved") {
     await upsertKnowledgeDocument(session.userId, {
       collection: "company",
       externalId: `mailbox-artifact:${candidate.id}`,

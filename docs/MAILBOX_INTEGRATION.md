@@ -10,7 +10,8 @@
 - IMAP 邮箱以只读方式打开；系统不修改已读状态、不移动或删除邮件、不下载附件、不发送邮件。
 - 单封邮件最多读取 2 MB，正文最多保留 200,000 字符；附件内容不入库。
 - 政策、客户信号和邮件模板先进入用户私有审核区。未经批准不会进入 RAG 或正式客户数据。
-- 用户批准政策或模板后，内容只写入该用户的知识文档与向量范围。
+- 用户批准任一候选后，内容只写入该用户的私有知识文档与向量范围。
+- 邮件正文会发送到服务端配置的 Kimi API 进行结构化提取；当前批处理上限为每次 5 封，模型默认 `kimi-k3`。
 
 ## 服务端配置
 
@@ -21,6 +22,14 @@ node --input-type=module -e "import { randomBytes } from 'node:crypto'; console.
 ```
 
 把输出保存到部署环境的 `MAILBOX_CREDENTIAL_KEY`，不要提交到 Git。密钥丢失后，已有邮箱安全密码无法恢复，只能让用户重新连接邮箱。
+
+同时配置 Kimi 学习服务：
+
+```dotenv
+KIMI_API_KEY=
+KIMI_BASE_URL=https://api.moonshot.cn/v1
+KIMI_MODEL=kimi-k3
+```
 
 执行迁移并重启服务：
 
@@ -48,9 +57,20 @@ npm run dev
 用户专属 IMAP 凭据
   → TLS 只读同步 INBOX / Sent
   → 用户私有 mailbox_message
-  → 确定性候选分类
-  → 用户审核
-  → 政策/模板进入该用户 RAG；客户信号保留为该用户确认数据
+  → Kimi-K3 按批提取政策 / 客户信号 / 可复用模板
+  → 实时写入用户私有待审核区
+  → 用户逐条批准或拒绝
+  → 批准内容以 visibility=private + owner_id 进入该用户 RAG
 ```
+
+同步进度保存在 `mailbox_sync_run`，逐邮件学习状态保存在 `mailbox_message.learning_status`。前端每秒读取当前用户的状态和候选，因此学习尚未结束时也可以批准或拒绝已经生成的候选。
+
+## 数据库与隔离
+
+- 原始邮件、连接凭据、游标、同步批次和候选位于独立的 `mailbox_*` 表，但与主知识库共用同一个 PostgreSQL 实例。
+- 这是表级与行级逻辑隔离，不是独立物理数据库。所有邮箱表均强制携带 `user_id`，关键关联使用复合所有权外键。
+- 未批准的邮件内容不会进入 `knowledge_document` / `knowledge_chunk`。
+- 批准后只写入派生文本，不移动原始邮件；知识文档标记为 `visibility=private` 并绑定当前用户 `owner_id`。
+- Kimi 是本地数据库之外的数据处理方。启用学习代表邮件正文会经 TLS 发送给配置的 Kimi API，部署前需确认公司对第三方模型的数据处理政策。
 
 开放平台 API 适配器暂不作为默认连接方式，因为企业级 `client_credentials` 可能拥有跨邮箱读取能力，不能天然证明当前产品用户只拥有指定邮箱。

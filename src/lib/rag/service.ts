@@ -34,6 +34,7 @@ export async function answerWithRag(userId: string, input: RagQuery): Promise<Ra
   const citations = chunks.filter((chunk) => citedIds.has(chunk.id)).map((chunk) => ({
     chunkId: chunk.id, documentTitle: chunk.title, sourceUrl: chunk.sourceUrl,
     excerpt: chunk.content.slice(0, 260), score: chunk.score, collection: chunk.collection,
+    visibility: chunk.visibility,
   }));
   const latencyMs = Date.now() - startedAt;
   await logRagQuery({

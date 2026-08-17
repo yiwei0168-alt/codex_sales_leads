@@ -37,6 +37,17 @@ User upload (industry / Cudy company / Cudy product)
   → answer + verified [KB:chunk-uuid] citations
 ```
 
+Retrieval has two explicit visibility lanes inside the same PostgreSQL/pgvector store:
+
+```text
+shared documents (visibility=shared)
+                    ├─ eligible chunks ─ vector + FTS fusion ─ grounded answer
+current user's private documents
+(visibility=private AND owner_id=session.userId)
+```
+
+Private documents belonging to any other user are excluded inside the initial SQL `eligible` CTE, before vector or keyword ranking. Mailbox rows remain in separate `mailbox_*` tables; only human-approved Kimi-derived artifacts are embedded into the private RAG lane.
+
 The three collections start empty. The existing 36-company channel-discovery snapshot is intentionally not copied into the company knowledge base: that collection is reserved for Cudy Technology's own company information. Raw user knowledge files are ignored by Git.
 
 Provider boundaries are defined in `src/providers/contracts.ts`; neither pages nor domain rules depend on a particular search, LLM, or database vendor.
@@ -64,6 +75,7 @@ Search and enrichment jobs fail explicitly when a provider is unavailable. Tavil
 - Users have independent database sessions and owner-scoped workspaces, knowledge documents, RAG retrieval, contacts and mailbox records.
 - Alibaba Mail uses per-user read-only IMAP credentials encrypted with AES-256-GCM; mailbox tables enforce composite user ownership across connections, cursors, messages and derived candidates.
 - Mail-derived policies, customer signals and templates require human review before promotion; no mailbox content is shared across users.
+- Mailbox import and Kimi learning progress is persisted per user and polled by the UI once per second, allowing review while later messages are still being analyzed.
 - Only public business-page/profile contacts are collected; private or login-gated data is not scraped.
 - Public, verified and pattern-guessed emails have distinct statuses. Pattern guesses require a public name and a public same-domain personalized pattern.
 - External links open public business sources only.

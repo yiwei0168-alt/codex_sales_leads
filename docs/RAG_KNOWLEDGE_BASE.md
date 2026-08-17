@@ -87,6 +87,14 @@ npm run products:ingest
 
 查询先生成向量，同时执行 pgvector cosine search 与 PostgreSQL FTS，使用 reciprocal-rank fusion 合并。只有超过 `RAG_MIN_SCORE` 的 chunks 会进入模型上下文。
 
+候选 chunk 在排名前先执行可见性过滤：
+
+- `visibility=shared`：公司维护的共享行业、公司和产品知识，对所有已登录用户可检索；
+- `visibility=private AND owner_id=当前会话用户`：该用户上传或批准的私有知识；
+- 其他用户的私有文档在 SQL `eligible` 阶段即被排除，不会参与向量相似度或全文排名。
+
+共享与当前用户私有 chunk 进入同一套向量/关键词融合排序，然后统一经过最低分阈值和带引用回答。引用 metadata 会携带 `visibility`，便于后续界面区分共享来源与私人来源。
+
 模型被要求：
 
 - 只能使用检索上下文；
@@ -101,7 +109,7 @@ npm run products:ingest
 
 - 内部经营资料上传前应确认访问授权和保密等级。
 - 不上传个人敏感信息、私人联系方式、密钥或客户机密，除非已建立相应权限体系。
-- 当前 Demo 没有用户级行权限；共享部署前必须增加身份认证、RBAC 和审计策略。
+- 当前已实现服务端会话、知识文档 `owner_id`、共享/私有可见性和用户级查询日志；生产部署仍建议在数据库侧增加 RLS 作为纵深防御。
 - 删除、版本管理和 PDF/DOCX 解析尚未实现，应在生产化阶段补充。
 - Responses API 调用设置 `store: false`；仍需根据企业政策确认第三方模型数据处理要求。
 

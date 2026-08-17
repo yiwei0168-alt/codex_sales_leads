@@ -28,6 +28,14 @@ export interface ImportedMailboxMessage {
   metadata: Record<string, unknown>;
 }
 
+export interface MailboxReadProgress {
+  phase: "connecting" | "discovering" | "fetching";
+  folders: number;
+  discovered: number;
+  processed: number;
+  currentSubject?: string;
+}
+
 function clientFor(email: string, password: string, verifyOnly = false): ImapFlow {
   return new ImapFlow({
     host: ALIMAIL_IMAP_HOST,
@@ -109,6 +117,7 @@ export async function readAliMailMessages(input: {
   cursors: Map<string, MailboxCursor>;
   since: Date;
   maxMessages: number;
+  onProgress?: (progress: MailboxReadProgress) => void | Promise<void>;
 }): Promise<{ messages: ImportedMailboxMessage[]; cursors: MailboxCursor[]; folders: number; discovered: number }> {
   const client = clientFor(input.email, input.password);
   client.on("error", () => undefined);
@@ -116,8 +125,10 @@ export async function readAliMailMessages(input: {
   const cursors: MailboxCursor[] = [];
   let discovered = 0;
   try {
+    await input.onProgress?.({ phase: "connecting", folders: 0, discovered: 0, processed: 0 });
     await client.connect();
     const folders = selectedFolders(await client.list());
+    await input.onProgress?.({ phase: "discovering", folders: folders.length, discovered: 0, processed: 0 });
     for (const folder of folders) {
       if (messages.length >= input.maxMessages) break;
       const lock = await client.getMailboxLock(folder.path, { readOnly: true, acquireTimeout: 15_000 });
@@ -129,6 +140,7 @@ export async function readAliMailMessages(input: {
         const found = await client.search({ since: input.since, ...(lastUid > 0 ? { uid: `${lastUid + 1}:*` } : {}) }, { uid: true });
         const allUids = Array.isArray(found) ? found.filter((uid) => uid > lastUid).sort((a, b) => a - b) : [];
         discovered += allUids.length;
+        await input.onProgress?.({ phase: "fetching", folders: folders.length, discovered, processed: messages.length });
         const remaining = input.maxMessages - messages.length;
         const selected = lastUid === 0 ? allUids.slice(-remaining) : allUids.slice(0, remaining);
         let highestUid = lastUid;
@@ -141,6 +153,10 @@ export async function readAliMailMessages(input: {
           }, { uid: true })) {
             const parsed = await parseMessage(message, folder, uidValidity).catch(() => null);
             if (parsed) messages.push(parsed);
+            await input.onProgress?.({
+              phase: "fetching", folders: folders.length, discovered, processed: messages.length,
+              currentSubject: parsed?.subject || undefined,
+            });
             highestUid = Math.max(highestUid, message.uid);
           }
         }

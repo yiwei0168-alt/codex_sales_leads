@@ -66,6 +66,7 @@ export interface RagCitation {
   excerpt: string;
   score: number;
   collection: KnowledgeBaseType;
+  visibility: KnowledgeVisibility;
 }
 
 export interface RagAnswer {
