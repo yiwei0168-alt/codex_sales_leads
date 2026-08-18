@@ -45,16 +45,19 @@ async function ensureDatabaseSecurity(): Promise<void> {
       let state: { ssl: boolean; rolsuper: boolean; rolbypassrls: boolean; session_super: boolean; session_bypassrls: boolean } | undefined;
       try {
         await client.query("begin");
-        await setApplicationRole(client);
         const result = await client.query<typeof state & QueryResultRow>(
           `select coalesce(s.ssl, false) as ssl, r.rolsuper, r.rolbypassrls,
                   sr.rolsuper as session_super, sr.rolbypassrls as session_bypassrls
            from pg_roles r
            join pg_roles sr on sr.rolname = session_user
            left join pg_stat_ssl s on s.pid = pg_backend_pid()
-           where r.rolname = current_user`,
+           where r.rolname = $1`,
+          [applicationRole()],
         );
         state = result.rows[0];
+        // Verify role membership after inspecting pg_stat_ssl. The restricted
+        // application role cannot see the session's pg_stat_ssl row on RDS.
+        await setApplicationRole(client);
         await client.query("rollback");
       } catch (error) {
         await client.query("rollback").catch(() => undefined);
