@@ -48,9 +48,9 @@ npm run kb:ingest -- --type=product --file=wr3000.md --external-id=cudy-wr3000 -
 产品数据库分成两层：
 
 - `product_catalog`：从 `Cudy products list.xlsx` 提取的结构化型号、名称、类别和描述；
-- 产品知识集合：从 Datasheet 提取的逐页文本证据，用于向量检索和有引用回答。
+- 产品知识集合：从 Datasheet、产品分类目录及培训/参考 PDF、PPTX 提取的文本证据，用于向量检索和有引用回答。
 
-首轮 Wi-Fi Router 验证流程：
+完整产品资料导入流程：
 
 ```powershell
 python -m pip install -r requirements-product.txt
@@ -59,7 +59,7 @@ npm run db:migrate
 npm run products:ingest
 ```
 
-`products:extract` 不修改原始文件，生成内容位于 `knowledge/product/processed`。`products:ingest` 可以重复执行：结构化产品按型号更新，知识文档按型号和 Datasheet 版本幂等更新。
+`products:extract` 会递归读取 `knowledge/product` 中的产品清单、各分类 Datasheet、顶层 PDF 与 PPTX，不修改原始文件；生成内容位于 `knowledge/product/processed`。`products:ingest` 可以重复执行：结构化产品按型号更新，知识文档按来源文件和分类幂等更新。导入后运行 `npm run products:verify`，检查目录数量、文档/分块向量完整性和典型型号召回结果。
 
 重复导入相同 `external-id` 和相同内容时会跳过。内容变化时会重新分块和生成向量，并在事务内替换旧 chunks。
 

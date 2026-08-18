@@ -35,7 +35,7 @@ try {
       excerpt: result.content.replace(/\s+/g, " ").slice(0, 220),
     })),
   }, null, 2));
-  if (stats.collections.length !== 3 || catalog[0]?.products !== "270" || results.length === 0) process.exitCode = 1;
+  if (stats.collections.length !== 3 || Number(catalog[0]?.products ?? 0) < 270 || results.length === 0) process.exitCode = 1;
 } finally {
   await getPool().end();
 }
