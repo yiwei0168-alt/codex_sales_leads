@@ -155,8 +155,8 @@ export async function updateWorkspaceMode(mode: "new-market" | "growth", userId:
     if (!result.rows[0]) throw new Error("Workspace not found");
     await client.query(
       `insert into workspace_audit_event (workspace_id, actor_user_id, entity_type, entity_id, action, changes)
-       values ($1, $2, 'workspace', $1::text, 'mode.updated', $3)`,
-      [result.rows[0].id, userId, JSON.stringify({ mode })],
+       values ($1, $2, 'workspace', $3, 'mode.updated', $4)`,
+      [result.rows[0].id, userId, result.rows[0].id, JSON.stringify({ mode })],
     );
   });
 }

@@ -1,13 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const { queryMock } = vi.hoisted(() => ({ queryMock: vi.fn() }));
+const { queryMock, transactionMock } = vi.hoisted(() => ({ queryMock: vi.fn(), transactionMock: vi.fn() }));
 
-vi.mock("@/lib/rag/db", () => ({ query: queryMock, transaction: vi.fn() }));
+vi.mock("@/lib/rag/db", () => ({ query: queryMock, transaction: transactionMock }));
 
-import { getCurrentWorkspace } from "./repository";
+import { getCurrentWorkspace, updateWorkspaceMode } from "./repository";
 
 describe("sales workspace tenant isolation", () => {
-  beforeEach(() => queryMock.mockReset());
+  beforeEach(() => { queryMock.mockReset(); transactionMock.mockReset(); });
 
   it("selects the active workspace by authenticated owner", async () => {
     queryMock.mockResolvedValue([]);
@@ -31,5 +31,18 @@ describe("sales workspace tenant isolation", () => {
     const statements = queryMock.mock.calls.map(([sql]) => String(sql));
     expect(statements.some((sql) => sql.includes("ct.workspace_id = $1"))).toBe(true);
     expect(statements.some((sql) => sql.includes("em.workspace_id = $1"))).toBe(true);
+  });
+
+  it("records workspace mode changes without reusing a parameter as uuid and text", async () => {
+    const clientQuery = vi.fn()
+      .mockResolvedValueOnce({ rows: [{ id: "workspace-a" }] })
+      .mockResolvedValueOnce({ rows: [] });
+    transactionMock.mockImplementation(async (run: (client: { query: typeof clientQuery }) => Promise<unknown>) => run({ query: clientQuery }));
+
+    await updateWorkspaceMode("growth", "user-a");
+
+    const [auditSql, auditParameters] = clientQuery.mock.calls[1] as [string, unknown[]];
+    expect(auditSql).toContain("values ($1, $2, 'workspace', $3");
+    expect(auditParameters).toEqual(["workspace-a", "user-a", "workspace-a", JSON.stringify({ mode: "growth" })]);
   });
 });

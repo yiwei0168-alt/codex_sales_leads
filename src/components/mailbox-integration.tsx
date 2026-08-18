@@ -54,13 +54,25 @@ interface MailboxStatus {
 
 interface Candidate {
   id: string;
+  message_id: string;
   kind: "company-policy" | "customer-signal" | "email-template";
   title: string;
+  content: string;
   excerpt: string;
   created_at: string;
   confidence: number | null;
   rationale: string | null;
   model: string | null;
+}
+
+interface MailboxMessageContent {
+  id: string;
+  subject: string;
+  bodyText: string;
+  direction: "inbound" | "outbound";
+  sender: Array<{ name?: string; address: string }>;
+  recipients: Array<{ name?: string; address: string }>;
+  sentAt?: string;
 }
 
 const phaseLabels: Record<string, string> = {
@@ -82,6 +94,45 @@ function progressPercent(run: NonNullable<MailboxStatus["latestRun"]>): number {
     return Math.min(98, 50 + Math.round((run.learning_processed / Math.max(run.learning_total, 1)) * 48));
   }
   return run.status === "failed" ? Math.max(5, Math.min(99, run.processed_count)) : 0;
+}
+
+function addressLabel(item: { name?: string; address: string }): string {
+  return item.name ? `${item.name} <${item.address}>` : item.address;
+}
+
+function MailboxMessageDisclosure({ messageId }: { messageId: string }) {
+  const [content, setContent] = useState<MailboxMessageContent | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  async function load() {
+    if (content || loading) return;
+    setLoading(true); setError("");
+    try {
+      const response = await fetch(`/api/mailbox/messages/${messageId}`, { cache: "no-store" });
+      const body = await response.json() as { message?: MailboxMessageContent; error?: string };
+      if (!response.ok || !body.message) throw new Error(body.error ?? "邮件原文读取失败");
+      setContent(body.message);
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : "邮件原文读取失败");
+    } finally { setLoading(false); }
+  }
+
+  return <details className="mailbox-disclosure" onToggle={(event) => {
+    if (event.currentTarget.open) void load();
+  }}>
+    <summary>{loading ? "正在解密邮件…" : "展开邮件原文"}</summary>
+    {error && <p className="mailbox-disclosure-error">{error}</p>}
+    {content && <div className="mailbox-message-content">
+      <dl>
+        <div><dt>主题</dt><dd>{content.subject || "无主题邮件"}</dd></div>
+        <div><dt>发件人</dt><dd>{content.sender.map(addressLabel).join("；") || "未知"}</dd></div>
+        <div><dt>收件人</dt><dd>{content.recipients.map(addressLabel).join("；") || "未知"}</dd></div>
+        {content.sentAt && <div><dt>时间</dt><dd>{new Date(content.sentAt).toLocaleString("zh-CN")}</dd></div>}
+      </dl>
+      <pre>{content.bodyText || "无正文"}</pre>
+    </div>}
+  </details>;
 }
 
 export function MailboxIntegration() {
@@ -295,6 +346,7 @@ export function MailboxIntegration() {
             </div>
             <p>{item.excerpt || "无正文预览"}</p>
             <div className="mailbox-screening-reasons">{item.screening_reasons.map((reason) => <span key={reason}>{reason}</span>)}{item.thread_key && <span>线程 {item.thread_key.slice(0, 8)}</span>}</div>
+            <MailboxMessageDisclosure messageId={item.id} />
             {(item.learning_status === "pending" || item.learning_status === "failed") && <div className="mailbox-message-actions">
               <button className="secondary-button" disabled={learningId === item.id} onClick={() => decideMessage(item.id, "skip")}>跳过，不外发</button>
               <button className="primary-button" disabled={learningId === item.id || status?.kimiConfigured === false} onClick={() => decideMessage(item.id, "authorize")}>{learningId === item.id ? "处理中…" : "同意脱敏后交给 Kimi"}</button>
@@ -320,6 +372,8 @@ export function MailboxIntegration() {
         {candidates.map((candidate) => <article key={candidate.id}>
           <div className="mailbox-candidate-head"><span className="tag neutral">{{ "company-policy": "公司政策", "customer-signal": "客户信号", "email-template": "邮件模板" }[candidate.kind]}</span><small>{candidate.created_at.slice(0, 10)}</small></div>
           <strong>{candidate.title || "无主题邮件"}</strong><p>{candidate.excerpt}</p>
+          <details className="mailbox-disclosure"><summary>展开完整提取内容</summary><div className="mailbox-artifact-content">{candidate.content}</div></details>
+          <MailboxMessageDisclosure messageId={candidate.message_id} />
           <div className="mailbox-ai-meta"><span>{candidate.model ?? "kimi-k3"}</span>{candidate.confidence !== null && <span>置信度 {Math.round(candidate.confidence * 100)}%</span>}</div>
           {candidate.rationale && <small className="mailbox-rationale">{candidate.rationale}</small>}
           <div><button className="secondary-button" disabled={reviewingId === candidate.id} onClick={() => review(candidate.id, candidate.kind, "rejected")}>拒绝</button><button className="primary-button" disabled={reviewingId === candidate.id} onClick={() => review(candidate.id, candidate.kind, "approved")}>{reviewingId === candidate.id ? "处理中…" : "批准进入私有知识库"}</button></div>

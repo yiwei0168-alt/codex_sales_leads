@@ -337,6 +337,40 @@ export async function getMailboxMessageForLearning(userId: string, messageId: st
   };
 }
 
+export async function getMailboxMessageForReview(userId: string, messageId: string): Promise<{
+  id: string;
+  subject: string;
+  bodyText: string;
+  direction: ImportedMailboxMessage["direction"];
+  sender: ImportedMailboxMessage["sender"];
+  recipients: ImportedMailboxMessage["recipients"];
+  sentAt?: string;
+} | null> {
+  const rows = await tenantQuery<{
+    id: string; subject: string; body_text: string; content_ciphertext: string | null;
+    direction: ImportedMailboxMessage["direction"]; sender: ImportedMailboxMessage["sender"];
+    recipients: ImportedMailboxMessage["recipients"]; sent_at: string | null;
+  }>(userId,
+    `select id, subject, body_text, content_ciphertext, direction, sender, recipients, sent_at::text
+     from mailbox_message where id = $1 and user_id = $2 limit 1`,
+    [messageId, userId],
+  );
+  const row = rows[0];
+  if (!row) return null;
+  const content = row.content_ciphertext ? decryptMailboxContent(userId, row.content_ciphertext) : {
+    subject: row.subject, bodyText: row.body_text, sender: row.sender, recipients: row.recipients,
+  };
+  return {
+    id: row.id,
+    subject: content.subject,
+    bodyText: content.bodyText,
+    direction: row.direction,
+    sender: content.sender as ImportedMailboxMessage["sender"],
+    recipients: content.recipients as ImportedMailboxMessage["recipients"],
+    sentAt: row.sent_at ?? undefined,
+  };
+}
+
 export interface MailboxMessageReviewItem {
   id: string;
   subject: string;

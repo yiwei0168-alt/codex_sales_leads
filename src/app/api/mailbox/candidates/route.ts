@@ -8,10 +8,10 @@ export async function GET() {
   const session = await requireApiSession();
   if (session instanceof Response) return session;
   const rows = await tenantQuery<{
-    id: string; kind: string; title: string; excerpt: string; structured_data: Record<string, unknown>;
+    id: string; message_id: string; kind: string; title: string; content: string; excerpt: string; structured_data: Record<string, unknown>;
     review_status: string; created_at: string; confidence: number | null; rationale: string | null; model: string | null;
   }>(session.userId,
-    `select id, kind, title, left(content, 1200) as excerpt, structured_data,
+    `select id, message_id, kind, title, content, left(content, 1200) as excerpt, structured_data,
             review_status, confidence, rationale, model, created_at::text
      from mailbox_artifact_candidate
      where user_id = $1 and review_status = 'pending'

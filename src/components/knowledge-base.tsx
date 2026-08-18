@@ -15,6 +15,24 @@ const emptyStats: KnowledgeStats = {
   collections: (["industry", "company", "product"] as KnowledgeBaseType[]).map((type) => ({ type, documentCount: 0, chunkCount: 0, embeddedCount: 0 })),
 };
 
+interface MailboxKnowledgeItem {
+  id: string;
+  message_id: string;
+  kind: "company-policy" | "customer-signal" | "email-template";
+  title: string;
+  content: string;
+  confidence: number | null;
+  rationale: string | null;
+  model: string | null;
+  reviewed_at: string;
+}
+
+const mailboxKindLabels: Record<MailboxKnowledgeItem["kind"], string> = {
+  "company-policy": "公司政策",
+  "customer-signal": "客户信号",
+  "email-template": "邮件模板",
+};
+
 export function KnowledgeBase() {
   const [stats, setStats] = useState<KnowledgeStats>(emptyStats);
   const [loading, setLoading] = useState(true);
@@ -31,6 +49,8 @@ export function KnowledgeBase() {
   const [adminToken, setAdminToken] = useState("");
   const [uploading, setUploading] = useState(false);
   const [uploadMessage, setUploadMessage] = useState("");
+  const [mailboxKnowledge, setMailboxKnowledge] = useState<MailboxKnowledgeItem[]>([]);
+  const [mailboxKnowledgeError, setMailboxKnowledgeError] = useState("");
 
   function loadStats() {
     setLoading(true);
@@ -47,6 +67,16 @@ export function KnowledgeBase() {
       .then(({ body }) => setStats(body))
       .catch((reason: Error) => setStats({ ...emptyStats, error: reason.message }))
       .finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/knowledge/mailbox", { cache: "no-store" })
+      .then(async (response) => {
+        const body = await response.json() as { items?: MailboxKnowledgeItem[]; error?: string };
+        if (!response.ok) throw new Error(body.error ?? "邮箱知识读取失败");
+        setMailboxKnowledge(body.items ?? []);
+      })
+      .catch((reason: Error) => setMailboxKnowledgeError(reason.message));
   }, []);
 
   function toggle(type: KnowledgeBaseType) {
@@ -126,6 +156,18 @@ export function KnowledgeBase() {
           <div className="kb-readiness"><span style={{ width: `${readiness}%` }}/></div>
         </article>;
       })}
+    </section>
+
+    <section className="panel mailbox-knowledge-panel">
+      <div className="panel-header"><div><span className="section-kicker">PRIVATE MAILBOX KNOWLEDGE</span><h2>邮箱学习知识</h2><p>仅当前账号可见；已批准内容会参与私有 RAG 检索。</p></div><span className="tag violet">{mailboxKnowledge.length} 条</span></div>
+      {mailboxKnowledgeError && <div className="rag-error">{mailboxKnowledgeError}</div>}
+      <div className="mailbox-knowledge-list">
+        {mailboxKnowledge.map((item) => <details key={item.id}>
+          <summary><span className="tag neutral">{mailboxKindLabels[item.kind]}</span><strong>{item.title || "未命名邮箱知识"}</strong><small>{item.reviewed_at?.slice(0, 10)}</small></summary>
+          <div className="mailbox-knowledge-content"><p>{item.content}</p><div>{item.model && <span>{item.model}</span>}{item.confidence !== null && <span>置信度 {Math.round(item.confidence * 100)}%</span>}</div>{item.rationale && <small>{item.rationale}</small>}</div>
+        </details>)}
+        {!mailboxKnowledgeError && mailboxKnowledge.length === 0 && <p className="subtle">暂无已批准的邮箱学习知识。请先在“邮箱学习”中批准候选。</p>}
+      </div>
     </section>
 
     <div className="kb-main-grid">
