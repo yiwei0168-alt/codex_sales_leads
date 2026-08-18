@@ -1,6 +1,7 @@
 import { resolveMx } from "node:dns/promises";
 import nextEnv from "@next/env";
 import { ContactVerificationAgent, type ContactEvidenceDocument } from "../src/lib/contacts/verification/agent";
+import { planContactPublication, type ContactSourceStatus } from "../src/lib/contacts/verification/publication";
 import type { ContactVerificationInput } from "../src/lib/contacts/verification/types";
 import { getPool, query, transaction } from "../src/lib/rag/db";
 import { DeepSeekProvider } from "../src/providers/deepseek";
@@ -9,7 +10,15 @@ import { resolveTargetWorkspace } from "./resolve-target-workspace";
 const { loadEnvConfig } = nextEnv;
 loadEnvConfig(process.cwd());
 
-const workspaceId = (await resolveTargetWorkspace()).id;
+const targetWorkspace = await resolveTargetWorkspace();
+const workspaceId = targetWorkspace.id;
+const requestedMode = process.argv.find((value) => value.startsWith("--mode="))?.slice("--mode=".length)
+  ?? process.env.CONTACT_VERIFICATION_MODE?.trim()
+  ?? "automatic";
+if (requestedMode !== "automatic" && requestedMode !== "shadow") {
+  throw new Error("CONTACT_VERIFICATION_MODE/--mode must be automatic or shadow");
+}
+const mode: "automatic" | "shadow" = requestedMode;
 const routineModel = process.env.DEEPSEEK_MODEL?.trim() || "deepseek-v4-flash";
 const escalationModel = process.env.DEEPSEEK_ESCALATION_MODEL?.trim() || "deepseek-v4-pro";
 const promptVersion = "contact-evidence-v1";
@@ -31,7 +40,7 @@ interface CandidateRow {
   full_name: string | null;
   job_title: string | null;
   email: string;
-  email_status: string;
+  source_status: ContactSourceStatus;
   derivation: string | null;
 }
 
@@ -105,8 +114,8 @@ function evidenceDocument(row: EvidenceRow): ContactEvidenceDocument {
 }
 
 function derivation(row: CandidateRow): ContactVerificationInput["candidate"]["derivation"] {
-  if (row.email_status === "Pattern-guessed") return "pattern-guessed";
-  if (row.email_status === "Public") return "direct-public";
+  if (row.source_status === "Pattern-guessed") return "pattern-guessed";
+  if (row.source_status === "Public") return "direct-public";
   if (row.derivation?.toLowerCase().includes("source")) return "cross-source";
   return "unknown";
 }
@@ -122,12 +131,12 @@ const candidates = await query<CandidateRow>(
      order by c.canonical_name limit $2
    )
    select em.id as email_candidate_id, em.company_id, em.contact_id, c.canonical_name, lower(c.domain) as domain,
-          c.record, ct.full_name, ct.job_title, lower(em.email) as email, em.status as email_status, em.derivation
+          c.record, ct.full_name, ct.job_title, lower(em.email) as email, em.source_status, em.derivation
    from company_email_candidate em
    join sales_company c on c.id = em.company_id
    join target_companies tc on tc.id = c.id
    left join company_contact ct on ct.id = em.contact_id and ct.workspace_id = em.workspace_id
-   where em.workspace_id = $1 and em.status <> 'Invalid'
+   where em.workspace_id = $1 and em.source_status <> 'Invalid'
    order by em.confidence desc, em.last_seen_at desc
    limit $3`,
   [workspaceId, companyLimit, candidateLimit],
@@ -137,11 +146,11 @@ if (candidates.length === 0) throw new Error("No active contact candidates are a
 const [run] = await query<{ id: string }>(
   `insert into contact_verification_run
      (workspace_id, mode, routine_model, escalation_model, prompt_version, target_count, timeout_ms, max_calls_per_contact, metadata)
-   values ($1, 'shadow', $2, $3, $4, $5, $6, 2, $7) returning id`,
-  [workspaceId, routineModel, escalationModel, promptVersion, candidates.length, timeoutMs,
+   values ($1, $2, $3, $4, $5, $6, $7, 2, $8) returning id`,
+  [workspaceId, mode, routineModel, escalationModel, promptVersion, candidates.length, timeoutMs,
     JSON.stringify({ requestedCompanyLimit, companyLimit, requestedCandidateLimit, candidateLimit,
       representedCompanyCount: new Set(candidates.map((candidate) => candidate.company_id)).size,
-      concurrency, linkedinProactiveCrawl: false, outboundVerification: false })],
+      concurrency, automaticPublishing: mode === "automatic", linkedinProactiveCrawl: false, outboundVerification: false })],
 );
 
 let processed = 0;
@@ -155,7 +164,7 @@ async function verifyCandidate(candidate: CandidateRow): Promise<void> {
   );
   const counts = employeeCounts(candidate.record);
   const routing = await mailRouting(emailDomain(candidate.email));
-  const result = await agent.runShadow({
+  const result = await agent.evaluate({
     company: {
       id: candidate.company_id,
       canonicalName: candidate.canonical_name,
@@ -178,6 +187,7 @@ async function verifyCandidate(candidate: CandidateRow): Promise<void> {
     },
     requestedAt: new Date().toISOString(),
   }, AbortSignal.timeout(timeoutMs));
+  const publication = planContactPublication(result.decision, candidate.source_status);
 
   await transaction(async (client) => {
     for (const [index, trace] of result.modelTraces.entries()) {
@@ -192,33 +202,70 @@ async function verifyCandidate(candidate: CandidateRow): Promise<void> {
       );
     }
     const decision = result.decision;
+    if (mode === "automatic") {
+      const previous = await client.query<{ id: string }>(
+        `update contact_verification_decision set current = false, superseded_at = now()
+         where email_candidate_id = $1 and current returning id`,
+        [candidate.email_candidate_id],
+      );
+      if (previous.rows.length > 0) {
+        await client.query(
+          `update contact_review_queue set status = 'deferred', resolution_note = 'Superseded by a newer automatic decision', resolved_at = now()
+           where decision_id = any($1::uuid[]) and status = 'open'`,
+          [previous.rows.map((row) => row.id)],
+        );
+      }
+    }
     const inserted = await client.query<{ id: string }>(
       `insert into contact_verification_decision
-         (run_id, company_id, contact_id, email_candidate_id, shadow, category, lifecycle_status, contact_type,
+         (run_id, company_id, contact_id, email_candidate_id, shadow, current, category, lifecycle_status, contact_type,
           confidence_score, role_relevance_score, reachability_score, development_priority, employment_status,
-          email_evidence_status, delivery_status, matched_rule_ids, evidence_ids, reasons, review_flags, decided_at)
-       values ($1, $2, $3, $4, true, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16::uuid[], $17, $18, $19)
+          email_evidence_status, delivery_status, matched_rule_ids, evidence_ids, reasons, review_flags, decided_at, published_at)
+       values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18::uuid[], $19, $20, $21, $22)
        returning id`,
-      [run.id, candidate.company_id, candidate.contact_id, candidate.email_candidate_id, decision.category,
+      [run.id, candidate.company_id, candidate.contact_id, candidate.email_candidate_id, mode === "shadow", mode === "automatic", decision.category,
         decision.lifecycleStatus, decision.contactType, decision.confidenceScore, decision.roleRelevanceScore,
         decision.reachabilityScore, decision.developmentPriority, decision.employmentStatus, decision.emailEvidenceStatus,
-        decision.deliveryStatus, decision.matchedRuleIds, decision.evidenceIds, decision.reasons, decision.reviewFlags, decision.decidedAt],
+        decision.deliveryStatus, decision.matchedRuleIds, decision.evidenceIds, decision.reasons, decision.reviewFlags,
+        decision.decidedAt, mode === "automatic" ? decision.decidedAt : null],
     );
-    if (decision.category === "NeedsReview" || decision.lifecycleStatus === "Invalid") {
+    if (mode === "automatic") {
+      await client.query(
+        `update company_email_candidate set status = $2, verification_decision_id = $3
+         where id = $1 and workspace_id = $4`,
+        [candidate.email_candidate_id, publication.activeStatus, inserted.rows[0].id, workspaceId],
+      );
+    }
+    if (mode === "automatic" && publication.needsReview) {
       await client.query(
         `insert into contact_review_queue (decision_id, priority, review_flags) values ($1, $2, $3)`,
         [inserted.rows[0].id, decision.developmentPriority, decision.reviewFlags.length ? decision.reviewFlags : ["hard-gate-incomplete"]],
       );
     }
+    if (mode === "automatic") {
+      await client.query(
+        `insert into workspace_audit_event (workspace_id, actor_user_id, entity_type, entity_id, action, changes)
+         values ($1, $2, 'email_candidate', $3, 'contact.verification.published', $4)`,
+        [workspaceId, targetWorkspace.ownerId, candidate.email_candidate_id, JSON.stringify({
+          decisionId: inserted.rows[0].id, category: decision.category, lifecycleStatus: decision.lifecycleStatus,
+          confidenceScore: decision.confidenceScore, roleRelevanceScore: decision.roleRelevanceScore,
+          reachabilityScore: decision.reachabilityScore, developmentPriority: decision.developmentPriority,
+        })],
+      );
+    }
     await client.query(
       `update contact_verification_run set processed_count = processed_count + 1,
          escalated_count = escalated_count + $2, model_call_count = model_call_count + $3,
-         total_tokens = total_tokens + $4 where id = $1`,
-      [run.id, result.escalated ? 1 : 0, result.modelTraces.length, result.totalTokens],
+         total_tokens = total_tokens + $4, published_count = published_count + $5,
+         accepted_count = accepted_count + $6, review_count = review_count + $7,
+         invalidated_count = invalidated_count + $8 where id = $1`,
+      [run.id, result.escalated ? 1 : 0, result.modelTraces.length, result.totalTokens,
+        mode === "automatic" ? 1 : 0, mode === "automatic" && publication.accepted ? 1 : 0,
+        mode === "automatic" && publication.needsReview ? 1 : 0, mode === "automatic" && publication.invalidated ? 1 : 0],
     );
   });
   processed += 1;
-  process.stdout.write(`${processed}/${candidates.length} ${candidate.canonical_name} ${candidate.email}: ${result.decision.category} (shadow)\n`);
+  process.stdout.write(`${processed}/${candidates.length} ${candidate.canonical_name} ${candidate.email}: ${result.decision.category} (${mode})\n`);
 }
 
 try {
@@ -241,7 +288,7 @@ try {
   await Promise.all(Array.from({ length: Math.min(concurrency, candidates.length) }, () => worker()));
   if (failures.length > 0) throw new Error(`${failures.length} candidates failed verification.`);
   await query(`update contact_verification_run set status = 'completed', finished_at = now() where id = $1`, [run.id]);
-  console.log(JSON.stringify({ runId: run.id, mode: "shadow", processed, routineModel, escalationModel, timeoutMs, concurrency }, null, 2));
+  console.log(JSON.stringify({ runId: run.id, mode, processed, routineModel, escalationModel, timeoutMs, concurrency }, null, 2));
 } catch (error) {
   await query(
     `update contact_verification_run set status = 'failed', error_message = $2, finished_at = now() where id = $1`,

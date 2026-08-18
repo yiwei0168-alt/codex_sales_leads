@@ -256,10 +256,12 @@ async function enrichCompany(company: CompanyRow, workerId: string): Promise<voi
       }
       for (const item of bestByEmail.values()) {
         await client.query(
-          `insert into company_email_candidate (workspace_id, company_id, contact_id, email, status, source_url, source_provider, derivation, confidence)
-           values ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+          `insert into company_email_candidate (workspace_id, company_id, contact_id, email, status, source_status, source_url, source_provider, derivation, confidence)
+           values ($1, $2, $3, $4, $5, $5, $6, $7, $8, $9)
            on conflict (workspace_id, company_id, email) do update set contact_id = coalesce(excluded.contact_id, company_email_candidate.contact_id),
-             status = excluded.status, source_url = coalesce(excluded.source_url, company_email_candidate.source_url),
+             source_status = excluded.source_status,
+             status = case when company_email_candidate.verification_decision_id is null then excluded.status else company_email_candidate.status end,
+             source_url = coalesce(excluded.source_url, company_email_candidate.source_url),
              source_provider = excluded.source_provider, derivation = excluded.derivation, confidence = excluded.confidence, last_seen_at = now()`,
           [workspaceId, company.id, item.contactName ? contactIds.get(item.contactName.toLocaleLowerCase("es")) ?? null : null,
             item.email, item.status, item.sourceUrl ?? null, item.provider, item.derivation ?? null, item.confidence],

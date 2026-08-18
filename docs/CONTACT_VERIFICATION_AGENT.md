@@ -287,16 +287,18 @@ Delivery interpretation:
 
 The status definitions follow the distinction between address, mailbox, and policy failures in [RFC 3463](https://www.rfc-editor.org/info/rfc3463/).
 
-## 11. Persistence plan
+## 11. Persistence
 
-The implementation should add, in a later migration:
+The production implementation persists:
 
 - `contact_verification_run`: orchestration, model, prompt, counts, and status;
 - `contact_model_assessment`: raw structured DeepSeek assessment and usage metadata;
 - `contact_verification_decision`: scores, category, rule IDs, and decision version;
 - `contact_evidence_link`: exact evidence used by each claim and decision;
 - `contact_review_queue`: review reason, priority, assignee state, and resolution;
-- `contact_delivery_attempt`: optional outbound attempt and normalized delivery result.
+- `company_email_candidate.verification_decision_id`: the current published decision while retaining the independent crawler source status.
+
+`contact_delivery_attempt` remains outside the active system because outbound verification has not been approved.
 
 Existing crawler findings remain immutable evidence. A new verification decision supersedes an older decision; it does not rewrite the historical source record.
 
@@ -329,8 +331,8 @@ Minimum release gates:
 3. **DeepSeek checkpoint**: approve prompt, budget, retry, and evidence retention. Flash for routine work with Pro escalation for conflicts is confirmed.
 4. Implement the DeepSeek provider and model-assessment orchestration in shadow mode.
 5. Evaluate against the human-labelled benchmark and tune deterministic rules.
-6. **Automation checkpoint**: approve whether high-confidence decisions may auto-publish or require review.
-7. Implement persistence, review UI, and scheduled re-verification.
+6. **Automation checkpoint**: approved for deterministic `Official` and `HighConfidence` decisions; all other outcomes require review.
+7. Persistence, current-decision supersession, review routing, audit events, and score display are implemented. Scheduled re-verification remains future work.
 8. **Outbound checkpoint**: approve sender domain, template, volume, observation window, and compliance controls.
 9. Implement the Delivery Verification Worker behind a disabled-by-default feature flag.
 

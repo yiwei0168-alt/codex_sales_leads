@@ -31,8 +31,10 @@
     "contacts:enrich": "tsx scripts/enrich-lead-contacts.ts",
     "contacts:verify": "tsx scripts/verify-contact-enrichment.ts",
     "contacts:classify": "tsx scripts/run-contact-verification.ts",
+    "contacts:classify:shadow": "tsx scripts/run-contact-verification.ts --mode=shadow",
     "contacts:classify:report": "tsx scripts/report-contact-verification.ts",
-    "contacts:classify:eval": "tsx scripts/evaluate-contact-verification.ts"
+    "contacts:classify:eval": "tsx scripts/evaluate-contact-verification.ts",
+    "contacts:classify:verify-production": "tsx scripts/verify-contact-verification-production.ts"
   },
   "dependencies": {
     "imapflow": "^1.7.1",

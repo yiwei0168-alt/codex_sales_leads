@@ -3,6 +3,19 @@ import type { CompanyRecord } from "@/lib/domain";
 export type ContactStatus = "Public" | "Verified" | "Inferred";
 export type EmailCandidateStatus = "Public" | "Verified" | "Pattern-guessed" | "Unknown" | "Invalid";
 
+export interface ContactVerificationDto {
+  decisionId: string;
+  category: "Official" | "HighConfidence" | "NeedsReview";
+  lifecycleStatus: "Active" | "Invalid";
+  confidenceScore: number;
+  roleRelevanceScore: number;
+  reachabilityScore: number;
+  developmentPriority: number;
+  reasons: string[];
+  reviewFlags: string[];
+  decidedAt: string;
+}
+
 export interface CompanyContactDto {
   id: string;
   fullName: string;
@@ -23,6 +36,7 @@ export interface CompanyEmailCandidateDto {
   sourceProvider: string;
   derivation?: string;
   confidence: number;
+  verification?: ContactVerificationDto;
 }
 
 export interface CompanyContactDetailsDto {

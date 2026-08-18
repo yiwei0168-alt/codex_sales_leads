@@ -51,11 +51,21 @@ export async function getCurrentWorkspace(userId: string): Promise<MarketWorkspa
     query<{
       external_id: string; id: string; contact_id: string | null; email: string; status: EmailCandidateStatus;
       source_url: string | null; source_provider: string; derivation: string | null; confidence: number;
+      decision_id: string | null; verification_category: "Official" | "HighConfidence" | "NeedsReview" | null;
+      verification_lifecycle: "Active" | "Invalid" | null; verification_confidence: number | null;
+      role_relevance_score: number | null; verification_reachability: number | null; development_priority: number | null;
+      verification_reasons: string[] | null; verification_review_flags: string[] | null; verification_decided_at: string | null;
     }>(
       `select c.external_id, em.id, em.contact_id, em.email, em.status, em.source_url, em.source_provider,
-              em.derivation, em.confidence
+              em.derivation, em.confidence, vd.id as decision_id, vd.category as verification_category,
+              vd.lifecycle_status as verification_lifecycle, vd.confidence_score as verification_confidence,
+              vd.role_relevance_score, vd.reachability_score as verification_reachability,
+              vd.development_priority, vd.reasons as verification_reasons,
+              vd.review_flags as verification_review_flags, vd.decided_at::text as verification_decided_at
        from company_email_candidate em join sales_company c on c.id = em.company_id
        join workspace_company wc on wc.company_id = c.id
+       left join contact_verification_decision vd on vd.id = em.verification_decision_id
+         and vd.current and not vd.shadow
        where wc.workspace_id = $1 and em.workspace_id = $1 order by c.external_id,
          case em.status when 'Verified' then 1 when 'Public' then 2 when 'Pattern-guessed' then 3 when 'Unknown' then 4 else 5 end,
          em.confidence desc, em.email`,
@@ -114,6 +124,21 @@ export async function getCurrentWorkspace(userId: string): Promise<MarketWorkspa
       sourceProvider: email.source_provider,
       derivation: email.derivation ?? undefined,
       confidence: email.confidence,
+      verification: email.decision_id && email.verification_category && email.verification_lifecycle
+        && email.verification_confidence !== null && email.role_relevance_score !== null
+        && email.verification_reachability !== null && email.development_priority !== null && email.verification_decided_at
+        ? {
+          decisionId: email.decision_id,
+          category: email.verification_category,
+          lifecycleStatus: email.verification_lifecycle,
+          confidenceScore: email.verification_confidence,
+          roleRelevanceScore: email.role_relevance_score,
+          reachabilityScore: email.verification_reachability,
+          developmentPriority: email.development_priority,
+          reasons: email.verification_reasons ?? [],
+          reviewFlags: email.verification_review_flags ?? [],
+          decidedAt: email.verification_decided_at,
+        } : undefined,
     });
   }
   return {

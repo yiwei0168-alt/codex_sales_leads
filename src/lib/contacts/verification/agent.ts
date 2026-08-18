@@ -51,9 +51,8 @@ interface ContactModelRequest {
   outputExample: ContactModelAssessment;
 }
 
-export interface ContactVerificationShadowResult {
+export interface ContactVerificationResult {
   decision: ContactVerificationDecision;
-  publish: false;
   modelVersion?: string;
   promptVersion: string;
   escalated: boolean;
@@ -69,6 +68,10 @@ export interface ContactVerificationShadowResult {
     usage?: StructuredAiResponse<unknown>["usage"];
     output: ContactModelAssessment;
   }>;
+}
+
+export interface ContactVerificationShadowResult extends ContactVerificationResult {
+  publish: false;
 }
 
 interface ContactVerificationAgentOptions {
@@ -218,13 +221,13 @@ export class ContactVerificationAgent {
     };
   }
 
-  async runShadow(input: ContactVerificationAgentInput, signal?: AbortSignal): Promise<ContactVerificationShadowResult> {
+  async evaluate(input: ContactVerificationAgentInput, signal?: AbortSignal): Promise<ContactVerificationResult> {
     const responses: Array<StructuredAiResponse<ContactModelAssessment>> = [];
     try {
       const routine = await this.provider.execute<ContactModelRequest, ContactModelAssessment>(this.request(input, this.routineModel), signal);
       responses.push(routine);
       let assessment = parseModelAssessment(routine.output, input.evidence.map((item) => item.evidenceId));
-      const modelTraces: ContactVerificationShadowResult["modelTraces"] = [{
+      const modelTraces: ContactVerificationResult["modelTraces"] = [{
         modelVersion: routine.modelVersion, promptVersion: routine.promptVersion, latencyMs: routine.latencyMs,
         warnings: routine.warnings, providerRequestId: routine.providerRequestId, usage: routine.usage, output: assessment,
       }];
@@ -242,7 +245,6 @@ export class ContactVerificationAgent {
       const decision = verifyContact({ ...input, evidence: assessmentsFromModel(input, assessment) });
       return {
         decision,
-        publish: false,
         modelVersion: responses.at(-1)?.modelVersion,
         promptVersion: this.promptVersion,
         escalated,
@@ -255,7 +257,6 @@ export class ContactVerificationAgent {
       const decision = verifyContact({ ...input, evidence: unknownAssessments(input) });
       return {
         decision: { ...decision, category: "NeedsReview", reviewFlags: [...decision.reviewFlags, "model-assessment-failed"] },
-        publish: false,
         promptVersion: this.promptVersion,
         escalated: responses.length > 1,
         providerWarnings: [error instanceof Error ? error.message : "Unknown model-assessment failure"],
@@ -264,5 +265,9 @@ export class ContactVerificationAgent {
         modelTraces: [],
       };
     }
+  }
+
+  async runShadow(input: ContactVerificationAgentInput, signal?: AbortSignal): Promise<ContactVerificationShadowResult> {
+    return { ...await this.evaluate(input, signal), publish: false };
   }
 }

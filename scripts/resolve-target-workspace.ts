@@ -1,16 +1,16 @@
 import { query } from "../src/lib/rag/db";
 
-export async function resolveTargetWorkspace(args = process.argv): Promise<{ id: string; email: string }> {
+export async function resolveTargetWorkspace(args = process.argv): Promise<{ id: string; email: string; ownerId: string }> {
   const requestedUserEmail = args.find((value) => value.startsWith("--user-email="))?.slice("--user-email=".length).trim().toLowerCase()
     || process.env.APP_USER_EMAIL?.trim().toLowerCase();
   const rows = requestedUserEmail
-    ? await query<{ id: string; email: string }>(
-      `select w.id, u.email from market_workspace w join app_user u on u.id = w.owner_id
+    ? await query<{ id: string; email: string; ownerId: string }>(
+      `select w.id, u.email, u.id as "ownerId" from market_workspace w join app_user u on u.id = w.owner_id
        where w.slug = 'global-sales' and w.status = 'active' and u.status = 'active' and lower(u.email) = $1`,
       [requestedUserEmail],
     )
-    : await query<{ id: string; email: string }>(
-      `select w.id, u.email from market_workspace w join app_user u on u.id = w.owner_id
+    : await query<{ id: string; email: string; ownerId: string }>(
+      `select w.id, u.email, u.id as "ownerId" from market_workspace w join app_user u on u.id = w.owner_id
        where w.slug = 'global-sales' and w.status = 'active' and u.status = 'active'
        order by u.created_at`,
     );
