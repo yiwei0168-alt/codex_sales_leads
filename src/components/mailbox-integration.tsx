@@ -17,6 +17,7 @@ interface MailboxStatus {
   messages: number;
   pendingCandidates: number;
   candidates: { policies: number; customers: number; templates: number };
+  screening: { recommended: number; review: number; ignored: number; unscreened: number };
   latestRun: null | {
     id: string;
     status: string;
@@ -44,6 +45,10 @@ interface MailboxStatus {
     learning_status: "pending" | "analyzing" | "completed" | "failed" | "skipped" | "blocked";
     learning_error: string | null;
     updated_at: string;
+    thread_key: string | null;
+    screening_score: number;
+    screening_bucket: "recommended" | "review" | "ignored";
+    screening_reasons: string[];
   }>;
 }
 
@@ -89,6 +94,7 @@ export function MailboxIntegration() {
   const [reviewingId, setReviewingId] = useState<string | null>(null);
   const [learningId, setLearningId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [screeningBusy, setScreeningBusy] = useState(false);
   const [message, setMessage] = useState("");
 
   const refresh = useCallback(async () => {
@@ -162,6 +168,42 @@ export function MailboxIntegration() {
     finally { setLearningId(null); }
   }
 
+  async function rescreen() {
+    setScreeningBusy(true); setMessage("");
+    try {
+      const response = await fetch("/api/mailbox/screening", {
+        method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ action: "rescreen" }),
+      });
+      const body = await response.json() as { error?: string; total?: number; recommended?: number; review?: number; ignored?: number };
+      if (!response.ok) throw new Error(body.error ?? "本地筛选失败");
+      setMessage(`本地筛选完成：推荐 ${body.recommended ?? 0}，待确认 ${body.review ?? 0}，自动忽略 ${body.ignored ?? 0}。`);
+      await refresh();
+    } catch (error) { setMessage(error instanceof Error ? error.message : "本地筛选失败"); }
+    finally { setScreeningBusy(false); }
+  }
+
+  async function batchDecide(action: "authorize" | "skip") {
+    const bucket = action === "authorize" ? "recommended" : "ignored";
+    const limit = action === "authorize" ? 5 : 50;
+    const ids = status?.recentMessages
+      .filter((item) => item.screening_bucket === bucket && (item.learning_status === "pending" || item.learning_status === "failed"))
+      .slice(0, limit).map((item) => item.id) ?? [];
+    if (ids.length === 0) { setMessage("当前列表没有可批量处理的邮件。"); return; }
+    if (action === "authorize" && !window.confirm(`将 ${ids.length} 封推荐邮件分别脱敏后发送给 Kimi？每封都会保留独立外发审计。`)) return;
+    setScreeningBusy(true); setMessage("");
+    try {
+      const response = await fetch("/api/mailbox/screening", {
+        method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ action, messageIds: ids, consent: action === "authorize" }),
+      });
+      const body = await response.json() as { error?: string; processed?: number; failed?: number };
+      if (!response.ok) throw new Error(body.error ?? "批量处理失败");
+      setMessage(`批量处理 ${body.processed ?? 0} 封，失败 ${body.failed ?? 0} 封。`);
+      await refresh();
+    } catch (error) { setMessage(error instanceof Error ? error.message : "批量处理失败"); }
+    finally { setScreeningBusy(false); }
+  }
+
   async function review(candidateId: string, kind: Candidate["kind"], reviewStatus: "approved" | "rejected") {
     setMessage("");
     setReviewingId(candidateId);
@@ -221,6 +263,16 @@ export function MailboxIntegration() {
         <div><strong>{status?.candidates.customers ?? 0}</strong><span>客户信号</span></div>
         <div><strong>{status?.candidates.templates ?? 0}</strong><span>模板候选</span></div>
       </div>
+      {status && <div className="mailbox-screening-summary">
+        <div><strong>{status.screening.recommended}</strong><span>推荐学习</span></div>
+        <div><strong>{status.screening.review}</strong><span>需要确认</span></div>
+        <div><strong>{status.screening.ignored}</strong><span>自动忽略</span></div>
+        <div className="mailbox-screening-actions">
+          <button className="secondary-button" disabled={screeningBusy} onClick={rescreen}>{screeningBusy ? "处理中…" : status.screening.unscreened > 0 ? `筛选 ${status.screening.unscreened} 封` : "重新本地筛选"}</button>
+          <button className="secondary-button" disabled={screeningBusy || status.screening.ignored === 0} onClick={() => batchDecide("skip")}>批量跳过忽略项</button>
+          <button className="primary-button" disabled={screeningBusy || status.screening.recommended === 0 || !status.kimiConfigured} onClick={() => batchDecide("authorize")}>授权推荐项（最多5封）</button>
+        </div>
+      </div>}
       {run && <div className="mailbox-pipeline">
         <div className="mailbox-pipeline-head">
           <div><span className={`run-state ${run.status}`}><i />{phaseLabels[run.phase] ?? run.phase}</span><strong>本地导入与授权学习</strong><small>外发模型 {status?.kimiModel ?? "kimi-k3"} · 批次 {run.id.slice(0, 8)}</small></div>
@@ -238,9 +290,11 @@ export function MailboxIntegration() {
           {status?.recentMessages.slice(0, 16).map((item) => <article key={item.id}>
             <div className="mailbox-message-summary">
               <span className={`mail-learning-state ${item.learning_status}`}>{item.learning_status === "completed" ? "已提取" : item.learning_status === "analyzing" ? "Kimi分析" : item.learning_status === "failed" ? "失败" : item.learning_status === "skipped" ? "已跳过" : item.learning_status === "blocked" ? "已阻止" : "待授权"}</span>
+              <span className={`mail-screening-state ${item.screening_bucket}`}>{item.screening_bucket === "recommended" ? `推荐 ${item.screening_score}` : item.screening_bucket === "review" ? `确认 ${item.screening_score}` : `忽略 ${item.screening_score}`}</span>
               <strong>{item.subject || "无主题邮件"}</strong><small>{item.direction === "inbound" ? "收件" : "已发送"}</small>
             </div>
             <p>{item.excerpt || "无正文预览"}</p>
+            <div className="mailbox-screening-reasons">{item.screening_reasons.map((reason) => <span key={reason}>{reason}</span>)}{item.thread_key && <span>线程 {item.thread_key.slice(0, 8)}</span>}</div>
             {(item.learning_status === "pending" || item.learning_status === "failed") && <div className="mailbox-message-actions">
               <button className="secondary-button" disabled={learningId === item.id} onClick={() => decideMessage(item.id, "skip")}>跳过，不外发</button>
               <button className="primary-button" disabled={learningId === item.id || status?.kimiConfigured === false} onClick={() => decideMessage(item.id, "authorize")}>{learningId === item.id ? "处理中…" : "同意脱敏后交给 Kimi"}</button>
@@ -249,7 +303,7 @@ export function MailboxIntegration() {
           </article>)}
         </div>}
       </div>}
-      <p className="mailbox-description">同步只把邮件保存到本地私有区。只有你逐封点击同意后，系统才会移除收发地址、引用历史并脱敏敏感字段，再发送给 Kimi；提取结果仍需第二次批准才进入私有知识库。</p>
+      <p className="mailbox-description">本地筛选根据你发出的邮件、互动线程、产品与认证命中以及自动群发特征评分，不调用外部模型。只有你逐封或最多五封明确授权后，系统才会脱敏并发送给 Kimi；提取结果仍需第二次批准才进入私有知识库。</p>
       {status && !status.kimiConfigured && <div className="login-config-error"><strong>Kimi 学习服务未配置</strong><p>请先设置 <code>KIMI_API_KEY</code>，再启动邮箱学习。</p></div>}
       <div className="mailbox-connections">
         {connections.map((connection) => <article key={connection.id}>

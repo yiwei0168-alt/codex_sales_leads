@@ -81,6 +81,11 @@ function selectedFolders(folders: ListResponse[]): ListResponse[] {
   return selected.length > 0 ? selected : [{ path: "INBOX" } as ListResponse];
 }
 
+function headerText(value: unknown): string | undefined {
+  if (typeof value === "string") return value.trim() || undefined;
+  return undefined;
+}
+
 async function parseMessage(message: FetchMessageObject, folder: ListResponse, uidValidity: string): Promise<ImportedMailboxMessage | null> {
   if (!message.source || message.source.length === 0) return null;
   const parsed = await simpleParser(message.source, {
@@ -107,6 +112,12 @@ async function parseMessage(message: FetchMessageObject, folder: ListResponse, u
       sourceSize: message.size ?? message.source.length,
       sourceTruncated: (message.size ?? 0) > message.source.length,
       attachmentsExcluded: true,
+      inReplyTo: parsed.inReplyTo || undefined,
+      references: parsed.references || undefined,
+      listId: headerText(parsed.headers.get("list-id")),
+      autoSubmitted: headerText(parsed.headers.get("auto-submitted"))?.toLowerCase() !== "no"
+        && Boolean(headerText(parsed.headers.get("auto-submitted"))),
+      precedence: headerText(parsed.headers.get("precedence"))?.toLowerCase(),
     },
   };
 }

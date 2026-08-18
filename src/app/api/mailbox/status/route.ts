@@ -9,9 +9,16 @@ export async function GET() {
   const session = await requireApiSession();
   if (session instanceof Response) return session;
   const [counts, latestRun] = await Promise.all([
-    tenantQuery<{ message_count: number; pending_count: number; policy_count: number; customer_count: number; template_count: number }>(session.userId,
+    tenantQuery<{
+      message_count: number; pending_count: number; policy_count: number; customer_count: number; template_count: number;
+      screening_recommended: number; screening_review: number; screening_ignored: number; screening_unscreened: number;
+    }>(session.userId,
       `select
          (select count(*)::int from mailbox_message where user_id = $1) as message_count,
+         (select count(*)::int from mailbox_message where user_id = $1 and learning_status in ('pending', 'failed') and screening_bucket = 'recommended') as screening_recommended,
+         (select count(*)::int from mailbox_message where user_id = $1 and learning_status in ('pending', 'failed') and screening_bucket = 'review') as screening_review,
+         (select count(*)::int from mailbox_message where user_id = $1 and learning_status in ('pending', 'failed') and screening_bucket = 'ignored') as screening_ignored,
+         (select count(*)::int from mailbox_message where user_id = $1 and learning_status in ('pending', 'failed') and screened_at is null) as screening_unscreened,
          count(*) filter (where review_status = 'pending')::int as pending_count,
          count(*) filter (where kind = 'company-policy')::int as policy_count,
          count(*) filter (where kind = 'customer-signal')::int as customer_count,
@@ -34,7 +41,7 @@ export async function GET() {
   ]);
   const count = counts[0];
   const run = latestRun[0] ?? null;
-  const recentMessages = run ? await listMailboxMessagesForReview(session.userId, run.id, 16) : [];
+  const recentMessages = run ? await listMailboxMessagesForReview(session.userId, run.id, 40) : [];
   return Response.json({
     configured: Boolean(process.env.MAILBOX_CREDENTIAL_KEY?.trim()),
     kimiConfigured: Boolean(process.env.KIMI_API_KEY?.trim()),
@@ -45,6 +52,12 @@ export async function GET() {
       policies: count?.policy_count ?? 0,
       customers: count?.customer_count ?? 0,
       templates: count?.template_count ?? 0,
+    },
+    screening: {
+      recommended: count?.screening_recommended ?? 0,
+      review: count?.screening_review ?? 0,
+      ignored: count?.screening_ignored ?? 0,
+      unscreened: count?.screening_unscreened ?? 0,
     },
     latestRun: run,
     recentMessages,

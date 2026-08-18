@@ -2,6 +2,7 @@ import { tenantQuery, tenantTransaction } from "@/lib/rag/db";
 import { decryptMailboxContent, decryptMailboxCredential, encryptMailboxContent, encryptMailboxCredential } from "./crypto";
 import { ALIMAIL_IMAP_HOST, ALIMAIL_IMAP_PORT, type ImportedMailboxMessage, type MailboxCursor } from "./alimail-imap";
 import type { KimiMailboxLearningResult } from "./kimi";
+import { screenMailboxMessage, type MailboxScreeningBucket } from "./screening";
 
 export interface MailboxConnectionRecord {
   id: string;
@@ -126,17 +127,30 @@ export async function persistMailboxImport(input: {
   return tenantTransaction(input.userId, async (client) => {
     let imported = 0;
     const storedMessages: StoredMailboxMessage[] = [];
+    const connection = await client.query<{ email: string }>(
+      `select email from mailbox_connection where id = $1 and user_id = $2 limit 1`,
+      [input.connectionId, input.userId],
+    );
+    if (!connection.rows[0]) throw new Error("邮箱连接不存在");
+    const products = await client.query<{ model: string; product_name: string }>(
+      `select model, product_name from product_catalog order by model limit 5000`,
+    );
+    const productTerms = products.rows.flatMap((item) => [item.model, item.product_name]);
     for (const message of input.messages) {
       const contentCiphertext = encryptMailboxContent(input.userId, {
         subject: message.subject, bodyText: message.bodyText,
         sender: message.sender, recipients: message.recipients,
       });
+      const screening = screenMailboxMessage({
+        message, mailboxEmail: connection.rows[0].email, productTerms,
+      });
       const result = await client.query<{ id: string; inserted: boolean; learning_status: StoredMailboxMessage["learningStatus"] }>(
         `insert into mailbox_message
            (user_id, connection_id, folder_path, uid_validity, message_uid, internet_message_id,
             direction, sender, recipients, subject, sent_at, body_text, content_sha256, metadata, sync_run_id,
-            content_ciphertext)
-         values ($1, $2, $3, $4, $5, $6, $7, '[]', '[]', '', $8, '', $9, $10, $11, $12)
+            content_ciphertext, thread_key, screening_score, screening_bucket, screening_reasons, screened_at)
+         values ($1, $2, $3, $4, $5, $6, $7, '[]', '[]', '', $8, '', $9, $10, $11, $12,
+           $13, $14, $15, $16, now())
          on conflict (user_id, connection_id, folder_path, uid_validity, message_uid) do update set
            internet_message_id = excluded.internet_message_id, direction = excluded.direction,
            sender = excluded.sender, recipients = excluded.recipients, subject = excluded.subject,
@@ -146,16 +160,34 @@ export async function persistMailboxImport(input: {
            learning_error = case when mailbox_message.content_sha256 <> excluded.content_sha256
              then null else mailbox_message.learning_error end,
            content_sha256 = excluded.content_sha256, metadata = excluded.metadata,
+           thread_key = excluded.thread_key, screening_score = excluded.screening_score,
+           screening_bucket = excluded.screening_bucket, screening_reasons = excluded.screening_reasons,
+           screened_at = now(),
            sync_run_id = excluded.sync_run_id, updated_at = now()
          returning id, (xmax = 0) as inserted, learning_status`,
         [input.userId, input.connectionId, message.folderPath, message.uidValidity, message.uid,
           message.internetMessageId ?? null, message.direction, message.sentAt ?? null,
-          message.contentSha256, JSON.stringify(message.metadata), input.runId, contentCiphertext],
+          message.contentSha256, JSON.stringify(message.metadata), input.runId, contentCiphertext,
+          screening.threadKey, screening.score, screening.bucket, JSON.stringify(screening.reasons)],
       );
       const stored = result.rows[0];
       if (stored.inserted) imported += 1;
       storedMessages.push({ id: stored.id, inserted: stored.inserted, learningStatus: stored.learning_status, message });
     }
+    await client.query(
+      `update mailbox_message m set
+         screening_score = least(200, m.screening_score + 30),
+         screening_bucket = case when least(200, m.screening_score + 30) >= 60 then 'recommended' else 'review' end,
+         screening_reasons = case when m.screening_reasons @> '["你参与的互动线程"]'::jsonb
+           then m.screening_reasons else m.screening_reasons || '["你参与的互动线程"]'::jsonb end,
+         screened_at = now(), updated_at = now()
+       where m.user_id = $1 and m.direction = 'inbound' and m.thread_key is not null
+         and m.screening_score < 60 and exists (
+           select 1 from mailbox_message sent
+           where sent.user_id = m.user_id and sent.thread_key = m.thread_key and sent.direction = 'outbound'
+         )`,
+      [input.userId],
+    );
     for (const cursor of input.cursors) {
       await client.query(
         `insert into mailbox_sync_cursor (user_id, connection_id, folder_path, uid_validity, last_uid)
@@ -313,22 +345,96 @@ export interface MailboxMessageReviewItem {
   learning_status: StoredMailboxMessage["learningStatus"];
   learning_error: string | null;
   updated_at: string;
+  thread_key: string | null;
+  screening_score: number;
+  screening_bucket: MailboxScreeningBucket;
+  screening_reasons: string[];
 }
 
 export async function listMailboxMessagesForReview(userId: string, runId: string, limit = 16): Promise<MailboxMessageReviewItem[]> {
   const rows = await tenantQuery<{
     id: string; subject: string; body_text: string; content_ciphertext: string | null;
     direction: ImportedMailboxMessage["direction"]; learning_status: StoredMailboxMessage["learningStatus"];
-    learning_error: string | null; updated_at: string;
+    learning_error: string | null; updated_at: string; thread_key: string | null;
+    screening_score: number; screening_bucket: MailboxScreeningBucket; screening_reasons: string[];
   }>(userId,
-    `select id, subject, body_text, content_ciphertext, direction, learning_status, learning_error, updated_at::text
-     from mailbox_message where user_id = $1 and sync_run_id = $2 order by updated_at desc limit $3`,
+    `select id, subject, body_text, content_ciphertext, direction, learning_status, learning_error,
+            updated_at::text, thread_key, screening_score, screening_bucket, screening_reasons
+     from mailbox_message where user_id = $1 and sync_run_id = $2
+     order by screening_score desc, updated_at desc limit $3`,
     [userId, runId, Math.min(Math.max(limit, 1), 50)],
   );
   return rows.map((row) => {
     const content = row.content_ciphertext ? decryptMailboxContent(userId, row.content_ciphertext) : { subject: row.subject, bodyText: row.body_text };
     return { id: row.id, subject: content.subject, excerpt: content.bodyText.slice(0, 600), direction: row.direction,
-      learning_status: row.learning_status, learning_error: row.learning_error, updated_at: row.updated_at };
+      learning_status: row.learning_status, learning_error: row.learning_error, updated_at: row.updated_at,
+      thread_key: row.thread_key, screening_score: row.screening_score,
+      screening_bucket: row.screening_bucket, screening_reasons: row.screening_reasons };
+  });
+}
+
+export async function screenStoredMailboxMessages(userId: string): Promise<{
+  total: number; recommended: number; review: number; ignored: number;
+}> {
+  return tenantTransaction(userId, async (client) => {
+    const products = await client.query<{ model: string; product_name: string }>(
+      `select model, product_name from product_catalog order by model limit 5000`,
+    );
+    const productTerms = products.rows.flatMap((item) => [item.model, item.product_name]);
+    const rows = await client.query<{
+      id: string; email: string; folder_path: string; uid_validity: string; message_uid: string;
+      internet_message_id: string | null; direction: ImportedMailboxMessage["direction"];
+      sent_at: string | null; content_ciphertext: string; content_sha256: string; metadata: Record<string, unknown>;
+    }>(
+      `select m.id, c.email, m.folder_path, m.uid_validity, m.message_uid::text,
+              m.internet_message_id, m.direction, m.sent_at::text, m.content_ciphertext,
+              m.content_sha256, m.metadata
+       from mailbox_message m join mailbox_connection c on c.id = m.connection_id and c.user_id = m.user_id
+       where m.user_id = $1 and m.learning_status in ('pending', 'failed')
+       order by m.sent_at desc nulls last limit 1000`,
+      [userId],
+    );
+    const total = rows.rows.length;
+    for (const row of rows.rows) {
+      const content = decryptMailboxContent(userId, row.content_ciphertext);
+      const message: ImportedMailboxMessage = {
+        folderPath: row.folder_path, uidValidity: row.uid_validity, uid: Number(row.message_uid),
+        internetMessageId: row.internet_message_id ?? undefined, direction: row.direction,
+        sender: content.sender as ImportedMailboxMessage["sender"],
+        recipients: content.recipients as ImportedMailboxMessage["recipients"],
+        subject: content.subject, bodyText: content.bodyText, sentAt: row.sent_at ?? undefined,
+        contentSha256: row.content_sha256, metadata: row.metadata,
+      };
+      const screening = screenMailboxMessage({ message, mailboxEmail: row.email, productTerms });
+      await client.query(
+        `update mailbox_message set thread_key = $3, screening_score = $4,
+           screening_bucket = $5, screening_reasons = $6, screened_at = now(), updated_at = now()
+         where id = $1 and user_id = $2`,
+        [row.id, userId, screening.threadKey, screening.score, screening.bucket, JSON.stringify(screening.reasons)],
+      );
+    }
+    await client.query(
+      `update mailbox_message m set
+         screening_score = least(200, m.screening_score + 30),
+         screening_bucket = case when least(200, m.screening_score + 30) >= 60 then 'recommended' else 'review' end,
+         screening_reasons = case when m.screening_reasons @> '["你参与的互动线程"]'::jsonb
+           then m.screening_reasons else m.screening_reasons || '["你参与的互动线程"]'::jsonb end,
+         screened_at = now(), updated_at = now()
+       where m.user_id = $1 and m.direction = 'inbound' and m.thread_key is not null
+         and m.screening_score < 60 and exists (
+           select 1 from mailbox_message sent
+           where sent.user_id = m.user_id and sent.thread_key = m.thread_key and sent.direction = 'outbound'
+         )`,
+      [userId],
+    );
+    const summary = await client.query<{ bucket: MailboxScreeningBucket; count: number }>(
+      `select screening_bucket as bucket, count(*)::int as count from mailbox_message
+       where user_id = $1 and learning_status in ('pending', 'failed') group by screening_bucket`,
+      [userId],
+    );
+    const counts = { total, recommended: 0, review: 0, ignored: 0 };
+    for (const item of summary.rows) counts[item.bucket] = item.count;
+    return counts;
   });
 }
 
