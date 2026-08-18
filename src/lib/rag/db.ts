@@ -1,5 +1,10 @@
 import { Pool, type PoolClient, type QueryResultRow } from "pg";
 import { getRagConfig } from "./config";
+import {
+  databaseConnectionString,
+  databaseSslConfiguration,
+  isRemoteDatabase,
+} from "./database-ssl";
 
 declare global {
   var __networkCopilotPool: Pool | undefined;
@@ -7,24 +12,6 @@ declare global {
 }
 
 export type AppDatabaseRole = "admin" | "member";
-
-function isRemoteDatabase(databaseUrl: string): boolean {
-  const hostname = new URL(databaseUrl).hostname.toLowerCase();
-  return !["localhost", "127.0.0.1", "::1"].includes(hostname);
-}
-
-function sslConfiguration(databaseUrl: string): false | { rejectUnauthorized: true; ca?: string } {
-  const url = new URL(databaseUrl);
-  const requested = ["require", "verify-ca", "verify-full"].includes(url.searchParams.get("sslmode") ?? "");
-  if (!requested) {
-    if (process.env.NODE_ENV === "production" && isRemoteDatabase(databaseUrl)) {
-      throw new Error("生产环境的远程 DATABASE_URL 必须配置 sslmode=require 或更严格模式");
-    }
-    return false;
-  }
-  const ca = process.env.DATABASE_SSL_CA?.replace(/\\n/g, "\n").trim();
-  return ca ? { rejectUnauthorized: true, ca } : { rejectUnauthorized: true };
-}
 
 function applicationRole(): string {
   const role = process.env.DATABASE_APPLICATION_ROLE?.trim() || "network_copilot_app";
@@ -41,11 +28,11 @@ export function getPool(): Pool {
   if (!databaseUrl) throw new Error("DATABASE_URL is not configured");
   if (!globalThis.__networkCopilotPool) {
     globalThis.__networkCopilotPool = new Pool({
-      connectionString: databaseUrl,
+      connectionString: databaseConnectionString(databaseUrl),
       max: 10,
       idleTimeoutMillis: 30_000,
       connectionTimeoutMillis: 5_000,
-      ssl: sslConfiguration(databaseUrl),
+      ssl: databaseSslConfiguration(databaseUrl),
     });
   }
   return globalThis.__networkCopilotPool;

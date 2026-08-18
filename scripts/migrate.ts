@@ -3,6 +3,10 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import nextEnv from "@next/env";
 import { Pool } from "pg";
+import {
+  databaseConnectionString,
+  databaseSslConfiguration,
+} from "../src/lib/rag/database-ssl";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const { loadEnvConfig } = nextEnv;
@@ -11,7 +15,10 @@ loadEnvConfig(root);
 const databaseUrl = process.env.DATABASE_URL;
 if (!databaseUrl) throw new Error("DATABASE_URL is required. Copy .env.example to .env.local first.");
 
-const pool = new Pool({ connectionString: databaseUrl });
+const pool = new Pool({
+  connectionString: databaseConnectionString(databaseUrl),
+  ssl: databaseSslConfiguration(databaseUrl),
+});
 try {
   const migrationsDirectory = join(root, "db", "migrations");
   const migrations = (await readdir(migrationsDirectory))

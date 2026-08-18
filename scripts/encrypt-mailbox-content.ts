@@ -1,6 +1,10 @@
 import nextEnv from "@next/env";
 import { Pool } from "pg";
 import { encryptMailboxContent } from "../src/lib/mailbox/crypto";
+import {
+  databaseConnectionString,
+  databaseSslConfiguration,
+} from "../src/lib/rag/database-ssl";
 
 const { loadEnvConfig } = nextEnv;
 loadEnvConfig(process.cwd());
@@ -8,7 +12,10 @@ loadEnvConfig(process.cwd());
 const databaseUrl = process.env.DATABASE_URL?.trim();
 if (!databaseUrl) throw new Error("DATABASE_URL is required");
 
-const pool = new Pool({ connectionString: databaseUrl });
+const pool = new Pool({
+  connectionString: databaseConnectionString(databaseUrl),
+  ssl: databaseSslConfiguration(databaseUrl),
+});
 let encrypted = 0;
 try {
   while (true) {
