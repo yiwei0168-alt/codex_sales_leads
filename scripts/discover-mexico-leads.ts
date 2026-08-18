@@ -137,7 +137,8 @@ function candidateRecord(candidate: Candidate, runId: string): CompanyRecord {
 }
 
 const [run] = await query<{ id: string }>(
-  `insert into lead_search_run (workspace_id, provider, target_count, metadata) values ($1, 'tavily', $2, $3) returning id`,
+  `insert into lead_search_run (workspace_id, provider, target_count, country_code, market_name, objective, metadata)
+   values ($1, 'tavily', $2, 'MX', 'Mexico', 'new-market', $3) returning id`,
   [workspaceId, target, JSON.stringify({ country: "mexico", source: "live-api", planVersion: "mx-v1" })],
 );
 
@@ -248,11 +249,11 @@ try {
       );
       await client.query(
         `insert into workspace_company (workspace_id, company_id, account_tier, supply_model, brand_involvement,
-           opportunity_stage, priority, owner_name, next_action, manually_edited)
-         values ($1, $2, $3, $4, $5, $6, $7, $8, $9, false)
-         on conflict (workspace_id, company_id) do update set updated_at = now()`,
+           opportunity_stage, priority, owner_name, next_action, manually_edited, market_country_code, search_run_id)
+         values ($1, $2, $3, $4, $5, $6, $7, $8, $9, false, 'MX', $10)
+         on conflict (workspace_id, company_id) do update set market_country_code = 'MX', search_run_id = excluded.search_run_id, updated_at = now()`,
         [workspaceId, company.rows[0].id, record.accountTier, record.supplyModel, record.brandInvolvement,
-          record.opportunityStage, record.priority, record.owner, record.nextAction],
+          record.opportunityStage, record.priority, record.owner, record.nextAction, run.id],
       );
       await client.query("update lead_search_result set accepted = true where run_id = $1 and url = $2", [run.id, candidate.result.url]);
     }

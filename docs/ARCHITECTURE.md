@@ -1,17 +1,15 @@
 # Architecture
 
-## Demo strategy
+## Product strategy
 
-The implementation is moving from a snapshot-driven demo to a single-user production pilot. The active Mexico workspace is persisted in PostgreSQL and populated from Tavily live-search runs; the historical snapshot remains test/reference data and is not seeded into the active workspace.
+The product uses one owner-scoped global workspace with country-partitioned search results. A persistent conversational home routes knowledge questions to private/shared RAG and lead-discovery requests to an explicit confirmation boundary. Historical Mexico assets remain test/reference data and do not constrain runtime markets.
 
 ```text
-Tavily live search → quality filters and deduplication → PostgreSQL workspace → review UI
-        ↓                              ↘ evidence IDs ↗
-public web search + extraction → contacts/email candidates
-                                   ↓
-                              verification agent
-                              (DeepSeek evidence assessment
-                               + deterministic decisions)
+Natural-language request
+  ├─ product / company / mailbox question → tenant-aware RAG → cited answer
+  └─ lead search → deterministic country/role plan → explicit user confirmation
+                                                   ↓
+       country-partitioned review UI ← PostgreSQL ← Tavily → filters → dedupe → scoring
 ```
 
 ## Layers
@@ -22,7 +20,7 @@ public web search + extraction → contacts/email candidates
 | Evidence | PostgreSQL search runs, URLs and captured excerpts | Source refresh and change detection |
 | Domain | Typed Company, ChannelNode context, scoring inputs, relationships and plans | Repository-backed services and audit log |
 | AI pipeline | Deterministic role-aware development-plan rule | `AiProvider` with structured output, timeout and retry |
-| Application | Next.js App Router client workspace | Authenticated server actions/API routes |
+| Application | Next.js App Router, persistent conversations and authenticated API routes | Durable background search jobs and streaming status |
 
 ## RAG knowledge architecture
 
@@ -63,7 +61,7 @@ Provider boundaries are defined in `src/providers/contracts.ts`; neither pages n
 
 ## State and synchronization
 
-The server loads the active workspace and live-search companies from PostgreSQL. The client keeps a normalized working array, and company edits are persisted through authenticated API routes with audit events.
+The server loads the owner-scoped `global-sales` workspace and its live-search companies from PostgreSQL. `assistant_conversation`, `assistant_message`, and `assistant_action` persist user interaction and proposed/confirmed search actions with tenant RLS. Search results retain both run and country identifiers; the client groups companies by country while preserving normalized company editing and audit events.
 
 ## Failure behavior
 
@@ -72,7 +70,8 @@ Search and enrichment jobs fail explicitly when a provider is unavailable. Tavil
 ## Security and privacy
 
 - No secrets are shipped to the browser or repository.
-- Users have independent database sessions and owner-scoped workspaces, knowledge documents, RAG retrieval, contacts and mailbox records.
+- Users have independent database sessions and owner-scoped workspaces, conversations, search actions, knowledge documents, RAG retrieval, contacts and mailbox records.
+- Tavily is never called while interpreting a request; only the authenticated confirmation endpoint can atomically claim and execute a proposed search action.
 - Alibaba Mail uses per-user read-only IMAP credentials encrypted with AES-256-GCM; mailbox tables enforce composite user ownership across connections, cursors, messages and derived candidates.
 - Mail-derived policies, customer signals and templates require human review before promotion; no mailbox content is shared across users.
 - Mailbox import and Kimi learning progress is persisted per user and polled by the UI once per second, allowing review while later messages are still being analyzed.

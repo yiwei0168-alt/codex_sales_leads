@@ -52,7 +52,7 @@ export interface CompanyRecord {
   displayName: string;
   domain: string;
   city: string;
-  country: "Mexico";
+  country: string;
   layer: ChannelLayer;
   roles: ChannelRole[];
   accountTier: AccountTier;
@@ -156,7 +156,7 @@ export function buildDevelopmentPlan(company: CompanyRecord): DevelopmentPlan {
       `确认 ${company.supplyModel} 的商务、库存和售后责任`,
       "人工审核内容后由销售团队执行外联",
     ],
-    draft: `Subject: Exploring an SMB networking growth plan with ${company.displayName}\n\nHi {{first_name}},\n\nWe noticed ${company.evidence[0]?.summary ?? `${company.displayName} serves the Mexican technology market`} [${company.evidence[0]?.id ?? "evidence-pending"}]. We would like to explore a focused SMB networking plan built around ${products.slice(0, 2).join(" and ")}.\n\nOur initial hypothesis is to use a ${company.supplyModel.toLowerCase()} path, subject to your validation. Would a short working session next week be useful?\n\nBest,\n{{sales_owner}}`,
+    draft: `Subject: Exploring an SMB networking growth plan with ${company.displayName}\n\nHi {{first_name}},\n\nWe noticed ${company.evidence[0]?.summary ?? `${company.displayName} serves the ${company.country} technology market`} [${company.evidence[0]?.id ?? "evidence-pending"}]. We would like to explore a focused SMB networking plan built around ${products.slice(0, 2).join(" and ")}.\n\nOur initial hypothesis is to use a ${company.supplyModel.toLowerCase()} path, subject to your validation. Would a short working session next week be useful?\n\nBest,\n{{sales_owner}}`,
     evidenceIds: company.evidence.slice(0, 2).map((item) => item.id),
   };
 }

@@ -36,7 +36,7 @@ const mailboxKindLabels: Record<MailboxKnowledgeItem["kind"], string> = {
 export function KnowledgeBase() {
   const [stats, setStats] = useState<KnowledgeStats>(emptyStats);
   const [loading, setLoading] = useState(true);
-  const [question, setQuestion] = useState("墨西哥市场应该优先开发哪些类型的渠道节点？为什么？");
+  const [question, setQuestion] = useState("基于现有产品组合，进入一个新市场时应该优先开发哪些渠道节点？为什么？");
   const [selected, setSelected] = useState<KnowledgeBaseType[]>(["industry", "company", "product"]);
   const [answer, setAnswer] = useState<RagAnswer | null>(null);
   const [querying, setQuerying] = useState(false);
@@ -198,7 +198,7 @@ export function KnowledgeBase() {
           <label>文档标题<input value={uploadTitle} onChange={(event) => setUploadTitle(event.target.value)} placeholder={uploadType === "company" ? "例如：Cudy Technology 公司简介 2026" : uploadType === "product" ? "例如：WR3000 技术规格 v2" : "例如：Networking 渠道结构研究"}/></label>
           <label>来源 URL（内部资料可留空）<input value={uploadSource} onChange={(event) => setUploadSource(event.target.value)} placeholder="https://..."/></label>
           {uploadType === "product" && <label>产品型号 / SKU<input value={entityId} onChange={(event) => setEntityId(event.target.value)} placeholder="例如：WR3000"/></label>}
-          {uploadType === "industry" && <label>市场 / 范围（可选）<input value={entityId} onChange={(event) => setEntityId(event.target.value)} placeholder="例如：Global、Mexico、EMEA"/></label>}
+          {uploadType === "industry" && <label>市场 / 范围（可选）<input value={entityId} onChange={(event) => setEntityId(event.target.value)} placeholder="例如：Global、Germany、EMEA"/></label>}
           {uploadType === "company" && <label>品牌方公司<input value="Cudy Technology" readOnly/></label>}
           <label>知识文件<input id="kb-file" type="file" accept=".md,.txt,.csv,.json,text/plain,text/markdown,text/csv,application/json" onChange={(event) => setUploadFile(event.target.files?.[0] ?? null)}/><small>当前支持 UTF-8 Markdown、TXT、CSV、JSON；单文档最多 2 MB。</small></label>
           <label>管理 Token<input type="password" value={adminToken} onChange={(event) => setAdminToken(event.target.value)} placeholder="KNOWLEDGE_ADMIN_TOKEN（本地开发可留空）"/></label>

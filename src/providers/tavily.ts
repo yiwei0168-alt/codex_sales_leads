@@ -81,7 +81,7 @@ export class TavilySearchProvider {
         headers: { "content-type": "application/json", authorization: `Bearer ${apiKey}` },
         body: JSON.stringify({
           query: input.query,
-          country: input.country ?? "mexico",
+          country: input.country,
           search_depth: depth,
           max_results: Math.max(1, Math.min(input.maxResults ?? 10, 20)),
           include_answer: false,

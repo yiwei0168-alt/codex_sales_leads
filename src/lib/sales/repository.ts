@@ -8,7 +8,7 @@ import type {
   MarketWorkspaceDto,
 } from "./types";
 
-const WORKSPACE_SLUG = "mexico-pilot";
+const WORKSPACE_SLUG = "global-sales";
 
 export async function getCurrentWorkspace(userId: string): Promise<MarketWorkspaceDto | null> {
   const workspaces = await query<{

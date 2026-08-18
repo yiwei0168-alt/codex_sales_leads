@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { AssistantHome } from "@/components/assistant-home";
 import { KnowledgeBase } from "@/components/knowledge-base";
 import { ContactEnrichmentProgress } from "@/components/contact-enrichment-progress";
 import { MailboxIntegration } from "@/components/mailbox-integration";
@@ -25,7 +26,7 @@ import type {
   MarketWorkspaceDto,
 } from "@/lib/sales/types";
 
-type View = "overview" | "results" | "map" | "opportunities" | "assistant" | "tasks" | "knowledge" | "mailbox";
+type View = "home" | "overview" | "results" | "map" | "opportunities" | "assistant" | "tasks" | "knowledge" | "mailbox";
 type Mode = "new-market" | "growth";
 type SearchState = "idle" | "retrieving" | "complete";
 
@@ -38,6 +39,7 @@ const stageOptions: OpportunityStage[] = ["Discovered", "Qualified", "Priority",
 const liveRelationships: ChannelRelationship[] = [];
 
 const icons: Record<string, React.ReactNode> = {
+  home: <><path d="m4 11 8-7 8 7v9H4z"/><path d="M9 20v-6h6v6"/></>,
   overview: <><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z" /></>,
   results: <><path d="m21 21-4.3-4.3M10.8 18a7.2 7.2 0 1 1 0-14.4 7.2 7.2 0 0 1 0 14.4Z" /></>,
   map: <><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="12" cy="18" r="2"/><path d="m7 7 4 9m6-9-4 9M7 6h10"/></>,
@@ -101,7 +103,7 @@ function providerLabel(provider: string): string {
 
 export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner" }: { initialWorkspace?: MarketWorkspaceDto; userName?: string }) {
   const router = useRouter();
-  const [view, setView] = useState<View>("overview");
+  const [view, setView] = useState<View>("home");
   const [mode, setMode] = useState<Mode>(initialWorkspace?.mode ?? "new-market");
   const [companies, setCompanies] = useState<CompanyRecord[]>(initialWorkspace?.companies ?? []);
   const [selectedId, setSelectedId] = useState("syscom");
@@ -123,12 +125,11 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner" }: 
   const filteredCompanies = useMemo(() => {
     const term = query.trim().toLowerCase();
     return companies
-      .filter((company) => mode === "new-market" || company.layer === "Downstream Channel" || company.id === "exel")
       .filter((company) => roleFilter === "All" || company.roles.includes(roleFilter))
       .filter((company) => tierFilter === "All" || company.accountTier === tierFilter)
       .filter((company) => !term || [company.displayName, company.city, company.domain, company.roles.join(" ")].join(" ").toLowerCase().includes(term))
       .sort((a, b) => priorityIndex(b) - priorityIndex(a));
-  }, [companies, mode, query, roleFilter, tierFilter]);
+  }, [companies, query, roleFilter, tierFilter]);
 
   async function updateCompany(id: string, patch: CompanyEditablePatch) {
     setCompanies((items) => items.map((item) => item.id === id ? { ...item, ...patch, manuallyEdited: true } : item));
@@ -172,8 +173,9 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner" }: 
   }
 
   const navItems: Array<{ id: View; label: string; meta?: string }> = [
-    { id: "overview", label: "市场工作台" },
-    { id: "results", label: "节点发现", meta: String(filteredCompanies.length) },
+    { id: "home", label: "AI 销售助理" },
+    { id: "overview", label: "全球市场概览" },
+    { id: "results", label: "销售线索", meta: String(filteredCompanies.length) },
     { id: "map", label: "渠道关系图" },
     { id: "opportunities", label: "机会工作区", meta: String(shortlist.length) },
     { id: "assistant", label: "开发助手" },
@@ -186,7 +188,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner" }: 
     <div className="app-shell">
       <aside className="sidebar">
         <div className="brand-mark"><span className="brand-glyph">N</span><div><strong>Network Copilot</strong><small>Channel Intelligence</small></div></div>
-        <div className="workspace-switcher"><span className="market-flag">MX</span><div><strong>Mexico · All segments</strong><small>Tavily live workspace</small></div><Icon name="chevron" size={14} /></div>
+        <div className="workspace-switcher"><span className="market-flag">◎</span><div><strong>Global · All markets</strong><small>AI sales workspace</small></div><Icon name="chevron" size={14} /></div>
         <nav aria-label="主导航">
           <p className="nav-label">Workspace</p>
           {navItems.map((item) => (
@@ -197,7 +199,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner" }: 
         </nav>
         <div className="sidebar-spacer" />
         <div className="snapshot-card">
-          <div className="snapshot-title"><span className="live-dot" /> Tavily live search</div>
+          <div className="snapshot-title"><span className="live-dot" /> Global intelligence</div>
           <strong>{companies.length} leads · {sourceCount} sources</strong>
           <small>Last run {searchDate} · {initialWorkspace?.latestSearch?.creditsUsed ?? 0} credits</small>
         </div>
@@ -206,15 +208,15 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner" }: 
 
       <main className="main-shell">
         <header className="topbar">
-          <div className="breadcrumbs"><span>Markets</span><Icon name="chevron" size={13}/><strong>Mexico</strong><Icon name="chevron" size={13}/><span>{navItems.find((item) => item.id === view)?.label}</span></div>
-          <div className="top-actions"><span className={`snapshot-badge ${saveState === "error" ? "save-error" : ""}`}><span className="live-dot"/>{saveState === "saving" ? "正在保存…" : saveState === "saved" ? "已保存到 RDS" : saveState === "error" ? "保存失败，请重试" : `Tavily live · ${searchDate}`}</span><button className="icon-button" aria-label="通知">2</button><button className="avatar small">{userName.slice(0, 2).toUpperCase()}</button></div>
+          <div className="breadcrumbs"><span>Workspace</span><Icon name="chevron" size={13}/><strong>Global</strong><Icon name="chevron" size={13}/><span>{navItems.find((item) => item.id === view)?.label}</span></div>
+          <div className="top-actions"><span className={`snapshot-badge ${saveState === "error" ? "save-error" : ""}`}><span className="live-dot"/>{saveState === "saving" ? "正在保存…" : saveState === "saved" ? "已保存到 RDS" : saveState === "error" ? "保存失败，请重试" : `Global workspace · ${searchDate}`}</span><button className="icon-button" aria-label="通知">2</button><button className="avatar small">{userName.slice(0, 2).toUpperCase()}</button></div>
         </header>
 
         <div className="workspace-content">
-          <section className="workspace-heading">
+          {view !== "home" && <section className="workspace-heading">
             <div>
-              <div className="eyebrow">MEXICO MARKET / ALL CUDY SALES SEGMENTS</div>
-              <h1>{view === "overview" ? "市场渠道工作台" : navItems.find((item) => item.id === view)?.label}</h1>
+              <div className="eyebrow">GLOBAL MARKET / ALL CUDY SALES SEGMENTS</div>
+              <h1>{view === "overview" ? "全球市场渠道概览" : navItems.find((item) => item.id === view)?.label}</h1>
               <p>{view === "knowledge" ? "统一管理行业、公司和产品知识，以可追溯 RAG 支撑 AI 决策。" : view === "mailbox" ? "只读同步当前用户的邮箱，提取政策、客户信号和开发邮件模板候选。" : view === "tasks" ? "实时查看联系人搜索进度、当前公司、worker 状态和任务产出。" : mode === "new-market" ? "同步建立一级供货能力与下级渠道需求。" : "激活现有供货体系，主动发现未覆盖的下级增长节点。"}</p>
             </div>
             <div className="heading-actions">
@@ -224,10 +226,11 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner" }: 
               </div>
               <button className="primary-button" onClick={() => { setView("results"); showLiveResults(); }}><Icon name="spark" />查看实时线索</button>
             </div>
-          </section>
+          </section>}
 
           {searchState === "complete" && <div className="inline-notice success"><Icon name="check"/><span>当前工作区包含 {companies.length} 个 Tavily 实时候选、{sourceCount} 条来源；角色和适配度在证据复核前均为 Inferred。</span><button onClick={() => setSearchState("idle")} aria-label="关闭"><Icon name="close" size={15}/></button></div>}
 
+          {view === "home" && <AssistantHome userName={userName} onOpenResults={() => setView("results")} />}
           {view === "overview" && <Overview mode={mode} companies={companies} onMode={(next) => { chooseMode(next); setView("results"); }} onSelect={selectCompany} />}
           {view === "results" && <Results companies={filteredCompanies} query={query} setQuery={setQuery} roleFilter={roleFilter} setRoleFilter={setRoleFilter} tierFilter={tierFilter} setTierFilter={setTierFilter} onSelect={selectCompany} onToggle={(company) => updateCompany(company.id, { opportunityStage: company.opportunityStage === "Discovered" ? "Qualified" : "Discovered" })} />}
           {view === "map" && <ChannelMap companies={companies} onSelect={selectCompany} />}
@@ -251,6 +254,10 @@ function Overview({ mode, companies, onMode, onSelect }: { mode: Mode; companies
   const distributors = companies.filter((item) => item.layer === "Tier-1 Distributor").length;
   const downstream = companies.length - distributors;
   const top = [...companies].sort((a, b) => priorityIndex(b) - priorityIndex(a)).slice(0, 5);
+  const laneNames = (predicate: (company: CompanyRecord) => boolean) => {
+    const names = companies.filter(predicate).slice(0, 3).map((company) => company.displayName);
+    return names.length ? names.join(" · ") : "等待从对话中选择国家并搜索";
+  };
   return (
     <div className="overview-grid">
       <section className="metrics-row span-12">
@@ -264,13 +271,13 @@ function Overview({ mode, companies, onMode, onSelect }: { mode: Mode; companies
         <div className="panel-header"><div><span className="section-kicker">MARKET PLAYBOOK</span><h2>{mode === "new-market" ? "Hybrid 冷启动策略" : "Distributor-led 增长修复"}</h2></div><button className="text-button">编辑策略</button></div>
         <div className="playbook-banner">
           <div className="strategy-icon"><Icon name="spark" size={22}/></div>
-          <div><strong>{mode === "new-market" ? "同步构建供货与需求，而非串行等待" : "由品牌主动创造下级需求，再连接现有供货体系"}</strong><p>{mode === "new-market" ? "优先验证 3–4 个全国/区域分销节点，同时推进高匹配 E-tailer、SI/MSP 与大型 ISP。" : "固定 Exel del Norte 为现有供货锚点，重点开发未覆盖的零售、集成和 ISP 节点。"}</p></div>
+          <div><strong>{mode === "new-market" ? "同步构建供货与需求，而非串行等待" : "由品牌主动创造下级需求，再连接现有供货体系"}</strong><p>{mode === "new-market" ? "在目标国家优先验证全国/区域分销节点，同时推进高匹配 E-tailer、SI/MSP 与大型 ISP。" : "以用户确认的现有分销体系为供货锚点，重点开发未覆盖的零售、集成和 ISP 节点。"}</p></div>
         </div>
         <div className="lane-grid">
-          <div className="lane"><span className="lane-number">01</span><div><strong>供货基础</strong><p>{mode === "new-market" ? "SYSCOM · Grupo CVA · Exel" : "Exel del Norte（现有）"}</p></div><StatusTag tone="violet">Tier-1</StatusTag></div>
-          <div className="lane"><span className="lane-number">02</span><div><strong>规模需求</strong><p>Cyberpuerta · Intercompras · Office Depot</p></div><StatusTag tone="blue">Retail</StatusTag></div>
-          <div className="lane"><span className="lane-number">03</span><div><strong>项目与服务</strong><p>Ikusi · Alestra · KIO Networks</p></div><StatusTag tone="green">SI / MSP</StatusTag></div>
-          <div className="lane"><span className="lane-number">04</span><div><strong>大型机会</strong><p>TELMEX · Totalplay · izzi</p></div><StatusTag tone="amber">ISP · KA</StatusTag></div>
+          <div className="lane"><span className="lane-number">01</span><div><strong>供货基础</strong><p>{laneNames((company) => company.layer === "Tier-1 Distributor")}</p></div><StatusTag tone="violet">Tier-1</StatusTag></div>
+          <div className="lane"><span className="lane-number">02</span><div><strong>规模需求</strong><p>{laneNames((company) => company.roles.some((role) => ["Retailer", "E-tailer", "Dealer", "Reseller"].includes(role)))}</p></div><StatusTag tone="blue">Retail</StatusTag></div>
+          <div className="lane"><span className="lane-number">03</span><div><strong>项目与服务</strong><p>{laneNames((company) => company.roles.some((role) => ["SI", "MSP", "Installer"].includes(role)))}</p></div><StatusTag tone="green">SI / MSP</StatusTag></div>
+          <div className="lane"><span className="lane-number">04</span><div><strong>大型机会</strong><p>{laneNames((company) => company.roles.includes("ISP") || company.accountTier === "KA")}</p></div><StatusTag tone="amber">ISP · KA</StatusTag></div>
         </div>
         <div className="risk-strip"><strong>策略边界</strong><span>大型 ISP 采用 Deep 参与；无公开证据的供货关系只显示为 Hypothesis。</span></div>
       </section>
@@ -314,6 +321,11 @@ function CoverageRow({ label, value, note, tone }: { label: string; value: numbe
 function Results({ companies, query, setQuery, roleFilter, setRoleFilter, tierFilter, setTierFilter, onSelect, onToggle }: {
   companies: CompanyRecord[]; query: string; setQuery: (value: string) => void; roleFilter: "All" | ChannelRole; setRoleFilter: (value: "All" | ChannelRole) => void; tierFilter: "All" | AccountTier; setTierFilter: (value: "All" | AccountTier) => void; onSelect: (id: string) => void; onToggle: (company: CompanyRecord) => void;
 }) {
+  const countryGroups = [...companies.reduce((groups, company) => {
+    const country = company.country || "未指定国家";
+    groups.set(country, [...(groups.get(country) ?? []), company]);
+    return groups;
+  }, new Map<string, CompanyRecord[]>()).entries()].sort(([a], [b]) => a.localeCompare(b, "zh-CN"));
   return (
     <section className="panel results-panel">
       <div className="results-toolbar">
@@ -325,7 +337,9 @@ function Results({ companies, query, setQuery, roleFilter, setRoleFilter, tierFi
       <div className="table-scroll">
         <table className="data-table">
           <thead><tr><th aria-label="选择"/><th>公司 / 地域</th><th>渠道身份</th><th>等级</th><th>适配分</th><th>证据置信</th><th>供货建议</th><th>状态</th><th aria-label="操作"/></tr></thead>
-          <tbody>{companies.map((company) => (
+          <tbody>{countryGroups.map(([country, countryCompanies]) => <Fragment key={country}>
+            <tr className="country-group-row"><td colSpan={9}><strong>{country}</strong><span>{countryCompanies.length} 家公司</span></td></tr>
+            {countryCompanies.map((company) => (
             <tr key={company.id} className={company.manuallyEdited ? "manual-row" : ""}>
               <td><input type="checkbox" checked={company.opportunityStage !== "Discovered" && company.opportunityStage !== "Excluded"} onChange={() => onToggle(company)} aria-label={`切换 ${company.displayName} 的 shortlist 状态`}/></td>
               <td><button className="company-cell" onClick={() => onSelect(company.id)}><span className="company-avatar">{company.displayName.slice(0, 2).toUpperCase()}</span><span><strong>{company.displayName}</strong><small>{company.city} · {company.domain}</small></span></button></td>
@@ -337,10 +351,10 @@ function Results({ companies, query, setQuery, roleFilter, setRoleFilter, tierFi
               <td><span className={`stage-dot ${company.opportunityStage.toLowerCase().replace(" ", "-")}`}/>{company.opportunityStage}</td>
               <td><button className="row-action" onClick={() => onSelect(company.id)} aria-label={`打开 ${company.displayName} 详情`}><Icon name="chevron" size={16}/></button></td>
             </tr>
-          ))}</tbody>
+          ))}</Fragment>)}</tbody>
         </table>
       </div>
-      <div className="table-footer"><span>Tavily live search · Mexico</span><span>事实与推断分开展示；请在外联前人工复核。</span></div>
+      <div className="table-footer"><span>Tavily live search · 按国家分区</span><span>事实与推断分开展示；请在外联前人工复核。</span></div>
     </section>
   );
 }
@@ -353,12 +367,12 @@ function ChannelMap({ companies, onSelect }: { companies: CompanyRecord[]; onSel
   distributors.forEach((item, index) => positions.set(item.id, { x: 165, y: 92 + index * 88 }));
   downstream.forEach((item, index) => positions.set(item.id, { x: 725, y: 54 + index * 54 }));
   const lines = liveRelationships.filter((rel) => positions.has(rel.fromNode) && positions.has(rel.toNode));
-  const extraLines = downstream.slice(0, 5).map((item, index) => ({ id: `suggested-${item.id}`, fromNode: distributors[index % distributors.length].id, toNode: item.id, status: "Hypothesis" as const }));
+  const extraLines = distributors.length ? downstream.slice(0, 5).map((item, index) => ({ id: `suggested-${item.id}`, fromNode: distributors[index % distributors.length].id, toNode: item.id, status: "Hypothesis" as const })) : [];
   return (
     <div className="map-layout">
       <section className="panel map-panel">
         <div className="panel-header"><div><span className="section-kicker">RELATIONSHIP CANVAS</span><h2>供货与需求节点连接</h2></div><div className="map-legend"><span><i className="solid-line"/> 已验证</span><span><i className="dash-line"/> AI 假设</span></div></div>
-        <svg className="channel-map" viewBox="0 0 900 520" role="img" aria-label="墨西哥渠道关系图">
+        <svg className="channel-map" viewBox="0 0 900 520" role="img" aria-label="全球渠道关系图">
           <rect x="30" y="18" width="270" height="476" rx="18" className="map-zone distributor-zone"/>
           <rect x="600" y="18" width="270" height="476" rx="18" className="map-zone downstream-zone"/>
           <text x="52" y="48" className="zone-title">SUPPLY NODES · TIER-1</text>
@@ -368,7 +382,7 @@ function ChannelMap({ companies, onSelect }: { companies: CompanyRecord[]; onSel
             return <path key={rel.id} d={`M ${from.x + 94} ${from.y} C 390 ${from.y}, 510 ${to.y}, ${to.x - 94} ${to.y}`} className={`map-link ${rel.status === "Hypothesis" ? "hypothesis" : "verified"}`} />;
           })}
           <circle cx="450" cy="260" r="72" className="brand-node"/>
-          <text x="450" y="252" textAnchor="middle" className="brand-node-title">CUDY</text><text x="450" y="273" textAnchor="middle" className="brand-node-sub">MEXICO MARKET</text>
+          <text x="450" y="252" textAnchor="middle" className="brand-node-title">CUDY</text><text x="450" y="273" textAnchor="middle" className="brand-node-sub">GLOBAL MARKET</text>
           {mapCompanies.map((company) => {
             const position = positions.get(company.id)!;
             return <g key={company.id} className="map-node" role="button" tabIndex={0} onClick={() => onSelect(company.id)} onKeyDown={(event) => { if (event.key === "Enter") onSelect(company.id); }}>

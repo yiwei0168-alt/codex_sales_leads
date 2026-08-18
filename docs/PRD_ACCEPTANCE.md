@@ -19,6 +19,11 @@
 | AC-T02 quality gates | Build, TypeScript, ESLint and Vitest are configured. |
 | AC-T05 degraded-state rule | Snapshot is explicitly labelled; no mock company is presented as a real live-search result. Provider error contract is included. |
 | AC-T06 basic accessibility | Keyboard-focus styles, semantic tables, labelled inputs, buttons and keyboard-selectable SVG nodes are included. |
+| AC-C01 conversational home | Persistent user-scoped conversations support create, rename, delete, greetings and suggested prompts. |
+| AC-C02 grounded knowledge Q&A | Product, company and approved mailbox questions use tenant-aware RAG and render source citations. |
+| AC-C03 explicit search confirmation | Natural-language lead requests produce a country/role/count plan; Tavily is called only after authenticated confirmation. |
+| AC-C04 global market partitioning | Country names are resolved across major UI languages and saved results are grouped by country in one global workspace. |
+| AC-C05 updated visual system | The main workspace, chat, login and mailbox surfaces use a responsive iPadOS-inspired light visual system. |
 
 ## Simplified for Demo
 
@@ -26,14 +31,13 @@
 - Search uses Tavily live API runs persisted in PostgreSQL; SerpAPI remains a planned next-version provider.
 - Role-aware scoring inputs are stored in the snapshot and priority is deterministically recomputed; a production scoring configuration UI is not included.
 - The map provides verified and hypothesis states; confirmation buttons are visual Demo controls and do not yet persist relationship decisions.
-- Manual edits persist in the authenticated single-user PostgreSQL workspace.
+- Manual edits persist in the authenticated owner-scoped PostgreSQL workspace.
 - The development assistant uses deterministic role rules instead of a live LLM so the Demo needs no credential and remains reproducible.
 
 ## Not implemented
 
-- Multi-user ownership and authorization
 - Scheduled source refresh and change detection
-- Production AI adapter calls, model telemetry and prompt audit persistence
+- Model telemetry and full prompt audit persistence
 - Snov-backed verified contact enrichment and any outbound message sending
 - Full responsive mobile layout; the PRD's 1280px desktop target is the primary layout
 - Browser E2E automation in CI; unit/domain tests are included

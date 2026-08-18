@@ -29,8 +29,8 @@ try {
     const id = result.rows[0].id;
     await client.query(
       `insert into market_workspace (owner_id, slug, name, market, country_code, objective)
-       values ($1, 'mexico-pilot', 'Mexico Market Pilot', 'Mexico', 'MX',
-         'Discover and develop qualified sales leads in Mexico.')
+       values ($1, 'global-sales', 'Global Sales Workspace', 'Global', 'WW',
+         'Discover, evaluate, and develop qualified sales opportunities in any market.')
        on conflict (owner_id, slug) do nothing`,
       [id],
     );

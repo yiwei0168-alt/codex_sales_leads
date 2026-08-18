@@ -52,7 +52,7 @@ export async function GET() {
       `select r.id, r.workspace_id, r.status, r.target_count, r.processed_count, r.search_credits_used,
        extract_credits_used, error_message, started_at, finished_at
        from company_enrichment_run r join market_workspace w on w.id = r.workspace_id
-       where w.owner_id = $1 and w.slug = 'mexico-pilot'
+       where w.owner_id = $1 and w.slug = 'global-sales'
        order by r.started_at desc limit 1`,
       [session.userId],
     );

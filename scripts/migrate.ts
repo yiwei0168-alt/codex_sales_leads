@@ -12,8 +12,19 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const { loadEnvConfig } = nextEnv;
 loadEnvConfig(root);
 
-const databaseUrl = process.env.DATABASE_URL;
-if (!databaseUrl) throw new Error("DATABASE_URL is required. Copy .env.example to .env.local first.");
+const applicationDatabaseUrl = process.env.DATABASE_URL;
+const databaseUrl = process.env.DATABASE_MIGRATION_URL || applicationDatabaseUrl;
+if (!databaseUrl) throw new Error("DATABASE_MIGRATION_URL or DATABASE_URL is required. Copy .env.example to .env.local first.");
+if (process.env.DATABASE_MIGRATION_URL && applicationDatabaseUrl) {
+  const migrationTarget = new URL(process.env.DATABASE_MIGRATION_URL);
+  const applicationTarget = new URL(applicationDatabaseUrl);
+  const sameTarget = migrationTarget.hostname === applicationTarget.hostname
+    && (migrationTarget.port || "5432") === (applicationTarget.port || "5432")
+    && migrationTarget.pathname === applicationTarget.pathname;
+  if (!sameTarget) {
+    throw new Error("DATABASE_MIGRATION_URL must target the same host, port, and database as DATABASE_URL");
+  }
+}
 
 const pool = new Pool({
   connectionString: databaseConnectionString(databaseUrl),
