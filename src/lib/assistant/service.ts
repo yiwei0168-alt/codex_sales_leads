@@ -6,6 +6,22 @@ import {
 import { interpretAssistantRequest } from "./intent";
 import type { AssistantConversationDto } from "./types";
 
+function knowledgeErrorMessage(error: unknown): string {
+  const status = typeof error === "object" && error !== null && "status" in error
+    ? Number((error as { status?: unknown }).status)
+    : undefined;
+  if (status === 401 || status === 403) {
+    return "知识库检索已成功，但回答模型认证失败（AI API Key 无效或已过期）。请检查服务端 OPENAI_API_KEY 与 OPENAI_BASE_URL 配置后重试。";
+  }
+  if (status === 429) {
+    return "知识库检索已成功，但回答模型当前限流。请稍后重试。";
+  }
+  if (status && status >= 500) {
+    return "知识库检索已成功，但回答模型暂时不可用。请稍后重试。";
+  }
+  return error instanceof Error ? `知识库查询失败：${error.message}` : "知识库查询失败，请稍后重试。";
+}
+
 function conversationTitle(content: string): string {
   return content.replace(/\s+/g, " ").trim().slice(0, 38) || "新对话";
 }
@@ -53,7 +69,7 @@ export async function processAssistantMessage(userId: string, input: {
       } catch (error) {
         await appendMessage(userId, conversationId, {
           role: "assistant", intent: "knowledge-question",
-          content: error instanceof Error ? `知识库查询失败：${error.message}` : "知识库查询失败，请稍后重试。",
+          content: knowledgeErrorMessage(error),
         });
       }
     }
