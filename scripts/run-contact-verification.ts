@@ -4,11 +4,12 @@ import { ContactVerificationAgent, type ContactEvidenceDocument } from "../src/l
 import type { ContactVerificationInput } from "../src/lib/contacts/verification/types";
 import { getPool, query, transaction } from "../src/lib/rag/db";
 import { DeepSeekProvider } from "../src/providers/deepseek";
+import { resolveTargetWorkspace } from "./resolve-target-workspace";
 
 const { loadEnvConfig } = nextEnv;
 loadEnvConfig(process.cwd());
 
-const workspaceId = "00000000-0000-4000-8000-000000000100";
+const workspaceId = (await resolveTargetWorkspace()).id;
 const routineModel = process.env.DEEPSEEK_MODEL?.trim() || "deepseek-v4-flash";
 const escalationModel = process.env.DEEPSEEK_ESCALATION_MODEL?.trim() || "deepseek-v4-pro";
 const promptVersion = "contact-evidence-v1";

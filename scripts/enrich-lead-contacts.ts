@@ -2,11 +2,12 @@ import nextEnv from "@next/env";
 import { extractDomainEmails, guessPersonalEmail, personNameFromPersonalEmail, personalizedEmailPattern } from "../src/lib/leads/contact-extraction";
 import { getPool, query, transaction } from "../src/lib/rag/db";
 import { TavilySearchProvider, type TavilySearchResult } from "../src/providers/tavily";
+import { resolveTargetWorkspace } from "./resolve-target-workspace";
 
 const { loadEnvConfig } = nextEnv;
 loadEnvConfig(process.cwd());
 
-const workspaceId = "00000000-0000-4000-8000-000000000100";
+const workspaceId = (await resolveTargetWorkspace()).id;
 const requestedDomains = process.argv.find((value) => value.startsWith("--domains="))?.slice("--domains=".length).split(",").map((value) => value.trim().toLowerCase()).filter(Boolean);
 const requestedLimit = Number(process.argv.find((value) => value.startsWith("--limit="))?.slice("--limit=".length) ?? 100);
 const limit = Math.max(1, Math.min(Number.isFinite(requestedLimit) ? Math.floor(requestedLimit) : 100, 100));

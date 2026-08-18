@@ -71,11 +71,11 @@ Remove-Item Env:APP_PASSWORD_SETUP
 
 ```powershell
 npm run db:migrate
-npm run leads:discover -- --target=100 --replace
-npm run leads:verify
-npm run contacts:enrich -- --limit=100 --concurrency=4 --replace
-npm run contacts:verify
-npm run contacts:classify -- --company-limit=100 --candidate-limit=1000
+npm run leads:discover -- --target=100 --replace --user-email=your-login@company.com
+npm run leads:verify -- --user-email=your-login@company.com
+npm run contacts:enrich -- --limit=100 --concurrency=4 --replace --user-email=your-login@company.com
+npm run contacts:verify -- --user-email=your-login@company.com
+npm run contacts:classify -- --company-limit=100 --candidate-limit=1000 --user-email=your-login@company.com
 npm run contacts:classify:report
 npm run contacts:classify:eval
 ```
@@ -93,6 +93,7 @@ Each candidate receives at most one routine call and one conflict-escalation cal
 up to 100 companies and 1,000 resulting email candidates.
 
 `--replace` 只替换当前工作区中的上一批 Tavily 活动候选；历史查询、原始结果和质量筛选记录保留用于审计。
+`--user-email` 明确指定结果所属的登录用户，避免把线索写入初始化或已停用账号的工作区；只有一个启用账号时可省略。
 
 ## 建立 RAG 知识库
 

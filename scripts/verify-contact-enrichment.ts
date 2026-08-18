@@ -1,14 +1,16 @@
 import nextEnv from "@next/env";
 import { getPool, query } from "../src/lib/rag/db";
+import { resolveTargetWorkspace } from "./resolve-target-workspace";
 
 const { loadEnvConfig } = nextEnv;
 loadEnvConfig(process.cwd());
 
+const workspaceId = (await resolveTargetWorkspace()).id;
 const [run] = await query<{
   id: string; status: string; target_count: number; processed_count: number; search_credits_used: number;
   extract_credits_used: number; provider_mix: string[]; started_at: string;
 }>(`select id, status, target_count, processed_count, search_credits_used, extract_credits_used, provider_mix, started_at
-    from company_enrichment_run order by started_at desc limit 1`);
+    from company_enrichment_run where workspace_id = $1 order by started_at desc limit 1`, [workspaceId]);
 if (!run) throw new Error("No contact enrichment run found.");
 
 const companies = await query<{

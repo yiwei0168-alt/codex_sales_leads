@@ -4,14 +4,17 @@ import type { ChannelRole, CompanyRecord } from "../src/lib/domain";
 import { mexicoSearchPlan, type MexicoSearchQuery } from "../src/lib/leads/mexico-search-plan";
 import { getPool, query, transaction } from "../src/lib/rag/db";
 import { TavilySearchProvider, type TavilySearchResult } from "../src/providers/tavily";
+import { resolveTargetWorkspace } from "./resolve-target-workspace";
 
 const { loadEnvConfig } = nextEnv;
 loadEnvConfig(process.cwd());
 
 const target = Math.max(1, Math.min(Number(process.argv.find((value) => value.startsWith("--target="))?.split("=")[1] ?? 50), 100));
 const reuseRecentOnly = process.argv.includes("--reuse-recent-only");
-const workspaceId = "00000000-0000-4000-8000-000000000100";
 const provider = new TavilySearchProvider();
+const targetWorkspace = await resolveTargetWorkspace();
+const workspaceId = targetWorkspace.id;
+process.stdout.write(`Target workspace: ${targetWorkspace.email} (${workspaceId})\n`);
 
 const blockedDomains = [
   "linkedin.com", "facebook.com", "instagram.com", "youtube.com", "youtu.be", "tiktok.com", "x.com", "twitter.com",
