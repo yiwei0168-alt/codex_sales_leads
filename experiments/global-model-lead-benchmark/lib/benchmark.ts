@@ -3,9 +3,9 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 export type ProviderId = "openai" | "claude" | "kimi" | "deepseek";
-type ProviderConfig = { enabled: boolean; participatesInCurrentRun: boolean; credentials: { apiKeyEnv: string; baseUrl?: string; baseUrlEnv?: string }; model: { modelId: string } };
+export type ProviderConfig = { enabled: boolean; participatesInCurrentRun: boolean; credentials: { apiKeyEnv: string; baseUrl?: string; baseUrlEnv?: string }; model: { modelId: string } };
 type PilotConfig = { countryCode: string; countryName: string; regionName: string; primaryLanguages: string[]; promptFile: string; providers: ProviderId[]; limits: { nativeSearchRequests: number; visibleOutputTokens: number; continuationPages: number; timeoutMinutesPerProvider: number; automaticRetries: number }; storage: { rawResultsDirectory: string } };
-type RunContext = { providerId: ProviderId; provider: ProviderConfig; prompt: string; runDate: string; pilot: PilotConfig };
+export type RunContext = { providerId: ProviderId; provider: ProviderConfig; prompt: string; runDate: string; pilot: PilotConfig };
 export type RunArtifact = { providerId: ProviderId; modelId: string; startedAt: string; completedAt: string; searchRequestsObserved: number; response: unknown; rawProviderResponse: unknown };
 
 const experimentRoot = path.resolve("experiments/global-model-lead-benchmark");

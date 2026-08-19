@@ -52,6 +52,11 @@ instructions and the identical short user trigger. This prevents a native
 search adapter from treating the full benchmark specification as one query and
 keeps message roles consistent across providers.
 
+Use `npm run benchmark:preflight -- <provider>` before a measured run. It first
+checks a tiny no-search request, proceeds to one native-search request only on
+success, performs no automatic retries, classifies gateway/upstream/account
+pool failures, and stores the diagnostic report only in the ignored raw folder.
+
 Prompt v1.0 remains preserved as the original baseline. Pilot v1.1 removes
 repetition while retaining the same knowledge, evidence, privacy, role, and
 output requirements. OpenAI uses Responses API streaming so long-running web

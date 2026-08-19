@@ -36,7 +36,8 @@
     "contacts:classify:eval": "tsx scripts/evaluate-contact-verification.ts",
     "contacts:classify:verify-production": "tsx scripts/verify-contact-verification-production.ts",
     "benchmark:pilot": "tsx experiments/global-model-lead-benchmark/scripts/run-pilot.ts",
-    "benchmark:verify": "tsx experiments/global-model-lead-benchmark/scripts/verify-runner.ts"
+    "benchmark:verify": "tsx experiments/global-model-lead-benchmark/scripts/verify-runner.ts",
+    "benchmark:preflight": "tsx experiments/global-model-lead-benchmark/scripts/preflight-provider.ts"
   },
   "dependencies": {
     "imapflow": "^1.7.1",
