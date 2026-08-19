@@ -75,8 +75,51 @@ async function requestSse(url: string, init: RequestInit, timeoutMs: number): Pr
   return events;
 }
 
-function parseJsonObject(text: string): unknown {
-  return JSON.parse(text.trim().replace(/^```json\s*/i, "").replace(/\s*```$/, "")) as unknown;
+function isBenchmarkObject(value: any): boolean {
+  return Boolean(value && typeof value === "object" && !Array.isArray(value) && value.runMetadata && value.searchCapability && Array.isArray(value.tier1Partners));
+}
+
+export function extractBenchmarkJson(text: string): unknown {
+  const trimmed = text.trim().replace(/^```json\s*/i, "").replace(/\s*```$/, "");
+  try {
+    const direct = JSON.parse(trimmed) as unknown;
+    if (isBenchmarkObject(direct)) return direct;
+  } catch {
+    // Continue with balanced-object extraction for provider-added prose.
+  }
+
+  const candidates: unknown[] = [];
+  let start = -1;
+  let depth = 0;
+  let inString = false;
+  let escaped = false;
+  for (let index = 0; index < text.length; index += 1) {
+    const character = text[index];
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (character === "\\") escaped = true;
+      else if (character === '"') inString = false;
+      continue;
+    }
+    if (character === '"') { inString = true; continue; }
+    if (character === "{") {
+      if (depth === 0) start = index;
+      depth += 1;
+    } else if (character === "}" && depth > 0) {
+      depth -= 1;
+      if (depth === 0 && start >= 0) {
+        try {
+          const value = JSON.parse(text.slice(start, index + 1)) as unknown;
+          if (isBenchmarkObject(value)) candidates.push(value);
+        } catch {
+          // A balanced brace block can still be non-JSON prose.
+        }
+        start = -1;
+      }
+    }
+  }
+  if (candidates.length !== 1) throw new Error(`Expected exactly one complete benchmark JSON object, found ${candidates.length}`);
+  return candidates[0];
 }
 
 async function runOpenAi(context: RunContext) {
@@ -149,11 +192,28 @@ export async function executeProvider(providerId: ProviderId): Promise<RunArtifa
   const startedAt = new Date().toISOString();
   const result = providerId === "openai" ? await runOpenAi(context) : providerId === "kimi" ? await runKimi(context) : await runAnthropic(context);
   if (result.searches > context.pilot.limits.nativeSearchRequests) throw new Error(`${providerId} exceeded native search request limit`);
-  const response = parseJsonObject(result.text);
-  validateBenchmarkResult(response, context);
-  const artifact: RunArtifact = { providerId, modelId: context.provider.model.modelId, startedAt, completedAt: new Date().toISOString(), searchRequestsObserved: result.searches, response, rawProviderResponse: result.raw };
   const outputDirectory = path.join(experimentRoot, context.pilot.storage.rawResultsDirectory);
   await mkdir(outputDirectory, { recursive: true });
+  let response: unknown;
+  try {
+    response = extractBenchmarkJson(result.text);
+    validateBenchmarkResult(response, context);
+  } catch (error) {
+    const rejected = {
+      status: "rejected",
+      providerId,
+      modelId: context.provider.model.modelId,
+      startedAt,
+      completedAt: new Date().toISOString(),
+      searchRequestsObserved: result.searches,
+      validationError: error instanceof Error ? error.message : String(error),
+      rawText: result.text,
+      rawProviderResponse: result.raw,
+    };
+    await writeFile(path.join(outputDirectory, `${context.runDate}-${context.pilot.countryCode}-${providerId}.rejected.json`), JSON.stringify(rejected, null, 2), "utf8");
+    throw error;
+  }
+  const artifact: RunArtifact = { providerId, modelId: context.provider.model.modelId, startedAt, completedAt: new Date().toISOString(), searchRequestsObserved: result.searches, response, rawProviderResponse: result.raw };
   await writeFile(path.join(outputDirectory, `${context.runDate}-${context.pilot.countryCode}-${providerId}.json`), JSON.stringify(artifact, null, 2), "utf8");
   return artifact;
 }

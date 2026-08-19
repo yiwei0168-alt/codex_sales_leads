@@ -42,6 +42,11 @@ check. After explicit approval for live calls, run one provider at a time with
 `npm run benchmark:pilot -- openai` (or another configured provider). Raw
 responses are written below `runs/raw/`, which is ignored by Git.
 
+Provider-added prose or a Markdown fence is tolerated only when it contains one
+complete benchmark JSON object. Multiple, incomplete, or schema-invalid objects
+remain failures. Rejected provider payloads are retained locally under
+`runs/raw/*.rejected.json` for diagnosis and are never committed.
+
 Prompt v1.0 remains preserved as the original baseline. Pilot v1.1 removes
 repetition while retaining the same knowledge, evidence, privacy, role, and
 output requirements. OpenAI uses Responses API streaming so long-running web

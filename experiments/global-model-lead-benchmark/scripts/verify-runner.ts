@@ -1,4 +1,4 @@
-import { loadContext, parseSseBuffer, validateBenchmarkResult } from "../lib/benchmark";
+import { extractBenchmarkJson, loadContext, parseSseBuffer, validateBenchmarkResult } from "../lib/benchmark";
 
 const context = await loadContext("openai", "2026-08-19");
 if (!context.prompt.includes("Country: `Germany` (`DE`)") || !context.prompt.includes("Search languages: `German, English` plus English")) throw new Error("Prompt substitution failed");
@@ -9,6 +9,11 @@ const result = {
   summaryMetrics: { tier1PartnerCount: 0, tier1ConfirmedCurrentCount: 0, downstreamCustomerCount: 0, downstreamConfirmedCudyCount: 0, contactCount: 0, publicVerifiedContactCount: 0, uniqueCompanyCount: 0, uniqueDomainCount: 0, queriesExecutedCount: 0 },
 };
 validateBenchmarkResult(result, context);
+const wrapped = extractBenchmarkJson(`I searched first.\n\n\`\`\`json\n${JSON.stringify(result)}\n\`\`\``) as typeof result;
+if (wrapped.runMetadata.countryCode !== "DE") throw new Error("Wrapped JSON extraction failed");
+let multipleRejected = false;
+try { extractBenchmarkJson(`${JSON.stringify(result)}\n${JSON.stringify(result)}`); } catch { multipleRejected = true; }
+if (!multipleRejected) throw new Error("Extractor accepted multiple benchmark objects");
 const invalid = structuredClone(result);
 invalid.summaryMetrics.contactCount = 1;
 let rejected = false;
