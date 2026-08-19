@@ -5,17 +5,20 @@ import path from "node:path";
 export type ProviderId = "openai" | "claude" | "kimi" | "deepseek";
 export type ProviderConfig = { enabled: boolean; participatesInCurrentRun: boolean; credentials: { apiKeyEnv: string; baseUrl?: string; baseUrlEnv?: string }; model: { modelId: string } };
 type PilotConfig = { countryCode: string; countryName: string; regionName: string; primaryLanguages: string[]; promptFile: string; providers: ProviderId[]; limits: { nativeSearchRequests: number; visibleOutputTokens: number; continuationPages: number; timeoutMinutesPerProvider: number; automaticRetries: number }; storage: { rawResultsDirectory: string } };
-export type RunContext = { providerId: ProviderId; provider: ProviderConfig; prompt: string; runDate: string; pilot: PilotConfig };
+export type RunContext = { providerId: ProviderId; provider: ProviderConfig; prompt: string; trigger: string; runDate: string; pilot: PilotConfig };
 export type RunArtifact = { providerId: ProviderId; modelId: string; startedAt: string; completedAt: string; searchRequestsObserved: number; response: unknown; rawProviderResponse: unknown };
 
 const experimentRoot = path.resolve("experiments/global-model-lead-benchmark");
-export const BENCHMARK_TRIGGER = "Begin the benchmark now. Follow the system instructions and return only the required JSON object.";
 const readJson = async <T>(file: string): Promise<T> => JSON.parse(await readFile(file, "utf8")) as T;
 
-export function buildMessageEnvelope(providerId: ProviderId, prompt: string): { instructions?: string; input?: string; system?: string; messages?: Array<{ role: string; content: string }> } {
-  if (providerId === "openai") return { instructions: prompt, input: BENCHMARK_TRIGGER };
-  if (providerId === "kimi") return { messages: [{ role: "system", content: prompt }, { role: "user", content: BENCHMARK_TRIGGER }] };
-  return { system: prompt, messages: [{ role: "user", content: BENCHMARK_TRIGGER }] };
+export function buildBenchmarkTrigger(countryName: string, countryCode: string, primaryLanguages: string[]): string {
+  return `Begin the ${countryName} (${countryCode}) benchmark. Search in ${primaryLanguages.join(" and ")} for Cudy's current channel partners and qualified tier-1 distributors, importers, wholesalers, operator or enterprise SIs, plus important downstream VARs, ISPs, retailers, and public business contacts. Follow the system schema and return only JSON.`;
+}
+
+export function buildMessageEnvelope(providerId: ProviderId, prompt: string, trigger: string): { instructions?: string; input?: string; system?: string; messages?: Array<{ role: string; content: string }> } {
+  if (providerId === "openai") return { instructions: prompt, input: trigger };
+  if (providerId === "kimi") return { messages: [{ role: "system", content: prompt }, { role: "user", content: trigger }] };
+  return { system: prompt, messages: [{ role: "user", content: trigger }] };
 }
 
 export async function loadContext(providerId: ProviderId, runDate = new Date().toISOString().slice(0, 10)): Promise<RunContext> {
@@ -28,7 +31,8 @@ export async function loadContext(providerId: ProviderId, runDate = new Date().t
   const prompt = template.replace(/\{([A-Z_]+)\}/g, (match, key: string) => values[key] ?? match);
   const unresolved = [...prompt.matchAll(/\{([A-Z_]+)\}/g)].map((match) => match[0]);
   if (unresolved.length) throw new Error(`Unresolved prompt placeholders: ${[...new Set(unresolved)].join(", ")}`);
-  return { providerId, provider, prompt, runDate, pilot };
+  const trigger = buildBenchmarkTrigger(pilot.countryName, pilot.countryCode, pilot.primaryLanguages);
+  return { providerId, provider, prompt, trigger, runDate, pilot };
 }
 
 function credentials(provider: ProviderConfig): { apiKey: string; baseUrl: string } {
@@ -131,7 +135,7 @@ export function extractBenchmarkJson(text: string): unknown {
 
 async function runOpenAi(context: RunContext) {
   const { apiKey, baseUrl } = credentials(context.provider);
-  const envelope = buildMessageEnvelope("openai", context.prompt);
+  const envelope = buildMessageEnvelope("openai", context.prompt, context.trigger);
   const events = await requestSse(`${baseUrl}/responses`, { method: "POST", headers: { authorization: `Bearer ${apiKey}`, accept: "text/event-stream", "content-type": "application/json" }, body: JSON.stringify({ model: context.provider.model.modelId, ...envelope, tools: [{ type: "web_search" }], include: ["web_search_call.action.sources"], max_output_tokens: context.pilot.limits.visibleOutputTokens, stream: true }) }, context.pilot.limits.timeoutMinutesPerProvider * 60_000);
   const failed = events.find((event) => event.type === "response.failed" || event.type === "error");
   if (failed) throw new Error(`OpenAI stream failed: ${JSON.stringify(failed).slice(0, 500)}`);
@@ -145,7 +149,7 @@ async function runOpenAi(context: RunContext) {
 
 async function runAnthropic(context: RunContext) {
   const { apiKey, baseUrl } = credentials(context.provider);
-  const envelope = buildMessageEnvelope(context.providerId, context.prompt);
+  const envelope = buildMessageEnvelope(context.providerId, context.prompt, context.trigger);
   const raw = await requestJson(`${baseUrl}/v1/messages`, { method: "POST", headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "content-type": "application/json" }, body: JSON.stringify({ model: context.provider.model.modelId, max_tokens: context.pilot.limits.visibleOutputTokens, ...envelope, tools: [{ type: "web_search_20250305", name: "web_search", max_uses: context.pilot.limits.nativeSearchRequests }] }) }, context.pilot.limits.timeoutMinutesPerProvider * 60_000);
   const text = (raw.content ?? []).filter((item: any) => item.type === "text").map((item: any) => item.text).join("");
   return { text, searches: (raw.content ?? []).filter((item: any) => item.type === "server_tool_use" && item.name === "web_search").length, raw };
@@ -153,7 +157,7 @@ async function runAnthropic(context: RunContext) {
 
 async function runKimi(context: RunContext) {
   const { apiKey, baseUrl } = credentials(context.provider);
-  const envelope = buildMessageEnvelope("kimi", context.prompt);
+  const envelope = buildMessageEnvelope("kimi", context.prompt, context.trigger);
   const messages: any[] = structuredClone(envelope.messages ?? []);
   const rounds: unknown[] = [];
   let searches = 0;

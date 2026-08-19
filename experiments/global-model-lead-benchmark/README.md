@@ -49,9 +49,11 @@ remain failures. Rejected provider payloads are retained locally under
 `runs/raw/*.rejected.json` for diagnosis and are never committed.
 
 Every provider receives the identical substituted prompt as system-level
-instructions and the identical short user trigger. This prevents a native
-search adapter from treating the full benchmark specification as one query and
-keeps message roles consistent across providers.
+instructions and the identical country-specific user trigger. The trigger is a
+compact, valid initial search task containing country, languages, Cudy, channel
+roles, contacts, and JSON intent. This remains useful even when a gateway uses
+the user message verbatim as its first native-search query, while keeping the
+full benchmark rules out of the query and message roles consistent.
 
 Use `npm run benchmark:preflight -- <provider>` before a measured run. It first
 checks a tiny no-search request, proceeds to one native-search request only on
