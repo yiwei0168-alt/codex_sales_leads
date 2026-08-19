@@ -9,8 +9,13 @@ APIs, contact databases, and the project's existing lead data are excluded.
 
 ## Current stage
 
-Stage A: country sampling. The reproducibly selected countries remain pending
-explicit user confirmation before knowledge extraction or model calls begin.
+Country selection and the universal benchmark prompt are frozen. The next stage
+is provider model discovery and native-search capability verification; no
+country benchmark run has started.
+
+Google Gemini remains an optional provider placeholder. It is disabled and does
+not participate in current runs until its API credentials, model choice, and
+provider-native Google Search grounding capability have been verified.
 
 ## Privacy and repository policy
 
