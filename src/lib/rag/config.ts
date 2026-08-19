@@ -29,12 +29,13 @@ export function getRagConfig(): RagConfig {
   const openaiApiKey = process.env.OPENAI_API_KEY?.trim() ?? "";
   const openaiBaseUrl = process.env.OPENAI_BASE_URL?.trim() ?? "";
   const openaiModel = process.env.OPENAI_GENERATION_MODEL?.trim() ?? "";
+  const lingyuApiKey = process.env.LINGYU_API_KEY?.trim() ?? "";
   const kimiApiKey = process.env.KIMI_API_KEY?.trim() ?? "";
   const kimiBaseUrl = process.env.KIMI_BASE_URL?.trim() ?? "";
   const kimiModel = process.env.KIMI_MODEL?.trim() ?? "";
   return {
     databaseUrl: process.env.DATABASE_URL?.trim() ?? "",
-    openaiApiKey: openaiApiKey || kimiApiKey,
+    openaiApiKey: lingyuApiKey || openaiApiKey || kimiApiKey,
     openaiBaseUrl: normalizeGenerationBaseUrl(openaiBaseUrl || kimiBaseUrl),
     embeddingApiKey: process.env.EMBEDDING_API_KEY?.trim() ?? "",
     embeddingBaseUrl: process.env.EMBEDDING_BASE_URL?.trim() ?? "",
