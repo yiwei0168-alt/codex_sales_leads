@@ -57,7 +57,7 @@
     "kimi": {
       "displayName": "Moonshot Kimi",
       "enabled": false,
-      "status": "adapter_required",
+      "status": "k3_native_search_incompatible",
       "participatesInCurrentRun": false,
       "credentials": {
         "apiKeyEnv": "KIMI_API_KEY",
@@ -78,7 +78,20 @@
           "toolName": "$web_search",
           "searchIdObserved": true,
           "sourceCitationRoundCompleted": false,
-          "blockingError": "tool-result continuation returned tokenization_failed"
+          "thinkingDisabled": true,
+          "officialSdkFlowUsed": true,
+          "blockingRound": "tool-result continuation",
+          "blockingError": "kimi-k3 returned tokenization_failed after accepting the native search call",
+          "providerNotice": "Kimi documentation states that built-in web search is being updated and is not recommended in the near term"
+        },
+        "verifiedFallback": {
+          "modelId": "kimi-k2.6",
+          "eligibleForBenchmark": false,
+          "pendingUserDecision": true,
+          "capabilityVerified": true,
+          "toolCalls": 1,
+          "sourceUrlCount": 4,
+          "officialCudyDomainObserved": true
         }
       }
     },

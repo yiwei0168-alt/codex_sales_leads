@@ -11,8 +11,10 @@ APIs, contact databases, and the project's existing lead data are excluded.
 
 Country selection and the universal benchmark prompt are frozen. The next stage
 is a single-country pilot. OpenAI, Claude, and DeepSeek passed native-search
-verification. Kimi remains disabled until its built-in search-result
-continuation adapter is completed. No country benchmark run has started.
+verification. Kimi K3 remains disabled because its native-search result
+continuation is currently rejected by the provider tokenizer; Kimi K2.6 passed
+the same flow and is recorded only as a fallback pending approval. No country
+benchmark run has started.
 
 Google Gemini remains an optional provider placeholder. It is disabled and does
 not participate in current runs until its API credentials, model choice, and
