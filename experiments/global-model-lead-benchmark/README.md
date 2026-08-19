@@ -10,8 +10,9 @@ APIs, contact databases, and the project's existing lead data are excluded.
 ## Current stage
 
 Country selection and the universal benchmark prompt are frozen. The next stage
-is provider model discovery and native-search capability verification; no
-country benchmark run has started.
+is a single-country pilot. OpenAI, Claude, and DeepSeek passed native-search
+verification. Kimi remains disabled until its built-in search-result
+continuation adapter is completed. No country benchmark run has started.
 
 Google Gemini remains an optional provider placeholder. It is disabled and does
 not participate in current runs until its API credentials, model choice, and

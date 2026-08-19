@@ -3,9 +3,9 @@
   "providers": {
     "openai": {
       "displayName": "OpenAI",
-      "enabled": false,
-      "status": "model_discovered",
-      "participatesInCurrentRun": false,
+      "enabled": true,
+      "status": "ready",
+      "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "LINGYU_API_KEY",
         "baseUrl": "https://lingyuapi.com/v1"
@@ -18,7 +18,96 @@
       "nativeSearch": {
         "required": true,
         "adapter": "openai_web_search",
-        "capabilityVerified": false
+        "capabilityVerified": true,
+        "verifiedAt": "2026-08-19",
+        "verification": {
+          "toolSignal": "web_search_call",
+          "sourceUrlCount": 1,
+          "officialSourceObserved": "https://www.cudy.com/"
+        }
+      }
+    },
+    "claude": {
+      "displayName": "Anthropic Claude",
+      "enabled": true,
+      "status": "ready",
+      "participatesInCurrentRun": true,
+      "credentials": {
+        "apiKeyEnv": "CLAUDE_API_KEY",
+        "baseUrlEnv": "CLAUDE_BASE_URL"
+      },
+      "model": {
+        "selectionPolicy": "highest-performance discovered Claude model",
+        "modelId": "claude-opus-4-8",
+        "discoveryRequired": false
+      },
+      "nativeSearch": {
+        "required": true,
+        "adapter": "anthropic_web_search_20250305",
+        "capabilityVerified": true,
+        "verifiedAt": "2026-08-19",
+        "verification": {
+          "toolSignal": "server_tool_use + web_search_tool_result",
+          "webSearchRequests": 1,
+          "sourceUrlCount": 8,
+          "officialSourceObserved": "https://www.cudy.com/pages/about-cudy"
+        }
+      }
+    },
+    "kimi": {
+      "displayName": "Moonshot Kimi",
+      "enabled": false,
+      "status": "adapter_required",
+      "participatesInCurrentRun": false,
+      "credentials": {
+        "apiKeyEnv": "KIMI_API_KEY",
+        "baseUrlEnv": "KIMI_BASE_URL"
+      },
+      "model": {
+        "selectionPolicy": "highest-performance discovered Kimi model",
+        "modelId": "kimi-k3",
+        "discoveryRequired": false
+      },
+      "nativeSearch": {
+        "required": true,
+        "adapter": "moonshot_builtin_web_search",
+        "capabilityVerified": false,
+        "verifiedAt": "2026-08-19",
+        "verification": {
+          "toolCallObserved": true,
+          "toolName": "$web_search",
+          "searchIdObserved": true,
+          "sourceCitationRoundCompleted": false,
+          "blockingError": "tool-result continuation returned tokenization_failed"
+        }
+      }
+    },
+    "deepseek": {
+      "displayName": "DeepSeek",
+      "enabled": true,
+      "status": "ready_with_latency_risk",
+      "participatesInCurrentRun": true,
+      "credentials": {
+        "apiKeyEnv": "DEEPSEEK_API_KEY",
+        "baseUrlEnv": "DEEPSEEK_BASE_URL"
+      },
+      "model": {
+        "selectionPolicy": "highest-performance discovered DeepSeek model",
+        "modelId": "deepseek-v4-pro",
+        "discoveryRequired": false
+      },
+      "nativeSearch": {
+        "required": true,
+        "adapter": "deepseek_anthropic_web_search",
+        "capabilityVerified": true,
+        "verifiedAt": "2026-08-19",
+        "verification": {
+          "toolSignal": "server_tool_use + web_search_tool_result",
+          "webSearchRequests": 2,
+          "sourceUrlCount": 10,
+          "officialCudyDomainObserved": true,
+          "performanceRisk": "minimal verification request had exceptionally high latency"
+        }
       }
     },
     "gemini": {
