@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "status": "confirmed",
+  "countryCode": "DE",
+  "countryName": "Germany",
+  "regionName": "Europe",
+  "primaryLanguages": ["German", "English"],
+  "runDatePolicy": "actual-run-date",
+  "providers": ["openai", "claude", "kimi", "deepseek"],
+  "independentRuns": true,
+  "limits": {
+    "nativeSearchRequests": 12,
+    "visibleOutputTokens": 20000,
+    "continuationPages": 1,
+    "timeoutMinutesPerProvider": 30,
+    "automaticRetries": 0,
+    "targetCompanyCount": null
+  },
+  "storage": {
+    "rawResultsDirectory": "runs/raw",
+    "commitRawResults": false,
+    "commitOnlyRedactedReports": true
+  }
+}

@@ -13,7 +13,8 @@ Country selection and the universal benchmark prompt are frozen. The next stage
 is a single-country pilot. OpenAI, Claude, and DeepSeek passed native-search
 verification. Kimi K2.6 is enabled after passing the same native-search flow;
 Kimi K3 is excluded because its search-result continuation is currently
-rejected by the provider tokenizer. No country benchmark run has started.
+rejected by the provider tokenizer. The Germany pilot parameters and unified
+runner are ready; no live country benchmark call has started.
 
 Google Gemini remains an optional provider placeholder. It is disabled and does
 not participate in current runs until its API credentials, model choice, and
@@ -27,3 +28,16 @@ provider-native Google Search grounding capability have been verified.
 - Raw results containing public contact details will remain local and ignored.
 - Prompts, non-sensitive configuration, normalized aggregate scores, and
   redacted reports may be versioned after review.
+
+## Germany pilot
+
+The confirmed pilot uses German and English with the actual execution date. It
+runs OpenAI, Claude, Kimi K2.6, and DeepSeek independently with the frozen
+prompt. Each provider is limited to 12 native-search requests, 20,000 visible
+output tokens, one continuation page, and 30 minutes. Failed requests are
+recorded without automatic retry.
+
+Run `npm run benchmark:verify` for a local-only configuration and validator
+check. After explicit approval for live calls, run one provider at a time with
+`npm run benchmark:pilot -- openai` (or another configured provider). Raw
+responses are written below `runs/raw/`, which is ignored by Git.
