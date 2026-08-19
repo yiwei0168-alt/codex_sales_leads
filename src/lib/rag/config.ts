@@ -11,6 +11,20 @@ export interface RagConfig {
   maxContextChunks: number;
 }
 
+function normalizeGenerationBaseUrl(value: string): string {
+  const baseUrl = value || "https://api.openai.com/v1";
+  try {
+    const parsed = new URL(baseUrl);
+    if (parsed.hostname === "lingyuapi.com" && (parsed.pathname === "" || parsed.pathname === "/")) {
+      parsed.pathname = "/v1";
+      return parsed.toString().replace(/\/$/, "");
+    }
+  } catch {
+    // Let the provider return its normal URL validation error.
+  }
+  return baseUrl.replace(/\/$/, "");
+}
+
 export function getRagConfig(): RagConfig {
   const openaiApiKey = process.env.OPENAI_API_KEY?.trim() ?? "";
   const openaiBaseUrl = process.env.OPENAI_BASE_URL?.trim() ?? "";
@@ -21,7 +35,7 @@ export function getRagConfig(): RagConfig {
   return {
     databaseUrl: process.env.DATABASE_URL?.trim() ?? "",
     openaiApiKey: openaiApiKey || kimiApiKey,
-    openaiBaseUrl: openaiBaseUrl || kimiBaseUrl || "https://api.openai.com/v1",
+    openaiBaseUrl: normalizeGenerationBaseUrl(openaiBaseUrl || kimiBaseUrl),
     embeddingApiKey: process.env.EMBEDDING_API_KEY?.trim() ?? "",
     embeddingBaseUrl: process.env.EMBEDDING_BASE_URL?.trim() ?? "",
     embeddingModel: process.env.EMBEDDING_MODEL?.trim() || "text-embedding-v4",
