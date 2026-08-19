@@ -33,7 +33,7 @@ provider-native Google Search grounding capability have been verified.
 
 The confirmed pilot uses German and English with the actual execution date. It
 runs OpenAI, Claude, Kimi K2.6, and DeepSeek independently with the frozen
-prompt. Each provider is limited to 12 native-search requests, 20,000 visible
+prompt. Each provider is limited to 8 native-search requests, 10,000 visible
 output tokens, one continuation page, and 30 minutes. Failed requests are
 recorded without automatic retry.
 
@@ -41,3 +41,9 @@ Run `npm run benchmark:verify` for a local-only configuration and validator
 check. After explicit approval for live calls, run one provider at a time with
 `npm run benchmark:pilot -- openai` (or another configured provider). Raw
 responses are written below `runs/raw/`, which is ignored by Git.
+
+Prompt v1.0 remains preserved as the original baseline. Pilot v1.1 removes
+repetition while retaining the same knowledge, evidence, privacy, role, and
+output requirements. OpenAI uses Responses API streaming so long-running web
+search emits progress events instead of relying on one silent synchronous
+connection.

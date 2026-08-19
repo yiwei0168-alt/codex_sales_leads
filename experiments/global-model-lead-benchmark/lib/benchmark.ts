@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- provider payloads are validated at runtime */
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 export type ProviderId = "openai" | "claude" | "kimi" | "deepseek";
 type ProviderConfig = { enabled: boolean; participatesInCurrentRun: boolean; credentials: { apiKeyEnv: string; baseUrl?: string; baseUrlEnv?: string }; model: { modelId: string } };
-type PilotConfig = { countryCode: string; countryName: string; regionName: string; primaryLanguages: string[]; providers: ProviderId[]; limits: { nativeSearchRequests: number; visibleOutputTokens: number; continuationPages: number; timeoutMinutesPerProvider: number; automaticRetries: number }; storage: { rawResultsDirectory: string } };
+type PilotConfig = { countryCode: string; countryName: string; regionName: string; primaryLanguages: string[]; promptFile: string; providers: ProviderId[]; limits: { nativeSearchRequests: number; visibleOutputTokens: number; continuationPages: number; timeoutMinutesPerProvider: number; automaticRetries: number }; storage: { rawResultsDirectory: string } };
 type RunContext = { providerId: ProviderId; provider: ProviderConfig; prompt: string; runDate: string; pilot: PilotConfig };
 export type RunArtifact = { providerId: ProviderId; modelId: string; startedAt: string; completedAt: string; searchRequestsObserved: number; response: unknown; rawProviderResponse: unknown };
 
@@ -15,7 +16,7 @@ export async function loadContext(providerId: ProviderId, runDate = new Date().t
   const document = await readJson<{ providers: Record<string, ProviderConfig> }>(path.join(experimentRoot, "config/providers.json"));
   const provider = document.providers[providerId];
   if (!pilot.providers.includes(providerId) || !provider?.enabled || !provider.participatesInCurrentRun) throw new Error(`${providerId} is not enabled for the confirmed pilot`);
-  const template = await readFile(path.join(experimentRoot, "prompts/universal-system-prompt.md"), "utf8");
+  const template = await readFile(path.join(experimentRoot, pilot.promptFile), "utf8");
   const values: Record<string, string> = { COUNTRY_NAME: pilot.countryName, COUNTRY_CODE: pilot.countryCode, REGION_NAME: pilot.regionName, PRIMARY_LANGUAGES: pilot.primaryLanguages.join(", "), RUN_DATE: runDate };
   const prompt = template.replace(/\{([A-Z_]+)\}/g, (match, key: string) => values[key] ?? match);
   const unresolved = [...prompt.matchAll(/\{([A-Z_]+)\}/g)].map((match) => match[0]);
@@ -37,15 +38,58 @@ async function requestJson(url: string, init: RequestInit, timeoutMs: number): P
   return JSON.parse(body);
 }
 
+export function parseSseBuffer(buffer: string): { events: any[]; remainder: string } {
+  const blocks = buffer.replace(/\r\n/g, "\n").split("\n\n");
+  const remainder = blocks.pop() ?? "";
+  const events = blocks.flatMap((block) => {
+    const data = block.split("\n").filter((line) => line.startsWith("data:")).map((line) => line.slice(5).trimStart()).join("\n");
+    if (!data || data === "[DONE]") return [];
+    return [JSON.parse(data)];
+  });
+  return { events, remainder };
+}
+
+async function requestSse(url: string, init: RequestInit, timeoutMs: number): Promise<any[]> {
+  const response = await fetch(url, { ...init, signal: AbortSignal.timeout(timeoutMs) });
+  if (!response.ok) {
+    const body = await response.text();
+    throw new Error(`Provider stream failed (${response.status}): ${body.slice(0, 500)}`);
+  }
+  if (!response.body) throw new Error("Provider stream has no response body");
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  const events: any[] = [];
+  let buffer = "";
+  while (true) {
+    const { done, value } = await reader.read();
+    buffer += decoder.decode(value, { stream: !done });
+    const parsed = parseSseBuffer(buffer);
+    events.push(...parsed.events);
+    buffer = parsed.remainder;
+    if (done) break;
+  }
+  if (buffer.trim()) {
+    const parsed = parseSseBuffer(`${buffer}\n\n`);
+    events.push(...parsed.events);
+  }
+  return events;
+}
+
 function parseJsonObject(text: string): unknown {
   return JSON.parse(text.trim().replace(/^```json\s*/i, "").replace(/\s*```$/, "")) as unknown;
 }
 
 async function runOpenAi(context: RunContext) {
   const { apiKey, baseUrl } = credentials(context.provider);
-  const raw = await requestJson(`${baseUrl}/responses`, { method: "POST", headers: { authorization: `Bearer ${apiKey}`, "content-type": "application/json" }, body: JSON.stringify({ model: context.provider.model.modelId, input: context.prompt, tools: [{ type: "web_search" }], include: ["web_search_call.action.sources"], max_output_tokens: context.pilot.limits.visibleOutputTokens }) }, context.pilot.limits.timeoutMinutesPerProvider * 60_000);
+  const events = await requestSse(`${baseUrl}/responses`, { method: "POST", headers: { authorization: `Bearer ${apiKey}`, accept: "text/event-stream", "content-type": "application/json" }, body: JSON.stringify({ model: context.provider.model.modelId, input: context.prompt, tools: [{ type: "web_search" }], include: ["web_search_call.action.sources"], max_output_tokens: context.pilot.limits.visibleOutputTokens, stream: true }) }, context.pilot.limits.timeoutMinutesPerProvider * 60_000);
+  const failed = events.find((event) => event.type === "response.failed" || event.type === "error");
+  if (failed) throw new Error(`OpenAI stream failed: ${JSON.stringify(failed).slice(0, 500)}`);
+  const completed = events.findLast((event) => event.type === "response.completed")?.response;
+  if (!completed) throw new Error("OpenAI stream ended without response.completed");
+  const raw = completed;
   const text = (raw.output ?? []).flatMap((item: any) => item.content ?? []).filter((item: any) => item.type === "output_text").map((item: any) => item.text).join("");
-  return { text, searches: (raw.output ?? []).filter((item: any) => item.type === "web_search_call").length, raw };
+  const searches = events.filter((event) => event.type === "response.web_search_call.completed").length;
+  return { text, searches, raw: { response: raw, streamEventTypes: events.map((event) => event.type) } };
 }
 
 async function runAnthropic(context: RunContext) {
