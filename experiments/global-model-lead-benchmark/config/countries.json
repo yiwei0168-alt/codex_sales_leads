@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "status": "pending-user-confirmation",
+  "seed": "CUDY-GLOBAL-CHANNEL-BENCHMARK-V1",
+  "algorithm": {
+    "name": "sha256-region-index-v1",
+    "input": "<seed>:<regionId>",
+    "integer": "unsigned big-endian 32-bit integer from the first four digest bytes",
+    "selection": "integer modulo candidate pool length",
+    "poolOrderIsSignificant": true
+  },
+  "manualOverrides": [
+    {
+      "regionId": "europe",
+      "randomlySelectedCountryCode": "PL",
+      "finalCountryCode": "DE",
+      "reason": "user-selected benchmark country"
+    },
+    {
+      "regionId": "south_america",
+      "randomlySelectedCountryCode": "BR",
+      "finalCountryCode": "CO",
+      "reason": "user-selected benchmark country"
+    },
+    {
+      "regionId": "africa",
+      "randomlySelectedCountryCode": "RW",
+      "finalCountryCode": "TZ",
+      "reason": "user-selected benchmark country"
+    }
+  ],
+  "regions": [
+    {
+      "id": "europe",
+      "nameZh": "欧洲",
+      "candidates": [
+        { "countryCode": "DE", "countryNameZh": "德国", "countryNameEn": "Germany" },
+        { "countryCode": "FR", "countryNameZh": "法国", "countryNameEn": "France" },
+        { "countryCode": "IT", "countryNameZh": "意大利", "countryNameEn": "Italy" },
+        { "countryCode": "ES", "countryNameZh": "西班牙", "countryNameEn": "Spain" },
+        { "countryCode": "PL", "countryNameZh": "波兰", "countryNameEn": "Poland" },
+        { "countryCode": "NL", "countryNameZh": "荷兰", "countryNameEn": "Netherlands" },
+        { "countryCode": "RO", "countryNameZh": "罗马尼亚", "countryNameEn": "Romania" },
+        { "countryCode": "CZ", "countryNameZh": "捷克", "countryNameEn": "Czechia" }
+      ],
+      "randomlySelectedCountryCode": "PL",
+      "selectedCountryCode": "DE"
+    },
+    {
+      "id": "north_america",
+      "nameZh": "北美",
+      "candidates": [
+        { "countryCode": "US", "countryNameZh": "美国", "countryNameEn": "United States" },
+        { "countryCode": "CA", "countryNameZh": "加拿大", "countryNameEn": "Canada" },
+        { "countryCode": "MX", "countryNameZh": "墨西哥", "countryNameEn": "Mexico" }
+      ],
+      "randomlySelectedCountryCode": "CA",
+      "selectedCountryCode": "CA"
+    },
+    {
+      "id": "south_america",
+      "nameZh": "南美",
+      "candidates": [
+        { "countryCode": "BR", "countryNameZh": "巴西", "countryNameEn": "Brazil" },
+        { "countryCode": "AR", "countryNameZh": "阿根廷", "countryNameEn": "Argentina" },
+        { "countryCode": "CL", "countryNameZh": "智利", "countryNameEn": "Chile" },
+        { "countryCode": "CO", "countryNameZh": "哥伦比亚", "countryNameEn": "Colombia" },
+        { "countryCode": "PE", "countryNameZh": "秘鲁", "countryNameEn": "Peru" },
+        { "countryCode": "EC", "countryNameZh": "厄瓜多尔", "countryNameEn": "Ecuador" },
+        { "countryCode": "UY", "countryNameZh": "乌拉圭", "countryNameEn": "Uruguay" },
+        { "countryCode": "PY", "countryNameZh": "巴拉圭", "countryNameEn": "Paraguay" }
+      ],
+      "randomlySelectedCountryCode": "BR",
+      "selectedCountryCode": "CO"
+    },
+    {
+      "id": "middle_east",
+      "nameZh": "中东",
+      "candidates": [
+        { "countryCode": "AE", "countryNameZh": "阿联酋", "countryNameEn": "United Arab Emirates" },
+        { "countryCode": "SA", "countryNameZh": "沙特阿拉伯", "countryNameEn": "Saudi Arabia" },
+        { "countryCode": "TR", "countryNameZh": "土耳其", "countryNameEn": "Turkey" },
+        { "countryCode": "QA", "countryNameZh": "卡塔尔", "countryNameEn": "Qatar" },
+        { "countryCode": "JO", "countryNameZh": "约旦", "countryNameEn": "Jordan" },
+        { "countryCode": "OM", "countryNameZh": "阿曼", "countryNameEn": "Oman" },
+        { "countryCode": "KW", "countryNameZh": "科威特", "countryNameEn": "Kuwait" },
+        { "countryCode": "BH", "countryNameZh": "巴林", "countryNameEn": "Bahrain" }
+      ],
+      "randomlySelectedCountryCode": "SA",
+      "selectedCountryCode": "SA"
+    },
+    {
+      "id": "africa",
+      "nameZh": "非洲",
+      "candidates": [
+        { "countryCode": "ZA", "countryNameZh": "南非", "countryNameEn": "South Africa" },
+        { "countryCode": "EG", "countryNameZh": "埃及", "countryNameEn": "Egypt" },
+        { "countryCode": "MA", "countryNameZh": "摩洛哥", "countryNameEn": "Morocco" },
+        { "countryCode": "KE", "countryNameZh": "肯尼亚", "countryNameEn": "Kenya" },
+        { "countryCode": "NG", "countryNameZh": "尼日利亚", "countryNameEn": "Nigeria" },
+        { "countryCode": "GH", "countryNameZh": "加纳", "countryNameEn": "Ghana" },
+        { "countryCode": "TZ", "countryNameZh": "坦桑尼亚", "countryNameEn": "Tanzania" },
+        { "countryCode": "RW", "countryNameZh": "卢旺达", "countryNameEn": "Rwanda" }
+      ],
+      "randomlySelectedCountryCode": "RW",
+      "selectedCountryCode": "TZ"
+    },
+    {
+      "id": "southeast_asia",
+      "nameZh": "东南亚",
+      "candidates": [
+        { "countryCode": "ID", "countryNameZh": "印度尼西亚", "countryNameEn": "Indonesia" },
+        { "countryCode": "TH", "countryNameZh": "泰国", "countryNameEn": "Thailand" },
+        { "countryCode": "VN", "countryNameZh": "越南", "countryNameEn": "Vietnam" },
+        { "countryCode": "MY", "countryNameZh": "马来西亚", "countryNameEn": "Malaysia" },
+        { "countryCode": "PH", "countryNameZh": "菲律宾", "countryNameEn": "Philippines" },
+        { "countryCode": "SG", "countryNameZh": "新加坡", "countryNameEn": "Singapore" },
+        { "countryCode": "KH", "countryNameZh": "柬埔寨", "countryNameEn": "Cambodia" }
+      ],
+      "randomlySelectedCountryCode": "SG",
+      "selectedCountryCode": "SG"
+    }
+  ]
+}
