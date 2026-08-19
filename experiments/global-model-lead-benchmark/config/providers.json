@@ -56,22 +56,22 @@
     },
     "kimi": {
       "displayName": "Moonshot Kimi",
-      "enabled": false,
-      "status": "k3_native_search_incompatible",
-      "participatesInCurrentRun": false,
+      "enabled": true,
+      "status": "ready_with_k2_6_fallback",
+      "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "KIMI_API_KEY",
         "baseUrlEnv": "KIMI_BASE_URL"
       },
       "model": {
-        "selectionPolicy": "highest-performance discovered Kimi model",
-        "modelId": "kimi-k3",
+        "selectionPolicy": "user-approved highest Kimi model with verified native search",
+        "modelId": "kimi-k2.6",
         "discoveryRequired": false
       },
       "nativeSearch": {
         "required": true,
         "adapter": "moonshot_builtin_web_search",
-        "capabilityVerified": false,
+        "capabilityVerified": true,
         "verifiedAt": "2026-08-19",
         "verification": {
           "toolCallObserved": true,
@@ -86,12 +86,16 @@
         },
         "verifiedFallback": {
           "modelId": "kimi-k2.6",
-          "eligibleForBenchmark": false,
-          "pendingUserDecision": true,
+          "eligibleForBenchmark": true,
+          "pendingUserDecision": false,
           "capabilityVerified": true,
           "toolCalls": 1,
           "sourceUrlCount": 4,
           "officialCudyDomainObserved": true
+        },
+        "excludedModel": {
+          "modelId": "kimi-k3",
+          "reason": "native search result continuation returned tokenization_failed"
         }
       }
     },
