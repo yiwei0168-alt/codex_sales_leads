@@ -66,7 +66,11 @@
           "basicRequest": "passed",
           "nativeSearch": "passed",
           "webSearchRequests": 1,
-          "searchQueryCharacters": 57,
+          "searchQueryCharacters": 311,
+          "searchableBenchmarkTrigger": "passed",
+          "cudyIntentDetected": true,
+          "germanyIntentDetected": true,
+          "channelIntentDetected": true,
           "fullPromptQueryRegression": false,
           "automaticRetries": 0
         }
