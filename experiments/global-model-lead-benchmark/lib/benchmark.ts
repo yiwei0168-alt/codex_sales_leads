@@ -9,7 +9,14 @@ type RunContext = { providerId: ProviderId; provider: ProviderConfig; prompt: st
 export type RunArtifact = { providerId: ProviderId; modelId: string; startedAt: string; completedAt: string; searchRequestsObserved: number; response: unknown; rawProviderResponse: unknown };
 
 const experimentRoot = path.resolve("experiments/global-model-lead-benchmark");
+export const BENCHMARK_TRIGGER = "Begin the benchmark now. Follow the system instructions and return only the required JSON object.";
 const readJson = async <T>(file: string): Promise<T> => JSON.parse(await readFile(file, "utf8")) as T;
+
+export function buildMessageEnvelope(providerId: ProviderId, prompt: string): { instructions?: string; input?: string; system?: string; messages?: Array<{ role: string; content: string }> } {
+  if (providerId === "openai") return { instructions: prompt, input: BENCHMARK_TRIGGER };
+  if (providerId === "kimi") return { messages: [{ role: "system", content: prompt }, { role: "user", content: BENCHMARK_TRIGGER }] };
+  return { system: prompt, messages: [{ role: "user", content: BENCHMARK_TRIGGER }] };
+}
 
 export async function loadContext(providerId: ProviderId, runDate = new Date().toISOString().slice(0, 10)): Promise<RunContext> {
   const pilot = await readJson<PilotConfig>(path.join(experimentRoot, "config/pilot.json"));
@@ -124,7 +131,8 @@ export function extractBenchmarkJson(text: string): unknown {
 
 async function runOpenAi(context: RunContext) {
   const { apiKey, baseUrl } = credentials(context.provider);
-  const events = await requestSse(`${baseUrl}/responses`, { method: "POST", headers: { authorization: `Bearer ${apiKey}`, accept: "text/event-stream", "content-type": "application/json" }, body: JSON.stringify({ model: context.provider.model.modelId, input: context.prompt, tools: [{ type: "web_search" }], include: ["web_search_call.action.sources"], max_output_tokens: context.pilot.limits.visibleOutputTokens, stream: true }) }, context.pilot.limits.timeoutMinutesPerProvider * 60_000);
+  const envelope = buildMessageEnvelope("openai", context.prompt);
+  const events = await requestSse(`${baseUrl}/responses`, { method: "POST", headers: { authorization: `Bearer ${apiKey}`, accept: "text/event-stream", "content-type": "application/json" }, body: JSON.stringify({ model: context.provider.model.modelId, ...envelope, tools: [{ type: "web_search" }], include: ["web_search_call.action.sources"], max_output_tokens: context.pilot.limits.visibleOutputTokens, stream: true }) }, context.pilot.limits.timeoutMinutesPerProvider * 60_000);
   const failed = events.find((event) => event.type === "response.failed" || event.type === "error");
   if (failed) throw new Error(`OpenAI stream failed: ${JSON.stringify(failed).slice(0, 500)}`);
   const completed = events.findLast((event) => event.type === "response.completed")?.response;
@@ -137,14 +145,16 @@ async function runOpenAi(context: RunContext) {
 
 async function runAnthropic(context: RunContext) {
   const { apiKey, baseUrl } = credentials(context.provider);
-  const raw = await requestJson(`${baseUrl}/v1/messages`, { method: "POST", headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "content-type": "application/json" }, body: JSON.stringify({ model: context.provider.model.modelId, max_tokens: context.pilot.limits.visibleOutputTokens, messages: [{ role: "user", content: context.prompt }], tools: [{ type: "web_search_20250305", name: "web_search", max_uses: context.pilot.limits.nativeSearchRequests }] }) }, context.pilot.limits.timeoutMinutesPerProvider * 60_000);
+  const envelope = buildMessageEnvelope(context.providerId, context.prompt);
+  const raw = await requestJson(`${baseUrl}/v1/messages`, { method: "POST", headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "content-type": "application/json" }, body: JSON.stringify({ model: context.provider.model.modelId, max_tokens: context.pilot.limits.visibleOutputTokens, ...envelope, tools: [{ type: "web_search_20250305", name: "web_search", max_uses: context.pilot.limits.nativeSearchRequests }] }) }, context.pilot.limits.timeoutMinutesPerProvider * 60_000);
   const text = (raw.content ?? []).filter((item: any) => item.type === "text").map((item: any) => item.text).join("");
   return { text, searches: (raw.content ?? []).filter((item: any) => item.type === "server_tool_use" && item.name === "web_search").length, raw };
 }
 
 async function runKimi(context: RunContext) {
   const { apiKey, baseUrl } = credentials(context.provider);
-  const messages: any[] = [{ role: "user", content: context.prompt }];
+  const envelope = buildMessageEnvelope("kimi", context.prompt);
+  const messages: any[] = structuredClone(envelope.messages ?? []);
   const rounds: unknown[] = [];
   let searches = 0;
   let text = "";

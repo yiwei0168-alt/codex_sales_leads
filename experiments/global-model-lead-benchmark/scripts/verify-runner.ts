@@ -1,7 +1,13 @@
-import { extractBenchmarkJson, loadContext, parseSseBuffer, validateBenchmarkResult } from "../lib/benchmark";
+import { BENCHMARK_TRIGGER, buildMessageEnvelope, extractBenchmarkJson, loadContext, parseSseBuffer, validateBenchmarkResult } from "../lib/benchmark";
 
 const context = await loadContext("openai", "2026-08-19");
 if (!context.prompt.includes("Country: `Germany` (`DE`)") || !context.prompt.includes("Search languages: `German, English` plus English")) throw new Error("Prompt substitution failed");
+for (const provider of ["openai", "claude", "kimi", "deepseek"] as const) {
+  const envelope = buildMessageEnvelope(provider, context.prompt);
+  const userContent = envelope.input ?? envelope.messages?.find((message) => message.role === "user")?.content;
+  const systemContent = envelope.instructions ?? envelope.system ?? envelope.messages?.find((message) => message.role === "system")?.content;
+  if (userContent !== BENCHMARK_TRIGGER || systemContent !== context.prompt || userContent.includes("Cudy Global Channel-Lead")) throw new Error(`${provider} message role separation failed`);
+}
 const result = {
   runMetadata: { countryName: "Germany", countryCode: "DE" }, searchCapability: { queriesExecutedCount: 0 },
   tier1Partners: [], downstreamCustomers: [], contacts: [], uncertainties: [], knowledgeGaps: [],

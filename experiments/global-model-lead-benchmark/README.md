@@ -47,6 +47,11 @@ complete benchmark JSON object. Multiple, incomplete, or schema-invalid objects
 remain failures. Rejected provider payloads are retained locally under
 `runs/raw/*.rejected.json` for diagnosis and are never committed.
 
+Every provider receives the identical substituted prompt as system-level
+instructions and the identical short user trigger. This prevents a native
+search adapter from treating the full benchmark specification as one query and
+keeps message roles consistent across providers.
+
 Prompt v1.0 remains preserved as the original baseline. Pilot v1.1 removes
 repetition while retaining the same knowledge, evidence, privacy, role, and
 output requirements. OpenAI uses Responses API streaming so long-running web
