@@ -9,12 +9,13 @@ APIs, contact databases, and the project's existing lead data are excluded.
 
 ## Current stage
 
-Country selection and the universal benchmark prompt are frozen. The next stage
-is a single-country pilot. OpenAI, Claude, and DeepSeek passed native-search
-verification. Kimi K2.6 is enabled after passing the same native-search flow;
-Kimi K3 is excluded because its search-result continuation is currently
-rejected by the provider tokenizer. The Germany pilot parameters and unified
-runner are ready; no live country benchmark call has started.
+Country selection and prompt v1.1 are frozen. Claude and Kimi K2.6 currently
+pass both basic and native-search preflights. Kimi K3 remains excluded because
+its search-result continuation is rejected by the provider tokenizer. OpenAI
+`gpt-5.6-sol` passes basic Responses streaming, but Lingyu's native-search path
+currently returns an upstream-overloaded error; it is operationally blocked,
+not scored as a model failure. DeepSeek retains its verified latency risk. No
+successful live country benchmark run has completed.
 
 Google Gemini remains an optional provider placeholder. It is disabled and does
 not participate in current runs until its API credentials, model choice, and

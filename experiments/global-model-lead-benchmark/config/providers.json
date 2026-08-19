@@ -4,7 +4,7 @@
     "openai": {
       "displayName": "OpenAI",
       "enabled": true,
-      "status": "ready",
+      "status": "blocked_native_search_upstream_unavailable",
       "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "LINGYU_API_KEY",
@@ -24,6 +24,15 @@
           "toolSignal": "web_search_call",
           "sourceUrlCount": 1,
           "officialSourceObserved": "https://www.cudy.com/"
+        },
+        "latestPreflight": {
+          "checkedAt": "2026-08-19",
+          "basicRequest": "passed",
+          "streaming": "passed",
+          "nativeSearch": "failed",
+          "failureCategory": "upstream_unavailable",
+          "failureMessage": "server overloaded",
+          "automaticRetries": 0
         }
       }
     },
@@ -51,6 +60,15 @@
           "webSearchRequests": 1,
           "sourceUrlCount": 8,
           "officialSourceObserved": "https://www.cudy.com/pages/about-cudy"
+        },
+        "latestPreflight": {
+          "checkedAt": "2026-08-19",
+          "basicRequest": "passed",
+          "nativeSearch": "passed",
+          "webSearchRequests": 1,
+          "searchQueryCharacters": 57,
+          "fullPromptQueryRegression": false,
+          "automaticRetries": 0
         }
       }
     },
@@ -92,6 +110,14 @@
           "toolCalls": 1,
           "sourceUrlCount": 4,
           "officialCudyDomainObserved": true
+        },
+        "latestPreflight": {
+          "checkedAt": "2026-08-19",
+          "basicRequest": "passed",
+          "nativeSearch": "passed",
+          "toolCalls": 1,
+          "continuationCompleted": true,
+          "automaticRetries": 0
         },
         "excludedModel": {
           "modelId": "kimi-k3",
