@@ -1,6 +1,26 @@
 {
   "schemaVersion": 1,
   "providers": {
+    "openai": {
+      "displayName": "OpenAI",
+      "enabled": false,
+      "status": "model_discovered",
+      "participatesInCurrentRun": false,
+      "credentials": {
+        "apiKeyEnv": "LINGYU_API_KEY",
+        "baseUrl": "https://lingyuapi.com/v1"
+      },
+      "model": {
+        "selectionPolicy": "user-selected high-performance model",
+        "modelId": "gpt-5.6-sol",
+        "discoveryRequired": false
+      },
+      "nativeSearch": {
+        "required": true,
+        "adapter": "openai_web_search",
+        "capabilityVerified": false
+      }
+    },
     "gemini": {
       "displayName": "Google Gemini",
       "enabled": false,
