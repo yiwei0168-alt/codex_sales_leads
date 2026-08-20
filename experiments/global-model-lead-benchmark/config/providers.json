@@ -5,7 +5,7 @@
     "openai": {
       "displayName": "OpenAI via Lingyu",
       "enabled": true,
-      "status": "v2_preflight_failed_gateway_parameter_incompatibility",
+      "status": "ready_v2",
       "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "LINGYU_API_KEY",
@@ -31,16 +31,18 @@
       "latestPreflight": {
         "checkedAt": "2026-08-20",
         "basicRequest": "passed",
-        "nativeSearch": "failed",
-        "failureCategory": "aggregation_gateway_parameter_incompatibility",
-        "failureDetail": "Lingyu returned HTTP 400 for the Responses API max_tool_calls parameter",
+        "nativeSearch": "passed_after_gateway_compatibility_adaptation",
+        "webSearchCalls": 1,
+        "sourceUrlCount": 2,
+        "basicLatencyMs": 2920,
+        "nativeSearchLatencyMs": 7161,
         "automaticRetries": 0
       }
     },
     "claude": {
       "displayName": "Anthropic Claude via Lingyu",
       "enabled": true,
-      "status": "v2_preflight_failed_no_native_search_signal",
+      "status": "ready_v2",
       "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "CLAUDE_API_KEY",
@@ -66,9 +68,11 @@
       "latestPreflight": {
         "checkedAt": "2026-08-20",
         "basicRequest": "passed",
-        "nativeSearch": "failed",
-        "failureCategory": "no_provider_native_search_signal",
-        "failureDetail": "The request returned final text but no server_tool_use web_search signal",
+        "nativeSearch": "passed_with_current_web_dependent_probe",
+        "webSearchCalls": 1,
+        "sourceUrlCount": 13,
+        "basicLatencyMs": 3367,
+        "nativeSearchLatencyMs": 7480,
         "automaticRetries": 0
       }
     },
@@ -143,7 +147,7 @@
     "grok": {
       "displayName": "xAI Grok",
       "enabled": true,
-      "status": "v2_preflight_failed_transport",
+      "status": "ready_v2",
       "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "XAI_API_KEY",
@@ -176,9 +180,11 @@
       "latestPreflight": {
         "checkedAt": "2026-08-20",
         "basicRequest": "passed",
-        "nativeSearch": "failed",
-        "failureCategory": "transport_fetch_failed",
-        "failureDetail": "The native-search request ended with fetch failed; the captured error did not expose a lower-level cause",
+        "nativeSearch": "passed_after_parallel_tool_calls_disabled",
+        "webSearchCalls": 1,
+        "sourceUrlCount": 10,
+        "basicLatencyMs": 809,
+        "nativeSearchLatencyMs": 4837,
         "automaticRetries": 0
       }
     },

@@ -14,6 +14,8 @@
 
 2026-08-20 的 v2 首轮预检中，Kimi K2.6 和 DeepSeek V4 Flash 通过；OpenAI 经 Lingyu 的搜索请求因网关不接受 `max_tool_calls` 而失败；Claude 经 Lingyu 返回了自然语言文本但没有原生搜索工具信号；Grok 的基础请求成功、搜索请求发生未能进一步归因的传输失败。失败请求均未自动重试，正式德国评测尚未开始。脱敏详情见 `reports/2026-08-20-v2-protocol-status.json`。
 
+在用户确认修复方案后，OpenAI 移除网关不兼容参数、Claude 改用必须依赖当前网页的能力探针、Grok 禁止并行工具调用；三家各自唯一一次修复后预检均通过。连同首轮已通过的 Kimi 和 DeepSeek，五家现均为 `ready_v2`。这些是能力预检，不是德国计分运行。
+
 ## 运行流程
 
 1. 运行 `npm run benchmark:verify`，只检查配置、请求结构、提示词一致性、评分函数和盲审抽样，不连接模型 API。

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "protocolVersion": "native-search-natural-language-v2",
   "asOf": "2026-08-20",
-  "status": "preflight_completed_remediation_required",
+  "status": "ready_for_measured_germany_runs",
   "pilotCountry": "DE",
   "repetitionsPerSystem": 3,
   "participatingProviders": ["openai", "claude", "kimi", "deepseek", "grok"],
@@ -29,16 +29,22 @@
     "typescript": "passed",
     "providerPreflights": {
       "openai": {
-        "status": "failed",
-        "basicLatencyMs": 10194,
-        "nativeSearchLatencyMs": 2008,
-        "cause": "Lingyu rejected max_tool_calls with HTTP 400"
+        "status": "passed_after_remediation",
+        "initialFailure": "Lingyu rejected max_tool_calls with HTTP 400",
+        "remediation": "omit unsupported gateway parameter and enforce the 12-call rule after the response",
+        "basicLatencyMs": 2920,
+        "nativeSearchLatencyMs": 7161,
+        "webSearchCalls": 1,
+        "sourceUrlCount": 2
       },
       "claude": {
-        "status": "failed",
-        "basicLatencyMs": 3185,
-        "nativeSearchLatencyMs": 3049,
-        "cause": "final text returned without a provider-native web-search signal"
+        "status": "passed_after_remediation",
+        "initialFailure": "the stable-fact probe returned final text without a provider-native web-search signal",
+        "remediation": "use a current-web-dependent native-search probe",
+        "basicLatencyMs": 3367,
+        "nativeSearchLatencyMs": 7480,
+        "webSearchCalls": 1,
+        "sourceUrlCount": 13
       },
       "kimi": {
         "status": "passed",
@@ -55,10 +61,13 @@
         "sourceUrlCount": 11
       },
       "grok": {
-        "status": "failed",
-        "basicLatencyMs": 1066,
-        "nativeSearchLatencyMs": 7309,
-        "cause": "transport fetch failed without a captured lower-level cause"
+        "status": "passed_after_remediation",
+        "initialFailure": "transport fetch failed without a captured lower-level cause",
+        "remediation": "disable parallel tool calls and retain lower-level transport diagnostics",
+        "basicLatencyMs": 809,
+        "nativeSearchLatencyMs": 4837,
+        "webSearchCalls": 1,
+        "sourceUrlCount": 10
       }
     },
     "measuredRuns": "not_run_under_v2"
