@@ -17,7 +17,7 @@ contact methods receive 0–2 points independently from company fit.
 
 After Codex finishes, `npm run benchmark:prepare-human-audit` selects a
 deterministic, stratified 25 percent sample with a minimum of 12 candidates. It
-also adds high-risk cases to a separate supplement. Provider/product identity,
+also adds a separate high-risk supplement capped at 10 percent of the pool. Provider/product identity,
 Codex scores, risk flags, and sampling strata remain hidden from the reviewer.
 Every contact and contact method for a sampled candidate is reviewed.
 

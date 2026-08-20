@@ -34,6 +34,7 @@
     "codexReviewsAllCandidates": true,
     "blindHumanAuditPercent": 25,
     "blindHumanAuditMinimum": 12,
+    "highRiskSupplementMaximumPercent": 10,
     "failedAuditExpansionPercent": 15,
     "finalReviewer": "user",
     "codexPreVerification": true

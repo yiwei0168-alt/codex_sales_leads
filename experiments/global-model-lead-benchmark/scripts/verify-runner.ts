@@ -40,6 +40,11 @@ if (!context.prompt.includes("原生联网搜索能力") || !context.prompt.incl
 if (context.pilot.protocolVersion !== "native-search-potential-fit-v3" || context.pilot.artifactTag !== "potential-fit-v3") {
   throw new Error("Potential-fit v3 artifact isolation is incomplete");
 }
+if (context.pilot.judging.blindHumanAuditPercent !== 25 || context.pilot.judging.blindHumanAuditMinimum !== 12
+  || context.pilot.judging.highRiskSupplementMaximumPercent !== 10
+  || context.pilot.judging.failedAuditExpansionPercent !== 15) {
+  throw new Error("Potential-fit human audit limits are incomplete");
+}
 if (context.prompt.includes("区分“已证实的当前Cudy渠道”")) throw new Error("Existing-channel priority leaked into the v3 prompt");
 if (/runMetadata|summaryMetrics|queriesExecutedCount|pageIndex/.test(context.prompt)) throw new Error("Legacy benchmark schema leaked into the v2 prompt");
 if (!context.pilot.productComparator.enabled || !context.pilot.productComparator.sameUserPrompt

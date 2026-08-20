@@ -47,6 +47,7 @@
     "statisticalSamplePercent": 25,
     "minimumCandidates": 12,
     "highRiskSupplement": true,
+    "highRiskSupplementMaximumPercent": 10,
     "failedAuditExpansionPercent": 15,
     "codexScoresHidden": true,
     "providerIdentityHidden": true
@@ -58,6 +59,25 @@
   "measuredRuns": {
     "attempted": 0,
     "paidCallsAuthorized": false
+  },
+  "historicalV2PoolAuditRehearsal": {
+    "purpose": "validate the v3 Codex and blind-human-audit mechanism only; never publish as a v3 model leaderboard",
+    "candidatePoolSize": 48,
+    "gateValidAndScored": 23,
+    "gateInvalidAndUnscored": 25,
+    "confirmedExistingRelationshipReference": 13,
+    "qualifiedNetNewPotentialProspects": 9,
+    "unqualifiedNetNewPotentialProspects": 1,
+    "namedContactClaims": 26,
+    "codexPositiveNamedContactClaims": 16,
+    "contactMethodClaims": 105,
+    "codexPositiveContactMethodClaims": 52,
+    "blindHumanAudit": {
+      "statisticalSample": 12,
+      "highRiskSupplement": 5,
+      "totalCandidates": 17,
+      "humanDecisionsCompleted": false
+    }
   },
   "historicalV2Disposition": "workflow_pilot_only_not_a_final_quality_leaderboard",
   "privacy": {

@@ -41,6 +41,7 @@ type JudgingConfig = {
   humanInTheLoop: {
     blindHumanAuditPercent: number;
     blindHumanAuditMinimum: number;
+    highRiskSupplementMaximumPercent: number;
     auditSeed: string;
   };
 };
@@ -71,7 +72,8 @@ const statisticalSampleIds = selectStratifiedBlindAuditIds(
   audit.blindHumanAuditMinimum,
   audit.auditSeed,
 );
-const riskSupplementIds = selectHighRiskAuditIds(document.assessments, statisticalSampleIds, audit.auditSeed);
+const highRiskMaximum = Math.ceil(document.assessments.length * audit.highRiskSupplementMaximumPercent / 100);
+const riskSupplementIds = selectHighRiskAuditIds(document.assessments, statisticalSampleIds, audit.auditSeed).slice(0, highRiskMaximum);
 const selectedIds = [...statisticalSampleIds, ...riskSupplementIds];
 const selected = selectedIds.map((id) => {
   const candidate = packet.candidates.find((item) => item.blindCandidateId === id);

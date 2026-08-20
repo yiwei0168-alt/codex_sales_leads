@@ -69,6 +69,7 @@
     "blindHumanAuditMinimum": 12,
     "auditAllContactsForSampledCandidates": true,
     "auditHighRiskCandidates": true,
+    "highRiskSupplementMaximumPercent": 10,
     "failedAuditExpansionPercent": 15,
     "auditSeed": "CUDY-POTENTIAL-FIT-V3-HUMAN-AUDIT",
     "acceptanceThresholds": {

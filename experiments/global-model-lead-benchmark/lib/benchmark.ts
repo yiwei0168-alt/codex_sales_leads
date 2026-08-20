@@ -42,6 +42,7 @@ export type PilotConfig = {
     codexReviewsAllCandidates: boolean;
     blindHumanAuditPercent: number;
     blindHumanAuditMinimum: number;
+    highRiskSupplementMaximumPercent: number;
     failedAuditExpansionPercent: number;
   };
   storage: { rawResultsDirectory: string; commitRawResults: boolean };
