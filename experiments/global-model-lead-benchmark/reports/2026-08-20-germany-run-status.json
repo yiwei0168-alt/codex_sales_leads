@@ -40,7 +40,17 @@
       "failureCategory": "tokenization_failed",
       "httpStatus": 400,
       "continuationCompleted": false,
-      "subsequentDecision": "restore_kimi-k2.6_for_next_run"
+      "subsequentDecision": "restore_kimi-k2.6_for_next_run",
+      "fallbackRun": {
+        "modelId": "kimi-k2.6",
+        "status": "rejected_no_json",
+        "failureCategory": "degenerate_output_limit",
+        "nativeSearchRequests": 1,
+        "rounds": 2,
+        "providerFinishReasons": ["tool_calls", "length"],
+        "completionTokensFinalRound": 10000,
+        "jsonBracesObserved": 0
+      }
     },
     "claude": {
       "modelId": "claude-opus-4-8",

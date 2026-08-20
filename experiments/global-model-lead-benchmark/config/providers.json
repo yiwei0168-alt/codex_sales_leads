@@ -85,7 +85,7 @@
     "kimi": {
       "displayName": "Moonshot Kimi",
       "enabled": true,
-      "status": "ready_with_k2_6_fallback",
+      "status": "k2_6_benchmark_degenerate_output",
       "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "KIMI_API_KEY",
@@ -128,6 +128,16 @@
           "toolCalls": 1,
           "continuationCompleted": true,
           "automaticRetries": 0
+        },
+        "latestBenchmark": {
+          "runDate": "2026-08-20",
+          "countryCode": "DE",
+          "modelId": "kimi-k2.6",
+          "status": "rejected_no_json",
+          "failureCategory": "degenerate_output_limit",
+          "nativeSearchRequests": 1,
+          "providerFinishReason": "length",
+          "completionTokens": 10000
         },
         "knownRiskModel": {
           "modelId": "kimi-k3",

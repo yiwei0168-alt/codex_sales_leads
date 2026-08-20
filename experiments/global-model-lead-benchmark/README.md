@@ -18,7 +18,9 @@ latency risk, and OpenAI uses Responses streaming through Lingyu.
 On 2026-08-20, the Germany OpenAI run completed and passed validation. DeepSeek
 completed six searches but its JSON was cut off by the output-token limit and
 is eligible for the configured single continuation page. Kimi K3 reproduced
-its `tokenization_failed` error. Only redacted aggregate status is committed;
+its `tokenization_failed` error. The subsequent Kimi K2.6 fallback completed one
+search round but degenerated into repeated non-JSON output until its token
+limit, so it was also rejected. Only redacted aggregate status is committed;
 the OpenAI lead records and rejected provider payloads remain local and ignored.
 
 Google Gemini remains an optional provider placeholder. It is disabled and does
