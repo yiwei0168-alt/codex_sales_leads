@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "protocolVersion": "native-search-natural-language-v2",
   "asOf": "2026-08-20",
-  "status": "measured_runs_resumed_after_resource_rule_amendment",
+  "status": "measured_model_runs_complete_normalization_pending",
   "pilotCountry": "DE",
   "repetitionsPerSystem": 3,
   "participatingProviders": ["openai", "claude", "kimi", "deepseek", "grok"],
@@ -32,7 +32,7 @@
       "openai": {
         "status": "passed_after_remediation",
         "initialFailure": "Lingyu rejected max_tool_calls with HTTP 400",
-        "remediation": "omit unsupported gateway parameter and enforce the 12-call rule after the response",
+        "remediation": "omit the unsupported gateway parameter and report actual search usage against the target budget",
         "basicLatencyMs": 2920,
         "nativeSearchLatencyMs": 7161,
         "webSearchCalls": 1,
@@ -72,8 +72,11 @@
       }
     },
     "measuredRuns": {
-      "completed": 5,
-      "planned": 15,
+      "attempted": 15,
+      "completedAnswers": 11,
+      "eligibleNativeSearchAnswers": 10,
+      "zeroScoreNoNativeSearch": 1,
+      "infrastructureFailures": 4,
       "automaticRetries": 0,
       "round1": {
         "openai": {
@@ -112,13 +115,123 @@
           "latencyMs": 147039
         }
       },
+      "round2": {
+        "kimi": {
+          "status": "eligible",
+          "webSearchCalls": 1,
+          "sourceUrlCount": 0,
+          "answerCharacters": 15689,
+          "latencyMs": 227690
+        },
+        "grok": {
+          "status": "eligible",
+          "webSearchCalls": 18,
+          "sourceUrlCount": 75,
+          "answerCharacters": 4212,
+          "latencyMs": 61954
+        },
+        "claude": {
+          "status": "infrastructure_failure",
+          "failureCategory": "gateway_no_available_accounts",
+          "latencyMs": 1968
+        },
+        "openai": {
+          "status": "infrastructure_failure",
+          "failureCategory": "service_overloaded",
+          "latencyMs": 12146
+        },
+        "deepseek": {
+          "status": "eligible",
+          "webSearchCalls": 6,
+          "sourceUrlCount": 23,
+          "answerCharacters": 5414,
+          "latencyMs": 26643
+        }
+      },
+      "round3": {
+        "deepseek": {
+          "status": "eligible",
+          "webSearchCalls": 6,
+          "sourceUrlCount": 30,
+          "answerCharacters": 6314,
+          "latencyMs": 31527
+        },
+        "openai": {
+          "status": "infrastructure_failure",
+          "failureCategory": "service_overloaded",
+          "latencyMs": 28316
+        },
+        "grok": {
+          "status": "eligible",
+          "webSearchCalls": 21,
+          "sourceUrlCount": 101,
+          "answerCharacters": 6848,
+          "latencyMs": 57175
+        },
+        "kimi": {
+          "status": "eligible",
+          "webSearchCalls": 1,
+          "sourceUrlCount": 0,
+          "answerCharacters": 15775,
+          "latencyMs": 223560
+        },
+        "claude": {
+          "status": "infrastructure_failure",
+          "failureCategory": "gateway_no_available_accounts",
+          "latencyMs": 3759
+        }
+      },
+      "providerSummary": {
+        "openai": {
+          "scheduledRuns": 3,
+          "eligibleRuns": 1,
+          "infrastructureFailures": 2,
+          "observedSearchCalls": 8,
+          "sourceUrlCountSum": 14,
+          "eligibleRunMedianLatencyMs": 115466
+        },
+        "claude": {
+          "scheduledRuns": 3,
+          "eligibleRuns": 0,
+          "zeroScoreNoNativeSearch": 1,
+          "infrastructureFailures": 2,
+          "observedSearchCalls": 0,
+          "sourceUrlCountSum": 0,
+          "eligibleRunMedianLatencyMs": null
+        },
+        "kimi": {
+          "scheduledRuns": 3,
+          "eligibleRuns": 3,
+          "infrastructureFailures": 0,
+          "observedSearchCalls": 3,
+          "sourceUrlCountSum": 0,
+          "eligibleRunMedianLatencyMs": 223560
+        },
+        "deepseek": {
+          "scheduledRuns": 3,
+          "eligibleRuns": 3,
+          "infrastructureFailures": 0,
+          "observedSearchCalls": 18,
+          "sourceUrlCountSum": 71,
+          "eligibleRunMedianLatencyMs": 27514
+        },
+        "grok": {
+          "scheduledRuns": 3,
+          "eligibleRuns": 3,
+          "infrastructureFailures": 0,
+          "observedSearchCalls": 60,
+          "sourceUrlCountSum": 297,
+          "eligibleRunMedianLatencyMs": 61954
+        }
+      },
       "resourceRuleAmendment": {
         "trigger": "Grok emitted 21 distinct completed web_search_call items despite max_turns=12 and parallel_tool_calls=false; max_turns is not a hard web-search action limit.",
         "decision": "Treat 12 search actions as a target resource budget rather than a scoring disqualifier for every provider.",
         "hardLimitsRetained": ["15 minute wall-clock timeout", "8000 visible output tokens", "zero automatic retries"],
         "timing": "Confirmed before any candidate-quality extraction or human review.",
         "grokRound1Reclassified": true
-      }
+      },
+      "qualityScoringStatus": "pending Codex extraction, deduplication, public-web verification, and blinded user review"
     }
   },
   "privacy": {
