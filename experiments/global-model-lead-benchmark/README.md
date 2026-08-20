@@ -1,110 +1,50 @@
-# Global Model Lead Benchmark
+# Global Model Native-Search Benchmark
 
-This experiment compares high-performance models from different providers on
-their ability to discover Cudy Technology channel prospects across regions.
+本实验只比较不同模型服务商的原生联网搜索能力，并在相同任务下与本项目的 Sales Lead Copilot 进行对照。它不是通用推理能力测试，也不模拟网页聊天产品 UI。
 
-The benchmark permits only each model provider's native web-search or grounding
-capability. External crawlers, browser automation, Tavily, third-party search
-APIs, contact databases, and the project's existing lead data are excluded.
+## 当前协议
 
-## Current stage
+- 所有模型收到同一条中文 user prompt，并返回自然语言答案；不要求 JSON，不添加隐藏 system prompt，不追问、不续写、不自动重试。
+- 被测模型只能使用服务商随模型提供的原生 Web Search/grounding。禁止向模型注入 Codex 搜索结果、Tavily、爬虫、第三方搜索 API、联系人数据库、CRM、历史线索或其他模型输出。
+- 关闭或降至服务支持的最低推理模式，使用已确认的快速模型：OpenAI `gpt-5.6-terra`、Claude `claude-haiku-4-5`、Kimi `kimi-k2.6`、DeepSeek `deepseek-v4-flash`、Grok `grok-4.3`。Gemini 保留接口但在凭证配置前不参与。
+- 每次运行最多允许 12 次原生搜索动作、15 分钟、8,000 个可见输出 token；没有自动重试。限制是防止单次异常运行无限消耗资源的安全上限，不是要求模型必须用满。
+- 只有供应商响应中能观察到原生搜索调用的运行才按正常候选结果评分。完成回答但未调用原生搜索的运行保留为协议不合规结果，并在该次发现指标中记零；Codex 后验核验不能挽救该次分数。
 
-Country selection and prompt v1.1 are frozen. Claude is temporarily skipped by
-user decision. Kimi K2.6 is the current model after passing basic, native-search,
-and JSON Mode checks; Kimi K3 remains recorded as incompatible after reproducing
-its tokenization failure. DeepSeek retains its verified latency risk, and OpenAI
-uses Responses streaming through Lingyu.
+当前先在德国做五个系统各三次的独立重复。德国流程稳定后，再以同一协议扩展到加拿大、哥伦比亚、沙特阿拉伯、坦桑尼亚和新加坡。国家选择及人工覆盖见 `config/countries.json`。
 
-Grok is wired into the same pilot through xAI's Responses API using the
-publicly documented `grok-4.5` flagship, server-side Web Search only, high
-reasoning effort, JSON Object output, and the same frozen prompt. The account's
-model list also exposes `grok-4.6`, but it is not selected because public
-capability documentation was unavailable at integration time. Direct Node
-networking timed out, so benchmark and preflight commands explicitly enable the
-configured environment proxy.
+## 运行流程
 
-On 2026-08-20, the Germany OpenAI run completed and passed validation. DeepSeek
-completed six searches but its first JSON was cut off by the output-token limit;
-its single allowed continuation then produced a compact full replacement JSON
-without any new search and passed validation. Kimi K3 reproduced its
-`tokenization_failed` error. The subsequent Kimi K2.6 fallback completed one
-search round but degenerated into repeated non-JSON output until its token
-limit, so it was rejected. A later minimal Kimi K2.6 JSON Mode test passed with
-thinking and search disabled, isolating the benchmark failure to the combined
-native-search continuation and long-form synthesis path rather than basic JSON
-support. Enabling JSON Mode on the same frozen benchmark request then produced a
-valid Kimi K2.6 result, but it stopped after one of eight allowed searches and
-returned only one company, so it is explicitly classified as low recall. Its
-reported `tool_budget` stop reason is also inconsistent with the configured
-eight-search limit. Only redacted aggregate status is committed; lead records
-and rejected provider payloads remain local and ignored.
+1. 运行 `npm run benchmark:verify`，只检查配置、请求结构、提示词一致性、评分函数和盲审抽样，不连接模型 API。
+2. 对每个供应商运行 `npm run benchmark:preflight -- <provider>`。预检包括一次极小的基础调用和一次原生搜索调用，二者任一失败即停止；预检不会自动重试。
+3. 只有在预检通过并明确授权付费调用后，才运行 `npm run benchmark:pilot -- <provider> <repetition>`。`repetition` 只能是 1、2、3。
+4. 原始回答和供应商响应写入被 Git 忽略的 `runs/raw/`。失败也单独保留，不能覆盖或伪装成成功运行。
+5. Codex 在全部运行结束后统一抽取公司和联系人、标准化域名、跨模型去重、汇集每个系统前 20 名候选，并使用公开网页进行后验事实核验。核验材料不会回传给被测模型。
+6. Codex 将候选做匿名化并生成证据包；供应商、模型和重复序号对审核者隐藏。用户是唯一最终审核者，并对确定性抽取的 15% 样本进行同人盲态复审。
+7. 只有脱敏聚合指标和协议状态可以提交到 Git。公司线索、联系人、原始输出、盲化盐和审核工作文件均保持本地，不进入仓库。
 
-The first Grok search preflight exposed citation text outside the JSON object;
-disabling inline citations resolved that format issue. The second preflight
-completed its basic request but the model chose not to invoke Web Search. The
-third preflight passed after setting `tool_choice=required` and disabling
-parallel calls: exactly one Web Search call was observed and the single output
-text block parsed as JSON. The subsequently authorized measured Germany run did
-not reproduce that path: with the full prompt plus JSON mode, Grok serialized a
-proposed Web Search request as ordinary text instead of invoking the server-side
-tool. The API reported zero searches and zero sources, so the response was
-rejected and is not eligible for comparison. No retry or continuation was run.
-A two-stage native-search then structured-synthesis remediation using
-`previous_response_id` was subsequently authorized and implemented with one
-shared 30-minute deadline; its single remediation run is pending.
+供应商值为 `openai`、`claude`、`kimi`、`deepseek` 或 `grok`。Gemini 目前仅在配置中保留占位，不接受运行命令。
 
-Google Gemini remains an optional provider placeholder. It is disabled and does
-not participate in current runs until its API credentials, model choice, and
-provider-native Google Search grounding capability have been verified.
+## 评分
 
-## Privacy and repository policy
+人工审核把候选分为四档：已证实的当前 Cudy 渠道为 3 分、合格一级渠道为 2 分、重要下级渠道为 1 分、无效为 0 分。主要结果只看模型答案中最先出现的 20 家公司：
 
-- API credentials remain in `.env.local` and must never be committed.
-- Existing private knowledge, mailbox content, contacts, and lead records are
-  excluded from benchmark context.
-- Raw results containing public contact details will remain local and ignored.
-- Prompts, non-sensitive configuration, normalized aggregate scores, and
-  redacted reports may be versioned after review.
+- `nDCG@20`：同时衡量有效线索质量和排序质量。
+- `Precision@20`：前 20 位中通过人工审核的比例；少于 20 家时空位也计入分母，以反映召回不足。
+- `ValidatedLeads@20`：前 20 位中通过审核的公司数量。
+- `PooledRecall`：该系统找到的有效公司占所有系统前 20 名合并去重后有效候选池的比例。它是相对召回率，不代表市场中的绝对召回率。
 
-## Germany pilot
+次要结果包括已证实 Cudy 渠道数、一级和下级渠道数、跨重复的唯一有效线索数、来源支持率、官方来源率、可核验联系人及公开业务联系方式数、延迟和观察到的搜索次数。三次重复分别保留，同时报告中位数和范围；不把三次答案拼接成一个更强的单次回答。
 
-The confirmed pilot uses German and English with the actual execution date. It
-configures OpenAI, Kimi K2.6, DeepSeek, and Grok independently with the frozen
-prompt; Claude is temporarily skipped. Each provider is limited to 8
-native-search requests, 10,000 visible output tokens, one continuation page,
-and 30 minutes. Failed requests are recorded without automatic retry.
+Sales Lead Copilot 是产品基准，因此可以使用它真实的 Tavily、筛选、去重和联系人流程。它必须使用同一国家、同一提示信息、相同的 15 分钟墙钟上限和前 20 名人工审核规则；原生模型的 12 次搜索动作上限不强加给产品内部实现，但必须另外记录查询数、外部请求数和成本，避免隐藏资源优势。
 
-Run `npm run benchmark:verify` for a local-only configuration and validator
-check. After explicit approval for live calls, run one provider at a time with
-`npm run benchmark:pilot -- openai` (or another configured provider). Raw
-responses are written below `runs/raw/`, which is ignored by Git.
+## 文件与隐私
 
-Provider-added prose or a Markdown fence is tolerated only when it contains one
-complete benchmark JSON object. Multiple, incomplete, or schema-invalid objects
-remain failures. Rejected provider payloads are retained locally under
-`runs/raw/*.rejected.json` for diagnosis and are never committed.
+- `prompts/native-search-user-prompt-v2.md`：冻结的自然语言 user prompt。
+- `config/pilot.json`：德国试点及运行上限。
+- `config/providers.json`：模型、传输方式和原生搜索适配器，不含密钥。
+- `config/judging.json`：盲审和指标定义。
+- `lib/benchmark.ts`：统一调用、超时、原生搜索观测及本地留档。
+- `lib/judging.ts`：候选/审核结构、盲化和评分函数。
+- `reports/2026-08-20-germany-run-status.json`：旧版 JSON 协议的历史记录，不可与 v2 成绩合并。
 
-Every provider receives the identical substituted prompt as system-level
-instructions and the identical country-specific user trigger. The trigger is a
-compact, valid initial search task containing country, languages, Cudy, channel
-roles, contacts, and JSON intent. This remains useful even when a gateway uses
-the user message verbatim as its first native-search query, while keeping the
-full benchmark rules out of the query and message roles consistent.
-
-Use `npm run benchmark:preflight -- <provider>` before a measured run. It first
-checks a tiny no-search request, proceeds to one native-search request only on
-success, performs no automatic retries, classifies gateway/upstream/account
-pool failures, and stores the diagnostic report only in the ignored raw folder.
-
-Use `npm run benchmark:continue:deepseek` only for the configured single
-DeepSeek continuation after a `max_tokens` rejection. It replays the original
-provider response as conversation history, requests a compact full replacement,
-provides no search tool, and verifies page index and unchanged total search
-count. Use `npm run benchmark:preflight:kimi-json` for the minimal no-search
-Kimi JSON Mode compatibility check; it is not a benchmark run.
-
-Prompt v1.0 remains preserved as the original baseline. Pilot v1.1 removes
-repetition while retaining the same knowledge, evidence, privacy, role, and
-output requirements. OpenAI uses Responses API streaming so long-running web
-search emits progress events instead of relying on one silent synchronous
-connection.
+API 密钥只能保存在 `.env.local`。不要提交凭证、原始线索、联系方式、模型原始响应、依赖目录或其他本地生成数据。

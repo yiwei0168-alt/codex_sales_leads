@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "native-search-natural-language-v2",
+  "asOf": "2026-08-20",
+  "status": "implementation_verified_live_runs_not_started",
+  "pilotCountry": "DE",
+  "repetitionsPerSystem": 3,
+  "participatingProviders": ["openai", "claude", "kimi", "deepseek", "grok"],
+  "geminiStatus": "placeholder_not_configured",
+  "productComparator": "sales-lead-copilot",
+  "protocol": {
+    "input": "one identical user message",
+    "output": "natural language",
+    "providerNativeSearchRequired": true,
+    "thirdPartySearchInjectionForbidden": true,
+    "automaticRetries": 0,
+    "nativeSearchActionsSafetyCeiling": 12,
+    "timeoutMinutesPerRun": 15,
+    "visibleOutputTokens": 8000,
+    "primaryCompanyCutoff": 20
+  },
+  "humanReview": {
+    "finalReviewer": "user",
+    "providerIdentityHidden": true,
+    "sameReviewerBlindedReReviewPercent": 15
+  },
+  "verification": {
+    "configurationAndRunnerChecks": "passed",
+    "typescript": "passed",
+    "providerPreflights": "not_run_under_v2",
+    "measuredRuns": "not_run_under_v2"
+  },
+  "privacy": {
+    "containsLeadRecords": false,
+    "containsContactDetails": false,
+    "containsCredentials": false
+  },
+  "historicalCompatibility": "Do not combine strict-json-v1 results with v2 results."
+}

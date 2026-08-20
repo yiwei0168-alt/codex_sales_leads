@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "status": "pending-user-confirmation",
+  "status": "confirmed",
   "seed": "CUDY-GLOBAL-CHANNEL-BENCHMARK-V1",
   "algorithm": {
     "name": "sha256-region-index-v1",

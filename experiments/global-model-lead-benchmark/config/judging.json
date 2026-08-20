@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "status": "confirmed",
+  "primaryCompanyCutoff": 20,
+  "candidateGrades": {
+    "confirmed_current_cudy": 3,
+    "qualified_tier1": 2,
+    "important_downstream": 1,
+    "invalid": 0
+  },
+  "primaryMetrics": [
+    "nDCG@20",
+    "Precision@20",
+    "ValidatedLeads@20",
+    "PooledRecall"
+  ],
+  "secondaryMetrics": [
+    "confirmedCurrentCudyCount",
+    "qualifiedTier1Count",
+    "importantDownstreamCount",
+    "uniqueValidatedLeadCount",
+    "sourceSupportedRate",
+    "officialSourceRate",
+    "verifiedContactCount",
+    "verifiedPublicContactMethodCount",
+    "latencyMs",
+    "searchRequestsObserved"
+  ],
+  "humanInTheLoop": {
+    "reviewers": 1,
+    "finalReviewer": "user",
+    "providerIdentityHidden": true,
+    "reviewAllPooledTop20Candidates": true,
+    "reviewAllScoredContacts": true,
+    "sameReviewerBlindedReReviewPercent": 15,
+    "reReviewSeed": "CUDY-NATIVE-SEARCH-V2-REREVIEW"
+  },
+  "invalidReasons": [
+    "industry_mismatch",
+    "country_mismatch",
+    "insufficient_evidence",
+    "duplicate",
+    "not_a_company"
+  ],
+  "goldPoolPolicy": {
+    "source": "deduplicated union of every measured model-run and product-comparator run's top-20 candidates",
+    "projectCrmExcluded": true,
+    "historicalLeadDatabaseExcluded": true,
+    "codexMayUsePublicWebForPostRunVerification": true,
+    "verificationEvidenceNeverReturnedToTestedModels": true
+  }
+}

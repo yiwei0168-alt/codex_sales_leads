@@ -1,300 +1,139 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
+  "protocolVersion": "native-search-natural-language-v2",
   "providers": {
     "openai": {
-      "displayName": "OpenAI",
+      "displayName": "OpenAI via Lingyu",
       "enabled": true,
-      "status": "ready",
+      "status": "pending_v2_preflight",
       "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "LINGYU_API_KEY",
         "baseUrl": "https://lingyuapi.com/v1"
       },
+      "transport": {
+        "endpointKind": "aggregation_gateway",
+        "gateway": "Lingyu",
+        "modelLockedByUser": true
+      },
       "model": {
-        "selectionPolicy": "user-selected high-performance model",
-        "modelId": "gpt-5.6-sol",
-        "discoveryRequired": false
+        "selectionPolicy": "user-confirmed fast model with reasoning disabled",
+        "modelId": "gpt-5.6-terra",
+        "reasoningMode": "none"
       },
       "nativeSearch": {
         "required": true,
-        "adapter": "openai_web_search",
-        "capabilityVerified": true,
-        "verifiedAt": "2026-08-19",
-        "verification": {
-          "toolSignal": "web_search_call",
-          "sourceUrlCount": 1,
-          "officialSourceObserved": "https://www.cudy.com/"
-        },
-        "latestPreflight": {
-          "checkedAt": "2026-08-19",
-          "basicRequest": "passed",
-          "streaming": "passed",
-          "nativeSearch": "failed",
-          "failureCategory": "upstream_unavailable",
-          "failureMessage": "server overloaded",
-          "automaticRetries": 0
-        },
-        "latestBenchmark": {
-          "runDate": "2026-08-20",
-          "countryCode": "DE",
-          "status": "completed_and_validated",
-          "webSearchRequests": 8
-        }
+        "adapter": "openai_responses_web_search",
+        "mustVerifyServerToolSignal": "web_search_call",
+        "externalSearchInjectionForbidden": true
       }
     },
     "claude": {
-      "displayName": "Anthropic Claude",
+      "displayName": "Anthropic Claude via Lingyu",
       "enabled": true,
-      "status": "temporarily_skipped_by_user",
-      "participatesInCurrentRun": false,
+      "status": "pending_v2_preflight",
+      "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "CLAUDE_API_KEY",
         "baseUrlEnv": "CLAUDE_BASE_URL"
       },
+      "transport": {
+        "endpointKind": "aggregation_gateway",
+        "gateway": "Lingyu",
+        "modelLockedByUser": true
+      },
       "model": {
-        "selectionPolicy": "highest-performance discovered Claude model",
-        "modelId": "claude-opus-4-8",
-        "discoveryRequired": false
+        "selectionPolicy": "user-confirmed fast Claude model with extended thinking omitted",
+        "modelId": "claude-haiku-4-5",
+        "reasoningMode": "disabled"
       },
       "nativeSearch": {
         "required": true,
         "adapter": "anthropic_web_search_20250305",
-        "capabilityVerified": true,
-        "verifiedAt": "2026-08-19",
-        "verification": {
-          "toolSignal": "server_tool_use + web_search_tool_result",
-          "webSearchRequests": 1,
-          "sourceUrlCount": 8,
-          "officialSourceObserved": "https://www.cudy.com/pages/about-cudy"
-        },
-        "latestPreflight": {
-          "checkedAt": "2026-08-19",
-          "basicRequest": "passed",
-          "nativeSearch": "passed",
-          "webSearchRequests": 1,
-          "searchQueryCharacters": 311,
-          "searchableBenchmarkTrigger": "passed",
-          "cudyIntentDetected": true,
-          "germanyIntentDetected": true,
-          "channelIntentDetected": true,
-          "fullPromptQueryRegression": false,
-          "automaticRetries": 0
-        }
+        "mustVerifyServerToolSignal": "server_tool_use:web_search",
+        "externalSearchInjectionForbidden": true
       }
     },
     "kimi": {
       "displayName": "Moonshot Kimi",
       "enabled": true,
-      "status": "completed_validated_low_recall",
+      "status": "pending_v2_preflight",
       "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "KIMI_API_KEY",
         "baseUrlEnv": "KIMI_BASE_URL"
       },
+      "transport": {
+        "endpointKind": "official_api",
+        "modelLockedByUser": true
+      },
       "model": {
-        "selectionPolicy": "user-approved Kimi K2.6 fallback after K3 tokenization failure",
+        "selectionPolicy": "officially recommended model for built-in web search with thinking disabled",
         "modelId": "kimi-k2.6",
-        "discoveryRequired": false
+        "reasoningMode": "disabled"
       },
       "nativeSearch": {
         "required": true,
         "adapter": "moonshot_builtin_web_search",
-        "capabilityVerified": true,
-        "verifiedAt": "2026-08-19",
-        "verification": {
-          "toolCallObserved": true,
-          "toolName": "$web_search",
-          "searchIdObserved": true,
-          "sourceCitationRoundCompleted": false,
-          "thinkingDisabled": true,
-          "officialSdkFlowUsed": true,
-          "blockingRound": "tool-result continuation",
-          "blockingError": "kimi-k3 returned tokenization_failed after accepting the native search call",
-          "providerNotice": "Kimi documentation states that built-in web search is being updated and is not recommended in the near term"
-        },
-        "verifiedFallback": {
-          "modelId": "kimi-k2.6",
-          "eligibleForBenchmark": true,
-          "pendingUserDecision": false,
-          "capabilityVerified": true,
-          "toolCalls": 1,
-          "sourceUrlCount": 4,
-          "officialCudyDomainObserved": true
-        },
-        "latestPreflight": {
-          "checkedAt": "2026-08-19",
-          "basicRequest": "passed",
-          "nativeSearch": "passed",
-          "toolCalls": 1,
-          "continuationCompleted": true,
-          "automaticRetries": 0
-        },
-        "latestBenchmark": {
-          "runDate": "2026-08-20",
-          "countryCode": "DE",
-          "modelId": "kimi-k2.6",
-          "status": "completed_and_validated_low_recall",
-          "remediation": "response_format_json_object",
-          "nativeSearchRequests": 1,
-          "configuredSearchLimit": 8,
-          "reportedStopReason": "tool_budget",
-          "stopReasonConsistentWithConfiguredLimit": false,
-          "providerRounds": 2,
-          "providerFinishReasons": ["tool_calls", "stop"],
-          "completionTokensFinalRound": 837,
-          "outputTruncated": false,
-          "summaryMetrics": {
-            "tier1PartnerCount": 1,
-            "tier1ConfirmedCurrentCount": 1,
-            "downstreamCustomerCount": 0,
-            "downstreamConfirmedCudyCount": 0,
-            "contactCount": 0,
-            "publicVerifiedContactCount": 0,
-            "uniqueCompanyCount": 1
-          }
-        },
-        "priorBenchmarkFailure": {
-          "runDate": "2026-08-20",
-          "countryCode": "DE",
-          "modelId": "kimi-k2.6",
-          "status": "rejected_no_json",
-          "failureCategory": "degenerate_output_limit",
-          "nativeSearchRequests": 1,
-          "providerFinishReason": "length",
-          "completionTokens": 10000
-        },
-        "latestJsonModePreflight": {
-          "checkedAt": "2026-08-20",
-          "modelId": "kimi-k2.6",
-          "status": "passed",
-          "httpStatus": 200,
-          "finishReason": "stop",
-          "thinkingDisabled": true,
-          "responseFormat": "json_object",
-          "nativeSearchEnabled": false,
-          "maxCompletionTokens": 128,
-          "interpretation": "JSON mode works in isolation and subsequently produced a structurally valid full benchmark response when combined with native search"
-        },
-        "knownRiskModel": {
-          "modelId": "kimi-k3",
-          "reason": "prior native search result continuation returned tokenization_failed",
-          "retryRequestedAt": "2026-08-20",
-          "retryResult": "tokenization_failed",
-          "currentDecision": "fallback_to_kimi-k2.6"
-        }
+        "mustVerifyServerToolSignal": "$web_search",
+        "externalSearchInjectionForbidden": true
       }
     },
     "deepseek": {
       "displayName": "DeepSeek",
       "enabled": true,
-      "status": "ready",
+      "status": "pending_v2_preflight",
       "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "DEEPSEEK_API_KEY",
         "baseUrlEnv": "DEEPSEEK_BASE_URL"
       },
+      "transport": {
+        "endpointKind": "official_api",
+        "modelLockedByUser": true
+      },
       "model": {
-        "selectionPolicy": "highest-performance discovered DeepSeek model",
-        "modelId": "deepseek-v4-pro",
-        "discoveryRequired": false
+        "selectionPolicy": "fast V4 model in non-thinking mode",
+        "modelId": "deepseek-v4-flash",
+        "reasoningMode": "disabled"
       },
       "nativeSearch": {
         "required": true,
         "adapter": "deepseek_anthropic_web_search",
-        "capabilityVerified": true,
-        "verifiedAt": "2026-08-19",
-        "verification": {
-          "toolSignal": "server_tool_use + web_search_tool_result",
-          "webSearchRequests": 2,
-          "sourceUrlCount": 10,
-          "officialCudyDomainObserved": true,
-          "performanceRisk": "minimal verification request had exceptionally high latency"
-        },
-        "latestBenchmark": {
-          "runDate": "2026-08-20",
-          "countryCode": "DE",
-          "status": "completed_and_validated_on_continuation",
-          "webSearchRequests": 6,
-          "initialPage": {
-            "status": "rejected_incomplete_json",
-            "failureCategory": "output_limit",
-            "providerStopReason": "max_tokens"
-          },
-          "continuationPage": {
-            "pageIndex": 2,
-            "strategy": "compact_full_replacement",
-            "newWebSearchRequests": 0,
-            "providerStopReason": "end_turn",
-            "outputTruncated": false
-          }
-        }
+        "mustVerifyServerToolSignal": "server_tool_use:web_search",
+        "externalSearchInjectionForbidden": true
       }
     },
     "grok": {
       "displayName": "xAI Grok",
       "enabled": true,
-      "status": "two_stage_remediation_authorized",
+      "status": "pending_v2_preflight",
       "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "XAI_API_KEY",
         "baseUrlEnv": "XAI_BASE_URL"
       },
+      "transport": {
+        "endpointKind": "official_api",
+        "modelLockedByUser": true,
+        "nodeUseEnvProxy": true
+      },
       "model": {
-        "selectionPolicy": "latest publicly documented xAI flagship with verified Responses web search and structured output support",
-        "modelId": "grok-4.5",
-        "discoveryRequired": false,
+        "selectionPolicy": "fastest account-visible general xAI model documented for non-reasoning operation",
+        "modelId": "grok-4.3",
+        "reasoningMode": "none",
         "discoverySnapshot": {
           "checkedAt": "2026-08-20",
           "modelsEndpointStatus": 200,
-          "grok46VisibleToAccount": true,
-          "grok46SelectionStatus": "not_selected_missing_public_capability_documentation"
+          "accountVisible": true
         }
       },
       "nativeSearch": {
         "required": true,
         "adapter": "xai_responses_web_search",
-        "capabilityVerified": true,
-        "verifiedAt": "2026-08-20",
-        "structuredOutputRequired": true,
-        "reasoningEffort": "high",
-        "maxAgentTurns": 8,
-        "observedSearchCallHardLimit": 8,
-        "toolChoice": "required",
-        "parallelToolCalls": false,
-        "latestPreflight": {
-          "checkedAt": "2026-08-20",
-          "basicRequest": "passed",
-          "nativeSearch": "passed",
-          "observedWebSearchCalls": 1,
-          "structuredJsonParsed": true,
-          "outputTextBlocks": 1,
-          "remediation": "force_required_tool_choice_disable_parallel_calls_and_disable_inline_citations",
-          "remediationVerifiedLive": true,
-          "automaticRetries": 0
-        },
-        "priorPreflightFailures": [
-          "search response contained non-data citation text outside JSON",
-          "model did not select the optional web search tool"
-        ],
-        "latestBenchmark": {
-          "runDate": "2026-08-20",
-          "countryCode": "DE",
-          "status": "rejected_no_benchmark_json",
-          "failureCategory": "serialized_tool_request_as_text",
-          "observedWebSearchCalls": 0,
-          "providerSourcesUsed": 0,
-          "rawTextCharacters": 163,
-          "providerResponseStatus": "completed",
-          "automaticRetries": 0,
-          "proposedRemediation": "separate_native_search_turn_from_structured_synthesis_using_previous_response_id",
-          "remediationAuthorized": true,
-          "remediationImplementation": "stateful_search_then_structured_synthesis",
-          "remediationRunPending": true
-        },
-        "transport": {
-          "nodeUseEnvProxy": true,
-          "reason": "direct Node connection timed out while the configured system proxy path succeeded"
-        }
+        "mustVerifyServerToolSignal": "web_search_call",
+        "externalSearchInjectionForbidden": true,
+        "inlineCitations": true
       }
     },
     "gemini": {
@@ -306,23 +145,20 @@
         "apiKeyEnv": "GEMINI_API_KEY",
         "baseUrlEnv": "GEMINI_BASE_URL"
       },
+      "transport": {
+        "endpointKind": "official_api"
+      },
       "model": {
-        "selectionPolicy": "highest-performance model with provider-native Google Search grounding",
-        "modelId": null,
-        "discoveryRequired": true
+        "selectionPolicy": "stable fast Flash model with native Google Search grounding",
+        "modelId": "pending",
+        "reasoningMode": "disabled_or_lowest_supported"
       },
       "nativeSearch": {
         "required": true,
         "adapter": "google_search_grounding",
-        "capabilityVerified": false
-      },
-      "activationChecklist": [
-        "Add GEMINI_API_KEY and GEMINI_BASE_URL to .env.local only",
-        "Discover currently available Gemini models",
-        "Select the highest-performance model that supports native Google Search grounding",
-        "Verify grounded citations and source metadata with a minimal request",
-        "Record the final model ID and capability result before enabling benchmark runs"
-      ]
+        "mustVerifyServerToolSignal": "groundingMetadata",
+        "externalSearchInjectionForbidden": true
+      }
     }
   }
 }
