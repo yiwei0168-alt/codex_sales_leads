@@ -10,13 +10,15 @@ APIs, contact databases, and the project's existing lead data are excluded.
 ## Current stage
 
 Country selection and prompt v1.1 are frozen. Claude is temporarily skipped by
-user decision. Kimi K2.6 passed both basic and native-search preflights, but the
-current batch retries Kimi K3 by explicit user request despite its prior
-`tokenization_failed` continuation result. OpenAI
-`gpt-5.6-sol` passes basic Responses streaming, but Lingyu's native-search path
-currently returns an upstream-overloaded error; it is operationally blocked,
-not scored as a model failure. DeepSeek retains its verified latency risk. No
-successful live country benchmark run has completed.
+user decision. Kimi K2.6 passed both basic and native-search preflights; Kimi K3
+was retried by explicit user request. DeepSeek retains its verified latency
+risk, and OpenAI uses Responses streaming through Lingyu.
+
+On 2026-08-20, the Germany OpenAI run completed and passed validation. DeepSeek
+completed six searches but its JSON was cut off by the output-token limit and
+is eligible for the configured single continuation page. Kimi K3 reproduced
+its `tokenization_failed` error. Only redacted aggregate status is committed;
+the OpenAI lead records and rejected provider payloads remain local and ignored.
 
 Google Gemini remains an optional provider placeholder. It is disabled and does
 not participate in current runs until its API credentials, model choice, and

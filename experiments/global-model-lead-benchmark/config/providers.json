@@ -4,7 +4,7 @@
     "openai": {
       "displayName": "OpenAI",
       "enabled": true,
-      "status": "blocked_native_search_upstream_unavailable",
+      "status": "ready",
       "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "LINGYU_API_KEY",
@@ -33,6 +33,12 @@
           "failureCategory": "upstream_unavailable",
           "failureMessage": "server overloaded",
           "automaticRetries": 0
+        },
+        "latestBenchmark": {
+          "runDate": "2026-08-20",
+          "countryCode": "DE",
+          "status": "completed_and_validated",
+          "webSearchRequests": 8
         }
       }
     },
@@ -79,7 +85,7 @@
     "kimi": {
       "displayName": "Moonshot Kimi",
       "enabled": true,
-      "status": "retrying_k3_by_user_request",
+      "status": "blocked_k3_tokenization_failed",
       "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "KIMI_API_KEY",
@@ -126,14 +132,15 @@
         "knownRiskModel": {
           "modelId": "kimi-k3",
           "reason": "prior native search result continuation returned tokenization_failed",
-          "retryRequestedAt": "2026-08-20"
+          "retryRequestedAt": "2026-08-20",
+          "retryResult": "tokenization_failed"
         }
       }
     },
     "deepseek": {
       "displayName": "DeepSeek",
       "enabled": true,
-      "status": "ready_with_latency_risk",
+      "status": "output_limit_continuation_available",
       "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "DEEPSEEK_API_KEY",
@@ -155,6 +162,15 @@
           "sourceUrlCount": 10,
           "officialCudyDomainObserved": true,
           "performanceRisk": "minimal verification request had exceptionally high latency"
+        },
+        "latestBenchmark": {
+          "runDate": "2026-08-20",
+          "countryCode": "DE",
+          "status": "rejected_incomplete_json",
+          "failureCategory": "output_limit",
+          "providerStopReason": "max_tokens",
+          "webSearchRequests": 6,
+          "continuationEligible": true
         }
       }
     },
