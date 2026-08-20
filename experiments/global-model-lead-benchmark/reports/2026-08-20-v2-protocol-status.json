@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "protocolVersion": "native-search-natural-language-v2",
   "asOf": "2026-08-20",
-  "status": "model_answers_normalized_and_codex_verified_user_review_pending",
+  "status": "combined_pool_codex_verified_user_review_pending",
   "pilotCountry": "DE",
   "repetitionsPerSystem": 3,
   "participatingProviders": ["openai", "claude", "kimi", "deepseek", "grok"],
@@ -231,27 +231,100 @@
         "timing": "Confirmed before any candidate-quality extraction or human review.",
         "grokRound1Reclassified": true
       },
+      "productComparatorMeasurement": {
+        "system": "sales-lead-copilot-v0.3",
+        "isolation": "Reused production intent parsing, discovery, filtering, ranking, domain deduplication, public-contact enrichment and extraction logic without database writes, CRM/history reads, or model-answer inputs.",
+        "plannedRuns": 3,
+        "attemptedRuns": 3,
+        "completedEligibleAnswers": 2,
+        "infrastructureFailures": 1,
+        "automaticRetries": 0,
+        "promptHashMatchedModelRuns": true,
+        "round1": {
+          "status": "eligible",
+          "candidateCount": 20,
+          "latencyMs": 74432,
+          "searchQueries": 89,
+          "extractionRequests": 19,
+          "externalRequests": 108,
+          "totalCredits": 127,
+          "estimatedCostUsdPayAsYouGo": 1.016,
+          "failedExternalRequests": 0
+        },
+        "round2": {
+          "status": "eligible",
+          "candidateCount": 20,
+          "latencyMs": 45906,
+          "searchQueries": 89,
+          "extractionRequests": 19,
+          "externalRequests": 108,
+          "totalCredits": 127,
+          "estimatedCostUsdPayAsYouGo": 1.016,
+          "failedExternalRequests": 0
+        },
+        "round3": {
+          "status": "infrastructure_failure",
+          "failureStage": "discovery_first_request",
+          "failureCategory": "rate_limited",
+          "latencyMs": 1058,
+          "searchQueries": 1,
+          "extractionRequests": 0,
+          "externalRequests": 1,
+          "totalCredits": 0,
+          "estimatedCostUsdPayAsYouGo": 0,
+          "failedExternalRequests": 1
+        },
+        "successfulRunLatencyMs": {
+          "median": 60169,
+          "minimum": 45906,
+          "maximum": 74432
+        },
+        "successfulRunResourcesTotal": {
+          "searchQueries": 178,
+          "extractionRequests": 38,
+          "externalRequests": 216,
+          "searchCredits": 218,
+          "extractCredits": 36,
+          "totalCredits": 254,
+          "estimatedCostUsdPayAsYouGo": 2.032
+        },
+        "allAttemptedRunsExternalRequests": 217,
+        "costBasis": {
+          "usdPerCredit": 0.008,
+          "sourceUrl": "https://docs.tavily.com/documentation/api-credits",
+          "note": "Pay-as-you-go list price; the account plan or included allowance can reduce effective cost. The failed rate-limited request consumed no reported credits."
+        },
+        "candidateOccurrences": 40,
+        "deduplicatedProductCandidates": 27,
+        "overlapWithModelCandidatePool": 1,
+        "newCandidatesAddedToCombinedPool": 26
+      },
       "normalizationAndVerification": {
         "eligibleNativeSearchAnswersProcessed": 10,
+        "eligibleProductComparatorAnswersProcessed": 2,
+        "combinedSuccessfulAnswersProcessed": 12,
         "degenerateProcessOutputs": 3,
-        "candidateOccurrences": 39,
-        "deduplicatedCandidates": 22,
+        "candidateOccurrences": 79,
+        "deduplicatedCandidates": 48,
         "perProviderCandidateOccurrences": {
           "openai": 9,
           "claude": 0,
           "kimi": 0,
           "deepseek": 16,
-          "grok": 14
+          "grok": 14,
+          "sales-lead-copilot": 40
         },
-        "independentlyWebVerifiedCandidates": 22,
-        "codexPreVerifiedChannelRelevantCandidates": 19,
+        "independentlyWebVerifiedCandidates": 48,
+        "codexPreVerifiedCompanyExistence": 37,
+        "codexPreVerifiedGermanyOperation": 35,
+        "codexPreVerifiedChannelRelevantCandidates": 33,
         "codexPreVerifiedCurrentCudyRelationships": 13,
-        "verifiedNamedContactClaims": 15,
-        "verifiedPublicContactMethodClaims": 25,
+        "verifiedNamedContactClaims": 16,
+        "verifiedPublicContactMethodClaims": 52,
         "candidateAndContactDetailsCommitted": false,
         "providerIdentityHiddenFromReviewPacket": true,
         "userFinalDecisionsCompleted": false,
-        "plannedSameReviewerBlindReReviewCandidates": 4
+        "plannedSameReviewerBlindReReviewCandidates": 8
       },
       "reviewTaxonomyAmendment": {
         "addedReason": "not_independent_sales_lead",

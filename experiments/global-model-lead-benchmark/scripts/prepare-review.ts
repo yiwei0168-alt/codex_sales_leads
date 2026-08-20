@@ -14,7 +14,7 @@ const root = path.resolve("experiments/global-model-lead-benchmark");
 const rawDirectory = path.join(root, "runs", "raw");
 const workingDirectory = path.join(root, "reviews", "working");
 const saltPath = path.join(root, "reviews", ".blind-salt");
-const eligibleFilePattern = /^2026-08-20-DE-(openai|deepseek|kimi|grok)-r[123]\.json$/;
+const eligibleFilePattern = /^2026-08-20-DE-(openai|deepseek|kimi|grok|sales-lead-copilot)-r[123]\.json$/;
 
 await mkdir(workingDirectory, { recursive: true });
 const secretSalt = loadOrCreateBlindSalt(saltPath);
@@ -117,7 +117,7 @@ const markdown = [
   `- Distinct candidates: ${deduplicated.length}`,
   `- Candidate occurrences: ${allOccurrences.length}`,
   "- Review classes: confirmed_current_cudy, qualified_tier1, important_downstream, invalid",
-  "- Invalid reasons: industry_mismatch, country_mismatch, insufficient_evidence, duplicate, not_a_company",
+  "- Invalid reasons: industry_mismatch, country_mismatch, insufficient_evidence, duplicate, not_a_company, not_independent_sales_lead",
   "",
   ...deduplicated.flatMap((candidate) => [
     `## ${candidate.blindCandidateId} — ${candidate.companyName}`,
@@ -160,7 +160,7 @@ await Promise.all([
 ]);
 
 console.log(JSON.stringify({
-  measuredNativeSearchRuns: runResults.length,
+  eligibleAnswerRuns: runResults.length,
   degenerateProcessRuns: runResults.filter((result) => result.degenerateProcessOutput).length,
   candidateOccurrences: allOccurrences.length,
   deduplicatedCandidates: deduplicated.length,
