@@ -85,7 +85,7 @@
     "kimi": {
       "displayName": "Moonshot Kimi",
       "enabled": true,
-      "status": "k2_6_benchmark_degenerate_output",
+      "status": "json_mode_verified_benchmark_retry_pending",
       "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "KIMI_API_KEY",
@@ -139,6 +139,18 @@
           "providerFinishReason": "length",
           "completionTokens": 10000
         },
+        "latestJsonModePreflight": {
+          "checkedAt": "2026-08-20",
+          "modelId": "kimi-k2.6",
+          "status": "passed",
+          "httpStatus": 200,
+          "finishReason": "stop",
+          "thinkingDisabled": true,
+          "responseFormat": "json_object",
+          "nativeSearchEnabled": false,
+          "maxCompletionTokens": 128,
+          "interpretation": "JSON mode works in isolation; the prior benchmark failure is specific to the native-search continuation and long-form synthesis path"
+        },
         "knownRiskModel": {
           "modelId": "kimi-k3",
           "reason": "prior native search result continuation returned tokenization_failed",
@@ -151,7 +163,7 @@
     "deepseek": {
       "displayName": "DeepSeek",
       "enabled": true,
-      "status": "output_limit_continuation_available",
+      "status": "ready",
       "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "DEEPSEEK_API_KEY",
@@ -177,11 +189,20 @@
         "latestBenchmark": {
           "runDate": "2026-08-20",
           "countryCode": "DE",
-          "status": "rejected_incomplete_json",
-          "failureCategory": "output_limit",
-          "providerStopReason": "max_tokens",
+          "status": "completed_and_validated_on_continuation",
           "webSearchRequests": 6,
-          "continuationEligible": true
+          "initialPage": {
+            "status": "rejected_incomplete_json",
+            "failureCategory": "output_limit",
+            "providerStopReason": "max_tokens"
+          },
+          "continuationPage": {
+            "pageIndex": 2,
+            "strategy": "compact_full_replacement",
+            "newWebSearchRequests": 0,
+            "providerStopReason": "end_turn",
+            "outputTruncated": false
+          }
         }
       }
     },

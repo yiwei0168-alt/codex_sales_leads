@@ -16,12 +16,17 @@ after reproducing its tokenization failure. DeepSeek retains its verified
 latency risk, and OpenAI uses Responses streaming through Lingyu.
 
 On 2026-08-20, the Germany OpenAI run completed and passed validation. DeepSeek
-completed six searches but its JSON was cut off by the output-token limit and
-is eligible for the configured single continuation page. Kimi K3 reproduced
-its `tokenization_failed` error. The subsequent Kimi K2.6 fallback completed one
+completed six searches but its first JSON was cut off by the output-token limit;
+its single allowed continuation then produced a compact full replacement JSON
+without any new search and passed validation. Kimi K3 reproduced its
+`tokenization_failed` error. The subsequent Kimi K2.6 fallback completed one
 search round but degenerated into repeated non-JSON output until its token
-limit, so it was also rejected. Only redacted aggregate status is committed;
-the OpenAI lead records and rejected provider payloads remain local and ignored.
+limit, so it was rejected. A later minimal Kimi K2.6 JSON Mode test passed with
+thinking and search disabled, isolating the benchmark failure to the combined
+native-search continuation and long-form synthesis path rather than basic JSON
+support. No full Kimi benchmark retry has been performed. Only redacted
+aggregate status is committed; lead records and rejected provider payloads
+remain local and ignored.
 
 Google Gemini remains an optional provider placeholder. It is disabled and does
 not participate in current runs until its API credentials, model choice, and
@@ -65,6 +70,13 @@ Use `npm run benchmark:preflight -- <provider>` before a measured run. It first
 checks a tiny no-search request, proceeds to one native-search request only on
 success, performs no automatic retries, classifies gateway/upstream/account
 pool failures, and stores the diagnostic report only in the ignored raw folder.
+
+Use `npm run benchmark:continue:deepseek` only for the configured single
+DeepSeek continuation after a `max_tokens` rejection. It replays the original
+provider response as conversation history, requests a compact full replacement,
+provides no search tool, and verifies page index and unchanged total search
+count. Use `npm run benchmark:preflight:kimi-json` for the minimal no-search
+Kimi JSON Mode compatibility check; it is not a benchmark run.
 
 Prompt v1.0 remains preserved as the original baseline. Pilot v1.1 removes
 repetition while retaining the same knowledge, evidence, privacy, role, and

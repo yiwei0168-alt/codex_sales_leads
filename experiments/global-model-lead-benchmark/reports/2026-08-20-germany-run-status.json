@@ -27,12 +27,24 @@
     },
     "deepseek": {
       "modelId": "deepseek-v4-pro",
-      "status": "rejected_incomplete_json",
-      "failureCategory": "output_limit",
-      "providerStopReason": "max_tokens",
+      "status": "completed_and_validated_on_continuation",
       "nativeSearchRequests": 6,
-      "partialTextCharacters": 10596,
-      "continuationEligible": true
+      "continuation": {
+        "pageIndex": 2,
+        "strategy": "compact_full_replacement",
+        "newNativeSearchRequests": 0,
+        "providerStopReason": "end_turn",
+        "outputTruncated": false
+      },
+      "summaryMetrics": {
+        "tier1PartnerCount": 1,
+        "tier1ConfirmedCurrentCount": 1,
+        "downstreamCustomerCount": 5,
+        "downstreamConfirmedCudyCount": 5,
+        "contactCount": 0,
+        "publicVerifiedContactCount": 0,
+        "uniqueCompanyCount": 6
+      }
     },
     "kimi": {
       "modelId": "kimi-k3",
@@ -50,6 +62,17 @@
         "providerFinishReasons": ["tool_calls", "length"],
         "completionTokensFinalRound": 10000,
         "jsonBracesObserved": 0
+      },
+      "jsonModePreflight": {
+        "modelId": "kimi-k2.6",
+        "status": "passed",
+        "httpStatus": 200,
+        "finishReason": "stop",
+        "thinkingDisabled": true,
+        "responseFormat": "json_object",
+        "nativeSearchEnabled": false,
+        "maxCompletionTokens": 128,
+        "interpretation": "JSON mode is compatible in isolation; no full benchmark retry was performed"
       }
     },
     "claude": {
