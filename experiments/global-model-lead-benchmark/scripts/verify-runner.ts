@@ -1,4 +1,4 @@
-import { anthropicMessagesUrl, buildGrokRequest, buildKimiRequest, buildMessageEnvelope, extractBenchmarkJson, loadContext, parseSseBuffer, validateBenchmarkResult } from "../lib/benchmark";
+import { anthropicMessagesUrl, buildGrokSearchRequest, buildGrokSynthesisRequest, buildKimiRequest, buildMessageEnvelope, extractBenchmarkJson, loadContext, parseSseBuffer, validateBenchmarkResult } from "../lib/benchmark";
 
 const context = await loadContext("openai", "2026-08-19");
 if (!context.prompt.includes("Country: `Germany` (`DE`)") || !context.prompt.includes("Search languages: `German, English` plus English")) throw new Error("Prompt substitution failed");
@@ -14,8 +14,10 @@ const kimiContext = await loadContext("kimi", "2026-08-19");
 const kimiRequest = buildKimiRequest(kimiContext, [{ role: "user", content: "test" }]);
 if (kimiRequest.max_completion_tokens !== 10000 || kimiRequest.response_format.type !== "json_object" || kimiRequest.thinking.type !== "disabled" || kimiRequest.tools[0].function.name !== "$web_search") throw new Error("Kimi JSON-mode benchmark request is incomplete");
 const grokContext = await loadContext("grok", "2026-08-19");
-const grokRequest = buildGrokRequest(grokContext);
-if (grokRequest.model !== "grok-4.5" || grokRequest.max_turns !== 8 || grokRequest.max_output_tokens !== 10000 || grokRequest.tools[0].type !== "web_search" || grokRequest.tool_choice !== "required" || grokRequest.parallel_tool_calls !== false || grokRequest.text.format.type !== "json_object" || grokRequest.reasoning.effort !== "high" || !grokRequest.include.includes("no_inline_citations")) throw new Error("Grok benchmark request is incomplete");
+const grokSearchRequest = buildGrokSearchRequest(grokContext);
+if (grokSearchRequest.model !== "grok-4.5" || grokSearchRequest.max_turns !== 8 || grokSearchRequest.max_output_tokens !== 10000 || grokSearchRequest.tools[0].type !== "web_search" || grokSearchRequest.tool_choice !== "required" || grokSearchRequest.parallel_tool_calls !== false || "text" in grokSearchRequest || grokSearchRequest.reasoning.effort !== "high" || !grokSearchRequest.include.includes("no_inline_citations")) throw new Error("Grok search request is incomplete");
+const grokSynthesisRequest = buildGrokSynthesisRequest(grokContext, "resp_test", 4);
+if (grokSynthesisRequest.previous_response_id !== "resp_test" || grokSynthesisRequest.tool_choice !== "none" || grokSynthesisRequest.tools.length !== 0 || grokSynthesisRequest.text.format.type !== "json_object" || !grokSynthesisRequest.input.includes("exactly to the 4 native Web Search calls")) throw new Error("Grok synthesis request is incomplete");
 const result = {
   runMetadata: { countryName: "Germany", countryCode: "DE" }, searchCapability: { queriesExecutedCount: 0 },
   tier1Partners: [], downstreamCustomers: [], contacts: [], uncertainties: [], knowledgeGaps: [],

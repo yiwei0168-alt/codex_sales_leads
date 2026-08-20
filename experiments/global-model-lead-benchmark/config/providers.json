@@ -233,7 +233,7 @@
     "grok": {
       "displayName": "xAI Grok",
       "enabled": true,
-      "status": "benchmark_failed_serialized_tool_request",
+      "status": "two_stage_remediation_authorized",
       "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "XAI_API_KEY",
@@ -287,7 +287,9 @@
           "providerResponseStatus": "completed",
           "automaticRetries": 0,
           "proposedRemediation": "separate_native_search_turn_from_structured_synthesis_using_previous_response_id",
-          "remediationAuthorized": false
+          "remediationAuthorized": true,
+          "remediationImplementation": "stateful_search_then_structured_synthesis",
+          "remediationRunPending": true
         },
         "transport": {
           "nodeUseEnvProxy": true,

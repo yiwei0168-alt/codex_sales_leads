@@ -50,7 +50,8 @@ proposed Web Search request as ordinary text instead of invoking the server-side
 tool. The API reported zero searches and zero sources, so the response was
 rejected and is not eligible for comparison. No retry or continuation was run.
 A two-stage native-search then structured-synthesis remediation using
-`previous_response_id` is documented but awaits separate user approval.
+`previous_response_id` was subsequently authorized and implemented with one
+shared 30-minute deadline; its single remediation run is pending.
 
 Google Gemini remains an optional provider placeholder. It is disabled and does
 not participate in current runs until its API credentials, model choice, and

@@ -151,7 +151,7 @@ async function runOpenAi(context: RunContext) {
   return { text, searches, raw: { response: raw, streamEventTypes: events.map((event) => event.type) } };
 }
 
-export function buildGrokRequest(context: RunContext) {
+export function buildGrokSearchRequest(context: RunContext) {
   return {
     model: context.provider.model.modelId,
     ...buildMessageEnvelope("grok", context.prompt, context.trigger),
@@ -162,23 +162,79 @@ export function buildGrokRequest(context: RunContext) {
     max_turns: context.pilot.limits.nativeSearchRequests,
     max_output_tokens: context.pilot.limits.visibleOutputTokens,
     reasoning: { effort: "high" },
-    text: { format: { type: "json_object" } },
+    store: true,
     stream: true,
   };
 }
 
+export function buildGrokSynthesisRequest(context: RunContext, previousResponseId: string, searches: number) {
+  const input = [
+    "This is page 2, the single allowed continuation for the benchmark search turn above.",
+    "Use only the supplied Cudy facts and native-search evidence already present in this xAI response chain.",
+    "Do not search, call tools, or add facts. Return one complete benchmark JSON object only, without Markdown or prose.",
+    `Set runMetadata.pageIndex to 2 and set both query count fields exactly to the ${searches} native Web Search calls observed by the runner.`,
+    "Recalculate every summary metric from the returned arrays and set continuation.outputTruncated truthfully.",
+  ].join(" ");
+  return {
+    model: context.provider.model.modelId,
+    previous_response_id: previousResponseId,
+    instructions: context.prompt,
+    input,
+    tools: [],
+    tool_choice: "none",
+    max_output_tokens: context.pilot.limits.visibleOutputTokens,
+    reasoning: { effort: "high" },
+    text: { format: { type: "json_object" } },
+    store: true,
+    stream: true,
+  };
+}
+
+function responseOutputText(response: any): string {
+  return (response.output ?? []).flatMap((item: any) => item.content ?? []).filter((item: any) => item.type === "output_text").map((item: any) => item.text).join("");
+}
+
+function responseWebSearchCount(response: any): number {
+  return (response.output ?? []).filter((item: any) => item.type === "web_search_call").length;
+}
+
+function completedResponse(events: any[], phase: string): any {
+  const failed = events.find((event) => event.type === "response.failed" || event.type === "error");
+  if (failed) throw new Error(`Grok ${phase} stream failed: ${JSON.stringify(failed).slice(0, 500)}`);
+  const completed = events.findLast((event) => event.type === "response.completed")?.response;
+  if (!completed) throw new Error(`Grok ${phase} stream ended without response.completed`);
+  return completed;
+}
+
 async function runGrok(context: RunContext) {
   const { apiKey, baseUrl } = credentials(context.provider);
-  const events = await requestSse(`${baseUrl}/responses`, { method: "POST", headers: { authorization: `Bearer ${apiKey}`, accept: "text/event-stream", "content-type": "application/json" }, body: JSON.stringify(buildGrokRequest(context)) }, context.pilot.limits.timeoutMinutesPerProvider * 60_000);
-  const failed = events.find((event) => event.type === "response.failed" || event.type === "error");
-  if (failed) throw new Error(`Grok stream failed: ${JSON.stringify(failed).slice(0, 500)}`);
-  const completed = events.findLast((event) => event.type === "response.completed")?.response;
-  if (!completed) throw new Error("Grok stream ended without response.completed");
-  const text = (completed.output ?? []).flatMap((item: any) => item.content ?? []).filter((item: any) => item.type === "output_text").map((item: any) => item.text).join("");
-  const completedSearchItems = (completed.output ?? []).filter((item: any) => item.type === "web_search_call");
-  const streamedSearchItems = events.filter((event) => event.type === "response.output_item.done" && event.item?.type === "web_search_call");
-  const searches = completedSearchItems.length || new Set(streamedSearchItems.map((event) => event.item?.id).filter(Boolean)).size;
-  return { text, searches, raw: { response: completed, streamEventTypes: events.map((event) => event.type) } };
+  if (context.pilot.limits.continuationPages < 1) throw new Error("Grok two-stage run requires the confirmed continuation page");
+  const deadline = Date.now() + context.pilot.limits.timeoutMinutesPerProvider * 60_000;
+  const remainingTimeout = () => {
+    const remaining = deadline - Date.now();
+    if (remaining <= 0) throw new Error("Grok two-stage run exceeded the provider timeout");
+    return remaining;
+  };
+  const headers = { authorization: `Bearer ${apiKey}`, accept: "text/event-stream", "content-type": "application/json" };
+  const searchEvents = await requestSse(`${baseUrl}/responses`, { method: "POST", headers, body: JSON.stringify(buildGrokSearchRequest(context)) }, remainingTimeout());
+  const searchResponse = completedResponse(searchEvents, "search");
+  const searches = responseWebSearchCount(searchResponse);
+  if (searches < 1) throw new Error("Grok search phase completed without a native Web Search call");
+  if (searches > context.pilot.limits.nativeSearchRequests) throw new Error(`Grok search phase exceeded the native search limit with ${searches} calls`);
+
+  const synthesisEvents = await requestSse(`${baseUrl}/responses`, { method: "POST", headers, body: JSON.stringify(buildGrokSynthesisRequest(context, searchResponse.id, searches)) }, remainingTimeout());
+  const synthesisResponse = completedResponse(synthesisEvents, "synthesis");
+  const synthesisSearches = responseWebSearchCount(synthesisResponse);
+  if (synthesisSearches !== 0) throw new Error(`Grok synthesis phase unexpectedly performed ${synthesisSearches} searches`);
+  return {
+    text: responseOutputText(synthesisResponse),
+    searches,
+    raw: {
+      strategy: "stateful_search_then_structured_synthesis",
+      searchPhase: { response: searchResponse, streamEventTypes: searchEvents.map((event) => event.type) },
+      synthesisPhase: { response: synthesisResponse, streamEventTypes: synthesisEvents.map((event) => event.type) },
+    },
+  };
 }
 
 async function runAnthropic(context: RunContext) {

@@ -122,7 +122,9 @@
         "automaticRetries": 0,
         "resultEligibleForComparison": false,
         "proposedRemediation": "separate_native_search_turn_from_structured_synthesis_using_previous_response_id",
-        "remediationAuthorized": false
+        "remediationAuthorized": true,
+        "remediationImplementation": "stateful_search_then_structured_synthesis",
+        "remediationRunPending": true
       }
     },
     "claude": {
