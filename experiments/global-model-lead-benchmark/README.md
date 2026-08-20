@@ -10,9 +10,10 @@ APIs, contact databases, and the project's existing lead data are excluded.
 ## Current stage
 
 Country selection and prompt v1.1 are frozen. Claude is temporarily skipped by
-user decision. Kimi K2.6 passed both basic and native-search preflights; Kimi K3
-was retried by explicit user request. DeepSeek retains its verified latency
-risk, and OpenAI uses Responses streaming through Lingyu.
+user decision. Kimi K2.6 is restored as the current model after passing both
+basic and native-search preflights; Kimi K3 remains recorded as incompatible
+after reproducing its tokenization failure. DeepSeek retains its verified
+latency risk, and OpenAI uses Responses streaming through Lingyu.
 
 On 2026-08-20, the Germany OpenAI run completed and passed validation. DeepSeek
 completed six searches but its JSON was cut off by the output-token limit and

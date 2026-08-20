@@ -85,21 +85,21 @@
     "kimi": {
       "displayName": "Moonshot Kimi",
       "enabled": true,
-      "status": "blocked_k3_tokenization_failed",
+      "status": "ready_with_k2_6_fallback",
       "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "KIMI_API_KEY",
         "baseUrlEnv": "KIMI_BASE_URL"
       },
       "model": {
-        "selectionPolicy": "user-selected Kimi K3 retry with known native-search continuation risk",
-        "modelId": "kimi-k3",
+        "selectionPolicy": "user-approved Kimi K2.6 fallback after K3 tokenization failure",
+        "modelId": "kimi-k2.6",
         "discoveryRequired": false
       },
       "nativeSearch": {
         "required": true,
         "adapter": "moonshot_builtin_web_search",
-        "capabilityVerified": false,
+        "capabilityVerified": true,
         "verifiedAt": "2026-08-19",
         "verification": {
           "toolCallObserved": true,
@@ -133,7 +133,8 @@
           "modelId": "kimi-k3",
           "reason": "prior native search result continuation returned tokenization_failed",
           "retryRequestedAt": "2026-08-20",
-          "retryResult": "tokenization_failed"
+          "retryResult": "tokenization_failed",
+          "currentDecision": "fallback_to_kimi-k2.6"
         }
       }
     },

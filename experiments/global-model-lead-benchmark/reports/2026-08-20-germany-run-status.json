@@ -39,7 +39,8 @@
       "status": "failed",
       "failureCategory": "tokenization_failed",
       "httpStatus": 400,
-      "continuationCompleted": false
+      "continuationCompleted": false,
+      "subsequentDecision": "restore_kimi-k2.6_for_next_run"
     },
     "claude": {
       "modelId": "claude-opus-4-8",
