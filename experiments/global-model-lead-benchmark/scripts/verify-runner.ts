@@ -1,4 +1,4 @@
-import { anthropicMessagesUrl, buildMessageEnvelope, extractBenchmarkJson, loadContext, parseSseBuffer, validateBenchmarkResult } from "../lib/benchmark";
+import { anthropicMessagesUrl, buildKimiRequest, buildMessageEnvelope, extractBenchmarkJson, loadContext, parseSseBuffer, validateBenchmarkResult } from "../lib/benchmark";
 
 const context = await loadContext("openai", "2026-08-19");
 if (!context.prompt.includes("Country: `Germany` (`DE`)") || !context.prompt.includes("Search languages: `German, English` plus English")) throw new Error("Prompt substitution failed");
@@ -10,6 +10,9 @@ for (const provider of ["openai", "claude", "kimi", "deepseek"] as const) {
 }
 if (!context.trigger.includes("Germany (DE)") || !context.trigger.includes("German and English") || !context.trigger.includes("Cudy's current channel partners") || !context.trigger.includes("return only JSON")) throw new Error("Searchable benchmark trigger is incomplete");
 if (anthropicMessagesUrl("deepseek", "https://api.deepseek.com") !== "https://api.deepseek.com/anthropic/v1/messages" || anthropicMessagesUrl("claude", "https://lingyuapi.com") !== "https://lingyuapi.com/v1/messages") throw new Error("Anthropic-compatible endpoint routing failed");
+const kimiContext = await loadContext("kimi", "2026-08-19");
+const kimiRequest = buildKimiRequest(kimiContext, [{ role: "user", content: "test" }]);
+if (kimiRequest.max_completion_tokens !== 10000 || kimiRequest.response_format.type !== "json_object" || kimiRequest.thinking.type !== "disabled" || kimiRequest.tools[0].function.name !== "$web_search") throw new Error("Kimi JSON-mode benchmark request is incomplete");
 const result = {
   runMetadata: { countryName: "Germany", countryCode: "DE" }, searchCapability: { queriesExecutedCount: 0 },
   tier1Partners: [], downstreamCustomers: [], contacts: [], uncertainties: [], knowledgeGaps: [],

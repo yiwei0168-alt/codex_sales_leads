@@ -159,6 +159,17 @@ async function runAnthropic(context: RunContext) {
   return { text, searches: (raw.content ?? []).filter((item: any) => item.type === "server_tool_use" && item.name === "web_search").length, raw };
 }
 
+export function buildKimiRequest(context: RunContext, messages: any[]) {
+  return {
+    model: context.provider.model.modelId,
+    max_completion_tokens: context.pilot.limits.visibleOutputTokens,
+    thinking: { type: "disabled" },
+    response_format: { type: "json_object" },
+    messages,
+    tools: [{ type: "builtin_function", function: { name: "$web_search" } }],
+  };
+}
+
 async function runKimi(context: RunContext) {
   const { apiKey, baseUrl } = credentials(context.provider);
   const envelope = buildMessageEnvelope("kimi", context.prompt, context.trigger);
@@ -167,7 +178,7 @@ async function runKimi(context: RunContext) {
   let searches = 0;
   let text = "";
   for (let round = 0; round <= context.pilot.limits.nativeSearchRequests; round += 1) {
-    const raw = await requestJson(`${baseUrl}/chat/completions`, { method: "POST", headers: { authorization: `Bearer ${apiKey}`, "content-type": "application/json" }, body: JSON.stringify({ model: context.provider.model.modelId, max_tokens: context.pilot.limits.visibleOutputTokens, thinking: { type: "disabled" }, messages, tools: [{ type: "builtin_function", function: { name: "$web_search" } }] }) }, context.pilot.limits.timeoutMinutesPerProvider * 60_000);
+    const raw = await requestJson(`${baseUrl}/chat/completions`, { method: "POST", headers: { authorization: `Bearer ${apiKey}`, "content-type": "application/json" }, body: JSON.stringify(buildKimiRequest(context, messages)) }, context.pilot.limits.timeoutMinutesPerProvider * 60_000);
     rounds.push(raw);
     const choice = raw.choices?.[0];
     if (!choice) throw new Error("Kimi response has no choice");
