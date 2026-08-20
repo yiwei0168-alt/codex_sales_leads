@@ -41,10 +41,11 @@ and rejected provider payloads remain local and ignored.
 
 The first Grok search preflight exposed citation text outside the JSON object;
 disabling inline citations resolved that format issue. The second preflight
-completed its basic request but the model chose not to invoke Web Search. A
-third live preflight is pending user confirmation with `tool_choice=required`
-and parallel calls disabled. Until it passes, Grok remains in the comparison
-configuration but no measured Germany run is valid or authorized.
+completed its basic request but the model chose not to invoke Web Search. The
+third preflight passed after setting `tool_choice=required` and disabling
+parallel calls: exactly one Web Search call was observed and the single output
+text block parsed as JSON. Grok is eligible for the measured Germany run, but
+that run still requires separate user approval.
 
 Google Gemini remains an optional provider placeholder. It is disabled and does
 not participate in current runs until its API credentials, model choice, and

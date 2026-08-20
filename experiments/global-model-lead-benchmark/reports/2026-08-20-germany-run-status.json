@@ -94,7 +94,7 @@
     },
     "grok": {
       "modelId": "grok-4.5",
-      "status": "preflight_fix_ready_pending_confirmation",
+      "status": "ready",
       "modelSelection": {
         "policy": "latest_publicly_documented_flagship",
         "grok46VisibleToAccount": true,
@@ -104,10 +104,12 @@
       "preflight": {
         "basicRequest": "passed",
         "structuredJsonWithoutSearch": "passed",
-        "nativeSearch": "failed_tool_not_selected",
-        "observedWebSearchCalls": 0,
-        "preparedRemediation": "tool_choice_required_and_parallel_tool_calls_false",
-        "remediationVerifiedLive": false,
+        "nativeSearch": "passed",
+        "observedWebSearchCalls": 1,
+        "structuredJsonParsed": true,
+        "outputTextBlocks": 1,
+        "remediation": "tool_choice_required_parallel_tool_calls_false_and_no_inline_citations",
+        "remediationVerifiedLive": true,
         "automaticRetries": 0
       },
       "benchmarkRunPerformed": false

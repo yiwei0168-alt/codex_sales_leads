@@ -233,7 +233,7 @@
     "grok": {
       "displayName": "xAI Grok",
       "enabled": true,
-      "status": "preflight_fix_ready_pending_confirmation",
+      "status": "ready",
       "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "XAI_API_KEY",
@@ -253,7 +253,8 @@
       "nativeSearch": {
         "required": true,
         "adapter": "xai_responses_web_search",
-        "capabilityVerified": false,
+        "capabilityVerified": true,
+        "verifiedAt": "2026-08-20",
         "structuredOutputRequired": true,
         "reasoningEffort": "high",
         "maxAgentTurns": 8,
@@ -263,14 +264,18 @@
         "latestPreflight": {
           "checkedAt": "2026-08-20",
           "basicRequest": "passed",
-          "nativeSearch": "failed",
-          "failureCategory": "tool_not_selected",
-          "observedWebSearchCalls": 0,
-          "structuredJsonIssueFromPriorAttempt": "resolved_by_disabling_inline_citations_and_tolerating_non-data_citation_text",
-          "preparedRemediation": "force_required_tool_choice_and_disable_parallel_tool_calls",
-          "remediationVerifiedLive": false,
+          "nativeSearch": "passed",
+          "observedWebSearchCalls": 1,
+          "structuredJsonParsed": true,
+          "outputTextBlocks": 1,
+          "remediation": "force_required_tool_choice_disable_parallel_calls_and_disable_inline_citations",
+          "remediationVerifiedLive": true,
           "automaticRetries": 0
         },
+        "priorPreflightFailures": [
+          "search response contained non-data citation text outside JSON",
+          "model did not select the optional web search tool"
+        ],
         "transport": {
           "nodeUseEnvProxy": true,
           "reason": "direct Node connection timed out while the configured system proxy path succeeded"
