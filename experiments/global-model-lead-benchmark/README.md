@@ -9,9 +9,10 @@ APIs, contact databases, and the project's existing lead data are excluded.
 
 ## Current stage
 
-Country selection and prompt v1.1 are frozen. Claude and Kimi K2.6 currently
-pass both basic and native-search preflights. Kimi K3 remains excluded because
-its search-result continuation is rejected by the provider tokenizer. OpenAI
+Country selection and prompt v1.1 are frozen. Claude is temporarily skipped by
+user decision. Kimi K2.6 passed both basic and native-search preflights, but the
+current batch retries Kimi K3 by explicit user request despite its prior
+`tokenization_failed` continuation result. OpenAI
 `gpt-5.6-sol` passes basic Responses streaming, but Lingyu's native-search path
 currently returns an upstream-overloaded error; it is operationally blocked,
 not scored as a model failure. DeepSeek retains its verified latency risk. No

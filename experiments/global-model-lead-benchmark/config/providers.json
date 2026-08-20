@@ -39,8 +39,8 @@
     "claude": {
       "displayName": "Anthropic Claude",
       "enabled": true,
-      "status": "ready",
-      "participatesInCurrentRun": true,
+      "status": "temporarily_skipped_by_user",
+      "participatesInCurrentRun": false,
       "credentials": {
         "apiKeyEnv": "CLAUDE_API_KEY",
         "baseUrlEnv": "CLAUDE_BASE_URL"
@@ -79,21 +79,21 @@
     "kimi": {
       "displayName": "Moonshot Kimi",
       "enabled": true,
-      "status": "ready_with_k2_6_fallback",
+      "status": "retrying_k3_by_user_request",
       "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "KIMI_API_KEY",
         "baseUrlEnv": "KIMI_BASE_URL"
       },
       "model": {
-        "selectionPolicy": "user-approved highest Kimi model with verified native search",
-        "modelId": "kimi-k2.6",
+        "selectionPolicy": "user-selected Kimi K3 retry with known native-search continuation risk",
+        "modelId": "kimi-k3",
         "discoveryRequired": false
       },
       "nativeSearch": {
         "required": true,
         "adapter": "moonshot_builtin_web_search",
-        "capabilityVerified": true,
+        "capabilityVerified": false,
         "verifiedAt": "2026-08-19",
         "verification": {
           "toolCallObserved": true,
@@ -123,9 +123,10 @@
           "continuationCompleted": true,
           "automaticRetries": 0
         },
-        "excludedModel": {
+        "knownRiskModel": {
           "modelId": "kimi-k3",
-          "reason": "native search result continuation returned tokenization_failed"
+          "reason": "prior native search result continuation returned tokenization_failed",
+          "retryRequestedAt": "2026-08-20"
         }
       }
     },
