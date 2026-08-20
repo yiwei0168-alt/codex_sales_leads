@@ -68,8 +68,8 @@ export function interpretAssistantRequest(text: string): { intent: AssistantInte
     reply: "我可以先为你生成销售线索搜索计划。请补充目标国家或市场，例如“搜索德国的分销商和系统集成商”。",
   };
   const roles = roleSignals.filter((item) => item.pattern.test(text)).map((item) => item.role);
-  const countMatch = text.match(/(?:前|搜索|寻找|find|top)?\s*(\d{1,3})\s*(?:家|个|companies|leads)?/i);
-  const targetCount = Math.max(1, Math.min(Number(countMatch?.[1] ?? 20), 100));
+  const countMatch = text.match(/(?:前|搜索|寻找|find|top)\s*(\d{1,3})\s*(?:家|个|companies?|leads?)|(?<!\d)(\d{1,3})\s*(?:家|个|companies?|leads?)/i);
+  const targetCount = Math.max(1, Math.min(Number(countMatch?.[1] ?? countMatch?.[2] ?? 20), 100));
   const objective = /已有|现有.{0,8}分销|existing distributor|增长|growth/i.test(text)
     ? "existing-distributor-growth" as const : "new-market" as const;
   return {

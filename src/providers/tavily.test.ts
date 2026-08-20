@@ -30,4 +30,14 @@ describe("TavilySearchProvider country scope", () => {
     const body = JSON.parse(String(init.body)) as Record<string, unknown>;
     expect(body.country).toBe("germany");
   });
+
+  it("supports a single-attempt mode for controlled benchmarks", async () => {
+    vi.stubEnv("TAVILY_API_KEY", "test-key");
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({ detail: "busy" }), { status: 503 }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(new TavilySearchProvider({ maxAttempts: 1 }).search({ query: "network distributor Germany" }))
+      .rejects.toMatchObject({ name: "ProviderUnavailableError", cause: expect.objectContaining({ message: expect.stringContaining("HTTP 503") }) });
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
 });

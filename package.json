@@ -36,6 +36,7 @@
     "contacts:classify:eval": "tsx scripts/evaluate-contact-verification.ts",
     "contacts:classify:verify-production": "tsx scripts/verify-contact-verification-production.ts",
     "benchmark:pilot": "node --use-env-proxy --import tsx experiments/global-model-lead-benchmark/scripts/run-pilot.ts",
+    "benchmark:product": "node --use-env-proxy --import tsx experiments/global-model-lead-benchmark/scripts/run-product-comparator.ts",
     "benchmark:verify": "tsx experiments/global-model-lead-benchmark/scripts/verify-runner.ts",
     "benchmark:preflight": "node --use-env-proxy --import tsx experiments/global-model-lead-benchmark/scripts/preflight-provider.ts",
     "benchmark:prepare-review": "tsx experiments/global-model-lead-benchmark/scripts/prepare-review.ts",

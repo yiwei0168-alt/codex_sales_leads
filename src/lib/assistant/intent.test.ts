@@ -18,6 +18,11 @@ describe("assistant intent routing", () => {
     expect(resolveCountry("搜索德国的渠道伙伴")).toMatchObject({ countryCode: "DE" });
   });
 
+  it("does not mistake years or product generations for a requested lead count", () => {
+    const result = interpretAssistantRequest("搜索德国渠道。公司成立于2018年，产品包括4G和5G路由器。");
+    expect(result.plan).toMatchObject({ countryCode: "DE", targetCount: 20 });
+  });
+
   it("asks for a country before proposing an external search", () => {
     const result = interpretAssistantRequest("帮我搜索 30 家系统集成商");
     expect(result.intent).toBe("clarification");

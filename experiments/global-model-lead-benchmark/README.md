@@ -47,6 +47,10 @@ Codex 已按冻结规则处理 10 个原生搜索答案：只抽取编号小节�
 
 Sales Lead Copilot 是产品基准，因此可以使用它真实的 Tavily、筛选、去重和联系人流程。它必须使用同一国家、同一提示信息、相同的 15 分钟墙钟上限和前 20 名人工审核规则；12 次搜索目标预算不强加给产品内部实现，但必须另外记录查询数、外部请求数和成本，避免隐藏资源优势。
 
+产品对照通过 `npm run benchmark:product -- <repetition>` 运行。实验适配器复用正式产品的自然语言意图解析、国家/角色查询生成、网页结果过滤、相关性排序和域名去重，但不写入正式数据库，也不读取已有 CRM、历史线索或模型答案。每次运行都从相同 user prompt 独立开始；发现阶段完成后，仅对该次前 20 家执行官网 Cudy 证据、公开联系人、同域邮箱和网页正文提取。适配器把 Tavily 客户端固定为单次尝试，保留 15 分钟总超时，并将自然语言表格及完整资源账单写入被 Git 忽略的原始结果目录。
+
+产品成本按 Tavily 返回的实际 credits 计量，同时用其公开 pay-as-you-go 牌价 `US$0.008/credit` 生成可比较的保守估算；免费额度或月度套餐下的实际边际成本可能更低。价格依据为 Tavily 官方文档：<https://docs.tavily.com/documentation/api-credits>。
+
 ## 文件与隐私
 
 - `prompts/native-search-user-prompt-v2.md`：冻结的自然语言 user prompt。
@@ -57,6 +61,7 @@ Sales Lead Copilot 是产品基准，因此可以使用它真实的 Tavily、筛
 - `lib/judging.ts`：候选/审核结构、盲化和评分函数。
 - `lib/normalization.ts`：自然语言候选抽取、过程文本检测、URL/联系方式清洗和跨运行去重。
 - `lib/review-verification.ts`：Codex 独立公开网页核验结构与校验。
+- `lib/product-comparator.ts`：Sales Lead Copilot 的隔离运行、公开联系人提取、自然语言输出和资源计量适配器。
 - `reports/2026-08-20-germany-run-status.json`：旧版 JSON 协议的历史记录，不可与 v2 成绩合并。
 
 API 密钥只能保存在 `.env.local`。不要提交凭证、原始线索、联系方式、模型原始响应、依赖目录或其他本地生成数据。

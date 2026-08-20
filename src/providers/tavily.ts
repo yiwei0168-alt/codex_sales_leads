@@ -1,12 +1,16 @@
 import { ProviderUnavailableError } from "./contracts";
 
-async function fetchWithRetry(url: string, init: RequestInit): Promise<Response> {
+export interface TavilySearchProviderOptions {
+  maxAttempts?: number;
+}
+
+async function fetchWithRetry(url: string, init: RequestInit, maxAttempts: number): Promise<Response> {
   let lastError: unknown;
-  for (let attempt = 0; attempt < 3; attempt += 1) {
+  for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
     if (init.signal?.aborted) throw init.signal.reason ?? new DOMException("Aborted", "AbortError");
     try {
       const response = await fetch(url, init);
-      if (![429, 500, 502, 503, 504].includes(response.status) || attempt === 2) return response;
+      if (![429, 500, 502, 503, 504].includes(response.status) || attempt === maxAttempts - 1) return response;
       lastError = new Error(`Retryable HTTP ${response.status}`);
       const retryAfterSeconds = Number(response.headers.get("retry-after"));
       const retryDelay = Number.isFinite(retryAfterSeconds) && retryAfterSeconds > 0
@@ -16,7 +20,7 @@ async function fetchWithRetry(url: string, init: RequestInit): Promise<Response>
       continue;
     } catch (error) {
       lastError = error;
-      if (attempt < 2) await new Promise((resolve) => setTimeout(resolve, 500 * (2 ** attempt)));
+      if (attempt < maxAttempts - 1) await new Promise((resolve) => setTimeout(resolve, 500 * (2 ** attempt)));
     }
   }
   throw lastError;
@@ -69,6 +73,15 @@ interface TavilyWireResponse {
 
 export class TavilySearchProvider {
   readonly id = "tavily";
+  private readonly maxAttempts: number;
+
+  constructor(options: TavilySearchProviderOptions = {}) {
+    const maxAttempts = options.maxAttempts ?? 3;
+    if (!Number.isInteger(maxAttempts) || maxAttempts < 1 || maxAttempts > 3) {
+      throw new Error("Tavily maxAttempts must be an integer between 1 and 3");
+    }
+    this.maxAttempts = maxAttempts;
+  }
 
   async search(input: TavilySearchInput, signal?: AbortSignal): Promise<TavilySearchResponse> {
     const apiKey = process.env.TAVILY_API_KEY?.trim();
@@ -89,7 +102,7 @@ export class TavilySearchProvider {
           include_domains: input.includeDomains,
         }),
         signal,
-      });
+      }, this.maxAttempts);
     } catch (error) {
       throw new ProviderUnavailableError(this.id, error);
     }
@@ -128,7 +141,7 @@ export class TavilySearchProvider {
           timeout: 20,
         }),
         signal,
-      });
+      }, this.maxAttempts);
     } catch (error) {
       throw new ProviderUnavailableError(this.id, error);
     }

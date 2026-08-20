@@ -10,7 +10,7 @@ export type ProviderConfig = {
   model: { modelId: string };
 };
 
-type PilotConfig = {
+export type PilotConfig = {
   protocolVersion: string;
   countryCode: string;
   countryName: string;
@@ -46,6 +46,12 @@ export type RunContext = {
   prompt: string;
   runDate: string;
   repetition: number;
+  pilot: PilotConfig;
+};
+
+export type PilotPromptContext = {
+  prompt: string;
+  runDate: string;
   pilot: PilotConfig;
 };
 
@@ -88,7 +94,7 @@ export async function loadContext(
   runDate = new Date().toISOString().slice(0, 10),
   repetition = 1,
 ): Promise<RunContext> {
-  const pilot = await readJson<PilotConfig>(path.join(experimentRoot, "config/pilot.json"));
+  const { pilot, prompt } = await loadPilotPrompt(runDate);
   const document = await readJson<{ providers: Record<string, ProviderConfig> }>(path.join(experimentRoot, "config/providers.json"));
   const provider = document.providers[providerId];
   if (!pilot.providers.includes(providerId) || !provider?.enabled || !provider.participatesInCurrentRun) {
@@ -97,6 +103,13 @@ export async function loadContext(
   if (!Number.isInteger(repetition) || repetition < 1 || repetition > pilot.repetitionsPerSystem) {
     throw new Error(`Repetition must be between 1 and ${pilot.repetitionsPerSystem}`);
   }
+  return { providerId, provider, prompt, runDate, repetition, pilot };
+}
+
+export async function loadPilotPrompt(
+  runDate = new Date().toISOString().slice(0, 10),
+): Promise<PilotPromptContext> {
+  const pilot = await readJson<PilotConfig>(path.join(experimentRoot, "config/pilot.json"));
   const template = await readFile(path.join(experimentRoot, pilot.promptFile), "utf8");
   const values: Record<string, string> = {
     COUNTRY_NAME: pilot.countryName,
@@ -108,7 +121,7 @@ export async function loadContext(
   const prompt = template.replace(/\{([A-Z_]+)\}/g, (match, key: string) => values[key] ?? match).trim();
   const unresolved = [...prompt.matchAll(/\{([A-Z_]+)\}/g)].map((match) => match[0]);
   if (unresolved.length) throw new Error(`Unresolved prompt placeholders: ${[...new Set(unresolved)].join(", ")}`);
-  return { providerId, provider, prompt, runDate, repetition, pilot };
+  return { prompt, runDate, pilot };
 }
 
 function credentials(provider: ProviderConfig): { apiKey: string; baseUrl: string } {

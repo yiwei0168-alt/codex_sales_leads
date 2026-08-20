@@ -15,7 +15,12 @@ const nonCompanyPattern = /(\.pdf(?:$|\?)|\/download(?:\/|$)|\/blogs?(?:\/|$)|\/
 const directoryPattern = /\b(top\s*\d+|best companies|company list|directory|ranking)\b/i;
 const relevancePattern = /\b(network(?:ing)?|wi-?fi|router|switch|telecom|internet|fiber|fibre|cabling|integrator|connectivity|infrastructure|ict|it solutions?|cctv|poe|redes?|fibra|integrador|réseau|netzwerk)\b|网络|通信|光纤|系统集成/i;
 
-interface SearchCandidate { role: ChannelRole; result: TavilySearchResult; domain: string; queryId: string; }
+export interface GlobalLeadSearchCandidate {
+  role: ChannelRole;
+  result: TavilySearchResult;
+  domain: string;
+  queryId: string;
+}
 
 function domainFromUrl(value: string): string | null {
   try { return new URL(value).hostname.toLowerCase().replace(/^www\./, ""); } catch { return null; }
@@ -37,13 +42,13 @@ function uniqueId(value: string): string {
   return createHash("sha256").update(value).digest("hex").slice(0, 16);
 }
 
-function displayName(result: TavilySearchResult, domain: string): string {
+export function globalLeadDisplayName(result: TavilySearchResult, domain: string): string {
   const first = result.title.split(/\s+[|–—]\s+|\s+-\s+/)[0]?.trim();
   const fallback = domain.split(".")[0].replace(/[-_]+/g, " ");
   return first && first.length >= 2 && first.length <= 100 ? first.replace(/^home\s*[|:-]?\s*/i, "").trim() : fallback;
 }
 
-function buildQueries(plan: LeadSearchPlan): Array<{ role: ChannelRole; query: string }> {
+export function buildGlobalLeadSearchQueries(plan: LeadSearchPlan): Array<{ role: ChannelRole; query: string }> {
   const roles = plan.roles.filter((role): role is ChannelRole => allowedRoles.has(role as ChannelRole));
   const selected: ChannelRole[] = roles.length
     ? roles
@@ -59,11 +64,27 @@ function buildQueries(plan: LeadSearchPlan): Array<{ role: ChannelRole; query: s
   return selected.slice(0, 12).map((role) => ({ role, query: `${labels[role]} ${queryCountry} official company` }));
 }
 
-function toRecord(candidate: SearchCandidate, plan: LeadSearchPlan, runId: string): CompanyRecord {
+export function classifyGlobalLeadSearchResult(result: TavilySearchResult): { domain: string | null; rejectionReason: string | null } {
+  const domain = domainFromUrl(result.url);
+  return { domain, rejectionReason: rejectionReason(result, domain) };
+}
+
+export function selectGlobalLeadSearchCandidates(
+  candidates: GlobalLeadSearchCandidate[],
+  targetCount: number,
+): GlobalLeadSearchCandidate[] {
+  return [...new Map(
+    candidates
+      .sort((a, b) => b.result.score - a.result.score)
+      .map((item) => [item.domain, item]),
+  ).values()].slice(0, targetCount);
+}
+
+function toRecord(candidate: GlobalLeadSearchCandidate, plan: LeadSearchPlan, runId: string): CompanyRecord {
   const score = Math.max(0, Math.min(candidate.result.score, 1));
   const confidence = Math.round(45 + score * 38);
   const fit = Math.round(55 + score * 35);
-  const name = displayName(candidate.result, candidate.domain);
+  const name = globalLeadDisplayName(candidate.result, candidate.domain);
   const isDistribution = candidate.role === "Distributor" || candidate.role === "VAD";
   const isLargeIsp = candidate.role === "ISP" && score >= 0.72;
   return {
@@ -103,8 +124,8 @@ export async function executeGlobalLeadSearch(userId: string, actionId: string, 
   const provider = new TavilySearchProvider();
   const providerCountry = new Intl.DisplayNames(["en"], { type: "region" }).of(plan.countryCode)?.toLowerCase()
     ?? plan.countryName.toLowerCase();
-  const queries = buildQueries(plan);
-  const candidates: SearchCandidate[] = [];
+  const queries = buildGlobalLeadSearchQueries(plan);
+  const candidates: GlobalLeadSearchCandidate[] = [];
   let rawResults = 0;
   let creditsUsed = 0;
   try {
@@ -128,8 +149,7 @@ export async function executeGlobalLeadSearch(userId: string, actionId: string, 
       rawResults += response.results.length;
       await query(`update lead_search_query set result_count = $2, credits_used = $3 where id = $1`, [searchQuery.id, response.results.length, response.creditsUsed]);
       for (const result of response.results) {
-        const domain = domainFromUrl(result.url);
-        const rejected = rejectionReason(result, domain);
+        const { domain, rejectionReason: rejected } = classifyGlobalLeadSearchResult(result);
         const inserted = await query<{ id: string }>(
           `insert into lead_search_result (run_id, query_id, url, domain, title, snippet, provider_score, rejection_reason)
            values ($1, $2, $3, $4, $5, $6, $7, $8) on conflict (run_id, url) do nothing returning id`,
@@ -138,8 +158,7 @@ export async function executeGlobalLeadSearch(userId: string, actionId: string, 
         if (!rejected && inserted[0] && domain) candidates.push({ role: spec.role, result, domain, queryId: searchQuery.id });
       }
     }
-    const selected = [...new Map(candidates.sort((a, b) => b.result.score - a.result.score).map((item) => [item.domain, item])).values()]
-      .slice(0, plan.targetCount);
+    const selected = selectGlobalLeadSearchCandidates(candidates, plan.targetCount);
     await transaction(async (client) => {
       for (const candidate of selected) {
         const record = toRecord(candidate, plan, run.id);
