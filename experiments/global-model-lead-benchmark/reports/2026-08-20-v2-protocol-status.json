@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "protocolVersion": "native-search-natural-language-v2",
   "asOf": "2026-08-20",
-  "status": "ready_for_measured_germany_runs",
+  "status": "measured_runs_paused_after_round_1_resource_limit_mismatch",
   "pilotCountry": "DE",
   "repetitionsPerSystem": 3,
   "participatingProviders": ["openai", "claude", "kimi", "deepseek", "grok"],
@@ -70,7 +70,49 @@
         "sourceUrlCount": 10
       }
     },
-    "measuredRuns": "not_run_under_v2"
+    "measuredRuns": {
+      "completed": 5,
+      "planned": 15,
+      "automaticRetries": 0,
+      "round1": {
+        "openai": {
+          "status": "eligible",
+          "webSearchCalls": 8,
+          "sourceUrlCount": 14,
+          "answerCharacters": 12528,
+          "latencyMs": 115466
+        },
+        "claude": {
+          "status": "zero_score_no_native_search",
+          "webSearchCalls": 0,
+          "sourceUrlCount": 0,
+          "answerCharacters": 29,
+          "latencyMs": 4835
+        },
+        "kimi": {
+          "status": "eligible",
+          "webSearchCalls": 1,
+          "sourceUrlCount": 0,
+          "answerCharacters": 16793,
+          "latencyMs": 177431
+        },
+        "deepseek": {
+          "status": "eligible",
+          "webSearchCalls": 6,
+          "sourceUrlCount": 18,
+          "answerCharacters": 4752,
+          "latencyMs": 27514
+        },
+        "grok": {
+          "status": "zero_score_search_ceiling_exceeded",
+          "webSearchCalls": 21,
+          "sourceUrlCount": 121,
+          "answerCharacters": 5338,
+          "latencyMs": 147039
+        }
+      },
+      "pauseReason": "Grok emitted 21 distinct completed web_search_call items despite max_turns=12 and parallel_tool_calls=false; max_turns is not a hard web-search action limit."
+    }
   },
   "privacy": {
     "containsLeadRecords": false,
