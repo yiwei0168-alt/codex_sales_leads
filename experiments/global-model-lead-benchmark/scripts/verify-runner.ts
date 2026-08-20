@@ -1,4 +1,4 @@
-import { buildMessageEnvelope, extractBenchmarkJson, loadContext, parseSseBuffer, validateBenchmarkResult } from "../lib/benchmark";
+import { anthropicMessagesUrl, buildMessageEnvelope, extractBenchmarkJson, loadContext, parseSseBuffer, validateBenchmarkResult } from "../lib/benchmark";
 
 const context = await loadContext("openai", "2026-08-19");
 if (!context.prompt.includes("Country: `Germany` (`DE`)") || !context.prompt.includes("Search languages: `German, English` plus English")) throw new Error("Prompt substitution failed");
@@ -9,6 +9,7 @@ for (const provider of ["openai", "claude", "kimi", "deepseek"] as const) {
   if (userContent !== context.trigger || systemContent !== context.prompt || userContent.includes("Cudy Global Channel-Lead")) throw new Error(`${provider} message role separation failed`);
 }
 if (!context.trigger.includes("Germany (DE)") || !context.trigger.includes("German and English") || !context.trigger.includes("Cudy's current channel partners") || !context.trigger.includes("return only JSON")) throw new Error("Searchable benchmark trigger is incomplete");
+if (anthropicMessagesUrl("deepseek", "https://api.deepseek.com") !== "https://api.deepseek.com/anthropic/v1/messages" || anthropicMessagesUrl("claude", "https://lingyuapi.com") !== "https://lingyuapi.com/v1/messages") throw new Error("Anthropic-compatible endpoint routing failed");
 const result = {
   runMetadata: { countryName: "Germany", countryCode: "DE" }, searchCapability: { queriesExecutedCount: 0 },
   tier1Partners: [], downstreamCustomers: [], contacts: [], uncertainties: [], knowledgeGaps: [],

@@ -21,6 +21,10 @@ export function buildMessageEnvelope(providerId: ProviderId, prompt: string, tri
   return { system: prompt, messages: [{ role: "user", content: trigger }] };
 }
 
+export function anthropicMessagesUrl(providerId: ProviderId, baseUrl: string): string {
+  return providerId === "deepseek" ? `${baseUrl}/anthropic/v1/messages` : `${baseUrl}/v1/messages`;
+}
+
 export async function loadContext(providerId: ProviderId, runDate = new Date().toISOString().slice(0, 10)): Promise<RunContext> {
   const pilot = await readJson<PilotConfig>(path.join(experimentRoot, "config/pilot.json"));
   const document = await readJson<{ providers: Record<string, ProviderConfig> }>(path.join(experimentRoot, "config/providers.json"));
@@ -150,7 +154,7 @@ async function runOpenAi(context: RunContext) {
 async function runAnthropic(context: RunContext) {
   const { apiKey, baseUrl } = credentials(context.provider);
   const envelope = buildMessageEnvelope(context.providerId, context.prompt, context.trigger);
-  const raw = await requestJson(`${baseUrl}/v1/messages`, { method: "POST", headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "content-type": "application/json" }, body: JSON.stringify({ model: context.provider.model.modelId, max_tokens: context.pilot.limits.visibleOutputTokens, ...envelope, tools: [{ type: "web_search_20250305", name: "web_search", max_uses: context.pilot.limits.nativeSearchRequests }] }) }, context.pilot.limits.timeoutMinutesPerProvider * 60_000);
+  const raw = await requestJson(anthropicMessagesUrl(context.providerId, baseUrl), { method: "POST", headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "content-type": "application/json" }, body: JSON.stringify({ model: context.provider.model.modelId, max_tokens: context.pilot.limits.visibleOutputTokens, ...envelope, tools: [{ type: "web_search_20250305", name: "web_search", max_uses: context.pilot.limits.nativeSearchRequests }] }) }, context.pilot.limits.timeoutMinutesPerProvider * 60_000);
   const text = (raw.content ?? []).filter((item: any) => item.type === "text").map((item: any) => item.text).join("");
   return { text, searches: (raw.content ?? []).filter((item: any) => item.type === "server_tool_use" && item.name === "web_search").length, raw };
 }

@@ -2,7 +2,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import nextEnv from "@next/env";
-import { loadContext, parseSseBuffer, type ProviderConfig, type ProviderId } from "../lib/benchmark";
+import { anthropicMessagesUrl, loadContext, parseSseBuffer, type ProviderConfig, type ProviderId } from "../lib/benchmark";
 
 nextEnv.loadEnvConfig(process.cwd());
 const providerId = process.argv[2] as ProviderId | undefined;
@@ -91,7 +91,7 @@ async function preflightOpenAi(): Promise<Stage[]> {
 async function preflightAnthropic(): Promise<Stage[]> {
   const { apiKey, baseUrl } = credentials(context.provider);
   const request = async (withSearch: boolean) => {
-    const { body } = await jsonRequest(`${baseUrl}/v1/messages`, { method: "POST", headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "content-type": "application/json" }, body: JSON.stringify({ model: context.provider.model.modelId, system: withSearch ? "Use exactly one native web search. Do not use the entire system message as the query." : "Reply exactly OK.", messages: [{ role: "user", content: withSearch ? "Find the official Cudy Technology homepage title and URL." : "Health check." }], max_tokens: withSearch ? 256 : 32, ...(withSearch ? { tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 1 }] } : {}) }) });
+    const { body } = await jsonRequest(anthropicMessagesUrl(context.providerId, baseUrl), { method: "POST", headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "content-type": "application/json" }, body: JSON.stringify({ model: context.provider.model.modelId, system: withSearch ? "Use exactly one native web search. Do not use the entire system message as the query." : "Reply exactly OK.", messages: [{ role: "user", content: withSearch ? "Find the official Cudy Technology homepage title and URL." : "Health check." }], max_tokens: withSearch ? 256 : 32, ...(withSearch ? { tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 1 }] } : {}) }) });
     const toolUses = (body.content ?? []).filter((item: any) => item.type === "server_tool_use" && item.name === "web_search");
     return { stopReason: body.stop_reason, webSearchCalls: toolUses.length, queryLengths: toolUses.map((item: any) => String(item.input?.query ?? "").length) };
   };
