@@ -26,7 +26,7 @@
         "adapter": "openai_responses_web_search",
         "mustVerifyServerToolSignal": "web_search_call",
         "externalSearchInjectionForbidden": true,
-        "safetyCeilingEnforcement": "post_response_zero_score_due_to_gateway_parameter_incompatibility"
+        "targetBudgetImplementation": "gateway_does_not_support_max_tool_calls_observe_actual_usage"
       },
       "latestPreflight": {
         "checkedAt": "2026-08-20",
@@ -63,7 +63,7 @@
         "adapter": "anthropic_web_search_20250305",
         "mustVerifyServerToolSignal": "server_tool_use:web_search",
         "externalSearchInjectionForbidden": true,
-        "safetyCeilingEnforcement": "provider_max_uses"
+        "targetBudgetImplementation": "provider_max_uses"
       },
       "latestPreflight": {
         "checkedAt": "2026-08-20",
@@ -99,7 +99,7 @@
         "adapter": "moonshot_builtin_web_search",
         "mustVerifyServerToolSignal": "$web_search",
         "externalSearchInjectionForbidden": true,
-        "safetyCeilingEnforcement": "client_counted_tool_calls"
+        "targetBudgetImplementation": "observe_client_side_tool_calls_until_wall_clock_timeout"
       },
       "latestPreflight": {
         "checkedAt": "2026-08-20",
@@ -133,7 +133,7 @@
         "adapter": "deepseek_anthropic_web_search",
         "mustVerifyServerToolSignal": "server_tool_use:web_search",
         "externalSearchInjectionForbidden": true,
-        "safetyCeilingEnforcement": "provider_max_uses"
+        "targetBudgetImplementation": "provider_max_uses"
       },
       "latestPreflight": {
         "checkedAt": "2026-08-20",
@@ -175,7 +175,7 @@
         "externalSearchInjectionForbidden": true,
         "inlineCitations": true,
         "parallelToolCalls": false,
-        "safetyCeilingEnforcement": "provider_max_turns_with_parallel_calls_disabled"
+        "targetBudgetImplementation": "provider_max_turns_not_equivalent_to_tool_call_count"
       },
       "latestPreflight": {
         "checkedAt": "2026-08-20",

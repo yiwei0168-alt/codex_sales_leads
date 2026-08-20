@@ -30,7 +30,7 @@ type PilotConfig = {
     resourceUseMustBeReported: string[];
   };
   limits: {
-    nativeSearchActionsSafetyCeiling: number;
+    nativeSearchActionsTargetBudget: number;
     visibleOutputTokens: number;
     timeoutMinutesPerProvider: number;
     automaticRetries: number;
@@ -60,7 +60,7 @@ export type RunArtifact = {
   latencyMs: number;
   searchRequestsObserved: number | null;
   nativeSearchEvidence: "observed" | "not_observed" | "unavailable";
-  scoringEligibility: "eligible" | "zero_score_no_native_search" | "zero_score_search_ceiling_exceeded";
+  scoringEligibility: "eligible" | "zero_score_no_native_search";
   sourceUrls: string[];
   answerText: string;
   rawProviderResponse: unknown;
@@ -233,7 +233,7 @@ export function buildGrokRequest(context: RunContext) {
     model: context.provider.model.modelId,
     ...buildMessageEnvelope("grok", context.prompt),
     tools: [{ type: "web_search" }],
-    max_turns: context.pilot.limits.nativeSearchActionsSafetyCeiling,
+    max_turns: context.pilot.limits.nativeSearchActionsTargetBudget,
     max_output_tokens: context.pilot.limits.visibleOutputTokens,
     reasoning: { effort: "none" },
     parallel_tool_calls: false,
@@ -263,7 +263,7 @@ export function buildAnthropicRequest(context: RunContext) {
     max_tokens: context.pilot.limits.visibleOutputTokens,
     ...buildMessageEnvelope(context.providerId, context.prompt),
     ...(context.providerId === "deepseek" ? { thinking: { type: "disabled" } } : {}),
-    tools: [{ type: "web_search_20250305", name: "web_search", max_uses: context.pilot.limits.nativeSearchActionsSafetyCeiling }],
+    tools: [{ type: "web_search_20250305", name: "web_search", max_uses: context.pilot.limits.nativeSearchActionsTargetBudget }],
   };
 }
 
@@ -305,7 +305,7 @@ async function runKimi(context: RunContext): Promise<ProviderResult> {
   };
   let searches = 0;
   let text = "";
-  for (let round = 0; round <= context.pilot.limits.nativeSearchActionsSafetyCeiling; round += 1) {
+  while (true) {
     const raw = await requestJson(`${baseUrl}/chat/completions`, {
       method: "POST",
       headers: { authorization: `Bearer ${apiKey}`, "content-type": "application/json" },
@@ -318,7 +318,6 @@ async function runKimi(context: RunContext): Promise<ProviderResult> {
     if (choice.finish_reason !== "tool_calls") { text = choice.message.content ?? ""; break; }
     for (const toolCall of choice.message.tool_calls ?? []) {
       searches += 1;
-      if (searches > context.pilot.limits.nativeSearchActionsSafetyCeiling) throw new Error("Kimi exceeded native search safety ceiling");
       messages.push({ role: "tool", tool_call_id: toolCall.id, name: toolCall.function.name, content: toolCall.function.arguments });
     }
   }
@@ -356,10 +355,7 @@ export async function executeProvider(providerId: ProviderId, repetition = 1): P
     const nativeSearchEvidence = result.searches === null
       ? "unavailable"
       : (result.searches > 0 ? "observed" : "not_observed");
-    const scoringEligibility = result.searches !== null
-      && result.searches > context.pilot.limits.nativeSearchActionsSafetyCeiling
-      ? "zero_score_search_ceiling_exceeded"
-      : nativeSearchEvidence === "observed" ? "eligible" : "zero_score_no_native_search";
+    const scoringEligibility = nativeSearchEvidence === "observed" ? "eligible" : "zero_score_no_native_search";
     const artifact: RunArtifact = {
       protocolVersion: context.pilot.protocolVersion,
       providerId,

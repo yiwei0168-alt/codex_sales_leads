@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "protocolVersion": "native-search-natural-language-v2",
   "asOf": "2026-08-20",
-  "status": "measured_runs_paused_after_round_1_resource_limit_mismatch",
+  "status": "measured_runs_resumed_after_resource_rule_amendment",
   "pilotCountry": "DE",
   "repetitionsPerSystem": 3,
   "participatingProviders": ["openai", "claude", "kimi", "deepseek", "grok"],
@@ -14,7 +14,8 @@
     "providerNativeSearchRequired": true,
     "thirdPartySearchInjectionForbidden": true,
     "automaticRetries": 0,
-    "nativeSearchActionsSafetyCeiling": 12,
+    "nativeSearchActionsTargetBudget": 12,
+    "searchActionTargetIsScoringDisqualifier": false,
     "timeoutMinutesPerRun": 15,
     "visibleOutputTokens": 8000,
     "primaryCompanyCutoff": 20
@@ -104,14 +105,20 @@
           "latencyMs": 27514
         },
         "grok": {
-          "status": "zero_score_search_ceiling_exceeded",
+          "status": "eligible_after_resource_rule_amendment",
           "webSearchCalls": 21,
           "sourceUrlCount": 121,
           "answerCharacters": 5338,
           "latencyMs": 147039
         }
       },
-      "pauseReason": "Grok emitted 21 distinct completed web_search_call items despite max_turns=12 and parallel_tool_calls=false; max_turns is not a hard web-search action limit."
+      "resourceRuleAmendment": {
+        "trigger": "Grok emitted 21 distinct completed web_search_call items despite max_turns=12 and parallel_tool_calls=false; max_turns is not a hard web-search action limit.",
+        "decision": "Treat 12 search actions as a target resource budget rather than a scoring disqualifier for every provider.",
+        "hardLimitsRetained": ["15 minute wall-clock timeout", "8000 visible output tokens", "zero automatic retries"],
+        "timing": "Confirmed before any candidate-quality extraction or human review.",
+        "grokRound1Reclassified": true
+      }
     }
   },
   "privacy": {

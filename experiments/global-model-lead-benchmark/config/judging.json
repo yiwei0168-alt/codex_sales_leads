@@ -26,6 +26,12 @@
     "latencyMs",
     "searchRequestsObserved"
   ],
+  "resourceEfficiencyMetrics": [
+    "validatedLeadsPerObservedSearchRequest",
+    "verifiedContactsPerObservedSearchRequest",
+    "validatedLeadsPerMinute",
+    "estimatedCostPerValidatedLead"
+  ],
   "humanInTheLoop": {
     "reviewers": 1,
     "finalReviewer": "user",

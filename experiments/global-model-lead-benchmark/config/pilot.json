@@ -22,7 +22,7 @@
     "resourceUseMustBeReported": ["searchQueries", "externalRequests", "estimatedCost"]
   },
   "limits": {
-    "nativeSearchActionsSafetyCeiling": 12,
+    "nativeSearchActionsTargetBudget": 12,
     "visibleOutputTokens": 8000,
     "timeoutMinutesPerProvider": 15,
     "automaticRetries": 0,
