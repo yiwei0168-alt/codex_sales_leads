@@ -156,6 +156,8 @@ export function buildGrokRequest(context: RunContext) {
     model: context.provider.model.modelId,
     ...buildMessageEnvelope("grok", context.prompt, context.trigger),
     tools: [{ type: "web_search" }],
+    tool_choice: "required",
+    parallel_tool_calls: false,
     include: ["web_search_call.action.sources", "no_inline_citations"],
     max_turns: context.pilot.limits.nativeSearchRequests,
     max_output_tokens: context.pilot.limits.visibleOutputTokens,

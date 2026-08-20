@@ -92,6 +92,26 @@
         "interpretation": "JSON mode is compatible in isolation and the subsequent full benchmark retry produced valid JSON"
       }
     },
+    "grok": {
+      "modelId": "grok-4.5",
+      "status": "preflight_fix_ready_pending_confirmation",
+      "modelSelection": {
+        "policy": "latest_publicly_documented_flagship",
+        "grok46VisibleToAccount": true,
+        "grok46Selected": false,
+        "reason": "public capability documentation unavailable"
+      },
+      "preflight": {
+        "basicRequest": "passed",
+        "structuredJsonWithoutSearch": "passed",
+        "nativeSearch": "failed_tool_not_selected",
+        "observedWebSearchCalls": 0,
+        "preparedRemediation": "tool_choice_required_and_parallel_tool_calls_false",
+        "remediationVerifiedLive": false,
+        "automaticRetries": 0
+      },
+      "benchmarkRunPerformed": false
+    },
     "claude": {
       "modelId": "claude-opus-4-8",
       "status": "temporarily_skipped_by_user"

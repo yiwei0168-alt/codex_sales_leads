@@ -233,7 +233,7 @@
     "grok": {
       "displayName": "xAI Grok",
       "enabled": true,
-      "status": "preflight_pending",
+      "status": "preflight_fix_ready_pending_confirmation",
       "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "XAI_API_KEY",
@@ -258,6 +258,19 @@
         "reasoningEffort": "high",
         "maxAgentTurns": 8,
         "observedSearchCallHardLimit": 8,
+        "toolChoice": "required",
+        "parallelToolCalls": false,
+        "latestPreflight": {
+          "checkedAt": "2026-08-20",
+          "basicRequest": "passed",
+          "nativeSearch": "failed",
+          "failureCategory": "tool_not_selected",
+          "observedWebSearchCalls": 0,
+          "structuredJsonIssueFromPriorAttempt": "resolved_by_disabling_inline_citations_and_tolerating_non-data_citation_text",
+          "preparedRemediation": "force_required_tool_choice_and_disable_parallel_tool_calls",
+          "remediationVerifiedLive": false,
+          "automaticRetries": 0
+        },
         "transport": {
           "nodeUseEnvProxy": true,
           "reason": "direct Node connection timed out while the configured system proxy path succeeded"

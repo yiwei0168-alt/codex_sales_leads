@@ -15,6 +15,14 @@ and JSON Mode checks; Kimi K3 remains recorded as incompatible after reproducing
 its tokenization failure. DeepSeek retains its verified latency risk, and OpenAI
 uses Responses streaming through Lingyu.
 
+Grok is wired into the same pilot through xAI's Responses API using the
+publicly documented `grok-4.5` flagship, server-side Web Search only, high
+reasoning effort, JSON Object output, and the same frozen prompt. The account's
+model list also exposes `grok-4.6`, but it is not selected because public
+capability documentation was unavailable at integration time. Direct Node
+networking timed out, so benchmark and preflight commands explicitly enable the
+configured environment proxy.
+
 On 2026-08-20, the Germany OpenAI run completed and passed validation. DeepSeek
 completed six searches but its first JSON was cut off by the output-token limit;
 its single allowed continuation then produced a compact full replacement JSON
@@ -30,6 +38,13 @@ returned only one company, so it is explicitly classified as low recall. Its
 reported `tool_budget` stop reason is also inconsistent with the configured
 eight-search limit. Only redacted aggregate status is committed; lead records
 and rejected provider payloads remain local and ignored.
+
+The first Grok search preflight exposed citation text outside the JSON object;
+disabling inline citations resolved that format issue. The second preflight
+completed its basic request but the model chose not to invoke Web Search. A
+third live preflight is pending user confirmation with `tool_choice=required`
+and parallel calls disabled. Until it passes, Grok remains in the comparison
+configuration but no measured Germany run is valid or authorized.
 
 Google Gemini remains an optional provider placeholder. It is disabled and does
 not participate in current runs until its API credentials, model choice, and
@@ -47,10 +62,10 @@ provider-native Google Search grounding capability have been verified.
 ## Germany pilot
 
 The confirmed pilot uses German and English with the actual execution date. It
-runs OpenAI, Claude, Kimi K2.6, and DeepSeek independently with the frozen
-prompt. Each provider is limited to 8 native-search requests, 10,000 visible
-output tokens, one continuation page, and 30 minutes. Failed requests are
-recorded without automatic retry.
+configures OpenAI, Kimi K2.6, DeepSeek, and Grok independently with the frozen
+prompt; Claude is temporarily skipped. Each provider is limited to 8
+native-search requests, 10,000 visible output tokens, one continuation page,
+and 30 minutes. Failed requests are recorded without automatic retry.
 
 Run `npm run benchmark:verify` for a local-only configuration and validator
 check. After explicit approval for live calls, run one provider at a time with

@@ -176,7 +176,7 @@ async function preflightGrok(): Promise<Stage[]> {
         reasoning: { effort: "low" },
         max_output_tokens: withSearch ? 256 : 64,
         stream: true,
-        ...(withSearch ? { tools: [{ type: "web_search" }], include: ["web_search_call.action.sources", "no_inline_citations"], max_turns: 1, text: { format: { type: "json_object" } } } : {}),
+        ...(withSearch ? { tools: [{ type: "web_search" }], tool_choice: "required", parallel_tool_calls: false, include: ["web_search_call.action.sources", "no_inline_citations"], max_turns: 1, text: { format: { type: "json_object" } } } : {}),
       }),
     });
     const completed = events.findLast((event) => event.type === "response.completed")?.response;
