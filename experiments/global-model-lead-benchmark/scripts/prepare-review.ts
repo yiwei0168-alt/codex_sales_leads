@@ -9,12 +9,15 @@ import {
   loadOrCreateBlindSalt,
   type MeasuredRun,
 } from "../lib/normalization";
+import { loadPilotPrompt } from "../lib/benchmark";
 
 const root = path.resolve("experiments/global-model-lead-benchmark");
 const rawDirectory = path.join(root, "runs", "raw");
 const workingDirectory = path.join(root, "reviews", "working");
 const saltPath = path.join(root, "reviews", ".blind-salt");
-const eligibleFilePattern = /^2026-08-20-DE-(openai|deepseek|kimi|grok|sales-lead-copilot)-r[123]\.json$/;
+const { pilot } = await loadPilotPrompt();
+const escapedArtifactTag = pilot.artifactTag.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const eligibleFilePattern = new RegExp(`^\\d{4}-\\d{2}-\\d{2}-${pilot.countryCode}-${escapedArtifactTag}-(openai|claude|deepseek|kimi|grok|sales-lead-copilot)-r[123]\\.json$`);
 
 await mkdir(workingDirectory, { recursive: true });
 const secretSalt = loadOrCreateBlindSalt(saltPath);
@@ -45,6 +48,8 @@ const deduplicated = deduplicateOccurrences(allOccurrences);
 
 const identityMap = {
   generatedAt: new Date().toISOString(),
+  protocolVersion: pilot.protocolVersion,
+  artifactTag: pilot.artifactTag,
   warning: "LOCAL SECRET: contains provider/run identities and must never be committed.",
   runs: runResults.map(({ filename, providerId, modelId, repetition, answerSha256, degenerateProcessOutput, extractedCandidateCount, occurrences }) => ({
     filename,
@@ -70,7 +75,9 @@ const identityMap = {
 const evidencePacket = {
   schemaVersion: 1,
   generatedAt: new Date().toISOString(),
-  countryCode: "DE",
+  protocolVersion: pilot.protocolVersion,
+  artifactTag: pilot.artifactTag,
+  countryCode: pilot.countryCode,
   providerIdentityHidden: true,
   extractionPolicy: "Only discrete numbered headings, numbered table rows, and standalone bold candidate entries in the final answer are eligible; incidental prose and search plans are excluded.",
   runCount: runResults.length,
@@ -93,31 +100,18 @@ const evidencePacket = {
       citedUrls: occurrence.sourceUrls,
       codexPreVerification: occurrence.codexPreVerification,
     })),
-    reviewerDecision: {
-      candidateClass: null,
-      reason: null,
-      companyExists: null,
-      operatesInCountry: null,
-      channelRelevant: null,
-      evidenceSufficient: null,
-      contactsVerified: null,
-      publicContactMethodsVerified: null,
-      duplicateOfBlindCandidateId: null,
-      reviewerNotes: null,
-      reviewedAt: null,
-    },
+    codexAuditStatus: "pending",
   })),
 };
 
 const markdown = [
-  "# Germany blinded evidence review",
+  `# ${pilot.countryName} potential-partner evidence packet`,
   "",
-  "Provider, model, and product identities are intentionally hidden. Review only the cited evidence and exact submitted excerpts.",
+  "Provider, model, and product identities are intentionally hidden. Codex must verify only the submitted candidates and claims; it must not add or repair leads.",
   "",
   `- Distinct candidates: ${deduplicated.length}`,
   `- Candidate occurrences: ${allOccurrences.length}`,
-  "- Review classes: confirmed_current_cudy, qualified_tier1, important_downstream, invalid",
-  "- Invalid reasons: industry_mismatch, country_mismatch, insufficient_evidence, duplicate, not_a_company, not_independent_sales_lead",
+  "- Current Cudy relationship is metadata with zero potential-fit scoring weight.",
   "",
   ...deduplicated.flatMap((candidate) => [
     `## ${candidate.blindCandidateId} — ${candidate.companyName}`,
@@ -142,13 +136,7 @@ const markdown = [
       occurrence.answerExcerpt,
       "",
     ]),
-    "Reviewer decision: ____________________",
-    "",
-    "Reason: ____________________",
-    "",
-    "Verified contacts / public methods: ____________________",
-    "",
-    "Notes: ____________________",
+    "Codex evidence assessment: pending",
     "",
   ]),
 ].join("\n");

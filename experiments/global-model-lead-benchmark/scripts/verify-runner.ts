@@ -14,11 +14,14 @@ import {
   normalizedDiscountedCumulativeGain,
   pooledRecall,
   precisionAt,
-  relevanceGrade,
-  selectBlindedReReviewIds,
   validatedLeadsAt,
-  type HumanReviewDecision,
 } from "../lib/judging";
+import {
+  potentialFitBand,
+  potentialFitScore,
+  primaryPoolStatus,
+  type PotentialPartnerAssessment,
+} from "../lib/codex-audit";
 import {
   deduplicateOccurrences,
   extractCandidateOccurrences,
@@ -29,7 +32,15 @@ import { validateCandidateVerification } from "../lib/review-verification";
 
 const context = await loadContext("openai", "2026-08-20", 1);
 if (!context.prompt.includes("Germany（DE）") || !context.prompt.includes("用德语、英语进行检索")) throw new Error("Prompt substitution failed");
-if (!context.prompt.includes("原生联网搜索能力") || !context.prompt.includes("不要输出JSON")) throw new Error("Natural-language search prompt is incomplete");
+if (!context.prompt.includes("原生联网搜索能力") || !context.prompt.includes("不要输出JSON")
+  || !context.prompt.includes("是否已经与Cudy合作不影响匹配度")
+  || !context.prompt.includes("渠道能力、产品互补性、市场覆盖和合作可执行性")) {
+  throw new Error("Potential-partner natural-language search prompt is incomplete");
+}
+if (context.pilot.protocolVersion !== "native-search-potential-fit-v3" || context.pilot.artifactTag !== "potential-fit-v3") {
+  throw new Error("Potential-fit v3 artifact isolation is incomplete");
+}
+if (context.prompt.includes("区分“已证实的当前Cudy渠道”")) throw new Error("Existing-channel priority leaked into the v3 prompt");
 if (/runMetadata|summaryMetrics|queriesExecutedCount|pageIndex/.test(context.prompt)) throw new Error("Legacy benchmark schema leaked into the v2 prompt");
 if (!context.pilot.productComparator.enabled || !context.pilot.productComparator.sameUserPrompt
   || context.pilot.productComparator.nativeSearchRestrictionApplies
@@ -109,9 +120,6 @@ let invalidRepetitionRejected = false;
 try { await loadContext("openai", "2026-08-20", 4); } catch { invalidRepetitionRejected = true; }
 if (!invalidRepetitionRejected) throw new Error("Runner accepted a repetition outside the confirmed three-run design");
 
-if (relevanceGrade("confirmed_current_cudy") !== 3 || relevanceGrade("invalid") !== 0) {
-  throw new Error("Candidate relevance grading failed");
-}
 const ndcg = normalizedDiscountedCumulativeGain([3, 1, 2, 0], [3, 2, 1, 0], 4);
 if (ndcg <= 0 || ndcg >= 1) throw new Error("nDCG calculation failed");
 if (precisionAt([true, false, true], 4) !== 0.5 || validatedLeadsAt([3, 0, 1], 20) !== 2) {
@@ -123,23 +131,25 @@ if (pooledRecall(["C-A", "C-A", "C-B"], ["C-A", "C-B", "C-C"]) !== 2 / 3) {
 if (!/^R-[A-F0-9]{12}$/.test(deterministicBlindId("R", "secret", "openai-r1"))) {
   throw new Error("Blind ID generation failed");
 }
-const decisions = Array.from({ length: 10 }, (_, index): HumanReviewDecision => ({
-  blindCandidateId: `C-${index.toString(16).toUpperCase().padStart(12, "0")}`,
-  candidateClass: "qualified_tier1",
-  reason: "accepted",
-  companyExists: true,
-  operatesInCountry: true,
-  channelRelevant: true,
-  evidenceSufficient: true,
-  contactsVerified: 0,
-  publicContactMethodsVerified: 0,
-  duplicateOfBlindCandidateId: null,
-  reviewerNotes: null,
-  reviewedAt: "2026-08-20T00:00:00.000Z",
-}));
-if (selectBlindedReReviewIds(decisions, 15, "seed").length !== 2
-  || selectBlindedReReviewIds(decisions, 0, "seed").length !== 0) {
-  throw new Error("Blinded re-review sampling failed");
+const potentialAssessment: PotentialPartnerAssessment = {
+  blindCandidateId: "C-000000000001",
+  assessedAt: "2026-08-20T00:00:00.000Z",
+  evidenceGates: {
+    submittedIdentityUsable: true, companyExists: true, targetCountryPresence: true,
+    relevantChannel: true, sufficientEvidence: true, independentProspect: true,
+  },
+  relationshipStatus: "confirmed_existing",
+  evidenceStrength: "strong",
+  fitDimensions: {
+    channelRoleAndCustomerAccess: 25, productAndUseCaseFit: 20, targetMarketCoverage: 15,
+    partnershipExecutionCapability: 10, strategicComplementarity: 10,
+  },
+  independentEvidenceUrls: ["https://example.de/evidence"],
+  namedContacts: [], contactMethods: [], riskFlags: [], notes: [],
+};
+if (potentialFitScore(potentialAssessment) !== 80 || potentialFitBand(potentialAssessment) !== "high_fit"
+  || primaryPoolStatus(potentialAssessment) !== "existing_relationship_reference") {
+  throw new Error("Existing relationships affected potential-fit scoring or primary-pool separation");
 }
 
 const syntheticRun = {
@@ -150,16 +160,16 @@ const syntheticRun = {
   scoringEligibility: "eligible",
   nativeSearchEvidence: "observed",
   answerText: [
-    "## Confirmed channels",
+    "## Potential partners",
     "### 1. Example Distribution GmbH",
-    "Sells Cudy. https://shop.example.de/cudy?utm_source=test",
+    "Networking distributor with national reseller coverage. https://shop.example.de/networking?utm_source=test",
     "### 2. Second Network Shop",
     "Online retailer in Germany. https://second.example.com/de",
   ].join("\n"),
 };
 const syntheticCandidates = extractCandidateOccurrences(syntheticRun, "test-salt");
 if (syntheticCandidates.length !== 2 || syntheticCandidates[0].answerRank !== 1
-  || syntheticCandidates[0].sourceUrls[0] !== "https://shop.example.de/cudy"
+  || syntheticCandidates[0].sourceUrls[0] !== "https://shop.example.de/networking"
   || deduplicateOccurrences(syntheticCandidates).length !== 2) {
   throw new Error("Natural-language candidate extraction or deduplication failed");
 }
@@ -197,4 +207,4 @@ validateCandidateVerification({
   notes: [],
 });
 
-console.log("Native-search natural-language benchmark validation passed");
+console.log("Native-search potential-fit v3 benchmark validation passed");

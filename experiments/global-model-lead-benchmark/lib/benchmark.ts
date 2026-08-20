@@ -12,6 +12,7 @@ export type ProviderConfig = {
 
 export type PilotConfig = {
   protocolVersion: string;
+  artifactTag: string;
   countryCode: string;
   countryName: string;
   regionName: string;
@@ -36,7 +37,13 @@ export type PilotConfig = {
     automaticRetries: number;
     primaryCompanyCutoff: number;
   };
-  judging: { humanReviewers: number; blindedReReviewPercent: number };
+  judging: {
+    humanReviewers: number;
+    codexReviewsAllCandidates: boolean;
+    blindHumanAuditPercent: number;
+    blindHumanAuditMinimum: number;
+    failedAuditExpansionPercent: number;
+  };
   storage: { rawResultsDirectory: string; commitRawResults: boolean };
 };
 
@@ -357,7 +364,7 @@ export async function executeProvider(providerId: ProviderId, repetition = 1): P
   const startedMs = Date.now();
   const outputDirectory = path.join(experimentRoot, context.pilot.storage.rawResultsDirectory);
   await mkdir(outputDirectory, { recursive: true });
-  const baseName = `${context.runDate}-${context.pilot.countryCode}-${providerId}-r${repetition}`;
+  const baseName = `${context.runDate}-${context.pilot.countryCode}-${context.pilot.artifactTag}-${providerId}-r${repetition}`;
   try {
     const result = providerId === "openai" ? await runOpenAi(context)
       : providerId === "grok" ? await runGrok(context)

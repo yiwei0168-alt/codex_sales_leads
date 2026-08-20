@@ -27,7 +27,7 @@ const payAsYouGoUsdPerCredit = 0.008;
 const tavilyPricingSource = "https://docs.tavily.com/documentation/api-credits";
 const perRequestTimeoutMs = 45_000;
 
-type SearchPhase = "discovery" | "cudy-evidence" | "official-contact" | "public-contact" | "domain-email";
+type SearchPhase = "discovery" | "official-contact" | "public-contact" | "domain-email";
 
 type MeteredQuery = {
   phase: SearchPhase;
@@ -254,10 +254,6 @@ async function enrichCandidate(
 ): Promise<ProductComparatorCandidate> {
   const companyName = globalLeadDisplayName(candidate.result, candidate.domain);
   const requests = await Promise.all([
-    settledSearch(meter, "cudy-evidence", {
-      query: `site:${candidate.domain} Cudy router switch access point`, country, searchDepth: "basic", maxResults: 5,
-      includeRawContent: true, includeDomains: [candidate.domain],
-    }),
     settledSearch(meter, "official-contact", {
       query: `site:${candidate.domain} Kontakt Vertrieb Einkauf Geschäftsführung Team Impressum E-Mail Telefon`, country,
       searchDepth: "basic", maxResults: 6, includeRawContent: true, includeDomains: [candidate.domain],
@@ -271,10 +267,9 @@ async function enrichCandidate(
       includeRawContent: true, includeDomains: [candidate.domain],
     }),
   ]);
-  const [cudy, official, publicContact, domainEmail] = requests.map((item) => item.response);
+  const [official, publicContact, domainEmail] = requests.map((item) => item.response);
   const enrichmentErrors = requests.flatMap((item) => item.error ? [item.error] : []);
   const combined = uniqueBy([
-    ...(cudy?.results ?? []),
     ...(official?.results ?? []),
     ...(publicContact?.results ?? []),
     ...(domainEmail?.results ?? []),
@@ -295,7 +290,6 @@ async function enrichCandidate(
     for (const email of extractDomainEmails(text, candidate.domain)) publicEmails.push({ value: email, sourceUrl: result.url });
     for (const phone of extractGermanPublicPhones(text)) publicPhones.push({ value: phone, sourceUrl: result.url });
   }
-  const cudyEvidence = (cudy?.results ?? []).filter((result) => sameDomain(result.url, candidate.domain) && /\bcudy\b/i.test(`${result.title} ${result.content} ${result.rawContent ?? ""}`));
   return {
     companyName,
     domain: candidate.domain,
@@ -303,7 +297,7 @@ async function enrichCandidate(
     providerScore: candidate.result.score,
     discoveryQuery,
     discoveryEvidence: candidate.result,
-    cudyEvidence: uniqueBy(cudyEvidence, (result) => result.url).slice(0, 5),
+    cudyEvidence: [],
     namedContacts: contactsFromSearch(companyName, candidate.domain, publicContact?.results ?? []),
     publicEmails: uniqueBy(publicEmails, (finding) => finding.value).slice(0, 8),
     publicPhones: uniqueBy(publicPhones, (finding) => finding.value).slice(0, 5),
@@ -319,7 +313,6 @@ function tableCell(value: string): string {
 function candidateSources(candidate: ProductComparatorCandidate): string[] {
   return [...new Set([
     candidate.discoveryEvidence.url,
-    ...candidate.cudyEvidence.map((item) => item.url),
     ...candidate.namedContacts.map((item) => item.sourceUrl),
     ...candidate.publicEmails.map((item) => item.sourceUrl),
     ...candidate.publicPhones.map((item) => item.sourceUrl),
@@ -335,23 +328,20 @@ export function formatProductComparatorAnswer(
   const lines = [
     `# ${countryName} 渠道销售线索（Sales Lead Copilot）`,
     "",
-    "以下候选按产品当前的搜索相关性评分排序。公开网页中未直接出现的联系人或联系方式不作推测；最终合作资格仍需销售人员审核。",
+    "以下候选按产品当前的搜索相关性评分排序。是否已有Cudy合作不参与排序；公开网页中未直接出现的联系人或联系方式不作推测，最终潜在合作匹配度由统一的证据化审核规则评定。",
     "",
-    "| # | 公司 | 渠道角色与适配理由 | 当前 Cudy 证据 | 公开联系人与联系方式 | 来源 |",
-    "|---:|---|---|---|---|---|",
+    "| # | 公司 | 渠道角色与潜在适配理由 | 公开联系人与联系方式 | 来源 |",
+    "|---:|---|---|---|---|",
   ];
   candidates.forEach((candidate, index) => {
     const reason = `${candidate.role}；${cleanText(candidate.discoveryEvidence.content || candidate.discoveryEvidence.title, 240)}`;
-    const cudy = candidate.cudyEvidence.length > 0
-      ? `已找到该公司域名下的 Cudy 页面：${cleanText(candidate.cudyEvidence[0].title, 120)}`
-      : "未找到该公司官网域名下的当前 Cudy 销售证据";
     const contactParts = [
       ...candidate.namedContacts.slice(0, 3).map((contact) => `${contact.fullName}${contact.jobTitle ? `（${contact.jobTitle}）` : ""}`),
       ...candidate.publicEmails.slice(0, 5).map((finding) => finding.value),
       ...candidate.publicPhones.slice(0, 3).map((finding) => finding.value),
     ];
     const sources = candidateSources(candidate).slice(0, 6).map((url, sourceIndex) => `[${sourceIndex + 1}](${url})`).join(" ");
-    lines.push(`| ${index + 1} | **${tableCell(candidate.companyName)}** | ${tableCell(reason)} | ${tableCell(cudy)} | ${tableCell(contactParts.join("；") || "未在公开网页中确认")} | ${sources} |`);
+    lines.push(`| ${index + 1} | **${tableCell(candidate.companyName)}** | ${tableCell(reason)} | ${tableCell(contactParts.join("；") || "未在公开网页中确认")} | ${sources} |`);
   });
   lines.push(
     "",
@@ -382,7 +372,7 @@ export async function executeProductComparator(repetition: number): Promise<Prod
   }
   const outputDirectory = path.join(experimentRoot, pilot.storage.rawResultsDirectory);
   await mkdir(outputDirectory, { recursive: true });
-  const baseName = `${runDate}-${pilot.countryCode}-sales-lead-copilot-r${repetition}`;
+  const baseName = `${runDate}-${pilot.countryCode}-${pilot.artifactTag}-sales-lead-copilot-r${repetition}`;
   const artifactPath = path.join(outputDirectory, `${baseName}.json`);
   const failedPath = path.join(outputDirectory, `${baseName}.failed.json`);
   await assertArtifactDoesNotExist([artifactPath, failedPath]);

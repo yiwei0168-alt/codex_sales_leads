@@ -1,8 +1,11 @@
 export type TargetMarketPresence =
   | "direct_german_entity"
   | "german_storefront"
+  | "direct_target_country_entity"
+  | "target_country_storefront"
   | "cross_border_sales"
   | "pan_europe_distribution"
+  | "regional_distribution"
   | "manufacturer_market_access"
   | "unclear";
 

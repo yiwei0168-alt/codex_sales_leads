@@ -35,7 +35,7 @@ type EvidencePacket = {
         notes: string[];
       };
     }>;
-    reviewerDecision: Record<string, unknown>;
+    codexAuditStatus?: string;
   }>;
 };
 
@@ -85,14 +85,13 @@ const verifiedPacket = {
 };
 
 const markdown = [
-  "# Germany blinded evidence review",
+  `# ${packet.countryCode} Codex-verified potential-partner evidence`,
   "",
-  "Provider, model, and product identities are hidden. Codex verification used only independent public-web evidence after all measured runs finished.",
+  "Provider, model, and product identities are hidden. Codex verification used only independent public-web evidence after all measured runs finished. Current Cudy relationship is metadata with zero fit-score weight.",
   "",
   `- Distinct candidates: ${verifiedCandidates.length}`,
   `- Candidate occurrences: ${packet.occurrenceCount}`,
-  "- Review classes: confirmed_current_cudy, qualified_tier1, important_downstream, invalid",
-  "- Invalid reasons: industry_mismatch, country_mismatch, insufficient_evidence, duplicate, not_a_company, not_independent_sales_lead",
+  "- The next stage applies evidence gates, five potential-fit dimensions, and separate contact scores.",
   "",
   ...verifiedCandidates.flatMap((candidate) => {
     const verification = candidate.independentVerification;
@@ -101,7 +100,7 @@ const markdown = [
       "",
       `Occurrences: ${candidate.occurrenceCount}`,
       "",
-      `Codex checks: exists=${verification.companyExists}; Germany operation=${verification.operatesInCountry} (${verification.targetMarketPresence}); channel relevant=${verification.channelRelevant}; evidence sufficient=${verification.evidenceSufficient}; Cudy relationship=${verification.cudyRelationshipEvidence}`,
+      `Codex checks: exists=${verification.companyExists}; target-country operation=${verification.operatesInCountry} (${verification.targetMarketPresence}); channel relevant=${verification.channelRelevant}; evidence sufficient=${verification.evidenceSufficient}; Cudy relationship metadata=${verification.cudyRelationshipEvidence}`,
       "",
       ...verification.notes.map((note) => `- ${note}`),
       "",
@@ -135,13 +134,7 @@ const markdown = [
         submission.exactAnswerExcerpt,
         "",
       ]),
-      "Reviewer decision: ____________________",
-      "",
-      "Reason: ____________________",
-      "",
-      "Verified contacts / public methods: ____________________",
-      "",
-      "Notes: ____________________",
+      "Codex potential-fit assessment: pending",
       "",
     ];
   }),
@@ -155,7 +148,7 @@ await Promise.all([
 console.log(JSON.stringify({
   verifiedCandidates: verifiedCandidates.length,
   companyExistenceConfirmed: verificationDocument.candidates.filter((item) => item.companyExists === true).length,
-  GermanyOperationConfirmed: verificationDocument.candidates.filter((item) => item.operatesInCountry === true).length,
+  targetCountryOperationConfirmed: verificationDocument.candidates.filter((item) => item.operatesInCountry === true).length,
   channelRelevantConfirmed: verificationDocument.candidates.filter((item) => item.channelRelevant === true).length,
   currentCudyRelationshipsConfirmed: verificationDocument.candidates.filter((item) => item.cudyRelationshipEvidence === "confirmed_current").length,
   namedContactClaimsVerified: verificationDocument.candidates.reduce((sum, item) => sum + item.verifiedNamedContactClaims.length, 0),

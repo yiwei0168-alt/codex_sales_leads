@@ -40,7 +40,9 @@
     "benchmark:verify": "tsx experiments/global-model-lead-benchmark/scripts/verify-runner.ts",
     "benchmark:preflight": "node --use-env-proxy --import tsx experiments/global-model-lead-benchmark/scripts/preflight-provider.ts",
     "benchmark:prepare-review": "tsx experiments/global-model-lead-benchmark/scripts/prepare-review.ts",
-    "benchmark:apply-verification": "tsx experiments/global-model-lead-benchmark/scripts/apply-review-verification.ts"
+    "benchmark:apply-verification": "tsx experiments/global-model-lead-benchmark/scripts/apply-review-verification.ts",
+    "benchmark:prepare-human-audit": "tsx experiments/global-model-lead-benchmark/scripts/prepare-human-audit.ts",
+    "benchmark:evaluate-human-audit": "tsx experiments/global-model-lead-benchmark/scripts/evaluate-human-audit.ts"
   },
   "dependencies": {
     "imapflow": "^1.7.1",

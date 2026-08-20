@@ -1,45 +1,84 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "status": "confirmed",
   "primaryCompanyCutoff": 20,
-  "candidateGrades": {
-    "confirmed_current_cudy": 3,
-    "qualified_tier1": 2,
-    "important_downstream": 1,
-    "invalid": 0
+  "objective": "discover high-fit potential Cudy channel customers; current Cudy relationship has zero scoring weight",
+  "eligibilityGates": [
+    "submittedIdentityUsable",
+    "companyExists",
+    "targetCountryPresence",
+    "relevantChannel",
+    "sufficientEvidence",
+    "independentProspect"
+  ],
+  "potentialFitDimensions": {
+    "channelRoleAndCustomerAccess": 30,
+    "productAndUseCaseFit": 25,
+    "targetMarketCoverage": 20,
+    "partnershipExecutionCapability": 15,
+    "strategicComplementarity": 10
+  },
+  "potentialFitBands": {
+    "high_fit": [80, 100],
+    "strong_fit": [65, 79],
+    "follow_up": [50, 64],
+    "unqualified": [0, 49]
+  },
+  "qualifiedPotentialFitThreshold": 50,
+  "relationshipStatusPolicy": {
+    "scoringWeight": 0,
+    "values": ["confirmed_existing", "no_public_evidence", "unknown"],
+    "confirmedExistingDisposition": "exclude_from_net_new_primary_pool_and_report_separately"
+  },
+  "contactScoring": {
+    "namedContactRange": [0, 3],
+    "contactMethodRange": [0, 2],
+    "companyPotentialFitUnaffected": true
   },
   "primaryMetrics": [
-    "nDCG@20",
+    "PotentialFitNDCG@20",
+    "MeanPotentialFit@20",
     "Precision@20",
-    "ValidatedLeads@20",
+    "QualifiedProspects@20",
     "PooledRecall"
   ],
   "secondaryMetrics": [
-    "confirmedCurrentCudyCount",
-    "qualifiedTier1Count",
-    "importantDownstreamCount",
-    "uniqueValidatedLeadCount",
+    "confirmedExistingRelationshipCount",
+    "uniqueQualifiedNetNewProspectCount",
     "sourceSupportedRate",
     "officialSourceRate",
-    "verifiedContactCount",
-    "verifiedPublicContactMethodCount",
+    "namedContactScoreSum",
+    "contactMethodScoreSum",
+    "companiesWithRelevantNamedContactRate",
+    "contactMisattributionRate",
     "latencyMs",
     "searchRequestsObserved"
   ],
   "resourceEfficiencyMetrics": [
-    "validatedLeadsPerObservedSearchRequest",
-    "verifiedContactsPerObservedSearchRequest",
-    "validatedLeadsPerMinute",
-    "estimatedCostPerValidatedLead"
+    "qualifiedProspectsPerObservedSearchRequest",
+    "relevantContactsPerObservedSearchRequest",
+    "qualifiedProspectsPerMinute",
+    "estimatedCostPerQualifiedProspect"
   ],
   "humanInTheLoop": {
     "reviewers": 1,
     "finalReviewer": "user",
     "providerIdentityHidden": true,
-    "reviewAllPooledTop20Candidates": true,
-    "reviewAllScoredContacts": true,
-    "sameReviewerBlindedReReviewPercent": 15,
-    "reReviewSeed": "CUDY-NATIVE-SEARCH-V2-REREVIEW"
+    "codexReviewsAllPooledTop20Candidates": true,
+    "blindHumanAuditPercent": 25,
+    "blindHumanAuditMinimum": 12,
+    "auditAllContactsForSampledCandidates": true,
+    "auditHighRiskCandidates": true,
+    "failedAuditExpansionPercent": 15,
+    "auditSeed": "CUDY-POTENTIAL-FIT-V3-HUMAN-AUDIT",
+    "acceptanceThresholds": {
+      "qualifiedStatusAgreement": 0.9,
+      "fitBandExactAgreement": 0.8,
+      "weightedKappa": 0.75,
+      "potentialFitMeanAbsoluteErrorMaximum": 10,
+      "namedContactPositivePrecision": 0.9,
+      "contactMethodPositivePrecision": 0.9
+    }
   },
   "invalidReasons": [
     "industry_mismatch",
@@ -51,6 +90,8 @@
   ],
   "goldPoolPolicy": {
     "source": "deduplicated union of every measured model-run and product-comparator run's top-20 candidates",
+    "primaryPool": "gate-valid candidates without a publicly confirmed existing Cudy relationship and with potentialFitScore >= 50",
+    "existingRelationshipHandling": "metadata-only reference pool; never a fit-score bonus",
     "projectCrmExcluded": true,
     "historicalLeadDatabaseExcluded": true,
     "codexMayUsePublicWebForPostRunVerification": true,

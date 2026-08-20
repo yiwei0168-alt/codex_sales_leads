@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "protocolVersion": "native-search-natural-language-v2",
   "asOf": "2026-08-20",
-  "status": "combined_pool_codex_verified_user_review_pending",
+  "status": "historical_v2_workflow_pilot_superseded",
   "pilotCountry": "DE",
   "repetitionsPerSystem": 3,
   "participatingProviders": ["openai", "claude", "kimi", "deepseek", "grok"],
@@ -332,7 +332,7 @@
         "scoringEffect": "None; every invalid reason retains grade zero.",
         "timing": "Added after natural-language extraction and before any user review decision."
       },
-      "qualityScoringStatus": "pending blinded user review, 15 percent same-reviewer re-review, and adjudication"
+      "qualityScoringStatus": "not published; superseded before final review because the objective and grading rule did not match net-new potential-partner fit"
     }
   },
   "privacy": {
@@ -340,5 +340,8 @@
     "containsContactDetails": false,
     "containsCredentials": false
   },
-  "historicalCompatibility": "Do not combine strict-json-v1 results with v2 results."
+  "historicalCompatibility": "Do not combine strict-json-v1, v2, or potential-fit-v3 results.",
+  "supersededForFinalScoringBy": "native-search-potential-fit-v3",
+  "historicalDisposition": "workflow_pilot_only_not_a_final_potential-partner_quality_leaderboard",
+  "supersessionReason": "The v2 prompt mixed existing and potential Cudy channels, while its grades rewarded confirmed current Cudy relationships above prospect fit. V3 removes relationship status from fit scoring and separates confirmed existing relationships from the net-new primary pool."
 }

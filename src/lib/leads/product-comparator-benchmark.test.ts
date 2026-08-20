@@ -36,7 +36,9 @@ describe("Sales Lead Copilot benchmark adapter", () => {
     });
     expect(answer).toContain("| 1 | **Beispiel Netzwerk GmbH**");
     expect(answer).toContain("sales@beispiel.de");
-    expect(answer).toContain("https://beispiel.de/cudy");
+    expect(answer).not.toContain("https://beispiel.de/cudy");
+    expect(answer).not.toContain("当前 Cudy 证据");
+    expect(answer).not.toContain("已找到该公司域名下的 Cudy 页面");
     expect(answer).not.toContain("{\"");
   });
 });
