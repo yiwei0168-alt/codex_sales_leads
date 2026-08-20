@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "protocolVersion": "native-search-natural-language-v2",
   "asOf": "2026-08-20",
-  "status": "measured_model_runs_complete_normalization_pending",
+  "status": "model_answers_normalized_and_codex_verified_user_review_pending",
   "pilotCountry": "DE",
   "repetitionsPerSystem": 3,
   "participatingProviders": ["openai", "claude", "kimi", "deepseek", "grok"],
@@ -231,7 +231,35 @@
         "timing": "Confirmed before any candidate-quality extraction or human review.",
         "grokRound1Reclassified": true
       },
-      "qualityScoringStatus": "pending Codex extraction, deduplication, public-web verification, and blinded user review"
+      "normalizationAndVerification": {
+        "eligibleNativeSearchAnswersProcessed": 10,
+        "degenerateProcessOutputs": 3,
+        "candidateOccurrences": 39,
+        "deduplicatedCandidates": 22,
+        "perProviderCandidateOccurrences": {
+          "openai": 9,
+          "claude": 0,
+          "kimi": 0,
+          "deepseek": 16,
+          "grok": 14
+        },
+        "independentlyWebVerifiedCandidates": 22,
+        "codexPreVerifiedChannelRelevantCandidates": 19,
+        "codexPreVerifiedCurrentCudyRelationships": 13,
+        "verifiedNamedContactClaims": 15,
+        "verifiedPublicContactMethodClaims": 25,
+        "candidateAndContactDetailsCommitted": false,
+        "providerIdentityHiddenFromReviewPacket": true,
+        "userFinalDecisionsCompleted": false,
+        "plannedSameReviewerBlindReReviewCandidates": 4
+      },
+      "reviewTaxonomyAmendment": {
+        "addedReason": "not_independent_sales_lead",
+        "purpose": "Distinguish manufacturer-self, self-operated marketplace, and other non-independent entities from industry mismatch.",
+        "scoringEffect": "None; every invalid reason retains grade zero.",
+        "timing": "Added after natural-language extraction and before any user review decision."
+      },
+      "qualityScoringStatus": "pending blinded user review, 15 percent same-reviewer re-review, and adjudication"
     }
   },
   "privacy": {

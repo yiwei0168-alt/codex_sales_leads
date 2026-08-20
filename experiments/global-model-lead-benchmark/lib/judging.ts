@@ -1,10 +1,10 @@
 import { createHash } from "node:crypto";
 
 export type CandidateClass = "confirmed_current_cudy" | "qualified_tier1" | "important_downstream" | "invalid";
-export type ReviewReason = "accepted" | "industry_mismatch" | "country_mismatch" | "insufficient_evidence" | "duplicate" | "not_a_company";
+export type ReviewReason = "accepted" | "industry_mismatch" | "country_mismatch" | "insufficient_evidence" | "duplicate" | "not_a_company" | "not_independent_sales_lead";
 
 export type NormalizedContact = {
-  fullName: string;
+  fullName: string | null;
   jobTitle: string | null;
   publicBusinessEmail: string | null;
   publicBusinessPhone: string | null;
@@ -63,7 +63,11 @@ export function validateNormalizedCandidate(candidate: NormalizedCandidate): voi
     if (!/^https?:$/.test(parsed.protocol)) throw new Error("Candidate source URL must be HTTP(S)");
   }
   for (const contact of candidate.contacts) {
-    if (!contact.fullName.trim() || !contact.answerExcerpt.trim()) throw new Error("Contact must retain name and answer excerpt");
+    if (!contact.answerExcerpt.trim()) throw new Error("Contact must retain an answer excerpt");
+    if (!contact.fullName && !contact.publicBusinessEmail && !contact.publicBusinessPhone && !contact.publicProfileUrl) {
+      throw new Error("Contact must retain at least one public identifier or method");
+    }
+    if (contact.fullName !== null && !contact.fullName.trim()) throw new Error("Contact name cannot be blank");
     if (contact.publicBusinessEmail && !contact.publicBusinessEmail.includes("@")) throw new Error("Contact email is malformed");
   }
 }

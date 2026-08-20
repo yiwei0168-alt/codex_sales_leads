@@ -19,6 +19,13 @@ import {
   validatedLeadsAt,
   type HumanReviewDecision,
 } from "../lib/judging";
+import {
+  deduplicateOccurrences,
+  extractCandidateOccurrences,
+  extractUrls,
+  isDegenerateProcessOutput,
+} from "../lib/normalization";
+import { validateCandidateVerification } from "../lib/review-verification";
 
 const context = await loadContext("openai", "2026-08-20", 1);
 if (!context.prompt.includes("Germany（DE）") || !context.prompt.includes("用德语、英语进行检索")) throw new Error("Prompt substitution failed");
@@ -134,5 +141,60 @@ if (selectBlindedReReviewIds(decisions, 15, "seed").length !== 2
   || selectBlindedReReviewIds(decisions, 0, "seed").length !== 0) {
   throw new Error("Blinded re-review sampling failed");
 }
+
+const syntheticRun = {
+  providerId: "synthetic",
+  modelId: "synthetic-fast",
+  countryCode: "DE",
+  repetition: 1,
+  scoringEligibility: "eligible",
+  nativeSearchEvidence: "observed",
+  answerText: [
+    "## Confirmed channels",
+    "### 1. Example Distribution GmbH",
+    "Sells Cudy. https://shop.example.de/cudy?utm_source=test",
+    "### 2. Second Network Shop",
+    "Online retailer in Germany. https://second.example.com/de",
+  ].join("\n"),
+};
+const syntheticCandidates = extractCandidateOccurrences(syntheticRun, "test-salt");
+if (syntheticCandidates.length !== 2 || syntheticCandidates[0].answerRank !== 1
+  || syntheticCandidates[0].sourceUrls[0] !== "https://shop.example.de/cudy"
+  || deduplicateOccurrences(syntheticCandidates).length !== 2) {
+  throw new Error("Natural-language candidate extraction or deduplication failed");
+}
+const syntheticTableCandidates = extractCandidateOccurrences({
+  ...syntheticRun,
+  answerText: [
+    "| Priority | Company | Evidence |",
+    "|---|---|---|",
+    "| 1 | **Table One GmbH** | https://table-one.example/cudy |",
+    "| 2 | **Table Two GmbH** | https://table-two.example/cudy |",
+  ].join("\n"),
+}, "test-salt");
+if (syntheticTableCandidates.length !== 2 || syntheticTableCandidates.some((candidate) => candidate.extractionRule !== "numbered_table_row")) {
+  throw new Error("Natural-language table candidate extraction failed");
+}
+if (extractUrls("https://example.de/a?utm_source=x and https://example.de/a").length !== 1) {
+  throw new Error("Normalized answer URL extraction failed");
+}
+if (!isDegenerateProcessOutput(Array.from({ length: 20 }, () => "让我继续搜索更多渠道。").join(""))) {
+  throw new Error("Degenerate process-output detection failed");
+}
+validateCandidateVerification({
+  blindCandidateId: "C-000000000001",
+  verifiedAt: "2026-08-20T00:00:00.000Z",
+  companyExists: true,
+  operatesInCountry: true,
+  targetMarketPresence: "direct_german_entity",
+  channelRelevant: true,
+  evidenceSufficient: true,
+  cudyRelationshipEvidence: "confirmed_current",
+  independentEvidenceUrls: ["https://example.de/evidence"],
+  verifiedNamedContactClaims: [],
+  verifiedPublicContactMethodClaims: [],
+  unverifiedOrContradictedClaims: [],
+  notes: [],
+});
 
 console.log("Native-search natural-language benchmark validation passed");

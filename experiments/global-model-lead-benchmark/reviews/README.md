@@ -19,3 +19,15 @@ to judge them again. Differences enter a final adjudication queue.
 Only aggregate, redacted metrics may be committed. Raw answers, candidate names,
 contact details, blind-ID salts, reviewer working files, and adjudication notes
 remain local.
+
+Run `npm run benchmark:prepare-review` after measured calls finish. The command
+extracts only discrete candidate entries from final natural-language answers,
+deduplicates the pooled candidates, and writes the secret identity map plus
+blinded JSON/Markdown packets under `reviews/working/`. Search plans, incidental
+examples, and repeated tool-process narration are not treated as candidates.
+Codex then records independent public-web checks in the ignored
+`reviews/working/verification.local.json` file and runs
+`npm run benchmark:apply-verification`. The resulting verified packet remains
+local and contains no provider identity. `not_independent_sales_lead` is used
+when an answer returns the manufacturer itself, its self-operated marketplace
+store, or another entity that is not an independent prospect.

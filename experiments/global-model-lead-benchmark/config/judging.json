@@ -46,7 +46,8 @@
     "country_mismatch",
     "insufficient_evidence",
     "duplicate",
-    "not_a_company"
+    "not_a_company",
+    "not_independent_sales_lead"
   ],
   "goldPoolPolicy": {
     "source": "deduplicated union of every measured model-run and product-comparator run's top-20 candidates",
