@@ -85,7 +85,7 @@
     "kimi": {
       "displayName": "Moonshot Kimi",
       "enabled": true,
-      "status": "json_mode_verified_benchmark_retry_pending",
+      "status": "completed_validated_low_recall",
       "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "KIMI_API_KEY",
@@ -133,6 +133,30 @@
           "runDate": "2026-08-20",
           "countryCode": "DE",
           "modelId": "kimi-k2.6",
+          "status": "completed_and_validated_low_recall",
+          "remediation": "response_format_json_object",
+          "nativeSearchRequests": 1,
+          "configuredSearchLimit": 8,
+          "reportedStopReason": "tool_budget",
+          "stopReasonConsistentWithConfiguredLimit": false,
+          "providerRounds": 2,
+          "providerFinishReasons": ["tool_calls", "stop"],
+          "completionTokensFinalRound": 837,
+          "outputTruncated": false,
+          "summaryMetrics": {
+            "tier1PartnerCount": 1,
+            "tier1ConfirmedCurrentCount": 1,
+            "downstreamCustomerCount": 0,
+            "downstreamConfirmedCudyCount": 0,
+            "contactCount": 0,
+            "publicVerifiedContactCount": 0,
+            "uniqueCompanyCount": 1
+          }
+        },
+        "priorBenchmarkFailure": {
+          "runDate": "2026-08-20",
+          "countryCode": "DE",
+          "modelId": "kimi-k2.6",
           "status": "rejected_no_json",
           "failureCategory": "degenerate_output_limit",
           "nativeSearchRequests": 1,
@@ -149,7 +173,7 @@
           "responseFormat": "json_object",
           "nativeSearchEnabled": false,
           "maxCompletionTokens": 128,
-          "interpretation": "JSON mode works in isolation; the prior benchmark failure is specific to the native-search continuation and long-form synthesis path"
+          "interpretation": "JSON mode works in isolation and subsequently produced a structurally valid full benchmark response when combined with native search"
         },
         "knownRiskModel": {
           "modelId": "kimi-k3",

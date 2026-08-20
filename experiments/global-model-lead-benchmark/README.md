@@ -10,10 +10,10 @@ APIs, contact databases, and the project's existing lead data are excluded.
 ## Current stage
 
 Country selection and prompt v1.1 are frozen. Claude is temporarily skipped by
-user decision. Kimi K2.6 is restored as the current model after passing both
-basic and native-search preflights; Kimi K3 remains recorded as incompatible
-after reproducing its tokenization failure. DeepSeek retains its verified
-latency risk, and OpenAI uses Responses streaming through Lingyu.
+user decision. Kimi K2.6 is the current model after passing basic, native-search,
+and JSON Mode checks; Kimi K3 remains recorded as incompatible after reproducing
+its tokenization failure. DeepSeek retains its verified latency risk, and OpenAI
+uses Responses streaming through Lingyu.
 
 On 2026-08-20, the Germany OpenAI run completed and passed validation. DeepSeek
 completed six searches but its first JSON was cut off by the output-token limit;
@@ -24,9 +24,12 @@ search round but degenerated into repeated non-JSON output until its token
 limit, so it was rejected. A later minimal Kimi K2.6 JSON Mode test passed with
 thinking and search disabled, isolating the benchmark failure to the combined
 native-search continuation and long-form synthesis path rather than basic JSON
-support. No full Kimi benchmark retry has been performed. Only redacted
-aggregate status is committed; lead records and rejected provider payloads
-remain local and ignored.
+support. Enabling JSON Mode on the same frozen benchmark request then produced a
+valid Kimi K2.6 result, but it stopped after one of eight allowed searches and
+returned only one company, so it is explicitly classified as low recall. Its
+reported `tool_budget` stop reason is also inconsistent with the configured
+eight-search limit. Only redacted aggregate status is committed; lead records
+and rejected provider payloads remain local and ignored.
 
 Google Gemini remains an optional provider placeholder. It is disabled and does
 not participate in current runs until its API credentials, model choice, and
