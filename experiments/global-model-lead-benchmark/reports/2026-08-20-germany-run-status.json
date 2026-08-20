@@ -94,7 +94,7 @@
     },
     "grok": {
       "modelId": "grok-4.5",
-      "status": "ready",
+      "status": "rejected_no_benchmark_json",
       "modelSelection": {
         "policy": "latest_publicly_documented_flagship",
         "grok46VisibleToAccount": true,
@@ -112,7 +112,18 @@
         "remediationVerifiedLive": true,
         "automaticRetries": 0
       },
-      "benchmarkRunPerformed": false
+      "benchmarkRunPerformed": true,
+      "benchmark": {
+        "failureCategory": "serialized_tool_request_as_text",
+        "observedWebSearchCalls": 0,
+        "providerSourcesUsed": 0,
+        "rawTextCharacters": 163,
+        "providerResponseStatus": "completed",
+        "automaticRetries": 0,
+        "resultEligibleForComparison": false,
+        "proposedRemediation": "separate_native_search_turn_from_structured_synthesis_using_previous_response_id",
+        "remediationAuthorized": false
+      }
     },
     "claude": {
       "modelId": "claude-opus-4-8",

@@ -44,8 +44,13 @@ disabling inline citations resolved that format issue. The second preflight
 completed its basic request but the model chose not to invoke Web Search. The
 third preflight passed after setting `tool_choice=required` and disabling
 parallel calls: exactly one Web Search call was observed and the single output
-text block parsed as JSON. Grok is eligible for the measured Germany run, but
-that run still requires separate user approval.
+text block parsed as JSON. The subsequently authorized measured Germany run did
+not reproduce that path: with the full prompt plus JSON mode, Grok serialized a
+proposed Web Search request as ordinary text instead of invoking the server-side
+tool. The API reported zero searches and zero sources, so the response was
+rejected and is not eligible for comparison. No retry or continuation was run.
+A two-stage native-search then structured-synthesis remediation using
+`previous_response_id` is documented but awaits separate user approval.
 
 Google Gemini remains an optional provider placeholder. It is disabled and does
 not participate in current runs until its API credentials, model choice, and

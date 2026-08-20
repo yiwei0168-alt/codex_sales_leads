@@ -233,7 +233,7 @@
     "grok": {
       "displayName": "xAI Grok",
       "enabled": true,
-      "status": "ready",
+      "status": "benchmark_failed_serialized_tool_request",
       "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "XAI_API_KEY",
@@ -276,6 +276,19 @@
           "search response contained non-data citation text outside JSON",
           "model did not select the optional web search tool"
         ],
+        "latestBenchmark": {
+          "runDate": "2026-08-20",
+          "countryCode": "DE",
+          "status": "rejected_no_benchmark_json",
+          "failureCategory": "serialized_tool_request_as_text",
+          "observedWebSearchCalls": 0,
+          "providerSourcesUsed": 0,
+          "rawTextCharacters": 163,
+          "providerResponseStatus": "completed",
+          "automaticRetries": 0,
+          "proposedRemediation": "separate_native_search_turn_from_structured_synthesis_using_previous_response_id",
+          "remediationAuthorized": false
+        },
         "transport": {
           "nodeUseEnvProxy": true,
           "reason": "direct Node connection timed out while the configured system proxy path succeeded"
