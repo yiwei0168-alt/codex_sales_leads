@@ -5,7 +5,7 @@
     "openai": {
       "displayName": "OpenAI via Lingyu",
       "enabled": true,
-      "status": "pending_v2_preflight",
+      "status": "v2_preflight_failed_gateway_parameter_incompatibility",
       "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "LINGYU_API_KEY",
@@ -26,12 +26,20 @@
         "adapter": "openai_responses_web_search",
         "mustVerifyServerToolSignal": "web_search_call",
         "externalSearchInjectionForbidden": true
+      },
+      "latestPreflight": {
+        "checkedAt": "2026-08-20",
+        "basicRequest": "passed",
+        "nativeSearch": "failed",
+        "failureCategory": "aggregation_gateway_parameter_incompatibility",
+        "failureDetail": "Lingyu returned HTTP 400 for the Responses API max_tool_calls parameter",
+        "automaticRetries": 0
       }
     },
     "claude": {
       "displayName": "Anthropic Claude via Lingyu",
       "enabled": true,
-      "status": "pending_v2_preflight",
+      "status": "v2_preflight_failed_no_native_search_signal",
       "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "CLAUDE_API_KEY",
@@ -52,12 +60,20 @@
         "adapter": "anthropic_web_search_20250305",
         "mustVerifyServerToolSignal": "server_tool_use:web_search",
         "externalSearchInjectionForbidden": true
+      },
+      "latestPreflight": {
+        "checkedAt": "2026-08-20",
+        "basicRequest": "passed",
+        "nativeSearch": "failed",
+        "failureCategory": "no_provider_native_search_signal",
+        "failureDetail": "The request returned final text but no server_tool_use web_search signal",
+        "automaticRetries": 0
       }
     },
     "kimi": {
       "displayName": "Moonshot Kimi",
       "enabled": true,
-      "status": "pending_v2_preflight",
+      "status": "ready_v2",
       "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "KIMI_API_KEY",
@@ -77,12 +93,20 @@
         "adapter": "moonshot_builtin_web_search",
         "mustVerifyServerToolSignal": "$web_search",
         "externalSearchInjectionForbidden": true
+      },
+      "latestPreflight": {
+        "checkedAt": "2026-08-20",
+        "basicRequest": "passed",
+        "nativeSearch": "passed",
+        "webSearchCalls": 1,
+        "sourceUrlCount": 5,
+        "automaticRetries": 0
       }
     },
     "deepseek": {
       "displayName": "DeepSeek",
       "enabled": true,
-      "status": "pending_v2_preflight",
+      "status": "ready_v2",
       "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "DEEPSEEK_API_KEY",
@@ -102,12 +126,20 @@
         "adapter": "deepseek_anthropic_web_search",
         "mustVerifyServerToolSignal": "server_tool_use:web_search",
         "externalSearchInjectionForbidden": true
+      },
+      "latestPreflight": {
+        "checkedAt": "2026-08-20",
+        "basicRequest": "passed",
+        "nativeSearch": "passed",
+        "webSearchCalls": 2,
+        "sourceUrlCount": 11,
+        "automaticRetries": 0
       }
     },
     "grok": {
       "displayName": "xAI Grok",
       "enabled": true,
-      "status": "pending_v2_preflight",
+      "status": "v2_preflight_failed_transport",
       "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "XAI_API_KEY",
@@ -134,6 +166,14 @@
         "mustVerifyServerToolSignal": "web_search_call",
         "externalSearchInjectionForbidden": true,
         "inlineCitations": true
+      },
+      "latestPreflight": {
+        "checkedAt": "2026-08-20",
+        "basicRequest": "passed",
+        "nativeSearch": "failed",
+        "failureCategory": "transport_fetch_failed",
+        "failureDetail": "The native-search request ended with fetch failed; the captured error did not expose a lower-level cause",
+        "automaticRetries": 0
       }
     },
     "gemini": {

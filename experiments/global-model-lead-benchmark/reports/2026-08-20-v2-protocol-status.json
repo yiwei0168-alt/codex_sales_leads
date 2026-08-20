@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "protocolVersion": "native-search-natural-language-v2",
   "asOf": "2026-08-20",
-  "status": "implementation_verified_live_runs_not_started",
+  "status": "preflight_completed_remediation_required",
   "pilotCountry": "DE",
   "repetitionsPerSystem": 3,
   "participatingProviders": ["openai", "claude", "kimi", "deepseek", "grok"],
@@ -27,7 +27,40 @@
   "verification": {
     "configurationAndRunnerChecks": "passed",
     "typescript": "passed",
-    "providerPreflights": "not_run_under_v2",
+    "providerPreflights": {
+      "openai": {
+        "status": "failed",
+        "basicLatencyMs": 10194,
+        "nativeSearchLatencyMs": 2008,
+        "cause": "Lingyu rejected max_tool_calls with HTTP 400"
+      },
+      "claude": {
+        "status": "failed",
+        "basicLatencyMs": 3185,
+        "nativeSearchLatencyMs": 3049,
+        "cause": "final text returned without a provider-native web-search signal"
+      },
+      "kimi": {
+        "status": "passed",
+        "basicLatencyMs": 1363,
+        "nativeSearchLatencyMs": 13993,
+        "webSearchCalls": 1,
+        "sourceUrlCount": 5
+      },
+      "deepseek": {
+        "status": "passed",
+        "basicLatencyMs": 904,
+        "nativeSearchLatencyMs": 3833,
+        "webSearchCalls": 2,
+        "sourceUrlCount": 11
+      },
+      "grok": {
+        "status": "failed",
+        "basicLatencyMs": 1066,
+        "nativeSearchLatencyMs": 7309,
+        "cause": "transport fetch failed without a captured lower-level cause"
+      }
+    },
     "measuredRuns": "not_run_under_v2"
   },
   "privacy": {

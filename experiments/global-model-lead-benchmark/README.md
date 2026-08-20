@@ -12,6 +12,8 @@
 
 当前先在德国做五个系统各三次的独立重复。德国流程稳定后，再以同一协议扩展到加拿大、哥伦比亚、沙特阿拉伯、坦桑尼亚和新加坡。国家选择及人工覆盖见 `config/countries.json`。
 
+2026-08-20 的 v2 首轮预检中，Kimi K2.6 和 DeepSeek V4 Flash 通过；OpenAI 经 Lingyu 的搜索请求因网关不接受 `max_tool_calls` 而失败；Claude 经 Lingyu 返回了自然语言文本但没有原生搜索工具信号；Grok 的基础请求成功、搜索请求发生未能进一步归因的传输失败。失败请求均未自动重试，正式德国评测尚未开始。脱敏详情见 `reports/2026-08-20-v2-protocol-status.json`。
+
 ## 运行流程
 
 1. 运行 `npm run benchmark:verify`，只检查配置、请求结构、提示词一致性、评分函数和盲审抽样，不连接模型 API。
