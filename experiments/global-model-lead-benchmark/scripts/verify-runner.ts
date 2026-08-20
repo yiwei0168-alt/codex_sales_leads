@@ -15,7 +15,7 @@ const kimiRequest = buildKimiRequest(kimiContext, [{ role: "user", content: "tes
 if (kimiRequest.max_completion_tokens !== 10000 || kimiRequest.response_format.type !== "json_object" || kimiRequest.thinking.type !== "disabled" || kimiRequest.tools[0].function.name !== "$web_search") throw new Error("Kimi JSON-mode benchmark request is incomplete");
 const grokContext = await loadContext("grok", "2026-08-19");
 const grokRequest = buildGrokRequest(grokContext);
-if (grokRequest.model !== "grok-4.5" || grokRequest.max_turns !== 8 || grokRequest.max_output_tokens !== 10000 || grokRequest.tools[0].type !== "web_search" || grokRequest.text.format.type !== "json_object" || grokRequest.reasoning.effort !== "high") throw new Error("Grok benchmark request is incomplete");
+if (grokRequest.model !== "grok-4.5" || grokRequest.max_turns !== 8 || grokRequest.max_output_tokens !== 10000 || grokRequest.tools[0].type !== "web_search" || grokRequest.text.format.type !== "json_object" || grokRequest.reasoning.effort !== "high" || !grokRequest.include.includes("no_inline_citations")) throw new Error("Grok benchmark request is incomplete");
 const result = {
   runMetadata: { countryName: "Germany", countryCode: "DE" }, searchCapability: { queriesExecutedCount: 0 },
   tier1Partners: [], downstreamCustomers: [], contacts: [], uncertainties: [], knowledgeGaps: [],

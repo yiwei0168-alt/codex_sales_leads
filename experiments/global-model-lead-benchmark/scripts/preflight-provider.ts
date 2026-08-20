@@ -60,6 +60,45 @@ async function sseRequest(url: string, init: RequestInit): Promise<any[]> {
   return events;
 }
 
+function parseSingleJsonObject(text: string): Record<string, unknown> {
+  try {
+    const direct = JSON.parse(text) as unknown;
+    if (direct && typeof direct === "object" && !Array.isArray(direct)) return direct as Record<string, unknown>;
+  } catch {
+    // Search responses can contain citation text outside an otherwise valid JSON object.
+  }
+  const candidates: Record<string, unknown>[] = [];
+  let start = -1;
+  let depth = 0;
+  let inString = false;
+  let escaped = false;
+  for (let index = 0; index < text.length; index += 1) {
+    const character = text[index];
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (character === "\\") escaped = true;
+      else if (character === '"') inString = false;
+      continue;
+    }
+    if (character === '"') { inString = true; continue; }
+    if (character === "{") { if (depth === 0) start = index; depth += 1; }
+    else if (character === "}" && depth > 0) {
+      depth -= 1;
+      if (depth === 0 && start >= 0) {
+        try {
+          const value = JSON.parse(text.slice(start, index + 1)) as unknown;
+          if (value && typeof value === "object" && !Array.isArray(value)) candidates.push(value as Record<string, unknown>);
+        } catch {
+          // Ignore balanced non-JSON text.
+        }
+        start = -1;
+      }
+    }
+  }
+  if (candidates.length !== 1) throw new Error(`Expected exactly one JSON object, found ${candidates.length}`);
+  return candidates[0];
+}
+
 async function stage(name: Stage["name"], operation: () => Promise<Record<string, unknown>>): Promise<Stage> {
   const start = Date.now();
   try {
@@ -137,7 +176,7 @@ async function preflightGrok(): Promise<Stage[]> {
         reasoning: { effort: "low" },
         max_output_tokens: withSearch ? 256 : 64,
         stream: true,
-        ...(withSearch ? { tools: [{ type: "web_search" }], include: ["web_search_call.action.sources"], max_turns: 1, text: { format: { type: "json_object" } } } : {}),
+        ...(withSearch ? { tools: [{ type: "web_search" }], include: ["web_search_call.action.sources", "no_inline_citations"], max_turns: 1, text: { format: { type: "json_object" } } } : {}),
       }),
     });
     const completed = events.findLast((event) => event.type === "response.completed")?.response;
@@ -146,9 +185,10 @@ async function preflightGrok(): Promise<Stage[]> {
     const text = (completed.output ?? []).flatMap((item: any) => item.content ?? []).filter((item: any) => item.type === "output_text").map((item: any) => item.text).join("");
     if (withSearch) {
       if (searchItems.length !== 1) throw new Error(`Expected one Grok web search, observed ${searchItems.length}`);
-      JSON.parse(text);
+      const parsed = parseSingleJsonObject(text);
+      if (typeof parsed.title !== "string" || typeof parsed.url !== "string") throw new Error("Grok structured search result lacks title or url");
     }
-    return { finalStatus: completed.status, webSearchCalls: searchItems.length, finalTextPresent: Boolean(text), structuredJsonParsed: withSearch ? true : undefined };
+    return { finalStatus: completed.status, webSearchCalls: searchItems.length, finalTextPresent: Boolean(text), outputTextBlocks: (completed.output ?? []).flatMap((item: any) => item.content ?? []).filter((item: any) => item.type === "output_text").length, structuredJsonParsed: withSearch ? true : undefined };
   };
   const basic = await stage("basic", () => request(false));
   return basic.ok ? [basic, await stage("native_search", () => request(true))] : [basic];
