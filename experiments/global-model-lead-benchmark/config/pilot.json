@@ -7,7 +7,7 @@
   "primaryLanguages": ["German", "English"],
   "runDatePolicy": "actual-run-date",
   "promptFile": "prompts/universal-system-prompt-v1.1.md",
-  "providers": ["openai", "deepseek", "kimi"],
+  "providers": ["openai", "deepseek", "kimi", "grok"],
   "temporarilySkippedProviders": ["claude"],
   "independentRuns": true,
   "limits": {

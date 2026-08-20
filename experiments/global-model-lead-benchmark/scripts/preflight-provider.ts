@@ -6,7 +6,7 @@ import { anthropicMessagesUrl, loadContext, parseSseBuffer, type ProviderConfig,
 
 nextEnv.loadEnvConfig(process.cwd());
 const providerId = process.argv[2] as ProviderId | undefined;
-if (!providerId || !["openai", "claude", "kimi", "deepseek"].includes(providerId)) throw new Error("Usage: npm run benchmark:preflight -- <openai|claude|kimi|deepseek>");
+if (!providerId || !["openai", "claude", "kimi", "deepseek", "grok"].includes(providerId)) throw new Error("Usage: npm run benchmark:preflight -- <openai|claude|kimi|deepseek|grok>");
 
 type Stage = { name: "basic" | "native_search"; ok: boolean; latencyMs: number; category?: string; status?: number; detail?: Record<string, unknown> };
 const startedAt = new Date().toISOString();
@@ -121,7 +121,40 @@ async function preflightKimi(): Promise<Stage[]> {
   return basic.ok ? [basic, await stage("native_search", () => request(true))] : [basic];
 }
 
-const stages = providerId === "openai" ? await preflightOpenAi() : providerId === "kimi" ? await preflightKimi() : await preflightAnthropic();
+async function preflightGrok(): Promise<Stage[]> {
+  const { apiKey, baseUrl } = credentials(context.provider);
+  const request = async (withSearch: boolean) => {
+    const instructions = withSearch
+      ? "Use exactly one native web search. Return one JSON object with string fields title and url, with no prose."
+      : "Reply exactly OK.";
+    const events = await sseRequest(`${baseUrl}/responses`, {
+      method: "POST",
+      headers: { authorization: `Bearer ${apiKey}`, accept: "text/event-stream", "content-type": "application/json" },
+      body: JSON.stringify({
+        model: context.provider.model.modelId,
+        instructions,
+        input: withSearch ? "Find the official Cudy Technology homepage title and URL." : "Health check.",
+        reasoning: { effort: "low" },
+        max_output_tokens: withSearch ? 256 : 64,
+        stream: true,
+        ...(withSearch ? { tools: [{ type: "web_search" }], include: ["web_search_call.action.sources"], max_turns: 1, text: { format: { type: "json_object" } } } : {}),
+      }),
+    });
+    const completed = events.findLast((event) => event.type === "response.completed")?.response;
+    if (!completed) throw new Error("Missing response.completed");
+    const searchItems = (completed.output ?? []).filter((item: any) => item.type === "web_search_call");
+    const text = (completed.output ?? []).flatMap((item: any) => item.content ?? []).filter((item: any) => item.type === "output_text").map((item: any) => item.text).join("");
+    if (withSearch) {
+      if (searchItems.length !== 1) throw new Error(`Expected one Grok web search, observed ${searchItems.length}`);
+      JSON.parse(text);
+    }
+    return { finalStatus: completed.status, webSearchCalls: searchItems.length, finalTextPresent: Boolean(text), structuredJsonParsed: withSearch ? true : undefined };
+  };
+  const basic = await stage("basic", () => request(false));
+  return basic.ok ? [basic, await stage("native_search", () => request(true))] : [basic];
+}
+
+const stages = providerId === "openai" ? await preflightOpenAi() : providerId === "grok" ? await preflightGrok() : providerId === "kimi" ? await preflightKimi() : await preflightAnthropic();
 const report = { providerId, modelId: context.provider.model.modelId, startedAt, completedAt: new Date().toISOString(), automaticRetries: 0, healthy: stages.length === 2 && stages.every((item) => item.ok), stages };
 const outputDirectory = path.resolve("experiments/global-model-lead-benchmark/runs/raw");
 await mkdir(outputDirectory, { recursive: true });

@@ -35,9 +35,9 @@
     "contacts:classify:report": "tsx scripts/report-contact-verification.ts",
     "contacts:classify:eval": "tsx scripts/evaluate-contact-verification.ts",
     "contacts:classify:verify-production": "tsx scripts/verify-contact-verification-production.ts",
-    "benchmark:pilot": "tsx experiments/global-model-lead-benchmark/scripts/run-pilot.ts",
+    "benchmark:pilot": "node --use-env-proxy --import tsx experiments/global-model-lead-benchmark/scripts/run-pilot.ts",
     "benchmark:verify": "tsx experiments/global-model-lead-benchmark/scripts/verify-runner.ts",
-    "benchmark:preflight": "tsx experiments/global-model-lead-benchmark/scripts/preflight-provider.ts",
+    "benchmark:preflight": "node --use-env-proxy --import tsx experiments/global-model-lead-benchmark/scripts/preflight-provider.ts",
     "benchmark:continue:deepseek": "tsx experiments/global-model-lead-benchmark/scripts/continue-deepseek.ts",
     "benchmark:preflight:kimi-json": "tsx experiments/global-model-lead-benchmark/scripts/preflight-kimi-json.ts"
   },

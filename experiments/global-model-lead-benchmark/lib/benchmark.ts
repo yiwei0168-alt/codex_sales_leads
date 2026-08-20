@@ -2,7 +2,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-export type ProviderId = "openai" | "claude" | "kimi" | "deepseek";
+export type ProviderId = "openai" | "claude" | "kimi" | "deepseek" | "grok";
 export type ProviderConfig = { enabled: boolean; participatesInCurrentRun: boolean; credentials: { apiKeyEnv: string; baseUrl?: string; baseUrlEnv?: string }; model: { modelId: string } };
 type PilotConfig = { countryCode: string; countryName: string; regionName: string; primaryLanguages: string[]; promptFile: string; providers: ProviderId[]; limits: { nativeSearchRequests: number; visibleOutputTokens: number; continuationPages: number; timeoutMinutesPerProvider: number; automaticRetries: number }; storage: { rawResultsDirectory: string } };
 export type RunContext = { providerId: ProviderId; provider: ProviderConfig; prompt: string; trigger: string; runDate: string; pilot: PilotConfig };
@@ -16,7 +16,7 @@ export function buildBenchmarkTrigger(countryName: string, countryCode: string, 
 }
 
 export function buildMessageEnvelope(providerId: ProviderId, prompt: string, trigger: string): { instructions?: string; input?: string; system?: string; messages?: Array<{ role: string; content: string }> } {
-  if (providerId === "openai") return { instructions: prompt, input: trigger };
+  if (providerId === "openai" || providerId === "grok") return { instructions: prompt, input: trigger };
   if (providerId === "kimi") return { messages: [{ role: "system", content: prompt }, { role: "user", content: trigger }] };
   return { system: prompt, messages: [{ role: "user", content: trigger }] };
 }
@@ -151,6 +151,34 @@ async function runOpenAi(context: RunContext) {
   return { text, searches, raw: { response: raw, streamEventTypes: events.map((event) => event.type) } };
 }
 
+export function buildGrokRequest(context: RunContext) {
+  return {
+    model: context.provider.model.modelId,
+    ...buildMessageEnvelope("grok", context.prompt, context.trigger),
+    tools: [{ type: "web_search" }],
+    include: ["web_search_call.action.sources"],
+    max_turns: context.pilot.limits.nativeSearchRequests,
+    max_output_tokens: context.pilot.limits.visibleOutputTokens,
+    reasoning: { effort: "high" },
+    text: { format: { type: "json_object" } },
+    stream: true,
+  };
+}
+
+async function runGrok(context: RunContext) {
+  const { apiKey, baseUrl } = credentials(context.provider);
+  const events = await requestSse(`${baseUrl}/responses`, { method: "POST", headers: { authorization: `Bearer ${apiKey}`, accept: "text/event-stream", "content-type": "application/json" }, body: JSON.stringify(buildGrokRequest(context)) }, context.pilot.limits.timeoutMinutesPerProvider * 60_000);
+  const failed = events.find((event) => event.type === "response.failed" || event.type === "error");
+  if (failed) throw new Error(`Grok stream failed: ${JSON.stringify(failed).slice(0, 500)}`);
+  const completed = events.findLast((event) => event.type === "response.completed")?.response;
+  if (!completed) throw new Error("Grok stream ended without response.completed");
+  const text = (completed.output ?? []).flatMap((item: any) => item.content ?? []).filter((item: any) => item.type === "output_text").map((item: any) => item.text).join("");
+  const completedSearchItems = (completed.output ?? []).filter((item: any) => item.type === "web_search_call");
+  const streamedSearchItems = events.filter((event) => event.type === "response.output_item.done" && event.item?.type === "web_search_call");
+  const searches = completedSearchItems.length || new Set(streamedSearchItems.map((event) => event.item?.id).filter(Boolean)).size;
+  return { text, searches, raw: { response: completed, streamEventTypes: events.map((event) => event.type) } };
+}
+
 async function runAnthropic(context: RunContext) {
   const { apiKey, baseUrl } = credentials(context.provider);
   const envelope = buildMessageEnvelope(context.providerId, context.prompt, context.trigger);
@@ -219,7 +247,7 @@ export function validateBenchmarkResult(value: any, context: RunContext): void {
 export async function executeProvider(providerId: ProviderId): Promise<RunArtifact> {
   const context = await loadContext(providerId);
   const startedAt = new Date().toISOString();
-  const result = providerId === "openai" ? await runOpenAi(context) : providerId === "kimi" ? await runKimi(context) : await runAnthropic(context);
+  const result = providerId === "openai" ? await runOpenAi(context) : providerId === "grok" ? await runGrok(context) : providerId === "kimi" ? await runKimi(context) : await runAnthropic(context);
   if (result.searches > context.pilot.limits.nativeSearchRequests) throw new Error(`${providerId} exceeded native search request limit`);
   const outputDirectory = path.join(experimentRoot, context.pilot.storage.rawResultsDirectory);
   await mkdir(outputDirectory, { recursive: true });
@@ -227,6 +255,7 @@ export async function executeProvider(providerId: ProviderId): Promise<RunArtifa
   try {
     response = extractBenchmarkJson(result.text);
     validateBenchmarkResult(response, context);
+    if ((response as any).searchCapability.queriesExecutedCount !== result.searches) throw new Error(`${providerId} reported ${(response as any).searchCapability.queriesExecutedCount} searches, observed ${result.searches}`);
   } catch (error) {
     const rejected = {
       status: "rejected",

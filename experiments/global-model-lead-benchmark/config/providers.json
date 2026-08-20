@@ -230,6 +230,40 @@
         }
       }
     },
+    "grok": {
+      "displayName": "xAI Grok",
+      "enabled": true,
+      "status": "preflight_pending",
+      "participatesInCurrentRun": true,
+      "credentials": {
+        "apiKeyEnv": "XAI_API_KEY",
+        "baseUrlEnv": "XAI_BASE_URL"
+      },
+      "model": {
+        "selectionPolicy": "latest publicly documented xAI flagship with verified Responses web search and structured output support",
+        "modelId": "grok-4.5",
+        "discoveryRequired": false,
+        "discoverySnapshot": {
+          "checkedAt": "2026-08-20",
+          "modelsEndpointStatus": 200,
+          "grok46VisibleToAccount": true,
+          "grok46SelectionStatus": "not_selected_missing_public_capability_documentation"
+        }
+      },
+      "nativeSearch": {
+        "required": true,
+        "adapter": "xai_responses_web_search",
+        "capabilityVerified": false,
+        "structuredOutputRequired": true,
+        "reasoningEffort": "high",
+        "maxAgentTurns": 8,
+        "observedSearchCallHardLimit": 8,
+        "transport": {
+          "nodeUseEnvProxy": true,
+          "reason": "direct Node connection timed out while the configured system proxy path succeeded"
+        }
+      }
+    },
     "gemini": {
       "displayName": "Google Gemini",
       "enabled": false,
