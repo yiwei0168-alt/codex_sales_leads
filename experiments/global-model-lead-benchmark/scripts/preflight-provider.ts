@@ -22,6 +22,7 @@ type Stage = {
 const startedAt = new Date().toISOString();
 const context = await loadContext(providerId);
 const searchPrompt = "请使用你所在模型服务的原生联网搜索，找到 Cudy Technology 官方网站，并用自然语言回答网站标题和URL。不要使用训练记忆代替搜索。";
+const currentClaudeSearchPrompt = "请使用你所在模型服务的原生联网搜索，访问 Cudy Technology 官网当前的新闻或博客页面，报告截至今天最新一篇文章的标题、发布日期和URL。无法找到时也请说明实际搜索过哪些官网页面，不要使用训练记忆代替搜索。";
 
 function credentials(provider: ProviderConfig) {
   const apiKey = process.env[provider.credentials.apiKeyEnv]?.trim();
@@ -36,6 +37,7 @@ function classify(status: number, message: string): string {
   if (status === 429 || lower.includes("rate limit") || lower.includes("quota")) return "rate_limit_or_quota";
   if (status === 504 || lower.includes("time-out") || lower.includes("timeout") || lower.includes("aborted")) return "gateway_timeout";
   if (status === 503 || lower.includes("overloaded") || lower.includes("service_unavailable")) return "upstream_unavailable";
+  if (lower.includes("fetch failed") || lower.includes("econnreset") || lower.includes("socket")) return "transport_error";
   if (status >= 500) return "upstream_server_error";
   return "protocol_or_request_error";
 }
@@ -83,7 +85,20 @@ async function stage(name: Stage["name"], operation: () => Promise<Record<string
   } catch (error) {
     const status = Number((error as { status?: number }).status ?? 0);
     const message = error instanceof Error ? error.message : String(error);
-    return { name, ok: false, latencyMs: Date.now() - start, status: status || undefined, category: classify(status, message), detail: { message: message.slice(0, 240) } };
+    const cause = (error as { cause?: unknown }).cause;
+    const causeDetail = cause instanceof Error ? {
+      name: cause.name,
+      message: cause.message.slice(0, 240),
+      ...("code" in cause && typeof cause.code === "string" ? { code: cause.code } : {}),
+    } : undefined;
+    return {
+      name,
+      ok: false,
+      latencyMs: Date.now() - start,
+      status: status || undefined,
+      category: classify(status, `${message} ${causeDetail?.message ?? ""} ${causeDetail?.code ?? ""}`),
+      detail: { message: message.slice(0, 240), ...(causeDetail ? { cause: causeDetail } : {}) },
+    };
   }
 }
 
@@ -98,7 +113,7 @@ async function preflightResponses(provider: "openai" | "grok"): Promise<Stage[]>
       stream: true,
       ...(withSearch ? {
         tools: [{ type: "web_search" }],
-        ...(provider === "openai" ? { max_tool_calls: 1 } : { max_turns: 1 }),
+        ...(provider === "grok" ? { max_turns: 1, parallel_tool_calls: false } : {}),
       } : {}),
     };
     const events = await sseRequest(`${baseUrl}/responses`, {
@@ -130,7 +145,7 @@ async function preflightAnthropic(): Promise<Stage[]> {
       body: JSON.stringify({
         model: context.provider.model.modelId,
         max_tokens: withSearch ? 512 : 64,
-        messages: [{ role: "user", content: withSearch ? searchPrompt : "请只回复 OK。" }],
+        messages: [{ role: "user", content: withSearch && context.providerId === "claude" ? currentClaudeSearchPrompt : withSearch ? searchPrompt : "请只回复 OK。" }],
         ...(context.providerId === "deepseek" ? { thinking: { type: "disabled" } } : {}),
         ...(withSearch ? { tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 1 }] } : {}),
       }),
@@ -201,6 +216,7 @@ const report = {
 };
 const outputDirectory = path.resolve("experiments/global-model-lead-benchmark/runs/raw");
 await mkdir(outputDirectory, { recursive: true });
-await writeFile(path.join(outputDirectory, `${context.runDate}-${providerId}-v2-preflight.json`), JSON.stringify(report, null, 2), "utf8");
+const auditTimestamp = startedAt.replace(/[:.]/g, "-");
+await writeFile(path.join(outputDirectory, `${context.runDate}-${providerId}-v2-preflight-${auditTimestamp}.json`), JSON.stringify(report, null, 2), "utf8");
 console.log(JSON.stringify(report, null, 2));
 if (!report.healthy) process.exitCode = 1;

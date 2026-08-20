@@ -50,7 +50,7 @@ if (anthropicMessagesUrl("claude", "https://lingyuapi.com") !== "https://lingyua
 
 const openAiRequest = buildOpenAiRequest(context);
 if (openAiRequest.model !== "gpt-5.6-terra" || openAiRequest.reasoning.effort !== "none"
-  || openAiRequest.max_tool_calls !== 12 || openAiRequest.max_output_tokens !== 8000
+  || "max_tool_calls" in openAiRequest || openAiRequest.max_output_tokens !== 8000
   || openAiRequest.tools[0].type !== "web_search" || "instructions" in openAiRequest) {
   throw new Error("OpenAI natural-language search request is incomplete");
 }
@@ -80,7 +80,8 @@ const grokContext = await loadContext("grok", "2026-08-20", 1);
 const grokRequest = buildGrokRequest(grokContext);
 if (grokRequest.model !== "grok-4.3" || grokRequest.reasoning.effort !== "none"
   || grokRequest.max_turns !== 12 || grokRequest.max_output_tokens !== 8000
-  || grokRequest.tools[0].type !== "web_search" || "text" in grokRequest || "tool_choice" in grokRequest) {
+  || grokRequest.parallel_tool_calls !== false || grokRequest.tools[0].type !== "web_search"
+  || "text" in grokRequest || "tool_choice" in grokRequest) {
   throw new Error("Grok natural-language search request is incomplete");
 }
 

@@ -60,7 +60,7 @@ export type RunArtifact = {
   latencyMs: number;
   searchRequestsObserved: number | null;
   nativeSearchEvidence: "observed" | "not_observed" | "unavailable";
-  scoringEligibility: "eligible" | "zero_score_no_native_search";
+  scoringEligibility: "eligible" | "zero_score_no_native_search" | "zero_score_search_ceiling_exceeded";
   sourceUrls: string[];
   answerText: string;
   rawProviderResponse: unknown;
@@ -206,7 +206,6 @@ export function buildOpenAiRequest(context: RunContext) {
     model: context.provider.model.modelId,
     ...buildMessageEnvelope("openai", context.prompt),
     tools: [{ type: "web_search" }],
-    max_tool_calls: context.pilot.limits.nativeSearchActionsSafetyCeiling,
     max_output_tokens: context.pilot.limits.visibleOutputTokens,
     reasoning: { effort: "none" },
     text: { verbosity: "medium" },
@@ -237,6 +236,7 @@ export function buildGrokRequest(context: RunContext) {
     max_turns: context.pilot.limits.nativeSearchActionsSafetyCeiling,
     max_output_tokens: context.pilot.limits.visibleOutputTokens,
     reasoning: { effort: "none" },
+    parallel_tool_calls: false,
     store: true,
     stream: true,
   };
@@ -327,9 +327,6 @@ async function runKimi(context: RunContext): Promise<ProviderResult> {
 }
 
 function validateNaturalAnswer(result: ProviderResult, context: RunContext): void {
-  if (result.searches !== null && result.searches > context.pilot.limits.nativeSearchActionsSafetyCeiling) {
-    throw new Error(`${context.providerId} exceeded the native search safety ceiling`);
-  }
   if (!result.text.trim()) throw new Error(`${context.providerId} returned an empty natural-language answer`);
 }
 
@@ -359,7 +356,10 @@ export async function executeProvider(providerId: ProviderId, repetition = 1): P
     const nativeSearchEvidence = result.searches === null
       ? "unavailable"
       : (result.searches > 0 ? "observed" : "not_observed");
-    const scoringEligibility = nativeSearchEvidence === "observed" ? "eligible" : "zero_score_no_native_search";
+    const scoringEligibility = result.searches !== null
+      && result.searches > context.pilot.limits.nativeSearchActionsSafetyCeiling
+      ? "zero_score_search_ceiling_exceeded"
+      : nativeSearchEvidence === "observed" ? "eligible" : "zero_score_no_native_search";
     const artifact: RunArtifact = {
       protocolVersion: context.pilot.protocolVersion,
       providerId,
