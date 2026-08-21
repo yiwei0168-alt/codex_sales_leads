@@ -359,9 +359,7 @@ async function runKimi(context: RunContext): Promise<ProviderResult> {
     const raw = await requestJson(`${baseUrl}/chat/completions`, {
       method: "POST",
       headers,
-      body: JSON.stringify(searches < context.pilot.limits.nativeSearchActionsTargetBudget
-        ? buildKimiRequest(context, messages, tools, searches === 0 ? "required" : "auto")
-        : buildKimiRequest(context, messages, null)),
+      body: JSON.stringify(buildKimiRequest(context, messages, tools, searches === 0 ? "required" : "auto")),
     }, remainingTimeout());
     rounds.push(raw);
     const choice = raw.choices?.[0];
@@ -370,7 +368,6 @@ async function runKimi(context: RunContext): Promise<ProviderResult> {
     if (choice.finish_reason !== "tool_calls") { text = choice.message.content ?? ""; break; }
     for (const toolCall of choice.message.tool_calls ?? []) {
       if (toolCall.function?.name !== "web_search") throw new Error(`Kimi requested an unsupported official tool: ${toolCall.function?.name}`);
-      if (searches >= context.pilot.limits.nativeSearchActionsTargetBudget) throw new Error("Kimi returned multiple tool calls crossing the search ceiling");
       searches += 1;
       const execution = await requestJson(`${formulaUrl}/fibers`, {
         method: "POST",
