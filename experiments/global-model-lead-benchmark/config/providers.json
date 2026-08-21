@@ -71,7 +71,7 @@
       },
       "nativeSearch": {
         "required": true,
-        "adapter": "anthropic_web_search_20250305",
+        "adapter": "anthropic_web_search_20260209_dynamic_filtering",
         "mustVerifyServerToolSignal": "server_tool_use:web_search",
         "externalSearchInjectionForbidden": true,
         "targetBudgetImplementation": "provider_max_uses"

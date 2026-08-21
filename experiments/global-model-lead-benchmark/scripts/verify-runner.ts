@@ -85,13 +85,15 @@ if (openAiRequest.model !== "gpt-5.6-terra" || openAiRequest.reasoning.effort !=
 const claudeContext = await loadContext("claude", "2026-08-20", 1);
 const claudeRequest = buildAnthropicRequest(claudeContext);
 if (claudeRequest.model !== "claude-fable-5" || claudeRequest.max_tokens !== 8000
-  || claudeRequest.tools[0].max_uses !== 12 || "system" in claudeRequest || "thinking" in claudeRequest) {
+  || claudeRequest.tools[0].type !== "web_search_20260209" || claudeRequest.tools[0].max_uses !== 12
+  || "system" in claudeRequest || "thinking" in claudeRequest) {
   throw new Error("Claude natural-language search request is incomplete");
 }
 
 const deepSeekContext = await loadContext("deepseek", "2026-08-20", 1);
 const deepSeekRequest = buildAnthropicRequest(deepSeekContext);
-if (deepSeekRequest.model !== "deepseek-v4-flash" || deepSeekRequest.thinking?.type !== "disabled") {
+if (deepSeekRequest.model !== "deepseek-v4-flash" || deepSeekRequest.thinking?.type !== "disabled"
+  || deepSeekRequest.tools[0].type !== "web_search_20250305") {
   throw new Error("DeepSeek non-thinking search request is incomplete");
 }
 

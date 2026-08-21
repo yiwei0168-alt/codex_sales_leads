@@ -296,12 +296,13 @@ async function runGrok(context: RunContext): Promise<ProviderResult> {
 }
 
 export function buildAnthropicRequest(context: RunContext) {
+  const webSearchType = context.providerId === "claude" ? "web_search_20260209" : "web_search_20250305";
   return {
     model: context.provider.model.modelId,
     max_tokens: context.pilot.limits.visibleOutputTokens,
     ...buildMessageEnvelope(context.providerId, context.prompt),
     ...(context.providerId === "deepseek" ? { thinking: { type: "disabled" } } : {}),
-    tools: [{ type: "web_search_20250305", name: "web_search", max_uses: context.pilot.limits.nativeSearchActionsTargetBudget }],
+    tools: [{ type: webSearchType, name: "web_search", max_uses: context.pilot.limits.nativeSearchActionsTargetBudget }],
   };
 }
 
