@@ -42,7 +42,7 @@
     "claude": {
       "displayName": "Anthropic Claude via Lingyu",
       "enabled": true,
-      "status": "ready_v2",
+      "status": "degraded_v3_upstream_unavailable",
       "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "CLAUDE_API_KEY",
@@ -66,13 +66,12 @@
         "targetBudgetImplementation": "provider_max_uses"
       },
       "latestPreflight": {
-        "checkedAt": "2026-08-20",
-        "basicRequest": "passed",
-        "nativeSearch": "passed_with_current_web_dependent_probe",
-        "webSearchCalls": 1,
-        "sourceUrlCount": 13,
-        "basicLatencyMs": 3367,
-        "nativeSearchLatencyMs": 7480,
+        "checkedAt": "2026-08-21",
+        "basicRequest": "failed_upstream_unavailable",
+        "nativeSearch": "not_attempted_basic_failed",
+        "httpStatus": 503,
+        "diagnostic": "aggregation_gateway_reported_no_available_accounts",
+        "basicLatencyMs": 2516,
         "automaticRetries": 0
       }
     },

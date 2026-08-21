@@ -5,6 +5,7 @@
   "status": "framework_ready_paid_runs_not_started",
   "objective": "compare native web-search discovery of high-fit potential Cudy channel customers",
   "participatingProviders": ["openai", "claude", "kimi", "deepseek", "grok", "gemini"],
+  "claudeStatus": "degraded_v3_upstream_unavailable_preflight_failed",
   "geminiStatus": "ready_v3_preflight_passed",
   "productComparator": "sales-lead-copilot",
   "promptPolicy": {
