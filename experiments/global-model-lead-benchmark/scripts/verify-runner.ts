@@ -111,6 +111,9 @@ const kimiRequiredSearch = buildKimiRequest(kimiContext, [{ role: "user", conten
 if (kimiRequiredSearch.tool_choice !== "required" || kimiRequiredSearch.tools[0].function.name !== "web_search") {
   throw new Error("Kimi recovery request does not require an auditable first native search");
 }
+if (buildKimiRequest(kimiContext, [{ role: "user", content: "test" }], kimiRequiredSearch.tools, "none").tool_choice !== "none") {
+  throw new Error("Kimi recovery request cannot force final synthesis at the search target");
+}
 
 const grokContext = await loadContext("grok", "2026-08-20", 1);
 const grokRequest = buildGrokRequest(grokContext);

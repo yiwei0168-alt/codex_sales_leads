@@ -325,7 +325,7 @@ export function buildKimiRequest(
   context: RunContext,
   messages: any[],
   tools: any[] | null = [{ type: "builtin_function", function: { name: "$web_search" } }],
-  toolChoice?: "required" | "auto",
+  toolChoice?: "required" | "auto" | "none",
 ) {
   return {
     model: context.provider.model.modelId,
@@ -359,7 +359,14 @@ async function runKimi(context: RunContext): Promise<ProviderResult> {
     const raw = await requestJson(`${baseUrl}/chat/completions`, {
       method: "POST",
       headers,
-      body: JSON.stringify(buildKimiRequest(context, messages, tools, searches === 0 ? "required" : "auto")),
+      body: JSON.stringify(buildKimiRequest(
+        context,
+        messages,
+        tools,
+        searches === 0
+          ? "required"
+          : (searches >= context.pilot.limits.nativeSearchActionsTargetBudget ? "none" : "auto"),
+      )),
     }, remainingTimeout());
     rounds.push(raw);
     const choice = raw.choices?.[0];
@@ -368,6 +375,9 @@ async function runKimi(context: RunContext): Promise<ProviderResult> {
     if (choice.finish_reason !== "tool_calls") { text = choice.message.content ?? ""; break; }
     for (const toolCall of choice.message.tool_calls ?? []) {
       if (toolCall.function?.name !== "web_search") throw new Error(`Kimi requested an unsupported official tool: ${toolCall.function?.name}`);
+      if (searches >= context.pilot.limits.nativeSearchActionsTargetBudget) {
+        throw new Error("Kimi ignored tool_choice=none after reaching the search target");
+      }
       searches += 1;
       const execution = await requestJson(`${formulaUrl}/fibers`, {
         method: "POST",

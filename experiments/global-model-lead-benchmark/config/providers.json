@@ -113,7 +113,7 @@
         "adapter": "moonshot_official_formula_web_search",
         "mustVerifyServerToolSignal": "web_search tool call plus successful moonshot/web-search:latest fiber",
         "externalSearchInjectionForbidden": true,
-        "targetBudgetImplementation": "require_the_first_search_then_allow_model_directed_search_until_natural_stop_or_the_shared_wall_clock_timeout; report_actual_usage_against_target"
+        "targetBudgetImplementation": "first_search_required; subsequent_searches_auto; after_target_keep_tool_schema_and_set_tool_choice_none_for_final_synthesis"
       },
       "latestPreflight": {
         "checkedAt": "2026-08-21",
