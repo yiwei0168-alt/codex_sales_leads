@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "native-search-potential-fit-v3",
+  "countryCode": "DE",
+  "asOf": "2026-08-21",
+  "status": "formal_collection_complete_review_pool_prepared",
+  "systems": {
+    "claude-fable-5": {
+      "comparisonTier": "supplementary_high_capability",
+      "attempted": 3,
+      "transportSuccesses": 0,
+      "candidateRuns": 0,
+      "failureCategory": "aggregation_gateway_upstream_502"
+    },
+    "gemini-3.7-flash": {
+      "attempted": 3,
+      "transportSuccesses": 0,
+      "candidateRuns": 0,
+      "failureCategory": "provider_high_demand_500"
+    },
+    "gpt-5.6-terra": {
+      "attempted": 3,
+      "transportSuccesses": 3,
+      "candidateRuns": 3,
+      "extractedCandidatesPerRun": [14, 15, 20],
+      "nativeSearchCallsPerRun": [9, 5, 5]
+    },
+    "deepseek-v4-flash": {
+      "attempted": 3,
+      "transportSuccesses": 3,
+      "candidateRuns": 1,
+      "degenerateProcessRuns": 2,
+      "extractedCandidatesPerRun": [9, 0, 0],
+      "nativeSearchCallsPerRun": [6, 8, 7]
+    },
+    "kimi-k2.6": {
+      "attempted": 3,
+      "transportSuccesses": 3,
+      "candidateRuns": 0,
+      "degenerateProcessRuns": 3,
+      "extractedCandidatesPerRun": [0, 0, 0],
+      "nativeSearchCallsPerRun": [1, 1, 1],
+      "sourceUrlsPerRun": [0, 0, 0]
+    },
+    "grok-4.3": {
+      "attempted": 3,
+      "transportSuccesses": 3,
+      "candidateRuns": 3,
+      "extractedCandidatesPerRun": [4, 8, 7],
+      "nativeSearchCallsPerRun": [20, 25, 21],
+      "resourceBudgetObservation": "max_turns_did_not_enforce_the_12_search_target"
+    },
+    "sales-lead-copilot": {
+      "attempted": 3,
+      "transportSuccesses": 3,
+      "candidateRuns": 3,
+      "extractedCandidatesPerRun": [18, 20, 20],
+      "externalRequestsPerRun": [89, 89, 89],
+      "totalCreditsPerRun": [108, 107, 108],
+      "estimatedPayAsYouGoCostUsdPerRun": [0.864, 0.856, 0.864]
+    }
+  },
+  "reviewPool": {
+    "eligibleAnswerRuns": 15,
+    "degenerateProcessRuns": 5,
+    "candidateOccurrences": 135,
+    "deduplicatedCandidates": 87,
+    "codexVerificationStarted": false,
+    "humanBlindAuditStarted": false
+  },
+  "privacy": {
+    "containsLeadRecords": false,
+    "containsContactDetails": false,
+    "containsCredentials": false
+  }
+}

@@ -219,11 +219,58 @@ const syntheticTableCandidates = extractCandidateOccurrences({
 if (syntheticTableCandidates.length !== 2 || syntheticTableCandidates.some((candidate) => candidate.extractionRule !== "numbered_table_row")) {
   throw new Error("Natural-language table candidate extraction failed");
 }
+const syntheticStandaloneBoldCandidates = extractCandidateOccurrences({
+  ...syntheticRun,
+  answerText: [
+    "**EFB-Elektronik GmbH** (Bielefeld, Deutschland)  ",
+    "**Website:** https://www.efb-elektronik.de/",
+    "**Kanalrolle:** Distributor für Fachkunden.",
+    "**YELLO NETCOM GmbH** (Rheine, Deutschland)",
+    "**Website:** https://www.yello-net.de/",
+    "**Kanalrolle:** Value-Added-Distributor.",
+  ].join("\n"),
+}, "test-salt");
+if (syntheticStandaloneBoldCandidates.length !== 2
+  || syntheticStandaloneBoldCandidates.some((candidate) => candidate.extractionRule !== "bold_candidate")) {
+  throw new Error("Standalone bold natural-language candidate extraction failed");
+}
+const syntheticMixedCandidates = extractCandidateOccurrences({
+  ...syntheticRun,
+  answerText: [
+    "### 1. Primary Distribution GmbH",
+    "Distributor. https://primary.example/",
+    "### 2. Second Distribution GmbH",
+    "Distributor. https://second.example/",
+    "### 3. 其他值得关注的潜在渠道",
+    "- **Third Networks GmbH**（集成商）：https://third.example/",
+  ].join("\n"),
+}, "test-salt");
+if (syntheticMixedCandidates.length !== 3
+  || syntheticMixedCandidates[2].companyName !== "Third Networks GmbH") {
+  throw new Error("Mixed natural-language candidate extraction failed");
+}
+const syntheticLeadingTableCandidates = extractCandidateOccurrences({
+  ...syntheticRun,
+  answerText: [
+    "| 1 | **Leading Table GmbH** | https://leading-table.example/ |",
+    "### 2. Detailed Networks GmbH",
+    "Distributor. https://detailed.example/",
+    "| 3 | **Repeated Summary GmbH** | summary only |",
+  ].join("\n"),
+}, "test-salt");
+if (syntheticLeadingTableCandidates.length !== 2
+  || syntheticLeadingTableCandidates[0].companyName !== "Leading Table GmbH"
+  || syntheticLeadingTableCandidates[1].companyName !== "Detailed Networks GmbH") {
+  throw new Error("Leading table plus detailed heading extraction failed");
+}
 if (extractUrls("https://example.de/a?utm_source=x and https://example.de/a").length !== 1) {
   throw new Error("Normalized answer URL extraction failed");
 }
 if (!isDegenerateProcessOutput(Array.from({ length: 20 }, () => "让我继续搜索更多渠道。").join(""))) {
   throw new Error("Degenerate process-output detection failed");
+}
+if (!isDegenerateProcessOutput("I found initial leads. Let me search more distributors. Let me compile the findings after more searches.")) {
+  throw new Error("Short process-only output detection failed");
 }
 validateCandidateVerification({
   blindCandidateId: "C-000000000001",

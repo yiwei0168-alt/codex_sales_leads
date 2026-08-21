@@ -48,12 +48,14 @@ type CandidateMatch = {
 const GENERIC_TITLE_PATTERNS = [
   /^(?:weitere|other|andere|additional|summary|recommendation|follow-up|sources?|contacts?|notes?)/i,
   /^(?:其他|其它|更多|总结|建议|来源|联系|后续|需要|优先|優先|可能|调研|重要说明|进一步)/,
+  /^(?:大型全球分销商|行业协会|產業協會|行業協會)/,
   /^(?:已证实|已證實|尚无|尚無|cudy technology|在德国|在德國|接触方式|接觸方式|下一步)/i,
   /(?:潜在渠道|跟进建议|检索局限|销售行动|证据来源|contact information|follow-up recommendations)$/i,
 ];
 
 const LEGAL_SUFFIXES = /\b(?:gmbh|mbh|ag|se|ohg|kg|gbr|ug|e\.?\s*k\.?|inc|corp(?:oration)?|limited|ltd|llc|a\.?s\.?|sp\.?\s*z\.?\s*o\.?o\.?)\b/gi;
-const NON_COMPANY_BOLD = /^(?:website|webseite|官网|網站|业务|業務|渠道角色|為什麼|为什么|来源|來源|公开|公開|kontakt|contact|evidence|quellen|empfehlung|注意)/i;
+const COMPANY_LEGAL_SUFFIX = /\b(?:gmbh|mbh|ag|se|ohg|kg|gbr|ug|e\.?\s*k\.?|inc|corp(?:oration)?|limited|ltd|llc|a\.?s\.?|sp\.?\s*z\.?\s*o\.?o\.?)\b/i;
+const NON_COMPANY_BOLD = /^(?:website|webseite|官网|網站|官方网站|業務|业务|在德业务|geschäft|standort|rolle|channel|渠道角色|角色与客户群|match|匹配|与cudy|cudy\s*匹配|覆盖|當地覆蓋|当地覆盖|risik|风险|風險|潜在冲突|來源|来源|依据|公開|公开|kontakt|contact|联系人|evidence|quellen|empfehlung|建议|注意|recherchedatum|检索基准|produkt|product|.*\bpack\b)/i;
 
 function cleanInlineMarkdown(value: string): string {
   return value
@@ -81,12 +83,14 @@ function collectCandidateMatches(answerText: string): CandidateMatch[] {
   const numberedHeading = /^#{2,6}\s+\d+[.)]\s+(.+)$/gmu;
   const numberedTableRow = /^\|\s*\d+\s*\|\s*([^|]+)\|.*$/gmu;
   const boldBullet = /^\s*-\s+\*\*([^*]+)\*\*(?:\s*\([^\n]*\))?/gmu;
-  const boldLead = /^\*\*(?:\d+[.)]\s*)?([^*]+)\*\*\s*(?:\([^\n)]*\)\s*)?(?:[–—-]|$)/gmu;
+  const boldStandalone = /^\*\*(?:\d+[.)]\s*)?([^*\n]+)\*\*(?:[ \t]*\([^\n)]*\))?[ \t]*$/gmu;
+  const boldLead = /^\*\*(?:\d+[.)]\s*)?([^*\n]+)\*\*[ \t]*(?:\([^\n)]*\)[ \t]*)?(?:[–—-]|$)/gmu;
 
   for (const [regex, extractionRule, target] of [
     [numberedHeading, "numbered_heading", headings],
     [numberedTableRow, "numbered_table_row", tableRows],
     [boldBullet, "bold_candidate", boldEntries],
+    [boldStandalone, "bold_candidate", boldEntries],
     [boldLead, "bold_candidate", boldEntries],
   ] as const) {
     for (const match of answerText.matchAll(regex)) {
@@ -101,14 +105,24 @@ function collectCandidateMatches(answerText: string): CandidateMatch[] {
     }
   }
 
-  const selected = headings.length > 0 ? headings : tableRows.length > 0 ? tableRows : boldEntries;
-  return selected
+  const structuredEntries = headings.length > 0
+    ? [...tableRows.filter((match) => match.start < headings[0].start), ...headings]
+    : tableRows;
+  const primary = structuredEntries.length > 0 ? structuredEntries : boldEntries;
+  const strongBoldAdditions = primary === boldEntries ? [] : boldEntries.filter((match) => {
+    const sourceLineEnd = answerText.indexOf("\n", match.start);
+    const sourceLine = answerText.slice(match.start, sourceLineEnd === -1 ? answerText.length : sourceLineEnd);
+    return COMPANY_LEGAL_SUFFIX.test(match.companyName) || /https?:\/\//i.test(sourceLine);
+  });
+  return [...primary, ...strongBoldAdditions]
     .sort((left, right) => left.start - right.start || left.end - right.end)
     .filter((match, index, ordered) => index === 0 || match.start !== ordered[index - 1].start);
 }
 
 export function isDegenerateProcessOutput(answerText: string): boolean {
   const compact = answerText.replace(/\s+/g, "").toLowerCase();
+  const processMarkers = answerText.match(/(?:let me (?:search|compile|do (?:a few|more))|让我(?:继续|进行更多|搜索)|我需要搜索|maximum number of search steps|reached the maximum number of search)/giu) ?? [];
+  if (processMarkers.length >= 2 && collectCandidateMatches(answerText).length === 0) return true;
   if (compact.length < 200) return false;
 
   const chunks = answerText

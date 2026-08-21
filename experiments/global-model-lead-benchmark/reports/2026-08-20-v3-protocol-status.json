@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "protocolVersion": "native-search-potential-fit-v3",
   "asOf": "2026-08-21",
-  "status": "framework_ready_paid_runs_not_started",
+  "status": "formal_collection_complete_review_pool_prepared",
   "objective": "compare native web-search discovery of high-fit potential Cudy channel customers",
   "participatingProviders": ["openai", "claude", "kimi", "deepseek", "grok", "gemini"],
   "claudeStatus": "ready_v3_fable_5_preflight_passed_supplementary_high_capability",
@@ -62,8 +62,17 @@
     "preventsV2OverwriteOrPooling": true
   },
   "measuredRuns": {
-    "attempted": 0,
-    "paidCallsAuthorized": false
+    "modelRunsAttempted": 18,
+    "productRunsAttempted": 3,
+    "modelTransportSuccesses": 12,
+    "productTransportSuccesses": 3,
+    "infrastructureFailures": 6,
+    "degenerateProcessRuns": 5,
+    "runsWithExtractedCandidates": 10,
+    "candidateOccurrences": 135,
+    "deduplicatedCandidates": 87,
+    "paidCallsAuthorized": true,
+    "formalCollectionCompletedAt": "2026-08-21"
   },
   "historicalV2PoolAuditRehearsal": {
     "purpose": "validate the v3 Codex and blind-human-audit mechanism only; never publish as a v3 model leaderboard",
