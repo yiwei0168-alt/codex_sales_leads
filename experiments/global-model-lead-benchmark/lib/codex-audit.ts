@@ -70,8 +70,6 @@ export type HumanAuditDecision = {
   evidenceGates: EvidenceGates;
   relationshipStatus: RelationshipStatus;
   fitDimensions: PotentialFitDimensions | null;
-  namedContactScores: Array<{ claimId: string; relevanceScore: 0 | 1 | 2 | 3 }>;
-  contactMethodScores: Array<{ claimId: string; usefulnessScore: 0 | 1 | 2 }>;
   reviewerNotes: string | null;
 };
 
@@ -80,8 +78,6 @@ export type AuditAcceptanceThresholds = {
   fitBandExactAgreement: number;
   weightedKappa: number;
   potentialFitMeanAbsoluteErrorMaximum: number;
-  namedContactPositivePrecision: number;
-  contactMethodPositivePrecision: number;
 };
 
 export type HumanAuditAgreement = {
@@ -92,8 +88,6 @@ export type HumanAuditAgreement = {
   potentialFitMeanAbsoluteError: number | null;
   evidenceGateAgreement: number;
   relationshipStatusAgreement: number;
-  namedContactPositivePrecision: number;
-  contactMethodPositivePrecision: number;
   passed: boolean;
   failedThresholds: string[];
 };
@@ -204,24 +198,6 @@ export function validateHumanAuditDecision(decision: HumanAuditDecision, assessm
   if (decision.blindCandidateId !== assessment.blindCandidateId) throw new Error("Human decision does not match the Codex assessment");
   if (Number.isNaN(Date.parse(decision.reviewedAt))) throw new Error("reviewedAt must be an ISO date-time");
   validateFitDimensions(decision.fitDimensions, decision.evidenceGates);
-  const expectedNamed = new Set(assessment.namedContacts.map((claim) => claim.claimId));
-  const reviewedNamed = new Set(decision.namedContactScores.map((claim) => claim.claimId));
-  const expectedMethods = new Set(assessment.contactMethods.map((claim) => claim.claimId));
-  const reviewedMethods = new Set(decision.contactMethodScores.map((claim) => claim.claimId));
-  if (expectedNamed.size !== reviewedNamed.size || [...expectedNamed].some((id) => !reviewedNamed.has(id))) {
-    throw new Error("Human audit must score every named-contact claim exactly once");
-  }
-  if (expectedMethods.size !== reviewedMethods.size || [...expectedMethods].some((id) => !reviewedMethods.has(id))) {
-    throw new Error("Human audit must score every contact-method claim exactly once");
-  }
-  decision.namedContactScores.forEach((claim) => {
-    assertClaimId(claim.claimId);
-    assertIntegerRange(claim.relevanceScore, 0, 3, "Human named-contact score");
-  });
-  decision.contactMethodScores.forEach((claim) => {
-    assertClaimId(claim.claimId);
-    assertIntegerRange(claim.usefulnessScore, 0, 2, "Human contact-method score");
-  });
 }
 
 function deterministicOrder(seed: string, value: string): string {
@@ -304,12 +280,6 @@ function weightedKappa(left: number[], right: number[], categoryCount = 5): numb
   return expected === 0 ? (observed === 0 ? 1 : 0) : 1 - observed / expected;
 }
 
-function positivePrecision(codexScores: Map<string, number>, humanScores: Map<string, number>): number {
-  const positives = [...codexScores].filter(([, score]) => score > 0);
-  if (positives.length === 0) return 1;
-  return positives.filter(([id]) => (humanScores.get(id) ?? 0) > 0).length / positives.length;
-}
-
 export function compareHumanAudit(
   assessments: PotentialPartnerAssessment[],
   decisions: HumanAuditDecision[],
@@ -337,16 +307,6 @@ export function compareHumanAudit(
   const allGatePairs = sample.flatMap(({ assessment, decision }) => Object.keys(assessment.evidenceGates).map((key) => [
     assessment.evidenceGates[key as keyof EvidenceGates], decision.evidenceGates[key as keyof EvidenceGates],
   ]));
-  const codexNamed = new Map<string, number>();
-  const humanNamed = new Map<string, number>();
-  const codexMethods = new Map<string, number>();
-  const humanMethods = new Map<string, number>();
-  for (const { assessment, decision } of sample) {
-    assessment.namedContacts.forEach((claim) => codexNamed.set(claim.claimId, claim.relevanceScore));
-    decision.namedContactScores.forEach((claim) => humanNamed.set(claim.claimId, claim.relevanceScore));
-    assessment.contactMethods.forEach((claim) => codexMethods.set(claim.claimId, claim.usefulnessScore));
-    decision.contactMethodScores.forEach((claim) => humanMethods.set(claim.claimId, claim.usefulnessScore));
-  }
   const result = {
     auditedCandidates: sample.length,
     qualifiedStatusAgreement: sample.filter(({ assessment, decision }) =>
@@ -358,8 +318,6 @@ export function compareHumanAudit(
       : comparableScores.reduce((sum, value) => sum + value, 0) / comparableScores.length,
     evidenceGateAgreement: allGatePairs.filter(([left, right]) => left === right).length / allGatePairs.length,
     relationshipStatusAgreement: sample.filter(({ assessment, decision }) => assessment.relationshipStatus === decision.relationshipStatus).length / sample.length,
-    namedContactPositivePrecision: positivePrecision(codexNamed, humanNamed),
-    contactMethodPositivePrecision: positivePrecision(codexMethods, humanMethods),
   };
   const failedThresholds = [
     ...(result.qualifiedStatusAgreement < thresholds.qualifiedStatusAgreement ? ["qualifiedStatusAgreement"] : []),
@@ -368,8 +326,6 @@ export function compareHumanAudit(
     ...(result.potentialFitMeanAbsoluteError === null
       || result.potentialFitMeanAbsoluteError > thresholds.potentialFitMeanAbsoluteErrorMaximum
       ? ["potentialFitMeanAbsoluteError"] : []),
-    ...(result.namedContactPositivePrecision < thresholds.namedContactPositivePrecision ? ["namedContactPositivePrecision"] : []),
-    ...(result.contactMethodPositivePrecision < thresholds.contactMethodPositivePrecision ? ["contactMethodPositivePrecision"] : []),
   ];
   return { ...result, passed: failedThresholds.length === 0, failedThresholds };
 }

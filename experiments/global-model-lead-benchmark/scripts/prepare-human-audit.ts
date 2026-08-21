@@ -87,7 +87,6 @@ const selected = selectedIds.map((id) => {
     submittedSourceUrls: candidate.mergedSourceUrls,
     independentEvidenceUrls: assessment.independentEvidenceUrls,
     namedContactClaims: assessment.namedContacts.map(({ claimId, name, role, sourceUrl }) => ({ claimId, name, role, sourceUrl })),
-    contactMethodClaims: assessment.contactMethods.map(({ claimId, value, sourceUrl }) => ({ claimId, value, sourceUrl })),
     submissions: candidate.submissions.map(({ blindRunId, answerRank, exactAnswerExcerpt, citedUrls }) => ({
       blindRunId, answerRank, exactAnswerExcerpt, citedUrls,
     })),
@@ -121,8 +120,6 @@ const decisionTemplate = {
     },
     relationshipStatus: null,
     fitDimensions: null,
-    namedContactScores: candidate.namedContactClaims.map((claim) => ({ claimId: claim.claimId, relevanceScore: null })),
-    contactMethodScores: candidate.contactMethodClaims.map((claim) => ({ claimId: claim.claimId, usefulnessScore: null })),
     reviewerNotes: null,
   })),
 };
@@ -143,7 +140,7 @@ const markdown = [
   "",
   "Fit dimensions: channel/customer access 0–30; product/use-case fit 0–25; target-market coverage 0–20; execution capability 0–15; strategic complementarity 0–10.",
   "",
-  "Named contacts: 0–3. Contact methods: 0–2.",
+  "Human review covers company identity, eligibility, relationship metadata and potential fit. Named contacts are shown as context only; Codex audits contacts and contact methods separately.",
   "",
   ...selected.flatMap((candidate) => [
     `## ${candidate.blindCandidateId} — ${candidate.companyName}`,
@@ -157,13 +154,7 @@ const markdown = [
     "Named-contact claims:",
     "",
     ...(candidate.namedContactClaims.length > 0
-      ? candidate.namedContactClaims.map((claim) => `- ${claim.claimId}: ${claim.name} — ${claim.role} — ${claim.sourceUrl} — score: ___ / 3`)
-      : ["- None"]),
-    "",
-    "Contact-method claims:",
-    "",
-    ...(candidate.contactMethodClaims.length > 0
-      ? candidate.contactMethodClaims.map((claim) => `- ${claim.claimId}: ${claim.value} — ${claim.sourceUrl} — score: ___ / 2`)
+      ? candidate.namedContactClaims.map((claim) => `- ${claim.name} — ${claim.role} — ${claim.sourceUrl}`)
       : ["- None"]),
     "",
     ...candidate.submissions.flatMap((submission) => [

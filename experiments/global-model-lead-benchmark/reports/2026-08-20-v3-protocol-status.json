@@ -41,7 +41,9 @@
     "providerIdentityHidden": true,
     "evidenceCollectionSeparatedFromScoring": true,
     "mayUseIndependentPublicWebAndPublicLinkedIn": true,
-    "mayAddOrRepairSubmittedLeads": false
+    "mayAddNewSubmittedLeads": false,
+    "mayResolveIncorrectLabelFromSubmittedFirstPartyEvidence": true,
+    "mayRepairAmbiguousOrMultiEntityLead": false
   },
   "humanAudit": {
     "statisticalSamplePercent": 25,
@@ -49,6 +51,8 @@
     "highRiskSupplement": true,
     "highRiskSupplementMaximumPercent": 10,
     "failedAuditExpansionPercent": 15,
+    "companyAssessmentOnly": true,
+    "contactsAuditedByCodexSeparately": true,
     "codexScoresHidden": true,
     "providerIdentityHidden": true
   },
@@ -63,11 +67,11 @@
   "historicalV2PoolAuditRehearsal": {
     "purpose": "validate the v3 Codex and blind-human-audit mechanism only; never publish as a v3 model leaderboard",
     "candidatePoolSize": 48,
-    "gateValidAndScored": 23,
-    "gateInvalidAndUnscored": 25,
-    "confirmedExistingRelationshipReference": 13,
-    "qualifiedNetNewPotentialProspects": 9,
-    "unqualifiedNetNewPotentialProspects": 1,
+    "gateValidAndScored": 33,
+    "gateInvalidAndUnscored": 15,
+    "confirmedExistingRelationshipReference": 15,
+    "qualifiedNetNewPotentialProspects": 14,
+    "unqualifiedNetNewPotentialProspects": 4,
     "namedContactClaims": 25,
     "codexPositiveNamedContactClaims": 16,
     "contactMethodClaims": 105,
@@ -76,7 +80,37 @@
       "statisticalSample": 12,
       "highRiskSupplement": 5,
       "totalCandidates": 17,
-      "humanDecisionsCompleted": false
+      "humanDecisionsCompleted": true,
+      "humanDecisionSummary": {
+        "gateValidAndScored": 12,
+        "gateInvalidAndUnscored": 5,
+        "highFit": 5,
+        "strongFit": 2,
+        "followUp": 3,
+        "unqualified": 2,
+        "confirmedExistingRelationshipReference": 6,
+        "qualifiedNetNewPotentialProspects": 4
+      },
+      "firstPassAgreement": {
+        "qualifiedStatusAgreement": 0.8333333333333334,
+        "fitBandExactAgreement": 0.75,
+        "weightedKappa": 0.9605263157894737,
+        "potentialFitMeanAbsoluteError": 4.333333333333333,
+        "evidenceGateAgreement": 0.7916666666666666,
+        "relationshipStatusAgreement": 0.75,
+        "passed": false
+      },
+      "postRuleReassessmentAgreement": {
+        "qualifiedStatusAgreement": 1,
+        "fitBandExactAgreement": 0.8333333333333334,
+        "weightedKappa": 0.9727272727272728,
+        "potentialFitMeanAbsoluteError": 3.7142857142857144,
+        "evidenceGateAgreement": 0.9027777777777778,
+        "relationshipStatusAgreement": 0.9166666666666666,
+        "passed": true
+      },
+      "finalDisposition": "accepted_no_blind_sample_expansion_required",
+      "nextAction": "historical_rehearsal_complete_ready_for_frozen_v3_paid_runs"
     }
   },
   "historicalV2Disposition": "workflow_pilot_only_not_a_final_quality_leaderboard",

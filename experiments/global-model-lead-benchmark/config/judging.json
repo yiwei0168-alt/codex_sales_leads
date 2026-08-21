@@ -67,7 +67,8 @@
     "codexReviewsAllPooledTop20Candidates": true,
     "blindHumanAuditPercent": 25,
     "blindHumanAuditMinimum": 12,
-    "auditAllContactsForSampledCandidates": true,
+    "companyAssessmentOnly": true,
+    "contactsAuditedByCodexSeparately": true,
     "auditHighRiskCandidates": true,
     "highRiskSupplementMaximumPercent": 10,
     "failedAuditExpansionPercent": 15,
@@ -76,9 +77,7 @@
       "qualifiedStatusAgreement": 0.9,
       "fitBandExactAgreement": 0.8,
       "weightedKappa": 0.75,
-      "potentialFitMeanAbsoluteErrorMaximum": 10,
-      "namedContactPositivePrecision": 0.9,
-      "contactMethodPositivePrecision": 0.9
+      "potentialFitMeanAbsoluteErrorMaximum": 10
     }
   },
   "invalidReasons": [

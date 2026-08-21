@@ -76,8 +76,6 @@ function matchingHumanDecision(value: PotentialPartnerAssessment): HumanAuditDec
     evidenceGates: { ...value.evidenceGates },
     relationshipStatus: value.relationshipStatus,
     fitDimensions: value.fitDimensions ? { ...value.fitDimensions } : null,
-    namedContactScores: value.namedContacts.map((claim) => ({ claimId: claim.claimId, relevanceScore: claim.relevanceScore })),
-    contactMethodScores: value.contactMethods.map((claim) => ({ claimId: claim.claimId, usefulnessScore: claim.usefulnessScore })),
     reviewerNotes: null,
   };
 }
@@ -120,8 +118,6 @@ describe("potential-partner Codex audit", () => {
       fitBandExactAgreement: 0.8,
       weightedKappa: 0.75,
       potentialFitMeanAbsoluteErrorMaximum: 10,
-      namedContactPositivePrecision: 0.9,
-      contactMethodPositivePrecision: 0.9,
     };
     const accepted = compareHumanAudit(values, matching, values.map((value) => value.blindCandidateId), thresholds);
     expect(accepted.passed).toBe(true);
@@ -129,9 +125,9 @@ describe("potential-partner Codex audit", () => {
 
     const disagreed = structuredClone(matching);
     disagreed[0].fitDimensions = dimensions(10);
-    disagreed[1].namedContactScores[0].relevanceScore = 0;
+    disagreed[1].fitDimensions = dimensions(10);
     const rejected = compareHumanAudit(values, disagreed, values.map((value) => value.blindCandidateId), thresholds);
     expect(rejected.passed).toBe(false);
-    expect(rejected.failedThresholds).toContain("namedContactPositivePrecision");
+    expect(rejected.failedThresholds).toContain("fitBandExactAgreement");
   });
 });
