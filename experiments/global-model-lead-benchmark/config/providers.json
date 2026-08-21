@@ -1,6 +1,6 @@
 {
-  "schemaVersion": 2,
-  "protocolVersion": "native-search-natural-language-v2",
+  "schemaVersion": 3,
+  "protocolVersion": "native-search-potential-fit-v3",
   "providers": {
     "openai": {
       "displayName": "OpenAI via Lingyu",
@@ -190,26 +190,38 @@
     },
     "gemini": {
       "displayName": "Google Gemini",
-      "enabled": false,
-      "status": "not_configured",
-      "participatesInCurrentRun": false,
+      "enabled": true,
+      "status": "ready_v3",
+      "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "GEMINI_API_KEY",
         "baseUrlEnv": "GEMINI_BASE_URL"
       },
       "transport": {
-        "endpointKind": "official_api"
+        "endpointKind": "official_api",
+        "api": "interactions_v1beta"
       },
       "model": {
-        "selectionPolicy": "stable fast Flash model with native Google Search grounding",
-        "modelId": "pending",
-        "reasoningMode": "disabled_or_lowest_supported"
+        "selectionPolicy": "current GA high-performance Flash model with the lowest supported thinking level",
+        "modelId": "gemini-3.7-flash",
+        "reasoningMode": "low"
       },
       "nativeSearch": {
         "required": true,
-        "adapter": "google_search_grounding",
-        "mustVerifyServerToolSignal": "groundingMetadata",
-        "externalSearchInjectionForbidden": true
+        "adapter": "gemini_interactions_google_search",
+        "mustVerifyServerToolSignal": "google_search_call",
+        "externalSearchInjectionForbidden": true,
+        "targetBudgetImplementation": "provider_decides_query_count_observe_actual_usage"
+      },
+      "latestPreflight": {
+        "checkedAt": "2026-08-21",
+        "basicRequest": "passed_after_gemini_thought_token_allowance",
+        "nativeSearch": "passed",
+        "googleSearchQueries": 3,
+        "sourceUrlCount": 8,
+        "basicLatencyMs": 41749,
+        "nativeSearchLatencyMs": 66863,
+        "automaticRetries": 0
       }
     }
   }

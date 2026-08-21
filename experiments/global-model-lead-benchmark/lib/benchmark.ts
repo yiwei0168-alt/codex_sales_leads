@@ -2,7 +2,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-export type ProviderId = "openai" | "claude" | "kimi" | "deepseek" | "grok";
+export type ProviderId = "openai" | "claude" | "kimi" | "deepseek" | "grok" | "gemini";
 export type ProviderConfig = {
   enabled: boolean;
   participatesInCurrentRun: boolean;
@@ -89,8 +89,15 @@ export function buildMessageEnvelope(providerId: ProviderId, prompt: string): {
   input?: string;
   messages?: Array<{ role: "user"; content: string }>;
 } {
-  if (providerId === "openai" || providerId === "grok") return { input: prompt };
+  if (providerId === "openai" || providerId === "grok" || providerId === "gemini") return { input: prompt };
   return { messages: [{ role: "user", content: prompt }] };
+}
+
+export function geminiInteractionsUrl(baseUrl: string): string {
+  let normalized = baseUrl.trim().replace(/\/+$/, "");
+  normalized = normalized.replace(/\/openai(?:\/v1)?$/i, "");
+  if (!/\/v1(?:beta)?$/i.test(normalized)) normalized = `${normalized}/v1beta`;
+  return `${normalized}/interactions`;
 }
 
 export function anthropicMessagesUrl(providerId: ProviderId, baseUrl: string): string {
@@ -132,9 +139,18 @@ export async function loadPilotPrompt(
   return { prompt, runDate, pilot };
 }
 
-function credentials(provider: ProviderConfig): { apiKey: string; baseUrl: string } {
-  const apiKey = process.env[provider.credentials.apiKeyEnv]?.trim();
-  const baseUrl = (provider.credentials.baseUrl ?? process.env[provider.credentials.baseUrlEnv ?? ""] ?? "").trim().replace(/\/$/, "");
+export function environmentValue(name: string | undefined): string | undefined {
+  if (!name) return undefined;
+  const direct = process.env[name]?.trim();
+  if (direct) return direct;
+  const caseInsensitive = Object.entries(process.env)
+    .find(([key, value]) => key.toLowerCase() === name.toLowerCase() && value?.trim())?.[1];
+  return caseInsensitive?.trim();
+}
+
+export function providerCredentials(provider: ProviderConfig): { apiKey: string; baseUrl: string } {
+  const apiKey = environmentValue(provider.credentials.apiKeyEnv);
+  const baseUrl = (provider.credentials.baseUrl ?? environmentValue(provider.credentials.baseUrlEnv) ?? "").trim().replace(/\/$/, "");
   if (!apiKey || !baseUrl) throw new Error(`Missing ${provider.credentials.apiKeyEnv} or provider base URL`);
   return { apiKey, baseUrl };
 }
@@ -235,7 +251,7 @@ export function buildOpenAiRequest(context: RunContext) {
 }
 
 async function runOpenAi(context: RunContext): Promise<ProviderResult> {
-  const { apiKey, baseUrl } = credentials(context.provider);
+  const { apiKey, baseUrl } = providerCredentials(context.provider);
   const events = await requestSse(`${baseUrl}/responses`, {
     method: "POST",
     headers: { authorization: `Bearer ${apiKey}`, accept: "text/event-stream", "content-type": "application/json" },
@@ -264,7 +280,7 @@ export function buildGrokRequest(context: RunContext) {
 }
 
 async function runGrok(context: RunContext): Promise<ProviderResult> {
-  const { apiKey, baseUrl } = credentials(context.provider);
+  const { apiKey, baseUrl } = providerCredentials(context.provider);
   const events = await requestSse(`${baseUrl}/responses`, {
     method: "POST",
     headers: { authorization: `Bearer ${apiKey}`, accept: "text/event-stream", "content-type": "application/json" },
@@ -289,7 +305,7 @@ export function buildAnthropicRequest(context: RunContext) {
 }
 
 async function runAnthropic(context: RunContext): Promise<ProviderResult> {
-  const { apiKey, baseUrl } = credentials(context.provider);
+  const { apiKey, baseUrl } = providerCredentials(context.provider);
   const raw = await requestJson(anthropicMessagesUrl(context.providerId, baseUrl), {
     method: "POST",
     headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "content-type": "application/json" },
@@ -315,7 +331,7 @@ export function buildKimiRequest(context: RunContext, messages: any[]) {
 }
 
 async function runKimi(context: RunContext): Promise<ProviderResult> {
-  const { apiKey, baseUrl } = credentials(context.provider);
+  const { apiKey, baseUrl } = providerCredentials(context.provider);
   const messages: any[] = structuredClone(buildMessageEnvelope("kimi", context.prompt).messages ?? []);
   const rounds: unknown[] = [];
   const deadline = Date.now() + context.pilot.limits.timeoutMinutesPerProvider * 60_000;
@@ -346,6 +362,54 @@ async function runKimi(context: RunContext): Promise<ProviderResult> {
   return { text, searches, raw: rounds };
 }
 
+export function buildGeminiRequest(
+  context: RunContext,
+  prompt = context.prompt,
+  withSearch = true,
+  maxOutputTokens = context.pilot.limits.visibleOutputTokens,
+) {
+  return {
+    model: context.provider.model.modelId,
+    input: prompt,
+    ...(withSearch ? { tools: [{ type: "google_search" }] } : {}),
+    generation_config: {
+      thinking_level: "low",
+      max_output_tokens: maxOutputTokens,
+    },
+  };
+}
+
+export function geminiInteractionText(response: any): string {
+  return (response.steps ?? [])
+    .filter((step: any) => step.type === "model_output")
+    .flatMap((step: any) => step.content ?? [])
+    .filter((content: any) => content.type === "text")
+    .map((content: any) => content.text ?? "")
+    .join("");
+}
+
+export function countGeminiSearchQueries(response: any): number {
+  const searchCalls = (response.steps ?? []).filter((step: any) => step.type === "google_search_call");
+  const queries = new Set(searchCalls.flatMap((step: any) => step.arguments?.queries ?? [])
+    .filter((query: unknown): query is string => typeof query === "string" && query.trim().length > 0)
+    .map((query: string) => query.trim()));
+  return queries.size || searchCalls.length;
+}
+
+async function runGemini(context: RunContext): Promise<ProviderResult> {
+  const { apiKey, baseUrl } = providerCredentials(context.provider);
+  const raw = await requestJson(geminiInteractionsUrl(baseUrl), {
+    method: "POST",
+    headers: { "x-goog-api-key": apiKey, "content-type": "application/json" },
+    body: JSON.stringify(buildGeminiRequest(context)),
+  }, context.pilot.limits.timeoutMinutesPerProvider * 60_000);
+  return {
+    text: geminiInteractionText(raw),
+    searches: countGeminiSearchQueries(raw),
+    raw,
+  };
+}
+
 function validateNaturalAnswer(result: ProviderResult, context: RunContext): void {
   if (!result.text.trim()) throw new Error(`${context.providerId} returned an empty natural-language answer`);
 }
@@ -370,7 +434,8 @@ export async function executeProvider(providerId: ProviderId, repetition = 1): P
     const result = providerId === "openai" ? await runOpenAi(context)
       : providerId === "grok" ? await runGrok(context)
         : providerId === "kimi" ? await runKimi(context)
-          : await runAnthropic(context);
+          : providerId === "gemini" ? await runGemini(context)
+            : await runAnthropic(context);
     validateNaturalAnswer(result, context);
     const sourceUrls = collectSourceUrls([result.text, result.raw]);
     const nativeSearchEvidence = result.searches === null

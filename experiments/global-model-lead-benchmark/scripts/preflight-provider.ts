@@ -2,12 +2,23 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import nextEnv from "@next/env";
-import { anthropicMessagesUrl, collectSourceUrls, loadContext, parseSseBuffer, type ProviderConfig, type ProviderId } from "../lib/benchmark";
+import {
+  anthropicMessagesUrl,
+  buildGeminiRequest,
+  collectSourceUrls,
+  countGeminiSearchQueries,
+  geminiInteractionText,
+  geminiInteractionsUrl,
+  loadContext,
+  parseSseBuffer,
+  providerCredentials,
+  type ProviderId,
+} from "../lib/benchmark";
 
 nextEnv.loadEnvConfig(process.cwd());
 const providerId = process.argv[2] as ProviderId | undefined;
-if (!providerId || !["openai", "claude", "kimi", "deepseek", "grok"].includes(providerId)) {
-  throw new Error("Usage: npm run benchmark:preflight -- <openai|claude|kimi|deepseek|grok>");
+if (!providerId || !["openai", "claude", "kimi", "deepseek", "grok", "gemini"].includes(providerId)) {
+  throw new Error("Usage: npm run benchmark:preflight -- <openai|claude|kimi|deepseek|grok|gemini>");
 }
 
 type Stage = {
@@ -23,13 +34,6 @@ const startedAt = new Date().toISOString();
 const context = await loadContext(providerId);
 const searchPrompt = "请使用你所在模型服务的原生联网搜索，找到 Cudy Technology 官方网站，并用自然语言回答网站标题和URL。不要使用训练记忆代替搜索。";
 const currentClaudeSearchPrompt = "请使用你所在模型服务的原生联网搜索，访问 Cudy Technology 官网当前的新闻或博客页面，报告截至今天最新一篇文章的标题、发布日期和URL。无法找到时也请说明实际搜索过哪些官网页面，不要使用训练记忆代替搜索。";
-
-function credentials(provider: ProviderConfig) {
-  const apiKey = process.env[provider.credentials.apiKeyEnv]?.trim();
-  const baseUrl = (provider.credentials.baseUrl ?? process.env[provider.credentials.baseUrlEnv ?? ""] ?? "").trim().replace(/\/$/, "");
-  if (!apiKey || !baseUrl) throw new Error(`Missing ${provider.credentials.apiKeyEnv} or base URL`);
-  return { apiKey, baseUrl };
-}
 
 function classify(status: number, message: string): string {
   const lower = message.toLowerCase();
@@ -103,7 +107,7 @@ async function stage(name: Stage["name"], operation: () => Promise<Record<string
 }
 
 async function preflightResponses(provider: "openai" | "grok"): Promise<Stage[]> {
-  const { apiKey, baseUrl } = credentials(context.provider);
+  const { apiKey, baseUrl } = providerCredentials(context.provider);
   const request = async (withSearch: boolean) => {
     const body = {
       model: context.provider.model.modelId,
@@ -137,7 +141,7 @@ async function preflightResponses(provider: "openai" | "grok"): Promise<Stage[]>
 }
 
 async function preflightAnthropic(): Promise<Stage[]> {
-  const { apiKey, baseUrl } = credentials(context.provider);
+  const { apiKey, baseUrl } = providerCredentials(context.provider);
   const request = async (withSearch: boolean) => {
     const body = await jsonRequest(anthropicMessagesUrl(context.providerId, baseUrl), {
       method: "POST",
@@ -163,7 +167,7 @@ async function preflightAnthropic(): Promise<Stage[]> {
 }
 
 async function preflightKimi(): Promise<Stage[]> {
-  const { apiKey, baseUrl } = credentials(context.provider);
+  const { apiKey, baseUrl } = providerCredentials(context.provider);
   const request = async (withSearch: boolean) => {
     const messages: any[] = [{ role: "user", content: withSearch ? searchPrompt : "请只回复 OK。" }];
     let searches = 0;
@@ -201,9 +205,40 @@ async function preflightKimi(): Promise<Stage[]> {
   return basic.ok ? [basic, await stage("native_search", () => request(true))] : [basic];
 }
 
+async function preflightGemini(): Promise<Stage[]> {
+  const { apiKey, baseUrl } = providerCredentials(context.provider);
+  const request = async (withSearch: boolean) => {
+    const body = await jsonRequest(geminiInteractionsUrl(baseUrl), {
+      method: "POST",
+      headers: { "x-goog-api-key": apiKey, "content-type": "application/json" },
+      body: JSON.stringify(buildGeminiRequest(
+        context,
+        withSearch ? searchPrompt : "请只回复 OK。",
+        withSearch,
+        withSearch ? 2048 : 512,
+      )),
+    });
+    const searches = countGeminiSearchQueries(body);
+    const text = geminiInteractionText(body);
+    const urls = collectSourceUrls([text, body]);
+    if (withSearch && searches < 1) throw new Error("No provider-native Google Search call was observed");
+    if (!text.trim()) throw new Error("No final natural-language text was returned");
+    return {
+      interactionStatus: body.status,
+      googleSearchQueries: searches,
+      finalTextPresent: true,
+      sourceUrlCount: urls.length,
+    };
+  };
+  const basic = await stage("basic", () => request(false));
+  return basic.ok ? [basic, await stage("native_search", () => request(true))] : [basic];
+}
+
 const stages = providerId === "openai" || providerId === "grok"
   ? await preflightResponses(providerId)
-  : providerId === "kimi" ? await preflightKimi() : await preflightAnthropic();
+  : providerId === "kimi" ? await preflightKimi()
+    : providerId === "gemini" ? await preflightGemini()
+      : await preflightAnthropic();
 const report = {
   protocolVersion: context.pilot.protocolVersion,
   providerId,
@@ -217,6 +252,6 @@ const report = {
 const outputDirectory = path.resolve("experiments/global-model-lead-benchmark/runs/raw");
 await mkdir(outputDirectory, { recursive: true });
 const auditTimestamp = startedAt.replace(/[:.]/g, "-");
-await writeFile(path.join(outputDirectory, `${context.runDate}-${providerId}-v2-preflight-${auditTimestamp}.json`), JSON.stringify(report, null, 2), "utf8");
+await writeFile(path.join(outputDirectory, `${context.runDate}-${providerId}-${context.pilot.artifactTag}-preflight-${auditTimestamp}.json`), JSON.stringify(report, null, 2), "utf8");
 console.log(JSON.stringify(report, null, 2));
 if (!report.healthy) process.exitCode = 1;

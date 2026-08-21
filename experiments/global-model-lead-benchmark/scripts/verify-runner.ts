@@ -1,11 +1,15 @@
 import {
   anthropicMessagesUrl,
   buildAnthropicRequest,
+  buildGeminiRequest,
   buildGrokRequest,
   buildKimiRequest,
   buildMessageEnvelope,
   buildOpenAiRequest,
   collectSourceUrls,
+  countGeminiSearchQueries,
+  geminiInteractionText,
+  geminiInteractionsUrl,
   loadContext,
   parseSseBuffer,
 } from "../lib/benchmark";
@@ -55,7 +59,7 @@ if (!context.pilot.productComparator.enabled || !context.pilot.productComparator
   throw new Error("Sales Lead Copilot comparator is not aligned with the measured model runs");
 }
 
-for (const provider of ["openai", "claude", "kimi", "deepseek", "grok"] as const) {
+for (const provider of ["openai", "claude", "kimi", "deepseek", "grok", "gemini"] as const) {
   const envelope = buildMessageEnvelope(provider, context.prompt);
   const userContent = envelope.input ?? envelope.messages?.[0]?.content;
   if (userContent !== context.prompt) throw new Error(`${provider} did not receive the identical user prompt`);
@@ -106,6 +110,31 @@ if (grokRequest.model !== "grok-4.3" || grokRequest.reasoning.effort !== "none"
   || grokRequest.parallel_tool_calls !== false || grokRequest.tools[0].type !== "web_search"
   || "text" in grokRequest || "tool_choice" in grokRequest) {
   throw new Error("Grok natural-language search request is incomplete");
+}
+
+const geminiContext = await loadContext("gemini", "2026-08-20", 1);
+const geminiRequest = buildGeminiRequest(geminiContext);
+if (geminiRequest.model !== "gemini-3.7-flash" || geminiRequest.input !== context.prompt
+  || geminiRequest.generation_config.thinking_level !== "low"
+  || geminiRequest.generation_config.max_output_tokens !== 8000
+  || geminiRequest.tools?.[0]?.type !== "google_search" || "system_instruction" in geminiRequest) {
+  throw new Error("Gemini natural-language search request is incomplete");
+}
+if (geminiInteractionsUrl("https://generativelanguage.googleapis.com/v1beta/openai/")
+    !== "https://generativelanguage.googleapis.com/v1beta/interactions"
+  || geminiInteractionsUrl("https://generativelanguage.googleapis.com")
+    !== "https://generativelanguage.googleapis.com/v1beta/interactions") {
+  throw new Error("Gemini native Interactions endpoint routing failed");
+}
+const syntheticGeminiResponse = {
+  steps: [
+    { type: "google_search_call", arguments: { queries: ["Cudy Technology official website"] } },
+    { type: "model_output", content: [{ type: "text", text: "Cudy official site" }] },
+  ],
+};
+if (countGeminiSearchQueries(syntheticGeminiResponse) !== 1
+  || geminiInteractionText(syntheticGeminiResponse) !== "Cudy official site") {
+  throw new Error("Gemini native search response parsing failed");
 }
 
 const urls = collectSourceUrls({

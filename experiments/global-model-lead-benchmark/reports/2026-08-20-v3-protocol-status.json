@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "protocolVersion": "native-search-potential-fit-v3",
-  "asOf": "2026-08-20",
+  "asOf": "2026-08-21",
   "status": "framework_ready_paid_runs_not_started",
   "objective": "compare native web-search discovery of high-fit potential Cudy channel customers",
-  "participatingProviders": ["openai", "claude", "kimi", "deepseek", "grok"],
-  "geminiStatus": "placeholder_not_configured",
+  "participatingProviders": ["openai", "claude", "kimi", "deepseek", "grok", "gemini"],
+  "geminiStatus": "ready_v3_preflight_passed",
   "productComparator": "sales-lead-copilot",
   "promptPolicy": {
     "sameNaturalLanguageUserPrompt": true,
