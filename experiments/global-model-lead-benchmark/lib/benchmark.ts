@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any -- provider payloads are retained for audit */
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 export type ProviderId = "openai" | "claude" | "kimi" | "deepseek" | "grok" | "gemini";
@@ -69,6 +69,7 @@ export type RunArtifact = {
   modelId: string;
   countryCode: string;
   repetition: number;
+  attempt: number;
   startedAt: string;
   completedAt: string;
   latencyMs: number;
@@ -423,13 +424,29 @@ function failureDetail(error: unknown): Record<string, unknown> {
   };
 }
 
-export async function executeProvider(providerId: ProviderId, repetition = 1): Promise<RunArtifact> {
+async function assertArtifactPathsAvailable(paths: string[]): Promise<void> {
+  for (const file of paths) {
+    try {
+      await access(file);
+      throw new Error(`Refusing to overwrite an existing benchmark artifact: ${file}`);
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+    }
+  }
+}
+
+export async function executeProvider(providerId: ProviderId, repetition = 1, attempt = 1): Promise<RunArtifact> {
+  if (!Number.isInteger(attempt) || attempt < 1) throw new Error("Attempt must be a positive integer");
   const context = await loadContext(providerId, undefined, repetition);
   const startedAt = new Date().toISOString();
   const startedMs = Date.now();
   const outputDirectory = path.join(experimentRoot, context.pilot.storage.rawResultsDirectory);
   await mkdir(outputDirectory, { recursive: true });
-  const baseName = `${context.runDate}-${context.pilot.countryCode}-${context.pilot.artifactTag}-${providerId}-r${repetition}`;
+  const attemptSuffix = attempt === 1 ? "" : `-a${attempt}`;
+  const baseName = `${context.runDate}-${context.pilot.countryCode}-${context.pilot.artifactTag}-${providerId}-r${repetition}${attemptSuffix}`;
+  const successPath = path.join(outputDirectory, `${baseName}.json`);
+  const failurePath = path.join(outputDirectory, `${baseName}.failed.json`);
+  await assertArtifactPathsAvailable([successPath, failurePath]);
   try {
     const result = providerId === "openai" ? await runOpenAi(context)
       : providerId === "grok" ? await runGrok(context)
@@ -448,6 +465,7 @@ export async function executeProvider(providerId: ProviderId, repetition = 1): P
       modelId: context.provider.model.modelId,
       countryCode: context.pilot.countryCode,
       repetition,
+      attempt,
       startedAt,
       completedAt: new Date().toISOString(),
       latencyMs: Date.now() - startedMs,
@@ -458,7 +476,7 @@ export async function executeProvider(providerId: ProviderId, repetition = 1): P
       answerText: result.text,
       rawProviderResponse: result.raw,
     };
-    await writeFile(path.join(outputDirectory, `${baseName}.json`), JSON.stringify(artifact, null, 2), "utf8");
+    await writeFile(successPath, JSON.stringify(artifact, null, 2), { encoding: "utf8", flag: "wx" });
     return artifact;
   } catch (error) {
     const failure = {
@@ -468,13 +486,14 @@ export async function executeProvider(providerId: ProviderId, repetition = 1): P
       modelId: context.provider.model.modelId,
       countryCode: context.pilot.countryCode,
       repetition,
+      attempt,
       startedAt,
       completedAt: new Date().toISOString(),
       latencyMs: Date.now() - startedMs,
       automaticRetries: context.pilot.limits.automaticRetries,
       error: failureDetail(error),
     };
-    await writeFile(path.join(outputDirectory, `${baseName}.failed.json`), JSON.stringify(failure, null, 2), "utf8");
+    await writeFile(failurePath, JSON.stringify(failure, null, 2), { encoding: "utf8", flag: "wx" });
     throw error;
   }
 }

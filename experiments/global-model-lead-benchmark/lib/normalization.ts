@@ -14,6 +14,7 @@ export type MeasuredRun = {
   modelId: string;
   countryCode: string;
   repetition: number;
+  attempt?: number;
   scoringEligibility: string;
   nativeSearchEvidence: string;
   answerText: string;

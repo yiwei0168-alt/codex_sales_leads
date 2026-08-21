@@ -17,7 +17,7 @@ const workingDirectory = path.join(root, "reviews", "working");
 const saltPath = path.join(root, "reviews", ".blind-salt");
 const { pilot } = await loadPilotPrompt();
 const escapedArtifactTag = pilot.artifactTag.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-const eligibleFilePattern = new RegExp(`^\\d{4}-\\d{2}-\\d{2}-${pilot.countryCode}-${escapedArtifactTag}-(openai|claude|deepseek|kimi|grok|sales-lead-copilot)-r[123]\\.json$`);
+const eligibleFilePattern = new RegExp(`^\\d{4}-\\d{2}-\\d{2}-${pilot.countryCode}-${escapedArtifactTag}-(openai|claude|deepseek|kimi|grok|gemini|sales-lead-copilot)-r[123](?:-a\\d+)?\\.json$`);
 
 await mkdir(workingDirectory, { recursive: true });
 const secretSalt = loadOrCreateBlindSalt(saltPath);
@@ -30,19 +30,27 @@ for (const filename of filenames) {
   runs.push({ filename, run: parsed });
 }
 
-const runResults = runs.map(({ filename, run }) => {
+const assessedRuns = runs.map(({ filename, run }) => {
   const occurrences = extractCandidateOccurrences(run, secretSalt);
   return {
     filename,
     providerId: run.providerId,
     modelId: run.modelId,
     repetition: run.repetition,
+    attempt: run.attempt ?? 1,
     answerSha256: answerDigest(run.answerText),
     degenerateProcessOutput: isDegenerateProcessOutput(run.answerText),
     extractedCandidateCount: occurrences.length,
     occurrences,
   };
 });
+const effectiveRuns = assessedRuns.filter((result) => !result.degenerateProcessOutput && result.extractedCandidateCount > 0);
+const selectedByRound = new Map<string, (typeof effectiveRuns)[number]>();
+for (const result of effectiveRuns.sort((left, right) => left.attempt - right.attempt || left.filename.localeCompare(right.filename))) {
+  const key = `${result.providerId}\u0000${result.modelId}\u0000${result.repetition}`;
+  if (!selectedByRound.has(key)) selectedByRound.set(key, result);
+}
+const runResults = [...selectedByRound.values()].sort((left, right) => left.filename.localeCompare(right.filename));
 const allOccurrences = runResults.flatMap((result) => result.occurrences);
 const deduplicated = deduplicateOccurrences(allOccurrences);
 
@@ -51,11 +59,22 @@ const identityMap = {
   protocolVersion: pilot.protocolVersion,
   artifactTag: pilot.artifactTag,
   warning: "LOCAL SECRET: contains provider/run identities and must never be committed.",
-  runs: runResults.map(({ filename, providerId, modelId, repetition, answerSha256, degenerateProcessOutput, extractedCandidateCount, occurrences }) => ({
+  selectionPolicy: "For each provider/model/repetition, use the earliest native-search attempt with a non-degenerate answer and at least one extractable candidate.",
+  excludedRuns: assessedRuns.filter((result) => !runResults.includes(result)).map((result) => ({
+    filename: result.filename,
+    providerId: result.providerId,
+    modelId: result.modelId,
+    repetition: result.repetition,
+    attempt: result.attempt,
+    degenerateProcessOutput: result.degenerateProcessOutput,
+    extractedCandidateCount: result.extractedCandidateCount,
+  })),
+  runs: runResults.map(({ filename, providerId, modelId, repetition, attempt, answerSha256, degenerateProcessOutput, extractedCandidateCount, occurrences }) => ({
     filename,
     providerId,
     modelId,
     repetition,
+    attempt,
     answerSha256,
     degenerateProcessOutput,
     extractedCandidateCount,
@@ -149,7 +168,8 @@ await Promise.all([
 
 console.log(JSON.stringify({
   eligibleAnswerRuns: runResults.length,
-  degenerateProcessRuns: runResults.filter((result) => result.degenerateProcessOutput).length,
+  excludedNativeSearchRuns: assessedRuns.length - runResults.length,
+  degenerateProcessRuns: assessedRuns.filter((result) => result.degenerateProcessOutput).length,
   candidateOccurrences: allOccurrences.length,
   deduplicatedCandidates: deduplicated.length,
   perRun: runResults.map((result) => ({
