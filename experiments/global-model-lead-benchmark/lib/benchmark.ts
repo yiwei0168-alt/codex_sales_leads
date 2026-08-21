@@ -321,7 +321,7 @@ async function runAnthropic(context: RunContext): Promise<ProviderResult> {
   };
 }
 
-export function buildKimiRequest(context: RunContext, messages: any[], tools: any[] = [
+export function buildKimiRequest(context: RunContext, messages: any[], tools: any[] | null = [
   { type: "builtin_function", function: { name: "$web_search" } },
 ]) {
   return {
@@ -329,7 +329,7 @@ export function buildKimiRequest(context: RunContext, messages: any[], tools: an
     max_completion_tokens: context.pilot.limits.visibleOutputTokens,
     thinking: { type: "disabled" },
     messages,
-    tools,
+    ...(tools ? { tools } : {}),
   };
 }
 
@@ -355,7 +355,11 @@ async function runKimi(context: RunContext): Promise<ProviderResult> {
     const raw = await requestJson(`${baseUrl}/chat/completions`, {
       method: "POST",
       headers,
-      body: JSON.stringify(buildKimiRequest(context, messages, tools)),
+      body: JSON.stringify(buildKimiRequest(
+        context,
+        messages,
+        searches < context.pilot.limits.nativeSearchActionsTargetBudget ? tools : null,
+      )),
     }, remainingTimeout());
     rounds.push(raw);
     const choice = raw.choices?.[0];
@@ -364,9 +368,7 @@ async function runKimi(context: RunContext): Promise<ProviderResult> {
     if (choice.finish_reason !== "tool_calls") { text = choice.message.content ?? ""; break; }
     for (const toolCall of choice.message.tool_calls ?? []) {
       if (toolCall.function?.name !== "web_search") throw new Error(`Kimi requested an unsupported official tool: ${toolCall.function?.name}`);
-      if (searches >= context.pilot.limits.nativeSearchActionsTargetBudget) {
-        throw new Error("Kimi exceeded the confirmed native-search action ceiling before producing a final answer");
-      }
+      if (searches >= context.pilot.limits.nativeSearchActionsTargetBudget) throw new Error("Kimi returned multiple tool calls crossing the search ceiling");
       searches += 1;
       const execution = await requestJson(`${formulaUrl}/fibers`, {
         method: "POST",

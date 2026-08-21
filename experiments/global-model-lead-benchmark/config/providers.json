@@ -111,7 +111,7 @@
         "adapter": "moonshot_official_formula_web_search",
         "mustVerifyServerToolSignal": "web_search tool call plus successful moonshot/web-search:latest fiber",
         "externalSearchInjectionForbidden": true,
-        "targetBudgetImplementation": "observe_client_side_official_tool_calls_until_wall_clock_timeout"
+        "targetBudgetImplementation": "execute_at_most_target_budget_then_remove_tools_and_collect_the_natural_language_answer"
       },
       "latestPreflight": {
         "checkedAt": "2026-08-21",

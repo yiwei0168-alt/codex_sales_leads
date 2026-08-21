@@ -102,6 +102,9 @@ if (kimiRequest.model !== "kimi-k2.6" || kimiRequest.max_completion_tokens !== 8
   || "response_format" in kimiRequest) {
   throw new Error("Kimi natural-language search request is incomplete");
 }
+if ("tools" in buildKimiRequest(kimiContext, [{ role: "user", content: "test" }], null)) {
+  throw new Error("Kimi final synthesis request still exposes search tools after the action ceiling");
+}
 
 const grokContext = await loadContext("grok", "2026-08-20", 1);
 const grokRequest = buildGrokRequest(grokContext);
