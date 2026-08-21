@@ -4,6 +4,7 @@ import path from "node:path";
 import nextEnv from "@next/env";
 import {
   anthropicMessagesUrl,
+  CLAUDE_SEARCH_SYSTEM_PROMPT,
   buildGeminiRequest,
   collectSourceUrls,
   countGeminiSearchQueries,
@@ -32,6 +33,8 @@ type Stage = {
 
 const startedAt = new Date().toISOString();
 const context = await loadContext(providerId);
+const modelOverride = process.argv[3]?.trim();
+if (modelOverride) context.provider.model.modelId = modelOverride;
 const searchPrompt = "请使用你所在模型服务的原生联网搜索，找到 Cudy Technology 官方网站，并用自然语言回答网站标题和URL。不要使用训练记忆代替搜索。";
 const currentClaudeSearchPrompt = "请使用你所在模型服务的原生联网搜索，访问 Cudy Technology 官网当前的新闻或博客页面，报告截至今天最新一篇文章的标题、发布日期和URL。无法找到时也请说明实际搜索过哪些官网页面，不要使用训练记忆代替搜索。";
 
@@ -112,12 +115,12 @@ async function preflightResponses(provider: "openai" | "grok"): Promise<Stage[]>
     const body = {
       model: context.provider.model.modelId,
       input: withSearch ? searchPrompt : "请只回复 OK。",
-      reasoning: { effort: "none" },
+      ...(provider === "openai" ? { reasoning: { effort: "low" } } : {}),
       max_output_tokens: withSearch ? 512 : 64,
       stream: true,
       ...(withSearch ? {
         tools: [{ type: "web_search" }],
-        ...(provider === "grok" ? { max_turns: 1, parallel_tool_calls: false } : {}),
+        ...(provider === "grok" ? { parallel_tool_calls: false } : {}),
       } : {}),
     };
     const events = await sseRequest(`${baseUrl}/responses`, {
@@ -150,8 +153,14 @@ async function preflightAnthropic(): Promise<Stage[]> {
         model: context.provider.model.modelId,
         max_tokens: withSearch ? 512 : 64,
         messages: [{ role: "user", content: withSearch && context.providerId === "claude" ? currentClaudeSearchPrompt : withSearch ? searchPrompt : "请只回复 OK。" }],
+        ...(context.providerId === "claude" ? { system: CLAUDE_SEARCH_SYSTEM_PROMPT } : {}),
         ...(context.providerId === "deepseek" ? { thinking: { type: "disabled" } } : {}),
-        ...(withSearch ? { tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 1 }] } : {}),
+        ...(context.providerId === "claude" ? { output_config: { effort: "medium" } } : {}),
+        ...(withSearch ? { tools: [{
+          type: context.providerId === "claude" ? "web_search_20260209" : "web_search_20250305",
+          name: "web_search",
+          max_uses: 1,
+        }] } : {}),
       }),
     });
     const searches = Number(body.usage?.server_tool_use?.web_search_requests
@@ -168,20 +177,27 @@ async function preflightAnthropic(): Promise<Stage[]> {
 
 async function preflightKimi(): Promise<Stage[]> {
   const { apiKey, baseUrl } = providerCredentials(context.provider);
+  const formulaUrl = `${baseUrl}/formulas/moonshot/web-search:latest`;
+  const headers = { authorization: `Bearer ${apiKey}`, "content-type": "application/json" };
   const request = async (withSearch: boolean) => {
     const messages: any[] = [{ role: "user", content: withSearch ? searchPrompt : "请只回复 OK。" }];
+    const toolDeclaration = withSearch ? await jsonRequest(`${formulaUrl}/tools`, { headers }) : null;
+    const tools = toolDeclaration?.tools;
+    if (withSearch && (!Array.isArray(tools) || tools.length === 0)) throw new Error("Kimi official Formula returned no tool declaration");
     let searches = 0;
+    let completionRecoveryAttempts = 0;
     const rawRounds: any[] = [];
-    for (let round = 0; round < 3; round += 1) {
+    for (let round = 0; round < 5; round += 1) {
+      const roundTools = completionRecoveryAttempts > 0 ? null : tools;
       const body = await jsonRequest(`${baseUrl}/chat/completions`, {
         method: "POST",
-        headers: { authorization: `Bearer ${apiKey}`, "content-type": "application/json" },
+        headers,
         body: JSON.stringify({
           model: context.provider.model.modelId,
           messages,
-          thinking: { type: "disabled" },
-          max_completion_tokens: withSearch ? 512 : 64,
-          ...(withSearch ? { tools: [{ type: "builtin_function", function: { name: "$web_search" } }] } : {}),
+          reasoning_effort: "low",
+          max_completion_tokens: withSearch ? 4096 : 512,
+          ...(withSearch && roundTools ? { tools: roundTools, tool_choice: searches === 0 ? "required" : "none" } : {}),
         }),
       });
       rawRounds.push(body);
@@ -191,15 +207,29 @@ async function preflightKimi(): Promise<Stage[]> {
       if (choice.finish_reason !== "tool_calls") {
         const text = choice.message.content ?? "";
         if (withSearch && searches < 1) throw new Error("No provider-native web search call was observed");
-        if (!text.trim()) throw new Error("No final natural-language text was returned");
+        if (!text.trim()) {
+          if (!withSearch || completionRecoveryAttempts >= 2) throw new Error("No final natural-language text was returned");
+          completionRecoveryAttempts += 1;
+          messages.push({ role: "user", content: "请基于刚才的联网搜索结果直接给出最终答案和URL，不要继续调用工具。" });
+          continue;
+        }
         return { finishReason: choice.finish_reason, webSearchCalls: searches, finalTextPresent: true, sourceUrlCount: collectSourceUrls([text, rawRounds]).length };
       }
       for (const toolCall of choice.message.tool_calls ?? []) {
+        if (toolCall.function?.name !== "web_search") throw new Error(`Kimi requested unsupported Formula tool ${toolCall.function?.name}`);
         searches += 1;
-        messages.push({ role: "tool", tool_call_id: toolCall.id, name: toolCall.function.name, content: toolCall.function.arguments });
+        const execution = await jsonRequest(`${formulaUrl}/fibers`, {
+          method: "POST",
+          headers,
+          body: JSON.stringify(toolCall.function),
+        });
+        rawRounds.push(execution);
+        const content = execution.context?.encrypted_output ?? execution.output;
+        if (typeof content !== "string" || !content) throw new Error("Kimi Formula returned no usable tool output");
+        messages.push({ role: "tool", tool_call_id: toolCall.id, content });
       }
     }
-    throw new Error("Kimi did not finish within two internal tool continuations");
+    throw new Error("Kimi did not finish within three Formula rounds");
   };
   const basic = await stage("basic", () => request(false));
   return basic.ok ? [basic, await stage("native_search", () => request(true))] : [basic];

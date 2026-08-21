@@ -6,6 +6,7 @@ import {
   buildKimiRequest,
   buildMessageEnvelope,
   buildOpenAiRequest,
+  CLAUDE_SEARCH_SYSTEM_PROMPT,
   collectSourceUrls,
   countGeminiSearchQueries,
   geminiInteractionText,
@@ -91,9 +92,10 @@ if (openAiRequest.model !== "gpt-5.6-terra" || openAiRequest.reasoning.effort !=
 
 const claudeContext = await loadContext("claude", "2026-08-20", 1);
 const claudeRequest = buildAnthropicRequest(claudeContext);
-if (claudeRequest.model !== "claude-fable-5" || claudeRequest.max_tokens !== 128_000
-  || claudeRequest.tools[0].type !== "web_search_20260209" || claudeRequest.tools[0].max_uses !== 8
-  || claudeRequest.output_config?.effort !== "low" || "system" in claudeRequest || "thinking" in claudeRequest) {
+if (claudeRequest.model !== "claude-opus-5" || claudeRequest.max_tokens !== 128_000
+  || claudeRequest.tools?.[0].type !== "web_search_20260209" || claudeRequest.tools?.[0].max_uses !== 8
+  || claudeRequest.output_config?.effort !== "medium" || claudeRequest.system !== CLAUDE_SEARCH_SYSTEM_PROMPT
+  || "thinking" in claudeRequest) {
   throw new Error("Claude natural-language search request is incomplete");
 }
 
@@ -101,7 +103,7 @@ const deepSeekContext = await loadContext("deepseek", "2026-08-20", 1);
 const deepSeekRequest = buildAnthropicRequest(deepSeekContext);
 if (deepSeekRequest.model !== "deepseek-v4-pro" || deepSeekRequest.max_tokens !== 384_000
   || deepSeekRequest.thinking?.type !== "disabled"
-  || deepSeekRequest.tools[0].type !== "web_search_20250305") {
+  || deepSeekRequest.tools?.[0].type !== "web_search_20250305") {
   throw new Error("DeepSeek non-thinking search request is incomplete");
 }
 
@@ -136,7 +138,7 @@ if (grokRequest.model !== "grok-4.6" || "reasoning" in grokRequest
 
 const geminiContext = await loadContext("gemini", "2026-08-20", 1);
 const geminiRequest = buildGeminiRequest(geminiContext);
-if (geminiRequest.model !== "gemini-3.7-flash" || geminiRequest.input !== context.prompt
+if (geminiRequest.model !== "gemini-3.6-flash" || geminiRequest.input !== context.prompt
   || geminiRequest.generation_config.thinking_level !== "low"
   || "max_output_tokens" in geminiRequest.generation_config
   || geminiRequest.tools?.[0]?.type !== "google_search" || "system_instruction" in geminiRequest) {
@@ -242,6 +244,22 @@ const syntheticTableCandidates = extractCandidateOccurrences({
 if (syntheticTableCandidates.length !== 2 || syntheticTableCandidates.some((candidate) => candidate.extractionRule !== "numbered_table_row")) {
   throw new Error("Natural-language table candidate extraction failed");
 }
+const syntheticNumberedListCandidates = extractCandidateOccurrences({
+  ...syntheticRun,
+  answerText: [
+    "## 1. 一级分销商",
+    "1. **List One GmbH**",
+    "类别：一级分销商。官网：https://list-one.example/",
+    "## 2. Reseller",
+    "1. Plain Network GmbH",
+    "Website: https://plain-network.example/",
+  ].join("\n"),
+}, "test-salt");
+if (syntheticNumberedListCandidates.length !== 2
+  || syntheticNumberedListCandidates.some((candidate) => candidate.claimedCategory === "unclear")
+  || syntheticNumberedListCandidates.some((candidate) => /^(?:一级分销商|reseller)$/i.test(candidate.companyName))) {
+  throw new Error("Numbered-list candidate extraction or category-heading exclusion failed");
+}
 const syntheticStandaloneBoldCandidates = extractCandidateOccurrences({
   ...syntheticRun,
   answerText: [
@@ -311,6 +329,9 @@ if (!isDegenerateProcessOutput(Array.from({ length: 20 }, () => "让我继续搜
 }
 if (!isDegenerateProcessOutput("I found initial leads. Let me search more distributors. Let me compile the findings after more searches.")) {
   throw new Error("Short process-only output detection failed");
+}
+if (!isDegenerateProcessOutput(`I'll search for "${"repeat the task ".repeat(60)}"`)) {
+  throw new Error("Long prompt-echo process-output detection failed");
 }
 validateCandidateVerification({
   blindCandidateId: "C-000000000001",

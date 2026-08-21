@@ -56,14 +56,16 @@
         "multipleModelsApprovedByUser": true
       },
       "model": {
-        "selectionPolicy": "Lingyu-accessible Claude model with observed native web search; low effort limits latency while preserving adaptive reasoning",
-        "modelId": "claude-fable-5",
-        "reasoningMode": "adaptive_low_effort",
+        "selectionPolicy": "Lingyu-accessible Claude model with observed native web search; Opus 5 replaces Fable 5 because Fable reproducibly submitted the full long prompt as its search query instead of completing the task",
+        "modelId": "claude-opus-5",
+        "reasoningMode": "adaptive_medium_effort",
         "comparisonTier": "supplementary_high_capability",
         "candidateProbe": {
           "claude-haiku-4-5": "basic_failed_gateway_502",
           "claude-haiku-4-5-20251001": "basic_passed_native_search_not_observed",
-          "claude-fable-5": "basic_and_native_search_passed",
+          "claude-fable-5": "short_preflight_passed_but_full_v4_prompt_reproducibly_degenerated",
+          "claude-opus-5": "basic_and_native_search_passed",
+          "claude-opus-4-8": "basic_passed_native_search_not_observed",
           "claude-sonnet-4-5-20250929": "model_not_found",
           "claude-sonnet-4-6": "basic_passed_native_search_not_observed",
           "claude-sonnet-5": "basic_passed_native_search_not_observed"
@@ -218,9 +220,10 @@
         "api": "interactions_v1beta"
       },
       "model": {
-        "selectionPolicy": "current GA high-performance Flash model with the lowest supported thinking level",
-        "modelId": "gemini-3.7-flash",
-        "reasoningMode": "low"
+        "selectionPolicy": "current stable high-performance Flash model with the lowest supported thinking level; 3.6 replaces 3.7 after two full formal attempts exhausted automatic retries with sustained official high-demand errors",
+        "modelId": "gemini-3.6-flash",
+        "reasoningMode": "low",
+        "capacityFallbackFrom": "gemini-3.7-flash"
       },
       "nativeSearch": {
         "required": true,

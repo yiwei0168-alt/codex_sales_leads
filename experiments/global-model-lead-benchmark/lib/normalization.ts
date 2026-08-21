@@ -49,6 +49,8 @@ const GENERIC_TITLE_PATTERNS = [
   /^(?:大型全球分销商|行业协会|產業協會|行業協會)/,
   /^(?:已证实|已證實|尚无|尚無|cudy technology|在德国|在德國|接触方式|接觸方式|下一步)/i,
   /(?:潜在渠道|跟进建议|检索局限|销售行动|证据来源|contact information|follow-up recommendations)$/i,
+  /^(?:\d+[.)]?\s*)?(?:一级分销商|一級分銷商|tier[ -]?1(?: distributors?)?|distributors?|resellers?|retailers?|si|system integrators?)(?:\s*[（(].*)?$/i,
+  /^(?:本次|目录页|目錄頁|the search|search limit)/i,
 ];
 
 const LEGAL_SUFFIXES = /\b(?:gmbh|mbh|ag|se|ohg|kg|gbr|ug|e\.?\s*k\.?|inc|corp(?:oration)?|limited|ltd|llc|a\.?s\.?|sp\.?\s*z\.?\s*o\.?o\.?)\b/gi;
@@ -78,8 +80,11 @@ function collectCandidateMatches(answerText: string): CandidateMatch[] {
   const headings: CandidateMatch[] = [];
   const tableRows: CandidateMatch[] = [];
   const boldEntries: CandidateMatch[] = [];
+  const plainNumberedEntries: CandidateMatch[] = [];
   const numberedHeading = /^#{2,6}\s+\d+[.)]\s+(.+)$/gmu;
   const numberedTableRow = /^\|\s*\d+\s*\|\s*([^|]+)\|.*$/gmu;
+  const numberedBold = /^\s*\d+[.)]\s+\*\*([^*\n]+)\*\*/gmu;
+  const plainNumbered = /^\s*\d+[.)]\s+([^\n]{2,180})$/gmu;
   const boldBullet = /^\s*-\s+\*\*([^*]+)\*\*(?:\s*\([^\n]*\))?/gmu;
   const boldStandalone = /^\*\*(?:\d+[.)]\s*)?([^*\n]+)\*\*(?:[ \t]*\([^\n)]*\))?[ \t]*$/gmu;
   const boldLead = /^\*\*(?:\d+[.)]\s*)?([^*\n]+)\*\*[ \t]*(?:\([^\n)]*\)[ \t]*)?(?:[–—-]|$)/gmu;
@@ -87,6 +92,7 @@ function collectCandidateMatches(answerText: string): CandidateMatch[] {
   for (const [regex, extractionRule, target] of [
     [numberedHeading, "numbered_heading", headings],
     [numberedTableRow, "numbered_table_row", tableRows],
+    [numberedBold, "bold_candidate", boldEntries],
     [boldBullet, "bold_candidate", boldEntries],
     [boldStandalone, "bold_candidate", boldEntries],
     [boldLead, "bold_candidate", boldEntries],
@@ -103,11 +109,24 @@ function collectCandidateMatches(answerText: string): CandidateMatch[] {
     }
   }
 
+  for (const match of answerText.matchAll(plainNumbered)) {
+    const companyName = cleanInlineMarkdown(match[1]);
+    if (!plausibleCompanyTitle(companyName) || /[。！？；;：:]|\b(?:because|therefore|search|note)\b/i.test(companyName)
+      || match.index === undefined) continue;
+    plainNumberedEntries.push({
+      start: match.index,
+      end: match.index + match[0].length,
+      companyName,
+      extractionRule: "numbered_heading",
+    });
+  }
+
   const structuredEntries = headings.length > 0
     ? [...tableRows.filter((match) => match.start < headings[0].start), ...headings]
     : tableRows;
-  const primary = structuredEntries.length > 0 ? structuredEntries : boldEntries;
-  const strongBoldAdditions = primary === boldEntries ? [] : boldEntries.filter((match) => {
+  const listEntries = [...boldEntries, ...plainNumberedEntries];
+  const primary = structuredEntries.length > 0 ? structuredEntries : listEntries;
+  const strongBoldAdditions = primary === listEntries ? [] : boldEntries.filter((match) => {
     const sourceLineEnd = answerText.indexOf("\n", match.start);
     const sourceLine = answerText.slice(match.start, sourceLineEnd === -1 ? answerText.length : sourceLineEnd);
     return COMPANY_LEGAL_SUFFIX.test(match.companyName) || /https?:\/\//i.test(sourceLine);
@@ -117,8 +136,29 @@ function collectCandidateMatches(answerText: string): CandidateMatch[] {
     .filter((match, index, ordered) => index === 0 || match.start !== ordered[index - 1].start);
 }
 
+function inferClaimedCategoryWithSection(answerText: string, matchStart: number, excerpt: string): BenchmarkCompanyCategory | "unclear" {
+  const direct = inferClaimedCategory(excerpt);
+  if (direct !== "unclear") return direct;
+  const precedingLines = answerText.slice(0, matchStart).split("\n").reverse();
+  for (const line of precedingLines) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.length > 200) continue;
+    const looksLikeSection = /^#{1,6}\s+/.test(trimmed)
+      || /^\*\*[^*]+\*\*$/.test(trimmed)
+      || /^(?:类别|類別|category|kategorie)\s*[一二三四1-4.)：: -]/i.test(trimmed);
+    if (!looksLikeSection) continue;
+    const sectionTitle = cleanInlineMarkdown(trimmed.replace(/^#{1,6}\s+/, ""))
+      .replace(/^(?:[一二三四]+|\d+)[、.)\s]+/, "");
+    const inferred = inferClaimedCategory(`类别：${sectionTitle}`);
+    if (inferred !== "unclear") return inferred;
+  }
+  return "unclear";
+}
+
 export function isDegenerateProcessOutput(answerText: string): boolean {
   const compact = answerText.replace(/\s+/g, "").toLowerCase();
+  if (/^i(?:'|’)ll search for\s+["“][\s\S]{500}/iu.test(answerText.trim())
+    && collectCandidateMatches(answerText).length === 0) return true;
   const processMarkers = answerText.match(/(?:let me (?:search|compile|do (?:a few|more))|让我(?:继续|进行更多|搜索)|我需要搜索|maximum number of search steps|reached the maximum number of search)/giu) ?? [];
   if (processMarkers.length >= 2 && collectCandidateMatches(answerText).length === 0) return true;
   if (compact.length < 200) return false;
@@ -210,16 +250,17 @@ function inferClaimedClass(excerpt: string): NormalizedCandidate["claimedChannel
 }
 
 function inferClaimedCategory(excerpt: string): BenchmarkCompanyCategory | "unclear" {
-  if (/(?:类别|類別|category|kategorie)\s*[：:]?\s*(?:一级分销商|一級分銷商|tier[ -]?1|distribut|vad|wholesal|großhandel|grosshandel)/iu.test(excerpt)) {
+  const normalized = excerpt.replace(/[*_`#]/g, "");
+  if (/(?:类别|類別|category|kategorie)\s*[：:]?\s*(?:一级分销商|一級分銷商|tier[ -]?1|distribut|vad|wholesal|großhandel|grosshandel)/iu.test(normalized)) {
     return "tier1_distributor";
   }
-  if (/(?:类别|類別|category|kategorie)\s*[：:]?\s*(?:reseller|var|经销商|經銷商|转售商|轉售商|fachhändler)/iu.test(excerpt)) {
+  if (/(?:类别|類別|category|kategorie)\s*[：:]?\s*(?:reseller|var|经销商|經銷商|转售商|轉售商|fachhändler)/iu.test(normalized)) {
     return "reseller";
   }
-  if (/(?:类别|類別|category|kategorie)\s*[：:]?\s*(?:retailer|retail|零售商|零售|einzelhändler|online.?shop)/iu.test(excerpt)) {
+  if (/(?:类别|類別|category|kategorie)\s*[：:]?\s*(?:retailer|retail|零售商|零售|einzelhändler|online.?shop)/iu.test(normalized)) {
     return "retailer";
   }
-  if (/(?:类别|類別|category|kategorie)\s*[：:]?\s*(?:si\b|system\s*integrat|系统集成|系統整合|系统整合|systemhaus)/iu.test(excerpt)) {
+  if (/(?:类别|類別|category|kategorie)\s*[：:]?\s*(?:si\b|system\s*integrat|系统集成|系統整合|系统整合|systemhaus)/iu.test(normalized)) {
     return "si";
   }
   return "unclear";
@@ -256,7 +297,7 @@ export function extractCandidateOccurrences(run: MeasuredRun, secretSalt: string
   for (let index = 0; index < matches.length && candidates.length < 40; index += 1) {
     const match = matches[index];
     const excerpt = run.answerText.slice(match.start, excerptEnd(run.answerText, match, matches[index + 1])).trim();
-    const claimedCategory = inferClaimedCategory(excerpt);
+    const claimedCategory = inferClaimedCategoryWithSection(run.answerText, match.start, excerpt);
     const currentCategoryCount = claimedCategory === "unclear" ? 0 : (categoryCounts.get(claimedCategory) ?? 0);
     if (claimedCategory !== "unclear" && currentCategoryCount >= 10) continue;
     const sourceUrls = extractUrls(excerpt);

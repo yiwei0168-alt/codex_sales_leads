@@ -92,6 +92,7 @@ type ProviderResult = { text: string; searches: number | null; raw: unknown };
 
 const experimentRoot = path.resolve("experiments/global-model-lead-benchmark");
 const readJson = async <T>(file: string): Promise<T> => JSON.parse(await readFile(file, "utf8")) as T;
+export const CLAUDE_SEARCH_SYSTEM_PROMPT = "Use server-side web search with concise keyword queries. Never use the full user request as a search query. After searching, return the requested final answer directly; do not quote, translate, or restate the instructions.";
 
 export function buildMessageEnvelope(providerId: ProviderId, prompt: string): {
   input?: string;
@@ -354,31 +355,71 @@ async function runGrok(context: RunContext): Promise<ProviderResult> {
   };
 }
 
-export function buildAnthropicRequest(context: RunContext) {
+export function buildAnthropicRequest(
+  context: RunContext,
+  messages = buildMessageEnvelope(context.providerId, context.prompt).messages,
+  withSearchTools = true,
+) {
   const webSearchType = context.providerId === "claude" ? "web_search_20260209" : "web_search_20250305";
   return {
     model: context.provider.model.modelId,
     max_tokens: context.providerId === "claude" ? 128_000 : 384_000,
-    ...buildMessageEnvelope(context.providerId, context.prompt),
+    messages,
+    ...(context.providerId === "claude" ? { system: CLAUDE_SEARCH_SYSTEM_PROMPT } : {}),
     ...(context.providerId === "deepseek" ? { thinking: { type: "disabled" } } : {}),
-    ...(context.providerId === "claude" ? { output_config: { effort: "low" } } : {}),
-    tools: [{ type: webSearchType, name: "web_search", max_uses: context.pilot.limits.nativeSearchActionsMaximumWhereSupported }],
+    ...(context.providerId === "claude" ? { output_config: { effort: "medium" } } : {}),
+    ...(withSearchTools ? {
+      tools: [{ type: webSearchType, name: "web_search", max_uses: context.pilot.limits.nativeSearchActionsMaximumWhereSupported }],
+    } : {}),
   };
 }
 
 async function runAnthropic(context: RunContext): Promise<ProviderResult> {
   const { apiKey, baseUrl } = providerCredentials(context.provider);
-  const raw = await requestJson(anthropicMessagesUrl(context.providerId, baseUrl), {
-    method: "POST",
-    headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "content-type": "application/json" },
-    body: JSON.stringify(buildAnthropicRequest(context)),
-  }, remainingRunTimeoutMs(context), context.pilot.limits.automaticTransportRetries);
-  const searches = Number(raw.usage?.server_tool_use?.web_search_requests
-    ?? (raw.content ?? []).filter((item: any) => item.type === "server_tool_use" && item.name === "web_search").length);
+  const messages: any[] = structuredClone(buildMessageEnvelope(context.providerId, context.prompt).messages ?? []);
+  const rounds: any[] = [];
+  let searches = 0;
+  const textParts: string[] = [];
+  let completionRecoveryAttempts = 0;
+  let withSearchTools = true;
+  while (true) {
+    const raw = await requestJson(anthropicMessagesUrl(context.providerId, baseUrl), {
+      method: "POST",
+      headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "content-type": "application/json" },
+      body: JSON.stringify(buildAnthropicRequest(context, messages, withSearchTools)),
+    }, remainingRunTimeoutMs(context), context.pilot.limits.automaticTransportRetries);
+    rounds.push(raw);
+    const roundSearches = Number(raw.usage?.server_tool_use?.web_search_requests
+      ?? (raw.content ?? []).filter((item: any) => item.type === "server_tool_use" && item.name === "web_search").length);
+    if (Number.isFinite(roundSearches)) searches += roundSearches;
+    textParts.push(...(raw.content ?? []).filter((item: any) => item.type === "text").map((item: any) => item.text));
+    const continuationRequired = raw.stop_reason === "pause_turn"
+      || (context.providerId === "deepseek" && raw.stop_reason === "tool_use");
+    const claudeCompletionRecovery = context.providerId === "claude"
+      && searches > 0
+      && textParts.join("").length < 4_000
+      && completionRecoveryAttempts < 2;
+    if (!continuationRequired && !claudeCompletionRecovery) break;
+    if (rounds.length >= context.pilot.limits.nativeSearchActionsMaximumWhereSupported + 2) {
+      throw new Error(`${context.providerId} exceeded the bounded server-tool continuation rounds`);
+    }
+    if (claudeCompletionRecovery) {
+      completionRecoveryAttempts += 1;
+      withSearchTools = true;
+      textParts.length = 0;
+      messages.length = 0;
+      messages.push({
+        role: "user",
+        content: `${context.prompt}\n\n执行要求：请使用简短关键词重新搜索并直接输出四类最终候选公司清单；不要重复原始请求、不要只描述搜索过程。`,
+      });
+    } else {
+      messages.push({ role: "assistant", content: raw.content ?? [] });
+    }
+  }
   return {
-    text: (raw.content ?? []).filter((item: any) => item.type === "text").map((item: any) => item.text).join(""),
-    searches: Number.isFinite(searches) ? searches : null,
-    raw,
+    text: textParts.join(""),
+    searches,
+    raw: rounds.length === 1 ? rounds[0] : { rounds },
   };
 }
 
@@ -413,15 +454,17 @@ async function runKimi(context: RunContext): Promise<ProviderResult> {
   const searchCeiling = context.pilot.limits.nativeSearchActionsMaximumWhereSupported;
   let searches = 0;
   let text = "";
+  let completionRecoveryAttempts = 0;
   while (true) {
-    const toolChoice = searches === 0 ? "required" : (searches >= searchCeiling ? "none" : "auto");
+    const roundTools = completionRecoveryAttempts > 0 ? null : tools;
+    const toolChoice = roundTools ? (searches === 0 ? "required" : (searches >= searchCeiling ? "none" : "auto")) : undefined;
     const raw = await requestJson(`${baseUrl}/chat/completions`, {
       method: "POST",
       headers,
       body: JSON.stringify(buildKimiRequest(
         context,
         messages,
-        tools,
+        roundTools,
         toolChoice,
       )),
     }, remainingRunTimeoutMs(context), context.pilot.limits.automaticTransportRetries);
@@ -429,7 +472,19 @@ async function runKimi(context: RunContext): Promise<ProviderResult> {
     const choice = raw.choices?.[0];
     if (!choice) throw new Error("Kimi response has no choice");
     messages.push(choice.message);
-    if (choice.finish_reason !== "tool_calls") { text = choice.message.content ?? ""; break; }
+    if (choice.finish_reason !== "tool_calls") {
+      text = choice.message.content ?? "";
+      if (text.trim()) break;
+      if (searches < 1 || completionRecoveryAttempts >= 2) {
+        throw new Error("Kimi returned an empty final response after the official web-search result");
+      }
+      completionRecoveryAttempts += 1;
+      messages.push({
+        role: "user",
+        content: "请基于刚才已经获得的联网搜索结果，直接完成原始任务并输出最终候选公司清单；不要继续调用工具，也不要只描述过程。",
+      });
+      continue;
+    }
     if (toolChoice === "none") throw new Error("Kimi ignored tool_choice=none after the official-tool context ceiling");
     for (const toolCall of choice.message.tool_calls ?? []) {
       if (toolCall.function?.name !== "web_search") throw new Error(`Kimi requested an unsupported official tool: ${toolCall.function?.name}`);
