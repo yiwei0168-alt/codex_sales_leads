@@ -1,31 +1,24 @@
 import { createHash } from "node:crypto";
 
 export type CandidateClass = "confirmed_current_cudy" | "qualified_tier1" | "important_downstream" | "invalid";
+export type BenchmarkCompanyCategory = "tier1_distributor" | "reseller" | "retailer" | "si";
 export type ReviewReason = "accepted" | "industry_mismatch" | "country_mismatch" | "insufficient_evidence" | "duplicate" | "not_a_company" | "not_independent_sales_lead";
-
-export type NormalizedContact = {
-  fullName: string | null;
-  jobTitle: string | null;
-  publicBusinessEmail: string | null;
-  publicBusinessPhone: string | null;
-  publicProfileUrl: string | null;
-  evidenceUrls: string[];
-  answerExcerpt: string;
-};
 
 export type NormalizedCandidate = {
   blindCandidateId: string;
   blindRunId: string;
   answerRank: number;
+  categoryRank: number | null;
+  claimedCategory: BenchmarkCompanyCategory | "unclear";
   companyName: string;
   legalName: string | null;
   domain: string | null;
+  officialWebsiteUrl: string | null;
   countryCode: string;
   claimedChannelClass: Exclude<CandidateClass, "invalid"> | "unclear";
   claimedCudyRelationship: "confirmed" | "not_confirmed" | "unclear";
   answerExcerpt: string;
   sourceUrls: string[];
-  contacts: NormalizedContact[];
   codexPreVerification: {
     companyExists: boolean | null;
     operatesInCountry: boolean | null;
@@ -43,8 +36,6 @@ export type HumanReviewDecision = {
   operatesInCountry: boolean;
   channelRelevant: boolean;
   evidenceSufficient: boolean;
-  contactsVerified: number;
-  publicContactMethodsVerified: number;
   duplicateOfBlindCandidateId: string | null;
   reviewerNotes: string | null;
   reviewedAt: string;
@@ -54,21 +45,20 @@ export function validateNormalizedCandidate(candidate: NormalizedCandidate): voi
   if (!/^C-[A-F0-9]{12}$/.test(candidate.blindCandidateId)) throw new Error("Invalid blind candidate ID");
   if (!/^R-[A-F0-9]{12}$/.test(candidate.blindRunId)) throw new Error("Invalid blind run ID");
   if (!Number.isInteger(candidate.answerRank) || candidate.answerRank < 1) throw new Error("Candidate answerRank must be a positive integer");
+  if (candidate.categoryRank !== null && (!Number.isInteger(candidate.categoryRank) || candidate.categoryRank < 1 || candidate.categoryRank > 10)) {
+    throw new Error("Candidate categoryRank must be null or an integer between 1 and 10");
+  }
   if (!candidate.companyName.trim()) throw new Error("Candidate companyName is required");
+  if (candidate.officialWebsiteUrl !== null) {
+    const officialUrl = new URL(candidate.officialWebsiteUrl);
+    if (!/^https?:$/.test(officialUrl.protocol)) throw new Error("Candidate official website URL must be HTTP(S)");
+  }
   if (!/^[A-Z]{2}$/.test(candidate.countryCode)) throw new Error("Candidate countryCode must be ISO alpha-2");
   if (!candidate.answerExcerpt.trim()) throw new Error("Candidate must retain an answer excerpt");
   if (!Array.isArray(candidate.sourceUrls)) throw new Error("Candidate sourceUrls must be an array");
   for (const url of candidate.sourceUrls) {
     const parsed = new URL(url);
     if (!/^https?:$/.test(parsed.protocol)) throw new Error("Candidate source URL must be HTTP(S)");
-  }
-  for (const contact of candidate.contacts) {
-    if (!contact.answerExcerpt.trim()) throw new Error("Contact must retain an answer excerpt");
-    if (!contact.fullName && !contact.publicBusinessEmail && !contact.publicBusinessPhone && !contact.publicProfileUrl) {
-      throw new Error("Contact must retain at least one public identifier or method");
-    }
-    if (contact.fullName !== null && !contact.fullName.trim()) throw new Error("Contact name cannot be blank");
-    if (contact.publicBusinessEmail && !contact.publicBusinessEmail.includes("@")) throw new Error("Contact email is malformed");
   }
 }
 
@@ -78,8 +68,6 @@ export function validateHumanDecision(decision: HumanReviewDecision): void {
   if (decision.candidateClass !== "invalid" && decision.reason !== "accepted") throw new Error("Accepted candidate must use accepted reason");
   if (decision.reason === "duplicate" && !decision.duplicateOfBlindCandidateId) throw new Error("Duplicate decision must reference the retained candidate");
   if (decision.reason !== "duplicate" && decision.duplicateOfBlindCandidateId) throw new Error("Only duplicate decisions may reference another candidate");
-  if (!Number.isInteger(decision.contactsVerified) || decision.contactsVerified < 0) throw new Error("contactsVerified must be a non-negative integer");
-  if (!Number.isInteger(decision.publicContactMethodsVerified) || decision.publicContactMethodsVerified < 0) throw new Error("publicContactMethodsVerified must be a non-negative integer");
   if (Number.isNaN(Date.parse(decision.reviewedAt))) throw new Error("reviewedAt must be an ISO date-time");
 }
 

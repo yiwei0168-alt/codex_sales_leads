@@ -18,6 +18,12 @@ export type PilotConfig = {
   regionName: string;
   primaryLanguages: string[];
   promptFile: string;
+  categoryTargets: {
+    tier1Distributor: number;
+    reseller: number;
+    retailer: number;
+    si: number;
+  };
   providers: ProviderId[];
   repetitionsPerSystem: number;
   productComparator: {
@@ -31,10 +37,10 @@ export type PilotConfig = {
     resourceUseMustBeReported: string[];
   };
   limits: {
-    nativeSearchActionsTargetBudget: number;
-    visibleOutputTokens: number;
+    nativeSearchActionsMaximumWhereSupported: number;
+    providerNativeOutputLimitOnly: boolean;
     timeoutMinutesPerProvider: number;
-    automaticRetries: number;
+    automaticTransportRetries: number;
     primaryCompanyCutoff: number;
   };
   judging: {
@@ -55,6 +61,7 @@ export type RunContext = {
   runDate: string;
   repetition: number;
   pilot: PilotConfig;
+  deadlineAtMs?: number;
 };
 
 export type PilotPromptContext = {
@@ -156,11 +163,43 @@ export function providerCredentials(provider: ProviderConfig): { apiKey: string;
   return { apiKey, baseUrl };
 }
 
-async function requestJson(url: string, init: RequestInit, timeoutMs: number): Promise<any> {
-  const response = await fetch(url, { ...init, signal: AbortSignal.timeout(timeoutMs) });
-  const body = await response.text();
-  if (!response.ok) throw new Error(`Provider request failed (${response.status}): ${body.slice(0, 500)}`);
-  try { return JSON.parse(body); } catch { throw new Error(`Provider returned non-JSON transport payload: ${body.slice(0, 300)}`); }
+const retryableHttpStatuses = new Set([408, 429, 500, 502, 503, 504]);
+
+function timeoutError(): DOMException {
+  return new DOMException("Benchmark wall-clock timeout exceeded", "TimeoutError");
+}
+
+async function retryDelay(attempt: number, retryAfter: string | null, remainingMs: number): Promise<void> {
+  if (remainingMs <= 0) throw timeoutError();
+  const retryAfterSeconds = retryAfter === null ? Number.NaN : Number(retryAfter);
+  const delayMs = Number.isFinite(retryAfterSeconds) && retryAfterSeconds >= 0
+    ? Math.min(retryAfterSeconds * 1_000, 60_000)
+    : (attempt === 0 ? 2_000 : 8_000);
+  await new Promise((resolve) => setTimeout(resolve, Math.min(delayMs, remainingMs)));
+}
+
+async function requestJson(url: string, init: RequestInit, timeoutMs: number, maximumRetries = 0): Promise<any> {
+  const deadlineAtMs = Date.now() + timeoutMs;
+  for (let attempt = 0; ; attempt += 1) {
+    try {
+      const remainingMs = deadlineAtMs - Date.now();
+      if (remainingMs <= 0) throw timeoutError();
+      const response = await fetch(url, { ...init, signal: AbortSignal.timeout(remainingMs) });
+      const body = await response.text();
+      if (!response.ok) {
+        if (attempt < maximumRetries && retryableHttpStatuses.has(response.status)) {
+          await retryDelay(attempt, response.headers.get("retry-after"), deadlineAtMs - Date.now());
+          continue;
+        }
+        throw new Error(`Provider request failed (${response.status}): ${body.slice(0, 500)}`);
+      }
+      try { return JSON.parse(body); } catch { throw new Error(`Provider returned non-JSON transport payload: ${body.slice(0, 300)}`); }
+    } catch (error) {
+      const timedOut = error instanceof DOMException && (error.name === "TimeoutError" || error.name === "AbortError");
+      if (attempt >= maximumRetries || timedOut || !(error instanceof TypeError)) throw error;
+      await retryDelay(attempt, null, deadlineAtMs - Date.now());
+    }
+  }
 }
 
 export function parseSseBuffer(buffer: string): { events: any[]; remainder: string } {
@@ -174,30 +213,54 @@ export function parseSseBuffer(buffer: string): { events: any[]; remainder: stri
   return { events, remainder };
 }
 
-async function requestSse(url: string, init: RequestInit, timeoutMs: number): Promise<any[]> {
-  const response = await fetch(url, { ...init, signal: AbortSignal.timeout(timeoutMs) });
-  if (!response.ok) throw new Error(`Provider stream failed (${response.status}): ${(await response.text()).slice(0, 500)}`);
-  if (!response.body) throw new Error("Provider stream has no response body");
-  const reader = response.body.getReader();
-  const decoder = new TextDecoder();
-  const events: any[] = [];
-  let buffer = "";
-  try {
-    while (true) {
-      const { done, value } = await reader.read();
-      buffer += decoder.decode(value, { stream: !done });
-      const parsed = parseSseBuffer(buffer);
-      events.push(...parsed.events);
-      buffer = parsed.remainder;
-      if (done) break;
+async function requestSse(url: string, init: RequestInit, timeoutMs: number, maximumRetries = 0): Promise<any[]> {
+  const deadlineAtMs = Date.now() + timeoutMs;
+  for (let attempt = 0; ; attempt += 1) {
+    const events: any[] = [];
+    try {
+      const remainingMs = deadlineAtMs - Date.now();
+      if (remainingMs <= 0) throw timeoutError();
+      const response = await fetch(url, { ...init, signal: AbortSignal.timeout(remainingMs) });
+      if (!response.ok) {
+        const body = await response.text();
+        if (attempt < maximumRetries && retryableHttpStatuses.has(response.status)) {
+          await retryDelay(attempt, response.headers.get("retry-after"), deadlineAtMs - Date.now());
+          continue;
+        }
+        throw new Error(`Provider stream failed (${response.status}): ${body.slice(0, 500)}`);
+      }
+      if (!response.body) throw new Error("Provider stream has no response body");
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      while (true) {
+        const { done, value } = await reader.read();
+        buffer += decoder.decode(value, { stream: !done });
+        const parsed = parseSseBuffer(buffer);
+        events.push(...parsed.events);
+        buffer = parsed.remainder;
+        if (done) break;
+      }
+      if (buffer.trim()) events.push(...parseSseBuffer(`${buffer}\n\n`).events);
+      return events;
+    } catch (error) {
+      const timedOut = error instanceof DOMException && (error.name === "TimeoutError" || error.name === "AbortError");
+      if (attempt < maximumRetries && !timedOut && error instanceof TypeError) {
+        await retryDelay(attempt, null, deadlineAtMs - Date.now());
+        continue;
+      }
+      throw Object.assign(error instanceof Error ? error : new Error(String(error)), {
+        partialEventTypes: events.map((event) => event.type).slice(-100),
+      });
     }
-  } catch (error) {
-    throw Object.assign(error instanceof Error ? error : new Error(String(error)), {
-      partialEventTypes: events.map((event) => event.type).slice(-100),
-    });
   }
-  if (buffer.trim()) events.push(...parseSseBuffer(`${buffer}\n\n`).events);
-  return events;
+}
+
+function remainingRunTimeoutMs(context: RunContext, requestedMaximumMs?: number): number {
+  const configuredMs = context.pilot.limits.timeoutMinutesPerProvider * 60_000;
+  const remainingMs = context.deadlineAtMs === undefined ? configuredMs : context.deadlineAtMs - Date.now();
+  if (remainingMs <= 0) throw timeoutError();
+  return Math.max(1, Math.min(remainingMs, requestedMaximumMs ?? configuredMs));
 }
 
 function responseOutputText(response: any): string {
@@ -244,8 +307,7 @@ export function buildOpenAiRequest(context: RunContext) {
     model: context.provider.model.modelId,
     ...buildMessageEnvelope("openai", context.prompt),
     tools: [{ type: "web_search" }],
-    max_output_tokens: context.pilot.limits.visibleOutputTokens,
-    reasoning: { effort: "none" },
+    reasoning: { effort: "low" },
     text: { verbosity: "medium" },
     stream: true,
   };
@@ -257,7 +319,7 @@ async function runOpenAi(context: RunContext): Promise<ProviderResult> {
     method: "POST",
     headers: { authorization: `Bearer ${apiKey}`, accept: "text/event-stream", "content-type": "application/json" },
     body: JSON.stringify(buildOpenAiRequest(context)),
-  }, context.pilot.limits.timeoutMinutesPerProvider * 60_000);
+  }, remainingRunTimeoutMs(context), context.pilot.limits.automaticTransportRetries);
   const response = completedResponse(events, "OpenAI");
   return {
     text: responseOutputText(response),
@@ -271,9 +333,6 @@ export function buildGrokRequest(context: RunContext) {
     model: context.provider.model.modelId,
     ...buildMessageEnvelope("grok", context.prompt),
     tools: [{ type: "web_search" }],
-    max_turns: context.pilot.limits.nativeSearchActionsTargetBudget,
-    max_output_tokens: context.pilot.limits.visibleOutputTokens,
-    reasoning: { effort: "none" },
     parallel_tool_calls: false,
     store: true,
     stream: true,
@@ -286,7 +345,7 @@ async function runGrok(context: RunContext): Promise<ProviderResult> {
     method: "POST",
     headers: { authorization: `Bearer ${apiKey}`, accept: "text/event-stream", "content-type": "application/json" },
     body: JSON.stringify(buildGrokRequest(context)),
-  }, context.pilot.limits.timeoutMinutesPerProvider * 60_000);
+  }, remainingRunTimeoutMs(context), context.pilot.limits.automaticTransportRetries);
   const response = completedResponse(events, "Grok");
   return {
     text: responseOutputText(response),
@@ -299,10 +358,11 @@ export function buildAnthropicRequest(context: RunContext) {
   const webSearchType = context.providerId === "claude" ? "web_search_20260209" : "web_search_20250305";
   return {
     model: context.provider.model.modelId,
-    max_tokens: context.pilot.limits.visibleOutputTokens,
+    max_tokens: context.providerId === "claude" ? 128_000 : 384_000,
     ...buildMessageEnvelope(context.providerId, context.prompt),
     ...(context.providerId === "deepseek" ? { thinking: { type: "disabled" } } : {}),
-    tools: [{ type: webSearchType, name: "web_search", max_uses: context.pilot.limits.nativeSearchActionsTargetBudget }],
+    ...(context.providerId === "claude" ? { output_config: { effort: "low" } } : {}),
+    tools: [{ type: webSearchType, name: "web_search", max_uses: context.pilot.limits.nativeSearchActionsMaximumWhereSupported }],
   };
 }
 
@@ -312,7 +372,7 @@ async function runAnthropic(context: RunContext): Promise<ProviderResult> {
     method: "POST",
     headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "content-type": "application/json" },
     body: JSON.stringify(buildAnthropicRequest(context)),
-  }, context.pilot.limits.timeoutMinutesPerProvider * 60_000);
+  }, remainingRunTimeoutMs(context), context.pilot.limits.automaticTransportRetries);
   const searches = Number(raw.usage?.server_tool_use?.web_search_requests
     ?? (raw.content ?? []).filter((item: any) => item.type === "server_tool_use" && item.name === "web_search").length);
   return {
@@ -330,8 +390,8 @@ export function buildKimiRequest(
 ) {
   return {
     model: context.provider.model.modelId,
-    max_completion_tokens: context.pilot.limits.visibleOutputTokens,
-    thinking: { type: "disabled" },
+    max_completion_tokens: 128_000,
+    reasoning_effort: "low",
     messages,
     ...(tools ? { tools } : {}),
     ...(tools && toolChoice ? { tool_choice: toolChoice } : {}),
@@ -342,19 +402,15 @@ async function runKimi(context: RunContext): Promise<ProviderResult> {
   const { apiKey, baseUrl } = providerCredentials(context.provider);
   const formulaUrl = `${baseUrl}/formulas/moonshot/web-search:latest`;
   const headers = { authorization: `Bearer ${apiKey}`, "content-type": "application/json" };
-  const toolDeclaration = await requestJson(`${formulaUrl}/tools`, { headers }, 30_000);
+  const toolDeclaration = await requestJson(
+    `${formulaUrl}/tools`, { headers }, remainingRunTimeoutMs(context, 30_000), context.pilot.limits.automaticTransportRetries,
+  );
   const tools = toolDeclaration.tools;
   if (!Array.isArray(tools) || tools.length === 0) throw new Error("Kimi official web-search returned no tool declaration");
   const messages: any[] = structuredClone(buildMessageEnvelope("kimi", context.prompt).messages ?? []);
   const rounds: unknown[] = [];
   const toolExecutions: unknown[] = [];
-  const searchCeiling = Math.min(3, context.pilot.limits.nativeSearchActionsTargetBudget);
-  const deadline = Date.now() + context.pilot.limits.timeoutMinutesPerProvider * 60_000;
-  const remainingTimeout = () => {
-    const remaining = deadline - Date.now();
-    if (remaining <= 0) throw new Error("Kimi run exceeded the provider timeout");
-    return remaining;
-  };
+  const searchCeiling = context.pilot.limits.nativeSearchActionsMaximumWhereSupported;
   let searches = 0;
   let text = "";
   while (true) {
@@ -368,7 +424,7 @@ async function runKimi(context: RunContext): Promise<ProviderResult> {
         tools,
         toolChoice,
       )),
-    }, remainingTimeout());
+    }, remainingRunTimeoutMs(context), context.pilot.limits.automaticTransportRetries);
     rounds.push(raw);
     const choice = raw.choices?.[0];
     if (!choice) throw new Error("Kimi response has no choice");
@@ -382,7 +438,7 @@ async function runKimi(context: RunContext): Promise<ProviderResult> {
         method: "POST",
         headers,
         body: JSON.stringify(toolCall.function),
-      }, remainingTimeout());
+      }, remainingRunTimeoutMs(context), context.pilot.limits.automaticTransportRetries);
       toolExecutions.push(execution);
       const content = execution.context?.encrypted_output ?? execution.output;
       if (typeof content !== "string" || !content) throw new Error("Kimi official web-search returned no usable tool output");
@@ -397,7 +453,7 @@ export function buildGeminiRequest(
   context: RunContext,
   prompt = context.prompt,
   withSearch = true,
-  maxOutputTokens = context.pilot.limits.visibleOutputTokens,
+  maxOutputTokens?: number,
 ) {
   return {
     model: context.provider.model.modelId,
@@ -405,7 +461,7 @@ export function buildGeminiRequest(
     ...(withSearch ? { tools: [{ type: "google_search" }] } : {}),
     generation_config: {
       thinking_level: "low",
-      max_output_tokens: maxOutputTokens,
+      ...(maxOutputTokens === undefined ? {} : { max_output_tokens: maxOutputTokens }),
     },
   };
 }
@@ -433,7 +489,7 @@ async function runGemini(context: RunContext): Promise<ProviderResult> {
     method: "POST",
     headers: { "x-goog-api-key": apiKey, "content-type": "application/json" },
     body: JSON.stringify(buildGeminiRequest(context)),
-  }, context.pilot.limits.timeoutMinutesPerProvider * 60_000);
+  }, remainingRunTimeoutMs(context), context.pilot.limits.automaticTransportRetries);
   return {
     text: geminiInteractionText(raw),
     searches: countGeminiSearchQueries(raw),
@@ -470,6 +526,7 @@ export async function executeProvider(providerId: ProviderId, repetition = 1, at
   const context = await loadContext(providerId, undefined, repetition);
   const startedAt = new Date().toISOString();
   const startedMs = Date.now();
+  context.deadlineAtMs = startedMs + context.pilot.limits.timeoutMinutesPerProvider * 60_000;
   const outputDirectory = path.join(experimentRoot, context.pilot.storage.rawResultsDirectory);
   await mkdir(outputDirectory, { recursive: true });
   const attemptSuffix = attempt === 1 ? "" : `-a${attempt}`;
@@ -520,7 +577,7 @@ export async function executeProvider(providerId: ProviderId, repetition = 1, at
       startedAt,
       completedAt: new Date().toISOString(),
       latencyMs: Date.now() - startedMs,
-      automaticRetries: context.pilot.limits.automaticRetries,
+      automaticTransportRetries: context.pilot.limits.automaticTransportRetries,
       error: failureDetail(error),
     };
     await writeFile(failurePath, JSON.stringify(failure, null, 2), { encoding: "utf8", flag: "wx" });

@@ -20,11 +20,12 @@ type VerifiedPacket = {
     countryCode: string;
     occurrenceCount: number;
     mergedSourceUrls: string[];
-    claimedPublicEmails: string[];
-    claimedPublicPhones: string[];
+    mergedOfficialWebsiteUrls: string[];
     submissions: Array<{
       blindRunId: string;
       answerRank: number;
+      categoryRank: number | null;
+      claimedCategory: string;
       exactAnswerExcerpt: string;
       citedUrls: string[];
     }>;
@@ -33,7 +34,7 @@ type VerifiedPacket = {
 
 type AssessmentDocument = {
   schemaVersion: number;
-  rubricVersion: "potential-fit-v3";
+  rubricVersion: "four-channel-company-fit-v4";
   assessments: PotentialPartnerAssessment[];
 };
 
@@ -56,7 +57,7 @@ const [packet, document, config] = await Promise.all([
   readJson<JudgingConfig>(path.join(root, "config", "judging.json")),
 ]);
 if (!packet.providerIdentityHidden) throw new Error("Human audit input must hide provider identity");
-if (document.schemaVersion !== 1 || document.rubricVersion !== "potential-fit-v3") throw new Error("Unsupported Codex assessment document");
+if (document.schemaVersion !== 1 || document.rubricVersion !== "four-channel-company-fit-v4") throw new Error("Unsupported Codex assessment document");
 document.assessments.forEach(validatePotentialPartnerAssessment);
 const assessmentById = new Map(document.assessments.map((assessment) => [assessment.blindCandidateId, assessment]));
 if (assessmentById.size !== document.assessments.length) throw new Error("Duplicate Codex assessment candidate");
@@ -85,17 +86,17 @@ const selected = selectedIds.map((id) => {
     countryCode: candidate.countryCode,
     occurrenceCount: candidate.occurrenceCount,
     submittedSourceUrls: candidate.mergedSourceUrls,
+    submittedOfficialWebsiteUrls: candidate.mergedOfficialWebsiteUrls,
     independentEvidenceUrls: assessment.independentEvidenceUrls,
-    namedContactClaims: assessment.namedContacts.map(({ claimId, name, role, sourceUrl }) => ({ claimId, name, role, sourceUrl })),
-    submissions: candidate.submissions.map(({ blindRunId, answerRank, exactAnswerExcerpt, citedUrls }) => ({
-      blindRunId, answerRank, exactAnswerExcerpt, citedUrls,
+    submissions: candidate.submissions.map(({ blindRunId, answerRank, categoryRank, claimedCategory, exactAnswerExcerpt, citedUrls }) => ({
+      blindRunId, answerRank, categoryRank, claimedCategory, exactAnswerExcerpt, citedUrls,
     })),
   };
 });
 
 const humanPacket = {
   schemaVersion: 1,
-  rubricVersion: "potential-fit-v3",
+  rubricVersion: "four-channel-company-fit-v4",
   generatedAt: new Date().toISOString(),
   countryCode: packet.countryCode,
   providerIdentityHidden: true,
@@ -106,7 +107,7 @@ const humanPacket = {
 };
 const decisionTemplate = {
   schemaVersion: 1,
-  rubricVersion: "potential-fit-v3",
+  rubricVersion: "four-channel-company-fit-v4",
   decisions: selected.map((candidate) => ({
     blindCandidateId: candidate.blindCandidateId,
     reviewedAt: null,
@@ -138,27 +139,22 @@ const markdown = [
   "",
   "Company gates must all pass before assigning fit points. Relationship status is metadata with zero scoring weight.",
   "",
-  "Fit dimensions: channel/customer access 0–30; product/use-case fit 0–25; target-market coverage 0–20; execution capability 0–15; strategic complementarity 0–10.",
+  "Fit dimensions: channel/customer access 0–30; product/use-case fit 0–25; target-market coverage 0–20; execution capability 0–15; strategic complementarity 0–10. A submitted-category mismatch remains eligible: deduct 3 channel points for a credible secondary role or 8 for a material mismatch within the four categories, plus 0–5 product/use-case points only when the mismatch weakens use-case fit; floor dimensions at zero.",
   "",
-  "Human review covers company identity, eligibility, relationship metadata and potential fit. Named contacts are shown as context only; Codex audits contacts and contact methods separately.",
+  "Human review covers company identity, submitted-category alignment, relationship metadata and potential fit. Category mismatch lowers fit but does not independently invalidate a candidate. Contacts and contact methods are outside this protocol.",
   "",
   ...selected.flatMap((candidate) => [
     `## ${candidate.blindCandidateId} — ${candidate.companyName}`,
     "",
     `Occurrences: ${candidate.occurrenceCount}`,
+    `Official website: ${candidate.submittedOfficialWebsiteUrls.join(", ") || "not supplied"}`,
     "",
     "Independent evidence:",
     "",
     ...candidate.independentEvidenceUrls.map((url) => `- ${url}`),
     "",
-    "Named-contact claims:",
-    "",
-    ...(candidate.namedContactClaims.length > 0
-      ? candidate.namedContactClaims.map((claim) => `- ${claim.name} — ${claim.role} — ${claim.sourceUrl}`)
-      : ["- None"]),
-    "",
     ...candidate.submissions.flatMap((submission) => [
-      `### Submitted answer (${submission.blindRunId}, rank ${submission.answerRank})`,
+      `### Submitted answer (${submission.blindRunId}, ${submission.claimedCategory} rank ${submission.categoryRank ?? "unclear"}, overall ${submission.answerRank})`,
       "",
       submission.exactAnswerExcerpt,
       "",

@@ -18,11 +18,12 @@ type EvidencePacket = {
     countryCode: string;
     occurrenceCount: number;
     mergedSourceUrls: string[];
-    claimedPublicEmails: string[];
-    claimedPublicPhones: string[];
+    mergedOfficialWebsiteUrls: string[];
     submissions: Array<{
       blindRunId: string;
       answerRank: number;
+      categoryRank: number | null;
+      claimedCategory: string;
       claimedChannelClass: string;
       claimedCudyRelationship: string;
       exactAnswerExcerpt: string;
@@ -91,7 +92,7 @@ const markdown = [
   "",
   `- Distinct candidates: ${verifiedCandidates.length}`,
   `- Candidate occurrences: ${packet.occurrenceCount}`,
-  "- The next stage applies evidence gates, five potential-fit dimensions, and separate contact scores.",
+  "- The next stage applies evidence gates and five potential-fit dimensions; contacts are outside this protocol.",
   "",
   ...verifiedCandidates.flatMap((candidate) => {
     const verification = candidate.independentVerification;
@@ -108,18 +109,6 @@ const markdown = [
       "",
       ...verification.independentEvidenceUrls.map((url) => `- ${url}`),
       "",
-      "Verified named contacts claimed in submissions:",
-      "",
-      ...(verification.verifiedNamedContactClaims.length > 0
-        ? verification.verifiedNamedContactClaims.map((claim) => `- ${claim.name} — ${claim.role} — ${claim.sourceUrl}`)
-        : ["- None"]),
-      "",
-      "Verified public contact methods claimed in submissions:",
-      "",
-      ...(verification.verifiedPublicContactMethodClaims.length > 0
-        ? verification.verifiedPublicContactMethodClaims.map((claim) => `- ${claim.value} — ${claim.sourceUrl}`)
-        : ["- None"]),
-      "",
       "Unverified or contradicted submission claims:",
       "",
       ...(verification.unverifiedOrContradictedClaims.length > 0
@@ -129,7 +118,7 @@ const markdown = [
       ...candidate.submissions.flatMap((submission, index) => [
         `### Submission ${index + 1} (${submission.blindRunId}, answer rank ${submission.answerRank})`,
         "",
-        `Claimed class: ${submission.claimedChannelClass}; claimed Cudy relationship: ${submission.claimedCudyRelationship}`,
+        `Claimed category: ${submission.claimedCategory}; category rank: ${submission.categoryRank ?? "unclear"}; claimed Cudy relationship: ${submission.claimedCudyRelationship}`,
         "",
         submission.exactAnswerExcerpt,
         "",
@@ -151,6 +140,4 @@ console.log(JSON.stringify({
   targetCountryOperationConfirmed: verificationDocument.candidates.filter((item) => item.operatesInCountry === true).length,
   channelRelevantConfirmed: verificationDocument.candidates.filter((item) => item.channelRelevant === true).length,
   currentCudyRelationshipsConfirmed: verificationDocument.candidates.filter((item) => item.cudyRelationshipEvidence === "confirmed_current").length,
-  namedContactClaimsVerified: verificationDocument.candidates.reduce((sum, item) => sum + item.verifiedNamedContactClaims.length, 0),
-  publicContactMethodClaimsVerified: verificationDocument.candidates.reduce((sum, item) => sum + item.verifiedPublicContactMethodClaims.length, 0),
 }, null, 2));

@@ -6,7 +6,7 @@ import {
   deterministicBlindId,
   validateNormalizedCandidate,
   type NormalizedCandidate,
-  type NormalizedContact,
+  type BenchmarkCompanyCategory,
 } from "./judging";
 
 export type MeasuredRun = {
@@ -23,8 +23,6 @@ export type MeasuredRun = {
 export type CandidateOccurrence = NormalizedCandidate & {
   extractionRule: "numbered_heading" | "numbered_table_row" | "bold_candidate";
   canonicalKey: string;
-  claimedEmails: string[];
-  claimedPhones: string[];
 };
 
 export type DeduplicatedCandidate = {
@@ -35,8 +33,7 @@ export type DeduplicatedCandidate = {
   occurrenceCount: number;
   occurrences: CandidateOccurrence[];
   mergedSourceUrls: string[];
-  mergedClaimedEmails: string[];
-  mergedClaimedPhones: string[];
+  mergedOfficialWebsiteUrls: string[];
 };
 
 type CandidateMatch = {
@@ -189,6 +186,16 @@ function candidateDomain(companyName: string, urls: string[]): string | null {
   return domains.find((domain) => !excluded.has(domain)) ?? null;
 }
 
+function officialWebsiteUrl(excerpt: string, urls: string[], companyName: string): string | null {
+  const labeledLine = excerpt.split("\n").find((line) => /(?:官方网站|官方網站|公司官网|公司官網|官网|官網|official\s+(?:company\s+)?website|website|webseite)/iu.test(line));
+  const labeledUrl = labeledLine ? extractUrls(labeledLine)[0] : undefined;
+  if (labeledUrl) return labeledUrl;
+  const domain = candidateDomain(companyName, urls);
+  return domain === null ? null : urls.find((url) => {
+    try { return registrableDomain(new URL(url).hostname) === domain; } catch { return false; }
+  }) ?? null;
+}
+
 function inferClaimedClass(excerpt: string): NormalizedCandidate["claimedChannelClass"] {
   if (/(?:bestätigte|current cudy|已证实|已證實|当前\s*cudy|當前\s*cudy|cudy合作证据.{0,12}(?:是|✅)|cudy-belege.{0,12}ja)/iu.test(excerpt)) {
     return "confirmed_current_cudy";
@@ -202,48 +209,26 @@ function inferClaimedClass(excerpt: string): NormalizedCandidate["claimedChannel
   return "unclear";
 }
 
+function inferClaimedCategory(excerpt: string): BenchmarkCompanyCategory | "unclear" {
+  if (/(?:类别|類別|category|kategorie)\s*[：:]?\s*(?:一级分销商|一級分銷商|tier[ -]?1|distribut|vad|wholesal|großhandel|grosshandel)/iu.test(excerpt)) {
+    return "tier1_distributor";
+  }
+  if (/(?:类别|類別|category|kategorie)\s*[：:]?\s*(?:reseller|var|经销商|經銷商|转售商|轉售商|fachhändler)/iu.test(excerpt)) {
+    return "reseller";
+  }
+  if (/(?:类别|類別|category|kategorie)\s*[：:]?\s*(?:retailer|retail|零售商|零售|einzelhändler|online.?shop)/iu.test(excerpt)) {
+    return "retailer";
+  }
+  if (/(?:类别|類別|category|kategorie)\s*[：:]?\s*(?:si\b|system\s*integrat|系统集成|系統整合|系统整合|systemhaus)/iu.test(excerpt)) {
+    return "si";
+  }
+  return "unclear";
+}
+
 function inferCudyRelationship(excerpt: string): NormalizedCandidate["claimedCudyRelationship"] {
   if (/(?:keine öffentliche cudy|尚无\s*cudy|尚無\s*cudy|未.*cudy.*证据|without.*cudy.*evidence|no.*cudy.*evidence)/iu.test(excerpt)) return "not_confirmed";
   if (/(?:cudy.{0,100}(?:产品|產品|product|sortiment|销售|銷售|在售|listet|verkauft|distribut)|(?:产品|產品|product|销售|銷售|在售|listet|verkauft|distribut).{0,100}cudy)/iu.test(excerpt)) return "confirmed";
   return "unclear";
-}
-
-function extractEmails(text: string): string[] {
-  return [...new Set((text.match(/(?<![\p{L}0-9._%+-])[\p{L}0-9._%+-]+@[\p{L}0-9.-]+\.[\p{L}]{2,}/giu) ?? []).map((value) => value.toLowerCase()))];
-}
-
-function extractPhones(text: string): string[] {
-  const withoutUrls = text.replace(/https?:\/\/\S+/giu, " ");
-  const candidates = withoutUrls.match(/(?:\+\d{1,3}|0\d{2,5})[\s()./-]+(?:\d[\s()./-]*){5,}/g) ?? [];
-  return [...new Set(candidates.map((value) => value.trim()).filter((value) => value.replace(/\D/g, "").length >= 7))];
-}
-
-function contactClaims(excerpt: string, urls: string[]): NormalizedContact[] {
-  const evidenceUrls = urls;
-  const contacts: NormalizedContact[] = [];
-  for (const email of extractEmails(excerpt)) {
-    contacts.push({
-      fullName: null,
-      jobTitle: null,
-      publicBusinessEmail: email,
-      publicBusinessPhone: null,
-      publicProfileUrl: null,
-      evidenceUrls,
-      answerExcerpt: email,
-    });
-  }
-  for (const phone of extractPhones(excerpt)) {
-    contacts.push({
-      fullName: null,
-      jobTitle: null,
-      publicBusinessEmail: null,
-      publicBusinessPhone: phone,
-      publicProfileUrl: null,
-      evidenceUrls,
-      answerExcerpt: phone,
-    });
-  }
-  return contacts;
 }
 
 function excerptEnd(answerText: string, match: CandidateMatch, next: CandidateMatch | undefined): number {
@@ -266,31 +251,37 @@ export function extractCandidateOccurrences(run: MeasuredRun, secretSalt: string
   const seen = new Set<string>();
   const seenNames = new Set<string>();
   const candidates: CandidateOccurrence[] = [];
+  const categoryCounts = new Map<BenchmarkCompanyCategory, number>();
 
-  for (let index = 0; index < matches.length && candidates.length < 20; index += 1) {
+  for (let index = 0; index < matches.length && candidates.length < 40; index += 1) {
     const match = matches[index];
     const excerpt = run.answerText.slice(match.start, excerptEnd(run.answerText, match, matches[index + 1])).trim();
+    const claimedCategory = inferClaimedCategory(excerpt);
+    const currentCategoryCount = claimedCategory === "unclear" ? 0 : (categoryCounts.get(claimedCategory) ?? 0);
+    if (claimedCategory !== "unclear" && currentCategoryCount >= 10) continue;
     const sourceUrls = extractUrls(excerpt);
-    const domain = candidateDomain(match.companyName, sourceUrls);
+    const websiteUrl = officialWebsiteUrl(excerpt, sourceUrls, match.companyName);
+    const domain = websiteUrl === null ? candidateDomain(match.companyName, sourceUrls) : registrableDomain(new URL(websiteUrl).hostname);
     const nameKey = normalizedNameKey(match.companyName);
     const canonicalKey = domain ? `domain:${domain}` : `name:${nameKey}:${run.countryCode}`;
     if (seen.has(canonicalKey) || seenNames.has(nameKey)) continue;
     seen.add(canonicalKey);
     seenNames.add(nameKey);
-    const contacts = contactClaims(excerpt, sourceUrls);
     const candidate: CandidateOccurrence = {
       blindCandidateId: deterministicBlindId("C", secretSalt, canonicalKey),
       blindRunId,
       answerRank: candidates.length + 1,
+      categoryRank: claimedCategory === "unclear" ? null : currentCategoryCount + 1,
+      claimedCategory,
       companyName: match.companyName,
       legalName: null,
       domain,
+      officialWebsiteUrl: websiteUrl,
       countryCode: run.countryCode,
       claimedChannelClass: inferClaimedClass(excerpt),
       claimedCudyRelationship: inferCudyRelationship(excerpt),
       answerExcerpt: excerpt,
       sourceUrls,
-      contacts,
       codexPreVerification: {
         companyExists: null,
         operatesInCountry: null,
@@ -300,11 +291,10 @@ export function extractCandidateOccurrences(run: MeasuredRun, secretSalt: string
       },
       extractionRule: match.extractionRule,
       canonicalKey,
-      claimedEmails: extractEmails(excerpt),
-      claimedPhones: extractPhones(excerpt),
     };
     validateNormalizedCandidate(candidate);
     candidates.push(candidate);
+    if (claimedCategory !== "unclear") categoryCounts.set(claimedCategory, currentCategoryCount + 1);
   }
   return candidates;
 }
@@ -325,8 +315,7 @@ export function deduplicateOccurrences(occurrences: CandidateOccurrence[]): Dedu
       occurrenceCount: items.length,
       occurrences: items,
       mergedSourceUrls: [...new Set(items.flatMap((item) => item.sourceUrls))],
-      mergedClaimedEmails: [...new Set(items.flatMap((item) => item.claimedEmails))],
-      mergedClaimedPhones: [...new Set(items.flatMap((item) => item.claimedPhones))],
+      mergedOfficialWebsiteUrls: [...new Set(items.flatMap((item) => item.officialWebsiteUrl ? [item.officialWebsiteUrl] : []))],
     }))
     .sort((left, right) => right.occurrenceCount - left.occurrenceCount || left.blindCandidateId.localeCompare(right.blindCandidateId));
 }

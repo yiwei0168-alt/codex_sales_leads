@@ -33,23 +33,6 @@ export type AuditRiskFlag =
   | "high_score_without_official_source"
   | "relationship_unclear";
 
-export type ScoredNamedContact = {
-  claimId: string;
-  name: string;
-  role: string;
-  sourceUrl: string;
-  relevanceScore: 0 | 1 | 2 | 3;
-  notes: string | null;
-};
-
-export type ScoredContactMethod = {
-  claimId: string;
-  value: string;
-  sourceUrl: string;
-  usefulnessScore: 0 | 1 | 2;
-  notes: string | null;
-};
-
 export type PotentialPartnerAssessment = {
   blindCandidateId: string;
   assessedAt: string;
@@ -58,8 +41,6 @@ export type PotentialPartnerAssessment = {
   evidenceStrength: EvidenceStrength;
   fitDimensions: PotentialFitDimensions | null;
   independentEvidenceUrls: string[];
-  namedContacts: ScoredNamedContact[];
-  contactMethods: ScoredContactMethod[];
   riskFlags: AuditRiskFlag[];
   notes: string[];
 };
@@ -115,15 +96,6 @@ function assertBlindCandidateId(value: string): void {
   if (!/^C-[A-F0-9]{12}$/.test(value)) throw new Error("Invalid blind candidate ID");
 }
 
-function assertClaimId(value: string): void {
-  if (!/^[NM]-[A-F0-9]{12}$/.test(value)) throw new Error("Invalid contact claim ID");
-}
-
-export function deterministicClaimId(kind: "N" | "M", blindCandidateId: string, stableValue: string): string {
-  const digest = createHash("sha256").update(`${blindCandidateId}:${kind}:${stableValue}`).digest("hex").slice(0, 12).toUpperCase();
-  return `${kind}-${digest}`;
-}
-
 export function evidenceGatesPass(gates: EvidenceGates): boolean {
   return Object.values(gates).every(Boolean);
 }
@@ -173,23 +145,6 @@ export function validatePotentialPartnerAssessment(assessment: PotentialPartnerA
   validateFitDimensions(assessment.fitDimensions, assessment.evidenceGates);
   if (assessment.independentEvidenceUrls.length === 0) throw new Error("Independent audit evidence is required");
   assessment.independentEvidenceUrls.forEach(assertUrl);
-  const claimIds = new Set<string>();
-  for (const contact of assessment.namedContacts) {
-    assertClaimId(contact.claimId);
-    if (claimIds.has(contact.claimId)) throw new Error(`Duplicate contact claim ID ${contact.claimId}`);
-    claimIds.add(contact.claimId);
-    if (!contact.name.trim() || !contact.role.trim()) throw new Error("Named contacts require a name and role");
-    assertIntegerRange(contact.relevanceScore, 0, 3, "Named-contact score");
-    assertUrl(contact.sourceUrl);
-  }
-  for (const method of assessment.contactMethods) {
-    assertClaimId(method.claimId);
-    if (claimIds.has(method.claimId)) throw new Error(`Duplicate contact claim ID ${method.claimId}`);
-    claimIds.add(method.claimId);
-    if (!method.value.trim()) throw new Error("Contact methods require a value");
-    assertIntegerRange(method.usefulnessScore, 0, 2, "Contact-method score");
-    assertUrl(method.sourceUrl);
-  }
   if (new Set(assessment.riskFlags).size !== assessment.riskFlags.length) throw new Error("Duplicate audit risk flag");
 }
 

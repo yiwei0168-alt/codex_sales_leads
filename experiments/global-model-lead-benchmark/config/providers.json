@@ -1,11 +1,11 @@
 {
-  "schemaVersion": 3,
-  "protocolVersion": "native-search-potential-fit-v3",
+  "schemaVersion": 4,
+  "protocolVersion": "native-search-four-channel-categories-v4",
   "providers": {
     "openai": {
       "displayName": "OpenAI via Lingyu",
       "enabled": true,
-      "status": "ready_v2",
+      "status": "requires_v4_preflight",
       "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "LINGYU_API_KEY",
@@ -18,9 +18,9 @@
         "recoveryFallbackApprovedByOutcomeRequirement": true
       },
       "model": {
-        "selectionPolicy": "user-confirmed fast model with reasoning disabled",
+        "selectionPolicy": "user-confirmed balanced model through Lingyu with low reasoning for reliable search planning",
         "modelId": "gpt-5.6-terra",
-        "reasoningMode": "none"
+        "reasoningMode": "low"
       },
       "nativeSearch": {
         "required": true,
@@ -43,7 +43,7 @@
     "claude": {
       "displayName": "Anthropic Claude via Lingyu",
       "enabled": true,
-      "status": "ready_v3",
+      "status": "requires_v4_preflight",
       "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "CLAUDE_API_KEY",
@@ -56,9 +56,9 @@
         "multipleModelsApprovedByUser": true
       },
       "model": {
-        "selectionPolicy": "user-approved additional high-capability Claude model with observed native web search",
+        "selectionPolicy": "Lingyu-accessible Claude model with observed native web search; low effort limits latency while preserving adaptive reasoning",
         "modelId": "claude-fable-5",
-        "reasoningMode": "disabled",
+        "reasoningMode": "adaptive_low_effort",
         "comparisonTier": "supplementary_high_capability",
         "candidateProbe": {
           "claude-haiku-4-5": "basic_failed_gateway_502",
@@ -74,7 +74,7 @@
         "adapter": "anthropic_web_search_20260209_dynamic_filtering",
         "mustVerifyServerToolSignal": "server_tool_use:web_search",
         "externalSearchInjectionForbidden": true,
-        "targetBudgetImplementation": "provider_max_uses"
+        "targetBudgetImplementation": "provider_max_uses_when_supported"
       },
       "latestPreflight": {
         "checkedAt": "2026-08-21",
@@ -92,7 +92,7 @@
     "kimi": {
       "displayName": "Moonshot Kimi",
       "enabled": true,
-      "status": "ready_v2",
+      "status": "requires_v4_preflight",
       "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "KIMI_API_KEY",
@@ -103,9 +103,9 @@
         "modelLockedByUser": true
       },
       "model": {
-        "selectionPolicy": "account-visible Kimi general model that completes the official web-search tool flow; K2.6 retained only as failed diagnostic evidence",
+        "selectionPolicy": "Kimi flagship model with the official Formula web-search flow and low reasoning effort",
         "modelId": "kimi-k3",
-        "reasoningMode": "disabled",
+        "reasoningMode": "low",
         "fallbackFrom": "kimi-k2.6"
       },
       "nativeSearch": {
@@ -113,7 +113,7 @@
         "adapter": "moonshot_official_formula_web_search",
         "mustVerifyServerToolSignal": "web_search tool call plus successful moonshot/web-search:latest fiber",
         "externalSearchInjectionForbidden": true,
-        "targetBudgetImplementation": "first_search_required; stop_opening_new_search_batches_after_three_observed_calls; finish_any_in_flight_batch; then_keep_tool_schema_and_set_tool_choice_none"
+        "targetBudgetImplementation": "first_search_required; stop_opening_new_search_batches_at_configured_maximum; finish_any_in_flight_batch; then_keep_tool_schema_and_set_tool_choice_none"
       },
       "latestPreflight": {
         "checkedAt": "2026-08-21",
@@ -129,7 +129,7 @@
     "deepseek": {
       "displayName": "DeepSeek",
       "enabled": true,
-      "status": "ready_v2",
+      "status": "requires_v4_preflight",
       "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "DEEPSEEK_API_KEY",
@@ -140,8 +140,8 @@
         "modelLockedByUser": true
       },
       "model": {
-        "selectionPolicy": "fast V4 model in non-thinking mode",
-        "modelId": "deepseek-v4-flash",
+        "selectionPolicy": "higher-capability V4 model in non-thinking mode to improve tool-loop completion reliability",
+        "modelId": "deepseek-v4-pro",
         "reasoningMode": "disabled"
       },
       "nativeSearch": {
@@ -163,7 +163,7 @@
     "grok": {
       "displayName": "xAI Grok",
       "enabled": true,
-      "status": "ready_v2",
+      "status": "requires_v4_preflight",
       "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "XAI_API_KEY",
@@ -175,9 +175,9 @@
         "nodeUseEnvProxy": true
       },
       "model": {
-        "selectionPolicy": "fastest account-visible general xAI model documented for non-reasoning operation",
-        "modelId": "grok-4.3",
-        "reasoningMode": "none",
+        "selectionPolicy": "current xAI general model documented with native web search",
+        "modelId": "grok-4.6",
+        "reasoningMode": "provider_default",
         "discoverySnapshot": {
           "checkedAt": "2026-08-20",
           "modelsEndpointStatus": 200,
@@ -191,7 +191,7 @@
         "externalSearchInjectionForbidden": true,
         "inlineCitations": true,
         "parallelToolCalls": false,
-        "targetBudgetImplementation": "provider_max_turns_not_equivalent_to_tool_call_count"
+        "targetBudgetImplementation": "provider_managed_search_observe_actual_usage"
       },
       "latestPreflight": {
         "checkedAt": "2026-08-20",
@@ -207,7 +207,7 @@
     "gemini": {
       "displayName": "Google Gemini",
       "enabled": true,
-      "status": "ready_v3",
+      "status": "requires_v4_preflight",
       "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "GEMINI_API_KEY",

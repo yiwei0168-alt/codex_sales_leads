@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "native-search-four-channel-categories-v4",
+  "asOf": "2026-08-21",
+  "status": "protocol_offline_verified_provider_preflight_required",
+  "objective": "compare company-level potential-fit discovery across four fixed channel categories and the Sales Lead Copilot product comparator",
+  "categoryTargets": {
+    "tier1_distributor": 10,
+    "reseller": 10,
+    "retailer": 10,
+    "si": 10
+  },
+  "companyTargetMaximum": 40,
+  "contactsInScope": false,
+  "companyUrlRequired": true,
+  "rankingBasis": "potential partnership fit within each category",
+  "categoryMismatchPolicy": {
+    "eligibility": "remains eligible and attributed to the submitted category",
+    "credibleSecondaryRoleChannelDeduction": 3,
+    "materialMismatchWithinFourCategoriesChannelDeduction": 8,
+    "additionalProductUseCaseDeductionWhenAffected": [0, 5]
+  },
+  "orchestration": {
+    "langChainPresent": false,
+    "langGraphPresent": false,
+    "currentImplementation": "native TypeScript runner plus provider-native search adapters, Tavily discovery/page extraction for the product comparator, and separate Codex evidence scoring",
+    "langChainChangeStatus": "not introduced pending separate architecture confirmation"
+  },
+  "outputPolicy": {
+    "benchmarkTokenCap": null,
+    "providerNativeMaximumUsedWhenApiRequiresAValue": true,
+    "naturalLanguage": true,
+    "jsonRequired": false
+  },
+  "reliabilityPolicy": {
+    "timeoutMinutesPerSystem": 20,
+    "automaticTransportRetries": 2,
+    "retryableConditions": ["network_reset", "http_408", "http_429", "http_500", "http_502", "http_503", "http_504"],
+    "contentBasedRetriesForbidden": true
+  },
+  "providers": {
+    "openai": { "model": "gpt-5.6-terra", "transport": "Lingyu", "reasoning": "low" },
+    "claude": { "model": "claude-fable-5", "transport": "Lingyu", "effort": "low" },
+    "kimi": { "model": "kimi-k3", "transport": "official_api", "reasoningEffort": "low" },
+    "deepseek": { "model": "deepseek-v4-pro", "transport": "official_api", "thinking": "disabled" },
+    "grok": { "model": "grok-4.6", "transport": "official_api", "reasoning": "provider_default" },
+    "gemini": { "model": "gemini-3.7-flash", "transport": "official_api", "thinking": "low" }
+  },
+  "offlineVerification": {
+    "typecheck": "passed",
+    "lint": "passed",
+    "fullTestSuite": "82_passed",
+    "productionBuild": "passed",
+    "providerRequestAndProtocolAssertions": "passed"
+  },
+  "nextAction": "run one basic-plus-native-search preflight per provider before authorizing measured calls",
+  "privacy": {
+    "containsLeadRecords": false,
+    "containsContactDetails": false,
+    "containsCredentials": false
+  }
+}

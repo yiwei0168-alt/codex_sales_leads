@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 
 import {
   compareHumanAudit,
-  deterministicClaimId,
   potentialFitBand,
   potentialFitScore,
   primaryPoolStatus,
@@ -49,21 +48,6 @@ PotentialPartnerAssessment {
     evidenceStrength: gatesPass ? "strong" : "weak",
     fitDimensions: score === null ? null : dimensions(score),
     independentEvidenceUrls: [`https://example${index}.de/evidence`],
-    namedContacts: [{
-      claimId: deterministicClaimId("N", blindCandidateId, "Erika Muster:Sales Director"),
-      name: "Erika Muster",
-      role: "Sales Director",
-      sourceUrl: `https://example${index}.de/team`,
-      relevanceScore: 3,
-      notes: null,
-    }],
-    contactMethods: [{
-      claimId: deterministicClaimId("M", blindCandidateId, "sales@example.de"),
-      value: "sales@example.de",
-      sourceUrl: `https://example${index}.de/contact`,
-      usefulnessScore: 2,
-      notes: null,
-    }],
     riskFlags: index % 11 === 0 ? ["source_conflict"] : [],
     notes: [],
   };

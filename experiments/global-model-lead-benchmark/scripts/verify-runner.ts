@@ -36,13 +36,20 @@ import { validateCandidateVerification } from "../lib/review-verification";
 
 const context = await loadContext("openai", "2026-08-20", 1);
 if (!context.prompt.includes("Germany（DE）") || !context.prompt.includes("用德语、英语进行检索")) throw new Error("Prompt substitution failed");
-if (!context.prompt.includes("原生联网搜索能力") || !context.prompt.includes("不要输出JSON")
+if (!context.prompt.includes("原生联网搜索和原生网页读取能力") || !context.prompt.includes("不要输出JSON")
   || !context.prompt.includes("是否已经与Cudy合作不影响匹配度")
-  || !context.prompt.includes("渠道能力、产品互补性、市场覆盖和合作可执行性")) {
-  throw new Error("Potential-partner natural-language search prompt is incomplete");
+  || !context.prompt.includes("每类目标提交10家公司，共目标40家")
+  || !context.prompt.includes("不搜索、不输出关键联系人")) {
+  throw new Error("Four-category natural-language search prompt is incomplete");
 }
-if (context.pilot.protocolVersion !== "native-search-potential-fit-v3" || context.pilot.artifactTag !== "potential-fit-v3") {
-  throw new Error("Potential-fit v3 artifact isolation is incomplete");
+if (context.pilot.protocolVersion !== "native-search-four-channel-categories-v4" || context.pilot.artifactTag !== "four-channel-categories-v4") {
+  throw new Error("Four-category v4 artifact isolation is incomplete");
+}
+if (Object.values(context.pilot.categoryTargets).some((target) => target !== 10)
+  || context.pilot.limits.primaryCompanyCutoff !== 40
+  || !context.pilot.limits.providerNativeOutputLimitOnly
+  || context.pilot.limits.automaticTransportRetries !== 2) {
+  throw new Error("Four-category quotas or reliability controls are incomplete");
 }
 if (context.pilot.judging.blindHumanAuditPercent !== 25 || context.pilot.judging.blindHumanAuditMinimum !== 12
   || context.pilot.judging.highRiskSupplementMaximumPercent !== 10
@@ -50,7 +57,7 @@ if (context.pilot.judging.blindHumanAuditPercent !== 25 || context.pilot.judging
   throw new Error("Potential-fit human audit limits are incomplete");
 }
 if (context.prompt.includes("区分“已证实的当前Cudy渠道”")) throw new Error("Existing-channel priority leaked into the v3 prompt");
-if (/runMetadata|summaryMetrics|queriesExecutedCount|pageIndex/.test(context.prompt)) throw new Error("Legacy benchmark schema leaked into the v2 prompt");
+if (/runMetadata|summaryMetrics|queriesExecutedCount|pageIndex/.test(context.prompt)) throw new Error("Legacy benchmark schema leaked into the v4 prompt");
 if (!context.pilot.productComparator.enabled || !context.pilot.productComparator.sameUserPrompt
   || context.pilot.productComparator.nativeSearchRestrictionApplies
   || context.pilot.productComparator.sameTimeoutMinutes !== context.pilot.limits.timeoutMinutesPerProvider
@@ -76,31 +83,32 @@ if (anthropicMessagesUrl("claude", "https://lingyuapi.com") !== "https://lingyua
 }
 
 const openAiRequest = buildOpenAiRequest(context);
-if (openAiRequest.model !== "gpt-5.6-terra" || openAiRequest.reasoning.effort !== "none"
-  || "max_tool_calls" in openAiRequest || openAiRequest.max_output_tokens !== 8000
+if (openAiRequest.model !== "gpt-5.6-terra" || openAiRequest.reasoning.effort !== "low"
+  || "max_tool_calls" in openAiRequest || "max_output_tokens" in openAiRequest
   || openAiRequest.tools[0].type !== "web_search" || "instructions" in openAiRequest) {
   throw new Error("OpenAI natural-language search request is incomplete");
 }
 
 const claudeContext = await loadContext("claude", "2026-08-20", 1);
 const claudeRequest = buildAnthropicRequest(claudeContext);
-if (claudeRequest.model !== "claude-fable-5" || claudeRequest.max_tokens !== 8000
-  || claudeRequest.tools[0].type !== "web_search_20260209" || claudeRequest.tools[0].max_uses !== 12
-  || "system" in claudeRequest || "thinking" in claudeRequest) {
+if (claudeRequest.model !== "claude-fable-5" || claudeRequest.max_tokens !== 128_000
+  || claudeRequest.tools[0].type !== "web_search_20260209" || claudeRequest.tools[0].max_uses !== 8
+  || claudeRequest.output_config?.effort !== "low" || "system" in claudeRequest || "thinking" in claudeRequest) {
   throw new Error("Claude natural-language search request is incomplete");
 }
 
 const deepSeekContext = await loadContext("deepseek", "2026-08-20", 1);
 const deepSeekRequest = buildAnthropicRequest(deepSeekContext);
-if (deepSeekRequest.model !== "deepseek-v4-flash" || deepSeekRequest.thinking?.type !== "disabled"
+if (deepSeekRequest.model !== "deepseek-v4-pro" || deepSeekRequest.max_tokens !== 384_000
+  || deepSeekRequest.thinking?.type !== "disabled"
   || deepSeekRequest.tools[0].type !== "web_search_20250305") {
   throw new Error("DeepSeek non-thinking search request is incomplete");
 }
 
 const kimiContext = await loadContext("kimi", "2026-08-20", 1);
 const kimiRequest = buildKimiRequest(kimiContext, [{ role: "user", content: "test" }]);
-if (kimiRequest.model !== "kimi-k3" || kimiRequest.max_completion_tokens !== 8000
-  || kimiRequest.thinking.type !== "disabled" || kimiRequest.tools[0].function.name !== "$web_search"
+if (kimiRequest.model !== "kimi-k3" || kimiRequest.max_completion_tokens !== 128_000
+  || kimiRequest.reasoning_effort !== "low" || "thinking" in kimiRequest || kimiRequest.tools?.[0]?.function.name !== "$web_search"
   || "response_format" in kimiRequest) {
   throw new Error("Kimi natural-language search request is incomplete");
 }
@@ -110,7 +118,7 @@ if ("tools" in buildKimiRequest(kimiContext, [{ role: "user", content: "test" }]
 const kimiRequiredSearch = buildKimiRequest(kimiContext, [{ role: "user", content: "test" }], [
   { type: "function", function: { name: "web_search" } },
 ], "required");
-if (kimiRequiredSearch.tool_choice !== "required" || kimiRequiredSearch.tools[0].function.name !== "web_search") {
+if (kimiRequiredSearch.tool_choice !== "required" || kimiRequiredSearch.tools?.[0]?.function.name !== "web_search") {
   throw new Error("Kimi recovery request does not require an auditable first native search");
 }
 if (buildKimiRequest(kimiContext, [{ role: "user", content: "test" }], kimiRequiredSearch.tools, "none").tool_choice !== "none") {
@@ -119,8 +127,8 @@ if (buildKimiRequest(kimiContext, [{ role: "user", content: "test" }], kimiRequi
 
 const grokContext = await loadContext("grok", "2026-08-20", 1);
 const grokRequest = buildGrokRequest(grokContext);
-if (grokRequest.model !== "grok-4.3" || grokRequest.reasoning.effort !== "none"
-  || grokRequest.max_turns !== 12 || grokRequest.max_output_tokens !== 8000
+if (grokRequest.model !== "grok-4.6" || "reasoning" in grokRequest
+  || "max_turns" in grokRequest || "max_output_tokens" in grokRequest
   || grokRequest.parallel_tool_calls !== false || grokRequest.tools[0].type !== "web_search"
   || "text" in grokRequest || "tool_choice" in grokRequest) {
   throw new Error("Grok natural-language search request is incomplete");
@@ -130,7 +138,7 @@ const geminiContext = await loadContext("gemini", "2026-08-20", 1);
 const geminiRequest = buildGeminiRequest(geminiContext);
 if (geminiRequest.model !== "gemini-3.7-flash" || geminiRequest.input !== context.prompt
   || geminiRequest.generation_config.thinking_level !== "low"
-  || geminiRequest.generation_config.max_output_tokens !== 8000
+  || "max_output_tokens" in geminiRequest.generation_config
   || geminiRequest.tools?.[0]?.type !== "google_search" || "system_instruction" in geminiRequest) {
   throw new Error("Gemini natural-language search request is incomplete");
 }
@@ -193,7 +201,7 @@ const potentialAssessment: PotentialPartnerAssessment = {
     partnershipExecutionCapability: 10, strategicComplementarity: 10,
   },
   independentEvidenceUrls: ["https://example.de/evidence"],
-  namedContacts: [], contactMethods: [], riskFlags: [], notes: [],
+  riskFlags: [], notes: [],
 };
 if (potentialFitScore(potentialAssessment) !== 80 || potentialFitBand(potentialAssessment) !== "high_fit"
   || primaryPoolStatus(potentialAssessment) !== "existing_relationship_reference") {
@@ -218,6 +226,7 @@ const syntheticRun = {
 const syntheticCandidates = extractCandidateOccurrences(syntheticRun, "test-salt");
 if (syntheticCandidates.length !== 2 || syntheticCandidates[0].answerRank !== 1
   || syntheticCandidates[0].sourceUrls[0] !== "https://shop.example.de/networking"
+  || syntheticCandidates[0].officialWebsiteUrl !== "https://shop.example.de/networking"
   || deduplicateOccurrences(syntheticCandidates).length !== 2) {
   throw new Error("Natural-language candidate extraction or deduplication failed");
 }
@@ -280,6 +289,23 @@ if (syntheticLeadingTableCandidates.length !== 2
 if (extractUrls("https://example.de/a?utm_source=x and https://example.de/a").length !== 1) {
   throw new Error("Normalized answer URL extraction failed");
 }
+const fourCategoryRows = [
+  ["一级分销商", "Distributor", "distributor"],
+  ["Reseller", "Reseller", "reseller"],
+  ["Retailer", "Retailer", "retailer"],
+  ["SI", "Integrator", "integrator"],
+].flatMap(([category, name, domain]) => Array.from({ length: 11 }, (_, index) =>
+  `| ${index + 1} | **${name} ${index + 1} GmbH** | 类别：${category} | https://${domain}${index + 1}.example/ |`));
+const fourCategoryCandidates = extractCandidateOccurrences({
+  ...syntheticRun,
+  answerText: fourCategoryRows.join("\n"),
+}, "test-salt");
+if (fourCategoryCandidates.length !== 40
+  || fourCategoryCandidates.some((candidate) => candidate.claimedCategory === "unclear" || candidate.categoryRank === null)
+  || new Set(fourCategoryCandidates.map((candidate) => candidate.claimedCategory)).size !== 4
+  || Math.max(...fourCategoryCandidates.map((candidate) => candidate.categoryRank ?? 0)) !== 10) {
+  throw new Error("Four-category extraction or per-category cutoff failed");
+}
 if (!isDegenerateProcessOutput(Array.from({ length: 20 }, () => "让我继续搜索更多渠道。").join(""))) {
   throw new Error("Degenerate process-output detection failed");
 }
@@ -296,10 +322,8 @@ validateCandidateVerification({
   evidenceSufficient: true,
   cudyRelationshipEvidence: "confirmed_current",
   independentEvidenceUrls: ["https://example.de/evidence"],
-  verifiedNamedContactClaims: [],
-  verifiedPublicContactMethodClaims: [],
   unverifiedOrContradictedClaims: [],
   notes: [],
 });
 
-console.log("Native-search potential-fit v3 benchmark validation passed");
+console.log("Native-search four-category v4 benchmark validation passed");

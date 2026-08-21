@@ -1,8 +1,10 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "status": "confirmed",
-  "primaryCompanyCutoff": 20,
-  "objective": "discover high-fit potential Cudy channel customers; current Cudy relationship has zero scoring weight",
+  "primaryCompanyCutoff": 40,
+  "categoryCutoff": 10,
+  "categories": ["tier1_distributor", "reseller", "retailer", "si"],
+  "objective": "identify and rank the highest-fit potential Cudy companies in four fixed channel categories; current Cudy relationship has zero scoring weight",
   "eligibilityGates": [
     "submittedIdentityUsable",
     "companyExists",
@@ -18,6 +20,18 @@
     "partnershipExecutionCapability": 15,
     "strategicComplementarity": 10
   },
+  "categoryMismatchPolicy": {
+    "candidateRemainsEligible": true,
+    "channelRoleAndCustomerAccessPointDeduction": {
+      "exact_or_primary_role": 0,
+      "credible_secondary_role": 3,
+      "material_mismatch_within_the_four_categories": 8
+    },
+    "additionalProductAndUseCaseFitDeductionWhenMismatchWeakensUseCaseFit": [0, 5],
+    "floorEachDimensionAtZero": true,
+    "scoringTreatment": "apply the category-alignment deduction after scoring the underlying company fit; do not fail an eligibility gate solely because the submitted category is inaccurate",
+    "metricsBucket": "score the candidate in the category where the submitting system placed it"
+  },
   "potentialFitBands": {
     "high_fit": [80, 100],
     "strong_fit": [65, 79],
@@ -30,16 +44,13 @@
     "values": ["confirmed_existing", "no_public_evidence", "unknown"],
     "confirmedExistingDisposition": "exclude_from_net_new_primary_pool_and_report_separately"
   },
-  "contactScoring": {
-    "namedContactRange": [0, 3],
-    "contactMethodRange": [0, 2],
-    "companyPotentialFitUnaffected": true
-  },
+  "contactScoring": null,
   "primaryMetrics": [
-    "PotentialFitNDCG@20",
-    "MeanPotentialFit@20",
-    "Precision@20",
-    "QualifiedProspects@20",
+    "MacroPotentialFitNDCG@10ByCategory",
+    "MacroMeanPotentialFit@10ByCategory",
+    "MacroPrecision@10ByCategory",
+    "QualifiedProspects@40",
+    "CategoryQuotaCompletionRate",
     "PooledRecall"
   ],
   "secondaryMetrics": [
@@ -47,16 +58,11 @@
     "uniqueQualifiedNetNewProspectCount",
     "sourceSupportedRate",
     "officialSourceRate",
-    "namedContactScoreSum",
-    "contactMethodScoreSum",
-    "companiesWithRelevantNamedContactRate",
-    "contactMisattributionRate",
     "latencyMs",
     "searchRequestsObserved"
   ],
   "resourceEfficiencyMetrics": [
     "qualifiedProspectsPerObservedSearchRequest",
-    "relevantContactsPerObservedSearchRequest",
     "qualifiedProspectsPerMinute",
     "estimatedCostPerQualifiedProspect"
   ],
@@ -64,15 +70,15 @@
     "reviewers": 1,
     "finalReviewer": "user",
     "providerIdentityHidden": true,
-    "codexReviewsAllPooledTop20Candidates": true,
+    "codexReviewsAllPooledTop40Candidates": true,
     "blindHumanAuditPercent": 25,
     "blindHumanAuditMinimum": 12,
     "companyAssessmentOnly": true,
-    "contactsAuditedByCodexSeparately": true,
+    "contactsAuditedByCodexSeparately": false,
     "auditHighRiskCandidates": true,
     "highRiskSupplementMaximumPercent": 10,
     "failedAuditExpansionPercent": 15,
-    "auditSeed": "CUDY-POTENTIAL-FIT-V3-HUMAN-AUDIT",
+    "auditSeed": "CUDY-FOUR-CHANNEL-V4-HUMAN-AUDIT",
     "acceptanceThresholds": {
       "qualifiedStatusAgreement": 0.9,
       "fitBandExactAgreement": 0.8,
@@ -89,7 +95,7 @@
     "not_independent_sales_lead"
   ],
   "goldPoolPolicy": {
-    "source": "deduplicated union of every measured model-run and product-comparator run's top-20 candidates",
+    "source": "deduplicated union of every measured model-run and product-comparator run's top-10 candidates in each of four categories",
     "primaryPool": "gate-valid candidates without a publicly confirmed existing Cudy relationship and with potentialFitScore >= 50",
     "existingRelationshipHandling": "metadata-only reference pool; never a fit-score bonus",
     "projectCrmExcluded": true,
