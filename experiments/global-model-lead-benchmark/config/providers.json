@@ -108,18 +108,20 @@
       },
       "nativeSearch": {
         "required": true,
-        "adapter": "moonshot_builtin_web_search",
-        "mustVerifyServerToolSignal": "$web_search",
+        "adapter": "moonshot_official_formula_web_search",
+        "mustVerifyServerToolSignal": "web_search tool call plus successful moonshot/web-search:latest fiber",
         "externalSearchInjectionForbidden": true,
-        "targetBudgetImplementation": "observe_client_side_tool_calls_until_wall_clock_timeout"
+        "targetBudgetImplementation": "observe_client_side_official_tool_calls_until_wall_clock_timeout"
       },
       "latestPreflight": {
-        "checkedAt": "2026-08-20",
+        "checkedAt": "2026-08-21",
         "basicRequest": "passed",
-        "nativeSearch": "passed",
-        "webSearchCalls": 1,
-        "sourceUrlCount": 5,
-        "automaticRetries": 0
+        "nativeSearch": "passed_after_official_formula_migration",
+        "webSearchCalls": 3,
+        "controlAnswerCharacters": 2794,
+        "automaticRetries": 0,
+        "legacyBuiltinDiagnostic": "four full-prompt attempts produced repeated process text and finish_reason_length",
+        "migrationReason": "Moonshot Help Center marks the legacy builtin search as under update; the official formula completed the same control task"
       }
     },
     "deepseek": {

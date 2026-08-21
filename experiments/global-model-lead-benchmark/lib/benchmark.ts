@@ -321,20 +321,28 @@ async function runAnthropic(context: RunContext): Promise<ProviderResult> {
   };
 }
 
-export function buildKimiRequest(context: RunContext, messages: any[]) {
+export function buildKimiRequest(context: RunContext, messages: any[], tools: any[] = [
+  { type: "builtin_function", function: { name: "$web_search" } },
+]) {
   return {
     model: context.provider.model.modelId,
     max_completion_tokens: context.pilot.limits.visibleOutputTokens,
     thinking: { type: "disabled" },
     messages,
-    tools: [{ type: "builtin_function", function: { name: "$web_search" } }],
+    tools,
   };
 }
 
 async function runKimi(context: RunContext): Promise<ProviderResult> {
   const { apiKey, baseUrl } = providerCredentials(context.provider);
+  const formulaUrl = `${baseUrl}/formulas/moonshot/web-search:latest`;
+  const headers = { authorization: `Bearer ${apiKey}`, "content-type": "application/json" };
+  const toolDeclaration = await requestJson(`${formulaUrl}/tools`, { headers }, 30_000);
+  const tools = toolDeclaration.tools;
+  if (!Array.isArray(tools) || tools.length === 0) throw new Error("Kimi official web-search returned no tool declaration");
   const messages: any[] = structuredClone(buildMessageEnvelope("kimi", context.prompt).messages ?? []);
   const rounds: unknown[] = [];
+  const toolExecutions: unknown[] = [];
   const deadline = Date.now() + context.pilot.limits.timeoutMinutesPerProvider * 60_000;
   const remainingTimeout = () => {
     const remaining = deadline - Date.now();
@@ -346,8 +354,8 @@ async function runKimi(context: RunContext): Promise<ProviderResult> {
   while (true) {
     const raw = await requestJson(`${baseUrl}/chat/completions`, {
       method: "POST",
-      headers: { authorization: `Bearer ${apiKey}`, "content-type": "application/json" },
-      body: JSON.stringify(buildKimiRequest(context, messages)),
+      headers,
+      body: JSON.stringify(buildKimiRequest(context, messages, tools)),
     }, remainingTimeout());
     rounds.push(raw);
     const choice = raw.choices?.[0];
@@ -355,12 +363,24 @@ async function runKimi(context: RunContext): Promise<ProviderResult> {
     messages.push(choice.message);
     if (choice.finish_reason !== "tool_calls") { text = choice.message.content ?? ""; break; }
     for (const toolCall of choice.message.tool_calls ?? []) {
+      if (toolCall.function?.name !== "web_search") throw new Error(`Kimi requested an unsupported official tool: ${toolCall.function?.name}`);
+      if (searches >= context.pilot.limits.nativeSearchActionsTargetBudget) {
+        throw new Error("Kimi exceeded the confirmed native-search action ceiling before producing a final answer");
+      }
       searches += 1;
-      messages.push({ role: "tool", tool_call_id: toolCall.id, name: toolCall.function.name, content: toolCall.function.arguments });
+      const execution = await requestJson(`${formulaUrl}/fibers`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(toolCall.function),
+      }, remainingTimeout());
+      toolExecutions.push(execution);
+      const content = execution.context?.encrypted_output ?? execution.output;
+      if (typeof content !== "string" || !content) throw new Error("Kimi official web-search returned no usable tool output");
+      messages.push({ role: "tool", tool_call_id: toolCall.id, content });
     }
   }
   if (!text.trim()) throw new Error("Kimi did not produce a final natural-language response within the search ceiling");
-  return { text, searches, raw: rounds };
+  return { text, searches, raw: { toolDeclaration, rounds, toolExecutions } };
 }
 
 export function buildGeminiRequest(
