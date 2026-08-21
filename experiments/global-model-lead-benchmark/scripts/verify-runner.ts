@@ -84,7 +84,7 @@ if (openAiRequest.model !== "gpt-5.6-terra" || openAiRequest.reasoning.effort !=
 
 const claudeContext = await loadContext("claude", "2026-08-20", 1);
 const claudeRequest = buildAnthropicRequest(claudeContext);
-if (claudeRequest.model !== "claude-haiku-4-5" || claudeRequest.max_tokens !== 8000
+if (claudeRequest.model !== "claude-fable-5" || claudeRequest.max_tokens !== 8000
   || claudeRequest.tools[0].max_uses !== 12 || "system" in claudeRequest || "thinking" in claudeRequest) {
   throw new Error("Claude natural-language search request is incomplete");
 }

@@ -42,7 +42,7 @@
     "claude": {
       "displayName": "Anthropic Claude via Lingyu",
       "enabled": true,
-      "status": "degraded_v3_upstream_unavailable",
+      "status": "ready_v3",
       "participatesInCurrentRun": true,
       "credentials": {
         "apiKeyEnv": "CLAUDE_API_KEY",
@@ -51,12 +51,22 @@
       "transport": {
         "endpointKind": "aggregation_gateway",
         "gateway": "Lingyu",
-        "modelLockedByUser": true
+        "modelLockedByUser": false,
+        "multipleModelsApprovedByUser": true
       },
       "model": {
-        "selectionPolicy": "user-confirmed fast Claude model with extended thinking omitted",
-        "modelId": "claude-haiku-4-5",
-        "reasoningMode": "disabled"
+        "selectionPolicy": "user-approved additional high-capability Claude model with observed native web search",
+        "modelId": "claude-fable-5",
+        "reasoningMode": "disabled",
+        "comparisonTier": "supplementary_high_capability",
+        "candidateProbe": {
+          "claude-haiku-4-5": "basic_failed_gateway_502",
+          "claude-haiku-4-5-20251001": "basic_passed_native_search_not_observed",
+          "claude-fable-5": "basic_and_native_search_passed",
+          "claude-sonnet-4-5-20250929": "model_not_found",
+          "claude-sonnet-4-6": "basic_passed_native_search_not_observed",
+          "claude-sonnet-5": "basic_passed_native_search_not_observed"
+        }
       },
       "nativeSearch": {
         "required": true,
@@ -67,12 +77,15 @@
       },
       "latestPreflight": {
         "checkedAt": "2026-08-21",
-        "basicRequest": "failed_upstream_unavailable",
-        "nativeSearch": "not_attempted_basic_failed",
-        "httpStatus": 503,
-        "diagnostic": "aggregation_gateway_reported_no_available_accounts",
-        "basicLatencyMs": 2516,
-        "automaticRetries": 0
+        "basicRequest": "passed",
+        "nativeSearch": "passed",
+        "webSearchCalls": 1,
+        "sourceUrlCount": 11,
+        "basicLatencyMs": 6168,
+        "nativeSearchLatencyMs": 2672,
+        "automaticRetries": 0,
+        "userAuthorizedManualAttempts": 2,
+        "firstManualAttempt": "transport_reset_before_tls"
       }
     },
     "kimi": {

@@ -6,7 +6,7 @@
 
 - 所有模型收到同一条中文 user prompt，并返回自然语言答案；不要求 JSON，不添加隐藏 system prompt，不追问、不续写、不自动重试。
 - 被测模型只能使用服务商随模型提供的原生 Web Search/grounding。禁止向模型注入 Codex 搜索结果、Tavily、爬虫、第三方搜索 API、联系人数据库、CRM、历史线索或其他模型输出。
-- 关闭或降至服务支持的最低推理模式，使用已确认的快速模型：OpenAI `gpt-5.6-terra`、Claude `claude-haiku-4-5`、Kimi `kimi-k2.6`、DeepSeek `deepseek-v4-flash`、Grok `grok-4.3`、Gemini `gemini-3.7-flash`。Gemini 不支持完全关闭思考，使用最低可用的 `low`。
+- 关闭或降至服务支持的最低推理模式，快速模型组使用 OpenAI `gpt-5.6-terra`、Kimi `kimi-k2.6`、DeepSeek `deepseek-v4-flash`、Grok `grok-4.3`、Gemini `gemini-3.7-flash`。Gemini 不支持完全关闭思考，使用最低可用的 `low`。Claude 快速候选当前均未通过原生搜索预检；用户允许增加多个 Claude 型号后，`claude-fable-5` 通过预检，但它属于补充高性能系统，报告时必须与快速模型组明确区分。
 - 每次模型运行有 12 次原生搜索动作的目标资源预算、15 分钟硬超时、8,000 个可见输出 token 硬上限和零自动重试。不同服务商无法执行完全相同的工具调用硬上限，因此必须报告实际搜索次数、延迟和成本，不能因此修改质量分。
 - 只有供应商响应中能观察到原生搜索调用的运行才进入正常候选提取。完成回答但没有原生搜索信号的运行在发现指标中记零；Codex 后验搜索不能挽救该次运行。
 - v3 原始文件名含 `potential-fit-v3` 标签，不能覆盖或混入历史 v2 运行。
