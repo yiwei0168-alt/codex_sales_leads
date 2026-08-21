@@ -357,6 +357,7 @@ async function runKimi(context: RunContext): Promise<ProviderResult> {
   let searches = 0;
   let text = "";
   while (true) {
+    const toolChoice = searches === 0 ? "required" : (searches >= searchCeiling ? "none" : "auto");
     const raw = await requestJson(`${baseUrl}/chat/completions`, {
       method: "POST",
       headers,
@@ -364,9 +365,7 @@ async function runKimi(context: RunContext): Promise<ProviderResult> {
         context,
         messages,
         tools,
-        searches === 0
-          ? "required"
-          : (searches >= searchCeiling ? "none" : "auto"),
+        toolChoice,
       )),
     }, remainingTimeout());
     rounds.push(raw);
@@ -374,11 +373,9 @@ async function runKimi(context: RunContext): Promise<ProviderResult> {
     if (!choice) throw new Error("Kimi response has no choice");
     messages.push(choice.message);
     if (choice.finish_reason !== "tool_calls") { text = choice.message.content ?? ""; break; }
+    if (toolChoice === "none") throw new Error("Kimi ignored tool_choice=none after the official-tool context ceiling");
     for (const toolCall of choice.message.tool_calls ?? []) {
       if (toolCall.function?.name !== "web_search") throw new Error(`Kimi requested an unsupported official tool: ${toolCall.function?.name}`);
-      if (searches >= searchCeiling) {
-        throw new Error("Kimi ignored tool_choice=none after reaching its official-tool context ceiling");
-      }
       searches += 1;
       const execution = await requestJson(`${formulaUrl}/fibers`, {
         method: "POST",
