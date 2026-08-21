@@ -347,6 +347,7 @@ async function runKimi(context: RunContext): Promise<ProviderResult> {
   const messages: any[] = structuredClone(buildMessageEnvelope("kimi", context.prompt).messages ?? []);
   const rounds: unknown[] = [];
   const toolExecutions: unknown[] = [];
+  const searchCeiling = Math.min(3, context.pilot.limits.nativeSearchActionsTargetBudget);
   const deadline = Date.now() + context.pilot.limits.timeoutMinutesPerProvider * 60_000;
   const remainingTimeout = () => {
     const remaining = deadline - Date.now();
@@ -365,7 +366,7 @@ async function runKimi(context: RunContext): Promise<ProviderResult> {
         tools,
         searches === 0
           ? "required"
-          : (searches >= context.pilot.limits.nativeSearchActionsTargetBudget ? "none" : "auto"),
+          : (searches >= searchCeiling ? "none" : "auto"),
       )),
     }, remainingTimeout());
     rounds.push(raw);
@@ -375,8 +376,8 @@ async function runKimi(context: RunContext): Promise<ProviderResult> {
     if (choice.finish_reason !== "tool_calls") { text = choice.message.content ?? ""; break; }
     for (const toolCall of choice.message.tool_calls ?? []) {
       if (toolCall.function?.name !== "web_search") throw new Error(`Kimi requested an unsupported official tool: ${toolCall.function?.name}`);
-      if (searches >= context.pilot.limits.nativeSearchActionsTargetBudget) {
-        throw new Error("Kimi ignored tool_choice=none after reaching the search target");
+      if (searches >= searchCeiling) {
+        throw new Error("Kimi ignored tool_choice=none after reaching its official-tool context ceiling");
       }
       searches += 1;
       const execution = await requestJson(`${formulaUrl}/fibers`, {
