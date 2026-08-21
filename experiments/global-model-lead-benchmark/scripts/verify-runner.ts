@@ -97,13 +97,19 @@ if (deepSeekRequest.model !== "deepseek-v4-flash" || deepSeekRequest.thinking?.t
 
 const kimiContext = await loadContext("kimi", "2026-08-20", 1);
 const kimiRequest = buildKimiRequest(kimiContext, [{ role: "user", content: "test" }]);
-if (kimiRequest.model !== "kimi-k2.6" || kimiRequest.max_completion_tokens !== 8000
+if (kimiRequest.model !== "kimi-k3" || kimiRequest.max_completion_tokens !== 8000
   || kimiRequest.thinking.type !== "disabled" || kimiRequest.tools[0].function.name !== "$web_search"
   || "response_format" in kimiRequest) {
   throw new Error("Kimi natural-language search request is incomplete");
 }
 if ("tools" in buildKimiRequest(kimiContext, [{ role: "user", content: "test" }], null)) {
   throw new Error("Kimi final synthesis request still exposes search tools after the action ceiling");
+}
+const kimiRequiredSearch = buildKimiRequest(kimiContext, [{ role: "user", content: "test" }], [
+  { type: "function", function: { name: "web_search" } },
+], "required");
+if (kimiRequiredSearch.tool_choice !== "required" || kimiRequiredSearch.tools[0].function.name !== "web_search") {
+  throw new Error("Kimi recovery request does not require an auditable first native search");
 }
 
 const grokContext = await loadContext("grok", "2026-08-20", 1);

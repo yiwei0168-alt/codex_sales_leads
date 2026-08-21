@@ -14,7 +14,8 @@
       "transport": {
         "endpointKind": "aggregation_gateway",
         "gateway": "Lingyu",
-        "modelLockedByUser": true
+        "modelLockedByUser": false,
+        "recoveryFallbackApprovedByOutcomeRequirement": true
       },
       "model": {
         "selectionPolicy": "user-confirmed fast model with reasoning disabled",
@@ -102,26 +103,27 @@
         "modelLockedByUser": true
       },
       "model": {
-        "selectionPolicy": "officially recommended model for built-in web search with thinking disabled",
-        "modelId": "kimi-k2.6",
-        "reasoningMode": "disabled"
+        "selectionPolicy": "account-visible Kimi general model that completes the official web-search tool flow; K2.6 retained only as failed diagnostic evidence",
+        "modelId": "kimi-k3",
+        "reasoningMode": "disabled",
+        "fallbackFrom": "kimi-k2.6"
       },
       "nativeSearch": {
         "required": true,
         "adapter": "moonshot_official_formula_web_search",
         "mustVerifyServerToolSignal": "web_search tool call plus successful moonshot/web-search:latest fiber",
         "externalSearchInjectionForbidden": true,
-        "targetBudgetImplementation": "execute_at_most_target_budget_then_remove_tools_and_collect_the_natural_language_answer"
+        "targetBudgetImplementation": "require_the_first_search_to_honor_the_user_request_then_auto_until_target_budget_and_synthesize"
       },
       "latestPreflight": {
         "checkedAt": "2026-08-21",
         "basicRequest": "passed",
-        "nativeSearch": "passed_after_official_formula_migration",
+        "nativeSearch": "passed_with_kimi_k3_official_formula_and_first_search_required",
         "webSearchCalls": 3,
-        "controlAnswerCharacters": 2794,
+        "controlAnswerCharacters": 2276,
         "automaticRetries": 0,
-        "legacyBuiltinDiagnostic": "four full-prompt attempts produced repeated process text and finish_reason_length",
-        "migrationReason": "Moonshot Help Center marks the legacy builtin search as under update; the official formula completed the same control task"
+        "legacyBuiltinDiagnostic": "four full-prompt K2.6 attempts produced repeated process text and finish_reason_length; K3 plus legacy builtin failed tokenization",
+        "migrationReason": "K2.6 also degenerated after twelve official Formula searches; K3 completed the official Formula control task"
       }
     },
     "deepseek": {

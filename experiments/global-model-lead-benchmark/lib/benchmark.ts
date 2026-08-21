@@ -321,15 +321,19 @@ async function runAnthropic(context: RunContext): Promise<ProviderResult> {
   };
 }
 
-export function buildKimiRequest(context: RunContext, messages: any[], tools: any[] | null = [
-  { type: "builtin_function", function: { name: "$web_search" } },
-]) {
+export function buildKimiRequest(
+  context: RunContext,
+  messages: any[],
+  tools: any[] | null = [{ type: "builtin_function", function: { name: "$web_search" } }],
+  toolChoice?: "required" | "auto",
+) {
   return {
     model: context.provider.model.modelId,
     max_completion_tokens: context.pilot.limits.visibleOutputTokens,
     thinking: { type: "disabled" },
     messages,
     ...(tools ? { tools } : {}),
+    ...(tools && toolChoice ? { tool_choice: toolChoice } : {}),
   };
 }
 
@@ -355,11 +359,9 @@ async function runKimi(context: RunContext): Promise<ProviderResult> {
     const raw = await requestJson(`${baseUrl}/chat/completions`, {
       method: "POST",
       headers,
-      body: JSON.stringify(buildKimiRequest(
-        context,
-        messages,
-        searches < context.pilot.limits.nativeSearchActionsTargetBudget ? tools : null,
-      )),
+      body: JSON.stringify(searches < context.pilot.limits.nativeSearchActionsTargetBudget
+        ? buildKimiRequest(context, messages, tools, searches === 0 ? "required" : "auto")
+        : buildKimiRequest(context, messages, null)),
     }, remainingTimeout());
     rounds.push(raw);
     const choice = raw.choices?.[0];
