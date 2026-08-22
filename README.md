@@ -148,6 +148,7 @@ npm run products:ingest
 - [最新产品需求文档 v1.0](Network_Channel_Copilot_PRD_v1.0.md)
 - [历史产品需求文档 v0.3](Network_Channel_Copilot_PRD_v0.3.md)
 - [架构与关键决策](docs/ARCHITECTURE.md)
+- [当前产品架构（飞书发布版）](docs/CURRENT_ARCHITECTURE_FEISHU.md)
 - [公开数据快照说明](docs/DATA_SNAPSHOT.md)
 - [RAG 知识库指南](docs/RAG_KNOWLEDGE_BASE.md)
 - [LangChain / LangGraph 销售线索工作流](docs/LANGGRAPH_LEAD_WORKFLOW.md)
