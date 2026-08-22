@@ -68,6 +68,21 @@ export function AssistantHome({ userName, onOpenResults }: { userName: string; o
     return () => controller.abort();
   }, []);
   useEffect(() => { scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" }); }, [conversation?.messages.length]);
+  const workflowActive = conversation?.actions.some((action) => action.status === "confirmed" || action.status === "running") ?? false;
+  useEffect(() => {
+    if (!activeId || !workflowActive) return;
+    const controller = new AbortController();
+    const timer = window.setInterval(() => {
+      void fetch(`/api/assistant/conversations/${activeId}`, { cache: "no-store", signal: controller.signal })
+        .then(async (response) => {
+          const body = await response.json() as { conversation?: AssistantConversationDto; error?: string };
+          if (!response.ok || !body.conversation) throw new Error(body.error ?? "工作流状态读取失败");
+          setConversation(body.conversation);
+        })
+        .catch((reason: Error) => { if (reason.name !== "AbortError") setError(reason.message); });
+    }, 4_000);
+    return () => { controller.abort(); window.clearInterval(timer); };
+  }, [activeId, workflowActive]);
 
   async function send(content: string) {
     const message = content.trim();
@@ -111,14 +126,19 @@ export function AssistantHome({ userName, onOpenResults }: { userName: string; o
   }
 
   async function confirmSearch(actionId: string) {
-    if (!window.confirm("确认调用 Tavily 执行该搜索计划？搜索结果、网页证据和评分将写入对应国家分区。")) return;
+    const retrying = conversation?.actions.find((action) => action.id === actionId)?.status === "failed";
+    if (!window.confirm(retrying
+      ? "从已保留的 checkpoint 重试该工作流？"
+      : "确认执行 LangGraph 销售线索工作流？系统会先调用三类知识 RAG，再使用 Tavily 搜索和抓取网页，并由独立评分 Agent 评估候选。")) return;
     setConfirmingId(actionId); setError("");
     try {
       const response = await fetch(`/api/assistant/actions/${actionId}/confirm`, { method: "POST" });
       const body = await response.json() as { conversation?: AssistantConversationDto; error?: string };
-      if (!response.ok || !body.conversation) throw new Error(body.error ?? "搜索执行失败");
-      setConversation(body.conversation);
-      await loadList(body.conversation.id);
+      if (body.conversation) {
+        setConversation(body.conversation);
+        await loadList(body.conversation.id);
+      }
+      if (!response.ok) throw new Error(body.error ?? "搜索执行失败");
     } catch (reason) { setError(reason instanceof Error ? reason.message : "搜索执行失败"); }
     finally { setConfirmingId(undefined); }
   }
@@ -157,7 +177,8 @@ export function AssistantHome({ userName, onOpenResults }: { userName: string; o
               {action && <div className={`ai-action-card ${action.status}`}>
                 <div className="ai-action-head"><div><span>{action.payload.countryCode}</span><strong>{action.payload.countryName} 销售线索计划</strong></div><em>{action.status === "proposed" ? "等待确认" : action.status === "completed" ? "已完成" : action.status === "failed" ? "失败" : "执行中"}</em></div>
                 <dl><div><dt>开发模式</dt><dd>{action.payload.objective === "new-market" ? "新市场并行开发" : "已有分销体系增长"}</dd></div><div><dt>目标数量</dt><dd>{action.payload.targetCount} 家</dd></div><div><dt>渠道角色</dt><dd>{action.payload.roles.join(" · ")}</dd></div></dl>
-                {action.status === "proposed" && <button disabled={confirmingId === action.id} onClick={() => void confirmSearch(action.id)}>{confirmingId === action.id ? "正在搜索并保存…" : "确认并开始搜索"}</button>}
+                {action.status === "proposed" && <button disabled={confirmingId === action.id} onClick={() => void confirmSearch(action.id)}>{confirmingId === action.id ? "正在启动工作流…" : "确认并开始搜索"}</button>}
+                {action.status === "failed" && <button disabled={confirmingId === action.id} onClick={() => void confirmSearch(action.id)}>{confirmingId === action.id ? "正在恢复工作流…" : "从 checkpoint 重试"}</button>}
                 {action.status === "completed" && <button onClick={onOpenResults}>查看 {action.payload.countryName} 结果</button>}
                 {action.errorMessage && <p>{action.errorMessage}</p>}
               </div>}

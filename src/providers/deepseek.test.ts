@@ -41,6 +41,27 @@ describe("DeepSeekProvider", () => {
     })).rejects.toThrow("Provider deepseek is unavailable");
   });
 
+  it("routes Pro models through the official Anthropic-compatible transport", async () => {
+    const fetchImplementation = vi.fn<typeof fetch>().mockResolvedValue(new Response(JSON.stringify({
+      id: "request-pro",
+      model: "deepseek-v4-pro",
+      stop_reason: "end_turn",
+      content: [{ type: "text", text: JSON.stringify({ result: "ok" }) }],
+      usage: { input_tokens: 12, output_tokens: 5 },
+    }), { status: 200, headers: { "content-type": "application/json" } }));
+    const provider = new DeepSeekProvider({ apiKey: "test-key", baseUrl: "https://api.deepseek.com",
+      fetchImplementation, maxAttempts: 1 });
+    const response = await provider.execute<{ value: number }, { result: string }>({
+      task: "lead-qualification", modelVersion: "deepseek-v4-pro", promptVersion: "test",
+      input: { value: 1 }, evidenceIds: [], outputSchema: { type: "object" },
+    });
+    expect(response.output).toEqual({ result: "ok" });
+    expect(response.usage?.totalTokens).toBe(17);
+    expect(fetchImplementation.mock.calls[0][0]).toBe("https://api.deepseek.com/anthropic/v1/messages");
+    const headers = fetchImplementation.mock.calls[0][1]?.headers as Record<string, string>;
+    expect(headers["x-api-key"]).toBe("test-key");
+  });
+
   it("does not retry an authentication or request-format failure", async () => {
     const fetchImplementation = vi.fn<typeof fetch>().mockResolvedValue(new Response(JSON.stringify({
       error: { message: "Authentication failed" },

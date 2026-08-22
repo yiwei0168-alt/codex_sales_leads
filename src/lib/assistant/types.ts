@@ -1,4 +1,5 @@
 import type { RagCitation } from "@/lib/rag/types";
+import type { ChannelRole } from "@/lib/domain";
 
 export type AssistantIntent = "knowledge-question" | "lead-search" | "clarification" | "general";
 export type AssistantActionStatus = "proposed" | "confirmed" | "running" | "completed" | "failed" | "cancelled";
@@ -7,7 +8,7 @@ export interface LeadSearchPlan {
   countryCode: string;
   countryName: string;
   objective: "new-market" | "existing-distributor-growth";
-  roles: string[];
+  roles: ChannelRole[];
   targetCount: number;
   queryLanguage: string;
   userRequest: string;

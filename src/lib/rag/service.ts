@@ -35,7 +35,19 @@ export async function answerWithRag(userId: string, input: RagQuery): Promise<Ra
     chunkId: chunk.id, documentTitle: chunk.title, sourceUrl: chunk.sourceUrl,
     excerpt: chunk.content.slice(0, 260), score: chunk.score, collection: chunk.collection,
     visibility: chunk.visibility,
+    retrievalSignals: chunk.retrievalSignals,
+    corroborated: chunk.corroborated,
+    structuredFacts: Array.isArray(chunk.metadata.structuredFacts)
+      ? chunk.metadata.structuredFacts as RagAnswer["citations"][number]["structuredFacts"] : [],
   }));
+  const citedProductChunks = chunks.filter((chunk) => chunk.collection === "product" && citedIds.has(chunk.id));
+  if (citedProductChunks.some((chunk) => !chunk.corroborated || !chunk.retrievalSignals.includes("structured"))) {
+    warnings.push("部分产品结论缺少结构化事实交叉印证，已标记为低置信度，不能视为已验证规格。");
+  }
+  if (citedProductChunks.some((chunk) => Array.isArray(chunk.metadata.structuredFacts)
+    && (chunk.metadata.structuredFacts as Array<{ status?: string }>).some((fact) => fact.status === "conflicting"))) {
+    warnings.push("结构化产品事实存在冲突；冲突项不得用于自动决策。");
+  }
   const latencyMs = Date.now() - startedAt;
   await logRagQuery({
     userId,
@@ -45,5 +57,7 @@ export async function answerWithRag(userId: string, input: RagQuery): Promise<Ra
     embeddingModel: config.embeddingModel, generationModel: config.generationModel, latencyMs,
   }).catch(() => warnings.push("查询日志写入失败，但不影响本次答案。"));
 
-  return { answer, citations, grounded: citedIds.size > 0, model: config.generationModel, latencyMs, warnings };
+  const grounded = citedIds.size > 0 && citedProductChunks.every((chunk) => chunk.corroborated
+    && chunk.retrievalSignals.includes("structured"));
+  return { answer, citations, grounded, model: config.generationModel, latencyMs, warnings };
 }

@@ -33,10 +33,13 @@ export function getRagConfig(): RagConfig {
   const kimiApiKey = process.env.KIMI_API_KEY?.trim() ?? "";
   const kimiBaseUrl = process.env.KIMI_BASE_URL?.trim() ?? "";
   const kimiModel = process.env.KIMI_MODEL?.trim() ?? "";
+  const lingyuGenerationBase = lingyuApiKey
+    ? (/lingyuapi\.com/i.test(openaiBaseUrl) ? openaiBaseUrl : "https://lingyuapi.com/v1")
+    : openaiBaseUrl;
   return {
     databaseUrl: process.env.DATABASE_URL?.trim() ?? "",
     openaiApiKey: lingyuApiKey || openaiApiKey || kimiApiKey,
-    openaiBaseUrl: normalizeGenerationBaseUrl(openaiBaseUrl || kimiBaseUrl),
+    openaiBaseUrl: normalizeGenerationBaseUrl(lingyuGenerationBase || kimiBaseUrl),
     embeddingApiKey: process.env.EMBEDDING_API_KEY?.trim() ?? "",
     embeddingBaseUrl: process.env.EMBEDDING_BASE_URL?.trim() ?? "",
     embeddingModel: process.env.EMBEDDING_MODEL?.trim() || "text-embedding-v4",

@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import nextEnv from "@next/env";
 import { Pool } from "pg";
+import { PostgresSaver } from "@langchain/langgraph-checkpoint-postgres";
 import {
   databaseConnectionString,
   databaseSslConfiguration,
@@ -40,6 +41,21 @@ try {
     await pool.query(sql);
     console.log(`Applied db/migrations/${migration}`);
   }
+  await pool.query("create schema if not exists langgraph");
+  const checkpointer = new PostgresSaver(pool, undefined, { schema: "langgraph" });
+  await checkpointer.setup();
+  const applicationRole = process.env.DATABASE_APPLICATION_ROLE?.trim() || "network_copilot_app";
+  if (!/^[a-z_][a-z0-9_]{0,62}$/i.test(applicationRole)) throw new Error("DATABASE_APPLICATION_ROLE format is invalid");
+  const applicationLogin = applicationDatabaseUrl ? decodeURIComponent(new URL(applicationDatabaseUrl).username) : "";
+  if (applicationLogin && !/^[a-z_][a-z0-9_.-]{0,62}$/i.test(applicationLogin)) {
+    throw new Error("DATABASE_URL login role format is invalid");
+  }
+  for (const role of [...new Set([applicationRole, applicationLogin].filter(Boolean))]) {
+    await pool.query(`grant usage on schema langgraph to "${role}"`);
+    await pool.query(`grant select, insert, update, delete on all tables in schema langgraph to "${role}"`);
+    await pool.query(`alter default privileges in schema langgraph grant select, insert, update, delete on tables to "${role}"`);
+  }
+  console.log("Applied LangGraph PostgreSQL checkpoint migrations");
 } finally {
   await pool.end();
 }

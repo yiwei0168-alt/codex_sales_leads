@@ -1,3 +1,4 @@
+import type { ChannelRole } from "@/lib/domain";
 import type { AssistantIntent, LeadSearchPlan } from "./types";
 
 const ISO_CODES = `AD AE AF AG AI AL AM AO AQ AR AS AT AU AW AX AZ BA BB BD BE BF BG BH BI BJ BL BM BN BO BQ BR BS BT BV BW BY BZ CA CC CD CF CG CH CI CK CL CM CN CO CR CU CV CW CX CY CZ DE DJ DK DM DO DZ EC EE EG EH ER ES ET FI FJ FK FM FO FR GA GB GD GE GF GG GH GI GL GM GN GP GQ GR GS GT GU GW GY HK HM HN HR HT HU ID IE IL IM IN IO IQ IR IS IT JE JM JO JP KE KG KH KI KM KN KP KR KW KY KZ LA LB LC LI LK LR LS LT LU LV LY MA MC MD ME MF MG MH MK ML MM MN MO MP MQ MR MS MT MU MV MW MX MY MZ NA NC NE NF NG NI NL NO NP NR NU NZ OM PA PE PF PG PH PK PL PM PN PR PS PT PW PY QA RE RO RS RU RW SA SB SC SD SE SG SH SI SJ SK SL SM SN SO SR SS ST SV SX SY SZ TC TD TF TG TH TJ TK TL TM TN TO TR TT TV TW TZ UA UG UM US UY UZ VA VC VE VG VI VN VU WF WS YE YT ZA ZM ZW`.split(" ");
@@ -38,14 +39,14 @@ export function resolveCountry(text: string): { countryCode: string; countryName
   return { countryCode: code, countryName };
 }
 
-const roleSignals: Array<{ role: string; pattern: RegExp }> = [
+const roleSignals: Array<{ role: ChannelRole; pattern: RegExp }> = [
   { role: "Distributor", pattern: /分销商|distributor|mayorista/i },
   { role: "VAD", pattern: /\bvad\b|增值分销/i },
   { role: "VAR", pattern: /\bvar\b|增值经销/i },
   { role: "Dealer", pattern: /经销商|dealer/i },
   { role: "Reseller", pattern: /转售商|reseller/i },
   { role: "Retailer", pattern: /零售商|retailer|retail/i },
-  { role: "E-tailer", pattern: /电商|e-?tailer/i },
+  { role: "E-tailer", pattern: /电商|网上商城|e-?tailer|online retailer/i },
   { role: "SI", pattern: /系统集成|集成商|\bsi\b|system integrator/i },
   { role: "Installer", pattern: /安装商|installer/i },
   { role: "MSP", pattern: /托管服务|\bmsp\b|managed service/i },
@@ -77,7 +78,7 @@ export function interpretAssistantRequest(text: string): { intent: AssistantInte
     plan: {
       ...country,
       objective,
-      roles: roles.length ? roles : ["Distributor", "VAD", "VAR", "Retailer", "SI", "MSP", "ISP"],
+      roles: roles.length ? roles : ["Distributor", "VAD", "VAR", "Dealer", "Reseller", "Retailer", "E-tailer", "SI", "Installer", "MSP", "ISP"],
       targetCount,
       queryLanguage: /[\u3400-\u9fff]/.test(text) ? "zh-CN" : "en",
       userRequest: text,

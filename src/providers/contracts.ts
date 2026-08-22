@@ -29,11 +29,13 @@ export interface SearchProvider {
 }
 
 export interface StructuredAiRequest<TInput> {
-  task: "market-playbook" | "evidence-extraction" | "classification" | "relationship" | "development-plan" | "contact-verification";
+  task: "market-playbook" | "evidence-extraction" | "classification" | "relationship" | "development-plan" | "contact-verification" | "lead-qualification";
   modelVersion: string;
   promptVersion: string;
   input: TInput;
   evidenceIds: string[];
+  /** JSON Schema for providers that need an explicit structured-output contract. */
+  outputSchema?: Record<string, unknown>;
 }
 
 export interface StructuredAiResponse<TOutput> {

@@ -5,11 +5,12 @@
 The product uses one owner-scoped global workspace with country-partitioned search results. A persistent conversational home routes knowledge questions to private/shared RAG and lead-discovery requests to an explicit confirmation boundary. Historical Mexico assets remain test/reference data and do not constrain runtime markets.
 
 ```text
-Natural-language request
-  ├─ product / company / mailbox question → tenant-aware RAG → cited answer
-  └─ lead search → deterministic country/role plan → explicit user confirmation
-                                                   ↓
-       country-partitioned review UI ← PostgreSQL ← Tavily → filters → dedupe → scoring
+Natural-language request → Assistant StateGraph
+  ├─ product / company / mailbox question → tenant-aware hybrid RAG → cited answer
+  └─ lead search → proposed action → explicit user confirmation
+                                      ↓
+       Lead StateGraph + PostgreSQL checkpoints
+       RAG gate → Market Playbook → Tavily → evidence → independent score agent → qualified records
 ```
 
 ## Layers
@@ -19,8 +20,8 @@ Natural-language request
 | Search/import | Tavily live-search and enrichment jobs | SerpAPI adapter and scheduled refresh jobs |
 | Evidence | PostgreSQL search runs, URLs and captured excerpts | Source refresh and change detection |
 | Domain | Typed Company, ChannelNode context, scoring inputs, relationships and plans | Repository-backed services and audit log |
-| AI pipeline | Deterministic role-aware development-plan rule | `AiProvider` with structured output, timeout and retry |
-| Application | Next.js App Router, persistent conversations and authenticated API routes | Durable background search jobs and streaming status |
+| AI pipeline | Lingyu planner + DeepSeek Flash/Pro independent qualification | Separate strategic-customer graph |
+| Application | Next.js App Router, persistent conversations, inline graph and durable DB jobs | Deploy worker on ECS/long-running Node compute |
 
 ## RAG knowledge architecture
 
@@ -29,9 +30,9 @@ User upload (industry / Cudy company / Cudy product)
   → authority and source metadata
   → heading-aware chunks + SHA-256 idempotency
   → Qwen text-embedding-v4 (1536 dimensions)
-  → PostgreSQL pgvector HNSW + FTS GIN
-  → reciprocal-rank fusion
-  → Responses API with store=false
+  → PostgreSQL pgvector HNSW + FTS GIN + structured product facts
+  → three-lane weighted fusion and corroboration flag
+  → LangChain ChatOpenAI through configured compatible gateway
   → answer + verified [KB:chunk-uuid] citations
 ```
 
@@ -39,7 +40,7 @@ Retrieval has two explicit visibility lanes inside the same PostgreSQL/pgvector 
 
 ```text
 shared documents (visibility=shared)
-                    ├─ eligible chunks ─ vector + FTS fusion ─ grounded answer
+                    ├─ eligible chunks ─ vector + FTS + structured fusion ─ grounded answer
 current user's private documents
 (visibility=private AND owner_id=session.userId)
 ```
@@ -47,6 +48,8 @@ current user's private documents
 Private documents belonging to any other user are excluded inside the initial SQL `eligible` CTE, before vector or keyword ranking. Mailbox rows remain in separate `mailbox_*` tables; only human-approved Kimi-derived artifacts are embedded into the private RAG lane.
 
 The three collections start empty. The existing 36-company channel-discovery snapshot is intentionally not copied into the company knowledge base: that collection is reserved for Cudy Technology's own company information. Raw user knowledge files are ignored by Git.
+
+Product documents have a second, deterministic truth lane in `product_catalog` and `product_fact`. A structured fact stores the canonical value and its source excerpt rather than an LLM-generated interpretation. Product specifications require at least two retrieval signals to remain fully grounded; semantic-only or conflicting facts are explicitly downgraded.
 
 Provider boundaries are defined in `src/providers/contracts.ts`; neither pages nor domain rules depend on a particular search, LLM, or database vendor.
 
@@ -66,6 +69,8 @@ The server loads the owner-scoped `global-sales` workspace and its live-search c
 ## Failure behavior
 
 Search and enrichment jobs fail explicitly when a provider is unavailable. Tavily requests use limited retries for transient network failures, and contact replacement happens per company only after the new evidence is ready. Mock companies are never substituted into live results.
+
+The lead graph checkpoints every node in the RDS `langgraph` schema. Failed actions retain their thread and can be retried. Only evidence-qualified assessments with all eligibility gates passing and a server-recomputed score of at least 50 are published.
 
 ## Security and privacy
 

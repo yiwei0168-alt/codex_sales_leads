@@ -1,16 +1,9 @@
 import OpenAI from "openai";
+import { ChatOpenAI } from "@langchain/openai";
 import { getRagConfig } from "./config";
 import type { RetrievedChunk } from "./types";
 
-let generationClient: OpenAI | undefined;
 let embeddingClient: OpenAI | undefined;
-
-function getGenerationClient(): OpenAI {
-  const config = getRagConfig();
-  if (!config.openaiApiKey) throw new Error("OPENAI_API_KEY is not configured");
-  generationClient ??= new OpenAI({ apiKey: config.openaiApiKey, baseURL: config.openaiBaseUrl });
-  return generationClient;
-}
 
 function getEmbeddingClient(): OpenAI {
   const config = getRagConfig();
@@ -39,9 +32,10 @@ export async function embedTexts(inputs: string[]): Promise<number[][]> {
 
 function buildContext(chunks: RetrievedChunk[]): string {
   return chunks.map((chunk) => [
-    `<source id="KB:${chunk.id}" collection="${chunk.collection}" authority="${chunk.authorityLevel}">`,
+    `<source id="KB:${chunk.id}" collection="${chunk.collection}" authority="${chunk.authorityLevel}" retrieval_signals="${chunk.retrievalSignals.join(",")}" corroborated="${chunk.corroborated}">`,
     `Title: ${chunk.title}`,
     chunk.sourceUrl ? `URL: ${chunk.sourceUrl}` : "URL: internal knowledge document",
+    `Structured facts: ${JSON.stringify(chunk.metadata.structuredFacts ?? [])}`,
     `Content: ${chunk.content}`,
     "</source>",
   ].join("\n")).join("\n\n");
@@ -49,9 +43,17 @@ function buildContext(chunks: RetrievedChunk[]): string {
 
 export async function generateGroundedAnswer(question: string, chunks: RetrievedChunk[]): Promise<string> {
   const config = getRagConfig();
-  const response = await getGenerationClient().chat.completions.create({
+  if (!config.openaiApiKey) throw new Error("OPENAI_API_KEY or LINGYU_API_KEY is not configured");
+  const model = new ChatOpenAI({
+    apiKey: config.openaiApiKey,
     model: config.generationModel,
-    messages: [
+    temperature: 0,
+    maxRetries: 2,
+    timeout: 90_000,
+    streamUsage: false,
+    configuration: { baseURL: config.openaiBaseUrl },
+  });
+  const response = await model.invoke([
       {
         role: "system",
         content: [
@@ -60,12 +62,16 @@ export async function generateGroundedAnswer(question: string, chunks: Retrieved
           "Separate verified facts from recommendations or inference.",
           "Cite factual sentences with one or more exact source markers like [KB:chunk-uuid].",
           "Never invent a source, company fact, product capability, price, contact, or relationship.",
+          "Treat structured product facts marked verified as corroboration; never assert conflicting facts as true.",
+          "When a product specification is supported only by semantic retrieval and lacks structured/keyword corroboration, label it unverified.",
           "If sources are insufficient or conflicting, state that clearly and list what must be verified.",
           "Reply in the language used by the question.",
         ].join("\n"),
       },
       { role: "user", content: `Question:\n${question}\n\nKnowledge-base context:\n${buildContext(chunks)}` },
-    ],
-  });
-  return response.choices[0]?.message?.content?.trim() ?? "未能生成回答。";
+    ]);
+  if (typeof response.content === "string") return response.content.trim() || "未能生成回答。";
+  const text = response.content.flatMap((item) => typeof item === "string" ? [item]
+    : item.type === "text" && "text" in item ? [String(item.text)] : []).join("").trim();
+  return text || "未能生成回答。";
 }

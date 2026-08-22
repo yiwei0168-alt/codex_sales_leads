@@ -66,11 +66,17 @@ export async function upsertKnowledgeDocument(userId: string, input: KnowledgeDo
 
 export async function hybridSearch(userId: string, question: string, queryEmbedding: number[], filters: RetrievalFilters = {}, limit = 8): Promise<RetrievedChunk[]> {
   const collections = filters.collections?.length ? filters.collections : ["industry", "company", "product"];
+  const structuredQuery = filters.structuredProductTerms?.length
+    ? filters.structuredProductTerms.map((term) => `"${term.replace(/["\\]/g, " ").trim()}"`).filter((term) => term !== '""').join(" OR ")
+    : question;
   const rows = await tenantQuery<{
     id: string; document_id: string; collection: KnowledgeBaseType; title: string; content: string;
     source_url: string | null; source_type: string; authority_level: number; captured_at: string | null;
     visibility: KnowledgeVisibility;
     heading_path: string[]; vector_rank: string | null; keyword_rank: string | null;
+    structured_rank: string | null; structured_evidence: Array<{
+      model: string; factKey: string; factValue: string; status: string;
+    }> | null;
     vector_similarity: number | null; score: number; metadata: Record<string, unknown>;
   }>(userId,
     `with eligible as (
@@ -96,31 +102,78 @@ export async function hybridSearch(userId: string, question: string, queryEmbedd
        from eligible
        where search_vector @@ websearch_to_tsquery('simple', $2)
        order by ts_rank_cd(search_vector, websearch_to_tsquery('simple', $2)) desc limit 30
+     ), raw_structured_matches as (
+       select pc.model, pc.category, 'catalog_identity'::text as fact_key,
+              (pc.product_name || ' / ' || pc.category)::text as fact_value,
+              'verified'::text as verification_status,
+              ts_rank_cd(pc.search_vector, websearch_to_tsquery('simple', $10))::float8 as relevance
+       from product_catalog pc
+       where pc.search_vector @@ websearch_to_tsquery('simple', $10)
+       union all
+       select pf.model, pc.category, pf.fact_key, pf.fact_value, pf.verification_status,
+              (ts_rank_cd(pf.search_vector, websearch_to_tsquery('simple', $10))
+               * (pf.source_authority::float8 / 5.0)
+               * case pf.verification_status when 'verified' then 1.0 when 'provisional' then 0.6 else 0.2 end)::float8
+       from product_fact pf
+       join product_catalog pc on pc.model = pf.model
+       where pf.search_vector @@ websearch_to_tsquery('simple', $10)
+     ), structured_matches as (
+       select *, row_number() over (order by relevance desc, model) as rank
+       from raw_structured_matches
+       where 'product' = any($3::text[])
+       order by relevance desc, model limit 40
+     ), structured_results as (
+       select e.id, min(sm.rank) as rank,
+              jsonb_agg(jsonb_build_object(
+                'model', sm.model, 'factKey', sm.fact_key, 'factValue', sm.fact_value,
+                'status', sm.verification_status
+              ) order by sm.rank) as evidence
+       from eligible e
+       join structured_matches sm on e.collection = 'product' and (
+         e.product_id = sm.model
+         or e.document_metadata->'relatedModels' ? sm.model
+         or e.document_metadata->>'category' = sm.category
+       )
+       group by e.id
      )
      select e.id, e.document_id, e.collection, e.title, e.content, e.source_url, e.source_type,
             e.visibility,
             e.authority_level, e.captured_at, e.heading_path, v.rank as vector_rank, k.rank as keyword_rank,
+            s.rank as structured_rank, coalesce(s.evidence, '[]'::jsonb) as structured_evidence,
             v.similarity as vector_similarity,
-            (greatest(coalesce(v.similarity, 0), 0) * 0.85 +
-             least((coalesce(1.0 / (60 + v.rank), 0) + coalesce(1.0 / (60 + k.rank), 0)) * 10, 0.15))::float8 as score,
+            (greatest(coalesce(v.similarity, 0), 0) * 0.70 +
+             least((coalesce(1.0 / (60 + v.rank), 0) + coalesce(1.0 / (60 + k.rank), 0)
+               + coalesce(1.0 / (60 + s.rank), 0)) * 8, 0.30))::float8 as score,
             e.document_metadata as metadata
      from eligible e
      left join vector_results v on v.id = e.id
      left join keyword_results k on k.id = e.id
-     where v.id is not null or k.id is not null
+     left join structured_results s on s.id = e.id
+     where v.id is not null or k.id is not null or s.id is not null
      order by score desc limit $8`,
     [vectorLiteral(queryEmbedding), question, collections, filters.market ?? null, filters.companyId ?? null,
-      filters.productId ?? null, filters.minAuthority ?? 1, limit, userId],
+      filters.productId ?? null, filters.minAuthority ?? 1, limit, userId,
+      structuredQuery],
   );
-  return rows.map((row) => ({
-    id: row.id, documentId: row.document_id, collection: row.collection, title: row.title,
-    content: row.content, sourceUrl: row.source_url ?? undefined, sourceType: row.source_type,
-    authorityLevel: row.authority_level, capturedAt: row.captured_at ?? undefined,
-    headingPath: row.heading_path, vectorRank: row.vector_rank ? Number(row.vector_rank) : undefined,
-    keywordRank: row.keyword_rank ? Number(row.keyword_rank) : undefined,
-    score: Math.max(0, Math.min(row.score, 1)), visibility: row.visibility,
-    metadata: { ...row.metadata, visibility: row.visibility, vectorSimilarity: row.vector_similarity },
-  }));
+  return rows.map((row) => {
+    const retrievalSignals: RetrievedChunk["retrievalSignals"] = [];
+    if (row.vector_rank) retrievalSignals.push("vector");
+    if (row.keyword_rank) retrievalSignals.push("keyword");
+    if (row.structured_rank) retrievalSignals.push("structured");
+    return {
+      id: row.id, documentId: row.document_id, collection: row.collection, title: row.title,
+      content: row.content, sourceUrl: row.source_url ?? undefined, sourceType: row.source_type,
+      authorityLevel: row.authority_level, capturedAt: row.captured_at ?? undefined,
+      headingPath: row.heading_path, vectorRank: row.vector_rank ? Number(row.vector_rank) : undefined,
+      keywordRank: row.keyword_rank ? Number(row.keyword_rank) : undefined,
+      structuredRank: row.structured_rank ? Number(row.structured_rank) : undefined,
+      retrievalSignals,
+      corroborated: retrievalSignals.length >= 2,
+      score: Math.max(0, Math.min(row.score, 1)), visibility: row.visibility,
+      metadata: { ...row.metadata, visibility: row.visibility, vectorSimilarity: row.vector_similarity,
+        structuredFacts: row.structured_evidence ?? [] },
+    };
+  });
 }
 
 export async function getKnowledgeStats(userId: string): Promise<KnowledgeStats> {

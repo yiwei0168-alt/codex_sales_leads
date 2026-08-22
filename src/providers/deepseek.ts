@@ -25,6 +25,15 @@ interface DeepSeekWireResponse {
   error?: { message?: string };
 }
 
+interface DeepSeekAnthropicResponse {
+  id?: string;
+  model?: string;
+  stop_reason?: string;
+  content?: Array<{ type?: string; text?: string }>;
+  usage?: { input_tokens?: number; output_tokens?: number };
+  error?: { message?: string };
+}
+
 class DeepSeekRequestError extends Error {
   constructor(message: string, readonly retryable: boolean) {
     super(message);
@@ -68,39 +77,52 @@ export class DeepSeekProvider implements AiProvider {
     const model = request.modelVersion.trim() || this.defaultModel;
     const startedAt = performance.now();
     let lastError: unknown;
+    const systemPrompt = [
+      "Return one valid JSON object only, with no Markdown or commentary.",
+      "Follow the task instructions and never invent evidence IDs or facts not present in the input JSON.",
+      request.outputSchema ? `Your entire response MUST validate against this JSON Schema: ${JSON.stringify(request.outputSchema)}` : "",
+    ].filter(Boolean).join("\n");
+    const userPrompt = JSON.stringify({
+      task: request.task,
+      promptVersion: request.promptVersion,
+      evidenceIds: request.evidenceIds,
+      input: request.input,
+      requiredOutputSchema: request.outputSchema,
+    });
+    const maxTokens = Math.max(1_024, Math.min(16_384,
+      Number(process.env.DEEPSEEK_MAX_OUTPUT_TOKENS ?? 8_192) || 8_192));
+    const useAnthropicTransport = process.env.DEEPSEEK_TRANSPORT?.trim().toLowerCase() === "anthropic"
+      || (!process.env.DEEPSEEK_TRANSPORT && model.includes("pro"));
 
     for (let attempt = 0; attempt < this.maxAttempts; attempt += 1) {
       try {
-        const response = await this.fetchImplementation(`${this.baseUrl}/chat/completions`, {
+        const response = await this.fetchImplementation(useAnthropicTransport
+          ? `${this.baseUrl}/anthropic/v1/messages` : `${this.baseUrl}/chat/completions`, {
           method: "POST",
-          headers: {
-            authorization: `Bearer ${this.apiKey}`,
+          headers: useAnthropicTransport ? {
+            "x-api-key": this.apiKey,
+            "anthropic-version": "2023-06-01",
             "content-type": "application/json",
-          },
-          body: JSON.stringify({
+          } : { authorization: `Bearer ${this.apiKey}`, "content-type": "application/json" },
+          body: JSON.stringify(useAnthropicTransport ? {
+            model,
+            max_tokens: maxTokens,
+            system: systemPrompt,
+            messages: [{ role: "user", content: userPrompt }],
+            thinking: { type: "disabled" },
+          } : {
             model,
             messages: [
-              {
-                role: "system",
-                content: "Return one valid JSON object only. Follow the task instructions and never invent evidence IDs or facts not present in the input JSON.",
-              },
-              {
-                role: "user",
-                content: JSON.stringify({
-                  task: request.task,
-                  promptVersion: request.promptVersion,
-                  evidenceIds: request.evidenceIds,
-                  input: request.input,
-                }),
-              },
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
             ],
             response_format: { type: "json_object" },
             thinking: { type: model.includes("pro") ? "enabled" : "disabled" },
-            max_tokens: 4_096,
+            max_tokens: maxTokens,
           }),
           signal,
         });
-        const body = await response.json() as DeepSeekWireResponse;
+        const body = await response.json() as DeepSeekWireResponse & DeepSeekAnthropicResponse;
         if (!response.ok) {
           const error = new DeepSeekRequestError(body.error?.message ?? `DeepSeek HTTP ${response.status}`, retryableStatus(response.status));
           if (retryableStatus(response.status) && attempt < this.maxAttempts - 1) {
@@ -112,16 +134,19 @@ export class DeepSeekProvider implements AiProvider {
         }
 
         const choice = body.choices?.[0];
-        const content = choice?.message?.content?.trim();
+        const content = (useAnthropicTransport
+          ? body.content?.filter((item) => item.type === "text").map((item) => item.text ?? "").join("")
+          : choice?.message?.content)?.trim();
         if (!content) throw new Error("DeepSeek returned empty JSON content");
-        if (choice?.finish_reason === "length") throw new Error("DeepSeek JSON output was truncated");
+        const finishReason = useAnthropicTransport ? body.stop_reason : choice?.finish_reason;
+        if (finishReason === "length" || finishReason === "max_tokens") throw new Error("DeepSeek JSON output was truncated");
         let output: TOutput;
         try {
           output = JSON.parse(content) as TOutput;
         } catch (error) {
           throw new Error("DeepSeek returned invalid JSON", { cause: error });
         }
-        const warnings = choice?.finish_reason && choice.finish_reason !== "stop" ? [`finish_reason:${choice.finish_reason}`] : [];
+        const warnings = finishReason && !["stop", "end_turn"].includes(finishReason) ? [`finish_reason:${finishReason}`] : [];
         return {
           output,
           modelVersion: body.model ?? model,
@@ -130,10 +155,11 @@ export class DeepSeekProvider implements AiProvider {
           warnings,
           providerRequestId: body.id,
           usage: body.usage ? {
-            promptTokens: body.usage.prompt_tokens ?? 0,
-            completionTokens: body.usage.completion_tokens ?? 0,
+            promptTokens: body.usage.prompt_tokens ?? body.usage.input_tokens ?? 0,
+            completionTokens: body.usage.completion_tokens ?? body.usage.output_tokens ?? 0,
             reasoningTokens: body.usage.completion_tokens_details?.reasoning_tokens ?? 0,
-            totalTokens: body.usage.total_tokens ?? 0,
+            totalTokens: body.usage.total_tokens
+              ?? (body.usage.input_tokens ?? 0) + (body.usage.output_tokens ?? 0),
           } : undefined,
         };
       } catch (error) {

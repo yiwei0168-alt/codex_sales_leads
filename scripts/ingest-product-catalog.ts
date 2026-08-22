@@ -2,8 +2,9 @@ import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { createHash } from "node:crypto";
 import nextEnv from "@next/env";
-import { getPool, query, tenantQuery } from "../src/lib/rag/db";
+import { getPool, query, tenantQuery, tenantTransaction } from "../src/lib/rag/db";
 import { upsertKnowledgeDocument } from "../src/lib/rag/repository";
+import { extractStructuredProductFacts } from "../src/lib/rag/product-facts";
 import { OWNER_USER_ID } from "../src/lib/auth/config";
 
 const { loadEnvConfig } = nextEnv;
@@ -68,6 +69,34 @@ for (const product of catalogProducts) {
       product.lifecycleStatus, datasheet?.datasheetVersion ?? null, datasheet?.datasheetFile ?? product.sourceFile,
       JSON.stringify({ datasheetFile: datasheet?.datasheetFile, pageCount: datasheet?.pageCount })],
   );
+  const facts = extractStructuredProductFacts(product);
+  await tenantTransaction(OWNER_USER_ID, async (client) => {
+    await client.query("delete from product_fact where model = $1", [product.model]);
+    if (facts.length === 0) return;
+    const values: unknown[] = [];
+    const rows = facts.map((fact, index) => {
+      const offset = index * 10;
+      values.push(product.model, fact.factGroup, fact.factKey, fact.factValue, fact.normalizedValue,
+        fact.numericValue ?? null, fact.unit ?? null, product.sourceFile, fact.evidenceExcerpt, fact.factHash);
+      return `($${offset + 1},$${offset + 2},$${offset + 3},$${offset + 4},$${offset + 5},
+        $${offset + 6},$${offset + 7},$${offset + 8},5,$${offset + 9},
+        'deterministic-catalog-v1','verified',$${offset + 10},now())`;
+    });
+    await client.query(
+      `insert into product_fact (
+         model, fact_group, fact_key, fact_value, normalized_value, numeric_value, unit,
+         source_file, source_authority, evidence_excerpt, extraction_method,
+         verification_status, fact_hash, updated_at
+       ) values ${rows.join(",")}
+       on conflict (model, fact_key, normalized_value, source_file) do update set
+         fact_group=excluded.fact_group, fact_value=excluded.fact_value,
+         numeric_value=excluded.numeric_value, unit=excluded.unit,
+         source_authority=excluded.source_authority, evidence_excerpt=excluded.evidence_excerpt,
+         extraction_method=excluded.extraction_method, verification_status=excluded.verification_status,
+         fact_hash=excluded.fact_hash, updated_at=now()`,
+      values,
+    );
+  }, "admin");
 }
 
 const knowledgeDocuments: Array<{
@@ -140,11 +169,12 @@ await tenantQuery(
   "admin",
 );
 
-const counts = await query<{ products: string; documents: string; chunks: string }>(
+const counts = await query<{ products: string; facts: string; documents: string; chunks: string }>(
   `select
      (select count(*) from product_catalog)::text as products,
+     (select count(*) from product_fact)::text as facts,
      (select count(*) from knowledge_document d join knowledge_collection c on c.id = d.collection_id where c.slug = 'product' and d.status = 'active')::text as documents,
      (select count(*) from knowledge_chunk ch join knowledge_document d on d.id = ch.document_id join knowledge_collection c on c.id = d.collection_id where c.slug = 'product')::text as chunks`,
 );
-console.log(`Product catalog: ${counts[0].products}; product documents: ${counts[0].documents}; chunks: ${counts[0].chunks}`);
+console.log(`Product catalog: ${counts[0].products}; structured facts: ${counts[0].facts}; product documents: ${counts[0].documents}; chunks: ${counts[0].chunks}`);
 await getPool().end();

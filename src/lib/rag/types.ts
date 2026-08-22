@@ -33,6 +33,8 @@ export interface RetrievalFilters {
   companyId?: string;
   productId?: string;
   minAuthority?: number;
+  /** Canonical catalog terms used by the structured product retrieval lane. */
+  structuredProductTerms?: string[];
 }
 
 export interface RetrievedChunk {
@@ -48,6 +50,9 @@ export interface RetrievedChunk {
   headingPath: string[];
   vectorRank?: number;
   keywordRank?: number;
+  structuredRank?: number;
+  retrievalSignals: Array<"vector" | "keyword" | "structured">;
+  corroborated: boolean;
   score: number;
   metadata: Record<string, unknown>;
   visibility: KnowledgeVisibility;
@@ -67,6 +72,9 @@ export interface RagCitation {
   score: number;
   collection: KnowledgeBaseType;
   visibility: KnowledgeVisibility;
+  retrievalSignals: Array<"vector" | "keyword" | "structured">;
+  corroborated: boolean;
+  structuredFacts: Array<{ model: string; factKey: string; factValue: string; status: string }>;
 }
 
 export interface RagAnswer {

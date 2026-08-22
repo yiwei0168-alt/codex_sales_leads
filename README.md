@@ -4,14 +4,15 @@
 
 - 产品、公司和已审核邮箱知识通过私有 RAG 回答并附引用；
 - 用户可指定任意国家、渠道角色、数量以及新市场/增长目标；
-- 系统先生成搜索计划，只有用户明确确认后才调用 Tavily；
-- 真实搜索结果经筛选、域名去重和评分后保存，并按国家分区展示。
+- 系统先用 LangGraph 调用产品、公司、行业 RAG 并生成搜索计划，只有用户明确确认后才调用 Tavily；
+- 产品知识由向量、全文和结构化事实三路融合，低置信或冲突规格不会被当成确定事实；
+- 真实搜索结果经官网取证、域名去重和独立评分 Agent 复核后，仅保存匹配分达到 50 的公司。
 
 早期墨西哥验证数据和脚本保留为回归资料，但不再限制产品运行市场。搜索候选在完成网页证据复核前统一标记为 `Inferred`。
 
 ## 启动
 
-需要 Node.js 20.9 或更高版本。当前验证环境为 Node.js 24。
+需要 Node.js 22 或更高版本（LangChain OpenAI 适配器要求 Node 22+）。当前验证环境为 Node.js 24。
 
 ```powershell
 npm install
@@ -38,7 +39,7 @@ npm run build
 
 1. 在首页直接询问产品、公司、认证或已审核邮箱知识。
 2. 用自然语言描述目标国家和线索，例如“搜索阿联酋 20 家分销商和系统集成商”。
-3. 检查系统生成的国家、角色、目标数量和开发模式，明确确认后才执行搜索。
+3. 检查系统生成的国家、角色、目标数量和开发模式，明确确认后才执行搜索；角色覆盖 Distributor、VAD、VAR、Dealer、Reseller、Retailer、E-tailer、SI、Installer、MSP 和 ISP，不设固定角色配额。
 4. 在“销售线索”中按国家分区查看已保存候选，并按角色、Account Tier 或关键字筛选。
 5. 打开公司详情查看 Evidence，修改 Account Tier、Supply Model、参与深度或机会状态。
 6. 在关系图、机会工作区和开发助手中继续推进；系统不会真实发送外联。
@@ -129,7 +130,7 @@ npm run kb:ingest -- --type=product --file=knowledge/product/wr3000.md --externa
 
 ### 产品数据库
 
-数据库同时包含三个知识域：行业知识、Cudy Technology 公司知识和 Cudy Technology 产品知识。产品域额外包含结构化 `product_catalog` 主表，用于按型号和类别筛选；Datasheet 则进入产品 RAG 集合并保留型号、版本、文件名和页码结构。
+数据库同时包含三个知识域：行业知识、Cudy Technology 公司知识和 Cudy Technology 产品知识。产品域额外包含结构化 `product_catalog` 与 `product_fact`。后者把产品目录确定性转换为带来源、权威等级、验证状态和证据摘录的型号事实；Datasheet 则进入产品 RAG 集合并保留型号、版本、文件名和页码结构。检索会融合 pgvector、全文和结构化事实三条通道，并向回答层暴露交叉印证状态。
 
 将 `Cudy products list.xlsx` 与 Datasheet 放入 `knowledge/product` 后执行：
 
@@ -147,14 +148,15 @@ npm run products:ingest
 - [架构与关键决策](docs/ARCHITECTURE.md)
 - [公开数据快照说明](docs/DATA_SNAPSHOT.md)
 - [RAG 知识库指南](docs/RAG_KNOWLEDGE_BASE.md)
+- [LangChain / LangGraph 销售线索工作流](docs/LANGGRAPH_LEAD_WORKFLOW.md)
 - [Postgres 参考 Schema](docs/schema.sql)
 - [PRD 验收报告](docs/PRD_ACCEPTANCE.md)
 
 ## 已知限制
 
-- 当前确认后的 Tavily 搜索在请求内同步执行；生产规模需要迁移到可恢复的后台任务队列。
-- Tavily 候选仅完成域名级基础筛选；企业身份、角色和适配度仍需网页证据抽取与人工确认。
+- 当前只有 RDS，默认在确认请求内执行；数据库队列、checkpoint、租约、失败重试和 worker 已实现，切换异步模式仍需部署 ECS 或长期 Node 容器。
+- 公司资格由独立 Agent 自动评估并留存审计证据，但高价值商务决策仍建议由销售负责人复核。
 - 实时线索尚未建立公司间供货关系，关系图在证据分析前保持为空。
-- 开发草稿由确定性规则生成，用于演示证据引用与节点差异化，不调用真实 LLM。
+- 战略终端客户尚未接入当前渠道图，后续应使用独立 lead type 和评分图，避免污染渠道匹配分。
 - RAG 仅支持可读取为 UTF-8 文本的 Markdown、TXT、CSV 和 JSON；PDF/DOCX 解析尚未接入。
 - 不实现真实邮件、LinkedIn、WhatsApp 或电话发送。
