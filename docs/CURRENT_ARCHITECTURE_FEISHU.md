@@ -83,20 +83,23 @@ Provider 边界集中定义，页面和核心领域规则不依赖具体搜索�
 
 ```text
 用户消息
-  → interpret_request
+  → plan_request（Kimi-k3，最近 8 轮上下文）
   → resolve_request
       ├─ general / clarification → 普通回复或追问
       ├─ knowledge-question      → 租户感知混合 RAG → 带引用回答
+      ├─ hybrid-research         → 内部 RAG ∥ Gemini Search → OpenAI/Lingyu 整合
       └─ lead-search             → proposed action → 用户明确确认
 ```
 
 Assistant Graph 的主要职责：
 
-1. 识别用户是在提问知识、补充条件还是发起线索搜索；
+1. 使用 Kimi-k3 识别用户是在提问知识、补充条件还是发起线索搜索，并生成结构化 plan；
 2. 把国家、目标数量、业务模式和目标渠道角色规范化；
 3. 在线索搜索前创建可检查的 proposed action；
 4. 在用户确认前禁止调用 Tavily；
-5. 持久化 conversation、message 和 action，保证页面刷新后仍可继续。
+5. 持久化 conversation、message 和 action，保证页面刷新后仍可继续多轮纠正和反馈；
+6. 低置信度时发起针对性追问，用户修订线索计划时仅替换同一对话内尚未确认的旧计划；
+7. 混合研究只把公共问题交给 Gemini，并要求实际 Google Search 信号和 URL 引用，再由 OpenAI 经 Lingyu 合成内外证据。
 
 用户确认是显式外部搜索边界。只有已认证用户确认属于自己的 action 后，系统才会原子 claim 工作流 job。
 

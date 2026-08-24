@@ -1,7 +1,7 @@
 import type { RagCitation } from "@/lib/rag/types";
 import type { ChannelRole } from "@/lib/domain";
 
-export type AssistantIntent = "knowledge-question" | "lead-search" | "clarification" | "general";
+export type AssistantIntent = "knowledge-question" | "hybrid-research" | "lead-search" | "clarification" | "general";
 export type AssistantActionStatus = "proposed" | "confirmed" | "running" | "completed" | "failed" | "cancelled";
 
 export interface LeadSearchPlan {
@@ -12,6 +12,36 @@ export interface LeadSearchPlan {
   targetCount: number;
   queryLanguage: string;
   userRequest: string;
+}
+
+export interface AssistantConversationTurn {
+  role: "user" | "assistant";
+  content: string;
+}
+
+export interface IntentPlan {
+  intent: AssistantIntent;
+  confidence: number;
+  internalQuestion?: string;
+  externalQuestions: string[];
+  leadPlan?: LeadSearchPlan;
+  reply?: string;
+  plannerModel: string;
+  plannerSource: "kimi-k3" | "deterministic-fallback";
+  warnings: string[];
+}
+
+export interface WebCitation {
+  url: string;
+  title: string;
+}
+
+export interface ExternalSearchAnswer {
+  answer: string;
+  citations: WebCitation[];
+  searchQueries: string[];
+  model: string;
+  latencyMs: number;
 }
 
 export interface AssistantConversationSummary {
@@ -31,6 +61,8 @@ export interface AssistantMessageDto {
     citations?: RagCitation[];
     grounded?: boolean;
     warnings?: string[];
+    webCitations?: WebCitation[];
+    planner?: Pick<IntentPlan, "confidence" | "plannerModel" | "plannerSource">;
     actionId?: string;
     searchResult?: Record<string, unknown>;
   };

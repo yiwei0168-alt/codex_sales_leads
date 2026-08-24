@@ -80,6 +80,17 @@ export async function createLeadSearchAction(userId: string, conversationId: str
   return rows[0].id;
 }
 
+export async function cancelProposedLeadSearchActions(userId: string, conversationId: string): Promise<number> {
+  const rows = await tenantQuery<{ id: string }>(userId,
+    `update assistant_action set status = 'cancelled', finished_at = now(), updated_at = now(),
+       error_message = '已被用户后续修订的计划替代'
+     where user_id = $1 and conversation_id = $2 and action_type = 'lead-search' and status = 'proposed'
+     returning id`,
+    [userId, conversationId],
+  );
+  return rows.length;
+}
+
 export async function getAssistantAction(userId: string, actionId: string): Promise<AssistantActionDto | null> {
   const rows = await tenantQuery<{
     id: string; action_type: "lead-search"; status: AssistantActionStatus; payload: LeadSearchPlan;

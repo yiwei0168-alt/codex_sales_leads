@@ -13,6 +13,7 @@
     "test": "vitest run",
     "db:migrate": "node scripts/run-tsx.cjs scripts/migrate.ts",
     "assistant:verify": "tsx scripts/verify-assistant-workspace.ts",
+    "assistant:verify-models": "node --use-env-proxy scripts/run-tsx.cjs scripts/verify-assistant-models.ts",
     "kb:ingest": "tsx scripts/ingest-knowledge.ts",
     "products:extract": "python scripts/extract-product-knowledge.py",
     "products:ingest": "node scripts/run-tsx.cjs scripts/ingest-product-catalog.ts",

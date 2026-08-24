@@ -6,8 +6,11 @@ The product uses one owner-scoped global workspace with country-partitioned sear
 
 ```text
 Natural-language request → Assistant StateGraph
-  ├─ product / company / mailbox question → tenant-aware hybrid RAG → cited answer
-  └─ lead search → proposed action → explicit user confirmation
+  → Kimi-k3 intent + plan Agent (recent conversation context)
+  ├─ internal question → tenant-aware hybrid RAG → cited answer
+  ├─ internal + public question → internal RAG ∥ Gemini Google Search → OpenAI/Lingyu synthesis
+  ├─ uncertain request → targeted clarification → next conversation turn
+  └─ lead search → proposed/revisable action → explicit user confirmation
                                       ↓
        Lead StateGraph + PostgreSQL checkpoints
        RAG gate → Market Playbook → Tavily → evidence → independent score agent → qualified records
@@ -71,6 +74,8 @@ The server loads the owner-scoped `global-sales` workspace and its live-search c
 Search and enrichment jobs fail explicitly when a provider is unavailable. Tavily requests use limited retries for transient network failures, and contact replacement happens per company only after the new evidence is ready. Mock companies are never substituted into live results.
 
 The lead graph checkpoints every node in the RDS `langgraph` schema. Failed actions retain their thread and can be retried. Only evidence-qualified assessments with all eligibility gates passing and a server-recomputed score of at least 50 are published.
+
+The Assistant graph supplies the last eight conversation turns to the Kimi-k3 intent/plan Agent. Its JSON plan is schema-validated and normalized before routing. Low-confidence plans become clarification questions. A corrected lead request cancels only older `proposed` actions in the same conversation; confirmed or running work is never silently replaced. Hybrid research sends only the public subquestions to stable Gemini 3.6 Flash, requires an observed Google Search call and URL citations, then sends the bounded internal and external evidence to OpenAI through Lingyu for final synthesis. Gemini 3.6 is the reliability default because it completed all three v4 benchmark runs after 3.7 returned repeated high-demand failures.
 
 ## Security and privacy
 

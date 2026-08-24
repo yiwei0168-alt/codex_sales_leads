@@ -183,6 +183,7 @@ export function AssistantHome({ userName, onOpenResults }: { userName: string; o
                 {action.errorMessage && <p>{action.errorMessage}</p>}
               </div>}
               {(message.metadata.citations?.length ?? 0) > 0 && <div className="ai-citations"><strong>知识库证据</strong>{message.metadata.citations?.map((citation) => <a key={citation.chunkId} href={citation.sourceUrl || undefined} target="_blank" rel="noreferrer"><span>[KB:{citation.chunkId.slice(0, 8)}]</span><b>{citation.documentTitle}</b><em>{Math.round(citation.score * 100)}%</em></a>)}</div>}
+              {(message.metadata.webCitations?.length ?? 0) > 0 && <div className="ai-citations"><strong>外部网页证据</strong>{message.metadata.webCitations?.map((citation, index) => <a key={citation.url} href={citation.url} target="_blank" rel="noreferrer"><span>[WEB:{index + 1}]</span><b>{citation.title}</b></a>)}</div>}
               {message.metadata.grounded === false && <small className="ai-evidence-warning">回答尚未获得充分引用，请人工复核。</small>}
             </div>
           </article>;
@@ -190,7 +191,7 @@ export function AssistantHome({ userName, onOpenResults }: { userName: string; o
         {busy && <article className="ai-message assistant"><div className="ai-message-avatar">✦</div><div className="ai-thinking"><i/><i/><i/></div></article>}
       </div>
       {error && <div className="ai-chat-error">{error}</div>}
-      <form className="ai-composer" onSubmit={submit}><textarea value={input} onChange={(event) => setInput(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); void send(input); } }} placeholder="询问产品、公司，或描述你想搜索的国家和销售线索…" rows={1}/><div><span>知识回答附引用 · 外部搜索执行前需确认</span><button disabled={busy || !input.trim()} aria-label="发送">↑</button></div></form>
+      <form className="ai-composer" onSubmit={submit}><textarea value={input} onChange={(event) => setInput(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); void send(input); } }} placeholder="询问产品、结合网页调研，或描述销售线索目标…" rows={1}/><div><span>支持多轮纠正 · 线索搜索执行前需确认</span><button disabled={busy || !input.trim()} aria-label="发送">↑</button></div></form>
     </section>
   </div>;
 }
