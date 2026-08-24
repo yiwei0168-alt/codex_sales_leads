@@ -14,6 +14,9 @@ Natural-language request → Assistant StateGraph
                                       ↓
        Lead StateGraph + PostgreSQL checkpoints
        RAG gate → Market Playbook → Tavily → evidence → independent score agent → qualified records
+                                      ↓ selected company
+       Development Strategy StateGraph
+       context → Cudy RAG + approved style templates → Kimi strategy → Kimi draft → validate → persist
 ```
 
 ## Layers
@@ -76,6 +79,8 @@ Search and enrichment jobs fail explicitly when a provider is unavailable. Tavil
 The lead graph checkpoints every node in the RDS `langgraph` schema. Failed actions retain their thread and can be retried. Only evidence-qualified assessments with all eligibility gates passing and a server-recomputed score of at least 50 are published.
 
 The Assistant graph supplies the last eight conversation turns to the Kimi-k3 intent/plan Agent. Its JSON plan is schema-validated and normalized before routing. Low-confidence plans become clarification questions. A corrected lead request cancels only older `proposed` actions in the same conversation; confirmed or running work is never silently replaced. Hybrid research sends only the public subquestions to stable Gemini 3.6 Flash, requires an observed Google Search call and URL citations, then sends the bounded internal and external evidence to OpenAI through Lingyu for final synthesis. Gemini 3.6 is the reliability default because it completed all three v4 benchmark runs after 3.7 returned repeated high-demand failures.
+
+The Development Strategy graph is invoked manually for a selected qualified company rather than for every lead-search result. It loads the persisted assessment and Market Playbook, retrieves product/company facts through hybrid RAG, syncs only human-approved `email-template` mailbox artifacts into the user's private style lane, and combines them with shared team templates. Kimi-k3 first produces a structured strategy and then a style-conditioned draft. Company and Cudy factual sentences carry internal evidence markers during generation; the server rejects unknown IDs and removes valid markers from the recipient-facing body before persisting `outreach_draft`. Manual approval is stored but cannot send email. A future delivery tool must remain a separate, explicitly confirmed action.
 
 ## Security and privacy
 

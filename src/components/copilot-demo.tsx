@@ -7,7 +7,6 @@ import { KnowledgeBase } from "@/components/knowledge-base";
 import { ContactEnrichmentProgress } from "@/components/contact-enrichment-progress";
 import { MailboxIntegration } from "@/components/mailbox-integration";
 import {
-  buildDevelopmentPlan,
   primaryRole,
   priorityIndex,
   type AccountTier,
@@ -25,6 +24,7 @@ import type {
   EmailCandidateStatus,
   MarketWorkspaceDto,
 } from "@/lib/sales/types";
+import type { DevelopmentStrategyDto } from "@/lib/outreach/types";
 
 type View = "home" | "overview" | "results" | "map" | "opportunities" | "assistant" | "tasks" | "knowledge" | "mailbox";
 type Mode = "new-market" | "growth";
@@ -114,12 +114,14 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner" }: 
   const [tierFilter, setTierFilter] = useState<"All" | AccountTier>("All");
   const [searchState, setSearchState] = useState<SearchState>("idle");
   const [draft, setDraft] = useState("");
+  const [developmentResult, setDevelopmentResult] = useState<DevelopmentStrategyDto | null>(null);
+  const [developmentState, setDevelopmentState] = useState<"idle" | "generating" | "ready" | "approving" | "approved" | "error">("idle");
+  const [developmentError, setDevelopmentError] = useState("");
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const sourceCount = companies.reduce((total, company) => total + company.evidence.length, 0);
   const searchDate = initialWorkspace?.latestSearch?.finishedAt?.slice(0, 10) ?? "Not searched";
 
   const selectedCompany = companies.find((item) => item.id === selectedId) ?? companies[0];
-  const selectedPlan = useMemo(() => selectedCompany ? buildDevelopmentPlan(selectedCompany) : null, [selectedCompany]);
   const shortlist = companies.filter((company) => !["Discovered", "Excluded"].includes(company.opportunityStage));
 
   const filteredCompanies = useMemo(() => {
@@ -149,7 +151,49 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner" }: 
   function selectCompany(id: string, openDrawer = true) {
     setSelectedId(id);
     setDraft("");
+    setDevelopmentResult(null);
+    setDevelopmentState("idle");
+    setDevelopmentError("");
     if (openDrawer) setDetailOpen(true);
+  }
+
+  async function generateDevelopment(company = selectedCompany) {
+    if (!company || developmentState === "generating") return;
+    setDevelopmentState("generating");
+    setDevelopmentError("");
+    try {
+      const response = await fetch("/api/development-strategies", {
+        method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ companyExternalId: company.id, language: "en", tone: "consultative" }),
+      });
+      const payload = await response.json() as { result?: DevelopmentStrategyDto; error?: string };
+      if (!response.ok || !payload.result) throw new Error(payload.error || "开发策略生成失败");
+      setDevelopmentResult(payload.result);
+      setDraft(payload.result.draft.body);
+      setDevelopmentState("ready");
+    } catch (error) {
+      setDevelopmentState("error");
+      setDevelopmentError(error instanceof Error ? error.message : "开发策略生成失败");
+    }
+  }
+
+  async function approveDevelopmentDraft() {
+    if (!developmentResult || developmentState === "approving") return;
+    setDevelopmentState("approving");
+    setDevelopmentError("");
+    try {
+      const response = await fetch(`/api/development-strategies/${developmentResult.id}`, {
+        method: "PATCH", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ body: draft, approve: true }),
+      });
+      const payload = await response.json() as { error?: string };
+      if (!response.ok) throw new Error(payload.error || "草稿批准失败");
+      setDevelopmentResult({ ...developmentResult, status: "approved", draft: { ...developmentResult.draft, body: draft } });
+      setDevelopmentState("approved");
+    } catch (error) {
+      setDevelopmentState("error");
+      setDevelopmentError(error instanceof Error ? error.message : "草稿批准失败");
+    }
   }
 
   function showLiveResults() {
@@ -235,14 +279,14 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner" }: 
           {view === "results" && <Results companies={filteredCompanies} query={query} setQuery={setQuery} roleFilter={roleFilter} setRoleFilter={setRoleFilter} tierFilter={tierFilter} setTierFilter={setTierFilter} onSelect={selectCompany} onToggle={(company) => updateCompany(company.id, { opportunityStage: company.opportunityStage === "Discovered" ? "Qualified" : "Discovered" })} />}
           {view === "map" && <ChannelMap companies={companies} onSelect={selectCompany} />}
           {view === "opportunities" && <OpportunityWorkspace companies={shortlist} onSelect={selectCompany} onUpdate={updateCompany} />}
-          {view === "assistant" && selectedCompany && selectedPlan && <DevelopmentAssistant company={selectedCompany} plan={selectedPlan} draft={draft || selectedPlan.draft} setDraft={setDraft} onEvidence={setEvidenceOpen} onChoose={() => setDetailOpen(true)} />}
+          {view === "assistant" && selectedCompany && <DevelopmentAssistant company={selectedCompany} result={developmentResult} draft={draft} setDraft={setDraft} state={developmentState} error={developmentError} onGenerate={() => void generateDevelopment()} onApprove={() => void approveDevelopmentDraft()} onEvidence={setEvidenceOpen} onChoose={() => setDetailOpen(true)} />}
           {view === "tasks" && <ContactEnrichmentProgress />}
           {view === "knowledge" && <KnowledgeBase />}
           {view === "mailbox" && <MailboxIntegration />}
         </div>
       </main>
 
-      {detailOpen && selectedCompany && <CompanyDrawer company={selectedCompany} contactDetails={initialWorkspace?.contactsByCompanyId[selectedCompany.id]} onClose={() => setDetailOpen(false)} onUpdate={(patch) => updateCompany(selectedCompany.id, patch)} onEvidence={setEvidenceOpen} onOpenAssistant={() => { setDetailOpen(false); setView("assistant"); }} />}
+      {detailOpen && selectedCompany && <CompanyDrawer company={selectedCompany} contactDetails={initialWorkspace?.contactsByCompanyId[selectedCompany.id]} onClose={() => setDetailOpen(false)} onUpdate={(patch) => updateCompany(selectedCompany.id, patch)} onEvidence={setEvidenceOpen} onOpenAssistant={() => { setDetailOpen(false); setView("assistant"); void generateDevelopment(selectedCompany); }} />}
       {evidenceOpen && <EvidenceModal evidence={evidenceOpen} onClose={() => setEvidenceOpen(null)} />}
     </div>
   );
@@ -412,11 +456,19 @@ function OpportunityWorkspace({ companies, onSelect, onUpdate }: { companies: Co
   return <div className="opportunity-board">{groups.map((stage) => { const items = companies.filter((item) => item.opportunityStage === stage); return <section key={stage} className="board-column"><header><div><span className={`stage-dot ${stage.toLowerCase().replace(" ", "-")}`}/><strong>{stage}</strong></div><em>{items.length}</em></header><div className="board-stack">{items.map((company) => <article key={company.id} className="opportunity-card"><button className="card-company" onClick={() => onSelect(company.id)}><span className="company-avatar">{company.displayName.slice(0, 2).toUpperCase()}</span><span><strong>{company.displayName}</strong><small>{company.roles.join(" · ")}</small></span></button><div className="opportunity-meta"><StatusTag tone={company.accountTier === "KA" ? "amber" : "blue"}>{company.accountTier}</StatusTag><span>Fit <b>{company.fitScore}</b></span></div><p>{company.nextAction}</p><div className="card-owner"><span className="avatar tiny">{company.owner === "Unassigned" ? "?" : company.owner.split(" ").map((part) => part[0]).join("")}</span><span>{company.owner}</span><select value={company.opportunityStage} onChange={(event) => onUpdate(company.id, { opportunityStage: event.target.value as OpportunityStage })} aria-label={`修改 ${company.displayName} 状态`}>{stageOptions.map((option) => <option key={option}>{option}</option>)}</select></div></article>)}{items.length === 0 && <div className="empty-column"><Icon name="plus"/><span>暂无节点</span></div>}</div></section>; })}</div>;
 }
 
-function DevelopmentAssistant({ company, plan, draft, setDraft, onEvidence, onChoose }: { company: CompanyRecord; plan: ReturnType<typeof buildDevelopmentPlan>; draft: string; setDraft: (value: string) => void; onEvidence: (evidence: Evidence) => void; onChoose: () => void }) {
+function DevelopmentAssistant({ company, result, draft, setDraft, state, error, onGenerate, onApprove, onEvidence, onChoose }: {
+  company: CompanyRecord; result: DevelopmentStrategyDto | null; draft: string; setDraft: (value: string) => void;
+  state: "idle" | "generating" | "ready" | "approving" | "approved" | "error"; error: string;
+  onGenerate: () => void; onApprove: () => void; onEvidence: (evidence: Evidence) => void; onChoose: () => void;
+}) {
+  const strategy = result?.strategy;
   return <div className="assistant-grid">
     <section className="panel assistant-context"><div className="panel-header"><div><span className="section-kicker">SELECTED NODE</span><h2>开发上下文</h2></div><button className="text-button" onClick={onChoose}>切换节点</button></div><div className="selected-company"><span className="company-avatar large">{company.displayName.slice(0, 2).toUpperCase()}</span><div><h3>{company.displayName}</h3><p>{company.roles.join(" · ")} · {company.city}</p></div><ScoreRing value={company.fitScore}/></div><div className="context-grid"><div><span>Account Tier</span><strong>{company.accountTier}</strong></div><div><span>Supply Model</span><strong>{company.supplyModel}</strong></div><div><span>Brand Involvement</span><strong>{company.brandInvolvement}</strong></div><div><span>Evidence Confidence</span><strong>{company.evidenceConfidence}%</strong></div></div><div className="assistant-section"><span className="section-kicker">EVIDENCE USED</span>{company.evidence.map((item) => <button className="evidence-mini" key={item.id} onClick={() => onEvidence(item)}><span>{item.id}</span><div><strong>{item.title}</strong><small>{item.summary}</small></div><Icon name="external" size={14}/></button>)}</div></section>
-    <section className="panel plan-panel"><div className="panel-header"><div><span className="section-kicker">DEVELOPMENT PLAN</span><h2>节点差异化开发计划</h2></div><StatusTag tone="violet"><Icon name="spark" size={13}/> Evidence-linked</StatusTag></div><div className="plan-highlight"><span>推荐切入</span><strong>{plan.angle}</strong></div><div className="plan-columns"><div><span className="section-kicker">PRODUCT WEDGE</span><ul className="product-list">{plan.products.map((product) => <li key={product}><Icon name="check" size={15}/>{product}</li>)}</ul></div><div><span className="section-kicker">TARGET ROLES</span><ul className="title-list">{plan.targetTitles.map((title) => <li key={title}>{title}</li>)}</ul></div></div><div className="assistant-section"><span className="section-kicker">HUMAN NEXT STEPS</span><ol className="step-list">{plan.steps.map((step, index) => <li key={step}><span>{index + 1}</span>{step}</li>)}</ol></div></section>
-    <section className="panel draft-panel"><div className="panel-header"><div><span className="section-kicker">OUTREACH DRAFT · NOT SENT</span><h2>英文触达草稿</h2></div><div className="draft-actions"><button className="secondary-button" onClick={() => setDraft(plan.draft)}>重新生成</button><button className="primary-button" onClick={() => navigator.clipboard?.writeText(draft)}><Icon name="check"/>复制草稿</button></div></div><div className="safety-banner"><Icon name="spark"/><span>个性化事实已附 Evidence ID。系统不会发送邮件；请人工复核后使用。</span></div><textarea value={draft} onChange={(event) => setDraft(event.target.value)} aria-label="英文触达草稿"/><div className="draft-foot"><span>{draft.length} characters</span><span>{plan.evidenceIds.length} evidence references</span><span>Prompt v0.3-demo · Rules v1</span></div></section>
+    <section className="panel plan-panel"><div className="panel-header"><div><span className="section-kicker">DEVELOPMENT STRATEGY AGENT</span><h2>Kimi 定制开发策略</h2></div><StatusTag tone={result?.model === "deterministic-fallback" ? "amber" : "violet"}><Icon name="spark" size={13}/>{result ? result.model : "Awaiting generation"}</StatusTag></div>
+      {!strategy ? <div className="plan-highlight"><span>{state === "generating" ? "正在编排" : "尚未生成"}</span><strong>{state === "generating" ? "正在读取候选证据、Cudy RAG 和你的已批准邮箱风格…" : "点击生成，由 Kimi-k3 制定策略并写开发信。"}</strong><button className="primary-button" disabled={state === "generating"} onClick={onGenerate}>{state === "generating" ? "生成中…" : "生成开发策略"}</button></div> : <><div className="plan-highlight"><span>推荐切入</span><strong>{strategy.personalizationAngle}</strong></div><div className="plan-columns"><div><span className="section-kicker">PRODUCT WEDGE</span><ul className="product-list">{strategy.recommendedProducts.map((product) => <li key={product}><Icon name="check" size={15}/>{product}</li>)}</ul></div><div><span className="section-kicker">TARGET ROLES</span><ul className="title-list">{strategy.targetTitles.map((title) => <li key={title}>{title}</li>)}</ul></div></div><div className="assistant-section"><span className="section-kicker">FOLLOW-UP PLAN</span><ol className="step-list">{strategy.followUpPlan.map((step, index) => <li key={step}><span>{index + 1}</span>{step}</li>)}</ol></div></>}
+      {error && <div className="safety-banner"><span>{error}</span></div>}
+    </section>
+    <section className="panel draft-panel"><div className="panel-header"><div><span className="section-kicker">OUTREACH DRAFT · NOT SENT</span><h2>{result?.draft.language === "en" ? "英文触达草稿" : "定制触达草稿"}</h2></div><div className="draft-actions"><button className="secondary-button" disabled={state === "generating"} onClick={onGenerate}>{state === "generating" ? "生成中…" : "重新生成"}</button><button className="secondary-button" disabled={!result || state === "approving" || state === "approved"} onClick={onApprove}>{state === "approved" ? "已批准" : state === "approving" ? "保存中…" : "保存并批准"}</button><button className="primary-button" disabled={!draft} onClick={() => navigator.clipboard?.writeText(draft)}><Icon name="check"/>复制草稿</button></div></div><div className="safety-banner"><Icon name="spark"/><span>事实引用已在服务端校验并从外发正文移除；系统不会自动发送邮件，批准也不触发发送。</span></div>{result?.draft.subjectOptions.length ? <div className="assistant-section"><span className="section-kicker">SUBJECT OPTIONS</span><ul className="title-list">{result.draft.subjectOptions.map((subject) => <li key={subject}>{subject}</li>)}</ul></div> : null}<textarea value={draft} onChange={(event) => setDraft(event.target.value)} placeholder={state === "generating" ? "Kimi 正在生成…" : "生成后可在此人工编辑"} aria-label="开发信草稿"/><div className="draft-foot"><span>{draft.length} characters</span><span>{result?.evidenceIds.length ?? 0} company evidence · {result?.knowledgeIds.length ?? 0} KB references</span><span>{result?.promptVersion ?? "Kimi Agent v1"}</span></div></section>
   </div>;
 }
 

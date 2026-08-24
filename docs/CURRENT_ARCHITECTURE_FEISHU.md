@@ -29,6 +29,7 @@ Network Channel Copilot 是一个证据驱动的海外渠道销售线索产品�
 - PostgreSQL 同时承担业务数据、RAG、任务状态、审计和 LangGraph checkpoint；
 - 用户私有知识、对话、邮箱和业务数据使用数据库 RLS 隔离；
 - 联系方式查询位于公司资格判断之后，通过独立 Provider API 扩展。
+- 开发策略位于候选资格判断之后，由独立 Kimi-k3 LangGraph 结合证据、Cudy RAG、共享模板和个人已批准邮箱风格生成；草稿批准与邮件发送分离。
 
 ---
 
@@ -114,6 +115,21 @@ retrieve_knowledge
   → persist_results
 ```
 
+### 3.3 Development Strategy StateGraph
+
+```text
+selected qualified company
+  → load_candidate_context
+  → Cudy product/company hybrid RAG + approved shared/private style templates
+  → create_strategy（Kimi-k3）
+  → write_draft（Kimi-k3）
+  → evidence-ID allowlist validation
+  → persist outreach_draft
+  → human edit / approve（不会发送）
+```
+
+该图按用户选择的公司按需运行，不在每次线索搜索后批量消耗模型调用。私人风格只读取当前用户已批准的 `email-template` 提取物，不把原始邮箱正文或其他用户数据发送给模型。未来邮箱发送必须增加独立确认 Action、幂等键、频率限制和投递审计。
+
 | 节点 | 核心职责 | 输出 | 失败策略 |
 |---|---|---|---|
 | retrieve_knowledge | 检索产品、Cudy 公司和行业知识 | 三域上下文、引用、检索信号 | 任一知识域缺失则 fail closed，不搜索 |
@@ -123,7 +139,7 @@ retrieve_knowledge
 | score_candidates | 独立评估公司存在性、市场存在、渠道相关性和匹配度 | 完整 assessment | Flash 冲突/低置信升级 Pro；均失败则不发布 |
 | persist_results | 服务端重算并保存合格 Top N | 正式公司、工作区上下文、审计数据 | 单事务失败则任务失败并保留 checkpoint |
 
-### 3.3 状态与恢复
+### 3.4 状态与恢复
 
 - 每个 Lead Graph 节点使用 RDS `langgraph` schema 保存 checkpoint；
 - `lead_workflow_job` 保存 thread、mode、status、phase、attempt、lease、result 和 error；
