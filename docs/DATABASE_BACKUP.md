@@ -32,3 +32,15 @@ The archive intentionally excludes ownership and ACL metadata so it can be resto
 ## Restore safety
 
 Restore into a new empty database first. Do not use `--clean` against the production database. After restoring, run migrations, application security verification, and the most relevant RAG verification commands before switching application traffic.
+
+## Switch development to the restored local database
+
+After a verified archive has been restored as `network_copilot_local`, apply migrations with a temporary local owner connection. Then run:
+
+```powershell
+node scripts/run-tsx.cjs scripts/configure-local-database.ts
+```
+
+The command creates or rotates a restricted local login and updates only the three database settings in `.env.local`. Other model, embedding, search, and mailbox settings remain unchanged. The Docker port is bound to `127.0.0.1`, so PostgreSQL is not exposed on the LAN.
+
+After switching, `backup-database.ts` backs up the local database because it reads the updated `DATABASE_MIGRATION_URL`. RDS is no longer queried by the application, but external model, embedding, search, contact, and mailbox providers remain external unless separately replaced.
