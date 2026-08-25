@@ -10,6 +10,7 @@ loadEnvConfig(process.cwd());
 const checks = [
   { question: "What are Cudy's company and brand capabilities?", expectedTopic: "company-brand-profile" },
   { question: "What OEM and ODM manufacturing capabilities does Cudy provide?", expectedTopic: "oem-odm-manufacturing" },
+  { question: "What distribution, delivery, margin, marketing and partner support policies does Cudy offer?", expectedTopic: "distribution-policy" },
 ];
 
 try {
@@ -33,7 +34,7 @@ try {
     });
   }
   console.log(JSON.stringify({ company, checks: results }, null, 2));
-  if (company?.documentCount !== 2 || company.embeddedCount !== company.chunkCount || results.some((item) => !item.matched)) process.exitCode = 1;
+  if (company?.documentCount !== 3 || company.embeddedCount !== company.chunkCount || results.some((item) => !item.matched)) process.exitCode = 1;
 } finally {
   await getPool().end();
 }

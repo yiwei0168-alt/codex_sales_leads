@@ -16,8 +16,8 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   const draftBody = typeof body.body === "string" ? body.body.trim() : undefined;
   const approve = body.approve === true;
   if (!draftBody && !approve) return Response.json({ error: "body 或 approve 至少需要一个" }, { status: 400 });
-  if (draftBody && (draftBody.length < 40 || draftBody.length > 20_000)) {
-    return Response.json({ error: "开发信长度必须在 40–20000 字符之间" }, { status: 400 });
+  if (draftBody && (draftBody.length < 40 || draftBody.length > 30_000)) {
+    return Response.json({ error: "开发信长度必须在 40–30000 字符之间" }, { status: 400 });
   }
   const updated = await updateDevelopmentDraft(session.userId, id, { body: draftBody, approve });
   return updated ? Response.json({ updated: true, status: approve ? "approved" : "generated" })

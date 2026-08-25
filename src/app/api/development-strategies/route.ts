@@ -22,8 +22,8 @@ export async function POST(request: Request) {
   if (!/^[a-z]{2,3}(?:-[A-Z]{2})?$/i.test(language)) return Response.json({ error: "language 无效" }, { status: 400 });
   if (tone && tone.length > 100) return Response.json({ error: "tone 过长" }, { status: 400 });
   if (instructions && instructions.length > 2_000) return Response.json({ error: "instructions 过长" }, { status: 400 });
-  if (targetLength !== undefined && (targetLength < 60 || targetLength > 300)) {
-    return Response.json({ error: "targetLength 必须在 60–300 之间" }, { status: 400 });
+  if (targetLength !== undefined && (targetLength < 180 || targetLength > 500)) {
+    return Response.json({ error: "targetLength 必须在 180–500 之间" }, { status: 400 });
   }
   try {
     const result = await runDevelopmentStrategyAgent(session.userId, {

@@ -14,12 +14,14 @@ export interface OutreachTemplate {
 }
 export interface OutreachKnowledgeItem {
   id: string;
-  collection: "product" | "company";
+  kind: "company-profile" | "distribution-policy" | "market-proof" | "feedback-memory";
   title: string;
   content: string;
+  marketCodes: string[];
+  channelRoles: string[];
+  priorityWeight: number;
+  sourceRefs: Record<string, unknown>;
   score: number;
-  corroborated: boolean;
-  structuredFacts: Array<{ model: string; factKey: string; factValue: string; status: string }>;
 }
 
 export interface OutreachRecipient {
@@ -70,6 +72,14 @@ export interface DevelopmentDraft {
   placeholders: string[];
 }
 
+export interface DevelopmentGenerationMetrics {
+  modelCalls: number;
+  latencyMs: number;
+  promptTokens?: number;
+  completionTokens?: number;
+  totalTokens?: number;
+}
+
 export interface DevelopmentStrategyDto {
   id: string;
   companyExternalId: string;
@@ -82,8 +92,26 @@ export interface DevelopmentStrategyDto {
   warnings: string[];
   model: string;
   promptVersion: string;
+  generationMetrics: DevelopmentGenerationMetrics;
   status: "generated" | "approved" | "sent" | "cancelled";
+  revision: number;
   createdAt: string;
+}
+
+export interface OutreachFeedbackResult {
+  feedbackId: string;
+  draft: DevelopmentStrategyDto;
+  memoryStored: boolean;
+  memorySummary?: string;
+  memoryReason: string;
+}
+
+export interface DevelopmentFeedbackOptions {
+  draftId: string;
+  feedback: string;
+  currentBody: string;
+  sourceRevision: number;
+  allowMemory: boolean;
 }
 
 export interface DevelopmentGenerationOptions {

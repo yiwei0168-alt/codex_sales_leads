@@ -439,7 +439,7 @@ retrieve_knowledge
 | Company Detail | 查看官网、证据、角色、评分、风险、Unknown 和人工修改 |
 | Channel Map | 查看已有关系与 Hypothesis 关系，不把推断展示为事实 |
 | Opportunity Workspace | 管理阶段、优先级、owner、供货路径和下一步 |
-| Development Assistant | 生成基于 Evidence 的产品切入、岗位建议和开发草稿 |
+| Development Assistant | 从开发策略专库检索公司背书、分销政策、市场证明和反馈记忆，单次生成策略与长邮件；支持审核、反馈改写和确认 |
 | Knowledge & RAG | 查看三域统计、导入知识、执行带引用问答 |
 | Mailbox Integration | 配置私有邮箱、同步、筛选、AI 学习和人工审批 |
 
@@ -460,6 +460,16 @@ retrieve_knowledge
 - `Verified`、`Corroborated`、`Inferred`、`Unknown`、`Conflicting` 使用文字与视觉双重编码；
 - 外部 URL 使用新窗口打开，并只展示公开商业来源；
 - 产品问答 grounded=false 时显示明确复核提示。
+
+## 10.4 开发策略审核与反馈
+
+- 开发邮件不检索详细产品规格，只使用候选公司 Evidence 和独立开发策略库；
+- 专库优先召回 `Cudy Profile Company`、`Cudy Distribution Policy`、目标市场证明和当前用户的高价值反馈记忆；
+- 初次生成将策略与完整邮件合并为一次 Kimi-k3 调用，并记录耗时、调用次数和 Token；
+- 默认长度参考脱敏真实模板，目标为 5–7 个段落并包含 4–6 个紧凑利益点；
+- 每次生成或反馈改写后状态均为待审核，用户可以人工编辑、提交反馈或确认批准；
+- 反馈 Agent 只记忆可跨公司复用的市场事实、渠道策略、定位经验或稳定风格偏好，不记忆联系人、单家公司措辞、秘密或未获支持的断言；
+- 批准不会自动发送邮件。
 
 ---
 
@@ -524,6 +534,7 @@ Content-Type: application/json
 - NFR-P03：评分 batch 最多 5，默认并发 2；
 - NFR-P04：UI 普通读取不应等待外部模型；长任务显示可观测状态；
 - NFR-P05：只有部署长期计算服务后才允许把生产模式切换为 worker。
+- NFR-P06：开发策略首次生成默认只调用一次 Kimi，并将专库上下文限制为 4 个知识分块、1 个最匹配团队长模板，以及至多 1 个已批准私人风格样本。
 
 ## 12.3 安全与合规
 

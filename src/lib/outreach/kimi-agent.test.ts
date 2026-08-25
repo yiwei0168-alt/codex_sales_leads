@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type { CompanyRecord } from "@/lib/domain";
-import { generateDevelopmentStrategyWithKimi } from "./kimi-agent";
-import type { DevelopmentContext } from "./types";
+import { generateDevelopmentStrategyWithKimi, reviseDevelopmentDraftWithFeedback } from "./kimi-agent";
+import type { DevelopmentContext, DevelopmentStrategyDto } from "./types";
 
 const company: CompanyRecord = {
   id: "company-example", legalName: "Example GmbH", displayName: "Example GmbH", domain: "example.de",
@@ -17,8 +17,9 @@ const company: CompanyRecord = {
 
 const context: DevelopmentContext = {
   userId: "user", workspaceId: "workspace", companyId: "company-db", company,
-  knowledge: [{ id: "00000000-0000-0000-0000-000000000001", collection: "product", title: "AP",
-    content: "Verified Cudy access point family", score: 0.9, corroborated: true, structuredFacts: [] }],
+  knowledge: [{ id: "00000000-0000-0000-0000-000000000001", kind: "company-profile", title: "Cudy profile",
+    content: "Cudy serves consumer and SMB networking markets.", score: 0.9, marketCodes: [], channelRoles: [],
+    priorityWeight: 2.7, sourceRefs: { authority: 5 } }],
   templates: [{ id: "10000000-0000-0000-0000-000000000001", visibility: "private", source: "mailbox-approved",
     title: "My style", language: "en", channelRoles: ["SI"], targetTitles: ["Solutions Director"],
     subjectPattern: "Possible fit", body: "Hi, concise approved style. Best,", styleProfile: { targetWords: 80 } }],
@@ -27,22 +28,21 @@ const context: DevelopmentContext = {
 afterEach(() => vi.unstubAllEnvs());
 
 describe("Kimi development strategy agent", () => {
-  it("generates a two-stage strategy and strips validated internal citation markers", async () => {
+  it("generates strategy and draft in one call and strips validated internal citation markers", async () => {
     vi.stubEnv("KIMI_API_KEY", "test-key");
-    const responses = [
-      { objective: "Develop an SI partnership", personalizationAngle: "Integration delivery fit", valuePropositions: ["Simpler delivery"],
+    const responseValue = { strategy: {
+        objective: "Develop an SI partnership", personalizationAngle: "Integration delivery fit", valuePropositions: ["Simpler delivery"],
         recommendedProducts: ["Cudy access points"], targetTitles: ["Solutions Director"], likelyObjections: ["Vendor overlap"],
         callToAction: "Short use-case call", followUpPlan: ["Send a concise follow-up"], evidenceIds: ["ev-1"],
-        knowledgeIds: ["00000000-0000-0000-0000-000000000001"] },
-      { language: "en", subjectOptions: ["A possible integration fit"],
+        knowledgeIds: ["00000000-0000-0000-0000-000000000001"] }, draft: {
+        language: "en", subjectOptions: ["A possible integration fit"],
         bodyWithCitations: "Hi {{first_name}},\n\nYour network integration work looks relevant. [EVIDENCE:ev-1] Cudy access points may support the proposed discussion. [KNOWLEDGE:00000000-0000-0000-0000-000000000001]\n\nBest,\n{{sales_owner}}",
-        placeholders: ["first_name", "sales_owner"] },
-    ];
+        placeholders: ["first_name", "sales_owner"] } };
     const fetchMock = vi.fn().mockImplementation(async () => new Response(JSON.stringify({
-      model: "kimi-k3", choices: [{ message: { content: JSON.stringify(responses.shift()) } }],
+      model: "kimi-k3", choices: [{ message: { content: JSON.stringify(responseValue) } }],
     }), { status: 200 }));
     const result = await generateDevelopmentStrategyWithKimi(context, { companyExternalId: company.id }, fetchMock);
-    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(result.model).toBe("kimi-k3");
     expect(result.draft.body).not.toContain("[EVIDENCE:");
     expect(result.evidenceIds).toEqual(["ev-1"]);
@@ -52,17 +52,41 @@ describe("Kimi development strategy agent", () => {
 
   it("falls back safely when the draft invents an evidence ID", async () => {
     vi.stubEnv("KIMI_API_KEY", "test-key");
-    const responses = [
-      { objective: "Develop an SI partnership", personalizationAngle: "Integration delivery fit", valuePropositions: ["Fit"],
+    const responseValue = { strategy: {
+        objective: "Develop an SI partnership", personalizationAngle: "Integration delivery fit", valuePropositions: ["Fit"],
         recommendedProducts: [], targetTitles: ["Director"], likelyObjections: [], callToAction: "Call",
-        followUpPlan: ["Follow up"], evidenceIds: [], knowledgeIds: [] },
-      { language: "en", subjectOptions: ["Hello"], bodyWithCitations: "Hi, invented fact. [EVIDENCE:invented-id] Please meet next week. Best regards.", placeholders: [] },
-    ];
+        followUpPlan: ["Follow up"], evidenceIds: [], knowledgeIds: [] }, draft: {
+        language: "en", subjectOptions: ["Hello"],
+        bodyWithCitations: "Hi, invented fact. [EVIDENCE:invented-id] Please meet next week. Best regards. This sentence ensures the draft is long enough for schema validation.", placeholders: [] } };
     const fetchMock = vi.fn().mockImplementation(async () => new Response(JSON.stringify({
-      choices: [{ message: { content: JSON.stringify(responses.shift()) } }],
+      choices: [{ message: { content: JSON.stringify(responseValue) } }],
     }), { status: 200 }));
     const result = await generateDevelopmentStrategyWithKimi(context, { companyExternalId: company.id }, fetchMock);
-    expect(result.model).toBe("deterministic-fallback");
+    expect(result.model).toBe("template-fallback");
     expect(result.warnings[0]).toContain("invented company evidence IDs");
+  });
+
+  it("revises an audited draft and screens reusable market feedback for memory", async () => {
+    vi.stubEnv("KIMI_API_KEY", "test-key");
+    const current = {
+      id: "draft", companyExternalId: company.id, strategy: { objective: "Partner", personalizationAngle: "Fit",
+        valuePropositions: ["Value"], recommendedProducts: [], targetTitles: ["Director"], likelyObjections: [],
+        callToAction: "Call", followUpPlan: ["Follow up"], evidenceIds: ["ev-1"],
+        knowledgeIds: ["00000000-0000-0000-0000-000000000001"] },
+      draft: { language: "en", subjectOptions: ["Subject"], body: "Existing email", wordCount: 2, placeholders: [] },
+      evidenceIds: ["ev-1"], knowledgeIds: ["00000000-0000-0000-0000-000000000001"], templateIds: [],
+      warnings: [], model: "kimi-k3", promptVersion: "v2", status: "generated", revision: 1,
+      generationMetrics: { modelCalls: 1, latencyMs: 10 }, createdAt: "2026-08-24",
+    } satisfies DevelopmentStrategyDto;
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({ model: "kimi-k3", usage: {
+      prompt_tokens: 300, completion_tokens: 200, total_tokens: 500,
+    }, choices: [{ message: { content: JSON.stringify({ subjectOptions: ["Revised subject"],
+      revisedBodyWithCitations: "Dear {{first_name}},\n\nYour integration work is relevant to this partnership discussion. [EVIDENCE:ev-1] Cudy serves consumer and SMB networking markets. [KNOWLEDGE:00000000-0000-0000-0000-000000000001]\n\nPlease let me know if a short discussion would be useful.\n\nBest regards,\n{{sender_name}}",
+      memoryEvaluation: { valuable: true, summary: "Use local retail proof for relevant Dutch partners.",
+        reason: "Reusable market positioning", marketCodes: ["NL"], channelRoles: ["Distributor"] } }) } }] }), { status: 200 }));
+    const result = await reviseDevelopmentDraftWithFeedback(context, current, "Use Dutch retail proof", fetchMock);
+    expect(result.revisedBody).not.toContain("[KNOWLEDGE:");
+    expect(result.memory.valuable).toBe(true);
+    expect(result.generationMetrics.totalTokens).toBe(500);
   });
 });

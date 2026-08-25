@@ -1,16 +1,16 @@
-import { getRagConfig } from "@/lib/rag/config";
-import { tenantQuery } from "@/lib/rag/db";
+import { tenantQuery, tenantTransaction } from "@/lib/rag/db";
 import { embedTexts } from "@/lib/rag/openai-provider";
-import { hybridSearch } from "@/lib/rag/repository";
 import type { CompanyRecord } from "@/lib/domain";
+import { insertFeedbackMemory, prepareFeedbackMemory, searchOutreachKnowledge } from "./knowledge-repository";
 import type {
-  DevelopmentContext, DevelopmentGenerationOptions, DevelopmentStrategyDto, OutreachTemplate,
+  DevelopmentContext, DevelopmentGenerationOptions, DevelopmentStrategyDto, OutreachFeedbackResult, OutreachTemplate,
 } from "./types";
 
 interface CompanyContextRow {
   workspace_id: string;
   company_id: string;
   external_id: string;
+  country_code: string;
   record: CompanyRecord;
   search_run_id: string | null;
   dimensions: Record<string, number> | null;
@@ -49,12 +49,15 @@ async function loadTemplates(userId: string, roles: string[], language: string):
       order by case when visibility='private' then 0 else 1 end,
         case when channel_roles && $2::text[] then 0 else 1 end,
         case when language in ($3, 'auto') then 0 else 1 end,
-        updated_at desc limit 5`, [userId, roles, language]);
-  return rows.map((row) => ({
+        updated_at desc limit 6`, [userId, roles, language]);
+  const mapped = rows.map((row) => ({
     id: row.id, visibility: row.visibility, source: row.source, title: row.title, language: row.language,
     channelRoles: row.channel_roles, targetTitles: row.target_titles, subjectPattern: row.subject_pattern,
     body: row.body, styleProfile: row.style_profile,
   }));
+  const shared = mapped.find((item) => item.visibility === "shared");
+  const privateStyle = mapped.find((item) => item.visibility === "private");
+  return [shared, privateStyle].filter((item): item is OutreachTemplate => Boolean(item));
 }
 
 async function loadRecipient(userId: string, workspaceId: string, companyId: string, contactId?: string) {
@@ -83,7 +86,7 @@ async function loadRecipient(userId: string, workspaceId: string, companyId: str
 
 export async function loadDevelopmentContext(userId: string, options: DevelopmentGenerationOptions): Promise<DevelopmentContext> {
   const rows = await tenantQuery<CompanyContextRow>(userId,
-    `select w.id as workspace_id, c.id as company_id, c.external_id, c.record, wc.search_run_id,
+    `select w.id as workspace_id, c.id as company_id, c.external_id, c.country_code, c.record, wc.search_run_id,
             a.dimensions, a.reasons, a.risks, a.unknowns, a.evidence_ids,
             r.metadata->'playbook' as playbook
        from market_workspace w
@@ -96,23 +99,14 @@ export async function loadDevelopmentContext(userId: string, options: Developmen
   const row = rows[0];
   if (!row) throw new Error("候选公司不存在或不属于当前工作区");
   const language = options.language?.trim() || "en";
-  const query = [
-    `Cudy products, company strengths and approved policies relevant to ${row.record.displayName}`,
-    `${row.record.roles.join(" ")} in ${row.record.country}`,
-    row.record.summary,
-  ].join(". ");
+  const query = [`Cudy company strengths, distribution partnership policy and market proof`,
+    `${row.record.roles.join(" ")} partner in ${row.record.country}`, row.record.summary].join(". ");
   const [embedding] = await embedTexts([query]);
-  const config = getRagConfig();
-  const retrieved = await hybridSearch(userId, query, embedding, { collections: ["product", "company"] }, 10);
-  const knowledge = retrieved.filter((chunk) => chunk.score >= config.minScore)
-    .filter((chunk) => chunk.metadata.mailboxArtifactKind !== "email-template"
-      && chunk.metadata.mailboxArtifactKind !== "customer-signal")
-    .map((chunk) => ({
-      id: chunk.id, collection: chunk.collection as "product" | "company", title: chunk.title,
-      content: chunk.content.slice(0, 4_000), score: chunk.score, corroborated: chunk.corroborated,
-      structuredFacts: Array.isArray(chunk.metadata.structuredFacts)
-        ? chunk.metadata.structuredFacts as DevelopmentContext["knowledge"][number]["structuredFacts"] : [],
-    }));
+  const countryCode = row.country_code.toUpperCase();
+  const marketCodes = [countryCode, row.record.country.toUpperCase()];
+  if (["NL", "BE", "LU"].includes(countryCode)) marketCodes.push("BENELUX");
+  if (countryCode === "GB") marketCodes.push("UK");
+  const knowledge = await searchOutreachKnowledge(userId, query, embedding, marketCodes, row.record.roles, 4);
   const [templates, recipient] = await Promise.all([
     loadTemplates(userId, row.record.roles, language),
     loadRecipient(userId, row.workspace_id, row.company_id, options.contactId),
@@ -130,21 +124,23 @@ export async function loadDevelopmentContext(userId: string, options: Developmen
 
 export async function persistDevelopmentDraft(
   context: DevelopmentContext,
-  result: Omit<DevelopmentStrategyDto, "id" | "createdAt" | "companyExternalId" | "status">,
+  result: Omit<DevelopmentStrategyDto, "id" | "createdAt" | "companyExternalId" | "status" | "revision">,
   inputSnapshot: Record<string, unknown>,
 ): Promise<DevelopmentStrategyDto> {
-  const rows = await tenantQuery<{ id: string; created_at: string }>(context.userId,
+  const rows = await tenantQuery<{ id: string; created_at: string; revision: number }>(context.userId,
     `insert into outreach_draft (
        user_id, workspace_id, company_id, contact_id, search_run_id, language, strategy,
        subject_options, body, evidence_ids, knowledge_chunk_ids, template_ids,
-       input_snapshot, model, prompt_version, warnings
-     ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11::uuid[],$12::uuid[],$13,$14,$15,$16)
-     returning id, created_at::text`,
+       input_snapshot, model, prompt_version, warnings, generation_metrics
+     ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11::uuid[],$12::uuid[],$13,$14,$15,$16,$17)
+     returning id, created_at::text, revision`,
     [context.userId, context.workspaceId, context.companyId, context.recipient?.contactId ?? null,
       context.searchRunId ?? null, result.draft.language, JSON.stringify(result.strategy), result.draft.subjectOptions,
       result.draft.body, result.evidenceIds, result.knowledgeIds, result.templateIds,
-      JSON.stringify(inputSnapshot), result.model, result.promptVersion, result.warnings]);
-  return { ...result, id: rows[0].id, companyExternalId: context.company.id, status: "generated", createdAt: rows[0].created_at };
+      JSON.stringify(inputSnapshot), result.model, result.promptVersion, result.warnings,
+      JSON.stringify(result.generationMetrics)]);
+  return { ...result, id: rows[0].id, companyExternalId: context.company.id, status: "generated",
+    revision: rows[0].revision, createdAt: rows[0].created_at };
 }
 
 export async function updateDevelopmentDraft(userId: string, draftId: string, input: { body?: string; approve?: boolean }): Promise<boolean> {
@@ -153,6 +149,111 @@ export async function updateDevelopmentDraft(userId: string, draftId: string, in
        status=case when $4 then 'approved' else status end,
        approved_at=case when $4 then now() else approved_at end, updated_at=now()
      where id=$1 and user_id=$2 and status in ('generated','approved') returning id`,
-    [draftId, userId, input.body?.slice(0, 20_000) ?? null, input.approve ?? false]);
+    [draftId, userId, input.body?.slice(0, 30_000) ?? null, input.approve ?? false]);
   return Boolean(rows[0]);
+}
+
+export async function loadDraftForFeedback(userId: string, draftId: string): Promise<{
+  context: DevelopmentContext;
+  draft: DevelopmentStrategyDto;
+}> {
+  const rows = await tenantQuery<{
+    company_external_id: string; strategy: DevelopmentStrategyDto["strategy"]; subject_options: string[];
+    contact_id: string | null; language: string; body: string; manual_body: string | null;
+    evidence_ids: string[]; knowledge_chunk_ids: string[];
+    template_ids: string[]; warnings: string[]; model: string; prompt_version: string; status: DevelopmentStrategyDto["status"];
+    revision: number; generation_metrics: DevelopmentStrategyDto["generationMetrics"]; created_at: string;
+  }>(userId,
+    `select c.external_id as company_external_id, d.contact_id, d.language, d.strategy,
+            d.subject_options, d.body, d.manual_body,
+            d.evidence_ids, d.knowledge_chunk_ids, d.template_ids, d.warnings, d.model,
+            d.prompt_version, d.status, d.revision, d.generation_metrics, d.created_at::text
+       from outreach_draft d join sales_company c on c.id=d.company_id
+      where d.id=$1 and d.user_id=$2`, [draftId, userId]);
+  const row = rows[0];
+  if (!row) throw new Error("开发草稿不存在");
+  const context = await loadDevelopmentContext(userId, {
+    companyExternalId: row.company_external_id, contactId: row.contact_id ?? undefined, language: row.language,
+  });
+  const body = row.manual_body ?? row.body;
+  return { context, draft: {
+    id: draftId, companyExternalId: row.company_external_id, strategy: row.strategy,
+    draft: { language: row.language, subjectOptions: row.subject_options, body,
+      wordCount: body.split(/\s+/).filter(Boolean).length,
+      placeholders: [...body.matchAll(/\{\{([^{}]+)\}\}/g)].map((match) => match[1]) },
+    evidenceIds: row.evidence_ids, knowledgeIds: row.knowledge_chunk_ids,
+    templateIds: row.template_ids, warnings: row.warnings, model: row.model,
+    promptVersion: row.prompt_version, generationMetrics: row.generation_metrics,
+    status: row.status, revision: row.revision, createdAt: row.created_at,
+  } };
+}
+
+export async function createFeedbackRecord(userId: string, input: {
+  draftId: string; feedback: string; previousBody: string; sourceRevision: number; allowMemory: boolean;
+}): Promise<string> {
+  const rows = await tenantQuery<{ id: string }>(userId,
+    `insert into outreach_feedback (
+       user_id, draft_id, feedback, previous_body, source_revision, memory_allowed
+     ) values ($1,$2,$3,$4,$5,$6) returning id`,
+    [userId, input.draftId, input.feedback.slice(0, 4_000), input.previousBody,
+      input.sourceRevision, input.allowMemory]);
+  return rows[0].id;
+}
+
+export async function markFeedbackFailed(userId: string, feedbackId: string, reason: string): Promise<void> {
+  await tenantQuery(userId,
+    `update outreach_feedback set status='failed', memory_reason=$3 where id=$1 and user_id=$2`,
+    [feedbackId, userId, reason.slice(0, 500)]);
+}
+
+export async function applyFeedbackRevision(userId: string, input: {
+  feedbackId: string;
+  draft: DevelopmentStrategyDto;
+  revisedBody: string;
+  subjectOptions: string[];
+  model: string;
+  generationMetrics: DevelopmentStrategyDto["generationMetrics"];
+  evidenceIds: string[];
+  knowledgeIds: string[];
+  allowMemory: boolean;
+  memory: { valuable: boolean; summary?: string; reason: string; marketCodes: string[]; channelRoles: string[] };
+}): Promise<OutreachFeedbackResult> {
+  const shouldStoreMemory = input.allowMemory && input.memory.valuable && Boolean(input.memory.summary);
+  const memoryEmbedding = shouldStoreMemory ? await prepareFeedbackMemory(input.memory.summary!) : undefined;
+  const memoryReason = input.allowMemory ? input.memory.reason : "用户未授权将本次反馈写入长期记忆";
+  const applied = await tenantTransaction(userId, async (client) => {
+    let memoryId: string | undefined;
+    if (shouldStoreMemory && memoryEmbedding) {
+      memoryId = await insertFeedbackMemory(client, userId, {
+        feedbackId: input.feedbackId, summary: input.memory.summary!, marketCodes: input.memory.marketCodes,
+        channelRoles: input.memory.channelRoles, reason: input.memory.reason,
+      }, memoryEmbedding);
+    }
+    const draftResult = await client.query<{ revision: number; updated_at: string }>(
+      `update outreach_draft set body=$3, manual_body=null, subject_options=$4, status='generated',
+         approved_at=null, revision=revision+1, model=$5, generation_metrics=$6,
+         evidence_ids=$7, knowledge_chunk_ids=$8::uuid[], updated_at=now()
+       where id=$1 and user_id=$2 and revision=$9 and status in ('generated','approved')
+       returning revision, updated_at::text`,
+      [input.draft.id, userId, input.revisedBody, input.subjectOptions, input.model,
+        JSON.stringify(input.generationMetrics), input.evidenceIds, input.knowledgeIds, input.draft.revision]);
+    if (!draftResult.rows[0]) throw new Error("草稿已被其他操作更新，请刷新后重新提交反馈");
+    const feedbackResult = await client.query<{ id: string }>(
+      `update outreach_feedback set status='applied', revised_body=$3, memory_valuable=$4,
+         memory_summary=$5, memory_reason=$6, memory_id=$7, model=$8,
+         generation_metrics=$9, applied_at=now()
+       where id=$1 and user_id=$2 and status='submitted' returning id`,
+      [input.feedbackId, userId, input.revisedBody, shouldStoreMemory,
+        shouldStoreMemory ? input.memory.summary : null, memoryReason, memoryId ?? null,
+        input.model, JSON.stringify(input.generationMetrics)]);
+    if (!feedbackResult.rows[0]) throw new Error("反馈记录状态已变化，无法重复应用");
+    return { revision: draftResult.rows[0].revision, memoryId };
+  });
+  const revised = { ...input.draft, status: "generated" as const, revision: applied.revision,
+    model: input.model, generationMetrics: input.generationMetrics,
+    evidenceIds: input.evidenceIds, knowledgeIds: input.knowledgeIds,
+    draft: { ...input.draft.draft, subjectOptions: input.subjectOptions,
+      body: input.revisedBody, wordCount: input.revisedBody.split(/\s+/).filter(Boolean).length } };
+  return { feedbackId: input.feedbackId, draft: revised, memoryStored: Boolean(applied.memoryId),
+    memorySummary: applied.memoryId ? input.memory.summary : undefined, memoryReason };
 }

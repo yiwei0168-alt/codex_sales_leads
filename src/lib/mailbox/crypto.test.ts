@@ -20,7 +20,10 @@ describe("mailbox credential encryption", () => {
   it("rejects tampered ciphertext", () => {
     process.env.MAILBOX_CREDENTIAL_KEY = randomBytes(32).toString("base64url");
     const sealed = encryptMailboxCredential("secret");
-    expect(() => decryptMailboxCredential(`${sealed.slice(0, -1)}A`)).toThrow();
+    const index = Math.floor(sealed.length / 2);
+    const replacement = sealed[index] === "A" ? "B" : "A";
+    const tampered = `${sealed.slice(0, index)}${replacement}${sealed.slice(index + 1)}`;
+    expect(() => decryptMailboxCredential(tampered)).toThrow();
   });
 
   it("derives isolated authenticated content keys per user", () => {

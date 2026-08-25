@@ -29,7 +29,7 @@ Network Channel Copilot 是一个证据驱动的海外渠道销售线索产品�
 - PostgreSQL 同时承担业务数据、RAG、任务状态、审计和 LangGraph checkpoint；
 - 用户私有知识、对话、邮箱和业务数据使用数据库 RLS 隔离；
 - 联系方式查询位于公司资格判断之后，通过独立 Provider API 扩展。
-- 开发策略位于候选资格判断之后，由独立 Kimi-k3 LangGraph 结合证据、Cudy RAG、共享模板和个人已批准邮箱风格生成；草稿批准与邮件发送分离。
+- 开发策略位于候选资格判断之后，由独立 Kimi-k3 LangGraph 结合候选证据、开发策略专库、脱敏长模板和个人已批准邮箱风格生成；审核、反馈记忆、批准与邮件发送彼此分离。
 
 ---
 
@@ -120,15 +120,16 @@ retrieve_knowledge
 ```text
 selected qualified company
   → load_candidate_context
-  → Cudy product/company hybrid RAG + approved shared/private style templates
-  → create_strategy（Kimi-k3）
-  → write_draft（Kimi-k3）
+  → dedicated outreach RAG（公司档案 / 分销政策 / 市场背书 / 反馈记忆）
+  → strategy + long-form draft（Kimi-k3，单次调用）
   → evidence-ID allowlist validation
   → persist outreach_draft
-  → human edit / approve（不会发送）
+  → human review
+      ├─ confirm / approve（不会发送）
+      └─ feedback → revise + screen reusable memory → new review revision
 ```
 
-该图按用户选择的公司按需运行，不在每次线索搜索后批量消耗模型调用。私人风格只读取当前用户已批准的 `email-template` 提取物，不把原始邮箱正文或其他用户数据发送给模型。未来邮箱发送必须增加独立确认 Action、幂等键、频率限制和投递审计。
+该图按用户选择的公司按需运行，不在每次线索搜索后批量消耗模型调用，也不检索详细产品规格。`Cudy Profile Company` 与 `Cudy Distribution Policy` 在专库中具有最高基础权重，匹配市场的证明与反馈记忆获得额外权重。私人风格只读取当前用户已批准的 `email-template` 提取物，不把原始邮箱正文或其他用户数据发送给模型。每次调用记录耗时和 Token；未来邮箱发送必须增加独立确认 Action、幂等键、频率限制和投递审计。
 
 | 节点 | 核心职责 | 输出 | 失败策略 |
 |---|---|---|---|
