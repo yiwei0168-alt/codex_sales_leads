@@ -137,9 +137,10 @@ class GooglePlacesDiscoveryProvider implements DiscoveryProvider {
   async search(query: DiscoveryQuery, signal?: AbortSignal): Promise<DiscoveryProviderResult> {
     const startedAt = Date.now();
     const { apiKey, baseUrl } = credentials(this.id);
+    const canonicalBaseUrl = `${new URL(baseUrl).origin}/v1`;
     const body = await requestJson<{ places?: Array<{ id?: string; displayName?: { text?: string };
       formattedAddress?: string; websiteUri?: string; googleMapsUri?: string; primaryTypeDisplayName?: { text?: string } }> }>(
-      this.id, trustedEndpoint(baseUrl, ["places.googleapis.com"], "places:searchText"), {
+      this.id, trustedEndpoint(canonicalBaseUrl, ["places.googleapis.com"], "places:searchText"), {
         method: "POST",
         headers: {
           "x-goog-api-key": apiKey,

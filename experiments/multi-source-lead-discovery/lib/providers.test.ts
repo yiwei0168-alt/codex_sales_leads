@@ -60,6 +60,7 @@ describe("multi-source discovery providers", () => {
 
   it("uses Google Places Text Search with an explicit field mask", async () => {
     configured("google-places");
+    vi.stubEnv("GOOGLE_PLACES_BASE_URL", "https://places.googleapis.com/v1/places/...");
     const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({ places: [{ id: "place-1",
       displayName: { text: "Local IT GmbH" }, websiteUri: "https://local-it.de", formattedAddress: "Berlin" }] }), { status: 200 }));
     const output = await createDiscoveryProvider("google-places", { fetchImplementation: fetchMock }).search(query);
