@@ -28,6 +28,9 @@ Thumbs.db
 tmp/
 temp/
 
+# Local database backups contain production data and must never enter Git
+backups/
+
 # User-supplied knowledge files (keep instructions only)
 knowledge/industry/*
 knowledge/company/*
