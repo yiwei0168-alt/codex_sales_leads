@@ -1,6 +1,7 @@
 import { Annotation, END, START, StateGraph } from "@langchain/langgraph";
 
-import { generateDevelopmentStrategyWithKimi, reviseDevelopmentDraftWithFeedback, type KimiDevelopmentResult } from "./kimi-agent";
+import { reviseDevelopmentDraftWithClaude } from "./claude-agent";
+import { generateDevelopmentStrategyWithKimi, type KimiDevelopmentResult } from "./kimi-agent";
 import { applyFeedbackRevision, createFeedbackRecord, loadDevelopmentContext, loadDraftForFeedback, markFeedbackFailed, persistDevelopmentDraft } from "./repository";
 import type { DevelopmentContext, DevelopmentFeedbackOptions, DevelopmentGenerationOptions, DevelopmentStrategyDto, OutreachFeedbackResult } from "./types";
 
@@ -71,7 +72,7 @@ const FeedbackState = Annotation.Root({
   userId: Annotation<string>(), options: Annotation<DevelopmentFeedbackOptions>(),
   context: Annotation<DevelopmentContext | undefined>(), current: Annotation<DevelopmentStrategyDto | undefined>(),
   feedbackId: Annotation<string | undefined>(),
-  revised: Annotation<Awaited<ReturnType<typeof reviseDevelopmentDraftWithFeedback>> | undefined>(),
+  revised: Annotation<Awaited<ReturnType<typeof reviseDevelopmentDraftWithClaude>> | undefined>(),
   result: Annotation<OutreachFeedbackResult | undefined>(),
 });
 
@@ -95,10 +96,10 @@ export function buildDevelopmentFeedbackGraph() {
         allowMemory: state.options.allowMemory,
       }) };
     })
-    .addNode("revise_and_screen_memory", async (state) => {
+    .addNode("revise_with_claude_and_screen_memory", async (state) => {
       if (!state.context || !state.current) throw new Error("反馈修改上下文缺失");
       try {
-        return { revised: await reviseDevelopmentDraftWithFeedback(
+        return { revised: await reviseDevelopmentDraftWithClaude(
           state.context, state.current, state.options.feedback,
         ) };
       } catch (error) {
@@ -125,8 +126,8 @@ export function buildDevelopmentFeedbackGraph() {
     })
     .addEdge(START, "load_review_context")
     .addEdge("load_review_context", "record_user_feedback")
-    .addEdge("record_user_feedback", "revise_and_screen_memory")
-    .addEdge("revise_and_screen_memory", "persist_revision_and_memory")
+    .addEdge("record_user_feedback", "revise_with_claude_and_screen_memory")
+    .addEdge("revise_with_claude_and_screen_memory", "persist_revision_and_memory")
     .addEdge("persist_revision_and_memory", END)
     .compile();
 }

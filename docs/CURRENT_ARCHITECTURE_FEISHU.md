@@ -29,7 +29,7 @@ Network Channel Copilot 是一个证据驱动的海外渠道销售线索产品�
 - PostgreSQL 同时承担业务数据、RAG、任务状态、审计和 LangGraph checkpoint；
 - 用户私有知识、对话、邮箱和业务数据使用数据库 RLS 隔离；
 - 联系方式查询位于公司资格判断之后，通过独立 Provider API 扩展。
-- 开发策略位于候选资格判断之后，由独立 Kimi-k3 LangGraph 结合候选证据、开发策略专库、脱敏长模板和个人已批准邮箱风格生成；审核、反馈记忆、批准与邮件发送彼此分离。
+- 开发策略位于候选资格判断之后：Kimi-k3 结合候选证据、开发策略专库、脱敏长模板和个人已批准邮箱风格生成策略与初稿；Claude 负责人工反馈后的重写和私人记忆筛选。审核、反馈记忆、批准与邮件发送彼此分离。
 
 ---
 
@@ -122,6 +122,7 @@ selected qualified company
   → load_candidate_context
   → dedicated outreach RAG（公司档案 / 分销政策 / 市场背书 / 反馈记忆）
   → strategy + long-form draft（Kimi-k3，单次调用）
+  → reviewed revision + private feedback memory（Claude）
   → evidence-ID allowlist validation
   → persist outreach_draft
   → human review

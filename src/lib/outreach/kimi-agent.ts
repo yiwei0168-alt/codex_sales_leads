@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { cleanCitations, evidencePayload, knowledgePayload, parseOutreachJson } from "./feedback-model-shared";
 import type {
   DevelopmentContext, DevelopmentDraft, DevelopmentGenerationOptions, DevelopmentStrategy, DevelopmentStrategyDto,
 } from "./types";
@@ -31,21 +32,6 @@ const compactStrategySchema = strategySchema.pick({
   callToAction: true, followUpPlan: true, evidenceIds: true, knowledgeIds: true,
 });
 const generationSchema = z.object({ strategy: compactStrategySchema, draft: draftSchema });
-const feedbackSchema = z.object({
-  subjectOptions: z.array(z.string().min(2).max(240)).min(1).max(5),
-  revisedBodyWithCitations: z.string().min(100).max(30_000),
-  memoryEvaluation: z.object({
-    valuable: z.boolean(), summary: z.string().trim().min(10).max(1_000).optional(),
-    reason: z.string().min(2).transform((value) => value.slice(0, 500)),
-    marketCodes: z.array(z.string().min(2).max(40)).max(10),
-    channelRoles: z.array(z.string().min(2).max(80)).max(10),
-  }),
-}).superRefine((value, context) => {
-  if (value.memoryEvaluation.valuable && !value.memoryEvaluation.summary) {
-    context.addIssue({ code: "custom", path: ["memoryEvaluation", "summary"],
-      message: "Reusable memory requires a standalone summary" });
-  }
-});
 
 interface KimiResponse {
   model?: string;
@@ -66,25 +52,11 @@ export interface KimiDevelopmentResult {
   generationMetrics: DevelopmentStrategyDto["generationMetrics"];
 }
 
-export interface KimiFeedbackResult {
-  subjectOptions: string[];
-  revisedBody: string;
-  evidenceIds: string[];
-  knowledgeIds: string[];
-  memory: z.infer<typeof feedbackSchema>["memoryEvaluation"];
-  model: string;
-  generationMetrics: DevelopmentStrategyDto["generationMetrics"];
-}
-
 function baseUrl(): string {
   const parsed = new URL(process.env.KIMI_BASE_URL?.trim() || "https://api.moonshot.cn/v1");
   if (parsed.protocol !== "https:" || !["api.moonshot.cn", "api.moonshot.ai"].includes(parsed.hostname)
     || parsed.username || parsed.password) throw new Error("KIMI_BASE_URL 必须是受信任的 Moonshot HTTPS API 地址");
   return parsed.toString().replace(/\/$/, "");
-}
-
-function parseJson(content: string): unknown {
-  return JSON.parse(content.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, ""));
 }
 
 async function invokeKimiJson(
@@ -129,7 +101,7 @@ async function invokeKimiJson(
     const totalTokens = body.usage?.total_tokens ?? "unknown";
     throw new Error(`Kimi returned empty outreach JSON (finish_reason=${finishReason}, total_tokens=${totalTokens})`);
   }
-  return { value: parseJson(content), model: body.model ?? model, metrics: {
+  return { value: parseOutreachJson(content), model: body.model ?? model, metrics: {
     modelCalls: 1, latencyMs: Date.now() - startedAt, promptTokens: body.usage?.prompt_tokens,
     completionTokens: body.usage?.completion_tokens, totalTokens: body.usage?.total_tokens,
   } };
@@ -141,30 +113,6 @@ function targetTemplateWords(context: DevelopmentContext): number {
     return Number.isFinite(profiled) && profiled > 0 ? profiled : template.body.trim().split(/\s+/).length;
   }).sort((a, b) => a - b);
   return values.length ? values[Math.floor(values.length / 2)] : 240;
-}
-
-function evidencePayload(context: DevelopmentContext) {
-  return context.company.evidence.slice(0, 8).map((item) => ({
-    evidenceId: item.id, title: item.title, claim: item.claim, summary: item.summary,
-    sourceUrl: item.sourceUrl, status: item.status, confidence: item.confidence,
-  }));
-}
-
-function knowledgePayload(context: DevelopmentContext) {
-  return context.knowledge.map((item) => ({
-    knowledgeId: item.id, kind: item.kind, title: item.title, content: item.content,
-    markets: item.marketCodes, roles: item.channelRoles, priority: item.priorityWeight, provenance: item.sourceRefs,
-  }));
-}
-
-function cleanCitations(bodyWithCitations: string, allowedEvidence: Set<string>, allowedKnowledge: Set<string>) {
-  const evidenceIds = [...bodyWithCitations.matchAll(/\[EVIDENCE:([^\]]+)\]/g)].map((match) => match[1]);
-  const knowledgeIds = [...bodyWithCitations.matchAll(/\[KNOWLEDGE:([0-9a-f-]{36})\]/gi)].map((match) => match[1].toLowerCase());
-  if (evidenceIds.some((id) => !allowedEvidence.has(id))) throw new Error("Kimi draft invented company evidence IDs");
-  if (knowledgeIds.some((id) => !allowedKnowledge.has(id))) throw new Error("Kimi draft invented outreach knowledge IDs");
-  if (allowedEvidence.size > 0 && evidenceIds.length === 0) throw new Error("Kimi draft omitted evidence markers for personalization");
-  return { body: bodyWithCitations.replace(/\s*\[(?:EVIDENCE:[^\]]+|KNOWLEDGE:[0-9a-f-]{36})\]/gi, "").trim(),
-    evidenceIds: [...new Set(evidenceIds)], knowledgeIds: [...new Set(knowledgeIds)] };
 }
 
 function safeStrategy(strategy: z.infer<typeof strategySchema>, evidence: Set<string>, knowledge: Set<string>): DevelopmentStrategy {
@@ -249,64 +197,5 @@ export async function generateDevelopmentStrategyWithKimi(
       return generateDevelopmentStrategyWithKimi(context, options, fetchImplementation, false);
     }
     return fallbackResult(context, `Kimi 开发策略 Agent 已安全降级：${error instanceof Error ? error.message : String(error)}`);
-  }
-}
-
-export async function reviseDevelopmentDraftWithFeedback(
-  context: DevelopmentContext, current: DevelopmentStrategyDto, feedback: string,
-  fetchImplementation: typeof fetch = fetch, retryInvalidResponse = true, validationCorrection?: string,
-): Promise<KimiFeedbackResult> {
-  const allowedEvidence = new Set(context.company.evidence.map((item) => item.id));
-  const allowedKnowledge = new Set(context.knowledge.map((item) => item.id.toLowerCase()));
-  let attemptMetrics: DevelopmentStrategyDto["generationMetrics"] | undefined;
-  try {
-    const response = await invokeKimiJson([
-      { role: "system", content: [
-        "You revise a Cudy development email from explicit user feedback and screen that feedback for reusable memory.",
-        "Apply the feedback without losing grounded personalization or materially shortening the email unless the user asks.",
-        "Use only supplied evidence and outreach knowledge. Add internal markers after factual sentences.",
-        "When companyEvidence is non-empty, the revised body MUST use at least one exact [EVIDENCE:<id>] marker from allowedEvidenceIds.",
-        "When outreachKnowledge is non-empty, the revised body MUST use at least one exact [KNOWLEDGE:<id>] marker from allowedKnowledgeIds.",
-        "Memory is valuable only if reusable across future companies: a market fact, channel strategy, positioning lesson or stable style preference.",
-        "Do not memorize contact/company-specific edits, one-off wording, secrets or unsupported claims.",
-        "When valuable, write a concise standalone memory summary, market codes and channel roles. Otherwise explain why it is not reusable.",
-        "Return JSON only with subjectOptions, revisedBodyWithCitations and memoryEvaluation.",
-        validationCorrection ? `Previous output failed validation: ${validationCorrection}. Correct it exactly.` : "",
-      ].filter(Boolean).join("\n") },
-      { role: "user", content: JSON.stringify({
-        target: { name: context.company.displayName, country: context.company.country, roles: context.company.roles },
-        strategy: current.strategy, currentSubjects: current.draft.subjectOptions, currentBody: current.draft.body,
-        userFeedback: feedback.slice(0, 4_000), companyEvidence: evidencePayload(context),
-        outreachKnowledge: knowledgePayload(context), allowedEvidenceIds: [...allowedEvidence],
-        allowedKnowledgeIds: [...allowedKnowledge], requestedSchema: {
-          subjectOptions: ["string"], revisedBodyWithCitations: "complete revised email with required exact markers",
-          memoryEvaluation: { valuable: "boolean", summary: "optional reusable fact or lesson", reason: "string",
-            marketCodes: ["ISO/market codes"], channelRoles: ["channel role"] },
-        },
-      }) },
-    ], fetchImplementation);
-    attemptMetrics = response.metrics;
-    const parsed = feedbackSchema.parse(response.value);
-    const cleaned = cleanCitations(parsed.revisedBodyWithCitations, allowedEvidence, allowedKnowledge);
-    return { subjectOptions: parsed.subjectOptions, revisedBody: cleaned.body,
-      evidenceIds: cleaned.evidenceIds, knowledgeIds: cleaned.knowledgeIds,
-      memory: parsed.memoryEvaluation, model: response.model, generationMetrics: response.metrics };
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    if (retryInvalidResponse && (error instanceof SyntaxError || error instanceof z.ZodError
-      || /empty outreach JSON|omitted .* markers|invented .* IDs/i.test(message))) {
-      const retried = await reviseDevelopmentDraftWithFeedback(
-        context, current, feedback, fetchImplementation, false, message.slice(0, 500),
-      );
-      if (!attemptMetrics) return retried;
-      return { ...retried, generationMetrics: {
-        modelCalls: attemptMetrics.modelCalls + retried.generationMetrics.modelCalls,
-        latencyMs: attemptMetrics.latencyMs + retried.generationMetrics.latencyMs,
-        promptTokens: (attemptMetrics.promptTokens ?? 0) + (retried.generationMetrics.promptTokens ?? 0),
-        completionTokens: (attemptMetrics.completionTokens ?? 0) + (retried.generationMetrics.completionTokens ?? 0),
-        totalTokens: (attemptMetrics.totalTokens ?? 0) + (retried.generationMetrics.totalTokens ?? 0),
-      } };
-    }
-    throw error;
   }
 }

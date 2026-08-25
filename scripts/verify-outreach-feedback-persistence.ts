@@ -1,14 +1,14 @@
 import nextEnv from "@next/env";
 
 import { loadDevelopmentContext, applyFeedbackRevision, createFeedbackRecord, persistDevelopmentDraft } from "../src/lib/outreach/repository";
-import { reviseDevelopmentDraftWithFeedback } from "../src/lib/outreach/kimi-agent";
+import { reviseDevelopmentDraftWithClaude } from "../src/lib/outreach/claude-agent";
 import { tenantQuery } from "../src/lib/rag/db";
 import { resolveTargetWorkspace } from "./resolve-target-workspace";
 
 nextEnv.loadEnvConfig(process.cwd());
 
 const workspace = await resolveTargetWorkspace();
-const liveKimi = process.argv.includes("--live-kimi");
+const liveClaude = process.argv.includes("--live-claude");
 const companies = await tenantQuery<{ external_id: string }>(workspace.ownerId,
   `select c.external_id from workspace_company wc
     join sales_company c on c.id=wc.company_id
@@ -41,16 +41,16 @@ try {
     previousBody: reviewedBody, sourceRevision: draft.revision, allowMemory: true,
   });
   const feedback = "For future Netherlands distributor outreach, use the approved MediaMarkt Netherlands proof when relevant and keep the call to action low-pressure. This is a reusable market and style preference.";
-  const evaluated = liveKimi
-    ? await reviseDevelopmentDraftWithFeedback(context, { ...draft, draft: { ...draft.draft, body: reviewedBody } }, feedback)
+  const evaluated = liveClaude
+    ? await reviseDevelopmentDraftWithClaude(context, { ...draft, draft: { ...draft.draft, body: reviewedBody } }, feedback)
     : { revisedBody: `${reviewedBody}\n\nThe revised version keeps a low-pressure next step.`,
         subjectOptions: ["A practical channel discussion"], model: "verification-fixture",
         generationMetrics: { modelCalls: 0, latencyMs: 0 }, evidenceIds, knowledgeIds,
         memory: { valuable: true, summary: "For relevant Dutch channel outreach, use approved local retail proof and a low-pressure call to action.",
           reason: "Reusable market and style preference confirmed by the user", marketCodes: ["NL", "BENELUX"],
           channelRoles: ["Distributor"] } };
-  if (liveKimi && !evaluated.memory.valuable) {
-    throw new Error(`Kimi did not classify the explicit reusable preference as valuable: ${evaluated.memory.reason}`);
+  if (liveClaude && !evaluated.memory.valuable) {
+    throw new Error(`Claude did not classify the explicit reusable preference as valuable: ${evaluated.memory.reason}`);
   }
   const result = await applyFeedbackRevision(workspace.ownerId, {
     feedbackId, draft: { ...draft, draft: { ...draft.draft, body: reviewedBody } },
@@ -72,7 +72,7 @@ try {
     || audit.draft_revision !== draft.revision + 1 || !result.memoryStored) {
     throw new Error("Local feedback persistence audit failed");
   }
-  console.log(JSON.stringify({ persisted: true, liveKimi, revision: audit.draft_revision, status: audit.status,
+  console.log(JSON.stringify({ persisted: true, liveClaude, revision: audit.draft_revision, status: audit.status,
     memoryAllowed: audit.memory_allowed, memoryStored: result.memoryStored, previousHumanEditPreserved: true }, null, 2));
 } finally {
   if (feedbackId) {
