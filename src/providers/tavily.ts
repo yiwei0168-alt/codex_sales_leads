@@ -2,14 +2,21 @@ import { ProviderUnavailableError } from "./contracts";
 
 export interface TavilySearchProviderOptions {
   maxAttempts?: number;
+  fetchImplementation?: typeof fetch;
+  baseUrl?: string;
 }
 
-async function fetchWithRetry(url: string, init: RequestInit, maxAttempts: number): Promise<Response> {
+async function fetchWithRetry(
+  url: string,
+  init: RequestInit,
+  maxAttempts: number,
+  fetchImplementation: typeof fetch,
+): Promise<Response> {
   let lastError: unknown;
   for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
     if (init.signal?.aborted) throw init.signal.reason ?? new DOMException("Aborted", "AbortError");
     try {
-      const response = await fetch(url, init);
+      const response = await fetchImplementation(url, init);
       if (![429, 500, 502, 503, 504].includes(response.status) || attempt === maxAttempts - 1) return response;
       lastError = new Error(`Retryable HTTP ${response.status}`);
       const retryAfterSeconds = Number(response.headers.get("retry-after"));
@@ -74,6 +81,8 @@ interface TavilyWireResponse {
 export class TavilySearchProvider {
   readonly id = "tavily";
   private readonly maxAttempts: number;
+  private readonly fetchImplementation: typeof fetch;
+  private readonly baseUrl: string;
 
   constructor(options: TavilySearchProviderOptions = {}) {
     const maxAttempts = options.maxAttempts ?? 3;
@@ -81,6 +90,12 @@ export class TavilySearchProvider {
       throw new Error("Tavily maxAttempts must be an integer between 1 and 3");
     }
     this.maxAttempts = maxAttempts;
+    this.fetchImplementation = options.fetchImplementation ?? fetch;
+    const parsed = new URL(options.baseUrl?.trim() || process.env.TAVILY_BASE_URL?.trim() || "https://api.tavily.com");
+    if (parsed.protocol !== "https:" || parsed.hostname !== "api.tavily.com" || parsed.username || parsed.password) {
+      throw new Error("TAVILY_BASE_URL must be the trusted Tavily HTTPS endpoint");
+    }
+    this.baseUrl = parsed.toString().replace(/\/$/, "");
   }
 
   async search(input: TavilySearchInput, signal?: AbortSignal): Promise<TavilySearchResponse> {
@@ -89,7 +104,7 @@ export class TavilySearchProvider {
     const depth = input.searchDepth ?? "basic";
     let response: Response;
     try {
-      response = await fetchWithRetry("https://api.tavily.com/search", {
+      response = await fetchWithRetry(`${this.baseUrl}/search`, {
         method: "POST",
         headers: { "content-type": "application/json", authorization: `Bearer ${apiKey}` },
         body: JSON.stringify({
@@ -102,7 +117,7 @@ export class TavilySearchProvider {
           include_domains: input.includeDomains,
         }),
         signal,
-      }, this.maxAttempts);
+      }, this.maxAttempts, this.fetchImplementation);
     } catch (error) {
       throw new ProviderUnavailableError(this.id, error);
     }
@@ -129,7 +144,7 @@ export class TavilySearchProvider {
     if (urls.length === 0) return { results: [], failedUrls: [], creditsUsed: 0 };
     let response: Response;
     try {
-      response = await fetchWithRetry("https://api.tavily.com/extract", {
+      response = await fetchWithRetry(`${this.baseUrl}/extract`, {
         method: "POST",
         headers: { "content-type": "application/json", authorization: `Bearer ${apiKey}` },
         body: JSON.stringify({
@@ -141,7 +156,7 @@ export class TavilySearchProvider {
           timeout: 20,
         }),
         signal,
-      }, this.maxAttempts);
+      }, this.maxAttempts, this.fetchImplementation);
     } catch (error) {
       throw new ProviderUnavailableError(this.id, error);
     }

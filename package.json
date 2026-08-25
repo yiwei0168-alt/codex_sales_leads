@@ -54,7 +54,9 @@
     "benchmark:evaluate-v4": "node scripts/run-tsx.cjs experiments/global-model-lead-benchmark/scripts/evaluate-v4-calibrated.ts",
     "benchmark:apply-verification": "node scripts/run-tsx.cjs experiments/global-model-lead-benchmark/scripts/apply-review-verification.ts",
     "benchmark:prepare-human-audit": "node scripts/run-tsx.cjs experiments/global-model-lead-benchmark/scripts/prepare-human-audit.ts",
-    "benchmark:evaluate-human-audit": "node scripts/run-tsx.cjs experiments/global-model-lead-benchmark/scripts/evaluate-human-audit.ts"
+    "benchmark:evaluate-human-audit": "node scripts/run-tsx.cjs experiments/global-model-lead-benchmark/scripts/evaluate-human-audit.ts",
+    "benchmark:discovery:env": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/check-environment.ts",
+    "benchmark:discovery:preflight": "node --use-env-proxy scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/preflight-provider.ts"
   },
   "dependencies": {
     "@langchain/langgraph": "^1.4.12",

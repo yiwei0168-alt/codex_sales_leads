@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1",
+  "status": "environment-setup",
+  "countryCode": "DE",
+  "countryName": "Germany",
+  "languageCode": "de",
+  "providers": ["gemini", "tavily", "google-places", "exa", "brave", "serpapi"],
+  "preflight": {
+    "query": "WLAN Systemhaus Hotel Netzwerktechnik Deutschland",
+    "maxResults": 3,
+    "timeoutMs": 90000
+  },
+  "storage": {
+    "rawDirectory": "runs/raw",
+    "commitRawResults": false
+  }
+}
