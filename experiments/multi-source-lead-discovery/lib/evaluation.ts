@@ -41,77 +41,60 @@ export interface EvaluatedChannel {
   selectedCandidates: EvaluatedCandidate[];
   rejectedItems: Array<{ title: string; url: string | null; reason: string }>;
   evaluator: {
+    provider: string;
+    gateway: string;
+    transport: "responses";
     requestedModel: string;
     returnedModel: string;
+    reasoningEffort: string;
     requestCount: number;
     latencyMs: number;
     inputTokens?: number;
     outputTokens?: number;
+    reasoningTokens?: number;
   };
   rawResponse: unknown;
 }
 
 interface EvaluatorConfiguration {
+  provider: string;
+  gateway: string;
+  apiKeyEnvironmentVariable: string;
+  baseUrl: string;
   model: string;
-  temperature: number;
+  reasoningEffort: "low" | "medium" | "high";
+  structuredOutput: "strict-json-schema";
   maxOutputTokens: number;
   systemPrompt: string;
   taskPrompt: string;
   fixedListEvaluationPrompt: string;
 }
 
-interface ClaudeResponse {
+interface OpenAIResponse {
+  id?: string;
   model?: string;
-  content?: Array<{ type?: string; text?: string }>;
-  usage?: { input_tokens?: number; output_tokens?: number };
+  status?: string;
+  output?: Array<{
+    type?: string;
+    content?: Array<{ type?: string; text?: string; refusal?: string }>;
+  }>;
+  incomplete_details?: { reason?: string };
+  usage?: {
+    input_tokens?: number;
+    output_tokens?: number;
+    output_tokens_details?: { reasoning_tokens?: number };
+  };
   error?: { message?: string };
 }
 
-interface ClaudeStreamEvent {
-  type?: string;
-  message?: ClaudeResponse;
-  delta?: { type?: string; text?: string; stop_reason?: string | null };
-  usage?: { input_tokens?: number; output_tokens?: number };
-  error?: { message?: string };
-}
-
-function parseClaudeStream(payload: string): ClaudeResponse {
-  const result: ClaudeResponse = { content: [] };
-  let text = "";
-  for (const block of payload.split(/\r?\n\r?\n/)) {
-    const data = block.split(/\r?\n/).filter((line) => line.startsWith("data:"))
-      .map((line) => line.slice(5).trim()).join("\n");
-    if (!data || data === "[DONE]") continue;
-    const event = JSON.parse(data) as ClaudeStreamEvent;
-    if (event.type === "error") throw new Error(event.error?.message ?? "Claude evaluator streaming error");
-    if (event.type === "message_start") {
-      result.model = event.message?.model;
-      result.usage = { input_tokens: event.message?.usage?.input_tokens };
-    } else if (event.type === "content_block_delta" && event.delta?.type === "text_delta") {
-      text += event.delta.text ?? "";
-    } else if (event.type === "message_delta") {
-      result.usage = { ...result.usage, output_tokens: event.usage?.output_tokens };
-    }
-  }
-  result.content = [{ type: "text", text }];
-  return result;
-}
-
-async function readClaudeResponse(response: Response): Promise<ClaudeResponse> {
-  const contentType = response.headers.get("content-type")?.toLowerCase() ?? "";
-  return contentType.includes("text/event-stream")
-    ? parseClaudeStream(await response.text())
-    : response.json() as Promise<ClaudeResponse>;
-}
-
-function messagesUrl(): string {
-  const parsed = new URL(process.env.CLAUDE_BASE_URL?.trim() || "https://api.anthropic.com");
-  if (parsed.protocol !== "https:" || !["api.anthropic.com", "lingyuapi.com"].includes(parsed.hostname)
+function responsesUrl(baseUrl: string): string {
+  const parsed = new URL(baseUrl);
+  if (parsed.protocol !== "https:" || !["api.openai.com", "lingyuapi.com"].includes(parsed.hostname)
     || parsed.username || parsed.password) {
-    throw new Error("CLAUDE_BASE_URL is not a trusted Anthropic-compatible HTTPS endpoint");
+    throw new Error("Evaluator base URL is not a trusted OpenAI-compatible HTTPS endpoint");
   }
   const base = parsed.toString().replace(/\/$/, "");
-  return /\/v1$/i.test(base) ? `${base}/messages` : `${base}/v1/messages`;
+  return /\/v1$/i.test(base) ? `${base}/responses` : `${base}/v1/responses`;
 }
 
 function parseJsonObject(text: string): unknown {
@@ -231,56 +214,126 @@ function parseCandidate(value: unknown): EvaluatedCandidate {
 
 function evaluatorSchema(): Record<string, unknown> {
   return {
-    selectedCandidates: [{
-      companyName: "string",
-      officialUrl: "official company URL or null",
-      roles: ["verified role"],
-      eligibility: {
-        companyExists: "boolean", germanyPresence: "boolean", networkingRelevant: "boolean",
-        submittedChannelRole: "boolean", sufficientEvidence: "boolean", uniqueWithinList: "boolean",
+    type: "object",
+    properties: {
+      selectedCandidates: {
+        type: "array",
+        maxItems: 10,
+        items: {
+          type: "object",
+          properties: {
+            companyName: { type: "string" },
+            officialUrl: { type: ["string", "null"] },
+            roles: { type: "array", items: { type: "string" }, maxItems: 8 },
+            eligibility: {
+              type: "object",
+              properties: {
+                companyExists: { type: "boolean" },
+                germanyPresence: { type: "boolean" },
+                networkingRelevant: { type: "boolean" },
+                submittedChannelRole: { type: "boolean" },
+                sufficientEvidence: { type: "boolean" },
+                uniqueWithinList: { type: "boolean" },
+              },
+              required: ["companyExists", "germanyPresence", "networkingRelevant", "submittedChannelRole", "sufficientEvidence", "uniqueWithinList"],
+              additionalProperties: false,
+            },
+            levels: {
+              type: "object",
+              properties: {
+                productUseCaseFit: { type: "integer", minimum: 0, maximum: 5 },
+                cooperationPath: { type: "integer", minimum: 0, maximum: 5 },
+                evidenceReliability: { type: "integer", minimum: 0, maximum: 5 },
+              },
+              required: ["productUseCaseFit", "cooperationPath", "evidenceReliability"],
+              additionalProperties: false,
+            },
+            roleEvidence: { type: "string" },
+            productFitEvidence: { type: "string" },
+            cooperationEvidence: { type: "string" },
+            evidenceItems: {
+              type: "array",
+              maxItems: 8,
+              items: {
+                type: "object",
+                properties: { url: { type: "string" }, excerpt: { type: "string" } },
+                required: ["url", "excerpt"],
+                additionalProperties: false,
+              },
+            },
+            rationale: { type: "string" },
+          },
+          required: [
+            "companyName", "officialUrl", "roles", "eligibility", "levels", "roleEvidence",
+            "productFitEvidence", "cooperationEvidence", "evidenceItems", "rationale",
+          ],
+          additionalProperties: false,
+        },
       },
-      levels: { productUseCaseFit: "integer 0-5", cooperationPath: "integer 0-5", evidenceReliability: "integer 0-5" },
-      roleEvidence: "concise evidence-grounded explanation",
-      productFitEvidence: "concise evidence-grounded explanation",
-      cooperationEvidence: "concise evidence-grounded explanation",
-      evidenceItems: [{ url: "supplied public URL", excerpt: "exact or minimally cleaned supplied excerpt" }],
-      rationale: "concise score rationale",
-    }],
-    rejectedItems: [{ title: "string", url: "URL or null", reason: "string" }],
+      rejectedItems: {
+        type: "array",
+        maxItems: 100,
+        items: {
+          type: "object",
+          properties: {
+            title: { type: "string" },
+            url: { type: ["string", "null"] },
+            reason: { type: "string" },
+          },
+          required: ["title", "url", "reason"],
+          additionalProperties: false,
+        },
+      },
+    },
+    required: ["selectedCandidates", "rejectedItems"],
+    additionalProperties: false,
   };
 }
 
-async function invokeClaude(
+async function invokeOpenAI(
   configuration: EvaluatorConfiguration,
   userPayload: Record<string, unknown>,
   fetchImplementation: typeof fetch,
-): Promise<{ parsed: Record<string, unknown>; response: ClaudeResponse; latencyMs: number }> {
-  const apiKey = process.env.CLAUDE_API_KEY?.trim();
-  if (!apiKey) throw new Error("CLAUDE_API_KEY is not configured for benchmark evaluation");
+): Promise<{ parsed: Record<string, unknown>; response: OpenAIResponse; latencyMs: number }> {
+  const apiKey = process.env[configuration.apiKeyEnvironmentVariable]?.trim();
+  if (!apiKey) throw new Error(`${configuration.apiKeyEnvironmentVariable} is not configured for benchmark evaluation`);
   const startedAt = Date.now();
-  const response = await fetchImplementation(messagesUrl(), {
+  const response = await fetchImplementation(responsesUrl(configuration.baseUrl), {
     method: "POST",
     headers: {
       authorization: `Bearer ${apiKey}`,
-      "x-api-key": apiKey,
-      "anthropic-version": process.env.CLAUDE_API_VERSION?.trim() || "2023-06-01",
       "content-type": "application/json",
     },
     body: JSON.stringify({
       model: configuration.model,
-      max_tokens: configuration.maxOutputTokens,
-      temperature: configuration.temperature,
-      stream: true,
-      system: configuration.systemPrompt,
-      messages: [{ role: "user", content: JSON.stringify(userPayload) }],
+      input: [
+        { role: "system", content: configuration.systemPrompt },
+        { role: "user", content: JSON.stringify(userPayload) },
+      ],
+      reasoning: { effort: configuration.reasoningEffort },
+      max_output_tokens: configuration.maxOutputTokens,
+      text: {
+        format: {
+          type: "json_schema",
+          name: "cudy_lead_evaluation",
+          strict: true,
+          schema: evaluatorSchema(),
+        },
+      },
     }),
     signal: AbortSignal.timeout(240_000),
   });
-  const body = await readClaudeResponse(response);
-  if (!response.ok) throw new Error(body.error?.message ?? `Claude evaluator HTTP ${response.status}`);
-  const text = (body.content ?? []).filter((item) => item.type === "text")
-    .map((item) => item.text ?? "").join("\n").trim();
-  if (!text) throw new Error("Claude evaluator returned an empty response");
+  const body = await response.json() as OpenAIResponse;
+  if (!response.ok) throw new Error(body.error?.message ?? `OpenAI evaluator HTTP ${response.status}`);
+  const refusal = (body.output ?? []).flatMap((item) => item.content ?? [])
+    .find((item) => item.type === "refusal")?.refusal;
+  if (refusal) throw new Error(`OpenAI evaluator refused the request: ${refusal}`);
+  if (body.status === "incomplete") {
+    throw new Error(`OpenAI evaluator response incomplete: ${body.incomplete_details?.reason ?? "unknown reason"}`);
+  }
+  const text = (body.output ?? []).flatMap((item) => item.content ?? [])
+    .filter((item) => item.type === "output_text").map((item) => item.text ?? "").join("\n").trim();
+  if (!text) throw new Error("OpenAI evaluator returned an empty structured response");
   return { parsed: objectValue(parseJsonObject(text)), response: body, latencyMs: Date.now() - startedAt };
 }
 
@@ -308,13 +361,12 @@ export async function evaluateChannel(options: {
 }): Promise<EvaluatedChannel> {
   const fixed = options.fixedCandidates !== undefined;
   const task = fixed ? options.configuration.fixedListEvaluationPrompt : options.configuration.taskPrompt;
-  const { parsed, response, latencyMs } = await invokeClaude(options.configuration, {
+  const { parsed, response, latencyMs } = await invokeOpenAI(options.configuration, {
     task,
     channel: { id: options.channelId, label: options.channelLabel, eligibleRoles: options.eligibleRoles },
     cudyBrief: options.cudyBrief,
     commonDiscoveryBrief: options.commonBrief,
     compactRoleRules: options.roleRules,
-    outputSchema: evaluatorSchema(),
     ...(fixed ? { fixedCandidates: options.fixedCandidates } : { discoveryResults: compactItems(options.discoveryItems) }),
   }, options.fetchImplementation ?? fetch);
   const selected = Array.isArray(parsed.selectedCandidates)
@@ -333,12 +385,17 @@ export async function evaluateChannel(options: {
     selectedCandidates: selected,
     rejectedItems: rejected,
     evaluator: {
+      provider: options.configuration.provider,
+      gateway: options.configuration.gateway,
+      transport: "responses",
       requestedModel: options.configuration.model,
       returnedModel: response.model ?? options.configuration.model,
+      reasoningEffort: options.configuration.reasoningEffort,
       requestCount: 1,
       latencyMs,
       inputTokens: response.usage?.input_tokens,
       outputTokens: response.usage?.output_tokens,
+      reasoningTokens: response.usage?.output_tokens_details?.reasoning_tokens,
     },
     rawResponse: response,
   };

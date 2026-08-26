@@ -25,8 +25,10 @@ Each lane has two German queries and one English query. Search-only APIs receive
 - selected channels: 3;
 - Gemini Full requests: 1;
 - discovery-only requests per provider: 9;
-- common evaluator: `claude-sonnet-4-6`, temperature 0, maximum 12,000 output tokens;
+- common evaluator: OpenAI `gpt-5.6-sol` through `https://lingyuapi.com/v1/responses`, `medium` reasoning, strict JSON Schema, maximum 12,000 output tokens;
 - evaluator input consists only of the frozen rules and the measured system's own discovery payload for that channel.
+
+The credential value is never frozen or committed. The manifest records only `LINGYU_API_KEY` as the environment-variable name. Protocol v1.1 changed only this evaluator configuration after the v1 Claude route failed and before any score existed; all discovery inputs and outputs remain those from v1.
 
 ## Generated input manifest
 

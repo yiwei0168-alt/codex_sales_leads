@@ -20,25 +20,30 @@ describe("provider-neutral benchmark evaluation", () => {
   });
 
   it("recomputes scores and applies failed gates as zero", async () => {
-    vi.stubEnv("CLAUDE_API_KEY", "private-key");
-    vi.stubEnv("CLAUDE_BASE_URL", "https://lingyuapi.com");
+    vi.stubEnv("LINGYU_API_KEY", "private-key");
     const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({
-      model: "claude-sonnet-4-6-actual",
-      content: [{ type: "text", text: JSON.stringify({
-        selectedCandidates: [{
-          companyName: "Example GmbH",
-          officialUrl: "https://example.de/?utm_source=x",
-          roles: ["Reseller"],
-          eligibility: {
-            companyExists: true, germanyPresence: true, networkingRelevant: true,
-            submittedChannelRole: false, sufficientEvidence: true, uniqueWithinList: true,
-          },
-          levels: { productUseCaseFit: 5, cooperationPath: 5, evidenceReliability: 5 },
-          evidenceItems: [{ url: "https://example.de", excerpt: "sales@example.de +49 30 1234 5678" }],
-        }],
-        rejectedItems: [],
-      }) }],
-      usage: { input_tokens: 100, output_tokens: 50 },
+      id: "resp_test",
+      model: "gpt-5.6-sol-actual",
+      status: "completed",
+      output: [{ type: "message", content: [{ type: "output_text", text: JSON.stringify({
+          selectedCandidates: [{
+            companyName: "Example GmbH",
+            officialUrl: "https://example.de/?utm_source=x",
+            roles: ["Reseller"],
+            eligibility: {
+              companyExists: true, germanyPresence: true, networkingRelevant: true,
+              submittedChannelRole: false, sufficientEvidence: true, uniqueWithinList: true,
+            },
+            levels: { productUseCaseFit: 5, cooperationPath: 5, evidenceReliability: 5 },
+            roleEvidence: "Wrong submitted role",
+            productFitEvidence: "Networking products",
+            cooperationEvidence: "Resells products",
+            evidenceItems: [{ url: "https://example.de", excerpt: "sales@example.de +49 30 1234 5678" }],
+            rationale: "Fails the category gate",
+          }],
+          rejectedItems: [],
+        }) }] }],
+      usage: { input_tokens: 100, output_tokens: 50, output_tokens_details: { reasoning_tokens: 20 } },
     }), { status: 200 }));
     const result = await evaluateChannel({
       channelId: "b2b-resale",
@@ -48,7 +53,10 @@ describe("provider-neutral benchmark evaluation", () => {
       cudyBrief: "brief",
       commonBrief: "common",
       configuration: {
-        model: "claude-sonnet-4-6", temperature: 0, maxOutputTokens: 1000,
+        provider: "openai", gateway: "lingyu-openai-compatible",
+        apiKeyEnvironmentVariable: "LINGYU_API_KEY", baseUrl: "https://lingyuapi.com/v1",
+        model: "gpt-5.6-sol", reasoningEffort: "medium", structuredOutput: "strict-json-schema",
+        maxOutputTokens: 1000,
         systemPrompt: "system", taskPrompt: "task", fixedListEvaluationPrompt: "fixed",
       },
       discoveryItems: [],
@@ -56,10 +64,14 @@ describe("provider-neutral benchmark evaluation", () => {
     });
     expect(result.selectedCandidates[0].score).toBe(0);
     expect(result.selectedCandidates[0].evidenceItems[0].excerpt).not.toContain("@");
-    expect(result.evaluator.returnedModel).toBe("claude-sonnet-4-6-actual");
+    expect(result.evaluator.returnedModel).toBe("gpt-5.6-sol-actual");
+    expect(result.evaluator.reasoningTokens).toBe(20);
+    expect(fetchMock.mock.calls[0][0]).toBe("https://lingyuapi.com/v1/responses");
     const request = JSON.parse(fetchMock.mock.calls[0][1].body as string);
-    expect(request.temperature).toBe(0);
-    expect(request.stream).toBe(true);
+    expect(request.reasoning).toEqual({ effort: "medium" });
+    expect(request.text.format.type).toBe("json_schema");
+    expect(request.text.format.strict).toBe(true);
+    expect(request.temperature).toBeUndefined();
     expect(JSON.stringify(request)).not.toContain("private-key");
   });
 });

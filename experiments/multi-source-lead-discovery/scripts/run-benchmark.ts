@@ -30,6 +30,7 @@ interface BenchmarkConfig {
   measuredSystems: Array<{ id: SystemId; mode: string; discoveryProvider: DiscoveryProviderId }>;
   execution: {
     frozenAt: string;
+    judgeAmendedAt: string;
     runId: string;
     queriesPerChannel: number;
     maxResultsPerQuery: number;
@@ -47,8 +48,14 @@ interface InputsConfig {
   geminiFullPrompt: string;
   channels: Array<{ id: ChannelId; label: string; eligibleRoles: string[]; queries: string[] }>;
   downstreamEvaluator: {
+    evaluatorVersion: string;
+    provider: string;
+    gateway: string;
+    apiKeyEnvironmentVariable: string;
+    baseUrl: string;
     model: string;
-    temperature: number;
+    reasoningEffort: "low" | "medium" | "high";
+    structuredOutput: "strict-json-schema";
     maxOutputTokens: number;
     systemPrompt: string;
     taskPrompt: string;
@@ -72,6 +79,9 @@ if (!Number.isInteger(evaluationConcurrency)) throw new Error("Evaluation concur
 if (!["preflight", "discovery", "evaluate", "all"].includes(phase)) throw new Error(`Unknown phase: ${phase}`);
 if (benchmark.status !== "frozen-ready-to-run") throw new Error("Benchmark protocol is not frozen");
 if (Date.now() < Date.parse(benchmark.execution.frozenAt)) throw new Error("Frozen benchmark time is in the future");
+if ((phase === "evaluate" || phase === "all") && Date.now() < Date.parse(benchmark.execution.judgeAmendedAt)) {
+  throw new Error("Frozen evaluator amendment time is in the future");
+}
 if (inputs.channels.some((channel) => channel.queries.length !== benchmark.execution.queriesPerChannel)) {
   throw new Error("Query pack does not match the frozen request budget");
 }

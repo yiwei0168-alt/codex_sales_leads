@@ -1,6 +1,8 @@
 # Scoring and blinded human audit
 
-Status: **confirmed and frozen on 2026-08-26**
+Status: **confirmed and frozen on 2026-08-26; judge-only amendment frozen in protocol v1.1**
+
+All raw model scores use one evaluator configuration: OpenAI `gpt-5.6-sol`, Responses API, `medium` reasoning and strict JSON Schema. The application recomputes the 45/35/20 total from returned integer levels and forces failed gates to zero, so the model cannot directly set its total score. The earlier Claude route produced no candidate score and is not mixed into the results.
 
 ## Eligibility gates
 

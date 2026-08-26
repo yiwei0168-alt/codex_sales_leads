@@ -2,7 +2,9 @@
 
 Status: **frozen for measurement on 2026-08-26**
 
-Protocol ID: `multi-source-professional-discovery-v1`
+Protocol ID: `multi-source-professional-discovery-v1.1`
+
+Amendment scope: version 1.1 changes only the common evaluator before any candidate score was produced. The version 1 discovery prompts, query packs, provider outputs, scoring rubric and blind-audit rules are unchanged.
 
 Market: Germany (`DE`), with German and English search terminology where applicable.
 
@@ -45,8 +47,10 @@ All systems except `gemini-full` use the same downstream entity normalization, e
 - Each discovery-only provider receives the same three queries per channel and may return at most ten results per query: nine discovery requests per provider.
 - `gemini-full` receives one end-to-end prompt and independently returns three ranked lists of ten.
 - Provider request retry limit is one retry after a failed attempt; failures and retries remain in the execution journal.
-- The common downstream evaluator is Claude Sonnet 4.6 at temperature 0 with a 12,000-token output ceiling.
+- The common downstream evaluator is OpenAI `gpt-5.6-sol`, called through the Lingyu OpenAI-compatible gateway with the Responses API, `medium` reasoning, strict JSON Schema output and a 12,000-token output ceiling.
 - Run order is fixed in configuration. No measured system sees another system's output until all discovery has completed.
+
+The evaluator was amended after the originally frozen Claude route failed every real request and before any candidate was scored. A model-list call and a strict-schema Responses probe both succeeded for `gpt-5.6-sol`. The unusable direct OpenAI credential and all failed Claude attempts remain documented; the measured run does not mix judge models.
 
 ## Confirmed scoring and audit
 

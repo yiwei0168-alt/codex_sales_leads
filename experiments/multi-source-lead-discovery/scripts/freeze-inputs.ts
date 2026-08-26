@@ -39,7 +39,17 @@ const inputs = JSON.parse(inputsText) as {
   schemaVersion: number;
   promptVersion: string;
   channels: Array<{ id: string; queries: string[] }>;
-  downstreamEvaluator: { model: string; temperature: number; maxOutputTokens: number };
+  downstreamEvaluator: {
+    evaluatorVersion: string;
+    provider: string;
+    gateway: string;
+    apiKeyEnvironmentVariable: string;
+    baseUrl: string;
+    model: string;
+    reasoningEffort: string;
+    structuredOutput: string;
+    maxOutputTokens: number;
+  };
 };
 
 if (benchmark.status !== "frozen-ready-to-run") throw new Error("Benchmark protocol is not frozen");
@@ -61,7 +71,7 @@ const manifest = {
   protocolVersion: benchmark.protocolVersion,
   promptVersion: inputs.promptVersion,
   frozenAt: benchmark.execution.frozenAt,
-  datePolicy: "Measured calls run on or after the frozen date; each attempt retains its actual ISO-8601 Asia/Shanghai timestamp.",
+  datePolicy: "Discovery calls ran after execution.frozenAt. Evaluator calls run after execution.judgeAmendedAt. Every attempt retains its actual ISO-8601 Asia/Shanghai timestamp.",
   market: {
     countryCode: benchmark.countryCode,
     countryName: benchmark.countryName,
