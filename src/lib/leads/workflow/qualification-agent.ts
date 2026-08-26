@@ -2,6 +2,7 @@ import type { AiProvider, StructuredAiResponse } from "@/providers/contracts";
 import { DeepSeekProvider } from "@/providers/deepseek";
 import { z } from "zod";
 
+import { LEAD_EVIDENCE_SOURCE_POLICY, assessLeadEvidenceQuality } from "../evidence-quality";
 import { assessNetworkingRelevanceEvidence } from "../networking-relevance";
 import { leadAssessmentBatchSchema, leadAssessmentModelSchema, type LeadAssessmentModelOutput } from "./schemas";
 import type {
@@ -10,7 +11,7 @@ import type {
   LeadWorkflowCandidate,
 } from "./types";
 
-const PROMPT_VERSION = "lead-fit-v1-v4-active-networking-gate";
+const PROMPT_VERSION = "lead-fit-v1-v5-claim-linked-evidence";
 
 interface LeadAssessmentRequest {
   instructions: string[];
@@ -51,9 +52,16 @@ function normalizeAssessment(
   const allowedEvidence = new Set(candidate.evidence.map((item) => item.id));
   const evidenceIds = [...new Set(value.evidenceIds.filter((id) => allowedEvidence.has(id)))];
   const networkingEvidence = assessNetworkingRelevanceEvidence(candidate.evidence.flatMap((item) => [item.title, item.excerpt]));
+  const evidenceQuality = assessLeadEvidenceQuality({
+    candidateDomain: candidate.domain,
+    officialUrl: candidate.officialWebsiteUrl,
+    profile: value.accountTier === "Long-tail" ? "long-tail-small-company" : "standard",
+    evidence: candidate.evidence,
+  });
   const gates = {
     ...value.gates,
     networkingRelevant: value.gates.networkingRelevant && networkingEvidence.demonstrated,
+    sufficientEvidence: value.gates.sufficientEvidence && evidenceQuality.sufficient,
   };
   const dimensions = {
     channelRoleAndCustomerAccess: clamp(value.dimensions.channelRoleAndCustomerAccess, 30),
@@ -89,6 +97,8 @@ function normalizeAssessment(
     warnings: [...response.warnings, ...value.warnings,
       ...(value.gates.networkingRelevant && !networkingEvidence.demonstrated
         ? [`Networking relevance was changed to not-demonstrated: ${networkingEvidence.reason}`] : []),
+      ...(value.gates.sufficientEvidence && !evidenceQuality.sufficient
+        ? [`Evidence sufficiency was changed to false: ${evidenceQuality.reason}`] : []),
       ...(evidenceIds.length < value.evidenceIds.length ? ["Model returned unsupported evidence IDs; they were removed."] : [])],
   };
 }
@@ -155,6 +165,10 @@ export class LeadQualificationAgent {
         "Active networking includes routers, gateways, cellular CPE, access points, mesh/WLAN controllers, Ethernet/PoE switches, modems, outdoor/PtP wireless, network firewalls, security gateways and network-management controllers. A named relevant vendor relationship or concrete project can also prove the gate.",
         "Generic IT infrastructure, cloud connectivity, edge infrastructure, managed IT, IP solutions, system integration, network consulting, data centers, broadcast IP and IT procurement do not prove networking relevance without concrete products, vendors, projects or actions.",
         "Pure structured cabling, fiber or low-voltage work can prove an Installer role but does not pass networkingRelevant without active-equipment evidence. Report absent public proof as not demonstrated, not as a factual claim that the company is unrelated.",
+        "Treat search snippets, provider summaries and AI-generated summaries as discovery only, never as standalone proof. Link every material claim to a supplied URL and concrete excerpt.",
+        "Confirm that the company name, official URL/domain and evidence entity refer to the same business. A wrong or unmatched official URL fails sufficientEvidence until corrected; repeated pages, mirrors and duplicate excerpts count once.",
+        "One concrete company-owned official page can be sufficient. Without direct official evidence, a standard candidate normally needs two non-duplicative public origins.",
+        "For a genuinely small Long-tail candidate, do not require multiple independent sources: one identity-clear official marketplace store, official company/profile/social page, Google Business-style profile or other concrete auditable public source can pass sufficientEvidence. This exception changes eligibility, not the evidence-quality score.",
         "Set sufficientEvidence=false when identity, target-country presence or channel activity lacks auditable support.",
         "Current Cudy relationship has zero fit-score weight. Cudy itself and non-independent entities fail independentProspect.",
         "Use the exact five dimension maxima. Do not compensate a failed eligibility gate with a high score.",
@@ -181,6 +195,7 @@ export class LeadQualificationAgent {
         })),
       })),
       scoringRubric: {
+        evidenceSourcePolicy: LEAD_EVIDENCE_SOURCE_POLICY,
         eligibilityGates: ["submittedIdentityUsable", "companyExists", "targetCountryPresence", "networkingRelevant", "relevantChannel", "sufficientEvidence", "independentProspect"],
         dimensions: {
           channelRoleAndCustomerAccess: 30,

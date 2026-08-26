@@ -31,6 +31,18 @@ IT infrastructure、cloud connectivity、edge infrastructure、digital transform
 
 Networking relevance 只判断是否实质参与主动网络设备业务；product and use-case fit 继续独立判断其产品和场景与 Cudy 的接近程度。例如企业级网络安全 VAD 可以通过 networking relevance，但如果产品与 Cudy 的 SOHO／SMB 产品线重叠有限，product fit 仍可为低分。没有检索到主动网络设备证据时必须记录为“未证明／not demonstrated”，不能写成公司事实上“没有”或“无关”；在本产品当前搜索和测评中，“未证明”仍不能通过该项准入门槛。
 
+### 证据来源、主体一致性与长尾单来源规则
+
+证据充分性是质量门槛，不是机械的页面数量门槛。公司真实性、目标市场经营、Networking relevance、渠道角色和合作路径必须分别绑定到支持该判断的具体 URL 和原文摘录；一段泛化公司简介不能自动证明所有字段。搜索引擎摘要、搜索工具生成的 provider summary 和模型生成的公司总结只用于发现候选，不能单独作为事实证据。
+
+候选公司名称、声称的官网域名和证据所指向的经营主体必须一致。提供了错误官网、证据属于同名公司或没有证据能够把声称的官网与候选主体对应起来时，sufficient evidence 不通过，应先纠正公司身份与官网。相同来源的多个页面、镜像转载、重复摘要和实质相同的摘录只按一份证据计算。
+
+证据优先使用品牌方或候选公司官网的具体页面、品牌伙伴名录、政府或监管记录和可验证的官方 Marketplace 店铺，其次使用官方 LinkedIn 公司页、Google Business、行业协会及其他可审计公共来源。LinkedIn 官方公司页属于可用的一方公司资料，但可靠性通常低于公司自有官网。新闻、商业目录和数据商可以辅助验证；目录标签、搜索摘要或模型总结不能替代具体业务证据。
+
+一条内容具体、主体明确的公司自有官网页面可以达到基本证据门槛，不要求为了数量重复寻找相同结论。没有直接官网证据的普通候选公司，原则上需要两个非重复的公共来源相互支持，或者继续标记为待核验；交叉验证的强度同时影响 evidence reliability，但不得用页面数量代替来源质量。
+
+对长尾线索中的小公司放宽证据数量门槛，不要求多个独立证据交叉验证。只要一条来源能够明确对应经营主体，并具体展示相关产品、品牌、官方店铺、项目、安装服务或其他真实业务动作，即可通过基本证据门槛；来源可以是官方 Marketplace 店铺、官方 LinkedIn／社交公司页面、Google Business 类经营页面或其他具体且可审计的公共资料。该例外只降低准入所需的来源数量，不降低主体一致性、内容具体性、Networking relevance 和角色证据要求，也不会自动获得更高的 evidence reliability 分数。
+
 # 已确认角色
 
 ## Distributor（一级代理商）
@@ -872,7 +884,7 @@ export const CHANNEL_ROLE_TAXONOMY_DOCUMENT = {
   capturedAt: "2026-08-26T00:00:00+08:00",
   metadata: {
     topic: "channel-role-taxonomy",
-    policyVersion: "2026-08-26.13",
+    policyVersion: "2026-08-27.14",
     confirmedRoles: ["Distributor", "VAD", "VAR", "Dealer", "Reseller", "Retailer", "E-tailer", "SI", "Installer", "MSP", "ISP", "Commission Agent"],
     pendingRoles: [],
     userConfirmed: true,

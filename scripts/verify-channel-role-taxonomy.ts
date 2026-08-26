@@ -51,6 +51,9 @@ const verificationQueries = [
   "什么证据才能证明候选公司与 Cudy 主动网络设备业务相关？泛化 IT infrastructure 表述够吗？",
   "只做结构化布线和光纤施工的 Installer 能否通过 Cudy networking relevance 门槛？",
   "Networking relevance 和 product use-case fit 有什么区别？",
+  "搜索摘要和模型生成的公司总结能否单独作为候选公司证据？",
+  "候选公司官网错误或证据属于同名公司时 sufficient evidence 应该怎样判断？",
+  "长尾小公司是否必须有多个独立来源交叉验证？LinkedIn Marketplace 或 Google Business 能否作为单一来源？",
 ];
 
 try {
@@ -127,6 +130,14 @@ try {
     "product and use-case fit 继续独立判断",
     "未证明／not demonstrated",
     "Installer 角色成立",
+    "证据充分性是质量门槛，不是机械的页面数量门槛",
+    "provider summary 和模型生成的公司总结只用于发现候选",
+    "候选公司名称、声称的官网域名和证据所指向的经营主体必须一致",
+    "镜像转载、重复摘要和实质相同的摘录只按一份证据计算",
+    "LinkedIn 官方公司页属于可用的一方公司资料",
+    "一条内容具体、主体明确的公司自有官网页面可以达到基本证据门槛",
+    "对长尾线索中的小公司放宽证据数量门槛，不要求多个独立证据交叉验证",
+    "该例外只降低准入所需的来源数量",
   ];
   const missingText = requiredText.filter((fragment) => !stored.combined_content.includes(fragment));
 

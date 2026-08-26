@@ -1,6 +1,6 @@
 # Post-audit corrective rubric
 
-Status: **rule 1 confirmed on 2026-08-26; later corrective rules remain under sequential user review**
+Status: **rules 1 and 2 confirmed on 2026-08-27; later corrective rules remain under sequential user review**
 
 The v1.2 human audit failed the frozen calibration thresholds, so the published scores remain provisional and no provider winner is declared. This document records corrective rules for the required future full-pool rescoring. It does not retroactively change the frozen v1.2 prompts, packets, decisions or raw scores.
 
@@ -19,3 +19,11 @@ The gate and the 45-point product/use-case fit dimension remain separate. A comp
 The shared `active-networking-relevance-v1` policy is now sent to the benchmark evaluator and the production qualification agent. Both pipelines independently recompute the gate from supplied evidence and can only preserve a model `true` when at least one explicit active-networking signal is present. Generic and passive-cabling examples are covered by automated tests in English and German.
 
 The machine-readable next-iteration amendment is [`../config/corrective-rubric-v1.3.json`](../config/corrective-rubric-v1.3.json). The frozen v1.2 input manifest and result artifacts remain unchanged for reproducibility.
+
+## Corrective rule 2 — claim-linked evidence and long-tail exception
+
+Search snippets, provider summaries and AI-generated company summaries remain discovery material and cannot independently prove identity, market presence, networking relevance, channel role or cooperation path. Each material judgment must be linked to a concrete URL and excerpt. The company name, claimed official URL/domain and evidence entity must refer to the same business; a wrong or unmatched official URL fails `sufficientEvidence` until corrected. Mirrors, duplicate excerpts and repeated pages from the same origin count once.
+
+One concrete company-owned official page can satisfy the basic evidence floor. Without direct official evidence, a standard candidate normally needs two non-duplicative public origins. Source quality and claim directness matter more than page count, and additional corroboration remains part of the evidence-reliability score.
+
+Small long-tail leads have an explicit single-source exception. They do not need multiple independent sources when one identity-clear official Marketplace store, official LinkedIn/company/social profile, Google Business-style page or other concrete auditable public source shows the relevant products, brands, projects, installation services or business actions. The exception changes the admission threshold only: it does not relax identity consistency, content specificity, active-networking relevance or role requirements, and it does not automatically increase the evidence-reliability level.

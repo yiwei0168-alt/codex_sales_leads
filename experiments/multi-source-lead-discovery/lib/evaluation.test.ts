@@ -29,6 +29,7 @@ describe("provider-neutral benchmark evaluation", () => {
           selectedCandidates: [{
             companyName: "Example GmbH",
             officialUrl: "https://example.de/?utm_source=x",
+            evidenceProfile: "standard",
             roles: ["Reseller"],
             eligibility: {
               companyExists: true, germanyPresence: true, networkingRelevant: true,
@@ -38,7 +39,8 @@ describe("provider-neutral benchmark evaluation", () => {
             roleEvidence: "Wrong submitted role",
             productFitEvidence: "Networking products",
             cooperationEvidence: "Resells products",
-            evidenceItems: [{ url: "https://example.de", excerpt: "Sells routers and PoE switches. sales@example.de +49 30 1234 5678" }],
+            evidenceItems: [{ url: "https://example.de", sourceType: "official-company",
+              excerpt: "Sells routers and PoE switches. sales@example.de +49 30 1234 5678" }],
             rationale: "Fails the category gate",
           }],
           rejectedItems: [],
@@ -83,12 +85,13 @@ describe("provider-neutral benchmark evaluation", () => {
       model: "gpt-test",
       output: [{ type: "message", content: [{ type: "output_text", text: JSON.stringify({
         selectedCandidates: [{
-          companyName: "Generic IT GmbH", officialUrl: "https://generic.example", roles: ["SI"],
+          companyName: "Generic IT GmbH", officialUrl: "https://generic.example",
+          evidenceProfile: "standard", roles: ["SI"],
           eligibility: { companyExists: true, germanyPresence: true, networkingRelevant: true,
             submittedChannelRole: true, sufficientEvidence: true, uniqueWithinList: true },
           levels: { productUseCaseFit: 4, cooperationPath: 4, evidenceReliability: 4 },
           roleEvidence: "System integrator", productFitEvidence: "IT infrastructure",
-          cooperationEvidence: "Consulting", evidenceItems: [{ url: "https://generic.example/services",
+          cooperationEvidence: "Consulting", evidenceItems: [{ url: "https://generic.example/services", sourceType: "official-company",
             excerpt: "Cloud connectivity, managed IT and structured cabling" }], rationale: "Generic wording",
         }], rejectedItems: [],
       }) }] }],

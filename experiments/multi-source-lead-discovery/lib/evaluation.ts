@@ -1,5 +1,10 @@
 import type { DiscoveryItem } from "./contracts";
 import {
+  LEAD_EVIDENCE_SOURCE_POLICY,
+  assessLeadEvidenceQuality,
+  type EvidenceProfile,
+} from "../../../src/lib/leads/evidence-quality";
+import {
   ACTIVE_NETWORKING_RELEVANCE_POLICY,
   assessNetworkingRelevanceEvidence,
 } from "../../../src/lib/leads/networking-relevance";
@@ -24,11 +29,13 @@ export interface ScoreLevels {
 export interface EvidenceItem {
   url: string;
   excerpt: string;
+  sourceType: "official-company" | "official-platform-profile" | "authoritative-third-party" | "independent-public" | "discovery-summary";
 }
 
 export interface EvaluatedCandidate {
   companyName: string;
   officialUrl: string | null;
+  evidenceProfile: EvidenceProfile;
   roles: string[];
   eligibility: EligibilityGates;
   levels: ScoreLevels;
@@ -182,16 +189,26 @@ function parseCandidate(value: unknown): EvaluatedCandidate {
     const evidence = entry as Record<string, unknown>;
     const url = canonicalPublicUrl(evidence.url);
     const excerpt = sanitizeText(stringValue(evidence.excerpt)).slice(0, 1_000);
-    return url && excerpt ? [{ url, excerpt }] : [];
+    const allowedSourceTypes = new Set<EvidenceItem["sourceType"]>([
+      "official-company", "official-platform-profile", "authoritative-third-party",
+      "independent-public", "discovery-summary",
+    ]);
+    const rawSourceType = stringValue(evidence.sourceType) as EvidenceItem["sourceType"];
+    const sourceType = allowedSourceTypes.has(rawSourceType) ? rawSourceType : "discovery-summary";
+    return url && excerpt ? [{ url, excerpt, sourceType }] : [];
   }) : [];
+  const officialUrl = canonicalPublicUrl(candidate.officialUrl);
+  const evidenceProfile: EvidenceProfile = candidate.evidenceProfile === "long-tail-small-company"
+    ? "long-tail-small-company" : "standard";
   const networkingEvidence = assessNetworkingRelevanceEvidence(evidenceItems.map((item) => item.excerpt));
+  const evidenceQuality = assessLeadEvidenceQuality({ officialUrl, profile: evidenceProfile, evidence: evidenceItems });
   const gateInput = objectValue(candidate.eligibility ?? {});
   const eligibility: EligibilityGates = {
     companyExists: booleanValue(gateInput.companyExists),
     germanyPresence: booleanValue(gateInput.germanyPresence),
     networkingRelevant: booleanValue(gateInput.networkingRelevant) && networkingEvidence.demonstrated,
     submittedChannelRole: booleanValue(gateInput.submittedChannelRole),
-    sufficientEvidence: booleanValue(gateInput.sufficientEvidence),
+    sufficientEvidence: booleanValue(gateInput.sufficientEvidence) && evidenceQuality.sufficient,
     uniqueWithinList: booleanValue(gateInput.uniqueWithinList),
   };
   const levelInput = objectValue(candidate.levels ?? {});
@@ -203,7 +220,8 @@ function parseCandidate(value: unknown): EvaluatedCandidate {
   const score = passesAllGates(eligibility) ? candidateScore(levels) : 0;
   return {
     companyName: sanitizeText(stringValue(candidate.companyName, "Unnamed company")).slice(0, 200),
-    officialUrl: canonicalPublicUrl(candidate.officialUrl),
+    officialUrl,
+    evidenceProfile,
     roles: Array.isArray(candidate.roles)
       ? [...new Set(candidate.roles.map((role) => sanitizeText(stringValue(role))).filter(Boolean))].slice(0, 8) : [],
     eligibility,
@@ -229,6 +247,7 @@ function evaluatorSchema(): Record<string, unknown> {
           properties: {
             companyName: { type: "string" },
             officialUrl: { type: ["string", "null"] },
+            evidenceProfile: { type: "string", enum: ["standard", "long-tail-small-company"] },
             roles: { type: "array", items: { type: "string" }, maxItems: 8 },
             eligibility: {
               type: "object",
@@ -261,15 +280,21 @@ function evaluatorSchema(): Record<string, unknown> {
               maxItems: 8,
               items: {
                 type: "object",
-                properties: { url: { type: "string" }, excerpt: { type: "string" } },
-                required: ["url", "excerpt"],
+                properties: {
+                  url: { type: "string" }, excerpt: { type: "string" },
+                  sourceType: { type: "string", enum: [
+                    "official-company", "official-platform-profile", "authoritative-third-party",
+                    "independent-public", "discovery-summary",
+                  ] },
+                },
+                required: ["url", "excerpt", "sourceType"],
                 additionalProperties: false,
               },
             },
             rationale: { type: "string" },
           },
           required: [
-            "companyName", "officialUrl", "roles", "eligibility", "levels", "roleEvidence",
+            "companyName", "officialUrl", "evidenceProfile", "roles", "eligibility", "levels", "roleEvidence",
             "productFitEvidence", "cooperationEvidence", "evidenceItems", "rationale",
           ],
           additionalProperties: false,
@@ -373,6 +398,7 @@ export async function evaluateChannel(options: {
     commonDiscoveryBrief: options.commonBrief,
     compactRoleRules: options.roleRules,
     networkingRelevancePolicy: ACTIVE_NETWORKING_RELEVANCE_POLICY,
+    evidenceSourcePolicy: LEAD_EVIDENCE_SOURCE_POLICY,
     ...(fixed ? { fixedCandidates: options.fixedCandidates } : { discoveryResults: compactItems(options.discoveryItems) }),
   }, options.fetchImplementation ?? fetch);
   const selected = Array.isArray(parsed.selectedCandidates)

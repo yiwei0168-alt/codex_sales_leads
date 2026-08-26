@@ -1,6 +1,6 @@
 {
   "rubricVersion": "multi-source-professional-discovery-v1.3-draft",
-  "status": "confirmed-corrective-rule-1",
+  "status": "confirmed-corrective-rules-1-and-2",
   "appliesTo": "future full-pool rescoring; does not alter committed v1.2 artifacts",
   "networkingRelevance": {
     "gate": true,
@@ -38,5 +38,16 @@
     "pureCablingBoundary": "A pure cabling company may be a valid Installer but fails this Cudy relevance gate without active-equipment evidence.",
     "unknownHandling": "Missing public proof is not demonstrated, not confirmed factual irrelevance; not demonstrated fails the benchmark gate.",
     "separateFitDimension": "Passing the gate does not imply high Cudy product/use-case fit."
+  },
+  "evidenceSources": {
+    "gate": true,
+    "claimLinking": "Identity, market presence, networking relevance, channel role and cooperation path must each be linked to supporting URLs and excerpts.",
+    "discoveryOnly": "Search snippets, provider summaries and AI-generated summaries may discover a candidate but cannot independently prove a claim.",
+    "identityRule": "Company name, claimed official URL and evidence entity must refer to the same business; an unmatched or wrong official URL fails sufficient evidence until corrected.",
+    "directOfficialRule": "One concrete company-owned official page can satisfy the basic evidence floor.",
+    "standardAlternative": "Without direct official evidence, a standard candidate normally needs two non-duplicative public origins.",
+    "longTailSmallCompanyException": "A small long-tail lead does not require multiple independent sources. One identity-clear official marketplace store, official company/profile/social page, Google Business-style page or other concrete auditable public source can satisfy the basic evidence floor.",
+    "duplicateRule": "Mirrors, repeated excerpts and pages from the same origin count once for corroboration.",
+    "scoringBoundary": "The long-tail exception changes eligibility only; independent corroboration may improve evidence reliability but is not required for admission."
   }
 }
