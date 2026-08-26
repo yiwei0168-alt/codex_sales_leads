@@ -1,6 +1,6 @@
 {
   "rubricVersion": "multi-source-professional-discovery-v1.3-draft",
-  "status": "confirmed-corrective-rules-1-and-2",
+  "status": "confirmed-corrective-rules-1-through-3",
   "appliesTo": "future full-pool rescoring; does not alter committed v1.2 artifacts",
   "networkingRelevance": {
     "gate": true,
@@ -49,5 +49,18 @@
     "longTailSmallCompanyException": "A small long-tail lead does not require multiple independent sources. One identity-clear official marketplace store, official company/profile/social page, Google Business-style page or other concrete auditable public source can satisfy the basic evidence floor.",
     "duplicateRule": "Mirrors, repeated excerpts and pages from the same origin count once for corroboration.",
     "scoringBoundary": "The long-tail exception changes eligibility only; independent corroboration may improve evidence reliability but is not required for admission."
+  },
+  "cooperationPathCaps": {
+    "noDemonstratedControl": 2,
+    "oneDemonstratedLever": 3,
+    "multipleComplementaryLevers": 4,
+    "activeTransactionOrCompleteRepeatablePath": 5,
+    "tier1Evidence": "brand onboarding/direct procurement/import plus repeatable downstream supply",
+    "b2bResaleEvidence": "purchasing, live listing/ordering, quotation and recommendation control",
+    "projectServicesEvidence": "design/specification/BOM, procurement/vendor selection and deployment responsibility",
+    "customerSuppliedInstallerCap": 2,
+    "currentRelationshipRule": "A live public Cudy listing can prove the path; a current-relationship label alone adds no points.",
+    "unknownRule": "Undisclosed procurement or control remains unknown, not a factual negative, but cannot support a higher level.",
+    "scaleRule": "Company size does not increase cooperation-path score."
   }
 }

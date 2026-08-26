@@ -65,6 +65,8 @@ describe("provider-neutral benchmark evaluation", () => {
       fetchImplementation: fetchMock,
     });
     expect(result.selectedCandidates[0].score).toBe(0);
+    expect(result.selectedCandidates[0].levels.cooperationPath).toBe(3);
+    expect(result.selectedCandidates[0].cooperationPathCap).toBe(3);
     expect(result.selectedCandidates[0].evidenceItems[0].excerpt).not.toContain("@");
     expect(result.evaluator.returnedModel).toBe("gpt-5.6-sol-actual");
     expect(result.evaluator.reasoningTokens).toBe(20);

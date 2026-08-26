@@ -2,6 +2,7 @@ import type { AiProvider, StructuredAiResponse } from "@/providers/contracts";
 import { DeepSeekProvider } from "@/providers/deepseek";
 import { z } from "zod";
 
+import { COOPERATION_PATH_POLICY, assessCooperationPathEvidence, type CooperationLane } from "../cooperation-path";
 import { LEAD_EVIDENCE_SOURCE_POLICY, assessLeadEvidenceQuality } from "../evidence-quality";
 import { assessNetworkingRelevanceEvidence } from "../networking-relevance";
 import { leadAssessmentBatchSchema, leadAssessmentModelSchema, type LeadAssessmentModelOutput } from "./schemas";
@@ -11,7 +12,7 @@ import type {
   LeadWorkflowCandidate,
 } from "./types";
 
-const PROMPT_VERSION = "lead-fit-v1-v5-claim-linked-evidence";
+const PROMPT_VERSION = "lead-fit-v1-v6-evidence-capped-cooperation";
 
 interface LeadAssessmentRequest {
   instructions: string[];
@@ -43,6 +44,14 @@ function clamp(value: number, maximum: number): number {
   return Math.max(0, Math.min(maximum, Math.round(value)));
 }
 
+function cooperationLane(value: LeadAssessmentModelOutput): CooperationLane {
+  const role = value.primaryRole ?? value.roles[0];
+  if (role === "Distributor" || role === "VAD") return "tier1-distribution";
+  if (["VAR", "Dealer", "Reseller", "Retailer", "E-tailer"].includes(role ?? "")) return "b2b-resale";
+  if (["SI", "Installer", "MSP"].includes(role ?? "")) return "project-services";
+  return "operator";
+}
+
 function normalizeAssessment(
   value: LeadAssessmentModelOutput,
   candidate: LeadWorkflowCandidate,
@@ -58,6 +67,10 @@ function normalizeAssessment(
     profile: value.accountTier === "Long-tail" ? "long-tail-small-company" : "standard",
     evidence: candidate.evidence,
   });
+  const cooperationPath = assessCooperationPathEvidence({
+    lane: cooperationLane(value),
+    evidence: candidate.evidence.flatMap((item) => [item.title, item.excerpt]),
+  });
   const gates = {
     ...value.gates,
     networkingRelevant: value.gates.networkingRelevant && networkingEvidence.demonstrated,
@@ -67,7 +80,10 @@ function normalizeAssessment(
     channelRoleAndCustomerAccess: clamp(value.dimensions.channelRoleAndCustomerAccess, 30),
     productAndUseCaseFit: clamp(value.dimensions.productAndUseCaseFit, 25),
     targetMarketCoverage: clamp(value.dimensions.targetMarketCoverage, 20),
-    partnershipExecutionCapability: clamp(value.dimensions.partnershipExecutionCapability, 15),
+    partnershipExecutionCapability: Math.min(
+      clamp(value.dimensions.partnershipExecutionCapability, 15),
+      cooperationPath.cap * 3,
+    ),
     strategicComplementarity: clamp(value.dimensions.strategicComplementarity, 10),
   };
   const eligible = Object.values(gates).every(Boolean);
@@ -99,6 +115,8 @@ function normalizeAssessment(
         ? [`Networking relevance was changed to not-demonstrated: ${networkingEvidence.reason}`] : []),
       ...(value.gates.sufficientEvidence && !evidenceQuality.sufficient
         ? [`Evidence sufficiency was changed to false: ${evidenceQuality.reason}`] : []),
+      ...(value.dimensions.partnershipExecutionCapability > cooperationPath.cap * 3
+        ? [`Partnership execution was capped at ${cooperationPath.cap * 3}/15: ${cooperationPath.reason}`] : []),
       ...(evidenceIds.length < value.evidenceIds.length ? ["Model returned unsupported evidence IDs; they were removed."] : [])],
   };
 }
@@ -169,6 +187,9 @@ export class LeadQualificationAgent {
         "Confirm that the company name, official URL/domain and evidence entity refer to the same business. A wrong or unmatched official URL fails sufficientEvidence until corrected; repeated pages, mirrors and duplicate excerpts count once.",
         "One concrete company-owned official page can be sufficient. Without direct official evidence, a standard candidate normally needs two non-duplicative public origins.",
         "For a genuinely small Long-tail candidate, do not require multiple independent sources: one identity-clear official marketplace store, official company/profile/social page, Google Business-style profile or other concrete auditable public source can pass sufficientEvidence. This exception changes eligibility, not the evidence-quality score.",
+        "Cap cooperation-path strength by demonstrated transaction control: no explicit procurement/listing/quotation/specification/recommendation/deployment control means level 2 at most; one lever means level 3; multiple complementary levers mean level 4.",
+        "Reserve cooperation level 5 for an evidenced active transaction/listing/direct-procurement path or a complete repeatable chain. An active public Cudy listing proves the path, but a relationship label alone adds no points. Customer-supplied installation-only work is capped at level 2.",
+        "Missing public procurement or control evidence remains unknown rather than a negative fact, but cannot support a higher cooperation score. Company size never raises this score.",
         "Set sufficientEvidence=false when identity, target-country presence or channel activity lacks auditable support.",
         "Current Cudy relationship has zero fit-score weight. Cudy itself and non-independent entities fail independentProspect.",
         "Use the exact five dimension maxima. Do not compensate a failed eligibility gate with a high score.",
@@ -196,6 +217,7 @@ export class LeadQualificationAgent {
       })),
       scoringRubric: {
         evidenceSourcePolicy: LEAD_EVIDENCE_SOURCE_POLICY,
+        cooperationPathPolicy: COOPERATION_PATH_POLICY,
         eligibilityGates: ["submittedIdentityUsable", "companyExists", "targetCountryPresence", "networkingRelevant", "relevantChannel", "sufficientEvidence", "independentProspect"],
         dimensions: {
           channelRoleAndCustomerAccess: 30,

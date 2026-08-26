@@ -1,6 +1,6 @@
 # Post-audit corrective rubric
 
-Status: **rules 1 and 2 confirmed on 2026-08-27; later corrective rules remain under sequential user review**
+Status: **rules 1 through 3 confirmed on 2026-08-27; later corrective rules remain under sequential user review**
 
 The v1.2 human audit failed the frozen calibration thresholds, so the published scores remain provisional and no provider winner is declared. This document records corrective rules for the required future full-pool rescoring. It does not retroactively change the frozen v1.2 prompts, packets, decisions or raw scores.
 
@@ -27,3 +27,11 @@ Search snippets, provider summaries and AI-generated company summaries remain di
 One concrete company-owned official page can satisfy the basic evidence floor. Without direct official evidence, a standard candidate normally needs two non-duplicative public origins. Source quality and claim directness matter more than page count, and additional corroboration remains part of the evidence-reliability score.
 
 Small long-tail leads have an explicit single-source exception. They do not need multiple independent sources when one identity-clear official Marketplace store, official LinkedIn/company/social profile, Google Business-style page or other concrete auditable public source shows the relevant products, brands, projects, installation services or business actions. The exception changes the admission threshold only: it does not relax identity consistency, content specificity, active-networking relevance or role requirements, and it does not automatically increase the evidence-reliability level.
+
+## Corrective rule 3 — evidence-capped cooperation path
+
+Cooperation-path scores are now capped by demonstrated transaction control rather than inferred from role or company size. With no explicit procurement, listing, ordering, quotation, specification, BOM, brand-recommendation or deployment control, the maximum level is 2. One demonstrated lever permits at most 3; multiple complementary levers permit at most 4. Level 5 requires an evidenced active transaction/listing/direct-procurement path or a complete repeatable cooperation chain.
+
+Tier-1 evidence focuses on brand onboarding, direct procurement/import and repeatable downstream supply. B2B resale focuses on purchasing, live listing/ordering, quotation and recommendation. Project services focus on design/specification/BOM, procurement or vendor selection and deployment. An Installer explicitly limited to customer-supplied equipment is capped at 2.
+
+Missing public procurement or control information remains unknown rather than a negative company fact, but it cannot support a higher score. Company size contributes no cooperation points. A live Cudy product page, price, SKU, stock indication or order path can prove that a transaction path exists; a current-relationship label by itself remains zero-weight.

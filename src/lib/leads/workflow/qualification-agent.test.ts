@@ -34,7 +34,7 @@ class FakeProvider implements AiProvider {
 const candidate: LeadWorkflowCandidate = {
   candidateId: "lead-example", companyName: "Example", domain: "example.de", officialWebsiteUrl: "https://example.de/",
   queryRoles: ["VAR"], queryFamily: "resale", providerScore: 0.99,
-  evidence: [{ id: "evidence-valid", url: "https://example.de", title: "Example", excerpt: "VAR selling routers and PoE switches",
+  evidence: [{ id: "evidence-valid", url: "https://example.de", title: "Example", excerpt: "VAR selling routers and PoE switches; business customers can request a quote.",
     sourceType: "official-website", provider: "test", capturedAt: "2026-08-22" }], evidenceWarnings: [],
 };
 const playbook: LeadMarketPlaybook = {

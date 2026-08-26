@@ -1,4 +1,5 @@
 import type { DiscoveryItem } from "./contracts";
+import { COOPERATION_PATH_POLICY, assessCooperationPathEvidence, type CooperationSignal } from "../../../src/lib/leads/cooperation-path";
 import {
   LEAD_EVIDENCE_SOURCE_POLICY,
   assessLeadEvidenceQuality,
@@ -39,6 +40,8 @@ export interface EvaluatedCandidate {
   roles: string[];
   eligibility: EligibilityGates;
   levels: ScoreLevels;
+  cooperationPathCap: number;
+  cooperationPathSignals: CooperationSignal[];
   score: number;
   roleEvidence: string;
   productFitEvidence: string;
@@ -182,7 +185,7 @@ export function canonicalPublicUrl(value: unknown): string | null {
   }
 }
 
-function parseCandidate(value: unknown): EvaluatedCandidate {
+function parseCandidate(value: unknown, channelId: ChannelId): EvaluatedCandidate {
   const candidate = objectValue(value);
   const evidenceItems = Array.isArray(candidate.evidenceItems) ? candidate.evidenceItems.flatMap((entry) => {
     if (!entry || typeof entry !== "object" || Array.isArray(entry)) return [];
@@ -202,6 +205,7 @@ function parseCandidate(value: unknown): EvaluatedCandidate {
     ? "long-tail-small-company" : "standard";
   const networkingEvidence = assessNetworkingRelevanceEvidence(evidenceItems.map((item) => item.excerpt));
   const evidenceQuality = assessLeadEvidenceQuality({ officialUrl, profile: evidenceProfile, evidence: evidenceItems });
+  const cooperationPath = assessCooperationPathEvidence({ lane: channelId, evidence: evidenceItems.map((item) => item.excerpt) });
   const gateInput = objectValue(candidate.eligibility ?? {});
   const eligibility: EligibilityGates = {
     companyExists: booleanValue(gateInput.companyExists),
@@ -214,7 +218,7 @@ function parseCandidate(value: unknown): EvaluatedCandidate {
   const levelInput = objectValue(candidate.levels ?? {});
   const levels: ScoreLevels = {
     productUseCaseFit: levelValue(levelInput.productUseCaseFit),
-    cooperationPath: levelValue(levelInput.cooperationPath),
+    cooperationPath: Math.min(levelValue(levelInput.cooperationPath), cooperationPath.cap),
     evidenceReliability: levelValue(levelInput.evidenceReliability),
   };
   const score = passesAllGates(eligibility) ? candidateScore(levels) : 0;
@@ -226,6 +230,8 @@ function parseCandidate(value: unknown): EvaluatedCandidate {
       ? [...new Set(candidate.roles.map((role) => sanitizeText(stringValue(role))).filter(Boolean))].slice(0, 8) : [],
     eligibility,
     levels,
+    cooperationPathCap: cooperationPath.cap,
+    cooperationPathSignals: cooperationPath.signals,
     score,
     roleEvidence: sanitizeText(stringValue(candidate.roleEvidence)).slice(0, 2_000),
     productFitEvidence: sanitizeText(stringValue(candidate.productFitEvidence)).slice(0, 2_000),
@@ -399,10 +405,11 @@ export async function evaluateChannel(options: {
     compactRoleRules: options.roleRules,
     networkingRelevancePolicy: ACTIVE_NETWORKING_RELEVANCE_POLICY,
     evidenceSourcePolicy: LEAD_EVIDENCE_SOURCE_POLICY,
+    cooperationPathPolicy: COOPERATION_PATH_POLICY,
     ...(fixed ? { fixedCandidates: options.fixedCandidates } : { discoveryResults: compactItems(options.discoveryItems) }),
   }, options.fetchImplementation ?? fetch);
   const selected = Array.isArray(parsed.selectedCandidates)
-    ? parsed.selectedCandidates.slice(0, 10).map(parseCandidate) : [];
+    ? parsed.selectedCandidates.slice(0, 10).map((candidate) => parseCandidate(candidate, options.channelId)) : [];
   const rejected = Array.isArray(parsed.rejectedItems) ? parsed.rejectedItems.slice(0, 100).flatMap((entry) => {
     if (!entry || typeof entry !== "object" || Array.isArray(entry)) return [];
     const item = entry as Record<string, unknown>;
