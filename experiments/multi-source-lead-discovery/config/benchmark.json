@@ -1,11 +1,37 @@
 {
   "schemaVersion": 1,
   "protocolVersion": "multi-source-professional-discovery-v1",
-  "status": "environment-setup",
+  "status": "protocol-design",
   "countryCode": "DE",
   "countryName": "Germany",
   "languageCode": "de",
   "providers": ["gemini", "tavily", "google-places", "exa", "brave", "searchapi"],
+  "selectedChannels": [
+    {
+      "id": "tier1-distribution",
+      "roles": ["Distributor", "VAD"],
+      "targetCompanies": 10
+    },
+    {
+      "id": "b2b-resale",
+      "roles": ["Reseller", "VAR", "DVAR", "Dealer"],
+      "targetCompanies": 10
+    },
+    {
+      "id": "project-services",
+      "roles": ["SI", "Installer"],
+      "targetCompanies": 10
+    }
+  ],
+  "measuredSystems": [
+    { "id": "gemini-full", "mode": "end-to-end-search-and-output", "discoveryProvider": "gemini" },
+    { "id": "product-gemini", "mode": "product-with-discovery-only-provider", "discoveryProvider": "gemini" },
+    { "id": "product-tavily", "mode": "product-with-discovery-only-provider", "discoveryProvider": "tavily" },
+    { "id": "product-google-places", "mode": "product-with-discovery-only-provider", "discoveryProvider": "google-places" },
+    { "id": "product-exa", "mode": "product-with-discovery-only-provider", "discoveryProvider": "exa" },
+    { "id": "product-brave", "mode": "product-with-discovery-only-provider", "discoveryProvider": "brave" },
+    { "id": "product-searchapi", "mode": "product-with-discovery-only-provider", "discoveryProvider": "searchapi" }
+  ],
   "preflight": {
     "query": "WLAN Systemhaus Hotel Netzwerktechnik Deutschland",
     "maxResults": 3,
@@ -13,6 +39,18 @@
   },
   "storage": {
     "rawDirectory": "runs/raw",
-    "commitRawResults": false
+    "commitRawResults": false,
+    "committedArtifactDirectory": "artifacts",
+    "commitSanitizedNormalizedResults": true,
+    "commitEvidenceAndScoringResults": true,
+    "commitFinalReport": true
+  },
+  "scoring": {
+    "status": "pending-user-confirmation",
+    "crossCategoryCompanyComparison": false,
+    "companyScaleWeight": 0,
+    "companyMarketCoverageWeight": 0,
+    "pooledRecallIsRankingMetric": false,
+    "humanBlindAuditRequired": true
   }
 }

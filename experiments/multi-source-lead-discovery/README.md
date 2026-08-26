@@ -30,4 +30,17 @@ Raw benchmark artifacts will be stored under `runs/raw` and are ignored by Git. 
 - Brave: independent-index and long-tail web discovery.
 - SearchAPI.io: explicit Google SERP/local controls and pagination.
 
-The next stage will freeze professional-scenario query packs and a provider-neutral evaluation protocol. Production integration remains out of scope until that comparison is complete.
+The next stage freezes the three selected professional-scenario query packs and a provider-neutral evaluation protocol. Production integration remains out of scope until that comparison is complete.
+
+## Reproducible experiment record
+
+The benchmark is documented as a reproducible experiment rather than only as a final leaderboard. The documentation index is in [`docs/README.md`](docs/README.md). Every meaningful stage must commit and push:
+
+- the versioned protocol and all confirmed decisions;
+- the exact non-secret inputs, prompts, query packs, locale settings and limits;
+- an append-only execution journal with timestamps, run IDs and artifact hashes;
+- one sanitized normalized result artifact per measured step;
+- the deduplicated evidence ledger, raw and calibrated scoring summaries, and blinded-human-audit aggregate results;
+- a detailed final report that links conclusions to the recorded evidence.
+
+Provider-native transport payloads remain under `runs/raw` for local audit. They are never committed verbatim because they can contain credentials, request metadata, opaque tracking parameters or personal data. A content-faithful normalized result is committed instead, together with the raw artifact hash so omissions are detectable. Candidate company names, public company URLs and non-personal public business evidence may be included in the committed normalized artifacts. Personal contacts remain outside this benchmark.
