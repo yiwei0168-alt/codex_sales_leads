@@ -1,6 +1,6 @@
 # Multi-source professional lead-discovery benchmark
 
-This experiment is isolated from the production lead workflow. It compares discovery coverage across Gemini Grounding, Tavily, Google Places, Exa, Brave Search and SerpAPI before any provider is added to production.
+This experiment is isolated from the production lead workflow. It compares discovery coverage across Gemini Grounding, Tavily, Google Places, Exa, Brave Search and SearchAPI.io before any provider is added to production.
 
 ## Environment stage
 
@@ -17,7 +17,7 @@ Supported provider names:
 - `google-places`
 - `exa`
 - `brave`
-- `serpapi`
+- `searchapi`
 
 Raw benchmark artifacts will be stored under `runs/raw` and are ignored by Git. API keys, raw company results and local evaluation decisions must never be committed.
 
@@ -28,6 +28,6 @@ Raw benchmark artifacts will be stored under `runs/raw` and are ignored by Git. 
 - Google Places: small and local downstream businesses.
 - Exa: semantic company and professional-scenario discovery.
 - Brave: independent-index and long-tail web discovery.
-- SerpAPI: explicit Google SERP/local controls and pagination.
+- SearchAPI.io: explicit Google SERP/local controls and pagination.
 
 The next stage will freeze professional-scenario query packs and a provider-neutral evaluation protocol. Production integration remains out of scope until that comparison is complete.

@@ -17,7 +17,7 @@ const keyByProvider: Record<DiscoveryProviderId, string> = {
   "google-places": "GOOGLE_PLACES_API_KEY",
   exa: "EXA_API_KEY",
   brave: "BRAVE_SEARCH_API_KEY",
-  serpapi: "SERPAPI_API_KEY",
+  searchapi: "SEARCHAPI_API_KEY",
 };
 
 function configured(providerId: DiscoveryProviderId): void {
@@ -90,15 +90,24 @@ describe("multi-source discovery providers", () => {
     expect(Object.fromEntries(url.searchParams)).toMatchObject({ country: "DE", search_lang: "de", count: "3" });
   });
 
-  it("uses SerpAPI's Google engine with explicit locale controls", async () => {
-    configured("serpapi");
+  it("uses SearchAPI.io's Google engine with explicit locale controls", async () => {
+    configured("searchapi");
     const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({ organic_results: [
       { position: 1, title: "Example", link: "https://example.de", snippet: "Network integrator" },
     ] }), { status: 200 }));
-    await createDiscoveryProvider("serpapi", { fetchImplementation: fetchMock }).search(query);
+    await createDiscoveryProvider("searchapi", { fetchImplementation: fetchMock }).search(query);
     const url = new URL(fetchMock.mock.calls[0][0] as string);
-    expect(url.pathname).toBe("/search.json");
-    expect(Object.fromEntries(url.searchParams)).toMatchObject({ engine: "google", gl: "de", hl: "de", api_key: "test-key" });
+    expect(url.pathname).toBe("/api/v1/search");
+    expect(Object.fromEntries(url.searchParams)).toMatchObject({ engine: "google", gl: "de", hl: "de" });
+    expect(url.searchParams.has("api_key")).toBe(false);
+    expect(fetchMock.mock.calls[0][1].headers.authorization).toBe("Bearer test-key");
+  });
+
+  it("supports the initially configured SearchAPI.io key alias", () => {
+    vi.stubEnv("SearchApi.io_API_KEY", "private-value");
+    const status = discoveryEnvironmentStatus();
+    expect(status.find((item) => item.providerId === "searchapi")?.configured).toBe(true);
+    expect(JSON.stringify(status)).not.toContain("private-value");
   });
 
   it("does not silently fall back when a provider key is missing", async () => {

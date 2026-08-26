@@ -4,7 +4,7 @@ export const DISCOVERY_PROVIDER_IDS = [
   "google-places",
   "exa",
   "brave",
-  "serpapi",
+  "searchapi",
 ] as const;
 
 export type DiscoveryProviderId = typeof DISCOVERY_PROVIDER_IDS[number];

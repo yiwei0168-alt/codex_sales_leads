@@ -23,9 +23,16 @@ export const DISCOVERY_PROVIDER_ENVIRONMENTS: DiscoveryProviderEnvironment[] = [
     defaultBaseUrl: "https://api.exa.ai", purpose: "Semantic company and professional-scenario discovery" },
   { id: "brave", apiKeyEnv: "BRAVE_SEARCH_API_KEY", baseUrlEnv: "BRAVE_SEARCH_BASE_URL",
     defaultBaseUrl: "https://api.search.brave.com/res/v1", purpose: "Independent-index long-tail web discovery" },
-  { id: "serpapi", apiKeyEnv: "SERPAPI_API_KEY", baseUrlEnv: "SERPAPI_BASE_URL",
-    defaultBaseUrl: "https://serpapi.com", purpose: "Google SERP and local-result discovery with explicit locale controls" },
+  { id: "searchapi", apiKeyEnv: "SEARCHAPI_API_KEY", baseUrlEnv: "SEARCHAPI_BASE_URL",
+    defaultBaseUrl: "https://www.searchapi.io/api/v1", purpose: "Google SERP and local-result discovery with explicit locale controls" },
 ];
+
+function apiKeyFor(config: DiscoveryProviderEnvironment): string | undefined {
+  const standardKey = process.env[config.apiKeyEnv]?.trim();
+  if (standardKey) return standardKey;
+  if (config.id === "searchapi") return process.env["SearchApi.io_API_KEY"]?.trim();
+  return undefined;
+}
 
 function environment(id: DiscoveryProviderId): DiscoveryProviderEnvironment {
   const found = DISCOVERY_PROVIDER_ENVIRONMENTS.find((item) => item.id === id);
@@ -35,7 +42,7 @@ function environment(id: DiscoveryProviderId): DiscoveryProviderEnvironment {
 
 function credentials(id: DiscoveryProviderId): { apiKey: string; baseUrl: string } {
   const config = environment(id);
-  const apiKey = process.env[config.apiKeyEnv]?.trim();
+  const apiKey = apiKeyFor(config);
   if (!apiKey) throw new Error(`${config.apiKeyEnv} is not configured`);
   return { apiKey, baseUrl: process.env[config.baseUrlEnv]?.trim() || config.defaultBaseUrl };
 }
@@ -214,8 +221,8 @@ class BraveDiscoveryProvider implements DiscoveryProvider {
   }
 }
 
-class SerpApiDiscoveryProvider implements DiscoveryProvider {
-  readonly id = "serpapi" as const;
+class SearchApiDiscoveryProvider implements DiscoveryProvider {
+  readonly id = "searchapi" as const;
   private readonly fetchImplementation: typeof fetch;
   private readonly timeoutMs: number;
   constructor(options: ProviderOptions = {}) {
@@ -225,13 +232,14 @@ class SerpApiDiscoveryProvider implements DiscoveryProvider {
   async search(query: DiscoveryQuery, signal?: AbortSignal): Promise<DiscoveryProviderResult> {
     const startedAt = Date.now();
     const { apiKey, baseUrl } = credentials(this.id);
-    const url = new URL(trustedEndpoint(baseUrl, ["serpapi.com"], "search.json"));
+    const url = new URL(trustedEndpoint(baseUrl, ["www.searchapi.io"], "search"));
     url.search = new URLSearchParams({ engine: "google", q: query.query, location: query.countryName,
-      gl: query.countryCode.toLowerCase(), hl: query.languageCode, num: String(boundedResults(query.maxResults)), api_key: apiKey }).toString();
+      gl: query.countryCode.toLowerCase(), hl: query.languageCode }).toString();
     const body = await requestJson<{ organic_results?: Array<{ title?: string; link?: string; snippet?: string; position?: number }> }>(
-      this.id, url.toString(), { headers: { accept: "application/json" } }, this.fetchImplementation, this.timeoutMs, signal,
+      this.id, url.toString(), { headers: { authorization: `Bearer ${apiKey}`, accept: "application/json" } },
+      this.fetchImplementation, this.timeoutMs, signal,
     );
-    const items = (body.organic_results ?? []).flatMap((entry, index) => entry.link ? [item(this.id, {
+    const items = (body.organic_results ?? []).slice(0, boundedResults(query.maxResults)).flatMap((entry, index) => entry.link ? [item(this.id, {
       title: entry.title ?? new URL(entry.link).hostname, url: entry.link,
       snippet: entry.snippet ?? "", sourceKind: "web",
     }, entry.position ? entry.position - 1 : index)] : []);
@@ -245,13 +253,13 @@ export function createDiscoveryProvider(id: DiscoveryProviderId, options: Provid
   if (id === "google-places") return new GooglePlacesDiscoveryProvider(options);
   if (id === "exa") return new ExaDiscoveryProvider(options);
   if (id === "brave") return new BraveDiscoveryProvider(options);
-  return new SerpApiDiscoveryProvider(options);
+  return new SearchApiDiscoveryProvider(options);
 }
 
 export function discoveryEnvironmentStatus() {
   return DISCOVERY_PROVIDER_ENVIRONMENTS.map((config) => ({
     providerId: config.id,
-    configured: Boolean(process.env[config.apiKeyEnv]?.trim()),
+    configured: Boolean(apiKeyFor(config)),
     apiKeyEnv: config.apiKeyEnv,
     baseUrl: process.env[config.baseUrlEnv]?.trim() || config.defaultBaseUrl,
     purpose: config.purpose,

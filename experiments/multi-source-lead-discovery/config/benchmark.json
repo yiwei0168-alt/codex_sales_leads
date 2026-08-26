@@ -5,7 +5,7 @@
   "countryCode": "DE",
   "countryName": "Germany",
   "languageCode": "de",
-  "providers": ["gemini", "tavily", "google-places", "exa", "brave", "serpapi"],
+  "providers": ["gemini", "tavily", "google-places", "exa", "brave", "searchapi"],
   "preflight": {
     "query": "WLAN Systemhaus Hotel Netzwerktechnik Deutschland",
     "maxResults": 3,
