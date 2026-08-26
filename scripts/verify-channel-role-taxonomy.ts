@@ -27,6 +27,8 @@ const verificationQueries = [
   "直接从品牌采购但主要服务最终客户的增值经销商属于 VAD 还是 VAR DVAR？",
   "VAR 是否必须同时属于 Reseller？",
   "Dealer 和 Retailer 什么时候可以同时标记？实体门店是否是 Dealer 必要条件？",
+  "纯产品转售但没有技术增值的公司能否属于 Reseller？",
+  "Retailer 和 E-tailer 是否默认同时标记 Reseller？",
 ];
 
 try {
@@ -60,6 +62,9 @@ try {
     "Dealer 与 Retailer 默认不重叠",
     "同时存在可验证的转售业务和线下零售店",
     "是否获得授权不作为 Dealer 的硬性准入条件",
+    "只进行标准化产品转售、能够验证实际交易身份的公司也可以成立 Reseller",
+    "Reseller 是 VAR 和 Dealer 的基础父角色",
+    "作为独立零售角色，默认不自动标记 Reseller",
   ];
   const missingText = requiredText.filter((fragment) => !stored.combined_content.includes(fragment));
 

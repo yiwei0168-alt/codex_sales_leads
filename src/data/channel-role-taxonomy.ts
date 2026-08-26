@@ -237,6 +237,65 @@ Dealer 属于 Downstream Channel，可以根据客户质量、区域影响力、
 
 没有检索到实体门店、仓库、授权证书或库存只能记录为 unknown，不能当作否定证据。如果只能确认公司销售产品，却不能判断其面向大众零售还是专业／关系型转售，应暂时保留 Reseller 或 Dealer／Retailer 待核验，并优先核实客户类型、销售方式、是否存在企业询价／批量业务及是否经营线下零售店。
 
+## Reseller（转售商）
+
+### 状态与规范名称
+
+- 状态：已由业务负责人确认。
+- 中文规范名称：转售商／经销商（泛称）。
+- 英文规范名称：Reseller。
+- 所属角色家族：resale。
+- channel layer：Downstream Channel。
+- 角色关系：Reseller 是 VAR 和 Dealer 的基础父角色；标记 VAR 或 Dealer 时必须同时标记 Reseller。
+
+### 完整定义
+
+Reseller 是以自身商业身份采购产品或取得产品转售权，再向最终企业、机构或其他客户转售，并通过进销差价或附带服务获得收入的下级渠道客户。Reseller 购买产品的目的不是自身消费，而是再次销售；它通常以自身名义报价、销售、开票或承担客户交易责任。
+
+Reseller 是基础转售角色，不要求具有 VAR 级别的技术或解决方案增值能力，也不要求实体门店、公开库存或品牌正式授权。只进行标准化产品转售、能够验证实际交易身份的公司也可以成立 Reseller。
+
+### 必要判断条件
+
+在公开证据足够的情况下，Reseller 至少需要满足：
+
+1. 公司购买产品或取得合法转售权，目的是再次销售而不是自身使用；
+2. 公司是交易中的实际卖方，以自身名义参与报价、订单、合同、开票、收款、履约或客户责任；
+3. 主要销售对象是最终客户，而不是系统性地向大量下级渠道伙伴供货；
+4. 商业收入来自产品差价或附带服务，而不是只介绍客户并获得佣金。
+
+### 强证据与辅助证据
+
+强证据包括：品牌方、Distributor／VAD 或行业组织的官方 reseller 名录；候选公司官网明确自述 reseller／IT reseller／authorized reseller；面向企业客户的报价、订单、开票、批量采购、贸易账户或销售条款；可验证的最终客户产品销售案例。
+
+辅助证据包括：产品目录、品牌组合、询价表单、企业客户页面、采购或售后条款、客户经理、当地商业目录及公司自述。只有购物链接、品牌 Logo 或第三方目录收录不足以单独证明公司承担实际转售交易。
+
+### 授权、库存与履约方式
+
+“Authorized Reseller”描述授权状态，不是独立角色。只有品牌方、授权上游或可验证的正式伙伴资料能够确认授权；公司自述但缺少独立证据时应标记为待核验。
+
+实体仓库、公开库存和自有配送不是 Reseller 的必要条件。采用 dropshipping、第三方履约或按单采购的公司，只要仍是客户交易中的实际卖方或 merchant of record，并承担报价、收款或客户责任，仍可分类为 Reseller。未披露库存和供应方式只能记录为 unknown。
+
+### 与子类型及相邻角色的关系
+
+- VAR：VAR 是提供实质性技术、服务或解决方案增值的 Reseller；标记 VAR 时必须同时标记 Reseller。
+- Dealer：Dealer 是具有本地、区域、品牌专营、品类专业或关系型经销特征的 Reseller；标记 Dealer 时必须同时标记 Reseller。
+- Retailer／E-tailer：作为独立零售角色，默认不自动标记 Reseller。只有同一公司另有明确的 B2B 转售、企业询价、批量报价或专业渠道业务时才允许重叠。
+- Distributor／VAD：系统性地向大量下级渠道伙伴供货、组织间接渠道的一级渠道属于 Distributor／VAD；普通 Reseller 主要服务最终客户。
+- Commission Agent：只介绍客户，由品牌方、运营商或其他供应商签约开票并按佣金获得报酬的主体不是 Reseller。
+- Marketplace／目录站／比价站：仅提供第三方挂牌、流量或信息聚合且不承担实际卖方责任的主体不是 Reseller。
+
+### 子类型未知时的使用规则
+
+如果能够确认候选公司采购后向最终客户转售，但公开证据不足以判断其是否为 VAR、Dealer、Retailer 或 E-tailer，可以暂时只标记 Reseller。后续找到技术增值、本地经销、线下零售或线上零售证据后，再增加或调整具体角色，不能为了填满子类型而强行推断。
+
+### 商业价值等级
+
+Reseller 属于 Downstream Channel，可以根据客户质量、采购潜力、覆盖能力、产品相关性、增长性和合作价值评为 KA、Priority、Standard 或 Long-tail。纯产品转售不妨碍成为 KA，但技术增值、行业专长和客户关系可作为提高商业价值的证据。
+
+### 信息缺失与置信度
+
+缺少公开采购来源、库存或正式授权不构成否定证据；但系统必须确认候选公司确实承担转售交易。若只能确认其推广产品，却不能确认谁报价、签约、开票或收款，应保留 Reseller candidate／待核验，并优先核实 merchant of record、供应来源、客户对象及收入方式。
+
 # 参考依据
 
 以下资料用于支撑行业通用边界；本文件中的产品操作规则以业务负责人确认口径为最终准则。
@@ -252,6 +311,8 @@ Dealer 属于 Downstream Channel，可以根据客户质量、区域影响力、
 - TD SYNNEX，Connectivity partner models（VAR／Agent）：https://www.tdsynnex.com/na/us/connectivity/
 - Hikvision，Dealer Partner Program and channel partner types：https://pro-av.hikvision.com/sg/about-us/company-profile/
 - Hikvision Canada，Channel Partner Program：https://pro-av.hikvision.com/ca-en/Partners/
+- U.S. Department of Veterans Affairs，Information for Resellers：https://www.va.gov/oal/business/fss/acronyms.asp
+- HP，DesignJet specialist reseller transaction path：https://h41201.www4.hp.com/WMCF.Web/Dispatcher.aspx?action=terms&country=uk&language=en&ocugid=11535&program=11549&simdate=2026-01-31&wacp=20251214
 - UK Department for Business and Trade，When to use an agent or distributor：https://www.business.gov.uk/export-from-uk/learn/categories/prepare-sell-new-country/routes-to-market/when-use-agent-or-distributor/
 - UK HMRC，INTM441080 Agents and distributors：https://www.gov.uk/hmrc-internal-manuals/international-manual/intm441080
 - European Commission，Working paper on distributors that also act as agents：https://competition-policy.ec.europa.eu/document/download/a2a40192-9491-450d-8878-e7d1a17ce732_en
@@ -268,9 +329,9 @@ export const CHANNEL_ROLE_TAXONOMY_DOCUMENT = {
   capturedAt: "2026-08-26T00:00:00+08:00",
   metadata: {
     topic: "channel-role-taxonomy",
-    policyVersion: "2026-08-26.4",
-    confirmedRoles: ["Distributor", "VAD", "VAR", "Dealer"],
-    pendingRoles: ["Reseller", "Retailer", "E-tailer", "SI", "Installer", "MSP", "ISP", "Commission Agent"],
+    policyVersion: "2026-08-26.5",
+    confirmedRoles: ["Distributor", "VAD", "VAR", "Dealer", "Reseller"],
+    pendingRoles: ["Retailer", "E-tailer", "SI", "Installer", "MSP", "ISP", "Commission Agent"],
     userConfirmed: true,
     temporalReviewRequired: false,
   },
