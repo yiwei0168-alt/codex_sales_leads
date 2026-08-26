@@ -1,0 +1,357 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-08-26-de-v1",
+  "systemId": "product-tavily",
+  "mode": "product-with-discovery-only-provider",
+  "providerId": "tavily",
+  "channelId": "tier1-distribution",
+  "queryOutputs": [
+    {
+      "queryIndex": 0,
+      "rawSha256": "815e4c529ed46b4c6f8fd3052899041966d3ef5b0bff4241f3170638f8bba501",
+      "attempts": 1,
+      "result": {
+        "providerId": "tavily",
+        "query": {
+          "query": "IT Netzwerk Distributor Deutschland WLAN Router Switch B2B Fachhändler",
+          "countryCode": "DE",
+          "countryName": "Germany",
+          "languageCode": "de",
+          "maxResults": 10
+        },
+        "items": [
+          {
+            "providerId": "tavily",
+            "rank": 1,
+            "title": "Netzwerk-Switch Großhandel B2B Gruppe 2800051 - whoffice.de",
+            "url": "https://www.whoffice.de/gruppe,whoffice,ru,seite.4/produkte,2800000,2800051,Netwerk-switch?pSprache=de",
+            "snippet": "Effiziente Switches der Marken NETGEAR, TP-LINK, ZyXEL, D-Link und Ubiquiti für Fachhändler und B2B Partner. Bestellen Sie jetzt online!",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 2,
+            "title": "Switche & Router | OMG.DE GmbH",
+            "url": "https://www.omg.de/netzwerk/switche-router",
+            "snippet": "Das Rückgrat jedes zuverlässigen Netzwerks ist kabelgebunden. Wo WLAN an seine Grenzen stößt – bei hohen Bandbreiten, geringer Latenz oder kritischen Verbindungen – übernimmt die strukturierte Verkabelung mit professionellen Switches und Routern. Bei OMG.DE finden Sie eine sorgfältig zusammengestellte Auswahl an Netzwerk-Switches und Business-Routern führender Hersteller wie Ubiquiti (UniFi), MikroTik, Teltonika, DrayTek und Zyxel – für strukturierte LAN-Infrastrukturen vom Kleinbüro bis zum Rechenzentrum. ## Switches – das Herzstück des kabelgebundenen Netzwerks [...] 113,30 € \\ \\ inkl. ges. MwSt. zzgl. Versandkosten Netto 95,21 EUR MikroTik Cloud Router Switch - CRS326-24G-2S+RM Lagerware - sofort verfügbar 169,11 € \\ \\ inkl. ges. MwSt. zzgl. Versandkosten Netto 142,11 EUR MikroTik hAP ac2 – WLAN Router Lagerware - sofort verfügbar 62,48 € \\ \\ inkl. ges. MwSt. zzgl. Versandkosten Netto 52,50 EUR MikroTik hAP ac lite - RB952Ui-5ac2nD Lagerware - sofort verfügbar 59,29 € \\ \\ inkl. ges. MwSt. zzgl. Versandkosten Netto 49,82 EUR MikroTik hAP - RB951Ui-2nD Lagerware - sofort verfügbar 35,72 € \\ \\ inkl. ges. MwSt. zzgl. Versandkosten Netto 30,02 EUR MikroTik Cloud Router Switch - CRS112-8P-4S-IN Lagerware - sofort verfügbar 169,86 € \\ \\ inkl. ges. MwSt. zzgl. Versandkosten [...] Zyxel Networks Zyxel bietet eine breite Palette an Switches und Routern für den Business-Bereich – von einfachen Unmanaged Switches bis zu vollständig verwaltbaren Layer-3-Switches mit Cloud-Management. Besonders im KMU- und Bildungsbereich sind Zyxel-Geräte für ihre Zuverlässigkeit und einfache Handhabung geschätzt. ## Switch oder Router – was brauche ich zuerst? In jedem Netzwerk kommt zuerst der Router: Er stellt die Verbindung ins Internet her und vergibt IP-Adressen. Der Switch erweitert das Netzwerk um zusätzliche kabelgebundene Anschlüsse. Viele Router haben bereits einen integrierten Switch mit wenigen Ports – wer mehr Geräte anschließen möchte, schließt einen separaten Switch an und erweitert so die Kapazität beliebig.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 3,
+            "title": "Globaler IT-Distributor aus einer Hand für Unternehmen",
+            "url": "https://www.router-switch.com/de",
+            "snippet": "Router-Switch.com bietet seit 2002 preisgünstige Netzwerkausrüstung und IKT-Lösungen von Cisco, Huawei und HPE mit Expertensupport und weltweitem Versand.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 4,
+            "title": "it-switch | B2B-Unternehmen und Lieferanten | wlw.de (Seite 4)",
+            "url": "https://www.wlw.de/de/suche/it-switch/page/4",
+            "snippet": "236 Unternehmen und Lieferanten für it-switch. B2B Marktplatz ・ entwickelt und produziert in Deutschland und vertreibt weltweit ・ technik (Switches, Router,",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 5,
+            "title": "Switches fuer Netzwerke – B2B-Lieferanten - Wer liefert was – wlw",
+            "url": "https://www.wlw.de/de/suche/switches-fuer-netzwerke",
+            "snippet": "Switches fuer Netzwerke – Direkt von Lieferanten beziehen · Deutschland Pericom AG · Hilscher Gesellschaft für Systemautomation mbH · Hopf Vertriebsgesellschaft.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 6,
+            "title": "ALLNET GmbH -ALLNET Produktwelt",
+            "url": "https://www.allnet.de/de/allnet-brand",
+            "snippet": "WLAN Wireless Controller & AP Wireless Router Access Points & Bridges. Hier finden zertifizierte Fachhändler, Online Shops und Distributoren. innovative IT-",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 7,
+            "title": "Rangliste der IT-Distributoren: Die Top 30 in Deutschland | ChannelPartner",
+            "url": "https://www.channelpartner.de/article/3888091/die-top-30-in-deutschland.html",
+            "snippet": "Platz 25: Exclusive Networks Platz 25: Exclusive Networks Foto: Exclusive Networks Unternehmen: Exclusive Networks Deutschland GmbH Schwerpunkt: Netzwerke Umsatz: 63,3 Mio. Euro (2013) Sitz: Münster Platz 24: Fröhlich + Walter Platz 24: Fröhlich + Walter Foto: Fröhlich + Walter Unternehmen: Fröhlich + Walter GmbH Schwerpunkt: Netzwerke Umsatz: 70 Mio. Euro (2014; Schätzung) Sitz: Saarbrücken Platz 23: Infinigate Platz 23: Infinigate Foto: Infinigate Unternehmen: Infinigate Deutschland GmbH Schwerpunkt: Security Umsatz: 128 Mio. Euro (2014) Sitz: Oberhaching Platz 22: Michael Telecom Platz 22: Michael Telecom Foto: Michael Telecom [...] Platz 22: Michael Telecom Foto: Michael Telecom Unternehmen: Michael Telecom AG Schwerpunkt: Telekommunikation Umsatz: 130 Mio. Euro (2014; Schätzung) Sitz: Bohmte Bei den Channel Excellence Awards 2015 in der Kategorie “TK-Distribution” auf Platz 3 gelandet (“Preferred Distributor”). Platz 20: Bluechip Platz 20: Bluechip Foto: Bluechip Unternehmen: Bluechip Computer AG Schwerpunkt: Peripherie Umsatz: 160 Mio. Euro (2014; inkl. Assemblierung) Sitz: Meuselwitz Bei den Channel Excellence Awards 2015 in der Kategorie “Spezial-Distribution” auf Platz 3 gelandet (“Preferred Distributor”). Platz 19: ComLine Platz 19: ComLine Foto: ComLine Unternehmen: ComLine GmbH Schwerpunkt: Apple-Produkte Umsatz: 172 Mio. Euro (2014) Sitz: Flensburg Platz 18: ENO Platz 18: ENO Foto: ENO Telecom [...] Platz 28: Littlebit Platz 28: Littlebit Foto: Littlebit Unternehmen: Littlebit Technology Deutschland GmbH Schwerpunkt: Storage Umsatz: 56,7 Mio. Euro (2013) Sitz: Altenstadt Platz 27: Allnet Platz 27: Allnet Foto: Allnet Unternehmen: Allnet GmbH Computersysteme Schwerpunkt: Netzwerke Umsatz: 58 Mio. Euro (2013) Sitz: Germering Bei den Channel Excellence Awards 2015 in der Kategorie “Spezial-Distribution” auf Platz 17 gelandet (“Preferred Distributor”). Platz 26: Action Europe Platz 26: Action Europe Foto: Action Europe Unternehmen: Action Europe GmbH Schwerpunkt: Komplettsysteme Umsatz: 60 Mio. Euro (2013) Sitz: Braunschweig Bei den Channel Excellence Awards 2015 in der Kategorie “Spezial-Distribution” auf Platz 9 gelandet (“Preferred Distributor”).",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 8,
+            "title": "Top IT-Spezialdistributor Deutschland – bytec – Alle Fakten",
+            "url": "https://www.bytec.de/top-it-distributor-deutschland-fakten",
+            "snippet": "bytec hat sich als einer der führenden IT-Distributoren für IT-Infrastruktur und Datacenter-Technologien im B2B-Reseller-Bereich etabliert und konkurriert erfolgreich mit anderen großen Akteuren. Das IT-Spezialdistributionsunternehmen unterstützt Systemhäuser bei der Vermarktung komplexer Infrastrukturlösungen und zeichnet sich besonders durch eine ganzheitliche Projektbetreuung von der Planung bis zur Umsetzung aus, kombiniert mit hochwertigen Serviceleistungen. Dabei setzt bytec sowohl auf maßgeschneiderte Lösungen für Datacenter und IT-Infrastruktur als auch auf leistungsstarke Standardprodukte – und bietet so die perfekte Balance zwischen Flexibilität und Effizienz. bytec setzt Maßstäbe in der IT-Distribution, indem es passgenaue Lösungen liefert, die den Mittelstand gezielt stärken [...] ### bytec – Vorreiter in der IT-Distribution mit innovativen Lösungen und Marktkompetenz bytec hat sich in der IT-Distribution als Vorreiter und Innovationstreiber etabliert. Das Unternehmen zeichnet sich durch eine Kombination aus breiter Angebotspalette und tiefgehendem technischem Know-how aus, was als klarer Wettbewerbsvorteil gilt. Im Reseller-Umfeld wird bytec daher nicht nur als klassischer Distributor, sondern vor allem als Lösungspartner und Innovationstreiber geschätzt, der Fachhändlern und Systemhäusern kontinuierlich neue Geschäftsideen liefert, um neue Markt- und Kundensegmente zu erschließen. [...] Lösungen liefert, die den Mittelstand gezielt stärken und voranbringen.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 9,
+            "title": "Intellinet Deutschland: Intellinet Network Solutions Deutschland",
+            "url": "https://intellinetnetwork.de/",
+            "snippet": "Die umfassende Netzwerklösung - Switche - PoE - Netzwerkkarten - Schränke - Netzwerkkabel - Verbinder - Patch Panels- SFP - Medienkonverter - WLAN/WiFi und",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 10,
+            "title": "Netzwerk | JACOB Elektronik | Competence Center",
+            "url": "https://www.jacob.de/netzwerk",
+            "snippet": "Bei JACOB findest du das vollständige Portfolio aus Switches, WLAN-Lösungen, Cybersecurity und Transceivern in einem einzigen Sortiment, mit tiefen",
+            "sourceKind": "web"
+          }
+        ],
+        "sourceUrls": [
+          "https://www.whoffice.de/gruppe,whoffice,ru,seite.4/produkte,2800000,2800051,Netwerk-switch?pSprache=de",
+          "https://www.omg.de/netzwerk/switche-router",
+          "https://www.router-switch.com/de",
+          "https://www.wlw.de/de/suche/it-switch/page/4",
+          "https://www.wlw.de/de/suche/switches-fuer-netzwerke",
+          "https://www.allnet.de/de/allnet-brand",
+          "https://www.channelpartner.de/article/3888091/die-top-30-in-deutschland.html",
+          "https://www.bytec.de/top-it-distributor-deutschland-fakten",
+          "https://intellinetnetwork.de/",
+          "https://www.jacob.de/netzwerk"
+        ],
+        "requestCount": 1,
+        "latencyMs": 2370,
+        "usage": {
+          "credits": 2
+        }
+      }
+    },
+    {
+      "queryIndex": 1,
+      "rawSha256": "1dcaf0f2797275bce500c069c68c452bb8dc2683fe98f336f69294047eaee629",
+      "attempts": 1,
+      "result": {
+        "providerId": "tavily",
+        "query": {
+          "query": "Value Added Distributor Netzwerktechnik Deutschland WLAN LAN Partner",
+          "countryCode": "DE",
+          "countryName": "Germany",
+          "languageCode": "de",
+          "maxResults": 10
+        },
+        "items": [
+          {
+            "providerId": "tavily",
+            "rank": 1,
+            "title": "4Networks IT-Distribution – Netzwerk, Security & WLAN",
+            "url": "https://www.4networks.de/",
+            "snippet": "Vertrauen Sie auf unsere Erfahrung und unsere starke Partnerschaft, um Ihre Geschäftsziele erfolgreich zu erreichen. Als Value Add Distributor stehen wir Ihnen nicht nur mit Produkten zur Seite, sondern bieten auch einen echten Mehrwert durch individuelle Beratung und Lösungen. Thilko Cullmann Thilko Cullmann CEO & Founder Tel.: [redacted-phone] [redacted-email] Bernd Eisenhauer Bernd Eisenhauer Head of Sales Tel.: [redacted-phone] [redacted-email] Jamal Mehdi Jamal Mehdi Sales Engineer Tel.: [redacted-phone] [redacted-email] Andreas Galke Andreas Galke Sales Manager Tel.: [redacted-phone] [redacted-email] Unsere Herstellerpartner [...] Ihr zuverlässiger Partner in der IT-Distribution Wir sind ein führender Value Add Distributor, der sich durch Kundennähe, Zuverlässigkeit und Schnelligkeit auszeichnet. Mit langjähriger Erfahrung in der Branche bieten wir maßgeschneiderte Lösungen, die den spezifischen Bedürfnissen unserer Partner gerecht werden. Unser Fokus liegt auf einer engen Zusammenarbeit mit unseren Kunden, um optimale Mehrwerte zu schaffen und deren Geschäftserfolg zu fördern. Dank unserer umfassenden Expertise und einem zuverlässigen Netzwerk sind wir in der Lage, Produkte und Dienstleistungen schnell und effizient zu liefern. So können unsere Kunden stets auf einen schnellen Service und eine problemlose Umsetzung zählen. [...] WLAN ## WLAN Verbinden Sie sich mit der Zukunft In einer Welt, die immer vernetzter wird, sind leistungsstarke Wireless-Lösungen unverzichtbar. Als IT-Distributor bieten wir Ihnen Zugang zu führenden Herstellern und innovativen Technologien im Bereich Wireless. Unser Portfolio umfasst modernste Produkte für drahtlose Netzwerke, die höchste Geschwindigkeit, Zuverlässigkeit und Sicherheit garantieren. Ob für Unternehmen, die eine nahtlose Vernetzung ihrer Standorte benötigen, oder für Privatanwender, die maximale Flexibilität suchen – wir liefern die passenden Lösungen. Unsere Partnerschaften mit renommierten Marken ermöglichen es uns, Ihnen stets die neuesten Entwicklungen und zukunftsweisenden Technologien anzubieten.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 2,
+            "title": "Value-Add-Distributor Sysob gibt WLAN-Hersteller Meru Anschubhilfe",
+            "url": "https://www.heise.de/hintergrund/Value-Add-Distributor-Sysob-gibt-WLAN-Hersteller-Meru-Anschubhilfe-1187065.html",
+            "snippet": "Mit Hilfe von Sysob will der Wireless-LAN-Spezialist Meru in Deutschland Fuß fassen. Das Servicekonzept des VAD soll auch kleineren",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 3,
+            "title": "TP-Link gibt Allnet als neuen Value Added Distributor bekannt",
+            "url": "https://www.tp-link.com/de/press/news/20014",
+            "snippet": "Zurück For Home For Business Deutschland / Deutsch # TP-Link gibt Allnet als neuen Value Added Distributor bekannt TP-Link, Spezialist für Smart-Home- und Netzwerkinfrastruktur-Lösungen, gibt die Zusammenarbeit mit Distributor Allnet bekannt. Das in Germering ansässige Unternehmen konzentriert sich dabei auf ein umfassendes Produktportfolio zukunftsorientierter Netzwerk-, Überwachungs- und Kommunikationslösungen. Seit dem [redacted-phone] vertreibt Allnet das TP-Link Enterprise-Portfolio in Deutschland als Value Added Distributor (VAD). Dazu stellt Allnet speziell geschulte Vertriebs- und Technikressourcen bereit und ist somit der ideale Ansprechpartner für Systemhäuser. Dank seiner Expertise kann der Distributor so selbst beratungsintensive Netzwerk-Infrastruktur-Projekte begleiten. [...] Zubehör für Saugroboter Video-Türklingel Smart Switches WLAN-Steckdosen Glühbirne & LED-Streifen Smart Sensors Smartes Thermostat Smart Hub Tapo Store Matter Smart Actions 2.0 Geschäftskunden Zurück Omada Was ist Omada? Fusion Gateways WiFi Switches Gateways Controller Zubehör Alle Omada Produkte VIGI Was ist VIGI? Kameras Videorekorder Solar Power System Zubehör Software Service Alle Produkte Omada Pro Businessanwender Case Studies Konfigurationsguide Netzwerkberater Kaufen Angebote Support Zurück All Support Downloads Häufig gestellte Fragen Support-Forum Kontakt mit dem Technischen Support Kompatibilitäts-listen TP-Link-Emulatoren GPL-Code-Center Garantie Partner Community Zurück For Home For Business Deutschland / Deutsch [...] Wi-Fi 5 Mesh Outdoor Mesh Deckenmontage Mesh 5G/4G Mesh Alle Deco Internet-Router DSL-Router 5G/4G-Router TP-LinkBox Mobiler WLAN-Router 5G Mobiler WLAN Router 4G Mobiler WLAN Router Router ohne DSL Wi-Fi 7 Router Wi-Fi 6 Router Mobile Reise-Router Gaming Router Alle Router Netzwerkerweiterung WLAN Verstärker Powerline-Adapter Desktop Access Point Netzwerk-Switches Unmanaged Switches PoE Switches Easy Smart Switches Netzwerkadapter WLAN Stick Bluetooth USB Adapters PCIe Adapters Zubehör USB-Hub LAN Splitter Home-Office-Netzwerk Festa-Netzwerklösung Wi-Fi 7 Wi-Fi 6 Deco Mesh Homeshield OneMesh EasyMesh VPN Einrichtungsvideos Smart-Home Zurück Überwachungskamera Saugroboter Saugroboter Zubehör für Saugroboter Video-Türklingel Smart Switches",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 4,
+            "title": "Einkaufsquellen für Reseller – Teil 4: Value Added Distributoren | ChannelPartner",
+            "url": "https://www.channelpartner.de/article/3903078/einkaufsquellen-fuer-reseller-value-add-distribution.html",
+            "snippet": "| | | --- | | Sysob IT-Distribution GmbH & Co. KG | | | Adresse | Kirchplatz 1 93489 Schorndorf | | URL | www.sysob.com | | E-Mail | (/cdn-cgi/l/email-protection#2a4b486a[redacted-phone]) | | Telefon | [redacted-phone] | | Tätigkeits-, Produkt- und Lösungsschwerpunkte | IT-Security-, WLAN- und SBC-Produkte, Service- u. Support-Konzepte, technische Unterstützung bei Installationen und Projekten vor Ort | [...] Daher finden sich in der Kategorie “Value Add Distribution” vor allem Grossisten, die sich auf komplexe IT-Infrastrukturen, Security, Cloud Services und Angebote für Managed Service Provider spezialisiert haben. ## Value Add Distributoren | | | --- | | 3KV GmbH | | | Adresse | Fürstenrieder Str. [redacted-phone] München | | URL | www.3KV.de | | E-Mail | (/cdn-cgi/l/email-protection#98eefdeaeceaf1fdfad8abd3ceb6fcfd) | | Telefon | [redacted-phone] | | Tätigkeits-, Produkt- und Lösungsschwerpunkte | Aktive- und passive Infrastruktur (Verkabelungssysteme und Netzwerklösungen für Gebäude und Rechenzentren), SD-WAN | [...] | | | --- | | Teamtrade IT GmbH | | | Adresse | Molkereistr. 45 47589 Uedem | | URL | teamtrade-it.de | | E-Mail | (/cdn-cgi/l/email-protection#a8c1c6cec7e8dccdc9c5dcdac9cccd86cccd) | | Telefon | [redacted-phone] | | Tätigkeits-, Produkt- und Lösungsschwerpunkte | VAD mit Fokus auf Netzwerkinfrastruktur: TP-Link Omada Distribution, Enablement, Co-Marketing, MSP-Modelle und Programme für IT-Partner |",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 5,
+            "title": "Lieferantenkonten Archive - ITscope Guide",
+            "url": "https://guide.itscope.com/kbtopic/lieferantenkonten",
+            "snippet": "1 Artikel ### etree etree GmbH ist Systemhaus und Value-Added Distributor im SMB-Bereich der ITK-Branche. 1 Artikel ### everIT | directdeal.me Distributor für Software, Infrastruktur und Cloud-Services 1 Artikel ### exertis Connect Die exertis Connect GmbH ist Spezialist für Kabel-und Netzwerktechnik sowie Distributor für mehr als 10.000 Komponenten- und Peripherieprodukte in Europa. 1 Artikel ### Exertis Pro AV Die Exertis Pro AV ist Distributor und Partner für AV-Medientechnik in Europa, mit dem Schwerpunkt auf den Bereich Computer und Netzwerk. 1 Artikel ### EXTRA Computer / exone exone entwickelt, produziert und liefert seit über 30 Jahren PC, Server und IT für Unternehmen in Deutschland 1 Artikel ### FEGA & Schmitt Elektrogroßhandel [...] 1 Artikel ### SOS Software Service Die SOS Software Service GmbH ist ein Distributor spezialisiert auf Software, Softwarebeschaffung und Lizenzberatung. 1 Artikel ### Supplies24 Führender Lieferant im Bereich Tinten & Toner auf dem europäischen Markt 1 Artikel ### SYNAXON Deutschland / Österreich Die SYNAXON ist ein Value Added Distributor mit einer großen Anzahl an Produkten, Herstellern und Partnern. 1 Artikel ### sysob Die sysob IT-Distribution GmbH & Co. KG ist ein Value Added Distributor aus den Bereichen Telekommunikation, Netzwerk und Security. 1 Artikel ### Systeam Deutschland Die SYSTEAM GmbH ist ein Distributor für den ITK Hard- und Softwarebereich. 1 Artikel ### Systeam Österreich Die SYSTEAM GmbH ist ein Distributor für den ITK Hard- und Softwarebereich. [...] 1 Artikel ### Herweck Die Herweck AG ist Systemhaus und Distributor mit Schwerpunkt im Telekommunikationsbereich. 1 Artikel ### ICO Innovative Computer Distributor von Computer- und Kommunikations-Komponenten im Server-, Storage- und Industriebereich. 1 Artikel ### imcopex Die imcopex GmbH ist Großhändler und Distributor für IT-Hardware, Office Supplies und Consumer Electronics. 1 Artikel ### Infinigate Deutschland Die Infinigate Deutschland GmbH ist ein Value-Added Distributor mit Schwerpunkt in den Bereichen Netzwerk, Security und Software. 1 Artikel ### Ingram Micro Deutschland Die Ingram Micro Distribution GmbH ist einer der Top Broadline Distributoren in Deutschland. 1 Artikel ### Ingram Micro Österreich",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 6,
+            "title": "Value Added Distribution - m2m Germany",
+            "url": "https://www.m2mgermany.de/value-added-distribution",
+            "snippet": "Es sind keine Floskeln, wenn wir davon sprechen, dass wir Ihnen nicht nur einzelne Komponenten liefern, sondern dass wir Sie begleiten von der ersten Idee über die gesamte Wertschöpfungskette bis zum fertigen Produkt. Dabei übernehmen wir beispielsweise auch ein Design Review Ihres eigenen Layouts, entwickeln mit Ihnen einen Prototypen und die entsprechende Firmware oder übernehmen die Micro-Controller-Programmierung sowie die Programmierung von etwaigen Cloud-Konnektoren. Wir unterstützen Sie auch aktiv beim Thema Zertifizierung und sprechen auf Wunsch Empfehlungen zu geeigneten Providern, Cloudanbietern oder sonstigem aus. Unser gelebtes Know-how macht uns zu einem zuverlässigen und kompetenten Partner, ganz im Sinne von: „we make your business wireless“. [...] Sie sind auf der Suche nach einer passenden Lösung oder brauchen einen Partner, der an Ihrer Seite ist? Dann rufen Sie uns an unter: [redacted-phone] oder nehmen via Mail Kontakt mit uns auf. Kontaktieren Sie uns m2m Germany GmbH StandortAm Kappengraben 18 D-61273 Wehrheim Kontakt Tel. [redacted-phone] Fax. [redacted-phone] E-Mail [redacted-email] Folgen Sie uns © 2026 m2m Germany GmbH [...] Darüber hinaus bietet ein guter Distributor eine umfassende Beratung und Unterstützung sowohl bei der Produktauswahl als auch beim geeigneten Zubehör an. In der Regel offeriert er dazu einen 1st-Level-Support für seine angebotenen Produkte. Ein Distributor verfasst entsprechende End-of-Life-Regelungen, kündigt diese an und bevorratet sich mit EOL-Ware, um etwaigen Kundenwünschen gerecht zu werden. Ebenso stellt der Distributor eine Konformität der Produkte sicher, um geforderten Langzeitlieferanten Statuten zu entsprechen. ## „Value Added“ umfasst mehr als gedacht",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 7,
+            "title": "sysob IT-Distribution - Security, Wireless LAN und Serverbased ...",
+            "url": "https://www.sysob.com/",
+            "snippet": "sysob – Ihr Distributor für Security, Wireless LAN und Serverbased Computing. Wir sind seit 20 Jahren Ihr VAD mit innovativen Lösungen für den Fachhandel.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 8,
+            "title": "Zusammenarbeit mit ALE und sysob - Alcatel-Lucent Enterprise",
+            "url": "https://www.al-enterprise.com/de-de/unternehmen/neuigkeiten/zusammenarbeit-mit-ale-und-sysob",
+            "snippet": "Alcatel-Lucent Enterprise und der renommierte Value Added Distributor für IT-Sicherheit sysob sind neue Vertragspartner. ... LAN und WLAN Produkte",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 9,
+            "title": "Netzwerk | Johansen Network Solutions",
+            "url": "https://jns-gmbh.de/netzwerk",
+            "snippet": "LANCOM-Partner in Deutschland. Ein Spezialbereich von Johansen Network Solutions sind die besonderen Anforderungen und Möglichkeiten der Wireless-LAN Technik.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 10,
+            "title": "Bezugsquellen | TP-Link Deutschland",
+            "url": "https://www.tp-link.com/de/where-to-buy",
+            "snippet": "Value Added Distributoren Distributoren Solution Partner Online Shops … ortmund Adresse:Bornstraße 281 Stufe:Qualified",
+            "sourceKind": "web"
+          }
+        ],
+        "sourceUrls": [
+          "https://www.4networks.de/",
+          "https://www.heise.de/hintergrund/Value-Add-Distributor-Sysob-gibt-WLAN-Hersteller-Meru-Anschubhilfe-1187065.html",
+          "https://www.tp-link.com/de/press/news/20014",
+          "https://www.channelpartner.de/article/3903078/einkaufsquellen-fuer-reseller-value-add-distribution.html",
+          "https://guide.itscope.com/kbtopic/lieferantenkonten",
+          "https://www.m2mgermany.de/value-added-distribution",
+          "https://www.sysob.com/",
+          "https://www.al-enterprise.com/de-de/unternehmen/neuigkeiten/zusammenarbeit-mit-ale-und-sysob",
+          "https://jns-gmbh.de/netzwerk",
+          "https://www.tp-link.com/de/where-to-buy"
+        ],
+        "requestCount": 1,
+        "latencyMs": 4069,
+        "usage": {
+          "credits": 2
+        }
+      }
+    },
+    {
+      "queryIndex": 2,
+      "rawSha256": "40deb7619fef9d3017d95198b8cae91e500653dce556f79be23dd4aa1fb8aec2",
+      "attempts": 1,
+      "result": {
+        "providerId": "tavily",
+        "query": {
+          "query": "networking hardware distributor Germany reseller partners wireless switches",
+          "countryCode": "DE",
+          "countryName": "Germany",
+          "languageCode": "de",
+          "maxResults": 10
+        },
+        "items": [
+          {
+            "providerId": "tavily",
+            "rank": 1,
+            "title": "Enterprise networking & wireless | Nomios Germany",
+            "url": "https://www.nomios.de/en/network/enterprise-networking-wireless",
+            "snippet": "### Elite Plus Partner ### Juniper Networks Cisco Partner/ Reseller ### Select Partner ### Cisco Fortinet Partner/ Reseller ### Advanced Partner ### Fortinet Huawei Enterprise Partner/ Reseller ### Gold Partner ### Huawei Enterprise HPE Partner/ Reseller ### Certified Partner ### HPE ## Get in touch with our network experts Our team is available for a quick call or video meeting. Let's connect and discuss your network challenges, dive into vendor comparison reports, or talk about your upcoming IT-projects. We are here to help. Placeholder for Portrait of engineer beard wearing polo Portrait of engineer beard wearing polo ## Latest news and blog posts Placeholder for Two men cyber incident hotline Two men cyber incident hotline MSSP [...] “We have been very pleased working with Nomios Germany. When they initiated the project, Nomios Germany assisted us from A to Z for the setup, implementation and connection with the existing network. Because we wanted to make a segmentation on the network for the Wi-Fi solution, we could depend on Nomios Germany’ assistance to do so.” says De Smedt. Thanks to the expertise and ease of contact with Nomios Germany, we were quickly able to plan updates of all the access points and perform firmware updates when desired. This increases our flexibility on the work floor and saves us valuable time. Placeholder for Lined tanks Lined tanks Placeholder for Lined tanks Lined tanks ## Our technology ecosystem Juniper Networks Partner/ Reseller ### Elite Plus Partner ### Juniper Networks [...] The network for the next decade is revolutionising enterprise networks with AI-driven automation, actionable insights, and the agility plus elasticity of a microservices cloud. It applies artificial intelligence and data science tools to deliver optimised experiences and simplified network operations. Traditional wired and wireless LAN solutions are built on antiquated architectures that lack the scale, reliability and agility needed to address today’s diverse enterprise needs. We offer wired and wireless access solutions including switches, access points, and cloud services. Leveraging these solutions, IT teams can streamline operations and simplify user and device troubleshooting, while delivering innovative and strategic projects with IoT and location services. ## Related insights",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 2,
+            "title": "Distributors & Resellers | CHERRY's distribution network - Cherry",
+            "url": "https://www.cherry.de/en-gb/distributors-resellers",
+            "snippet": "# Distributors & Reseller Our worldwide distributor network means that CHERRY is always available in your vicinity. We look forward to hearing from you. Distributors & Reseller for Peripherals and Switches Trading Partners for eHealth products CHERRY Products ## Distributors & Reseller for Office, Gaming and Switches Austria Littlebit Technology GmbH littlebit.at 0815 Online Handel GmbH 0815.eu/ Bechtle Austria GmbH Traun bechtle.com/ e-tec electronic GmbH e-tec.at MediaMarkt mediamarkt.at/ OMEGA Handelsgesellschaft m.b.H. b2b.omegacom.at Belgium Distributors Ingram Micro B.V be.ingrammicro.com/ Reseller All In One Systems aios.be/ Bechtle NV bechtle.com/be-nl EET Europarts eetgroup.com/ Redcorp S.A redcorp.com/ Brazil Reseller [...] Concat AG Berliner Ring 127-129 | 64625 Bensheim www.concat.de [redacted-email] Keybo.de Hammerl Am Hollerstein 3b | 91257 Pegnitz [redacted-phone] www.keybo.de [redacted-email] think about IT GmbH Hanauer Landstraße [redacted-phone] | 60314 Frankfurt am Main www.think-about.it Contact: Alexander Böhm [redacted-email] [redacted-phone] VIA DA VINCI.dialog GmbH Hellgrundweg 109 | 22525 Hamburg [redacted-email] ZEMO EDV Handels GmbH Franz-Mader-Str. 9 | 94036Passau [redacted-phone] www.zemo.de [redacted-email] Distributor M.K. Computer ELECTRONIC GmbH Heilbronner Straße 11 | 73037 Göppingen Contact: Massimo Scuderi [redacted-phone] www.mk-electronic.de [redacted-email] Samhammer AG [...] MediaMarkt mediamarkt.de/ Mercateo SE mercateo.com Mindfactory AG mindfactory.de MR Datentechnik Vertriebs- und Service GmbH mr-daten.de Multitronic Vertrieb GmbH multitronic.de MUP Bürohandels GmbH mupi.de Notebooksbilliger.de AG notebooksbilliger.de Office Partner GmbH office-partner.de/ Otto GmbH & Co. KG otto.de/ Pollin Electronic GmbH pollin.de/ Printus GmbH printus.de Reichelt Elektronik reichelt.de RS Components GmbH de.rs-online.com/ Saturn saturn.de/ Think About IT GmbH think-about.it/ VIKING OFFICE INTERNATIONAL B.V viking.de/ Great Britain Distributors INGRAM MICRO (U.K.) LTD. (UK Credit) uk.ingrammicro.eu/ VOW Wholesale vowwholesale.co.uk/ Westcoast Limited westcoast.co.uk/ Reseller Ballicom ballicom.co.uk",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 3,
+            "title": "Cisco Partner - BaryTech",
+            "url": "https://barytech.com/cisco-partner",
+            "snippet": "BaryTech provides a variety of IT infrastructure services in Germany that incorporate Cisco-based networking hardware, software, telecommunications equipment,",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 4,
+            "title": "Our partners - m2m Germany",
+            "url": "https://www.m2mgermany.de/en/our-partners",
+            "snippet": "m2m Germany # Our partners m2m Germany has a valuable strategic partner network. This includes manufacturers of wireless technologies but also mobile network operators (MNO's), system houses, software specialists & IoT platform providers as well as certification service providers. Our partner network continues to grow; flexibility in component selection is very important to us, because a suitable customer solution is our top priority. Laird Connectivity/ezurio specializes in LoRaWAN - from standalone sensors to IoT end-2-end networks Owasys, based in Bilbao/Spain, has been developing high-performance Linux telematics platforms since 2002. AcSiP is a specialist in LoRa, WiFi and NB-IoT SIP modules with the smallest dimensions. [...] m2m Germany is a member of the Design Network. We help you to integrate Silicon Labs components into your design. As a qualified Telekom partner, we also offer certified solutions for Telekom Cloud-of-Things. Fibocom Wireless INC, manufacturer of wireless modules and provider of M2M communication solutions. HUAWEI - the world's leading provider of information technology and telecommunications solutions. Sparklan is a global provider of wireless networking solutions, from modules to routers. Red Lion offers high-performance components and solutions for industrial automation Actility: Leading LoRaWAN® network operator & solution provider for LoRaWAN® servers. PSsystec: Specialist for building control systems and automation of processes in HVAC systems. [...] Sensing Labs is one of our partners in IoT and connected objects via LoRa & LoRaWAN. Amit develops and manufactures 4G routers and gateways for industrial & automotive in Taiwan. NetModule: Manufacturer of communication products for M2M & IoT, focused on automotive & industrial routers. CETECOM, our certification partner for worldwide product approvals in the wireless field. Sienergy is an expert in the condition assessment of electrical installations during operation Pepperl+Fuchs is known throughout the world as a pioneer and innovator in electrical explosion protection and sensor technology. LORIOT is a LoRaWAN network server provider for scalable IoT solutions with software platform. melita.io is the European M2M / IoT connectivity provider with a Germany-wide LoRaWAN network.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 5,
+            "title": "Edgecore Networks - Switches, Routers, Wireless Solutions",
+            "url": "https://www.epsglobal.com/manufacturers/edgecore",
+            "snippet": "##### Welcome ##### MY EPS ###### Enter search by name or keyword EPS ###### Enter search by name or keyword # Edgecore Networks ## EPS Global are a Worldwide Distribution Partner for Edgecore Networks Edgecore Networks Network Switches Service Provider Network Hardware Network Switches Network Switches Network Switches Network Switches ## Unboxing Series ### Giving you early access to the latest Edgecore Hardware Check out our Unboxing Open Networking Series, where we take a look under the hood of the latest Edgecore hardware, and discuss compatible open NOS software. ## Latest Unboxings Edgecore Open Networking Switches ## Cloud Data Center Solutions ### 1G to 800G Open Data Center Switches [...] ### Manage up to 10,000 Access Points Edgecore Networks offers integrated Wi-Fi solutions for complex Wi-Fi environments, ensuring a high-performance, flexible, and cost-effective wireless experience. From Wi-Fi to Switch, from Controller to Cloud, from infrastructure to application, and from Terragraph to OpenWi-Fi, Edgecore’s solutions empower businesses with new opportunities for value-added services, Edgecore is your perfect partner to carry out all kinds of networking innovative ideas for the future. ## Products ## The Critical Lowdown ### A Podcast from EPS Global [...] ### 1G to 800G Open Data Center Switches Edgecore Cloud Data Center Solutions allow users to deploy the best topology and protocols for their network environment.In traditional networking, devices and their software come in a proprietary format from a specific vendor, Edgecore Cloud Data Center Solutions make networking infrastructure more fexible and customizable, users can separate (disaggregate) a device's hardware and software components, and select software from open source communities or afferent commercial software vendors. Edgecore Cloud Data Center Solutions allow users to deploy the best topology and protocols for their network environment. ## Products ## Service Provider Solutions ### Routers, Packet Optical and OLTs",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 6,
+            "title": "Network Equipment Suppliers in Germany - GlobalSpec",
+            "url": "https://www.globalspec.com/local/4783/C_DE",
+            "snippet": "Locate Network Equipment suppliers, manufacturers & distributors in Germany. Interactive map of Germany provided.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 7,
+            "title": "ALLNET GmbH -Vendors",
+            "url": "https://distribution.allnet.de/distribution-vendors.html?L=12",
+            "snippet": "RUCKUS offers products for switches, storage networks, routers, software networks, network ... Cambium Networks. Cambium Networks provides wireless connectivity",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 8,
+            "title": "Partner | Juniper Networks DE",
+            "url": "https://www.juniper.net/de/de/partners.html",
+            "snippet": "#### Rolle des Vertriebspartners von Lösungen Als Vertriebspartner für Lösungen erhalten Partner Zugriff auf die Software-, Hardware- und Servicelösungen von Juniper, um eine außergewöhnliche Kundenerfahrung zu bieten und eine erfolgreiche Juniper Praxis aufzubauen. Partner können die Vorteile von wachstumsstarken Technologiespezialisierungen, marktführenden Anreizen und Performance-Tools nutzen, um inkrementelles Wachstum für ihr Unternehmen zu fördern. Blurred image of business professionals walking through a modern office plaza with glass walls #### Rolle als Managed Network Provider [...] Smart city and internet line in blue tone, wireless communication network line on city commercial building background #### Reichhaltige Servicemöglichkeiten Nutzen Sie die Vorteile des dynamischen und schnell wachsenden Marktes für die Chance von Managed Services NaaS. Erstellen Sie einen markenspezifischen, differenzierten Servicekatalog, um Ihre wiederkehrenden Umsätze zu steigern und Ihren Markt zu erweitern. ## Wählen Sie Ihren Weg. Maximieren Sie die Möglichkeiten. Diverse businesspeople smiling while working with colleagues in #### Rolle des Vertriebspartners von Lösungen [...] #### Rolle als Managed Network Provider Als Managed Network Provider haben Partner den Vorteil der ersten KI-nativen Netzwerkplattform, die eine einfache Bereitstellung, niedrigere Betriebskosten und eine führende Benutzererfahrung ermöglicht. Partner profitieren außerdem von Managed Networking Service-Angeboten, die den Umsatz steigern und gleichzeitig die Gewinnspanne erhöhen sowie außergewöhnliche SLAs für Kunden bieten. ### Details erfahren Weitere Informationen über das Vorteilsprogramm für Partner von Juniper (JPA) und den besten Weg zur Profitabilität finden Sie im Leitfaden für das Vorteilsprogramm für Partner von Juniper. ### Partner finden Partnersuche Händlersuche Bundespartner Services Partner Strategische Allianzen Lösungspartner Technologieallianzen",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 9,
+            "title": "LevelOne: Reliable Network Solutions & Security",
+            "url": "https://www.level1.com/level1_en",
+            "snippet": "LevelOne is focused on providing professional networking solutions and equipment, including switches, wireless access points, surveillance systems, and network",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 10,
+            "title": "STORDIS - Network People · Open By Design",
+            "url": "https://stordis.com/",
+            "snippet": "Learn how we work ### 24/7 Support Your network doesn't sleep, and neither do we. From same-day hardware advance exchange to NOS troubleshooting and routing escalations — the same engineers who designed your stack are the ones who answer when you call. No call centers. No tier-one gatekeepers. Multivendor expertise, real warranty coverage. Explore support options ### Partnership & Training Open networking hardware, software, and services delivered to partners across Europe and beyond — with the training, certification, and hands-on labs your team needs to deploy and run it confidently. Partner with us ## Support that goes beyond the warranty Manufacturer warranties make you wait. Open2Support doesn’t — one contract covers your entire stack. Hardware, software, multivendor. [...] TestSONiC Download GNS3 VM TestOcNOS® Download VM AI ToolSmartCLAI - Configure SONiC Switch HotEnterprise SONiC Support EbookSONiC for AI Networks EbookValidated Network Design Download the Validated Reference Design eBook Now Download the STORDIS AI Networks eBook Now 24/7 Network Hardware and Software Support STORDIS GmbH Network People · Open By Design All Products Search Quote Icon0 X No products in the list 0 Compare Search 0 Compare Quote Icon0 X No products in the list Network People · Open By Design # Open Networking Infrastructure for Modern Data Centers We help organizations build scalable, vendor-neutral infrastructure with switches, Enterprise SONiC, expert services, training, and 24×7 support. Build a Quote Connect with us [...] Years in networking 0 Switches and routers deployed globally 0 + Countries reached 0 Tickets resolved within SLA 0 % Technology partners & customers 0 Commitment to customer success 0 % ## A trusted team, open by design We are engineers, architects, and open networking advocates who have been helping organizations build better networks since day one. No black boxes, no vendor lock-in — just the right technology, the right people, and the support to back it up. Learn more about us Trust and compilance ## Networks we've built, results that speak for themselves Real deployments, real teams, real outcomes. See how operators across Europe run production networks on open technology. Customer stories",
+            "sourceKind": "web"
+          }
+        ],
+        "sourceUrls": [
+          "https://www.nomios.de/en/network/enterprise-networking-wireless",
+          "https://www.cherry.de/en-gb/distributors-resellers",
+          "https://barytech.com/cisco-partner",
+          "https://www.m2mgermany.de/en/our-partners",
+          "https://www.epsglobal.com/manufacturers/edgecore",
+          "https://www.globalspec.com/local/4783/C_DE",
+          "https://distribution.allnet.de/distribution-vendors.html?L=12",
+          "https://www.juniper.net/de/de/partners.html",
+          "https://www.level1.com/level1_en",
+          "https://stordis.com/"
+        ],
+        "requestCount": 1,
+        "latencyMs": 3768,
+        "usage": {
+          "credits": 2
+        }
+      }
+    }
+  ],
+  "requestCount": 3,
+  "latencyMs": 10207,
+  "usage": {
+    "credits": 6
+  }
+}

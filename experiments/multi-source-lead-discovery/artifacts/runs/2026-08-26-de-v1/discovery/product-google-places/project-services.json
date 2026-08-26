@@ -1,0 +1,285 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-08-26-de-v1",
+  "systemId": "product-google-places",
+  "mode": "product-with-discovery-only-provider",
+  "providerId": "google-places",
+  "channelId": "project-services",
+  "queryOutputs": [
+    {
+      "queryIndex": 0,
+      "rawSha256": "6266d07bc0fc0c776665b45510e8f832bd270c16fc398c628e575c188ac93f63",
+      "attempts": 1,
+      "result": {
+        "providerId": "google-places",
+        "query": {
+          "query": "WLAN Netzwerk Installation Firma Deutschland Gewerbe",
+          "countryCode": "DE",
+          "countryName": "Germany",
+          "languageCode": "de",
+          "maxResults": 10
+        },
+        "items": [
+          {
+            "providerId": "google-places",
+            "rank": 1,
+            "title": "Netzwerk Emobilität - Ihre Wallbox-Installateure",
+            "url": "https://www.nemob.de/",
+            "snippet": "Dienstleistungen · Kollwitzstraße 76, 10435 Berlin",
+            "sourceKind": "place",
+            "externalId": "ChIJB5_Pbm-uyk0R8E9CosPEfVk"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 2,
+            "title": "n@work Internet Informationssysteme GmbH",
+            "url": "https://www.work.de/",
+            "snippet": "Dienstleistungen · Versmannstraße 58, 20457 Hamburg",
+            "sourceKind": "place",
+            "externalId": "ChIJ0wu-BOyOsUcRYr5qN51Mqss"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 3,
+            "title": "Pollin Electronic Ladengeschäft",
+            "url": "https://www.pollin.de/",
+            "snippet": "Elektrofachmarkt · Max-Pollin-Straße 1, 85104 Pförring",
+            "sourceKind": "place",
+            "externalId": "ChIJFSfQIqKtn0cRnYe0Ytav5l0"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 4,
+            "title": "NETWORK EXPERTS – Netzwerk für Unternehmensentwicklung",
+            "url": "https://network-experts.org/",
+            "snippet": "Kleestraße 21-23, 90461 Nürnberg",
+            "sourceKind": "place",
+            "externalId": "ChIJb41dBJFXn0cROp0iZQUtmY0"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 5,
+            "title": "Elektro-Installation Raabe GmbH - Elektriker in Köln",
+            "url": "http://www.elektro-raabe.de/",
+            "snippet": "Elektriker · Rochusstraße 375, 50827 Köln-Ehrenfeld",
+            "sourceKind": "place",
+            "externalId": "ChIJrULhvFUlv0cR6-98q4Q1VBQ"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 6,
+            "title": "GERMAN HOTSPOT | WLAN Lösungen für viele Nutzer",
+            "url": "https://www.germanhotspot.de/",
+            "snippet": "Dienstleistungen · Siemensstraße 4, 30916 Isernhagen-Altwarmbüchen",
+            "sourceKind": "place",
+            "externalId": "ChIJt7vTRDMNsEcRac8g-GhYZsg"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 7,
+            "title": "Rohde & Schwarz Networks and Cybersecurity GmbH",
+            "url": "https://www.rohde-schwarz.com/networks-and-cybersecurity",
+            "snippet": "Hersteller · Adenauerstraße 20/B2, 52146 Würselen",
+            "sourceKind": "place",
+            "externalId": "ChIJqbBDONmewEcR8XM0YVl1aV4"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 8,
+            "title": "KOSATEC Empowering Global Innovation GmbH",
+            "url": "http://www.kosatec.de/",
+            "snippet": "Grosshändler · Carl-Miele-Straße 3, 38112 Braunschweig-Veltenhof-Rühme",
+            "sourceKind": "place",
+            "externalId": "ChIJH9_iVcn2r0cRvd-g_ei63g0"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 9,
+            "title": "eWLAN - Professioneller WLAN Service für Unternehmen",
+            "url": "https://maps.google.com/?cid=10227462222896240226&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+            "snippet": "Soennecken Platz, 51491 Overath",
+            "sourceKind": "place",
+            "externalId": "ChIJw802IZbbvkcRYhZ1TbQ-740"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 10,
+            "title": "Elektrotechnik Kilian Selent - Meisterbetrieb",
+            "url": "https://www.elektrotechnik-selent.de/",
+            "snippet": "Dienstleistungen · Lindenweg 15A, 82549 Königsdorf",
+            "sourceKind": "place",
+            "externalId": "ChIJ-8CtRfC_nUcRozip6imOkgc"
+          }
+        ],
+        "sourceUrls": [
+          "https://www.nemob.de/",
+          "https://www.work.de/",
+          "https://www.pollin.de/",
+          "https://network-experts.org/",
+          "http://www.elektro-raabe.de/",
+          "https://www.germanhotspot.de/",
+          "https://www.rohde-schwarz.com/networks-and-cybersecurity",
+          "http://www.kosatec.de/",
+          "https://maps.google.com/?cid=10227462222896240226&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+          "https://www.elektrotechnik-selent.de/"
+        ],
+        "requestCount": 1,
+        "latencyMs": 259
+      }
+    },
+    {
+      "queryIndex": 1,
+      "rawSha256": "ddd15e6731d71bcfe54f24cdf04c63d289756043f78b0c1f1eb2e8c86710868d",
+      "attempts": 1,
+      "result": {
+        "providerId": "google-places",
+        "query": {
+          "query": "Systemintegrator Netzwerktechnik Deutschland LAN WLAN Projekte",
+          "countryCode": "DE",
+          "countryName": "Germany",
+          "languageCode": "de",
+          "maxResults": 10
+        },
+        "items": [
+          {
+            "providerId": "google-places",
+            "rank": 1,
+            "title": "Matthias Weber Systemintegration (KNX)",
+            "url": "https://www.matthias-weber-knx.de/home.html",
+            "snippet": "Dienstleistungen · Grashofblick 5, 36148 Kalbach",
+            "sourceKind": "place",
+            "externalId": "ChIJcwRtlZIvo0cRjVyas4cigzI"
+          }
+        ],
+        "sourceUrls": [
+          "https://www.matthias-weber-knx.de/home.html"
+        ],
+        "requestCount": 1,
+        "latencyMs": 306
+      }
+    },
+    {
+      "queryIndex": 2,
+      "rawSha256": "5fe16cd9b75241f5f9ba35da6606855adaf3ab14a08688bc83be8e11f8b1869c",
+      "attempts": 1,
+      "result": {
+        "providerId": "google-places",
+        "query": {
+          "query": "structured cabling WiFi installer system integrator Germany business",
+          "countryCode": "DE",
+          "countryName": "Germany",
+          "languageCode": "de",
+          "maxResults": 10
+        },
+        "items": [
+          {
+            "providerId": "google-places",
+            "rank": 1,
+            "title": "IB-IT Cabling GmbH",
+            "url": "http://www.ib-it.eu/",
+            "snippet": "Dienstleistungen · Friedberger Str. 173, 61118 Bad Vilbel-Dortelweil",
+            "sourceKind": "place",
+            "externalId": "ChIJN_PLko4LvUcRhGvXCVHCKyM"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 2,
+            "title": "Fibercom GmbH",
+            "url": "http://www.fibercom.de/",
+            "snippet": "Telekommunikationsanbieter · Am Wildzaun 30, 64546 Mörfelden-Walldorf-Walldorf",
+            "sourceKind": "place",
+            "externalId": "ChIJ6YVgKv51vUcR-NPVd-oS1CM"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 3,
+            "title": "Radio Frequency Systems GmbH",
+            "url": "https://www.rfsworld.com/",
+            "snippet": "Hersteller · Kabelkamp 20, 30179 Hannover",
+            "sourceKind": "place",
+            "externalId": "ChIJQYQ8jRNzsEcRYp0_ncozYNU"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 4,
+            "title": "High Knowledge GmbH",
+            "url": "http://www.highknowledge.de/",
+            "snippet": "Generalunternehmer · Lindenstraße 14, 50674 Köln",
+            "sourceKind": "place",
+            "externalId": "ChIJKWoSrzklv0cRkFaY-0UVa0Q"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 5,
+            "title": "IB-IT Datacenter GmbH",
+            "url": "https://ib-it.gmbh/",
+            "snippet": "Berater · Eichenstraße 59, 65933 Frankfurt am Main West",
+            "sourceKind": "place",
+            "externalId": "ChIJ38LDHDcKvUcRQFM8I6DhPAY"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 6,
+            "title": "Fiber NetworkS GmbH",
+            "url": "http://www.fibernetworks.de/",
+            "snippet": "Hersteller · Heinitzstraße 1B, 66583 Spiesen-Elversberg-Elversberg",
+            "sourceKind": "place",
+            "externalId": "ChIJuy5FOOfHlUcR_6bvne_i7oY"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 7,
+            "title": "WAYFONE. [ Reparatur Service | Mobilfunk | Internet für Zuhause | Internet für Unterwegs ]",
+            "url": "http://www.wayfone.de/",
+            "snippet": "Mobiltelefongeschäft · Trommsdorffstraße 8, 99084 Erfurt",
+            "sourceKind": "place",
+            "externalId": "ChIJrZK3oOtzpEcRPVLAXUX4eTk"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 8,
+            "title": "Netzwerkbau & IT-Services",
+            "url": "https://netzwerkbau.berlin/",
+            "snippet": "Wilhelmstraße 25-30, 13593 Berlin",
+            "sourceKind": "place",
+            "externalId": "ChIJfzTnNYNXqEcRdS2sZaAt39E"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 9,
+            "title": "Fiber Networks GmbH",
+            "url": "http://www.fibernetworks.de/",
+            "snippet": "Dienstleistungen · Nordendstraße 48, 64546 Mörfelden-Walldorf-Walldorf",
+            "sourceKind": "place",
+            "externalId": "ChIJ7eNiaCd1vUcRVDBRSVWvpKY"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 10,
+            "title": "expert HERFAG Elektrotechnik GmbH",
+            "url": "https://www.expert.de/sondershausen1",
+            "snippet": "Elektrofachmarkt · Lange Str. 1A, 99706 Sondershausen",
+            "sourceKind": "place",
+            "externalId": "ChIJca4-CTVXpEcRdaUB_yxIL6w"
+          }
+        ],
+        "sourceUrls": [
+          "http://www.ib-it.eu/",
+          "http://www.fibercom.de/",
+          "https://www.rfsworld.com/",
+          "http://www.highknowledge.de/",
+          "https://ib-it.gmbh/",
+          "http://www.fibernetworks.de/",
+          "http://www.wayfone.de/",
+          "https://netzwerkbau.berlin/",
+          "https://www.expert.de/sondershausen1"
+        ],
+        "requestCount": 1,
+        "latencyMs": 300
+      }
+    }
+  ],
+  "requestCount": 3,
+  "latencyMs": 865,
+  "usage": {}
+}

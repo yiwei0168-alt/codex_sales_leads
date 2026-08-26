@@ -1,0 +1,335 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-08-26-de-v1",
+  "systemId": "product-google-places",
+  "mode": "product-with-discovery-only-provider",
+  "providerId": "google-places",
+  "channelId": "b2b-resale",
+  "queryOutputs": [
+    {
+      "queryIndex": 0,
+      "rawSha256": "b0f6ad824be5ce4a9e603e1066c703fa1b09c401d5ae66b1e75c209117b518d9",
+      "attempts": 1,
+      "result": {
+        "providerId": "google-places",
+        "query": {
+          "query": "Netzwerktechnik Fachhändler B2B Deutschland WLAN Router Switch",
+          "countryCode": "DE",
+          "countryName": "Germany",
+          "languageCode": "de",
+          "maxResults": 10
+        },
+        "items": [
+          {
+            "providerId": "google-places",
+            "rank": 1,
+            "title": "SATURN",
+            "url": "https://www.saturn.de/de/store/muenchen-neuhauser-strasse-55",
+            "snippet": "Elektrofachmarkt · Neuhauser Str. 39, 80331 München",
+            "sourceKind": "place",
+            "externalId": "ChIJJfxvYfZ1nkcR-ZMJe-vW3X0"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 2,
+            "title": "reichelt elektronik GmbH",
+            "url": "https://www.reichelt.de/",
+            "snippet": "Elektrofachmarkt · Elektronikring 1, 26452 Sande",
+            "sourceKind": "place",
+            "externalId": "ChIJBeLCvJ2StkcRcgzQXC01Wlw"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 3,
+            "title": "OMG.DE GmbH - IT Services & E-Commerce",
+            "url": "https://www.omg.de/",
+            "snippet": "Kornkamp 40, 26605 Aurich",
+            "sourceKind": "place",
+            "externalId": "ChIJO1LX3BBDtkcRmbEUpoMCiNg"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 4,
+            "title": "Rohde & Schwarz Networks and Cybersecurity GmbH",
+            "url": "https://www.rohde-schwarz.com/networks-and-cybersecurity",
+            "snippet": "Hersteller · Adenauerstraße 20/B2, 52146 Würselen",
+            "sourceKind": "place",
+            "externalId": "ChIJqbBDONmewEcR8XM0YVl1aV4"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 5,
+            "title": "Frings IT-Shop: E-Commerce Plattform für Unternehmen",
+            "url": "https://www.frings-itshop.de/",
+            "snippet": "Kleinhülsen 42, 40721 Hilden",
+            "sourceKind": "place",
+            "externalId": "ChIJ1xxYJAslv0cRHsqWXmyNaJY"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 6,
+            "title": "JACOB Elektronik GmbH",
+            "url": "https://www.jacob.de/",
+            "snippet": "Geschäftsstelle · Greschbachstraße 2-4, 76229 Karlsruhe",
+            "sourceKind": "place",
+            "externalId": "ChIJ61dXcUEIl0cRuyaQJl6631E"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 7,
+            "title": "Informationstechnik Oest",
+            "url": "https://it-oest.de/",
+            "snippet": "Wolder Weg 58, 26427 Esens-Wold",
+            "sourceKind": "place",
+            "externalId": "ChIJ0VCPpOJvtkcRelTh2b6tvg8"
+          }
+        ],
+        "sourceUrls": [
+          "https://www.saturn.de/de/store/muenchen-neuhauser-strasse-55",
+          "https://www.reichelt.de/",
+          "https://www.omg.de/",
+          "https://www.rohde-schwarz.com/networks-and-cybersecurity",
+          "https://www.frings-itshop.de/",
+          "https://www.jacob.de/",
+          "https://it-oest.de/"
+        ],
+        "requestCount": 1,
+        "latencyMs": 245
+      }
+    },
+    {
+      "queryIndex": 1,
+      "rawSha256": "0d6f2d03fcb6fbed42d9e7071f85de30f8d9cc3cb7c591d9cc1b8786bb0bfc2d",
+      "attempts": 1,
+      "result": {
+        "providerId": "google-places",
+        "query": {
+          "query": "IT Reseller Systemhaus Netzwerkhardware Deutschland Geschäftskunden",
+          "countryCode": "DE",
+          "countryName": "Germany",
+          "languageCode": "de",
+          "maxResults": 10
+        },
+        "items": [
+          {
+            "providerId": "google-places",
+            "rank": 1,
+            "title": "Serverhero GmbH - IT-Infrastruktur Systemhaus",
+            "url": "https://serverhero.de/",
+            "snippet": "Berater · Toyota-Allee 99, 50858 Köln",
+            "sourceKind": "place",
+            "externalId": "ChIJUeOMaUA7v0cRtq88Q4-E70E"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 2,
+            "title": "WKN Datentechnik GmbH | IT-Systemhaus",
+            "url": "https://wkn-datentechnik.de/",
+            "snippet": "Berater · Am bhf 5, 58802 Balve",
+            "sourceKind": "place",
+            "externalId": "ChIJ6ev78MdEuUcRZdJOaR0vbKA"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 3,
+            "title": "M.IT Connect GmbH & Co. KG",
+            "url": "http://www.m-it-connect.de/",
+            "snippet": "Dienstleistungen · Emil-Kemmer-Straße 11, 96103 Hallstadt",
+            "sourceKind": "place",
+            "externalId": "ChIJ9wSNalQjokcRejDNnU7yRPQ"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 4,
+            "title": "hagel IT-Services GmbH Hamburg",
+            "url": "https://www.hagel-it.de/",
+            "snippet": "Dienstleistungen · Spaldingstraße 64-68, 20097 Hamburg",
+            "sourceKind": "place",
+            "externalId": "ChIJC8yjc4GFsUcRU9vgjn83Brw"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 5,
+            "title": "reitzner AG",
+            "url": "http://www.reitzner.de/",
+            "snippet": "Dienstleistungen · Dieselstraße 8, 85134 Stammham",
+            "sourceKind": "place",
+            "externalId": "ChIJ5TDwtmQBn0cRSE4hS9xYzMk"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 6,
+            "title": "systemIQ GmbH",
+            "url": "https://www.system-iq.at/",
+            "snippet": "Dienstleistungen · Pummerinpl. 3, 4490 St. Florian, Österreich",
+            "sourceKind": "place",
+            "externalId": "ChIJ25W1uay-c0cRuDuiMaQzH00"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 7,
+            "title": "reitzner AG",
+            "url": "https://reitzner.de/",
+            "snippet": "Dienstleistungen · Johannes-Scheiffele-Straße 19, 89407 Dillingen an der Donau",
+            "sourceKind": "place",
+            "externalId": "ChIJpbnGkOU1mUcR0DYjKi1Ruys"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 8,
+            "title": "reitzner AG",
+            "url": "https://reitzner.de/",
+            "snippet": "Dienstleistungen · Meraner Str. 43, 86165 Augsburg-Lechhausen",
+            "sourceKind": "place",
+            "externalId": "ChIJq6qqqqHmnkcROOhmpMhUrSM"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 9,
+            "title": "etree GmbH",
+            "url": "https://www.etree.de/",
+            "snippet": "Grosshändler · Mathias-Brüggen-Straße 160, 50829 Köln",
+            "sourceKind": "place",
+            "externalId": "ChIJMVP0-Fkuv0cRenRHH4gluJQ"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 10,
+            "title": "Systembetreuung Lösel GmbH",
+            "url": "http://www.loesel.de/",
+            "snippet": "Berater · Am Atzelhorst 3, 64569 Nauheim",
+            "sourceKind": "place",
+            "externalId": "ChIJd53RG9WdvUcR0BNIP2JwKmw"
+          }
+        ],
+        "sourceUrls": [
+          "https://serverhero.de/",
+          "https://wkn-datentechnik.de/",
+          "http://www.m-it-connect.de/",
+          "https://www.hagel-it.de/",
+          "http://www.reitzner.de/",
+          "https://www.system-iq.at/",
+          "https://reitzner.de/",
+          "https://www.etree.de/",
+          "http://www.loesel.de/"
+        ],
+        "requestCount": 1,
+        "latencyMs": 232
+      }
+    },
+    {
+      "queryIndex": 2,
+      "rawSha256": "1c301480675e6b0c74f0934d8541a12639bc99956103c893284dd04be546e9b2",
+      "attempts": 1,
+      "result": {
+        "providerId": "google-places",
+        "query": {
+          "query": "networking VAR reseller Germany SMB WiFi switches business customers",
+          "countryCode": "DE",
+          "countryName": "Germany",
+          "languageCode": "de",
+          "maxResults": 10
+        },
+        "items": [
+          {
+            "providerId": "google-places",
+            "rank": 1,
+            "title": "Esphere Network GmbH",
+            "url": "https://www.esnetwork.de/",
+            "snippet": "Maurergasse 1, 15366 Hoppegarten",
+            "sourceKind": "place",
+            "externalId": "ChIJy9uNQTNFqEcRd5iDmuvZk8Y"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 2,
+            "title": "SBE network solutions GmbH",
+            "url": "http://www.sbe.de/",
+            "snippet": "Dienstleistungen · Deutschland, Möllendorffstraße 45, 10367 Berlin",
+            "sourceKind": "place",
+            "externalId": "ChIJg-VshOZNqEcRt5i3pYLmPa8"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 3,
+            "title": "reichelt elektronik GmbH",
+            "url": "https://www.reichelt.de/",
+            "snippet": "Elektrofachmarkt · Elektronikring 1, 26452 Sande",
+            "sourceKind": "place",
+            "externalId": "ChIJBeLCvJ2StkcRcgzQXC01Wlw"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 4,
+            "title": "SYNERGY NETWORKS GmbH",
+            "url": "https://www.synergy-networks.de/",
+            "snippet": "Dienstleistungen · Unterberg 13, 06108 Halle (Saale)",
+            "sourceKind": "place",
+            "externalId": "ChIJQ7lcb1VjpkcRwxX5nqy_We0"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 5,
+            "title": "SMB IT Solution",
+            "url": "https://smb-it-solution.com/",
+            "snippet": "Berater · Frizstraße 11, 70734 Fellbach",
+            "sourceKind": "place",
+            "externalId": "ChIJIbulgunFmUcRZwegJCEk7bY"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 6,
+            "title": "Edgecore Networks Corporation - 鈺登科技股份有限公司",
+            "url": "https://www.edge-core.com/",
+            "snippet": "Hersteller · 302059, Taiwan, Hsinchu County, Zhubei City, Beixing Village, Zhihui 1st Road, 97號2樓",
+            "sourceKind": "place",
+            "externalId": "ChIJm7Q7DgA2aDQRdyuLJ14HTvU"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 7,
+            "title": "NewClimate Institute",
+            "url": "http://newclimate.org/",
+            "snippet": "Forschungsinstitut · Waidmarkt 11a, 50676 Köln",
+            "sourceKind": "place",
+            "externalId": "ChIJLzBVH7Alv0cR5VNGwMa2UG8"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 8,
+            "title": "NVT Phybridge | Long Reach Power over Ethernet Switches & Extenders",
+            "url": "https://www.nvtphybridge.com/",
+            "snippet": "Hersteller · 3457 Superior Ct Unit 3, Oakville, ON L7L 6X3, Kanada",
+            "sourceKind": "place",
+            "externalId": "ChIJYWmGFrpdK4gR1w3USkde35I"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 9,
+            "title": "Vyronic GmbH",
+            "url": "https://vyronic.shop/",
+            "snippet": "Dienstleistungen · Rauschbergstraße 3, 83365 Nußdorf",
+            "sourceKind": "place",
+            "externalId": "ChIJRdm_YtJ7dkcR1fDJDeWbg5U"
+          }
+        ],
+        "sourceUrls": [
+          "https://www.esnetwork.de/",
+          "http://www.sbe.de/",
+          "https://www.reichelt.de/",
+          "https://www.synergy-networks.de/",
+          "https://smb-it-solution.com/",
+          "https://www.edge-core.com/",
+          "http://newclimate.org/",
+          "https://www.nvtphybridge.com/",
+          "https://vyronic.shop/"
+        ],
+        "requestCount": 1,
+        "latencyMs": 281
+      }
+    }
+  ],
+  "requestCount": 3,
+  "latencyMs": 758,
+  "usage": {}
+}

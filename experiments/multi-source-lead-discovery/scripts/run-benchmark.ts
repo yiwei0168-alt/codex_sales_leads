@@ -64,6 +64,7 @@ const [benchmarkText, inputsText] = await Promise.all([
 const benchmark = JSON.parse(benchmarkText) as BenchmarkConfig;
 const inputs = JSON.parse(inputsText) as InputsConfig;
 const phase = (process.argv.find((argument) => argument.startsWith("--phase="))?.split("=")[1] ?? "all") as Phase;
+const allowRecoveryAttempt = process.argv.includes("--allow-recovery-attempt");
 if (!["preflight", "discovery", "evaluate", "all"].includes(phase)) throw new Error(`Unknown phase: ${phase}`);
 if (benchmark.status !== "frozen-ready-to-run") throw new Error("Benchmark protocol is not frozen");
 if (Date.now() < Date.parse(benchmark.execution.frozenAt)) throw new Error("Frozen benchmark time is in the future");
@@ -118,6 +119,36 @@ function committedResult(result: DiscoveryProviderResult): Omit<DiscoveryProvide
   };
 }
 
+function sanitizeUnknownForCommit(value: unknown, key = ""): unknown {
+  if (typeof value === "string") {
+    if (/urls?$/i.test(key)) return canonicalPublicUrl(value) ?? sanitizeText(value);
+    return sanitizeText(value);
+  }
+  if (Array.isArray(value)) return value.map((entry) => sanitizeUnknownForCommit(entry, key));
+  if (value && typeof value === "object") {
+    return Object.fromEntries(Object.entries(value as Record<string, unknown>)
+      .filter(([entryKey]) => !/(?:email|phone|mobile|contactPerson|executive|employeeName)/i.test(entryKey))
+      .map(([entryKey, entryValue]) => [entryKey, sanitizeUnknownForCommit(entryValue, entryKey)]));
+  }
+  return value;
+}
+
+async function parallelMap<T, R>(values: T[], concurrency: number, operation: (value: T) => Promise<R>): Promise<R[]> {
+  const results = new Array<R>(values.length);
+  let cursor = 0;
+  const workers = Array.from({ length: Math.min(concurrency, values.length) }, async () => {
+    while (cursor < values.length) {
+      const index = cursor;
+      cursor += 1;
+      results[index] = await operation(values[index]);
+    }
+  });
+  const settled = await Promise.allSettled(workers);
+  const errors = settled.flatMap((entry) => entry.status === "rejected" ? [errorRecord(entry.reason)] : []);
+  if (errors.length) throw new Error(`Parallel evaluation failed: ${JSON.stringify(errors)}`);
+  return results;
+}
+
 async function measuredCall(
   basePath: string,
   operation: () => Promise<DiscoveryProviderResult>,
@@ -134,20 +165,38 @@ async function measuredCall(
     }
   }
 
-  const maximumAttempts = benchmark.execution.providerRequestRetryLimit + 1;
-  let lastError: unknown;
-  for (let attempt = 1; attempt <= maximumAttempts; attempt += 1) {
-    const startedAt = timestamp();
+  let existingAttempts = 0;
+  for (let attempt = 1; attempt <= 20; attempt += 1) {
     try {
-      const result = await operation();
-      validate?.(result);
-      await writeJson(`${basePath}.attempt-${attempt}.json`, { startedAt, status: "succeeded", result });
-      const rawSha256 = await writeJson(resultPath, { startedAt, status: "succeeded", attempts: attempt, result });
-      return { result, rawSha256, attempts: attempt };
+      await readFile(`${basePath}.attempt-${attempt}.json`);
+      existingAttempts = attempt;
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === "ENOENT") break;
+      throw error;
+    }
+  }
+  const maximumAttempts = benchmark.execution.providerRequestRetryLimit + 1 + (allowRecoveryAttempt ? 1 : 0);
+  if (existingAttempts >= maximumAttempts) {
+    throw new Error(`${basePath} exhausted ${existingAttempts} recorded attempts; an explicit recovery attempt is required`);
+  }
+  let lastError: unknown;
+  for (let attempt = existingAttempts + 1; attempt <= maximumAttempts; attempt += 1) {
+    const startedAt = timestamp();
+    let returnedResult: DiscoveryProviderResult | undefined;
+    try {
+      returnedResult = await operation();
+      validate?.(returnedResult);
+      await writeJson(`${basePath}.attempt-${attempt}.json`, { startedAt, status: "succeeded", result: returnedResult });
+      const rawSha256 = await writeJson(resultPath, { startedAt, status: "succeeded", attempts: attempt, result: returnedResult });
+      return { result: returnedResult, rawSha256, attempts: attempt };
     } catch (error) {
       lastError = error;
       await writeJson(`${basePath}.attempt-${attempt}.json`, {
-        startedAt, finishedAt: timestamp(), status: "failed", error: errorRecord(error),
+        startedAt,
+        finishedAt: timestamp(),
+        status: returnedResult ? "response-validation-failed" : "request-failed",
+        error: errorRecord(error),
+        result: returnedResult,
       });
       if (attempt < maximumAttempts) console.warn(`Retrying ${basePath} after attempt ${attempt}`);
     }
@@ -174,14 +223,38 @@ function parseJsonObject(text: string): Record<string, unknown> {
 function geminiChannels(result: DiscoveryProviderResult): Map<ChannelId, unknown[]> {
   if (!result.answerText) throw new Error("Gemini Full returned no answer text");
   const parsed = parseJsonObject(result.answerText);
-  if (!Array.isArray(parsed.channels)) throw new Error("Gemini Full JSON has no channels array");
   const channels = new Map<ChannelId, unknown[]>();
-  for (const entry of parsed.channels) {
+  const identifyChannel = (value: unknown): ChannelId | null => {
+    const normalized = String(value ?? "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+    if ((normalized.includes("tier") && normalized.includes("distribution")) || normalized.includes("distributor")) {
+      return "tier1-distribution";
+    }
+    if ((normalized.includes("b2b") && normalized.includes("resale")) || normalized.includes("reseller")) {
+      return "b2b-resale";
+    }
+    if ((normalized.includes("project") && normalized.includes("service"))
+      || normalized.includes("system integrator") || normalized.includes("installer")) {
+      return "project-services";
+    }
+    return null;
+  };
+  const channelEntries = Array.isArray(parsed.channels) ? parsed.channels : Object.entries(parsed).map(([key, value]) => ({
+    channelId: key,
+    candidates: Array.isArray(value) ? value : undefined,
+  }));
+  for (const entry of channelEntries) {
     if (!entry || typeof entry !== "object" || Array.isArray(entry)) continue;
     const item = entry as Record<string, unknown>;
-    if (typeof item.channelId !== "string" || !Array.isArray(item.candidates)) continue;
-    if (inputs.channels.some((channel) => channel.id === item.channelId)) {
-      channels.set(item.channelId as ChannelId, item.candidates.slice(0, 10));
+    if (!Array.isArray(item.candidates)) continue;
+    const channelId = identifyChannel(item.channelId ?? item.category ?? item.label ?? item.name);
+    if (channelId) channels.set(channelId, item.candidates.slice(0, 10));
+  }
+  if (channels.size === 0 && Array.isArray(parsed.candidates)) {
+    for (const candidate of parsed.candidates) {
+      if (!candidate || typeof candidate !== "object" || Array.isArray(candidate)) continue;
+      const value = candidate as Record<string, unknown>;
+      const channelId = identifyChannel(value.channelId ?? value.category ?? value.channel);
+      if (channelId) channels.set(channelId, [...(channels.get(channelId) ?? []), candidate].slice(0, 10));
     }
   }
   for (const channel of inputs.channels) {
@@ -251,7 +324,7 @@ async function runDiscovery(): Promise<void> {
           requestCount: 1,
           latencyMs: call.result.latencyMs,
           usage: call.result.usage,
-          candidates: parsedChannels.get(channel.id),
+          candidates: sanitizeUnknownForCommit(parsedChannels.get(channel.id)),
           sourceUrls: committedResult(call.result).sourceUrls,
         });
       }
@@ -319,9 +392,9 @@ async function assertDiscoveryComplete(): Promise<void> {
 async function runEvaluation(): Promise<void> {
   await assertDiscoveryComplete();
   console.log("[evaluate] all measured discovery files are complete; downstream access is now enabled");
-  const evaluated: Array<{ systemId: SystemId; channel: EvaluatedChannel }> = [];
-  for (const systemId of benchmark.execution.runOrder) {
-    for (const channel of inputs.channels) {
+  const evaluationTasks = benchmark.execution.runOrder.flatMap((systemId) =>
+    inputs.channels.map((channel) => ({ systemId, channel })));
+  const evaluated = await parallelMap(evaluationTasks, 3, async ({ systemId, channel }) => {
       console.log(`[evaluate] ${systemId} ${channel.id}`);
       const rawPath = path.join(rawRoot, "evaluation", systemId, channel.id);
       let result: EvaluatedChannel;
@@ -354,9 +427,8 @@ async function runEvaluation(): Promise<void> {
         rawSha256,
         ...committedEvaluation(result),
       });
-      evaluated.push({ systemId, channel: result });
-    }
-  }
+      return { systemId, channel: result };
+    });
 
   const systemScores = benchmark.execution.runOrder.map((systemId) => {
     const channels = inputs.channels.map((channel) => {

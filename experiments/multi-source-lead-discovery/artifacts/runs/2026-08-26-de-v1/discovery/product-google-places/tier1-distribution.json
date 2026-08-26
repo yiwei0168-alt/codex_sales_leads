@@ -1,0 +1,296 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-08-26-de-v1",
+  "systemId": "product-google-places",
+  "mode": "product-with-discovery-only-provider",
+  "providerId": "google-places",
+  "channelId": "tier1-distribution",
+  "queryOutputs": [
+    {
+      "queryIndex": 0,
+      "rawSha256": "05bfc36013c0e4d51b94e626747e72776063d4aa8b0acd6e51cfca1e1c558ff5",
+      "attempts": 1,
+      "result": {
+        "providerId": "google-places",
+        "query": {
+          "query": "IT Netzwerk Distributor Deutschland WLAN Router Switch B2B Fachhändler",
+          "countryCode": "DE",
+          "countryName": "Germany",
+          "languageCode": "de",
+          "maxResults": 10
+        },
+        "items": [
+          {
+            "providerId": "google-places",
+            "rank": 1,
+            "title": "KOSATEC Empowering Global Innovation GmbH",
+            "url": "http://www.kosatec.de/",
+            "snippet": "Grosshändler · Carl-Miele-Straße 3, 38112 Braunschweig-Veltenhof-Rühme",
+            "sourceKind": "place",
+            "externalId": "ChIJH9_iVcn2r0cRvd-g_ei63g0"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 2,
+            "title": "Serverhero GmbH - IT-Infrastruktur Systemhaus",
+            "url": "https://serverhero.de/",
+            "snippet": "Berater · Toyota-Allee 99, 50858 Köln",
+            "sourceKind": "place",
+            "externalId": "ChIJUeOMaUA7v0cRtq88Q4-E70E"
+          }
+        ],
+        "sourceUrls": [
+          "http://www.kosatec.de/",
+          "https://serverhero.de/"
+        ],
+        "requestCount": 1,
+        "latencyMs": 427
+      }
+    },
+    {
+      "queryIndex": 1,
+      "rawSha256": "e12f4687108cfaba5ed0620f2d8dbee099091331aececf1abe3c075465c4c4d9",
+      "attempts": 1,
+      "result": {
+        "providerId": "google-places",
+        "query": {
+          "query": "Value Added Distributor Netzwerktechnik Deutschland WLAN LAN Partner",
+          "countryCode": "DE",
+          "countryName": "Germany",
+          "languageCode": "de",
+          "maxResults": 10
+        },
+        "items": [
+          {
+            "providerId": "google-places",
+            "rank": 1,
+            "title": "Added Value Support GmbH",
+            "url": "https://www.added-value.net/de/",
+            "snippet": "Landwirtschaftsbetrieb · Torsholter Hauptstraße 11, 26655 Westerstede",
+            "sourceKind": "place",
+            "externalId": "ChIJj2OtubbktkcRWlBxR3jdaNU"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 2,
+            "title": "ADN Distribution GmbH",
+            "url": "https://www.adn.de/",
+            "snippet": "Berater · Gesundheitscampus-Süd 31, 44801 Bochum Süd",
+            "sourceKind": "place",
+            "externalId": "ChIJ_6PbYE_nuEcRduxbJAa7q48"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 3,
+            "title": "AC-EDV UG (haftungsbeschränkt)",
+            "url": "http://www.ac-edv.com/",
+            "snippet": "Dienstleistungen · Haspelkamp 7, 33161 Hövelhof-Espeln",
+            "sourceKind": "place",
+            "externalId": "ChIJYbP_5fY2ukcRm5Q5EEv6wQ4"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 4,
+            "title": "AVC Added Value Concept GmbH",
+            "url": "http://www.flammkuchen-konzept.de/",
+            "snippet": "Grosshändler · Sinnerstraße 1, 76185 Karlsruhe-Grünwinkel",
+            "sourceKind": "place",
+            "externalId": "ChIJWzOs0MEGl0cRQ0AzLN5EOW8"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 5,
+            "title": "Serverhero GmbH - IT-Infrastruktur Systemhaus",
+            "url": "https://serverhero.de/",
+            "snippet": "Berater · Toyota-Allee 99, 50858 Köln",
+            "sourceKind": "place",
+            "externalId": "ChIJUeOMaUA7v0cRtq88Q4-E70E"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 6,
+            "title": "Thomas-Krenn.AG",
+            "url": "https://www.thomas-krenn.com/",
+            "snippet": "Hersteller · Speltenbach-Steinäcker 1, 94078 Freyung",
+            "sourceKind": "place",
+            "externalId": "ChIJ07f5YSLpdEcREoVyJXJ0Bdg"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 7,
+            "title": "netgo",
+            "url": "https://www.netgo.de/",
+            "snippet": "Berater · Weseler Str. 9, 46325 Borken",
+            "sourceKind": "place",
+            "externalId": "ChIJaYbOPXFguEcRcpEgBlagElc"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 8,
+            "title": "M.IT Connect GmbH & Co. KG",
+            "url": "http://www.m-it-connect.de/",
+            "snippet": "Dienstleistungen · Emil-Kemmer-Straße 11, 96103 Hallstadt",
+            "sourceKind": "place",
+            "externalId": "ChIJ9wSNalQjokcRejDNnU7yRPQ"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 9,
+            "title": "Savecall",
+            "url": "https://www.savecall.de/",
+            "snippet": "Telekommunikationsanbieter · Bavariafilmpl. 7/Geb 100, 82031 Grünwald",
+            "sourceKind": "place",
+            "externalId": "ChIJOSTSnpvfnUcRO6mo4dSmwho"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 10,
+            "title": "IBH connect GmbH",
+            "url": "https://www.ibh.de/",
+            "snippet": "Berater · Heilbronner Str. 20, 01189 Dresden",
+            "sourceKind": "place",
+            "externalId": "ChIJ5QfIiXbGCUcRNwv13JP03oo"
+          }
+        ],
+        "sourceUrls": [
+          "https://www.added-value.net/de/",
+          "https://www.adn.de/",
+          "http://www.ac-edv.com/",
+          "http://www.flammkuchen-konzept.de/",
+          "https://serverhero.de/",
+          "https://www.thomas-krenn.com/",
+          "https://www.netgo.de/",
+          "http://www.m-it-connect.de/",
+          "https://www.savecall.de/",
+          "https://www.ibh.de/"
+        ],
+        "requestCount": 1,
+        "latencyMs": 248
+      }
+    },
+    {
+      "queryIndex": 2,
+      "rawSha256": "bd6ea8592571d9b117cd8fabbe00898f914ea313e44a111da8df4e41b2e63ad6",
+      "attempts": 1,
+      "result": {
+        "providerId": "google-places",
+        "query": {
+          "query": "networking hardware distributor Germany reseller partners wireless switches",
+          "countryCode": "DE",
+          "countryName": "Germany",
+          "languageCode": "de",
+          "maxResults": 10
+        },
+        "items": [
+          {
+            "providerId": "google-places",
+            "rank": 1,
+            "title": "reichelt elektronik GmbH",
+            "url": "https://www.reichelt.de/",
+            "snippet": "Elektrofachmarkt · Elektronikring 1, 26452 Sande",
+            "sourceKind": "place",
+            "externalId": "ChIJBeLCvJ2StkcRcgzQXC01Wlw"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 2,
+            "title": "Rohde & Schwarz Networks and Cybersecurity GmbH",
+            "url": "https://www.rohde-schwarz.com/networks-and-cybersecurity",
+            "snippet": "Hersteller · Adenauerstraße 20/B2, 52146 Würselen",
+            "sourceKind": "place",
+            "externalId": "ChIJqbBDONmewEcR8XM0YVl1aV4"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 3,
+            "title": "EP:Hammer",
+            "url": "https://www.ep.de/hammer",
+            "snippet": "Dienstleistungen · Leipziger Str. 22, 60487 Frankfurt am Main",
+            "sourceKind": "place",
+            "externalId": "ChIJVw_8DkMJvUcRtuYNxOQKROw"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 4,
+            "title": "HORNBACH",
+            "url": "https://www.hornbach.de/mein-markt/baumarkt-hornbach-hannover-garbsen/",
+            "snippet": "Baumarkt · Langenhagener Str. 1, 30827 Garbsen",
+            "sourceKind": "place",
+            "externalId": "ChIJ0V7sBxNxsEcR-CsSKmjzlWY"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 5,
+            "title": "EP:Wenner",
+            "url": "https://www.ep.de/wenner",
+            "snippet": "Dienstleistungen · u. Mühlstraße 9, 64291 Darmstadt",
+            "sourceKind": "place",
+            "externalId": "ChIJWedxB6hxvUcRSAa4vsdTZO0"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 6,
+            "title": "EP:Schmidt + Partner",
+            "url": "https://www.ep.de/schmidt-edemissen",
+            "snippet": "Dienstleistungen · Wöhrbergweg 1, 31234 Edemissen",
+            "sourceKind": "place",
+            "externalId": "ChIJexUuVqf9r0cRYPhiHmGl_OY"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 7,
+            "title": "MediaMarkt Leipzig - Höfe am Brühl",
+            "url": "https://www.mediamarkt.de/de/store/leipzig-hoefe-am-bruehl-1229",
+            "snippet": "Elektrofachmarkt · Brühl 1, 04109 Leipzig",
+            "sourceKind": "place",
+            "externalId": "ChIJT-pzuSH4pkcR1EF2fFrcPdY"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 8,
+            "title": "NI Network Innovations GmbH",
+            "url": "https://www.networkinnovations.com/de/",
+            "snippet": "Hersteller · Adalbert-Stifter-Straße 15, 65375 Oestrich-Winkel-Winkel",
+            "sourceKind": "place",
+            "externalId": "ChIJiww_-DfpvUcRqCaRfn6bA0g"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 9,
+            "title": "Wentronic GmbH",
+            "url": "http://www.wentronic.com/",
+            "snippet": "Elektrofachmarkt · Pillmannstraße 12, 38112 Braunschweig-Veltenhof-Rühme",
+            "sourceKind": "place",
+            "externalId": "ChIJUVem0TH3r0cRCm-5nKhXDgs"
+          },
+          {
+            "providerId": "google-places",
+            "rank": 10,
+            "title": "Nowaitech GmbH",
+            "url": "https://nowaitech.com/",
+            "snippet": "Brunsbütteler Damm 117, 13581 Berlin",
+            "sourceKind": "place",
+            "externalId": "ChIJe9H8SnpXqEcRaK9ob7yZ6oc"
+          }
+        ],
+        "sourceUrls": [
+          "https://www.reichelt.de/",
+          "https://www.rohde-schwarz.com/networks-and-cybersecurity",
+          "https://www.ep.de/hammer",
+          "https://www.hornbach.de/mein-markt/baumarkt-hornbach-hannover-garbsen/",
+          "https://www.ep.de/wenner",
+          "https://www.ep.de/schmidt-edemissen",
+          "https://www.mediamarkt.de/de/store/leipzig-hoefe-am-bruehl-1229",
+          "https://www.networkinnovations.com/de/",
+          "http://www.wentronic.com/",
+          "https://nowaitech.com/"
+        ],
+        "requestCount": 1,
+        "latencyMs": 319
+      }
+    }
+  ],
+  "requestCount": 3,
+  "latencyMs": 994,
+  "usage": {}
+}

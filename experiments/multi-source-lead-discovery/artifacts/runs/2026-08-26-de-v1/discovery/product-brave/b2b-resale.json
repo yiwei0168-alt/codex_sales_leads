@@ -1,0 +1,346 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-08-26-de-v1",
+  "systemId": "product-brave",
+  "mode": "product-with-discovery-only-provider",
+  "providerId": "brave",
+  "channelId": "b2b-resale",
+  "queryOutputs": [
+    {
+      "queryIndex": 0,
+      "rawSha256": "e04ad92f4d673e41cf63144aad5f1d6c576c4dc090a512d5a155e17986388c53",
+      "attempts": 1,
+      "result": {
+        "providerId": "brave",
+        "query": {
+          "query": "Netzwerktechnik Fachhändler B2B Deutschland WLAN Router Switch",
+          "countryCode": "DE",
+          "countryName": "Germany",
+          "languageCode": "de",
+          "maxResults": 10
+        },
+        "items": [
+          {
+            "providerId": "brave",
+            "rank": 1,
+            "title": "B2B Ankauf gebrauchter Netzwerktechnik | IT-RESELL.COM",
+            "url": "https://www.it-resell.com/page/netzwerktechnik-verkaufen",
+            "snippet": "Ausgemusterte Switches, Router und Access Points belegen oft wertvolle Lagerflächen und verlieren mit jeder Generation an Marktwert. <strong>IT-RESELL.COM ist Ihr spezialisierter B2B-Partner für den professionellen Ankauf gebrauchter Netzwerkkomponenten</strong>.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "brave",
+            "rank": 2,
+            "title": "Router vom Fachhändler | GermanProtect",
+            "url": "https://www.germanprotect.com/videoueberwachung/netzwerktechnik/ubertragungstechnik/router.html",
+            "snippet": "Mein Angebot · Suche · Mein Konto ... Übertragungstechnik · Router · Produkt- sortiment · Ratgeber · <strong>Ubiquiti UniFi Dream Machine - Wireless Router - 4-Port-Switch</strong> ·...",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "brave",
+            "rank": 3,
+            "title": "Netzwerk für Unternehmen | Bechtle",
+            "url": "https://www.bechtle.com/shop/hardware/it-infrastruktur/netzwerk--10006005--c",
+            "snippet": "Wireless LAN ist heute ein Grundbedürfnis für jedes Unternehmen und als geschäftskritisch anzusehen. Für eine optimale Verwaltung Ihrer WLAN-Umgebung bieten wir bei <strong>Bechtle</strong> eine breite Palette an Netzwerk-Hardware, einschließlich Router, Switches und Access Points.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "brave",
+            "rank": 4,
+            "title": "Azenn Connect Onlineshop | Ihr IT-Großhandel für Kabel und Netzwerktechnik, Lieferung innerhalb 24h, hohe Lagerverfügbarkeit, professionelle Kabelkonfektion",
+            "url": "https://www.exertis-connect.de/",
+            "snippet": "<strong>Azenn Connect</strong> Onlineshop (Fröhlich + Walter GmbH) | Ihr IT-Großhandel für Kabel und Netzwerktechnik, Lieferung innerhalb 24h, hohe Lagerverfügbarkeit, professionelle Kabelkonfektion",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "brave",
+            "rank": 5,
+            "title": "Router Deutschland | B2B Firmen & Lieferanten | europages",
+            "url": "https://www.europages.de/unternehmen/deutschland/router.html",
+            "snippet": "Online Shop für Netzwerkkomponenten - Industrielle Ethernet Switches, Medien Konverter, Router, Access Points · UniStream-Serie - All-in-One SPS+HMI: Bereit für die Cloud ... Spectra PowerBox 100/110 - Industrielle Mini-PC ab Lager lieferbar ! ... ...Installation DSL Router, Einrichtung Internet. - Einrichtung DSL - Einrichtung WLAN - Verbindung mit PC - Verbindung mit Smartphone - Verbindung mit T...",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "brave",
+            "rank": 6,
+            "title": "Netzwerktechnik bei reichelt günstig bestellen | reichelt elektronik",
+            "url": "https://www.reichelt.de/de/de/shop/kategorie/netzwerktechnik-5820",
+            "snippet": "Übersicht über hochwertige Netzwerktechnik bei <strong>reichelt elektronik</strong> günstig kaufen bei <strong>reichelt elektronik</strong> ✓ Viele Marken ✓ Schnelle Lieferung ✓ günstige Preise ✓ Jetzt online bestellen!",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "brave",
+            "rank": 7,
+            "title": "OMG.DE - WLAN, Richtfunk & Smart Home vom Fachhändler",
+            "url": "https://www.omg.de/",
+            "snippet": "Ubiquiti zählt zu den weltweit führenden Herstellern professioneller Netzwerktechnik – mit leistungsstarken und zugleich benutzerfreundlichen Lösungen für Unternehmen, Provider und Privatanwender. Im Zentrum steht das UniFi-Ökosystem: Access Points, Switches und Gateways verwalten Sie zentral über die UniFi-Software – für nahtloses WLAN-Management, stabile Netzwerke und einfache Skalierung vom Einzelbüro bis zum Campus.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "brave",
+            "rank": 8,
+            "title": "Netzwerktechnik – Finden Sie B2B-Lieferanten | WLW",
+            "url": "https://www.wlw.de/de/suche/netzwerktechnik",
+            "snippet": "Daten-und Netzwerktechnik, Wireless Lan, Router, wir bearbeiten Gebiete von Hannover, Hamburg bis Flensburg",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "brave",
+            "rank": 9,
+            "title": "TP-Link Deutschland - Netzwerklösungen für Privat- und Businessanwender",
+            "url": "https://www.tp-link.com/de/",
+            "snippet": "<strong>TP-Link</strong> ist der weltweit führende Anbieter von WLAN-Netzwerkgeräten, die Produkte in über 170-Länder und Hunderte Millionen von Kunden versenden.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "brave",
+            "rank": 10,
+            "title": "Switches fuer Netzwerke – B2B-Lieferanten | wlw",
+            "url": "https://www.wlw.de/de/suche/switches-fuer-netzwerke",
+            "snippet": "Daten-und Netzwerktechnik, Wireless Lan, Router, wir bearbeiten Gebiete von Hannover, Hamburg bis Flensburg",
+            "sourceKind": "web"
+          }
+        ],
+        "sourceUrls": [
+          "https://www.it-resell.com/page/netzwerktechnik-verkaufen",
+          "https://www.germanprotect.com/videoueberwachung/netzwerktechnik/ubertragungstechnik/router.html",
+          "https://www.bechtle.com/shop/hardware/it-infrastruktur/netzwerk--10006005--c",
+          "https://www.exertis-connect.de/",
+          "https://www.europages.de/unternehmen/deutschland/router.html",
+          "https://www.reichelt.de/de/de/shop/kategorie/netzwerktechnik-5820",
+          "https://www.omg.de/",
+          "https://www.wlw.de/de/suche/netzwerktechnik",
+          "https://www.tp-link.com/de/",
+          "https://www.wlw.de/de/suche/switches-fuer-netzwerke"
+        ],
+        "requestCount": 1,
+        "latencyMs": 699
+      }
+    },
+    {
+      "queryIndex": 1,
+      "rawSha256": "edcd7df8f89e0579f8fe50bf1fcab69de5417685f0e89266ebc258d64982ee2f",
+      "attempts": 1,
+      "result": {
+        "providerId": "brave",
+        "query": {
+          "query": "IT Reseller Systemhaus Netzwerkhardware Deutschland Geschäftskunden",
+          "countryCode": "DE",
+          "countryName": "Germany",
+          "languageCode": "de",
+          "maxResults": 10
+        },
+        "items": [
+          {
+            "providerId": "brave",
+            "rank": 1,
+            "title": "IT-Reseller | Telekom Geschäftskunden",
+            "url": "https://geschaeftskunden.telekom.de/business/t-business-entdecken/ueber-uns/business-partner/it-reseller",
+            "snippet": "Richtig für Sie, wenn Sie im B2B-Umfeld zu Telekom Festnetz &amp; IT-Produkten beraten &amp; vermarkten, ein IT-Systemhaus sind oder IT-Reselling betreiben.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "brave",
+            "rank": 2,
+            "title": "Netzwerkgeräte (Netzwerkgerät, Geräte für Netzwerke) - 23 Hersteller, Händler & Lieferanten",
+            "url": "https://www.industrystock.de/de/unternehmen/Informationstechnik/Netzwerktechnik/Netzwerkhardware/Netzwerkger%C3%A4te",
+            "snippet": "Das <strong>ITK-Systemhaus SNcom GmbH</strong> ist seit der Gründung 2001 zuverlässiger Telekommunikationsanbieter für Geschäftskunden, Carrier, Institutionen, Städte und Kommunen in Ihrer Region. Gemeinsam mit unseren Kunden finden wir die richtige Kommunikationslösung, die zur langfristigen Optimierung ...",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "brave",
+            "rank": 3,
+            "title": "Netzwerkhardware (Netzwerk-Hardware, Hardware für Netzwerk) - 42 Hersteller, Händler & Lieferanten",
+            "url": "https://www.industrystock.de/de/unternehmen/Informationstechnik/Netzwerktechnik/Netzwerkhardware",
+            "snippet": "Wenn Sie wenig Zeit haben Sie benötigen Informationen oder Preise zu: Netzwerkhardware Jetzt unseren Spezialservice nutzen ... Das <strong>ITK-Systemhaus SNcom GmbH</strong> ist seit der Gründung 2001 zuverlässiger Telekommunikationsanbieter für Geschäftskunden, Carrier, Institutionen, Städte und Kommunen ...",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "brave",
+            "rank": 4,
+            "title": "Hardwarehandel (Hardware-Handel, Handel mit Hardware) - 26 Hersteller, Händler & Lieferanten",
+            "url": "https://www.industrystock.de/de/unternehmen/Informationstechnik/Computertechnik/Hardware/Hardwarehandel",
+            "snippet": "Das <strong>ITK-Systemhaus SNcom GmbH</strong> ist seit der Gründung 2001 zuverlässiger Telekommunikationsanbieter für Geschäftskunden, Carrier, Institutionen, Städte und Kommunen in Ihrer Region. Gemeinsam mit unseren Kunden finden wir die richtige Kommunikationslösung, die zur langfristigen Optimierung ...",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "brave",
+            "rank": 5,
+            "title": "ALSO Deutschland GmbH",
+            "url": "https://www.also.com/ec/cms5/de_1010/1010/index.jsp",
+            "snippet": "Kurz gesagt: IT-Experten, vom Reseller zum Netzvermarktungs-Spezialist, vom Systemhaus zum Cloud-Anbieter.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "brave",
+            "rank": 6,
+            "title": "Services für IT-Reseller | D-Link Deutschland",
+            "url": "https://www.dlink.com/de/de/for-business/services-fuer-it-reseller",
+            "snippet": "Viele Unternehmen benötigen einen kompetenten Ansprechpartner, der ihren Bedarf in eine entsprechende Lösung übersetzt. Wenn das IT-Netzwerk nur einen Teil Ihres Leistungsportfolios als IT-Reseller oder Systemhaus spiegelt oder Ihr Team gerade ausgelastet ist, kann passende Unterstützung bares Geld wert sein.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "brave",
+            "rank": 7,
+            "title": "IT-Systemhäuser Deutschland 2026: Markt & Verbünde",
+            "url": "https://www.hagel-it.de/it-dienstleister/systemhaus-verbund",
+            "snippet": "IT-Systemhaus bedeutet: Ein Anbieter, der den IT-Betrieb eines Unternehmens komplett übernimmt — von der Beratung über Beschaffung und Implementierung bis zur laufenden Betreuung — und damit als zentraler IT-Partner fungiert.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "brave",
+            "rank": 8,
+            "title": "Das Netzwerk für Systemhäuser, IT-Fachhändler und Selbstständige | CPN",
+            "url": "https://www.cpn.network/",
+            "snippet": "Unser Netzwerk ist offen für Systemhäuser, IT-Fachhändler mit oder ohne Ladengeschäft, IT-Dienstleister, IT-Consultants oder Betreiber*innen von IT-Onlineshops in Deutschland und/oder Österreich. Es existieren keine Einschränkungen im Sinne von Zertifizierungen oder hinsichtlich der Anzahl der Mitarbeitenden.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "brave",
+            "rank": 9,
+            "title": "Hardware & Software für Ihr Unternehmen | ITCE Systemhaus: ITCE-SYSTEMHAUS GmbH",
+            "url": "https://www.itce-systemhaus.de/it-vor-ort/it-betrieb/verkauf-von-hardware-software/",
+            "snippet": "<strong>Wir unterstützen Sie dabei, die passende Hardware für Ihr Unternehmen zu identifizieren und zu beschaffen</strong>. Dabei analysieren wir Ihre bestehende IT-Infrastruktur und leiten daraus Ihren Bedarf ab. In einem persönlichen Gespräch werden Sie von unseren IT-Experten beraten und erhalten konkrete ...",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "brave",
+            "rank": 10,
+            "title": "Die Top 30 IT-Systemhäuser in Deutschland 2026",
+            "url": "https://www.placetel.de/it-systemhaeuser",
+            "snippet": "Die folgende Übersicht zeigt die Top 30 IT-Systemhäuser in Deutschland im direkten Vergleich. Berücksichtigt wurden Unternehmen, die in renommierten Branchenstudien besonders gut abschneiden und zugleich durch starke Google-Bewertungen überzeugen · Auch direkt in Ihrer Nähe",
+            "sourceKind": "web"
+          }
+        ],
+        "sourceUrls": [
+          "https://geschaeftskunden.telekom.de/business/t-business-entdecken/ueber-uns/business-partner/it-reseller",
+          "https://www.industrystock.de/de/unternehmen/Informationstechnik/Netzwerktechnik/Netzwerkhardware/Netzwerkger%C3%A4te",
+          "https://www.industrystock.de/de/unternehmen/Informationstechnik/Netzwerktechnik/Netzwerkhardware",
+          "https://www.industrystock.de/de/unternehmen/Informationstechnik/Computertechnik/Hardware/Hardwarehandel",
+          "https://www.also.com/ec/cms5/de_1010/1010/index.jsp",
+          "https://www.dlink.com/de/de/for-business/services-fuer-it-reseller",
+          "https://www.hagel-it.de/it-dienstleister/systemhaus-verbund",
+          "https://www.cpn.network/",
+          "https://www.itce-systemhaus.de/it-vor-ort/it-betrieb/verkauf-von-hardware-software/",
+          "https://www.placetel.de/it-systemhaeuser"
+        ],
+        "requestCount": 1,
+        "latencyMs": 824
+      }
+    },
+    {
+      "queryIndex": 2,
+      "rawSha256": "7bc7b4100903bf255578d7d78c0cee1c7ce4b1fe2df202a55d06f7d00c0d48cd",
+      "attempts": 1,
+      "result": {
+        "providerId": "brave",
+        "query": {
+          "query": "networking VAR reseller Germany SMB WiFi switches business customers",
+          "countryCode": "DE",
+          "countryName": "Germany",
+          "languageCode": "de",
+          "maxResults": 10
+        },
+        "items": [
+          {
+            "providerId": "brave",
+            "rank": 1,
+            "title": "Enterprise-Netzwerklösungen für KMU und mittelständische Unternehmen - NETGEAR",
+            "url": "https://www.netgear.com/de/business/solutions/smb/",
+            "snippet": "... Modulare Produktreihen lassen sich nahtlos erweitern – es ist keine Rip-and-Replace-Strategie erforderlich.​ ... <strong>NETGEAR Insight</strong> bietet IT-Managern, MSPs und VARs eine zentralisierte Remoteverwaltung von Netzwerken über mehrere Standorte ...",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "brave",
+            "rank": 2,
+            "title": "Omada Switches for Small and Medium Business (SMB) Networking | TP-Link Deutschland",
+            "url": "https://www.omadanetworks.com/de/business-networking/omada/switch/",
+            "snippet": "<strong>Omada</strong> offers enterprise-level switches ranging from L3 Managed to Unmanaged switches, catering to the demand for dependable networking from edge to core. Building high-speed wired connections and corporate backbone networks is simplified with ...",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "brave",
+            "rank": 3,
+            "title": "Introducing: NETGEAR for Business - Discover More",
+            "url": "https://www.netgear.com/hub/business/enterprise-it/netgear-for-business/",
+            "snippet": "In addition to an extensive portfolio of hardware products, unique software features and on-premise/cloud management platforms that have each been tailored to best serve IT network applications and/or AV networks, what sets NETGEAR apart from others in the industry is a set of comprehensive network design services we make available at no-charge to our Value Added Reseller and AV Integrator partners. Our Pro WiFi Design team as well as our Pro AV Design team partner closely with VARs and integrators so that they are confident a proposal presented to their end customer has been verified by one or more of our 25+ network consultants.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "brave",
+            "rank": 4,
+            "title": "Switches for Business WiFi | TP-Link Deutschland",
+            "url": "https://www.tp-link.com/de/business-networking/solution/switches-for-business-wifi/",
+            "snippet": "Mit den gesammelten Erfahrungen aus der SMB-Vernetzung bietet <strong>TP-Link</strong> ein umfangreiches Portfolio an Netzwerk-Switches mit zahlreichen Funktionen und flexiblen Optionen für jede Phase Ihres Geschäftswachstums.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "brave",
+            "rank": 5,
+            "title": "Business Networking Products: SMB to Enterprise | NETGEAR",
+            "url": "https://www.netgear.com/de/business/",
+            "snippet": "Ihr Unternehmen benötigt Netzwerkprodukte von höchster Qualität, um die Produktivität zu maximieren. Entdecken Sie unsere Netzwerklösungen für kleine und mittlere Unternehmen.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "brave",
+            "rank": 6,
+            "title": "Network Equipment Suppliers in Germany",
+            "url": "https://www.globalspec.com/local/4783/C_DE",
+            "snippet": "Locate Network Equipment suppliers, manufacturers &amp; distributors in Germany. Interactive map of Germany provided.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "brave",
+            "rank": 7,
+            "title": "sysob IT-Distribution - Security, Wireless LAN und Serverbased Computing",
+            "url": "https://www.sysob.com/",
+            "snippet": "sysob – Ihr Distributor für Security, Wireless LAN und Serverbased Computing. Wir sind seit 20 Jahren Ihr VAD mit innovativen Lösungen für den Fachhandel",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "brave",
+            "rank": 8,
+            "title": "Switches for Business WiFi | TP-Link Deutschland - Omada",
+            "url": "https://www.omadanetworks.com/de/business-networking/solution/switches-for-business-wifi/",
+            "snippet": "Mit den gesammelten Erfahrungen aus der SMB-Vernetzung bietet <strong>TP-Link</strong> ein umfangreiches Portfolio an Netzwerk-Switches mit zahlreichen Funktionen und flexiblen Optionen für jede Phase Ihres Geschäftswachstums.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "brave",
+            "rank": 9,
+            "title": "Netzwerktechnologie für kleine und mittelständische Unternehmen - Cisco",
+            "url": "https://www.cisco.com/c/de_de/solutions/small-business/networking/switches.html",
+            "snippet": "Sie möchten den Kauf über einen Cisco Partner abwickeln? Setzen Sie sich mit unseren zertifizierten Partnern und Resellern in Verbindung, die für Sie Kostenvoranschläge erstellen und Bestellungen aufgeben können. ... Hier finden Sie alle unsere Innovationen für leistungsstarkes Switching.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "brave",
+            "rank": 10,
+            "title": "Business-Netzwerklösungen „Engineered in Germany“: R&S Networks and Cybersecurity",
+            "url": "https://rs-nc.rohde-schwarz.com/de/",
+            "snippet": "<strong>R&amp;S Networks and Cybersecurity</strong> bietet sichere, skalierbare Netzwerke und Cybersecurity-Lösungen für Unternehmen, Behörden, KRITIS und Defense.",
+            "sourceKind": "web"
+          }
+        ],
+        "sourceUrls": [
+          "https://www.netgear.com/de/business/solutions/smb/",
+          "https://www.omadanetworks.com/de/business-networking/omada/switch/",
+          "https://www.netgear.com/hub/business/enterprise-it/netgear-for-business/",
+          "https://www.tp-link.com/de/business-networking/solution/switches-for-business-wifi/",
+          "https://www.netgear.com/de/business/",
+          "https://www.globalspec.com/local/4783/C_DE",
+          "https://www.sysob.com/",
+          "https://www.omadanetworks.com/de/business-networking/solution/switches-for-business-wifi/",
+          "https://www.cisco.com/c/de_de/solutions/small-business/networking/switches.html",
+          "https://rs-nc.rohde-schwarz.com/de/"
+        ],
+        "requestCount": 1,
+        "latencyMs": 672
+      }
+    }
+  ],
+  "requestCount": 3,
+  "latencyMs": 2195,
+  "usage": {}
+}

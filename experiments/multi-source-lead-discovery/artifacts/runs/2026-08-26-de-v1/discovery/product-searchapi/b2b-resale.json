@@ -1,0 +1,319 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-08-26-de-v1",
+  "systemId": "product-searchapi",
+  "mode": "product-with-discovery-only-provider",
+  "providerId": "searchapi",
+  "channelId": "b2b-resale",
+  "queryOutputs": [
+    {
+      "queryIndex": 0,
+      "rawSha256": "73c82e13c9b7f6444b538c8b7289096bdfbc918bf3811d72d4e1ed36f6183fcb",
+      "attempts": 1,
+      "result": {
+        "providerId": "searchapi",
+        "query": {
+          "query": "Netzwerktechnik Fachhändler B2B Deutschland WLAN Router Switch",
+          "countryCode": "DE",
+          "countryName": "Germany",
+          "languageCode": "de",
+          "maxResults": 10
+        },
+        "items": [
+          {
+            "providerId": "searchapi",
+            "rank": 1,
+            "title": "TP-Link Deutschland - Netzwerklösungen für Privat- und ...",
+            "url": "https://www.tp-link.com/de/",
+            "snippet": "TP-Link ist der weltweit führende Anbieter von WLAN-Netzwerkgeräten, die Produkte in über 170-Länder und Hunderte Millionen von Kunden versenden.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 2,
+            "title": "Industrieller WLAN-Router | Dualband 2,4/5,8 GHz ...",
+            "url": "https://www.come-star.com/de/industrial-router/wifi-router/",
+            "snippet": "COME-STAR ist ein professioneller Hersteller von industriellen WLAN-Routern und bietet robuste WLAN-Router für industrielle Anwendungen und IoT-Projekte.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 3,
+            "title": "Netzwerktechnik – Finden Sie B2B-Lieferanten",
+            "url": "https://www.wlw.de/de/suche/netzwerktechnik",
+            "snippet": "Finden Sie Netzwerktechnik-Lieferanten ✓Einfache Recherche ✓Direkter Kontakt ✓Führender B2B-Marktplatz ➤ Jetzt Lieferanten kontaktieren!",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 4,
+            "title": "Switches for Business WiFi | TP-Link Deutschland - Omada",
+            "url": "https://www.omadanetworks.com/de/business-networking/solution/switches-for-business-wifi/",
+            "snippet": "Wall-to-Wall-WLAN und mehr. Für kleine und mittlere Unternehmen ist ein Netzwerk-Switch die grundlegende Komponente für den Aufbau eines Unternehmensnetzwerks.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 5,
+            "title": "Netzwerk Switches günstig kaufen! - Expert",
+            "url": "https://www.expert.de/shop/unsere-produkte/computer-zubehor/netzwerk/netzwerk-switches",
+            "snippet": "Große Auswahl an expert Netzwerk-Switches Angeboten ✓ Jetzt online & in Ihrer Nähe. Angebote vergleichen - Netzwerk-Switches - Netzwerk-Switches günstig ...",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 6,
+            "title": "✓ Netzwerk-Access Point ✓ Großhandel B2B ✓ Gruppe ...",
+            "url": "https://www.whoffice.de/gruppe,whoffice,ru,seite.2/produkte,2800000,2800052,Network-access-point?pSprache=de",
+            "snippet": "Access Points für Fachhändler: Hochleistungs-Netzwerklösungen von NETGEAR, TP-LINK und Ubiquiti. Skalierbare und sichere Netzwerkinfrastruktur für Ihre ...",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 7,
+            "title": "5G & LTE Netzwerktechnik: Router, Switches",
+            "url": "https://www.fts-hennig.de/netztechnik?srsltid=AfmBOopHuDr1MQ-MWMdwitwxA6GDQOC13p_h63CFIWB0yus_TAvq8pCw",
+            "snippet": "Finden Sie hochwertige 5G- und LTE-Netzwerklösungen bei FTS Hennig. Umfassendes Sortiment an Routern und Switches für alle Ihre Netzwerkanforderungen.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 8,
+            "title": "Netzwerk | JACOB Elektronik | Competence Center",
+            "url": "https://www.jacob.de/netzwerk/",
+            "snippet": "Bei JACOB findest du das vollständige Portfolio aus Switches, WLAN-Lösungen, Cybersecurity und Transceivern in einem einzigen Sortiment, mit tiefen ...",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 9,
+            "title": "Netzwerktechnik bei reichelt günstig bestellen",
+            "url": "https://www.reichelt.de/de/de/shop/kategorie/netzwerktechnik-5820",
+            "snippet": "Entdecken Sie hochwertige Netzwerktechnik bei reichelt elektronik ✓ Große Auswahl ✓ Top Qualität. Jetzt günstig bestellen!",
+            "sourceKind": "web"
+          }
+        ],
+        "sourceUrls": [
+          "https://www.tp-link.com/de/",
+          "https://www.come-star.com/de/industrial-router/wifi-router/",
+          "https://www.wlw.de/de/suche/netzwerktechnik",
+          "https://www.omadanetworks.com/de/business-networking/solution/switches-for-business-wifi/",
+          "https://www.expert.de/shop/unsere-produkte/computer-zubehor/netzwerk/netzwerk-switches",
+          "https://www.whoffice.de/gruppe,whoffice,ru,seite.2/produkte,2800000,2800052,Network-access-point?pSprache=de",
+          "https://www.fts-hennig.de/netztechnik?srsltid=AfmBOopHuDr1MQ-MWMdwitwxA6GDQOC13p_h63CFIWB0yus_TAvq8pCw",
+          "https://www.jacob.de/netzwerk/",
+          "https://www.reichelt.de/de/de/shop/kategorie/netzwerktechnik-5820"
+        ],
+        "requestCount": 1,
+        "latencyMs": 2136
+      }
+    },
+    {
+      "queryIndex": 1,
+      "rawSha256": "c6c59df93b67c8b2a16a25921df50fd8417263cfddcf9678f19a00833d97a570",
+      "attempts": 1,
+      "result": {
+        "providerId": "searchapi",
+        "query": {
+          "query": "IT Reseller Systemhaus Netzwerkhardware Deutschland Geschäftskunden",
+          "countryCode": "DE",
+          "countryName": "Germany",
+          "languageCode": "de",
+          "maxResults": 10
+        },
+        "items": [
+          {
+            "providerId": "searchapi",
+            "rank": 1,
+            "title": "Partner - ASS it-systemhaus GmbH",
+            "url": "https://ass-systemhaus.de/partner/",
+            "snippet": "Mit dem starken Partner-Netzwerk der ASS it-systemhaus GmbH erhalten Sie stets die passende IT-Lösung für Ihre individuellen Anforderungen.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 2,
+            "title": "Die Top 30 IT-Systemhäuser in Deutschland 2026",
+            "url": "https://www.placetel.de/it-systemhaeuser",
+            "snippet": "Das IT-Systemhaus unterstützt mittelständische und Enterprise-Kunden mit Managed Services, Hybrid Cloud, Collaboration‑Lösungen (Microsoft 365, ...",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 3,
+            "title": "IT-Systemhäuser: Ein unverzichtbarer Partner für ...",
+            "url": "https://www.interix-systeme.de/it-systemhaeuser-ein-unverzichtbarer-partner-fuer-unternehmen/",
+            "snippet": "IT-Systemhäuser agieren hierbei als Partner und helfen Unternehmen dabei, ihre technologischen Anforderungen zu erfüllen und innovative Lösungen ...",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 4,
+            "title": "Kommunikationslösungen für ein erfolgreiches Geschäft",
+            "url": "https://g2-systemhaus.de/kommunikationsloesungen/",
+            "snippet": "Optimieren Sie Ihre Geschäftskommunikation mit maßgeschneiderten Kommunikationslösungen und steigern Sie Ihren Erfolg.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 5,
+            "title": "IT-Systemhäuser Deutschland 2026: Markt & Verbünde",
+            "url": "https://www.hagel-it.de/it-dienstleister/systemhaus-verbund",
+            "snippet": "Festpreis ab 50 €/Arbeitsplatz/Monat für Managed IT Services inkl. Helpdesk, Monitoring, Patch-Management. Vor-Ort-Service deutschlandweit über rund 200 iTeam- ...",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 6,
+            "title": "REDDOXX Partner finden in Deutschland, Österreich & ...",
+            "url": "https://www.reddoxx.com/kaufen/partner/",
+            "snippet": "REDDOXX Partner. Unsere Vertriebspartner, Reseller und IT-Systemhäuser ermöglichen eine lokale Verfügbarkeit und starken Support direkt vor Ort.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 7,
+            "title": "netzwerk hardware Firmenliste -Deutschland",
+            "url": "https://www.firmendatenbanken.de/firmen/n1/s/netzwerk-hardware.html",
+            "snippet": "ALLCOMPUTER PC-Fachgeschäft & IT-Systemhaus. 63263 Neu-Isenburg. Auszug aus dem Geschäftsbereich: Computer Netzwerk Reparatur Schulung Internet Service ...",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 8,
+            "title": "Ranking der größten IT-Dienstleister: die Top 25 ...",
+            "url": "https://www.channelpartner.de/article/4012344/ranking-der-grosten-it-dienstleister-die-top-25-systemhauser-in-deutschland-2025.html",
+            "snippet": "Auch 2025 bleibt Bechtle Deutschlands größtes Systemhaus. Bechtle. Außerdem wird Bechtle – nicht nur im B2B-E-Commerce, sondern als Systemhaus ...",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 9,
+            "title": "IT-Hardware für Geschäftskunden – Beratung & Service",
+            "url": "https://kernkompetenz-it.de/it-hardware-fuer-geschaeftskunden",
+            "snippet": "Hochwertige IT-Hardware für Unternehmen. Persönliche Beratung, schnelle Lieferung und Vor-Ort-Service. Maßgeschneiderte Lösungen.",
+            "sourceKind": "web"
+          }
+        ],
+        "sourceUrls": [
+          "https://ass-systemhaus.de/partner/",
+          "https://www.placetel.de/it-systemhaeuser",
+          "https://www.interix-systeme.de/it-systemhaeuser-ein-unverzichtbarer-partner-fuer-unternehmen/",
+          "https://g2-systemhaus.de/kommunikationsloesungen/",
+          "https://www.hagel-it.de/it-dienstleister/systemhaus-verbund",
+          "https://www.reddoxx.com/kaufen/partner/",
+          "https://www.firmendatenbanken.de/firmen/n1/s/netzwerk-hardware.html",
+          "https://www.channelpartner.de/article/4012344/ranking-der-grosten-it-dienstleister-die-top-25-systemhauser-in-deutschland-2025.html",
+          "https://kernkompetenz-it.de/it-hardware-fuer-geschaeftskunden"
+        ],
+        "requestCount": 1,
+        "latencyMs": 4736
+      }
+    },
+    {
+      "queryIndex": 2,
+      "rawSha256": "5e58bbb50b46cb5745a439df1da01fe4253a3b5b99c7b2139044cd9ad1429144",
+      "attempts": 1,
+      "result": {
+        "providerId": "searchapi",
+        "query": {
+          "query": "networking VAR reseller Germany SMB WiFi switches business customers",
+          "countryCode": "DE",
+          "countryName": "Germany",
+          "languageCode": "de",
+          "maxResults": 10
+        },
+        "items": [
+          {
+            "providerId": "searchapi",
+            "rank": 1,
+            "title": "HPE Network Switches for SMB's",
+            "url": "https://buy.hpe.com/at/de/Networkswitches",
+            "snippet": "Easy to install and manage, our SMB router solutions also include scalable models that can effectively support evolving networking needs as your business grows.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 2,
+            "title": "Business-Class Networking für moderne KMU",
+            "url": "https://www.netgear.com/de/business/solutions/smb/",
+            "snippet": "Einfache, kosteneffiziente und zukunftssichere Designs mit Wireless Access Points, PoE-Switches, Insight Pro Management und ProSupport für kleine und mittlere ...",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 3,
+            "title": "Network switch: High-End Small Business vs. Entry-Level ...",
+            "url": "https://www.reddit.com/r/networking/comments/144amk0/network_switch_highend_small_business_vs/",
+            "snippet": "Am I fine just purchasing the hardware or should I really try to find a different VAR to make sure I'm getting everything I need?",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 4,
+            "title": "Small Business Network Switches Market",
+            "url": "https://dataintelo.com/report/global-small-business-network-switches-market",
+            "snippet": "The small business network switches market was valued at $4.8 billion in 2025 and is projected to reach $9.1 billion by 2034, growing at a 7.3% CAGR.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 5,
+            "title": "L2 Switches",
+            "url": "https://www.edge-core.com/enterprise-l2-switches/",
+            "snippet": "With the trend of high speed Ethernet, [redacted-phone]Gbps, Edgecore switches offer a complete set of advanced software features that will easily satisfy the ...",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 6,
+            "title": "NETGEAR BUSINESS - ALSO Deutschland GmbH",
+            "url": "https://www.also.com/ec/cms5/de_1010/1010_anbieter/netgear/netgear-business/index.jsp",
+            "snippet": "Als Marktführer im Bereich PoE Switching hat NETGEAR jetzt uPoE Switches für unterbrechungsfreie PoE++ Leistung im Portfolio. uPoE (PoE++) verdoppelt bzw.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 7,
+            "title": "Zyxel launches industry's first five-color LED smart ...",
+            "url": "https://www.zyxel.com/de/de/newsroom/press-releases/zyxel-launches-industrys-first-five-color-led-smart-managed-switch-to-help-businesses-adopt-wifi-6-standard-with-ease",
+            "snippet": "Zyxel launches industry's first five-color LED smart managed switch to help businesses adopt WiFi 6 standard with ease. The XS1930 series Multi-Gigabit switch ...",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 8,
+            "title": "About us",
+            "url": "https://smb-it-solution.com/en/info/about-us.html?srsltid=AfmBOoq8u7xF6oWL2mSncx3oeMlmLMLGRkYh_j4dMrCMDS6HfeHdQzsl",
+            "snippet": "Since our foundation in 2015, we have been active in the worldwide trade of IT hardware and networking technology. From our location in Germany, we supply ...",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 9,
+            "title": "Distributors & Switches - buy at BerryBase",
+            "url": "https://www.berrybase.de/en/network-iot/network-devices/distributors-switches/?srsltid=AfmBOor-lTkGHuJ_-AwBwKY5DPQy1xKsoy-Rg-LBVhfUknjbBHsUDooj",
+            "snippet": "Discover network switches and distributors! These innovative devices are indispensable for an efficient and powerful network - both for businesses and private ...",
+            "sourceKind": "web"
+          }
+        ],
+        "sourceUrls": [
+          "https://buy.hpe.com/at/de/Networkswitches",
+          "https://www.netgear.com/de/business/solutions/smb/",
+          "https://www.reddit.com/r/networking/comments/144amk0/network_switch_highend_small_business_vs/",
+          "https://dataintelo.com/report/global-small-business-network-switches-market",
+          "https://www.edge-core.com/enterprise-l2-switches/",
+          "https://www.also.com/ec/cms5/de_1010/1010_anbieter/netgear/netgear-business/index.jsp",
+          "https://www.zyxel.com/de/de/newsroom/press-releases/zyxel-launches-industrys-first-five-color-led-smart-managed-switch-to-help-businesses-adopt-wifi-6-standard-with-ease",
+          "https://smb-it-solution.com/en/info/about-us.html?srsltid=AfmBOoq8u7xF6oWL2mSncx3oeMlmLMLGRkYh_j4dMrCMDS6HfeHdQzsl",
+          "https://www.berrybase.de/en/network-iot/network-devices/distributors-switches/?srsltid=AfmBOor-lTkGHuJ_-AwBwKY5DPQy1xKsoy-Rg-LBVhfUknjbBHsUDooj"
+        ],
+        "requestCount": 1,
+        "latencyMs": 2351
+      }
+    }
+  ],
+  "requestCount": 3,
+  "latencyMs": 9223,
+  "usage": {}
+}

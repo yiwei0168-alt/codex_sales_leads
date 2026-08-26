@@ -1,0 +1,357 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-08-26-de-v1",
+  "systemId": "product-tavily",
+  "mode": "product-with-discovery-only-provider",
+  "providerId": "tavily",
+  "channelId": "b2b-resale",
+  "queryOutputs": [
+    {
+      "queryIndex": 0,
+      "rawSha256": "cee7da94df83d18280e41b2492fb91e4043020d8726c32399e8dc28ed3e411a5",
+      "attempts": 1,
+      "result": {
+        "providerId": "tavily",
+        "query": {
+          "query": "Netzwerktechnik Fachhändler B2B Deutschland WLAN Router Switch",
+          "countryCode": "DE",
+          "countryName": "Germany",
+          "languageCode": "de",
+          "maxResults": 10
+        },
+        "items": [
+          {
+            "providerId": "tavily",
+            "rank": 1,
+            "title": "OMG.DE - WLAN, Richtfunk & Smart Home vom Fachhändler",
+            "url": "https://www.omg.de/",
+            "snippet": "# Netzwerk-, WLAN- & Richtfunk-Technik vom Fachhändler Ob WLAN, Netzwerktechnik, IT-Security, Videoüberwachung, IoT & Smarthome oder Richtfunk – bei OMG.DE finden Sie als Fachhändler seit 1997 ein umfangreiches Sortiment renommierter Hersteller für jede Netzwerkanforderung. Unsere beiden Kernmarken Ubiquiti und MikroTik ergänzen wir um starke Partner wie Cambium Networks, Zyxel, DrayTek, Teltonika, Shelly, FRITZ!, HikVision, ekahau und Yubico – alles aus einer Hand, mit persönlicher Beratung und schnellem Versand direkt aus Deutschland. Ubiquiti Logo ### Enterprise-WLAN und Netzwerktechnik für jede Anforderung [...] Ubiquiti zählt zu den weltweit führenden Herstellern professioneller Netzwerktechnik – mit leistungsstarken und zugleich benutzerfreundlichen Lösungen für Unternehmen, Provider und Privatanwender. Im Zentrum steht das UniFi-Ökosystem: Access Points, Switches und Gateways verwalten Sie zentral über die UniFi-Software – für nahtloses WLAN-Management, stabile Netzwerke und einfache Skalierung vom Einzelbüro bis zum Campus. Für Richtfunk-Strecken und Außenanwendungen sorgen airMAX und airFiber für stabile Punkt-zu-Punkt- und Punkt-zu-Multipoint-Verbindungen. [...] Die Cloud Router Switches (CRS) ergänzen das Portfolio um leistungsstarke Layer-2/3-Switching-Lösungen. Wireless- und LTE-Produkte sorgen auch in anspruchsvollen Outdoor- und Richtfunk-Szenarien für stabile Konnektivität. Mit einem hervorragenden Preis-Leistungs-Verhältnis und maximaler Konfigurierbarkeit ist MikroTik die richtige Wahl für alle, die volle Kontrolle über ihr Netzwerk behalten möchten. Jetzt entdecken ## Tests, Unboxings & Vergleiche Ubiquiti, MikroTik Router und weitere WLAN-Produkte von Mimosa & Ruckus Wireless bei OMG.DE OMG.DE Logo Mehr Videos auf unserem Kanal! Anmelden",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 2,
+            "title": "5G & LTE Netzwerktechnik: Router, Switches - FTS Hennig",
+            "url": "https://www.fts-hennig.de/netztechnik",
+            "snippet": "Finden Sie hochwertige 5G- und LTE-Netzwerklösungen bei FTS Hennig. Umfassendes Sortiment an Routern und Switches für alle Ihre Netzwerkanforderungen.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 3,
+            "title": "Switches for Business WiFi | TP-Link Deutschland - Omada",
+            "url": "https://www.omadanetworks.com/de/business-networking/solution/switches-for-business-wifi",
+            "snippet": "Wall-to-Wall-WLAN und mehr. Für kleine und mittlere Unternehmen ist ein Netzwerk-Switch die grundlegende Komponente für den Aufbau eines Unternehmensnetzwerks.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 4,
+            "title": "Netzwerktechnik bei reichelt günstig bestellen",
+            "url": "https://www.reichelt.de/de/de/shop/kategorie/netzwerktechnik-5820",
+            "snippet": "Entdecken Sie hochwertige Netzwerktechnik bei reichelt elektronik ✓ Große Auswahl ✓ Top Qualität. Jetzt günstig bestellen! Netzwerkgeräte, wie Router, Switches",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 5,
+            "title": "Netzwerk | JACOB Elektronik | Competence Center",
+            "url": "https://www.jacob.de/netzwerk",
+            "snippet": "Bei JACOB findest du das vollständige Portfolio aus Switches, WLAN-Lösungen, Cybersecurity und Transceivern in einem einzigen Sortiment, mit tiefen",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 6,
+            "title": "netzwerk hardware Firmenliste -Deutschland",
+            "url": "https://www.firmendatenbanken.de/firmen/n1/s/netzwerk-hardware.html",
+            "snippet": "Händler D-Hessen Eintrag bearbeiten Media-net-Point 35239 Steffenberg Auszug aus dem Geschäftsbereich: Computerservice Computerhardware IT-Security Netzwerktechnik Mobilfunk Glasfaser Media-net-Point Steffenberg D-Hessen Firmendetails | 28.391 Aufrufe Daten: Aktuell vom: [redacted-phone] Hersteller Dienstleister Großhändler Händler D-Mecklenburg-Vorpommern Eintrag bearbeiten Dr. Netik & Partner GmbH 17034 Neubrandenburg Auszug aus dem Geschäftsbereich: Netzwerk Software Warenwirtschaft crm Hardware Citrix Navision Finanzierung scm Firmendetails | 4.277 Aufrufe Daten: Aktuell vom: [redacted-phone] Hersteller Dienstleister Großhändler Händler D-Rheinland-Pfalz Eintrag bearbeiten BSC Systemhaus GmbH 67346 Speyer [...] Eintrag bearbeiten Schmidt’s LOGIN GmbH 81929 München Auszug aus dem Geschäftsbereich: Inventarisierung Lizenzmanagement Hardware Software IT-Netzwerk Dokumentation IT Asset Management Software Asset Management ITAM Firmendetails | 1.177 Aufrufe Daten: Aktuell vom: [redacted-phone] Hersteller Dienstleister Großhändler Händler D-Bremen/Bremerhaven Eintrag bearbeiten ALSEHK Computer Bremen 28259 Bremen Auszug aus dem Geschäftsbereich: Hardware/Software Consulting IT-Dienstleister IT-Security PC-Notdienst TERRA Service-Partner TERRA Cloud Backup Video-/Audiobearbeitung Videodigitalisierung/-schnitt Netzwerktechnik Firmendetails | 73.078 Aufrufe Daten: Aktuell vom: [redacted-phone] Hersteller Dienstleister Großhändler Händler D-Hessen Eintrag bearbeiten Media-net-Point [...] ALLCOMPUTER PC-Fachgeschäft & IT-Systemhaus 63263 Neu-Isenburg Auszug aus dem Geschäftsbereich: Computer Netzwerk Reparatur Schulung Internet Service Hardware Software Datenbank Firmendetails | 5.412 Aufrufe Daten: Aktuell vom: [redacted-phone] Hersteller Dienstleister Großhändler Händler D-Bayern Eintrag bearbeiten CompNetKom Service GmbH 85253 Erdweg-Unterweikertshofen Auszug aus dem Geschäftsbereich: Computerreparatur Telefonanlagen Vor-Ort-Service Installation Internet M Partner Hardware Synology Gold Partner Netzwerk Firmendetails | 3.198 Aufrufe Daten: Aktuell vom: [redacted-phone] Hersteller Dienstleister Großhändler Händler D-Sachsen-Anhalt Eintrag bearbeiten CSV GmbH 06886 Lutherstadt Wittenberg",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 7,
+            "title": "Router für ihr Netzwerk - büroshop24",
+            "url": "https://www.bueroshop24.de/technik/netzwerke-kommunikation/router-modems",
+            "snippet": "FRITZ! FRITZ!Box 6860 5G WLAN-Router, 1 St. ; Kombination aus Access Point und Switch. Wird für die Kopplung von mobilen Endgeräte ans Internet verwendet.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 8,
+            "title": "Netzwerk-Technik bei Conrad",
+            "url": "https://www.conrad.de/de/c/netzwerk-17132.html",
+            "snippet": "Große Auswahl an Produkten für Ihr Netzwerk ✓ Netzwerktechnik von Top-Marken ✓ Von Netzwerkschränken über Kabel bis hinzu WLAN-Komponenten.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 9,
+            "title": "Intellinet Deutschland: Intellinet Network Solutions Deutschland",
+            "url": "https://intellinetnetwork.de/",
+            "snippet": "Die umfassende Netzwerklösung - Switche - PoE - Netzwerkkarten - Schränke - Netzwerkkabel - Verbinder - Patch Panels- SFP - Medienkonverter - WLAN/WiFi und",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 10,
+            "title": "Netzwerktechnik & Zubehör kaufen | LaanTech®",
+            "url": "https://www.laantech.de/",
+            "snippet": "Patchkabel, Netzwerkzubehör, 19\"-Zubehör & Stromverteilung für IT-Installationen und Gewerbe. Schneller Versand, Fachhändler seit über 20 Jahren.",
+            "sourceKind": "web"
+          }
+        ],
+        "sourceUrls": [
+          "https://www.omg.de/",
+          "https://www.fts-hennig.de/netztechnik",
+          "https://www.omadanetworks.com/de/business-networking/solution/switches-for-business-wifi",
+          "https://www.reichelt.de/de/de/shop/kategorie/netzwerktechnik-5820",
+          "https://www.jacob.de/netzwerk",
+          "https://www.firmendatenbanken.de/firmen/n1/s/netzwerk-hardware.html",
+          "https://www.bueroshop24.de/technik/netzwerke-kommunikation/router-modems",
+          "https://www.conrad.de/de/c/netzwerk-17132.html",
+          "https://intellinetnetwork.de/",
+          "https://www.laantech.de/"
+        ],
+        "requestCount": 1,
+        "latencyMs": 3373,
+        "usage": {
+          "credits": 2
+        }
+      }
+    },
+    {
+      "queryIndex": 1,
+      "rawSha256": "6ef412d2094ea0945ed0dec34fcf386b74c58f6d274819704c8332ee2715e672",
+      "attempts": 1,
+      "result": {
+        "providerId": "tavily",
+        "query": {
+          "query": "IT Reseller Systemhaus Netzwerkhardware Deutschland Geschäftskunden",
+          "countryCode": "DE",
+          "countryName": "Germany",
+          "languageCode": "de",
+          "maxResults": 10
+        },
+        "items": [
+          {
+            "providerId": "tavily",
+            "rank": 1,
+            "title": "netzwerk hardware Firmenliste -Deutschland - FDB-Business",
+            "url": "https://www.firmendatenbanken.de/firmen/n1/s/netzwerk-hardware.html",
+            "snippet": "Eintrag bearbeiten BSC Systemhaus GmbH 67346 Speyer Auszug aus dem Geschäftsbereich: Computer Software IT-Service Hardware Telefonanlage Datensicherung Netzwerk EDV Handwerk Firmendetails | 1.826 Aufrufe Daten: Aktuell vom: [redacted-phone] Hersteller Dienstleister Großhändler Händler D-Baden-Württemberg Eintrag bearbeiten BKSYS Systemplanung 71397 Leutenbach Auszug aus dem Geschäftsbereich: Softwareprogrammierung Softwareprojektierung Hardware Netzwerktechnik Schnittstellen Softwaredienstleistungen Computer BKSYS Systemplanung Leutenbach Firmendetails | 2.258 Aufrufe letztes Update: [redacted-phone] Hersteller Dienstleister Großhändler Händler D-Baden-Württemberg Eintrag bearbeiten Business Software Ressing 76479 Steinmauern [...] Business Software Ressing 76479 Steinmauern Auszug aus dem Geschäftsbereich: IT-Dienstleistungen microtech büro+ ERP Warenwirtschaft Lexware cobra CRM 3CX Netzwerk Hardware Software Firmendetails | 24.579 Aufrufe Datenaktualität: > 1 Jahr Hersteller Dienstleister Großhändler Händler D-Baden-Württemberg Eintrag bearbeiten HT-Software Thilo Lampart 73669 Lichtenwald Auszug aus dem Geschäftsbereich: Software Netzwerk Internet Hardware Warenwirtschaft Selectline Fibu Wawi HT-Software Thilo Lampart Firmendetails | 2.089 Aufrufe Datenaktualität: > 1 Jahr Hersteller Dienstleister Großhändler Händler D-Nordrhein-Westfalen Eintrag bearbeiten terraconnect GmbH & Co. KG 48301 Nottuln [...] ALLCOMPUTER PC-Fachgeschäft & IT-Systemhaus 63263 Neu-Isenburg Auszug aus dem Geschäftsbereich: Computer Netzwerk Reparatur Schulung Internet Service Hardware Software Datenbank Firmendetails | 5.412 Aufrufe Daten: Aktuell vom: [redacted-phone] Hersteller Dienstleister Großhändler Händler D-Bayern Eintrag bearbeiten CompNetKom Service GmbH 85253 Erdweg-Unterweikertshofen Auszug aus dem Geschäftsbereich: Computerreparatur Telefonanlagen Vor-Ort-Service Installation Internet M Partner Hardware Synology Gold Partner Netzwerk Firmendetails | 3.198 Aufrufe Daten: Aktuell vom: [redacted-phone] Hersteller Dienstleister Großhändler Händler D-Sachsen-Anhalt Eintrag bearbeiten CSV GmbH 06886 Lutherstadt Wittenberg",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 2,
+            "title": "REDDOXX Partner finden in Deutschland, Österreich & Schweiz",
+            "url": "https://www.reddoxx.com/kaufen/partner",
+            "snippet": "Reseller und IT-Systemhäuser ermöglichen eine lokale Verfügbarkeit und starken Support direkt vor Ort. [redacted-email] [redacted-phone] kostenlose",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 3,
+            "title": "IT-Systemhäuser Deutschland 2026: Markt & Verbünde",
+            "url": "https://www.hagel-it.de/it-dienstleister/systemhaus-verbund",
+            "snippet": "## IT-Systemhaus Deutschland: Definition und Marktgröße Der Begriff „IT-Systemhaus” ist in Deutschland nicht geschützt. Theoretisch darf jeder, der einen Laptop konfigurieren kann, sein Geschäft so nennen. In der Praxis meint man damit aber Anbieter, die das komplette IT-Bündel liefern: Hardware, Software, Cloud, Cybersecurity, Telefonie, Helpdesk — alles aus einer Hand. > IT-Systemhaus bedeutet: Ein Anbieter, der den IT-Betrieb eines Unternehmens komplett übernimmt — von der Beratung über Beschaffung und Implementierung bis zur laufenden Betreuung — und damit als zentraler IT-Partner fungiert. [...] | Kriterium | Konzern-Systemhaus (z.B. Bechtle) | Mittelstands-Systemhaus mit Verbund (z.B. hagel IT / iTeam) | --- | Zielkunde | ab 500 Arbeitsplätze, Konzerne, Public Sector | 5–250 Arbeitsplätze, Mittelstand | | Ansprechpartner | Account Manager + Hotline-Tickets | Fester GF-Kontakt + 32-Personen-Team | | Reaktionszeit | SLA-gestaffelt, oft nur Premium-Tier mit < 4h | Vertraglich 4h, Anspruch: sofort | | Vor-Ort-Reichweite | Eigene Niederlassungen in Großstädten | Verbund-Netzwerk in ganz Deutschland (~200 Partner) | | Preise | Großkunden-Konditionen, Listenpreise oft hoch | Festpreis ab 50 €/AP/Monat, planbar | | Cloud / M365 Kompetenz | Sehr hoch, eigene Cloud-Practices | Hoch, durch Verbund-Schulungen ständig auf Stand | [...] So machen wir das: 1. Hamburg. Server, Helpdesk, Strategie — alles aus unserer Hand. Direkter Draht zur Geschäftsführung. 2. Remote-Support deutschlandweit. Rund 80 % aller Tickets lösen wir aus Hamburg per Fernwartung — egal wo der Mitarbeiter sitzt. 3. Vor-Ort in München / Berlin. Wenn ein Switch kaputt geht oder eine Firewall getauscht werden muss, fährt der iTeam-Partner vor Ort. Wir koordinieren, der Kunde sieht nur einen Ansprechpartner. 4. Eine Rechnung, eine Vertragsbeziehung. Der Kunde hat einen Festpreis-Vertrag mit uns — was im Hintergrund passiert, ist seine Sorge nicht. Ein Ansprechpartner, eine Rechnung, alles drin. Keine zehn verschiedenen Verträge, keine Überraschungen. Das ist alles, was wir wollen.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 4,
+            "title": "So finden Sie die besten IT Systemhäuser Deutschland",
+            "url": "https://deeken-group.com/2026/03/06/it-systemhauser-deutschland",
+            "snippet": "Als ISO 27001:2024 zertifiziertes Systemhaus betreuen wir ausschließlich Unternehmen und Selbstständige und bieten maßgeschneiderte Lösungen",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 5,
+            "title": "Die Top 30 IT-Systemhäuser in Deutschland 2026",
+            "url": "https://www.placetel.de/it-systemhaeuser",
+            "snippet": "| | Die EDV‑Beratung Neumann GmbH mit Sitz in Karlsruhe ist seit 1993 ein regional verankertes IT‑Systemhaus, das sowohl Privathaushalte als auch kleine und mittelständische Unternehmen betreut. Mit mehr als 30 Jahren Erfahrung in den Bereichen Hardware‑ und Software‑Verkauf, PC‑ und Serverwartung sowie Netzwerk‑Administration bietet das Unternehmen ein umfassendes Leistungsportfolio – darunter Reparatur‑ und Wartungsservices in der eigenen Werkstatt, Installation, Consulting, Fernwartung und Managed Services. | Karlsruhe | Freelancer Kleine Unternehmen Mittelstand Privathaushalte Verschiedenste Branchen | 5,0 ⭐ (2) Karlsruhe | [...] | | Die CANCOM SE mit Hauptsitz in München zählt zu den führenden IT-Dienstleistern in Deutschland und bietet ein umfassendes Portfolio rund um IT- und Cloud-Lösungen. Der Fokus liegt auf der digitalen Transformation von Geschäftsprozessen durch maßgeschneiderte Services in den Bereichen IT-Consulting, Managed Services, Cloud Computing und Security. Zu den Kunden gehören namhafte Unternehmen aus Industrie, Handel, dem Mittelstand sowie der öffentlichen Hand. | Neben Standorten in Deutschland und Österreich unterhält der Konzern ein internationales Partnernetzwerk mit Repräsentanzen unter anderem in Brüssel (Belgien) und der Slowakei. Hauptsitz: München | Mittelstand Großunternehmen Öffentlicher Sektor Bildung Carrier & Service Provider Gesundheitswesen Einzelhandel Kirche & Wohlfahrt [...] | | Die IT-HAUS GmbH mit Hauptsitz in Föhren (Rheinland-Pfalz) wurde 1998 gegründet und zählt heute zu den führenden IT-Systemhäusern Deutschlands. Seit ihrer Gründung hat sich die Unternehmensgruppe kontinuierlich weiterentwickelt und gilt als zuverlässiger Partner für mittelständische Unternehmen ebenso wie für internationale Konzerne. Mit über 360 Mitarbeitenden an 26 Standorten im In- und Ausland bietet das Unternehmen ein breites Spektrum maßgeschneiderter IT-Lösungen und Services. Die Schwerpunkte liegen unter anderem in den Bereichen IT-Security, Cloud-Transformation, XaaS-Modellen sowie nachhaltigen IT-Konzepten. Durch umfassende Beratung, modernste Technologien und ein starkes Partnernetzwerk unterstützt IT-HAUS seine Kunden dabei, digitale Prozesse effizienter, sicherer und",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 6,
+            "title": "Die 20 besten IT-Systemhäuser in Deutschland 🥇 2026 Ranking",
+            "url": "https://feedbax.de/it-systemhaus/deutschland",
+            "snippet": "115 Rezensionen TOP-BEWERTET 25 % IT Systemhäuser Hardware Beschaffung 11-50 > 1.000 € 100 € - 149 € Georgsmarienhütte, Deutschland Wir bieten moderne und verlässliche IT-Lösungen für unsere Kunden. Olbricht IT ist ein junges Unternehmen und beschäftigt sich hauptsächlich mit der Administration von Microsoft 365 (Teams, ...).Zusätzlich gehört zu den Hauptprojekten Homepage Hosting und Design mit WordPress. Weiter lesen + Profil zusammenfassen + Bewertungen analysieren + Projekte analyiseren + Stärken und Schwächen + Webseite analysieren Webseite Wir finden den idealen Anbieter für Sie! Erhalten Sie kostenlos, individuell für Sie ausgewählte Top-Angebote. [...] 100 % IT Systemhäuser 11-50 Erlangen, Deutschland NEXTWERK ist professioneller IT-Dienstleister. Wir digitalisieren Ihre Geschäftsprozesse, helfen Ihnen, Arbeitsabläufe zu optimieren und kümmern uns um die Sicherheit Ihrer Systeme durch intelligenten Einsatz moderner IT-Lösungen. Weiter lesen + Profil zusammenfassen + Bewertungen analysieren + Projekte analyiseren + Stärken und Schwächen + Webseite analysieren Webseite ElevoNet GmbH Logo ### ElevoNet GmbH 5,0 29 Rezensionen TOP-BEWERTET 25 % IT Systemhäuser Drucker Management Desktop Management Anti Virus Management Patch Management Lizenzmanagement Backup Management Hardware Beschaffung Helpdesk IT Infrastruktur [redacted-phone] € - 149 € Neulußheim, Deutschland [...] [redacted-phone] € - 149 € Neulußheim, Deutschland Eure IT ist unsere Mission Die ElevoNet GmbH ist Ihr verlässlicher Partner für IT-Services. Wir bieten individuelle Lösungen in den Bereichen Netzwerk, Cloud, IT-Sicherheit und Support. Unser Ziel ist es, Ihre IT-Infrastruktur zu optimieren, Sicherheit zu gewährleisten und Effizienz zu steigern, damit Ihr Unternehmen erfo... Weiter lesen + Profil zusammenfassen + Bewertungen analysieren + Projekte analyiseren + Stärken und Schwächen + Webseite analysieren Webseite seo-leopard e.K. Logo ### seo-leopard e.K. 5,0 60 Rezensionen TOP-BEWERTET 6 % IT Systemhäuser Helpdesk [redacted-phone] € - 149 € Vallendar, Deutschland",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 7,
+            "title": "Hardware & Software für Ihr Unternehmen - ITCE Systemhaus",
+            "url": "https://www.itce-systemhaus.de/it-vor-ort/it-betrieb/verkauf-von-hardware-software",
+            "snippet": "Wir verkaufen Hardware und Software aller gängigen Hersteller. Als Partner von Lenovo, veeam, Cisco und Microsoft sind wir in der Lage, Ihnen Waren dieser",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 8,
+            "title": "Partner - Mehr für Dein Business - Xpertus IT Systemhaus GmbH",
+            "url": "https://www.xpertus-it.de/home/partner",
+            "snippet": "Partner - Grundsätzlich erhalten Sie bei uns eine herstellerunabhänige Beratung und das beste Produkt für Ihren Bedarf.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 9,
+            "title": "IT-Systemhaus: Ihre IT-Komplettlösung",
+            "url": "https://www.cyberport-it-services.de/it-betreuung/it-systemhaus",
+            "snippet": "### Im Idealfall entscheiden Sie sich für ein IT-Systemhaus mit hohem Erfahrungsschatz und vielen Referenzen in Ihrer speziellen Branche. Standortnähe ist selbstverständlich ein Vorteil, wenn Sie Ihren persönlichen und kompetenten Ansprechpartner jederzeit in der Nähe wissen möchten. Mit unseren IT-Dienstleistungen bieten wir Ihnen das komplette Leistungsspektrum an vielen deutschen Standorten. Wir beraten Sie immer individuell und stellen genau das Leistungspaket für Sie zusammen, das zu Ihren Anforderungen passt. ### [...] Komplette IT-Lösungen aus einer Hand Als IT-Systemhaus bieten wir Ihnen alle IT-Services für Ihre IT-Infrastruktur, die Sie benötigen, aus einer einzigen Quelle. Dadurch können Sie sich auf Ihr Kerngeschäft konzentrieren und haben einen einzigen Ansprechpartner für all Ihre IT-Belange. Technologische Kompetenz und Expertise Cyberport IT-Services verfügt über Fachwissen und langjährige Erfahrung. Wir sind immer auf dem neuesten Stand der Technik und können daher innovative Lösungen bieten, die Ihrem Unternehmen einen Wettbewerbsvorteil verschaffen. Zeit- und Kosteneffizienz Durch die Auslagerung Ihrer IT-Aufgaben an ein IT-Systemhaus sparen Sie Kosten ein und nutzen Ihre Ressourcen effizienter. Wir optimieren Ihre IT-Prozesse und reduzieren den Bedarf an internen IT-Ressourcen. [...] ### Das Herzstück unserer IT-Dienstleistungen ist die Servicevereinbarung – ein Vertragsmodell, das den Umfang der monatlichen Leistungen festlegt, mit denen wir Ihre IT-Infrastruktur und Ihre Mitarbeiter bestmöglich betreuen können. Mit diesem Verständnis unserer Systemwartung sind viele unserer Kunden seit Jahren sehr zufrieden. ### Diese Themen könnten Sie auch interessieren: ## Datensicherung Daten sind ein essenzieller Vermögenswert Ihres Unternehmens. Schützen Sie sensible Daten durch regelmäßige Sicherungskopien zur Datenwiederherstellung. Erfahren Sie mehr › ## IT-Sicherheit Unsere Endpoint-Securitylösungen bieten grundlegenden Schutz für Ihre IT-Infrastruktur durch kontinuierliche Überwachung und Abwehr potenzieller Gefahren. Erfahren Sie mehr › ## Firewall",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 10,
+            "title": "Business-Netzwerklösungen „Engineered in Germany“: R&S ...",
+            "url": "https://rs-nc.rohde-schwarz.com/de",
+            "snippet": "Nächtliche Satellitenansicht Europas aus dem All mit leuchtenden Ländergrenzen und dichtem Netz aus Stadtlichtern ## R&S Networks and Cybersecurity ### Leistungsstarke Netzwerk- und Cybersicherheitslösungen aus Deutschland. Mehr erfahren ## Vertrauen Sie auf Deutschlands Nr. 1 für integrierte Netzwerklösungen. Volles Engagement für IT-Sicherheit: NIS2 und ISO/IEC 27001 [...] Produkte Netzwerklösungen von R&S Networks and Cybersecurity sind innovativ, sicher & zukunftsfähig. Zuverlässige Technologien aus Deutschland, auf die Sie sich verlassen können. Hier informieren R&S Networks and Cybersecurity Produktportfolio als Collage. Serverraum #### Sicherheitshinweis In unseren allgemeinen Sicherheitshinweisen erhalten Sie stets aktuelle Informationen und Handlungsempfehlungen zu bekannten Sicherheitslücken. Mehr erfahren Foto von zwei Personen, die in einem modernen Büro oder Café an ihren Laptops arbeiten; links sind viele Topfpflanzen auf dem Fensterbrett gesehen; rechts davon sitzen eine junge, blonde Frau im Vordergrund und ein junger, brünetter Mann mit Brille im Hintergrund dem Fenster zugewandt an ihren Laptops und arbeiten gutgelaunt an etwas [...] Die europäische NIS2-Richtlinie veranlasst viele Unternehmen und Behörden zur Neubewertung ihrer Sicherheitsmaßnahmen. Für Rohde & Schwarz Networks and Cybersecurity bedeutet das: intensive Unterstützung bei der Umsetzung und volles Engagement für unsere Produkte und Sicherheitspolitik. Wir haben dies kürzlich bewiesen: Unsere R&S®LANCOM Management Cloud (R&S®LMC) und Service- & Support-Prozesse sind nach ISO/IEC 27001 zertifiziert. Erfahren Sie mehr über unser Engagement für höchste Sicherheitsstandards und den Schutz sensibler Daten! Zur ISO/IEC 27001-Zertifizierung Grafik zur ISO/IEC-27001-Zertifizierung von Rohde & Schwarz Networks and Cybersecurity mit TÜV-Siegel. Digitale Souveränität im IT-Bereich",
+            "sourceKind": "web"
+          }
+        ],
+        "sourceUrls": [
+          "https://www.firmendatenbanken.de/firmen/n1/s/netzwerk-hardware.html",
+          "https://www.reddoxx.com/kaufen/partner",
+          "https://www.hagel-it.de/it-dienstleister/systemhaus-verbund",
+          "https://deeken-group.com/2026/03/06/it-systemhauser-deutschland",
+          "https://www.placetel.de/it-systemhaeuser",
+          "https://feedbax.de/it-systemhaus/deutschland",
+          "https://www.itce-systemhaus.de/it-vor-ort/it-betrieb/verkauf-von-hardware-software",
+          "https://www.xpertus-it.de/home/partner",
+          "https://www.cyberport-it-services.de/it-betreuung/it-systemhaus",
+          "https://rs-nc.rohde-schwarz.com/de"
+        ],
+        "requestCount": 1,
+        "latencyMs": 4143,
+        "usage": {
+          "credits": 2
+        }
+      }
+    },
+    {
+      "queryIndex": 2,
+      "rawSha256": "c5a8424c422a2339f6130d0aef7a2f57e8aae01d6fc6c7c1286d20fc48cf3602",
+      "attempts": 1,
+      "result": {
+        "providerId": "tavily",
+        "query": {
+          "query": "networking VAR reseller Germany SMB WiFi switches business customers",
+          "countryCode": "DE",
+          "countryName": "Germany",
+          "languageCode": "de",
+          "maxResults": 10
+        },
+        "items": [
+          {
+            "providerId": "tavily",
+            "rank": 1,
+            "title": "Small Business Network Switches Market Research Report 2034",
+            "url": "https://dataintelo.com/report/global-small-business-network-switches-market",
+            "snippet": "specification comparisons, customer reviews, and rapid delivery. The convenience of online procurement, combined with comprehensive technical documentation and compatibility tools available on vendor websites, has reduced the reliance on in-person technical consultations historically provided by value-added resellers (VARs). The Offline channel retained a larger share of approximately 56.3% in 2025, reflecting the continued importance of traditional IT resellers, value-added resellers, system integrators, and specialty networking distributors such as Ingram Micro, TD Synnex, and Arrow Electronics in facilitating complex multi-site deployments, post-sale technical support, and financing arrangements for SMB customers. The offline channel is projected to grow at a CAGR of 5.6% through 2034 [...] Juniper Networks, Arista Networks, and Extreme Networks, while primarily known for enterprise and data center networking, have made targeted moves into the upper end of the SMB switching market through simplified product lines and partner program adjustments. Dell Technologies leverages its PowerSwitch N-Series portfolio and established SMB relationships to maintain a presence in the market, particularly in IT environments where customers prefer integrated server and networking procurement from a single vendor. MikroTik's RouterOS-based switches offer exceptional feature density at very low price points, cultivating a loyal following among technically proficient SMB users, resellers, and ISPs in Eastern Europe, Latin America, and Asia Pacific. Fortinet's FortiSwitch product line is [...] channel is projected to grow at a CAGR of 5.6% through 2034 as digital channels increasingly capture routine hardware replacement purchases while complex new deployments continue to flow through the reseller channel. The emergence of hybrid procurement models, wherein SMBs research and specify equipment online but complete purchases through their preferred MSP or VAR, is blurring the distinction between channel types and creating opportunities for vendors to engage customers across multiple touchpoints simultaneously.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 2,
+            "title": "Switches Cisco | Partners & resellers | Nomios Germany",
+            "url": "https://www.nomios.de/en/partners/cisco/switches",
+            "snippet": "icon Storage Networking ### Storage Networking icon Small Business Switches ### Small Business Switches ## Ready to talk? Are you looking for pricing details, technical information, support or a custom quote? Our team of experts in Dortmund is ready to assist you. Placeholder for Arrow right Arrow right Placeholder for Portrait of nomios employee2 Portrait of nomios employee2 ## More updates Placeholder for Two men cyber incident hotline Two men cyber incident hotline MSSP The rise of the MSP and MSSP: technology is less and less the differentiator For years, the IT and cybersecurity market revolved around technology. Faster networks, better security, new cloud platforms and innovative software were the answer to almost every challenge. [...] Placeholder for Arrow right Arrow right Placeholder for Aerial view city streets Aerial view city streets Placeholder for Aerial view city streets Aerial view city streets ## Switches for every network Find the right switch for your network. Cisco switches have integrated security to help you address threats now and in the future. Simplify management of your evolving requirements for mobility, Internet of Things (IoT), data centre, and cloud. Cisco delivers a comprehensive portfolio of switching solutions for Enterprise Networks, data centres, and smaller businesses. These solutions are optimised for a wide range of industries, including service providers, financial services, and the public sector. ## Related insights [...] Unfortunatly your search returned no results, please adjust your searchterm ### Managed Services All Managed Services icon ### Professional services All professional services icon ### Cyber security All security solutions icon ### Networking ### Areas of expertise Telecommunications icon Datacenter & cloud icon Broadband & ISP icon Media & broadcasting icon Software & technology icon Retail & e-commerce icon Financial services icon Legal & consulting icon Healthcare & pharma icon Education & science icon Industrial & manufacturing icon Transport & logistics icon Energy & utilities icon Government & public sector icon Hospitality & Travel icon ### Popular ### More Nomios Why Nomios? icon About us icon Leadership team icon Projects icon Careers icon Events icon Resources icon",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 3,
+            "title": "NETGEAR BUSINESS - ALSO Deutschland GmbH",
+            "url": "https://www.also.com/ec/cms5/de_1010/1010_anbieter/netgear/netgear-business/index.jsp",
+            "snippet": "NETGEAR bietet das größte Portfolio an PoE-Switches für Unternehmen. s-WiFi 6 Wireless Access Points … 4 Wireless 802.11ac (WiFi 5) oder 2 x2 802.11ax (WiFi 6)",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 4,
+            "title": "SMB IT Solution - About us",
+            "url": "https://smb-it-solution.com/en/info/about-us.html",
+            "snippet": "### Since 2015 at Your Service Since our foundation in 2015, we have been active in the worldwide trade of IT hardware and networking technology. From our location in Germany, we supply customers all over the world and stand out thanks to our large and diverse product portfolio. We wish you every success with the support of your competent and friendly SMB IT Solution team! Back {{#title}} {{/title}} {{#showButtons}} {{#buttons}} {{/buttons}} {{/showButtons}} {{#content}}{{/content}} {{#content}}{{/content}} [...] SMB IT Solution-Logo Search Welcome to SMB IT Solution! Main page » About us # About us ## SMB IT Solution: Your Partner for IT Procurement and Spare Parts Your IT service provider for new and hard-to-find IT hardware Whether networking technology, servers, storage solutions, or accessories – with us you will find a wide selection of high-quality products from leading manufacturers. In addition to current hardware, we also offer particularly hard-to-find End-of-Life products that you often cannot obtain elsewhere. With a strong international network, personal service, and worldwide shipping, we have been a reliable partner for companies of all sizes since 2015. ### What sets us apart [...] ### What sets us apart Broad product portfolio: From servers to networking devices, security solutions, and spare parts End-of-Life specialist: We source products that are no longer officially produced Reliability: Short delivery times, high availability, and fair prices ### Our Mission Our team pursues a clear goal: To equip companies with the right IT products to optimize processes and increase competitiveness. With our experience and global sourcing network, we give you the decisive advantage – whether through current hardware or hard-to-find End-of-Life items. ### Our Partners We work with renowned manufacturers such as Dell, HP, Lenovo, Cisco, Seagate and many more. With this strong foundation, we can provide you with a comprehensive range of hardware and services.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 5,
+            "title": "L2 Switches - Edgecore Networks",
+            "url": "https://www.edge-core.com/enterprise-l2-switches",
+            "snippet": "Solutions + Total AI Solution + Cloud Data Center Solutions + Service Provider Solutions + Enterprise Solutions Products + AI/ML Networking + Cloud Data Centers + Service Provider + Optical Networking + Enterprise Networking + Edge Gateway + WIFI Controller + Wifi Access Points + Open LAN + Transceivers + Cables + SONiC Support & Service + Support Service + Warranty Policy + Product Registration + Help Center Partners + Software Ecosystem + Commercial Software Partners + Solution and Technical Partners Where to buy + Asia Pacific - Asia Pacific Distributors - Asia Pacific SI/VAR/Reseller + Indian Subcontinent - Indian Subcontinent Distributors - Indian Subcontinent SI/VAR/Reseller + EMEA - EMEA Distributors [...] + EMEA - EMEA Distributors - EMEA SI/VAR/Reseller + North America - North America Distributors - North America SI/VAR/Reseller - North America On-Line + Latin America - Latin America SI/VAR/Reseller - Latin America Distributors + CIS - CIS Distributors - CIS SI/VAR/Reseller Resources + Press Release + Events + Webinar + Media Report + Blogs + Case Study + White Paper + Marketing Video + Technical Video + GITHUB Repository Company + About US + Company Values + Management Team + Compliance Policy + ESG + Quality Policy + Global Locations + Contact + Career + Privacy Policy + Term of Use English + 繁體中文 + 简体中文 + 日本語 + Português [...] Key Features Audi ###### Cost-effective Audi ###### PoE support Audi ###### Field Proven ## L2 Switch-10G(DL) ECS5500 Series ##### ECS5500-12P L2+/Lite L3 10G Multi-Gigabit Ethernet Switch The Edgecore ECS5500-12P switch is a 10G Ethernet access switch with 8 x 10GBASE-T ports and 2 x 10G SFP+/2 x 10GBASE-T as uplink ports. The switch is ideal for SMB networks as a core switch. ##### ECS5500-12P L2+/Lite L3 10G Multi-Gigabit Ethernet Switch The Edgecore ECS5500-12P switch is a 10G Ethernet access switch with 8 x 10GBASE-T ports and 2 x 10G SFP+/2 x 10GBASE-T as uplink ports. The switch is ideal for SMB networks as a core switch. ##### ECS5500-12T",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 6,
+            "title": "HPE Network Switches for SMB's",
+            "url": "https://buy.hpe.com/at/de/Networkswitches",
+            "snippet": "Easy to install and manage, our SMB router solutions also include scalable models that can effectively support evolving networking needs as your business grows.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 7,
+            "title": "Enterprise-Netzwerklösungen für KMU und mittelständische ...",
+            "url": "https://www.netgear.com/de/business/solutions/smb",
+            "snippet": "NETGEAR liefert Netzwerk-Lösungen in Enterprise-Qualität – WiFi 7, VLANs, Cloud-Management. WLAN, Switches und Sicherheitslösungen,",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 8,
+            "title": "Top 20+ Network Companies in Germany (2026) - TechBehemoths",
+            "url": "https://techbehemoths.com/companies/network/germany",
+            "snippet": "In Europe In Asia In Latin America North America & Australia Industry Services Web & Software Development Design Advertising Business Services Germany Photo # There are 26 Companies in Germany that provide Network Services! Germany is home to the single largest IT market in Europe, accounting for around a quarter of the European market by value. Increased business demand for smart data products and services in the cloud is driving domestic IT market growth, as Germany embarks on a far-reaching program of digitalization that promises to transform the economy. Discover Top IT Companies in Germany specialized in Network and other related services. Find the best IT service providers for your projects. Handpicked companies • No obligation to hire • 100% risk-free [...] ## Featured Companies in Germany This month, the following Network companies managed to provide an outstanding service and support. It's worth taking a look. European IT Firm Logo European IT Firm Verified Company Frankfurt am Main, Germany Managed IT Services for your success. European excellence. Reliable IT that creates value. GFAD IT und Service GmbH Logo GFAD IT und Service GmbH Verified Company Berlin, Germany GFAD IT & Service offers Berlin SMEs IT support, on-site care, proactive managed services and GDPR-compliant cloud hosting. Interlake Media GmbH Logo Interlake Media GmbH Verified Company Potsdam, Germany Sovereign cloud and managed IT solutions for mid-sized businesses - secure, scalable, and built for European compliance. [...] Glyco IT Logo Glyco IT Verified Company Berlin, Germany Empowers businesses with cutting-edge IT, AI development, Software and digital marketing solutions. Services: CodeHütte GmbH Logo CodeHütte GmbH Verified Company Hannover, Germany Maßgeschneiderte IT-, KI- und Softwarelösungen für Unternehmen – sicher, skalierbar und wachstumsorientiert. Services: Sacred Byte GmbH Logo Sacred Byte GmbH Verified Company Berlin, Germany Sacred Byte is an Apple-native managed IT provider for startups, service businesses, architecture firms, and SMBs in Germany. Services: juunit GmbH Logo juunit GmbH Verified Company Mainz, Germany Head office in: Germany",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 9,
+            "title": "Distributors & Switches - buy at BerryBase",
+            "url": "https://www.berrybase.de/en/network-iot/network-devices/distributors-switches",
+            "snippet": "Discover network switches and distributors! These innovative devices are indispensable for an efficient and powerful network - both for businesses and private",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 10,
+            "title": "Business network solutions \"engineered in Germany\": R&S ...",
+            "url": "https://rs-nc.rohde-schwarz.com/en",
+            "snippet": "Nighttime satellite view of Europe from space, showing illuminated borders and a dense network of city lights ## R&S Networks and Cybersecurity ### High-performance networking and cybersecurity solutions from Germany. Find out more ## Trust in Germany's No. 1 for integrated network solutions. Full commitment to IT security: NIS2 and ISO/IEC 27001 [...] R&S®LANCOM VPN as Professional User Rating Champion 2026 Logo Preferred Vendor Award 2024 Networks Logo Allianz Cyber Security IT Security made in EU Logo Logo BITKOM Logo WiFi Alliance [...] #### Newsroom Current press releases and portfolio news, the media response, as well as contributions from our posts on social media channels. More about People sit in a row and talk happily #### Career Are you looking for exciting tasks, freedom for creative ideas and an open, inspiring working atmosphere? Then you've come to the right place. To the career portal Two people sit at an office table and discuss #### Sustainability As a leading German manufacturer of network solutions, we are taking responsibility in the digital age with our sustainability concept. Learn more #### Our awards and memberships Ecovadis certificate with silver rating and sustainability assessment dated September 2025 Silver Award at the IP Insider Award 2025 in the category Network Infrastructure",
+            "sourceKind": "web"
+          }
+        ],
+        "sourceUrls": [
+          "https://dataintelo.com/report/global-small-business-network-switches-market",
+          "https://www.nomios.de/en/partners/cisco/switches",
+          "https://www.also.com/ec/cms5/de_1010/1010_anbieter/netgear/netgear-business/index.jsp",
+          "https://smb-it-solution.com/en/info/about-us.html",
+          "https://www.edge-core.com/enterprise-l2-switches",
+          "https://buy.hpe.com/at/de/Networkswitches",
+          "https://www.netgear.com/de/business/solutions/smb",
+          "https://techbehemoths.com/companies/network/germany",
+          "https://www.berrybase.de/en/network-iot/network-devices/distributors-switches",
+          "https://rs-nc.rohde-schwarz.com/en"
+        ],
+        "requestCount": 1,
+        "latencyMs": 4180,
+        "usage": {
+          "credits": 2
+        }
+      }
+    }
+  ],
+  "requestCount": 3,
+  "latencyMs": 11696,
+  "usage": {
+    "credits": 6
+  }
+}

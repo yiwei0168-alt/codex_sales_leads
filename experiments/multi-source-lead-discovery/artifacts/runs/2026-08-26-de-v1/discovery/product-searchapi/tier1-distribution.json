@@ -1,0 +1,319 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-08-26-de-v1",
+  "systemId": "product-searchapi",
+  "mode": "product-with-discovery-only-provider",
+  "providerId": "searchapi",
+  "channelId": "tier1-distribution",
+  "queryOutputs": [
+    {
+      "queryIndex": 0,
+      "rawSha256": "e2e066e91dfe18fb7e50cbf3512c72c23e9ca3113ecc3ef6a5daadabbff17253",
+      "attempts": 1,
+      "result": {
+        "providerId": "searchapi",
+        "query": {
+          "query": "IT Netzwerk Distributor Deutschland WLAN Router Switch B2B Fachhändler",
+          "countryCode": "DE",
+          "countryName": "Germany",
+          "languageCode": "de",
+          "maxResults": 10
+        },
+        "items": [
+          {
+            "providerId": "searchapi",
+            "rank": 1,
+            "title": "netzwerkloesungen – B2B Firmen & Lieferanten",
+            "url": "https://www.wlw.de/de/suche/netzwerkloesungen",
+            "snippet": "Finden Sie Firmen für netzwerkloesungen ✓Einfache Recherche ✓Direkter Kontakt ✓Führender B2B-Marktplatz ➤ Jetzt Lieferanten kontaktieren!",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 2,
+            "title": "Bezugsquellen | TP-Link Deutschland",
+            "url": "https://www.tp-link.com/de/where-to-buy/",
+            "snippet": "Absolut It Inh. Dirk Dodenhöft e. K. Region:Deutschland; Stadt:Dortmund; Adresse:Bornstraße 281; Stufe:Qualified; Postleitzahl:44145. access2net GmbH.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 3,
+            "title": "Business-Netzwerklösungen „Engineered in Germany“: R&S ...",
+            "url": "https://rs-nc.rohde-schwarz.com/de/",
+            "snippet": "R&S Networks and Cybersecurity bietet sichere, skalierbare Netzwerke und Cybersecurity-Lösungen für Unternehmen, Behörden, ...",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 4,
+            "title": "Netzwerkkomponenten Hersteller, Händler, Lieferanten",
+            "url": "https://www.industrystock.de/de/unternehmen/Informationstechnik/Netzwerktechnik/Netzwerkkomponenten",
+            "snippet": "221 Firmen zu Netzwerkkomponenten ✓ B2B Hersteller, Händler & Zulieferer aus 13 Länder ✓ Mit Spezialservice für schnelle Informationen und Preise ✓.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 5,
+            "title": "Netzwerk | JACOB Elektronik | Competence Center",
+            "url": "https://www.jacob.de/netzwerk/",
+            "snippet": "Bei JACOB findest du das vollständige Portfolio aus Switches, WLAN-Lösungen, Cybersecurity und Transceivern in einem einzigen Sortiment, mit tiefen ...",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 6,
+            "title": "IT-Hardware: Server, Netzwerke & Storage | Senetic",
+            "url": "https://www.senetic.de/",
+            "snippet": "Unser Angebot umfasst Cloud-Lösungen wie Office 365 oder Azure, Netzwerkgeräte wie Ubiquiti und MikroTik, sowie umfassende Lösungen für Serverräume, wie Server, ...",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 7,
+            "title": "Azenn Connect Onlineshop | Ihr IT-Großhandel für Kabel und ...",
+            "url": "https://www.exertis-connect.de/",
+            "snippet": "Azenn Connect Onlineshop (Fröhlich + Walter GmbH) | Ihr IT-Großhandel für Kabel und Netzwerktechnik, Lieferung innerhalb 24h, hohe Lagerverfügbarkeit, ...",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 8,
+            "title": "Netzwerktechnik bei reichelt günstig bestellen",
+            "url": "https://www.reichelt.de/de/de/shop/kategorie/netzwerktechnik-5820",
+            "snippet": "Entdecken Sie hochwertige Netzwerktechnik bei reichelt elektronik ✓ Große Auswahl ✓ Top Qualität. Jetzt günstig bestellen!",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 9,
+            "title": "Netzwerk Switch kaufen - bis 80 Ports - managed",
+            "url": "https://industry-electronics.de/it-edv/netzwerk/switches/",
+            "snippet": "Industry-Electronics - Ihr B2B Onlineshop für Elektronikprodukte. IT / EDV ➤ Netzwerk ➤ Switches. Ports 5–384 Ports, Geschwindigkeit 1G / 10G / 25G / 100G ...",
+            "sourceKind": "web"
+          }
+        ],
+        "sourceUrls": [
+          "https://www.wlw.de/de/suche/netzwerkloesungen",
+          "https://www.tp-link.com/de/where-to-buy/",
+          "https://rs-nc.rohde-schwarz.com/de/",
+          "https://www.industrystock.de/de/unternehmen/Informationstechnik/Netzwerktechnik/Netzwerkkomponenten",
+          "https://www.jacob.de/netzwerk/",
+          "https://www.senetic.de/",
+          "https://www.exertis-connect.de/",
+          "https://www.reichelt.de/de/de/shop/kategorie/netzwerktechnik-5820",
+          "https://industry-electronics.de/it-edv/netzwerk/switches/"
+        ],
+        "requestCount": 1,
+        "latencyMs": 1809
+      }
+    },
+    {
+      "queryIndex": 1,
+      "rawSha256": "14a057dd6f3b2add4c2de765bb20f57dc85e0bbd8791f58f5a1fa6e704cac320",
+      "attempts": 1,
+      "result": {
+        "providerId": "searchapi",
+        "query": {
+          "query": "Value Added Distributor Netzwerktechnik Deutschland WLAN LAN Partner",
+          "countryCode": "DE",
+          "countryName": "Germany",
+          "languageCode": "de",
+          "maxResults": 10
+        },
+        "items": [
+          {
+            "providerId": "searchapi",
+            "rank": 1,
+            "title": "Einkaufsquellen für Reseller – Teil 4: Value Added ...",
+            "url": "https://www.channelpartner.de/article/3903078/einkaufsquellen-fuer-reseller-value-add-distribution.html",
+            "snippet": "Value Add Distributoren ; Nuvias Deutschland GmbH ; Adresse, Sachsenfeld 2 20097 Hamburg ; URL, www.nuvias.com/de-de ; E-Mail, [redacted-email].",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 2,
+            "title": "ADN Root: ADN - Value Added IT-Distribution",
+            "url": "https://www.adn.de/de/",
+            "snippet": "Mit leistungsstarken Netzwerk-Switches, robusten Servern und innovativen WLAN-Technologien sorgt H3C für eine zukunftssichere IT-Infrastruktur. ... Mit den DE-CIX ...",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 3,
+            "title": "sysob IT-Distribution - Security, Wireless LAN und ...",
+            "url": "https://www.sysob.com/",
+            "snippet": "sysob – Ihr Distributor für Security, Wireless LAN und Serverbased Computing. Wir sind seit 20 Jahren Ihr VAD mit innovativen Lösungen für den Fachhandel.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 4,
+            "title": "4Networks IT-Distribution – Netzwerk, Security & WLAN",
+            "url": "https://www.4networks.de/",
+            "snippet": "Wir sind ein führender Value Add Distributor, der sich durch Kundennähe, Zuverlässigkeit und Schnelligkeit auszeichnet. Mit langjähriger Erfahrung in der ...",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 5,
+            "title": "Unser Network Portfolio",
+            "url": "https://www.itelio.com/portfolio/network",
+            "snippet": "Von WLAN bis VPN, Firewall bis RADIUS: Das Netzwerk ist der wohl wichtigste Bestandteil der IT. Wir halten Sie online. Lassen Sie sich jetzt beraten.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 6,
+            "title": "Zusammenarbeit mit ALE und sysob | ALE Deutschland",
+            "url": "https://www.al-enterprise.com/de-de/unternehmen/neuigkeiten/zusammenarbeit-mit-ale-und-sysob",
+            "snippet": "Alcatel-Lucent Enterprise und der renommierte Value Added Distributor für IT-Sicherheit sysob sind neue Vertragspartner. sysob ergänzt sein ...",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 7,
+            "title": "Yello Netcom – Netzwerktechnik & Systemlösungen",
+            "url": "https://www.yello-net.de/",
+            "snippet": "Wir sind Ihr führender Systemanbieter und Value Added Distributor für kommerzielle und industrielle Netzwerktechnik. Unser umfangreiches Portfolio bietet ...",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 8,
+            "title": "Value Added Distribution",
+            "url": "https://www.m2mgermany.de/value-added-distribution/?srsltid=AfmBOooT4VlOlMBTDN5tgQiJvc3mmjqwrNDfTDEFntgfITfoEJOjpQY8",
+            "snippet": "Als Value Added Distributor macht uns unser gelebtes Know-how zu einem zuverlässigen und kompetenten Partner IoT Projekte.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 9,
+            "title": "IT-Distributor-Archiv",
+            "url": "https://it-dock.de/dienstleisterkategorie/it-distributor/",
+            "snippet": "Infinigate Deutschland ist Value Added Distributor für IT-Security- und Cloud-Lösungen im deutschen Channel. Dienstleistungen. Cybersecurity Distribution & ...",
+            "sourceKind": "web"
+          }
+        ],
+        "sourceUrls": [
+          "https://www.channelpartner.de/article/3903078/einkaufsquellen-fuer-reseller-value-add-distribution.html",
+          "https://www.adn.de/de/",
+          "https://www.sysob.com/",
+          "https://www.4networks.de/",
+          "https://www.itelio.com/portfolio/network",
+          "https://www.al-enterprise.com/de-de/unternehmen/neuigkeiten/zusammenarbeit-mit-ale-und-sysob",
+          "https://www.yello-net.de/",
+          "https://www.m2mgermany.de/value-added-distribution/?srsltid=AfmBOooT4VlOlMBTDN5tgQiJvc3mmjqwrNDfTDEFntgfITfoEJOjpQY8",
+          "https://it-dock.de/dienstleisterkategorie/it-distributor/"
+        ],
+        "requestCount": 1,
+        "latencyMs": 7553
+      }
+    },
+    {
+      "queryIndex": 2,
+      "rawSha256": "8520f83d327aac3323165b4e98d3fed8bb316d7d8e5048f444a17ce4e12238b2",
+      "attempts": 1,
+      "result": {
+        "providerId": "searchapi",
+        "query": {
+          "query": "networking hardware distributor Germany reseller partners wireless switches",
+          "countryCode": "DE",
+          "countryName": "Germany",
+          "languageCode": "de",
+          "maxResults": 10
+        },
+        "items": [
+          {
+            "providerId": "searchapi",
+            "rank": 1,
+            "title": "ALLNET GmbH -Vendors",
+            "url": "https://distribution.allnet.de/distribution-vendors.html?&L=12",
+            "snippet": "No matter if you search for active or passive network components, measurement technology, USVs or components for data center infrastructure: We have it all!",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 2,
+            "title": "Partner Locator",
+            "url": "https://www.ruckusnetworks.com/partners/partner-locator/",
+            "snippet": "Find a RUCKUS Networks Partner Connect with Experts - Use our Find a Partner tool to locate and connect with RUCKUS Networks experts near you.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 3,
+            "title": "LevelOne: Reliable Network Solutions & Security",
+            "url": "https://www.level1.com/",
+            "snippet": "LevelOne is focused on providing professional networking solutions and equipment, including switches, wireless access points, surveillance systems, and network ...",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 4,
+            "title": "Edgecore Networks - Switches, Routers, Wireless Solutions",
+            "url": "https://www.epsglobal.com/manufacturers/edgecore",
+            "snippet": "EPS Global is an authorized distributor of Edgecore Networks, providing: Cloud, Data Center, and Enterprise Switches; Open Routers; and Wireless Solutions.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 5,
+            "title": "Extreme Networks",
+            "url": "https://www.westconcomstor.com/uk/en/vendors/extreme-networks.html",
+            "snippet": "Extreme Networks, Inc. (EXTR) is a leader in AI-powered cloud networking, delivering a unified platform that simplifies and secures IT operations.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 6,
+            "title": "Partner | Juniper Networks DE",
+            "url": "https://www.juniper.net/de/de/partners.html",
+            "snippet": "Als Vertriebspartner für Lösungen erhalten Partner Zugriff auf die Software-, Hardware- und Servicelösungen von Juniper, um eine außergewöhnliche ...",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 7,
+            "title": "Welcome to PLANET Technology",
+            "url": "https://www.planet.com.tw/",
+            "snippet": "PLANET Technology Corporation is a leading global provider of IP-based networking products and solutions for small-to-medium-sized businesses, enterprises, ...",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 8,
+            "title": "Partner Locator",
+            "url": "https://www.ruijie.com/en-global/partner/locator",
+            "snippet": "Find a Ruijie Networks partner near you. Trusted Ruijie partiners and distributors worldwide can serve your business with authorized products and services.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 9,
+            "title": "Networking Solutions",
+            "url": "https://www.digikey.de/en/products/category/networking-solutions/44?srsltid=AfmBOoprrPA78H1FuqHFMKt73DIyszGvIwcxVwoDJVkYdvjJzpzUnSpJ",
+            "snippet": "Shop DigiKey's large in-stock selection of Networking Solutions. View inventory, pricing and order now for same day shipping!",
+            "sourceKind": "web"
+          }
+        ],
+        "sourceUrls": [
+          "https://distribution.allnet.de/distribution-vendors.html?&L=12",
+          "https://www.ruckusnetworks.com/partners/partner-locator/",
+          "https://www.level1.com/",
+          "https://www.epsglobal.com/manufacturers/edgecore",
+          "https://www.westconcomstor.com/uk/en/vendors/extreme-networks.html",
+          "https://www.juniper.net/de/de/partners.html",
+          "https://www.planet.com.tw/",
+          "https://www.ruijie.com/en-global/partner/locator",
+          "https://www.digikey.de/en/products/category/networking-solutions/44?srsltid=AfmBOoprrPA78H1FuqHFMKt73DIyszGvIwcxVwoDJVkYdvjJzpzUnSpJ"
+        ],
+        "requestCount": 1,
+        "latencyMs": 1734
+      }
+    }
+  ],
+  "requestCount": 3,
+  "latencyMs": 11096,
+  "usage": {}
+}

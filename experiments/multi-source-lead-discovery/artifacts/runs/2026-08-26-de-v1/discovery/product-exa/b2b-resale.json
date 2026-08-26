@@ -1,0 +1,376 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-08-26-de-v1",
+  "systemId": "product-exa",
+  "mode": "product-with-discovery-only-provider",
+  "providerId": "exa",
+  "channelId": "b2b-resale",
+  "queryOutputs": [
+    {
+      "queryIndex": 0,
+      "rawSha256": "4d0f3346c9383cd148a007b4f0b11530dea9cdc1a8ca455bdd1a70960af68243",
+      "attempts": 1,
+      "result": {
+        "providerId": "exa",
+        "query": {
+          "query": "Netzwerktechnik Fachhändler B2B Deutschland WLAN Router Switch",
+          "countryCode": "DE",
+          "countryName": "Germany",
+          "languageCode": "de",
+          "maxResults": 10
+        },
+        "items": [
+          {
+            "providerId": "exa",
+            "rank": 1,
+            "title": "Avanis GmbH",
+            "url": "https://avanis.de/",
+            "snippet": "# Avanis GmbH Avanis GmbH is a IT Services and IT Consulting company. Avanis GmbH is a company specializing in network technology and WLAN solutions. They offer a wide range of services including switches, RTLS positioning, and infrastructure planning. Avanis GmbH employs 4 people (-12.5% YoY, -1 person), founded in 2003. Headquartered in Bielefeld, North Rhine-Westphalia, Germany, with presence in United States. ## About Die Avanis GmbH zählt zu den führenden Spezial-Distributoren im Netzwerkbereich. Switches, Industrial Ethernet, Medienkonverter, VDSL2, WLAN: Mit einem breiten Sortiment von über 5000 Artikeln verschiedener Marken berät Avanis den Fachhandel, IT-Systemhäuser und gewerbliche Endkunden. Als Spezialist für WLAN-Planung und -Analyse ist Avanis ein Pionier im Bereich Echtzeit-Lokalisierung und WLAN-Ortung. Unter dem Dach der Avanis Academy hat das Unternehmen in den vergangenen anderthalb Jahrzehnten als Anbieter von Trainings, Schulungen und Seminaren viele Hundert Teilnehmer fit für Netzwerktechnik und WLAN-Planung gemacht. ## Company Details - Industry: IT Services and IT Consulting - Type: Partnership - Headquarters: Bielefeld, Germany - Founded Year: 2003 - Homepage: avanis.de - Status: active - Ownership: Private - Aliases: avanis gmbh, avanis - LinkedIn: linkedin.com/company/avanis-gmbh - Linkedin Followers: 96 (Monthly: -1.0%, Yearly: +33.3%) - Emails: [redacted-email] - Phone: [redacted-phone], [redacted-phone] [redacted-workforce-section]",
+            "sourceKind": "web",
+            "externalId": "https://exa.ai/library/organization/7r6rfjf5m29"
+          },
+          {
+            "providerId": "exa",
+            "rank": 2,
+            "title": "Zyxel Networks Deutschland / Österreich",
+            "url": "https://zyxel.de/",
+            "snippet": "# Zyxel Networks Deutschland / Österreich Zyxel Networks Deutschland / Österreich is a Software Development company. Zyxel Networks is a leading provider of secure, KI-driven cloud network solutions for KMU, offering robust network hardware with a high level of security. Zyxel Networks Deutschland / Österreich employs 14 people (+16.7% YoY, +3 people), founded in 1989. Headquartered in Würselen, Nordrhein-Westfalen, Germany, with presence in United States. Its workforce is distributed across Germany and Netherlands. ## About Zyxel verbindet seit über 35 Jahren Menschen mit dem Internet und legt dabei den Fokus auf Innovation und Kundenorientierung. Wir fördern Kreativität, was die Anforderungen der Kunden erfüllt. Dieser Grundstimmung sind wir unverändert gefolgt, seit wir 1992 das erste integrierte 3-in-1 Daten/Fax/Voice-Modem entwickelt haben. Unsere Anpassungs- und Innovationsfähigkeit im Bereich Netzwerktechnologie haben dazu geführt, dass wir an vorderster Front bei Netzwerk- und Internetzugang für Telekommunikationsanbieter/Service Provider, Unternehmen und Privatanwender agieren. Wir bauen die Netzwerke von morgen und helfen beim Erschließen des weltweiten Potenzials. Außerdem erfüllen wir die Anforderungen der modernen Arbeitswelt und verleihen den Menschen bei der Arbeit, zuhause und in der Freizeit die erforderliche Power. Wir stehen unseren Kunden und Partnern stets zur Seite und teilen neue Ansätze im Bereich Netzwerke mit ihnen, damit sie das volle Potenzial ihrer Fähigkeiten ausschöpfen können. ## Company Details - Industry: Software Development - Type: Public Company - Headquarters: Würselen, Germany - Founded Year: 1989 - Homepage: zyxel.de - Status: active - Ownership: Private - Parent Company: ZyXEL Communications Corp. - Aliases: zyxel networks deutschland / österreich, sphairon technologies, sphairon technologies gmbh, zyxel communications - LinkedIn: linkedin.com/company/zyxel-networks-germany - Linkedin Followers: 1,150 (Monthly: +0.4%, Ye",
+            "sourceKind": "web",
+            "externalId": "https://exa.ai/library/organization/tlv1gxl8cmd"
+          },
+          {
+            "providerId": "exa",
+            "rank": 3,
+            "title": "HEIN Netzwerktechnik GmbH",
+            "url": "https://hein.de/",
+            "snippet": "# HEIN Netzwerktechnik GmbH HEIN Netzwerktechnik GmbH is a Telecommunications company. HEIN Netzwerktechnik GmbH employs 10 people (+17.6% YoY, +3 people), founded in 1986. Headquartered in Ratingen, North Rhine-Westphalia, Germany, with presence in United States. ## About Netzwerktechnik & Telekommunikation ## Company Details - Industry: Telecommunications - Type: Self-Owned - Headquarters: Ratingen, Germany - Founded Year: 1986 - Homepage: hein.de - Status: active - Aliases: hein netzwerktechnik gmbh, hein network technology, hein netzwerktechnik - LinkedIn: linkedin.com/company/hein-netzwerktechnik - Linkedin Followers: 227 (Monthly: +1.8%, Yearly: +11.8%) - Emails: [redacted-email] - Phone: ([redacted-phone], [redacted-phone], [redacted-phone], [redacted-phone] - SIC Codes: 73, 737 - NAICS Codes: 81, 811 [redacted-workforce-section]",
+            "sourceKind": "web",
+            "externalId": "https://exa.ai/library/organization/g6prw6md80v"
+          },
+          {
+            "providerId": "exa",
+            "rank": 4,
+            "title": "OMG.DE GmbH",
+            "url": "https://www.omg.de/",
+            "snippet": "# OMG.DE GmbH OMG.DE GmbH is a Technology, Information and Internet company. OMG.DE GmbH is a company that offers a wide range of products for WLAN, Richtfunk, Smart Home, and more. They provide online ordering, fast delivery, and comprehensive support. OMG.DE GmbH employs 9 people (+16.7% YoY, +2 people), founded in 1997. with presence in Germany and United States. ## About OMG ist als Systemintegrator und Dienstleistungsanbieter im Netzwerk- und Telekommunikationsmarkt tätig. Schwerpunkt ist die bedarfsgerechte Betreuung unserer Kunden mit individuellen IT-Services, ISP-Diensten, Netzwerkmanagement und Support. OMG wurde 1997 gegründet und ist seitdem kontinuierlich gewachsen. - Unsere Mitarbeiter sind aktiv um die Belange unserer Kunden bemüht und stehen Ihnen gerne zur Verfügung. ## Company Details - Industry: Technology, Information and Internet - Type: Partnership - Founded Year: 1997 - Homepage: omg.de - Status: active - Aliases: omg.de gmbh, omg.de - LinkedIn: linkedin.com/company/omg-internet-gmbh - Emails: [redacted-email], [redacted-email] - Phone: [redacted-phone], [redacted-phone] - SIC Codes: 73, 737 - NAICS Codes: 81, 811 [redacted-workforce-section]",
+            "sourceKind": "web",
+            "externalId": "https://exa.ai/library/organization/prwgcnxx2hh"
+          },
+          {
+            "providerId": "exa",
+            "rank": 5,
+            "title": "NLS Netzwerke GmbH",
+            "url": "https://nls-netzwerke.de/",
+            "snippet": "# NLS Netzwerke GmbH NLS Netzwerke GmbH is a IT Services and IT Consulting company. NLS Netzwerke München is a company that specializes in network technology, including fiber optic components, switched router technology, network security, and management systems. They provide individual network solutions and offer services such as network service and monitoring. NLS Netzwerke GmbH employs 3 people, founded in 1998. Headquartered in Alling, Bayern, Germany, with presence in United States. ## About Your Value: - Competent partner for consulting, planning, delivery and implementation of complete IT-solutions. - Longtime experience of experts to Data Center with its multiple requirements of applications, cabling, cooling, cable-mgmt. - deliver of customized solutions in an integrated and flexible way. - deliver of high quality (premium) products and services. Partners and Qualifications: apranet - Solutions: Racks, Cabinets Commscope Systimax - Solutions: Cabling, Cu, FO, Trunks, Racks, Cabinets, WLAN, iPatch - Status: Systimax Business Partner Extreme Networks - Solutions: Routing, Switching, WLAN, Security, Firewall, Networkmanagement, - Status: Silver Panduit - Solutions: Cabling, Cu, FO, Trunks, Racks, Cabinets, Cablemanagement, FibreRunner, PanView, PDUs, Einhausung, vBlocks, Grounding, Bounding - Status: Systemintegrator Customers: Carrier, Provider, DataCenters, Enterprise, Government ## Company Details - Industry: IT Services and IT Consulting - Type: Privately Held - Headquarters: Alling, Germany - Founded Year: 1998 - Homepage: nls-netzwerke.de - Status: active - Aliases: nls netzwerke gmbh, nls group - LinkedIn: linkedin.com/company/nls-netzwerke - Linkedin Followers: 50 (Monthly: +2.0%) - Emails: [redacted-email], [redacted-email] - Phone: [redacted-phone], [redacted-phone], [redacted-phone], [redacted-phone] [redacted-workforce-section]",
+            "sourceKind": "web",
+            "externalId": "https://exa.ai/library/organization/72sn9frymgy"
+          },
+          {
+            "providerId": "exa",
+            "rank": 6,
+            "title": "SHC Netzwerktechnik GmbH",
+            "url": "https://shc.eu/",
+            "snippet": "# SHC Netzwerktechnik GmbH SHC Netzwerktechnik GmbH is a Computer and Network Security company. SHC Netzwerktechnik GmbH is a company that provides comprehensive solutions for IT security, network infrastructure, core networking, and cloud computing. They are partnered with leading manufacturers such as Sophos, Dell, VMware, Nutanix, Tenable, Palo Alto, Tintri, Veeam, F5, Juniper, Arista, and Microsoft. They offer nationwide solutions for core networking, cloud computing, and help clients find security. SHC Netzwerktechnik GmbH employs 7 people (+22.2% YoY, +2 people), founded in 1991. Headquartered in Berlin, Berlin, Germany, with presence in United States. ## About Die SHC Netzwerktechnik GmbH ist ein mittelständischer IT-Dienstleister mit einer 27 jährigen Erfahrung in Bereichen IT-Management, IT-Sicherheit, IT-Infrastruktur und IT-Service. Seit 1991 sind wir bundesweit von unseren Standorten Frankfurt am Main, Berlin und Köln aus tätig. Unser Anspruch ist die optimale Beratung unserer Kunden. Bei der Auswahl und der Einführung neuer Produkte oder Lösungen, ist für uns die individuelle Ausgangssituation eines jeden Kunden entscheidend. Unternehmen aller Größenordnungen vertrauen deshalb auf unsere Kompetenz und Zuverlässigkeit. Durch unsere langjährigen Erfahrungen können wir Sie umfassend und mit Kundenorientierung beraten. Wir begleiten Sie von der Beratung, Projektierung und Beschaffung bis hin zur Integration und Schulung Ihrer Mitarbeiter. Dabei unterstützen wir Sie gern in den unterschiedlichsten Bereichen und Projektphasen. Unser Support wird sehr flexibel und individuell an Ihre Anforderungen angepasst. Ob Komplettsupport, HelpDesk oder Betreuung einzelner Bereiche oder Managed Service. Wir sind für Sie da. ## Company Details - Industry: Computer and Network Security - Type: Privately Held - Headquarters: Berlin, Germany - Founded Year: 1991 - Homepage: shc.eu - Status: active - Aliases: shc netzwerktechnik gmbh, shc netzwerktechnik, berlin - LinkedI",
+            "sourceKind": "web",
+            "externalId": "https://exa.ai/library/organization/sgq0pkzrb97"
+          },
+          {
+            "providerId": "exa",
+            "rank": 7,
+            "title": "WLAN-Shop24.de",
+            "url": "https://linkedin.com/company/wlan-shop24.de",
+            "snippet": "# WLAN-Shop24.de WLAN-Shop24.de. WLAN-Shop24.de is a company that provides wireless solutions such as LoRa, WLAN, LTE, and 5G Antennen. They offer a wide range of products including routers, antennas, cables, and accessories. The company is B2B (True). Headquartered in Hamburg, Hamburg, Germany, with presence in United States. ## Company Details - Headquarters: Hamburg, Germany - Status: active - Ownership: Private - Aliases: wlan-shop24.de, wlan-shop24, wlan - shop24.de - LinkedIn: linkedin.com/company/wlan-shop24.de - Linkedin Followers: 5 - Emails: [redacted-email] - Phone: [redacted-phone], [redacted-phone] - SIC Codes: 73, 737 - NAICS Codes: 81, 811 [redacted-workforce-section]",
+            "sourceKind": "web",
+            "externalId": "https://exa.ai/library/organization/9cytk9t99nv"
+          },
+          {
+            "providerId": "exa",
+            "rank": 8,
+            "title": "Net Factory Gesellschaft für Netzwerklösungen mbH",
+            "url": "https://net-factory.de/",
+            "snippet": "# Net Factory Gesellschaft für Netzwerklösungen mbH Net Factory Gesellschaft für Netzwerklösungen mbH is a Computer Hardware Manufacturing company. NetFactory Gesellschaft für Netzwerklösungen mbH is a company that provides network solutions. Net Factory Gesellschaft für Netzwerklösungen mbH employs 16 people, founded in 1997. Headquartered in Rheinstetten, Baden-Württemberg, Germany, with presence in United States. ## About NetFactory - Ihr Partner für erstklassige IT-Lösungen, maßgeschneiderte Services und herausragenden Kundensupport. Die Net Factory Gesellschaft für Netzwerklösungen mbH mit Hauptsitz in Rheinstetten, hat sich seit ihrer Gründung im Jahr 1989 zu einem etablierten IT-Systemhaus entwickelt. Wir bieten gewerblichen Unternehmen und privaten Endkunden wegweisende IT-Lösungen sowie exzellenten Service. Durch eine breite Palette hochwertiger Hardware und vielfältige IT-Dienstleistungen erfüllen wir die individuellen Anforderungen verschiedenster Unternehmen. Wir begleiten unsere Kunden von der initialen Planung bis zur kontinuierlichen Wartung modernster IT-Infrastrukturen. Dabei legen wir besonderen Wert auf maßgeschneiderte Lösungen, die reibungslose Abläufe gewährleisten und den Erfolg unserer Kunden nachhaltig sicherstellt. Unser erfahrenes Team setzt sich aus IT-Experten zusammen und zeichnet sich durch umfassendes Fachwissen, technisches Know-how sowie die erfolgreiche Umsetzung selbst anspruchsvollster Projekte aus. Unsere Dienstleistungen umfassen unter anderem Netzwerkdesign, Hardware- und Software-Implementierung, IT-Sicherheit sowie die Konfiguration drahtloser Netzwerke. Unsere Mission ist es die Effizienz, Produktivität und Sicherheit der IT unserer Kunden in einer zunehmend vernetzten Welt zu optimieren. Dabei stehen Qualität, Innovation und Zuverlässigkeit im Zentrum unseres Handelns. Unser kontinuierliches Streben nach technologischer Exzellenz ermöglicht es uns, stets erstklassige Lösungen für unsere Kunden bereitzustellen. Mit",
+            "sourceKind": "web",
+            "externalId": "https://exa.ai/library/organization/d5czx78q09v"
+          },
+          {
+            "providerId": "exa",
+            "rank": 9,
+            "title": "Netzwerktechnik Kopp GmbH",
+            "url": "https://netzwerktechnik-kopp.de/",
+            "snippet": "# Netzwerktechnik Kopp GmbH Netzwerktechnik Kopp GmbH is a IT System Data Services company. Netzwerktechnik Kopp is a company that provides network solutions for industries and medium-sized enterprises. They offer services such as IT infrastructure, building infrastructure, and campus infrastructure. They provide consulting, planning, and networking solutions to ensure secure and reliable network connections. Netzwerktechnik Kopp GmbH employs 3 people, founded in 2014. Headquartered in Erftstadt, North Rhine-Westphalia, Germany. ## About Netzwerktechnik Kopp GmbH – Ihre Experten für strukturierte IT-Verkabelung in Köln und Umgebung. Wir sind Ihr zuverlässiger Partner für hochwertige, anwenderorientierte Netzwerklösungen – spezialisiert auf die Planung und Umsetzung passiver IT-Infrastrukturen in Industrie und Mittelstand. Mit langjähriger Erfahrung und VdS-Zertifizierung bieten wir ein breites Leistungsspektrum: Beratung & Planung Kabelwegebau Kupfer- und Glasfaserverkabelung (LWL) Rechenzentrumsverkabelung (inkl. MPO/MTP) Messungen, Dokumentation & Fehleranalyse Was uns auszeichnet? Schnelles, sauberes und flexibles Arbeiten – auch bei komplexen oder zeitkritischen Projekten. Vertrauen Sie auf unsere technische Expertise, klare Kommunikation und ein Team, das mitdenkt. ## Company Details - Industry: IT System Data Services - Type: Public Company - Headquarters: Erftstadt, Germany - Founded Year: 2014 - Homepage: netzwerktechnik-kopp.de - Aliases: netzwerktechnik kopp gmbh - LinkedIn: linkedin.com/company/netzwerktechnik-kopp - Linkedin Followers: 148 (Monthly: +0.7%, Yearly: +6.5%) - Phone: [redacted-phone], [redacted-phone] [redacted-workforce-section]",
+            "sourceKind": "web",
+            "externalId": "https://exa.ai/library/organization/sr3xr15k6rb"
+          },
+          {
+            "providerId": "exa",
+            "rank": 10,
+            "title": "Messkom Vertriebs GmbH",
+            "url": "https://messkom.de/",
+            "snippet": "# Messkom Vertriebs GmbH Messkom Vertriebs GmbH is a Telecommunications company. Messkom Vertriebs GmbH is a company that specializes in measurement technology for communication and network technology. They offer a wide range of products and services including xDSL, VoIP/Video/IPTV, network cable technology, WLAN planning and measurement, and network analysis. Messkom Vertriebs GmbH employs 2 people (+25.0% YoY, +1 person), founded in 1995. Headquartered in Germany, with presence in United States. ## About Die Messkom Vertriebs GmbH wurde 1995 von Walther Gold gegründet und ist als Spezialist für Netzwerk-Messtechnik in der gesamten DACH-Region tätig. Unser Firmensitz befindet sich am Awarenring 38, 85419 Mauern, Deutschland. Unsere Kernkompetenzen: Messtechnik: Umfassende Lösungen für Kupfer- und LWL-Verkabelung, WLAN-Analyse, aktives Netzwerk und Kabelfehlerortung Glasfaser-Technologie: Professionelle Spleißgeräte und OTDR-Systeme für die Glasfaserverlegung KI-gestützte Messungen: Moderne OTDR-Messungen mit künstlicher Intelligenz für höchste Präzision WLAN-Expertise als zertifizierter Ekahau-Partner: Als zertifizierter Ekahau-Partner bieten wir professionelle WLAN-Dienstleistungen: KI-gestützte WLAN-Planung und -Vermessung Site Survey und Troubleshooting Performance-Optimierung und Kapazitätsplanung Compliance-Dokumentation Dienstleistungen & Beratung: Wir beraten unsere Kunden umfassend, damit Sie die optimale Lösung für Ihre spezifischen Anforderungen erhalten. Unser Ansatz: Nicht die teuerste, sondern die richtige Messtechnik für Ihre Anwendung. Schulungen & Support: Kompetente Schulungen für unsere Messtechnik sowie fachmännischer Support bei Netzwerkproblemen runden unser Angebot ab. 30 Jahre Expertise – Ihr zuverlässiger Partner für moderne Netzwerk-Messtechnik. Founded in 1995, Messkom Vertriebs GmbH is a leading network measurement technology specialist across the DACH region, headquartered in Mauern, Germany. Our Expertise: Measurement Technolog",
+            "sourceKind": "web",
+            "externalId": "https://exa.ai/library/organization/tbybsnj1n49"
+          }
+        ],
+        "sourceUrls": [
+          "https://avanis.de/",
+          "https://zyxel.de/",
+          "https://hein.de/",
+          "https://www.omg.de/",
+          "https://nls-netzwerke.de/",
+          "https://shc.eu/",
+          "https://linkedin.com/company/wlan-shop24.de",
+          "https://net-factory.de/",
+          "https://netzwerktechnik-kopp.de/",
+          "https://messkom.de/"
+        ],
+        "requestCount": 1,
+        "latencyMs": 1895
+      }
+    },
+    {
+      "queryIndex": 1,
+      "rawSha256": "d31479514e4d0b2884f4370b184f2fd924a36682f992b621711834e567353c17",
+      "attempts": 1,
+      "result": {
+        "providerId": "exa",
+        "query": {
+          "query": "IT Reseller Systemhaus Netzwerkhardware Deutschland Geschäftskunden",
+          "countryCode": "DE",
+          "countryName": "Germany",
+          "languageCode": "de",
+          "maxResults": 10
+        },
+        "items": [
+          {
+            "providerId": "exa",
+            "rank": 1,
+            "title": "nds Netzwerksysteme GmbH",
+            "url": "https://nds-systemhaus.de/",
+            "snippet": "# nds Netzwerksysteme GmbH nds Netzwerksysteme GmbH is a IT Services and IT Consulting company. Als herstellerunabhängiger IT-Komplettanbieter, bietet das nds it systemhaus maßgeschneiderte Lösungen über das gesamte Spektrum einer modernen Unternehmens-IT. Nds Netzwerksysteme GmbH employs 25 people and has an annual revenue of $1M-$5M, founded in 1992. Headquartered in Germany, with presence in United States. ## About Als herstellerunabhängiger IT-Komplettanbieter bieten wir maßgeschneiderte Lösungen über das gesamte Spektrum einer modernen Unternehmens-IT. Von der IT-Strategieberatung bis zum kompletten Betrieb bieten wir Ihnen alle IT-Leistungen aus einer Hand. Zu unserem Portfolio gehören Lösungen aus den Bereichen: IT-Infrastruktur, IT-Services, Cloud sowie Kommunikations-, Collaboration- und Medientechnik. Wir begleiten Sie bei den Herausforderungen der Digitalisierung. Industrie 4.0, Internet of things, Bring your own devices, Lösungen für Homeoffice, Collaboration und papierloses Büro sind hier nur ein paar Stichworte, die uns in den nächsten Jahren begleiten. Aber auch die Art der Nutzung befindet sich im Wandel. Die Nutzung von Cloud-Lösungen und einzelnen Anwendungen und Diensten als „Managed Service“ haben die Auswahlmöglichkeiten und Flexibilität für den Kunden erhöht. Dadurch kann aber an vielen Stellen falsch abgebogen werden. Hier mit Ihnen den richtigen Weg für Ihr Unternehmen zu treffen, gehört zu unseren Aufgaben und Kompetenzen. Mit einem Team von über 80 Spezialisten betreuen wir von unseren 3 Standorten Metzingen, Stuttgart und Sindelfingen über 550 Kunden im In- und Ausland. Im Bereich Netzwerke (LAN, WLAN, Richtfunk) zählt die nds zu den „Top Drei“ in Deutschland.“ Das nds it systemhaus bietet Ihnen bundesweit einen 24 x 7 Service an 365 Tagen im Jahr. Am Standort Stuttgart steht uns mit dem Collaboration Center mit 11 verschiedenen Räumen ein hochmoderner Showroom für Collaboration- und Präsentations-Lösungen zur Verfügung. Das Collabo",
+            "sourceKind": "web",
+            "externalId": "https://exa.ai/library/organization/k0f7mrbqkql"
+          },
+          {
+            "providerId": "exa",
+            "rank": 2,
+            "title": "SYNECTIVE Systemhaus GmbH & Co. KG",
+            "url": "https://synective.de/",
+            "snippet": "# SYNECTIVE Systemhaus GmbH & Co. KG SYNECTIVE Systemhaus GmbH & Co. KG is a IT Services and IT Consulting company. Synective is a future-oriented system house with a long tradition in new-found and located in the heart of the shore. They have extensive experience in all aspects of the IT and are a competent partner for business customers throughout Germany and the innereuropische region. SYNECTIVE Systemhaus GmbH & Co. KG employs 2 people, founded in 2017. Headquartered in Elsfleth, Lower Saxony, Germany. ## About Unser Wirkungsgebiet sind Geschäftskunden in ganz Deutschland und im innereuropäischen Ausland mit vollumfänglicher Betreuung in den Bereichen Consulting, Development, Managed Services, IT Infrastruktur uvm.. ## Company Details - Industry: IT Services and IT Consulting - Type: Public Company - Headquarters: Elsfleth, Germany - Founded Year: 2017 - Homepage: synective.de - Aliases: synective systemhaus gmbh & co. kg - LinkedIn: linkedin.com/company/synective-systemhaus-gmbh-co-kg - Linkedin Followers: 21 (Yearly: +5.0%) - Emails: [redacted-email] - Phone: [redacted-phone], [redacted-phone] [redacted-workforce-section]",
+            "sourceKind": "web",
+            "externalId": "https://exa.ai/library/organization/x9wk6nfm4g4"
+          },
+          {
+            "providerId": "exa",
+            "rank": 3,
+            "title": "indasys IT Systemhaus Gruppe",
+            "url": "https://indasys.de/",
+            "snippet": "# indasys IT Systemhaus Gruppe (indasys IT Systemhaus AG) indasys IT Systemhaus Gruppe is a Computer Networking company. indasys IT Systemhaus Gruppe is an IT system house that provides a wide range of services including IT infrastructure, network security, data center, modern workplace, software and licenses, cloud services, managed services, IT support, consulting, and repair services. Indasys IT Systemhaus Gruppe employs 36 people (+1.6% YoY, +1 person), founded in 1999. Headquartered in Stuttgart-Weilimdorf, Baden-Württemberg, Germany, with presence in United States. Its workforce is distributed across Germany and Kenya. ## About Wir lösen reale IT-Probleme – nicht mit Buzzwords, sondern mit messbaren Ergebnissen. Unser Ziel: Eine IT, die funktioniert, schützt und mitdenkt – damit Sie sich auf Ihr Kerngeschäft konzentrieren können. Seit über 25 Jahren begleiten wir mittelständische und größere Unternehmen als zuverlässiger IT-Partner in Baden-Württemberg. Durch unsere Erfahrung aus zahlreichen Projekten wissen wir, worauf es wirklich ankommt: individuelle Lösungen, die exakt zu Ihrer Unternehmensstruktur passen. Unsere Services sind skalierbar – wir passen uns Ihrer Größe, Branche und technischen Umgebung an. So entsteht eine IT-Landschaft, die nicht von der Stange kommt, sondern für Sie gebaut ist. Unsere vier Kernbereiche: • IT-Infrastruktur – stabile Netzwerke, performante Server und zuverlässige Systeme, die mitwachsen. • Cloud Services – flexible, sichere Umgebungen, die Effizienz und Mobilität ermöglichen. • IT-Security – Schutz vor Cyberbedrohungen durch moderne Sicherheitskonzepte, Audits und Awareness. • IT-Services – ganzheitlicher Support, Monitoring und Betreuung – persönlich, planbar, professionell. Wir sprechen Klartext, liefern Substanz und zeigen Ergebnisse. Unsere Kunden schätzen uns, weil wir tun, statt nur zu reden – technisch fundiert, strukturiert und ehrlich. Unsere Haltung: Kompetenz statt Hype. Partnerschaft statt Abhängigkeit. Si",
+            "sourceKind": "web",
+            "externalId": "https://exa.ai/library/organization/vqg7qfwr83w"
+          },
+          {
+            "providerId": "exa",
+            "rank": 4,
+            "title": "U+P Systemhaus GmbH",
+            "url": "https://up-systemhaus.de/",
+            "snippet": "# U+P Systemhaus GmbH (U+P Systemhaus, GmbH.) U+P Systemhaus GmbH is a IT Services and IT Consulting company. U+P Systemhaus GmbH employs 2 people (+50.0% YoY, +1 person), founded in 2001. Headquartered in Germany, with presence in United States. ## About Seit 2001 unterstützen wir Unternehmen jeder Größe mit maßgeschneiderten IT-Lösungen. Mit hervorragenden Herstellerbeziehungen bieten wir exklusive Konditionen, schnelle Lieferung und persönliche Beratung. Unsere Leistungen: - Hardware-Beschaffung & E-Procurement - Software & Cloud-Lösungen - Ausschreibungen & IT-Logistik - IT-Ankauf & nachhaltiges Recycling Ihr Vorteil: - Angebote am selben Werktag - Lieferung meist am nächsten Werktag - Persönlicher Ansprechpartner statt Hotline ## Company Details - Industry: IT Services and IT Consulting - Type: Public Company - Founded Year: 2001 - Homepage: up-systemhaus.de - Status: active - Aliases: u+p systemhaus gmbh, u+p systemhaus, u+p systemhaus, gmbh. - LinkedIn: linkedin.com/company/up-systemhaus-gmbh - Linkedin Followers: 30 (Monthly: -3.2%, Yearly: +130.8%) - Emails: [redacted-email] - Phone: [redacted-phone] - SIC Codes: 73, 737 - NAICS Codes: 81, 811 [redacted-workforce-section]",
+            "sourceKind": "web",
+            "externalId": "https://exa.ai/library/organization/w2yz2sl417b"
+          },
+          {
+            "providerId": "exa",
+            "rank": 5,
+            "title": "wp.DATA Kommunikations GmbH",
+            "url": "https://wpdata.com/",
+            "snippet": "# wp.DATA Kommunikations GmbH wp.DATA Kommunikations GmbH is a Computer and Network Security company. wp.DATA is a software consulting house for SAP Business One ERP and IT systems in NRW. They provide individual complete solutions for small and medium-sized businesses. Wp.DATA Kommunikations GmbH employs 5 people (+42.9% YoY, +3 people), founded in 1992. Headquartered in neuss, nordrhein-westfalen, Germany, with presence in United States. ## About wp.DATA Kommunikations Gmbh is an IT service provider, reseller und integrator located in Neuss, North Rhine-Westphalia, Germany. ## Company Details - Industry: Computer and Network Security - Type: Privately Held - Headquarters: neuss, Germany - Founded Year: 1992 - Homepage: wpdata.com - Status: active - Aliases: wp.data kommunikations gmbh, wp.data kommunikations, wp data kommunikations - LinkedIn: linkedin.com/company/wp-data-kommunikations-gmbh - Linkedin Followers: 92 (Monthly: +1.1%, Yearly: +22.7%) - Emails: [redacted-email] - Phone: [redacted-phone], [redacted-phone] - SIC Codes: 73, 737 - NAICS Codes: 81, 811 [redacted-workforce-section]",
+            "sourceKind": "web",
+            "externalId": "https://exa.ai/library/organization/8pbnrtcmf44"
+          },
+          {
+            "providerId": "exa",
+            "rank": 6,
+            "title": "Systemhaus Cramer GmbH",
+            "url": "https://systemhaus-cramer.de/",
+            "snippet": "# Systemhaus Cramer GmbH Systemhaus Cramer GmbH is a Information Technology & Services company. Systemhaus Cramer provides creative and ergebnisorientierte IT infrastructure solutions for businesses, ensuring security and optimized processes. They offer managed print services, print software, scanner & software, datev services, and business services. Systemhaus Cramer GmbH employs 23 people (-7.0% YoY, -3 people), founded in 1992. Headquartered in Hamm, North Rhine-Westphalia, Germany, with presence in United States. ## About Mit mehr als 100 Mitarbeitern orchestrieren wir die IT unserer Kunden – leidenschaftlich, vertrauensvoll und ergebnisorientiert. Seit 1992 sind wir an unseren Standorten in Hamm, Münster, Kassel und Köln Ansprechpartner für kleine und mittelständische Unternehmen, die ihre digitale Transformation anpacken und gemeinsam mit uns die Weichen für zukunftsweisende IT-Konzepte stellen wollen. Die Herausforderungen sind vielseitig. VoIP-Telefonie, Collaboration, Dokumentenmanagement, IT-Sicherheit: Wir unterstützen Sie dabei, den Anforderungen an den Arbeitsplatz der Zukunft bestmöglich gerecht werden. Vor allem die Flexibilität und Skalierbarkeit von IT-Services stehen bei der Digitalisierung der Arbeitswelt gegenwärtig im Mittelpunkt. Cloud-Technologien und Managed Services gewinnen an Bedeutung. Doch für uns steht fest: Die Orchestrierung Ihrer IT gelingt nicht mit Schablone. Wir stehen an Ihrer Seite, wenn es darum geht, eine passgenaue Strategie zu entwickeln und umzusetzen. Wir sind Ihr Partner von der Bestandsaufnahme, der Analyse vorhandener IT-Prozesse und Technologien bis zur Realisierung Ihrer neuen IT-Identität. Was uns auszeichnet 30 Jahre Expertise: Unser Erfahrungsschatz aus den Projekten mit über 1.500 Kunden machen uns zum kompetenten Begleiter in allen Handlungsfeldern Ihrer Digitalisierungsstrategie. Hierbei greifen wir auf ein schlagkräftiges Netzwerk aus Technologiepartnern zurück. Alles aus einer Hand: Wir begleiten u",
+            "sourceKind": "web",
+            "externalId": "https://exa.ai/library/organization/xdqg9hbtz2y"
+          },
+          {
+            "providerId": "exa",
+            "rank": 7,
+            "title": "ATD Systemhaus",
+            "url": "https://atd-systemhaus.de/",
+            "snippet": "# ATD Systemhaus ATD Systemhaus is a IT Services and IT Consulting company. ATD Systemhaus is a company that specializes in IT infrastructure, IT security, digitalization and collaboration, and managed services. They have been in operation since 1996 and are regionally represented. They have a network of partners and offer a wide range of services. ATD Systemhaus employs 35 people (+44.4% YoY, +20 people), founded in 1996. Headquartered in braunschweig, niedersachsen, Germany, with offices in Detmold, Hannover, and Wolfenbüttel. ## About Ganzheitlich. Sie finden bei uns mehr als Hard- und Software. Wir bieten Ihnen kompetenten, freundlichen Service und ganzheitliche Lösungskonzepte. Vom ersten Kennenlernen über die gemeinsame Erarbeitung Ihres spezifischen Umsetzungskonzepts bis hin zur Installation und Betrieb Ihrer IT-Business-Lösung sind wir Ihr kompetenter Ansprechpartner. Unser Beratungsteam orientiert sich eng an Ihren Bedürfnissen, Wünschen und Möglichkeiten. Für die Betreuung Ihrer EDV-Anwender und den Betrieb Ihrer IT-Systemlandschaft steht Ihnen unser leistungsfähiges Support-Team zur Verfügung. Unsere Mobile-Admins helfen Ihnen telefonisch, remote oder bei Ihnen vor Ort – ganz so, wie Sie die Unterstützung benötigen. Zusammenarbeit. Wir fördern Ihre Talente und gestalten die Zusammenarbeit im Team gemeinsam. In der ATD haben Sie Raum für Ihre persönliche Entwicklung: fachlich, methodisch und im Bereich der Softskills. Flache Hierarchien und agile Systematiken in unseren Prozessen und der Führung geben den passenden Rahmen für ein sehr eigenverantwortliches Handeln und Arbeiten. Mitarbeiter:innen genießen bei uns die gute und familiäre Arbeitsatmosphäre, das Arbeiten an gemeinsamen Lösungen und in gemeinsamen Projekten. Gemeinsam mit unserem fachlich versierten Vertrieb kann sich unser Beratungs- und Technik-Team ganz auf die technischen Themen bei den Kunden fokussieren. Wir haben den Anspruch, für unsere mittelständischen Kunden regional der beste Pa",
+            "sourceKind": "web",
+            "externalId": "https://exa.ai/library/organization/45s7x607x7m"
+          },
+          {
+            "providerId": "exa",
+            "rank": 8,
+            "title": "primeLine Systemhaus GmbH",
+            "url": "https://primeline-systemhaus.de/",
+            "snippet": "# primeLine Systemhaus GmbH primeLine Systemhaus GmbH is a IT Services and IT Consulting company. primeline systemhaus is an IT services provider that offers cyberriskiocheck and IT consulting services. They work with extensive experience and expertise in IT infrastructure solutions for businesses in the region. They plan their IT, support, and expand them with products and solutions tailored to their needs. They have their own data center georedundant at two standorten server hardware and provide exclusive support through over 40. PrimeLine Systemhaus GmbH employs 5 people, founded in 2014. Headquartered in Bad Oeynhausen, Nordrhein-Westfalen, Germany. ## About In Bad Oeynhausen sitzen wir, das primeLine Systemhaus! Als Teil der primeLine Unternehmensgruppe kümmern wir uns um infrastrukturelle Lösungen im B2B-Bereich. Von Inhouse-Themen bis zu cloudbasierten Lösungen in unseren Rechenzentren steht Ihnen unser primeLine Systemhaus direkt in Bad Oeynhausen und unsere partimus GmbH in Limburg an der Lahn als starker Partner zur Seite. Mit der ebenfalls zur Gruppe gehörenden primeLine Solutions liefern wir nicht nur maßgeschneiderte Hardware, sondern heben als Systemhaus den dazugehörigen Service auf ein neues Level. Lassen Sie uns gemeinsam Ihr Unternehmen zukunftssicher machen. Sie möchten uns persönlich kennenlernen? Gerne stellen wir uns bei Ihnen im Haus vor. ## Company Details - Industry: IT Services and IT Consulting - Type: Public Company - Headquarters: Bad Oeynhausen, Germany - Founded Year: 2014 - Homepage: primeline-systemhaus.de - Aliases: primeline systemhaus gmbh - LinkedIn: linkedin.com/company/primeline-systemhaus-gmbh - Linkedin Followers: 124 (Monthly: +0.8%, Yearly: +39.3%) - Emails: [redacted-email], [redacted-email], [redacted-email], [redacted-email] - Phone: [redacted-phone], [redacted-phone], [redacted-phone] [redacted-workforce-section]",
+            "sourceKind": "web",
+            "externalId": "https://exa.ai/library/organization/9x744qqr66p"
+          },
+          {
+            "providerId": "exa",
+            "rank": 9,
+            "title": "NCS Netzwerke Computer Service GmbH",
+            "url": "https://ncs.de/",
+            "snippet": "# NCS Netzwerke Computer Service GmbH NCS Netzwerke Computer Service GmbH is a Computer Networking Products company. NCS Netzwerke Computer Service GmbH is an IT system located in Friedberg, Augsburg. They provide solutions in virtualization, storage and data security, server and network (data center), green data center, IT security and privacy, monitoring and analysis, software, and products. They also offer managed services for Microsoft 365 and conference systems. NCS Netzwerke Computer Service GmbH employs 16 people, founded in 1997. Headquartered in Friedberg, Bayern, Germany, with presence in United States. ## About Mit den drei Standorten Ulm, Friedberg bei Augsburg und München ziehen wir eine durchgehende Linie technischer Exzellenz quer durch Südbayern. Manche sprechen vom IT-Backbone Süddeutschlands – wir nennen es einfach: Nähe, auf die Sie sich verlassen können. Wir bieten IT-Lösungen für Backup, Support, Monitoring, Netzwerke, Hardware, System-Management, Coaching, Installation, Datensicherung, Druckermanagement, IT-Security, Repairservice, Server und Virtualisierung an. Als Managed Service Provider sind wir Ihr Partner! Für mehr Hochverfügbarkeit ist unser Rechenzentrum die richtige Anlaufstelle! Sie müssen sich um nichts mehr kümmern – die NCS GmbH ist für Sie da! ## Company Details - Industry: Computer Networking Products - Type: Public Company - Headquarters: Friedberg, Germany - Founded Year: 1997 - Homepage: ncs.de - Status: active - Aliases: ncs netzwerke computer service gmbh, ncs netzwerke computer service - LinkedIn: linkedin.com/company/ncs-netzwerke-computer-service-gmbh - Linkedin Followers: 286 (Monthly: +4.4%) - Emails: [redacted-email] - Phone: [redacted-phone], [redacted-phone], [redacted-phone], [redacted-phone], [redacted-phone] - SIC Codes: 73, 737 - NAICS Codes: 81, 811 [redacted-workforce-section]",
+            "sourceKind": "web",
+            "externalId": "https://exa.ai/library/organization/3h59kgyytwn"
+          },
+          {
+            "providerId": "exa",
+            "rank": 10,
+            "title": "INCAS GmbH",
+            "url": "https://it-systemhaus.de/",
+            "snippet": "# INCAS GmbH INCAS GmbH is a IT Services and IT Consulting company. IT-SYSTEMHAUS is a company that provides IT solutions, cloud, security, and support. They offer efficient IT services for businesses. INCAS GmbH employs 13 people, founded in 1996. Headquartered in krefeld, nordrhein-westfalen, Germany, with presence in United States. ## About INCAS – Member of think about IT Wir sind ihr ISO-zertifizierter IT-Spezialist mit langjähriger Erfahrung im Bereich der IT-Services. Gemeinsam verfolgen wir die Vision von Innovation, Zuverlässigkeit und exzellenten IT-Dienstleistungen. Unsere Mission besteht darin, zunehmend komplexere IT-Strukturen zu bewältigen und Ihnen stets erstklassige Produkte sowie Services bereitzustellen. Unser großes Partnernetzwerk bietet unseren Kund*innen Zugang zu den neuesten Technologien und IT-Dienstleistungen. ## Company Details - Industry: IT Services and IT Consulting - Type: Public Company - Headquarters: krefeld, Germany - Founded Year: 1996 - Homepage: it-systemhaus.de - Status: active - Aliases: incas gmbh, incas - LinkedIn: linkedin.com/company/incas-it-systemhaus - Linkedin Followers: 1,117 (Yearly: +8.1%) - Emails: [redacted-email] - Phone: [redacted-phone], [redacted-phone] [redacted-workforce-section]",
+            "sourceKind": "web",
+            "externalId": "https://exa.ai/library/organization/kh2k1czkjc1"
+          }
+        ],
+        "sourceUrls": [
+          "https://nds-systemhaus.de/",
+          "https://synective.de/",
+          "https://indasys.de/",
+          "https://up-systemhaus.de/",
+          "https://wpdata.com/",
+          "https://systemhaus-cramer.de/",
+          "https://atd-systemhaus.de/",
+          "https://primeline-systemhaus.de/",
+          "https://ncs.de/",
+          "https://it-systemhaus.de/"
+        ],
+        "requestCount": 1,
+        "latencyMs": 2261
+      }
+    },
+    {
+      "queryIndex": 2,
+      "rawSha256": "8fd08222b729189b393b12ee180f371dbb6214de899ae2d793bbfe44e3c3a309",
+      "attempts": 1,
+      "result": {
+        "providerId": "exa",
+        "query": {
+          "query": "networking VAR reseller Germany SMB WiFi switches business customers",
+          "countryCode": "DE",
+          "countryName": "Germany",
+          "languageCode": "de",
+          "maxResults": 10
+        },
+        "items": [
+          {
+            "providerId": "exa",
+            "rank": 1,
+            "title": "Avanis GmbH",
+            "url": "https://avanis.de/",
+            "snippet": "# Avanis GmbH Avanis GmbH is a IT Services and IT Consulting company. Avanis GmbH is a company specializing in network technology and WLAN solutions. They offer a wide range of services including switches, RTLS positioning, and infrastructure planning. Avanis GmbH employs 4 people (-12.5% YoY, -1 person), founded in 2003. Headquartered in Bielefeld, North Rhine-Westphalia, Germany, with presence in United States. ## About Die Avanis GmbH zählt zu den führenden Spezial-Distributoren im Netzwerkbereich. Switches, Industrial Ethernet, Medienkonverter, VDSL2, WLAN: Mit einem breiten Sortiment von über 5000 Artikeln verschiedener Marken berät Avanis den Fachhandel, IT-Systemhäuser und gewerbliche Endkunden. Als Spezialist für WLAN-Planung und -Analyse ist Avanis ein Pionier im Bereich Echtzeit-Lokalisierung und WLAN-Ortung. Unter dem Dach der Avanis Academy hat das Unternehmen in den vergangenen anderthalb Jahrzehnten als Anbieter von Trainings, Schulungen und Seminaren viele Hundert Teilnehmer fit für Netzwerktechnik und WLAN-Planung gemacht. ## Company Details - Industry: IT Services and IT Consulting - Type: Partnership - Headquarters: Bielefeld, Germany - Founded Year: 2003 - Homepage: avanis.de - Status: active - Ownership: Private - Aliases: avanis gmbh, avanis - LinkedIn: linkedin.com/company/avanis-gmbh - Linkedin Followers: 96 (Monthly: -1.0%, Yearly: +33.3%) - Emails: [redacted-email] - Phone: [redacted-phone], [redacted-phone] [redacted-workforce-section]",
+            "sourceKind": "web",
+            "externalId": "https://exa.ai/library/organization/7r6rfjf5m29"
+          },
+          {
+            "providerId": "exa",
+            "rank": 2,
+            "title": "SCALCOM",
+            "url": "https://scalcom.de/",
+            "snippet": "# SCALCOM SCALCOM is a IT Services and IT Consulting company. SCALCOM is a B2B online shop that offers a wide range of products including switching/routing, WLAN, server, storage, router, service, security, switches, and workstations. SCALCOM employs 5 people (-30.0% YoY, -3 people), founded in 2009. Headquartered in waltenhofen, bayern, Germany, with presence in United States. ## About Die SCALCOM bietet als spezialisierter Distributor – mit dem Schwerpunkt Netzwerkkomponenten – weit mehr als nur eine klassische Produktdistribution. Neben dem Fokus auf die Lieferung von Netzwerkkomponenten und ausgewählten Funklösungen beinhalten die Leistungen von SCALCOM die strategische Beratung und einen umfassenden Service und Support. Unsere Kunden profitieren von unserem langjährigen Know-how in den neuesten Technologien. Sie finden bei SCALCOM klassische Netzwerkkomponenten aus den Bereichen Switching und Routing, neueste Funktechnologien (WLAN, Richtfunk) sowie Multiplexer- und Modemtechnik und vieles mehr. SCALCOM unterstützt Sie mit einem umfangreichen Partnernetzwerk bestehend aus technologieführenden Herstellern. Bereits bei der Skizzierung Ihres Projektes und der Erstellung von Stücklisten bis hin zur Planung oder Machbarkeit wird Ihnen geholfen. Bei der Herstellerauswahl achtet SCALCOM stets auf die Maxime „Best of Breed\"​, denn alle Hersteller im SCALCOM-Portfolio haben eine technologieführende Position. Gleichzeitig ergänzt und erweitert SCALCOM kontinuierlich sein Produkt- und Leistungsportfolio mit geeigneten Partnern. SCALCOM Kunden Zu den Kunden der SCALCOM zählen ausschließlich Serviceprovider, Netzbetreiber, IT-Systemhäuser, Systemintegratoren, Value Added Reseller (VARs), Netzwerkdienstleister und EDV-Fachhändler. Für alle unsere Kunden ist SCALCOM der innovative, zuverlässige und serviceorientierte Partner und Lieferant. ## Company Details - Industry: IT Services and IT Consulting - Type: Privately Held - Headquarters: waltenhofen, Germany -",
+            "sourceKind": "web",
+            "externalId": "https://exa.ai/library/organization/svmky2mfyz6"
+          },
+          {
+            "providerId": "exa",
+            "rank": 3,
+            "title": "Vitel GmbH",
+            "url": "https://vitel.de/",
+            "snippet": "# Vitel GmbH Vitel GmbH is a IT Services and IT Consulting company. The Vitel GmbH is a value-added distributor of solutions for infrastructure, communication, and security with a focus on Peplink. Vitel GmbH employs 8 people (+40.0% YoY, +2 people), founded in 2016. Headquartered in Germany, with presence in United States. ## About We are a European value-added distributor of IT solutions for network infrastructure, communication, and security. Our portfolio comprises products from carefully selected high-tech manufacturers in the areas of network and surveillance technology, connectivity as well as branch networking. Our team offers extensive consultation and supports you in in the strategic selection and implementation of your customized IT solution. ## Company Details - Industry: IT Services and IT Consulting - Type: Privately Held - Founded Year: 2016 - Homepage: vitel.de - Status: active - Ownership: Private - Aliases: vitel gmbh, vitel - LinkedIn: linkedin.com/company/vitel-gmbh-academy - Linkedin Followers: 911 (Monthly: +1.9%, Yearly: +10.0%) - Emails: [redacted-email], [redacted-email] - Phone: [redacted-phone], [redacted-phone] - SIC Codes: 50, 504 - NAICS Codes: 42, 423 [redacted-workforce-section]",
+            "sourceKind": "web",
+            "externalId": "https://exa.ai/library/organization/gyfp57l4s1g"
+          },
+          {
+            "providerId": "exa",
+            "rank": 4,
+            "title": "nds Netzwerksysteme GmbH",
+            "url": "https://nds-systemhaus.de/",
+            "snippet": "# nds Netzwerksysteme GmbH nds Netzwerksysteme GmbH is a IT Services and IT Consulting company. Als herstellerunabhängiger IT-Komplettanbieter, bietet das nds it systemhaus maßgeschneiderte Lösungen über das gesamte Spektrum einer modernen Unternehmens-IT. Nds Netzwerksysteme GmbH employs 25 people and has an annual revenue of $1M-$5M, founded in 1992. Headquartered in Germany, with presence in United States. ## About Als herstellerunabhängiger IT-Komplettanbieter bieten wir maßgeschneiderte Lösungen über das gesamte Spektrum einer modernen Unternehmens-IT. Von der IT-Strategieberatung bis zum kompletten Betrieb bieten wir Ihnen alle IT-Leistungen aus einer Hand. Zu unserem Portfolio gehören Lösungen aus den Bereichen: IT-Infrastruktur, IT-Services, Cloud sowie Kommunikations-, Collaboration- und Medientechnik. Wir begleiten Sie bei den Herausforderungen der Digitalisierung. Industrie 4.0, Internet of things, Bring your own devices, Lösungen für Homeoffice, Collaboration und papierloses Büro sind hier nur ein paar Stichworte, die uns in den nächsten Jahren begleiten. Aber auch die Art der Nutzung befindet sich im Wandel. Die Nutzung von Cloud-Lösungen und einzelnen Anwendungen und Diensten als „Managed Service“ haben die Auswahlmöglichkeiten und Flexibilität für den Kunden erhöht. Dadurch kann aber an vielen Stellen falsch abgebogen werden. Hier mit Ihnen den richtigen Weg für Ihr Unternehmen zu treffen, gehört zu unseren Aufgaben und Kompetenzen. Mit einem Team von über 80 Spezialisten betreuen wir von unseren 3 Standorten Metzingen, Stuttgart und Sindelfingen über 550 Kunden im In- und Ausland. Im Bereich Netzwerke (LAN, WLAN, Richtfunk) zählt die nds zu den „Top Drei“ in Deutschland.“ Das nds it systemhaus bietet Ihnen bundesweit einen 24 x 7 Service an 365 Tagen im Jahr. Am Standort Stuttgart steht uns mit dem Collaboration Center mit 11 verschiedenen Räumen ein hochmoderner Showroom für Collaboration- und Präsentations-Lösungen zur Verfügung. Das Collabo",
+            "sourceKind": "web",
+            "externalId": "https://exa.ai/library/organization/k0f7mrbqkql"
+          },
+          {
+            "providerId": "exa",
+            "rank": 5,
+            "title": "WLANxpert",
+            "url": "https://linkedin.com/company/wlanxpert",
+            "snippet": "# WLANxpert WLANxpert is a Computer Networking Products company. Founded in 2016. Headquartered in Munich, Bavaria, Germany. ## About Ein schlecht geplantes WLAN kostet Sie Geld und Zeit. Wenn das WLAN nicht oder schlecht funktioniert, sinken die Produktivität und Zufriedenheit von Kunden und Mitarbeitern. Was unterscheidet WLANxpert: Wir sind auf das Thema WLAN-Netzwerke spezialisiert und machen nichts anders. Wir lösen Ihre Anforderungen an Performanz, Sicherheit, Kosteneffizienz, professioneller Betreuung und Wartung. WLANxpert plant, installiert und betreibt WLAN Lösungen für • Büros • Produktions- und Logistikunternehmen • Hotels und • Gastronomie • Behörden und Kommunen • Schulen und Universitäten • Produktions- und Logistikunternehmen Referenzen auf Anfrage: • Zelte auf dem Oktoberfest, • Hotels und Gastronomie-Unternehmen • Fertigungsstandorte von Mittelständlern • Öffentliche Träger und Behörden. http://wlanxpert.de/kontakt/ ## Company Details - Industry: Computer Networking Products - Type: Privately Held - Headquarters: Munich, Germany - Founded Year: 2016 - Aliases: wlanxpert - LinkedIn: linkedin.com/company/wlanxpert - Linkedin Followers: 4 [redacted-workforce-section]",
+            "sourceKind": "web",
+            "externalId": "https://exa.ai/library/organization/f0wq3j75n0r"
+          },
+          {
+            "providerId": "exa",
+            "rank": 6,
+            "title": "HPC IT-Security",
+            "url": "https://linkedin.com/company/hpc-it-security",
+            "snippet": "# HPC IT-Security HPC IT-Security is a IT Services and IT Consulting company. The company provides video surveillance, alarm systems, IT consulting, and storage & network services. They offer a comprehensive range of products and services to protect objects, individuals, and valuables. They also provide intelligent security technology for private buildings and businesses. They offer products from prestigious manufacturers and provide advice and support for IT projects. HPC IT-Security has an annual revenue of $296.2K, founded in 2011. Headquartered in Munich, Bavaria, Germany, with presence in United States. ## About HPC IT-Security, based in Munich, Bavaria, Germany, is a newly developed IT reseller and system integrator. The company was founded in 2012 by Harald Philipp, who has been working for more than 25 years as a leading manager in the IT industry in Germany and in Europe. The company is highly experienced in the security industry and other IT segments. Their main focus is on video surveillance, IT security, networking and home networking as well as consumer electronics. The main target groups are the high-end private enduser and small companies who need to protect their properties and their wealth. \"Through my work experience with international technology leaders such as EPSON, Actebis & Peacock, eMachines & Gateway, LG Electronics, InFocus, Bitdefender and others, I have gained a lot of experience and understanding for the customers requirements when it comes to all kinds of security questions and usability combined with IT, home networking and consumer electronics. \" Therefore, HPC offers to their customers all aspects of IT, consultancy, video surveillance, security, hardware & software, networking and much more starting with consulting, planning, installation up to financing their security and IT projects as well as support and other services. ## Company Details - Industry: IT Services and IT Consulting - Type: Self-Employed - Headquarters: M",
+            "sourceKind": "web",
+            "externalId": "https://exa.ai/library/organization/xtbt1bxzjvw"
+          },
+          {
+            "providerId": "exa",
+            "rank": 7,
+            "title": "YELLO NETCOM GmbH",
+            "url": "https://yello-net.de/",
+            "snippet": "# YELLO NETCOM GmbH YELLO NETCOM GmbH is a Industrial Automation company. YELLO Netcom is a company that specializes in networking technology, offering routers, switches, cables, and data cabinets. They provide training and service for their products and services. YELLO NETCOM GmbH employs 16 people (+3.8% YoY, +1 person), founded in 1999. Headquartered in Rheine, North Rhine-Westphalia, Germany, with presence in United States. Its workforce is distributed across Germany and Ireland. ## About YELLO NETCOM is a medium-sized, owner-managed company in the field of network technology based in Birkenallee 115, Rheine, North Rhine-Westphalia, Germany. We are specialised in industrial Ethernet, network design and implementation services, IIot and OT security. We focus on customised services: Customers do not only benefit from individual advice and on-site service, but also from complete project management for setting up and integrating a network as well as implementation & training. ## Company Details - Industry: Industrial Automation - Type: Public Company - Headquarters: Rheine, Germany - Founded Year: 1999 - Homepage: yello-net.de - Status: active - Ownership: Private - Aliases: yello netcom gmbh, yello netcom - LinkedIn: linkedin.com/company/yello-netcom-gmbh - Linkedin Followers: 451 (Monthly: +2.5%, Yearly: +21.2%) - Emails: [redacted-email] - Phone: + [redacted-phone] - SIC Codes: 17, 173 - NAICS Codes: 23, 238 [redacted-workforce-section]",
+            "sourceKind": "web",
+            "externalId": "https://exa.ai/library/organization/5vctwpl20zx"
+          },
+          {
+            "providerId": "exa",
+            "rank": 8,
+            "title": "NLS Netzwerke GmbH",
+            "url": "https://nls-netzwerke.de/",
+            "snippet": "# NLS Netzwerke GmbH NLS Netzwerke GmbH is a IT Services and IT Consulting company. NLS Netzwerke München is a company that specializes in network technology, including fiber optic components, switched router technology, network security, and management systems. They provide individual network solutions and offer services such as network service and monitoring. NLS Netzwerke GmbH employs 3 people, founded in 1998. Headquartered in Alling, Bayern, Germany, with presence in United States. ## About Your Value: - Competent partner for consulting, planning, delivery and implementation of complete IT-solutions. - Longtime experience of experts to Data Center with its multiple requirements of applications, cabling, cooling, cable-mgmt. - deliver of customized solutions in an integrated and flexible way. - deliver of high quality (premium) products and services. Partners and Qualifications: apranet - Solutions: Racks, Cabinets Commscope Systimax - Solutions: Cabling, Cu, FO, Trunks, Racks, Cabinets, WLAN, iPatch - Status: Systimax Business Partner Extreme Networks - Solutions: Routing, Switching, WLAN, Security, Firewall, Networkmanagement, - Status: Silver Panduit - Solutions: Cabling, Cu, FO, Trunks, Racks, Cabinets, Cablemanagement, FibreRunner, PanView, PDUs, Einhausung, vBlocks, Grounding, Bounding - Status: Systemintegrator Customers: Carrier, Provider, DataCenters, Enterprise, Government ## Company Details - Industry: IT Services and IT Consulting - Type: Privately Held - Headquarters: Alling, Germany - Founded Year: 1998 - Homepage: nls-netzwerke.de - Status: active - Aliases: nls netzwerke gmbh, nls group - LinkedIn: linkedin.com/company/nls-netzwerke - Linkedin Followers: 50 (Monthly: +2.0%) - Emails: [redacted-email], [redacted-email] - Phone: [redacted-phone], [redacted-phone], [redacted-phone], [redacted-phone] [redacted-workforce-section]",
+            "sourceKind": "web",
+            "externalId": "https://exa.ai/library/organization/72sn9frymgy"
+          },
+          {
+            "providerId": "exa",
+            "rank": 9,
+            "title": "The Cloud Networks International",
+            "url": "https://thecloud.eu/",
+            "snippet": "# The Cloud Networks International The Cloud Networks International is a Wireless Services company. The Cloud Networks Germany GmbH is a professional network solutions provider. They have been trusted by customers for over 14 years. They offer a wide range of services including public wifi, WLAN, hotspot, and fiber optic. The Cloud Networks International employs 38 people (+11.8% YoY, +6 people), founded in 2003. Headquartered in Munich, Germany, with presence in United States and Sweden. Its workforce is distributed across 5 countries (including Germany, Romania, Denmark, Switzerland, and Sweden). ## About As a leading provider of WiFi networks, The Cloud supports companies of all sizes and industries, as well as numerous public institutions. With our WiFi platform, we aim to be the technological leader - that's not an end in itself. Business, the public sector, healthcare and education and many areas of society need better digital support and in some cases have to be completely repositioned in order to be prepared for the challenges of our time. The creation of digital performance is the core of our target image. The product operations are implemented from the company's HQ in Munich, Bavaria; international Sales and marketing are carried out from the offices in Heinsberg, NRW. Our Scandinavian customers and our eastern European customers are looked after by our unit in Stockholm. The Cloud Networks is part of the Wifirst Group based in Paris. ## Company Details - Industry: Wireless Services - Type: Public Company - Headquarters: Munich, Germany - Founded Year: 2003 - Homepage: thecloud.eu - Status: active - Ownership: Private - Aliases: the cloud networks international, the cloud networks, the cloud, the cloud networks germany - LinkedIn: linkedin.com/company/the-cloud-networks-germany-gmbh - Emails: [redacted-email], [redacted-email], [redacted-email], [redacted-email], [redacted-email] - Phone: [redacted-phone], [redacted-phone], [redacted-phone], +49",
+            "sourceKind": "web",
+            "externalId": "https://exa.ai/library/organization/yjj0z8z0j0d"
+          },
+          {
+            "providerId": "exa",
+            "rank": 10,
+            "title": "RockSolid Networks e. K.",
+            "url": "https://rocksolid-networks.de/",
+            "snippet": "# RockSolid Networks e. K. RockSolid Networks e. K. is a IT Services and IT Consulting company. RockSolid Networks is a company that provides network solutions that match the needs of their customers. RockSolid Networks e. K. employs 2 people, founded in 2020. Headquartered in Germany. ## About Die All-in-One Lösung für Ihr Netzwerk Qualitativ hochwertige und verlässliche Consulting-, Implementation- und Operation Services für Enterprise und kleinere Unternehmensnetzwerke, Data Center und TK-Netze. Gerne übernehmen wir auch Ihre Standortvernetzung: sicher per IPsec, kostengünstig und ohne Backdoors mittels Open Source Software und mit aktuellem Verschlüsselungsstandard. Sie benötigen eine neue Netzwerkinfrastruktur, Erweiterungen, Umbau oder externe Unterstützung beim Betrieb Ihrer Komponenten? Durch unsere langjährige Erfahrungen können wir Ihnen mit Sicherheit helfen eine solide, skalierbare und moderne Netzwerkinfrastruktur zu verwirklichen. Gerne unterstützen wir sie durch unsere Consulting Dienstleistungen mit erfahrenen Network Architects und Network Engineers in allen Phasen Ihrer Projekte. ## Company Details - Industry: IT Services and IT Consulting - Type: Self-Owned - Founded Year: 2020 - Homepage: rocksolid-networks.de - Aliases: rocksolid networks e. k. - LinkedIn: linkedin.com/company/rocksolid-networks - Linkedin Followers: 60 (Yearly: +3.4%) - Emails: [redacted-email] - Phone: [redacted-phone], [redacted-phone] [redacted-workforce-section]",
+            "sourceKind": "web",
+            "externalId": "https://exa.ai/library/organization/t3nys39b0zn"
+          }
+        ],
+        "sourceUrls": [
+          "https://avanis.de/",
+          "https://scalcom.de/",
+          "https://vitel.de/",
+          "https://nds-systemhaus.de/",
+          "https://linkedin.com/company/wlanxpert",
+          "https://linkedin.com/company/hpc-it-security",
+          "https://yello-net.de/",
+          "https://nls-netzwerke.de/",
+          "https://thecloud.eu/",
+          "https://rocksolid-networks.de/"
+        ],
+        "requestCount": 1,
+        "latencyMs": 1317
+      }
+    }
+  ],
+  "requestCount": 3,
+  "latencyMs": 5473,
+  "usage": {}
+}

@@ -1,0 +1,183 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-08-26-de-v1",
+  "systemId": "gemini-full",
+  "mode": "end-to-end-search-and-output",
+  "channelId": "project-services",
+  "rawSha256": "ed1961ca485528ae410cfe2116f5f71d069cb87610a7810e392fbfb05e55b82e",
+  "attempts": 3,
+  "requestCount": 1,
+  "latencyMs": 34804,
+  "usage": {
+    "total_tokens": 6276,
+    "total_input_tokens": 830,
+    "input_tokens_by_modality": [
+      {
+        "modality": "text",
+        "tokens": 830
+      }
+    ],
+    "total_cached_tokens": 0,
+    "total_output_tokens": 3553,
+    "total_tool_use_tokens": 0,
+    "total_thought_tokens": 1893,
+    "grounding_tool_count": [
+      {
+        "type": "google_search",
+        "count": 3
+      }
+    ],
+    "raw_prompt_token": 11712
+  },
+  "candidates": [
+    {
+      "companyName": "Controlware GmbH",
+      "officialUrl": "https://www.controlware.de/",
+      "roles": [
+        "System Integrator",
+        "Network & Security Managed Service Provider"
+      ],
+      "reason": "Controlware is a premier independent German system integrator specializing in enterprise network architecture, WAN/LAN integration, wireless bridges, and cyber security installation.",
+      "evidenceUrls": [
+        "https://www.controlware.de/"
+      ]
+    },
+    {
+      "companyName": "DATAGROUP SE",
+      "officialUrl": "https://www.datagroup.de/",
+      "roles": [
+        "System Integrator",
+        "IT Infrastructure Installer & Operator"
+      ],
+      "reason": "DATAGROUP designs, installs, and manages full IT network infrastructure, campus networks, and data center connectivity projects for medium and large enterprises across Germany.",
+      "evidenceUrls": [
+        "https://www.datagroup.de/"
+      ]
+    },
+    {
+      "companyName": "SPIE Deutschland & Zentraleuropa",
+      "officialUrl": "https://spie.de/",
+      "roles": [
+        "Network Installer",
+        "Infrastructure System Integrator"
+      ],
+      "reason": "SPIE is a major technical service provider performing physical network cabling, Wi-Fi deployment, industrial networking installation, and turnkey building automation.",
+      "evidenceUrls": [
+        "https://spie.de/"
+      ]
+    },
+    {
+      "companyName": "telent GmbH",
+      "officialUrl": "https://www.telent.de/",
+      "roles": [
+        "System Integrator",
+        "Industrial & Critical Infrastructure Installer"
+      ],
+      "reason": "telent plans, integrates, and installs critical networking infrastructure, PMR, industrial Ethernet/PoE switches, and wireless bridges for utilities, industrial, and transportation sectors.",
+      "evidenceUrls": [
+        "https://www.telent.de/"
+      ]
+    },
+    {
+      "companyName": "VINCI Energies Deutschland GmbH",
+      "officialUrl": "https://www.vinci-energies.de/",
+      "roles": [
+        "Network Installer",
+        "System Integrator"
+      ],
+      "reason": "VINCI Energies implements network infrastructure, industrial IoT cabling, equipment installation, and configuration for industrial and commercial facilities throughout Germany.",
+      "evidenceUrls": [
+        "https://www.vinci-energies.de/"
+      ]
+    },
+    {
+      "companyName": "BFE Studio und Medien Systeme GmbH",
+      "officialUrl": "https://www.bfe.tv/",
+      "roles": [
+        "Media & Network System Integrator"
+      ],
+      "reason": "BFE acts as a specialized system integrator responsible for planning, installing, and configuring high-performance IP and broadcast network infrastructure.",
+      "evidenceUrls": [
+        "https://www.bfe.tv/"
+      ]
+    },
+    {
+      "companyName": "EQOS Energie Deutschland GmbH",
+      "officialUrl": "https://eqos-energie.com/",
+      "roles": [
+        "Infrastructure Installer & Network Integrator"
+      ],
+      "reason": "EQOS Energie specializes in physical infrastructure installation, mobile telecommunications, fiber optic cabling, and outdoor wireless deployment projects.",
+      "evidenceUrls": [
+        "https://eqos-energie.com/"
+      ]
+    },
+    {
+      "companyName": "KUPPER IT GmbH",
+      "officialUrl": "https://www.kupper-it.com/",
+      "roles": [
+        "System Integrator",
+        "IT Infrastructure Installer"
+      ],
+      "reason": "KUPPER IT plans, deploys, and configures modern SMB/SOHO network hardware, access points, and structured cabling for regional business projects.",
+      "evidenceUrls": [
+        "https://www.kupper-it.com/"
+      ]
+    },
+    {
+      "companyName": "KUMAVISION AG",
+      "officialUrl": "https://kumavision.com/",
+      "roles": [
+        "System Integrator"
+      ],
+      "reason": "KUMAVISION implements integrated business technology and cloud network architectures, delivering end-to-end IT solution projects for mid-market clients.",
+      "evidenceUrls": [
+        "https://kumavision.com/"
+      ]
+    },
+    {
+      "companyName": "GISA GmbH",
+      "officialUrl": "https://www.gisa.de/",
+      "roles": [
+        "System Integrator",
+        "IT Infrastructure Provider"
+      ],
+      "reason": "GISA plans, integrates, and operates high-availability network systems, industrial IT, and telecom infrastructure for public sector, utility, and commercial projects.",
+      "evidenceUrls": [
+        "https://www.gisa.de/"
+      ]
+    }
+  ],
+  "sourceUrls": [
+    "https://www.allnet.de/",
+    "https://www.also.de/",
+    "https://de.ingrammicro.eu/",
+    "https://de.tdsynnex.com/",
+    "https://komsa.com/",
+    "https://www.eno.de/",
+    "https://www.herweck.de/",
+    "https://www.littlebit.de/",
+    "https://www.wave-computer.de/",
+    "https://www.ecom-edv.de/",
+    "https://www.bechtle.com/",
+    "https://www.cancom.de/",
+    "https://www.computacenter.com/",
+    "https://www.sva.de/",
+    "https://www.netgo.de/",
+    "https://www.acp.de/",
+    "https://www.softwareone.com/",
+    "https://www.axians.de/",
+    "https://www.concat.de/",
+    "https://www.skaylink.com/",
+    "https://www.controlware.de/",
+    "https://www.datagroup.de/",
+    "https://spie.de/",
+    "https://www.telent.de/",
+    "https://www.vinci-energies.de/",
+    "https://www.bfe.tv/",
+    "https://eqos-energie.com/",
+    "https://www.kupper-it.com/",
+    "https://kumavision.com/",
+    "https://www.gisa.de/"
+  ]
+}

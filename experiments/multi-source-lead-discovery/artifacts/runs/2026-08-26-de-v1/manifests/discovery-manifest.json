@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-08-26-de-v1",
+  "stage": "discovery",
+  "validation": "passed",
+  "artifactFiles": 21,
+  "normalizedRecords": 540,
+  "plannedSuccessfulRequests": 55,
+  "actualExternalRequests": 57,
+  "protocolDeviation": {
+    "systemId": "gemini-full",
+    "extraRequests": 2,
+    "reason": "Two API-success responses failed the original exact-channelId parser and were not retained because of an execution-harness logging defect. The same frozen prompt was recovered once after response capture and equivalent-label parsing were fixed.",
+    "qualityScoringTreatment": "Only the successful third response supplies candidates; extra requests affect resource reporting, not quality score."
+  },
+  "privacyChecks": {
+    "configuredSecretsAbsent": true,
+    "emailAddressesAbsent": true,
+    "personnelSectionsAbsent": true
+  },
+  "files": [
+    {
+      "path": "experiments/multi-source-lead-discovery/artifacts/runs/2026-08-26-de-v1/discovery/gemini-full/b2b-resale.json",
+      "sha256": "f2c69e820b196faeb96382ad5ec52dd6f796f5e5e357c835fb08a50ffb1bb130",
+      "bytes": 6136,
+      "recordCount": 10
+    },
+    {
+      "path": "experiments/multi-source-lead-discovery/artifacts/runs/2026-08-26-de-v1/discovery/gemini-full/project-services.json",
+      "sha256": "b2c77191eac15002c0b9e13f28ba59a0b32e95e6aab2b1466b0593369e6ff824",
+      "bytes": 6215,
+      "recordCount": 10
+    },
+    {
+      "path": "experiments/multi-source-lead-discovery/artifacts/runs/2026-08-26-de-v1/discovery/gemini-full/tier1-distribution.json",
+      "sha256": "6e2cec6480ebda5f337537a80b5a26a9311a9ed6998a51bd62f02ad316de45e8",
+      "bytes": 6140,
+      "recordCount": 10
+    },
+    {
+      "path": "experiments/multi-source-lead-discovery/artifacts/runs/2026-08-26-de-v1/discovery/product-brave/b2b-resale.json",
+      "sha256": "98708f19737225be57b79785b78400139cc22f8b2b7ea2516dfed3425aab0061",
+      "bytes": 21296,
+      "recordCount": 30
+    },
+    {
+      "path": "experiments/multi-source-lead-discovery/artifacts/runs/2026-08-26-de-v1/discovery/product-brave/project-services.json",
+      "sha256": "9a7597a4fb8d526d00991d400ec4cb7409ecdc0b36b4e2728e7563c3ed2e0349",
+      "bytes": 23064,
+      "recordCount": 30
+    },
+    {
+      "path": "experiments/multi-source-lead-discovery/artifacts/runs/2026-08-26-de-v1/discovery/product-brave/tier1-distribution.json",
+      "sha256": "36617dd8eb60c3a53151cdf4782fc8e8c5ef0c88e54a1561edeae6588e55e4ba",
+      "bytes": 21139,
+      "recordCount": 30
+    },
+    {
+      "path": "experiments/multi-source-lead-discovery/artifacts/runs/2026-08-26-de-v1/discovery/product-exa/b2b-resale.json",
+      "sha256": "bfca211f419fbe4e4de4bd4fa8f5601c61194e4b9e304b3e89bdeedc24dd9998",
+      "bytes": 61668,
+      "recordCount": 30
+    },
+    {
+      "path": "experiments/multi-source-lead-discovery/artifacts/runs/2026-08-26-de-v1/discovery/product-exa/project-services.json",
+      "sha256": "f806713f641dce122dfa310cd2874498c442fca59795eaf64464e05132bd0296",
+      "bytes": 59330,
+      "recordCount": 30
+    },
+    {
+      "path": "experiments/multi-source-lead-discovery/artifacts/runs/2026-08-26-de-v1/discovery/product-exa/tier1-distribution.json",
+      "sha256": "d5d5fec3ec689b7ba4e9518d6ec33ef13b5f9f777c3145ab3d163864bad71dbf",
+      "bytes": 59877,
+      "recordCount": 30
+    },
+    {
+      "path": "experiments/multi-source-lead-discovery/artifacts/runs/2026-08-26-de-v1/discovery/product-gemini/b2b-resale.json",
+      "sha256": "f7282ffa11c68024efeb6d8f090a06a9843707064369580f5afaf3fa739ac905",
+      "bytes": 81606,
+      "recordCount": 30
+    },
+    {
+      "path": "experiments/multi-source-lead-discovery/artifacts/runs/2026-08-26-de-v1/discovery/product-gemini/project-services.json",
+      "sha256": "3107fe4a68f6ed1e44fad04e8888c46f757584d2751d9516029240b9dc5aa8f8",
+      "bytes": 83095,
+      "recordCount": 30
+    },
+    {
+      "path": "experiments/multi-source-lead-discovery/artifacts/runs/2026-08-26-de-v1/discovery/product-gemini/tier1-distribution.json",
+      "sha256": "809edc6080cb7d817c6a7e75c317c2755da744ff11a79d11e91d3f550db6cab0",
+      "bytes": 83348,
+      "recordCount": 30
+    },
+    {
+      "path": "experiments/multi-source-lead-discovery/artifacts/runs/2026-08-26-de-v1/discovery/product-google-places/b2b-resale.json",
+      "sha256": "85307f2a6ae879cfa267be619bd3b29efc38cb6411785eaf6b01f064a13a420a",
+      "bytes": 12432,
+      "recordCount": 26
+    },
+    {
+      "path": "experiments/multi-source-lead-discovery/artifacts/runs/2026-08-26-de-v1/discovery/product-google-places/project-services.json",
+      "sha256": "53ce9db384f948c2cea6c7a75936521f66da2820ba0d31083f39047b7865242a",
+      "bytes": 10950,
+      "recordCount": 21
+    },
+    {
+      "path": "experiments/multi-source-lead-discovery/artifacts/runs/2026-08-26-de-v1/discovery/product-google-places/tier1-distribution.json",
+      "sha256": "6f87188c813500369cd760dfed4c062d9e6f5e5c4f6ac515f1336e467598fa1e",
+      "bytes": 11045,
+      "recordCount": 22
+    },
+    {
+      "path": "experiments/multi-source-lead-discovery/artifacts/runs/2026-08-26-de-v1/discovery/product-searchapi/b2b-resale.json",
+      "sha256": "7fbebb40c9e6fcd5e8a0650e33e00f8f982f2d81b4cbe4af36cd3494d88838aa",
+      "bytes": 16911,
+      "recordCount": 27
+    },
+    {
+      "path": "experiments/multi-source-lead-discovery/artifacts/runs/2026-08-26-de-v1/discovery/product-searchapi/project-services.json",
+      "sha256": "17379df56075608d1d667ce32f13d0e8ef05aff8b80216a70ae0cf70b4138bc0",
+      "bytes": 16958,
+      "recordCount": 27
+    },
+    {
+      "path": "experiments/multi-source-lead-discovery/artifacts/runs/2026-08-26-de-v1/discovery/product-searchapi/tier1-distribution.json",
+      "sha256": "faa30bbf96ee6b2e9baef484b44232322ac9a18666e65b0c77161b988fa83848",
+      "bytes": 15639,
+      "recordCount": 27
+    },
+    {
+      "path": "experiments/multi-source-lead-discovery/artifacts/runs/2026-08-26-de-v1/discovery/product-tavily/b2b-resale.json",
+      "sha256": "e12048ab786ef34d92e7a5eff475eea65d55686ecfb747023423b80e0c72ea5a",
+      "bytes": 44111,
+      "recordCount": 30
+    },
+    {
+      "path": "experiments/multi-source-lead-discovery/artifacts/runs/2026-08-26-de-v1/discovery/product-tavily/project-services.json",
+      "sha256": "e7d405966e30bcaa149d63f9c1310dcc55a5c1b322ddd0ee13a0b37c8a90e495",
+      "bytes": 51637,
+      "recordCount": 30
+    },
+    {
+      "path": "experiments/multi-source-lead-discovery/artifacts/runs/2026-08-26-de-v1/discovery/product-tavily/tier1-distribution.json",
+      "sha256": "6b15c7f0948ea78cb5983bd5de182c640d169eccb3506e38244a32df3eb6c898",
+      "bytes": 44100,
+      "recordCount": 30
+    }
+  ]
+}

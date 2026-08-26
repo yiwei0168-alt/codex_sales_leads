@@ -1,0 +1,185 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-08-26-de-v1",
+  "systemId": "gemini-full",
+  "mode": "end-to-end-search-and-output",
+  "channelId": "b2b-resale",
+  "rawSha256": "ed1961ca485528ae410cfe2116f5f71d069cb87610a7810e392fbfb05e55b82e",
+  "attempts": 3,
+  "requestCount": 1,
+  "latencyMs": 34804,
+  "usage": {
+    "total_tokens": 6276,
+    "total_input_tokens": 830,
+    "input_tokens_by_modality": [
+      {
+        "modality": "text",
+        "tokens": 830
+      }
+    ],
+    "total_cached_tokens": 0,
+    "total_output_tokens": 3553,
+    "total_tool_use_tokens": 0,
+    "total_thought_tokens": 1893,
+    "grounding_tool_count": [
+      {
+        "type": "google_search",
+        "count": 3
+      }
+    ],
+    "raw_prompt_token": 11712
+  },
+  "candidates": [
+    {
+      "companyName": "Bechtle AG",
+      "officialUrl": "https://www.bechtle.com/",
+      "roles": [
+        "Value-Added Reseller (VAR)",
+        "Direct B2B Reseller",
+        "IT Systemhaus"
+      ],
+      "reason": "Bechtle is Germany's largest IT system house and direct B2B reseller, providing enterprise and SMB business clients with networking hardware, procurement, and IT workspace solutions.",
+      "evidenceUrls": [
+        "https://www.bechtle.com/"
+      ]
+    },
+    {
+      "companyName": "CANCOM SE",
+      "officialUrl": "https://www.cancom.de/",
+      "roles": [
+        "Value-Added Reseller (VAR)",
+        "Direct B2B Reseller"
+      ],
+      "reason": "CANCOM is a leading digital transformation partner and VAR in Germany, reselling enterprise network infrastructure, cloud hardware, and IT services directly to commercial end customers.",
+      "evidenceUrls": [
+        "https://www.cancom.de/"
+      ]
+    },
+    {
+      "companyName": "Computacenter AG & Co. oHG (Germany)",
+      "officialUrl": "https://www.computacenter.com/",
+      "roles": [
+        "Value-Added Reseller (VAR)",
+        "Direct B2B IT Supplier"
+      ],
+      "reason": "Computacenter is a major independent technology and network infrastructure reseller supplying corporate and public sector clients throughout Germany.",
+      "evidenceUrls": [
+        "https://www.computacenter.com/"
+      ]
+    },
+    {
+      "companyName": "SVA System Vertrieb Alexander GmbH",
+      "officialUrl": "https://www.sva.de/",
+      "roles": [
+        "Value-Added Reseller (VAR)",
+        "System Integrator / VAR"
+      ],
+      "reason": "SVA is one of Germany's leading IT system integrators and VARs, reselling enterprise networking, data center, and security infrastructure to business customers.",
+      "evidenceUrls": [
+        "https://www.sva.de/"
+      ]
+    },
+    {
+      "companyName": "netgo GmbH",
+      "officialUrl": "https://www.netgo.de/",
+      "roles": [
+        "Value-Added Reseller (VAR)",
+        "IT Systemhaus"
+      ],
+      "reason": "netgo is a fast-growing nationwide German IT system house providing SOHO, SMB, and enterprise clients with complete networking, cloud, and modern workplace hardware.",
+      "evidenceUrls": [
+        "https://www.netgo.de/"
+      ]
+    },
+    {
+      "companyName": "ACP IT Solutions GmbH",
+      "officialUrl": "https://www.acp.de/",
+      "roles": [
+        "Value-Added Reseller (VAR)",
+        "IT Systemhaus"
+      ],
+      "reason": "ACP provides complete network, campus, and workplace IT infrastructure solutions and hardware reselling for mid-market business clients across Germany.",
+      "evidenceUrls": [
+        "https://www.acp.de/"
+      ]
+    },
+    {
+      "companyName": "SoftwareOne Deutschland GmbH",
+      "officialUrl": "https://www.softwareone.com/",
+      "roles": [
+        "Direct B2B VAR / Solutions Provider"
+      ],
+      "reason": "SoftwareOne offers comprehensive IT procurement, cloud, and edge infrastructure reselling services directly to corporate end users in Germany.",
+      "evidenceUrls": [
+        "https://www.softwareone.com/"
+      ]
+    },
+    {
+      "companyName": "Axians Deutschland",
+      "officialUrl": "https://www.axians.de/",
+      "roles": [
+        "Value-Added Reseller (VAR)",
+        "ICT Solution Partner"
+      ],
+      "reason": "Axians delivers ICT networking, telecom, and cloud infrastructure directly to enterprise and public sector customers as a specialized VAR and solutions reseller.",
+      "evidenceUrls": [
+        "https://www.axians.de/"
+      ]
+    },
+    {
+      "companyName": "Concat AG",
+      "officialUrl": "https://www.concat.de/",
+      "roles": [
+        "Value-Added Reseller (VAR)",
+        "IT Systemhaus"
+      ],
+      "reason": "Concat AG designs and resells tailored IT infrastructure, storage, and networking hardware solutions directly to business end clients across Germany.",
+      "evidenceUrls": [
+        "https://www.concat.de/"
+      ]
+    },
+    {
+      "companyName": "Skaylink GmbH",
+      "officialUrl": "https://www.skaylink.com/",
+      "roles": [
+        "Cloud & IT Infrastructure VAR"
+      ],
+      "reason": "Skaylink delivers business network infrastructure, cloud connectivity, and managed hardware reselling to mid-sized commercial organizations in Germany.",
+      "evidenceUrls": [
+        "https://www.skaylink.com/"
+      ]
+    }
+  ],
+  "sourceUrls": [
+    "https://www.allnet.de/",
+    "https://www.also.de/",
+    "https://de.ingrammicro.eu/",
+    "https://de.tdsynnex.com/",
+    "https://komsa.com/",
+    "https://www.eno.de/",
+    "https://www.herweck.de/",
+    "https://www.littlebit.de/",
+    "https://www.wave-computer.de/",
+    "https://www.ecom-edv.de/",
+    "https://www.bechtle.com/",
+    "https://www.cancom.de/",
+    "https://www.computacenter.com/",
+    "https://www.sva.de/",
+    "https://www.netgo.de/",
+    "https://www.acp.de/",
+    "https://www.softwareone.com/",
+    "https://www.axians.de/",
+    "https://www.concat.de/",
+    "https://www.skaylink.com/",
+    "https://www.controlware.de/",
+    "https://www.datagroup.de/",
+    "https://spie.de/",
+    "https://www.telent.de/",
+    "https://www.vinci-energies.de/",
+    "https://www.bfe.tv/",
+    "https://eqos-energie.com/",
+    "https://www.kupper-it.com/",
+    "https://kumavision.com/",
+    "https://www.gisa.de/"
+  ]
+}

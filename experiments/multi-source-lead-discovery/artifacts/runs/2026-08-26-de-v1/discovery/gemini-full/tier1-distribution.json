@@ -1,0 +1,182 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-08-26-de-v1",
+  "systemId": "gemini-full",
+  "mode": "end-to-end-search-and-output",
+  "channelId": "tier1-distribution",
+  "rawSha256": "ed1961ca485528ae410cfe2116f5f71d069cb87610a7810e392fbfb05e55b82e",
+  "attempts": 3,
+  "requestCount": 1,
+  "latencyMs": 34804,
+  "usage": {
+    "total_tokens": 6276,
+    "total_input_tokens": 830,
+    "input_tokens_by_modality": [
+      {
+        "modality": "text",
+        "tokens": 830
+      }
+    ],
+    "total_cached_tokens": 0,
+    "total_output_tokens": 3553,
+    "total_tool_use_tokens": 0,
+    "total_thought_tokens": 1893,
+    "grounding_tool_count": [
+      {
+        "type": "google_search",
+        "count": 3
+      }
+    ],
+    "raw_prompt_token": 11712
+  },
+  "candidates": [
+    {
+      "companyName": "ALLNET GmbH",
+      "officialUrl": "https://www.allnet.de/",
+      "roles": [
+        "Value-Added Distributor",
+        "IT Distributor"
+      ],
+      "reason": "ALLNET is a major German value-added IT distributor specializing in networking, wireless, security, and telecommunication hardware, offering extensive pre- and post-sales technical support and training for channel partners.",
+      "evidenceUrls": [
+        "https://www.allnet.de/"
+      ]
+    },
+    {
+      "companyName": "ALSO Deutschland GmbH",
+      "officialUrl": "https://www.also.de/",
+      "roles": [
+        "Tier-1 IT Distributor",
+        "Broadline Distributor"
+      ],
+      "reason": "ALSO is one of the premier ICT distributors in Germany, supplying B2B resellers and VARs with hardware, network equipment, and cloud/managed services.",
+      "evidenceUrls": [
+        "https://www.also.de/"
+      ]
+    },
+    {
+      "companyName": "Ingram Micro Distribution GmbH",
+      "officialUrl": "https://de.ingrammicro.eu/",
+      "roles": [
+        "Tier-1 IT Distributor",
+        "Global Broadline Distributor"
+      ],
+      "reason": "Ingram Micro Germany is a dominant broadline ICT distributor offering nationwide logistics, financial enablement, and technical solution enablement for networking vendor portfolios.",
+      "evidenceUrls": [
+        "https://de.ingrammicro.eu/"
+      ]
+    },
+    {
+      "companyName": "TD SYNNEX Germany",
+      "officialUrl": "https://de.tdsynnex.com/",
+      "roles": [
+        "Tier-1 IT Distributor",
+        "Value-Added Distributor"
+      ],
+      "reason": "TD SYNNEX (formerly Tech Data Germany) is a top-tier broadline and value-added technology distributor supplying system houses, VARs, and resellers across Germany.",
+      "evidenceUrls": [
+        "https://de.tdsynnex.com/"
+      ]
+    },
+    {
+      "companyName": "Komsa AG",
+      "officialUrl": "https://komsa.com/",
+      "roles": [
+        "ICT Distributor",
+        "Value-Added Distributor"
+      ],
+      "reason": "Komsa is a leading German distributor for telecommunications and IT infrastructure, serving specialized trade partners with procurement, repair, and technical enablement.",
+      "evidenceUrls": [
+        "https://komsa.com/"
+      ]
+    },
+    {
+      "companyName": "ENO Telecom GmbH",
+      "officialUrl": "https://www.eno.de/",
+      "roles": [
+        "Telecommunications & Networking Distributor"
+      ],
+      "reason": "ENO Telecom is an established German ICT distributor delivering networking equipment, mobile infrastructure, and broadband CPE to retail and B2B channel partners.",
+      "evidenceUrls": [
+        "https://www.eno.de/"
+      ]
+    },
+    {
+      "companyName": "Herweck AG",
+      "officialUrl": "https://www.herweck.de/",
+      "roles": [
+        "ICT Distributor",
+        "VAD"
+      ],
+      "reason": "Herweck is a key nationwide distributor in Germany focused on telecommunications, IT infrastructure, smart home, and network solution distribution.",
+      "evidenceUrls": [
+        "https://www.herweck.de/"
+      ]
+    },
+    {
+      "companyName": "Littlebit Technology Deutschland GmbH",
+      "officialUrl": "https://www.littlebit.de/",
+      "roles": [
+        "Value-Added Distributor"
+      ],
+      "reason": "Littlebit Technology operates as a specialized VAD offering networking components, storage, and peripheral hardware to German system integrators and resellers.",
+      "evidenceUrls": [
+        "https://www.littlebit.de/"
+      ]
+    },
+    {
+      "companyName": "Wave Computersysteme GmbH",
+      "officialUrl": "https://www.wave-computer.de/",
+      "roles": [
+        "B2B Wholesale IT Distributor"
+      ],
+      "reason": "Wave Computersysteme is a major German wholesale IT distributor supplying SMB resellers, system integrators, and business dealers with network and IT hardware.",
+      "evidenceUrls": [
+        "https://www.wave-computer.de/"
+      ]
+    },
+    {
+      "companyName": "Ecom Electronic Components Trading GmbH",
+      "officialUrl": "https://www.ecom-edv.de/",
+      "roles": [
+        "Wholesale IT Distributor"
+      ],
+      "reason": "Ecom EDV is an international IT hardware distributor headquartered in Germany, supplying network components, active hardware, and peripherals to downstream channel partners.",
+      "evidenceUrls": [
+        "https://www.ecom-edv.de/"
+      ]
+    }
+  ],
+  "sourceUrls": [
+    "https://www.allnet.de/",
+    "https://www.also.de/",
+    "https://de.ingrammicro.eu/",
+    "https://de.tdsynnex.com/",
+    "https://komsa.com/",
+    "https://www.eno.de/",
+    "https://www.herweck.de/",
+    "https://www.littlebit.de/",
+    "https://www.wave-computer.de/",
+    "https://www.ecom-edv.de/",
+    "https://www.bechtle.com/",
+    "https://www.cancom.de/",
+    "https://www.computacenter.com/",
+    "https://www.sva.de/",
+    "https://www.netgo.de/",
+    "https://www.acp.de/",
+    "https://www.softwareone.com/",
+    "https://www.axians.de/",
+    "https://www.concat.de/",
+    "https://www.skaylink.com/",
+    "https://www.controlware.de/",
+    "https://www.datagroup.de/",
+    "https://spie.de/",
+    "https://www.telent.de/",
+    "https://www.vinci-energies.de/",
+    "https://www.bfe.tv/",
+    "https://eqos-energie.com/",
+    "https://www.kupper-it.com/",
+    "https://kumavision.com/",
+    "https://www.gisa.de/"
+  ]
+}
