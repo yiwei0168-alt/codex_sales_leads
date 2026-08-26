@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { candidateScore, canonicalPublicUrl, evaluateChannel, sanitizeText } from "./evaluation";
+import { candidateScore, canonicalPublicUrl, evaluateChannel, isUsefulPublicUrl, sanitizeText } from "./evaluation";
 
 afterEach(() => vi.unstubAllEnvs());
 
@@ -13,6 +13,10 @@ describe("provider-neutral benchmark evaluation", () => {
     expect(sanitizeText("Mail jane@example.de or +49 30 1234 5678")).toBe("Mail [redacted-email] or [redacted-phone]");
     expect(canonicalPublicUrl("https://example.de/partner?utm_source=test&id=3#contact"))
       .toBe("https://example.de/partner?id=3");
+    expect(sanitizeText("## Workforce - Employees: 4 - Key Executives: - Jane Doe: CEO"))
+      .toBe("[redacted-workforce-section]");
+    expect(isUsefulPublicUrl("http://www.w3.org/2000/svg")).toBe(false);
+    expect(isUsefulPublicUrl("https://www.google.com/search?q=test")).toBe(false);
   });
 
   it("recomputes scores and applies failed gates as zero", async () => {

@@ -37,6 +37,8 @@ describe("multi-source discovery providers", () => {
   it("uses Gemini Grounding with Google Search", async () => {
     configured("gemini");
     const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({ steps: [
+      { type: "asset", url: "http://www.w3.org/2000/svg" },
+      { type: "google_search_result", result: { url: "https://www.google.com/search?q=example" } },
       { type: "google_search_result", result: { url: "https://example.de/" } },
       { type: "model_output", content: [{ type: "text", text: "Example GmbH https://example.de/" }] },
     ] }), { status: 200 }));
@@ -45,6 +47,7 @@ describe("multi-source discovery providers", () => {
     const request = JSON.parse(fetchMock.mock.calls[0][1].body as string);
     expect(request.tools).toEqual([{ type: "google_search" }]);
     expect(output.sourceUrls).toContain("https://example.de/");
+    expect(output.items).toHaveLength(1);
     expect(output.rawResponse).toBeDefined();
   });
 

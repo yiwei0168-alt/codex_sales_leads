@@ -50,5 +50,10 @@ export function publicUrls(value: unknown): string[] {
     if (item && typeof item === "object") Object.values(item as Record<string, unknown>).forEach(visit);
   };
   visit(value);
-  return [...urls];
+  return [...urls].filter((value) => {
+    const parsed = new URL(value);
+    if (/^(?:www\.)?w3\.org$/i.test(parsed.hostname) && /\/(?:2000\/svg|1999\/xhtml)/i.test(parsed.pathname)) return false;
+    if (/^(?:www\.)?google\.[a-z.]+$/i.test(parsed.hostname) && parsed.pathname === "/search") return false;
+    return true;
+  });
 }

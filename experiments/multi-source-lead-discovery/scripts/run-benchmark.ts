@@ -8,6 +8,7 @@ import type { DiscoveryProviderId, DiscoveryProviderResult } from "../lib/contra
 import {
   canonicalPublicUrl,
   evaluateChannel,
+  isUsefulPublicUrl,
   sanitizeText,
   type ChannelId,
   type EvaluatedChannel,
@@ -103,14 +104,14 @@ function committedResult(result: DiscoveryProviderResult): Omit<DiscoveryProvide
   return {
     providerId: result.providerId,
     query: result.query,
-    items: result.items.map((item) => ({
+    items: result.items.filter((item) => isUsefulPublicUrl(item.url)).map((item) => ({
       ...item,
       title: sanitizeText(item.title),
       url: canonicalPublicUrl(item.url),
       snippet: sanitizeText(item.snippet),
     })),
     answerText: result.answerText ? sanitizeText(result.answerText) : undefined,
-    sourceUrls: [...new Set(result.sourceUrls.flatMap((url) => canonicalPublicUrl(url) ?? []))],
+    sourceUrls: [...new Set(result.sourceUrls.filter(isUsefulPublicUrl).flatMap((url) => canonicalPublicUrl(url) ?? []))],
     requestCount: result.requestCount,
     latencyMs: result.latencyMs,
     usage: result.usage,

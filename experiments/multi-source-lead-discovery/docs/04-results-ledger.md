@@ -4,6 +4,7 @@ No measured result exists yet. This ledger must be updated in the same commit as
 
 | Step ID | Stage | System | Channel | Normalized artifact | Raw SHA-256 | Record count | Validation | Notes |
 |---|---|---|---|---|---|---:|---|---|
+| preflight-001 | connectivity preflight | Gemini, Tavily, Google Places, Exa, Brave, SearchAPI.io | n/a | `artifacts/runs/2026-08-26-de-v1/preflight/provider-connectivity.json` | six hashes inside artifact | 6 | passed | All configured providers succeeded on their first request; personal contact values and provider-internal asset/search URLs are excluded from the committed representation. |
 
 ## Required artifact stages
 

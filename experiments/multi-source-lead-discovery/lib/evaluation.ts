@@ -118,10 +118,22 @@ export function passesAllGates(gates: EligibilityGates): boolean {
 
 export function sanitizeText(value: string): string {
   return value
+    .replace(/(?:^|\s)#{1,6}\s*Workforce\b[\s\S]*$/i, " [redacted-workforce-section]")
+    .replace(/(?:-|#{1,6})\s*Key Executives?\s*:[\s\S]*?(?=(?:-|#{1,6})\s*(?:Breakdown|Workforce|Company Details)\b|$)/gi,
+      " [redacted-personnel-section] ")
     .replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, "[redacted-email]")
     .replace(/(?:\+?\d[\d\s()./-]{7,}\d)/g, "[redacted-phone]")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+export function isUsefulPublicUrl(value: string | null): boolean {
+  const url = canonicalPublicUrl(value);
+  if (!url) return false;
+  const parsed = new URL(url);
+  if (/^(?:www\.)?w3\.org$/i.test(parsed.hostname) && /\/(?:2000\/svg|1999\/xhtml)/i.test(parsed.pathname)) return false;
+  if (/^(?:www\.)?google\.[a-z.]+$/i.test(parsed.hostname) && parsed.pathname === "/search") return false;
+  return true;
 }
 
 export function canonicalPublicUrl(value: unknown): string | null {

@@ -1,0 +1,266 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-08-26-de-v1",
+  "completedAt": "2026-08-26T16:28:50.653+08:00",
+  "records": [
+    {
+      "providerId": "gemini",
+      "status": "succeeded",
+      "rawSha256": "38a824ec0b5c1d4b13f7e15e2617105cd3c0070ea34c167331163bd2e1d842c7",
+      "attempts": 1,
+      "normalized": {
+        "providerId": "gemini",
+        "query": {
+          "query": "WLAN Systemhaus Hotel Netzwerktechnik Deutschland",
+          "countryCode": "DE",
+          "countryName": "Germany",
+          "languageCode": "de",
+          "maxResults": 3
+        },
+        "items": [],
+        "answerText": "Here are 3 German IT system integrators (*Systemhäuser*) and network providers specializing in hotel WLAN and network technology (*Netzwerktechnik*): 1. **datadiorama Systemhaus & Softwareentwicklung** * **Official URL:** https://www.datadiorama.de * **Matching Reason:** German IT system house specializing in Wi-Fi site surveys (*WLAN-Ausleuchtung*), network planning, and implementation tailored for the hospitality sector. They provide GDPR-compliant guest Wi-Fi solutions, network isolation between guest and hotel operations, and central management. 2. **CODE MASCHINE GmbH** * **Official URL:** https://www.code-maschine.de * **Matching Reason:** Specialist in professional WLAN infrastructure for demanding environments, including hotels across Germany. They utilize advanced measurement technology (Ekahau) to ensure full coverage, seamless roaming across hotel areas, and high-density network setups. 3. **escadoo IT & Software Solutions** * **Official URL:** https://www.escadoo.de * **Matching Reason:** German IT service provider offering end-to-end hotel network engineering (*Netzwerktechnik*). Their services range from structured cabling and access point installation to secure network separation, PMS integration, and central IT administration for hotels of all sizes.",
+        "sourceUrls": [
+          "https://www.datadiorama.de/",
+          "https://www.code-maschine.de/",
+          "https://www.escadoo.de/"
+        ],
+        "requestCount": 1,
+        "latencyMs": 16802
+      }
+    },
+    {
+      "providerId": "tavily",
+      "status": "succeeded",
+      "rawSha256": "937b32b549768db5613a28622f6ddc919061ce8ef2367c6a767453575be685fe",
+      "attempts": 1,
+      "normalized": {
+        "providerId": "tavily",
+        "query": {
+          "query": "WLAN Systemhaus Hotel Netzwerktechnik Deutschland",
+          "countryCode": "DE",
+          "countryName": "Germany",
+          "languageCode": "de",
+          "maxResults": 3
+        },
+        "items": [
+          {
+            "providerId": "tavily",
+            "rank": 1,
+            "title": "WLAN für Hotels: Gäste-WLAN professionell planen | datadiorama",
+            "url": "https://datadiorama.com/leistungen/hotel-wlan",
+            "snippet": "### Zentral steuerbar Verwaltung und Fernwartung über eine Oberfläche. ## Häufige Fragen zu WLAN für Hotels ## Verwandte Leistungen ### Netzwerkservice Planung, Einrichtung und Betreuung sicherer Unternehmensnetzwerke – als zertifizierter UniFi-Partner. ### IT-Support Wir lösen Ihre IT-Probleme schnell und zuverlässig und sorgen dafür, dass alle Systeme stabil und sicher laufen. ### Home-Office Wir richten sichere Home-Office-Arbeitsplätze ein – mit VPN, Cloud-Zugriff und 2-Faktor-Authentifizierung. ## Interesse an WLAN für Hotels? Vereinbaren Sie ein kostenloses Erstgespräch – wir beraten Sie ehrlich und unverbindlich. datadiorama Ihr IT-Systemhaus und Softwareentwickler aus Potsdam – seit 2013. Von der Telefonanlage über die Netzwerkbetreuung bis zur Cloud-Lösung. [...] ### Leistungen ### Unternehmen ### Standorte Potsdam Hebbelstraße 8, 14469 Potsdam Berlin Gormannstraße 14, 10119 Berlin Mörschwil (CH) Gallusäckerstrasse 28, 9402 Mörschwil © 2026 datadiorama Systemhaus & Softwareentwicklung. Alle Rechte vorbehalten. [...] ## Planung für lückenlose Abdeckung Dicke Wände, mehrere Etagen und volle Häuser stellen WLAN vor Herausforderungen. Wir führen eine professionelle WLAN-Planung durch und positionieren Access Points so, dass Gäste überall stabil surfen – ohne Funklöcher und Verbindungsabbrüche. WLAN für Hotels bei datadiorama ## Sicher getrennt: Gäste- und Betriebsnetz Gäste-WLAN und interne Systeme gehören strikt getrennt. Wir richten separate Netze ein, sodass Ihr Hotelbetrieb (Kasse, Verwaltung, Buchung) vom öffentlichen Gästezugang abgeschirmt ist – inklusive DSGVO-konformer Anmeldeseite. ## Was Ihnen WLAN für Hotels bringt ### Zufriedene Gäste Schnelles WLAN überall im Haus – ein echtes Komfortmerkmal. ### Betrieb geschützt Getrennte Netze schirmen Ihre interne IT ab. ### Zentral steuerbar",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 2,
+            "title": "WLAN Lösungen für Hotels | WLAN für Hotels professionell einrichten",
+            "url": "https://www.wifirst.com/de/wlan-hotel",
+            "snippet": "### Wie lässt sich das Gäste-WLAN personalisieren? Das WLAN für Hotels kann individuell gebrandet werden: Anmeldeseite mit Hotel-Logo Login per Zimmernummer und Buchungs-ID oder SSO Mehrsprachiger Zugang für internationale Gäste Integration von Begrüßungsnachrichten, Promotions oder Umfragen ### Welche Vorschriften gelten für Hotels mit WLAN? Hotels in Deutschland unterliegen spezifischen Anforderungen: DSGVO-konformer Umgang mit personenbezogenen Daten, transparente Informationspflichten gegenüber den Gästen, sowie die seit 2017 geltenden Regelungen zur Haftung von WLAN-Betreibern (Abschaffung der Störerhaftung). Wifirst sorgt dafür, dass Ihr Hotel diese Anforderungen einhält und unterstützt Sie bei Anfragen von Behörden oder Rechteinhabern. [...] ## Ein WLAN- und Glasfasernetz für Gäste und Hotelbetrieb Wir sind überzeugt, dass WLAN-Lösungen für Hotels und Glasfaser das Herzstück der digitalen Transformation der Hotellerie bilden. Der Internetzugang für Gäste ist nur ein Bestandteil des Gesamtangebots. Wifirst baut eine robuste und leistungsstarke technische Grundlage, die eine Vielzahl digitaler Dienste unterstützt: Gäste-WLAN, Business-WLAN, PMS, TPE, Digital Signage, Chromecast, IoT und mehr. Der Internetzugang – insbesondere das WLAN – ist zu einem kritischen Element im Hotelbetrieb geworden. Deshalb empfiehlt es sich, das Management einem spezialisierten Anbieter wie Wifirst anzuvertrauen, der seit vielen Jahren erfolgreich am Markt tätig ist. Unser Hotellerie-Leitfaden Btiment-connecté-hotellerie-DE [...] Das Angebot umfasst: Abdeckungsaudit, Installation, professionelle Hardware, 24/7-Überwachung, proaktive Wartung, 24/7-Hotline, Sicherheitsupdates, Captive Portal, rechtliche Absicherung und Kunden-Extranet. Die Vorteile von WiFi as a Service Modèle-vertueux-DE-1 ## Seminare, Coworking & mehr: ein skalierbares Netzwerk Wifirst unterstützt Hotels bei der Diversifizierung ihrer Aktivitäten und der optimalen Nutzung gemeinsamer Räume. Seminarräume, Konferenzbereiche und Coworking-Spaces stellen besonders hohe Anforderungen an die Konnektivität. Mit WLAN-Lösungen für Hotels von Wifirst sind Sie für diese Herausforderungen bestens aufgestellt. photo_hotellerie_MICE ## Viel mehr als WiFi!",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "tavily",
+            "rank": 3,
+            "title": "WLAN im Hotel: So steigern Sie Gästebewertungen mit optimaler Netzwerktechnik | Guide 2025",
+            "url": "https://www.social-wave.com/blog/wlan-im-hotel-so-steigern-sie-gastebewertungen-mit-optimaler-netzwerktechnik-guide-2025",
+            "snippet": "WLAN im Hotel: So steigern Sie Gästebewertungen mit optimaler Netzwerktechnik | Guide 2025 ## WLAN im Hotel: So steigern Sie Gästebewertungen mit optimaler Netzwerktechnik | Guide 2025 ## Erfahren Sie jetzt mehr über kostengünstiges Kunden-WLAN und WLAN-Marketing Unsere Kundenberater helfen Ihnen gerne weiter Alternativ können Sie uns unter [redacted-email] kontaktieren. A woman wearing headphones and smiling. Socialwave Logo Bunzlauer Straße [redacted-phone] München Deutschland Ein Unternehmen der swissnet Group Logo telefon icon mail icon linkedin icon.svg) instagram icon facebook icon.svg) youtube icon.svg) germany flag germany flag usa flag Spain Icon © 2024 Socialwave GmbH aus München, Deutschland A black and white speech bubble with a white dot in the center. [...] germany flag usa flag Spain Icon germany flag germany flag usa flag Spain Icon Präsentation buchen # WLAN im Hotel: So steigern Sie Gästebewertungen mit optimaler Netzwerktechnik | Guide 2025 WLAN im Hotel: So steigern Sie Gästebewertungen mit optimaler Netzwerktechnik | Guide 2025 ## Warum WLAN im Hotel über Erfolg und Misserfolg entscheidet ### Die Erwartungshaltung moderner Hotelgäste Ein zuverlässiges WLAN-Netzwerk, gepaart mit einem Internetzugang hoher Bandbreite, ist heute unentbehrlich. Es versetzt Gäste in die Lage, Videotelefonate zu führen, Filme zu streamen und E-Mails zu kommunizieren, wobei es für Geschäftsreisende von besonderer Bedeutung ist. [...] ### 4. Fehlende Integration Fehler: WLAN als isolierte Dienstleistung Lösung: Integration in das gesamte digitale Gästemanagement ### 5. Vernachlässigung der Sicherheit Fehler: Ungeschützte Netzwerke oder mangelnde Datenschutzmaßnahmen Lösung: Professionelle Sicherheitskonzepte und DSGVO-Compliance ## Professionelle WLAN-Lösungen für die Hotellerie mit Socialwave Angesichts der komplexen technischen und rechtlichen Anforderungen entscheiden sich viele Hotelbetreiber für spezialisierte Komplettlösungen. Socialwave, Teil der swissnet Group, hat sich als führender Anbieter für WLAN-Marketing-Lösungen in der Hotellerie etabliert.",
+            "sourceKind": "web"
+          }
+        ],
+        "sourceUrls": [
+          "https://datadiorama.com/leistungen/hotel-wlan",
+          "https://www.wifirst.com/de/wlan-hotel",
+          "https://www.social-wave.com/blog/wlan-im-hotel-so-steigern-sie-gastebewertungen-mit-optimaler-netzwerktechnik-guide-2025"
+        ],
+        "requestCount": 1,
+        "latencyMs": 5467,
+        "usage": {
+          "credits": 2
+        }
+      }
+    },
+    {
+      "providerId": "google-places",
+      "status": "succeeded",
+      "rawSha256": "dba3b5873062d28869e777873f85adeb86e568ced404c8dee16e5d905807032b",
+      "attempts": 1,
+      "normalized": {
+        "providerId": "google-places",
+        "query": {
+          "query": "WLAN Systemhaus Hotel Netzwerktechnik Deutschland",
+          "countryCode": "DE",
+          "countryName": "Germany",
+          "languageCode": "de",
+          "maxResults": 3
+        },
+        "items": [
+          {
+            "providerId": "google-places",
+            "rank": 1,
+            "title": "Datadiorama - IT Systemhaus für Potsdam",
+            "url": "https://datadiorama.com/",
+            "snippet": "Berater · Hebbelstraße 8, 14469 Potsdam",
+            "sourceKind": "place",
+            "externalId": "ChIJJaq5MPH1qEcRwTJzZu6bX1M"
+          }
+        ],
+        "sourceUrls": [
+          "https://datadiorama.com/"
+        ],
+        "requestCount": 1,
+        "latencyMs": 1632
+      }
+    },
+    {
+      "providerId": "exa",
+      "status": "succeeded",
+      "rawSha256": "8cdcca5eee94029ef677af6c2b0096f8299057fc2be625722be1cd304920744d",
+      "attempts": 1,
+      "normalized": {
+        "providerId": "exa",
+        "query": {
+          "query": "WLAN Systemhaus Hotel Netzwerktechnik Deutschland",
+          "countryCode": "DE",
+          "countryName": "Germany",
+          "languageCode": "de",
+          "maxResults": 3
+        },
+        "items": [
+          {
+            "providerId": "exa",
+            "rank": 1,
+            "title": "CompuNet Systems GmbH",
+            "url": "https://compunet.systems/",
+            "snippet": "# CompuNet Systems GmbH CompuNet Systems GmbH is a IT Services and IT Consulting company. CompuNet Systems GmbH provides solutions in telecommunications, network infrastructure, software development, network connectivity, and remote client services. CompuNet Systems GmbH employs 4 people, founded in 2005. Headquartered in Lübeck, Schleswig-Holstein, Germany, with presence in United States. ## About Die COMPUNET Systems GmbH ist in ganz Deutschland unterwegs, um Menschen zu verbinden und Unternehmen bei der Digitalisierung Ihrer Organisations- und Kommunikationsstrukturen kompetent zu unterstützen. Informationstechnologien sollen Ihren Alltag erleichtern und Ihre geschäftlichen Herausforderungen lösen. Dafür stehen wir! Vom Internetanschluss via Glasfaser, WLAN Lösungen für Hotels, Serverbetrieb und Bürovernetzung, bis hin zu Firewalls und Telefonie. Ihre Anforderungen und Wünsche stehen immer im Vordergrund! ## Company Details - Industry: IT Services and IT Consulting - Type: Self-Owned - Headquarters: Lübeck, Germany - Founded Year: 2005 - Homepage: compunet.systems - Status: active - Aliases: compunet systems gmbh, compunet systems - LinkedIn: linkedin.com/company/compunet-systems-gmbh - Linkedin Followers: 117 (Monthly: +0.9%, Yearly: +6.4%) - Emails: [redacted-email] - Phone: [redacted-phone], [redacted-phone], [redacted-phone] [redacted-workforce-section]",
+            "sourceKind": "web",
+            "externalId": "https://exa.ai/library/organization/sfw7pkxmk0c"
+          },
+          {
+            "providerId": "exa",
+            "rank": 2,
+            "title": "nds Netzwerksysteme GmbH",
+            "url": "https://nds-systemhaus.de/",
+            "snippet": "# nds Netzwerksysteme GmbH nds Netzwerksysteme GmbH is a IT Services and IT Consulting company. Als herstellerunabhängiger IT-Komplettanbieter, bietet das nds it systemhaus maßgeschneiderte Lösungen über das gesamte Spektrum einer modernen Unternehmens-IT. Nds Netzwerksysteme GmbH employs 25 people and has an annual revenue of $1M-$5M, founded in 1992. Headquartered in Germany, with presence in United States. ## About Als herstellerunabhängiger IT-Komplettanbieter bieten wir maßgeschneiderte Lösungen über das gesamte Spektrum einer modernen Unternehmens-IT. Von der IT-Strategieberatung bis zum kompletten Betrieb bieten wir Ihnen alle IT-Leistungen aus einer Hand. Zu unserem Portfolio gehören Lösungen aus den Bereichen: IT-Infrastruktur, IT-Services, Cloud sowie Kommunikations-, Collaboration- und Medientechnik. Wir begleiten Sie bei den Herausforderungen der Digitalisierung. Industrie 4.0, Internet of things, Bring your own devices, Lösungen für Homeoffice, Collaboration und papierloses Büro sind hier nur ein paar Stichworte, die uns in den nächsten Jahren begleiten. Aber auch die Art der Nutzung befindet sich im Wandel. Die Nutzung von Cloud-Lösungen und einzelnen Anwendungen und Diensten als „Managed Service“ haben die Auswahlmöglichkeiten und Flexibilität für den Kunden erhöht. Dadurch kann aber an vielen Stellen falsch abgebogen werden. Hier mit Ihnen den richtigen Weg für Ihr Unternehmen zu treffen, gehört zu unseren Aufgaben und Kompetenzen. Mit einem Team von über 80 Spezialisten betreuen wir von unseren 3 Standorten Metzingen, Stuttgart und Sindelfingen über 550 Kunden im In- und Ausland. Im Bereich Netzwerke (LAN, WLAN, Richtfunk) zählt die nds zu den „Top Drei“ in Deutschland.“ Das nds it systemhaus bietet Ihnen bundesweit einen 24 x 7 Service an 365 Tagen im Jahr. Am Standort Stuttgart steht uns mit dem Collaboration Center mit 11 verschiedenen Räumen ein hochmoderner Showroom für Collaboration- und Präsentations-Lösungen zur Verfügung. Das Collabo",
+            "sourceKind": "web",
+            "externalId": "https://exa.ai/library/organization/k0f7mrbqkql"
+          },
+          {
+            "providerId": "exa",
+            "rank": 3,
+            "title": "binder Systemhaus GmbH",
+            "url": "https://binder-systemhaus.de/",
+            "snippet": "# binder Systemhaus GmbH binder Systemhaus GmbH is a Telecommunications company. binder Systemhaus GmbH offers affordable and intelligent solutions for telephone telephony. Binder Systemhaus GmbH employs 9 people, founded in 2002. Headquartered in Balingen, Baden-Württemberg, Germany, with presence in United States. ## About Systemspezialisten für IT- und Telekommunikation mit Fokus auf tiefe Integrationen individueller Geschäftsprozesse und Lösungen. Mit langjähriger Erfahrung sind wir eines der führenden Unternehmen dieser Branche in der Region. Wir bieten kleinen wie großen Unternehmen, Behörden, Institutionen oder Callcentern das gesamte Spektrum moderner Informationstechnologien aus einer Hand: - Consulting und Systemkonzeption - Telefonanlagen von 3 bis 5.000 Nebenstellen - IP Telefonie (VoIP) - Unified Communication (UC) und computerintegrierte Telefonie (CTI) - Netzwerktechnologie (LAN und WLAN) - Controlling: Gesprächskostenabrechnung, Analyse des Telefonverhaltens - Türkommunikation - Alarmierungssysteme: Spezielle Alarmierungsszenarien für öffentliche Einrichtungen (Amok, Bedrohungen), Industrie (Alleinarbeitsplatzsicherung, Maschinenüberwachung, etc.) und Pflege (Schwesternruf, Notfall) Für einen tieferen Einblick, besuchen Sie uns gerne auf unserer Website oder kontaktieren Sie uns. ## Company Details - Industry: Telecommunications - Type: Public Company - Headquarters: Balingen, Germany - Founded Year: 2002 - Homepage: binder-systemhaus.de - Status: active - Aliases: binder systemhaus gmbh, binder systemhaus - LinkedIn: linkedin.com/company/binder-systemhaus-gmbh - Linkedin Followers: 427 (Monthly: +0.7%) - Emails: [redacted-email] - Phone: [redacted-phone] [redacted-workforce-section]",
+            "sourceKind": "web",
+            "externalId": "https://exa.ai/library/organization/1z47hzk82by"
+          }
+        ],
+        "sourceUrls": [
+          "https://compunet.systems/",
+          "https://nds-systemhaus.de/",
+          "https://binder-systemhaus.de/"
+        ],
+        "requestCount": 1,
+        "latencyMs": 1913
+      }
+    },
+    {
+      "providerId": "brave",
+      "status": "succeeded",
+      "rawSha256": "d92c489be074941d4ee97b4557926b570390d8ccf241229b416390cdfa87931e",
+      "attempts": 1,
+      "normalized": {
+        "providerId": "brave",
+        "query": {
+          "query": "WLAN Systemhaus Hotel Netzwerktechnik Deutschland",
+          "countryCode": "DE",
+          "countryName": "Germany",
+          "languageCode": "de",
+          "maxResults": 3
+        },
+        "items": [
+          {
+            "providerId": "brave",
+            "rank": 1,
+            "title": "WLAN Lösungen | Stabile, flächendeckende Netzwerk - gct.de",
+            "url": "https://www.gct.de/home/systemhaus/wlan-loesungen/",
+            "snippet": "<strong>Die individuelle Ausleuchtung der Räumlichkeiten vor Ort bringt vor allem den Vorteil, dass Störfaktoren und offene Frequenzen eliminiert werden können</strong>. Dadurch ermöglichen wir Ihnen ein performantes und stabiles WLAN-Signalen in allen Büros ...",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "brave",
+            "rank": 2,
+            "title": "WLAN Lösungen für Hotels- Endlich stabiles und sicheres WLAN in Hotels",
+            "url": "https://datadiorama.com/leistungen/hotel-wlan/",
+            "snippet": "WLAN-Probleme im Hotel können schnell zu schlechten Bewertungen führen – ein schnelles und stabiles WLAN wird in Hotelbewertungen oft positiv hervorgehoben. <strong>Datadiorama ist als Systemhaus auf den Aufbau stabiler Netzwerkstrukturen spezialisiert</strong>.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "brave",
+            "rank": 3,
+            "title": "Omada-Netzwerklösung für Hotels | TP-Link Deutschland",
+            "url": "https://www.tp-link.com/de/business-networking/solution/hospitality/",
+            "snippet": "<strong>Omada</strong> bietet eine bewährte, umfassende Lösung für Hotels jeder Größe und stellt leistungsstarke Hardware und Kernsoftware bereit, um Gästen ein außergewöhnliches WLAN-Erlebnis zu bieten und die Zufriedenheit zu steigern.",
+            "sourceKind": "web"
+          }
+        ],
+        "sourceUrls": [
+          "https://www.gct.de/home/systemhaus/wlan-loesungen/",
+          "https://datadiorama.com/leistungen/hotel-wlan/",
+          "https://www.tp-link.com/de/business-networking/solution/hospitality/"
+        ],
+        "requestCount": 1,
+        "latencyMs": 1082
+      }
+    },
+    {
+      "providerId": "searchapi",
+      "status": "succeeded",
+      "rawSha256": "f2f333ca838768cf07246b66dcbf0fbb3cfde6b59c2ba70c9de4a1de339b24fb",
+      "attempts": 1,
+      "normalized": {
+        "providerId": "searchapi",
+        "query": {
+          "query": "WLAN Systemhaus Hotel Netzwerktechnik Deutschland",
+          "countryCode": "DE",
+          "countryName": "Germany",
+          "languageCode": "de",
+          "maxResults": 3
+        },
+        "items": [
+          {
+            "providerId": "searchapi",
+            "rank": 1,
+            "title": "Omada-Netzwerklösung für Hotels | TP-Link Deutschland",
+            "url": "https://www.omadanetworks.com/de/business-networking/solution/hotel/",
+            "snippet": "Omada bietet eine bewährte, umfassende Lösung für Hotels jeder Größe, die leistungsstarke Hardware und zentrale Software bereitstellt, um Gästen ein ...",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 2,
+            "title": "WLAN Lösungen für Hotels - Wifirst",
+            "url": "https://www.wifirst.com/de/wlan-hotel",
+            "snippet": "Wifirst ist der Spezialist für WLAN Lösungen in Hotels. Professionelle Installation, sichere Netze und perfektes Gäste-WLAN für eine optimale Erfahrung.",
+            "sourceKind": "web"
+          },
+          {
+            "providerId": "searchapi",
+            "rank": 3,
+            "title": "IT Firma für WLAN in Hotels richtig wählen",
+            "url": "https://fuerte-systems.de/it-firma-wlan-hotels/",
+            "snippet": "Die richtige IT Firma für WLAN in Hotels sorgt für stabiles Internet, sichere Netze und weniger Ausfälle - entscheidend für Gäste und Betrieb.",
+            "sourceKind": "web"
+          }
+        ],
+        "sourceUrls": [
+          "https://www.omadanetworks.com/de/business-networking/solution/hotel/",
+          "https://www.wifirst.com/de/wlan-hotel",
+          "https://fuerte-systems.de/it-firma-wlan-hotels/"
+        ],
+        "requestCount": 1,
+        "latencyMs": 5048
+      }
+    }
+  ]
+}
