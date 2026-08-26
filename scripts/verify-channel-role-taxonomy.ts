@@ -29,6 +29,8 @@ const verificationQueries = [
   "Dealer 和 Retailer 什么时候可以同时标记？实体门店是否是 Dealer 必要条件？",
   "纯产品转售但没有技术增值的公司能否属于 Reseller？",
   "Retailer 和 E-tailer 是否默认同时标记 Reseller？",
+  "什么样的实体场所可以证明候选公司是 Retailer？仓库和提货点算吗？",
+  "有实体门店并且可以在自营网站直接下单应该标记哪些角色？",
 ];
 
 try {
@@ -65,6 +67,9 @@ try {
     "只进行标准化产品转售、能够验证实际交易身份的公司也可以成立 Reseller",
     "Reseller 是 VAR 和 Dealer 的基础父角色",
     "作为独立零售角色，默认不自动标记 Reseller",
+    "实体消费者零售场所是 Retailer 的必要条件",
+    "仓库、公司办公室、维修点、普通物流提货点或不能现场购买的 Showroom 不足以证明 Retailer",
+    "应同时标记 Retailer 与 E-tailer",
   ];
   const missingText = requiredText.filter((fragment) => !stored.combined_content.includes(fragment));
 

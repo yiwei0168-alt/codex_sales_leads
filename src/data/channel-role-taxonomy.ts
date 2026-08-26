@@ -296,6 +296,66 @@ Reseller 属于 Downstream Channel，可以根据客户质量、采购潜力、�
 
 缺少公开采购来源、库存或正式授权不构成否定证据；但系统必须确认候选公司确实承担转售交易。若只能确认其推广产品，却不能确认谁报价、签约、开票或收款，应保留 Reseller candidate／待核验，并优先核实 merchant of record、供应来源、客户对象及收入方式。
 
+## Retailer（实体零售商）
+
+### 状态与规范名称
+
+- 状态：已由业务负责人确认。
+- 中文规范名称：实体零售商／线下零售商。
+- 英文规范名称：Retailer。
+- 所属角色家族：retail。
+- channel layer：Downstream Channel。
+- 角色关系：Retailer 是独立零售角色，默认不自动标记 Reseller。
+
+### 完整定义
+
+Retailer 是通过面向公众开放的实体零售门店，以公开或标准化价格向个人及家庭消费者少量销售商品，并以自身名义承担收款、交付、退换货或售后责任的公司。在本产品的分类中，Retailer 专指具有消费者实体销售场所的零售业务；通过线上渠道完成的零售另以 E-tailer 表达。
+
+Retailer 可以是全国或区域消费电子连锁、百货商场、超市、专业电子产品门店、电脑店或独立本地商店。网络设备或相关 IT 硬件必须是其实际经营的品类，不能仅因门店可能偶然销售电子产品就判定为相关 Retailer。
+
+### 必要判断条件
+
+在公开证据足够的情况下，Retailer 至少需要满足：
+
+1. 存在可验证且面向消费者营业的实体零售门店、商场柜台或可现场购买的销售场所；
+2. 主要客户包含个人或家庭消费者，核心销售模式具有明确的 B2C 零售属性；
+3. 公司是实际卖方或 merchant of record，以自身名义完成销售并承担交易责任；
+4. 候选公司在目标市场实际销售网络设备、IT 硬件或其他相关产品。
+
+### 强证据与辅助证据
+
+强证据包括：候选公司官网 Store Locator 和门店地址；品牌方官方零售商名录；门店商品目录、公开零售价、促销、到店购买或 Click & Collect；官方门店页面展示营业时间、联系方式及可现场购买的商品。
+
+辅助证据包括：Google Places 等地图服务中的零售类别、营业时间、门店照片和消费者评价；商场目录、当地商业名录、社交媒体门店页面及第三方新闻报道。地图或目录信息可以支持小型零售商发现，但应尽可能与公司身份、商品类别及交易能力交叉验证。
+
+### 实体场所判定
+
+实体消费者零售场所是 Retailer 的必要条件。仓库、公司办公室、维修点、普通物流提货点或不能现场购买的 Showroom 不足以证明 Retailer。商场柜台、展厅或 Click & Collect 地点只有在消费者能够现场选择或完成购买时，才能作为实体零售证据。
+
+如果没有检索到门店，不能断言公司没有门店；但在获得实体消费者销售场所证据前，不应确认 Retailer，只能保留 Retailer candidate／待核验。
+
+### 与 E-tailer 的关系
+
+拥有实体零售门店，同时经营能够浏览商品并直接下单的自营网站、应用或其他可验证在线商店时，应同时标记 Retailer 与 E-tailer。只有线上销售而没有实体消费者门店时，只标记 E-tailer。官网只有品牌展示、门店查询或询价表单而不能在线下单，不足以增加 E-tailer。
+
+### 与 Dealer、Reseller 的边界
+
+Retailer 与 Dealer 默认不重叠。Dealer 侧重专业／关系型转售、本地询价、企业或专业客户服务；Retailer 侧重通过实体门店面向大众消费者进行标准化零售。只有同一公司同时存在可验证的 B2B／专业转售业务和大众线下零售业务时，才允许同时标记 Dealer 与 Retailer，这种混合模式在渠道结构不发达的市场可能出现。
+
+Retailer 默认不标记 Reseller。只有公司另有明确的 B2B 转售、企业询价、批量报价或专业渠道业务时，才同时标记 Reseller。单纯因零售商在法律意义上“买入再卖出”不能自动增加 Reseller 角色。
+
+### Marketplace 与柜台边界
+
+仅为第三方商家提供挂牌、流量、支付或撮合服务的 Marketplace 平台不是 Retailer。平台或其关联公司以自身名义经营的自营零售部分可以单独判断。商场内第三方品牌柜台应根据实际经营和交易主体判断，不能把整个商场或平台的角色自动赋给柜台经营者，反之亦然。
+
+### 商业价值等级
+
+Retailer 属于 Downstream Channel，可以根据门店数量、市场覆盖、客流、相关品类销量、采购潜力、品牌影响力和增长性评为 KA、Priority、Standard 或 Long-tail。全国或区域性消费电子连锁通常具有较高 KA 潜力；小型独立门店也可作为长尾线索，不能仅因网站流量低而排除。
+
+### 信息缺失与置信度
+
+没有公开库存、仓库或品牌授权不构成否定证据。门店信息可能只存在于地图、社交媒体或当地目录中，系统应允许使用多源证据确认小型零售商。如果只能确认线上销售，不能推断存在实体店；如果只能确认地址，则必须进一步判断该地址是消费者门店、办公室、仓库还是提货点。
+
 # 参考依据
 
 以下资料用于支撑行业通用边界；本文件中的产品操作规则以业务负责人确认口径为最终准则。
@@ -313,6 +373,8 @@ Reseller 属于 Downstream Channel，可以根据客户质量、采购潜力、�
 - Hikvision Canada，Channel Partner Program：https://pro-av.hikvision.com/ca-en/Partners/
 - U.S. Department of Veterans Affairs，Information for Resellers：https://www.va.gov/oal/business/fss/acronyms.asp
 - HP，DesignJet specialist reseller transaction path：https://h41201.www4.hp.com/WMCF.Web/Dispatcher.aspx?action=terms&country=uk&language=en&ocugid=11535&program=11549&simdate=2026-01-31&wacp=20251214
+- U.S. Census Bureau，Monthly Retail Trade definitions：https://www.census.gov/retail/mrts_general_faqs.html
+- Eurostat，Retail trade turnover concepts：https://ec.europa.eu/eurostat/cache/metadata/en/sts_wrt_ts_esms_rs.htm
 - UK Department for Business and Trade，When to use an agent or distributor：https://www.business.gov.uk/export-from-uk/learn/categories/prepare-sell-new-country/routes-to-market/when-use-agent-or-distributor/
 - UK HMRC，INTM441080 Agents and distributors：https://www.gov.uk/hmrc-internal-manuals/international-manual/intm441080
 - European Commission，Working paper on distributors that also act as agents：https://competition-policy.ec.europa.eu/document/download/a2a40192-9491-450d-8878-e7d1a17ce732_en
@@ -329,9 +391,9 @@ export const CHANNEL_ROLE_TAXONOMY_DOCUMENT = {
   capturedAt: "2026-08-26T00:00:00+08:00",
   metadata: {
     topic: "channel-role-taxonomy",
-    policyVersion: "2026-08-26.5",
-    confirmedRoles: ["Distributor", "VAD", "VAR", "Dealer", "Reseller"],
-    pendingRoles: ["Retailer", "E-tailer", "SI", "Installer", "MSP", "ISP", "Commission Agent"],
+    policyVersion: "2026-08-26.6",
+    confirmedRoles: ["Distributor", "VAD", "VAR", "Dealer", "Reseller", "Retailer"],
+    pendingRoles: ["E-tailer", "SI", "Installer", "MSP", "ISP", "Commission Agent"],
     userConfirmed: true,
     temporalReviewRequired: false,
   },
