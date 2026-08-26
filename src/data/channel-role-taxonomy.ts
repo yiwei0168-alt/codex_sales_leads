@@ -19,7 +19,7 @@ KA 是商业价值等级，不是渠道角色。仅当候选公司已被归入 D
 
 ### Commission Agent 独立候选类型
 
-佣金型 Agent 不属于 Distributor。Agent 通常代表委托方促成交易、按佣金获得报酬，并且通常不取得货物所有权、不以自身名义承担进销差价及主要库存风险。Agent 具有独立商业价值，应作为单独的候选公司类型纳入搜索体系。其完整纳入条件、证据标准、排除规则及商业价值分级方式需要在 Agent 角色的专项讨论中确认；在确认前不得把 Agent 自动归入 Distributor，也不得默认其适用 KA。
+佣金型 Agent 不属于 Distributor。Agent 通常代表委托方促成交易、通过佣金或代理服务费获得报酬，并且通常不取得货物所有权、不承担进销差价及主要库存风险。Agent 具有独立商业价值，应作为单独的候选公司类型纳入搜索体系；其完整定义、证据、边界及独立价值分级见下文已确认的 Commission Agent 角色。Agent 不适用下级渠道客户的 account tier／KA，应使用 agent_potential_tier。
 
 # 已确认角色
 
@@ -704,6 +704,104 @@ ISP 属于 Downstream Channel，可以根据用户和站点数量、覆盖区域
 
 未找到 ASN、自有网络、牌照、公开合同或详细用户数量只能记录为 unknown，不能自动否定 ISP。系统应优先确认实际服务套餐、覆盖区域、客户关系、计费或支持责任及上游供给模式。如果只有“internet”“telecom”“broadband”关键词，或只能确认设备销售、安装和普通 Wi-Fi 服务，应保留 ISP candidate／待核验，不能强行确认。
 
+## Commission Agent（佣金型销售代理）
+
+### 状态与规范名称
+
+- 状态：已由业务负责人确认。
+- 中文规范名称：佣金型销售代理／商业代理。
+- 英文规范名称：Commission Agent／Sales Agent／Commercial Agent。
+- 所属角色家族：agency／intermediary。
+- channel layer：Intermediary／Agency；既不是 Tier-1 Distributor，也不是采购产品的 Downstream Channel customer。
+- 角色关系：Commission Agent 是独立候选公司类型，不能自动归入 Distributor、Reseller 或其他采购转售角色。
+
+### 完整定义
+
+Commission Agent 是受品牌方、制造商或其他供应商委托，以委托方利益在目标市场寻找客户、介绍商机、推广产品、协助报价、参与谈判或促成交易，并通过佣金、成功费、固定代理服务费、Retainer 或“基础服务费＋佣金”获得报酬的独立公司或可验证的个人经营者。
+
+Agent 通常不购买产品、不取得货权，也不依靠进销差价盈利。产品交易主要发生在委托方与客户之间，库存、应收账款、产品定价、坏账、保修和主要履约风险通常仍由委托方承担。Commission Agent 的核心是代表、介绍和促成，而不是以自身商业主体身份买入后转售。
+
+### 子类型与纳入范围
+
+本分类统一包含：
+
+- Sales／Commercial Agent：持续代表品牌或供应商开发客户和推进交易；
+- Manufacturer’s Representative：在特定区域或行业代表一个或多个厂商；
+- Independent Sales Representative：以独立外部销售身份代表委托方；
+- Referral／Introducer Agent：系统性介绍合格 B2B 客户或项目机会，但通常不参与完整谈判；
+- Outsourced Sales Agent：作为委托方的外部销售团队开展客户开发、跟进或谈判；
+- Tender／Project Agent：帮助委托方获得当地招标、运营商、大型项目或关键客户机会。
+
+Referral／Introducer Agent 必须具有可验证、可重复的 B2B 商机介绍业务。偶尔介绍一次客户的个人、普通联盟链接、优惠码推广者或泛化流量推广账号不作为正式 Commission Agent 候选。
+
+本产品中的 Commission Agent 专指卖方侧销售代理。代表采购方寻找、筛选或购买供应商产品的 Buying／Sourcing Agent 不纳入此角色；如未来需要搜索采购影响者，应作为独立的 buyer-side influencer／procurement intermediary 类型设计。
+
+### 必要判断条件
+
+在公开证据足够的情况下，Commission Agent 至少需要满足：
+
+1. 代表可识别的委托方，或以明确且可验证的代理业务模式开展销售活动；
+2. 实际承担客户开发、商机介绍、市场代表、谈判、投标支持或促成交易职能；
+3. 收入来自佣金、成功费、代理费、Retainer 或混合报酬，而不是主要依靠采购后加价转售；
+4. 在所代理的交易中，不以自身经济主体身份取得产品货权并承担主要库存、应收账款、坏账和转售风险。
+
+固定服务费或 Retainer 加佣金不影响 Agent 身份，报酬不要求完全按单笔成交佣金计算。代理合同和具体佣金比例通常不会公开；没有找到合同或佣金数字只能记录为 unknown，但至少需要代理服务模式、品牌代表关系、客户开发活动或其他证据支持。
+
+### 货权、风险和履约边界
+
+是否取得货权并承担库存与转售风险，是 Commission Agent 与 Distributor／Reseller 的首要边界。真实代理交易中，货权通常由委托方直接转移给客户，Agent 不拥有商品，也不承担依靠进销差价获利的主要商业风险。
+
+保存样品或 Demo、临时保管委托方寄售库存、协助报价、收集订单、协调物流、提供市场信息、跟进客户、参与招投标或在授权范围内谈判价格，都不会自动改变 Agent 身份。实体库存、货物交付地点和发票流向是证据，但不能替代对真实货权、收益方式和风险承担的判断。
+
+某些司法辖区的 commissionaire／undisclosed agent 可能以自己名义签订合同，但仍代表委托方且不承担商品所有权和主要商业风险。此类情况应根据真实交易安排判断，不能只看发票抬头或合同签署形式。
+
+如果公司采购产品、取得货权、自行决定转售价，并承担库存、应收账款、坏账、退货或主要履约风险，该笔业务应分类为 Distributor、Dealer 或 Reseller，而不是 Agent。
+
+### 多品牌、多角色与交易范围
+
+一家公司可以针对品牌 A 担任 Agent，同时针对品牌 B 开展采购转售；也可以在一条产品线提供代理服务，在另一条产品线提供集成、安装或托管服务。分类必须按品牌、产品线、国家和实际交易模式判断，并分别保存证据，不能用公司整体名称强制选择单一角色。
+
+- Reseller／Distributor：仅当存在不同品牌、产品线或明确分离的采购转售交易时与 Agent 同时标记；代理交易本身不增加采购转售角色。
+- SI：既代表品牌获得商机，又以自身名义承担系统集成和方案结果时，可以同时标记。
+- Installer：介绍商机之外，另行与客户签约并承担安装结果时，可以同时标记。
+- MSP：另行向客户提供持续托管并承担运营责任时，可以同时标记。
+- ISP：既代理其他运营商销售连接服务，又经营自己的互联网接入服务时，可以同时标记。
+
+单纯把安装、托管或宽带客户转介给第三方并收取佣金，只标记 Commission Agent；只有自己承担对应服务责任时，才增加 Installer、MSP 或 ISP。
+
+### 排除规则
+
+普通广告、SEO、内容营销或数字营销公司，只有流量和联系人名单的 Lead Generation 平台，Affiliate、Influencer、优惠码推广账号，Marketplace、目录站和比价平台，以及只提供泛化咨询但不代表供应商开发客户的顾问，本身不属于 Commission Agent。
+
+营销外包或销售外包公司如果实际代表委托方开展客户开发、持续跟进、谈判或销售推进，可以认定为 Outsourced Sales Agent；不能只根据 business development、marketing、consulting 或 representative 等关键词确认。品牌方自己的员工或内部销售代表不是独立候选公司，也不标记 Commission Agent。
+
+### 强证据与辅助证据
+
+强证据包括：候选公司官网明确自述 commercial agent、commission agent、manufacturer’s representative、independent sales representative 或 sales agency；厂商官方当地代表页面；公开 line card、represented manufacturers、territory 或行业范围；可验证的委托品牌、客户开发项目、代理协议说明、佣金／成功费模式或招投标代表身份。
+
+辅助证据包括：商业代理或 Manufacturer Rep 协会目录、LinkedIn 公司和人员资料、展会与行业活动记录、招投标文件、公司注册业务范围、历史代理品牌、客户推荐、结构化社交页面及相关销售职位。只出现 agent、representative 或 business development 等通用词不能单独确认，必须排除房地产、保险、旅游、招聘等无关代理，并验证与 IT、网络、通信或目标产品市场的关系。
+
+### 小型代理与长尾搜索
+
+独立代理人、个人经营者和小型代理公司可以进入长尾候选池，不要求高流量网站、实体办公室、仓库或员工团队。系统必须能够验证经营身份，以及目标行业、区域覆盖、代表品牌、客户网络或真实代理活动中的至少一组有效证据；无法区分偶发介绍、普通顾问和专业代理时，应保留 Agent candidate／待核验。
+
+搜索应组合当地语言中的 Commercial Agent、Commission Agent、Manufacturer’s Representative、Independent Sales Representative、Sales Agency、Outsourced Sales、ICT／Telecom Sales Agent、Local Representative、Tender Representative 和 Referral Partner，并结合厂商代表页面、行业协会、代理目录、LinkedIn、展会资料、招投标记录和公司注册信息交叉验证。
+
+### 独立商业价值分级
+
+Commission Agent 不是采购产品的下级渠道客户，因此不使用 account tier，也不评为 KA。系统使用独立字段 agent_potential_tier：
+
+- Strategic：能够进入关键客户、运营商、政府项目或重要行业，并具备较强持续成交能力；
+- Priority：有可验证客户网络、区域覆盖和相关产品经验，值得优先接触；
+- Standard：代理业务真实，但覆盖、影响力或成交能力有限；
+- Watchlist：代理身份、客户关系、利益冲突或实际能力仍待验证。
+
+评价因素包括目标客户和决策人触达能力、区域与垂直行业覆盖、既有厂商和产品线、项目与招投标经验、商机质量和历史成交、技术理解和售前能力、市场声誉与合规风险、是否代理直接竞争品牌，以及是否能够持续开发而不是只提供一次性介绍。代理多个品牌或竞争品牌影响商业匹配度和优先级，但不否定 Agent 角色本身。
+
+### 信息缺失与置信度
+
+未找到公开代理合同、佣金比例、客户名称、办公室或仓库只能记录为 unknown，不能直接排除候选 Agent。系统必须区分“没有公开披露”和“证据显示其实际买断转售”。当货权、风险、报酬方式或委托关系不清楚时，应保留 Commission Agent candidate／待核验，并优先核实谁与客户签约开票、谁拥有货物、谁承担坏账和售后风险，以及候选公司的真实收入方式。
+
 # 参考依据
 
 以下资料用于支撑行业通用边界；本文件中的产品操作规则以业务负责人确认口径为最终准则。
@@ -741,6 +839,11 @@ ISP 属于 Downstream Channel，可以根据用户和站点数量、覆盖区域
 - FCC，Wireless Broadband Internet Access Service Providers／WISP definition：https://docs.fcc.gov/public/attachments/DOC-390853A1.pdf
 - BEREC，What is covered and protected by the Open Internet Regulation：https://www.berec.europa.eu/en/what-is-covered-and-protected-by-the-regulation
 - BEREC，ISP retail and wholesale connectivity roles：https://www.berec.europa.eu/sites/default/files/files/news/bor_12_33_ip_ic_assessment.pdf
+- European Union，Council Directive 86/653/EEC on self-employed commercial agents：https://eur-lex.europa.eu/legal-content/en/TXT/?uri=CELEX%3A31986L0653
+- UK Department for Business and Trade，Working with agents and distributors：https://www.business.gov.uk/export-from-uk/learn/categories/prepare-sell-new-country/routes-to-market/when-use-agent-or-distributor/
+- UK HMRC，What is an agent：https://www.gov.uk/hmrc-internal-manuals/vat-taxable-person/vtaxper35500
+- UK HMRC，How to distinguish agency — title and risk factors：https://www.gov.uk/hmrc-internal-manuals/vat-taxable-person/vtaxper36820
+- UK HMRC，Commissionaires overview：https://www.gov.uk/hmrc-internal-manuals/international-manual/intm441040
 - UK Department for Business and Trade，When to use an agent or distributor：https://www.business.gov.uk/export-from-uk/learn/categories/prepare-sell-new-country/routes-to-market/when-use-agent-or-distributor/
 - UK HMRC，INTM441080 Agents and distributors：https://www.gov.uk/hmrc-internal-manuals/international-manual/intm441080
 - European Commission，Working paper on distributors that also act as agents：https://competition-policy.ec.europa.eu/document/download/a2a40192-9491-450d-8878-e7d1a17ce732_en
@@ -757,9 +860,9 @@ export const CHANNEL_ROLE_TAXONOMY_DOCUMENT = {
   capturedAt: "2026-08-26T00:00:00+08:00",
   metadata: {
     topic: "channel-role-taxonomy",
-    policyVersion: "2026-08-26.11",
-    confirmedRoles: ["Distributor", "VAD", "VAR", "Dealer", "Reseller", "Retailer", "E-tailer", "SI", "Installer", "MSP", "ISP"],
-    pendingRoles: ["Commission Agent"],
+    policyVersion: "2026-08-26.12",
+    confirmedRoles: ["Distributor", "VAD", "VAR", "Dealer", "Reseller", "Retailer", "E-tailer", "SI", "Installer", "MSP", "ISP", "Commission Agent"],
+    pendingRoles: [],
     userConfirmed: true,
     temporalReviewRequired: false,
   },

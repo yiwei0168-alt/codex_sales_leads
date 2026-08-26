@@ -44,6 +44,10 @@ const verificationQueries = [
   "ISP 是否必须拥有自建网络 ASN 和通信牌照？虚拟转售型 ISP 算吗？",
   "WISP 移动卫星企业和批发运营商是否都属于 ISP？纯客户转介算不算？",
   "ISP 套餐内出租 CPE 是否自动属于 Reseller？ISP 与 MSP Installer 怎样重叠？",
+  "Commission Agent 和 Distributor Reseller 的核心区别是什么？Agent 会取得货权吗？",
+  "Manufacturer Representative Referral Agent 和外包销售公司是否属于 Commission Agent？",
+  "固定代理费或 Retainer 加佣金还能算 Agent 吗？Agent 能否同时是 SI Installer MSP ISP？",
+  "Commission Agent 能否评为 KA？应该怎样评价代理商业价值？",
 ];
 
 try {
@@ -105,6 +109,14 @@ try {
     "只转介宽带客户，由实际运营商签约、开票和承担服务结果的公司属于 Commission Agent／Referral Agent，不属于 ISP",
     "套餐内仍归 ISP 所有、租赁、借用或仅作为服务终端部署的 CPE 不自动构成 Reseller",
     "Wholesale ISP 销售带宽、Transit 或 Backhaul 不等于硬件一级分销",
+    "Commission Agent 的核心是代表、介绍和促成，而不是以自身商业主体身份买入后转售",
+    "Referral／Introducer Agent 必须具有可验证、可重复的 B2B 商机介绍业务",
+    "本产品中的 Commission Agent 专指卖方侧销售代理",
+    "固定服务费或 Retainer 加佣金不影响 Agent 身份",
+    "是否取得货权并承担库存与转售风险，是 Commission Agent 与 Distributor／Reseller 的首要边界",
+    "单纯把安装、托管或宽带客户转介给第三方并收取佣金，只标记 Commission Agent",
+    "Commission Agent 不是采购产品的下级渠道客户，因此不使用 account tier，也不评为 KA",
+    "agent_potential_tier",
   ];
   const missingText = requiredText.filter((fragment) => !stored.combined_content.includes(fragment));
 
