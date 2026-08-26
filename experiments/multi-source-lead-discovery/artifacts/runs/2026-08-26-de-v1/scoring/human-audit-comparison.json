@@ -1,0 +1,855 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "auditVersion": "blind-audit-v1.1",
+  "runId": "2026-08-26-de-v1",
+  "humanAuditCheckpointCommit": "67fff9a",
+  "humanDecisionsFrozenBeforeDeblinding": true,
+  "thresholds": {
+    "gateAgreementMinimum": 0.9,
+    "categoryAgreementMinimum": 0.9,
+    "weightedKappaMinimum": 0.75,
+    "scoreMeanAbsoluteErrorMaximum": 8,
+    "absoluteCategoryMeanBiasMaximum": 5
+  },
+  "metricDefinitions": {
+    "gateAgreement": "field-level agreement over companyExists, germanyPresence, networkingRelevant and sufficientEvidence; model-only role and uniqueness gates are excluded",
+    "categoryAgreement": "exact agreement between the model's eligible anchor channel (or none) and the human valid category",
+    "weightedKappa": "quadratic weighted kappa over invalid, low, follow-up, strong and high total-score bands",
+    "scoreError": "model anchor score versus human score after each side's gates are applied",
+    "representativeStatistics": "six core samples only; six problem samples are diagnostic and excluded"
+  },
+  "metrics": {
+    "coreSampleSize": 6,
+    "gateFieldAgreement": 0.916667,
+    "completeGateVectorAgreement": 0.666667,
+    "categoryAgreement": 0.666667,
+    "scoreBandExactAgreement": 0.333333,
+    "quadraticWeightedKappa": 0.470588,
+    "scoreMeanAbsoluteError": 29.5,
+    "overallModelMinusHumanMeanBias": 29.5,
+    "categoryBias": [
+      {
+        "channelId": "tier1-distribution",
+        "auditedCandidates": 2,
+        "modelMinusHumanMeanBias": 9,
+        "absoluteMeanBias": 9
+      },
+      {
+        "channelId": "b2b-resale",
+        "auditedCandidates": 2,
+        "modelMinusHumanMeanBias": 32,
+        "absoluteMeanBias": 32
+      },
+      {
+        "channelId": "project-services",
+        "auditedCandidates": 2,
+        "modelMinusHumanMeanBias": 47.5,
+        "absoluteMeanBias": 47.5
+      }
+    ]
+  },
+  "passed": false,
+  "failedThresholds": [
+    "categoryAgreement",
+    "weightedKappa",
+    "scoreMeanAbsoluteError",
+    "absoluteCategoryMeanBias"
+  ],
+  "calibrationDecision": {
+    "status": "failed-gate-or-category-calibration",
+    "rawScoresChanged": false,
+    "leaderboardStatus": "provisional-not-calibrated",
+    "requiredAction": "revise rubric, expand human audit, and rescore the full candidate pool; a numeric offset is prohibited"
+  },
+  "coreComparisons": [
+    {
+      "blindCandidateId": "C-333AB110B4E6",
+      "sampleType": "core",
+      "companyName": "SCALCOM",
+      "officialUrl": "https://scalcom.de/",
+      "anchor": {
+        "systemId": "product-exa",
+        "channelId": "b2b-resale",
+        "rank": 5,
+        "occurrenceCount": 2,
+        "occurrenceChannels": [
+          "tier1-distribution",
+          "b2b-resale"
+        ]
+      },
+      "problemTriggers": [
+        "cross-category-occurrence"
+      ],
+      "model": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "networkingRelevant": true,
+          "sufficientEvidence": true
+        },
+        "submittedChannelRole": true,
+        "uniqueWithinList": true,
+        "validCategory": "b2b-resale",
+        "levels": {
+          "productUseCaseFit": 5,
+          "cooperationPath": 4,
+          "evidenceReliability": 3
+        },
+        "score": 85,
+        "scoreBand": "high"
+      },
+      "human": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "networkingRelevant": true,
+          "sufficientEvidence": true
+        },
+        "validCategory": "b2b-resale",
+        "levels": {
+          "productUseCaseFit": 4,
+          "cooperationPath": 4,
+          "evidenceReliability": 5
+        },
+        "score": 84,
+        "scoreBand": "high",
+        "reviewerNotes": "角色介于 VAD 和 VAR 之间；实际经营形态是偏增值型的 B2B online shop，因此本轮归入 B2B 转售。"
+      },
+      "comparison": {
+        "gateFieldAgreement": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "networkingRelevant": true,
+          "sufficientEvidence": true
+        },
+        "allCommonGatesAgree": true,
+        "categoryAgrees": true,
+        "scoreDifferenceModelMinusHuman": 1,
+        "absoluteScoreError": 1,
+        "scoreBandAgrees": true
+      }
+    },
+    {
+      "blindCandidateId": "C-5C4CF672AC7E",
+      "sampleType": "core",
+      "companyName": "Netzwerk-Arzt",
+      "officialUrl": "https://www.netzwerk-arzt.de/",
+      "anchor": {
+        "systemId": "product-tavily",
+        "channelId": "project-services",
+        "rank": 8,
+        "occurrenceCount": 1,
+        "occurrenceChannels": [
+          "project-services"
+        ]
+      },
+      "problemTriggers": [],
+      "model": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "networkingRelevant": true,
+          "sufficientEvidence": true
+        },
+        "submittedChannelRole": true,
+        "uniqueWithinList": true,
+        "validCategory": "project-services",
+        "levels": {
+          "productUseCaseFit": 5,
+          "cooperationPath": 4,
+          "evidenceReliability": 3
+        },
+        "score": 85,
+        "scoreBand": "high"
+      },
+      "human": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "networkingRelevant": true,
+          "sufficientEvidence": true
+        },
+        "validCategory": "project-services",
+        "levels": {
+          "productUseCaseFit": 4,
+          "cooperationPath": 3,
+          "evidenceReliability": 3
+        },
+        "score": 69,
+        "scoreBand": "strong",
+        "reviewerNotes": "官网自述提供 SMB networking 服务，与 Cudy 产品匹配；现有材料未证明库存、合作品牌或更完整的采购、选型与供应路径，未知信息不视为确定不存在。"
+      },
+      "comparison": {
+        "gateFieldAgreement": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "networkingRelevant": true,
+          "sufficientEvidence": true
+        },
+        "allCommonGatesAgree": true,
+        "categoryAgrees": true,
+        "scoreDifferenceModelMinusHuman": 16,
+        "absoluteScoreError": 16,
+        "scoreBandAgrees": false
+      }
+    },
+    {
+      "blindCandidateId": "C-7A91FBCD0523",
+      "sampleType": "core",
+      "companyName": "Red Eagle IT Distribution GmbH",
+      "officialUrl": "https://redeagle-it.de/",
+      "anchor": {
+        "systemId": "product-exa",
+        "channelId": "tier1-distribution",
+        "rank": 4,
+        "occurrenceCount": 1,
+        "occurrenceChannels": [
+          "tier1-distribution"
+        ]
+      },
+      "problemTriggers": [],
+      "model": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "networkingRelevant": true,
+          "sufficientEvidence": true
+        },
+        "submittedChannelRole": true,
+        "uniqueWithinList": true,
+        "validCategory": "tier1-distribution",
+        "levels": {
+          "productUseCaseFit": 5,
+          "cooperationPath": 4,
+          "evidenceReliability": 3
+        },
+        "score": 85,
+        "scoreBand": "high"
+      },
+      "human": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "networkingRelevant": true,
+          "sufficientEvidence": true
+        },
+        "validCategory": "tier1-distribution",
+        "levels": {
+          "productUseCaseFit": 4,
+          "cooperationPath": 4,
+          "evidenceReliability": 4
+        },
+        "score": 80,
+        "scoreBand": "high",
+        "reviewerNotes": "判断为 VAD。公司规模较小，可能不直接从品牌采购，也可能是 sub-distributor；规模仅作为采购层级的辅助信息，不直接扣分。合作品牌包括 D-Link，业务与 Cudy 高度相近。"
+      },
+      "comparison": {
+        "gateFieldAgreement": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "networkingRelevant": true,
+          "sufficientEvidence": true
+        },
+        "allCommonGatesAgree": true,
+        "categoryAgrees": true,
+        "scoreDifferenceModelMinusHuman": 5,
+        "absoluteScoreError": 5,
+        "scoreBandAgrees": true
+      }
+    },
+    {
+      "blindCandidateId": "C-857CBF410400",
+      "sampleType": "core",
+      "companyName": "Infinigate Deutschland GmbH",
+      "officialUrl": "https://www.infinigate.de/",
+      "anchor": {
+        "systemId": "product-gemini",
+        "channelId": "tier1-distribution",
+        "rank": 7,
+        "occurrenceCount": 2,
+        "occurrenceChannels": [
+          "tier1-distribution"
+        ]
+      },
+      "problemTriggers": [
+        "evidence-reliability-at-most-1"
+      ],
+      "model": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "networkingRelevant": true,
+          "sufficientEvidence": true
+        },
+        "submittedChannelRole": true,
+        "uniqueWithinList": true,
+        "validCategory": "tier1-distribution",
+        "levels": {
+          "productUseCaseFit": 4,
+          "cooperationPath": 5,
+          "evidenceReliability": 1
+        },
+        "score": 75,
+        "scoreBand": "strong"
+      },
+      "human": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "networkingRelevant": true,
+          "sufficientEvidence": true
+        },
+        "validCategory": "tier1-distribution",
+        "levels": {
+          "productUseCaseFit": 2,
+          "cooperationPath": 4,
+          "evidenceReliability": 4
+        },
+        "score": 62,
+        "scoreBand": "follow-up",
+        "reviewerNotes": "判断为 VAD。渠道合作路径清晰，但现有材料只能证明泛网络相关业务，没有证据显示其业务与 Cudy 核心产品高度匹配。"
+      },
+      "comparison": {
+        "gateFieldAgreement": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "networkingRelevant": true,
+          "sufficientEvidence": true
+        },
+        "allCommonGatesAgree": true,
+        "categoryAgrees": true,
+        "scoreDifferenceModelMinusHuman": 13,
+        "absoluteScoreError": 13,
+        "scoreBandAgrees": false
+      }
+    },
+    {
+      "blindCandidateId": "C-8D3734DA95B9",
+      "sampleType": "core",
+      "companyName": "Skaylink GmbH",
+      "officialUrl": "https://www.skaylink.com/",
+      "anchor": {
+        "systemId": "gemini-full",
+        "channelId": "b2b-resale",
+        "rank": 10,
+        "occurrenceCount": 1,
+        "occurrenceChannels": [
+          "b2b-resale"
+        ]
+      },
+      "problemTriggers": [],
+      "model": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "networkingRelevant": true,
+          "sufficientEvidence": true
+        },
+        "submittedChannelRole": true,
+        "uniqueWithinList": true,
+        "validCategory": "b2b-resale",
+        "levels": {
+          "productUseCaseFit": 3,
+          "cooperationPath": 4,
+          "evidenceReliability": 2
+        },
+        "score": 63,
+        "scoreBand": "follow-up"
+      },
+      "human": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "networkingRelevant": false,
+          "sufficientEvidence": true
+        },
+        "validCategory": "none-or-unclear",
+        "levels": {
+          "productUseCaseFit": 0,
+          "cooperationPath": 0,
+          "evidenceReliability": 2
+        },
+        "score": 0,
+        "scoreBand": "invalid",
+        "reviewerNotes": "公司真实并在德国经营，但更像云服务方案与咨询公司；没有明确证据证明其具备与 Cudy 相关的 networking 硬件采购、转售、选型或部署业务，因此 networking 相关性门槛不通过。"
+      },
+      "comparison": {
+        "gateFieldAgreement": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "networkingRelevant": false,
+          "sufficientEvidence": true
+        },
+        "allCommonGatesAgree": false,
+        "categoryAgrees": false,
+        "scoreDifferenceModelMinusHuman": 63,
+        "absoluteScoreError": 63,
+        "scoreBandAgrees": false
+      }
+    },
+    {
+      "blindCandidateId": "C-D14CBB6B96F4",
+      "sampleType": "core",
+      "companyName": "BFE Studio und Medien Systeme GmbH",
+      "officialUrl": "https://www.bfe.tv/",
+      "anchor": {
+        "systemId": "gemini-full",
+        "channelId": "project-services",
+        "rank": 6,
+        "occurrenceCount": 1,
+        "occurrenceChannels": [
+          "project-services"
+        ]
+      },
+      "problemTriggers": [],
+      "model": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "networkingRelevant": true,
+          "sufficientEvidence": true
+        },
+        "submittedChannelRole": true,
+        "uniqueWithinList": true,
+        "validCategory": "project-services",
+        "levels": {
+          "productUseCaseFit": 4,
+          "cooperationPath": 5,
+          "evidenceReliability": 2
+        },
+        "score": 79,
+        "scoreBand": "strong"
+      },
+      "human": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "networkingRelevant": false,
+          "sufficientEvidence": true
+        },
+        "validCategory": "none-or-unclear",
+        "levels": {
+          "productUseCaseFit": 0,
+          "cooperationPath": 0,
+          "evidenceReliability": 2
+        },
+        "score": 0,
+        "scoreBand": "invalid",
+        "reviewerNotes": "公司真实并在德国经营，但当前材料没有直接证明其实质 networking 业务，广播和媒体 IP 系统描述不足以建立与 Cudy 对应网络产品的相关性，因此 networking 相关性门槛不通过。"
+      },
+      "comparison": {
+        "gateFieldAgreement": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "networkingRelevant": false,
+          "sufficientEvidence": true
+        },
+        "allCommonGatesAgree": false,
+        "categoryAgrees": false,
+        "scoreDifferenceModelMinusHuman": 79,
+        "absoluteScoreError": 79,
+        "scoreBandAgrees": false
+      }
+    }
+  ],
+  "problemDiagnostics": [
+    {
+      "blindCandidateId": "C-A646DF2CC549",
+      "sampleType": "problem",
+      "companyName": "WLAN-Shop24 (Varistano GmbH)",
+      "officialUrl": "https://www.wlan-shop24.de/",
+      "anchor": {
+        "systemId": "product-gemini",
+        "channelId": "b2b-resale",
+        "rank": 5,
+        "occurrenceCount": 1,
+        "occurrenceChannels": [
+          "b2b-resale"
+        ]
+      },
+      "problemTriggers": [
+        "evidence-reliability-at-most-1"
+      ],
+      "model": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "networkingRelevant": true,
+          "sufficientEvidence": true
+        },
+        "submittedChannelRole": true,
+        "uniqueWithinList": true,
+        "validCategory": "b2b-resale",
+        "levels": {
+          "productUseCaseFit": 5,
+          "cooperationPath": 5,
+          "evidenceReliability": 1
+        },
+        "score": 84,
+        "scoreBand": "high"
+      },
+      "human": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "networkingRelevant": true,
+          "sufficientEvidence": true
+        },
+        "validCategory": "b2b-resale",
+        "levels": {
+          "productUseCaseFit": 4,
+          "cooperationPath": 4,
+          "evidenceReliability": 5
+        },
+        "score": 84,
+        "scoreBand": "high",
+        "reviewerNotes": "判断为 VAR 或 Reseller。审核人通过官网发现该公司已经销售 Cudy，采购与上架路径已被现实验证，属于优秀搜索结果。现有 Cudy 关系本身不额外加分，但可证明合作路径成立；该发现属于人工检查官网得到的补充信息，并非原盲审摘录直接提供。"
+      },
+      "comparison": {
+        "gateFieldAgreement": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "networkingRelevant": true,
+          "sufficientEvidence": true
+        },
+        "allCommonGatesAgree": true,
+        "categoryAgrees": true,
+        "scoreDifferenceModelMinusHuman": 0,
+        "absoluteScoreError": 0,
+        "scoreBandAgrees": true
+      }
+    },
+    {
+      "blindCandidateId": "C-B53C22FC38AA",
+      "sampleType": "problem",
+      "companyName": "smaRTtechnik GmbH & Co. KG",
+      "officialUrl": "https://smarttechnik.de/",
+      "anchor": {
+        "systemId": "product-gemini",
+        "channelId": "project-services",
+        "rank": 10,
+        "occurrenceCount": 1,
+        "occurrenceChannels": [
+          "project-services"
+        ]
+      },
+      "problemTriggers": [
+        "evidence-reliability-at-most-1"
+      ],
+      "model": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "networkingRelevant": true,
+          "sufficientEvidence": true
+        },
+        "submittedChannelRole": true,
+        "uniqueWithinList": true,
+        "validCategory": "project-services",
+        "levels": {
+          "productUseCaseFit": 4,
+          "cooperationPath": 5,
+          "evidenceReliability": 1
+        },
+        "score": 75,
+        "scoreBand": "strong"
+      },
+      "human": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "networkingRelevant": true,
+          "sufficientEvidence": true
+        },
+        "validCategory": "project-services",
+        "levels": {
+          "productUseCaseFit": 2,
+          "cooperationPath": 3,
+          "evidenceReliability": 3
+        },
+        "score": 51,
+        "scoreBand": "follow-up",
+        "reviewerNotes": "正确官网为 https://smarttechnik.eu/，原提交的 https://smarttechnik.de/ 错误。公司真实，判断为 Installer／项目服务；偏企业级网络方案，与 Cudy 产品匹配度不高，且没有直接证据证明其与 networking 品牌直接合作或掌握采购权。"
+      },
+      "comparison": {
+        "gateFieldAgreement": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "networkingRelevant": true,
+          "sufficientEvidence": true
+        },
+        "allCommonGatesAgree": true,
+        "categoryAgrees": true,
+        "scoreDifferenceModelMinusHuman": 24,
+        "absoluteScoreError": 24,
+        "scoreBandAgrees": false
+      }
+    },
+    {
+      "blindCandidateId": "C-B74B9D01DF37",
+      "sampleType": "problem",
+      "companyName": "SoftwareOne Deutschland GmbH",
+      "officialUrl": "https://www.softwareone.com/",
+      "anchor": {
+        "systemId": "gemini-full",
+        "channelId": "b2b-resale",
+        "rank": 7,
+        "occurrenceCount": 1,
+        "occurrenceChannels": [
+          "b2b-resale"
+        ]
+      },
+      "problemTriggers": [
+        "score-within-5-of-50"
+      ],
+      "model": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "networkingRelevant": true,
+          "sufficientEvidence": true
+        },
+        "submittedChannelRole": true,
+        "uniqueWithinList": true,
+        "validCategory": "b2b-resale",
+        "levels": {
+          "productUseCaseFit": 2,
+          "cooperationPath": 4,
+          "evidenceReliability": 2
+        },
+        "score": 54,
+        "scoreBand": "follow-up"
+      },
+      "human": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "networkingRelevant": false,
+          "sufficientEvidence": true
+        },
+        "validCategory": "none-or-unclear",
+        "levels": {
+          "productUseCaseFit": 0,
+          "cooperationPath": 0,
+          "evidenceReliability": 2
+        },
+        "score": 0,
+        "scoreBand": "invalid",
+        "reviewerNotes": "公司真实并在德国经营，但现有材料显示其更像 IT 软件、云服务和咨询公司，缺少与 networking 硬件的实质相关性，因此 networking 相关性门槛不通过。"
+      },
+      "comparison": {
+        "gateFieldAgreement": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "networkingRelevant": false,
+          "sufficientEvidence": true
+        },
+        "allCommonGatesAgree": false,
+        "categoryAgrees": false,
+        "scoreDifferenceModelMinusHuman": 54,
+        "absoluteScoreError": 54,
+        "scoreBandAgrees": false
+      }
+    },
+    {
+      "blindCandidateId": "C-C526CAFCD3BE",
+      "sampleType": "problem",
+      "companyName": "ADN – Advanced Digital Network Distribution GmbH",
+      "officialUrl": "https://www.adn.de/",
+      "anchor": {
+        "systemId": "product-gemini",
+        "channelId": "tier1-distribution",
+        "rank": 5,
+        "occurrenceCount": 3,
+        "occurrenceChannels": [
+          "tier1-distribution"
+        ]
+      },
+      "problemTriggers": [
+        "evidence-reliability-at-most-1"
+      ],
+      "model": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "networkingRelevant": true,
+          "sufficientEvidence": true
+        },
+        "submittedChannelRole": true,
+        "uniqueWithinList": true,
+        "validCategory": "tier1-distribution",
+        "levels": {
+          "productUseCaseFit": 5,
+          "cooperationPath": 5,
+          "evidenceReliability": 1
+        },
+        "score": 84,
+        "scoreBand": "high"
+      },
+      "human": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "networkingRelevant": true,
+          "sufficientEvidence": true
+        },
+        "validCategory": "tier1-distribution",
+        "levels": {
+          "productUseCaseFit": 2,
+          "cooperationPath": 4,
+          "evidenceReliability": 3
+        },
+        "score": 58,
+        "scoreBand": "follow-up",
+        "reviewerNotes": "公司真实并在德国经营，判断为 Distributor／VAD。与 Omada 合作证明其具备网络品牌引入和渠道合作可能性，但业务更偏企业级，与 Cudy 当前产品匹配度有限；提交证据存在公司与来源 URL 错配。"
+      },
+      "comparison": {
+        "gateFieldAgreement": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "networkingRelevant": true,
+          "sufficientEvidence": true
+        },
+        "allCommonGatesAgree": true,
+        "categoryAgrees": true,
+        "scoreDifferenceModelMinusHuman": 26,
+        "absoluteScoreError": 26,
+        "scoreBandAgrees": false
+      }
+    },
+    {
+      "blindCandidateId": "C-D0206FA0ABED",
+      "sampleType": "problem",
+      "companyName": "Avanis GmbH",
+      "officialUrl": "https://avanis.de/",
+      "anchor": {
+        "systemId": "product-exa",
+        "channelId": "b2b-resale",
+        "rank": 4,
+        "occurrenceCount": 2,
+        "occurrenceChannels": [
+          "tier1-distribution",
+          "b2b-resale"
+        ]
+      },
+      "problemTriggers": [
+        "cross-category-occurrence"
+      ],
+      "model": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "networkingRelevant": true,
+          "sufficientEvidence": true
+        },
+        "submittedChannelRole": true,
+        "uniqueWithinList": true,
+        "validCategory": "b2b-resale",
+        "levels": {
+          "productUseCaseFit": 5,
+          "cooperationPath": 5,
+          "evidenceReliability": 3
+        },
+        "score": 92,
+        "scoreBand": "high"
+      },
+      "human": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "networkingRelevant": true,
+          "sufficientEvidence": true
+        },
+        "validCategory": "tier1-distribution",
+        "levels": {
+          "productUseCaseFit": 4,
+          "cooperationPath": 4,
+          "evidenceReliability": 4
+        },
+        "score": 80,
+        "scoreBand": "high",
+        "reviewerNotes": "官网支持其为 VAD／Distributor；同时分销 Ubiquiti，说明产品定位与 Cudy 较接近。面向经销商和 System House 供货，并具备 WLAN 规划及培训能力，但直接采购、库存和品牌引入流程尚未得到完整证明；两条原始证据内容重复。"
+      },
+      "comparison": {
+        "gateFieldAgreement": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "networkingRelevant": true,
+          "sufficientEvidence": true
+        },
+        "allCommonGatesAgree": true,
+        "categoryAgrees": false,
+        "scoreDifferenceModelMinusHuman": 12,
+        "absoluteScoreError": 12,
+        "scoreBandAgrees": true
+      }
+    },
+    {
+      "blindCandidateId": "C-FD81D92A000A",
+      "sampleType": "problem",
+      "companyName": "IT-HAUS GmbH",
+      "officialUrl": "https://www.it-haus.com/",
+      "anchor": {
+        "systemId": "product-gemini",
+        "channelId": "b2b-resale",
+        "rank": 6,
+        "occurrenceCount": 1,
+        "occurrenceChannels": [
+          "b2b-resale"
+        ]
+      },
+      "problemTriggers": [
+        "evidence-reliability-at-most-1"
+      ],
+      "model": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "networkingRelevant": true,
+          "sufficientEvidence": true
+        },
+        "submittedChannelRole": true,
+        "uniqueWithinList": true,
+        "validCategory": "b2b-resale",
+        "levels": {
+          "productUseCaseFit": 5,
+          "cooperationPath": 4,
+          "evidenceReliability": 1
+        },
+        "score": 77,
+        "scoreBand": "strong"
+      },
+      "human": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "networkingRelevant": true,
+          "sufficientEvidence": true
+        },
+        "validCategory": "b2b-resale",
+        "levels": {
+          "productUseCaseFit": 5,
+          "cooperationPath": 4,
+          "evidenceReliability": 5
+        },
+        "score": 93,
+        "scoreBand": "high",
+        "reviewerNotes": "角色为 VAR + SI；本轮以 B2B 转售／VAR 作为主类别，同时具备 SI 项目服务能力。在售产品与 Cudy 匹配度很高。"
+      },
+      "comparison": {
+        "gateFieldAgreement": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "networkingRelevant": true,
+          "sufficientEvidence": true
+        },
+        "allCommonGatesAgree": true,
+        "categoryAgrees": true,
+        "scoreDifferenceModelMinusHuman": -16,
+        "absoluteScoreError": 16,
+        "scoreBandAgrees": false
+      }
+    }
+  ]
+}

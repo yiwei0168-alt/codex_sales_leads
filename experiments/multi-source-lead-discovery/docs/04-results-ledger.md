@@ -1,6 +1,6 @@
 # Step-result ledger
 
-Measured discovery and primary Codex scores now exist. The leaderboard remains provisional until the required human blind audit and calibration decision are complete. This ledger must be updated in the same commit as each published normalized artifact.
+Measured discovery, primary Codex scores and the reduced human blind audit are complete. Human calibration failed, so the raw leaderboard remains provisional and no winner is declared. This ledger must be updated in the same commit as each published normalized artifact.
 
 | Step ID | Stage | System | Channel | Normalized artifact | Raw SHA-256 | Record count | Validation | Notes |
 |---|---|---|---|---|---|---:|---|---|
@@ -36,6 +36,7 @@ Measured discovery and primary Codex scores now exist. The leaderboard remains p
 | blind-audit-sample-001 | superseded human audit sampling | provider/system hidden | cross-channel stratified sample | replaced by `blind-audit-v1.1` | generated from committed primary artifacts | 119 unique companies; 24 core + 6 risk | superseded before decisions | No human decisions were recorded under this sample. |
 | blind-audit-v1.1 | human audit sampling | provider/system hidden | fixed category-stratified core plus problem sample | `scoring/blind-audit-packet.json`; `scoring/blind-audit-manifest.json` | generated from unchanged committed primary artifacts | 119 unique companies; 6 core + 6 problem/risk | identity fields checked hidden | Core has two cases per category; problem sample is diagnostic. Human decision template and identity map remain local and ignored. |
 | human-audit-001 | frozen human blind decisions | user; provider/system hidden | 6 core + 6 problem | `scoring/human-audit-decisions.blind.json` | checkpoint file SHA-256 recorded by freeze command | 12 complete decisions | validated before deblinding | Supplemental official-site observations are retained in notes; model scores and exact problem triggers were still hidden. |
+| human-audit-aggregate-001 | deblind, agreement and calibration | user vs primary Codex | 6 core; 6 problem diagnostic | `scoring/human-audit-comparison.json`; `scoring/leaderboard-post-human-audit.json`; `reports/final-report.md` | generated from checkpoint `67fff9a` and local identity map | 12 comparisons | calibration failed | Gate fields passed; category, weighted kappa, MAE and category-bias thresholds failed. No correction applied; raw leaderboard remains provisional. |
 
 ## Required artifact stages
 
