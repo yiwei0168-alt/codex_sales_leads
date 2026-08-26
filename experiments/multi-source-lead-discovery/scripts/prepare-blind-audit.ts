@@ -10,10 +10,9 @@ interface BenchmarkConfig {
   execution: { runId: string; runOrder: SystemId[] };
   scoring: {
     blindAudit: {
-      samplePercent: number;
-      minimumUniqueCompanies: number;
-      maximumUniqueCompanies: number;
-      riskSupplementMaximum: number;
+      auditVersion: string;
+      coreSampleSize: number;
+      problemSampleSize: number;
       seed: string;
       identityFieldsHidden: string[];
     };
@@ -152,18 +151,39 @@ const anchors = pool.map((entry) => {
   };
 });
 
-const target = Math.min(pool.length, Math.max(
-  audit.minimumUniqueCompanies,
-  Math.min(audit.maximumUniqueCompanies, Math.ceil(pool.length * audit.samplePercent / 100)),
-));
+const target = Math.min(pool.length, audit.coreSampleSize);
 const selected = new Set<string>();
-const strata = new Map<string, typeof anchors>();
-for (const anchor of anchors) strata.set(anchor.stratum, [...(strata.get(anchor.stratum) ?? []), anchor]);
-for (const [stratum, values] of strata) {
-  const first = [...values].sort((left, right) =>
-    deterministicOrder(`${audit.seed}:stratum:${stratum}`, left.blindCandidateId)
-      .localeCompare(deterministicOrder(`${audit.seed}:stratum:${stratum}`, right.blindCandidateId)))[0];
-  if (selected.size < target) selected.add(first.blindCandidateId);
+
+// Give every measured channel an equal quota, then spread each quota across score bands.
+// With the frozen six-company core this produces two deterministic core cases per channel.
+const channelQuotas = new Map(inputs.channels.map((channel, index) => [
+  channel.id,
+  Math.floor(target / inputs.channels.length) + (index < target % inputs.channels.length ? 1 : 0),
+]));
+for (const channel of inputs.channels) {
+  const quota = channelQuotas.get(channel.id) ?? 0;
+  const channelAnchors = anchors.filter((anchor) => anchor.anchor.channelId === channel.id);
+  const bands = new Map<string, typeof anchors>();
+  for (const anchor of channelAnchors) {
+    const band = scoreBand(anchor.anchor.candidate.score);
+    bands.set(band, [...(bands.get(band) ?? []), anchor]);
+  }
+  const bandOrder = [...bands.keys()].sort((left, right) =>
+    deterministicOrder(`${audit.seed}:band:${channel.id}`, left)
+      .localeCompare(deterministicOrder(`${audit.seed}:band:${channel.id}`, right)));
+  for (const band of bandOrder) {
+    if ([...selected].filter((id) => channelAnchors.some((anchor) => anchor.blindCandidateId === id)).length >= quota) break;
+    const first = [...(bands.get(band) ?? [])].sort((left, right) =>
+      deterministicOrder(`${audit.seed}:stratum:${channel.id}:${band}`, left.blindCandidateId)
+        .localeCompare(deterministicOrder(`${audit.seed}:stratum:${channel.id}:${band}`, right.blindCandidateId)))[0];
+    if (first) selected.add(first.blindCandidateId);
+  }
+  for (const anchor of [...channelAnchors].sort((left, right) =>
+    deterministicOrder(`${audit.seed}:channel-fill:${channel.id}`, left.blindCandidateId)
+      .localeCompare(deterministicOrder(`${audit.seed}:channel-fill:${channel.id}`, right.blindCandidateId)))) {
+    if ([...selected].filter((id) => channelAnchors.some((item) => item.blindCandidateId === id)).length >= quota) break;
+    selected.add(anchor.blindCandidateId);
+  }
 }
 for (const anchor of [...anchors].sort((left, right) =>
   deterministicOrder(`${audit.seed}:fill`, left.blindCandidateId)
@@ -171,16 +191,30 @@ for (const anchor of [...anchors].sort((left, right) =>
   if (selected.size >= target) break;
   selected.add(anchor.blindCandidateId);
 }
+if (selected.size !== target) throw new Error(`Requested ${target} core samples, selected ${selected.size}`);
+const anchorById = new Map(anchors.map((anchor) => [anchor.blindCandidateId, anchor]));
+const coreSamplesByChannel = Object.fromEntries(inputs.channels.map((channel) => [
+  channel.id,
+  [...selected].filter((id) => anchorById.get(id)?.anchor.channelId === channel.id).length,
+]));
+for (const [channelId, quota] of channelQuotas) {
+  if (coreSamplesByChannel[channelId] !== quota) {
+    throw new Error(`Core sample quota mismatch for ${channelId}: expected ${quota}, selected ${coreSamplesByChannel[channelId]}`);
+  }
+}
 
-const riskEligible = anchors.filter((anchor) => !selected.has(anchor.blindCandidateId) && (
+const problemEligible = anchors.filter((anchor) => !selected.has(anchor.blindCandidateId) && (
   new Set(anchor.entry.occurrences.map((item) => item.channelId)).size > 1
   || anchor.anchor.candidate.levels.evidenceReliability <= 1
   || Math.abs(anchor.anchor.candidate.score - 50) <= 5
 )).sort((left, right) => deterministicOrder(`${audit.seed}:risk`, left.blindCandidateId)
   .localeCompare(deterministicOrder(`${audit.seed}:risk`, right.blindCandidateId)));
-const riskIds = new Set(riskEligible.slice(0, audit.riskSupplementMaximum).map((anchor) => anchor.blindCandidateId));
+if (problemEligible.length < audit.problemSampleSize) {
+  throw new Error(`Requested ${audit.problemSampleSize} problem samples, but only ${problemEligible.length} meet the frozen risk rules`);
+}
+const problemIds = new Set(problemEligible.slice(0, audit.problemSampleSize).map((anchor) => anchor.blindCandidateId));
 
-function packetEntry(anchor: typeof anchors[number], sampleType: "core" | "risk-supplement") {
+function packetEntry(anchor: typeof anchors[number], sampleType: "core" | "problem") {
   const candidate = anchor.anchor.candidate;
   return {
     blindCandidateId: anchor.blindCandidateId,
@@ -197,8 +231,8 @@ function packetEntry(anchor: typeof anchors[number], sampleType: "core" | "risk-
 }
 
 const packet = anchors.flatMap((anchor) => selected.has(anchor.blindCandidateId)
-  ? [packetEntry(anchor, "core")] : riskIds.has(anchor.blindCandidateId)
-    ? [packetEntry(anchor, "risk-supplement")] : [])
+  ? [packetEntry(anchor, "core")] : problemIds.has(anchor.blindCandidateId)
+    ? [packetEntry(anchor, "problem")] : [])
   .sort((left, right) => left.blindCandidateId.localeCompare(right.blindCandidateId));
 const decisions = packet.map((entry) => ({
   blindCandidateId: entry.blindCandidateId,
@@ -245,11 +279,15 @@ await writeJson(path.join(artifactRoot, "scoring/blind-audit-manifest.json"), {
   schemaVersion: 1,
   runId,
   providerIdentityHidden: true,
+  auditVersion: audit.auditVersion,
   hiddenFields: audit.identityFieldsHidden,
   poolUniqueCompanies: pool.length,
   coreSampleSize: selected.size,
   coreSamplePercent: pool.length ? selected.size / pool.length : 0,
-  riskSupplementSize: riskIds.size,
+  coreSamplesByChannel,
+  problemSampleSize: problemIds.size,
+  problemSelectionRules: ["cross-category-occurrence", "evidence-reliability-at-most-1", "score-within-5-of-50"],
+  totalSampleSize: selected.size + problemIds.size,
   samplingSeed: audit.seed,
   identityMapCommitted: false,
   reviewerDecisionStatus: "pending",
@@ -266,7 +304,8 @@ console.log(JSON.stringify({
   uniqueCompanies: pool.length,
   occurrences: occurrences.length,
   coreSample: selected.size,
-  riskSupplement: riskIds.size,
+  coreSamplesByChannel,
+  problemSample: problemIds.size,
   packet: `experiments/multi-source-lead-discovery/artifacts/runs/${runId}/scoring/blind-audit-packet.json`,
   localDecisionTemplate: `experiments/multi-source-lead-discovery/runs/raw/${runId}/audit/human-audit-decisions.local.template.json`,
 }, null, 2));

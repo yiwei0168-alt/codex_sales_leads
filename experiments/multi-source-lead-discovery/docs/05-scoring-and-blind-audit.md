@@ -1,6 +1,6 @@
 # Scoring and blinded human audit
 
-Status: **confirmed and frozen on 2026-08-26; primary judge amended to blind Codex review in protocol v1.2**
+Status: **confirmed and frozen on 2026-08-26; primary judge amended to blind Codex review in protocol v1.2; audit workload amended before human decisions on 2026-08-26**
 
 All leaderboard scores use one evaluator: this Codex agent reviewing randomized blind evidence packets in-session, with no scoring API and no external search. The application recomputes the 45/35/20 total from returned integer levels and forces failed gates to zero, so the reviewer cannot directly set its total score. Earlier Claude and OpenAI API attempts are diagnostic only and are not mixed into the results.
 
@@ -38,9 +38,11 @@ Validity/precision, category-placement accuracy, duplicate rate, evidence-suppor
 
 ## Blind audit
 
-The core sample is 20% of the deduplicated company pool, with a minimum of 24 and maximum of 36 unique companies. Sampling is deterministic and stratified across all three categories and raw score bands. The reviewer does not see provider/system identity, Gemini mode, rank, model score, occurrence count or Cudy relationship status.
+The audit contains exactly 12 unique companies: six representative core samples and six problem/risk samples. The six core samples are selected deterministically with an equal two-company quota for each measured category and, where the candidate pool permits, different raw score bands. The six problem samples are selected separately from cases with cross-category occurrences, very weak evidence or scores near the decision threshold. The reviewer does not see provider/system identity, Gemini mode, rank, model score, occurrence count or Cudy relationship status.
 
-The reviewer receives the same normalized evidence packet as the scoring model, chooses the valid category independently, evaluates all gates and assigns the same three 0–5 levels. A risk supplement of at most six companies is added only when required and is reported separately from the representative core sample.
+The reviewer receives the same normalized evidence packet as the scoring model, chooses the valid category independently, evaluates all gates and assigns the same three 0–5 levels. The six problem/risk companies are reported separately from the representative core sample.
+
+Only the six core samples enter representative agreement and calibration statistics; the six problem samples are diagnostic and are reported separately. Because the reduced core has limited statistical power, the final report must describe the result as a focused calibration spot check rather than broad statistical validation. With six core cases, a 90% agreement threshold effectively requires agreement on all six.
 
 ## Calibration rules
 

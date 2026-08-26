@@ -3,7 +3,7 @@
   "protocolVersion": "multi-source-professional-discovery-v1.2",
   "promptVersion": "professional-discovery-de-v1",
   "frozenAt": "2026-08-26T16:08:00+08:00",
-  "datePolicy": "Discovery calls ran after execution.frozenAt. OpenAI evaluator calls began after execution.judgeAmendedAt; retry/failure-isolation logic applies after execution.runnerAmendedAt. Every attempt retains its actual ISO-8601 Asia/Shanghai timestamp.",
+  "datePolicy": "Discovery calls ran after execution.frozenAt. OpenAI evaluator calls began after execution.judgeAmendedAt; retry/failure-isolation logic applies after execution.runnerAmendedAt. Human-audit sampling was amended before any human decisions, as recorded in scoring.blindAudit.amendedAt. Every attempt retains its actual ISO-8601 Asia/Shanghai timestamp.",
   "market": {
     "countryCode": "DE",
     "countryName": "Germany",
@@ -140,11 +140,11 @@
     "pooledRecallIsRankingMetric": false,
     "humanBlindAuditRequired": true,
     "blindAudit": {
+      "auditVersion": "blind-audit-v1.1",
+      "amendedAt": "2026-08-26T21:44:29+08:00",
       "reviewer": "user",
-      "samplePercent": 20,
-      "minimumUniqueCompanies": 24,
-      "maximumUniqueCompanies": 36,
-      "riskSupplementMaximum": 6,
+      "coreSampleSize": 6,
+      "problemSampleSize": 6,
       "seed": "CUDY-MULTI-SOURCE-DE-V1-BLIND-AUDIT",
       "identityFieldsHidden": [
         "system",
@@ -239,8 +239,8 @@
   "fileHashes": [
     {
       "path": "experiments/multi-source-lead-discovery/config/benchmark.json",
-      "sha256": "7da98c36389268b48c67b7347086625d754448938a2049d5087f34f5faa687c4",
-      "bytes": 4726
+      "sha256": "401d4391f73f74da17c7882d8551e8cc9ae5424166ae9ed8c576105632222a59",
+      "bytes": 4740
     },
     {
       "path": "experiments/multi-source-lead-discovery/config/inputs.json",
@@ -249,13 +249,13 @@
     },
     {
       "path": "experiments/multi-source-lead-discovery/docs/01-protocol.md",
-      "sha256": "5a19f8ea914dc7f60eb9a20bf770ddde4916ddfa5d5fb244fc407493b758b314",
-      "bytes": 4485
+      "sha256": "1b2642aab42cb859e511074b068c721e557c3c5b47d00416e51ca9bfde807333",
+      "bytes": 4640
     },
     {
       "path": "experiments/multi-source-lead-discovery/docs/05-scoring-and-blind-audit.md",
-      "sha256": "71fb364b4d93fc4d3b6d9cef956bfd835c6708d08ca10c139760977a98f046c4",
-      "bytes": 5120
+      "sha256": "1a5f61f5bb4dc4574392073a5ed8434362d8dbe78f6126f4221ac790d9b587ac",
+      "bytes": 5791
     },
     {
       "path": "src/data/channel-role-taxonomy.ts",

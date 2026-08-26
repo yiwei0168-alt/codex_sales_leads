@@ -4,7 +4,7 @@ Status: **frozen for measurement on 2026-08-26**
 
 Protocol ID: `multi-source-professional-discovery-v1.2`
 
-Amendment scope: version 1.1 changed the planned API evaluator before any candidate score was produced. Version 1.1.1 changed only API retry handling. Version 1.2 makes a blind in-session Codex review the primary evaluator after the API route succeeded for only 12 of 21 batches. The version 1 discovery prompts, query packs, provider outputs, evaluator rules, scoring rubric and human blind-audit rules are unchanged. API scores are diagnostic only and cannot enter the leaderboard.
+Amendment scope: version 1.1 changed the planned API evaluator before any candidate score was produced. Version 1.1.1 changed only API retry handling. Version 1.2 makes a blind in-session Codex review the primary evaluator after the API route succeeded for only 12 of 21 batches. Before any human audit decisions were recorded, audit amendment `blind-audit-v1.1` reduced the workload from 24 core plus six risk cases to six core plus six problem/risk cases. Discovery prompts, query packs, provider outputs, evaluator rules and the 45/35/20 scoring rubric remain unchanged. API scores are diagnostic only and cannot enter the leaderboard.
 
 Market: Germany (`DE`), with German and English search terminology where applicable.
 

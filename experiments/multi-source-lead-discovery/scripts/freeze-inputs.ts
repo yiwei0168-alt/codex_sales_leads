@@ -72,7 +72,7 @@ const manifest = {
   protocolVersion: benchmark.protocolVersion,
   promptVersion: inputs.promptVersion,
   frozenAt: benchmark.execution.frozenAt,
-  datePolicy: "Discovery calls ran after execution.frozenAt. OpenAI evaluator calls began after execution.judgeAmendedAt; retry/failure-isolation logic applies after execution.runnerAmendedAt. Every attempt retains its actual ISO-8601 Asia/Shanghai timestamp.",
+  datePolicy: "Discovery calls ran after execution.frozenAt. OpenAI evaluator calls began after execution.judgeAmendedAt; retry/failure-isolation logic applies after execution.runnerAmendedAt. Human-audit sampling was amended before any human decisions, as recorded in scoring.blindAudit.amendedAt. Every attempt retains its actual ISO-8601 Asia/Shanghai timestamp.",
   market: {
     countryCode: benchmark.countryCode,
     countryName: benchmark.countryName,

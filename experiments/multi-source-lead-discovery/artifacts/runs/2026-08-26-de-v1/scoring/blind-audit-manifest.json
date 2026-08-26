@@ -2,6 +2,7 @@
   "schemaVersion": 1,
   "runId": "2026-08-26-de-v1",
   "providerIdentityHidden": true,
+  "auditVersion": "blind-audit-v1.1",
   "hiddenFields": [
     "system",
     "provider",
@@ -12,9 +13,20 @@
     "cudyRelationship"
   ],
   "poolUniqueCompanies": 119,
-  "coreSampleSize": 24,
-  "coreSamplePercent": 0.20168067226890757,
-  "riskSupplementSize": 6,
+  "coreSampleSize": 6,
+  "coreSamplePercent": 0.05042016806722689,
+  "coreSamplesByChannel": {
+    "tier1-distribution": 2,
+    "b2b-resale": 2,
+    "project-services": 2
+  },
+  "problemSampleSize": 6,
+  "problemSelectionRules": [
+    "cross-category-occurrence",
+    "evidence-reliability-at-most-1",
+    "score-within-5-of-50"
+  ],
+  "totalSampleSize": 12,
   "samplingSeed": "CUDY-MULTI-SOURCE-DE-V1-BLIND-AUDIT",
   "identityMapCommitted": false,
   "reviewerDecisionStatus": "pending"

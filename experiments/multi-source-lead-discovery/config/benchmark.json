@@ -80,11 +80,11 @@
     "pooledRecallIsRankingMetric": false,
     "humanBlindAuditRequired": true,
     "blindAudit": {
+      "auditVersion": "blind-audit-v1.1",
+      "amendedAt": "2026-08-26T21:44:29+08:00",
       "reviewer": "user",
-      "samplePercent": 20,
-      "minimumUniqueCompanies": 24,
-      "maximumUniqueCompanies": 36,
-      "riskSupplementMaximum": 6,
+      "coreSampleSize": 6,
+      "problemSampleSize": 6,
       "seed": "CUDY-MULTI-SOURCE-DE-V1-BLIND-AUDIT",
       "identityFieldsHidden": ["system", "provider", "geminiMode", "rank", "modelScore", "occurrenceCount", "cudyRelationship"],
       "acceptance": {
