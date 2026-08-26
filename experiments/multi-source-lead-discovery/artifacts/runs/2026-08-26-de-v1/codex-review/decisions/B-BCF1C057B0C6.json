@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "blindBatchId": "B-BCF1C057B0C6",
+  "reviewMode": "discovery-pool",
+  "channelId": "project-services",
+  "reviewer": "runtime-managed-codex",
+  "externalSearchUsed": false,
+  "selectedCandidates": [
+    {
+      "companyName": "NLS Netzwerke GmbH", "officialUrl": "https://nls-netzwerke.de/", "roles": ["SI", "Installer"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 4 }, "sourceEvidenceIds": ["E-020804CE73"],
+      "roleEvidence": "German network specialist offers consulting, planning, delivery and implementation of complete IT solutions.",
+      "productFitEvidence": "Routing, switching, WLAN, security, management and data-centre networking directly match Cudy.",
+      "cooperationEvidence": "The explicit consult-plan-deliver-implement chain covers selection, procurement and deployment.",
+      "rationale": "Exceptionally detailed candidate-specific evidence for both product and project fit."
+    },
+    {
+      "companyName": "FASTNET GmbH", "officialUrl": "https://fastnet-gmbh-montagetechnik.de/", "roles": ["Installer", "SI"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 4 }, "sourceEvidenceIds": ["E-2A61916624"],
+      "roleEvidence": "German B2B implementation partner supplies complete white-label teams to system integrators.",
+      "productFitEvidence": "Network engineering, cabling, WLAN installation and server-room infrastructure strongly overlap Cudy projects.",
+      "cooperationEvidence": "Planning, execution, acceptance, consulting and project management establish complete delivery control.",
+      "rationale": "Excellent specialist implementation route with clear B2B partner mechanics."
+    },
+    {
+      "companyName": "WLANxpert", "officialUrl": "http://wlanxpert.de/", "roles": ["SI", "Installer"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 4 }, "sourceEvidenceIds": ["E-282EA1855B"],
+      "roleEvidence": "Munich specialist explicitly plans, installs and operates WLAN for multiple commercial/public sectors.",
+      "productFitEvidence": "Dedicated professional WLAN projects directly align with Cudy access points and managed-network hardware.",
+      "cooperationEvidence": "Planning, installation, operation and maintenance provide full lifecycle influence.",
+      "rationale": "Highly specialized and actionable WLAN project lead with detailed candidate-specific evidence."
+    },
+    {
+      "companyName": "Frings Solutions Deutschland GmbH", "officialUrl": "https://frings-solutions.de/", "roles": ["SI", "Installer"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 4 }, "sourceEvidenceIds": ["E-76375E85FF"],
+      "roleEvidence": "German infrastructure company provides technical planning, installation and service.",
+      "productFitEvidence": "Network integration and WLAN development directly match Cudy professional networking.",
+      "cooperationEvidence": "Planning, installation and ongoing service establish an end-to-end project path.",
+      "rationale": "Excellent and clearly documented SI/installer fit."
+    },
+    {
+      "companyName": "DNWS Die Netz-Werk Spezialisten GmbH", "officialUrl": "https://dnws.de/", "roles": ["SI", "Installer"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 4 }, "sourceEvidenceIds": ["E-423F3CF1A2"],
+      "roleEvidence": "German network specialist delivers consulting, design, implementation, operation and troubleshooting.",
+      "productFitEvidence": "Office LAN/WLAN, data-centre networks, WAN and security strongly overlap Cudy.",
+      "cooperationEvidence": "Full lifecycle from design through operation provides maximum specification and deployment leverage.",
+      "rationale": "Exceptional technical and cooperation alignment supported by detailed evidence."
+    },
+    {
+      "companyName": "RockSolid Networks e. K.", "officialUrl": "https://rocksolid-networks.de/", "roles": ["SI", "Installer"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 4 }, "sourceEvidenceIds": ["E-60B5A0548D"],
+      "roleEvidence": "German network-engineering specialist provides consulting, implementation and operation services.",
+      "productFitEvidence": "Enterprise/SME networks, site connectivity and new network infrastructure directly match Cudy use cases.",
+      "cooperationEvidence": "Network architects and engineers support every project phase from design through component operation.",
+      "rationale": "Excellent project partner with unusually clear lifecycle evidence."
+    },
+    {
+      "companyName": "DevTec Systems GmbH", "officialUrl": "https://devtecsystems.net/", "roles": ["SI", "Installer"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 4 }, "sourceEvidenceIds": ["E-9889A92C55"],
+      "roleEvidence": "German provider develops tailored concepts, supports implementation and monitors commercial IT infrastructure.",
+      "productFitEvidence": "Network technology and high-performance WLAN solutions directly align with Cudy.",
+      "cooperationEvidence": "Concept, implementation and proactive monitoring provide an end-to-end project and lifecycle route.",
+      "rationale": "Excellent active-network fit with strong candidate-specific evidence."
+    },
+    {
+      "companyName": "CompuNet Systems GmbH", "officialUrl": "https://compunet.systems/", "roles": ["SI", "Installer"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 4, "evidenceReliability": 4 }, "sourceEvidenceIds": ["E-FAACB59DE7"],
+      "roleEvidence": "German IT/telecommunications provider delivers network infrastructure and connectivity solutions.",
+      "productFitEvidence": "Hotel WLAN, office networking, firewalls and broadband connections strongly overlap Cudy.",
+      "cooperationEvidence": "Tailored solution delivery gives strong selection influence, while explicit planning/procurement stages are not detailed.",
+      "rationale": "Excellent product use cases and a strong, moderately documented project path."
+    },
+    {
+      "companyName": "tilko GmbH", "officialUrl": "https://tilko-wlan.de/", "roles": ["SI", "Installer"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 4, "evidenceReliability": 4 }, "sourceEvidenceIds": ["E-F6C6A3D578"],
+      "roleEvidence": "Mannheim WLAN specialist supports retail, hotels, care homes and industrial businesses year-round.",
+      "productFitEvidence": "Dedicated business WLAN concepts directly match Cudy access-point and managed-network applications.",
+      "cooperationEvidence": "Individual WLAN concept work and ongoing support imply strong specification influence, but installation/procurement are not explicit.",
+      "rationale": "Highly relevant specialist with a strong but incompletely evidenced transaction path."
+    },
+    {
+      "companyName": "BKN GmbH & Co. KG", "officialUrl": "https://bk-netzwerk.de/", "roles": ["SI", "Installer"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 4, "cooperationPath": 5, "evidenceReliability": 4 }, "sourceEvidenceIds": ["E-CDB42330D3", "E-5E04FE9A46"],
+      "roleEvidence": "German communications integrator plans and implements site networking plus active/passive networks.",
+      "productFitEvidence": "Active networking and site connectivity are strongly relevant, though device families are not listed.",
+      "cooperationEvidence": "Planning, installation and documentation provide complete project control and vendor-based installation mechanics.",
+      "rationale": "Excellent cooperation path and good active-network fit supported by duplicate detailed evidence."
+    }
+  ],
+  "rejectedItems": [
+    { "title": "WSTN, Zahner Net, Net Factory, MTG, PKN and other eligible integrators", "url": "https://wstn.de/", "reason": "Strong project candidates, but their computed fit/path scores place them below the selected top ten." },
+    { "title": "IB-IT, KSN, KNS, Netzwerktechnik Kopp and other cabling specialists", "url": "https://ib-it.eu/", "reason": "Eligible installers with stronger passive-cabling or infrastructure emphasis and lower direct product fit." },
+    { "title": "Avanis GmbH", "url": "https://avanis.de/", "reason": "The excerpt primarily describes specialist distribution; that role belongs to the tier-one channel despite adjacent WLAN services." },
+    { "title": "AMP CONNECT GmbH", "url": "https://ampconnect.de/", "reason": "Manufacturer rather than SI/Installer candidate." }
+  ]
+}

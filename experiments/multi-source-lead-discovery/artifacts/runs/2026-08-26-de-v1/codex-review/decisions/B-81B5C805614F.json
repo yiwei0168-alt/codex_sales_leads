@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "blindBatchId": "B-81B5C805614F",
+  "reviewMode": "discovery-pool",
+  "channelId": "project-services",
+  "reviewer": "runtime-managed-codex",
+  "externalSearchUsed": false,
+  "selectedCandidates": [
+    {
+      "companyName": "EWE Business", "officialUrl": "https://business.ewe.de/", "roles": ["SI", "Installer"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 4 }, "sourceEvidenceIds": ["E-8083C29AEA"],
+      "roleEvidence": "German business WLAN experts explicitly cover planning, installation and performance monitoring.",
+      "productFitEvidence": "Professional B2B WLAN directly matches Cudy access points, switches and managed-network use cases.",
+      "cooperationEvidence": "The complete plan-install-monitor chain provides specification, deployment and lifecycle influence.",
+      "rationale": "Excellent first-party project-service target with an end-to-end cooperation path."
+    },
+    {
+      "companyName": "Dietrich.expert", "officialUrl": "https://dietrich.expert/", "roles": ["SI", "Installer"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 4 }, "sourceEvidenceIds": ["E-615549140A"],
+      "roleEvidence": "First-party German article states how the company builds networks from the building connection to the final access point.",
+      "productFitEvidence": "Network construction and access-point deployment closely match Cudy's active hardware.",
+      "cooperationEvidence": "End-to-end build responsibility and manufacturer selection imply specification, procurement and installation influence.",
+      "rationale": "Highly actionable installer/SI evidence with excellent active-network relevance."
+    },
+    {
+      "companyName": "Elektro-LU", "officialUrl": "https://elektro-lu.eu/", "roles": ["Installer", "SI"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 4 }, "sourceEvidenceIds": ["E-F83F43CED6"],
+      "roleEvidence": "German electrician offers professional network planning, cabling, cabinets, LAN/WLAN access points and measurement for companies.",
+      "productFitEvidence": "Access points and LAN/WLAN deployment directly overlap Cudy's project portfolio.",
+      "cooperationEvidence": "Planning, physical installation and validation create full project and product-selection control.",
+      "rationale": "Clear end-to-end installer with unusually specific first-party evidence."
+    },
+    {
+      "companyName": "Code Maschine GmbH", "officialUrl": "https://codemaschine.de/", "roles": ["SI", "Installer"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 4, "cooperationPath": 5, "evidenceReliability": 4 }, "sourceEvidenceIds": ["E-8AD54286FF"],
+      "roleEvidence": "Provides network planning, installation and measurement for companies in Hamburg.",
+      "productFitEvidence": "Business network infrastructure is strongly relevant, although active device categories are not named.",
+      "cooperationEvidence": "Planning, installation, measurement and consultation establish end-to-end project influence.",
+      "rationale": "Excellent local project path with good networking fit."
+    },
+    {
+      "companyName": "Netzwerkbau & IT-Services Berlin", "officialUrl": "https://www.netzwerkbau.berlin/", "roles": ["SI", "Installer"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 4, "cooperationPath": 5, "evidenceReliability": 4 }, "sourceEvidenceIds": ["E-5BD1F02C91"],
+      "roleEvidence": "Berlin provider supports planning and implementation of new and expanded networks.",
+      "productFitEvidence": "Network projects are directly relevant, though the snippet does not list active device families.",
+      "cooperationEvidence": "Planning plus implementation gives strong specification and deployment influence.",
+      "rationale": "Clear local SI/installer with a strong first-party project path."
+    },
+    {
+      "companyName": "Netzkontor GmbH", "officialUrl": "https://www.netzkontor.de/", "roles": ["Installer", "SI"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 4, "cooperationPath": 5, "evidenceReliability": 4 }, "sourceEvidenceIds": ["E-16CA8FB124"],
+      "roleEvidence": "Installs smart-building data/bus networks and supplements them with wireless and Wi-Fi solutions.",
+      "productFitEvidence": "Wi-Fi and smart-building networking align well, though the offering also emphasizes cabling.",
+      "cooperationEvidence": "Installation and integration responsibility provide direct deployment and hardware-selection leverage.",
+      "rationale": "Strong first-party installer evidence with material active-wireless relevance."
+    },
+    {
+      "companyName": "High Knowledge GmbH", "officialUrl": "https://www.hknow.de/", "roles": ["SI", "Installer"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 3, "cooperationPath": 5, "evidenceReliability": 4 }, "sourceEvidenceIds": ["E-C88E93EF64"],
+      "roleEvidence": "German company explicitly plans and implements structured data-centre cabling.",
+      "productFitEvidence": "Network infrastructure is relevant, but evidence is weighted toward passive cabling rather than active Cudy devices.",
+      "cooperationEvidence": "Planning and implementation provide strong project control and adjacent hardware influence.",
+      "rationale": "Well-evidenced project partner with moderate direct product overlap."
+    },
+    {
+      "companyName": "Elomech Elektroanlagen GmbH", "officialUrl": "https://www.elomech.de/", "roles": ["SI", "Installer"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 4, "cooperationPath": 4, "evidenceReliability": 3 }, "sourceEvidenceIds": ["E-2A5E3A137A"],
+      "roleEvidence": "German electrical contractor presents a network-services portfolio spanning LAN, WAN and network components.",
+      "productFitEvidence": "LAN/WAN and network components materially overlap Cudy, though WLAN and devices are not detailed.",
+      "cooperationEvidence": "Service-portfolio ownership implies solution delivery, but explicit planning/procurement stages are absent.",
+      "rationale": "Good active-network fit with a moderately evidenced installer path."
+    },
+    {
+      "companyName": "KODEWI UG", "officialUrl": "https://www.kodewi.de/", "roles": ["SI", "Installer"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 4, "cooperationPath": 4, "evidenceReliability": 2 }, "sourceEvidenceIds": ["E-A7C90D5767"],
+      "roleEvidence": "German B2B directory excerpt identifies KODEWI as a partner for high-performance WLAN and modern IT infrastructure for companies.",
+      "productFitEvidence": "Business WLAN and IT infrastructure are strongly relevant, without detailed device families.",
+      "cooperationEvidence": "Supporting companies with WLAN networks implies project influence, but specific stages are truncated.",
+      "rationale": "Promising local project candidate based on one concise third-party excerpt."
+    },
+    {
+      "companyName": "IB-IT Cabling GmbH", "officialUrl": "https://www.ib-it.eu/", "roles": ["SI", "Installer"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 3, "cooperationPath": 4, "evidenceReliability": 3 }, "sourceEvidenceIds": ["E-A987ABF636"],
+      "roleEvidence": "German IT-services company states it builds and implements telecommunications solutions.",
+      "productFitEvidence": "Telecommunications/network infrastructure is relevant, but active product categories are not shown.",
+      "cooperationEvidence": "Build and implementation responsibility creates a credible deployment route.",
+      "rationale": "Eligible SI/installer with useful but broad first-party evidence."
+    }
+  ],
+  "rejectedItems": [
+    { "title": "Grüninger Netzwerk, Rosenberger OSI and Onnec", "url": "https://www.grueninger-netzwerk.de/en/lan/", "reason": "Installer evidence is present, but the supplied content is dominated by passive cabling and ranks below the selected ten; Onnec also lacks Germany evidence." },
+    { "title": "Hagel IT, MiMann and PHONEKOM articles", "url": "https://www.hagel-it.de/it-insights/netzwerkinstallation-fuer-kleine-unternehmen-schritt-fuer-schritt-anleitung", "reason": "The excerpts are guides and do not establish that the company itself owns customer implementation." },
+    { "title": "ALLNET Austria and Deutsche Telekom career pages", "url": "https://www.allnet.de/at/allnet-brand/unternehmen/karriere/career-sales/", "reason": "Wrong geography or employment content rather than a German candidate-company service claim." },
+    { "title": "Jobs, forums, videos and MediaMarkt installation", "url": "https://www.fachinformatiker.de/topic/57757-projektarbeit-%C3%BCber-wireless-lan/", "reason": "Not eligible B2B project-company evidence for this benchmark." }
+  ]
+}

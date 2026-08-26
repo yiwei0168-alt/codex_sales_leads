@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "blindBatchId": "B-09BE3EAE3F83",
+  "reviewMode": "discovery-pool",
+  "channelId": "tier1-distribution",
+  "reviewer": "runtime-managed-codex",
+  "externalSearchUsed": false,
+  "selectedCandidates": [
+    {
+      "companyName": "ALLNET GmbH",
+      "officialUrl": "https://www.allnet.de/",
+      "roles": ["VAD"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 4 },
+      "sourceEvidenceIds": ["E-EB0E2FAC7A", "E-5C98B3B06E", "E-255ACB6AA1"],
+      "roleEvidence": "TP-Link explicitly names ALLNET as its German VAD, while ALLNET's distribution site lists networking vendors.",
+      "productFitEvidence": "Enterprise WLAN, access points, bridges, switches, routers and surveillance directly overlap Cudy.",
+      "cooperationEvidence": "Vendor onboarding, trained sales/technical resources and system-house support establish direct procurement and channel enablement.",
+      "rationale": "The packet provides unusually direct official and independently corroborated evidence for both VAD role and core networking fit."
+    },
+    {
+      "companyName": "sysob IT-Distribution",
+      "officialUrl": "https://www.sysob.com/",
+      "roles": ["VAD"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 4, "cooperationPath": 5, "evidenceReliability": 5 },
+      "sourceEvidenceIds": ["E-A65676E83C", "E-04BD7D4066", "E-0DD7E3DE3A", "E-E63DDEA46B"],
+      "roleEvidence": "Official, vendor and trade-publication evidence all identify sysob as a German VAD for the specialist trade.",
+      "productFitEvidence": "Wireless LAN and networking are material parts of a broader security/SBC portfolio.",
+      "cooperationEvidence": "Long-running VAD supply, manufacturer agreements, specialist-trade support and technical project assistance create multiple verified levers.",
+      "rationale": "Best-supported channel path in the packet, with strong but not all-portfolio Cudy product overlap."
+    },
+    {
+      "companyName": "4Networks IT-Distribution",
+      "officialUrl": "https://www.4networks.de/",
+      "roles": ["VAD"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 4, "evidenceReliability": 3 },
+      "sourceEvidenceIds": ["E-713F7B9005"],
+      "roleEvidence": "Official page explicitly presents the business as a value-add IT distributor.",
+      "productFitEvidence": "Network, WLAN, surveillance and security solutions strongly match Cudy's professional portfolio.",
+      "cooperationEvidence": "Manufacturer partnerships, product supply and tailored advice show a practical channel path, but downstream mechanics are not detailed.",
+      "rationale": "Excellent stated fit with credible VAD capability supported by one direct page."
+    },
+    {
+      "companyName": "Router-Switch.com",
+      "officialUrl": "https://www.router-switch.com/de",
+      "roles": ["Distributor"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 4, "evidenceReliability": 2 },
+      "sourceEvidenceIds": ["E-F594468194"],
+      "roleEvidence": "German-localized official page describes a global IT distributor serving businesses with worldwide delivery.",
+      "productFitEvidence": "Cisco, Huawei and HPE network equipment directly overlaps routers, switches and infrastructure use cases.",
+      "cooperationEvidence": "Direct distribution, quotations and worldwide delivery provide a transaction path into Germany, though no German legal/warehouse presence is evidenced.",
+      "rationale": "Very strong product and transaction fit, discounted for thin evidence of local German operations."
+    },
+    {
+      "companyName": "STORDIS GmbH",
+      "officialUrl": "https://stordis.com/",
+      "roles": ["VAD"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 4, "cooperationPath": 4, "evidenceReliability": 3 },
+      "sourceEvidenceIds": ["E-79602B3AAB"],
+      "roleEvidence": "German company delivering open-networking hardware, software and services to partners with training and certification.",
+      "productFitEvidence": "Open networking switches, routers and support are directly relevant, but focused toward data-center/open networking.",
+      "cooperationEvidence": "Partner delivery, quote workflow, training, warranty and engineering support provide several value-add channel mechanisms.",
+      "rationale": "Credible specialist VAD profile with strong networking fit and one detailed official source."
+    },
+    {
+      "companyName": "bytec Bodry Technology GmbH",
+      "officialUrl": "https://www.bytec.de/",
+      "roles": ["VAD"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 3, "cooperationPath": 5, "evidenceReliability": 3 },
+      "sourceEvidenceIds": ["E-F796EBEB96"],
+      "roleEvidence": "Official page describes a German specialist IT distributor serving B2B resellers and system houses.",
+      "productFitEvidence": "IT infrastructure and data-center solutions are materially relevant, although direct WLAN/router/switch detail is limited in the excerpt.",
+      "cooperationEvidence": "System-house sales enablement, project support from planning through implementation and value-added services show an excellent channel path.",
+      "rationale": "Outstanding cooperation route with only moderate direct evidence of Cudy-category breadth."
+    },
+    {
+      "companyName": "3KV GmbH",
+      "officialUrl": "https://www.3kv.de/",
+      "roles": ["VAD"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 4, "cooperationPath": 4, "evidenceReliability": 2 },
+      "sourceEvidenceIds": ["E-04BD7D4066"],
+      "roleEvidence": "Trade publication lists the Munich company under Value Add Distributors.",
+      "productFitEvidence": "Active/passive infrastructure, building/data-center networking and SD-WAN materially overlap Cudy use cases.",
+      "cooperationEvidence": "VAD classification and infrastructure solution focus imply reseller supply and technical influence, but only one third-party excerpt is supplied.",
+      "rationale": "Strong fit and plausible channel path with limited evidence depth."
+    },
+    {
+      "companyName": "wHoffice.de",
+      "officialUrl": "https://www.whoffice.de/",
+      "roles": ["Distributor"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 4, "cooperationPath": 4, "evidenceReliability": 2 },
+      "sourceEvidenceIds": ["E-B467AD0CB6"],
+      "roleEvidence": "German wholesale page markets networking switches specifically to specialist dealers and B2B partners.",
+      "productFitEvidence": "Switches from major networking brands directly overlap Cudy's switching line.",
+      "cooperationEvidence": "Wholesale ordering for dealers provides a direct transactional path, although company identity and broader distribution services are thinly documented.",
+      "rationale": "Valid but narrowly evidenced networking wholesaler."
+    },
+    {
+      "companyName": "m2m Germany GmbH",
+      "officialUrl": "https://www.m2mgermany.de/",
+      "roles": ["VAD"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 3, "cooperationPath": 4, "evidenceReliability": 3 },
+      "sourceEvidenceIds": ["E-96F4693C7F", "E-542F1C64F1"],
+      "roleEvidence": "Official German page explicitly offers value-added distribution and works with wireless-component manufacturers.",
+      "productFitEvidence": "Wi-Fi, cellular/IoT modules, industrial routers and wireless solutions are relevant but more component/IoT-focused than Cudy's full line.",
+      "cooperationEvidence": "Design review, prototyping, firmware, certification support and manufacturer relationships provide material value-add procurement influence.",
+      "rationale": "Clear VAD capability with a specialized wireless/IoT rather than broad channel-networking fit."
+    },
+    {
+      "companyName": "Exertis Connect GmbH",
+      "officialUrl": null,
+      "roles": ["Distributor"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 2, "cooperationPath": 4, "evidenceReliability": 2 },
+      "sourceEvidenceIds": ["E-FBA0F62595"],
+      "roleEvidence": "German supplier-account guide identifies Exertis Connect as a European distributor for cable and network technology.",
+      "productFitEvidence": "Network components are relevant, but evidence emphasizes cabling, components and peripherals rather than active Cudy equipment.",
+      "cooperationEvidence": "Large component-distribution catalogue implies a direct listing and purchasing path; details are only third-party evidence.",
+      "rationale": "Qualifying distributor with weak direct active-network product overlap."
+    }
+  ],
+  "rejectedItems": [
+    { "title": "EPS Global", "url": "https://www.epsglobal.com/manufacturers/edgecore", "reason": "Worldwide Edgecore distribution and product fit are clear, but the packet does not establish operation in Germany." },
+    { "title": "JACOB Elektronik", "url": "https://www.jacob.de/netzwerk", "reason": "Product listing supports B2B resale, not supply to a downstream channel." },
+    { "title": "OMG.DE GmbH", "url": "https://www.omg.de/netzwerk/switche-router", "reason": "Online reseller/system integrator; wrong channel." },
+    { "title": "Nomios Germany", "url": "https://www.nomios.de/en/network/enterprise-networking-wireless", "reason": "Evidence supports VAR/SI delivery to final customers, not downstream distribution." },
+    { "title": "BaryTech", "url": "https://barytech.com/cisco-partner", "reason": "IT infrastructure service/partner evidence does not establish Distributor/VAD status." },
+    { "title": "Intellinet Network Solutions", "url": "https://intellinetnetwork.de/", "reason": "Networking product brand/page with no qualifying channel-distributor evidence." },
+    { "title": "LevelOne", "url": "https://www.level1.com/level1_en", "reason": "Manufacturer/product brand evidence, not a German Distributor/VAD candidate." },
+    { "title": "WLW and GlobalSpec directory pages", "url": "https://www.wlw.de/de/suche/switches-fuer-netzwerke", "reason": "Directories are not candidate companies; named suppliers lack enough individual evidence in this packet." },
+    { "title": "Generic Juniper/TP-Link partner pages", "url": "https://www.juniper.net/de/de/partners.html", "reason": "Generic programs without a resolvable candidate company cannot fill a slot." }
+  ]
+}

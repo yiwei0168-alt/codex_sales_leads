@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "blindBatchId": "B-6102C3492DD5",
+  "reviewMode": "discovery-pool",
+  "channelId": "b2b-resale",
+  "reviewer": "runtime-managed-codex",
+  "externalSearchUsed": false,
+  "selectedCandidates": [
+    {
+      "companyName": "OMG.DE GmbH", "officialUrl": "https://www.omg.de/", "roles": ["Reseller", "VAR"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 4 }, "sourceEvidenceIds": ["E-C069DB6EA3"],
+      "roleEvidence": "German specialist dealer offering networking, WLAN, point-to-point radio, security and IoT products with consultation and shipping.",
+      "productFitEvidence": "Access points, switches, gateways and wireless links closely match Cudy's professional portfolio.",
+      "cooperationEvidence": "Multi-brand assortment, personal advice and direct German fulfilment provide a clear listing, recommendation and resale path.",
+      "rationale": "Exceptionally clear specialist-reseller fit supported by a detailed first-party page."
+    },
+    {
+      "companyName": "SMB IT Solution", "officialUrl": "https://smb-it-solution.com/", "roles": ["Reseller", "Dealer"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 4 }, "sourceEvidenceIds": ["E-C69AA2E6AE"],
+      "roleEvidence": "Germany-based company explicitly trading IT hardware and networking technology to companies worldwide.",
+      "productFitEvidence": "Its broad new and hard-to-find networking-hardware catalogue directly overlaps Cudy.",
+      "cooperationEvidence": "IT procurement, multi-manufacturer sourcing, personal service and worldwide shipping establish a complete B2B resale path.",
+      "rationale": "Strong first-party evidence for both B2B procurement and networking resale."
+    },
+    {
+      "companyName": "Nomios Germany", "officialUrl": "https://www.nomios.de/", "roles": ["VAR", "Reseller"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 4, "cooperationPath": 5, "evidenceReliability": 4 }, "sourceEvidenceIds": ["E-DD1F81461F"],
+      "roleEvidence": "German partner/reseller page offers Cisco switches, technical advice, support and custom quotes through a Dortmund team.",
+      "productFitEvidence": "Business switching, mobility, IoT and data-centre networking are strongly relevant, though shown for one vendor.",
+      "cooperationEvidence": "Custom quotation plus technical and support consultation provides direct product-selection and resale influence.",
+      "rationale": "Well-evidenced networking VAR path with strong commercial actionability."
+    },
+    {
+      "companyName": "JACOB Elektronik GmbH", "officialUrl": "https://www.jacob.de/netzwerk", "roles": ["Reseller", "VAR"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 4, "evidenceReliability": 3 }, "sourceEvidenceIds": ["E-C103B00AD9"],
+      "roleEvidence": "German seller presents a dedicated network competence centre and a complete networking assortment.",
+      "productFitEvidence": "Switches, WLAN solutions, cybersecurity and transceivers cover major Cudy use cases.",
+      "cooperationEvidence": "One-stop assortment and competence positioning imply advice and resale, although the excerpt does not describe procurement mechanics.",
+      "rationale": "Excellent product breadth with a clear but briefly evidenced resale path."
+    },
+    {
+      "companyName": "FTS Hennig", "officialUrl": "https://www.fts-hennig.de/netztechnik", "roles": ["Reseller", "Dealer"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 4, "evidenceReliability": 3 }, "sourceEvidenceIds": ["E-B9275FF1EF"],
+      "roleEvidence": "German commercial product page offers 5G/LTE networking equipment for purchase.",
+      "productFitEvidence": "5G/LTE routers and switches directly match Cudy's cellular-routing and switching lines.",
+      "cooperationEvidence": "A broad purchasable assortment gives a direct listing and resale route, while advisory and customer-segment details are absent.",
+      "rationale": "Highly relevant specialist assortment with moderate evidence depth."
+    },
+    {
+      "companyName": "ITCE Systemhaus", "officialUrl": "https://www.itce-systemhaus.de/", "roles": ["VAR", "Reseller"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 4, "cooperationPath": 4, "evidenceReliability": 3 }, "sourceEvidenceIds": ["E-20C25109A9"],
+      "roleEvidence": "German IT system house explicitly sells hardware and software from common manufacturers and names Cisco as a partner.",
+      "productFitEvidence": "Cisco partnership establishes networking relevance, though specific product categories are not shown.",
+      "cooperationEvidence": "System-house sales and vendor partnerships provide a credible B2B recommendation and resale path.",
+      "rationale": "Eligible VAR with good commercial fit but limited product detail."
+    },
+    {
+      "companyName": "LaanTech", "officialUrl": "https://www.laantech.de/", "roles": ["Reseller", "Dealer"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 3, "cooperationPath": 4, "evidenceReliability": 3 }, "sourceEvidenceIds": ["E-2387C4E28B"],
+      "roleEvidence": "German specialist dealer with more than twenty years of selling network and installation accessories.",
+      "productFitEvidence": "Network accessories and installation infrastructure are adjacent to Cudy, but active devices are not evidenced.",
+      "cooperationEvidence": "Commercial assortment and fast shipping give a direct dealer route for business installation buyers.",
+      "rationale": "Clear B2B dealer, with only moderate direct fit to active networking hardware."
+    }
+  ],
+  "rejectedItems": [
+    { "title": "R&S, HPE, Edgecore, Intellinet, TP-Link and NETGEAR pages", "url": "https://rs-nc.rohde-schwarz.com/en", "reason": "Manufacturer or product pages rather than independent B2B reseller candidates." },
+    { "title": "büroshop24, Conrad, reichelt and BerryBase product pages", "url": "https://www.bueroshop24.de/technik/netzwerke-kommunikation/router-modems", "reason": "Product sales are visible, but the supplied excerpts do not establish an eligible B2B reseller/VAR/dealer path distinct from general retail." },
+    { "title": "Xpertus IT and Cyberport IT-Services", "url": "https://www.xpertus-it.de/home/partner", "reason": "Consulting or infrastructure service is visible, but the packet lacks enough networking-product resale evidence for this channel." },
+    { "title": "Directories, rankings, market reports and generic partner locators", "url": "https://www.firmendatenbanken.de/firmen/n1/s/netzwerk-hardware.html", "reason": "Do not provide sufficient first-party evidence for a specific eligible candidate." },
+    { "title": "ALSO Deutschland product page", "url": "https://www.also.com/ec/cms5/de_1010/1010_anbieter/netgear/netgear-business/index.jsp", "reason": "Distributor evidence belongs to the tier-one channel, not B2B resale." }
+  ]
+}

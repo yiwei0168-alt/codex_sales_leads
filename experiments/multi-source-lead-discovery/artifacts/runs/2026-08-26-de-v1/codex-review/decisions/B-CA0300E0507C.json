@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "blindBatchId": "B-CA0300E0507C",
+  "reviewMode": "discovery-pool",
+  "channelId": "b2b-resale",
+  "reviewer": "runtime-managed-codex",
+  "externalSearchUsed": false,
+  "selectedCandidates": [],
+  "rejectedItems": [
+    { "title": "Frings IT-Shop", "url": "https://www.frings-itshop.de/", "reason": "The title establishes a B2B e-commerce platform and the map establishes Germany, but no networking-product relevance is supplied." },
+    { "title": "OMG.DE and SMB IT Solution", "url": "https://www.omg.de/", "reason": "The map snippets establish German businesses but provide no networking assortment or eligible resale-path evidence." },
+    { "title": "Serverhero, WKN Datentechnik and other system houses", "url": "https://serverhero.de/", "reason": "Consulting/IT-infrastructure positioning is visible, but product resale and sufficient networking evidence are not both established." },
+    { "title": "JACOB Elektronik and reichelt elektronik", "url": "https://www.jacob.de/", "reason": "Electronics/store presence is visible, but the supplied packet does not establish an eligible B2B networking-reseller path." },
+    { "title": "etree GmbH", "url": "https://www.etree.de/", "reason": "Wholesale category alone does not establish networking relevance and is not sufficient for the B2B-resale channel." },
+    { "title": "Manufacturers, foreign and irrelevant entries", "url": "https://www.nvtphybridge.com/", "reason": "Fail geography, role, or relevance gates." }
+  ]
+}

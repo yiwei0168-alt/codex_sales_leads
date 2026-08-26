@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "blindBatchId": "B-6F4557AA17A7",
+  "reviewMode": "discovery-pool",
+  "channelId": "tier1-distribution",
+  "reviewer": "runtime-managed-codex",
+  "externalSearchUsed": false,
+  "selectedCandidates": [
+    {
+      "companyName": "ALLNET GmbH Computersysteme", "officialUrl": "https://www.allnet.de/", "roles": ["Distributor", "VAD"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 1 }, "sourceEvidenceIds": ["E-6C771F91CC", "E-9CCDB0B59B"],
+      "roleEvidence": "Repeated packet summaries identify a German specialist ICT VAD supplying IT resellers and B2B channels.",
+      "productFitEvidence": "Active networking, WLAN, managed switching, PoE and routers directly match Cudy.",
+      "cooperationEvidence": "Explicit supply to IT resellers and system integrators provides a direct tier-one route.",
+      "rationale": "Excellent claimed match, but all support is repeated generated-list text rather than primary page evidence."
+    },
+    {
+      "companyName": "Ingram Micro Distribution GmbH", "officialUrl": "https://de.ingrammicro.com/", "roles": ["Distributor", "VAD"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 1 }, "sourceEvidenceIds": ["E-C6919158E6", "E-8FB799F844"],
+      "roleEvidence": "Packet summaries identify Ingram Micro as an IT distributor operating in Germany with certified B2B channel partners.",
+      "productFitEvidence": "Routers, switches, enterprise Wi-Fi access points and controllers strongly overlap Cudy.",
+      "cooperationEvidence": "Inventory, partner programs and channel supply create a clear brand-to-reseller path.",
+      "rationale": "Excellent claimed distribution fit with minimal source reliability."
+    },
+    {
+      "companyName": "TD SYNNEX Germany", "officialUrl": "https://www.tdsynnex.de/", "roles": ["Distributor", "VAD"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 1 }, "sourceEvidenceIds": ["E-9608077D50", "E-9335A2ADB6"],
+      "roleEvidence": "Packet summary calls it a major German IT/networking distributor serving channel resellers.",
+      "productFitEvidence": "Switches, routers and wireless access points directly match Cudy.",
+      "cooperationEvidence": "Hardware supply, partner training and pre-sales support establish strong VAD mechanics.",
+      "rationale": "Excellent claimed tier-one route, heavily penalized for generated-list evidence."
+    },
+    {
+      "companyName": "ALSO Deutschland GmbH", "officialUrl": "https://www.also.com/", "roles": ["Distributor", "VAD"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 1 }, "sourceEvidenceIds": ["E-285F327B1F", "E-4C23928CFF", "E-9FC723C95E"],
+      "roleEvidence": "Repeated packet summaries identify ALSO as a European B2B IT distributor serving German integrators and dealers.",
+      "productFitEvidence": "Network hardware, corporate switches, routers and access points directly overlap Cudy.",
+      "cooperationEvidence": "Downstream supply plus technical channel services create a strong distribution and enablement path.",
+      "rationale": "Excellent claimed channel fit with very weak evidence provenance."
+    },
+    {
+      "companyName": "ADN – Advanced Digital Network Distribution GmbH", "officialUrl": "https://www.adn.de/", "roles": ["VAD"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 1 }, "sourceEvidenceIds": ["E-3F70781C8A"],
+      "roleEvidence": "Packet summary describes a German VAD supplying system houses, MSPs and resellers.",
+      "productFitEvidence": "LAN/WLAN, cloud management and enterprise network infrastructure strongly match Cudy.",
+      "cooperationEvidence": "Explicit downstream supply and VAD positioning provide a direct cooperation route.",
+      "rationale": "Strong specialist VAD claim supported only by low-provenance generated text."
+    },
+    {
+      "companyName": "sysob IT-Distribution GmbH & Co. KG", "officialUrl": "https://www.sysob.de/", "roles": ["VAD"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 1 }, "sourceEvidenceIds": ["E-044970B242"],
+      "roleEvidence": "Packet summary explicitly identifies an owner-managed German VAD.",
+      "productFitEvidence": "Enterprise network infrastructure, security and wireless LAN directly align with Cudy professional networking.",
+      "cooperationEvidence": "VAD status and vendor distribution imply direct brand procurement and channel supply.",
+      "rationale": "Excellent claimed specialist fit with minimal source reliability."
+    },
+    {
+      "companyName": "Infinigate Deutschland GmbH", "officialUrl": "https://www.infinigate.de/", "roles": ["VAD"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 4, "cooperationPath": 5, "evidenceReliability": 1 }, "sourceEvidenceIds": ["E-389E1C55E3", "E-858D4CE43C"],
+      "roleEvidence": "Packet summary identifies a DACH VAD operating in Germany.",
+      "productFitEvidence": "Enterprise WLAN/LAN and Wi-Fi survey solutions are relevant, with a stronger security orientation.",
+      "cooperationEvidence": "VAD positioning and named manufacturer partnerships establish a direct channel route.",
+      "rationale": "Strong claimed VAD with good networking relevance but low-provenance support."
+    },
+    {
+      "companyName": "Westcon-Comstor Germany", "officialUrl": "https://www.westconcomstor.com/", "roles": ["VAD"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 4, "cooperationPath": 4, "evidenceReliability": 1 }, "sourceEvidenceIds": ["E-3F70781C8A", "E-50B078098C"],
+      "roleEvidence": "Two packet lists include Westcon-Comstor Germany among German VADs/B2B network distributors.",
+      "productFitEvidence": "The list context covers enterprise WLAN, LAN, switches and routers, but its candidate-specific explanation is truncated.",
+      "cooperationEvidence": "VAD/distributor designation implies downstream channel supply without detailed enablement evidence.",
+      "rationale": "Eligible claimed VAD, with thin candidate-specific content and very low provenance quality."
+    }
+  ],
+  "rejectedItems": [
+    { "title": "SVA and Bechtle", "url": "https://www.sva.de/", "reason": "Packet text describes system-house/VAR activity, not distribution to downstream partners." },
+    { "title": "Other target domains", "url": "https://www.siewert-kau.de/", "reason": "Their snippets are repeated generated candidate lists and do not contain candidate-specific evidence for the target company." },
+    { "title": "Duplicate ALLNET, Ingram, ALSO, TD SYNNEX, Infinigate and Westcon results", "url": "https://www.allnet.de/", "reason": "Merged into one unique candidate per company." }
+  ]
+}

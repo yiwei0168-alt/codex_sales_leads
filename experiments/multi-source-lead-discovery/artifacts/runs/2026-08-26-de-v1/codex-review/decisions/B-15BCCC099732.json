@@ -1,0 +1,123 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "blindBatchId": "B-15BCCC099732",
+  "reviewMode": "discovery-pool",
+  "channelId": "b2b-resale",
+  "reviewer": "runtime-managed-codex",
+  "externalSearchUsed": false,
+  "selectedCandidates": [
+    {
+      "companyName": "NLS Netzwerke GmbH", "officialUrl": "https://nls-netzwerke.de/", "roles": ["VAR"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 3 },
+      "sourceEvidenceIds": ["E-A24067D097", "E-C14908367C"],
+      "roleEvidence": "German network specialist and manufacturer partner that plans, delivers and implements complete customer solutions.",
+      "productFitEvidence": "Routing, switching, WLAN, security and network management directly overlap Cudy core products.",
+      "cooperationEvidence": "Consulting, planning, product delivery, implementation and named vendor-partner status provide control across specification, quotation and deployment.",
+      "rationale": "Exceptional product overlap and a complete evidence-supported VAR transaction path."
+    },
+    {
+      "companyName": "YELLO NETCOM GmbH", "officialUrl": "https://yello-net.de/", "roles": ["VAR"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 3 },
+      "sourceEvidenceIds": ["E-3CDDF75C7C"],
+      "roleEvidence": "Industrial-network specialist providing products plus network design, integration and training to customers.",
+      "productFitEvidence": "Routers, switches, industrial Ethernet, IIoT and OT networking strongly match Cudy's industrial and SMB lines.",
+      "cooperationEvidence": "Advice, on-site service, project management, implementation and training show direct specification, procurement and deployment influence.",
+      "rationale": "Excellent industrial-network VAR with several direct buying and project levers."
+    },
+    {
+      "companyName": "OMG.DE GmbH", "officialUrl": "https://www.omg.de/", "roles": ["Reseller", "VAR"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 3 },
+      "sourceEvidenceIds": ["E-013CE006ED"],
+      "roleEvidence": "German online networking seller that also acts as system integrator and service provider.",
+      "productFitEvidence": "WLAN, point-to-point wireless, routers and related professional networking products directly overlap Cudy.",
+      "cooperationEvidence": "Online listing/order, product selection, integration, network management and support provide multiple purchase and recommendation paths.",
+      "rationale": "A direct B2B product channel combined with material solution value."
+    },
+    {
+      "companyName": "Avanis GmbH", "officialUrl": "https://avanis.de/", "roles": ["DVAR", "VAR"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 3 },
+      "sourceEvidenceIds": ["E-64055E497C", "E-C76353E6AE"],
+      "roleEvidence": "Specialist distributor that also directly advises commercial end customers and performs WLAN planning/analysis.",
+      "productFitEvidence": "Switches, industrial Ethernet, VDSL2, WLAN and media conversion provide broad direct overlap.",
+      "cooperationEvidence": "Direct commercial-customer sales, planning, technical advice and product supply cover quotation, recommendation and specification.",
+      "rationale": "Qualifies as a direct-buying VAR/DVAR in this lane despite also having distributor activity."
+    },
+    {
+      "companyName": "SCALCOM", "officialUrl": "https://scalcom.de/", "roles": ["Reseller", "VAR"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 4, "evidenceReliability": 3 },
+      "sourceEvidenceIds": ["E-4EC2B23AA7"],
+      "roleEvidence": "B2B online shop and specialist networking supplier with strategic advice and support.",
+      "productFitEvidence": "Switching, routing, WLAN, directional wireless, routers and modems strongly match Cudy.",
+      "cooperationEvidence": "B2B listing/order plus consultation and project assistance create direct purchase and recommendation paths; final-customer mix is not detailed.",
+      "rationale": "Very strong catalogue fit and clear B2B transaction capability."
+    },
+    {
+      "companyName": "WLAN-Shop24.de", "officialUrl": null, "roles": ["Reseller", "Dealer"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 4, "evidenceReliability": 2 },
+      "sourceEvidenceIds": ["E-66D282A628"],
+      "roleEvidence": "Hamburg-based B2B seller of wireless and cellular networking products.",
+      "productFitEvidence": "WLAN, LTE/5G, routers, antennas, cables and accessories align directly with Cudy wireless CPE and router lines.",
+      "cooperationEvidence": "B2B product sales establish listing and purchase influence, but the packet gives little evidence of solution value or an official website.",
+      "rationale": "Excellent product fit discounted for shallow third-party evidence."
+    },
+    {
+      "companyName": "NCS Netzwerke Computer Service GmbH", "officialUrl": "https://ncs.de/", "roles": ["VAR"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 4, "cooperationPath": 4, "evidenceReliability": 3 },
+      "sourceEvidenceIds": ["E-59ACDBF7A5"],
+      "roleEvidence": "German system house providing hardware, network solutions, installation and managed services to organizations.",
+      "productFitEvidence": "Networks, hardware, data-center infrastructure, monitoring and IT security are materially relevant but broader than Cudy's portfolio.",
+      "cooperationEvidence": "Solution design, hardware supply, installation and support give purchasing and deployment influence.",
+      "rationale": "Strong general-network VAR with a credible end-customer path."
+    },
+    {
+      "companyName": "SHC Netzwerktechnik GmbH", "officialUrl": "https://shc.eu/", "roles": ["VAR"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 4, "cooperationPath": 4, "evidenceReliability": 3 },
+      "sourceEvidenceIds": ["E-8283996CF6"],
+      "roleEvidence": "German IT service provider delivering manufacturer-backed infrastructure and core-networking solutions.",
+      "productFitEvidence": "Network infrastructure and core networking are direct, while the excerpt emphasizes security and data-center vendors.",
+      "cooperationEvidence": "Named vendor partnerships and nationwide solution delivery imply control over recommendation, quotation and deployment.",
+      "rationale": "Credible networking VAR with solid but not portfolio-specific evidence."
+    },
+    {
+      "companyName": "Net Factory Gesellschaft für Netzwerklösungen mbH", "officialUrl": "https://net-factory.de/", "roles": ["VAR"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 4, "cooperationPath": 4, "evidenceReliability": 3 },
+      "sourceEvidenceIds": ["E-40ACA61894"],
+      "roleEvidence": "German IT system house supplying hardware and tailored network/IT solutions to businesses.",
+      "productFitEvidence": "Network solutions, modern IT infrastructure and hardware are relevant, though specific product families are not enumerated.",
+      "cooperationEvidence": "Planning, hardware supply, service and ongoing maintenance establish recommendation and procurement influence.",
+      "rationale": "Valid B2B VAR with good path evidence but less specific product evidence."
+    },
+    {
+      "companyName": "indasys IT Systemhaus AG", "officialUrl": "https://indasys.de/", "roles": ["VAR"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 4, "cooperationPath": 4, "evidenceReliability": 3 },
+      "sourceEvidenceIds": ["E-548CBB8135"],
+      "roleEvidence": "German system house providing IT infrastructure, network security, data-center and managed solutions to business customers.",
+      "productFitEvidence": "Networking, infrastructure and security materially overlap Cudy use cases, although exact resold device categories are not listed.",
+      "cooperationEvidence": "Consulting, solution supply, support and managed services provide specification, quotation and deployment influence.",
+      "rationale": "Strong general B2B solution partner with moderate product specificity."
+    }
+  ],
+  "rejectedItems": [
+    { "title": "Zyxel Networks Deutschland", "url": "https://zyxel.de/", "reason": "Networking manufacturer/brand, not a reseller candidate." },
+    { "title": "The Cloud Networks Germany", "url": "https://thecloud.eu/", "reason": "Managed Wi-Fi provider; packet does not establish hardware resale." },
+    { "title": "Netzwerktechnik Kopp GmbH", "url": "https://netzwerktechnik-kopp.de/", "reason": "Passive cabling installer with no hardware resale evidence." },
+    { "title": "WLANxpert", "url": "https://linkedin.com/company/wlanxpert", "reason": "WLAN planner/installer/operator; no reselling evidence." },
+    { "title": "RockSolid Networks e. K.", "url": "https://rocksolid-networks.de/", "reason": "Consulting and implementation services are clear, but product resale is not." },
+    { "title": "Vitel GmbH", "url": "https://vitel.de/", "reason": "Packet supports VAD distribution; it does not clearly establish service to final customers for this lane." },
+    { "title": "Messkom Vertriebs GmbH", "url": "https://messkom.de/", "reason": "Resells network measurement tools, but overlap with Cudy's target hardware is too weak." },
+    { "title": "HEIN Netzwerktechnik GmbH", "url": "https://hein.de/", "reason": "Company and network relevance are supported, but reseller/VAR activity is not sufficiently evidenced." },
+    { "title": "U+P Systemhaus GmbH", "url": "https://up-systemhaus.de/", "reason": "Strong B2B procurement capability but no material networking-product evidence in the packet." },
+    { "title": "HPC IT-Security", "url": "https://linkedin.com/company/hpc-it-security", "reason": "Consumer/high-end private emphasis and thin official evidence make it weaker than the selected B2B candidates." }
+  ]
+}

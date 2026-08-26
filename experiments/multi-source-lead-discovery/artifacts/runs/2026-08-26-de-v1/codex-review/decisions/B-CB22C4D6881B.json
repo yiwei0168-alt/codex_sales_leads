@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "blindBatchId": "B-CB22C4D6881B",
+  "reviewMode": "fixed-output",
+  "channelId": "b2b-resale",
+  "reviewer": "runtime-managed-codex",
+  "externalSearchUsed": false,
+  "selectedCandidates": [
+    {
+      "companyName": "Bechtle AG", "officialUrl": "https://www.bechtle.com/", "roles": ["VAR", "Reseller"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 2 }, "sourceEvidenceIds": ["F-01"],
+      "roleEvidence": "Submitted as a German IT system house, direct B2B reseller and VAR.",
+      "productFitEvidence": "Enterprise/SMB networking hardware directly matches Cudy.",
+      "cooperationEvidence": "Business procurement, hardware supply and solution delivery establish a complete resale path.",
+      "rationale": "Excellent claimed fit; support is limited to one official URL and the submitted summary."
+    },
+    {
+      "companyName": "CANCOM SE", "officialUrl": "https://www.cancom.de/", "roles": ["VAR", "Reseller"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 2 }, "sourceEvidenceIds": ["F-02"],
+      "roleEvidence": "Submitted as a leading German VAR and direct B2B reseller.",
+      "productFitEvidence": "Enterprise network infrastructure and related hardware strongly overlap Cudy.",
+      "cooperationEvidence": "Direct resale plus IT services provide listing, recommendation and lifecycle influence.",
+      "rationale": "Excellent claimed VAR path with only summary-level evidence."
+    },
+    {
+      "companyName": "Computacenter AG & Co. oHG", "officialUrl": "https://www.computacenter.com/", "roles": ["VAR", "Reseller"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 4, "cooperationPath": 5, "evidenceReliability": 2 }, "sourceEvidenceIds": ["F-03"],
+      "roleEvidence": "Submitted as a German technology/network-infrastructure reseller serving corporate and public clients.",
+      "productFitEvidence": "Network infrastructure is strongly relevant, but specific hardware families are not named.",
+      "cooperationEvidence": "Direct supply to end customers provides a clear VAR transaction path.",
+      "rationale": "Strong claimed path and good product fit with shallow evidence."
+    },
+    {
+      "companyName": "SVA System Vertrieb Alexander GmbH", "officialUrl": "https://www.sva.de/", "roles": ["VAR"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 2 }, "sourceEvidenceIds": ["F-04"],
+      "roleEvidence": "Submitted as a German system integrator and VAR reselling to business customers.",
+      "productFitEvidence": "Enterprise networking, data-centre and security infrastructure strongly align with Cudy.",
+      "cooperationEvidence": "Integration plus direct resale create strong recommendation, procurement and deployment influence.",
+      "rationale": "Excellent claimed B2B VAR fit with summary-level support."
+    },
+    {
+      "companyName": "netgo GmbH", "officialUrl": "https://www.netgo.de/", "roles": ["VAR"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 4, "evidenceReliability": 2 }, "sourceEvidenceIds": ["F-05"],
+      "roleEvidence": "Submitted as a German system house serving SOHO, SMB and enterprise clients.",
+      "productFitEvidence": "Complete networking and workplace hardware strongly match Cudy's target segment.",
+      "cooperationEvidence": "Complete-solution delivery indicates hardware influence, but explicit procurement/resale mechanics are not detailed.",
+      "rationale": "Excellent segment and product fit with a strong but incomplete claimed path."
+    },
+    {
+      "companyName": "ACP IT Solutions GmbH", "officialUrl": "https://www.acp.de/", "roles": ["VAR", "Reseller"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 2 }, "sourceEvidenceIds": ["F-06"],
+      "roleEvidence": "Submitted as a German system house and VAR reselling hardware to mid-market customers.",
+      "productFitEvidence": "Network and campus infrastructure directly match professional Cudy applications.",
+      "cooperationEvidence": "Complete solutions and hardware resale provide selection, purchasing and implementation influence.",
+      "rationale": "Excellent claimed VAR route with limited evidence detail."
+    },
+    {
+      "companyName": "SoftwareOne Deutschland GmbH", "officialUrl": "https://www.softwareone.com/", "roles": ["VAR"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 2, "cooperationPath": 4, "evidenceReliability": 2 }, "sourceEvidenceIds": ["F-07"],
+      "roleEvidence": "Submitted as a German direct B2B solutions provider offering IT procurement.",
+      "productFitEvidence": "Cloud and edge infrastructure are adjacent, but no routers, switches or WLAN products are specified.",
+      "cooperationEvidence": "Corporate procurement and infrastructure resale establish a route, although hardware mechanics are broad.",
+      "rationale": "Eligible claimed VAR but weakly aligned with Cudy's active networking categories."
+    },
+    {
+      "companyName": "Axians Deutschland", "officialUrl": "https://www.axians.de/", "roles": ["VAR", "Reseller"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 4, "cooperationPath": 5, "evidenceReliability": 2 }, "sourceEvidenceIds": ["F-08"],
+      "roleEvidence": "Submitted as a specialized German ICT VAR selling directly to enterprise/public customers.",
+      "productFitEvidence": "Networking and telecom infrastructure are strongly relevant without detailed device categories.",
+      "cooperationEvidence": "Direct solution resale and delivery provide a strong customer transaction path.",
+      "rationale": "Strong claimed VAR with good product fit and summary-level evidence."
+    },
+    {
+      "companyName": "Concat AG", "officialUrl": "https://www.concat.de/", "roles": ["VAR", "Reseller"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 4, "cooperationPath": 5, "evidenceReliability": 2 }, "sourceEvidenceIds": ["F-09"],
+      "roleEvidence": "Submitted as a German system house and VAR designing/reselling business IT infrastructure.",
+      "productFitEvidence": "Networking hardware is materially relevant beside storage and broader infrastructure.",
+      "cooperationEvidence": "Tailored design and direct resale provide clear specification and purchasing influence.",
+      "rationale": "Strong claimed cooperation route and good product fit with shallow evidence."
+    },
+    {
+      "companyName": "Skaylink GmbH", "officialUrl": "https://www.skaylink.com/", "roles": ["VAR"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 3, "cooperationPath": 4, "evidenceReliability": 2 }, "sourceEvidenceIds": ["F-10"],
+      "roleEvidence": "Submitted as a German cloud and IT-infrastructure VAR serving mid-sized businesses.",
+      "productFitEvidence": "Business network infrastructure and connectivity are relevant, but active hardware categories are not specified.",
+      "cooperationEvidence": "Managed hardware resale gives a credible direct route, with limited purchasing detail.",
+      "rationale": "Eligible claimed VAR with moderate direct Cudy-product alignment."
+    }
+  ],
+  "rejectedItems": []
+}

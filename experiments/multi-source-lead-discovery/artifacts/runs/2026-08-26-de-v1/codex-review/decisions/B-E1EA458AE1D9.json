@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "blindBatchId": "B-E1EA458AE1D9",
+  "reviewMode": "discovery-pool",
+  "channelId": "tier1-distribution",
+  "reviewer": "runtime-managed-codex",
+  "externalSearchUsed": false,
+  "selectedCandidates": [
+    {
+      "companyName": "sysob IT-Distribution GmbH & Co. KG", "officialUrl": "https://www.sysob.com/", "roles": ["VAD", "Distributor"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 4 }, "sourceEvidenceIds": ["E-568AE2EEA4"],
+      "roleEvidence": "Official page explicitly identifies sysob as a VAD supporting resellers and their projects.",
+      "productFitEvidence": "Tailored wireless infrastructure and communication networks directly align with Cudy.",
+      "cooperationEvidence": "An explicit reseller partner program and project support provide a complete downstream enablement path.",
+      "rationale": "Excellent first-party evidence across product fit, role and cooperation."
+    },
+    {
+      "companyName": "ADN – Advanced Digital Network Distribution GmbH", "officialUrl": "https://www.adn.de/", "roles": ["VAD", "Distributor"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 4 }, "sourceEvidenceIds": ["E-4AF9D1D01E", "E-B5B9C140AB"],
+      "roleEvidence": "Official ADN page identifies value-added IT distribution; an independent vendor announcement confirms VAD status.",
+      "productFitEvidence": "Network switches and WLAN technologies strongly overlap Cudy.",
+      "cooperationEvidence": "Partner services plus a documented manufacturer distribution agreement establish direct brand and downstream routes.",
+      "rationale": "Exceptionally well-supported tier-one candidate with complementary evidence."
+    },
+    {
+      "companyName": "KTI Distribution GmbH", "officialUrl": "https://www.kti.de/", "roles": ["Distributor"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 3 }, "sourceEvidenceIds": ["E-D5E4E186A3", "E-14551A3C5C"],
+      "roleEvidence": "Two German B2B directory excerpts identify KTI Distribution as the exclusive operator for German-speaking KTI Networks partners.",
+      "productFitEvidence": "Active network components from a dedicated networking manufacturer strongly match Cudy.",
+      "cooperationEvidence": "Exclusive partner responsibility establishes a clear manufacturer-to-channel distribution path.",
+      "rationale": "Excellent claimed route corroborated by two third-party excerpts."
+    },
+    {
+      "companyName": "Vitel GmbH", "officialUrl": "https://vitel.de/", "roles": ["VAD"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 4, "evidenceReliability": 4 }, "sourceEvidenceIds": ["E-67E2E0DE3C"],
+      "roleEvidence": "Official German company page calls Vitel a leading VAD for industrial networking and security.",
+      "productFitEvidence": "Industrial communication/network technology directly overlaps Cudy's professional and cellular products.",
+      "cooperationEvidence": "VAD status and named vendor scope provide a direct brand relationship, though downstream support stages are not detailed.",
+      "rationale": "Excellent specialist product fit with clear first-party role evidence."
+    },
+    {
+      "companyName": "Visiotech Deutschland", "officialUrl": "https://www.visiotechsecurity.com/de/", "roles": ["Distributor"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 4, "evidenceReliability": 4 }, "sourceEvidenceIds": ["E-9AABEA35C7"],
+      "roleEvidence": "German-market official page explicitly presents a networking wholesaler and invites commercial customers.",
+      "productFitEvidence": "Routers, switches and wireless products directly match Cudy's core lines.",
+      "cooperationEvidence": "Wholesale customer onboarding gives a direct supply route, though downstream-channel specialization is not detailed.",
+      "rationale": "Excellent product fit and clear commercial wholesale path."
+    },
+    {
+      "companyName": "brainworks computer technologie GmbH", "officialUrl": "https://www.brainworks.de/", "roles": ["VAD"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 4, "evidenceReliability": 3 }, "sourceEvidenceIds": ["E-42F497A6DD"],
+      "roleEvidence": "German B2B directory excerpt explicitly identifies brainworks as a value-added distributor.",
+      "productFitEvidence": "Networking, system management, security, network analysis and VoIP strongly align with Cudy.",
+      "cooperationEvidence": "VAD positioning gives a direct vendor route, but downstream partners and enablement mechanics are absent.",
+      "rationale": "Strong specialist VAD candidate supported by concise third-party evidence."
+    },
+    {
+      "companyName": "Distrelec Deutschland", "officialUrl": "https://www.distrelec.de/", "roles": ["Distributor"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 4, "cooperationPath": 4, "evidenceReliability": 4 }, "sourceEvidenceIds": ["E-B364C21B63"],
+      "roleEvidence": "German official storefront calls Distrelec a high-service electronics/automation distributor.",
+      "productFitEvidence": "The cited Ethernet-switch category is strongly relevant within a broader electronics range.",
+      "cooperationEvidence": "Large inventory and next-day distribution establish fulfilment capacity, but downstream partner enablement is not described.",
+      "rationale": "Clear distributor with good network relevance and moderate channel depth."
+    },
+    {
+      "companyName": "MichaelTelecom / MICHAEL AG", "officialUrl": "https://www.michael-ag.de/", "roles": ["Distributor", "VAD"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 3, "cooperationPath": 5, "evidenceReliability": 4 }, "sourceEvidenceIds": ["E-1D46BDA1BF"],
+      "roleEvidence": "Official page identifies a German IT/telecommunications distributor and wholesaler.",
+      "productFitEvidence": "ITK positioning is relevant to Cudy, but no router, switch or WLAN families appear in the excerpt.",
+      "cooperationEvidence": "Wholesale, network marketing, training and dropshipping provide multiple concrete channel levers.",
+      "rationale": "Excellent cooperation mechanics with only moderate demonstrated product specificity."
+    }
+  ],
+  "rejectedItems": [
+    { "title": "Exertis, DataStore and Infinigate references", "url": "https://www.lancom-systems.de/newsroom/presse/pressemitteilung/exertis-ist-neuer-lancom-distributor-in-benelux/", "reason": "The supplied evidence covers Benelux, Switzerland/Liechtenstein or Austria rather than German operations." },
+    { "title": "Bechtle, OMG.DE, BellEquip, IT-BUDGET and other resellers", "url": "https://www.bechtle.com/shop/hardware/it-infrastruktur/netzwerk--10006005--c", "reason": "Direct reseller/dealer evidence belongs to the lower B2B-resale channel, not tier-one distribution." },
+    { "title": "LANCOM/R&S, LevelOne and manufacturer pages", "url": "https://www.lancom-systems.de/", "reason": "Manufacturers rather than independent Distributor/VAD candidates." },
+    { "title": "WORTMANN AG", "url": "https://www.wortmann.de/de-de/search.aspx?q=*&category=DISTRI_LAN_FE", "reason": "The supplied pages were unavailable and do not establish downstream distribution despite a relevant category title." },
+    { "title": "Directories and partner locators", "url": "https://www.wlw.de/de/suche/switches-fuer-netzwerke", "reason": "No additional specific candidate passes all gates with sufficient evidence." }
+  ]
+}

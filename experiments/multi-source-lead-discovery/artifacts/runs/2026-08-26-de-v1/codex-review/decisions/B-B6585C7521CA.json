@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "blindBatchId": "B-B6585C7521CA",
+  "reviewMode": "discovery-pool",
+  "channelId": "tier1-distribution",
+  "reviewer": "runtime-managed-codex",
+  "externalSearchUsed": false,
+  "selectedCandidates": [],
+  "rejectedItems": [
+    { "title": "ADN Distribution GmbH", "url": "https://www.adn.de/", "reason": "The title suggests distribution and the map entry establishes Germany, but the packet contains no networking relevance or downstream-channel evidence." },
+    { "title": "KOSATEC Empowering Global Innovation GmbH", "url": "http://www.kosatec.de/", "reason": "The map category establishes wholesale activity in Germany, but not networking products or supply to downstream channel partners." },
+    { "title": "AVC Added Value Concept GmbH", "url": "http://www.flammkuchen-konzept.de/", "reason": "Wholesale category is visible, but the URL is mismatched and no IT/networking relevance is evidenced." },
+    { "title": "Wentronic GmbH and electronics retailers", "url": "http://www.wentronic.com/", "reason": "Retail/manufacturer/map categories do not establish eligible Distributor/VAD status plus networking relevance." },
+    { "title": "Consultants, system houses and service providers", "url": "https://serverhero.de/", "reason": "The supplied map snippets do not establish downstream distribution, and therefore do not meet the tier-one role gate." },
+    { "title": "Remaining map results", "url": "https://www.added-value.net/de/", "reason": "Categories are irrelevant, contradictory or too shallow to pass all eligibility gates." }
+  ]
+}

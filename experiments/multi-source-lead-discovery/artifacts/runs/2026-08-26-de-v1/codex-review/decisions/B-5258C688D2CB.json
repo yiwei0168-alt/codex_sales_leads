@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "blindBatchId": "B-5258C688D2CB",
+  "reviewMode": "discovery-pool",
+  "channelId": "project-services",
+  "reviewer": "runtime-managed-codex",
+  "externalSearchUsed": false,
+  "selectedCandidates": [
+    {
+      "companyName": "GERMAN HOTSPOT", "officialUrl": "https://www.germanhotspot.de/", "roles": ["SI"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 3, "evidenceReliability": 2 }, "sourceEvidenceIds": ["E-93657F2975"],
+      "roleEvidence": "German service business explicitly offering WLAN solutions for high-user environments.", "productFitEvidence": "Professional multi-user WLAN directly matches Cudy access-point and managed-network use cases.", "cooperationEvidence": "Solution-provider status implies design/recommendation influence, but planning, procurement and installation are not described in the supplied place result.", "rationale": "Excellent fit with only title/category/address-level evidence for the project path."
+    },
+    {
+      "companyName": "eWLAN", "officialUrl": null, "roles": ["SI", "Installer"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 3, "evidenceReliability": 2 }, "sourceEvidenceIds": ["E-7636914799"],
+      "roleEvidence": "German place listing explicitly identifies a professional WLAN service for companies.", "productFitEvidence": "Business WLAN directly overlaps Cudy's professional wireless portfolio.", "cooperationEvidence": "Professional WLAN service suggests recommendation and deployment influence, but the packet contains no detailed project or procurement evidence.", "rationale": "Strong specialist relevance but very shallow place-listing evidence."
+    },
+    {
+      "companyName": "Netzwerkbau & IT-Services", "officialUrl": "https://netzwerkbau.berlin/", "roles": ["SI", "Installer"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 4, "cooperationPath": 3, "evidenceReliability": 2 }, "sourceEvidenceIds": ["E-7C215620CC"],
+      "roleEvidence": "Berlin business whose listing explicitly combines network construction and IT services.", "productFitEvidence": "Network construction is materially relevant, but active WLAN/router/switch categories are not stated.", "cooperationEvidence": "Network-build and IT-service positioning implies project delivery, while design, BOM and procurement remain unverified.", "rationale": "Likely qualifying local SI/installer with limited evidence depth."
+    },
+    {
+      "companyName": "IB-IT Cabling GmbH", "officialUrl": "http://www.ib-it.eu/", "roles": ["Installer"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 2, "cooperationPath": 3, "evidenceReliability": 2 }, "sourceEvidenceIds": ["E-A65C7232F0"],
+      "roleEvidence": "German cabling service company identified by company name, service category and address.", "productFitEvidence": "Network cabling enables Cudy deployments but does not directly overlap active networking hardware.", "cooperationEvidence": "Installation responsibility is plausible from the cabling/service identity, but device specification and procurement are not evidenced.", "rationale": "Valid installation specialist with weak direct product overlap and shallow evidence."
+    }
+  ],
+  "rejectedItems": [
+    { "title": "Fiber Networks GmbH", "url": "http://www.fibernetworks.de/", "reason": "Duplicate/conflicting service and manufacturer place listings do not establish a clear SI/Installer project role." },
+    { "title": "High Knowledge GmbH", "url": "http://www.highknowledge.de/", "reason": "General-contractor label and address alone do not establish networking relevance or installation activity." },
+    { "title": "IB-IT Datacenter GmbH", "url": "https://ib-it.gmbh/", "reason": "Consultant place category alone does not establish networking SI/Installer responsibility." },
+    { "title": "n@work Internet Informationssysteme GmbH", "url": "https://www.work.de/", "reason": "Generic service category and address provide insufficient networking/project evidence." },
+    { "title": "Elektrotechnik Selent and Elektro-Installation Raabe", "url": "https://www.elektrotechnik-selent.de/", "reason": "Generic electrician listings do not establish professional networking installation." },
+    { "title": "Matthias Weber Systemintegration (KNX)", "url": "https://www.matthias-weber-knx.de/home.html", "reason": "Building-automation system integration is shown, not networking integration." },
+    { "title": "KOSATEC", "url": "http://www.kosatec.de/", "reason": "Wholesaler; wrong channel." },
+    { "title": "Rohde & Schwarz Networks and Cybersecurity and Radio Frequency Systems", "url": "https://www.rohde-schwarz.com/networks-and-cybersecurity", "reason": "Manufacturers; wrong candidate type." },
+    { "title": "WAYFONE, expert HERFAG and Pollin", "url": "http://www.wayfone.de/", "reason": "Retail businesses, not SI/Installer candidates." },
+    { "title": "Other generic place results", "url": "https://network-experts.org/", "reason": "Insufficient evidence of a professional networking project role." }
+  ]
+}

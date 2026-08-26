@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "blindBatchId": "B-AB0CCC6C8B92",
+  "reviewMode": "discovery-pool",
+  "channelId": "project-services",
+  "reviewer": "runtime-managed-codex",
+  "externalSearchUsed": false,
+  "selectedCandidates": [
+    {
+      "companyName": "Frings Solutions Deutschland GmbH", "officialUrl": "https://www.frings-solutions.de/", "roles": ["SI", "Installer"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 1 }, "sourceEvidenceIds": ["E-D1C4230870"],
+      "roleEvidence": "Packet summary identifies a German commercial WLAN planner and installer.",
+      "productFitEvidence": "Site surveys, access-point installation and network optimization directly match Cudy.",
+      "cooperationEvidence": "Planning, product positioning, installation and optimization form a complete project path.",
+      "rationale": "Excellent claimed target, but the excerpt is a generated list rather than first-party page content."
+    },
+    {
+      "companyName": "GREEN IT Das Systemhaus GmbH", "officialUrl": "https://www.greenit.systems/", "roles": ["SI", "Installer"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 1 }, "sourceEvidenceIds": ["E-DC6E48C51D"],
+      "roleEvidence": "Packet summary describes a German system house delivering end-to-end commercial network projects.",
+      "productFitEvidence": "Managed WLAN and named network-vendor deployment strongly overlap Cudy.",
+      "cooperationEvidence": "Architecture, cabling, WLAN deployment and management provide end-to-end influence.",
+      "rationale": "Excellent claimed SI/installer with very low source provenance."
+    },
+    {
+      "companyName": "ditpro GmbH", "officialUrl": "https://www.ditpro.de/", "roles": ["SI", "Installer"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 1 }, "sourceEvidenceIds": ["E-B5D3A61635"],
+      "roleEvidence": "Packet summary describes business indoor/outdoor Wi-Fi and network-structure delivery.",
+      "productFitEvidence": "Corporate Wi-Fi, guest networks and point-to-point wireless directly match Cudy use cases.",
+      "cooperationEvidence": "Business network setup implies design and deployment control across multiple project scenarios.",
+      "rationale": "Excellent claimed technical fit with only generated-list evidence."
+    },
+    {
+      "companyName": "itc GmbH", "officialUrl": "https://www.itc-net.de/", "roles": ["SI", "Installer"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 1 }, "sourceEvidenceIds": ["E-0247C470A3"],
+      "roleEvidence": "Packet summary identifies a specialist in WLAN site surveys, heatmaps and access-point positioning.",
+      "productFitEvidence": "Professional WLAN design and access-point placement directly overlap Cudy.",
+      "cooperationEvidence": "Survey and positioning expertise give strong specification influence; the excerpt indicates full network delivery beyond the truncation point.",
+      "rationale": "Excellent claimed WLAN project partner, heavily penalized for evidence provenance."
+    },
+    {
+      "companyName": "Klare Leitung", "officialUrl": "https://klare-leitung.de/", "roles": ["SI", "Installer"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 1 }, "sourceEvidenceIds": ["E-9C66ACB37A"],
+      "roleEvidence": "Packet summary calls it a Berlin network integrator for cabling, switching and enterprise Wi-Fi.",
+      "productFitEvidence": "Switch setup and enterprise Wi-Fi directly match core Cudy hardware.",
+      "cooperationEvidence": "Structured cabling plus active-network setup provides an end-to-end deployment route.",
+      "rationale": "Strong local claimed installer/SI with low-provenance generated support."
+    },
+    {
+      "companyName": "Bechtle AG", "officialUrl": "https://www.bechtle.com/", "roles": ["SI", "Installer"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 1 }, "sourceEvidenceIds": ["E-8AD2AF7BD5"],
+      "roleEvidence": "Packet summary identifies a German integrator for network design and large-scale deployment.",
+      "productFitEvidence": "LAN/WLAN surveys and enterprise switching directly overlap Cudy.",
+      "cooperationEvidence": "Design, survey and rollout stages create complete specification and deployment influence.",
+      "rationale": "Excellent claimed project-services target with weak evidence provenance."
+    },
+    {
+      "companyName": "SVA System Vertrieb Alexander GmbH", "officialUrl": "https://www.sva.de/", "roles": ["SI"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 1 }, "sourceEvidenceIds": ["E-1ED3CA7410"],
+      "roleEvidence": "Packet summary describes a German system integrator delivering end-to-end network projects.",
+      "productFitEvidence": "Campus LAN and enterprise WLAN directly align with Cudy professional networking.",
+      "cooperationEvidence": "Architecture, infrastructure delivery and managed networking give end-to-end influence.",
+      "rationale": "Excellent claimed SI path supported only by generated-list evidence."
+    },
+    {
+      "companyName": "Computacenter AG & Co. oHG", "officialUrl": "https://www.computacenter.com/", "roles": ["SI", "Installer"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 1 }, "sourceEvidenceIds": ["E-241A2C67A2"],
+      "roleEvidence": "Packet summary identifies extensive German operations delivering corporate network rollouts.",
+      "productFitEvidence": "LAN/WLAN rollouts, network refresh and software-defined networking strongly match Cudy.",
+      "cooperationEvidence": "Rollout and refresh ownership provides strong design, procurement and deployment leverage.",
+      "rationale": "Excellent claimed project route with minimal source reliability."
+    },
+    {
+      "companyName": "CANCOM SE", "officialUrl": "https://www.cancom.de/", "roles": ["SI"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 4, "evidenceReliability": 1 }, "sourceEvidenceIds": ["E-6AF5C06226"],
+      "roleEvidence": "Packet summary calls CANCOM a German digital system house for corporate network infrastructure.",
+      "productFitEvidence": "Managed LAN/WLAN and network-security integration strongly overlap Cudy.",
+      "cooperationEvidence": "Integration and managed delivery indicate specification influence, but installation/procurement stages are not explicit.",
+      "rationale": "Excellent technical fit with a strong but incompletely detailed path and low-provenance support."
+    },
+    {
+      "companyName": "smaRTtechnik GmbH & Co. KG", "officialUrl": "https://smarttechnik.de/", "roles": ["SI", "Installer"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 4, "cooperationPath": 5, "evidenceReliability": 1 }, "sourceEvidenceIds": ["E-1BB4FDA9B8"],
+      "roleEvidence": "Packet summary describes a Frankfurt B2B infrastructure installer providing end-to-end services.",
+      "productFitEvidence": "Enterprise Wi-Fi is directly relevant, alongside copper/fiber and data-centre infrastructure.",
+      "cooperationEvidence": "End-to-end installation and rollout responsibility provide strong project control.",
+      "rationale": "Strong claimed installer route with good product relevance and minimal provenance quality."
+    }
+  ],
+  "rejectedItems": [
+    { "title": "IB-IT Cabling and Rosenberger OSI", "url": "https://ib-it.eu/", "reason": "Eligible installers but more passive-cabling-focused and below the selected ten on direct product fit." },
+    { "title": "Other target domains", "url": "https://www.acventis.de/", "reason": "Their attached snippets are repeated generated lists without candidate-specific evidence for the target domain." },
+    { "title": "Duplicate repeated list results", "url": "https://www.greenit.systems/", "reason": "Merged into one unique candidate per evidenced company." }
+  ]
+}

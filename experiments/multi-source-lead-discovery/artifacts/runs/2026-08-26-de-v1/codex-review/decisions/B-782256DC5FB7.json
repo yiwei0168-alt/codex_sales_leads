@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "blindBatchId": "B-782256DC5FB7",
+  "reviewMode": "discovery-pool",
+  "channelId": "b2b-resale",
+  "reviewer": "runtime-managed-codex",
+  "externalSearchUsed": false,
+  "selectedCandidates": [
+    {
+      "companyName": "Bechtle AG", "officialUrl": "https://www.bechtle.com/", "roles": ["VAR", "Reseller"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 4 }, "sourceEvidenceIds": ["E-40FA1956F7"],
+      "roleEvidence": "Official German business-network shop page offers network hardware for companies.",
+      "productFitEvidence": "Routers, switches and access points directly cover Cudy's core SMB portfolio.",
+      "cooperationEvidence": "A broad purchasable business assortment provides a direct listing, quotation and resale path.",
+      "rationale": "Excellent B2B VAR/reseller target with concise first-party evidence."
+    },
+    {
+      "companyName": "OMG.DE GmbH", "officialUrl": "https://www.omg.de/", "roles": ["Reseller", "VAR"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 4, "evidenceReliability": 4 }, "sourceEvidenceIds": ["E-68BEEC604B"],
+      "roleEvidence": "Official specialist-dealer result describes professional networking products for companies and providers.",
+      "productFitEvidence": "Access points, switches and gateways in a centrally managed WLAN ecosystem directly overlap Cudy.",
+      "cooperationEvidence": "Specialist-dealer positioning supports product listing and recommendation, though the excerpt does not show procurement terms.",
+      "rationale": "Excellent specialist product fit and strong first-party evidence."
+    },
+    {
+      "companyName": "ITCE Systemhaus GmbH", "officialUrl": "https://www.itce-systemhaus.de/", "roles": ["VAR", "Reseller"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 4, "cooperationPath": 5, "evidenceReliability": 4 }, "sourceEvidenceIds": ["E-1F50230992"],
+      "roleEvidence": "German system house explicitly identifies and procures suitable hardware for business customers.",
+      "productFitEvidence": "Existing IT-infrastructure analysis supports networking use cases, although device categories are not listed.",
+      "cooperationEvidence": "Needs analysis, hardware selection, procurement and expert consultation form a complete VAR path.",
+      "rationale": "Outstanding cooperation mechanics with good but not fully specific product fit."
+    },
+    {
+      "companyName": "GermanProtect", "officialUrl": "https://www.germanprotect.com/", "roles": ["Dealer", "Reseller"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 4, "cooperationPath": 3, "evidenceReliability": 3 }, "sourceEvidenceIds": ["E-1C82B29C63"],
+      "roleEvidence": "German specialist-dealer product page offers routers within a network/video-surveillance assortment.",
+      "productFitEvidence": "Wireless routers with switching functionality overlap a material portion of Cudy's range.",
+      "cooperationEvidence": "Direct catalogue resale is visible, but B2B customer focus, advice and purchasing mechanics are not shown.",
+      "rationale": "Eligible niche dealer with relevant products and a relatively shallow cooperation path."
+    },
+    {
+      "companyName": "SNcom GmbH", "officialUrl": "https://www.sncom.de/", "roles": ["VAR"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 3, "cooperationPath": 4, "evidenceReliability": 2 }, "sourceEvidenceIds": ["E-D3D9DF0C05", "E-5C3F664E82", "E-ADA5CC89DC"],
+      "roleEvidence": "Multiple German industry-directory excerpts identify an ITK system house serving business, carrier and public customers.",
+      "productFitEvidence": "Placement in network-hardware/device supplier categories supports relevance, but no active device family is candidate-specific.",
+      "cooperationEvidence": "System-house delivery of tailored communications solutions implies specification and procurement influence.",
+      "rationale": "Plausible VAR supported by repeated third-party directory evidence, with moderate specificity."
+    }
+  ],
+  "rejectedItems": [
+    { "title": "R&S, Cisco, NETGEAR, D-Link and TP-Link pages", "url": "https://rs-nc.rohde-schwarz.com/de/", "reason": "Manufacturer or partner-program content rather than independent B2B reseller candidates." },
+    { "title": "Azenn Connect, sysob and ALSO", "url": "https://www.exertis-connect.de/", "reason": "Distributor/VAD candidates belong to the tier-one channel." },
+    { "title": "CPN, WLW, IndustryStock, Europages, GlobalSpec and ranking pages", "url": "https://www.cpn.network/", "reason": "Networks/directories rather than a sufficiently evidenced individual reseller candidate." },
+    { "title": "reichelt elektronik", "url": "https://www.reichelt.de/de/de/shop/kategorie/netzwerktechnik-5820", "reason": "Retail sale is clear, but the excerpt does not establish an eligible B2B reseller/VAR/dealer cooperation path." },
+    { "title": "IT-RESELL.COM", "url": "https://www.it-resell.com/page/netzwerktechnik-verkaufen", "reason": "The evidence establishes purchasing used equipment from sellers, not a route for listing and reselling new Cudy products." }
+  ]
+}

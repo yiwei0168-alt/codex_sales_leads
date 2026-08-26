@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "blindBatchId": "B-6B1FB907E9EB",
+  "reviewMode": "discovery-pool",
+  "channelId": "b2b-resale",
+  "reviewer": "runtime-managed-codex",
+  "externalSearchUsed": false,
+  "selectedCandidates": [
+    {
+      "companyName": "Bechtle AG", "officialUrl": "https://www.bechtle.com/", "roles": ["VAR", "Reseller"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 1 }, "sourceEvidenceIds": ["E-557C4F2DE4", "E-7DFBA7BAC3", "E-01B991C487"],
+      "roleEvidence": "Repeated packet summaries describe a German IT system house and direct B2B reseller with hardware procurement.",
+      "productFitEvidence": "Routers, switches, access points, firewalls and enterprise Wi-Fi directly overlap Cudy.",
+      "cooperationEvidence": "Planning, hardware procurement, deployment and managed services create a complete VAR route.",
+      "rationale": "Excellent claimed fit, but the excerpts are repeated generated lists rather than claim-level page content, so reliability is minimal."
+    },
+    {
+      "companyName": "Computacenter AG & Co. oHG", "officialUrl": "https://www.computacenter.com/", "roles": ["VAR", "Reseller"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 1 }, "sourceEvidenceIds": ["E-D2E4F0D9F4"],
+      "roleEvidence": "Packet summary identifies a German B2B hardware reseller and IT service provider.",
+      "productFitEvidence": "Enterprise networking infrastructure and data-centre hardware are strongly relevant.",
+      "cooperationEvidence": "Hardware resale plus managed network delivery provides procurement and deployment influence.",
+      "rationale": "Strong claimed VAR route with only low-reliability generated-list evidence."
+    },
+    {
+      "companyName": "SVA Systemvertrieb Alexander GmbH", "officialUrl": "https://www.sva.de/", "roles": ["VAR", "Reseller"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 1 }, "sourceEvidenceIds": ["E-7DEB3D9156"],
+      "roleEvidence": "Packet summary identifies a German system house specializing in enterprise IT infrastructure and hardware procurement.",
+      "productFitEvidence": "Network hardware, data centres and network security overlap Cudy's professional portfolio.",
+      "cooperationEvidence": "Explicit procurement and system-house positioning provide a direct VAR transaction path.",
+      "rationale": "Excellent claimed commercial fit with weak source-grounding quality."
+    },
+    {
+      "companyName": "JACOB Elektronik GmbH", "officialUrl": "https://www.jacob.de/", "roles": ["Reseller", "VAR"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 1 }, "sourceEvidenceIds": ["E-AE5D97AD55"],
+      "roleEvidence": "Packet summary describes a dedicated German B2B online networking specialist.",
+      "productFitEvidence": "Managed switches, Wi-Fi 6/7 access points and business routers directly match Cudy.",
+      "cooperationEvidence": "B2B specialist assortment provides an explicit listing and resale path.",
+      "rationale": "Excellent claimed target, penalized because the evidence is a generated list attached to the URL."
+    },
+    {
+      "companyName": "WLAN-Shop24 (Varistano GmbH)", "officialUrl": "https://www.wlan-shop24.de/", "roles": ["Reseller", "VAR"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "evidenceReliability": 1 }, "sourceEvidenceIds": ["E-E2D2BFE7C4"],
+      "roleEvidence": "Packet summary calls it a German specialist retailer and consultant for industrial and commercial networking.",
+      "productFitEvidence": "Business WLAN access points and outdoor wireless directly overlap Cudy.",
+      "cooperationEvidence": "Specialist retail plus consulting implies both resale and recommendation influence.",
+      "rationale": "Strong niche target whose supplied evidence has very low provenance quality."
+    },
+    {
+      "companyName": "IT-HAUS GmbH", "officialUrl": "https://www.it-haus.com/", "roles": ["VAR"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 4, "evidenceReliability": 1 }, "sourceEvidenceIds": ["E-1D97E5C305"],
+      "roleEvidence": "Packet summary identifies a German IT system house delivering end-to-end network infrastructure to SMEs.",
+      "productFitEvidence": "Managed switching, Layer 2/3 routing and business WLAN strongly match Cudy.",
+      "cooperationEvidence": "End-to-end infrastructure delivery implies product influence, though purchasing is not explicit in the excerpt.",
+      "rationale": "Excellent product fit but low-provenance evidence and incomplete procurement detail."
+    },
+    {
+      "companyName": "CANCOM SE", "officialUrl": "https://www.cancom.de/", "roles": ["VAR"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 4, "evidenceReliability": 1 }, "sourceEvidenceIds": ["E-AB2C91507E", "E-EA9C043CB7", "E-D67D6BC297"],
+      "roleEvidence": "Repeated summaries identify a German IT system house and VAR for business customers.",
+      "productFitEvidence": "Managed switches, enterprise WLAN, SD-WAN and network security are highly relevant.",
+      "cooperationEvidence": "Tailored infrastructure and integration indicate specification influence, but direct purchasing is not demonstrated.",
+      "rationale": "Strong claimed VAR with repeated but non-primary evidence."
+    },
+    {
+      "companyName": "indasys IT Systemhaus Gruppe", "officialUrl": "https://www.indasys.de/", "roles": ["VAR"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 4, "cooperationPath": 4, "evidenceReliability": 1 }, "sourceEvidenceIds": ["E-8CD1FB7323"],
+      "roleEvidence": "Packet list identifies indasys as a German VAR in a set specializing in SME networking, business Wi-Fi and switching.",
+      "productFitEvidence": "The list context supports relevant networking use cases, though candidate-specific product detail is truncated.",
+      "cooperationEvidence": "VAR designation implies recommendation and resale, without a documented purchasing workflow.",
+      "rationale": "Eligible but only thin, generated-list evidence is available."
+    },
+    {
+      "companyName": "Controlware GmbH", "officialUrl": "https://www.controlware.de/", "roles": ["VAR"],
+      "eligibility": { "companyExists": true, "germanyPresence": true, "networkingRelevant": true, "submittedChannelRole": true, "sufficientEvidence": true, "uniqueWithinList": true },
+      "levels": { "productUseCaseFit": 4, "cooperationPath": 4, "evidenceReliability": 1 }, "sourceEvidenceIds": ["E-1C425C8BCE"],
+      "roleEvidence": "Packet summary calls it a German IT system house and system integrator focused on networking.",
+      "productFitEvidence": "Networking focus is clear, but device families and use cases are truncated.",
+      "cooperationEvidence": "System-house/integrator status implies specification and resale influence, while procurement is not explicit.",
+      "rationale": "Credible claimed VAR role with limited content and minimal evidence reliability."
+    }
+  ],
+  "rejectedItems": [
+    { "title": "ALLNET and distributor candidates", "url": "https://www.allnet.de/", "reason": "The packet describes a distributor serving resellers/system integrators, which belongs to the tier-one channel rather than B2B resale." },
+    { "title": "Remaining target domains", "url": "https://www.datagroup.de/", "reason": "Their attached snippets are generic repeated candidate lists and do not contain candidate-specific claims for the target domain." },
+    { "title": "Duplicate Bechtle and CANCOM entries", "url": "https://www.bechtle.com/", "reason": "Merged into one unique candidate per company." }
+  ]
+}
