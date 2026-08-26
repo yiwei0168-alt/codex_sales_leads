@@ -1,0 +1,252 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "auditVersion": "blind-audit-v1.1",
+  "runId": "2026-08-26-de-v1",
+  "status": "human-blind-decisions-frozen-before-deblinding",
+  "reviewer": "user",
+  "decisionCount": 12,
+  "coreDecisionCount": 6,
+  "problemDecisionCount": 6,
+  "supplementalOfficialSiteChecksOccurred": true,
+  "supplementalEvidencePolicy": "Reviewer-observed official-site facts are preserved in notes and reported as supplemental evidence; current Cudy relationship itself remains zero-weight.",
+  "hiddenDuringDecision": [
+    "system",
+    "provider",
+    "geminiMode",
+    "rank",
+    "modelScore",
+    "occurrenceCount",
+    "cudyRelationship"
+  ],
+  "decisions": [
+    {
+      "blindCandidateId": "C-333AB110B4E6",
+      "sampleType": "core",
+      "companyName": "SCALCOM",
+      "officialUrl": "https://scalcom.de/",
+      "gates": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "sufficientEvidence": true
+      },
+      "validCategory": "b2b-resale",
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 4,
+        "evidenceReliability": 5
+      },
+      "reviewerNotes": "角色介于 VAD 和 VAR 之间；实际经营形态是偏增值型的 B2B online shop，因此本轮归入 B2B 转售。"
+    },
+    {
+      "blindCandidateId": "C-5C4CF672AC7E",
+      "sampleType": "core",
+      "companyName": "Netzwerk-Arzt",
+      "officialUrl": "https://www.netzwerk-arzt.de/",
+      "gates": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "sufficientEvidence": true
+      },
+      "validCategory": "project-services",
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 3,
+        "evidenceReliability": 3
+      },
+      "reviewerNotes": "官网自述提供 SMB networking 服务，与 Cudy 产品匹配；现有材料未证明库存、合作品牌或更完整的采购、选型与供应路径，未知信息不视为确定不存在。"
+    },
+    {
+      "blindCandidateId": "C-7A91FBCD0523",
+      "sampleType": "core",
+      "companyName": "Red Eagle IT Distribution GmbH",
+      "officialUrl": "https://redeagle-it.de/",
+      "gates": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "sufficientEvidence": true
+      },
+      "validCategory": "tier1-distribution",
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 4,
+        "evidenceReliability": 4
+      },
+      "reviewerNotes": "判断为 VAD。公司规模较小，可能不直接从品牌采购，也可能是 sub-distributor；规模仅作为采购层级的辅助信息，不直接扣分。合作品牌包括 D-Link，业务与 Cudy 高度相近。"
+    },
+    {
+      "blindCandidateId": "C-857CBF410400",
+      "sampleType": "core",
+      "companyName": "Infinigate Deutschland GmbH",
+      "officialUrl": "https://www.infinigate.de/",
+      "gates": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "sufficientEvidence": true
+      },
+      "validCategory": "tier1-distribution",
+      "levels": {
+        "productUseCaseFit": 2,
+        "cooperationPath": 4,
+        "evidenceReliability": 4
+      },
+      "reviewerNotes": "判断为 VAD。渠道合作路径清晰，但现有材料只能证明泛网络相关业务，没有证据显示其业务与 Cudy 核心产品高度匹配。"
+    },
+    {
+      "blindCandidateId": "C-8D3734DA95B9",
+      "sampleType": "core",
+      "companyName": "Skaylink GmbH",
+      "officialUrl": "https://www.skaylink.com/",
+      "gates": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": false,
+        "sufficientEvidence": true
+      },
+      "validCategory": "none-or-unclear",
+      "levels": {
+        "productUseCaseFit": 0,
+        "cooperationPath": 0,
+        "evidenceReliability": 2
+      },
+      "reviewerNotes": "公司真实并在德国经营，但更像云服务方案与咨询公司；没有明确证据证明其具备与 Cudy 相关的 networking 硬件采购、转售、选型或部署业务，因此 networking 相关性门槛不通过。"
+    },
+    {
+      "blindCandidateId": "C-A646DF2CC549",
+      "sampleType": "problem",
+      "companyName": "WLAN-Shop24 (Varistano GmbH)",
+      "officialUrl": "https://www.wlan-shop24.de/",
+      "gates": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "sufficientEvidence": true
+      },
+      "validCategory": "b2b-resale",
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 4,
+        "evidenceReliability": 5
+      },
+      "reviewerNotes": "判断为 VAR 或 Reseller。审核人通过官网发现该公司已经销售 Cudy，采购与上架路径已被现实验证，属于优秀搜索结果。现有 Cudy 关系本身不额外加分，但可证明合作路径成立；该发现属于人工检查官网得到的补充信息，并非原盲审摘录直接提供。"
+    },
+    {
+      "blindCandidateId": "C-B53C22FC38AA",
+      "sampleType": "problem",
+      "companyName": "smaRTtechnik GmbH & Co. KG",
+      "officialUrl": "https://smarttechnik.de/",
+      "gates": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "sufficientEvidence": true
+      },
+      "validCategory": "project-services",
+      "levels": {
+        "productUseCaseFit": 2,
+        "cooperationPath": 3,
+        "evidenceReliability": 3
+      },
+      "reviewerNotes": "正确官网为 https://smarttechnik.eu/，原提交的 https://smarttechnik.de/ 错误。公司真实，判断为 Installer／项目服务；偏企业级网络方案，与 Cudy 产品匹配度不高，且没有直接证据证明其与 networking 品牌直接合作或掌握采购权。"
+    },
+    {
+      "blindCandidateId": "C-B74B9D01DF37",
+      "sampleType": "problem",
+      "companyName": "SoftwareOne Deutschland GmbH",
+      "officialUrl": "https://www.softwareone.com/",
+      "gates": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": false,
+        "sufficientEvidence": true
+      },
+      "validCategory": "none-or-unclear",
+      "levels": {
+        "productUseCaseFit": 0,
+        "cooperationPath": 0,
+        "evidenceReliability": 2
+      },
+      "reviewerNotes": "公司真实并在德国经营，但现有材料显示其更像 IT 软件、云服务和咨询公司，缺少与 networking 硬件的实质相关性，因此 networking 相关性门槛不通过。"
+    },
+    {
+      "blindCandidateId": "C-C526CAFCD3BE",
+      "sampleType": "problem",
+      "companyName": "ADN – Advanced Digital Network Distribution GmbH",
+      "officialUrl": "https://www.adn.de/",
+      "gates": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "sufficientEvidence": true
+      },
+      "validCategory": "tier1-distribution",
+      "levels": {
+        "productUseCaseFit": 2,
+        "cooperationPath": 4,
+        "evidenceReliability": 3
+      },
+      "reviewerNotes": "公司真实并在德国经营，判断为 Distributor／VAD。与 Omada 合作证明其具备网络品牌引入和渠道合作可能性，但业务更偏企业级，与 Cudy 当前产品匹配度有限；提交证据存在公司与来源 URL 错配。"
+    },
+    {
+      "blindCandidateId": "C-D0206FA0ABED",
+      "sampleType": "problem",
+      "companyName": "Avanis GmbH",
+      "officialUrl": "https://avanis.de/",
+      "gates": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "sufficientEvidence": true
+      },
+      "validCategory": "tier1-distribution",
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 4,
+        "evidenceReliability": 4
+      },
+      "reviewerNotes": "官网支持其为 VAD／Distributor；同时分销 Ubiquiti，说明产品定位与 Cudy 较接近。面向经销商和 System House 供货，并具备 WLAN 规划及培训能力，但直接采购、库存和品牌引入流程尚未得到完整证明；两条原始证据内容重复。"
+    },
+    {
+      "blindCandidateId": "C-D14CBB6B96F4",
+      "sampleType": "core",
+      "companyName": "BFE Studio und Medien Systeme GmbH",
+      "officialUrl": "https://www.bfe.tv/",
+      "gates": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": false,
+        "sufficientEvidence": true
+      },
+      "validCategory": "none-or-unclear",
+      "levels": {
+        "productUseCaseFit": 0,
+        "cooperationPath": 0,
+        "evidenceReliability": 2
+      },
+      "reviewerNotes": "公司真实并在德国经营，但当前材料没有直接证明其实质 networking 业务，广播和媒体 IP 系统描述不足以建立与 Cudy 对应网络产品的相关性，因此 networking 相关性门槛不通过。"
+    },
+    {
+      "blindCandidateId": "C-FD81D92A000A",
+      "sampleType": "problem",
+      "companyName": "IT-HAUS GmbH",
+      "officialUrl": "https://www.it-haus.com/",
+      "gates": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "sufficientEvidence": true
+      },
+      "validCategory": "b2b-resale",
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 4,
+        "evidenceReliability": 5
+      },
+      "reviewerNotes": "角色为 VAR + SI；本轮以 B2B 转售／VAR 作为主类别，同时具备 SI 项目服务能力。在售产品与 Cudy 匹配度很高。"
+    }
+  ]
+}

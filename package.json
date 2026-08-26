@@ -65,6 +65,7 @@
     "benchmark:discovery:verify-codex-review": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/verify-codex-review.ts",
     "benchmark:discovery:aggregate-codex-review": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/aggregate-codex-review.ts",
     "benchmark:discovery:prepare-audit": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/prepare-blind-audit.ts",
+    "benchmark:discovery:freeze-human-audit": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/freeze-human-audit.ts",
     "benchmark:discovery:verify": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/verify-discovery-run.ts"
   },
   "dependencies": {
