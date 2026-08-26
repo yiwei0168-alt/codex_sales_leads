@@ -26,6 +26,7 @@ const verificationQueries = [
   "VAD 和 VAR 应该怎样根据规模、采购能力和品牌直接采购关系区分？",
   "直接从品牌采购但主要服务最终客户的增值经销商属于 VAD 还是 VAR DVAR？",
   "VAR 是否必须同时属于 Reseller？",
+  "Dealer 和 Retailer 什么时候可以同时标记？实体门店是否是 Dealer 必要条件？",
 ];
 
 try {
@@ -56,6 +57,9 @@ try {
     "DVAR（Direct Value-Added Reseller）是 VAR 的直采子型",
     "标记 VAR 时必须同时标记 Reseller",
     "直采本身不能把 VAR 自动归为 VAD",
+    "Dealer 与 Retailer 默认不重叠",
+    "同时存在可验证的转售业务和线下零售店",
+    "是否获得授权不作为 Dealer 的硬性准入条件",
   ];
   const missingText = requiredText.filter((fragment) => !stored.combined_content.includes(fragment));
 

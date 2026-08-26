@@ -177,6 +177,66 @@ VAR 属于 Downstream Channel，因此可以根据市场覆盖、客户质量、
 
 没有公开采购来源时，应记录为 Distributor Supply／Brand Direct 待核验，不能强行推断。没有展示技术服务细节时，也不能把“未找到”写成“没有”；但由于实质性增值是 VAR 的定义条件，在缺乏足够证据时只能保留 VAR candidate／待核验，或暂时归为证据更充分的 Reseller。
 
+## Dealer（经销商）
+
+### 状态与规范名称
+
+- 状态：已由业务负责人确认。
+- 中文规范名称：经销商。
+- 英文规范名称：Dealer。
+- 所属角色家族：resale。
+- channel layer：Downstream Channel。
+- 角色关系：Dealer 是 Reseller 的本地化、交易型子类型；标记 Dealer 时必须同时标记 Reseller。
+
+### 完整定义
+
+Dealer 是从品牌方、Distributor／VAD 或其他合法上游采购产品，再以自身商业身份面向所在城市、区域或特定客户群进行转售的下级渠道客户。Dealer 通常依靠本地销售关系、特定品牌或品类专长、询价和报价、基础售后或专业客户服务开展业务，常见客户包括 SOHO、SMB、本地机构及个人专业用户。
+
+Dealer 通常规模较小、覆盖本地或区域市场，但规模不是硬性门槛。它可以拥有门店、展厅、贸易柜台、本地库存、维修点或本地销售团队，也可以主要通过电话、拜访、社交媒体或询价方式销售。实体场所和公开库存是强证据，不是必要条件。
+
+### 必要判断条件
+
+在公开证据足够的情况下，Dealer 至少需要满足：
+
+1. 实际采购并转售相关产品，以自身名义承担产品交易，而不是只介绍客户并收取佣金；
+2. 业务具有本地、区域、品牌专营、品类专业或关系型经销特征；
+3. 主要业务不是面向大众消费者的标准化线下零售。
+
+Dealer 不要求具备 VAR 那样的实质性方案设计或集成能力。若可验证其同时提供专业咨询、方案设计、复杂配置或项目交付，可以同时标记 VAR；若主要承担安装施工，可以同时标记 Installer。
+
+### 强证据与辅助证据
+
+强证据包括：品牌方、Distributor 或行业组织的官方 dealer 名录；候选公司官网明确自述 dealer／authorized dealer／IT dealer／network equipment dealer；面向企业或专业客户的询价、批量报价、客户经理、贸易账户或本地经销服务；可验证的特定区域、品牌或品类经销业务。
+
+辅助证据包括：本地销售团队、展厅、贸易柜台、维修点、库存、售后支持、社交媒体销售页面、当地商业目录和品牌陈列。多个辅助证据可以提高置信度，但目录站或地图平台仅将公司标记为 dealer 不能单独完成角色确认。
+
+### 授权状态
+
+“Dealer”描述业务角色，不自动表示获得品牌授权。只有品牌方、授权上游或可验证的正式伙伴资料能够支持 Authorized Dealer 状态；候选公司自称 authorized dealer 但没有独立证据时，应把授权状态标记为待核验。是否获得授权不作为 Dealer 的硬性准入条件。
+
+### 与 Retailer 的边界及重叠规则
+
+Dealer 与 Retailer 默认不重叠。Dealer 侧重专业或关系型转售、本地询价、企业／专业客户服务及品牌或品类经销；Retailer 侧重通过线下门店以公开价格向大众消费者销售标准化商品。
+
+只有当同一候选公司同时存在可验证的转售业务和线下零售店时，才允许同时标记 Dealer 与 Retailer。例如在渠道结构混合的不发达市场，一家公司可能一方面向本地企业或其他客户开展询价、批量采购和经销业务，另一方面经营面向消费者的实体门店。仅仅拥有门店不应自动增加 Dealer，只有转售业务但没有大众线下零售也不应增加 Retailer。
+
+### 与相邻角色的边界
+
+- Reseller：Reseller 是更宽泛的转售角色；Dealer 必须同时标记 Reseller，但普通 Reseller 不一定具有 Dealer 的本地、专业或关系型经销特征。
+- VAR：Dealer 不要求实质性技术增值；满足 VAR 的产品转售和增值条件时允许同时标记。
+- Retailer：默认互斥，只有同时验证转售业务和线下大众零售业务时才双重标记。
+- E-tailer：在线销售只表示销售渠道；具有 Dealer 核心业务且同时经营自有在线商店时可以多角色标记。
+- Distributor／VAD：主要向下级渠道供货的一级渠道不应仅因本地存在销售点而标为 Dealer。
+- Commission Agent：不取得货权、只撮合交易并获得佣金的主体不是 Dealer。
+
+### 商业价值等级
+
+Dealer 属于 Downstream Channel，可以根据客户质量、区域影响力、采购潜力、品类专长和增长性评为 KA、Priority、Standard 或 Long-tail。虽然 Dealer 通常规模较小，但不能仅凭公司规模预设其等级；在小型或不发达市场，具有强本地覆盖和客户关系的 Dealer 仍可能具有较高商业价值。
+
+### 信息缺失与置信度
+
+没有检索到实体门店、仓库、授权证书或库存只能记录为 unknown，不能当作否定证据。如果只能确认公司销售产品，却不能判断其面向大众零售还是专业／关系型转售，应暂时保留 Reseller 或 Dealer／Retailer 待核验，并优先核实客户类型、销售方式、是否存在企业询价／批量业务及是否经营线下零售店。
+
 # 参考依据
 
 以下资料用于支撑行业通用边界；本文件中的产品操作规则以业务负责人确认口径为最终准则。
@@ -190,6 +250,8 @@ VAR 属于 Downstream Channel，因此可以根据市场覆盖、客户质量、
 - Arrow ECS，Value-added services：https://www.arrow.com/globalecs/na/services/
 - TD SYNNEX，Solutions Aggregation：https://www.tdsynnex.com/na/us/solutions-aggregation/
 - TD SYNNEX，Connectivity partner models（VAR／Agent）：https://www.tdsynnex.com/na/us/connectivity/
+- Hikvision，Dealer Partner Program and channel partner types：https://pro-av.hikvision.com/sg/about-us/company-profile/
+- Hikvision Canada，Channel Partner Program：https://pro-av.hikvision.com/ca-en/Partners/
 - UK Department for Business and Trade，When to use an agent or distributor：https://www.business.gov.uk/export-from-uk/learn/categories/prepare-sell-new-country/routes-to-market/when-use-agent-or-distributor/
 - UK HMRC，INTM441080 Agents and distributors：https://www.gov.uk/hmrc-internal-manuals/international-manual/intm441080
 - European Commission，Working paper on distributors that also act as agents：https://competition-policy.ec.europa.eu/document/download/a2a40192-9491-450d-8878-e7d1a17ce732_en
@@ -206,9 +268,9 @@ export const CHANNEL_ROLE_TAXONOMY_DOCUMENT = {
   capturedAt: "2026-08-26T00:00:00+08:00",
   metadata: {
     topic: "channel-role-taxonomy",
-    policyVersion: "2026-08-26.3",
-    confirmedRoles: ["Distributor", "VAD", "VAR"],
-    pendingRoles: ["Dealer", "Reseller", "Retailer", "E-tailer", "SI", "Installer", "MSP", "ISP", "Commission Agent"],
+    policyVersion: "2026-08-26.4",
+    confirmedRoles: ["Distributor", "VAD", "VAR", "Dealer"],
+    pendingRoles: ["Reseller", "Retailer", "E-tailer", "SI", "Installer", "MSP", "ISP", "Commission Agent"],
     userConfirmed: true,
     temporalReviewRequired: false,
   },
