@@ -24,6 +24,8 @@ const verificationQueries = [
   "佣金型 Agent 是否属于 Distributor 一级代理商？",
   "Distributor 和 VAD 能否评为 KA？",
   "VAD 和 VAR 应该怎样根据规模、采购能力和品牌直接采购关系区分？",
+  "直接从品牌采购但主要服务最终客户的增值经销商属于 VAD 还是 VAR DVAR？",
+  "VAR 是否必须同时属于 Reseller？",
 ];
 
 try {
@@ -51,6 +53,9 @@ try {
     "标记 VAD 时必须同时标记 Distributor",
     "首要边界是采购层级及支撑该层级的规模和采购能力",
     "普通物流、融资、订货、基础市场活动或一般产品培训本身不足以证明 VAD",
+    "DVAR（Direct Value-Added Reseller）是 VAR 的直采子型",
+    "标记 VAR 时必须同时标记 Reseller",
+    "直采本身不能把 VAR 自动归为 VAD",
   ];
   const missingText = requiredText.filter((fragment) => !stored.combined_content.includes(fragment));
 

@@ -99,7 +99,7 @@ VAD 的增值能力可以包括专职售前工程师或解决方案架构师、�
 - VAR 通常规模及单次采购能力相对较弱，更可能从 Distributor／VAD 采购，再向最终客户转售并提供方案、集成、配置或其他增值服务，因此属于下级渠道。
 - 候选公司的官网自述、公司定位以及品牌方对其身份的官方说明是重要判断依据。公司明确将自己定位为 value-added distributor、specialist distributor 或 VAR／solution provider 时，应结合其他证据优先采用其真实业务定位。
 
-“规模大”是判断直接采购能力的代理信号，不是独立且绝对的分类标准。员工数、营业额或网站流量不能单独决定 VAD／VAR；应尽可能验证实际采购路径、品牌授权层级、下级渠道客户、批量采购能力及渠道项目。不同国家、品牌和产品线可能设置不同的合作门槛，因此同一家公司可能在某条产品线是 VAD，在另一条产品线是 VAR，分类时应保留市场和产品线范围。
+“规模大”是判断直接采购能力的代理信号，不是独立且绝对的分类标准。员工数、营业额或网站流量不能单独决定 VAD／VAR；应尽可能验证实际采购路径、品牌授权层级、下级渠道客户、批量采购能力及渠道项目。直接向品牌采购但主要服务最终客户、没有下级渠道供货职能的公司仍属于 VAR，可进一步标记为 DVAR／direct-buy VAR；直采本身不能把 VAR 自动归为 VAD。不同国家、品牌和产品线可能设置不同的合作门槛，因此同一家公司可能在某条产品线是 VAD，在另一条产品线是 VAR，分类时应保留市场和产品线范围。
 
 ### 必要判断条件
 
@@ -123,6 +123,60 @@ VAD 可以协助下级伙伴完成面向最终客户的售前、PoC、配置、�
 
 品牌直接采购合同和 MOV 往往不会公开。未检索到合同、订单或采购金额只能标记为 unknown，不能直接推断候选公司从一级代理商采购。系统应综合品牌官方身份、公司自述定位、规模和资金代理信号、下级伙伴计划及技术能力确定置信度；当证据无法区分 VAD 和 VAR 时，应保留 VAD／VAR 待核验状态，并把实际采购来源和品牌授权层级列为优先核实项。
 
+## VAR（Value-Added Reseller）
+
+### 状态与规范名称
+
+- 状态：已由业务负责人确认。
+- 中文规范名称：增值经销商／增值转售商。
+- 英文规范名称：Value-Added Reseller（VAR）。
+- 所属角色家族：resale。
+- channel layer：Downstream Channel。
+- 角色关系：VAR 是 Reseller 的增值子类型；标记 VAR 时必须同时标记 Reseller。
+
+### 完整定义
+
+VAR 是采购并转售 IT 或网络产品，以自身名义向最终企业、机构或其他产品使用者报价、销售或开票，并在产品之外提供具有商业意义的技术、服务或解决方案增值的下级渠道客户。VAR 通常从 Distributor／VAD 采购；规模和采购能力较强、能够满足品牌直接合作及 MOV 要求的 VAR 也可以直接从品牌方采购。
+
+典型增值能力包括技术咨询与产品选型、网络或解决方案设计、配置与预配置、跨产品组合、集成、安装部署、迁移、培训、技术支持、维护及面向特定垂直行业的定制化方案。增值服务必须是可验证的实际业务能力，不能只根据公司名称中出现 solution、technology 或 value-added 等词语判断。
+
+### DVAR／direct-buy VAR
+
+DVAR（Direct Value-Added Reseller）是 VAR 的直采子型，不作为与 VAR 并列的基础 channel role。公司直接从品牌方采购，但主要销售和服务对象仍是最终客户，且没有可验证的下级渠道供货职能时，应标记为 VAR 和 Reseller，并用 DVAR／direct-buy 或 supply model = Brand Direct 表达其采购方式，不得仅因直采、规模较大或单笔订单较高而归为 VAD。
+
+只有当候选公司同时满足直接品牌采购、向下级渠道供货及实质性增值能力三个条件时，才归为 VAD；如果主要面向最终客户交付，则无论是否直采，基础角色仍是 VAR。
+
+### 必要判断条件
+
+在公开证据足够的情况下，VAR 至少需要满足：
+
+1. 公司实际采购并转售相关产品，以自身名义参与报价、合同、开票或承担产品交易责任，而不是只介绍客户并收取佣金；
+2. 主要客户对象是最终企业、公共机构、教育、酒店、运营商或其他实际使用解决方案的组织；
+3. 除产品转售外，具有至少一种可验证且对客户结果有实质影响的增值能力。
+
+### 强证据与辅助证据
+
+强证据包括：候选公司官网明确自述 VAR／value-added reseller／solution provider；品牌方或 Distributor 的官方伙伴名录将其标为 VAR；官网展示由公司承担报价、方案设计、配置、安装、部署、培训、支持或维护；可验证的最终客户项目、案例研究、技术认证及专业服务目录。
+
+辅助证据包括：面向企业客户的产品与服务组合、垂直行业专长、技术团队、服务台、项目案例、厂商认证、客户支持条款以及从 Distributor／VAD 获得的伙伴身份。多个辅助证据可以提高置信度，但简单的产品目录、购物车或“联系我们询价”不足以单独证明 VAR。
+
+### 与相邻角色的边界
+
+- Reseller：仅进行产品转售、增值服务很少或无法验证时，只标记 Reseller；VAR 必须同时标记 Reseller。
+- VAD：VAD 必须直接向品牌采购并向下级渠道供货；VAR 主要服务最终客户。直采 VAR 使用 DVAR／Brand Direct 表达，不能仅凭直采归为 VAD。
+- SI：SI 的核心是复杂系统、多个技术域或定制化项目的集成与交付；VAR 的核心仍包含产品转售和围绕产品增加价值。满足两组条件时允许同时标记。
+- Installer：只承担安装施工、不负责产品方案和转售时，不属于 VAR；同时销售产品并提供安装时可以多角色标记。
+- MSP：持续按订阅、合同或 SLA 运营客户系统时可以同时标记 MSP；一次性销售、配置或项目支持本身不构成 MSP。
+- Commission Agent：只介绍客户，由品牌、运营商或其他供应方与客户签约开票，并按佣金获得报酬的主体属于 Agent，不是 VAR。
+
+### 商业价值等级
+
+VAR 属于 Downstream Channel，因此可以根据市场覆盖、客户质量、采购潜力、技术能力、增长性及合作价值评为 KA、Priority、Standard 或 Long-tail。是否为 DVAR、是否直采以及公司规模可以作为商业价值证据，但不能单独决定 KA。
+
+### 信息缺失与置信度
+
+没有公开采购来源时，应记录为 Distributor Supply／Brand Direct 待核验，不能强行推断。没有展示技术服务细节时，也不能把“未找到”写成“没有”；但由于实质性增值是 VAR 的定义条件，在缺乏足够证据时只能保留 VAR candidate／待核验，或暂时归为证据更充分的 Reseller。
+
 # 参考依据
 
 以下资料用于支撑行业通用边界；本文件中的产品操作规则以业务负责人确认口径为最终准则。
@@ -132,8 +186,10 @@ VAD 可以协助下级伙伴完成面向最终客户的售前、PoC、配置、�
 - Global Technology Distribution Council，Understanding the Channel：https://gtdc.org/wp-content/uploads/2021/09/Understanding-the-Channel_2100907.pdf
 - Cisco，Distributors：https://www.cisco.com/site/us/en/partners/distributors/index.html
 - Cisco，Westcon-Comstor VAD profile：https://www.cisco.com/c/de_de/training-events/events/it-sa.html
+- Cisco，Distributor Program terms（VAR／DVAR channel tiers）：https://www.cisco.com/c/dam/en_us/partners/distributor/01-14-2026-final-formatted-version-2hfy26-distributor-program-invest-terms-and-conditions.pdf
 - Arrow ECS，Value-added services：https://www.arrow.com/globalecs/na/services/
 - TD SYNNEX，Solutions Aggregation：https://www.tdsynnex.com/na/us/solutions-aggregation/
+- TD SYNNEX，Connectivity partner models（VAR／Agent）：https://www.tdsynnex.com/na/us/connectivity/
 - UK Department for Business and Trade，When to use an agent or distributor：https://www.business.gov.uk/export-from-uk/learn/categories/prepare-sell-new-country/routes-to-market/when-use-agent-or-distributor/
 - UK HMRC，INTM441080 Agents and distributors：https://www.gov.uk/hmrc-internal-manuals/international-manual/intm441080
 - European Commission，Working paper on distributors that also act as agents：https://competition-policy.ec.europa.eu/document/download/a2a40192-9491-450d-8878-e7d1a17ce732_en
@@ -150,9 +206,9 @@ export const CHANNEL_ROLE_TAXONOMY_DOCUMENT = {
   capturedAt: "2026-08-26T00:00:00+08:00",
   metadata: {
     topic: "channel-role-taxonomy",
-    policyVersion: "2026-08-26.2",
-    confirmedRoles: ["Distributor", "VAD"],
-    pendingRoles: ["VAR", "Dealer", "Reseller", "Retailer", "E-tailer", "SI", "Installer", "MSP", "ISP", "Commission Agent"],
+    policyVersion: "2026-08-26.3",
+    confirmedRoles: ["Distributor", "VAD", "VAR"],
+    pendingRoles: ["Dealer", "Reseller", "Retailer", "E-tailer", "SI", "Installer", "MSP", "ISP", "Commission Agent"],
     userConfirmed: true,
     temporalReviewRequired: false,
   },
