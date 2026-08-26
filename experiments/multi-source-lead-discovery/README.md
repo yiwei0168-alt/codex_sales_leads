@@ -19,7 +19,17 @@ Supported provider names:
 - `brave`
 - `searchapi`
 
-Raw benchmark artifacts will be stored under `runs/raw` and are ignored by Git. API keys, raw company results and local evaluation decisions must never be committed.
+After the frozen input manifest is committed, the reproducible measured workflow is:
+
+1. `npm run benchmark:discovery:run -- --phase=preflight`
+2. `npm run benchmark:discovery:run -- --phase=discovery`
+3. commit and push the sanitized discovery artifacts;
+4. `npm run benchmark:discovery:run -- --phase=evaluate`
+5. `npm run benchmark:discovery:prepare-audit`
+
+The runner is resumable. A successful raw result is reused, while failed attempts remain locally recorded. Evaluation refuses to start unless every planned discovery result exists.
+
+Raw benchmark artifacts are stored under `runs/raw` and are ignored by Git. API keys, provider-native payloads, the blind identity map and local human-review decisions must never be committed.
 
 ## Intended provider roles
 

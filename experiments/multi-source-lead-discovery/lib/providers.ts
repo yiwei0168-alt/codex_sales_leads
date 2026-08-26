@@ -47,6 +47,10 @@ function credentials(id: DiscoveryProviderId): { apiKey: string; baseUrl: string
   return { apiKey, baseUrl: process.env[config.baseUrlEnv]?.trim() || config.defaultBaseUrl };
 }
 
+function geminiCredentials(): { apiKey: string; baseUrl: string } {
+  return credentials("gemini");
+}
+
 function item(
   providerId: DiscoveryProviderId,
   value: Omit<DiscoveryItem, "providerId" | "rank">,
@@ -112,7 +116,7 @@ class GeminiDiscoveryProvider implements DiscoveryProvider {
       title: new URL(urlValue).hostname.replace(/^www\./, ""), url: urlValue,
       snippet: answerText.slice(0, 2_000), sourceKind: "grounded-answer",
     }, index));
-    return result(this.id, query, startedAt, items, { answerText, sourceUrls: urls });
+    return result(this.id, query, startedAt, items, { answerText, sourceUrls: urls, rawResponse: body });
   }
 }
 
@@ -129,7 +133,10 @@ class TavilyDiscoveryProvider implements DiscoveryProvider {
     const items = response.results.map((entry, index) => item(this.id, {
       title: entry.title, url: entry.url, snippet: entry.content, sourceKind: "web",
     }, index));
-    return result(this.id, query, startedAt, items, { usage: { credits: response.creditsUsed } });
+    return result(this.id, query, startedAt, items, {
+      usage: { credits: response.creditsUsed },
+      rawResponse: response,
+    });
   }
 }
 
@@ -164,7 +171,7 @@ class GooglePlacesDiscoveryProvider implements DiscoveryProvider {
       snippet: [place.primaryTypeDisplayName?.text, place.formattedAddress].filter(Boolean).join(" · "),
       sourceKind: "place", externalId: place.id,
     }, index));
-    return result(this.id, query, startedAt, items);
+    return result(this.id, query, startedAt, items, { rawResponse: body });
   }
 }
 
@@ -191,7 +198,7 @@ class ExaDiscoveryProvider implements DiscoveryProvider {
       title: entry.title ?? new URL(entry.url).hostname, url: entry.url,
       snippet: entry.text?.slice(0, 2_000) ?? "", sourceKind: "web", externalId: entry.id,
     }, index)] : []);
-    return result(this.id, query, startedAt, items);
+    return result(this.id, query, startedAt, items, { rawResponse: body });
   }
 }
 
@@ -217,7 +224,7 @@ class BraveDiscoveryProvider implements DiscoveryProvider {
       title: entry.title ?? new URL(entry.url).hostname, url: entry.url,
       snippet: entry.description ?? "", sourceKind: "web",
     }, index)] : []);
-    return result(this.id, query, startedAt, items);
+    return result(this.id, query, startedAt, items, { rawResponse: body });
   }
 }
 
@@ -243,8 +250,52 @@ class SearchApiDiscoveryProvider implements DiscoveryProvider {
       title: entry.title ?? new URL(entry.link).hostname, url: entry.link,
       snippet: entry.snippet ?? "", sourceKind: "web",
     }, entry.position ? entry.position - 1 : index)] : []);
-    return result(this.id, query, startedAt, items);
+    return result(this.id, query, startedAt, items, { rawResponse: body });
   }
+}
+
+export async function runGeminiFullSearch(
+  prompt: string,
+  query: Omit<DiscoveryQuery, "query">,
+  options: ProviderOptions = {},
+  signal?: AbortSignal,
+): Promise<DiscoveryProviderResult> {
+  const startedAt = Date.now();
+  const fetchImplementation = options.fetchImplementation ?? fetch;
+  const timeoutMs = options.timeoutMs ?? 180_000;
+  const { apiKey, baseUrl } = geminiCredentials();
+  const url = trustedEndpoint(baseUrl.replace(/\/openai(?:\/v1)?\/?$/i, ""),
+    ["generativelanguage.googleapis.com"], "interactions");
+  const body = await requestJson<{
+    steps?: Array<{ type?: string; content?: Array<{ type?: string; text?: string }> }>;
+    usage?: Record<string, number>;
+  }>("gemini-full", url, {
+    method: "POST",
+    headers: { "x-goog-api-key": apiKey, "content-type": "application/json" },
+    body: JSON.stringify({
+      model: process.env.GEMINI_DISCOVERY_MODEL?.trim()
+        || process.env.GEMINI_SEARCH_MODEL?.trim() || "gemini-3.6-flash",
+      input: prompt,
+      tools: [{ type: "google_search" }],
+      generation_config: { thinking_level: "low" },
+    }),
+  }, fetchImplementation, timeoutMs, signal);
+  const answerText = (body.steps ?? []).filter((step) => step.type === "model_output")
+    .flatMap((step) => step.content ?? []).filter((content) => content.type === "text")
+    .map((content) => content.text ?? "").join("").trim();
+  const urls = publicUrls(body);
+  const items = urls.map((urlValue, index) => item("gemini", {
+    title: new URL(urlValue).hostname.replace(/^www\./, ""),
+    url: urlValue,
+    snippet: answerText.slice(0, 2_000),
+    sourceKind: "grounded-answer",
+  }, index));
+  return result("gemini", { ...query, query: prompt }, startedAt, items, {
+    answerText,
+    sourceUrls: urls,
+    usage: body.usage,
+    rawResponse: body,
+  });
 }
 
 export function createDiscoveryProvider(id: DiscoveryProviderId, options: ProviderOptions = {}): DiscoveryProvider {

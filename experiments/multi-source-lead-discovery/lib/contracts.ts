@@ -36,6 +36,7 @@ export interface DiscoveryProviderResult {
   requestCount: number;
   latencyMs: number;
   usage?: Record<string, number>;
+  rawResponse?: unknown;
 }
 
 export interface DiscoveryProvider {

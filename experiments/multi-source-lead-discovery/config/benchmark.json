@@ -39,6 +39,7 @@
   },
   "execution": {
     "frozenAt": "2026-08-26T16:08:00+08:00",
+    "runId": "2026-08-26-de-v1",
     "queriesPerChannel": 3,
     "maxResultsPerQuery": 10,
     "productDiscoveryRequestsPerProvider": 9,

@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type { DiscoveryProviderId, DiscoveryQuery } from "./contracts";
-import { createDiscoveryProvider, discoveryEnvironmentStatus } from "./providers";
+import { createDiscoveryProvider, discoveryEnvironmentStatus, runGeminiFullSearch } from "./providers";
 
 const query: DiscoveryQuery = {
   query: "WLAN Systemhaus Hotel Netzwerktechnik",
@@ -45,6 +45,21 @@ describe("multi-source discovery providers", () => {
     const request = JSON.parse(fetchMock.mock.calls[0][1].body as string);
     expect(request.tools).toEqual([{ type: "google_search" }]);
     expect(output.sourceUrls).toContain("https://example.de/");
+    expect(output.rawResponse).toBeDefined();
+  });
+
+  it("runs Gemini Full as one exact end-to-end grounded request", async () => {
+    configured("gemini");
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({
+      steps: [{ type: "model_output", content: [{ type: "text", text: "{\"channels\":[]}" }] }],
+    }), { status: 200 }));
+    const output = await runGeminiFullSearch("exact frozen prompt", {
+      countryCode: "DE", countryName: "Germany", languageCode: "de", maxResults: 20,
+    }, { fetchImplementation: fetchMock });
+    const request = JSON.parse(fetchMock.mock.calls[0][1].body as string);
+    expect(request.input).toBe("exact frozen prompt");
+    expect(request.tools).toEqual([{ type: "google_search" }]);
+    expect(output.answerText).toBe("{\"channels\":[]}");
   });
 
   it("uses Tavily advanced search with bounded results", async () => {
