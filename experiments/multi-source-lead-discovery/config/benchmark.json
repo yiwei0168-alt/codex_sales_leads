@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "protocolVersion": "multi-source-professional-discovery-v1",
-  "status": "protocol-design",
+  "status": "frozen-ready-to-run",
   "countryCode": "DE",
   "countryName": "Germany",
   "languageCode": "de",
@@ -37,6 +37,17 @@
     "maxResults": 3,
     "timeoutMs": 90000
   },
+  "execution": {
+    "frozenAt": "2026-08-26T16:08:00+08:00",
+    "queriesPerChannel": 3,
+    "maxResultsPerQuery": 10,
+    "productDiscoveryRequestsPerProvider": 9,
+    "geminiFullRequests": 1,
+    "providerRequestRetryLimit": 1,
+    "requestTimeoutMs": 90000,
+    "runOrder": ["gemini-full", "product-gemini", "product-tavily", "product-google-places", "product-exa", "product-brave", "product-searchapi"],
+    "crossSystemOutputAccessBeforeDiscoveryComplete": false
+  },
   "storage": {
     "rawDirectory": "runs/raw",
     "commitRawResults": false,
@@ -46,11 +57,46 @@
     "commitFinalReport": true
   },
   "scoring": {
-    "status": "pending-user-confirmation",
+    "status": "confirmed",
+    "roleTreatment": "eligibility-gate-and-separate-category-accuracy-metric",
+    "invalidDuplicateMiscategorizedOrMissingSlotScore": 0,
+    "candidateDimensions": {
+      "productUseCaseFit": { "weight": 45, "levelMultiplier": 9 },
+      "cooperationPath": { "weight": 35, "levelMultiplier": 7 },
+      "evidenceReliability": { "weight": 20, "levelMultiplier": 4 }
+    },
+    "levels": { "minimum": 0, "maximum": 5, "integersOnly": true },
+    "finalSlotsPerChannel": 10,
+    "channelAggregation": "sum-of-ten-slot-scores-divided-by-ten",
+    "overallAggregation": "equal-weight-macro-mean-of-three-channel-scores",
     "crossCategoryCompanyComparison": false,
     "companyScaleWeight": 0,
     "companyMarketCoverageWeight": 0,
     "pooledRecallIsRankingMetric": false,
-    "humanBlindAuditRequired": true
+    "humanBlindAuditRequired": true,
+    "blindAudit": {
+      "reviewer": "user",
+      "samplePercent": 20,
+      "minimumUniqueCompanies": 24,
+      "maximumUniqueCompanies": 36,
+      "riskSupplementMaximum": 6,
+      "seed": "CUDY-MULTI-SOURCE-DE-V1-BLIND-AUDIT",
+      "identityFieldsHidden": ["system", "provider", "geminiMode", "rank", "modelScore", "occurrenceCount", "cudyRelationship"],
+      "acceptance": {
+        "gateAgreementMinimum": 0.9,
+        "categoryAgreementMinimum": 0.9,
+        "weightedKappaMinimum": 0.75,
+        "scoreMeanAbsoluteErrorMaximum": 8,
+        "absoluteCategoryMeanBiasMaximum": 5
+      },
+      "numericCorrectionPolicy": "one-uniform-category-offset-for-all-systems-capped-at-plus-or-minus-8",
+      "providerSpecificCorrectionAllowed": false
+    },
+    "judge": {
+      "provider": "anthropic-compatible-claude",
+      "model": "claude-sonnet-4-6",
+      "temperature": 0,
+      "maxOutputTokens": 12000
+    }
   }
 }

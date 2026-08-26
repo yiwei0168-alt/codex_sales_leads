@@ -58,7 +58,8 @@
     "benchmark:prepare-human-audit": "node scripts/run-tsx.cjs experiments/global-model-lead-benchmark/scripts/prepare-human-audit.ts",
     "benchmark:evaluate-human-audit": "node scripts/run-tsx.cjs experiments/global-model-lead-benchmark/scripts/evaluate-human-audit.ts",
     "benchmark:discovery:env": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/check-environment.ts",
-    "benchmark:discovery:preflight": "node --use-env-proxy scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/preflight-provider.ts"
+    "benchmark:discovery:preflight": "node --use-env-proxy scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/preflight-provider.ts",
+    "benchmark:discovery:freeze": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/freeze-inputs.ts"
   },
   "dependencies": {
     "@langchain/langgraph": "^1.4.12",

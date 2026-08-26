@@ -1,24 +1,34 @@
 # Frozen input specification
 
-Status: **draft — do not run measured calls from this document yet**
+Status: **frozen for measurement — 2026-08-26**
 
 No secret is part of the frozen input. API endpoints and credential environment-variable names may be recorded; credential values may not.
 
-## Common benchmark brief
+## Canonical machine-readable input
 
-The final common brief will contain only the minimum Cudy facts, compact role definitions, target-market validity rules and output constraints confirmed by the user. Long role definitions remain in the shared taxonomy and are applied by the common downstream classifier rather than repeated inside every search query.
+[`../config/inputs.json`](../config/inputs.json) is the canonical source for every exact non-secret input: Cudy brief, compact role rules, provider queries, Gemini Full prompt, evaluator prompts and evaluator settings. This document explains how those strings are applied; it does not paraphrase or override them.
 
 ## Selected channel query packs
 
-Only the following semantic lanes will be frozen:
+Only the following semantic lanes are frozen:
 
 1. Tier-1 distribution — Distributor and VAD.
 2. B2B resale — Reseller, VAR/DVAR and Dealer.
 3. Project services — SI and Installer.
 
-Each lane will have German and English query variants. Search-only APIs receive short search queries, not the complete natural-language brief. Gemini Full receives the final concise end-to-end prompt. Gemini Discovery receives the same lane intent as the other discovery providers through its required provider wrapper.
+Each lane has two German queries and one English query. Search-only APIs receive only those short queries plus their required market wrapper. Gemini Full receives the one frozen concise end-to-end prompt. Gemini Discovery receives the same three lane queries as every other discovery-only provider.
 
-## Input manifest required before measurement
+## Fixed limits and evaluator
+
+- maximum discovery results per query: 10;
+- queries per channel: 3;
+- selected channels: 3;
+- Gemini Full requests: 1;
+- discovery-only requests per provider: 9;
+- common evaluator: `claude-sonnet-4-6`, temperature 0, maximum 12,000 output tokens;
+- evaluator input consists only of the frozen rules and the measured system's own discovery payload for that channel.
+
+## Generated input manifest
 
 The committed input manifest must record:
 
@@ -31,4 +41,4 @@ The committed input manifest must record:
 - SHA-256 hash for every input file;
 - confirmation that no unresolved placeholders remain.
 
-Any post-freeze input change creates a new protocol version; it cannot silently modify an in-progress measured run.
+Any post-freeze input change creates a new protocol version; it cannot silently modify an in-progress measured run. The manifest is committed before paid measurement and checked again by the runner.
