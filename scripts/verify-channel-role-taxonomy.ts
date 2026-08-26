@@ -38,6 +38,9 @@ const verificationQueries = [
   "怎样区分 System Integrator SI 和 Installer？",
   "Installer 是否必须销售产品或拥有证书和独立官网？",
   "安装总包公司使用分包团队后还属于 Installer 吗？",
+  "MSP 的必要条件是什么？一次性安装维修或产品保修算不算 MSP？",
+  "没有公开 SLA 或主动监控的小型托管服务商能否认定为 MSP？",
+  "MSSP 与 MSP 是什么关系？ISP SI Installer VAR 能否同时标记 MSP？",
 ];
 
 try {
@@ -87,6 +90,12 @@ try {
     "基础配置、测试和调试可以作为安装工作的一部分",
     "即使部分或全部现场工作由分包团队执行，仍可标记 Installer",
     "不作为全球统一硬门槛",
+    "MSP 是通过持续性服务关系",
+    "主动监控是 MSP 的典型能力和强证据，但不是绝对必要条件",
+    "只有预付工时、临时响应或按次收费，但不承担任何持续管理责任的支持包不构成 MSP",
+    "确认 MSSP 时必须同时标记 MSP",
+    "仅提供连接或带宽属于 ISP，不自动成为 MSP",
+    "未找到公开合同、SLA、计费周期、NOC／SOC、自有平台或厂商认证只能记录为 unknown",
   ];
   const missingText = requiredText.filter((fragment) => !stored.combined_content.includes(fragment));
 

@@ -556,6 +556,70 @@ Installer 属于 Downstream Channel，可以根据项目数量与规模、客户
 
 未找到许可证、官网、门店或公开客户名称只能记录为 unknown，不能直接排除候选公司。但系统必须获得足够证据区分实际 Installer、普通产品卖家和 Referral Agent。如果只能看到“installation”关键词而无法确认公司业务、现场服务或责任主体，应保留 Installer candidate／待核验，不能把产品安装说明或内容页面误判为安装公司。
 
+## MSP（Managed Service Provider）
+
+### 状态与规范名称
+
+- 状态：已由业务负责人确认。
+- 中文规范名称：托管服务商／IT 托管服务商。
+- 英文规范名称：Managed Service Provider（MSP）。
+- 所属角色家族：services。
+- channel layer：Downstream Channel。
+- 角色关系：MSP 是独立的持续运营与托管服务角色，不要求同时销售产品；MSSP 是其安全托管子类型。
+
+### 完整定义
+
+MSP 是通过持续性服务关系，为最终客户承担部分或全部 IT、网络、云、安全、终端、服务器或应用环境日常管理与运行责任的服务商。其核心不是是否完成过一次安装或项目，而是在交付之后是否继续按约定管理、维护、监控、支持、保护或优化客户环境，并对相应服务结果承担责任。
+
+持续关系可以通过月度或年度服务计划、订阅、托管合同、长期运维协议、SLA 或其他可重复服务安排建立。具体合同、计费周期或 SLA 不要求必须在公开渠道披露；它们是确认实际业务关系的证据，而不是网站披露层面的硬门槛。
+
+### 必要判断条件
+
+在公开证据足够的情况下，MSP 至少需要满足：
+
+1. 服务具有持续性或周期性，而不是仅完成一次项目、安装、维修或咨询；
+2. 对明确范围内的客户用户、设备、系统、网络、云环境或安全环境承担持续运营、维护、响应或管理责任；
+3. 服务对象是最终客户的实际 IT 环境，而不只是销售硬件、软件许可证、互联网线路或提供产品保修；
+4. 候选公司是面向客户的服务责任主体，或者能够验证其直接承担约定的服务结果。
+
+主动监控是 MSP 的典型能力和强证据，但不是绝对必要条件。按月或按年提供的 Help Desk、Service Desk 或运维支持，即使没有公开证明主动监控，只要覆盖范围、服务时段或响应责任明确，并持续承担维护和问题处理责任，仍可认定为 MSP。只有预付工时、临时响应或按次收费，但不承担任何持续管理责任的支持包不构成 MSP。
+
+### 典型服务范围
+
+MSP 服务可以包括 Managed IT、Managed Network、Managed Wi-Fi、Managed Firewall、远程监控与管理、Help Desk／Service Desk、配置与补丁管理、固件升级、备份管理、设备和许可证生命周期管理、网络与云环境运维、事件响应、性能与容量优化、定期服务报告，以及终端、服务器、身份或应用管理。
+
+Managed Security、MDR、SOC 服务、持续威胁监测和安全事件响应可归入 MSSP。MSSP 在本分类中是 MSP 的安全服务子类型；确认 MSSP 时必须同时标记 MSP，不把 MSSP 作为与 MSP 平级且互斥的基础角色。
+
+### 强证据与辅助证据
+
+强证据包括：官网明确提供 managed services、managed IT、managed network、managed Wi-Fi、managed security 等服务；月度或年度托管套餐；明确的 SLA、响应时间、覆盖范围或服务时段；持续监控、RMM、Help Desk、NOC／SOC、补丁和备份管理；定期报告、客户门户或服务评审；品牌方官方 MSP／MSSP 伙伴身份；能够证明长期运营责任的客户案例。
+
+辅助证据包括：运维工程师和服务台团队、工单系统、远程管理平台、ITSM 流程、厂商认证、托管服务价格页、长期维护合同、客户评价及招聘信息。只有“IT support”“network support”“maintenance”等泛化文字，不能单独完成 MSP 确认，必须继续核实服务持续性和责任范围。
+
+### 非必要条件与第三方履约
+
+7×24 小时 NOC／SOC、自有 RMM 或 PSA 平台、自建数据中心、厂商高级 MSP 认证和自有全职运维团队都是强增信证据，但不作为普通 MSP 的绝对必要条件。小型 MSP 可以仅在约定服务时段运营，也可以使用第三方工具、云端平台、白标 NOC／SOC 或分包技术团队。
+
+候选公司只要是面向客户的合同或服务责任主体，并对持续服务结果负责，即使部分后台工作由第三方完成，仍可标记 MSP。仅把客户转介给其他服务商、由对方签约和承担服务结果并收取佣金的公司，应归为 Commission Agent／Referral Agent，不属于 MSP。
+
+### 排除与相邻角色边界
+
+- 一次性安装、系统建设、迁移、配置、咨询或集成项目本身不构成 MSP。
+- 单次维修、按次上门、产品保修、故障返修、普通售后或只有预付工时的临时支持本身不构成 MSP。
+- 只出售硬件、软件许可证、云资源或互联网接入，而不承担客户环境持续管理责任的公司不属于 MSP。
+- SI：负责方案设计和阶段性项目交付；项目完成后继续承担持续托管责任时，可以同时标记 SI 与 MSP。
+- Installer：负责现场施工和安装；同时根据长期安排持续维护或运营客户系统时，可以同时标记 Installer 与 MSP。
+- Reseller／VAR：MSP 不要求销售产品；以自身名义转售产品时增加 Reseller，围绕产品提供实质性增值时增加 VAR。
+- ISP：仅提供连接或带宽属于 ISP，不自动成为 MSP；另外提供 Managed Network、Managed Wi-Fi、Managed Firewall、监控、配置和持续运维时，可以同时标记 ISP 与 MSP。
+
+### 商业价值等级
+
+MSP 属于 Downstream Channel，可以根据受管客户数量与质量、受管设备或站点规模、经常性收入、服务范围、续约能力、技术影响力、采购潜力、区域覆盖、增长性及合作价值评为 KA、Priority、Standard 或 Long-tail。即使硬件采购由客户或其他伙伴完成，能够长期影响设备选型、升级和替换决策的 MSP 仍可能具有较高商业价值。
+
+### 信息缺失与置信度
+
+未找到公开合同、SLA、计费周期、NOC／SOC、自有平台或厂商认证只能记录为 unknown，不能直接断定候选公司不是 MSP。系统应综合服务页面、套餐、责任描述、案例、客户评价、伙伴目录和招聘信息判断；如果只能确认一次性项目或泛化技术支持，不能标记 MSP。如果持续性和责任范围尚不清楚，应保留 MSP candidate／待核验，并把服务周期、受管范围、响应责任和合同主体列为优先核实项。
+
 # 参考依据
 
 以下资料用于支撑行业通用边界；本文件中的产品操作规则以业务负责人确认口径为最终准则。
@@ -581,6 +645,11 @@ Installer 属于 Downstream Channel，可以根据项目数量与规模、客户
 - AWS，Services Partners：https://docs.aws.amazon.com/it_it/whitepapers/latest/how-customers-can-work-with-aws-and-our-apn-partners/apn-partners.html
 - TP-Link，SolutionX partner types：https://partner.tp-link.com/gr/registration/apply.html%3Bjsessionid%3D4FF94AF0F15734BE6FD9599FF663D543
 - Axis Communications，Resellers, system integrators and installers：https://www.axis.com/products/axis-ta4601
+- AWS，Managed Services Provider Program：https://aws.amazon.com/partners/programs/msp/
+- AWS，How Customers Can Work With AWS and Our APN Partners — Managed Service Providers：https://docs.aws.amazon.com/whitepapers/latest/how-customers-can-work-with-aws-and-our-apn-partners/managed-service-providers.html
+- AWS，Managed Service Provider definition and ongoing lifecycle responsibility：https://aws.amazon.com/blogs/apn/more-value-greater-profitability-10-enhancements-to-the-aws-partner-experience/
+- Cisco Meraki，Dashboard for Managed Service Providers：https://meraki.cisco.com/wp-content/uploads/2020/05/meraki_whitepaper_large_scale_deployments.pdf
+- Microsoft，Azure Expert Managed Services Provider：https://partner.microsoft.com/en-US/partnership/azure-expert-msp
 - UK Department for Business and Trade，When to use an agent or distributor：https://www.business.gov.uk/export-from-uk/learn/categories/prepare-sell-new-country/routes-to-market/when-use-agent-or-distributor/
 - UK HMRC，INTM441080 Agents and distributors：https://www.gov.uk/hmrc-internal-manuals/international-manual/intm441080
 - European Commission，Working paper on distributors that also act as agents：https://competition-policy.ec.europa.eu/document/download/a2a40192-9491-450d-8878-e7d1a17ce732_en
@@ -597,9 +666,9 @@ export const CHANNEL_ROLE_TAXONOMY_DOCUMENT = {
   capturedAt: "2026-08-26T00:00:00+08:00",
   metadata: {
     topic: "channel-role-taxonomy",
-    policyVersion: "2026-08-26.9",
-    confirmedRoles: ["Distributor", "VAD", "VAR", "Dealer", "Reseller", "Retailer", "E-tailer", "SI", "Installer"],
-    pendingRoles: ["MSP", "ISP", "Commission Agent"],
+    policyVersion: "2026-08-26.10",
+    confirmedRoles: ["Distributor", "VAD", "VAR", "Dealer", "Reseller", "Retailer", "E-tailer", "SI", "Installer", "MSP"],
+    pendingRoles: ["ISP", "Commission Agent"],
     userConfirmed: true,
     temporalReviewRequired: false,
   },
