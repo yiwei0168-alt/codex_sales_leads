@@ -492,6 +492,70 @@ SI 属于 Downstream Channel，可以根据项目规模、客户质量、行业�
 
 项目架构、合同责任和客户名称可能因保密要求不公开。未找到详细案例不能直接认定公司没有 SI 能力；系统应综合服务目录、团队资质、招投标记录、合作伙伴身份及匿名案例进行判断。但如果无法验证多组件协同和方案级责任，只能保留 SI candidate／待核验，不能用“IT solutions”或“technology services”等泛化描述强行确认。
 
+## Installer（安装服务商）
+
+### 状态与规范名称
+
+- 状态：已由业务负责人确认。
+- 中文规范名称：安装服务商／网络安装商／弱电安装商。
+- 英文规范名称：Installer。
+- 所属角色家族：services。
+- channel layer：Downstream Channel。
+- 角色关系：Installer 是独立的现场施工与安装角色，不要求同时销售产品或拥有 SI 能力。
+
+### 完整定义
+
+Installer 是面向最终企业、机构、家庭或其他客户，在现场执行网络布线、设备固定与连接、基础配置、测试、调试、更换、维修或拆除工作，并对约定的安装质量和结果承担责任的公司、承包商或可验证的独立经营者。
+
+Installer 的工作可以包括铜缆或光纤敷设、端接和测试，机柜安装，路由器、交换机、无线 AP、控制器、天线、CPE、摄像机、门禁或其他网络与弱电设备安装，设备配对、基础参数设置、覆盖或链路测试、安装验收及现场更换服务。基础配置、测试和调试可以作为安装工作的一部分，不会因此自动成为 SI。
+
+### 必要判断条件
+
+在公开证据足够的情况下，Installer 至少需要满足：
+
+1. 实际提供客户现场的安装、施工、布线、设备部署、测试、调试、维修或更换服务；
+2. 对安装合同、施工质量、现场安全或约定的安装结果承担责任；
+3. 服务涉及目标产品或相关网络、通信、安防、弱电、AV、门禁或智能建筑领域；
+4. 不只是在线指导、远程配置、产品销售或把客户介绍给第三方安装商。
+
+### 强证据与辅助证据
+
+强证据包括：官网或正式服务目录明确提供 network installation、structured cabling、Wi-Fi installation、low-voltage installation、CCTV installation 等服务；品牌方官方 Installer 伙伴身份；项目照片、安装案例、工程范围、测试报告或客户验收；承包商注册、当地法定许可、行业认证及可验证的现场技术团队。
+
+辅助证据包括：Google Places 等地图服务中的安装商类别、服务区域和客户评价；社交媒体施工记录；当地行业协会、商业目录、招投标或分包记录；安装技术员职位及工具设备。地图或目录的单一类别标签不能独立完成确认，应尽量交叉验证公司身份、服务内容和实际项目。
+
+### 总包与分包规则
+
+公司与客户签订安装合同、组织和管理项目，并对安装质量和最终结果负责时，即使部分或全部现场工作由分包团队执行，仍可标记 Installer。系统应记录 subcontracted delivery 等履约信息，但不能因使用分包而否定安装角色。
+
+如果公司只把客户转介绍给另一家安装商、由对方签约和承担结果，并按推荐或成交收取佣金，则属于 Commission Agent／Referral Agent，不属于 Installer。无法确认责任主体时，应把合同与验收责任列为优先核实项。
+
+### 与 SI 的核心边界
+
+Installer 主要按照既定需求或设计执行现场施工、设备安装、基础配置和测试；SI 对整体方案、技术架构、多个组件或系统的协同以及项目结果负责。只安装一台或一批设备可以成立 Installer，但不能因此推断 SI。
+
+同一公司同时承担方案设计、系统集成、现场安装、测试和整体验收时，可以同时标记 SI 与 Installer。基础调试或按说明完成配置不足以单独证明 SI。
+
+### 与 Reseller、VAR、MSP 的边界
+
+Installer 不要求销售产品。如果同时以自身名义采购并向客户销售设备，则根据交易事实增加 Reseller；如果围绕产品提供实质性技术或解决方案增值，则增加 VAR。
+
+一次性安装、保修期支持、故障返修或按次上门服务本身不构成 MSP。只有通过持续合同、订阅或 SLA 长期监控、维护或运营客户系统时，才增加 MSP。只提供远程配置、电话支持或在线培训而没有现场安装服务的公司不属于 Installer。
+
+### 资质、实体场所与小型安装商
+
+行业证书、电工资质、弱电许可、BICSI 或品牌技术认证是强增信证据，但法定要求因国家和施工类型而异，不作为全球统一硬门槛。实体门店、办公室、仓库、公开库存和独立官网同样不是 Installer 的必要条件。
+
+个人经营者、小型安装团队及没有高流量网站的本地承包商，只要经营身份、服务区域和实际安装业务可验证，都应进入长尾候选池。搜索应结合 Google Places、品牌伙伴名录、承包商注册、行业协会、当地目录、项目照片、客户评价和结构化社交页面，避免只依赖 SEO 或大型公司网站。
+
+### 商业价值等级
+
+Installer 属于 Downstream Channel，可以根据项目数量与规模、客户质量、服务区域、相关产品影响力、技术能力、采购潜力、增长性和合作价值评为 KA、Priority、Standard 或 Long-tail。大型全国安装服务商可能具有 KA 价值；覆盖关键区域或垂直行业的小型团队也可能是高质量长尾线索。
+
+### 信息缺失与置信度
+
+未找到许可证、官网、门店或公开客户名称只能记录为 unknown，不能直接排除候选公司。但系统必须获得足够证据区分实际 Installer、普通产品卖家和 Referral Agent。如果只能看到“installation”关键词而无法确认公司业务、现场服务或责任主体，应保留 Installer candidate／待核验，不能把产品安装说明或内容页面误判为安装公司。
+
 # 参考依据
 
 以下资料用于支撑行业通用边界；本文件中的产品操作规则以业务负责人确认口径为最终准则。
@@ -515,6 +579,8 @@ SI 属于 Downstream Channel，可以根据项目规模、客户质量、行业�
 - UK Office for National Statistics，E-commerce glossary：https://www.ons.gov.uk/surveys/informationforbusinesses/businesssurveys/ecommerceglossary
 - IBM，System integrator and solution provider roles：https://public.dhe.ibm.com/partnerworld/pub/svi/swg_svi_program_guide.pdf
 - AWS，Services Partners：https://docs.aws.amazon.com/it_it/whitepapers/latest/how-customers-can-work-with-aws-and-our-apn-partners/apn-partners.html
+- TP-Link，SolutionX partner types：https://partner.tp-link.com/gr/registration/apply.html%3Bjsessionid%3D4FF94AF0F15734BE6FD9599FF663D543
+- Axis Communications，Resellers, system integrators and installers：https://www.axis.com/products/axis-ta4601
 - UK Department for Business and Trade，When to use an agent or distributor：https://www.business.gov.uk/export-from-uk/learn/categories/prepare-sell-new-country/routes-to-market/when-use-agent-or-distributor/
 - UK HMRC，INTM441080 Agents and distributors：https://www.gov.uk/hmrc-internal-manuals/international-manual/intm441080
 - European Commission，Working paper on distributors that also act as agents：https://competition-policy.ec.europa.eu/document/download/a2a40192-9491-450d-8878-e7d1a17ce732_en
@@ -531,9 +597,9 @@ export const CHANNEL_ROLE_TAXONOMY_DOCUMENT = {
   capturedAt: "2026-08-26T00:00:00+08:00",
   metadata: {
     topic: "channel-role-taxonomy",
-    policyVersion: "2026-08-26.8",
-    confirmedRoles: ["Distributor", "VAD", "VAR", "Dealer", "Reseller", "Retailer", "E-tailer", "SI"],
-    pendingRoles: ["Installer", "MSP", "ISP", "Commission Agent"],
+    policyVersion: "2026-08-26.9",
+    confirmedRoles: ["Distributor", "VAD", "VAR", "Dealer", "Reseller", "Retailer", "E-tailer", "SI", "Installer"],
+    pendingRoles: ["MSP", "ISP", "Commission Agent"],
     userConfirmed: true,
     temporalReviewRequired: false,
   },

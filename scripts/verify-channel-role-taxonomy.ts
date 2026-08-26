@@ -36,6 +36,8 @@ const verificationQueries = [
   "只有社交媒体私信询价能否确认 E-tailer？",
   "SI 是否必须销售产品或者使用多个品牌？",
   "怎样区分 System Integrator SI 和 Installer？",
+  "Installer 是否必须销售产品或拥有证书和独立官网？",
+  "安装总包公司使用分包团队后还属于 Installer 吗？",
 ];
 
 try {
@@ -82,6 +84,9 @@ try {
     "SI 不强制要求多品牌",
     "SI 不要求一定采购或转售产品",
     "SI 与 Installer 的核心边界是是否承担整体方案、技术架构、系统协同和项目结果责任",
+    "基础配置、测试和调试可以作为安装工作的一部分",
+    "即使部分或全部现场工作由分包团队执行，仍可标记 Installer",
+    "不作为全球统一硬门槛",
   ];
   const missingText = requiredText.filter((fragment) => !stored.combined_content.includes(fragment));
 
