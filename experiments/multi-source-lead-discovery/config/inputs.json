@@ -50,8 +50,19 @@
     }
   ],
   "geminiFullPrompt": "You are independently conducting a sales-lead search for Cudy in Germany. Cudy is a fast-growing, high-value and cost-efficient networking hardware brand/manufacturer with a one-stop portfolio covering Wi-Fi routers, mesh, access points, Ethernet/PoE switches, 4G/5G CPE, GPON/ONT, wireless bridges and industrial networking for consumer, SOHO, SMB, ISP and industrial use. Use Google Search and produce exactly 10 best-supported real companies in each category: (1) Tier-1 distribution: Distributor/VAD that buys from brands and supplies downstream channel partners; VAD also has material technical/solution enablement. (2) B2B resale: Reseller/VAR/DVAR/Dealer that resells to business or professional end customers; DVAR may buy direct but does not supply downstream partners; exclude consumer-only retailers. (3) Project services: SI responsible for solution architecture/integration/project outcome, or Installer responsible for on-site cabling/equipment installation/configuration/testing. A company may be small. Do not use size, revenue, traffic or coverage as quality criteria. Return companies, not people, products, articles, directories or marketplaces. Do not output contacts. Cite public URLs for every company. Return one JSON object only with channels, each containing channelId and exactly 10 candidates in ranked order; each candidate must contain companyName, officialUrl, roles, reason and evidenceUrls.",
+  "primaryEvaluator": {
+    "evaluatorVersion": "codex-blind-review-v1",
+    "reviewerType": "codex-agent-session",
+    "modelIdentity": "runtime-managed-codex",
+    "transport": "in-session-no-api",
+    "blindToSystemIdentity": true,
+    "externalSearchAllowed": false,
+    "promptSource": "downstreamEvaluator.systemPrompt, taskPrompt and fixedListEvaluationPrompt",
+    "scoreComputation": "application-recomputed"
+  },
   "downstreamEvaluator": {
     "evaluatorVersion": "openai-judge-v1",
+    "status": "auxiliary-diagnostic-only",
     "provider": "openai",
     "gateway": "lingyu-openai-compatible",
     "apiKeyEnvironmentVariable": "LINGYU_API_KEY",

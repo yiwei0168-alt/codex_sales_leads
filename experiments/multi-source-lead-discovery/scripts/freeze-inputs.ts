@@ -39,6 +39,7 @@ const inputs = JSON.parse(inputsText) as {
   schemaVersion: number;
   promptVersion: string;
   channels: Array<{ id: string; queries: string[] }>;
+  primaryEvaluator: Record<string, unknown>;
   downstreamEvaluator: {
     evaluatorVersion: string;
     provider: string;
@@ -87,7 +88,8 @@ const manifest = {
   execution: benchmark.execution,
   scoring: benchmark.scoring,
   queryPacks: inputs.channels.map((channel) => ({ channelId: channel.id, queries: channel.queries })),
-  evaluator: inputs.downstreamEvaluator,
+  primaryEvaluator: inputs.primaryEvaluator,
+  diagnosticApiEvaluator: inputs.downstreamEvaluator,
   unresolvedPlaceholders: [],
   secretValuesIncluded: false,
   fileHashes,

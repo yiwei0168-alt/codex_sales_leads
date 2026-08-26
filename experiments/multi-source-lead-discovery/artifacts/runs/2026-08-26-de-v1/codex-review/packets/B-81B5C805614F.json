@@ -1,0 +1,178 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "blindBatchId": "B-81B5C805614F",
+  "reviewMode": "discovery-pool",
+  "channel": {
+    "id": "project-services",
+    "label": "Project services",
+    "eligibleRoles": [
+      "SI",
+      "Installer"
+    ]
+  },
+  "evidenceEntries": [
+    {
+      "evidenceEntryId": "E-16CA8FB124",
+      "title": "Service & Installation for Broadband Networks",
+      "url": "https://www.netzkontor.de/en/glasfasernetze/service-installation",
+      "snippet": "We install smart building networks based on electrical installations as well as data and bus cabling, which we supplement with wireless and Wi-Fi solutions."
+    },
+    {
+      "evidenceEntryId": "E-A7C90D5767",
+      "title": "Netzwerkinstallationen Hersteller, Lieferanten & Händler",
+      "url": "https://www.wlw.de/de/suche/netzwerkinstallationen",
+      "snippet": "Die KODEWI UG (haftungsbeschränkt) ist Ihr zuverlässiger Partner für leistungsstarke WLAN-Netzwerke und moderne IT-Infrastrukturen. Wir unterstützen Unternehmen ..."
+    },
+    {
+      "evidenceEntryId": "E-FF77CE6D49",
+      "title": "Projektarbeit über Wireless LAN! - Abschlussprojekte",
+      "url": "https://www.fachinformatiker.de/topic/57757-projektarbeit-%C3%BCber-wireless-lan/",
+      "snippet": "Ich führe bei dem Projekt natürlich: Vor- und NAchteile des WLAN's auf, die Zielsetzung, WLAN Standarts, Reichweiten, Übertragungsmodi u.s.w..."
+    },
+    {
+      "evidenceEntryId": "E-5EFC72402F",
+      "title": "Allnet Österreich GmbH -Fachinformatiker Systemintegration",
+      "url": "https://www.allnet.de/at/allnet-brand/unternehmen/karriere/career-sales/",
+      "snippet": "Planung, Consulting, Inbetriebnahme und Dokumentation von IT Infrastruktur Projekten mit dem Schwerpunkt Wireless Solutions (WLAN), Richtfunk, Switching, Fiber ..."
+    },
+    {
+      "evidenceEntryId": "E-2724C59FE2",
+      "title": "Fachinformatiker:in Systemintegration (Netzwerk & NAC) ...",
+      "url": "https://www.stepstone.de/stellenangebote--Fachinformatiker-in-Systemintegration-Netzwerk-NAC-m-w-d-Hannover-ComNet-Ges-fuer-Kommunikation-Netzwerk-mbH--14137327-inline.html",
+      "snippet": "Unser Fokus liegt auf den Bereichen: LAN, WLAN, IT-Security und Network Access Control (NAC). Wir schaffen sichere Netzwerke, zuverlässige Verbindungen und ..."
+    },
+    {
+      "evidenceEntryId": "E-615549140A",
+      "title": "Netzwerk & WLAN-Optimierung: Privat & Gewerbe",
+      "url": "https://dietrich.expert/blog/netzwerkinstallation-wlan-optimierung",
+      "snippet": "Dieser Artikel zeigt, wie wir Netzwerke aufbauen, vom Hausanschluss bis zum letzten Access Point. Mit konkreten Standards, konkreten Herstellern ..."
+    },
+    {
+      "evidenceEntryId": "E-5C79FE6423",
+      "title": "Ausbildung Fachinformatiker*in für Systemintegration",
+      "url": "https://careers.telekom.com/de/pupils-in-Germany/apprenticeships/it-specialist-for-system-integration",
+      "snippet": "Wir bieten 5G Campus Netze an, bauen diese bei Kunden auf und unterstützen bei Problemen, aber auch bei Projekten mit LAN/WLAN. Start in den Tag Ich starte ..."
+    },
+    {
+      "evidenceEntryId": "E-A987ABF636",
+      "title": "IB-IT Cabling GmbH",
+      "url": "https://www.ib-it.eu/dc/en/index.php",
+      "snippet": "IB-IT Cabling is a team of highly skilled IT Professionals providing IT Services since 1991. We build and implement cutting edge telecommunications ..."
+    },
+    {
+      "evidenceEntryId": "E-0608E5443A",
+      "title": "WLAN-Lösungen für Unternehmen | Anforderungen, Planung ...",
+      "url": "https://www.youtube.com/watch?v=X-GAwHUnBgM",
+      "snippet": "Erfahren Sie in diesem Video, was Sie bei der Umsetzung einer modernen WLAN-Installation ... Go to channel Jan Pörtner - Smart Home | Heimnetzwerk ..."
+    },
+    {
+      "evidenceEntryId": "E-5F3C9C8112",
+      "title": "Professional installation and cable-laying in the data centre",
+      "url": "https://osi.rosenberger.com/products-services/installation/",
+      "snippet": "Installation services ensuring efficient cabling infrastructures. Professional cable laying & quality assurance by specialists."
+    },
+    {
+      "evidenceEntryId": "E-A84951E86B",
+      "title": "Netzwerkinstallation kleine Unternehmen: Anleitung 2026",
+      "url": "https://www.hagel-it.de/it-insights/netzwerkinstallation-fuer-kleine-unternehmen-schritt-fuer-schritt-anleitung",
+      "snippet": "Netzwerkinstallation Hamburg: Komponenten, CAT6a-Verkabelung, VLAN, Wi-Fi 6E/7, NIS-2. Praxis-Anleitung mit Kosten — 25 Arbeitsplätze ab 12.000 € einmalig."
+    },
+    {
+      "evidenceEntryId": "E-C88E93EF64",
+      "title": "Structured Cabling for Efficient Data Centers",
+      "url": "https://www.hknow.de/en/solutions/structured-cabling/",
+      "snippet": "Plan and implement sustainable structured cabling in your data center with High Knowledge GmbH."
+    },
+    {
+      "evidenceEntryId": "E-28DDAC6C0A",
+      "title": "Structured Cabling",
+      "url": "https://www.onnecgroup.com/structured-cabling/",
+      "snippet": "A global leader in IT structured cabling for data centres and enterprise networks. 35+ years delivering scalable, future-ready infrastructure solutions."
+    },
+    {
+      "evidenceEntryId": "E-5650198E64",
+      "title": "📶 Wireless LAN (WLAN) für Unternehmen 🌐",
+      "url": "https://phonekom.de/ratgeber/wlan/",
+      "snippet": "Wir werden auch einen Überblick über die besten WLAN-Systeme für kleine und mittelständische Unternehmen geben, sowie einige häufige Probleme ..."
+    },
+    {
+      "evidenceEntryId": "E-2A5E3A137A",
+      "title": "Networks",
+      "url": "https://www.elomech.de/en/services/networks/",
+      "snippet": "The service portfolio of Elomech Elektroanlagen covers the entire spectrum: local area networks (LAN), network components and wide area networks (WAN) – even ..."
+    },
+    {
+      "evidenceEntryId": "E-8AD54286FF",
+      "title": "Plan & install network infrastructure - Hamburg",
+      "url": "https://codemaschine.de/en/net/networks/",
+      "snippet": "Network planning, installation, measurement - we create network infrastructure for companies in the Hamburg area. Request a free initial consultation now!"
+    },
+    {
+      "evidenceEntryId": "E-5BD1F02C91",
+      "title": "Network installation | Netzwerkbau & IT-Services Berlin",
+      "url": "https://www.netzwerkbau.berlin/en/services/networkinstallation.html",
+      "snippet": "We support you in planning and implementation in the field of network technology, starting with the installation of new networks and the expansion of existing ..."
+    },
+    {
+      "evidenceEntryId": "E-7E01DD6A2C",
+      "title": "Fachinformatiker (m/w/d) für Systemintegration ...",
+      "url": "https://mevis.tv/karriere/fachinformatiker-m-w-d/",
+      "snippet": "Kenntnisse in Netzwerk- und Systemadministration (LAN, WLAN, TCP/IP, Windows Server, Linux); erste praktische Erfahrung mit AV-Systemen und Medientechnik ..."
+    },
+    {
+      "evidenceEntryId": "E-2F8993BB99",
+      "title": "Business WLAN einrichten: Hardware & Hersteller ...",
+      "url": "https://mimann.net/blog/business-wlan-einrichten-hardware-hersteller-und-installation/",
+      "snippet": "Welche Hardware für Firmen-WLAN? UniFi, Aruba, Meraki & Omada im Vergleich mit Preisen. Schritt-für-Schritt-Anleitung für die WLAN-Installation im ..."
+    },
+    {
+      "evidenceEntryId": "E-B4AD3542C2",
+      "title": "Netz16 Ausbildung Fachinformatiker Systemintegration (m/ ...",
+      "url": "https://bebee.com/de/jobs/netz16-ausbildung-fachinformatiker-systemintegration-augsburg-accompio-augsburg-bavaria--t7xk-789714558",
+      "snippet": "Dann komm zur Netz16 Gruppe und bewirb dich gerne für September 2026. Wer du bist · Technik-Fan mit (Fach-)Abitur oder abgeschlossener Berufsausbildung."
+    },
+    {
+      "evidenceEntryId": "E-B540378F7F",
+      "title": "Fachinformatiker (M/W/D) für Systemintegration",
+      "url": "https://www.epcan.jobs/jobs/52241294/Fachinformatiker-M-W-D-f%C3%BCr-Systemintegration-%E2%80%93-Schwerpunkt-Netzwerk/",
+      "snippet": "Das solltest du mitbringen: Kenntnisse im IT-Bereich, idealerweise im Netzwerk (LAN, WAN und WLAN); Lernbereitschaft; Teamfähigkeit und ..."
+    },
+    {
+      "evidenceEntryId": "E-6F361859EC",
+      "title": "Lan Service | Grüninger Netzwerk",
+      "url": "https://www.grueninger-netzwerk.de/en/lan/",
+      "snippet": "Professional copper network cabling for all. At Grüninger Netzwerk, we have been providing reliable and high-performance network solutions in Berlin and ..."
+    },
+    {
+      "evidenceEntryId": "E-894BFA350A",
+      "title": "Fachinformatiker Systemintegration Netzwerk Jobs in Köln",
+      "url": "https://de.indeed.com/q-fachinformatiker-systemintegration-netzwerk-l-k%C3%B6ln-jobs.html",
+      "snippet": "In Vollzeit (39 Stunden/Woche). Administration, Betreuung und Weiterentwicklung unserer Server-, Netzwerk und Client-Infrastruktur."
+    },
+    {
+      "evidenceEntryId": "E-8083C29AEA",
+      "title": "Profi WLAN: Sichere B2B-Netzwerke mit Premium-Hardware",
+      "url": "https://business.ewe.de/vernetzung/managed-lan-wlan/profi-wlan",
+      "snippet": "Unsere WLAN-Experten begleiten Sie von der Planung und der Installation bis zur Überwachung Ihrer WLAN-Performance. Wichtig dabei sind vor allem die ..."
+    },
+    {
+      "evidenceEntryId": "E-F105CFD5D6",
+      "title": "Fachinformatiker Systemintegration (m/w/d)",
+      "url": "https://www.pandacom.de/job/fachinformatiker-systemintegration-mwd.html",
+      "snippet": "Ausbildung in allen wichtigen Unternehmensabteilungen, z.B. Servicemanagement, Service – Technik (LAN/WLAN, Security, Voice), Projektmanagement, Service Desk, ..."
+    },
+    {
+      "evidenceEntryId": "E-F83F43CED6",
+      "title": "Netzwerktechnik - WLAN LAN Planung & Installation",
+      "url": "https://elektro-lu.eu/leistungen/netzwerktechnik-elektriker/",
+      "snippet": "Professionelle Netzwerktechnik vom Elektriker. Planung, Verkabelung, Serverschrank, LAN WLAN Access Points und Messung – für Zuhause und Unternehmen."
+    },
+    {
+      "evidenceEntryId": "E-9ED8277F1B",
+      "title": "Internet einrichten lassen - Netzwerk, Router & Telefonie",
+      "url": "https://www.mediamarkt.de/de/service/aufbau-ersteinrichtung/ersteinrichtung-netzwerk-router?srsltid=AfmBOoosUcbpq_1S36IJp37moRy2Y2t0AvC12Pzvl_youHB9zKGhcVgU",
+      "snippet": "Du brauchst professionelle Hilfe bei der Einrichtung deines WLANs oder deines Haustelefons? Wir machen das! Ganz einfach. Buche dir jetzt online einen Termin ..."
+    }
+  ]
+}

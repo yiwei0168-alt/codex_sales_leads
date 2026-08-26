@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "blindBatchId": "B-CB22C4D6881B",
+  "reviewMode": "fixed-output",
+  "channel": {
+    "id": "b2b-resale",
+    "label": "B2B resale",
+    "eligibleRoles": [
+      "Reseller",
+      "VAR",
+      "DVAR",
+      "Dealer"
+    ]
+  },
+  "evidenceEntries": [
+    {
+      "evidenceEntryId": "F-01",
+      "submittedCandidate": {
+        "companyName": "Bechtle AG",
+        "officialUrl": "https://www.bechtle.com/",
+        "roles": [
+          "Value-Added Reseller (VAR)",
+          "Direct B2B Reseller",
+          "IT Systemhaus"
+        ],
+        "reason": "Bechtle is Germany's largest IT system house and direct B2B reseller, providing enterprise and SMB business clients with networking hardware, procurement, and IT workspace solutions.",
+        "evidenceUrls": [
+          "https://www.bechtle.com/"
+        ]
+      }
+    },
+    {
+      "evidenceEntryId": "F-02",
+      "submittedCandidate": {
+        "companyName": "CANCOM SE",
+        "officialUrl": "https://www.cancom.de/",
+        "roles": [
+          "Value-Added Reseller (VAR)",
+          "Direct B2B Reseller"
+        ],
+        "reason": "CANCOM is a leading digital transformation partner and VAR in Germany, reselling enterprise network infrastructure, cloud hardware, and IT services directly to commercial end customers.",
+        "evidenceUrls": [
+          "https://www.cancom.de/"
+        ]
+      }
+    },
+    {
+      "evidenceEntryId": "F-03",
+      "submittedCandidate": {
+        "companyName": "Computacenter AG & Co. oHG (Germany)",
+        "officialUrl": "https://www.computacenter.com/",
+        "roles": [
+          "Value-Added Reseller (VAR)",
+          "Direct B2B IT Supplier"
+        ],
+        "reason": "Computacenter is a major independent technology and network infrastructure reseller supplying corporate and public sector clients throughout Germany.",
+        "evidenceUrls": [
+          "https://www.computacenter.com/"
+        ]
+      }
+    },
+    {
+      "evidenceEntryId": "F-04",
+      "submittedCandidate": {
+        "companyName": "SVA System Vertrieb Alexander GmbH",
+        "officialUrl": "https://www.sva.de/",
+        "roles": [
+          "Value-Added Reseller (VAR)",
+          "System Integrator / VAR"
+        ],
+        "reason": "SVA is one of Germany's leading IT system integrators and VARs, reselling enterprise networking, data center, and security infrastructure to business customers.",
+        "evidenceUrls": [
+          "https://www.sva.de/"
+        ]
+      }
+    },
+    {
+      "evidenceEntryId": "F-05",
+      "submittedCandidate": {
+        "companyName": "netgo GmbH",
+        "officialUrl": "https://www.netgo.de/",
+        "roles": [
+          "Value-Added Reseller (VAR)",
+          "IT Systemhaus"
+        ],
+        "reason": "netgo is a fast-growing nationwide German IT system house providing SOHO, SMB, and enterprise clients with complete networking, cloud, and modern workplace hardware.",
+        "evidenceUrls": [
+          "https://www.netgo.de/"
+        ]
+      }
+    },
+    {
+      "evidenceEntryId": "F-06",
+      "submittedCandidate": {
+        "companyName": "ACP IT Solutions GmbH",
+        "officialUrl": "https://www.acp.de/",
+        "roles": [
+          "Value-Added Reseller (VAR)",
+          "IT Systemhaus"
+        ],
+        "reason": "ACP provides complete network, campus, and workplace IT infrastructure solutions and hardware reselling for mid-market business clients across Germany.",
+        "evidenceUrls": [
+          "https://www.acp.de/"
+        ]
+      }
+    },
+    {
+      "evidenceEntryId": "F-07",
+      "submittedCandidate": {
+        "companyName": "SoftwareOne Deutschland GmbH",
+        "officialUrl": "https://www.softwareone.com/",
+        "roles": [
+          "Direct B2B VAR / Solutions Provider"
+        ],
+        "reason": "SoftwareOne offers comprehensive IT procurement, cloud, and edge infrastructure reselling services directly to corporate end users in Germany.",
+        "evidenceUrls": [
+          "https://www.softwareone.com/"
+        ]
+      }
+    },
+    {
+      "evidenceEntryId": "F-08",
+      "submittedCandidate": {
+        "companyName": "Axians Deutschland",
+        "officialUrl": "https://www.axians.de/",
+        "roles": [
+          "Value-Added Reseller (VAR)",
+          "ICT Solution Partner"
+        ],
+        "reason": "Axians delivers ICT networking, telecom, and cloud infrastructure directly to enterprise and public sector customers as a specialized VAR and solutions reseller.",
+        "evidenceUrls": [
+          "https://www.axians.de/"
+        ]
+      }
+    },
+    {
+      "evidenceEntryId": "F-09",
+      "submittedCandidate": {
+        "companyName": "Concat AG",
+        "officialUrl": "https://www.concat.de/",
+        "roles": [
+          "Value-Added Reseller (VAR)",
+          "IT Systemhaus"
+        ],
+        "reason": "Concat AG designs and resells tailored IT infrastructure, storage, and networking hardware solutions directly to business end clients across Germany.",
+        "evidenceUrls": [
+          "https://www.concat.de/"
+        ]
+      }
+    },
+    {
+      "evidenceEntryId": "F-10",
+      "submittedCandidate": {
+        "companyName": "Skaylink GmbH",
+        "officialUrl": "https://www.skaylink.com/",
+        "roles": [
+          "Cloud & IT Infrastructure VAR"
+        ],
+        "reason": "Skaylink delivers business network infrastructure, cloud connectivity, and managed hardware reselling to mid-sized commercial organizations in Germany.",
+        "evidenceUrls": [
+          "https://www.skaylink.com/"
+        ]
+      }
+    }
+  ]
+}

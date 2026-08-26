@@ -61,6 +61,7 @@
     "benchmark:discovery:preflight": "node --use-env-proxy scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/preflight-provider.ts",
     "benchmark:discovery:freeze": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/freeze-inputs.ts",
     "benchmark:discovery:run": "node --use-env-proxy scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/run-benchmark.ts",
+    "benchmark:discovery:prepare-codex-review": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/prepare-codex-review.ts",
     "benchmark:discovery:prepare-audit": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/prepare-blind-audit.ts",
     "benchmark:discovery:verify": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/verify-discovery-run.ts"
   },

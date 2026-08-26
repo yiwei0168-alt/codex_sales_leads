@@ -1,0 +1,162 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "blindBatchId": "B-47F9C2C23B66",
+  "reviewMode": "fixed-output",
+  "channel": {
+    "id": "tier1-distribution",
+    "label": "Tier-1 distribution",
+    "eligibleRoles": [
+      "Distributor",
+      "VAD"
+    ]
+  },
+  "evidenceEntries": [
+    {
+      "evidenceEntryId": "F-01",
+      "submittedCandidate": {
+        "companyName": "ALLNET GmbH",
+        "officialUrl": "https://www.allnet.de/",
+        "roles": [
+          "Value-Added Distributor",
+          "IT Distributor"
+        ],
+        "reason": "ALLNET is a major German value-added IT distributor specializing in networking, wireless, security, and telecommunication hardware, offering extensive pre- and post-sales technical support and training for channel partners.",
+        "evidenceUrls": [
+          "https://www.allnet.de/"
+        ]
+      }
+    },
+    {
+      "evidenceEntryId": "F-02",
+      "submittedCandidate": {
+        "companyName": "ALSO Deutschland GmbH",
+        "officialUrl": "https://www.also.de/",
+        "roles": [
+          "Tier-1 IT Distributor",
+          "Broadline Distributor"
+        ],
+        "reason": "ALSO is one of the premier ICT distributors in Germany, supplying B2B resellers and VARs with hardware, network equipment, and cloud/managed services.",
+        "evidenceUrls": [
+          "https://www.also.de/"
+        ]
+      }
+    },
+    {
+      "evidenceEntryId": "F-03",
+      "submittedCandidate": {
+        "companyName": "Ingram Micro Distribution GmbH",
+        "officialUrl": "https://de.ingrammicro.eu/",
+        "roles": [
+          "Tier-1 IT Distributor",
+          "Global Broadline Distributor"
+        ],
+        "reason": "Ingram Micro Germany is a dominant broadline ICT distributor offering nationwide logistics, financial enablement, and technical solution enablement for networking vendor portfolios.",
+        "evidenceUrls": [
+          "https://de.ingrammicro.eu/"
+        ]
+      }
+    },
+    {
+      "evidenceEntryId": "F-04",
+      "submittedCandidate": {
+        "companyName": "TD SYNNEX Germany",
+        "officialUrl": "https://de.tdsynnex.com/",
+        "roles": [
+          "Tier-1 IT Distributor",
+          "Value-Added Distributor"
+        ],
+        "reason": "TD SYNNEX (formerly Tech Data Germany) is a top-tier broadline and value-added technology distributor supplying system houses, VARs, and resellers across Germany.",
+        "evidenceUrls": [
+          "https://de.tdsynnex.com/"
+        ]
+      }
+    },
+    {
+      "evidenceEntryId": "F-05",
+      "submittedCandidate": {
+        "companyName": "Komsa AG",
+        "officialUrl": "https://komsa.com/",
+        "roles": [
+          "ICT Distributor",
+          "Value-Added Distributor"
+        ],
+        "reason": "Komsa is a leading German distributor for telecommunications and IT infrastructure, serving specialized trade partners with procurement, repair, and technical enablement.",
+        "evidenceUrls": [
+          "https://komsa.com/"
+        ]
+      }
+    },
+    {
+      "evidenceEntryId": "F-06",
+      "submittedCandidate": {
+        "companyName": "ENO Telecom GmbH",
+        "officialUrl": "https://www.eno.de/",
+        "roles": [
+          "Telecommunications & Networking Distributor"
+        ],
+        "reason": "ENO Telecom is an established German ICT distributor delivering networking equipment, mobile infrastructure, and broadband CPE to retail and B2B channel partners.",
+        "evidenceUrls": [
+          "https://www.eno.de/"
+        ]
+      }
+    },
+    {
+      "evidenceEntryId": "F-07",
+      "submittedCandidate": {
+        "companyName": "Herweck AG",
+        "officialUrl": "https://www.herweck.de/",
+        "roles": [
+          "ICT Distributor",
+          "VAD"
+        ],
+        "reason": "Herweck is a key nationwide distributor in Germany focused on telecommunications, IT infrastructure, smart home, and network solution distribution.",
+        "evidenceUrls": [
+          "https://www.herweck.de/"
+        ]
+      }
+    },
+    {
+      "evidenceEntryId": "F-08",
+      "submittedCandidate": {
+        "companyName": "Littlebit Technology Deutschland GmbH",
+        "officialUrl": "https://www.littlebit.de/",
+        "roles": [
+          "Value-Added Distributor"
+        ],
+        "reason": "Littlebit Technology operates as a specialized VAD offering networking components, storage, and peripheral hardware to German system integrators and resellers.",
+        "evidenceUrls": [
+          "https://www.littlebit.de/"
+        ]
+      }
+    },
+    {
+      "evidenceEntryId": "F-09",
+      "submittedCandidate": {
+        "companyName": "Wave Computersysteme GmbH",
+        "officialUrl": "https://www.wave-computer.de/",
+        "roles": [
+          "B2B Wholesale IT Distributor"
+        ],
+        "reason": "Wave Computersysteme is a major German wholesale IT distributor supplying SMB resellers, system integrators, and business dealers with network and IT hardware.",
+        "evidenceUrls": [
+          "https://www.wave-computer.de/"
+        ]
+      }
+    },
+    {
+      "evidenceEntryId": "F-10",
+      "submittedCandidate": {
+        "companyName": "Ecom Electronic Components Trading GmbH",
+        "officialUrl": "https://www.ecom-edv.de/",
+        "roles": [
+          "Wholesale IT Distributor"
+        ],
+        "reason": "Ecom EDV is an international IT hardware distributor headquartered in Germany, supplying network components, active hardware, and peripherals to downstream channel partners.",
+        "evidenceUrls": [
+          "https://www.ecom-edv.de/"
+        ]
+      }
+    }
+  ]
+}

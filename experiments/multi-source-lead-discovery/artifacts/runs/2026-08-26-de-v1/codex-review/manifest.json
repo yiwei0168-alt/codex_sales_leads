@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "runId": "2026-08-26-de-v1",
+  "systemIdentityHidden": true,
+  "providerIdentityHidden": true,
+  "apiScoresHidden": true,
+  "batchCount": 21,
+  "packets": [
+    {
+      "blindBatchId": "B-087190FF439C",
+      "reviewMode": "discovery-pool",
+      "channelId": "tier1-distribution",
+      "evidenceEntryCount": 30,
+      "packetSha256": "215e3d6d8ca23d1bec7aeeb89e01af7f6e1e76e0abf41f0a4aa9107c92215ab4"
+    },
+    {
+      "blindBatchId": "B-09BE3EAE3F83",
+      "reviewMode": "discovery-pool",
+      "channelId": "tier1-distribution",
+      "evidenceEntryCount": 30,
+      "packetSha256": "d462cac2f9af811a09071601a303164059e0ff477eb7853ce50eb2f0944c703f"
+    },
+    {
+      "blindBatchId": "B-15BCCC099732",
+      "reviewMode": "discovery-pool",
+      "channelId": "b2b-resale",
+      "evidenceEntryCount": 30,
+      "packetSha256": "1d0a885414a4225c1e7498027760f6a4d1f1b0e40a896217a4701650aea5feac"
+    },
+    {
+      "blindBatchId": "B-1E94E5239B23",
+      "reviewMode": "discovery-pool",
+      "channelId": "b2b-resale",
+      "evidenceEntryCount": 27,
+      "packetSha256": "a86215c7447bb087bcbc53cf563137ce8e4afb192d98659516dd09fd6d3416d8"
+    },
+    {
+      "blindBatchId": "B-47F9C2C23B66",
+      "reviewMode": "fixed-output",
+      "channelId": "tier1-distribution",
+      "evidenceEntryCount": 10,
+      "packetSha256": "aa66e233bc2e76e8bd89b0845f391517c70eafddd4cf5035640159392732a30f"
+    },
+    {
+      "blindBatchId": "B-50308678FBE5",
+      "reviewMode": "discovery-pool",
+      "channelId": "project-services",
+      "evidenceEntryCount": 30,
+      "packetSha256": "59a5b5288cba8af124ac13ac8cbd62e149d87c818fab765a757c9e9b55494b40"
+    },
+    {
+      "blindBatchId": "B-5258C688D2CB",
+      "reviewMode": "discovery-pool",
+      "channelId": "project-services",
+      "evidenceEntryCount": 21,
+      "packetSha256": "4b530efad9b8cd40089d71f70f294f1d0794c2e7246f8ef4de4d99ba3fcc087a"
+    },
+    {
+      "blindBatchId": "B-573E6427FD14",
+      "reviewMode": "discovery-pool",
+      "channelId": "project-services",
+      "evidenceEntryCount": 30,
+      "packetSha256": "e84f3220cee07997cdc7cb7e9717e3f6c8ec79527c83300ca94ff6161cff36fd"
+    },
+    {
+      "blindBatchId": "B-6102C3492DD5",
+      "reviewMode": "discovery-pool",
+      "channelId": "b2b-resale",
+      "evidenceEntryCount": 30,
+      "packetSha256": "363d82b44f3c893605996cc333cc6d5e10e8cfe312b2e9e1ee75ca4f9e4698a4"
+    },
+    {
+      "blindBatchId": "B-6B1FB907E9EB",
+      "reviewMode": "discovery-pool",
+      "channelId": "b2b-resale",
+      "evidenceEntryCount": 30,
+      "packetSha256": "a1c128189dd241d7a16aefbe358b41dcd72296db475277448bab7d53ac752e5f"
+    },
+    {
+      "blindBatchId": "B-6F4557AA17A7",
+      "reviewMode": "discovery-pool",
+      "channelId": "tier1-distribution",
+      "evidenceEntryCount": 30,
+      "packetSha256": "d826a910e6a370085a42c0a71be98059f3c087979a98a300f03443fdea0792ee"
+    },
+    {
+      "blindBatchId": "B-782256DC5FB7",
+      "reviewMode": "discovery-pool",
+      "channelId": "b2b-resale",
+      "evidenceEntryCount": 30,
+      "packetSha256": "dda3cc975de58b8a654f64fae2328ceaa36422778684e5c7ba8f48c6b4c5ec90"
+    },
+    {
+      "blindBatchId": "B-81B5C805614F",
+      "reviewMode": "discovery-pool",
+      "channelId": "project-services",
+      "evidenceEntryCount": 27,
+      "packetSha256": "45c866849ee29ca771fa2243049d7532aac5e84a0a6bd773871f130c211d150f"
+    },
+    {
+      "blindBatchId": "B-A3C4E10AB016",
+      "reviewMode": "fixed-output",
+      "channelId": "project-services",
+      "evidenceEntryCount": 10,
+      "packetSha256": "9a29aa0ea2f258bc313d8896fe79b926ee57c1a9e6c3b0c130792987fc86e2f2"
+    },
+    {
+      "blindBatchId": "B-AB0CCC6C8B92",
+      "reviewMode": "discovery-pool",
+      "channelId": "project-services",
+      "evidenceEntryCount": 30,
+      "packetSha256": "d0a60da727c9f8589b437bff1bf807720fada8c69fd89c8a010704b0951c115a"
+    },
+    {
+      "blindBatchId": "B-B6585C7521CA",
+      "reviewMode": "discovery-pool",
+      "channelId": "tier1-distribution",
+      "evidenceEntryCount": 22,
+      "packetSha256": "85c59320f728cef074fc7e3cb7379b8ba5b53f2a6570fe7753e26d95be564fba"
+    },
+    {
+      "blindBatchId": "B-BCF1C057B0C6",
+      "reviewMode": "discovery-pool",
+      "channelId": "project-services",
+      "evidenceEntryCount": 30,
+      "packetSha256": "fe8686953a21757434805a1cc39333155d4651704467a573bbe064c9a054a156"
+    },
+    {
+      "blindBatchId": "B-CA0300E0507C",
+      "reviewMode": "discovery-pool",
+      "channelId": "b2b-resale",
+      "evidenceEntryCount": 26,
+      "packetSha256": "3f0bca3f7e577abb10ce846406798347f303024e4a74f9123fa8e71635ed013f"
+    },
+    {
+      "blindBatchId": "B-CB22C4D6881B",
+      "reviewMode": "fixed-output",
+      "channelId": "b2b-resale",
+      "evidenceEntryCount": 10,
+      "packetSha256": "428850fe450967d0bc76ed864d86e6bba9c2270525455d83fca9318255bfa8ed"
+    },
+    {
+      "blindBatchId": "B-D0A08AF38338",
+      "reviewMode": "discovery-pool",
+      "channelId": "tier1-distribution",
+      "evidenceEntryCount": 27,
+      "packetSha256": "c2f4b26684e3cf0016f0ab22472037dbf34fd292aa46597dcdc735b404616a6f"
+    },
+    {
+      "blindBatchId": "B-E1EA458AE1D9",
+      "reviewMode": "discovery-pool",
+      "channelId": "tier1-distribution",
+      "evidenceEntryCount": 30,
+      "packetSha256": "af4167366c58f79136915c54878edd8e8d4064c3daa9b2ff1fcfee4e79224357"
+    }
+  ]
+}

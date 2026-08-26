@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "protocolVersion": "multi-source-professional-discovery-v1.1.1",
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
   "promptVersion": "professional-discovery-de-v1",
   "frozenAt": "2026-08-26T16:08:00+08:00",
   "datePolicy": "Discovery calls ran after execution.frozenAt. OpenAI evaluator calls began after execution.judgeAmendedAt; retry/failure-isolation logic applies after execution.runnerAmendedAt. Every attempt retains its actual ISO-8601 Asia/Shanghai timestamp.",
@@ -88,6 +88,7 @@
     "frozenAt": "2026-08-26T16:08:00+08:00",
     "judgeAmendedAt": "2026-08-26T17:18:00+08:00",
     "runnerAmendedAt": "2026-08-26T17:35:00+08:00",
+    "codexJudgeAmendedAt": "2026-08-26T18:03:00+08:00",
     "runId": "2026-08-26-de-v1",
     "queriesPerChannel": 3,
     "maxResultsPerQuery": 10,
@@ -165,6 +166,14 @@
       "providerSpecificCorrectionAllowed": false
     },
     "judge": {
+      "provider": "codex-agent",
+      "transport": "in-session-no-api",
+      "model": "runtime-managed-codex",
+      "blindToSystemIdentity": true,
+      "promptSource": "config/inputs.json primaryEvaluator"
+    },
+    "diagnosticApiJudge": {
+      "status": "auxiliary-not-used-for-ranking",
       "provider": "openai",
       "gateway": "lingyu-openai-compatible",
       "transport": "responses",
@@ -200,8 +209,19 @@
       ]
     }
   ],
-  "evaluator": {
+  "primaryEvaluator": {
+    "evaluatorVersion": "codex-blind-review-v1",
+    "reviewerType": "codex-agent-session",
+    "modelIdentity": "runtime-managed-codex",
+    "transport": "in-session-no-api",
+    "blindToSystemIdentity": true,
+    "externalSearchAllowed": false,
+    "promptSource": "downstreamEvaluator.systemPrompt, taskPrompt and fixedListEvaluationPrompt",
+    "scoreComputation": "application-recomputed"
+  },
+  "diagnosticApiEvaluator": {
     "evaluatorVersion": "openai-judge-v1",
+    "status": "auxiliary-diagnostic-only",
     "provider": "openai",
     "gateway": "lingyu-openai-compatible",
     "apiKeyEnvironmentVariable": "LINGYU_API_KEY",
@@ -219,23 +239,23 @@
   "fileHashes": [
     {
       "path": "experiments/multi-source-lead-discovery/config/benchmark.json",
-      "sha256": "b23bebb3d109d108405e1c36bc4a735ce10ab1ee281bc5092d4c840b47522b88",
-      "bytes": 4377
+      "sha256": "7da98c36389268b48c67b7347086625d754448938a2049d5087f34f5faa687c4",
+      "bytes": 4726
     },
     {
       "path": "experiments/multi-source-lead-discovery/config/inputs.json",
-      "sha256": "06ece7a3a582b968da01f37c8ee1d8c17d9c74cf97791c520ada71fb2f3890f9",
-      "bytes": 7822
+      "sha256": "bc696a01066c641481135d758df4cbf438b1cd536a6e494b7e7dac40e7e930ef",
+      "bytes": 8288
     },
     {
       "path": "experiments/multi-source-lead-discovery/docs/01-protocol.md",
-      "sha256": "26a3f0972464b6d10bf19aa164672e038eb23fd2fa71683a21b2c1d5aadd9995",
-      "bytes": 4285
+      "sha256": "5a19f8ea914dc7f60eb9a20bf770ddde4916ddfa5d5fb244fc407493b758b314",
+      "bytes": 4485
     },
     {
       "path": "experiments/multi-source-lead-discovery/docs/05-scoring-and-blind-audit.md",
-      "sha256": "f41bedc853ea6496439679f99dfe2ac77b709beade10c5014b43b741b9bee4bd",
-      "bytes": 5092
+      "sha256": "71fb364b4d93fc4d3b6d9cef956bfd835c6708d08ca10c139760977a98f046c4",
+      "bytes": 5120
     },
     {
       "path": "src/data/channel-role-taxonomy.ts",

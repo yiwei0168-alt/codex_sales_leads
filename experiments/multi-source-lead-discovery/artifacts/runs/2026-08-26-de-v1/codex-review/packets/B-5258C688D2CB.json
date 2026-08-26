@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "blindBatchId": "B-5258C688D2CB",
+  "reviewMode": "discovery-pool",
+  "channel": {
+    "id": "project-services",
+    "label": "Project services",
+    "eligibleRoles": [
+      "SI",
+      "Installer"
+    ]
+  },
+  "evidenceEntries": [
+    {
+      "evidenceEntryId": "E-00002766EB",
+      "title": "KOSATEC Empowering Global Innovation GmbH",
+      "url": "http://www.kosatec.de/",
+      "snippet": "Grosshändler · Carl-Miele-Straße 3, 38112 Braunschweig-Veltenhof-Rühme"
+    },
+    {
+      "evidenceEntryId": "E-7C215620CC",
+      "title": "Netzwerkbau & IT-Services",
+      "url": "https://netzwerkbau.berlin/",
+      "snippet": "Wilhelmstraße 25-30, 13593 Berlin"
+    },
+    {
+      "evidenceEntryId": "E-C12AC5B4F3",
+      "title": "Netzwerk Emobilität - Ihre Wallbox-Installateure",
+      "url": "https://www.nemob.de/",
+      "snippet": "Dienstleistungen · Kollwitzstraße 76, 10435 Berlin"
+    },
+    {
+      "evidenceEntryId": "E-C23E25EAC3",
+      "title": "Fiber Networks GmbH",
+      "url": "http://www.fibernetworks.de/",
+      "snippet": "Dienstleistungen · Nordendstraße 48, 64546 Mörfelden-Walldorf-Walldorf"
+    },
+    {
+      "evidenceEntryId": "E-93657F2975",
+      "title": "GERMAN HOTSPOT | WLAN Lösungen für viele Nutzer",
+      "url": "https://www.germanhotspot.de/",
+      "snippet": "Dienstleistungen · Siemensstraße 4, 30916 Isernhagen-Altwarmbüchen"
+    },
+    {
+      "evidenceEntryId": "E-A65C7232F0",
+      "title": "IB-IT Cabling GmbH",
+      "url": "http://www.ib-it.eu/",
+      "snippet": "Dienstleistungen · Friedberger Str. 173, 61118 Bad Vilbel-Dortelweil"
+    },
+    {
+      "evidenceEntryId": "E-F9FBCCDF4B",
+      "title": "WAYFONE. [ Reparatur Service | Mobilfunk | Internet für Zuhause | Internet für Unterwegs ]",
+      "url": "http://www.wayfone.de/",
+      "snippet": "Mobiltelefongeschäft · Trommsdorffstraße 8, 99084 Erfurt"
+    },
+    {
+      "evidenceEntryId": "E-CDC26AAED0",
+      "title": "Fiber NetworkS GmbH",
+      "url": "http://www.fibernetworks.de/",
+      "snippet": "Hersteller · Heinitzstraße 1B, 66583 Spiesen-Elversberg-Elversberg"
+    },
+    {
+      "evidenceEntryId": "E-02C4AFC553",
+      "title": "n@work Internet Informationssysteme GmbH",
+      "url": "https://www.work.de/",
+      "snippet": "Dienstleistungen · Versmannstraße 58, 20457 Hamburg"
+    },
+    {
+      "evidenceEntryId": "E-92482383B0",
+      "title": "expert HERFAG Elektrotechnik GmbH",
+      "url": "https://www.expert.de/sondershausen1",
+      "snippet": "Elektrofachmarkt · Lange Str. 1A, 99706 Sondershausen"
+    },
+    {
+      "evidenceEntryId": "E-DFD10F010E",
+      "title": "Elektrotechnik Kilian Selent - Meisterbetrieb",
+      "url": "https://www.elektrotechnik-selent.de/",
+      "snippet": "Dienstleistungen · Lindenweg 15A, 82549 Königsdorf"
+    },
+    {
+      "evidenceEntryId": "E-8D99CC3888",
+      "title": "Radio Frequency Systems GmbH",
+      "url": "https://www.rfsworld.com/",
+      "snippet": "Hersteller · Kabelkamp 20, 30179 Hannover"
+    },
+    {
+      "evidenceEntryId": "E-7636914799",
+      "title": "eWLAN - Professioneller WLAN Service für Unternehmen",
+      "url": "https://maps.google.com/?cid=10227462222896240226&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+      "snippet": "Soennecken Platz, 51491 Overath"
+    },
+    {
+      "evidenceEntryId": "E-56B6AA1B1C",
+      "title": "Pollin Electronic Ladengeschäft",
+      "url": "https://www.pollin.de/",
+      "snippet": "Elektrofachmarkt · Max-Pollin-Straße 1, 85104 Pförring"
+    },
+    {
+      "evidenceEntryId": "E-67C251CE85",
+      "title": "Elektro-Installation Raabe GmbH - Elektriker in Köln",
+      "url": "http://www.elektro-raabe.de/",
+      "snippet": "Elektriker · Rochusstraße 375, 50827 Köln-Ehrenfeld"
+    },
+    {
+      "evidenceEntryId": "E-D4B768E12E",
+      "title": "Matthias Weber Systemintegration (KNX)",
+      "url": "https://www.matthias-weber-knx.de/home.html",
+      "snippet": "Dienstleistungen · Grashofblick 5, 36148 Kalbach"
+    },
+    {
+      "evidenceEntryId": "E-7F8006A82B",
+      "title": "High Knowledge GmbH",
+      "url": "http://www.highknowledge.de/",
+      "snippet": "Generalunternehmer · Lindenstraße 14, 50674 Köln"
+    },
+    {
+      "evidenceEntryId": "E-4EEA1A2E87",
+      "title": "Fibercom GmbH",
+      "url": "http://www.fibercom.de/",
+      "snippet": "Telekommunikationsanbieter · Am Wildzaun 30, 64546 Mörfelden-Walldorf-Walldorf"
+    },
+    {
+      "evidenceEntryId": "E-70C889499A",
+      "title": "Rohde & Schwarz Networks and Cybersecurity GmbH",
+      "url": "https://www.rohde-schwarz.com/networks-and-cybersecurity",
+      "snippet": "Hersteller · Adenauerstraße 20/B2, 52146 Würselen"
+    },
+    {
+      "evidenceEntryId": "E-44DF630AE8",
+      "title": "NETWORK EXPERTS – Netzwerk für Unternehmensentwicklung",
+      "url": "https://network-experts.org/",
+      "snippet": "Kleestraße 21-23, 90461 Nürnberg"
+    },
+    {
+      "evidenceEntryId": "E-6FAD560A00",
+      "title": "IB-IT Datacenter GmbH",
+      "url": "https://ib-it.gmbh/",
+      "snippet": "Berater · Eichenstraße 59, 65933 Frankfurt am Main West"
+    }
+  ]
+}

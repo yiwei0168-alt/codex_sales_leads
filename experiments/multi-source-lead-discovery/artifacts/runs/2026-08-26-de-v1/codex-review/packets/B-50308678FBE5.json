@@ -1,0 +1,196 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "blindBatchId": "B-50308678FBE5",
+  "reviewMode": "discovery-pool",
+  "channel": {
+    "id": "project-services",
+    "label": "Project services",
+    "eligibleRoles": [
+      "SI",
+      "Installer"
+    ]
+  },
+  "evidenceEntries": [
+    {
+      "evidenceEntryId": "E-D77E807B5F",
+      "title": "Netzwerkinstallation kleine Unternehmen: Anleitung 2026",
+      "url": "https://www.hagel-it.de/it-insights/netzwerkinstallation-fuer-kleine-unternehmen-schritt-fuer-schritt-anleitung",
+      "snippet": "## Inhalt in Kürze Das Firmennetzwerk ist das Nervensystem Ihres Betriebs. Im Zweifel merken Sie es erst, wenn es nicht funktioniert: Die Videokonferenz hakt, der Drucker ist „offline”, das Backup läuft nicht zu Ende, die Kasse steht still. In dem Moment geht es nicht mehr um IT — es geht um Umsatz, um Kundentermine, um Mitarbeiter, die nicht arbeiten können. Dieser Artikel ist die Anleitung, die wir unseren Kunden in Hamburg und Norddeutschland in die Hand geben, wenn sie zum ersten Mal ein Firmennetzwerk planen, ein bestehendes Büro modernisieren oder umziehen. Keine Produkt-Werbung, sondern eine Entscheidungshilfe mit Zahlen, Komponenten und Fallstricken aus rund 150 Netzwerk-Installationen. ## Was gehört zu einer professionellen Netzwerkinstallation? [...] Für 25 Arbeitsplätze liegen die Einmal-Kosten für ein sauber geplantes Firmennetzwerk bei 12.000–22.000 € netto — das umfasst managed Switch, Wi-Fi-6E-Access-Points, Firewall, CAT6a-Verkabelung, Patchpanel und Montage. Dazu kommt ein Betriebsmodell: entweder Break-Fix nach Aufwand oder Managed WLAN/Firewall als Flatrate ab ca. 50 € pro Arbeitsplatz/Monat. Der Preisspreiz entsteht vor allem durch die Verkabelungssituation — Ne"
+    },
+    {
+      "evidenceEntryId": "E-243C4CC6D9",
+      "title": "Networks - Elomech",
+      "url": "https://www.elomech.de/en/services/networks",
+      "snippet": "As our customer, you enjoy the benefits of expert advice and installation in all areas of network technology: from planning the network topology and architecture to structured cabling and activating communication networks. In other words: Elomech Elektroanlagen GmbH provides you with integrated solutions for all demands and requirements - and our employees offer the highest level of expertise, resilience and flexibility. Network topology Network architecture Network installation Local area networks (LAN) Wide area networks (WAN) Gigabit Ethernet ### Projects: ### Automobilclub Frankfurt [...] High-performance data networks are the prerequisite for perfect communication within the company and between the head office and branch offices. As a full-service provider, we offer our customers in the Networks business field integrated solutions for a smooth flow of data – and for every requirement. No matter how large or complex your requirements are. The service portfolio of Elomech Elektroanlagen covers the entire spectrum: local area networks (LAN), network components and wide area networks (WAN) – even across continents thanks to partnerships with well-known manufacturers. The services "
+    },
+    {
+      "evidenceEntryId": "E-37E46F3C9B",
+      "title": "Rosenberger OSI leader in the German data center market",
+      "url": "https://osi.rosenberger.com/news-media/market-leader-in-german-data-center",
+      "snippet": "Cabling market grew by 10 percent The study showed that the German structured cabling market grew by over 10 percent in 2022, both quantitatively and qualitatively. Although the market initially benefited from the lifting of remaining Covid-19 restrictions, growth was once again affected by geopolitical events such as the war in Ukraine. Manufacturers struggled with supply issues that impacted production and sales. The persistent inflationary pressure was further exacerbated by supply chain issues, leading to repeated price increases. Despite these challenges, the data center market continued to show solid growth and outperformed the LAN market, albeit with a lower margin than in previous years. Rosenberger OSI emerges as leader in the German data center market [...] Despite the intense competitive situation in the German market for structured cabling, as highlighted in the study with a large number of strong players, Rosenberger OSI has once again taken the top position as the leading company in the field of data centers and fiber optic connections. This result underlines the company's excellent position in the industry and its ability to provide innovative data center solutions. "
+    },
+    {
+      "evidenceEntryId": "E-D75F20EBD1",
+      "title": "Fachinformatiker (m/w/d) für Systemintegration / Medientechnik",
+      "url": "https://mevis.tv/karriere/fachinformatiker-m-w-d",
+      "snippet": "Kenntnisse in Netzwerk- und Systemadministration (LAN, WLAN, TCP/IP, Windows Server, Linux); erste praktische Erfahrung mit AV-Systemen und Medientechnik"
+    },
+    {
+      "evidenceEntryId": "E-BCBC2C33F7",
+      "title": "Profi WLAN: Sichere B2B-Netzwerke mit Premium-Hardware",
+      "url": "https://business.ewe.de/vernetzung/managed-lan-wlan/profi-wlan",
+      "snippet": "### Planung Wir erstellen eine detaillierte Planung sämtlicher Komponenten und eine konkrete Kostenschätzung. ### Installation Wir planen nicht nur Ihr WLAN-Netz, sondern liefern auch sämtliche Geräte aus und installieren diese. ### Analyse Wir stellen Ihnen eine Software zur Verfügung, mit der Sie jederzeit einen Überblick zur Nutzung Ihres WLANs erhalten. ### Wartung Damit Ihr Netzwerk dauerhaft störungsfrei läuft, übernehmen wir auch die Wartung und Administration. ## Branchenbeispiele für unsere professionellen WLAN-Lösungen [...] Tablet mit Raumplan in zwei Händen ## WLAN-Kartierung Auf Basis eines Grundrisses und des genauen Standortes der Internetanbindung und der weiteren LAN-Infrastruktur erstellen wir Ihnen eine übersichtliche Karte mit der günstigsten WLAN-Ausleuchtung Ihres Büros, Gebäudes oder Areals. Inklusive Empfehlung für verbaute Access-Points, Switches und weitere Geräte. Zwei Männer im Business-Look schauen auf ein Handy ## Rundum-sorglos-Paket Unsere WLAN-Experten begleiten Sie von der Planung und der Installation bis zur Überwachung Ihrer WLAN-Performance. Wichtig dabei sind vor allem die Bestandsaufnahme Ihrer aktuellen LAN-Infrastruktur sowie die Verkabelung"
+    },
+    {
+      "evidenceEntryId": "E-496E98182C",
+      "title": "WLAN & Gäste-WLAN – stabil, sicher, professionell - Netzwerk-Arzt",
+      "url": "https://www.netzwerk-arzt.de/wlan-netzwerk-gaestewlan.html",
+      "snippet": "Ihr WLAN-Dienstleister in Bayern: professionelle WLAN-Installation und Gäste-WLAN für Unternehmen in Bayreuth und ganz Oberfranken."
+    },
+    {
+      "evidenceEntryId": "E-CEEE515FA4",
+      "title": "Structured Network Data Cabling - Infrastructure Cabling experts",
+      "url": "https://www.onnecgroup.com/structured-cabling",
+      "snippet": "## STRUCTURED APPROACHQUALITY CABLING Structured cabling is critical to your network. It’s the foundation of your connectivity – and ensures your business remains resilient and agile. As a global leader in structured cabling, we bring over 35 years of expertise to designing and deploying cabling systems that meet your business needs—today and into the future. [...] Skip to content Onnec Logo About Us + About Onnec + Our Partnerships + ESG & Sustainability + Locations + Onnec in Ireland + Onnec in Nordics + Careers Services + Structured Cabling + Data centre + Support Services + Network Solutions Sectors + Data centre + Office Space + Fulfilment centres Learn + News + Blog + Resources + In the Press + Case Studies + Events Contact us Onnec Structured cabling Onnec Structured cabling # Structured Cabling Build your network on the strongest foundation. Draw on the knowhow of our highly trained expert team to design and install IT Network and Structured Cabling that gives you certainty in your connected space. ## STRUCTURED APPROACHQUALITY CABLING [...] Fibre cabling #### installation With a focus on precision, quality and safety, our certified technicians handle the installation proce"
+    },
+    {
+      "evidenceEntryId": "E-70812DC130",
+      "title": "Netzwerk Infrastruktur: Die Netz-Werker AG",
+      "url": "https://www.dnw.ag/portfolio/it-infrastruktur/netzwerk-infrastruktur",
+      "snippet": "Flexibel und zukunftssicher Unsere Netzwerk- und WLAN-Lösungen sind skalierbar, sodass sie sich an die wachsenden Anforderungen Ihres Unternehmens anpassen. Wir bieten fortlaufende Verwaltung und Support, um sicherzustellen, dass Ihr Netzwerk stets sicher, leistungsfähig und zukunftssicher ist. Ob kleine oder große Umgebungen – wir bieten maßgeschneiderte Lösungen, die genau auf Ihre Bedürfnisse abgestimmt sind. ### Lassen Sie uns reden Kontaktieren Sie uns für eine Beratung oder besuchen Sie unseren Blog für mehr Infos. #### Unsere Lösungspartner Die Netz-Werker AG Logo Die Netz-Werker AG Kiefholzstr. 3, 12435 Berlin Ihr erfahrener IT-Systempartner für Berlin und Brandenburg Informationen Portfolio Copyright © 2026 Die Netz-Werker AG. All rights reserved. [...] Nahtlose drahtlose Konnektivität Wir bieten umfassende Dienstleistungen zur Einrichtung und Optimierung Ihrer WLAN-Infrastruktur. Mit Lösungen von Ruckus und Ubiquiti sorgen wir für eine nahtlose drahtlose Konnektivität, die schnelles und sicheres Internet an allen Arbeitsplätzen und mobilen Geräten ermöglicht. Unsere Experten optimieren die Reichweite und Leistung Ihrer WLAN-Netzwerke für maximale Effizienz. #### Skalierba"
+    },
+    {
+      "evidenceEntryId": "E-6836DD01BA",
+      "title": "Netzwerktechnik vom Elektriker | WLAN LAN Planung & Installation",
+      "url": "https://elektro-lu.eu/leistungen/netzwerktechnik-elektriker",
+      "snippet": "Skip to content []( Click on the Edit Content button to edit/add the content. Instagram Icon\\_mail Instagram Icon\\_mail Icon\\_phone # Netzwerktechnik planen und installieren ###### WLAN / LAN ## Netzwerktechnik – Zuverlässiges WLAN und LAN für Zuhause und Unternehmen Eine stabile Netzwerktechnik ist heute unverzichtbar. Ob Homeoffice, Büro, Produktion oder Gewerbe – ohne ein professionell aufgebautes Netzwerk entstehen Ausfälle, langsame Datenverbindungen und unnötige Kosten. Wir planen, installieren und optimieren komplette Netzwerktechnik für Privatkunden und Unternehmen. Serverschrank / Netzwerkschrank Ein sauber aufgebauter Serverschrank bildet das Zentrum jeder modernen Netzwerkinstallation. Wir übernehmen: [...] Smart Home #### 📍 Bietigheim – Moderne Video-Türsprechanlage mit Smart System installiert Installation einer modernen Video-Türsprechanlage mit Smart System in Bietigheim. Die Anlage ermöglicht eine sichere und komfortable Zutrittskontrolle per App und sorgt für mehr Sicherheit und Übersicht im Alltag. Kontakt aufnehmen Wallbox Ladestation für Elektrofahrzeuge bei einem Gewerbeobjekt in Steinmauern installiert Wallbox #### 📍 Steinmauern – Gewerbe Wallbox professione"
+    },
+    {
+      "evidenceEntryId": "E-FC14110482",
+      "title": "Allnet Österreich GmbH -Fachinformatiker Systemintegration",
+      "url": "https://www.allnet.de/at/allnet-brand/unternehmen/karriere/career-sales",
+      "snippet": "Planung, Consulting, Inbetriebnahme und Dokumentation von IT Infrastruktur Projekten mit dem Schwerpunkt Wireless Solutions (WLAN), Richtfunk, Switching, Fiber"
+    },
+    {
+      "evidenceEntryId": "E-646F2C2954",
+      "title": "Business WLAN einrichten: Hardware & Hersteller-Vergleich für KMU | MiMann.net",
+      "url": "https://mimann.net/blog/business-wlan-einrichten-hardware-hersteller-und-installation",
+      "snippet": "Entscheidend ist nicht nur die Hardware, sondern die fachgerechte Installation und Konfiguration: VLAN-Trennung, Sicherheitsrichtlinien, Kanalplanung und ein sauberes Monitoring-Setup machen den Unterschied zwischen einem WLAN, das funktioniert, und einem, das Probleme verursacht. Wenn Sie unsicher sind, welche Lösung zu Ihrem Unternehmen passt, sprechen Sie uns an — wir planen, installieren und betreuen Ihr Business-WLAN von der ersten Bestandsaufnahme bis zum laufenden Betrieb. ## Professionelles WLAN für Ihr Unternehmen? Wir beraten Sie herstellerunabhängig, planen Ihre WLAN-Infrastruktur und übernehmen die komplette Installation — von der Verkabelung bis zum letzten Access Point. MiMann.net Logo Ihr Systemhaus am Kaiserstuhl. IT-Lösungen für den Mittelstand. MiMann.net [...] ### Das UniFi-Setup | Komponente | Modell | Anzahl | Einzelpreis (netto) | Gesamt | --- --- | Gateway & Controller | UniFi Dream Machine Pro | 1 | 430 € | 430 € | | PoE-Switch | UniFi USW-Pro-24-PoE | 1 | 450 € | 450 € | | Access Points EG | UniFi U7 Pro | 3 | 190 € | 570 € | | Access Points OG | UniFi U7 Pro | 3 | 190 € | 570 € | | Patchkabel Cat6a (0,5 m) | Diverse | 30 | 3 € | 90 € | | Montagematerial | "
+    },
+    {
+      "evidenceEntryId": "E-BB0669FA40",
+      "title": "Projektarbeit über Wireless LAN! - Abschlussprojekte - Fachinformatiker.de",
+      "url": "https://www.fachinformatiker.de/topic/57757-projektarbeit-%C3%BCber-wireless-lan",
+      "snippet": "Â§15(2) Absatz 2. in der Fachrichtung Systemintegration in insgesamt höchstens 35 Stunden für die Projektarbeit einschließlich Dokumentation: a) Realisieren und Anpassen eines komplexen Systems der Informations- und Telekommunikationstechnik einschließlich Anforderungsanalyse, Planung, Angebotserstellung, Inbetriebnahme und Übergabe, B) Erweitern eines komplexen Systems der Informations- und B) Telekommunikationstechnik sowie Einbinden von Komponenten in das Gesamtsystem unter Berücksichtigung organisatorischer und logistischer Aspekte einschließlich Anforderungsanalyse, Planung, Angebotserstellung, Inbetriebnahme und Übergabe. Die Ausführung der Projektarbeit wird mit praxisbezogenen Unterlagen dokumentiert. Durch die Projektarbeit und deren Dokumentation soll der [...] Ziel: (Soll Zustand) Durch Installation eines Wireless LAN Netzwerkes soll zum einen die Flexibilität der Mitarbeiter gewährleistet werden und zum anderen eine saubere Netzwerklösung ohne Kabelziehen im ganzen Gebäude stattfinden und die Sicherheitsrichtlinien außer Acht zu lassen. Zudem wird auf allen Workstations ein aktueller Virenschutz (Norton Anti Virus 2004) installiert, der so konfiguriert sein wird, dass s"
+    },
+    {
+      "evidenceEntryId": "E-C022129DA2",
+      "title": "DIGITUS Structured Cabling System - assmann.pl",
+      "url": "https://www.assmann.pl/en/digitus/digitus-structured-cabling-system",
+      "snippet": "ASSMANN is a competent partner for LAN network installers. Get to know more about the DIGITUS structured cabling system."
+    },
+    {
+      "evidenceEntryId": "E-FD33330235",
+      "title": "[PDF] ZUM NEUEN HYPER-INTEGRIERTEN NETZWERK-MANAGEMENT",
+      "url": "https://www.lancom-systems.com/download/LMC/1704-LMC-DE.pdf",
+      "snippet": "für neue Geräte, die einem Standort hinzugefügt werden Einzelgerätekonfiguration Vollständige, detaillierte Konfiguration aller Parameter einzelner Geräte Passwort-Management Zentrale Verwaltung aller Geräte-Passwörter Flexibles Geräte-Handling Geräte lassen sich frei zwischen Organisationen und Projekten verschieben Geräteintegration Verfügbar für alle aktuellen LANCOM Produkte ab LCOS Version 10 bzw. LANCOM Switch OS Version 3.30 (jeweils als kosten-freies SW-Update verfügbar) Leistungsumfang – Projekt-Management Organisation Bereich für Fachhändler, Systemhäuser und Systemintegratoren zur Projektverwaltung, beliebige Projektanzahl pro Organisation Key-Features: A A Live Projekt-Status als Kartenansicht A A Geräte-Pool, von dem aus die Geräte in Projekte verschoben werden können [...] Security Made in Germany Gateways, Router, Access Points, das LCOS-Betriebs-system sowie die LANCOM Management Cloud werden in Deutschland entwickelt und hergestellt. Das Hosting der Public Cloud in einem deutschen Rechenzentrum garantiert hohe Datensicherheit und rechtssicheres Handling nach deutschen und europäischen Datenschutzrichtlinien. Multi-Mandantenfähigkeit Die LANCOM Management Cloud ermö"
+    },
+    {
+      "evidenceEntryId": "E-F37EF80AB7",
+      "title": "Lan Service | Grüninger Netzwerk",
+      "url": "https://www.grueninger-netzwerk.de/en/lan",
+      "snippet": "We plan, install, and inspect your twisted pair cabling systems. Structured cabling for extensions or complete new installations patch panels, and network"
+    },
+    {
+      "evidenceEntryId": "E-B8AAB18922",
+      "title": "Structured Cabling Companies | Market Research Future",
+      "url": "https://www.marketresearchfuture.com/reports/structured-cabling-market/companies",
+      "snippet": "Company Overview. Nexans is the leading European LAN wiring standards specialist in the Structured Cabling Market, offering its LANmark copper and fiber connectivity range — including Cat 6, Cat 6A, and single-mode fiber variants — alongside specialty halogen-free cable jacket materials that meet the circular-economy and fire-safety requirements of EU green-building procurement frameworks. The company serves more than 50 countries through its Telecom & Data segment and a European-concentrated distribution network, with particular strength in French, German, Benelux, and Scandinavian commercial and public-sector structured cabling projects. Nexans actively participates in EU Ecodesign for Sustainable Products Regulation (ESPR) working groups and has positioned its EPD-certified [...] Company Overview. R&M is the European hyperscale and colocation fiber optic cabling solutions specialist, delivering its Netscale 48 ultra-high-density fiber cabling system — supporting 48 fibers per rack unit — and R&Mfreenet flexible copper infrastructure for enterprise and industrial LAN wiring standards deployments, with distribution across more than 80 countries through a certified installer partne"
+    },
+    {
+      "evidenceEntryId": "E-116CF7C18E",
+      "title": "Structured Cabling Services | Everon",
+      "url": "https://www.everonsolutions.com/solutions/security-solutions/specialized-solutions/structured-cabling",
+      "snippet": "Contact Us ## What Is Structured Cabling? Structured cabling is the nervous system of a facility’s or campus’s integrated safety and security systems. It’s an organized and standardized system of cables, connectors, and hardware that links all devices and systems, allowing them to communicate efficiently and reliably. Properly installed structured cabling helps ensure your digital and security information flows smoothly throughout your facilities. ## Full-Service Cabling Installation, Testing, and Support [...] #### Product-Agnostic Support We hold product certifications with many industry-leading manufacturers, which gives us the independence and flexibility to help your organization identify and meet your unique business needs. Our Industry Partners: panduit general-cable advanced-digital-cable corning siemon commscope berk-tek belden panduit general-cable advanced-digital-cable corning siemon commscope berk-tek belden ## Add Structured Cabling Services to Your Integrated Security System Keep lines of communication between your security systems and facilities open and running smoothly. Everon can help you design and implement a comprehensive security plan to protect your assets, "
+    },
+    {
+      "evidenceEntryId": "E-D88B9B2FDF",
+      "title": "Structured Cabling for Efficient Data Centers - High Knowledge GmbH",
+      "url": "https://www.hknow.de/en/solutions/structured-cabling",
+      "snippet": "Plan and implement sustainable structured cabling in your data center. We plan, lay and install your cabling according to the latest standards and guidelines."
+    },
+    {
+      "evidenceEntryId": "E-9A20592CCC",
+      "title": "LANCOM Systems und Juniper kooperieren bei WLAN-Projekten im ...",
+      "url": "https://www.deutscherpresseindex.de/2017/05/15/lancom-systems-und-juniper-kooperieren-bei-wlan-projekten-im-campus-und-carrier-umfeld",
+      "snippet": "Damit sind Systemhäuser und Integratoren ab sofort in der Lage, Netzwerk-Gesamtlösungen im Rahmen großer Campus-Projekte anzubieten, die neben"
+    },
+    {
+      "evidenceEntryId": "E-4581ED18BD",
+      "title": "Advanced Services WLAN und LAN - eudisa",
+      "url": "https://www.eudisa.com/advanced-services-wlan-und-lan",
+      "snippet": "WLAN-Lösungen für Dienstleister Systemintegratoren, die Unterstützung bei der Planung, Site Survey-Optimierung oder Fehlerbehebung benötigen,"
+    },
+    {
+      "evidenceEntryId": "E-043012CD3F",
+      "title": "Systemintegrator – Wikipedia",
+      "url": "https://de.wikipedia.org/wiki/Systemintegrator",
+      "snippet": "[Bearbeiten\") | Quelltext bearbeiten\")] Systemintegratoren sind Unternehmen der IT-Branche, die Software- und Hardware-Produkte anderer Hersteller vertreiben, anpassen, erweitern und in die IT-Landschaft ihrer Kunden integrieren. Zu den Kunden gehören u. a. mittlere und größere Unternehmen, etwa Banken, Versicherungen und die öffentliche Verwaltung (Behörden, Verbände und dergleichen). Eine mögliche englische Bezeichnung für das Tätigkeitsfeld ist systems integration. Da Verwaltungseinheiten den größten Bedarf an maßgeschneiderten Lösungen \"Lösung (Software)\") haben, stellen Datenbankanwendungen das Haupttätigkeitsfeld dar. ## Markt für IT-Beratung und Systemintegration in Deutschland [Bearbeiten | Quelltext bearbeiten] [...] [Bearbeiten | Quelltext bearbeiten] 2015 bestimmten die folgenden Anbieter maßgeblich den deutschen Markt für IT-Beratung und Systemintegration: | Rang | Unternehmen | Umsatz in Deutschland in Mio. Euro | Mitarbeiterzahl in Deutschland | --- --- | | 01 | Accenture 1 \\ | 1.550,0 | 6.550 | | 02 | IBM Global Business Services 1 \\ | 1.380,0 | 6.800 | | 03 | T-Systems 2 \\ | 1.200,0 | 4.100 | | 04 | Capgemini Deutschland 1 \\ | 0.700,0 | 3.200 | | 05 | Atos IT Soluti"
+    },
+    {
+      "evidenceEntryId": "E-E465FC82B1",
+      "title": "Fachinformatiker:in Systemintegration (Netzwerk & NAC) (m/w/d)",
+      "url": "https://www.stepstone.de/stellenangebote--Fachinformatiker-in-Systemintegration-Netzwerk-NAC-m-w-d-Hannover-ComNet-Ges-fuer-Kommunikation-Netzwerk-mbH--14137327-inline.html",
+      "snippet": "Unser Fokus liegt auf den Bereichen: LAN, WLAN, IT-Security und Network Access Control (NAC). Wir schaffen sichere Netzwerke, zuverlässige Verbindungen und"
+    },
+    {
+      "evidenceEntryId": "E-32F2C3474A",
+      "title": "WLAN-Lösungen für Unternehmen – Frings Solutions",
+      "url": "https://www.frings-solutions.de/infrastruktur/wlan",
+      "snippet": "### Wir haben hunderte Unternehmen bei der Transformation in den Bereichen Infrastruktur, Smart Work, Kommunikation, Cloud, Security und Servicemanagement begleitet. Erfahren Sie, wie. Referenzübersicht ###### Ein Auszug unserer Technologie-Partner: Mehr Hersteller ## Gemeinsam mit starken Marken entwickeln wir smarte Lösungen. Logo Cisco Logo Lenovo Logo Enreach Logo Canon Logo Extreme Logo Copilot Logo aruba Logo MS Team Logo Audiocodes # 💬 ### 100 % Klarheit bei 15 Minuten Invest. Wir beraten Sie zum Thema WLAN-Ausbau, kostenlos und unverbindlich: Beratung Frings Solutions Deutschland GmbH Kleinhülsen 42, 40721 Hilden Phone: [redacted-phone] Mail: [redacted-email] Beratung [...] Hersteller und Systeme für Gebäude, Räume und IT. ### Die Systemhausgruppe Unternehmen der Gruppe im Überblick. ### Informationen Informationen, Hintergründe und Aktuelles. ### Standorte Unsere Expert:innen sind für Sie da – vor Ort oder remote. Telefonzentrale: [redacted-phone] Mail: [redacted-email] # WLAN-Ausbau: Für eine vernetzte Zukunft [...] Netzwerkanalyse und Planung: Durchführung von Site Surveys und Analysen zur Bestimmung der optimalen Platzierung von Access Points. Installation und Konfigur"
+    },
+    {
+      "evidenceEntryId": "E-7475ED7FDC",
+      "title": "Data Cabling Companies - The Installation Services",
+      "url": "https://www.installation-services.net/data-cabling-companies",
+      "snippet": "Wi-Fi setups. The Installation Services is experienced in designing and installing structured cabling systems that are organized, scalable, and easy to manage."
+    },
+    {
+      "evidenceEntryId": "E-CE652D51D2",
+      "title": "Top 100 Data Cabling Companies in Germany (2026) - ensun",
+      "url": "https://ensun.io/search/data-cabling/germany",
+      "snippet": "The company specializes in structured cabling solutions, particularly for Data Centers, includes copper cabling systems for LAN and WLAN networks."
+    },
+    {
+      "evidenceEntryId": "E-CE206CC7F3",
+      "title": "Netzwerkinstallationen Hersteller, Lieferanten & Händler",
+      "url": "https://www.wlw.de/de/suche/netzwerkinstallationen",
+      "snippet": "Die KODEWI UG (haftungsbeschränkt) ist Ihr zuverlässiger Partner für leistungsstarke WLAN-Netzwerke und moderne IT-Infrastrukturen. Wir unterstützen Unternehmen"
+    },
+    {
+      "evidenceEntryId": "E-4910E40C81",
+      "title": "📶 Wireless LAN (WLAN) für Unternehmen 🌐",
+      "url": "https://phonekom.de/ratgeber/wlan",
+      "snippet": "Installation und Konfiguration: Die Installation und Konfiguration des WLAN-Systems sollte von einem professionellen Installateur durchgeführt werden, um sicherzustellen, dass alle Geräte ordnungsgemäß installiert und konfiguriert sind. Eine Überprüfung und Fehlerbehebung des Netzwerks ist ebenfalls notwendig. Schulung und Wartung: Die Mitarbeiter sollten in der Verwendung des WLANs geschult werden, um die Effizienz und Sicherheit des Netzwerks zu erhöhen. Eine regelmäßige Wartung und Aktualisierung des Systems ist ebenfalls wichtig, um die Leistung und Sicherheit zu gewährleisten. [...] ## Mit PHONEKOM zum optimalen Wireless LAN Network Die Entscheidung für ein neues WLAN ist nur eine von vielen, um Ihre betriebliche Kommunikation fit für die Zukunft zu machen. Vielen Firmen ist nicht bewusst, wie die Digitalisierung neue Möglichkeiten in hausinternen Gesprächen sowie im Kontakt mit Kunden mitbringt. Hier steht Ihnen PHONEKOM gerne als erfahrener Branchenpartner zur Seite, der Ihnen den Weg zu einer leistungsfähigen Netzwerkinfrastruktur ebnet. Verstehen und beraten #### Verstehen und beraten Wir arbeiten eng mit ihnen zusammen um Ihre geschäftlichen Prozesse und die damit verbund"
+    },
+    {
+      "evidenceEntryId": "E-673C044084",
+      "title": "Netzwerk-Projekte - A+G connect GmbH",
+      "url": "https://www.aplusg.de/projekte",
+      "snippet": "A+G connect GmbH Logo Network Datennetze # Netzwerk-Projekte Unser Spitzen Know-How und unsere langjährige Erfahrung in der Zusammenführung von Datennetzen, Sprache und IT-Sicherheit sind unser klar erkennbares Unterscheidungs­­merkmal. Erfahren Sie hier mehr über unsere Projektarbeit. ## Erwähnenswerte Netzwerk-Projekte ### we connect Modernste Technologien und Methoden in der öffentlichen Verwaltung ### Telefonie-Projekt Mit Zentraler Steuerung und 32 abgesetzten Standorten für 3500+ Teilnehmer ### Support und Betrieb Europaweit Verantwortung für Betriebs- und Datensicherheit Technologie: WAN, LAN, W-LAN, IT-Security ### Service 24×7 Europa- und Weltweit ITIL-konforme Ablaufstrukturen und Dokumentationsvorgaben ### One stop convergence [...] ### One stop convergence Modernste Technologien und Methoden in der öffentlichen Verwaltung ### Netzwerk-Kopplung über WLAN Anbindung von mobilen lokalen Netzwerken an das Firmen-Netzwerk Trierer Strasse 12 • 66111 Saarbrücken • Fax 0681 – 94805-11 A+G connect GmbH Logo Impressum I Datenschtzhinweise I AGB © 2022 – 2025 All rights reserved. • A+G connect GmbH • mit ♥ realisiert – mv-onliners.de Sie müssen den Inhalt von reCAPTCHA laden, um da"
+    },
+    {
+      "evidenceEntryId": "E-3883D1CA1A",
+      "title": "Fachinformatiker (m/w/d) Schwerpunkt Systemintegration / ...",
+      "url": "https://kristall-baeder-ag.com/fachinformatiker-m-w-d-schwerpunkt-systemintegration-netzwerktechnik",
+      "snippet": "Ihre Aufgaben: · Planung, Aufbau und Betrieb von Netzwerk- und Serverinfrastrukturen · Administration, Überwachung und Optimierung von LAN-, WAN- und WLAN-"
+    },
+    {
+      "evidenceEntryId": "E-8D46D2F444",
+      "title": "Schnelles Business WLAN für Ihr Unternehmen. | D-Link Deutschland",
+      "url": "https://www.dlink.com/de/de/for-business/wireless",
+      "snippet": "## Wir sind Business WLAN Experten. Sie suchen einen zuverlässigen Partner für schnelles WLAN für Ihr Unternehmen? Dann bietet Ihnen D-Link die richtigen Lösungen. Mit unserem professionellen Business WLAN erhält Ihr Betrieb eine leistungsstarke Netzwerkverbindung für kabelloses Arbeiten. Unsere WLAN-Komplettlösungen gewähren durch optimierte Netzwerkleistung eine nahtlose Abdeckung aller Bereiche Ihres Unternehmens. Die dazugehörigen Access Points sind einfach bereitzustellen und lassen sich kostengünstig betreiben. Vertrauen Sie auf unsere Expertise im Bereich WLAN Lösungen für Unternehmen und schaffen Sie eine stabile und sichere WLAN-Infrastruktur! ### Access Points mit Software-Verwaltung DAP Verwalten Sie mit dem kostenlosen Central WiFi Manager bis zu 1000 APs. [...] ### Nuclias Connect Zentrale Verwaltung von bis zu 1000 APs mit der kostenlosen Nuclias Connect Software. Die vollständige Lösung für größere Installationen bzw. mehrere Standorte lässt sich kostengünstig skalieren. ### Nuclias Cloud Die Cloud-Netzwerkverwaltung von D-Link bietet höchste Flexibilität für Unternehmen, die einen oder mehrere Standorte jederzeit und von überall verwalten wollen. ### Nuclias Connect"
+    }
+  ]
+}

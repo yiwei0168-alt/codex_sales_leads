@@ -1,0 +1,163 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "blindBatchId": "B-A3C4E10AB016",
+  "reviewMode": "fixed-output",
+  "channel": {
+    "id": "project-services",
+    "label": "Project services",
+    "eligibleRoles": [
+      "SI",
+      "Installer"
+    ]
+  },
+  "evidenceEntries": [
+    {
+      "evidenceEntryId": "F-01",
+      "submittedCandidate": {
+        "companyName": "Controlware GmbH",
+        "officialUrl": "https://www.controlware.de/",
+        "roles": [
+          "System Integrator",
+          "Network & Security Managed Service Provider"
+        ],
+        "reason": "Controlware is a premier independent German system integrator specializing in enterprise network architecture, WAN/LAN integration, wireless bridges, and cyber security installation.",
+        "evidenceUrls": [
+          "https://www.controlware.de/"
+        ]
+      }
+    },
+    {
+      "evidenceEntryId": "F-02",
+      "submittedCandidate": {
+        "companyName": "DATAGROUP SE",
+        "officialUrl": "https://www.datagroup.de/",
+        "roles": [
+          "System Integrator",
+          "IT Infrastructure Installer & Operator"
+        ],
+        "reason": "DATAGROUP designs, installs, and manages full IT network infrastructure, campus networks, and data center connectivity projects for medium and large enterprises across Germany.",
+        "evidenceUrls": [
+          "https://www.datagroup.de/"
+        ]
+      }
+    },
+    {
+      "evidenceEntryId": "F-03",
+      "submittedCandidate": {
+        "companyName": "SPIE Deutschland & Zentraleuropa",
+        "officialUrl": "https://spie.de/",
+        "roles": [
+          "Network Installer",
+          "Infrastructure System Integrator"
+        ],
+        "reason": "SPIE is a major technical service provider performing physical network cabling, Wi-Fi deployment, industrial networking installation, and turnkey building automation.",
+        "evidenceUrls": [
+          "https://spie.de/"
+        ]
+      }
+    },
+    {
+      "evidenceEntryId": "F-04",
+      "submittedCandidate": {
+        "companyName": "telent GmbH",
+        "officialUrl": "https://www.telent.de/",
+        "roles": [
+          "System Integrator",
+          "Industrial & Critical Infrastructure Installer"
+        ],
+        "reason": "telent plans, integrates, and installs critical networking infrastructure, PMR, industrial Ethernet/PoE switches, and wireless bridges for utilities, industrial, and transportation sectors.",
+        "evidenceUrls": [
+          "https://www.telent.de/"
+        ]
+      }
+    },
+    {
+      "evidenceEntryId": "F-05",
+      "submittedCandidate": {
+        "companyName": "VINCI Energies Deutschland GmbH",
+        "officialUrl": "https://www.vinci-energies.de/",
+        "roles": [
+          "Network Installer",
+          "System Integrator"
+        ],
+        "reason": "VINCI Energies implements network infrastructure, industrial IoT cabling, equipment installation, and configuration for industrial and commercial facilities throughout Germany.",
+        "evidenceUrls": [
+          "https://www.vinci-energies.de/"
+        ]
+      }
+    },
+    {
+      "evidenceEntryId": "F-06",
+      "submittedCandidate": {
+        "companyName": "BFE Studio und Medien Systeme GmbH",
+        "officialUrl": "https://www.bfe.tv/",
+        "roles": [
+          "Media & Network System Integrator"
+        ],
+        "reason": "BFE acts as a specialized system integrator responsible for planning, installing, and configuring high-performance IP and broadcast network infrastructure.",
+        "evidenceUrls": [
+          "https://www.bfe.tv/"
+        ]
+      }
+    },
+    {
+      "evidenceEntryId": "F-07",
+      "submittedCandidate": {
+        "companyName": "EQOS Energie Deutschland GmbH",
+        "officialUrl": "https://eqos-energie.com/",
+        "roles": [
+          "Infrastructure Installer & Network Integrator"
+        ],
+        "reason": "EQOS Energie specializes in physical infrastructure installation, mobile telecommunications, fiber optic cabling, and outdoor wireless deployment projects.",
+        "evidenceUrls": [
+          "https://eqos-energie.com/"
+        ]
+      }
+    },
+    {
+      "evidenceEntryId": "F-08",
+      "submittedCandidate": {
+        "companyName": "KUPPER IT GmbH",
+        "officialUrl": "https://www.kupper-it.com/",
+        "roles": [
+          "System Integrator",
+          "IT Infrastructure Installer"
+        ],
+        "reason": "KUPPER IT plans, deploys, and configures modern SMB/SOHO network hardware, access points, and structured cabling for regional business projects.",
+        "evidenceUrls": [
+          "https://www.kupper-it.com/"
+        ]
+      }
+    },
+    {
+      "evidenceEntryId": "F-09",
+      "submittedCandidate": {
+        "companyName": "KUMAVISION AG",
+        "officialUrl": "https://kumavision.com/",
+        "roles": [
+          "System Integrator"
+        ],
+        "reason": "KUMAVISION implements integrated business technology and cloud network architectures, delivering end-to-end IT solution projects for mid-market clients.",
+        "evidenceUrls": [
+          "https://kumavision.com/"
+        ]
+      }
+    },
+    {
+      "evidenceEntryId": "F-10",
+      "submittedCandidate": {
+        "companyName": "GISA GmbH",
+        "officialUrl": "https://www.gisa.de/",
+        "roles": [
+          "System Integrator",
+          "IT Infrastructure Provider"
+        ],
+        "reason": "GISA plans, integrates, and operates high-availability network systems, industrial IT, and telecom infrastructure for public sector, utility, and commercial projects.",
+        "evidenceUrls": [
+          "https://www.gisa.de/"
+        ]
+      }
+    }
+  ]
+}

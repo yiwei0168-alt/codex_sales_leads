@@ -1,8 +1,8 @@
 # Scoring and blinded human audit
 
-Status: **confirmed and frozen on 2026-08-26; judge-only amendment in v1.1 and transport-only amendment in v1.1.1**
+Status: **confirmed and frozen on 2026-08-26; primary judge amended to blind Codex review in protocol v1.2**
 
-All raw model scores use one evaluator configuration: OpenAI `gpt-5.6-sol`, Responses API, `medium` reasoning and strict JSON Schema. The application recomputes the 45/35/20 total from returned integer levels and forces failed gates to zero, so the model cannot directly set its total score. The earlier Claude route produced no candidate score and is not mixed into the results.
+All leaderboard scores use one evaluator: this Codex agent reviewing randomized blind evidence packets in-session, with no scoring API and no external search. The application recomputes the 45/35/20 total from returned integer levels and forces failed gates to zero, so the reviewer cannot directly set its total score. Earlier Claude and OpenAI API attempts are diagnostic only and are not mixed into the results.
 
 ## Eligibility gates
 

@@ -1,0 +1,148 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "blindBatchId": "B-B6585C7521CA",
+  "reviewMode": "discovery-pool",
+  "channel": {
+    "id": "tier1-distribution",
+    "label": "Tier-1 distribution",
+    "eligibleRoles": [
+      "Distributor",
+      "VAD"
+    ]
+  },
+  "evidenceEntries": [
+    {
+      "evidenceEntryId": "E-4692E98A11",
+      "title": "Added Value Support GmbH",
+      "url": "https://www.added-value.net/de/",
+      "snippet": "Landwirtschaftsbetrieb · Torsholter Hauptstraße 11, 26655 Westerstede"
+    },
+    {
+      "evidenceEntryId": "E-7831C00E5F",
+      "title": "IBH connect GmbH",
+      "url": "https://www.ibh.de/",
+      "snippet": "Berater · Heilbronner Str. 20, 01189 Dresden"
+    },
+    {
+      "evidenceEntryId": "E-07129B7CA2",
+      "title": "ADN Distribution GmbH",
+      "url": "https://www.adn.de/",
+      "snippet": "Berater · Gesundheitscampus-Süd 31, 44801 Bochum Süd"
+    },
+    {
+      "evidenceEntryId": "E-2F46A27514",
+      "title": "Serverhero GmbH - IT-Infrastruktur Systemhaus",
+      "url": "https://serverhero.de/",
+      "snippet": "Berater · Toyota-Allee 99, 50858 Köln"
+    },
+    {
+      "evidenceEntryId": "E-A1CE65ACC7",
+      "title": "Nowaitech GmbH",
+      "url": "https://nowaitech.com/",
+      "snippet": "Brunsbütteler Damm 117, 13581 Berlin"
+    },
+    {
+      "evidenceEntryId": "E-CF9CDAA3E8",
+      "title": "EP:Wenner",
+      "url": "https://www.ep.de/wenner",
+      "snippet": "Dienstleistungen · u. Mühlstraße 9, 64291 Darmstadt"
+    },
+    {
+      "evidenceEntryId": "E-734D0D1F12",
+      "title": "M.IT Connect GmbH & Co. KG",
+      "url": "http://www.m-it-connect.de/",
+      "snippet": "Dienstleistungen · Emil-Kemmer-Straße 11, 96103 Hallstadt"
+    },
+    {
+      "evidenceEntryId": "E-374B4D7423",
+      "title": "Serverhero GmbH - IT-Infrastruktur Systemhaus",
+      "url": "https://serverhero.de/",
+      "snippet": "Berater · Toyota-Allee 99, 50858 Köln"
+    },
+    {
+      "evidenceEntryId": "E-17CF431BB7",
+      "title": "Wentronic GmbH",
+      "url": "http://www.wentronic.com/",
+      "snippet": "Elektrofachmarkt · Pillmannstraße 12, 38112 Braunschweig-Veltenhof-Rühme"
+    },
+    {
+      "evidenceEntryId": "E-48564EC134",
+      "title": "Savecall",
+      "url": "https://www.savecall.de/",
+      "snippet": "Telekommunikationsanbieter · Bavariafilmpl. 7/Geb 100, 82031 Grünwald"
+    },
+    {
+      "evidenceEntryId": "E-B8DB6918AF",
+      "title": "EP:Schmidt + Partner",
+      "url": "https://www.ep.de/schmidt-edemissen",
+      "snippet": "Dienstleistungen · Wöhrbergweg 1, 31234 Edemissen"
+    },
+    {
+      "evidenceEntryId": "E-0561FD7BB5",
+      "title": "NI Network Innovations GmbH",
+      "url": "https://www.networkinnovations.com/de/",
+      "snippet": "Hersteller · Adalbert-Stifter-Straße 15, 65375 Oestrich-Winkel-Winkel"
+    },
+    {
+      "evidenceEntryId": "E-A4FD28E8DC",
+      "title": "Thomas-Krenn.AG",
+      "url": "https://www.thomas-krenn.com/",
+      "snippet": "Hersteller · Speltenbach-Steinäcker 1, 94078 Freyung"
+    },
+    {
+      "evidenceEntryId": "E-ADC6C3B7AE",
+      "title": "MediaMarkt Leipzig - Höfe am Brühl",
+      "url": "https://www.mediamarkt.de/de/store/leipzig-hoefe-am-bruehl-1229",
+      "snippet": "Elektrofachmarkt · Brühl 1, 04109 Leipzig"
+    },
+    {
+      "evidenceEntryId": "E-3037A54476",
+      "title": "Rohde & Schwarz Networks and Cybersecurity GmbH",
+      "url": "https://www.rohde-schwarz.com/networks-and-cybersecurity",
+      "snippet": "Hersteller · Adenauerstraße 20/B2, 52146 Würselen"
+    },
+    {
+      "evidenceEntryId": "E-F9619D3044",
+      "title": "AC-EDV UG (haftungsbeschränkt)",
+      "url": "http://www.ac-edv.com/",
+      "snippet": "Dienstleistungen · Haspelkamp 7, 33161 Hövelhof-Espeln"
+    },
+    {
+      "evidenceEntryId": "E-151BC4AEF6",
+      "title": "AVC Added Value Concept GmbH",
+      "url": "http://www.flammkuchen-konzept.de/",
+      "snippet": "Grosshändler · Sinnerstraße 1, 76185 Karlsruhe-Grünwinkel"
+    },
+    {
+      "evidenceEntryId": "E-B0B0E04173",
+      "title": "HORNBACH",
+      "url": "https://www.hornbach.de/mein-markt/baumarkt-hornbach-hannover-garbsen/",
+      "snippet": "Baumarkt · Langenhagener Str. 1, 30827 Garbsen"
+    },
+    {
+      "evidenceEntryId": "E-05C7BBF228",
+      "title": "netgo",
+      "url": "https://www.netgo.de/",
+      "snippet": "Berater · Weseler Str. 9, 46325 Borken"
+    },
+    {
+      "evidenceEntryId": "E-CF1AB3F06A",
+      "title": "KOSATEC Empowering Global Innovation GmbH",
+      "url": "http://www.kosatec.de/",
+      "snippet": "Grosshändler · Carl-Miele-Straße 3, 38112 Braunschweig-Veltenhof-Rühme"
+    },
+    {
+      "evidenceEntryId": "E-D187C956E6",
+      "title": "EP:Hammer",
+      "url": "https://www.ep.de/hammer",
+      "snippet": "Dienstleistungen · Leipziger Str. 22, 60487 Frankfurt am Main"
+    },
+    {
+      "evidenceEntryId": "E-3B778CB0D3",
+      "title": "reichelt elektronik GmbH",
+      "url": "https://www.reichelt.de/",
+      "snippet": "Elektrofachmarkt · Elektronikring 1, 26452 Sande"
+    }
+  ]
+}

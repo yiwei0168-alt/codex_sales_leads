@@ -1,0 +1,196 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "blindBatchId": "B-573E6427FD14",
+  "reviewMode": "discovery-pool",
+  "channel": {
+    "id": "project-services",
+    "label": "Project services",
+    "eligibleRoles": [
+      "SI",
+      "Installer"
+    ]
+  },
+  "evidenceEntries": [
+    {
+      "evidenceEntryId": "E-F6ECC92FCE",
+      "title": "Business WLAN einrichten: Hardware & Hersteller-Vergleich für KMU | MiMann.net",
+      "url": "https://mimann.net/blog/business-wlan-einrichten-hardware-hersteller-und-installation/",
+      "snippet": "Welche Hardware für Firmen-WLAN? UniFi, Aruba, Meraki &amp; Omada im Vergleich mit Preisen. Schritt-für-Schritt-Anleitung für die WLAN-Installation im Unternehmen."
+    },
+    {
+      "evidenceEntryId": "E-610770DFE4",
+      "title": "Planung und Installation von individuell optimierten Netzwerken | INTERPORT REAL",
+      "url": "https://www.interportreal.de/netzwerke/",
+      "snippet": "Netzwerklösungen: Strukturierte Verkabelung, Glasfasernetze, Serverräume, USV-Systeme, RZ-Ausstattung und Klimatisierung"
+    },
+    {
+      "evidenceEntryId": "E-90D47F724C",
+      "title": "Profi WLAN: Sichere B2B-Netzwerke mit Premium-Hardware",
+      "url": "https://business.ewe.de/vernetzung/managed-lan-wlan/profi-wlan",
+      "snippet": "Hotels, Pensionen, Restaurants ... bei einem Latte Macchiato Familienbilder aus der Cloud teilen. <strong>Wir installieren und betreiben kabellose Netzwerke und Hotspots in Hotels, Pensionen, Restaurants und Cafés</strong>...."
+    },
+    {
+      "evidenceEntryId": "E-71714922FE",
+      "title": "Structured Cabling Installers - Kualitek",
+      "url": "https://kualitek.com/en/structured-cabling/",
+      "snippet": "Before installing the network wiring in an office or building, it is essential to study the characteristics of the same, and plan in detail the connection between the internet service that comes from outside (through optic fiber or radio link), and the communications rack, as well as the connection between it and all the equipment and systems that will be part of the company&#x27;s computer networks (routers, switches, WiFi access points, computers, printers, etc.). There are several essential aspects for the correct installation of the network cabling that will support the computer networks of your company or business:"
+    },
+    {
+      "evidenceEntryId": "E-B003D9D6BF",
+      "title": "Netzwerkinstallation kleine Unternehmen: Anleitung 2026",
+      "url": "https://www.hagel-it.de/it-insights/netzwerkinstallation-fuer-kleine-unternehmen-schritt-fuer-schritt-anleitung",
+      "snippet": "Im Sprachgebrauch synonym: „Netzwerkaufbau&quot;, „Netzwerk-Einrichtung&quot;, „LAN-Installation&quot; — gemeint ist immer dasselbe Projekt. Faustregel: Für 5 Arbeitsplätze rechnet man mit ca. 3.000–5.500 €, für 25 Arbeitsplätze 12.000–22.000 € einmalig, jeweils plus Managed-Betrieb ab 50 €/AP/Monat. Eine professionelle Netzwerkinstallation besteht aus sieben Bausteinen: Internet-Router (vom Provider), Business-Firewall, managed Switch mit VLAN-Support, PoE-Access-Points für WLAN, strukturierte CAT6a-Verkabelung mit Patchpanel im 19″-Rack, einer USV für den Rack und einem Management-Layer für Monitoring und Patches."
+    },
+    {
+      "evidenceEntryId": "E-0A0004915F",
+      "title": "Structured Cabling - Network Cabling Installation Company - TELECO Inc.",
+      "url": "https://www.teleco.com/structured-cabling/",
+      "snippet": "<strong>TELECO</strong> is a one-stop cabling solution for your company. Our experts help in structured cabling design &amp; installation to reduce congestion and future proof."
+    },
+    {
+      "evidenceEntryId": "E-D35843EA9A",
+      "title": "Firmennetzwerk & WLAN einrichten | Solisation GmbH",
+      "url": "https://solisation.de/leistungen/netzwerk-wlan-unternehmen",
+      "snippet": "Professionelles Netzwerk und WLAN für Unternehmen: Planung, Installation, VPN für Homeoffice und sichere Netzwerkzonen. Für Büros und Gewerbeobjekte im Rhein-Neckar-Raum."
+    },
+    {
+      "evidenceEntryId": "E-D40FA97DA0",
+      "title": "Network installations (cabling, also structured) - IT suppliers, IT manufacturers and IT service providers",
+      "url": "https://www.it-in-germany.de/05011811/eng/Network%20installations%20(cabling,%20also%20structured)",
+      "snippet": "Die <strong>SysTree AG</strong> ist ein innovativer Systemintegrator auf dem Gebiet unternehmensweiter Kommunikations- und Sicherheitslösungen."
+    },
+    {
+      "evidenceEntryId": "E-24C77F8C9E",
+      "title": "WLAN und Telefonie für Unternehmen nutzen | o2 Business",
+      "url": "https://www.o2business.de/internet-vernetzung/festnetz-internet/all-ip/wlan/",
+      "snippet": "Zwei unterschiedliche WLAN Access Geräte für Ihre Geschäftsraumfläche · Einfache Installation mittels Schritt für Schritt Installationsanleitung, komplett abgestimmt auf den O2 Business All-IP Router"
+    },
+    {
+      "evidenceEntryId": "E-4DD4ECDF8A",
+      "title": "Projektantrag Fachinformatiker Systemintegration - Wie ist eure Meinung dazu ? Verbesserungen? - Administrator",
+      "url": "https://administrator.de/forum/projektantrag-fachinformatiker-systemintegration-wie-ist-eure-meinung-dazu-verbesserungen-294859.html",
+      "snippet": "Es wird ein Lösungskonzept ausgearbeitet, welches verhindert, dass der Kunde für illegale Aktivitäten von Hotelgästen im WLAN haftbar gemacht wird. Dieses könnte zum Beispiel mit einem Ticketsystem realisiert werden, welches jedem Gast für einen bestimmten Zeitraum Zugang zum Drahtlosen Netzwerk erlaubt und zusätzlich eine Logging Funktion besitzt. 3.3 Projektziel Das Projektziel ist es, alle vorhandenen Hotelzimmer mit einer schnellen, stabilen und sicheren Drahtlosverbindung auszustatten."
+    },
+    {
+      "evidenceEntryId": "E-8C9FFB6EE5",
+      "title": "Netzwerktechnik - Systemhaus für Telekommunikation und IT",
+      "url": "https://www.ctm-com.de/it-netzwerk/netzwerktechnik/",
+      "snippet": "Netzwerktechnik für IT und TK in Kupfer, Glasfaser, LWL, WLAN, Richtfunk, VPN, IPSec. Darmstadt, Dieburg, Frankfurt, Heidelberg, Odenwald, Rhein Main Neckar"
+    },
+    {
+      "evidenceEntryId": "E-DB2E264F8A",
+      "title": "WLAN-Lösungen für Unternehmen von Kellner Telecom",
+      "url": "https://www.kellner-telecom.de/leistungen/netzwerk-und-uebertragungstechnik/passive-und-aktive-netzwerkkomponenten/wlan-loesungen/",
+      "snippet": "<strong>Kellner Telecom</strong> übernimmt für Sie den fach- und bedarfsgerechten Aufbau professioneller WLAN-Netzwerke für Ihr Unternehmen. Dank unserer langjährigen Erfahrung in der Planung und Realisierung von WLAN-Lösungen verfügen wir über das ..."
+    },
+    {
+      "evidenceEntryId": "E-F5DEF12710",
+      "title": "Data Cabling Companies - The Installation Services",
+      "url": "https://www.installation-services.net/data-cabling-companies/",
+      "snippet": "<strong>Data Cabling Companies</strong> - The Installation Services – Your trusted partner for professional network installation, structured cabling, and IT infrastructure solutions across Europe."
+    },
+    {
+      "evidenceEntryId": "E-BB2A668B00",
+      "title": "Netzwerk-Projekte - A+G connect GmbH",
+      "url": "https://www.aplusg.de/projekte/",
+      "snippet": "Kundenspezifische Servicekonzept Hotline-, Remote- und Onsite-Support Monitoring Reporting und Dokumentation Hardware Austausch System Update Service Outsourcing Projektmanagement 24×7 ... Analyse, Beratung und Design Konzeption und Realisierung LAN / WAN / W-LAN Datacenter Management und Monitoring End-to-End Measurement Voice over IP Projektmanagement Workshops"
+    },
+    {
+      "evidenceEntryId": "E-0D64E28021",
+      "title": "Daten-und Netzwerktechnik - ITK Deutschland",
+      "url": "https://www.itkdeutschland.de/leistungen/daten-und-netzwerktechnik/",
+      "snippet": "<strong>Die ITK Deutschland</strong> ist für Sie mit einem Team an hochqualifizierten Monteuren und Technikern da, wenn es um PCs, Notebooks, Server, Switche, Router, Firewalls und anderen Peripheriegeräten geht. Auch für gesicherte lokale, drahtlose und Weitverkehrs-Netze (LAN, WLAN, WAN) bieten wir effiziente ..."
+    },
+    {
+      "evidenceEntryId": "E-6258FEF674",
+      "title": "Business-Netzwerklösungen „Engineered in Germany“: R&S Networks and Cybersecurity",
+      "url": "https://www.lancom-systems.de/",
+      "snippet": "Für <strong>Rohde &amp; Schwarz Networks and Cybersecurity</strong> bedeutet das: intensive Unterstützung bei der Umsetzung und volles Engagement für unsere Produkte und Sicherheitspolitik. Wir haben dies kürzlich bewiesen: Unsere R&amp;S®LANCOM Management Cloud ..."
+    },
+    {
+      "evidenceEntryId": "E-FFC1385A08",
+      "title": "Netzwerktechnik „Made in Germany“ beflügelt Lancom",
+      "url": "https://netzpalaver.de/2019/06/24/netzwerktechnik-made-in-germany-befluegelt-lancom/",
+      "snippet": "<strong>Die LMC ist die weltweit erste, hyperintegrierte Netzwerkmanagementlösung für SD-WAN, SD-LAN und SD-WLAN</strong>. Ihre Markteinführung im Herbst 2017 eröffnete LANCOM den Zugang zum schnell wachsenden Software-defined Networking-Markt (SDN)."
+    },
+    {
+      "evidenceEntryId": "E-8C0711C6BA",
+      "title": "Infrastruktur für lokale Netzwerke LAN – Top-Lieferanten | wlw",
+      "url": "https://www.wlw.de/de/suche/infrastruktur-fuer-lokale-netzwerke-lan",
+      "snippet": "<strong>AllTec</strong>, der Systemintegrator im Bereich Automatisierungs- und Kommunikationsanlagen bietet schon heute Systemlösungen für morgen."
+    },
+    {
+      "evidenceEntryId": "E-D4994CDE37",
+      "title": "Mesh-WLAN für kleine Unternehmen | Synology Inc.",
+      "url": "https://www.synology.com/de-de/srm/solution/secure_wi_fi",
+      "snippet": "Da die Geräte Daisy-Chain-Verkettung unterstützen, können Sie die WLAN-Abdeckung effektiv stockwerkübergreifend ausdehnen. Netzwerkeinrichtung mit dem Smartphone : Über die mobile App können Sie ganz einfach eine Internetverbindung auf dem primären RT2600ac einrichten und weitere MR2200ac-Geräte hinzufügen."
+    },
+    {
+      "evidenceEntryId": "E-9498BE0039",
+      "title": "LEISTUNGEN – Netzwerktechnik – HANSA PROJEKT",
+      "url": "https://www.hansa-projekt.de/leistungen-netzwerktechnik/",
+      "snippet": "Aktive Netzwerktechnik, im LAN- und WAN- Bereich · Switches, Router, Firewall, Virenscanner, WLAN, VPN, Richtfunkverbindungen, Netzwerkmanagement und Netzfernüberwachung · Laser- und Funkübertragung · Fehleranalyse · Infrastrukturelle Netzwerkdokumentationssysteme ·"
+    },
+    {
+      "evidenceEntryId": "E-8B59CAE991",
+      "title": "10 Best Structured Cabling Services & Companies (2026)",
+      "url": "https://thenetworkinstallers.com/blog/structured-cabling-companies/",
+      "snippet": "Copper Structured Cabling Solutions: Cat6 and Cat6A horizontal cabling compliant with ANSI/TIA-568.2-E · Fiber Optic Cabling: Single-mode and multimode backbone installations for data centers and multi-building campus environments · Wireless Network Infrastructure: High-density Wi-Fi deployments with dual Cat6A runs to each access point per current TIA standards · Security Systems Integration: Low-voltage wiring supporting IP camera systems and door entry management"
+    },
+    {
+      "evidenceEntryId": "E-12B8E76338",
+      "title": "WLAN-Lösungen für Unternehmen – Frings Solutions",
+      "url": "https://www.frings-solutions.de/infrastruktur/wlan",
+      "snippet": "Optimieren Sie Ihr Netzwerk mit unserer Expertise im WLAN-Ausbau ... Netzwerkanalyse und Planung: Durchführung von Site Surveys und Analysen zur Bestimmung der optimalen Platzierung von Access Points. Installation und Konfiguration: Fachgerechte Installation und Konfiguration von Access Points und Netzwerkkomponenten."
+    },
+    {
+      "evidenceEntryId": "E-6A76F052C0",
+      "title": "Gewerbe | intersaar",
+      "url": "https://www.intersaar.de/geschaeftskunden/wlan-hotspot/wlan-und-campus-netze/gewerbe",
+      "snippet": "Kontaktieren Sie uns noch heute, um mehr über unsere maßgeschneiderten WLAN-Lösungen für Gewerbetreibende zu erfahren. Wir freuen uns darauf, Ihnen zu helfen, Ihr Unternehmen auf die nächste Stufe zu bringen! Wir bieten die Möglichkeit Ihre bestehenden WLAN Installationen an unser Hotspotsystem anzubinden, damit Sie Ihren Gästen und Mitarbeitern einen Hotspot bereitstellen können. Roaming im Gästehotspot zwischen anderen Installationen im FREE-Wifi Netzwerk (Stadt,Hotel,Gastronomie)"
+    },
+    {
+      "evidenceEntryId": "E-BD9C2A3AE4",
+      "title": "📶 Wireless LAN (WLAN) für Unternehmen 🌐",
+      "url": "https://phonekom.de/ratgeber/wlan/",
+      "snippet": "Installation und Konfiguration: Die Installation und Konfiguration des WLAN-Systems sollte von einem professionellen Installateur durchgeführt werden, um sicherzustellen, dass alle Geräte ordnungsgemäß installiert und konfiguriert sind. Eine Überprüfung und Fehlerbehebung des Netzwerks ist ebenfalls notwendig."
+    },
+    {
+      "evidenceEntryId": "E-9D0EBE757E",
+      "title": "Top 100 Data Cabling Companies in Germany (2026) | ensun",
+      "url": "https://ensun.io/search/data-cabling/germany",
+      "snippet": "<strong>Premium-Line Systems GmbH</strong> specializes in technical networking and offers a comprehensive product portfolio that includes various high-quality data cabling solutions, such as patch cords and structured cabling systems for different categories."
+    },
+    {
+      "evidenceEntryId": "E-98FB376693",
+      "title": "IB-IT Cabling GmbH",
+      "url": "https://www.ib-it.eu/dc/en/index.php",
+      "snippet": "<strong>IB IT Cabling</strong> undertakes project management of a variety of projects, anything from simple short term projects up to complete whitespace fitout projects. ... Structured Cabling: Fiber &amp; CopperStructured precabling is the foundation for every ..."
+    },
+    {
+      "evidenceEntryId": "E-5706820BF4",
+      "title": "Professionelle Netzwerktechnik-Lösungen für Unternehmen - zebes.de",
+      "url": "https://www.zebes.de/de/leistungen/netzwerktechnik-br-ihr-netzwerk-schnell-sicher-zuverlaessig-und-bereit-fuer-jede-herausforderung.html",
+      "snippet": "Egal ob Datenübertragung zwischen Standorten, stabile Verbindungen im Büro oder reibungsloser WLAN-Zugang für Ihre Mitarbeiter – ein zuverlässiges Netzwerk ist unerlässlich. Durch Professionelle Netzwerktechnik-Lösungen für Unternehmen bietet <strong>ZEBES AG</strong> individuelle Konzepte für WAN, ..."
+    },
+    {
+      "evidenceEntryId": "E-0CC268D37C",
+      "title": "Netzwerk-System-Integrationen - IT-Anbieter, IT-Hersteller und IT-Dienstleister",
+      "url": "https://www.it-in-germany.de/05021161/deu/Netzwerk-System-Integrationen",
+      "snippet": "Die <strong>Innovation Networks 2002 GmbH, Ludwigsburg</strong>, legt seinen Geschäftsschwerpunkt auf die Bereiche VoIP, WLAN, Storage, Enhanced Security sowie Unified Communication. Das Unternehmen ist Partner von Cisco Systems. ... Displays für Werbe- und Informationszwecke (Digital Signage), alternative ..."
+    },
+    {
+      "evidenceEntryId": "E-81FE6BF6FB",
+      "title": "Structured Cabling Installation: Ensuring Reliable and Efficient Network Infrastructure",
+      "url": "https://www.icobus.com/blogs/structured-cabling-installation",
+      "snippet": "From office floors to national retail chains, <strong>iMS designs and installs robust WiFi infrastructure, managed remotely by our central PMO</strong>. Skilled field engineers deliver racking, stacking, and patching of switches and servers, ideal for data centre ..."
+    },
+    {
+      "evidenceEntryId": "E-5A479379F3",
+      "title": "Structured Cabling – DACC Europe",
+      "url": "https://www.dacceurope.com/services/structured-cabling/",
+      "snippet": "We understand the broad scope of possible applications for a wireless network and will provide designs that cater to the exact requirements of the system users. Our experience in implementation ranging from offices to industrial manufacturing facilities to college campuses and the like, means we deploy your wireless network quickly, efficiently and on time. Accurate as-built documentation is supplied as standard, and post-installation surveys are carried out to ensure the network is delivering the optimum performance. We understand that your network is business critical, therefore error free operation of it is essential."
+    }
+  ]
+}

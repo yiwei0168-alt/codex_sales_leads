@@ -1,0 +1,174 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "blindBatchId": "B-CA0300E0507C",
+  "reviewMode": "discovery-pool",
+  "channel": {
+    "id": "b2b-resale",
+    "label": "B2B resale",
+    "eligibleRoles": [
+      "Reseller",
+      "VAR",
+      "DVAR",
+      "Dealer"
+    ]
+  },
+  "evidenceEntries": [
+    {
+      "evidenceEntryId": "E-F49EEA864F",
+      "title": "M.IT Connect GmbH & Co. KG",
+      "url": "http://www.m-it-connect.de/",
+      "snippet": "Dienstleistungen · Emil-Kemmer-Straße 11, 96103 Hallstadt"
+    },
+    {
+      "evidenceEntryId": "E-72AE4DFD17",
+      "title": "OMG.DE GmbH - IT Services & E-Commerce",
+      "url": "https://www.omg.de/",
+      "snippet": "Kornkamp 40, 26605 Aurich"
+    },
+    {
+      "evidenceEntryId": "E-F54933E038",
+      "title": "SMB IT Solution",
+      "url": "https://smb-it-solution.com/",
+      "snippet": "Berater · Frizstraße 11, 70734 Fellbach"
+    },
+    {
+      "evidenceEntryId": "E-0126183B59",
+      "title": "Serverhero GmbH - IT-Infrastruktur Systemhaus",
+      "url": "https://serverhero.de/",
+      "snippet": "Berater · Toyota-Allee 99, 50858 Köln"
+    },
+    {
+      "evidenceEntryId": "E-250AED669B",
+      "title": "Vyronic GmbH",
+      "url": "https://vyronic.shop/",
+      "snippet": "Dienstleistungen · Rauschbergstraße 3, 83365 Nußdorf"
+    },
+    {
+      "evidenceEntryId": "E-33B00689C8",
+      "title": "SATURN",
+      "url": "https://www.saturn.de/de/store/muenchen-neuhauser-strasse-55",
+      "snippet": "Elektrofachmarkt · Neuhauser Str. 39, 80331 München"
+    },
+    {
+      "evidenceEntryId": "E-85C905B32C",
+      "title": "reichelt elektronik GmbH",
+      "url": "https://www.reichelt.de/",
+      "snippet": "Elektrofachmarkt · Elektronikring 1, 26452 Sande"
+    },
+    {
+      "evidenceEntryId": "E-9A116F6446",
+      "title": "NVT Phybridge | Long Reach Power over Ethernet Switches & Extenders",
+      "url": "https://www.nvtphybridge.com/",
+      "snippet": "Hersteller · 3457 Superior Ct Unit 3, Oakville, ON L7L 6X3, Kanada"
+    },
+    {
+      "evidenceEntryId": "E-740D965C6D",
+      "title": "reitzner AG",
+      "url": "https://reitzner.de/",
+      "snippet": "Dienstleistungen · Meraner Str. 43, 86165 Augsburg-Lechhausen"
+    },
+    {
+      "evidenceEntryId": "E-421837DCBC",
+      "title": "Rohde & Schwarz Networks and Cybersecurity GmbH",
+      "url": "https://www.rohde-schwarz.com/networks-and-cybersecurity",
+      "snippet": "Hersteller · Adenauerstraße 20/B2, 52146 Würselen"
+    },
+    {
+      "evidenceEntryId": "E-ADD5478BFF",
+      "title": "Edgecore Networks Corporation - 鈺登科技股份有限公司",
+      "url": "https://www.edge-core.com/",
+      "snippet": "Hersteller · 302059, Taiwan, Hsinchu County, Zhubei City, Beixing Village, Zhihui 1st Road, 97號2樓"
+    },
+    {
+      "evidenceEntryId": "E-9BDCE2882D",
+      "title": "hagel IT-Services GmbH Hamburg",
+      "url": "https://www.hagel-it.de/",
+      "snippet": "Dienstleistungen · Spaldingstraße 64-68, 20097 Hamburg"
+    },
+    {
+      "evidenceEntryId": "E-A001556238",
+      "title": "etree GmbH",
+      "url": "https://www.etree.de/",
+      "snippet": "Grosshändler · Mathias-Brüggen-Straße 160, 50829 Köln"
+    },
+    {
+      "evidenceEntryId": "E-17ADCB4E7D",
+      "title": "NewClimate Institute",
+      "url": "http://newclimate.org/",
+      "snippet": "Forschungsinstitut · Waidmarkt 11a, 50676 Köln"
+    },
+    {
+      "evidenceEntryId": "E-1A6E80C3C9",
+      "title": "reitzner AG",
+      "url": "https://reitzner.de/",
+      "snippet": "Dienstleistungen · Johannes-Scheiffele-Straße 19, 89407 Dillingen an der Donau"
+    },
+    {
+      "evidenceEntryId": "E-A3AF425949",
+      "title": "WKN Datentechnik GmbH | IT-Systemhaus",
+      "url": "https://wkn-datentechnik.de/",
+      "snippet": "Berater · Am bhf 5, 58802 Balve"
+    },
+    {
+      "evidenceEntryId": "E-93AFAD9451",
+      "title": "Frings IT-Shop: E-Commerce Plattform für Unternehmen",
+      "url": "https://www.frings-itshop.de/",
+      "snippet": "Kleinhülsen 42, 40721 Hilden"
+    },
+    {
+      "evidenceEntryId": "E-7ADBE3AE1C",
+      "title": "SBE network solutions GmbH",
+      "url": "http://www.sbe.de/",
+      "snippet": "Dienstleistungen · Deutschland, Möllendorffstraße 45, 10367 Berlin"
+    },
+    {
+      "evidenceEntryId": "E-AE64FB2257",
+      "title": "Systembetreuung Lösel GmbH",
+      "url": "http://www.loesel.de/",
+      "snippet": "Berater · Am Atzelhorst 3, 64569 Nauheim"
+    },
+    {
+      "evidenceEntryId": "E-36E9EFF0B6",
+      "title": "Esphere Network GmbH",
+      "url": "https://www.esnetwork.de/",
+      "snippet": "Maurergasse 1, 15366 Hoppegarten"
+    },
+    {
+      "evidenceEntryId": "E-780E94062E",
+      "title": "Informationstechnik Oest",
+      "url": "https://it-oest.de/",
+      "snippet": "Wolder Weg 58, 26427 Esens-Wold"
+    },
+    {
+      "evidenceEntryId": "E-E139874093",
+      "title": "SYNERGY NETWORKS GmbH",
+      "url": "https://www.synergy-networks.de/",
+      "snippet": "Dienstleistungen · Unterberg 13, 06108 Halle (Saale)"
+    },
+    {
+      "evidenceEntryId": "E-A6F3EB0C6C",
+      "title": "reichelt elektronik GmbH",
+      "url": "https://www.reichelt.de/",
+      "snippet": "Elektrofachmarkt · Elektronikring 1, 26452 Sande"
+    },
+    {
+      "evidenceEntryId": "E-9AF752AE80",
+      "title": "reitzner AG",
+      "url": "http://www.reitzner.de/",
+      "snippet": "Dienstleistungen · Dieselstraße 8, 85134 Stammham"
+    },
+    {
+      "evidenceEntryId": "E-DA5D3A2939",
+      "title": "JACOB Elektronik GmbH",
+      "url": "https://www.jacob.de/",
+      "snippet": "Geschäftsstelle · Greschbachstraße 2-4, 76229 Karlsruhe"
+    },
+    {
+      "evidenceEntryId": "E-B9ED7EBF8F",
+      "title": "systemIQ GmbH",
+      "url": "https://www.system-iq.at/",
+      "snippet": "Dienstleistungen · Pummerinpl. 3, 4490 St. Florian, Österreich"
+    }
+  ]
+}
