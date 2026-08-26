@@ -41,6 +41,9 @@ const verificationQueries = [
   "MSP 的必要条件是什么？一次性安装维修或产品保修算不算 MSP？",
   "没有公开 SLA 或主动监控的小型托管服务商能否认定为 MSP？",
   "MSSP 与 MSP 是什么关系？ISP SI Installer VAR 能否同时标记 MSP？",
+  "ISP 是否必须拥有自建网络 ASN 和通信牌照？虚拟转售型 ISP 算吗？",
+  "WISP 移动卫星企业和批发运营商是否都属于 ISP？纯客户转介算不算？",
+  "ISP 套餐内出租 CPE 是否自动属于 Reseller？ISP 与 MSP Installer 怎样重叠？",
 ];
 
 try {
@@ -96,6 +99,12 @@ try {
     "确认 MSSP 时必须同时标记 MSP",
     "仅提供连接或带宽属于 ISP，不自动成为 MSP",
     "未找到公开合同、SLA、计费周期、NOC／SOC、自有平台或厂商认证只能记录为 unknown",
+    "自建光纤、基站、无线塔、核心网络、ASN、IP 地址资源和通信牌照是设施型 ISP 的强证据，但不作为全球统一硬门槛",
+    "没有自有网络的 Virtual／Reseller ISP",
+    "WISP：通过固定无线、Wi-Fi、微波或其他无线网络向最终用户提供互联网接入",
+    "只转介宽带客户，由实际运营商签约、开票和承担服务结果的公司属于 Commission Agent／Referral Agent，不属于 ISP",
+    "套餐内仍归 ISP 所有、租赁、借用或仅作为服务终端部署的 CPE 不自动构成 Reseller",
+    "Wholesale ISP 销售带宽、Transit 或 Backhaul 不等于硬件一级分销",
   ];
   const missingText = requiredText.filter((fragment) => !stored.combined_content.includes(fragment));
 

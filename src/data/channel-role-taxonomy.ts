@@ -620,6 +620,90 @@ MSP 属于 Downstream Channel，可以根据受管客户数量与质量、受管
 
 未找到公开合同、SLA、计费周期、NOC／SOC、自有平台或厂商认证只能记录为 unknown，不能直接断定候选公司不是 MSP。系统应综合服务页面、套餐、责任描述、案例、客户评价、伙伴目录和招聘信息判断；如果只能确认一次性项目或泛化技术支持，不能标记 MSP。如果持续性和责任范围尚不清楚，应保留 MSP candidate／待核验，并把服务周期、受管范围、响应责任和合同主体列为优先核实项。
 
+## ISP（Internet Service Provider）
+
+### 状态与规范名称
+
+- 状态：已由业务负责人确认。
+- 中文规范名称：互联网服务提供商／互联网接入服务商。
+- 英文规范名称：Internet Service Provider（ISP）。
+- 所属角色家族：services／connectivity。
+- channel layer：Downstream Channel。
+- 角色关系：ISP 是独立的互联网连接服务角色；自建网络、虚拟转售和批发模式通过子类型及 supply model 区分。
+
+### 完整定义
+
+ISP 是以自身商业身份，向家庭、企业、机构或其他网络运营商提供公共互联网接入或互联网连接服务，并对客户的开通、计费、连接质量、支持或服务关系承担实质责任的公司。其核心是提供通往公共互联网、原则上连接到互联网几乎所有端点的连接能力，而不是仅安装网络、管理局域网或销售路由器。
+
+接入技术不影响 ISP 基础角色。光纤、DSL、Cable、以太网宽带、固定无线、公共 Wi-Fi、移动网络和卫星连接均可成立 ISP；面向家庭、企业、机构、公共用户或其他运营商提供服务也均可成立，但应记录实际客户类型、网络范围和商业模式。
+
+### 子类型与业务模式
+
+ISP 至少可以细分为：
+
+- Fixed Broadband ISP：通过光纤、DSL、Cable、以太网或其他固定接入提供互联网服务；
+- WISP：通过固定无线、Wi-Fi、微波或其他无线网络向最终用户提供互联网接入；
+- Mobile ISP／MNO／MVNO：通过移动网络提供互联网接入；
+- Satellite ISP：通过卫星网络提供互联网接入；
+- Business ISP：向企业提供商业宽带、DIA、专线互联网或相关连接服务；
+- Virtual／Reseller ISP：采购上游批发网络或接入能力，以自己的品牌、合同及客户服务提供互联网接入；
+- Wholesale ISP／Carrier：向其他 ISP、运营商或服务提供者销售 Internet Transit、Backhaul、批发宽带或其他互联网连接。
+
+上述是 ISP 子类型或业务属性，不应在基础角色层制造互斥分类。同一 ISP 可以同时经营固定、无线、企业和批发业务，系统应保留产品、客户和覆盖区域范围。
+
+### 必要判断条件
+
+在公开证据足够的情况下，ISP 至少需要满足：
+
+1. 实际提供公共互联网接入，或向其他运营商提供互联网连接、Transit、Backhaul 等批发连接能力，而不只是局域网、VPN、托管或安装服务；
+2. 以自身名义向最终用户、企业客户或其他运营商提供服务；
+3. 对客户合同、开通、计费、技术支持、服务质量或连接结果中的实质部分承担责任；
+4. 不是只把客户介绍给另一家运营商，由对方签约、开票和承担服务结果后收取佣金。
+
+### 自有网络、ASN 与牌照规则
+
+自建光纤、基站、无线塔、核心网络、ASN、IP 地址资源和通信牌照是设施型 ISP 的强证据，但不作为全球统一硬门槛。ISP 可以租用其他运营商的最后一公里、光纤、无线网络或全部底层设施，也可以采购批发宽带后以自己的品牌提供服务。
+
+没有自有网络的 Virtual／Reseller ISP，只要与客户建立自己的合同或可验证的服务关系，并承担开通、计费、支持和连接服务责任，仍应认定为 ISP。ASN 也可能属于普通企业、学校、云服务商或数据中心，不能单独证明 ISP；牌照要求因国家、技术和服务范围不同而异，未找到公开牌照只能记录为 unknown，不得自动排除。
+
+### 强证据与辅助证据
+
+强证据包括：国家或地区通信监管机构的 ISP／运营商／牌照名录；官网公开宽带套餐、覆盖区域、安装费、月费和服务条款；用户开户、账单、测速、故障申报或客户门户；明确的 Fiber、Broadband、Fixed Wireless、WISP、DIA、Internet Transit 或 Wholesale Internet 服务；能够证明候选公司承担客户服务责任的合同说明和客户案例。
+
+辅助证据包括：ASN、IP 地址资源、网络节点、PeeringDB、BGP 路由、无线塔、频谱或施工许可、覆盖地图、地图平台类别、当地宽带目录、客户评价、安装照片及结构化社交页面。网络数据可以证明运营能力，但必须与商业服务、客户对象和候选公司实体进行交叉验证。
+
+### 小型 WISP 与长尾搜索
+
+小型、乡村或地区型 WISP 即使没有高流量网站、独立 ASN、公开牌照或完整在线订购系统，只要经营身份、覆盖区域、互联网套餐和客户服务能够验证，都应进入长尾候选池。搜索应结合监管名录、Google Places、当地宽带目录、覆盖地图、社区页面、结构化 Facebook 等社交页面、无线塔或安装照片和客户评价，不得只依赖 SEO、新闻流量或大型公司网站。
+
+### 排除规则
+
+- 酒店、咖啡馆、学校、商场或企业仅为自身访客、学生或员工附带提供 Wi-Fi，且不以互联网接入为独立对外服务时，不属于 ISP。
+- 只安装路由器、AP、光纤、天线或布线的公司属于 Installer 候选，不因安装连接设备成为 ISP。
+- 只管理客户 LAN、Wi-Fi、防火墙或云环境而不提供互联网连接的公司属于 MSP 候选，不属于 ISP。
+- 只出售路由器、SIM 卡、充值、软件或云资源而不承担连接服务责任的公司不属于 ISP。
+- 仅提供主机托管、数据中心、CDN、云服务、域名、电子邮件或 VPN，且不销售公共互联网接入或批发互联网连接的公司不属于 ISP。
+- 只转介宽带客户，由实际运营商签约、开票和承担服务结果的公司属于 Commission Agent／Referral Agent，不属于 ISP。
+
+专门经营公共热点网络，并以自身名义向用户或场地方提供互联网接入、计费和服务责任的公司可以认定为 ISP；普通场所为限定访客提供的附带 Wi-Fi 不可以。
+
+### 与相邻角色的重叠
+
+- MSP：ISP 除线路外持续管理客户网络、Managed Wi-Fi、Managed Firewall、设备、监控或运维时，可以同时标记 ISP 与 MSP；只提供连接或带宽不自动成为 MSP。
+- Installer：ISP 自己承担客户现场布线、CPE、天线或无线设备安装责任时，可以同时标记 Installer；把安装外包且不承担安装结果时不自动增加 Installer。
+- SI：ISP 另外设计并交付完整企业网络或多系统解决方案，并承担方案级结果时，可以同时标记 SI。
+- Reseller／VAR：以自身名义销售并将路由器、AP、网关或其他产品所有权转移给客户时，增加 Reseller；围绕产品提供实质性技术增值时增加 VAR。套餐内仍归 ISP 所有、租赁、借用或仅作为服务终端部署的 CPE 不自动构成 Reseller。
+- Retailer／E-tailer：实体营业厅或在线页面只办理连接服务，不自动构成产品零售；实际在线下或线上销售相关产品时，再分别按 Retailer／E-tailer 条件判断。
+- Distributor：Wholesale ISP 销售带宽、Transit 或 Backhaul 不等于硬件一级分销；只有另有可验证的相关产品一级渠道供货业务时才增加 Distributor。
+
+### 商业价值等级
+
+ISP 属于 Downstream Channel，可以根据用户和站点数量、覆盖区域、网络扩张速度、企业客户比例、经常性收入、CPE 和网络设备采购量、设备选型控制力、用户增长、升级替换周期及合作价值评为 KA、Priority、Standard 或 Long-tail。大型全国运营商、区域 ISP 以及覆盖关键空白市场并快速增长的小型 WISP 都可能具有较高商业价值。
+
+### 信息缺失与置信度
+
+未找到 ASN、自有网络、牌照、公开合同或详细用户数量只能记录为 unknown，不能自动否定 ISP。系统应优先确认实际服务套餐、覆盖区域、客户关系、计费或支持责任及上游供给模式。如果只有“internet”“telecom”“broadband”关键词，或只能确认设备销售、安装和普通 Wi-Fi 服务，应保留 ISP candidate／待核验，不能强行确认。
+
 # 参考依据
 
 以下资料用于支撑行业通用边界；本文件中的产品操作规则以业务负责人确认口径为最终准则。
@@ -650,6 +734,13 @@ MSP 属于 Downstream Channel，可以根据受管客户数量与质量、受管
 - AWS，Managed Service Provider definition and ongoing lifecycle responsibility：https://aws.amazon.com/blogs/apn/more-value-greater-profitability-10-enhancements-to-the-aws-partner-experience/
 - Cisco Meraki，Dashboard for Managed Service Providers：https://meraki.cisco.com/wp-content/uploads/2020/05/meraki_whitepaper_large_scale_deployments.pdf
 - Microsoft，Azure Expert Managed Services Provider：https://partner.microsoft.com/en-US/partnership/azure-expert-msp
+- EUR-Lex，Electronic communications services and internet access service definition：https://eur-lex.europa.eu/EN/legal-content/glossary/electronic-communications-services.html
+- Regulation (EU) 2015/2120，Open internet access：https://eur-lex.europa.eu/eli/reg/2015/2120/oj/eng
+- Ofcom，Internet Service Providers and Network Operators：https://www.ofcom.org.uk/siteassets/resources/documents/about-ofcom/foi/2023/october/internet-service-providers-isps-and-network-operators/%3Fv%3D330324
+- Ofcom，General Authorisation Regime and systemless resellers：https://www.ofcom.org.uk/phones-and-broadband/accessibility/general-conditions-archive
+- FCC，Wireless Broadband Internet Access Service Providers／WISP definition：https://docs.fcc.gov/public/attachments/DOC-390853A1.pdf
+- BEREC，What is covered and protected by the Open Internet Regulation：https://www.berec.europa.eu/en/what-is-covered-and-protected-by-the-regulation
+- BEREC，ISP retail and wholesale connectivity roles：https://www.berec.europa.eu/sites/default/files/files/news/bor_12_33_ip_ic_assessment.pdf
 - UK Department for Business and Trade，When to use an agent or distributor：https://www.business.gov.uk/export-from-uk/learn/categories/prepare-sell-new-country/routes-to-market/when-use-agent-or-distributor/
 - UK HMRC，INTM441080 Agents and distributors：https://www.gov.uk/hmrc-internal-manuals/international-manual/intm441080
 - European Commission，Working paper on distributors that also act as agents：https://competition-policy.ec.europa.eu/document/download/a2a40192-9491-450d-8878-e7d1a17ce732_en
@@ -666,9 +757,9 @@ export const CHANNEL_ROLE_TAXONOMY_DOCUMENT = {
   capturedAt: "2026-08-26T00:00:00+08:00",
   metadata: {
     topic: "channel-role-taxonomy",
-    policyVersion: "2026-08-26.10",
-    confirmedRoles: ["Distributor", "VAD", "VAR", "Dealer", "Reseller", "Retailer", "E-tailer", "SI", "Installer", "MSP"],
-    pendingRoles: ["ISP", "Commission Agent"],
+    policyVersion: "2026-08-26.11",
+    confirmedRoles: ["Distributor", "VAD", "VAR", "Dealer", "Reseller", "Retailer", "E-tailer", "SI", "Installer", "MSP", "ISP"],
+    pendingRoles: ["Commission Agent"],
     userConfirmed: true,
     temporalReviewRequired: false,
   },
