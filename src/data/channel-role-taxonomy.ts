@@ -428,6 +428,70 @@ E-tailer 属于 Downstream Channel，可以根据目标市场销量、相关品�
 
 平台可能隐藏卖家法律名称、销量、采购来源或联系方式。未披露只能记录为 unknown，不能推断为不存在。如果无法把店铺解析到稳定经营主体，或无法确认候选公司是实际卖方，应保留 E-tailer candidate／待核验并降低置信度，不得把平台运营方的信息补到第三方卖家记录中。
 
+## SI（System Integrator）
+
+### 状态与规范名称
+
+- 状态：已由业务负责人确认。
+- 中文规范名称：系统集成商。
+- 英文规范名称：System Integrator（SI）。
+- 所属角色家族：services。
+- channel layer：Downstream Channel。
+- 角色关系：SI 是独立的项目与专业服务角色，不要求同时标记 Reseller；产品转售、现场安装和持续运维分别通过其他角色表达。
+
+### 完整定义
+
+SI 是面向最终企业、政府、教育、酒店、工业或其他机构客户，把网络、计算、安全、软件、云平台、通信、布线或其他技术组件组合成可运行的整体解决方案，并承担方案设计、系统集成、测试、上线、验收或项目交付责任的公司。
+
+SI 的核心不是销售多少产品，而是对客户需求、技术架构、多个组件或系统之间的协同以及最终项目结果承担方案级责任。SI 可以只提供咨询、设计和项目实施而不销售硬件；发生产品采购和转售时，再根据实际交易增加 VAR 与 Reseller。
+
+### 必要判断条件
+
+在公开证据足够的情况下，SI 至少需要满足：
+
+1. 主要服务对象包含最终企业或机构客户，而不是仅向下级渠道供货；
+2. 承担需求分析、方案设计、架构、系统连接、集成、测试、调试、迁移、上线、验收或项目管理中的方案级职责；
+3. 工作涉及多个组件、子系统或技术层之间的协同，不能只是设备搬运、基础安装或单一产品转售；
+4. 对整体解决方案能否按需求运行及项目交付结果承担明确责任。
+
+### 多组件与品牌规则
+
+SI 不强制要求多品牌。单一品牌方案也可以成立 SI，例如在同一厂商品牌下整合网关、交换机、无线 AP、控制器、安全策略、认证系统和云管理。必要的是多组件或多技术层的设计与协同，以及候选公司对整体方案和项目结果负责。
+
+同时采用多个品牌、平台或技术域是强增信证据，但不能作为硬门槛。只安装一台路由器、摄像机、AP 或其他独立设备，不构成 SI。
+
+### 强证据与辅助证据
+
+强证据包括：候选公司官网明确自述 system integrator／systems integration／ICT integrator；完整项目案例展示需求、架构、多个组件、实施过程和客户结果；公开的设计、集成、测试、迁移、调试、验收或项目管理服务；品牌方或行业组织的官方 SI 伙伴身份。
+
+辅助证据包括：解决方案架构师、网络工程师、项目经理等专业团队；厂商认证和技术资质；招投标或项目中标记录；面向特定行业的端到端解决方案；技术合作伙伴组合、实验室、PoC 和客户推荐。只有合作伙伴 Logo、泛化的“solutions”描述或员工职位不能单独完成 SI 判断。
+
+### 与 VAR、Reseller 的边界
+
+SI 不要求一定采购或转售产品，因此不自动标记 VAR 或 Reseller。SI 的核心是专业服务、系统协同和项目结果；VAR 的核心包含产品转售并围绕产品增加价值。
+
+如果 SI 同时以自身名义采购并向客户销售设备或软件，且围绕产品提供实质性增值，应同时标记 SI、VAR 和 Reseller。如果仅代客户采购、提供采购建议或由其他供应商直接开票，则不能仅凭项目中使用产品增加 VAR／Reseller。
+
+### 与 Installer 的核心边界
+
+SI 与 Installer 的核心边界是是否承担整体方案、技术架构、系统协同和项目结果责任。Installer 主要按照既定设计执行布线、设备安装、基础配置、现场施工或更换任务；SI 负责决定系统如何设计、不同组件如何协同、如何验证客户需求及如何完成整体交付。
+
+同一公司可以同时承担 SI 和 Installer。如果证据只支持现场施工或设备安装，不应推断 SI；如果同时有设计文档、复杂项目案例、集成测试、调试和验收责任，可以多角色标记。
+
+### 与 MSP 及咨询公司的边界
+
+SI 通常以阶段性项目设计和交付为核心；MSP 通过持续合同、订阅或 SLA 长期运营、监控和支持客户系统。SI 完成项目后继续承担持续托管服务时，可以同时标记 MSP。
+
+只提供战略、管理或采购建议，不参与技术方案设计、系统集成或实施的普通咨询公司不属于 SI。咨询服务只有与可验证的技术架构或交付职责结合时才能支持 SI 判断。
+
+### 商业价值等级
+
+SI 属于 Downstream Channel，可以根据项目规模、客户质量、行业覆盖、技术深度、采购影响力、可复制方案、增长性和合作价值评为 KA、Priority、Standard 或 Long-tail。产品采购金额不是唯一价值来源；即使硬件由客户或其他伙伴采购，能够影响技术选型的大型 SI 仍可能具有较高商业价值。
+
+### 信息缺失与置信度
+
+项目架构、合同责任和客户名称可能因保密要求不公开。未找到详细案例不能直接认定公司没有 SI 能力；系统应综合服务目录、团队资质、招投标记录、合作伙伴身份及匿名案例进行判断。但如果无法验证多组件协同和方案级责任，只能保留 SI candidate／待核验，不能用“IT solutions”或“technology services”等泛化描述强行确认。
+
 # 参考依据
 
 以下资料用于支撑行业通用边界；本文件中的产品操作规则以业务负责人确认口径为最终准则。
@@ -449,6 +513,8 @@ E-tailer 属于 Downstream Channel，可以根据目标市场销量、相关品�
 - Eurostat，Retail trade turnover concepts：https://ec.europa.eu/eurostat/cache/metadata/en/sts_wrt_ts_esms_rs.htm
 - OECD，The 2025 definition of e-commerce and guidelines for interpretation：https://www.oecd.org/en/publications/the-2025-oecd-definition-of-e-commerce-and-guidelines-for-interpretation_2254f1de-en.html
 - UK Office for National Statistics，E-commerce glossary：https://www.ons.gov.uk/surveys/informationforbusinesses/businesssurveys/ecommerceglossary
+- IBM，System integrator and solution provider roles：https://public.dhe.ibm.com/partnerworld/pub/svi/swg_svi_program_guide.pdf
+- AWS，Services Partners：https://docs.aws.amazon.com/it_it/whitepapers/latest/how-customers-can-work-with-aws-and-our-apn-partners/apn-partners.html
 - UK Department for Business and Trade，When to use an agent or distributor：https://www.business.gov.uk/export-from-uk/learn/categories/prepare-sell-new-country/routes-to-market/when-use-agent-or-distributor/
 - UK HMRC，INTM441080 Agents and distributors：https://www.gov.uk/hmrc-internal-manuals/international-manual/intm441080
 - European Commission，Working paper on distributors that also act as agents：https://competition-policy.ec.europa.eu/document/download/a2a40192-9491-450d-8878-e7d1a17ce732_en
@@ -465,9 +531,9 @@ export const CHANNEL_ROLE_TAXONOMY_DOCUMENT = {
   capturedAt: "2026-08-26T00:00:00+08:00",
   metadata: {
     topic: "channel-role-taxonomy",
-    policyVersion: "2026-08-26.7",
-    confirmedRoles: ["Distributor", "VAD", "VAR", "Dealer", "Reseller", "Retailer", "E-tailer"],
-    pendingRoles: ["SI", "Installer", "MSP", "ISP", "Commission Agent"],
+    policyVersion: "2026-08-26.8",
+    confirmedRoles: ["Distributor", "VAD", "VAR", "Dealer", "Reseller", "Retailer", "E-tailer", "SI"],
+    pendingRoles: ["Installer", "MSP", "ISP", "Commission Agent"],
     userConfirmed: true,
     temporalReviewRequired: false,
   },

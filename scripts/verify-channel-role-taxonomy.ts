@@ -34,6 +34,8 @@ const verificationQueries = [
   "没有独立官网只在当地 Marketplace 开店的公司能否成为 E-tailer？",
   "Marketplace 平台自营店和第三方卖家是否应该合并成同一条销售线索？",
   "只有社交媒体私信询价能否确认 E-tailer？",
+  "SI 是否必须销售产品或者使用多个品牌？",
+  "怎样区分 System Integrator SI 和 Installer？",
 ];
 
 try {
@@ -77,6 +79,9 @@ try {
     "必须生成相互独立的候选销售线索",
     "不能单独确认 E-tailer",
     "销售线索搜索必须支持独立的 Marketplace discovery lane",
+    "SI 不强制要求多品牌",
+    "SI 不要求一定采购或转售产品",
+    "SI 与 Installer 的核心边界是是否承担整体方案、技术架构、系统协同和项目结果责任",
   ];
   const missingText = requiredText.filter((fragment) => !stored.combined_content.includes(fragment));
 
