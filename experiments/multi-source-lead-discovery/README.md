@@ -24,10 +24,13 @@ After the frozen input manifest is committed, the reproducible measured workflow
 1. `npm run benchmark:discovery:run -- --phase=preflight`
 2. `npm run benchmark:discovery:run -- --phase=discovery`
 3. commit and push the sanitized discovery artifacts;
-4. `npm run benchmark:discovery:run -- --phase=evaluate`
-5. `npm run benchmark:discovery:prepare-audit`
+4. `npm run benchmark:discovery:prepare-codex-review`
+5. review every blind packet with the frozen rubric and save one decision per batch;
+6. `npm run benchmark:discovery:verify-codex-review -- --require-complete`
+7. commit the still-blinded decisions, then run `npm run benchmark:discovery:aggregate-codex-review`;
+8. `npm run benchmark:discovery:prepare-audit`
 
-The runner is resumable. A successful raw result is reused, while failed attempts remain locally recorded. Evaluation refuses to start unless every planned discovery result exists.
+The discovery runner is resumable. A successful raw result is reused, while failed attempts remain locally recorded. The OpenAI-compatible API evaluator is diagnostic only: its partial results never enter the ranking. Primary scores come from the uniformly completed Codex blind review and remain provisional until the human blind audit is accepted.
 
 Raw benchmark artifacts are stored under `runs/raw` and are ignored by Git. API keys, provider-native payloads, the blind identity map and local human-review decisions must never be committed.
 

@@ -1,0 +1,383 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "runId": "2026-08-26-de-v1",
+  "systemId": "product-gemini",
+  "channelId": "b2b-resale",
+  "reviewMode": "discovery-pool",
+  "blindBatchId": "B-6B1FB907E9EB",
+  "sourceDiscoveryArtifact": "artifacts/runs/2026-08-26-de-v1/discovery/product-gemini/b2b-resale.json",
+  "selectedCandidates": [
+    {
+      "rank": 1,
+      "companyName": "Bechtle AG",
+      "officialUrl": "https://www.bechtle.com/",
+      "roles": [
+        "VAR",
+        "Reseller"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 1
+      },
+      "score": 84,
+      "roleEvidence": "Repeated packet summaries describe a German IT system house and direct B2B reseller with hardware procurement.",
+      "productFitEvidence": "Routers, switches, access points, firewalls and enterprise Wi-Fi directly overlap Cudy.",
+      "cooperationEvidence": "Planning, hardware procurement, deployment and managed services create a complete VAR route.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-557C4F2DE4",
+          "url": "https://www.bechtle.com/",
+          "excerpt": "Here are 10 B2B network technology specialists, distributors, and IT system integrators operating in Germany that cover enterprise networking, switches, routers, and WLAN infrastructure: 1. **Bechtle AG** * **Website:** https://www.bechtle.com * **Relevance:** Major German IT system house and B2B direct reseller providing enterprise network planning, hardware procurement (switches, routers, access points), and managed network services. 2. **JACOB Elektronik GmbH** * **Website:** https://www.jacob.de * **Relevance:** Dedicated B2B distributor and online specialist in Germany offering enterprise network technology, including managed switches, Wi-Fi 6/7 access points, and business routers. 3. **ALLNET GmbH Computersysteme** * **Website:** https://www.allnet.de * **Relevance:** German specialist distributor and developer for network equipment, focused on B2B resellers and system integrators for WLAN, industrial/enterprise switches, and routing solutions. 4. **WLAN-Shop24 (Varistano GmbH)** * **Website:** https://www.wlan-shop24.de * **Relevance:** Specialized German retailer and consultant for industrial and commercial networking, focusing on business WLAN access points, outdoor wirele"
+        },
+        {
+          "evidenceEntryId": "E-7DFBA7BAC3",
+          "url": "https://www.bechtle.com/",
+          "excerpt": "Here are 10 real companies (VARs, Systemhäuser, and IT resellers) operating in Germany (DE) that specialize in networking, business WiFi, and switch infrastructure for SMBs (*KMU* / *Kleine und mittlere Unternehmen*): 1. **Bechtle AG** * **URL:** [https://www.bechtle.com](https://www.bechtle.com) * **Why it matches:** Germany’s largest IT system house (*IT-Systemhaus*) and VAR, serving German SMBs with comprehensive network planning, enterprise WiFi, and switch deployment across major vendors (Cisco, Aruba, LANCOM). 2. **CANCOM SE** * **URL:** [https://www.cancom.de](https://www.cancom.de) * **Why it matches:** A major German VAR offering tailored IT infrastructure, managed switches, enterprise WLAN architectures, and network security for mid-market business customers. 3. **IT-HAUS GmbH** * **URL:** [https://www.it-haus.com](https://www.it-haus.com) * **Why it matches:** A well-established IT Systemhaus in Germany providing end-to-end network infrastructure (*Netzwerk-Infrastruktur*), managed switches, Layer 2/3 routing, and business WLAN for KMU clients. 4. **indasys IT Systemhaus Gruppe** * **URL:** [https://www.indasys.de](https://www.indasys.de) * **Why it matches:** German VAR"
+        },
+        {
+          "evidenceEntryId": "E-01B991C487",
+          "url": "https://www.bechtle.com/",
+          "excerpt": "1. **Bechtle AG** * **URL:** https://www.bechtle.com * **Why it matches:** Germany's largest IT system house and direct reseller, offering comprehensive network hardware (routers, switches, firewalls) and infrastructure services tailored to business customers (B2B). 2. **CANCOM SE** * **URL:** https://www.cancom.de * **Why it matches:** A leading German IT system house and cloud/network integrator providing enterprise-grade network hardware, WLAN, and SD-WAN solutions for business clients. 3. **Computacenter AG & Co. oHG** * **URL:** https://www.computacenter.com * **Why it matches:** Major IT service provider and hardware reseller in Germany, delivering enterprise networking infrastructure, data center hardware, and managed network services for B2B. 4. **SVA Systemvertrieb Alexander GmbH** * **URL:** https://www.sva.de * **Why it matches:** One of Germany's largest system houses, specializing in enterprise IT infrastructure, network hardware procurement, datacenters, and network security for business customers. 5. **Controlware GmbH** * **URL:** https://www.controlware.de * **Why it matches:** A dedicated IT system house and system integrator in Germany focused heavily on network"
+        }
+      ],
+      "rationale": "Excellent claimed fit, but the excerpts are repeated generated lists rather than claim-level page content, so reliability is minimal."
+    },
+    {
+      "rank": 2,
+      "companyName": "Computacenter AG & Co. oHG",
+      "officialUrl": "https://www.computacenter.com/",
+      "roles": [
+        "VAR",
+        "Reseller"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 1
+      },
+      "score": 84,
+      "roleEvidence": "Packet summary identifies a German B2B hardware reseller and IT service provider.",
+      "productFitEvidence": "Enterprise networking infrastructure and data-centre hardware are strongly relevant.",
+      "cooperationEvidence": "Hardware resale plus managed network delivery provides procurement and deployment influence.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-D2E4F0D9F4",
+          "url": "https://www.computacenter.com/",
+          "excerpt": "1. **Bechtle AG** * **URL:** https://www.bechtle.com * **Why it matches:** Germany's largest IT system house and direct reseller, offering comprehensive network hardware (routers, switches, firewalls) and infrastructure services tailored to business customers (B2B). 2. **CANCOM SE** * **URL:** https://www.cancom.de * **Why it matches:** A leading German IT system house and cloud/network integrator providing enterprise-grade network hardware, WLAN, and SD-WAN solutions for business clients. 3. **Computacenter AG & Co. oHG** * **URL:** https://www.computacenter.com * **Why it matches:** Major IT service provider and hardware reseller in Germany, delivering enterprise networking infrastructure, data center hardware, and managed network services for B2B. 4. **SVA Systemvertrieb Alexander GmbH** * **URL:** https://www.sva.de * **Why it matches:** One of Germany's largest system houses, specializing in enterprise IT infrastructure, network hardware procurement, datacenters, and network security for business customers. 5. **Controlware GmbH** * **URL:** https://www.controlware.de * **Why it matches:** A dedicated IT system house and system integrator in Germany focused heavily on network"
+        }
+      ],
+      "rationale": "Strong claimed VAR route with only low-reliability generated-list evidence."
+    },
+    {
+      "rank": 3,
+      "companyName": "SVA Systemvertrieb Alexander GmbH",
+      "officialUrl": "https://www.sva.de/",
+      "roles": [
+        "VAR",
+        "Reseller"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 1
+      },
+      "score": 84,
+      "roleEvidence": "Packet summary identifies a German system house specializing in enterprise IT infrastructure and hardware procurement.",
+      "productFitEvidence": "Network hardware, data centres and network security overlap Cudy's professional portfolio.",
+      "cooperationEvidence": "Explicit procurement and system-house positioning provide a direct VAR transaction path.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-7DEB3D9156",
+          "url": "https://www.sva.de/",
+          "excerpt": "1. **Bechtle AG** * **URL:** https://www.bechtle.com * **Why it matches:** Germany's largest IT system house and direct reseller, offering comprehensive network hardware (routers, switches, firewalls) and infrastructure services tailored to business customers (B2B). 2. **CANCOM SE** * **URL:** https://www.cancom.de * **Why it matches:** A leading German IT system house and cloud/network integrator providing enterprise-grade network hardware, WLAN, and SD-WAN solutions for business clients. 3. **Computacenter AG & Co. oHG** * **URL:** https://www.computacenter.com * **Why it matches:** Major IT service provider and hardware reseller in Germany, delivering enterprise networking infrastructure, data center hardware, and managed network services for B2B. 4. **SVA Systemvertrieb Alexander GmbH** * **URL:** https://www.sva.de * **Why it matches:** One of Germany's largest system houses, specializing in enterprise IT infrastructure, network hardware procurement, datacenters, and network security for business customers. 5. **Controlware GmbH** * **URL:** https://www.controlware.de * **Why it matches:** A dedicated IT system house and system integrator in Germany focused heavily on network"
+        }
+      ],
+      "rationale": "Excellent claimed commercial fit with weak source-grounding quality."
+    },
+    {
+      "rank": 4,
+      "companyName": "JACOB Elektronik GmbH",
+      "officialUrl": "https://www.jacob.de/",
+      "roles": [
+        "Reseller",
+        "VAR"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 1
+      },
+      "score": 84,
+      "roleEvidence": "Packet summary describes a dedicated German B2B online networking specialist.",
+      "productFitEvidence": "Managed switches, Wi-Fi 6/7 access points and business routers directly match Cudy.",
+      "cooperationEvidence": "B2B specialist assortment provides an explicit listing and resale path.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-AE5D97AD55",
+          "url": "https://www.jacob.de/",
+          "excerpt": "Here are 10 B2B network technology specialists, distributors, and IT system integrators operating in Germany that cover enterprise networking, switches, routers, and WLAN infrastructure: 1. **Bechtle AG** * **Website:** https://www.bechtle.com * **Relevance:** Major German IT system house and B2B direct reseller providing enterprise network planning, hardware procurement (switches, routers, access points), and managed network services. 2. **JACOB Elektronik GmbH** * **Website:** https://www.jacob.de * **Relevance:** Dedicated B2B distributor and online specialist in Germany offering enterprise network technology, including managed switches, Wi-Fi 6/7 access points, and business routers. 3. **ALLNET GmbH Computersysteme** * **Website:** https://www.allnet.de * **Relevance:** German specialist distributor and developer for network equipment, focused on B2B resellers and system integrators for WLAN, industrial/enterprise switches, and routing solutions. 4. **WLAN-Shop24 (Varistano GmbH)** * **Website:** https://www.wlan-shop24.de * **Relevance:** Specialized German retailer and consultant for industrial and commercial networking, focusing on business WLAN access points, outdoor wirele"
+        }
+      ],
+      "rationale": "Excellent claimed target, penalized because the evidence is a generated list attached to the URL."
+    },
+    {
+      "rank": 5,
+      "companyName": "WLAN-Shop24 (Varistano GmbH)",
+      "officialUrl": "https://www.wlan-shop24.de/",
+      "roles": [
+        "Reseller",
+        "VAR"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 1
+      },
+      "score": 84,
+      "roleEvidence": "Packet summary calls it a German specialist retailer and consultant for industrial and commercial networking.",
+      "productFitEvidence": "Business WLAN access points and outdoor wireless directly overlap Cudy.",
+      "cooperationEvidence": "Specialist retail plus consulting implies both resale and recommendation influence.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-E2D2BFE7C4",
+          "url": "https://www.wlan-shop24.de/",
+          "excerpt": "Here are 10 B2B network technology specialists, distributors, and IT system integrators operating in Germany that cover enterprise networking, switches, routers, and WLAN infrastructure: 1. **Bechtle AG** * **Website:** https://www.bechtle.com * **Relevance:** Major German IT system house and B2B direct reseller providing enterprise network planning, hardware procurement (switches, routers, access points), and managed network services. 2. **JACOB Elektronik GmbH** * **Website:** https://www.jacob.de * **Relevance:** Dedicated B2B distributor and online specialist in Germany offering enterprise network technology, including managed switches, Wi-Fi 6/7 access points, and business routers. 3. **ALLNET GmbH Computersysteme** * **Website:** https://www.allnet.de * **Relevance:** German specialist distributor and developer for network equipment, focused on B2B resellers and system integrators for WLAN, industrial/enterprise switches, and routing solutions. 4. **WLAN-Shop24 (Varistano GmbH)** * **Website:** https://www.wlan-shop24.de * **Relevance:** Specialized German retailer and consultant for industrial and commercial networking, focusing on business WLAN access points, outdoor wirele"
+        }
+      ],
+      "rationale": "Strong niche target whose supplied evidence has very low provenance quality."
+    },
+    {
+      "rank": 6,
+      "companyName": "IT-HAUS GmbH",
+      "officialUrl": "https://www.it-haus.com/",
+      "roles": [
+        "VAR"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 4,
+        "evidenceReliability": 1
+      },
+      "score": 77,
+      "roleEvidence": "Packet summary identifies a German IT system house delivering end-to-end network infrastructure to SMEs.",
+      "productFitEvidence": "Managed switching, Layer 2/3 routing and business WLAN strongly match Cudy.",
+      "cooperationEvidence": "End-to-end infrastructure delivery implies product influence, though purchasing is not explicit in the excerpt.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-1D97E5C305",
+          "url": "https://www.it-haus.com/",
+          "excerpt": "Here are 10 real companies (VARs, Systemhäuser, and IT resellers) operating in Germany (DE) that specialize in networking, business WiFi, and switch infrastructure for SMBs (*KMU* / *Kleine und mittlere Unternehmen*): 1. **Bechtle AG** * **URL:** [https://www.bechtle.com](https://www.bechtle.com) * **Why it matches:** Germany’s largest IT system house (*IT-Systemhaus*) and VAR, serving German SMBs with comprehensive network planning, enterprise WiFi, and switch deployment across major vendors (Cisco, Aruba, LANCOM). 2. **CANCOM SE** * **URL:** [https://www.cancom.de](https://www.cancom.de) * **Why it matches:** A major German VAR offering tailored IT infrastructure, managed switches, enterprise WLAN architectures, and network security for mid-market business customers. 3. **IT-HAUS GmbH** * **URL:** [https://www.it-haus.com](https://www.it-haus.com) * **Why it matches:** A well-established IT Systemhaus in Germany providing end-to-end network infrastructure (*Netzwerk-Infrastruktur*), managed switches, Layer 2/3 routing, and business WLAN for KMU clients. 4. **indasys IT Systemhaus Gruppe** * **URL:** [https://www.indasys.de](https://www.indasys.de) * **Why it matches:** German VAR"
+        }
+      ],
+      "rationale": "Excellent product fit but low-provenance evidence and incomplete procurement detail."
+    },
+    {
+      "rank": 7,
+      "companyName": "CANCOM SE",
+      "officialUrl": "https://www.cancom.de/",
+      "roles": [
+        "VAR"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 4,
+        "evidenceReliability": 1
+      },
+      "score": 77,
+      "roleEvidence": "Repeated summaries identify a German IT system house and VAR for business customers.",
+      "productFitEvidence": "Managed switches, enterprise WLAN, SD-WAN and network security are highly relevant.",
+      "cooperationEvidence": "Tailored infrastructure and integration indicate specification influence, but direct purchasing is not demonstrated.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-AB2C91507E",
+          "url": "https://www.cancom.de/",
+          "excerpt": "1. **Bechtle AG** * **URL:** https://www.bechtle.com * **Why it matches:** Germany's largest IT system house and direct reseller, offering comprehensive network hardware (routers, switches, firewalls) and infrastructure services tailored to business customers (B2B). 2. **CANCOM SE** * **URL:** https://www.cancom.de * **Why it matches:** A leading German IT system house and cloud/network integrator providing enterprise-grade network hardware, WLAN, and SD-WAN solutions for business clients. 3. **Computacenter AG & Co. oHG** * **URL:** https://www.computacenter.com * **Why it matches:** Major IT service provider and hardware reseller in Germany, delivering enterprise networking infrastructure, data center hardware, and managed network services for B2B. 4. **SVA Systemvertrieb Alexander GmbH** * **URL:** https://www.sva.de * **Why it matches:** One of Germany's largest system houses, specializing in enterprise IT infrastructure, network hardware procurement, datacenters, and network security for business customers. 5. **Controlware GmbH** * **URL:** https://www.controlware.de * **Why it matches:** A dedicated IT system house and system integrator in Germany focused heavily on network"
+        },
+        {
+          "evidenceEntryId": "E-EA9C043CB7",
+          "url": "https://www.cancom.de/",
+          "excerpt": "Here are 10 real companies (VARs, Systemhäuser, and IT resellers) operating in Germany (DE) that specialize in networking, business WiFi, and switch infrastructure for SMBs (*KMU* / *Kleine und mittlere Unternehmen*): 1. **Bechtle AG** * **URL:** [https://www.bechtle.com](https://www.bechtle.com) * **Why it matches:** Germany’s largest IT system house (*IT-Systemhaus*) and VAR, serving German SMBs with comprehensive network planning, enterprise WiFi, and switch deployment across major vendors (Cisco, Aruba, LANCOM). 2. **CANCOM SE** * **URL:** [https://www.cancom.de](https://www.cancom.de) * **Why it matches:** A major German VAR offering tailored IT infrastructure, managed switches, enterprise WLAN architectures, and network security for mid-market business customers. 3. **IT-HAUS GmbH** * **URL:** [https://www.it-haus.com](https://www.it-haus.com) * **Why it matches:** A well-established IT Systemhaus in Germany providing end-to-end network infrastructure (*Netzwerk-Infrastruktur*), managed switches, Layer 2/3 routing, and business WLAN for KMU clients. 4. **indasys IT Systemhaus Gruppe** * **URL:** [https://www.indasys.de](https://www.indasys.de) * **Why it matches:** German VAR"
+        },
+        {
+          "evidenceEntryId": "E-D67D6BC297",
+          "url": "https://www.cancom.de/",
+          "excerpt": "Here are 10 B2B network technology specialists, distributors, and IT system integrators operating in Germany that cover enterprise networking, switches, routers, and WLAN infrastructure: 1. **Bechtle AG** * **Website:** https://www.bechtle.com * **Relevance:** Major German IT system house and B2B direct reseller providing enterprise network planning, hardware procurement (switches, routers, access points), and managed network services. 2. **JACOB Elektronik GmbH** * **Website:** https://www.jacob.de * **Relevance:** Dedicated B2B distributor and online specialist in Germany offering enterprise network technology, including managed switches, Wi-Fi 6/7 access points, and business routers. 3. **ALLNET GmbH Computersysteme** * **Website:** https://www.allnet.de * **Relevance:** German specialist distributor and developer for network equipment, focused on B2B resellers and system integrators for WLAN, industrial/enterprise switches, and routing solutions. 4. **WLAN-Shop24 (Varistano GmbH)** * **Website:** https://www.wlan-shop24.de * **Relevance:** Specialized German retailer and consultant for industrial and commercial networking, focusing on business WLAN access points, outdoor wirele"
+        }
+      ],
+      "rationale": "Strong claimed VAR with repeated but non-primary evidence."
+    },
+    {
+      "rank": 8,
+      "companyName": "indasys IT Systemhaus Gruppe",
+      "officialUrl": "https://www.indasys.de/",
+      "roles": [
+        "VAR"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 4,
+        "evidenceReliability": 1
+      },
+      "score": 68,
+      "roleEvidence": "Packet list identifies indasys as a German VAR in a set specializing in SME networking, business Wi-Fi and switching.",
+      "productFitEvidence": "The list context supports relevant networking use cases, though candidate-specific product detail is truncated.",
+      "cooperationEvidence": "VAR designation implies recommendation and resale, without a documented purchasing workflow.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-8CD1FB7323",
+          "url": "https://www.indasys.de/",
+          "excerpt": "Here are 10 real companies (VARs, Systemhäuser, and IT resellers) operating in Germany (DE) that specialize in networking, business WiFi, and switch infrastructure for SMBs (*KMU* / *Kleine und mittlere Unternehmen*): 1. **Bechtle AG** * **URL:** [https://www.bechtle.com](https://www.bechtle.com) * **Why it matches:** Germany’s largest IT system house (*IT-Systemhaus*) and VAR, serving German SMBs with comprehensive network planning, enterprise WiFi, and switch deployment across major vendors (Cisco, Aruba, LANCOM). 2. **CANCOM SE** * **URL:** [https://www.cancom.de](https://www.cancom.de) * **Why it matches:** A major German VAR offering tailored IT infrastructure, managed switches, enterprise WLAN architectures, and network security for mid-market business customers. 3. **IT-HAUS GmbH** * **URL:** [https://www.it-haus.com](https://www.it-haus.com) * **Why it matches:** A well-established IT Systemhaus in Germany providing end-to-end network infrastructure (*Netzwerk-Infrastruktur*), managed switches, Layer 2/3 routing, and business WLAN for KMU clients. 4. **indasys IT Systemhaus Gruppe** * **URL:** [https://www.indasys.de](https://www.indasys.de) * **Why it matches:** German VAR"
+        }
+      ],
+      "rationale": "Eligible but only thin, generated-list evidence is available."
+    },
+    {
+      "rank": 9,
+      "companyName": "Controlware GmbH",
+      "officialUrl": "https://www.controlware.de/",
+      "roles": [
+        "VAR"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 4,
+        "evidenceReliability": 1
+      },
+      "score": 68,
+      "roleEvidence": "Packet summary calls it a German IT system house and system integrator focused on networking.",
+      "productFitEvidence": "Networking focus is clear, but device families and use cases are truncated.",
+      "cooperationEvidence": "System-house/integrator status implies specification and resale influence, while procurement is not explicit.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-1C425C8BCE",
+          "url": "https://www.controlware.de/",
+          "excerpt": "1. **Bechtle AG** * **URL:** https://www.bechtle.com * **Why it matches:** Germany's largest IT system house and direct reseller, offering comprehensive network hardware (routers, switches, firewalls) and infrastructure services tailored to business customers (B2B). 2. **CANCOM SE** * **URL:** https://www.cancom.de * **Why it matches:** A leading German IT system house and cloud/network integrator providing enterprise-grade network hardware, WLAN, and SD-WAN solutions for business clients. 3. **Computacenter AG & Co. oHG** * **URL:** https://www.computacenter.com * **Why it matches:** Major IT service provider and hardware reseller in Germany, delivering enterprise networking infrastructure, data center hardware, and managed network services for B2B. 4. **SVA Systemvertrieb Alexander GmbH** * **URL:** https://www.sva.de * **Why it matches:** One of Germany's largest system houses, specializing in enterprise IT infrastructure, network hardware procurement, datacenters, and network security for business customers. 5. **Controlware GmbH** * **URL:** https://www.controlware.de * **Why it matches:** A dedicated IT system house and system integrator in Germany focused heavily on network"
+        }
+      ],
+      "rationale": "Credible claimed VAR role with limited content and minimal evidence reliability."
+    }
+  ],
+  "rejectedItems": [
+    {
+      "title": "ALLNET and distributor candidates",
+      "url": "https://www.allnet.de/",
+      "reason": "The packet describes a distributor serving resellers/system integrators, which belongs to the tier-one channel rather than B2B resale."
+    },
+    {
+      "title": "Remaining target domains",
+      "url": "https://www.datagroup.de/",
+      "reason": "Their attached snippets are generic repeated candidate lists and do not contain candidate-specific claims for the target domain."
+    },
+    {
+      "title": "Duplicate Bechtle and CANCOM entries",
+      "url": "https://www.bechtle.com/",
+      "reason": "Merged into one unique candidate per company."
+    }
+  ],
+  "scoring": {
+    "finalSlots": 10,
+    "filledSlots": 9,
+    "missingSlots": 1,
+    "slotScores": [
+      84,
+      84,
+      84,
+      84,
+      84,
+      77,
+      77,
+      68,
+      68,
+      0
+    ],
+    "channelScore": 71,
+    "meanLevelsAcrossTenSlots": {
+      "productUseCaseFit": 4.3,
+      "cooperationPath": 4.1,
+      "evidenceReliability": 0.9
+    }
+  },
+  "evaluator": {
+    "provider": "codex-agent",
+    "transport": "in-session-no-api",
+    "model": "runtime-managed-codex",
+    "systemIdentityHiddenDuringReview": true,
+    "providerIdentityHiddenDuringReview": true,
+    "apiScoresHiddenDuringReview": true,
+    "externalSearchUsed": false
+  }
+}

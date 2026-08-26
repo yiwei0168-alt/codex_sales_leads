@@ -1,0 +1,345 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "runId": "2026-08-26-de-v1",
+  "systemId": "product-searchapi",
+  "channelId": "tier1-distribution",
+  "reviewMode": "discovery-pool",
+  "blindBatchId": "B-D0A08AF38338",
+  "sourceDiscoveryArtifact": "artifacts/runs/2026-08-26-de-v1/discovery/product-searchapi/tier1-distribution.json",
+  "selectedCandidates": [
+    {
+      "rank": 1,
+      "companyName": "sysob IT-Distribution GmbH & Co. KG",
+      "officialUrl": "https://www.sysob.com/",
+      "roles": [
+        "VAD",
+        "Distributor"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 4
+      },
+      "score": 96,
+      "roleEvidence": "First-party result identifies sysob as a twenty-year VAD for specialist trade; an independent vendor announcement confirms the VAD relationship.",
+      "productFitEvidence": "Wireless LAN, security and server-based solutions strongly overlap Cudy's professional portfolio.",
+      "cooperationEvidence": "Explicit specialist-channel supply and a documented vendor agreement provide a direct brand-to-channel route.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-E8E070B598",
+          "url": "https://www.sysob.com/",
+          "excerpt": "sysob – Ihr Distributor für Security, Wireless LAN und Serverbased Computing. Wir sind seit 20 Jahren Ihr VAD mit innovativen Lösungen für den Fachhandel."
+        },
+        {
+          "evidenceEntryId": "E-5F376DC16D",
+          "url": "https://www.al-enterprise.com/de-de/unternehmen/neuigkeiten/zusammenarbeit-mit-ale-und-sysob",
+          "excerpt": "Alcatel-Lucent Enterprise und der renommierte Value Added Distributor für IT-Sicherheit sysob sind neue Vertragspartner. sysob ergänzt sein ..."
+        }
+      ],
+      "rationale": "Exceptionally clear product, role and cooperation evidence from complementary sources."
+    },
+    {
+      "rank": 2,
+      "companyName": "ADN – Advanced Digital Network Distribution GmbH",
+      "officialUrl": "https://www.adn.de/",
+      "roles": [
+        "VAD",
+        "Distributor"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 4,
+        "evidenceReliability": 4
+      },
+      "score": 89,
+      "roleEvidence": "Official German page title explicitly identifies ADN as value-added IT distribution.",
+      "productFitEvidence": "Network switches, servers and WLAN technologies strongly overlap Cudy.",
+      "cooperationEvidence": "VAD designation provides a direct distribution path, though downstream enablement mechanics are not detailed.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-AD47FC75CF",
+          "url": "https://www.adn.de/de/",
+          "excerpt": "Mit leistungsstarken Netzwerk-Switches, robusten Servern und innovativen WLAN-Technologien sorgt H3C für eine zukunftssichere IT-Infrastruktur. ... Mit den DE-CIX ..."
+        }
+      ],
+      "rationale": "Excellent specialist fit with clear first-party evidence and a moderately documented path."
+    },
+    {
+      "rank": 3,
+      "companyName": "ALLNET GmbH Computersysteme",
+      "officialUrl": "https://distribution.allnet.de/",
+      "roles": [
+        "Distributor",
+        "VAD"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 4,
+        "evidenceReliability": 4
+      },
+      "score": 89,
+      "roleEvidence": "Official distribution vendor page establishes an active distributor assortment.",
+      "productFitEvidence": "Active/passive network components, measurement technology and data-centre infrastructure strongly match Cudy.",
+      "cooperationEvidence": "Distribution context establishes a direct listing/supply route, but reseller enablement is not described.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-06C3774622",
+          "url": "https://distribution.allnet.de/distribution-vendors.html?&L=12",
+          "excerpt": "No matter if you search for active or passive network components, measurement technology, USVs or components for data center infrastructure: We have it all!"
+        }
+      ],
+      "rationale": "Excellent product breadth and clear role with moderate cooperation detail."
+    },
+    {
+      "rank": 4,
+      "companyName": "4Networks IT-Distribution",
+      "officialUrl": "https://www.4networks.de/",
+      "roles": [
+        "VAD",
+        "Distributor"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 4,
+        "evidenceReliability": 4
+      },
+      "score": 89,
+      "roleEvidence": "Official result explicitly calls the German company a leading value-added distributor.",
+      "productFitEvidence": "Networking, security and WLAN directly align with Cudy.",
+      "cooperationEvidence": "VAD status and stated customer proximity provide a credible route, without explicit downstream or enablement stages.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-ED2027BB19",
+          "url": "https://www.4networks.de/",
+          "excerpt": "Wir sind ein führender Value Add Distributor, der sich durch Kundennähe, Zuverlässigkeit und Schnelligkeit auszeichnet. Mit langjähriger Erfahrung in der ..."
+        }
+      ],
+      "rationale": "Excellent specialist target supported by concise first-party evidence."
+    },
+    {
+      "rank": 5,
+      "companyName": "Yello Netcom GmbH",
+      "officialUrl": "https://www.yello-net.de/",
+      "roles": [
+        "VAD",
+        "Distributor"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 4,
+        "evidenceReliability": 4
+      },
+      "score": 89,
+      "roleEvidence": "Official result identifies Yello Netcom as a system provider and VAD for commercial and industrial networking.",
+      "productFitEvidence": "Commercial/industrial network technology strongly overlaps Cudy's professional products.",
+      "cooperationEvidence": "VAD status and broad portfolio establish a direct brand relationship, though downstream supply mechanics are not shown.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-16A80DD5C5",
+          "url": "https://www.yello-net.de/",
+          "excerpt": "Wir sind Ihr führender Systemanbieter und Value Added Distributor für kommerzielle und industrielle Netzwerktechnik. Unser umfangreiches Portfolio bietet ..."
+        }
+      ],
+      "rationale": "Excellent niche fit with strong first-party role evidence."
+    },
+    {
+      "rank": 6,
+      "companyName": "Azenn Connect (Fröhlich + Walter GmbH)",
+      "officialUrl": "https://www.exertis-connect.de/",
+      "roles": [
+        "Distributor"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 3,
+        "cooperationPath": 5,
+        "evidenceReliability": 4
+      },
+      "score": 78,
+      "roleEvidence": "Official German shop result explicitly identifies an IT wholesaler.",
+      "productFitEvidence": "Network technology is relevant, but the shown strengths emphasize cables and custom cable assembly.",
+      "cooperationEvidence": "Wholesale, high stock availability and 24-hour fulfilment provide a clear channel-supply route.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-0D2BA3D05A",
+          "url": "https://www.exertis-connect.de/",
+          "excerpt": "Azenn Connect Onlineshop (Fröhlich + Walter GmbH) | Ihr IT-Großhandel für Kabel und Netzwerktechnik, Lieferung innerhalb 24h, hohe Lagerverfügbarkeit, ..."
+        }
+      ],
+      "rationale": "Strong distribution mechanics with moderate direct active-hardware fit."
+    },
+    {
+      "rank": 7,
+      "companyName": "m2m Germany GmbH",
+      "officialUrl": "https://www.m2mgermany.de/",
+      "roles": [
+        "VAD"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 3,
+        "cooperationPath": 4,
+        "evidenceReliability": 4
+      },
+      "score": 71,
+      "roleEvidence": "Official page explicitly identifies the company as a value-added distributor.",
+      "productFitEvidence": "IoT projects are adjacent to Cudy's cellular/industrial networking, but no core WLAN/switch/router categories are stated.",
+      "cooperationEvidence": "VAD expertise implies vendor and project enablement, without downstream supply details.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-D118D0F9AD",
+          "url": "https://www.m2mgermany.de/value-added-distribution/?srsltid=AfmBOooT4VlOlMBTDN5tgQiJvc3mmjqwrNDfTDEFntgfITfoEJOjpQY8",
+          "excerpt": "Als Value Added Distributor macht uns unser gelebtes Know-how zu einem zuverlässigen und kompetenten Partner IoT Projekte."
+        }
+      ],
+      "rationale": "Eligible specialist VAD with narrower demonstrated product fit."
+    },
+    {
+      "rank": 8,
+      "companyName": "Infinigate Deutschland GmbH",
+      "officialUrl": "https://www.infinigate.de/",
+      "roles": [
+        "VAD"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 2,
+        "cooperationPath": 5,
+        "evidenceReliability": 3
+      },
+      "score": 65,
+      "roleEvidence": "German channel archive identifies Infinigate Deutschland as a VAD in the German channel.",
+      "productFitEvidence": "IT security and cloud are adjacent but the excerpt does not show WLAN, switching or routing hardware.",
+      "cooperationEvidence": "Explicit VAD/channel designation establishes a direct downstream distribution route.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-6677215EF1",
+          "url": "https://it-dock.de/dienstleisterkategorie/it-distributor/",
+          "excerpt": "Infinigate Deutschland ist Value Added Distributor für IT-Security- und Cloud-Lösungen im deutschen Channel. Dienstleistungen. Cybersecurity Distribution & ..."
+        }
+      ],
+      "rationale": "Strong role/path evidence but weak direct product-category overlap in the supplied excerpt."
+    }
+  ],
+  "rejectedItems": [
+    {
+      "title": "EPS Global",
+      "url": "https://www.epsglobal.com/manufacturers/edgecore",
+      "reason": "Authorized distribution and product fit are clear, but operation in Germany is not established."
+    },
+    {
+      "title": "Nuvias Deutschland",
+      "url": "https://www.channelpartner.de/article/3903078/einkaufsquellen-fuer-reseller-value-add-distribution.html",
+      "reason": "German VAD status is visible, but the supplied excerpt lacks networking-product relevance."
+    },
+    {
+      "title": "JACOB, Industry-Electronics, reichelt, Senetic and itelio",
+      "url": "https://www.jacob.de/netzwerk/",
+      "reason": "Reseller/solution-provider evidence belongs to a lower-channel category rather than tier-one distribution."
+    },
+    {
+      "title": "Manufacturer and partner-locator pages",
+      "url": "https://www.level1.com/",
+      "reason": "Not candidate distributors with sufficient Germany and downstream-channel evidence."
+    },
+    {
+      "title": "Directories and generic marketplaces",
+      "url": "https://www.industrystock.de/de/unternehmen/Informationstechnik/Netzwerktechnik/Netzwerkkomponenten",
+      "reason": "Do not establish a specific eligible candidate."
+    }
+  ],
+  "scoring": {
+    "finalSlots": 10,
+    "filledSlots": 8,
+    "missingSlots": 2,
+    "slotScores": [
+      96,
+      89,
+      89,
+      89,
+      89,
+      78,
+      71,
+      65,
+      0,
+      0
+    ],
+    "channelScore": 66.6,
+    "meanLevelsAcrossTenSlots": {
+      "productUseCaseFit": 3.3,
+      "cooperationPath": 3.5,
+      "evidenceReliability": 3.1
+    }
+  },
+  "evaluator": {
+    "provider": "codex-agent",
+    "transport": "in-session-no-api",
+    "model": "runtime-managed-codex",
+    "systemIdentityHiddenDuringReview": true,
+    "providerIdentityHiddenDuringReview": true,
+    "apiScoresHiddenDuringReview": true,
+    "externalSearchUsed": false
+  }
+}

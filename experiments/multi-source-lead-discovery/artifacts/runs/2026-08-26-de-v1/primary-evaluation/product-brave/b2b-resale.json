@@ -1,0 +1,250 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "runId": "2026-08-26-de-v1",
+  "systemId": "product-brave",
+  "channelId": "b2b-resale",
+  "reviewMode": "discovery-pool",
+  "blindBatchId": "B-782256DC5FB7",
+  "sourceDiscoveryArtifact": "artifacts/runs/2026-08-26-de-v1/discovery/product-brave/b2b-resale.json",
+  "selectedCandidates": [
+    {
+      "rank": 1,
+      "companyName": "Bechtle AG",
+      "officialUrl": "https://www.bechtle.com/",
+      "roles": [
+        "VAR",
+        "Reseller"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 4
+      },
+      "score": 96,
+      "roleEvidence": "Official German business-network shop page offers network hardware for companies.",
+      "productFitEvidence": "Routers, switches and access points directly cover Cudy's core SMB portfolio.",
+      "cooperationEvidence": "A broad purchasable business assortment provides a direct listing, quotation and resale path.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-40FA1956F7",
+          "url": "https://www.bechtle.com/shop/hardware/it-infrastruktur/netzwerk--10006005--c",
+          "excerpt": "Wireless LAN ist heute ein Grundbedürfnis für jedes Unternehmen und als geschäftskritisch anzusehen. Für eine optimale Verwaltung Ihrer WLAN-Umgebung bieten wir bei <strong>Bechtle</strong> eine breite Palette an Netzwerk-Hardware, einschließlich Router, Switches und Access Points."
+        }
+      ],
+      "rationale": "Excellent B2B VAR/reseller target with concise first-party evidence."
+    },
+    {
+      "rank": 2,
+      "companyName": "OMG.DE GmbH",
+      "officialUrl": "https://www.omg.de/",
+      "roles": [
+        "Reseller",
+        "VAR"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 4,
+        "evidenceReliability": 4
+      },
+      "score": 89,
+      "roleEvidence": "Official specialist-dealer result describes professional networking products for companies and providers.",
+      "productFitEvidence": "Access points, switches and gateways in a centrally managed WLAN ecosystem directly overlap Cudy.",
+      "cooperationEvidence": "Specialist-dealer positioning supports product listing and recommendation, though the excerpt does not show procurement terms.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-68BEEC604B",
+          "url": "https://www.omg.de/",
+          "excerpt": "Ubiquiti zählt zu den weltweit führenden Herstellern professioneller Netzwerktechnik – mit leistungsstarken und zugleich benutzerfreundlichen Lösungen für Unternehmen, Provider und Privatanwender. Im Zentrum steht das UniFi-Ökosystem: Access Points, Switches und Gateways verwalten Sie zentral über die UniFi-Software – für nahtloses WLAN-Management, stabile Netzwerke und einfache Skalierung vom Einzelbüro bis zum Campus."
+        }
+      ],
+      "rationale": "Excellent specialist product fit and strong first-party evidence."
+    },
+    {
+      "rank": 3,
+      "companyName": "ITCE Systemhaus GmbH",
+      "officialUrl": "https://www.itce-systemhaus.de/",
+      "roles": [
+        "VAR",
+        "Reseller"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 5,
+        "evidenceReliability": 4
+      },
+      "score": 87,
+      "roleEvidence": "German system house explicitly identifies and procures suitable hardware for business customers.",
+      "productFitEvidence": "Existing IT-infrastructure analysis supports networking use cases, although device categories are not listed.",
+      "cooperationEvidence": "Needs analysis, hardware selection, procurement and expert consultation form a complete VAR path.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-1F50230992",
+          "url": "https://www.itce-systemhaus.de/it-vor-ort/it-betrieb/verkauf-von-hardware-software/",
+          "excerpt": "<strong>Wir unterstützen Sie dabei, die passende Hardware für Ihr Unternehmen zu identifizieren und zu beschaffen</strong>. Dabei analysieren wir Ihre bestehende IT-Infrastruktur und leiten daraus Ihren Bedarf ab. In einem persönlichen Gespräch werden Sie von unseren IT-Experten beraten und erhalten konkrete ..."
+        }
+      ],
+      "rationale": "Outstanding cooperation mechanics with good but not fully specific product fit."
+    },
+    {
+      "rank": 4,
+      "companyName": "GermanProtect",
+      "officialUrl": "https://www.germanprotect.com/",
+      "roles": [
+        "Dealer",
+        "Reseller"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 3,
+        "evidenceReliability": 3
+      },
+      "score": 69,
+      "roleEvidence": "German specialist-dealer product page offers routers within a network/video-surveillance assortment.",
+      "productFitEvidence": "Wireless routers with switching functionality overlap a material portion of Cudy's range.",
+      "cooperationEvidence": "Direct catalogue resale is visible, but B2B customer focus, advice and purchasing mechanics are not shown.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-1C82B29C63",
+          "url": "https://www.germanprotect.com/videoueberwachung/netzwerktechnik/ubertragungstechnik/router.html",
+          "excerpt": "Mein Angebot · Suche · Mein Konto ... Übertragungstechnik · Router · Produkt- sortiment · Ratgeber · <strong>Ubiquiti UniFi Dream Machine - Wireless Router - 4-Port-Switch</strong> ·..."
+        }
+      ],
+      "rationale": "Eligible niche dealer with relevant products and a relatively shallow cooperation path."
+    },
+    {
+      "rank": 5,
+      "companyName": "SNcom GmbH",
+      "officialUrl": "https://www.sncom.de/",
+      "roles": [
+        "VAR"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 3,
+        "cooperationPath": 4,
+        "evidenceReliability": 2
+      },
+      "score": 63,
+      "roleEvidence": "Multiple German industry-directory excerpts identify an ITK system house serving business, carrier and public customers.",
+      "productFitEvidence": "Placement in network-hardware/device supplier categories supports relevance, but no active device family is candidate-specific.",
+      "cooperationEvidence": "System-house delivery of tailored communications solutions implies specification and procurement influence.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-D3D9DF0C05",
+          "url": "https://www.industrystock.de/de/unternehmen/Informationstechnik/Netzwerktechnik/Netzwerkhardware",
+          "excerpt": "Wenn Sie wenig Zeit haben Sie benötigen Informationen oder Preise zu: Netzwerkhardware Jetzt unseren Spezialservice nutzen ... Das <strong>ITK-Systemhaus SNcom GmbH</strong> ist seit der Gründung 2001 zuverlässiger Telekommunikationsanbieter für Geschäftskunden, Carrier, Institutionen, Städte und Kommunen ..."
+        },
+        {
+          "evidenceEntryId": "E-5C3F664E82",
+          "url": "https://www.industrystock.de/de/unternehmen/Informationstechnik/Computertechnik/Hardware/Hardwarehandel",
+          "excerpt": "Das <strong>ITK-Systemhaus SNcom GmbH</strong> ist seit der Gründung 2001 zuverlässiger Telekommunikationsanbieter für Geschäftskunden, Carrier, Institutionen, Städte und Kommunen in Ihrer Region. Gemeinsam mit unseren Kunden finden wir die richtige Kommunikationslösung, die zur langfristigen Optimierung ..."
+        },
+        {
+          "evidenceEntryId": "E-ADA5CC89DC",
+          "url": "https://www.industrystock.de/de/unternehmen/Informationstechnik/Netzwerktechnik/Netzwerkhardware/Netzwerkger%C3%A4te",
+          "excerpt": "Das <strong>ITK-Systemhaus SNcom GmbH</strong> ist seit der Gründung 2001 zuverlässiger Telekommunikationsanbieter für Geschäftskunden, Carrier, Institutionen, Städte und Kommunen in Ihrer Region. Gemeinsam mit unseren Kunden finden wir die richtige Kommunikationslösung, die zur langfristigen Optimierung ..."
+        }
+      ],
+      "rationale": "Plausible VAR supported by repeated third-party directory evidence, with moderate specificity."
+    }
+  ],
+  "rejectedItems": [
+    {
+      "title": "R&S, Cisco, NETGEAR, D-Link and TP-Link pages",
+      "url": "https://rs-nc.rohde-schwarz.com/de/",
+      "reason": "Manufacturer or partner-program content rather than independent B2B reseller candidates."
+    },
+    {
+      "title": "Azenn Connect, sysob and ALSO",
+      "url": "https://www.exertis-connect.de/",
+      "reason": "Distributor/VAD candidates belong to the tier-one channel."
+    },
+    {
+      "title": "CPN, WLW, IndustryStock, Europages, GlobalSpec and ranking pages",
+      "url": "https://www.cpn.network/",
+      "reason": "Networks/directories rather than a sufficiently evidenced individual reseller candidate."
+    },
+    {
+      "title": "reichelt elektronik",
+      "url": "https://www.reichelt.de/de/de/shop/kategorie/netzwerktechnik-5820",
+      "reason": "Retail sale is clear, but the excerpt does not establish an eligible B2B reseller/VAR/dealer cooperation path."
+    },
+    {
+      "title": "IT-RESELL.COM",
+      "url": "https://www.it-resell.com/page/netzwerktechnik-verkaufen",
+      "reason": "The evidence establishes purchasing used equipment from sellers, not a route for listing and reselling new Cudy products."
+    }
+  ],
+  "scoring": {
+    "finalSlots": 10,
+    "filledSlots": 5,
+    "missingSlots": 5,
+    "slotScores": [
+      96,
+      89,
+      87,
+      69,
+      63,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "channelScore": 40.4,
+    "meanLevelsAcrossTenSlots": {
+      "productUseCaseFit": 2.1,
+      "cooperationPath": 2.1,
+      "evidenceReliability": 1.7
+    }
+  },
+  "evaluator": {
+    "provider": "codex-agent",
+    "transport": "in-session-no-api",
+    "model": "runtime-managed-codex",
+    "systemIdentityHiddenDuringReview": true,
+    "providerIdentityHiddenDuringReview": true,
+    "apiScoresHiddenDuringReview": true,
+    "externalSearchUsed": false
+  }
+}

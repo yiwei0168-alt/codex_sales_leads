@@ -1,0 +1,428 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "runId": "2026-08-26-de-v1",
+  "systemId": "product-brave",
+  "channelId": "project-services",
+  "reviewMode": "discovery-pool",
+  "blindBatchId": "B-573E6427FD14",
+  "sourceDiscoveryArtifact": "artifacts/runs/2026-08-26-de-v1/discovery/product-brave/project-services.json",
+  "selectedCandidates": [
+    {
+      "rank": 1,
+      "companyName": "Frings Solutions Deutschland GmbH",
+      "officialUrl": "https://www.frings-solutions.de/",
+      "roles": [
+        "SI",
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 4
+      },
+      "score": 96,
+      "roleEvidence": "German WLAN solution provider performing analysis, site surveys, planning, installation and configuration.",
+      "productFitEvidence": "Access points and network components directly overlap Cudy professional WLAN.",
+      "cooperationEvidence": "Survey, AP placement, recommendation, installation and configuration provide full specification/deployment influence.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-12B8E76338",
+          "url": "https://www.frings-solutions.de/infrastruktur/wlan",
+          "excerpt": "Optimieren Sie Ihr Netzwerk mit unserer Expertise im WLAN-Ausbau ... Netzwerkanalyse und Planung: Durchführung von Site Surveys und Analysen zur Bestimmung der optimalen Platzierung von Access Points. Installation und Konfiguration: Fachgerechte Installation und Konfiguration von Access Points und Netzwerkkomponenten."
+        }
+      ],
+      "rationale": "Detailed first-party evidence for the complete WLAN project chain."
+    },
+    {
+      "rank": 2,
+      "companyName": "EWE Business",
+      "officialUrl": "https://business.ewe.de/",
+      "roles": [
+        "SI",
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 3
+      },
+      "score": 92,
+      "roleEvidence": "Installs and operates wireless networks and hotspots for German hospitality businesses.",
+      "productFitEvidence": "Business WLAN and hotspots directly match Cudy access-point and managed-WLAN use cases.",
+      "cooperationEvidence": "Installation and operation establish strong deployment and hardware-selection influence.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-90D47F724C",
+          "url": "https://business.ewe.de/vernetzung/managed-lan-wlan/profi-wlan",
+          "excerpt": "Hotels, Pensionen, Restaurants ... bei einem Latte Macchiato Familienbilder aus der Cloud teilen. <strong>Wir installieren und betreiben kabellose Netzwerke und Hotspots in Hotels, Pensionen, Restaurants und Cafés</strong>...."
+        }
+      ],
+      "rationale": "Excellent project fit supported by a concise first-party statement."
+    },
+    {
+      "rank": 3,
+      "companyName": "Solisation GmbH",
+      "officialUrl": "https://solisation.de/",
+      "roles": [
+        "SI",
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 3
+      },
+      "score": 92,
+      "roleEvidence": "Plans and installs professional networks/WLAN for offices and commercial properties in Germany.",
+      "productFitEvidence": "Business WLAN, secure network zones and VPN scenarios strongly overlap Cudy SMB networking.",
+      "cooperationEvidence": "Explicit planning and installation imply direct specification, quotation and deployment responsibility.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-D35843EA9A",
+          "url": "https://solisation.de/leistungen/netzwerk-wlan-unternehmen",
+          "excerpt": "Professionelles Netzwerk und WLAN für Unternehmen: Planung, Installation, VPN für Homeoffice und sichere Netzwerkzonen. Für Büros und Gewerbeobjekte im Rhein-Neckar-Raum."
+        }
+      ],
+      "rationale": "Clear local SI/installer with excellent use-case alignment."
+    },
+    {
+      "rank": 4,
+      "companyName": "Kellner Telecom GmbH",
+      "officialUrl": "https://www.kellner-telecom.de/",
+      "roles": [
+        "SI",
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 3
+      },
+      "score": 92,
+      "roleEvidence": "Plans and builds needs-based professional WLAN networks for German companies.",
+      "productFitEvidence": "Professional WLAN projects directly match Cudy access points, switches and related infrastructure.",
+      "cooperationEvidence": "Planning and realization establish specification and deployment control; procurement is implicit rather than detailed.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-DB2E264F8A",
+          "url": "https://www.kellner-telecom.de/leistungen/netzwerk-und-uebertragungstechnik/passive-und-aktive-netzwerkkomponenten/wlan-loesungen/",
+          "excerpt": "<strong>Kellner Telecom</strong> übernimmt für Sie den fach- und bedarfsgerechten Aufbau professioneller WLAN-Netzwerke für Ihr Unternehmen. Dank unserer langjährigen Erfahrung in der Planung und Realisierung von WLAN-Lösungen verfügen wir über das ..."
+        }
+      ],
+      "rationale": "Excellent specialist project partner with direct first-party evidence."
+    },
+    {
+      "rank": 5,
+      "companyName": "A+G connect GmbH",
+      "officialUrl": "https://www.aplusg.de/",
+      "roles": [
+        "SI"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 5,
+        "evidenceReliability": 4
+      },
+      "score": 87,
+      "roleEvidence": "German integrator offering analysis, design, realization, project management and support for LAN/WAN/WLAN.",
+      "productFitEvidence": "Enterprise LAN, WAN, WLAN and data-center networking are strongly relevant, though device categories are not detailed.",
+      "cooperationEvidence": "Design, realization, hardware exchange, operations and project management provide end-to-end control.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-BB2A668B00",
+          "url": "https://www.aplusg.de/projekte/",
+          "excerpt": "Kundenspezifische Servicekonzept Hotline-, Remote- und Onsite-Support Monitoring Reporting und Dokumentation Hardware Austausch System Update Service Outsourcing Projektmanagement 24×7 ... Analyse, Beratung und Design Konzeption und Realisierung LAN / WAN / W-LAN Datacenter Management und Monitoring End-to-End Measurement Voice over IP Projektmanagement Workshops"
+        }
+      ],
+      "rationale": "Highly evidenced SI path with broad professional networking relevance."
+    },
+    {
+      "rank": 6,
+      "companyName": "ITK Deutschland",
+      "officialUrl": "https://www.itkdeutschland.de/",
+      "roles": [
+        "SI",
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 4,
+        "evidenceReliability": 3
+      },
+      "score": 85,
+      "roleEvidence": "German technical team handles data/network technology and LAN/WLAN/WAN environments.",
+      "productFitEvidence": "Switches, routers, firewalls, LAN, WLAN and WAN directly overlap Cudy.",
+      "cooperationEvidence": "Technicians and device/network solution delivery imply installation and recommendation influence, but planning/procurement are not explicit.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-0D64E28021",
+          "url": "https://www.itkdeutschland.de/leistungen/daten-und-netzwerktechnik/",
+          "excerpt": "<strong>Die ITK Deutschland</strong> ist für Sie mit einem Team an hochqualifizierten Monteuren und Technikern da, wenn es um PCs, Notebooks, Server, Switche, Router, Firewalls und anderen Peripheriegeräten geht. Auch für gesicherte lokale, drahtlose und Weitverkehrs-Netze (LAN, WLAN, WAN) bieten wir effiziente ..."
+        }
+      ],
+      "rationale": "Excellent product fit with a strong but incompletely documented project path."
+    },
+    {
+      "rank": 7,
+      "companyName": "CTM-COM GmbH",
+      "officialUrl": "https://www.ctm-com.de/",
+      "roles": [
+        "SI",
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 4,
+        "evidenceReliability": 3
+      },
+      "score": 85,
+      "roleEvidence": "German telecommunications/IT system house providing network technology solutions.",
+      "productFitEvidence": "Copper, fiber, WLAN, point-to-point wireless, VPN and IPsec provide broad overlap.",
+      "cooperationEvidence": "System-house role implies solution design and delivery, though explicit BOM, purchase and installation steps are not described.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-8C9FFB6EE5",
+          "url": "https://www.ctm-com.de/it-netzwerk/netzwerktechnik/",
+          "excerpt": "Netzwerktechnik für IT und TK in Kupfer, Glasfaser, LWL, WLAN, Richtfunk, VPN, IPSec. Darmstadt, Dieburg, Frankfurt, Heidelberg, Odenwald, Rhein Main Neckar"
+        }
+      ],
+      "rationale": "Very strong technical fit with moderate path detail."
+    },
+    {
+      "rank": 8,
+      "companyName": "HANSA PROJEKT",
+      "officialUrl": "https://www.hansa-projekt.de/",
+      "roles": [
+        "SI"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 4,
+        "evidenceReliability": 3
+      },
+      "score": 85,
+      "roleEvidence": "German project company lists active network technology and management among its services.",
+      "productFitEvidence": "Switches, routers, firewalls, WLAN, VPN, directional wireless and network management align directly with Cudy.",
+      "cooperationEvidence": "Project/service positioning and active-network portfolio imply design and delivery influence, but individual project stages are not shown.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-9498BE0039",
+          "url": "https://www.hansa-projekt.de/leistungen-netzwerktechnik/",
+          "excerpt": "Aktive Netzwerktechnik, im LAN- und WAN- Bereich · Switches, Router, Firewall, Virenscanner, WLAN, VPN, Richtfunkverbindungen, Netzwerkmanagement und Netzfernüberwachung · Laser- und Funkübertragung · Fehleranalyse · Infrastrukturelle Netzwerkdokumentationssysteme ·"
+        }
+      ],
+      "rationale": "Excellent product breadth with a moderately evidenced SI path."
+    },
+    {
+      "rank": 9,
+      "companyName": "ZEBES AG",
+      "officialUrl": "https://www.zebes.de/",
+      "roles": [
+        "SI"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 4,
+        "evidenceReliability": 3
+      },
+      "score": 76,
+      "roleEvidence": "Develops tailored professional network concepts for German business customers.",
+      "productFitEvidence": "WAN, office connectivity and employee WLAN are materially relevant, with limited device detail.",
+      "cooperationEvidence": "Individual concept creation provides specification influence, while procurement and installation are not evidenced in the excerpt.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-5706820BF4",
+          "url": "https://www.zebes.de/de/leistungen/netzwerktechnik-br-ihr-netzwerk-schnell-sicher-zuverlaessig-und-bereit-fuer-jede-herausforderung.html",
+          "excerpt": "Egal ob Datenübertragung zwischen Standorten, stabile Verbindungen im Büro oder reibungsloser WLAN-Zugang für Ihre Mitarbeiter – ein zuverlässiges Netzwerk ist unerlässlich. Durch Professionelle Netzwerktechnik-Lösungen für Unternehmen bietet <strong>ZEBES AG</strong> individuelle Konzepte für WAN, ..."
+        }
+      ],
+      "rationale": "Good business-network SI candidate with moderate transaction-path depth."
+    },
+    {
+      "rank": 10,
+      "companyName": "INTERPORT REAL",
+      "officialUrl": "https://www.interportreal.de/",
+      "roles": [
+        "SI",
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 3,
+        "cooperationPath": 5,
+        "evidenceReliability": 3
+      },
+      "score": 74,
+      "roleEvidence": "German provider explicitly planning and installing individually optimized networks.",
+      "productFitEvidence": "Structured cabling, fiber, server rooms and data-center infrastructure are relevant but weighted toward passive infrastructure.",
+      "cooperationEvidence": "Planning, installation and complete infrastructure delivery provide strong project control.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-610770DFE4",
+          "url": "https://www.interportreal.de/netzwerke/",
+          "excerpt": "Netzwerklösungen: Strukturierte Verkabelung, Glasfasernetze, Serverräume, USV-Systeme, RZ-Ausstattung und Klimatisierung"
+        }
+      ],
+      "rationale": "Excellent project path with moderate direct overlap to Cudy active hardware."
+    }
+  ],
+  "rejectedItems": [
+    {
+      "title": "MiMann.net",
+      "url": "https://mimann.net/blog/business-wlan-einrichten-hardware-hersteller-und-installation/",
+      "reason": "Highly relevant article, but this excerpt does not establish that the company itself delivers customer projects."
+    },
+    {
+      "title": "Hagel IT-Services",
+      "url": "https://www.hagel-it.de/it-insights/netzwerkinstallation-fuer-kleine-unternehmen-schritt-fuer-schritt-anleitung",
+      "reason": "Detailed installation guide, but the excerpt does not directly establish company project responsibility."
+    },
+    {
+      "title": "IB-IT Cabling GmbH",
+      "url": "https://www.ib-it.eu/dc/en/index.php",
+      "reason": "Eligible installer with strong project management but passive-cabling emphasis places it below the selected ten."
+    },
+    {
+      "title": "SysTree AG, AllTec and Innovation Networks 2002",
+      "url": "https://www.it-in-germany.de/05011811/eng/Network%20installations%20(cabling,%20also%20structured)",
+      "reason": "Potential integrators discovered only in directory excerpts, with insufficient direct project evidence."
+    },
+    {
+      "title": "intersaar",
+      "url": "https://www.intersaar.de/geschaeftskunden/wlan-hotspot/wlan-und-campus-netze/gewerbe",
+      "reason": "Commercial WLAN solution evidence is relevant, but the excerpt mainly describes connecting existing installations rather than owning full deployment."
+    },
+    {
+      "title": "PHONEKOM",
+      "url": "https://phonekom.de/ratgeber/wlan/",
+      "reason": "Generic installation advice does not establish that PHONEKOM itself performs the work in this excerpt."
+    },
+    {
+      "title": "Kualitek, TELECO, The Installation Services, DACC Europe and iMS",
+      "url": "https://kualitek.com/en/structured-cabling/",
+      "reason": "Service capability may be relevant, but operation in Germany is not established."
+    },
+    {
+      "title": "O2, R&S/LANCOM and Synology pages",
+      "url": "https://www.o2business.de/internet-vernetzung/festnetz-internet/all-ip/wlan/",
+      "reason": "Carrier/manufacturer/product pages rather than candidate SI/Installer companies."
+    },
+    {
+      "title": "Forums, directories and list articles",
+      "url": "https://administrator.de/forum/projektantrag-fachinformatiker-systemintegration-wie-ist-eure-meinung-dazu-verbesserungen-294859.html",
+      "reason": "Not candidate companies with sufficient evidence."
+    }
+  ],
+  "scoring": {
+    "finalSlots": 10,
+    "filledSlots": 10,
+    "missingSlots": 0,
+    "slotScores": [
+      96,
+      92,
+      92,
+      92,
+      87,
+      85,
+      85,
+      85,
+      76,
+      74
+    ],
+    "channelScore": 86.4,
+    "meanLevelsAcrossTenSlots": {
+      "productUseCaseFit": 4.6,
+      "cooperationPath": 4.6,
+      "evidenceReliability": 3.2
+    }
+  },
+  "evaluator": {
+    "provider": "codex-agent",
+    "transport": "in-session-no-api",
+    "model": "runtime-managed-codex",
+    "systemIdentityHiddenDuringReview": true,
+    "providerIdentityHiddenDuringReview": true,
+    "apiScoresHiddenDuringReview": true,
+    "externalSearchUsed": false
+  }
+}

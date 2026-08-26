@@ -1,0 +1,382 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "runId": "2026-08-26-de-v1",
+  "systemId": "gemini-full",
+  "channelId": "project-services",
+  "reviewMode": "fixed-output",
+  "blindBatchId": "B-A3C4E10AB016",
+  "sourceDiscoveryArtifact": "artifacts/runs/2026-08-26-de-v1/discovery/gemini-full/project-services.json",
+  "selectedCandidates": [
+    {
+      "rank": 1,
+      "companyName": "Controlware GmbH",
+      "officialUrl": "https://www.controlware.de/",
+      "roles": [
+        "SI"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 2
+      },
+      "score": 88,
+      "roleEvidence": "Submitted as an independent German network/security system integrator and managed-service provider.",
+      "productFitEvidence": "WAN/LAN integration, wireless bridges and enterprise networking directly overlap Cudy.",
+      "cooperationEvidence": "Architecture, integration, installation and operation provide full project influence.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-01",
+          "url": "https://www.controlware.de/",
+          "excerpt": "Controlware is a premier independent German system integrator specializing in enterprise network architecture, WAN/LAN integration, wireless bridges, and cyber security installation."
+        }
+      ],
+      "rationale": "Excellent claimed SI fit; evidence is limited to the submitted summary and one official URL."
+    },
+    {
+      "rank": 2,
+      "companyName": "DATAGROUP SE",
+      "officialUrl": "https://www.datagroup.de/",
+      "roles": [
+        "SI",
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 5,
+        "evidenceReliability": 2
+      },
+      "score": 79,
+      "roleEvidence": "Submitted as a German integrator that designs, installs and manages IT network infrastructure.",
+      "productFitEvidence": "Campus networks and data-centre connectivity are strongly relevant, but specific device families are absent.",
+      "cooperationEvidence": "Design, installation and management form an end-to-end cooperation path.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-02",
+          "url": "https://www.datagroup.de/",
+          "excerpt": "DATAGROUP designs, installs, and manages full IT network infrastructure, campus networks, and data center connectivity projects for medium and large enterprises across Germany."
+        }
+      ],
+      "rationale": "Strong claimed project target with summary-level evidence only."
+    },
+    {
+      "rank": 3,
+      "companyName": "SPIE Deutschland & Zentraleuropa",
+      "officialUrl": "https://spie.de/",
+      "roles": [
+        "Installer",
+        "SI"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 5,
+        "evidenceReliability": 2
+      },
+      "score": 79,
+      "roleEvidence": "Submitted as a German technical-service provider for cabling, Wi-Fi and industrial-network installation.",
+      "productFitEvidence": "Wi-Fi deployment and networking are strongly relevant alongside building automation and passive cabling.",
+      "cooperationEvidence": "Turnkey physical deployment gives strong project execution and equipment influence.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-03",
+          "url": "https://spie.de/",
+          "excerpt": "SPIE is a major technical service provider performing physical network cabling, Wi-Fi deployment, industrial networking installation, and turnkey building automation."
+        }
+      ],
+      "rationale": "Strong claimed installer route with limited claim-level evidence."
+    },
+    {
+      "rank": 4,
+      "companyName": "telent GmbH",
+      "officialUrl": "https://www.telent.de/",
+      "roles": [
+        "SI",
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 2
+      },
+      "score": 88,
+      "roleEvidence": "Submitted as a German critical-infrastructure network integrator and installer.",
+      "productFitEvidence": "Industrial Ethernet/PoE switching and wireless bridges directly match material Cudy categories.",
+      "cooperationEvidence": "Planning, integration and installation establish full specification and deployment control.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-04",
+          "url": "https://www.telent.de/",
+          "excerpt": "telent plans, integrates, and installs critical networking infrastructure, PMR, industrial Ethernet/PoE switches, and wireless bridges for utilities, industrial, and transportation sectors."
+        }
+      ],
+      "rationale": "Excellent claimed technical and transaction fit with only summary-level support."
+    },
+    {
+      "rank": 5,
+      "companyName": "VINCI Energies Deutschland GmbH",
+      "officialUrl": "https://www.vinci-energies.de/",
+      "roles": [
+        "Installer",
+        "SI"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 5,
+        "evidenceReliability": 2
+      },
+      "score": 79,
+      "roleEvidence": "Submitted as a German integrator installing network and industrial-IoT infrastructure.",
+      "productFitEvidence": "Network infrastructure and equipment configuration are relevant, though the summary emphasizes cabling and industrial facilities.",
+      "cooperationEvidence": "Installation and configuration responsibility provide strong project leverage.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-05",
+          "url": "https://www.vinci-energies.de/",
+          "excerpt": "VINCI Energies implements network infrastructure, industrial IoT cabling, equipment installation, and configuration for industrial and commercial facilities throughout Germany."
+        }
+      ],
+      "rationale": "Strong claimed project path and good product fit with shallow evidence."
+    },
+    {
+      "rank": 6,
+      "companyName": "BFE Studio und Medien Systeme GmbH",
+      "officialUrl": "https://www.bfe.tv/",
+      "roles": [
+        "SI",
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 5,
+        "evidenceReliability": 2
+      },
+      "score": 79,
+      "roleEvidence": "Submitted as a German media/IP-network system integrator responsible for planning and deployment.",
+      "productFitEvidence": "High-performance IP infrastructure is relevant, although broadcast specialization narrows the fit.",
+      "cooperationEvidence": "Planning, installation and configuration create complete project influence.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-06",
+          "url": "https://www.bfe.tv/",
+          "excerpt": "BFE acts as a specialized system integrator responsible for planning, installing, and configuring high-performance IP and broadcast network infrastructure."
+        }
+      ],
+      "rationale": "Strong specialist SI path with good but narrower product relevance."
+    },
+    {
+      "rank": 7,
+      "companyName": "EQOS Energie Deutschland GmbH",
+      "officialUrl": "https://eqos-energie.com/",
+      "roles": [
+        "Installer",
+        "SI"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 3,
+        "cooperationPath": 5,
+        "evidenceReliability": 2
+      },
+      "score": 70,
+      "roleEvidence": "Submitted as a German telecommunications and physical-infrastructure installer.",
+      "productFitEvidence": "Outdoor wireless and mobile telecom are relevant, while fiber/cabling dominate the stated scope.",
+      "cooperationEvidence": "Infrastructure installation responsibility provides strong deployment control.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-07",
+          "url": "https://eqos-energie.com/",
+          "excerpt": "EQOS Energie specializes in physical infrastructure installation, mobile telecommunications, fiber optic cabling, and outdoor wireless deployment projects."
+        }
+      ],
+      "rationale": "Excellent project path with moderate direct overlap to Cudy active hardware."
+    },
+    {
+      "rank": 8,
+      "companyName": "KUPPER IT GmbH",
+      "officialUrl": "https://www.kupper-it.com/",
+      "roles": [
+        "SI",
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 2
+      },
+      "score": 88,
+      "roleEvidence": "Submitted as a German SMB/SOHO network integrator and installer.",
+      "productFitEvidence": "Network hardware, access points and structured networking directly match Cudy's target use cases.",
+      "cooperationEvidence": "Planning, deployment and configuration provide end-to-end project influence.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-08",
+          "url": "https://www.kupper-it.com/",
+          "excerpt": "KUPPER IT plans, deploys, and configures modern SMB/SOHO network hardware, access points, and structured cabling for regional business projects."
+        }
+      ],
+      "rationale": "Excellent claimed fit for Cudy's target segment, supported only by the submitted summary."
+    },
+    {
+      "rank": 9,
+      "companyName": "KUMAVISION AG",
+      "officialUrl": "https://kumavision.com/",
+      "roles": [
+        "SI"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 2,
+        "cooperationPath": 3,
+        "evidenceReliability": 2
+      },
+      "score": 47,
+      "roleEvidence": "Submitted as a mid-market business-technology and cloud-network integrator.",
+      "productFitEvidence": "Cloud network architecture is adjacent, but no routing, switching or WLAN deployment is evidenced.",
+      "cooperationEvidence": "End-to-end IT solution projects imply some specification influence, with no hardware transaction path shown.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-09",
+          "url": "https://kumavision.com/",
+          "excerpt": "KUMAVISION implements integrated business technology and cloud network architectures, delivering end-to-end IT solution projects for mid-market clients."
+        }
+      ],
+      "rationale": "Eligible SI claim but materially weaker Cudy hardware and cooperation fit."
+    },
+    {
+      "rank": 10,
+      "companyName": "GISA GmbH",
+      "officialUrl": "https://www.gisa.de/",
+      "roles": [
+        "SI"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 5,
+        "evidenceReliability": 2
+      },
+      "score": 79,
+      "roleEvidence": "Submitted as a German integrator of high-availability network, industrial IT and telecom systems.",
+      "productFitEvidence": "Network and telecom infrastructure are strongly relevant, though active product categories are not listed.",
+      "cooperationEvidence": "Planning, integration and operation establish an end-to-end project path.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-10",
+          "url": "https://www.gisa.de/",
+          "excerpt": "GISA plans, integrates, and operates high-availability network systems, industrial IT, and telecom infrastructure for public sector, utility, and commercial projects."
+        }
+      ],
+      "rationale": "Strong claimed SI with good product fit and summary-level evidence."
+    }
+  ],
+  "rejectedItems": [],
+  "scoring": {
+    "finalSlots": 10,
+    "filledSlots": 10,
+    "missingSlots": 0,
+    "slotScores": [
+      88,
+      79,
+      79,
+      88,
+      79,
+      79,
+      70,
+      88,
+      47,
+      79
+    ],
+    "channelScore": 77.6,
+    "meanLevelsAcrossTenSlots": {
+      "productUseCaseFit": 4,
+      "cooperationPath": 4.8,
+      "evidenceReliability": 2
+    }
+  },
+  "evaluator": {
+    "provider": "codex-agent",
+    "transport": "in-session-no-api",
+    "model": "runtime-managed-codex",
+    "systemIdentityHiddenDuringReview": true,
+    "providerIdentityHiddenDuringReview": true,
+    "apiScoresHiddenDuringReview": true,
+    "externalSearchUsed": false
+  }
+}

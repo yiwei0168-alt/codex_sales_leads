@@ -1,0 +1,381 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "runId": "2026-08-26-de-v1",
+  "systemId": "gemini-full",
+  "channelId": "b2b-resale",
+  "reviewMode": "fixed-output",
+  "blindBatchId": "B-CB22C4D6881B",
+  "sourceDiscoveryArtifact": "artifacts/runs/2026-08-26-de-v1/discovery/gemini-full/b2b-resale.json",
+  "selectedCandidates": [
+    {
+      "rank": 1,
+      "companyName": "Bechtle AG",
+      "officialUrl": "https://www.bechtle.com/",
+      "roles": [
+        "VAR",
+        "Reseller"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 2
+      },
+      "score": 88,
+      "roleEvidence": "Submitted as a German IT system house, direct B2B reseller and VAR.",
+      "productFitEvidence": "Enterprise/SMB networking hardware directly matches Cudy.",
+      "cooperationEvidence": "Business procurement, hardware supply and solution delivery establish a complete resale path.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-01",
+          "url": "https://www.bechtle.com/",
+          "excerpt": "Bechtle is Germany's largest IT system house and direct B2B reseller, providing enterprise and SMB business clients with networking hardware, procurement, and IT workspace solutions."
+        }
+      ],
+      "rationale": "Excellent claimed fit; support is limited to one official URL and the submitted summary."
+    },
+    {
+      "rank": 2,
+      "companyName": "CANCOM SE",
+      "officialUrl": "https://www.cancom.de/",
+      "roles": [
+        "VAR",
+        "Reseller"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 2
+      },
+      "score": 88,
+      "roleEvidence": "Submitted as a leading German VAR and direct B2B reseller.",
+      "productFitEvidence": "Enterprise network infrastructure and related hardware strongly overlap Cudy.",
+      "cooperationEvidence": "Direct resale plus IT services provide listing, recommendation and lifecycle influence.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-02",
+          "url": "https://www.cancom.de/",
+          "excerpt": "CANCOM is a leading digital transformation partner and VAR in Germany, reselling enterprise network infrastructure, cloud hardware, and IT services directly to commercial end customers."
+        }
+      ],
+      "rationale": "Excellent claimed VAR path with only summary-level evidence."
+    },
+    {
+      "rank": 3,
+      "companyName": "Computacenter AG & Co. oHG",
+      "officialUrl": "https://www.computacenter.com/",
+      "roles": [
+        "VAR",
+        "Reseller"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 5,
+        "evidenceReliability": 2
+      },
+      "score": 79,
+      "roleEvidence": "Submitted as a German technology/network-infrastructure reseller serving corporate and public clients.",
+      "productFitEvidence": "Network infrastructure is strongly relevant, but specific hardware families are not named.",
+      "cooperationEvidence": "Direct supply to end customers provides a clear VAR transaction path.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-03",
+          "url": "https://www.computacenter.com/",
+          "excerpt": "Computacenter is a major independent technology and network infrastructure reseller supplying corporate and public sector clients throughout Germany."
+        }
+      ],
+      "rationale": "Strong claimed path and good product fit with shallow evidence."
+    },
+    {
+      "rank": 4,
+      "companyName": "SVA System Vertrieb Alexander GmbH",
+      "officialUrl": "https://www.sva.de/",
+      "roles": [
+        "VAR"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 2
+      },
+      "score": 88,
+      "roleEvidence": "Submitted as a German system integrator and VAR reselling to business customers.",
+      "productFitEvidence": "Enterprise networking, data-centre and security infrastructure strongly align with Cudy.",
+      "cooperationEvidence": "Integration plus direct resale create strong recommendation, procurement and deployment influence.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-04",
+          "url": "https://www.sva.de/",
+          "excerpt": "SVA is one of Germany's leading IT system integrators and VARs, reselling enterprise networking, data center, and security infrastructure to business customers."
+        }
+      ],
+      "rationale": "Excellent claimed B2B VAR fit with summary-level support."
+    },
+    {
+      "rank": 5,
+      "companyName": "netgo GmbH",
+      "officialUrl": "https://www.netgo.de/",
+      "roles": [
+        "VAR"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 4,
+        "evidenceReliability": 2
+      },
+      "score": 81,
+      "roleEvidence": "Submitted as a German system house serving SOHO, SMB and enterprise clients.",
+      "productFitEvidence": "Complete networking and workplace hardware strongly match Cudy's target segment.",
+      "cooperationEvidence": "Complete-solution delivery indicates hardware influence, but explicit procurement/resale mechanics are not detailed.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-05",
+          "url": "https://www.netgo.de/",
+          "excerpt": "netgo is a fast-growing nationwide German IT system house providing SOHO, SMB, and enterprise clients with complete networking, cloud, and modern workplace hardware."
+        }
+      ],
+      "rationale": "Excellent segment and product fit with a strong but incomplete claimed path."
+    },
+    {
+      "rank": 6,
+      "companyName": "ACP IT Solutions GmbH",
+      "officialUrl": "https://www.acp.de/",
+      "roles": [
+        "VAR",
+        "Reseller"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 2
+      },
+      "score": 88,
+      "roleEvidence": "Submitted as a German system house and VAR reselling hardware to mid-market customers.",
+      "productFitEvidence": "Network and campus infrastructure directly match professional Cudy applications.",
+      "cooperationEvidence": "Complete solutions and hardware resale provide selection, purchasing and implementation influence.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-06",
+          "url": "https://www.acp.de/",
+          "excerpt": "ACP provides complete network, campus, and workplace IT infrastructure solutions and hardware reselling for mid-market business clients across Germany."
+        }
+      ],
+      "rationale": "Excellent claimed VAR route with limited evidence detail."
+    },
+    {
+      "rank": 7,
+      "companyName": "SoftwareOne Deutschland GmbH",
+      "officialUrl": "https://www.softwareone.com/",
+      "roles": [
+        "VAR"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 2,
+        "cooperationPath": 4,
+        "evidenceReliability": 2
+      },
+      "score": 54,
+      "roleEvidence": "Submitted as a German direct B2B solutions provider offering IT procurement.",
+      "productFitEvidence": "Cloud and edge infrastructure are adjacent, but no routers, switches or WLAN products are specified.",
+      "cooperationEvidence": "Corporate procurement and infrastructure resale establish a route, although hardware mechanics are broad.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-07",
+          "url": "https://www.softwareone.com/",
+          "excerpt": "SoftwareOne offers comprehensive IT procurement, cloud, and edge infrastructure reselling services directly to corporate end users in Germany."
+        }
+      ],
+      "rationale": "Eligible claimed VAR but weakly aligned with Cudy's active networking categories."
+    },
+    {
+      "rank": 8,
+      "companyName": "Axians Deutschland",
+      "officialUrl": "https://www.axians.de/",
+      "roles": [
+        "VAR",
+        "Reseller"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 5,
+        "evidenceReliability": 2
+      },
+      "score": 79,
+      "roleEvidence": "Submitted as a specialized German ICT VAR selling directly to enterprise/public customers.",
+      "productFitEvidence": "Networking and telecom infrastructure are strongly relevant without detailed device categories.",
+      "cooperationEvidence": "Direct solution resale and delivery provide a strong customer transaction path.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-08",
+          "url": "https://www.axians.de/",
+          "excerpt": "Axians delivers ICT networking, telecom, and cloud infrastructure directly to enterprise and public sector customers as a specialized VAR and solutions reseller."
+        }
+      ],
+      "rationale": "Strong claimed VAR with good product fit and summary-level evidence."
+    },
+    {
+      "rank": 9,
+      "companyName": "Concat AG",
+      "officialUrl": "https://www.concat.de/",
+      "roles": [
+        "VAR",
+        "Reseller"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 5,
+        "evidenceReliability": 2
+      },
+      "score": 79,
+      "roleEvidence": "Submitted as a German system house and VAR designing/reselling business IT infrastructure.",
+      "productFitEvidence": "Networking hardware is materially relevant beside storage and broader infrastructure.",
+      "cooperationEvidence": "Tailored design and direct resale provide clear specification and purchasing influence.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-09",
+          "url": "https://www.concat.de/",
+          "excerpt": "Concat AG designs and resells tailored IT infrastructure, storage, and networking hardware solutions directly to business end clients across Germany."
+        }
+      ],
+      "rationale": "Strong claimed cooperation route and good product fit with shallow evidence."
+    },
+    {
+      "rank": 10,
+      "companyName": "Skaylink GmbH",
+      "officialUrl": "https://www.skaylink.com/",
+      "roles": [
+        "VAR"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 3,
+        "cooperationPath": 4,
+        "evidenceReliability": 2
+      },
+      "score": 63,
+      "roleEvidence": "Submitted as a German cloud and IT-infrastructure VAR serving mid-sized businesses.",
+      "productFitEvidence": "Business network infrastructure and connectivity are relevant, but active hardware categories are not specified.",
+      "cooperationEvidence": "Managed hardware resale gives a credible direct route, with limited purchasing detail.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-10",
+          "url": "https://www.skaylink.com/",
+          "excerpt": "Skaylink delivers business network infrastructure, cloud connectivity, and managed hardware reselling to mid-sized commercial organizations in Germany."
+        }
+      ],
+      "rationale": "Eligible claimed VAR with moderate direct Cudy-product alignment."
+    }
+  ],
+  "rejectedItems": [],
+  "scoring": {
+    "finalSlots": 10,
+    "filledSlots": 10,
+    "missingSlots": 0,
+    "slotScores": [
+      88,
+      88,
+      79,
+      88,
+      81,
+      88,
+      54,
+      79,
+      79,
+      63
+    ],
+    "channelScore": 78.7,
+    "meanLevelsAcrossTenSlots": {
+      "productUseCaseFit": 4.2,
+      "cooperationPath": 4.7,
+      "evidenceReliability": 2
+    }
+  },
+  "evaluator": {
+    "provider": "codex-agent",
+    "transport": "in-session-no-api",
+    "model": "runtime-managed-codex",
+    "systemIdentityHiddenDuringReview": true,
+    "providerIdentityHiddenDuringReview": true,
+    "apiScoresHiddenDuringReview": true,
+    "externalSearchUsed": false
+  }
+}

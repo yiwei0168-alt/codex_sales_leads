@@ -1,0 +1,451 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "runId": "2026-08-26-de-v1",
+  "systemId": "product-tavily",
+  "channelId": "tier1-distribution",
+  "reviewMode": "discovery-pool",
+  "blindBatchId": "B-09BE3EAE3F83",
+  "sourceDiscoveryArtifact": "artifacts/runs/2026-08-26-de-v1/discovery/product-tavily/tier1-distribution.json",
+  "selectedCandidates": [
+    {
+      "rank": 1,
+      "companyName": "ALLNET GmbH",
+      "officialUrl": "https://www.allnet.de/",
+      "roles": [
+        "VAD"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 4
+      },
+      "score": 96,
+      "roleEvidence": "TP-Link explicitly names ALLNET as its German VAD, while ALLNET's distribution site lists networking vendors.",
+      "productFitEvidence": "Enterprise WLAN, access points, bridges, switches, routers and surveillance directly overlap Cudy.",
+      "cooperationEvidence": "Vendor onboarding, trained sales/technical resources and system-house support establish direct procurement and channel enablement.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-EB0E2FAC7A",
+          "url": "https://www.allnet.de/de/allnet-brand",
+          "excerpt": "WLAN Wireless Controller & AP Wireless Router Access Points & Bridges. Hier finden zertifizierte Fachhändler, Online Shops und Distributoren. innovative IT-"
+        },
+        {
+          "evidenceEntryId": "E-5C98B3B06E",
+          "url": "https://distribution.allnet.de/distribution-vendors.html?L=12",
+          "excerpt": "RUCKUS offers products for switches, storage networks, routers, software networks, network ... Cambium Networks. Cambium Networks provides wireless connectivity"
+        },
+        {
+          "evidenceEntryId": "E-255ACB6AA1",
+          "url": "https://www.tp-link.com/de/press/news/20014",
+          "excerpt": "Zurück For Home For Business Deutschland / Deutsch # TP-Link gibt Allnet als neuen Value Added Distributor bekannt TP-Link, Spezialist für Smart-Home- und Netzwerkinfrastruktur-Lösungen, gibt die Zusammenarbeit mit Distributor Allnet bekannt. Das in Germering ansässige Unternehmen konzentriert sich dabei auf ein umfassendes Produktportfolio zukunftsorientierter Netzwerk-, Überwachungs- und Kommunikationslösungen. Seit dem [redacted-phone] vertreibt Allnet das TP-Link Enterprise-Portfolio in Deutschland als Value Added Distributor (VAD). Dazu stellt Allnet speziell geschulte Vertriebs- und Technikressourcen bereit und ist somit der ideale Ansprechpartner für Systemhäuser. Dank seiner Expertise kann der Distributor so selbst beratungsintensive Netzwerk-Infrastruktur-Projekte begleiten. [...] Zubehör für Saugroboter Video-Türklingel Smart Switches WLAN-Steckdosen Glühbirne & LED-Streifen Smart Sensors Smartes Thermostat Smart Hub Tapo Store Matter Smart Actions 2.0 Geschäftskunden Zurück Omada Was ist Omada? Fusion Gateways WiFi Switches Gateways Controller Zubehör Alle Omada Produkte VIGI Was ist VIGI? Kameras Videorekorder Solar Power System Zubehör Software Service Alle Produkte Om"
+        }
+      ],
+      "rationale": "The packet provides unusually direct official and independently corroborated evidence for both VAD role and core networking fit."
+    },
+    {
+      "rank": 2,
+      "companyName": "sysob IT-Distribution",
+      "officialUrl": "https://www.sysob.com/",
+      "roles": [
+        "VAD"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 5,
+        "evidenceReliability": 5
+      },
+      "score": 91,
+      "roleEvidence": "Official, vendor and trade-publication evidence all identify sysob as a German VAD for the specialist trade.",
+      "productFitEvidence": "Wireless LAN and networking are material parts of a broader security/SBC portfolio.",
+      "cooperationEvidence": "Long-running VAD supply, manufacturer agreements, specialist-trade support and technical project assistance create multiple verified levers.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-A65676E83C",
+          "url": "https://www.sysob.com/",
+          "excerpt": "sysob – Ihr Distributor für Security, Wireless LAN und Serverbased Computing. Wir sind seit 20 Jahren Ihr VAD mit innovativen Lösungen für den Fachhandel."
+        },
+        {
+          "evidenceEntryId": "E-04BD7D4066",
+          "url": "https://www.channelpartner.de/article/3903078/einkaufsquellen-fuer-reseller-value-add-distribution.html",
+          "excerpt": "| | | --- | | Sysob IT-Distribution GmbH & Co. KG | | | Adresse | Kirchplatz 1 93489 Schorndorf | | URL | www.sysob.com | | E-Mail | (/cdn-cgi/l/email-protection#2a4b486a[redacted-phone]) | | Telefon | [redacted-phone] | | Tätigkeits-, Produkt- und Lösungsschwerpunkte | IT-Security-, WLAN- und SBC-Produkte, Service- u. Support-Konzepte, technische Unterstützung bei Installationen und Projekten vor Ort | [...] Daher finden sich in der Kategorie “Value Add Distribution” vor allem Grossisten, die sich auf komplexe IT-Infrastrukturen, Security, Cloud Services und Angebote für Managed Service Provider spezialisiert haben. ## Value Add Distributoren | | | --- | | 3KV GmbH | | | Adresse | Fürstenrieder Str. [redacted-phone] München | | URL | www.3KV.de | | E-Mail | (/cdn-cgi/l/email-protection#98eefdeaeceaf1fdfad8abd3ceb6fcfd) | | Telefon | [redacted-phone] | | Tätigkeits-, Produkt- und Lösungsschwerpunkte | Aktive- und passive Infrastruktur (Verkabelungssysteme und Netzwerklösungen für Gebäude und Rechenzentren), SD-WAN | [...] | | | --- | | Teamtrade IT GmbH | | | Adresse | Molkereistr. 45 47589 Uedem | | URL | teamtrade-it.de | | E-Mail | (/cdn-cgi/l/email-protection#a8c1c6cec7e8dccdc9"
+        },
+        {
+          "evidenceEntryId": "E-0DD7E3DE3A",
+          "url": "https://www.al-enterprise.com/de-de/unternehmen/neuigkeiten/zusammenarbeit-mit-ale-und-sysob",
+          "excerpt": "Alcatel-Lucent Enterprise und der renommierte Value Added Distributor für IT-Sicherheit sysob sind neue Vertragspartner. ... LAN und WLAN Produkte"
+        },
+        {
+          "evidenceEntryId": "E-E63DDEA46B",
+          "url": "https://www.heise.de/hintergrund/Value-Add-Distributor-Sysob-gibt-WLAN-Hersteller-Meru-Anschubhilfe-1187065.html",
+          "excerpt": "Mit Hilfe von Sysob will der Wireless-LAN-Spezialist Meru in Deutschland Fuß fassen. Das Servicekonzept des VAD soll auch kleineren"
+        }
+      ],
+      "rationale": "Best-supported channel path in the packet, with strong but not all-portfolio Cudy product overlap."
+    },
+    {
+      "rank": 3,
+      "companyName": "4Networks IT-Distribution",
+      "officialUrl": "https://www.4networks.de/",
+      "roles": [
+        "VAD"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 4,
+        "evidenceReliability": 3
+      },
+      "score": 85,
+      "roleEvidence": "Official page explicitly presents the business as a value-add IT distributor.",
+      "productFitEvidence": "Network, WLAN, surveillance and security solutions strongly match Cudy's professional portfolio.",
+      "cooperationEvidence": "Manufacturer partnerships, product supply and tailored advice show a practical channel path, but downstream mechanics are not detailed.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-713F7B9005",
+          "url": "https://www.4networks.de/",
+          "excerpt": "Vertrauen Sie auf unsere Erfahrung und unsere starke Partnerschaft, um Ihre Geschäftsziele erfolgreich zu erreichen. Als Value Add Distributor stehen wir Ihnen nicht nur mit Produkten zur Seite, sondern bieten auch einen echten Mehrwert durch individuelle Beratung und Lösungen. Thilko Cullmann Thilko Cullmann CEO & Founder Tel.: [redacted-phone] [redacted-email] Bernd Eisenhauer Bernd Eisenhauer Head of Sales Tel.: [redacted-phone] [redacted-email] Jamal Mehdi Jamal Mehdi Sales Engineer Tel.: [redacted-phone] [redacted-email] Andreas Galke Andreas Galke Sales Manager Tel.: [redacted-phone] [redacted-email] Unsere Herstellerpartner [...] Ihr zuverlässiger Partner in der IT-Distribution Wir sind ein führender Value Add Distributor, der sich durch Kundennähe, Zuverlässigkeit und Schnelligkeit auszeichnet. Mit langjähriger Erfahrung in der Branche bieten wir maßgeschneiderte Lösungen, die den spezifischen Bedürfnissen unserer Partner gerecht werden. Unser Fokus liegt auf einer engen Zusammenarbeit mit unseren Kunden, um optimale Mehrwerte zu schaffen und deren Geschäftserfolg zu fördern. Dank unserer umfassenden Expertise und einem zuverlässigen Netzwerk sind wir in der Lage, Produkte"
+        }
+      ],
+      "rationale": "Excellent stated fit with credible VAD capability supported by one direct page."
+    },
+    {
+      "rank": 4,
+      "companyName": "Router-Switch.com",
+      "officialUrl": "https://www.router-switch.com/de",
+      "roles": [
+        "Distributor"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 4,
+        "evidenceReliability": 2
+      },
+      "score": 81,
+      "roleEvidence": "German-localized official page describes a global IT distributor serving businesses with worldwide delivery.",
+      "productFitEvidence": "Cisco, Huawei and HPE network equipment directly overlaps routers, switches and infrastructure use cases.",
+      "cooperationEvidence": "Direct distribution, quotations and worldwide delivery provide a transaction path into Germany, though no German legal/warehouse presence is evidenced.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-F594468194",
+          "url": "https://www.router-switch.com/de",
+          "excerpt": "Router-Switch.com bietet seit 2002 preisgünstige Netzwerkausrüstung und IKT-Lösungen von Cisco, Huawei und HPE mit Expertensupport und weltweitem Versand."
+        }
+      ],
+      "rationale": "Very strong product and transaction fit, discounted for thin evidence of local German operations."
+    },
+    {
+      "rank": 5,
+      "companyName": "STORDIS GmbH",
+      "officialUrl": "https://stordis.com/",
+      "roles": [
+        "VAD"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 4,
+        "evidenceReliability": 3
+      },
+      "score": 76,
+      "roleEvidence": "German company delivering open-networking hardware, software and services to partners with training and certification.",
+      "productFitEvidence": "Open networking switches, routers and support are directly relevant, but focused toward data-center/open networking.",
+      "cooperationEvidence": "Partner delivery, quote workflow, training, warranty and engineering support provide several value-add channel mechanisms.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-79602B3AAB",
+          "url": "https://stordis.com/",
+          "excerpt": "Learn how we work ### 24/7 Support Your network doesn't sleep, and neither do we. From same-day hardware advance exchange to NOS troubleshooting and routing escalations — the same engineers who designed your stack are the ones who answer when you call. No call centers. No tier-one gatekeepers. Multivendor expertise, real warranty coverage. Explore support options ### Partnership & Training Open networking hardware, software, and services delivered to partners across Europe and beyond — with the training, certification, and hands-on labs your team needs to deploy and run it confidently. Partner with us ## Support that goes beyond the warranty Manufacturer warranties make you wait. Open2Support doesn’t — one contract covers your entire stack. Hardware, software, multivendor. [...] TestSONiC Download GNS3 VM TestOcNOS® Download VM AI ToolSmartCLAI - Configure SONiC Switch HotEnterprise SONiC Support EbookSONiC for AI Networks EbookValidated Network Design Download the Validated Reference Design eBook Now Download the STORDIS AI Networks eBook Now 24/7 Network Hardware and Software Support STORDIS GmbH Network People · Open By Design All Products Search Quote Icon0 X No products in the"
+        }
+      ],
+      "rationale": "Credible specialist VAD profile with strong networking fit and one detailed official source."
+    },
+    {
+      "rank": 6,
+      "companyName": "bytec Bodry Technology GmbH",
+      "officialUrl": "https://www.bytec.de/",
+      "roles": [
+        "VAD"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 3,
+        "cooperationPath": 5,
+        "evidenceReliability": 3
+      },
+      "score": 74,
+      "roleEvidence": "Official page describes a German specialist IT distributor serving B2B resellers and system houses.",
+      "productFitEvidence": "IT infrastructure and data-center solutions are materially relevant, although direct WLAN/router/switch detail is limited in the excerpt.",
+      "cooperationEvidence": "System-house sales enablement, project support from planning through implementation and value-added services show an excellent channel path.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-F796EBEB96",
+          "url": "https://www.bytec.de/top-it-distributor-deutschland-fakten",
+          "excerpt": "bytec hat sich als einer der führenden IT-Distributoren für IT-Infrastruktur und Datacenter-Technologien im B2B-Reseller-Bereich etabliert und konkurriert erfolgreich mit anderen großen Akteuren. Das IT-Spezialdistributionsunternehmen unterstützt Systemhäuser bei der Vermarktung komplexer Infrastrukturlösungen und zeichnet sich besonders durch eine ganzheitliche Projektbetreuung von der Planung bis zur Umsetzung aus, kombiniert mit hochwertigen Serviceleistungen. Dabei setzt bytec sowohl auf maßgeschneiderte Lösungen für Datacenter und IT-Infrastruktur als auch auf leistungsstarke Standardprodukte – und bietet so die perfekte Balance zwischen Flexibilität und Effizienz. bytec setzt Maßstäbe in der IT-Distribution, indem es passgenaue Lösungen liefert, die den Mittelstand gezielt stärken [...] ### bytec – Vorreiter in der IT-Distribution mit innovativen Lösungen und Marktkompetenz bytec hat sich in der IT-Distribution als Vorreiter und Innovationstreiber etabliert. Das Unternehmen zeichnet sich durch eine Kombination aus breiter Angebotspalette und tiefgehendem technischem Know-how aus, was als klarer Wettbewerbsvorteil gilt. Im Reseller-Umfeld wird bytec daher nicht nur als klassis"
+        }
+      ],
+      "rationale": "Outstanding cooperation route with only moderate direct evidence of Cudy-category breadth."
+    },
+    {
+      "rank": 7,
+      "companyName": "3KV GmbH",
+      "officialUrl": "https://www.3kv.de/",
+      "roles": [
+        "VAD"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 4,
+        "evidenceReliability": 2
+      },
+      "score": 72,
+      "roleEvidence": "Trade publication lists the Munich company under Value Add Distributors.",
+      "productFitEvidence": "Active/passive infrastructure, building/data-center networking and SD-WAN materially overlap Cudy use cases.",
+      "cooperationEvidence": "VAD classification and infrastructure solution focus imply reseller supply and technical influence, but only one third-party excerpt is supplied.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-04BD7D4066",
+          "url": "https://www.channelpartner.de/article/3903078/einkaufsquellen-fuer-reseller-value-add-distribution.html",
+          "excerpt": "| | | --- | | Sysob IT-Distribution GmbH & Co. KG | | | Adresse | Kirchplatz 1 93489 Schorndorf | | URL | www.sysob.com | | E-Mail | (/cdn-cgi/l/email-protection#2a4b486a[redacted-phone]) | | Telefon | [redacted-phone] | | Tätigkeits-, Produkt- und Lösungsschwerpunkte | IT-Security-, WLAN- und SBC-Produkte, Service- u. Support-Konzepte, technische Unterstützung bei Installationen und Projekten vor Ort | [...] Daher finden sich in der Kategorie “Value Add Distribution” vor allem Grossisten, die sich auf komplexe IT-Infrastrukturen, Security, Cloud Services und Angebote für Managed Service Provider spezialisiert haben. ## Value Add Distributoren | | | --- | | 3KV GmbH | | | Adresse | Fürstenrieder Str. [redacted-phone] München | | URL | www.3KV.de | | E-Mail | (/cdn-cgi/l/email-protection#98eefdeaeceaf1fdfad8abd3ceb6fcfd) | | Telefon | [redacted-phone] | | Tätigkeits-, Produkt- und Lösungsschwerpunkte | Aktive- und passive Infrastruktur (Verkabelungssysteme und Netzwerklösungen für Gebäude und Rechenzentren), SD-WAN | [...] | | | --- | | Teamtrade IT GmbH | | | Adresse | Molkereistr. 45 47589 Uedem | | URL | teamtrade-it.de | | E-Mail | (/cdn-cgi/l/email-protection#a8c1c6cec7e8dccdc9"
+        }
+      ],
+      "rationale": "Strong fit and plausible channel path with limited evidence depth."
+    },
+    {
+      "rank": 8,
+      "companyName": "wHoffice.de",
+      "officialUrl": "https://www.whoffice.de/",
+      "roles": [
+        "Distributor"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 4,
+        "evidenceReliability": 2
+      },
+      "score": 72,
+      "roleEvidence": "German wholesale page markets networking switches specifically to specialist dealers and B2B partners.",
+      "productFitEvidence": "Switches from major networking brands directly overlap Cudy's switching line.",
+      "cooperationEvidence": "Wholesale ordering for dealers provides a direct transactional path, although company identity and broader distribution services are thinly documented.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-B467AD0CB6",
+          "url": "https://www.whoffice.de/gruppe,whoffice,ru,seite.4/produkte,2800000,2800051,Netwerk-switch?pSprache=de",
+          "excerpt": "Effiziente Switches der Marken NETGEAR, TP-LINK, ZyXEL, D-Link und Ubiquiti für Fachhändler und B2B Partner. Bestellen Sie jetzt online!"
+        }
+      ],
+      "rationale": "Valid but narrowly evidenced networking wholesaler."
+    },
+    {
+      "rank": 9,
+      "companyName": "m2m Germany GmbH",
+      "officialUrl": "https://www.m2mgermany.de/",
+      "roles": [
+        "VAD"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 3,
+        "cooperationPath": 4,
+        "evidenceReliability": 3
+      },
+      "score": 67,
+      "roleEvidence": "Official German page explicitly offers value-added distribution and works with wireless-component manufacturers.",
+      "productFitEvidence": "Wi-Fi, cellular/IoT modules, industrial routers and wireless solutions are relevant but more component/IoT-focused than Cudy's full line.",
+      "cooperationEvidence": "Design review, prototyping, firmware, certification support and manufacturer relationships provide material value-add procurement influence.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-96F4693C7F",
+          "url": "https://www.m2mgermany.de/value-added-distribution",
+          "excerpt": "Es sind keine Floskeln, wenn wir davon sprechen, dass wir Ihnen nicht nur einzelne Komponenten liefern, sondern dass wir Sie begleiten von der ersten Idee über die gesamte Wertschöpfungskette bis zum fertigen Produkt. Dabei übernehmen wir beispielsweise auch ein Design Review Ihres eigenen Layouts, entwickeln mit Ihnen einen Prototypen und die entsprechende Firmware oder übernehmen die Micro-Controller-Programmierung sowie die Programmierung von etwaigen Cloud-Konnektoren. Wir unterstützen Sie auch aktiv beim Thema Zertifizierung und sprechen auf Wunsch Empfehlungen zu geeigneten Providern, Cloudanbietern oder sonstigem aus. Unser gelebtes Know-how macht uns zu einem zuverlässigen und kompetenten Partner, ganz im Sinne von: „we make your business wireless“. [...] Sie sind auf der Suche nach einer passenden Lösung oder brauchen einen Partner, der an Ihrer Seite ist? Dann rufen Sie uns an unter: [redacted-phone] oder nehmen via Mail Kontakt mit uns auf. Kontaktieren Sie uns m2m Germany GmbH StandortAm Kappengraben 18 D-61273 Wehrheim Kontakt Tel. [redacted-phone] Fax. [redacted-phone] E-Mail [redacted-email] Folgen Sie uns © 2026 m2m Germany GmbH [...] Darüber hinaus bietet ein guter"
+        },
+        {
+          "evidenceEntryId": "E-542F1C64F1",
+          "url": "https://www.m2mgermany.de/en/our-partners",
+          "excerpt": "m2m Germany # Our partners m2m Germany has a valuable strategic partner network. This includes manufacturers of wireless technologies but also mobile network operators (MNO's), system houses, software specialists & IoT platform providers as well as certification service providers. Our partner network continues to grow; flexibility in component selection is very important to us, because a suitable customer solution is our top priority. Laird Connectivity/ezurio specializes in LoRaWAN - from standalone sensors to IoT end-2-end networks Owasys, based in Bilbao/Spain, has been developing high-performance Linux telematics platforms since 2002. AcSiP is a specialist in LoRa, WiFi and NB-IoT SIP modules with the smallest dimensions. [...] m2m Germany is a member of the Design Network. We help you to integrate Silicon Labs components into your design. As a qualified Telekom partner, we also offer certified solutions for Telekom Cloud-of-Things. Fibocom Wireless INC, manufacturer of wireless modules and provider of M2M communication solutions. HUAWEI - the world's leading provider of information technology and telecommunications solutions. Sparklan is a global provider of wireless networkin"
+        }
+      ],
+      "rationale": "Clear VAD capability with a specialized wireless/IoT rather than broad channel-networking fit."
+    },
+    {
+      "rank": 10,
+      "companyName": "Exertis Connect GmbH",
+      "officialUrl": null,
+      "roles": [
+        "Distributor"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 2,
+        "cooperationPath": 4,
+        "evidenceReliability": 2
+      },
+      "score": 54,
+      "roleEvidence": "German supplier-account guide identifies Exertis Connect as a European distributor for cable and network technology.",
+      "productFitEvidence": "Network components are relevant, but evidence emphasizes cabling, components and peripherals rather than active Cudy equipment.",
+      "cooperationEvidence": "Large component-distribution catalogue implies a direct listing and purchasing path; details are only third-party evidence.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-FBA0F62595",
+          "url": "https://guide.itscope.com/kbtopic/lieferantenkonten",
+          "excerpt": "1 Artikel ### etree etree GmbH ist Systemhaus und Value-Added Distributor im SMB-Bereich der ITK-Branche. 1 Artikel ### everIT | directdeal.me Distributor für Software, Infrastruktur und Cloud-Services 1 Artikel ### exertis Connect Die exertis Connect GmbH ist Spezialist für Kabel-und Netzwerktechnik sowie Distributor für mehr als 10.000 Komponenten- und Peripherieprodukte in Europa. 1 Artikel ### Exertis Pro AV Die Exertis Pro AV ist Distributor und Partner für AV-Medientechnik in Europa, mit dem Schwerpunkt auf den Bereich Computer und Netzwerk. 1 Artikel ### EXTRA Computer / exone exone entwickelt, produziert und liefert seit über 30 Jahren PC, Server und IT für Unternehmen in Deutschland 1 Artikel ### FEGA & Schmitt Elektrogroßhandel [...] 1 Artikel ### SOS Software Service Die SOS Software Service GmbH ist ein Distributor spezialisiert auf Software, Softwarebeschaffung und Lizenzberatung. 1 Artikel ### Supplies24 Führender Lieferant im Bereich Tinten & Toner auf dem europäischen Markt 1 Artikel ### SYNAXON Deutschland / Österreich Die SYNAXON ist ein Value Added Distributor mit einer großen Anzahl an Produkten, Herstellern und Partnern. 1 Artikel ### sysob Die sysob IT-Distrib"
+        }
+      ],
+      "rationale": "Qualifying distributor with weak direct active-network product overlap."
+    }
+  ],
+  "rejectedItems": [
+    {
+      "title": "EPS Global",
+      "url": "https://www.epsglobal.com/manufacturers/edgecore",
+      "reason": "Worldwide Edgecore distribution and product fit are clear, but the packet does not establish operation in Germany."
+    },
+    {
+      "title": "JACOB Elektronik",
+      "url": "https://www.jacob.de/netzwerk",
+      "reason": "Product listing supports B2B resale, not supply to a downstream channel."
+    },
+    {
+      "title": "OMG.DE GmbH",
+      "url": "https://www.omg.de/netzwerk/switche-router",
+      "reason": "Online reseller/system integrator; wrong channel."
+    },
+    {
+      "title": "Nomios Germany",
+      "url": "https://www.nomios.de/en/network/enterprise-networking-wireless",
+      "reason": "Evidence supports VAR/SI delivery to final customers, not downstream distribution."
+    },
+    {
+      "title": "BaryTech",
+      "url": "https://barytech.com/cisco-partner",
+      "reason": "IT infrastructure service/partner evidence does not establish Distributor/VAD status."
+    },
+    {
+      "title": "Intellinet Network Solutions",
+      "url": "https://intellinetnetwork.de/",
+      "reason": "Networking product brand/page with no qualifying channel-distributor evidence."
+    },
+    {
+      "title": "LevelOne",
+      "url": "https://www.level1.com/level1_en",
+      "reason": "Manufacturer/product brand evidence, not a German Distributor/VAD candidate."
+    },
+    {
+      "title": "WLW and GlobalSpec directory pages",
+      "url": "https://www.wlw.de/de/suche/switches-fuer-netzwerke",
+      "reason": "Directories are not candidate companies; named suppliers lack enough individual evidence in this packet."
+    },
+    {
+      "title": "Generic Juniper/TP-Link partner pages",
+      "url": "https://www.juniper.net/de/de/partners.html",
+      "reason": "Generic programs without a resolvable candidate company cannot fill a slot."
+    }
+  ],
+  "scoring": {
+    "finalSlots": 10,
+    "filledSlots": 10,
+    "missingSlots": 0,
+    "slotScores": [
+      96,
+      91,
+      85,
+      81,
+      76,
+      74,
+      72,
+      72,
+      67,
+      54
+    ],
+    "channelScore": 76.8,
+    "meanLevelsAcrossTenSlots": {
+      "productUseCaseFit": 3.9,
+      "cooperationPath": 4.3,
+      "evidenceReliability": 2.9
+    }
+  },
+  "evaluator": {
+    "provider": "codex-agent",
+    "transport": "in-session-no-api",
+    "model": "runtime-managed-codex",
+    "systemIdentityHiddenDuringReview": true,
+    "providerIdentityHiddenDuringReview": true,
+    "apiScoresHiddenDuringReview": true,
+    "externalSearchUsed": false
+  }
+}

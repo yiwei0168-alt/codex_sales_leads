@@ -91,10 +91,23 @@ function deterministicOrder(seed: string, value: string): string {
   return digest(`${seed}:${value}`);
 }
 
+function assertNoHiddenIdentityFields(value: unknown, location = "packet"): void {
+  const forbidden = new Set(["systemId", "provider", "providerId", "geminiMode", "rank", "modelScore", "score", "occurrenceCount", "cudyRelationship"]);
+  if (Array.isArray(value)) {
+    value.forEach((item, index) => assertNoHiddenIdentityFields(item, `${location}[${index}]`));
+    return;
+  }
+  if (!value || typeof value !== "object") return;
+  for (const [key, child] of Object.entries(value as Record<string, unknown>)) {
+    if (forbidden.has(key)) throw new Error(`Blind audit packet leaked hidden field ${location}.${key}`);
+    assertNoHiddenIdentityFields(child, `${location}.${key}`);
+  }
+}
+
 const occurrences: Occurrence[] = [];
 for (const systemId of benchmark.execution.runOrder) {
   for (const channel of inputs.channels) {
-    const artifact = await readJson<EvaluationArtifact>(path.join(artifactRoot, "evaluation", systemId, `${channel.id}.json`));
+    const artifact = await readJson<EvaluationArtifact>(path.join(artifactRoot, "primary-evaluation", systemId, `${channel.id}.json`));
     artifact.selectedCandidates.forEach((candidate, index) => occurrences.push({
       systemId, channelId: channel.id, rank: index + 1, candidate,
     }));
@@ -194,6 +207,7 @@ const decisions = packet.map((entry) => ({
   levels: { productUseCaseFit: null, cooperationPath: null, evidenceReliability: null },
   reviewerNotes: "",
 }));
+assertNoHiddenIdentityFields(packet);
 
 await writeJson(path.join(rawAudit, "blind-identity-map.local.json"), {
   runId,

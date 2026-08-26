@@ -1,6 +1,6 @@
 # Step-result ledger
 
-No measured result exists yet. This ledger must be updated in the same commit as each published normalized artifact.
+Measured discovery and primary Codex scores now exist. The leaderboard remains provisional until the required human blind audit and calibration decision are complete. This ledger must be updated in the same commit as each published normalized artifact.
 
 | Step ID | Stage | System | Channel | Normalized artifact | Raw SHA-256 | Record count | Validation | Notes |
 |---|---|---|---|---|---|---:|---|---|
@@ -31,6 +31,9 @@ No measured result exists yet. This ledger must be updated in the same commit as
 | evaluator-runner-amendment-001 | evaluator execution resilience | all OpenAI evaluator batches | n/a | regenerated v1.1.1 input manifest | failure attempts retained locally | 6 previously successful batches unchanged | passed | Uniform three-attempt cap, failure isolation and transport-attempt accounting added without changing model input or score computation. |
 | api-evaluator-diagnostic-001 | evaluator infrastructure diagnostic | gpt-5.6-sol via Lingyu | all | 12 evaluation artifacts; failures retained locally | hashes inside successful artifacts | 12 successful / 9 failed batches | excluded from ranking | Failures crossed Tavily, Exa, Brave and SearchAPI. User directed that infrastructure stability must not affect search quality. |
 | codex-review-amendment-001 | primary evaluator protocol | runtime-managed Codex, in-session | all | `artifacts/runs/2026-08-26-de-v1/codex-review/` | packet hashes in manifest | 21 blind batches planned | frozen before Codex scores | System/provider identity, provider rank and API scores stay hidden until every Codex decision is frozen. |
+| codex-review-001 | primary blind evaluation | runtime-managed Codex, in-session | all | `artifacts/runs/2026-08-26-de-v1/codex-review/decisions/` | 21 hashes in `codex-review/deblind-manifest.json` | 21 decisions / 163 selected occurrences | passed complete validator | Blind decisions were committed and pushed at `cc4052c` before the identity map was read. No search API, evaluator API or external browsing was used. |
+| codex-aggregate-001 | primary deblind and raw scoring | seven measured systems | three channels each | `artifacts/runs/2026-08-26-de-v1/primary-evaluation/`; `scoring/raw-system-scores.json` | 21 artifact hashes in score table and deblind manifest | 21 channel artifacts | passed | Ten-slot channel means and equal-weight three-channel macro means; API diagnostic scores are excluded. Status: provisional pending human audit. |
+| blind-audit-sample-001 | human audit sampling | provider/system hidden | cross-channel stratified sample | `scoring/blind-audit-packet.json`; `scoring/blind-audit-manifest.json` | generated from committed primary artifacts | 119 unique companies; 24 core + 6 risk | identity fields checked hidden | Human decision template and identity map remain local and ignored. |
 
 ## Required artifact stages
 

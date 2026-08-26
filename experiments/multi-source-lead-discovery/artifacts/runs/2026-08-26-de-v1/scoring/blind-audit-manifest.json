@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-08-26-de-v1",
+  "providerIdentityHidden": true,
+  "hiddenFields": [
+    "system",
+    "provider",
+    "geminiMode",
+    "rank",
+    "modelScore",
+    "occurrenceCount",
+    "cudyRelationship"
+  ],
+  "poolUniqueCompanies": 119,
+  "coreSampleSize": 24,
+  "coreSamplePercent": 0.20168067226890757,
+  "riskSupplementSize": 6,
+  "samplingSeed": "CUDY-MULTI-SOURCE-DE-V1-BLIND-AUDIT",
+  "identityMapCommitted": false,
+  "reviewerDecisionStatus": "pending"
+}

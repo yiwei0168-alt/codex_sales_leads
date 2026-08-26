@@ -1,0 +1,411 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "runId": "2026-08-26-de-v1",
+  "systemId": "product-exa",
+  "channelId": "project-services",
+  "reviewMode": "discovery-pool",
+  "blindBatchId": "B-BCF1C057B0C6",
+  "sourceDiscoveryArtifact": "artifacts/runs/2026-08-26-de-v1/discovery/product-exa/project-services.json",
+  "selectedCandidates": [
+    {
+      "rank": 1,
+      "companyName": "NLS Netzwerke GmbH",
+      "officialUrl": "https://nls-netzwerke.de/",
+      "roles": [
+        "SI",
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 4
+      },
+      "score": 96,
+      "roleEvidence": "German network specialist offers consulting, planning, delivery and implementation of complete IT solutions.",
+      "productFitEvidence": "Routing, switching, WLAN, security, management and data-centre networking directly match Cudy.",
+      "cooperationEvidence": "The explicit consult-plan-deliver-implement chain covers selection, procurement and deployment.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-020804CE73",
+          "url": "https://nls-netzwerke.de/",
+          "excerpt": "# NLS Netzwerke GmbH NLS Netzwerke GmbH is a IT Services and IT Consulting company. NLS Netzwerke München is a company that specializes in network technology, including fiber optic components, switched router technology, network security, and management systems. They provide individual network solutions and offer services such as network service and monitoring. NLS Netzwerke GmbH employs 3 people, founded in 1998. Headquartered in Alling, Bayern, Germany, with presence in United States. ## About Your Value: - Competent partner for consulting, planning, delivery and implementation of complete IT-solutions. - Longtime experience of experts to Data Center with its multiple requirements of applications, cabling, cooling, cable-mgmt. - deliver of customized solutions in an integrated and flexible way. - deliver of high quality (premium) products and services. Partners and Qualifications: apranet - Solutions: Racks, Cabinets Commscope Systimax - Solutions: Cabling, Cu, FO, Trunks, Racks, Cabinets, WLAN, iPatch - Status: Systimax Business Partner Extreme Networks - Solutions: Routing, Switching, WLAN, Security, Firewall, Networkmanagement, - Status: Silver Panduit - Solutions: Cabling, Cu"
+        }
+      ],
+      "rationale": "Exceptionally detailed candidate-specific evidence for both product and project fit."
+    },
+    {
+      "rank": 2,
+      "companyName": "FASTNET GmbH",
+      "officialUrl": "https://fastnet-gmbh-montagetechnik.de/",
+      "roles": [
+        "Installer",
+        "SI"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 4
+      },
+      "score": 96,
+      "roleEvidence": "German B2B implementation partner supplies complete white-label teams to system integrators.",
+      "productFitEvidence": "Network engineering, cabling, WLAN installation and server-room infrastructure strongly overlap Cudy projects.",
+      "cooperationEvidence": "Planning, execution, acceptance, consulting and project management establish complete delivery control.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-2A61916624",
+          "url": "https://fastnet-gmbh-montagetechnik.de/",
+          "excerpt": "# FASTNET GmbH FASTNET GmbH is a IT Services and IT Consulting company. FASTNET GmbH is a nationwide implementation partner for smartboard assembly and presentation technology. They provide white label rollouts for IT system houses and AV integrators. With over 83 completed assembly projects in 2025, FASTNET GmbH is a direct partner for businesses, education sector, and public entities. FASTNET GmbH employs 2 people, founded in 2025. Headquartered in Germany. ## About FASTNET GmbH is your B2B project partner for IT infrastructure—specializing in rollouts, network engineering, and project-based onsite support commissioned by system integrators. We don’t just supply personnel profiles; we deliver complete implementation teams. As an extension of our partners, we take full responsibility for project outcomes—from planning through execution to final acceptance—all under a white-label model without end-customer visibility. Our service portfolio includes IT rollouts in schools, branch offices, and distributed locations, network cabling, WLAN installations, server-room infrastructure, and temporary operational support. This is complemented by technical consulting and project management ba"
+        }
+      ],
+      "rationale": "Excellent specialist implementation route with clear B2B partner mechanics."
+    },
+    {
+      "rank": 3,
+      "companyName": "WLANxpert",
+      "officialUrl": "http://wlanxpert.de/",
+      "roles": [
+        "SI",
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 4
+      },
+      "score": 96,
+      "roleEvidence": "Munich specialist explicitly plans, installs and operates WLAN for multiple commercial/public sectors.",
+      "productFitEvidence": "Dedicated professional WLAN projects directly align with Cudy access points and managed-network hardware.",
+      "cooperationEvidence": "Planning, installation, operation and maintenance provide full lifecycle influence.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-282EA1855B",
+          "url": "https://linkedin.com/company/wlanxpert",
+          "excerpt": "# WLANxpert WLANxpert is a Computer Networking Products company. Founded in 2016. Headquartered in Munich, Bavaria, Germany. ## About Ein schlecht geplantes WLAN kostet Sie Geld und Zeit. Wenn das WLAN nicht oder schlecht funktioniert, sinken die Produktivität und Zufriedenheit von Kunden und Mitarbeitern. Was unterscheidet WLANxpert: Wir sind auf das Thema WLAN-Netzwerke spezialisiert und machen nichts anders. Wir lösen Ihre Anforderungen an Performanz, Sicherheit, Kosteneffizienz, professioneller Betreuung und Wartung. WLANxpert plant, installiert und betreibt WLAN Lösungen für • Büros • Produktions- und Logistikunternehmen • Hotels und • Gastronomie • Behörden und Kommunen • Schulen und Universitäten • Produktions- und Logistikunternehmen Referenzen auf Anfrage: • Zelte auf dem Oktoberfest, • Hotels und Gastronomie-Unternehmen • Fertigungsstandorte von Mittelständlern • Öffentliche Träger und Behörden. http://wlanxpert.de/kontakt/ ## Company Details - Industry: Computer Networking Products - Type: Privately Held - Headquarters: Munich, Germany - Founded Year: 2016 - Aliases: wlanxpert - LinkedIn: linkedin.com/company/wlanxpert - Linkedin Followers: 4 [redacted-workforce-section]"
+        }
+      ],
+      "rationale": "Highly specialized and actionable WLAN project lead with detailed candidate-specific evidence."
+    },
+    {
+      "rank": 4,
+      "companyName": "Frings Solutions Deutschland GmbH",
+      "officialUrl": "https://frings-solutions.de/",
+      "roles": [
+        "SI",
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 4
+      },
+      "score": 96,
+      "roleEvidence": "German infrastructure company provides technical planning, installation and service.",
+      "productFitEvidence": "Network integration and WLAN development directly match Cudy professional networking.",
+      "cooperationEvidence": "Planning, installation and ongoing service establish an end-to-end project path.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-76375E85FF",
+          "url": "https://frings-solutions.de/",
+          "excerpt": "# Frings Solutions Group (Frings Solutions Deutschland GmbH) Frings Solutions Group is a IT Services and IT Consulting company. Frings Solutions is an IT services and infrastructure company that supports businesses in digitalization. They offer a range of services including network integration, WLAN development, and customized software solutions. Frings Solutions Group employs 23 people (+25.0% YoY, +11 people), founded in 1992. Headquartered in Hilden, Nordrhein-Westfalen, Germany, with presence in United States. ## About Die Frings Solutions Group bietet professionelle und maßgeschneiderte Business IT-Lösungen für jede Unternehmensgröße. Von der technischen Planung und Installation bis hin zum Service – unsere starken Unternehmenssäulen stehen Ihnen jederzeit unterstützend zur Seite. ## Company Details - Industry: IT Services and IT Consulting - Type: Public Company - Headquarters: Hilden, Germany - Founded Year: 1992 - Homepage: frings-solutions.de - Status: active - Aliases: frings solutions group, frings group, frings solutions deutschland, frings solutions deutschland gmbh - LinkedIn: linkedin.com/company/frings-solutions-group - Linkedin Followers: 592 (Monthly: +1.7%, Yearl"
+        }
+      ],
+      "rationale": "Excellent and clearly documented SI/installer fit."
+    },
+    {
+      "rank": 5,
+      "companyName": "DNWS Die Netz-Werk Spezialisten GmbH",
+      "officialUrl": "https://dnws.de/",
+      "roles": [
+        "SI",
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 4
+      },
+      "score": 96,
+      "roleEvidence": "German network specialist delivers consulting, design, implementation, operation and troubleshooting.",
+      "productFitEvidence": "Office LAN/WLAN, data-centre networks, WAN and security strongly overlap Cudy.",
+      "cooperationEvidence": "Full lifecycle from design through operation provides maximum specification and deployment leverage.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-423F3CF1A2",
+          "url": "https://dnws.de/",
+          "excerpt": "# DNWS DIE NETZ-WERK SPEZIALISTEN GMBH (DnPackaging) DNWS DIE NETZ-WERK SPEZIALISTEN GMBH is a Retail company. DNWS DIE NETZ-WERK SPEZIALISTEN GMBH employs 6 people, founded in 1998. Headquartered in Germany, with presence in United States. ## About DNWS is a mid-size IT-network retail company located in Oberschleissheim on the Munich outskirts. For more than 25 years we have been providing outstanding network services to industrial as well as medium sized enterprise customers. Automotive, health, finance and science/education are only a choice of the branches we are servicing. Our comprehensive expertise is ranging from network consulting over network design and implementation to network operation and deep dive trouble shooting. These skills we do not only offer in office LAN/WLAN environments but also in the area of complex data center networks or WAN. Our particular attention is with network security, a topic which nowadays can determine about success or failure. All skills mentioned above we also offer in the context of Software Defined Networks. Our customer focused operational model bases on the leading Service Management framework ITIL. DNWS - your network in safe hands! ##"
+        }
+      ],
+      "rationale": "Exceptional technical and cooperation alignment supported by detailed evidence."
+    },
+    {
+      "rank": 6,
+      "companyName": "RockSolid Networks e. K.",
+      "officialUrl": "https://rocksolid-networks.de/",
+      "roles": [
+        "SI",
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 4
+      },
+      "score": 96,
+      "roleEvidence": "German network-engineering specialist provides consulting, implementation and operation services.",
+      "productFitEvidence": "Enterprise/SME networks, site connectivity and new network infrastructure directly match Cudy use cases.",
+      "cooperationEvidence": "Network architects and engineers support every project phase from design through component operation.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-60B5A0548D",
+          "url": "https://rocksolid-networks.de/",
+          "excerpt": "# RockSolid Networks e. K. RockSolid Networks e. K. is a IT Services and IT Consulting company. RockSolid Networks is a company that provides network solutions that match the needs of their customers. RockSolid Networks e. K. employs 2 people, founded in 2020. Headquartered in Germany. ## About Die All-in-One Lösung für Ihr Netzwerk Qualitativ hochwertige und verlässliche Consulting-, Implementation- und Operation Services für Enterprise und kleinere Unternehmensnetzwerke, Data Center und TK-Netze. Gerne übernehmen wir auch Ihre Standortvernetzung: sicher per IPsec, kostengünstig und ohne Backdoors mittels Open Source Software und mit aktuellem Verschlüsselungsstandard. Sie benötigen eine neue Netzwerkinfrastruktur, Erweiterungen, Umbau oder externe Unterstützung beim Betrieb Ihrer Komponenten? Durch unsere langjährige Erfahrungen können wir Ihnen mit Sicherheit helfen eine solide, skalierbare und moderne Netzwerkinfrastruktur zu verwirklichen. Gerne unterstützen wir sie durch unsere Consulting Dienstleistungen mit erfahrenen Network Architects und Network Engineers in allen Phasen Ihrer Projekte. ## Company Details - Industry: IT Services and IT Consulting - Type: Self-Owned - Fou"
+        }
+      ],
+      "rationale": "Excellent project partner with unusually clear lifecycle evidence."
+    },
+    {
+      "rank": 7,
+      "companyName": "DevTec Systems GmbH",
+      "officialUrl": "https://devtecsystems.net/",
+      "roles": [
+        "SI",
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 4
+      },
+      "score": 96,
+      "roleEvidence": "German provider develops tailored concepts, supports implementation and monitors commercial IT infrastructure.",
+      "productFitEvidence": "Network technology and high-performance WLAN solutions directly align with Cudy.",
+      "cooperationEvidence": "Concept, implementation and proactive monitoring provide an end-to-end project and lifecycle route.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-9889A92C55",
+          "url": "https://devtecsystems.net/",
+          "excerpt": "# DevTec Systems DevTec Systems is a IT System Operations and Maintenance company. DevTec Systems GmbH is a company that offers comprehensive solutions in network technology and network cable, including wlan solutions, modern video surveillance, and smart access systems. They focus on reliability, performance, and scalability in their services. DevTec Systems employs 2 people (+133.3% YoY), founded in 2009. Headquartered in Neumünster, Schleswig-Holstein, Germany, with presence in United States. ## About DEVTEC Systems | next generation IT Seit mehr als 15 Jahren sind wir der Spezialist für ganzheitliche IT- und Technologielösungen — maßgeschneidert für Fitnessstudios, Gewerbeimmobilien und Industrieanlagen. Unser Portfolio umfasst: • Netzwerktechnik & leistungsstarke WLAN-Lösungen • Videoüberwachung & Zutrittskontrollsysteme • Beschallungssysteme & Monitorlösungen • Kreatives Beleuchtungsdesign Was uns auszeichnet: Wir denken IT-Infrastruktur von Anfang bis Ende. Unsere Expertenteams entwickeln individuelle Konzepte, begleiten die Umsetzung — und sorgen mit unserem proaktiven Monitoringsystem für dauerhaft zuverlässigen Betrieb. Unsere Kunden kommen aus Fitness & Wellness, Industr"
+        }
+      ],
+      "rationale": "Excellent active-network fit with strong candidate-specific evidence."
+    },
+    {
+      "rank": 8,
+      "companyName": "CompuNet Systems GmbH",
+      "officialUrl": "https://compunet.systems/",
+      "roles": [
+        "SI",
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 4,
+        "evidenceReliability": 4
+      },
+      "score": 89,
+      "roleEvidence": "German IT/telecommunications provider delivers network infrastructure and connectivity solutions.",
+      "productFitEvidence": "Hotel WLAN, office networking, firewalls and broadband connections strongly overlap Cudy.",
+      "cooperationEvidence": "Tailored solution delivery gives strong selection influence, while explicit planning/procurement stages are not detailed.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-FAACB59DE7",
+          "url": "https://compunet.systems/",
+          "excerpt": "# CompuNet Systems GmbH CompuNet Systems GmbH is a IT Services and IT Consulting company. CompuNet Systems GmbH provides solutions in telecommunications, network infrastructure, software development, network connectivity, and remote client services. CompuNet Systems GmbH employs 4 people, founded in 2005. Headquartered in Lübeck, Schleswig-Holstein, Germany, with presence in United States. ## About Die COMPUNET Systems GmbH ist in ganz Deutschland unterwegs, um Menschen zu verbinden und Unternehmen bei der Digitalisierung Ihrer Organisations- und Kommunikationsstrukturen kompetent zu unterstützen. Informationstechnologien sollen Ihren Alltag erleichtern und Ihre geschäftlichen Herausforderungen lösen. Dafür stehen wir! Vom Internetanschluss via Glasfaser, WLAN Lösungen für Hotels, Serverbetrieb und Bürovernetzung, bis hin zu Firewalls und Telefonie. Ihre Anforderungen und Wünsche stehen immer im Vordergrund! ## Company Details - Industry: IT Services and IT Consulting - Type: Self-Owned - Headquarters: Lübeck, Germany - Founded Year: 2005 - Homepage: compunet.systems - Status: active - Aliases: compunet systems gmbh, compunet systems - LinkedIn: linkedin.com/company/compunet-system"
+        }
+      ],
+      "rationale": "Excellent product use cases and a strong, moderately documented project path."
+    },
+    {
+      "rank": 9,
+      "companyName": "tilko GmbH",
+      "officialUrl": "https://tilko-wlan.de/",
+      "roles": [
+        "SI",
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 4,
+        "evidenceReliability": 4
+      },
+      "score": 89,
+      "roleEvidence": "Mannheim WLAN specialist supports retail, hotels, care homes and industrial businesses year-round.",
+      "productFitEvidence": "Dedicated business WLAN concepts directly match Cudy access-point and managed-network applications.",
+      "cooperationEvidence": "Individual WLAN concept work and ongoing support imply strong specification influence, but installation/procurement are not explicit.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-F6C6A3D578",
+          "url": "https://tilko-wlan.de/",
+          "excerpt": "# tilko GmbH tilko GmbH is a IT Services and IT Consulting company. Tilko is a company that provides 365 days a year support for businesses in the trade, hotels, nursing homes, and industry sectors. Tilko GmbH employs 5 people (+200.0% YoY). Headquartered in mannheim, Germany. ## About Wir sind tilko und denken ans WLAN für Handel, Hotels, Pflegeheime und Industrie. Hinter dem perfekten WLAN-Konzept steckt nichts Anderes als deine individuellen Bedürfnisse, kombiniert mit unserer langjährigen Erfahrung. ## Company Details - Industry: IT Services and IT Consulting - Type: Public Company - Headquarters: mannheim, Germany - Homepage: tilko-wlan.de - Aliases: tilko gmbh - LinkedIn: linkedin.com/company/tilko-gmbh - Emails: [redacted-email] - Phone: [redacted-phone] [redacted-workforce-section]"
+        }
+      ],
+      "rationale": "Highly relevant specialist with a strong but incompletely evidenced transaction path."
+    },
+    {
+      "rank": 10,
+      "companyName": "BKN GmbH & Co. KG",
+      "officialUrl": "https://bk-netzwerk.de/",
+      "roles": [
+        "SI",
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 5,
+        "evidenceReliability": 4
+      },
+      "score": 87,
+      "roleEvidence": "German communications integrator plans and implements site networking plus active/passive networks.",
+      "productFitEvidence": "Active networking and site connectivity are strongly relevant, though device families are not listed.",
+      "cooperationEvidence": "Planning, installation and documentation provide complete project control and vendor-based installation mechanics.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-CDB42330D3",
+          "url": "https://bk-netzwerk.de/",
+          "excerpt": "# BKN GmbH & Co. KG BKN GmbH & Co. KG is a Telecommunications company. BKN GmbH & Co. KG provides IT and communication solutions, including phone systems for future-proof communication. BKN GmbH & Co. KG employs 7 people, founded in 1997. Headquartered in Drensteinfurt, North Rhine-Westphalia, Germany. ## About Die BKN bietet mit ihrem Team die Installation von modernsten Telekommunikationsanlagen, die Planung und Umsetzung von professionellen Standortvernetzungen, die Einrichtung passiver und aktiver Netzwerke. Von der Planung, über die Installation, bis hin zur Dokumentation bekommt der Kunde alles aus einer Hand. Das 1997 gegründete Unternehmen befindet sich heute am strategisch günstig gelegenen Standort Drensteinfurt. Dieser ermöglicht kurze und effiziente Anreisewege in das Ruhrgebiet, Rheinland, Bergische Land, Sauerland oder Ostwestfalen-Lippe. Ebenso sind Großstädte wie Bremen, Hamburg oder Hannover schnell erreicht. Wir sind zertifizierte Partner der AVAYA | Novalink | C4B Xphone | Anynode | Huawai | Microsoft | NFON und vielen mehr. So gewährleisten wir, dass Anlagen oder System auf den Vorgaben unserer Lieferanten montiert und auf Basis der kundeneigenen Qualitätsansprü"
+        },
+        {
+          "evidenceEntryId": "E-5E04FE9A46",
+          "url": "https://bk-netzwerk.de/",
+          "excerpt": "# BKN GmbH & Co. KG BKN GmbH & Co. KG is a Telecommunications company. BKN GmbH & Co. KG provides IT and communication solutions, including phone systems for future-proof communication. BKN GmbH & Co. KG employs 7 people, founded in 1997. Headquartered in Drensteinfurt, North Rhine-Westphalia, Germany. ## About Die BKN bietet mit ihrem Team die Installation von modernsten Telekommunikationsanlagen, die Planung und Umsetzung von professionellen Standortvernetzungen, die Einrichtung passiver und aktiver Netzwerke. Von der Planung, über die Installation, bis hin zur Dokumentation bekommt der Kunde alles aus einer Hand. Das 1997 gegründete Unternehmen befindet sich heute am strategisch günstig gelegenen Standort Drensteinfurt. Dieser ermöglicht kurze und effiziente Anreisewege in das Ruhrgebiet, Rheinland, Bergische Land, Sauerland oder Ostwestfalen-Lippe. Ebenso sind Großstädte wie Bremen, Hamburg oder Hannover schnell erreicht. Wir sind zertifizierte Partner der AVAYA | Novalink | C4B Xphone | Anynode | Huawai | Microsoft | NFON und vielen mehr. So gewährleisten wir, dass Anlagen oder System auf den Vorgaben unserer Lieferanten montiert und auf Basis der kundeneigenen Qualitätsansprü"
+        }
+      ],
+      "rationale": "Excellent cooperation path and good active-network fit supported by duplicate detailed evidence."
+    }
+  ],
+  "rejectedItems": [
+    {
+      "title": "WSTN, Zahner Net, Net Factory, MTG, PKN and other eligible integrators",
+      "url": "https://wstn.de/",
+      "reason": "Strong project candidates, but their computed fit/path scores place them below the selected top ten."
+    },
+    {
+      "title": "IB-IT, KSN, KNS, Netzwerktechnik Kopp and other cabling specialists",
+      "url": "https://ib-it.eu/",
+      "reason": "Eligible installers with stronger passive-cabling or infrastructure emphasis and lower direct product fit."
+    },
+    {
+      "title": "Avanis GmbH",
+      "url": "https://avanis.de/",
+      "reason": "The excerpt primarily describes specialist distribution; that role belongs to the tier-one channel despite adjacent WLAN services."
+    },
+    {
+      "title": "AMP CONNECT GmbH",
+      "url": "https://ampconnect.de/",
+      "reason": "Manufacturer rather than SI/Installer candidate."
+    }
+  ],
+  "scoring": {
+    "finalSlots": 10,
+    "filledSlots": 10,
+    "missingSlots": 0,
+    "slotScores": [
+      96,
+      96,
+      96,
+      96,
+      96,
+      96,
+      96,
+      89,
+      89,
+      87
+    ],
+    "channelScore": 93.7,
+    "meanLevelsAcrossTenSlots": {
+      "productUseCaseFit": 4.9,
+      "cooperationPath": 4.8,
+      "evidenceReliability": 4
+    }
+  },
+  "evaluator": {
+    "provider": "codex-agent",
+    "transport": "in-session-no-api",
+    "model": "runtime-managed-codex",
+    "systemIdentityHiddenDuringReview": true,
+    "providerIdentityHiddenDuringReview": true,
+    "apiScoresHiddenDuringReview": true,
+    "externalSearchUsed": false
+  }
+}

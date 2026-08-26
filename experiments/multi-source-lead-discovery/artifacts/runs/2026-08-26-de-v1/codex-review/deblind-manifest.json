@@ -1,0 +1,222 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "runId": "2026-08-26-de-v1",
+  "blindDecisionCheckpointCommit": "cc4052c",
+  "identityMapCommitted": false,
+  "identityMapSha256": "23e23559de29e499bde8b7667388c1415031cb6cd330f16a1b62207d42842858",
+  "decisionSetSha256": "669bbd813012fe645914080606da8d8bb86a95e70af8bdd59d831d6c08858a98",
+  "batchCount": 21,
+  "mappings": [
+    {
+      "blindBatchId": "B-47F9C2C23B66",
+      "systemId": "gemini-full",
+      "channelId": "tier1-distribution",
+      "reviewMode": "fixed-output",
+      "sourcePath": "artifacts/runs/2026-08-26-de-v1/discovery/gemini-full/tier1-distribution.json",
+      "decisionSha256": "66a07af4867cac687a995c2d0b2b0592f50f14f576497be2fabea8dcf801e0e9",
+      "primaryEvaluationArtifact": "primary-evaluation/gemini-full/tier1-distribution.json",
+      "primaryEvaluationSha256": "2c2d309a5c6db921ab8a1ffb59b3037021922d3a2697021c16bbb287f6dbc3ff"
+    },
+    {
+      "blindBatchId": "B-CB22C4D6881B",
+      "systemId": "gemini-full",
+      "channelId": "b2b-resale",
+      "reviewMode": "fixed-output",
+      "sourcePath": "artifacts/runs/2026-08-26-de-v1/discovery/gemini-full/b2b-resale.json",
+      "decisionSha256": "5551963d3f6917b6f46916950b07e8b7b4f817136699040205fc337463e333e3",
+      "primaryEvaluationArtifact": "primary-evaluation/gemini-full/b2b-resale.json",
+      "primaryEvaluationSha256": "2585ed3958eb92ff3d0a6131485150491f7d2dcfc9f83c1e1830b91317b0c675"
+    },
+    {
+      "blindBatchId": "B-A3C4E10AB016",
+      "systemId": "gemini-full",
+      "channelId": "project-services",
+      "reviewMode": "fixed-output",
+      "sourcePath": "artifacts/runs/2026-08-26-de-v1/discovery/gemini-full/project-services.json",
+      "decisionSha256": "44bae39107d3d871ebc0ec341dce6008654a4d9791a39285a4fc9407470b511d",
+      "primaryEvaluationArtifact": "primary-evaluation/gemini-full/project-services.json",
+      "primaryEvaluationSha256": "01c236e866a37cbc876b5f7259a7b3fb5d61ebc3a337b71a24f3b8388a7d3bf1"
+    },
+    {
+      "blindBatchId": "B-6F4557AA17A7",
+      "systemId": "product-gemini",
+      "channelId": "tier1-distribution",
+      "reviewMode": "discovery-pool",
+      "sourcePath": "artifacts/runs/2026-08-26-de-v1/discovery/product-gemini/tier1-distribution.json",
+      "decisionSha256": "60597ece9b57ab64c2307813bb23ef0fb97cffa66ac34474f24b95926646a9d0",
+      "primaryEvaluationArtifact": "primary-evaluation/product-gemini/tier1-distribution.json",
+      "primaryEvaluationSha256": "5a6497348fd8a6ac5732d02989a51d3c4b9e746f17c09db1d8bdf2f8811943a8"
+    },
+    {
+      "blindBatchId": "B-6B1FB907E9EB",
+      "systemId": "product-gemini",
+      "channelId": "b2b-resale",
+      "reviewMode": "discovery-pool",
+      "sourcePath": "artifacts/runs/2026-08-26-de-v1/discovery/product-gemini/b2b-resale.json",
+      "decisionSha256": "2df0bc7f53fa6bb96a57eed56c27345f0f3e61edd1946f588dfea2acd398e59d",
+      "primaryEvaluationArtifact": "primary-evaluation/product-gemini/b2b-resale.json",
+      "primaryEvaluationSha256": "91719e0eb68808b07fee834d692d9ef03f0518cb558c2a9f423a20225fd0c2d1"
+    },
+    {
+      "blindBatchId": "B-AB0CCC6C8B92",
+      "systemId": "product-gemini",
+      "channelId": "project-services",
+      "reviewMode": "discovery-pool",
+      "sourcePath": "artifacts/runs/2026-08-26-de-v1/discovery/product-gemini/project-services.json",
+      "decisionSha256": "caf5b364e278b1fddc9e81b4a8935f6d03f0fea950edfe4caaa7d009571f8c6e",
+      "primaryEvaluationArtifact": "primary-evaluation/product-gemini/project-services.json",
+      "primaryEvaluationSha256": "e23832c4135b4299db1f2edeeb06cde3691c72bb81e5d21682ea0a37959aa335"
+    },
+    {
+      "blindBatchId": "B-09BE3EAE3F83",
+      "systemId": "product-tavily",
+      "channelId": "tier1-distribution",
+      "reviewMode": "discovery-pool",
+      "sourcePath": "artifacts/runs/2026-08-26-de-v1/discovery/product-tavily/tier1-distribution.json",
+      "decisionSha256": "43a380c55459a9f97c8b810090bb6cb956e8d841dedb80586e56de484cdebfee",
+      "primaryEvaluationArtifact": "primary-evaluation/product-tavily/tier1-distribution.json",
+      "primaryEvaluationSha256": "12f4cf2261c3dde1e45f9f521027fbad3c70be363d4711dfdfad8bf44207c69a"
+    },
+    {
+      "blindBatchId": "B-6102C3492DD5",
+      "systemId": "product-tavily",
+      "channelId": "b2b-resale",
+      "reviewMode": "discovery-pool",
+      "sourcePath": "artifacts/runs/2026-08-26-de-v1/discovery/product-tavily/b2b-resale.json",
+      "decisionSha256": "1a1f4a53fd8d66414af36dffdf8b4fd0924181900683744c0ba1ca0637d0a55e",
+      "primaryEvaluationArtifact": "primary-evaluation/product-tavily/b2b-resale.json",
+      "primaryEvaluationSha256": "b6b469b9b077ff4d4a1c02d0a6fff07cf00a17bed8f8bf052f458539eb1f4dab"
+    },
+    {
+      "blindBatchId": "B-50308678FBE5",
+      "systemId": "product-tavily",
+      "channelId": "project-services",
+      "reviewMode": "discovery-pool",
+      "sourcePath": "artifacts/runs/2026-08-26-de-v1/discovery/product-tavily/project-services.json",
+      "decisionSha256": "1925c0070934c83ccdf8f058e5084efa9dda5bcda34626a17a1aca1d1270461d",
+      "primaryEvaluationArtifact": "primary-evaluation/product-tavily/project-services.json",
+      "primaryEvaluationSha256": "59e01bac6b7aef9127645ed5c1f229e08811cb904a37e098eae23ad353acd109"
+    },
+    {
+      "blindBatchId": "B-B6585C7521CA",
+      "systemId": "product-google-places",
+      "channelId": "tier1-distribution",
+      "reviewMode": "discovery-pool",
+      "sourcePath": "artifacts/runs/2026-08-26-de-v1/discovery/product-google-places/tier1-distribution.json",
+      "decisionSha256": "bb20ba632f0b9363551e98ac93b9f88dd55e0724b0792c3afc458783c9b848a8",
+      "primaryEvaluationArtifact": "primary-evaluation/product-google-places/tier1-distribution.json",
+      "primaryEvaluationSha256": "cea189917ca0999535a8f694a501a91bdd5d58b3b1263f3c7509c4f700e99c95"
+    },
+    {
+      "blindBatchId": "B-CA0300E0507C",
+      "systemId": "product-google-places",
+      "channelId": "b2b-resale",
+      "reviewMode": "discovery-pool",
+      "sourcePath": "artifacts/runs/2026-08-26-de-v1/discovery/product-google-places/b2b-resale.json",
+      "decisionSha256": "339f06b176638b0af734d6edf260f52b0f34c33907f0fc2a3e821b8ff104fb6a",
+      "primaryEvaluationArtifact": "primary-evaluation/product-google-places/b2b-resale.json",
+      "primaryEvaluationSha256": "f56992bf794ba9a11fde9ecdd46cf474b7c1ac98a77147ea9cabfb9648d8885f"
+    },
+    {
+      "blindBatchId": "B-5258C688D2CB",
+      "systemId": "product-google-places",
+      "channelId": "project-services",
+      "reviewMode": "discovery-pool",
+      "sourcePath": "artifacts/runs/2026-08-26-de-v1/discovery/product-google-places/project-services.json",
+      "decisionSha256": "00665fcbb5b4329b94cd4050b81f93d148356c9366b8caf40ac56dac77e186d1",
+      "primaryEvaluationArtifact": "primary-evaluation/product-google-places/project-services.json",
+      "primaryEvaluationSha256": "341a8ec489e21c205b6069faac7c5d777140abb9cff6ddda7ec3e97e94488d18"
+    },
+    {
+      "blindBatchId": "B-087190FF439C",
+      "systemId": "product-exa",
+      "channelId": "tier1-distribution",
+      "reviewMode": "discovery-pool",
+      "sourcePath": "artifacts/runs/2026-08-26-de-v1/discovery/product-exa/tier1-distribution.json",
+      "decisionSha256": "e272b33aeafaa3cc4365ae0e8110522c3eaebbdcef761989c9ba06aa59100401",
+      "primaryEvaluationArtifact": "primary-evaluation/product-exa/tier1-distribution.json",
+      "primaryEvaluationSha256": "bb4e7f143a2efb68191916bb78909ffa0fd4b6cb889b55632b928283140bf4ec"
+    },
+    {
+      "blindBatchId": "B-15BCCC099732",
+      "systemId": "product-exa",
+      "channelId": "b2b-resale",
+      "reviewMode": "discovery-pool",
+      "sourcePath": "artifacts/runs/2026-08-26-de-v1/discovery/product-exa/b2b-resale.json",
+      "decisionSha256": "153a1d05418489af16eed9f02694021ebc8d33f47f82fff1709343e5d570eaec",
+      "primaryEvaluationArtifact": "primary-evaluation/product-exa/b2b-resale.json",
+      "primaryEvaluationSha256": "a7950aabe69c3d1c2416f8e742a46d40288d64fd653f275b921ba4397a473407"
+    },
+    {
+      "blindBatchId": "B-BCF1C057B0C6",
+      "systemId": "product-exa",
+      "channelId": "project-services",
+      "reviewMode": "discovery-pool",
+      "sourcePath": "artifacts/runs/2026-08-26-de-v1/discovery/product-exa/project-services.json",
+      "decisionSha256": "1919a5a8dc42db76ce14e064bf22f454863f96ee003c41c41d0b5b82684b018c",
+      "primaryEvaluationArtifact": "primary-evaluation/product-exa/project-services.json",
+      "primaryEvaluationSha256": "17ecc5f533fcf3fffd575684b09286bfe6fef95bfcebeda4975847b2a97197c2"
+    },
+    {
+      "blindBatchId": "B-E1EA458AE1D9",
+      "systemId": "product-brave",
+      "channelId": "tier1-distribution",
+      "reviewMode": "discovery-pool",
+      "sourcePath": "artifacts/runs/2026-08-26-de-v1/discovery/product-brave/tier1-distribution.json",
+      "decisionSha256": "a16da316ae761cbae3508246ff9e1112b624281c4625e94f8dcc5bcd6c428595",
+      "primaryEvaluationArtifact": "primary-evaluation/product-brave/tier1-distribution.json",
+      "primaryEvaluationSha256": "519024a1cb6f6818a91e4cac57d61d71d5edb486b88efc509dc9c069a380730a"
+    },
+    {
+      "blindBatchId": "B-782256DC5FB7",
+      "systemId": "product-brave",
+      "channelId": "b2b-resale",
+      "reviewMode": "discovery-pool",
+      "sourcePath": "artifacts/runs/2026-08-26-de-v1/discovery/product-brave/b2b-resale.json",
+      "decisionSha256": "6dd8f4821c1d2c28474bef22e96a220c138912713a6a79ecb406afc08b9500eb",
+      "primaryEvaluationArtifact": "primary-evaluation/product-brave/b2b-resale.json",
+      "primaryEvaluationSha256": "5133e2c39695b287d75e935acabbb368e201f776078e7e9ef410dfa13dfdf9ec"
+    },
+    {
+      "blindBatchId": "B-573E6427FD14",
+      "systemId": "product-brave",
+      "channelId": "project-services",
+      "reviewMode": "discovery-pool",
+      "sourcePath": "artifacts/runs/2026-08-26-de-v1/discovery/product-brave/project-services.json",
+      "decisionSha256": "aaa371a9cdfc606ca3f8fc6842a6e033b6365bc9f9fd3cd2460f6b9e0142170c",
+      "primaryEvaluationArtifact": "primary-evaluation/product-brave/project-services.json",
+      "primaryEvaluationSha256": "3d7049b8f42ea178002c58b606c07dc99fcfbf1c61c2c6ce8d0daf35d7c91329"
+    },
+    {
+      "blindBatchId": "B-D0A08AF38338",
+      "systemId": "product-searchapi",
+      "channelId": "tier1-distribution",
+      "reviewMode": "discovery-pool",
+      "sourcePath": "artifacts/runs/2026-08-26-de-v1/discovery/product-searchapi/tier1-distribution.json",
+      "decisionSha256": "bd377e28f21c2bef3df283f8e59a6777e1b3a3c138fe140135c00839b5a78efc",
+      "primaryEvaluationArtifact": "primary-evaluation/product-searchapi/tier1-distribution.json",
+      "primaryEvaluationSha256": "cbf28aa5967aa74c84b1502ca5fa0c90368e7d9874d69bb41f1a978cb9fb40e9"
+    },
+    {
+      "blindBatchId": "B-1E94E5239B23",
+      "systemId": "product-searchapi",
+      "channelId": "b2b-resale",
+      "reviewMode": "discovery-pool",
+      "sourcePath": "artifacts/runs/2026-08-26-de-v1/discovery/product-searchapi/b2b-resale.json",
+      "decisionSha256": "10529a18eddb67a5cec54556ab78399963088eae8717bf9b00c1705e84a3858c",
+      "primaryEvaluationArtifact": "primary-evaluation/product-searchapi/b2b-resale.json",
+      "primaryEvaluationSha256": "cf99bdcc9523fbf8f41cf03c98f3443213c49c4af4efb585bb0d31977895c77b"
+    },
+    {
+      "blindBatchId": "B-81B5C805614F",
+      "systemId": "product-searchapi",
+      "channelId": "project-services",
+      "reviewMode": "discovery-pool",
+      "sourcePath": "artifacts/runs/2026-08-26-de-v1/discovery/product-searchapi/project-services.json",
+      "decisionSha256": "6060ed28adefc93e4184bada0ad94c073f909714f4225ac9d9d8674bb5788f0a",
+      "primaryEvaluationArtifact": "primary-evaluation/product-searchapi/project-services.json",
+      "primaryEvaluationSha256": "83805640ed5ef55e5e563095895b9e130c2b184f61d66a781ee35f40c0d9869f"
+    }
+  ]
+}

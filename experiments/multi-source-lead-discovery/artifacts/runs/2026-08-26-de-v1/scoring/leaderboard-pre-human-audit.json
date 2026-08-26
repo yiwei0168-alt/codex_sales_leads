@@ -1,0 +1,625 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "runId": "2026-08-26-de-v1",
+  "status": "provisional-pending-human-blind-audit",
+  "rankingMetric": "equal-weight macro mean of tier1-distribution, b2b-resale and project-services",
+  "leaderboard": [
+    {
+      "rank": 1,
+      "systemId": "product-exa",
+      "overallScore": 87.53333333333332,
+      "channels": [
+        {
+          "channelId": "tier1-distribution",
+          "blindBatchId": "B-087190FF439C",
+          "reviewMode": "discovery-pool",
+          "filledSlots": 10,
+          "missingSlots": 0,
+          "channelScore": 85.1,
+          "slotScores": [
+            92,
+            92,
+            85,
+            85,
+            85,
+            85,
+            85,
+            83,
+            83,
+            76
+          ],
+          "meanLevelsAcrossTenSlots": {
+            "productUseCaseFit": 4.7,
+            "cooperationPath": 4.4,
+            "evidenceReliability": 3
+          },
+          "artifact": "primary-evaluation/product-exa/tier1-distribution.json",
+          "artifactSha256": "bb4e7f143a2efb68191916bb78909ffa0fd4b6cb889b55632b928283140bf4ec"
+        },
+        {
+          "channelId": "b2b-resale",
+          "blindBatchId": "B-15BCCC099732",
+          "reviewMode": "discovery-pool",
+          "filledSlots": 10,
+          "missingSlots": 0,
+          "channelScore": 83.8,
+          "slotScores": [
+            92,
+            92,
+            92,
+            92,
+            85,
+            81,
+            76,
+            76,
+            76,
+            76
+          ],
+          "meanLevelsAcrossTenSlots": {
+            "productUseCaseFit": 4.6,
+            "cooperationPath": 4.4,
+            "evidenceReliability": 2.9
+          },
+          "artifact": "primary-evaluation/product-exa/b2b-resale.json",
+          "artifactSha256": "a7950aabe69c3d1c2416f8e742a46d40288d64fd653f275b921ba4397a473407"
+        },
+        {
+          "channelId": "project-services",
+          "blindBatchId": "B-BCF1C057B0C6",
+          "reviewMode": "discovery-pool",
+          "filledSlots": 10,
+          "missingSlots": 0,
+          "channelScore": 93.7,
+          "slotScores": [
+            96,
+            96,
+            96,
+            96,
+            96,
+            96,
+            96,
+            89,
+            89,
+            87
+          ],
+          "meanLevelsAcrossTenSlots": {
+            "productUseCaseFit": 4.9,
+            "cooperationPath": 4.8,
+            "evidenceReliability": 4
+          },
+          "artifact": "primary-evaluation/product-exa/project-services.json",
+          "artifactSha256": "17ecc5f533fcf3fffd575684b09286bfe6fef95bfcebeda4975847b2a97197c2"
+        }
+      ]
+    },
+    {
+      "rank": 2,
+      "systemId": "gemini-full",
+      "overallScore": 78.5,
+      "channels": [
+        {
+          "channelId": "tier1-distribution",
+          "blindBatchId": "B-47F9C2C23B66",
+          "reviewMode": "fixed-output",
+          "filledSlots": 10,
+          "missingSlots": 0,
+          "channelScore": 79.2,
+          "slotScores": [
+            88,
+            79,
+            79,
+            79,
+            79,
+            88,
+            72,
+            70,
+            79,
+            79
+          ],
+          "meanLevelsAcrossTenSlots": {
+            "productUseCaseFit": 4.1,
+            "cooperationPath": 4.9,
+            "evidenceReliability": 2
+          },
+          "artifact": "primary-evaluation/gemini-full/tier1-distribution.json",
+          "artifactSha256": "2c2d309a5c6db921ab8a1ffb59b3037021922d3a2697021c16bbb287f6dbc3ff"
+        },
+        {
+          "channelId": "b2b-resale",
+          "blindBatchId": "B-CB22C4D6881B",
+          "reviewMode": "fixed-output",
+          "filledSlots": 10,
+          "missingSlots": 0,
+          "channelScore": 78.7,
+          "slotScores": [
+            88,
+            88,
+            79,
+            88,
+            81,
+            88,
+            54,
+            79,
+            79,
+            63
+          ],
+          "meanLevelsAcrossTenSlots": {
+            "productUseCaseFit": 4.2,
+            "cooperationPath": 4.7,
+            "evidenceReliability": 2
+          },
+          "artifact": "primary-evaluation/gemini-full/b2b-resale.json",
+          "artifactSha256": "2585ed3958eb92ff3d0a6131485150491f7d2dcfc9f83c1e1830b91317b0c675"
+        },
+        {
+          "channelId": "project-services",
+          "blindBatchId": "B-A3C4E10AB016",
+          "reviewMode": "fixed-output",
+          "filledSlots": 10,
+          "missingSlots": 0,
+          "channelScore": 77.6,
+          "slotScores": [
+            88,
+            79,
+            79,
+            88,
+            79,
+            79,
+            70,
+            88,
+            47,
+            79
+          ],
+          "meanLevelsAcrossTenSlots": {
+            "productUseCaseFit": 4,
+            "cooperationPath": 4.8,
+            "evidenceReliability": 2
+          },
+          "artifact": "primary-evaluation/gemini-full/project-services.json",
+          "artifactSha256": "01c236e866a37cbc876b5f7259a7b3fb5d61ebc3a337b71a24f3b8388a7d3bf1"
+        }
+      ]
+    },
+    {
+      "rank": 3,
+      "systemId": "product-tavily",
+      "overallScore": 74.8,
+      "channels": [
+        {
+          "channelId": "tier1-distribution",
+          "blindBatchId": "B-09BE3EAE3F83",
+          "reviewMode": "discovery-pool",
+          "filledSlots": 10,
+          "missingSlots": 0,
+          "channelScore": 76.8,
+          "slotScores": [
+            96,
+            91,
+            85,
+            81,
+            76,
+            74,
+            72,
+            72,
+            67,
+            54
+          ],
+          "meanLevelsAcrossTenSlots": {
+            "productUseCaseFit": 3.9,
+            "cooperationPath": 4.3,
+            "evidenceReliability": 2.9
+          },
+          "artifact": "primary-evaluation/product-tavily/tier1-distribution.json",
+          "artifactSha256": "12f4cf2261c3dde1e45f9f521027fbad3c70be363d4711dfdfad8bf44207c69a"
+        },
+        {
+          "channelId": "b2b-resale",
+          "blindBatchId": "B-6102C3492DD5",
+          "reviewMode": "discovery-pool",
+          "filledSlots": 7,
+          "missingSlots": 3,
+          "channelScore": 59.2,
+          "slotScores": [
+            96,
+            96,
+            87,
+            85,
+            85,
+            76,
+            67,
+            0,
+            0,
+            0
+          ],
+          "meanLevelsAcrossTenSlots": {
+            "productUseCaseFit": 3.1,
+            "cooperationPath": 3.1,
+            "evidenceReliability": 2.4
+          },
+          "artifact": "primary-evaluation/product-tavily/b2b-resale.json",
+          "artifactSha256": "b6b469b9b077ff4d4a1c02d0a6fff07cf00a17bed8f8bf052f458539eb1f4dab"
+        },
+        {
+          "channelId": "project-services",
+          "blindBatchId": "B-50308678FBE5",
+          "reviewMode": "discovery-pool",
+          "filledSlots": 10,
+          "missingSlots": 0,
+          "channelScore": 88.4,
+          "slotScores": [
+            96,
+            96,
+            96,
+            96,
+            96,
+            87,
+            87,
+            85,
+            76,
+            69
+          ],
+          "meanLevelsAcrossTenSlots": {
+            "productUseCaseFit": 4.6,
+            "cooperationPath": 4.6,
+            "evidenceReliability": 3.7
+          },
+          "artifact": "primary-evaluation/product-tavily/project-services.json",
+          "artifactSha256": "59e01bac6b7aef9127645ed5c1f229e08811cb904a37e098eae23ad353acd109"
+        }
+      ]
+    },
+    {
+      "rank": 4,
+      "systemId": "product-gemini",
+      "overallScore": 72.7,
+      "channels": [
+        {
+          "channelId": "tier1-distribution",
+          "blindBatchId": "B-6F4557AA17A7",
+          "reviewMode": "discovery-pool",
+          "filledSlots": 8,
+          "missingSlots": 2,
+          "channelScore": 64.7,
+          "slotScores": [
+            84,
+            84,
+            84,
+            84,
+            84,
+            84,
+            75,
+            68,
+            0,
+            0
+          ],
+          "meanLevelsAcrossTenSlots": {
+            "productUseCaseFit": 3.8,
+            "cooperationPath": 3.9,
+            "evidenceReliability": 0.8
+          },
+          "artifact": "primary-evaluation/product-gemini/tier1-distribution.json",
+          "artifactSha256": "5a6497348fd8a6ac5732d02989a51d3c4b9e746f17c09db1d8bdf2f8811943a8"
+        },
+        {
+          "channelId": "b2b-resale",
+          "blindBatchId": "B-6B1FB907E9EB",
+          "reviewMode": "discovery-pool",
+          "filledSlots": 9,
+          "missingSlots": 1,
+          "channelScore": 71,
+          "slotScores": [
+            84,
+            84,
+            84,
+            84,
+            84,
+            77,
+            77,
+            68,
+            68,
+            0
+          ],
+          "meanLevelsAcrossTenSlots": {
+            "productUseCaseFit": 4.3,
+            "cooperationPath": 4.1,
+            "evidenceReliability": 0.9
+          },
+          "artifact": "primary-evaluation/product-gemini/b2b-resale.json",
+          "artifactSha256": "91719e0eb68808b07fee834d692d9ef03f0518cb558c2a9f423a20225fd0c2d1"
+        },
+        {
+          "channelId": "project-services",
+          "blindBatchId": "B-AB0CCC6C8B92",
+          "reviewMode": "discovery-pool",
+          "filledSlots": 10,
+          "missingSlots": 0,
+          "channelScore": 82.4,
+          "slotScores": [
+            84,
+            84,
+            84,
+            84,
+            84,
+            84,
+            84,
+            84,
+            77,
+            75
+          ],
+          "meanLevelsAcrossTenSlots": {
+            "productUseCaseFit": 4.9,
+            "cooperationPath": 4.9,
+            "evidenceReliability": 1
+          },
+          "artifact": "primary-evaluation/product-gemini/project-services.json",
+          "artifactSha256": "e23832c4135b4299db1f2edeeb06cde3691c72bb81e5d21682ea0a37959aa335"
+        }
+      ]
+    },
+    {
+      "rank": 5,
+      "systemId": "product-brave",
+      "overallScore": 65.76666666666667,
+      "channels": [
+        {
+          "channelId": "tier1-distribution",
+          "blindBatchId": "B-E1EA458AE1D9",
+          "reviewMode": "discovery-pool",
+          "filledSlots": 8,
+          "missingSlots": 2,
+          "channelScore": 70.5,
+          "slotScores": [
+            96,
+            96,
+            92,
+            89,
+            89,
+            85,
+            80,
+            78,
+            0,
+            0
+          ],
+          "meanLevelsAcrossTenSlots": {
+            "productUseCaseFit": 3.7,
+            "cooperationPath": 3.6,
+            "evidenceReliability": 3
+          },
+          "artifact": "primary-evaluation/product-brave/tier1-distribution.json",
+          "artifactSha256": "519024a1cb6f6818a91e4cac57d61d71d5edb486b88efc509dc9c069a380730a"
+        },
+        {
+          "channelId": "b2b-resale",
+          "blindBatchId": "B-782256DC5FB7",
+          "reviewMode": "discovery-pool",
+          "filledSlots": 5,
+          "missingSlots": 5,
+          "channelScore": 40.4,
+          "slotScores": [
+            96,
+            89,
+            87,
+            69,
+            63,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "meanLevelsAcrossTenSlots": {
+            "productUseCaseFit": 2.1,
+            "cooperationPath": 2.1,
+            "evidenceReliability": 1.7
+          },
+          "artifact": "primary-evaluation/product-brave/b2b-resale.json",
+          "artifactSha256": "5133e2c39695b287d75e935acabbb368e201f776078e7e9ef410dfa13dfdf9ec"
+        },
+        {
+          "channelId": "project-services",
+          "blindBatchId": "B-573E6427FD14",
+          "reviewMode": "discovery-pool",
+          "filledSlots": 10,
+          "missingSlots": 0,
+          "channelScore": 86.4,
+          "slotScores": [
+            96,
+            92,
+            92,
+            92,
+            87,
+            85,
+            85,
+            85,
+            76,
+            74
+          ],
+          "meanLevelsAcrossTenSlots": {
+            "productUseCaseFit": 4.6,
+            "cooperationPath": 4.6,
+            "evidenceReliability": 3.2
+          },
+          "artifact": "primary-evaluation/product-brave/project-services.json",
+          "artifactSha256": "3d7049b8f42ea178002c58b606c07dc99fcfbf1c61c2c6ce8d0daf35d7c91329"
+        }
+      ]
+    },
+    {
+      "rank": 6,
+      "systemId": "product-searchapi",
+      "overallScore": 60,
+      "channels": [
+        {
+          "channelId": "tier1-distribution",
+          "blindBatchId": "B-D0A08AF38338",
+          "reviewMode": "discovery-pool",
+          "filledSlots": 8,
+          "missingSlots": 2,
+          "channelScore": 66.6,
+          "slotScores": [
+            96,
+            89,
+            89,
+            89,
+            89,
+            78,
+            71,
+            65,
+            0,
+            0
+          ],
+          "meanLevelsAcrossTenSlots": {
+            "productUseCaseFit": 3.3,
+            "cooperationPath": 3.5,
+            "evidenceReliability": 3.1
+          },
+          "artifact": "primary-evaluation/product-searchapi/tier1-distribution.json",
+          "artifactSha256": "cbf28aa5967aa74c84b1502ca5fa0c90368e7d9874d69bb41f1a978cb9fb40e9"
+        },
+        {
+          "channelId": "b2b-resale",
+          "blindBatchId": "B-1E94E5239B23",
+          "reviewMode": "discovery-pool",
+          "filledSlots": 4,
+          "missingSlots": 6,
+          "channelScore": 29.2,
+          "slotScores": [
+            81,
+            76,
+            72,
+            63,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "meanLevelsAcrossTenSlots": {
+            "productUseCaseFit": 1.6,
+            "cooperationPath": 1.6,
+            "evidenceReliability": 0.9
+          },
+          "artifact": "primary-evaluation/product-searchapi/b2b-resale.json",
+          "artifactSha256": "cf99bdcc9523fbf8f41cf03c98f3443213c49c4af4efb585bb0d31977895c77b"
+        },
+        {
+          "channelId": "project-services",
+          "blindBatchId": "B-81B5C805614F",
+          "reviewMode": "discovery-pool",
+          "filledSlots": 10,
+          "missingSlots": 0,
+          "channelScore": 84.2,
+          "slotScores": [
+            96,
+            96,
+            96,
+            87,
+            87,
+            87,
+            78,
+            76,
+            72,
+            67
+          ],
+          "meanLevelsAcrossTenSlots": {
+            "productUseCaseFit": 4.1,
+            "cooperationPath": 4.7,
+            "evidenceReliability": 3.6
+          },
+          "artifact": "primary-evaluation/product-searchapi/project-services.json",
+          "artifactSha256": "83805640ed5ef55e5e563095895b9e130c2b184f61d66a781ee35f40c0d9869f"
+        }
+      ]
+    },
+    {
+      "rank": 7,
+      "systemId": "product-google-places",
+      "overallScore": 8.666666666666666,
+      "channels": [
+        {
+          "channelId": "tier1-distribution",
+          "blindBatchId": "B-B6585C7521CA",
+          "reviewMode": "discovery-pool",
+          "filledSlots": 0,
+          "missingSlots": 10,
+          "channelScore": 0,
+          "slotScores": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "meanLevelsAcrossTenSlots": {
+            "productUseCaseFit": 0,
+            "cooperationPath": 0,
+            "evidenceReliability": 0
+          },
+          "artifact": "primary-evaluation/product-google-places/tier1-distribution.json",
+          "artifactSha256": "cea189917ca0999535a8f694a501a91bdd5d58b3b1263f3c7509c4f700e99c95"
+        },
+        {
+          "channelId": "b2b-resale",
+          "blindBatchId": "B-CA0300E0507C",
+          "reviewMode": "discovery-pool",
+          "filledSlots": 0,
+          "missingSlots": 10,
+          "channelScore": 0,
+          "slotScores": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "meanLevelsAcrossTenSlots": {
+            "productUseCaseFit": 0,
+            "cooperationPath": 0,
+            "evidenceReliability": 0
+          },
+          "artifact": "primary-evaluation/product-google-places/b2b-resale.json",
+          "artifactSha256": "f56992bf794ba9a11fde9ecdd46cf474b7c1ac98a77147ea9cabfb9648d8885f"
+        },
+        {
+          "channelId": "project-services",
+          "blindBatchId": "B-5258C688D2CB",
+          "reviewMode": "discovery-pool",
+          "filledSlots": 4,
+          "missingSlots": 6,
+          "channelScore": 26,
+          "slotScores": [
+            74,
+            74,
+            65,
+            47,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "meanLevelsAcrossTenSlots": {
+            "productUseCaseFit": 1.6,
+            "cooperationPath": 1.2,
+            "evidenceReliability": 0.8
+          },
+          "artifact": "primary-evaluation/product-google-places/project-services.json",
+          "artifactSha256": "341a8ec489e21c205b6069faac7c5d777140abb9cff6ddda7ec3e97e94488d18"
+        }
+      ]
+    }
+  ]
+}

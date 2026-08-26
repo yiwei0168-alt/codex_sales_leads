@@ -1,0 +1,987 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-08-26-de-v1",
+  "instructions": "Provider, system, Gemini mode, rank, model score, occurrence count and relationship status are hidden. Judge only supplied public evidence using the frozen rubric.",
+  "candidates": [
+    {
+      "blindCandidateId": "C-0E353516F635",
+      "sampleType": "core",
+      "companyName": "SVA System Vertrieb Alexander GmbH",
+      "officialUrl": "https://www.sva.de/",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-04",
+          "url": "https://www.sva.de/",
+          "excerpt": "SVA is one of Germany's leading IT system integrators and VARs, reselling enterprise networking, data center, and security infrastructure to business customers."
+        }
+      ],
+      "reviewerTask": {
+        "determineGates": [
+          "companyExists",
+          "germanyPresence",
+          "networkingRelevant",
+          "sufficientEvidence"
+        ],
+        "chooseValidCategory": [
+          "tier1-distribution",
+          "b2b-resale",
+          "project-services",
+          "none-or-unclear"
+        ],
+        "assignIntegerLevels": {
+          "productUseCaseFit": "0-5",
+          "cooperationPath": "0-5",
+          "evidenceReliability": "0-5"
+        }
+      }
+    },
+    {
+      "blindCandidateId": "C-11DF73E87860",
+      "sampleType": "core",
+      "companyName": "ALLNET GmbH",
+      "officialUrl": "https://www.allnet.de/",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-EB0E2FAC7A",
+          "url": "https://www.allnet.de/de/allnet-brand",
+          "excerpt": "WLAN Wireless Controller & AP Wireless Router Access Points & Bridges. Hier finden zertifizierte Fachhändler, Online Shops und Distributoren. innovative IT-"
+        },
+        {
+          "evidenceEntryId": "E-5C98B3B06E",
+          "url": "https://distribution.allnet.de/distribution-vendors.html?L=12",
+          "excerpt": "RUCKUS offers products for switches, storage networks, routers, software networks, network ... Cambium Networks. Cambium Networks provides wireless connectivity"
+        },
+        {
+          "evidenceEntryId": "E-255ACB6AA1",
+          "url": "https://www.tp-link.com/de/press/news/20014",
+          "excerpt": "Zurück For Home For Business Deutschland / Deutsch # TP-Link gibt Allnet als neuen Value Added Distributor bekannt TP-Link, Spezialist für Smart-Home- und Netzwerkinfrastruktur-Lösungen, gibt die Zusammenarbeit mit Distributor Allnet bekannt. Das in Germering ansässige Unternehmen konzentriert sich dabei auf ein umfassendes Produktportfolio zukunftsorientierter Netzwerk-, Überwachungs- und Kommunikationslösungen. Seit dem [redacted-phone] vertreibt Allnet das TP-Link Enterprise-Portfolio in Deutschland als Value Added Distributor (VAD). Dazu stellt Allnet speziell geschulte Vertriebs- und Technikressourcen bereit und ist somit der ideale Ansprechpartner für Systemhäuser. Dank seiner Expertise kann der Distributor so selbst beratungsintensive Netzwerk-Infrastruktur-Projekte begleiten. [...] Zubehör für Saugroboter Video-Türklingel Smart Switches WLAN-Steckdosen Glühbirne & LED-Streifen Smart Sensors Smartes Thermostat Smart Hub Tapo Store Matter Smart Actions 2.0 Geschäftskunden Zurück Omada Was ist Omada? Fusion Gateways WiFi Switches Gateways Controller Zubehör Alle Omada Produkte VIGI Was ist VIGI? Kameras Videorekorder Solar Power System Zubehör Software Service Alle Produkte Om"
+        }
+      ],
+      "reviewerTask": {
+        "determineGates": [
+          "companyExists",
+          "germanyPresence",
+          "networkingRelevant",
+          "sufficientEvidence"
+        ],
+        "chooseValidCategory": [
+          "tier1-distribution",
+          "b2b-resale",
+          "project-services",
+          "none-or-unclear"
+        ],
+        "assignIntegerLevels": {
+          "productUseCaseFit": "0-5",
+          "cooperationPath": "0-5",
+          "evidenceReliability": "0-5"
+        }
+      }
+    },
+    {
+      "blindCandidateId": "C-150C6827B4CD",
+      "sampleType": "risk-supplement",
+      "companyName": "ditpro GmbH",
+      "officialUrl": "https://www.ditpro.de/",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-B5D3A61635",
+          "url": "https://www.ditpro.de/",
+          "excerpt": "Here are 10 real companies operating in Germany that specialize in corporate WLAN and network planning, site survey, and installation (*WLAN Netzwerk Installation Gewerbe/Unternehmen*): 1. **Frings Solutions Deutschland GmbH** * **URL:** https://www.frings-solutions.de * **Match Reason:** Offers enterprise IT infrastructure services, including professional WLAN planning (*WLAN-Ausleuchtung* / site surveys), access point installation, and network optimization for commercial premises. 2. **GREEN IT Das Systemhaus GmbH** * **URL:** https://www.greenit.systems * **Match Reason:** A nationwide IT system house offering end-to-end network architecture, structured cabling, managed WLAN, and Ubiquiti/Sophos deployment for commercial clients. 3. **ditpro GmbH** * **URL:** https://www.ditpro.de * **Match Reason:** Specializes in business network structures, including indoor/outdoor corporate Wi-Fi setups, secure guest network separation (*Gastnetzwerke*), and point-to-point wireless solutions for commercial sites. 4. **itc GmbH** * **URL:** https://www.itc-net.de * **Match Reason:** Offers specialized Ekahau-assisted 3D WLAN site surveys, heatmapping, access point positioning, and full networ"
+        }
+      ],
+      "reviewerTask": {
+        "determineGates": [
+          "companyExists",
+          "germanyPresence",
+          "networkingRelevant",
+          "sufficientEvidence"
+        ],
+        "chooseValidCategory": [
+          "tier1-distribution",
+          "b2b-resale",
+          "project-services",
+          "none-or-unclear"
+        ],
+        "assignIntegerLevels": {
+          "productUseCaseFit": "0-5",
+          "cooperationPath": "0-5",
+          "evidenceReliability": "0-5"
+        }
+      }
+    },
+    {
+      "blindCandidateId": "C-16A700C66D83",
+      "sampleType": "core",
+      "companyName": "Netzwerkbau & IT-Services Berlin",
+      "officialUrl": "https://www.netzwerkbau.berlin/",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-5BD1F02C91",
+          "url": "https://www.netzwerkbau.berlin/en/services/networkinstallation.html",
+          "excerpt": "We support you in planning and implementation in the field of network technology, starting with the installation of new networks and the expansion of existing ..."
+        }
+      ],
+      "reviewerTask": {
+        "determineGates": [
+          "companyExists",
+          "germanyPresence",
+          "networkingRelevant",
+          "sufficientEvidence"
+        ],
+        "chooseValidCategory": [
+          "tier1-distribution",
+          "b2b-resale",
+          "project-services",
+          "none-or-unclear"
+        ],
+        "assignIntegerLevels": {
+          "productUseCaseFit": "0-5",
+          "cooperationPath": "0-5",
+          "evidenceReliability": "0-5"
+        }
+      }
+    },
+    {
+      "blindCandidateId": "C-16B31410009A",
+      "sampleType": "core",
+      "companyName": "NCS Netzwerke Computer Service GmbH",
+      "officialUrl": "https://ncs.de/",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-59ACDBF7A5",
+          "url": "https://ncs.de/",
+          "excerpt": "# NCS Netzwerke Computer Service GmbH NCS Netzwerke Computer Service GmbH is a Computer Networking Products company. NCS Netzwerke Computer Service GmbH is an IT system located in Friedberg, Augsburg. They provide solutions in virtualization, storage and data security, server and network (data center), green data center, IT security and privacy, monitoring and analysis, software, and products. They also offer managed services for Microsoft 365 and conference systems. NCS Netzwerke Computer Service GmbH employs 16 people, founded in 1997. Headquartered in Friedberg, Bayern, Germany, with presence in United States. ## About Mit den drei Standorten Ulm, Friedberg bei Augsburg und München ziehen wir eine durchgehende Linie technischer Exzellenz quer durch Südbayern. Manche sprechen vom IT-Backbone Süddeutschlands – wir nennen es einfach: Nähe, auf die Sie sich verlassen können. Wir bieten IT-Lösungen für Backup, Support, Monitoring, Netzwerke, Hardware, System-Management, Coaching, Installation, Datensicherung, Druckermanagement, IT-Security, Repairservice, Server und Virtualisierung an. Als Managed Service Provider sind wir Ihr Partner! Für mehr Hochverfügbarkeit ist unser Rechenzentr"
+        }
+      ],
+      "reviewerTask": {
+        "determineGates": [
+          "companyExists",
+          "germanyPresence",
+          "networkingRelevant",
+          "sufficientEvidence"
+        ],
+        "chooseValidCategory": [
+          "tier1-distribution",
+          "b2b-resale",
+          "project-services",
+          "none-or-unclear"
+        ],
+        "assignIntegerLevels": {
+          "productUseCaseFit": "0-5",
+          "cooperationPath": "0-5",
+          "evidenceReliability": "0-5"
+        }
+      }
+    },
+    {
+      "blindCandidateId": "C-1D4C58F5CAB2",
+      "sampleType": "core",
+      "companyName": "SPIE Deutschland & Zentraleuropa",
+      "officialUrl": "https://spie.de/",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-03",
+          "url": "https://spie.de/",
+          "excerpt": "SPIE is a major technical service provider performing physical network cabling, Wi-Fi deployment, industrial networking installation, and turnkey building automation."
+        }
+      ],
+      "reviewerTask": {
+        "determineGates": [
+          "companyExists",
+          "germanyPresence",
+          "networkingRelevant",
+          "sufficientEvidence"
+        ],
+        "chooseValidCategory": [
+          "tier1-distribution",
+          "b2b-resale",
+          "project-services",
+          "none-or-unclear"
+        ],
+        "assignIntegerLevels": {
+          "productUseCaseFit": "0-5",
+          "cooperationPath": "0-5",
+          "evidenceReliability": "0-5"
+        }
+      }
+    },
+    {
+      "blindCandidateId": "C-24E6D7DB528E",
+      "sampleType": "core",
+      "companyName": "3KV GmbH",
+      "officialUrl": "https://www.3kv.de/",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-04BD7D4066",
+          "url": "https://www.channelpartner.de/article/3903078/einkaufsquellen-fuer-reseller-value-add-distribution.html",
+          "excerpt": "| | | --- | | Sysob IT-Distribution GmbH & Co. KG | | | Adresse | Kirchplatz 1 93489 Schorndorf | | URL | www.sysob.com | | E-Mail | (/cdn-cgi/l/email-protection#2a4b486a[redacted-phone]) | | Telefon | [redacted-phone] | | Tätigkeits-, Produkt- und Lösungsschwerpunkte | IT-Security-, WLAN- und SBC-Produkte, Service- u. Support-Konzepte, technische Unterstützung bei Installationen und Projekten vor Ort | [...] Daher finden sich in der Kategorie “Value Add Distribution” vor allem Grossisten, die sich auf komplexe IT-Infrastrukturen, Security, Cloud Services und Angebote für Managed Service Provider spezialisiert haben. ## Value Add Distributoren | | | --- | | 3KV GmbH | | | Adresse | Fürstenrieder Str. [redacted-phone] München | | URL | www.3KV.de | | E-Mail | (/cdn-cgi/l/email-protection#98eefdeaeceaf1fdfad8abd3ceb6fcfd) | | Telefon | [redacted-phone] | | Tätigkeits-, Produkt- und Lösungsschwerpunkte | Aktive- und passive Infrastruktur (Verkabelungssysteme und Netzwerklösungen für Gebäude und Rechenzentren), SD-WAN | [...] | | | --- | | Teamtrade IT GmbH | | | Adresse | Molkereistr. 45 47589 Uedem | | URL | teamtrade-it.de | | E-Mail | (/cdn-cgi/l/email-protection#a8c1c6cec7e8dccdc9"
+        }
+      ],
+      "reviewerTask": {
+        "determineGates": [
+          "companyExists",
+          "germanyPresence",
+          "networkingRelevant",
+          "sufficientEvidence"
+        ],
+        "chooseValidCategory": [
+          "tier1-distribution",
+          "b2b-resale",
+          "project-services",
+          "none-or-unclear"
+        ],
+        "assignIntegerLevels": {
+          "productUseCaseFit": "0-5",
+          "cooperationPath": "0-5",
+          "evidenceReliability": "0-5"
+        }
+      }
+    },
+    {
+      "blindCandidateId": "C-2867DF0679EC",
+      "sampleType": "core",
+      "companyName": "Die Netz-Werker AG",
+      "officialUrl": "https://www.dnw.ag/",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-70812DC130",
+          "url": "https://www.dnw.ag/portfolio/it-infrastruktur/netzwerk-infrastruktur",
+          "excerpt": "Flexibel und zukunftssicher Unsere Netzwerk- und WLAN-Lösungen sind skalierbar, sodass sie sich an die wachsenden Anforderungen Ihres Unternehmens anpassen. Wir bieten fortlaufende Verwaltung und Support, um sicherzustellen, dass Ihr Netzwerk stets sicher, leistungsfähig und zukunftssicher ist. Ob kleine oder große Umgebungen – wir bieten maßgeschneiderte Lösungen, die genau auf Ihre Bedürfnisse abgestimmt sind. ### Lassen Sie uns reden Kontaktieren Sie uns für eine Beratung oder besuchen Sie unseren Blog für mehr Infos. #### Unsere Lösungspartner Die Netz-Werker AG Logo Die Netz-Werker AG Kiefholzstr. 3, 12435 Berlin Ihr erfahrener IT-Systempartner für Berlin und Brandenburg Informationen Portfolio Copyright © 2026 Die Netz-Werker AG. All rights reserved. [...] Nahtlose drahtlose Konnektivität Wir bieten umfassende Dienstleistungen zur Einrichtung und Optimierung Ihrer WLAN-Infrastruktur. Mit Lösungen von Ruckus und Ubiquiti sorgen wir für eine nahtlose drahtlose Konnektivität, die schnelles und sicheres Internet an allen Arbeitsplätzen und mobilen Geräten ermöglicht. Unsere Experten optimieren die Reichweite und Leistung Ihrer WLAN-Netzwerke für maximale Effizienz. #### Skalierba"
+        }
+      ],
+      "reviewerTask": {
+        "determineGates": [
+          "companyExists",
+          "germanyPresence",
+          "networkingRelevant",
+          "sufficientEvidence"
+        ],
+        "chooseValidCategory": [
+          "tier1-distribution",
+          "b2b-resale",
+          "project-services",
+          "none-or-unclear"
+        ],
+        "assignIntegerLevels": {
+          "productUseCaseFit": "0-5",
+          "cooperationPath": "0-5",
+          "evidenceReliability": "0-5"
+        }
+      }
+    },
+    {
+      "blindCandidateId": "C-333AB110B4E6",
+      "sampleType": "core",
+      "companyName": "SCALCOM",
+      "officialUrl": "https://scalcom.de/",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-4EC2B23AA7",
+          "url": "https://scalcom.de/",
+          "excerpt": "# SCALCOM SCALCOM is a IT Services and IT Consulting company. SCALCOM is a B2B online shop that offers a wide range of products including switching/routing, WLAN, server, storage, router, service, security, switches, and workstations. SCALCOM employs 5 people (-30.0% YoY, -3 people), founded in 2009. Headquartered in waltenhofen, bayern, Germany, with presence in United States. ## About Die SCALCOM bietet als spezialisierter Distributor – mit dem Schwerpunkt Netzwerkkomponenten – weit mehr als nur eine klassische Produktdistribution. Neben dem Fokus auf die Lieferung von Netzwerkkomponenten und ausgewählten Funklösungen beinhalten die Leistungen von SCALCOM die strategische Beratung und einen umfassenden Service und Support. Unsere Kunden profitieren von unserem langjährigen Know-how in den neuesten Technologien. Sie finden bei SCALCOM klassische Netzwerkkomponenten aus den Bereichen Switching und Routing, neueste Funktechnologien (WLAN, Richtfunk) sowie Multiplexer- und Modemtechnik und vieles mehr. SCALCOM unterstützt Sie mit einem umfangreichen Partnernetzwerk bestehend aus technologieführenden Herstellern. Bereits bei der Skizzierung Ihres Projektes und der Erstellung von Stüc"
+        }
+      ],
+      "reviewerTask": {
+        "determineGates": [
+          "companyExists",
+          "germanyPresence",
+          "networkingRelevant",
+          "sufficientEvidence"
+        ],
+        "chooseValidCategory": [
+          "tier1-distribution",
+          "b2b-resale",
+          "project-services",
+          "none-or-unclear"
+        ],
+        "assignIntegerLevels": {
+          "productUseCaseFit": "0-5",
+          "cooperationPath": "0-5",
+          "evidenceReliability": "0-5"
+        }
+      }
+    },
+    {
+      "blindCandidateId": "C-435434E6C839",
+      "sampleType": "core",
+      "companyName": "Acondistec",
+      "officialUrl": "https://acondistec.de/",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-2770106585",
+          "url": "https://acondistec.de/",
+          "excerpt": "# Acondistec Acondistec is a IT Services and IT Consulting company. Acondistec is a company that specializes in value-added distribution of high-quality tech. They offer ITK and Cloud solutions from market leaders and provide a customized business development program. Acondistec employs 27 people (+7.7% YoY, +3 people), founded in 2006. Headquartered in Sankt Leon-Rot, Baden-Württemberg, Germany, with presence in United States. ## About Acondistec ist Value Added Distributor für IT-Infrastruktur, Cloud- und Smart Energy-Lösungen. Wir unterstützen Systemhäuser mit innovativen Technologien und echtem Value Add, der Umsatz und Wachstum ermöglicht. Unser Portfolio umfasst Datacenter, Server, Storage, Netzwerk, WiFi, Backup, Security, Cloud, Energiespeicher, Photovoltaik und Ladeinfrastruktur. Dank enger Partnerschaften mit führenden Herstellern wie Huawei, Huawei eKit, FusionSolar, xFusion und Supermicro sowie unseren individuellen Serviceleistungen realisieren wir zukunftsorientierte Lösungen. ## Company Details - Industry: IT Services and IT Consulting - Type: Public Company - Headquarters: Sankt Leon-Rot, Germany - Founded Year: 2006 - Homepage: acondistec.de - Status: active - Owne"
+        }
+      ],
+      "reviewerTask": {
+        "determineGates": [
+          "companyExists",
+          "germanyPresence",
+          "networkingRelevant",
+          "sufficientEvidence"
+        ],
+        "chooseValidCategory": [
+          "tier1-distribution",
+          "b2b-resale",
+          "project-services",
+          "none-or-unclear"
+        ],
+        "assignIntegerLevels": {
+          "productUseCaseFit": "0-5",
+          "cooperationPath": "0-5",
+          "evidenceReliability": "0-5"
+        }
+      }
+    },
+    {
+      "blindCandidateId": "C-592F17C2347E",
+      "sampleType": "core",
+      "companyName": "CANCOM SE",
+      "officialUrl": "https://www.cancom.de/",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-02",
+          "url": "https://www.cancom.de/",
+          "excerpt": "CANCOM is a leading digital transformation partner and VAR in Germany, reselling enterprise network infrastructure, cloud hardware, and IT services directly to commercial end customers."
+        }
+      ],
+      "reviewerTask": {
+        "determineGates": [
+          "companyExists",
+          "germanyPresence",
+          "networkingRelevant",
+          "sufficientEvidence"
+        ],
+        "chooseValidCategory": [
+          "tier1-distribution",
+          "b2b-resale",
+          "project-services",
+          "none-or-unclear"
+        ],
+        "assignIntegerLevels": {
+          "productUseCaseFit": "0-5",
+          "cooperationPath": "0-5",
+          "evidenceReliability": "0-5"
+        }
+      }
+    },
+    {
+      "blindCandidateId": "C-5C4CF672AC7E",
+      "sampleType": "core",
+      "companyName": "Netzwerk-Arzt",
+      "officialUrl": "https://www.netzwerk-arzt.de/",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-496E98182C",
+          "url": "https://www.netzwerk-arzt.de/wlan-netzwerk-gaestewlan.html",
+          "excerpt": "Ihr WLAN-Dienstleister in Bayern: professionelle WLAN-Installation und Gäste-WLAN für Unternehmen in Bayreuth und ganz Oberfranken."
+        }
+      ],
+      "reviewerTask": {
+        "determineGates": [
+          "companyExists",
+          "germanyPresence",
+          "networkingRelevant",
+          "sufficientEvidence"
+        ],
+        "chooseValidCategory": [
+          "tier1-distribution",
+          "b2b-resale",
+          "project-services",
+          "none-or-unclear"
+        ],
+        "assignIntegerLevels": {
+          "productUseCaseFit": "0-5",
+          "cooperationPath": "0-5",
+          "evidenceReliability": "0-5"
+        }
+      }
+    },
+    {
+      "blindCandidateId": "C-609D3B387E49",
+      "sampleType": "core",
+      "companyName": "BerryBase",
+      "officialUrl": "https://www.berrybase.de/",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-E024F8E06D",
+          "url": "https://www.berrybase.de/en/network-iot/network-devices/distributors-switches/?srsltid=AfmBOor-lTkGHuJ_-AwBwKY5DPQy1xKsoy-Rg-LBVhfUknjbBHsUDooj",
+          "excerpt": "Discover network switches and distributors! These innovative devices are indispensable for an efficient and powerful network - both for businesses and private ..."
+        }
+      ],
+      "reviewerTask": {
+        "determineGates": [
+          "companyExists",
+          "germanyPresence",
+          "networkingRelevant",
+          "sufficientEvidence"
+        ],
+        "chooseValidCategory": [
+          "tier1-distribution",
+          "b2b-resale",
+          "project-services",
+          "none-or-unclear"
+        ],
+        "assignIntegerLevels": {
+          "productUseCaseFit": "0-5",
+          "cooperationPath": "0-5",
+          "evidenceReliability": "0-5"
+        }
+      }
+    },
+    {
+      "blindCandidateId": "C-7A91FBCD0523",
+      "sampleType": "core",
+      "companyName": "Red Eagle IT Distribution GmbH",
+      "officialUrl": "https://redeagle-it.de/",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-EF6F00FFAE",
+          "url": "https://redeagle-it.de/",
+          "excerpt": "# Red Eagle IT Distribution GmbH Red Eagle IT Distribution GmbH is a Computer and Network Security company. Red Eagle IT Distribution is a company that offers a wide selection of IT hardware and software components from various manufacturers. They also provide professional advice and services for resellers and system integrators. Red Eagle IT Distribution GmbH employs 2 people. Headquartered in Feldkirchen, Bayern, Germany. ## About The product range of Red Eagle IT Distribution includes a wide selection of IT hardware and software components from various manufacturers. In addition to original, factory-new portfolio we also offer alternatives such as „renew“, „refurbished“ and „used“ products. As a specialist in the field of IT distribution and network technology we mainly concentrate on switches, router, access points, firewalls, server technology, network technology, network security and transceivers. One of our current highlights is BlackFog - a software representing a new generation of data security. BlackFog allows for a significant increase in data security by the means of additional surveillance of outgoing data traffic. As a reseller and system integrator Red Eagle IT Distr"
+        }
+      ],
+      "reviewerTask": {
+        "determineGates": [
+          "companyExists",
+          "germanyPresence",
+          "networkingRelevant",
+          "sufficientEvidence"
+        ],
+        "chooseValidCategory": [
+          "tier1-distribution",
+          "b2b-resale",
+          "project-services",
+          "none-or-unclear"
+        ],
+        "assignIntegerLevels": {
+          "productUseCaseFit": "0-5",
+          "cooperationPath": "0-5",
+          "evidenceReliability": "0-5"
+        }
+      }
+    },
+    {
+      "blindCandidateId": "C-7F1772D30541",
+      "sampleType": "core",
+      "companyName": "A+G connect GmbH",
+      "officialUrl": "https://www.aplusg.de/",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-673C044084",
+          "url": "https://www.aplusg.de/projekte",
+          "excerpt": "A+G connect GmbH Logo Network Datennetze # Netzwerk-Projekte Unser Spitzen Know-How und unsere langjährige Erfahrung in der Zusammenführung von Datennetzen, Sprache und IT-Sicherheit sind unser klar erkennbares Unterscheidungs­­merkmal. Erfahren Sie hier mehr über unsere Projektarbeit. ## Erwähnenswerte Netzwerk-Projekte ### we connect Modernste Technologien und Methoden in der öffentlichen Verwaltung ### Telefonie-Projekt Mit Zentraler Steuerung und 32 abgesetzten Standorten für 3500+ Teilnehmer ### Support und Betrieb Europaweit Verantwortung für Betriebs- und Datensicherheit Technologie: WAN, LAN, W-LAN, IT-Security ### Service 24×7 Europa- und Weltweit ITIL-konforme Ablaufstrukturen und Dokumentationsvorgaben ### One stop convergence [...] ### One stop convergence Modernste Technologien und Methoden in der öffentlichen Verwaltung ### Netzwerk-Kopplung über WLAN Anbindung von mobilen lokalen Netzwerken an das Firmen-Netzwerk Trierer Strasse 12 • 66111 Saarbrücken • Fax 0681 – 94805-11 A+G connect GmbH Logo Impressum I Datenschtzhinweise I AGB © 2022 – 2025 All rights reserved. • A+G connect GmbH • mit ♥ realisiert – mv-onliners.de Sie müssen den Inhalt von reCAPTCHA laden, um da"
+        }
+      ],
+      "reviewerTask": {
+        "determineGates": [
+          "companyExists",
+          "germanyPresence",
+          "networkingRelevant",
+          "sufficientEvidence"
+        ],
+        "chooseValidCategory": [
+          "tier1-distribution",
+          "b2b-resale",
+          "project-services",
+          "none-or-unclear"
+        ],
+        "assignIntegerLevels": {
+          "productUseCaseFit": "0-5",
+          "cooperationPath": "0-5",
+          "evidenceReliability": "0-5"
+        }
+      }
+    },
+    {
+      "blindCandidateId": "C-857CBF410400",
+      "sampleType": "core",
+      "companyName": "Infinigate Deutschland GmbH",
+      "officialUrl": "https://www.infinigate.de/",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-389E1C55E3",
+          "url": "https://www.infinigate.de/",
+          "excerpt": "Here are 10 top real Value Added Distributors (VADs) operating in Germany (DE) that match your search criteria for networking, enterprise WLAN, LAN, and IT channel partner enablement: 1. **ADN – Advanced Digital Network Distribution GmbH** * **URL:** [adn.de](https://www.adn.de) * **Why it matches:** Leading German VAD that supplies specialized networking (LAN/WLAN) and cloud management solutions (e.g., TP-Link Omada, enterprise network infrastructure) to system houses, MSPs, and resellers. 2. **sysob IT-Distribution GmbH** * **URL:** [sysob.de](https://www.sysob.de) * **Why it matches:** Independent owner-managed VAD based in Germany focused on enterprise network infrastructure, IT security, and wireless LAN solutions (distributing vendors such as Alcatel-Lucent Enterprise LAN/WLAN). 3. **Infinigate Deutschland GmbH** * **URL:** [infinigate.de](https://www.infinigate.de) * **Why it matches:** Premier VAD operating across DACH; specializes in IT security and enterprise WLAN/LAN infrastructure (partnering with vendors like Ruckus, Aruba/HPE, and Ekahau Wi-Fi survey systems). 4. **Westcon-Comstor Germany (Westcon Group Germany GmbH)** * **URL:** [westconcomstor.com](https://www.westc"
+        },
+        {
+          "evidenceEntryId": "E-858D4CE43C",
+          "url": "https://www.infinigate.de/",
+          "excerpt": "Here are 10 key B2B IT network distributors operating in Germany that serve IT resellers (*Fachhändler*), system integrators, and B2B customers with enterprise networking solutions (WLAN, access points, switches, and routers): 1. **ALLNET GmbH Computersysteme** * **Website:** https://www.allnet.de * **Why it matches:** ALLNET is a major specialized ICT distributor and developer in Germering (Bavaria), focusing heavily on active network technology, wireless infrastructure, switches, PoE, and enterprise routers for B2B channels. 2. **Ingram Micro Distribution GmbH** * **Website:** https://de.ingrammicro.com * **Why it matches:** One of the largest global IT distributors in Germany, offering broad enterprise network infrastructure, routers, switches, and WLAN solutions to certified B2B channel partners (*Fachhändler*). 3. **ALSO Deutschland GmbH** * **Website:** https://www.also.com * **Why it matches:** A leading European IT B2B distributor supplying network hardware, corporate switches, routers, and access points alongside technical channel services to German system integrators and IT dealers. 4. **Westcon Group Germany GmbH** * **Website:** https://www.westconcomstor.com * **Why it"
+        }
+      ],
+      "reviewerTask": {
+        "determineGates": [
+          "companyExists",
+          "germanyPresence",
+          "networkingRelevant",
+          "sufficientEvidence"
+        ],
+        "chooseValidCategory": [
+          "tier1-distribution",
+          "b2b-resale",
+          "project-services",
+          "none-or-unclear"
+        ],
+        "assignIntegerLevels": {
+          "productUseCaseFit": "0-5",
+          "cooperationPath": "0-5",
+          "evidenceReliability": "0-5"
+        }
+      }
+    },
+    {
+      "blindCandidateId": "C-86F6A7B21DD3",
+      "sampleType": "core",
+      "companyName": "indasys IT Systemhaus AG",
+      "officialUrl": "https://indasys.de/",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-548CBB8135",
+          "url": "https://indasys.de/",
+          "excerpt": "# indasys IT Systemhaus Gruppe (indasys IT Systemhaus AG) indasys IT Systemhaus Gruppe is a Computer Networking company. indasys IT Systemhaus Gruppe is an IT system house that provides a wide range of services including IT infrastructure, network security, data center, modern workplace, software and licenses, cloud services, managed services, IT support, consulting, and repair services. Indasys IT Systemhaus Gruppe employs 36 people (+1.6% YoY, +1 person), founded in 1999. Headquartered in Stuttgart-Weilimdorf, Baden-Württemberg, Germany, with presence in United States. Its workforce is distributed across Germany and Kenya. ## About Wir lösen reale IT-Probleme – nicht mit Buzzwords, sondern mit messbaren Ergebnissen. Unser Ziel: Eine IT, die funktioniert, schützt und mitdenkt – damit Sie sich auf Ihr Kerngeschäft konzentrieren können. Seit über 25 Jahren begleiten wir mittelständische und größere Unternehmen als zuverlässiger IT-Partner in Baden-Württemberg. Durch unsere Erfahrung aus zahlreichen Projekten wissen wir, worauf es wirklich ankommt: individuelle Lösungen, die exakt zu Ihrer Unternehmensstruktur passen. Unsere Services sind skalierbar – wir passen uns Ihrer Größe, Bran"
+        }
+      ],
+      "reviewerTask": {
+        "determineGates": [
+          "companyExists",
+          "germanyPresence",
+          "networkingRelevant",
+          "sufficientEvidence"
+        ],
+        "chooseValidCategory": [
+          "tier1-distribution",
+          "b2b-resale",
+          "project-services",
+          "none-or-unclear"
+        ],
+        "assignIntegerLevels": {
+          "productUseCaseFit": "0-5",
+          "cooperationPath": "0-5",
+          "evidenceReliability": "0-5"
+        }
+      }
+    },
+    {
+      "blindCandidateId": "C-8D3734DA95B9",
+      "sampleType": "core",
+      "companyName": "Skaylink GmbH",
+      "officialUrl": "https://www.skaylink.com/",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-10",
+          "url": "https://www.skaylink.com/",
+          "excerpt": "Skaylink delivers business network infrastructure, cloud connectivity, and managed hardware reselling to mid-sized commercial organizations in Germany."
+        }
+      ],
+      "reviewerTask": {
+        "determineGates": [
+          "companyExists",
+          "germanyPresence",
+          "networkingRelevant",
+          "sufficientEvidence"
+        ],
+        "chooseValidCategory": [
+          "tier1-distribution",
+          "b2b-resale",
+          "project-services",
+          "none-or-unclear"
+        ],
+        "assignIntegerLevels": {
+          "productUseCaseFit": "0-5",
+          "cooperationPath": "0-5",
+          "evidenceReliability": "0-5"
+        }
+      }
+    },
+    {
+      "blindCandidateId": "C-8F091222E6BF",
+      "sampleType": "core",
+      "companyName": "KUMAVISION AG",
+      "officialUrl": "https://kumavision.com/",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-09",
+          "url": "https://kumavision.com/",
+          "excerpt": "KUMAVISION implements integrated business technology and cloud network architectures, delivering end-to-end IT solution projects for mid-market clients."
+        }
+      ],
+      "reviewerTask": {
+        "determineGates": [
+          "companyExists",
+          "germanyPresence",
+          "networkingRelevant",
+          "sufficientEvidence"
+        ],
+        "chooseValidCategory": [
+          "tier1-distribution",
+          "b2b-resale",
+          "project-services",
+          "none-or-unclear"
+        ],
+        "assignIntegerLevels": {
+          "productUseCaseFit": "0-5",
+          "cooperationPath": "0-5",
+          "evidenceReliability": "0-5"
+        }
+      }
+    },
+    {
+      "blindCandidateId": "C-A646DF2CC549",
+      "sampleType": "risk-supplement",
+      "companyName": "WLAN-Shop24 (Varistano GmbH)",
+      "officialUrl": "https://www.wlan-shop24.de/",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-E2D2BFE7C4",
+          "url": "https://www.wlan-shop24.de/",
+          "excerpt": "Here are 10 B2B network technology specialists, distributors, and IT system integrators operating in Germany that cover enterprise networking, switches, routers, and WLAN infrastructure: 1. **Bechtle AG** * **Website:** https://www.bechtle.com * **Relevance:** Major German IT system house and B2B direct reseller providing enterprise network planning, hardware procurement (switches, routers, access points), and managed network services. 2. **JACOB Elektronik GmbH** * **Website:** https://www.jacob.de * **Relevance:** Dedicated B2B distributor and online specialist in Germany offering enterprise network technology, including managed switches, Wi-Fi 6/7 access points, and business routers. 3. **ALLNET GmbH Computersysteme** * **Website:** https://www.allnet.de * **Relevance:** German specialist distributor and developer for network equipment, focused on B2B resellers and system integrators for WLAN, industrial/enterprise switches, and routing solutions. 4. **WLAN-Shop24 (Varistano GmbH)** * **Website:** https://www.wlan-shop24.de * **Relevance:** Specialized German retailer and consultant for industrial and commercial networking, focusing on business WLAN access points, outdoor wirele"
+        }
+      ],
+      "reviewerTask": {
+        "determineGates": [
+          "companyExists",
+          "germanyPresence",
+          "networkingRelevant",
+          "sufficientEvidence"
+        ],
+        "chooseValidCategory": [
+          "tier1-distribution",
+          "b2b-resale",
+          "project-services",
+          "none-or-unclear"
+        ],
+        "assignIntegerLevels": {
+          "productUseCaseFit": "0-5",
+          "cooperationPath": "0-5",
+          "evidenceReliability": "0-5"
+        }
+      }
+    },
+    {
+      "blindCandidateId": "C-B53C22FC38AA",
+      "sampleType": "risk-supplement",
+      "companyName": "smaRTtechnik GmbH & Co. KG",
+      "officialUrl": "https://smarttechnik.de/",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-1BB4FDA9B8",
+          "url": "https://smarttechnik.de/",
+          "excerpt": "Here are 10 real companies operating in Germany that specialize in structured cabling, Wi-Fi installation, and system integration services for businesses: 1. **smaRTtechnik GmbH & Co. KG** * **URL:** https://smarttechnik.de * **Relevance:** Based in Frankfurt am Main, they specialize in B2B physical IT infrastructure, offering end-to-end services including structured copper/fiber cabling, enterprise Wi-Fi installation, and data center network rollouts. 2. **IB-IT Cabling GmbH** * **URL:** https://ib-it.eu * **Relevance:** German network infrastructure specialist providing planning, structured copper and fiber optic cabling, and system integration services for office fit-outs and enterprise data centers. 3. **Rosenberger OSI (Rosenberger-OSI GmbH & Co. OHG)** * **URL:** https://rosenberger.com/osi/ * **Relevance:** A major nationwide system integrator and developer in Germany focusing on standard-compliant structured cabling (EN 50173 / ISO 11801) and integrated fiber/copper campus architectures. 4. **Klare Leitung** * **URL:** https://klare-leitung.de * **Relevance:** A Berlin-based network system integrator specializing in structured Cat6A cabling, switch setup, enterprise Wi-Fi ("
+        }
+      ],
+      "reviewerTask": {
+        "determineGates": [
+          "companyExists",
+          "germanyPresence",
+          "networkingRelevant",
+          "sufficientEvidence"
+        ],
+        "chooseValidCategory": [
+          "tier1-distribution",
+          "b2b-resale",
+          "project-services",
+          "none-or-unclear"
+        ],
+        "assignIntegerLevels": {
+          "productUseCaseFit": "0-5",
+          "cooperationPath": "0-5",
+          "evidenceReliability": "0-5"
+        }
+      }
+    },
+    {
+      "blindCandidateId": "C-B74B9D01DF37",
+      "sampleType": "risk-supplement",
+      "companyName": "SoftwareOne Deutschland GmbH",
+      "officialUrl": "https://www.softwareone.com/",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-07",
+          "url": "https://www.softwareone.com/",
+          "excerpt": "SoftwareOne offers comprehensive IT procurement, cloud, and edge infrastructure reselling services directly to corporate end users in Germany."
+        }
+      ],
+      "reviewerTask": {
+        "determineGates": [
+          "companyExists",
+          "germanyPresence",
+          "networkingRelevant",
+          "sufficientEvidence"
+        ],
+        "chooseValidCategory": [
+          "tier1-distribution",
+          "b2b-resale",
+          "project-services",
+          "none-or-unclear"
+        ],
+        "assignIntegerLevels": {
+          "productUseCaseFit": "0-5",
+          "cooperationPath": "0-5",
+          "evidenceReliability": "0-5"
+        }
+      }
+    },
+    {
+      "blindCandidateId": "C-C526CAFCD3BE",
+      "sampleType": "risk-supplement",
+      "companyName": "ADN – Advanced Digital Network Distribution GmbH",
+      "officialUrl": "https://www.adn.de/",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-3F70781C8A",
+          "url": "https://www.westconcomstor.com/",
+          "excerpt": "Here are 10 top real Value Added Distributors (VADs) operating in Germany (DE) that match your search criteria for networking, enterprise WLAN, LAN, and IT channel partner enablement: 1. **ADN – Advanced Digital Network Distribution GmbH** * **URL:** [adn.de](https://www.adn.de) * **Why it matches:** Leading German VAD that supplies specialized networking (LAN/WLAN) and cloud management solutions (e.g., TP-Link Omada, enterprise network infrastructure) to system houses, MSPs, and resellers. 2. **sysob IT-Distribution GmbH** * **URL:** [sysob.de](https://www.sysob.de) * **Why it matches:** Independent owner-managed VAD based in Germany focused on enterprise network infrastructure, IT security, and wireless LAN solutions (distributing vendors such as Alcatel-Lucent Enterprise LAN/WLAN). 3. **Infinigate Deutschland GmbH** * **URL:** [infinigate.de](https://www.infinigate.de) * **Why it matches:** Premier VAD operating across DACH; specializes in IT security and enterprise WLAN/LAN infrastructure (partnering with vendors like Ruckus, Aruba/HPE, and Ekahau Wi-Fi survey systems). 4. **Westcon-Comstor Germany (Westcon Group Germany GmbH)** * **URL:** [westconcomstor.com](https://www.westc"
+        }
+      ],
+      "reviewerTask": {
+        "determineGates": [
+          "companyExists",
+          "germanyPresence",
+          "networkingRelevant",
+          "sufficientEvidence"
+        ],
+        "chooseValidCategory": [
+          "tier1-distribution",
+          "b2b-resale",
+          "project-services",
+          "none-or-unclear"
+        ],
+        "assignIntegerLevels": {
+          "productUseCaseFit": "0-5",
+          "cooperationPath": "0-5",
+          "evidenceReliability": "0-5"
+        }
+      }
+    },
+    {
+      "blindCandidateId": "C-C60E05647833",
+      "sampleType": "core",
+      "companyName": "EQOS Energie Deutschland GmbH",
+      "officialUrl": "https://eqos-energie.com/",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-07",
+          "url": "https://eqos-energie.com/",
+          "excerpt": "EQOS Energie specializes in physical infrastructure installation, mobile telecommunications, fiber optic cabling, and outdoor wireless deployment projects."
+        }
+      ],
+      "reviewerTask": {
+        "determineGates": [
+          "companyExists",
+          "germanyPresence",
+          "networkingRelevant",
+          "sufficientEvidence"
+        ],
+        "chooseValidCategory": [
+          "tier1-distribution",
+          "b2b-resale",
+          "project-services",
+          "none-or-unclear"
+        ],
+        "assignIntegerLevels": {
+          "productUseCaseFit": "0-5",
+          "cooperationPath": "0-5",
+          "evidenceReliability": "0-5"
+        }
+      }
+    },
+    {
+      "blindCandidateId": "C-C96FA0D944A4",
+      "sampleType": "core",
+      "companyName": "Exertis Connect GmbH",
+      "officialUrl": null,
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-FBA0F62595",
+          "url": "https://guide.itscope.com/kbtopic/lieferantenkonten",
+          "excerpt": "1 Artikel ### etree etree GmbH ist Systemhaus und Value-Added Distributor im SMB-Bereich der ITK-Branche. 1 Artikel ### everIT | directdeal.me Distributor für Software, Infrastruktur und Cloud-Services 1 Artikel ### exertis Connect Die exertis Connect GmbH ist Spezialist für Kabel-und Netzwerktechnik sowie Distributor für mehr als 10.000 Komponenten- und Peripherieprodukte in Europa. 1 Artikel ### Exertis Pro AV Die Exertis Pro AV ist Distributor und Partner für AV-Medientechnik in Europa, mit dem Schwerpunkt auf den Bereich Computer und Netzwerk. 1 Artikel ### EXTRA Computer / exone exone entwickelt, produziert und liefert seit über 30 Jahren PC, Server und IT für Unternehmen in Deutschland 1 Artikel ### FEGA & Schmitt Elektrogroßhandel [...] 1 Artikel ### SOS Software Service Die SOS Software Service GmbH ist ein Distributor spezialisiert auf Software, Softwarebeschaffung und Lizenzberatung. 1 Artikel ### Supplies24 Führender Lieferant im Bereich Tinten & Toner auf dem europäischen Markt 1 Artikel ### SYNAXON Deutschland / Österreich Die SYNAXON ist ein Value Added Distributor mit einer großen Anzahl an Produkten, Herstellern und Partnern. 1 Artikel ### sysob Die sysob IT-Distrib"
+        }
+      ],
+      "reviewerTask": {
+        "determineGates": [
+          "companyExists",
+          "germanyPresence",
+          "networkingRelevant",
+          "sufficientEvidence"
+        ],
+        "chooseValidCategory": [
+          "tier1-distribution",
+          "b2b-resale",
+          "project-services",
+          "none-or-unclear"
+        ],
+        "assignIntegerLevels": {
+          "productUseCaseFit": "0-5",
+          "cooperationPath": "0-5",
+          "evidenceReliability": "0-5"
+        }
+      }
+    },
+    {
+      "blindCandidateId": "C-D0206FA0ABED",
+      "sampleType": "risk-supplement",
+      "companyName": "Avanis GmbH",
+      "officialUrl": "https://avanis.de/",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-64055E497C",
+          "url": "https://avanis.de/",
+          "excerpt": "# Avanis GmbH Avanis GmbH is a IT Services and IT Consulting company. Avanis GmbH is a company specializing in network technology and WLAN solutions. They offer a wide range of services including switches, RTLS positioning, and infrastructure planning. Avanis GmbH employs 4 people (-12.5% YoY, -1 person), founded in 2003. Headquartered in Bielefeld, North Rhine-Westphalia, Germany, with presence in United States. ## About Die Avanis GmbH zählt zu den führenden Spezial-Distributoren im Netzwerkbereich. Switches, Industrial Ethernet, Medienkonverter, VDSL2, WLAN: Mit einem breiten Sortiment von über 5000 Artikeln verschiedener Marken berät Avanis den Fachhandel, IT-Systemhäuser und gewerbliche Endkunden. Als Spezialist für WLAN-Planung und -Analyse ist Avanis ein Pionier im Bereich Echtzeit-Lokalisierung und WLAN-Ortung. Unter dem Dach der Avanis Academy hat das Unternehmen in den vergangenen anderthalb Jahrzehnten als Anbieter von Trainings, Schulungen und Seminaren viele Hundert Teilnehmer fit für Netzwerktechnik und WLAN-Planung gemacht. ## Company Details - Industry: IT Services and IT Consulting - Type: Partnership - Headquarters: Bielefeld, Germany - Founded Year: 2003 - Homepa"
+        },
+        {
+          "evidenceEntryId": "E-C76353E6AE",
+          "url": "https://avanis.de/",
+          "excerpt": "# Avanis GmbH Avanis GmbH is a IT Services and IT Consulting company. Avanis GmbH is a company specializing in network technology and WLAN solutions. They offer a wide range of services including switches, RTLS positioning, and infrastructure planning. Avanis GmbH employs 4 people (-12.5% YoY, -1 person), founded in 2003. Headquartered in Bielefeld, North Rhine-Westphalia, Germany, with presence in United States. ## About Die Avanis GmbH zählt zu den führenden Spezial-Distributoren im Netzwerkbereich. Switches, Industrial Ethernet, Medienkonverter, VDSL2, WLAN: Mit einem breiten Sortiment von über 5000 Artikeln verschiedener Marken berät Avanis den Fachhandel, IT-Systemhäuser und gewerbliche Endkunden. Als Spezialist für WLAN-Planung und -Analyse ist Avanis ein Pionier im Bereich Echtzeit-Lokalisierung und WLAN-Ortung. Unter dem Dach der Avanis Academy hat das Unternehmen in den vergangenen anderthalb Jahrzehnten als Anbieter von Trainings, Schulungen und Seminaren viele Hundert Teilnehmer fit für Netzwerktechnik und WLAN-Planung gemacht. ## Company Details - Industry: IT Services and IT Consulting - Type: Partnership - Headquarters: Bielefeld, Germany - Founded Year: 2003 - Homepa"
+        }
+      ],
+      "reviewerTask": {
+        "determineGates": [
+          "companyExists",
+          "germanyPresence",
+          "networkingRelevant",
+          "sufficientEvidence"
+        ],
+        "chooseValidCategory": [
+          "tier1-distribution",
+          "b2b-resale",
+          "project-services",
+          "none-or-unclear"
+        ],
+        "assignIntegerLevels": {
+          "productUseCaseFit": "0-5",
+          "cooperationPath": "0-5",
+          "evidenceReliability": "0-5"
+        }
+      }
+    },
+    {
+      "blindCandidateId": "C-D14CBB6B96F4",
+      "sampleType": "core",
+      "companyName": "BFE Studio und Medien Systeme GmbH",
+      "officialUrl": "https://www.bfe.tv/",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-06",
+          "url": "https://www.bfe.tv/",
+          "excerpt": "BFE acts as a specialized system integrator responsible for planning, installing, and configuring high-performance IP and broadcast network infrastructure."
+        }
+      ],
+      "reviewerTask": {
+        "determineGates": [
+          "companyExists",
+          "germanyPresence",
+          "networkingRelevant",
+          "sufficientEvidence"
+        ],
+        "chooseValidCategory": [
+          "tier1-distribution",
+          "b2b-resale",
+          "project-services",
+          "none-or-unclear"
+        ],
+        "assignIntegerLevels": {
+          "productUseCaseFit": "0-5",
+          "cooperationPath": "0-5",
+          "evidenceReliability": "0-5"
+        }
+      }
+    },
+    {
+      "blindCandidateId": "C-EC447D4C841E",
+      "sampleType": "core",
+      "companyName": "indasys IT Systemhaus Gruppe",
+      "officialUrl": "https://www.indasys.de/",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-8CD1FB7323",
+          "url": "https://www.indasys.de/",
+          "excerpt": "Here are 10 real companies (VARs, Systemhäuser, and IT resellers) operating in Germany (DE) that specialize in networking, business WiFi, and switch infrastructure for SMBs (*KMU* / *Kleine und mittlere Unternehmen*): 1. **Bechtle AG** * **URL:** [https://www.bechtle.com](https://www.bechtle.com) * **Why it matches:** Germany’s largest IT system house (*IT-Systemhaus*) and VAR, serving German SMBs with comprehensive network planning, enterprise WiFi, and switch deployment across major vendors (Cisco, Aruba, LANCOM). 2. **CANCOM SE** * **URL:** [https://www.cancom.de](https://www.cancom.de) * **Why it matches:** A major German VAR offering tailored IT infrastructure, managed switches, enterprise WLAN architectures, and network security for mid-market business customers. 3. **IT-HAUS GmbH** * **URL:** [https://www.it-haus.com](https://www.it-haus.com) * **Why it matches:** A well-established IT Systemhaus in Germany providing end-to-end network infrastructure (*Netzwerk-Infrastruktur*), managed switches, Layer 2/3 routing, and business WLAN for KMU clients. 4. **indasys IT Systemhaus Gruppe** * **URL:** [https://www.indasys.de](https://www.indasys.de) * **Why it matches:** German VAR"
+        }
+      ],
+      "reviewerTask": {
+        "determineGates": [
+          "companyExists",
+          "germanyPresence",
+          "networkingRelevant",
+          "sufficientEvidence"
+        ],
+        "chooseValidCategory": [
+          "tier1-distribution",
+          "b2b-resale",
+          "project-services",
+          "none-or-unclear"
+        ],
+        "assignIntegerLevels": {
+          "productUseCaseFit": "0-5",
+          "cooperationPath": "0-5",
+          "evidenceReliability": "0-5"
+        }
+      }
+    },
+    {
+      "blindCandidateId": "C-F6DDFE671DBE",
+      "sampleType": "core",
+      "companyName": "GREEN IT Das Systemhaus GmbH",
+      "officialUrl": "https://www.greenit.systems/",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-DC6E48C51D",
+          "url": "https://www.greenit.systems/",
+          "excerpt": "Here are 10 real companies operating in Germany that specialize in corporate WLAN and network planning, site survey, and installation (*WLAN Netzwerk Installation Gewerbe/Unternehmen*): 1. **Frings Solutions Deutschland GmbH** * **URL:** https://www.frings-solutions.de * **Match Reason:** Offers enterprise IT infrastructure services, including professional WLAN planning (*WLAN-Ausleuchtung* / site surveys), access point installation, and network optimization for commercial premises. 2. **GREEN IT Das Systemhaus GmbH** * **URL:** https://www.greenit.systems * **Match Reason:** A nationwide IT system house offering end-to-end network architecture, structured cabling, managed WLAN, and Ubiquiti/Sophos deployment for commercial clients. 3. **ditpro GmbH** * **URL:** https://www.ditpro.de * **Match Reason:** Specializes in business network structures, including indoor/outdoor corporate Wi-Fi setups, secure guest network separation (*Gastnetzwerke*), and point-to-point wireless solutions for commercial sites. 4. **itc GmbH** * **URL:** https://www.itc-net.de * **Match Reason:** Offers specialized Ekahau-assisted 3D WLAN site surveys, heatmapping, access point positioning, and full networ"
+        }
+      ],
+      "reviewerTask": {
+        "determineGates": [
+          "companyExists",
+          "germanyPresence",
+          "networkingRelevant",
+          "sufficientEvidence"
+        ],
+        "chooseValidCategory": [
+          "tier1-distribution",
+          "b2b-resale",
+          "project-services",
+          "none-or-unclear"
+        ],
+        "assignIntegerLevels": {
+          "productUseCaseFit": "0-5",
+          "cooperationPath": "0-5",
+          "evidenceReliability": "0-5"
+        }
+      }
+    },
+    {
+      "blindCandidateId": "C-FD81D92A000A",
+      "sampleType": "core",
+      "companyName": "IT-HAUS GmbH",
+      "officialUrl": "https://www.it-haus.com/",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-1D97E5C305",
+          "url": "https://www.it-haus.com/",
+          "excerpt": "Here are 10 real companies (VARs, Systemhäuser, and IT resellers) operating in Germany (DE) that specialize in networking, business WiFi, and switch infrastructure for SMBs (*KMU* / *Kleine und mittlere Unternehmen*): 1. **Bechtle AG** * **URL:** [https://www.bechtle.com](https://www.bechtle.com) * **Why it matches:** Germany’s largest IT system house (*IT-Systemhaus*) and VAR, serving German SMBs with comprehensive network planning, enterprise WiFi, and switch deployment across major vendors (Cisco, Aruba, LANCOM). 2. **CANCOM SE** * **URL:** [https://www.cancom.de](https://www.cancom.de) * **Why it matches:** A major German VAR offering tailored IT infrastructure, managed switches, enterprise WLAN architectures, and network security for mid-market business customers. 3. **IT-HAUS GmbH** * **URL:** [https://www.it-haus.com](https://www.it-haus.com) * **Why it matches:** A well-established IT Systemhaus in Germany providing end-to-end network infrastructure (*Netzwerk-Infrastruktur*), managed switches, Layer 2/3 routing, and business WLAN for KMU clients. 4. **indasys IT Systemhaus Gruppe** * **URL:** [https://www.indasys.de](https://www.indasys.de) * **Why it matches:** German VAR"
+        }
+      ],
+      "reviewerTask": {
+        "determineGates": [
+          "companyExists",
+          "germanyPresence",
+          "networkingRelevant",
+          "sufficientEvidence"
+        ],
+        "chooseValidCategory": [
+          "tier1-distribution",
+          "b2b-resale",
+          "project-services",
+          "none-or-unclear"
+        ],
+        "assignIntegerLevels": {
+          "productUseCaseFit": "0-5",
+          "cooperationPath": "0-5",
+          "evidenceReliability": "0-5"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,380 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "runId": "2026-08-26-de-v1",
+  "systemId": "gemini-full",
+  "channelId": "tier1-distribution",
+  "reviewMode": "fixed-output",
+  "blindBatchId": "B-47F9C2C23B66",
+  "sourceDiscoveryArtifact": "artifacts/runs/2026-08-26-de-v1/discovery/gemini-full/tier1-distribution.json",
+  "selectedCandidates": [
+    {
+      "rank": 1,
+      "companyName": "ALLNET GmbH",
+      "officialUrl": "https://www.allnet.de/",
+      "roles": [
+        "Distributor",
+        "VAD"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 2
+      },
+      "score": 88,
+      "roleEvidence": "Submitted as a German networking VAD/IT distributor serving channel partners.",
+      "productFitEvidence": "Networking, wireless, security and telecommunications hardware directly overlap Cudy.",
+      "cooperationEvidence": "Pre/post-sales support and channel training supplement direct distribution.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-01",
+          "url": "https://www.allnet.de/",
+          "excerpt": "ALLNET is a major German value-added IT distributor specializing in networking, wireless, security, and telecommunication hardware, offering extensive pre- and post-sales technical support and training for channel partners."
+        }
+      ],
+      "rationale": "Excellent claimed fit and path; evidence is limited to one official URL plus the submitted explanation."
+    },
+    {
+      "rank": 2,
+      "companyName": "ALSO Deutschland GmbH",
+      "officialUrl": "https://www.also.de/",
+      "roles": [
+        "Distributor"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 5,
+        "evidenceReliability": 2
+      },
+      "score": 79,
+      "roleEvidence": "Submitted as a German broadline ICT distributor supplying resellers and VARs.",
+      "productFitEvidence": "Network equipment is material within a broader ICT portfolio.",
+      "cooperationEvidence": "Downstream supply plus cloud/managed enablement provide strong channel levers.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-02",
+          "url": "https://www.also.de/",
+          "excerpt": "ALSO is one of the premier ICT distributors in Germany, supplying B2B resellers and VARs with hardware, network equipment, and cloud/managed services."
+        }
+      ],
+      "rationale": "Strong channel path and good networking fit with shallow evidence detail."
+    },
+    {
+      "rank": 3,
+      "companyName": "Ingram Micro Distribution GmbH",
+      "officialUrl": "https://de.ingrammicro.eu/",
+      "roles": [
+        "Distributor",
+        "VAD"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 5,
+        "evidenceReliability": 2
+      },
+      "score": 79,
+      "roleEvidence": "Submitted as a German broadline ICT distributor with networking-vendor enablement.",
+      "productFitEvidence": "Networking vendor portfolios are relevant within a broad catalogue.",
+      "cooperationEvidence": "Distribution, logistics, finance and technical enablement create multiple direct channel mechanisms.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-03",
+          "url": "https://de.ingrammicro.eu/",
+          "excerpt": "Ingram Micro Germany is a dominant broadline ICT distributor offering nationwide logistics, financial enablement, and technical solution enablement for networking vendor portfolios."
+        }
+      ],
+      "rationale": "Strong VAD/distributor path with one minimally detailed citation."
+    },
+    {
+      "rank": 4,
+      "companyName": "TD SYNNEX Germany",
+      "officialUrl": "https://de.tdsynnex.com/",
+      "roles": [
+        "Distributor",
+        "VAD"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 5,
+        "evidenceReliability": 2
+      },
+      "score": 79,
+      "roleEvidence": "Submitted as a German broadline and value-added distributor supplying system houses, VARs and resellers.",
+      "productFitEvidence": "Technology distribution is relevant, but specific networking families are not enumerated.",
+      "cooperationEvidence": "Explicit downstream system-house and reseller supply provides a strong route.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-04",
+          "url": "https://de.tdsynnex.com/",
+          "excerpt": "TD SYNNEX (formerly Tech Data Germany) is a top-tier broadline and value-added technology distributor supplying system houses, VARs, and resellers across Germany."
+        }
+      ],
+      "rationale": "Excellent channel position with moderate product specificity and limited evidence depth."
+    },
+    {
+      "rank": 5,
+      "companyName": "Komsa AG",
+      "officialUrl": "https://komsa.com/",
+      "roles": [
+        "Distributor",
+        "VAD"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 5,
+        "evidenceReliability": 2
+      },
+      "score": 79,
+      "roleEvidence": "Submitted as a German telecom and IT-infrastructure distributor serving specialist trade partners.",
+      "productFitEvidence": "Telecom and IT infrastructure strongly relate to Cudy, though exact device categories are not shown.",
+      "cooperationEvidence": "Trade procurement, repair and technical enablement provide multiple channel levers.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-05",
+          "url": "https://komsa.com/",
+          "excerpt": "Komsa is a leading German distributor for telecommunications and IT infrastructure, serving specialized trade partners with procurement, repair, and technical enablement."
+        }
+      ],
+      "rationale": "Strong practical VAD path with one summary-level source."
+    },
+    {
+      "rank": 6,
+      "companyName": "ENO Telecom GmbH",
+      "officialUrl": "https://www.eno.de/",
+      "roles": [
+        "Distributor"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 2
+      },
+      "score": 88,
+      "roleEvidence": "Submitted as a German ICT distributor delivering to retail and B2B channel partners.",
+      "productFitEvidence": "Networking equipment, broadband CPE and mobile infrastructure directly overlap Cudy's router/CPE lines.",
+      "cooperationEvidence": "Explicit downstream-channel distribution provides a direct brand purchasing and listing route.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-06",
+          "url": "https://www.eno.de/",
+          "excerpt": "ENO Telecom is an established German ICT distributor delivering networking equipment, mobile infrastructure, and broadband CPE to retail and B2B channel partners."
+        }
+      ],
+      "rationale": "Excellent claimed fit and distribution path with limited evidence detail."
+    },
+    {
+      "rank": 7,
+      "companyName": "Herweck AG",
+      "officialUrl": "https://www.herweck.de/",
+      "roles": [
+        "Distributor",
+        "VAD"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 4,
+        "evidenceReliability": 2
+      },
+      "score": 72,
+      "roleEvidence": "Submitted as a nationwide German ICT distributor/VAD.",
+      "productFitEvidence": "Telecommunications, IT infrastructure, smart home and network solutions materially overlap Cudy.",
+      "cooperationEvidence": "Distribution is clear, but the submitted evidence does not describe downstream or enablement mechanics.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-07",
+          "url": "https://www.herweck.de/",
+          "excerpt": "Herweck is a key nationwide distributor in Germany focused on telecommunications, IT infrastructure, smart home, and network solution distribution."
+        }
+      ],
+      "rationale": "Strong fit with a less evidenced cooperation path."
+    },
+    {
+      "rank": 8,
+      "companyName": "Littlebit Technology Deutschland GmbH",
+      "officialUrl": "https://www.littlebit.de/",
+      "roles": [
+        "VAD"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 3,
+        "cooperationPath": 5,
+        "evidenceReliability": 2
+      },
+      "score": 70,
+      "roleEvidence": "Submitted as a German specialist VAD serving system integrators and resellers.",
+      "productFitEvidence": "Networking components are relevant but sit beside storage and peripherals with no detailed categories.",
+      "cooperationEvidence": "Explicit supply to downstream integrators/resellers provides a strong direct route.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-08",
+          "url": "https://www.littlebit.de/",
+          "excerpt": "Littlebit Technology operates as a specialized VAD offering networking components, storage, and peripheral hardware to German system integrators and resellers."
+        }
+      ],
+      "rationale": "Excellent channel eligibility with only moderate demonstrated Cudy-product breadth."
+    },
+    {
+      "rank": 9,
+      "companyName": "Wave Computersysteme GmbH",
+      "officialUrl": "https://www.wave-computer.de/",
+      "roles": [
+        "Distributor"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 5,
+        "evidenceReliability": 2
+      },
+      "score": 79,
+      "roleEvidence": "Submitted as a German B2B wholesale IT distributor to resellers, integrators and dealers.",
+      "productFitEvidence": "Network hardware is material within its IT catalogue.",
+      "cooperationEvidence": "Explicit downstream SMB reseller/system-integrator supply gives a direct purchase path.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-09",
+          "url": "https://www.wave-computer.de/",
+          "excerpt": "Wave Computersysteme is a major German wholesale IT distributor supplying SMB resellers, system integrators, and business dealers with network and IT hardware."
+        }
+      ],
+      "rationale": "Strong channel route and good product fit, supported only at summary level."
+    },
+    {
+      "rank": 10,
+      "companyName": "Ecom Electronic Components Trading GmbH",
+      "officialUrl": "https://www.ecom-edv.de/",
+      "roles": [
+        "Distributor"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 5,
+        "evidenceReliability": 2
+      },
+      "score": 79,
+      "roleEvidence": "Submitted as a Germany-headquartered international IT hardware wholesaler serving downstream channel partners.",
+      "productFitEvidence": "Network components and active hardware materially overlap Cudy, alongside peripherals.",
+      "cooperationEvidence": "Wholesale distribution to downstream partners provides a direct listing and procurement path.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "F-10",
+          "url": "https://www.ecom-edv.de/",
+          "excerpt": "Ecom EDV is an international IT hardware distributor headquartered in Germany, supplying network components, active hardware, and peripherals to downstream channel partners."
+        }
+      ],
+      "rationale": "Strong distributor eligibility and good fit with limited claim-level evidence."
+    }
+  ],
+  "rejectedItems": [],
+  "scoring": {
+    "finalSlots": 10,
+    "filledSlots": 10,
+    "missingSlots": 0,
+    "slotScores": [
+      88,
+      79,
+      79,
+      79,
+      79,
+      88,
+      72,
+      70,
+      79,
+      79
+    ],
+    "channelScore": 79.2,
+    "meanLevelsAcrossTenSlots": {
+      "productUseCaseFit": 4.1,
+      "cooperationPath": 4.9,
+      "evidenceReliability": 2
+    }
+  },
+  "evaluator": {
+    "provider": "codex-agent",
+    "transport": "in-session-no-api",
+    "model": "runtime-managed-codex",
+    "systemIdentityHiddenDuringReview": true,
+    "providerIdentityHiddenDuringReview": true,
+    "apiScoresHiddenDuringReview": true,
+    "externalSearchUsed": false
+  }
+}

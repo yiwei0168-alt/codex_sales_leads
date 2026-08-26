@@ -1,0 +1,237 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "runId": "2026-08-26-de-v1",
+  "systemId": "product-searchapi",
+  "channelId": "b2b-resale",
+  "reviewMode": "discovery-pool",
+  "blindBatchId": "B-1E94E5239B23",
+  "sourceDiscoveryArtifact": "artifacts/runs/2026-08-26-de-v1/discovery/product-searchapi/b2b-resale.json",
+  "selectedCandidates": [
+    {
+      "rank": 1,
+      "companyName": "JACOB Elektronik GmbH",
+      "officialUrl": "https://www.jacob.de/netzwerk/",
+      "roles": [
+        "Reseller",
+        "VAR"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 4,
+        "evidenceReliability": 2
+      },
+      "score": 81,
+      "roleEvidence": "German network competence-center page offers a consolidated professional networking catalogue.",
+      "productFitEvidence": "Switches, WLAN solutions, cybersecurity and transceivers directly overlap Cudy's professional networking line.",
+      "cooperationEvidence": "Catalogue listing and competence-center positioning provide purchase and recommendation influence, but the excerpt does not detail its B2B customer process.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-AB2ED4C761",
+          "url": "https://www.jacob.de/netzwerk/",
+          "excerpt": "Bei JACOB findest du das vollständige Portfolio aus Switches, WLAN-Lösungen, Cybersecurity und Transceivern in einem einzigen Sortiment, mit tiefen ..."
+        }
+      ],
+      "rationale": "Strong product listing with limited role and evidence depth."
+    },
+    {
+      "rank": 2,
+      "companyName": "SMB IT Solution",
+      "officialUrl": "https://smb-it-solution.com/",
+      "roles": [
+        "Reseller",
+        "Dealer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 4,
+        "evidenceReliability": 3
+      },
+      "score": 76,
+      "roleEvidence": "Germany-based trader and supplier of IT hardware and networking technology.",
+      "productFitEvidence": "Networking technology is material, though specific Cudy product families are not enumerated.",
+      "cooperationEvidence": "Direct supply and international hardware trade provide listing, quotation and purchasing paths.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-8A5BB45276",
+          "url": "https://smb-it-solution.com/en/info/about-us.html?srsltid=AfmBOoq8u7xF6oWL2mSncx3oeMlmLMLGRkYh_j4dMrCMDS6HfeHdQzsl",
+          "excerpt": "Since our foundation in 2015, we have been active in the worldwide trade of IT hardware and networking technology. From our location in Germany, we supply ..."
+        }
+      ],
+      "rationale": "Clear German professional reseller with solid but nonspecific networking overlap."
+    },
+    {
+      "rank": 3,
+      "companyName": "BerryBase",
+      "officialUrl": "https://www.berrybase.de/",
+      "roles": [
+        "Reseller",
+        "Dealer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 4,
+        "evidenceReliability": 2
+      },
+      "score": 72,
+      "roleEvidence": "German online seller offers network devices to both businesses and private buyers, so it is not consumer-only.",
+      "productFitEvidence": "Network switches and related devices directly overlap one core Cudy category.",
+      "cooperationEvidence": "Direct online product listing and sales provide a transaction path, but solution/recommendation capability is not evidenced.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-E024F8E06D",
+          "url": "https://www.berrybase.de/en/network-iot/network-devices/distributors-switches/?srsltid=AfmBOor-lTkGHuJ_-AwBwKY5DPQy1xKsoy-Rg-LBVhfUknjbBHsUDooj",
+          "excerpt": "Discover network switches and distributors! These innovative devices are indispensable for an efficient and powerful network - both for businesses and private ..."
+        }
+      ],
+      "rationale": "Valid mixed-customer reseller with narrow product and evidence breadth."
+    },
+    {
+      "rank": 4,
+      "companyName": "ALLCOMPUTER PC-Fachgeschäft & IT-Systemhaus",
+      "officialUrl": null,
+      "roles": [
+        "Reseller",
+        "VAR"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 3,
+        "cooperationPath": 4,
+        "evidenceReliability": 2
+      },
+      "score": 63,
+      "roleEvidence": "German PC specialist shop and IT system house, supporting both product resale and added service.",
+      "productFitEvidence": "Computer networking is part of the listed business, but no specific WLAN/router/switch range is shown.",
+      "cooperationEvidence": "Shop, system-house service, repair and training imply purchasing and customer recommendation influence.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-3B45FFEDCC",
+          "url": "https://www.firmendatenbanken.de/firmen/n1/s/netzwerk-hardware.html",
+          "excerpt": "ALLCOMPUTER PC-Fachgeschäft & IT-Systemhaus. 63263 Neu-Isenburg. Auszug aus dem Geschäftsbereich: Computer Netzwerk Reparatur Schulung Internet Service ..."
+        }
+      ],
+      "rationale": "Qualifying small VAR discovered only through a directory excerpt, so evidence is limited."
+    }
+  ],
+  "rejectedItems": [
+    {
+      "title": "Bechtle",
+      "url": "https://www.channelpartner.de/article/4012344/ranking-der-grosten-it-dienstleister-die-top-25-systemhauser-in-deutschland-2025.html",
+      "reason": "B2B e-commerce and system-house role are supported, but this packet does not establish material networking-product relevance."
+    },
+    {
+      "title": "FTS Hennig",
+      "url": "https://www.fts-hennig.de/netztechnik",
+      "reason": "Excellent product relevance, but the supplied excerpt does not establish B2B/professional-customer rather than consumer-only resale."
+    },
+    {
+      "title": "reichelt elektronik",
+      "url": "https://www.reichelt.de/de/de/shop/kategorie/netzwerktechnik-5820",
+      "reason": "Networking retail is supported, but B2B lane eligibility is not."
+    },
+    {
+      "title": "expert",
+      "url": "https://www.expert.de/shop/unsere-produkte/computer-zubehor/netzwerk/netzwerk-switches",
+      "reason": "Consumer retail listing; excluded from the B2B resale lane."
+    },
+    {
+      "title": "Kernkompetenz IT",
+      "url": "https://kernkompetenz-it.de/it-hardware-fuer-geschaeftskunden",
+      "reason": "Business hardware sales are clear, but no material network-product evidence is supplied."
+    },
+    {
+      "title": "ASS it-systemhaus GmbH",
+      "url": "https://ass-systemhaus.de/partner/",
+      "reason": "Generic partner-network statement does not establish networking product fit or resale."
+    },
+    {
+      "title": "G2 Systemhaus",
+      "url": "https://g2-systemhaus.de/kommunikationsloesungen/",
+      "reason": "Generic communications-solution evidence without hardware resale or product detail."
+    },
+    {
+      "title": "wHoffice.de",
+      "url": "https://www.whoffice.de/gruppe,whoffice,ru,seite.2/produkte,2800000,2800052,Network-access-point?pSprache=de",
+      "reason": "Evidence targets dealers and downstream B2B partners, making it a distribution candidate rather than a final-customer reseller in this lane."
+    },
+    {
+      "title": "ALSO Deutschland",
+      "url": "https://www.also.com/ec/cms5/de_1010/1010_anbieter/netgear/netgear-business/index.jsp",
+      "reason": "Distributor product page; wrong channel."
+    },
+    {
+      "title": "TP-Link, Edgecore, COME-STAR, HPE, Zyxel and NETGEAR pages",
+      "url": "https://www.tp-link.com/de/",
+      "reason": "Manufacturers/products rather than candidate reseller companies."
+    },
+    {
+      "title": "Directories, market reports and generic system-house articles",
+      "url": "https://www.wlw.de/de/suche/netzwerktechnik",
+      "reason": "Not resolvable candidate companies with sufficient role and product evidence."
+    }
+  ],
+  "scoring": {
+    "finalSlots": 10,
+    "filledSlots": 4,
+    "missingSlots": 6,
+    "slotScores": [
+      81,
+      76,
+      72,
+      63,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "channelScore": 29.2,
+    "meanLevelsAcrossTenSlots": {
+      "productUseCaseFit": 1.6,
+      "cooperationPath": 1.6,
+      "evidenceReliability": 0.9
+    }
+  },
+  "evaluator": {
+    "provider": "codex-agent",
+    "transport": "in-session-no-api",
+    "model": "runtime-managed-codex",
+    "systemIdentityHiddenDuringReview": true,
+    "providerIdentityHiddenDuringReview": true,
+    "apiScoresHiddenDuringReview": true,
+    "externalSearchUsed": false
+  }
+}

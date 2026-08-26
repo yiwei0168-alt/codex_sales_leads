@@ -1,0 +1,230 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "runId": "2026-08-26-de-v1",
+  "systemId": "product-google-places",
+  "channelId": "project-services",
+  "reviewMode": "discovery-pool",
+  "blindBatchId": "B-5258C688D2CB",
+  "sourceDiscoveryArtifact": "artifacts/runs/2026-08-26-de-v1/discovery/product-google-places/project-services.json",
+  "selectedCandidates": [
+    {
+      "rank": 1,
+      "companyName": "GERMAN HOTSPOT",
+      "officialUrl": "https://www.germanhotspot.de/",
+      "roles": [
+        "SI"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 3,
+        "evidenceReliability": 2
+      },
+      "score": 74,
+      "roleEvidence": "German service business explicitly offering WLAN solutions for high-user environments.",
+      "productFitEvidence": "Professional multi-user WLAN directly matches Cudy access-point and managed-network use cases.",
+      "cooperationEvidence": "Solution-provider status implies design/recommendation influence, but planning, procurement and installation are not described in the supplied place result.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-93657F2975",
+          "url": "https://www.germanhotspot.de/",
+          "excerpt": "Dienstleistungen · Siemensstraße 4, 30916 Isernhagen-Altwarmbüchen"
+        }
+      ],
+      "rationale": "Excellent fit with only title/category/address-level evidence for the project path."
+    },
+    {
+      "rank": 2,
+      "companyName": "eWLAN",
+      "officialUrl": null,
+      "roles": [
+        "SI",
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 3,
+        "evidenceReliability": 2
+      },
+      "score": 74,
+      "roleEvidence": "German place listing explicitly identifies a professional WLAN service for companies.",
+      "productFitEvidence": "Business WLAN directly overlaps Cudy's professional wireless portfolio.",
+      "cooperationEvidence": "Professional WLAN service suggests recommendation and deployment influence, but the packet contains no detailed project or procurement evidence.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-7636914799",
+          "url": "https://maps.google.com/?cid=10227462222896240226&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+          "excerpt": "Soennecken Platz, 51491 Overath"
+        }
+      ],
+      "rationale": "Strong specialist relevance but very shallow place-listing evidence."
+    },
+    {
+      "rank": 3,
+      "companyName": "Netzwerkbau & IT-Services",
+      "officialUrl": "https://netzwerkbau.berlin/",
+      "roles": [
+        "SI",
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 3,
+        "evidenceReliability": 2
+      },
+      "score": 65,
+      "roleEvidence": "Berlin business whose listing explicitly combines network construction and IT services.",
+      "productFitEvidence": "Network construction is materially relevant, but active WLAN/router/switch categories are not stated.",
+      "cooperationEvidence": "Network-build and IT-service positioning implies project delivery, while design, BOM and procurement remain unverified.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-7C215620CC",
+          "url": "https://netzwerkbau.berlin/",
+          "excerpt": "Wilhelmstraße 25-30, 13593 Berlin"
+        }
+      ],
+      "rationale": "Likely qualifying local SI/installer with limited evidence depth."
+    },
+    {
+      "rank": 4,
+      "companyName": "IB-IT Cabling GmbH",
+      "officialUrl": "http://www.ib-it.eu/",
+      "roles": [
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 2,
+        "cooperationPath": 3,
+        "evidenceReliability": 2
+      },
+      "score": 47,
+      "roleEvidence": "German cabling service company identified by company name, service category and address.",
+      "productFitEvidence": "Network cabling enables Cudy deployments but does not directly overlap active networking hardware.",
+      "cooperationEvidence": "Installation responsibility is plausible from the cabling/service identity, but device specification and procurement are not evidenced.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-A65C7232F0",
+          "url": "http://www.ib-it.eu/",
+          "excerpt": "Dienstleistungen · Friedberger Str. 173, 61118 Bad Vilbel-Dortelweil"
+        }
+      ],
+      "rationale": "Valid installation specialist with weak direct product overlap and shallow evidence."
+    }
+  ],
+  "rejectedItems": [
+    {
+      "title": "Fiber Networks GmbH",
+      "url": "http://www.fibernetworks.de/",
+      "reason": "Duplicate/conflicting service and manufacturer place listings do not establish a clear SI/Installer project role."
+    },
+    {
+      "title": "High Knowledge GmbH",
+      "url": "http://www.highknowledge.de/",
+      "reason": "General-contractor label and address alone do not establish networking relevance or installation activity."
+    },
+    {
+      "title": "IB-IT Datacenter GmbH",
+      "url": "https://ib-it.gmbh/",
+      "reason": "Consultant place category alone does not establish networking SI/Installer responsibility."
+    },
+    {
+      "title": "n@work Internet Informationssysteme GmbH",
+      "url": "https://www.work.de/",
+      "reason": "Generic service category and address provide insufficient networking/project evidence."
+    },
+    {
+      "title": "Elektrotechnik Selent and Elektro-Installation Raabe",
+      "url": "https://www.elektrotechnik-selent.de/",
+      "reason": "Generic electrician listings do not establish professional networking installation."
+    },
+    {
+      "title": "Matthias Weber Systemintegration (KNX)",
+      "url": "https://www.matthias-weber-knx.de/home.html",
+      "reason": "Building-automation system integration is shown, not networking integration."
+    },
+    {
+      "title": "KOSATEC",
+      "url": "http://www.kosatec.de/",
+      "reason": "Wholesaler; wrong channel."
+    },
+    {
+      "title": "Rohde & Schwarz Networks and Cybersecurity and Radio Frequency Systems",
+      "url": "https://www.rohde-schwarz.com/networks-and-cybersecurity",
+      "reason": "Manufacturers; wrong candidate type."
+    },
+    {
+      "title": "WAYFONE, expert HERFAG and Pollin",
+      "url": "http://www.wayfone.de/",
+      "reason": "Retail businesses, not SI/Installer candidates."
+    },
+    {
+      "title": "Other generic place results",
+      "url": "https://network-experts.org/",
+      "reason": "Insufficient evidence of a professional networking project role."
+    }
+  ],
+  "scoring": {
+    "finalSlots": 10,
+    "filledSlots": 4,
+    "missingSlots": 6,
+    "slotScores": [
+      74,
+      74,
+      65,
+      47,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "channelScore": 26,
+    "meanLevelsAcrossTenSlots": {
+      "productUseCaseFit": 1.6,
+      "cooperationPath": 1.2,
+      "evidenceReliability": 0.8
+    }
+  },
+  "evaluator": {
+    "provider": "codex-agent",
+    "transport": "in-session-no-api",
+    "model": "runtime-managed-codex",
+    "systemIdentityHiddenDuringReview": true,
+    "providerIdentityHiddenDuringReview": true,
+    "apiScoresHiddenDuringReview": true,
+    "externalSearchUsed": false
+  }
+}

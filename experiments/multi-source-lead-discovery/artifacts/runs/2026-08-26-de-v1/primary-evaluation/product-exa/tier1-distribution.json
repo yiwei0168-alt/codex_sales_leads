@@ -1,0 +1,478 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "runId": "2026-08-26-de-v1",
+  "systemId": "product-exa",
+  "channelId": "tier1-distribution",
+  "reviewMode": "discovery-pool",
+  "blindBatchId": "B-087190FF439C",
+  "sourceDiscoveryArtifact": "artifacts/runs/2026-08-26-de-v1/discovery/product-exa/tier1-distribution.json",
+  "selectedCandidates": [
+    {
+      "rank": 1,
+      "companyName": "Avanis GmbH",
+      "officialUrl": "https://avanis.de/",
+      "roles": [
+        "Distributor",
+        "VAD"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 3
+      },
+      "score": 92,
+      "roleEvidence": "Describes itself as a specialist network distributor advising trade partners and IT system houses.",
+      "productFitEvidence": "Switches, industrial Ethernet, media converters, VDSL2 and WLAN directly overlap Cudy core categories.",
+      "cooperationEvidence": "Distributor supply plus technical advice, WLAN planning and channel training provide direct procurement and enablement paths.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-8633FA7684",
+          "url": "https://avanis.de/",
+          "excerpt": "# Avanis GmbH Avanis GmbH is a IT Services and IT Consulting company. Avanis GmbH is a company specializing in network technology and WLAN solutions. They offer a wide range of services including switches, RTLS positioning, and infrastructure planning. Avanis GmbH employs 4 people (-12.5% YoY, -1 person), founded in 2003. Headquartered in Bielefeld, North Rhine-Westphalia, Germany, with presence in United States. ## About Die Avanis GmbH zählt zu den führenden Spezial-Distributoren im Netzwerkbereich. Switches, Industrial Ethernet, Medienkonverter, VDSL2, WLAN: Mit einem breiten Sortiment von über 5000 Artikeln verschiedener Marken berät Avanis den Fachhandel, IT-Systemhäuser und gewerbliche Endkunden. Als Spezialist für WLAN-Planung und -Analyse ist Avanis ein Pionier im Bereich Echtzeit-Lokalisierung und WLAN-Ortung. Unter dem Dach der Avanis Academy hat das Unternehmen in den vergangenen anderthalb Jahrzehnten als Anbieter von Trainings, Schulungen und Seminaren viele Hundert Teilnehmer fit für Netzwerktechnik und WLAN-Planung gemacht. ## Company Details - Industry: IT Services and IT Consulting - Type: Partnership - Headquarters: Bielefeld, Germany - Founded Year: 2003 - Homepa"
+        },
+        {
+          "evidenceEntryId": "E-925E82D718",
+          "url": "https://avanis.de/",
+          "excerpt": "# Avanis GmbH Avanis GmbH is a IT Services and IT Consulting company. Avanis GmbH is a company specializing in network technology and WLAN solutions. They offer a wide range of services including switches, RTLS positioning, and infrastructure planning. Avanis GmbH employs 4 people (-12.5% YoY, -1 person), founded in 2003. Headquartered in Bielefeld, North Rhine-Westphalia, Germany, with presence in United States. ## About Die Avanis GmbH zählt zu den führenden Spezial-Distributoren im Netzwerkbereich. Switches, Industrial Ethernet, Medienkonverter, VDSL2, WLAN: Mit einem breiten Sortiment von über 5000 Artikeln verschiedener Marken berät Avanis den Fachhandel, IT-Systemhäuser und gewerbliche Endkunden. Als Spezialist für WLAN-Planung und -Analyse ist Avanis ein Pionier im Bereich Echtzeit-Lokalisierung und WLAN-Ortung. Unter dem Dach der Avanis Academy hat das Unternehmen in den vergangenen anderthalb Jahrzehnten als Anbieter von Trainings, Schulungen und Seminaren viele Hundert Teilnehmer fit für Netzwerktechnik und WLAN-Planung gemacht. ## Company Details - Industry: IT Services and IT Consulting - Type: Partnership - Headquarters: Bielefeld, Germany - Founded Year: 2003 - Homepa"
+        },
+        {
+          "evidenceEntryId": "E-1258E5CA3D",
+          "url": "https://avanis.de/",
+          "excerpt": "# Avanis GmbH Avanis GmbH is a IT Services and IT Consulting company. Avanis GmbH is a company specializing in network technology and WLAN solutions. They offer a wide range of services including switches, RTLS positioning, and infrastructure planning. Avanis GmbH employs 4 people (-12.5% YoY, -1 person), founded in 2003. Headquartered in Bielefeld, North Rhine-Westphalia, Germany, with presence in United States. ## About Die Avanis GmbH zählt zu den führenden Spezial-Distributoren im Netzwerkbereich. Switches, Industrial Ethernet, Medienkonverter, VDSL2, WLAN: Mit einem breiten Sortiment von über 5000 Artikeln verschiedener Marken berät Avanis den Fachhandel, IT-Systemhäuser und gewerbliche Endkunden. Als Spezialist für WLAN-Planung und -Analyse ist Avanis ein Pionier im Bereich Echtzeit-Lokalisierung und WLAN-Ortung. Unter dem Dach der Avanis Academy hat das Unternehmen in den vergangenen anderthalb Jahrzehnten als Anbieter von Trainings, Schulungen und Seminaren viele Hundert Teilnehmer fit für Netzwerktechnik und WLAN-Planung gemacht. ## Company Details - Industry: IT Services and IT Consulting - Type: Partnership - Headquarters: Bielefeld, Germany - Founded Year: 2003 - Homepa"
+        }
+      ],
+      "rationale": "Exceptionally direct product overlap and a verified downstream-channel path; evidence is strong but comes from one repeated source."
+    },
+    {
+      "rank": 2,
+      "companyName": "Teamtrade IT GmbH",
+      "officialUrl": "https://www.team-it-group.de/teamtrade",
+      "roles": [
+        "VAD"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 3
+      },
+      "score": 92,
+      "roleEvidence": "Explicitly identified as a value-add distributor serving more than 600 German system houses.",
+      "productFitEvidence": "Omada Networks and HPE distribution is directly relevant to professional WLAN, switching and infrastructure.",
+      "cooperationEvidence": "Technical advice, sales support and procurement for a large system-house channel establish several direct cooperation levers.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-1242FEF049",
+          "url": "https://www.team-it-group.de/teamtrade",
+          "excerpt": "# Teamtrade IT GmbH (Team IT system house GmbH) Teamtrade IT GmbH. TeamTrade IT is a value-add distributor for HPE and Omada Networks. They provide technical advice, sales support, and procurement services to over 600 system houses in Germany. Teamtrade IT GmbH employs 4 people. Headquartered in Uedem, Germany, with presence in United States. ## Company Details - Headquarters: Uedem, Germany - Homepage: team-it-group.de/teamtrade - Status: active - Aliases: teamtrade it gmbh, team it system house, team it system house gmbh - LinkedIn: linkedin.com/company/teamtrade-it-gmbh - Emails: [redacted-email], [redacted-email] - Phone: [redacted-phone], [redacted-phone] [redacted-workforce-section]"
+        }
+      ],
+      "rationale": "Core networking VAD with an unusually clear downstream purchasing and enablement path."
+    },
+    {
+      "rank": 3,
+      "companyName": "Vitel GmbH",
+      "officialUrl": "https://vitel.de/",
+      "roles": [
+        "VAD"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 4,
+        "evidenceReliability": 3
+      },
+      "score": 85,
+      "roleEvidence": "Explicit European value-added distributor of network infrastructure, connectivity and security solutions.",
+      "productFitEvidence": "Branch networking, connectivity, network and surveillance technology strongly overlap Cudy networking use cases.",
+      "cooperationEvidence": "Selected-vendor distribution plus consultation and implementation support show a practical onboarding and solution path, though downstream-channel evidence is less detailed.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-4894D97D12",
+          "url": "https://vitel.de/",
+          "excerpt": "# Vitel GmbH Vitel GmbH is a IT Services and IT Consulting company. The Vitel GmbH is a value-added distributor of solutions for infrastructure, communication, and security with a focus on Peplink. Vitel GmbH employs 8 people (+40.0% YoY, +2 people), founded in 2016. Headquartered in Germany, with presence in United States. ## About We are a European value-added distributor of IT solutions for network infrastructure, communication, and security. Our portfolio comprises products from carefully selected high-tech manufacturers in the areas of network and surveillance technology, connectivity as well as branch networking. Our team offers extensive consultation and supports you in in the strategic selection and implementation of your customized IT solution. ## Company Details - Industry: IT Services and IT Consulting - Type: Privately Held - Founded Year: 2016 - Homepage: vitel.de - Status: active - Ownership: Private - Aliases: vitel gmbh, vitel - LinkedIn: linkedin.com/company/vitel-gmbh-academy - Linkedin Followers: 911 (Monthly: +1.9%, Yearly: +10.0%) - Emails: [redacted-email], [redacted-email] - Phone: [redacted-phone], [redacted-phone] - SIC Codes: 50, 504 - NAICS Codes: 42, 423"
+        },
+        {
+          "evidenceEntryId": "E-518DEF18D1",
+          "url": "https://vitel.de/",
+          "excerpt": "# Vitel GmbH Vitel GmbH is a IT Services and IT Consulting company. The Vitel GmbH is a value-added distributor of solutions for infrastructure, communication, and security with a focus on Peplink. Vitel GmbH employs 8 people (+40.0% YoY, +2 people), founded in 2016. Headquartered in Germany, with presence in United States. ## About We are a European value-added distributor of IT solutions for network infrastructure, communication, and security. Our portfolio comprises products from carefully selected high-tech manufacturers in the areas of network and surveillance technology, connectivity as well as branch networking. Our team offers extensive consultation and supports you in in the strategic selection and implementation of your customized IT solution. ## Company Details - Industry: IT Services and IT Consulting - Type: Privately Held - Founded Year: 2016 - Homepage: vitel.de - Status: active - Ownership: Private - Aliases: vitel gmbh, vitel - LinkedIn: linkedin.com/company/vitel-gmbh-academy - Linkedin Followers: 911 (Monthly: +1.9%, Yearly: +10.0%) - Emails: [redacted-email], [redacted-email] - Phone: [redacted-phone], [redacted-phone] - SIC Codes: 50, 504 - NAICS Codes: 42, 423"
+        },
+        {
+          "evidenceEntryId": "E-4FD34A4356",
+          "url": "https://vitel.de/",
+          "excerpt": "# Vitel GmbH Vitel GmbH is a IT Services and IT Consulting company. The Vitel GmbH is a value-added distributor of solutions for infrastructure, communication, and security with a focus on Peplink. Vitel GmbH employs 8 people (+40.0% YoY, +2 people), founded in 2016. Headquartered in Germany, with presence in United States. ## About We are a European value-added distributor of IT solutions for network infrastructure, communication, and security. Our portfolio comprises products from carefully selected high-tech manufacturers in the areas of network and surveillance technology, connectivity as well as branch networking. Our team offers extensive consultation and supports you in in the strategic selection and implementation of your customized IT solution. ## Company Details - Industry: IT Services and IT Consulting - Type: Privately Held - Founded Year: 2016 - Homepage: vitel.de - Status: active - Ownership: Private - Aliases: vitel gmbh, vitel - LinkedIn: linkedin.com/company/vitel-gmbh-academy - Linkedin Followers: 911 (Monthly: +1.9%, Yearly: +10.0%) - Emails: [redacted-email], [redacted-email] - Phone: [redacted-phone], [redacted-phone] - SIC Codes: 50, 504 - NAICS Codes: 42, 423"
+        }
+      ],
+      "rationale": "Excellent fit and credible VAD capability with a clear, if not fully quantified, channel path."
+    },
+    {
+      "rank": 4,
+      "companyName": "Red Eagle IT Distribution GmbH",
+      "officialUrl": "https://redeagle-it.de/",
+      "roles": [
+        "Distributor"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 4,
+        "evidenceReliability": 3
+      },
+      "score": 85,
+      "roleEvidence": "IT distributor that explicitly serves resellers and system integrators.",
+      "productFitEvidence": "Concentrates on switches, routers, access points, firewalls, network security and transceivers.",
+      "cooperationEvidence": "Multi-manufacturer distribution and professional advice to downstream resellers establish a direct purchasing path.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-EF6F00FFAE",
+          "url": "https://redeagle-it.de/",
+          "excerpt": "# Red Eagle IT Distribution GmbH Red Eagle IT Distribution GmbH is a Computer and Network Security company. Red Eagle IT Distribution is a company that offers a wide selection of IT hardware and software components from various manufacturers. They also provide professional advice and services for resellers and system integrators. Red Eagle IT Distribution GmbH employs 2 people. Headquartered in Feldkirchen, Bayern, Germany. ## About The product range of Red Eagle IT Distribution includes a wide selection of IT hardware and software components from various manufacturers. In addition to original, factory-new portfolio we also offer alternatives such as „renew“, „refurbished“ and „used“ products. As a specialist in the field of IT distribution and network technology we mainly concentrate on switches, router, access points, firewalls, server technology, network technology, network security and transceivers. One of our current highlights is BlackFog - a software representing a new generation of data security. BlackFog allows for a significant increase in data security by the means of additional surveillance of outgoing data traffic. As a reseller and system integrator Red Eagle IT Distr"
+        }
+      ],
+      "rationale": "Near-perfect product overlap and clear channel sales, supported by one source."
+    },
+    {
+      "rank": 5,
+      "companyName": "MeshTech",
+      "officialUrl": "https://meshtech.de/",
+      "roles": [
+        "Distributor"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 4,
+        "evidenceReliability": 3
+      },
+      "score": 85,
+      "roleEvidence": "Explicit importer and official distributor of WLAN and network products in Germany.",
+      "productFitEvidence": "Cloud WLAN access points, switches and professional SMB network solutions directly match Cudy.",
+      "cooperationEvidence": "Importer/distributor status creates a direct brand purchasing path, although downstream partner mechanics are not described in detail.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-FA8E2715FA",
+          "url": "https://meshtech.de/",
+          "excerpt": "# MeshTech MeshTech is a Wireless Services company. MeshTech is an official distributor of plasma cloud, offering cloud-based WLAN Access Points, Switches, and accessories. MeshTech employs 12 people (+33.3% YoY, +3 people), founded in 2017. Headquartered in Berlin, Germany. ## About MeshTech ist Importeur und Distributor von WLAN und Netzwerkprodukten. Since its foundation in 2016, our primary goal has been to offer professional WLAN and network solutions for small and medium-sized enterprises and public institutions. The focus is on cloud-based solutions with an attractive price-performance ratio. ## Company Details - Industry: Wireless Services - Type: Self-Owned - Headquarters: Berlin, Germany - Founded Year: 2017 - Homepage: meshtech.de - Aliases: meshtech - LinkedIn: linkedin.com/company/meshtech-de - Emails: [redacted-email] - Phone: [redacted-phone] [redacted-workforce-section]"
+        },
+        {
+          "evidenceEntryId": "E-D94E67B77F",
+          "url": "https://meshtech.de/",
+          "excerpt": "# MeshTech MeshTech is a Wireless Services company. MeshTech is an official distributor of plasma cloud, offering cloud-based WLAN Access Points, Switches, and accessories. MeshTech employs 12 people (+33.3% YoY, +3 people), founded in 2017. Headquartered in Berlin, Germany. ## About MeshTech ist Importeur und Distributor von WLAN und Netzwerkprodukten. Since its foundation in 2016, our primary goal has been to offer professional WLAN and network solutions for small and medium-sized enterprises and public institutions. The focus is on cloud-based solutions with an attractive price-performance ratio. ## Company Details - Industry: Wireless Services - Type: Self-Owned - Headquarters: Berlin, Germany - Founded Year: 2017 - Homepage: meshtech.de - Aliases: meshtech - LinkedIn: linkedin.com/company/meshtech-de - Emails: [redacted-email] - Phone: [redacted-phone] [redacted-workforce-section]"
+        }
+      ],
+      "rationale": "Excellent specialist product fit with a credible direct-distribution route."
+    },
+    {
+      "rank": 6,
+      "companyName": "SCALCOM",
+      "officialUrl": "https://scalcom.de/",
+      "roles": [
+        "Distributor",
+        "VAD"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 4,
+        "evidenceReliability": 3
+      },
+      "score": 85,
+      "roleEvidence": "Calls itself a specialized distributor for networking components with value-added advice and support.",
+      "productFitEvidence": "Switching, routing, WLAN, point-to-point wireless and modem technology have direct Cudy overlap.",
+      "cooperationEvidence": "Manufacturer network, strategic consultation and project/BOM support provide a practical channel route; exact downstream mix is not fully evidenced.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-9B15626A60",
+          "url": "https://scalcom.de/",
+          "excerpt": "# SCALCOM SCALCOM is a IT Services and IT Consulting company. SCALCOM is a B2B online shop that offers a wide range of products including switching/routing, WLAN, server, storage, router, service, security, switches, and workstations. SCALCOM employs 5 people (-30.0% YoY, -3 people), founded in 2009. Headquartered in waltenhofen, bayern, Germany, with presence in United States. ## About Die SCALCOM bietet als spezialisierter Distributor – mit dem Schwerpunkt Netzwerkkomponenten – weit mehr als nur eine klassische Produktdistribution. Neben dem Fokus auf die Lieferung von Netzwerkkomponenten und ausgewählten Funklösungen beinhalten die Leistungen von SCALCOM die strategische Beratung und einen umfassenden Service und Support. Unsere Kunden profitieren von unserem langjährigen Know-how in den neuesten Technologien. Sie finden bei SCALCOM klassische Netzwerkkomponenten aus den Bereichen Switching und Routing, neueste Funktechnologien (WLAN, Richtfunk) sowie Multiplexer- und Modemtechnik und vieles mehr. SCALCOM unterstützt Sie mit einem umfangreichen Partnernetzwerk bestehend aus technologieführenden Herstellern. Bereits bei der Skizzierung Ihres Projektes und der Erstellung von Stüc"
+        },
+        {
+          "evidenceEntryId": "E-5907CF1B54",
+          "url": "https://scalcom.de/",
+          "excerpt": "# SCALCOM SCALCOM is a IT Services and IT Consulting company. SCALCOM is a B2B online shop that offers a wide range of products including switching/routing, WLAN, server, storage, router, service, security, switches, and workstations. SCALCOM employs 5 people (-30.0% YoY, -3 people), founded in 2009. Headquartered in waltenhofen, bayern, Germany, with presence in United States. ## About Die SCALCOM bietet als spezialisierter Distributor – mit dem Schwerpunkt Netzwerkkomponenten – weit mehr als nur eine klassische Produktdistribution. Neben dem Fokus auf die Lieferung von Netzwerkkomponenten und ausgewählten Funklösungen beinhalten die Leistungen von SCALCOM die strategische Beratung und einen umfassenden Service und Support. Unsere Kunden profitieren von unserem langjährigen Know-how in den neuesten Technologien. Sie finden bei SCALCOM klassische Netzwerkkomponenten aus den Bereichen Switching und Routing, neueste Funktechnologien (WLAN, Richtfunk) sowie Multiplexer- und Modemtechnik und vieles mehr. SCALCOM unterstützt Sie mit einem umfangreichen Partnernetzwerk bestehend aus technologieführenden Herstellern. Bereits bei der Skizzierung Ihres Projektes und der Erstellung von Stüc"
+        },
+        {
+          "evidenceEntryId": "E-6E88C18896",
+          "url": "https://scalcom.de/",
+          "excerpt": "# SCALCOM SCALCOM is a IT Services and IT Consulting company. SCALCOM is a B2B online shop that offers a wide range of products including switching/routing, WLAN, server, storage, router, service, security, switches, and workstations. SCALCOM employs 5 people (-30.0% YoY, -3 people), founded in 2009. Headquartered in waltenhofen, bayern, Germany, with presence in United States. ## About Die SCALCOM bietet als spezialisierter Distributor – mit dem Schwerpunkt Netzwerkkomponenten – weit mehr als nur eine klassische Produktdistribution. Neben dem Fokus auf die Lieferung von Netzwerkkomponenten und ausgewählten Funklösungen beinhalten die Leistungen von SCALCOM die strategische Beratung und einen umfassenden Service und Support. Unsere Kunden profitieren von unserem langjährigen Know-how in den neuesten Technologien. Sie finden bei SCALCOM klassische Netzwerkkomponenten aus den Bereichen Switching und Routing, neueste Funktechnologien (WLAN, Richtfunk) sowie Multiplexer- und Modemtechnik und vieles mehr. SCALCOM unterstützt Sie mit einem umfangreichen Partnernetzwerk bestehend aus technologieführenden Herstellern. Bereits bei der Skizzierung Ihres Projektes und der Erstellung von Stüc"
+        }
+      ],
+      "rationale": "Very strong specialist fit and material value-add distribution capability."
+    },
+    {
+      "rank": 7,
+      "companyName": "4Networks IT-Distribution",
+      "officialUrl": "https://4networks.de/",
+      "roles": [
+        "VAD"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 4,
+        "evidenceReliability": 3
+      },
+      "score": 85,
+      "roleEvidence": "Explicitly presents itself as a German value-add IT distributor.",
+      "productFitEvidence": "Network, WLAN, video surveillance and security solutions align closely with Cudy's professional portfolio.",
+      "cooperationEvidence": "Vendor/partner distribution and tailored solution support show a plausible direct route, but concrete downstream purchasing evidence is limited.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-E5E4C591AF",
+          "url": "https://4networks.de/",
+          "excerpt": "# 4Networks IT-Distribution 4Networks IT-Distribution is a IT Services and IT Consulting company. 4Networks is an IT-Distributor that provides network, WLAN, videoüberwachung, and security solutions. They offer tailored solutions and strong partners for businesses. 4Networks IT-Distribution employs 3 people, founded in 2025. Headquartered in Aurich, Lower Saxony, Germany. ## About Ihr zuverlässiger Partner in der IT-Distribution Wir sind ein führender Value Add Distributor, der sich durch Kundennähe, Zuverlässigkeit und Schnelligkeit auszeichnet. Mit langjähriger Erfahrung in der Branche bieten wir maßgeschneiderte Lösungen, die den spezifischen Bedürfnissen unserer Partner gerecht werden. Unser Fokus liegt auf einer engen Zusammenarbeit mit unseren Kunden, um optimale Mehrwerte zu schaffen und deren Geschäftserfolg zu fördern. Dank unserer umfassenden Expertise und einem zuverlässigen Netzwerk sind wir in der Lage, Produkte und Dienstleistungen schnell und effizient zu liefern. So können unsere Kunden stets auf einen schnellen Service und eine problemlose Umsetzung zählen. Vertrauen Sie auf unsere Erfahrung und unsere starke Partnerschaft, um Ihre Geschäftsziele erfolgreich zu err"
+        },
+        {
+          "evidenceEntryId": "E-317E1F1A09",
+          "url": "https://4networks.de/",
+          "excerpt": "# 4Networks IT-Distribution 4Networks IT-Distribution is a IT Services and IT Consulting company. 4Networks is an IT-Distributor that provides network, WLAN, videoüberwachung, and security solutions. They offer tailored solutions and strong partners for businesses. 4Networks IT-Distribution employs 3 people, founded in 2025. Headquartered in Aurich, Lower Saxony, Germany. ## About Ihr zuverlässiger Partner in der IT-Distribution Wir sind ein führender Value Add Distributor, der sich durch Kundennähe, Zuverlässigkeit und Schnelligkeit auszeichnet. Mit langjähriger Erfahrung in der Branche bieten wir maßgeschneiderte Lösungen, die den spezifischen Bedürfnissen unserer Partner gerecht werden. Unser Fokus liegt auf einer engen Zusammenarbeit mit unseren Kunden, um optimale Mehrwerte zu schaffen und deren Geschäftserfolg zu fördern. Dank unserer umfassenden Expertise und einem zuverlässigen Netzwerk sind wir in der Lage, Produkte und Dienstleistungen schnell und effizient zu liefern. So können unsere Kunden stets auf einen schnellen Service und eine problemlose Umsetzung zählen. Vertrauen Sie auf unsere Erfahrung und unsere starke Partnerschaft, um Ihre Geschäftsziele erfolgreich zu err"
+        },
+        {
+          "evidenceEntryId": "E-F79CCA813D",
+          "url": "https://www.4networks.de/",
+          "excerpt": "# 4Networks IT-Distribution 4Networks IT-Distribution is a IT Services and IT Consulting company. 4Networks is an IT-Distributor that provides network, WLAN, videoüberwachung, and security solutions. They offer tailored solutions and strong partners for businesses. 4Networks IT-Distribution employs 3 people, founded in 2025. Headquartered in Aurich, Lower Saxony, Germany. ## About Ihr zuverlässiger Partner in der IT-Distribution Wir sind ein führender Value Add Distributor, der sich durch Kundennähe, Zuverlässigkeit und Schnelligkeit auszeichnet. Mit langjähriger Erfahrung in der Branche bieten wir maßgeschneiderte Lösungen, die den spezifischen Bedürfnissen unserer Partner gerecht werden. Unser Fokus liegt auf einer engen Zusammenarbeit mit unseren Kunden, um optimale Mehrwerte zu schaffen und deren Geschäftserfolg zu fördern. Dank unserer umfassenden Expertise und einem zuverlässigen Netzwerk sind wir in der Lage, Produkte und Dienstleistungen schnell und effizient zu liefern. So können unsere Kunden stets auf einen schnellen Service und eine problemlose Umsetzung zählen. Vertrauen Sie auf unsere Erfahrung und unsere starke Partnerschaft, um Ihre Geschäftsziele erfolgreich zu err"
+        }
+      ],
+      "rationale": "Strong stated VAD fit and product relevance, with moderate evidence depth."
+    },
+    {
+      "rank": 8,
+      "companyName": "sysob IT-Distribution",
+      "officialUrl": "https://www.sysob.com/",
+      "roles": [
+        "VAD"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 5,
+        "evidenceReliability": 3
+      },
+      "score": 83,
+      "roleEvidence": "Explicit DACH VAD for security and wireless/networking with more than 1,200 purchasing partners.",
+      "productFitEvidence": "Wireless LAN and networking are material, though the portfolio is also strongly security-oriented.",
+      "cooperationEvidence": "Large verified partner channel, vendor distribution and managed services create strong onboarding and enablement paths.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-988E99AB38",
+          "url": "https://www.sysob.com/",
+          "excerpt": "# sysob IT-Distribution (sysob IT-Distribution GmbH & Co. KG) sysob IT-Distribution is a Computer and Network Security company. sysob is an IT-Distribution company that specializes in Security, Wireless LAN, and Serverbased Computing. They have been providing innovative solutions for the trade for over 20 years. Sysob IT-Distribution employs 15 people (+6.9% YoY, +2 people) and has an annual revenue of $36.8M, founded in 1999. Headquartered in Schorndorf, Bavaria, Germany, with presence in United States. ## About Value Added Distributor (VAD) with Security, Wireless/Networking Channel in D-A-CH (Germany, Austria and Switzerland). More than 1200 Partners already connected and purchasing through sysob. sysob is distributing a lot of high value vendors with additional managed service portfolio. ## Company Details - Industry: Computer and Network Security - Type: Privately Held - Headquarters: Schorndorf, Germany - Founded Year: 1999 - Homepage: sysob.com - Status: active - Ownership: Private - Parent Company: CMS Distribution Limited - Aliases: sysob it-distribution, sysob, sysob it-unternehmensgruppe, sysob it-unternehmensgruppe gmbh & co. kg, sysob it-distribution gmbh & co. kg - Li"
+        },
+        {
+          "evidenceEntryId": "E-546420ED61",
+          "url": "https://sysob.com/",
+          "excerpt": "# sysob IT-Distribution (sysob IT-Distribution GmbH & Co. KG) sysob IT-Distribution is a Computer and Network Security company. sysob is an IT-Distribution company that specializes in Security, Wireless LAN, and Serverbased Computing. They have been providing innovative solutions for the trade for over 20 years. Sysob IT-Distribution employs 15 people (+6.9% YoY, +2 people) and has an annual revenue of $36.8M, founded in 1999. Headquartered in Schorndorf, Bavaria, Germany, with presence in United States. ## About Value Added Distributor (VAD) with Security, Wireless/Networking Channel in D-A-CH (Germany, Austria and Switzerland). More than 1200 Partners already connected and purchasing through sysob. sysob is distributing a lot of high value vendors with additional managed service portfolio. ## Company Details - Industry: Computer and Network Security - Type: Privately Held - Headquarters: Schorndorf, Germany - Founded Year: 1999 - Homepage: sysob.com - Status: active - Ownership: Private - Parent Company: CMS Distribution Limited - Aliases: sysob it-distribution, sysob, sysob it-unternehmensgruppe, sysob it-unternehmensgruppe gmbh & co. kg, sysob it-distribution gmbh & co. kg - Li"
+        }
+      ],
+      "rationale": "Outstanding downstream-channel evidence with strong, slightly less comprehensive core-product overlap."
+    },
+    {
+      "rank": 9,
+      "companyName": "Acondistec",
+      "officialUrl": "https://acondistec.de/",
+      "roles": [
+        "VAD"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 5,
+        "evidenceReliability": 3
+      },
+      "score": 83,
+      "roleEvidence": "Explicit value-added distributor supporting system houses.",
+      "productFitEvidence": "Portfolio includes network and Wi-Fi alongside broader infrastructure, cloud and energy solutions.",
+      "cooperationEvidence": "System-house enablement, manufacturer partnerships, services and business development give a direct channel path.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-2770106585",
+          "url": "https://acondistec.de/",
+          "excerpt": "# Acondistec Acondistec is a IT Services and IT Consulting company. Acondistec is a company that specializes in value-added distribution of high-quality tech. They offer ITK and Cloud solutions from market leaders and provide a customized business development program. Acondistec employs 27 people (+7.7% YoY, +3 people), founded in 2006. Headquartered in Sankt Leon-Rot, Baden-Württemberg, Germany, with presence in United States. ## About Acondistec ist Value Added Distributor für IT-Infrastruktur, Cloud- und Smart Energy-Lösungen. Wir unterstützen Systemhäuser mit innovativen Technologien und echtem Value Add, der Umsatz und Wachstum ermöglicht. Unser Portfolio umfasst Datacenter, Server, Storage, Netzwerk, WiFi, Backup, Security, Cloud, Energiespeicher, Photovoltaik und Ladeinfrastruktur. Dank enger Partnerschaften mit führenden Herstellern wie Huawei, Huawei eKit, FusionSolar, xFusion und Supermicro sowie unseren individuellen Serviceleistungen realisieren wir zukunftsorientierte Lösungen. ## Company Details - Industry: IT Services and IT Consulting - Type: Public Company - Headquarters: Sankt Leon-Rot, Germany - Founded Year: 2006 - Homepage: acondistec.de - Status: active - Owne"
+        }
+      ],
+      "rationale": "Excellent VAD cooperation path and strong networking relevance within a broader portfolio."
+    },
+    {
+      "rank": 10,
+      "companyName": "Hopf Vertriebsgesellschaft mbH",
+      "officialUrl": "https://hopf-online.de/",
+      "roles": [
+        "Distributor"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 4,
+        "evidenceReliability": 3
+      },
+      "score": 76,
+      "roleEvidence": "German wholesaler and exclusive distributor in industrial networking and automation.",
+      "productFitEvidence": "Industrial Ethernet, switches, firewalls, routers and optical devices provide strong Cudy overlap.",
+      "cooperationEvidence": "Wholesale and exclusive-distributor status imply direct procurement and resale, with limited detail about the downstream channel.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-0A03B68597",
+          "url": "https://hopf-online.de/",
+          "excerpt": "# Hopf Vertriebsgesellschaft mbH (Hopf Vertriebsgesellschaft mbH.) Hopf Vertriebsgesellschaft mbH is a Wholesale company. Hopf Vertriebsgesellschaft is a company that specializes in automation technology. They have been a family-owned company since 1938 and are known for their tradition and innovation. They are exclusive distributors of triax in Germany, Austria, and Switzerland, offering a wide range of products including switches, firewalls, routers, and optical devices. They also provide automation technology, industrial connection, and signal distribution services. Hopf Vertriebsgesellschaft mbH employs 15 people, founded in 1938. Headquartered in Germany, with presence in United States. Its workforce is distributed across Germany and Austria. ## About Fortschritt seit 1938 – dafür steht HOPF. Seit dem Unternehmensstart wurde aus einem kleinen Vertriebsbüro in Frankfurt am Main einer der größten Anbieter für Komplettlösungen im Bereich Industrial Ethernet und Industrial Internet of Things (IIoT). Und das nicht ohne Grund: Zukunftsorientierte Prozesse gehören für uns seit jeher zum Erfolg. Deshalb bieten wir individuell angepasste Lösungen an, um den speziellen Anforderungen uns"
+        },
+        {
+          "evidenceEntryId": "E-9A3733691C",
+          "url": "https://hopf-online.de/",
+          "excerpt": "# Hopf Vertriebsgesellschaft mbH (Hopf Vertriebsgesellschaft mbH.) Hopf Vertriebsgesellschaft mbH is a Wholesale company. Hopf Vertriebsgesellschaft is a company that specializes in automation technology. They have been a family-owned company since 1938 and are known for their tradition and innovation. They are exclusive distributors of triax in Germany, Austria, and Switzerland, offering a wide range of products including switches, firewalls, routers, and optical devices. They also provide automation technology, industrial connection, and signal distribution services. Hopf Vertriebsgesellschaft mbH employs 15 people, founded in 1938. Headquartered in Germany, with presence in United States. Its workforce is distributed across Germany and Austria. ## About Fortschritt seit 1938 – dafür steht HOPF. Seit dem Unternehmensstart wurde aus einem kleinen Vertriebsbüro in Frankfurt am Main einer der größten Anbieter für Komplettlösungen im Bereich Industrial Ethernet und Industrial Internet of Things (IIoT). Und das nicht ohne Grund: Zukunftsorientierte Prozesse gehören für uns seit jeher zum Erfolg. Deshalb bieten wir individuell angepasste Lösungen an, um den speziellen Anforderungen uns"
+        }
+      ],
+      "rationale": "Strong industrial-networking distributor that ranks below candidates with better evidenced channel enablement."
+    }
+  ],
+  "rejectedItems": [
+    {
+      "title": "Complus GmbH",
+      "url": "https://complus.de/",
+      "reason": "Eligible specialist distributor but UCC/voice focus and weaker core-network breadth place it below the top ten."
+    },
+    {
+      "title": "BR Network Solutions GmbH",
+      "url": "https://br-network.de/",
+      "reason": "Eligible wholesaler, but its passive cabling and cabinet emphasis yields weaker Cudy product fit."
+    },
+    {
+      "title": "Exertis Connect Germany",
+      "url": "https://www.exertis-connect.de/",
+      "reason": "Eligible B2B distributor with a strong channel path, but evidence emphasizes passive infrastructure rather than Cudy's active products."
+    },
+    {
+      "title": "STORDIS",
+      "url": "https://stordis.com/",
+      "reason": "Strong networking company, but supplied evidence emphasizes consulting, integration and end-organization delivery rather than downstream distribution."
+    },
+    {
+      "title": "OMG.DE GmbH",
+      "url": "https://www.omg.de/",
+      "reason": "Supplied evidence supports SI/service and online sales, not a qualifying downstream distributor role."
+    },
+    {
+      "title": "IT COM Langer GmbH",
+      "url": "https://itcomlanger.de/",
+      "reason": "System house serving final business customers; wrong channel."
+    },
+    {
+      "title": "Compart IT-Solutions GmbH",
+      "url": "https://compart-it.de/",
+      "reason": "Integrator for enterprise and public-sector customers; wrong channel."
+    },
+    {
+      "title": "nds Netzwerksysteme GmbH",
+      "url": "https://nds-systemhaus.de/",
+      "reason": "IT system house and final-customer solution provider; wrong channel."
+    },
+    {
+      "title": "HEIN Netzwerktechnik GmbH",
+      "url": "https://hein.de/",
+      "reason": "Company and networking relevance are supported, but the supplied evidence does not establish Distributor/VAD activity."
+    }
+  ],
+  "scoring": {
+    "finalSlots": 10,
+    "filledSlots": 10,
+    "missingSlots": 0,
+    "slotScores": [
+      92,
+      92,
+      85,
+      85,
+      85,
+      85,
+      85,
+      83,
+      83,
+      76
+    ],
+    "channelScore": 85.1,
+    "meanLevelsAcrossTenSlots": {
+      "productUseCaseFit": 4.7,
+      "cooperationPath": 4.4,
+      "evidenceReliability": 3
+    }
+  },
+  "evaluator": {
+    "provider": "codex-agent",
+    "transport": "in-session-no-api",
+    "model": "runtime-managed-codex",
+    "systemIdentityHiddenDuringReview": true,
+    "providerIdentityHiddenDuringReview": true,
+    "apiScoresHiddenDuringReview": true,
+    "externalSearchUsed": false
+  }
+}

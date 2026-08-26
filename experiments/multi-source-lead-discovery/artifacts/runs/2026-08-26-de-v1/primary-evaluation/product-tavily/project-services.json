@@ -1,0 +1,427 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "runId": "2026-08-26-de-v1",
+  "systemId": "product-tavily",
+  "channelId": "project-services",
+  "reviewMode": "discovery-pool",
+  "blindBatchId": "B-50308678FBE5",
+  "sourceDiscoveryArtifact": "artifacts/runs/2026-08-26-de-v1/discovery/product-tavily/project-services.json",
+  "selectedCandidates": [
+    {
+      "rank": 1,
+      "companyName": "Hagel IT-Services GmbH",
+      "officialUrl": "https://www.hagel-it.de/",
+      "roles": [
+        "SI",
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 4
+      },
+      "score": 96,
+      "roleEvidence": "Official technical guide states that the company has delivered about 150 business network installations in northern Germany.",
+      "productFitEvidence": "Managed switches, Wi-Fi 6E access points, firewalls, cabling and managed WLAN closely match Cudy use cases.",
+      "cooperationEvidence": "Planning, component/BOM decisions, installation and managed operation cover the full project chain.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-D77E807B5F",
+          "url": "https://www.hagel-it.de/it-insights/netzwerkinstallation-fuer-kleine-unternehmen-schritt-fuer-schritt-anleitung",
+          "excerpt": "## Inhalt in Kürze Das Firmennetzwerk ist das Nervensystem Ihres Betriebs. Im Zweifel merken Sie es erst, wenn es nicht funktioniert: Die Videokonferenz hakt, der Drucker ist „offline”, das Backup läuft nicht zu Ende, die Kasse steht still. In dem Moment geht es nicht mehr um IT — es geht um Umsatz, um Kundentermine, um Mitarbeiter, die nicht arbeiten können. Dieser Artikel ist die Anleitung, die wir unseren Kunden in Hamburg und Norddeutschland in die Hand geben, wenn sie zum ersten Mal ein Firmennetzwerk planen, ein bestehendes Büro modernisieren oder umziehen. Keine Produkt-Werbung, sondern eine Entscheidungshilfe mit Zahlen, Komponenten und Fallstricken aus rund 150 Netzwerk-Installationen. ## Was gehört zu einer professionellen Netzwerkinstallation? [...] Für 25 Arbeitsplätze liegen die Einmal-Kosten für ein sauber geplantes Firmennetzwerk bei 12.000–22.000 € netto — das umfasst managed Switch, Wi-Fi-6E-Access-Points, Firewall, CAT6a-Verkabelung, Patchpanel und Montage. Dazu kommt ein Betriebsmodell: entweder Break-Fix nach Aufwand oder Managed WLAN/Firewall als Flatrate ab ca. 50 € pro Arbeitsplatz/Monat. Der Preisspreiz entsteht vor allem durch die Verkabelungssituation — Ne"
+        }
+      ],
+      "rationale": "Exceptionally direct project, product and procurement evidence from a detailed first-party source."
+    },
+    {
+      "rank": 2,
+      "companyName": "EWE Business",
+      "officialUrl": "https://business.ewe.de/",
+      "roles": [
+        "SI",
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 4
+      },
+      "score": 96,
+      "roleEvidence": "Provides managed LAN/WLAN projects for German business customers from planning through maintenance.",
+      "productFitEvidence": "Access points, switches, LAN/WLAN mapping and managed Wi-Fi directly overlap Cudy.",
+      "cooperationEvidence": "Specifies components, supplies all devices, installs, monitors and administers the network.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-BCBC2C33F7",
+          "url": "https://business.ewe.de/vernetzung/managed-lan-wlan/profi-wlan",
+          "excerpt": "### Planung Wir erstellen eine detaillierte Planung sämtlicher Komponenten und eine konkrete Kostenschätzung. ### Installation Wir planen nicht nur Ihr WLAN-Netz, sondern liefern auch sämtliche Geräte aus und installieren diese. ### Analyse Wir stellen Ihnen eine Software zur Verfügung, mit der Sie jederzeit einen Überblick zur Nutzung Ihres WLANs erhalten. ### Wartung Damit Ihr Netzwerk dauerhaft störungsfrei läuft, übernehmen wir auch die Wartung und Administration. ## Branchenbeispiele für unsere professionellen WLAN-Lösungen [...] Tablet mit Raumplan in zwei Händen ## WLAN-Kartierung Auf Basis eines Grundrisses und des genauen Standortes der Internetanbindung und der weiteren LAN-Infrastruktur erstellen wir Ihnen eine übersichtliche Karte mit der günstigsten WLAN-Ausleuchtung Ihres Büros, Gebäudes oder Areals. Inklusive Empfehlung für verbaute Access-Points, Switches und weitere Geräte. Zwei Männer im Business-Look schauen auf ein Handy ## Rundum-sorglos-Paket Unsere WLAN-Experten begleiten Sie von der Planung und der Installation bis zur Überwachung Ihrer WLAN-Performance. Wichtig dabei sind vor allem die Bestandsaufnahme Ihrer aktuellen LAN-Infrastruktur sowie die Verkabelung"
+        }
+      ],
+      "rationale": "Full end-to-end specification, procurement and deployment control."
+    },
+    {
+      "rank": 3,
+      "companyName": "MiMann.net",
+      "officialUrl": "https://mimann.net/",
+      "roles": [
+        "SI",
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 4
+      },
+      "score": 96,
+      "roleEvidence": "German system house offering vendor-neutral business-WLAN planning, installation and operation.",
+      "productFitEvidence": "The supplied example specifies gateways, PoE switches, Wi-Fi access points and structured cabling.",
+      "cooperationEvidence": "Assessment, design, explicit BOM, installation, configuration and ongoing operation demonstrate maximum specification influence.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-646F2C2954",
+          "url": "https://mimann.net/blog/business-wlan-einrichten-hardware-hersteller-und-installation",
+          "excerpt": "Entscheidend ist nicht nur die Hardware, sondern die fachgerechte Installation und Konfiguration: VLAN-Trennung, Sicherheitsrichtlinien, Kanalplanung und ein sauberes Monitoring-Setup machen den Unterschied zwischen einem WLAN, das funktioniert, und einem, das Probleme verursacht. Wenn Sie unsicher sind, welche Lösung zu Ihrem Unternehmen passt, sprechen Sie uns an — wir planen, installieren und betreuen Ihr Business-WLAN von der ersten Bestandsaufnahme bis zum laufenden Betrieb. ## Professionelles WLAN für Ihr Unternehmen? Wir beraten Sie herstellerunabhängig, planen Ihre WLAN-Infrastruktur und übernehmen die komplette Installation — von der Verkabelung bis zum letzten Access Point. MiMann.net Logo Ihr Systemhaus am Kaiserstuhl. IT-Lösungen für den Mittelstand. MiMann.net [...] ### Das UniFi-Setup | Komponente | Modell | Anzahl | Einzelpreis (netto) | Gesamt | --- --- | Gateway & Controller | UniFi Dream Machine Pro | 1 | 430 € | 430 € | | PoE-Switch | UniFi USW-Pro-24-PoE | 1 | 450 € | 450 € | | Access Points EG | UniFi U7 Pro | 3 | 190 € | 570 € | | Access Points OG | UniFi U7 Pro | 3 | 190 € | 570 € | | Patchkabel Cat6a (0,5 m) | Diverse | 30 | 3 € | 90 € | | Montagematerial |"
+        }
+      ],
+      "rationale": "Highly specific evidence for every stage relevant to a Cudy project sale."
+    },
+    {
+      "rank": 4,
+      "companyName": "Frings Solutions Deutschland GmbH",
+      "officialUrl": "https://www.frings-solutions.de/",
+      "roles": [
+        "SI",
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 4
+      },
+      "score": 96,
+      "roleEvidence": "German solution group performs WLAN analysis, planning, installation and configuration for businesses.",
+      "productFitEvidence": "Site surveys, access-point placement, switches and enterprise WLAN are directly relevant.",
+      "cooperationEvidence": "Technology partnerships plus survey, design, product recommendation and installation create a complete project path.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-32F2C3474A",
+          "url": "https://www.frings-solutions.de/infrastruktur/wlan",
+          "excerpt": "### Wir haben hunderte Unternehmen bei der Transformation in den Bereichen Infrastruktur, Smart Work, Kommunikation, Cloud, Security und Servicemanagement begleitet. Erfahren Sie, wie. Referenzübersicht ###### Ein Auszug unserer Technologie-Partner: Mehr Hersteller ## Gemeinsam mit starken Marken entwickeln wir smarte Lösungen. Logo Cisco Logo Lenovo Logo Enreach Logo Canon Logo Extreme Logo Copilot Logo aruba Logo MS Team Logo Audiocodes # 💬 ### 100 % Klarheit bei 15 Minuten Invest. Wir beraten Sie zum Thema WLAN-Ausbau, kostenlos und unverbindlich: Beratung Frings Solutions Deutschland GmbH Kleinhülsen 42, 40721 Hilden Phone: [redacted-phone] Mail: [redacted-email] Beratung [...] Hersteller und Systeme für Gebäude, Räume und IT. ### Die Systemhausgruppe Unternehmen der Gruppe im Überblick. ### Informationen Informationen, Hintergründe und Aktuelles. ### Standorte Unsere Expert:innen sind für Sie da – vor Ort oder remote. Telefonzentrale: [redacted-phone] Mail: [redacted-email] # WLAN-Ausbau: Für eine vernetzte Zukunft [...] Netzwerkanalyse und Planung: Durchführung von Site Surveys und Analysen zur Bestimmung der optimalen Platzierung von Access Points. Installation und Konfigur"
+        }
+      ],
+      "rationale": "Excellent project-specific evidence and direct ability to specify active networking hardware."
+    },
+    {
+      "rank": 5,
+      "companyName": "Die Netz-Werker AG",
+      "officialUrl": "https://www.dnw.ag/",
+      "roles": [
+        "SI",
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 4
+      },
+      "score": 96,
+      "roleEvidence": "Berlin/Brandenburg IT system partner delivering tailored network and WLAN solutions.",
+      "productFitEvidence": "Enterprise WLAN, access points and network infrastructure using named vendors directly match Cudy categories.",
+      "cooperationEvidence": "Consultation, solution tailoring, WLAN setup/optimization and ongoing management provide specification and deployment control.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-70812DC130",
+          "url": "https://www.dnw.ag/portfolio/it-infrastruktur/netzwerk-infrastruktur",
+          "excerpt": "Flexibel und zukunftssicher Unsere Netzwerk- und WLAN-Lösungen sind skalierbar, sodass sie sich an die wachsenden Anforderungen Ihres Unternehmens anpassen. Wir bieten fortlaufende Verwaltung und Support, um sicherzustellen, dass Ihr Netzwerk stets sicher, leistungsfähig und zukunftssicher ist. Ob kleine oder große Umgebungen – wir bieten maßgeschneiderte Lösungen, die genau auf Ihre Bedürfnisse abgestimmt sind. ### Lassen Sie uns reden Kontaktieren Sie uns für eine Beratung oder besuchen Sie unseren Blog für mehr Infos. #### Unsere Lösungspartner Die Netz-Werker AG Logo Die Netz-Werker AG Kiefholzstr. 3, 12435 Berlin Ihr erfahrener IT-Systempartner für Berlin und Brandenburg Informationen Portfolio Copyright © 2026 Die Netz-Werker AG. All rights reserved. [...] Nahtlose drahtlose Konnektivität Wir bieten umfassende Dienstleistungen zur Einrichtung und Optimierung Ihrer WLAN-Infrastruktur. Mit Lösungen von Ruckus und Ubiquiti sorgen wir für eine nahtlose drahtlose Konnektivität, die schnelles und sicheres Internet an allen Arbeitsplätzen und mobilen Geräten ermöglicht. Unsere Experten optimieren die Reichweite und Leistung Ihrer WLAN-Netzwerke für maximale Effizienz. #### Skalierba"
+        }
+      ],
+      "rationale": "Strong direct evidence for a full WLAN solution lifecycle."
+    },
+    {
+      "rank": 6,
+      "companyName": "Elomech Elektroanlagen GmbH",
+      "officialUrl": "https://www.elomech.de/",
+      "roles": [
+        "SI",
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 5,
+        "evidenceReliability": 4
+      },
+      "score": 87,
+      "roleEvidence": "German full-service provider designs and installs network architecture, cabling and active communication networks.",
+      "productFitEvidence": "LAN, WAN, Gigabit Ethernet and network components are strong matches, with less direct WLAN/CPE detail.",
+      "cooperationEvidence": "Architecture, topology, components, cabling, activation and installation show end-to-end project responsibility.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-243C4CC6D9",
+          "url": "https://www.elomech.de/en/services/networks",
+          "excerpt": "As our customer, you enjoy the benefits of expert advice and installation in all areas of network technology: from planning the network topology and architecture to structured cabling and activating communication networks. In other words: Elomech Elektroanlagen GmbH provides you with integrated solutions for all demands and requirements - and our employees offer the highest level of expertise, resilience and flexibility. Network topology Network architecture Network installation Local area networks (LAN) Wide area networks (WAN) Gigabit Ethernet ### Projects: ### Automobilclub Frankfurt [...] High-performance data networks are the prerequisite for perfect communication within the company and between the head office and branch offices. As a full-service provider, we offer our customers in the Networks business field integrated solutions for a smooth flow of data – and for every requirement. No matter how large or complex your requirements are. The service portfolio of Elomech Elektroanlagen covers the entire spectrum: local area networks (LAN), network components and wide area networks (WAN) – even across continents thanks to partnerships with well-known manufacturers. The services"
+        }
+      ],
+      "rationale": "Excellent integration/deployment path and strong general networking fit."
+    },
+    {
+      "rank": 7,
+      "companyName": "A+G connect GmbH",
+      "officialUrl": "https://www.aplusg.de/",
+      "roles": [
+        "SI"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 5,
+        "evidenceReliability": 4
+      },
+      "score": 87,
+      "roleEvidence": "German integrator documents complex public-sector and multi-site network projects.",
+      "productFitEvidence": "WAN, LAN, WLAN and IT security provide broad relevant networking overlap.",
+      "cooperationEvidence": "Network convergence, multi-site project delivery, operations and 24x7 responsibility demonstrate strong architecture and deployment influence.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-673C044084",
+          "url": "https://www.aplusg.de/projekte",
+          "excerpt": "A+G connect GmbH Logo Network Datennetze # Netzwerk-Projekte Unser Spitzen Know-How und unsere langjährige Erfahrung in der Zusammenführung von Datennetzen, Sprache und IT-Sicherheit sind unser klar erkennbares Unterscheidungs­­merkmal. Erfahren Sie hier mehr über unsere Projektarbeit. ## Erwähnenswerte Netzwerk-Projekte ### we connect Modernste Technologien und Methoden in der öffentlichen Verwaltung ### Telefonie-Projekt Mit Zentraler Steuerung und 32 abgesetzten Standorten für 3500+ Teilnehmer ### Support und Betrieb Europaweit Verantwortung für Betriebs- und Datensicherheit Technologie: WAN, LAN, W-LAN, IT-Security ### Service 24×7 Europa- und Weltweit ITIL-konforme Ablaufstrukturen und Dokumentationsvorgaben ### One stop convergence [...] ### One stop convergence Modernste Technologien und Methoden in der öffentlichen Verwaltung ### Netzwerk-Kopplung über WLAN Anbindung von mobilen lokalen Netzwerken an das Firmen-Netzwerk Trierer Strasse 12 • 66111 Saarbrücken • Fax 0681 – 94805-11 A+G connect GmbH Logo Impressum I Datenschtzhinweise I AGB © 2022 – 2025 All rights reserved. • A+G connect GmbH • mit ♥ realisiert – mv-onliners.de Sie müssen den Inhalt von reCAPTCHA laden, um da"
+        }
+      ],
+      "rationale": "Highly credible project integrator, though exact hardware families are not listed."
+    },
+    {
+      "rank": 8,
+      "companyName": "Netzwerk-Arzt",
+      "officialUrl": "https://www.netzwerk-arzt.de/",
+      "roles": [
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 4,
+        "evidenceReliability": 3
+      },
+      "score": 85,
+      "roleEvidence": "Professional WLAN installer for companies in Bavaria.",
+      "productFitEvidence": "Business WLAN and guest WLAN directly match Cudy access-point and SMB use cases.",
+      "cooperationEvidence": "Installation creates deployment and likely recommendation influence, but planning, BOM and procurement are not detailed.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-496E98182C",
+          "url": "https://www.netzwerk-arzt.de/wlan-netzwerk-gaestewlan.html",
+          "excerpt": "Ihr WLAN-Dienstleister in Bayern: professionelle WLAN-Installation und Gäste-WLAN für Unternehmen in Bayreuth und ganz Oberfranken."
+        }
+      ],
+      "rationale": "Excellent specialist fit with a narrower evidenced cooperation path."
+    },
+    {
+      "rank": 9,
+      "companyName": "Elektro-LU",
+      "officialUrl": "https://elektro-lu.eu/",
+      "roles": [
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 4,
+        "evidenceReliability": 3
+      },
+      "score": 76,
+      "roleEvidence": "Plans, installs and optimizes complete LAN/WLAN networks for offices, production and commercial sites.",
+      "productFitEvidence": "LAN/WLAN and network cabinets are relevant, with evidence weighted toward passive infrastructure.",
+      "cooperationEvidence": "Planning and complete installation provide material specification/deployment influence; device procurement is not described.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-6836DD01BA",
+          "url": "https://elektro-lu.eu/leistungen/netzwerktechnik-elektriker",
+          "excerpt": "Skip to content []( Click on the Edit Content button to edit/add the content. Instagram Icon\\_mail Instagram Icon\\_mail Icon\\_phone # Netzwerktechnik planen und installieren ###### WLAN / LAN ## Netzwerktechnik – Zuverlässiges WLAN und LAN für Zuhause und Unternehmen Eine stabile Netzwerktechnik ist heute unverzichtbar. Ob Homeoffice, Büro, Produktion oder Gewerbe – ohne ein professionell aufgebautes Netzwerk entstehen Ausfälle, langsame Datenverbindungen und unnötige Kosten. Wir planen, installieren und optimieren komplette Netzwerktechnik für Privatkunden und Unternehmen. Serverschrank / Netzwerkschrank Ein sauber aufgebauter Serverschrank bildet das Zentrum jeder modernen Netzwerkinstallation. Wir übernehmen: [...] Smart Home #### 📍 Bietigheim – Moderne Video-Türsprechanlage mit Smart System installiert Installation einer modernen Video-Türsprechanlage mit Smart System in Bietigheim. Die Anlage ermöglicht eine sichere und komfortable Zutrittskontrolle per App und sorgt für mehr Sicherheit und Übersicht im Alltag. Kontakt aufnehmen Wallbox Ladestation für Elektrofahrzeuge bei einem Gewerbeobjekt in Steinmauern installiert Wallbox #### 📍 Steinmauern – Gewerbe Wallbox professione"
+        }
+      ],
+      "rationale": "Valid commercial network installer with moderate active-product depth."
+    },
+    {
+      "rank": 10,
+      "companyName": "PHONEKOM",
+      "officialUrl": "https://phonekom.de/",
+      "roles": [
+        "SI"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 3,
+        "evidenceReliability": 3
+      },
+      "score": 69,
+      "roleEvidence": "German business communications partner advising companies on WLAN and network infrastructure.",
+      "productFitEvidence": "Business WLAN, configuration, maintenance and network infrastructure are materially relevant.",
+      "cooperationEvidence": "Needs analysis and advice are explicit, but the excerpt is ambiguous about PHONEKOM itself performing procurement and installation.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-4910E40C81",
+          "url": "https://phonekom.de/ratgeber/wlan",
+          "excerpt": "Installation und Konfiguration: Die Installation und Konfiguration des WLAN-Systems sollte von einem professionellen Installateur durchgeführt werden, um sicherzustellen, dass alle Geräte ordnungsgemäß installiert und konfiguriert sind. Eine Überprüfung und Fehlerbehebung des Netzwerks ist ebenfalls notwendig. Schulung und Wartung: Die Mitarbeiter sollten in der Verwendung des WLANs geschult werden, um die Effizienz und Sicherheit des Netzwerks zu erhöhen. Eine regelmäßige Wartung und Aktualisierung des Systems ist ebenfalls wichtig, um die Leistung und Sicherheit zu gewährleisten. [...] ## Mit PHONEKOM zum optimalen Wireless LAN Network Die Entscheidung für ein neues WLAN ist nur eine von vielen, um Ihre betriebliche Kommunikation fit für die Zukunft zu machen. Vielen Firmen ist nicht bewusst, wie die Digitalisierung neue Möglichkeiten in hausinternen Gesprächen sowie im Kontakt mit Kunden mitbringt. Hier steht Ihnen PHONEKOM gerne als erfahrener Branchenpartner zur Seite, der Ihnen den Weg zu einer leistungsfähigen Netzwerkinfrastruktur ebnet. Verstehen und beraten #### Verstehen und beraten Wir arbeiten eng mit ihnen zusammen um Ihre geschäftlichen Prozesse und die damit verbund"
+        }
+      ],
+      "rationale": "Relevant SI influence with a less direct documented transaction/deployment path."
+    }
+  ],
+  "rejectedItems": [
+    {
+      "title": "Onnec",
+      "url": "https://www.onnecgroup.com/structured-cabling",
+      "reason": "Strong cabling installer evidence, but German operation is not established in the packet."
+    },
+    {
+      "title": "Everon",
+      "url": "https://www.everonsolutions.com/solutions/security-solutions/specialized-solutions/structured-cabling",
+      "reason": "Strong cabling service evidence, but no German operation is established."
+    },
+    {
+      "title": "High Knowledge GmbH",
+      "url": "https://www.hknow.de/en/solutions/structured-cabling",
+      "reason": "Eligible cabling installer but weak active-network Cudy product overlap relative to the selected ten."
+    },
+    {
+      "title": "Grüninger Netzwerk",
+      "url": "https://www.grueninger-netzwerk.de/en/lan",
+      "reason": "Eligible cabling installer but only passive installation is evidenced and it falls below the selected ten."
+    },
+    {
+      "title": "Rosenberger OSI",
+      "url": "https://osi.rosenberger.com/news-media/market-leader-in-german-data-center",
+      "reason": "Market/manufacturer evidence does not establish SI/Installer project delivery in the submitted excerpt."
+    },
+    {
+      "title": "eudisa",
+      "url": "https://www.eudisa.com/advanced-services-wlan-und-lan",
+      "reason": "Supports other system integrators; final-customer SI/Installer responsibility is not clear."
+    },
+    {
+      "title": "KODEWI UG",
+      "url": "https://www.wlw.de/de/suche/netzwerkinstallationen",
+      "reason": "Potential WLAN provider named only in a directory snippet; insufficient direct company/project evidence."
+    },
+    {
+      "title": "D-Link, LANCOM and ASSMANN product/program pages",
+      "url": "https://www.dlink.com/de/de/for-business/wireless",
+      "reason": "Manufacturers or generic partner programs, not candidate SI/Installer companies."
+    },
+    {
+      "title": "Jobs, forum posts, market reports, Wikipedia and directory pages",
+      "url": "https://de.wikipedia.org/wiki/Systemintegrator",
+      "reason": "Not candidate companies with sufficient project evidence."
+    }
+  ],
+  "scoring": {
+    "finalSlots": 10,
+    "filledSlots": 10,
+    "missingSlots": 0,
+    "slotScores": [
+      96,
+      96,
+      96,
+      96,
+      96,
+      87,
+      87,
+      85,
+      76,
+      69
+    ],
+    "channelScore": 88.4,
+    "meanLevelsAcrossTenSlots": {
+      "productUseCaseFit": 4.6,
+      "cooperationPath": 4.6,
+      "evidenceReliability": 3.7
+    }
+  },
+  "evaluator": {
+    "provider": "codex-agent",
+    "transport": "in-session-no-api",
+    "model": "runtime-managed-codex",
+    "systemIdentityHiddenDuringReview": true,
+    "providerIdentityHiddenDuringReview": true,
+    "apiScoresHiddenDuringReview": true,
+    "externalSearchUsed": false
+  }
+}

@@ -1,0 +1,399 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "runId": "2026-08-26-de-v1",
+  "systemId": "product-gemini",
+  "channelId": "project-services",
+  "reviewMode": "discovery-pool",
+  "blindBatchId": "B-AB0CCC6C8B92",
+  "sourceDiscoveryArtifact": "artifacts/runs/2026-08-26-de-v1/discovery/product-gemini/project-services.json",
+  "selectedCandidates": [
+    {
+      "rank": 1,
+      "companyName": "Frings Solutions Deutschland GmbH",
+      "officialUrl": "https://www.frings-solutions.de/",
+      "roles": [
+        "SI",
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 1
+      },
+      "score": 84,
+      "roleEvidence": "Packet summary identifies a German commercial WLAN planner and installer.",
+      "productFitEvidence": "Site surveys, access-point installation and network optimization directly match Cudy.",
+      "cooperationEvidence": "Planning, product positioning, installation and optimization form a complete project path.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-D1C4230870",
+          "url": "https://www.frings-solutions.de/",
+          "excerpt": "Here are 10 real companies operating in Germany that specialize in corporate WLAN and network planning, site survey, and installation (*WLAN Netzwerk Installation Gewerbe/Unternehmen*): 1. **Frings Solutions Deutschland GmbH** * **URL:** https://www.frings-solutions.de * **Match Reason:** Offers enterprise IT infrastructure services, including professional WLAN planning (*WLAN-Ausleuchtung* / site surveys), access point installation, and network optimization for commercial premises. 2. **GREEN IT Das Systemhaus GmbH** * **URL:** https://www.greenit.systems * **Match Reason:** A nationwide IT system house offering end-to-end network architecture, structured cabling, managed WLAN, and Ubiquiti/Sophos deployment for commercial clients. 3. **ditpro GmbH** * **URL:** https://www.ditpro.de * **Match Reason:** Specializes in business network structures, including indoor/outdoor corporate Wi-Fi setups, secure guest network separation (*Gastnetzwerke*), and point-to-point wireless solutions for commercial sites. 4. **itc GmbH** * **URL:** https://www.itc-net.de * **Match Reason:** Offers specialized Ekahau-assisted 3D WLAN site surveys, heatmapping, access point positioning, and full networ"
+        }
+      ],
+      "rationale": "Excellent claimed target, but the excerpt is a generated list rather than first-party page content."
+    },
+    {
+      "rank": 2,
+      "companyName": "GREEN IT Das Systemhaus GmbH",
+      "officialUrl": "https://www.greenit.systems/",
+      "roles": [
+        "SI",
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 1
+      },
+      "score": 84,
+      "roleEvidence": "Packet summary describes a German system house delivering end-to-end commercial network projects.",
+      "productFitEvidence": "Managed WLAN and named network-vendor deployment strongly overlap Cudy.",
+      "cooperationEvidence": "Architecture, cabling, WLAN deployment and management provide end-to-end influence.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-DC6E48C51D",
+          "url": "https://www.greenit.systems/",
+          "excerpt": "Here are 10 real companies operating in Germany that specialize in corporate WLAN and network planning, site survey, and installation (*WLAN Netzwerk Installation Gewerbe/Unternehmen*): 1. **Frings Solutions Deutschland GmbH** * **URL:** https://www.frings-solutions.de * **Match Reason:** Offers enterprise IT infrastructure services, including professional WLAN planning (*WLAN-Ausleuchtung* / site surveys), access point installation, and network optimization for commercial premises. 2. **GREEN IT Das Systemhaus GmbH** * **URL:** https://www.greenit.systems * **Match Reason:** A nationwide IT system house offering end-to-end network architecture, structured cabling, managed WLAN, and Ubiquiti/Sophos deployment for commercial clients. 3. **ditpro GmbH** * **URL:** https://www.ditpro.de * **Match Reason:** Specializes in business network structures, including indoor/outdoor corporate Wi-Fi setups, secure guest network separation (*Gastnetzwerke*), and point-to-point wireless solutions for commercial sites. 4. **itc GmbH** * **URL:** https://www.itc-net.de * **Match Reason:** Offers specialized Ekahau-assisted 3D WLAN site surveys, heatmapping, access point positioning, and full networ"
+        }
+      ],
+      "rationale": "Excellent claimed SI/installer with very low source provenance."
+    },
+    {
+      "rank": 3,
+      "companyName": "ditpro GmbH",
+      "officialUrl": "https://www.ditpro.de/",
+      "roles": [
+        "SI",
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 1
+      },
+      "score": 84,
+      "roleEvidence": "Packet summary describes business indoor/outdoor Wi-Fi and network-structure delivery.",
+      "productFitEvidence": "Corporate Wi-Fi, guest networks and point-to-point wireless directly match Cudy use cases.",
+      "cooperationEvidence": "Business network setup implies design and deployment control across multiple project scenarios.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-B5D3A61635",
+          "url": "https://www.ditpro.de/",
+          "excerpt": "Here are 10 real companies operating in Germany that specialize in corporate WLAN and network planning, site survey, and installation (*WLAN Netzwerk Installation Gewerbe/Unternehmen*): 1. **Frings Solutions Deutschland GmbH** * **URL:** https://www.frings-solutions.de * **Match Reason:** Offers enterprise IT infrastructure services, including professional WLAN planning (*WLAN-Ausleuchtung* / site surveys), access point installation, and network optimization for commercial premises. 2. **GREEN IT Das Systemhaus GmbH** * **URL:** https://www.greenit.systems * **Match Reason:** A nationwide IT system house offering end-to-end network architecture, structured cabling, managed WLAN, and Ubiquiti/Sophos deployment for commercial clients. 3. **ditpro GmbH** * **URL:** https://www.ditpro.de * **Match Reason:** Specializes in business network structures, including indoor/outdoor corporate Wi-Fi setups, secure guest network separation (*Gastnetzwerke*), and point-to-point wireless solutions for commercial sites. 4. **itc GmbH** * **URL:** https://www.itc-net.de * **Match Reason:** Offers specialized Ekahau-assisted 3D WLAN site surveys, heatmapping, access point positioning, and full networ"
+        }
+      ],
+      "rationale": "Excellent claimed technical fit with only generated-list evidence."
+    },
+    {
+      "rank": 4,
+      "companyName": "itc GmbH",
+      "officialUrl": "https://www.itc-net.de/",
+      "roles": [
+        "SI",
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 1
+      },
+      "score": 84,
+      "roleEvidence": "Packet summary identifies a specialist in WLAN site surveys, heatmaps and access-point positioning.",
+      "productFitEvidence": "Professional WLAN design and access-point placement directly overlap Cudy.",
+      "cooperationEvidence": "Survey and positioning expertise give strong specification influence; the excerpt indicates full network delivery beyond the truncation point.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-0247C470A3",
+          "url": "https://www.itc-net.de/",
+          "excerpt": "Here are 10 real companies operating in Germany that specialize in corporate WLAN and network planning, site survey, and installation (*WLAN Netzwerk Installation Gewerbe/Unternehmen*): 1. **Frings Solutions Deutschland GmbH** * **URL:** https://www.frings-solutions.de * **Match Reason:** Offers enterprise IT infrastructure services, including professional WLAN planning (*WLAN-Ausleuchtung* / site surveys), access point installation, and network optimization for commercial premises. 2. **GREEN IT Das Systemhaus GmbH** * **URL:** https://www.greenit.systems * **Match Reason:** A nationwide IT system house offering end-to-end network architecture, structured cabling, managed WLAN, and Ubiquiti/Sophos deployment for commercial clients. 3. **ditpro GmbH** * **URL:** https://www.ditpro.de * **Match Reason:** Specializes in business network structures, including indoor/outdoor corporate Wi-Fi setups, secure guest network separation (*Gastnetzwerke*), and point-to-point wireless solutions for commercial sites. 4. **itc GmbH** * **URL:** https://www.itc-net.de * **Match Reason:** Offers specialized Ekahau-assisted 3D WLAN site surveys, heatmapping, access point positioning, and full networ"
+        }
+      ],
+      "rationale": "Excellent claimed WLAN project partner, heavily penalized for evidence provenance."
+    },
+    {
+      "rank": 5,
+      "companyName": "Klare Leitung",
+      "officialUrl": "https://klare-leitung.de/",
+      "roles": [
+        "SI",
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 1
+      },
+      "score": 84,
+      "roleEvidence": "Packet summary calls it a Berlin network integrator for cabling, switching and enterprise Wi-Fi.",
+      "productFitEvidence": "Switch setup and enterprise Wi-Fi directly match core Cudy hardware.",
+      "cooperationEvidence": "Structured cabling plus active-network setup provides an end-to-end deployment route.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-9C66ACB37A",
+          "url": "https://klare-leitung.de/",
+          "excerpt": "Here are 10 real companies operating in Germany that specialize in structured cabling, Wi-Fi installation, and system integration services for businesses: 1. **smaRTtechnik GmbH & Co. KG** * **URL:** https://smarttechnik.de * **Relevance:** Based in Frankfurt am Main, they specialize in B2B physical IT infrastructure, offering end-to-end services including structured copper/fiber cabling, enterprise Wi-Fi installation, and data center network rollouts. 2. **IB-IT Cabling GmbH** * **URL:** https://ib-it.eu * **Relevance:** German network infrastructure specialist providing planning, structured copper and fiber optic cabling, and system integration services for office fit-outs and enterprise data centers. 3. **Rosenberger OSI (Rosenberger-OSI GmbH & Co. OHG)** * **URL:** https://rosenberger.com/osi/ * **Relevance:** A major nationwide system integrator and developer in Germany focusing on standard-compliant structured cabling (EN 50173 / ISO 11801) and integrated fiber/copper campus architectures. 4. **Klare Leitung** * **URL:** https://klare-leitung.de * **Relevance:** A Berlin-based network system integrator specializing in structured Cat6A cabling, switch setup, enterprise Wi-Fi ("
+        }
+      ],
+      "rationale": "Strong local claimed installer/SI with low-provenance generated support."
+    },
+    {
+      "rank": 6,
+      "companyName": "Bechtle AG",
+      "officialUrl": "https://www.bechtle.com/",
+      "roles": [
+        "SI",
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 1
+      },
+      "score": 84,
+      "roleEvidence": "Packet summary identifies a German integrator for network design and large-scale deployment.",
+      "productFitEvidence": "LAN/WLAN surveys and enterprise switching directly overlap Cudy.",
+      "cooperationEvidence": "Design, survey and rollout stages create complete specification and deployment influence.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-8AD2AF7BD5",
+          "url": "https://www.bechtle.com/",
+          "excerpt": "Here are 10 real companies operating in Germany (DE) as system integrators and IT service providers specializing in network technology, LAN/WLAN deployment, and enterprise infrastructure projects: 1. **Bechtle AG** * **URL:** https://www.bechtle.com * **Relevance:** One of Germany's largest IT system integrators, offering complete network design, LAN/WLAN site surveys, enterprise switching, and large-scale deployment projects across DE. 2. **SVA System Vertrieb Alexander GmbH** * **URL:** https://www.sva.de * **Relevance:** A major German IT system integrator delivering end-to-end networking solutions, campus LAN architecture, enterprise WLAN infrastructure, and managed network projects. 3. **CANCOM SE** * **URL:** https://www.cancom.de * **Relevance:** Leading digital system house in DE providing managed LAN/WLAN solutions, network security integration, and complex corporate network infrastructure projects. 4. **Computacenter AG & Co. oHG (Germany)** * **URL:** https://www.computacenter.com * **Relevance:** Global IT service provider with extensive operations in Germany, specializing in corporate LAN/WLAN rollouts, network refresh projects, and software-defined networking. 5. **GR"
+        }
+      ],
+      "rationale": "Excellent claimed project-services target with weak evidence provenance."
+    },
+    {
+      "rank": 7,
+      "companyName": "SVA System Vertrieb Alexander GmbH",
+      "officialUrl": "https://www.sva.de/",
+      "roles": [
+        "SI"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 1
+      },
+      "score": 84,
+      "roleEvidence": "Packet summary describes a German system integrator delivering end-to-end network projects.",
+      "productFitEvidence": "Campus LAN and enterprise WLAN directly align with Cudy professional networking.",
+      "cooperationEvidence": "Architecture, infrastructure delivery and managed networking give end-to-end influence.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-1ED3CA7410",
+          "url": "https://www.sva.de/",
+          "excerpt": "Here are 10 real companies operating in Germany (DE) as system integrators and IT service providers specializing in network technology, LAN/WLAN deployment, and enterprise infrastructure projects: 1. **Bechtle AG** * **URL:** https://www.bechtle.com * **Relevance:** One of Germany's largest IT system integrators, offering complete network design, LAN/WLAN site surveys, enterprise switching, and large-scale deployment projects across DE. 2. **SVA System Vertrieb Alexander GmbH** * **URL:** https://www.sva.de * **Relevance:** A major German IT system integrator delivering end-to-end networking solutions, campus LAN architecture, enterprise WLAN infrastructure, and managed network projects. 3. **CANCOM SE** * **URL:** https://www.cancom.de * **Relevance:** Leading digital system house in DE providing managed LAN/WLAN solutions, network security integration, and complex corporate network infrastructure projects. 4. **Computacenter AG & Co. oHG (Germany)** * **URL:** https://www.computacenter.com * **Relevance:** Global IT service provider with extensive operations in Germany, specializing in corporate LAN/WLAN rollouts, network refresh projects, and software-defined networking. 5. **GR"
+        }
+      ],
+      "rationale": "Excellent claimed SI path supported only by generated-list evidence."
+    },
+    {
+      "rank": 8,
+      "companyName": "Computacenter AG & Co. oHG",
+      "officialUrl": "https://www.computacenter.com/",
+      "roles": [
+        "SI",
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 1
+      },
+      "score": 84,
+      "roleEvidence": "Packet summary identifies extensive German operations delivering corporate network rollouts.",
+      "productFitEvidence": "LAN/WLAN rollouts, network refresh and software-defined networking strongly match Cudy.",
+      "cooperationEvidence": "Rollout and refresh ownership provides strong design, procurement and deployment leverage.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-241A2C67A2",
+          "url": "https://www.computacenter.com/",
+          "excerpt": "Here are 10 real companies operating in Germany (DE) as system integrators and IT service providers specializing in network technology, LAN/WLAN deployment, and enterprise infrastructure projects: 1. **Bechtle AG** * **URL:** https://www.bechtle.com * **Relevance:** One of Germany's largest IT system integrators, offering complete network design, LAN/WLAN site surveys, enterprise switching, and large-scale deployment projects across DE. 2. **SVA System Vertrieb Alexander GmbH** * **URL:** https://www.sva.de * **Relevance:** A major German IT system integrator delivering end-to-end networking solutions, campus LAN architecture, enterprise WLAN infrastructure, and managed network projects. 3. **CANCOM SE** * **URL:** https://www.cancom.de * **Relevance:** Leading digital system house in DE providing managed LAN/WLAN solutions, network security integration, and complex corporate network infrastructure projects. 4. **Computacenter AG & Co. oHG (Germany)** * **URL:** https://www.computacenter.com * **Relevance:** Global IT service provider with extensive operations in Germany, specializing in corporate LAN/WLAN rollouts, network refresh projects, and software-defined networking. 5. **GR"
+        }
+      ],
+      "rationale": "Excellent claimed project route with minimal source reliability."
+    },
+    {
+      "rank": 9,
+      "companyName": "CANCOM SE",
+      "officialUrl": "https://www.cancom.de/",
+      "roles": [
+        "SI"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 4,
+        "evidenceReliability": 1
+      },
+      "score": 77,
+      "roleEvidence": "Packet summary calls CANCOM a German digital system house for corporate network infrastructure.",
+      "productFitEvidence": "Managed LAN/WLAN and network-security integration strongly overlap Cudy.",
+      "cooperationEvidence": "Integration and managed delivery indicate specification influence, but installation/procurement stages are not explicit.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-6AF5C06226",
+          "url": "https://www.cancom.de/",
+          "excerpt": "Here are 10 real companies operating in Germany (DE) as system integrators and IT service providers specializing in network technology, LAN/WLAN deployment, and enterprise infrastructure projects: 1. **Bechtle AG** * **URL:** https://www.bechtle.com * **Relevance:** One of Germany's largest IT system integrators, offering complete network design, LAN/WLAN site surveys, enterprise switching, and large-scale deployment projects across DE. 2. **SVA System Vertrieb Alexander GmbH** * **URL:** https://www.sva.de * **Relevance:** A major German IT system integrator delivering end-to-end networking solutions, campus LAN architecture, enterprise WLAN infrastructure, and managed network projects. 3. **CANCOM SE** * **URL:** https://www.cancom.de * **Relevance:** Leading digital system house in DE providing managed LAN/WLAN solutions, network security integration, and complex corporate network infrastructure projects. 4. **Computacenter AG & Co. oHG (Germany)** * **URL:** https://www.computacenter.com * **Relevance:** Global IT service provider with extensive operations in Germany, specializing in corporate LAN/WLAN rollouts, network refresh projects, and software-defined networking. 5. **GR"
+        }
+      ],
+      "rationale": "Excellent technical fit with a strong but incompletely detailed path and low-provenance support."
+    },
+    {
+      "rank": 10,
+      "companyName": "smaRTtechnik GmbH & Co. KG",
+      "officialUrl": "https://smarttechnik.de/",
+      "roles": [
+        "SI",
+        "Installer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 5,
+        "evidenceReliability": 1
+      },
+      "score": 75,
+      "roleEvidence": "Packet summary describes a Frankfurt B2B infrastructure installer providing end-to-end services.",
+      "productFitEvidence": "Enterprise Wi-Fi is directly relevant, alongside copper/fiber and data-centre infrastructure.",
+      "cooperationEvidence": "End-to-end installation and rollout responsibility provide strong project control.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-1BB4FDA9B8",
+          "url": "https://smarttechnik.de/",
+          "excerpt": "Here are 10 real companies operating in Germany that specialize in structured cabling, Wi-Fi installation, and system integration services for businesses: 1. **smaRTtechnik GmbH & Co. KG** * **URL:** https://smarttechnik.de * **Relevance:** Based in Frankfurt am Main, they specialize in B2B physical IT infrastructure, offering end-to-end services including structured copper/fiber cabling, enterprise Wi-Fi installation, and data center network rollouts. 2. **IB-IT Cabling GmbH** * **URL:** https://ib-it.eu * **Relevance:** German network infrastructure specialist providing planning, structured copper and fiber optic cabling, and system integration services for office fit-outs and enterprise data centers. 3. **Rosenberger OSI (Rosenberger-OSI GmbH & Co. OHG)** * **URL:** https://rosenberger.com/osi/ * **Relevance:** A major nationwide system integrator and developer in Germany focusing on standard-compliant structured cabling (EN 50173 / ISO 11801) and integrated fiber/copper campus architectures. 4. **Klare Leitung** * **URL:** https://klare-leitung.de * **Relevance:** A Berlin-based network system integrator specializing in structured Cat6A cabling, switch setup, enterprise Wi-Fi ("
+        }
+      ],
+      "rationale": "Strong claimed installer route with good product relevance and minimal provenance quality."
+    }
+  ],
+  "rejectedItems": [
+    {
+      "title": "IB-IT Cabling and Rosenberger OSI",
+      "url": "https://ib-it.eu/",
+      "reason": "Eligible installers but more passive-cabling-focused and below the selected ten on direct product fit."
+    },
+    {
+      "title": "Other target domains",
+      "url": "https://www.acventis.de/",
+      "reason": "Their attached snippets are repeated generated lists without candidate-specific evidence for the target domain."
+    },
+    {
+      "title": "Duplicate repeated list results",
+      "url": "https://www.greenit.systems/",
+      "reason": "Merged into one unique candidate per evidenced company."
+    }
+  ],
+  "scoring": {
+    "finalSlots": 10,
+    "filledSlots": 10,
+    "missingSlots": 0,
+    "slotScores": [
+      84,
+      84,
+      84,
+      84,
+      84,
+      84,
+      84,
+      84,
+      77,
+      75
+    ],
+    "channelScore": 82.4,
+    "meanLevelsAcrossTenSlots": {
+      "productUseCaseFit": 4.9,
+      "cooperationPath": 4.9,
+      "evidenceReliability": 1
+    }
+  },
+  "evaluator": {
+    "provider": "codex-agent",
+    "transport": "in-session-no-api",
+    "model": "runtime-managed-codex",
+    "systemIdentityHiddenDuringReview": true,
+    "providerIdentityHiddenDuringReview": true,
+    "apiScoresHiddenDuringReview": true,
+    "externalSearchUsed": false
+  }
+}

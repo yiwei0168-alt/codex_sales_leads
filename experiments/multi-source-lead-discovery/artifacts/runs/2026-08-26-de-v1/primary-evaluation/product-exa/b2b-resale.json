@@ -1,0 +1,440 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.2",
+  "runId": "2026-08-26-de-v1",
+  "systemId": "product-exa",
+  "channelId": "b2b-resale",
+  "reviewMode": "discovery-pool",
+  "blindBatchId": "B-15BCCC099732",
+  "sourceDiscoveryArtifact": "artifacts/runs/2026-08-26-de-v1/discovery/product-exa/b2b-resale.json",
+  "selectedCandidates": [
+    {
+      "rank": 1,
+      "companyName": "NLS Netzwerke GmbH",
+      "officialUrl": "https://nls-netzwerke.de/",
+      "roles": [
+        "VAR"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 3
+      },
+      "score": 92,
+      "roleEvidence": "German network specialist and manufacturer partner that plans, delivers and implements complete customer solutions.",
+      "productFitEvidence": "Routing, switching, WLAN, security and network management directly overlap Cudy core products.",
+      "cooperationEvidence": "Consulting, planning, product delivery, implementation and named vendor-partner status provide control across specification, quotation and deployment.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-A24067D097",
+          "url": "https://nls-netzwerke.de/",
+          "excerpt": "# NLS Netzwerke GmbH NLS Netzwerke GmbH is a IT Services and IT Consulting company. NLS Netzwerke München is a company that specializes in network technology, including fiber optic components, switched router technology, network security, and management systems. They provide individual network solutions and offer services such as network service and monitoring. NLS Netzwerke GmbH employs 3 people, founded in 1998. Headquartered in Alling, Bayern, Germany, with presence in United States. ## About Your Value: - Competent partner for consulting, planning, delivery and implementation of complete IT-solutions. - Longtime experience of experts to Data Center with its multiple requirements of applications, cabling, cooling, cable-mgmt. - deliver of customized solutions in an integrated and flexible way. - deliver of high quality (premium) products and services. Partners and Qualifications: apranet - Solutions: Racks, Cabinets Commscope Systimax - Solutions: Cabling, Cu, FO, Trunks, Racks, Cabinets, WLAN, iPatch - Status: Systimax Business Partner Extreme Networks - Solutions: Routing, Switching, WLAN, Security, Firewall, Networkmanagement, - Status: Silver Panduit - Solutions: Cabling, Cu"
+        },
+        {
+          "evidenceEntryId": "E-C14908367C",
+          "url": "https://nls-netzwerke.de/",
+          "excerpt": "# NLS Netzwerke GmbH NLS Netzwerke GmbH is a IT Services and IT Consulting company. NLS Netzwerke München is a company that specializes in network technology, including fiber optic components, switched router technology, network security, and management systems. They provide individual network solutions and offer services such as network service and monitoring. NLS Netzwerke GmbH employs 3 people, founded in 1998. Headquartered in Alling, Bayern, Germany, with presence in United States. ## About Your Value: - Competent partner for consulting, planning, delivery and implementation of complete IT-solutions. - Longtime experience of experts to Data Center with its multiple requirements of applications, cabling, cooling, cable-mgmt. - deliver of customized solutions in an integrated and flexible way. - deliver of high quality (premium) products and services. Partners and Qualifications: apranet - Solutions: Racks, Cabinets Commscope Systimax - Solutions: Cabling, Cu, FO, Trunks, Racks, Cabinets, WLAN, iPatch - Status: Systimax Business Partner Extreme Networks - Solutions: Routing, Switching, WLAN, Security, Firewall, Networkmanagement, - Status: Silver Panduit - Solutions: Cabling, Cu"
+        }
+      ],
+      "rationale": "Exceptional product overlap and a complete evidence-supported VAR transaction path."
+    },
+    {
+      "rank": 2,
+      "companyName": "YELLO NETCOM GmbH",
+      "officialUrl": "https://yello-net.de/",
+      "roles": [
+        "VAR"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 3
+      },
+      "score": 92,
+      "roleEvidence": "Industrial-network specialist providing products plus network design, integration and training to customers.",
+      "productFitEvidence": "Routers, switches, industrial Ethernet, IIoT and OT networking strongly match Cudy's industrial and SMB lines.",
+      "cooperationEvidence": "Advice, on-site service, project management, implementation and training show direct specification, procurement and deployment influence.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-3CDDF75C7C",
+          "url": "https://yello-net.de/",
+          "excerpt": "# YELLO NETCOM GmbH YELLO NETCOM GmbH is a Industrial Automation company. YELLO Netcom is a company that specializes in networking technology, offering routers, switches, cables, and data cabinets. They provide training and service for their products and services. YELLO NETCOM GmbH employs 16 people (+3.8% YoY, +1 person), founded in 1999. Headquartered in Rheine, North Rhine-Westphalia, Germany, with presence in United States. Its workforce is distributed across Germany and Ireland. ## About YELLO NETCOM is a medium-sized, owner-managed company in the field of network technology based in Birkenallee 115, Rheine, North Rhine-Westphalia, Germany. We are specialised in industrial Ethernet, network design and implementation services, IIot and OT security. We focus on customised services: Customers do not only benefit from individual advice and on-site service, but also from complete project management for setting up and integrating a network as well as implementation & training. ## Company Details - Industry: Industrial Automation - Type: Public Company - Headquarters: Rheine, Germany - Founded Year: 1999 - Homepage: yello-net.de - Status: active - Ownership: Private - Aliases: yello"
+        }
+      ],
+      "rationale": "Excellent industrial-network VAR with several direct buying and project levers."
+    },
+    {
+      "rank": 3,
+      "companyName": "OMG.DE GmbH",
+      "officialUrl": "https://www.omg.de/",
+      "roles": [
+        "Reseller",
+        "VAR"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 3
+      },
+      "score": 92,
+      "roleEvidence": "German online networking seller that also acts as system integrator and service provider.",
+      "productFitEvidence": "WLAN, point-to-point wireless, routers and related professional networking products directly overlap Cudy.",
+      "cooperationEvidence": "Online listing/order, product selection, integration, network management and support provide multiple purchase and recommendation paths.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-013CE006ED",
+          "url": "https://www.omg.de/",
+          "excerpt": "# OMG.DE GmbH OMG.DE GmbH is a Technology, Information and Internet company. OMG.DE GmbH is a company that offers a wide range of products for WLAN, Richtfunk, Smart Home, and more. They provide online ordering, fast delivery, and comprehensive support. OMG.DE GmbH employs 9 people (+16.7% YoY, +2 people), founded in 1997. with presence in Germany and United States. ## About OMG ist als Systemintegrator und Dienstleistungsanbieter im Netzwerk- und Telekommunikationsmarkt tätig. Schwerpunkt ist die bedarfsgerechte Betreuung unserer Kunden mit individuellen IT-Services, ISP-Diensten, Netzwerkmanagement und Support. OMG wurde 1997 gegründet und ist seitdem kontinuierlich gewachsen. - Unsere Mitarbeiter sind aktiv um die Belange unserer Kunden bemüht und stehen Ihnen gerne zur Verfügung. ## Company Details - Industry: Technology, Information and Internet - Type: Partnership - Founded Year: 1997 - Homepage: omg.de - Status: active - Aliases: omg.de gmbh, omg.de - LinkedIn: linkedin.com/company/omg-internet-gmbh - Emails: [redacted-email], [redacted-email] - Phone: [redacted-phone], [redacted-phone] - SIC Codes: 73, 737 - NAICS Codes: 81, 811 [redacted-workforce-section]"
+        }
+      ],
+      "rationale": "A direct B2B product channel combined with material solution value."
+    },
+    {
+      "rank": 4,
+      "companyName": "Avanis GmbH",
+      "officialUrl": "https://avanis.de/",
+      "roles": [
+        "DVAR",
+        "VAR"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 5,
+        "evidenceReliability": 3
+      },
+      "score": 92,
+      "roleEvidence": "Specialist distributor that also directly advises commercial end customers and performs WLAN planning/analysis.",
+      "productFitEvidence": "Switches, industrial Ethernet, VDSL2, WLAN and media conversion provide broad direct overlap.",
+      "cooperationEvidence": "Direct commercial-customer sales, planning, technical advice and product supply cover quotation, recommendation and specification.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-64055E497C",
+          "url": "https://avanis.de/",
+          "excerpt": "# Avanis GmbH Avanis GmbH is a IT Services and IT Consulting company. Avanis GmbH is a company specializing in network technology and WLAN solutions. They offer a wide range of services including switches, RTLS positioning, and infrastructure planning. Avanis GmbH employs 4 people (-12.5% YoY, -1 person), founded in 2003. Headquartered in Bielefeld, North Rhine-Westphalia, Germany, with presence in United States. ## About Die Avanis GmbH zählt zu den führenden Spezial-Distributoren im Netzwerkbereich. Switches, Industrial Ethernet, Medienkonverter, VDSL2, WLAN: Mit einem breiten Sortiment von über 5000 Artikeln verschiedener Marken berät Avanis den Fachhandel, IT-Systemhäuser und gewerbliche Endkunden. Als Spezialist für WLAN-Planung und -Analyse ist Avanis ein Pionier im Bereich Echtzeit-Lokalisierung und WLAN-Ortung. Unter dem Dach der Avanis Academy hat das Unternehmen in den vergangenen anderthalb Jahrzehnten als Anbieter von Trainings, Schulungen und Seminaren viele Hundert Teilnehmer fit für Netzwerktechnik und WLAN-Planung gemacht. ## Company Details - Industry: IT Services and IT Consulting - Type: Partnership - Headquarters: Bielefeld, Germany - Founded Year: 2003 - Homepa"
+        },
+        {
+          "evidenceEntryId": "E-C76353E6AE",
+          "url": "https://avanis.de/",
+          "excerpt": "# Avanis GmbH Avanis GmbH is a IT Services and IT Consulting company. Avanis GmbH is a company specializing in network technology and WLAN solutions. They offer a wide range of services including switches, RTLS positioning, and infrastructure planning. Avanis GmbH employs 4 people (-12.5% YoY, -1 person), founded in 2003. Headquartered in Bielefeld, North Rhine-Westphalia, Germany, with presence in United States. ## About Die Avanis GmbH zählt zu den führenden Spezial-Distributoren im Netzwerkbereich. Switches, Industrial Ethernet, Medienkonverter, VDSL2, WLAN: Mit einem breiten Sortiment von über 5000 Artikeln verschiedener Marken berät Avanis den Fachhandel, IT-Systemhäuser und gewerbliche Endkunden. Als Spezialist für WLAN-Planung und -Analyse ist Avanis ein Pionier im Bereich Echtzeit-Lokalisierung und WLAN-Ortung. Unter dem Dach der Avanis Academy hat das Unternehmen in den vergangenen anderthalb Jahrzehnten als Anbieter von Trainings, Schulungen und Seminaren viele Hundert Teilnehmer fit für Netzwerktechnik und WLAN-Planung gemacht. ## Company Details - Industry: IT Services and IT Consulting - Type: Partnership - Headquarters: Bielefeld, Germany - Founded Year: 2003 - Homepa"
+        }
+      ],
+      "rationale": "Qualifies as a direct-buying VAR/DVAR in this lane despite also having distributor activity."
+    },
+    {
+      "rank": 5,
+      "companyName": "SCALCOM",
+      "officialUrl": "https://scalcom.de/",
+      "roles": [
+        "Reseller",
+        "VAR"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 4,
+        "evidenceReliability": 3
+      },
+      "score": 85,
+      "roleEvidence": "B2B online shop and specialist networking supplier with strategic advice and support.",
+      "productFitEvidence": "Switching, routing, WLAN, directional wireless, routers and modems strongly match Cudy.",
+      "cooperationEvidence": "B2B listing/order plus consultation and project assistance create direct purchase and recommendation paths; final-customer mix is not detailed.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-4EC2B23AA7",
+          "url": "https://scalcom.de/",
+          "excerpt": "# SCALCOM SCALCOM is a IT Services and IT Consulting company. SCALCOM is a B2B online shop that offers a wide range of products including switching/routing, WLAN, server, storage, router, service, security, switches, and workstations. SCALCOM employs 5 people (-30.0% YoY, -3 people), founded in 2009. Headquartered in waltenhofen, bayern, Germany, with presence in United States. ## About Die SCALCOM bietet als spezialisierter Distributor – mit dem Schwerpunkt Netzwerkkomponenten – weit mehr als nur eine klassische Produktdistribution. Neben dem Fokus auf die Lieferung von Netzwerkkomponenten und ausgewählten Funklösungen beinhalten die Leistungen von SCALCOM die strategische Beratung und einen umfassenden Service und Support. Unsere Kunden profitieren von unserem langjährigen Know-how in den neuesten Technologien. Sie finden bei SCALCOM klassische Netzwerkkomponenten aus den Bereichen Switching und Routing, neueste Funktechnologien (WLAN, Richtfunk) sowie Multiplexer- und Modemtechnik und vieles mehr. SCALCOM unterstützt Sie mit einem umfangreichen Partnernetzwerk bestehend aus technologieführenden Herstellern. Bereits bei der Skizzierung Ihres Projektes und der Erstellung von Stüc"
+        }
+      ],
+      "rationale": "Very strong catalogue fit and clear B2B transaction capability."
+    },
+    {
+      "rank": 6,
+      "companyName": "WLAN-Shop24.de",
+      "officialUrl": null,
+      "roles": [
+        "Reseller",
+        "Dealer"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 5,
+        "cooperationPath": 4,
+        "evidenceReliability": 2
+      },
+      "score": 81,
+      "roleEvidence": "Hamburg-based B2B seller of wireless and cellular networking products.",
+      "productFitEvidence": "WLAN, LTE/5G, routers, antennas, cables and accessories align directly with Cudy wireless CPE and router lines.",
+      "cooperationEvidence": "B2B product sales establish listing and purchase influence, but the packet gives little evidence of solution value or an official website.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-66D282A628",
+          "url": "https://linkedin.com/company/wlan-shop24.de",
+          "excerpt": "# WLAN-Shop24.de WLAN-Shop24.de. WLAN-Shop24.de is a company that provides wireless solutions such as LoRa, WLAN, LTE, and 5G Antennen. They offer a wide range of products including routers, antennas, cables, and accessories. The company is B2B (True). Headquartered in Hamburg, Hamburg, Germany, with presence in United States. ## Company Details - Headquarters: Hamburg, Germany - Status: active - Ownership: Private - Aliases: wlan-shop24.de, wlan-shop24, wlan - shop24.de - LinkedIn: linkedin.com/company/wlan-shop24.de - Linkedin Followers: 5 - Emails: [redacted-email] - Phone: [redacted-phone], [redacted-phone] - SIC Codes: 73, 737 - NAICS Codes: 81, 811 [redacted-workforce-section]"
+        }
+      ],
+      "rationale": "Excellent product fit discounted for shallow third-party evidence."
+    },
+    {
+      "rank": 7,
+      "companyName": "NCS Netzwerke Computer Service GmbH",
+      "officialUrl": "https://ncs.de/",
+      "roles": [
+        "VAR"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 4,
+        "evidenceReliability": 3
+      },
+      "score": 76,
+      "roleEvidence": "German system house providing hardware, network solutions, installation and managed services to organizations.",
+      "productFitEvidence": "Networks, hardware, data-center infrastructure, monitoring and IT security are materially relevant but broader than Cudy's portfolio.",
+      "cooperationEvidence": "Solution design, hardware supply, installation and support give purchasing and deployment influence.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-59ACDBF7A5",
+          "url": "https://ncs.de/",
+          "excerpt": "# NCS Netzwerke Computer Service GmbH NCS Netzwerke Computer Service GmbH is a Computer Networking Products company. NCS Netzwerke Computer Service GmbH is an IT system located in Friedberg, Augsburg. They provide solutions in virtualization, storage and data security, server and network (data center), green data center, IT security and privacy, monitoring and analysis, software, and products. They also offer managed services for Microsoft 365 and conference systems. NCS Netzwerke Computer Service GmbH employs 16 people, founded in 1997. Headquartered in Friedberg, Bayern, Germany, with presence in United States. ## About Mit den drei Standorten Ulm, Friedberg bei Augsburg und München ziehen wir eine durchgehende Linie technischer Exzellenz quer durch Südbayern. Manche sprechen vom IT-Backbone Süddeutschlands – wir nennen es einfach: Nähe, auf die Sie sich verlassen können. Wir bieten IT-Lösungen für Backup, Support, Monitoring, Netzwerke, Hardware, System-Management, Coaching, Installation, Datensicherung, Druckermanagement, IT-Security, Repairservice, Server und Virtualisierung an. Als Managed Service Provider sind wir Ihr Partner! Für mehr Hochverfügbarkeit ist unser Rechenzentr"
+        }
+      ],
+      "rationale": "Strong general-network VAR with a credible end-customer path."
+    },
+    {
+      "rank": 8,
+      "companyName": "SHC Netzwerktechnik GmbH",
+      "officialUrl": "https://shc.eu/",
+      "roles": [
+        "VAR"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 4,
+        "evidenceReliability": 3
+      },
+      "score": 76,
+      "roleEvidence": "German IT service provider delivering manufacturer-backed infrastructure and core-networking solutions.",
+      "productFitEvidence": "Network infrastructure and core networking are direct, while the excerpt emphasizes security and data-center vendors.",
+      "cooperationEvidence": "Named vendor partnerships and nationwide solution delivery imply control over recommendation, quotation and deployment.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-8283996CF6",
+          "url": "https://shc.eu/",
+          "excerpt": "# SHC Netzwerktechnik GmbH SHC Netzwerktechnik GmbH is a Computer and Network Security company. SHC Netzwerktechnik GmbH is a company that provides comprehensive solutions for IT security, network infrastructure, core networking, and cloud computing. They are partnered with leading manufacturers such as Sophos, Dell, VMware, Nutanix, Tenable, Palo Alto, Tintri, Veeam, F5, Juniper, Arista, and Microsoft. They offer nationwide solutions for core networking, cloud computing, and help clients find security. SHC Netzwerktechnik GmbH employs 7 people (+22.2% YoY, +2 people), founded in 1991. Headquartered in Berlin, Berlin, Germany, with presence in United States. ## About Die SHC Netzwerktechnik GmbH ist ein mittelständischer IT-Dienstleister mit einer 27 jährigen Erfahrung in Bereichen IT-Management, IT-Sicherheit, IT-Infrastruktur und IT-Service. Seit 1991 sind wir bundesweit von unseren Standorten Frankfurt am Main, Berlin und Köln aus tätig. Unser Anspruch ist die optimale Beratung unserer Kunden. Bei der Auswahl und der Einführung neuer Produkte oder Lösungen, ist für uns die individuelle Ausgangssituation eines jeden Kunden entscheidend. Unternehmen aller Größenordnungen vertrauen"
+        }
+      ],
+      "rationale": "Credible networking VAR with solid but not portfolio-specific evidence."
+    },
+    {
+      "rank": 9,
+      "companyName": "Net Factory Gesellschaft für Netzwerklösungen mbH",
+      "officialUrl": "https://net-factory.de/",
+      "roles": [
+        "VAR"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 4,
+        "evidenceReliability": 3
+      },
+      "score": 76,
+      "roleEvidence": "German IT system house supplying hardware and tailored network/IT solutions to businesses.",
+      "productFitEvidence": "Network solutions, modern IT infrastructure and hardware are relevant, though specific product families are not enumerated.",
+      "cooperationEvidence": "Planning, hardware supply, service and ongoing maintenance establish recommendation and procurement influence.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-40ACA61894",
+          "url": "https://net-factory.de/",
+          "excerpt": "# Net Factory Gesellschaft für Netzwerklösungen mbH Net Factory Gesellschaft für Netzwerklösungen mbH is a Computer Hardware Manufacturing company. NetFactory Gesellschaft für Netzwerklösungen mbH is a company that provides network solutions. Net Factory Gesellschaft für Netzwerklösungen mbH employs 16 people, founded in 1997. Headquartered in Rheinstetten, Baden-Württemberg, Germany, with presence in United States. ## About NetFactory - Ihr Partner für erstklassige IT-Lösungen, maßgeschneiderte Services und herausragenden Kundensupport. Die Net Factory Gesellschaft für Netzwerklösungen mbH mit Hauptsitz in Rheinstetten, hat sich seit ihrer Gründung im Jahr 1989 zu einem etablierten IT-Systemhaus entwickelt. Wir bieten gewerblichen Unternehmen und privaten Endkunden wegweisende IT-Lösungen sowie exzellenten Service. Durch eine breite Palette hochwertiger Hardware und vielfältige IT-Dienstleistungen erfüllen wir die individuellen Anforderungen verschiedenster Unternehmen. Wir begleiten unsere Kunden von der initialen Planung bis zur kontinuierlichen Wartung modernster IT-Infrastrukturen. Dabei legen wir besonderen Wert auf maßgeschneiderte Lösungen, die reibungslose Abläufe gewährle"
+        }
+      ],
+      "rationale": "Valid B2B VAR with good path evidence but less specific product evidence."
+    },
+    {
+      "rank": 10,
+      "companyName": "indasys IT Systemhaus AG",
+      "officialUrl": "https://indasys.de/",
+      "roles": [
+        "VAR"
+      ],
+      "eligibility": {
+        "companyExists": true,
+        "germanyPresence": true,
+        "networkingRelevant": true,
+        "submittedChannelRole": true,
+        "sufficientEvidence": true,
+        "uniqueWithinList": true
+      },
+      "levels": {
+        "productUseCaseFit": 4,
+        "cooperationPath": 4,
+        "evidenceReliability": 3
+      },
+      "score": 76,
+      "roleEvidence": "German system house providing IT infrastructure, network security, data-center and managed solutions to business customers.",
+      "productFitEvidence": "Networking, infrastructure and security materially overlap Cudy use cases, although exact resold device categories are not listed.",
+      "cooperationEvidence": "Consulting, solution supply, support and managed services provide specification, quotation and deployment influence.",
+      "evidenceItems": [
+        {
+          "evidenceEntryId": "E-548CBB8135",
+          "url": "https://indasys.de/",
+          "excerpt": "# indasys IT Systemhaus Gruppe (indasys IT Systemhaus AG) indasys IT Systemhaus Gruppe is a Computer Networking company. indasys IT Systemhaus Gruppe is an IT system house that provides a wide range of services including IT infrastructure, network security, data center, modern workplace, software and licenses, cloud services, managed services, IT support, consulting, and repair services. Indasys IT Systemhaus Gruppe employs 36 people (+1.6% YoY, +1 person), founded in 1999. Headquartered in Stuttgart-Weilimdorf, Baden-Württemberg, Germany, with presence in United States. Its workforce is distributed across Germany and Kenya. ## About Wir lösen reale IT-Probleme – nicht mit Buzzwords, sondern mit messbaren Ergebnissen. Unser Ziel: Eine IT, die funktioniert, schützt und mitdenkt – damit Sie sich auf Ihr Kerngeschäft konzentrieren können. Seit über 25 Jahren begleiten wir mittelständische und größere Unternehmen als zuverlässiger IT-Partner in Baden-Württemberg. Durch unsere Erfahrung aus zahlreichen Projekten wissen wir, worauf es wirklich ankommt: individuelle Lösungen, die exakt zu Ihrer Unternehmensstruktur passen. Unsere Services sind skalierbar – wir passen uns Ihrer Größe, Bran"
+        }
+      ],
+      "rationale": "Strong general B2B solution partner with moderate product specificity."
+    }
+  ],
+  "rejectedItems": [
+    {
+      "title": "Zyxel Networks Deutschland",
+      "url": "https://zyxel.de/",
+      "reason": "Networking manufacturer/brand, not a reseller candidate."
+    },
+    {
+      "title": "The Cloud Networks Germany",
+      "url": "https://thecloud.eu/",
+      "reason": "Managed Wi-Fi provider; packet does not establish hardware resale."
+    },
+    {
+      "title": "Netzwerktechnik Kopp GmbH",
+      "url": "https://netzwerktechnik-kopp.de/",
+      "reason": "Passive cabling installer with no hardware resale evidence."
+    },
+    {
+      "title": "WLANxpert",
+      "url": "https://linkedin.com/company/wlanxpert",
+      "reason": "WLAN planner/installer/operator; no reselling evidence."
+    },
+    {
+      "title": "RockSolid Networks e. K.",
+      "url": "https://rocksolid-networks.de/",
+      "reason": "Consulting and implementation services are clear, but product resale is not."
+    },
+    {
+      "title": "Vitel GmbH",
+      "url": "https://vitel.de/",
+      "reason": "Packet supports VAD distribution; it does not clearly establish service to final customers for this lane."
+    },
+    {
+      "title": "Messkom Vertriebs GmbH",
+      "url": "https://messkom.de/",
+      "reason": "Resells network measurement tools, but overlap with Cudy's target hardware is too weak."
+    },
+    {
+      "title": "HEIN Netzwerktechnik GmbH",
+      "url": "https://hein.de/",
+      "reason": "Company and network relevance are supported, but reseller/VAR activity is not sufficiently evidenced."
+    },
+    {
+      "title": "U+P Systemhaus GmbH",
+      "url": "https://up-systemhaus.de/",
+      "reason": "Strong B2B procurement capability but no material networking-product evidence in the packet."
+    },
+    {
+      "title": "HPC IT-Security",
+      "url": "https://linkedin.com/company/hpc-it-security",
+      "reason": "Consumer/high-end private emphasis and thin official evidence make it weaker than the selected B2B candidates."
+    }
+  ],
+  "scoring": {
+    "finalSlots": 10,
+    "filledSlots": 10,
+    "missingSlots": 0,
+    "slotScores": [
+      92,
+      92,
+      92,
+      92,
+      85,
+      81,
+      76,
+      76,
+      76,
+      76
+    ],
+    "channelScore": 83.8,
+    "meanLevelsAcrossTenSlots": {
+      "productUseCaseFit": 4.6,
+      "cooperationPath": 4.4,
+      "evidenceReliability": 2.9
+    }
+  },
+  "evaluator": {
+    "provider": "codex-agent",
+    "transport": "in-session-no-api",
+    "model": "runtime-managed-codex",
+    "systemIdentityHiddenDuringReview": true,
+    "providerIdentityHiddenDuringReview": true,
+    "apiScoresHiddenDuringReview": true,
+    "externalSearchUsed": false
+  }
+}
