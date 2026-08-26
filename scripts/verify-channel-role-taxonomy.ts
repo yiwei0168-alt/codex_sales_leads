@@ -23,6 +23,7 @@ const verificationQueries = [
   "一级代理商 Distributor 是否必须有实体仓库和公开库存？",
   "佣金型 Agent 是否属于 Distributor 一级代理商？",
   "Distributor 和 VAD 能否评为 KA？",
+  "VAD 和 VAR 应该怎样根据规模、采购能力和品牌直接采购关系区分？",
 ];
 
 try {
@@ -47,6 +48,9 @@ try {
     "佣金型 Agent 不属于 Distributor",
     "不是绝对必要条件",
     "不得直接当作“不具备”",
+    "标记 VAD 时必须同时标记 Distributor",
+    "首要边界是采购层级及支撑该层级的规模和采购能力",
+    "普通物流、融资、订货、基础市场活动或一般产品培训本身不足以证明 VAD",
   ];
   const missingText = requiredText.filter((fragment) => !stored.combined_content.includes(fragment));
 
