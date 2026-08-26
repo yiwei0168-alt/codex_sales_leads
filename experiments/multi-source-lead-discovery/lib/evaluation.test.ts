@@ -59,6 +59,7 @@ describe("provider-neutral benchmark evaluation", () => {
     expect(result.evaluator.returnedModel).toBe("claude-sonnet-4-6-actual");
     const request = JSON.parse(fetchMock.mock.calls[0][1].body as string);
     expect(request.temperature).toBe(0);
+    expect(request.stream).toBe(true);
     expect(JSON.stringify(request)).not.toContain("private-key");
   });
 });

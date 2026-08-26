@@ -67,6 +67,43 @@ interface ClaudeResponse {
   error?: { message?: string };
 }
 
+interface ClaudeStreamEvent {
+  type?: string;
+  message?: ClaudeResponse;
+  delta?: { type?: string; text?: string; stop_reason?: string | null };
+  usage?: { input_tokens?: number; output_tokens?: number };
+  error?: { message?: string };
+}
+
+function parseClaudeStream(payload: string): ClaudeResponse {
+  const result: ClaudeResponse = { content: [] };
+  let text = "";
+  for (const block of payload.split(/\r?\n\r?\n/)) {
+    const data = block.split(/\r?\n/).filter((line) => line.startsWith("data:"))
+      .map((line) => line.slice(5).trim()).join("\n");
+    if (!data || data === "[DONE]") continue;
+    const event = JSON.parse(data) as ClaudeStreamEvent;
+    if (event.type === "error") throw new Error(event.error?.message ?? "Claude evaluator streaming error");
+    if (event.type === "message_start") {
+      result.model = event.message?.model;
+      result.usage = { input_tokens: event.message?.usage?.input_tokens };
+    } else if (event.type === "content_block_delta" && event.delta?.type === "text_delta") {
+      text += event.delta.text ?? "";
+    } else if (event.type === "message_delta") {
+      result.usage = { ...result.usage, output_tokens: event.usage?.output_tokens };
+    }
+  }
+  result.content = [{ type: "text", text }];
+  return result;
+}
+
+async function readClaudeResponse(response: Response): Promise<ClaudeResponse> {
+  const contentType = response.headers.get("content-type")?.toLowerCase() ?? "";
+  return contentType.includes("text/event-stream")
+    ? parseClaudeStream(await response.text())
+    : response.json() as Promise<ClaudeResponse>;
+}
+
 function messagesUrl(): string {
   const parsed = new URL(process.env.CLAUDE_BASE_URL?.trim() || "https://api.anthropic.com");
   if (parsed.protocol !== "https:" || !["api.anthropic.com", "lingyuapi.com"].includes(parsed.hostname)
@@ -233,12 +270,13 @@ async function invokeClaude(
       model: configuration.model,
       max_tokens: configuration.maxOutputTokens,
       temperature: configuration.temperature,
+      stream: true,
       system: configuration.systemPrompt,
       messages: [{ role: "user", content: JSON.stringify(userPayload) }],
     }),
     signal: AbortSignal.timeout(240_000),
   });
-  const body = await response.json() as ClaudeResponse;
+  const body = await readClaudeResponse(response);
   if (!response.ok) throw new Error(body.error?.message ?? `Claude evaluator HTTP ${response.status}`);
   const text = (body.content ?? []).filter((item) => item.type === "text")
     .map((item) => item.text ?? "").join("\n").trim();

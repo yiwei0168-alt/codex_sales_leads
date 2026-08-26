@@ -65,6 +65,10 @@ const benchmark = JSON.parse(benchmarkText) as BenchmarkConfig;
 const inputs = JSON.parse(inputsText) as InputsConfig;
 const phase = (process.argv.find((argument) => argument.startsWith("--phase="))?.split("=")[1] ?? "all") as Phase;
 const allowRecoveryAttempt = process.argv.includes("--allow-recovery-attempt");
+const evaluationConcurrency = Math.max(1, Math.min(3, Number(
+  process.argv.find((argument) => argument.startsWith("--evaluation-concurrency="))?.split("=")[1] ?? 3,
+)));
+if (!Number.isInteger(evaluationConcurrency)) throw new Error("Evaluation concurrency must be an integer from 1 to 3");
 if (!["preflight", "discovery", "evaluate", "all"].includes(phase)) throw new Error(`Unknown phase: ${phase}`);
 if (benchmark.status !== "frozen-ready-to-run") throw new Error("Benchmark protocol is not frozen");
 if (Date.now() < Date.parse(benchmark.execution.frozenAt)) throw new Error("Frozen benchmark time is in the future");
@@ -394,7 +398,7 @@ async function runEvaluation(): Promise<void> {
   console.log("[evaluate] all measured discovery files are complete; downstream access is now enabled");
   const evaluationTasks = benchmark.execution.runOrder.flatMap((systemId) =>
     inputs.channels.map((channel) => ({ systemId, channel })));
-  const evaluated = await parallelMap(evaluationTasks, 3, async ({ systemId, channel }) => {
+  const evaluated = await parallelMap(evaluationTasks, evaluationConcurrency, async ({ systemId, channel }) => {
       console.log(`[evaluate] ${systemId} ${channel.id}`);
       const rawPath = path.join(rawRoot, "evaluation", systemId, channel.id);
       let result: EvaluatedChannel;
@@ -406,17 +410,25 @@ async function runEvaluation(): Promise<void> {
         const sourceResults = await discoveryResults(systemId, channel.id);
         const fixedCandidates = systemId === "gemini-full"
           ? geminiChannels(sourceResults[0]).get(channel.id) ?? [] : undefined;
-        result = await evaluateChannel({
-          channelId: channel.id,
-          channelLabel: channel.label,
-          eligibleRoles: channel.eligibleRoles,
-          roleRules: inputs.compactRoleRules,
-          cudyBrief: inputs.cudyBrief,
-          commonBrief: inputs.commonDiscoveryBrief,
-          configuration: inputs.downstreamEvaluator,
-          discoveryItems: sourceResults.flatMap((source) => source.items),
-          fixedCandidates,
-        });
+        try {
+          result = await evaluateChannel({
+            channelId: channel.id,
+            channelLabel: channel.label,
+            eligibleRoles: channel.eligibleRoles,
+            roleRules: inputs.compactRoleRules,
+            cudyBrief: inputs.cudyBrief,
+            commonBrief: inputs.commonDiscoveryBrief,
+            configuration: inputs.downstreamEvaluator,
+            discoveryItems: sourceResults.flatMap((source) => source.items),
+            fixedCandidates,
+          });
+        } catch (evaluationError) {
+          await writeJson(`${rawPath}.failed-${Date.now()}.json`, {
+            completedAt: timestamp(), status: "failed", systemId, channelId: channel.id,
+            error: errorRecord(evaluationError),
+          });
+          throw evaluationError;
+        }
         await writeJson(`${rawPath}.result.json`, { completedAt: timestamp(), status: "succeeded", result });
       }
       const rawSha256 = sha256(await readFile(`${rawPath}.result.json`));

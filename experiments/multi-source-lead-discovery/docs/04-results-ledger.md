@@ -26,6 +26,7 @@ No measured result exists yet. This ledger must be updated in the same commit as
 | discovery-product-searchapi-tier1 | measured discovery | product-searchapi | tier1-distribution | `artifacts/runs/2026-08-26-de-v1/discovery/product-searchapi/tier1-distribution.json` | 3 hashes inside artifact | 27 | passed | Three frozen queries. |
 | discovery-product-searchapi-b2b | measured discovery | product-searchapi | b2b-resale | `artifacts/runs/2026-08-26-de-v1/discovery/product-searchapi/b2b-resale.json` | 3 hashes inside artifact | 27 | passed | Three frozen queries. |
 | discovery-product-searchapi-project | measured discovery | product-searchapi | project-services | `artifacts/runs/2026-08-26-de-v1/discovery/product-searchapi/project-services.json` | 3 hashes inside artifact | 27 | passed | Three frozen queries. |
+| evaluator-preflight-001 | evaluator connectivity | claude-sonnet-4-6 and same-gateway Claude alternatives | n/a | none | local failure records only | 0 scored candidates | failed before scoring | The gateway lists models but has no usable Claude message channel for the configured key. No partial scores exist and no alternative judge has been substituted. |
 
 ## Required artifact stages
 
