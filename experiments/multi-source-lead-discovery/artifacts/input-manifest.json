@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "protocolVersion": "multi-source-professional-discovery-v1.1",
+  "protocolVersion": "multi-source-professional-discovery-v1.1.1",
   "promptVersion": "professional-discovery-de-v1",
   "frozenAt": "2026-08-26T16:08:00+08:00",
-  "datePolicy": "Discovery calls ran after execution.frozenAt. Evaluator calls run after execution.judgeAmendedAt. Every attempt retains its actual ISO-8601 Asia/Shanghai timestamp.",
+  "datePolicy": "Discovery calls ran after execution.frozenAt. OpenAI evaluator calls began after execution.judgeAmendedAt; retry/failure-isolation logic applies after execution.runnerAmendedAt. Every attempt retains its actual ISO-8601 Asia/Shanghai timestamp.",
   "market": {
     "countryCode": "DE",
     "countryName": "Germany",
@@ -87,12 +87,14 @@
   "execution": {
     "frozenAt": "2026-08-26T16:08:00+08:00",
     "judgeAmendedAt": "2026-08-26T17:18:00+08:00",
+    "runnerAmendedAt": "2026-08-26T17:35:00+08:00",
     "runId": "2026-08-26-de-v1",
     "queriesPerChannel": 3,
     "maxResultsPerQuery": 10,
     "productDiscoveryRequestsPerProvider": 9,
     "geminiFullRequests": 1,
     "providerRequestRetryLimit": 1,
+    "evaluatorRequestRetryLimit": 2,
     "requestTimeoutMs": 90000,
     "runOrder": [
       "gemini-full",
@@ -217,8 +219,8 @@
   "fileHashes": [
     {
       "path": "experiments/multi-source-lead-discovery/config/benchmark.json",
-      "sha256": "17f925e0cf13fbdec6e072d239ad44668e1455f2b837344792ab1f4a479d5a62",
-      "bytes": 4286
+      "sha256": "b23bebb3d109d108405e1c36bc4a735ce10ab1ee281bc5092d4c840b47522b88",
+      "bytes": 4377
     },
     {
       "path": "experiments/multi-source-lead-discovery/config/inputs.json",
@@ -227,13 +229,13 @@
     },
     {
       "path": "experiments/multi-source-lead-discovery/docs/01-protocol.md",
-      "sha256": "bd00ec4f316a90de716c7628b13491d7c287bc2715137d33ed05e0d6fec38dc1",
-      "bytes": 3927
+      "sha256": "26a3f0972464b6d10bf19aa164672e038eb23fd2fa71683a21b2c1d5aadd9995",
+      "bytes": 4285
     },
     {
       "path": "experiments/multi-source-lead-discovery/docs/05-scoring-and-blind-audit.md",
-      "sha256": "5e7e72b1d4a10d3e3cfbac4be84e32f73740d1ca330e70bedca5d69d1a54d651",
-      "bytes": 5069
+      "sha256": "f41bedc853ea6496439679f99dfe2ac77b709beade10c5014b43b741b9bee4bd",
+      "bytes": 5092
     },
     {
       "path": "src/data/channel-role-taxonomy.ts",

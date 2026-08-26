@@ -28,6 +28,7 @@ No measured result exists yet. This ledger must be updated in the same commit as
 | discovery-product-searchapi-project | measured discovery | product-searchapi | project-services | `artifacts/runs/2026-08-26-de-v1/discovery/product-searchapi/project-services.json` | 3 hashes inside artifact | 27 | passed | Three frozen queries. |
 | evaluator-preflight-001 | evaluator connectivity | claude-sonnet-4-6 and same-gateway Claude alternatives | n/a | none | local failure records only | 0 scored candidates | failed before scoring | The gateway lists models but has no usable Claude message channel for the configured key. No partial scores exist and no alternative judge has been substituted. |
 | evaluator-amendment-001 | evaluator connectivity and protocol amendment | gpt-5.6-sol via Lingyu OpenAI-compatible Responses API | n/a | regenerated v1.1 input manifest | connectivity response retained locally only | 0 scored candidates | passed | Model listing advertised `gpt-5.6-sol`; a `medium`-reasoning strict JSON Schema response succeeded. Formal scoring begins only after the amendment commit. |
+| evaluator-runner-amendment-001 | evaluator execution resilience | all OpenAI evaluator batches | n/a | regenerated v1.1.1 input manifest | failure attempts retained locally | 6 previously successful batches unchanged | passed | Uniform three-attempt cap, failure isolation and transport-attempt accounting added without changing model input or score computation. |
 
 ## Required artifact stages
 

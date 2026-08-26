@@ -26,9 +26,10 @@ Each lane has two German queries and one English query. Search-only APIs receive
 - Gemini Full requests: 1;
 - discovery-only requests per provider: 9;
 - common evaluator: OpenAI `gpt-5.6-sol` through `https://lingyuapi.com/v1/responses`, `medium` reasoning, strict JSON Schema, maximum 12,000 output tokens;
+- evaluator transport retry limit: 2 retries after the initial attempt, applied uniformly per system/channel batch;
 - evaluator input consists only of the frozen rules and the measured system's own discovery payload for that channel.
 
-The credential value is never frozen or committed. The manifest records only `LINGYU_API_KEY` as the environment-variable name. Protocol v1.1 changed only this evaluator configuration after the v1 Claude route failed and before any score existed; all discovery inputs and outputs remain those from v1.
+The credential value is never frozen or committed. The manifest records only `LINGYU_API_KEY` as the environment-variable name. Protocol v1.1 changed only this evaluator configuration after the v1 Claude route failed and before any score existed. Protocol v1.1.1 changes only failure isolation and a uniform retry cap after the first six OpenAI batches; it does not change any model input or scoring behavior. All discovery inputs and outputs remain those from v1.
 
 ## Generated input manifest
 

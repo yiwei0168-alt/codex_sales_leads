@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import nextEnv from "@next/env";
@@ -31,10 +31,12 @@ interface BenchmarkConfig {
   execution: {
     frozenAt: string;
     judgeAmendedAt: string;
+    runnerAmendedAt: string;
     runId: string;
     queriesPerChannel: number;
     maxResultsPerQuery: number;
     providerRequestRetryLimit: number;
+    evaluatorRequestRetryLimit: number;
     requestTimeoutMs: number;
     runOrder: SystemId[];
   };
@@ -81,6 +83,9 @@ if (benchmark.status !== "frozen-ready-to-run") throw new Error("Benchmark proto
 if (Date.now() < Date.parse(benchmark.execution.frozenAt)) throw new Error("Frozen benchmark time is in the future");
 if ((phase === "evaluate" || phase === "all") && Date.now() < Date.parse(benchmark.execution.judgeAmendedAt)) {
   throw new Error("Frozen evaluator amendment time is in the future");
+}
+if ((phase === "evaluate" || phase === "all") && Date.now() < Date.parse(benchmark.execution.runnerAmendedAt)) {
+  throw new Error("Frozen evaluator runner amendment time is in the future");
 }
 if (inputs.channels.some((channel) => channel.queries.length !== benchmark.execution.queriesPerChannel)) {
   throw new Error("Query pack does not match the frozen request budget");
@@ -150,15 +155,19 @@ function sanitizeUnknownForCommit(value: unknown, key = ""): unknown {
 async function parallelMap<T, R>(values: T[], concurrency: number, operation: (value: T) => Promise<R>): Promise<R[]> {
   const results = new Array<R>(values.length);
   let cursor = 0;
+  const errors: Array<{ index: number; error: { name: string; message: string } }> = [];
   const workers = Array.from({ length: Math.min(concurrency, values.length) }, async () => {
     while (cursor < values.length) {
       const index = cursor;
       cursor += 1;
-      results[index] = await operation(values[index]);
+      try {
+        results[index] = await operation(values[index]);
+      } catch (error) {
+        errors.push({ index, error: errorRecord(error) });
+      }
     }
   });
-  const settled = await Promise.allSettled(workers);
-  const errors = settled.flatMap((entry) => entry.status === "rejected" ? [errorRecord(entry.reason)] : []);
+  await Promise.all(workers);
   if (errors.length) throw new Error(`Parallel evaluation failed: ${JSON.stringify(errors)}`);
   return results;
 }
@@ -403,6 +412,60 @@ async function assertDiscoveryComplete(): Promise<void> {
   }
 }
 
+async function evaluationFailureCount(rawPath: string): Promise<number> {
+  try {
+    const prefix = `${path.basename(rawPath)}.failed-`;
+    const filenames = (await readdir(path.dirname(rawPath))).filter((filename) => filename.startsWith(prefix));
+    const records = await Promise.all(filenames.map((filename) =>
+      readJson<{ completedAt?: string }>(path.join(path.dirname(rawPath), filename))));
+    return records.filter((record) => record.completedAt
+      && Date.parse(record.completedAt) >= Date.parse(benchmark.execution.judgeAmendedAt)).length;
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return 0;
+    throw error;
+  }
+}
+
+async function evaluateWithRetries(options: {
+  rawPath: string;
+  systemId: SystemId;
+  channelId: ChannelId;
+  operation: () => Promise<EvaluatedChannel>;
+}): Promise<EvaluatedChannel> {
+  const maximumAttempts = benchmark.execution.evaluatorRequestRetryLimit + 1;
+  const priorFailures = await evaluationFailureCount(options.rawPath);
+  if (priorFailures >= maximumAttempts) {
+    throw new Error(`${options.systemId}/${options.channelId} exhausted ${priorFailures} evaluator attempts`);
+  }
+  let lastError: unknown;
+  for (let attempt = priorFailures + 1; attempt <= maximumAttempts; attempt += 1) {
+    try {
+      const result = await options.operation();
+      await writeJson(`${options.rawPath}.result.json`, {
+        completedAt: timestamp(), status: "succeeded", attemptNumber: attempt, result,
+      });
+      return result;
+    } catch (error) {
+      lastError = error;
+      await writeJson(`${options.rawPath}.failed-${Date.now()}.json`, {
+        completedAt: timestamp(), status: "failed", attemptNumber: attempt,
+        systemId: options.systemId, channelId: options.channelId,
+        evaluator: {
+          provider: inputs.downstreamEvaluator.provider,
+          gateway: inputs.downstreamEvaluator.gateway,
+          model: inputs.downstreamEvaluator.model,
+          reasoningEffort: inputs.downstreamEvaluator.reasoningEffort,
+        },
+        error: errorRecord(error),
+      });
+      if (attempt < maximumAttempts) {
+        console.warn(`[evaluate] retrying ${options.systemId} ${options.channelId} after attempt ${attempt}`);
+      }
+    }
+  }
+  throw lastError;
+}
+
 async function runEvaluation(): Promise<void> {
   await assertDiscoveryComplete();
   console.log("[evaluate] all measured discovery files are complete; downstream access is now enabled");
@@ -420,8 +483,11 @@ async function runEvaluation(): Promise<void> {
         const sourceResults = await discoveryResults(systemId, channel.id);
         const fixedCandidates = systemId === "gemini-full"
           ? geminiChannels(sourceResults[0]).get(channel.id) ?? [] : undefined;
-        try {
-          result = await evaluateChannel({
+        result = await evaluateWithRetries({
+          rawPath,
+          systemId,
+          channelId: channel.id,
+          operation: () => evaluateChannel({
             channelId: channel.id,
             channelLabel: channel.label,
             eligibleRoles: channel.eligibleRoles,
@@ -431,15 +497,8 @@ async function runEvaluation(): Promise<void> {
             configuration: inputs.downstreamEvaluator,
             discoveryItems: sourceResults.flatMap((source) => source.items),
             fixedCandidates,
-          });
-        } catch (evaluationError) {
-          await writeJson(`${rawPath}.failed-${Date.now()}.json`, {
-            completedAt: timestamp(), status: "failed", systemId, channelId: channel.id,
-            error: errorRecord(evaluationError),
-          });
-          throw evaluationError;
-        }
-        await writeJson(`${rawPath}.result.json`, { completedAt: timestamp(), status: "succeeded", result });
+          }),
+        });
       }
       const rawSha256 = sha256(await readFile(`${rawPath}.result.json`));
       await writeJson(path.join(artifactRoot, "evaluation", systemId, `${channel.id}.json`), {
@@ -489,6 +548,10 @@ async function runEvaluation(): Promise<void> {
       ? await discoveryResults(system.id, inputs.channels[0].id)
       : (await Promise.all(inputs.channels.map((channel) => discoveryResults(system.id, channel.id)))).flat();
     const evaluations = evaluated.filter((entry) => entry.systemId === system.id).map((entry) => entry.channel.evaluator);
+    const evaluatorFailedAttempts = (await Promise.all(inputs.channels.map((channel) =>
+      evaluationFailureCount(path.join(rawRoot, "evaluation", system.id, channel.id)))))
+      .reduce((sum, count) => sum + count, 0);
+    const evaluatorSuccessfulResponses = evaluations.reduce((sum, value) => sum + value.requestCount, 0);
     resourceMetrics.push({
       systemId: system.id,
       discoveryRequests: uniqueDiscoveryResults.reduce((sum, result) => sum + result.requestCount, 0),
@@ -497,7 +560,10 @@ async function runEvaluation(): Promise<void> {
         for (const [key, value] of Object.entries(result.usage ?? {})) usage[key] = (usage[key] ?? 0) + value;
         return usage;
       }, {}),
-      evaluatorRequests: evaluations.reduce((sum, value) => sum + value.requestCount, 0),
+      evaluatorRequests: evaluatorSuccessfulResponses,
+      evaluatorSuccessfulResponses,
+      evaluatorFailedAttempts,
+      evaluatorTransportAttempts: evaluatorSuccessfulResponses + evaluatorFailedAttempts,
       evaluatorLatencyMs: evaluations.reduce((sum, value) => sum + value.latencyMs, 0),
       evaluatorInputTokens: evaluations.reduce((sum, value) => sum + (value.inputTokens ?? 0), 0),
       evaluatorOutputTokens: evaluations.reduce((sum, value) => sum + (value.outputTokens ?? 0), 0),

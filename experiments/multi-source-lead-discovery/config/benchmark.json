@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "protocolVersion": "multi-source-professional-discovery-v1.1",
+  "protocolVersion": "multi-source-professional-discovery-v1.1.1",
   "status": "frozen-ready-to-run",
   "countryCode": "DE",
   "countryName": "Germany",
@@ -40,12 +40,14 @@
   "execution": {
     "frozenAt": "2026-08-26T16:08:00+08:00",
     "judgeAmendedAt": "2026-08-26T17:18:00+08:00",
+    "runnerAmendedAt": "2026-08-26T17:35:00+08:00",
     "runId": "2026-08-26-de-v1",
     "queriesPerChannel": 3,
     "maxResultsPerQuery": 10,
     "productDiscoveryRequestsPerProvider": 9,
     "geminiFullRequests": 1,
     "providerRequestRetryLimit": 1,
+    "evaluatorRequestRetryLimit": 2,
     "requestTimeoutMs": 90000,
     "runOrder": ["gemini-full", "product-gemini", "product-tavily", "product-google-places", "product-exa", "product-brave", "product-searchapi"],
     "crossSystemOutputAccessBeforeDiscoveryComplete": false
