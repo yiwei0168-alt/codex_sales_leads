@@ -26,6 +26,8 @@
     "industry:extract": "python scripts/extract-industry-knowledge.py",
     "industry:ingest": "tsx scripts/ingest-industry-knowledge.ts",
     "industry:verify": "tsx scripts/verify-industry-rag.ts",
+    "industry:ingest-taxonomy": "node scripts/run-tsx.cjs scripts/ingest-channel-role-taxonomy.ts",
+    "industry:verify-taxonomy": "node scripts/run-tsx.cjs scripts/verify-channel-role-taxonomy.ts",
     "company:extract": "python scripts/extract-company-knowledge.py",
     "company:ingest": "tsx scripts/ingest-company-knowledge.ts",
     "company:verify": "tsx scripts/verify-company-rag.ts",
