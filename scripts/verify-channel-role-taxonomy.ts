@@ -48,6 +48,9 @@ const verificationQueries = [
   "Manufacturer Representative Referral Agent 和外包销售公司是否属于 Commission Agent？",
   "固定代理费或 Retainer 加佣金还能算 Agent 吗？Agent 能否同时是 SI Installer MSP ISP？",
   "Commission Agent 能否评为 KA？应该怎样评价代理商业价值？",
+  "什么证据才能证明候选公司与 Cudy 主动网络设备业务相关？泛化 IT infrastructure 表述够吗？",
+  "只做结构化布线和光纤施工的 Installer 能否通过 Cudy networking relevance 门槛？",
+  "Networking relevance 和 product use-case fit 有什么区别？",
 ];
 
 try {
@@ -117,6 +120,13 @@ try {
     "单纯把安装、托管或宽带客户转介给第三方并收取佣金，只标记 Commission Agent",
     "Commission Agent 不是采购产品的下级渠道客户，因此不使用 account tier，也不评为 KA",
     "agent_potential_tier",
+    "角色分类与 Cudy 销售线索准入必须分开判断",
+    "实际销售、分销、选型、采购、设计、安装、部署、运营或维护主动网络设备",
+    "泛化表述不能单独证明 networking relevance",
+    "纯结构化布线、铜缆、光纤或弱电施工可以证明 Installer 角色",
+    "product and use-case fit 继续独立判断",
+    "未证明／not demonstrated",
+    "Installer 角色成立",
   ];
   const missingText = requiredText.filter((fragment) => !stored.combined_content.includes(fragment));
 

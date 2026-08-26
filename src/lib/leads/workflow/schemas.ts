@@ -28,6 +28,7 @@ const gatesSchema = z.object({
   submittedIdentityUsable: z.boolean(),
   companyExists: z.boolean(),
   targetCountryPresence: z.boolean(),
+  networkingRelevant: z.boolean(),
   relevantChannel: z.boolean(),
   sufficientEvidence: z.boolean(),
   independentProspect: z.boolean(),

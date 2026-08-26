@@ -10,6 +10,7 @@ This directory is the narrative audit trail for `multi-source-professional-disco
 4. [`04-results-ledger.md`](04-results-ledger.md) — index of each step output and its committed artifact.
 5. [`05-scoring-and-blind-audit.md`](05-scoring-and-blind-audit.md) — eligibility gates, category-specific scoring, system aggregation, blind sampling and calibration.
 6. [`../reports/final-report.md`](../reports/final-report.md) — final evidence-linked experiment report.
+7. [`06-corrective-rubric.md`](06-corrective-rubric.md) — post-audit rules confirmed for the required next full-pool rescoring, without rewriting the frozen run.
 
 ## Stage publication rule
 

@@ -91,6 +91,7 @@ export interface LeadEligibilityGates {
   submittedIdentityUsable: boolean;
   companyExists: boolean;
   targetCountryPresence: boolean;
+  networkingRelevant: boolean;
   relevantChannel: boolean;
   sufficientEvidence: boolean;
   independentProspect: boolean;

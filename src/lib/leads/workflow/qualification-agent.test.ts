@@ -13,7 +13,8 @@ class FakeProvider implements AiProvider {
     return {
       output: { assessments: [{
         candidateId: "lead-example", gates: { submittedIdentityUsable: true, companyExists: true,
-          targetCountryPresence: true, relevantChannel: true, sufficientEvidence: true, independentProspect: true },
+          targetCountryPresence: true, networkingRelevant: true, relevantChannel: true,
+          sufficientEvidence: true, independentProspect: true },
         roles: ["VAR", "Reseller"], primaryRole: "VAR", accountTier: "Priority",
         supplyModel: "Distributor Supply", brandInvolvement: "Standard",
         dimensions: { channelRoleAndCustomerAccess: 27.8, productAndUseCaseFit: 21.2, targetMarketCoverage: 18,
@@ -33,7 +34,7 @@ class FakeProvider implements AiProvider {
 const candidate: LeadWorkflowCandidate = {
   candidateId: "lead-example", companyName: "Example", domain: "example.de", officialWebsiteUrl: "https://example.de/",
   queryRoles: ["VAR"], queryFamily: "resale", providerScore: 0.99,
-  evidence: [{ id: "evidence-valid", url: "https://example.de", title: "Example", excerpt: "VAR and reseller",
+  evidence: [{ id: "evidence-valid", url: "https://example.de", title: "Example", excerpt: "VAR selling routers and PoE switches",
     sourceType: "official-website", provider: "test", capturedAt: "2026-08-22" }], evidenceWarnings: [],
 };
 const playbook: LeadMarketPlaybook = {
@@ -52,5 +53,19 @@ describe("LeadQualificationAgent", () => {
     expect(result.warnings).toContain("Model returned unsupported evidence IDs; they were removed.");
     expect(provider.calls).toHaveLength(1);
     expect(JSON.stringify(provider.calls[0].input)).not.toContain("providerScore");
+  });
+
+  it("fails the networking gate when the model relies only on generic IT wording", async () => {
+    const provider = new FakeProvider();
+    const agent = new LeadQualificationAgent(provider, { batchSize: 5, concurrency: 1 });
+    const genericCandidate = {
+      ...candidate,
+      evidence: [{ ...candidate.evidence[0], excerpt: "Cloud connectivity, managed IT and structured cabling" }],
+    };
+    const [result] = await agent.evaluate([genericCandidate], playbook, "DE", "Germany", "new-market");
+    expect(result.gates.networkingRelevant).toBe(false);
+    expect(result.eligible).toBe(false);
+    expect(result.totalScore).toBe(0);
+    expect(result.warnings.join(" ")).toContain("not-demonstrated");
   });
 });

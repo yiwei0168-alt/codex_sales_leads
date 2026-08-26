@@ -2,6 +2,7 @@ import type { AiProvider, StructuredAiResponse } from "@/providers/contracts";
 import { DeepSeekProvider } from "@/providers/deepseek";
 import { z } from "zod";
 
+import { assessNetworkingRelevanceEvidence } from "../networking-relevance";
 import { leadAssessmentBatchSchema, leadAssessmentModelSchema, type LeadAssessmentModelOutput } from "./schemas";
 import type {
   LeadCandidateAssessment,
@@ -9,7 +10,7 @@ import type {
   LeadWorkflowCandidate,
 } from "./types";
 
-const PROMPT_VERSION = "lead-fit-v1-v3-calibrated";
+const PROMPT_VERSION = "lead-fit-v1-v4-active-networking-gate";
 
 interface LeadAssessmentRequest {
   instructions: string[];
@@ -49,6 +50,11 @@ function normalizeAssessment(
 ): LeadCandidateAssessment {
   const allowedEvidence = new Set(candidate.evidence.map((item) => item.id));
   const evidenceIds = [...new Set(value.evidenceIds.filter((id) => allowedEvidence.has(id)))];
+  const networkingEvidence = assessNetworkingRelevanceEvidence(candidate.evidence.flatMap((item) => [item.title, item.excerpt]));
+  const gates = {
+    ...value.gates,
+    networkingRelevant: value.gates.networkingRelevant && networkingEvidence.demonstrated,
+  };
   const dimensions = {
     channelRoleAndCustomerAccess: clamp(value.dimensions.channelRoleAndCustomerAccess, 30),
     productAndUseCaseFit: clamp(value.dimensions.productAndUseCaseFit, 25),
@@ -56,14 +62,14 @@ function normalizeAssessment(
     partnershipExecutionCapability: clamp(value.dimensions.partnershipExecutionCapability, 15),
     strategicComplementarity: clamp(value.dimensions.strategicComplementarity, 10),
   };
-  const eligible = Object.values(value.gates).every(Boolean);
+  const eligible = Object.values(gates).every(Boolean);
   const totalScore = eligible ? Object.values(dimensions).reduce((sum, score) => sum + score, 0) : 0;
   const roles = [...new Set(value.roles)];
   const primaryRole = value.primaryRole && roles.includes(value.primaryRole) ? value.primaryRole : roles[0] ?? null;
   return {
     candidateId: candidate.candidateId,
     eligible,
-    gates: value.gates,
+    gates,
     roles,
     primaryRole,
     accountTier: value.accountTier,
@@ -81,6 +87,8 @@ function normalizeAssessment(
     promptVersion: response.promptVersion,
     escalated,
     warnings: [...response.warnings, ...value.warnings,
+      ...(value.gates.networkingRelevant && !networkingEvidence.demonstrated
+        ? [`Networking relevance was changed to not-demonstrated: ${networkingEvidence.reason}`] : []),
       ...(evidenceIds.length < value.evidenceIds.length ? ["Model returned unsupported evidence IDs; they were removed."] : [])],
   };
 }
@@ -93,6 +101,7 @@ function failedAssessment(candidate: LeadWorkflowCandidate, message: string): Le
       submittedIdentityUsable: Boolean(candidate.companyName && candidate.domain),
       companyExists: false,
       targetCountryPresence: false,
+      networkingRelevant: false,
       relevantChannel: false,
       sufficientEvidence: false,
       independentProspect: false,
@@ -142,6 +151,10 @@ export class LeadQualificationAgent {
         "Act as an independent sales-lead qualification agent. Ignore search-provider scores and discovery order.",
         "Assess only supplied evidence. Never invent a company fact, role, country presence, product fit, relationship or evidence ID.",
         "A company may have multiple roles. KA is an account tier, not a channel role. ISP is a downstream channel role.",
+        "Set networkingRelevant=true only when supplied evidence explicitly shows selling, distributing, specifying, buying, designing, installing, deploying or maintaining active networking hardware, or a WLAN/LAN implementation that directly requires it.",
+        "Active networking includes routers, gateways, cellular CPE, access points, mesh/WLAN controllers, Ethernet/PoE switches, modems, outdoor/PtP wireless, network firewalls, security gateways and network-management controllers. A named relevant vendor relationship or concrete project can also prove the gate.",
+        "Generic IT infrastructure, cloud connectivity, edge infrastructure, managed IT, IP solutions, system integration, network consulting, data centers, broadcast IP and IT procurement do not prove networking relevance without concrete products, vendors, projects or actions.",
+        "Pure structured cabling, fiber or low-voltage work can prove an Installer role but does not pass networkingRelevant without active-equipment evidence. Report absent public proof as not demonstrated, not as a factual claim that the company is unrelated.",
         "Set sufficientEvidence=false when identity, target-country presence or channel activity lacks auditable support.",
         "Current Cudy relationship has zero fit-score weight. Cudy itself and non-independent entities fail independentProspect.",
         "Use the exact five dimension maxima. Do not compensate a failed eligibility gate with a high score.",
@@ -168,7 +181,7 @@ export class LeadQualificationAgent {
         })),
       })),
       scoringRubric: {
-        eligibilityGates: ["submittedIdentityUsable", "companyExists", "targetCountryPresence", "relevantChannel", "sufficientEvidence", "independentProspect"],
+        eligibilityGates: ["submittedIdentityUsable", "companyExists", "targetCountryPresence", "networkingRelevant", "relevantChannel", "sufficientEvidence", "independentProspect"],
         dimensions: {
           channelRoleAndCustomerAccess: 30,
           productAndUseCaseFit: 25,

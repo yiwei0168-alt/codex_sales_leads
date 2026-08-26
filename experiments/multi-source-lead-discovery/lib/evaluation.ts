@@ -1,4 +1,8 @@
 import type { DiscoveryItem } from "./contracts";
+import {
+  ACTIVE_NETWORKING_RELEVANCE_POLICY,
+  assessNetworkingRelevanceEvidence,
+} from "../../../src/lib/leads/networking-relevance";
 
 export type ChannelId = "tier1-distribution" | "b2b-resale" | "project-services";
 
@@ -173,11 +177,19 @@ export function canonicalPublicUrl(value: unknown): string | null {
 
 function parseCandidate(value: unknown): EvaluatedCandidate {
   const candidate = objectValue(value);
+  const evidenceItems = Array.isArray(candidate.evidenceItems) ? candidate.evidenceItems.flatMap((entry) => {
+    if (!entry || typeof entry !== "object" || Array.isArray(entry)) return [];
+    const evidence = entry as Record<string, unknown>;
+    const url = canonicalPublicUrl(evidence.url);
+    const excerpt = sanitizeText(stringValue(evidence.excerpt)).slice(0, 1_000);
+    return url && excerpt ? [{ url, excerpt }] : [];
+  }) : [];
+  const networkingEvidence = assessNetworkingRelevanceEvidence(evidenceItems.map((item) => item.excerpt));
   const gateInput = objectValue(candidate.eligibility ?? {});
   const eligibility: EligibilityGates = {
     companyExists: booleanValue(gateInput.companyExists),
     germanyPresence: booleanValue(gateInput.germanyPresence),
-    networkingRelevant: booleanValue(gateInput.networkingRelevant),
+    networkingRelevant: booleanValue(gateInput.networkingRelevant) && networkingEvidence.demonstrated,
     submittedChannelRole: booleanValue(gateInput.submittedChannelRole),
     sufficientEvidence: booleanValue(gateInput.sufficientEvidence),
     uniqueWithinList: booleanValue(gateInput.uniqueWithinList),
@@ -188,13 +200,6 @@ function parseCandidate(value: unknown): EvaluatedCandidate {
     cooperationPath: levelValue(levelInput.cooperationPath),
     evidenceReliability: levelValue(levelInput.evidenceReliability),
   };
-  const evidenceItems = Array.isArray(candidate.evidenceItems) ? candidate.evidenceItems.flatMap((entry) => {
-    if (!entry || typeof entry !== "object" || Array.isArray(entry)) return [];
-    const evidence = entry as Record<string, unknown>;
-    const url = canonicalPublicUrl(evidence.url);
-    const excerpt = sanitizeText(stringValue(evidence.excerpt)).slice(0, 1_000);
-    return url && excerpt ? [{ url, excerpt }] : [];
-  }) : [];
   const score = passesAllGates(eligibility) ? candidateScore(levels) : 0;
   return {
     companyName: sanitizeText(stringValue(candidate.companyName, "Unnamed company")).slice(0, 200),
@@ -367,6 +372,7 @@ export async function evaluateChannel(options: {
     cudyBrief: options.cudyBrief,
     commonDiscoveryBrief: options.commonBrief,
     compactRoleRules: options.roleRules,
+    networkingRelevancePolicy: ACTIVE_NETWORKING_RELEVANCE_POLICY,
     ...(fixed ? { fixedCandidates: options.fixedCandidates } : { discoveryResults: compactItems(options.discoveryItems) }),
   }, options.fetchImplementation ?? fetch);
   const selected = Array.isArray(parsed.selectedCandidates)

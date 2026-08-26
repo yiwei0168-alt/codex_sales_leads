@@ -38,7 +38,7 @@ describe("provider-neutral benchmark evaluation", () => {
             roleEvidence: "Wrong submitted role",
             productFitEvidence: "Networking products",
             cooperationEvidence: "Resells products",
-            evidenceItems: [{ url: "https://example.de", excerpt: "sales@example.de +49 30 1234 5678" }],
+            evidenceItems: [{ url: "https://example.de", excerpt: "Sells routers and PoE switches. sales@example.de +49 30 1234 5678" }],
             rationale: "Fails the category gate",
           }],
           rejectedItems: [],
@@ -72,6 +72,37 @@ describe("provider-neutral benchmark evaluation", () => {
     expect(request.text.format.type).toBe("json_schema");
     expect(request.text.format.strict).toBe(true);
     expect(request.temperature).toBeUndefined();
+    expect(request.input[1].content).toContain("active-networking-relevance-v1");
     expect(JSON.stringify(request)).not.toContain("private-key");
+  });
+
+  it("overrides a model-passed networking gate when evidence is generic only", async () => {
+    vi.stubEnv("LINGYU_API_KEY", "private-key");
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({
+      status: "completed",
+      model: "gpt-test",
+      output: [{ type: "message", content: [{ type: "output_text", text: JSON.stringify({
+        selectedCandidates: [{
+          companyName: "Generic IT GmbH", officialUrl: "https://generic.example", roles: ["SI"],
+          eligibility: { companyExists: true, germanyPresence: true, networkingRelevant: true,
+            submittedChannelRole: true, sufficientEvidence: true, uniqueWithinList: true },
+          levels: { productUseCaseFit: 4, cooperationPath: 4, evidenceReliability: 4 },
+          roleEvidence: "System integrator", productFitEvidence: "IT infrastructure",
+          cooperationEvidence: "Consulting", evidenceItems: [{ url: "https://generic.example/services",
+            excerpt: "Cloud connectivity, managed IT and structured cabling" }], rationale: "Generic wording",
+        }], rejectedItems: [],
+      }) }] }],
+    }), { status: 200 }));
+    const result = await evaluateChannel({
+      channelId: "project-services", channelLabel: "Project services", eligibleRoles: ["SI"], roleRules: [],
+      cudyBrief: "brief", commonBrief: "common",
+      configuration: { provider: "openai", gateway: "lingyu-openai-compatible",
+        apiKeyEnvironmentVariable: "LINGYU_API_KEY", baseUrl: "https://lingyuapi.com/v1", model: "gpt-test",
+        reasoningEffort: "medium", structuredOutput: "strict-json-schema", maxOutputTokens: 1000,
+        systemPrompt: "system", taskPrompt: "task", fixedListEvaluationPrompt: "fixed" },
+      discoveryItems: [], fetchImplementation: fetchMock,
+    });
+    expect(result.selectedCandidates[0].eligibility.networkingRelevant).toBe(false);
+    expect(result.selectedCandidates[0].score).toBe(0);
   });
 });

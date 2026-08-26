@@ -21,6 +21,16 @@ KA 是商业价值等级，不是渠道角色。仅当候选公司已被归入 D
 
 佣金型 Agent 不属于 Distributor。Agent 通常代表委托方促成交易、通过佣金或代理服务费获得报酬，并且通常不取得货物所有权、不承担进销差价及主要库存风险。Agent 具有独立商业价值，应作为单独的候选公司类型纳入搜索体系；其完整定义、证据、边界及独立价值分级见下文已确认的 Commission Agent 角色。Agent 不适用下级渠道客户的 account tier／KA，应使用 agent_potential_tier。
 
+### Cudy 销售线索的 Networking 相关性准入门槛
+
+角色分类与 Cudy 销售线索准入必须分开判断。候选公司可以真实属于 SI、Installer、VAR、MSP 或其他渠道角色，但只有公开证据明确显示其实际销售、分销、选型、采购、设计、安装、部署、运营或维护主动网络设备，或者实施直接需要主动网络设备的 WLAN／LAN 项目时，才能通过 networking relevance 准入门槛。
+
+主动网络设备包括路由器、网关、4G／5G CPE、无线 AP、Mesh、WLAN 控制器、Ethernet／PoE 交换机、Modem、室外无线及点对点无线设备和相关管理或安全能力。可通过准入门槛的强证据包括：候选公司官网或目录中的具体产品及在售页面；明确的分销或转售说明；明确承担 WLAN／LAN 设计、选型、BOM、采购、部署或运维；Omada、UniFi／Ubiquiti、MikroTik、D-Link、Ruckus、Aruba 等相关品牌伙伴关系；以及可验证的相关项目案例。
+
+IT infrastructure、cloud connectivity、edge infrastructure、digital transformation、managed IT、IP solutions、system integration、network consulting、data center、broadcast IP、IT procurement 等泛化表述不能单独证明 networking relevance，必须同时出现具体产品、品牌、项目或业务动作。纯结构化布线、铜缆、光纤或弱电施工可以证明 Installer 角色，但在没有 AP、路由器、交换机或其他主动网络设备的选型、采购、安装或维护证据时，不通过 Cudy 销售线索的 networking relevance 门槛。
+
+Networking relevance 只判断是否实质参与主动网络设备业务；product and use-case fit 继续独立判断其产品和场景与 Cudy 的接近程度。例如企业级网络安全 VAD 可以通过 networking relevance，但如果产品与 Cudy 的 SOHO／SMB 产品线重叠有限，product fit 仍可为低分。没有检索到主动网络设备证据时必须记录为“未证明／not demonstrated”，不能写成公司事实上“没有”或“无关”；在本产品当前搜索和测评中，“未证明”仍不能通过该项准入门槛。
+
 # 已确认角色
 
 ## Distributor（一级代理商）
@@ -509,6 +519,8 @@ Installer 是面向最终企业、机构、家庭或其他客户，在现场执�
 
 Installer 的工作可以包括铜缆或光纤敷设、端接和测试，机柜安装，路由器、交换机、无线 AP、控制器、天线、CPE、摄像机、门禁或其他网络与弱电设备安装，设备配对、基础参数设置、覆盖或链路测试、安装验收及现场更换服务。基础配置、测试和调试可以作为安装工作的一部分，不会因此自动成为 SI。
 
+需要特别区分“Installer 角色成立”和“适合作为 Cudy 销售线索”。纯结构化布线、铜缆、光纤或弱电施工公司仍可被正确分类为 Installer；但如果公开证据没有显示其选型、采购、安装或维护 AP、路由器、交换机等主动网络设备，则其 networking relevance 只能记为未证明，在 Cudy 销售线索搜索与测评中不通过相关性准入门槛。
+
 ### 必要判断条件
 
 在公开证据足够的情况下，Installer 至少需要满足：
@@ -860,7 +872,7 @@ export const CHANNEL_ROLE_TAXONOMY_DOCUMENT = {
   capturedAt: "2026-08-26T00:00:00+08:00",
   metadata: {
     topic: "channel-role-taxonomy",
-    policyVersion: "2026-08-26.12",
+    policyVersion: "2026-08-26.13",
     confirmedRoles: ["Distributor", "VAD", "VAR", "Dealer", "Reseller", "Retailer", "E-tailer", "SI", "Installer", "MSP", "ISP", "Commission Agent"],
     pendingRoles: [],
     userConfirmed: true,

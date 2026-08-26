@@ -1,0 +1,42 @@
+{
+  "rubricVersion": "multi-source-professional-discovery-v1.3-draft",
+  "status": "confirmed-corrective-rule-1",
+  "appliesTo": "future full-pool rescoring; does not alter committed v1.2 artifacts",
+  "networkingRelevance": {
+    "gate": true,
+    "passRule": "Explicit supplied evidence must show that the company sells, distributes, specifies, buys, designs, installs, deploys, operates or maintains active networking hardware, or implements WLAN/LAN projects that directly require it.",
+    "activeEquipmentExamples": [
+      "router or gateway",
+      "4G/5G CPE",
+      "wireless AP, mesh or WLAN controller",
+      "Ethernet/PoE switch",
+      "modem",
+      "outdoor or point-to-point wireless",
+      "network firewall, security gateway or network-management controller"
+    ],
+    "acceptableEvidence": [
+      "official product, catalog or listing",
+      "explicit distribution or resale",
+      "explicit WLAN/LAN design, specification, BOM, procurement, deployment or maintenance",
+      "named relevant vendor relationship",
+      "concrete relevant project"
+    ],
+    "insufficientAlone": [
+      "IT infrastructure",
+      "cloud connectivity",
+      "edge infrastructure",
+      "digital transformation",
+      "managed IT",
+      "IP solutions",
+      "system integration",
+      "network consulting",
+      "data center",
+      "broadcast IP",
+      "IT procurement",
+      "structured cabling, fiber or low-voltage work"
+    ],
+    "pureCablingBoundary": "A pure cabling company may be a valid Installer but fails this Cudy relevance gate without active-equipment evidence.",
+    "unknownHandling": "Missing public proof is not demonstrated, not confirmed factual irrelevance; not demonstrated fails the benchmark gate.",
+    "separateFitDimension": "Passing the gate does not imply high Cudy product/use-case fit."
+  }
+}

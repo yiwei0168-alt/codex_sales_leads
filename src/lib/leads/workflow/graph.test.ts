@@ -63,7 +63,7 @@ const assessment: LeadCandidateAssessment = {
   candidateId: candidate.candidateId,
   eligible: true,
   gates: { submittedIdentityUsable: true, companyExists: true, targetCountryPresence: true,
-    relevantChannel: true, sufficientEvidence: true, independentProspect: true },
+    networkingRelevant: true, relevantChannel: true, sufficientEvidence: true, independentProspect: true },
   roles: ["Distributor"], primaryRole: "Distributor", accountTier: "Priority",
   supplyModel: "Distributor Supply", brandInvolvement: "Standard",
   dimensions: { channelRoleAndCustomerAccess: 24, productAndUseCaseFit: 20, targetMarketCoverage: 15,
