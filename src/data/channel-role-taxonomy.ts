@@ -356,6 +356,78 @@ Retailer 属于 Downstream Channel，可以根据门店数量、市场覆盖、�
 
 没有公开库存、仓库或品牌授权不构成否定证据。门店信息可能只存在于地图、社交媒体或当地目录中，系统应允许使用多源证据确认小型零售商。如果只能确认线上销售，不能推断存在实体店；如果只能确认地址，则必须进一步判断该地址是消费者门店、办公室、仓库还是提货点。
 
+## E-tailer（线上零售商）
+
+### 状态与规范名称
+
+- 状态：已由业务负责人确认。
+- 中文规范名称：线上零售商／电子零售商。
+- 英文规范名称：E-tailer／Online Retailer。
+- 所属角色家族：retail。
+- channel layer：Downstream Channel。
+- 角色关系：E-tailer 是独立零售角色，默认不自动标记 Reseller。
+
+### 完整定义
+
+E-tailer 是主要通过网站、应用、Marketplace 商家店铺或具备结构化下单功能的社交商务渠道，向个人及家庭消费者销售商品，并以自身身份承担实际卖方责任的在线零售商。判断电子零售的核心是客户能够通过专门设计的数字渠道提交具有购买承诺的订单；付款和最终交付可以在线或线下完成。
+
+E-tailer 不要求拥有独立官网。在 Amazon、eBay、Shopee、Lazada、Mercado Libre 等 Marketplace 上经营的独立商家店铺，以及使用 TikTok Shop、WhatsApp Catalog／Cart 等结构化购物功能的社交商务商家，只要能够解析到真实、可识别的经营主体并确认其承担实际销售责任，都可以成立 E-tailer。
+
+### 必要判断条件
+
+在公开证据足够的情况下，E-tailer 至少需要满足：
+
+1. 消费者能够通过网站、App、Marketplace 店铺或结构化社交商务功能提交实际订单，而不只是查看商品或发送普通询价；
+2. 候选公司是实际卖方或 merchant of record，控制商品、价格或交易条件，并承担订单、履约、退换货或客户责任；
+3. 主要客户包含个人消费者，业务具有明确的 B2C 在线零售属性；
+4. 候选公司在目标市场实际销售网络设备、IT 硬件或其他相关产品；
+5. 店铺能够解析到真实公司、合法经营主体或具有稳定身份的独立商家，不能只是匿名、一次性或无法验证身份的卖家账号。
+
+### 强证据与辅助证据
+
+强证据包括：可直接浏览商品、价格并下单的自营网站或 App；Marketplace 的正式商家主页、店铺 ID、卖家法律信息及持续商品目录；结构化社交商务店铺；订单、配送、退换货和客户服务条款；平台标注的 official store／verified seller；品牌方官方线上零售商名录。
+
+辅助证据包括：卖家评分、历史销量、评价数量、店铺开设时间、相关产品数量、社交媒体经营记录、第三方公司注册信息和支付／物流信息。评分和销量可以支持活跃度及商业价值判断，但不能替代卖家身份与交易责任证据。
+
+### 普通私信与非结构化销售
+
+只有 Facebook、Instagram、WhatsApp、电子邮件或其他普通私信询价，且需要人工逐条议价和确认订单的页面，不能单独确认 E-tailer。这些页面可以进入 Marketplace／social-commerce 搜索候选池，用于发现数字曝光较弱的小型商家；在确认稳定经营、商品目录、实际交易及卖方责任前，应标记为 E-tailer candidate／待核验。
+
+### Marketplace 平台与第三方卖家
+
+Marketplace 平台只为第三方提供流量、挂牌、支付、物流或撮合服务时，平台的中介业务本身不是 E-tailer。平台上的实际第三方商家应作为独立候选实体判断；平台经营自营官方店、以自身名义销售商品并承担交易责任时，其自营零售业务也可以成为独立销售线索。
+
+平台自营官方店与每个第三方卖家必须生成相互独立的候选销售线索，不能把商品、店铺、销量、评价、联系人、公司信息或证据合并到同一条线索。平台纯线上自营店在本产品中标记 E-tailer；若平台或同一公司另有面向消费者的实体门店，则同时标记 Retailer。业务语境中可以把平台自营部门称为 retailer，但结构化 channel role 必须依据线上和线下渠道分别记录。
+
+同一实际卖家在多个 Marketplace、多个店铺或自营网站出现时，应先进行公司实体解析和去重，再形成一条公司级候选线索，并把不同店铺保留为独立证据来源；不得因跨平台重复出现而重复计算候选公司。
+
+### Marketplace 搜索要求
+
+销售线索搜索必须支持独立的 Marketplace discovery lane，与普通网页搜索并行运行：
+
+1. 根据目标国家识别当地主要综合 Marketplace、垂直电商平台和结构化社交商务渠道；
+2. 使用目标产品类别、关键型号、竞品品牌、应用场景及当地语言同义词搜索相关商品；
+3. 从商品结果提取实际 seller／store，而不是把 Marketplace 域名直接当作卖家公司；
+4. 解析卖家主页、店铺 ID、经营主体、目标国家存在、相关商品、评分、销量和联系渠道；
+5. 将第三方卖家、平台自营店和 Marketplace 运营方分离建模，并对跨平台同一公司进行实体去重；
+6. 对身份不可验证或只有单个匿名商品的卖家保留为待核验，不进入正式合格线索。
+
+这一搜索通道用于补足普通搜索引擎对小型、低流量、未做 GEO／SEO 的线上商家的覆盖不足。Marketplace 搜索结果只能提供发现和交易证据，仍需结合公司注册、官网、社交页面、品牌授权或其他独立来源进行候选公司验证。
+
+### 履约方式与角色边界
+
+使用 FBA、平台仓储、第三方物流或 dropshipping 不影响 E-tailer 分类，关键是谁是实际卖方及谁承担客户交易责任。仅进行联盟推广、导购或推荐并按佣金获得收入的主体属于 Agent／Publisher，不属于 E-tailer。
+
+有实体消费者门店并经营可直接下单在线商店时，同时标记 Retailer 与 E-tailer；只有线上消费者零售时只标记 E-tailer。E-tailer 默认不标记 Reseller，只有公司另有明确的 B2B 企业账户、批量报价、专业转售或渠道业务时才同时标记 Reseller。主要通过在线系统面向企业采购的 B2B 转售公司优先归为 Reseller，其消费者线上零售业务成立时再增加 E-tailer。
+
+### 商业价值等级
+
+E-tailer 属于 Downstream Channel，可以根据目标市场销量、相关品类覆盖、店铺评分、评价数量、采购潜力、跨平台覆盖、增长性及合作价值评为 KA、Priority、Standard 或 Long-tail。小型 Marketplace 商家即使缺少高流量独立网站也可能具有商业价值，不能把网站流量或 SEO 能力作为硬性筛除条件。
+
+### 信息缺失与置信度
+
+平台可能隐藏卖家法律名称、销量、采购来源或联系方式。未披露只能记录为 unknown，不能推断为不存在。如果无法把店铺解析到稳定经营主体，或无法确认候选公司是实际卖方，应保留 E-tailer candidate／待核验并降低置信度，不得把平台运营方的信息补到第三方卖家记录中。
+
 # 参考依据
 
 以下资料用于支撑行业通用边界；本文件中的产品操作规则以业务负责人确认口径为最终准则。
@@ -375,6 +447,8 @@ Retailer 属于 Downstream Channel，可以根据门店数量、市场覆盖、�
 - HP，DesignJet specialist reseller transaction path：https://h41201.www4.hp.com/WMCF.Web/Dispatcher.aspx?action=terms&country=uk&language=en&ocugid=11535&program=11549&simdate=2026-01-31&wacp=20251214
 - U.S. Census Bureau，Monthly Retail Trade definitions：https://www.census.gov/retail/mrts_general_faqs.html
 - Eurostat，Retail trade turnover concepts：https://ec.europa.eu/eurostat/cache/metadata/en/sts_wrt_ts_esms_rs.htm
+- OECD，The 2025 definition of e-commerce and guidelines for interpretation：https://www.oecd.org/en/publications/the-2025-oecd-definition-of-e-commerce-and-guidelines-for-interpretation_2254f1de-en.html
+- UK Office for National Statistics，E-commerce glossary：https://www.ons.gov.uk/surveys/informationforbusinesses/businesssurveys/ecommerceglossary
 - UK Department for Business and Trade，When to use an agent or distributor：https://www.business.gov.uk/export-from-uk/learn/categories/prepare-sell-new-country/routes-to-market/when-use-agent-or-distributor/
 - UK HMRC，INTM441080 Agents and distributors：https://www.gov.uk/hmrc-internal-manuals/international-manual/intm441080
 - European Commission，Working paper on distributors that also act as agents：https://competition-policy.ec.europa.eu/document/download/a2a40192-9491-450d-8878-e7d1a17ce732_en
@@ -391,9 +465,9 @@ export const CHANNEL_ROLE_TAXONOMY_DOCUMENT = {
   capturedAt: "2026-08-26T00:00:00+08:00",
   metadata: {
     topic: "channel-role-taxonomy",
-    policyVersion: "2026-08-26.6",
-    confirmedRoles: ["Distributor", "VAD", "VAR", "Dealer", "Reseller", "Retailer"],
-    pendingRoles: ["E-tailer", "SI", "Installer", "MSP", "ISP", "Commission Agent"],
+    policyVersion: "2026-08-26.7",
+    confirmedRoles: ["Distributor", "VAD", "VAR", "Dealer", "Reseller", "Retailer", "E-tailer"],
+    pendingRoles: ["SI", "Installer", "MSP", "ISP", "Commission Agent"],
     userConfirmed: true,
     temporalReviewRequired: false,
   },

@@ -31,6 +31,9 @@ const verificationQueries = [
   "Retailer 和 E-tailer 是否默认同时标记 Reseller？",
   "什么样的实体场所可以证明候选公司是 Retailer？仓库和提货点算吗？",
   "有实体门店并且可以在自营网站直接下单应该标记哪些角色？",
+  "没有独立官网只在当地 Marketplace 开店的公司能否成为 E-tailer？",
+  "Marketplace 平台自营店和第三方卖家是否应该合并成同一条销售线索？",
+  "只有社交媒体私信询价能否确认 E-tailer？",
 ];
 
 try {
@@ -70,6 +73,10 @@ try {
     "实体消费者零售场所是 Retailer 的必要条件",
     "仓库、公司办公室、维修点、普通物流提货点或不能现场购买的 Showroom 不足以证明 Retailer",
     "应同时标记 Retailer 与 E-tailer",
+    "E-tailer 不要求拥有独立官网",
+    "必须生成相互独立的候选销售线索",
+    "不能单独确认 E-tailer",
+    "销售线索搜索必须支持独立的 Marketplace discovery lane",
   ];
   const missingText = requiredText.filter((fragment) => !stored.combined_content.includes(fragment));
 
