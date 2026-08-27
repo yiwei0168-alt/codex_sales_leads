@@ -12,6 +12,8 @@ This directory is the narrative audit trail for `multi-source-professional-disco
 6. [`../reports/final-report.md`](../reports/final-report.md) — final evidence-linked experiment report.
 7. [`06-corrective-rubric.md`](06-corrective-rubric.md) — post-audit rules confirmed for the required next full-pool rescoring, without rewriting the frozen run.
 8. [`07-shared-evidence-enrichment.md`](07-shared-evidence-enrichment.md) — provider-neutral canonical dossiers, retrieval budgets, failure rules and the direct-fetch pilot.
+9. [`08-google-places-local-control.md`](08-google-places-local-control.md) — localized Places control protocol, query/region design and content-handling boundary.
+10. [`09-v1.3-full-rescoring-and-audit.md`](09-v1.3-full-rescoring-and-audit.md) — v1.3 collection results, all-candidate preliminary scores and the frozen 12-case calibration checkpoint.
 
 ## Stage publication rule
 

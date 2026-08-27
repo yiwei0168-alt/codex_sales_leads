@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-08-27-de-v1.3",
+  "auditVersion": "v1.3-small-sample-human-calibration-12",
+  "providerIdentityHidden": true,
+  "hiddenFields": [
+    "system/provider",
+    "discovery rank",
+    "rule score",
+    "occurrence count",
+    "core/problem stratum"
+  ],
+  "coreSampleSize": 6,
+  "problemSampleSize": 6,
+  "totalSampleSize": 12,
+  "samplesPerLane": {
+    "tier1-distribution": 4,
+    "b2b-resale": 4,
+    "project-services": 4
+  },
+  "identityMapCommitted": false,
+  "reviewerDecisionStatus": "pending",
+  "calibrationBoundary": "Human decisions are reference calibration; any numeric correction must be one uniform category-level offset applied to every system, capped at +/-8 points."
+}

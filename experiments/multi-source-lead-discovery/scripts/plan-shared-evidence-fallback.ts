@@ -57,6 +57,7 @@ const queue = master.companies.flatMap((company) => {
   const result = resultsById.get(company.dossierId);
   if (!result) throw new Error(`Missing collection result for ${company.dossierId}`);
   const classification = priority(company, result);
+  const opaqueGooglePlace = company.canonicalName.startsWith("Unresolved Google Place ");
   return [{
     dossierId: company.dossierId,
     canonicalName: company.canonicalName,
@@ -68,7 +69,11 @@ const queue = master.companies.flatMap((company) => {
     officialPagesAttempted: result.officialPagesAttempted,
     officialPagesCollected: result.officialPagesCollected,
     fallbackSourcesAlreadyCollected: result.fallbackSourcesCollected,
-    actionable: result.fallbackSourcesCollected < company.retrievalPlan.fallbackSourceBudget,
+    actionable: !opaqueGooglePlace
+      && result.fallbackSourcesCollected < company.retrievalPlan.fallbackSourceBudget,
+    exclusionReason: opaqueGooglePlace
+      ? "Opaque Google Places rows cannot be safely identified by paid web search."
+      : null,
     missingClaims: missingClaims(company),
   }];
 }).sort((left, right) => left.tier - right.tier || left.canonicalName.localeCompare(right.canonicalName));

@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-08-27-de-v1.3",
+  "policyVersion": "shared-provider-neutral-evidence-v1",
+  "files": [
+    {
+      "path": "artifacts/runs/2026-08-27-de-v1.3/evidence/shared-evidence-dossiers.seed.json",
+      "sha256": "a89678b89159007765c53a2882d545d950ec944158ce285c186ab340c7b936ce"
+    },
+    {
+      "path": "artifacts/runs/2026-08-27-de-v1.3/evidence/shared-evidence-dossiers.v1.json",
+      "sha256": "5c0949f40e04855118b99d0aef8e4fd96d9e8c88c44c78ddf8e3237977fa11c4"
+    },
+    {
+      "path": "artifacts/runs/2026-08-27-de-v1.3/evidence/shared-evidence-fallback-queue.json",
+      "sha256": "a87f07c659d2f81cf778c27736b66e75adffb339bbe0d79092d177447f563878"
+    }
+  ],
+  "collectionMode": "direct-then-paid-fallback",
+  "paidFallbackEnabled": true,
+  "paidFallbackEverUsed": true,
+  "selection": {
+    "offset": 0,
+    "requestedLimit": "all",
+    "selected": 28,
+    "match": null,
+    "retry": false,
+    "fallbackOnly": true,
+    "fallbackTier": 1,
+    "concurrency": 3,
+    "totalCanonicalCompanies": 465
+  },
+  "summary": {
+    "canonicalTotal": 465,
+    "completed": 465,
+    "remaining": 0,
+    "readyForRescoring": 33,
+    "partiallySupported": 331,
+    "stillNeedsEnrichment": 101,
+    "identityConflicts": 0,
+    "officialPagesAttempted": 1754,
+    "officialPagesCollected": 1696,
+    "fallbackSourcesCollected": 98
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.3-google-places-local",
+  "runId": "2026-08-27-de-v1.3",
+  "sourceRunId": "2026-08-26-de-v1",
+  "systemId": "product-google-places-local",
+  "configSha256": "aa21ff8ba316481f46de93b678766d50e1b8f44919beb75ee6a97ade5394523a",
+  "discoveryEvidenceRequired": false,
+  "filters": {
+    "businessStatus": "OPERATIONAL",
+    "addressCountryCode": "DE",
+    "locationRestrictionRequired": true,
+    "typeIsEligibilityEvidence": false
+  },
+  "persistence": {
+    "rawPlacesContent": "local-temporary-not-committed",
+    "committedGoogleIdentifier": "place-id-only-until-independent-web-resolution",
+    "latitudeLongitudeCommitted": false,
+    "attributionRequired": true,
+    "placeIdRefreshRecommendedMonths": 12
+  },
+  "completedAt": "2026-08-27T03:49:51.650Z"
+}

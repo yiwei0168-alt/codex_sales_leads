@@ -72,6 +72,11 @@
     "benchmark:discovery:plan-evidence-fallback": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/plan-shared-evidence-fallback.ts",
     "benchmark:discovery:verify-shared-evidence": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/verify-shared-evidence.ts",
     "benchmark:google-places-local:discover": "node --use-env-proxy scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/run-google-places-local.ts",
+    "benchmark:google-places-local:resolve": "node --use-env-proxy scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/resolve-google-places-local.ts",
+    "benchmark:v1.3:prepare-shared-pool": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/prepare-v1.3-shared-pool.ts",
+    "benchmark:v1.3:score": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/score-v1.3-all-candidates.ts",
+    "benchmark:v1.3:prepare-audit": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/prepare-v1.3-blind-audit.ts",
+    "benchmark:v1.3:verify": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/verify-v1.3-run.ts",
     "benchmark:discovery:verify": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/verify-discovery-run.ts"
   },
   "dependencies": {

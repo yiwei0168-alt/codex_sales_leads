@@ -72,4 +72,14 @@ describe("shared evidence dossiers", () => {
     expect(refreshed.claimCoverage.identity).toBe(false);
     expect(refreshed.enrichmentStatus).not.toBe("ready-for-rescoring");
   });
+
+  it("recognizes a concrete German five-digit postal address as market-presence evidence", () => {
+    const dossier = prepareSharedEvidenceDossiers(pool).companies[0];
+    dossier.evidence.push({
+      evidenceId: "GERMAN-ADDRESS", url: "https://www.wlan-shop24.de/impressum", sourceType: "official-company",
+      acquisition: "direct-fetch", capturedAt: "2026-08-27T00:00:00.000Z", sourceSystems: [],
+      excerpt: "WLAN-Shop24 Varistano GmbH, Musterstraße 1, 20095 Hamburg. We sell routers and switches.",
+    });
+    expect(refreshEvidenceDossier(dossier).claimCoverage.germanyPresence).toBe(true);
+  });
 });

@@ -1,0 +1,2018 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-08-27-de-v1.3",
+  "generatedAt": "2026-08-27T04:46:06.999Z",
+  "status": "pre-human-calibration",
+  "policy": {
+    "version": "all-candidate-shared-evidence-rescoring-v1.3",
+    "scope": "Every unique canonical system-by-lane occurrence is rescored from the same provider-neutral dossier.",
+    "discoveryEvidenceBoundary": "Search snippets, Places content and provider summaries are excluded from scoring evidence.",
+    "gates": [
+      "companyExists",
+      "germanyPresence",
+      "activeNetworking",
+      "submittedLaneMembership",
+      "sufficientEvidence",
+      "uniqueCanonicalCompany"
+    ],
+    "multiRoleRule": "Every evidence-supported role is retained; no primary role is required.",
+    "weights": {
+      "productUseCaseFit": 9,
+      "cooperationPath": 7,
+      "evidenceReliability": 4,
+      "maximum": 100
+    },
+    "comparisonRule": "Rank only within the same channel. Each system/channel contributes at most its best ten eligible candidates.",
+    "missingSlotRule": "A missing eligible candidate contributes zero to that channel's fixed ten target slots."
+  },
+  "systems": [
+    {
+      "systemId": "product-google-places-local",
+      "channels": [
+        {
+          "channelId": "tier1-distribution",
+          "submittedCanonicalCandidates": 125,
+          "eligibleCandidates": 1,
+          "selectedCount": 1,
+          "rejectedByGate": 124,
+          "top10ScoreSum": 42,
+          "meanPerTargetSlot": 4.2,
+          "meanSelectedScore": 42,
+          "selected": [
+            {
+              "dossierId": "DOS-9878523F9C8A",
+              "companyName": "ADN – Advanced Digital Network Distribution GmbH",
+              "officialUrl": "https://www.adn.de/",
+              "systemId": "product-google-places-local",
+              "channelId": "tier1-distribution",
+              "submittedRank": 55,
+              "supportedRoles": [
+                "Distributor",
+                "VAD",
+                "Reseller",
+                "MSP"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 1,
+                "cooperationPath": 3,
+                "evidenceReliability": 3
+              },
+              "score": 42,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): Distributor, VAD. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: named networking vendor or platform.",
+                "productUseCaseFit": "Only weak active-networking overlap is evidenced; no direct Cudy product family or use case was found.",
+                "cooperationPath": "Evidence demonstrates one cooperation lever, capped at level 3.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 1
+            }
+          ]
+        },
+        {
+          "channelId": "b2b-resale",
+          "submittedCanonicalCandidates": 125,
+          "eligibleCandidates": 1,
+          "selectedCount": 1,
+          "rejectedByGate": 124,
+          "top10ScoreSum": 53,
+          "meanPerTargetSlot": 5.3,
+          "meanSelectedScore": 53,
+          "selected": [
+            {
+              "dossierId": "DOS-7E79D5EC429B",
+              "companyName": "Systemhaus Frankfurt - Emmerich & Lorenz GmbH",
+              "officialUrl": "https://e-l.de/",
+              "systemId": "product-google-places-local",
+              "channelId": "b2b-resale",
+              "submittedRank": 78,
+              "supportedRoles": [
+                "Dealer",
+                "Reseller"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 2,
+                "evidenceReliability": 3
+              },
+              "score": 53,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): Dealer, Reseller. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: WLAN implementation.",
+                "productUseCaseFit": "One core product family or an explicit WLAN/LAN implementation use case is evidenced.",
+                "cooperationPath": "No procurement, listing, quotation, specification, recommendation or deployment control was demonstrated; unknown evidence cannot support a score above level 2.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 1
+            }
+          ]
+        },
+        {
+          "channelId": "project-services",
+          "submittedCanonicalCandidates": 142,
+          "eligibleCandidates": 12,
+          "selectedCount": 10,
+          "rejectedByGate": 130,
+          "top10ScoreSum": 562,
+          "meanPerTargetSlot": 56.2,
+          "meanSelectedScore": 56.2,
+          "selected": [
+            {
+              "dossierId": "DOS-A582B98E52E2",
+              "companyName": "Elektro MA",
+              "officialUrl": "https://www.elektro-ma24.de/",
+              "systemId": "product-google-places-local",
+              "channelId": "project-services",
+              "submittedRank": 66,
+              "supportedRoles": [
+                "Installer"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 4,
+                "evidenceReliability": 3
+              },
+              "score": 67,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): Installer. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: Ethernet or PoE switching, named networking vendor or platform, WLAN implementation.",
+                "productUseCaseFit": "One core product family or an explicit WLAN/LAN implementation use case is evidenced.",
+                "cooperationPath": "Evidence demonstrates 2 complementary cooperation levers, capped at level 4 without an active or complete path.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 1
+            },
+            {
+              "dossierId": "DOS-285F4E8146C6",
+              "companyName": "Beschützerbox GmbH",
+              "officialUrl": "https://beschuetzerbox.de/",
+              "systemId": "product-google-places-local",
+              "channelId": "project-services",
+              "submittedRank": 6,
+              "supportedRoles": [
+                "SI"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 3,
+                "evidenceReliability": 3
+              },
+              "score": 60,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): SI. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: active-networking product, Ethernet or PoE switching.",
+                "productUseCaseFit": "One core product family or an explicit WLAN/LAN implementation use case is evidenced.",
+                "cooperationPath": "Evidence demonstrates one cooperation lever, capped at level 3.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 2
+            },
+            {
+              "dossierId": "DOS-553C9D5B4F88",
+              "companyName": "Dennis Neubacher IT-Service",
+              "officialUrl": "https://dennisneubacher.de/",
+              "systemId": "product-google-places-local",
+              "channelId": "project-services",
+              "submittedRank": 14,
+              "supportedRoles": [
+                "Retailer",
+                "Installer"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 3,
+                "evidenceReliability": 3
+              },
+              "score": 60,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): Installer. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: WLAN implementation.",
+                "productUseCaseFit": "One core product family or an explicit WLAN/LAN implementation use case is evidenced.",
+                "cooperationPath": "Evidence demonstrates one cooperation lever, capped at level 3.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 3
+            },
+            {
+              "dossierId": "DOS-6B48B36641BB",
+              "companyName": "Socialwave GmbH",
+              "officialUrl": "https://www.social-wave.com/",
+              "systemId": "product-google-places-local",
+              "channelId": "project-services",
+              "submittedRank": 42,
+              "supportedRoles": [
+                "Installer"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 3,
+                "evidenceReliability": 3
+              },
+              "score": 60,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): Installer. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: WLAN implementation.",
+                "productUseCaseFit": "One core product family or an explicit WLAN/LAN implementation use case is evidenced.",
+                "cooperationPath": "Evidence demonstrates one cooperation lever, capped at level 3.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 4
+            },
+            {
+              "dossierId": "DOS-1B7EFCD5643C",
+              "companyName": "DeltaCom GmbH",
+              "officialUrl": "https://www.deltacom.de/",
+              "systemId": "product-google-places-local",
+              "channelId": "project-services",
+              "submittedRank": 84,
+              "supportedRoles": [
+                "SI",
+                "Installer"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 3,
+                "evidenceReliability": 3
+              },
+              "score": 60,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): SI, Installer. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: active-networking product, active-networking hardware, WLAN implementation.",
+                "productUseCaseFit": "One core product family or an explicit WLAN/LAN implementation use case is evidenced.",
+                "cooperationPath": "Evidence demonstrates one cooperation lever, capped at level 3.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 5
+            },
+            {
+              "dossierId": "DOS-B6075853D532",
+              "companyName": "Das ElektroWerk",
+              "officialUrl": "https://das-elektrowerk.com/",
+              "systemId": "product-google-places-local",
+              "channelId": "project-services",
+              "submittedRank": 97,
+              "supportedRoles": [
+                "Installer"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 3,
+                "evidenceReliability": 3
+              },
+              "score": 60,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): Installer. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: active-networking product, WLAN implementation.",
+                "productUseCaseFit": "One core product family or an explicit WLAN/LAN implementation use case is evidenced.",
+                "cooperationPath": "Evidence demonstrates one cooperation lever, capped at level 3.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 6
+            },
+            {
+              "dossierId": "DOS-11EF534AA036",
+              "companyName": "IT-TEKTEN",
+              "officialUrl": "https://it-tekten.net/",
+              "systemId": "product-google-places-local",
+              "channelId": "project-services",
+              "submittedRank": 32,
+              "supportedRoles": [
+                "Installer"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 2,
+                "evidenceReliability": 3
+              },
+              "score": 53,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): Installer. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: WLAN implementation.",
+                "productUseCaseFit": "One core product family or an explicit WLAN/LAN implementation use case is evidenced.",
+                "cooperationPath": "No procurement, listing, quotation, specification, recommendation or deployment control was demonstrated; unknown evidence cannot support a score above level 2.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 7
+            },
+            {
+              "dossierId": "DOS-3CF7ED2BD342",
+              "companyName": "Elektro Bima GmbH",
+              "officialUrl": "https://elektro-bima.de/",
+              "systemId": "product-google-places-local",
+              "channelId": "project-services",
+              "submittedRank": 74,
+              "supportedRoles": [
+                "Installer"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 1,
+                "cooperationPath": 4,
+                "evidenceReliability": 3
+              },
+              "score": 49,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): Installer. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: active-networking product.",
+                "productUseCaseFit": "Only weak active-networking overlap is evidenced; no direct Cudy product family or use case was found.",
+                "cooperationPath": "Evidence demonstrates 2 complementary cooperation levers, capped at level 4 without an active or complete path.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 8
+            },
+            {
+              "dossierId": "DOS-DB11F9C3C652",
+              "companyName": "e:tech Elektroservice Nürnberg GmbH",
+              "officialUrl": "https://etech-elektroservice.de/",
+              "systemId": "product-google-places-local",
+              "channelId": "project-services",
+              "submittedRank": 123,
+              "supportedRoles": [
+                "Installer"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 1,
+                "cooperationPath": 4,
+                "evidenceReliability": 3
+              },
+              "score": 49,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): Installer. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: active-networking product.",
+                "productUseCaseFit": "Only weak active-networking overlap is evidenced; no direct Cudy product family or use case was found.",
+                "cooperationPath": "Evidence demonstrates 2 complementary cooperation levers, capped at level 4 without an active or complete path.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 9
+            },
+            {
+              "dossierId": "DOS-B30903042377",
+              "companyName": "HEIN Netzwerktechnik GmbH",
+              "officialUrl": "https://www.hein.de/",
+              "systemId": "product-google-places-local",
+              "channelId": "project-services",
+              "submittedRank": 80,
+              "supportedRoles": [
+                "SI"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 2,
+                "cooperationPath": 2,
+                "evidenceReliability": 3
+              },
+              "score": 44,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): SI. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: named networking vendor or platform.",
+                "productUseCaseFit": "Active networking is evidenced, but the visible use case is mainly enterprise/carrier adjacent.",
+                "cooperationPath": "No procurement, listing, quotation, specification, recommendation or deployment control was demonstrated; unknown evidence cannot support a score above level 2.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 10
+            }
+          ]
+        }
+      ],
+      "macroMeanPerTargetSlot": 21.9
+    },
+    {
+      "systemId": "product-searchapi",
+      "channels": [
+        {
+          "channelId": "tier1-distribution",
+          "submittedCanonicalCandidates": 8,
+          "eligibleCandidates": 3,
+          "selectedCount": 3,
+          "rejectedByGate": 5,
+          "top10ScoreSum": 119,
+          "meanPerTargetSlot": 11.9,
+          "meanSelectedScore": 39.67,
+          "selected": [
+            {
+              "dossierId": "DOS-9878523F9C8A",
+              "companyName": "ADN – Advanced Digital Network Distribution GmbH",
+              "officialUrl": "https://www.adn.de/",
+              "systemId": "product-searchapi",
+              "channelId": "tier1-distribution",
+              "submittedRank": 2,
+              "supportedRoles": [
+                "Distributor",
+                "VAD",
+                "Reseller",
+                "MSP"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 1,
+                "cooperationPath": 3,
+                "evidenceReliability": 3
+              },
+              "score": 42,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): Distributor, VAD. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: named networking vendor or platform.",
+                "productUseCaseFit": "Only weak active-networking overlap is evidenced; no direct Cudy product family or use case was found.",
+                "cooperationPath": "Evidence demonstrates one cooperation lever, capped at level 3.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 1
+            },
+            {
+              "dossierId": "DOS-666DB19C2EE1",
+              "companyName": "m2m Germany GmbH",
+              "officialUrl": "https://www.m2mgermany.de/",
+              "systemId": "product-searchapi",
+              "channelId": "tier1-distribution",
+              "submittedRank": 7,
+              "supportedRoles": [
+                "Distributor",
+                "VAD",
+                "SI"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 1,
+                "cooperationPath": 3,
+                "evidenceReliability": 3
+              },
+              "score": 42,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): Distributor, VAD. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: active-networking product.",
+                "productUseCaseFit": "Only weak active-networking overlap is evidenced; no direct Cudy product family or use case was found.",
+                "cooperationPath": "Evidence demonstrates one cooperation lever, capped at level 3.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 2
+            },
+            {
+              "dossierId": "DOS-BD59F160C5BD",
+              "companyName": "4Networks IT-Distribution",
+              "officialUrl": "https://www.4networks.de/",
+              "systemId": "product-searchapi",
+              "channelId": "tier1-distribution",
+              "submittedRank": 4,
+              "supportedRoles": [
+                "Distributor"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 1,
+                "cooperationPath": 2,
+                "evidenceReliability": 3
+              },
+              "score": 35,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): Distributor. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: named networking vendor or platform.",
+                "productUseCaseFit": "Only weak active-networking overlap is evidenced; no direct Cudy product family or use case was found.",
+                "cooperationPath": "No procurement, listing, quotation, specification, recommendation or deployment control was demonstrated; unknown evidence cannot support a score above level 2.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 3
+            }
+          ]
+        },
+        {
+          "channelId": "b2b-resale",
+          "submittedCanonicalCandidates": 4,
+          "eligibleCandidates": 0,
+          "selectedCount": 0,
+          "rejectedByGate": 4,
+          "top10ScoreSum": 0,
+          "meanPerTargetSlot": 0,
+          "meanSelectedScore": 0,
+          "selected": []
+        },
+        {
+          "channelId": "project-services",
+          "submittedCanonicalCandidates": 10,
+          "eligibleCandidates": 5,
+          "selectedCount": 5,
+          "rejectedByGate": 5,
+          "top10ScoreSum": 314,
+          "meanPerTargetSlot": 31.4,
+          "meanSelectedScore": 62.8,
+          "selected": [
+            {
+              "dossierId": "DOS-75830CB1433D",
+              "companyName": "Code Maschine GmbH",
+              "officialUrl": "https://codemaschine.de/",
+              "systemId": "product-searchapi",
+              "channelId": "project-services",
+              "submittedRank": 4,
+              "supportedRoles": [
+                "SI",
+                "Installer"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 4,
+                "evidenceReliability": 3
+              },
+              "score": 67,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): SI, Installer. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: WLAN implementation.",
+                "productUseCaseFit": "One core product family or an explicit WLAN/LAN implementation use case is evidenced.",
+                "cooperationPath": "Evidence demonstrates 3 complementary cooperation levers, capped at level 4 without an active or complete path.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 1
+            },
+            {
+              "dossierId": "DOS-43545283CBC1",
+              "companyName": "Netzkontor GmbH",
+              "officialUrl": "https://www.netzkontor.de/",
+              "systemId": "product-searchapi",
+              "channelId": "project-services",
+              "submittedRank": 6,
+              "supportedRoles": [
+                "Installer"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 4,
+                "evidenceReliability": 3
+              },
+              "score": 67,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): Installer. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: WLAN implementation.",
+                "productUseCaseFit": "One core product family or an explicit WLAN/LAN implementation use case is evidenced.",
+                "cooperationPath": "Evidence demonstrates 2 complementary cooperation levers, capped at level 4 without an active or complete path.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 2
+            },
+            {
+              "dossierId": "DOS-85344049A2DD",
+              "companyName": "EWE Business",
+              "officialUrl": "https://business.ewe.de/",
+              "systemId": "product-searchapi",
+              "channelId": "project-services",
+              "submittedRank": 1,
+              "supportedRoles": [
+                "Installer"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 3,
+                "evidenceReliability": 3
+              },
+              "score": 60,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): Installer. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: WLAN implementation.",
+                "productUseCaseFit": "One core product family or an explicit WLAN/LAN implementation use case is evidenced.",
+                "cooperationPath": "Evidence demonstrates one cooperation lever, capped at level 3.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 3
+            },
+            {
+              "dossierId": "DOS-1C8F5F600282",
+              "companyName": "Dietrich.expert",
+              "officialUrl": "https://dietrich.expert/",
+              "systemId": "product-searchapi",
+              "channelId": "project-services",
+              "submittedRank": 2,
+              "supportedRoles": [
+                "SI"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 3,
+                "evidenceReliability": 3
+              },
+              "score": 60,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): SI. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: active-networking product, WLAN implementation.",
+                "productUseCaseFit": "One core product family or an explicit WLAN/LAN implementation use case is evidenced.",
+                "cooperationPath": "Evidence demonstrates one cooperation lever, capped at level 3.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 4
+            },
+            {
+              "dossierId": "DOS-2839F2FA0A91",
+              "companyName": "Elektro-LU",
+              "officialUrl": "https://elektro-lu.eu/",
+              "systemId": "product-searchapi",
+              "channelId": "project-services",
+              "submittedRank": 3,
+              "supportedRoles": [
+                "Installer",
+                "ISP"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 3,
+                "evidenceReliability": 3
+              },
+              "score": 60,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): Installer. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: WLAN implementation.",
+                "productUseCaseFit": "One core product family or an explicit WLAN/LAN implementation use case is evidenced.",
+                "cooperationPath": "Evidence demonstrates one cooperation lever, capped at level 3.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 5
+            }
+          ]
+        }
+      ],
+      "macroMeanPerTargetSlot": 14.43
+    },
+    {
+      "systemId": "product-tavily",
+      "channels": [
+        {
+          "channelId": "tier1-distribution",
+          "submittedCanonicalCandidates": 10,
+          "eligibleCandidates": 3,
+          "selectedCount": 3,
+          "rejectedByGate": 7,
+          "top10ScoreSum": 112,
+          "meanPerTargetSlot": 11.2,
+          "meanSelectedScore": 37.33,
+          "selected": [
+            {
+              "dossierId": "DOS-666DB19C2EE1",
+              "companyName": "m2m Germany GmbH",
+              "officialUrl": "https://www.m2mgermany.de/",
+              "systemId": "product-tavily",
+              "channelId": "tier1-distribution",
+              "submittedRank": 9,
+              "supportedRoles": [
+                "Distributor",
+                "VAD",
+                "SI"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 1,
+                "cooperationPath": 3,
+                "evidenceReliability": 3
+              },
+              "score": 42,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): Distributor, VAD. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: active-networking product.",
+                "productUseCaseFit": "Only weak active-networking overlap is evidenced; no direct Cudy product family or use case was found.",
+                "cooperationPath": "Evidence demonstrates one cooperation lever, capped at level 3.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 1
+            },
+            {
+              "dossierId": "DOS-BD59F160C5BD",
+              "companyName": "4Networks IT-Distribution",
+              "officialUrl": "https://www.4networks.de/",
+              "systemId": "product-tavily",
+              "channelId": "tier1-distribution",
+              "submittedRank": 3,
+              "supportedRoles": [
+                "Distributor"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 1,
+                "cooperationPath": 2,
+                "evidenceReliability": 3
+              },
+              "score": 35,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): Distributor. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: named networking vendor or platform.",
+                "productUseCaseFit": "Only weak active-networking overlap is evidenced; no direct Cudy product family or use case was found.",
+                "cooperationPath": "No procurement, listing, quotation, specification, recommendation or deployment control was demonstrated; unknown evidence cannot support a score above level 2.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 2
+            },
+            {
+              "dossierId": "DOS-8961CF25434B",
+              "companyName": "bytec Bodry Technology GmbH",
+              "officialUrl": "https://www.bytec.de/",
+              "systemId": "product-tavily",
+              "channelId": "tier1-distribution",
+              "submittedRank": 6,
+              "supportedRoles": [
+                "VAD",
+                "Reseller",
+                "Installer",
+                "Distributor"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 1,
+                "cooperationPath": 2,
+                "evidenceReliability": 3
+              },
+              "score": 35,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): VAD, Distributor. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: named networking vendor or platform.",
+                "productUseCaseFit": "Only weak active-networking overlap is evidenced; no direct Cudy product family or use case was found.",
+                "cooperationPath": "No procurement, listing, quotation, specification, recommendation or deployment control was demonstrated; unknown evidence cannot support a score above level 2.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 3
+            }
+          ]
+        },
+        {
+          "channelId": "b2b-resale",
+          "submittedCanonicalCandidates": 7,
+          "eligibleCandidates": 1,
+          "selectedCount": 1,
+          "rejectedByGate": 6,
+          "top10ScoreSum": 49,
+          "meanPerTargetSlot": 4.9,
+          "meanSelectedScore": 49,
+          "selected": [
+            {
+              "dossierId": "DOS-354049CB1A07",
+              "companyName": "LaanTech",
+              "officialUrl": "https://www.laantech.de/",
+              "systemId": "product-tavily",
+              "channelId": "b2b-resale",
+              "submittedRank": 7,
+              "supportedRoles": [
+                "Dealer",
+                "E-tailer",
+                "Reseller"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 1,
+                "cooperationPath": 4,
+                "evidenceReliability": 3
+              },
+              "score": 49,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): Dealer, Reseller. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: active-networking product.",
+                "productUseCaseFit": "Only weak active-networking overlap is evidenced; no direct Cudy product family or use case was found.",
+                "cooperationPath": "Evidence demonstrates 2 complementary cooperation levers, capped at level 4 without an active or complete path.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 1
+            }
+          ]
+        },
+        {
+          "channelId": "project-services",
+          "submittedCanonicalCandidates": 10,
+          "eligibleCandidates": 4,
+          "selectedCount": 4,
+          "rejectedByGate": 6,
+          "top10ScoreSum": 254,
+          "meanPerTargetSlot": 25.4,
+          "meanSelectedScore": 63.5,
+          "selected": [
+            {
+              "dossierId": "DOS-324C17BEED97",
+              "companyName": "MiMann.net",
+              "officialUrl": "https://mimann.net/",
+              "systemId": "product-tavily",
+              "channelId": "project-services",
+              "submittedRank": 3,
+              "supportedRoles": [
+                "Installer"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 4,
+                "evidenceReliability": 3
+              },
+              "score": 67,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): Installer. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: active-networking product, Ethernet or PoE switching, named networking vendor or platform, WLAN implementation.",
+                "productUseCaseFit": "One core product family or an explicit WLAN/LAN implementation use case is evidenced.",
+                "cooperationPath": "Evidence demonstrates 4 complementary cooperation levers, capped at level 4 without an active or complete path.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 1
+            },
+            {
+              "dossierId": "DOS-4861083669B7",
+              "companyName": "Netzwerk-Arzt",
+              "officialUrl": "https://www.netzwerk-arzt.de/",
+              "systemId": "product-tavily",
+              "channelId": "project-services",
+              "submittedRank": 8,
+              "supportedRoles": [
+                "Installer"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 4,
+                "evidenceReliability": 3
+              },
+              "score": 67,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): Installer. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: WLAN implementation.",
+                "productUseCaseFit": "One core product family or an explicit WLAN/LAN implementation use case is evidenced.",
+                "cooperationPath": "Evidence demonstrates 2 complementary cooperation levers, capped at level 4 without an active or complete path.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 2
+            },
+            {
+              "dossierId": "DOS-85344049A2DD",
+              "companyName": "EWE Business",
+              "officialUrl": "https://business.ewe.de/",
+              "systemId": "product-tavily",
+              "channelId": "project-services",
+              "submittedRank": 2,
+              "supportedRoles": [
+                "Installer"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 3,
+                "evidenceReliability": 3
+              },
+              "score": 60,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): Installer. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: WLAN implementation.",
+                "productUseCaseFit": "One core product family or an explicit WLAN/LAN implementation use case is evidenced.",
+                "cooperationPath": "Evidence demonstrates one cooperation lever, capped at level 3.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 3
+            },
+            {
+              "dossierId": "DOS-2839F2FA0A91",
+              "companyName": "Elektro-LU",
+              "officialUrl": "https://elektro-lu.eu/",
+              "systemId": "product-tavily",
+              "channelId": "project-services",
+              "submittedRank": 9,
+              "supportedRoles": [
+                "Installer",
+                "ISP"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 3,
+                "evidenceReliability": 3
+              },
+              "score": 60,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): Installer. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: WLAN implementation.",
+                "productUseCaseFit": "One core product family or an explicit WLAN/LAN implementation use case is evidenced.",
+                "cooperationPath": "Evidence demonstrates one cooperation lever, capped at level 3.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 4
+            }
+          ]
+        }
+      ],
+      "macroMeanPerTargetSlot": 13.83
+    },
+    {
+      "systemId": "product-brave",
+      "channels": [
+        {
+          "channelId": "tier1-distribution",
+          "submittedCanonicalCandidates": 8,
+          "eligibleCandidates": 2,
+          "selectedCount": 2,
+          "rejectedByGate": 6,
+          "top10ScoreSum": 109,
+          "meanPerTargetSlot": 10.9,
+          "meanSelectedScore": 54.5,
+          "selected": [
+            {
+              "dossierId": "DOS-8C650509C86F",
+              "companyName": "Vitel GmbH",
+              "officialUrl": "https://vitel.de/",
+              "systemId": "product-brave",
+              "channelId": "tier1-distribution",
+              "submittedRank": 4,
+              "supportedRoles": [
+                "Distributor",
+                "VAD",
+                "Reseller"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 4,
+                "evidenceReliability": 3
+              },
+              "score": 67,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): Distributor, VAD. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: active-networking product, Wi-Fi or WLAN equipment, active-networking hardware.",
+                "productUseCaseFit": "One core product family or an explicit WLAN/LAN implementation use case is evidenced.",
+                "cooperationPath": "Evidence demonstrates 2 complementary cooperation levers, capped at level 4 without an active or complete path.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 1
+            },
+            {
+              "dossierId": "DOS-9878523F9C8A",
+              "companyName": "ADN – Advanced Digital Network Distribution GmbH",
+              "officialUrl": "https://www.adn.de/",
+              "systemId": "product-brave",
+              "channelId": "tier1-distribution",
+              "submittedRank": 2,
+              "supportedRoles": [
+                "Distributor",
+                "VAD",
+                "Reseller",
+                "MSP"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 1,
+                "cooperationPath": 3,
+                "evidenceReliability": 3
+              },
+              "score": 42,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): Distributor, VAD. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: named networking vendor or platform.",
+                "productUseCaseFit": "Only weak active-networking overlap is evidenced; no direct Cudy product family or use case was found.",
+                "cooperationPath": "Evidence demonstrates one cooperation lever, capped at level 3.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 2
+            }
+          ]
+        },
+        {
+          "channelId": "b2b-resale",
+          "submittedCanonicalCandidates": 5,
+          "eligibleCandidates": 1,
+          "selectedCount": 1,
+          "rejectedByGate": 4,
+          "top10ScoreSum": 83,
+          "meanPerTargetSlot": 8.3,
+          "meanSelectedScore": 83,
+          "selected": [
+            {
+              "dossierId": "DOS-B7E98DD9D6D2",
+              "companyName": "GermanProtect",
+              "officialUrl": "https://www.germanprotect.com/",
+              "systemId": "product-brave",
+              "channelId": "b2b-resale",
+              "submittedRank": 4,
+              "supportedRoles": [
+                "Dealer",
+                "E-tailer",
+                "Reseller"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 4,
+                "cooperationPath": 5,
+                "evidenceReliability": 3
+              },
+              "score": 83,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): Dealer, Reseller. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: active-networking product, Wi-Fi or WLAN equipment, Ethernet or PoE switching, named networking vendor or platform, WLAN implementation.",
+                "productUseCaseFit": "2 directly relevant active-networking product families are evidenced.",
+                "cooperationPath": "Evidence demonstrates an active transaction or a complete repeatable cooperation path.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 1
+            }
+          ]
+        },
+        {
+          "channelId": "project-services",
+          "submittedCanonicalCandidates": 10,
+          "eligibleCandidates": 4,
+          "selectedCount": 4,
+          "rejectedByGate": 6,
+          "top10ScoreSum": 222,
+          "meanPerTargetSlot": 22.2,
+          "meanSelectedScore": 55.5,
+          "selected": [
+            {
+              "dossierId": "DOS-2AC88864E43E",
+              "companyName": "Solisation GmbH",
+              "officialUrl": "https://solisation.de/",
+              "systemId": "product-brave",
+              "channelId": "project-services",
+              "submittedRank": 3,
+              "supportedRoles": [
+                "Installer"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 4,
+                "evidenceReliability": 3
+              },
+              "score": 67,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): Installer. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: WLAN implementation.",
+                "productUseCaseFit": "One core product family or an explicit WLAN/LAN implementation use case is evidenced.",
+                "cooperationPath": "Evidence demonstrates 2 complementary cooperation levers, capped at level 4 without an active or complete path.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 1
+            },
+            {
+              "dossierId": "DOS-85344049A2DD",
+              "companyName": "EWE Business",
+              "officialUrl": "https://business.ewe.de/",
+              "systemId": "product-brave",
+              "channelId": "project-services",
+              "submittedRank": 2,
+              "supportedRoles": [
+                "Installer"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 3,
+                "evidenceReliability": 3
+              },
+              "score": 60,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): Installer. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: WLAN implementation.",
+                "productUseCaseFit": "One core product family or an explicit WLAN/LAN implementation use case is evidenced.",
+                "cooperationPath": "Evidence demonstrates one cooperation lever, capped at level 3.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 2
+            },
+            {
+              "dossierId": "DOS-831450757FBE",
+              "companyName": "Kellner Telecom GmbH",
+              "officialUrl": "https://www.kellner-telecom.de/",
+              "systemId": "product-brave",
+              "channelId": "project-services",
+              "submittedRank": 4,
+              "supportedRoles": [
+                "Installer"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 3,
+                "evidenceReliability": 3
+              },
+              "score": 60,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): Installer. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: active-networking product, active-networking hardware.",
+                "productUseCaseFit": "One core product family or an explicit WLAN/LAN implementation use case is evidenced.",
+                "cooperationPath": "Evidence demonstrates one cooperation lever, capped at level 3.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 3
+            },
+            {
+              "dossierId": "DOS-71A32E9206A8",
+              "companyName": "INTERPORT REAL",
+              "officialUrl": "https://www.interportreal.de/",
+              "systemId": "product-brave",
+              "channelId": "project-services",
+              "submittedRank": 10,
+              "supportedRoles": [
+                "SI"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 1,
+                "cooperationPath": 2,
+                "evidenceReliability": 3
+              },
+              "score": 35,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): SI. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: active-networking product, named networking vendor or platform.",
+                "productUseCaseFit": "Only weak active-networking overlap is evidenced; no direct Cudy product family or use case was found.",
+                "cooperationPath": "No procurement, listing, quotation, specification, recommendation or deployment control was demonstrated; unknown evidence cannot support a score above level 2.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 4
+            }
+          ]
+        }
+      ],
+      "macroMeanPerTargetSlot": 13.8
+    },
+    {
+      "systemId": "product-exa",
+      "channels": [
+        {
+          "channelId": "tier1-distribution",
+          "submittedCanonicalCandidates": 10,
+          "eligibleCandidates": 4,
+          "selectedCount": 4,
+          "rejectedByGate": 6,
+          "top10ScoreSum": 202,
+          "meanPerTargetSlot": 20.2,
+          "meanSelectedScore": 50.5,
+          "selected": [
+            {
+              "dossierId": "DOS-8C650509C86F",
+              "companyName": "Vitel GmbH",
+              "officialUrl": "https://vitel.de/",
+              "systemId": "product-exa",
+              "channelId": "tier1-distribution",
+              "submittedRank": 3,
+              "supportedRoles": [
+                "Distributor",
+                "VAD",
+                "Reseller"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 4,
+                "evidenceReliability": 3
+              },
+              "score": 67,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): Distributor, VAD. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: active-networking product, Wi-Fi or WLAN equipment, active-networking hardware.",
+                "productUseCaseFit": "One core product family or an explicit WLAN/LAN implementation use case is evidenced.",
+                "cooperationPath": "Evidence demonstrates 2 complementary cooperation levers, capped at level 4 without an active or complete path.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 1
+            },
+            {
+              "dossierId": "DOS-80FCAEC5E645",
+              "companyName": "Acondistec",
+              "officialUrl": "https://acondistec.de/",
+              "systemId": "product-exa",
+              "channelId": "tier1-distribution",
+              "submittedRank": 9,
+              "supportedRoles": [
+                "Distributor",
+                "VAD",
+                "MSP"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 2,
+                "cooperationPath": 3,
+                "evidenceReliability": 3
+              },
+              "score": 51,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): Distributor, VAD. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: active-networking product.",
+                "productUseCaseFit": "Active networking is evidenced, but the visible use case is mainly enterprise/carrier adjacent.",
+                "cooperationPath": "Evidence demonstrates one cooperation lever, capped at level 3.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 2
+            },
+            {
+              "dossierId": "DOS-91EB44A9F7C9",
+              "companyName": "Red Eagle IT Distribution GmbH",
+              "officialUrl": "https://redeagle-it.de/",
+              "systemId": "product-exa",
+              "channelId": "tier1-distribution",
+              "submittedRank": 4,
+              "supportedRoles": [
+                "Distributor",
+                "Reseller",
+                "Dealer",
+                "SI"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 1,
+                "cooperationPath": 4,
+                "evidenceReliability": 3
+              },
+              "score": 49,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): Distributor. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: active-networking product.",
+                "productUseCaseFit": "Only weak active-networking overlap is evidenced; no direct Cudy product family or use case was found.",
+                "cooperationPath": "Evidence demonstrates 2 complementary cooperation levers, capped at level 4 without an active or complete path.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 3
+            },
+            {
+              "dossierId": "DOS-BD59F160C5BD",
+              "companyName": "4Networks IT-Distribution",
+              "officialUrl": "https://www.4networks.de/",
+              "systemId": "product-exa",
+              "channelId": "tier1-distribution",
+              "submittedRank": 7,
+              "supportedRoles": [
+                "Distributor"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 1,
+                "cooperationPath": 2,
+                "evidenceReliability": 3
+              },
+              "score": 35,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): Distributor. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: named networking vendor or platform.",
+                "productUseCaseFit": "Only weak active-networking overlap is evidenced; no direct Cudy product family or use case was found.",
+                "cooperationPath": "No procurement, listing, quotation, specification, recommendation or deployment control was demonstrated; unknown evidence cannot support a score above level 2.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 4
+            }
+          ]
+        },
+        {
+          "channelId": "b2b-resale",
+          "submittedCanonicalCandidates": 10,
+          "eligibleCandidates": 0,
+          "selectedCount": 0,
+          "rejectedByGate": 10,
+          "top10ScoreSum": 0,
+          "meanPerTargetSlot": 0,
+          "meanSelectedScore": 0,
+          "selected": []
+        },
+        {
+          "channelId": "project-services",
+          "submittedCanonicalCandidates": 10,
+          "eligibleCandidates": 3,
+          "selectedCount": 3,
+          "rejectedByGate": 7,
+          "top10ScoreSum": 164,
+          "meanPerTargetSlot": 16.4,
+          "meanSelectedScore": 54.67,
+          "selected": [
+            {
+              "dossierId": "DOS-2B90F410A171",
+              "companyName": "tilko GmbH",
+              "officialUrl": "https://tilko-wlan.de/",
+              "systemId": "product-exa",
+              "channelId": "project-services",
+              "submittedRank": 9,
+              "supportedRoles": [
+                "E-tailer",
+                "Installer"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 4,
+                "evidenceReliability": 3
+              },
+              "score": 67,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): Installer. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: Wi-Fi or WLAN equipment, WLAN implementation.",
+                "productUseCaseFit": "One core product family or an explicit WLAN/LAN implementation use case is evidenced.",
+                "cooperationPath": "Evidence demonstrates 2 complementary cooperation levers, capped at level 4 without an active or complete path.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 1
+            },
+            {
+              "dossierId": "DOS-DA65122C2B87",
+              "companyName": "NLS Netzwerke GmbH",
+              "officialUrl": "https://nls-netzwerke.de/",
+              "systemId": "product-exa",
+              "channelId": "project-services",
+              "submittedRank": 1,
+              "supportedRoles": [
+                "Installer"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 2,
+                "evidenceReliability": 3
+              },
+              "score": 53,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): Installer. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: active-networking product, Ethernet or PoE switching, active-networking hardware, WLAN implementation.",
+                "productUseCaseFit": "One core product family or an explicit WLAN/LAN implementation use case is evidenced.",
+                "cooperationPath": "No procurement, listing, quotation, specification, recommendation or deployment control was demonstrated; unknown evidence cannot support a score above level 2.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 2
+            },
+            {
+              "dossierId": "DOS-52C1A55EF1B2",
+              "companyName": "CompuNet Systems GmbH",
+              "officialUrl": "https://compunet.systems/",
+              "systemId": "product-exa",
+              "channelId": "project-services",
+              "submittedRank": 8,
+              "supportedRoles": [
+                "SI"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 2,
+                "cooperationPath": 2,
+                "evidenceReliability": 3
+              },
+              "score": 44,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): SI. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: active-networking hardware, named networking vendor or platform.",
+                "productUseCaseFit": "Active networking is evidenced, but the visible use case is mainly enterprise/carrier adjacent.",
+                "cooperationPath": "No procurement, listing, quotation, specification, recommendation or deployment control was demonstrated; unknown evidence cannot support a score above level 2.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 3
+            }
+          ]
+        }
+      ],
+      "macroMeanPerTargetSlot": 12.2
+    },
+    {
+      "systemId": "product-google-places",
+      "channels": [
+        {
+          "channelId": "tier1-distribution",
+          "submittedCanonicalCandidates": 0,
+          "eligibleCandidates": 0,
+          "selectedCount": 0,
+          "rejectedByGate": 0,
+          "top10ScoreSum": 0,
+          "meanPerTargetSlot": 0,
+          "meanSelectedScore": 0,
+          "selected": []
+        },
+        {
+          "channelId": "b2b-resale",
+          "submittedCanonicalCandidates": 0,
+          "eligibleCandidates": 0,
+          "selectedCount": 0,
+          "rejectedByGate": 0,
+          "top10ScoreSum": 0,
+          "meanPerTargetSlot": 0,
+          "meanSelectedScore": 0,
+          "selected": []
+        },
+        {
+          "channelId": "project-services",
+          "submittedCanonicalCandidates": 4,
+          "eligibleCandidates": 1,
+          "selectedCount": 1,
+          "rejectedByGate": 3,
+          "top10ScoreSum": 60,
+          "meanPerTargetSlot": 6,
+          "meanSelectedScore": 60,
+          "selected": [
+            {
+              "dossierId": "DOS-D1BA596FE329",
+              "companyName": "GERMAN HOTSPOT",
+              "officialUrl": "https://www.germanhotspot.de/",
+              "systemId": "product-google-places",
+              "channelId": "project-services",
+              "submittedRank": 1,
+              "supportedRoles": [
+                "SI",
+                "Installer"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 3,
+                "evidenceReliability": 3
+              },
+              "score": 60,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): SI, Installer. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: WLAN implementation.",
+                "productUseCaseFit": "One core product family or an explicit WLAN/LAN implementation use case is evidenced.",
+                "cooperationPath": "Evidence demonstrates one cooperation lever, capped at level 3.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 1
+            }
+          ]
+        }
+      ],
+      "macroMeanPerTargetSlot": 2
+    },
+    {
+      "systemId": "gemini-full",
+      "channels": [
+        {
+          "channelId": "tier1-distribution",
+          "submittedCanonicalCandidates": 10,
+          "eligibleCandidates": 0,
+          "selectedCount": 0,
+          "rejectedByGate": 10,
+          "top10ScoreSum": 0,
+          "meanPerTargetSlot": 0,
+          "meanSelectedScore": 0,
+          "selected": []
+        },
+        {
+          "channelId": "b2b-resale",
+          "submittedCanonicalCandidates": 10,
+          "eligibleCandidates": 0,
+          "selectedCount": 0,
+          "rejectedByGate": 10,
+          "top10ScoreSum": 0,
+          "meanPerTargetSlot": 0,
+          "meanSelectedScore": 0,
+          "selected": []
+        },
+        {
+          "channelId": "project-services",
+          "submittedCanonicalCandidates": 10,
+          "eligibleCandidates": 1,
+          "selectedCount": 1,
+          "rejectedByGate": 9,
+          "top10ScoreSum": 51,
+          "meanPerTargetSlot": 5.1,
+          "meanSelectedScore": 51,
+          "selected": [
+            {
+              "dossierId": "DOS-9C9B65E0FA03",
+              "companyName": "telent GmbH",
+              "officialUrl": "https://www.telent.de/",
+              "systemId": "gemini-full",
+              "channelId": "project-services",
+              "submittedRank": 4,
+              "supportedRoles": [
+                "SI"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 2,
+                "cooperationPath": 3,
+                "evidenceReliability": 3
+              },
+              "score": 51,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): SI. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: active-networking product, WLAN implementation.",
+                "productUseCaseFit": "Active networking is evidenced, but the visible use case is mainly enterprise/carrier adjacent.",
+                "cooperationPath": "Evidence demonstrates one cooperation lever, capped at level 3.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 1
+            }
+          ]
+        }
+      ],
+      "macroMeanPerTargetSlot": 1.7
+    },
+    {
+      "systemId": "product-gemini",
+      "channels": [
+        {
+          "channelId": "tier1-distribution",
+          "submittedCanonicalCandidates": 8,
+          "eligibleCandidates": 1,
+          "selectedCount": 1,
+          "rejectedByGate": 7,
+          "top10ScoreSum": 42,
+          "meanPerTargetSlot": 4.2,
+          "meanSelectedScore": 42,
+          "selected": [
+            {
+              "dossierId": "DOS-9878523F9C8A",
+              "companyName": "ADN – Advanced Digital Network Distribution GmbH",
+              "officialUrl": "https://www.adn.de/",
+              "systemId": "product-gemini",
+              "channelId": "tier1-distribution",
+              "submittedRank": 5,
+              "supportedRoles": [
+                "Distributor",
+                "VAD",
+                "Reseller",
+                "MSP"
+              ],
+              "eligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "sufficientEvidence": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedGates": [],
+              "levels": {
+                "productUseCaseFit": 1,
+                "cooperationPath": 3,
+                "evidenceReliability": 3
+              },
+              "score": 42,
+              "evidenceProfile": "standard",
+              "assessments": {
+                "laneMembership": "Evidence demonstrates submitted-lane role(s): Distributor, VAD. Other supported roles do not invalidate the lane.",
+                "networking": "Active-networking involvement demonstrated by: named networking vendor or platform.",
+                "productUseCaseFit": "Only weak active-networking overlap is evidenced; no direct Cudy product family or use case was found.",
+                "cooperationPath": "Evidence demonstrates one cooperation lever, capped at level 3.",
+                "evidenceReliability": "Concrete company-owned evidence is available without independent corroboration.",
+                "evidenceSufficiency": "A concrete source matching the company-owned official identity was supplied."
+              },
+              "finalRank": 1
+            }
+          ]
+        },
+        {
+          "channelId": "b2b-resale",
+          "submittedCanonicalCandidates": 9,
+          "eligibleCandidates": 0,
+          "selectedCount": 0,
+          "rejectedByGate": 9,
+          "top10ScoreSum": 0,
+          "meanPerTargetSlot": 0,
+          "meanSelectedScore": 0,
+          "selected": []
+        },
+        {
+          "channelId": "project-services",
+          "submittedCanonicalCandidates": 10,
+          "eligibleCandidates": 0,
+          "selectedCount": 0,
+          "rejectedByGate": 10,
+          "top10ScoreSum": 0,
+          "meanPerTargetSlot": 0,
+          "meanSelectedScore": 0,
+          "selected": []
+        }
+      ],
+      "macroMeanPerTargetSlot": 1.4
+    }
+  ]
+}

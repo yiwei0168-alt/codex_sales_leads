@@ -243,6 +243,11 @@ if (companiesById.size !== seed.companies.length
 }
 function paidFallbackPriority(company: SharedEvidenceDossier): number | null {
   if (company.enrichmentStatus === "ready-for-rescoring" || company.enrichmentStatus === "identity-conflict") return null;
+  // The unresolved Places rows intentionally retain only an opaque place-id-derived
+  // label. Sending that label to a paid web-search fallback cannot identify the
+  // business and would both waste quota and risk attaching evidence to the wrong
+  // entity.
+  if (company.canonicalName.startsWith("Unresolved Google Place ")) return null;
   const result = resultsById.get(company.dossierId);
   if (!result) return null;
   if (result.fallbackSourcesCollected >= company.retrievalPlan.fallbackSourceBudget) return null;

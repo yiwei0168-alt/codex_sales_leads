@@ -203,7 +203,8 @@ function sanitizeExcerpt(value: string): string {
 }
 
 function germanyPresence(excerpts: string[]): boolean {
-  return excerpts.some((value) => /\b(?:germany|deutschland|german market|deutscher markt|headquartered in germany|sitz in deutschland)\b/iu.test(value));
+  return excerpts.some((value) => /\b(?:germany|deutschland|german market|deutscher markt|headquartered in germany|sitz in deutschland)\b/iu.test(value)
+    || /\b(?:d-|de-)?\d{5}\s+[A-ZÄÖÜ][A-Za-zÄÖÜäöüß.-]{2,}/u.test(value));
 }
 
 function identityNameMatch(aliases: string[], legalAliases: string[], excerpts: string[]): boolean {
