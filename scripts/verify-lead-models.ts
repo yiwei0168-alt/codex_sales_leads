@@ -1,6 +1,7 @@
 import nextEnv from "@next/env";
 
 import { buildLeadMarketPlaybook } from "../src/lib/leads/workflow/playbook";
+import { LeadEvidenceCorrectionAgent } from "../src/lib/leads/workflow/evidence-correction-agent";
 import { LeadQualificationAgent } from "../src/lib/leads/workflow/qualification-agent";
 import type { LeadRagCitation, LeadWorkflowCandidate } from "../src/lib/leads/workflow/types";
 
@@ -54,14 +55,23 @@ const candidate: LeadWorkflowCandidate = {
   // model adapters are exercised without persisting this fixture.
   evidenceWarnings: ["Preflight fixture intentionally requests escalation."],
 };
+const noOpSearch = { search: async () => ({ query: "preflight", results: [], creditsUsed: 0 }) };
+const correction = await new LeadEvidenceCorrectionAgent(undefined, noOpSearch,
+  { batchSize: 1, concurrency: 1, searchConcurrency: 1 }).correct([candidate], { ...plan, roles: [...plan.roles] });
+const [correctedCandidate] = correction.candidates;
+if (!correctedCandidate || correctedCandidate.correction.model === "deterministic-fallback") {
+  throw new Error(`DeepSeek correction preflight failed: ${correctedCandidate?.correction.warnings.join("; ") ?? "no correction"}`);
+}
 const [assessment] = await new LeadQualificationAgent(undefined, { batchSize: 1, concurrency: 1 })
-  .evaluate([candidate], playbook, "DE", "Germany", "new-market");
+  .evaluate([correctedCandidate], playbook, "DE", "Germany", "new-market");
 if (!assessment || assessment.model === "unavailable" || !assessment.escalated) {
   throw new Error(`DeepSeek model preflight failed: ${assessment?.warnings.join("; ") ?? "no assessment"}`);
 }
 
 console.log(JSON.stringify({
   planner: { model: playbook.model, generatedBy: playbook.generatedBy, queryCount: playbook.searchQueries.length },
+  correction: { model: correctedCandidate.correction.model, escalated: correctedCandidate.correction.escalated,
+    schemaValid: true, roles: correctedCandidate.correction.resolvedRoles },
   qualification: { model: assessment.model, escalated: assessment.escalated,
     schemaValid: true, eligible: assessment.eligible, score: assessment.totalScore },
 }, null, 2));

@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "@/providers/contracts";
 
 import { LeadQualificationAgent } from "./qualification-agent";
-import type { LeadMarketPlaybook, LeadWorkflowCandidate } from "./types";
+import type { CorrectedLeadWorkflowCandidate, LeadMarketPlaybook } from "./types";
 
 class FakeProvider implements AiProvider {
   readonly id = "fake";
@@ -12,13 +12,13 @@ class FakeProvider implements AiProvider {
     this.calls.push(request as StructuredAiRequest<unknown>);
     return {
       output: { assessments: [{
-        candidateId: "lead-example", gates: { submittedIdentityUsable: true, companyExists: true,
-          targetCountryPresence: true, networkingRelevant: true, relevantChannel: true,
-          sufficientEvidence: true, independentProspect: true },
-        roles: ["VAR", "Reseller"], primaryRole: "VAR", accountTier: "Priority",
+        candidateId: "lead-example", gates: { correctedIdentityUsable: true, companyExists: true,
+          targetCountryPresence: true, networkingRelevant: true, independentProspect: true },
+        accountTier: "Priority",
         supplyModel: "Distributor Supply", brandInvolvement: "Standard",
-        dimensions: { channelRoleAndCustomerAccess: 27.8, productAndUseCaseFit: 21.2, targetMarketCoverage: 18,
-          partnershipExecutionCapability: 12, strategicComplementarity: 8 },
+        dimensions: { productAndUseCaseFit: 40, cooperationPathAndBuyingInfluence: 26,
+          evidenceAndEntityConfidence: 18,
+          roleIdentificationQuality: 3, channelClassificationQuality: 1 },
         confidence: 88, summary: "Evidence-grounded multi-role channel candidate.", reasons: ["Strong customer access"],
         risks: [], unknowns: ["Purchasing volume"], evidenceIds: ["evidence-valid", "invented-id"],
         needsEscalation: false, warnings: [],
@@ -31,11 +31,15 @@ class FakeProvider implements AiProvider {
   }
 }
 
-const candidate: LeadWorkflowCandidate = {
+const candidate: CorrectedLeadWorkflowCandidate = {
   candidateId: "lead-example", companyName: "Example", domain: "example.de", officialWebsiteUrl: "https://example.de/",
   queryRoles: ["VAR"], queryFamily: "resale", providerScore: 0.99,
   evidence: [{ id: "evidence-valid", url: "https://example.de", title: "Example", excerpt: "VAR selling routers and PoE switches; business customers can request a quote.",
     sourceType: "official-website", provider: "test", capturedAt: "2026-08-22" }], evidenceWarnings: [],
+  correction: { originalCompanyName: "Example", originalDomain: "example.de", originalOfficialWebsiteUrl: "https://example.de/",
+    resolvedRoles: ["VAR", "Reseller"], resolvedFamilies: ["resale"], identityChanged: false, routingChanged: false,
+    supplementalEvidenceIds: [], reliedEvidenceIds: ["evidence-valid"], reasons: ["Official evidence supports resale."],
+    confidence: 90, model: "test-corrector", promptVersion: "test", escalated: false, warnings: [] },
 };
 const playbook: LeadMarketPlaybook = {
   marketHypothesis: "test", productAngles: ["SMB"], preferredCompanyTraits: ["VAR"], exclusions: [],
@@ -47,7 +51,7 @@ describe("LeadQualificationAgent", () => {
     const provider = new FakeProvider();
     const agent = new LeadQualificationAgent(provider, { batchSize: 5, concurrency: 1 });
     const [result] = await agent.evaluate([candidate], playbook, "DE", "Germany", "new-market");
-    expect(result.totalScore).toBe(87);
+    expect(result.totalScore).toBe(88);
     expect(result.roles).toEqual(["VAR", "Reseller"]);
     expect(result.primaryRole).toBeNull();
     expect(result.evidenceIds).toEqual(["evidence-valid"]);
@@ -85,7 +89,17 @@ describe("LeadQualificationAgent", () => {
     };
     const [result] = await agent.evaluate([summaryOnlyCandidate], playbook, "DE", "Germany", "new-market");
     expect(result.gates.networkingRelevant).toBe(false);
-    expect(result.gates.relevantChannel).toBe(false);
     expect(result.eligible).toBe(false);
+  });
+
+  it("keeps a valuable lead eligible after the correction agent reroutes an originally mismatched lane", async () => {
+    const provider = new FakeProvider();
+    const agent = new LeadQualificationAgent(provider, { batchSize: 5, concurrency: 1 });
+    const rerouted = { ...candidate, queryFamily: "distribution" as const,
+      correction: { ...candidate.correction, resolvedFamilies: ["resale" as const], routingChanged: true } };
+    const [result] = await agent.evaluate([rerouted], playbook, "DE", "Germany", "new-market");
+    expect(result.eligible).toBe(true);
+    expect(result.totalScore).toBe(88);
+    expect(result.roles).toEqual(["VAR", "Reseller"]);
   });
 });

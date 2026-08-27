@@ -5,11 +5,13 @@ import type { LeadSearchPlan } from "@/lib/assistant/types";
 import { getPool } from "@/lib/rag/db";
 
 import { collectLeadEvidence, discoverLeadCandidates } from "./discovery";
+import { LeadEvidenceCorrectionAgent } from "./evidence-correction-agent";
 import { getGlobalWorkspaceId, persistLeadWorkflowResult, updateWorkflowPhase } from "./persistence";
 import { buildLeadMarketPlaybook } from "./playbook";
 import { LeadQualificationAgent } from "./qualification-agent";
 import { retrieveLeadRagContext } from "./rag-context";
 import type {
+  CorrectedLeadWorkflowCandidate,
   LeadCandidateAssessment,
   LeadMarketPlaybook,
   LeadRagCitation,
@@ -30,6 +32,7 @@ const WorkflowAnnotation = Annotation.Root({
   playbook: Annotation<LeadMarketPlaybook | undefined>(),
   runId: Annotation<string | undefined>(),
   candidates: Annotation<LeadWorkflowCandidate[]>(),
+  correctedCandidates: Annotation<CorrectedLeadWorkflowCandidate[]>(),
   assessments: Annotation<LeadCandidateAssessment[]>(),
   creditsUsed: Annotation<number>(),
   warnings: Annotation<string[]>(),
@@ -41,6 +44,7 @@ export interface LeadWorkflowDependencies {
   buildPlaybook: typeof buildLeadMarketPlaybook;
   discover: typeof discoverLeadCandidates;
   collectEvidence: typeof collectLeadEvidence;
+  correctionAgent: Pick<LeadEvidenceCorrectionAgent, "correct">;
   qualificationAgent: Pick<LeadQualificationAgent, "evaluate">;
   persist: typeof persistLeadWorkflowResult;
   updatePhase: typeof updateWorkflowPhase;
@@ -51,6 +55,7 @@ const productionDependencies: LeadWorkflowDependencies = {
   buildPlaybook: buildLeadMarketPlaybook,
   discover: discoverLeadCandidates,
   collectEvidence: collectLeadEvidence,
+  correctionAgent: new LeadEvidenceCorrectionAgent(),
   qualificationAgent: new LeadQualificationAgent(),
   persist: persistLeadWorkflowResult,
   updatePhase: updateWorkflowPhase,
@@ -104,11 +109,21 @@ export function buildLeadWorkflowGraph(
         warnings: [...state.warnings, ...enriched.warnings],
       };
     })
+    .addNode("correct_candidates", async (state) => {
+      await phase(dependencies, state, "correcting-evidence");
+      const corrected = await dependencies.correctionAgent.correct(state.candidates, state.plan);
+      return {
+        phase: "correcting-evidence" as const,
+        correctedCandidates: corrected.candidates,
+        creditsUsed: state.creditsUsed + corrected.creditsUsed,
+        warnings: [...state.warnings, ...corrected.warnings],
+      };
+    })
     .addNode("score_candidates", async (state) => {
       await phase(dependencies, state, "scoring");
       if (!state.playbook) throw new Error("Market Playbook is missing before qualification");
       const assessments = await dependencies.qualificationAgent.evaluate(
-        state.candidates, state.playbook, state.plan.countryCode, state.plan.countryName, state.plan.objective,
+        state.correctedCandidates, state.playbook, state.plan.countryCode, state.plan.countryName, state.plan.objective,
       );
       return { phase: "scoring" as const, assessments };
     })
@@ -127,7 +142,7 @@ export function buildLeadWorkflowGraph(
         creditsUsed: state.creditsUsed,
         ragContext: state.ragContext,
         playbook: state.playbook,
-        candidates: state.candidates,
+        candidates: state.correctedCandidates,
         assessments: state.assessments,
         warnings: state.warnings,
       });
@@ -138,7 +153,8 @@ export function buildLeadWorkflowGraph(
     .addEdge("retrieve_knowledge", "build_playbook")
     .addEdge("build_playbook", "discover_candidates")
     .addEdge("discover_candidates", "collect_evidence")
-    .addEdge("collect_evidence", "score_candidates")
+    .addEdge("collect_evidence", "correct_candidates")
+    .addEdge("correct_candidates", "score_candidates")
     .addEdge("score_candidates", "persist_results")
     .addEdge("persist_results", END);
   return graph.compile(checkpointer ? { checkpointer } : undefined);
@@ -166,6 +182,7 @@ export async function runLeadWorkflow(input: {
     phase: "queued",
     ragContext: [],
     candidates: [],
+    correctedCandidates: [],
     assessments: [],
     creditsUsed: 0,
     warnings: [],

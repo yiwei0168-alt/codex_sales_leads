@@ -5,10 +5,10 @@ import type { CompanyRecord, Evidence } from "@/lib/domain";
 import { tenantQuery, tenantTransaction } from "@/lib/rag/db";
 
 import type {
+  CorrectedLeadWorkflowCandidate,
   LeadCandidateAssessment,
   LeadMarketPlaybook,
   LeadRagCitation,
-  LeadWorkflowCandidate,
   LeadWorkflowPhase,
   LeadWorkflowResult,
 } from "./types";
@@ -30,7 +30,7 @@ export async function updateWorkflowPhase(userId: string, actionId: string, phas
     [actionId, userId, phase]);
 }
 
-function companyEvidence(candidate: LeadWorkflowCandidate, assessment: LeadCandidateAssessment): Evidence[] {
+function companyEvidence(candidate: CorrectedLeadWorkflowCandidate, assessment: LeadCandidateAssessment): Evidence[] {
   const cited = new Set(assessment.evidenceIds);
   return candidate.evidence.filter((item) => cited.has(item.id)).slice(0, 8).map((item) => ({
     id: item.id,
@@ -46,7 +46,7 @@ function companyEvidence(candidate: LeadWorkflowCandidate, assessment: LeadCandi
 }
 
 function companyRecord(
-  candidate: LeadWorkflowCandidate,
+  candidate: CorrectedLeadWorkflowCandidate,
   assessment: LeadCandidateAssessment,
   countryCode: string,
   countryName: string,
@@ -137,7 +137,7 @@ export async function persistLeadWorkflowResult(input: {
   creditsUsed: number;
   ragContext: LeadRagCitation[];
   playbook: LeadMarketPlaybook;
-  candidates: LeadWorkflowCandidate[];
+  candidates: CorrectedLeadWorkflowCandidate[];
   assessments: LeadCandidateAssessment[];
   warnings: string[];
 }): Promise<LeadWorkflowResult> {
@@ -156,22 +156,22 @@ export async function persistLeadWorkflowResult(input: {
         `insert into lead_candidate_assessment (
            user_id, run_id, candidate_id, company_name, domain, official_website_url, roles, primary_role,
            eligible, total_score, confidence, gates, dimensions, account_tier, supply_model,
-           brand_involvement, summary, reasons, risks, unknowns, evidence, evidence_ids,
+           brand_involvement, summary, reasons, risks, unknowns, evidence, correction, evidence_ids,
            model, prompt_version, escalated, warnings, selected, selected_rank
-         ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28)
+         ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29)
          on conflict (run_id, candidate_id) do update set roles=excluded.roles, primary_role=excluded.primary_role,
            eligible=excluded.eligible, total_score=excluded.total_score, confidence=excluded.confidence,
            gates=excluded.gates, dimensions=excluded.dimensions, account_tier=excluded.account_tier,
            supply_model=excluded.supply_model, brand_involvement=excluded.brand_involvement,
            summary=excluded.summary, reasons=excluded.reasons, risks=excluded.risks, unknowns=excluded.unknowns,
-           evidence=excluded.evidence, evidence_ids=excluded.evidence_ids, model=excluded.model,
+           evidence=excluded.evidence, correction=excluded.correction, evidence_ids=excluded.evidence_ids, model=excluded.model,
            prompt_version=excluded.prompt_version, escalated=excluded.escalated, warnings=excluded.warnings,
            selected=excluded.selected, selected_rank=excluded.selected_rank, updated_at=now()`,
         [input.userId, input.runId, assessment.candidateId, candidate.companyName, candidate.domain,
           candidate.officialWebsiteUrl, assessment.roles, assessment.primaryRole, assessment.eligible,
           assessment.totalScore, assessment.confidence, JSON.stringify(assessment.gates), JSON.stringify(assessment.dimensions),
           assessment.accountTier, assessment.supplyModel, assessment.brandInvolvement, assessment.summary,
-          assessment.reasons, assessment.risks, assessment.unknowns, JSON.stringify(candidate.evidence), assessment.evidenceIds,
+          assessment.reasons, assessment.risks, assessment.unknowns, JSON.stringify(candidate.evidence), JSON.stringify(candidate.correction), assessment.evidenceIds,
           assessment.model, assessment.promptVersion, assessment.escalated, assessment.warnings, Boolean(rank), rank ?? null],
       );
       if (rank) await saveCompany(client, input.workspaceId,

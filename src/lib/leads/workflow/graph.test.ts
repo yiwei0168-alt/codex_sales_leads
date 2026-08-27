@@ -4,6 +4,7 @@ import type { LeadSearchPlan } from "@/lib/assistant/types";
 
 import { buildLeadWorkflowGraph, type LeadWorkflowDependencies } from "./graph";
 import type {
+  CorrectedLeadWorkflowCandidate,
   LeadCandidateAssessment,
   LeadMarketPlaybook,
   LeadRagCitation,
@@ -59,15 +60,25 @@ const candidate: LeadWorkflowCandidate = {
   evidenceWarnings: [],
 };
 
+const correctedCandidate: CorrectedLeadWorkflowCandidate = {
+  ...candidate,
+  correction: { originalCompanyName: candidate.companyName, originalDomain: candidate.domain,
+    originalOfficialWebsiteUrl: candidate.officialWebsiteUrl, resolvedRoles: ["Distributor"],
+    resolvedFamilies: ["distribution"], identityChanged: false, routingChanged: false,
+    supplementalEvidenceIds: [], reliedEvidenceIds: ["evidence-example"], reasons: ["Official evidence supports distribution."],
+    confidence: 85, model: "test-corrector", promptVersion: "test", escalated: false, warnings: [] },
+};
+
 const assessment: LeadCandidateAssessment = {
   candidateId: candidate.candidateId,
   eligible: true,
-  gates: { submittedIdentityUsable: true, companyExists: true, targetCountryPresence: true,
-    networkingRelevant: true, relevantChannel: true, sufficientEvidence: true, independentProspect: true },
+  gates: { correctedIdentityUsable: true, companyExists: true, targetCountryPresence: true,
+    networkingRelevant: true, independentProspect: true },
   roles: ["Distributor"], primaryRole: "Distributor", accountTier: "Priority",
   supplyModel: "Distributor Supply", brandInvolvement: "Standard",
-  dimensions: { channelRoleAndCustomerAccess: 24, productAndUseCaseFit: 20, targetMarketCoverage: 15,
-    partnershipExecutionCapability: 12, strategicComplementarity: 8 },
+  dimensions: { productAndUseCaseFit: 35, cooperationPathAndBuyingInfluence: 24,
+    evidenceAndEntityConfidence: 16,
+    roleIdentificationQuality: 3, channelClassificationQuality: 1 },
   totalScore: 79, confidence: 85, summary: "Qualified test candidate", reasons: ["Evidence supports fit"],
   risks: [], unknowns: [], evidenceIds: ["evidence-example"], model: "test-scorer",
   promptVersion: "test", escalated: false, warnings: [],
@@ -83,6 +94,7 @@ function dependencies(events: string[], context = ragContext): LeadWorkflowDepen
     buildPlaybook: vi.fn(async () => { events.push("playbook"); return playbook; }),
     discover: vi.fn(async () => { events.push("discover"); return { runId: "run-1", candidates: [candidate], creditsUsed: 1, warnings: [] }; }),
     collectEvidence: vi.fn(async () => { events.push("evidence"); return { candidates: [candidate], creditsUsed: 2, warnings: [] }; }),
+    correctionAgent: { correct: vi.fn(async () => { events.push("correct"); return { candidates: [correctedCandidate], creditsUsed: 1, warnings: [] }; }) },
     qualificationAgent: { evaluate: vi.fn(async () => { events.push("score"); return [assessment]; }) },
     persist: vi.fn(async () => { events.push("persist"); return result; }),
   };
@@ -95,8 +107,8 @@ describe("LangGraph lead workflow", () => {
     const state = await graph.invoke({ userId: "user-1", actionId: "action-1", graphThreadId: "thread-1",
       workspaceId: "workspace-1", plan, phase: "queued", ragContext: [], candidates: [], assessments: [], creditsUsed: 0, warnings: [] });
     expect(state.result?.accepted).toBe(1);
-    expect(events.filter((item) => ["rag", "playbook", "discover", "evidence", "score", "persist"].includes(item)))
-      .toEqual(["rag", "playbook", "discover", "evidence", "score", "persist"]);
+    expect(events.filter((item) => ["rag", "playbook", "discover", "evidence", "correct", "score", "persist"].includes(item)))
+      .toEqual(["rag", "playbook", "discover", "evidence", "correct", "score", "persist"]);
   });
 
   it("fails closed before external discovery when one RAG domain is missing", async () => {

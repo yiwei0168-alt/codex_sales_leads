@@ -22,6 +22,7 @@ export type LeadWorkflowPhase =
   | "planning"
   | "discovering"
   | "collecting-evidence"
+  | "correcting-evidence"
   | "scoring"
   | "persisting"
   | "completed"
@@ -88,22 +89,42 @@ export interface LeadWorkflowCandidate {
   evidenceWarnings: string[];
 }
 
+export interface LeadCandidateCorrection {
+  originalCompanyName: string;
+  originalDomain: string;
+  originalOfficialWebsiteUrl: string;
+  resolvedRoles: ChannelRole[];
+  resolvedFamilies: ChannelRoleFamily[];
+  identityChanged: boolean;
+  routingChanged: boolean;
+  supplementalEvidenceIds: string[];
+  reliedEvidenceIds: string[];
+  reasons: string[];
+  confidence: number;
+  model: string;
+  promptVersion: string;
+  escalated: boolean;
+  warnings: string[];
+}
+
+export interface CorrectedLeadWorkflowCandidate extends LeadWorkflowCandidate {
+  correction: LeadCandidateCorrection;
+}
+
 export interface LeadEligibilityGates {
-  submittedIdentityUsable: boolean;
+  correctedIdentityUsable: boolean;
   companyExists: boolean;
   targetCountryPresence: boolean;
   networkingRelevant: boolean;
-  relevantChannel: boolean;
-  sufficientEvidence: boolean;
   independentProspect: boolean;
 }
 
 export interface LeadFitDimensions {
-  channelRoleAndCustomerAccess: number;
   productAndUseCaseFit: number;
-  targetMarketCoverage: number;
-  partnershipExecutionCapability: number;
-  strategicComplementarity: number;
+  cooperationPathAndBuyingInfluence: number;
+  evidenceAndEntityConfidence: number;
+  roleIdentificationQuality: number;
+  channelClassificationQuality: number;
 }
 
 export interface LeadCandidateAssessment {
@@ -156,6 +177,7 @@ export interface LeadWorkflowState {
   playbook?: LeadMarketPlaybook;
   runId?: string;
   candidates: LeadWorkflowCandidate[];
+  correctedCandidates: CorrectedLeadWorkflowCandidate[];
   assessments: LeadCandidateAssessment[];
   creditsUsed: number;
   warnings: string[];
