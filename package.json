@@ -76,6 +76,7 @@
     "benchmark:v1.3:prepare-shared-pool": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/prepare-v1.3-shared-pool.ts",
     "benchmark:v1.3:score": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/score-v1.3-all-candidates.ts",
     "benchmark:v1.3:prepare-audit": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/prepare-v1.3-blind-audit.ts",
+    "benchmark:v1.3:freeze-human-audit": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/freeze-v1.3-human-audit.ts",
     "benchmark:v1.3:verify": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/verify-v1.3-run.ts",
     "benchmark:discovery:verify": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/verify-discovery-run.ts"
   },
