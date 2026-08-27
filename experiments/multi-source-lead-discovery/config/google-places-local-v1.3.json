@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "multi-source-professional-discovery-v1.3-google-places-local",
+  "runId": "2026-08-27-de-v1.3",
+  "sourceRunId": "2026-08-26-de-v1",
+  "systemId": "product-google-places-local",
+  "countryCode": "DE",
+  "languageCode": "de",
+  "discoveryEvidenceRequired": false,
+  "finalScoringEvidencePolicy": "shared-provider-neutral-evidence-v1",
+  "pageSize": 20,
+  "maxPagesPerCell": 2,
+  "minimumAcceptedBeforePaginationStops": 10,
+  "channels": [
+    {
+      "id": "tier1-distribution",
+      "eligibleRoles": ["Distributor", "VAD"],
+      "shortQueries": ["Netzwerk Großhandel", "IT Distributor"]
+    },
+    {
+      "id": "b2b-resale",
+      "eligibleRoles": ["Reseller", "VAR", "DVAR", "Dealer"],
+      "shortQueries": ["Netzwerktechnik Fachhandel", "IT Systemhaus"]
+    },
+    {
+      "id": "project-services",
+      "eligibleRoles": ["SI", "Installer"],
+      "shortQueries": ["WLAN Installation", "Netzwerktechnik Installation"]
+    }
+  ],
+  "regions": [
+    { "id": "berlin", "label": "Berlin", "low": { "latitude": 52.15, "longitude": 12.55 }, "high": { "latitude": 52.85, "longitude": 14.05 } },
+    { "id": "hamburg", "label": "Hamburg", "low": { "latitude": 53.15, "longitude": 9.05 }, "high": { "latitude": 54.05, "longitude": 10.95 } },
+    { "id": "munich", "label": "München", "low": { "latitude": 47.75, "longitude": 10.55 }, "high": { "latitude": 48.65, "longitude": 12.35 } },
+    { "id": "rhine-ruhr", "label": "Rhein-Ruhr", "low": { "latitude": 50.35, "longitude": 5.85 }, "high": { "latitude": 52.05, "longitude": 8.35 } },
+    { "id": "frankfurt", "label": "Frankfurt Rhein-Main", "low": { "latitude": 49.55, "longitude": 7.45 }, "high": { "latitude": 50.75, "longitude": 9.45 } },
+    { "id": "stuttgart", "label": "Stuttgart", "low": { "latitude": 48.15, "longitude": 8.15 }, "high": { "latitude": 49.35, "longitude": 10.05 } },
+    { "id": "central-east", "label": "Leipzig Dresden", "low": { "latitude": 50.55, "longitude": 11.45 }, "high": { "latitude": 51.75, "longitude": 14.25 } },
+    { "id": "nuremberg", "label": "Nürnberg", "low": { "latitude": 48.75, "longitude": 10.15 }, "high": { "latitude": 49.95, "longitude": 12.15 } }
+  ],
+  "filters": {
+    "businessStatus": "OPERATIONAL",
+    "addressCountryCode": "DE",
+    "locationRestrictionRequired": true,
+    "typeIsEligibilityEvidence": false
+  },
+  "persistence": {
+    "rawPlacesContent": "local-temporary-not-committed",
+    "committedGoogleIdentifier": "place-id-only-until-independent-web-resolution",
+    "latitudeLongitudeCommitted": false,
+    "attributionRequired": true,
+    "placeIdRefreshRecommendedMonths": 12
+  }
+}
