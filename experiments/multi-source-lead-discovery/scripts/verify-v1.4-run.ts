@@ -51,6 +51,7 @@ const master = JSON.parse(await readFile(path.join(runRoot, "evidence/shared-evi
 const decisions = JSON.parse(await readFile(path.join(runRoot, "evaluation/v1.4/gemini-full-independent-decisions.json"), "utf8")) as IndependentDecisionArtifact;
 const scoreArtifact = JSON.parse(await readFile(path.join(runRoot, "scoring/independent-value-v1.4/all-candidate-scores.v1.4.json"), "utf8")) as ScoreArtifact;
 const leaderboard = JSON.parse(await readFile(path.join(runRoot, "scoring/independent-value-v1.4/leaderboard-independent-value.v1.4.json"), "utf8")) as LeaderboardArtifact;
+const report = await readFile(path.resolve("experiments/multi-source-lead-discovery/reports/v1.4-independent-value-final-report.md"), "utf8");
 
 validateIndependentDecisions({ artifact: decisions, dossiers: master.companies });
 assert(decisions.decisions.length === 30, `Expected 30 Gemini Full decisions, received ${decisions.decisions.length}`);
@@ -100,6 +101,11 @@ const sorted = [...leaderboard.systems].sort((left, right) => right.macroMeanPer
 assert(sorted.every((system, index) => system.systemId === leaderboard.systems[index]?.systemId && system.rank === index + 1), "Leaderboard ordering mismatch");
 const gemini = leaderboard.systems.find((system) => system.systemId === "gemini-full");
 assert(gemini?.rank === 1 && gemini.macroMeanPerTargetSlot === 64.93, "Gemini Full v1.4 regression value changed");
+const disclosedRows = report.match(/^\| DOS-[A-F0-9]+ \|/gm)?.length ?? 0;
+assert(disclosedRows === scoreArtifact.scores.length, `Report discloses ${disclosedRows}/${scoreArtifact.scores.length} candidate rows`);
+for (const system of leaderboard.systems) {
+  assert(report.includes(`### ${system.rank}. `), `Report is missing the ranked section for ${system.systemId}`);
+}
 
 console.log(JSON.stringify({
   runId,
@@ -109,4 +115,5 @@ console.log(JSON.stringify({
   providerEvidenceCompletenessWeight: 0,
   newHumanAudit: false,
   geminiFull: { rank: gemini.rank, macroMeanPerTargetSlot: gemini.macroMeanPerTargetSlot },
+  reportCandidateRows: disclosedRows,
 }, null, 2));
