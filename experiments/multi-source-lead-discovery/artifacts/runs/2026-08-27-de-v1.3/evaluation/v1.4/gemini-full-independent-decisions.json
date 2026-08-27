@@ -1,0 +1,430 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "independent-candidate-value-v1.4",
+  "runId": "2026-08-27-de-v1.3",
+  "targetSystemId": "gemini-full",
+  "decisions": [
+    {
+      "dossierId": "DOS-CE5CFF2ED35C",
+      "companyName": "ALLNET GmbH Computersysteme",
+      "resolvedOfficialUrl": "https://distribution.allnet.de/",
+      "channelId": "tier1-distribution",
+      "status": "verified-pass",
+      "valueGates": { "companyExists": true, "germanyPresence": true, "activeNetworking": true, "submittedLaneMembership": true, "uniqueCanonicalCompany": true },
+      "supportedRoles": ["Distributor", "VAD"],
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "independentInformationConfidence": 5 },
+      "evidence": [
+        { "url": "https://distribution.allnet.de/", "supports": ["German networking distributor", "supplies resellers and system houses", "active networking and wireless portfolio", "pre-sales and after-sales value add"] },
+        { "url": "https://distribution.allnet.de/register-as-var.html", "supports": ["repeatable reseller onboarding path"] }
+      ],
+      "reason": "A specialist networking distributor with downstream channel supply, exact Cudy-adjacent product families and a public reseller route."
+    },
+    {
+      "dossierId": "DOS-42210E8B828E",
+      "companyName": "ALSO Deutschland GmbH",
+      "channelId": "tier1-distribution",
+      "status": "verified-pass",
+      "valueGates": { "companyExists": true, "germanyPresence": true, "activeNetworking": true, "submittedLaneMembership": true, "uniqueCanonicalCompany": true },
+      "supportedRoles": ["Distributor", "VAD"],
+      "levels": { "productUseCaseFit": 3, "cooperationPath": 5, "independentInformationConfidence": 4 },
+      "evidence": [
+        { "url": "https://www.also.com/ec/cms5/de_1010/1010/kunden/index.jsp", "supports": ["manufacturer-to-reseller channel position", "large ITK portfolio", "distribution and value-added services"] },
+        { "url": "https://www.also.com/ec/cms5/de_6000/6000/reseller-registrierung/index.jsp", "supports": ["public partner registration route", "Germany market option"] }
+      ],
+      "reason": "A major German ITK distributor with a clear downstream reseller path; product relevance is broad rather than Cudy-specialist."
+    },
+    {
+      "dossierId": "DOS-34980A2004F3",
+      "companyName": "Ingram Micro Distribution GmbH",
+      "channelId": "tier1-distribution",
+      "status": "verified-pass",
+      "valueGates": { "companyExists": true, "germanyPresence": true, "activeNetworking": true, "submittedLaneMembership": true, "uniqueCanonicalCompany": true },
+      "supportedRoles": ["Distributor", "VAD"],
+      "levels": { "productUseCaseFit": 3, "cooperationPath": 5, "independentInformationConfidence": 5 },
+      "evidence": [
+        { "url": "https://de.ingrammicro.eu/one-im-b4/public/unternehmen/auf-einen-blick", "supports": ["German ITK wholesaler", "35000 trade partners", "350 suppliers and 100000 products", "distribution center and services"] },
+        { "url": "https://de.ingrammicro.eu/one-im-b4/services-and-trainings/managed-services/managed-network-services?lang=de", "supports": ["managed LAN, WLAN and firewall technologies", "reseller enablement and support"] }
+      ],
+      "reason": "A proven large distributor with downstream reach and networking enablement; the visible portfolio is broad and enterprise-weighted."
+    },
+    {
+      "dossierId": "DOS-5168C944EB18",
+      "companyName": "TD SYNNEX Germany",
+      "resolvedOfficialUrl": "https://de.tdsynnex.com/",
+      "channelId": "tier1-distribution",
+      "status": "verified-pass",
+      "valueGates": { "companyExists": true, "germanyPresence": true, "activeNetworking": true, "submittedLaneMembership": true, "uniqueCanonicalCompany": true },
+      "supportedRoles": ["Distributor", "VAD"],
+      "levels": { "productUseCaseFit": 3, "cooperationPath": 5, "independentInformationConfidence": 4 },
+      "evidence": [
+        { "url": "https://dach.tdsynnex.com/cloud/at/kontakt-2/", "supports": ["distributor-to-reseller model", "Germany eligibility", "does not sell directly to end customers"] },
+        { "url": "https://dach.tdsynnex.com/blog/de/wp-content/uploads/sites/2/2023/07/Final-10-Reasons-AWS-Broschuereonline.pdf", "supports": ["German distributor organization", "procurement, consulting and partner services"] }
+      ],
+      "reason": "The direct channel path is explicit and highly repeatable; Cudy fit is credible but less specifically demonstrated than at networking-specialist distributors."
+    },
+    {
+      "dossierId": "DOS-1C5CBA9A30BE",
+      "companyName": "Komsa AG",
+      "resolvedOfficialUrl": "https://komsa.com/",
+      "channelId": "tier1-distribution",
+      "status": "verified-pass",
+      "valueGates": { "companyExists": true, "germanyPresence": true, "activeNetworking": true, "submittedLaneMembership": true, "uniqueCanonicalCompany": true },
+      "supportedRoles": ["Distributor", "VAD"],
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "independentInformationConfidence": 5 },
+      "evidence": [
+        { "url": "https://komsa.com/b2b-handel", "supports": ["distributor identity", "partner supply", "routers, switches and access points", "technical support, training and logistics"] },
+        { "url": "https://komsa.com/loesungen/netzwerktechnik/", "supports": ["D-Link, Huawei and other active-networking solutions", "professional networking use cases"] }
+      ],
+      "reason": "A high-value distributor result with exact product-family overlap, comparable brands, channel supply and strong value-added services."
+    },
+    {
+      "dossierId": "DOS-CB0220E643FD",
+      "companyName": "ENO Telecom GmbH",
+      "channelId": "tier1-distribution",
+      "status": "verified-pass",
+      "valueGates": { "companyExists": true, "germanyPresence": true, "activeNetworking": true, "submittedLaneMembership": true, "uniqueCanonicalCompany": true },
+      "supportedRoles": ["Distributor", "Wholesaler"],
+      "levels": { "productUseCaseFit": 4, "cooperationPath": 5, "independentInformationConfidence": 5 },
+      "evidence": [
+        { "url": "https://www.eno.de/", "supports": ["German B2B IT, telecom and networking supplier", "business-customer registration and fulfillment"] },
+        { "url": "https://www.eno.de/IT-Gaming-Home-Communication/Festnetz-Netzwerk/Router-Repeater/", "supports": ["live router and repeater catalog", "inventory and wholesale-price fields"] }
+      ],
+      "reason": "A concrete B2B wholesale route with live Cudy-adjacent router and WLAN products."
+    },
+    {
+      "dossierId": "DOS-1F6C27A02568",
+      "companyName": "Herweck AG",
+      "channelId": "tier1-distribution",
+      "status": "verified-pass",
+      "valueGates": { "companyExists": true, "germanyPresence": true, "activeNetworking": true, "submittedLaneMembership": true, "uniqueCanonicalCompany": true },
+      "supportedRoles": ["Distributor", "VAD"],
+      "levels": { "productUseCaseFit": 4, "cooperationPath": 5, "independentInformationConfidence": 5 },
+      "evidence": [
+        { "url": "https://herweck.de/leistungen/", "supports": ["ITK distribution", "networking portfolio", "supply to IT service firms, system houses and retailers", "logistics, technical and marketing services"] },
+        { "url": "https://partnerwerden.herweck.de/", "supports": ["VAD identity", "reseller onboarding", "30000 products and technical support"] }
+      ],
+      "reason": "A well-evidenced German VAD with networking products, trade customers and a direct partner-onboarding path."
+    },
+    {
+      "dossierId": "DOS-F9BE6DD361F7",
+      "companyName": "Littlebit Technology Deutschland GmbH",
+      "channelId": "tier1-distribution",
+      "status": "verified-pass",
+      "valueGates": { "companyExists": true, "germanyPresence": true, "activeNetworking": true, "submittedLaneMembership": true, "uniqueCanonicalCompany": true },
+      "supportedRoles": ["Distributor", "VAD"],
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "independentInformationConfidence": 5 },
+      "evidence": [
+        { "url": "https://www.littlebit.de/ubiquiti-netzwerkloesungen", "supports": ["official Ubiquiti distributor", "AP, switch, router and mesh portfolio", "stock, partner pricing, training and project support"] },
+        { "url": "https://www.littlebit.de/zusammenarbeit", "supports": ["reseller-only ordering route", "inventory, logistics and manufacturer relationships"] }
+      ],
+      "reason": "An especially strong match: comparable cost-efficient networking products, official distribution rights and a repeatable reseller path."
+    },
+    {
+      "dossierId": "DOS-F67166CAC871",
+      "companyName": "Wave Computersysteme GmbH",
+      "resolvedOfficialUrl": "https://www.wave-distribution.de/",
+      "channelId": "tier1-distribution",
+      "status": "verified-pass",
+      "valueGates": { "companyExists": true, "germanyPresence": true, "activeNetworking": true, "submittedLaneMembership": true, "uniqueCanonicalCompany": true },
+      "supportedRoles": ["Distributor", "Wholesaler", "Importer"],
+      "levels": { "productUseCaseFit": 4, "cooperationPath": 5, "independentInformationConfidence": 5 },
+      "evidence": [
+        { "url": "https://www.wave-distribution.de/", "supports": ["German wholesaler, distributor and importer", "business-customer registration and delivery"] },
+        { "url": "https://www.wave-distribution.de/Hardware", "supports": ["live networking categories", "access points, firewalls, modems, routers, switches and WLAN"] }
+      ],
+      "reason": "A genuine distributor with a live and broad active-networking catalog; it is less networking-specialized than the top matches."
+    },
+    {
+      "dossierId": "DOS-60AAC068D0C7",
+      "companyName": "Ecom Electronic Components Trading GmbH",
+      "resolvedOfficialUrl": "https://www.ecom-trading.de/",
+      "channelId": "tier1-distribution",
+      "status": "verified-pass",
+      "valueGates": { "companyExists": true, "germanyPresence": true, "activeNetworking": true, "submittedLaneMembership": true, "uniqueCanonicalCompany": true },
+      "supportedRoles": ["Wholesaler", "Distributor"],
+      "levels": { "productUseCaseFit": 5, "cooperationPath": 5, "independentInformationConfidence": 5 },
+      "evidence": [
+        { "url": "https://www.ecom-trading.de/shop/ubiquiti/", "supports": ["hardware wholesaler", "Ubiquiti router, switch, AP and WLAN catalog", "live online-shop route"] },
+        { "url": "https://www.ecom-trading.de/shop/hardware/peripherie/netzwerktechnik/", "supports": ["broad networking category and Wi-Fi routers"] }
+      ],
+      "reason": "A highly relevant networking wholesaler with a live comparable-brand catalog; v1.4 also corrects the operational official domain."
+    },
+
+    {
+      "dossierId": "DOS-038F1F349F23",
+      "companyName": "Bechtle AG",
+      "channelId": "b2b-resale",
+      "status": "verified-pass",
+      "valueGates": { "companyExists": true, "germanyPresence": true, "activeNetworking": true, "submittedLaneMembership": true, "uniqueCanonicalCompany": true },
+      "supportedRoles": ["Reseller", "VAR", "SI"],
+      "levels": { "productUseCaseFit": 4, "cooperationPath": 5, "independentInformationConfidence": 5 },
+      "evidence": [
+        { "url": "https://www.bechtle.com/shop/hardware/it-infrastruktur/netzwerk--10006005--c", "supports": ["live B2B networking shop", "active networking hardware and purchase path"] },
+        { "url": "https://www.bechtle.com/it-services/bechtle-services/wlan-planung-und-ausleuchtung", "supports": ["WLAN design and deployment capability"] }
+      ],
+      "reason": "A high-value VAR/reseller with both a transaction path and implementation capability across relevant network products."
+    },
+    {
+      "dossierId": "DOS-512D65ADA011",
+      "companyName": "CANCOM SE",
+      "channelId": "b2b-resale",
+      "status": "verified-pass",
+      "valueGates": { "companyExists": true, "germanyPresence": true, "activeNetworking": true, "submittedLaneMembership": true, "uniqueCanonicalCompany": true },
+      "supportedRoles": ["VAR", "SI", "MSP"],
+      "levels": { "productUseCaseFit": 2, "cooperationPath": 5, "independentInformationConfidence": 5 },
+      "evidence": [
+        { "url": "https://www.cancom.de/loesungen/it-themen/network-connectivity/", "supports": ["supplies network hardware", "LAN, WLAN, routers, gateways and switches", "planning, implementation and on-site service"] },
+        { "url": "https://www.cancom.de/services/supply-services/service-factory/", "supports": ["procurement, logistics and rollout path"] }
+      ],
+      "reason": "The VAR path is explicit and strong, but its visible network offer is mainly enterprise-grade and therefore only partly overlaps Cudy."
+    },
+    {
+      "dossierId": "DOS-CEA9A45CE909",
+      "companyName": "Computacenter AG & Co. oHG",
+      "channelId": "b2b-resale",
+      "status": "verified-pass",
+      "valueGates": { "companyExists": true, "germanyPresence": true, "activeNetworking": true, "submittedLaneMembership": true, "uniqueCanonicalCompany": true },
+      "supportedRoles": ["VAR", "SI", "MSP"],
+      "levels": { "productUseCaseFit": 2, "cooperationPath": 5, "independentInformationConfidence": 4 },
+      "evidence": [
+        { "url": "https://careers.computacenter.com/de/cluster/networking/4c3b1d46-8628-5b09-8e5f-55625ad2c8c0", "supports": ["German network solutions practice", "switch, router, LAN, WLAN and WAN implementation"] },
+        { "url": "https://investors.computacenter.com/", "supports": ["one of the largest global VARs", "technology sourcing and managed services"] }
+      ],
+      "reason": "A real large VAR with technology sourcing and networking capability, but heavily oriented to major enterprise and public accounts."
+    },
+    {
+      "dossierId": "DOS-DF573E55B367",
+      "companyName": "SVA System Vertrieb Alexander GmbH",
+      "channelId": "b2b-resale",
+      "status": "verified-pass",
+      "valueGates": { "companyExists": true, "germanyPresence": true, "activeNetworking": true, "submittedLaneMembership": true, "uniqueCanonicalCompany": true },
+      "supportedRoles": ["VAR", "SI", "MSP"],
+      "levels": { "productUseCaseFit": 2, "cooperationPath": 5, "independentInformationConfidence": 5 },
+      "evidence": [
+        { "url": "https://www.sva.de/de/services/netzwerk/managed-network-as-a-service", "supports": ["selects, supplies and configures network hardware", "Cisco Meraki WLAN, switching, security and SD-WAN", "full managed lifecycle"] },
+        { "url": "https://www.sva.de/de/dell-networking", "supports": ["direct networking vendor access and hardware portfolio"] }
+      ],
+      "reason": "A verified VAR/SI cooperation path with major vendors; the product positioning is more enterprise-oriented than Cudy."
+    },
+    {
+      "dossierId": "DOS-749C6122253C",
+      "companyName": "netgo GmbH",
+      "channelId": "b2b-resale",
+      "status": "verified-pass",
+      "valueGates": { "companyExists": true, "germanyPresence": true, "activeNetworking": true, "submittedLaneMembership": true, "uniqueCanonicalCompany": true },
+      "supportedRoles": ["VAR", "SI", "MSP"],
+      "levels": { "productUseCaseFit": 3, "cooperationPath": 5, "independentInformationConfidence": 5 },
+      "evidence": [
+        { "url": "https://www.netgo.de/network/network-as-a-service", "supports": ["LAN, WLAN and firewall hardware", "planning, procurement, installation and operation", "small-company through enterprise offer"] },
+        { "url": "https://www.netgo.de/centralhub", "supports": ["customer e-store and hardware ordering", "vendor partnerships and repeatable procurement"] }
+      ],
+      "reason": "A strong VAR/MSP result with explicit hardware procurement, customer ordering and full network lifecycle control."
+    },
+    {
+      "dossierId": "DOS-55841AFCE068",
+      "companyName": "ACP IT Solutions GmbH",
+      "channelId": "b2b-resale",
+      "status": "verified-pass",
+      "valueGates": { "companyExists": true, "germanyPresence": true, "activeNetworking": true, "submittedLaneMembership": true, "uniqueCanonicalCompany": true },
+      "supportedRoles": ["VAR", "SI", "MSP"],
+      "levels": { "productUseCaseFit": 2, "cooperationPath": 4, "independentInformationConfidence": 4 },
+      "evidence": [
+        { "url": "https://www.acp.de/", "supports": ["German IT solution provider", "Network Security practice", "hardware, software and managed services"] },
+        { "url": "https://www.acp.de/hubfs/Acp_De-2018/PDF/Aucotec.pdf", "supports": ["vendor-independent hardware supply and network/security implementation"] }
+      ],
+      "reason": "A credible VAR/SI with relevant network infrastructure work, but public detail on the active product mix and buying route is less specific."
+    },
+    {
+      "dossierId": "DOS-499B9CF2D84F",
+      "companyName": "SoftwareOne Deutschland GmbH",
+      "channelId": "b2b-resale",
+      "status": "verified-fail",
+      "valueGates": { "companyExists": true, "germanyPresence": true, "activeNetworking": false, "submittedLaneMembership": true, "uniqueCanonicalCompany": true },
+      "supportedRoles": ["Reseller", "Cloud Service Provider"],
+      "levels": { "productUseCaseFit": 0, "cooperationPath": 0, "independentInformationConfidence": 4 },
+      "evidence": [
+        { "url": "https://www.softwareone.com/", "supports": ["enterprise software and cloud focus", "no demonstrated Cudy-relevant active-networking offer in reviewed official portfolio"] }
+      ],
+      "reason": "The company is real and can resell technology, but the reviewed offer does not demonstrate active networking hardware relevant to Cudy."
+    },
+    {
+      "dossierId": "DOS-9F732BE06E7B",
+      "companyName": "Axians Deutschland",
+      "channelId": "b2b-resale",
+      "status": "verified-pass",
+      "valueGates": { "companyExists": true, "germanyPresence": true, "activeNetworking": true, "submittedLaneMembership": true, "uniqueCanonicalCompany": true },
+      "supportedRoles": ["VAR", "SI", "MSP"],
+      "levels": { "productUseCaseFit": 2, "cooperationPath": 5, "independentInformationConfidence": 4 },
+      "evidence": [
+        { "url": "https://www.axians.de/use-case/beratung-und-technischer-support-fuer-internationalen-w-lan-refresh/", "supports": ["WLAN hardware procurement and delivery", "advice and technical support"] },
+        { "url": "https://www.axians.de/", "supports": ["German Enterprise Networks and managed-services practices"] }
+      ],
+      "reason": "A valid VAR/SI path is proven by WLAN hardware procurement, though its typical solutions are much more enterprise-focused than Cudy."
+    },
+    {
+      "dossierId": "DOS-4535F43AAEBC",
+      "companyName": "Concat AG",
+      "channelId": "b2b-resale",
+      "status": "verified-pass",
+      "valueGates": { "companyExists": true, "germanyPresence": true, "activeNetworking": true, "submittedLaneMembership": true, "uniqueCanonicalCompany": true },
+      "supportedRoles": ["VAR", "SI", "MSP"],
+      "levels": { "productUseCaseFit": 2, "cooperationPath": 4, "independentInformationConfidence": 4 },
+      "evidence": [
+        { "url": "https://www.concat.de/portfolio/networking/", "supports": ["enterprise networking solution business"] },
+        { "url": "https://www.concat.de/partner/", "supports": ["Aruba and other technology-vendor partnerships", "consulting and implementation path"] }
+      ],
+      "reason": "A genuine networking VAR/SI, but the public offer is enterprise-heavy and does not show as direct a procurement route as stronger results."
+    },
+    {
+      "dossierId": "DOS-9B09D2614787",
+      "companyName": "Skaylink GmbH",
+      "channelId": "b2b-resale",
+      "status": "verified-fail",
+      "valueGates": { "companyExists": true, "germanyPresence": true, "activeNetworking": false, "submittedLaneMembership": false, "uniqueCanonicalCompany": true },
+      "supportedRoles": ["Cloud Service Provider", "MSP", "SI"],
+      "levels": { "productUseCaseFit": 0, "cooperationPath": 0, "independentInformationConfidence": 4 },
+      "evidence": [
+        { "url": "https://www.skaylink.com/en/", "supports": ["cloud transformation and managed-services focus", "no demonstrated active-networking resale business in reviewed official portfolio"] }
+      ],
+      "reason": "The company is a real cloud consultancy/MSP, but neither Cudy-relevant active networking nor the submitted B2B hardware-resale lane is demonstrated."
+    },
+
+    {
+      "dossierId": "DOS-7CEFA4A953B7",
+      "companyName": "Controlware GmbH",
+      "channelId": "project-services",
+      "status": "verified-pass",
+      "valueGates": { "companyExists": true, "germanyPresence": true, "activeNetworking": true, "submittedLaneMembership": true, "uniqueCanonicalCompany": true },
+      "supportedRoles": ["SI", "MSP"],
+      "levels": { "productUseCaseFit": 2, "cooperationPath": 5, "independentInformationConfidence": 5 },
+      "evidence": [
+        { "url": "https://www.controlware.de/loesungen/network-solutions", "supports": ["WLAN design and bill-of-material input", "Wi-Fi, switching, routing and campus networking", "managed operation"] },
+        { "url": "https://www.controlware.de/services/managed-services/network-as-a-service", "supports": ["router, switch and firewall provision", "full managed path"] }
+      ],
+      "reason": "A strong SI/MSP path with specification and deployment control, but positioned mainly for sophisticated enterprise networks."
+    },
+    {
+      "dossierId": "DOS-C7771BB02330",
+      "companyName": "DATAGROUP SE",
+      "channelId": "project-services",
+      "status": "verified-pass",
+      "valueGates": { "companyExists": true, "germanyPresence": true, "activeNetworking": true, "submittedLaneMembership": true, "uniqueCanonicalCompany": true },
+      "supportedRoles": ["SI", "MSP", "Installer"],
+      "levels": { "productUseCaseFit": 3, "cooperationPath": 5, "independentInformationConfidence": 5 },
+      "evidence": [
+        { "url": "https://www.datagroup.de/en/corbox/network-services/managed-lan-wlan", "supports": ["plans, provides, installs and operates routers, switches and access points", "managed LAN and WLAN"] },
+        { "url": "https://www.datagroup.de/corbox/network-services/", "supports": ["German network implementation and operations"] }
+      ],
+      "reason": "A clearly valid project-services lead with control across planning, provision, installation and operation of active network devices."
+    },
+    {
+      "dossierId": "DOS-3A8635AE8757",
+      "companyName": "SPIE Deutschland & Zentraleuropa",
+      "channelId": "project-services",
+      "status": "verified-pass",
+      "valueGates": { "companyExists": true, "germanyPresence": true, "activeNetworking": true, "submittedLaneMembership": true, "uniqueCanonicalCompany": true },
+      "supportedRoles": ["SI", "Installer"],
+      "levels": { "productUseCaseFit": 4, "cooperationPath": 5, "independentInformationConfidence": 5 },
+      "evidence": [
+        { "url": "https://spie.de/leistungen/it-solutions/network-infrastructure", "supports": ["selects, supplies and installs network equipment", "switching, routing, enterprise WLAN and LAN", "planning, operation and maintenance"] },
+        { "url": "https://spie.de/leistungen/it-solutions/netzwerktechnik-infrastruktur", "supports": ["German active-network installation, maintenance and operation"] }
+      ],
+      "reason": "An unusually complete project path: product selection, supply, installation and lifecycle responsibility are all public."
+    },
+    {
+      "dossierId": "DOS-9C9B65E0FA03",
+      "companyName": "telent GmbH",
+      "channelId": "project-services",
+      "status": "verified-pass",
+      "valueGates": { "companyExists": true, "germanyPresence": true, "activeNetworking": true, "submittedLaneMembership": true, "uniqueCanonicalCompany": true },
+      "supportedRoles": ["SI"],
+      "levels": { "productUseCaseFit": 2, "cooperationPath": 4, "independentInformationConfidence": 5 },
+      "evidence": [
+        { "url": "https://www.telent.de/de/loesungen-services/campus-data-center/wlan-funknetzwerke", "supports": ["WLAN planning and product selection"] },
+        { "url": "https://www.telent.de/de/unternehmen/partner", "supports": ["plans, builds and operates networks with named router and switch vendors"] }
+      ],
+      "reason": "A verified network SI with product influence, but its critical-infrastructure and industrial positioning is substantially above Cudy's core segment."
+    },
+    {
+      "dossierId": "DOS-F5E5F357BBA8",
+      "companyName": "VINCI Energies Deutschland GmbH",
+      "channelId": "project-services",
+      "status": "verified-pass",
+      "valueGates": { "companyExists": true, "germanyPresence": true, "activeNetworking": true, "submittedLaneMembership": true, "uniqueCanonicalCompany": true },
+      "supportedRoles": ["SI", "MSP"],
+      "levels": { "productUseCaseFit": 2, "cooperationPath": 4, "independentInformationConfidence": 4 },
+      "evidence": [
+        { "url": "https://www.vinci-energies.de/unsere-bereiche/informations-und-kommunikationstechnologie-ict-axians/", "supports": ["German Axians ICT business line", "enterprise networks and managed services", "consultants and technicians"] },
+        { "url": "https://www.vinci-energies.de/app/uploads/sites/28/2025/02/20250227-PM-VINCI-Energies-Actemium-Axians-Data-Driven-Industry-Hannover-Messe.pdf", "supports": ["Axians enterprise-network integration under VINCI Energies Germany"] }
+      ],
+      "reason": "A valid group-level project lead through the Axians business line, though less directly actionable and more enterprise-oriented than the operating-company results."
+    },
+    {
+      "dossierId": "DOS-6C0F64F51D7F",
+      "companyName": "BFE Studio und Medien Systeme GmbH",
+      "channelId": "project-services",
+      "status": "verified-fail",
+      "valueGates": { "companyExists": true, "germanyPresence": true, "activeNetworking": false, "submittedLaneMembership": true, "uniqueCanonicalCompany": true },
+      "supportedRoles": ["SI"],
+      "levels": { "productUseCaseFit": 0, "cooperationPath": 0, "independentInformationConfidence": 4 },
+      "evidence": [
+        { "url": "https://www.bfe.tv/", "supports": ["broadcast studio and media-system integration focus", "no demonstrated Cudy-relevant active-networking offer in reviewed official portfolio"] }
+      ],
+      "reason": "The company and project role are real, but media-system IP connectivity does not prove a relevant active-network hardware business."
+    },
+    {
+      "dossierId": "DOS-CB8E0BA6A3D8",
+      "companyName": "EQOS Energie Deutschland GmbH",
+      "channelId": "project-services",
+      "status": "verified-fail",
+      "valueGates": { "companyExists": true, "germanyPresence": true, "activeNetworking": false, "submittedLaneMembership": true, "uniqueCanonicalCompany": true },
+      "supportedRoles": ["Installer"],
+      "levels": { "productUseCaseFit": 0, "cooperationPath": 0, "independentInformationConfidence": 4 },
+      "evidence": [
+        { "url": "https://eqos-energie.com/", "supports": ["energy and telecommunications infrastructure contractor", "no demonstrated SOHO/SMB active-network product selection or deployment in reviewed official portfolio"] }
+      ],
+      "reason": "Its installer role is genuine, but public work concerns energy and carrier infrastructure rather than Cudy-relevant active LAN/WLAN products."
+    },
+    {
+      "dossierId": "DOS-F49ED4051F4B",
+      "companyName": "KUPPER IT GmbH",
+      "channelId": "project-services",
+      "status": "verified-pass",
+      "valueGates": { "companyExists": true, "germanyPresence": true, "activeNetworking": true, "submittedLaneMembership": true, "uniqueCanonicalCompany": true },
+      "supportedRoles": ["VAR", "SI", "MSP"],
+      "levels": { "productUseCaseFit": 3, "cooperationPath": 5, "independentInformationConfidence": 5 },
+      "evidence": [
+        { "url": "https://www.kupper-it.com/unternehmen/ueber-kupper", "supports": ["designs, implements and maintains network infrastructure"] },
+        { "url": "https://www.kupper-it.com/portfolio/infrastrukturen-produkte/produkthandel", "supports": ["direct manufacturer contracts", "network hardware selection, supply, logistics and lifecycle support"] }
+      ],
+      "reason": "A commercially actionable regional SI/VAR with direct buying routes and lifecycle control, though its public network product detail is broad."
+    },
+    {
+      "dossierId": "DOS-DCFF23CF432A",
+      "companyName": "KUMAVISION AG",
+      "channelId": "project-services",
+      "status": "verified-fail",
+      "valueGates": { "companyExists": true, "germanyPresence": true, "activeNetworking": false, "submittedLaneMembership": true, "uniqueCanonicalCompany": true },
+      "supportedRoles": ["SI", "Consultancy"],
+      "levels": { "productUseCaseFit": 0, "cooperationPath": 0, "independentInformationConfidence": 4 },
+      "evidence": [
+        { "url": "https://kumavision.com/dienstleistung/erp-beratungsunternehmen", "supports": ["ERP and business-software consulting focus", "no demonstrated active-networking hardware business"] }
+      ],
+      "reason": "A real software SI, but not a demonstrated buyer, specifier or deployer of Cudy-relevant active networking."
+    },
+    {
+      "dossierId": "DOS-2AFFBE9C4879",
+      "companyName": "GISA GmbH",
+      "channelId": "project-services",
+      "status": "verified-fail",
+      "valueGates": { "companyExists": true, "germanyPresence": true, "activeNetworking": false, "submittedLaneMembership": true, "uniqueCanonicalCompany": true },
+      "supportedRoles": ["SI", "MSP"],
+      "levels": { "productUseCaseFit": 0, "cooperationPath": 0, "independentInformationConfidence": 4 },
+      "evidence": [
+        { "url": "https://www.gisa.de/business-processes/client-management/", "supports": ["IT service and endpoint connectivity work", "no demonstrated control over customer router, switch or AP procurement"] },
+        { "url": "https://www.gisa.de/cloud-services-und-datacenter/", "supports": ["cloud and data-center focus"] }
+      ],
+      "reason": "The company is a valid IT service provider, but the reviewed material does not prove influence over Cudy-relevant active-network hardware."
+    }
+  ]
+}

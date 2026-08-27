@@ -79,6 +79,8 @@
     "benchmark:v1.3:freeze-human-audit": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/freeze-v1.3-human-audit.ts",
     "benchmark:v1.3:aggregate-human-audit": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/aggregate-v1.3-human-audit.ts",
     "benchmark:v1.3:verify": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/verify-v1.3-run.ts",
+    "benchmark:v1.4:score": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/score-v1.4-independent-value.ts",
+    "benchmark:v1.4:verify": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/verify-v1.4-run.ts",
     "benchmark:discovery:verify": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/verify-discovery-run.ts"
   },
   "dependencies": {

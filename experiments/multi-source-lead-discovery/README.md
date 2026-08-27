@@ -2,6 +2,8 @@
 
 This experiment is isolated from the production lead workflow. It compares discovery coverage across Gemini Grounding, Tavily, Google Places, Exa, Brave Search and SearchAPI.io before any provider is added to production.
 
+Current result: [`reports/v1.4-independent-value-final-report.md`](reports/v1.4-independent-value-final-report.md). v1.4 evaluates candidate value after provider-neutral verification, displays provider evidence completeness separately at zero weight, and supersedes the earlier extraction-pipeline leaderboard.
+
 ## Environment stage
 
 No provider SDK is required. The adapters use Node's native `fetch`, which keeps request payloads auditable and avoids six extra dependency trees.

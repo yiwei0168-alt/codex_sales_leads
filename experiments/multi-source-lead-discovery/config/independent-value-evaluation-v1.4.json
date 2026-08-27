@@ -1,0 +1,52 @@
+{
+  "protocolVersion": "independent-candidate-value-v1.4",
+  "status": "confirmed",
+  "objective": "Compare the value delivered to the user: real German companies, valid submitted-lane business, Cudy-relevant active networking, and a usable cooperation path.",
+  "submissionBoundary": "Provider output proposes candidates and may include helpful citations, but provider-authored summaries and missing provider citations never decide candidate truth or main-score eligibility.",
+  "independentAdjudication": {
+    "unit": "canonical company plus submitted lane",
+    "reuseAcrossSystems": true,
+    "states": [
+      "verified-pass",
+      "verified-fail",
+      "unresolved"
+    ],
+    "zeroScoreRule": "Only a verified-fail decision or a failed independently supported value gate may force zero. Retrieval failure alone remains unresolved.",
+    "finalizationRule": "Every specially adjudicated Gemini Full candidate must be resolved before the leaderboard is final."
+  },
+  "mainScore": {
+    "valueGates": [
+      "companyExists",
+      "germanyPresence",
+      "activeNetworking",
+      "submittedLaneMembership",
+      "uniqueCanonicalCompany"
+    ],
+    "weights": {
+      "productUseCaseFit": 9,
+      "cooperationPath": 7,
+      "independentInformationConfidence": 4,
+      "maximum": 100
+    },
+    "independentInformationConfidenceLevels": {
+      "5": "Current, specific official material resolves the company, Germany, active-networking, lane and operational path claims.",
+      "4": "Concrete official material resolves the core claims, but one operational detail is indirect, group-level or less specific.",
+      "3": "Official material supports the core classification but remains broad about products or operational control.",
+      "2": "Only partial independently checkable support exists.",
+      "1": "The claim remains weak after independent review.",
+      "0": "No independently usable information was found or the claim is contradicted."
+    },
+    "interpretation": "Product/use-case fit and cooperation path contribute 80% of the score. Independent information confidence contributes 20%."
+  },
+  "providerEvidenceCompleteness": {
+    "fieldName": "provider_evidence_completeness",
+    "definition": "Share of submitted canonical occurrences for which the discovery provider supplied at least one non-empty URL and excerpt in its own submission.",
+    "mainScoreWeight": 0,
+    "isTruthMetric": false,
+    "warning": "This measures submission structure, not whether a provider claim is correct or independently verifiable."
+  },
+  "humanAudit": {
+    "newAuditRequired": false,
+    "reason": "The confirmed role, lane, fit and cooperation-path rubric is unchanged; v1.4 corrects the evidence-source boundary and reuses the completed v1.3 human calibration."
+  }
+}

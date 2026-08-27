@@ -1,0 +1,3990 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-08-27-de-v1.3",
+  "generatedAt": "2026-08-27T09:55:19.877Z",
+  "status": "final-no-new-human-audit",
+  "policy": {
+    "version": "independent-candidate-value-v1.4",
+    "mainValueGates": [
+      "companyExists",
+      "germanyPresence",
+      "activeNetworking",
+      "submittedLaneMembership",
+      "uniqueCanonicalCompany"
+    ],
+    "providerSubmissionRule": "Provider citations and provider-authored summaries never decide truth or eligibility.",
+    "independentDecisionRule": "Only verified-fail can force a specially adjudicated candidate to zero; unresolved decisions prevent finalization.",
+    "sharingRule": "An independent decision is keyed by canonical company plus submitted lane and reused across every system occurrence.",
+    "weights": {
+      "productUseCaseFit": 9,
+      "cooperationPath": 7,
+      "independentInformationConfidence": 4,
+      "maximum": 100
+    },
+    "provider_evidence_completeness": {
+      "mainScoreWeight": 0,
+      "isTruthMetric": false
+    },
+    "comparisonRule": "Rank within each channel and average three fixed ten-slot channel scores.",
+    "humanAuditRule": "No new blind audit; v1.3 confirmed role, lane, fit and cooperation-path judgments are unchanged."
+  },
+  "interpretation": {
+    "mainRanking": "Candidate value after provider-neutral verification and confirmed v1.3 calibration.",
+    "provider_evidence_completeness": "Zero-weight structural diagnostic only; it is neither a correctness score nor a value gate.",
+    "geminiHistory": {
+      "v1_2_nativeRawUnaccepted": 78.5,
+      "v1_3_1_evidencePipelineLowerBound": 1.7,
+      "v1_4": "Use the independently adjudicated main-ranking value below."
+    }
+  },
+  "systems": [
+    {
+      "systemId": "gemini-full",
+      "channels": [
+        {
+          "channelId": "tier1-distribution",
+          "submittedCanonicalCandidates": 10,
+          "eligibleCandidates": 10,
+          "selectedCount": 10,
+          "rejectedByValueGate": 0,
+          "top10ScoreSum": 911,
+          "meanPerTargetSlot": 91.1,
+          "meanSelectedScore": 91.1,
+          "provider_evidence_completeness": {
+            "submittedCanonicalOccurrences": 10,
+            "completeOccurrences": 10,
+            "incompleteOccurrences": 0,
+            "percentage": 100,
+            "mainScoreWeight": 0
+          },
+          "selected": [
+            {
+              "dossierId": "DOS-CE5CFF2ED35C",
+              "companyName": "ALLNET GmbH Computersysteme",
+              "officialUrl": "https://distribution.allnet.de/",
+              "systemId": "gemini-full",
+              "channelId": "tier1-distribution",
+              "submittedRank": 1,
+              "supportedRoles": [
+                "Distributor",
+                "VAD"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 5,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 5
+              },
+              "score": 100,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "A specialist networking distributor with downstream channel supply, exact Cudy-adjacent product families and a public reseller route.",
+              "independentEvidence": [
+                {
+                  "url": "https://distribution.allnet.de/",
+                  "supports": [
+                    "German networking distributor",
+                    "supplies resellers and system houses",
+                    "active networking and wireless portfolio",
+                    "pre-sales and after-sales value add"
+                  ]
+                },
+                {
+                  "url": "https://distribution.allnet.de/register-as-var.html",
+                  "supports": [
+                    "repeatable reseller onboarding path"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 1
+            },
+            {
+              "dossierId": "DOS-1C5CBA9A30BE",
+              "companyName": "Komsa AG",
+              "officialUrl": "https://komsa.com/",
+              "systemId": "gemini-full",
+              "channelId": "tier1-distribution",
+              "submittedRank": 5,
+              "supportedRoles": [
+                "Distributor",
+                "VAD"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 5,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 5
+              },
+              "score": 100,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "A high-value distributor result with exact product-family overlap, comparable brands, channel supply and strong value-added services.",
+              "independentEvidence": [
+                {
+                  "url": "https://komsa.com/b2b-handel",
+                  "supports": [
+                    "distributor identity",
+                    "partner supply",
+                    "routers, switches and access points",
+                    "technical support, training and logistics"
+                  ]
+                },
+                {
+                  "url": "https://komsa.com/loesungen/netzwerktechnik/",
+                  "supports": [
+                    "D-Link, Huawei and other active-networking solutions",
+                    "professional networking use cases"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 2
+            },
+            {
+              "dossierId": "DOS-F9BE6DD361F7",
+              "companyName": "Littlebit Technology Deutschland GmbH",
+              "officialUrl": "https://www.littlebit.de/",
+              "systemId": "gemini-full",
+              "channelId": "tier1-distribution",
+              "submittedRank": 8,
+              "supportedRoles": [
+                "Distributor",
+                "VAD"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 5,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 5
+              },
+              "score": 100,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "An especially strong match: comparable cost-efficient networking products, official distribution rights and a repeatable reseller path.",
+              "independentEvidence": [
+                {
+                  "url": "https://www.littlebit.de/ubiquiti-netzwerkloesungen",
+                  "supports": [
+                    "official Ubiquiti distributor",
+                    "AP, switch, router and mesh portfolio",
+                    "stock, partner pricing, training and project support"
+                  ]
+                },
+                {
+                  "url": "https://www.littlebit.de/zusammenarbeit",
+                  "supports": [
+                    "reseller-only ordering route",
+                    "inventory, logistics and manufacturer relationships"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 3
+            },
+            {
+              "dossierId": "DOS-60AAC068D0C7",
+              "companyName": "Ecom Electronic Components Trading GmbH",
+              "officialUrl": "https://www.ecom-trading.de/",
+              "systemId": "gemini-full",
+              "channelId": "tier1-distribution",
+              "submittedRank": 10,
+              "supportedRoles": [
+                "Wholesaler",
+                "Distributor"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 5,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 5
+              },
+              "score": 100,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "A highly relevant networking wholesaler with a live comparable-brand catalog; v1.4 also corrects the operational official domain.",
+              "independentEvidence": [
+                {
+                  "url": "https://www.ecom-trading.de/shop/ubiquiti/",
+                  "supports": [
+                    "hardware wholesaler",
+                    "Ubiquiti router, switch, AP and WLAN catalog",
+                    "live online-shop route"
+                  ]
+                },
+                {
+                  "url": "https://www.ecom-trading.de/shop/hardware/peripherie/netzwerktechnik/",
+                  "supports": [
+                    "broad networking category and Wi-Fi routers"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 4
+            },
+            {
+              "dossierId": "DOS-CB0220E643FD",
+              "companyName": "ENO Telecom GmbH",
+              "officialUrl": "https://www.eno.de/",
+              "systemId": "gemini-full",
+              "channelId": "tier1-distribution",
+              "submittedRank": 6,
+              "supportedRoles": [
+                "Distributor",
+                "Wholesaler"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 4,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 5
+              },
+              "score": 91,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "A concrete B2B wholesale route with live Cudy-adjacent router and WLAN products.",
+              "independentEvidence": [
+                {
+                  "url": "https://www.eno.de/",
+                  "supports": [
+                    "German B2B IT, telecom and networking supplier",
+                    "business-customer registration and fulfillment"
+                  ]
+                },
+                {
+                  "url": "https://www.eno.de/IT-Gaming-Home-Communication/Festnetz-Netzwerk/Router-Repeater/",
+                  "supports": [
+                    "live router and repeater catalog",
+                    "inventory and wholesale-price fields"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 5
+            },
+            {
+              "dossierId": "DOS-1F6C27A02568",
+              "companyName": "Herweck AG",
+              "officialUrl": "https://www.herweck.de/",
+              "systemId": "gemini-full",
+              "channelId": "tier1-distribution",
+              "submittedRank": 7,
+              "supportedRoles": [
+                "Distributor",
+                "VAD"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 4,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 5
+              },
+              "score": 91,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "A well-evidenced German VAD with networking products, trade customers and a direct partner-onboarding path.",
+              "independentEvidence": [
+                {
+                  "url": "https://herweck.de/leistungen/",
+                  "supports": [
+                    "ITK distribution",
+                    "networking portfolio",
+                    "supply to IT service firms, system houses and retailers",
+                    "logistics, technical and marketing services"
+                  ]
+                },
+                {
+                  "url": "https://partnerwerden.herweck.de/",
+                  "supports": [
+                    "VAD identity",
+                    "reseller onboarding",
+                    "30000 products and technical support"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 6
+            },
+            {
+              "dossierId": "DOS-F67166CAC871",
+              "companyName": "Wave Computersysteme GmbH",
+              "officialUrl": "https://www.wave-distribution.de/",
+              "systemId": "gemini-full",
+              "channelId": "tier1-distribution",
+              "submittedRank": 9,
+              "supportedRoles": [
+                "Distributor",
+                "Wholesaler",
+                "Importer"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 4,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 5
+              },
+              "score": 91,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "A genuine distributor with a live and broad active-networking catalog; it is less networking-specialized than the top matches.",
+              "independentEvidence": [
+                {
+                  "url": "https://www.wave-distribution.de/",
+                  "supports": [
+                    "German wholesaler, distributor and importer",
+                    "business-customer registration and delivery"
+                  ]
+                },
+                {
+                  "url": "https://www.wave-distribution.de/Hardware",
+                  "supports": [
+                    "live networking categories",
+                    "access points, firewalls, modems, routers, switches and WLAN"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 7
+            },
+            {
+              "dossierId": "DOS-34980A2004F3",
+              "companyName": "Ingram Micro Distribution GmbH",
+              "officialUrl": "https://de.ingrammicro.eu/",
+              "systemId": "gemini-full",
+              "channelId": "tier1-distribution",
+              "submittedRank": 3,
+              "supportedRoles": [
+                "Distributor",
+                "VAD"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 5
+              },
+              "score": 82,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "A proven large distributor with downstream reach and networking enablement; the visible portfolio is broad and enterprise-weighted.",
+              "independentEvidence": [
+                {
+                  "url": "https://de.ingrammicro.eu/one-im-b4/public/unternehmen/auf-einen-blick",
+                  "supports": [
+                    "German ITK wholesaler",
+                    "35000 trade partners",
+                    "350 suppliers and 100000 products",
+                    "distribution center and services"
+                  ]
+                },
+                {
+                  "url": "https://de.ingrammicro.eu/one-im-b4/services-and-trainings/managed-services/managed-network-services?lang=de",
+                  "supports": [
+                    "managed LAN, WLAN and firewall technologies",
+                    "reseller enablement and support"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 8
+            },
+            {
+              "dossierId": "DOS-42210E8B828E",
+              "companyName": "ALSO Deutschland GmbH",
+              "officialUrl": "https://www.also.de/",
+              "systemId": "gemini-full",
+              "channelId": "tier1-distribution",
+              "submittedRank": 2,
+              "supportedRoles": [
+                "Distributor",
+                "VAD"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 4
+              },
+              "score": 78,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "A major German ITK distributor with a clear downstream reseller path; product relevance is broad rather than Cudy-specialist.",
+              "independentEvidence": [
+                {
+                  "url": "https://www.also.com/ec/cms5/de_1010/1010/kunden/index.jsp",
+                  "supports": [
+                    "manufacturer-to-reseller channel position",
+                    "large ITK portfolio",
+                    "distribution and value-added services"
+                  ]
+                },
+                {
+                  "url": "https://www.also.com/ec/cms5/de_6000/6000/reseller-registrierung/index.jsp",
+                  "supports": [
+                    "public partner registration route",
+                    "Germany market option"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 9
+            },
+            {
+              "dossierId": "DOS-5168C944EB18",
+              "companyName": "TD SYNNEX Germany",
+              "officialUrl": "https://de.tdsynnex.com/",
+              "systemId": "gemini-full",
+              "channelId": "tier1-distribution",
+              "submittedRank": 4,
+              "supportedRoles": [
+                "Distributor",
+                "VAD"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 4
+              },
+              "score": 78,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "The direct channel path is explicit and highly repeatable; Cudy fit is credible but less specifically demonstrated than at networking-specialist distributors.",
+              "independentEvidence": [
+                {
+                  "url": "https://dach.tdsynnex.com/cloud/at/kontakt-2/",
+                  "supports": [
+                    "distributor-to-reseller model",
+                    "Germany eligibility",
+                    "does not sell directly to end customers"
+                  ]
+                },
+                {
+                  "url": "https://dach.tdsynnex.com/blog/de/wp-content/uploads/sites/2/2023/07/Final-10-Reasons-AWS-Broschuereonline.pdf",
+                  "supports": [
+                    "German distributor organization",
+                    "procurement, consulting and partner services"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 10
+            }
+          ]
+        },
+        {
+          "channelId": "b2b-resale",
+          "submittedCanonicalCandidates": 10,
+          "eligibleCandidates": 8,
+          "selectedCount": 8,
+          "rejectedByValueGate": 2,
+          "top10ScoreSum": 581,
+          "meanPerTargetSlot": 58.1,
+          "meanSelectedScore": 72.63,
+          "provider_evidence_completeness": {
+            "submittedCanonicalOccurrences": 10,
+            "completeOccurrences": 10,
+            "incompleteOccurrences": 0,
+            "percentage": 100,
+            "mainScoreWeight": 0
+          },
+          "selected": [
+            {
+              "dossierId": "DOS-038F1F349F23",
+              "companyName": "Bechtle AG",
+              "officialUrl": "https://www.bechtle.com/",
+              "systemId": "gemini-full",
+              "channelId": "b2b-resale",
+              "submittedRank": 1,
+              "supportedRoles": [
+                "Reseller",
+                "VAR",
+                "SI"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 4,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 5
+              },
+              "score": 91,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "A high-value VAR/reseller with both a transaction path and implementation capability across relevant network products.",
+              "independentEvidence": [
+                {
+                  "url": "https://www.bechtle.com/shop/hardware/it-infrastruktur/netzwerk--10006005--c",
+                  "supports": [
+                    "live B2B networking shop",
+                    "active networking hardware and purchase path"
+                  ]
+                },
+                {
+                  "url": "https://www.bechtle.com/it-services/bechtle-services/wlan-planung-und-ausleuchtung",
+                  "supports": [
+                    "WLAN design and deployment capability"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 1
+            },
+            {
+              "dossierId": "DOS-749C6122253C",
+              "companyName": "netgo GmbH",
+              "officialUrl": "https://www.netgo.de/",
+              "systemId": "gemini-full",
+              "channelId": "b2b-resale",
+              "submittedRank": 5,
+              "supportedRoles": [
+                "VAR",
+                "SI",
+                "MSP"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 5
+              },
+              "score": 82,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "A strong VAR/MSP result with explicit hardware procurement, customer ordering and full network lifecycle control.",
+              "independentEvidence": [
+                {
+                  "url": "https://www.netgo.de/network/network-as-a-service",
+                  "supports": [
+                    "LAN, WLAN and firewall hardware",
+                    "planning, procurement, installation and operation",
+                    "small-company through enterprise offer"
+                  ]
+                },
+                {
+                  "url": "https://www.netgo.de/centralhub",
+                  "supports": [
+                    "customer e-store and hardware ordering",
+                    "vendor partnerships and repeatable procurement"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 2
+            },
+            {
+              "dossierId": "DOS-512D65ADA011",
+              "companyName": "CANCOM SE",
+              "officialUrl": "https://www.cancom.de/",
+              "systemId": "gemini-full",
+              "channelId": "b2b-resale",
+              "submittedRank": 2,
+              "supportedRoles": [
+                "VAR",
+                "SI",
+                "MSP"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 2,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 5
+              },
+              "score": 73,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "The VAR path is explicit and strong, but its visible network offer is mainly enterprise-grade and therefore only partly overlaps Cudy.",
+              "independentEvidence": [
+                {
+                  "url": "https://www.cancom.de/loesungen/it-themen/network-connectivity/",
+                  "supports": [
+                    "supplies network hardware",
+                    "LAN, WLAN, routers, gateways and switches",
+                    "planning, implementation and on-site service"
+                  ]
+                },
+                {
+                  "url": "https://www.cancom.de/services/supply-services/service-factory/",
+                  "supports": [
+                    "procurement, logistics and rollout path"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 3
+            },
+            {
+              "dossierId": "DOS-DF573E55B367",
+              "companyName": "SVA System Vertrieb Alexander GmbH",
+              "officialUrl": "https://www.sva.de/",
+              "systemId": "gemini-full",
+              "channelId": "b2b-resale",
+              "submittedRank": 4,
+              "supportedRoles": [
+                "VAR",
+                "SI",
+                "MSP"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 2,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 5
+              },
+              "score": 73,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "A verified VAR/SI cooperation path with major vendors; the product positioning is more enterprise-oriented than Cudy.",
+              "independentEvidence": [
+                {
+                  "url": "https://www.sva.de/de/services/netzwerk/managed-network-as-a-service",
+                  "supports": [
+                    "selects, supplies and configures network hardware",
+                    "Cisco Meraki WLAN, switching, security and SD-WAN",
+                    "full managed lifecycle"
+                  ]
+                },
+                {
+                  "url": "https://www.sva.de/de/dell-networking",
+                  "supports": [
+                    "direct networking vendor access and hardware portfolio"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 4
+            },
+            {
+              "dossierId": "DOS-CEA9A45CE909",
+              "companyName": "Computacenter AG & Co. oHG",
+              "officialUrl": "https://www.computacenter.com/",
+              "systemId": "gemini-full",
+              "channelId": "b2b-resale",
+              "submittedRank": 3,
+              "supportedRoles": [
+                "VAR",
+                "SI",
+                "MSP"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 2,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 4
+              },
+              "score": 69,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "A real large VAR with technology sourcing and networking capability, but heavily oriented to major enterprise and public accounts.",
+              "independentEvidence": [
+                {
+                  "url": "https://careers.computacenter.com/de/cluster/networking/4c3b1d46-8628-5b09-8e5f-55625ad2c8c0",
+                  "supports": [
+                    "German network solutions practice",
+                    "switch, router, LAN, WLAN and WAN implementation"
+                  ]
+                },
+                {
+                  "url": "https://investors.computacenter.com/",
+                  "supports": [
+                    "one of the largest global VARs",
+                    "technology sourcing and managed services"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 5
+            },
+            {
+              "dossierId": "DOS-9F732BE06E7B",
+              "companyName": "Axians Deutschland",
+              "officialUrl": "https://www.axians.de/",
+              "systemId": "gemini-full",
+              "channelId": "b2b-resale",
+              "submittedRank": 8,
+              "supportedRoles": [
+                "VAR",
+                "SI",
+                "MSP"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 2,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 4
+              },
+              "score": 69,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "A valid VAR/SI path is proven by WLAN hardware procurement, though its typical solutions are much more enterprise-focused than Cudy.",
+              "independentEvidence": [
+                {
+                  "url": "https://www.axians.de/use-case/beratung-und-technischer-support-fuer-internationalen-w-lan-refresh/",
+                  "supports": [
+                    "WLAN hardware procurement and delivery",
+                    "advice and technical support"
+                  ]
+                },
+                {
+                  "url": "https://www.axians.de/",
+                  "supports": [
+                    "German Enterprise Networks and managed-services practices"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 6
+            },
+            {
+              "dossierId": "DOS-55841AFCE068",
+              "companyName": "ACP IT Solutions GmbH",
+              "officialUrl": "https://www.acp.de/",
+              "systemId": "gemini-full",
+              "channelId": "b2b-resale",
+              "submittedRank": 6,
+              "supportedRoles": [
+                "VAR",
+                "SI",
+                "MSP"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 2,
+                "cooperationPath": 4,
+                "independentInformationConfidence": 4
+              },
+              "score": 62,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "A credible VAR/SI with relevant network infrastructure work, but public detail on the active product mix and buying route is less specific.",
+              "independentEvidence": [
+                {
+                  "url": "https://www.acp.de/",
+                  "supports": [
+                    "German IT solution provider",
+                    "Network Security practice",
+                    "hardware, software and managed services"
+                  ]
+                },
+                {
+                  "url": "https://www.acp.de/hubfs/Acp_De-2018/PDF/Aucotec.pdf",
+                  "supports": [
+                    "vendor-independent hardware supply and network/security implementation"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 7
+            },
+            {
+              "dossierId": "DOS-4535F43AAEBC",
+              "companyName": "Concat AG",
+              "officialUrl": "https://www.concat.de/",
+              "systemId": "gemini-full",
+              "channelId": "b2b-resale",
+              "submittedRank": 9,
+              "supportedRoles": [
+                "VAR",
+                "SI",
+                "MSP"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 2,
+                "cooperationPath": 4,
+                "independentInformationConfidence": 4
+              },
+              "score": 62,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "A genuine networking VAR/SI, but the public offer is enterprise-heavy and does not show as direct a procurement route as stronger results.",
+              "independentEvidence": [
+                {
+                  "url": "https://www.concat.de/portfolio/networking/",
+                  "supports": [
+                    "enterprise networking solution business"
+                  ]
+                },
+                {
+                  "url": "https://www.concat.de/partner/",
+                  "supports": [
+                    "Aruba and other technology-vendor partnerships",
+                    "consulting and implementation path"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 8
+            }
+          ]
+        },
+        {
+          "channelId": "project-services",
+          "submittedCanonicalCandidates": 10,
+          "eligibleCandidates": 6,
+          "selectedCount": 6,
+          "rejectedByValueGate": 4,
+          "top10ScoreSum": 456,
+          "meanPerTargetSlot": 45.6,
+          "meanSelectedScore": 76,
+          "provider_evidence_completeness": {
+            "submittedCanonicalOccurrences": 10,
+            "completeOccurrences": 10,
+            "incompleteOccurrences": 0,
+            "percentage": 100,
+            "mainScoreWeight": 0
+          },
+          "selected": [
+            {
+              "dossierId": "DOS-3A8635AE8757",
+              "companyName": "SPIE Deutschland & Zentraleuropa",
+              "officialUrl": "https://spie.de/",
+              "systemId": "gemini-full",
+              "channelId": "project-services",
+              "submittedRank": 3,
+              "supportedRoles": [
+                "SI",
+                "Installer"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 4,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 5
+              },
+              "score": 91,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "An unusually complete project path: product selection, supply, installation and lifecycle responsibility are all public.",
+              "independentEvidence": [
+                {
+                  "url": "https://spie.de/leistungen/it-solutions/network-infrastructure",
+                  "supports": [
+                    "selects, supplies and installs network equipment",
+                    "switching, routing, enterprise WLAN and LAN",
+                    "planning, operation and maintenance"
+                  ]
+                },
+                {
+                  "url": "https://spie.de/leistungen/it-solutions/netzwerktechnik-infrastruktur",
+                  "supports": [
+                    "German active-network installation, maintenance and operation"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 1
+            },
+            {
+              "dossierId": "DOS-C7771BB02330",
+              "companyName": "DATAGROUP SE",
+              "officialUrl": "https://www.datagroup.de/",
+              "systemId": "gemini-full",
+              "channelId": "project-services",
+              "submittedRank": 2,
+              "supportedRoles": [
+                "SI",
+                "MSP",
+                "Installer"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 5
+              },
+              "score": 82,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "A clearly valid project-services lead with control across planning, provision, installation and operation of active network devices.",
+              "independentEvidence": [
+                {
+                  "url": "https://www.datagroup.de/en/corbox/network-services/managed-lan-wlan",
+                  "supports": [
+                    "plans, provides, installs and operates routers, switches and access points",
+                    "managed LAN and WLAN"
+                  ]
+                },
+                {
+                  "url": "https://www.datagroup.de/corbox/network-services/",
+                  "supports": [
+                    "German network implementation and operations"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 2
+            },
+            {
+              "dossierId": "DOS-F49ED4051F4B",
+              "companyName": "KUPPER IT GmbH",
+              "officialUrl": "https://www.kupper-it.com/",
+              "systemId": "gemini-full",
+              "channelId": "project-services",
+              "submittedRank": 8,
+              "supportedRoles": [
+                "VAR",
+                "SI",
+                "MSP"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 5
+              },
+              "score": 82,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "A commercially actionable regional SI/VAR with direct buying routes and lifecycle control, though its public network product detail is broad.",
+              "independentEvidence": [
+                {
+                  "url": "https://www.kupper-it.com/unternehmen/ueber-kupper",
+                  "supports": [
+                    "designs, implements and maintains network infrastructure"
+                  ]
+                },
+                {
+                  "url": "https://www.kupper-it.com/portfolio/infrastrukturen-produkte/produkthandel",
+                  "supports": [
+                    "direct manufacturer contracts",
+                    "network hardware selection, supply, logistics and lifecycle support"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 3
+            },
+            {
+              "dossierId": "DOS-7CEFA4A953B7",
+              "companyName": "Controlware GmbH",
+              "officialUrl": "https://www.controlware.de/",
+              "systemId": "gemini-full",
+              "channelId": "project-services",
+              "submittedRank": 1,
+              "supportedRoles": [
+                "SI",
+                "MSP"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 2,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 5
+              },
+              "score": 73,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "A strong SI/MSP path with specification and deployment control, but positioned mainly for sophisticated enterprise networks.",
+              "independentEvidence": [
+                {
+                  "url": "https://www.controlware.de/loesungen/network-solutions",
+                  "supports": [
+                    "WLAN design and bill-of-material input",
+                    "Wi-Fi, switching, routing and campus networking",
+                    "managed operation"
+                  ]
+                },
+                {
+                  "url": "https://www.controlware.de/services/managed-services/network-as-a-service",
+                  "supports": [
+                    "router, switch and firewall provision",
+                    "full managed path"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 4
+            },
+            {
+              "dossierId": "DOS-9C9B65E0FA03",
+              "companyName": "telent GmbH",
+              "officialUrl": "https://www.telent.de/",
+              "systemId": "gemini-full",
+              "channelId": "project-services",
+              "submittedRank": 4,
+              "supportedRoles": [
+                "SI"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 2,
+                "cooperationPath": 4,
+                "independentInformationConfidence": 5
+              },
+              "score": 66,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "A verified network SI with product influence, but its critical-infrastructure and industrial positioning is substantially above Cudy's core segment.",
+              "independentEvidence": [
+                {
+                  "url": "https://www.telent.de/de/loesungen-services/campus-data-center/wlan-funknetzwerke",
+                  "supports": [
+                    "WLAN planning and product selection"
+                  ]
+                },
+                {
+                  "url": "https://www.telent.de/de/unternehmen/partner",
+                  "supports": [
+                    "plans, builds and operates networks with named router and switch vendors"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 5
+            },
+            {
+              "dossierId": "DOS-F5E5F357BBA8",
+              "companyName": "VINCI Energies Deutschland GmbH",
+              "officialUrl": "https://www.vinci-energies.de/",
+              "systemId": "gemini-full",
+              "channelId": "project-services",
+              "submittedRank": 5,
+              "supportedRoles": [
+                "SI",
+                "MSP"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 2,
+                "cooperationPath": 4,
+                "independentInformationConfidence": 4
+              },
+              "score": 62,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "A valid group-level project lead through the Axians business line, though less directly actionable and more enterprise-oriented than the operating-company results.",
+              "independentEvidence": [
+                {
+                  "url": "https://www.vinci-energies.de/unsere-bereiche/informations-und-kommunikationstechnologie-ict-axians/",
+                  "supports": [
+                    "German Axians ICT business line",
+                    "enterprise networks and managed services",
+                    "consultants and technicians"
+                  ]
+                },
+                {
+                  "url": "https://www.vinci-energies.de/app/uploads/sites/28/2025/02/20250227-PM-VINCI-Energies-Actemium-Axians-Data-Driven-Industry-Hannover-Messe.pdf",
+                  "supports": [
+                    "Axians enterprise-network integration under VINCI Energies Germany"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 6
+            }
+          ]
+        }
+      ],
+      "macroMeanPerTargetSlot": 64.93,
+      "provider_evidence_completeness": {
+        "submittedCanonicalOccurrences": 30,
+        "completeOccurrences": 30,
+        "incompleteOccurrences": 0,
+        "percentage": 100,
+        "mainScoreWeight": 0
+      },
+      "rank": 1
+    },
+    {
+      "systemId": "product-google-places-local",
+      "channels": [
+        {
+          "channelId": "tier1-distribution",
+          "submittedCanonicalCandidates": 125,
+          "eligibleCandidates": 1,
+          "selectedCount": 1,
+          "rejectedByValueGate": 124,
+          "top10ScoreSum": 74,
+          "meanPerTargetSlot": 7.4,
+          "meanSelectedScore": 74,
+          "provider_evidence_completeness": {
+            "submittedCanonicalOccurrences": 125,
+            "completeOccurrences": 0,
+            "incompleteOccurrences": 125,
+            "percentage": 0,
+            "mainScoreWeight": 0
+          },
+          "selected": [
+            {
+              "dossierId": "DOS-9878523F9C8A",
+              "companyName": "ADN – Advanced Digital Network Distribution GmbH",
+              "officialUrl": "https://www.adn.de/",
+              "systemId": "product-google-places-local",
+              "channelId": "tier1-distribution",
+              "submittedRank": 55,
+              "supportedRoles": [
+                "Distributor",
+                "VAD",
+                "Reseller",
+                "MSP"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 3
+              },
+              "score": 74,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": false,
+              "providerEvidenceItemCount": 0,
+              "finalRank": 1
+            }
+          ]
+        },
+        {
+          "channelId": "b2b-resale",
+          "submittedCanonicalCandidates": 125,
+          "eligibleCandidates": 3,
+          "selectedCount": 3,
+          "rejectedByValueGate": 122,
+          "top10ScoreSum": 237,
+          "meanPerTargetSlot": 23.7,
+          "meanSelectedScore": 79,
+          "provider_evidence_completeness": {
+            "submittedCanonicalOccurrences": 125,
+            "completeOccurrences": 0,
+            "incompleteOccurrences": 125,
+            "percentage": 0,
+            "mainScoreWeight": 0
+          },
+          "selected": [
+            {
+              "dossierId": "DOS-038F1F349F23",
+              "companyName": "Bechtle AG",
+              "officialUrl": "https://www.bechtle.com/",
+              "systemId": "product-google-places-local",
+              "channelId": "b2b-resale",
+              "submittedRank": 2,
+              "supportedRoles": [
+                "Reseller",
+                "VAR",
+                "SI"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 4,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 5
+              },
+              "score": 91,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "A high-value VAR/reseller with both a transaction path and implementation capability across relevant network products.",
+              "independentEvidence": [
+                {
+                  "url": "https://www.bechtle.com/shop/hardware/it-infrastruktur/netzwerk--10006005--c",
+                  "supports": [
+                    "live B2B networking shop",
+                    "active networking hardware and purchase path"
+                  ]
+                },
+                {
+                  "url": "https://www.bechtle.com/it-services/bechtle-services/wlan-planung-und-ausleuchtung",
+                  "supports": [
+                    "WLAN design and deployment capability"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": false,
+              "providerEvidenceItemCount": 0,
+              "finalRank": 1
+            },
+            {
+              "dossierId": "DOS-749C6122253C",
+              "companyName": "netgo GmbH",
+              "officialUrl": "https://www.netgo.de/",
+              "systemId": "product-google-places-local",
+              "channelId": "b2b-resale",
+              "submittedRank": 14,
+              "supportedRoles": [
+                "VAR",
+                "SI",
+                "MSP"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 5
+              },
+              "score": 82,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "A strong VAR/MSP result with explicit hardware procurement, customer ordering and full network lifecycle control.",
+              "independentEvidence": [
+                {
+                  "url": "https://www.netgo.de/network/network-as-a-service",
+                  "supports": [
+                    "LAN, WLAN and firewall hardware",
+                    "planning, procurement, installation and operation",
+                    "small-company through enterprise offer"
+                  ]
+                },
+                {
+                  "url": "https://www.netgo.de/centralhub",
+                  "supports": [
+                    "customer e-store and hardware ordering",
+                    "vendor partnerships and repeatable procurement"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": false,
+              "providerEvidenceItemCount": 0,
+              "finalRank": 2
+            },
+            {
+              "dossierId": "DOS-C61BFF636AA0",
+              "companyName": "Netzwerkartikel.de",
+              "officialUrl": "https://www.netzwerkartikel.de/",
+              "systemId": "product-google-places-local",
+              "channelId": "b2b-resale",
+              "submittedRank": 58,
+              "supportedRoles": [
+                "E-tailer",
+                "Installer",
+                "Reseller"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 3,
+                "independentInformationConfidence": 4
+              },
+              "score": 64,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": false,
+              "providerEvidenceItemCount": 0,
+              "finalRank": 3
+            }
+          ]
+        },
+        {
+          "channelId": "project-services",
+          "submittedCanonicalCandidates": 142,
+          "eligibleCandidates": 12,
+          "selectedCount": 10,
+          "rejectedByValueGate": 130,
+          "top10ScoreSum": 703,
+          "meanPerTargetSlot": 70.3,
+          "meanSelectedScore": 70.3,
+          "provider_evidence_completeness": {
+            "submittedCanonicalOccurrences": 142,
+            "completeOccurrences": 0,
+            "incompleteOccurrences": 142,
+            "percentage": 0,
+            "mainScoreWeight": 0
+          },
+          "selected": [
+            {
+              "dossierId": "DOS-6B48B36641BB",
+              "companyName": "Socialwave GmbH",
+              "officialUrl": "https://www.social-wave.com/",
+              "systemId": "product-google-places-local",
+              "channelId": "project-services",
+              "submittedRank": 42,
+              "supportedRoles": [
+                "Installer"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 5,
+                "cooperationPath": 3,
+                "independentInformationConfidence": 4
+              },
+              "score": 82,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": false,
+              "providerEvidenceItemCount": 0,
+              "finalRank": 1
+            },
+            {
+              "dossierId": "DOS-A582B98E52E2",
+              "companyName": "Elektro MA",
+              "officialUrl": "https://www.elektro-ma24.de/",
+              "systemId": "product-google-places-local",
+              "channelId": "project-services",
+              "submittedRank": 66,
+              "supportedRoles": [
+                "Installer"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 4,
+                "cooperationPath": 4,
+                "independentInformationConfidence": 3
+              },
+              "score": 76,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": false,
+              "providerEvidenceItemCount": 0,
+              "finalRank": 2
+            },
+            {
+              "dossierId": "DOS-3CF7ED2BD342",
+              "companyName": "Elektro Bima GmbH",
+              "officialUrl": "https://elektro-bima.de/",
+              "systemId": "product-google-places-local",
+              "channelId": "project-services",
+              "submittedRank": 74,
+              "supportedRoles": [
+                "Installer"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 4,
+                "cooperationPath": 4,
+                "independentInformationConfidence": 3
+              },
+              "score": 76,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": false,
+              "providerEvidenceItemCount": 0,
+              "finalRank": 3
+            },
+            {
+              "dossierId": "DOS-11EF534AA036",
+              "companyName": "IT-TEKTEN",
+              "officialUrl": "https://it-tekten.net/",
+              "systemId": "product-google-places-local",
+              "channelId": "project-services",
+              "submittedRank": 32,
+              "supportedRoles": [
+                "Installer"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 5,
+                "cooperationPath": 2,
+                "independentInformationConfidence": 3
+              },
+              "score": 71,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": false,
+              "providerEvidenceItemCount": 0,
+              "finalRank": 4
+            },
+            {
+              "dossierId": "DOS-285F4E8146C6",
+              "companyName": "Beschützerbox GmbH",
+              "officialUrl": "https://beschuetzerbox.de/",
+              "systemId": "product-google-places-local",
+              "channelId": "project-services",
+              "submittedRank": 6,
+              "supportedRoles": [
+                "SI"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 4,
+                "cooperationPath": 3,
+                "independentInformationConfidence": 3
+              },
+              "score": 69,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": false,
+              "providerEvidenceItemCount": 0,
+              "finalRank": 5
+            },
+            {
+              "dossierId": "DOS-7EE6C3BAE452",
+              "companyName": "ARES Elektrotechnik",
+              "officialUrl": "https://ares-elektro.de/",
+              "systemId": "product-google-places-local",
+              "channelId": "project-services",
+              "submittedRank": 82,
+              "supportedRoles": [
+                "SI",
+                "Installer"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 4,
+                "cooperationPath": 3,
+                "independentInformationConfidence": 3
+              },
+              "score": 69,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": false,
+              "providerEvidenceItemCount": 0,
+              "finalRank": 6
+            },
+            {
+              "dossierId": "DOS-1B7EFCD5643C",
+              "companyName": "DeltaCom GmbH",
+              "officialUrl": "https://www.deltacom.de/",
+              "systemId": "product-google-places-local",
+              "channelId": "project-services",
+              "submittedRank": 84,
+              "supportedRoles": [
+                "SI",
+                "Installer"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 4,
+                "cooperationPath": 3,
+                "independentInformationConfidence": 3
+              },
+              "score": 69,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": false,
+              "providerEvidenceItemCount": 0,
+              "finalRank": 7
+            },
+            {
+              "dossierId": "DOS-DB11F9C3C652",
+              "companyName": "e:tech Elektroservice Nürnberg GmbH",
+              "officialUrl": "https://etech-elektroservice.de/",
+              "systemId": "product-google-places-local",
+              "channelId": "project-services",
+              "submittedRank": 123,
+              "supportedRoles": [
+                "Installer"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 4,
+                "independentInformationConfidence": 3
+              },
+              "score": 67,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": false,
+              "providerEvidenceItemCount": 0,
+              "finalRank": 8
+            },
+            {
+              "dossierId": "DOS-B6075853D532",
+              "companyName": "Das ElektroWerk",
+              "officialUrl": "https://das-elektrowerk.com/",
+              "systemId": "product-google-places-local",
+              "channelId": "project-services",
+              "submittedRank": 97,
+              "supportedRoles": [
+                "Installer"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 3,
+                "independentInformationConfidence": 4
+              },
+              "score": 64,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": false,
+              "providerEvidenceItemCount": 0,
+              "finalRank": 9
+            },
+            {
+              "dossierId": "DOS-553C9D5B4F88",
+              "companyName": "Dennis Neubacher IT-Service",
+              "officialUrl": "https://dennisneubacher.de/",
+              "systemId": "product-google-places-local",
+              "channelId": "project-services",
+              "submittedRank": 14,
+              "supportedRoles": [
+                "Retailer",
+                "Installer"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 3,
+                "independentInformationConfidence": 3
+              },
+              "score": 60,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": false,
+              "providerEvidenceItemCount": 0,
+              "finalRank": 10
+            }
+          ]
+        }
+      ],
+      "macroMeanPerTargetSlot": 33.8,
+      "provider_evidence_completeness": {
+        "submittedCanonicalOccurrences": 392,
+        "completeOccurrences": 0,
+        "incompleteOccurrences": 392,
+        "percentage": 0,
+        "mainScoreWeight": 0
+      },
+      "rank": 2
+    },
+    {
+      "systemId": "product-gemini",
+      "channels": [
+        {
+          "channelId": "tier1-distribution",
+          "submittedCanonicalCandidates": 8,
+          "eligibleCandidates": 5,
+          "selectedCount": 5,
+          "rejectedByValueGate": 3,
+          "top10ScoreSum": 412,
+          "meanPerTargetSlot": 41.2,
+          "meanSelectedScore": 82.4,
+          "provider_evidence_completeness": {
+            "submittedCanonicalOccurrences": 8,
+            "completeOccurrences": 8,
+            "incompleteOccurrences": 0,
+            "percentage": 100,
+            "mainScoreWeight": 0
+          },
+          "selected": [
+            {
+              "dossierId": "DOS-CE5CFF2ED35C",
+              "companyName": "ALLNET GmbH Computersysteme",
+              "officialUrl": "https://distribution.allnet.de/",
+              "systemId": "product-gemini",
+              "channelId": "tier1-distribution",
+              "submittedRank": 1,
+              "supportedRoles": [
+                "Distributor",
+                "VAD"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 5,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 5
+              },
+              "score": 100,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "A specialist networking distributor with downstream channel supply, exact Cudy-adjacent product families and a public reseller route.",
+              "independentEvidence": [
+                {
+                  "url": "https://distribution.allnet.de/",
+                  "supports": [
+                    "German networking distributor",
+                    "supplies resellers and system houses",
+                    "active networking and wireless portfolio",
+                    "pre-sales and after-sales value add"
+                  ]
+                },
+                {
+                  "url": "https://distribution.allnet.de/register-as-var.html",
+                  "supports": [
+                    "repeatable reseller onboarding path"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 2,
+              "finalRank": 1
+            },
+            {
+              "dossierId": "DOS-34980A2004F3",
+              "companyName": "Ingram Micro Distribution GmbH",
+              "officialUrl": "https://de.ingrammicro.eu/",
+              "systemId": "product-gemini",
+              "channelId": "tier1-distribution",
+              "submittedRank": 2,
+              "supportedRoles": [
+                "Distributor",
+                "VAD"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 5
+              },
+              "score": 82,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "A proven large distributor with downstream reach and networking enablement; the visible portfolio is broad and enterprise-weighted.",
+              "independentEvidence": [
+                {
+                  "url": "https://de.ingrammicro.eu/one-im-b4/public/unternehmen/auf-einen-blick",
+                  "supports": [
+                    "German ITK wholesaler",
+                    "35000 trade partners",
+                    "350 suppliers and 100000 products",
+                    "distribution center and services"
+                  ]
+                },
+                {
+                  "url": "https://de.ingrammicro.eu/one-im-b4/services-and-trainings/managed-services/managed-network-services?lang=de",
+                  "supports": [
+                    "managed LAN, WLAN and firewall technologies",
+                    "reseller enablement and support"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 2,
+              "finalRank": 2
+            },
+            {
+              "dossierId": "DOS-5168C944EB18",
+              "companyName": "TD SYNNEX Germany",
+              "officialUrl": "https://de.tdsynnex.com/",
+              "systemId": "product-gemini",
+              "channelId": "tier1-distribution",
+              "submittedRank": 3,
+              "supportedRoles": [
+                "Distributor",
+                "VAD"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 4
+              },
+              "score": 78,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "The direct channel path is explicit and highly repeatable; Cudy fit is credible but less specifically demonstrated than at networking-specialist distributors.",
+              "independentEvidence": [
+                {
+                  "url": "https://dach.tdsynnex.com/cloud/at/kontakt-2/",
+                  "supports": [
+                    "distributor-to-reseller model",
+                    "Germany eligibility",
+                    "does not sell directly to end customers"
+                  ]
+                },
+                {
+                  "url": "https://dach.tdsynnex.com/blog/de/wp-content/uploads/sites/2/2023/07/Final-10-Reasons-AWS-Broschuereonline.pdf",
+                  "supports": [
+                    "German distributor organization",
+                    "procurement, consulting and partner services"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 2,
+              "finalRank": 3
+            },
+            {
+              "dossierId": "DOS-42210E8B828E",
+              "companyName": "ALSO Deutschland GmbH",
+              "officialUrl": "https://www.also.de/",
+              "systemId": "product-gemini",
+              "channelId": "tier1-distribution",
+              "submittedRank": 4,
+              "supportedRoles": [
+                "Distributor",
+                "VAD"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 4
+              },
+              "score": 78,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "A major German ITK distributor with a clear downstream reseller path; product relevance is broad rather than Cudy-specialist.",
+              "independentEvidence": [
+                {
+                  "url": "https://www.also.com/ec/cms5/de_1010/1010/kunden/index.jsp",
+                  "supports": [
+                    "manufacturer-to-reseller channel position",
+                    "large ITK portfolio",
+                    "distribution and value-added services"
+                  ]
+                },
+                {
+                  "url": "https://www.also.com/ec/cms5/de_6000/6000/reseller-registrierung/index.jsp",
+                  "supports": [
+                    "public partner registration route",
+                    "Germany market option"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 3,
+              "finalRank": 4
+            },
+            {
+              "dossierId": "DOS-9878523F9C8A",
+              "companyName": "ADN – Advanced Digital Network Distribution GmbH",
+              "officialUrl": "https://www.adn.de/",
+              "systemId": "product-gemini",
+              "channelId": "tier1-distribution",
+              "submittedRank": 5,
+              "supportedRoles": [
+                "Distributor",
+                "VAD",
+                "Reseller",
+                "MSP"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 3
+              },
+              "score": 74,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 5
+            }
+          ]
+        },
+        {
+          "channelId": "b2b-resale",
+          "submittedCanonicalCandidates": 9,
+          "eligibleCandidates": 5,
+          "selectedCount": 5,
+          "rejectedByValueGate": 4,
+          "top10ScoreSum": 393,
+          "meanPerTargetSlot": 39.3,
+          "meanSelectedScore": 78.6,
+          "provider_evidence_completeness": {
+            "submittedCanonicalOccurrences": 9,
+            "completeOccurrences": 9,
+            "incompleteOccurrences": 0,
+            "percentage": 100,
+            "mainScoreWeight": 0
+          },
+          "selected": [
+            {
+              "dossierId": "DOS-038F1F349F23",
+              "companyName": "Bechtle AG",
+              "officialUrl": "https://www.bechtle.com/",
+              "systemId": "product-gemini",
+              "channelId": "b2b-resale",
+              "submittedRank": 1,
+              "supportedRoles": [
+                "Reseller",
+                "VAR",
+                "SI"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 4,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 5
+              },
+              "score": 91,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "A high-value VAR/reseller with both a transaction path and implementation capability across relevant network products.",
+              "independentEvidence": [
+                {
+                  "url": "https://www.bechtle.com/shop/hardware/it-infrastruktur/netzwerk--10006005--c",
+                  "supports": [
+                    "live B2B networking shop",
+                    "active networking hardware and purchase path"
+                  ]
+                },
+                {
+                  "url": "https://www.bechtle.com/it-services/bechtle-services/wlan-planung-und-ausleuchtung",
+                  "supports": [
+                    "WLAN design and deployment capability"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 4,
+              "finalRank": 1
+            },
+            {
+              "dossierId": "DOS-52E758B74543",
+              "companyName": "JACOB Elektronik GmbH",
+              "officialUrl": "https://www.jacob.de/",
+              "systemId": "product-gemini",
+              "channelId": "b2b-resale",
+              "submittedRank": 4,
+              "supportedRoles": [
+                "E-tailer",
+                "Reseller"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 4,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 4
+              },
+              "score": 87,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 2
+            },
+            {
+              "dossierId": "DOS-DF573E55B367",
+              "companyName": "SVA System Vertrieb Alexander GmbH",
+              "officialUrl": "https://www.sva.de/",
+              "systemId": "product-gemini",
+              "channelId": "b2b-resale",
+              "submittedRank": 3,
+              "supportedRoles": [
+                "VAR",
+                "SI",
+                "MSP"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 2,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 5
+              },
+              "score": 73,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "A verified VAR/SI cooperation path with major vendors; the product positioning is more enterprise-oriented than Cudy.",
+              "independentEvidence": [
+                {
+                  "url": "https://www.sva.de/de/services/netzwerk/managed-network-as-a-service",
+                  "supports": [
+                    "selects, supplies and configures network hardware",
+                    "Cisco Meraki WLAN, switching, security and SD-WAN",
+                    "full managed lifecycle"
+                  ]
+                },
+                {
+                  "url": "https://www.sva.de/de/dell-networking",
+                  "supports": [
+                    "direct networking vendor access and hardware portfolio"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 2,
+              "finalRank": 3
+            },
+            {
+              "dossierId": "DOS-512D65ADA011",
+              "companyName": "CANCOM SE",
+              "officialUrl": "https://www.cancom.de/",
+              "systemId": "product-gemini",
+              "channelId": "b2b-resale",
+              "submittedRank": 7,
+              "supportedRoles": [
+                "VAR",
+                "SI",
+                "MSP"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 2,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 5
+              },
+              "score": 73,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "The VAR path is explicit and strong, but its visible network offer is mainly enterprise-grade and therefore only partly overlaps Cudy.",
+              "independentEvidence": [
+                {
+                  "url": "https://www.cancom.de/loesungen/it-themen/network-connectivity/",
+                  "supports": [
+                    "supplies network hardware",
+                    "LAN, WLAN, routers, gateways and switches",
+                    "planning, implementation and on-site service"
+                  ]
+                },
+                {
+                  "url": "https://www.cancom.de/services/supply-services/service-factory/",
+                  "supports": [
+                    "procurement, logistics and rollout path"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 4,
+              "finalRank": 4
+            },
+            {
+              "dossierId": "DOS-CEA9A45CE909",
+              "companyName": "Computacenter AG & Co. oHG",
+              "officialUrl": "https://www.computacenter.com/",
+              "systemId": "product-gemini",
+              "channelId": "b2b-resale",
+              "submittedRank": 2,
+              "supportedRoles": [
+                "VAR",
+                "SI",
+                "MSP"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 2,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 4
+              },
+              "score": 69,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "A real large VAR with technology sourcing and networking capability, but heavily oriented to major enterprise and public accounts.",
+              "independentEvidence": [
+                {
+                  "url": "https://careers.computacenter.com/de/cluster/networking/4c3b1d46-8628-5b09-8e5f-55625ad2c8c0",
+                  "supports": [
+                    "German network solutions practice",
+                    "switch, router, LAN, WLAN and WAN implementation"
+                  ]
+                },
+                {
+                  "url": "https://investors.computacenter.com/",
+                  "supports": [
+                    "one of the largest global VARs",
+                    "technology sourcing and managed services"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 2,
+              "finalRank": 5
+            }
+          ]
+        },
+        {
+          "channelId": "project-services",
+          "submittedCanonicalCandidates": 10,
+          "eligibleCandidates": 0,
+          "selectedCount": 0,
+          "rejectedByValueGate": 10,
+          "top10ScoreSum": 0,
+          "meanPerTargetSlot": 0,
+          "meanSelectedScore": 0,
+          "provider_evidence_completeness": {
+            "submittedCanonicalOccurrences": 10,
+            "completeOccurrences": 10,
+            "incompleteOccurrences": 0,
+            "percentage": 100,
+            "mainScoreWeight": 0
+          },
+          "selected": []
+        }
+      ],
+      "macroMeanPerTargetSlot": 26.83,
+      "provider_evidence_completeness": {
+        "submittedCanonicalOccurrences": 27,
+        "completeOccurrences": 27,
+        "incompleteOccurrences": 0,
+        "percentage": 100,
+        "mainScoreWeight": 0
+      },
+      "rank": 3
+    },
+    {
+      "systemId": "product-tavily",
+      "channels": [
+        {
+          "channelId": "tier1-distribution",
+          "submittedCanonicalCandidates": 10,
+          "eligibleCandidates": 4,
+          "selectedCount": 4,
+          "rejectedByValueGate": 6,
+          "top10ScoreSum": 259,
+          "meanPerTargetSlot": 25.9,
+          "meanSelectedScore": 64.75,
+          "provider_evidence_completeness": {
+            "submittedCanonicalOccurrences": 10,
+            "completeOccurrences": 10,
+            "incompleteOccurrences": 0,
+            "percentage": 100,
+            "mainScoreWeight": 0
+          },
+          "selected": [
+            {
+              "dossierId": "DOS-CE5CFF2ED35C",
+              "companyName": "ALLNET GmbH Computersysteme",
+              "officialUrl": "https://distribution.allnet.de/",
+              "systemId": "product-tavily",
+              "channelId": "tier1-distribution",
+              "submittedRank": 1,
+              "supportedRoles": [
+                "Distributor",
+                "VAD"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 5,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 5
+              },
+              "score": 100,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "A specialist networking distributor with downstream channel supply, exact Cudy-adjacent product families and a public reseller route.",
+              "independentEvidence": [
+                {
+                  "url": "https://distribution.allnet.de/",
+                  "supports": [
+                    "German networking distributor",
+                    "supplies resellers and system houses",
+                    "active networking and wireless portfolio",
+                    "pre-sales and after-sales value add"
+                  ]
+                },
+                {
+                  "url": "https://distribution.allnet.de/register-as-var.html",
+                  "supports": [
+                    "repeatable reseller onboarding path"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 3,
+              "finalRank": 1
+            },
+            {
+              "dossierId": "DOS-8961CF25434B",
+              "companyName": "bytec Bodry Technology GmbH",
+              "officialUrl": "https://www.bytec.de/",
+              "systemId": "product-tavily",
+              "channelId": "tier1-distribution",
+              "submittedRank": 6,
+              "supportedRoles": [
+                "VAD",
+                "Reseller",
+                "Installer",
+                "Distributor"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 3,
+                "independentInformationConfidence": 4
+              },
+              "score": 64,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 2
+            },
+            {
+              "dossierId": "DOS-666DB19C2EE1",
+              "companyName": "m2m Germany GmbH",
+              "officialUrl": "https://www.m2mgermany.de/",
+              "systemId": "product-tavily",
+              "channelId": "tier1-distribution",
+              "submittedRank": 9,
+              "supportedRoles": [
+                "Distributor",
+                "VAD",
+                "SI"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 3,
+                "independentInformationConfidence": 3
+              },
+              "score": 60,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 2,
+              "finalRank": 3
+            },
+            {
+              "dossierId": "DOS-BD59F160C5BD",
+              "companyName": "4Networks IT-Distribution",
+              "officialUrl": "https://www.4networks.de/",
+              "systemId": "product-tavily",
+              "channelId": "tier1-distribution",
+              "submittedRank": 3,
+              "supportedRoles": [
+                "Distributor"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 1,
+                "cooperationPath": 2,
+                "independentInformationConfidence": 3
+              },
+              "score": 35,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 4
+            }
+          ]
+        },
+        {
+          "channelId": "b2b-resale",
+          "submittedCanonicalCandidates": 7,
+          "eligibleCandidates": 2,
+          "selectedCount": 2,
+          "rejectedByValueGate": 5,
+          "top10ScoreSum": 167,
+          "meanPerTargetSlot": 16.7,
+          "meanSelectedScore": 83.5,
+          "provider_evidence_completeness": {
+            "submittedCanonicalOccurrences": 7,
+            "completeOccurrences": 7,
+            "incompleteOccurrences": 0,
+            "percentage": 100,
+            "mainScoreWeight": 0
+          },
+          "selected": [
+            {
+              "dossierId": "DOS-52E758B74543",
+              "companyName": "JACOB Elektronik GmbH",
+              "officialUrl": "https://www.jacob.de/",
+              "systemId": "product-tavily",
+              "channelId": "b2b-resale",
+              "submittedRank": 4,
+              "supportedRoles": [
+                "E-tailer",
+                "Reseller"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 4,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 4
+              },
+              "score": 87,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 1
+            },
+            {
+              "dossierId": "DOS-354049CB1A07",
+              "companyName": "LaanTech",
+              "officialUrl": "https://www.laantech.de/",
+              "systemId": "product-tavily",
+              "channelId": "b2b-resale",
+              "submittedRank": 7,
+              "supportedRoles": [
+                "E-tailer",
+                "Reseller"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 4,
+                "cooperationPath": 4,
+                "independentInformationConfidence": 4
+              },
+              "score": 80,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 2
+            }
+          ]
+        },
+        {
+          "channelId": "project-services",
+          "submittedCanonicalCandidates": 10,
+          "eligibleCandidates": 4,
+          "selectedCount": 4,
+          "rejectedByValueGate": 6,
+          "top10ScoreSum": 338,
+          "meanPerTargetSlot": 33.8,
+          "meanSelectedScore": 84.5,
+          "provider_evidence_completeness": {
+            "submittedCanonicalOccurrences": 10,
+            "completeOccurrences": 10,
+            "incompleteOccurrences": 0,
+            "percentage": 100,
+            "mainScoreWeight": 0
+          },
+          "selected": [
+            {
+              "dossierId": "DOS-324C17BEED97",
+              "companyName": "MiMann.net",
+              "officialUrl": "https://mimann.net/",
+              "systemId": "product-tavily",
+              "channelId": "project-services",
+              "submittedRank": 3,
+              "supportedRoles": [
+                "Installer"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 5,
+                "cooperationPath": 4,
+                "independentInformationConfidence": 4
+              },
+              "score": 89,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 1
+            },
+            {
+              "dossierId": "DOS-85344049A2DD",
+              "companyName": "EWE Business",
+              "officialUrl": "https://business.ewe.de/",
+              "systemId": "product-tavily",
+              "channelId": "project-services",
+              "submittedRank": 2,
+              "supportedRoles": [
+                "Installer"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 5,
+                "cooperationPath": 4,
+                "independentInformationConfidence": 3
+              },
+              "score": 85,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 2
+            },
+            {
+              "dossierId": "DOS-4861083669B7",
+              "companyName": "Netzwerk-Arzt",
+              "officialUrl": "https://www.netzwerk-arzt.de/",
+              "systemId": "product-tavily",
+              "channelId": "project-services",
+              "submittedRank": 8,
+              "supportedRoles": [
+                "Installer"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 5,
+                "cooperationPath": 3,
+                "independentInformationConfidence": 4
+              },
+              "score": 82,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 3
+            },
+            {
+              "dossierId": "DOS-2839F2FA0A91",
+              "companyName": "Elektro-LU",
+              "officialUrl": "https://elektro-lu.eu/",
+              "systemId": "product-tavily",
+              "channelId": "project-services",
+              "submittedRank": 9,
+              "supportedRoles": [
+                "Installer",
+                "ISP"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 5,
+                "cooperationPath": 3,
+                "independentInformationConfidence": 4
+              },
+              "score": 82,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 4
+            }
+          ]
+        }
+      ],
+      "macroMeanPerTargetSlot": 25.47,
+      "provider_evidence_completeness": {
+        "submittedCanonicalOccurrences": 27,
+        "completeOccurrences": 27,
+        "incompleteOccurrences": 0,
+        "percentage": 100,
+        "mainScoreWeight": 0
+      },
+      "rank": 4
+    },
+    {
+      "systemId": "product-searchapi",
+      "channels": [
+        {
+          "channelId": "tier1-distribution",
+          "submittedCanonicalCandidates": 8,
+          "eligibleCandidates": 4,
+          "selectedCount": 4,
+          "rejectedByValueGate": 4,
+          "top10ScoreSum": 269,
+          "meanPerTargetSlot": 26.9,
+          "meanSelectedScore": 67.25,
+          "provider_evidence_completeness": {
+            "submittedCanonicalOccurrences": 8,
+            "completeOccurrences": 8,
+            "incompleteOccurrences": 0,
+            "percentage": 100,
+            "mainScoreWeight": 0
+          },
+          "selected": [
+            {
+              "dossierId": "DOS-CE5CFF2ED35C",
+              "companyName": "ALLNET GmbH Computersysteme",
+              "officialUrl": "https://distribution.allnet.de/",
+              "systemId": "product-searchapi",
+              "channelId": "tier1-distribution",
+              "submittedRank": 3,
+              "supportedRoles": [
+                "Distributor",
+                "VAD"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 5,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 5
+              },
+              "score": 100,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "A specialist networking distributor with downstream channel supply, exact Cudy-adjacent product families and a public reseller route.",
+              "independentEvidence": [
+                {
+                  "url": "https://distribution.allnet.de/",
+                  "supports": [
+                    "German networking distributor",
+                    "supplies resellers and system houses",
+                    "active networking and wireless portfolio",
+                    "pre-sales and after-sales value add"
+                  ]
+                },
+                {
+                  "url": "https://distribution.allnet.de/register-as-var.html",
+                  "supports": [
+                    "repeatable reseller onboarding path"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 1
+            },
+            {
+              "dossierId": "DOS-9878523F9C8A",
+              "companyName": "ADN – Advanced Digital Network Distribution GmbH",
+              "officialUrl": "https://www.adn.de/",
+              "systemId": "product-searchapi",
+              "channelId": "tier1-distribution",
+              "submittedRank": 2,
+              "supportedRoles": [
+                "Distributor",
+                "VAD",
+                "Reseller",
+                "MSP"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 3
+              },
+              "score": 74,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 2
+            },
+            {
+              "dossierId": "DOS-666DB19C2EE1",
+              "companyName": "m2m Germany GmbH",
+              "officialUrl": "https://www.m2mgermany.de/",
+              "systemId": "product-searchapi",
+              "channelId": "tier1-distribution",
+              "submittedRank": 7,
+              "supportedRoles": [
+                "Distributor",
+                "VAD",
+                "SI"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 3,
+                "independentInformationConfidence": 3
+              },
+              "score": 60,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 3
+            },
+            {
+              "dossierId": "DOS-BD59F160C5BD",
+              "companyName": "4Networks IT-Distribution",
+              "officialUrl": "https://www.4networks.de/",
+              "systemId": "product-searchapi",
+              "channelId": "tier1-distribution",
+              "submittedRank": 4,
+              "supportedRoles": [
+                "Distributor"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 1,
+                "cooperationPath": 2,
+                "independentInformationConfidence": 3
+              },
+              "score": 35,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 4
+            }
+          ]
+        },
+        {
+          "channelId": "b2b-resale",
+          "submittedCanonicalCandidates": 4,
+          "eligibleCandidates": 1,
+          "selectedCount": 1,
+          "rejectedByValueGate": 3,
+          "top10ScoreSum": 87,
+          "meanPerTargetSlot": 8.7,
+          "meanSelectedScore": 87,
+          "provider_evidence_completeness": {
+            "submittedCanonicalOccurrences": 4,
+            "completeOccurrences": 4,
+            "incompleteOccurrences": 0,
+            "percentage": 100,
+            "mainScoreWeight": 0
+          },
+          "selected": [
+            {
+              "dossierId": "DOS-52E758B74543",
+              "companyName": "JACOB Elektronik GmbH",
+              "officialUrl": "https://www.jacob.de/",
+              "systemId": "product-searchapi",
+              "channelId": "b2b-resale",
+              "submittedRank": 1,
+              "supportedRoles": [
+                "E-tailer",
+                "Reseller"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 4,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 4
+              },
+              "score": 87,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 1
+            }
+          ]
+        },
+        {
+          "channelId": "project-services",
+          "submittedCanonicalCandidates": 10,
+          "eligibleCandidates": 5,
+          "selectedCount": 5,
+          "rejectedByValueGate": 5,
+          "top10ScoreSum": 372,
+          "meanPerTargetSlot": 37.2,
+          "meanSelectedScore": 74.4,
+          "provider_evidence_completeness": {
+            "submittedCanonicalOccurrences": 10,
+            "completeOccurrences": 10,
+            "incompleteOccurrences": 0,
+            "percentage": 100,
+            "mainScoreWeight": 0
+          },
+          "selected": [
+            {
+              "dossierId": "DOS-85344049A2DD",
+              "companyName": "EWE Business",
+              "officialUrl": "https://business.ewe.de/",
+              "systemId": "product-searchapi",
+              "channelId": "project-services",
+              "submittedRank": 1,
+              "supportedRoles": [
+                "Installer"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 5,
+                "cooperationPath": 4,
+                "independentInformationConfidence": 3
+              },
+              "score": 85,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 1
+            },
+            {
+              "dossierId": "DOS-75830CB1433D",
+              "companyName": "Code Maschine GmbH",
+              "officialUrl": "https://codemaschine.de/",
+              "systemId": "product-searchapi",
+              "channelId": "project-services",
+              "submittedRank": 4,
+              "supportedRoles": [
+                "SI",
+                "Installer"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 5,
+                "cooperationPath": 4,
+                "independentInformationConfidence": 3
+              },
+              "score": 85,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 2
+            },
+            {
+              "dossierId": "DOS-2839F2FA0A91",
+              "companyName": "Elektro-LU",
+              "officialUrl": "https://elektro-lu.eu/",
+              "systemId": "product-searchapi",
+              "channelId": "project-services",
+              "submittedRank": 3,
+              "supportedRoles": [
+                "Installer",
+                "ISP"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 5,
+                "cooperationPath": 3,
+                "independentInformationConfidence": 4
+              },
+              "score": 82,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 3
+            },
+            {
+              "dossierId": "DOS-1C8F5F600282",
+              "companyName": "Dietrich.expert",
+              "officialUrl": "https://dietrich.expert/",
+              "systemId": "product-searchapi",
+              "channelId": "project-services",
+              "submittedRank": 2,
+              "supportedRoles": [
+                "SI"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 4,
+                "cooperationPath": 3,
+                "independentInformationConfidence": 3
+              },
+              "score": 69,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 4
+            },
+            {
+              "dossierId": "DOS-43545283CBC1",
+              "companyName": "Netzkontor GmbH",
+              "officialUrl": "https://www.netzkontor.de/",
+              "systemId": "product-searchapi",
+              "channelId": "project-services",
+              "submittedRank": 6,
+              "supportedRoles": [
+                "Installer"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 2,
+                "cooperationPath": 3,
+                "independentInformationConfidence": 3
+              },
+              "score": 51,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 5
+            }
+          ]
+        }
+      ],
+      "macroMeanPerTargetSlot": 24.27,
+      "provider_evidence_completeness": {
+        "submittedCanonicalOccurrences": 22,
+        "completeOccurrences": 22,
+        "incompleteOccurrences": 0,
+        "percentage": 100,
+        "mainScoreWeight": 0
+      },
+      "rank": 5
+    },
+    {
+      "systemId": "product-brave",
+      "channels": [
+        {
+          "channelId": "tier1-distribution",
+          "submittedCanonicalCandidates": 8,
+          "eligibleCandidates": 2,
+          "selectedCount": 2,
+          "rejectedByValueGate": 6,
+          "top10ScoreSum": 163,
+          "meanPerTargetSlot": 16.3,
+          "meanSelectedScore": 81.5,
+          "provider_evidence_completeness": {
+            "submittedCanonicalOccurrences": 8,
+            "completeOccurrences": 8,
+            "incompleteOccurrences": 0,
+            "percentage": 100,
+            "mainScoreWeight": 0
+          },
+          "selected": [
+            {
+              "dossierId": "DOS-8C650509C86F",
+              "companyName": "Vitel GmbH",
+              "officialUrl": "https://vitel.de/",
+              "systemId": "product-brave",
+              "channelId": "tier1-distribution",
+              "submittedRank": 4,
+              "supportedRoles": [
+                "Distributor",
+                "VAD",
+                "Reseller"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 5,
+                "cooperationPath": 4,
+                "independentInformationConfidence": 4
+              },
+              "score": 89,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 1
+            },
+            {
+              "dossierId": "DOS-9878523F9C8A",
+              "companyName": "ADN – Advanced Digital Network Distribution GmbH",
+              "officialUrl": "https://www.adn.de/",
+              "systemId": "product-brave",
+              "channelId": "tier1-distribution",
+              "submittedRank": 2,
+              "supportedRoles": [
+                "Distributor",
+                "VAD",
+                "Reseller",
+                "MSP"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 3
+              },
+              "score": 74,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 2,
+              "finalRank": 2
+            }
+          ]
+        },
+        {
+          "channelId": "b2b-resale",
+          "submittedCanonicalCandidates": 5,
+          "eligibleCandidates": 2,
+          "selectedCount": 2,
+          "rejectedByValueGate": 3,
+          "top10ScoreSum": 178,
+          "meanPerTargetSlot": 17.8,
+          "meanSelectedScore": 89,
+          "provider_evidence_completeness": {
+            "submittedCanonicalOccurrences": 5,
+            "completeOccurrences": 5,
+            "incompleteOccurrences": 0,
+            "percentage": 100,
+            "mainScoreWeight": 0
+          },
+          "selected": [
+            {
+              "dossierId": "DOS-038F1F349F23",
+              "companyName": "Bechtle AG",
+              "officialUrl": "https://www.bechtle.com/",
+              "systemId": "product-brave",
+              "channelId": "b2b-resale",
+              "submittedRank": 1,
+              "supportedRoles": [
+                "Reseller",
+                "VAR",
+                "SI"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 4,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 5
+              },
+              "score": 91,
+              "evaluationBasis": "v1.4-independent-adjudication",
+              "independentDecisionStatus": "verified-pass",
+              "independentDecisionReason": "A high-value VAR/reseller with both a transaction path and implementation capability across relevant network products.",
+              "independentEvidence": [
+                {
+                  "url": "https://www.bechtle.com/shop/hardware/it-infrastruktur/netzwerk--10006005--c",
+                  "supports": [
+                    "live B2B networking shop",
+                    "active networking hardware and purchase path"
+                  ]
+                },
+                {
+                  "url": "https://www.bechtle.com/it-services/bechtle-services/wlan-planung-und-ausleuchtung",
+                  "supports": [
+                    "WLAN design and deployment capability"
+                  ]
+                }
+              ],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 1
+            },
+            {
+              "dossierId": "DOS-B7E98DD9D6D2",
+              "companyName": "GermanProtect",
+              "officialUrl": "https://www.germanprotect.com/",
+              "systemId": "product-brave",
+              "channelId": "b2b-resale",
+              "submittedRank": 4,
+              "supportedRoles": [
+                "E-tailer",
+                "Reseller"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 4,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 4
+              },
+              "score": 87,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 2
+            }
+          ]
+        },
+        {
+          "channelId": "project-services",
+          "submittedCanonicalCandidates": 10,
+          "eligibleCandidates": 4,
+          "selectedCount": 4,
+          "rejectedByValueGate": 6,
+          "top10ScoreSum": 299,
+          "meanPerTargetSlot": 29.9,
+          "meanSelectedScore": 74.75,
+          "provider_evidence_completeness": {
+            "submittedCanonicalOccurrences": 10,
+            "completeOccurrences": 10,
+            "incompleteOccurrences": 0,
+            "percentage": 100,
+            "mainScoreWeight": 0
+          },
+          "selected": [
+            {
+              "dossierId": "DOS-85344049A2DD",
+              "companyName": "EWE Business",
+              "officialUrl": "https://business.ewe.de/",
+              "systemId": "product-brave",
+              "channelId": "project-services",
+              "submittedRank": 2,
+              "supportedRoles": [
+                "Installer"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 5,
+                "cooperationPath": 4,
+                "independentInformationConfidence": 3
+              },
+              "score": 85,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 1
+            },
+            {
+              "dossierId": "DOS-2AC88864E43E",
+              "companyName": "Solisation GmbH",
+              "officialUrl": "https://solisation.de/",
+              "systemId": "product-brave",
+              "channelId": "project-services",
+              "submittedRank": 3,
+              "supportedRoles": [
+                "Installer"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 5,
+                "cooperationPath": 4,
+                "independentInformationConfidence": 3
+              },
+              "score": 85,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 2
+            },
+            {
+              "dossierId": "DOS-831450757FBE",
+              "companyName": "Kellner Telecom GmbH",
+              "officialUrl": "https://www.kellner-telecom.de/",
+              "systemId": "product-brave",
+              "channelId": "project-services",
+              "submittedRank": 4,
+              "supportedRoles": [
+                "Installer"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 4,
+                "independentInformationConfidence": 3
+              },
+              "score": 67,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 3
+            },
+            {
+              "dossierId": "DOS-71A32E9206A8",
+              "companyName": "INTERPORT REAL",
+              "officialUrl": "https://www.interportreal.de/",
+              "systemId": "product-brave",
+              "channelId": "project-services",
+              "submittedRank": 10,
+              "supportedRoles": [
+                "SI"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 4,
+                "cooperationPath": 2,
+                "independentInformationConfidence": 3
+              },
+              "score": 62,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 4
+            }
+          ]
+        }
+      ],
+      "macroMeanPerTargetSlot": 21.33,
+      "provider_evidence_completeness": {
+        "submittedCanonicalOccurrences": 23,
+        "completeOccurrences": 23,
+        "incompleteOccurrences": 0,
+        "percentage": 100,
+        "mainScoreWeight": 0
+      },
+      "rank": 6
+    },
+    {
+      "systemId": "product-exa",
+      "channels": [
+        {
+          "channelId": "tier1-distribution",
+          "submittedCanonicalCandidates": 10,
+          "eligibleCandidates": 4,
+          "selectedCount": 4,
+          "rejectedByValueGate": 6,
+          "top10ScoreSum": 265,
+          "meanPerTargetSlot": 26.5,
+          "meanSelectedScore": 66.25,
+          "provider_evidence_completeness": {
+            "submittedCanonicalOccurrences": 10,
+            "completeOccurrences": 10,
+            "incompleteOccurrences": 0,
+            "percentage": 100,
+            "mainScoreWeight": 0
+          },
+          "selected": [
+            {
+              "dossierId": "DOS-8C650509C86F",
+              "companyName": "Vitel GmbH",
+              "officialUrl": "https://vitel.de/",
+              "systemId": "product-exa",
+              "channelId": "tier1-distribution",
+              "submittedRank": 3,
+              "supportedRoles": [
+                "Distributor",
+                "VAD",
+                "Reseller"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 5,
+                "cooperationPath": 4,
+                "independentInformationConfidence": 4
+              },
+              "score": 89,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 1
+            },
+            {
+              "dossierId": "DOS-80FCAEC5E645",
+              "companyName": "Acondistec",
+              "officialUrl": "https://acondistec.de/",
+              "systemId": "product-exa",
+              "channelId": "tier1-distribution",
+              "submittedRank": 9,
+              "supportedRoles": [
+                "Distributor",
+                "VAD",
+                "MSP"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 5,
+                "independentInformationConfidence": 3
+              },
+              "score": 74,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 2
+            },
+            {
+              "dossierId": "DOS-91EB44A9F7C9",
+              "companyName": "Red Eagle IT Distribution GmbH",
+              "officialUrl": "https://redeagle-it.de/",
+              "systemId": "product-exa",
+              "channelId": "tier1-distribution",
+              "submittedRank": 4,
+              "supportedRoles": [
+                "Distributor",
+                "Reseller",
+                "SI"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 3,
+                "cooperationPath": 4,
+                "independentInformationConfidence": 3
+              },
+              "score": 67,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 3
+            },
+            {
+              "dossierId": "DOS-BD59F160C5BD",
+              "companyName": "4Networks IT-Distribution",
+              "officialUrl": "https://www.4networks.de/",
+              "systemId": "product-exa",
+              "channelId": "tier1-distribution",
+              "submittedRank": 7,
+              "supportedRoles": [
+                "Distributor"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 1,
+                "cooperationPath": 2,
+                "independentInformationConfidence": 3
+              },
+              "score": 35,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 2,
+              "finalRank": 4
+            }
+          ]
+        },
+        {
+          "channelId": "b2b-resale",
+          "submittedCanonicalCandidates": 10,
+          "eligibleCandidates": 1,
+          "selectedCount": 1,
+          "rejectedByValueGate": 9,
+          "top10ScoreSum": 73,
+          "meanPerTargetSlot": 7.3,
+          "meanSelectedScore": 73,
+          "provider_evidence_completeness": {
+            "submittedCanonicalOccurrences": 10,
+            "completeOccurrences": 10,
+            "incompleteOccurrences": 0,
+            "percentage": 100,
+            "mainScoreWeight": 0
+          },
+          "selected": [
+            {
+              "dossierId": "DOS-80EBE942AFEC",
+              "companyName": "SCALCOM",
+              "officialUrl": "https://scalcom.de/",
+              "systemId": "product-exa",
+              "channelId": "b2b-resale",
+              "submittedRank": 5,
+              "supportedRoles": [
+                "E-tailer",
+                "Reseller"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 4,
+                "cooperationPath": 3,
+                "independentInformationConfidence": 4
+              },
+              "score": 73,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 1
+            }
+          ]
+        },
+        {
+          "channelId": "project-services",
+          "submittedCanonicalCandidates": 10,
+          "eligibleCandidates": 3,
+          "selectedCount": 3,
+          "rejectedByValueGate": 7,
+          "top10ScoreSum": 218,
+          "meanPerTargetSlot": 21.8,
+          "meanSelectedScore": 72.67,
+          "provider_evidence_completeness": {
+            "submittedCanonicalOccurrences": 10,
+            "completeOccurrences": 10,
+            "incompleteOccurrences": 0,
+            "percentage": 100,
+            "mainScoreWeight": 0
+          },
+          "selected": [
+            {
+              "dossierId": "DOS-2B90F410A171",
+              "companyName": "tilko GmbH",
+              "officialUrl": "https://tilko-wlan.de/",
+              "systemId": "product-exa",
+              "channelId": "project-services",
+              "submittedRank": 9,
+              "supportedRoles": [
+                "E-tailer",
+                "Installer"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 5,
+                "cooperationPath": 4,
+                "independentInformationConfidence": 3
+              },
+              "score": 85,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 1
+            },
+            {
+              "dossierId": "DOS-52C1A55EF1B2",
+              "companyName": "CompuNet Systems GmbH",
+              "officialUrl": "https://compunet.systems/",
+              "systemId": "product-exa",
+              "channelId": "project-services",
+              "submittedRank": 8,
+              "supportedRoles": [
+                "SI"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 5,
+                "cooperationPath": 2,
+                "independentInformationConfidence": 3
+              },
+              "score": 71,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 2
+            },
+            {
+              "dossierId": "DOS-DA65122C2B87",
+              "companyName": "NLS Netzwerke GmbH",
+              "officialUrl": "https://nls-netzwerke.de/",
+              "systemId": "product-exa",
+              "channelId": "project-services",
+              "submittedRank": 1,
+              "supportedRoles": [
+                "Installer"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 4,
+                "cooperationPath": 2,
+                "independentInformationConfidence": 3
+              },
+              "score": 62,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 3
+            }
+          ]
+        }
+      ],
+      "macroMeanPerTargetSlot": 18.53,
+      "provider_evidence_completeness": {
+        "submittedCanonicalOccurrences": 30,
+        "completeOccurrences": 30,
+        "incompleteOccurrences": 0,
+        "percentage": 100,
+        "mainScoreWeight": 0
+      },
+      "rank": 7
+    },
+    {
+      "systemId": "product-google-places",
+      "channels": [
+        {
+          "channelId": "tier1-distribution",
+          "submittedCanonicalCandidates": 0,
+          "eligibleCandidates": 0,
+          "selectedCount": 0,
+          "rejectedByValueGate": 0,
+          "top10ScoreSum": 0,
+          "meanPerTargetSlot": 0,
+          "meanSelectedScore": 0,
+          "provider_evidence_completeness": {
+            "submittedCanonicalOccurrences": 0,
+            "completeOccurrences": 0,
+            "incompleteOccurrences": 0,
+            "percentage": 0,
+            "mainScoreWeight": 0
+          },
+          "selected": []
+        },
+        {
+          "channelId": "b2b-resale",
+          "submittedCanonicalCandidates": 0,
+          "eligibleCandidates": 0,
+          "selectedCount": 0,
+          "rejectedByValueGate": 0,
+          "top10ScoreSum": 0,
+          "meanPerTargetSlot": 0,
+          "meanSelectedScore": 0,
+          "provider_evidence_completeness": {
+            "submittedCanonicalOccurrences": 0,
+            "completeOccurrences": 0,
+            "incompleteOccurrences": 0,
+            "percentage": 0,
+            "mainScoreWeight": 0
+          },
+          "selected": []
+        },
+        {
+          "channelId": "project-services",
+          "submittedCanonicalCandidates": 4,
+          "eligibleCandidates": 1,
+          "selectedCount": 1,
+          "rejectedByValueGate": 3,
+          "top10ScoreSum": 78,
+          "meanPerTargetSlot": 7.8,
+          "meanSelectedScore": 78,
+          "provider_evidence_completeness": {
+            "submittedCanonicalOccurrences": 4,
+            "completeOccurrences": 4,
+            "incompleteOccurrences": 0,
+            "percentage": 100,
+            "mainScoreWeight": 0
+          },
+          "selected": [
+            {
+              "dossierId": "DOS-D1BA596FE329",
+              "companyName": "GERMAN HOTSPOT",
+              "officialUrl": "https://www.germanhotspot.de/",
+              "systemId": "product-google-places",
+              "channelId": "project-services",
+              "submittedRank": 1,
+              "supportedRoles": [
+                "SI",
+                "Installer"
+              ],
+              "valueEligibility": {
+                "companyExists": true,
+                "germanyPresence": true,
+                "activeNetworking": true,
+                "submittedLaneMembership": true,
+                "uniqueCanonicalCompany": true
+              },
+              "failedValueGates": [],
+              "levels": {
+                "productUseCaseFit": 5,
+                "cooperationPath": 3,
+                "independentInformationConfidence": 3
+              },
+              "score": 78,
+              "evaluationBasis": "v1.3.1-shared-evidence",
+              "independentDecisionStatus": null,
+              "independentDecisionReason": null,
+              "independentEvidence": [],
+              "providerEvidenceComplete": true,
+              "providerEvidenceItemCount": 1,
+              "finalRank": 1
+            }
+          ]
+        }
+      ],
+      "macroMeanPerTargetSlot": 2.6,
+      "provider_evidence_completeness": {
+        "submittedCanonicalOccurrences": 4,
+        "completeOccurrences": 4,
+        "incompleteOccurrences": 0,
+        "percentage": 100,
+        "mainScoreWeight": 0
+      },
+      "rank": 8
+    }
+  ]
+}

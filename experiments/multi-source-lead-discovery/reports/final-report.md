@@ -1,6 +1,8 @@
 # Multi-source professional lead-discovery benchmark — measurement report
 
-Status: **measurement complete; human calibration failed; no final winner declared**
+> Historical v1.2 report. Its raw leaderboard was rejected by human calibration. The current main conclusion is the [v1.4 independent candidate-value report](v1.4-independent-value-final-report.md).
+
+Status: **historical and superseded for the main ranking; raw measurement preserved**
 
 Protocol: `multi-source-professional-discovery-v1.2` with human-audit amendment `blind-audit-v1.1`
 

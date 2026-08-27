@@ -9,11 +9,12 @@ This directory is the narrative audit trail for `multi-source-professional-disco
 3. [`03-execution-log.md`](03-execution-log.md) — append-only chronological journal of every environment check, measured call, normalization, evidence, scoring and audit step.
 4. [`04-results-ledger.md`](04-results-ledger.md) — index of each step output and its committed artifact.
 5. [`05-scoring-and-blind-audit.md`](05-scoring-and-blind-audit.md) — eligibility gates, category-specific scoring, system aggregation, blind sampling and calibration.
-6. [`../reports/final-report.md`](../reports/final-report.md) — final evidence-linked experiment report.
+6. [`../reports/final-report.md`](../reports/final-report.md) — historical v1.2 measurement report.
 7. [`06-corrective-rubric.md`](06-corrective-rubric.md) — post-audit rules confirmed for the required next full-pool rescoring, without rewriting the frozen run.
 8. [`07-shared-evidence-enrichment.md`](07-shared-evidence-enrichment.md) — provider-neutral canonical dossiers, retrieval budgets, failure rules and the direct-fetch pilot.
 9. [`08-google-places-local-control.md`](08-google-places-local-control.md) — localized Places control protocol, query/region design and content-handling boundary.
 10. [`09-v1.3-full-rescoring-and-audit.md`](09-v1.3-full-rescoring-and-audit.md) — v1.3 collection results, all-candidate preliminary scores and the frozen 12-case calibration checkpoint.
+11. [`10-independent-value-v1.4.md`](10-independent-value-v1.4.md) and [`../reports/v1.4-independent-value-final-report.md`](../reports/v1.4-independent-value-final-report.md) — current evidence-boundary protocol and final candidate-value result.
 
 ## Stage publication rule
 
