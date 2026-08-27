@@ -1,8 +1,10 @@
 import type { DiscoveryItem } from "./contracts";
+import { MULTI_ROLE_CHANNEL_POLICY, assessChannelMembershipEvidence, type ChannelMembershipLane } from "../../../src/lib/leads/channel-membership";
 import { COOPERATION_PATH_POLICY, assessCooperationPathEvidence, type CooperationSignal } from "../../../src/lib/leads/cooperation-path";
 import {
   LEAD_EVIDENCE_SOURCE_POLICY,
   assessLeadEvidenceQuality,
+  isDiscoveryOnlyLeadEvidence,
   type EvidenceProfile,
 } from "../../../src/lib/leads/evidence-quality";
 import {
@@ -42,6 +44,7 @@ export interface EvaluatedCandidate {
   levels: ScoreLevels;
   cooperationPathCap: number;
   cooperationPathSignals: CooperationSignal[];
+  supportedLaneRoles: string[];
   score: number;
   roleEvidence: string;
   productFitEvidence: string;
@@ -142,6 +145,12 @@ function levelValue(value: unknown): number {
   return Math.max(0, Math.min(5, Math.round(numeric)));
 }
 
+function membershipLane(channelId: ChannelId): ChannelMembershipLane {
+  if (channelId === "tier1-distribution") return "distribution";
+  if (channelId === "b2b-resale") return "resale";
+  return "services";
+}
+
 export function candidateScore(levels: ScoreLevels): number {
   return levels.productUseCaseFit * 9 + levels.cooperationPath * 7 + levels.evidenceReliability * 4;
 }
@@ -203,15 +212,19 @@ function parseCandidate(value: unknown, channelId: ChannelId): EvaluatedCandidat
   const officialUrl = canonicalPublicUrl(candidate.officialUrl);
   const evidenceProfile: EvidenceProfile = candidate.evidenceProfile === "long-tail-small-company"
     ? "long-tail-small-company" : "standard";
-  const networkingEvidence = assessNetworkingRelevanceEvidence(evidenceItems.map((item) => item.excerpt));
+  const claimEvidenceItems = evidenceItems.filter((item) => !isDiscoveryOnlyLeadEvidence(item));
+  const networkingEvidence = assessNetworkingRelevanceEvidence(claimEvidenceItems.map((item) => item.excerpt));
   const evidenceQuality = assessLeadEvidenceQuality({ officialUrl, profile: evidenceProfile, evidence: evidenceItems });
-  const cooperationPath = assessCooperationPathEvidence({ lane: channelId, evidence: evidenceItems.map((item) => item.excerpt) });
+  const channelMembership = assessChannelMembershipEvidence({
+    lane: membershipLane(channelId), evidence: claimEvidenceItems.map((item) => item.excerpt),
+  });
+  const cooperationPath = assessCooperationPathEvidence({ lane: channelId, evidence: claimEvidenceItems.map((item) => item.excerpt) });
   const gateInput = objectValue(candidate.eligibility ?? {});
   const eligibility: EligibilityGates = {
     companyExists: booleanValue(gateInput.companyExists),
     germanyPresence: booleanValue(gateInput.germanyPresence),
     networkingRelevant: booleanValue(gateInput.networkingRelevant) && networkingEvidence.demonstrated,
-    submittedChannelRole: booleanValue(gateInput.submittedChannelRole),
+    submittedChannelRole: booleanValue(gateInput.submittedChannelRole) && channelMembership.demonstrated,
     sufficientEvidence: booleanValue(gateInput.sufficientEvidence) && evidenceQuality.sufficient,
     uniqueWithinList: booleanValue(gateInput.uniqueWithinList),
   };
@@ -226,12 +239,15 @@ function parseCandidate(value: unknown, channelId: ChannelId): EvaluatedCandidat
     companyName: sanitizeText(stringValue(candidate.companyName, "Unnamed company")).slice(0, 200),
     officialUrl,
     evidenceProfile,
-    roles: Array.isArray(candidate.roles)
-      ? [...new Set(candidate.roles.map((role) => sanitizeText(stringValue(role))).filter(Boolean))].slice(0, 8) : [],
+    roles: [...new Set([
+      ...(Array.isArray(candidate.roles) ? candidate.roles.map((role) => sanitizeText(stringValue(role))).filter(Boolean) : []),
+      ...channelMembership.supportedRoles,
+    ])].slice(0, 8),
     eligibility,
     levels,
     cooperationPathCap: cooperationPath.cap,
     cooperationPathSignals: cooperationPath.signals,
+    supportedLaneRoles: channelMembership.supportedRoles,
     score,
     roleEvidence: sanitizeText(stringValue(candidate.roleEvidence)).slice(0, 2_000),
     productFitEvidence: sanitizeText(stringValue(candidate.productFitEvidence)).slice(0, 2_000),
@@ -403,6 +419,7 @@ export async function evaluateChannel(options: {
     cudyBrief: options.cudyBrief,
     commonDiscoveryBrief: options.commonBrief,
     compactRoleRules: options.roleRules,
+    multiRoleChannelPolicy: MULTI_ROLE_CHANNEL_POLICY,
     networkingRelevancePolicy: ACTIVE_NETWORKING_RELEVANCE_POLICY,
     evidenceSourcePolicy: LEAD_EVIDENCE_SOURCE_POLICY,
     cooperationPathPolicy: COOPERATION_PATH_POLICY,

@@ -49,6 +49,7 @@ describe("LeadQualificationAgent", () => {
     const [result] = await agent.evaluate([candidate], playbook, "DE", "Germany", "new-market");
     expect(result.totalScore).toBe(87);
     expect(result.roles).toEqual(["VAR", "Reseller"]);
+    expect(result.primaryRole).toBeNull();
     expect(result.evidenceIds).toEqual(["evidence-valid"]);
     expect(result.warnings).toContain("Model returned unsupported evidence IDs; they were removed.");
     expect(provider.calls).toHaveLength(1);
@@ -67,5 +68,24 @@ describe("LeadQualificationAgent", () => {
     expect(result.eligible).toBe(false);
     expect(result.totalScore).toBe(0);
     expect(result.warnings.join(" ")).toContain("not-demonstrated");
+  });
+
+  it("does not use a discovery summary to prove role or networking claims", async () => {
+    const provider = new FakeProvider();
+    const agent = new LeadQualificationAgent(provider, { batchSize: 5, concurrency: 1 });
+    const summaryOnlyCandidate = {
+      ...candidate,
+      evidence: [
+        { ...candidate.evidence[0], id: "evidence-discovery", sourceType: "discovery" as const,
+          excerpt: "Search summary: VAR selling routers and PoE switches with business quotations." },
+        { ...candidate.evidence[0], id: "evidence-valid", url: "https://example.de/about",
+          sourceType: "official-website" as const,
+          excerpt: "Example GmbH is a registered local company serving business customers in Germany." },
+      ],
+    };
+    const [result] = await agent.evaluate([summaryOnlyCandidate], playbook, "DE", "Germany", "new-market");
+    expect(result.gates.networkingRelevant).toBe(false);
+    expect(result.gates.relevantChannel).toBe(false);
+    expect(result.eligible).toBe(false);
   });
 });

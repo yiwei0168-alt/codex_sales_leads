@@ -143,7 +143,7 @@ export async function persistLeadWorkflowResult(input: {
 }): Promise<LeadWorkflowResult> {
   const candidateById = new Map(input.candidates.map((item) => [item.candidateId, item]));
   const selected = input.assessments
-    .filter((item) => item.eligible && item.totalScore >= 50 && item.primaryRole && candidateById.has(item.candidateId))
+    .filter((item) => item.eligible && item.totalScore >= 50 && candidateById.has(item.candidateId))
     .sort((left, right) => right.totalScore - left.totalScore || right.confidence - left.confidence)
     .slice(0, input.requested);
   const selectedIds = new Map(selected.map((item, index) => [item.candidateId, index + 1]));

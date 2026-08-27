@@ -1,6 +1,6 @@
 {
   "rubricVersion": "multi-source-professional-discovery-v1.3-draft",
-  "status": "confirmed-corrective-rules-1-through-3",
+  "status": "confirmed-corrective-rules-1-through-4",
   "appliesTo": "future full-pool rescoring; does not alter committed v1.2 artifacts",
   "networkingRelevance": {
     "gate": true,
@@ -62,5 +62,18 @@
     "currentRelationshipRule": "A live public Cudy listing can prove the path; a current-relationship label alone adds no points.",
     "unknownRule": "Undisclosed procurement or control remains unknown, not a factual negative, but cannot support a higher level.",
     "scaleRule": "Company size does not increase cooperation-path score."
+  },
+  "multiRoleChannelMembership": {
+    "primaryRoleRequired": false,
+    "recordAllSupportedRoles": true,
+    "noBusinessShareInference": "Do not infer role proportions or a dominant role from public-page volume, search rank or model impression.",
+    "laneAdmission": "Pass a submitted lane when evidence proves that the company genuinely conducts at least one role allowed in that lane, regardless of other roles or business proportions.",
+    "multiLaneRule": "One company may qualify for several lanes when each business is supported by corresponding evidence; the long-tail single-source exception still applies.",
+    "distributionBoundary": "Require downstream supply or explicit distributor/wholesaler identity; direct brand buying for final-customer service remains VAR/DVAR.",
+    "vadBoundary": "VAD requires Distributor status plus substantive technical enablement.",
+    "varBoundary": "VAR requires actual resale to final customers plus substantive technical value; project work without resale may be SI but not VAR.",
+    "serviceBoundary": "SI requires solution/architecture/integration or project-outcome responsibility; installation execution alone supports Installer, not SI.",
+    "possibleRoleRule": "An indicated but unproven role may be retained as possible/pending and does not pass its lane.",
+    "categoryMetric": "Measure supported submitted-lane membership, not agreement on one forced primary role."
   }
 }

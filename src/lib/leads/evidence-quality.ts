@@ -56,7 +56,7 @@ function isProfileHost(host: string): boolean {
   return profileHosts.some((value) => host === value || host.endsWith(`.${value}`));
 }
 
-function isDiscoveryOnly(item: LeadEvidenceSourceInput): boolean {
+export function isDiscoveryOnlyLeadEvidence(item: LeadEvidenceSourceInput): boolean {
   if (discoverySourceTypes.has(item.sourceType?.toLowerCase() ?? "")) return true;
   try {
     const parsed = new URL(item.url);
@@ -121,8 +121,8 @@ export function assessLeadEvidenceQuality(options: {
   const identityConsistent = expectedHost
     ? deduplicated.some((item) => sameHostOrSubdomain(item.host, expectedHost))
     : deduplicated.length > 0;
-  const discoveryOnlyCount = deduplicated.filter(isDiscoveryOnly).length;
-  const usable = deduplicated.filter((item) => !isDiscoveryOnly(item));
+  const discoveryOnlyCount = deduplicated.filter(isDiscoveryOnlyLeadEvidence).length;
+  const usable = deduplicated.filter((item) => !isDiscoveryOnlyLeadEvidence(item));
   const directOfficial = usable.filter((item) => {
     const declaredOfficial = officialSourceTypes.has(item.sourceType?.toLowerCase() ?? "");
     return !isProfileHost(item.host) && sameHostOrSubdomain(item.host, expectedHost) && (declaredOfficial || !item.sourceType);

@@ -2,6 +2,8 @@
 
 Status: **confirmed and frozen on 2026-08-26; primary judge amended to blind Codex review in protocol v1.2; audit workload amended before human decisions on 2026-08-26**
 
+Post-audit note: this file preserves the v1.2 measured rubric. The draft v1.3 rerun replaces forced primary-role/category agreement with evidence-supported submitted-lane membership and records multiple roles; see [`06-corrective-rubric.md`](06-corrective-rubric.md).
+
 All leaderboard scores use one evaluator: this Codex agent reviewing randomized blind evidence packets in-session, with no scoring API and no external search. The application recomputes the 45/35/20 total from returned integer levels and forces failed gates to zero, so the reviewer cannot directly set its total score. Earlier Claude and OpenAI API attempts are diagnostic only and are not mixed into the results.
 
 ## Eligibility gates

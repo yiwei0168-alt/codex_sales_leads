@@ -1,6 +1,6 @@
 # Post-audit corrective rubric
 
-Status: **rules 1 through 3 confirmed on 2026-08-27; later corrective rules remain under sequential user review**
+Status: **rules 1 through 4 confirmed on 2026-08-27; later corrective rules remain under sequential user review**
 
 The v1.2 human audit failed the frozen calibration thresholds, so the published scores remain provisional and no provider winner is declared. This document records corrective rules for the required future full-pool rescoring. It does not retroactively change the frozen v1.2 prompts, packets, decisions or raw scores.
 
@@ -35,3 +35,13 @@ Cooperation-path scores are now capped by demonstrated transaction control rathe
 Tier-1 evidence focuses on brand onboarding, direct procurement/import and repeatable downstream supply. B2B resale focuses on purchasing, live listing/ordering, quotation and recommendation. Project services focus on design/specification/BOM, procurement or vendor selection and deployment. An Installer explicitly limited to customer-supplied equipment is capped at 2.
 
 Missing public procurement or control information remains unknown rather than a negative company fact, but it cannot support a higher score. Company size contributes no cooperation points. A live Cudy product page, price, SKU, stock indication or order path can prove that a transaction path exists; a current-relationship label by itself remains zero-weight.
+
+## Corrective rule 4 — multi-role channel membership
+
+Candidates may retain every role supported by public evidence; the product and benchmark no longer require or score one `primary role`. Public material often proves that a business line exists without revealing its revenue, order or staffing share. Page volume, search rank and model impression must not be used to infer a dominant role.
+
+A submitted lane passes whenever evidence proves that the company genuinely conducts at least one role permitted in that lane, regardless of which other roles exist or appear more prominent. The same company can qualify for several lanes when each business has corresponding evidence. This is a claim requirement, not a multiple-source requirement, so the confirmed long-tail single-source exception still applies.
+
+Distribution requires downstream supply or explicit distributor/wholesaler identity; direct brand buying for final-customer service remains VAR/DVAR. VAD requires Distributor status plus substantive technical enablement. VAR requires actual resale to final customers plus substantive technical value. SI requires solution, architecture, integration or project-outcome responsibility; installation execution alone supports Installer but not SI. Suggested but unproven roles may remain possible/pending and do not pass their lane.
+
+The v1.3 category metric therefore measures whether submitted-lane membership is supported, not whether the evaluator selected the same forced primary role as a reviewer.

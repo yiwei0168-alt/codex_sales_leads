@@ -2,8 +2,9 @@ import type { AiProvider, StructuredAiResponse } from "@/providers/contracts";
 import { DeepSeekProvider } from "@/providers/deepseek";
 import { z } from "zod";
 
+import { MULTI_ROLE_CHANNEL_POLICY, assessChannelMembershipEvidence, type ChannelMembershipLane } from "../channel-membership";
 import { COOPERATION_PATH_POLICY, assessCooperationPathEvidence, type CooperationLane } from "../cooperation-path";
-import { LEAD_EVIDENCE_SOURCE_POLICY, assessLeadEvidenceQuality } from "../evidence-quality";
+import { LEAD_EVIDENCE_SOURCE_POLICY, assessLeadEvidenceQuality, isDiscoveryOnlyLeadEvidence } from "../evidence-quality";
 import { assessNetworkingRelevanceEvidence } from "../networking-relevance";
 import { leadAssessmentBatchSchema, leadAssessmentModelSchema, type LeadAssessmentModelOutput } from "./schemas";
 import type {
@@ -12,7 +13,7 @@ import type {
   LeadWorkflowCandidate,
 } from "./types";
 
-const PROMPT_VERSION = "lead-fit-v1-v6-evidence-capped-cooperation";
+const PROMPT_VERSION = "lead-fit-v1-v7-multi-role-membership";
 
 interface LeadAssessmentRequest {
   instructions: string[];
@@ -44,11 +45,10 @@ function clamp(value: number, maximum: number): number {
   return Math.max(0, Math.min(maximum, Math.round(value)));
 }
 
-function cooperationLane(value: LeadAssessmentModelOutput): CooperationLane {
-  const role = value.primaryRole ?? value.roles[0];
-  if (role === "Distributor" || role === "VAD") return "tier1-distribution";
-  if (["VAR", "Dealer", "Reseller", "Retailer", "E-tailer"].includes(role ?? "")) return "b2b-resale";
-  if (["SI", "Installer", "MSP"].includes(role ?? "")) return "project-services";
+function cooperationLane(lane: ChannelMembershipLane): CooperationLane {
+  if (lane === "distribution") return "tier1-distribution";
+  if (lane === "resale" || lane === "retail") return "b2b-resale";
+  if (lane === "services") return "project-services";
   return "operator";
 }
 
@@ -60,20 +60,27 @@ function normalizeAssessment(
 ): LeadCandidateAssessment {
   const allowedEvidence = new Set(candidate.evidence.map((item) => item.id));
   const evidenceIds = [...new Set(value.evidenceIds.filter((id) => allowedEvidence.has(id)))];
-  const networkingEvidence = assessNetworkingRelevanceEvidence(candidate.evidence.flatMap((item) => [item.title, item.excerpt]));
+  const claimEvidence = candidate.evidence.filter((item) => !isDiscoveryOnlyLeadEvidence(item));
+  const claimEvidenceText = claimEvidence.flatMap((item) => [item.title, item.excerpt]);
+  const networkingEvidence = assessNetworkingRelevanceEvidence(claimEvidenceText);
   const evidenceQuality = assessLeadEvidenceQuality({
     candidateDomain: candidate.domain,
     officialUrl: candidate.officialWebsiteUrl,
     profile: value.accountTier === "Long-tail" ? "long-tail-small-company" : "standard",
     evidence: candidate.evidence,
   });
+  const channelMembership = assessChannelMembershipEvidence({
+    lane: candidate.queryFamily,
+    evidence: claimEvidenceText,
+  });
   const cooperationPath = assessCooperationPathEvidence({
-    lane: cooperationLane(value),
-    evidence: candidate.evidence.flatMap((item) => [item.title, item.excerpt]),
+    lane: cooperationLane(candidate.queryFamily),
+    evidence: claimEvidenceText,
   });
   const gates = {
     ...value.gates,
     networkingRelevant: value.gates.networkingRelevant && networkingEvidence.demonstrated,
+    relevantChannel: value.gates.relevantChannel && channelMembership.demonstrated,
     sufficientEvidence: value.gates.sufficientEvidence && evidenceQuality.sufficient,
   };
   const dimensions = {
@@ -88,8 +95,8 @@ function normalizeAssessment(
   };
   const eligible = Object.values(gates).every(Boolean);
   const totalScore = eligible ? Object.values(dimensions).reduce((sum, score) => sum + score, 0) : 0;
-  const roles = [...new Set(value.roles)];
-  const primaryRole = value.primaryRole && roles.includes(value.primaryRole) ? value.primaryRole : roles[0] ?? null;
+  const roles = [...new Set([...value.roles, ...channelMembership.supportedRoles])];
+  const primaryRole = null;
   return {
     candidateId: candidate.candidateId,
     eligible,
@@ -115,6 +122,8 @@ function normalizeAssessment(
         ? [`Networking relevance was changed to not-demonstrated: ${networkingEvidence.reason}`] : []),
       ...(value.gates.sufficientEvidence && !evidenceQuality.sufficient
         ? [`Evidence sufficiency was changed to false: ${evidenceQuality.reason}`] : []),
+      ...(value.gates.relevantChannel && !channelMembership.demonstrated
+        ? [`Submitted channel membership was changed to false: ${channelMembership.reason}`] : []),
       ...(value.dimensions.partnershipExecutionCapability > cooperationPath.cap * 3
         ? [`Partnership execution was capped at ${cooperationPath.cap * 3}/15: ${cooperationPath.reason}`] : []),
       ...(evidenceIds.length < value.evidenceIds.length ? ["Model returned unsupported evidence IDs; they were removed."] : [])],
@@ -178,7 +187,9 @@ export class LeadQualificationAgent {
       instructions: [
         "Act as an independent sales-lead qualification agent. Ignore search-provider scores and discovery order.",
         "Assess only supplied evidence. Never invent a company fact, role, country presence, product fit, relationship or evidence ID.",
-        "A company may have multiple roles. KA is an account tier, not a channel role. ISP is a downstream channel role.",
+        "Record every role supported by supplied evidence. A company may have multiple simultaneous roles; do not infer business shares or force one primary role. Return primaryRole=null because it is not required or scored.",
+        "A submitted lane passes when evidence proves at least one allowed role is genuinely conducted, even if another role appears more prominent. Each lane needs its own business evidence; evidence from another business line cannot substitute.",
+        "KA is an account tier, not a channel role. ISP is a downstream channel role.",
         "Set networkingRelevant=true only when supplied evidence explicitly shows selling, distributing, specifying, buying, designing, installing, deploying or maintaining active networking hardware, or a WLAN/LAN implementation that directly requires it.",
         "Active networking includes routers, gateways, cellular CPE, access points, mesh/WLAN controllers, Ethernet/PoE switches, modems, outdoor/PtP wireless, network firewalls, security gateways and network-management controllers. A named relevant vendor relationship or concrete project can also prove the gate.",
         "Generic IT infrastructure, cloud connectivity, edge infrastructure, managed IT, IP solutions, system integration, network consulting, data centers, broadcast IP and IT procurement do not prove networking relevance without concrete products, vendors, projects or actions.",
@@ -216,6 +227,7 @@ export class LeadQualificationAgent {
         })),
       })),
       scoringRubric: {
+        multiRoleChannelPolicy: MULTI_ROLE_CHANNEL_POLICY,
         evidenceSourcePolicy: LEAD_EVIDENCE_SOURCE_POLICY,
         cooperationPathPolicy: COOPERATION_PATH_POLICY,
         eligibilityGates: ["submittedIdentityUsable", "companyExists", "targetCountryPresence", "networkingRelevant", "relevantChannel", "sufficientEvidence", "independentProspect"],
