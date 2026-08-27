@@ -1,6 +1,6 @@
 # Post-audit corrective rubric
 
-Status: **rules 1 through 4 confirmed on 2026-08-27; later corrective rules remain under sequential user review**
+Status: **rules 1 through 5 confirmed on 2026-08-27; later corrective rules remain under sequential user review**
 
 The v1.2 human audit failed the frozen calibration thresholds, so the published scores remain provisional and no provider winner is declared. This document records corrective rules for the required future full-pool rescoring. It does not retroactively change the frozen v1.2 prompts, packets, decisions or raw scores.
 
@@ -45,3 +45,13 @@ A submitted lane passes whenever evidence proves that the company genuinely cond
 Distribution requires downstream supply or explicit distributor/wholesaler identity; direct brand buying for final-customer service remains VAR/DVAR. VAD requires Distributor status plus substantive technical enablement. VAR requires actual resale to final customers plus substantive technical value. SI requires solution, architecture, integration or project-outcome responsibility; installation execution alone supports Installer but not SI. Suggested but unproven roles may remain possible/pending and do not pass their lane.
 
 The v1.3 category metric therefore measures whether submitted-lane membership is supported, not whether the evaluator selected the same forced primary role as a reviewer.
+
+## Corrective rule 5 — auditable small long-tail classification
+
+The evaluator and production qualification model may no longer self-assign the evidence exception. In particular, the commercial `accountTier=Long-tail` label is separate from the evidence profile and cannot activate a lower evidence-source threshold. The profile is recomputed deterministically from the supplied, non-discovery evidence and records its supporting URLs and signals.
+
+`confirmed-small-long-tail` requires positive direct small-company evidence plus a long-tail public-information signal. Direct evidence includes an explicit 1–49 employee count, sole-proprietor or individual-enterprise form, or explicit micro-enterprise status. `probable-small-long-tail` requires at least two different positive structural signals—such as owner operation, an explicitly small team, explicitly limited locations, local/regional service scope, or an official small storefront/Marketplace profile—plus a long-tail information signal. Several signals may come from the same identity-clear source; this is not a requirement for two independent sources.
+
+Long-tail information forms include an official Marketplace or platform business profile, a Google Business-style profile, a local/regional business presentation or another fragmented but auditable public-business footprint. Explicit evidence of 250 or more employees or a clearly large national branch/group footprint overrides the exception. A simple website, few search results, weak SEO, low traffic, or missing employee, revenue, warehouse or brand information never proves that a company is small. When positive proof is insufficient, the profile remains `standard`; missing information is recorded as unknown.
+
+This profile only decides whether one concrete, identity-clear public source can satisfy the admission floor. It contributes zero points to product fit, channel role, cooperation path and evidence reliability, and it does not relax entity consistency, active-networking relevance or submitted-lane business proof.

@@ -1,5 +1,6 @@
 import type { ChannelRole } from "@/lib/domain";
 import type { LeadSearchPlan } from "@/lib/assistant/types";
+import type { SmallLongTailAssessment } from "@/lib/leads/small-long-tail";
 
 export const ALL_CHANNEL_ROLES: ChannelRole[] = [
   "Distributor", "VAD", "VAR", "Dealer", "Reseller", "Retailer",
@@ -112,6 +113,7 @@ export interface LeadCandidateAssessment {
   roles: ChannelRole[];
   primaryRole: ChannelRole | null;
   accountTier: "KA" | "Priority" | "Standard" | "Long-tail";
+  evidenceProfileAssessment?: SmallLongTailAssessment;
   supplyModel: "Distributor Supply" | "Brand Direct" | "Co-sell/Co-supply" | "TBD";
   brandInvolvement: "Light" | "Standard" | "Deep";
   dimensions: LeadFitDimensions;

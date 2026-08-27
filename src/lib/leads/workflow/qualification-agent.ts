@@ -6,6 +6,7 @@ import { MULTI_ROLE_CHANNEL_POLICY, assessChannelMembershipEvidence, type Channe
 import { COOPERATION_PATH_POLICY, assessCooperationPathEvidence, type CooperationLane } from "../cooperation-path";
 import { LEAD_EVIDENCE_SOURCE_POLICY, assessLeadEvidenceQuality, isDiscoveryOnlyLeadEvidence } from "../evidence-quality";
 import { assessNetworkingRelevanceEvidence } from "../networking-relevance";
+import { SMALL_LONG_TAIL_POLICY } from "../small-long-tail";
 import { leadAssessmentBatchSchema, leadAssessmentModelSchema, type LeadAssessmentModelOutput } from "./schemas";
 import type {
   LeadCandidateAssessment,
@@ -13,7 +14,7 @@ import type {
   LeadWorkflowCandidate,
 } from "./types";
 
-const PROMPT_VERSION = "lead-fit-v1-v7-multi-role-membership";
+const PROMPT_VERSION = "lead-fit-v1-v8-audited-small-long-tail";
 
 interface LeadAssessmentRequest {
   instructions: string[];
@@ -66,7 +67,6 @@ function normalizeAssessment(
   const evidenceQuality = assessLeadEvidenceQuality({
     candidateDomain: candidate.domain,
     officialUrl: candidate.officialWebsiteUrl,
-    profile: value.accountTier === "Long-tail" ? "long-tail-small-company" : "standard",
     evidence: candidate.evidence,
   });
   const channelMembership = assessChannelMembershipEvidence({
@@ -104,6 +104,7 @@ function normalizeAssessment(
     roles,
     primaryRole,
     accountTier: value.accountTier,
+    evidenceProfileAssessment: evidenceQuality.smallLongTail,
     supplyModel: value.supplyModel,
     brandInvolvement: value.brandInvolvement,
     dimensions,
@@ -146,6 +147,11 @@ function failedAssessment(candidate: LeadWorkflowCandidate, message: string): Le
     roles: [],
     primaryRole: null,
     accountTier: "Standard",
+    evidenceProfileAssessment: {
+      profile: "standard", confidence: "none", exceptionEligible: false,
+      directSizeSignals: [], structuralSignals: [], longTailSignals: [], largeCompanyOverrides: [],
+      reason: "Evidence assessment did not complete.",
+    },
     supplyModel: "TBD",
     brandInvolvement: "Standard",
     dimensions: {
@@ -197,7 +203,8 @@ export class LeadQualificationAgent {
         "Treat search snippets, provider summaries and AI-generated summaries as discovery only, never as standalone proof. Link every material claim to a supplied URL and concrete excerpt.",
         "Confirm that the company name, official URL/domain and evidence entity refer to the same business. A wrong or unmatched official URL fails sufficientEvidence until corrected; repeated pages, mirrors and duplicate excerpts count once.",
         "One concrete company-owned official page can be sufficient. Without direct official evidence, a standard candidate normally needs two non-duplicative public origins.",
-        "For a genuinely small Long-tail candidate, do not require multiple independent sources: one identity-clear official marketplace store, official company/profile/social page, Google Business-style profile or other concrete auditable public source can pass sufficientEvidence. This exception changes eligibility, not the evidence-quality score.",
+        "Do not self-assign a small-company evidence exception and do not infer size from sparse results, weak SEO, a simple website, low traffic or missing data. The system derives this profile deterministically from positive evidence; accountTier=Long-tail is a separate commercial label.",
+        "A deterministically confirmed or probable small long-tail candidate does not require multiple independent sources: one identity-clear official marketplace store, official company/profile/social page, Google Business-style profile or other concrete auditable public source can pass sufficientEvidence. This changes eligibility only, never the evidence-quality score.",
         "Cap cooperation-path strength by demonstrated transaction control: no explicit procurement/listing/quotation/specification/recommendation/deployment control means level 2 at most; one lever means level 3; multiple complementary levers mean level 4.",
         "Reserve cooperation level 5 for an evidenced active transaction/listing/direct-procurement path or a complete repeatable chain. An active public Cudy listing proves the path, but a relationship label alone adds no points. Customer-supplied installation-only work is capped at level 2.",
         "Missing public procurement or control evidence remains unknown rather than a negative fact, but cannot support a higher cooperation score. Company size never raises this score.",
@@ -229,6 +236,7 @@ export class LeadQualificationAgent {
       scoringRubric: {
         multiRoleChannelPolicy: MULTI_ROLE_CHANNEL_POLICY,
         evidenceSourcePolicy: LEAD_EVIDENCE_SOURCE_POLICY,
+        smallLongTailPolicy: SMALL_LONG_TAIL_POLICY,
         cooperationPathPolicy: COOPERATION_PATH_POLICY,
         eligibilityGates: ["submittedIdentityUsable", "companyExists", "targetCountryPresence", "networkingRelevant", "relevantChannel", "sufficientEvidence", "independentProspect"],
         dimensions: {

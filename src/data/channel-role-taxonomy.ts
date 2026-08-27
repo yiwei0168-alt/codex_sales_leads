@@ -43,6 +43,10 @@ Networking relevance 只判断是否实质参与主动网络设备业务；produ
 
 对长尾线索中的小公司放宽证据数量门槛，不要求多个独立证据交叉验证。只要一条来源能够明确对应经营主体，并具体展示相关产品、品牌、官方店铺、项目、安装服务或其他真实业务动作，即可通过基本证据门槛；来源可以是官方 Marketplace 店铺、官方 LinkedIn／社交公司页面、Google Business 类经营页面或其他具体且可审计的公共资料。该例外只降低准入所需的来源数量，不降低主体一致性、内容具体性、Networking relevance 和角色证据要求，也不会自动获得更高的 evidence reliability 分数。
 
+小型长尾证据档案必须由系统根据非发现性证据确定，不能由模型自行声明，也不能用商业价值字段 accountTier=Long-tail 触发。confirmed-small-long-tail 需要一项直接的小型公司证据（明确 1–49 名员工、个体／独资经营形式或明确的微型企业身份）和一项长尾公开信息形态；probable-small-long-tail 需要至少两种不同的正面结构性信号（例如业主直接经营、明确的小团队、明确的有限经营地点、本地／区域服务范围、官方小型店铺或 Marketplace 经营页面）以及一项长尾信息形态。同一条主体明确的来源可以同时提供多个信号，这不构成多来源要求。
+
+官方 Marketplace／平台经营页、Google Business 类页面、本地或区域经营表述、以及分散但可审计的公开经营足迹可以构成长尾信息信号。明确 250 人以上、全国性大型分支网络或大型企业集团足迹会覆盖小型长尾例外。搜索结果少、SEO 弱、网站简单、流量低，或者没有公开员工、营收、仓库和品牌信息，都不能单独或组合证明公司规模小；正面证据不足时必须保留为 standard／unknown。该档案只控制单来源准入例外，不参与产品匹配、角色、合作路径或证据可靠性评分。
+
 ### 合作路径证据与评分上限
 
 合作路径评分衡量候选公司在实际合作中对采购、产品上架、订货、报价、选型、BOM、品牌推荐、部署或持续运营的可验证控制与影响，不等于渠道角色、Networking relevance 或公司规模。角色成立只能证明公司“是什么”，不能自动证明品牌可以怎样与其合作。
@@ -910,7 +914,7 @@ export const CHANNEL_ROLE_TAXONOMY_DOCUMENT = {
   capturedAt: "2026-08-26T00:00:00+08:00",
   metadata: {
     topic: "channel-role-taxonomy",
-    policyVersion: "2026-08-27.16",
+    policyVersion: "2026-08-27.17",
     confirmedRoles: ["Distributor", "VAD", "VAR", "Dealer", "Reseller", "Retailer", "E-tailer", "SI", "Installer", "MSP", "ISP", "Commission Agent"],
     pendingRoles: [],
     userConfirmed: true,

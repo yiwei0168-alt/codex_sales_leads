@@ -1,4 +1,10 @@
-export type EvidenceProfile = "standard" | "long-tail-small-company";
+import {
+  assessSmallLongTailProfile,
+  type EvidenceProfile,
+  type SmallLongTailAssessment,
+} from "./small-long-tail";
+
+export type { EvidenceProfile } from "./small-long-tail";
 
 export interface LeadEvidenceSourceInput {
   url: string;
@@ -14,16 +20,18 @@ export interface LeadEvidenceQualityAssessment {
   independentOriginCount: number;
   duplicateCount: number;
   discoveryOnlyCount: number;
+  smallLongTail: SmallLongTailAssessment;
   reason: string;
 }
 
 export const LEAD_EVIDENCE_SOURCE_POLICY = {
-  version: "claim-linked-evidence-v1",
+  version: "claim-linked-evidence-v2-audited-small-long-tail",
   claimLinking: "Company identity, market presence, networking relevance, channel role and cooperation path must each be assessed from claim-linked URLs and excerpts; one generic description cannot prove every claim.",
   discoveryOnly: "Search snippets, provider summaries and AI-generated summaries may discover a candidate but cannot independently prove a claim.",
   directEvidence: "One clear company-owned official page may be sufficient; evidence quality is not a page-count contest.",
   standardAlternative: "Without direct official evidence, a standard candidate normally needs two non-duplicative public origins with concrete support.",
-  longTailException: "A small long-tail company does not need multiple independent sources. One identity-clear official marketplace store, official company/profile/social page, Google Business-style profile, or other concrete auditable public source may be sufficient.",
+  longTailException: "A deterministically confirmed or probable small long-tail company does not need multiple independent sources. One identity-clear official marketplace store, official company/profile/social page, Google Business-style profile, or other concrete auditable public source may be sufficient.",
+  longTailClassification: "The model cannot self-assign the exception. Confirmed requires positive direct small-company evidence plus a long-tail information signal; probable requires two different positive structural size signals plus a long-tail signal. Sparse search results, weak SEO, simple websites and missing data never prove size.",
   identityRule: "The company name, claimed official URL and evidence entity must refer to the same business. A supplied official URL with no matching entity evidence fails sufficient evidence until corrected.",
   duplicateRule: "Mirrors, repeated excerpts and pages from the same origin count once for corroboration.",
   scoringBoundary: "The single-source long-tail exception affects eligibility only. Independent corroboration can still support a higher evidence-reliability score, but its absence is not an automatic rejection.",
@@ -81,10 +89,10 @@ function hasConcreteContent(value: string): boolean {
 export function assessLeadEvidenceQuality(options: {
   candidateDomain?: string | null;
   officialUrl?: string | null;
-  profile?: EvidenceProfile;
   evidence: LeadEvidenceSourceInput[];
 }): LeadEvidenceQualityAssessment {
-  const profile = options.profile ?? "standard";
+  const smallLongTail = assessSmallLongTailProfile(options.evidence);
+  const profile: EvidenceProfile = smallLongTail.profile;
   const candidateHost = hostFromUrl(options.candidateDomain?.includes("://")
     ? options.candidateDomain : options.candidateDomain ? `https://${options.candidateDomain}` : null);
   const officialHost = hostFromUrl(options.officialUrl);
@@ -129,7 +137,7 @@ export function assessLeadEvidenceQuality(options: {
   });
   const independent = usable.filter((item) => !directOfficial.includes(item));
   const independentOrigins = new Set(independent.map((item) => item.host));
-  const longTailSingleSource = profile === "long-tail-small-company"
+  const longTailSingleSource = smallLongTail.exceptionEligible
     && usable.some((item) => isProfileHost(item.host) || independent.includes(item));
   const sufficient = identityConsistent
     && (directOfficial.length > 0 || independentOrigins.size >= 2 || longTailSingleSource);
@@ -157,6 +165,7 @@ export function assessLeadEvidenceQuality(options: {
     independentOriginCount: independentOrigins.size,
     duplicateCount,
     discoveryOnlyCount,
+    smallLongTail,
     reason,
   };
 }

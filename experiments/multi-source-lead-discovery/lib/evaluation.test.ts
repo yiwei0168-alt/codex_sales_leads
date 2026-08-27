@@ -14,7 +14,7 @@ describe("provider-neutral benchmark evaluation", () => {
     expect(canonicalPublicUrl("https://example.de/partner?utm_source=test&id=3#contact"))
       .toBe("https://example.de/partner?id=3");
     expect(sanitizeText("## Workforce - Employees: 4 - Key Executives: - Jane Doe: CEO"))
-      .toBe("[redacted-workforce-section]");
+      .toBe("## Workforce - Employees: 4 [redacted-personnel-section]");
     expect(isUsefulPublicUrl("http://www.w3.org/2000/svg")).toBe(false);
     expect(isUsefulPublicUrl("https://www.google.com/search?q=test")).toBe(false);
   });
@@ -29,7 +29,6 @@ describe("provider-neutral benchmark evaluation", () => {
           selectedCandidates: [{
             companyName: "Example GmbH",
             officialUrl: "https://example.de/?utm_source=x",
-            evidenceProfile: "standard",
             roles: ["Reseller"],
             eligibility: {
               companyExists: true, germanyPresence: true, networkingRelevant: true,
@@ -89,7 +88,7 @@ describe("provider-neutral benchmark evaluation", () => {
       output: [{ type: "message", content: [{ type: "output_text", text: JSON.stringify({
         selectedCandidates: [{
           companyName: "Generic IT GmbH", officialUrl: "https://generic.example",
-          evidenceProfile: "standard", roles: ["SI"],
+          roles: ["SI"],
           eligibility: { companyExists: true, germanyPresence: true, networkingRelevant: true,
             submittedChannelRole: true, sufficientEvidence: true, uniqueWithinList: true },
           levels: { productUseCaseFit: 4, cooperationPath: 4, evidenceReliability: 4 },

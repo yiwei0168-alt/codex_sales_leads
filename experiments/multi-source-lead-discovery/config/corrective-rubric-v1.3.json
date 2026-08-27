@@ -1,6 +1,6 @@
 {
   "rubricVersion": "multi-source-professional-discovery-v1.3-draft",
-  "status": "confirmed-corrective-rules-1-through-4",
+  "status": "confirmed-corrective-rules-1-through-5",
   "appliesTo": "future full-pool rescoring; does not alter committed v1.2 artifacts",
   "networkingRelevance": {
     "gate": true,
@@ -46,9 +46,20 @@
     "identityRule": "Company name, claimed official URL and evidence entity must refer to the same business; an unmatched or wrong official URL fails sufficient evidence until corrected.",
     "directOfficialRule": "One concrete company-owned official page can satisfy the basic evidence floor.",
     "standardAlternative": "Without direct official evidence, a standard candidate normally needs two non-duplicative public origins.",
-    "longTailSmallCompanyException": "A small long-tail lead does not require multiple independent sources. One identity-clear official marketplace store, official company/profile/social page, Google Business-style page or other concrete auditable public source can satisfy the basic evidence floor.",
+    "longTailSmallCompanyException": "A deterministically confirmed or probable small long-tail lead does not require multiple independent sources. One identity-clear official marketplace store, official company/profile/social page, Google Business-style page or other concrete auditable public source can satisfy the basic evidence floor.",
+    "longTailClassification": {
+      "modelSelfAssignmentAllowed": false,
+      "confirmed": "Positive direct small-company evidence plus a long-tail public-information signal.",
+      "probable": "At least two different positive structural size signals plus a long-tail public-information signal; the signals may be present in one identity-clear source.",
+      "directSmallEvidence": ["explicit 1-49 employees", "sole proprietor or individual enterprise", "explicit micro-enterprise status"],
+      "structuralSignals": ["owner-operated", "explicitly small team", "explicitly limited locations", "local or regional service scope", "official small storefront or marketplace profile"],
+      "longTailSignals": ["official marketplace or platform business profile", "Google Business-style profile", "local or regional business presentation", "fragmented but auditable public-business footprint"],
+      "largeOverride": "Explicit 250+ employees or a clearly large national branch/group footprint prevents the exception.",
+      "prohibitedInference": ["few search results", "weak SEO", "simple website", "low traffic", "missing employees, revenue, warehouse or brand information"],
+      "fallback": "Insufficient positive evidence remains unknown and uses the standard evidence profile."
+    },
     "duplicateRule": "Mirrors, repeated excerpts and pages from the same origin count once for corroboration.",
-    "scoringBoundary": "The long-tail exception changes eligibility only; independent corroboration may improve evidence reliability but is not required for admission."
+    "scoringBoundary": "The derived long-tail profile changes eligibility only; it contributes zero fit, role, cooperation-path or evidence-reliability points."
   },
   "cooperationPathCaps": {
     "noDemonstratedControl": 2,

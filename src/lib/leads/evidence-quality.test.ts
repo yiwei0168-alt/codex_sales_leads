@@ -48,22 +48,22 @@ describe("claim-linked lead evidence quality", () => {
     expect(result.sufficient).toBe(false);
   });
 
-  it("allows a long-tail small company to pass with one concrete public profile", () => {
+  it("allows a deterministically supported small long-tail company to pass with one concrete public profile", () => {
     const result = assessLeadEvidenceQuality({
-      profile: "long-tail-small-company",
       officialUrl: "https://www.linkedin.com/company/local-wifi-installer/",
       evidence: [{
-        url: "https://www.linkedin.com/company/local-wifi-installer/", sourceType: "independent-public",
-        excerpt: "Local Wi-Fi Installer plans and installs WLAN access points for shops and small offices.",
+        url: "https://www.linkedin.com/company/local-wifi-installer/", sourceType: "official-platform-profile",
+        excerpt: "Owner-operated local Wi-Fi Installer has 6 employees and installs WLAN access points for shops and small offices.",
       }],
     });
     expect(result.sufficient).toBe(true);
     expect(result.reason).toContain("long-tail");
+    expect(result.profile).toBe("confirmed-small-long-tail");
   });
 
   it("does not apply the single independent-source exception to a standard profile", () => {
     const result = assessLeadEvidenceQuality({
-      profile: "standard", evidence: [{
+      evidence: [{
         url: "https://industry.example/company", sourceType: "independent-public",
         excerpt: "The company distributes active networking products through local channel partners.",
       }],
@@ -73,7 +73,7 @@ describe("claim-linked lead evidence quality", () => {
 
   it("does not mistake a Google search-result URL for a long-tail business profile", () => {
     const result = assessLeadEvidenceQuality({
-      profile: "long-tail-small-company", officialUrl: "https://www.google.com/search?q=local+installer",
+      officialUrl: "https://www.google.com/search?q=local+installer",
       evidence: [{
         url: "https://www.google.com/search?q=local+installer", sourceType: "independent-public",
         excerpt: "Search results mention a local installer that may provide business Wi-Fi services.",

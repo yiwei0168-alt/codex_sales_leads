@@ -7,6 +7,7 @@ import {
   isDiscoveryOnlyLeadEvidence,
   type EvidenceProfile,
 } from "../../../src/lib/leads/evidence-quality";
+import { SMALL_LONG_TAIL_POLICY, type SmallLongTailAssessment } from "../../../src/lib/leads/small-long-tail";
 import {
   ACTIVE_NETWORKING_RELEVANCE_POLICY,
   assessNetworkingRelevanceEvidence,
@@ -39,6 +40,7 @@ export interface EvaluatedCandidate {
   companyName: string;
   officialUrl: string | null;
   evidenceProfile: EvidenceProfile;
+  evidenceProfileAssessment: SmallLongTailAssessment;
   roles: string[];
   eligibility: EligibilityGates;
   levels: ScoreLevels;
@@ -161,7 +163,6 @@ export function passesAllGates(gates: EligibilityGates): boolean {
 
 export function sanitizeText(value: string): string {
   return value
-    .replace(/(?:^|\s)#{1,6}\s*Workforce\b[\s\S]*$/i, " [redacted-workforce-section]")
     .replace(/(?:-|#{1,6})\s*Key Executives?\s*:[\s\S]*?(?=(?:-|#{1,6})\s*(?:Breakdown|Workforce|Company Details)\b|$)/gi,
       " [redacted-personnel-section] ")
     .replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, "[redacted-email]")
@@ -210,11 +211,10 @@ function parseCandidate(value: unknown, channelId: ChannelId): EvaluatedCandidat
     return url && excerpt ? [{ url, excerpt, sourceType }] : [];
   }) : [];
   const officialUrl = canonicalPublicUrl(candidate.officialUrl);
-  const evidenceProfile: EvidenceProfile = candidate.evidenceProfile === "long-tail-small-company"
-    ? "long-tail-small-company" : "standard";
   const claimEvidenceItems = evidenceItems.filter((item) => !isDiscoveryOnlyLeadEvidence(item));
   const networkingEvidence = assessNetworkingRelevanceEvidence(claimEvidenceItems.map((item) => item.excerpt));
-  const evidenceQuality = assessLeadEvidenceQuality({ officialUrl, profile: evidenceProfile, evidence: evidenceItems });
+  const evidenceQuality = assessLeadEvidenceQuality({ officialUrl, evidence: evidenceItems });
+  const evidenceProfile = evidenceQuality.profile;
   const channelMembership = assessChannelMembershipEvidence({
     lane: membershipLane(channelId), evidence: claimEvidenceItems.map((item) => item.excerpt),
   });
@@ -239,6 +239,7 @@ function parseCandidate(value: unknown, channelId: ChannelId): EvaluatedCandidat
     companyName: sanitizeText(stringValue(candidate.companyName, "Unnamed company")).slice(0, 200),
     officialUrl,
     evidenceProfile,
+    evidenceProfileAssessment: evidenceQuality.smallLongTail,
     roles: [...new Set([
       ...(Array.isArray(candidate.roles) ? candidate.roles.map((role) => sanitizeText(stringValue(role))).filter(Boolean) : []),
       ...channelMembership.supportedRoles,
@@ -269,7 +270,6 @@ function evaluatorSchema(): Record<string, unknown> {
           properties: {
             companyName: { type: "string" },
             officialUrl: { type: ["string", "null"] },
-            evidenceProfile: { type: "string", enum: ["standard", "long-tail-small-company"] },
             roles: { type: "array", items: { type: "string" }, maxItems: 8 },
             eligibility: {
               type: "object",
@@ -316,7 +316,7 @@ function evaluatorSchema(): Record<string, unknown> {
             rationale: { type: "string" },
           },
           required: [
-            "companyName", "officialUrl", "evidenceProfile", "roles", "eligibility", "levels", "roleEvidence",
+            "companyName", "officialUrl", "roles", "eligibility", "levels", "roleEvidence",
             "productFitEvidence", "cooperationEvidence", "evidenceItems", "rationale",
           ],
           additionalProperties: false,
@@ -422,6 +422,7 @@ export async function evaluateChannel(options: {
     multiRoleChannelPolicy: MULTI_ROLE_CHANNEL_POLICY,
     networkingRelevancePolicy: ACTIVE_NETWORKING_RELEVANCE_POLICY,
     evidenceSourcePolicy: LEAD_EVIDENCE_SOURCE_POLICY,
+    smallLongTailPolicy: SMALL_LONG_TAIL_POLICY,
     cooperationPathPolicy: COOPERATION_PATH_POLICY,
     ...(fixed ? { fixedCandidates: options.fixedCandidates } : { discoveryResults: compactItems(options.discoveryItems) }),
   }, options.fetchImplementation ?? fetch);

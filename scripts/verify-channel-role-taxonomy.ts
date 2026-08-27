@@ -60,6 +60,8 @@ const verificationQueries = [
   "候选公司有多个真实角色但无法判断业务占比时是否必须选择 primary role？",
   "同一家公司能否同时通过多个搜索通道？通道准入是否要求该业务是主营业务？",
   "在多角色集合与搜索通道成员资格规则中，VAD 为什么必须满足 Distributor，安装工作为什么只确认 Installer 而不能确认 SI？",
+  "系统如何确认候选公司是小型长尾公司？搜索结果少、网站简单或者 accountTier Long-tail 能否作为判断依据？",
+  "confirmed-small-long-tail 和 probable-small-long-tail 分别需要什么证据？一条来源能否提供多个结构信号？",
 ];
 
 try {
@@ -164,6 +166,12 @@ try {
     "只执行既定安装工作可以确认 Installer，但不能确认 SI",
     "possible role／待核验角色",
     "不再评价模型是否选择了唯一 primary role",
+    "不能由模型自行声明，也不能用商业价值字段 accountTier=Long-tail 触发",
+    "confirmed-small-long-tail 需要一项直接的小型公司证据",
+    "probable-small-long-tail 需要至少两种不同的正面结构性信号",
+    "同一条主体明确的来源可以同时提供多个信号",
+    "搜索结果少、SEO 弱、网站简单、流量低",
+    "正面证据不足时必须保留为 standard／unknown",
   ];
   const missingText = requiredText.filter((fragment) => !stored.combined_content.includes(fragment));
 
