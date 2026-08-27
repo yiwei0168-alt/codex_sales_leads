@@ -1,6 +1,6 @@
 # Shared provider-neutral evidence enrichment
 
-Status: **corrective rule 6 implemented and direct-fetch pilot completed on 2026-08-27**
+Status: **corrective rule 6 implemented; full direct collection and priority-1 fallback completed on 2026-08-27**
 
 ## Purpose
 
@@ -32,11 +32,28 @@ The pilot used the merged WLAN-Shop24 dossier and made no paid-provider calls. F
 
 This pilot validates the intended failure behavior: stronger evidence collection can invalidate stale candidate identity while retaining the useful product and channel evidence as auditable material.
 
+## Resumable full-pool collection
+
+The collector now maintains `shared-evidence-dossiers.v1.json` as a resumable 113-company master artifact. It processes ten uncompleted dossiers by default with concurrency capped at three, checkpoints after every completed company, and validates the exact seed hash before resuming. Completed dossiers are not requested again unless an explicit retry mode is selected. Company dossiers and collection metrics are stored separately to avoid duplicating evidence payloads.
+
+The free direct-only pass completed all 113 canonical dossiers and collected 422 of 448 attempted official pages (94.2%). Before paid fallback, 17 dossiers were ready for rescoring, 76 were partially supported and 20 still had no recognized core support. These labels describe evidence completeness under the corrective rubric, not lead quality.
+
+## Cost-gated fallback result
+
+The fallback planner split the 96 non-ready dossiers into three marginal-value tiers. Tier 1 contained 23 dossiers with no canonical official URL, zero successful official pages, or at least one failed official target. Tier 2 contained two dossiers whose official pages were retrieved but established no recognized core claim. Tier 3 contained 71 partially supported dossiers with complete direct retrieval and was deliberately deferred.
+
+Only tier 1 was run. It collected the full cumulative budget of 46 fallback sources across 23 dossiers. The final state is 18 ready, 90 partially supported and 5 still unsupported: 16 tier-1 dossiers improved at least one status level, while only one reached the complete automatic rescoring threshold. The result supports fallback as a recovery mechanism for failed or missing official pages, but not as an economical blanket expansion step. Tier 2 and tier 3 remain uncalled.
+
+Fallback-only retries skip direct retrieval, preserve the existing dossier, and enforce the two-source cap cumulatively across process restarts. Exhausted dossiers are automatically removed from the actionable queue, preventing duplicate paid calls.
+
 ## Artifacts and commands
 
 - Seed dossiers: `artifacts/runs/2026-08-26-de-v1/evidence/shared-evidence-dossiers.seed.json`
 - Direct pilot: `artifacts/runs/2026-08-26-de-v1/evidence/shared-evidence-direct-pilot.json`
+- Resumable master: `artifacts/runs/2026-08-26-de-v1/evidence/shared-evidence-dossiers.v1.json`
+- Cost-gated queue: `artifacts/runs/2026-08-26-de-v1/evidence/shared-evidence-fallback-queue.json`
 - Prepare: `npm run benchmark:discovery:prepare-shared-evidence`
 - Collect: `npm run benchmark:discovery:collect-shared-evidence -- --limit=10`
-- Enable paid fallback deliberately: add `--allow-paid-fallback`
+- Plan fallback: `npm run benchmark:discovery:plan-evidence-fallback`
+- Run priority-1 fallback deliberately: `npm run benchmark:discovery:collect-shared-evidence -- --fallback-only --fallback-tier=1 --allow-paid-fallback`
 - Verify: `npm run benchmark:discovery:verify-shared-evidence`

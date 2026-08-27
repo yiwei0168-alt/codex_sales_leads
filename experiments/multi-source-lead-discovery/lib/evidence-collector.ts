@@ -130,6 +130,7 @@ export async function collectEvidenceDossier(
     pageFetcher: EvidencePageFetcher;
     fallbackAdapter?: EvidenceFallbackAdapter;
     capturedAt: string;
+    skipOfficial?: boolean;
     signal?: AbortSignal;
   },
 ): Promise<EvidenceCollectionResult> {
@@ -142,13 +143,16 @@ export async function collectEvidenceDossier(
   const queue = [...dossier.retrievalPlan.initialOfficialTargets];
   if (dossier.canonicalOfficialUrl && !queue.includes(dossier.canonicalOfficialUrl)) queue.unshift(dossier.canonicalOfficialUrl);
   const seen = new Set<string>();
-  const failedOfficialUrls: string[] = [];
+  const failedOfficialUrls: string[] = options.skipOfficial
+    ? dossier.collectionLog.filter((item) => item.stage === "direct-official" && item.status === "failed" && item.url)
+      .map((item) => item.url!)
+    : [];
   let officialPagesAttempted = 0;
   let officialPagesCollected = 0;
   let stoppedEarly = false;
   let stopReason = "official-page-budget-exhausted";
 
-  while (queue.length > 0 && officialPagesAttempted < dossier.retrievalPlan.officialPageBudget) {
+  while (!options.skipOfficial && queue.length > 0 && officialPagesAttempted < dossier.retrievalPlan.officialPageBudget) {
     const target = canonicalUrl(queue.shift()!);
     if (!target || seen.has(target) || !sameCompanyHost(target, dossier.canonicalDomain)) continue;
     seen.add(target);
@@ -182,14 +186,17 @@ export async function collectEvidenceDossier(
   }
 
   let fallbackSourcesCollected = 0;
-  if (!mayStop(dossier) && options.fallbackAdapter && dossier.retrievalPlan.fallbackSourceBudget > 0) {
+  const existingFallbackSources = dossier.evidence.filter((item) => item.acquisition === "tavily-extract"
+    || item.acquisition === "fallback-search").length;
+  const remainingFallbackBudget = Math.max(0, dossier.retrievalPlan.fallbackSourceBudget - existingFallbackSources);
+  if (!mayStop(dossier) && options.fallbackAdapter && remainingFallbackBudget > 0) {
     try {
       const fallback = await options.fallbackAdapter.collect({
         dossier, failedOfficialUrls,
-        remainingSourceBudget: dossier.retrievalPlan.fallbackSourceBudget,
+        remainingSourceBudget: remainingFallbackBudget,
         signal: options.signal,
       });
-      for (const source of fallback.sources.slice(0, dossier.retrievalPlan.fallbackSourceBudget)) {
+      for (const source of fallback.sources.slice(0, remainingFallbackBudget)) {
         addEvidence(dossier, { ...source, excerpt: source.text, capturedAt: options.capturedAt });
         fallbackSourcesCollected += 1;
       }
@@ -211,9 +218,14 @@ export async function collectEvidenceDossier(
         reason: error instanceof Error ? error.message : String(error) });
       stopReason = "fallback-failed-unknowns-preserved";
     }
+  } else if (!mayStop(dossier) && options.fallbackAdapter && remainingFallbackBudget === 0) {
+    dossier.collectionLog.push({ stage: "search-fallback", url: null, status: "skipped", reason: "The per-company fallback source budget is exhausted." });
+    stopReason = "fallback-budget-already-exhausted";
   } else if (!mayStop(dossier) && !options.fallbackAdapter) {
     dossier.collectionLog.push({ stage: "search-fallback", url: null, status: "skipped", reason: "No fallback adapter was configured." });
     stopReason = "fallback-not-configured";
+  } else if (options.skipOfficial && mayStop(dossier)) {
+    stopReason = "fallback-skipped-already-complete";
   }
 
   return { dossier, officialPagesAttempted, officialPagesCollected, fallbackSourcesCollected, stoppedEarly, stopReason };

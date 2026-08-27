@@ -59,6 +59,33 @@ describe("shared evidence collection budget", () => {
     expect(result.fallbackSourcesCollected).toBe(2);
   });
 
+  it("enforces the fallback budget cumulatively across resumable collection attempts", async () => {
+    const first = await collectEvidenceDossier(seedDossier(), {
+      capturedAt: "2026-08-27T00:00:00.000Z",
+      pageFetcher: { fetch: async () => { throw new Error("blocked"); } },
+      fallbackAdapter: { collect: async () => ({
+        sources: [0, 1].map((index) => ({
+          url: `https://directory-${index}.example/company`, text: `Concrete public source ${index} about the company.`,
+          acquisition: "fallback-search" as const, sourceType: "independent-public" as const,
+        })),
+        attempts: [],
+      }) },
+    });
+    let fallbackCalls = 0;
+    const resumed = await collectEvidenceDossier(first.dossier, {
+      capturedAt: "2026-08-27T01:00:00.000Z",
+      skipOfficial: true,
+      pageFetcher: { fetch: async () => { throw new Error("Direct fetch must not run in fallback-only mode"); } },
+      fallbackAdapter: { collect: async () => {
+        fallbackCalls += 1;
+        return { sources: [], attempts: [] };
+      } },
+    });
+    expect(fallbackCalls).toBe(0);
+    expect(resumed.fallbackSourcesCollected).toBe(0);
+    expect(resumed.stopReason).toBe("fallback-budget-already-exhausted");
+  });
+
   it("redacts contacts and strips cookie-manager boilerplate from stored evidence", async () => {
     const result = await collectEvidenceDossier(seedDossier(), {
       capturedAt: "2026-08-27T00:00:00.000Z",

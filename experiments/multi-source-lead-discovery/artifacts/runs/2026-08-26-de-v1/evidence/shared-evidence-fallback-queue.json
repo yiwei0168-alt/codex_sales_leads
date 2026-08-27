@@ -1,0 +1,1857 @@
+{
+  "schemaVersion": 1,
+  "policyVersion": "shared-provider-neutral-evidence-v1",
+  "runId": "2026-08-26-de-v1",
+  "generatedAt": "2026-08-27T02:36:08.234Z",
+  "policy": {
+    "tier1": "Run first: missing official URL, zero successful direct pages, or a failed official target.",
+    "tier2": "Run only after reviewing tier 1 yield: direct pages succeeded but no recognized core claim was established.",
+    "tier3": "Defer by default: some claims are supported and direct retrieval completed; paid expansion has lower expected marginal value."
+  },
+  "summary": {
+    "totalNotReady": 95,
+    "tier1": 22,
+    "tier2": 2,
+    "tier3": 71,
+    "actionable": 73,
+    "tier1Actionable": 0
+  },
+  "queue": [
+    {
+      "dossierId": "DOS-402E5B15E0AF",
+      "canonicalName": "3KV GmbH",
+      "canonicalOfficialUrl": "https://www.3kv.de/",
+      "requestedLanes": [
+        "tier1-distribution"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 1,
+      "reason": "All attempted official-page retrievals failed.",
+      "officialPagesAttempted": 1,
+      "officialPagesCollected": 0,
+      "fallbackSourcesAlreadyCollected": 2,
+      "actionable": false,
+      "missingClaims": [
+        "identity",
+        "cooperation-path:tier1-distribution"
+      ]
+    },
+    {
+      "dossierId": "DOS-AF92580501F1",
+      "canonicalName": "A+G connect GmbH",
+      "canonicalOfficialUrl": "https://www.aplusg.de/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 1,
+      "reason": "All attempted official-page retrievals failed.",
+      "officialPagesAttempted": 3,
+      "officialPagesCollected": 0,
+      "fallbackSourcesAlreadyCollected": 2,
+      "actionable": false,
+      "missingClaims": [
+        "germany-presence",
+        "active-networking",
+        "cooperation-path:project-services"
+      ]
+    },
+    {
+      "dossierId": "DOS-55841AFCE068",
+      "canonicalName": "ACP IT Solutions GmbH",
+      "canonicalOfficialUrl": "https://www.acp.de/",
+      "requestedLanes": [
+        "b2b-resale"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 1,
+      "reason": "All attempted official-page retrievals failed.",
+      "officialPagesAttempted": 1,
+      "officialPagesCollected": 0,
+      "fallbackSourcesAlreadyCollected": 2,
+      "actionable": false,
+      "missingClaims": [
+        "lane:b2b-resale"
+      ]
+    },
+    {
+      "dossierId": "DOS-6F828157B272",
+      "canonicalName": "ALLCOMPUTER PC-Fachgeschäft & IT-Systemhaus",
+      "canonicalOfficialUrl": null,
+      "requestedLanes": [
+        "b2b-resale"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 1,
+      "reason": "No canonical official URL was available for direct collection.",
+      "officialPagesAttempted": 0,
+      "officialPagesCollected": 0,
+      "fallbackSourcesAlreadyCollected": 2,
+      "actionable": false,
+      "missingClaims": [
+        "identity",
+        "active-networking",
+        "cooperation-path:b2b-resale"
+      ]
+    },
+    {
+      "dossierId": "DOS-72DE10499A3D",
+      "canonicalName": "BKN GmbH & Co. KG",
+      "canonicalOfficialUrl": "https://bk-netzwerk.de/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 1,
+      "reason": "At least one official target failed and is eligible for extraction fallback.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 4,
+      "fallbackSourcesAlreadyCollected": 2,
+      "actionable": false,
+      "missingClaims": [
+        "active-networking",
+        "lane:project-services"
+      ]
+    },
+    {
+      "dossierId": "DOS-74300D59AC52",
+      "canonicalName": "brainworks computer technologie GmbH",
+      "canonicalOfficialUrl": "https://www.brainworks.de/",
+      "requestedLanes": [
+        "tier1-distribution"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 1,
+      "reason": "All attempted official-page retrievals failed.",
+      "officialPagesAttempted": 1,
+      "officialPagesCollected": 0,
+      "fallbackSourcesAlreadyCollected": 2,
+      "actionable": false,
+      "missingClaims": [
+        "identity",
+        "cooperation-path:tier1-distribution"
+      ]
+    },
+    {
+      "dossierId": "DOS-CEA9A45CE909",
+      "canonicalName": "Computacenter AG & Co. oHG",
+      "canonicalOfficialUrl": "https://www.computacenter.com/",
+      "requestedLanes": [
+        "b2b-resale",
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 1,
+      "reason": "At least one official target failed and is eligible for extraction fallback.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 4,
+      "fallbackSourcesAlreadyCollected": 2,
+      "actionable": false,
+      "missingClaims": [
+        "identity"
+      ]
+    },
+    {
+      "dossierId": "DOS-4535F43AAEBC",
+      "canonicalName": "Concat AG",
+      "canonicalOfficialUrl": "https://www.concat.de/",
+      "requestedLanes": [
+        "b2b-resale"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 1,
+      "reason": "At least one official target failed and is eligible for extraction fallback.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 3,
+      "fallbackSourcesAlreadyCollected": 2,
+      "actionable": false,
+      "missingClaims": [
+        "active-networking",
+        "lane:b2b-resale",
+        "cooperation-path:b2b-resale"
+      ]
+    },
+    {
+      "dossierId": "DOS-F956B8036EAF",
+      "canonicalName": "Distrelec Deutschland",
+      "canonicalOfficialUrl": "https://www.distrelec.de/",
+      "requestedLanes": [
+        "tier1-distribution"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 1,
+      "reason": "All attempted official-page retrievals failed.",
+      "officialPagesAttempted": 2,
+      "officialPagesCollected": 0,
+      "fallbackSourcesAlreadyCollected": 2,
+      "actionable": false,
+      "missingClaims": [
+        "active-networking",
+        "lane:tier1-distribution"
+      ]
+    },
+    {
+      "dossierId": "DOS-60AAC068D0C7",
+      "canonicalName": "Ecom Electronic Components Trading GmbH",
+      "canonicalOfficialUrl": "https://www.ecom-edv.de/",
+      "requestedLanes": [
+        "tier1-distribution"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 1,
+      "reason": "All attempted official-page retrievals failed.",
+      "officialPagesAttempted": 1,
+      "officialPagesCollected": 0,
+      "fallbackSourcesAlreadyCollected": 2,
+      "actionable": false,
+      "missingClaims": [
+        "identity",
+        "active-networking"
+      ]
+    },
+    {
+      "dossierId": "DOS-6DDFD52E18F0",
+      "canonicalName": "eWLAN",
+      "canonicalOfficialUrl": null,
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 1,
+      "reason": "No canonical official URL was available for direct collection.",
+      "officialPagesAttempted": 0,
+      "officialPagesCollected": 0,
+      "fallbackSourcesAlreadyCollected": 2,
+      "actionable": false,
+      "missingClaims": [
+        "identity",
+        "active-networking",
+        "cooperation-path:project-services"
+      ]
+    },
+    {
+      "dossierId": "DOS-C6924F28E290",
+      "canonicalName": "IB-IT Cabling GmbH",
+      "canonicalOfficialUrl": "http://www.ib-it.eu/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 1,
+      "reason": "At least one official target failed and is eligible for extraction fallback.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 3,
+      "fallbackSourcesAlreadyCollected": 2,
+      "actionable": false,
+      "missingClaims": [
+        "germany-presence",
+        "active-networking"
+      ]
+    },
+    {
+      "dossierId": "DOS-2F1EA4260472",
+      "canonicalName": "Infinigate Deutschland GmbH",
+      "canonicalOfficialUrl": "https://www.infinigate.de/",
+      "requestedLanes": [
+        "tier1-distribution"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 1,
+      "reason": "All attempted official-page retrievals failed.",
+      "officialPagesAttempted": 1,
+      "officialPagesCollected": 0,
+      "fallbackSourcesAlreadyCollected": 2,
+      "actionable": false,
+      "missingClaims": [
+        "active-networking",
+        "cooperation-path:tier1-distribution"
+      ]
+    },
+    {
+      "dossierId": "DOS-34980A2004F3",
+      "canonicalName": "Ingram Micro Distribution GmbH",
+      "canonicalOfficialUrl": "https://de.ingrammicro.eu/",
+      "requestedLanes": [
+        "tier1-distribution"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 1,
+      "reason": "All attempted official-page retrievals failed.",
+      "officialPagesAttempted": 1,
+      "officialPagesCollected": 0,
+      "fallbackSourcesAlreadyCollected": 2,
+      "actionable": false,
+      "missingClaims": [
+        "active-networking",
+        "lane:tier1-distribution",
+        "cooperation-path:tier1-distribution"
+      ]
+    },
+    {
+      "dossierId": "DOS-6578E78FB520",
+      "canonicalName": "itc GmbH",
+      "canonicalOfficialUrl": "https://www.itc-net.de/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "seeded-needs-enrichment",
+      "tier": 1,
+      "reason": "All attempted official-page retrievals failed.",
+      "officialPagesAttempted": 1,
+      "officialPagesCollected": 0,
+      "fallbackSourcesAlreadyCollected": 2,
+      "actionable": false,
+      "missingClaims": [
+        "identity",
+        "active-networking",
+        "lane:project-services",
+        "cooperation-path:project-services"
+      ]
+    },
+    {
+      "dossierId": "DOS-F332C9E1A850",
+      "canonicalName": "Klare Leitung",
+      "canonicalOfficialUrl": "https://klare-leitung.de/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "seeded-needs-enrichment",
+      "tier": 1,
+      "reason": "All attempted official-page retrievals failed.",
+      "officialPagesAttempted": 1,
+      "officialPagesCollected": 0,
+      "fallbackSourcesAlreadyCollected": 2,
+      "actionable": false,
+      "missingClaims": [
+        "identity",
+        "active-networking",
+        "lane:project-services",
+        "cooperation-path:project-services"
+      ]
+    },
+    {
+      "dossierId": "DOS-9AF9F89FFCA5",
+      "canonicalName": "Router-Switch.com",
+      "canonicalOfficialUrl": "https://www.router-switch.com/de",
+      "requestedLanes": [
+        "tier1-distribution"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 1,
+      "reason": "All attempted official-page retrievals failed.",
+      "officialPagesAttempted": 1,
+      "officialPagesCollected": 0,
+      "fallbackSourcesAlreadyCollected": 2,
+      "actionable": false,
+      "missingClaims": [
+        "germany-presence"
+      ]
+    },
+    {
+      "dossierId": "DOS-499B9CF2D84F",
+      "canonicalName": "SoftwareOne Deutschland GmbH",
+      "canonicalOfficialUrl": "https://www.softwareone.com/",
+      "requestedLanes": [
+        "b2b-resale"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 1,
+      "reason": "All attempted official-page retrievals failed.",
+      "officialPagesAttempted": 1,
+      "officialPagesCollected": 0,
+      "fallbackSourcesAlreadyCollected": 2,
+      "actionable": false,
+      "missingClaims": [
+        "active-networking",
+        "lane:b2b-resale",
+        "cooperation-path:b2b-resale"
+      ]
+    },
+    {
+      "dossierId": "DOS-0864BDF54A51",
+      "canonicalName": "sysob IT-Distribution GmbH & Co. KG",
+      "canonicalOfficialUrl": "https://www.sysob.de/",
+      "requestedLanes": [
+        "tier1-distribution"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 1,
+      "reason": "All attempted official-page retrievals failed.",
+      "officialPagesAttempted": 1,
+      "officialPagesCollected": 0,
+      "fallbackSourcesAlreadyCollected": 2,
+      "actionable": false,
+      "missingClaims": [
+        "germany-presence",
+        "lane:tier1-distribution",
+        "cooperation-path:tier1-distribution"
+      ]
+    },
+    {
+      "dossierId": "DOS-5168C944EB18",
+      "canonicalName": "TD SYNNEX Germany",
+      "canonicalOfficialUrl": "https://de.tdsynnex.com/",
+      "requestedLanes": [
+        "tier1-distribution"
+      ],
+      "enrichmentStatus": "seeded-needs-enrichment",
+      "tier": 1,
+      "reason": "All attempted official-page retrievals failed.",
+      "officialPagesAttempted": 1,
+      "officialPagesCollected": 0,
+      "fallbackSourcesAlreadyCollected": 2,
+      "actionable": false,
+      "missingClaims": [
+        "identity",
+        "active-networking",
+        "lane:tier1-distribution",
+        "cooperation-path:tier1-distribution"
+      ]
+    },
+    {
+      "dossierId": "DOS-F67166CAC871",
+      "canonicalName": "Wave Computersysteme GmbH",
+      "canonicalOfficialUrl": "https://www.wave-computer.de/",
+      "requestedLanes": [
+        "tier1-distribution"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 1,
+      "reason": "All attempted official-page retrievals failed.",
+      "officialPagesAttempted": 1,
+      "officialPagesCollected": 0,
+      "fallbackSourcesAlreadyCollected": 2,
+      "actionable": false,
+      "missingClaims": [
+        "identity",
+        "active-networking"
+      ]
+    },
+    {
+      "dossierId": "DOS-EAAE93A31094",
+      "canonicalName": "WLANxpert",
+      "canonicalOfficialUrl": "http://wlanxpert.de/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 1,
+      "reason": "All attempted official-page retrievals failed.",
+      "officialPagesAttempted": 1,
+      "officialPagesCollected": 0,
+      "fallbackSourcesAlreadyCollected": 2,
+      "actionable": false,
+      "missingClaims": [
+        "identity"
+      ]
+    },
+    {
+      "dossierId": "DOS-2AFFBE9C4879",
+      "canonicalName": "GISA GmbH",
+      "canonicalOfficialUrl": "https://www.gisa.de/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "seeded-needs-enrichment",
+      "tier": 2,
+      "reason": "Direct pages were collected but did not establish a recognized identity, networking, or requested-lane claim.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "identity",
+        "active-networking",
+        "lane:project-services",
+        "cooperation-path:project-services"
+      ]
+    },
+    {
+      "dossierId": "DOS-3A8635AE8757",
+      "canonicalName": "SPIE Deutschland & Zentraleuropa",
+      "canonicalOfficialUrl": "https://spie.de/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "seeded-needs-enrichment",
+      "tier": 2,
+      "reason": "Direct pages were collected but did not establish a recognized identity, networking, or requested-lane claim.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "identity",
+        "active-networking",
+        "lane:project-services",
+        "cooperation-path:project-services"
+      ]
+    },
+    {
+      "dossierId": "DOS-CE5CFF2ED35C",
+      "canonicalName": "ALLNET GmbH Computersysteme",
+      "canonicalOfficialUrl": "https://www.allnet.de/",
+      "requestedLanes": [
+        "tier1-distribution"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "lane:tier1-distribution"
+      ]
+    },
+    {
+      "dossierId": "DOS-42210E8B828E",
+      "canonicalName": "ALSO Deutschland GmbH",
+      "canonicalOfficialUrl": "https://www.also.de/",
+      "requestedLanes": [
+        "tier1-distribution"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 1,
+      "officialPagesCollected": 1,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "active-networking",
+        "lane:tier1-distribution",
+        "cooperation-path:tier1-distribution"
+      ]
+    },
+    {
+      "dossierId": "DOS-1E2535E98150",
+      "canonicalName": "Avanis GmbH",
+      "canonicalOfficialUrl": "https://avanis.de/",
+      "requestedLanes": [
+        "b2b-resale",
+        "tier1-distribution"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "lane:b2b-resale",
+        "lane:tier1-distribution"
+      ]
+    },
+    {
+      "dossierId": "DOS-9F732BE06E7B",
+      "canonicalName": "Axians Deutschland",
+      "canonicalOfficialUrl": "https://www.axians.de/",
+      "requestedLanes": [
+        "b2b-resale"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "active-networking",
+        "lane:b2b-resale"
+      ]
+    },
+    {
+      "dossierId": "DOS-64FD311CD333",
+      "canonicalName": "Azenn Connect (Fröhlich + Walter GmbH)",
+      "canonicalOfficialUrl": "https://www.exertis-connect.de/",
+      "requestedLanes": [
+        "tier1-distribution"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "identity",
+        "lane:tier1-distribution"
+      ]
+    },
+    {
+      "dossierId": "DOS-038F1F349F23",
+      "canonicalName": "Bechtle AG",
+      "canonicalOfficialUrl": "https://www.bechtle.com/",
+      "requestedLanes": [
+        "b2b-resale",
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "germany-presence",
+        "lane:b2b-resale",
+        "lane:project-services"
+      ]
+    },
+    {
+      "dossierId": "DOS-115AB11D22DE",
+      "canonicalName": "BerryBase",
+      "canonicalOfficialUrl": "https://www.berrybase.de/",
+      "requestedLanes": [
+        "b2b-resale"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "germany-presence"
+      ]
+    },
+    {
+      "dossierId": "DOS-6C0F64F51D7F",
+      "canonicalName": "BFE Studio und Medien Systeme GmbH",
+      "canonicalOfficialUrl": "https://www.bfe.tv/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "active-networking",
+        "cooperation-path:project-services"
+      ]
+    },
+    {
+      "dossierId": "DOS-512D65ADA011",
+      "canonicalName": "CANCOM SE",
+      "canonicalOfficialUrl": "https://www.cancom.de/",
+      "requestedLanes": [
+        "b2b-resale",
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "active-networking"
+      ]
+    },
+    {
+      "dossierId": "DOS-7CEFA4A953B7",
+      "canonicalName": "Controlware GmbH",
+      "canonicalOfficialUrl": "https://www.controlware.de/",
+      "requestedLanes": [
+        "b2b-resale",
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "active-networking",
+        "lane:b2b-resale",
+        "cooperation-path:b2b-resale",
+        "cooperation-path:project-services"
+      ]
+    },
+    {
+      "dossierId": "DOS-99926231B074",
+      "canonicalName": "CTM-COM GmbH",
+      "canonicalOfficialUrl": "https://www.ctm-com.de/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "germany-presence",
+        "active-networking",
+        "lane:project-services",
+        "cooperation-path:project-services"
+      ]
+    },
+    {
+      "dossierId": "DOS-C7771BB02330",
+      "canonicalName": "DATAGROUP SE",
+      "canonicalOfficialUrl": "https://www.datagroup.de/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "active-networking",
+        "lane:project-services"
+      ]
+    },
+    {
+      "dossierId": "DOS-6ADB45345A91",
+      "canonicalName": "DevTec Systems GmbH",
+      "canonicalOfficialUrl": "https://devtecsystems.net/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "germany-presence",
+        "lane:project-services"
+      ]
+    },
+    {
+      "dossierId": "DOS-B46FD3C30843",
+      "canonicalName": "Die Netz-Werker AG",
+      "canonicalOfficialUrl": "https://www.dnw.ag/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "germany-presence",
+        "lane:project-services",
+        "cooperation-path:project-services"
+      ]
+    },
+    {
+      "dossierId": "DOS-283B0DF44C5D",
+      "canonicalName": "ditpro GmbH",
+      "canonicalOfficialUrl": "https://www.ditpro.de/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "active-networking",
+        "lane:project-services"
+      ]
+    },
+    {
+      "dossierId": "DOS-7B08FA57520F",
+      "canonicalName": "DNWS Die Netz-Werk Spezialisten GmbH",
+      "canonicalOfficialUrl": "https://dnws.de/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "germany-presence",
+        "lane:project-services",
+        "cooperation-path:project-services"
+      ]
+    },
+    {
+      "dossierId": "DOS-E54B06193A34",
+      "canonicalName": "Elomech Elektroanlagen GmbH",
+      "canonicalOfficialUrl": "https://www.elomech.de/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "active-networking"
+      ]
+    },
+    {
+      "dossierId": "DOS-CB0220E643FD",
+      "canonicalName": "ENO Telecom GmbH",
+      "canonicalOfficialUrl": "https://www.eno.de/",
+      "requestedLanes": [
+        "tier1-distribution"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "lane:tier1-distribution"
+      ]
+    },
+    {
+      "dossierId": "DOS-CB8E0BA6A3D8",
+      "canonicalName": "EQOS Energie Deutschland GmbH",
+      "canonicalOfficialUrl": "https://eqos-energie.com/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "identity",
+        "lane:project-services"
+      ]
+    },
+    {
+      "dossierId": "DOS-85344049A2DD",
+      "canonicalName": "EWE Business",
+      "canonicalOfficialUrl": "https://business.ewe.de/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "germany-presence"
+      ]
+    },
+    {
+      "dossierId": "DOS-49F38137215F",
+      "canonicalName": "FASTNET GmbH",
+      "canonicalOfficialUrl": "https://fastnet-gmbh-montagetechnik.de/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "active-networking",
+        "lane:project-services"
+      ]
+    },
+    {
+      "dossierId": "DOS-615BFB06A2C3",
+      "canonicalName": "Frings Solutions Deutschland GmbH",
+      "canonicalOfficialUrl": "https://www.frings-solutions.de/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "lane:project-services",
+        "cooperation-path:project-services"
+      ]
+    },
+    {
+      "dossierId": "DOS-00A80739F8DE",
+      "canonicalName": "FTS Hennig",
+      "canonicalOfficialUrl": "https://www.fts-hennig.de/netztechnik",
+      "requestedLanes": [
+        "b2b-resale"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "germany-presence",
+        "lane:b2b-resale"
+      ]
+    },
+    {
+      "dossierId": "DOS-9F175AE17D55",
+      "canonicalName": "GREEN IT Das Systemhaus GmbH",
+      "canonicalOfficialUrl": "https://www.greenit.systems/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "lane:project-services"
+      ]
+    },
+    {
+      "dossierId": "DOS-502B13D007D3",
+      "canonicalName": "Hagel IT-Services GmbH",
+      "canonicalOfficialUrl": "https://www.hagel-it.de/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "lane:project-services"
+      ]
+    },
+    {
+      "dossierId": "DOS-F582B0198864",
+      "canonicalName": "HANSA PROJEKT",
+      "canonicalOfficialUrl": "https://www.hansa-projekt.de/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "germany-presence",
+        "lane:project-services",
+        "cooperation-path:project-services"
+      ]
+    },
+    {
+      "dossierId": "DOS-1F6C27A02568",
+      "canonicalName": "Herweck AG",
+      "canonicalOfficialUrl": "https://www.herweck.de/",
+      "requestedLanes": [
+        "tier1-distribution"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "active-networking"
+      ]
+    },
+    {
+      "dossierId": "DOS-DF20DECAA2F2",
+      "canonicalName": "High Knowledge GmbH",
+      "canonicalOfficialUrl": "https://www.hknow.de/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "active-networking"
+      ]
+    },
+    {
+      "dossierId": "DOS-DDC2A5468B60",
+      "canonicalName": "Hopf Vertriebsgesellschaft mbH",
+      "canonicalOfficialUrl": "https://hopf-online.de/",
+      "requestedLanes": [
+        "tier1-distribution"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "lane:tier1-distribution",
+        "cooperation-path:tier1-distribution"
+      ]
+    },
+    {
+      "dossierId": "DOS-9D7E21D44787",
+      "canonicalName": "indasys IT Systemhaus Gruppe",
+      "canonicalOfficialUrl": "https://indasys.de/",
+      "requestedLanes": [
+        "b2b-resale"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "lane:b2b-resale"
+      ]
+    },
+    {
+      "dossierId": "DOS-71A32E9206A8",
+      "canonicalName": "INTERPORT REAL",
+      "canonicalOfficialUrl": "https://www.interportreal.de/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "germany-presence",
+        "cooperation-path:project-services"
+      ]
+    },
+    {
+      "dossierId": "DOS-BD013AD77D34",
+      "canonicalName": "IT-HAUS GmbH",
+      "canonicalOfficialUrl": "https://www.it-haus.com/",
+      "requestedLanes": [
+        "b2b-resale"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "active-networking",
+        "lane:b2b-resale",
+        "cooperation-path:b2b-resale"
+      ]
+    },
+    {
+      "dossierId": "DOS-3FB4D53292D1",
+      "canonicalName": "ITCE Systemhaus",
+      "canonicalOfficialUrl": "https://www.itce-systemhaus.de/",
+      "requestedLanes": [
+        "b2b-resale"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "germany-presence",
+        "active-networking",
+        "lane:b2b-resale"
+      ]
+    },
+    {
+      "dossierId": "DOS-3D3811E5779E",
+      "canonicalName": "ITK Deutschland",
+      "canonicalOfficialUrl": "https://www.itkdeutschland.de/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "lane:project-services",
+        "cooperation-path:project-services"
+      ]
+    },
+    {
+      "dossierId": "DOS-52E758B74543",
+      "canonicalName": "JACOB Elektronik GmbH",
+      "canonicalOfficialUrl": "https://www.jacob.de/",
+      "requestedLanes": [
+        "b2b-resale"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "lane:b2b-resale"
+      ]
+    },
+    {
+      "dossierId": "DOS-FE717C579547",
+      "canonicalName": "KODEWI UG",
+      "canonicalOfficialUrl": "https://www.kodewi.de/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 1,
+      "officialPagesCollected": 1,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "germany-presence",
+        "active-networking",
+        "lane:project-services",
+        "cooperation-path:project-services"
+      ]
+    },
+    {
+      "dossierId": "DOS-1C5CBA9A30BE",
+      "canonicalName": "Komsa AG",
+      "canonicalOfficialUrl": "https://komsa.com/",
+      "requestedLanes": [
+        "tier1-distribution"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "active-networking",
+        "lane:tier1-distribution"
+      ]
+    },
+    {
+      "dossierId": "DOS-FD61927FA5DA",
+      "canonicalName": "KTI Distribution GmbH",
+      "canonicalOfficialUrl": "https://www.kti.de/",
+      "requestedLanes": [
+        "tier1-distribution"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "germany-presence",
+        "lane:tier1-distribution"
+      ]
+    },
+    {
+      "dossierId": "DOS-DCFF23CF432A",
+      "canonicalName": "KUMAVISION AG",
+      "canonicalOfficialUrl": "https://kumavision.com/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "active-networking",
+        "lane:project-services"
+      ]
+    },
+    {
+      "dossierId": "DOS-F49ED4051F4B",
+      "canonicalName": "KUPPER IT GmbH",
+      "canonicalOfficialUrl": "https://www.kupper-it.com/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "active-networking",
+        "lane:project-services"
+      ]
+    },
+    {
+      "dossierId": "DOS-F9BE6DD361F7",
+      "canonicalName": "Littlebit Technology Deutschland GmbH",
+      "canonicalOfficialUrl": "https://www.littlebit.de/",
+      "requestedLanes": [
+        "tier1-distribution"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "lane:tier1-distribution"
+      ]
+    },
+    {
+      "dossierId": "DOS-50A542CAB6B1",
+      "canonicalName": "MeshTech",
+      "canonicalOfficialUrl": "https://meshtech.de/",
+      "requestedLanes": [
+        "tier1-distribution"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "lane:tier1-distribution"
+      ]
+    },
+    {
+      "dossierId": "DOS-D7CD4E4FD0A4",
+      "canonicalName": "MichaelTelecom / MICHAEL AG",
+      "canonicalOfficialUrl": "https://www.michael-ag.de/",
+      "requestedLanes": [
+        "tier1-distribution"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "identity",
+        "germany-presence",
+        "lane:tier1-distribution"
+      ]
+    },
+    {
+      "dossierId": "DOS-324C17BEED97",
+      "canonicalName": "MiMann.net",
+      "canonicalOfficialUrl": "https://mimann.net/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "germany-presence"
+      ]
+    },
+    {
+      "dossierId": "DOS-BEEE802425BC",
+      "canonicalName": "NCS Netzwerke Computer Service GmbH",
+      "canonicalOfficialUrl": "https://ncs.de/",
+      "requestedLanes": [
+        "b2b-resale"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "germany-presence",
+        "active-networking",
+        "lane:b2b-resale",
+        "cooperation-path:b2b-resale"
+      ]
+    },
+    {
+      "dossierId": "DOS-570B7C175AC7",
+      "canonicalName": "Net Factory Gesellschaft für Netzwerklösungen mbH",
+      "canonicalOfficialUrl": "https://net-factory.de/",
+      "requestedLanes": [
+        "b2b-resale"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "active-networking",
+        "lane:b2b-resale"
+      ]
+    },
+    {
+      "dossierId": "DOS-749C6122253C",
+      "canonicalName": "netgo GmbH",
+      "canonicalOfficialUrl": "https://www.netgo.de/",
+      "requestedLanes": [
+        "b2b-resale"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "active-networking",
+        "lane:b2b-resale",
+        "cooperation-path:b2b-resale"
+      ]
+    },
+    {
+      "dossierId": "DOS-E2D32FE7DB83",
+      "canonicalName": "Netzwerkbau & IT-Services Berlin",
+      "canonicalOfficialUrl": "https://netzwerkbau.berlin/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "germany-presence"
+      ]
+    },
+    {
+      "dossierId": "DOS-DA65122C2B87",
+      "canonicalName": "NLS Netzwerke GmbH",
+      "canonicalOfficialUrl": "https://nls-netzwerke.de/",
+      "requestedLanes": [
+        "b2b-resale",
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "lane:b2b-resale",
+        "cooperation-path:b2b-resale",
+        "cooperation-path:project-services"
+      ]
+    },
+    {
+      "dossierId": "DOS-144C2341074F",
+      "canonicalName": "Nomios Germany",
+      "canonicalOfficialUrl": "https://www.nomios.de/",
+      "requestedLanes": [
+        "b2b-resale"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "active-networking",
+        "lane:b2b-resale",
+        "cooperation-path:b2b-resale"
+      ]
+    },
+    {
+      "dossierId": "DOS-3B56615EA53D",
+      "canonicalName": "OMG.DE GmbH",
+      "canonicalOfficialUrl": "https://www.omg.de/",
+      "requestedLanes": [
+        "b2b-resale"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "identity",
+        "germany-presence"
+      ]
+    },
+    {
+      "dossierId": "DOS-FD6C94BCDF65",
+      "canonicalName": "PHONEKOM",
+      "canonicalOfficialUrl": "https://phonekom.de/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "active-networking",
+        "lane:project-services",
+        "cooperation-path:project-services"
+      ]
+    },
+    {
+      "dossierId": "DOS-91EB44A9F7C9",
+      "canonicalName": "Red Eagle IT Distribution GmbH",
+      "canonicalOfficialUrl": "https://redeagle-it.de/",
+      "requestedLanes": [
+        "tier1-distribution"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "germany-presence"
+      ]
+    },
+    {
+      "dossierId": "DOS-F5A78AEA91F3",
+      "canonicalName": "RockSolid Networks e. K.",
+      "canonicalOfficialUrl": "https://rocksolid-networks.de/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 1,
+      "officialPagesCollected": 1,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "germany-presence",
+        "active-networking",
+        "lane:project-services",
+        "cooperation-path:project-services"
+      ]
+    },
+    {
+      "dossierId": "DOS-80EBE942AFEC",
+      "canonicalName": "SCALCOM",
+      "canonicalOfficialUrl": "https://scalcom.de/",
+      "requestedLanes": [
+        "b2b-resale",
+        "tier1-distribution"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "germany-presence",
+        "lane:b2b-resale",
+        "lane:tier1-distribution"
+      ]
+    },
+    {
+      "dossierId": "DOS-CEC74BEDD336",
+      "canonicalName": "SHC Netzwerktechnik GmbH",
+      "canonicalOfficialUrl": "https://shc.eu/",
+      "requestedLanes": [
+        "b2b-resale"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "lane:b2b-resale",
+        "cooperation-path:b2b-resale"
+      ]
+    },
+    {
+      "dossierId": "DOS-9B09D2614787",
+      "canonicalName": "Skaylink GmbH",
+      "canonicalOfficialUrl": "https://www.skaylink.com/",
+      "requestedLanes": [
+        "b2b-resale"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "active-networking",
+        "cooperation-path:b2b-resale"
+      ]
+    },
+    {
+      "dossierId": "DOS-E65C94A2B31C",
+      "canonicalName": "smaRTtechnik GmbH & Co. KG",
+      "canonicalOfficialUrl": "https://smarttechnik.de/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "active-networking",
+        "lane:project-services",
+        "cooperation-path:project-services"
+      ]
+    },
+    {
+      "dossierId": "DOS-E970155B0250",
+      "canonicalName": "SMB IT Solution",
+      "canonicalOfficialUrl": "https://smb-it-solution.com/",
+      "requestedLanes": [
+        "b2b-resale"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "lane:b2b-resale"
+      ]
+    },
+    {
+      "dossierId": "DOS-AE9D1B827599",
+      "canonicalName": "SNcom GmbH",
+      "canonicalOfficialUrl": "https://www.sncom.de/",
+      "requestedLanes": [
+        "b2b-resale"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "germany-presence",
+        "active-networking",
+        "lane:b2b-resale",
+        "cooperation-path:b2b-resale"
+      ]
+    },
+    {
+      "dossierId": "DOS-00304410FC3E",
+      "canonicalName": "STORDIS GmbH",
+      "canonicalOfficialUrl": "https://stordis.com/",
+      "requestedLanes": [
+        "tier1-distribution"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "germany-presence",
+        "lane:tier1-distribution"
+      ]
+    },
+    {
+      "dossierId": "DOS-DF573E55B367",
+      "canonicalName": "SVA System Vertrieb Alexander GmbH",
+      "canonicalOfficialUrl": "https://www.sva.de/",
+      "requestedLanes": [
+        "b2b-resale",
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "active-networking",
+        "lane:project-services"
+      ]
+    },
+    {
+      "dossierId": "DOS-72A689BB4760",
+      "canonicalName": "Teamtrade IT GmbH",
+      "canonicalOfficialUrl": "https://www.team-it-group.de/teamtrade",
+      "requestedLanes": [
+        "tier1-distribution"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "lane:tier1-distribution",
+        "cooperation-path:tier1-distribution"
+      ]
+    },
+    {
+      "dossierId": "DOS-2B90F410A171",
+      "canonicalName": "tilko GmbH",
+      "canonicalOfficialUrl": "https://tilko-wlan.de/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "germany-presence"
+      ]
+    },
+    {
+      "dossierId": "DOS-F5E5F357BBA8",
+      "canonicalName": "VINCI Energies Deutschland GmbH",
+      "canonicalOfficialUrl": "https://www.vinci-energies.de/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "identity",
+        "active-networking",
+        "lane:project-services",
+        "cooperation-path:project-services"
+      ]
+    },
+    {
+      "dossierId": "DOS-B9D3F2D79ED0",
+      "canonicalName": "Visiotech Deutschland",
+      "canonicalOfficialUrl": "https://www.visiotechsecurity.com/de/",
+      "requestedLanes": [
+        "tier1-distribution"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "identity",
+        "germany-presence",
+        "lane:tier1-distribution",
+        "cooperation-path:tier1-distribution"
+      ]
+    },
+    {
+      "dossierId": "DOS-064B0AA5A976",
+      "canonicalName": "Westcon-Comstor Germany",
+      "canonicalOfficialUrl": "https://www.westconcomstor.com/",
+      "requestedLanes": [
+        "tier1-distribution"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "germany-presence",
+        "active-networking"
+      ]
+    },
+    {
+      "dossierId": "DOS-C6308B269DD4",
+      "canonicalName": "wHoffice.de",
+      "canonicalOfficialUrl": "https://www.whoffice.de/",
+      "requestedLanes": [
+        "tier1-distribution"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "lane:tier1-distribution"
+      ]
+    },
+    {
+      "dossierId": "DOS-55236A499A08",
+      "canonicalName": "WLAN-Shop24 (Varistano GmbH)",
+      "canonicalOfficialUrl": "https://www.wlan-shop24.de/",
+      "requestedLanes": [
+        "b2b-resale"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "identity"
+      ]
+    },
+    {
+      "dossierId": "DOS-B261611D8E0D",
+      "canonicalName": "YELLO NETCOM GmbH",
+      "canonicalOfficialUrl": "https://yello-net.de/",
+      "requestedLanes": [
+        "b2b-resale",
+        "tier1-distribution"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "germany-presence",
+        "lane:b2b-resale",
+        "lane:tier1-distribution"
+      ]
+    },
+    {
+      "dossierId": "DOS-D0AC71062E06",
+      "canonicalName": "ZEBES AG",
+      "canonicalOfficialUrl": "https://www.zebes.de/",
+      "requestedLanes": [
+        "project-services"
+      ],
+      "enrichmentStatus": "partially-supported",
+      "tier": 3,
+      "reason": "Direct evidence supports some claims; defer paid expansion until higher-priority gaps are tested.",
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesAlreadyCollected": 0,
+      "actionable": true,
+      "missingClaims": [
+        "germany-presence"
+      ]
+    }
+  ]
+}
