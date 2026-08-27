@@ -36,6 +36,29 @@ interface BlindPacket {
   }>;
 }
 
+interface HumanDecisionCheckpoint {
+  runId: string;
+  decisions: unknown[];
+}
+
+interface HumanAuditComparison {
+  runId: string;
+  evaluationView: string;
+  humanAuditCheckpointCommit: string;
+  humanDecisionsFrozenBeforeDeblinding: boolean;
+  passed: boolean;
+  failedThresholds: string[];
+  metrics: {
+    coreSampleSize: number;
+    problemDiagnosticSize: number;
+    gateFieldAgreement: number;
+    submittedLaneAgreement: number;
+    quadraticWeightedKappa: number;
+    scoreMeanAbsoluteError: number;
+  };
+  calibrationDecision: { status: string; leaderboardStatus: string };
+}
+
 function assertBlind(value: unknown, location = "packet"): void {
   const forbidden = new Set(["systemId", "provider", "providerId", "rank", "submittedRank", "score", "modelScore", "occurrenceCount", "sampleType"]);
   if (Array.isArray(value)) return value.forEach((item, index) => assertBlind(item, `${location}[${index}]`));
@@ -56,7 +79,12 @@ const seedBytes = await readFile(path.join(root, "evidence/shared-evidence-dossi
 const seed = JSON.parse(seedBytes.toString("utf8")) as SharedDossierArtifact;
 const master = JSON.parse(await readFile(path.join(root, "evidence/shared-evidence-dossiers.v1.json"), "utf8")) as MasterArtifact;
 const scores = JSON.parse(await readFile(path.join(root, "scoring/all-candidate-scores.json"), "utf8")) as ScoreArtifact;
+const calibratedScores = JSON.parse(await readFile(path.join(root, "scoring/calibrated/all-candidate-scores.v1.3.1.json"), "utf8")) as ScoreArtifact;
 const blindPacket = JSON.parse(await readFile(path.join(root, "scoring/blind-audit-packet.json"), "utf8")) as BlindPacket;
+const decisionBytes = await readFile(path.join(root, "scoring/human-audit-decisions.blind.json"));
+const decisions = JSON.parse(decisionBytes.toString("utf8")) as HumanDecisionCheckpoint;
+const initialAudit = JSON.parse(await readFile(path.join(root, "scoring/human-audit-comparison.json"), "utf8")) as HumanAuditComparison;
+const calibrationFit = JSON.parse(await readFile(path.join(root, "scoring/calibrated/human-audit-recalibration-fit.v1.3.1.json"), "utf8")) as HumanAuditComparison;
 
 assert(seed.runId === runId && master.runId === runId && scores.runId === runId, "Every artifact must use the target run ID");
 assert(seed.canonicalCompanyCount === 465 && seed.submittedOccurrenceCount === 555,
@@ -84,6 +112,14 @@ assert(new Set(scores.scores.map((item) => `${item.systemId}\u0000${item.channel
   "A canonical company may occur at most once per system and lane");
 assert(scores.scores.every((item) => item.score >= 0 && item.score <= 100
   && (item.failedGates.length === 0 || item.score === 0)), "Scores must respect the eligibility gates and 0-100 scale");
+assert(calibratedScores.runId === runId && calibratedScores.summary.canonicalCompanies === 465,
+  "Calibrated scoring must cover the same run and all canonical companies");
+assert(calibratedScores.scores.length === 555 && calibratedScores.summary.uniqueSystemLaneCompanyOccurrences === 555,
+  "Calibrated scoring must cover all 555 frozen occurrences");
+assert(calibratedScores.summary.eligibleOccurrences === 51 && calibratedScores.summary.rejectedOccurrences === 504,
+  "The verified v1.3.1 rule revision must preserve its published eligibility totals");
+assert(calibratedScores.scores.every((item) => item.score >= 0 && item.score <= 100
+  && (item.failedGates.length === 0 || item.score === 0)), "Calibrated scores must respect the gates and 0-100 scale");
 assert(blindPacket.runId === runId && blindPacket.candidates.length === 12, "Blind packet must contain the frozen 12 cases");
 assert(new Set(blindPacket.candidates.map((item) => item.blindCandidateId)).size === 12, "Blind case IDs must be unique");
 for (const lane of ["tier1-distribution", "b2b-resale", "project-services"]) {
@@ -92,6 +128,22 @@ for (const lane of ["tier1-distribution", "b2b-resale", "project-services"]) {
 assert(blindPacket.candidates.flatMap((item) => item.evidenceItems).every((item) => item.sourceType !== "discovery-summary"),
   "Blind packet must use provider-neutral evidence only");
 assertBlind(blindPacket);
+assert(decisions.runId === runId && decisions.decisions.length === 12, "Human checkpoint must contain all 12 frozen decisions");
+assert(createHash("sha256").update(decisionBytes).digest("hex") === "44f6983305ab8560dd112e53b2d0222596f4fc11e2063eed242e0cc3aac3eafd",
+  "Human checkpoint bytes no longer match the pre-deblinding SHA-256");
+assert(initialAudit.runId === runId && initialAudit.humanAuditCheckpointCommit === "95df76d"
+  && initialAudit.humanDecisionsFrozenBeforeDeblinding && !initialAudit.passed,
+"Initial human comparison must remain bound to the frozen checkpoint and preserve the failed pre-revision result");
+assert(calibrationFit.runId === runId && calibrationFit.evaluationView === "post-human-rule-revision-v1.3.1-in-sample-fit",
+  "Calibration-fit artifact has the wrong run or evaluation view");
+assert(calibrationFit.passed && calibrationFit.failedThresholds.length === 0
+  && calibrationFit.calibrationDecision.status === "in-sample-rule-calibration-fit-passed"
+  && calibrationFit.calibrationDecision.leaderboardStatus === "post-rule-revision-independent-validation-pending",
+"v1.3.1 must pass the frozen in-sample fit while remaining pending independent validation");
+assert(calibrationFit.metrics.coreSampleSize === 6 && calibrationFit.metrics.problemDiagnosticSize === 6
+  && calibrationFit.metrics.gateFieldAgreement === 1 && calibrationFit.metrics.submittedLaneAgreement === 1
+  && calibrationFit.metrics.quadraticWeightedKappa === 1 && calibrationFit.metrics.scoreMeanAbsoluteError === 1.1667,
+"Published v1.3.1 calibration metrics changed unexpectedly");
 
 console.log(JSON.stringify({
   runId,
@@ -99,6 +151,8 @@ console.log(JSON.stringify({
   submittedOccurrences: seed.submittedOccurrenceCount,
   uniqueScoredOccurrences: scores.scores.length,
   eligibleOccurrences: scores.summary.eligibleOccurrences,
+  calibratedEligibleOccurrences: calibratedScores.summary.eligibleOccurrences,
   providerNeutralEvidenceItems: master.companies.flatMap(providerNeutralScoringEvidence).length,
   blindAuditCases: blindPacket.candidates.length,
+  calibratedAuditStatus: calibrationFit.calibrationDecision.leaderboardStatus,
 }, null, 2));

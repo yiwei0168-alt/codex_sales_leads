@@ -1,0 +1,923 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-08-27-de-v1.3",
+  "auditVersion": "v1.3-small-sample-human-calibration-12",
+  "evaluationView": "post-human-rule-revision-v1.3.1-in-sample-fit",
+  "humanAuditCheckpointCommit": "95df76d",
+  "humanDecisionsFrozenBeforeDeblinding": true,
+  "thresholds": {
+    "gateAgreementMinimum": 0.9,
+    "submittedLaneAgreementMinimum": 0.9,
+    "weightedKappaMinimum": 0.75,
+    "scoreMeanAbsoluteErrorMaximum": 8,
+    "absoluteCategoryMeanBiasMaximum": 5
+  },
+  "metricDefinitions": {
+    "representativeStatistics": "Six core samples only; six deliberately difficult problem cases are diagnostic and excluded from acceptance metrics.",
+    "gateAgreement": "Field agreement over identity, Germany presence, active networking and evidence sufficiency.",
+    "submittedLaneAgreement": "Agreement on whether evidence supports any eligible role in the submitted lane; no primary role is required.",
+    "scoreError": "Machine versus human weighted score after each side's gates and submitted-lane decision are applied."
+  },
+  "metrics": {
+    "coreSampleSize": 6,
+    "problemDiagnosticSize": 6,
+    "gateFieldAgreement": 1,
+    "gateAgreementByField": {
+      "companyExists": 1,
+      "germanyPresence": 1,
+      "activeNetworking": 1,
+      "sufficientEvidence": 1
+    },
+    "completeCommonGateVectorAgreement": 1,
+    "submittedLaneAgreement": 1,
+    "submittedLaneConfusion": {
+      "truePositive": 5,
+      "trueNegative": 1,
+      "falsePositive": 0,
+      "falseNegative": 0
+    },
+    "scoreBandExactAgreement": 1,
+    "quadraticWeightedKappa": 1,
+    "scoreMeanAbsoluteError": 1.1667,
+    "overallMachineMinusHumanMeanBias": -1.1667,
+    "levelMeanAbsoluteError": {
+      "productUseCaseFit": 0.5,
+      "cooperationPath": 0.1667,
+      "evidenceReliability": 0
+    },
+    "categoryBias": [
+      {
+        "channelId": "tier1-distribution",
+        "auditedCandidates": 2,
+        "machineMinusHumanMeanBias": -3.5,
+        "absoluteMeanBias": 3.5
+      },
+      {
+        "channelId": "b2b-resale",
+        "auditedCandidates": 2,
+        "machineMinusHumanMeanBias": 0,
+        "absoluteMeanBias": 0
+      },
+      {
+        "channelId": "project-services",
+        "auditedCandidates": 2,
+        "machineMinusHumanMeanBias": 0,
+        "absoluteMeanBias": 0
+      }
+    ]
+  },
+  "passed": true,
+  "failedThresholds": [],
+  "calibrationDecision": {
+    "status": "in-sample-rule-calibration-fit-passed",
+    "rawScoresChanged": true,
+    "leaderboardStatus": "post-rule-revision-independent-validation-pending",
+    "requiredAction": "Treat the revised full-pool scores as calibrated but provisional; the same 12 cases trained the rule changes, so an independent holdout is required before declaring a winner."
+  },
+  "coreComparisons": [
+    {
+      "blindCandidateId": "V13-85476FC723",
+      "sampleType": "core",
+      "selectionReason": "highest eligible Google Places Local case in lane",
+      "companyName": "Elektro MA",
+      "anchor": {
+        "systemId": "product-google-places-local",
+        "channelId": "project-services",
+        "submittedRank": 66
+      },
+      "machine": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "activeNetworking": true,
+          "sufficientEvidence": true
+        },
+        "submittedLanePass": true,
+        "supportedRoles": [
+          "Installer"
+        ],
+        "levels": {
+          "productUseCaseFit": 4,
+          "cooperationPath": 4,
+          "evidenceReliability": 3
+        },
+        "score": 76,
+        "scoreBand": "strong",
+        "failedGates": []
+      },
+      "human": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "activeNetworking": true,
+          "sufficientEvidence": true
+        },
+        "submittedLanePass": true,
+        "supportedCategories": [
+          "project-services"
+        ],
+        "levels": {
+          "productUseCaseFit": 4,
+          "cooperationPath": 4,
+          "evidenceReliability": 3
+        },
+        "score": 76,
+        "scoreBand": "strong",
+        "reviewerNotes": "Project-services candidate with explicit active-networking work relevant to Cudy. Evidence shows planning, recommendation and installation capability, including named access-point vendors, switches, firewalls and VLAN work. The company can influence product selection, but a complete procurement chain is not publicly proven. Multiple official pages are one company-owned origin."
+      },
+      "comparison": {
+        "gateAgreement": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "activeNetworking": true,
+          "sufficientEvidence": true
+        },
+        "allCommonGatesAgree": true,
+        "submittedLaneAgrees": true,
+        "levelDifferenceMachineMinusHuman": {
+          "productUseCaseFit": 0,
+          "cooperationPath": 0,
+          "evidenceReliability": 0
+        },
+        "scoreDifferenceMachineMinusHuman": 0,
+        "absoluteScoreError": 0,
+        "scoreBandAgrees": true
+      }
+    },
+    {
+      "blindCandidateId": "V13-AB90B14943",
+      "sampleType": "core",
+      "selectionReason": "highest eligible Google Places Local case in lane",
+      "companyName": "ADN – Advanced Digital Network Distribution GmbH",
+      "anchor": {
+        "systemId": "product-google-places-local",
+        "channelId": "tier1-distribution",
+        "submittedRank": 55
+      },
+      "machine": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "activeNetworking": true,
+          "sufficientEvidence": true
+        },
+        "submittedLanePass": true,
+        "supportedRoles": [
+          "Distributor",
+          "VAD",
+          "Reseller",
+          "MSP"
+        ],
+        "levels": {
+          "productUseCaseFit": 3,
+          "cooperationPath": 5,
+          "evidenceReliability": 3
+        },
+        "score": 74,
+        "scoreBand": "strong",
+        "failedGates": []
+      },
+      "human": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "activeNetworking": true,
+          "sufficientEvidence": true
+        },
+        "submittedLanePass": true,
+        "supportedCategories": [
+          "tier1-distribution"
+        ],
+        "levels": {
+          "productUseCaseFit": 3,
+          "cooperationPath": 5,
+          "evidenceReliability": 3
+        },
+        "score": 74,
+        "scoreBand": "strong",
+        "reviewerNotes": "All gates pass. ADN is a VAD/Distributor with active networking products. The portfolio is in the same broad field as Cudy but skews toward higher-end enterprise infrastructure, so direct product fit is limited. A complete VAD operation and an Omada relationship make the cooperation path clear for a comparable networking brand."
+      },
+      "comparison": {
+        "gateAgreement": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "activeNetworking": true,
+          "sufficientEvidence": true
+        },
+        "allCommonGatesAgree": true,
+        "submittedLaneAgrees": true,
+        "levelDifferenceMachineMinusHuman": {
+          "productUseCaseFit": 0,
+          "cooperationPath": 0,
+          "evidenceReliability": 0
+        },
+        "scoreDifferenceMachineMinusHuman": 0,
+        "absoluteScoreError": 0,
+        "scoreBandAgrees": true
+      }
+    },
+    {
+      "blindCandidateId": "V13-171E024669",
+      "sampleType": "core",
+      "selectionReason": "highest eligible Google Places Local case in lane",
+      "companyName": "Systemhaus Frankfurt - Emmerich & Lorenz GmbH",
+      "anchor": {
+        "systemId": "product-google-places-local",
+        "channelId": "b2b-resale",
+        "submittedRank": 78
+      },
+      "machine": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "activeNetworking": true,
+          "sufficientEvidence": true
+        },
+        "submittedLanePass": false,
+        "supportedRoles": [],
+        "levels": {
+          "productUseCaseFit": 5,
+          "cooperationPath": 2,
+          "evidenceReliability": 3
+        },
+        "score": 0,
+        "scoreBand": "invalid",
+        "failedGates": [
+          "submittedLaneMembership"
+        ]
+      },
+      "human": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "activeNetworking": true,
+          "sufficientEvidence": true
+        },
+        "submittedLanePass": false,
+        "supportedCategories": [
+          "project-services"
+        ],
+        "levels": {
+          "productUseCaseFit": 2,
+          "cooperationPath": 2,
+          "evidenceReliability": 3
+        },
+        "score": 0,
+        "scoreBand": "invalid",
+        "reviewerNotes": "All non-category gates pass. The company is an SI with IT consulting and Installer activities. Public evidence does not establish strong product-line fit with Cudy or actual B2B resale of networking hardware. The submitted B2B-resale lane therefore fails, and its purchasing/listing/quotation path is unclear."
+      },
+      "comparison": {
+        "gateAgreement": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "activeNetworking": true,
+          "sufficientEvidence": true
+        },
+        "allCommonGatesAgree": true,
+        "submittedLaneAgrees": true,
+        "levelDifferenceMachineMinusHuman": {
+          "productUseCaseFit": 3,
+          "cooperationPath": 0,
+          "evidenceReliability": 0
+        },
+        "scoreDifferenceMachineMinusHuman": 0,
+        "absoluteScoreError": 0,
+        "scoreBandAgrees": true
+      }
+    },
+    {
+      "blindCandidateId": "V13-18C3AAAA8E",
+      "sampleType": "core",
+      "selectionReason": "highest eligible non-control case in lane",
+      "companyName": "Vitel GmbH",
+      "anchor": {
+        "systemId": "product-brave",
+        "channelId": "tier1-distribution",
+        "submittedRank": 4
+      },
+      "machine": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "activeNetworking": true,
+          "sufficientEvidence": true
+        },
+        "submittedLanePass": true,
+        "supportedRoles": [
+          "Distributor",
+          "VAD",
+          "Reseller"
+        ],
+        "levels": {
+          "productUseCaseFit": 5,
+          "cooperationPath": 4,
+          "evidenceReliability": 4
+        },
+        "score": 89,
+        "scoreBand": "high",
+        "failedGates": []
+      },
+      "human": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "activeNetworking": true,
+          "sufficientEvidence": true
+        },
+        "submittedLanePass": true,
+        "supportedCategories": [
+          "tier1-distribution"
+        ],
+        "levels": {
+          "productUseCaseFit": 5,
+          "cooperationPath": 5,
+          "evidenceReliability": 4
+        },
+        "score": 96,
+        "scoreBand": "high",
+        "reviewerNotes": "All gates pass. Vitel is a VAD and a Ruijie partner, which strongly demonstrates alignment with Cudy's networking portfolio and an established path for onboarding and distributing a comparable networking brand. The cooperation path is explicit and the evidence is strong."
+      },
+      "comparison": {
+        "gateAgreement": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "activeNetworking": true,
+          "sufficientEvidence": true
+        },
+        "allCommonGatesAgree": true,
+        "submittedLaneAgrees": true,
+        "levelDifferenceMachineMinusHuman": {
+          "productUseCaseFit": 0,
+          "cooperationPath": -1,
+          "evidenceReliability": 0
+        },
+        "scoreDifferenceMachineMinusHuman": -7,
+        "absoluteScoreError": 7,
+        "scoreBandAgrees": true
+      }
+    },
+    {
+      "blindCandidateId": "V13-9CA63F60C5",
+      "sampleType": "core",
+      "selectionReason": "highest eligible non-control case in lane",
+      "companyName": "Netzkontor GmbH",
+      "anchor": {
+        "systemId": "product-searchapi",
+        "channelId": "project-services",
+        "submittedRank": 6
+      },
+      "machine": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "activeNetworking": true,
+          "sufficientEvidence": true
+        },
+        "submittedLanePass": true,
+        "supportedRoles": [
+          "Installer"
+        ],
+        "levels": {
+          "productUseCaseFit": 2,
+          "cooperationPath": 3,
+          "evidenceReliability": 3
+        },
+        "score": 51,
+        "scoreBand": "follow-up",
+        "failedGates": []
+      },
+      "human": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "activeNetworking": true,
+          "sufficientEvidence": true
+        },
+        "submittedLanePass": true,
+        "supportedCategories": [
+          "project-services"
+        ],
+        "levels": {
+          "productUseCaseFit": 2,
+          "cooperationPath": 3,
+          "evidenceReliability": 3
+        },
+        "score": 51,
+        "scoreBand": "follow-up",
+        "reviewerNotes": "All gates pass. Netzkontor resembles an IT consultant and SI with installation and operation capability, but its visible business focuses on large enterprise, carrier, public-infrastructure and campus solutions. Fit with Cudy's core market is low. Project execution is proven, while equipment selection, procurement and brand cooperation remain unclear."
+      },
+      "comparison": {
+        "gateAgreement": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "activeNetworking": true,
+          "sufficientEvidence": true
+        },
+        "allCommonGatesAgree": true,
+        "submittedLaneAgrees": true,
+        "levelDifferenceMachineMinusHuman": {
+          "productUseCaseFit": 0,
+          "cooperationPath": 0,
+          "evidenceReliability": 0
+        },
+        "scoreDifferenceMachineMinusHuman": 0,
+        "absoluteScoreError": 0,
+        "scoreBandAgrees": true
+      }
+    },
+    {
+      "blindCandidateId": "V13-898E6E3154",
+      "sampleType": "core",
+      "selectionReason": "highest eligible non-control case in lane",
+      "companyName": "GermanProtect",
+      "anchor": {
+        "systemId": "product-brave",
+        "channelId": "b2b-resale",
+        "submittedRank": 4
+      },
+      "machine": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "activeNetworking": true,
+          "sufficientEvidence": true
+        },
+        "submittedLanePass": true,
+        "supportedRoles": [
+          "E-tailer",
+          "Reseller"
+        ],
+        "levels": {
+          "productUseCaseFit": 4,
+          "cooperationPath": 5,
+          "evidenceReliability": 4
+        },
+        "score": 87,
+        "scoreBand": "high",
+        "failedGates": []
+      },
+      "human": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "activeNetworking": true,
+          "sufficientEvidence": true
+        },
+        "submittedLanePass": true,
+        "supportedCategories": [
+          "b2b-resale"
+        ],
+        "levels": {
+          "productUseCaseFit": 4,
+          "cooperationPath": 5,
+          "evidenceReliability": 4
+        },
+        "score": 87,
+        "scoreBand": "high",
+        "reviewerNotes": "All gates pass. GermanProtect is a B2B web shop that also appears to serve consumers and operate a physical retail location, so it has Reseller, E-tailer and Retailer roles. Although security is the core vertical, access points, switches, routers and PoE products strongly overlap with Cudy. Live listings, stock, pricing, ordering and B2B terms prove a clear cooperation path."
+      },
+      "comparison": {
+        "gateAgreement": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "activeNetworking": true,
+          "sufficientEvidence": true
+        },
+        "allCommonGatesAgree": true,
+        "submittedLaneAgrees": true,
+        "levelDifferenceMachineMinusHuman": {
+          "productUseCaseFit": 0,
+          "cooperationPath": 0,
+          "evidenceReliability": 0
+        },
+        "scoreDifferenceMachineMinusHuman": 0,
+        "absoluteScoreError": 0,
+        "scoreBandAgrees": true
+      }
+    }
+  ],
+  "problemDiagnostics": [
+    {
+      "blindCandidateId": "V13-3ACD7C087F",
+      "sampleType": "problem",
+      "selectionReason": "Google Places Local near-miss or low-confidence case",
+      "companyName": "Das ElektroWerk",
+      "anchor": {
+        "systemId": "product-google-places-local",
+        "channelId": "project-services",
+        "submittedRank": 97
+      },
+      "machine": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "activeNetworking": true,
+          "sufficientEvidence": true
+        },
+        "submittedLanePass": true,
+        "supportedRoles": [
+          "Installer"
+        ],
+        "levels": {
+          "productUseCaseFit": 3,
+          "cooperationPath": 3,
+          "evidenceReliability": 4
+        },
+        "score": 64,
+        "scoreBand": "follow-up",
+        "failedGates": []
+      },
+      "human": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "activeNetworking": true,
+          "sufficientEvidence": true
+        },
+        "submittedLanePass": true,
+        "supportedCategories": [
+          "project-services"
+        ],
+        "levels": {
+          "productUseCaseFit": 4,
+          "cooperationPath": 3,
+          "evidenceReliability": 3
+        },
+        "score": 69,
+        "scoreBand": "strong",
+        "reviewerNotes": "Small local Installer team serving the Stuttgart area. Official pages explicitly show installation of access points, mesh, switches, routers and firewall hardware, so this business is relevant to Cudy. No clear evidence establishes product-selection influence or a repeatable procurement path. The company appears able to work both with equipment it supplies and customer-supplied equipment."
+      },
+      "comparison": {
+        "gateAgreement": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "activeNetworking": true,
+          "sufficientEvidence": true
+        },
+        "allCommonGatesAgree": true,
+        "submittedLaneAgrees": true,
+        "levelDifferenceMachineMinusHuman": {
+          "productUseCaseFit": -1,
+          "cooperationPath": 0,
+          "evidenceReliability": 1
+        },
+        "scoreDifferenceMachineMinusHuman": -5,
+        "absoluteScoreError": 5,
+        "scoreBandAgrees": false
+      }
+    },
+    {
+      "blindCandidateId": "V13-A2CDB6004A",
+      "sampleType": "problem",
+      "selectionReason": "Google Places Local near-miss or low-confidence case",
+      "companyName": "DeltaCom GmbH",
+      "anchor": {
+        "systemId": "product-google-places-local",
+        "channelId": "tier1-distribution",
+        "submittedRank": 76
+      },
+      "machine": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "activeNetworking": true,
+          "sufficientEvidence": true
+        },
+        "submittedLanePass": false,
+        "supportedRoles": [
+          "SI",
+          "Installer"
+        ],
+        "levels": {
+          "productUseCaseFit": 4,
+          "cooperationPath": 3,
+          "evidenceReliability": 3
+        },
+        "score": 0,
+        "scoreBand": "invalid",
+        "failedGates": [
+          "submittedLaneMembership"
+        ]
+      },
+      "human": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "activeNetworking": true,
+          "sufficientEvidence": true
+        },
+        "submittedLanePass": false,
+        "supportedCategories": [
+          "project-services"
+        ],
+        "levels": {
+          "productUseCaseFit": 4,
+          "cooperationPath": 2,
+          "evidenceReliability": 3
+        },
+        "score": 0,
+        "scoreBand": "invalid",
+        "reviewerNotes": "All non-category gates pass. DeltaCom is primarily an IT consulting, SI and Installer business and independently selects appropriate active networking equipment. It may also act as an end-customer VAR, but no evidence shows downstream reseller/dealer/SI supply, so the submitted tier-1 distribution lane fails. Product overlap is strong; the tier-1 cooperation path is unproven."
+      },
+      "comparison": {
+        "gateAgreement": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "activeNetworking": true,
+          "sufficientEvidence": true
+        },
+        "allCommonGatesAgree": true,
+        "submittedLaneAgrees": true,
+        "levelDifferenceMachineMinusHuman": {
+          "productUseCaseFit": 0,
+          "cooperationPath": 1,
+          "evidenceReliability": 0
+        },
+        "scoreDifferenceMachineMinusHuman": 0,
+        "absoluteScoreError": 0,
+        "scoreBandAgrees": true
+      }
+    },
+    {
+      "blindCandidateId": "V13-FAB18B0092",
+      "sampleType": "problem",
+      "selectionReason": "cross-system near-miss or low-confidence case",
+      "companyName": "Acondistec",
+      "anchor": {
+        "systemId": "product-exa",
+        "channelId": "tier1-distribution",
+        "submittedRank": 9
+      },
+      "machine": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "activeNetworking": true,
+          "sufficientEvidence": true
+        },
+        "submittedLanePass": true,
+        "supportedRoles": [
+          "Distributor",
+          "VAD",
+          "MSP"
+        ],
+        "levels": {
+          "productUseCaseFit": 3,
+          "cooperationPath": 5,
+          "evidenceReliability": 3
+        },
+        "score": 74,
+        "scoreBand": "strong",
+        "failedGates": []
+      },
+      "human": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "activeNetworking": true,
+          "sufficientEvidence": true
+        },
+        "submittedLanePass": true,
+        "supportedCategories": [
+          "tier1-distribution"
+        ],
+        "levels": {
+          "productUseCaseFit": 3,
+          "cooperationPath": 5,
+          "evidenceReliability": 3
+        },
+        "score": 74,
+        "scoreBand": "strong",
+        "reviewerNotes": "All gates pass. Acondistec explicitly operates as a VAD/Distributor with networking products and Huawei-related vendor lines. Its products are in the same broad field as Cudy, but the visible portfolio and technical specifications skew toward higher-end enterprise infrastructure. The public site proves a complete vendor-to-downstream-channel value-added path."
+      },
+      "comparison": {
+        "gateAgreement": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "activeNetworking": true,
+          "sufficientEvidence": true
+        },
+        "allCommonGatesAgree": true,
+        "submittedLaneAgrees": true,
+        "levelDifferenceMachineMinusHuman": {
+          "productUseCaseFit": 0,
+          "cooperationPath": 0,
+          "evidenceReliability": 0
+        },
+        "scoreDifferenceMachineMinusHuman": 0,
+        "absoluteScoreError": 0,
+        "scoreBandAgrees": true
+      }
+    },
+    {
+      "blindCandidateId": "V13-4D86F48116",
+      "sampleType": "problem",
+      "selectionReason": "cross-system near-miss or low-confidence case",
+      "companyName": "GERMAN HOTSPOT",
+      "anchor": {
+        "systemId": "product-google-places",
+        "channelId": "project-services",
+        "submittedRank": 1
+      },
+      "machine": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "activeNetworking": true,
+          "sufficientEvidence": true
+        },
+        "submittedLanePass": true,
+        "supportedRoles": [
+          "SI",
+          "Installer"
+        ],
+        "levels": {
+          "productUseCaseFit": 5,
+          "cooperationPath": 3,
+          "evidenceReliability": 3
+        },
+        "score": 78,
+        "scoreBand": "strong",
+        "failedGates": []
+      },
+      "human": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "activeNetworking": true,
+          "sufficientEvidence": true
+        },
+        "submittedLanePass": true,
+        "supportedCategories": [
+          "project-services"
+        ],
+        "levels": {
+          "productUseCaseFit": 5,
+          "cooperationPath": 4,
+          "evidenceReliability": 3
+        },
+        "score": 85,
+        "scoreBand": "high",
+        "reviewerNotes": "All gates pass. The company acts as an ISP/managed Wi-Fi provider and also performs SI/Installer project services. Guest WLAN, access-point deployment and hospitality/SMB environments are highly aligned with Cudy. This business model normally has substantial product-selection influence, although the official site does not prove a specific procurement chain."
+      },
+      "comparison": {
+        "gateAgreement": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "activeNetworking": true,
+          "sufficientEvidence": true
+        },
+        "allCommonGatesAgree": true,
+        "submittedLaneAgrees": true,
+        "levelDifferenceMachineMinusHuman": {
+          "productUseCaseFit": 0,
+          "cooperationPath": -1,
+          "evidenceReliability": 0
+        },
+        "scoreDifferenceMachineMinusHuman": -7,
+        "absoluteScoreError": 7,
+        "scoreBandAgrees": false
+      }
+    },
+    {
+      "blindCandidateId": "V13-0119D32474",
+      "sampleType": "problem",
+      "selectionReason": "Google Places Local near-miss or low-confidence case",
+      "companyName": "Frankfurt IT Service",
+      "anchor": {
+        "systemId": "product-google-places-local",
+        "channelId": "b2b-resale",
+        "submittedRank": 81
+      },
+      "machine": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "activeNetworking": false,
+          "sufficientEvidence": true
+        },
+        "submittedLanePass": false,
+        "supportedRoles": [],
+        "levels": {
+          "productUseCaseFit": 3,
+          "cooperationPath": 5,
+          "evidenceReliability": 3
+        },
+        "score": 0,
+        "scoreBand": "invalid",
+        "failedGates": [
+          "activeNetworking",
+          "submittedLaneMembership"
+        ]
+      },
+      "human": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "activeNetworking": false,
+          "sufficientEvidence": true
+        },
+        "submittedLanePass": false,
+        "supportedCategories": [
+          "none-or-unclear"
+        ],
+        "levels": {
+          "productUseCaseFit": 1,
+          "cooperationPath": 0,
+          "evidenceReliability": 2
+        },
+        "score": 0,
+        "scoreBand": "invalid",
+        "reviewerNotes": "The company is real and operates in Germany, but networking relevance is low. It is an IT service business focused on consulting and computer repair. Public evidence does not show that it buys, resells, recommends or materially influences procurement of active networking products, so the B2B-resale lane fails."
+      },
+      "comparison": {
+        "gateAgreement": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "activeNetworking": true,
+          "sufficientEvidence": true
+        },
+        "allCommonGatesAgree": true,
+        "submittedLaneAgrees": true,
+        "levelDifferenceMachineMinusHuman": {
+          "productUseCaseFit": 2,
+          "cooperationPath": 5,
+          "evidenceReliability": 1
+        },
+        "scoreDifferenceMachineMinusHuman": 0,
+        "absoluteScoreError": 0,
+        "scoreBandAgrees": true
+      }
+    },
+    {
+      "blindCandidateId": "V13-14168ED6BD",
+      "sampleType": "problem",
+      "selectionReason": "cross-system near-miss or low-confidence case",
+      "companyName": "LaanTech",
+      "anchor": {
+        "systemId": "product-tavily",
+        "channelId": "b2b-resale",
+        "submittedRank": 7
+      },
+      "machine": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "activeNetworking": true,
+          "sufficientEvidence": true
+        },
+        "submittedLanePass": true,
+        "supportedRoles": [
+          "E-tailer",
+          "Reseller"
+        ],
+        "levels": {
+          "productUseCaseFit": 4,
+          "cooperationPath": 4,
+          "evidenceReliability": 4
+        },
+        "score": 80,
+        "scoreBand": "high",
+        "failedGates": []
+      },
+      "human": {
+        "gates": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "activeNetworking": true,
+          "sufficientEvidence": true
+        },
+        "submittedLanePass": true,
+        "supportedCategories": [
+          "b2b-resale"
+        ],
+        "levels": {
+          "productUseCaseFit": 3,
+          "cooperationPath": 4,
+          "evidenceReliability": 3
+        },
+        "score": 67,
+        "scoreBand": "strong",
+        "reviewerNotes": "All gates pass. LaanTech is a specialized networking-category online shop and qualifies as an E-tailer/Reseller for B2B resale. Its assortment is mainly enterprise-oriented passive networking, cabling and installation accessories, so direct fit with Cudy's active networking portfolio is limited. Live stock, ordering, quotation and warehouse fulfillment make the resale path clear."
+      },
+      "comparison": {
+        "gateAgreement": {
+          "companyExists": true,
+          "germanyPresence": true,
+          "activeNetworking": true,
+          "sufficientEvidence": true
+        },
+        "allCommonGatesAgree": true,
+        "submittedLaneAgrees": true,
+        "levelDifferenceMachineMinusHuman": {
+          "productUseCaseFit": 1,
+          "cooperationPath": 0,
+          "evidenceReliability": 1
+        },
+        "scoreDifferenceMachineMinusHuman": 13,
+        "absoluteScoreError": 13,
+        "scoreBandAgrees": false
+      }
+    }
+  ]
+}

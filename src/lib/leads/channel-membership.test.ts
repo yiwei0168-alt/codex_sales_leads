@@ -48,4 +48,20 @@ describe("multi-role channel membership", () => {
     expect(result.supportedRoles).toContain("Installer");
     expect(result.supportedRoles).not.toContain("SI");
   });
+
+  it("does not let an unrelated software Fachhändler label prove networking resale", () => {
+    const result = assessChannelMembershipEvidence({ lane: "resale", evidence: [
+      "Sage-Fachhändler and IT consultant. We also plan and install WLAN solutions for offices.",
+    ] });
+    expect(result.demonstrated).toBe(false);
+    expect(result.supportedRoles).not.toContain("Dealer");
+  });
+
+  it("admits a mixed B2B online networking shop as both E-tailer and Reseller", () => {
+    const result = assessChannelMembershipEvidence({ lane: "resale", evidence: [
+      "Online shop with B2B purchase on invoice, a cart, and live router and PoE switch products.",
+    ] });
+    expect(result.demonstrated).toBe(true);
+    expect(result.supportedRoles).toEqual(expect.arrayContaining(["E-tailer", "Reseller"]));
+  });
 });

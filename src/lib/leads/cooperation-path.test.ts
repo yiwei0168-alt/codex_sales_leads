@@ -24,9 +24,24 @@ describe("evidence-capped cooperation path", () => {
     expect(result.cap).toBe(4);
   });
 
+  it("counts deployment and managed operation as one project execution lever", () => {
+    const result = assessCooperationPathEvidence({ lane: "project-services", evidence: [
+      "We deploy WLAN access points and maintain the network after installation.",
+    ] });
+    expect(result.demonstratedLevers).toBe(1);
+    expect(result.cap).toBe(3);
+  });
+
   it("allows level 5 for a complete Tier-1 path", () => {
     const result = assessCooperationPathEvidence({ lane: "tier1-distribution", evidence: [
       "Authorized networking distributor with a reseller portal supplying dealers and system integrators.",
+    ] });
+    expect(result.cap).toBe(5);
+  });
+
+  it("recognizes a German VAD partner portal and Systemhaus enablement as a complete path", () => {
+    const result = assessCooperationPathEvidence({ lane: "tier1-distribution", evidence: [
+      "Value Added Distributor für Netzwerke. Unser Partnerportal unterstützt Systemhäuser und Handelspartner.",
     ] });
     expect(result.cap).toBe(5);
   });

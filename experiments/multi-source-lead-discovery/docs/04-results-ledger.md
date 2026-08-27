@@ -1,6 +1,6 @@
 # Step-result ledger
 
-Measured discovery, primary Codex scores and the reduced human blind audit are complete. Human calibration failed, so the raw leaderboard remains provisional and no winner is declared. This ledger must be updated in the same commit as each published normalized artifact.
+Measured discovery, provider-neutral full-pool scoring and the reduced human blind audit are complete. The initial human comparison failed; v1.3.1 general-rule revisions now pass the same cases in-sample. The revised leaderboard remains provisional pending an independent holdout, so no final winner is declared. This ledger must be updated in the same commit as each published normalized artifact.
 
 | Step ID | Stage | System | Channel | Normalized artifact | Raw SHA-256 | Record count | Validation | Notes |
 |---|---|---|---|---|---|---:|---|---|
@@ -47,6 +47,9 @@ Measured discovery, primary Codex scores and the reduced human blind audit are c
 | shared-rescore-v1.3-001 | all-candidate rule rescoring | all eight systems | all three lanes | `scoring/all-candidate-scores.json`; `scoring/leaderboard-pre-human-audit.json` | generated from bound evidence master | 555 scores; 47 eligible | passed v1.3 verifier | Preliminary only. Fixed ten-slot channel means and equal three-channel macro; no cross-category comparison. |
 | blind-audit-v1.3 | small human recalibration sample | provider/system hidden | four cases per lane | `scoring/blind-audit-packet.json`; `scoring/blind-audit-manifest.json` | local identity map ignored | 6 core + 6 problem | hidden-field validator passed | Core/problem stratum is also hidden. Decisions are pending and no deblinding has occurred. |
 | human-audit-v1.3-001 | frozen human blind decisions | user; provider/system hidden | 12 v1.3 cases | `scoring/human-audit-decisions.blind.json` | decision SHA-256 in execution log | 12 complete decisions | validated before deblinding | System/provider, rank, rule score, occurrence count and core/problem stratum remain absent. The local identity map has not been read at this checkpoint. |
+| human-audit-v1.3-aggregate-001 | initial deblind and disagreement analysis | user vs deterministic v1.3 rules | 6 core; 6 problem diagnostic | `scoring/human-audit-comparison.json`; `scoring/leaderboard-post-human-audit.json` | bound to checkpoint commit `95df76d` | 12 comparisons | structural calibration failed | Submitted-lane agreement 0.8333, kappa 0.4 and MAE 23.8333 prohibited numeric correction. |
+| shared-rescore-v1.3.1-001 | human-informed general-rule full rescore | all eight systems | all 465 companies / 555 occurrences | calibrated score table and post-rule leaderboard under `scoring/calibrated/` | same frozen evidence master; no provider-specific offsets | 51 eligible / 504 rejected | full-pool rescore complete | Google Places Local provisional macro 28.03; Tavily 22.13; SearchAPI 20.93; independent holdout pending. |
+| human-audit-v1.3.1-fit-001 | in-sample rule calibration fit | user vs v1.3.1 rules | same 6 core; 6 problem diagnostic | `scoring/calibrated/human-audit-recalibration-fit.v1.3.1.json`; post-human leaderboard; `reports/v1.3-google-places-local-final-report.md` | frozen decision hash and checkpoint commit verified | 12 comparisons | all frozen fit thresholds passed | Lane agreement and score bands 100%, kappa 1.0, MAE 1.1667. Not independent validation; no final winner. |
 
 ## Required artifact stages
 

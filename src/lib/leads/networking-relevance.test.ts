@@ -33,4 +33,12 @@ describe("active-networking relevance evidence gate", () => {
     expect(result.demonstrated).toBe(false);
     expect(result.reason).not.toMatch(/company is (?:not|unrelated)/i);
   });
+
+  it("does not promote a computer repair shop from a generic WLAN security article", () => {
+    const result = assessNetworkingRelevanceEvidence([
+      "Computer and laptop repair, virus removal, data recovery and software service.",
+      "Ratgeber: Sichern Sie Ihren WLAN-Router vor Cyberkriminellen.",
+    ]);
+    expect(result.demonstrated).toBe(false);
+  });
 });

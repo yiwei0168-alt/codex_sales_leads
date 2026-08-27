@@ -41,7 +41,7 @@ const rolePatterns: Array<{ role: ChannelRole; pattern: RegExp }> = [
   },
   {
     role: "Dealer",
-    pattern: /\b(?:authorized )?(?:network(?:ing)?|it|technology|equipment)?\s*dealer\b|\bfachh(?:a|ä)ndler\b/i,
+    pattern: /\b(?:authorized|official)\s+(?:network(?:ing)?|it hardware|technology|equipment)\s+dealer\b|\b(?:network(?:ing)?|netzwerk|wlan|router|switch|access point|it[- ]hardware)[- ]?fachh(?:a|ä)ndler\b|\bfachh(?:a|ä)ndler\s+(?:f(?:u|ü)r|von)\s+(?:network(?:ing)?|netzwerk|wlan|routers?|switches?|access points?|it[- ]hardware)\b/i,
   },
   {
     role: "Retailer",
@@ -77,12 +77,19 @@ const laneRoles: Record<ChannelMembershipLane, readonly ChannelRole[]> = {
   isp: ["ISP"],
 };
 
+const b2bCommercePattern = /\b(?:b2b|business customers?|commercial customers?|business account|trade account|gesch(?:a|ä)ftskunden|gewerbekunden|firmenkunden|beh(?:o|ö)rden|(?:kauf|zahlung) auf rechnung|billie b2b)\b/i;
+const networkingCommercePattern = /\b(?:routers?|gateways?|access points?|wlan|wi-?fi|poe switches?|network hardware|netzwerk(?:hardware|ger(?:a|ä)te|technik)|switches?)\b/i;
+
 export function assessChannelMembershipEvidence(options: {
   lane: ChannelMembershipLane;
   evidence: Array<string | null | undefined>;
 }): ChannelMembershipAssessment {
   const text = options.evidence.filter((value): value is string => typeof value === "string" && value.trim().length > 0).join("\n");
   const supportedRoles = [...new Set(rolePatterns.filter(({ pattern }) => pattern.test(text)).map(({ role }) => role))];
+  // A mixed B2B/B2C online shop is also a Reseller when its own pages prove
+  // B2B commerce in networking goods. A generic consumer shop does not pass.
+  if (supportedRoles.includes("E-tailer") && b2bCommercePattern.test(text) && networkingCommercePattern.test(text)
+    && !supportedRoles.includes("Reseller")) supportedRoles.push("Reseller");
   if (supportedRoles.includes("VAD") && !supportedRoles.includes("Distributor")) supportedRoles.push("Distributor");
   if (supportedRoles.includes("VAR") && !supportedRoles.includes("Reseller")) supportedRoles.push("Reseller");
   if (supportedRoles.includes("Dealer") && !supportedRoles.includes("Reseller")) supportedRoles.push("Reseller");

@@ -86,7 +86,9 @@ export function assessNetworkingRelevanceEvidence(values: Array<string | null | 
   const text = values.filter((value): value is string => typeof value === "string" && value.trim().length > 0).join("\n");
   const positiveSignals = uniqueMatches(text, [...positivePatterns, ...implementationPatterns]);
   const genericSignals = uniqueMatches(text, genericPatterns);
-  const demonstrated = positiveSignals.length > 0;
+  const repairOrAdviceOnly = /\b(?:computer|laptop|notebook|pc)\s+(?:repair|reparatur|service)\b|\b(?:virenentfernung|datenrettung|software service)\b/i.test(text);
+  const networkingBusinessAction = /\b(?:sell(?:s|ing)?|resell(?:s|ing)?|distribut(?:es?|ion)|liefer(?:t|ung)?|verkauft|vertreibt|plant|planen|installiert|installation|deploy(?:s|ment)?|implementiert|konfiguriert|wartet|betreibt|managed wi-?fi|managed wlan|partnerportal|fachh(?:a|ä)ndler)\b.{0,100}\b(?:routers?|switches?|access points?|wlan|wi-?fi|network hardware|netzwerk(?:hardware|ger(?:a|ä)te))\b|\b(?:routers?|switches?|access points?|wlan|wi-?fi|network hardware|netzwerk(?:hardware|ger(?:a|ä)te))\b.{0,100}\b(?:sell(?:s|ing)?|resell(?:s|ing)?|distribut(?:es?|ion)|liefer(?:t|ung)?|verkauft|vertreibt|plant|planen|installiert|installation|deploy(?:s|ment)?|implementiert|konfiguriert|wartet|betreibt)\b/i.test(text);
+  const demonstrated = positiveSignals.length > 0 && (!repairOrAdviceOnly || networkingBusinessAction);
   return {
     status: demonstrated ? "demonstrated" : "not-demonstrated",
     demonstrated,

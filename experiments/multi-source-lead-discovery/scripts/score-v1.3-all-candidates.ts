@@ -12,19 +12,29 @@ interface MasterArtifact {
 }
 
 const runId = process.argv.find((value) => value.startsWith("--run-id="))?.slice(9) ?? "2026-08-27-de-v1.3";
+const calibrated = process.argv.includes("--calibrated");
 const runRoot = path.resolve("experiments/multi-source-lead-discovery/artifacts/runs", runId);
 const master = JSON.parse(await readFile(path.join(runRoot, "evidence/shared-evidence-dossiers.v1.json"), "utf8")) as MasterArtifact;
-const scoringRoot = path.join(runRoot, "scoring");
+const scoringRoot = path.join(runRoot, calibrated ? "scoring/calibrated" : "scoring");
 await mkdir(scoringRoot, { recursive: true });
 
 type CompactScore = Omit<V13OccurrenceScore, "evidence">;
+type SharedLaneScore = Omit<CompactScore, "systemId" | "submittedRank">;
 const scoreByOccurrenceKey = new Map<string, CompactScore>();
+const sharedLaneScoreCache = new Map<string, SharedLaneScore>();
 let duplicateCanonicalOccurrencesSuppressed = 0;
 for (const dossier of master.companies) {
   for (const occurrence of dossier.submittedOccurrences) {
     const key = `${occurrence.systemId}\u0000${occurrence.channelId}\u0000${dossier.dossierId}`;
-    const score = evaluateV13Occurrence({ dossier, occurrence });
-    const { evidence: _evidence, ...compact } = score;
+    const sharedKey = `${occurrence.channelId}\u0000${dossier.dossierId}`;
+    let shared = sharedLaneScoreCache.get(sharedKey);
+    if (!shared) {
+      const score = evaluateV13Occurrence({ dossier, occurrence });
+      const { evidence: _evidence, systemId: _systemId, submittedRank: _submittedRank, ...assessment } = score;
+      shared = assessment;
+      sharedLaneScoreCache.set(sharedKey, shared);
+    }
+    const compact: CompactScore = { ...shared, systemId: occurrence.systemId, submittedRank: occurrence.rank };
     const existing = scoreByOccurrenceKey.get(key);
     if (!existing || compact.submittedRank < existing.submittedRank) scoreByOccurrenceKey.set(key, compact);
     if (existing) duplicateCanonicalOccurrencesSuppressed += 1;
@@ -64,7 +74,8 @@ const leaderboard = systemIds.map((systemId) => {
 }).sort((left, right) => right.macroMeanPerTargetSlot - left.macroMeanPerTargetSlot || left.systemId.localeCompare(right.systemId));
 
 const policy = {
-  version: "all-candidate-shared-evidence-rescoring-v1.3",
+  version: calibrated ? "all-candidate-shared-evidence-rescoring-v1.3.1-human-rule-revision"
+    : "all-candidate-shared-evidence-rescoring-v1.3",
   scope: "Every unique canonical system-by-lane occurrence is rescored from the same provider-neutral dossier.",
   discoveryEvidenceBoundary: "Search snippets, Places content and provider summaries are excluded from scoring evidence.",
   gates: ["companyExists", "germanyPresence", "activeNetworking", "submittedLaneMembership", "sufficientEvidence", "uniqueCanonicalCompany"],
@@ -94,15 +105,18 @@ const leaderboardArtifact = {
   schemaVersion: 1,
   runId,
   generatedAt: scoreArtifact.generatedAt,
-  status: "pre-human-calibration",
+  status: calibrated ? "post-human-rule-revision-in-sample-validation-pending" : "pre-human-calibration",
   policy,
   systems: leaderboard,
 };
 
-await writeFile(path.join(scoringRoot, "all-candidate-scores.json"), `${JSON.stringify(scoreArtifact, null, 2)}\n`, "utf8");
-await writeFile(path.join(scoringRoot, "leaderboard-pre-human-audit.json"), `${JSON.stringify(leaderboardArtifact, null, 2)}\n`, "utf8");
+const scoreFilename = calibrated ? "all-candidate-scores.v1.3.1.json" : "all-candidate-scores.json";
+const leaderboardFilename = calibrated ? "leaderboard-post-rule-revision.v1.3.1.json" : "leaderboard-pre-human-audit.json";
+await writeFile(path.join(scoringRoot, scoreFilename), `${JSON.stringify(scoreArtifact, null, 2)}\n`, "utf8");
+await writeFile(path.join(scoringRoot, leaderboardFilename), `${JSON.stringify(leaderboardArtifact, null, 2)}\n`, "utf8");
 console.log(JSON.stringify({
   runId,
+  calibrated,
   ...scoreArtifact.summary,
   leaderboard: leaderboard.map((system) => ({ systemId: system.systemId, macroMeanPerTargetSlot: system.macroMeanPerTargetSlot })),
 }, null, 2));

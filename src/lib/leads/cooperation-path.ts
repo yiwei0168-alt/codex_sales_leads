@@ -43,11 +43,11 @@ export const COOPERATION_PATH_POLICY = {
 const patterns: Array<{ signal: CooperationSignal; pattern: RegExp }> = [
   {
     signal: "brand-direct",
-    pattern: /\b(?:authorized|official|value[- ]added|speciali[sz]ed?)\b.{0,35}\bdistribut(?:or|ion)\b|\bdirect(?:ly)?\s+(?:procures?|purchases?|buys?)\s+from\s+(?:brands?|manufacturers?|vendors?)\b|\b(?:brand|vendor)\s+onboarding\b|\b(?:importer|importiert|direktbezug|herstellerbezug)\b/i,
+    pattern: /\b(?:authorized|official|value[- ]added|speciali[sz]ed?)\b.{0,35}\bdistribut(?:or|ion)\b|\bvalue[- ]added distributor\b|\bVAD\b|\bdirect(?:ly)?\s+(?:procures?|purchases?|buys?)\s+from\s+(?:brands?|manufacturers?|vendors?)\b|\b(?:brand|vendor)\s+onboarding\b|\b(?:importer|importiert|direktbezug|herstellerbezug)\b/i,
   },
   {
     signal: "downstream-supply",
-    pattern: /\b(?:suppl(?:y|ies)|sell(?:s|ing)?|deliver(?:s|ing)?|beliefert|versorgt)\b.{0,60}\b(?:resellers?|dealers?|channel partners?|system integrators?|fachh(?:a|ä)ndler|wiederverk(?:a|ä)ufer)\b|\b(?:reseller|dealer|trade|partner)\s+(?:portal|account|program(?:me)?|network)\b|\bwholesale(?:r)?\b/i,
+    pattern: /\b(?:suppl(?:y|ies)|sell(?:s|ing)?|deliver(?:s|ing)?|beliefert|versorgt|unterst(?:u|ü)tzt)\b.{0,80}\b(?:resellers?|dealers?|channel partners?|system integrators?|systemh(?:a|ä)user|fachh(?:a|ä)ndler|wiederverk(?:a|ä)ufer|handelspartner)\b|\b(?:reseller|dealer|trade|partner)\s+(?:portal|account|program(?:me)?|network)\b|\b(?:partnerportal|handelspartner(?:portal|programm)?|partner werden)\b|\bwholesale(?:r)?\b/i,
   },
   {
     signal: "listing-ordering",
@@ -106,7 +106,12 @@ export function assessCooperationPathEvidence(options: {
 }): CooperationPathAssessment {
   const text = options.evidence.filter((value): value is string => typeof value === "string" && value.trim().length > 0).join("\n");
   const signals = uniqueSignals(text);
-  const demonstratedLevers = signals.filter((signal) => leverSignals.has(signal)).length;
+  const rawLevers = signals.filter((signal) => leverSignals.has(signal));
+  // Deployment and managed operation are one execution-control family for
+  // project services; neither proves specification or procurement by itself.
+  const demonstratedLevers = options.lane === "project-services"
+    ? new Set(rawLevers.map((signal) => signal === "deployment" || signal === "managed-operation" ? "execution" : signal)).size
+    : rawLevers.length;
   const customerSuppliedInstaller = options.lane === "project-services" && signals.includes("customer-supplied-installation");
   const laneComplete = options.lane === "tier1-distribution"
     ? has(signals, "brand-direct", "downstream-supply")
