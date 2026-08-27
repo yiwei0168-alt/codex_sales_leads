@@ -62,6 +62,9 @@ const verificationQueries = [
   "在多角色集合与搜索通道成员资格规则中，VAD 为什么必须满足 Distributor，安装工作为什么只确认 Installer 而不能确认 SI？",
   "系统如何确认候选公司是小型长尾公司？搜索结果少、网站简单或者 accountTier Long-tail 能否作为判断依据？",
   "confirmed-small-long-tail 和 probable-small-long-tail 分别需要什么证据？一条来源能否提供多个结构信号？",
+  "不同搜索工具发现同一家公司时，应该分别使用各自摘要评分还是共享同一份证据档案？",
+  "共享证据档案怎样确认公司身份？第三方目录域名或同域网页能否自动证明是同一家公司？",
+  "每家公司证据补全最多抓取多少官网页面和回退来源？搜索摘要和抓取失败应该怎样处理？",
 ];
 
 try {
@@ -172,6 +175,12 @@ try {
     "同一条主体明确的来源可以同时提供多个信号",
     "搜索结果少、SEO 弱、网站简单、流量低",
     "正面证据不足时必须保留为 standard／unknown",
+    "为每家公司建立一份工具中立的共享证据档案",
+    "第三方目录的域名不能作为公司别名",
+    "还必须在正文中匹配公司／品牌",
+    "必须从评分证据视图中排除",
+    "最多直接抓取五个官网页面，再使用最多两个回退来源",
+    "抓取失败或预算耗尽只保留 unknown",
   ];
   const missingText = requiredText.filter((fragment) => !stored.combined_content.includes(fragment));
 

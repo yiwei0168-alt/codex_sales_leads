@@ -1,6 +1,6 @@
 {
   "rubricVersion": "multi-source-professional-discovery-v1.3-draft",
-  "status": "confirmed-corrective-rules-1-through-5",
+  "status": "confirmed-corrective-rules-1-through-6",
   "appliesTo": "future full-pool rescoring; does not alter committed v1.2 artifacts",
   "networkingRelevance": {
     "gate": true,
@@ -86,5 +86,19 @@
     "serviceBoundary": "SI requires solution/architecture/integration or project-outcome responsibility; installation execution alone supports Installer, not SI.",
     "possibleRoleRule": "An indicated but unproven role may be retained as possible/pending and does not pass its lane.",
     "categoryMetric": "Measure supported submitted-lane membership, not agreement on one forced primary role."
+  },
+  "providerNeutralEvidenceDossiers": {
+    "oneDossierPerCanonicalCompany": true,
+    "reuseAcrossAllOccurrencesAndLanes": true,
+    "canonicalIdentity": "Official domain first; strong company/brand/official-platform aliases only without conflicting official domains. Third-party directory hosts are never company aliases.",
+    "pageIdentityCheck": "A direct page must match the canonical domain and company/brand text; submitted legal-entity aliases must also match when present.",
+    "discoveryMaterial": "Preserve provider snippets for target planning and traceability but exclude them from every scoring view.",
+    "officialPageBudget": 5,
+    "fallbackSourceBudget": 2,
+    "retrievalOrder": ["direct official pages", "Tavily Extract for failed official URLs", "Tavily or Exa retrieval of auditable page content"],
+    "searchSummaryRule": "Search summaries never become factual evidence.",
+    "stopRule": "Stop when identity, market, active-networking and every submitted-lane claim are supported and cooperation control has an evidenced level; the confirmed/probable small-long-tail exception may complete from one sufficient source.",
+    "failureRule": "Failed or exhausted retrieval remains unknown and never becomes a negative company fact.",
+    "paidFallbackControl": "Paid fallback requires an explicit runtime flag."
   }
 }

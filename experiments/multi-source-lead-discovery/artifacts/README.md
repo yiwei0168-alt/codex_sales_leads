@@ -1,12 +1,12 @@
 # Committed experiment artifacts
 
-This directory stores reproducible, sanitized, machine-readable benchmark artifacts. No measured artifact exists yet.
+This directory stores reproducible, sanitized, machine-readable benchmark artifacts.
 
 Planned layout:
 
 - `inputs/` — frozen prompt, query packs, provider settings and hashes;
 - `normalized/` — one content-faithful normalized result per measured step;
-- `evidence/` — deduplicated company evidence records and source URLs;
+- `evidence/` — deduplicated company records, provider-neutral shared evidence dossiers, direct-fetch/fallback results and hashes;
 - `scoring/` — raw scores, aggregate blind-audit results, calibration decisions and calibrated scores;
 - `manifests/` — run and artifact manifests with SHA-256 hashes.
 

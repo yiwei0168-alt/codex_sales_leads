@@ -67,6 +67,9 @@
     "benchmark:discovery:prepare-audit": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/prepare-blind-audit.ts",
     "benchmark:discovery:freeze-human-audit": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/freeze-human-audit.ts",
     "benchmark:discovery:aggregate-human-audit": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/aggregate-human-audit.ts",
+    "benchmark:discovery:prepare-shared-evidence": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/prepare-shared-evidence.ts",
+    "benchmark:discovery:collect-shared-evidence": "node --use-env-proxy scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/collect-shared-evidence.ts",
+    "benchmark:discovery:verify-shared-evidence": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/verify-shared-evidence.ts",
     "benchmark:discovery:verify": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/verify-discovery-run.ts"
   },
   "dependencies": {

@@ -1,6 +1,6 @@
 # Post-audit corrective rubric
 
-Status: **rules 1 through 5 confirmed on 2026-08-27; later corrective rules remain under sequential user review**
+Status: **rules 1 through 6 confirmed on 2026-08-27; later corrective rules remain under sequential user review**
 
 The v1.2 human audit failed the frozen calibration thresholds, so the published scores remain provisional and no provider winner is declared. This document records corrective rules for the required future full-pool rescoring. It does not retroactively change the frozen v1.2 prompts, packets, decisions or raw scores.
 
@@ -55,3 +55,13 @@ The evaluator and production qualification model may no longer self-assign the e
 Long-tail information forms include an official Marketplace or platform business profile, a Google Business-style profile, a local/regional business presentation or another fragmented but auditable public-business footprint. Explicit evidence of 250 or more employees or a clearly large national branch/group footprint overrides the exception. A simple website, few search results, weak SEO, low traffic, or missing employee, revenue, warehouse or brand information never proves that a company is small. When positive proof is insufficient, the profile remains `standard`; missing information is recorded as unknown.
 
 This profile only decides whether one concrete, identity-clear public source can satisfy the admission floor. It contributes zero points to product fit, channel role, cooperation path and evidence reliability, and it does not relax entity consistency, active-networking relevance or submitted-lane business proof.
+
+## Corrective rule 6 — one provider-neutral evidence dossier per company
+
+All discovery-provider outputs are deduplicated to canonical companies before evidence enrichment. Each canonical company receives one shared dossier that is reused for every provider/system occurrence and every submitted lane. Provider snippets remain available for retrieval planning and experiment traceability but are excluded from the scoring view, preventing native snippet richness from affecting downstream scores.
+
+Canonicalization prioritizes the official domain and uses strong company, brand and official-platform aliases only when official domains do not conflict. Third-party directory hosts never become company aliases. Directly fetched evidence must match the canonical domain and the company/brand name in page text; submitted legal-entity aliases must also match when present.
+
+The confirmed budget is five official pages plus at most two fallback sources per company. Direct official retrieval runs first. Failed official targets may use Tavily Extract, followed by Tavily/Exa discovery of auditable page content. Search summaries never become evidence. Collection stops when required claims are supported, including the small-long-tail one-source early-stop case; failures and exhausted budgets remain unknown.
+
+The executable protocol and direct-fetch pilot are recorded in [`07-shared-evidence-enrichment.md`](07-shared-evidence-enrichment.md).

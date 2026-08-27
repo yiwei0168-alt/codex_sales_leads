@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-08-26-de-v1",
+  "policyVersion": "shared-provider-neutral-evidence-v1",
+  "files": [
+    {
+      "path": "artifacts/runs/2026-08-26-de-v1/evidence/shared-evidence-dossiers.seed.json",
+      "sha256": "609f3aef4670572dd0dd39fd2722c7b9d67f1cf545af29d7403da93916a7287b"
+    },
+    {
+      "path": "artifacts/runs/2026-08-26-de-v1/evidence/shared-evidence-direct-pilot.json",
+      "sha256": "656390bcfd7ade0bdbde99c00f90159688b751fd0345a3bac26be60785ed2e31"
+    }
+  ],
+  "collectionMode": "direct-only",
+  "paidFallbackEnabled": false,
+  "selection": {
+    "offset": 0,
+    "limit": 1,
+    "match": "wlan-shop24",
+    "totalCanonicalCompanies": 113
+  },
+  "summary": {
+    "readyForRescoring": 0,
+    "partiallySupported": 1,
+    "stillNeedsEnrichment": 0,
+    "officialPagesAttempted": 5,
+    "officialPagesCollected": 5,
+    "fallbackSourcesCollected": 0
+  }
+}

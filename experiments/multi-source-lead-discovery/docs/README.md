@@ -11,6 +11,7 @@ This directory is the narrative audit trail for `multi-source-professional-disco
 5. [`05-scoring-and-blind-audit.md`](05-scoring-and-blind-audit.md) — eligibility gates, category-specific scoring, system aggregation, blind sampling and calibration.
 6. [`../reports/final-report.md`](../reports/final-report.md) — final evidence-linked experiment report.
 7. [`06-corrective-rubric.md`](06-corrective-rubric.md) — post-audit rules confirmed for the required next full-pool rescoring, without rewriting the frozen run.
+8. [`07-shared-evidence-enrichment.md`](07-shared-evidence-enrichment.md) — provider-neutral canonical dossiers, retrieval budgets, failure rules and the direct-fetch pilot.
 
 ## Stage publication rule
 

@@ -1,0 +1,262 @@
+{
+  "schemaVersion": 1,
+  "policyVersion": "shared-provider-neutral-evidence-v1",
+  "runId": "2026-08-26-de-v1",
+  "capturedAt": "2026-08-27T01:58:00.785Z",
+  "mode": "direct-only",
+  "selection": {
+    "offset": 0,
+    "limit": 1,
+    "match": "wlan-shop24",
+    "totalCanonicalCompanies": 113
+  },
+  "summary": {
+    "readyForRescoring": 0,
+    "partiallySupported": 1,
+    "stillNeedsEnrichment": 0,
+    "officialPagesAttempted": 5,
+    "officialPagesCollected": 5,
+    "fallbackSourcesCollected": 0
+  },
+  "results": [
+    {
+      "dossier": {
+        "dossierId": "DOS-55236A499A08",
+        "canonicalName": "WLAN-Shop24 (Varistano GmbH)",
+        "canonicalOfficialUrl": "https://www.wlan-shop24.de/",
+        "canonicalDomain": "wlan-shop24.de",
+        "sourcePoolNames": [
+          "WLAN-Shop24 (Varistano GmbH)",
+          "WLAN-Shop24.de"
+        ],
+        "aliases": [
+          "varistano",
+          "wlan shop24",
+          "wlan shop24 varistano"
+        ],
+        "legalIdentityAliases": [
+          "varistano",
+          "wlan shop24 varistano"
+        ],
+        "identityStatus": "resolved",
+        "identityConflicts": [],
+        "requestedLanes": [
+          "b2b-resale"
+        ],
+        "submittedOccurrences": [
+          {
+            "systemId": "product-exa",
+            "channelId": "b2b-resale",
+            "rank": 6,
+            "submittedRoles": [
+              "Reseller",
+              "Dealer"
+            ]
+          },
+          {
+            "systemId": "product-gemini",
+            "channelId": "b2b-resale",
+            "rank": 5,
+            "submittedRoles": [
+              "Reseller",
+              "VAR"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "evidenceId": "SEED-90A100CD27E7",
+            "url": "https://www.wlan-shop24.de/",
+            "excerpt": "Here are 10 B2B network technology specialists, distributors, and IT system integrators operating in Germany that cover enterprise networking, switches, routers, and WLAN infrastructure: 1. **Bechtle AG** * **Website:** https://www.bechtle.com * **Relevance:** Major German IT system house and B2B direct reseller providing enterprise network planning, hardware procurement (switches, routers, access points), and managed network services. 2. **JACOB Elektronik GmbH** * **Website:** https://www.jacob.de * **Relevance:** Dedicated B2B distributor and online specialist in Germany offering enterprise network technology, including managed switches, Wi-Fi 6/7 access points, and business routers. 3. **ALLNET GmbH Computersysteme** * **Website:** https://www.allnet.de * **Relevance:** German specialist distributor and developer for network equipment, focused on B2B resellers and system integrators for WLAN, industrial/enterprise switches, and routing solutions. 4. **WLAN-Shop24 (Varistano GmbH)** * **Website:** https://www.wlan-shop24.de * **Relevance:** Specialized German retailer and consultant for industrial and commercial networking, focusing on business WLAN access points, outdoor wirele",
+            "sourceType": "discovery-summary",
+            "acquisition": "reused-discovery",
+            "capturedAt": null,
+            "sourceSystems": [
+              "product-gemini"
+            ]
+          },
+          {
+            "evidenceId": "SEED-2A18C92FBE6C",
+            "url": "https://linkedin.com/company/wlan-shop24.de",
+            "excerpt": "# WLAN-Shop24.de WLAN-Shop24.de. WLAN-Shop24.de is a company that provides wireless solutions such as LoRa, WLAN, LTE, and 5G Antennen. They offer a wide range of products including routers, antennas, cables, and accessories. The company is B2B (True). Headquartered in Hamburg, Hamburg, Germany, with presence in United States. ## Company Details - Headquarters: Hamburg, Germany - Status: active - Ownership: Private - Aliases: wlan-shop24.de, wlan-shop24, wlan - shop24.de - LinkedIn: linkedin.com/company/wlan-shop24.de - Linkedin Followers: 5 - Emails: [redacted-email] - Phone: [redacted-phone], [redacted-phone] - SIC Codes: 73, 737 - NAICS Codes: 81, 811 [redacted-workforce-section]",
+            "sourceType": "discovery-summary",
+            "acquisition": "reused-discovery",
+            "capturedAt": null,
+            "sourceSystems": [
+              "product-exa"
+            ]
+          },
+          {
+            "url": "https://www.wlan-shop24.de/",
+            "excerpt": "WLAN, LTE, 5G - Antennen, Router und Zubehör | WLAN-Shop24 Zum Consentmanager springen Zum Hauptinhalt springen Zur Suche springen Zur Kategorie-Navigation springen Zum Footer springen Persönlich & Erreichbar! Kompetenz seit 2008! Zuverlässig & Schnell! Deutsch English Lösungen / FAQ Kontakt Deutsch English Anmelden E-Mail-Adresse Passwort Anmelden Passwort vergessen?? Neu hier? Jetzt registrieren! 0 Warenkorb Dein Warenkorb ist leer. Zum Warenkorb Zur Kasse Datenschutzerklärung | WLAN-Shop24 • Impressum Menü #custom.linkHome# Netzwerk Zurück Netzwerk Willkommen in der Kommandozentrale! Die Kategorie 'Netzwerk' ist dein Ausgangspunkt für alles, was mit der Vernetzung deiner Geräte zu tun hat. Von hier aus kannst du in spezialisierte Bereiche wie... LTE / 5G Router Teltonika LTE / 5G Router Teltonika Zubehör DSL / VDSL Router WLAN Router WLAN Access Points WLAN Repeater WLAN USB Adapter WLAN Bridge Sets IP Kameras Zurück TP-Link VIGI UniFi Protect Sonstige Kameras Ethernet Switch Powerline / DLAN Verkabelung Zurück Ethernet Kabel Ethernet Dosen Ethernet Zubehör DAC Kabel SFP / SFP+ Module 19 Zoll Schränke Gehäuse Montagesysteme PoE Injektoren / Netzteile Blitzschutz GPS Tracker LAN Controller & Sensorik Sonstige TP-Link Zurück TP-Link Omada TP-Link VIGI Ubiquiti Networks Zurück UniFi Accesspoints UniFi Switch UniFi Video airMAX ac Komponenten 2.4 GHz Komponenten mehr (11) MikroTik Zurück MikroTik Wireless Systeme MikroTik Accesspoints & Router MikroTik Router MikroTik Switches MikroTik Zubehör Antennen Zurück Antennen Hier ist das Epizentrum für guten Empfang! Diese Kategorie ist dein Tor zur riesigen Welt der Antennentechnik. Egal, für welche Anwendung du eine Antenne suchst - ob für WLAN, Mobilfunk (LTE/5G),... WLAN Antennen Zurück Dualband / WiFi 6E / WiFi 7 Antennen 2.4 GHz Richtantennen 2.4 GHz Rundstrahlantennen 2.4 GHz Sektorantennen 5 GHz Richtantennen mehr (2) 5G Antennen / Außenantennen LTE Außenantennen LTE Zimmerantennen Teltonika Systemantennen Fahrzeugantennen - LTE, 5G, WLAN M2M / IoT Antennen - LTE, 5G, WLAN LoRa / Helium Antennen Montagezubehör Antennen Antennenkabel Zurück Antennenkabel Das perfekte Kabel für dein Signal! Diese Kategorie ist der Startpunkt für die Suche nach dem passenden Antennenkabel. Von hier aus kannst du in unsere spezialisierten Bereiche für WLAN-, LTE/5G-... Antennenkabel WLAN Antennenkabel LTE / 5G Antennenkabel Maßanfertigung Koaxial Pigtails Koaxial Adapter Koaxial Stecker Koaxial Splitter Yacht / Camper / Womo Zurück Yacht / Camper / Womo Internet auf hoher See oder mitten in der Natur? Kein Problem! In dieser Kategorie findest du robuste und praxiserprobte Lösungen, um auf deiner Yacht, im Wohnmobil oder im Camper immer online zu... Komplettsets WLAN, LTE, 5G Antennen WLAN, LTE, 5G, GNSS Montage & Zubehör Gelegenheiten Zurück Gelegenheiten Willkommen bei den verrücktesten Deals im Shop! Wer nach professioneller Netzwerktechnik und IT-Hardware sucht, rechnet wahrscheinlich nicht damit, plötzlich vor einer Heißluftfritteuse oder einem... Angebote & Trends Lifestyle & Technik Smart Living & Gadgets Saison & Outdoor Home & Kitchen Entertainment & Audio Wellness & Living Office & Gaming SALE! Service ... denn Technik ist einfach unser Element! Du suchst nach der optimalen Verbindung für dein Zuhause oder dein Business? Dann bist du bei uns genau richtig! Wir kennen wirklich jedes Produkt in unserem Sortiment wie die eigene Westentasche. Wir wissen, worauf es ankommt, und stehen dir nicht nur vor dem Kauf beratend zur Seite. Bei uns ist Experten-Support inklusive. Deine Zufriedenheit ist unser Business! Seit 2008 machen wir Kunden europaweit mit unseren Lösungen im Bereich WLAN, Kabelnetzwerke, LTE und 5G glücklich. Stöbere in unserem Sortiment und lass uns gemeinsam dein optimales Netzwerk gestalten. Hast du Fragen? Dann frag uns einfach! Dein Netzwerk - unsere Kompetenz - seit 2008! Top-Artikel Alle anzeigen Alle anzeigen TP-Link Archer NX200 5G Router | WiFi 6 / AX1800, EasyMesh 258,99 € * In den Warenkorb ENTAC Anti Mosquito Lamp | Campinglicht & UV-Insektenvernichter, Akku 22,49 € * In den Warenkorb Teltonika RMS Lizenz | 1 Credit für 1 Monat ab 1,59 € * In den Warenkorb Interline HORIZON LOGIS MINI | WLAN Rundstrahlantenne, Dualband, Wetterfest 49,99 € * In den Warenkorb Teltonika RUTC50 | 5G Router, WiFi 6, Dual-SIM, Gigabit Ethernet 789,99 € * In den Warenkorb Sales, Support, Beratung per Telefon: [redacted-phone] per Mail: [redacted-email] Gesetzliche Informationen Batterie- und Verpackungsverordnung Datenschutz AGB Sitemap Impressum Rechtliche Hinweise Widerruf / Widerrufsbelehrung Rücksendungen / RMA Informationen Händler / Wiederverkäufer Konfigurationsservice Beratungsservice Zahlungsmöglichkeiten Versandkosten Newsletter eKomi Bewertungen Sprache Deutsch English Datenschutzerklärung | WLAN-Shop24 • Impressum Vertrag widerrufen * Alle Preise inkl. gesetzlicher USt., zzgl. Versand © DAJB Hamburg GmbH, Farmsener Landstrasse 2, 22359 Hamburg, Germany Powered by JTL-Shop Made with ♥ by eRock Creations Loading ... Alle akzeptieren Ablehnen Konfigurieren",
+            "sourceType": "official-company",
+            "acquisition": "direct-fetch",
+            "capturedAt": "2026-08-27T01:58:00.785Z",
+            "evidenceId": "EVID-B2AFC111318F",
+            "sourceSystems": []
+          },
+          {
+            "url": "https://www.wlan-shop24.de/impressum",
+            "excerpt": "Impressum von WLAN-Shop24 Zum Consentmanager springen Zum Hauptinhalt springen Zur Suche springen Zur Kategorie-Navigation springen Zum Footer springen Persönlich & Erreichbar! Kompetenz seit 2008! Zuverlässig & Schnell! Deutsch English Lösungen / FAQ Kontakt Deutsch English Anmelden E-Mail-Adresse Passwort Anmelden Passwort vergessen?? Neu hier? Jetzt registrieren! 0 Warenkorb Dein Warenkorb ist leer. Zum Warenkorb Zur Kasse Datenschutzerklärung | WLAN-Shop24 • Impressum Menü #custom.linkHome# Netzwerk Zurück Netzwerk Willkommen in der Kommandozentrale! Die Kategorie 'Netzwerk' ist dein Ausgangspunkt für alles, was mit der Vernetzung deiner Geräte zu tun hat. Von hier aus kannst du in spezialisierte Bereiche wie... LTE / 5G Router Teltonika LTE / 5G Router Teltonika Zubehör DSL / VDSL Router WLAN Router WLAN Access Points WLAN Repeater WLAN USB Adapter WLAN Bridge Sets IP Kameras Zurück TP-Link VIGI UniFi Protect Sonstige Kameras Ethernet Switch Powerline / DLAN Verkabelung Zurück Ethernet Kabel Ethernet Dosen Ethernet Zubehör DAC Kabel SFP / SFP+ Module 19 Zoll Schränke Gehäuse Montagesysteme PoE Injektoren / Netzteile Blitzschutz GPS Tracker LAN Controller & Sensorik Sonstige TP-Link Zurück TP-Link Omada TP-Link VIGI Ubiquiti Networks Zurück UniFi Accesspoints UniFi Switch UniFi Video airMAX ac Komponenten 2.4 GHz Komponenten mehr (11) MikroTik Zurück MikroTik Wireless Systeme MikroTik Accesspoints & Router MikroTik Router MikroTik Switches MikroTik Zubehör Antennen Zurück Antennen Hier ist das Epizentrum für guten Empfang! Diese Kategorie ist dein Tor zur riesigen Welt der Antennentechnik. Egal, für welche Anwendung du eine Antenne suchst - ob für WLAN, Mobilfunk (LTE/5G),... WLAN Antennen Zurück Dualband / WiFi 6E / WiFi 7 Antennen 2.4 GHz Richtantennen 2.4 GHz Rundstrahlantennen 2.4 GHz Sektorantennen 5 GHz Richtantennen mehr (2) 5G Antennen / Außenantennen LTE Außenantennen LTE Zimmerantennen Teltonika Systemantennen Fahrzeugantennen - LTE, 5G, WLAN M2M / IoT Antennen - LTE, 5G, WLAN LoRa / Helium Antennen Montagezubehör Antennen Antennenkabel Zurück Antennenkabel Das perfekte Kabel für dein Signal! Diese Kategorie ist der Startpunkt für die Suche nach dem passenden Antennenkabel. Von hier aus kannst du in unsere spezialisierten Bereiche für WLAN-, LTE/5G-... Antennenkabel WLAN Antennenkabel LTE / 5G Antennenkabel Maßanfertigung Koaxial Pigtails Koaxial Adapter Koaxial Stecker Koaxial Splitter Yacht / Camper / Womo Zurück Yacht / Camper / Womo Internet auf hoher See oder mitten in der Natur? Kein Problem! In dieser Kategorie findest du robuste und praxiserprobte Lösungen, um auf deiner Yacht, im Wohnmobil oder im Camper immer online zu... Komplettsets WLAN, LTE, 5G Antennen WLAN, LTE, 5G, GNSS Montage & Zubehör Gelegenheiten Zurück Gelegenheiten Willkommen bei den verrücktesten Deals im Shop! Wer nach professioneller Netzwerktechnik und IT-Hardware sucht, rechnet wahrscheinlich nicht damit, plötzlich vor einer Heißluftfritteuse oder einem... Angebote & Trends Lifestyle & Technik Smart Living & Gadgets Saison & Outdoor Home & Kitchen Entertainment & Audio Wellness & Living Office & Gaming SALE! Service Startseite / Impressum Impressum Betreiber und verantwortlich für die Inhalte dieses Shops ist: DAJB Hamburg GmbH Farmsener Landstraße 2 22359 Hamburg Deutschland Telefon: [redacted-phone] Fax: [redacted-phone] E-Mail: [redacted-email] Internet: www.wlan-shop24.de Vertreten durch: Dirk Jacobs Handelsregister Hamburg: HRB172370 Umsatzsteuer-Identifikationsnummer gemäß § 27a Umsatzsteuergesetz: DE[redacted-phone] Haftungshinweis: Trotz sorgfältiger inhaltlicher Kontrolle übernehmen wir keine Haftung für die Inhalte externer Links. Für den Inhalt der verlinkten Seiten sind ausschließlich deren Betreiber verantwortlich. Hinweis zur Streitbeilegung: Wir sind nicht verpflichtet und nicht bereit, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen. Sales, Support, Beratung per Telefon: [redacted-phone] per Mail: [redacted-email] Gesetzliche Informationen Batterie- und Verpackungsverordnung Datenschutz AGB Sitemap Impressum Rechtliche Hinweise Widerruf / Widerrufsbelehrung Rücksendungen / RMA Informationen Händler / Wiederverkäufer Konfigurationsservice Beratungsservice Zahlungsmöglichkeiten Versandkosten Newsletter eKomi Bewertungen Sprache Deutsch English Datenschutzerklärung | WLAN-Shop24 • Impressum Vertrag widerrufen * Alle Preise inkl. gesetzlicher USt., zzgl. Versand © DAJB Hamburg GmbH, Farmsener Landstrasse 2, 22359 Hamburg, Germany Powered by JTL-Shop Made with ♥ by eRock Creations Loading ... Alle akzeptieren Ablehnen Konfigurieren",
+            "sourceType": "official-company",
+            "acquisition": "direct-fetch",
+            "capturedAt": "2026-08-27T01:58:00.785Z",
+            "evidenceId": "EVID-66E1995EF423",
+            "sourceSystems": []
+          },
+          {
+            "url": "https://www.wlan-shop24.de/netzwerk-router-accesspoint-wlan-dsl-lte-5g",
+            "excerpt": "Netzwerktechnik für Zuhause & Business Zum Consentmanager springen Zum Hauptinhalt springen Zur Suche springen Zur Kategorie-Navigation springen Zum Footer springen Persönlich & Erreichbar! Kompetenz seit 2008! Zuverlässig & Schnell! Deutsch English Lösungen / FAQ Kontakt Deutsch English Anmelden E-Mail-Adresse Passwort Anmelden Passwort vergessen?? Neu hier? Jetzt registrieren! 0 Warenkorb Dein Warenkorb ist leer. Zum Warenkorb Zur Kasse Datenschutzerklärung | WLAN-Shop24 • Impressum Menü #custom.linkHome# Netzwerk Zurück Netzwerk Willkommen in der Kommandozentrale! Die Kategorie 'Netzwerk' ist dein Ausgangspunkt für alles, was mit der Vernetzung deiner Geräte zu tun hat. Von hier aus kannst du in spezialisierte Bereiche wie... LTE / 5G Router Teltonika LTE / 5G Router Teltonika Zubehör DSL / VDSL Router WLAN Router WLAN Access Points WLAN Repeater WLAN USB Adapter WLAN Bridge Sets IP Kameras Zurück TP-Link VIGI UniFi Protect Sonstige Kameras Ethernet Switch Powerline / DLAN Verkabelung Zurück Ethernet Kabel Ethernet Dosen Ethernet Zubehör DAC Kabel SFP / SFP+ Module 19 Zoll Schränke Gehäuse Montagesysteme PoE Injektoren / Netzteile Blitzschutz GPS Tracker LAN Controller & Sensorik Sonstige TP-Link Zurück TP-Link Omada TP-Link VIGI Ubiquiti Networks Zurück UniFi Accesspoints UniFi Switch UniFi Video airMAX ac Komponenten 2.4 GHz Komponenten mehr (11) MikroTik Zurü […] r Flexibilität und Komfort im Alltag ist WLAN unverzichtbar. Für das Überbrücken von Distanzen in deinem Zuhause ohne Kabelverlegen ist DLAN die praktische Lösung. Für das Surfen und Arbeiten unterwegs sind LTE oder 5G deine zuverlässigen Begleiter. Oft ist die beste Lösung eine Kombination dieser Technologien. Ein Heimnetzwerk könnte einen stabilen Ethernet-Anschluss für den Gaming-PC, ein schnelles WLAN für Laptops und Smartphones und DLAN für den Smart-TV im Keller nutzen. Filtern nach Sales, Support, Beratung per Telefon: [redacted-phone] per Mail: [redacted-email] Gesetzliche Informationen Batterie- und Verpackungsverordnung Datenschutz AGB Sitemap Impressum Rechtliche Hinweise Widerruf / Widerrufsbelehrung Rücksendungen / RMA Informationen Händler / Wiederverkäufer Konfigurationsservice Beratungsservice Zahlungsmöglichkeiten Versandkosten Newsletter eKomi Bewertungen Sprache Deutsch English Datenschutzerklärung | WLAN-Shop24 • Impressum Vertrag widerrufen * Alle Preise inkl. gesetzlicher USt., zzgl. Versand © DAJB Hamburg GmbH, Farmsener Landstrasse 2, 22359 Hamburg, Germany Powered by JTL-Shop Made with ♥ by eRock Creations Loading ... Alle akzeptieren Ablehnen Konfigurieren",
+            "sourceType": "official-company",
+            "acquisition": "direct-fetch",
+            "capturedAt": "2026-08-27T01:58:00.785Z",
+            "evidenceId": "EVID-7F10B9F4A781",
+            "sourceSystems": []
+          },
+          {
+            "url": "https://www.wlan-shop24.de/kontakt",
+            "excerpt": "Kontaktformular | WLAN-Shop24 Zum Consentmanager springen Zum Hauptinhalt springen Zur Suche springen Zur Kategorie-Navigation springen Zum Footer springen Persönlich & Erreichbar! Kompetenz seit 2008! Zuverlässig & Schnell! Deutsch English Lösungen / FAQ Kontakt Deutsch English Anmelden E-Mail-Adresse Passwort Anmelden Passwort vergessen?? Neu hier? Jetzt registrieren! 0 Warenkorb Dein Warenkorb ist leer. Zum Warenkorb Zur Kasse Datenschutzerklärung | WLAN-Shop24 • Impressum Menü #custom.linkHome# Netzwerk Zurück Netzwerk Willkommen in der Kommandozentrale! Die Kategorie 'Netzwerk' ist dein Ausgangspunkt für alles, was mit der Vernetzung deiner Geräte zu tun hat. Von hier aus kannst du in spezialisierte Bereiche wie... LTE / 5G Router Teltonika LTE / 5G Router Teltonika Zubehör DSL / VDSL Router WLAN Router WLAN Access Points WLAN Repeater WLAN USB Adapter WLAN Bridge Sets IP Kameras Zurück TP-Link VIGI UniFi Protect Sonstige Kameras Ethernet Switch Powerline / DLAN Verkabelung Zurück Ethernet Kabel Ethernet Dosen Ethernet Zubehör DAC Kabel SFP / SFP+ Module 19 Zoll Schränke Gehäuse Montagesysteme PoE Injektoren / Netzteile Blitzschutz GPS Tracker LAN Controller & Sensorik Sonstige TP-Link Zurück TP-Link Omada TP-Link VIGI Ubiquiti Networks Zurück UniFi Accesspoints UniFi Switch UniFi Video airMAX ac Komponenten 2.4 GHz Komponenten mehr (11) MikroTik Zurück MikroTik Wireless Systeme MikroTik Accesspoints & Router MikroTik Router MikroTik Switches MikroTik Zubehör Antennen Zurück Antennen Hier ist das Epizentrum für guten Empfang! Diese Kategorie ist dein Tor zur riesigen Welt der Antennentechnik. Egal, für welche Anwendung du eine Antenne suchst - ob für WLAN, Mobilfunk (LTE/5G),... WLAN Antennen Zurück Dualband / WiFi 6E / WiFi 7 Antennen 2.4 GHz Richtantennen 2.4 GHz Rundstrahlantennen 2.4 GHz Sektorantennen 5 GHz Richtantennen mehr (2) 5G Antennen / Außenantennen LTE Außenantennen LTE Zimmerantennen Teltonika Systemantennen Fahrzeugantennen - LTE, 5G, WLAN M2M / IoT Antennen - LTE, 5G, WLAN LoRa / Helium Antennen Montagezubehör Antennen Antennenkabel Zurück Antennenkabel Das perfekte Kabel für dein Signal! Diese Kategorie ist der Startpunkt für die Suche nach dem passenden Antennenkabel. Von hier aus kannst du in unsere spezialisierten Bereiche für WLAN-, LTE/5G-... Antennenkabel WLAN Antennenkabel LTE / 5G Antennenkabel Maßanfertigung Koaxial Pigtails Koaxial Adapter Koaxial Stecker Koaxial Splitter Yacht / Camper / Womo Zurück Yacht / Camper / Womo Internet auf hoher See oder mitten in der Natur? Kein Problem! In dieser Kategorie findest du robuste und praxiserprobte Lösungen, um auf deiner Yacht, im Wohnmobil oder im Camper immer online zu... Komplettsets WLAN, LTE, 5G Antennen WLAN, LTE, 5G, GNSS Montage & Zubehör Gelegenheiten Zurück Gelegenheiten Willkommen bei den verrücktesten Deals im Shop! Wer nach professioneller Netzwerktechnik und IT-Hardware sucht, rechnet wahrscheinlich nicht damit, plötzlich vor einer Heißluftfritteuse oder einem... Angebote & Trends Lifestyle & Technik Smart Living & Gadgets Saison & Outdoor Home & Kitchen Entertainment & Audio Wellness & Living Office & Gaming SALE! Service Startseite / Kontakt Kontakt Deine Kontaktdaten Alle mit * markierten Felder sind Pflichtfelder. Vorname Nachname Firma E-Mail Telefon Ich willige ein, dass meine Angaben zur Kontaktaufnahme für eventuelle Rückfragen dauerhaft gespeichert werden. Hinweis: Die Einwilligung können Sie jederzeit mit Wirkung für die Zukunft widerrufen, indem Sie eine E-Mail an [redacted-email] schicken. Nachricht Betreff Betreff Barrierefreiheit Anfrage Vertrieb Allgemeine Anfrage Anfrage Technik Nachricht Bitte beantworten Sie die Frage × Close Absenden Bitte beachte unsere Datenschutzerklärung Nachricht senden Sales, Support, Beratung per Telefon: [redacted-phone] per Mail: [redacted-email] Gesetzliche Informationen Batterie- und Verpackungsverordnung Datenschutz AGB Sitemap Impressum Rechtliche Hinweise Widerruf / Widerrufsbelehrung Rücksendungen / RMA Informationen Händler / Wiederverkäufer Konfigurationsservice Beratungsservice Zahlungsmöglichkeiten Versandkosten Newsletter eKomi Bewertungen Sprache Deutsch English Datenschutzerklärung | WLAN-Shop24 • Impressum Vertrag widerrufen * Alle Preise inkl. gesetzlicher USt., zzgl. Versand © DAJB Hamburg GmbH, Farmsener Landstrasse 2, 22359 Hamburg, Germany Powered by JTL-Shop Made with ♥ by eRock Creations Loading ... Alle akzeptieren Ablehnen Konfigurieren",
+            "sourceType": "official-company",
+            "acquisition": "direct-fetch",
+            "capturedAt": "2026-08-27T01:58:00.785Z",
+            "evidenceId": "EVID-373B54797123",
+            "sourceSystems": []
+          },
+          {
+            "url": "https://www.wlan-shop24.de/tplink-omada-vigi-tapo-switches-router",
+            "excerpt": "TP-Link Omada, VIGI & Tapo | WLAN Router & PoE Switches Zum Consentmanager springen Zum Hauptinhalt springen Zur Suche springen Zur Kategorie-Navigation springen Zum Footer springen Persönlich & Erreichbar! Kompetenz seit 2008! Zuverlässig & Schnell! Deutsch English Lösungen / FAQ Kontakt Deutsch English Anmelden E-Mail-Adresse Passwort Anmelden Passwort vergessen?? Neu hier? Jetzt registrieren! 0 Warenkorb Dein Warenkorb ist leer. Zum Warenkorb Zur Kasse Datenschutzerklärung | WLAN-Shop24 • Impressum Menü #custom.linkHome# Netzwerk Zurück Netzwerk Willkommen in der Kommandozentrale! Die Kategorie 'Netzwerk' ist dein Ausgangspunkt für alles, was mit der Vernetzung deiner Geräte zu tun hat. Von hier aus kannst du in spezialisierte Bereiche wie... LTE / 5G Router Teltonika LTE / 5G Router Teltonika Zubehör DSL / VDSL Router WLAN Router WLAN Access Points WLAN Repeater WLAN USB Adapter WLAN Bridge Sets IP Kameras Zurück TP-Link VIGI UniFi Protect Sonstige Kameras Ethernet Switch Powerline / DLAN Verkabelung Zurück Ethernet Kabel Ethernet Dosen Ethernet Zubehör DAC Kabel SFP / SFP+ Module 19 Zoll Schränke Gehäuse Montagesysteme PoE Injektoren / Netzteile Blitzschutz GPS Tracker LAN Controller & Sensorik Sonstige TP-Link Zurück TP-Link Omada TP-Link VIGI Ubiquiti Networks Zurück UniFi Accesspoints UniFi Switch UniFi Video airMAX ac Komponenten 2.4 GHz Komponenten mehr (11) MikroTik Zurück MikroTik Wireless Systeme MikroTik Accesspoints & Router MikroTik Router MikroTik Switches MikroTik Zubehör Antennen Zurück Antennen Hier ist das Epizentrum für guten Empfang! Diese Kategorie ist dein Tor zur riesigen Welt der Antennentechnik. Egal, für welche Anwendung du eine Antenne suchst - ob für WLAN, Mobilfunk (LTE/5G),... WLAN Antennen Zurück Dualband / WiFi 6E / WiFi 7 Antennen 2.4 GHz Richtantennen 2.4 GHz Rundstrahlantennen 2.4 GHz Sektorantennen 5 GHz Richtantennen mehr (2) 5G Antennen / Außenantennen LTE Außenantennen LTE Zimmerantennen Teltonika Systemantennen Fahrzeugantennen - LTE, 5G, WLAN M2M / IoT Antennen - LTE, 5G, WLAN LoRa / Helium Antennen Montagezubehör Antennen Antennenkabel Zurück Antennenkabel Das perfekte Kabel für dein Signal! Diese Kategorie ist der Startpunkt für die Suche nach dem passenden Antennenkabel. Von hier aus kannst du in unsere spezialisierten Bereiche für WLAN-, LTE/5G-... Antennenkabel WLAN Antennenkabel LTE / 5G Antennenkabel Maßanfertigung Koaxial Pigtails Koaxial Adapter Koaxial Stecker Koaxial Splitter Yacht / Camper / Womo Zurück Yacht / Camper / Womo Internet auf hoher See oder mitten in der Natur? Kein Problem! In dieser Kategorie findest du robuste und praxiserprobte Lösungen, um auf deiner Yacht, im Wohnmobil oder im Camper immer online zu... Komplettsets WLAN, LTE, 5G Antennen WLAN, LTE, 5G, GNSS Montage & Zubehör Gelegenheiten Zurück Gelegenheiten Willkommen bei den verrücktesten Deals im Shop! Wer nach professioneller Netzwerktechnik und IT-Hardware sucht, rechnet wahrscheinlich nicht damit, plötzlich vor einer Heißluftfritteuse oder einem... Angebote & Trends Lifestyle & Technik Smart Living & Gadgets Saison & Outdoor Home & Kitchen Entertainment & Audio Wellness & Living Office & Gaming SALE! Service Startseite / Netzwerk / TP-Link TP-Link Du planst ein neues Netzwerk -Setup oder möchtest deine bestehende Infrastruktur auf das nächste Level heben? Mit der Hardware von TP-Link triffst du immer eine exzellente Wahl, ganz gleich, ob für dein smartes Zuhause oder komplexe Unternehmensnetzwerke. Wir bieten dir ein riesiges Portfolio an zuverlässigen WLAN Routern, Accesspoints und klassischen Switches , die exakt auf deine technischen Anforderungen zugeschnitten sind. Dank modernster Technologien und außergewöhnlich intuitiver Bedienung setzt du deine IT-Projekte damit effizient, stabil und absolut zukunftssicher um. Unser Sortiment umfasst dabei die stärksten Spezial-Serien des Herstellers für jeden erdenklichen Einsatzbereich. Mit der Omada-Serie baust du hochprofessionelle, zentral über die Cloud verwaltete Business-Netzwerke auf, während die VIGI-Serie dir gestochen scharfe, KI-gestützte Videoüberwachung für dein Betriebsgelände liefert. Für das smarte Home Office und die schnelle Automatisierung stehen dir hingegen die cleveren Produkte der Tapo-Serie zur Verfügung. Klick dich durch unsere Auswahl und finde jetzt die perfekte TP-Link Komponente für dein nächstes Vorhaben! TP-Link Omada Willkommen im Omada-Ökosystem von TP-Link, der smarten Lösung für... TP-Link VIGI Wenn es um den Schutz deines Betriebsgeländes, deiner Lagerhallen... Filtern nach Sales, Support, Beratung per Telefon: [redacted-phone] per Mail: [redacted-email] Gesetzliche Informationen Batterie- und Verpackungsverordnung Datenschutz AGB Sitemap Impressum Rechtliche Hinweise Widerruf / Widerrufsbelehrung Rücksendungen / RMA Informationen Händler / Wiederverkäufer Konfigurationsservice Beratungsservice Zahlungsmöglichkeiten Versandkosten Newsletter eKomi Bewertungen Sprache Deutsch English Datenschutzerklärung | WLAN-Shop24 • Impressum Vertrag widerrufen * Alle Preise inkl. gesetzlicher USt., zzgl. Versand © DAJB Hamburg GmbH, Farmsener Landstrasse 2, 22359 Hamburg, Germany Powered by JTL-Shop Made with ♥ by eRock Creations Loading ... Alle akzeptieren Ablehnen Konfigurieren",
+            "sourceType": "official-company",
+            "acquisition": "direct-fetch",
+            "capturedAt": "2026-08-27T01:58:00.785Z",
+            "evidenceId": "EVID-D64AE91D6C03",
+            "sourceSystems": []
+          }
+        ],
+        "evidenceProfileAssessment": {
+          "profile": "standard",
+          "confidence": "none",
+          "exceptionEligible": false,
+          "directSizeSignals": [],
+          "structuralSignals": [],
+          "longTailSignals": [],
+          "largeCompanyOverrides": [],
+          "reason": "Positive evidence is insufficient to classify the company as small long-tail; missing public information was not treated as size evidence."
+        },
+        "claimCoverage": {
+          "identity": false,
+          "germanyPresence": true,
+          "activeNetworking": true,
+          "laneMembership": {
+            "tier1-distribution": {
+              "requested": false,
+              "demonstrated": false,
+              "supportedRoles": [
+                "Reseller",
+                "E-tailer",
+                "Installer"
+              ]
+            },
+            "b2b-resale": {
+              "requested": true,
+              "demonstrated": true,
+              "supportedRoles": [
+                "Reseller",
+                "E-tailer",
+                "Installer"
+              ]
+            },
+            "project-services": {
+              "requested": false,
+              "demonstrated": true,
+              "supportedRoles": [
+                "Reseller",
+                "E-tailer",
+                "Installer"
+              ]
+            }
+          },
+          "cooperationPathCaps": {
+            "tier1-distribution": 3,
+            "b2b-resale": 3,
+            "project-services": 3
+          }
+        },
+        "enrichmentStatus": "partially-supported",
+        "retrievalPlan": {
+          "officialPageBudget": 5,
+          "fallbackSourceBudget": 2,
+          "directFetchFirst": true,
+          "longTailEarlyStopAllowed": false,
+          "initialOfficialTargets": [
+            "https://www.wlan-shop24.de/"
+          ],
+          "pageIntents": [
+            "home/about",
+            "imprint/contact",
+            "networking products/brands",
+            "shop/product listing/quotation/order"
+          ],
+          "fallbackOrder": [
+            "tavily-extract",
+            "exa-or-search"
+          ]
+        },
+        "collectionLog": [
+          {
+            "stage": "seed",
+            "url": "https://www.wlan-shop24.de/",
+            "status": "reused",
+            "reason": "Reused only to plan retrieval; excluded from scoring evidence."
+          },
+          {
+            "stage": "seed",
+            "url": "https://linkedin.com/company/wlan-shop24.de",
+            "status": "reused",
+            "reason": "Reused only to plan retrieval; excluded from scoring evidence."
+          },
+          {
+            "stage": "direct-official",
+            "url": "https://www.wlan-shop24.de/",
+            "status": "succeeded",
+            "reason": "Fetched directly from the canonical company domain."
+          },
+          {
+            "stage": "direct-official",
+            "url": "https://www.wlan-shop24.de/impressum",
+            "status": "succeeded",
+            "reason": "Fetched directly from the canonical company domain."
+          },
+          {
+            "stage": "direct-official",
+            "url": "https://www.wlan-shop24.de/netzwerk-router-accesspoint-wlan-dsl-lte-5g",
+            "status": "succeeded",
+            "reason": "Fetched directly from the canonical company domain."
+          },
+          {
+            "stage": "direct-official",
+            "url": "https://www.wlan-shop24.de/kontakt",
+            "status": "succeeded",
+            "reason": "Fetched directly from the canonical company domain."
+          },
+          {
+            "stage": "direct-official",
+            "url": "https://www.wlan-shop24.de/tplink-omada-vigi-tapo-switches-router",
+            "status": "succeeded",
+            "reason": "Fetched directly from the canonical company domain."
+          },
+          {
+            "stage": "search-fallback",
+            "url": null,
+            "status": "skipped",
+            "reason": "No fallback adapter was configured."
+          }
+        ]
+      },
+      "officialPagesAttempted": 5,
+      "officialPagesCollected": 5,
+      "fallbackSourcesCollected": 0,
+      "stoppedEarly": false,
+      "stopReason": "fallback-not-configured"
+    }
+  ]
+}
