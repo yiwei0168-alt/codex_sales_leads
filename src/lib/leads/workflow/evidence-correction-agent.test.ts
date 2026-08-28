@@ -64,6 +64,8 @@ describe("LeadEvidenceCorrectionAgent", () => {
     expect(corrected.companyName).toBe("Smart Technik GmbH");
     expect(corrected.correction.resolvedRoles).toEqual(expect.arrayContaining(["Installer", "SI"]));
     expect(corrected.correction.resolvedFamilies).toEqual(["services"]);
+    expect(corrected.correction.primaryRole).toBe("SI");
+    expect(corrected.correction.primaryFamily).toBe("services");
     expect(corrected.correction.identityChanged).toBe(true);
     expect(corrected.correction.routingChanged).toBe(true);
     expect(corrected.correction.supplementalEvidenceIds).toHaveLength(1);

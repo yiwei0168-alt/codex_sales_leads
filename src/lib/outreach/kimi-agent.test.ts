@@ -74,7 +74,7 @@ describe("Kimi development strategy agent", () => {
         evidenceSnapshotHash: "hash", correctionModel: "corrector", scoringModel: "scorer", reviewStatus: "secondary-confirmed" },
       identity: { companyName: company.displayName, officialUrl: "https://example.de/", domain: company.domain,
         possibleRoles: ["SI"] },
-      decision: { score: 82, recommendedFamilies: ["services"], scoreConfidence: 85, scoringStatus: "completed" },
+      decision: { score: 82, primaryFamily: "services", recommendedFamilies: ["services"], scoreConfidence: 85, scoringStatus: "completed" },
       externallyUsableFacts: [{ factId: "fact-1", kind: "commercial-action",
         statement: "Example delivers network integration services.", evidenceIds: ["ev-1"],
         sourceTypes: ["official-website"], confidence: 90 }],

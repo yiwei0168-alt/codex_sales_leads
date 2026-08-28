@@ -10,8 +10,8 @@ export interface ChannelMembershipAssessment {
 }
 
 export const MULTI_ROLE_CHANNEL_POLICY = {
-  version: "multi-role-channel-membership-v1",
-  multiRoleRule: "Record every role supported by public evidence. A candidate may have several roles and no primary role is required.",
+  version: "multi-role-channel-membership-v2-primary-display",
+  multiRoleRule: "Record every role supported by public evidence. A deterministic primary display route is selected separately and never removes the other roles.",
   noShareInference: "Do not infer the revenue share, business proportion or dominant role when public evidence only proves that a business line exists.",
   laneAdmission: "A candidate passes a submitted search lane when evidence proves that it genuinely conducts at least one role allowed in that lane, regardless of which other roles it also conducts.",
   laneEvidenceIsolation: "Each lane must be supported by evidence for that business. Evidence from another role or business line cannot substitute for the submitted lane.",
@@ -25,7 +25,7 @@ export const MULTI_ROLE_CHANNEL_POLICY = {
 const rolePatterns: Array<{ role: ChannelRole; pattern: RegExp }> = [
   {
     role: "Distributor",
-    pattern: /\b(?:authorized|official|technology|network(?:ing)?|it|speciali[sz]ed?|value[- ]added)\s+distribut(?:or|ion)\b|\b(?:we are|company is|acts as|operates as|is an?)\b.{0,25}\bdistributor\b|\bdistributor\s+(?:of|for)\b|\bwholesale(?:r)?\b|\b(?:suppl(?:y|ies)|beliefert|versorgt)\b.{0,70}\b(?:resellers?|dealers?|channel partners?|system integrators?|fachh(?:a|ä)ndler|wiederverk(?:a|ä)ufer)\b/i,
+    pattern: /\b(?:authorized|official|technology|network(?:ing)?|it|ict|itk|speciali[sz]ed?|value[- ]added)\s+distribut(?:or|ion)\b|\b(?:we are|company is|acts as|operates as|is an?|wir sind|als)\b.{0,35}\bdistributor\b|\bdistributor\s+(?:of|for|für|von)\b|\b(?:it|ict|itk|netzwerk|fachhandels?)[- ]?distribution\b|\bdistribution\s+(?:gmbh|ag|kg|unternehmen)\b|\b(?:broadliner|grossist|wholesale(?:r)?|gro(?:ß|ss)h(?:a|ä)ndler|gro(?:ß|ss)handel)\b|\b(?:suppl(?:y|ies)|beliefert|beliefern|versorgt|liefert)\b.{0,90}\b(?:resellers?|dealers?|channel partners?|system integrators?|systemh(?:a|ä)user|fachh(?:a|ä)ndler|wiederverk(?:a|ä)ufer)\b/i,
   },
   {
     role: "VAD",

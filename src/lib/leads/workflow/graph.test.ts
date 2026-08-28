@@ -64,7 +64,9 @@ const correctedCandidate: CorrectedLeadWorkflowCandidate = {
   ...candidate,
   correction: { originalCompanyName: candidate.companyName, originalDomain: candidate.domain,
     originalOfficialWebsiteUrl: candidate.officialWebsiteUrl, resolvedRoles: ["Distributor"],
-    resolvedFamilies: ["distribution"], identityChanged: false, routingChanged: false,
+    resolvedFamilies: ["distribution"], primaryRole: "Distributor", primaryFamily: "distribution",
+    primaryChannelReason: "Fixture primary route.", usedSmallLongTailChannelException: false,
+    identityChanged: false, routingChanged: false,
     supplementalEvidenceIds: [], reliedEvidenceIds: ["evidence-example"], findings: [{
       findingId: "finding-distribution", kind: "role", statement: "Example is a networking distributor.",
       status: "supported", roles: ["Distributor"], evidenceIds: ["evidence-example"],

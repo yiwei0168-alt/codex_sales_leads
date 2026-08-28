@@ -11,6 +11,8 @@ const candidate: CorrectedLeadWorkflowCandidate = {
     provider: "fixture", capturedAt: "2026-08-28" }], evidenceWarnings: [],
   correction: { originalCompanyName: "Handoff GmbH", originalDomain: "handoff.example",
     originalOfficialWebsiteUrl: "https://handoff.example/", resolvedRoles: ["Installer"], resolvedFamilies: ["services"],
+    primaryRole: "Installer", primaryFamily: "services", primaryChannelReason: "Fixture primary route.",
+    usedSmallLongTailChannelException: false,
     identityChanged: false, routingChanged: false, supplementalEvidenceIds: [], reliedEvidenceIds: ["evidence-handoff"],
     findings: [
       { findingId: "fact-install", kind: "commercial-action", statement: "The company installs WLAN access points for business customers.",

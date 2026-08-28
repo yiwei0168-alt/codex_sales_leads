@@ -49,7 +49,9 @@ const candidate: CorrectedLeadWorkflowCandidate = {
   evidence: [{ id: "evidence-valid", url: "https://example.de", title: "Example", excerpt: "VAR selling routers and PoE switches; business customers can request a quote.",
     sourceType: "official-website", provider: "test", capturedAt: "2026-08-22" }], evidenceWarnings: [],
   correction: { originalCompanyName: "Example", originalDomain: "example.de", originalOfficialWebsiteUrl: "https://example.de/",
-    resolvedRoles: ["VAR", "Reseller"], resolvedFamilies: ["resale"], identityChanged: false, routingChanged: false,
+    resolvedRoles: ["VAR", "Reseller"], resolvedFamilies: ["resale"], primaryRole: "VAR", primaryFamily: "resale",
+    primaryChannelReason: "Fixture primary route.", usedSmallLongTailChannelException: false,
+    identityChanged: false, routingChanged: false,
     supplementalEvidenceIds: [], reliedEvidenceIds: ["evidence-valid"], findings: [
       { findingId: "finding-identity", kind: "identity", statement: "Example owns example.de.", status: "supported",
         roles: [], evidenceIds: ["evidence-valid"], sourceTypes: ["official-website"], confidence: 90, notes: [] },
@@ -74,7 +76,7 @@ describe("LeadQualificationAgent", () => {
     const [result] = await agent.evaluate([candidate], playbook, "DE", "Germany", "new-market");
     expect(result.totalScore).toBe(88);
     expect(result.roles).toEqual(["VAR", "Reseller"]);
-    expect(result.primaryRole).toBeNull();
+    expect(result.primaryRole).toBe("VAR");
     expect(result.evidenceIds).toEqual(["evidence-valid"]);
     expect(result.warnings).toContain("Model returned unsupported evidence IDs; they were removed.");
     expect(provider.calls).toHaveLength(2);

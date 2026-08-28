@@ -121,6 +121,10 @@ export interface LeadCandidateCorrection {
   originalOfficialWebsiteUrl: string;
   resolvedRoles: ChannelRole[];
   resolvedFamilies: ChannelRoleFamily[];
+  primaryRole: ChannelRole | null;
+  primaryFamily: ChannelRoleFamily | null;
+  primaryChannelReason: string;
+  usedSmallLongTailChannelException: boolean;
   identityChanged: boolean;
   routingChanged: boolean;
   supplementalEvidenceIds: string[];
@@ -231,6 +235,7 @@ export interface LeadDevelopmentHandoff {
   };
   decision: {
     score: number;
+    primaryFamily: ChannelRoleFamily | null;
     recommendedFamilies: ChannelRoleFamily[];
     scoreConfidence: number;
     scoringStatus: LeadCandidateAssessment["scoringStatus"];

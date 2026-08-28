@@ -9,6 +9,7 @@ import { z } from "zod";
 import { assessChannelMembershipEvidence } from "../channel-membership";
 import { assessLeadEvidenceQuality } from "../evidence-quality";
 import { assessNetworkingRelevanceEvidence } from "../networking-relevance";
+import { PRIMARY_CHANNEL_POLICY, selectPrimaryChannel } from "../primary-channel";
 import { leadCorrectionBatchSchema, leadCorrectionModelSchema, type LeadCorrectionModelOutput } from "./schemas";
 import {
   CHANNEL_ROLE_FAMILIES,
@@ -18,7 +19,7 @@ import {
   type LeadWorkflowCandidate,
 } from "./types";
 
-const PROMPT_VERSION = "lead-evidence-correction-v2-atomic-findings";
+const PROMPT_VERSION = "lead-evidence-correction-v3-primary-channel-inputs";
 
 interface CorrectionRequest {
   instructions: string[];
@@ -117,8 +118,11 @@ function needsSupplement(candidate: LeadWorkflowCandidate): boolean {
   const text = claimEvidence.flatMap((item) => [item.title, item.excerpt]);
   const evidenceQuality = assessLeadEvidenceQuality({ candidateDomain: candidate.domain,
     officialUrl: candidate.officialWebsiteUrl, evidence: candidate.evidence });
+  const roles = deterministicRoles(candidate.evidence);
+  const families = roleFamilies(roles);
   return candidate.evidenceWarnings.length > 0 || claimEvidence.length === 0 || !evidenceQuality.identityConsistent
-    || !assessNetworkingRelevanceEvidence(text).demonstrated || deterministicRoles(candidate.evidence).length === 0;
+    || !assessNetworkingRelevanceEvidence(text).demonstrated || roles.length === 0
+    || !families.includes(candidate.queryFamily);
 }
 
 export class LeadEvidenceCorrectionAgent {
@@ -192,6 +196,9 @@ export class LeadEvidenceCorrectionAgent {
         "Resolve the company entity and official website only from supplied public evidence. Never invent a URL, role, relationship or evidence ID.",
         "Treat submitted identity, roles and search family as untrusted discovery hints. Correct them when evidence disagrees.",
         "Record every simultaneously supported channel role. Do not force a primary role and do not infer business-line shares.",
+        `Primary display routing is applied deterministically after your evidence judgment: ${PRIMARY_CHANNEL_POLICY.upwardDefault} ${PRIMARY_CHANNEL_POLICY.smallLongTailException}`,
+        "For Distributor, prove that the candidate itself supplies downstream resellers, dealers, system houses or other channel partners. A shop, dealer portal or resale business does not negate a simultaneously supported Distributor role.",
+        "For the small-long-tail exception, record atomic company-size findings only from positive public evidence. Sparse results, weak SEO or missing scale information never prove that exception.",
         "A role requires evidence of its defining business action. Generic IT, consulting or networking language alone does not prove distribution, resale, installation or system integration.",
         "The corrected official website must be a company-owned domain demonstrated by officialWebsiteEvidenceId. Directories, marketplaces and social profiles are evidence sources, not official websites.",
         "Use one clear official company source when adequate; supplement with independent public evidence when identity or material claims remain ambiguous.",
@@ -239,6 +246,10 @@ export class LeadEvidenceCorrectionAgent {
     const roles = [...new Set(value.roles.filter((role) => supportedFindingRoles.includes(role)))];
     const heuristicRoles = deterministicRoles(evidence);
     const families = roleFamilies(roles);
+    const evidenceQuality = assessLeadEvidenceQuality({ candidateDomain: domain,
+      officialUrl: officialWebsiteUrl, evidence });
+    const primary = selectPrimaryChannel({ roles,
+      smallLongTailExceptionEligible: evidenceQuality.smallLongTail.exceptionEligible });
     const supplementalEvidenceIds = evidence.filter((item) => item.provider === "tavily-correction").map((item) => item.id);
     return {
       ...candidate,
@@ -252,8 +263,12 @@ export class LeadEvidenceCorrectionAgent {
         originalOfficialWebsiteUrl: candidate.officialWebsiteUrl,
         resolvedRoles: roles,
         resolvedFamilies: families,
+        primaryRole: primary.primaryRole,
+        primaryFamily: primary.primaryFamily,
+        primaryChannelReason: primary.reason,
+        usedSmallLongTailChannelException: primary.usedSmallLongTailException,
         identityChanged: domain !== candidate.domain || value.resolvedCompanyName !== candidate.companyName,
-        routingChanged: !families.includes(candidate.queryFamily) || families.length > 1,
+        routingChanged: primary.primaryFamily !== null && primary.primaryFamily !== candidate.queryFamily,
         supplementalEvidenceIds,
         reliedEvidenceIds,
         findings,
@@ -279,6 +294,10 @@ export class LeadEvidenceCorrectionAgent {
     const nonDiscoveryEvidence = candidate.evidence.filter((item) => item.sourceType !== "discovery");
     const networking = assessNetworkingRelevanceEvidence(nonDiscoveryEvidence.flatMap((item) => [item.title, item.excerpt]));
     const evidenceIds = nonDiscoveryEvidence.map((item) => item.id);
+    const evidenceQuality = assessLeadEvidenceQuality({ candidateDomain: candidate.domain,
+      officialUrl: candidate.officialWebsiteUrl, evidence: candidate.evidence });
+    const primary = selectPrimaryChannel({ roles,
+      smallLongTailExceptionEligible: evidenceQuality.smallLongTail.exceptionEligible });
     const findings = [
       {
         findingId: stableId("finding", `${candidate.candidateId}|identity-fallback`),
@@ -315,8 +334,12 @@ export class LeadEvidenceCorrectionAgent {
         originalOfficialWebsiteUrl: candidate.officialWebsiteUrl,
         resolvedRoles: roles,
         resolvedFamilies: roleFamilies(roles),
+        primaryRole: primary.primaryRole,
+        primaryFamily: primary.primaryFamily,
+        primaryChannelReason: primary.reason,
+        usedSmallLongTailChannelException: primary.usedSmallLongTailException,
         identityChanged: false,
-        routingChanged: !roleFamilies(roles).includes(candidate.queryFamily),
+        routingChanged: primary.primaryFamily !== null && primary.primaryFamily !== candidate.queryFamily,
         supplementalEvidenceIds: candidate.evidence.filter((item) => item.provider === "tavily-correction").map((item) => item.id),
         reliedEvidenceIds: evidenceIds,
         findings,
@@ -372,6 +395,10 @@ export class LeadEvidenceCorrectionAgent {
       }
       const evidence = [...new Map([...existing.evidence, ...candidate.evidence].map((item) => [item.url, item])).values()];
       const roles = [...new Set([...existing.correction.resolvedRoles, ...candidate.correction.resolvedRoles])];
+      const evidenceQuality = assessLeadEvidenceQuality({ candidateDomain: existing.domain,
+        officialUrl: existing.officialWebsiteUrl, evidence });
+      const primary = selectPrimaryChannel({ roles,
+        smallLongTailExceptionEligible: evidenceQuality.smallLongTail.exceptionEligible });
       byDomain.set(candidate.domain, {
         ...existing,
         evidence,
@@ -379,6 +406,11 @@ export class LeadEvidenceCorrectionAgent {
           ...existing.correction,
           resolvedRoles: roles,
           resolvedFamilies: roleFamilies(roles),
+          primaryRole: primary.primaryRole,
+          primaryFamily: primary.primaryFamily,
+          primaryChannelReason: primary.reason,
+          usedSmallLongTailChannelException: primary.usedSmallLongTailException,
+          routingChanged: primary.primaryFamily !== null && primary.primaryFamily !== existing.queryFamily,
           supplementalEvidenceIds: [...new Set([...existing.correction.supplementalEvidenceIds, ...candidate.correction.supplementalEvidenceIds])],
           reliedEvidenceIds: [...new Set([...existing.correction.reliedEvidenceIds, ...candidate.correction.reliedEvidenceIds])],
           findings: [...new Map([...existing.correction.findings, ...candidate.correction.findings]

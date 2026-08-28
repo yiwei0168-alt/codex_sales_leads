@@ -80,8 +80,10 @@ export function normalizeAssessment(
     officialUrl: candidate.officialWebsiteUrl,
     evidence: candidate.evidence,
   });
-  const cooperationPaths = (candidate.correction.resolvedFamilies.length > 0
-    ? candidate.correction.resolvedFamilies : [candidate.queryFamily])
+  const cooperationPaths = (candidate.correction.primaryFamily
+    ? [candidate.correction.primaryFamily]
+    : candidate.correction.resolvedFamilies.length > 0
+      ? candidate.correction.resolvedFamilies : [candidate.queryFamily])
     .map((family) => assessCooperationPathEvidence({ lane: cooperationLane(family), evidence: claimEvidenceText }));
   const cooperationPath = cooperationPaths.sort((left, right) => right.cap - left.cap)[0];
   const gates = {
@@ -102,7 +104,7 @@ export function normalizeAssessment(
   const eligible = Object.values(gates).every((state) => state === "supported");
   const totalScore = eligible ? Math.round(Object.values(dimensions).reduce((sum, score) => sum + score, 0)) : 0;
   const roles = candidate.correction.resolvedRoles;
-  const primaryRole = null;
+  const primaryRole = candidate.correction.primaryRole ?? null;
   const allowedFindings = new Set(candidate.correction.findings.map((finding) => finding.findingId));
   const dimensionRationales = value.dimensionRationales.map((rationale) => ({
     ...rationale,
@@ -168,7 +170,7 @@ function failedAssessment(candidate: CorrectedLeadWorkflowCandidate, message: st
       independentProspect: "unknown",
     },
     roles: candidate.correction.resolvedRoles,
-    primaryRole: null,
+    primaryRole: candidate.correction.primaryRole ?? null,
     accountTier: "Standard",
     evidenceProfileAssessment: {
       profile: "standard", confidence: "none", exceptionEligible: false,

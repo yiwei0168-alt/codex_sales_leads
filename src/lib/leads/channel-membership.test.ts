@@ -41,6 +41,14 @@ describe("multi-role channel membership", () => {
     expect(result.supportedRoles).toEqual(expect.arrayContaining(["VAD", "Distributor"]));
   });
 
+  it("recognizes a German distributor that supplies downstream channels", () => {
+    const result = assessChannelMembershipEvidence({ lane: "distribution", evidence: [
+      "ALLNET Distribution: Als Distributor konzentrieren wir uns auf Netzwerklösungen. Wir beliefern Reseller und Systemhäuser jeder Größenordnung.",
+    ] });
+    expect(result.demonstrated).toBe(true);
+    expect(result.supportedRoles).toContain("Distributor");
+  });
+
   it("does not treat installation-only evidence as SI", () => {
     const result = assessChannelMembershipEvidence({ lane: "services", evidence: [
       "The company installs WLAN access points according to customer specifications.",
