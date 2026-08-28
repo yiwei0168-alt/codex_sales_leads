@@ -88,6 +88,8 @@
     "benchmark:v1.5:analyze-hybrid": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/analyze-v1.5-hybrid-strategy.ts",
     "benchmark:v1.6:score": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/score-v1.6-unified.ts",
     "benchmark:v1.6:verify": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/verify-v1.6-run.ts",
+    "benchmark:v1.7:score": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/score-v1.7-primary-channel.ts",
+    "benchmark:v1.7:verify": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/verify-v1.7-run.ts",
     "benchmark:discovery:verify": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/verify-discovery-run.ts"
   },
   "dependencies": {

@@ -53,7 +53,7 @@ export interface V16UnifiedScore {
   cooperationPathRoute: BenchmarkLane;
   scoreComponents: V16ScoreComponents;
   score: number;
-  evaluationBasis: "v1.6-unified-frozen-provider-neutral-evidence";
+  evaluationBasis: "v1.6-unified-frozen-provider-neutral-evidence" | "v1.7-primary-channel-frozen-provider-neutral-evidence";
   scoringReasons: {
     productUseCaseFit: string;
     cooperationPath: string;
@@ -254,9 +254,11 @@ export function evaluateV16Candidate(options: {
   submittedRank: number;
   priorV15?: V16UnifiedScore["priorV15"];
   hardValueOverride?: V16UnifiedScore["hardValueEligibility"];
+  factsOverride?: V16ExtractedFacts;
+  evaluationBasis?: V16UnifiedScore["evaluationBasis"];
 }): V16UnifiedScore {
   const { dossier, systemId, channelId, sourceChannelIds, submittedRank } = options;
-  const facts = extractV16Facts(dossier);
+  const facts = options.factsOverride ?? extractV16Facts(dossier);
   const product = assessV16ProductFit(facts);
   const cooperation = assessV16CooperationPath(channelId, facts);
   const reliability = assessEvidenceReliability(dossier);
@@ -299,7 +301,7 @@ export function evaluateV16Candidate(options: {
     cooperationPathRoute: channelId,
     scoreComponents,
     score,
-    evaluationBasis: "v1.6-unified-frozen-provider-neutral-evidence",
+    evaluationBasis: options.evaluationBasis ?? "v1.6-unified-frozen-provider-neutral-evidence",
     scoringReasons: {
       productUseCaseFit: product.reason,
       cooperationPath: `${channelId}: ${cooperation.reason}`,
