@@ -1,0 +1,1356 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-08-27-de-v1.3",
+  "generatedAt": "2026-08-28T01:43:52.812Z",
+  "purpose": "Retrospective product-provider union and cost-efficiency analysis for hybrid search design.",
+  "caveats": [
+    "This is an oracle union over the frozen v1.5 candidate pool, not a prospective live mixed-provider run.",
+    "Bing is absent because it was not measured in v1.5; its adaptive role must be validated in a separate branch.",
+    "Request efficiency uses benchmark request counts and excludes shared evidence-correction, model, and page-fetch costs."
+  ],
+  "benchmarkRequestsPerLane": {
+    "product-gemini": 3,
+    "product-tavily": 3,
+    "product-exa": 3,
+    "product-brave": 3,
+    "product-searchapi": 3,
+    "product-google-places-local": 8
+  },
+  "channels": [
+    {
+      "channelId": "tier1-distribution",
+      "singleProvider": [
+        {
+          "systemId": "product-exa",
+          "eligibleUniqueCandidates": 7,
+          "exclusiveEligibleCandidates": 4,
+          "selectedCount": 7,
+          "fixedTenSlotScore": 42.08,
+          "selectedMean": 60.11,
+          "benchmarkDiscoveryRequests": 3,
+          "fixedTenSlotScorePerRequest": 14.03
+        },
+        {
+          "systemId": "product-google-places-local",
+          "eligibleUniqueCandidates": 7,
+          "exclusiveEligibleCandidates": 5,
+          "selectedCount": 7,
+          "fixedTenSlotScore": 38.88,
+          "selectedMean": 55.54,
+          "benchmarkDiscoveryRequests": 8,
+          "fixedTenSlotScorePerRequest": 4.86
+        },
+        {
+          "systemId": "product-gemini",
+          "eligibleUniqueCandidates": 4,
+          "exclusiveEligibleCandidates": 3,
+          "selectedCount": 4,
+          "fixedTenSlotScore": 30.16,
+          "selectedMean": 75.4,
+          "benchmarkDiscoveryRequests": 3,
+          "fixedTenSlotScorePerRequest": 10.05
+        },
+        {
+          "systemId": "product-brave",
+          "eligibleUniqueCandidates": 3,
+          "exclusiveEligibleCandidates": 1,
+          "selectedCount": 3,
+          "fixedTenSlotScore": 22.16,
+          "selectedMean": 73.87,
+          "benchmarkDiscoveryRequests": 3,
+          "fixedTenSlotScorePerRequest": 7.39
+        },
+        {
+          "systemId": "product-searchapi",
+          "eligibleUniqueCandidates": 3,
+          "exclusiveEligibleCandidates": 0,
+          "selectedCount": 3,
+          "fixedTenSlotScore": 17.36,
+          "selectedMean": 57.87,
+          "benchmarkDiscoveryRequests": 3,
+          "fixedTenSlotScorePerRequest": 5.79
+        },
+        {
+          "systemId": "product-tavily",
+          "eligibleUniqueCandidates": 3,
+          "exclusiveEligibleCandidates": 1,
+          "selectedCount": 3,
+          "fixedTenSlotScore": 16.48,
+          "selectedMean": 54.93,
+          "benchmarkDiscoveryRequests": 3,
+          "fixedTenSlotScorePerRequest": 5.49
+        }
+      ],
+      "bestByProviderCount": [
+        {
+          "systems": [
+            "product-exa"
+          ],
+          "providerCount": 1,
+          "eligibleUniqueCandidates": 7,
+          "selectedCount": 7,
+          "fixedTenSlotScore": 42.08,
+          "benchmarkDiscoveryRequests": 3,
+          "fixedTenSlotScorePerRequest": 14.03
+        },
+        {
+          "systems": [
+            "product-gemini",
+            "product-exa"
+          ],
+          "providerCount": 2,
+          "eligibleUniqueCandidates": 11,
+          "selectedCount": 10,
+          "fixedTenSlotScore": 68.88,
+          "benchmarkDiscoveryRequests": 6,
+          "fixedTenSlotScorePerRequest": 11.48
+        },
+        {
+          "systems": [
+            "product-gemini",
+            "product-tavily",
+            "product-exa"
+          ],
+          "providerCount": 3,
+          "eligibleUniqueCandidates": 13,
+          "selectedCount": 10,
+          "fixedTenSlotScore": 72.08,
+          "benchmarkDiscoveryRequests": 9,
+          "fixedTenSlotScorePerRequest": 8.01
+        },
+        {
+          "systems": [
+            "product-gemini",
+            "product-tavily",
+            "product-exa",
+            "product-google-places-local"
+          ],
+          "providerCount": 4,
+          "eligibleUniqueCandidates": 18,
+          "selectedCount": 10,
+          "fixedTenSlotScore": 72.64,
+          "benchmarkDiscoveryRequests": 17,
+          "fixedTenSlotScorePerRequest": 4.27
+        },
+        {
+          "systems": [
+            "product-gemini",
+            "product-tavily",
+            "product-exa",
+            "product-brave",
+            "product-google-places-local"
+          ],
+          "providerCount": 5,
+          "eligibleUniqueCandidates": 19,
+          "selectedCount": 10,
+          "fixedTenSlotScore": 72.64,
+          "benchmarkDiscoveryRequests": 20,
+          "fixedTenSlotScorePerRequest": 3.63
+        },
+        {
+          "systems": [
+            "product-gemini",
+            "product-tavily",
+            "product-exa",
+            "product-brave",
+            "product-searchapi",
+            "product-google-places-local"
+          ],
+          "providerCount": 6,
+          "eligibleUniqueCandidates": 19,
+          "selectedCount": 10,
+          "fixedTenSlotScore": 72.64,
+          "benchmarkDiscoveryRequests": 23,
+          "fixedTenSlotScorePerRequest": 3.16
+        }
+      ],
+      "requestEfficiencyFrontier": [
+        {
+          "systems": [
+            "product-exa"
+          ],
+          "providerCount": 1,
+          "eligibleUniqueCandidates": 7,
+          "selectedCount": 7,
+          "fixedTenSlotScore": 42.08,
+          "benchmarkDiscoveryRequests": 3,
+          "fixedTenSlotScorePerRequest": 14.03
+        },
+        {
+          "systems": [
+            "product-gemini",
+            "product-exa"
+          ],
+          "providerCount": 2,
+          "eligibleUniqueCandidates": 11,
+          "selectedCount": 10,
+          "fixedTenSlotScore": 68.88,
+          "benchmarkDiscoveryRequests": 6,
+          "fixedTenSlotScorePerRequest": 11.48
+        },
+        {
+          "systems": [
+            "product-gemini",
+            "product-tavily",
+            "product-exa"
+          ],
+          "providerCount": 3,
+          "eligibleUniqueCandidates": 13,
+          "selectedCount": 10,
+          "fixedTenSlotScore": 72.08,
+          "benchmarkDiscoveryRequests": 9,
+          "fixedTenSlotScorePerRequest": 8.01
+        },
+        {
+          "systems": [
+            "product-gemini",
+            "product-tavily",
+            "product-exa",
+            "product-google-places-local"
+          ],
+          "providerCount": 4,
+          "eligibleUniqueCandidates": 18,
+          "selectedCount": 10,
+          "fixedTenSlotScore": 72.64,
+          "benchmarkDiscoveryRequests": 17,
+          "fixedTenSlotScorePerRequest": 4.27
+        }
+      ],
+      "fullProductUnion": {
+        "eligibleUniqueCandidates": 19,
+        "selectedCount": 10,
+        "fixedTenSlotScore": 72.64,
+        "topTenContributions": [
+          {
+            "rank": 1,
+            "dossierId": "DOS-8C650509C86F",
+            "companyName": "Vitel GmbH",
+            "score": 89.6,
+            "discoveredBy": [
+              "product-exa",
+              "product-brave"
+            ]
+          },
+          {
+            "rank": 2,
+            "dossierId": "DOS-34980A2004F3",
+            "companyName": "Ingram Micro Distribution GmbH",
+            "score": 78.4,
+            "discoveredBy": [
+              "product-gemini"
+            ]
+          },
+          {
+            "rank": 3,
+            "dossierId": "DOS-80FCAEC5E645",
+            "companyName": "Acondistec",
+            "score": 74.4,
+            "discoveredBy": [
+              "product-exa"
+            ]
+          },
+          {
+            "rank": 4,
+            "dossierId": "DOS-9878523F9C8A",
+            "companyName": "ADN – Advanced Digital Network Distribution GmbH",
+            "score": 74.4,
+            "discoveredBy": [
+              "product-gemini",
+              "product-brave",
+              "product-searchapi",
+              "product-google-places-local"
+            ]
+          },
+          {
+            "rank": 5,
+            "dossierId": "DOS-42210E8B828E",
+            "companyName": "ALSO Deutschland GmbH",
+            "score": 74.4,
+            "discoveredBy": [
+              "product-gemini"
+            ]
+          },
+          {
+            "rank": 6,
+            "dossierId": "DOS-5168C944EB18",
+            "companyName": "TD SYNNEX Germany",
+            "score": 74.4,
+            "discoveredBy": [
+              "product-gemini"
+            ]
+          },
+          {
+            "rank": 7,
+            "dossierId": "DOS-91EB44A9F7C9",
+            "companyName": "Red Eagle IT Distribution GmbH",
+            "score": 68,
+            "discoveredBy": [
+              "product-exa"
+            ]
+          },
+          {
+            "rank": 8,
+            "dossierId": "DOS-8961CF25434B",
+            "companyName": "bytec Bodry Technology GmbH",
+            "score": 65.6,
+            "discoveredBy": [
+              "product-tavily"
+            ]
+          },
+          {
+            "rank": 9,
+            "dossierId": "DOS-8E72816E355F",
+            "companyName": "DNS:NET Internet Service GmbH",
+            "score": 65.6,
+            "discoveredBy": [
+              "product-google-places-local"
+            ]
+          },
+          {
+            "rank": 10,
+            "dossierId": "DOS-666DB19C2EE1",
+            "companyName": "m2m Germany GmbH",
+            "score": 61.6,
+            "discoveredBy": [
+              "product-tavily",
+              "product-searchapi"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "channelId": "b2b-resale",
+      "singleProvider": [
+        {
+          "systemId": "product-google-places-local",
+          "eligibleUniqueCandidates": 21,
+          "exclusiveEligibleCandidates": 19,
+          "selectedCount": 10,
+          "fixedTenSlotScore": 72.32,
+          "selectedMean": 72.32,
+          "benchmarkDiscoveryRequests": 8,
+          "fixedTenSlotScorePerRequest": 9.04
+        },
+        {
+          "systemId": "product-gemini",
+          "eligibleUniqueCandidates": 8,
+          "exclusiveEligibleCandidates": 4,
+          "selectedCount": 8,
+          "fixedTenSlotScore": 62.96,
+          "selectedMean": 78.7,
+          "benchmarkDiscoveryRequests": 3,
+          "fixedTenSlotScorePerRequest": 20.99
+        },
+        {
+          "systemId": "product-tavily",
+          "eligibleUniqueCandidates": 6,
+          "exclusiveEligibleCandidates": 3,
+          "selectedCount": 6,
+          "fixedTenSlotScore": 47.36,
+          "selectedMean": 78.93,
+          "benchmarkDiscoveryRequests": 3,
+          "fixedTenSlotScorePerRequest": 15.79
+        },
+        {
+          "systemId": "product-exa",
+          "eligibleUniqueCandidates": 6,
+          "exclusiveEligibleCandidates": 5,
+          "selectedCount": 6,
+          "fixedTenSlotScore": 46.24,
+          "selectedMean": 77.07,
+          "benchmarkDiscoveryRequests": 3,
+          "fixedTenSlotScorePerRequest": 15.41
+        },
+        {
+          "systemId": "product-brave",
+          "eligibleUniqueCandidates": 4,
+          "exclusiveEligibleCandidates": 1,
+          "selectedCount": 4,
+          "fixedTenSlotScore": 32.96,
+          "selectedMean": 82.4,
+          "benchmarkDiscoveryRequests": 3,
+          "fixedTenSlotScorePerRequest": 10.99
+        },
+        {
+          "systemId": "product-searchapi",
+          "eligibleUniqueCandidates": 4,
+          "exclusiveEligibleCandidates": 0,
+          "selectedCount": 4,
+          "fixedTenSlotScore": 30.8,
+          "selectedMean": 77,
+          "benchmarkDiscoveryRequests": 3,
+          "fixedTenSlotScorePerRequest": 10.27
+        }
+      ],
+      "bestByProviderCount": [
+        {
+          "systems": [
+            "product-google-places-local"
+          ],
+          "providerCount": 1,
+          "eligibleUniqueCandidates": 21,
+          "selectedCount": 10,
+          "fixedTenSlotScore": 72.32,
+          "benchmarkDiscoveryRequests": 8,
+          "fixedTenSlotScorePerRequest": 9.04
+        },
+        {
+          "systems": [
+            "product-gemini",
+            "product-exa"
+          ],
+          "providerCount": 2,
+          "eligibleUniqueCandidates": 14,
+          "selectedCount": 10,
+          "fixedTenSlotScore": 83.52,
+          "benchmarkDiscoveryRequests": 6,
+          "fixedTenSlotScorePerRequest": 13.92
+        },
+        {
+          "systems": [
+            "product-tavily",
+            "product-exa",
+            "product-brave"
+          ],
+          "providerCount": 3,
+          "eligibleUniqueCandidates": 15,
+          "selectedCount": 10,
+          "fixedTenSlotScore": 85.76,
+          "benchmarkDiscoveryRequests": 9,
+          "fixedTenSlotScorePerRequest": 9.53
+        },
+        {
+          "systems": [
+            "product-gemini",
+            "product-tavily",
+            "product-exa",
+            "product-brave"
+          ],
+          "providerCount": 4,
+          "eligibleUniqueCandidates": 19,
+          "selectedCount": 10,
+          "fixedTenSlotScore": 86.88,
+          "benchmarkDiscoveryRequests": 12,
+          "fixedTenSlotScorePerRequest": 7.24
+        },
+        {
+          "systems": [
+            "product-gemini",
+            "product-tavily",
+            "product-exa",
+            "product-brave",
+            "product-searchapi"
+          ],
+          "providerCount": 5,
+          "eligibleUniqueCandidates": 19,
+          "selectedCount": 10,
+          "fixedTenSlotScore": 86.88,
+          "benchmarkDiscoveryRequests": 15,
+          "fixedTenSlotScorePerRequest": 5.79
+        },
+        {
+          "systems": [
+            "product-gemini",
+            "product-tavily",
+            "product-exa",
+            "product-brave",
+            "product-searchapi",
+            "product-google-places-local"
+          ],
+          "providerCount": 6,
+          "eligibleUniqueCandidates": 38,
+          "selectedCount": 10,
+          "fixedTenSlotScore": 86.88,
+          "benchmarkDiscoveryRequests": 23,
+          "fixedTenSlotScorePerRequest": 3.78
+        }
+      ],
+      "requestEfficiencyFrontier": [
+        {
+          "systems": [
+            "product-gemini"
+          ],
+          "providerCount": 1,
+          "eligibleUniqueCandidates": 8,
+          "selectedCount": 8,
+          "fixedTenSlotScore": 62.96,
+          "benchmarkDiscoveryRequests": 3,
+          "fixedTenSlotScorePerRequest": 20.99
+        },
+        {
+          "systems": [
+            "product-gemini",
+            "product-exa"
+          ],
+          "providerCount": 2,
+          "eligibleUniqueCandidates": 14,
+          "selectedCount": 10,
+          "fixedTenSlotScore": 83.52,
+          "benchmarkDiscoveryRequests": 6,
+          "fixedTenSlotScorePerRequest": 13.92
+        },
+        {
+          "systems": [
+            "product-tavily",
+            "product-exa",
+            "product-brave"
+          ],
+          "providerCount": 3,
+          "eligibleUniqueCandidates": 15,
+          "selectedCount": 10,
+          "fixedTenSlotScore": 85.76,
+          "benchmarkDiscoveryRequests": 9,
+          "fixedTenSlotScorePerRequest": 9.53
+        },
+        {
+          "systems": [
+            "product-gemini",
+            "product-tavily",
+            "product-exa",
+            "product-brave"
+          ],
+          "providerCount": 4,
+          "eligibleUniqueCandidates": 19,
+          "selectedCount": 10,
+          "fixedTenSlotScore": 86.88,
+          "benchmarkDiscoveryRequests": 12,
+          "fixedTenSlotScorePerRequest": 7.24
+        }
+      ],
+      "fullProductUnion": {
+        "eligibleUniqueCandidates": 38,
+        "selectedCount": 10,
+        "fixedTenSlotScore": 86.88,
+        "topTenContributions": [
+          {
+            "rank": 1,
+            "dossierId": "DOS-038F1F349F23",
+            "companyName": "Bechtle AG",
+            "score": 91.2,
+            "discoveredBy": [
+              "product-gemini",
+              "product-brave",
+              "product-google-places-local"
+            ]
+          },
+          {
+            "rank": 2,
+            "dossierId": "DOS-8C650509C86F",
+            "companyName": "Vitel GmbH",
+            "score": 89.6,
+            "discoveredBy": [
+              "product-exa",
+              "product-brave"
+            ]
+          },
+          {
+            "rank": 3,
+            "dossierId": "DOS-CE5CFF2ED35C",
+            "companyName": "ALLNET GmbH Computersysteme",
+            "score": 87.2,
+            "discoveredBy": [
+              "product-gemini",
+              "product-tavily",
+              "product-searchapi"
+            ]
+          },
+          {
+            "rank": 4,
+            "dossierId": "DOS-B7E98DD9D6D2",
+            "companyName": "GermanProtect",
+            "score": 87.2,
+            "discoveredBy": [
+              "product-brave"
+            ]
+          },
+          {
+            "rank": 5,
+            "dossierId": "DOS-52E758B74543",
+            "companyName": "JACOB Elektronik GmbH",
+            "score": 87.2,
+            "discoveredBy": [
+              "product-gemini",
+              "product-tavily",
+              "product-searchapi"
+            ]
+          },
+          {
+            "rank": 6,
+            "dossierId": "DOS-50A542CAB6B1",
+            "companyName": "MeshTech",
+            "score": 87.2,
+            "discoveredBy": [
+              "product-exa"
+            ]
+          },
+          {
+            "rank": 7,
+            "dossierId": "DOS-C6308B269DD4",
+            "companyName": "wHoffice.de",
+            "score": 87.2,
+            "discoveredBy": [
+              "product-tavily"
+            ]
+          },
+          {
+            "rank": 8,
+            "dossierId": "DOS-9F175AE17D55",
+            "companyName": "GREEN IT Das Systemhaus GmbH",
+            "score": 85.6,
+            "discoveredBy": [
+              "product-gemini"
+            ]
+          },
+          {
+            "rank": 9,
+            "dossierId": "DOS-2B90F410A171",
+            "companyName": "tilko GmbH",
+            "score": 85.6,
+            "discoveredBy": [
+              "product-exa"
+            ]
+          },
+          {
+            "rank": 10,
+            "dossierId": "DOS-354049CB1A07",
+            "companyName": "LaanTech",
+            "score": 80.8,
+            "discoveredBy": [
+              "product-tavily"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "channelId": "project-services",
+      "singleProvider": [
+        {
+          "systemId": "product-google-places-local",
+          "eligibleUniqueCandidates": 29,
+          "exclusiveEligibleCandidates": 27,
+          "selectedCount": 10,
+          "fixedTenSlotScore": 77.84,
+          "selectedMean": 77.84,
+          "benchmarkDiscoveryRequests": 8,
+          "fixedTenSlotScorePerRequest": 9.73
+        },
+        {
+          "systemId": "product-exa",
+          "eligibleUniqueCandidates": 11,
+          "exclusiveEligibleCandidates": 8,
+          "selectedCount": 10,
+          "fixedTenSlotScore": 65.84,
+          "selectedMean": 65.84,
+          "benchmarkDiscoveryRequests": 3,
+          "fixedTenSlotScorePerRequest": 21.95
+        },
+        {
+          "systemId": "product-tavily",
+          "eligibleUniqueCandidates": 9,
+          "exclusiveEligibleCandidates": 5,
+          "selectedCount": 9,
+          "fixedTenSlotScore": 63.28,
+          "selectedMean": 70.31,
+          "benchmarkDiscoveryRequests": 3,
+          "fixedTenSlotScorePerRequest": 21.09
+        },
+        {
+          "systemId": "product-brave",
+          "eligibleUniqueCandidates": 8,
+          "exclusiveEligibleCandidates": 5,
+          "selectedCount": 8,
+          "fixedTenSlotScore": 50.08,
+          "selectedMean": 62.6,
+          "benchmarkDiscoveryRequests": 3,
+          "fixedTenSlotScorePerRequest": 16.69
+        },
+        {
+          "systemId": "product-searchapi",
+          "eligibleUniqueCandidates": 7,
+          "exclusiveEligibleCandidates": 3,
+          "selectedCount": 7,
+          "fixedTenSlotScore": 50.08,
+          "selectedMean": 71.54,
+          "benchmarkDiscoveryRequests": 3,
+          "fixedTenSlotScorePerRequest": 16.69
+        },
+        {
+          "systemId": "product-gemini",
+          "eligibleUniqueCandidates": 3,
+          "exclusiveEligibleCandidates": 0,
+          "selectedCount": 3,
+          "fixedTenSlotScore": 18.32,
+          "selectedMean": 61.07,
+          "benchmarkDiscoveryRequests": 3,
+          "fixedTenSlotScorePerRequest": 6.11
+        }
+      ],
+      "bestByProviderCount": [
+        {
+          "systems": [
+            "product-google-places-local"
+          ],
+          "providerCount": 1,
+          "eligibleUniqueCandidates": 29,
+          "selectedCount": 10,
+          "fixedTenSlotScore": 77.84,
+          "benchmarkDiscoveryRequests": 8,
+          "fixedTenSlotScorePerRequest": 9.73
+        },
+        {
+          "systems": [
+            "product-tavily",
+            "product-google-places-local"
+          ],
+          "providerCount": 2,
+          "eligibleUniqueCandidates": 38,
+          "selectedCount": 10,
+          "fixedTenSlotScore": 83.36,
+          "benchmarkDiscoveryRequests": 11,
+          "fixedTenSlotScorePerRequest": 7.58
+        },
+        {
+          "systems": [
+            "product-tavily",
+            "product-exa",
+            "product-google-places-local"
+          ],
+          "providerCount": 3,
+          "eligibleUniqueCandidates": 47,
+          "selectedCount": 10,
+          "fixedTenSlotScore": 84.16,
+          "benchmarkDiscoveryRequests": 14,
+          "fixedTenSlotScorePerRequest": 6.01
+        },
+        {
+          "systems": [
+            "product-tavily",
+            "product-exa",
+            "product-brave",
+            "product-google-places-local"
+          ],
+          "providerCount": 4,
+          "eligibleUniqueCandidates": 52,
+          "selectedCount": 10,
+          "fixedTenSlotScore": 84.64,
+          "benchmarkDiscoveryRequests": 17,
+          "fixedTenSlotScorePerRequest": 4.98
+        },
+        {
+          "systems": [
+            "product-tavily",
+            "product-exa",
+            "product-brave",
+            "product-searchapi",
+            "product-google-places-local"
+          ],
+          "providerCount": 5,
+          "eligibleUniqueCandidates": 55,
+          "selectedCount": 10,
+          "fixedTenSlotScore": 85.04,
+          "benchmarkDiscoveryRequests": 20,
+          "fixedTenSlotScorePerRequest": 4.25
+        },
+        {
+          "systems": [
+            "product-gemini",
+            "product-tavily",
+            "product-exa",
+            "product-brave",
+            "product-searchapi",
+            "product-google-places-local"
+          ],
+          "providerCount": 6,
+          "eligibleUniqueCandidates": 55,
+          "selectedCount": 10,
+          "fixedTenSlotScore": 85.04,
+          "benchmarkDiscoveryRequests": 23,
+          "fixedTenSlotScorePerRequest": 3.7
+        }
+      ],
+      "requestEfficiencyFrontier": [
+        {
+          "systems": [
+            "product-exa"
+          ],
+          "providerCount": 1,
+          "eligibleUniqueCandidates": 11,
+          "selectedCount": 10,
+          "fixedTenSlotScore": 65.84,
+          "benchmarkDiscoveryRequests": 3,
+          "fixedTenSlotScorePerRequest": 21.95
+        },
+        {
+          "systems": [
+            "product-tavily",
+            "product-exa"
+          ],
+          "providerCount": 2,
+          "eligibleUniqueCandidates": 19,
+          "selectedCount": 10,
+          "fixedTenSlotScore": 81.36,
+          "benchmarkDiscoveryRequests": 6,
+          "fixedTenSlotScorePerRequest": 13.56
+        },
+        {
+          "systems": [
+            "product-tavily",
+            "product-exa",
+            "product-brave"
+          ],
+          "providerCount": 3,
+          "eligibleUniqueCandidates": 25,
+          "selectedCount": 10,
+          "fixedTenSlotScore": 83.12,
+          "benchmarkDiscoveryRequests": 9,
+          "fixedTenSlotScorePerRequest": 9.24
+        },
+        {
+          "systems": [
+            "product-tavily",
+            "product-exa",
+            "product-searchapi"
+          ],
+          "providerCount": 3,
+          "eligibleUniqueCandidates": 23,
+          "selectedCount": 10,
+          "fixedTenSlotScore": 83.12,
+          "benchmarkDiscoveryRequests": 9,
+          "fixedTenSlotScorePerRequest": 9.24
+        },
+        {
+          "systems": [
+            "product-tavily",
+            "product-google-places-local"
+          ],
+          "providerCount": 2,
+          "eligibleUniqueCandidates": 38,
+          "selectedCount": 10,
+          "fixedTenSlotScore": 83.36,
+          "benchmarkDiscoveryRequests": 11,
+          "fixedTenSlotScorePerRequest": 7.58
+        },
+        {
+          "systems": [
+            "product-tavily",
+            "product-exa",
+            "product-brave",
+            "product-searchapi"
+          ],
+          "providerCount": 4,
+          "eligibleUniqueCandidates": 28,
+          "selectedCount": 10,
+          "fixedTenSlotScore": 84.4,
+          "benchmarkDiscoveryRequests": 12,
+          "fixedTenSlotScorePerRequest": 7.03
+        },
+        {
+          "systems": [
+            "product-tavily",
+            "product-exa",
+            "product-brave",
+            "product-google-places-local"
+          ],
+          "providerCount": 4,
+          "eligibleUniqueCandidates": 52,
+          "selectedCount": 10,
+          "fixedTenSlotScore": 84.64,
+          "benchmarkDiscoveryRequests": 17,
+          "fixedTenSlotScorePerRequest": 4.98
+        },
+        {
+          "systems": [
+            "product-tavily",
+            "product-exa",
+            "product-searchapi",
+            "product-google-places-local"
+          ],
+          "providerCount": 4,
+          "eligibleUniqueCandidates": 50,
+          "selectedCount": 10,
+          "fixedTenSlotScore": 84.64,
+          "benchmarkDiscoveryRequests": 17,
+          "fixedTenSlotScorePerRequest": 4.98
+        },
+        {
+          "systems": [
+            "product-tavily",
+            "product-brave",
+            "product-searchapi",
+            "product-google-places-local"
+          ],
+          "providerCount": 4,
+          "eligibleUniqueCandidates": 46,
+          "selectedCount": 10,
+          "fixedTenSlotScore": 84.64,
+          "benchmarkDiscoveryRequests": 17,
+          "fixedTenSlotScorePerRequest": 4.98
+        },
+        {
+          "systems": [
+            "product-tavily",
+            "product-exa",
+            "product-brave",
+            "product-searchapi",
+            "product-google-places-local"
+          ],
+          "providerCount": 5,
+          "eligibleUniqueCandidates": 55,
+          "selectedCount": 10,
+          "fixedTenSlotScore": 85.04,
+          "benchmarkDiscoveryRequests": 20,
+          "fixedTenSlotScorePerRequest": 4.25
+        }
+      ],
+      "fullProductUnion": {
+        "eligibleUniqueCandidates": 55,
+        "selectedCount": 10,
+        "fixedTenSlotScore": 85.04,
+        "topTenContributions": [
+          {
+            "rank": 1,
+            "dossierId": "DOS-324C17BEED97",
+            "companyName": "MiMann.net",
+            "score": 89.6,
+            "discoveredBy": [
+              "product-tavily"
+            ]
+          },
+          {
+            "rank": 2,
+            "dossierId": "DOS-75830CB1433D",
+            "companyName": "Code Maschine GmbH",
+            "score": 85.6,
+            "discoveredBy": [
+              "product-searchapi"
+            ]
+          },
+          {
+            "rank": 3,
+            "dossierId": "DOS-85344049A2DD",
+            "companyName": "EWE Business",
+            "score": 85.6,
+            "discoveredBy": [
+              "product-tavily",
+              "product-brave",
+              "product-searchapi"
+            ]
+          },
+          {
+            "rank": 4,
+            "dossierId": "DOS-502B13D007D3",
+            "companyName": "Hagel IT-Services GmbH",
+            "score": 85.6,
+            "discoveredBy": [
+              "product-tavily"
+            ]
+          },
+          {
+            "rank": 5,
+            "dossierId": "DOS-2AC88864E43E",
+            "companyName": "Solisation GmbH",
+            "score": 85.6,
+            "discoveredBy": [
+              "product-brave"
+            ]
+          },
+          {
+            "rank": 6,
+            "dossierId": "DOS-2B90F410A171",
+            "companyName": "tilko GmbH",
+            "score": 85.6,
+            "discoveredBy": [
+              "product-exa"
+            ]
+          },
+          {
+            "rank": 7,
+            "dossierId": "DOS-2839F2FA0A91",
+            "companyName": "Elektro-LU",
+            "score": 83.2,
+            "discoveredBy": [
+              "product-tavily",
+              "product-searchapi"
+            ]
+          },
+          {
+            "rank": 8,
+            "dossierId": "DOS-110155CE636E",
+            "companyName": "IT Dienstleister Hamburg",
+            "score": 83.2,
+            "discoveredBy": [
+              "product-google-places-local"
+            ]
+          },
+          {
+            "rank": 9,
+            "dossierId": "DOS-4861083669B7",
+            "companyName": "Netzwerk-Arzt",
+            "score": 83.2,
+            "discoveredBy": [
+              "product-tavily"
+            ]
+          },
+          {
+            "rank": 10,
+            "dossierId": "DOS-6B48B36641BB",
+            "companyName": "Socialwave GmbH",
+            "score": 83.2,
+            "discoveredBy": [
+              "product-google-places-local"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "lowScoreSelectedAudit": {
+    "selectionRule": "Rows in leaderboard channel.selected with 0 < score < 50.",
+    "selectedOccurrences": 12,
+    "uniqueCompanies": 6,
+    "meanScore": 40.07,
+    "bySystem": {
+      "product-brave": 2,
+      "product-exa": 4,
+      "product-gemini": 1,
+      "product-google-places-local": 1,
+      "product-searchapi": 1,
+      "product-tavily": 3
+    },
+    "byChannel": {
+      "project-services": 7,
+      "tier1-distribution": 5
+    },
+    "byLevelPattern": {
+      "1/2/3": 5,
+      "2/2/3": 7
+    },
+    "averageComponents": {
+      "productUseCaseFit": 13.93,
+      "cooperationPath": 12.8,
+      "independentInformationConfidence": 12,
+      "roleIdentificationQuality": 1,
+      "channelClassificationQuality": 0.33
+    },
+    "averagePointLoss": {
+      "productUseCaseFit": 30.07,
+      "cooperationPath": 19.2,
+      "independentInformationConfidence": 8,
+      "roleIdentificationQuality": 2,
+      "channelClassificationQuality": 0.67
+    },
+    "missingSupportedRolesOccurrences": 8,
+    "providerEvidenceCompleteOccurrences": 11,
+    "scoringBasisComparison": {
+      "v1.3.1-shared-evidence": {
+        "selectedOccurrences": 100,
+        "lowScoreOccurrences": 12
+      },
+      "v1.4-independent-adjudication": {
+        "selectedOccurrences": 37,
+        "lowScoreOccurrences": 0
+      }
+    },
+    "rows": [
+      {
+        "systemId": "product-google-places-local",
+        "channelId": "tier1-distribution",
+        "finalRank": 7,
+        "dossierId": "DOS-72A689BB4760",
+        "companyName": "Teamtrade IT GmbH",
+        "officialUrl": "https://www.team-it-group.de/teamtrade",
+        "score": 33.6,
+        "levels": {
+          "productUseCaseFit": 1,
+          "cooperationPath": 2,
+          "independentInformationConfidence": 3
+        },
+        "scoreComponents": {
+          "productUseCaseFit": 8.8,
+          "cooperationPath": 12.8,
+          "independentInformationConfidence": 12,
+          "roleIdentificationQuality": 0,
+          "channelClassificationQuality": 0
+        },
+        "supportedRoles": [],
+        "providerEvidenceComplete": false,
+        "evaluationBasis": "v1.3.1-shared-evidence"
+      },
+      {
+        "systemId": "product-exa",
+        "channelId": "tier1-distribution",
+        "finalRank": 6,
+        "dossierId": "DOS-BD59F160C5BD",
+        "companyName": "4Networks IT-Distribution",
+        "officialUrl": "https://www.4networks.de/",
+        "score": 37.6,
+        "levels": {
+          "productUseCaseFit": 1,
+          "cooperationPath": 2,
+          "independentInformationConfidence": 3
+        },
+        "scoreComponents": {
+          "productUseCaseFit": 8.8,
+          "cooperationPath": 12.8,
+          "independentInformationConfidence": 12,
+          "roleIdentificationQuality": 3,
+          "channelClassificationQuality": 1
+        },
+        "supportedRoles": [
+          "Distributor"
+        ],
+        "providerEvidenceComplete": true,
+        "evaluationBasis": "v1.3.1-shared-evidence"
+      },
+      {
+        "systemId": "product-exa",
+        "channelId": "tier1-distribution",
+        "finalRank": 7,
+        "dossierId": "DOS-72A689BB4760",
+        "companyName": "Teamtrade IT GmbH",
+        "officialUrl": "https://www.team-it-group.de/teamtrade",
+        "score": 33.6,
+        "levels": {
+          "productUseCaseFit": 1,
+          "cooperationPath": 2,
+          "independentInformationConfidence": 3
+        },
+        "scoreComponents": {
+          "productUseCaseFit": 8.8,
+          "cooperationPath": 12.8,
+          "independentInformationConfidence": 12,
+          "roleIdentificationQuality": 0,
+          "channelClassificationQuality": 0
+        },
+        "supportedRoles": [],
+        "providerEvidenceComplete": true,
+        "evaluationBasis": "v1.3.1-shared-evidence"
+      },
+      {
+        "systemId": "product-exa",
+        "channelId": "project-services",
+        "finalRank": 9,
+        "dossierId": "DOS-CEC74BEDD336",
+        "companyName": "SHC Netzwerktechnik GmbH",
+        "officialUrl": "https://shc.eu/",
+        "score": 46.4,
+        "levels": {
+          "productUseCaseFit": 2,
+          "cooperationPath": 2,
+          "independentInformationConfidence": 3
+        },
+        "scoreComponents": {
+          "productUseCaseFit": 17.6,
+          "cooperationPath": 12.8,
+          "independentInformationConfidence": 12,
+          "roleIdentificationQuality": 3,
+          "channelClassificationQuality": 1
+        },
+        "supportedRoles": [
+          "SI",
+          "MSP"
+        ],
+        "providerEvidenceComplete": true,
+        "evaluationBasis": "v1.3.1-shared-evidence"
+      },
+      {
+        "systemId": "product-exa",
+        "channelId": "project-services",
+        "finalRank": 10,
+        "dossierId": "DOS-615BFB06A2C3",
+        "companyName": "Frings Solutions Deutschland GmbH",
+        "officialUrl": "https://www.frings-solutions.de/",
+        "score": 42.4,
+        "levels": {
+          "productUseCaseFit": 2,
+          "cooperationPath": 2,
+          "independentInformationConfidence": 3
+        },
+        "scoreComponents": {
+          "productUseCaseFit": 17.6,
+          "cooperationPath": 12.8,
+          "independentInformationConfidence": 12,
+          "roleIdentificationQuality": 0,
+          "channelClassificationQuality": 0
+        },
+        "supportedRoles": [],
+        "providerEvidenceComplete": true,
+        "evaluationBasis": "v1.3.1-shared-evidence"
+      },
+      {
+        "systemId": "product-tavily",
+        "channelId": "tier1-distribution",
+        "finalRank": 3,
+        "dossierId": "DOS-BD59F160C5BD",
+        "companyName": "4Networks IT-Distribution",
+        "officialUrl": "https://www.4networks.de/",
+        "score": 37.6,
+        "levels": {
+          "productUseCaseFit": 1,
+          "cooperationPath": 2,
+          "independentInformationConfidence": 3
+        },
+        "scoreComponents": {
+          "productUseCaseFit": 8.8,
+          "cooperationPath": 12.8,
+          "independentInformationConfidence": 12,
+          "roleIdentificationQuality": 3,
+          "channelClassificationQuality": 1
+        },
+        "supportedRoles": [
+          "Distributor"
+        ],
+        "providerEvidenceComplete": true,
+        "evaluationBasis": "v1.3.1-shared-evidence"
+      },
+      {
+        "systemId": "product-tavily",
+        "channelId": "project-services",
+        "finalRank": 8,
+        "dossierId": "DOS-615BFB06A2C3",
+        "companyName": "Frings Solutions Deutschland GmbH",
+        "officialUrl": "https://www.frings-solutions.de/",
+        "score": 42.4,
+        "levels": {
+          "productUseCaseFit": 2,
+          "cooperationPath": 2,
+          "independentInformationConfidence": 3
+        },
+        "scoreComponents": {
+          "productUseCaseFit": 17.6,
+          "cooperationPath": 12.8,
+          "independentInformationConfidence": 12,
+          "roleIdentificationQuality": 0,
+          "channelClassificationQuality": 0
+        },
+        "supportedRoles": [],
+        "providerEvidenceComplete": true,
+        "evaluationBasis": "v1.3.1-shared-evidence"
+      },
+      {
+        "systemId": "product-tavily",
+        "channelId": "project-services",
+        "finalRank": 9,
+        "dossierId": "DOS-B46FD3C30843",
+        "companyName": "Die Netz-Werker AG",
+        "officialUrl": "https://www.dnw.ag/",
+        "score": 42.4,
+        "levels": {
+          "productUseCaseFit": 2,
+          "cooperationPath": 2,
+          "independentInformationConfidence": 3
+        },
+        "scoreComponents": {
+          "productUseCaseFit": 17.6,
+          "cooperationPath": 12.8,
+          "independentInformationConfidence": 12,
+          "roleIdentificationQuality": 0,
+          "channelClassificationQuality": 0
+        },
+        "supportedRoles": [],
+        "providerEvidenceComplete": true,
+        "evaluationBasis": "v1.3.1-shared-evidence"
+      },
+      {
+        "systemId": "product-gemini",
+        "channelId": "project-services",
+        "finalRank": 3,
+        "dossierId": "DOS-615BFB06A2C3",
+        "companyName": "Frings Solutions Deutschland GmbH",
+        "officialUrl": "https://www.frings-solutions.de/",
+        "score": 42.4,
+        "levels": {
+          "productUseCaseFit": 2,
+          "cooperationPath": 2,
+          "independentInformationConfidence": 3
+        },
+        "scoreComponents": {
+          "productUseCaseFit": 17.6,
+          "cooperationPath": 12.8,
+          "independentInformationConfidence": 12,
+          "roleIdentificationQuality": 0,
+          "channelClassificationQuality": 0
+        },
+        "supportedRoles": [],
+        "providerEvidenceComplete": true,
+        "evaluationBasis": "v1.3.1-shared-evidence"
+      },
+      {
+        "systemId": "product-brave",
+        "channelId": "project-services",
+        "finalRank": 7,
+        "dossierId": "DOS-615BFB06A2C3",
+        "companyName": "Frings Solutions Deutschland GmbH",
+        "officialUrl": "https://www.frings-solutions.de/",
+        "score": 42.4,
+        "levels": {
+          "productUseCaseFit": 2,
+          "cooperationPath": 2,
+          "independentInformationConfidence": 3
+        },
+        "scoreComponents": {
+          "productUseCaseFit": 17.6,
+          "cooperationPath": 12.8,
+          "independentInformationConfidence": 12,
+          "roleIdentificationQuality": 0,
+          "channelClassificationQuality": 0
+        },
+        "supportedRoles": [],
+        "providerEvidenceComplete": true,
+        "evaluationBasis": "v1.3.1-shared-evidence"
+      },
+      {
+        "systemId": "product-brave",
+        "channelId": "project-services",
+        "finalRank": 8,
+        "dossierId": "DOS-F582B0198864",
+        "companyName": "HANSA PROJEKT",
+        "officialUrl": "https://www.hansa-projekt.de/",
+        "score": 42.4,
+        "levels": {
+          "productUseCaseFit": 2,
+          "cooperationPath": 2,
+          "independentInformationConfidence": 3
+        },
+        "scoreComponents": {
+          "productUseCaseFit": 17.6,
+          "cooperationPath": 12.8,
+          "independentInformationConfidence": 12,
+          "roleIdentificationQuality": 0,
+          "channelClassificationQuality": 0
+        },
+        "supportedRoles": [],
+        "providerEvidenceComplete": true,
+        "evaluationBasis": "v1.3.1-shared-evidence"
+      },
+      {
+        "systemId": "product-searchapi",
+        "channelId": "tier1-distribution",
+        "finalRank": 3,
+        "dossierId": "DOS-BD59F160C5BD",
+        "companyName": "4Networks IT-Distribution",
+        "officialUrl": "https://www.4networks.de/",
+        "score": 37.6,
+        "levels": {
+          "productUseCaseFit": 1,
+          "cooperationPath": 2,
+          "independentInformationConfidence": 3
+        },
+        "scoreComponents": {
+          "productUseCaseFit": 8.8,
+          "cooperationPath": 12.8,
+          "independentInformationConfidence": 12,
+          "roleIdentificationQuality": 3,
+          "channelClassificationQuality": 1
+        },
+        "supportedRoles": [
+          "Distributor"
+        ],
+        "providerEvidenceComplete": true,
+        "evaluationBasis": "v1.3.1-shared-evidence"
+      }
+    ]
+  }
+}

@@ -2,7 +2,7 @@
 
 This experiment is isolated from the production lead workflow. It compares discovery coverage across Gemini Grounding, Tavily, Google Places, Exa, Brave Search and SearchAPI.io before any provider is added to production.
 
-Current result: [`reports/v1.4-independent-value-final-report.md`](reports/v1.4-independent-value-final-report.md). v1.4 evaluates candidate value after provider-neutral verification, displays provider evidence completeness separately at zero weight, and supersedes the earlier extraction-pipeline leaderboard.
+Current frozen result: [`reports/v1.5-end-to-end-correction-final-report.md`](reports/v1.5-end-to-end-correction-final-report.md). The follow-up [`v1.5 hybrid-search strategy and low-score audit`](reports/v1.5-hybrid-search-strategy-and-low-score-audit.md) derives the proposed production policy and documents why the v1.5 ranking must remain provisional until all corrected candidates are rescored on one uniform basis.
 
 ## Environment stage
 
