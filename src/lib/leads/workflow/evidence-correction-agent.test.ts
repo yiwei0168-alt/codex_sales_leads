@@ -17,6 +17,16 @@ class FakeCorrectionProvider implements AiProvider {
         resolvedOfficialWebsiteUrl: "https://smarttechnik.eu/", roles: ["Installer", "SI"],
         officialWebsiteEvidenceId: official?.evidenceId ?? null,
         evidenceIds: candidate.evidence.map((item) => item.evidenceId),
+        findings: [
+          { kind: "identity", statement: "The official domain belongs to Smart Technik GmbH.", status: "supported",
+            roles: [], evidenceIds: official ? [official.evidenceId] : [], confidence: 95, notes: [] },
+          { kind: "country-presence", statement: "The company operates in Germany.", status: "supported",
+            roles: [], evidenceIds: official ? [official.evidenceId] : [], confidence: 90, notes: [] },
+          { kind: "active-networking", statement: "The company installs active WLAN equipment.", status: "supported",
+            roles: [], evidenceIds: official ? [official.evidenceId] : [], confidence: 92, notes: [] },
+          { kind: "role", statement: "The company performs installation and system integration.", status: "supported",
+            roles: ["Installer", "SI"], evidenceIds: official ? [official.evidenceId] : [], confidence: 92, notes: [] },
+        ],
         reasons: ["Official evidence shows Wi-Fi installation and network integration."],
         confidence: 92, needsEscalation: false, warnings: [] }] } as TOutput,
       modelVersion: request.modelVersion, promptVersion: request.promptVersion, latencyMs: 5, warnings: [],
@@ -57,6 +67,7 @@ describe("LeadEvidenceCorrectionAgent", () => {
     expect(corrected.correction.identityChanged).toBe(true);
     expect(corrected.correction.routingChanged).toBe(true);
     expect(corrected.correction.supplementalEvidenceIds).toHaveLength(1);
+    expect(corrected.correction.findings.every((finding) => finding.evidenceIds.length > 0)).toBe(true);
     expect(corrected.evidence.some((item) => item.sourceType === "official-website")).toBe(true);
   });
 });

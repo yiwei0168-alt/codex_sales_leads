@@ -4,6 +4,25 @@ import { ALL_CHANNEL_ROLES, CHANNEL_ROLE_FAMILIES } from "./types";
 
 const channelRoleSchema = z.enum(ALL_CHANNEL_ROLES as [typeof ALL_CHANNEL_ROLES[number], ...typeof ALL_CHANNEL_ROLES]);
 const channelRoleFamilySchema = z.enum(Object.keys(CHANNEL_ROLE_FAMILIES) as [keyof typeof CHANNEL_ROLE_FAMILIES, ...(keyof typeof CHANNEL_ROLE_FAMILIES)[]]);
+const claimStatusSchema = z.enum(["supported", "not-supported", "unknown", "conflicting"]);
+const findingKindSchema = z.enum([
+  "identity", "country-presence", "active-networking", "role", "product-family",
+  "brand-relationship", "commercial-action", "cooperation-path", "company-size", "other",
+]);
+const dimensionNameSchema = z.enum([
+  "productAndUseCaseFit", "cooperationPathAndBuyingInfluence", "evidenceAndEntityConfidence",
+  "roleIdentificationQuality", "channelClassificationQuality",
+]);
+
+export const leadEvidenceFindingModelSchema = z.object({
+  kind: findingKindSchema,
+  statement: z.string().min(2).max(500),
+  status: claimStatusSchema,
+  roles: z.array(channelRoleSchema).max(11),
+  evidenceIds: z.array(z.string()).max(12),
+  confidence: z.number().min(0).max(100),
+  notes: z.array(z.string().min(2).max(300)).max(6),
+});
 
 export const leadMarketPlaybookModelSchema = z.object({
   marketHypothesis: z.string().min(20).max(1_200),
@@ -31,6 +50,7 @@ export const leadCorrectionModelSchema = z.object({
   roles: z.array(channelRoleSchema).max(11),
   officialWebsiteEvidenceId: z.string().nullable(),
   evidenceIds: z.array(z.string()).max(30),
+  findings: z.array(leadEvidenceFindingModelSchema).min(1).max(30),
   reasons: z.array(z.string().min(2).max(300)).min(1).max(12),
   confidence: z.number().min(0).max(100),
   needsEscalation: z.boolean(),
@@ -42,11 +62,11 @@ export const leadCorrectionBatchSchema = z.object({
 });
 
 const gatesSchema = z.object({
-  correctedIdentityUsable: z.boolean(),
-  companyExists: z.boolean(),
-  targetCountryPresence: z.boolean(),
-  networkingRelevant: z.boolean(),
-  independentProspect: z.boolean(),
+  correctedIdentityUsable: claimStatusSchema,
+  companyExists: claimStatusSchema,
+  targetCountryPresence: claimStatusSchema,
+  networkingRelevant: claimStatusSchema,
+  independentProspect: claimStatusSchema,
 });
 
 const dimensionsSchema = z.object({
@@ -64,6 +84,14 @@ export const leadAssessmentModelSchema = z.object({
   supplyModel: z.enum(["Distributor Supply", "Brand Direct", "Co-sell/Co-supply", "TBD"]),
   brandInvolvement: z.enum(["Light", "Standard", "Deep"]),
   dimensions: dimensionsSchema,
+  dimensionRationales: z.array(z.object({
+    dimension: dimensionNameSchema,
+    score: z.number().min(0).max(44),
+    reason: z.string().min(2).max(500),
+    findingIds: z.array(z.string()).max(20),
+    evidenceIds: z.array(z.string()).max(20),
+    confidence: z.number().min(0).max(100),
+  })).min(5).max(5),
   confidence: z.number().min(0).max(100),
   summary: z.string().min(8).max(800),
   reasons: z.array(z.string().min(2).max(300)).min(1).max(12),

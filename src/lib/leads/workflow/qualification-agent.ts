@@ -14,7 +14,7 @@ import type {
   LeadMarketPlaybook,
 } from "./types";
 
-const PROMPT_VERSION = "lead-value-v2-post-correction-low-routing-weight";
+const PROMPT_VERSION = "lead-value-v3-atomic-findings-tristate";
 
 interface LeadAssessmentRequest {
   instructions: string[];
@@ -33,6 +33,7 @@ interface LeadAssessmentRequest {
     resolvedRoleFamilies: string[];
     correctionReasons: string[];
     correctionConfidence: number;
+    findings: CorrectedLeadWorkflowCandidate["correction"]["findings"];
     evidence: Array<{ evidenceId: string; sourceType: string; url: string; title: string; excerpt: string }>;
   }>;
   scoringRubric: Record<string, unknown>;
@@ -47,6 +48,13 @@ interface LeadQualificationAgentOptions {
 
 function clamp(value: number, maximum: number): number {
   return Math.max(0, Math.min(maximum, Math.round(value)));
+}
+
+function corroboratedGate(modelState: LeadAssessmentModelOutput["gates"][keyof LeadAssessmentModelOutput["gates"]],
+  demonstrated: boolean) {
+  if (modelState === "supported") return demonstrated ? "supported" as const : "conflicting" as const;
+  if (modelState === "not-supported" && demonstrated) return "conflicting" as const;
+  return modelState;
 }
 
 function cooperationLane(lane: CorrectedLeadWorkflowCandidate["queryFamily"]): CooperationLane {
@@ -78,25 +86,31 @@ function normalizeAssessment(
   const cooperationPath = cooperationPaths.sort((left, right) => right.cap - left.cap)[0];
   const gates = {
     ...value.gates,
-    correctedIdentityUsable: value.gates.correctedIdentityUsable && Boolean(candidate.companyName && candidate.domain)
-      && evidenceQuality.identityConsistent,
-    networkingRelevant: value.gates.networkingRelevant && networkingEvidence.demonstrated,
+    correctedIdentityUsable: corroboratedGate(value.gates.correctedIdentityUsable,
+      Boolean(candidate.companyName && candidate.domain) && evidenceQuality.identityConsistent),
+    networkingRelevant: corroboratedGate(value.gates.networkingRelevant, networkingEvidence.demonstrated),
   };
   const dimensions = {
     productAndUseCaseFit: clamp(value.dimensions.productAndUseCaseFit, 44),
-    cooperationPathAndBuyingInfluence: Math.min(
-      clamp(value.dimensions.cooperationPathAndBuyingInfluence, 32), Number((cooperationPath.cap * 6.4).toFixed(1))),
-    evidenceAndEntityConfidence: Math.min(clamp(value.dimensions.evidenceAndEntityConfidence, 20),
-      evidenceQuality.sufficient ? 20 : 12),
+    cooperationPathAndBuyingInfluence: clamp(value.dimensions.cooperationPathAndBuyingInfluence, 32),
+    evidenceAndEntityConfidence: clamp(value.dimensions.evidenceAndEntityConfidence, 20),
     roleIdentificationQuality: candidate.correction.resolvedRoles.length > 0
       ? clamp(value.dimensions.roleIdentificationQuality, 3) : 0,
     channelClassificationQuality: candidate.correction.resolvedFamilies.length > 0
       ? clamp(value.dimensions.channelClassificationQuality, 1) : 0,
   };
-  const eligible = Object.values(gates).every(Boolean);
+  const eligible = Object.values(gates).every((state) => state === "supported");
   const totalScore = eligible ? Math.round(Object.values(dimensions).reduce((sum, score) => sum + score, 0)) : 0;
   const roles = candidate.correction.resolvedRoles;
   const primaryRole = null;
+  const allowedFindings = new Set(candidate.correction.findings.map((finding) => finding.findingId));
+  const dimensionRationales = value.dimensionRationales.map((rationale) => ({
+    ...rationale,
+    score: dimensions[rationale.dimension],
+    findingIds: [...new Set(rationale.findingIds.filter((id) => allowedFindings.has(id)))],
+    evidenceIds: [...new Set(rationale.evidenceIds.filter((id) => allowedEvidence.has(id)))],
+    confidence: clamp(rationale.confidence, 100),
+  }));
   return {
     candidateId: candidate.candidateId,
     eligible,
@@ -108,6 +122,7 @@ function normalizeAssessment(
     supplyModel: value.supplyModel,
     brandInvolvement: value.brandInvolvement,
     dimensions,
+    dimensionRationales,
     totalScore,
     confidence: clamp(value.confidence, 100),
     summary: value.summary,
@@ -118,17 +133,27 @@ function normalizeAssessment(
     model: response.modelVersion,
     promptVersion: response.promptVersion,
     escalated,
+    scoringStatus: "completed",
     warnings: [...response.warnings, ...value.warnings,
-      ...(value.gates.networkingRelevant && !networkingEvidence.demonstrated
-        ? [`Networking relevance was changed to not-demonstrated: ${networkingEvidence.reason}`] : []),
-      ...(value.gates.correctedIdentityUsable && !evidenceQuality.identityConsistent
-        ? [`Corrected identity was changed to unusable: ${evidenceQuality.reason}`] : []),
-      ...(!evidenceQuality.sufficient
-        ? [`Evidence-confidence score was capped at 12/20: ${evidenceQuality.reason}`] : []),
+      ...(value.gates.networkingRelevant === "supported" && !networkingEvidence.demonstrated
+        ? [`Networking evidence conflicts with the model gate: ${networkingEvidence.reason}`] : []),
+      ...(value.gates.correctedIdentityUsable === "supported" && !evidenceQuality.identityConsistent
+        ? [`Corrected identity evidence conflicts with the model gate: ${evidenceQuality.reason}`] : []),
+      ...(!evidenceQuality.sufficient ? [`Evidence remains sparse: ${evidenceQuality.reason}`] : []),
       ...(value.dimensions.cooperationPathAndBuyingInfluence > cooperationPath.cap * 6.4
-        ? [`Cooperation path was capped at ${(cooperationPath.cap * 6.4).toFixed(1)}/32: ${cooperationPath.reason}`] : []),
+        ? [`Cooperation-path model score exceeds the deterministic evidence signal of ${(cooperationPath.cap * 6.4).toFixed(1)}/32 and requires review: ${cooperationPath.reason}`] : []),
       ...(evidenceIds.length < value.evidenceIds.length ? ["Model returned unsupported evidence IDs; they were removed."] : [])],
   };
+}
+
+function requiresEscalation(candidate: CorrectedLeadWorkflowCandidate, assessment: LeadCandidateAssessment,
+  value: LeadAssessmentModelOutput): boolean {
+  const deterministicPathWarning = assessment.warnings.some((warning) => warning.includes("requires review"));
+  return value.needsEscalation || value.confidence < 70 || candidate.correction.confidence < 75
+    || candidate.correction.identityChanged || candidate.correction.routingChanged
+    || candidate.evidenceWarnings.length > 0 || deterministicPathWarning
+    || Object.values(assessment.gates).some((state) => state !== "supported")
+    || (assessment.totalScore >= 40 && assessment.totalScore <= 60);
 }
 
 function failedAssessment(candidate: CorrectedLeadWorkflowCandidate, message: string): LeadCandidateAssessment {
@@ -136,11 +161,11 @@ function failedAssessment(candidate: CorrectedLeadWorkflowCandidate, message: st
     candidateId: candidate.candidateId,
     eligible: false,
     gates: {
-      correctedIdentityUsable: Boolean(candidate.companyName && candidate.domain),
-      companyExists: false,
-      targetCountryPresence: false,
-      networkingRelevant: false,
-      independentProspect: false,
+      correctedIdentityUsable: "unknown",
+      companyExists: "unknown",
+      targetCountryPresence: "unknown",
+      networkingRelevant: "unknown",
+      independentProspect: "unknown",
     },
     roles: candidate.correction.resolvedRoles,
     primaryRole: null,
@@ -159,6 +184,7 @@ function failedAssessment(candidate: CorrectedLeadWorkflowCandidate, message: st
       roleIdentificationQuality: 0,
       channelClassificationQuality: 0,
     },
+    dimensionRationales: [],
     totalScore: 0,
     confidence: 0,
     summary: "The independent qualification agent did not produce a valid evidence-grounded assessment.",
@@ -169,6 +195,7 @@ function failedAssessment(candidate: CorrectedLeadWorkflowCandidate, message: st
     model: "unavailable",
     promptVersion: PROMPT_VERSION,
     escalated: false,
+    scoringStatus: "retry-required",
     warnings: [message],
   };
 }
@@ -192,6 +219,8 @@ export class LeadQualificationAgent {
         "Act as an independent sales-lead qualification agent. Ignore search-provider scores and discovery order.",
         "Assess only supplied evidence. Never invent a company fact, role, country presence, product fit, relationship or evidence ID.",
         "The upstream correction agent owns entity resolution, multi-role classification and channel routing. Treat its output as a claim to verify, but do not reclassify or rewrite it.",
+        "Every gate uses supported, not-supported, unknown or conflicting. Missing evidence and failed acquisition are unknown, never not-supported.",
+        "Return exactly one rationale for each scoring dimension. Every rationale must cite the supplied atomic finding IDs and evidence IDs that actually support it.",
         "A wrong original search lane is never an eligibility failure. Judge the corrected roles and families against evidence; express residual mistakes only in the low-weight role and channel quality dimensions.",
         "KA is an account tier, not a channel role. ISP is a downstream channel role.",
         "Set networkingRelevant=true only when supplied evidence explicitly shows selling, distributing, specifying, buying, designing, installing, deploying or maintaining active networking hardware, or a WLAN/LAN implementation that directly requires it.",
@@ -227,6 +256,7 @@ export class LeadQualificationAgent {
         resolvedRoleFamilies: candidate.correction.resolvedFamilies,
         correctionReasons: candidate.correction.reasons,
         correctionConfidence: candidate.correction.confidence,
+        findings: candidate.correction.findings,
         evidence: candidate.evidence.map((item) => ({
           evidenceId: item.id,
           sourceType: item.sourceType,
@@ -278,10 +308,11 @@ export class LeadQualificationAgent {
       return await Promise.all(candidates.map(async (candidate) => {
         const value = values.get(candidate.candidateId);
         if (!value) return this.evaluateOneEscalated(candidate, playbook, countryCode, countryName, objective, "Routine batch omitted the candidate.");
-        if (value.needsEscalation || value.confidence < 60 || candidate.evidenceWarnings.length > 0) {
+        const normalized = normalizeAssessment(value, candidate, routine.response, false);
+        if (requiresEscalation(candidate, normalized, value)) {
           return this.evaluateOneEscalated(candidate, playbook, countryCode, countryName, objective, "Routine assessment requested evidence-conflict escalation.");
         }
-        return normalizeAssessment(value, candidate, routine.response, false);
+        return normalized;
       }));
     } catch (error) {
       return Promise.all(candidates.map((candidate) => this.evaluateOneEscalated(
@@ -301,7 +332,8 @@ export class LeadQualificationAgent {
         ? (escalation.output as { assessments?: unknown[] }).assessments?.[0]
         : escalation.output;
       const parsed = leadAssessmentModelSchema.parse(raw);
-      return { ...normalizeAssessment(parsed, candidate, escalation, true), warnings: [reason, ...escalation.warnings, ...parsed.warnings] };
+      const normalized = normalizeAssessment(parsed, candidate, escalation, true);
+      return { ...normalized, warnings: [reason, ...normalized.warnings] };
     } catch (error) {
       return failedAssessment(candidate, `${reason} Escalation failed: ${error instanceof Error ? error.message : String(error)}`);
     }

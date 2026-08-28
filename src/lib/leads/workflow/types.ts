@@ -16,6 +16,30 @@ export const CHANNEL_ROLE_FAMILIES = {
 } as const satisfies Record<string, readonly ChannelRole[]>;
 
 export type ChannelRoleFamily = keyof typeof CHANNEL_ROLE_FAMILIES;
+export type LeadClaimStatus = "supported" | "not-supported" | "unknown" | "conflicting";
+export type LeadEvidenceFindingKind =
+  | "identity"
+  | "country-presence"
+  | "active-networking"
+  | "role"
+  | "product-family"
+  | "brand-relationship"
+  | "commercial-action"
+  | "cooperation-path"
+  | "company-size"
+  | "other";
+
+export interface LeadEvidenceFinding {
+  findingId: string;
+  kind: LeadEvidenceFindingKind;
+  statement: string;
+  status: LeadClaimStatus;
+  roles: ChannelRole[];
+  evidenceIds: string[];
+  sourceTypes: LeadEvidenceItem["sourceType"][];
+  confidence: number;
+  notes: string[];
+}
 export type LeadWorkflowPhase =
   | "queued"
   | "retrieving-knowledge"
@@ -99,6 +123,7 @@ export interface LeadCandidateCorrection {
   routingChanged: boolean;
   supplementalEvidenceIds: string[];
   reliedEvidenceIds: string[];
+  findings: LeadEvidenceFinding[];
   reasons: string[];
   confidence: number;
   model: string;
@@ -112,11 +137,11 @@ export interface CorrectedLeadWorkflowCandidate extends LeadWorkflowCandidate {
 }
 
 export interface LeadEligibilityGates {
-  correctedIdentityUsable: boolean;
-  companyExists: boolean;
-  targetCountryPresence: boolean;
-  networkingRelevant: boolean;
-  independentProspect: boolean;
+  correctedIdentityUsable: LeadClaimStatus;
+  companyExists: LeadClaimStatus;
+  targetCountryPresence: LeadClaimStatus;
+  networkingRelevant: LeadClaimStatus;
+  independentProspect: LeadClaimStatus;
 }
 
 export interface LeadFitDimensions {
@@ -125,6 +150,15 @@ export interface LeadFitDimensions {
   evidenceAndEntityConfidence: number;
   roleIdentificationQuality: number;
   channelClassificationQuality: number;
+}
+
+export interface LeadDimensionRationale {
+  dimension: keyof LeadFitDimensions;
+  score: number;
+  reason: string;
+  findingIds: string[];
+  evidenceIds: string[];
+  confidence: number;
 }
 
 export interface LeadCandidateAssessment {
@@ -138,6 +172,7 @@ export interface LeadCandidateAssessment {
   supplyModel: "Distributor Supply" | "Brand Direct" | "Co-sell/Co-supply" | "TBD";
   brandInvolvement: "Light" | "Standard" | "Deep";
   dimensions: LeadFitDimensions;
+  dimensionRationales: LeadDimensionRationale[];
   totalScore: number;
   confidence: number;
   summary: string;
@@ -148,6 +183,7 @@ export interface LeadCandidateAssessment {
   model: string;
   promptVersion: string;
   escalated: boolean;
+  scoringStatus: "completed" | "retry-required";
   warnings: string[];
 }
 

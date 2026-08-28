@@ -65,23 +65,28 @@ const correctedCandidate: CorrectedLeadWorkflowCandidate = {
   correction: { originalCompanyName: candidate.companyName, originalDomain: candidate.domain,
     originalOfficialWebsiteUrl: candidate.officialWebsiteUrl, resolvedRoles: ["Distributor"],
     resolvedFamilies: ["distribution"], identityChanged: false, routingChanged: false,
-    supplementalEvidenceIds: [], reliedEvidenceIds: ["evidence-example"], reasons: ["Official evidence supports distribution."],
+    supplementalEvidenceIds: [], reliedEvidenceIds: ["evidence-example"], findings: [{
+      findingId: "finding-distribution", kind: "role", statement: "Example is a networking distributor.",
+      status: "supported", roles: ["Distributor"], evidenceIds: ["evidence-example"],
+      sourceTypes: ["official-website"], confidence: 85, notes: [],
+    }], reasons: ["Official evidence supports distribution."],
     confidence: 85, model: "test-corrector", promptVersion: "test", escalated: false, warnings: [] },
 };
 
 const assessment: LeadCandidateAssessment = {
   candidateId: candidate.candidateId,
   eligible: true,
-  gates: { correctedIdentityUsable: true, companyExists: true, targetCountryPresence: true,
-    networkingRelevant: true, independentProspect: true },
+  gates: { correctedIdentityUsable: "supported", companyExists: "supported", targetCountryPresence: "supported",
+    networkingRelevant: "supported", independentProspect: "supported" },
   roles: ["Distributor"], primaryRole: "Distributor", accountTier: "Priority",
   supplyModel: "Distributor Supply", brandInvolvement: "Standard",
   dimensions: { productAndUseCaseFit: 35, cooperationPathAndBuyingInfluence: 24,
     evidenceAndEntityConfidence: 16,
     roleIdentificationQuality: 3, channelClassificationQuality: 1 },
+  dimensionRationales: [],
   totalScore: 79, confidence: 85, summary: "Qualified test candidate", reasons: ["Evidence supports fit"],
   risks: [], unknowns: [], evidenceIds: ["evidence-example"], model: "test-scorer",
-  promptVersion: "test", escalated: false, warnings: [],
+  promptVersion: "test", escalated: false, scoringStatus: "completed", warnings: [],
 };
 
 function dependencies(events: string[], context = ragContext): LeadWorkflowDependencies {

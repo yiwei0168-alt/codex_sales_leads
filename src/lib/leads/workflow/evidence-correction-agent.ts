@@ -18,7 +18,7 @@ import {
   type LeadWorkflowCandidate,
 } from "./types";
 
-const PROMPT_VERSION = "lead-evidence-correction-v1";
+const PROMPT_VERSION = "lead-evidence-correction-v2-atomic-findings";
 
 interface CorrectionRequest {
   instructions: string[];
@@ -81,6 +81,29 @@ function deterministicRoles(evidence: LeadEvidenceItem[]) {
   const text = evidence.filter((item) => item.sourceType !== "discovery").flatMap((item) => [item.title, item.excerpt]);
   return [...new Set((Object.keys(CHANNEL_ROLE_FAMILIES) as ChannelRoleFamily[])
     .flatMap((lane) => assessChannelMembershipEvidence({ lane, evidence: text }).supportedRoles))];
+}
+
+function normalizedFindings(value: LeadCorrectionModelOutput, evidence: LeadEvidenceItem[], candidateId: string) {
+  const evidenceById = new Map(evidence.map((item) => [item.id, item]));
+  return value.findings.map((finding) => {
+    const evidenceIds = [...new Set(finding.evidenceIds.filter((id) => evidenceById.has(id)))];
+    const findingId = stableId("finding", [candidateId, finding.kind, finding.statement,
+      finding.status, ...evidenceIds].join("|"));
+    return {
+      findingId,
+      kind: finding.kind,
+      statement: finding.statement,
+      status: evidenceIds.length === 0 && finding.status === "supported" ? "unknown" as const : finding.status,
+      roles: finding.roles,
+      evidenceIds,
+      sourceTypes: [...new Set(evidenceIds.map((id) => evidenceById.get(id)!.sourceType))],
+      confidence: Math.max(0, Math.min(100, Math.round(finding.confidence))),
+      notes: [...finding.notes,
+        ...(evidenceIds.length < finding.evidenceIds.length ? ["Unsupported evidence IDs were removed from this finding."] : []),
+        ...(evidenceIds.length === 0 && finding.status === "supported"
+          ? ["A supported claim without valid evidence was downgraded to unknown."] : [])],
+    };
+  });
 }
 
 function roleFamilies(roles: CorrectedLeadWorkflowCandidate["correction"]["resolvedRoles"]): ChannelRoleFamily[] {
@@ -173,6 +196,8 @@ export class LeadEvidenceCorrectionAgent {
         "The corrected official website must be a company-owned domain demonstrated by officialWebsiteEvidenceId. Directories, marketplaces and social profiles are evidence sources, not official websites.",
         "Use one clear official company source when adequate; supplement with independent public evidence when identity or material claims remain ambiguous.",
         "Return evidence IDs supporting identity, target-country presence, active-networking involvement, roles and cooperation path. Missing public proof is an unknown, not a negative claim.",
+        "Return atomic findings for identity, country presence, active networking, every asserted role, relevant product families, brand relationships, commercial actions and cooperation path. Each finding must have its own status and evidence IDs.",
+        "Use not-supported only when supplied evidence affirmatively contradicts a claim. Use unknown when evidence is absent or acquisition failed, and conflicting when supplied sources disagree.",
         "Do not score lead value. Do not decide eligibility. Your only duties are evidence, entity correction, multi-role classification and routing inputs for the downstream scoring agent.",
       ],
       market: { countryCode: plan.countryCode, countryName: plan.countryName, objective: plan.objective },
@@ -208,7 +233,11 @@ export class LeadEvidenceCorrectionAgent {
     const officialWebsiteUrl = acceptIdentity ? value.resolvedOfficialWebsiteUrl : candidate.officialWebsiteUrl;
     const evidence = candidate.evidence.map((item) => sameDomain(item.url, domain)
       ? { ...item, sourceType: "official-website" as const } : item);
-    const roles = [...new Set([...value.roles, ...deterministicRoles(evidence)])];
+    const findings = normalizedFindings(value, evidence, candidate.candidateId);
+    const supportedFindingRoles = findings.filter((finding) => finding.kind === "role" && finding.status === "supported")
+      .flatMap((finding) => finding.roles);
+    const roles = [...new Set(value.roles.filter((role) => supportedFindingRoles.includes(role)))];
+    const heuristicRoles = deterministicRoles(evidence);
     const families = roleFamilies(roles);
     const supplementalEvidenceIds = evidence.filter((item) => item.provider === "tavily-correction").map((item) => item.id);
     return {
@@ -227,6 +256,7 @@ export class LeadEvidenceCorrectionAgent {
         routingChanged: !families.includes(candidate.queryFamily) || families.length > 1,
         supplementalEvidenceIds,
         reliedEvidenceIds,
+        findings,
         reasons: value.reasons,
         confidence: Math.max(0, Math.min(100, Math.round(value.confidence))),
         model: response.modelVersion,
@@ -235,6 +265,10 @@ export class LeadEvidenceCorrectionAgent {
         warnings: [...response.warnings, ...value.warnings,
           ...(!acceptIdentity && proposedDomain !== candidate.domain
             ? ["Proposed official website was not supported by the cited company-owned evidence; original identity retained."] : []),
+          ...(value.roles.length > roles.length
+            ? ["Roles without a supported atomic role finding were removed."] : []),
+          ...(heuristicRoles.some((role) => !roles.includes(role))
+            ? [`Deterministic role hints were not auto-added: ${heuristicRoles.filter((role) => !roles.includes(role)).join(", ")}.`] : []),
           ...(reliedEvidenceIds.length < value.evidenceIds.length ? ["Unsupported evidence IDs were removed."] : [])],
       },
     };
@@ -242,6 +276,37 @@ export class LeadEvidenceCorrectionAgent {
 
   private fallback(candidate: LeadWorkflowCandidate, warning: string): CorrectedLeadWorkflowCandidate {
     const roles = deterministicRoles(candidate.evidence);
+    const nonDiscoveryEvidence = candidate.evidence.filter((item) => item.sourceType !== "discovery");
+    const networking = assessNetworkingRelevanceEvidence(nonDiscoveryEvidence.flatMap((item) => [item.title, item.excerpt]));
+    const evidenceIds = nonDiscoveryEvidence.map((item) => item.id);
+    const findings = [
+      {
+        findingId: stableId("finding", `${candidate.candidateId}|identity-fallback`),
+        kind: "identity" as const,
+        statement: "Candidate identity was not resolved by the correction model.",
+        status: "unknown" as const,
+        roles: [], evidenceIds: [], sourceTypes: [], confidence: 0,
+        notes: ["Retry required; deterministic fallback does not make an identity claim."],
+      },
+      {
+        findingId: stableId("finding", `${candidate.candidateId}|networking-fallback`),
+        kind: "active-networking" as const,
+        statement: networking.reason,
+        status: networking.demonstrated && evidenceIds.length > 0 ? "supported" as const : "unknown" as const,
+        roles: [], evidenceIds: networking.demonstrated ? evidenceIds : [],
+        sourceTypes: [...new Set(nonDiscoveryEvidence.map((item) => item.sourceType))],
+        confidence: networking.demonstrated ? 50 : 0,
+        notes: ["Deterministic fallback finding; model correction did not complete."],
+      },
+      ...roles.map((role) => ({
+        findingId: stableId("finding", `${candidate.candidateId}|role|${role}`),
+        kind: "role" as const,
+        statement: `Deterministic evidence patterns indicate the ${role} role.`,
+        status: "supported" as const,
+        roles: [role], evidenceIds, sourceTypes: [...new Set(nonDiscoveryEvidence.map((item) => item.sourceType))],
+        confidence: 50, notes: ["Requires model review before external use."],
+      })),
+    ];
     return {
       ...candidate,
       correction: {
@@ -253,7 +318,8 @@ export class LeadEvidenceCorrectionAgent {
         identityChanged: false,
         routingChanged: !roleFamilies(roles).includes(candidate.queryFamily),
         supplementalEvidenceIds: candidate.evidence.filter((item) => item.provider === "tavily-correction").map((item) => item.id),
-        reliedEvidenceIds: candidate.evidence.filter((item) => item.sourceType !== "discovery").map((item) => item.id),
+        reliedEvidenceIds: evidenceIds,
+        findings,
         reasons: ["Deterministic evidence fallback was used because model correction did not complete."],
         confidence: roles.length > 0 ? 50 : 20,
         model: "deterministic-fallback",
@@ -315,6 +381,8 @@ export class LeadEvidenceCorrectionAgent {
           resolvedFamilies: roleFamilies(roles),
           supplementalEvidenceIds: [...new Set([...existing.correction.supplementalEvidenceIds, ...candidate.correction.supplementalEvidenceIds])],
           reliedEvidenceIds: [...new Set([...existing.correction.reliedEvidenceIds, ...candidate.correction.reliedEvidenceIds])],
+          findings: [...new Map([...existing.correction.findings, ...candidate.correction.findings]
+            .map((finding) => [finding.findingId, finding])).values()],
           reasons: [...existing.correction.reasons, `Merged duplicate discovery candidate ${candidate.candidateId} after identity correction.`],
         },
       });

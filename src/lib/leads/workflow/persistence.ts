@@ -32,16 +32,33 @@ export async function updateWorkflowPhase(userId: string, actionId: string, phas
 
 function companyEvidence(candidate: CorrectedLeadWorkflowCandidate, assessment: LeadCandidateAssessment): Evidence[] {
   const cited = new Set(assessment.evidenceIds);
+  const claimsByEvidence = new Map<string, string[]>();
+  const confidenceByEvidence = new Map<string, number[]>();
+  for (const finding of candidate.correction.findings) {
+    if (finding.status !== "supported") continue;
+    for (const evidenceId of finding.evidenceIds) {
+      claimsByEvidence.set(evidenceId, [...(claimsByEvidence.get(evidenceId) ?? []), finding.statement]);
+      confidenceByEvidence.set(evidenceId, [...(confidenceByEvidence.get(evidenceId) ?? []), finding.confidence]);
+    }
+  }
+  for (const rationale of assessment.dimensionRationales) {
+    for (const evidenceId of rationale.evidenceIds) {
+      claimsByEvidence.set(evidenceId, [...(claimsByEvidence.get(evidenceId) ?? []), rationale.reason]);
+      confidenceByEvidence.set(evidenceId, [...(confidenceByEvidence.get(evidenceId) ?? []), rationale.confidence]);
+    }
+  }
   return candidate.evidence.filter((item) => cited.has(item.id)).slice(0, 8).map((item) => ({
     id: item.id,
     sourceUrl: item.url,
     title: item.title,
     sourceType: item.sourceType === "official-website" ? "Company website" : "Industry publication",
     capturedAt: item.capturedAt.slice(0, 10),
-    claim: assessment.reasons[0] ?? "Public evidence supports the candidate assessment.",
+    claim: [...new Set(claimsByEvidence.get(item.id) ?? [])].slice(0, 3).join(" ")
+      || "This source was cited by the assessment but has no atomic claim mapping; review before external use.",
     summary: item.excerpt.slice(0, 700),
     status: item.sourceType === "official-website" ? "Corroborated" : "Inferred",
-    confidence: assessment.confidence,
+    confidence: Math.round(Math.min(assessment.confidence,
+      ...(confidenceByEvidence.get(item.id) ?? [assessment.confidence]))),
   }));
 }
 
@@ -143,7 +160,8 @@ export async function persistLeadWorkflowResult(input: {
 }): Promise<LeadWorkflowResult> {
   const candidateById = new Map(input.candidates.map((item) => [item.candidateId, item]));
   const selected = input.assessments
-    .filter((item) => item.eligible && item.totalScore >= 50 && candidateById.has(item.candidateId))
+    .filter((item) => item.scoringStatus === "completed" && item.eligible && item.totalScore >= 50
+      && candidateById.has(item.candidateId))
     .sort((left, right) => right.totalScore - left.totalScore || right.confidence - left.confidence)
     .slice(0, input.requested);
   const selectedIds = new Map(selected.map((item, index) => [item.candidateId, index + 1]));
@@ -157,14 +175,16 @@ export async function persistLeadWorkflowResult(input: {
            user_id, run_id, candidate_id, company_name, domain, official_website_url, roles, primary_role,
            eligible, total_score, confidence, gates, dimensions, account_tier, supply_model,
            brand_involvement, summary, reasons, risks, unknowns, evidence, correction, evidence_ids,
-           model, prompt_version, escalated, warnings, selected, selected_rank
-         ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29)
+           fact_ledger, dimension_rationales, scoring_status, model, prompt_version, escalated, warnings, selected, selected_rank
+         ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32)
          on conflict (run_id, candidate_id) do update set roles=excluded.roles, primary_role=excluded.primary_role,
            eligible=excluded.eligible, total_score=excluded.total_score, confidence=excluded.confidence,
            gates=excluded.gates, dimensions=excluded.dimensions, account_tier=excluded.account_tier,
            supply_model=excluded.supply_model, brand_involvement=excluded.brand_involvement,
            summary=excluded.summary, reasons=excluded.reasons, risks=excluded.risks, unknowns=excluded.unknowns,
            evidence=excluded.evidence, correction=excluded.correction, evidence_ids=excluded.evidence_ids, model=excluded.model,
+           fact_ledger=excluded.fact_ledger, dimension_rationales=excluded.dimension_rationales,
+           scoring_status=excluded.scoring_status,
            prompt_version=excluded.prompt_version, escalated=excluded.escalated, warnings=excluded.warnings,
            selected=excluded.selected, selected_rank=excluded.selected_rank, updated_at=now()`,
         [input.userId, input.runId, assessment.candidateId, candidate.companyName, candidate.domain,
@@ -172,6 +192,7 @@ export async function persistLeadWorkflowResult(input: {
           assessment.totalScore, assessment.confidence, JSON.stringify(assessment.gates), JSON.stringify(assessment.dimensions),
           assessment.accountTier, assessment.supplyModel, assessment.brandInvolvement, assessment.summary,
           assessment.reasons, assessment.risks, assessment.unknowns, JSON.stringify(candidate.evidence), JSON.stringify(candidate.correction), assessment.evidenceIds,
+          JSON.stringify(candidate.correction.findings), JSON.stringify(assessment.dimensionRationales), assessment.scoringStatus,
           assessment.model, assessment.promptVersion, assessment.escalated, assessment.warnings, Boolean(rank), rank ?? null],
       );
       if (rank) await saveCompany(client, input.workspaceId,
@@ -194,7 +215,8 @@ export async function persistLeadWorkflowResult(input: {
     requested: input.requested,
     discovered: input.candidates.length,
     assessed: input.assessments.length,
-    qualified: input.assessments.filter((item) => item.eligible && item.totalScore >= 50).length,
+    qualified: input.assessments.filter((item) => item.scoringStatus === "completed"
+      && item.eligible && item.totalScore >= 50).length,
     accepted: selected.length,
     creditsUsed: input.creditsUsed,
     ragCitationCount: input.ragContext.length,
