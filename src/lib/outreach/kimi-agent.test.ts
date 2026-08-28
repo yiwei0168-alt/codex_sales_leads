@@ -1,7 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type { CompanyRecord } from "@/lib/domain";
-import { generateDevelopmentStrategyWithKimi } from "./kimi-agent";
+import { generateDevelopmentEmailWithKimi, generateDevelopmentStrategyPlanWithKimi,
+  generateDevelopmentStrategyWithKimi } from "./kimi-agent";
 import type { DevelopmentContext } from "./types";
 
 const company: CompanyRecord = {
@@ -64,5 +65,51 @@ describe("Kimi development strategy agent", () => {
     const result = await generateDevelopmentStrategyWithKimi(context, { companyExternalId: company.id }, fetchMock);
     expect(result.model).toBe("template-fallback");
     expect(result.warnings[0]).toContain("invented company evidence IDs");
+  });
+
+  it("gives internal interpretations only to strategy and validates fact-level email citations", async () => {
+    vi.stubEnv("KIMI_API_KEY", "test-key");
+    const handoffContext: DevelopmentContext = { ...context, handoff: {
+      version: "lead-handoff-v1", provenance: { candidateId: "lead-1", runId: "run-1",
+        evidenceSnapshotHash: "hash", correctionModel: "corrector", scoringModel: "scorer", reviewStatus: "secondary-confirmed" },
+      identity: { companyName: company.displayName, officialUrl: "https://example.de/", domain: company.domain,
+        possibleRoles: ["SI"] },
+      decision: { score: 82, recommendedFamilies: ["services"], scoreConfidence: 85, scoringStatus: "completed" },
+      externallyUsableFacts: [{ factId: "fact-1", kind: "commercial-action",
+        statement: "Example delivers network integration services.", evidenceIds: ["ev-1"],
+        sourceTypes: ["official-website"], confidence: 90 }],
+      internalInterpretations: [{ interpretationId: "interpretation-fit", dimension: "productAndUseCaseFit",
+        statement: "This may support an SMB networking discussion.", basedOnFactIds: ["fact-1"], confidence: 75 }],
+      personalizationHooks: [{ hook: "Example delivers network integration services.", basedOnFactIds: ["fact-1"],
+        allowedInEmail: true }],
+      unknowns: ["Purchase volume"], risks: [], doNotClaim: ["Example buys directly from brands."],
+      evidenceIndex: [{ evidenceId: "ev-1", url: "https://example.de/solutions", title: "Solutions",
+        sourceType: "official-website" }],
+      quality: { readyForStrategy: true, readyForEmail: true, conflicts: [], warnings: [] },
+    } };
+    const strategyValue = { objective: "Develop an SI partnership", personalizationAngle: "Integration delivery fit",
+      valuePropositions: ["Partner support"], recommendedProducts: ["SMB networking"],
+      targetTitles: ["Solutions Director"], likelyObjections: ["Vendor overlap"], callToAction: "Short use-case call",
+      followUpPlan: ["Send a concise follow-up"], evidenceIds: ["ev-1"],
+      knowledgeIds: ["00000000-0000-0000-0000-000000000001"] };
+    const emailValue = { language: "en", subjectOptions: ["A possible integration fit"],
+      bodyWithCitations: "Hi {{first_name}},\n\nYour network integration services caught my attention. [LEAD:fact-1] Cudy serves SMB networking markets. [KNOWLEDGE:00000000-0000-0000-0000-000000000001]\n\nWould a short introductory call be useful next week?\n\nBest regards,\n{{sales_owner}}",
+      placeholders: ["first_name", "sales_owner"] };
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce(new Response(JSON.stringify({ model: "kimi-k3",
+        choices: [{ message: { content: JSON.stringify(strategyValue) } }] }), { status: 200 }))
+      .mockResolvedValueOnce(new Response(JSON.stringify({ model: "kimi-k3",
+        choices: [{ message: { content: JSON.stringify(emailValue) } }] }), { status: 200 }));
+    const plan = await generateDevelopmentStrategyPlanWithKimi(handoffContext,
+      { companyExternalId: company.id }, fetchMock);
+    const result = await generateDevelopmentEmailWithKimi(handoffContext,
+      { companyExternalId: company.id }, plan, fetchMock);
+    expect(result.evidenceIds).toContain("ev-1");
+    expect(result.draft.body).not.toContain("[LEAD:");
+    const strategyRequest = JSON.parse(fetchMock.mock.calls[0][1].body as string);
+    const emailRequest = JSON.parse(fetchMock.mock.calls[1][1].body as string);
+    expect(JSON.stringify(strategyRequest)).toContain("internalInterpretations");
+    expect(JSON.stringify(emailRequest)).not.toContain("internalInterpretations");
+    expect(JSON.stringify(emailRequest)).toContain("fact-1");
   });
 });

@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import {
   cleanCitations,
+  cleanHandoffCitations,
   evidencePayload,
   feedbackSchema,
   knowledgePayload,
@@ -152,7 +153,10 @@ export async function reviseDevelopmentDraftWithClaude(
       "Prioritize the strongest differentiators for this target; keep product families together as a one-stop portfolio unless the target is a specialist.",
       "Omit unsupported requested metrics or market achievements instead of weakening, generalizing or inventing them.",
       "Use only the supplied company evidence and outreach knowledge. Never invent claims, numbers, people, relationships or commercial terms.",
-      "Add an exact internal [EVIDENCE:<id>] marker after every target-company factual sentence and [KNOWLEDGE:<uuid>] after every Cudy, policy or market-proof factual sentence.",
+      context.handoff
+        ? "Use only handoff facts allowed in email and add [LEAD:<fact-id>] after every target-company factual sentence; never use doNotClaim items."
+        : "Add an exact internal [EVIDENCE:<id>] marker after every target-company factual sentence.",
+      "Add [KNOWLEDGE:<uuid>] after every Cudy, policy or market-proof factual sentence.",
       "When companyEvidence is non-empty, the revised body must use at least one allowed evidence marker. When outreachKnowledge is non-empty, use at least one allowed knowledge marker.",
       "Reusable private memory may include stable cross-company style, positioning and channel rules, plus sender identity explicitly approved by the user for private memory.",
       "Do not memorize target-company-specific edits, unapproved personal data, secrets or unsupported claims.",
@@ -165,7 +169,11 @@ export async function reviseDevelopmentDraftWithClaude(
       currentSubjects: current.draft.subjectOptions,
       currentBody: current.draft.body,
       userFeedback: feedback.slice(0, 4_000),
-      companyEvidence: evidencePayload(context),
+      companyEvidence: context.handoff ? undefined : evidencePayload(context),
+      allowedLeadFacts: context.handoff?.externallyUsableFacts.filter((fact) =>
+        context.handoff?.personalizationHooks.some((hook) => hook.allowedInEmail
+          && hook.basedOnFactIds.includes(fact.factId))),
+      doNotClaim: context.handoff?.doNotClaim,
       outreachKnowledge: knowledgePayload(context),
       allowedEvidenceIds: [...allowedEvidence],
       allowedKnowledgeIds: [...allowedKnowledge],
@@ -183,7 +191,9 @@ export async function reviseDevelopmentDraftWithClaude(
     }), fetchImplementation);
     attemptMetrics = response.metrics;
     const parsed = feedbackSchema.parse(response.value);
-    const cleaned = cleanCitations(parsed.revisedBodyWithCitations, allowedEvidence, allowedKnowledge);
+    const cleaned = context.handoff
+      ? cleanHandoffCitations(parsed.revisedBodyWithCitations, context, allowedKnowledge)
+      : cleanCitations(parsed.revisedBodyWithCitations, allowedEvidence, allowedKnowledge);
     if (allowedKnowledge.size > 0 && cleaned.knowledgeIds.length === 0) {
       throw new Error("Outreach draft omitted knowledge markers for Cudy claims");
     }

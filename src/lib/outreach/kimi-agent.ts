@@ -1,8 +1,9 @@
 import { z } from "zod";
 
-import { cleanCitations, evidencePayload, knowledgePayload, parseOutreachJson } from "./feedback-model-shared";
+import { cleanCitations, cleanHandoffCitations, evidencePayload, knowledgePayload, parseOutreachJson } from "./feedback-model-shared";
 import type {
   DevelopmentContext, DevelopmentDraft, DevelopmentGenerationOptions, DevelopmentStrategy, DevelopmentStrategyDto,
+  DevelopmentStrategyPlanResult,
 } from "./types";
 
 const PROMPT_VERSION = "development-strategy-kimi-v2";
@@ -120,6 +121,16 @@ function safeStrategy(strategy: z.infer<typeof strategySchema>, evidence: Set<st
     knowledgeIds: strategy.knowledgeIds.map((id) => id.toLowerCase()).filter((id) => knowledge.has(id)) };
 }
 
+function boundedStrategyOutput(value: unknown): unknown {
+  if (typeof value !== "object" || value === null) return value;
+  const raw = value as Record<string, unknown>;
+  const bounded = (key: string, maximum: number) => Array.isArray(raw[key]) ? raw[key].slice(0, maximum) : raw[key];
+  return { ...raw, valuePropositions: bounded("valuePropositions", 6),
+    recommendedProducts: bounded("recommendedProducts", 8), targetTitles: bounded("targetTitles", 8),
+    likelyObjections: bounded("likelyObjections", 6), followUpPlan: bounded("followUpPlan", 6),
+    evidenceIds: bounded("evidenceIds", 20), knowledgeIds: bounded("knowledgeIds", 20) };
+}
+
 function fallbackResult(context: DevelopmentContext, warning: string): KimiDevelopmentResult {
   const template = [...context.templates].sort((a, b) =>
     Number(b.styleProfile.targetWords ?? 0) - Number(a.styleProfile.targetWords ?? 0))[0];
@@ -197,5 +208,126 @@ export async function generateDevelopmentStrategyWithKimi(
       return generateDevelopmentStrategyWithKimi(context, options, fetchImplementation, false);
     }
     return fallbackResult(context, `Kimi 开发策略 Agent 已安全降级：${error instanceof Error ? error.message : String(error)}`);
+  }
+}
+
+export async function generateDevelopmentStrategyPlanWithKimi(
+  context: DevelopmentContext,
+  options: DevelopmentGenerationOptions,
+  fetchImplementation: typeof fetch = fetch,
+): Promise<DevelopmentStrategyPlanResult> {
+  const allowedEvidence = new Set(context.company.evidence.map((item) => item.id));
+  const allowedKnowledge = new Set(context.knowledge.map((item) => item.id.toLowerCase()));
+  try {
+    const response = await invokeKimiJson([
+      { role: "system", content: [
+        "You are Cudy Technology's channel Development Strategy Agent.",
+        "Create the internal sales strategy only; do not draft an email.",
+        "Use the complete lead handoff. Treat externallyUsableFacts as facts and internalInterpretations as hypotheses.",
+        "Never turn unknowns, risks or doNotClaim items into factual assertions.",
+        "Use only supplied Cudy knowledge. Return JSON matching the requested strategy object.",
+      ].join("\n") },
+      { role: "user", content: JSON.stringify({
+        requestedSchema: { objective: "string", personalizationAngle: "string", valuePropositions: ["string"],
+          recommendedProducts: ["broad category"], targetTitles: ["string"], likelyObjections: ["string"],
+          callToAction: "string", followUpPlan: ["string"], evidenceIds: ["allowed evidence ID"],
+          knowledgeIds: ["allowed knowledge UUID"] },
+        target: { name: context.company.displayName, country: context.company.country, roles: context.company.roles,
+          recipient: context.recipient },
+        leadHandoff: context.handoff,
+        assessment: context.assessment,
+        outreachKnowledge: knowledgePayload(context),
+        requirements: { language: options.language || "en", tone: options.tone || "consultative",
+          userInstructions: options.instructions?.slice(0, 2_000) },
+      }) },
+    ], fetchImplementation);
+    const raw = typeof response.value === "object" && response.value !== null && "strategy" in response.value
+      ? (response.value as { strategy: unknown }).strategy : response.value;
+    const parsed = strategySchema.parse(boundedStrategyOutput(raw));
+    const strategy = safeStrategy(parsed, allowedEvidence, allowedKnowledge);
+    return { strategy, evidenceIds: strategy.evidenceIds, knowledgeIds: strategy.knowledgeIds,
+      warnings: [], model: response.model, promptVersion: "development-strategy-kimi-v3-handoff",
+      generationMetrics: response.metrics };
+  } catch (error) {
+    const fallback = fallbackResult(context,
+      `Kimi strategy planning degraded safely: ${error instanceof Error ? error.message : String(error)}`);
+    return { strategy: fallback.strategy, evidenceIds: [], knowledgeIds: [], warnings: fallback.warnings,
+      model: fallback.model, promptVersion: "development-strategy-kimi-v3-handoff",
+      generationMetrics: fallback.generationMetrics };
+  }
+}
+
+export async function generateDevelopmentEmailWithKimi(
+  context: DevelopmentContext,
+  options: DevelopmentGenerationOptions,
+  plan: DevelopmentStrategyPlanResult,
+  fetchImplementation: typeof fetch = fetch,
+): Promise<KimiDevelopmentResult> {
+  const allowedEvidence = new Set(context.company.evidence.map((item) => item.id));
+  const allowedKnowledge = new Set(context.knowledge.map((item) => item.id.toLowerCase()));
+  const targetLength = options.targetLength === undefined
+    ? Math.max(280, Math.min(targetTemplateWords(context), 500))
+    : Math.max(180, Math.min(options.targetLength, 500));
+  const emailFacts = context.handoff?.externallyUsableFacts.filter((fact) =>
+    context.handoff?.personalizationHooks.some((hook) => hook.allowedInEmail
+      && hook.basedOnFactIds.includes(fact.factId))) ?? [];
+  try {
+    const response = await invokeKimiJson([
+      { role: "system", content: [
+        "You are Cudy Technology's Development Email Agent.",
+        "Write the email from the approved strategy, but use only the restricted lead facts supplied to this node.",
+        "Do not use internal interpretations, scores, risks or unknowns as customer-visible facts.",
+        context.handoff
+          ? (emailFacts.length > 0 ? "Every target-company factual sentence must end with [LEAD:allowed-fact-id]."
+            : "No lead fact is approved for email use; keep the target-company wording generic and do not assert a specific fact.")
+          : "Every target-company factual sentence must end with [EVIDENCE:allowed-evidence-id].",
+        "Every Cudy, policy or market-proof factual sentence must end with [KNOWLEDGE:allowed-uuid].",
+        "Never use an item listed in doNotClaim. Return only the draft JSON object.",
+      ].join("\n") },
+      { role: "user", content: JSON.stringify({
+        requestedSchema: { language: "string", subjectOptions: ["2-3 subjects"],
+          bodyWithCitations: "complete email with internal markers", placeholders: ["placeholder names"] },
+        approvedStrategy: plan.strategy,
+        target: { name: context.company.displayName, country: context.company.country, roles: context.company.roles,
+          recipient: context.recipient },
+        allowedLeadFacts: emailFacts,
+        companyEvidence: context.handoff ? undefined : evidencePayload(context),
+        doNotClaim: context.handoff?.doNotClaim ?? [],
+        quality: context.handoff?.quality,
+        outreachKnowledge: knowledgePayload(context),
+        styleExamples: context.templates.map((template) => ({ title: template.title,
+          subjectPattern: template.subjectPattern, body: template.body.slice(0, 2_000), styleProfile: template.styleProfile })),
+        requirements: { language: options.language || "en", tone: options.tone || "consultative",
+          targetWords: targetLength, userInstructions: options.instructions?.slice(0, 2_000) },
+      }) },
+    ], fetchImplementation);
+    const raw = typeof response.value === "object" && response.value !== null && "draft" in response.value
+      ? (response.value as { draft: unknown }).draft : response.value;
+    const parsed = draftSchema.parse(raw);
+    const cleaned = context.handoff
+      ? cleanHandoffCitations(parsed.bodyWithCitations, context, allowedKnowledge)
+      : cleanCitations(parsed.bodyWithCitations, allowedEvidence, allowedKnowledge);
+    const draft: DevelopmentDraft = { language: parsed.language, subjectOptions: parsed.subjectOptions,
+      body: cleaned.body, wordCount: cleaned.body.split(/\s+/).filter(Boolean).length,
+      placeholders: parsed.placeholders };
+    return { strategy: plan.strategy, draft,
+      evidenceIds: cleaned.evidenceIds,
+      knowledgeIds: cleaned.knowledgeIds,
+      templateIds: context.templates.map((item) => item.id), warnings: plan.warnings,
+      model: `${plan.model} -> ${response.model}`, promptVersion: "development-email-kimi-v3-handoff",
+      generationMetrics: { modelCalls: plan.generationMetrics.modelCalls + response.metrics.modelCalls,
+        latencyMs: plan.generationMetrics.latencyMs + response.metrics.latencyMs,
+        promptTokens: (plan.generationMetrics.promptTokens ?? 0) + (response.metrics.promptTokens ?? 0),
+        completionTokens: (plan.generationMetrics.completionTokens ?? 0) + (response.metrics.completionTokens ?? 0),
+        totalTokens: (plan.generationMetrics.totalTokens ?? 0) + (response.metrics.totalTokens ?? 0) },
+    };
+  } catch (error) {
+    const fallback = fallbackResult(context,
+      `Kimi email drafting degraded safely: ${error instanceof Error ? error.message : String(error)}`);
+    return { ...fallback, strategy: plan.strategy, evidenceIds: [], knowledgeIds: [],
+      warnings: [...plan.warnings, ...fallback.warnings], model: `${plan.model} -> ${fallback.model}`,
+      promptVersion: "development-email-kimi-v3-handoff",
+      generationMetrics: { modelCalls: plan.generationMetrics.modelCalls,
+        latencyMs: plan.generationMetrics.latencyMs } };
   }
 }

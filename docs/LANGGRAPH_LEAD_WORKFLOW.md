@@ -19,8 +19,17 @@ Lead StateGraph (PostgreSQL checkpoint)
     → build_playbook
     → discover_candidates
     → collect_evidence
+    → correct_candidates
     → score_candidates
+    → review_assessment_anomalies
+    → assemble_handoff_briefs
     → persist_results
+
+Outreach StateGraph
+  load_candidate_context
+    → build_development_strategy
+    → draft_email_from_restricted_handoff
+    → validate_and_persist
 ```
 
 对话、消息和 action 是助手层的持久状态；长耗时线索图使用 `langgraph` PostgreSQL schema 的 checkpoint。失败时 checkpoint、候选评估审计和错误消息均保留，界面允许从同一 thread 重试。
@@ -45,11 +54,18 @@ Lead StateGraph (PostgreSQL checkpoint)
 |---|---|---|
 | Market Playbook | LangChain `ChatOpenAI`，Lingyu OpenAI-compatible 网关 | temperature 0、严格 Zod structured output、90 秒超时、确定性安全降级 |
 | 候选发现/官网证据 | Tavily | 只在确认后调用；域名去重；候选必须输出官网 URL |
+| 补证与纠错 | DeepSeek Flash/Pro + Tavily 定向补证 | 输出原子 `finding → evidenceIds` 事实账本；缺证为 unknown；不负责评分 |
 | 例行资格评分 | DeepSeek v4 Flash | 不接收 Tavily score/排序；严格 JSON Schema；失败不发布 |
-| 冲突升级 | DeepSeek v4 Pro | 官方 Anthropic-compatible endpoint；低置信、冲突或 schema 问题才升级 |
-| 最终分数 | 服务端确定性重算 | 六个资格门全部通过才计算五维总分；总分至少 50 才可保存 |
+| 主评冲突升级 | DeepSeek v4 Pro | 低置信、冲突、规范化后异常或 schema 问题才升级 |
+| 盲独立复评 | GPT-5.6 Terra（可配置） | 只处理异常/边界样本；读取同一冻结事实账本但看不到主评分 |
+| 分歧裁决 | GPT-5.6 Sol（可配置） | 只在 gate 或分数出现实质分歧时调用；可要求定向补证，不允许创造事实 |
+| Handoff Assembler | 确定性 TypeScript | 分离外部事实与内部推断，校验引用并限制在 4 KB 内 |
+| 开发策略 | Kimi | 读取完整 handoff、Cudy 知识和内部推断，只输出内部策略 |
+| 开发邮件 | Kimi | 只读取获准对外事实、`doNotClaim`、批准策略和 Cudy 知识；使用 fact-level 引用 |
 
-五个维度总计 100 分：渠道角色与客户触达 30、产品/场景匹配 25、目标市场覆盖 20、合作执行能力 15、战略互补 10。模型给出的总分不被信任，服务端从受限维度值重新计算。
+五个维度总计 100 分：产品与使用场景 44、合作路径与采购影响力 32、证据与实体置信度 20、角色识别 3、通道分类 1。只有纠正身份可用、公司存在、目标国家经营、active networking 相关和独立候选五个 gate 均为 `supported` 才具备资格；`unknown`、`not-supported` 和 `conflicting` 均不会被伪装成通过。模型总分不被信任，服务端从受限维度值重算。
+
+异常路由包括硬门槛非 supported、40–60 分、入榜边界、低置信度、身份或路由变化、证据冲突、高分但证据稀疏以及 5% 确定性随机审计。没有触发条件的样本不会增加复评成本。
 
 ## 执行模式
 
@@ -78,10 +94,11 @@ npm run products:ingest
 npm run products:verify
 npm run leads:verify-workflow
 npm run leads:verify-models
+npm run outreach:verify
 npm run typecheck
 npm run lint
 npm test
 npm run build
 ```
 
-`products:verify` 会验证产品/事实数量、四个检索索引和真实三路融合结果；`leads:verify-workflow` 在 RDS 上执行 checkpoint 写入、读取和删除；`leads:verify-models` 发送不持久化的最小请求，覆盖 Lingyu planner 和 DeepSeek Flash→Pro 升级链路。
+`products:verify` 会验证产品/事实数量、四个检索索引和真实三路融合结果；`leads:verify-workflow` 在 RDS 上验证 checkpoint、评分治理列和强制 RLS；`leads:verify-models` 发送不持久化的最小请求，覆盖 Lingyu planner、DeepSeek 主评和 OpenAI-compatible 盲复评；`outreach:verify` 验证拆分后的策略与邮件调用、引用和持久化。2026-08-28 的实测中，拆分后的 Kimi 两次调用约耗时 214 秒，因此生产上应异步执行；在代表性评测证明不降质前不为了延迟重新合并两个权限不同的节点。

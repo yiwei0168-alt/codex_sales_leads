@@ -1,4 +1,5 @@
 import type { ChannelRole, CompanyRecord } from "@/lib/domain";
+import type { LeadDevelopmentHandoff } from "@/lib/leads/workflow/types";
 
 export interface OutreachTemplate {
   id: string;
@@ -46,6 +47,7 @@ export interface DevelopmentContext {
     evidenceIds: string[];
   };
   playbook?: Record<string, unknown>;
+  handoff?: LeadDevelopmentHandoff;
   recipient?: OutreachRecipient;
   knowledge: OutreachKnowledgeItem[];
   templates: OutreachTemplate[];
@@ -62,6 +64,16 @@ export interface DevelopmentStrategy {
   followUpPlan: string[];
   evidenceIds: string[];
   knowledgeIds: string[];
+}
+
+export interface DevelopmentStrategyPlanResult {
+  strategy: DevelopmentStrategy;
+  evidenceIds: string[];
+  knowledgeIds: string[];
+  warnings: string[];
+  model: string;
+  promptVersion: string;
+  generationMetrics: DevelopmentGenerationMetrics;
 }
 
 export interface DevelopmentDraft {

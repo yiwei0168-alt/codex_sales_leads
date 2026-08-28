@@ -1,6 +1,7 @@
 import { tenantQuery, tenantTransaction } from "@/lib/rag/db";
 import { embedTexts } from "@/lib/rag/openai-provider";
 import type { CompanyRecord } from "@/lib/domain";
+import type { LeadDevelopmentHandoff } from "@/lib/leads/workflow/types";
 import { insertFeedbackMemory, prepareFeedbackMemory, searchOutreachKnowledge } from "./knowledge-repository";
 import type {
   DevelopmentContext, DevelopmentGenerationOptions, DevelopmentStrategyDto, OutreachFeedbackResult, OutreachTemplate,
@@ -18,6 +19,7 @@ interface CompanyContextRow {
   risks: string[] | null;
   unknowns: string[] | null;
   evidence_ids: string[] | null;
+  handoff_report: LeadDevelopmentHandoff | null;
   playbook: Record<string, unknown> | null;
 }
 
@@ -87,7 +89,7 @@ async function loadRecipient(userId: string, workspaceId: string, companyId: str
 export async function loadDevelopmentContext(userId: string, options: DevelopmentGenerationOptions): Promise<DevelopmentContext> {
   const rows = await tenantQuery<CompanyContextRow>(userId,
     `select w.id as workspace_id, c.id as company_id, c.external_id, c.country_code, c.record, wc.search_run_id,
-            a.dimensions, a.reasons, a.risks, a.unknowns, a.evidence_ids,
+            a.dimensions, a.reasons, a.risks, a.unknowns, a.evidence_ids, a.handoff_report,
             r.metadata->'playbook' as playbook
        from market_workspace w
        join workspace_company wc on wc.workspace_id=w.id
@@ -118,7 +120,9 @@ export async function loadDevelopmentContext(userId: string, options: Developmen
       dimensions: row.dimensions, reasons: row.reasons ?? [], risks: row.risks ?? [],
       unknowns: row.unknowns ?? [], evidenceIds: row.evidence_ids ?? [],
     } : undefined,
-    playbook: row.playbook ?? undefined, recipient, knowledge, templates,
+    playbook: row.playbook ?? undefined,
+    handoff: row.handoff_report?.version === "lead-handoff-v1" ? row.handoff_report : undefined,
+    recipient, knowledge, templates,
   };
 }
 
@@ -131,13 +135,13 @@ export async function persistDevelopmentDraft(
     `insert into outreach_draft (
        user_id, workspace_id, company_id, contact_id, search_run_id, language, strategy,
        subject_options, body, evidence_ids, knowledge_chunk_ids, template_ids,
-       input_snapshot, model, prompt_version, warnings, generation_metrics
-     ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11::uuid[],$12::uuid[],$13,$14,$15,$16,$17)
+       input_snapshot, handoff_report, model, prompt_version, warnings, generation_metrics
+     ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11::uuid[],$12::uuid[],$13,$14,$15,$16,$17,$18)
      returning id, created_at::text, revision`,
     [context.userId, context.workspaceId, context.companyId, context.recipient?.contactId ?? null,
       context.searchRunId ?? null, result.draft.language, JSON.stringify(result.strategy), result.draft.subjectOptions,
       result.draft.body, result.evidenceIds, result.knowledgeIds, result.templateIds,
-      JSON.stringify(inputSnapshot), result.model, result.promptVersion, result.warnings,
+      JSON.stringify(inputSnapshot), JSON.stringify(context.handoff ?? {}), result.model, result.promptVersion, result.warnings,
       JSON.stringify(result.generationMetrics)]);
   return { ...result, id: rows[0].id, companyExternalId: context.company.id, status: "generated",
     revision: rows[0].revision, createdAt: rows[0].created_at };

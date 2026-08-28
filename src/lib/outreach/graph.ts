@@ -1,26 +1,30 @@
 import { Annotation, END, START, StateGraph } from "@langchain/langgraph";
 
 import { reviseDevelopmentDraftWithClaude } from "./claude-agent";
-import { generateDevelopmentStrategyWithKimi, type KimiDevelopmentResult } from "./kimi-agent";
+import { generateDevelopmentEmailWithKimi, generateDevelopmentStrategyPlanWithKimi, type KimiDevelopmentResult } from "./kimi-agent";
 import { applyFeedbackRevision, createFeedbackRecord, loadDevelopmentContext, loadDraftForFeedback, markFeedbackFailed, persistDevelopmentDraft } from "./repository";
-import type { DevelopmentContext, DevelopmentFeedbackOptions, DevelopmentGenerationOptions, DevelopmentStrategyDto, OutreachFeedbackResult } from "./types";
+import type { DevelopmentContext, DevelopmentFeedbackOptions, DevelopmentGenerationOptions, DevelopmentStrategyDto,
+  DevelopmentStrategyPlanResult, OutreachFeedbackResult } from "./types";
 
 const DevelopmentState = Annotation.Root({
   userId: Annotation<string>(),
   options: Annotation<DevelopmentGenerationOptions>(),
   context: Annotation<DevelopmentContext | undefined>(),
+  strategyPlan: Annotation<DevelopmentStrategyPlanResult | undefined>(),
   generated: Annotation<KimiDevelopmentResult | undefined>(),
   result: Annotation<DevelopmentStrategyDto | undefined>(),
 });
 
 export interface DevelopmentGraphDependencies {
   loadContext: typeof loadDevelopmentContext;
-  generate: typeof generateDevelopmentStrategyWithKimi;
+  generateStrategy: typeof generateDevelopmentStrategyPlanWithKimi;
+  generateEmail: typeof generateDevelopmentEmailWithKimi;
   persist: typeof persistDevelopmentDraft;
 }
 const productionDependencies: DevelopmentGraphDependencies = {
   loadContext: loadDevelopmentContext,
-  generate: generateDevelopmentStrategyWithKimi,
+  generateStrategy: generateDevelopmentStrategyPlanWithKimi,
+  generateEmail: generateDevelopmentEmailWithKimi,
   persist: persistDevelopmentDraft,
 };
 
@@ -29,9 +33,13 @@ export function buildDevelopmentStrategyGraph(dependencies: DevelopmentGraphDepe
     .addNode("load_candidate_context", async (state) => ({
       context: await dependencies.loadContext(state.userId, state.options),
     }))
-    .addNode("create_strategy_and_draft", async (state) => {
+    .addNode("build_development_strategy", async (state) => {
       if (!state.context) throw new Error("Development context is missing");
-      return { generated: await dependencies.generate(state.context, state.options) };
+      return { strategyPlan: await dependencies.generateStrategy(state.context, state.options) };
+    })
+    .addNode("draft_email_from_restricted_handoff", async (state) => {
+      if (!state.context || !state.strategyPlan) throw new Error("Development strategy plan is missing");
+      return { generated: await dependencies.generateEmail(state.context, state.options, state.strategyPlan) };
     })
     .addNode("validate_and_persist", async (state) => {
       if (!state.context || !state.generated) throw new Error("Development output is incomplete");
@@ -49,13 +57,15 @@ export function buildDevelopmentStrategyGraph(dependencies: DevelopmentGraphDepe
         knowledgeIds: state.generated.knowledgeIds,
         outreachKnowledge: state.context.knowledge.map((item) => ({ id: item.id, kind: item.kind,
           title: item.title, score: item.score, priorityWeight: item.priorityWeight })),
+        handoff: state.context.handoff,
         templateIds: state.generated.templateIds,
       });
       return { result };
     })
     .addEdge(START, "load_candidate_context")
-    .addEdge("load_candidate_context", "create_strategy_and_draft")
-    .addEdge("create_strategy_and_draft", "validate_and_persist")
+    .addEdge("load_candidate_context", "build_development_strategy")
+    .addEdge("build_development_strategy", "draft_email_from_restricted_handoff")
+    .addEdge("draft_email_from_restricted_handoff", "validate_and_persist")
     .addEdge("validate_and_persist", END)
     .compile();
 }

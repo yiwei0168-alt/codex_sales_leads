@@ -66,3 +66,27 @@ export function cleanCitations(
     knowledgeIds: [...new Set(knowledgeIds)],
   };
 }
+
+export function cleanHandoffCitations(
+  bodyWithCitations: string,
+  context: DevelopmentContext,
+  allowedKnowledge: Set<string>,
+) {
+  const allowedFacts = new Map((context.handoff?.externallyUsableFacts ?? [])
+    .filter((fact) => context.handoff?.personalizationHooks.some((hook) => hook.allowedInEmail
+      && hook.basedOnFactIds.includes(fact.factId)))
+    .map((fact) => [fact.factId, fact]));
+  const factIds = [...bodyWithCitations.matchAll(/\[LEAD:([^\]]+)\]/g)].map((match) => match[1]);
+  const knowledgeIds = [...bodyWithCitations.matchAll(/\[KNOWLEDGE:([0-9a-f-]{36})\]/gi)]
+    .map((match) => match[1].toLowerCase());
+  if (factIds.some((id) => !allowedFacts.has(id))) throw new Error("Outreach draft invented or used a blocked lead fact ID");
+  if (knowledgeIds.some((id) => !allowedKnowledge.has(id))) throw new Error("Outreach draft invented outreach knowledge IDs");
+  if (allowedFacts.size > 0 && factIds.length === 0) throw new Error("Outreach draft omitted lead fact markers for personalization");
+  const evidenceIds = factIds.flatMap((id) => allowedFacts.get(id)?.evidenceIds ?? []);
+  return {
+    body: bodyWithCitations.replace(/\s*\[(?:LEAD:[^\]]+|KNOWLEDGE:[0-9a-f-]{36})\]/gi, "").trim(),
+    factIds: [...new Set(factIds)],
+    evidenceIds: [...new Set(evidenceIds)],
+    knowledgeIds: [...new Set(knowledgeIds)],
+  };
+}

@@ -86,4 +86,41 @@ describe("Claude outreach feedback agent", () => {
     await expect(reviseDevelopmentDraftWithClaude(context, current, "Revise", vi.fn()))
       .rejects.toThrow("CLAUDE_API_KEY");
   });
+
+  it("keeps feedback revisions inside the handoff email-fact boundary", async () => {
+    vi.stubEnv("CLAUDE_API_KEY", "test-key");
+    vi.stubEnv("CLAUDE_BASE_URL", "https://lingyuapi.com");
+    const handoffContext: DevelopmentContext = { ...context, handoff: {
+      version: "lead-handoff-v1", provenance: { candidateId: "lead-1", runId: "run-1",
+        evidenceSnapshotHash: "hash", correctionModel: "corrector", scoringModel: "scorer", reviewStatus: "not-required" },
+      identity: { companyName: company.displayName, officialUrl: "https://example.de/", domain: company.domain,
+        possibleRoles: ["SI"] },
+      decision: { score: 82, recommendedFamilies: ["services"], scoreConfidence: 85, scoringStatus: "completed" },
+      externallyUsableFacts: [{ factId: "fact-1", kind: "commercial-action",
+        statement: "Example delivers network integration services.", evidenceIds: ["ev-1"],
+        sourceTypes: ["official-website"], confidence: 90 }],
+      internalInterpretations: [{ interpretationId: "internal-1", dimension: "productAndUseCaseFit",
+        statement: "Potential fit is an internal hypothesis.", basedOnFactIds: ["fact-1"], confidence: 70 }],
+      personalizationHooks: [{ hook: "Network integration services", basedOnFactIds: ["fact-1"], allowedInEmail: true }],
+      unknowns: [], risks: [], doNotClaim: ["Example procures directly from brands."],
+      evidenceIndex: [{ evidenceId: "ev-1", url: "https://example.de/solutions", title: "Solutions",
+        sourceType: "official-website" }],
+      quality: { readyForStrategy: true, readyForEmail: true, conflicts: [], warnings: [] },
+    } };
+    const responseValue = { subjectOptions: ["Revised subject"],
+      revisedBodyWithCitations: "Dear {{first_name}},\n\nYour network integration services caught my attention. [LEAD:fact-1] Cudy serves consumer and SMB networking markets. [KNOWLEDGE:00000000-0000-0000-0000-000000000001]\n\nWould a short call next week be useful?\n\nBest regards,\nSteven",
+      memoryEvaluation: { valuable: false, reason: "No reusable rule", marketCodes: [], channelRoles: [] } };
+    const stream = [`event: message_start\ndata: ${JSON.stringify({ type: "message_start", message: { model: "claude-opus-5", usage: { input_tokens: 10 } } })}`,
+      `event: content_block_delta\ndata: ${JSON.stringify({ type: "content_block_delta", delta: { type: "text_delta", text: JSON.stringify(responseValue) } })}`,
+      `event: message_delta\ndata: ${JSON.stringify({ type: "message_delta", delta: { stop_reason: "end_turn" }, usage: { output_tokens: 10 } })}`,
+      `event: message_stop\ndata: ${JSON.stringify({ type: "message_stop" })}`].join("\n\n");
+    const fetchMock = vi.fn().mockResolvedValue(new Response(stream, { status: 200,
+      headers: { "content-type": "text/event-stream" } }));
+    const result = await reviseDevelopmentDraftWithClaude(handoffContext, current, "Keep it concise", fetchMock);
+    expect(result.evidenceIds).toEqual(["ev-1"]);
+    expect(result.revisedBody).not.toContain("[LEAD:");
+    const request = JSON.parse(fetchMock.mock.calls[0][1].body as string);
+    expect(JSON.stringify(request)).not.toContain("internalInterpretations");
+    expect(JSON.stringify(request)).toContain("fact-1");
+  });
 });

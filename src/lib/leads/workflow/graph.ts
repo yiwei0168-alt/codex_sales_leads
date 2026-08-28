@@ -8,6 +8,7 @@ import { collectLeadEvidence, discoverLeadCandidates } from "./discovery";
 import { LeadAssessmentReviewAgent } from "./assessment-review-agent";
 import { LeadEvidenceCorrectionAgent } from "./evidence-correction-agent";
 import { getGlobalWorkspaceId, persistLeadWorkflowResult, updateWorkflowPhase } from "./persistence";
+import { LeadHandoffAssembler } from "./handoff-assembler";
 import { buildLeadMarketPlaybook } from "./playbook";
 import { LeadQualificationAgent } from "./qualification-agent";
 import { retrieveLeadRagContext } from "./rag-context";
@@ -15,6 +16,7 @@ import type {
   CorrectedLeadWorkflowCandidate,
   LeadCandidateAssessment,
   LeadAssessmentReview,
+  LeadDevelopmentHandoff,
   LeadMarketPlaybook,
   LeadRagCitation,
   LeadWorkflowCandidate,
@@ -37,6 +39,7 @@ const WorkflowAnnotation = Annotation.Root({
   correctedCandidates: Annotation<CorrectedLeadWorkflowCandidate[]>(),
   assessments: Annotation<LeadCandidateAssessment[]>(),
   assessmentReviews: Annotation<LeadAssessmentReview[]>(),
+  handoffs: Annotation<LeadDevelopmentHandoff[]>(),
   creditsUsed: Annotation<number>(),
   warnings: Annotation<string[]>(),
   result: Annotation<LeadWorkflowResult | undefined>(),
@@ -50,6 +53,7 @@ export interface LeadWorkflowDependencies {
   correctionAgent: Pick<LeadEvidenceCorrectionAgent, "correct">;
   qualificationAgent: Pick<LeadQualificationAgent, "evaluate">;
   assessmentReviewAgent: Pick<LeadAssessmentReviewAgent, "review">;
+  handoffAssembler: Pick<LeadHandoffAssembler, "assemble">;
   persist: typeof persistLeadWorkflowResult;
   updatePhase: typeof updateWorkflowPhase;
 }
@@ -62,6 +66,7 @@ const productionDependencies: LeadWorkflowDependencies = {
   correctionAgent: new LeadEvidenceCorrectionAgent(),
   qualificationAgent: new LeadQualificationAgent(),
   assessmentReviewAgent: new LeadAssessmentReviewAgent(),
+  handoffAssembler: new LeadHandoffAssembler(),
   persist: persistLeadWorkflowResult,
   updatePhase: updateWorkflowPhase,
 };
@@ -141,6 +146,14 @@ export function buildLeadWorkflowGraph(
       return { phase: "reviewing-scores" as const, assessments: reviewed.assessments,
         assessmentReviews: reviewed.reviews, warnings: [...state.warnings, ...reviewed.warnings] };
     })
+    .addNode("assemble_handoff_briefs", async (state) => {
+      await phase(dependencies, state, "assembling-handoff");
+      if (!state.runId) throw new Error("Run ID is missing before handoff assembly");
+      return { phase: "assembling-handoff" as const,
+        handoffs: dependencies.handoffAssembler.assemble(
+          state.correctedCandidates, state.assessments, state.assessmentReviews, state.runId,
+        ) };
+    })
     .addNode("persist_results", async (state) => {
       await phase(dependencies, state, "persisting");
       if (!state.playbook || !state.runId) throw new Error("Workflow cannot persist without playbook and run ID");
@@ -159,6 +172,7 @@ export function buildLeadWorkflowGraph(
         candidates: state.correctedCandidates,
         assessments: state.assessments,
         assessmentReviews: state.assessmentReviews,
+        handoffs: state.handoffs,
         warnings: state.warnings,
       });
       await phase(dependencies, state, "completed");
@@ -171,7 +185,8 @@ export function buildLeadWorkflowGraph(
     .addEdge("collect_evidence", "correct_candidates")
     .addEdge("correct_candidates", "score_candidates")
     .addEdge("score_candidates", "review_assessment_anomalies")
-    .addEdge("review_assessment_anomalies", "persist_results")
+    .addEdge("review_assessment_anomalies", "assemble_handoff_briefs")
+    .addEdge("assemble_handoff_briefs", "persist_results")
     .addEdge("persist_results", END);
   return graph.compile(checkpointer ? { checkpointer } : undefined);
 }
@@ -201,6 +216,7 @@ export async function runLeadWorkflow(input: {
     correctedCandidates: [],
     assessments: [],
     assessmentReviews: [],
+    handoffs: [],
     creditsUsed: 0,
     warnings: [],
   };

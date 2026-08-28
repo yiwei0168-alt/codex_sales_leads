@@ -7,18 +7,23 @@ describe("development strategy graph", () => {
   it("loads context, invokes Kimi and persists the validated draft", async () => {
     const context = { userId: "user", workspaceId: "workspace", companyId: "company-db",
       company: { id: "company" }, knowledge: [], templates: [] } as unknown as DevelopmentContext;
-    const generated = {
-      strategy: { objective: "Objective", personalizationAngle: "Angle", valuePropositions: ["Value"],
+    const strategy = { objective: "Objective", personalizationAngle: "Angle", valuePropositions: ["Value"],
         recommendedProducts: [], targetTitles: ["Director"], likelyObjections: [], callToAction: "Call",
-        followUpPlan: ["Follow"], evidenceIds: [], knowledgeIds: [] },
+        followUpPlan: ["Follow"], evidenceIds: [], knowledgeIds: [] };
+    const strategyPlan = { strategy, evidenceIds: [], knowledgeIds: [], warnings: [], model: "kimi-k3",
+      promptVersion: "strategy-v3", generationMetrics: { modelCalls: 1, latencyMs: 10 } };
+    const generated = {
+      strategy,
       draft: { language: "en", subjectOptions: ["Subject"], body: "Body", wordCount: 1, placeholders: [] },
       evidenceIds: [], knowledgeIds: [], templateIds: [], warnings: [], model: "kimi-k3", promptVersion: "v1",
+      generationMetrics: { modelCalls: 2, latencyMs: 20 },
     };
     const result = { ...generated, id: "draft", companyExternalId: "company", status: "generated" as const,
       revision: 1, createdAt: "2026-08-24", recipient: undefined };
     const dependencies = {
       loadContext: vi.fn().mockResolvedValue(context),
-      generate: vi.fn().mockResolvedValue(generated),
+      generateStrategy: vi.fn().mockResolvedValue(strategyPlan),
+      generateEmail: vi.fn().mockResolvedValue(generated),
       persist: vi.fn().mockResolvedValue(result),
     };
     const state = await buildDevelopmentStrategyGraph(dependencies).invoke({
@@ -26,7 +31,8 @@ describe("development strategy graph", () => {
     });
     expect(state.result).toEqual(result);
     expect(dependencies.loadContext).toHaveBeenCalledOnce();
-    expect(dependencies.generate).toHaveBeenCalledOnce();
+    expect(dependencies.generateStrategy).toHaveBeenCalledOnce();
+    expect(dependencies.generateEmail).toHaveBeenCalledOnce();
     expect(dependencies.persist).toHaveBeenCalledOnce();
   });
 });

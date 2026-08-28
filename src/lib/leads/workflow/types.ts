@@ -49,6 +49,7 @@ export type LeadWorkflowPhase =
   | "correcting-evidence"
   | "scoring"
   | "reviewing-scores"
+  | "assembling-handoff"
   | "persisting"
   | "completed"
   | "failed";
@@ -212,6 +213,65 @@ export interface LeadAssessmentReview {
   warnings: string[];
 }
 
+export interface LeadDevelopmentHandoff {
+  version: "lead-handoff-v1";
+  provenance: {
+    candidateId: string;
+    runId: string;
+    evidenceSnapshotHash: string;
+    correctionModel: string;
+    scoringModel: string;
+    reviewStatus: LeadAssessmentReviewStatus;
+  };
+  identity: {
+    companyName: string;
+    officialUrl: string;
+    domain: string;
+    possibleRoles: ChannelRole[];
+  };
+  decision: {
+    score: number;
+    recommendedFamilies: ChannelRoleFamily[];
+    scoreConfidence: number;
+    scoringStatus: LeadCandidateAssessment["scoringStatus"];
+  };
+  externallyUsableFacts: Array<{
+    factId: string;
+    kind: LeadEvidenceFindingKind;
+    statement: string;
+    evidenceIds: string[];
+    sourceTypes: LeadEvidenceItem["sourceType"][];
+    confidence: number;
+  }>;
+  internalInterpretations: Array<{
+    interpretationId: string;
+    dimension: keyof LeadFitDimensions;
+    statement: string;
+    basedOnFactIds: string[];
+    confidence: number;
+  }>;
+  personalizationHooks: Array<{
+    hook: string;
+    basedOnFactIds: string[];
+    allowedInEmail: boolean;
+  }>;
+  unknowns: string[];
+  risks: string[];
+  doNotClaim: string[];
+  evidenceIndex: Array<{
+    evidenceId: string;
+    url: string;
+    title: string;
+    sourceType: LeadEvidenceItem["sourceType"];
+  }>;
+  quality: {
+    readyForStrategy: boolean;
+    readyForEmail: boolean;
+    conflicts: string[];
+    warnings: string[];
+  };
+}
+
 export interface LeadWorkflowResult {
   runId: string;
   countryCode: string;
@@ -241,6 +301,7 @@ export interface LeadWorkflowState {
   correctedCandidates: CorrectedLeadWorkflowCandidate[];
   assessments: LeadCandidateAssessment[];
   assessmentReviews: LeadAssessmentReview[];
+  handoffs: LeadDevelopmentHandoff[];
   creditsUsed: number;
   warnings: string[];
   result?: LeadWorkflowResult;
