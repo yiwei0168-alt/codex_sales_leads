@@ -101,6 +101,10 @@ function dependencies(events: string[], context = ragContext): LeadWorkflowDepen
     collectEvidence: vi.fn(async () => { events.push("evidence"); return { candidates: [candidate], creditsUsed: 2, warnings: [] }; }),
     correctionAgent: { correct: vi.fn(async () => { events.push("correct"); return { candidates: [correctedCandidate], creditsUsed: 1, warnings: [] }; }) },
     qualificationAgent: { evaluate: vi.fn(async () => { events.push("score"); return [assessment]; }) },
+    assessmentReviewAgent: { review: vi.fn(async () => { events.push("review"); return { assessments: [assessment],
+      reviews: [{ candidateId: assessment.candidateId, required: false, triggers: [], status: "not-required" as const,
+        primaryModel: assessment.model, primaryScore: assessment.totalScore, finalScore: assessment.totalScore,
+        materialDisagreements: [], rationale: "No trigger", warnings: [] }], warnings: [] }; }) },
     persist: vi.fn(async () => { events.push("persist"); return result; }),
   };
 }
@@ -110,10 +114,10 @@ describe("LangGraph lead workflow", () => {
     const events: string[] = [];
     const graph = buildLeadWorkflowGraph(dependencies(events));
     const state = await graph.invoke({ userId: "user-1", actionId: "action-1", graphThreadId: "thread-1",
-      workspaceId: "workspace-1", plan, phase: "queued", ragContext: [], candidates: [], assessments: [], creditsUsed: 0, warnings: [] });
+      workspaceId: "workspace-1", plan, phase: "queued", ragContext: [], candidates: [], assessments: [], assessmentReviews: [], creditsUsed: 0, warnings: [] });
     expect(state.result?.accepted).toBe(1);
-    expect(events.filter((item) => ["rag", "playbook", "discover", "evidence", "correct", "score", "persist"].includes(item)))
-      .toEqual(["rag", "playbook", "discover", "evidence", "correct", "score", "persist"]);
+    expect(events.filter((item) => ["rag", "playbook", "discover", "evidence", "correct", "score", "review", "persist"].includes(item)))
+      .toEqual(["rag", "playbook", "discover", "evidence", "correct", "score", "review", "persist"]);
   });
 
   it("fails closed before external discovery when one RAG domain is missing", async () => {
@@ -121,7 +125,7 @@ describe("LangGraph lead workflow", () => {
     const deps = dependencies(events, ragContext.filter((item) => item.collection !== "company"));
     const graph = buildLeadWorkflowGraph(deps);
     await expect(graph.invoke({ userId: "user-1", actionId: "action-1", graphThreadId: "thread-1",
-      workspaceId: "workspace-1", plan, phase: "queued", ragContext: [], candidates: [], assessments: [], creditsUsed: 0, warnings: [] }))
+      workspaceId: "workspace-1", plan, phase: "queued", ragContext: [], candidates: [], assessments: [], assessmentReviews: [], creditsUsed: 0, warnings: [] }))
       .rejects.toThrow("missing usable company context");
     expect(deps.discover).not.toHaveBeenCalled();
   });
@@ -133,7 +137,7 @@ describe("LangGraph lead workflow", () => {
     const deps = dependencies(events, context);
     const graph = buildLeadWorkflowGraph(deps);
     await expect(graph.invoke({ userId: "user-1", actionId: "action-1", graphThreadId: "thread-1",
-      workspaceId: "workspace-1", plan, phase: "queued", ragContext: [], candidates: [], assessments: [], creditsUsed: 0, warnings: [] }))
+      workspaceId: "workspace-1", plan, phase: "queued", ragContext: [], candidates: [], assessments: [], assessmentReviews: [], creditsUsed: 0, warnings: [] }))
       .rejects.toThrow("lacks independent structured/text retrieval corroboration");
     expect(deps.discover).not.toHaveBeenCalled();
   });

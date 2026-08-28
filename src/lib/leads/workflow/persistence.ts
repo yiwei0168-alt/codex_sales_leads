@@ -7,6 +7,7 @@ import { tenantQuery, tenantTransaction } from "@/lib/rag/db";
 import type {
   CorrectedLeadWorkflowCandidate,
   LeadCandidateAssessment,
+  LeadAssessmentReview,
   LeadMarketPlaybook,
   LeadRagCitation,
   LeadWorkflowPhase,
@@ -156,9 +157,11 @@ export async function persistLeadWorkflowResult(input: {
   playbook: LeadMarketPlaybook;
   candidates: CorrectedLeadWorkflowCandidate[];
   assessments: LeadCandidateAssessment[];
+  assessmentReviews: LeadAssessmentReview[];
   warnings: string[];
 }): Promise<LeadWorkflowResult> {
   const candidateById = new Map(input.candidates.map((item) => [item.candidateId, item]));
+  const reviewById = new Map(input.assessmentReviews.map((item) => [item.candidateId, item]));
   const selected = input.assessments
     .filter((item) => item.scoringStatus === "completed" && item.eligible && item.totalScore >= 50
       && candidateById.has(item.candidateId))
@@ -175,8 +178,9 @@ export async function persistLeadWorkflowResult(input: {
            user_id, run_id, candidate_id, company_name, domain, official_website_url, roles, primary_role,
            eligible, total_score, confidence, gates, dimensions, account_tier, supply_model,
            brand_involvement, summary, reasons, risks, unknowns, evidence, correction, evidence_ids,
-           fact_ledger, dimension_rationales, scoring_status, model, prompt_version, escalated, warnings, selected, selected_rank
-         ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32)
+           fact_ledger, dimension_rationales, scoring_status, assessment_review,
+           model, prompt_version, escalated, warnings, selected, selected_rank
+         ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33)
          on conflict (run_id, candidate_id) do update set roles=excluded.roles, primary_role=excluded.primary_role,
            eligible=excluded.eligible, total_score=excluded.total_score, confidence=excluded.confidence,
            gates=excluded.gates, dimensions=excluded.dimensions, account_tier=excluded.account_tier,
@@ -184,7 +188,7 @@ export async function persistLeadWorkflowResult(input: {
            summary=excluded.summary, reasons=excluded.reasons, risks=excluded.risks, unknowns=excluded.unknowns,
            evidence=excluded.evidence, correction=excluded.correction, evidence_ids=excluded.evidence_ids, model=excluded.model,
            fact_ledger=excluded.fact_ledger, dimension_rationales=excluded.dimension_rationales,
-           scoring_status=excluded.scoring_status,
+           scoring_status=excluded.scoring_status, assessment_review=excluded.assessment_review,
            prompt_version=excluded.prompt_version, escalated=excluded.escalated, warnings=excluded.warnings,
            selected=excluded.selected, selected_rank=excluded.selected_rank, updated_at=now()`,
         [input.userId, input.runId, assessment.candidateId, candidate.companyName, candidate.domain,
@@ -193,6 +197,7 @@ export async function persistLeadWorkflowResult(input: {
           assessment.accountTier, assessment.supplyModel, assessment.brandInvolvement, assessment.summary,
           assessment.reasons, assessment.risks, assessment.unknowns, JSON.stringify(candidate.evidence), JSON.stringify(candidate.correction), assessment.evidenceIds,
           JSON.stringify(candidate.correction.findings), JSON.stringify(assessment.dimensionRationales), assessment.scoringStatus,
+          JSON.stringify(reviewById.get(assessment.candidateId) ?? {}),
           assessment.model, assessment.promptVersion, assessment.escalated, assessment.warnings, Boolean(rank), rank ?? null],
       );
       if (rank) await saveCompany(client, input.workspaceId,

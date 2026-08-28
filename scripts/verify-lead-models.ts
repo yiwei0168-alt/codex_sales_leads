@@ -3,6 +3,7 @@ import nextEnv from "@next/env";
 import { buildLeadMarketPlaybook } from "../src/lib/leads/workflow/playbook";
 import { LeadEvidenceCorrectionAgent } from "../src/lib/leads/workflow/evidence-correction-agent";
 import { LeadQualificationAgent } from "../src/lib/leads/workflow/qualification-agent";
+import { LeadAssessmentReviewAgent } from "../src/lib/leads/workflow/assessment-review-agent";
 import type { LeadRagCitation, LeadWorkflowCandidate } from "../src/lib/leads/workflow/types";
 
 nextEnv.loadEnvConfig(process.cwd());
@@ -67,6 +68,12 @@ const [assessment] = await new LeadQualificationAgent(undefined, { batchSize: 1,
 if (!assessment || assessment.model === "unavailable" || !assessment.escalated) {
   throw new Error(`DeepSeek model preflight failed: ${assessment?.warnings.join("; ") ?? "no assessment"}`);
 }
+const reviewed = await new LeadAssessmentReviewAgent(undefined, { randomAuditPercent: 100, concurrency: 1 })
+  .review([correctedCandidate], [assessment], playbook, { ...plan, roles: [...plan.roles] });
+const review = reviewed.reviews[0];
+if (!review || review.status === "review-failed") {
+  throw new Error(`OpenAI assessment review preflight failed: ${review?.warnings.join("; ") ?? "no review"}`);
+}
 
 console.log(JSON.stringify({
   planner: { model: playbook.model, generatedBy: playbook.generatedBy, queryCount: playbook.searchQueries.length },
@@ -74,4 +81,6 @@ console.log(JSON.stringify({
     schemaValid: true, roles: correctedCandidate.correction.resolvedRoles },
   qualification: { model: assessment.model, escalated: assessment.escalated,
     schemaValid: true, eligible: assessment.eligible, score: assessment.totalScore },
+  independentReview: { status: review.status, secondaryModel: review.secondaryModel,
+    judgeModel: review.judgeModel, finalScore: review.finalScore },
 }, null, 2));

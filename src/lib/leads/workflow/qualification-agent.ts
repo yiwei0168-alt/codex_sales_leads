@@ -64,7 +64,7 @@ function cooperationLane(lane: CorrectedLeadWorkflowCandidate["queryFamily"]): C
   return "operator";
 }
 
-function normalizeAssessment(
+export function normalizeAssessment(
   value: LeadAssessmentModelOutput,
   candidate: CorrectedLeadWorkflowCandidate,
   response: StructuredAiResponse<unknown>,

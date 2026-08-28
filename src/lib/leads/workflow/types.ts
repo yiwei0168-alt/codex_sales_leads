@@ -48,6 +48,7 @@ export type LeadWorkflowPhase =
   | "collecting-evidence"
   | "correcting-evidence"
   | "scoring"
+  | "reviewing-scores"
   | "persisting"
   | "completed"
   | "failed";
@@ -187,6 +188,30 @@ export interface LeadCandidateAssessment {
   warnings: string[];
 }
 
+export type LeadAssessmentReviewStatus =
+  | "not-required"
+  | "secondary-confirmed"
+  | "judge-resolved"
+  | "targeted-research-required"
+  | "review-failed";
+
+export interface LeadAssessmentReview {
+  candidateId: string;
+  required: boolean;
+  triggers: string[];
+  status: LeadAssessmentReviewStatus;
+  primaryModel: string;
+  secondaryModel?: string;
+  judgeModel?: string;
+  primaryScore: number;
+  secondaryScore?: number;
+  finalScore: number;
+  materialDisagreements: string[];
+  rationale: string;
+  researchQuestion?: string;
+  warnings: string[];
+}
+
 export interface LeadWorkflowResult {
   runId: string;
   countryCode: string;
@@ -215,6 +240,7 @@ export interface LeadWorkflowState {
   candidates: LeadWorkflowCandidate[];
   correctedCandidates: CorrectedLeadWorkflowCandidate[];
   assessments: LeadCandidateAssessment[];
+  assessmentReviews: LeadAssessmentReview[];
   creditsUsed: number;
   warnings: string[];
   result?: LeadWorkflowResult;

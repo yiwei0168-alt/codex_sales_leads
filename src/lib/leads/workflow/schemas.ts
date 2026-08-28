@@ -106,6 +106,15 @@ export const leadAssessmentBatchSchema = z.object({
   assessments: z.array(leadAssessmentModelSchema).min(1).max(5),
 });
 
+export const leadAssessmentJudgeSchema = z.object({
+  candidateId: z.string().min(8).max(80),
+  decision: z.enum(["accept-a", "accept-b", "merge", "targeted-research"]),
+  assessment: leadAssessmentModelSchema,
+  rationale: z.string().min(8).max(800),
+  researchQuestion: z.string().max(500),
+  warnings: z.array(z.string().max(300)).max(12),
+});
+
 export type LeadMarketPlaybookModelOutput = z.infer<typeof leadMarketPlaybookModelSchema>;
 export type LeadCorrectionModelOutput = z.infer<typeof leadCorrectionModelSchema>;
 export type LeadAssessmentModelOutput = z.infer<typeof leadAssessmentModelSchema>;
