@@ -2,7 +2,7 @@
 
 This experiment is isolated from the production lead workflow. It compares discovery coverage across Gemini Grounding, Tavily, Google Places, Exa, Brave Search and SearchAPI.io before any provider is added to production.
 
-Current frozen result: [`reports/v1.5-end-to-end-correction-final-report.md`](reports/v1.5-end-to-end-correction-final-report.md). The follow-up [`v1.5 hybrid-search strategy and low-score audit`](reports/v1.5-hybrid-search-strategy-and-low-score-audit.md) derives the proposed production policy and documents why the v1.5 ranking must remain provisional until all corrected candidates are rescored on one uniform basis.
+Current frozen-evidence result: [`reports/v1.6-unified-rescoring-report.md`](reports/v1.6-unified-rescoring-report.md). It uniformly rescored all corrected candidates and supersedes the provisional v1.5 ranking. It remains a deterministic replay rather than a live multi-agent run; the accompanying [`scoring governance and downstream handoff design`](reports/v1.6-scoring-governance-and-downstream-handoff-design.md) defines the safeguards required for production scoring.
 
 ## Environment stage
 
