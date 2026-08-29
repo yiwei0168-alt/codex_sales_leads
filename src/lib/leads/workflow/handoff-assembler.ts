@@ -6,8 +6,9 @@ import type {
   LeadCandidateAssessment,
   LeadDevelopmentHandoff,
 } from "./types";
+import { isCurrentLeadScoringEvidence } from "../evidence-snapshot";
 
-const HANDOFF_BUDGET_BYTES = 4_096;
+const HANDOFF_BUDGET_BYTES = 16_384;
 
 function text(value: string, maximum = 220): string {
   const cleaned = value.replace(/\s+/g, " ").trim();
@@ -53,7 +54,7 @@ function compactToBudget(handoff: LeadDevelopmentHandoff): LeadDevelopmentHandof
     copy.quality.conflicts = copy.quality.conflicts.slice(0, 1).map((item) => text(item, 120));
     copy.quality.warnings = ["Handoff was compacted to the transport budget."];
   }
-  if (size() > HANDOFF_BUDGET_BYTES) throw new Error("Lead handoff exceeds the 4 KB transport budget after compaction");
+  if (size() > HANDOFF_BUDGET_BYTES) throw new Error("Lead handoff exceeds the 16 KB transport budget after compaction");
   return copy;
 }
 
@@ -65,16 +66,21 @@ export class LeadHandoffAssembler {
       "commercial-action": 0, "cooperation-path": 1, "brand-relationship": 2,
       "product-family": 3, role: 4, "active-networking": 5, identity: 6, "country-presence": 7,
     };
+    const isCurrentScoringEvidence = (id: string) => {
+      const item = evidenceById.get(id);
+      return Boolean(item && isCurrentLeadScoringEvidence(item, candidate.evidenceSnapshotRunId));
+    };
     const supported = candidate.correction.findings.filter((finding) => finding.status === "supported"
-      && finding.confidence >= 70 && finding.evidenceIds.some((id) => evidenceById.get(id)?.sourceType !== "discovery"))
+      && finding.confidence >= 70 && finding.evidenceIds.some(isCurrentScoringEvidence))
       .sort((left, right) => (priority[left.kind] ?? 20) - (priority[right.kind] ?? 20)
         || right.confidence - left.confidence);
     const externallyUsableFacts = supported.slice(0, 5).map((finding) => ({
       factId: finding.findingId,
       kind: finding.kind,
       statement: text(finding.statement),
-      evidenceIds: finding.evidenceIds.filter((id) => evidenceById.get(id)?.sourceType !== "discovery").slice(0, 3),
-      sourceTypes: finding.sourceTypes.filter((sourceType) => sourceType !== "discovery"),
+      evidenceIds: finding.evidenceIds.filter(isCurrentScoringEvidence).slice(0, 3),
+      sourceTypes: [...new Set(finding.evidenceIds.filter(isCurrentScoringEvidence)
+        .map((id) => evidenceById.get(id)!.sourceType))],
       confidence: finding.confidence,
     }));
     const factIds = new Set(externallyUsableFacts.map((fact) => fact.factId));
@@ -106,7 +112,7 @@ export class LeadHandoffAssembler {
       && personalizationHooks.some((hook) => hook.allowedInEmail)
       && review.status !== "review-failed";
     const handoff: LeadDevelopmentHandoff = {
-      version: "lead-handoff-v1",
+      version: "lead-handoff-v2",
       provenance: {
         candidateId: candidate.candidateId,
         runId,
@@ -116,9 +122,14 @@ export class LeadHandoffAssembler {
         reviewStatus: review.status,
       },
       identity: { companyName: text(candidate.companyName, 200), officialUrl: text(candidate.officialWebsiteUrl, 500),
-        domain: text(candidate.domain, 200), possibleRoles: assessment.roles },
-      decision: { score: assessment.totalScore, primaryFamily: candidate.correction.primaryFamily,
+        domain: text(candidate.domain, 200), supportedRoles: assessment.roles,
+        primaryBusinessRole: assessment.primaryRole },
+      decision: { score: assessment.totalScore, scoreRange: assessment.scoreRange,
+        eligibilityStatus: assessment.eligibilityStatus, primaryFamily: candidate.correction.primaryFamily,
         recommendedFamilies: candidate.correction.resolvedFamilies,
+        companyScaleClass: assessment.companyScaleClass, researchDepth: assessment.researchDepth,
+        recommendationPriority: assessment.recommendationPriority, accountTier: assessment.accountTier,
+        cooperationPaths: assessment.cooperationPaths, selectedPathId: assessment.selectedPathId,
         scoreConfidence: assessment.confidence, scoringStatus: assessment.scoringStatus },
       externallyUsableFacts,
       internalInterpretations,

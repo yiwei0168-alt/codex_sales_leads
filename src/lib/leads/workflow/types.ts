@@ -1,6 +1,7 @@
-import type { ChannelRole } from "@/lib/domain";
+import type { ChannelRole, CooperationPathType } from "@/lib/domain";
 import type { LeadSearchPlan } from "@/lib/assistant/types";
 import type { SmallLongTailAssessment } from "@/lib/leads/small-long-tail";
+import type { CooperationPathMemory } from "@/lib/leads/path-memory";
 
 export const ALL_CHANNEL_ROLES: ChannelRole[] = [
   "Distributor", "VAD", "VAR", "Dealer", "Reseller", "Retailer",
@@ -16,7 +17,15 @@ export const CHANNEL_ROLE_FAMILIES = {
 } as const satisfies Record<string, readonly ChannelRole[]>;
 
 export type ChannelRoleFamily = keyof typeof CHANNEL_ROLE_FAMILIES;
+export type PrimaryBusinessRole = ChannelRole | "Hybrid" | "Unresolved";
 export type LeadClaimStatus = "supported" | "not-supported" | "unknown" | "conflicting";
+export type LeadEligibilityStatus = "eligible" | "research-required" | "ineligible-for-current-task"
+  | "insufficient-evidence-for-recommendation";
+export type LeadResearchDepth = "deep" | "standard" | "limited";
+export type CompanyScaleClass = "Global/Enterprise" | "National" | "Regional" | "Local/Small" | "Unknown";
+export type RecommendationPriority = "High" | "Medium" | "Low" | "Hold/Research Required";
+export type SalesAccountTier = "Strategic Distributor" | "Priority Distributor" | "Standard Distributor"
+  | "Long-tail Distributor" | "KA" | "Priority" | "Standard" | "Long-tail";
 export type LeadEvidenceFindingKind =
   | "identity"
   | "country-presence"
@@ -90,6 +99,7 @@ export interface LeadMarketPlaybook {
   ragCitationIds: string[];
   generatedBy: "langchain-model" | "deterministic-fallback";
   model?: string;
+  cooperationPathMemory?: CooperationPathMemory[];
   warnings: string[];
 }
 
@@ -101,10 +111,15 @@ export interface LeadEvidenceItem {
   sourceType: "discovery" | "official-website" | "independent-public";
   provider: string;
   capturedAt: string;
+  evidenceRunId?: string;
+  contentHash?: string;
+  freshnessStatus?: "fresh" | "revalidated" | "stale" | "unknown";
+  priorRunId?: string;
 }
 
 export interface LeadWorkflowCandidate {
   candidateId: string;
+  evidenceSnapshotRunId: string;
   companyName: string;
   domain: string;
   officialWebsiteUrl: string;
@@ -121,7 +136,7 @@ export interface LeadCandidateCorrection {
   originalOfficialWebsiteUrl: string;
   resolvedRoles: ChannelRole[];
   resolvedFamilies: ChannelRoleFamily[];
-  primaryRole: ChannelRole | null;
+  primaryRole: PrimaryBusinessRole;
   primaryFamily: ChannelRoleFamily | null;
   primaryChannelReason: string;
   usedSmallLongTailChannelException: boolean;
@@ -151,11 +166,13 @@ export interface LeadEligibilityGates {
 }
 
 export interface LeadFitDimensions {
-  productAndUseCaseFit: number;
+  productFamilyMatch: number;
+  customerAndScenarioOverlap: number;
+  positioningCompatibility: number;
   cooperationPathAndBuyingInfluence: number;
-  evidenceAndEntityConfidence: number;
-  roleIdentificationQuality: number;
-  channelClassificationQuality: number;
+  scaleAndChannelCoverage: number;
+  executionAndEnablement: number;
+  opportunityAndRisk: number;
 }
 
 export interface LeadDimensionRationale {
@@ -167,20 +184,47 @@ export interface LeadDimensionRationale {
   confidence: number;
 }
 
+export interface CooperationPathCandidate {
+  pathId: string;
+  pathType: CooperationPathType;
+  candidateRole: ChannelRole;
+  pathNodes: Array<{ actor: "Cudy" | "Candidate" | "Intermediary" | "Customer"; role: string }>;
+  supplyFlow: string;
+  decisionRole: string;
+  fitScore: number;
+  confidence: number;
+  rank: number;
+  evidenceIds: string[];
+  prerequisites: string[];
+  valuePropositions: string[];
+  risks: string[];
+  unknowns: string[];
+  targetTitles: string[];
+  recommendedCta: string;
+  allowedInExternalEmail: boolean;
+}
+
 export interface LeadCandidateAssessment {
   candidateId: string;
   eligible: boolean;
   gates: LeadEligibilityGates;
   roles: ChannelRole[];
-  primaryRole: ChannelRole | null;
-  accountTier: "KA" | "Priority" | "Standard" | "Long-tail";
+  primaryRole: PrimaryBusinessRole;
+  companyScaleClass: CompanyScaleClass;
+  researchDepth: LeadResearchDepth;
+  recommendationPriority: RecommendationPriority;
+  accountTier: SalesAccountTier;
   evidenceProfileAssessment?: SmallLongTailAssessment;
   supplyModel: "Distributor Supply" | "Brand Direct" | "Co-sell/Co-supply" | "TBD";
   brandInvolvement: "Light" | "Standard" | "Deep";
   dimensions: LeadFitDimensions;
   dimensionRationales: LeadDimensionRationale[];
   totalScore: number;
+  scoreRange: { lower: number; upper: number };
   confidence: number;
+  eligibilityStatus: LeadEligibilityStatus;
+  cooperationPaths: CooperationPathCandidate[];
+  selectedPathId: string | null;
   summary: string;
   reasons: string[];
   risks: string[];
@@ -218,7 +262,7 @@ export interface LeadAssessmentReview {
 }
 
 export interface LeadDevelopmentHandoff {
-  version: "lead-handoff-v1";
+  version: "lead-handoff-v2";
   provenance: {
     candidateId: string;
     runId: string;
@@ -231,12 +275,21 @@ export interface LeadDevelopmentHandoff {
     companyName: string;
     officialUrl: string;
     domain: string;
-    possibleRoles: ChannelRole[];
+    supportedRoles: ChannelRole[];
+    primaryBusinessRole: PrimaryBusinessRole;
   };
   decision: {
     score: number;
+    scoreRange: { lower: number; upper: number };
+    eligibilityStatus: LeadEligibilityStatus;
     primaryFamily: ChannelRoleFamily | null;
     recommendedFamilies: ChannelRoleFamily[];
+    companyScaleClass: CompanyScaleClass;
+    researchDepth: LeadResearchDepth;
+    recommendationPriority: RecommendationPriority;
+    accountTier: SalesAccountTier;
+    cooperationPaths: CooperationPathCandidate[];
+    selectedPathId: string | null;
     scoreConfidence: number;
     scoringStatus: LeadCandidateAssessment["scoringStatus"];
   };

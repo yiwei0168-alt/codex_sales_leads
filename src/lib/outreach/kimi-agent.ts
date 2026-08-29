@@ -224,6 +224,7 @@ export async function generateDevelopmentStrategyPlanWithKimi(
         "You are Cudy Technology's channel Development Strategy Agent.",
         "Create the internal sales strategy only; do not draft an email.",
         "Use the complete lead handoff. Treat externallyUsableFacts as facts and internalInterpretations as hypotheses.",
+        "Evaluate every cooperation path in the handoff, but anchor the strategy to selectedPathId unless the user explicitly overrides it.",
         "Never turn unknowns, risks or doNotClaim items into factual assertions.",
         "Use only supplied Cudy knowledge. Return JSON matching the requested strategy object.",
       ].join("\n") },
@@ -276,6 +277,7 @@ export async function generateDevelopmentEmailWithKimi(
       { role: "system", content: [
         "You are Cudy Technology's Development Email Agent.",
         "Write the email from the approved strategy, but use only the restricted lead facts supplied to this node.",
+        "Match positioning, target title, value proposition and CTA to the single selected cooperation path supplied; do not blend alternative paths.",
         "Do not use internal interpretations, scores, risks or unknowns as customer-visible facts.",
         context.handoff
           ? (emailFacts.length > 0 ? "Every target-company factual sentence must end with [LEAD:allowed-fact-id]."
@@ -288,6 +290,8 @@ export async function generateDevelopmentEmailWithKimi(
         requestedSchema: { language: "string", subjectOptions: ["2-3 subjects"],
           bodyWithCitations: "complete email with internal markers", placeholders: ["placeholder names"] },
         approvedStrategy: plan.strategy,
+        selectedCooperationPath: context.handoff?.decision.cooperationPaths.find((path) =>
+          path.pathId === context.handoff?.decision.selectedPathId),
         target: { name: context.company.displayName, country: context.company.country, roles: context.company.roles,
           recipient: context.recipient },
         allowedLeadFacts: emailFacts,

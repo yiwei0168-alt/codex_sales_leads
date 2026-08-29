@@ -2,11 +2,12 @@ import type { AiProvider, StructuredAiResponse } from "@/providers/contracts";
 import { DeepSeekProvider } from "@/providers/deepseek";
 import { z } from "zod";
 
-import { MULTI_ROLE_CHANNEL_POLICY } from "../channel-membership";
+import { candidateValueScore, clampDimension, recommendationPriority, salesAccountTier, selectResearchDepth } from "../candidate-value";
+import { isCurrentLeadScoringEvidence } from "../evidence-snapshot";
 import { COOPERATION_PATH_POLICY, assessCooperationPathEvidence, type CooperationLane } from "../cooperation-path";
-import { LEAD_EVIDENCE_SOURCE_POLICY, assessLeadEvidenceQuality, isDiscoveryOnlyLeadEvidence } from "../evidence-quality";
+import { LEAD_EVIDENCE_SOURCE_POLICY, assessLeadEvidenceQuality } from "../evidence-quality";
 import { assessNetworkingRelevanceEvidence } from "../networking-relevance";
-import { SMALL_LONG_TAIL_POLICY } from "../small-long-tail";
+import { ACTIVE_LEAD_SCORING_POLICY, scoringPolicyChecksum } from "../scoring-policy";
 import { leadAssessmentBatchSchema, leadAssessmentModelSchema, type LeadAssessmentModelOutput } from "./schemas";
 import type {
   LeadCandidateAssessment,
@@ -14,7 +15,7 @@ import type {
   LeadMarketPlaybook,
 } from "./types";
 
-const PROMPT_VERSION = "lead-value-v3-atomic-findings-tristate";
+const PROMPT_VERSION = "lead-value-v4-role-aware-100-point-paths";
 
 interface LeadAssessmentRequest {
   instructions: string[];
@@ -24,6 +25,7 @@ interface LeadAssessmentRequest {
     productAngles: string[];
     preferredCompanyTraits: string[];
     ragCitationIds: string[];
+    cooperationPathMemory: LeadMarketPlaybook["cooperationPathMemory"];
   };
   candidates: Array<{
     candidateId: string;
@@ -31,6 +33,7 @@ interface LeadAssessmentRequest {
     domain: string;
     resolvedRoles: string[];
     resolvedRoleFamilies: string[];
+    primaryBusinessRole: string;
     correctionReasons: string[];
     correctionConfidence: number;
     findings: CorrectedLeadWorkflowCandidate["correction"]["findings"];
@@ -69,10 +72,13 @@ export function normalizeAssessment(
   candidate: CorrectedLeadWorkflowCandidate,
   response: StructuredAiResponse<unknown>,
   escalated: boolean,
+  allowOemOdm = false,
 ): LeadCandidateAssessment {
-  const allowedEvidence = new Set(candidate.evidence.map((item) => item.id));
+  const currentScoringEvidence = candidate.evidence.filter((item) =>
+    isCurrentLeadScoringEvidence(item, candidate.evidenceSnapshotRunId));
+  const allowedEvidence = new Set(currentScoringEvidence.map((item) => item.id));
   const evidenceIds = [...new Set(value.evidenceIds.filter((id) => allowedEvidence.has(id)))];
-  const claimEvidence = candidate.evidence.filter((item) => !isDiscoveryOnlyLeadEvidence(item));
+  const claimEvidence = currentScoringEvidence;
   const claimEvidenceText = claimEvidence.flatMap((item) => [item.title, item.excerpt]);
   const networkingEvidence = assessNetworkingRelevanceEvidence(claimEvidenceText);
   const evidenceQuality = assessLeadEvidenceQuality({
@@ -80,12 +86,10 @@ export function normalizeAssessment(
     officialUrl: candidate.officialWebsiteUrl,
     evidence: candidate.evidence,
   });
-  const cooperationPaths = (candidate.correction.primaryFamily
-    ? [candidate.correction.primaryFamily]
-    : candidate.correction.resolvedFamilies.length > 0
-      ? candidate.correction.resolvedFamilies : [candidate.queryFamily])
+  const pathEvidenceAssessments = (candidate.correction.resolvedFamilies.length > 0
+    ? candidate.correction.resolvedFamilies : [candidate.queryFamily])
     .map((family) => assessCooperationPathEvidence({ lane: cooperationLane(family), evidence: claimEvidenceText }));
-  const cooperationPath = cooperationPaths.sort((left, right) => right.cap - left.cap)[0];
+  const pathEvidenceAssessment = pathEvidenceAssessments.sort((left, right) => right.cap - left.cap)[0];
   const gates = {
     ...value.gates,
     correctedIdentityUsable: corroboratedGate(value.gates.correctedIdentityUsable,
@@ -93,18 +97,49 @@ export function normalizeAssessment(
     networkingRelevant: corroboratedGate(value.gates.networkingRelevant, networkingEvidence.demonstrated),
   };
   const dimensions = {
-    productAndUseCaseFit: clamp(value.dimensions.productAndUseCaseFit, 44),
-    cooperationPathAndBuyingInfluence: clamp(value.dimensions.cooperationPathAndBuyingInfluence, 32),
-    evidenceAndEntityConfidence: clamp(value.dimensions.evidenceAndEntityConfidence, 20),
-    roleIdentificationQuality: candidate.correction.resolvedRoles.length > 0
-      ? clamp(value.dimensions.roleIdentificationQuality, 3) : 0,
-    channelClassificationQuality: candidate.correction.resolvedFamilies.length > 0
-      ? clamp(value.dimensions.channelClassificationQuality, 1) : 0,
+    productFamilyMatch: clampDimension("productFamilyMatch", value.dimensions.productFamilyMatch),
+    customerAndScenarioOverlap: clampDimension("customerAndScenarioOverlap", value.dimensions.customerAndScenarioOverlap),
+    positioningCompatibility: clampDimension("positioningCompatibility", value.dimensions.positioningCompatibility),
+    cooperationPathAndBuyingInfluence: clampDimension("cooperationPathAndBuyingInfluence", value.dimensions.cooperationPathAndBuyingInfluence),
+    scaleAndChannelCoverage: clampDimension("scaleAndChannelCoverage", value.dimensions.scaleAndChannelCoverage),
+    executionAndEnablement: clampDimension("executionAndEnablement", value.dimensions.executionAndEnablement),
+    opportunityAndRisk: clampDimension("opportunityAndRisk", value.dimensions.opportunityAndRisk),
   };
-  const eligible = Object.values(gates).every((state) => state === "supported");
-  const totalScore = eligible ? Math.round(Object.values(dimensions).reduce((sum, score) => sum + score, 0)) : 0;
+  const allowedRoles = new Set(candidate.correction.resolvedRoles);
+  const cooperationPaths = value.cooperationPaths
+    .filter((path) => allowedRoles.has(path.candidateRole))
+    .filter((path) => allowOemOdm || path.pathType !== "OEM/ODM")
+    .map((path) => ({ ...path,
+      fitScore: clamp(path.fitScore, 100), confidence: clamp(path.confidence, 100),
+      evidenceIds: [...new Set(path.evidenceIds.filter((id) => allowedEvidence.has(id)))],
+    }))
+    .sort((left, right) => left.rank - right.rank || right.fitScore - left.fitScore);
+  const selectedPath = cooperationPaths.find((path) => path.pathId === value.selectedPathId) ?? cooperationPaths[0];
+  const hasNotSupportedGate = Object.values(gates).some((state) => state === "not-supported");
+  const hasUnresolvedGate = Object.values(gates).some((state) => state !== "supported");
+  const sizeFinding = candidate.correction.findings.some((finding) => finding.kind === "company-size"
+    && finding.status === "supported" && finding.evidenceIds.length > 0);
+  const companyScaleClass = sizeFinding ? value.companyScaleClass : "Unknown";
+  const researchDepth = selectResearchDepth({ scaleClass: companyScaleClass,
+    strongRelevanceSignal: networkingEvidence.demonstrated, userNominated: false, topNBoundary: false,
+    hasConflict: candidate.correction.findings.some((finding) => finding.status === "conflicting") });
+  const eligibilityStatus = hasNotSupportedGate ? "ineligible-for-current-task" as const
+    : hasUnresolvedGate || cooperationPaths.length === 0
+      ? researchDepth === "limited" && value.eligibilityStatus === "insufficient-evidence-for-recommendation"
+        ? "insufficient-evidence-for-recommendation" as const : "research-required" as const
+      : "eligible" as const;
+  const eligible = eligibilityStatus === "eligible";
+  const totalScore = candidateValueScore(dimensions);
+  const uncertainty = Math.max(2, Math.round((100 - clamp(value.confidence, 100)) * 0.15
+    + Math.min(5, value.unknowns.length)));
+  const scoreRange = { lower: Math.max(0, totalScore - uncertainty), upper: Math.min(100, totalScore + uncertainty) };
+  const priority = recommendationPriority(totalScore, eligibilityStatus);
+  const accountTier = salesAccountTier({ score: totalScore,
+    scaleAndChannelCoverage: dimensions.scaleAndChannelCoverage,
+    cooperationPathAndBuyingInfluence: dimensions.cooperationPathAndBuyingInfluence,
+    selectedPath, eligibilityStatus, scaleClass: companyScaleClass });
   const roles = candidate.correction.resolvedRoles;
-  const primaryRole = candidate.correction.primaryRole ?? null;
+  const primaryRole = candidate.correction.primaryRole;
   const allowedFindings = new Set(candidate.correction.findings.map((finding) => finding.findingId));
   const dimensionRationales = value.dimensionRationales.map((rationale) => ({
     ...rationale,
@@ -119,14 +154,21 @@ export function normalizeAssessment(
     gates,
     roles,
     primaryRole,
-    accountTier: value.accountTier,
+    companyScaleClass,
+    researchDepth,
+    recommendationPriority: priority,
+    accountTier,
     evidenceProfileAssessment: evidenceQuality.smallLongTail,
     supplyModel: value.supplyModel,
     brandInvolvement: value.brandInvolvement,
     dimensions,
     dimensionRationales,
     totalScore,
+    scoreRange,
     confidence: clamp(value.confidence, 100),
+    eligibilityStatus,
+    cooperationPaths,
+    selectedPathId: selectedPath?.pathId ?? null,
     summary: value.summary,
     reasons: value.reasons,
     risks: value.risks,
@@ -142,8 +184,10 @@ export function normalizeAssessment(
       ...(value.gates.correctedIdentityUsable === "supported" && !evidenceQuality.identityConsistent
         ? [`Corrected identity evidence conflicts with the model gate: ${evidenceQuality.reason}`] : []),
       ...(!evidenceQuality.sufficient ? [`Evidence remains sparse: ${evidenceQuality.reason}`] : []),
-      ...(value.dimensions.cooperationPathAndBuyingInfluence > cooperationPath.cap * 6.4
-        ? [`Cooperation-path model score exceeds the deterministic evidence signal of ${(cooperationPath.cap * 6.4).toFixed(1)}/32 and requires review: ${cooperationPath.reason}`] : []),
+      ...(value.dimensions.cooperationPathAndBuyingInfluence > pathEvidenceAssessment.cap * 3
+        ? [`Cooperation-path model score exceeds the deterministic evidence signal of ${(pathEvidenceAssessment.cap * 3).toFixed(1)}/15 and requires review: ${pathEvidenceAssessment.reason}`] : []),
+      ...(cooperationPaths.length < value.cooperationPaths.length
+        ? ["Cooperation paths with unsupported roles, disabled OEM/ODM, or invalid evidence were removed."] : []),
       ...(evidenceIds.length < value.evidenceIds.length ? ["Model returned unsupported evidence IDs; they were removed."] : [])],
   };
 }
@@ -151,11 +195,14 @@ export function normalizeAssessment(
 function requiresEscalation(candidate: CorrectedLeadWorkflowCandidate, assessment: LeadCandidateAssessment,
   value: LeadAssessmentModelOutput): boolean {
   const deterministicPathWarning = assessment.warnings.some((warning) => warning.includes("requires review"));
-  return value.needsEscalation || value.confidence < 70 || candidate.correction.confidence < 75
-    || candidate.correction.identityChanged || candidate.correction.routingChanged
+  const materiallyDifferentPaths = new Set(assessment.cooperationPaths.map((path) => path.pathType)).size > 1;
+  return value.needsEscalation || value.confidence < 75 || candidate.correction.confidence < 75
+    || candidate.correction.identityChanged
+    || candidate.correction.primaryRole === "Hybrid" || candidate.correction.primaryRole === "Unresolved"
+    || materiallyDifferentPaths
     || candidate.evidenceWarnings.length > 0 || deterministicPathWarning
-    || Object.values(assessment.gates).some((state) => state !== "supported")
-    || (assessment.totalScore >= 40 && assessment.totalScore <= 60);
+    || candidate.correction.findings.some((finding) => finding.status === "conflicting")
+    || Object.values(assessment.gates).some((state) => state === "conflicting");
 }
 
 function failedAssessment(candidate: CorrectedLeadWorkflowCandidate, message: string): LeadCandidateAssessment {
@@ -170,7 +217,10 @@ function failedAssessment(candidate: CorrectedLeadWorkflowCandidate, message: st
       independentProspect: "unknown",
     },
     roles: candidate.correction.resolvedRoles,
-    primaryRole: candidate.correction.primaryRole ?? null,
+    primaryRole: candidate.correction.primaryRole,
+    companyScaleClass: "Unknown",
+    researchDepth: "standard",
+    recommendationPriority: "Hold/Research Required",
     accountTier: "Standard",
     evidenceProfileAssessment: {
       profile: "standard", confidence: "none", exceptionEligible: false,
@@ -180,15 +230,21 @@ function failedAssessment(candidate: CorrectedLeadWorkflowCandidate, message: st
     supplyModel: "TBD",
     brandInvolvement: "Standard",
     dimensions: {
-      productAndUseCaseFit: 0,
+      productFamilyMatch: 0,
+      customerAndScenarioOverlap: 0,
+      positioningCompatibility: 0,
       cooperationPathAndBuyingInfluence: 0,
-      evidenceAndEntityConfidence: 0,
-      roleIdentificationQuality: 0,
-      channelClassificationQuality: 0,
+      scaleAndChannelCoverage: 0,
+      executionAndEnablement: 0,
+      opportunityAndRisk: 0,
     },
     dimensionRationales: [],
     totalScore: 0,
+    scoreRange: { lower: 0, upper: 100 },
     confidence: 0,
+    eligibilityStatus: "research-required",
+    cooperationPaths: [],
+    selectedPathId: null,
     summary: "The independent qualification agent did not produce a valid evidence-grounded assessment.",
     reasons: ["Candidate was not published because automated evidence assessment failed."],
     risks: ["Requires a later evidence and model retry."],
@@ -218,30 +274,24 @@ export class LeadQualificationAgent {
   private request(candidates: CorrectedLeadWorkflowCandidate[], playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string, modelVersion: string) {
     const input: LeadAssessmentRequest = {
       instructions: [
-        "Act as an independent sales-lead qualification agent. Ignore search-provider scores and discovery order.",
-        "Assess only supplied evidence. Never invent a company fact, role, country presence, product fit, relationship or evidence ID.",
-        "The upstream correction agent owns entity resolution, multi-role classification and channel routing. Treat its output as a claim to verify, but do not reclassify or rewrite it.",
-        "Every gate uses supported, not-supported, unknown or conflicting. Missing evidence and failed acquisition are unknown, never not-supported.",
-        "Return exactly one rationale for each scoring dimension. Every rationale must cite the supplied atomic finding IDs and evidence IDs that actually support it.",
-        "A wrong original search lane is never an eligibility failure. Judge the corrected roles and families against evidence; express residual mistakes only in the low-weight role and channel quality dimensions.",
-        "KA is an account tier, not a channel role. ISP is a downstream channel role.",
-        "Set networkingRelevant=true only when supplied evidence explicitly shows selling, distributing, specifying, buying, designing, installing, deploying or maintaining active networking hardware, or a WLAN/LAN implementation that directly requires it.",
-        "Active networking includes routers, gateways, cellular CPE, access points, mesh/WLAN controllers, Ethernet/PoE switches, modems, outdoor/PtP wireless, network firewalls, security gateways and network-management controllers. A named relevant vendor relationship or concrete project can also prove the gate.",
-        "Generic IT infrastructure, cloud connectivity, edge infrastructure, managed IT, IP solutions, system integration, network consulting, data centers, broadcast IP and IT procurement do not prove networking relevance without concrete products, vendors, projects or actions.",
-        "Pure structured cabling, fiber or low-voltage work can prove an Installer role but does not pass networkingRelevant without active-equipment evidence. Report absent public proof as not demonstrated, not as a factual claim that the company is unrelated.",
-        "Treat search snippets, provider summaries and AI-generated summaries as discovery only, never as standalone proof. Link every material claim to a supplied URL and concrete excerpt.",
-        "Confirm that the corrected company name, official URL/domain and evidence entity refer to the same business. A wrong or unmatched final identity fails correctedIdentityUsable; repeated pages, mirrors and duplicate excerpts count once.",
-        "One concrete company-owned official page can be sufficient. Without direct official evidence, a standard candidate normally needs two non-duplicative public origins.",
-        "Do not self-assign a small-company evidence exception and do not infer size from sparse results, weak SEO, a simple website, low traffic or missing data. The system derives this profile deterministically from positive evidence; accountTier=Long-tail is a separate commercial label.",
-        "A deterministically confirmed or probable small long-tail candidate does not require multiple independent sources: one identity-clear official marketplace store, official company/profile/social page, Google Business-style profile or other concrete auditable public source can support the assessment. Sparse evidence still affects the evidence-confidence score.",
-        "Cap cooperation-path strength by demonstrated transaction control: no explicit procurement/listing/quotation/specification/recommendation/deployment control means level 2 at most; one lever means level 3; multiple complementary levers mean level 4.",
-        "Reserve cooperation level 5 for an evidenced active transaction/listing/direct-procurement path or a complete repeatable chain. An active public Cudy listing proves the path, but a relationship label alone adds no points. Customer-supplied installation-only work is capped at level 2.",
-        "Missing public procurement or control evidence remains unknown rather than a negative fact, but cannot support a higher cooperation score. Company size never raises this score.",
-        "Evidence completeness affects evidenceAndEntityConfidence. Do not reject a real, target-market, networking-relevant prospect merely because public evidence is sparse.",
-        "Current Cudy relationship has zero fit-score weight. Cudy itself and non-independent entities fail independentProspect.",
-        "Only corrected identity usability, company existence, target-country presence, active-networking commercial relevance and prospect independence are eligibility gates.",
-        "Use the exact five dimension maxima. Role identification and channel classification together contribute only 4/100 points.",
-        "Return one assessment for every candidateId and request escalation for material ambiguity or conflicting evidence.",
+        "Act as an independent role-aware sales-lead qualification and cooperation-path agent. Ignore provider scores, discovery order and the original search lane.",
+        "Assess only supplied current-run evidence. Never invent company facts, roles, scale, product fit, relationships, paths or evidence IDs.",
+        "Treat old-run or discovery-only material as a search lead, never as scoring evidence unless it was freshly acquired or revalidated into this run.",
+        "Every gate is supported, not-supported, unknown or conflicting. Failed acquisition and missing evidence are unknown, never a negative fact.",
+        "Use the candidate's primary business role for scale peer comparison. Use the role performed in each cooperation path for role-specific customer, scenario, positioning and execution criteria.",
+        "Product family fit uses the best enabled product track, not average coverage of every Cudy family. Full-portfolio breadth applies only when the task explicitly requests a full-line master distributor.",
+        "A broadline distributor is not diluted by unrelated categories. A focused SMB specialist is not penalized for lacking home, ISP or industrial families.",
+        "Selling competitor brands is normally positive category evidence. Penalize only evidenced exclusivity, hard vendor lock-in, direct own-brand conflict, refusal or lack of entry space.",
+        "Generate every evidence-supported viable cooperation path, rank each path, and select one current recommendation. The same candidate may have direct-distribution, downstream, project or co-sell alternatives.",
+        "Do not use an upward channel hierarchy. The recommended path depends on the user stage, market, product track, candidate roles and evidence.",
+        "Use supplied private cooperation-path memory as a higher-priority user preference for analogous contexts, never as an objective company fact or score evidence. Request escalation when it conflicts with current evidence.",
+        "OEM/ODM is disabled unless the task objective explicitly asks for OEM, ODM, private label or manufacturing cooperation.",
+        "For very large or strategically important companies, request deep research when relevant business-unit or regional evidence is incomplete. For a positively identified small weak-signal long-tail company, limited research may end as insufficient-evidence-for-recommendation.",
+        "Return exactly one evidence-linked rationale for each of the seven scoring dimensions. Evidence confidence is reported separately and has zero score weight.",
+        "Product and use-case fit is 50 points: product family 25, customer/scenario 15, positioning 10. Other dimensions are path/influence 15, same-role scale/coverage 15, execution/enablement 10, opportunity/risk 10.",
+        "Use current task fit for eligibility. No company-size gate exists. A small specialist with direct scenario evidence remains eligible.",
+        "KA is never a tier-1 distributor label. Account tier and recommendation priority are computed deterministically after your assessment and must not influence dimension scores.",
+        "Return one assessment for every candidateId and request escalation for Hybrid/Unresolved roles, evidence conflicts, material alternative routes, confidence below 75 or a likely Top-N boundary.",
       ],
       market: { countryCode, countryName, objective },
       cudyFitBrief: {
@@ -249,6 +299,7 @@ export class LeadQualificationAgent {
         productAngles: playbook.productAngles,
         preferredCompanyTraits: playbook.preferredCompanyTraits,
         ragCitationIds: playbook.ragCitationIds,
+        cooperationPathMemory: playbook.cooperationPathMemory ?? [],
       },
       candidates: candidates.map((candidate) => ({
         candidateId: candidate.candidateId,
@@ -256,6 +307,7 @@ export class LeadQualificationAgent {
         domain: candidate.domain,
         resolvedRoles: candidate.correction.resolvedRoles,
         resolvedRoleFamilies: candidate.correction.resolvedFamilies,
+        primaryBusinessRole: candidate.correction.primaryRole,
         correctionReasons: candidate.correction.reasons,
         correctionConfidence: candidate.correction.confidence,
         findings: candidate.correction.findings,
@@ -268,20 +320,14 @@ export class LeadQualificationAgent {
         })),
       })),
       scoringRubric: {
-        multiRoleChannelPolicy: MULTI_ROLE_CHANNEL_POLICY,
+        policyKey: ACTIVE_LEAD_SCORING_POLICY.policyKey,
+        policyVersion: ACTIVE_LEAD_SCORING_POLICY.version,
+        policyChecksum: scoringPolicyChecksum(),
+        policy: ACTIVE_LEAD_SCORING_POLICY,
         evidenceSourcePolicy: LEAD_EVIDENCE_SOURCE_POLICY,
-        smallLongTailPolicy: SMALL_LONG_TAIL_POLICY,
         cooperationPathPolicy: COOPERATION_PATH_POLICY,
         eligibilityGates: ["correctedIdentityUsable", "companyExists", "targetCountryPresence", "networkingRelevant", "independentProspect"],
-        dimensions: {
-          productAndUseCaseFit: 44,
-          cooperationPathAndBuyingInfluence: 32,
-          evidenceAndEntityConfidence: 20,
-          roleIdentificationQuality: 3,
-          channelClassificationQuality: 1,
-        },
-        qualifiedThreshold: 50,
-        highFitThreshold: 80,
+        dimensions: ACTIVE_LEAD_SCORING_POLICY.weights,
       },
     };
     return {
@@ -310,7 +356,8 @@ export class LeadQualificationAgent {
       return await Promise.all(candidates.map(async (candidate) => {
         const value = values.get(candidate.candidateId);
         if (!value) return this.evaluateOneEscalated(candidate, playbook, countryCode, countryName, objective, "Routine batch omitted the candidate.");
-        const normalized = normalizeAssessment(value, candidate, routine.response, false);
+        const allowOemOdm = /\b(?:oem|odm|private[ -]?label|manufactur(?:e|ing))\b/i.test(objective);
+        const normalized = normalizeAssessment(value, candidate, routine.response, false, allowOemOdm);
         if (requiresEscalation(candidate, normalized, value)) {
           return this.evaluateOneEscalated(candidate, playbook, countryCode, countryName, objective, "Routine assessment requested evidence-conflict escalation.");
         }
@@ -334,7 +381,8 @@ export class LeadQualificationAgent {
         ? (escalation.output as { assessments?: unknown[] }).assessments?.[0]
         : escalation.output;
       const parsed = leadAssessmentModelSchema.parse(raw);
-      const normalized = normalizeAssessment(parsed, candidate, escalation, true);
+      const allowOemOdm = /\b(?:oem|odm|private[ -]?label|manufactur(?:e|ing))\b/i.test(objective);
+      const normalized = normalizeAssessment(parsed, candidate, escalation, true, allowOemOdm);
       return { ...normalized, warnings: [reason, ...normalized.warnings] };
     } catch (error) {
       return failedAssessment(candidate, `${reason} Escalation failed: ${error instanceof Error ? error.message : String(error)}`);

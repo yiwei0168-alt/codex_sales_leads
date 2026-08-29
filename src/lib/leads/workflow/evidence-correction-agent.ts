@@ -9,6 +9,7 @@ import { z } from "zod";
 import { assessChannelMembershipEvidence } from "../channel-membership";
 import { assessLeadEvidenceQuality } from "../evidence-quality";
 import { assessNetworkingRelevanceEvidence } from "../networking-relevance";
+import { isCurrentLeadScoringEvidence, leadEvidenceContentHash } from "../evidence-snapshot";
 import { PRIMARY_CHANNEL_POLICY, selectPrimaryChannel } from "../primary-channel";
 import { leadCorrectionBatchSchema, leadCorrectionModelSchema, type LeadCorrectionModelOutput } from "./schemas";
 import {
@@ -19,7 +20,7 @@ import {
   type LeadWorkflowCandidate,
 } from "./types";
 
-const PROMPT_VERSION = "lead-evidence-correction-v3-primary-channel-inputs";
+const PROMPT_VERSION = "lead-evidence-correction-v4-agent-primary-role";
 
 interface CorrectionRequest {
   instructions: string[];
@@ -62,7 +63,7 @@ function sameDomain(url: string, domain: string): boolean {
   return resolved === domain || Boolean(resolved?.endsWith(`.${domain}`));
 }
 
-function supplementalEvidence(result: TavilySearchResult, candidateDomain: string): LeadEvidenceItem | null {
+function supplementalEvidence(result: TavilySearchResult, candidateDomain: string, evidenceRunId: string): LeadEvidenceItem | null {
   const domain = domainOf(result.url);
   if (!domain) return null;
   const excerpt = (result.rawContent || result.content).replace(/\s+/g, " ").trim().slice(0, 4_000);
@@ -75,19 +76,28 @@ function supplementalEvidence(result: TavilySearchResult, candidateDomain: strin
     sourceType: sameDomain(result.url, candidateDomain) ? "official-website" : "independent-public",
     provider: "tavily-correction",
     capturedAt: new Date().toISOString(),
+    contentHash: leadEvidenceContentHash(excerpt),
+    freshnessStatus: "fresh",
+    evidenceRunId,
   };
 }
 
-function deterministicRoles(evidence: LeadEvidenceItem[]) {
-  const text = evidence.filter((item) => item.sourceType !== "discovery").flatMap((item) => [item.title, item.excerpt]);
+function deterministicRoles(evidence: LeadEvidenceItem[], evidenceRunId?: string) {
+  const text = evidence.filter((item) => evidenceRunId
+    ? isCurrentLeadScoringEvidence(item, evidenceRunId) : item.sourceType !== "discovery")
+    .flatMap((item) => [item.title, item.excerpt]);
   return [...new Set((Object.keys(CHANNEL_ROLE_FAMILIES) as ChannelRoleFamily[])
     .flatMap((lane) => assessChannelMembershipEvidence({ lane, evidence: text }).supportedRoles))];
 }
 
-function normalizedFindings(value: LeadCorrectionModelOutput, evidence: LeadEvidenceItem[], candidateId: string) {
+function normalizedFindings(value: LeadCorrectionModelOutput, evidence: LeadEvidenceItem[], candidateId: string,
+  evidenceRunId: string) {
   const evidenceById = new Map(evidence.map((item) => [item.id, item]));
   return value.findings.map((finding) => {
-    const evidenceIds = [...new Set(finding.evidenceIds.filter((id) => evidenceById.has(id)))];
+    const evidenceIds = [...new Set(finding.evidenceIds.filter((id) => {
+      const item = evidenceById.get(id);
+      return item && isCurrentLeadScoringEvidence(item, evidenceRunId);
+    }))];
     const findingId = stableId("finding", [candidateId, finding.kind, finding.statement,
       finding.status, ...evidenceIds].join("|"));
     return {
@@ -114,11 +124,12 @@ function roleFamilies(roles: CorrectedLeadWorkflowCandidate["correction"]["resol
 }
 
 function needsSupplement(candidate: LeadWorkflowCandidate): boolean {
-  const claimEvidence = candidate.evidence.filter((item) => item.sourceType !== "discovery");
+  const claimEvidence = candidate.evidence.filter((item) =>
+    isCurrentLeadScoringEvidence(item, candidate.evidenceSnapshotRunId));
   const text = claimEvidence.flatMap((item) => [item.title, item.excerpt]);
   const evidenceQuality = assessLeadEvidenceQuality({ candidateDomain: candidate.domain,
     officialUrl: candidate.officialWebsiteUrl, evidence: candidate.evidence });
-  const roles = deterministicRoles(candidate.evidence);
+  const roles = deterministicRoles(candidate.evidence, candidate.evidenceSnapshotRunId);
   const families = roleFamilies(roles);
   return candidate.evidenceWarnings.length > 0 || claimEvidence.length === 0 || !evidenceQuality.identityConsistent
     || !assessNetworkingRelevanceEvidence(text).demonstrated || roles.length === 0
@@ -164,7 +175,7 @@ export class LeadEvidenceCorrectionAgent {
             includeRawContent: true,
           }, AbortSignal.timeout(45_000));
           const added = response.results.flatMap((item) => {
-            const evidence = supplementalEvidence(item, candidate.domain);
+            const evidence = supplementalEvidence(item, candidate.domain, candidate.evidenceSnapshotRunId);
             return evidence ? [evidence] : [];
           });
           output[index] = {
@@ -195,8 +206,10 @@ export class LeadEvidenceCorrectionAgent {
         "Act as the evidence supplementation and correction agent before independent lead scoring.",
         "Resolve the company entity and official website only from supplied public evidence. Never invent a URL, role, relationship or evidence ID.",
         "Treat submitted identity, roles and search family as untrusted discovery hints. Correct them when evidence disagrees.",
-        "Record every simultaneously supported channel role. Do not force a primary role and do not infer business-line shares.",
-        `Primary display routing is applied deterministically after your evidence judgment: ${PRIMARY_CHANNEL_POLICY.upwardDefault} ${PRIMARY_CHANNEL_POLICY.smallLongTailException}`,
+        "Record every simultaneously supported channel role, then independently determine the primary business role from the supplied evidence.",
+        `Primary-role policy: ${PRIMARY_CHANNEL_POLICY.noUpwardDefault} ${PRIMARY_CHANNEL_POLICY.hybridAllowed}`,
+        "The original submitted search family is diagnostic provenance only. It must not influence the primary role or cooperation path.",
+        "Use Hybrid when two or more materially different role families are co-primary. Use Unresolved when evidence is insufficient or conflicting. Explain the decision.",
         "For Distributor, prove that the candidate itself supplies downstream resellers, dealers, system houses or other channel partners. A shop, dealer portal or resale business does not negate a simultaneously supported Distributor role.",
         "For the small-long-tail exception, record atomic company-size findings only from positive public evidence. Sparse results, weak SEO or missing scale information never prove that exception.",
         "A role requires evidence of its defining business action. Generic IT, consulting or networking language alone does not prove distribution, resale, installation or system integration.",
@@ -205,7 +218,7 @@ export class LeadEvidenceCorrectionAgent {
         "Return evidence IDs supporting identity, target-country presence, active-networking involvement, roles and cooperation path. Missing public proof is an unknown, not a negative claim.",
         "Return atomic findings for identity, country presence, active networking, every asserted role, relevant product families, brand relationships, commercial actions and cooperation path. Each finding must have its own status and evidence IDs.",
         "Use not-supported only when supplied evidence affirmatively contradicts a claim. Use unknown when evidence is absent or acquisition failed, and conflicting when supplied sources disagree.",
-        "Do not score lead value. Do not decide eligibility. Your only duties are evidence, entity correction, multi-role classification and routing inputs for the downstream scoring agent.",
+        "Do not score lead value. Do not decide eligibility or cooperation path. Your duties are evidence, entity correction, supported-role classification and primary-business-role analysis.",
       ],
       market: { countryCode: plan.countryCode, countryName: plan.countryName, objective: plan.objective },
       candidates: candidates.map((candidate) => ({
@@ -232,24 +245,26 @@ export class LeadEvidenceCorrectionAgent {
   private normalize(value: LeadCorrectionModelOutput, candidate: LeadWorkflowCandidate,
     response: StructuredAiResponse<unknown>, escalated: boolean): CorrectedLeadWorkflowCandidate {
     const evidenceById = new Map(candidate.evidence.map((item) => [item.id, item]));
-    const reliedEvidenceIds = [...new Set(value.evidenceIds.filter((id) => evidenceById.has(id)))];
+    const reliedEvidenceIds = [...new Set(value.evidenceIds.filter((id) => {
+      const item = evidenceById.get(id);
+      return item && isCurrentLeadScoringEvidence(item, candidate.evidenceSnapshotRunId);
+    }))];
     const officialEvidence = value.officialWebsiteEvidenceId ? evidenceById.get(value.officialWebsiteEvidenceId) : undefined;
     const proposedDomain = domainOf(value.resolvedOfficialWebsiteUrl);
-    const acceptIdentity = Boolean(officialEvidence && proposedDomain && sameDomain(officialEvidence.url, proposedDomain));
+    const acceptIdentity = Boolean(officialEvidence && proposedDomain
+      && isCurrentLeadScoringEvidence(officialEvidence, candidate.evidenceSnapshotRunId)
+      && sameDomain(officialEvidence.url, proposedDomain));
     const domain = acceptIdentity && proposedDomain ? proposedDomain : candidate.domain;
     const officialWebsiteUrl = acceptIdentity ? value.resolvedOfficialWebsiteUrl : candidate.officialWebsiteUrl;
-    const evidence = candidate.evidence.map((item) => sameDomain(item.url, domain)
+    const evidence = candidate.evidence.map((item) => item.sourceType !== "discovery" && sameDomain(item.url, domain)
       ? { ...item, sourceType: "official-website" as const } : item);
-    const findings = normalizedFindings(value, evidence, candidate.candidateId);
+    const findings = normalizedFindings(value, evidence, candidate.candidateId, candidate.evidenceSnapshotRunId);
     const supportedFindingRoles = findings.filter((finding) => finding.kind === "role" && finding.status === "supported")
       .flatMap((finding) => finding.roles);
     const roles = [...new Set(value.roles.filter((role) => supportedFindingRoles.includes(role)))];
-    const heuristicRoles = deterministicRoles(evidence);
+    const heuristicRoles = deterministicRoles(evidence, candidate.evidenceSnapshotRunId);
     const families = roleFamilies(roles);
-    const evidenceQuality = assessLeadEvidenceQuality({ candidateDomain: domain,
-      officialUrl: officialWebsiteUrl, evidence });
-    const primary = selectPrimaryChannel({ roles,
-      smallLongTailExceptionEligible: evidenceQuality.smallLongTail.exceptionEligible });
+    const primary = selectPrimaryChannel({ roles, agentPrimaryRole: value.primaryBusinessRole });
     const supplementalEvidenceIds = evidence.filter((item) => item.provider === "tavily-correction").map((item) => item.id);
     return {
       ...candidate,
@@ -290,14 +305,12 @@ export class LeadEvidenceCorrectionAgent {
   }
 
   private fallback(candidate: LeadWorkflowCandidate, warning: string): CorrectedLeadWorkflowCandidate {
-    const roles = deterministicRoles(candidate.evidence);
-    const nonDiscoveryEvidence = candidate.evidence.filter((item) => item.sourceType !== "discovery");
+    const roles = deterministicRoles(candidate.evidence, candidate.evidenceSnapshotRunId);
+    const nonDiscoveryEvidence = candidate.evidence.filter((item) =>
+      isCurrentLeadScoringEvidence(item, candidate.evidenceSnapshotRunId));
     const networking = assessNetworkingRelevanceEvidence(nonDiscoveryEvidence.flatMap((item) => [item.title, item.excerpt]));
     const evidenceIds = nonDiscoveryEvidence.map((item) => item.id);
-    const evidenceQuality = assessLeadEvidenceQuality({ candidateDomain: candidate.domain,
-      officialUrl: candidate.officialWebsiteUrl, evidence: candidate.evidence });
-    const primary = selectPrimaryChannel({ roles,
-      smallLongTailExceptionEligible: evidenceQuality.smallLongTail.exceptionEligible });
+    const primary = selectPrimaryChannel({ roles, agentPrimaryRole: "Unresolved" });
     const findings = [
       {
         findingId: stableId("finding", `${candidate.candidateId}|identity-fallback`),
@@ -395,10 +408,10 @@ export class LeadEvidenceCorrectionAgent {
       }
       const evidence = [...new Map([...existing.evidence, ...candidate.evidence].map((item) => [item.url, item])).values()];
       const roles = [...new Set([...existing.correction.resolvedRoles, ...candidate.correction.resolvedRoles])];
-      const evidenceQuality = assessLeadEvidenceQuality({ candidateDomain: existing.domain,
-        officialUrl: existing.officialWebsiteUrl, evidence });
-      const primary = selectPrimaryChannel({ roles,
-        smallLongTailExceptionEligible: evidenceQuality.smallLongTail.exceptionEligible });
+      const crossFamily = roleFamilies(roles).length > 1;
+      const mergedPrimary = existing.correction.primaryRole === candidate.correction.primaryRole
+        ? existing.correction.primaryRole : crossFamily ? "Hybrid" : "Unresolved";
+      const primary = selectPrimaryChannel({ roles, agentPrimaryRole: mergedPrimary });
       byDomain.set(candidate.domain, {
         ...existing,
         evidence,

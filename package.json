@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "db:migrate": "node scripts/run-tsx.cjs scripts/migrate.ts",
+    "leads:publish-scoring-policy": "node scripts/run-tsx.cjs scripts/publish-lead-scoring-policy.ts",
     "assistant:verify": "tsx scripts/verify-assistant-workspace.ts",
     "assistant:verify-models": "node --use-env-proxy scripts/run-tsx.cjs scripts/verify-assistant-models.ts",
     "outreach:verify": "node --use-env-proxy scripts/run-tsx.cjs scripts/verify-development-strategy-agent.ts",

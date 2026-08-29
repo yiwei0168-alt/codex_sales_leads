@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import type { LeadSearchPlan } from "@/lib/assistant/types";
+import { leadEvidenceContentHash } from "@/lib/leads/evidence-snapshot";
 
 import { LeadAssessmentReviewAgent, assessmentReviewTriggers, type LeadReviewInvoker } from "./assessment-review-agent";
 import type { LeadAssessmentModelOutput } from "./schemas";
@@ -9,14 +10,24 @@ import type { CorrectedLeadWorkflowCandidate, LeadCandidateAssessment, LeadMarke
 const evidenceId = "evidence-review";
 const findingId = "finding-review";
 
-function modelOutput(productScore = 40): LeadAssessmentModelOutput {
-  const dimensions = { productAndUseCaseFit: productScore, cooperationPathAndBuyingInfluence: 26,
-    evidenceAndEntityConfidence: 18, roleIdentificationQuality: 3, channelClassificationQuality: 1 };
+function modelOutput(productScore = 22): LeadAssessmentModelOutput {
+  const dimensions = { productFamilyMatch: productScore, customerAndScenarioOverlap: 13,
+    positioningCompatibility: 8, cooperationPathAndBuyingInfluence: 12,
+    scaleAndChannelCoverage: 12, executionAndEnablement: 8, opportunityAndRisk: 8 };
+  const cooperationPaths = [{ pathId: "path-var-direct", pathType: "Direct Channel Supply" as const,
+    candidateRole: "VAR" as const, pathNodes: [{ actor: "Cudy" as const, role: "Brand" },
+      { actor: "Candidate" as const, role: "VAR" }, { actor: "Customer" as const, role: "SMB buyer" }],
+    supplyFlow: "Cudy supplies the VAR for SMB resale.", decisionRole: "Candidate selects the product offer.",
+    fitScore: 82, confidence: 88, rank: 1, evidenceIds: [evidenceId], prerequisites: [],
+    valuePropositions: ["SMB networking fit"], risks: [], unknowns: [], targetTitles: ["Category Manager"],
+    recommendedCta: "Validate the SMB assortment.", allowedInExternalEmail: true }];
   return {
     candidateId: "lead-review-example",
     gates: { correctedIdentityUsable: "supported", companyExists: "supported",
       targetCountryPresence: "supported", networkingRelevant: "supported", independentProspect: "supported" },
-    accountTier: "Priority", supplyModel: "Distributor Supply", brandInvolvement: "Standard",
+    eligibilityStatus: "eligible", companyScaleClass: "Regional", researchDepth: "standard",
+    supplyModel: "Distributor Supply", brandInvolvement: "Standard", cooperationPaths,
+    selectedPathId: "path-var-direct",
     dimensions,
     dimensionRationales: (Object.keys(dimensions) as Array<keyof typeof dimensions>).map((dimension) => ({
       dimension, score: dimensions[dimension], reason: `Evidence supports ${dimension}.`,
@@ -28,15 +39,20 @@ function modelOutput(productScore = 40): LeadAssessmentModelOutput {
 }
 
 const candidate: CorrectedLeadWorkflowCandidate = {
-  candidateId: "lead-review-example", companyName: "Review GmbH", domain: "review.example",
+  candidateId: "lead-review-example", evidenceSnapshotRunId: "run-review-example",
+  companyName: "Review GmbH", domain: "review.example",
   officialWebsiteUrl: "https://review.example/", queryRoles: ["VAR"], queryFamily: "resale", providerScore: 0.9,
   evidence: [
     { id: evidenceId, url: "https://review.example/network", title: "Network portfolio",
       excerpt: "Review GmbH in Germany is a VAR selling routers, Wi-Fi access points and PoE switches with business quotations.",
-      sourceType: "official-website", provider: "fixture", capturedAt: "2026-08-28" },
+      sourceType: "official-website", provider: "fixture", capturedAt: "2026-08-30T00:00:00Z",
+      evidenceRunId: "run-review-example", contentHash: leadEvidenceContentHash(
+        "Review GmbH in Germany is a VAR selling routers, Wi-Fi access points and PoE switches with business quotations."),
+      freshnessStatus: "fresh" },
     { id: "evidence-review-2", url: "https://public.example/review", title: "Company registry",
       excerpt: "Review GmbH is an active independent German company.", sourceType: "independent-public",
-      provider: "fixture", capturedAt: "2026-08-28" },
+      provider: "fixture", capturedAt: "2026-08-30T00:00:00Z", evidenceRunId: "run-review-example",
+      contentHash: leadEvidenceContentHash("Review GmbH is an active independent German company."), freshnessStatus: "fresh" },
   ],
   evidenceWarnings: [],
   correction: { originalCompanyName: "Review GmbH", originalDomain: "review.example",
@@ -53,7 +69,10 @@ const candidate: CorrectedLeadWorkflowCandidate = {
 };
 
 function assessment(output = modelOutput()): LeadCandidateAssessment {
-  return { ...output, eligible: true, roles: ["VAR", "Reseller"], primaryRole: null,
+  const totalScore = Object.values(output.dimensions).reduce((sum, value) => sum + value, 0);
+  return { ...output, eligible: true, roles: ["VAR", "Reseller"], primaryRole: "VAR",
+    companyScaleClass: "Regional", researchDepth: "standard", recommendationPriority: "High",
+    accountTier: "KA", scoreRange: { lower: totalScore - 3, upper: totalScore + 3 },
     evidenceProfileAssessment: undefined, totalScore: Object.values(output.dimensions).reduce((sum, value) => sum + value, 0),
     model: "deepseek-primary", promptVersion: "primary-v3", escalated: false, scoringStatus: "completed" };
 }
@@ -67,12 +86,12 @@ const plan: LeadSearchPlan = { countryCode: "DE", countryName: "Germany", object
   targetCount: 1, queryLanguage: "en", userRequest: "Find networking VARs" };
 
 describe("LeadAssessmentReviewAgent", () => {
-  it("routes hard-gate ambiguity and sparse high scores to independent review", () => {
+  it("routes deterministic gate conflicts and sparse high scores to independent review", () => {
     const primary = assessment();
-    primary.gates.networkingRelevant = "unknown";
+    primary.gates.networkingRelevant = "conflicting";
     const triggers = assessmentReviewTriggers({ candidate: { ...candidate, evidence: candidate.evidence.slice(0, 1) },
       assessment: primary, randomAuditPercent: 0 });
-    expect(triggers).toEqual(expect.arrayContaining(["hard-gate-not-supported", "high-score-sparse-evidence"]));
+    expect(triggers).toEqual(expect.arrayContaining(["deterministic-conflict", "high-score-sparse-evidence"]));
   });
 
   it("keeps the primary result when blind secondary review has no material disagreement", async () => {
@@ -86,9 +105,9 @@ describe("LeadAssessmentReviewAgent", () => {
   });
 
   it("uses the anonymous judge when secondary scoring materially disagrees", async () => {
-    const judged = modelOutput(38);
+    const judged = modelOutput(20);
     const invoker: LeadReviewInvoker = {
-      assess: vi.fn(async () => ({ output: modelOutput(20), model: "gpt-5.6-terra" })),
+      assess: vi.fn(async () => ({ output: modelOutput(8), model: "gpt-5.6-terra" })),
       judge: vi.fn(async () => ({ output: { candidateId: candidate.candidateId, decision: "merge" as const,
         assessment: judged, rationale: "The frozen facts support an intermediate product-fit score.",
         researchQuestion: "", warnings: [] }, model: "gpt-5.6-sol" })),

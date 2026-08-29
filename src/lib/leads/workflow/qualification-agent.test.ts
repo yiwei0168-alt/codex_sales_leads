@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "@/providers/contracts";
+import { leadEvidenceContentHash } from "@/lib/leads/evidence-snapshot";
 
 import { LeadQualificationAgent } from "./qualification-agent";
 import type { CorrectedLeadWorkflowCandidate, LeadMarketPlaybook } from "./types";
@@ -14,21 +15,33 @@ class FakeProvider implements AiProvider {
       output: { assessments: [{
         candidateId: "lead-example", gates: { correctedIdentityUsable: "supported", companyExists: "supported",
           targetCountryPresence: "supported", networkingRelevant: "supported", independentProspect: "supported" },
-        accountTier: "Priority",
+        eligibilityStatus: "eligible", companyScaleClass: "Regional", researchDepth: "standard",
         supplyModel: "Distributor Supply", brandInvolvement: "Standard",
-        dimensions: { productAndUseCaseFit: 40, cooperationPathAndBuyingInfluence: 26,
-          evidenceAndEntityConfidence: 18,
-          roleIdentificationQuality: 3, channelClassificationQuality: 1 },
+        cooperationPaths: [{ pathId: "path-var", pathType: "Direct Channel Supply", candidateRole: "VAR",
+          pathNodes: [{ actor: "Cudy", role: "Brand" }, { actor: "Candidate", role: "VAR" },
+            { actor: "Customer", role: "SMB customer" }], supplyFlow: "Cudy supplies the VAR.",
+          decisionRole: "The VAR selects products for SMB customers.", fitScore: 86, confidence: 86, rank: 1,
+          evidenceIds: ["evidence-valid"], prerequisites: [], valuePropositions: ["SMB portfolio"],
+          risks: [], unknowns: [], targetTitles: ["Category Manager"],
+          recommendedCta: "Validate the relevant product track.", allowedInExternalEmail: true }],
+        selectedPathId: "path-var",
+        dimensions: { productFamilyMatch: 23, customerAndScenarioOverlap: 14,
+          positioningCompatibility: 9, cooperationPathAndBuyingInfluence: 13,
+          scaleAndChannelCoverage: 13, executionAndEnablement: 8, opportunityAndRisk: 8 },
         dimensionRationales: [
-          { dimension: "productAndUseCaseFit", score: 40, reason: "Relevant routers and switches are sold.",
+          { dimension: "productFamilyMatch", score: 23, reason: "Relevant routers and switches are sold.",
             findingIds: ["finding-fit"], evidenceIds: ["evidence-valid"], confidence: 90 },
-          { dimension: "cooperationPathAndBuyingInfluence", score: 26, reason: "Business customers can request a quote.",
+          { dimension: "customerAndScenarioOverlap", score: 14, reason: "The candidate serves business customers.",
             findingIds: ["finding-path"], evidenceIds: ["evidence-valid"], confidence: 85 },
-          { dimension: "evidenceAndEntityConfidence", score: 18, reason: "Official evidence supports the entity.",
+          { dimension: "positioningCompatibility", score: 9, reason: "The SMB portfolio is compatible.",
+            findingIds: ["finding-fit"], evidenceIds: ["evidence-valid"], confidence: 85 },
+          { dimension: "cooperationPathAndBuyingInfluence", score: 13, reason: "Business customers can request a quote.",
+            findingIds: ["finding-path"], evidenceIds: ["evidence-valid"], confidence: 85 },
+          { dimension: "scaleAndChannelCoverage", score: 13, reason: "The relevant regional business is evidenced.",
             findingIds: ["finding-identity"], evidenceIds: ["evidence-valid"], confidence: 90 },
-          { dimension: "roleIdentificationQuality", score: 3, reason: "VAR and reseller roles are supported.",
+          { dimension: "executionAndEnablement", score: 8, reason: "VAR and reseller execution is supported.",
             findingIds: ["finding-role"], evidenceIds: ["evidence-valid"], confidence: 90 },
-          { dimension: "channelClassificationQuality", score: 1, reason: "The resale family is supported.",
+          { dimension: "opportunityAndRisk", score: 8, reason: "The current opportunity has manageable risk.",
             findingIds: ["finding-role"], evidenceIds: ["evidence-valid"], confidence: 90 },
         ],
         confidence: 88, summary: "Evidence-grounded multi-role channel candidate.", reasons: ["Strong customer access"],
@@ -44,10 +57,13 @@ class FakeProvider implements AiProvider {
 }
 
 const candidate: CorrectedLeadWorkflowCandidate = {
-  candidateId: "lead-example", companyName: "Example", domain: "example.de", officialWebsiteUrl: "https://example.de/",
+  candidateId: "lead-example", evidenceSnapshotRunId: "run-example",
+  companyName: "Example", domain: "example.de", officialWebsiteUrl: "https://example.de/",
   queryRoles: ["VAR"], queryFamily: "resale", providerScore: 0.99,
   evidence: [{ id: "evidence-valid", url: "https://example.de", title: "Example", excerpt: "VAR selling routers and PoE switches; business customers can request a quote.",
-    sourceType: "official-website", provider: "test", capturedAt: "2026-08-22" }], evidenceWarnings: [],
+    sourceType: "official-website", provider: "test", capturedAt: "2026-08-30T00:00:00Z",
+    evidenceRunId: "run-example", contentHash: leadEvidenceContentHash("VAR selling routers and PoE switches; business customers can request a quote."),
+    freshnessStatus: "fresh" }], evidenceWarnings: [],
   correction: { originalCompanyName: "Example", originalDomain: "example.de", originalOfficialWebsiteUrl: "https://example.de/",
     resolvedRoles: ["VAR", "Reseller"], resolvedFamilies: ["resale"], primaryRole: "VAR", primaryFamily: "resale",
     primaryChannelReason: "Fixture primary route.", usedSmallLongTailChannelException: false,
@@ -88,12 +104,13 @@ describe("LeadQualificationAgent", () => {
     const agent = new LeadQualificationAgent(provider, { batchSize: 5, concurrency: 1 });
     const genericCandidate = {
       ...candidate,
-      evidence: [{ ...candidate.evidence[0], excerpt: "Cloud connectivity, managed IT and structured cabling" }],
+      evidence: [{ ...candidate.evidence[0], excerpt: "Cloud connectivity, managed IT and structured cabling",
+        contentHash: leadEvidenceContentHash("Cloud connectivity, managed IT and structured cabling") }],
     };
     const [result] = await agent.evaluate([genericCandidate], playbook, "DE", "Germany", "new-market");
     expect(result.gates.networkingRelevant).toBe("conflicting");
     expect(result.eligible).toBe(false);
-    expect(result.totalScore).toBe(0);
+    expect(result.totalScore).toBe(88);
     expect(result.warnings.join(" ")).toContain("conflicts");
   });
 
@@ -104,10 +121,12 @@ describe("LeadQualificationAgent", () => {
       ...candidate,
       evidence: [
         { ...candidate.evidence[0], id: "evidence-discovery", sourceType: "discovery" as const,
-          excerpt: "Search summary: VAR selling routers and PoE switches with business quotations." },
+          excerpt: "Search summary: VAR selling routers and PoE switches with business quotations.",
+          contentHash: leadEvidenceContentHash("Search summary: VAR selling routers and PoE switches with business quotations.") },
         { ...candidate.evidence[0], id: "evidence-valid", url: "https://example.de/about",
           sourceType: "official-website" as const,
-          excerpt: "Example GmbH is a registered local company serving business customers in Germany." },
+          excerpt: "Example GmbH is a registered local company serving business customers in Germany.",
+          contentHash: leadEvidenceContentHash("Example GmbH is a registered local company serving business customers in Germany.") },
       ],
     };
     const [result] = await agent.evaluate([summaryOnlyCandidate], playbook, "DE", "Germany", "new-market");
@@ -124,5 +143,16 @@ describe("LeadQualificationAgent", () => {
     expect(result.eligible).toBe(true);
     expect(result.totalScore).toBe(88);
     expect(result.roles).toEqual(["VAR", "Reseller"]);
+  });
+
+  it("excludes strong prior-run evidence until it is reacquired or revalidated into the current snapshot", async () => {
+    const provider = new FakeProvider();
+    const agent = new LeadQualificationAgent(provider, { batchSize: 5, concurrency: 1 });
+    const priorRunCandidate = { ...candidate, evidence: [{ ...candidate.evidence[0],
+      evidenceRunId: "run-v1-7", priorRunId: "run-v1-7", freshnessStatus: "stale" as const }] };
+    const [result] = await agent.evaluate([priorRunCandidate], playbook, "DE", "Germany", "new-market");
+    expect(result.evidenceIds).toEqual([]);
+    expect(result.gates.networkingRelevant).not.toBe("supported");
+    expect(result.eligibilityStatus).not.toBe("eligible");
   });
 });

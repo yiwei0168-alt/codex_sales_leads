@@ -13,7 +13,12 @@ export type ChannelRole =
   | "MSP"
   | "ISP";
 
-export type AccountTier = "KA" | "Priority" | "Standard" | "Long-tail";
+export type AccountTier = "Strategic Distributor" | "Priority Distributor" | "Standard Distributor"
+  | "Long-tail Distributor" | "KA" | "Priority" | "Standard" | "Long-tail";
+export type PrimaryBusinessRole = ChannelRole | "Hybrid" | "Unresolved";
+export type CooperationPathType = "Direct Distribution" | "Direct Channel Supply"
+  | "Distributor-Supplied Channel" | "Direct Retail/E-commerce" | "ISP/Operator Supply"
+  | "Project/Specification Partnership" | "Co-sell/Co-supply" | "Referral/Introduction" | "OEM/ODM";
 export type SupplyModel =
   | "Distributor Supply"
   | "Brand Direct"
@@ -55,6 +60,16 @@ export interface CompanyRecord {
   country: string;
   layer: ChannelLayer;
   roles: ChannelRole[];
+  primaryBusinessRole?: PrimaryBusinessRole;
+  cooperationPaths?: Array<{
+    pathId: string;
+    pathType: CooperationPathType;
+    candidateRole: ChannelRole;
+    fitScore: number;
+    rank: number;
+  }>;
+  selectedPathId?: string;
+  selectedCooperationPath?: CooperationPathType;
   accountTier: AccountTier;
   supplyModel: SupplyModel;
   brandInvolvement: BrandInvolvement;
@@ -103,20 +118,12 @@ export const roleFamilies = {
   isp: ["ISP"] as ChannelRole[],
 };
 
-export function primaryRole(company: CompanyRecord): ChannelRole {
-  return company.roles[0];
+export function primaryRole(company: CompanyRecord): PrimaryBusinessRole {
+  return company.primaryBusinessRole ?? company.roles[0] ?? "Unresolved";
 }
 
 export function priorityIndex(company: CompanyRecord): number {
-  const tierBoost = company.accountTier === "KA" ? 10 : company.accountTier === "Priority" ? 5 : 0;
-  const confidencePenalty = company.evidenceConfidence < 60 ? 5 : 0;
-  return Math.round(
-    company.fitScore * 0.52 +
-      company.accountValue * 0.28 +
-      company.reachability * 0.2 +
-      tierBoost -
-      confidencePenalty,
-  );
+  return Math.round(company.fitScore);
 }
 
 export function buildDevelopmentPlan(company: CompanyRecord): DevelopmentPlan {

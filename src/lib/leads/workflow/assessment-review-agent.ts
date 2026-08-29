@@ -6,6 +6,8 @@ import { zodTextFormat } from "openai/helpers/zod";
 import type { LeadSearchPlan } from "@/lib/assistant/types";
 import type { StructuredAiResponse } from "@/providers/contracts";
 
+import { ACTIVE_LEAD_SCORING_POLICY, scoringPolicyChecksum } from "../scoring-policy";
+import { isCurrentLeadScoringEvidence } from "../evidence-snapshot";
 import { normalizeAssessment } from "./qualification-agent";
 import {
   leadAssessmentJudgeSchema,
@@ -19,8 +21,8 @@ import type {
   LeadMarketPlaybook,
 } from "./types";
 
-const REVIEW_PROMPT_VERSION = "lead-blind-secondary-v1";
-const JUDGE_PROMPT_VERSION = "lead-disagreement-judge-v1";
+const REVIEW_PROMPT_VERSION = "lead-blind-secondary-v2-role-aware";
+const JUDGE_PROMPT_VERSION = "lead-disagreement-judge-v2-role-aware";
 
 type JudgeOutput = typeof leadAssessmentJudgeSchema._output;
 
@@ -71,7 +73,8 @@ class OpenAiLeadReviewInvoker implements LeadReviewInvoker {
         "Independently assess one Cudy sales lead from the frozen atomic fact ledger and public evidence.",
         "You are blind to the primary score and discovery provider. Do not infer missing facts.",
         "Use unknown for missing proof, not-supported only for affirmative contradiction, and conflicting for disagreement.",
-        "Return exactly five evidence-linked dimension rationales and use only supplied finding/evidence IDs.",
+        "Use role-specific customer and scenario criteria, best enabled product track, same-primary-role scale peers and every viable cooperation path.",
+        "Return exactly seven evidence-linked dimension rationales and use only supplied current-run finding/evidence IDs.",
       ].join("\n"),
       input: JSON.stringify(input),
       text: { verbosity: "low", format: zodTextFormat(leadAssessmentModelSchema, "blind_lead_assessment") },
@@ -110,12 +113,14 @@ export function assessmentReviewTriggers(options: {
 }): string[] {
   const { candidate, assessment, boundaryScore, randomAuditPercent } = options;
   const triggers: string[] = [];
-  if (Object.values(assessment.gates).some((state) => state !== "supported")) triggers.push("hard-gate-not-supported");
-  if (assessment.totalScore >= 40 && assessment.totalScore <= 60) triggers.push("score-40-60");
+  if (Object.values(assessment.gates).some((state) => state === "conflicting")) triggers.push("deterministic-conflict");
   if (boundaryScore !== undefined && Math.abs(assessment.totalScore - boundaryScore) <= 5) triggers.push("selection-boundary");
-  if (candidate.correction.confidence < 75 || assessment.confidence < 70) triggers.push("low-confidence");
+  if (candidate.correction.confidence < 75 || assessment.confidence < 75) triggers.push("low-confidence");
+  if (candidate.correction.primaryRole === "Hybrid" || candidate.correction.primaryRole === "Unresolved") {
+    triggers.push("primary-role-unresolved");
+  }
+  if (new Set(assessment.cooperationPaths.map((path) => path.pathType)).size > 1) triggers.push("material-alternative-paths");
   if (candidate.correction.identityChanged) triggers.push("identity-changed");
-  if (candidate.correction.routingChanged) triggers.push("routing-changed");
   if (candidate.evidenceWarnings.length > 0 || candidate.correction.warnings.length > 0) triggers.push("evidence-warning");
   if (candidate.correction.findings.some((finding) => finding.status === "conflicting")) triggers.push("conflicting-facts");
   const claimEvidenceCount = candidate.evidence.filter((item) => item.sourceType !== "discovery").length;
@@ -129,9 +134,13 @@ function publicAssessment(assessment: LeadCandidateAssessment): LeadAssessmentMo
   return {
     candidateId: assessment.candidateId,
     gates: assessment.gates,
-    accountTier: assessment.accountTier,
+    eligibilityStatus: assessment.eligibilityStatus,
+    companyScaleClass: assessment.companyScaleClass,
+    researchDepth: assessment.researchDepth,
     supplyModel: assessment.supplyModel,
     brandInvolvement: assessment.brandInvolvement,
+    cooperationPaths: assessment.cooperationPaths,
+    selectedPathId: assessment.selectedPathId,
     dimensions: assessment.dimensions,
     dimensionRationales: assessment.dimensionRationales,
     confidence: assessment.confidence,
@@ -157,11 +166,13 @@ function materialDisagreements(primary: LeadCandidateAssessment, secondary: Lead
   if (primary.eligible !== secondary.eligible) disagreements.push("eligibility");
   if (Math.abs(primary.totalScore - secondary.totalScore) >= 8) disagreements.push("total-score");
   const thresholds: Record<keyof LeadCandidateAssessment["dimensions"], number> = {
-    productAndUseCaseFit: 8,
-    cooperationPathAndBuyingInfluence: 6,
-    evidenceAndEntityConfidence: 4,
-    roleIdentificationQuality: 1,
-    channelClassificationQuality: 1,
+    productFamilyMatch: 5,
+    customerAndScenarioOverlap: 3,
+    positioningCompatibility: 2,
+    cooperationPathAndBuyingInfluence: 3,
+    scaleAndChannelCoverage: 3,
+    executionAndEnablement: 2,
+    opportunityAndRisk: 2,
   };
   for (const key of Object.keys(thresholds) as Array<keyof typeof thresholds>) {
     if (Math.abs(primary.dimensions[key] - secondary.dimensions[key]) >= thresholds[key]) {
@@ -177,16 +188,22 @@ function evidencePayload(candidate: CorrectedLeadWorkflowCandidate) {
     companyName: candidate.companyName,
     domain: candidate.domain,
     officialWebsiteUrl: candidate.officialWebsiteUrl,
-    possibleRoles: candidate.correction.resolvedRoles,
+    supportedRoles: candidate.correction.resolvedRoles,
+    primaryBusinessRole: candidate.correction.primaryRole,
     possibleRoleFamilies: candidate.correction.resolvedFamilies,
     correctionConfidence: candidate.correction.confidence,
     findings: candidate.correction.findings,
-    evidence: candidate.evidence.filter((item) => item.sourceType !== "discovery").map((item) => ({
+    evidence: candidate.evidence.filter((item) =>
+      isCurrentLeadScoringEvidence(item, candidate.evidenceSnapshotRunId)).map((item) => ({
       evidenceId: item.id,
       sourceType: item.sourceType,
       url: item.url,
       title: item.title,
       excerpt: item.excerpt,
+      capturedAt: item.capturedAt,
+      contentHash: item.contentHash,
+      freshnessStatus: item.freshnessStatus,
+      evidenceRunId: item.evidenceRunId,
     })),
   };
 }
@@ -212,8 +229,9 @@ export class LeadAssessmentReviewAgent {
         market: { countryCode: plan.countryCode, countryName: plan.countryName, objective: plan.objective },
         cudyFitBrief: { marketHypothesis: playbook.marketHypothesis, productAngles: playbook.productAngles,
           preferredCompanyTraits: playbook.preferredCompanyTraits },
-        scoringWeights: { productAndUseCaseFit: 44, cooperationPathAndBuyingInfluence: 32,
-          evidenceAndEntityConfidence: 20, roleIdentificationQuality: 3, channelClassificationQuality: 1 },
+        scoringPolicy: { policyKey: ACTIVE_LEAD_SCORING_POLICY.policyKey,
+          version: ACTIVE_LEAD_SCORING_POLICY.version, checksum: scoringPolicyChecksum(),
+          weights: ACTIVE_LEAD_SCORING_POLICY.weights, roleScorecards: ACTIVE_LEAD_SCORING_POLICY.roleScorecards },
         candidate: evidencePayload(candidate),
       });
       if (secondaryResult.output.candidateId !== candidate.candidateId) {
@@ -268,7 +286,8 @@ export class LeadAssessmentReviewAgent {
       };
       return { assessment: judged, review };
     } catch (error) {
-      const severe = triggers.some((trigger) => ["hard-gate-not-supported", "identity-changed", "conflicting-facts"].includes(trigger));
+      const severe = triggers.some((trigger) => ["deterministic-conflict", "identity-changed", "conflicting-facts",
+        "primary-role-unresolved"].includes(trigger));
       const message = `Independent review failed: ${error instanceof Error ? error.message : String(error)}`;
       const assessment = severe ? { ...primary, scoringStatus: "retry-required" as const,
         warnings: [...primary.warnings, message] } : primary;

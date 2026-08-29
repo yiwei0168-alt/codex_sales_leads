@@ -15,6 +15,7 @@ class FakeCorrectionProvider implements AiProvider {
     return {
       output: { corrections: [{ candidateId: candidate.candidateId, resolvedCompanyName: "Smart Technik GmbH",
         resolvedOfficialWebsiteUrl: "https://smarttechnik.eu/", roles: ["Installer", "SI"],
+        primaryBusinessRole: "SI", primaryBusinessRoleReason: "System integration is the main evidenced activity.",
         officialWebsiteEvidenceId: official?.evidenceId ?? null,
         evidenceIds: candidate.evidence.map((item) => item.evidenceId),
         findings: [
@@ -43,7 +44,8 @@ const searchProvider = {
 };
 
 const candidate: LeadWorkflowCandidate = {
-  candidateId: "lead-smart-technik", companyName: "Smart Technik", domain: "wrong-example.de",
+  candidateId: "lead-smart-technik", evidenceSnapshotRunId: "run-smart-technik",
+  companyName: "Smart Technik", domain: "wrong-example.de",
   officialWebsiteUrl: "https://wrong-example.de/", queryRoles: ["Distributor"], queryFamily: "distribution",
   providerScore: 0.8, evidence: [{ id: "discovery-1", url: "https://directory.example/smart-technik",
     title: "Search result", excerpt: "IT company", sourceType: "discovery", provider: "test", capturedAt: "2026-08-27" }],

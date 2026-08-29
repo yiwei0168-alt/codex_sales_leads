@@ -3,6 +3,8 @@ import type { PoolClient } from "pg";
 
 import type { CompanyRecord, Evidence } from "@/lib/domain";
 import { tenantQuery, tenantTransaction } from "@/lib/rag/db";
+import { ACTIVE_LEAD_SCORING_POLICY, scoringPolicyChecksum } from "@/lib/leads/scoring-policy";
+import { isCurrentLeadScoringEvidence } from "@/lib/leads/evidence-snapshot";
 
 import type {
   CorrectedLeadWorkflowCandidate,
@@ -72,7 +74,7 @@ function companyRecord(
   runId: string,
 ): CompanyRecord {
   const roles = assessment.roles.length ? assessment.roles : candidate.queryRoles;
-  const primary = assessment.primaryRole ?? roles[0];
+  const primary = assessment.primaryRole;
   const isDistribution = primary === "Distributor" || primary === "VAD";
   const evidence = companyEvidence(candidate, assessment);
   return {
@@ -84,6 +86,11 @@ function companyRecord(
     country: countryName,
     layer: isDistribution ? "Tier-1 Distributor" : "Downstream Channel",
     roles,
+    primaryBusinessRole: assessment.primaryRole,
+    cooperationPaths: assessment.cooperationPaths.map((path) => ({ pathId: path.pathId,
+      pathType: path.pathType, candidateRole: path.candidateRole, fitScore: path.fitScore, rank: path.rank })),
+    selectedPathId: assessment.selectedPathId ?? undefined,
+    selectedCooperationPath: assessment.cooperationPaths.find((path) => path.pathId === assessment.selectedPathId)?.pathType,
     accountTier: assessment.accountTier,
     supplyModel: assessment.supplyModel,
     brandInvolvement: assessment.brandInvolvement,
@@ -112,6 +119,54 @@ function companyRecord(
     leadType: "Channel",
     searchRunId: runId,
   };
+}
+
+function canonicalUrl(value: string): string {
+  try {
+    const url = new URL(value);
+    url.hash = "";
+    url.hostname = url.hostname.toLowerCase().replace(/^www\./, "");
+    if (url.pathname !== "/") url.pathname = url.pathname.replace(/\/$/, "");
+    return url.toString();
+  } catch {
+    return value.trim();
+  }
+}
+
+function evidenceKinds(candidate: CorrectedLeadWorkflowCandidate, evidenceId: string): string[] {
+  return [...new Set(candidate.correction.findings
+    .filter((finding) => finding.evidenceIds.includes(evidenceId))
+    .map((finding) => finding.kind))];
+}
+
+function freshnessDays(kinds: string[]): number {
+  const configured = ACTIVE_LEAD_SCORING_POLICY.evidenceFreshnessDays as Record<string, number>;
+  const values = kinds.map((kind) => configured[kind]).filter((value): value is number => Number.isFinite(value));
+  return values.length > 0 ? Math.min(...values) : 90;
+}
+
+async function saveEvidenceSnapshots(client: PoolClient, userId: string, runId: string,
+  candidate: CorrectedLeadWorkflowCandidate): Promise<void> {
+  for (const item of candidate.evidence) {
+    if (!isCurrentLeadScoringEvidence(item, runId)) continue;
+    const kinds = evidenceKinds(candidate, item.id);
+    const days = freshnessDays(kinds);
+    await client.query(
+      `insert into lead_evidence_snapshot (
+         user_id, run_id, candidate_id, source_url, canonical_url, source_type, evidence_kinds,
+         acquisition_status, retrieved_at, freshness_days, expires_at, content_hash, content, prior_run_id, metadata
+       ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$9::timestamptz + ($10 || ' days')::interval,$11,$12,$13,$14)
+       on conflict (run_id, candidate_id, canonical_url) do update set
+         source_url=excluded.source_url, source_type=excluded.source_type, evidence_kinds=excluded.evidence_kinds,
+         acquisition_status=excluded.acquisition_status, retrieved_at=excluded.retrieved_at,
+         freshness_days=excluded.freshness_days, expires_at=excluded.expires_at,
+         content_hash=excluded.content_hash, content=excluded.content, prior_run_id=excluded.prior_run_id,
+         metadata=excluded.metadata`,
+      [userId, runId, candidate.candidateId, item.url, canonicalUrl(item.url), item.sourceType, kinds,
+        item.freshnessStatus, item.capturedAt, days, item.contentHash, item.excerpt, item.priorRunId ?? null,
+        JSON.stringify({ provider: item.provider, title: item.title, scoringEligible: true })],
+    );
+  }
 }
 
 async function saveCompany(client: PoolClient, workspaceId: string, record: CompanyRecord, countryCode: string, runId: string): Promise<void> {
@@ -166,7 +221,7 @@ export async function persistLeadWorkflowResult(input: {
   const reviewById = new Map(input.assessmentReviews.map((item) => [item.candidateId, item]));
   const handoffById = new Map(input.handoffs.map((item) => [item.provenance.candidateId, item]));
   const selected = input.assessments
-    .filter((item) => item.scoringStatus === "completed" && item.eligible && item.totalScore >= 50
+    .filter((item) => item.scoringStatus === "completed" && item.eligibilityStatus === "eligible"
       && candidateById.has(item.candidateId))
     .sort((left, right) => right.totalScore - left.totalScore || right.confidence - left.confidence)
     .slice(0, input.requested);
@@ -175,6 +230,7 @@ export async function persistLeadWorkflowResult(input: {
     for (const assessment of input.assessments) {
       const candidate = candidateById.get(assessment.candidateId);
       if (!candidate) continue;
+      await saveEvidenceSnapshots(client, input.userId, input.runId, candidate);
       const rank = selectedIds.get(assessment.candidateId);
       await client.query(
         `insert into lead_candidate_assessment (
@@ -182,8 +238,10 @@ export async function persistLeadWorkflowResult(input: {
            eligible, total_score, confidence, gates, dimensions, account_tier, supply_model,
            brand_involvement, summary, reasons, risks, unknowns, evidence, correction, evidence_ids,
            fact_ledger, dimension_rationales, scoring_status, assessment_review, handoff_report,
+           eligibility_status, score_lower, score_upper, research_depth, primary_business_role,
+           company_scale_class, recommendation_priority,
            model, prompt_version, escalated, warnings, selected, selected_rank
-         ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34)
+         ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34,$35,$36,$37,$38,$39,$40,$41)
          on conflict (run_id, candidate_id) do update set roles=excluded.roles, primary_role=excluded.primary_role,
            eligible=excluded.eligible, total_score=excluded.total_score, confidence=excluded.confidence,
            gates=excluded.gates, dimensions=excluded.dimensions, account_tier=excluded.account_tier,
@@ -193,6 +251,11 @@ export async function persistLeadWorkflowResult(input: {
            fact_ledger=excluded.fact_ledger, dimension_rationales=excluded.dimension_rationales,
            scoring_status=excluded.scoring_status, assessment_review=excluded.assessment_review,
            handoff_report=excluded.handoff_report,
+           eligibility_status=excluded.eligibility_status, score_lower=excluded.score_lower,
+           score_upper=excluded.score_upper, research_depth=excluded.research_depth,
+           primary_business_role=excluded.primary_business_role,
+           company_scale_class=excluded.company_scale_class,
+           recommendation_priority=excluded.recommendation_priority,
            prompt_version=excluded.prompt_version, escalated=excluded.escalated, warnings=excluded.warnings,
            selected=excluded.selected, selected_rank=excluded.selected_rank, updated_at=now()`,
         [input.userId, input.runId, assessment.candidateId, candidate.companyName, candidate.domain,
@@ -203,6 +266,9 @@ export async function persistLeadWorkflowResult(input: {
           JSON.stringify(candidate.correction.findings), JSON.stringify(assessment.dimensionRationales), assessment.scoringStatus,
           JSON.stringify(reviewById.get(assessment.candidateId) ?? {}),
           JSON.stringify(handoffById.get(assessment.candidateId) ?? {}),
+          assessment.eligibilityStatus, assessment.scoreRange.lower, assessment.scoreRange.upper,
+          assessment.researchDepth, assessment.primaryRole, assessment.companyScaleClass,
+          assessment.recommendationPriority,
           assessment.model, assessment.promptVersion, assessment.escalated, assessment.warnings, Boolean(rank), rank ?? null],
       );
       if (rank) await saveCompany(client, input.workspaceId,
@@ -215,7 +281,22 @@ export async function persistLeadWorkflowResult(input: {
          graph_thread_id=$4, workflow_phase='completed', rag_chunk_ids=$5::uuid[],
          metadata=metadata || $6::jsonb, finished_at=now() where id=$1`,
       [input.runId, selected.length, input.creditsUsed, input.graphThreadId, input.ragContext.map((item) => item.chunkId),
-        JSON.stringify({ playbook: input.playbook, assessmentCount: input.assessments.length, workflowWarnings: input.warnings })],
+        JSON.stringify({ playbook: input.playbook, assessmentCount: input.assessments.length,
+          workflowWarnings: input.warnings, scoringPolicy: { key: ACTIVE_LEAD_SCORING_POLICY.policyKey,
+            version: ACTIVE_LEAD_SCORING_POLICY.version, checksum: scoringPolicyChecksum() },
+          evidenceFreshnessReport: {
+            fresh: input.candidates.flatMap((candidate) => candidate.evidence)
+              .filter((item) => isCurrentLeadScoringEvidence(item, input.runId)
+                && item.freshnessStatus === "fresh").length,
+            revalidated: input.candidates.flatMap((candidate) => candidate.evidence)
+              .filter((item) => isCurrentLeadScoringEvidence(item, input.runId)
+                && item.freshnessStatus === "revalidated").length,
+            discoverySeedsExcludedFromScoring: input.candidates.flatMap((candidate) => candidate.evidence)
+              .filter((item) => item.sourceType === "discovery").length,
+            oldOrUnvalidatedExcludedFromScoring: input.candidates.flatMap((candidate) => candidate.evidence)
+              .filter((item) => item.sourceType !== "discovery"
+                && !isCurrentLeadScoringEvidence(item, input.runId)).length,
+          } })],
     );
   });
   return {
@@ -226,7 +307,7 @@ export async function persistLeadWorkflowResult(input: {
     discovered: input.candidates.length,
     assessed: input.assessments.length,
     qualified: input.assessments.filter((item) => item.scoringStatus === "completed"
-      && item.eligible && item.totalScore >= 50).length,
+      && item.eligibilityStatus === "eligible").length,
     accepted: selected.length,
     creditsUsed: input.creditsUsed,
     ragCitationCount: input.ragContext.length,

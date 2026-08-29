@@ -3,15 +3,23 @@ import { z } from "zod";
 import { ALL_CHANNEL_ROLES, CHANNEL_ROLE_FAMILIES } from "./types";
 
 const channelRoleSchema = z.enum(ALL_CHANNEL_ROLES as [typeof ALL_CHANNEL_ROLES[number], ...typeof ALL_CHANNEL_ROLES]);
+const primaryBusinessRoleSchema = z.union([channelRoleSchema, z.enum(["Hybrid", "Unresolved"])]);
 const channelRoleFamilySchema = z.enum(Object.keys(CHANNEL_ROLE_FAMILIES) as [keyof typeof CHANNEL_ROLE_FAMILIES, ...(keyof typeof CHANNEL_ROLE_FAMILIES)[]]);
 const claimStatusSchema = z.enum(["supported", "not-supported", "unknown", "conflicting"]);
+const eligibilityStatusSchema = z.enum(["eligible", "research-required", "ineligible-for-current-task",
+  "insufficient-evidence-for-recommendation"]);
+const companyScaleClassSchema = z.enum(["Global/Enterprise", "National", "Regional", "Local/Small", "Unknown"]);
+const researchDepthSchema = z.enum(["deep", "standard", "limited"]);
+const cooperationPathTypeSchema = z.enum(["Direct Distribution", "Direct Channel Supply",
+  "Distributor-Supplied Channel", "Direct Retail/E-commerce", "ISP/Operator Supply",
+  "Project/Specification Partnership", "Co-sell/Co-supply", "Referral/Introduction", "OEM/ODM"]);
 const findingKindSchema = z.enum([
   "identity", "country-presence", "active-networking", "role", "product-family",
   "brand-relationship", "commercial-action", "cooperation-path", "company-size", "other",
 ]);
 const dimensionNameSchema = z.enum([
-  "productAndUseCaseFit", "cooperationPathAndBuyingInfluence", "evidenceAndEntityConfidence",
-  "roleIdentificationQuality", "channelClassificationQuality",
+  "productFamilyMatch", "customerAndScenarioOverlap", "positioningCompatibility",
+  "cooperationPathAndBuyingInfluence", "scaleAndChannelCoverage", "executionAndEnablement", "opportunityAndRisk",
 ]);
 
 export const leadEvidenceFindingModelSchema = z.object({
@@ -48,6 +56,8 @@ export const leadCorrectionModelSchema = z.object({
   resolvedCompanyName: z.string().min(2).max(300),
   resolvedOfficialWebsiteUrl: z.string().url().max(1_000),
   roles: z.array(channelRoleSchema).max(11),
+  primaryBusinessRole: primaryBusinessRoleSchema,
+  primaryBusinessRoleReason: z.string().min(2).max(500),
   officialWebsiteEvidenceId: z.string().nullable(),
   evidenceIds: z.array(z.string()).max(30),
   findings: z.array(leadEvidenceFindingModelSchema).min(1).max(30),
@@ -70,28 +80,57 @@ const gatesSchema = z.object({
 });
 
 const dimensionsSchema = z.object({
-  productAndUseCaseFit: z.number().min(0).max(44),
-  cooperationPathAndBuyingInfluence: z.number().min(0).max(32),
-  evidenceAndEntityConfidence: z.number().min(0).max(20),
-  roleIdentificationQuality: z.number().min(0).max(3),
-  channelClassificationQuality: z.number().min(0).max(1),
+  productFamilyMatch: z.number().min(0).max(25),
+  customerAndScenarioOverlap: z.number().min(0).max(15),
+  positioningCompatibility: z.number().min(0).max(10),
+  cooperationPathAndBuyingInfluence: z.number().min(0).max(15),
+  scaleAndChannelCoverage: z.number().min(0).max(15),
+  executionAndEnablement: z.number().min(0).max(10),
+  opportunityAndRisk: z.number().min(0).max(10),
+});
+
+const cooperationPathSchema = z.object({
+  pathId: z.string().min(2).max(80),
+  pathType: cooperationPathTypeSchema,
+  candidateRole: channelRoleSchema,
+  pathNodes: z.array(z.object({
+    actor: z.enum(["Cudy", "Candidate", "Intermediary", "Customer"]),
+    role: z.string().min(2).max(120),
+  })).min(2).max(8),
+  supplyFlow: z.string().min(2).max(500),
+  decisionRole: z.string().min(2).max(300),
+  fitScore: z.number().min(0).max(100),
+  confidence: z.number().min(0).max(100),
+  rank: z.number().int().min(1).max(20),
+  evidenceIds: z.array(z.string()).max(20),
+  prerequisites: z.array(z.string().min(2).max(300)).max(10),
+  valuePropositions: z.array(z.string().min(2).max(300)).max(10),
+  risks: z.array(z.string().min(2).max(300)).max(10),
+  unknowns: z.array(z.string().min(2).max(300)).max(10),
+  targetTitles: z.array(z.string().min(2).max(160)).max(10),
+  recommendedCta: z.string().min(2).max(500),
+  allowedInExternalEmail: z.boolean(),
 });
 
 export const leadAssessmentModelSchema = z.object({
   candidateId: z.string().min(8).max(80),
   gates: gatesSchema,
-  accountTier: z.enum(["KA", "Priority", "Standard", "Long-tail"]),
+  eligibilityStatus: eligibilityStatusSchema,
+  companyScaleClass: companyScaleClassSchema,
+  researchDepth: researchDepthSchema,
   supplyModel: z.enum(["Distributor Supply", "Brand Direct", "Co-sell/Co-supply", "TBD"]),
   brandInvolvement: z.enum(["Light", "Standard", "Deep"]),
+  cooperationPaths: z.array(cooperationPathSchema).max(8),
+  selectedPathId: z.string().max(80).nullable(),
   dimensions: dimensionsSchema,
   dimensionRationales: z.array(z.object({
     dimension: dimensionNameSchema,
-    score: z.number().min(0).max(44),
+    score: z.number().min(0).max(25),
     reason: z.string().min(2).max(500),
     findingIds: z.array(z.string()).max(20),
     evidenceIds: z.array(z.string()).max(20),
     confidence: z.number().min(0).max(100),
-  })).min(5).max(5),
+  })).min(7).max(7),
   confidence: z.number().min(0).max(100),
   summary: z.string().min(8).max(800),
   reasons: z.array(z.string().min(2).max(300)).min(1).max(12),

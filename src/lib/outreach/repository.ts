@@ -121,7 +121,7 @@ export async function loadDevelopmentContext(userId: string, options: Developmen
       unknowns: row.unknowns ?? [], evidenceIds: row.evidence_ids ?? [],
     } : undefined,
     playbook: row.playbook ?? undefined,
-    handoff: row.handoff_report?.version === "lead-handoff-v1" ? row.handoff_report : undefined,
+    handoff: row.handoff_report?.version === "lead-handoff-v2" ? row.handoff_report : undefined,
     recipient, knowledge, templates,
   };
 }
@@ -148,13 +148,31 @@ export async function persistDevelopmentDraft(
 }
 
 export async function updateDevelopmentDraft(userId: string, draftId: string, input: { body?: string; approve?: boolean }): Promise<boolean> {
-  const rows = await tenantQuery<{ id: string }>(userId,
-    `update outreach_draft set manual_body=coalesce($3, manual_body),
-       status=case when $4 then 'approved' else status end,
-       approved_at=case when $4 then now() else approved_at end, updated_at=now()
-     where id=$1 and user_id=$2 and status in ('generated','approved') returning id`,
-    [draftId, userId, input.body?.slice(0, 30_000) ?? null, input.approve ?? false]);
-  return Boolean(rows[0]);
+  return tenantTransaction(userId, async (client) => {
+    const current = await client.query<{ workspace_id: string; revision: number; effective_body: string }>(
+      `select workspace_id, revision, coalesce(manual_body, body) as effective_body
+         from outreach_draft where id=$1 and user_id=$2 and status in ('generated','approved') for update`,
+      [draftId, userId]);
+    if (!current.rows[0]) return false;
+    const revisedBody = input.body?.slice(0, 30_000);
+    const rows = await client.query<{ id: string }>(
+      `update outreach_draft set manual_body=coalesce($3, manual_body),
+         status=case when $4 then 'approved' else status end,
+         approved_at=case when $4 then now() else approved_at end,
+         revision=case when $3::text is null then revision else revision+1 end, updated_at=now()
+       where id=$1 and user_id=$2 and status in ('generated','approved') returning id`,
+      [draftId, userId, revisedBody ?? null, input.approve ?? false]);
+    if (rows.rows[0] && revisedBody !== undefined && revisedBody !== current.rows[0].effective_body) {
+      await client.query(
+        `insert into user_outreach_edit_event (
+           user_id, workspace_id, draft_id, source_revision, edit_source, previous_body, revised_body
+         ) values ($1,$2,$3,$4,'manual-body-edit',$5,$6)`,
+        [userId, current.rows[0].workspace_id, draftId, current.rows[0].revision,
+          current.rows[0].effective_body, revisedBody],
+      );
+    }
+    return Boolean(rows.rows[0]);
+  });
 }
 
 export async function loadDraftForFeedback(userId: string, draftId: string): Promise<{
@@ -244,13 +262,24 @@ export async function applyFeedbackRevision(userId: string, input: {
     if (!draftResult.rows[0]) throw new Error("草稿已被其他操作更新，请刷新后重新提交反馈");
     const feedbackResult = await client.query<{ id: string }>(
       `update outreach_feedback set status='applied', revised_body=$3, memory_valuable=$4,
-         memory_summary=$5, memory_reason=$6, memory_id=$7, model=$8,
+         memory_summary=$5, memory_reason=$6, private_memory_id=$7, model=$8,
          generation_metrics=$9, applied_at=now()
        where id=$1 and user_id=$2 and status='submitted' returning id`,
       [input.feedbackId, userId, input.revisedBody, shouldStoreMemory,
         shouldStoreMemory ? input.memory.summary : null, memoryReason, memoryId ?? null,
         input.model, JSON.stringify(input.generationMetrics)]);
     if (!feedbackResult.rows[0]) throw new Error("反馈记录状态已变化，无法重复应用");
+    await client.query(
+      `insert into user_outreach_edit_event (
+         user_id, workspace_id, draft_id, feedback_id, source_revision, edit_source,
+         user_instruction, previous_body, revised_body, distilled_memory_id, distillation_status
+       ) select $1,d.workspace_id,d.id,$2,$3,'feedback-revision',f.feedback,f.previous_body,$4,$5,
+                case when $5::uuid is null then 'not-reusable' else 'applied' end
+           from outreach_draft d join outreach_feedback f on f.draft_id=d.id
+          where d.id=$6 and f.id=$2`,
+      [userId, input.feedbackId, input.draft.revision, input.revisedBody,
+        memoryId ?? null, input.draft.id],
+    );
     return { revision: draftResult.rows[0].revision, memoryId };
   });
   const revised = { ...input.draft, status: "generated" as const, revision: applied.revision,

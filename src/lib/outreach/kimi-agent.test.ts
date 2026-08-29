@@ -70,15 +70,18 @@ describe("Kimi development strategy agent", () => {
   it("gives internal interpretations only to strategy and validates fact-level email citations", async () => {
     vi.stubEnv("KIMI_API_KEY", "test-key");
     const handoffContext: DevelopmentContext = { ...context, handoff: {
-      version: "lead-handoff-v1", provenance: { candidateId: "lead-1", runId: "run-1",
+      version: "lead-handoff-v2", provenance: { candidateId: "lead-1", runId: "run-1",
         evidenceSnapshotHash: "hash", correctionModel: "corrector", scoringModel: "scorer", reviewStatus: "secondary-confirmed" },
       identity: { companyName: company.displayName, officialUrl: "https://example.de/", domain: company.domain,
-        possibleRoles: ["SI"] },
-      decision: { score: 82, primaryFamily: "services", recommendedFamilies: ["services"], scoreConfidence: 85, scoringStatus: "completed" },
+        supportedRoles: ["SI"], primaryBusinessRole: "SI" },
+      decision: { score: 82, scoreRange: { lower: 79, upper: 85 }, eligibilityStatus: "eligible",
+        primaryFamily: "services", recommendedFamilies: ["services"], companyScaleClass: "Regional",
+        researchDepth: "standard", recommendationPriority: "High", accountTier: "KA",
+        cooperationPaths: [], selectedPathId: null, scoreConfidence: 85, scoringStatus: "completed" },
       externallyUsableFacts: [{ factId: "fact-1", kind: "commercial-action",
         statement: "Example delivers network integration services.", evidenceIds: ["ev-1"],
         sourceTypes: ["official-website"], confidence: 90 }],
-      internalInterpretations: [{ interpretationId: "interpretation-fit", dimension: "productAndUseCaseFit",
+      internalInterpretations: [{ interpretationId: "interpretation-fit", dimension: "productFamilyMatch",
         statement: "This may support an SMB networking discussion.", basedOnFactIds: ["fact-1"], confidence: 75 }],
       personalizationHooks: [{ hook: "Example delivers network integration services.", basedOnFactIds: ["fact-1"],
         allowedInEmail: true }],

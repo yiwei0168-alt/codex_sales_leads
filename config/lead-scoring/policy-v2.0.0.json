@@ -1,0 +1,188 @@
+{
+  "policyKey": "cudy-lead-scoring",
+  "version": "2.0.0",
+  "schemaVersion": "lead-scoring-policy-v2",
+  "status": "active",
+  "weights": {
+    "productAndUseCaseFit": 50,
+    "cooperationPathAndBuyingInfluence": 15,
+    "scaleAndChannelCoverage": 15,
+    "executionAndEnablement": 10,
+    "opportunityAndRisk": 10
+  },
+  "productAndUseCaseFit": {
+    "productFamilyMatch": 25,
+    "customerAndScenarioOverlap": 15,
+    "positioningCompatibility": 10,
+    "productFamilyMatchMethod": "best-enabled-track",
+    "fullPortfolioMode": "explicit-task-only",
+    "unknownEvidence": "unknown-not-zero"
+  },
+  "productTracks": {
+    "home-retail": {
+      "label": "Home and retail connectivity",
+      "enabledByDefault": true,
+      "families": {
+        "routers": 30,
+        "mesh-repeaters": 30,
+        "retail-4g-5g": 30,
+        "adapters-accessories": 10
+      }
+    },
+    "smb": {
+      "label": "SMB one-stop networking",
+      "enabledByDefault": true,
+      "families": {
+        "ap-controller-cloud": 35,
+        "switching-poe-fiber": 30,
+        "gateway-vpn": 25,
+        "outdoor-fwa-backup": 10
+      }
+    },
+    "isp-fwa": {
+      "label": "ISP, FWA and last-mile access",
+      "enabledByDefault": true,
+      "families": {
+        "xpon-ont": 30,
+        "4g-5g-fwa": 30,
+        "isp-router-easymesh": 25,
+        "outdoor-access-fiber": 15
+      }
+    },
+    "industrial": {
+      "label": "Light industrial and IoT connectivity",
+      "enabledByDefault": true,
+      "families": {
+        "industrial-4g-5g-router": 50,
+        "industrial-switching": 30,
+        "outdoor-poe-fiber": 20
+      }
+    },
+    "pc-peripherals": {
+      "label": "PC peripherals",
+      "enabledByDefault": false,
+      "families": {
+        "pc-peripherals": 100
+      }
+    }
+  },
+  "roleScorecards": {
+    "distribution": {
+      "roles": ["Distributor", "VAD"],
+      "customerReachEvidence": ["downstream resellers", "VARs", "MSPs", "retailers", "e-tailers"],
+      "scenarioEvidence": ["relevant networking business unit", "vendor portfolio", "channel enablement"],
+      "executionEvidence": ["vendor onboarding", "procurement", "inventory", "credit", "logistics", "training", "marketing"]
+    },
+    "resale-services": {
+      "roles": ["VAR", "Dealer", "Reseller", "SI", "Installer", "MSP"],
+      "customerReachEvidence": ["business customers", "vertical customers", "managed customers", "project pipeline"],
+      "scenarioEvidence": ["office", "hospitality", "education", "retail", "campus", "surveillance"],
+      "executionEvidence": ["pre-sales", "design", "deployment", "project delivery", "support", "managed service"]
+    },
+    "retail": {
+      "roles": ["Retailer", "E-tailer"],
+      "customerReachEvidence": ["consumer audience", "stores", "relevant category traffic", "category sales"],
+      "scenarioEvidence": ["home Wi-Fi", "mesh", "mobile broadband", "gaming", "SOHO"],
+      "executionEvidence": ["listing", "content operations", "promotion", "fulfilment", "returns", "consumer support"]
+    },
+    "operator": {
+      "roles": ["ISP"],
+      "customerReachEvidence": ["subscribers", "homes passed", "service footprint", "install base"],
+      "scenarioEvidence": ["CPE", "xPON", "FWA", "mesh", "remote management", "mass deployment"],
+      "executionEvidence": ["lab validation", "certification", "provisioning", "NOC", "firmware", "rollout"]
+    }
+  },
+  "subweights": {
+    "customerAndScenarioOverlap": {
+      "targetCustomerReach": 6,
+      "scenarioOverlap": 6,
+      "realDemandAndEntryReason": 3
+    },
+    "positioningCompatibility": {
+      "marketAndPriceTier": 4,
+      "technicalAndDeliveryRequirements": 3,
+      "portfolioPosition": 3
+    },
+    "cooperationPathAndBuyingInfluence": {
+      "currentPathFit": 5,
+      "procurementControl": 6,
+      "selectionAndMarketInfluence": 4
+    },
+    "scaleAndChannelCoverage": {
+      "relevantBusinessScale": 6,
+      "targetMarketCoverage": 5,
+      "channelOrCustomerNetwork": 4
+    },
+    "executionAndEnablement": {
+      "commercialAndOperationalExecution": 4,
+      "technicalServiceAndEnablement": 3,
+      "marketActivationAndContinuity": 3
+    },
+    "opportunityAndRisk": {
+      "partnershipOpenness": 4,
+      "strategicTiming": 3,
+      "competitionAndStructuralRisk": 3
+    }
+  },
+  "researchPolicy": {
+    "depths": ["deep", "standard", "limited"],
+    "deepTriggers": [
+      "global-national-or-leading-regional-scale",
+      "strong-product-or-scenario-signal",
+      "user-nominated-candidate",
+      "top-n-boundary",
+      "identity-or-evidence-conflict"
+    ],
+    "limitedEligibility": [
+      "positively-small-or-local",
+      "weak-initial-relevance",
+      "not-user-nominated",
+      "not-top-n-boundary"
+    ],
+    "missingEvidenceRule": "A limited-research long-tail candidate may be held for insufficient evidence only after identity, official-site and targeted relevance searches complete.",
+    "oldEvidenceRule": "Previous-run evidence is discovery-only until freshly acquired or freshness-validated into the current run snapshot."
+  },
+  "evidenceFreshnessDays": {
+    "identity": 365,
+    "company-size": 365,
+    "product-family": 180,
+    "brand-relationship": 120,
+    "commercial-action": 90,
+    "cooperation-path": 120,
+    "strategic-timing": 60
+  },
+  "eligibilityPolicy": {
+    "statuses": ["eligible", "research-required", "ineligible-for-current-task", "insufficient-evidence-for-recommendation"],
+    "required": ["relevant-product-track", "role-appropriate-customer-or-scenario", "viable-cooperation-path", "no-hard-blocker"],
+    "unknownRule": "Unknown is not a negative fact and never becomes false solely because retrieval failed.",
+    "noScaleGate": true
+  },
+  "escalationPolicy": {
+    "confidenceBelow": 75,
+    "randomAuditPercent": 5,
+    "triggers": [
+      "materially-different-multi-family-routes",
+      "hybrid-or-unresolved-primary-role",
+      "atomic-evidence-conflict",
+      "source-conflict",
+      "top-n-boundary",
+      "memory-conflict"
+    ],
+    "originalSearchChannelIsTrigger": false
+  },
+  "accountTierPolicy": {
+    "tier1Distribution": ["Strategic Distributor", "Priority Distributor", "Standard Distributor", "Long-tail Distributor"],
+    "downstream": ["KA", "Priority", "Standard", "Long-tail"],
+    "kaScope": "KA is reserved for downstream-channel candidates and is prohibited for a candidate acting in a tier-1 distributor path.",
+    "strategicThreshold": 80,
+    "priorityThreshold": 75,
+    "thresholdsConfigurable": true,
+    "doesNotAffectScore": true
+  },
+  "knowledgePolicy": {
+    "sharedAndPrivateMemorySeparated": true,
+    "userConfirmedKnowledgePriority": "higher-than-ordinary-retrieval",
+    "userApprovedMarketingClaimsAreFacts": false,
+    "userApprovedMarketingClaimsAffectScoring": false
+  }
+}

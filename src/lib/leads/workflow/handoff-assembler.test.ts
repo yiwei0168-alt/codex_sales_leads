@@ -1,14 +1,18 @@
 import { describe, expect, it } from "vitest";
 
 import { LeadHandoffAssembler } from "./handoff-assembler";
+import { leadEvidenceContentHash } from "@/lib/leads/evidence-snapshot";
 import type { CorrectedLeadWorkflowCandidate, LeadAssessmentReview, LeadCandidateAssessment } from "./types";
 
 const candidate: CorrectedLeadWorkflowCandidate = {
-  candidateId: "lead-handoff-example", companyName: "Handoff GmbH", domain: "handoff.example",
+  candidateId: "lead-handoff-example", evidenceSnapshotRunId: "run-handoff",
+  companyName: "Handoff GmbH", domain: "handoff.example",
   officialWebsiteUrl: "https://handoff.example/", queryRoles: ["Installer"], queryFamily: "services", providerScore: 0.8,
   evidence: [{ id: "evidence-handoff", url: "https://handoff.example/wlan", title: "WLAN projects",
     excerpt: "We install WLAN access points for business customers.", sourceType: "official-website",
-    provider: "fixture", capturedAt: "2026-08-28" }], evidenceWarnings: [],
+    provider: "fixture", capturedAt: "2026-08-30T00:00:00Z", evidenceRunId: "run-handoff",
+    contentHash: leadEvidenceContentHash("We install WLAN access points for business customers."),
+    freshnessStatus: "fresh" }], evidenceWarnings: [],
   correction: { originalCompanyName: "Handoff GmbH", originalDomain: "handoff.example",
     originalOfficialWebsiteUrl: "https://handoff.example/", resolvedRoles: ["Installer"], resolvedFamilies: ["services"],
     primaryRole: "Installer", primaryFamily: "services", primaryChannelReason: "Fixture primary route.",
@@ -28,13 +32,26 @@ const assessment: LeadCandidateAssessment = {
   candidateId: candidate.candidateId, eligible: true,
   gates: { correctedIdentityUsable: "supported", companyExists: "supported", targetCountryPresence: "supported",
     networkingRelevant: "supported", independentProspect: "supported" },
-  roles: ["Installer"], primaryRole: null, accountTier: "Long-tail", supplyModel: "Distributor Supply",
-  brandInvolvement: "Light", dimensions: { productAndUseCaseFit: 35, cooperationPathAndBuyingInfluence: 20,
-    evidenceAndEntityConfidence: 16, roleIdentificationQuality: 3, channelClassificationQuality: 1 },
-  dimensionRationales: [{ dimension: "productAndUseCaseFit", score: 35,
+  roles: ["Installer"], primaryRole: "Installer", companyScaleClass: "Local/Small",
+  researchDepth: "limited", recommendationPriority: "Medium", accountTier: "Standard",
+  supplyModel: "Distributor Supply", brandInvolvement: "Light",
+  dimensions: { productFamilyMatch: 20, customerAndScenarioOverlap: 13, positioningCompatibility: 8,
+    cooperationPathAndBuyingInfluence: 9, scaleAndChannelCoverage: 8,
+    executionAndEnablement: 9, opportunityAndRisk: 8 },
+  dimensionRationales: [{ dimension: "productFamilyMatch", score: 20,
     reason: "The evidenced WLAN installation activity fits the product category.", findingIds: ["fact-install"],
     evidenceIds: ["evidence-handoff"], confidence: 88 }],
-  totalScore: 75, confidence: 86, summary: "Local WLAN installer.", reasons: ["Relevant project activity."],
+  totalScore: 75, scoreRange: { lower: 71, upper: 79 }, confidence: 86,
+  eligibilityStatus: "eligible", cooperationPaths: [{ pathId: "path-installer-project",
+    pathType: "Project/Specification Partnership", candidateRole: "Installer", pathNodes: [
+      { actor: "Cudy", role: "Brand" }, { actor: "Candidate", role: "Installer" },
+      { actor: "Customer", role: "SMB project customer" }], supplyFlow: "Cudy products enter installer projects.",
+    decisionRole: "Installer influences project specification.", fitScore: 78, confidence: 82, rank: 1,
+    evidenceIds: ["evidence-handoff"], prerequisites: ["Validate procurement route"],
+    valuePropositions: ["Efficient WLAN deployment"], risks: [], unknowns: ["Procurement control"],
+    targetTitles: ["Solutions Manager"], recommendedCta: "Review one WLAN use case.",
+    allowedInExternalEmail: true }], selectedPathId: "path-installer-project",
+  summary: "Local WLAN installer.", reasons: ["Relevant project activity."],
   risks: ["Procurement influence is not demonstrated."], unknowns: ["Hardware procurement control"],
   evidenceIds: ["evidence-handoff"], model: "scorer", promptVersion: "v3", escalated: false,
   scoringStatus: "completed", warnings: [],
@@ -50,7 +67,9 @@ describe("LeadHandoffAssembler", () => {
     expect(handoff.doNotClaim).toContain("The company controls hardware procurement.");
     expect(handoff.personalizationHooks[0].allowedInEmail).toBe(true);
     expect(handoff.quality.readyForEmail).toBe(true);
-    expect(Buffer.byteLength(JSON.stringify(handoff), "utf8")).toBeLessThanOrEqual(4_096);
+    expect(handoff.version).toBe("lead-handoff-v2");
+    expect(handoff.decision.cooperationPaths).toHaveLength(1);
+    expect(Buffer.byteLength(JSON.stringify(handoff), "utf8")).toBeLessThanOrEqual(16_384);
   });
 
   it("blocks email readiness when review remains unresolved", () => {

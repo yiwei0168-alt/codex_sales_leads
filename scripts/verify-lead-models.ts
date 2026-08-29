@@ -37,6 +37,7 @@ if (playbook.generatedBy !== "langchain-model") {
 
 const candidate: LeadWorkflowCandidate = {
   candidateId: "adapter-preflight-bechtle",
+  evidenceSnapshotRunId: "run-adapter-preflight",
   companyName: "Bechtle AG",
   domain: "bechtle.com",
   officialWebsiteUrl: "https://www.bechtle.com/",

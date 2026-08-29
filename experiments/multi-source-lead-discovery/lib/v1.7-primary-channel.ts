@@ -37,7 +37,7 @@ export function correctV17Roles(dossier: SharedEvidenceDossier): V17RoleCorrecti
   const roles = [...new Set([...evidenceRoles, ...consensusRoles])];
   const selection = selectPrimaryChannel({
     roles,
-    smallLongTailExceptionEligible: dossier.evidenceProfileAssessment.exceptionEligible,
+    agentPrimaryRole: roles.length === 1 ? roles[0] : roles.length > 1 ? "Hybrid" : "Unresolved",
   });
   const facts = extractV16Facts(dossier);
   return {

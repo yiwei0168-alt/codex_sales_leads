@@ -1,11 +1,11 @@
 import type { ChannelRole } from "@/lib/domain";
 
-import { CHANNEL_ROLE_FAMILIES, type ChannelRoleFamily } from "./workflow/types";
+import { CHANNEL_ROLE_FAMILIES, type ChannelRoleFamily, type PrimaryBusinessRole } from "./workflow/types";
 
 export type LeadDisplayChannel = "tier1-distribution" | "b2b-resale" | "project-services";
 
 export interface PrimaryChannelSelection {
-  primaryRole: ChannelRole | null;
+  primaryRole: PrimaryBusinessRole;
   primaryFamily: ChannelRoleFamily | null;
   primaryChannel: LeadDisplayChannel | null;
   supportedFamilies: ChannelRoleFamily[];
@@ -14,23 +14,13 @@ export interface PrimaryChannelSelection {
 }
 
 export const PRIMARY_CHANNEL_POLICY = {
-  version: "primary-channel-v1",
-  allRolesRetained: "Retain every evidence-supported role; primary means display and scoring route, not revenue dominance.",
-  upwardDefault: "When both distribution and downstream roles are supported, use distribution as the primary route.",
-  smallLongTailException: "A positively evidenced small long-tail company uses a supported downstream route instead of distribution when both exist.",
-  downstreamOrder: "Without distribution, prefer resale, then retail, then services, then ISP for one deterministic display route.",
-  prohibitedInference: "Missing size evidence never activates the small long-tail exception.",
+  version: "primary-business-role-v2",
+  allRolesRetained: "Retain every evidence-supported role; the evidence-correction agent independently determines the main business role.",
+  noUpwardDefault: "The original search lane and any upward channel hierarchy are prohibited as primary-role inputs.",
+  hybridAllowed: "Use Hybrid when multiple business-role families are materially co-primary and Unresolved when evidence is insufficient or conflicting.",
 } as const;
 
 const familyOrder: ChannelRoleFamily[] = ["distribution", "resale", "retail", "services", "isp"];
-const roleOrder: ChannelRole[] = [
-  "VAD", "Distributor",
-  "VAR", "Dealer", "Reseller",
-  "E-tailer", "Retailer",
-  "SI", "MSP", "Installer",
-  "ISP",
-];
-
 function familiesForRoles(roles: ChannelRole[]): ChannelRoleFamily[] {
   return familyOrder.filter((family) => roles.some((role) => CHANNEL_ROLE_FAMILIES[family].includes(role as never)));
 }
@@ -41,46 +31,36 @@ function displayChannel(family: ChannelRoleFamily): LeadDisplayChannel {
   return "project-services";
 }
 
-function roleForFamily(roles: ChannelRole[], family: ChannelRoleFamily): ChannelRole | null {
-  const allowed = CHANNEL_ROLE_FAMILIES[family] as readonly ChannelRole[];
-  return roleOrder.find((role) => roles.includes(role) && allowed.includes(role)) ?? null;
-}
-
 export function selectPrimaryChannel(options: {
   roles: ChannelRole[];
-  smallLongTailExceptionEligible: boolean;
+  agentPrimaryRole: PrimaryBusinessRole;
 }): PrimaryChannelSelection {
   const roles = [...new Set(options.roles)];
   const supportedFamilies = familiesForRoles(roles);
-  if (supportedFamilies.length === 0) {
+  const primaryRole = options.agentPrimaryRole;
+  if (primaryRole === "Hybrid" || primaryRole === "Unresolved") {
     return {
-      primaryRole: null,
+      primaryRole,
       primaryFamily: null,
       primaryChannel: null,
-      supportedFamilies: [],
+      supportedFamilies,
       usedSmallLongTailException: false,
-      reason: "No evidence-supported role family is available for primary-channel selection.",
+      reason: `${primaryRole} was selected by the role agent; no deterministic display hierarchy was applied.`,
     };
   }
-
-  const hasDistribution = supportedFamilies.includes("distribution");
-  const downstream = supportedFamilies.filter((family) => family !== "distribution");
-  const usedSmallLongTailException = hasDistribution && downstream.length > 0
-    && options.smallLongTailExceptionEligible;
-  const primaryFamily = usedSmallLongTailException ? downstream[0]
-    : hasDistribution ? "distribution"
-      : supportedFamilies[0];
-  const primaryRole = roleForFamily(roles, primaryFamily);
+  const primaryFamily = (Object.entries(CHANNEL_ROLE_FAMILIES) as Array<[ChannelRoleFamily, readonly ChannelRole[]]>)
+    .find(([, allowed]) => allowed.includes(primaryRole))?.[0] ?? null;
+  if (!roles.includes(primaryRole) || !primaryFamily) {
+    return { primaryRole: "Unresolved", primaryFamily: null, primaryChannel: null, supportedFamilies,
+      usedSmallLongTailException: false,
+      reason: "The agent-selected primary role was not evidence-supported and was normalized to Unresolved." };
+  }
   return {
     primaryRole,
     primaryFamily,
     primaryChannel: displayChannel(primaryFamily),
     supportedFamilies,
-    usedSmallLongTailException,
-    reason: usedSmallLongTailException
-      ? `Positive small-long-tail evidence moved the display route from distribution to supported downstream family ${primaryFamily}.`
-      : hasDistribution && downstream.length > 0
-        ? "Distribution is the primary display route under the upward-default rule; all downstream roles remain recorded."
-        : `${primaryFamily} is the highest supported family in the deterministic display hierarchy.`,
+    usedSmallLongTailException: false,
+    reason: `${primaryRole} was selected by the role agent from evidence-supported roles; the original search lane was ignored.`,
   };
 }

@@ -15,7 +15,8 @@ export interface OutreachTemplate {
 }
 export interface OutreachKnowledgeItem {
   id: string;
-  kind: "company-profile" | "distribution-policy" | "market-proof" | "feedback-memory";
+  kind: "company-profile" | "distribution-policy" | "market-proof" | "feedback-memory"
+    | "cooperation-path-preference" | "user-approved-marketing-claim";
   title: string;
   content: string;
   marketCodes: string[];

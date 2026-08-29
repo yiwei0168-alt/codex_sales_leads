@@ -8,6 +8,8 @@ import {
 } from "@/lib/leads/global-search";
 import { ProviderUnavailableError } from "@/providers/contracts";
 import { TavilySearchProvider, type TavilySearchResult } from "@/providers/tavily";
+import { ACTIVE_LEAD_SCORING_POLICY, scoringPolicyChecksum } from "@/lib/leads/scoring-policy";
+import { leadEvidenceContentHash } from "@/lib/leads/evidence-snapshot";
 
 import type {
   LeadEvidenceItem,
@@ -26,15 +28,19 @@ function stableId(prefix: string, value: string): string {
   return `${prefix}-${createHash("sha256").update(value).digest("hex").slice(0, 16)}`;
 }
 
-function discoveryEvidence(result: TavilySearchResult): LeadEvidenceItem {
+function discoveryEvidence(result: TavilySearchResult, runId: string): LeadEvidenceItem {
+  const excerpt = result.content.replace(/\s+/g, " ").trim().slice(0, 2_000);
   return {
     id: stableId("evidence", result.url),
     url: result.url,
     title: result.title,
-    excerpt: result.content.replace(/\s+/g, " ").trim().slice(0, 2_000),
+    excerpt,
     sourceType: "discovery",
     provider: "tavily",
     capturedAt: new Date().toISOString(),
+    evidenceRunId: runId,
+    contentHash: leadEvidenceContentHash(excerpt),
+    freshnessStatus: "fresh",
   };
 }
 
@@ -50,11 +56,17 @@ export async function discoverLeadCandidates(
   graphThreadId: string,
 ): Promise<DiscoveryResult> {
   const [run] = await query<{ id: string }>(
-    `insert into lead_search_run (workspace_id, provider, target_count, country_code, market_name, objective, metadata)
-     values ($1, 'langgraph+tavily', $2, $3, $4, $5, $6) returning id`,
+    `insert into lead_search_run (workspace_id, provider, target_count, country_code, market_name, objective,
+       scoring_policy_id, scoring_policy_version, scoring_policy_checksum, scoring_policy_snapshot, metadata)
+     values ($1, 'langgraph+tavily', $2, $3, $4, $5,
+       (select id from lead_scoring_policy where policy_key=$7 and version=$8 limit 1), $8, $9, $10, $6)
+     returning id`,
     [workspaceId, plan.targetCount, plan.countryCode, plan.countryName, plan.objective,
       JSON.stringify({ source: "assistant-confirmed-langgraph", assistantActionId: actionId, graphThreadId,
-        workflowVersion: "lead-discovery-v1", playbook })],
+        workflowVersion: "lead-discovery-v2-fresh-evidence", playbook,
+        evidencePolicy: "current-run-fresh-or-revalidated-only" }),
+      ACTIVE_LEAD_SCORING_POLICY.policyKey, ACTIVE_LEAD_SCORING_POLICY.version,
+      scoringPolicyChecksum(), JSON.stringify(ACTIVE_LEAD_SCORING_POLICY)],
   );
   const tavily = new TavilySearchProvider({ maxAttempts: 3 });
   const providerCountry = new Intl.DisplayNames(["en"], { type: "region" }).of(plan.countryCode)?.toLowerCase();
@@ -94,13 +106,14 @@ export async function discoverLeadCandidates(
         if (classified.rejectionReason || !classified.domain) continue;
         candidates.push({
           candidateId: stableId("lead", classified.domain),
+          evidenceSnapshotRunId: run.id,
           companyName: globalLeadDisplayName(result, classified.domain),
           domain: classified.domain,
           officialWebsiteUrl: `https://${classified.domain}/`,
           queryRoles: [...spec.roles],
           queryFamily: spec.family,
           providerScore: Math.max(0, Math.min(1, result.score * roleWeight(playbook, spec.family))),
-          evidence: [discoveryEvidence(result)],
+          evidence: [discoveryEvidence(result, run.id)],
           evidenceWarnings: [],
         });
       }
@@ -165,6 +178,11 @@ async function enrichOne(
       sourceType: "official-website",
       provider: "tavily",
       capturedAt: new Date().toISOString(),
+      evidenceRunId: candidate.evidenceSnapshotRunId,
+      freshnessStatus: "fresh",
+      contentHash: leadEvidenceContentHash(
+        (rawByUrl.get(result.url) || result.rawContent || result.content).replace(/\s+/g, " ").trim().slice(0, 4_000),
+      ),
     }));
     return {
       candidate: { ...candidate, evidence: [...new Map([...candidate.evidence, ...added].map((item) => [item.url, item])).values()] },

@@ -1,5 +1,5 @@
 import type { CompanyRecord } from "@/lib/domain";
-import { query, transaction } from "@/lib/rag/db";
+import { query, tenantTransaction, transaction } from "@/lib/rag/db";
 import type {
   CompanyContactDetailsDto,
   CompanyEditablePatch,
@@ -25,9 +25,11 @@ export async function getCurrentWorkspace(userId: string): Promise<MarketWorkspa
       record: CompanyRecord; account_tier: CompanyRecord["accountTier"]; supply_model: CompanyRecord["supplyModel"];
       brand_involvement: CompanyRecord["brandInvolvement"]; opportunity_stage: CompanyRecord["opportunityStage"];
       priority: CompanyRecord["priority"]; owner_name: string | null; next_action: string | null; manually_edited: boolean;
+      selected_path_id: string | null; selected_path_type: CompanyRecord["selectedCooperationPath"] | null;
     }>(
       `select c.record, wc.account_tier, wc.supply_model, wc.brand_involvement, wc.opportunity_stage,
-              wc.priority, wc.owner_name, wc.next_action, wc.manually_edited
+              wc.priority, wc.owner_name, wc.next_action, wc.manually_edited,
+              wc.selected_path_id, wc.selected_path_type
        from workspace_company wc join sales_company c on c.id = wc.company_id
        where wc.workspace_id = $1 order by c.canonical_name`,
       [workspace.id],
@@ -159,6 +161,8 @@ export async function getCurrentWorkspace(userId: string): Promise<MarketWorkspa
       owner: row.owner_name ?? row.record.owner,
       nextAction: row.next_action ?? row.record.nextAction,
       manuallyEdited: row.manually_edited,
+      selectedPathId: row.selected_path_id ?? row.record.selectedPathId,
+      selectedCooperationPath: row.selected_path_type ?? row.record.selectedCooperationPath,
     })),
     contactsByCompanyId,
     latestSearch: searches[0] ? {
@@ -187,13 +191,16 @@ export async function updateWorkspaceMode(mode: "new-market" | "growth", userId:
 }
 
 export async function updateCompanyState(externalId: string, patch: CompanyEditablePatch, userId: string): Promise<void> {
-  await transaction(async (client) => {
+  await tenantTransaction(userId, async (client) => {
     const current = await client.query<{
       workspace_id: string; company_id: string; account_tier: string; supply_model: string; brand_involvement: string;
       opportunity_stage: string; priority: string; owner_name: string | null; next_action: string | null;
+      selected_path_id: string | null; selected_path_type: string | null; record: CompanyRecord;
+      country_code: string; mode: string; objective: string;
     }>(
       `select wc.workspace_id, wc.company_id, wc.account_tier, wc.supply_model, wc.brand_involvement,
-              wc.opportunity_stage, wc.priority, wc.owner_name, wc.next_action
+              wc.opportunity_stage, wc.priority, wc.owner_name, wc.next_action,
+              wc.selected_path_id, wc.selected_path_type, c.record, w.country_code, w.mode, w.objective
        from workspace_company wc join market_workspace w on w.id = wc.workspace_id
        join sales_company c on c.id = wc.company_id
        where w.owner_id = $1 and w.slug = $2 and c.external_id = $3`,
@@ -201,6 +208,17 @@ export async function updateCompanyState(externalId: string, patch: CompanyEdita
     );
     const row = current.rows[0];
     if (!row) throw new Error("Company not found in current workspace");
+    if (patch.accountTier !== undefined) {
+      const distributorTier = patch.accountTier.endsWith("Distributor");
+      if (row.record.layer === "Tier-1 Distributor" ? !distributorTier : distributorTier) {
+        throw new Error("Account tier is incompatible with the candidate's cooperation-path layer");
+      }
+    }
+    const selectedPath = patch.selectedPathId === undefined ? undefined
+      : row.record.cooperationPaths?.find((path) => path.pathId === patch.selectedPathId);
+    if (patch.selectedPathId !== undefined && !selectedPath) {
+      throw new Error("Selected cooperation path is not available for this company");
+    }
     const next = {
       accountTier: patch.accountTier ?? row.account_tier,
       supplyModel: patch.supplyModel ?? row.supply_model,
@@ -209,15 +227,45 @@ export async function updateCompanyState(externalId: string, patch: CompanyEdita
       priority: patch.priority ?? row.priority,
       owner: patch.owner === undefined ? row.owner_name : patch.owner,
       nextAction: patch.nextAction === undefined ? row.next_action : patch.nextAction,
+      selectedPathId: patch.selectedPathId ?? row.selected_path_id,
+      selectedPathType: selectedPath?.pathType ?? row.selected_path_type,
     };
     await client.query(
       `update workspace_company set account_tier = $1, supply_model = $2, brand_involvement = $3,
               opportunity_stage = $4, priority = $5, owner_name = $6, next_action = $7,
+              selected_path_id = $8, selected_path_type = $9,
               manually_edited = true, updated_at = now()
-       where workspace_id = $8 and company_id = $9`,
+       where workspace_id = $10 and company_id = $11`,
       [next.accountTier, next.supplyModel, next.brandInvolvement, next.opportunityStage, next.priority,
-        next.owner || null, next.nextAction || null, row.workspace_id, row.company_id],
+        next.owner || null, next.nextAction || null, next.selectedPathId, next.selectedPathType,
+        row.workspace_id, row.company_id],
     );
+    if (selectedPath && selectedPath.pathId !== row.selected_path_id) {
+      const edit = await client.query<{ id: string }>(
+        `insert into user_cooperation_path_edit (
+           user_id, workspace_id, company_id, previous_path_id, previous_path_type,
+           selected_path_id, selected_path_type, primary_business_role, company_scale_class,
+           market_code, development_stage, available_paths, source
+         ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,'user-ui') returning id`,
+        [userId, row.workspace_id, row.company_id, row.selected_path_id, row.selected_path_type,
+          selectedPath.pathId, selectedPath.pathType, row.record.primaryBusinessRole ?? null,
+          (row.record as CompanyRecord & { companyScaleClass?: string }).companyScaleClass ?? null,
+          row.country_code, `${row.mode}:${row.objective}`, JSON.stringify(row.record.cooperationPaths ?? [])],
+      );
+      await client.query(
+        `insert into user_outreach_memory (
+           user_id, workspace_id, kind, external_id, title, content, market_codes, channel_roles,
+           context, usage_scope, affects_objective_scoring
+         ) values ($1,$2,'cooperation-path-preference',$3,'User-confirmed cooperation path',$4,$5,$6,$7,
+           'internal-learning',false)`,
+        [userId, row.workspace_id, `path-edit:${edit.rows[0].id}`,
+          `For ${row.record.displayName}, the user selected ${selectedPath.pathType} instead of ${row.selected_path_type ?? "the agent default"}.`,
+          [row.country_code], [selectedPath.candidateRole], JSON.stringify({ companyExternalId: externalId,
+            primaryBusinessRole: row.record.primaryBusinessRole, selectedPathId: selectedPath.pathId,
+            selectedPathType: selectedPath.pathType, previousPathId: row.selected_path_id,
+            previousPathType: row.selected_path_type, developmentStage: `${row.mode}:${row.objective}` })],
+      );
+    }
     await client.query(
       `insert into workspace_audit_event (workspace_id, actor_user_id, entity_type, entity_id, action, changes)
        values ($1, $2, 'company', $3, 'company.updated', $4)`,

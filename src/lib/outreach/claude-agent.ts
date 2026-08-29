@@ -166,6 +166,8 @@ export async function reviseDevelopmentDraftWithClaude(
     ].filter(Boolean).join("\n"), JSON.stringify({
       target: { name: context.company.displayName, country: context.company.country, roles: context.company.roles },
       strategy: current.strategy,
+      selectedCooperationPath: context.handoff?.decision.cooperationPaths.find((path) =>
+        path.pathId === context.handoff?.decision.selectedPathId),
       currentSubjects: current.draft.subjectOptions,
       currentBody: current.draft.body,
       userFeedback: feedback.slice(0, 4_000),

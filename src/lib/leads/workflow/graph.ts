@@ -12,6 +12,7 @@ import { LeadHandoffAssembler } from "./handoff-assembler";
 import { buildLeadMarketPlaybook } from "./playbook";
 import { LeadQualificationAgent } from "./qualification-agent";
 import { retrieveLeadRagContext } from "./rag-context";
+import { retrieveCooperationPathMemory } from "../path-memory";
 import type {
   CorrectedLeadWorkflowCandidate,
   LeadCandidateAssessment,
@@ -56,6 +57,7 @@ export interface LeadWorkflowDependencies {
   handoffAssembler: Pick<LeadHandoffAssembler, "assemble">;
   persist: typeof persistLeadWorkflowResult;
   updatePhase: typeof updateWorkflowPhase;
+  retrievePathMemory?: typeof retrieveCooperationPathMemory;
 }
 
 const productionDependencies: LeadWorkflowDependencies = {
@@ -69,6 +71,7 @@ const productionDependencies: LeadWorkflowDependencies = {
   handoffAssembler: new LeadHandoffAssembler(),
   persist: persistLeadWorkflowResult,
   updatePhase: updateWorkflowPhase,
+  retrievePathMemory: retrieveCooperationPathMemory,
 };
 
 async function phase(dependencies: LeadWorkflowDependencies, state: typeof WorkflowAnnotation.State, next: LeadWorkflowPhase): Promise<void> {
@@ -95,7 +98,10 @@ export function buildLeadWorkflowGraph(
     .addNode("build_playbook", async (state) => {
       await phase(dependencies, state, "planning");
       const playbook = await dependencies.buildPlaybook(state.plan, state.ragContext);
-      return { phase: "planning" as const, playbook, warnings: [...state.warnings, ...playbook.warnings] };
+      const cooperationPathMemory = dependencies.retrievePathMemory
+        ? await dependencies.retrievePathMemory(state.userId, state.workspaceId, state.plan.countryCode) : [];
+      return { phase: "planning" as const, playbook: { ...playbook, cooperationPathMemory },
+        warnings: [...state.warnings, ...playbook.warnings] };
     })
     .addNode("discover_candidates", async (state) => {
       await phase(dependencies, state, "discovering");

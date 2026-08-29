@@ -91,15 +91,18 @@ describe("Claude outreach feedback agent", () => {
     vi.stubEnv("CLAUDE_API_KEY", "test-key");
     vi.stubEnv("CLAUDE_BASE_URL", "https://lingyuapi.com");
     const handoffContext: DevelopmentContext = { ...context, handoff: {
-      version: "lead-handoff-v1", provenance: { candidateId: "lead-1", runId: "run-1",
+      version: "lead-handoff-v2", provenance: { candidateId: "lead-1", runId: "run-1",
         evidenceSnapshotHash: "hash", correctionModel: "corrector", scoringModel: "scorer", reviewStatus: "not-required" },
       identity: { companyName: company.displayName, officialUrl: "https://example.de/", domain: company.domain,
-        possibleRoles: ["SI"] },
-      decision: { score: 82, primaryFamily: "services", recommendedFamilies: ["services"], scoreConfidence: 85, scoringStatus: "completed" },
+        supportedRoles: ["SI"], primaryBusinessRole: "SI" },
+      decision: { score: 82, scoreRange: { lower: 79, upper: 85 }, eligibilityStatus: "eligible",
+        primaryFamily: "services", recommendedFamilies: ["services"], companyScaleClass: "Regional",
+        researchDepth: "standard", recommendationPriority: "High", accountTier: "KA",
+        cooperationPaths: [], selectedPathId: null, scoreConfidence: 85, scoringStatus: "completed" },
       externallyUsableFacts: [{ factId: "fact-1", kind: "commercial-action",
         statement: "Example delivers network integration services.", evidenceIds: ["ev-1"],
         sourceTypes: ["official-website"], confidence: 90 }],
-      internalInterpretations: [{ interpretationId: "internal-1", dimension: "productAndUseCaseFit",
+      internalInterpretations: [{ interpretationId: "internal-1", dimension: "productFamilyMatch",
         statement: "Potential fit is an internal hypothesis.", basedOnFactIds: ["fact-1"], confidence: 70 }],
       personalizationHooks: [{ hook: "Network integration services", basedOnFactIds: ["fact-1"], allowedInEmail: true }],
       unknowns: [], risks: [], doNotClaim: ["Example procures directly from brands."],

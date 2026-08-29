@@ -5,9 +5,10 @@ import type { CompanyEditablePatch } from "@/lib/sales/types";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const allowedKeys = new Set(["accountTier", "supplyModel", "brandInvolvement", "opportunityStage", "priority", "owner", "nextAction"]);
+const allowedKeys = new Set(["accountTier", "supplyModel", "brandInvolvement", "opportunityStage", "priority", "owner", "nextAction", "selectedPathId"]);
 const allowedValues = {
-  accountTier: new Set(["KA", "Priority", "Standard", "Long-tail"]),
+  accountTier: new Set(["Strategic Distributor", "Priority Distributor", "Standard Distributor", "Long-tail Distributor",
+    "KA", "Priority", "Standard", "Long-tail"]),
   supplyModel: new Set(["Distributor Supply", "Brand Direct", "Co-sell/Co-supply", "TBD"]),
   brandInvolvement: new Set(["Light", "Standard", "Deep"]),
   opportunityStage: new Set(["Discovered", "Qualified", "Priority", "Contact Prepared", "Engaged", "Excluded"]),
@@ -27,7 +28,8 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ ex
     if (value !== undefined && (typeof value !== "string" || !values.has(value))) return Response.json({ error: `Invalid ${key}` }, { status: 400 });
   }
   if ((body.owner !== undefined && (typeof body.owner !== "string" || body.owner.length > 200)) ||
-      (body.nextAction !== undefined && (typeof body.nextAction !== "string" || body.nextAction.length > 2000))) {
+      (body.nextAction !== undefined && (typeof body.nextAction !== "string" || body.nextAction.length > 2000)) ||
+      (body.selectedPathId !== undefined && (typeof body.selectedPathId !== "string" || body.selectedPathId.length > 80))) {
     return Response.json({ error: "Invalid text field" }, { status: 400 });
   }
   const { externalId } = await params;
