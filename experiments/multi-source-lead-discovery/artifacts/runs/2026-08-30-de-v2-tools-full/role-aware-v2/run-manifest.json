@@ -1,0 +1,2243 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-08-30-de-v2-tools-full",
+  "oldRunId": "2026-08-27-de-v1.3",
+  "createdAt": "2026-08-30T07:59:44.851Z",
+  "policy": {
+    "key": "cudy-lead-scoring",
+    "version": "2.0.0",
+    "checksum": "e1138957fb300a25a1c2628a3b7049a38448e07fa5989da06caddd3e36485874",
+    "snapshot": {
+      "policyKey": "cudy-lead-scoring",
+      "version": "2.0.0",
+      "schemaVersion": "lead-scoring-policy-v2",
+      "status": "active",
+      "weights": {
+        "productAndUseCaseFit": 50,
+        "cooperationPathAndBuyingInfluence": 15,
+        "scaleAndChannelCoverage": 15,
+        "executionAndEnablement": 10,
+        "opportunityAndRisk": 10
+      },
+      "productAndUseCaseFit": {
+        "productFamilyMatch": 25,
+        "customerAndScenarioOverlap": 15,
+        "positioningCompatibility": 10,
+        "productFamilyMatchMethod": "best-enabled-track",
+        "fullPortfolioMode": "explicit-task-only",
+        "unknownEvidence": "unknown-not-zero"
+      },
+      "productTracks": {
+        "home-retail": {
+          "label": "Home and retail connectivity",
+          "enabledByDefault": true,
+          "families": {
+            "routers": 30,
+            "mesh-repeaters": 30,
+            "retail-4g-5g": 30,
+            "adapters-accessories": 10
+          }
+        },
+        "smb": {
+          "label": "SMB one-stop networking",
+          "enabledByDefault": true,
+          "families": {
+            "ap-controller-cloud": 35,
+            "switching-poe-fiber": 30,
+            "gateway-vpn": 25,
+            "outdoor-fwa-backup": 10
+          }
+        },
+        "isp-fwa": {
+          "label": "ISP, FWA and last-mile access",
+          "enabledByDefault": true,
+          "families": {
+            "xpon-ont": 30,
+            "4g-5g-fwa": 30,
+            "isp-router-easymesh": 25,
+            "outdoor-access-fiber": 15
+          }
+        },
+        "industrial": {
+          "label": "Light industrial and IoT connectivity",
+          "enabledByDefault": true,
+          "families": {
+            "industrial-4g-5g-router": 50,
+            "industrial-switching": 30,
+            "outdoor-poe-fiber": 20
+          }
+        },
+        "pc-peripherals": {
+          "label": "PC peripherals",
+          "enabledByDefault": false,
+          "families": {
+            "pc-peripherals": 100
+          }
+        }
+      },
+      "roleScorecards": {
+        "distribution": {
+          "roles": [
+            "Distributor",
+            "VAD"
+          ],
+          "customerReachEvidence": [
+            "downstream resellers",
+            "VARs",
+            "MSPs",
+            "retailers",
+            "e-tailers"
+          ],
+          "scenarioEvidence": [
+            "relevant networking business unit",
+            "vendor portfolio",
+            "channel enablement"
+          ],
+          "executionEvidence": [
+            "vendor onboarding",
+            "procurement",
+            "inventory",
+            "credit",
+            "logistics",
+            "training",
+            "marketing"
+          ]
+        },
+        "resale-services": {
+          "roles": [
+            "VAR",
+            "Dealer",
+            "Reseller",
+            "SI",
+            "Installer",
+            "MSP"
+          ],
+          "customerReachEvidence": [
+            "business customers",
+            "vertical customers",
+            "managed customers",
+            "project pipeline"
+          ],
+          "scenarioEvidence": [
+            "office",
+            "hospitality",
+            "education",
+            "retail",
+            "campus",
+            "surveillance"
+          ],
+          "executionEvidence": [
+            "pre-sales",
+            "design",
+            "deployment",
+            "project delivery",
+            "support",
+            "managed service"
+          ]
+        },
+        "retail": {
+          "roles": [
+            "Retailer",
+            "E-tailer"
+          ],
+          "customerReachEvidence": [
+            "consumer audience",
+            "stores",
+            "relevant category traffic",
+            "category sales"
+          ],
+          "scenarioEvidence": [
+            "home Wi-Fi",
+            "mesh",
+            "mobile broadband",
+            "gaming",
+            "SOHO"
+          ],
+          "executionEvidence": [
+            "listing",
+            "content operations",
+            "promotion",
+            "fulfilment",
+            "returns",
+            "consumer support"
+          ]
+        },
+        "operator": {
+          "roles": [
+            "ISP"
+          ],
+          "customerReachEvidence": [
+            "subscribers",
+            "homes passed",
+            "service footprint",
+            "install base"
+          ],
+          "scenarioEvidence": [
+            "CPE",
+            "xPON",
+            "FWA",
+            "mesh",
+            "remote management",
+            "mass deployment"
+          ],
+          "executionEvidence": [
+            "lab validation",
+            "certification",
+            "provisioning",
+            "NOC",
+            "firmware",
+            "rollout"
+          ]
+        }
+      },
+      "subweights": {
+        "customerAndScenarioOverlap": {
+          "targetCustomerReach": 6,
+          "scenarioOverlap": 6,
+          "realDemandAndEntryReason": 3
+        },
+        "positioningCompatibility": {
+          "marketAndPriceTier": 4,
+          "technicalAndDeliveryRequirements": 3,
+          "portfolioPosition": 3
+        },
+        "cooperationPathAndBuyingInfluence": {
+          "currentPathFit": 5,
+          "procurementControl": 6,
+          "selectionAndMarketInfluence": 4
+        },
+        "scaleAndChannelCoverage": {
+          "relevantBusinessScale": 6,
+          "targetMarketCoverage": 5,
+          "channelOrCustomerNetwork": 4
+        },
+        "executionAndEnablement": {
+          "commercialAndOperationalExecution": 4,
+          "technicalServiceAndEnablement": 3,
+          "marketActivationAndContinuity": 3
+        },
+        "opportunityAndRisk": {
+          "partnershipOpenness": 4,
+          "strategicTiming": 3,
+          "competitionAndStructuralRisk": 3
+        }
+      },
+      "researchPolicy": {
+        "depths": [
+          "deep",
+          "standard",
+          "limited"
+        ],
+        "deepTriggers": [
+          "global-national-or-leading-regional-scale",
+          "strong-product-or-scenario-signal",
+          "user-nominated-candidate",
+          "top-n-boundary",
+          "identity-or-evidence-conflict"
+        ],
+        "limitedEligibility": [
+          "positively-small-or-local",
+          "weak-initial-relevance",
+          "not-user-nominated",
+          "not-top-n-boundary"
+        ],
+        "missingEvidenceRule": "A limited-research long-tail candidate may be held for insufficient evidence only after identity, official-site and targeted relevance searches complete.",
+        "oldEvidenceRule": "Previous-run evidence is discovery-only until freshly acquired or freshness-validated into the current run snapshot."
+      },
+      "evidenceFreshnessDays": {
+        "identity": 365,
+        "company-size": 365,
+        "product-family": 180,
+        "brand-relationship": 120,
+        "commercial-action": 90,
+        "cooperation-path": 120,
+        "strategic-timing": 60
+      },
+      "eligibilityPolicy": {
+        "statuses": [
+          "eligible",
+          "research-required",
+          "ineligible-for-current-task",
+          "insufficient-evidence-for-recommendation"
+        ],
+        "required": [
+          "relevant-product-track",
+          "role-appropriate-customer-or-scenario",
+          "viable-cooperation-path",
+          "no-hard-blocker"
+        ],
+        "unknownRule": "Unknown is not a negative fact and never becomes false solely because retrieval failed.",
+        "noScaleGate": true
+      },
+      "escalationPolicy": {
+        "confidenceBelow": 75,
+        "randomAuditPercent": 5,
+        "triggers": [
+          "materially-different-multi-family-routes",
+          "hybrid-or-unresolved-primary-role",
+          "atomic-evidence-conflict",
+          "source-conflict",
+          "top-n-boundary",
+          "memory-conflict"
+        ],
+        "originalSearchChannelIsTrigger": false
+      },
+      "accountTierPolicy": {
+        "tier1Distribution": [
+          "Strategic Distributor",
+          "Priority Distributor",
+          "Standard Distributor",
+          "Long-tail Distributor"
+        ],
+        "downstream": [
+          "KA",
+          "Priority",
+          "Standard",
+          "Long-tail"
+        ],
+        "kaScope": "KA is reserved for downstream-channel candidates and is prohibited for a candidate acting in a tier-1 distributor path.",
+        "strategicThreshold": 80,
+        "priorityThreshold": 75,
+        "thresholdsConfigurable": true,
+        "doesNotAffectScore": true
+      },
+      "knowledgePolicy": {
+        "sharedAndPrivateMemorySeparated": true,
+        "userConfirmedKnowledgePriority": "higher-than-ordinary-retrieval",
+        "userApprovedMarketingClaimsAreFacts": false,
+        "userApprovedMarketingClaimsAffectScoring": false
+      }
+    }
+  },
+  "evidenceRules": {
+    "oldEvidenceUsage": "discovery-seed-only",
+    "scoringRequirement": "current runId + fresh/revalidated status + matching content hash + non-discovery source",
+    "priorEvidencePermittedForScoring": false
+  },
+  "input": {
+    "candidatePool": "all-routed",
+    "sourceOccurrences": 253,
+    "uniqueSourceCompanies": 207,
+    "scheduledCompanies": 207,
+    "reusedEvidenceRunId": "2026-08-30-de-v2-fresh",
+    "userNominatedDeepResearch": [
+      "Ingram Micro Distribution GmbH",
+      "Wave Computersysteme GmbH",
+      "Ecom Electronic Components Trading GmbH",
+      "TD SYNNEX Germany",
+      "ALSO Deutschland GmbH",
+      "Herweck AG"
+    ]
+  },
+  "seeds": [
+    {
+      "dossierId": "DOS-34980A2004F3",
+      "companyName": "Ingram Micro Distribution GmbH",
+      "officialUrl": "https://de.ingrammicro.eu/",
+      "oldScore": 83.2,
+      "sourceSystems": [
+        "gemini-full",
+        "product-gemini"
+      ]
+    },
+    {
+      "dossierId": "DOS-F67166CAC871",
+      "companyName": "Wave Computersysteme GmbH",
+      "officialUrl": "https://www.wave-computer.de/",
+      "oldScore": 80.8,
+      "sourceSystems": [
+        "gemini-full"
+      ]
+    },
+    {
+      "dossierId": "DOS-60AAC068D0C7",
+      "companyName": "Ecom Electronic Components Trading GmbH",
+      "officialUrl": "https://www.ecom-edv.de/",
+      "oldScore": 75.2,
+      "sourceSystems": [
+        "gemini-full"
+      ]
+    },
+    {
+      "dossierId": "DOS-5168C944EB18",
+      "companyName": "TD SYNNEX Germany",
+      "officialUrl": "https://de.tdsynnex.com/",
+      "oldScore": 56,
+      "sourceSystems": [
+        "gemini-full",
+        "product-gemini"
+      ]
+    },
+    {
+      "dossierId": "DOS-42210E8B828E",
+      "companyName": "ALSO Deutschland GmbH",
+      "officialUrl": "https://www.also.de/",
+      "oldScore": 52,
+      "sourceSystems": [
+        "gemini-full",
+        "product-gemini"
+      ]
+    },
+    {
+      "dossierId": "DOS-1F6C27A02568",
+      "companyName": "Herweck AG",
+      "officialUrl": "https://www.herweck.de/",
+      "oldScore": 52,
+      "sourceSystems": [
+        "gemini-full"
+      ]
+    },
+    {
+      "dossierId": "DOS-8961CF25434B",
+      "companyName": "bytec Bodry Technology GmbH",
+      "officialUrl": "https://www.bytec.de/",
+      "oldScore": 96,
+      "sourceSystems": [
+        "product-tavily"
+      ]
+    },
+    {
+      "dossierId": "DOS-CEA9A45CE909",
+      "companyName": "Computacenter AG & Co. oHG",
+      "officialUrl": "https://www.computacenter.com/",
+      "oldScore": 96,
+      "sourceSystems": [
+        "gemini-full",
+        "product-gemini"
+      ]
+    },
+    {
+      "dossierId": "DOS-52E758B74543",
+      "companyName": "JACOB Elektronik GmbH",
+      "officialUrl": "https://www.jacob.de/",
+      "oldScore": 96,
+      "sourceSystems": [
+        "product-tavily",
+        "product-searchapi",
+        "product-gemini"
+      ]
+    },
+    {
+      "dossierId": "DOS-F9BE6DD361F7",
+      "companyName": "Littlebit Technology Deutschland GmbH",
+      "officialUrl": "https://www.littlebit.de/",
+      "oldScore": 96,
+      "sourceSystems": [
+        "gemini-full"
+      ]
+    },
+    {
+      "dossierId": "DOS-00F54F03D363",
+      "companyName": "MetaComp GmbH Computer + Netzwerke",
+      "officialUrl": "http://www.metacomp.de/",
+      "oldScore": 96,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-324C17BEED97",
+      "companyName": "MiMann.net",
+      "officialUrl": "https://mimann.net/",
+      "oldScore": 96,
+      "sourceSystems": [
+        "product-tavily"
+      ]
+    },
+    {
+      "dossierId": "DOS-80EBE942AFEC",
+      "companyName": "SCALCOM",
+      "officialUrl": "https://scalcom.de/",
+      "oldScore": 96,
+      "sourceSystems": [
+        "product-exa"
+      ]
+    },
+    {
+      "dossierId": "DOS-E970155B0250",
+      "companyName": "SMB IT Solution",
+      "officialUrl": "https://smb-it-solution.com/",
+      "oldScore": 96,
+      "sourceSystems": [
+        "product-tavily",
+        "product-searchapi"
+      ]
+    },
+    {
+      "dossierId": "DOS-8C650509C86F",
+      "companyName": "Vitel GmbH",
+      "officialUrl": "https://vitel.de/",
+      "oldScore": 96,
+      "sourceSystems": [
+        "product-brave",
+        "product-exa"
+      ]
+    },
+    {
+      "dossierId": "DOS-C6308B269DD4",
+      "companyName": "wHoffice.de",
+      "officialUrl": "https://www.whoffice.de/",
+      "oldScore": 96,
+      "sourceSystems": [
+        "product-tavily"
+      ]
+    },
+    {
+      "dossierId": "DOS-BD59F160C5BD",
+      "companyName": "4Networks IT-Distribution",
+      "officialUrl": "https://www.4networks.de/",
+      "oldScore": 92,
+      "sourceSystems": [
+        "product-tavily",
+        "product-searchapi",
+        "product-exa"
+      ]
+    },
+    {
+      "dossierId": "DOS-9878523F9C8A",
+      "companyName": "ADN – Advanced Digital Network Distribution GmbH",
+      "officialUrl": "https://www.adn.de/",
+      "oldScore": 92,
+      "sourceSystems": [
+        "product-google-places-local",
+        "product-searchapi",
+        "product-brave",
+        "product-gemini"
+      ]
+    },
+    {
+      "dossierId": "DOS-CE5CFF2ED35C",
+      "companyName": "ALLNET GmbH Computersysteme",
+      "officialUrl": "https://www.allnet.de/",
+      "oldScore": 92,
+      "sourceSystems": [
+        "product-tavily",
+        "product-searchapi",
+        "gemini-full",
+        "product-gemini"
+      ]
+    },
+    {
+      "dossierId": "DOS-52C1A55EF1B2",
+      "companyName": "CompuNet Systems GmbH",
+      "officialUrl": "https://compunet.systems/",
+      "oldScore": 92,
+      "sourceSystems": [
+        "product-exa"
+      ]
+    },
+    {
+      "dossierId": "DOS-85344049A2DD",
+      "companyName": "EWE Business",
+      "officialUrl": "https://business.ewe.de/",
+      "oldScore": 92,
+      "sourceSystems": [
+        "product-tavily",
+        "product-searchapi",
+        "product-brave"
+      ]
+    },
+    {
+      "dossierId": "DOS-B30903042377",
+      "companyName": "HEIN Netzwerktechnik GmbH",
+      "officialUrl": "https://www.hein.de/",
+      "oldScore": 92,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-6C97C8CCB00B",
+      "companyName": "hib Computer GmbH",
+      "officialUrl": "https://hib.de/",
+      "oldScore": 92,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-9D7E21D44787",
+      "companyName": "indasys IT Systemhaus Gruppe",
+      "officialUrl": "https://indasys.de/",
+      "oldScore": 92,
+      "sourceSystems": [
+        "product-exa",
+        "product-gemini"
+      ]
+    },
+    {
+      "dossierId": "DOS-71A32E9206A8",
+      "companyName": "INTERPORT REAL",
+      "officialUrl": "https://www.interportreal.de/",
+      "oldScore": 92,
+      "sourceSystems": [
+        "product-brave"
+      ]
+    },
+    {
+      "dossierId": "DOS-C74EEF40E4A0",
+      "companyName": "IT-Delfin",
+      "officialUrl": "http://www.it-delfin.de/",
+      "oldScore": 92,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-831450757FBE",
+      "companyName": "Kellner Telecom GmbH",
+      "officialUrl": "https://www.kellner-telecom.de/",
+      "oldScore": 92,
+      "sourceSystems": [
+        "product-brave"
+      ]
+    },
+    {
+      "dossierId": "DOS-FD61927FA5DA",
+      "companyName": "KTI Distribution GmbH",
+      "officialUrl": "https://www.kti.de/",
+      "oldScore": 92,
+      "sourceSystems": [
+        "product-brave"
+      ]
+    },
+    {
+      "dossierId": "DOS-144C2341074F",
+      "companyName": "Nomios Germany",
+      "officialUrl": "https://www.nomios.de/",
+      "oldScore": 92,
+      "sourceSystems": [
+        "product-tavily"
+      ]
+    },
+    {
+      "dossierId": "DOS-2AC88864E43E",
+      "companyName": "Solisation GmbH",
+      "officialUrl": "https://solisation.de/",
+      "oldScore": 92,
+      "sourceSystems": [
+        "product-brave"
+      ]
+    },
+    {
+      "dossierId": "DOS-72A689BB4760",
+      "companyName": "Teamtrade IT GmbH",
+      "officialUrl": "https://www.team-it-group.de/teamtrade",
+      "oldScore": 92,
+      "sourceSystems": [
+        "product-google-places-local",
+        "product-exa"
+      ]
+    },
+    {
+      "dossierId": "DOS-9C9B65E0FA03",
+      "companyName": "telent GmbH",
+      "officialUrl": "https://www.telent.de/",
+      "oldScore": 92,
+      "sourceSystems": [
+        "gemini-full"
+      ]
+    },
+    {
+      "dossierId": "DOS-110155CE636E",
+      "companyName": "IT Dienstleister Hamburg",
+      "officialUrl": "https://it-dienstleister-hamburg.de/",
+      "oldScore": 89.6,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-B6075853D532",
+      "companyName": "Das ElektroWerk",
+      "officialUrl": "https://das-elektrowerk.com/",
+      "oldScore": 87.2,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-1C5CBA9A30BE",
+      "companyName": "Komsa AG",
+      "officialUrl": "https://komsa.com/",
+      "oldScore": 87.2,
+      "sourceSystems": [
+        "gemini-full"
+      ]
+    },
+    {
+      "dossierId": "DOS-DF573E55B367",
+      "companyName": "SVA System Vertrieb Alexander GmbH",
+      "officialUrl": "https://www.sva.de/",
+      "oldScore": 85.6,
+      "sourceSystems": [
+        "gemini-full",
+        "product-gemini"
+      ]
+    },
+    {
+      "dossierId": "DOS-BC9E263C8C70",
+      "companyName": "030-IT, Berlins grünes Systemhaus",
+      "officialUrl": "https://030-it.de/",
+      "oldScore": 83.2,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-285F4E8146C6",
+      "companyName": "Beschützerbox GmbH",
+      "officialUrl": "https://beschuetzerbox.de/",
+      "oldScore": 83.2,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-75830CB1433D",
+      "companyName": "Code Maschine GmbH",
+      "officialUrl": "https://codemaschine.de/",
+      "oldScore": 83.2,
+      "sourceSystems": [
+        "product-searchapi"
+      ]
+    },
+    {
+      "dossierId": "DOS-7CEFA4A953B7",
+      "companyName": "Controlware GmbH",
+      "officialUrl": "https://www.controlware.de/",
+      "oldScore": 83.2,
+      "sourceSystems": [
+        "gemini-full",
+        "product-gemini"
+      ]
+    },
+    {
+      "dossierId": "DOS-C7771BB02330",
+      "companyName": "DATAGROUP SE",
+      "officialUrl": "https://www.datagroup.de/",
+      "oldScore": 83.2,
+      "sourceSystems": [
+        "gemini-full"
+      ]
+    },
+    {
+      "dossierId": "DOS-1B7EFCD5643C",
+      "companyName": "DeltaCom GmbH",
+      "officialUrl": "https://www.deltacom.de/",
+      "oldScore": 83.2,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-AA948F545374",
+      "companyName": "die prozessoren GmbH",
+      "officialUrl": "https://www.dieprozessoren.de/",
+      "oldScore": 83.2,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-1C8F5F600282",
+      "companyName": "Dietrich.expert",
+      "officialUrl": "https://dietrich.expert/",
+      "oldScore": 83.2,
+      "sourceSystems": [
+        "product-searchapi"
+      ]
+    },
+    {
+      "dossierId": "DOS-3CF7ED2BD342",
+      "companyName": "Elektro Bima GmbH",
+      "officialUrl": "https://elektro-bima.de/",
+      "oldScore": 83.2,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-A582B98E52E2",
+      "companyName": "Elektro MA",
+      "officialUrl": "https://www.elektro-ma24.de/",
+      "oldScore": 83.2,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-0229E59E063B",
+      "companyName": "FUERTE Systems Digital Network Center IT-Systemhaus - Medientechnik",
+      "officialUrl": "https://fuerte-systems.de/",
+      "oldScore": 83.2,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-585205DDE2EE",
+      "companyName": "IT-Systems Robin Biersack",
+      "officialUrl": "https://www.druckt.net/",
+      "oldScore": 83.2,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-91105D1276EE",
+      "companyName": "ITcares GmbH",
+      "officialUrl": "https://www.itcares.de/",
+      "oldScore": 83.2,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-6DDB98D76F46",
+      "companyName": "NBGTech IT-Systemhaus GmbH",
+      "officialUrl": "https://nbgtech.de/",
+      "oldScore": 83.2,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-DA65122C2B87",
+      "companyName": "NLS Netzwerke GmbH",
+      "officialUrl": "https://nls-netzwerke.de/",
+      "oldScore": 83.2,
+      "sourceSystems": [
+        "product-google-places-local",
+        "product-exa"
+      ]
+    },
+    {
+      "dossierId": "DOS-3A8635AE8757",
+      "companyName": "SPIE Deutschland & Zentraleuropa",
+      "officialUrl": "https://spie.de/",
+      "oldScore": 83.2,
+      "sourceSystems": [
+        "gemini-full"
+      ]
+    },
+    {
+      "dossierId": "DOS-8E72816E355F",
+      "companyName": "DNS:NET Internet Service GmbH",
+      "officialUrl": "https://www.dns-net.de/",
+      "oldScore": 80.8,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-CB0220E643FD",
+      "companyName": "ENO Telecom GmbH",
+      "officialUrl": "https://www.eno.de/",
+      "oldScore": 80.8,
+      "sourceSystems": [
+        "gemini-full"
+      ]
+    },
+    {
+      "dossierId": "DOS-B7E98DD9D6D2",
+      "companyName": "GermanProtect",
+      "officialUrl": "https://www.germanprotect.com/",
+      "oldScore": 80.8,
+      "sourceSystems": [
+        "product-brave"
+      ]
+    },
+    {
+      "dossierId": "DOS-354049CB1A07",
+      "companyName": "LaanTech",
+      "officialUrl": "https://www.laantech.de/",
+      "oldScore": 80.8,
+      "sourceSystems": [
+        "product-tavily"
+      ]
+    },
+    {
+      "dossierId": "DOS-50A542CAB6B1",
+      "companyName": "MeshTech",
+      "officialUrl": "https://meshtech.de/",
+      "oldScore": 80.8,
+      "sourceSystems": [
+        "product-exa"
+      ]
+    },
+    {
+      "dossierId": "DOS-C61BFF636AA0",
+      "companyName": "Netzwerkartikel.de",
+      "officialUrl": "https://www.netzwerkartikel.de/",
+      "oldScore": 80.8,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-ACF151809B85",
+      "companyName": "Schwanthaler Computer",
+      "officialUrl": "https://www.schwanthaler-computer.de/",
+      "oldScore": 80.8,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-2BA2EF53F482",
+      "companyName": "Tiger Technik",
+      "officialUrl": "https://www.tiger-technik.de/",
+      "oldScore": 80.8,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-2839F2FA0A91",
+      "companyName": "Elektro-LU",
+      "officialUrl": "https://elektro-lu.eu/",
+      "oldScore": 78.4,
+      "sourceSystems": [
+        "product-tavily",
+        "product-searchapi"
+      ]
+    },
+    {
+      "dossierId": "DOS-4861083669B7",
+      "companyName": "Netzwerk-Arzt",
+      "officialUrl": "https://www.netzwerk-arzt.de/",
+      "oldScore": 78.4,
+      "sourceSystems": [
+        "product-tavily"
+      ]
+    },
+    {
+      "dossierId": "DOS-6B48B36641BB",
+      "companyName": "Socialwave GmbH",
+      "officialUrl": "https://www.social-wave.com/",
+      "oldScore": 78.4,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-7EE6C3BAE452",
+      "companyName": "ARES Elektrotechnik",
+      "officialUrl": "https://ares-elektro.de/",
+      "oldScore": 76.8,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-038F1F349F23",
+      "companyName": "Bechtle AG",
+      "officialUrl": "https://www.bechtle.com/",
+      "oldScore": 76.8,
+      "sourceSystems": [
+        "product-google-places-local",
+        "product-brave",
+        "gemini-full",
+        "product-gemini"
+      ]
+    },
+    {
+      "dossierId": "DOS-512D65ADA011",
+      "companyName": "CANCOM SE",
+      "officialUrl": "https://www.cancom.de/",
+      "oldScore": 76.8,
+      "sourceSystems": [
+        "gemini-full",
+        "product-gemini"
+      ]
+    },
+    {
+      "dossierId": "DOS-9F175AE17D55",
+      "companyName": "GREEN IT Das Systemhaus GmbH",
+      "officialUrl": "https://www.greenit.systems/",
+      "oldScore": 76.8,
+      "sourceSystems": [
+        "product-gemini"
+      ]
+    },
+    {
+      "dossierId": "DOS-DDC2A5468B60",
+      "companyName": "Hopf Vertriebsgesellschaft mbH",
+      "officialUrl": "https://hopf-online.de/",
+      "oldScore": 76.8,
+      "sourceSystems": [
+        "product-exa"
+      ]
+    },
+    {
+      "dossierId": "DOS-C9793B8EED8A",
+      "companyName": "incoperating IT GmbH",
+      "officialUrl": "https://incoperating.de/",
+      "oldScore": 76.8,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-666DB19C2EE1",
+      "companyName": "m2m Germany GmbH",
+      "officialUrl": "https://www.m2mgermany.de/",
+      "oldScore": 76.8,
+      "sourceSystems": [
+        "product-tavily",
+        "product-searchapi"
+      ]
+    },
+    {
+      "dossierId": "DOS-3F0297C38D91",
+      "companyName": "mitteldeutsche IT GmbH",
+      "officialUrl": "https://mitteldeutsche-it.de/",
+      "oldScore": 76.8,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-2B90F410A171",
+      "companyName": "tilko GmbH",
+      "officialUrl": "https://tilko-wlan.de/",
+      "oldScore": 76.8,
+      "sourceSystems": [
+        "product-exa"
+      ]
+    },
+    {
+      "dossierId": "DOS-8625097AE77F",
+      "companyName": "TK-Welt e.K.",
+      "officialUrl": "https://www.tk-welt.de/",
+      "oldScore": 76.8,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-843B7FBF071F",
+      "companyName": "glisco internet services",
+      "officialUrl": "https://glisco.de/",
+      "oldScore": 76,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-60ABAE3825E8",
+      "companyName": "Compose IT",
+      "officialUrl": "https://compose-it.de/systemhaus-frankfurt/",
+      "oldScore": 74.4,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-BAF085C7DD96",
+      "companyName": "CosmosNet IT Systemhaus",
+      "officialUrl": "https://www.cosmosnet.de/it-systemhaus-muenchen/systemhaus-muenchen.asp",
+      "oldScore": 74.4,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-DB11F9C3C652",
+      "companyName": "e:tech Elektroservice Nürnberg GmbH",
+      "officialUrl": "https://etech-elektroservice.de/",
+      "oldScore": 74.4,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-830C33A43E7D",
+      "companyName": "Ebner Gebäudetechnik GmbH & Co.KG",
+      "officialUrl": "https://ebner-gebaeudetechnik.de/",
+      "oldScore": 74.4,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-9D77A4187181",
+      "companyName": "Elektrotechnik Schulz GmbH",
+      "officialUrl": "https://e-technik-schulz.de/",
+      "oldScore": 74.4,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-4C6CCDF0E060",
+      "companyName": "HC EDV und IT-Technik",
+      "officialUrl": "https://www.hctechnik.de/",
+      "oldScore": 74.4,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-542B4095B9A8",
+      "companyName": "Herrmann Computer GmbH",
+      "officialUrl": "https://www.herrmann-computer.de/",
+      "oldScore": 74.4,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-C6924F28E290",
+      "companyName": "IB-IT Cabling GmbH",
+      "officialUrl": "http://www.ib-it.eu/",
+      "oldScore": 74.4,
+      "sourceSystems": [
+        "product-searchapi",
+        "product-google-places"
+      ]
+    },
+    {
+      "dossierId": "DOS-11EF534AA036",
+      "companyName": "IT-TEKTEN",
+      "officialUrl": "https://it-tekten.net/",
+      "oldScore": 74.4,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-43545283CBC1",
+      "companyName": "Netzkontor GmbH",
+      "officialUrl": "https://www.netzkontor.de/",
+      "oldScore": 74.4,
+      "sourceSystems": [
+        "product-searchapi"
+      ]
+    },
+    {
+      "dossierId": "DOS-91EB44A9F7C9",
+      "companyName": "Red Eagle IT Distribution GmbH",
+      "officialUrl": "https://redeagle-it.de/",
+      "oldScore": 74.4,
+      "sourceSystems": [
+        "product-exa"
+      ]
+    },
+    {
+      "dossierId": "DOS-17B48FC771E1",
+      "companyName": "BWZ Elektronik Vertrieb GmbH",
+      "officialUrl": "https://bwzonline.de/",
+      "oldScore": 72,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-0A694494ABF9",
+      "companyName": "Components at Service GmbH",
+      "officialUrl": "https://www.components-service.de/en/",
+      "oldScore": 72,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-5D61606B937E",
+      "companyName": "Ghadban Elektrotechnik",
+      "officialUrl": "https://elektrikerportal.com/14958-ghadban-elektrotechnik",
+      "oldScore": 72,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-DFAA94C3B558",
+      "companyName": "MD Networxs",
+      "officialUrl": "https://md-networxs.de/",
+      "oldScore": 72,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-0A6C58A09D62",
+      "companyName": "ProSoft Krippner GmbH",
+      "officialUrl": "https://www.prosoft-krippner.com/",
+      "oldScore": 72,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-8EC25963B652",
+      "companyName": "RHEIN IT",
+      "officialUrl": "https://www.rhein-it.de/",
+      "oldScore": 72,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-553C9D5B4F88",
+      "companyName": "Dennis Neubacher IT-Service",
+      "officialUrl": "https://dennisneubacher.de/",
+      "oldScore": 70.4,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-18644BF04A41",
+      "companyName": "AM Elektroservice GmbH",
+      "officialUrl": "https://am-elektroservice.de/",
+      "oldScore": 68,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-36F271826483",
+      "companyName": "Beck GmbH & Co. Elektronik Bauelemente KG",
+      "officialUrl": "https://www.beck-elektronik.de/",
+      "oldScore": 68,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-D7A20E55E6CE",
+      "companyName": "Elektro Roy GmbH",
+      "officialUrl": "https://www.elektro-roy.de/",
+      "oldScore": 68,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-157342D2B359",
+      "companyName": "Elektrovation Sajdic Meisterbetrieb",
+      "officialUrl": "https://www.elektrovation-meisterbetrieb.de/",
+      "oldScore": 68,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-4667ADD22FAB",
+      "companyName": "ENELAN GmbH",
+      "officialUrl": "https://enelan.de/",
+      "oldScore": 68,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-D1BA596FE329",
+      "companyName": "GERMAN HOTSPOT",
+      "officialUrl": "https://www.germanhotspot.de/",
+      "oldScore": 68,
+      "sourceSystems": [
+        "product-google-places"
+      ]
+    },
+    {
+      "dossierId": "DOS-80FCAEC5E645",
+      "companyName": "Acondistec",
+      "officialUrl": "https://acondistec.de/",
+      "oldScore": 65.6,
+      "sourceSystems": [
+        "product-exa"
+      ]
+    },
+    {
+      "dossierId": "DOS-AD8F6420749C",
+      "companyName": "novotec IT-Systemhaus Hamburg | IT Service, Telefonanlagen, Cloud & Zeiterfassung",
+      "officialUrl": "https://www.novotec.de/",
+      "oldScore": 65.6,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-CEC74BEDD336",
+      "companyName": "SHC Netzwerktechnik GmbH",
+      "officialUrl": "https://shc.eu/",
+      "oldScore": 65.6,
+      "sourceSystems": [
+        "product-exa"
+      ]
+    },
+    {
+      "dossierId": "DOS-417C18E5B43A",
+      "companyName": "Südwest IT GmbH Systemhaus Stuttgart",
+      "officialUrl": "https://suedwestit.com/",
+      "oldScore": 65.6,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-3F850883A115",
+      "companyName": "ALKON-PC IT-Service",
+      "officialUrl": "https://alkon-pc.de/",
+      "oldScore": 61.6,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-BB3977C3BC39",
+      "companyName": "ordana - Computer- und IT-Systemhaus in Oberhausen",
+      "officialUrl": "https://www.ordana.de/computer-und-notebook-service-center/",
+      "oldScore": 52.8,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-F5E5F357BBA8",
+      "companyName": "VINCI Energies Deutschland GmbH",
+      "officialUrl": "https://www.vinci-energies.de/",
+      "oldScore": 45.6,
+      "sourceSystems": [
+        "gemini-full"
+      ]
+    },
+    {
+      "dossierId": "DOS-402E5B15E0AF",
+      "companyName": "3KV GmbH",
+      "officialUrl": "https://www.3kv.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-tavily"
+      ]
+    },
+    {
+      "dossierId": "DOS-038632CBB134",
+      "companyName": "A. Eberle GmbH & Co. KG",
+      "officialUrl": "https://www.a-eberle.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-AF92580501F1",
+      "companyName": "A+G connect GmbH",
+      "officialUrl": "https://www.aplusg.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-tavily",
+        "product-brave"
+      ]
+    },
+    {
+      "dossierId": "DOS-F233B3D07C2D",
+      "companyName": "Adalbert Zajadacz GmbH & Co. KG",
+      "officialUrl": "https://www.zajadacz.de/unternehmen/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-3EF3D7DAD15F",
+      "companyName": "all inclusive Fitness Leipzig-Südvorstadt",
+      "officialUrl": "https://www.ai-fitness.de/studios/leipzig-suedvorstadt",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-A3ECD344E97F",
+      "companyName": "Atlas Vision Store – Premium TV & HiFi Online-Shop München",
+      "officialUrl": "https://www.atlasfernsehdienst.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-64FD311CD333",
+      "companyName": "Azenn Connect (Fröhlich + Walter GmbH)",
+      "officialUrl": "https://www.exertis-connect.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-tavily",
+        "product-searchapi"
+      ]
+    },
+    {
+      "dossierId": "DOS-115AB11D22DE",
+      "companyName": "BerryBase",
+      "officialUrl": "https://www.berrybase.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-searchapi"
+      ]
+    },
+    {
+      "dossierId": "DOS-6C0F64F51D7F",
+      "companyName": "BFE Studio und Medien Systeme GmbH",
+      "officialUrl": "https://www.bfe.tv/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "gemini-full"
+      ]
+    },
+    {
+      "dossierId": "DOS-3C181287876C",
+      "companyName": "Biteno GmbH - IT-Dienstleister & Systemhaus",
+      "officialUrl": "https://www.biteno.com/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-74300D59AC52",
+      "companyName": "brainworks computer technologie GmbH",
+      "officialUrl": "https://www.brainworks.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-brave"
+      ]
+    },
+    {
+      "dossierId": "DOS-A1C1D3DAAD68",
+      "companyName": "CF Gastro Service GmbH & Co. KG",
+      "officialUrl": "https://www.cf-foodservice.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-E5D656ED8B24",
+      "companyName": "ColorMatch PrePress & IT Solutions GmbH",
+      "officialUrl": "https://www.colormatch.org/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-16191AA6FCC8",
+      "companyName": "Dacher Systems GmbH - IT Systemhaus Berlin",
+      "officialUrl": "https://dacher-systems.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-F956B8036EAF",
+      "companyName": "Distrelec Deutschland",
+      "officialUrl": "https://www.distrelec.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-brave"
+      ]
+    },
+    {
+      "dossierId": "DOS-492252D5CE4E",
+      "companyName": "DT Netsolution GmbH - IT-Systemhaus Stuttgart",
+      "officialUrl": "https://www.dtnet.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-0221DEBA1119",
+      "companyName": "ecomno IT-Solutions",
+      "officialUrl": "https://ecomno.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-00EA9C7349E5",
+      "companyName": "EGH Elektro-Großhandel GmbH | BruderGruppe",
+      "officialUrl": "https://www.egh-elektrogrosshandel.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-E28B1A315C16",
+      "companyName": "Elektro Liebhart GmbH | Elektroinstallationen Elektrofachhandel Reparaturen | München",
+      "officialUrl": "https://liebhart-tv.ihr-elektrofachmann.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-09FA40A0B635",
+      "companyName": "Elektro Ludwig",
+      "officialUrl": "https://www.ludwig-elektroinstallation.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-E54B06193A34",
+      "companyName": "Elomech Elektroanlagen GmbH",
+      "officialUrl": "https://www.elomech.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-tavily",
+        "product-searchapi"
+      ]
+    },
+    {
+      "dossierId": "DOS-53C0307BE705",
+      "companyName": "empITee - IT-Systemhaus Frankfurt",
+      "officialUrl": "https://empitee.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-ACE8FD109FA4",
+      "companyName": "Energiespeicher-Online GmbH",
+      "officialUrl": "https://www.energiespeicher-online.shop/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-6DDFD52E18F0",
+      "companyName": "eWLAN",
+      "officialUrl": null,
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places"
+      ]
+    },
+    {
+      "dossierId": "DOS-CE19082A3ED0",
+      "companyName": "Ext-Com IT GmbH - IT-Service München",
+      "officialUrl": "https://ext-com.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-1622901726BA",
+      "companyName": "Faust Systemtechnik GmbH",
+      "officialUrl": "https://www.faust-technologies.de/systemhaus",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-FAE95E361A65",
+      "companyName": "FEGA & Schmitt Elektrogroßhandel GmbH",
+      "officialUrl": "https://www.fega-schmitt.de/unternehmen/standorte/elektrogrosshandel-muenchen/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-28A3712B9DDA",
+      "companyName": "Fischmann.IT GmbH - IT Dienstleister München",
+      "officialUrl": "https://www.fischmann.it/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-7CD4449F2B4E",
+      "companyName": "Flechtwerk IT-Systems GmbH",
+      "officialUrl": "https://www.flechtwerk.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-00A80739F8DE",
+      "companyName": "FTS Hennig",
+      "officialUrl": "https://www.fts-hennig.de/netztechnik",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-tavily"
+      ]
+    },
+    {
+      "dossierId": "DOS-6DA0F9B724E4",
+      "companyName": "Golden Pack Einzel & Großhandel für Lebensmittel & Verpackungen",
+      "officialUrl": "https://www.golden-pack.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-73BBCC16A982",
+      "companyName": "H. Gautzsch München K. Held GmbH & Co. KG",
+      "officialUrl": "https://www.gautzsch-muenchen.de/home.aspx",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-DF20DECAA2F2",
+      "companyName": "High Knowledge GmbH",
+      "officialUrl": "https://www.hknow.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-searchapi"
+      ]
+    },
+    {
+      "dossierId": "DOS-298381B231D6",
+      "companyName": "Hilgert distribution",
+      "officialUrl": "https://www.hilgert.de/de",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-7DB90E277B31",
+      "companyName": "Hoffmann Group LogisticCity / Hoffmann Supply Chain GmbH & Co. KG",
+      "officialUrl": "https://www.hoffmann-group.com/GB/en/houk/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-67796A104357",
+      "companyName": "ICT Berlin GmbH | IT-Dienstleister",
+      "officialUrl": "https://ict-berlin.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-B48DCCEBBD6F",
+      "companyName": "Ikram Lebensmittel Großhandel GmbH",
+      "officialUrl": "https://ikram-food.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-2F1EA4260472",
+      "companyName": "Infinigate Deutschland GmbH",
+      "officialUrl": "https://www.infinigate.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-searchapi",
+        "product-gemini"
+      ]
+    },
+    {
+      "dossierId": "DOS-31FDAA7B1265",
+      "companyName": "inovex GmbH",
+      "officialUrl": "https://www.inovex.de/de/standorte/hamburg/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-AD558AB0007A",
+      "companyName": "IP Concepts",
+      "officialUrl": "https://ipconcepts.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-CC4CA5EDA78B",
+      "companyName": "It Dienstleister Düsseldorf - User 2000 AG",
+      "officialUrl": "https://www.user2000.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-E7E6BD6D87CB",
+      "companyName": "IT Service Rhein-Ruhr / ITSRR GmbH",
+      "officialUrl": "https://it-service-rhein-ruhr.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-BE9DFD826072",
+      "companyName": "IT SYSTEMHAUS - EDICTA GMBH",
+      "officialUrl": "https://edicta.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-BD013AD77D34",
+      "companyName": "IT-HAUS GmbH",
+      "officialUrl": "https://www.it-haus.com/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local",
+        "product-gemini"
+      ]
+    },
+    {
+      "dossierId": "DOS-1EC139771C10",
+      "companyName": "iT-Taste",
+      "officialUrl": "https://it-taste.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-CB4399431C3D",
+      "companyName": "itc GmbH | IT-Dienstleister Hamburg",
+      "officialUrl": "https://www.itc-online.de/it-systemhaus-hamburg/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-3FB4D53292D1",
+      "companyName": "ITCE Systemhaus",
+      "officialUrl": "https://www.itce-systemhaus.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-tavily",
+        "product-brave"
+      ]
+    },
+    {
+      "dossierId": "DOS-327F8A775E43",
+      "companyName": "ITFux24",
+      "officialUrl": "https://itfux24.com/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-FB68A95A7401",
+      "companyName": "ITZ Display Solutions",
+      "officialUrl": "https://itz-display.solutions/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-BB2D60415E75",
+      "companyName": "Jobasoft GmbH | IT-Services | Software- und Webentwicklung | Netzwerktechnik | Support",
+      "officialUrl": "https://jobasoft.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-D132FF5FCC25",
+      "companyName": "Jörg Linde Elektrotechnik GmbH",
+      "officialUrl": "https://linde-elektro.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-6371B12C145A",
+      "companyName": "KB Netzwerktechnik GmbH",
+      "officialUrl": "https://kb-netzwerktechnik.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-DCFF23CF432A",
+      "companyName": "KUMAVISION AG",
+      "officialUrl": "https://kumavision.com/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "gemini-full"
+      ]
+    },
+    {
+      "dossierId": "DOS-87BCEEE57069",
+      "companyName": "LANtana angewandte Daten- und Netzwerktechnik GmbH",
+      "officialUrl": "https://www.lantana.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-A6A66425E402",
+      "companyName": "Lehmann IT Lösungen GmbH",
+      "officialUrl": "https://www.lehmann-it-loesungen.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-E0675570163B",
+      "companyName": "M.alex(e) Handy & Zubehör großhandel",
+      "officialUrl": "https://www.handyundzubehoer.com/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-6BAE8A42FE05",
+      "companyName": "März Datenverarbeitung GmbH - IT-Security München",
+      "officialUrl": "https://www.maerz-dv.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-EE7D4A4A878F",
+      "companyName": "Meesenburg GmbH & Co. KG in Berlin",
+      "officialUrl": "https://www.meesenburg.com/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-6BC2758A696A",
+      "companyName": "MEGA eG Berlin-Tempelhof",
+      "officialUrl": "https://stores.mega.de/mega-eg-berlin-tempelhof-593a8f7ecb67",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-961BEAAC176E",
+      "companyName": "Memodo",
+      "officialUrl": "https://www.memodo.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-6322AECB7027",
+      "companyName": "Merkl IT GmbH",
+      "officialUrl": "https://www.merkl-it.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-A76D47963802",
+      "companyName": "METRO Berlin-Friedrichshain",
+      "officialUrl": "https://www.metro.de/standorte/berlin-friedrichshain",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-D7CD4E4FD0A4",
+      "companyName": "MichaelTelecom / MICHAEL AG",
+      "officialUrl": "https://www.michael-ag.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-brave"
+      ]
+    },
+    {
+      "dossierId": "DOS-874BB1897815",
+      "companyName": "Nägele GmbH & Co. KG",
+      "officialUrl": "https://www.naegele-elektro.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-786413FE9C48",
+      "companyName": "Netcom It Systems GmbH",
+      "officialUrl": "https://netcom-it.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-82FD67F7FDD6",
+      "companyName": "netcos GmbH IT Dienstleister München",
+      "officialUrl": "https://www.netcos.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-213295F32C61",
+      "companyName": "NeTec Netzwerktechnik & Systembetreuung GmbH",
+      "officialUrl": "https://netec.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-E9667AB7A038",
+      "companyName": "NETZTECHNIK Schiffmann GmbH",
+      "officialUrl": "https://www.netztechnik.com/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-E2D32FE7DB83",
+      "companyName": "Netzwerkbau & IT-Services Berlin",
+      "officialUrl": "https://netzwerkbau.berlin/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local",
+        "product-searchapi",
+        "product-google-places"
+      ]
+    },
+    {
+      "dossierId": "DOS-512B307AA695",
+      "companyName": "Netzwerktechnik Berlin",
+      "officialUrl": "https://netzwerktechnik-berlin24.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-20F6CD8D318B",
+      "companyName": "noris network AG",
+      "officialUrl": "https://www.noris.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-68AAE4D2F054",
+      "companyName": "Ökofrost",
+      "officialUrl": "https://oekofrost.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-3B56615EA53D",
+      "companyName": "OMG.DE GmbH",
+      "officialUrl": "https://www.omg.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-tavily",
+        "product-brave",
+        "product-exa"
+      ]
+    },
+    {
+      "dossierId": "DOS-C6CF2345DB10",
+      "companyName": "patchkabel. de mwu GmbH & Co. KG",
+      "officialUrl": "https://www.patchkabel.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-8D0E0B2E4F4C",
+      "companyName": "Pluggit GmbH - Die Wohnraumlüftung.",
+      "officialUrl": "https://www.pluggit.com/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-148C93F59062",
+      "companyName": "Preventis Import Export GmbH",
+      "officialUrl": "https://www.preventis.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-22D8852436D7",
+      "companyName": "Pronet GmbH",
+      "officialUrl": "http://www.pronet-connectivity.com/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-F240A650F678",
+      "companyName": "QBiz-IT GmbH-IT Beratung, IT Service, IT Sicherheit in München",
+      "officialUrl": "https://qbiz-it.com/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-46F123340FE4",
+      "companyName": "RBS Netkom GmbH - IT Systemhaus",
+      "officialUrl": "https://www.rbs-netkom.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-B2993EA51029",
+      "companyName": "renote",
+      "officialUrl": "https://www.renote.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-75DA571319EA",
+      "companyName": "Rexel Germany GmbH & Co. KG (Industrie Center)",
+      "officialUrl": "https://www.rexel.de/BERLIN/store/232",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-9AF9F89FFCA5",
+      "companyName": "Router-Switch.com",
+      "officialUrl": "https://www.router-switch.com/de",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-tavily"
+      ]
+    },
+    {
+      "dossierId": "DOS-B436906CF2FD",
+      "companyName": "Same-Day Laptop und PC Reparatur",
+      "officialUrl": "https://www.samedayrepair.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-8C823E270BC3",
+      "companyName": "SeKi Shop",
+      "officialUrl": "https://www.seki-shop.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-748F33F18BA7",
+      "companyName": "Semikron Danfoss Elektronik GmbH & Co. KG",
+      "officialUrl": "https://www.semikron-danfoss.com/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-C34BA947CA9F",
+      "companyName": "SF Elektrotechnik",
+      "officialUrl": "https://www.sfelektrotechnik.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-9B09D2614787",
+      "companyName": "Skaylink GmbH",
+      "officialUrl": "https://www.skaylink.com/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "gemini-full"
+      ]
+    },
+    {
+      "dossierId": "DOS-00304410FC3E",
+      "companyName": "STORDIS GmbH",
+      "officialUrl": "https://stordis.com/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-tavily"
+      ]
+    },
+    {
+      "dossierId": "DOS-2E4CB16D6707",
+      "companyName": "Stromheld Elektrotechnik",
+      "officialUrl": "https://stromheld-elektro.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-0864BDF54A51",
+      "companyName": "sysob IT-Distribution GmbH & Co. KG",
+      "officialUrl": "https://www.sysob.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-tavily",
+        "product-searchapi",
+        "product-brave",
+        "product-exa",
+        "product-gemini"
+      ]
+    },
+    {
+      "dossierId": "DOS-3E97D69B6A99",
+      "companyName": "Technikhilfe Bergisches Land GmbH",
+      "officialUrl": "https://www.tebela.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-233A7CA3C605",
+      "companyName": "ULD United Logistics & Distribution GmbH",
+      "officialUrl": "https://www.uld-hamburg.de/de",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-069F947BCF01",
+      "companyName": "UNI ELEKTRO PCC / TVK Berlin",
+      "officialUrl": "https://www.unielektro.de/startseite",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-B9D3F2D79ED0",
+      "companyName": "Visiotech Deutschland",
+      "officialUrl": "https://www.visiotechsecurity.com/de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-brave"
+      ]
+    },
+    {
+      "dossierId": "DOS-A5ACAAF8A90F",
+      "companyName": "Waschmaschinenzentrale Horn",
+      "officialUrl": "https://www.wmz-horn.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-064B0AA5A976",
+      "companyName": "Westcon-Comstor Germany",
+      "officialUrl": "https://www.westconcomstor.com/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-gemini"
+      ]
+    },
+    {
+      "dossierId": "DOS-55236A499A08",
+      "companyName": "WLAN-Shop24 (Varistano GmbH)",
+      "officialUrl": "https://www.wlan-shop24.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-exa",
+        "product-gemini"
+      ]
+    },
+    {
+      "dossierId": "DOS-EAAE93A31094",
+      "companyName": "WLANxpert",
+      "officialUrl": "http://wlanxpert.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-exa"
+      ]
+    },
+    {
+      "dossierId": "DOS-B261611D8E0D",
+      "companyName": "YELLO NETCOM GmbH",
+      "officialUrl": "https://yello-net.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-searchapi",
+        "product-exa"
+      ]
+    },
+    {
+      "dossierId": "DOS-9E658C0BD24C",
+      "companyName": "YESSS Elektrofachgroßhandlung GmbH",
+      "officialUrl": "https://www.yesss.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-5FCE86F58562",
+      "companyName": "Zahner Net GmbH IT-Systemhaus | Zeiterfassung | Datenschutz",
+      "officialUrl": "https://zahnernet.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-google-places-local"
+      ]
+    },
+    {
+      "dossierId": "DOS-D0AC71062E06",
+      "companyName": "ZEBES AG",
+      "officialUrl": "https://www.zebes.de/",
+      "oldScore": 0,
+      "sourceSystems": [
+        "product-brave"
+      ]
+    }
+  ]
+}

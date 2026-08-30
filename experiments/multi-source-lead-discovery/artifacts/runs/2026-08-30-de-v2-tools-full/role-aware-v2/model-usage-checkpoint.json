@@ -1,0 +1,55 @@
+{
+  "runId": "2026-08-30-de-v2-tools-full",
+  "stage": "qualification",
+  "generatedAt": "2026-08-30T14:03:10.458Z",
+  "modelUsage": [
+    {
+      "task": "lead-evidence-correction",
+      "model": "deepseek-v4-pro",
+      "requests": 148,
+      "successful": 148,
+      "failed": 0,
+      "promptTokens": 2480205,
+      "completionTokens": 473498,
+      "reasoningTokens": 0,
+      "totalTokens": 2953703,
+      "averageLatencyMs": 36799
+    },
+    {
+      "task": "lead-qualification",
+      "model": "deepseek-v4-pro",
+      "requests": 314,
+      "successful": 260,
+      "failed": 54,
+      "promptTokens": 2974550,
+      "completionTokens": 1029979,
+      "reasoningTokens": 0,
+      "totalTokens": 4004529,
+      "averageLatencyMs": 43400
+    },
+    {
+      "task": "lead-qualification",
+      "model": "deepseek-v4-pro",
+      "requests": 59,
+      "successful": 0,
+      "failed": 59,
+      "promptTokens": 0,
+      "completionTokens": 0,
+      "reasoningTokens": 0,
+      "totalTokens": 0,
+      "averageLatencyMs": 1516
+    },
+    {
+      "task": "lead-qualification",
+      "model": "deepseek-v4-pro",
+      "requests": 58,
+      "successful": 58,
+      "failed": 0,
+      "promptTokens": 585148,
+      "completionTokens": 214035,
+      "reasoningTokens": 0,
+      "totalTokens": 799183,
+      "averageLatencyMs": 50016
+    }
+  ]
+}

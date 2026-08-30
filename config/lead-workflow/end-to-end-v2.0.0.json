@@ -12,6 +12,71 @@
     "Cooperation paths, roles and evidence restrictions travel into development strategy and email generation.",
     "User edits to paths and outreach are retained as private learning signals, not written into the shared knowledge base."
   ],
+  "modelRouting": [
+    {
+      "stages": ["01-user-input"],
+      "purpose": "Intent classification and execution planning",
+      "defaultModel": "KIMI_INTENT_MODEL or KIMI_MODEL; default kimi-k3",
+      "escalationOrFallback": "Deterministic intent parser",
+      "callPolicy": "Conditional; skipped when credentials are absent"
+    },
+    {
+      "stages": ["02-context-memory"],
+      "purpose": "Local-database RAG query and memory embeddings",
+      "defaultModel": "EMBEDDING_MODEL; default text-embedding-v4",
+      "escalationOrFallback": "No generative fallback",
+      "callPolicy": "Required for vector retrieval; source documents remain in the local database"
+    },
+    {
+      "stages": ["03-playbook"],
+      "purpose": "Market playbook and search-query planning",
+      "defaultModel": "LEAD_PLANNER_MODEL or OPENAI_GENERATION_MODEL; default gpt-5-mini",
+      "escalationOrFallback": "Deterministic playbook with required role-family coverage",
+      "callPolicy": "One structured call per lead-search run when configured; cacheable"
+    },
+    {
+      "stages": ["06-correction-role"],
+      "purpose": "Entity correction, atomic facts and primary-role analysis",
+      "defaultModel": "DEEPSEEK_MODEL; default deepseek-v4-flash",
+      "escalationOrFallback": "DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro; deterministic fallback is retry-only",
+      "callPolicy": "Routine batches; ambiguity, low confidence, warnings or invalid batch output escalate per candidate"
+    },
+    {
+      "stages": ["09-scoring-paths"],
+      "purpose": "Role-aware score and possible cooperation paths",
+      "defaultModel": "DEEPSEEK_MODEL; default deepseek-v4-flash",
+      "escalationOrFallback": "DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro",
+      "callPolicy": "Routine batches; conflicts, low confidence, omitted candidates or invalid output escalate per candidate"
+    },
+    {
+      "stages": ["10-review"],
+      "purpose": "Blind secondary review and disagreement judgment",
+      "defaultModel": "LEAD_REVIEW_MODEL default gpt-5.6-terra; LEAD_JUDGE_MODEL default gpt-5.6-sol",
+      "escalationOrFallback": "DeepSeek review adapter using deepseek-v4-pro when explicitly routed",
+      "callPolicy": "Selective only; skipped for the search-tool leaderboard where cooperation-path review cannot affect the metric"
+    },
+    {
+      "stages": ["14-strategy"],
+      "purpose": "Path-specific development strategy",
+      "defaultModel": "KIMI_OUTREACH_MODEL or KIMI_MODEL; default kimi-k3",
+      "escalationOrFallback": "Restricted template fallback",
+      "callPolicy": "One call per generated strategy"
+    },
+    {
+      "stages": ["15-email"],
+      "purpose": "Path-specific development email",
+      "defaultModel": "KIMI_OUTREACH_MODEL or KIMI_MODEL; default kimi-k3",
+      "escalationOrFallback": "Restricted template fallback",
+      "callPolicy": "One call per generated email, plus one bounded retry only for invalid JSON/schema output"
+    },
+    {
+      "stages": ["16-feedback-memory"],
+      "purpose": "User-feedback revision and reusable private-memory extraction",
+      "defaultModel": "CLAUDE_OUTREACH_MODEL or CLAUDE_MODEL; default claude-sonnet-4-6",
+      "escalationOrFallback": "Keep the user draft and record a failed memory event",
+      "callPolicy": "One call per requested revision; text-embedding-v4 embeds accepted private memory"
+    }
+  ],
   "sourceFiles": [
     "config/lead-scoring/policy-v2.0.0.json",
     "config/lead-workflow/cost-quality-policy-v2.0.0.json",

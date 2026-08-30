@@ -4,6 +4,9 @@
 - Push completed commits to `origin/main` so files, code, and progress remain synchronized with GitHub.
 - Never commit secrets, credentials, local environment files, or generated dependency directories.
 - Before committing, inspect the diff and run the most relevant available checks.
+- Treat product cost reduction as a permanent product objective, not a one-off optimization task.
+- Every product workflow stage must record aggregate input volume, valid output volume, downstream-used output volume, token/API-credit cost, latency, retries, discarded-output reasons, utilization efficiency, and concrete optimization opportunities without committing secrets or personal data.
+- Any workflow implementation or optimization must update the versioned GitHub efficiency ledger and its relevant end-to-end workflow documentation in the same verified development stage.
 
 
 <!-- BEGIN:nextjs-agent-rules -->

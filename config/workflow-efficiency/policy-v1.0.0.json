@@ -1,0 +1,37 @@
+{
+  "policyKey": "product-workflow-efficiency",
+  "version": "1.0.0",
+  "status": "active",
+  "objective": "Continuously reduce product workflow cost while preserving output quality and downstream utility.",
+  "requiredStageMetrics": [
+    "inputUnits",
+    "validOutputUnits",
+    "downstreamUsedOutputUnits",
+    "inputTokens",
+    "outputTokens",
+    "apiCredits",
+    "latencyMs",
+    "attempts",
+    "failedAttempts",
+    "discardedOutputUnits",
+    "discardReasons"
+  ],
+  "derivedMetrics": {
+    "validOutputRate": "validOutputUnits / inputUnits",
+    "downstreamUtilizationRate": "downstreamUsedOutputUnits / validOutputUnits",
+    "costPerValidOutput": "totalCost / validOutputUnits",
+    "costPerUsedOutput": "totalCost / downstreamUsedOutputUnits",
+    "retryRate": "failedAttempts / attempts",
+    "wasteRate": "discardedOutputUnits / validOutputUnits"
+  },
+  "recordingRules": [
+    "Record stage metrics for every workflow run using stable workflow, run and stage identifiers.",
+    "Record whether downstream output was actually consumed, not merely generated.",
+    "Separate measured values from estimates and replay-derived values.",
+    "Never include secrets, credentials, personal contacts or raw private user content in GitHub artifacts.",
+    "Aggregate runtime records before committing them to the GitHub efficiency ledger.",
+    "Every workflow change must add or update optimization opportunities and document the quality guardrail."
+  ],
+  "githubLedger": "docs/PRODUCT_WORKFLOW_EFFICIENCY_LEDGER.md",
+  "priority": "permanent"
+}
