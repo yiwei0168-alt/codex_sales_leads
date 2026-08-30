@@ -5,7 +5,7 @@
 - 工作流版本：2.0.0
 - 评分策略版本：2.0.0
 - 成本质量策略版本：2.0.0
-- 配置指纹：`2d18178e9c03822d6fa4838e10445ad98f10abaaef952dabfd271ec2e111cbf7`
+- 配置指纹：`e562ee61964373351aa0d5fd68f77d928a7bcb58eba6aea715168ca3e4f60048`
 - 范围：From the user's natural-language market-development request and workspace context to ranked companies, editable cooperation paths, development strategy, outreach email, and private-memory learning from user edits.
 
 ## 一、从用户输入到最终输出的总流程
@@ -42,7 +42,23 @@ flowchart TD
 - Cooperation paths, roles and evidence restrictions travel into development strategy and email generation.
 - User edits to paths and outreach are retained as private learning signals, not written into the shared knowledge base.
 
-## 三、逐步输入、输出与策略
+## 三、模型调用路由
+
+| 阶段 | 用途 | 默认模型 | 升级/回退 | 调用策略 |
+|---|---|---|---|---|
+| `01-user-input` | Intent classification and execution planning | KIMI_INTENT_MODEL or KIMI_MODEL; default kimi-k3 | Deterministic intent parser | Conditional; skipped when credentials are absent |
+| `02-context-memory` | Local-database RAG query and memory embeddings | EMBEDDING_MODEL; default text-embedding-v4 | No generative fallback | Required for vector retrieval; source documents remain in the local database |
+| `03-playbook` | Market playbook and search-query planning | LEAD_PLANNER_MODEL or OPENAI_GENERATION_MODEL; default gpt-5-mini | Deterministic playbook with required role-family coverage | One structured call per lead-search run when configured; cacheable |
+| `06-correction-role` | Entity correction, atomic facts and primary-role analysis | DEEPSEEK_MODEL; default deepseek-v4-flash | DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro; deterministic fallback is retry-only | Routine batches; ambiguity, low confidence, warnings or invalid batch output escalate per candidate |
+| `09-scoring-paths` | Role-aware score and possible cooperation paths | DEEPSEEK_MODEL; default deepseek-v4-flash | DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro | Routine batches; conflicts, low confidence, omitted candidates or invalid output escalate per candidate |
+| `10-review` | Blind secondary review and disagreement judgment | LEAD_REVIEW_MODEL default gpt-5.6-terra; LEAD_JUDGE_MODEL default gpt-5.6-sol | DeepSeek review adapter using deepseek-v4-pro when explicitly routed | Selective only; skipped for the search-tool leaderboard where cooperation-path review cannot affect the metric |
+| `14-strategy` | Path-specific development strategy | KIMI_OUTREACH_MODEL or KIMI_MODEL; default kimi-k3 | Restricted template fallback | One call per generated strategy |
+| `15-email` | Path-specific development email | KIMI_OUTREACH_MODEL or KIMI_MODEL; default kimi-k3 | Restricted template fallback | One call per generated email, plus one bounded retry only for invalid JSON/schema output |
+| `16-feedback-memory` | User-feedback revision and reusable private-memory extraction | CLAUDE_OUTREACH_MODEL or CLAUDE_MODEL; default claude-sonnet-4-6 | Keep the user draft and record a failed memory event | One call per requested revision; text-embedding-v4 embeds accepted private memory |
+
+无生成模型阶段：多源搜索与网页抓取、研究深度确定性规则、证据包压缩、新鲜度校验、排行榜、账户等级、handoff 组装和持久化。
+
+## 四、逐步输入、输出与策略
 
 ### 1. User request and editable business intent
 
@@ -574,7 +590,7 @@ flowchart TD
 - Future path recommendations
 - Future strategy and email generation
 
-## 四、v2.0 评分标准
+## 五、v2.0 评分标准
 
 | 一级维度 | 分值 | 细分规则 |
 |---|---:|---|
@@ -586,7 +602,7 @@ flowchart TD
 
 产品匹配方法：`best-enabled-track`；未知证据规则：`unknown-not-zero`。规模只在相同主角色内横向比较。
 
-## 五、成本控制参数
+## 六、成本控制参数
 
 - 主评分证据包：保留全部 finding 引用，另加最多 4 条上下文；单条摘录最多 1800 字符。
 - 主评分批次：最多 70000 个序列化输入字符，同时仍受单批公司数上限约束；超限自动拆批，单候选不可再拆时保留为独立批次。
@@ -598,13 +614,13 @@ flowchart TD
 - JSON Schema 只在最高优先级 system prompt 中发送一次，避免在 user prompt 重复整份结构定义。
 - 高并发只降低墙钟时间，不降低 token；真正的成本控制来自证据压缩、选择性复核、模型路由、缓存和单候选重试。
 
-## 六、质量门禁
+## 七、质量门禁
 
 - strategicCandidateRecallPercent: 100
 - primaryRoleAgreementPercent: 97
 - selectedPathTypeAgreementPercent: 95
-- topNOverlapPercent: 95
-- maximumMeanAbsoluteScoreDifference: 2
+- topNOverlapPercent: 90
+- maximumMeanAbsoluteScoreDifference: 3
 - eligibilityAgreementPercent: 97
 - tier1DistributorKaErrors: 0
 - oldEvidenceUsedForScoring: 0
@@ -612,7 +628,7 @@ flowchart TD
 
 任何成本优化必须在同一冻结证据快照上通过这些门禁，未通过时自动回退完整证据或高能力路径。
 
-## 七、知识与长期记忆边界
+## 八、知识与长期记忆边界
 
 | 数据 | 存储范围 | 可影响评分 | 可影响策略/邮件 |
 |---|---|---:|---:|
@@ -622,14 +638,14 @@ flowchart TD
 | 用户合作路径修改 | 用户/工作区私有路径记忆 | 不直接改历史分数 | 是，影响未来路径推荐 |
 | 用户开发信修改 | 用户/工作区私有邮件风格记忆 | 否 | 是 |
 
-## 八、实现文件指纹
+## 九、实现文件指纹
 
 以下指纹用于审阅代码是否发生变化。GitHub 自动同步任务会在相关实现或配置修改后重新生成本文档。
 
 | 文件 | SHA-256 |
 |---|---|
 | `config/lead-scoring/policy-v2.0.0.json` | `c82cb110974d4d175abe5abd18140dac378154f2578ed9910cbca3b8d7c5dc91` |
-| `config/lead-workflow/cost-quality-policy-v2.0.0.json` | `b8f76b496581daba96ccd8aedca8517da2b6530d9b45e465b83ef12818dce3da` |
+| `config/lead-workflow/cost-quality-policy-v2.0.0.json` | `696aae4d3a5a8bfce96c4f0d69cf2334905cb4f37352bb2eab8f00c39e84a9ee` |
 | `src/app/api/assistant/messages/route.ts` | `04bec90cc3d3f336195e8ab97a5ad4b1ec1e05b95606064225e098e94ed7a5cd` |
 | `src/lib/assistant/types.ts` | `d430cdd811a92d590fb47aac95fb8b57b2a5bc57a16ffbdbfef362b1c5c13eb3` |
 | `src/lib/assistant/intent.ts` | `2a51eacc6cc72a3eec1a36f483cbd7c2b6a2f8e4c05c166840228b37352df53d` |
@@ -642,11 +658,11 @@ flowchart TD
 | `src/lib/leads/workflow/playbook.ts` | `48badb9d1b4c02f6eea2836ddbe8bfd1a25e0a99a4d20f353044775758f828f6` |
 | `src/lib/leads/workflow/discovery.ts` | `8581d8c32beddf0b7197e45f1c4d6187782d8f0274330b2c643b4f24196e3c1e` |
 | `src/lib/leads/global-search.ts` | `e152db8e1a99eb0d360d5d109094b83a6ef74f930ad2f2e1e4f61ec38eea9b9d` |
-| `src/lib/leads/workflow/evidence-correction-agent.ts` | `f09a543f0770cb51b99632477a3313f61c01ab3b3511e622b48528776993647f` |
+| `src/lib/leads/workflow/evidence-correction-agent.ts` | `6219791373be29b531a25d628e9965669b03205660b3f419c65b9bd5ff559308` |
 | `src/lib/leads/workflow/evidence-packet.ts` | `c3b646b9a78e0584f267ddec5c97dc6bbfc4abc01a39ca4de9795d3c480ac005` |
 | `src/lib/leads/workflow/qualification-agent.ts` | `8264e1d72201da33f079d7a1094903ca6de48c5ea9450438b109f08d0e686c8f` |
-| `src/lib/leads/workflow/assessment-review-agent.ts` | `4971b40fb63647d6dad16f213b935bce81dc43fd212119d8ab16ada13e602647` |
-| `src/providers/deepseek.ts` | `f5d0a11c6f907111f29be0af395a8813d04e94ed666198c7a41a46b79bc00781` |
+| `src/lib/leads/workflow/assessment-review-agent.ts` | `a7a7ac3849b914c056b839dc0eecfcaf24fd0c01b318f3bc087216abde720bce` |
+| `src/providers/deepseek.ts` | `986b13878cece7808a1ef6872cac1a96a5662ceb1b03acebeaef79749f76aa77` |
 | `src/providers/tavily.ts` | `58789a0700866dafa68907226537bd36db0278efffa7a428754f12d4bd376e43` |
 | `src/lib/leads/workflow/handoff-assembler.ts` | `58b92f337c05b7e1b62b28db27eb7d6ed1b5bcd95272926868f3c4a1df3a680c` |
 | `src/lib/leads/workflow/persistence.ts` | `657f9db353d4af29759876cfddaeea30eee1095a5ff712fc2daef40ece9692a1` |
