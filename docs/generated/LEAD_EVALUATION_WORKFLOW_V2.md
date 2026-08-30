@@ -632,7 +632,7 @@ flowchart TD
 | `config/lead-workflow/cost-quality-policy-v2.0.0.json` | `b8f76b496581daba96ccd8aedca8517da2b6530d9b45e465b83ef12818dce3da` |
 | `src/app/api/assistant/messages/route.ts` | `04bec90cc3d3f336195e8ab97a5ad4b1ec1e05b95606064225e098e94ed7a5cd` |
 | `src/lib/assistant/types.ts` | `d430cdd811a92d590fb47aac95fb8b57b2a5bc57a16ffbdbfef362b1c5c13eb3` |
-| `src/lib/assistant/intent.ts` | `bda42f827315a4cbc185a9bbd56263509613360d2db61b7434f5874d6bab86b9` |
+| `src/lib/assistant/intent.ts` | `2a51eacc6cc72a3eec1a36f483cbd7c2b6a2f8e4c05c166840228b37352df53d` |
 | `src/lib/assistant/intent-agent.ts` | `3472931b17ede1760d6049818f22018cc686ae62a770bb023c82b61ebaeff762` |
 | `src/lib/assistant/service.ts` | `1e2d9719d2937cc3081c3dbddf016d7cd665de1c1e9a88c775d10e3863ec00df` |
 | `src/lib/assistant/repository.ts` | `4243485613740437216b7867c0b8b420ea16d555f852397b436fd8a5f5414e67` |
@@ -641,13 +641,13 @@ flowchart TD
 | `src/lib/leads/workflow/rag-context.ts` | `d34f47db8308c4d89b6b81dfdcda530757b3af35a5d678725488335af127f410` |
 | `src/lib/leads/workflow/playbook.ts` | `48badb9d1b4c02f6eea2836ddbe8bfd1a25e0a99a4d20f353044775758f828f6` |
 | `src/lib/leads/workflow/discovery.ts` | `8581d8c32beddf0b7197e45f1c4d6187782d8f0274330b2c643b4f24196e3c1e` |
-| `src/lib/leads/global-search.ts` | `d62691dd6ffaecad6b13d5d7f05abaa5bdc39bd8ff91c1257c71cc21bacc670c` |
+| `src/lib/leads/global-search.ts` | `e152db8e1a99eb0d360d5d109094b83a6ef74f930ad2f2e1e4f61ec38eea9b9d` |
 | `src/lib/leads/workflow/evidence-correction-agent.ts` | `f09a543f0770cb51b99632477a3313f61c01ab3b3511e622b48528776993647f` |
 | `src/lib/leads/workflow/evidence-packet.ts` | `c3b646b9a78e0584f267ddec5c97dc6bbfc4abc01a39ca4de9795d3c480ac005` |
 | `src/lib/leads/workflow/qualification-agent.ts` | `8264e1d72201da33f079d7a1094903ca6de48c5ea9450438b109f08d0e686c8f` |
 | `src/lib/leads/workflow/assessment-review-agent.ts` | `4971b40fb63647d6dad16f213b935bce81dc43fd212119d8ab16ada13e602647` |
 | `src/providers/deepseek.ts` | `f5d0a11c6f907111f29be0af395a8813d04e94ed666198c7a41a46b79bc00781` |
-| `src/providers/tavily.ts` | `40adc0d2db5fc395d74cb5455fdca86d76f7580e478a71d63a89e094563194d6` |
+| `src/providers/tavily.ts` | `58789a0700866dafa68907226537bd36db0278efffa7a428754f12d4bd376e43` |
 | `src/lib/leads/workflow/handoff-assembler.ts` | `58b92f337c05b7e1b62b28db27eb7d6ed1b5bcd95272926868f3c4a1df3a680c` |
 | `src/lib/leads/workflow/persistence.ts` | `657f9db353d4af29759876cfddaeea30eee1095a5ff712fc2daef40ece9692a1` |
 | `src/lib/sales/repository.ts` | `3f3a9ca6f0b98b43f9609091b6ce93a046f336246b71e46d53a3525fd9e7ba86` |
