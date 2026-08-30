@@ -100,6 +100,9 @@
     "docs:lead-workflow": "node scripts/generate-lead-workflow-doc.mjs",
     "docs:lead-workflow:check": "node scripts/generate-lead-workflow-doc.mjs --check",
     "benchmark:v2:cost-replay": "tsx experiments/multi-source-lead-discovery/scripts/analyze-v2-cost-optimization.ts",
+    "benchmark:v2:quality-gate": "node --use-env-proxy scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/run-v2-cost-quality-gate.ts",
+    "benchmark:v2:score-tools": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/score-v2-tool-lead-value.ts",
+    "benchmark:v2:verify-tools": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/verify-v2-tool-leaderboard.ts",
     "benchmark:discovery:verify": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/verify-discovery-run.ts"
   },
   "dependencies": {

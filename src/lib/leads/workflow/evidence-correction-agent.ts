@@ -101,7 +101,7 @@ function normalizeFindingKind(rawKind: string, roles: readonly string[]): Normal
     "brand-relationship", "commercial-action", "cooperation-path", "company-size", "other",
   ]);
   if (direct.has(kind as NormalizedFindingKind)) return kind as NormalizedFindingKind;
-  if (/(^|-)role$/.test(kind) || (roles.length > 0
+  if (/(^|-)role(-|$)/.test(kind) || (roles.length > 0
     && /^(distributor|vad|reseller|e-?tailer|retailer|installer|si|system-integrator|isp|operator)$/.test(kind))) return "role";
   if (/^active-?network(ing)?$/.test(kind)) return "active-networking";
   if (/^country-?presence$/.test(kind)) return "country-presence";

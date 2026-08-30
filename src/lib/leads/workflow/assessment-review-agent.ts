@@ -2,9 +2,11 @@ import { createHash } from "node:crypto";
 
 import OpenAI from "openai";
 import { zodTextFormat } from "openai/helpers/zod";
+import { z } from "zod";
 
 import type { LeadSearchPlan } from "@/lib/assistant/types";
-import type { StructuredAiResponse } from "@/providers/contracts";
+import type { AiProvider, StructuredAiResponse } from "@/providers/contracts";
+import { DeepSeekProvider } from "@/providers/deepseek";
 
 import { ACTIVE_LEAD_SCORING_POLICY, scoringPolicyChecksum } from "../scoring-policy";
 import { isCurrentLeadScoringEvidence } from "../evidence-snapshot";
@@ -116,6 +118,60 @@ class OpenAiLeadReviewInvoker implements LeadReviewInvoker {
       reasoningTokens: response.usage.output_tokens_details?.reasoning_tokens ?? 0,
       totalTokens: response.usage.total_tokens,
     } : undefined };
+  }
+}
+
+export class DeepSeekLeadReviewInvoker implements LeadReviewInvoker {
+  constructor(
+    private readonly provider: AiProvider = new DeepSeekProvider({ maxAttempts: 4 }),
+    private readonly secondaryModel = process.env.DEEPSEEK_ESCALATION_MODEL?.trim() || "deepseek-v4-pro",
+    private readonly judgeModel = process.env.DEEPSEEK_ESCALATION_MODEL?.trim() || "deepseek-v4-pro",
+  ) {}
+
+  async assess(input: Record<string, unknown>) {
+    const response = await this.provider.execute<Record<string, unknown>, unknown>({
+      task: "lead-review-secondary",
+      modelVersion: this.secondaryModel,
+      promptVersion: REVIEW_PROMPT_VERSION,
+      evidenceIds: [],
+      input: {
+        instructions: [
+          "Independently assess one Cudy sales lead from the frozen atomic fact ledger and public evidence.",
+          "You are blind to the primary score and discovery provider. Do not infer missing facts.",
+          "Use unknown for missing proof, not-supported only for affirmative contradiction, and conflicting for disagreement.",
+          "Use role-specific customer and scenario criteria, best enabled product track, same-primary-role scale peers and every viable cooperation path.",
+          "Return exactly seven evidence-linked dimension rationales and use only supplied current-run finding/evidence IDs.",
+        ],
+        payload: input,
+      },
+      outputSchema: z.toJSONSchema(leadAssessmentModelSchema) as Record<string, unknown>,
+    }, AbortSignal.timeout(120_000));
+    return { output: leadAssessmentModelSchema.parse(response.output), model: response.modelVersion,
+      usage: response.usage ? { inputTokens: response.usage.promptTokens,
+        outputTokens: response.usage.completionTokens, reasoningTokens: response.usage.reasoningTokens,
+        totalTokens: response.usage.totalTokens } : undefined };
+  }
+
+  async judge(input: Record<string, unknown>) {
+    const response = await this.provider.execute<Record<string, unknown>, unknown>({
+      task: "lead-review-judge",
+      modelVersion: this.judgeModel,
+      promptVersion: JUDGE_PROMPT_VERSION,
+      evidenceIds: [],
+      input: {
+        instructions: [
+          "Resolve a material disagreement between two anonymous lead assessments using only the frozen fact ledger.",
+          "Do not assume A or B is primary. Accept one, merge dimension judgments, or request one targeted research question.",
+          "Never create a fact or evidence ID. Missing evidence remains unknown.",
+        ],
+        payload: input,
+      },
+      outputSchema: z.toJSONSchema(leadAssessmentJudgeSchema) as Record<string, unknown>,
+    }, AbortSignal.timeout(120_000));
+    return { output: leadAssessmentJudgeSchema.parse(response.output), model: response.modelVersion,
+      usage: response.usage ? { inputTokens: response.usage.promptTokens,
+        outputTokens: response.usage.completionTokens, reasoningTokens: response.usage.reasoningTokens,
+        totalTokens: response.usage.totalTokens } : undefined };
   }
 }
 

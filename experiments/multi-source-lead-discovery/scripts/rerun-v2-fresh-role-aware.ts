@@ -12,10 +12,10 @@ import { retrieveLeadRagContext } from "../../../src/lib/leads/workflow/rag-cont
 import { buildLeadMarketPlaybook } from "../../../src/lib/leads/workflow/playbook";
 import { LeadEvidenceCorrectionAgent } from "../../../src/lib/leads/workflow/evidence-correction-agent";
 import { LeadQualificationAgent } from "../../../src/lib/leads/workflow/qualification-agent";
-import { LeadAssessmentReviewAgent } from "../../../src/lib/leads/workflow/assessment-review-agent";
+import { DeepSeekLeadReviewInvoker, LeadAssessmentReviewAgent } from "../../../src/lib/leads/workflow/assessment-review-agent";
 import { LeadHandoffAssembler } from "../../../src/lib/leads/workflow/handoff-assembler";
 import type { ChannelRoleFamily, LeadCandidateAssessment, LeadEvidenceItem,
-  LeadWorkflowCandidate } from "../../../src/lib/leads/workflow/types";
+  LeadAssessmentReview, LeadWorkflowCandidate } from "../../../src/lib/leads/workflow/types";
 import type { CorrectedLeadWorkflowCandidate } from "../../../src/lib/leads/workflow/types";
 import { DeepSeekProvider } from "../../../src/providers/deepseek";
 import { TavilySearchProvider, type TavilySearchResult } from "../../../src/providers/tavily";
@@ -32,7 +32,10 @@ interface OldSelectedCandidate {
 }
 
 interface OldLeaderboard {
-  systems: Array<{ systemId: string; channels: Array<{ selected: OldSelectedCandidate[] }> }>;
+  systems: Array<{ systemId: string; channels: Array<{
+    selected: OldSelectedCandidate[];
+    candidates: OldSelectedCandidate[];
+  }> }>;
 }
 
 interface FreshEvidenceSnapshot {
@@ -126,6 +129,12 @@ const repairOnly = process.argv.includes("--repair-only");
 const resumeCorrection = process.argv.includes("--resume-correction");
 const retryFailedScoresOnly = process.argv.includes("--retry-failed-scores-only");
 const resumeAssessments = process.argv.includes("--resume-assessments");
+const useDeepSeekReview = process.argv.includes("--deepseek-review");
+const skipReview = process.argv.includes("--skip-review");
+const candidatePool = process.argv.includes("--all-routed-candidates") ? "all-routed" : "selected";
+const reuseEvidenceRunId = process.argv.find((value) => value.startsWith("--reuse-evidence-run-id="))?.slice(24);
+const searchConcurrency = Math.max(1, Math.min(16, Number.parseInt(
+  process.argv.find((value) => value.startsWith("--search-concurrency="))?.slice(21) ?? "8", 10)));
 const modelConcurrency = Math.max(1, Math.min(8, Number.parseInt(
   process.argv.find((value) => value.startsWith("--model-concurrency="))?.slice(20) ?? "8", 10)));
 const modelBatchSize = Math.max(1, Math.min(5, Number.parseInt(
@@ -186,7 +195,7 @@ const oldLeaderboard = JSON.parse(await readFile(oldLeaderboardPath, "utf8")) as
 const oldByDossier = new Map<string, OldSelectedCandidate & { systems: string[] }>();
 for (const system of oldLeaderboard.systems) {
   for (const channel of system.channels) {
-    for (const candidate of channel.selected) {
+    for (const candidate of candidatePool === "all-routed" ? channel.candidates : channel.selected) {
       const existing = oldByDossier.get(candidate.dossierId);
       if (!existing) oldByDossier.set(candidate.dossierId, { ...candidate, systems: [system.systemId] });
       else {
@@ -212,8 +221,9 @@ const manifest = {
     scoringRequirement: "current runId + fresh/revalidated status + matching content hash + non-discovery source",
     priorEvidencePermittedForScoring: false,
   },
-  input: { oldSelectedOccurrences: [...oldByDossier.values()].reduce((sum, item) => sum + item.systems.length, 0),
-    uniqueSelectedCompanies: oldByDossier.size, scheduledCompanies: seeds.length,
+  input: { candidatePool, sourceOccurrences: [...oldByDossier.values()].reduce((sum, item) => sum + item.systems.length, 0),
+    uniqueSourceCompanies: oldByDossier.size, scheduledCompanies: seeds.length,
+    reusedEvidenceRunId: reuseEvidenceRunId ?? null,
     userNominatedDeepResearch: seeds.filter((item) => priorityPattern.test(item.companyName)).map((item) => item.companyName) },
   seeds: seeds.map((item) => ({ dossierId: item.dossierId, companyName: item.companyName,
     officialUrl: item.officialUrl, oldScore: item.score, sourceSystems: [...new Set(item.systems)] })),
@@ -267,15 +277,38 @@ if (resumeSnapshot) {
 } else {
   const tavily = new TavilySearchProvider({ maxAttempts: 3 });
   const acquisition = new Array<{ candidate: LeadWorkflowCandidate; credits: number; warnings: string[] }>(seeds.length);
+  const reusableCandidates = new Map<string, LeadWorkflowCandidate>();
+  if (reuseEvidenceRunId) {
+    const reusable = JSON.parse(await readFile(path.join(root, reuseEvidenceRunId,
+      "role-aware-v2/fresh-evidence-snapshot.json"), "utf8")) as FreshEvidenceSnapshot;
+    for (const candidate of reusable.candidates) reusableCandidates.set(candidate.candidateId, candidate);
+  }
   let cursor = 0;
   async function acquireWorker() {
     while (true) {
       const index = cursor++;
       if (index >= seeds.length) return;
       const seed = seeds[index];
+      const candidateId = stableId("lead", seed.dossierId);
       const domain = domainOf(seed.officialUrl);
       const submittedRoles = (seed.facts?.supportedRoles ?? []).filter((role): role is ChannelRole => roles.has(role as ChannelRole));
       const queryRoles = submittedRoles.length > 0 ? submittedRoles : ["Reseller" as const];
+      const reusable = reusableCandidates.get(candidateId);
+      const reusableEvidence = reusable?.evidence.filter((item) =>
+        item.sourceType !== "discovery" && item.freshnessStatus === "fresh"
+        && Date.now() - Date.parse(item.capturedAt) <= 24 * 60 * 60 * 1000) ?? [];
+      if (reusable && reusableEvidence.length > 0) {
+        acquisition[index] = { candidate: {
+          candidateId, evidenceSnapshotRunId: runId, companyName: seed.companyName, domain,
+          officialWebsiteUrl: seed.officialUrl ?? reusable.officialWebsiteUrl,
+          queryRoles, queryFamily: familyFor(queryRoles), userNominated: priorityPattern.test(seed.companyName),
+          providerScore: 0,
+          evidence: reusableEvidence.map((item) => ({ ...item, evidenceRunId: runId,
+            freshnessStatus: "revalidated" as const, priorRunId: reuseEvidenceRunId })),
+          evidenceWarnings: [],
+        }, credits: 0, warnings: [] };
+        continue;
+      }
       const searchSpecs = [
         { name: "official-current", query: domain
           ? `site:${domain} company products networking router Wi-Fi access point switch customers Germany`
@@ -311,7 +344,7 @@ if (resumeSnapshot) {
         }
       }
       acquisition[index] = { candidate: {
-        candidateId: stableId("lead", seed.dossierId), evidenceSnapshotRunId: runId,
+        candidateId, evidenceSnapshotRunId: runId,
         companyName: seed.companyName, domain, officialWebsiteUrl: seed.officialUrl ?? `https://${domain}/`,
         queryRoles, queryFamily: familyFor(queryRoles), userNominated: priorityPattern.test(seed.companyName),
         providerScore: 0, evidence: [...new Map(evidence.map((item) => [item.url, item])).values()],
@@ -319,7 +352,7 @@ if (resumeSnapshot) {
       }, credits, warnings };
     }
   }
-  await Promise.all(Array.from({ length: Math.min(3, seeds.length) }, acquireWorker));
+  await Promise.all(Array.from({ length: Math.min(searchConcurrency, seeds.length) }, acquireWorker));
   candidates = acquisition.map((item) => item.candidate);
   acquisitionCredits = acquisition.reduce((sum, item) => sum + item.credits, 0);
   acquisitionWarnings = acquisition.flatMap((item) => item.warnings);
@@ -333,10 +366,19 @@ const plan: LeadSearchPlan = { countryCode: "DE", countryName: "Germany", object
 const rag = await retrieveLeadRagContext(OWNER_USER_ID, plan);
 const playbook = await buildLeadMarketPlaybook(plan, rag);
 const deepSeek = new MeteredAiProvider(new DeepSeekProvider({ maxAttempts: 4 }));
+const usageCheckpointPath = path.join(outputRoot, "model-usage-checkpoint.json");
+let resumedDeepSeekUsage: ReturnType<typeof summarizeUsage> = [];
 let priorRepairCostAnalysis: PriorRepairCostAnalysis | null = null;
 let correctedResult: { candidates: CorrectedLeadWorkflowCandidate[]; creditsUsed: number; warnings: string[] };
 if (resumeCorrection) {
   correctedResult = JSON.parse(await readFile(path.join(outputRoot, "corrected-candidates.json"), "utf8"));
+  try {
+    const checkpoint = JSON.parse(await readFile(usageCheckpointPath, "utf8")) as {
+      modelUsage?: ReturnType<typeof summarizeUsage> };
+    resumedDeepSeekUsage = checkpoint.modelUsage ?? [];
+  } catch {
+    resumedDeepSeekUsage = [];
+  }
   try {
     const priorResult = JSON.parse(await readFile(path.join(outputRoot, "assessment-results.json"), "utf8")) as {
       costAnalysis?: PriorRepairCostAnalysis };
@@ -355,6 +397,8 @@ if (resumeCorrection) {
   await writeFile(path.join(outputRoot, "corrected-candidates.json"), `${JSON.stringify({ runId,
     generatedAt: new Date().toISOString(), candidates: correctedResult.candidates,
     creditsUsed: correctedResult.creditsUsed, warnings: correctedResult.warnings }, null, 2)}\n`, "utf8");
+  await writeFile(usageCheckpointPath, `${JSON.stringify({ runId, stage: "evidence-correction",
+    generatedAt: new Date().toISOString(), modelUsage: summarizeUsage(deepSeek.records) }, null, 2)}\n`, "utf8");
   console.log(JSON.stringify({ stage: "correction-completed", companies: correctedResult.candidates.length,
     warnings: correctedResult.warnings.length, at: new Date().toISOString() }));
 }
@@ -388,13 +432,59 @@ if (resumeAssessments && priorAssessments) {
 }
 await writeFile(path.join(outputRoot, "primary-assessments.json"), `${JSON.stringify({ runId,
   generatedAt: new Date().toISOString(), assessments }, null, 2)}\n`, "utf8");
+await writeFile(usageCheckpointPath, `${JSON.stringify({ runId, stage: "qualification",
+  generatedAt: new Date().toISOString(),
+  modelUsage: [...resumedDeepSeekUsage, ...summarizeUsage(deepSeek.records)] }, null, 2)}\n`, "utf8");
 console.log(JSON.stringify({ stage: "qualification-completed", assessments: assessments.length,
   retryRequired: assessments.filter((item) => item.scoringStatus === "retry-required").length,
   at: new Date().toISOString() }));
 console.log(JSON.stringify({ stage: "review-started", assessments: assessments.length,
-  reviewConcurrency: modelConcurrency, at: new Date().toISOString() }));
-const reviewed = await new LeadAssessmentReviewAgent(undefined, { concurrency: modelConcurrency })
-  .review(correctedResult.candidates, assessments, playbook, plan);
+  reviewConcurrency: modelConcurrency, provider: skipReview ? "skipped-for-tool-leaderboard"
+    : useDeepSeekReview ? "deepseek" : "configured-independent",
+  at: new Date().toISOString() }));
+const createReviewAgent = () => new LeadAssessmentReviewAgent(useDeepSeekReview
+  ? new DeepSeekLeadReviewInvoker(new DeepSeekProvider({ maxAttempts: 4 })) : undefined,
+{ concurrency: modelConcurrency });
+let reviewed: { assessments: LeadCandidateAssessment[]; reviews: LeadAssessmentReview[];
+  usage?: Array<{ phase: string; model: string; usage: { inputTokens: number; outputTokens: number;
+    reasoningTokens: number; totalTokens: number } }>; warnings: string[] };
+if (skipReview) {
+  reviewed = {
+    assessments,
+    reviews: assessments.map((assessment) => ({
+      candidateId: assessment.candidateId,
+      required: false,
+      triggers: [],
+      status: "not-required" as const,
+      primaryModel: assessment.model,
+      primaryScore: assessment.totalScore,
+      finalScore: assessment.totalScore,
+      materialDisagreements: [],
+      rationale: "Independent cooperation-path review was intentionally skipped for the search-tool lead-value leaderboard.",
+      warnings: [],
+    })),
+    usage: [],
+    warnings: [],
+  };
+} else if (retryFailedScoresOnly) {
+  const priorFinal = JSON.parse(await readFile(path.join(outputRoot, "assessment-results.json"), "utf8")) as {
+    assessments: LeadCandidateAssessment[]; reviews: LeadAssessmentReview[] };
+  const repairedIds = new Set(qualificationCandidates.map((candidate) => candidate.candidateId));
+  const repairedReview = await createReviewAgent()
+    .review(correctedResult.candidates.filter((candidate) => repairedIds.has(candidate.candidateId)),
+      assessments.filter((assessment) => repairedIds.has(assessment.candidateId)), playbook, plan);
+  const repairedAssessmentById = new Map(repairedReview.assessments.map((item) => [item.candidateId, item]));
+  const repairedReviewById = new Map(repairedReview.reviews.map((item) => [item.candidateId, item]));
+  reviewed = {
+    assessments: priorFinal.assessments.map((item) => repairedAssessmentById.get(item.candidateId) ?? item),
+    reviews: priorFinal.reviews.map((item) => repairedReviewById.get(item.candidateId) ?? item),
+    usage: repairedReview.usage,
+    warnings: repairedReview.warnings,
+  };
+} else {
+  reviewed = await createReviewAgent()
+    .review(correctedResult.candidates, assessments, playbook, plan);
+}
 console.log(JSON.stringify({ stage: "review-completed", reviews: reviewed.reviews.length,
   required: reviewed.reviews.filter((item) => item.required).length,
   at: new Date().toISOString() }));
@@ -447,7 +537,7 @@ const freshnessAudit = {
 if (freshnessAudit.oldEvidenceUsedForScoring > 0) {
   throw new Error(`Fresh-evidence audit failed: ${freshnessAudit.oldEvidenceUsedForScoring} cited evidence IDs are not valid for ${runId}.`);
 }
-const priorModelUsage = priorRepairCostAnalysis?.modelUsage ?? [];
+const priorModelUsage = priorRepairCostAnalysis?.modelUsage ?? resumedDeepSeekUsage;
 const deepSeekUsage = [...priorModelUsage.filter((item) => !item.task.startsWith("lead-review-")),
   ...summarizeUsage(deepSeek.records)];
 const reviewUsage = [...priorModelUsage.filter((item) => item.task.startsWith("lead-review-")),
@@ -493,8 +583,54 @@ const costAnalysis = {
     "Implemented: place the stable JSON schema once in the system prompt; compatible gateways may cache the stable prefix automatically.",
   ],
 };
+const usageFor = (...tasks: string[]) => costAnalysis.modelUsage.filter((item) => tasks.includes(item.task))
+  .reduce((total, item) => ({ requests: total.requests + item.requests,
+    failed: total.failed + item.failed, inputTokens: total.inputTokens + item.promptTokens,
+    outputTokens: total.outputTokens + item.completionTokens, totalTokens: total.totalTokens + item.totalTokens,
+    latencyMs: total.latencyMs + (item.averageLatencyMs ?? 0) * item.requests }),
+  { requests: 0, failed: 0, inputTokens: 0, outputTokens: 0, totalTokens: 0, latencyMs: 0 });
+const efficiencyAnalysis = {
+  policyKey: "product-workflow-efficiency",
+  policyVersion: "1.0.0",
+  stages: [
+    { stage: "fresh-evidence", inputUnits: seeds.length, validOutputUnits: candidates.length,
+      downstreamUsedOutputUnits: candidates.length, apiCredits: acquisitionCredits,
+      reusedOutputUnits: candidates.filter((candidate) => candidate.evidence.some((item) =>
+        item.freshnessStatus === "revalidated")).length,
+      discardedOutputUnits: Math.max(0, seeds.length - candidates.length), discardReasons: acquisitionWarnings },
+    { stage: "evidence-correction", inputUnits: candidates.length,
+      validOutputUnits: correctedResult.candidates.length, downstreamUsedOutputUnits: correctedResult.candidates.length,
+      ...usageFor("lead-evidence-correction"), discardedOutputUnits: Math.max(0,
+        candidates.length - correctedResult.candidates.length), discardReasons: [] },
+    { stage: "qualification", inputUnits: correctedResult.candidates.length,
+      validOutputUnits: assessments.filter((item) => item.scoringStatus === "completed").length,
+      downstreamUsedOutputUnits: assessments.length, ...usageFor("lead-qualification"),
+      discardedOutputUnits: assessments.filter((item) => item.scoringStatus === "retry-required").length,
+      discardReasons: assessments.filter((item) => item.scoringStatus === "retry-required")
+        .flatMap((item) => item.warnings) },
+    { stage: "independent-review", inputUnits: assessments.length,
+      validOutputUnits: reviewed.reviews.filter((item) => item.required && item.status !== "review-failed").length,
+      downstreamUsedOutputUnits: reviewed.reviews.filter((item) => item.required
+        && item.status !== "review-failed").length,
+      ...usageFor("lead-review-secondary", "lead-review-judge"),
+      discardedOutputUnits: reviewed.reviews.filter((item) => item.status === "review-failed").length,
+      discardReasons: reviewed.reviews.filter((item) => item.status === "review-failed")
+        .flatMap((item) => item.warnings) },
+    { stage: "development-handoff", inputUnits: reviewed.assessments.length,
+      validOutputUnits: handoffs.length, downstreamUsedOutputUnits: handoffs.length,
+      requests: 0, failed: 0, inputTokens: 0, outputTokens: 0, totalTokens: 0, latencyMs: 0,
+      discardedOutputUnits: Math.max(0, reviewed.assessments.length - handoffs.length), discardReasons: [] },
+  ],
+  optimizationOpportunities: [
+    "Measure evidence items and excerpts actually cited by correction, scoring and review outputs.",
+    "Measure secondary-review outputs that change the final score versus confirmation-only reviews.",
+    "Avoid generating cooperation-path detail for tool-leaderboard-only runs after the reusable company assessment exists.",
+    "Use per-role and per-scale research depth to stop low-value long-tail searches after targeted evidence is exhausted.",
+  ],
+};
 const result = { schemaVersion: 1, runId, generatedAt: new Date().toISOString(),
   policyVersion: ACTIVE_LEAD_SCORING_POLICY.version, policyChecksum: scoringPolicyChecksum(), freshnessAudit, costAnalysis,
+  efficiencyAnalysis,
   creditsUsed: acquisitionCredits + correctedResult.creditsUsed,
   comparisons, corrections: correctedResult.candidates.map((candidate) => ({ candidateId: candidate.candidateId,
     correction: candidate.correction })), assessments: reviewed.assessments, reviews: reviewed.reviews, handoffs,
@@ -518,6 +654,12 @@ await writeFile(path.join(outputRoot, "comparison-report.md"), [
   "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|", ...usageRows, "",
   "### Main cost drivers", "", ...costAnalysis.mainCostDrivers.map((item) => `- ${item}`), "",
   "### Cost controls", "", ...costAnalysis.costControls.map((item) => `- ${item}`), "",
+  "### Workflow efficiency", "",
+  "| Stage | Input | Valid output | Downstream used | Tokens | API credits | Failed/discarded |",
+  "|---|---:|---:|---:|---:|---:|---:|",
+  ...efficiencyAnalysis.stages.map((item) => `| ${item.stage} | ${item.inputUnits} | ${item.validOutputUnits} | ${item.downstreamUsedOutputUnits} | ${"totalTokens" in item ? item.totalTokens : 0} | ${"apiCredits" in item ? item.apiCredits : 0} | ${item.discardedOutputUnits} |`),
+  "", "### Efficiency optimization opportunities", "",
+  ...efficiencyAnalysis.optimizationOpportunities.map((item) => `- ${item}`), "",
 ].join("\n"), "utf8");
 console.log(JSON.stringify({ runId, outputRoot, companies: comparisons.length, freshnessAudit,
   priority: comparisons.filter((item) => priorityPattern.test(item.companyName)) }, null, 2));

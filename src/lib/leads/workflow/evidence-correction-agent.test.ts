@@ -35,7 +35,7 @@ class FakeCorrectionProvider implements AiProvider {
           { kind: "role", statement: "The company performs installation and system integration.", status: "supported",
             roles: ["Installer", "SI"], evidenceIds: official ? [official.evidenceId] : [], confidence: 92, notes: [] },
           ...(this.repairableOutput ? [
-            { kind: "distributor_role", statement: "The distributor role is confirmed by current evidence.",
+            { kind: "role-distributor", statement: "The distributor role is confirmed by current evidence.",
               status: "confirmed", roles: ["Distributor"], evidenceIds: official ? [official.evidenceId] : [],
               confidence: 90, notes: [] },
             { kind: "other", statement: "No further conclusion is available.",

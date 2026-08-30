@@ -21,9 +21,14 @@ describe("DeepSeekProvider", () => {
 
     expect(response.output).toEqual({ result: "ok" });
     expect(response.usage?.totalTokens).toBe(14);
-    const request = JSON.parse(String(fetchImplementation.mock.calls[0][1]?.body)) as { response_format: { type: string }; thinking: { type: string } };
+    const request = JSON.parse(String(fetchImplementation.mock.calls[0][1]?.body)) as {
+      response_format: { type: string };
+      thinking: { type: string };
+      temperature: number;
+    };
     expect(request.response_format.type).toBe("json_object");
     expect(request.thinking.type).toBe("disabled");
+    expect(request.temperature).toBe(0);
   });
 
   it("rejects empty model content instead of accepting an unknown output", async () => {
@@ -66,6 +71,7 @@ describe("DeepSeekProvider", () => {
     };
     expect(body.system).toContain("Your entire response MUST validate against this JSON Schema");
     expect(body.messages[0].content).not.toContain("requiredOutputSchema");
+    expect((body as typeof body & { temperature: number }).temperature).toBe(0);
   });
 
   it("does not retry an authentication or request-format failure", async () => {
