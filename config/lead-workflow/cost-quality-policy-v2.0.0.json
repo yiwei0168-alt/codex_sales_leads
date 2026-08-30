@@ -1,0 +1,78 @@
+{
+  "policyKey": "cudy-lead-workflow-cost-quality",
+  "version": "2.0.0",
+  "status": "active",
+  "objective": "Reduce acquisition and model cost without changing evidence rules, role decisions, cooperation-path semantics or scoring weights.",
+  "evidencePackets": {
+    "qualification": {
+      "maxUnlinkedItems": 4,
+      "maxExcerptCharacters": 1800,
+      "maxBatchInputCharacters": 70000,
+      "retainAllFindingLinkedEvidence": true
+    },
+    "independentReview": {
+      "maxUnlinkedItems": 2,
+      "maxExcerptCharacters": 1400,
+      "retainAllFindingLinkedEvidence": true
+    }
+  },
+  "reviewRouting": {
+    "actionableScoreThreshold": 75,
+    "lowConfidenceThreshold": 75,
+    "materialPathFitGap": 10,
+    "selectionBoundaryPoints": 5,
+    "randomAuditPercent": 5,
+    "alwaysReviewTriggers": [
+      "deterministic-conflict",
+      "primary-role-unresolved",
+      "conflicting-facts",
+      "high-score-sparse-evidence",
+      "random-audit"
+    ],
+    "actionableOnlyTriggers": [
+      "low-confidence",
+      "material-alternative-paths",
+      "identity-changed",
+      "evidence-warning",
+      "scoring-anomaly"
+    ],
+    "researchHoldRule": "A non-actionable research-required long-tail candidate is not sent to an expensive independent reviewer unless a severe trigger or deterministic audit fires."
+  },
+  "judgeRouting": {
+    "totalScoreDifference": 8,
+    "dimensionDifferenceRequiresTotalDifference": 5,
+    "dimensionThresholds": {
+      "productFamilyMatch": 5,
+      "customerAndScenarioOverlap": 3,
+      "positioningCompatibility": 2,
+      "cooperationPathAndBuyingInfluence": 3,
+      "scaleAndChannelCoverage": 3,
+      "executionAndEnablement": 2,
+      "opportunityAndRisk": 2
+    },
+    "outcomeSensitiveDifferences": [
+      "eligibility",
+      "gate",
+      "account-tier",
+      "selected-path-type"
+    ]
+  },
+  "retryPolicy": {
+    "reuseFreshEvidenceSnapshot": true,
+    "reuseCorrectionCheckpoint": true,
+    "reusePrimaryAssessmentCheckpoint": true,
+    "retryOnlyInvalidCandidates": true,
+    "neverReacquireForSchemaFailure": true
+  },
+  "qualityGates": {
+    "strategicCandidateRecallPercent": 100,
+    "primaryRoleAgreementPercent": 97,
+    "selectedPathTypeAgreementPercent": 95,
+    "topNOverlapPercent": 95,
+    "maximumMeanAbsoluteScoreDifference": 2,
+    "eligibilityAgreementPercent": 97,
+    "tier1DistributorKaErrors": 0,
+    "oldEvidenceUsedForScoring": 0,
+    "validEvidenceReferencePercent": 100
+  }
+}

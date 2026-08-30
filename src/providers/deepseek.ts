@@ -87,7 +87,6 @@ export class DeepSeekProvider implements AiProvider {
       promptVersion: request.promptVersion,
       evidenceIds: request.evidenceIds,
       input: request.input,
-      requiredOutputSchema: request.outputSchema,
     });
     const maxTokens = Math.max(1_024, Math.min(16_384,
       Number(process.env.DEEPSEEK_MAX_OUTPUT_TOKENS ?? 8_192) || 8_192));

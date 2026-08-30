@@ -156,4 +156,21 @@ describe("LeadQualificationAgent", () => {
     expect(result.gates.networkingRelevant).not.toBe("supported");
     expect(result.eligibilityStatus).not.toBe("eligible");
   });
+
+  it("splits routine batches when the serialized input exceeds the prompt budget", async () => {
+    const provider = new FakeProvider();
+    const largeCandidate = { ...candidate, evidence: [{ ...candidate.evidence[0],
+      excerpt: `${candidate.evidence[0].excerpt} ${"routing portfolio customer scenario ".repeat(350)}`,
+      contentHash: leadEvidenceContentHash(`${candidate.evidence[0].excerpt} ${"routing portfolio customer scenario ".repeat(350)}`),
+    }] };
+    const agent = new LeadQualificationAgent(provider, {
+      batchSize: 5,
+      maxBatchInputCharacters: 10_000,
+      concurrency: 1,
+    });
+    await agent.evaluate([largeCandidate, largeCandidate], playbook, "DE", "Germany", "new-market");
+    const routineCalls = provider.calls.filter((call) => call.modelVersion === "deepseek-v4-flash");
+    expect(routineCalls).toHaveLength(2);
+    expect(routineCalls.every((call) => (call.input as { candidates: unknown[] }).candidates.length === 1)).toBe(true);
+  });
 });

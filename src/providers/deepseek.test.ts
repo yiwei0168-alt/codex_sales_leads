@@ -60,6 +60,12 @@ describe("DeepSeekProvider", () => {
     expect(fetchImplementation.mock.calls[0][0]).toBe("https://api.deepseek.com/anthropic/v1/messages");
     const headers = fetchImplementation.mock.calls[0][1]?.headers as Record<string, string>;
     expect(headers["x-api-key"]).toBe("test-key");
+    const body = JSON.parse(String(fetchImplementation.mock.calls[0][1]?.body)) as {
+      system: string;
+      messages: Array<{ content: string }>;
+    };
+    expect(body.system).toContain("Your entire response MUST validate against this JSON Schema");
+    expect(body.messages[0].content).not.toContain("requiredOutputSchema");
   });
 
   it("does not retry an authentication or request-format failure", async () => {

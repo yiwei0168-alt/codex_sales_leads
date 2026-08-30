@@ -9,6 +9,8 @@ import type { StructuredAiResponse } from "@/providers/contracts";
 import { ACTIVE_LEAD_SCORING_POLICY, scoringPolicyChecksum } from "../scoring-policy";
 import { isCurrentLeadScoringEvidence } from "../evidence-snapshot";
 import { normalizeAssessment } from "./qualification-agent";
+import { ACTIVE_LEAD_COST_QUALITY_POLICY } from "./cost-quality-policy";
+import { buildModelEvidencePacket } from "./evidence-packet";
 import {
   leadAssessmentJudgeSchema,
   leadAssessmentModelSchema,
@@ -129,21 +131,37 @@ export function assessmentReviewTriggers(options: {
 }): string[] {
   const { candidate, assessment, boundaryScore, randomAuditPercent } = options;
   const triggers: string[] = [];
+  const routing = ACTIVE_LEAD_COST_QUALITY_POLICY.reviewRouting;
+  const actionable = assessment.eligible || assessment.totalScore >= routing.actionableScoreThreshold
+    || candidate.userNominated === true || ["Global/Enterprise", "National"].includes(assessment.companyScaleClass);
   if (Object.values(assessment.gates).some((state) => state === "conflicting")) triggers.push("deterministic-conflict");
-  if (boundaryScore !== undefined && Math.abs(assessment.totalScore - boundaryScore) <= 5) triggers.push("selection-boundary");
-  if (candidate.correction.confidence < 75 || assessment.confidence < 75) triggers.push("low-confidence");
+  if (boundaryScore !== undefined && Math.abs(assessment.totalScore - boundaryScore) <= routing.selectionBoundaryPoints) {
+    triggers.push("selection-boundary");
+  }
+  if (actionable && (candidate.correction.confidence < routing.lowConfidenceThreshold
+    || assessment.confidence < routing.lowConfidenceThreshold)) triggers.push("low-confidence");
   if (candidate.correction.primaryRole === "Hybrid" || candidate.correction.primaryRole === "Unresolved") {
     triggers.push("primary-role-unresolved");
   }
-  if (new Set(assessment.cooperationPaths.map((path) => path.pathType)).size > 1) triggers.push("material-alternative-paths");
-  if (candidate.correction.identityChanged) triggers.push("identity-changed");
+  const rankedPaths = [...assessment.cooperationPaths].sort((left, right) => right.fitScore - left.fitScore);
+  if (actionable && new Set(rankedPaths.map((path) => path.pathType)).size > 1 && rankedPaths[1]
+    && rankedPaths[0].fitScore - rankedPaths[1].fitScore <= routing.materialPathFitGap) {
+    triggers.push("material-alternative-paths");
+  }
+  if (actionable && candidate.correction.identityChanged) triggers.push("identity-changed");
   const materialCorrectionWarning = candidate.correction.warnings.some((warning) =>
     /failed|conflict|invalid|unsupported evidence|downgraded|retained|requires review|unresolved/i.test(warning));
-  if (candidate.evidenceWarnings.length > 0 || materialCorrectionWarning) triggers.push("evidence-warning");
+  if (actionable && (candidate.evidenceWarnings.length > 0 || materialCorrectionWarning)) triggers.push("evidence-warning");
   if (candidate.correction.findings.some((finding) => finding.status === "conflicting")) triggers.push("conflicting-facts");
-  const claimEvidenceCount = candidate.evidence.filter((item) => item.sourceType !== "discovery").length;
+  const claimEvidenceCount = candidate.evidence.filter((item) =>
+    isCurrentLeadScoringEvidence(item, candidate.evidenceSnapshotRunId)).length;
   if (assessment.totalScore >= 80 && claimEvidenceCount < 2) triggers.push("high-score-sparse-evidence");
-  if (assessment.warnings.some((warning) => /requires review|conflict/i.test(warning))) triggers.push("scoring-anomaly");
+  const unresolvedScoringWarning = assessment.warnings.some((warning) =>
+    !/^Routine (?:assessment requested|batch failed):?/i.test(warning)
+    && /requires review|conflict/i.test(warning));
+  if (actionable && unresolvedScoringWarning) {
+    triggers.push("scoring-anomaly");
+  }
   if (randomAuditPercent > 0 && stableAuditBucket(candidate.candidateId) < randomAuditPercent) triggers.push("random-audit");
   return [...new Set(triggers)];
 }
@@ -178,22 +196,21 @@ function responseFor(output: LeadAssessmentModelOutput, model: string, promptVer
 
 function materialDisagreements(primary: LeadCandidateAssessment, secondary: LeadCandidateAssessment): string[] {
   const disagreements: string[] = [];
+  const routing = ACTIVE_LEAD_COST_QUALITY_POLICY.judgeRouting;
   for (const key of Object.keys(primary.gates) as Array<keyof typeof primary.gates>) {
     if (primary.gates[key] !== secondary.gates[key]) disagreements.push(`gate:${key}`);
   }
   if (primary.eligible !== secondary.eligible) disagreements.push("eligibility");
-  if (Math.abs(primary.totalScore - secondary.totalScore) >= 8) disagreements.push("total-score");
-  const thresholds: Record<keyof LeadCandidateAssessment["dimensions"], number> = {
-    productFamilyMatch: 5,
-    customerAndScenarioOverlap: 3,
-    positioningCompatibility: 2,
-    cooperationPathAndBuyingInfluence: 3,
-    scaleAndChannelCoverage: 3,
-    executionAndEnablement: 2,
-    opportunityAndRisk: 2,
-  };
+  const totalDifference = Math.abs(primary.totalScore - secondary.totalScore);
+  if (totalDifference >= routing.totalScoreDifference) disagreements.push("total-score");
+  if (primary.accountTier !== secondary.accountTier) disagreements.push("account-tier");
+  const selectedPathType = (assessment: LeadCandidateAssessment) => assessment.cooperationPaths
+    .find((path) => path.pathId === assessment.selectedPathId)?.pathType ?? null;
+  if (selectedPathType(primary) !== selectedPathType(secondary)) disagreements.push("selected-path-type");
+  const thresholds = routing.dimensionThresholds;
   for (const key of Object.keys(thresholds) as Array<keyof typeof thresholds>) {
-    if (Math.abs(primary.dimensions[key] - secondary.dimensions[key]) >= thresholds[key]) {
+    if (totalDifference >= routing.dimensionDifferenceRequiresTotalDifference
+      && Math.abs(primary.dimensions[key] - secondary.dimensions[key]) >= thresholds[key]) {
       disagreements.push(`dimension:${key}`);
     }
   }
@@ -201,6 +218,19 @@ function materialDisagreements(primary: LeadCandidateAssessment, secondary: Lead
 }
 
 function evidencePayload(candidate: CorrectedLeadWorkflowCandidate) {
+  const packetPolicy = ACTIVE_LEAD_COST_QUALITY_POLICY.evidencePackets.independentReview;
+  const currentEvidenceIds = new Set(candidate.evidence.filter((item) =>
+    isCurrentLeadScoringEvidence(item, candidate.evidenceSnapshotRunId)).map((item) => item.id));
+  const currentFindings = candidate.correction.findings.flatMap((finding) => {
+    const evidenceIds = finding.evidenceIds.filter((id) => currentEvidenceIds.has(id));
+    return evidenceIds.length > 0 ? [{ ...finding, evidenceIds }] : [];
+  });
+  const evidence = buildModelEvidencePacket(candidate, {
+    requiredEvidenceIds: currentFindings.flatMap((finding) => finding.evidenceIds),
+    maxUnlinkedItems: packetPolicy.maxUnlinkedItems,
+    maxExcerptCharacters: packetPolicy.maxExcerptCharacters,
+    relevanceText: currentFindings.map((finding) => finding.statement).join(" "),
+  });
   return {
     candidateId: candidate.candidateId,
     companyName: candidate.companyName,
@@ -210,10 +240,9 @@ function evidencePayload(candidate: CorrectedLeadWorkflowCandidate) {
     primaryBusinessRole: candidate.correction.primaryRole,
     possibleRoleFamilies: candidate.correction.resolvedFamilies,
     correctionConfidence: candidate.correction.confidence,
-    findings: candidate.correction.findings,
-    evidence: candidate.evidence.filter((item) =>
-      isCurrentLeadScoringEvidence(item, candidate.evidenceSnapshotRunId)).map((item) => ({
-      evidenceId: item.id,
+    findings: currentFindings,
+    evidence: evidence.map((item) => ({
+      evidenceId: item.evidenceId,
       sourceType: item.sourceType,
       url: item.url,
       title: item.title,
@@ -335,7 +364,7 @@ export class LeadAssessmentReviewAgent {
     const candidateById = new Map(candidates.map((candidate) => [candidate.candidateId, candidate]));
     const ranked = assessments.filter((assessment) => assessment.eligible && assessment.scoringStatus === "completed")
       .sort((left, right) => right.totalScore - left.totalScore);
-    const boundaryScore = ranked[Math.min(plan.targetCount, ranked.length) - 1]?.totalScore;
+    const boundaryScore = plan.targetCount < ranked.length ? ranked[plan.targetCount - 1]?.totalScore : undefined;
     const output = new Array<{ assessment: LeadCandidateAssessment; review: LeadAssessmentReview }>(assessments.length);
     let cursor = 0;
     const worker = async () => {

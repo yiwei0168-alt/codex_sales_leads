@@ -485,12 +485,12 @@ const costAnalysis = {
   mainCostDrivers: ["raw evidence characters and duplicated page content", "model retries after timeout or schema failure",
     "per-candidate escalation for ambiguity, conflicts and multi-path decisions", "blind secondary review and disagreement judging"],
   costControls: [
-    "Reuse immutable current-run evidence and corrected-candidate checkpoints instead of reacquiring or recorrecting unchanged companies.",
-    "Select claim-linked evidence per role and scoring dimension before model calls; do not send unrelated raw pages.",
-    "Use token-aware batches with a hard prompt budget instead of a fixed company count.",
-    "Keep routine-model scoring and trigger high-capability review only for confirmed ambiguity, conflict, multi-path, boundary or audit cases.",
-    "Retry only omitted or invalid candidates, never an otherwise valid whole batch.",
-    "Use prompt caching for the stable Cudy rubric, JSON schema and confirmed knowledge baseline where the deployed gateway supports it.",
+    "Implemented: reuse immutable current-run evidence and corrected-candidate checkpoints instead of reacquiring or recorrecting unchanged companies.",
+    "Implemented: retain every finding-linked evidence item, rank only a small unlinked context allowance and compact long excerpts before model calls.",
+    "Implemented: use token-aware batches with a hard serialized-input budget in addition to the company-count limit.",
+    "Implemented: trigger high-capability review only for outcome-sensitive ambiguity, conflict, material multi-path, boundary or deterministic audit cases.",
+    "Implemented: retry only omitted or invalid candidates, never an otherwise valid whole batch.",
+    "Implemented: place the stable JSON schema once in the system prompt; compatible gateways may cache the stable prefix automatically.",
   ],
 };
 const result = { schemaVersion: 1, runId, generatedAt: new Date().toISOString(),

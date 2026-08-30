@@ -139,3 +139,12 @@ Targeted repair: 18 candidates
 - Keep routine-model scoring and trigger high-capability review only for confirmed ambiguity, conflict, multi-path, boundary or audit cases.
 - Retry only omitted or invalid candidates, never an otherwise valid whole batch.
 - Use prompt caching for the stable Cudy rubric, JSON schema and confirmed knowledge baseline where the deployed gateway supports it.
+
+### Implemented cost optimization replay
+
+- Method: local routing and payload replay on the frozen v2 evidence and primary assessments; no model calls.
+- Independent-review routing: 79 → 76 candidates (3.8% reduction). Ambiguous roles, conflicts and material paths remain reviewable.
+- Independent-review evidence payload: 3,201,344 → 1,280,542 serialized characters (60.0% reduction).
+- Finding-linked current evidence retained: 730 / 730 (100%).
+- Routing-only linear token estimate: 4,528,395 → 4,356,431. This deliberately excludes additional savings from evidence compaction, stricter judge routing and JSON Schema de-duplication because no model replay or deployed gateway rate card was used.
+- Detailed replay: `cost-optimization-replay.md` and `cost-optimization-replay.json`.

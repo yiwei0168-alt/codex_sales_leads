@@ -96,10 +96,47 @@ describe("LeadAssessmentReviewAgent", () => {
     expect(triggers).toEqual(expect.arrayContaining(["deterministic-conflict", "high-score-sparse-evidence"]));
   });
 
+  it("does not spend an independent review on a non-actionable research hold with only generic warnings", () => {
+    const primary = assessment();
+    primary.eligible = false;
+    primary.eligibilityStatus = "research-required";
+    primary.totalScore = 54;
+    primary.confidence = 65;
+    primary.companyScaleClass = "Local/Small";
+    primary.warnings = ["Additional public product detail would be useful."];
+    const heldCandidate = { ...candidate, correction: { ...candidate.correction, confidence: 65 },
+      evidenceWarnings: ["Search returned limited public detail."] };
+    expect(assessmentReviewTriggers({ candidate: heldCandidate, assessment: primary,
+      randomAuditPercent: 0 })).toEqual([]);
+  });
+
+  it("reviews an actionable strategic candidate when confidence is low", () => {
+    const primary = assessment();
+    primary.confidence = 70;
+    primary.companyScaleClass = "Global/Enterprise";
+    const triggers = assessmentReviewTriggers({ candidate, assessment: primary, randomAuditPercent: 0 });
+    expect(triggers).toContain("low-confidence");
+  });
+
+  it("does not independently review an already-resolved routine escalation provenance warning", () => {
+    const primary = assessment();
+    primary.warnings = ["Routine assessment requested evidence-conflict escalation."];
+    const triggers = assessmentReviewTriggers({ candidate, assessment: primary, randomAuditPercent: 0 });
+    expect(triggers).not.toContain("scoring-anomaly");
+  });
+
+  it("does not treat clearly subordinate alternative paths as material", () => {
+    const primary = assessment();
+    primary.cooperationPaths.push({ ...primary.cooperationPaths[0], pathId: "path-referral",
+      pathType: "Referral/Introduction", fitScore: 55, rank: 2 });
+    const triggers = assessmentReviewTriggers({ candidate, assessment: primary, randomAuditPercent: 0 });
+    expect(triggers).not.toContain("material-alternative-paths");
+  });
+
   it("keeps the primary result when blind secondary review has no material disagreement", async () => {
     const invoker: LeadReviewInvoker = { assess: vi.fn(async () => ({ output: modelOutput(), model: "gpt-5.6-terra" })),
       judge: vi.fn() };
-    const result = await new LeadAssessmentReviewAgent(invoker, { randomAuditPercent: 0, concurrency: 1 })
+    const result = await new LeadAssessmentReviewAgent(invoker, { randomAuditPercent: 100, concurrency: 1 })
       .review([candidate], [assessment()], playbook, plan);
     expect(result.reviews[0].status).toBe("secondary-confirmed");
     expect(result.assessments[0].model).toBe("deepseek-primary");
@@ -114,7 +151,7 @@ describe("LeadAssessmentReviewAgent", () => {
         assessment: judged, rationale: "The frozen facts support an intermediate product-fit score.",
         researchQuestion: "", warnings: [] }, model: "gpt-5.6-sol" })),
     };
-    const result = await new LeadAssessmentReviewAgent(invoker, { randomAuditPercent: 0, concurrency: 1 })
+    const result = await new LeadAssessmentReviewAgent(invoker, { randomAuditPercent: 100, concurrency: 1 })
       .review([candidate], [assessment()], playbook, plan);
     expect(result.reviews[0].status).toBe("judge-resolved");
     expect(result.reviews[0].materialDisagreements).toContain("total-score");

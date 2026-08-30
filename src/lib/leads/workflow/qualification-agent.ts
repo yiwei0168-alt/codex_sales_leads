@@ -8,6 +8,8 @@ import { COOPERATION_PATH_POLICY, assessCooperationPathEvidence, type Cooperatio
 import { LEAD_EVIDENCE_SOURCE_POLICY, assessLeadEvidenceQuality } from "../evidence-quality";
 import { assessNetworkingRelevanceEvidence } from "../networking-relevance";
 import { ACTIVE_LEAD_SCORING_POLICY, scoringPolicyChecksum } from "../scoring-policy";
+import { ACTIVE_LEAD_COST_QUALITY_POLICY } from "./cost-quality-policy";
+import { buildModelEvidencePacket } from "./evidence-packet";
 import { leadAssessmentBatchSchema, leadAssessmentModelSchema, type LeadAssessmentModelOutput } from "./schemas";
 import type {
   LeadCandidateAssessment,
@@ -46,6 +48,7 @@ interface LeadQualificationAgentOptions {
   routineModel?: string;
   escalationModel?: string;
   batchSize?: number;
+  maxBatchInputCharacters?: number;
   concurrency?: number;
 }
 
@@ -268,12 +271,15 @@ export class LeadQualificationAgent {
   private readonly routineModel: string;
   private readonly escalationModel: string;
   private readonly batchSize: number;
+  private readonly maxBatchInputCharacters: number;
   private readonly concurrency: number;
 
   constructor(private readonly provider: AiProvider = new DeepSeekProvider(), options: LeadQualificationAgentOptions = {}) {
     this.routineModel = options.routineModel ?? process.env.DEEPSEEK_MODEL?.trim() ?? "deepseek-v4-flash";
     this.escalationModel = options.escalationModel ?? process.env.DEEPSEEK_ESCALATION_MODEL?.trim() ?? "deepseek-v4-pro";
     this.batchSize = Math.max(1, Math.min(5, options.batchSize ?? 5));
+    this.maxBatchInputCharacters = Math.max(10_000, options.maxBatchInputCharacters
+      ?? ACTIVE_LEAD_COST_QUALITY_POLICY.evidencePackets.qualification.maxBatchInputCharacters);
     this.concurrency = Math.max(1, Math.min(8, options.concurrency ?? 2));
   }
 
@@ -315,6 +321,13 @@ export class LeadQualificationAgent {
           const evidenceIds = finding.evidenceIds.filter((id) => currentEvidenceIds.has(id));
           return evidenceIds.length > 0 ? [{ ...finding, evidenceIds }] : [];
         });
+        const packetPolicy = ACTIVE_LEAD_COST_QUALITY_POLICY.evidencePackets.qualification;
+        const evidencePacket = buildModelEvidencePacket(candidate, {
+          requiredEvidenceIds: currentFindings.flatMap((finding) => finding.evidenceIds),
+          maxUnlinkedItems: packetPolicy.maxUnlinkedItems,
+          maxExcerptCharacters: packetPolicy.maxExcerptCharacters,
+          relevanceText: currentFindings.map((finding) => finding.statement).join(" "),
+        });
         return {
           candidateId: candidate.candidateId,
           companyName: candidate.companyName,
@@ -325,8 +338,8 @@ export class LeadQualificationAgent {
           correctionReasons: candidate.correction.reasons,
           correctionConfidence: candidate.correction.confidence,
           findings: currentFindings,
-          evidence: currentEvidence.map((item) => ({
-            evidenceId: item.id,
+          evidence: evidencePacket.map((item) => ({
+            evidenceId: item.evidenceId,
             sourceType: item.sourceType,
             url: item.url,
             title: item.title,
@@ -408,7 +421,21 @@ export class LeadQualificationAgent {
 
   async evaluate(candidates: CorrectedLeadWorkflowCandidate[], playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string): Promise<LeadCandidateAssessment[]> {
     const batches: CorrectedLeadWorkflowCandidate[][] = [];
-    for (let offset = 0; offset < candidates.length; offset += this.batchSize) batches.push(candidates.slice(offset, offset + this.batchSize));
+    let pending: CorrectedLeadWorkflowCandidate[] = [];
+    for (const candidate of candidates) {
+      const proposed = [...pending, candidate];
+      const inputCharacters = JSON.stringify(this.request(
+        proposed, playbook, countryCode, countryName, objective, this.routineModel,
+      ).input).length;
+      if (pending.length > 0 && (proposed.length > this.batchSize
+        || inputCharacters > this.maxBatchInputCharacters)) {
+        batches.push(pending);
+        pending = [candidate];
+      } else {
+        pending = proposed;
+      }
+    }
+    if (pending.length > 0) batches.push(pending);
     const results = new Array<LeadCandidateAssessment[]>(batches.length);
     let cursor = 0;
     async function worker(agent: LeadQualificationAgent): Promise<void> {

@@ -1,0 +1,54 @@
+{
+  "method": "local-routing-and-payload-replay-no-model-calls",
+  "runId": "2026-08-30-de-v2-fresh",
+  "candidates": 81,
+  "reviewRouting": {
+    "legacyReviewCandidates": 79,
+    "optimizedReviewCandidates": 76,
+    "candidateReduction": 3,
+    "reductionPercent": 3.8,
+    "legacyTriggerCounts": {
+      "material-alternative-paths": 53,
+      "scoring-anomaly": 74,
+      "deterministic-conflict": 16,
+      "low-confidence": 57,
+      "identity-changed": 22,
+      "conflicting-facts": 14,
+      "evidence-warning": 7,
+      "primary-role-unresolved": 30,
+      "random-audit": 3,
+      "selection-boundary": 3
+    },
+    "optimizedTriggerCounts": {
+      "material-alternative-paths": 34,
+      "deterministic-conflict": 16,
+      "low-confidence": 39,
+      "identity-changed": 16,
+      "conflicting-facts": 14,
+      "scoring-anomaly": 26,
+      "evidence-warning": 5,
+      "primary-role-unresolved": 30,
+      "random-audit": 3
+    }
+  },
+  "evidencePayload": {
+    "legacyCharacters": 3201344,
+    "optimizedCharacters": 1280542,
+    "reductionPercent": 60,
+    "requiredEvidenceIds": 730,
+    "retainedRequiredEvidenceIds": 730,
+    "requiredEvidenceRetentionPercent": 100
+  },
+  "costScenario": {
+    "observedIndependentReviewTokens": 4528395,
+    "routingOnlyTokenEstimate": 4356431,
+    "routingOnlyEstimatedTokenReduction": 171964,
+    "caveat": "Routing-only linear estimate. Evidence compaction and schema de-duplication should reduce input further, but are not monetized without a model replay and gateway rate card."
+  },
+  "qualityChecks": {
+    "staleOrDiscoveryEvidenceIntroduced": 0,
+    "allFindingLinkedCurrentEvidenceRetained": true,
+    "scoringWeightsChanged": false,
+    "roleOrCooperationPathSemanticsChanged": false
+  }
+}
