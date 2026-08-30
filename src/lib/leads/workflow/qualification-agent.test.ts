@@ -151,6 +151,7 @@ describe("LeadQualificationAgent", () => {
     const priorRunCandidate = { ...candidate, evidence: [{ ...candidate.evidence[0],
       evidenceRunId: "run-v1-7", priorRunId: "run-v1-7", freshnessStatus: "stale" as const }] };
     const [result] = await agent.evaluate([priorRunCandidate], playbook, "DE", "Germany", "new-market");
+    expect(JSON.stringify(provider.calls.map((call) => call.input))).not.toContain("evidence-valid");
     expect(result.evidenceIds).toEqual([]);
     expect(result.gates.networkingRelevant).not.toBe("supported");
     expect(result.eligibilityStatus).not.toBe("eligible");

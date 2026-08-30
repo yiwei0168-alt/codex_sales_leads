@@ -91,6 +91,12 @@
     "benchmark:v1.6:verify": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/verify-v1.6-run.ts",
     "benchmark:v1.7:score": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/score-v1.7-primary-channel.ts",
     "benchmark:v1.7:verify": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/verify-v1.7-run.ts",
+    "benchmark:v2:fresh-rerun": "node --use-env-proxy scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/rerun-v2-fresh-role-aware.ts",
+    "benchmark:v2:repair": "node --use-env-proxy scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/rerun-v2-fresh-role-aware.ts --resume-snapshot --repair-only",
+    "benchmark:v2:repair-score": "node --use-env-proxy scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/rerun-v2-fresh-role-aware.ts --resume-snapshot --repair-only --resume-correction",
+    "benchmark:v2:retry-failed-score": "node --use-env-proxy scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/rerun-v2-fresh-role-aware.ts --resume-snapshot --repair-only --resume-correction --retry-failed-scores-only",
+    "benchmark:v2:repair-review": "node --use-env-proxy scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/rerun-v2-fresh-role-aware.ts --resume-snapshot --repair-only --resume-correction --resume-assessments",
+    "benchmark:v2:merge-repair": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/merge-v2-targeted-repair.ts",
     "benchmark:discovery:verify": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/verify-discovery-run.ts"
   },
   "dependencies": {

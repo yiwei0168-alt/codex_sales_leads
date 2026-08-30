@@ -72,6 +72,8 @@ function assessment(output = modelOutput()): LeadCandidateAssessment {
   const totalScore = Object.values(output.dimensions).reduce((sum, value) => sum + value, 0);
   return { ...output, eligible: true, roles: ["VAR", "Reseller"], primaryRole: "VAR",
     companyScaleClass: "Regional", researchDepth: "standard", recommendationPriority: "High",
+    supplyModel: "Brand Direct", brandInvolvement: "Standard",
+    cooperationPaths: output.cooperationPaths.map((path, index) => ({ ...path, rank: path.rank ?? index + 1 })),
     accountTier: "KA", scoreRange: { lower: totalScore - 3, upper: totalScore + 3 },
     evidenceProfileAssessment: undefined, totalScore: Object.values(output.dimensions).reduce((sum, value) => sum + value, 0),
     model: "deepseek-primary", promptVersion: "primary-v3", escalated: false, scoringStatus: "completed" };

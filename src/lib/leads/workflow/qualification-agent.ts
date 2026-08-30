@@ -109,8 +109,9 @@ export function normalizeAssessment(
   const cooperationPaths = value.cooperationPaths
     .filter((path) => allowedRoles.has(path.candidateRole))
     .filter((path) => allowOemOdm || path.pathType !== "OEM/ODM")
-    .map((path) => ({ ...path,
+    .map((path, index) => ({ ...path,
       fitScore: clamp(path.fitScore, 100), confidence: clamp(path.confidence, 100),
+      rank: path.rank ?? index + 1,
       evidenceIds: [...new Set(path.evidenceIds.filter((id) => allowedEvidence.has(id)))],
     }))
     .sort((left, right) => left.rank - right.rank || right.fitScore - left.fitScore);
@@ -121,7 +122,8 @@ export function normalizeAssessment(
     && finding.status === "supported" && finding.evidenceIds.length > 0);
   const companyScaleClass = sizeFinding ? value.companyScaleClass : "Unknown";
   const researchDepth = selectResearchDepth({ scaleClass: companyScaleClass,
-    strongRelevanceSignal: networkingEvidence.demonstrated, userNominated: false, topNBoundary: false,
+    strongRelevanceSignal: networkingEvidence.demonstrated, userNominated: candidate.userNominated ?? false,
+    topNBoundary: false,
     hasConflict: candidate.correction.findings.some((finding) => finding.status === "conflicting") });
   const eligibilityStatus = hasNotSupportedGate ? "ineligible-for-current-task" as const
     : hasUnresolvedGate || cooperationPaths.length === 0
@@ -140,6 +142,10 @@ export function normalizeAssessment(
     selectedPath, eligibilityStatus, scaleClass: companyScaleClass });
   const roles = candidate.correction.resolvedRoles;
   const primaryRole = candidate.correction.primaryRole;
+  const supplyModel = ["Distributor Supply", "Brand Direct", "Co-sell/Co-supply", "TBD"].includes(value.supplyModel)
+    ? value.supplyModel as LeadCandidateAssessment["supplyModel"] : "TBD";
+  const brandInvolvement = ["Light", "Standard", "Deep"].includes(value.brandInvolvement)
+    ? value.brandInvolvement as LeadCandidateAssessment["brandInvolvement"] : "Standard";
   const allowedFindings = new Set(candidate.correction.findings.map((finding) => finding.findingId));
   const dimensionRationales = value.dimensionRationales.map((rationale) => ({
     ...rationale,
@@ -159,8 +165,8 @@ export function normalizeAssessment(
     recommendationPriority: priority,
     accountTier,
     evidenceProfileAssessment: evidenceQuality.smallLongTail,
-    supplyModel: value.supplyModel,
-    brandInvolvement: value.brandInvolvement,
+    supplyModel,
+    brandInvolvement,
     dimensions,
     dimensionRationales,
     totalScore,
@@ -268,7 +274,7 @@ export class LeadQualificationAgent {
     this.routineModel = options.routineModel ?? process.env.DEEPSEEK_MODEL?.trim() ?? "deepseek-v4-flash";
     this.escalationModel = options.escalationModel ?? process.env.DEEPSEEK_ESCALATION_MODEL?.trim() ?? "deepseek-v4-pro";
     this.batchSize = Math.max(1, Math.min(5, options.batchSize ?? 5));
-    this.concurrency = Math.max(1, Math.min(3, options.concurrency ?? 2));
+    this.concurrency = Math.max(1, Math.min(8, options.concurrency ?? 2));
   }
 
   private request(candidates: CorrectedLeadWorkflowCandidate[], playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string, modelVersion: string) {
@@ -301,24 +307,33 @@ export class LeadQualificationAgent {
         ragCitationIds: playbook.ragCitationIds,
         cooperationPathMemory: playbook.cooperationPathMemory ?? [],
       },
-      candidates: candidates.map((candidate) => ({
-        candidateId: candidate.candidateId,
-        companyName: candidate.companyName,
-        domain: candidate.domain,
-        resolvedRoles: candidate.correction.resolvedRoles,
-        resolvedRoleFamilies: candidate.correction.resolvedFamilies,
-        primaryBusinessRole: candidate.correction.primaryRole,
-        correctionReasons: candidate.correction.reasons,
-        correctionConfidence: candidate.correction.confidence,
-        findings: candidate.correction.findings,
-        evidence: candidate.evidence.map((item) => ({
-          evidenceId: item.id,
-          sourceType: item.sourceType,
-          url: item.url,
-          title: item.title,
-          excerpt: item.excerpt,
-        })),
-      })),
+      candidates: candidates.map((candidate) => {
+        const currentEvidence = candidate.evidence.filter((item) =>
+          isCurrentLeadScoringEvidence(item, candidate.evidenceSnapshotRunId));
+        const currentEvidenceIds = new Set(currentEvidence.map((item) => item.id));
+        const currentFindings = candidate.correction.findings.flatMap((finding) => {
+          const evidenceIds = finding.evidenceIds.filter((id) => currentEvidenceIds.has(id));
+          return evidenceIds.length > 0 ? [{ ...finding, evidenceIds }] : [];
+        });
+        return {
+          candidateId: candidate.candidateId,
+          companyName: candidate.companyName,
+          domain: candidate.domain,
+          resolvedRoles: candidate.correction.resolvedRoles,
+          resolvedRoleFamilies: candidate.correction.resolvedFamilies,
+          primaryBusinessRole: candidate.correction.primaryRole,
+          correctionReasons: candidate.correction.reasons,
+          correctionConfidence: candidate.correction.confidence,
+          findings: currentFindings,
+          evidence: currentEvidence.map((item) => ({
+            evidenceId: item.id,
+            sourceType: item.sourceType,
+            url: item.url,
+            title: item.title,
+            excerpt: item.excerpt,
+          })),
+        };
+      }),
       scoringRubric: {
         policyKey: ACTIVE_LEAD_SCORING_POLICY.policyKey,
         policyVersion: ACTIVE_LEAD_SCORING_POLICY.version,
@@ -335,7 +350,9 @@ export class LeadQualificationAgent {
       modelVersion,
       promptVersion: PROMPT_VERSION,
       input,
-      evidenceIds: candidates.flatMap((candidate) => candidate.evidence.map((item) => item.id)),
+      evidenceIds: candidates.flatMap((candidate) => candidate.evidence
+        .filter((item) => isCurrentLeadScoringEvidence(item, candidate.evidenceSnapshotRunId))
+        .map((item) => item.id)),
       outputSchema: z.toJSONSchema(leadAssessmentBatchSchema) as Record<string, unknown>,
     };
   }

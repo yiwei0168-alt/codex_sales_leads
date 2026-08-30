@@ -90,6 +90,29 @@ function deterministicRoles(evidence: LeadEvidenceItem[], evidenceRunId?: string
     .flatMap((lane) => assessChannelMembershipEvidence({ lane, evidence: text }).supportedRoles))];
 }
 
+type NormalizedFindingKind = "identity" | "country-presence" | "active-networking" | "role"
+  | "product-family" | "brand-relationship" | "commercial-action" | "cooperation-path"
+  | "company-size" | "other";
+
+function normalizeFindingKind(rawKind: string, roles: readonly string[]): NormalizedFindingKind {
+  const kind = rawKind.trim().toLowerCase().replace(/[ _]+/g, "-");
+  const direct = new Set<NormalizedFindingKind>([
+    "identity", "country-presence", "active-networking", "role", "product-family",
+    "brand-relationship", "commercial-action", "cooperation-path", "company-size", "other",
+  ]);
+  if (direct.has(kind as NormalizedFindingKind)) return kind as NormalizedFindingKind;
+  if (/(^|-)role$/.test(kind) || (roles.length > 0
+    && /^(distributor|vad|reseller|e-?tailer|retailer|installer|si|system-integrator|isp|operator)$/.test(kind))) return "role";
+  if (/^active-?network(ing)?$/.test(kind)) return "active-networking";
+  if (/^country-?presence$/.test(kind)) return "country-presence";
+  if (/^product-?famil(y|ies)$/.test(kind)) return "product-family";
+  if (/^brand-?relationships?$/.test(kind)) return "brand-relationship";
+  if (/^commercial-?actions?$/.test(kind)) return "commercial-action";
+  if (/^cooperation-?paths?$/.test(kind)) return "cooperation-path";
+  if (/^company-?size$/.test(kind)) return "company-size";
+  return "other";
+}
+
 function normalizedFindings(value: LeadCorrectionModelOutput, evidence: LeadEvidenceItem[], candidateId: string,
   evidenceRunId: string) {
   const evidenceById = new Map(evidence.map((item) => [item.id, item]));
@@ -98,20 +121,30 @@ function normalizedFindings(value: LeadCorrectionModelOutput, evidence: LeadEvid
       const item = evidenceById.get(id);
       return item && isCurrentLeadScoringEvidence(item, evidenceRunId);
     }))];
-    const findingId = stableId("finding", [candidateId, finding.kind, finding.statement,
-      finding.status, ...evidenceIds].join("|"));
+    const kind = normalizeFindingKind(finding.kind, finding.roles);
+    const rawStatus = finding.status.trim().toLowerCase();
+    const normalizedStatus = ["supported", "confirmed", "verified"].includes(rawStatus) ? "supported" as const
+      : ["not-supported", "not supported", "unsupported"].includes(rawStatus) ? "not-supported" as const
+        : rawStatus === "conflicting" || rawStatus === "conflict" ? "conflicting" as const
+          : "unknown" as const;
+    const status = evidenceIds.length === 0 && normalizedStatus === "supported" ? "unknown" as const : normalizedStatus;
+    const findingId = stableId("finding", [candidateId, kind, finding.statement,
+      status, ...evidenceIds].join("|"));
     return {
       findingId,
-      kind: finding.kind,
+      kind,
       statement: finding.statement,
-      status: evidenceIds.length === 0 && finding.status === "supported" ? "unknown" as const : finding.status,
+      status,
       roles: finding.roles,
       evidenceIds,
       sourceTypes: [...new Set(evidenceIds.map((id) => evidenceById.get(id)!.sourceType))],
       confidence: Math.max(0, Math.min(100, Math.round(finding.confidence))),
       notes: [...finding.notes,
+        ...(kind !== finding.kind ? [`Non-standard finding kind "${finding.kind}" was normalized to ${kind}.`] : []),
         ...(evidenceIds.length < finding.evidenceIds.length ? ["Unsupported evidence IDs were removed from this finding."] : []),
-        ...(evidenceIds.length === 0 && finding.status === "supported"
+        ...(normalizedStatus !== finding.status
+          ? [`Non-standard claim status "${finding.status}" was normalized to ${normalizedStatus}.`] : []),
+        ...(evidenceIds.length === 0 && normalizedStatus === "supported"
           ? ["A supported claim without valid evidence was downgraded to unknown."] : [])],
     };
   });
@@ -151,8 +184,8 @@ export class LeadEvidenceCorrectionAgent {
     this.routineModel = options.routineModel ?? process.env.DEEPSEEK_MODEL?.trim() ?? "deepseek-v4-flash";
     this.escalationModel = options.escalationModel ?? process.env.DEEPSEEK_ESCALATION_MODEL?.trim() ?? "deepseek-v4-pro";
     this.batchSize = Math.max(1, Math.min(5, options.batchSize ?? 5));
-    this.concurrency = Math.max(1, Math.min(3, options.concurrency ?? 2));
-    this.searchConcurrency = Math.max(1, Math.min(4, options.searchConcurrency ?? 3));
+    this.concurrency = Math.max(1, Math.min(8, options.concurrency ?? 2));
+    this.searchConcurrency = Math.max(1, Math.min(8, options.searchConcurrency ?? 3));
   }
 
   private async supplement(candidates: LeadWorkflowCandidate[], plan: LeadSearchPlan) {
@@ -221,23 +254,29 @@ export class LeadEvidenceCorrectionAgent {
         "Do not score lead value. Do not decide eligibility or cooperation path. Your duties are evidence, entity correction, supported-role classification and primary-business-role analysis.",
       ],
       market: { countryCode: plan.countryCode, countryName: plan.countryName, objective: plan.objective },
-      candidates: candidates.map((candidate) => ({
-        candidateId: candidate.candidateId,
-        submittedCompanyName: candidate.companyName,
-        submittedDomain: candidate.domain,
-        submittedOfficialWebsiteUrl: candidate.officialWebsiteUrl,
-        submittedRoles: candidate.queryRoles,
-        submittedFamily: candidate.queryFamily,
-        evidence: candidate.evidence.map((item) => ({ evidenceId: item.id, sourceType: item.sourceType,
-          url: item.url, title: item.title, excerpt: item.excerpt })),
-      })),
+      candidates: candidates.map((candidate) => {
+        const currentEvidence = candidate.evidence.filter((item) =>
+          isCurrentLeadScoringEvidence(item, candidate.evidenceSnapshotRunId));
+        return {
+          candidateId: candidate.candidateId,
+          submittedCompanyName: candidate.companyName,
+          submittedDomain: candidate.domain,
+          submittedOfficialWebsiteUrl: candidate.officialWebsiteUrl,
+          submittedRoles: candidate.queryRoles,
+          submittedFamily: candidate.queryFamily,
+          evidence: currentEvidence.map((item) => ({ evidenceId: item.id, sourceType: item.sourceType,
+            url: item.url, title: item.title, excerpt: item.excerpt })),
+        };
+      }),
     };
     return {
       task: "lead-evidence-correction" as const,
       modelVersion,
       promptVersion: PROMPT_VERSION,
       input,
-      evidenceIds: candidates.flatMap((candidate) => candidate.evidence.map((item) => item.id)),
+      evidenceIds: candidates.flatMap((candidate) => candidate.evidence
+        .filter((item) => isCurrentLeadScoringEvidence(item, candidate.evidenceSnapshotRunId))
+        .map((item) => item.id)),
       outputSchema: z.toJSONSchema(leadCorrectionBatchSchema) as Record<string, unknown>,
     };
   }

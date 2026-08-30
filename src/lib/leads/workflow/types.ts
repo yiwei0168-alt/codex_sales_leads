@@ -125,6 +125,7 @@ export interface LeadWorkflowCandidate {
   officialWebsiteUrl: string;
   queryRoles: ChannelRole[];
   queryFamily: ChannelRoleFamily;
+  userNominated?: boolean;
   providerScore: number;
   evidence: LeadEvidenceItem[];
   evidenceWarnings: string[];

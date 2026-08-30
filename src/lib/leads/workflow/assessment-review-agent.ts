@@ -27,8 +27,16 @@ const JUDGE_PROMPT_VERSION = "lead-disagreement-judge-v2-role-aware";
 type JudgeOutput = typeof leadAssessmentJudgeSchema._output;
 
 export interface LeadReviewInvoker {
-  assess(input: Record<string, unknown>): Promise<{ output: LeadAssessmentModelOutput; model: string }>;
-  judge(input: Record<string, unknown>): Promise<{ output: JudgeOutput; model: string }>;
+  assess(input: Record<string, unknown>): Promise<{ output: LeadAssessmentModelOutput; model: string;
+    usage?: LeadReviewUsage["usage"] }>;
+  judge(input: Record<string, unknown>): Promise<{ output: JudgeOutput; model: string;
+    usage?: LeadReviewUsage["usage"] }>;
+}
+
+export interface LeadReviewUsage {
+  phase: "secondary" | "judge";
+  model: string;
+  usage: { inputTokens: number; outputTokens: number; reasoningTokens: number; totalTokens: number };
 }
 
 interface AssessmentReviewAgentOptions {
@@ -80,7 +88,11 @@ class OpenAiLeadReviewInvoker implements LeadReviewInvoker {
       text: { verbosity: "low", format: zodTextFormat(leadAssessmentModelSchema, "blind_lead_assessment") },
     });
     if (!response.output_parsed) throw new Error("OpenAI secondary reviewer returned no parsed assessment");
-    return { output: response.output_parsed, model: response.model };
+    return { output: response.output_parsed, model: response.model, usage: response.usage ? {
+      inputTokens: response.usage.input_tokens, outputTokens: response.usage.output_tokens,
+      reasoningTokens: response.usage.output_tokens_details?.reasoning_tokens ?? 0,
+      totalTokens: response.usage.total_tokens,
+    } : undefined };
   }
 
   async judge(input: Record<string, unknown>) {
@@ -97,7 +109,11 @@ class OpenAiLeadReviewInvoker implements LeadReviewInvoker {
       text: { verbosity: "low", format: zodTextFormat(leadAssessmentJudgeSchema, "lead_assessment_judgment") },
     });
     if (!response.output_parsed) throw new Error("OpenAI judge returned no parsed decision");
-    return { output: response.output_parsed, model: response.model };
+    return { output: response.output_parsed, model: response.model, usage: response.usage ? {
+      inputTokens: response.usage.input_tokens, outputTokens: response.usage.output_tokens,
+      reasoningTokens: response.usage.output_tokens_details?.reasoning_tokens ?? 0,
+      totalTokens: response.usage.total_tokens,
+    } : undefined };
   }
 }
 
@@ -121,7 +137,9 @@ export function assessmentReviewTriggers(options: {
   }
   if (new Set(assessment.cooperationPaths.map((path) => path.pathType)).size > 1) triggers.push("material-alternative-paths");
   if (candidate.correction.identityChanged) triggers.push("identity-changed");
-  if (candidate.evidenceWarnings.length > 0 || candidate.correction.warnings.length > 0) triggers.push("evidence-warning");
+  const materialCorrectionWarning = candidate.correction.warnings.some((warning) =>
+    /failed|conflict|invalid|unsupported evidence|downgraded|retained|requires review|unresolved/i.test(warning));
+  if (candidate.evidenceWarnings.length > 0 || materialCorrectionWarning) triggers.push("evidence-warning");
   if (candidate.correction.findings.some((finding) => finding.status === "conflicting")) triggers.push("conflicting-facts");
   const claimEvidenceCount = candidate.evidence.filter((item) => item.sourceType !== "discovery").length;
   if (assessment.totalScore >= 80 && claimEvidenceCount < 2) triggers.push("high-score-sparse-evidence");
@@ -212,6 +230,7 @@ export class LeadAssessmentReviewAgent {
   private readonly invoker: LeadReviewInvoker;
   private readonly randomAuditPercent: number;
   private readonly concurrency: number;
+  private usageRecords: LeadReviewUsage[] = [];
 
   constructor(invoker?: LeadReviewInvoker, options: AssessmentReviewAgentOptions = {}) {
     const secondaryModel = options.secondaryModel ?? process.env.LEAD_REVIEW_MODEL?.trim() ?? "gpt-5.6-terra";
@@ -219,7 +238,7 @@ export class LeadAssessmentReviewAgent {
     this.invoker = invoker ?? new OpenAiLeadReviewInvoker(secondaryModel, judgeModel);
     this.randomAuditPercent = Math.max(0, Math.min(100, options.randomAuditPercent
       ?? Number(process.env.LEAD_REVIEW_RANDOM_PERCENT ?? 5)));
-    this.concurrency = Math.max(1, Math.min(3, options.concurrency ?? 2));
+    this.concurrency = Math.max(1, Math.min(8, options.concurrency ?? 2));
   }
 
   private async reviewOne(candidate: CorrectedLeadWorkflowCandidate, primary: LeadCandidateAssessment,
@@ -234,6 +253,8 @@ export class LeadAssessmentReviewAgent {
           weights: ACTIVE_LEAD_SCORING_POLICY.weights, roleScorecards: ACTIVE_LEAD_SCORING_POLICY.roleScorecards },
         candidate: evidencePayload(candidate),
       });
+      if (secondaryResult.usage) this.usageRecords.push({ phase: "secondary",
+        model: secondaryResult.model, usage: secondaryResult.usage });
       if (secondaryResult.output.candidateId !== candidate.candidateId) {
         throw new Error("Secondary reviewer returned a different candidateId");
       }
@@ -259,6 +280,8 @@ export class LeadAssessmentReviewAgent {
         assessmentA: a,
         assessmentB: b,
       });
+      if (judgeResult.usage) this.usageRecords.push({ phase: "judge",
+        model: judgeResult.model, usage: judgeResult.usage });
       if (judgeResult.output.candidateId !== candidate.candidateId
         || judgeResult.output.assessment.candidateId !== candidate.candidateId) {
         throw new Error("Judge returned a different candidateId");
@@ -302,7 +325,13 @@ export class LeadAssessmentReviewAgent {
   }
 
   async review(candidates: CorrectedLeadWorkflowCandidate[], assessments: LeadCandidateAssessment[],
-    playbook: LeadMarketPlaybook, plan: LeadSearchPlan) {
+    playbook: LeadMarketPlaybook, plan: LeadSearchPlan): Promise<{
+      assessments: LeadCandidateAssessment[];
+      reviews: LeadAssessmentReview[];
+      usage?: LeadReviewUsage[];
+      warnings: string[];
+    }> {
+    this.usageRecords = [];
     const candidateById = new Map(candidates.map((candidate) => [candidate.candidateId, candidate]));
     const ranked = assessments.filter((assessment) => assessment.eligible && assessment.scoringStatus === "completed")
       .sort((left, right) => right.totalScore - left.totalScore);
@@ -333,6 +362,7 @@ export class LeadAssessmentReviewAgent {
     return {
       assessments: output.map((item) => item.assessment),
       reviews: output.map((item) => item.review),
+      usage: [...this.usageRecords],
       warnings: output.flatMap((item) => item.review.warnings.map((warning) => `${item.review.candidateId}: ${warning}`)),
     };
   }

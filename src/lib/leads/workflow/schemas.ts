@@ -13,23 +13,19 @@ const researchDepthSchema = z.enum(["deep", "standard", "limited"]);
 const cooperationPathTypeSchema = z.enum(["Direct Distribution", "Direct Channel Supply",
   "Distributor-Supplied Channel", "Direct Retail/E-commerce", "ISP/Operator Supply",
   "Project/Specification Partnership", "Co-sell/Co-supply", "Referral/Introduction", "OEM/ODM"]);
-const findingKindSchema = z.enum([
-  "identity", "country-presence", "active-networking", "role", "product-family",
-  "brand-relationship", "commercial-action", "cooperation-path", "company-size", "other",
-]);
 const dimensionNameSchema = z.enum([
   "productFamilyMatch", "customerAndScenarioOverlap", "positioningCompatibility",
   "cooperationPathAndBuyingInfluence", "scaleAndChannelCoverage", "executionAndEnablement", "opportunityAndRisk",
 ]);
 
 export const leadEvidenceFindingModelSchema = z.object({
-  kind: findingKindSchema,
+  kind: z.string().min(1).max(80),
   statement: z.string().min(2).max(500),
-  status: claimStatusSchema,
+  status: z.string().min(1).max(50),
   roles: z.array(channelRoleSchema).max(11),
-  evidenceIds: z.array(z.string()).max(12),
+  evidenceIds: z.array(z.string()).max(100),
   confidence: z.number().min(0).max(100),
-  notes: z.array(z.string().min(2).max(300)).max(6),
+  notes: z.array(z.string().min(2).max(1_000)).max(12),
 });
 
 export const leadMarketPlaybookModelSchema = z.object({
@@ -54,12 +50,12 @@ export const leadMarketPlaybookModelSchema = z.object({
 export const leadCorrectionModelSchema = z.object({
   candidateId: z.string().min(8).max(80),
   resolvedCompanyName: z.string().min(2).max(300),
-  resolvedOfficialWebsiteUrl: z.string().url().max(1_000),
+  resolvedOfficialWebsiteUrl: z.string().max(1_000),
   roles: z.array(channelRoleSchema).max(11),
   primaryBusinessRole: primaryBusinessRoleSchema,
-  primaryBusinessRoleReason: z.string().min(2).max(500),
+  primaryBusinessRoleReason: z.string().min(2).max(2_000),
   officialWebsiteEvidenceId: z.string().nullable(),
-  evidenceIds: z.array(z.string()).max(30),
+  evidenceIds: z.array(z.string()).max(100),
   findings: z.array(leadEvidenceFindingModelSchema).min(1).max(30),
   reasons: z.array(z.string().min(2).max(300)).min(1).max(12),
   confidence: z.number().min(0).max(100),
@@ -95,13 +91,13 @@ const cooperationPathSchema = z.object({
   candidateRole: channelRoleSchema,
   pathNodes: z.array(z.object({
     actor: z.enum(["Cudy", "Candidate", "Intermediary", "Customer"]),
-    role: z.string().min(2).max(120),
+    role: z.string().min(2).max(500),
   })).min(2).max(8),
   supplyFlow: z.string().min(2).max(500),
-  decisionRole: z.string().min(2).max(300),
+  decisionRole: z.string().min(2).max(1_000),
   fitScore: z.number().min(0).max(100),
   confidence: z.number().min(0).max(100),
-  rank: z.number().int().min(1).max(20),
+  rank: z.number().int().min(1).max(20).nullable(),
   evidenceIds: z.array(z.string()).max(20),
   prerequisites: z.array(z.string().min(2).max(300)).max(10),
   valuePropositions: z.array(z.string().min(2).max(300)).max(10),
@@ -118,15 +114,15 @@ export const leadAssessmentModelSchema = z.object({
   eligibilityStatus: eligibilityStatusSchema,
   companyScaleClass: companyScaleClassSchema,
   researchDepth: researchDepthSchema,
-  supplyModel: z.enum(["Distributor Supply", "Brand Direct", "Co-sell/Co-supply", "TBD"]),
-  brandInvolvement: z.enum(["Light", "Standard", "Deep"]),
+  supplyModel: z.string().min(1).max(2_000),
+  brandInvolvement: z.string().min(1).max(2_000),
   cooperationPaths: z.array(cooperationPathSchema).max(8),
   selectedPathId: z.string().max(80).nullable(),
   dimensions: dimensionsSchema,
   dimensionRationales: z.array(z.object({
     dimension: dimensionNameSchema,
     score: z.number().min(0).max(25),
-    reason: z.string().min(2).max(500),
+    reason: z.string().min(2).max(1_500),
     findingIds: z.array(z.string()).max(20),
     evidenceIds: z.array(z.string()).max(20),
     confidence: z.number().min(0).max(100),

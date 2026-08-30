@@ -4,18 +4,25 @@ import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "@/pr
 import type { TavilySearchResponse } from "@/providers/tavily";
 
 import { LeadEvidenceCorrectionAgent } from "./evidence-correction-agent";
+import { leadCorrectionModelSchema } from "./schemas";
 import type { LeadWorkflowCandidate } from "./types";
 
 class FakeCorrectionProvider implements AiProvider {
   readonly id = "fake-corrector";
+  calls: StructuredAiRequest<unknown>[] = [];
+  constructor(private readonly repairableOutput = false) {}
   async execute<TInput, TOutput>(request: StructuredAiRequest<TInput>): Promise<StructuredAiResponse<TOutput>> {
+    this.calls.push(request as StructuredAiRequest<unknown>);
     const input = request.input as { candidates: Array<{ candidateId: string; evidence: Array<{ evidenceId: string; url: string }> }> };
     const candidate = input.candidates[0];
     const official = candidate.evidence.find((item) => item.url.includes("smarttechnik.eu"));
     return {
       output: { corrections: [{ candidateId: candidate.candidateId, resolvedCompanyName: "Smart Technik GmbH",
-        resolvedOfficialWebsiteUrl: "https://smarttechnik.eu/", roles: ["Installer", "SI"],
-        primaryBusinessRole: "SI", primaryBusinessRoleReason: "System integration is the main evidenced activity.",
+        resolvedOfficialWebsiteUrl: this.repairableOutput ? "not-a-valid-url" : "https://smarttechnik.eu/",
+        roles: this.repairableOutput ? ["Installer", "SI", "Distributor"] : ["Installer", "SI"],
+        primaryBusinessRole: "SI", primaryBusinessRoleReason: this.repairableOutput
+          ? "System integration is the main evidenced activity. ".repeat(14)
+          : "System integration is the main evidenced activity.",
         officialWebsiteEvidenceId: official?.evidenceId ?? null,
         evidenceIds: candidate.evidence.map((item) => item.evidenceId),
         findings: [
@@ -27,6 +34,13 @@ class FakeCorrectionProvider implements AiProvider {
             roles: [], evidenceIds: official ? [official.evidenceId] : [], confidence: 92, notes: [] },
           { kind: "role", statement: "The company performs installation and system integration.", status: "supported",
             roles: ["Installer", "SI"], evidenceIds: official ? [official.evidenceId] : [], confidence: 92, notes: [] },
+          ...(this.repairableOutput ? [
+            { kind: "distributor_role", statement: "The distributor role is confirmed by current evidence.",
+              status: "confirmed", roles: ["Distributor"], evidenceIds: official ? [official.evidenceId] : [],
+              confidence: 90, notes: [] },
+            { kind: "other", statement: "No further conclusion is available.",
+              status: "insufficient-evidence", roles: [], evidenceIds: [], confidence: 20, notes: [] },
+          ] : []),
         ],
         reasons: ["Official evidence shows Wi-Fi installation and network integration."],
         confidence: 92, needsEscalation: false, warnings: [] }] } as TOutput,
@@ -54,7 +68,8 @@ const candidate: LeadWorkflowCandidate = {
 
 describe("LeadEvidenceCorrectionAgent", () => {
   it("supplements evidence, corrects the official domain, reroutes roles and preserves provenance", async () => {
-    const agent = new LeadEvidenceCorrectionAgent(new FakeCorrectionProvider(), searchProvider,
+    const provider = new FakeCorrectionProvider();
+    const agent = new LeadEvidenceCorrectionAgent(provider, searchProvider,
       { batchSize: 1, concurrency: 1, searchConcurrency: 1 });
     const result = await agent.correct([candidate], { countryCode: "DE", countryName: "Germany",
       objective: "new-market", roles: ["Distributor", "Installer", "SI"], targetCount: 10,
@@ -73,5 +88,41 @@ describe("LeadEvidenceCorrectionAgent", () => {
     expect(corrected.correction.supplementalEvidenceIds).toHaveLength(1);
     expect(corrected.correction.findings.every((finding) => finding.evidenceIds.length > 0)).toBe(true);
     expect(corrected.evidence.some((item) => item.sourceType === "official-website")).toBe(true);
+    expect(JSON.stringify(provider.calls.map((call) => call.input))).not.toContain("discovery-1");
+  });
+
+  it("keeps repairable model output and safely normalizes invalid URL and claim status", async () => {
+    const provider = new FakeCorrectionProvider(true);
+    const agent = new LeadEvidenceCorrectionAgent(provider, searchProvider,
+      { batchSize: 1, concurrency: 1, searchConcurrency: 1 });
+    const result = await agent.correct([candidate], { countryCode: "DE", countryName: "Germany",
+      objective: "new-market", roles: ["Distributor", "Installer", "SI"], targetCount: 10,
+      queryLanguage: "en", userRequest: "Find German networking channel prospects" });
+    const [corrected] = result.candidates;
+    expect(corrected.correction.model).not.toBe("deterministic-fallback");
+    expect(corrected.domain).toBe("wrong-example.de");
+    const normalized = corrected.correction.findings.find((finding) => finding.kind === "other");
+    expect(normalized?.status).toBe("unknown");
+    expect(normalized?.notes.join(" ")).toContain("normalized to unknown");
+    const confirmed = corrected.correction.findings.find((finding) => finding.statement.includes("role is confirmed"));
+    expect(confirmed?.kind).toBe("role");
+    expect(confirmed?.status).toBe("supported");
+    expect(confirmed?.notes.join(" ")).toContain("normalized to supported");
+    expect(corrected.correction.resolvedRoles).toContain("Distributor");
+  });
+
+  it("accepts large but bounded current-evidence citation sets from deep research", () => {
+    const evidenceIds = Array.from({ length: 31 }, (_, index) => `evidence-${index}`);
+    const parsed = leadCorrectionModelSchema.safeParse({
+      candidateId: "lead-deep-research", resolvedCompanyName: "Example GmbH",
+      resolvedOfficialWebsiteUrl: "https://example.de/", roles: ["Distributor"],
+      primaryBusinessRole: "Distributor", primaryBusinessRoleReason: "Distribution is the primary supported role.",
+      officialWebsiteEvidenceId: evidenceIds[0], evidenceIds,
+      findings: [{ kind: "distributor_role", statement: "The company supplies downstream resellers.",
+        status: "confirmed", roles: ["Distributor"], evidenceIds, confidence: 90, notes: [] }],
+      reasons: ["Current public evidence supports distribution."], confidence: 90,
+      needsEscalation: false, warnings: [],
+    });
+    expect(parsed.success).toBe(true);
   });
 });
