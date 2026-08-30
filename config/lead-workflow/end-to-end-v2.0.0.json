@@ -1,0 +1,191 @@
+{
+  "workflowKey": "cudy-sales-lead-end-to-end",
+  "version": "2.0.0",
+  "status": "active",
+  "scope": "From the user's natural-language market-development request and workspace context to ranked companies, editable cooperation paths, development strategy, outreach email, and private-memory learning from user edits.",
+  "principles": [
+    "The original search channel is provenance only and never determines the final primary role or cooperation path.",
+    "Only current-run or freshness-validated evidence may affect scoring.",
+    "Unknown evidence is not negative evidence.",
+    "Product and use-case fit is evaluated against the best enabled Cudy product track and the candidate role's actual target customers.",
+    "User-confirmed knowledge has higher priority than ordinary retrieval, while shared knowledge and user/workspace memory remain isolated.",
+    "Cooperation paths, roles and evidence restrictions travel into development strategy and email generation.",
+    "User edits to paths and outreach are retained as private learning signals, not written into the shared knowledge base."
+  ],
+  "sourceFiles": [
+    "config/lead-scoring/policy-v2.0.0.json",
+    "config/lead-workflow/cost-quality-policy-v2.0.0.json",
+    "src/app/api/assistant/messages/route.ts",
+    "src/lib/assistant/types.ts",
+    "src/lib/assistant/intent.ts",
+    "src/lib/assistant/intent-agent.ts",
+    "src/lib/assistant/service.ts",
+    "src/lib/assistant/repository.ts",
+    "src/lib/leads/workflow/graph.ts",
+    "src/lib/leads/workflow/jobs.ts",
+    "src/lib/leads/workflow/rag-context.ts",
+    "src/lib/leads/workflow/playbook.ts",
+    "src/lib/leads/workflow/discovery.ts",
+    "src/lib/leads/global-search.ts",
+    "src/lib/leads/workflow/evidence-correction-agent.ts",
+    "src/lib/leads/workflow/evidence-packet.ts",
+    "src/lib/leads/workflow/qualification-agent.ts",
+    "src/lib/leads/workflow/assessment-review-agent.ts",
+    "src/providers/deepseek.ts",
+    "src/providers/tavily.ts",
+    "src/lib/leads/workflow/handoff-assembler.ts",
+    "src/lib/leads/workflow/persistence.ts",
+    "src/lib/sales/repository.ts",
+    "src/lib/outreach/graph.ts",
+    "src/lib/outreach/kimi-agent.ts",
+    "src/lib/outreach/claude-agent.ts",
+    "src/lib/outreach/repository.ts",
+    "src/lib/outreach/knowledge-repository.ts"
+  ],
+  "stages": [
+    {
+      "id": "01-user-input",
+      "name": "User request and editable business intent",
+      "inputs": ["Natural-language request", "Target country/market", "Desired count", "Optional roles, products, constraints and nominated companies"],
+      "outputs": ["LeadSearchPlan", "userId", "workspaceId", "actionId", "graphThreadId"],
+      "strategy": ["Preserve explicit user constraints", "Treat requested roles as search intent, not final classification", "Mark nominated companies for deep research"],
+      "failure": "Reject only structurally unusable requests; do not silently invent a target market or role.",
+      "downstream": ["Knowledge retrieval", "Workflow checkpoint identity"]
+    },
+    {
+      "id": "02-context-memory",
+      "name": "Workspace context, shared knowledge and private memory",
+      "inputs": ["LeadSearchPlan", "Shared product/company/industry RAG", "User-confirmed workspace knowledge", "Private cooperation-path memory", "Private email-style and edit memory"],
+      "outputs": ["LeadRagCitation[]", "CooperationPathMemory[]", "OutreachKnowledge[]"],
+      "strategy": ["Keep shared and private stores physically/logically separated", "Give user-confirmed knowledge priority over ordinary retrieval", "Never let private edits contaminate the shared Cudy knowledge base"],
+      "failure": "Pre-search gate blocks lead discovery when required product, company or industry context is missing or uncorroborated.",
+      "downstream": ["Market playbook", "Path recommendation", "Development strategy", "Email style"]
+    },
+    {
+      "id": "03-playbook",
+      "name": "Market playbook and search plan",
+      "inputs": ["LeadSearchPlan", "RAG citations", "Private cooperation-path memory"],
+      "outputs": ["Market hypothesis", "Enabled product angles", "Preferred traits", "Exclusions", "Role-family search queries"],
+      "strategy": ["Use confirmed Cudy positioning and competitors", "Do not average all product families", "Keep original role lanes only as discovery coverage"],
+      "failure": "Use a deterministic playbook fallback with warnings when the model cannot return a valid plan.",
+      "downstream": ["Candidate discovery", "Qualification context"]
+    },
+    {
+      "id": "04-discovery",
+      "name": "Multi-source candidate discovery",
+      "inputs": ["Market playbook", "Role-family queries", "Target count"],
+      "outputs": ["Raw candidate names/domains", "Discovery provider provenance", "Search-lane provenance", "Initial URLs/snippets"],
+      "strategy": ["Maximize recall across distribution, resale/retail, services and operator families", "Provider score and rank cannot enter final value scoring", "Canonicalize domains and retain multi-provider provenance"],
+      "failure": "A provider failure is isolated; the workflow continues with other discovery sources and records warnings.",
+      "downstream": ["Fresh evidence acquisition"]
+    },
+    {
+      "id": "05-evidence",
+      "name": "Fresh public evidence acquisition",
+      "inputs": ["Discovered candidates", "Official-site and targeted public search queries", "Evidence freshness policy"],
+      "outputs": ["Immutable evidence snapshot", "capturedAt", "contentHash", "sourceType", "freshnessStatus", "evidenceRunId"],
+      "strategy": ["Old-run evidence is discovery-only until reacquired or validated", "Prefer official and independent public sources", "Search for defining business actions, product tracks, target customers, size and cooperation signals"],
+      "failure": "Failed retrieval becomes unknown; it never becomes a negative fact.",
+      "downstream": ["Entity correction", "Role classification", "Freshness audit"]
+    },
+    {
+      "id": "06-correction-role",
+      "name": "Entity correction, atomic facts and primary-role decision",
+      "inputs": ["Fresh evidence snapshot", "Submitted candidate identity and discovery roles"],
+      "outputs": ["Corrected company/domain", "Atomic fact ledger", "All supported roles", "Primary role or Hybrid/Unresolved", "Correction confidence"],
+      "strategy": ["No upward-priority rule", "Agent independently decides the primary business role", "Distributor requires evidence of supplying downstream channel partners", "A company may hold multiple supported roles", "Non-standard model labels are normalized without discarding semantic role evidence"],
+      "failure": "Ambiguity escalates to the high-capability model; deterministic fallback is retry-only and not externally publishable as a resolved identity.",
+      "downstream": ["Research depth", "Role-aware scoring", "Cooperation paths"]
+    },
+    {
+      "id": "07-research-depth",
+      "name": "Research-depth routing",
+      "inputs": ["Corrected role", "Positive size evidence", "Product relevance", "User nomination", "Conflicts", "Top-N boundary"],
+      "outputs": ["deep", "standard", "limited"],
+      "strategy": ["Deep research for global/national/valuable or nominated companies", "Standard research for ordinary viable candidates", "Limited research only for positively identified long-tail candidates", "Sparse web presence alone does not prove small size"],
+      "failure": "Long-tail candidates may be held after targeted searches fail; strategic companies must not be downgraded merely because their channel structure is complex.",
+      "downstream": ["Evidence budget", "Model routing", "Search stopping rule"]
+    },
+    {
+      "id": "08-evidence-packet",
+      "name": "Claim-linked model evidence packet",
+      "inputs": ["Current evidence", "Atomic findings", "Cost-quality policy"],
+      "outputs": ["All finding-linked evidence", "Small relevance-ranked context set", "Compacted excerpts"],
+      "strategy": ["Never remove evidence referenced by a finding", "Remove stale/discovery-only material", "Deduplicate unlinked context", "Keep keyword windows for products, roles, customers, scale and procurement"],
+      "failure": "If compaction cannot retain every cited evidence ID, stop rather than score with an incomplete fact ledger.",
+      "downstream": ["Primary scoring", "Independent review"]
+    },
+    {
+      "id": "09-scoring-paths",
+      "name": "Role-aware scoring and possible cooperation paths",
+      "inputs": ["Corrected candidate", "Atomic findings", "Evidence packet", "Cudy playbook", "Private path memory", "Versioned scoring policy"],
+      "outputs": ["Seven dimensions", "Total score", "Eligibility", "Confidence", "Possible paths", "Selected path", "Target titles and CTA"],
+      "strategy": ["Product/use-case fit 50", "Path/influence 15", "Same-primary-role scale 15", "Execution 10", "Opportunity/risk 10", "Use the best enabled product track", "Use role-specific target-customer and scenario criteria", "Unknown is not zero", "Path memory is guidance, not unsupported public fact"],
+      "failure": "Unsupported evidence IDs and paths are removed; schema failures retry only the invalid candidate and reuse checkpoints.",
+      "downstream": ["Independent review", "Ranking", "Development handoff"]
+    },
+    {
+      "id": "10-review",
+      "name": "Selective blind review and disagreement judge",
+      "inputs": ["Primary assessment", "Evidence packet", "Review-routing policy"],
+      "outputs": ["not-required", "secondary-confirmed", "judge-resolved", "targeted-research-required", "review-failed"],
+      "strategy": ["Always review severe conflicts and deterministic audits", "Review low confidence and alternative paths only when commercially actionable", "Do not spend high-capability review on non-actionable long-tail research holds", "Judge only outcome-sensitive disagreement"],
+      "failure": "Retain a valid primary assessment when review service fails unless a severe unresolved trigger makes publication unsafe.",
+      "downstream": ["Final assessment", "Research queue", "Cost telemetry"]
+    },
+    {
+      "id": "11-ranking-account",
+      "name": "Ranking, recommendation and sales-account tier",
+      "inputs": ["Reviewed assessments", "Primary roles", "Eligibility", "Configurable thresholds"],
+      "outputs": ["Ranked companies", "Recommendation priority", "Sales account tier"],
+      "strategy": ["Account tier does not alter score", "KA is only for downstream candidates", "Tier-1 distributors use Strategic/Priority/Standard/Long-tail Distributor", "Scale is compared within the same primary role"],
+      "failure": "Any tier-1 Distributor/VAD assigned KA fails the deterministic quality gate.",
+      "downstream": ["User results", "Sales workspace", "Handoff"]
+    },
+    {
+      "id": "12-handoff-persist",
+      "name": "Restricted handoff and persistence",
+      "inputs": ["Corrected candidate", "Final assessment", "Review", "Evidence ledger"],
+      "outputs": ["LeadDevelopmentHandoff", "Externally usable facts", "Internal interpretations", "Do-not-claim list", "Personalization hooks", "Quality flags"],
+      "strategy": ["Keep handoff within transport budget", "Only supported facts may be used externally", "Carry role and every possible path to downstream agents", "Anchor downstream execution to selectedPathId unless the user overrides it"],
+      "failure": "Email generation is disabled when the handoff is not ready for external use; strategy may still be generated with unknowns.",
+      "downstream": ["Sales UI", "Development strategy Agent", "Email Agent"]
+    },
+    {
+      "id": "13-user-result-edit",
+      "name": "User presentation and cooperation-path override",
+      "inputs": ["Ranked results", "Evidence-linked reasons", "Possible paths", "Selected path"],
+      "outputs": ["User-visible company assessment", "Optional selectedPathId override", "Owner/next action updates"],
+      "strategy": ["Show the Agent recommendation but allow the user to change the cooperation path", "Preserve who changed what and when", "Do not rewrite public evidence when the user changes a commercial preference"],
+      "failure": "Reject a selectedPathId that is not one of the candidate's generated paths.",
+      "downstream": ["Private path memory", "Development strategy", "Email"]
+    },
+    {
+      "id": "14-strategy",
+      "name": "Development strategy generation",
+      "inputs": ["Full restricted handoff", "Selected cooperation path", "Role", "Risks", "Unknowns", "Private path memory", "Outreach knowledge"],
+      "outputs": ["Positioning angle", "Stakeholder sequence", "Value proposition", "Objection handling", "CTA strategy"],
+      "strategy": ["Evaluate all viable paths", "Anchor to the selected path", "Use different strategy for distributor, downstream channel, retail, operator and project/specification routes", "Keep unsupported claims internal or explicitly unknown"],
+      "failure": "Fallback strategy remains inside the same handoff fact boundary.",
+      "downstream": ["Development email Agent"]
+    },
+    {
+      "id": "15-email",
+      "name": "Development email generation and validation",
+      "inputs": ["Development strategy", "Selected path", "Allowed lead facts", "Target contact", "Private email-style preferences"],
+      "outputs": ["Subject options", "Email body", "Evidence markers", "Generation metrics"],
+      "strategy": ["Use path-specific templates and CTA", "Every target-company factual sentence must stay inside the allowed-fact boundary", "Use approved style memory without copying unsupported company claims"],
+      "failure": "Invented evidence IDs, missing required markers or use of do-not-claim facts rejects the draft and triggers bounded revision/fallback.",
+      "downstream": ["User review", "Draft persistence", "Sending workflow"]
+    },
+    {
+      "id": "16-feedback-memory",
+      "name": "User edits, feedback and long-term learning",
+      "inputs": ["Manual email edits", "Feedback instruction", "Path override", "Approved final draft"],
+      "outputs": ["Outreach edit events", "Email-style preference memory", "Cooperation-path preference memory", "Audit trail"],
+      "strategy": ["Store only valuable reusable preferences", "Scope memory to user/workspace", "User-confirmed marketing phrasing may be reused as approved messaging but does not become public scoring evidence", "Never write private memory into shared RAG"],
+      "failure": "Memory extraction failure does not block saving the user's draft; it records a failed memory event for retry.",
+      "downstream": ["Future playbooks", "Future path recommendations", "Future strategy and email generation"]
+    }
+  ]
+}

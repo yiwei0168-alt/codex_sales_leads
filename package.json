@@ -97,6 +97,9 @@
     "benchmark:v2:retry-failed-score": "node --use-env-proxy scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/rerun-v2-fresh-role-aware.ts --resume-snapshot --repair-only --resume-correction --retry-failed-scores-only",
     "benchmark:v2:repair-review": "node --use-env-proxy scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/rerun-v2-fresh-role-aware.ts --resume-snapshot --repair-only --resume-correction --resume-assessments",
     "benchmark:v2:merge-repair": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/merge-v2-targeted-repair.ts",
+    "docs:lead-workflow": "node scripts/generate-lead-workflow-doc.mjs",
+    "docs:lead-workflow:check": "node scripts/generate-lead-workflow-doc.mjs --check",
+    "benchmark:v2:cost-replay": "tsx experiments/multi-source-lead-discovery/scripts/analyze-v2-cost-optimization.ts",
     "benchmark:discovery:verify": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/verify-discovery-run.ts"
   },
   "dependencies": {

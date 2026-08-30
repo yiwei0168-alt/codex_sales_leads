@@ -1,0 +1,70 @@
+name: Sync lead workflow documentation
+
+on:
+  pull_request:
+    paths:
+      - "config/lead-scoring/**"
+      - "config/lead-workflow/**"
+      - "src/lib/leads/**"
+      - "src/lib/assistant/**"
+      - "src/lib/outreach/**"
+      - "src/lib/sales/**"
+      - "src/app/api/assistant/messages/route.ts"
+      - "src/providers/**"
+      - "scripts/generate-lead-workflow-doc.mjs"
+      - "docs/generated/LEAD_EVALUATION_WORKFLOW_V2.md"
+  push:
+    branches: [main]
+    paths:
+      - "config/lead-scoring/**"
+      - "config/lead-workflow/**"
+      - "src/lib/leads/**"
+      - "src/lib/assistant/**"
+      - "src/lib/outreach/**"
+      - "src/lib/sales/**"
+      - "src/app/api/assistant/messages/route.ts"
+      - "src/providers/**"
+      - "scripts/generate-lead-workflow-doc.mjs"
+
+permissions:
+  contents: write
+
+jobs:
+  verify-or-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source branch
+        uses: actions/checkout@v4
+        with:
+          path: source
+          fetch-depth: 0
+
+      - name: Verify generated document in pull request
+        if: github.event_name == 'pull_request'
+        working-directory: source
+        run: node scripts/generate-lead-workflow-doc.mjs --check
+
+      - name: Generate current document
+        if: github.event_name == 'push'
+        working-directory: source
+        run: node scripts/generate-lead-workflow-doc.mjs --output=${{ runner.temp }}/LEAD_EVALUATION_WORKFLOW_V2.md
+
+      - name: Check out documentation branch
+        if: github.event_name == 'push'
+        uses: actions/checkout@v4
+        with:
+          ref: workflow-docs/v2-lead-evaluation
+          path: workflow-docs
+
+      - name: Commit documentation update
+        if: github.event_name == 'push'
+        run: |
+          mkdir -p workflow-docs/docs/generated
+          cp "${{ runner.temp }}/LEAD_EVALUATION_WORKFLOW_V2.md" workflow-docs/docs/generated/LEAD_EVALUATION_WORKFLOW_V2.md
+          cd workflow-docs
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/generated/LEAD_EVALUATION_WORKFLOW_V2.md
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "docs: sync lead workflow from main"
+          git push origin HEAD:workflow-docs/v2-lead-evaluation
