@@ -191,19 +191,21 @@ export interface CooperationPathCandidate {
   pathId: string;
   pathType: CooperationPathType;
   candidateRole: ChannelRole;
-  pathNodes: Array<{ actor: "Cudy" | "Candidate" | "Intermediary" | "Customer"; role: string }>;
-  supplyFlow: string;
-  decisionRole: string;
+  fitComponents: {
+    roleStructureFit: number;
+    userStageAndSupplyFit: number;
+    productCustomerScenarioFit: number;
+    procurementAndInfluence: number;
+    executionFeasibility: number;
+  };
   fitScore: number;
-  confidence: number;
   rank: number;
+  findingIds: string[];
   evidenceIds: string[];
+  reason: string;
   prerequisites: string[];
-  valuePropositions: string[];
   risks: string[];
   unknowns: string[];
-  targetTitles: string[];
-  recommendedCta: string;
   allowedInExternalEmail: boolean;
 }
 

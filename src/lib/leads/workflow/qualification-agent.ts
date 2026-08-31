@@ -17,7 +17,7 @@ import type {
   LeadMarketPlaybook,
 } from "./types";
 
-const PROMPT_VERSION = "lead-value-v4-role-aware-100-point-paths";
+const PROMPT_VERSION = "lead-value-v5-role-aware-five-paths";
 
 interface LeadAssessmentRequest {
   instructions: string[];
@@ -56,6 +56,17 @@ function clamp(value: number, maximum: number): number {
   return Math.max(0, Math.min(maximum, Math.round(value)));
 }
 
+function normalizedPathFit(path: LeadAssessmentModelOutput["cooperationPaths"][number]) {
+  const fitComponents = {
+    roleStructureFit: clamp(path.fitComponents.roleStructureFit, 30),
+    userStageAndSupplyFit: clamp(path.fitComponents.userStageAndSupplyFit, 25),
+    productCustomerScenarioFit: clamp(path.fitComponents.productCustomerScenarioFit, 20),
+    procurementAndInfluence: clamp(path.fitComponents.procurementAndInfluence, 15),
+    executionFeasibility: clamp(path.fitComponents.executionFeasibility, 10),
+  };
+  return { fitComponents, fitScore: Object.values(fitComponents).reduce((sum, score) => sum + score, 0) };
+}
+
 function corroboratedGate(modelState: LeadAssessmentModelOutput["gates"][keyof LeadAssessmentModelOutput["gates"]],
   demonstrated: boolean) {
   if (modelState === "supported") return demonstrated ? "supported" as const : "conflicting" as const;
@@ -68,6 +79,15 @@ function cooperationLane(lane: CorrectedLeadWorkflowCandidate["queryFamily"]): C
   if (lane === "resale" || lane === "retail") return "b2b-resale";
   if (lane === "services") return "project-services";
   return "operator";
+}
+
+function pathRoleCompatible(path: LeadAssessmentModelOutput["cooperationPaths"][number]): boolean {
+  const tier1Role = path.candidateRole === "Distributor" || path.candidateRole === "VAD";
+  if (path.pathType === "Direct Tier-1 Supply") return tier1Role;
+  if (path.pathType === "Distributor-Mediated Supply" || path.pathType === "Direct Downstream Channel Supply") {
+    return !tier1Role;
+  }
+  return true;
 }
 
 export function normalizeAssessment(
@@ -109,15 +129,20 @@ export function normalizeAssessment(
     opportunityAndRisk: clampDimension("opportunityAndRisk", value.dimensions.opportunityAndRisk),
   };
   const allowedRoles = new Set(candidate.correction.resolvedRoles);
-  const cooperationPaths = value.cooperationPaths
+  const allowedFindings = new Set(candidate.correction.findings.map((finding) => finding.findingId));
+  const rankedPaths = value.cooperationPaths
     .filter((path) => allowedRoles.has(path.candidateRole))
+    .filter(pathRoleCompatible)
     .filter((path) => allowOemOdm || path.pathType !== "OEM/ODM")
-    .map((path, index) => ({ ...path,
-      fitScore: clamp(path.fitScore, 100), confidence: clamp(path.confidence, 100),
-      rank: path.rank ?? index + 1,
+    .map((path) => ({ ...path, ...normalizedPathFit(path),
+      findingIds: [...new Set(path.findingIds.filter((id) => allowedFindings.has(id)))],
       evidenceIds: [...new Set(path.evidenceIds.filter((id) => allowedEvidence.has(id)))],
     }))
-    .sort((left, right) => left.rank - right.rank || right.fitScore - left.fitScore);
+    .sort((left, right) => right.fitScore - left.fitScore || left.pathId.localeCompare(right.pathId))
+    .slice(0, 2)
+    .map((path, index) => ({ ...path, rank: index + 1 }));
+  const qualifiedPaths = rankedPaths.filter((path) => path.fitScore >= 65);
+  const cooperationPaths = qualifiedPaths.length > 0 ? qualifiedPaths : rankedPaths.slice(0, 1);
   const selectedPath = cooperationPaths.find((path) => path.pathId === value.selectedPathId) ?? cooperationPaths[0];
   const hasNotSupportedGate = Object.values(gates).some((state) => state === "not-supported");
   const hasUnresolvedGate = Object.values(gates).some((state) => state !== "supported");
@@ -126,7 +151,6 @@ export function normalizeAssessment(
   const companyScaleClass = sizeFinding ? value.companyScaleClass : "Unknown";
   const researchDepth = selectResearchDepth({ scaleClass: companyScaleClass,
     strongRelevanceSignal: networkingEvidence.demonstrated, userNominated: candidate.userNominated ?? false,
-    topNBoundary: false,
     hasConflict: candidate.correction.findings.some((finding) => finding.status === "conflicting") });
   const eligibilityStatus = hasNotSupportedGate ? "ineligible-for-current-task" as const
     : hasUnresolvedGate || cooperationPaths.length === 0
@@ -142,14 +166,14 @@ export function normalizeAssessment(
   const accountTier = salesAccountTier({ score: totalScore,
     scaleAndChannelCoverage: dimensions.scaleAndChannelCoverage,
     cooperationPathAndBuyingInfluence: dimensions.cooperationPathAndBuyingInfluence,
-    selectedPath, eligibilityStatus, scaleClass: companyScaleClass });
+    selectedPath, primaryRole: candidate.correction.primaryRole,
+    eligibilityStatus, scaleClass: companyScaleClass });
   const roles = candidate.correction.resolvedRoles;
   const primaryRole = candidate.correction.primaryRole;
   const supplyModel = ["Distributor Supply", "Brand Direct", "Co-sell/Co-supply", "TBD"].includes(value.supplyModel)
     ? value.supplyModel as LeadCandidateAssessment["supplyModel"] : "TBD";
   const brandInvolvement = ["Light", "Standard", "Deep"].includes(value.brandInvolvement)
     ? value.brandInvolvement as LeadCandidateAssessment["brandInvolvement"] : "Standard";
-  const allowedFindings = new Set(candidate.correction.findings.map((finding) => finding.findingId));
   const dimensionRationales = value.dimensionRationales.map((rationale) => ({
     ...rationale,
     score: dimensions[rationale.dimension],
@@ -203,15 +227,9 @@ export function normalizeAssessment(
 
 function requiresEscalation(candidate: CorrectedLeadWorkflowCandidate, assessment: LeadCandidateAssessment,
   value: LeadAssessmentModelOutput): boolean {
-  const deterministicPathWarning = assessment.warnings.some((warning) => warning.includes("requires review"));
-  const materiallyDifferentPaths = new Set(assessment.cooperationPaths.map((path) => path.pathType)).size > 1;
-  return value.needsEscalation || value.confidence < 75 || candidate.correction.confidence < 75
-    || candidate.correction.identityChanged
-    || candidate.correction.primaryRole === "Hybrid" || candidate.correction.primaryRole === "Unresolved"
-    || materiallyDifferentPaths
-    || candidate.evidenceWarnings.length > 0 || deterministicPathWarning
-    || candidate.correction.findings.some((finding) => finding.status === "conflicting")
-    || Object.values(assessment.gates).some((state) => state === "conflicting");
+  const hasCriticalStateChange = value.escalation.criticalStateChanges.length > 0;
+  return value.escalation.required && value.escalation.higherCapabilityCanResolve
+    && (value.escalation.expectedTotalScoreChange >= 8 || hasCriticalStateChange);
 }
 
 function failedAssessment(candidate: CorrectedLeadWorkflowCandidate, message: string): LeadCandidateAssessment {
@@ -294,7 +312,9 @@ export class LeadQualificationAgent {
         "Product family fit uses the best enabled product track, not average coverage of every Cudy family. Full-portfolio breadth applies only when the task explicitly requests a full-line master distributor.",
         "A broadline distributor is not diluted by unrelated categories. A focused SMB specialist is not penalized for lacking home, ISP or industrial families.",
         "Selling competitor brands is normally positive category evidence. Penalize only evidenced exclusivity, hard vendor lock-in, direct own-brand conflict, refusal or lack of entry space.",
-        "Generate every evidence-supported viable cooperation path, rank each path, and select one current recommendation. The same candidate may have direct-distribution, downstream, project or co-sell alternatives.",
+        "Return at most two evidence-supported cooperation paths using only: Direct Tier-1 Supply, Distributor-Mediated Supply, Direct Downstream Channel Supply, OEM/ODM, or Other.",
+        "Score each path semantically with role/structure 0-30, user-stage/supply fit 0-25, product/customer/scenario fit 0-20, procurement/influence 0-15, and execution feasibility 0-10. Do not return a path total or path confidence; code computes and ranks the total.",
+        "Normally recommend paths scoring at least 65. If every path is below 65, code retains only the highest path. Keep path explanations short; later strategy and email agents add titles, value propositions and calls to action only after explicit user action.",
         "Do not use an upward channel hierarchy. The recommended path depends on the user stage, market, product track, candidate roles and evidence.",
         "Use supplied private cooperation-path memory as a higher-priority user preference for analogous contexts, never as an objective company fact or score evidence. Request escalation when it conflicts with current evidence.",
         "OEM/ODM is disabled unless the task objective explicitly asks for OEM, ODM, private label or manufacturing cooperation.",
@@ -303,7 +323,7 @@ export class LeadQualificationAgent {
         "Product and use-case fit is 50 points: product family 25, customer/scenario 15, positioning 10. Other dimensions are path/influence 15, same-role scale/coverage 15, execution/enablement 10, opportunity/risk 10.",
         "Use current task fit for eligibility. No company-size gate exists. A small specialist with direct scenario evidence remains eligible.",
         "KA is never a tier-1 distributor label. Account tier and recommendation priority are computed deterministically after your assessment and must not influence dimension scores.",
-        "Return one assessment for every candidateId and request escalation for Hybrid/Unresolved roles, evidence conflicts, material alternative routes, confidence below 75 or a likely Top-N boundary.",
+        "Return one assessment for every candidateId. Request escalation only when a higher-capability model can resolve the issue and is expected to change total score by at least 8 points or change a critical identity, eligibility, primary-role, existence, country-presence or networking-relevance state. Top-N position and confidence alone never justify escalation.",
       ],
       market: { countryCode, countryName, objective },
       cudyFitBrief: {
@@ -389,6 +409,12 @@ export class LeadQualificationAgent {
         const allowOemOdm = /\b(?:oem|odm|private[ -]?label|manufactur(?:e|ing))\b/i.test(objective);
         const normalized = normalizeAssessment(value, candidate, routine.response, false, allowOemOdm);
         if (requiresEscalation(candidate, normalized, value)) {
+          if (this.routineModel === this.escalationModel) {
+            return { ...normalized, warnings: [
+              "Escalation was skipped because the configured routine and escalation models are identical.",
+              ...normalized.warnings,
+            ] };
+          }
           return this.evaluateOneEscalated(candidate, playbook, countryCode, countryName, objective, "Routine assessment requested evidence-conflict escalation.");
         }
         return normalized;

@@ -9,6 +9,10 @@ import type { CorrectedLeadWorkflowCandidate, LeadMarketPlaybook } from "./types
 class FakeProvider implements AiProvider {
   readonly id = "fake";
   calls: StructuredAiRequest<unknown>[] = [];
+  constructor(private readonly options: { cooperationPaths?: unknown[]; escalation?: {
+    required: boolean; expectedTotalScoreChange: number; criticalStateChanges: string[];
+    higherCapabilityCanResolve: boolean; reason: string;
+  } } = {}) {}
   async execute<TInput, TOutput>(request: StructuredAiRequest<TInput>): Promise<StructuredAiResponse<TOutput>> {
     this.calls.push(request as StructuredAiRequest<unknown>);
     return {
@@ -17,13 +21,12 @@ class FakeProvider implements AiProvider {
           targetCountryPresence: "supported", networkingRelevant: "supported", independentProspect: "supported" },
         eligibilityStatus: "eligible", companyScaleClass: "Regional", researchDepth: "standard",
         supplyModel: "Distributor Supply", brandInvolvement: "Standard",
-        cooperationPaths: [{ pathId: "path-var", pathType: "Direct Channel Supply", candidateRole: "VAR",
-          pathNodes: [{ actor: "Cudy", role: "Brand" }, { actor: "Candidate", role: "VAR" },
-            { actor: "Customer", role: "SMB customer" }], supplyFlow: "Cudy supplies the VAR.",
-          decisionRole: "The VAR selects products for SMB customers.", fitScore: 86, confidence: 86, rank: 1,
-          evidenceIds: ["evidence-valid"], prerequisites: [], valuePropositions: ["SMB portfolio"],
-          risks: [], unknowns: [], targetTitles: ["Category Manager"],
-          recommendedCta: "Validate the relevant product track.", allowedInExternalEmail: true }],
+        cooperationPaths: this.options.cooperationPaths ?? [{ pathId: "path-var", pathType: "Direct Downstream Channel Supply", candidateRole: "VAR",
+          fitComponents: { roleStructureFit: 27, userStageAndSupplyFit: 22, productCustomerScenarioFit: 16,
+            procurementAndInfluence: 13, executionFeasibility: 8 },
+          findingIds: ["finding-path"], evidenceIds: ["evidence-valid"],
+          reason: "Direct supply fits the evidenced VAR role.", prerequisites: [], risks: [], unknowns: [],
+          allowedInExternalEmail: true }],
         selectedPathId: "path-var",
         dimensions: { productFamilyMatch: 23, customerAndScenarioOverlap: 14,
           positioningCompatibility: 9, cooperationPathAndBuyingInfluence: 13,
@@ -46,7 +49,8 @@ class FakeProvider implements AiProvider {
         ],
         confidence: 88, summary: "Evidence-grounded multi-role channel candidate.", reasons: ["Strong customer access"],
         risks: [], unknowns: ["Purchasing volume"], evidenceIds: ["evidence-valid", "invented-id"],
-        needsEscalation: false, warnings: [],
+        escalation: this.options.escalation ?? { required: false, expectedTotalScoreChange: 0, criticalStateChanges: [],
+          higherCapabilityCanResolve: false, reason: "" }, warnings: [],
       }] } as TOutput,
       modelVersion: request.modelVersion,
       promptVersion: request.promptVersion,
@@ -95,7 +99,7 @@ describe("LeadQualificationAgent", () => {
     expect(result.primaryRole).toBe("VAR");
     expect(result.evidenceIds).toEqual(["evidence-valid"]);
     expect(result.warnings).toContain("Model returned unsupported evidence IDs; they were removed.");
-    expect(provider.calls).toHaveLength(2);
+    expect(provider.calls).toHaveLength(1);
     expect(JSON.stringify(provider.calls[0].input)).not.toContain("providerScore");
   });
 
@@ -172,5 +176,30 @@ describe("LeadQualificationAgent", () => {
     const routineCalls = provider.calls.filter((call) => call.modelVersion === "deepseek-v4-flash");
     expect(routineCalls).toHaveLength(2);
     expect(routineCalls.every((call) => (call.input as { candidates: unknown[] }).candidates.length === 1)).toBe(true);
+  });
+
+  it("computes path FitScore in code and retains only the best path when all are below 65", async () => {
+    const path = (pathId: string, roleFit: number) => ({ pathId,
+      pathType: "Direct Downstream Channel Supply", candidateRole: "VAR",
+      fitComponents: { roleStructureFit: roleFit, userStageAndSupplyFit: 10,
+        productCustomerScenarioFit: 10, procurementAndInfluence: 5, executionFeasibility: 5 },
+      findingIds: ["finding-path"], evidenceIds: ["evidence-valid"], reason: `Path ${pathId}`,
+      prerequisites: [], risks: [], unknowns: [], allowedInExternalEmail: true });
+    const provider = new FakeProvider({ cooperationPaths: [path("lower", 10), path("higher", 20)] });
+    const [result] = await new LeadQualificationAgent(provider, { concurrency: 1 })
+      .evaluate([candidate], playbook, "DE", "Germany", "new-market");
+    expect(result.cooperationPaths).toHaveLength(1);
+    expect(result.cooperationPaths[0]).toMatchObject({ pathId: "higher", fitScore: 50, rank: 1 });
+    expect(result.cooperationPaths[0]).not.toHaveProperty("confidence");
+  });
+
+  it("does not duplicate a semantic escalation when routine and escalation models are identical", async () => {
+    const provider = new FakeProvider({ escalation: { required: true, expectedTotalScoreChange: 9,
+      criticalStateChanges: [], higherCapabilityCanResolve: true, reason: "Material score ambiguity." } });
+    const [result] = await new LeadQualificationAgent(provider, {
+      routineModel: "same-model", escalationModel: "same-model", concurrency: 1,
+    }).evaluate([candidate], playbook, "DE", "Germany", "new-market");
+    expect(provider.calls).toHaveLength(1);
+    expect(result.warnings[0]).toContain("identical");
   });
 });

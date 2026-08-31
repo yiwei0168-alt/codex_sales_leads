@@ -14,13 +14,12 @@ function modelOutput(productScore = 22): LeadAssessmentModelOutput {
   const dimensions = { productFamilyMatch: productScore, customerAndScenarioOverlap: 13,
     positioningCompatibility: 8, cooperationPathAndBuyingInfluence: 12,
     scaleAndChannelCoverage: 12, executionAndEnablement: 8, opportunityAndRisk: 8 };
-  const cooperationPaths = [{ pathId: "path-var-direct", pathType: "Direct Channel Supply" as const,
-    candidateRole: "VAR" as const, pathNodes: [{ actor: "Cudy" as const, role: "Brand" },
-      { actor: "Candidate" as const, role: "VAR" }, { actor: "Customer" as const, role: "SMB buyer" }],
-    supplyFlow: "Cudy supplies the VAR for SMB resale.", decisionRole: "Candidate selects the product offer.",
-    fitScore: 82, confidence: 88, rank: 1, evidenceIds: [evidenceId], prerequisites: [],
-    valuePropositions: ["SMB networking fit"], risks: [], unknowns: [], targetTitles: ["Category Manager"],
-    recommendedCta: "Validate the SMB assortment.", allowedInExternalEmail: true }];
+  const cooperationPaths = [{ pathId: "path-var-direct", pathType: "Direct Downstream Channel Supply" as const,
+    candidateRole: "VAR" as const,
+    fitComponents: { roleStructureFit: 25, userStageAndSupplyFit: 20, productCustomerScenarioFit: 16,
+      procurementAndInfluence: 12, executionFeasibility: 9 },
+    findingIds: [findingId], evidenceIds: [evidenceId], reason: "Direct supply fits the evidenced VAR role.",
+    prerequisites: [], risks: [], unknowns: [], allowedInExternalEmail: true }];
   return {
     candidateId: "lead-review-example",
     gates: { correctedIdentityUsable: "supported", companyExists: "supported",
@@ -34,7 +33,8 @@ function modelOutput(productScore = 22): LeadAssessmentModelOutput {
       findingIds: [findingId], evidenceIds: [evidenceId], confidence: 88,
     })),
     confidence: 88, summary: "Evidence-grounded independent assessment.", reasons: ["Relevant active networking sales."],
-    risks: [], unknowns: [], evidenceIds: [evidenceId], needsEscalation: false, warnings: [],
+    risks: [], unknowns: [], evidenceIds: [evidenceId], escalation: { required: false,
+      expectedTotalScoreChange: 0, criticalStateChanges: [], higherCapabilityCanResolve: false, reason: "" }, warnings: [],
   };
 }
 
@@ -73,7 +73,8 @@ function assessment(output = modelOutput()): LeadCandidateAssessment {
   return { ...output, eligible: true, roles: ["VAR", "Reseller"], primaryRole: "VAR",
     companyScaleClass: "Regional", researchDepth: "standard", recommendationPriority: "High",
     supplyModel: "Brand Direct", brandInvolvement: "Standard",
-    cooperationPaths: output.cooperationPaths.map((path, index) => ({ ...path, rank: path.rank ?? index + 1 })),
+    cooperationPaths: output.cooperationPaths.map((path, index) => ({ ...path,
+      fitScore: Object.values(path.fitComponents).reduce((sum, score) => sum + score, 0), rank: index + 1 })),
     accountTier: "KA", scoreRange: { lower: totalScore - 3, upper: totalScore + 3 },
     evidenceProfileAssessment: undefined, totalScore: Object.values(output.dimensions).reduce((sum, value) => sum + value, 0),
     model: "deepseek-primary", promptVersion: "primary-v3", escalated: false, scoringStatus: "completed" };
@@ -93,7 +94,7 @@ describe("LeadAssessmentReviewAgent", () => {
     primary.gates.networkingRelevant = "conflicting";
     const triggers = assessmentReviewTriggers({ candidate: { ...candidate, evidence: candidate.evidence.slice(0, 1) },
       assessment: primary, randomAuditPercent: 0 });
-    expect(triggers).toEqual(expect.arrayContaining(["deterministic-conflict", "high-score-sparse-evidence"]));
+    expect(triggers).toContain("deterministic-conflict");
   });
 
   it("does not spend an independent review on a non-actionable research hold with only generic warnings", () => {
@@ -110,12 +111,12 @@ describe("LeadAssessmentReviewAgent", () => {
       randomAuditPercent: 0 })).toEqual([]);
   });
 
-  it("reviews an actionable strategic candidate when confidence is low", () => {
+  it("does not escalate solely because confidence is low", () => {
     const primary = assessment();
     primary.confidence = 70;
     primary.companyScaleClass = "Global/Enterprise";
     const triggers = assessmentReviewTriggers({ candidate, assessment: primary, randomAuditPercent: 0 });
-    expect(triggers).toContain("low-confidence");
+    expect(triggers).not.toContain("low-confidence");
   });
 
   it("does not independently review an already-resolved routine escalation provenance warning", () => {
@@ -128,7 +129,7 @@ describe("LeadAssessmentReviewAgent", () => {
   it("does not treat clearly subordinate alternative paths as material", () => {
     const primary = assessment();
     primary.cooperationPaths.push({ ...primary.cooperationPaths[0], pathId: "path-referral",
-      pathType: "Referral/Introduction", fitScore: 55, rank: 2 });
+      pathType: "Other", fitScore: 55, rank: 2 });
     const triggers = assessmentReviewTriggers({ candidate, assessment: primary, randomAuditPercent: 0 });
     expect(triggers).not.toContain("material-alternative-paths");
   });

@@ -85,7 +85,7 @@ class OpenAiLeadReviewInvoker implements LeadReviewInvoker {
         "Independently assess one Cudy sales lead from the frozen atomic fact ledger and public evidence.",
         "You are blind to the primary score and discovery provider. Do not infer missing facts.",
         "Use unknown for missing proof, not-supported only for affirmative contradiction, and conflicting for disagreement.",
-        "Use role-specific customer and scenario criteria, best enabled product track, same-primary-role scale peers and every viable cooperation path.",
+        "Use role-specific customer and scenario criteria, best enabled product track, same-primary-role scale peers and at most two viable paths from the five-path taxonomy.",
         "Return exactly seven evidence-linked dimension rationales and use only supplied current-run finding/evidence IDs.",
       ].join("\n"),
       input: JSON.stringify(input),
@@ -139,7 +139,7 @@ export class DeepSeekLeadReviewInvoker implements LeadReviewInvoker {
           "Independently assess one Cudy sales lead from the frozen atomic fact ledger and public evidence.",
           "You are blind to the primary score and discovery provider. Do not infer missing facts.",
           "Use unknown for missing proof, not-supported only for affirmative contradiction, and conflicting for disagreement.",
-          "Use role-specific customer and scenario criteria, best enabled product track, same-primary-role scale peers and every viable cooperation path.",
+          "Use role-specific customer and scenario criteria, best enabled product track, same-primary-role scale peers and at most two viable paths from the five-path taxonomy.",
           "Return exactly seven evidence-linked dimension rationales and use only supplied current-run finding/evidence IDs.",
         ],
         payload: input,
@@ -182,40 +182,21 @@ function stableAuditBucket(candidateId: string): number {
 export function assessmentReviewTriggers(options: {
   candidate: CorrectedLeadWorkflowCandidate;
   assessment: LeadCandidateAssessment;
+  /** Offline callers may still pass this for comparison reports; production routing ignores it. */
   boundaryScore?: number;
   randomAuditPercent: number;
 }): string[] {
-  const { candidate, assessment, boundaryScore, randomAuditPercent } = options;
+  const { candidate, assessment, randomAuditPercent } = options;
   const triggers: string[] = [];
-  const routing = ACTIVE_LEAD_COST_QUALITY_POLICY.reviewRouting;
-  const actionable = assessment.eligible || assessment.totalScore >= routing.actionableScoreThreshold
-    || candidate.userNominated === true || ["Global/Enterprise", "National"].includes(assessment.companyScaleClass);
   if (Object.values(assessment.gates).some((state) => state === "conflicting")) triggers.push("deterministic-conflict");
-  if (boundaryScore !== undefined && Math.abs(assessment.totalScore - boundaryScore) <= routing.selectionBoundaryPoints) {
-    triggers.push("selection-boundary");
-  }
-  if (actionable && (candidate.correction.confidence < routing.lowConfidenceThreshold
-    || assessment.confidence < routing.lowConfidenceThreshold)) triggers.push("low-confidence");
   if (candidate.correction.primaryRole === "Hybrid" || candidate.correction.primaryRole === "Unresolved") {
     triggers.push("primary-role-unresolved");
   }
-  const rankedPaths = [...assessment.cooperationPaths].sort((left, right) => right.fitScore - left.fitScore);
-  if (actionable && new Set(rankedPaths.map((path) => path.pathType)).size > 1 && rankedPaths[1]
-    && rankedPaths[0].fitScore - rankedPaths[1].fitScore <= routing.materialPathFitGap) {
-    triggers.push("material-alternative-paths");
-  }
-  if (actionable && candidate.correction.identityChanged) triggers.push("identity-changed");
-  const materialCorrectionWarning = candidate.correction.warnings.some((warning) =>
-    /failed|conflict|invalid|unsupported evidence|downgraded|retained|requires review|unresolved/i.test(warning));
-  if (actionable && (candidate.evidenceWarnings.length > 0 || materialCorrectionWarning)) triggers.push("evidence-warning");
   if (candidate.correction.findings.some((finding) => finding.status === "conflicting")) triggers.push("conflicting-facts");
-  const claimEvidenceCount = candidate.evidence.filter((item) =>
-    isCurrentLeadScoringEvidence(item, candidate.evidenceSnapshotRunId)).length;
-  if (assessment.totalScore >= 80 && claimEvidenceCount < 2) triggers.push("high-score-sparse-evidence");
   const unresolvedScoringWarning = assessment.warnings.some((warning) =>
     !/^Routine (?:assessment requested|batch failed):?/i.test(warning)
     && /requires review|conflict/i.test(warning));
-  if (actionable && unresolvedScoringWarning) {
+  if (unresolvedScoringWarning) {
     triggers.push("scoring-anomaly");
   }
   if (randomAuditPercent > 0 && stableAuditBucket(candidate.candidateId) < randomAuditPercent) triggers.push("random-audit");
@@ -231,7 +212,7 @@ function publicAssessment(assessment: LeadCandidateAssessment): LeadAssessmentMo
     researchDepth: assessment.researchDepth,
     supplyModel: assessment.supplyModel,
     brandInvolvement: assessment.brandInvolvement,
-    cooperationPaths: assessment.cooperationPaths,
+    cooperationPaths: assessment.cooperationPaths.map(({ fitScore: _fitScore, rank: _rank, ...path }) => path),
     selectedPathId: assessment.selectedPathId,
     dimensions: assessment.dimensions,
     dimensionRationales: assessment.dimensionRationales,
@@ -241,7 +222,8 @@ function publicAssessment(assessment: LeadCandidateAssessment): LeadAssessmentMo
     risks: assessment.risks,
     unknowns: assessment.unknowns,
     evidenceIds: assessment.evidenceIds,
-    needsEscalation: false,
+    escalation: { required: false, expectedTotalScoreChange: 0, criticalStateChanges: [],
+      higherCapabilityCanResolve: false, reason: "Already assessed." },
     warnings: assessment.warnings,
   };
 }
@@ -418,9 +400,6 @@ export class LeadAssessmentReviewAgent {
     }> {
     this.usageRecords = [];
     const candidateById = new Map(candidates.map((candidate) => [candidate.candidateId, candidate]));
-    const ranked = assessments.filter((assessment) => assessment.eligible && assessment.scoringStatus === "completed")
-      .sort((left, right) => right.totalScore - left.totalScore);
-    const boundaryScore = plan.targetCount < ranked.length ? ranked[plan.targetCount - 1]?.totalScore : undefined;
     const output = new Array<{ assessment: LeadCandidateAssessment; review: LeadAssessmentReview }>(assessments.length);
     let cursor = 0;
     const worker = async () => {
@@ -430,7 +409,7 @@ export class LeadAssessmentReviewAgent {
         const primary = assessments[index];
         const candidate = candidateById.get(primary.candidateId);
         if (!candidate) throw new Error(`Missing corrected candidate ${primary.candidateId} during assessment review`);
-        const triggers = assessmentReviewTriggers({ candidate, assessment: primary, boundaryScore,
+        const triggers = assessmentReviewTriggers({ candidate, assessment: primary,
           randomAuditPercent: this.randomAuditPercent });
         if (triggers.length === 0) {
           output[index] = { assessment: primary, review: {

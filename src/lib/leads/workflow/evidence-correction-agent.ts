@@ -20,7 +20,7 @@ import {
   type LeadWorkflowCandidate,
 } from "./types";
 
-const PROMPT_VERSION = "lead-evidence-correction-v4-agent-primary-role";
+const PROMPT_VERSION = "lead-evidence-correction-v5-material-escalation";
 
 interface CorrectionRequest {
   instructions: string[];
@@ -163,10 +163,8 @@ function needsSupplement(candidate: LeadWorkflowCandidate): boolean {
   const evidenceQuality = assessLeadEvidenceQuality({ candidateDomain: candidate.domain,
     officialUrl: candidate.officialWebsiteUrl, evidence: candidate.evidence });
   const roles = deterministicRoles(candidate.evidence, candidate.evidenceSnapshotRunId);
-  const families = roleFamilies(roles);
-  return candidate.evidenceWarnings.length > 0 || claimEvidence.length === 0 || !evidenceQuality.identityConsistent
-    || !assessNetworkingRelevanceEvidence(text).demonstrated || roles.length === 0
-    || !families.includes(candidate.queryFamily);
+  return claimEvidence.length === 0 || !evidenceQuality.identityConsistent
+    || !assessNetworkingRelevanceEvidence(text).demonstrated || roles.length === 0;
 }
 
 export class LeadEvidenceCorrectionAgent {
@@ -203,9 +201,9 @@ export class LeadEvidenceCorrectionAgent {
         try {
           const response = await this.searchProvider.search({
             query: `\"${candidate.companyName}\" ${plan.countryName} official website router Wi-Fi access point switch distributor reseller installer system integrator ISP`,
-            searchDepth: "advanced",
-            maxResults: 8,
-            includeRawContent: true,
+            searchDepth: "basic",
+            maxResults: 5,
+            includeRawContent: false,
           }, AbortSignal.timeout(45_000));
           const added = response.results.flatMap((item) => {
             const evidence = supplementalEvidence(item, candidate.domain, candidate.evidenceSnapshotRunId);
@@ -251,6 +249,7 @@ export class LeadEvidenceCorrectionAgent {
         "Return evidence IDs supporting identity, target-country presence, active-networking involvement, roles and cooperation path. Missing public proof is an unknown, not a negative claim.",
         "Return atomic findings for identity, country presence, active networking, every asserted role, relevant product families, brand relationships, commercial actions and cooperation path. Each finding must have its own status and evidence IDs.",
         "Use not-supported only when supplied evidence affirmatively contradicts a claim. Use unknown when evidence is absent or acquisition failed, and conflicting when supplied sources disagree.",
+        "Request a higher-capability model only when it can resolve the issue and is expected to change the eventual total score by at least 8 points or change a critical identity, eligibility, primary-role, existence, country-presence or networking-relevance state. Confidence, original search-lane mismatch and generic warnings alone are not escalation reasons.",
         "Do not score lead value. Do not decide eligibility or cooperation path. Your duties are evidence, entity correction, supported-role classification and primary-business-role analysis.",
       ],
       market: { countryCode: plan.countryCode, countryName: plan.countryName, objective: plan.objective },
@@ -426,10 +425,18 @@ export class LeadEvidenceCorrectionAgent {
       return Promise.all(candidates.map((candidate) => {
         const value = byId.get(candidate.candidateId);
         if (!value) return this.evaluateOneEscalated(candidate, plan, "Routine correction omitted the candidate.");
-        if (value.needsEscalation || value.confidence < 60 || candidate.evidenceWarnings.length > 0) {
+        const materialEscalation = value.escalation.required && value.escalation.higherCapabilityCanResolve
+          && (value.escalation.expectedTotalScoreChange >= 8 || value.escalation.criticalStateChanges.length > 0);
+        if (materialEscalation && this.routineModel !== this.escalationModel) {
           return this.evaluateOneEscalated(candidate, plan, "Routine correction requested ambiguity escalation.");
         }
-        return this.normalize(value, candidate, response, false);
+        const normalized = this.normalize(value, candidate, response, false);
+        return materialEscalation && this.routineModel === this.escalationModel
+          ? { ...normalized, correction: { ...normalized.correction, warnings: [
+            "Escalation was skipped because the configured routine and escalation models are identical.",
+            ...normalized.correction.warnings,
+          ] } }
+          : normalized;
       }));
     } catch (error) {
       return Promise.all(candidates.map((candidate) => this.evaluateOneEscalated(

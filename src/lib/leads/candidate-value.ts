@@ -52,11 +52,10 @@ export function selectResearchDepth(input: {
   scaleClass: CompanyScaleClass;
   strongRelevanceSignal: boolean;
   userNominated: boolean;
-  topNBoundary: boolean;
   hasConflict: boolean;
 }): LeadResearchDepth {
   if (["Global/Enterprise", "National"].includes(input.scaleClass) || input.strongRelevanceSignal
-    || input.userNominated || input.topNBoundary || input.hasConflict) return "deep";
+    || input.userNominated || input.hasConflict) return "deep";
   if (input.scaleClass === "Local/Small" && !input.strongRelevanceSignal) return "limited";
   return "standard";
 }
@@ -73,10 +72,11 @@ export function salesAccountTier(input: {
   scaleAndChannelCoverage: number;
   cooperationPathAndBuyingInfluence: number;
   selectedPath?: CooperationPathCandidate;
+  primaryRole: string;
   eligibilityStatus: string;
   scaleClass: CompanyScaleClass;
 }): SalesAccountTier {
-  const tier1 = input.selectedPath?.pathType === "Direct Distribution";
+  const tier1 = input.primaryRole === "Distributor" || input.primaryRole === "VAD";
   if (input.eligibilityStatus !== "eligible") return tier1 ? "Standard Distributor" : "Standard";
   const strategic = input.score >= ACTIVE_LEAD_SCORING_POLICY.accountTierPolicy.strategicThreshold
     && input.scaleAndChannelCoverage >= 12 && input.cooperationPathAndBuyingInfluence >= 11;

@@ -10,9 +10,8 @@ const eligibilityStatusSchema = z.enum(["eligible", "research-required", "inelig
   "insufficient-evidence-for-recommendation"]);
 const companyScaleClassSchema = z.enum(["Global/Enterprise", "National", "Regional", "Local/Small", "Unknown"]);
 const researchDepthSchema = z.enum(["deep", "standard", "limited"]);
-const cooperationPathTypeSchema = z.enum(["Direct Distribution", "Direct Channel Supply",
-  "Distributor-Supplied Channel", "Direct Retail/E-commerce", "ISP/Operator Supply",
-  "Project/Specification Partnership", "Co-sell/Co-supply", "Referral/Introduction", "OEM/ODM"]);
+const cooperationPathTypeSchema = z.enum(["Direct Tier-1 Supply", "Distributor-Mediated Supply",
+  "Direct Downstream Channel Supply", "OEM/ODM", "Other"]);
 const dimensionNameSchema = z.enum([
   "productFamilyMatch", "customerAndScenarioOverlap", "positioningCompatibility",
   "cooperationPathAndBuyingInfluence", "scaleAndChannelCoverage", "executionAndEnablement", "opportunityAndRisk",
@@ -59,7 +58,15 @@ export const leadCorrectionModelSchema = z.object({
   findings: z.array(leadEvidenceFindingModelSchema).min(1).max(30),
   reasons: z.array(z.string().min(2).max(300)).min(1).max(12),
   confidence: z.number().min(0).max(100),
-  needsEscalation: z.boolean(),
+  escalation: z.object({
+    required: z.boolean(),
+    expectedTotalScoreChange: z.number().min(0).max(100),
+    criticalStateChanges: z.array(z.enum([
+      "identity", "eligibility", "primary-role", "company-existence", "country-presence", "networking-relevance",
+    ])).max(6),
+    higherCapabilityCanResolve: z.boolean(),
+    reason: z.string().max(300),
+  }),
   warnings: z.array(z.string().max(300)).max(12),
 });
 
@@ -89,23 +96,30 @@ const cooperationPathSchema = z.object({
   pathId: z.string().min(2).max(80),
   pathType: cooperationPathTypeSchema,
   candidateRole: channelRoleSchema,
-  pathNodes: z.array(z.object({
-    actor: z.enum(["Cudy", "Candidate", "Intermediary", "Customer"]),
-    role: z.string().min(2).max(500),
-  })).min(2).max(8),
-  supplyFlow: z.string().min(2).max(500),
-  decisionRole: z.string().min(2).max(1_000),
-  fitScore: z.number().min(0).max(100),
-  confidence: z.number().min(0).max(100),
-  rank: z.number().int().min(1).max(20).nullable(),
+  fitComponents: z.object({
+    roleStructureFit: z.number().min(0).max(30),
+    userStageAndSupplyFit: z.number().min(0).max(25),
+    productCustomerScenarioFit: z.number().min(0).max(20),
+    procurementAndInfluence: z.number().min(0).max(15),
+    executionFeasibility: z.number().min(0).max(10),
+  }),
+  findingIds: z.array(z.string()).max(10),
   evidenceIds: z.array(z.string()).max(20),
-  prerequisites: z.array(z.string().min(2).max(300)).max(10),
-  valuePropositions: z.array(z.string().min(2).max(300)).max(10),
-  risks: z.array(z.string().min(2).max(300)).max(10),
-  unknowns: z.array(z.string().min(2).max(300)).max(10),
-  targetTitles: z.array(z.string().min(2).max(160)).max(10),
-  recommendedCta: z.string().min(2).max(500),
+  reason: z.string().min(2).max(300),
+  prerequisites: z.array(z.string().min(2).max(180)).max(4),
+  risks: z.array(z.string().min(2).max(180)).max(4),
+  unknowns: z.array(z.string().min(2).max(180)).max(4),
   allowedInExternalEmail: z.boolean(),
+});
+
+const escalationSchema = z.object({
+  required: z.boolean(),
+  expectedTotalScoreChange: z.number().min(0).max(100),
+  criticalStateChanges: z.array(z.enum([
+    "identity", "eligibility", "primary-role", "company-existence", "country-presence", "networking-relevance",
+  ])).max(6),
+  higherCapabilityCanResolve: z.boolean(),
+  reason: z.string().max(300),
 });
 
 export const leadAssessmentModelSchema = z.object({
@@ -116,24 +130,24 @@ export const leadAssessmentModelSchema = z.object({
   researchDepth: researchDepthSchema,
   supplyModel: z.string().min(1).max(2_000),
   brandInvolvement: z.string().min(1).max(2_000),
-  cooperationPaths: z.array(cooperationPathSchema).max(8),
+  cooperationPaths: z.array(cooperationPathSchema).max(2),
   selectedPathId: z.string().max(80).nullable(),
   dimensions: dimensionsSchema,
   dimensionRationales: z.array(z.object({
     dimension: dimensionNameSchema,
     score: z.number().min(0).max(25),
-    reason: z.string().min(2).max(1_500),
+    reason: z.string().min(2).max(400),
     findingIds: z.array(z.string()).max(20),
     evidenceIds: z.array(z.string()).max(20),
     confidence: z.number().min(0).max(100),
   })).min(7).max(7),
   confidence: z.number().min(0).max(100),
-  summary: z.string().min(8).max(800),
-  reasons: z.array(z.string().min(2).max(300)).min(1).max(12),
-  risks: z.array(z.string().min(2).max(300)).max(12),
-  unknowns: z.array(z.string().min(2).max(200)).max(12),
+  summary: z.string().min(8).max(400),
+  reasons: z.array(z.string().min(2).max(220)).min(1).max(6),
+  risks: z.array(z.string().min(2).max(220)).max(6),
+  unknowns: z.array(z.string().min(2).max(180)).max(6),
   evidenceIds: z.array(z.string()).max(30),
-  needsEscalation: z.boolean(),
+  escalation: escalationSchema,
   warnings: z.array(z.string().max(300)).max(12),
 });
 

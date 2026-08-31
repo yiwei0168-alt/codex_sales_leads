@@ -24,17 +24,19 @@ describe("candidate value policy", () => {
   it("never assigns KA to a tier-1 distribution path", () => {
     const accountTier = salesAccountTier({ score: 95, scaleAndChannelCoverage: 15,
       cooperationPathAndBuyingInfluence: 15, eligibilityStatus: "eligible", scaleClass: "Global/Enterprise",
-      selectedPath: { pathId: "p1", pathType: "Direct Distribution", candidateRole: "Distributor", pathNodes: [],
-        supplyFlow: "Cudy to distributor", decisionRole: "Vendor onboarding", fitScore: 95, confidence: 90, rank: 1,
-        evidenceIds: [], prerequisites: [], valuePropositions: [], risks: [], unknowns: [], targetTitles: [],
-        recommendedCta: "Discuss distribution", allowedInExternalEmail: true } });
+      primaryRole: "Distributor",
+      selectedPath: { pathId: "p1", pathType: "Direct Tier-1 Supply", candidateRole: "Distributor",
+        fitComponents: { roleStructureFit: 30, userStageAndSupplyFit: 25, productCustomerScenarioFit: 20,
+          procurementAndInfluence: 15, executionFeasibility: 5 }, fitScore: 95, rank: 1,
+        findingIds: [], evidenceIds: [], reason: "Direct distributor onboarding.", prerequisites: [],
+        risks: [], unknowns: [], allowedInExternalEmail: true } });
     expect(accountTier).toBe("Strategic Distributor");
   });
 
   it("routes large or strongly relevant candidates to deep research", () => {
     expect(selectResearchDepth({ scaleClass: "Global/Enterprise", strongRelevanceSignal: false,
-      userNominated: false, topNBoundary: false, hasConflict: false })).toBe("deep");
+      userNominated: false, hasConflict: false })).toBe("deep");
     expect(selectResearchDepth({ scaleClass: "Local/Small", strongRelevanceSignal: true,
-      userNominated: false, topNBoundary: false, hasConflict: false })).toBe("deep");
+      userNominated: false, hasConflict: false })).toBe("deep");
   });
 });

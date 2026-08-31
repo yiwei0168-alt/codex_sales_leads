@@ -43,7 +43,8 @@ class FakeCorrectionProvider implements AiProvider {
           ] : []),
         ],
         reasons: ["Official evidence shows Wi-Fi installation and network integration."],
-        confidence: 92, needsEscalation: false, warnings: [] }] } as TOutput,
+        confidence: 92, escalation: { required: false, expectedTotalScoreChange: 0,
+          criticalStateChanges: [], higherCapabilityCanResolve: false, reason: "" }, warnings: [] }] } as TOutput,
       modelVersion: request.modelVersion, promptVersion: request.promptVersion, latencyMs: 5, warnings: [],
     };
   }
@@ -121,7 +122,8 @@ describe("LeadEvidenceCorrectionAgent", () => {
       findings: [{ kind: "distributor_role", statement: "The company supplies downstream resellers.",
         status: "confirmed", roles: ["Distributor"], evidenceIds, confidence: 90, notes: [] }],
       reasons: ["Current public evidence supports distribution."], confidence: 90,
-      needsEscalation: false, warnings: [],
+      escalation: { required: false, expectedTotalScoreChange: 0,
+        criticalStateChanges: [], higherCapabilityCanResolve: false, reason: "" }, warnings: [],
     });
     expect(parsed.success).toBe(true);
   });

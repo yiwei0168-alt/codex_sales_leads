@@ -16,9 +16,8 @@ export type ChannelRole =
 export type AccountTier = "Strategic Distributor" | "Priority Distributor" | "Standard Distributor"
   | "Long-tail Distributor" | "KA" | "Priority" | "Standard" | "Long-tail";
 export type PrimaryBusinessRole = ChannelRole | "Hybrid" | "Unresolved";
-export type CooperationPathType = "Direct Distribution" | "Direct Channel Supply"
-  | "Distributor-Supplied Channel" | "Direct Retail/E-commerce" | "ISP/Operator Supply"
-  | "Project/Specification Partnership" | "Co-sell/Co-supply" | "Referral/Introduction" | "OEM/ODM";
+export type CooperationPathType = "Direct Tier-1 Supply" | "Distributor-Mediated Supply"
+  | "Direct Downstream Channel Supply" | "OEM/ODM" | "Other";
 export type SupplyModel =
   | "Distributor Supply"
   | "Brand Direct"
