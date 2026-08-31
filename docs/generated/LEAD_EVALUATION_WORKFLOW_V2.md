@@ -656,7 +656,7 @@ flowchart TD
 | `src/lib/leads/workflow/jobs.ts` | `73b446cdbf949c125a4ddd248cbf08ec01b5d780e26f756250d34a997bfd5c87` |
 | `src/lib/leads/workflow/rag-context.ts` | `d34f47db8308c4d89b6b81dfdcda530757b3af35a5d678725488335af127f410` |
 | `src/lib/leads/workflow/playbook.ts` | `48badb9d1b4c02f6eea2836ddbe8bfd1a25e0a99a4d20f353044775758f828f6` |
-| `src/lib/leads/workflow/discovery.ts` | `8581d8c32beddf0b7197e45f1c4d6187782d8f0274330b2c643b4f24196e3c1e` |
+| `src/lib/leads/workflow/discovery.ts` | `103fa1036b4bf0e67f5f53521cdb5fb715a94b5fdb0eebc78d310b52910742eb` |
 | `src/lib/leads/global-search.ts` | `e152db8e1a99eb0d360d5d109094b83a6ef74f930ad2f2e1e4f61ec38eea9b9d` |
 | `src/lib/leads/workflow/evidence-correction-agent.ts` | `6219791373be29b531a25d628e9965669b03205660b3f419c65b9bd5ff559308` |
 | `src/lib/leads/workflow/evidence-packet.ts` | `c3b646b9a78e0584f267ddec5c97dc6bbfc4abc01a39ca4de9795d3c480ac005` |
@@ -665,7 +665,7 @@ flowchart TD
 | `src/providers/deepseek.ts` | `986b13878cece7808a1ef6872cac1a96a5662ceb1b03acebeaef79749f76aa77` |
 | `src/providers/tavily.ts` | `58789a0700866dafa68907226537bd36db0278efffa7a428754f12d4bd376e43` |
 | `src/lib/leads/workflow/handoff-assembler.ts` | `58b92f337c05b7e1b62b28db27eb7d6ed1b5bcd95272926868f3c4a1df3a680c` |
-| `src/lib/leads/workflow/persistence.ts` | `657f9db353d4af29759876cfddaeea30eee1095a5ff712fc2daef40ece9692a1` |
+| `src/lib/leads/workflow/persistence.ts` | `ccf2f6fea5815d03573ad41ddfaef1d6e593fb12ffcf1df4aaa53acbbb5eecee` |
 | `src/lib/sales/repository.ts` | `3f3a9ca6f0b98b43f9609091b6ce93a046f336246b71e46d53a3525fd9e7ba86` |
 | `src/lib/outreach/graph.ts` | `97c7377dbc5eaaabe150f42e10811e599fdd65f028424f4c415927b5045b2590` |
 | `src/lib/outreach/kimi-agent.ts` | `e2e219fb192f8cb9593b9dd3d2413205f88e9664324e1b8b8844e1101db9981c` |
