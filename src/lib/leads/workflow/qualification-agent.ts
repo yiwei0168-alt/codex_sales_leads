@@ -15,6 +15,7 @@ import type {
   LeadCandidateAssessment,
   CorrectedLeadWorkflowCandidate,
   LeadMarketPlaybook,
+  WorkflowModelUsage,
 } from "./types";
 
 const PROMPT_VERSION = "lead-value-v5-role-aware-five-paths";
@@ -391,22 +392,30 @@ export class LeadQualificationAgent {
     };
   }
 
-  private async invokeBatch(candidates: CorrectedLeadWorkflowCandidate[], playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string, modelVersion: string) {
+  private async invokeBatch(candidates: CorrectedLeadWorkflowCandidate[], playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string, modelVersion: string,
+    usageRecords: WorkflowModelUsage[]) {
     const response = await this.provider.execute<LeadAssessmentRequest, unknown>(
       this.request(candidates, playbook, countryCode, countryName, objective, modelVersion),
       AbortSignal.timeout(modelVersion === this.escalationModel ? 120_000 : 75_000),
     );
+    usageRecords.push({ stage: "qualification", requestedModel: response.requestedModelVersion ?? modelVersion,
+      actualModel: response.modelVersion, providerId: response.actualProviderId,
+      promptTokens: response.usage?.promptTokens ?? 0, completionTokens: response.usage?.completionTokens ?? 0,
+      reasoningTokens: response.usage?.reasoningTokens ?? 0, totalTokens: response.usage?.totalTokens ?? 0,
+      latencyMs: response.latencyMs, fallbackUsed: Boolean(response.requestedModelVersion
+        && (response.requestedModelVersion !== response.modelVersion || response.actualProviderId !== "deepseek")) });
     const parsed = leadAssessmentBatchSchema.parse(response.output);
     return { response, parsed };
   }
 
-  private async evaluateBatch(candidates: CorrectedLeadWorkflowCandidate[], playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string): Promise<LeadCandidateAssessment[]> {
+  private async evaluateBatch(candidates: CorrectedLeadWorkflowCandidate[], playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string,
+    usageRecords: WorkflowModelUsage[]): Promise<LeadCandidateAssessment[]> {
     try {
-      const routine = await this.invokeBatch(candidates, playbook, countryCode, countryName, objective, this.routineModel);
+      const routine = await this.invokeBatch(candidates, playbook, countryCode, countryName, objective, this.routineModel, usageRecords);
       const values = new Map(routine.parsed.assessments.map((item) => [item.candidateId, item]));
       return await Promise.all(candidates.map(async (candidate) => {
         const value = values.get(candidate.candidateId);
-        if (!value) return this.evaluateOneEscalated(candidate, playbook, countryCode, countryName, objective, "Routine batch omitted the candidate.");
+        if (!value) return this.evaluateOneEscalated(candidate, playbook, countryCode, countryName, objective, "Routine batch omitted the candidate.", usageRecords);
         const allowOemOdm = /\b(?:oem|odm|private[ -]?label|manufactur(?:e|ing))\b/i.test(objective);
         const normalized = normalizeAssessment(value, candidate, routine.response, false, allowOemOdm);
         if (requiresEscalation(candidate, normalized, value)) {
@@ -416,24 +425,31 @@ export class LeadQualificationAgent {
               ...normalized.warnings,
             ] };
           }
-          return this.evaluateOneEscalated(candidate, playbook, countryCode, countryName, objective, "Routine assessment requested evidence-conflict escalation.");
+          return this.evaluateOneEscalated(candidate, playbook, countryCode, countryName, objective, "Routine assessment requested evidence-conflict escalation.", usageRecords);
         }
         return normalized;
       }));
     } catch (error) {
       return Promise.all(candidates.map((candidate) => this.evaluateOneEscalated(
         candidate, playbook, countryCode, countryName, objective,
-        `Routine batch failed: ${error instanceof Error ? error.message : String(error)}`,
+        `Routine batch failed: ${error instanceof Error ? error.message : String(error)}`, usageRecords,
       )));
     }
   }
 
-  private async evaluateOneEscalated(candidate: CorrectedLeadWorkflowCandidate, playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string, reason: string): Promise<LeadCandidateAssessment> {
+  private async evaluateOneEscalated(candidate: CorrectedLeadWorkflowCandidate, playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string, reason: string,
+    usageRecords: WorkflowModelUsage[]): Promise<LeadCandidateAssessment> {
     try {
       const escalation = await this.provider.execute<LeadAssessmentRequest, unknown>(
         this.request([candidate], playbook, countryCode, countryName, objective, this.escalationModel),
         AbortSignal.timeout(120_000),
       );
+      usageRecords.push({ stage: "qualification", requestedModel: escalation.requestedModelVersion ?? this.escalationModel,
+        actualModel: escalation.modelVersion, providerId: escalation.actualProviderId,
+        promptTokens: escalation.usage?.promptTokens ?? 0, completionTokens: escalation.usage?.completionTokens ?? 0,
+        reasoningTokens: escalation.usage?.reasoningTokens ?? 0, totalTokens: escalation.usage?.totalTokens ?? 0,
+        latencyMs: escalation.latencyMs, fallbackUsed: Boolean(escalation.requestedModelVersion
+          && (escalation.requestedModelVersion !== escalation.modelVersion || escalation.actualProviderId !== "deepseek")) });
       const raw = typeof escalation.output === "object" && escalation.output !== null && "assessments" in escalation.output
         ? (escalation.output as { assessments?: unknown[] }).assessments?.[0]
         : escalation.output;
@@ -446,7 +462,8 @@ export class LeadQualificationAgent {
     }
   }
 
-  async evaluate(candidates: CorrectedLeadWorkflowCandidate[], playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string): Promise<LeadCandidateAssessment[]> {
+  private async evaluateWithCollector(candidates: CorrectedLeadWorkflowCandidate[], playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string,
+    usageRecords: WorkflowModelUsage[]): Promise<LeadCandidateAssessment[]> {
     const batches: CorrectedLeadWorkflowCandidate[][] = [];
     let pending: CorrectedLeadWorkflowCandidate[] = [];
     for (const candidate of candidates) {
@@ -469,10 +486,21 @@ export class LeadQualificationAgent {
       while (true) {
         const index = cursor++;
         if (index >= batches.length) return;
-        results[index] = await agent.evaluateBatch(batches[index], playbook, countryCode, countryName, objective);
+        results[index] = await agent.evaluateBatch(batches[index], playbook, countryCode, countryName, objective, usageRecords);
       }
     }
     await Promise.all(Array.from({ length: Math.min(this.concurrency, batches.length) }, () => worker(this)));
     return results.flat();
+  }
+
+  async evaluate(candidates: CorrectedLeadWorkflowCandidate[], playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string): Promise<LeadCandidateAssessment[]> {
+    return this.evaluateWithCollector(candidates, playbook, countryCode, countryName, objective, []);
+  }
+
+  async evaluateWithUsage(candidates: CorrectedLeadWorkflowCandidate[], playbook: LeadMarketPlaybook,
+    countryCode: string, countryName: string, objective: string) {
+    const usage: WorkflowModelUsage[] = [];
+    const assessments = await this.evaluateWithCollector(candidates, playbook, countryCode, countryName, objective, usage);
+    return { assessments, usage };
   }
 }

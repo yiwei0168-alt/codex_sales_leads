@@ -13,6 +13,7 @@ import { buildLeadMarketPlaybook } from "./playbook";
 import { LeadQualificationAgent } from "./qualification-agent";
 import { retrieveLeadRagContext } from "./rag-context";
 import { retrieveCooperationPathMemory } from "../path-memory";
+import { completedStageMetric } from "./workflow-telemetry";
 import type {
   CorrectedLeadWorkflowCandidate,
   LeadCandidateAssessment,
@@ -24,6 +25,7 @@ import type {
   LeadWorkflowPhase,
   LeadWorkflowResult,
   LeadWorkflowState,
+  WorkflowModelUsage,
 } from "./types";
 
 const WorkflowAnnotation = Annotation.Root({
@@ -42,6 +44,8 @@ const WorkflowAnnotation = Annotation.Root({
   assessmentReviews: Annotation<LeadAssessmentReview[]>(),
   handoffs: Annotation<LeadDevelopmentHandoff[]>(),
   creditsUsed: Annotation<number>(),
+  modelUsage: Annotation<WorkflowModelUsage[]>(),
+  stageMetrics: Annotation<LeadWorkflowState["stageMetrics"]>(),
   warnings: Annotation<string[]>(),
   result: Annotation<LeadWorkflowResult | undefined>(),
 });
@@ -51,8 +55,13 @@ export interface LeadWorkflowDependencies {
   buildPlaybook: typeof buildLeadMarketPlaybook;
   discover: typeof discoverLeadCandidates;
   collectEvidence: typeof collectLeadEvidence;
-  correctionAgent: Pick<LeadEvidenceCorrectionAgent, "correct">;
-  qualificationAgent: Pick<LeadQualificationAgent, "evaluate">;
+  correctionAgent: { correct(candidates: LeadWorkflowCandidate[], plan: LeadSearchPlan): Promise<{
+    candidates: CorrectedLeadWorkflowCandidate[];
+    creditsUsed: number;
+    usage?: WorkflowModelUsage[];
+    warnings: string[];
+  }> };
+  qualificationAgent: Pick<LeadQualificationAgent, "evaluate"> & Partial<Pick<LeadQualificationAgent, "evaluateWithUsage">>;
   assessmentReviewAgent: Pick<LeadAssessmentReviewAgent, "review">;
   handoffAssembler: Pick<LeadHandoffAssembler, "assemble">;
   persist: typeof persistLeadWorkflowResult;
@@ -84,6 +93,7 @@ export function buildLeadWorkflowGraph(
 ) {
   const graph = new StateGraph(WorkflowAnnotation)
     .addNode("retrieve_knowledge", async (state) => {
+      const startedAt = Date.now();
       await phase(dependencies, state, "retrieving-knowledge");
       const ragContext = await dependencies.retrieveRagContext(state.userId, state.plan);
       const collections = new Set(ragContext.map((item) => item.collection));
@@ -93,76 +103,147 @@ export function buildLeadWorkflowGraph(
         && item.retrievalSignals.includes("structured"))) {
         throw new Error("Pre-search RAG gate failed; product context lacks independent structured/text retrieval corroboration.");
       }
-      return { phase: "retrieving-knowledge" as const, ragContext };
+      const metric = completedStageMetric({ stage: "retrieve_knowledge", startedAt, input: state.plan,
+        output: ragContext, inputItems: 1, outputItems: ragContext.length,
+        generatedArtifacts: ragContext.length, validArtifacts: ragContext.length,
+        downstreamUsedArtifacts: ragContext.length });
+      return { phase: "retrieving-knowledge" as const, ragContext,
+        stageMetrics: [...(state.stageMetrics ?? []), metric] };
     })
     .addNode("build_playbook", async (state) => {
+      const startedAt = Date.now();
       await phase(dependencies, state, "planning");
       const playbook = await dependencies.buildPlaybook(state.plan, state.ragContext);
       const cooperationPathMemory = dependencies.retrievePathMemory
         ? await dependencies.retrievePathMemory(state.userId, state.workspaceId, state.plan.countryCode) : [];
-      return { phase: "planning" as const, playbook: { ...playbook, cooperationPathMemory },
-        warnings: [...state.warnings, ...playbook.warnings] };
+      const output = { ...playbook, cooperationPathMemory };
+      const metric = completedStageMetric({ stage: "build_playbook", startedAt, input: state.ragContext,
+        output, inputItems: state.ragContext.length, outputItems: 1,
+        generatedArtifacts: 1, validArtifacts: 1, downstreamUsedArtifacts: 1 });
+      return { phase: "planning" as const, playbook: output,
+        warnings: [...state.warnings, ...playbook.warnings], stageMetrics: [...(state.stageMetrics ?? []), metric] };
     })
     .addNode("discover_candidates", async (state) => {
+      const startedAt = Date.now();
       await phase(dependencies, state, "discovering");
       if (!state.playbook) throw new Error("Market Playbook is missing before discovery");
       const discovered = await dependencies.discover(state.actionId, state.workspaceId, state.plan, state.playbook, state.graphThreadId);
+      const metric = completedStageMetric({ stage: "discover_candidates", startedAt,
+        input: state.playbook.searchQueries, output: discovered.candidates,
+        inputItems: state.playbook.searchQueries.length, outputItems: discovered.candidates.length,
+        paidSearchCredits: discovered.creditsUsed, generatedArtifacts: discovered.candidates.length,
+        validArtifacts: discovered.candidates.filter((candidate) => Boolean(candidate.domain)).length,
+        downstreamUsedArtifacts: discovered.candidates.length });
       return {
         phase: "discovering" as const,
         runId: discovered.runId,
         candidates: discovered.candidates,
         creditsUsed: state.creditsUsed + discovered.creditsUsed,
         warnings: [...state.warnings, ...discovered.warnings],
+        stageMetrics: [...(state.stageMetrics ?? []), metric],
       };
     })
     .addNode("collect_evidence", async (state) => {
+      const startedAt = Date.now();
       await phase(dependencies, state, "collecting-evidence");
       const enriched = await dependencies.collectEvidence(state.candidates, state.plan);
+      const evidenceCount = enriched.candidates.flatMap((candidate) => candidate.evidence).length;
+      const validEvidenceCount = enriched.candidates.flatMap((candidate) => candidate.evidence)
+        .filter((item) => item.sourceType !== "discovery").length;
+      const metric = completedStageMetric({ stage: "collect_evidence", startedAt,
+        input: state.candidates.map((candidate) => candidate.candidateId), output: enriched.candidates,
+        inputItems: state.candidates.length, outputItems: evidenceCount, paidSearchCredits: enriched.creditsUsed,
+        generatedArtifacts: evidenceCount, validArtifacts: validEvidenceCount,
+        downstreamUsedArtifacts: validEvidenceCount });
       return {
         phase: "collecting-evidence" as const,
         candidates: enriched.candidates,
         creditsUsed: state.creditsUsed + enriched.creditsUsed,
         warnings: [...state.warnings, ...enriched.warnings],
+        stageMetrics: [...(state.stageMetrics ?? []), metric],
       };
     })
     .addNode("correct_candidates", async (state) => {
+      const startedAt = Date.now();
       await phase(dependencies, state, "correcting-evidence");
       const corrected = await dependencies.correctionAgent.correct(state.candidates, state.plan);
+      const valid = corrected.candidates.filter((candidate) => candidate.correction.resolvedRoles.length > 0).length;
+      const metric = completedStageMetric({ stage: "correct_candidates", startedAt,
+        input: state.candidates, output: corrected.candidates, inputItems: state.candidates.length,
+        outputItems: corrected.candidates.length, paidSearchCredits: corrected.creditsUsed,
+        generatedArtifacts: corrected.candidates.length, validArtifacts: valid, downstreamUsedArtifacts: valid });
       return {
         phase: "correcting-evidence" as const,
         correctedCandidates: corrected.candidates,
         creditsUsed: state.creditsUsed + corrected.creditsUsed,
+        modelUsage: [...(state.modelUsage ?? []), ...(corrected.usage ?? [])],
+        stageMetrics: [...(state.stageMetrics ?? []), metric],
         warnings: [...state.warnings, ...corrected.warnings],
       };
     })
     .addNode("score_candidates", async (state) => {
+      const startedAt = Date.now();
       await phase(dependencies, state, "scoring");
       if (!state.playbook) throw new Error("Market Playbook is missing before qualification");
-      const assessments = await dependencies.qualificationAgent.evaluate(
-        state.correctedCandidates, state.playbook, state.plan.countryCode, state.plan.countryName, state.plan.objective,
-      );
-      return { phase: "scoring" as const, assessments };
+      const evaluated = dependencies.qualificationAgent.evaluateWithUsage
+        ? await dependencies.qualificationAgent.evaluateWithUsage(
+          state.correctedCandidates, state.playbook, state.plan.countryCode, state.plan.countryName, state.plan.objective)
+        : { assessments: await dependencies.qualificationAgent.evaluate(
+          state.correctedCandidates, state.playbook, state.plan.countryCode, state.plan.countryName, state.plan.objective),
+        usage: [] };
+      const completed = evaluated.assessments.filter((assessment) => assessment.scoringStatus === "completed").length;
+      const metric = completedStageMetric({ stage: "score_candidates", startedAt,
+        input: state.correctedCandidates, output: evaluated.assessments, inputItems: state.correctedCandidates.length,
+        outputItems: evaluated.assessments.length, generatedArtifacts: evaluated.assessments.length,
+        validArtifacts: completed, downstreamUsedArtifacts: completed });
+      return { phase: "scoring" as const, assessments: evaluated.assessments,
+        modelUsage: [...(state.modelUsage ?? []), ...evaluated.usage], stageMetrics: [...(state.stageMetrics ?? []), metric] };
     })
     .addNode("review_assessment_anomalies", async (state) => {
+      const startedAt = Date.now();
       await phase(dependencies, state, "reviewing-scores");
       if (!state.playbook) throw new Error("Market Playbook is missing before assessment review");
       const reviewed = await dependencies.assessmentReviewAgent.review(
         state.correctedCandidates, state.assessments, state.playbook, state.plan,
       );
+      const reviewUsage: WorkflowModelUsage[] = (reviewed.usage ?? []).map((usage) => ({
+        stage: usage.phase === "judge" ? "judge" : "secondary-review",
+        requestedModel: usage.model, actualModel: usage.model,
+        promptTokens: usage.usage.inputTokens, completionTokens: usage.usage.outputTokens,
+        reasoningTokens: usage.usage.reasoningTokens, totalTokens: usage.usage.totalTokens,
+        latencyMs: 0, fallbackUsed: false,
+      }));
+      const valid = reviewed.reviews.filter((review) => review.status !== "review-failed").length;
+      const metric = completedStageMetric({ stage: "review_assessment_anomalies", startedAt,
+        input: state.assessments, output: reviewed.reviews, inputItems: state.assessments.length,
+        outputItems: reviewed.reviews.length, generatedArtifacts: reviewed.reviews.filter((review) => review.required).length,
+        validArtifacts: valid, downstreamUsedArtifacts: reviewed.reviews.filter((review) => review.required).length });
       return { phase: "reviewing-scores" as const, assessments: reviewed.assessments,
-        assessmentReviews: reviewed.reviews, warnings: [...state.warnings, ...reviewed.warnings] };
+        assessmentReviews: reviewed.reviews, modelUsage: [...(state.modelUsage ?? []), ...reviewUsage],
+        stageMetrics: [...(state.stageMetrics ?? []), metric], warnings: [...state.warnings, ...reviewed.warnings] };
     })
     .addNode("assemble_handoff_briefs", async (state) => {
+      const startedAt = Date.now();
       await phase(dependencies, state, "assembling-handoff");
       if (!state.runId) throw new Error("Run ID is missing before handoff assembly");
-      return { phase: "assembling-handoff" as const,
-        handoffs: dependencies.handoffAssembler.assemble(
-          state.correctedCandidates, state.assessments, state.assessmentReviews, state.runId,
-        ) };
+      const handoffs = dependencies.handoffAssembler.assemble(
+        state.correctedCandidates, state.assessments, state.assessmentReviews, state.runId);
+      const metric = completedStageMetric({ stage: "assemble_handoff_briefs", startedAt,
+        input: state.assessments, output: handoffs, inputItems: state.assessments.length,
+        outputItems: handoffs.length, generatedArtifacts: handoffs.length,
+        validArtifacts: handoffs.filter((handoff) => handoff.quality.readyForStrategy).length,
+        downstreamUsedArtifacts: handoffs.length });
+      return { phase: "assembling-handoff" as const, handoffs,
+        stageMetrics: [...(state.stageMetrics ?? []), metric] };
     })
     .addNode("persist_results", async (state) => {
+      const startedAt = Date.now();
       await phase(dependencies, state, "persisting");
       if (!state.playbook || !state.runId) throw new Error("Workflow cannot persist without playbook and run ID");
+      const metric = completedStageMetric({ stage: "persist_results", startedAt,
+        input: state.handoffs, output: { expectedResult: true }, inputItems: state.handoffs.length, outputItems: 1,
+        generatedArtifacts: 1, validArtifacts: 1, downstreamUsedArtifacts: 1 });
+      const stageMetrics = [...(state.stageMetrics ?? []), metric];
       const result = await dependencies.persist({
         userId: state.userId,
         actionId: state.actionId,
@@ -179,10 +260,12 @@ export function buildLeadWorkflowGraph(
         assessments: state.assessments,
         assessmentReviews: state.assessmentReviews,
         handoffs: state.handoffs,
+        modelUsage: state.modelUsage ?? [],
+        stageMetrics,
         warnings: state.warnings,
       });
       await phase(dependencies, state, "completed");
-      return { phase: "completed" as const, result };
+      return { phase: "completed" as const, result, stageMetrics };
     })
     .addEdge(START, "retrieve_knowledge")
     .addEdge("retrieve_knowledge", "build_playbook")
@@ -224,6 +307,8 @@ export async function runLeadWorkflow(input: {
     assessmentReviews: [],
     handoffs: [],
     creditsUsed: 0,
+    modelUsage: [],
+    stageMetrics: [],
     warnings: [],
   };
   const state = await getProductionGraph().invoke(initial, {

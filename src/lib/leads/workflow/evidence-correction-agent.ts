@@ -18,6 +18,7 @@ import {
   type CorrectedLeadWorkflowCandidate,
   type LeadEvidenceItem,
   type LeadWorkflowCandidate,
+  type WorkflowModelUsage,
 } from "./types";
 
 const PROMPT_VERSION = "lead-evidence-correction-v5-material-escalation";
@@ -405,10 +406,12 @@ export class LeadEvidenceCorrectionAgent {
     };
   }
 
-  private async evaluateOneEscalated(candidate: LeadWorkflowCandidate, plan: LeadSearchPlan, reason: string) {
+  private async evaluateOneEscalated(candidate: LeadWorkflowCandidate, plan: LeadSearchPlan, reason: string,
+    usageRecords: WorkflowModelUsage[]) {
     try {
       const response = await this.provider.execute<CorrectionRequest, unknown>(
         this.request([candidate], plan, this.escalationModel), AbortSignal.timeout(120_000));
+      this.captureUsage(usageRecords, response, this.escalationModel);
       const raw = typeof response.output === "object" && response.output !== null && "corrections" in response.output
         ? (response.output as { corrections?: unknown[] }).corrections?.[0] : response.output;
       return this.normalize(leadCorrectionModelSchema.parse(raw), candidate, response, true);
@@ -417,19 +420,21 @@ export class LeadEvidenceCorrectionAgent {
     }
   }
 
-  private async evaluateBatch(candidates: LeadWorkflowCandidate[], plan: LeadSearchPlan) {
+  private async evaluateBatch(candidates: LeadWorkflowCandidate[], plan: LeadSearchPlan,
+    usageRecords: WorkflowModelUsage[]) {
     try {
       const response = await this.provider.execute<CorrectionRequest, unknown>(
         this.request(candidates, plan, this.routineModel), AbortSignal.timeout(75_000));
+      this.captureUsage(usageRecords, response, this.routineModel);
       const parsed = leadCorrectionBatchSchema.parse(response.output);
       const byId = new Map(parsed.corrections.map((item) => [item.candidateId, item]));
       return Promise.all(candidates.map((candidate) => {
         const value = byId.get(candidate.candidateId);
-        if (!value) return this.evaluateOneEscalated(candidate, plan, "Routine correction omitted the candidate.");
+        if (!value) return this.evaluateOneEscalated(candidate, plan, "Routine correction omitted the candidate.", usageRecords);
         const materialEscalation = value.escalation.required && value.escalation.higherCapabilityCanResolve
           && (value.escalation.expectedTotalScoreChange >= 8 || value.escalation.criticalStateChanges.length > 0);
         if (materialEscalation && this.routineModel !== this.escalationModel) {
-          return this.evaluateOneEscalated(candidate, plan, "Routine correction requested ambiguity escalation.");
+          return this.evaluateOneEscalated(candidate, plan, "Routine correction requested ambiguity escalation.", usageRecords);
         }
         const normalized = this.normalize(value, candidate, response, false);
         return materialEscalation && this.routineModel === this.escalationModel
@@ -441,7 +446,7 @@ export class LeadEvidenceCorrectionAgent {
       }));
     } catch (error) {
       return Promise.all(candidates.map((candidate) => this.evaluateOneEscalated(
-        candidate, plan, `Routine correction failed: ${error instanceof Error ? error.message : String(error)}`)));
+        candidate, plan, `Routine correction failed: ${error instanceof Error ? error.message : String(error)}`, usageRecords)));
     }
   }
 
@@ -483,6 +488,7 @@ export class LeadEvidenceCorrectionAgent {
   }
 
   async correct(candidates: LeadWorkflowCandidate[], plan: LeadSearchPlan) {
+    const usageRecords: WorkflowModelUsage[] = [];
     const supplemented = await this.supplement(candidates, plan);
     const batches: LeadWorkflowCandidate[][] = [];
     for (let offset = 0; offset < supplemented.candidates.length; offset += this.batchSize) {
@@ -494,7 +500,7 @@ export class LeadEvidenceCorrectionAgent {
       while (true) {
         const index = cursor++;
         if (index >= batches.length) return;
-        results[index] = await this.evaluateBatch(batches[index], plan);
+        results[index] = await this.evaluateBatch(batches[index], plan, usageRecords);
       }
     };
     await Promise.all(Array.from({ length: Math.min(this.concurrency, batches.length) }, worker));
@@ -502,8 +508,18 @@ export class LeadEvidenceCorrectionAgent {
     return {
       candidates: corrected,
       creditsUsed: supplemented.creditsUsed,
+      usage: usageRecords,
       warnings: [...supplemented.warnings,
         ...corrected.flatMap((candidate) => candidate.correction.warnings.map((warning) => `${candidate.domain}: ${warning}`))],
     };
+  }
+
+  private captureUsage(usageRecords: WorkflowModelUsage[], response: StructuredAiResponse<unknown>, requestedModel: string): void {
+    usageRecords.push({ stage: "evidence-correction", requestedModel: response.requestedModelVersion ?? requestedModel,
+      actualModel: response.modelVersion, providerId: response.actualProviderId,
+      promptTokens: response.usage?.promptTokens ?? 0, completionTokens: response.usage?.completionTokens ?? 0,
+      reasoningTokens: response.usage?.reasoningTokens ?? 0, totalTokens: response.usage?.totalTokens ?? 0,
+      latencyMs: response.latencyMs, fallbackUsed: Boolean(response.requestedModelVersion
+        && (response.requestedModelVersion !== response.modelVersion || response.actualProviderId !== "deepseek")) });
   }
 }

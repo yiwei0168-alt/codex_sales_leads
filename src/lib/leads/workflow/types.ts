@@ -350,6 +350,37 @@ export interface LeadWorkflowResult {
   warnings: string[];
 }
 
+export interface WorkflowModelUsage {
+  stage: "intent" | "playbook" | "evidence-correction" | "qualification" | "secondary-review" | "judge"
+    | "strategy" | "email" | "memory-distillation";
+  requestedModel: string;
+  actualModel: string;
+  providerId?: string;
+  promptTokens: number;
+  completionTokens: number;
+  reasoningTokens: number;
+  totalTokens: number;
+  latencyMs: number;
+  fallbackUsed: boolean;
+}
+
+export interface WorkflowStageMetric {
+  stage: string;
+  status: "completed" | "failed" | "cache-hit";
+  startedAt: string;
+  completedAt: string;
+  inputItems: number;
+  inputBytes: number;
+  outputItems: number;
+  outputBytes: number;
+  paidSearchCredits: number;
+  generatedArtifacts: number;
+  validArtifacts: number;
+  downstreamUsedArtifacts: number;
+  dependencyFingerprint: string;
+  metadata: Record<string, unknown>;
+}
+
 export interface LeadWorkflowState {
   userId: string;
   actionId: string;
@@ -366,6 +397,8 @@ export interface LeadWorkflowState {
   assessmentReviews: LeadAssessmentReview[];
   handoffs: LeadDevelopmentHandoff[];
   creditsUsed: number;
+  modelUsage: WorkflowModelUsage[];
+  stageMetrics: WorkflowStageMetric[];
   warnings: string[];
   result?: LeadWorkflowResult;
 }

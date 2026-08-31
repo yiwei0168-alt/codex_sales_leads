@@ -15,7 +15,10 @@ import type {
   LeadRagCitation,
   LeadWorkflowPhase,
   LeadWorkflowResult,
+  WorkflowModelUsage,
+  WorkflowStageMetric,
 } from "./types";
+import { detectWorkflowOptimizationOpportunities, LEAD_WORKFLOW_RUNTIME_VERSION } from "./workflow-telemetry";
 
 function externalId(countryCode: string, domain: string): string {
   return `langgraph-${countryCode.toLowerCase()}-${createHash("sha256").update(domain).digest("hex").slice(0, 16)}`;
@@ -218,6 +221,8 @@ export async function persistLeadWorkflowResult(input: {
   assessments: LeadCandidateAssessment[];
   assessmentReviews: LeadAssessmentReview[];
   handoffs: LeadDevelopmentHandoff[];
+  modelUsage: WorkflowModelUsage[];
+  stageMetrics: WorkflowStageMetric[];
   warnings: string[];
 }): Promise<LeadWorkflowResult> {
   const candidateById = new Map(input.candidates.map((item) => [item.candidateId, item]));
@@ -301,6 +306,70 @@ export async function persistLeadWorkflowResult(input: {
                 && !isCurrentLeadScoringEvidence(item, input.runId)).length,
           } })],
     );
+    for (const metric of input.stageMetrics) {
+      await client.query(
+        `insert into workflow_stage_metric (
+           user_id, workspace_id, lead_run_id, action_id, graph_thread_id, workflow_key, workflow_version,
+           stage, status, started_at, completed_at, input_items, input_bytes, output_items, output_bytes,
+           paid_search_credits, generated_artifacts, valid_artifacts, downstream_used_artifacts,
+           dependency_fingerprint, metadata
+         ) values ($1,$2,$3,$4,$5,'cudy-sales-lead-end-to-end-runtime',$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20::jsonb)`,
+        [input.userId, input.workspaceId, input.runId, input.actionId, input.graphThreadId,
+          LEAD_WORKFLOW_RUNTIME_VERSION, metric.stage, metric.status, metric.startedAt, metric.completedAt,
+          metric.inputItems, metric.inputBytes, metric.outputItems, metric.outputBytes, metric.paidSearchCredits,
+          metric.generatedArtifacts, metric.validArtifacts, metric.downstreamUsedArtifacts,
+          metric.dependencyFingerprint, JSON.stringify(metric.metadata)],
+      );
+    }
+    for (const usage of input.modelUsage) {
+      await client.query(
+        `insert into workflow_model_usage (
+           user_id, workspace_id, lead_run_id, action_id, graph_thread_id, stage, requested_model,
+           actual_model, provider_id, prompt_tokens, completion_tokens, reasoning_tokens, total_tokens,
+           latency_ms, fallback_used
+         ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)`,
+        [input.userId, input.workspaceId, input.runId, input.actionId, input.graphThreadId, usage.stage,
+          usage.requestedModel, usage.actualModel, usage.providerId ?? null, usage.promptTokens,
+          usage.completionTokens, usage.reasoningTokens, usage.totalTokens, usage.latencyMs, usage.fallbackUsed],
+      );
+    }
+    const citedEvidence = new Set(input.assessments.flatMap((assessment) => assessment.evidenceIds)).size;
+    const artifactEvents = [
+      { stage: "discover_candidates", artifactType: "candidate", eventType: "generated", count: input.candidates.length },
+      { stage: "correct_candidates", artifactType: "candidate", eventType: "valid", count: input.candidates
+        .filter((candidate) => candidate.correction.resolvedRoles.length > 0).length },
+      { stage: "collect_evidence", artifactType: "public-evidence", eventType: "retrieved", count: input.candidates
+        .flatMap((candidate) => candidate.evidence).filter((item) => item.sourceType !== "discovery").length },
+      { stage: "score_candidates", artifactType: "public-evidence", eventType: "cited", count: citedEvidence },
+      { stage: "score_candidates", artifactType: "assessment", eventType: "decision-used", count: input.assessments
+        .filter((assessment) => assessment.scoringStatus === "completed").length },
+      { stage: "persist_results", artifactType: "candidate", eventType: "displayed", count: selected.length },
+      { stage: "persist_results", artifactType: "candidate", eventType: "selected", count: selected.length },
+    ] as const;
+    for (const event of artifactEvents) {
+      await client.query(
+        `insert into workflow_artifact_event (
+           user_id, workspace_id, lead_run_id, action_id, graph_thread_id, stage, artifact_type, event_type,
+           artifact_count, metadata
+         ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,'{}'::jsonb)`,
+        [input.userId, input.workspaceId, input.runId, input.actionId, input.graphThreadId,
+          event.stage, event.artifactType, event.eventType, event.count],
+      );
+    }
+    for (const opportunity of detectWorkflowOptimizationOpportunities(input.stageMetrics, input.modelUsage)) {
+      await client.query(
+        `insert into workflow_optimization_opportunity (
+           user_id, workspace_id, lead_run_id, workflow_key, stage, opportunity_key, severity,
+           observation, recommended_action, evidence
+         ) values ($1,$2,$3,'cudy-sales-lead-end-to-end-runtime',$4,$5,$6,$7,$8,$9::jsonb)
+         on conflict (lead_run_id, stage, opportunity_key) do update set severity=excluded.severity,
+           observation=excluded.observation, recommended_action=excluded.recommended_action,
+           evidence=excluded.evidence, updated_at=now()`,
+        [input.userId, input.workspaceId, input.runId, opportunity.stage, opportunity.opportunityKey,
+          opportunity.severity, opportunity.observation, opportunity.recommendedAction,
+          JSON.stringify(opportunity.evidence)],
+      );
+    }
   });
   return {
     runId: input.runId,
