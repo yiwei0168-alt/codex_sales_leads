@@ -1,0 +1,140 @@
+{
+  "policyKey": "cudy-lead-workflow-cost-quality",
+  "version": "3.0.0",
+  "status": "active",
+  "objective": "Reduce model tokens by at least 40% and paid search/extract credits by at least 30% without weakening evidence, role, scoring, privacy or user-edit semantics.",
+  "taskModes": {
+    "toolEvaluation": {
+      "outputs": ["lead-value", "primary-role", "light-evidence-audit"],
+      "excluded": ["full-cooperation-paths", "development-handoff", "independent-path-review"]
+    },
+    "productResult": {
+      "outputs": ["role-aware-score", "maximum-two-cooperation-paths", "compact-evidence-linked-explanation"]
+    },
+    "developmentExecution": {
+      "activation": "explicit-user-action",
+      "outputs": ["path-specific-strategy", "path-specific-email"]
+    }
+  },
+  "researchBudgets": {
+    "limited": { "initialEvidenceTokens": 1500, "supplementalTokensPerRound": 750, "maximumRounds": 1, "maximumTotalTokens": 2250 },
+    "standard": { "initialEvidenceTokens": 2500, "supplementalTokensPerRound": 1500, "maximumRounds": 2, "maximumTotalTokens": 5500 },
+    "deep": { "initialEvidenceTokens": 4000, "supplementalTokensPerRound": 2000, "maximumRounds": 2, "maximumTotalTokens": 8000 }
+  },
+  "evidencePackets": {
+    "qualification": {
+      "maxUnlinkedItems": 2,
+      "maxExcerptCharacters": 1000,
+      "maxBatchInputCharacters": 42000,
+      "retainAllFindingLinkedEvidence": false,
+      "retainAllFindingReferences": true
+    },
+    "independentReview": {
+      "maxUnlinkedItems": 1,
+      "maxExcerptCharacters": 800,
+      "retainAllFindingLinkedEvidence": false,
+      "retainAllFindingReferences": true,
+      "conflictPacketOnly": true
+    },
+    "secondCitation": {
+      "minimumExpectedTotalScoreChange": 8,
+      "allowForCriticalStateChange": true,
+      "confidenceOnlyEligible": false,
+      "retrievalOrder": ["adjacent-chunks", "same-document", "local-evidence-library", "existing-pdf-pages", "targeted-web-search"]
+    }
+  },
+  "searchAcquisition": {
+    "limited": { "searchDepth": "basic", "includeRawContent": true, "extractAfterSearch": false, "maximumQueryGroups": 1 },
+    "standard": { "searchDepth": "basic", "includeRawContent": false, "extractAfterSearch": true, "maximumExtractPages": 4, "maximumQueryGroups": 2 },
+    "deep": { "initialSearchDepth": "basic", "advancedOnlyFor": ["entity-conflict", "complex-group", "basic-search-failure"], "maximumQueryGroups": 3 },
+    "knownOfficialUrl": "extract-known-pages-before-search",
+    "crawl": { "complexSitesOnly": true, "bounded": true },
+    "pdf": {
+      "preExtractionValueGate": 60,
+      "sampleOnlyRange": [45, 59],
+      "defaultExtractor": "pypdf",
+      "tableFallback": "pdfplumber",
+      "ocrFallback": "tesseract",
+      "visionFallback": "high-capability-multimodal-selected-pages-only"
+    }
+  },
+  "modelRouting": {
+    "intent": { "primary": "current-kimi-intent-model", "lightModelEvaluationAllowed": true, "deterministicFirst": false },
+    "playbook": { "templateFirst": true, "lightKimiTemplateReviewRequired": true, "complexPlanner": "kimi-k3" },
+    "factAndRole": { "routine": "DEEPSEEK_MODEL", "default": "deepseek-v4-flash", "escalation": "DEEPSEEK_ESCALATION_MODEL", "escalationDefault": "deepseek-v4-pro" },
+    "scoring": { "routine": "DEEPSEEK_MODEL", "default": "deepseek-v4-flash", "escalation": "DEEPSEEK_ESCALATION_MODEL", "escalationDefault": "deepseek-v4-pro" },
+    "strategyAndEmail": { "primary": "current-kimi-outreach-model", "onDemandOnly": true },
+    "feedbackMemory": { "manualDiffUsesModel": false, "lightDistillationPreferred": true, "claudeForComplexRevisionOnly": true }
+  },
+  "escalation": {
+    "minimumExpectedTotalScoreChange": 8,
+    "criticalStateChanges": ["identity", "primary-role", "eligibility-gate", "scale-class", "research-depth", "account-tier", "cooperation-path-type", "publishability"],
+    "disallowedSoleTriggers": ["original-search-lane-mismatch", "generic-warning", "fixed-confidence-threshold", "company-size", "alternative-path-exists", "top-n-position"],
+    "collapseWhenResolvedModelIsEqual": true
+  },
+  "reviewRouting": {
+    "actionableScoreThreshold": 75,
+    "lowConfidenceThreshold": 75,
+    "materialPathFitGap": 10,
+    "selectionBoundaryPoints": 0,
+    "randomAuditPercent": 0,
+    "alwaysReviewTriggers": ["severe-deterministic-conflict", "pro-unresolved-critical-state"],
+    "actionableOnlyTriggers": [],
+    "researchHoldRule": "Do not review a long-tail research hold unless a critical publishability conflict remains after targeted research."
+  },
+  "judgeRouting": {
+    "totalScoreDifference": 8,
+    "dimensionDifferenceRequiresTotalDifference": 8,
+    "dimensionThresholds": {
+      "productFamilyMatch": 8,
+      "customerAndScenarioOverlap": 8,
+      "positioningCompatibility": 8,
+      "cooperationPathAndBuyingInfluence": 8,
+      "scaleAndChannelCoverage": 8,
+      "executionAndEnablement": 8,
+      "opportunityAndRisk": 8
+    },
+    "outcomeSensitiveDifferences": ["eligibility", "gate", "account-tier", "selected-path-type", "primary-role"]
+  },
+  "resilience": {
+    "maximumPrimaryRetries": 2,
+    "maximumSchemaRepairRetries": 1,
+    "maximumFallbackModels": 2,
+    "embeddingFallbackEnabled": false,
+    "requireEquivalentDataPermission": true,
+    "requireSameOutputSchema": true,
+    "circuitBreakerEnabled": true,
+    "recordRequestedAndActualModel": true
+  },
+  "concurrency": {
+    "adaptive": true,
+    "separateStagePools": true,
+    "tokenAwareModelBatches": true,
+    "neverMixPrivateTenants": true,
+    "mergeIdenticalInFlightRequests": true,
+    "interactivePriority": true,
+    "qualityRulesUnaffected": true
+  },
+  "retryPolicy": {
+    "reuseFreshEvidenceSnapshot": true,
+    "reuseCorrectionCheckpoint": true,
+    "reusePrimaryAssessmentCheckpoint": true,
+    "retryOnlyInvalidCandidates": true,
+    "neverReacquireForSchemaFailure": true,
+    "resumeFromLatestValidArtifact": true
+  },
+  "qualityGates": {
+    "strategicCandidateRecallPercent": 100,
+    "primaryRoleAgreementPercent": 97,
+    "eligibilityAgreementPercent": 97,
+    "offlineToolTopNOverlapPercent": 90,
+    "maximumMeanAbsoluteScoreDifference": 3,
+    "tier1DistributorKaErrors": 0,
+    "invalidEvidenceUsedForScoring": 0,
+    "validEvidenceReferencePercent": 100,
+    "privateMemoryLeakage": 0,
+    "maximumTokenIncreasePercent": 5,
+    "targetTokenReductionPercent": 40,
+    "targetPaidSearchCreditReductionPercent": 30
+  }
+}

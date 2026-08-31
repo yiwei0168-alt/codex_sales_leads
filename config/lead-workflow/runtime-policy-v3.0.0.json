@@ -1,0 +1,50 @@
+{
+  "workflowKey": "cudy-sales-lead-end-to-end-runtime",
+  "version": "3.0.0",
+  "status": "active",
+  "baseDefinition": "config/lead-workflow/end-to-end-v2.0.0.json",
+  "scoringPolicy": "config/lead-scoring/policy-v2.0.0.json",
+  "costQualityPolicy": "config/lead-workflow/cost-quality-policy-v3.0.0.json",
+  "publicEvidenceSchema": "public_evidence",
+  "principles": [
+    "Search-lane provenance never determines primary role or cooperation path.",
+    "Public evidence is shared; user and workspace memory remains isolated.",
+    "Stale evidence is retained with a user-visible warning and is not automatically invalid.",
+    "A downstream agent may request more evidence only for an expected score change of at least eight points or a critical state change.",
+    "Production model escalation never depends on Top-N position.",
+    "Semantic judgments and sub-scores come from the model; deterministic totals and states come from code.",
+    "Every generated artifact records lineage, actual downstream use and cost.",
+    "Model failure may use an approved equivalent fallback; embeddings never switch model at runtime."
+  ],
+  "cooperationPaths": {
+    "maximumPerCompany": 2,
+    "minimumDisplayedFitScore": 65,
+    "showBestWhenAllBelowMinimum": true,
+    "confidenceField": false,
+    "types": [
+      "Direct Tier-1 Supply",
+      "Distributor-Mediated Supply",
+      "Direct Downstream Channel Supply",
+      "OEM/ODM",
+      "Other"
+    ]
+  },
+  "freshness": {
+    "lightweightCheckOnlyOnReuse": true,
+    "staleIsInvalid": false,
+    "targetedReverificationRequiresUserAction": true,
+    "preserveHistoricalVersions": true
+  },
+  "rollout": {
+    "stages": ["static", "shadow", "representative-ab", "canary", "default"],
+    "representativeCompaniesPerCategory": [1, 2],
+    "fullPoolRerunAutomatic": false,
+    "additiveDatabaseMigrationsOnly": true
+  },
+  "documentation": {
+    "generatedWorkflow": "docs/generated/LEAD_EVALUATION_WORKFLOW_V2.md",
+    "efficiencyLedger": "docs/PRODUCT_WORKFLOW_EFFICIENCY_LEDGER.md",
+    "recordOptimizationOpportunities": true,
+    "includePrivateRuntimeData": false
+  }
+}
