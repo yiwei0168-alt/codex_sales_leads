@@ -154,4 +154,21 @@ describe("LangGraph lead workflow", () => {
       .rejects.toThrow("lacks independent structured/text retrieval corroboration");
     expect(deps.discover).not.toHaveBeenCalled();
   });
+
+  it("reuses exact playbook and assessment dependencies without calling either model", async () => {
+    const events: string[] = [];
+    const deps = dependencies(events);
+    deps.loadPlaybookCache = vi.fn(async () => playbook);
+    deps.savePlaybookCache = vi.fn(async () => undefined);
+    deps.loadAssessmentCache = vi.fn(async () => new Map([[assessment.candidateId, assessment]]));
+    deps.saveAssessmentCache = vi.fn(async () => undefined);
+    const graph = buildLeadWorkflowGraph(deps);
+    const state = await graph.invoke({ userId: "user-1", actionId: "action-1", graphThreadId: "thread-1",
+      workspaceId: "workspace-1", plan, phase: "queued", ragContext: [], candidates: [], assessments: [],
+      assessmentReviews: [], handoffs: [], creditsUsed: 0, modelUsage: [], stageMetrics: [], warnings: [] });
+    expect(deps.buildPlaybook).not.toHaveBeenCalled();
+    expect(deps.qualificationAgent.evaluate).not.toHaveBeenCalled();
+    expect(state.stageMetrics.filter((metric) => metric.status === "cache-hit").map((metric) => metric.stage))
+      .toEqual(["build_playbook", "score_candidates"]);
+  });
 });

@@ -14,6 +14,8 @@ import {
   type RolePriority,
 } from "./types";
 
+export const LEAD_PLAYBOOK_PROMPT_VERSION = "lead-playbook-v3.0.0";
+
 const familyLabels: Record<ChannelRoleFamily, string[]> = {
   distribution: ["networking equipment distributor wholesaler importer", "value added distributor IT network"],
   resale: ["network equipment reseller VAR dealer", "SMB networking products reseller"],

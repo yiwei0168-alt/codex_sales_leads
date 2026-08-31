@@ -18,7 +18,8 @@ import type {
   WorkflowModelUsage,
 } from "./types";
 
-const PROMPT_VERSION = "lead-value-v5-role-aware-five-paths";
+export const LEAD_QUALIFICATION_PROMPT_VERSION = "lead-value-v5-role-aware-five-paths";
+const PROMPT_VERSION = LEAD_QUALIFICATION_PROMPT_VERSION;
 
 interface LeadAssessmentRequest {
   instructions: string[];

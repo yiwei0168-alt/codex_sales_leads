@@ -130,14 +130,12 @@
       "global-national-or-leading-regional-scale",
       "strong-product-or-scenario-signal",
       "user-nominated-candidate",
-      "top-n-boundary",
       "identity-or-evidence-conflict"
     ],
     "limitedEligibility": [
       "positively-small-or-local",
       "weak-initial-relevance",
-      "not-user-nominated",
-      "not-top-n-boundary"
+      "not-user-nominated"
     ],
     "missingEvidenceRule": "A limited-research long-tail candidate may be held for insufficient evidence only after identity, official-site and targeted relevance searches complete.",
     "oldEvidenceRule": "Previous-run evidence is discovery-only until freshly acquired or freshness-validated into the current run snapshot."
@@ -158,14 +156,16 @@
     "noScaleGate": true
   },
   "escalationPolicy": {
-    "confidenceBelow": 75,
-    "randomAuditPercent": 5,
+    "confidenceAloneEscalates": false,
+    "randomAuditPercent": 0,
+    "minimumExpectedScoreChange": 8,
+    "requiresResolvableIssue": true,
     "triggers": [
       "materially-different-multi-family-routes",
       "hybrid-or-unresolved-primary-role",
       "atomic-evidence-conflict",
       "source-conflict",
-      "top-n-boundary",
+      "critical-status-change",
       "memory-conflict"
     ],
     "originalSearchChannelIsTrigger": false

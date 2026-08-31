@@ -14,6 +14,8 @@ import { LeadQualificationAgent } from "./qualification-agent";
 import { retrieveLeadRagContext } from "./rag-context";
 import { retrieveCooperationPathMemory } from "../path-memory";
 import { completedStageMetric } from "./workflow-telemetry";
+import { loadCachedLeadAssessments, saveCachedLeadAssessments } from "./assessment-cache";
+import { loadCachedLeadPlaybook, saveCachedLeadPlaybook } from "./playbook-cache";
 import type {
   CorrectedLeadWorkflowCandidate,
   LeadCandidateAssessment,
@@ -67,6 +69,10 @@ export interface LeadWorkflowDependencies {
   persist: typeof persistLeadWorkflowResult;
   updatePhase: typeof updateWorkflowPhase;
   retrievePathMemory?: typeof retrieveCooperationPathMemory;
+  loadPlaybookCache?: typeof loadCachedLeadPlaybook;
+  savePlaybookCache?: typeof saveCachedLeadPlaybook;
+  loadAssessmentCache?: typeof loadCachedLeadAssessments;
+  saveAssessmentCache?: typeof saveCachedLeadAssessments;
 }
 
 const productionDependencies: LeadWorkflowDependencies = {
@@ -81,6 +87,10 @@ const productionDependencies: LeadWorkflowDependencies = {
   persist: persistLeadWorkflowResult,
   updatePhase: updateWorkflowPhase,
   retrievePathMemory: retrieveCooperationPathMemory,
+  loadPlaybookCache: loadCachedLeadPlaybook,
+  savePlaybookCache: saveCachedLeadPlaybook,
+  loadAssessmentCache: loadCachedLeadAssessments,
+  saveAssessmentCache: saveCachedLeadAssessments,
 };
 
 async function phase(dependencies: LeadWorkflowDependencies, state: typeof WorkflowAnnotation.State, next: LeadWorkflowPhase): Promise<void> {
@@ -113,13 +123,21 @@ export function buildLeadWorkflowGraph(
     .addNode("build_playbook", async (state) => {
       const startedAt = Date.now();
       await phase(dependencies, state, "planning");
-      const playbook = await dependencies.buildPlaybook(state.plan, state.ragContext);
+      const cachedPlaybook = dependencies.loadPlaybookCache
+        ? await dependencies.loadPlaybookCache(state.userId, state.workspaceId, state.plan, state.ragContext)
+        : null;
+      const playbook = cachedPlaybook ?? await dependencies.buildPlaybook(state.plan, state.ragContext);
+      if (!cachedPlaybook && dependencies.savePlaybookCache) {
+        await dependencies.savePlaybookCache(state.userId, state.workspaceId, state.plan, state.ragContext, playbook);
+      }
       const cooperationPathMemory = dependencies.retrievePathMemory
         ? await dependencies.retrievePathMemory(state.userId, state.workspaceId, state.plan.countryCode) : [];
       const output = { ...playbook, cooperationPathMemory };
-      const metric = completedStageMetric({ stage: "build_playbook", startedAt, input: state.ragContext,
+      const metric = { ...completedStageMetric({ stage: "build_playbook", startedAt, input: state.ragContext,
         output, inputItems: state.ragContext.length, outputItems: 1,
-        generatedArtifacts: 1, validArtifacts: 1, downstreamUsedArtifacts: 1 });
+        generatedArtifacts: cachedPlaybook ? 0 : 1, validArtifacts: 1, downstreamUsedArtifacts: 1,
+        metadata: { cacheHit: Boolean(cachedPlaybook) } }),
+      status: cachedPlaybook ? "cache-hit" as const : "completed" as const };
       return { phase: "planning" as const, playbook: output,
         warnings: [...state.warnings, ...playbook.warnings], stageMetrics: [...(state.stageMetrics ?? []), metric] };
     })
@@ -185,18 +203,36 @@ export function buildLeadWorkflowGraph(
       const startedAt = Date.now();
       await phase(dependencies, state, "scoring");
       if (!state.playbook) throw new Error("Market Playbook is missing before qualification");
-      const evaluated = dependencies.qualificationAgent.evaluateWithUsage
-        ? await dependencies.qualificationAgent.evaluateWithUsage(
-          state.correctedCandidates, state.playbook, state.plan.countryCode, state.plan.countryName, state.plan.objective)
-        : { assessments: await dependencies.qualificationAgent.evaluate(
-          state.correctedCandidates, state.playbook, state.plan.countryCode, state.plan.countryName, state.plan.objective),
-        usage: [] };
-      const completed = evaluated.assessments.filter((assessment) => assessment.scoringStatus === "completed").length;
-      const metric = completedStageMetric({ stage: "score_candidates", startedAt,
-        input: state.correctedCandidates, output: evaluated.assessments, inputItems: state.correctedCandidates.length,
-        outputItems: evaluated.assessments.length, generatedArtifacts: evaluated.assessments.length,
-        validArtifacts: completed, downstreamUsedArtifacts: completed });
-      return { phase: "scoring" as const, assessments: evaluated.assessments,
+      const cached = dependencies.loadAssessmentCache ? await dependencies.loadAssessmentCache({
+        userId: state.userId, workspaceId: state.workspaceId, candidates: state.correctedCandidates,
+        playbook: state.playbook, objective: state.plan.objective,
+      }) : new Map<string, LeadCandidateAssessment>();
+      const missing = state.correctedCandidates.filter((candidate) => !cached.has(candidate.candidateId));
+      const evaluated = missing.length === 0 ? { assessments: [], usage: [] as WorkflowModelUsage[] }
+        : dependencies.qualificationAgent.evaluateWithUsage
+          ? await dependencies.qualificationAgent.evaluateWithUsage(
+            missing, state.playbook, state.plan.countryCode, state.plan.countryName, state.plan.objective)
+          : { assessments: await dependencies.qualificationAgent.evaluate(
+            missing, state.playbook, state.plan.countryCode, state.plan.countryName, state.plan.objective),
+          usage: [] };
+      if (dependencies.saveAssessmentCache && evaluated.assessments.length > 0) await dependencies.saveAssessmentCache({
+        userId: state.userId, workspaceId: state.workspaceId, runId: state.runId,
+        candidates: missing, playbook: state.playbook, objective: state.plan.objective,
+        assessments: evaluated.assessments,
+      });
+      const evaluatedById = new Map(evaluated.assessments.map((assessment) => [assessment.candidateId, assessment]));
+      const assessments = state.correctedCandidates.flatMap((candidate) => {
+        const assessment = cached.get(candidate.candidateId) ?? evaluatedById.get(candidate.candidateId);
+        return assessment ? [assessment] : [];
+      });
+      const completed = assessments.filter((assessment) => assessment.scoringStatus === "completed").length;
+      const metric = { ...completedStageMetric({ stage: "score_candidates", startedAt,
+        input: state.correctedCandidates, output: assessments, inputItems: state.correctedCandidates.length,
+        outputItems: assessments.length, generatedArtifacts: evaluated.assessments.length,
+        validArtifacts: completed, downstreamUsedArtifacts: completed,
+        metadata: { cacheHits: cached.size, cacheMisses: missing.length } }),
+      status: missing.length === 0 ? "cache-hit" as const : "completed" as const };
+      return { phase: "scoring" as const, assessments,
         modelUsage: [...(state.modelUsage ?? []), ...evaluated.usage], stageMetrics: [...(state.stageMetrics ?? []), metric] };
     })
     .addNode("review_assessment_anomalies", async (state) => {

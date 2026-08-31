@@ -90,6 +90,7 @@ delete from outreach_knowledge_item where visibility='private';
 drop policy if exists outreach_knowledge_read on outreach_knowledge_item;
 create policy outreach_knowledge_read on outreach_knowledge_item for select using (visibility='shared');
 drop policy if exists outreach_knowledge_private_write on outreach_knowledge_item;
+drop policy if exists outreach_knowledge_shared_admin_write on outreach_knowledge_item;
 create policy outreach_knowledge_shared_admin_write on outreach_knowledge_item for all
   using (visibility='shared' and app_current_user_role()='admin')
   with check (visibility='shared' and app_current_user_role()='admin');
