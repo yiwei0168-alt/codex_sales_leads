@@ -36,6 +36,10 @@ export interface StructuredAiRequest<TInput> {
   evidenceIds: string[];
   /** JSON Schema for providers that need an explicit structured-output contract. */
   outputSchema?: Record<string, unknown>;
+  /** Controls whether an approved fallback may receive this request. */
+  dataClassification?: "public" | "private-workspace";
+  /** Tenant scope is required before private requests may be deduplicated. */
+  tenantScope?: string;
 }
 
 export interface StructuredAiResponse<TOutput> {
@@ -45,6 +49,8 @@ export interface StructuredAiResponse<TOutput> {
   latencyMs: number;
   warnings: string[];
   providerRequestId?: string;
+  requestedModelVersion?: string;
+  actualProviderId?: string;
   usage?: {
     promptTokens: number;
     completionTokens: number;

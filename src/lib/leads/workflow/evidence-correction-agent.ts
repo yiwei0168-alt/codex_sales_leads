@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 
 import type { AiProvider, StructuredAiResponse } from "@/providers/contracts";
-import { DeepSeekProvider } from "@/providers/deepseek";
+import { createLeadAiProvider } from "@/providers/resilient-ai";
 import { TavilySearchProvider, type TavilySearchResult } from "@/providers/tavily";
 import type { LeadSearchPlan } from "@/lib/assistant/types";
 import { z } from "zod";
@@ -175,7 +175,7 @@ export class LeadEvidenceCorrectionAgent {
   private readonly searchConcurrency: number;
 
   constructor(
-    private readonly provider: AiProvider = new DeepSeekProvider(),
+    private readonly provider: AiProvider = createLeadAiProvider(),
     private readonly searchProvider: SupplementalSearch = new TavilySearchProvider({ maxAttempts: 3 }),
     options: EvidenceCorrectionAgentOptions = {},
   ) {
@@ -277,6 +277,7 @@ export class LeadEvidenceCorrectionAgent {
         .filter((item) => isCurrentLeadScoringEvidence(item, candidate.evidenceSnapshotRunId))
         .map((item) => item.id)),
       outputSchema: z.toJSONSchema(leadCorrectionBatchSchema) as Record<string, unknown>,
+      dataClassification: "public" as const,
     };
   }
 

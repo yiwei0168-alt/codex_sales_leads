@@ -27,7 +27,7 @@ export interface IntentPlan {
   leadPlan?: LeadSearchPlan;
   reply?: string;
   plannerModel: string;
-  plannerSource: "kimi-k3" | "deterministic-fallback";
+  plannerSource: "kimi-light" | "kimi-k3" | "deterministic-fallback";
   warnings: string[];
 }
 

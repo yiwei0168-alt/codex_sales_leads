@@ -6,7 +6,7 @@ import { z } from "zod";
 
 import type { LeadSearchPlan } from "@/lib/assistant/types";
 import type { AiProvider, StructuredAiResponse } from "@/providers/contracts";
-import { DeepSeekProvider } from "@/providers/deepseek";
+import { createLeadAiProvider } from "@/providers/resilient-ai";
 
 import { ACTIVE_LEAD_SCORING_POLICY, scoringPolicyChecksum } from "../scoring-policy";
 import { isCurrentLeadScoringEvidence } from "../evidence-snapshot";
@@ -123,7 +123,7 @@ class OpenAiLeadReviewInvoker implements LeadReviewInvoker {
 
 export class DeepSeekLeadReviewInvoker implements LeadReviewInvoker {
   constructor(
-    private readonly provider: AiProvider = new DeepSeekProvider({ maxAttempts: 4 }),
+    private readonly provider: AiProvider = createLeadAiProvider(),
     private readonly secondaryModel = process.env.DEEPSEEK_ESCALATION_MODEL?.trim() || "deepseek-v4-pro",
     private readonly judgeModel = process.env.DEEPSEEK_ESCALATION_MODEL?.trim() || "deepseek-v4-pro",
   ) {}
@@ -145,6 +145,7 @@ export class DeepSeekLeadReviewInvoker implements LeadReviewInvoker {
         payload: input,
       },
       outputSchema: z.toJSONSchema(leadAssessmentModelSchema) as Record<string, unknown>,
+      dataClassification: "private-workspace",
     }, AbortSignal.timeout(120_000));
     return { output: leadAssessmentModelSchema.parse(response.output), model: response.modelVersion,
       usage: response.usage ? { inputTokens: response.usage.promptTokens,
@@ -167,6 +168,7 @@ export class DeepSeekLeadReviewInvoker implements LeadReviewInvoker {
         payload: input,
       },
       outputSchema: z.toJSONSchema(leadAssessmentJudgeSchema) as Record<string, unknown>,
+      dataClassification: "private-workspace",
     }, AbortSignal.timeout(120_000));
     return { output: leadAssessmentJudgeSchema.parse(response.output), model: response.modelVersion,
       usage: response.usage ? { inputTokens: response.usage.promptTokens,

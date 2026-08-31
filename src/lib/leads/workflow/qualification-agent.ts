@@ -1,5 +1,5 @@
 import type { AiProvider, StructuredAiResponse } from "@/providers/contracts";
-import { DeepSeekProvider } from "@/providers/deepseek";
+import { createLeadAiProvider } from "@/providers/resilient-ai";
 import { z } from "zod";
 
 import { candidateValueScore, clampDimension, recommendationPriority, salesAccountTier, selectResearchDepth } from "../candidate-value";
@@ -292,7 +292,7 @@ export class LeadQualificationAgent {
   private readonly maxBatchInputCharacters: number;
   private readonly concurrency: number;
 
-  constructor(private readonly provider: AiProvider = new DeepSeekProvider(), options: LeadQualificationAgentOptions = {}) {
+  constructor(private readonly provider: AiProvider = createLeadAiProvider(), options: LeadQualificationAgentOptions = {}) {
     this.routineModel = options.routineModel ?? process.env.DEEPSEEK_MODEL?.trim() ?? "deepseek-v4-flash";
     this.escalationModel = options.escalationModel ?? process.env.DEEPSEEK_ESCALATION_MODEL?.trim() ?? "deepseek-v4-pro";
     this.batchSize = Math.max(1, Math.min(5, options.batchSize ?? 5));
@@ -387,6 +387,7 @@ export class LeadQualificationAgent {
         .filter((item) => isCurrentLeadScoringEvidence(item, candidate.evidenceSnapshotRunId))
         .map((item) => item.id)),
       outputSchema: z.toJSONSchema(leadAssessmentBatchSchema) as Record<string, unknown>,
+      dataClassification: "private-workspace" as const,
     };
   }
 
