@@ -154,17 +154,20 @@ async function saveEvidenceSnapshots(client: PoolClient, userId: string, runId: 
     await client.query(
       `insert into lead_evidence_snapshot (
          user_id, run_id, candidate_id, source_url, canonical_url, source_type, evidence_kinds,
-         acquisition_status, retrieved_at, freshness_days, expires_at, content_hash, content, prior_run_id, metadata
-       ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$9::timestamptz + ($10 || ' days')::interval,$11,$12,$13,$14)
+         acquisition_status, retrieved_at, freshness_days, expires_at, content_hash, content, prior_run_id, metadata,
+         public_document_version_id, public_chunk_ids
+       ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$9::timestamptz + ($10 || ' days')::interval,$11,$12,$13,$14,$15,$16)
        on conflict (run_id, candidate_id, canonical_url) do update set
          source_url=excluded.source_url, source_type=excluded.source_type, evidence_kinds=excluded.evidence_kinds,
          acquisition_status=excluded.acquisition_status, retrieved_at=excluded.retrieved_at,
          freshness_days=excluded.freshness_days, expires_at=excluded.expires_at,
          content_hash=excluded.content_hash, content=excluded.content, prior_run_id=excluded.prior_run_id,
-         metadata=excluded.metadata`,
+         metadata=excluded.metadata, public_document_version_id=excluded.public_document_version_id,
+         public_chunk_ids=excluded.public_chunk_ids`,
       [userId, runId, candidate.candidateId, item.url, canonicalUrl(item.url), item.sourceType, kinds,
         item.freshnessStatus, item.capturedAt, days, item.contentHash, item.excerpt, item.priorRunId ?? null,
-        JSON.stringify({ provider: item.provider, title: item.title, scoringEligible: true })],
+        JSON.stringify({ provider: item.provider, title: item.title, scoringEligible: true }),
+        item.publicDocumentVersionId ?? null, item.publicChunkId ? [item.publicChunkId] : []],
     );
   }
 }

@@ -115,6 +115,8 @@ export interface LeadEvidenceItem {
   contentHash?: string;
   freshnessStatus?: "fresh" | "revalidated" | "stale" | "unknown";
   priorRunId?: string;
+  publicDocumentVersionId?: string;
+  publicChunkId?: string;
 }
 
 export interface LeadWorkflowCandidate {

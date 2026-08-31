@@ -16,6 +16,7 @@ import type {
   LeadMarketPlaybook,
   LeadWorkflowCandidate,
 } from "./types";
+import { findReusablePublicEvidence, persistPublicEvidence } from "./public-evidence-repository";
 
 export interface DiscoveryResult {
   runId: string;
@@ -153,12 +154,27 @@ async function enrichOne(
 ): Promise<{ candidate: LeadWorkflowCandidate; credits: number; warning?: string }> {
   let credits = 0;
   try {
+    const reusable = await findReusablePublicEvidence({
+      domain: candidate.domain,
+      countryCode: plan.countryCode,
+      evidenceRunId: candidate.evidenceSnapshotRunId,
+    }).catch(() => ({ evidence: [], stale: false }));
+    if (reusable.evidence.length > 0) {
+      const evidence = [...new Map([...candidate.evidence, ...reusable.evidence]
+        .map((item) => [item.id, item])).values()];
+      const onlyStale = reusable.evidence.every((item) => item.freshnessStatus === "stale");
+      const warning = onlyStale
+        ? `Reusable evidence for ${candidate.domain} is stale; retained without automatic Web Search. User reverification is required.`
+        : undefined;
+      return { candidate: { ...candidate, evidence, evidenceWarnings: warning
+        ? [...candidate.evidenceWarnings, warning] : candidate.evidenceWarnings }, credits, warning };
+    }
     const official = await tavily.search({
       query: `site:${candidate.domain} company products solutions customers locations networking ${plan.countryName}`,
       country: new Intl.DisplayNames(["en"], { type: "region" }).of(plan.countryCode)?.toLowerCase(),
-      searchDepth: "advanced",
+      searchDepth: "basic",
       maxResults: 6,
-      includeRawContent: true,
+      includeRawContent: false,
       includeDomains: [candidate.domain],
     }, AbortSignal.timeout(45_000));
     credits += official.creditsUsed;
@@ -174,16 +190,24 @@ async function enrichOne(
       id: stableId("evidence", result.url),
       url: result.url,
       title: result.title,
-      excerpt: (rawByUrl.get(result.url) || result.rawContent || result.content).replace(/\s+/g, " ").trim().slice(0, 4_000),
+      excerpt: (rawByUrl.get(result.url) || result.content).replace(/\s+/g, " ").trim().slice(0, 4_000),
       sourceType: "official-website",
       provider: "tavily",
       capturedAt: new Date().toISOString(),
       evidenceRunId: candidate.evidenceSnapshotRunId,
       freshnessStatus: "fresh",
       contentHash: leadEvidenceContentHash(
-        (rawByUrl.get(result.url) || result.rawContent || result.content).replace(/\s+/g, " ").trim().slice(0, 4_000),
+        (rawByUrl.get(result.url) || result.content).replace(/\s+/g, " ").trim().slice(0, 4_000),
       ),
     }));
+    await persistPublicEvidence({
+      companyName: candidate.companyName,
+      domain: candidate.domain,
+      countryCode: plan.countryCode,
+      evidence: added,
+    }).catch((error) => {
+      candidate.evidenceWarnings.push(`Public evidence persistence failed for ${candidate.domain}: ${error instanceof Error ? error.message : String(error)}`);
+    });
     return {
       candidate: { ...candidate, evidence: [...new Map([...candidate.evidence, ...added].map((item) => [item.url, item])).values()] },
       credits,
@@ -209,7 +233,9 @@ export async function collectLeadEvidence(
       results[index] = await enrichOne(candidates[index], plan, tavily);
     }
   }
-  await Promise.all(Array.from({ length: Math.min(4, candidates.length) }, () => worker()));
+  const configuredConcurrency = Number.parseInt(process.env.LEAD_EVIDENCE_CONCURRENCY ?? "8", 10);
+  const concurrency = Math.max(1, Math.min(16, Number.isFinite(configuredConcurrency) ? configuredConcurrency : 8));
+  await Promise.all(Array.from({ length: Math.min(concurrency, candidates.length) }, () => worker()));
   return {
     candidates: results.map((item) => item.candidate),
     creditsUsed: results.reduce((sum, item) => sum + item.credits, 0),
