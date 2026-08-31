@@ -11,6 +11,7 @@ on:
       - "src/lib/sales/**"
       - "src/app/api/assistant/messages/route.ts"
       - "src/providers/**"
+      - "db/migrations/**"
       - "scripts/generate-lead-workflow-doc.mjs"
       - "docs/generated/LEAD_EVALUATION_WORKFLOW_V2.md"
   push:
@@ -24,6 +25,7 @@ on:
       - "src/lib/sales/**"
       - "src/app/api/assistant/messages/route.ts"
       - "src/providers/**"
+      - "db/migrations/**"
       - "scripts/generate-lead-workflow-doc.mjs"
 
 permissions:

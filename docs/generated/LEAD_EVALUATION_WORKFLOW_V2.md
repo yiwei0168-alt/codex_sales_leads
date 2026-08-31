@@ -1,11 +1,11 @@
-# Cudy 销售线索端到端工作流 v2.0
+# Cudy 销售线索端到端工作流 v3.0.0
 
 > 本文档由 `scripts/generate-lead-workflow-doc.mjs` 自动生成。请修改版本化配置或实现代码，不要直接编辑生成文件。
 
-- 工作流版本：2.0.0
+- 运行时策略版本：3.0.0（基础流程定义 2.0.0）
 - 评分策略版本：2.0.0
-- 成本质量策略版本：2.0.0
-- 配置指纹：`e562ee61964373351aa0d5fd68f77d928a7bcb58eba6aea715168ca3e4f60048`
+- 成本质量策略版本：3.0.0
+- 配置指纹：`949505ae6475d6dd216285041a8a804540e6632d5caaddb165b32ec7f2b236cc`
 - 范围：From the user's natural-language market-development request and workspace context to ranked companies, editable cooperation paths, development strategy, outreach email, and private-memory learning from user edits.
 
 ## 一、从用户输入到最终输出的总流程
@@ -46,17 +46,19 @@ flowchart TD
 
 | 阶段 | 用途 | 默认模型 | 升级/回退 | 调用策略 |
 |---|---|---|---|---|
-| `01-user-input` | Intent classification and execution planning | KIMI_INTENT_MODEL or KIMI_MODEL; default kimi-k3 | Deterministic intent parser | Conditional; skipped when credentials are absent |
+| `01-user-input` | Intent classification and execution planning | KIMI_INTENT_LIGHT_MODEL; default kimi-k2.6 | KIMI_INTENT_MODEL or KIMI_MODEL; default kimi-k3 for materially complex planning | Light Kimi runs every turn; deterministic parsing is failure fallback only |
 | `02-context-memory` | Local-database RAG query and memory embeddings | EMBEDDING_MODEL; default text-embedding-v4 | No generative fallback | Required for vector retrieval; source documents remain in the local database |
-| `03-playbook` | Market playbook and search-query planning | LEAD_PLANNER_MODEL or OPENAI_GENERATION_MODEL; default gpt-5-mini | Deterministic playbook with required role-family coverage | One structured call per lead-search run when configured; cacheable |
-| `06-correction-role` | Entity correction, atomic facts and primary-role analysis | DEEPSEEK_MODEL; default deepseek-v4-flash | DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro; deterministic fallback is retry-only | Routine batches; ambiguity, low confidence, warnings or invalid batch output escalate per candidate |
-| `09-scoring-paths` | Role-aware score and possible cooperation paths | DEEPSEEK_MODEL; default deepseek-v4-flash | DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro | Routine batches; conflicts, low confidence, omitted candidates or invalid output escalate per candidate |
+| `03-playbook` | Market playbook and search-query planning | LEAD_PLANNER_MODEL or OPENAI_GENERATION_MODEL; default gpt-5-mini | Deterministic playbook with required role-family coverage | Cached standard playbook; light Kimi checks template fit; complex non-standard tasks use Kimi-k3 planning |
+| `06-correction-role` | Entity correction, atomic facts and primary-role analysis | DEEPSEEK_MODEL; default deepseek-v4-flash | DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro; deterministic fallback is retry-only | Routine batches; upgrade only for expected score change >=8 or a resolvable critical-state change |
+| `09-scoring-paths` | Role-aware score and possible cooperation paths | DEEPSEEK_MODEL; default deepseek-v4-flash | DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro | Routine batches; confidence, alternative paths and Top-N position never trigger upgrade alone |
 | `10-review` | Blind secondary review and disagreement judgment | LEAD_REVIEW_MODEL default gpt-5.6-terra; LEAD_JUDGE_MODEL default gpt-5.6-sol | DeepSeek review adapter using deepseek-v4-pro when explicitly routed | Selective only; skipped for the search-tool leaderboard where cooperation-path review cannot affect the metric |
 | `14-strategy` | Path-specific development strategy | KIMI_OUTREACH_MODEL or KIMI_MODEL; default kimi-k3 | Restricted template fallback | One call per generated strategy |
 | `15-email` | Path-specific development email | KIMI_OUTREACH_MODEL or KIMI_MODEL; default kimi-k3 | Restricted template fallback | One call per generated email, plus one bounded retry only for invalid JSON/schema output |
 | `16-feedback-memory` | User-feedback revision and reusable private-memory extraction | CLAUDE_OUTREACH_MODEL or CLAUDE_MODEL; default claude-sonnet-4-6 | Keep the user draft and record a failed memory event | One call per requested revision; text-embedding-v4 embeds accepted private memory |
 
 无生成模型阶段：多源搜索与网页抓取、研究深度确定性规则、证据包压缩、新鲜度校验、排行榜、账户等级、handoff 组装和持久化。
+
+意图识别每轮先调用轻量 Kimi 检查标准模板是否足够；仅在多市场、多目标、冲突约束或非标准复杂规划时升级 Kimi-k3。Lead 纠偏和评分以当前 DeepSeek 模型为主，只有预计改变总分至少 8 分或关键状态且高能力模型可解决时升级。主模型与升级模型相同则合并调用。最多允许两个显式批准、同级能力、同 Schema、同数据权限的跨公司 fallback；Embedding 不设置 fallback。
 
 ## 四、逐步输入、输出与策略
 
@@ -262,7 +264,6 @@ flowchart TD
 - Product relevance
 - User nomination
 - Conflicts
-- Top-N boundary
 
 输出：
 
@@ -333,10 +334,9 @@ flowchart TD
 - Seven dimensions
 - Total score
 - Eligibility
-- Confidence
-- Possible paths
+- Score confidence
+- At most two compact possible paths
 - Selected path
-- Target titles and CTA
 
 策略：
 
@@ -347,6 +347,9 @@ flowchart TD
 - Opportunity/risk 10
 - Use the best enabled product track
 - Use role-specific target-customer and scenario criteria
+- Use only the five-path taxonomy
+- Compute path FitScore deterministically from 30/25/20/15/10 sub-scores
+- Do not output path Confidence
 - Unknown is not zero
 - Path memory is guidance, not unsupported public fact
 
@@ -378,10 +381,10 @@ flowchart TD
 
 策略：
 
-- Always review severe conflicts and deterministic audits
-- Review low confidence and alternative paths only when commercially actionable
+- Review only severe deterministic conflicts and unresolved critical states
+- Do not review solely for low confidence, alternative paths, generic warnings or Top-N position
 - Do not spend high-capability review on non-actionable long-tail research holds
-- Judge only outcome-sensitive disagreement
+- Judge only outcome-sensitive disagreement of at least 8 points or a critical state
 
 失败与回退：Retain a valid primary assessment when review service fails unless a severe unresolved trigger makes publication unsafe.
 
@@ -447,7 +450,7 @@ flowchart TD
 
 - Keep handoff within transport budget
 - Only supported facts may be used externally
-- Carry role and every possible path to downstream agents
+- Carry role and at most two possible paths to downstream agents
 - Anchor downstream execution to selectedPathId unless the user overrides it
 
 失败与回退：Email generation is disabled when the handoff is not ready for external use; strategy may still be generated with unknowns.
@@ -590,7 +593,7 @@ flowchart TD
 - Future path recommendations
 - Future strategy and email generation
 
-## 五、v2.0 评分标准
+## 五、当前评分标准
 
 | 一级维度 | 分值 | 细分规则 |
 |---|---:|---|
@@ -604,71 +607,111 @@ flowchart TD
 
 ## 六、成本控制参数
 
-- 主评分证据包：保留全部 finding 引用，另加最多 4 条上下文；单条摘录最多 1800 字符。
-- 主评分批次：最多 70000 个序列化输入字符，同时仍受单批公司数上限约束；超限自动拆批，单候选不可再拆时保留为独立批次。
-- 独立复核证据包：保留全部 finding 引用，另加最多 2 条上下文；单条摘录最多 1400 字符。
-- 商业可行动分数阈值：75。
-- 多路径被视为实质接近的 fit 差：不超过 10。
+- 优化目标：模型 token 再降 40%，付费搜索/提取额度至少降 30%。
+- 证据预算：Limited 2250、Standard 5500、Deep 8000 tokens。
+- 二次引用：预计改变总分至少 8 分或改变关键状态；仅提高少量置信度不允许。
+- 主评分证据包：保留全部 finding 引用，另加最多 2 条上下文；单条摘录最多 1000 字符。
+- 主评分批次：最多 42000 个序列化输入字符，同时仍受单批公司数上限约束；超限自动拆批，单候选不可再拆时保留为独立批次。
+- 独立复核证据包：保留全部 finding 引用，另加最多 1 条上下文；单条摘录最多 800 字符。
+- 路径最多 2 条；通常显示 FitScore ≥65，全部低于门槛时只显示最高一条；不输出路径 Confidence。
 - Judge 总分差阈值：8。
-- 随机盲审比例：5%。
+- 随机盲审比例：0%。
 - JSON Schema 只在最高优先级 system prompt 中发送一次，避免在 user prompt 重复整份结构定义。
 - 高并发只降低墙钟时间，不降低 token；真正的成本控制来自证据压缩、选择性复核、模型路由、缓存和单候选重试。
+- 标准 playbook 与已完成评分使用租户隔离的精确依赖缓存；全命中时不得发送空模型请求。证据内容/新鲜度、纠正事实、评分策略校验和、Prompt、任务目标或用户路径记忆变化时，仅重算受影响候选。
 
 ## 七、质量门禁
 
 - strategicCandidateRecallPercent: 100
 - primaryRoleAgreementPercent: 97
-- selectedPathTypeAgreementPercent: 95
-- topNOverlapPercent: 90
-- maximumMeanAbsoluteScoreDifference: 3
 - eligibilityAgreementPercent: 97
+- offlineToolTopNOverlapPercent: 90
+- maximumMeanAbsoluteScoreDifference: 3
 - tier1DistributorKaErrors: 0
-- oldEvidenceUsedForScoring: 0
+- invalidEvidenceUsedForScoring: 0
 - validEvidenceReferencePercent: 100
+- privateMemoryLeakage: 0
+- maximumTokenIncreasePercent: 5
+- targetTokenReductionPercent: 40
+- targetPaidSearchCreditReductionPercent: 30
 
 任何成本优化必须在同一冻结证据快照上通过这些门禁，未通过时自动回退完整证据或高能力路径。
+正式产品不以 Top-N 作为升级依据；Top-N ≥90% 只用于离线搜索工具排行榜。代表性 A/B 每类只选 1–2 家，MAD 上限为 3 分，不自动全量重跑 207 家。
 
-## 八、知识与长期记忆边界
+## 八、搜索、网页与 PDF 获取策略
+
+- 已知官网 URL：先定向 Extract；Search 用于发现 URL，Extract/解析器用于读取正文，模型只看与当前缺口相关的片段。
+- Limited：Basic + raw content，最多 1 个查询组，不重复 Extract。Standard：Basic 不带 raw，提取 2–4 页。Deep：最多 3 个查询组，仅在实体冲突、复杂集团或 Basic 失败时用 Advanced；Crawl 仅限复杂站点且有边界。
+- PDF 先做价值门禁：≥60 才提取，45–59 只抽样，低于 45 跳过；每次升级提取方式前重新评估价值。
+- PDF 默认 pypdf；表格转 pdfplumber；扫描件仅对选定页用 Tesseract；仍有关键缺口时才对选定页使用高能力多模态模型。
+
+## 九、五类合作路径与流向
+
+- Direct Tier-1 Supply
+- Distributor-Mediated Supply
+- Direct Downstream Channel Supply
+- OEM/ODM
+- Other
+
+路径 FitScore 由模型给出五个语义子分、程序求和：角色/结构 30，用户阶段/供货 25，产品/客户/场景 20，采购/影响 15，执行可行性 10。角色与路径展示给用户且可修改；修改写入私有长期记忆，并与识别角色、候选路径一起输入后续开发策略和开发信 Agent。
+
+## 十、知识、证据与长期记忆边界
 
 | 数据 | 存储范围 | 可影响评分 | 可影响策略/邮件 |
 |---|---|---:|---:|
 | Cudy 产品、场景、客户与竞品确认知识 | 共享知识库 | 是 | 是 |
-| 普通 Web/RAG 证据 | 当前运行证据快照 | 是，须满足新鲜度与引用规则 | 是，须在 handoff 允许范围内 |
+| 普通 Web/RAG 证据 | 独立 public_evidence 库及版本化快照 | 是；陈旧只提醒，不自动 invalid | 是，须在 handoff 允许范围内 |
 | 用户确认的工作区知识 | 用户/工作区私有库 | 按知识策略；营销措辞不作为公共事实 | 是 |
 | 用户合作路径修改 | 用户/工作区私有路径记忆 | 不直接改历史分数 | 是，影响未来路径推荐 |
 | 用户开发信修改 | 用户/工作区私有邮件风格记忆 | 否 | 是 |
 
-## 九、实现文件指纹
+## 十一、成本与产出利用率遥测
+
+每个阶段记录输入/输出数量与字节、生成/有效/下游采用量、Token、实际模型、fallback、搜索额度和依赖指纹。事件生命周期为 generated、valid、retrieved、cited、decision-used、displayed、selected、edited、executed。系统只自动记录优化机会，不自动应用；私有正文、Prompt 和供应商原始响应不进入 GitHub 文档或聚合遥测。
+
+## 十二、实现文件指纹
 
 以下指纹用于审阅代码是否发生变化。GitHub 自动同步任务会在相关实现或配置修改后重新生成本文档。
 
 | 文件 | SHA-256 |
 |---|---|
-| `config/lead-scoring/policy-v2.0.0.json` | `c82cb110974d4d175abe5abd18140dac378154f2578ed9910cbca3b8d7c5dc91` |
-| `config/lead-workflow/cost-quality-policy-v2.0.0.json` | `696aae4d3a5a8bfce96c4f0d69cf2334905cb4f37352bb2eab8f00c39e84a9ee` |
+| `config/lead-scoring/policy-v2.0.0.json` | `aa0894967fd10096284b856c4654e2bf8615065aa9eafc3eb99dabe9567a31da` |
+| `config/lead-workflow/cost-quality-policy-v3.0.0.json` | `2e3d85b6ccd4a9fa13de39cdc66af32814c75b8b4a693cddd74638743b1def53` |
+| `config/lead-workflow/runtime-policy-v3.0.0.json` | `f58509eb101f842ae9c2e7b01484c8b2e429908166a13a502c5d8be477127989` |
 | `src/app/api/assistant/messages/route.ts` | `04bec90cc3d3f336195e8ab97a5ad4b1ec1e05b95606064225e098e94ed7a5cd` |
-| `src/lib/assistant/types.ts` | `d430cdd811a92d590fb47aac95fb8b57b2a5bc57a16ffbdbfef362b1c5c13eb3` |
+| `src/lib/assistant/types.ts` | `ddb4cc47c6d9c2523b115a32c0d74738fb66ddfd88f14a0e2cb37d77b308f667` |
 | `src/lib/assistant/intent.ts` | `bda42f827315a4cbc185a9bbd56263509613360d2db61b7434f5874d6bab86b9` |
-| `src/lib/assistant/intent-agent.ts` | `3472931b17ede1760d6049818f22018cc686ae62a770bb023c82b61ebaeff762` |
+| `src/lib/assistant/intent-agent.ts` | `383351c0023037cff4c08a8ccf6ba88bebf2d5ff3c60dd1ee1c8eb8b7a696cb4` |
 | `src/lib/assistant/service.ts` | `1e2d9719d2937cc3081c3dbddf016d7cd665de1c1e9a88c775d10e3863ec00df` |
 | `src/lib/assistant/repository.ts` | `4243485613740437216b7867c0b8b420ea16d555f852397b436fd8a5f5414e67` |
-| `src/lib/leads/workflow/graph.ts` | `8387df5ce85abc4ca1a7fe8fbb391c73d15ac4c4f35745c2634eef1cdc959877` |
+| `src/lib/leads/workflow/graph.ts` | `db53a606bcd9233361241cc89163bd71bd5ea396ee836415ceefc657750c9d25` |
 | `src/lib/leads/workflow/jobs.ts` | `73b446cdbf949c125a4ddd248cbf08ec01b5d780e26f756250d34a997bfd5c87` |
 | `src/lib/leads/workflow/rag-context.ts` | `d34f47db8308c4d89b6b81dfdcda530757b3af35a5d678725488335af127f410` |
-| `src/lib/leads/workflow/playbook.ts` | `48badb9d1b4c02f6eea2836ddbe8bfd1a25e0a99a4d20f353044775758f828f6` |
-| `src/lib/leads/workflow/discovery.ts` | `8581d8c32beddf0b7197e45f1c4d6187782d8f0274330b2c643b4f24196e3c1e` |
+| `src/lib/leads/workflow/playbook.ts` | `566a55bf71486a999a443ec364d7a316bba578eb3d0e5c9a3c37dcf223a45b98` |
+| `src/lib/leads/workflow/playbook-cache.ts` | `945d3fc727312208650ee7b4e55e33860e7c54f7e3daa939f768952409a1803f` |
+| `src/lib/leads/workflow/discovery.ts` | `1aa5ffc06dd9dcb6220942fd5056003c90031e95acb171cc25fa8048e4125879` |
 | `src/lib/leads/global-search.ts` | `d62691dd6ffaecad6b13d5d7f05abaa5bdc39bd8ff91c1257c71cc21bacc670c` |
-| `src/lib/leads/workflow/evidence-correction-agent.ts` | `6219791373be29b531a25d628e9965669b03205660b3f419c65b9bd5ff559308` |
-| `src/lib/leads/workflow/evidence-packet.ts` | `c3b646b9a78e0584f267ddec5c97dc6bbfc4abc01a39ca4de9795d3c480ac005` |
-| `src/lib/leads/workflow/qualification-agent.ts` | `8264e1d72201da33f079d7a1094903ca6de48c5ea9450438b109f08d0e686c8f` |
-| `src/lib/leads/workflow/assessment-review-agent.ts` | `a7a7ac3849b914c056b839dc0eecfcaf24fd0c01b318f3bc087216abde720bce` |
-| `src/providers/deepseek.ts` | `986b13878cece7808a1ef6872cac1a96a5662ceb1b03acebeaef79749f76aa77` |
-| `src/providers/tavily.ts` | `40adc0d2db5fc395d74cb5455fdca86d76f7580e478a71d63a89e094563194d6` |
-| `src/lib/leads/workflow/handoff-assembler.ts` | `58b92f337c05b7e1b62b28db27eb7d6ed1b5bcd95272926868f3c4a1df3a680c` |
-| `src/lib/leads/workflow/persistence.ts` | `657f9db353d4af29759876cfddaeea30eee1095a5ff712fc2daef40ece9692a1` |
-| `src/lib/sales/repository.ts` | `3f3a9ca6f0b98b43f9609091b6ce93a046f336246b71e46d53a3525fd9e7ba86` |
-| `src/lib/outreach/graph.ts` | `97c7377dbc5eaaabe150f42e10811e599fdd65f028424f4c415927b5045b2590` |
-| `src/lib/outreach/kimi-agent.ts` | `e2e219fb192f8cb9593b9dd3d2413205f88e9664324e1b8b8844e1101db9981c` |
-| `src/lib/outreach/claude-agent.ts` | `f4ce88c2db76aed34d1faa956e1cfd557fcfd7dabf01417e4573d3d631c987f5` |
-| `src/lib/outreach/repository.ts` | `44448d88796ef8908843c80b779d831cb5fd966a605a73c98642ea99e7eb76a2` |
-| `src/lib/outreach/knowledge-repository.ts` | `d38601efa6bf9911675774e3fea45d2041ef47907cf3bbbc2d0732bf036cd204` |
+| `src/lib/leads/workflow/evidence-correction-agent.ts` | `9f35d93f2913e6b77de3c988d8f2d44c9541e549441254fea5571f037dd22798` |
+| `src/lib/leads/workflow/evidence-packet.ts` | `1ca9577284952e245a8e8c51ae9fa82472fcbcf0b262ebaa83fc6463f379836f` |
+| `src/lib/leads/workflow/qualification-agent.ts` | `97967abc62b11dae08b75483b3f6b555d4f576d7ae2776e675749e722398dff3` |
+| `src/lib/leads/workflow/assessment-cache.ts` | `d7fd5fe0b350aa56eb9fcfb283c2c81a2de9564f88a3ef677631b82d81474fb3` |
+| `src/lib/leads/workflow/assessment-review-agent.ts` | `df3499c777bd541bb220adbfbdd7066c79c7b49053967b2ae96225c45345290d` |
+| `src/providers/deepseek.ts` | `9cb9825adf079109e19f287cb9b079ce4bb4cd55283eb8225a521b82fc6d0982` |
+| `src/providers/resilient-ai.ts` | `3456780221fa361ca66142bd01bc2627c5aec194279fd040426d7f40a65c5b31` |
+| `src/providers/tavily.ts` | `5360b3bd415a0e53c13deb82c76b1718fc3e8990c54160f212b5df553ae9e377` |
+| `src/lib/leads/workflow/handoff-assembler.ts` | `606736bdfcced8f3a476a58808b07c65867b75f948c46b66b21354e5102f3827` |
+| `src/lib/leads/workflow/persistence.ts` | `f6d7a93a51da93de57870da279a3b191c2cab191c6342ed4502042a73b0838da` |
+| `src/lib/sales/repository.ts` | `ba76e0227ec5c039bb8196df37322b24146b2d64a42af7e364e96dfd3dfdfef9` |
+| `src/lib/outreach/graph.ts` | `18dbb0c67613ab49cf69a61267c62d95f7e58da8b11b7beddfb2139aad78c19c` |
+| `src/lib/outreach/kimi-agent.ts` | `dd76bb48386350e1df6206385a3e90786249f2ca2a8116552fadd26a8ee94376` |
+| `src/lib/outreach/claude-agent.ts` | `21276b9b3b436efd22fe638bac9a128a21f594faa0b99fe7af7614d02913b588` |
+| `src/lib/outreach/repository.ts` | `9a70ae40ee817385f8bbbb9c9785ffc50efeb24eb4833c2e7fd8a8bfb77286ac` |
+| `src/lib/outreach/knowledge-repository.ts` | `59a023091f9adac80d4b502e1b4cf69b9d318bd5a7610112354fb95a8d802557` |
+| `src/lib/leads/workflow/evidence-budget.ts` | `db035da87b8896ae5a81b12744a072810de80f160cb472724d5cedbcf06037f9` |
+| `src/lib/leads/workflow/pdf-extraction-policy.ts` | `6d8847827f1e96eab570114bca33cd447eaa3e64d7246ee09a748f8e6d6ade03` |
+| `src/lib/leads/workflow/public-evidence-repository.ts` | `5dcbfe60487eeb5d2ccab4b6e3eac9529705b21005abaa599359c992e51c4b03` |
+| `src/lib/leads/workflow/workflow-telemetry.ts` | `47c86d6b05cd87f088eb110cae2603989aebc920b4203688fb899c4d48cbde95` |
+| `db/migrations/029_isolated_user_long_term_memory.sql` | `e3564a7328ffd643e60798c4d2bd6377c563aec0c224ad54589f534a0b5ae07c` |
+| `db/migrations/030_public_evidence_library.sql` | `43a795e0b015613db763707136829c04bdca56a0b6a19b950a9bf9a810eb3998` |
+| `db/migrations/031_workflow_efficiency_telemetry.sql` | `982a799ecd008ba7f8b68d9fc6b54fc59f2532aad8dea4fb7771659badff0a26` |
+| `db/migrations/032_lead_assessment_cache.sql` | `3837fd5de46961ebf27258f59ecfb623407e601dcd1e0554dcc64cab370acad6` |

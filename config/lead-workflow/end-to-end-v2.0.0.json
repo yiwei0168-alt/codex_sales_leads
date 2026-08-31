@@ -16,9 +16,9 @@
     {
       "stages": ["01-user-input"],
       "purpose": "Intent classification and execution planning",
-      "defaultModel": "KIMI_INTENT_MODEL or KIMI_MODEL; default kimi-k3",
-      "escalationOrFallback": "Deterministic intent parser",
-      "callPolicy": "Conditional; skipped when credentials are absent"
+      "defaultModel": "KIMI_INTENT_LIGHT_MODEL; default kimi-k2.6",
+      "escalationOrFallback": "KIMI_INTENT_MODEL or KIMI_MODEL; default kimi-k3 for materially complex planning",
+      "callPolicy": "Light Kimi runs every turn; deterministic parsing is failure fallback only"
     },
     {
       "stages": ["02-context-memory"],
@@ -32,21 +32,21 @@
       "purpose": "Market playbook and search-query planning",
       "defaultModel": "LEAD_PLANNER_MODEL or OPENAI_GENERATION_MODEL; default gpt-5-mini",
       "escalationOrFallback": "Deterministic playbook with required role-family coverage",
-      "callPolicy": "One structured call per lead-search run when configured; cacheable"
+      "callPolicy": "Cached standard playbook; light Kimi checks template fit; complex non-standard tasks use Kimi-k3 planning"
     },
     {
       "stages": ["06-correction-role"],
       "purpose": "Entity correction, atomic facts and primary-role analysis",
       "defaultModel": "DEEPSEEK_MODEL; default deepseek-v4-flash",
       "escalationOrFallback": "DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro; deterministic fallback is retry-only",
-      "callPolicy": "Routine batches; ambiguity, low confidence, warnings or invalid batch output escalate per candidate"
+      "callPolicy": "Routine batches; upgrade only for expected score change >=8 or a resolvable critical-state change"
     },
     {
       "stages": ["09-scoring-paths"],
       "purpose": "Role-aware score and possible cooperation paths",
       "defaultModel": "DEEPSEEK_MODEL; default deepseek-v4-flash",
       "escalationOrFallback": "DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro",
-      "callPolicy": "Routine batches; conflicts, low confidence, omitted candidates or invalid output escalate per candidate"
+      "callPolicy": "Routine batches; confidence, alternative paths and Top-N position never trigger upgrade alone"
     },
     {
       "stages": ["10-review"],
@@ -79,7 +79,8 @@
   ],
   "sourceFiles": [
     "config/lead-scoring/policy-v2.0.0.json",
-    "config/lead-workflow/cost-quality-policy-v2.0.0.json",
+    "config/lead-workflow/cost-quality-policy-v3.0.0.json",
+    "config/lead-workflow/runtime-policy-v3.0.0.json",
     "src/app/api/assistant/messages/route.ts",
     "src/lib/assistant/types.ts",
     "src/lib/assistant/intent.ts",
@@ -90,13 +91,16 @@
     "src/lib/leads/workflow/jobs.ts",
     "src/lib/leads/workflow/rag-context.ts",
     "src/lib/leads/workflow/playbook.ts",
+    "src/lib/leads/workflow/playbook-cache.ts",
     "src/lib/leads/workflow/discovery.ts",
     "src/lib/leads/global-search.ts",
     "src/lib/leads/workflow/evidence-correction-agent.ts",
     "src/lib/leads/workflow/evidence-packet.ts",
     "src/lib/leads/workflow/qualification-agent.ts",
+    "src/lib/leads/workflow/assessment-cache.ts",
     "src/lib/leads/workflow/assessment-review-agent.ts",
     "src/providers/deepseek.ts",
+    "src/providers/resilient-ai.ts",
     "src/providers/tavily.ts",
     "src/lib/leads/workflow/handoff-assembler.ts",
     "src/lib/leads/workflow/persistence.ts",
@@ -165,7 +169,7 @@
     {
       "id": "07-research-depth",
       "name": "Research-depth routing",
-      "inputs": ["Corrected role", "Positive size evidence", "Product relevance", "User nomination", "Conflicts", "Top-N boundary"],
+      "inputs": ["Corrected role", "Positive size evidence", "Product relevance", "User nomination", "Conflicts"],
       "outputs": ["deep", "standard", "limited"],
       "strategy": ["Deep research for global/national/valuable or nominated companies", "Standard research for ordinary viable candidates", "Limited research only for positively identified long-tail candidates", "Sparse web presence alone does not prove small size"],
       "failure": "Long-tail candidates may be held after targeted searches fail; strategic companies must not be downgraded merely because their channel structure is complex.",
@@ -184,8 +188,8 @@
       "id": "09-scoring-paths",
       "name": "Role-aware scoring and possible cooperation paths",
       "inputs": ["Corrected candidate", "Atomic findings", "Evidence packet", "Cudy playbook", "Private path memory", "Versioned scoring policy"],
-      "outputs": ["Seven dimensions", "Total score", "Eligibility", "Confidence", "Possible paths", "Selected path", "Target titles and CTA"],
-      "strategy": ["Product/use-case fit 50", "Path/influence 15", "Same-primary-role scale 15", "Execution 10", "Opportunity/risk 10", "Use the best enabled product track", "Use role-specific target-customer and scenario criteria", "Unknown is not zero", "Path memory is guidance, not unsupported public fact"],
+      "outputs": ["Seven dimensions", "Total score", "Eligibility", "Score confidence", "At most two compact possible paths", "Selected path"],
+      "strategy": ["Product/use-case fit 50", "Path/influence 15", "Same-primary-role scale 15", "Execution 10", "Opportunity/risk 10", "Use the best enabled product track", "Use role-specific target-customer and scenario criteria", "Use only the five-path taxonomy", "Compute path FitScore deterministically from 30/25/20/15/10 sub-scores", "Do not output path Confidence", "Unknown is not zero", "Path memory is guidance, not unsupported public fact"],
       "failure": "Unsupported evidence IDs and paths are removed; schema failures retry only the invalid candidate and reuse checkpoints.",
       "downstream": ["Independent review", "Ranking", "Development handoff"]
     },
@@ -194,7 +198,7 @@
       "name": "Selective blind review and disagreement judge",
       "inputs": ["Primary assessment", "Evidence packet", "Review-routing policy"],
       "outputs": ["not-required", "secondary-confirmed", "judge-resolved", "targeted-research-required", "review-failed"],
-      "strategy": ["Always review severe conflicts and deterministic audits", "Review low confidence and alternative paths only when commercially actionable", "Do not spend high-capability review on non-actionable long-tail research holds", "Judge only outcome-sensitive disagreement"],
+      "strategy": ["Review only severe deterministic conflicts and unresolved critical states", "Do not review solely for low confidence, alternative paths, generic warnings or Top-N position", "Do not spend high-capability review on non-actionable long-tail research holds", "Judge only outcome-sensitive disagreement of at least 8 points or a critical state"],
       "failure": "Retain a valid primary assessment when review service fails unless a severe unresolved trigger makes publication unsafe.",
       "downstream": ["Final assessment", "Research queue", "Cost telemetry"]
     },
@@ -212,7 +216,7 @@
       "name": "Restricted handoff and persistence",
       "inputs": ["Corrected candidate", "Final assessment", "Review", "Evidence ledger"],
       "outputs": ["LeadDevelopmentHandoff", "Externally usable facts", "Internal interpretations", "Do-not-claim list", "Personalization hooks", "Quality flags"],
-      "strategy": ["Keep handoff within transport budget", "Only supported facts may be used externally", "Carry role and every possible path to downstream agents", "Anchor downstream execution to selectedPathId unless the user overrides it"],
+      "strategy": ["Keep handoff within transport budget", "Only supported facts may be used externally", "Carry role and at most two possible paths to downstream agents", "Anchor downstream execution to selectedPathId unless the user overrides it"],
       "failure": "Email generation is disabled when the handoff is not ready for external use; strategy may still be generated with unknowns.",
       "downstream": ["Sales UI", "Development strategy Agent", "Email Agent"]
     },
