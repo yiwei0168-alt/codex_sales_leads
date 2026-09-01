@@ -104,6 +104,12 @@ GitHub 只保存聚合指标、质量门禁和优化事项，不保存密钥、�
 
 已实现的成本控制：Agent、Brand Owner、OEM/ODM默认关闭；Tavily从发现策略中禁止；同一轨道禁止相同provider/引擎/机制重复；Gemini Full/Product Gemini和SearchAPI按类别互斥或仅缺口升级。当前最重要的未完成优化是把路由执行结果的新增唯一候选、重复、门禁、credits、延迟和下游采用真实回写数据库。
 
+### 阶段2：统一provider与实时注册表（实现验证）
+
+新增生产级Google Grounding（Full/Product）、SearchAPI Google/Bing、Brave、Exa和Google Places适配器，以及跨工具共享的实时候选注册表。适配器统一记录请求数、有限重试、credits、模型token和延迟；不保存密钥或原始响应。注册表按根域名、Place ID和规范化名称实时归并，保留首次发现及全部辅助发现记录；无官网的Places候选保留为待解析实体，不直接进入评分。
+
+本阶段仍未激活外部调用，真实输入/有效输出/下游采用/API成本均为`not-observed`。自动测试覆盖16项provider/注册表/路由行为；下一阶段必须接入轻量门禁和数据库贡献回写后再激活，避免只增加provider调用而不减少重复下游成本。
+
 ## 持续优化事项
 
 | 优先级 | 工作流环节 | 可优化点 | 质量门禁 | 状态 |

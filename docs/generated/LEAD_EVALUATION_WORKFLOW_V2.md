@@ -5,7 +5,7 @@
 - 运行时策略版本：3.0.0（基础流程定义 2.0.0）
 - 评分策略版本：2.0.0
 - 成本质量策略版本：3.0.0
-- 配置指纹：`7cba0a90b0014bc160032de61b29e052e1044e119af585ca111045884bebca17`
+- 配置指纹：`b2b5117fc3725dfc7e0f78ee5105fcbc0ae2837c913c22087ffa040adc4c623c`
 - 范围：From the user's natural-language market-development request and workspace context to ranked companies, editable cooperation paths, development strategy, outreach email, and private-memory learning from user edits.
 
 ## 一、从用户输入到最终输出的总流程
@@ -689,30 +689,33 @@ flowchart TD
 
 | 文件 | SHA-256 |
 |---|---|
-| `config/lead-scoring/policy-v2.0.0.json` | `b0b387e6f66fb1723401a1d86445222682dcc6f8695de42ab67f1af84905580c` |
-| `config/lead-search/hybrid-search-v1.0.0.json` | `8e2b03dd13d3c8737004b650c301b177b9e39ca594bbb2c1b8ae4d6f66e447c0` |
+| `config/lead-scoring/policy-v2.0.0.json` | `0039203aafb29ec73e4beb10f72dc5ec114785fb4c5f311c7b425de0d451fc1b` |
+| `config/lead-search/hybrid-search-v1.0.0.json` | `71e05a4ec2fd3133173fa243ed2540ad87ff53682ddb6a1f371cff080f96477c` |
 | `config/lead-workflow/cost-quality-policy-v3.0.0.json` | `2e3d85b6ccd4a9fa13de39cdc66af32814c75b8b4a693cddd74638743b1def53` |
 | `config/lead-workflow/runtime-policy-v3.0.0.json` | `f58509eb101f842ae9c2e7b01484c8b2e429908166a13a502c5d8be477127989` |
 | `src/app/api/assistant/messages/route.ts` | `04bec90cc3d3f336195e8ab97a5ad4b1ec1e05b95606064225e098e94ed7a5cd` |
-| `src/lib/assistant/types.ts` | `0e588f15b29ba36dc5d3e235d28f859415d31f5fc447a0f8c970c6aa79ee71e4` |
-| `src/lib/assistant/intent.ts` | `c91b9808aa67fd78ccd80f1747c839ff69ff6d6a58822ec6b07f8524f3894fd6` |
-| `src/lib/assistant/intent-agent.ts` | `c5f90b10866ccd294bca4415e216a35218d611f247ccf636bf6779010e778107` |
+| `src/lib/assistant/types.ts` | `e9c9004fa6a69805a8a17fc2a139e5612abd5f909c086df6e146c3d17568ef78` |
+| `src/lib/assistant/intent.ts` | `cb77a2854f0058d92bf758ce4610d298bc94dde0157ade4f0bd3d05343fad168` |
+| `src/lib/assistant/intent-agent.ts` | `71a7a2e637266476f5f62610e3d8d186eb08a28539e395bcb740f97655713551` |
 | `src/lib/assistant/service.ts` | `1e2d9719d2937cc3081c3dbddf016d7cd665de1c1e9a88c775d10e3863ec00df` |
 | `src/lib/assistant/repository.ts` | `4243485613740437216b7867c0b8b420ea16d555f852397b436fd8a5f5414e67` |
 | `src/lib/leads/workflow/graph.ts` | `db53a606bcd9233361241cc89163bd71bd5ea396ee836415ceefc657750c9d25` |
 | `src/lib/leads/workflow/jobs.ts` | `73b446cdbf949c125a4ddd248cbf08ec01b5d780e26f756250d34a997bfd5c87` |
 | `src/lib/leads/workflow/rag-context.ts` | `d34f47db8308c4d89b6b81dfdcda530757b3af35a5d678725488335af127f410` |
-| `src/lib/leads/workflow/playbook.ts` | `8cbf633eadacbcccc36bb944f8c527107759e0a815d58f17d4d595da05642a4b` |
+| `src/lib/leads/workflow/playbook.ts` | `ea73c0cfa94b987c68b054eae59acb77f5009e8415320aac3b99884c9731fcab` |
 | `src/lib/leads/workflow/playbook-cache.ts` | `945d3fc727312208650ee7b4e55e33860e7c54f7e3daa939f768952409a1803f` |
-| `src/lib/leads/workflow/hybrid-search-policy.ts` | `e7dc7a25457cf8cd1f08dc9309e9d95556991cd9288bae4ee608952cc7a564ec` |
+| `src/lib/leads/workflow/hybrid-search-policy.ts` | `a34a06523189149918c2942bc7596c434b743354b49e56debd7c3702ea0a9fb0` |
+| `src/lib/leads/workflow/candidate-registry.ts` | `55d11ebb6d6add24161ca5ad9126f767102b002f14d08706845ac6a7b6d43666` |
 | `src/lib/leads/workflow/discovery.ts` | `1aa5ffc06dd9dcb6220942fd5056003c90031e95acb171cc25fa8048e4125879` |
-| `src/lib/leads/global-search.ts` | `21a1666a228a846826ec50301a78eb1eac0d8dc73de6d8db812e349ae6fbb7b9` |
+| `src/lib/leads/global-search.ts` | `963d07622725531e72d7f1807d4228a23d59d6a320b5d1e508b602bcc05c65db` |
 | `src/lib/leads/workflow/evidence-correction-agent.ts` | `9f35d93f2913e6b77de3c988d8f2d44c9541e549441254fea5571f037dd22798` |
 | `src/lib/leads/workflow/evidence-packet.ts` | `1ca9577284952e245a8e8c51ae9fa82472fcbcf0b262ebaa83fc6463f379836f` |
 | `src/lib/leads/workflow/qualification-agent.ts` | `97967abc62b11dae08b75483b3f6b555d4f576d7ae2776e675749e722398dff3` |
 | `src/lib/leads/workflow/assessment-cache.ts` | `d7fd5fe0b350aa56eb9fcfb283c2c81a2de9564f88a3ef677631b82d81474fb3` |
 | `src/lib/leads/workflow/assessment-review-agent.ts` | `df3499c777bd541bb220adbfbdd7066c79c7b49053967b2ae96225c45345290d` |
 | `src/providers/deepseek.ts` | `9cb9825adf079109e19f287cb9b079ce4bb4cd55283eb8225a521b82fc6d0982` |
+| `src/providers/discovery-contracts.ts` | `0c4b931ee82288cb7e114c919d21c9ac3383a9768f4d3b4f75d3fb2b1ce793ad` |
+| `src/providers/discovery.ts` | `c075b07c629db376f058532e8e7afa8543acad7bde0a7d45bdda2c9ec6ee070c` |
 | `src/providers/resilient-ai.ts` | `3456780221fa361ca66142bd01bc2627c5aec194279fd040426d7f40a65c5b31` |
 | `src/providers/tavily.ts` | `5360b3bd415a0e53c13deb82c76b1718fc3e8990c54160f212b5df553ae9e377` |
 | `src/lib/leads/workflow/handoff-assembler.ts` | `606736bdfcced8f3a476a58808b07c65867b75f948c46b66b21354e5102f3827` |
@@ -723,11 +726,12 @@ flowchart TD
 | `src/lib/outreach/claude-agent.ts` | `21276b9b3b436efd22fe638bac9a128a21f594faa0b99fe7af7614d02913b588` |
 | `src/lib/outreach/repository.ts` | `9a70ae40ee817385f8bbbb9c9785ffc50efeb24eb4833c2e7fd8a8bfb77286ac` |
 | `src/lib/outreach/knowledge-repository.ts` | `59a023091f9adac80d4b502e1b4cf69b9d318bd5a7610112354fb95a8d802557` |
+| `db/migrations/033_hybrid_search_contribution.sql` | `4088eb1ae2f9dbf58c2150a5c7ce3b4f5a49e1e75e2fb372887aed9d153ffb05` |
 | `src/lib/leads/workflow/evidence-budget.ts` | `db035da87b8896ae5a81b12744a072810de80f160cb472724d5cedbcf06037f9` |
 | `src/lib/leads/workflow/pdf-extraction-policy.ts` | `6d8847827f1e96eab570114bca33cd447eaa3e64d7246ee09a748f8e6d6ade03` |
 | `src/lib/leads/workflow/public-evidence-repository.ts` | `5dcbfe60487eeb5d2ccab4b6e3eac9529705b21005abaa599359c992e51c4b03` |
 | `src/lib/leads/workflow/workflow-telemetry.ts` | `47c86d6b05cd87f088eb110cae2603989aebc920b4203688fb899c4d48cbde95` |
-| `experiments/multi-source-lead-discovery/scripts/score-v3-tool-lead-value.ts` | `0417c889812d19ff5b8f28a76102eb80bc827b1356fc26cb5a33a22240ee811d` |
+| `experiments/multi-source-lead-discovery/scripts/score-v3-tool-lead-value.ts` | `633e541c552fd9d979a60211fc4adf981327966a197d8439f41c3a88392bd6b8` |
 | `experiments/multi-source-lead-discovery/scripts/render-v3-tool-evaluation.ts` | `1fdb0d23c3465159403b54f4a42a19e28556ce31de320c118ada5d8fd2615a7c` |
 | `experiments/multi-source-lead-discovery/scripts/verify-v3-tool-evaluation.ts` | `447ed84f220192fbab192033ebde7d8b0b2f7d86552a0769cbe0f341d33797fd` |
 | `db/migrations/029_isolated_user_long_term_memory.sql` | `e3564a7328ffd643e60798c4d2bd6377c563aec0c224ad54589f534a0b5ae07c` |

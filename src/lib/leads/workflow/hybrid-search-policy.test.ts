@@ -49,6 +49,7 @@ describe("hybrid search policy", () => {
       userRequest: "Search Germany OEM ODM private-label customer leads", opportunityTargets: ["OEM/ODM"] }));
     expect(route.some((step) => step.category === "oem-odm-opportunity")).toBe(true);
     expect(route.some((step) => step.category === "brand-owner")).toBe(false);
+    expect(new Set(route.map((step) => step.category))).toEqual(new Set(["oem-odm-opportunity"]));
     expect(route.some((step) => step.provider === "gemini-product")).toBe(false);
     expect(route.some((step) => step.provider === "google-places")).toBe(false);
   });

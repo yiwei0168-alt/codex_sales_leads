@@ -133,6 +133,26 @@ export interface LeadWorkflowCandidate {
   providerScore: number;
   evidence: LeadEvidenceItem[];
   evidenceWarnings: string[];
+  discoveryOccurrences?: LeadDiscoveryOccurrence[];
+  searchCategories?: string[];
+  suspectedRelationships?: Array<{ relationshipType: string; relatedName: string; sourceUrl: string; status: "unresolved" }>;
+  opportunitySignals?: Array<{ signalType: string; basis: "explicit" | "indirect"; sourceUrl: string; status: "unverified" | "verified" | "rejected" }>;
+}
+
+export interface LeadDiscoveryOccurrence {
+  occurrenceId: string;
+  provider: string;
+  engine: string;
+  mechanism: string;
+  category: string;
+  track: string;
+  query: string;
+  rank: number;
+  url: string | null;
+  domain: string | null;
+  externalId?: string;
+  firstDiscovery: boolean;
+  capturedAt: string;
 }
 
 export interface LeadCandidateCorrection {

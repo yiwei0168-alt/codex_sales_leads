@@ -113,6 +113,9 @@ function dualTracks(mode: NormalizedLeadSearchPlan["coverageMode"], targetCount:
 function selectedCategoryTracks(plan: NormalizedLeadSearchPlan): Array<[LeadSearchCategory, string[]]> {
   const roles = new Set(plan.roles);
   const selected: Array<[LeadSearchCategory, string[]]> = [];
+  if (plan.opportunityTargets.includes("OEM/ODM")) {
+    return [["oem-odm-opportunity", ["customer-opportunity"]]];
+  }
   if (roles.has("Distributor") || roles.has("VAD")) selected.push(["distribution", ["strategic"]]);
   if (roles.has("VAR") || roles.has("Dealer") || roles.has("Reseller")) {
     selected.push(["resale", dualTracks(plan.coverageMode, plan.targetCount, "national-b2b", "local-b2b")]);
@@ -145,11 +148,8 @@ function selectedCategoryTracks(plan: NormalizedLeadSearchPlan): Array<[LeadSear
     selected.push(["isp", tracks]);
   }
   if (roles.has("Agent")) selected.push(["agent", ["professional-agent"]]);
-  if (roles.has("Brand Owner") && !plan.opportunityTargets.includes("OEM/ODM")) {
+  if (roles.has("Brand Owner")) {
     selected.push(["brand-owner", ["owned-network-products"]]);
-  }
-  if (plan.opportunityTargets.includes("OEM/ODM")) {
-    selected.push(["oem-odm-opportunity", ["customer-opportunity"]]);
   }
   return selected;
 }

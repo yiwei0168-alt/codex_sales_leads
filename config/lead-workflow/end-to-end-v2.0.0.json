@@ -94,6 +94,7 @@
     "src/lib/leads/workflow/playbook.ts",
     "src/lib/leads/workflow/playbook-cache.ts",
     "src/lib/leads/workflow/hybrid-search-policy.ts",
+    "src/lib/leads/workflow/candidate-registry.ts",
     "src/lib/leads/workflow/discovery.ts",
     "src/lib/leads/global-search.ts",
     "src/lib/leads/workflow/evidence-correction-agent.ts",
@@ -102,6 +103,8 @@
     "src/lib/leads/workflow/assessment-cache.ts",
     "src/lib/leads/workflow/assessment-review-agent.ts",
     "src/providers/deepseek.ts",
+    "src/providers/discovery-contracts.ts",
+    "src/providers/discovery.ts",
     "src/providers/resilient-ai.ts",
     "src/providers/tavily.ts",
     "src/lib/leads/workflow/handoff-assembler.ts",
@@ -111,7 +114,8 @@
     "src/lib/outreach/kimi-agent.ts",
     "src/lib/outreach/claude-agent.ts",
     "src/lib/outreach/repository.ts",
-    "src/lib/outreach/knowledge-repository.ts"
+    "src/lib/outreach/knowledge-repository.ts",
+    "db/migrations/033_hybrid_search_contribution.sql"
   ],
   "stages": [
     {
