@@ -2,7 +2,7 @@
 
 本目录是混合搜索策略的独立审阅入口。文档记录用户逐项确认的搜索机制、版本迭代、尚待讨论的候选类别，以及后续真实搜索测评必须采集的工具贡献和下游质量数据。
 
-- 当前策略版本：`0.4.0-discussion`
+- 当前策略版本：`0.5.0-discussion`
 - 当前状态：四个候选类别已确认，生产代码尚未按本文修改
 - 文档分支：`workflow-docs/hybrid-search-strategy`
 - 最近更新：2026-09-01
@@ -22,7 +22,7 @@
 | Reseller / VAR / DVAR | 已确认 | 0.2.0 |
 | Retailer / E-tailer | 已确认 | 0.3.0 |
 | SI / MSP | 已确认 | 0.4.0 |
-| Installer | 待讨论 | - |
+| Installer | 已确认 | 0.5.0 |
 | ISP / WISP / 区域电信 | 待讨论 | - |
 | Agent、OEM/ODM、其他特殊类型 | 待讨论 | - |
 

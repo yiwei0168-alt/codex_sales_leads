@@ -85,3 +85,15 @@
 - 同时记录token、API credits、延迟、重试、丢弃原因和每个有效候选成本。
 
 状态：确认并纳入测量规范。
+
+## D009：Installer
+
+- 地方/区域Installer以Google Places Local为核心；全国、多地区或专业Installer以SearchAPI Google为核心。
+- Brave和SearchAPI Bing按索引缺口补充；Exa只处理案例和专业服务页面缺口。
+- Gemini Full和Product Gemini不固定调用；复杂任务使用Gemini Full时不再固定调用SearchAPI Google。
+- 使用Installer专用DeepSeek V4 Flash轻量门禁。
+- 只安装客户指定设备仍可通过角色门禁，采购影响由后续评分处理。
+- Installer与SI/MSP共享实时候选注册表、官网内容和任务租约。
+- Tavily只在统一证据阶段执行搜索和Extract。
+
+状态：确认。

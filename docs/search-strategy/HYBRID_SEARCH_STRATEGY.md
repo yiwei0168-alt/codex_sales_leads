@@ -1,6 +1,6 @@
 # Cudy 混合搜索策略
 
-版本：`0.4.0-discussion`
+版本：`0.5.0-discussion`
 
 状态：已确认部分设计，尚未实施到生产搜索路由
 
@@ -191,9 +191,36 @@ Google Places Local
 
 Tavily在证据阶段验证客户群、网络场景、方案设计、项目结果、选型采购影响和持续托管能力。搜索来源不能强制公司归为SI或MSP。
 
-## 十、待讨论类别
+## 十、Installer（已确认）
 
-- Installer
+Installer承担现场布线、设备安装、基础配置、测试或交付，不要求具备完整SI方案设计能力，也不能因为只安装客户指定设备就在搜索门禁阶段被拒绝。
+
+### 地方/区域轨道
+
+```text
+Google Places Local
+→ Installer专用Flash轻量门禁
+→ SearchAPI Google（官网、全国网页或专业服务缺口）
+→ Brave/Bing（仍有索引缺口）
+```
+
+### 全国/多地区/专业轨道
+
+```text
+SearchAPI Google
+→ Brave
+→ SearchAPI Bing
+→ Exa（案例和专业服务页面缺口）
+```
+
+- Gemini Full和Product Gemini不作为固定工具。复杂且模板无法表达的全国垂直任务使用Gemini Full时，不再固定调用SearchAPI Google。
+- Installer门禁关注企业网络布线、WLAN/AP安装、配置、测试、交付和B端客户；普通家用电工、家电安装、维修和无网络能力的纯安防公司不通过。
+- 采购/推荐影响在后续评分处理，不作为搜索角色门禁。
+- Installer与SI/MSP共享实时候选注册表、官网内容和任务租约；同一公司只增加角色/来源，不重复补证或评分。
+- Tavily只在统一证据阶段验证现场责任、客户、场景、设备影响、案例和地区，已有URL直接Extract。
+
+## 十一、待讨论类别
+
 - ISP / WISP / 区域电信
 - Agent、OEM/ODM和其他特殊类型
 

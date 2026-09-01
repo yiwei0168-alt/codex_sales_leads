@@ -2,6 +2,15 @@
 
 版本采用`主版本.类别确认数.规则修订`的文档化语义。进入生产实现前使用`discussion`状态；生产路由上线后再发布稳定版本。
 
+## 0.5.0-discussion - 2026-09-01
+
+- 确认Installer地方/区域与全国/专业双轨策略。
+- 地方轨道采用Places Local，全国轨道采用SearchAPI Google。
+- Brave、Bing和Exa只按索引或专业页面缺口调用。
+- 确认Installer专用Flash门禁，以及安装客户指定设备不构成角色拒绝。
+- Installer与SI/MSP共享候选注册表、官网内容和任务租约。
+- Tavily继续统一归入证据阶段。
+
 ## 0.4.0-discussion - 2026-09-01
 
 - 确认SI/MSP全国/复杂项目与地方/SMB双轨策略。
