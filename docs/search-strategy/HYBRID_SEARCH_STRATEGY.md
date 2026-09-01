@@ -1,6 +1,6 @@
 # Cudy 混合搜索策略
 
-版本：`0.7.0-discussion`
+版本：`0.8.0-discussion`
 
 状态：已确认部分设计，尚未实施到生产搜索路由
 
@@ -17,7 +17,7 @@
 7. 普通数量目标默认统计去重后的`eligible`及可展示`research-required`公司；用户明确要求“已验证”时只统计`eligible`。`invalid`和重复实体不能凑数。
 8. 未达到目标但连续两个不同批次或provider没有新增价值，且已无可解决缺口时，停止并报告差额，不降低质量标准。
 9. 每个搜索、门禁、补证和评分环节必须记录输入、有效输出、下游采用、成本、延迟、重试、丢弃原因和优化机会。
-10. Agent和OEM/ODM等特殊候选类别采用显式启用：除非用户明确要求搜索该类销售线索，否则不得加入默认搜索任务或为补足数量而隐式扩展到该类。
+10. Agent和OEM/ODM客户机会采用显式启用：除非用户明确要求搜索该类销售线索，否则不得加入默认搜索任务或为补足数量而隐式扩展到该类。本产品不搜索为Cudy提供OEM/ODM制造、设计或供应服务的供应商。
 
 ## 二、统一工作流与实时去重
 
@@ -297,8 +297,101 @@ Agent是独立销售代理、Manufacturer Representative、Handelsvertretung等�
 - 用户要求50家或100家时，按行业词、当地法律角色词、权威名录和地区批次扩展；不得引入错误的其他代理类别补足数量。
 - Agent进入统一评分，但规模维度只在Agent同类内横向比较，不能因没有库存、仓库或下级经销商而天然低于Distributor。
 
-## 十三、待讨论类别
+## 十三、OEM/ODM客户机会（已确认，显式启用）
 
-- OEM/ODM和其他特殊类型
+OEM/ODM不是公司主角色，而是用户明确要求时启用的销售机会搜索目标和潜在合作路径。本产品只寻找可能采购Cudy硬件、固件或整体方案，并以自有品牌、白牌或定制形式销售或部署的客户；不搜索为Cudy提供设计、制造或供应服务的工厂和供应商。
+
+结果继续保存公司的实际`primary_role`，另行记录`oem_odm_opportunity_signal`。后续路径Agent基于已核实证据判断是否建议OEM/ODM路径；不能因为来自该搜索任务就强制生成该路径。
+
+### 目标候选和启用边界
+
+- 只有用户明确提出OEM、ODM、白牌、private-label或定制产品客户线索时才启用；用户无需再选择客户或供应商方向。
+- 合法候选包括具备产品决策和批量采购可能性的ISP/WISP、电信运营商、Distributor/VAD、Retailer/E-tailer、网络设备品牌商及垂直方案/平台运营商。
+- 至少需要一个可核实或待核实的机会信号：自有品牌/白牌产品、定制CPE、设备招标、集中采购、标准化批量部署、明确产品组合缺口，或历史OEM/ODM合作。
+- 纯Marketplace/个人卖家、无采购控制、无网络产品相关性、只有泛化OEM关键词，以及为Cudy提供制造服务的供应商不能进入。
+
+### 分级搜索路由
+
+```text
+本地候选库/公共证据库
+→ SearchAPI Google（精确机会信号）
+→ 评估数量、角色和机会信号缺口
+→ Gemini Full（仅复杂语义或隐性机会缺口）
+→ Brave（异构索引缺口）
+→ SearchAPI Bing（第二索引缺口）
+→ Exa（自有品牌、CPE、产品组合等专业页面缺口）
+→ 统一证据阶段
+```
+
+- SearchAPI Google先搜索own brand、private label、custom CPE、运营商自有设备、招标和标准化部署等可精确表达的信号。
+- Gemini Full不固定调用。只有精确查询覆盖不足，或用户明确要求隐性战略机会时才升级；输入必须包含已有公司、已覆盖范围和待解决语义缺口，避免重复发现。
+- Product Gemini不调用。
+- Brave只补第一异构索引，Bing只补第二索引；查询针对明确缺口，不复制全部Google查询。
+- Exa只寻找自有品牌产品、CPE/规格、private-label、custom hardware、采购项目和产品组合等专业页面，不做普通公司名单泛搜。
+- Google Places不用于OEM/ODM机会发现。
+- Tavily只在统一证据阶段核实已知候选；已知URL优先Extract，不重复搜索。
+- 招标、产品目录和PDF只在搜索记录中保存URL与信号，正文在统一证据阶段先做价值门禁，再按`pypdf → pdfplumber → 相关页OCR`逐级提取。
+
+### OEM/ODM机会轻量门禁
+
+```text
+确定性预筛
+→ 官网/产品页轻量抓取
+→ DeepSeek V4 Flash批量语义判断
+→ 程序生成pass / hold / reject
+```
+
+模型只输出`network_product_relevance`、`product_or_brand_control_signal`、`volume_procurement_signal`、`customization_signal`、`signal_types[]`、`missing_evidence[]`和`reason_codes[]`，不输出Confidence、最终角色、最终路径或评分。
+
+- `pass`：网络产品相关，且存在至少一种较明确的自有品牌、定制CPE、白牌、集中采购、设备招标或标准化部署信号。
+- `hold`：具备相关业务、产品控制或采购规模，但机会只有间接信号，或品牌/法律实体/采购主体关系不清；进入Limited证据核实。
+- `reject`：无关产品、无采购控制、纯Marketplace/个人卖家、只有泛化OEM关键词，或属于制造供应商。
+- Flash不能解决的商业关系进入`hold`，不在门禁升级高能力模型。
+- 已由其他角色轨道发现的公司只追加机会信号，不创建第二个候选、补证或评分任务。
+
+### 搜索输出与下游流向
+
+每个机会信号保存`candidate_id`、`primary_role_hint`、`oem_odm_signal_type[]`、`signal_basis`、`target_product_family[]`、来源URL/内容指纹、疑似实体关系和缺失证据。
+
+`oem_odm_signal_type`使用固定枚举：
+
+- `own-brand-product`
+- `branded-cpe`
+- `private-label`
+- `custom-hardware`
+- `device-tender`
+- `centralized-procurement`
+- `standardized-deployment`
+- `product-portfolio-gap`
+- `past-oem-odm-relationship`
+
+`signal_basis`只区分`explicit`和`indirect`，不设置数值Confidence。`product-portfolio-gap`只能作为待核实假设，不能直接表述为采购意向。
+
+```text
+OEM/ODM机会搜索
+→ 统一候选注册表
+→ 统一证据核实
+→ 主角色识别
+→ 按主角色评分
+→ 路径Agent判断是否生成OEM/ODM合作路径
+→ 开发策略与开发信Agent
+```
+
+路径和开发Agent只能使用已核实的机会信号。若最终路径不是OEM/ODM，公司仍按真实主角色和其他适合路径保留。
+
+### 评分、数量和停止条件
+
+- 不建立第二套总分。公司继续使用统一100分机制，并按实际主角色解释产品/场景匹配、采购影响、规模和执行能力。
+- OEM/ODM机会信号主要支持合作路径与采购影响判断；关键词不能直接加分，产品组合缺口必须经过证据核实。
+- 无公开OEM历史不等于低分；明确场景、采购控制和规模仍可构成高价值机会。
+- 规模只在同一主角色内横向比较。OEM/ODM路径适配度由路径Agent单独计算，不重复叠加到总分。
+- 数量按去重公司实体计算，不按品牌、产品、文档或信号计数。集团实体是否拆分由后续Agent核实独立决策权，再由程序计数。
+- 普通数量目标统计`eligible + 可展示research-required`；明确要求“已验证”时只统计`eligible`。界面必须把`research-required`显示为机会待核实。
+- 连续两个不同查询批次/provider没有新增有效公司或可用机会信号，且无剩余可解决缺口时停止并报告差额。
+- 每个工具记录唯一候选、有效机会信号、证据可用、最终角色、路径采用、用户使用、成本、延迟、重复和丢弃原因；补证和评分后回写哪些信号最终被采用。
+
+## 十四、待讨论类别
+
+- 其他特殊类型
 
 这些类别确认前不得从相邻类别机械复制工具组合或门禁标准。

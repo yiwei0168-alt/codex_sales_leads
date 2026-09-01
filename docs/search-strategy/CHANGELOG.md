@@ -2,6 +2,16 @@
 
 版本采用`主版本.类别确认数.规则修订`的文档化语义。进入生产实现前使用`discussion`状态；生产路由上线后再发布稳定版本。
 
+## 0.8.0-discussion - 2026-09-01
+
+- 确认OEM/ODM是显式启用的客户机会搜索目标和潜在合作路径，不是公司主角色。
+- 明确产品只搜索可能采购Cudy定制/白牌方案的客户，完全排除面向Cudy的制造供应商寻源。
+- 采用SearchAPI Google精确召回、Gemini Full条件式语义升级的分级搜索架构。
+- 明确Product Gemini、Places、Brave、Bing、Exa、Tavily及PDF提取的职责边界。
+- 新增OEM/ODM机会专用Flash门禁、固定信号Schema及搜索到路径/开发Agent的数据流。
+- 继续按候选实际主角色评分，不建立第二套总分或重复路径加分。
+- 新增机会信号的数量、停止条件、真实贡献和下游采用回写要求。
+
 ## 0.7.0-discussion - 2026-09-01
 
 - 确认Agent/Manufacturer Representative为独立候选主角色及独立搜索策略。

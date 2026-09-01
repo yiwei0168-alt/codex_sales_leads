@@ -2,7 +2,7 @@
 
 版本：`1.0.0`
 
-适用策略：`0.7.0-discussion`及后续版本
+适用策略：`0.8.0-discussion`及后续版本
 
 ## 一、目的
 
@@ -81,6 +81,7 @@ search-returned
 - 是否需要新增搜索、Extract、PDF或高能力模型
 - 是否进入用户可见候选库
 - 是否被用户选择、修改、开发或长期保留
+- 显式/间接OEM/ODM机会信号是否经核实，以及是否最终支持OEM/ODM路径
 
 provider质量不使用其自身rank或摘要评分，而使用统一下游结果。
 
@@ -96,6 +97,7 @@ provider质量不使用其自身rank或摘要评分，而使用统一下游结�
 | unique_high_value_count | 仅由该provider发现且超过类别质量阈值的公司数 |
 | score_weighted_credit | 分数化发现信用乘以公司最终统一分数 |
 | evidence_contribution_rate | provider来源页面最终被引用的数量 / 其可验证页面数 |
+| opportunity_signal_use_rate | 经核实并被路径Agent采用的机会信号 / provider新增的可核实机会信号 |
 | duplicate_waste_rate | 已存在和调用内重复结果 / 原始结果 |
 | cost_per_valid_company | 搜索+门禁+归属补证成本 / 有效唯一公司 |
 | cost_per_used_company | 总归属成本 / 最终下游采用公司 |
