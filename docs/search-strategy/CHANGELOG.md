@@ -2,6 +2,22 @@
 
 版本采用`主版本.类别确认数.规则修订`的文档化语义。进入生产实现前使用`discussion`状态；生产路由上线后再发布稳定版本。
 
+## 1.0.0 - 2026-09-01
+
+- `main@6c4a1ea`将确认的类别路由接入生产LangGraph发现节点，策略状态改为`active`。
+- 增加小批次多provider执行、共享实时去重、质量池和连续两批无价值停止。
+- 增加有边界的官网轻抓取与DeepSeek Flash最小门禁；程序决定pass/hold/reject，禁止Pro升级。
+- Tavily从生产候选发现移除，仅保留统一定向补证和Extract职责。
+- 完成逐调用、逐occurrence和最终评分/展示/下游采用的贡献回写闭环。
+- 数据库迁移033已应用；286项测试、类型检查、文档校验、生产构建通过。
+- 真实成本与质量仍为`not-observed`，等待首次正式策略1.0.0运行。
+
+## implementation-checkpoint-3 - 2026-09-01
+
+- `main@6c4a1ea`完成混合执行器、轻量门禁、生产接线和贡献回写。
+- 发布端到端工作流定义2.1.0及同步效率台账。
+- provider配置预检全部通过，但未以预检名义产生付费搜索调用。
+
 ## implementation-checkpoint-1 - 2026-09-01
 
 - `main@a4dfdcd`完成Agent、Brand Owner和OEM/ODM显式意图门禁。
