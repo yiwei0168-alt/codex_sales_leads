@@ -12,6 +12,7 @@ on:
       - "src/app/api/assistant/messages/route.ts"
       - "src/providers/**"
       - "db/migrations/**"
+      - "experiments/multi-source-lead-discovery/scripts/*v3-tool*.ts"
       - "scripts/generate-lead-workflow-doc.mjs"
       - "docs/generated/LEAD_EVALUATION_WORKFLOW_V2.md"
   push:
@@ -26,6 +27,7 @@ on:
       - "src/app/api/assistant/messages/route.ts"
       - "src/providers/**"
       - "db/migrations/**"
+      - "experiments/multi-source-lead-discovery/scripts/*v3-tool*.ts"
       - "scripts/generate-lead-workflow-doc.mjs"
 
 permissions:
