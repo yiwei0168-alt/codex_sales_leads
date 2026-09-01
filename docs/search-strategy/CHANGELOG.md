@@ -2,6 +2,16 @@
 
 版本采用`主版本.类别确认数.规则修订`的文档化语义。进入生产实现前使用`discussion`状态；生产路由上线后再发布稳定版本。
 
+## 0.9.0-discussion - 2026-09-01
+
+- 确认Brand Owner / Product Company为正式、显式启用的候选主角色。
+- 明确Brand Owner与Distributor、Retailer、ISP及OEM制造供应商的角色边界。
+- 复用OEM/ODM分级搜索工具链和一次Flash调用，分别生成角色状态与机会状态。
+- 新增Brand Owner专用轻量门禁和统一100分下的角色评分卡。
+- 取消Other泛化候选搜索类别；未决角色使用`research-required + role-unresolved`。
+- 保留“其他合作模式”作为路径类型，并确立新主角色的版本化扩展规则。
+- 完成当前全部候选类别和机会搜索目标的逐项讨论，生产代码仍待按确认方案实施。
+
 ## 0.8.0-discussion - 2026-09-01
 
 - 确认OEM/ODM是显式启用的客户机会搜索目标和潜在合作路径，不是公司主角色。

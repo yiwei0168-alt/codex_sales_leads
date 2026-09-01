@@ -143,3 +143,17 @@
 - 搜索、补证和评分完成后回写每个provider的有效机会信号、最终采用、成本、延迟、重复和丢弃原因。
 
 状态：确认。
+
+## D013：Brand Owner与取消Other泛化搜索
+
+- Brand Owner / Product Company是掌握自有网络产品定义、品牌和市场决策权的正式主角色；制造可以外包。
+- Distributor、Retailer或ISP具有自有品牌/CPE时不自动改主角色，仍由后续角色Agent根据主营和证据判断。
+- 仅提供OEM制造服务的供应商不属于该角色，也不进入产品搜索范围。
+- Brand Owner默认关闭，只有用户明确要求品牌公司或启用OEM/ODM客户机会时进入计划。
+- Brand Owner搜索复用OEM/ODM分级工具链；两种任务同时启用时共享注册表、抓取和一次Flash调用。
+- Brand Owner角色成立与OEM/ODM机会成立分别门禁，不能互相自动通过。
+- Brand Owner使用统一100分及既有子权重，但规模只在Brand Owner同类比较，OEM/ODM路径FitScore不重复进入总分。
+- 取消Other泛化搜索类别。未决角色进入`research-required + role-unresolved`；稳定的新角色必须版本化增加独立规则。
+- “其他合作模式”继续作为合作路径保留，不属于候选主角色或搜索类别。
+
+状态：确认。
