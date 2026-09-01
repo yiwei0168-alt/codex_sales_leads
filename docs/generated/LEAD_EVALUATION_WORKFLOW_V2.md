@@ -5,7 +5,7 @@
 - 运行时策略版本：3.0.0（基础流程定义 2.0.0）
 - 评分策略版本：2.0.0
 - 成本质量策略版本：3.0.0
-- 配置指纹：`7cba0a90b0014bc160032de61b29e052e1044e119af585ca111045884bebca17`
+- 配置指纹：`b2b5117fc3725dfc7e0f78ee5105fcbc0ae2837c913c22087ffa040adc4c623c`
 - 范围：From the user's natural-language market-development request and workspace context to ranked companies, editable cooperation paths, development strategy, outreach email, and private-memory learning from user edits.
 
 ## 一、从用户输入到最终输出的总流程
@@ -704,7 +704,8 @@ flowchart TD
 | `src/lib/leads/workflow/rag-context.ts` | `d34f47db8308c4d89b6b81dfdcda530757b3af35a5d678725488335af127f410` |
 | `src/lib/leads/workflow/playbook.ts` | `8cbf633eadacbcccc36bb944f8c527107759e0a815d58f17d4d595da05642a4b` |
 | `src/lib/leads/workflow/playbook-cache.ts` | `945d3fc727312208650ee7b4e55e33860e7c54f7e3daa939f768952409a1803f` |
-| `src/lib/leads/workflow/hybrid-search-policy.ts` | `e7dc7a25457cf8cd1f08dc9309e9d95556991cd9288bae4ee608952cc7a564ec` |
+| `src/lib/leads/workflow/hybrid-search-policy.ts` | `96a0036b708a35026eb92459560a74a45b042beeca7ed8f53aa284961428f953` |
+| `src/lib/leads/workflow/candidate-registry.ts` | `55d11ebb6d6add24161ca5ad9126f767102b002f14d08706845ac6a7b6d43666` |
 | `src/lib/leads/workflow/discovery.ts` | `103fa1036b4bf0e67f5f53521cdb5fb715a94b5fdb0eebc78d310b52910742eb` |
 | `src/lib/leads/global-search.ts` | `3e808deea189a90ca6686ec8348648e9f98d97080c9cb78aa9226f6384a4db30` |
 | `src/lib/leads/workflow/evidence-correction-agent.ts` | `2687e38421d9a5f2207547a4a38e75657c8ac083d90494fcdd5537bcbf3d5afd` |
@@ -713,6 +714,8 @@ flowchart TD
 | `src/lib/leads/workflow/assessment-cache.ts` | `d7fd5fe0b350aa56eb9fcfb283c2c81a2de9564f88a3ef677631b82d81474fb3` |
 | `src/lib/leads/workflow/assessment-review-agent.ts` | `c40eba1f12cf8e59a52d6cc18ac337247507fb15830f36e878667cc35c25d457` |
 | `src/providers/deepseek.ts` | `986b13878cece7808a1ef6872cac1a96a5662ceb1b03acebeaef79749f76aa77` |
+| `src/providers/discovery-contracts.ts` | `0c4b931ee82288cb7e114c919d21c9ac3383a9768f4d3b4f75d3fb2b1ce793ad` |
+| `src/providers/discovery.ts` | `c075b07c629db376f058532e8e7afa8543acad7bde0a7d45bdda2c9ec6ee070c` |
 | `src/providers/resilient-ai.ts` | `3456780221fa361ca66142bd01bc2627c5aec194279fd040426d7f40a65c5b31` |
 | `src/providers/tavily.ts` | `58789a0700866dafa68907226537bd36db0278efffa7a428754f12d4bd376e43` |
 | `src/lib/leads/workflow/handoff-assembler.ts` | `58b92f337c05b7e1b62b28db27eb7d6ed1b5bcd95272926868f3c4a1df3a680c` |
@@ -723,6 +726,7 @@ flowchart TD
 | `src/lib/outreach/claude-agent.ts` | `f4ce88c2db76aed34d1faa956e1cfd557fcfd7dabf01417e4573d3d631c987f5` |
 | `src/lib/outreach/repository.ts` | `44448d88796ef8908843c80b779d831cb5fd966a605a73c98642ea99e7eb76a2` |
 | `src/lib/outreach/knowledge-repository.ts` | `d38601efa6bf9911675774e3fea45d2041ef47907cf3bbbc2d0732bf036cd204` |
+| `db/migrations/033_hybrid_search_contribution.sql` | `4088eb1ae2f9dbf58c2150a5c7ce3b4f5a49e1e75e2fb372887aed9d153ffb05` |
 | `src/lib/leads/workflow/evidence-budget.ts` | `db035da87b8896ae5a81b12744a072810de80f160cb472724d5cedbcf06037f9` |
 | `src/lib/leads/workflow/pdf-extraction-policy.ts` | `6d8847827f1e96eab570114bca33cd447eaa3e64d7246ee09a748f8e6d6ade03` |
 | `src/lib/leads/workflow/public-evidence-repository.ts` | `5dcbfe60487eeb5d2ccab4b6e3eac9529705b21005abaa599359c992e51c4b03` |
