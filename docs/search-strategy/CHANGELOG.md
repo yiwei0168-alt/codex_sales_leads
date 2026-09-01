@@ -2,6 +2,15 @@
 
 版本采用`主版本.类别确认数.规则修订`的文档化语义。进入生产实现前使用`discussion`状态；生产路由上线后再发布稳定版本。
 
+## 0.7.0-discussion - 2026-09-01
+
+- 确认Agent/Manufacturer Representative为独立候选主角色及独立搜索策略。
+- Agent默认关闭，只有用户明确要求搜索该类销售线索时才启用，不能用于给其他类别凑数。
+- 默认采用SearchAPI Google精确查询和权威代理名录；Product Gemini不调用，Gemini Full仅处理复杂多条件任务。
+- Brave、Bing、Exa和Places只按各自明确缺口条件调用。
+- 新增Agent专用Flash门禁，以及搜索阶段与下游商业关系核实的职责边界。
+- 确认Agent规模仅在同类中横向比较。
+
 ## 0.6.0-discussion - 2026-09-01
 
 - 确认ISP战略型/全国型与区域ISP/WISP双轨策略。

@@ -111,3 +111,19 @@
 - ISP与其他轨道共享候选注册表、公共证据和任务租约；Tavily只在统一证据阶段工作。
 
 状态：确认。
+
+## D011：Agent / Manufacturer Representative
+
+- Agent作为独立候选主角色，不并入Distributor、Reseller或咨询公司。
+- 该类别默认关闭；只有用户明确要求搜索Agent销售线索时才加入搜索计划，不能用于给其他类别凑数。
+- 默认以SearchAPI Google精确查询和行业协会/商业代理/品牌代表等权威名录为核心。
+- Product Gemini不调用；Gemini Full只处理模板难以表达的复杂多条件任务，调用后不固定重复SearchAPI Google。
+- Brave和SearchAPI Bing只补索引，Exa只补品牌代理、territory和portfolio等专业关系页面。
+- Places不作为核心，仅在用户明确要求本地代理且存在地区缺口时调用并经过Agent专用Flash门禁。
+- 门禁区分目标行业销售代理与Distributor、Reseller、咨询顾问，以及房地产、保险、招聘、旅行、物流报关和AI Agent等歧义类别。
+- 搜索阶段只结构化记录疑似代表品牌、地区、行业和代理模式；协议真实性、排他性、库存和采购关系由后续证据与角色Agent核实。
+- Tavily只在统一证据阶段工作；同一公司只补证和评分一次。
+- 数量任务通过合法行业词、当地法律角色词、名录和地区批次扩展，不用错误类别凑数。
+- Agent规模只在Agent同类内比较，不因缺少库存、仓库或下级渠道而天然低于Distributor。
+
+状态：确认。
