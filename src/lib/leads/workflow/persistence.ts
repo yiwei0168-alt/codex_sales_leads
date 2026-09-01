@@ -279,6 +279,25 @@ export async function persistLeadWorkflowResult(input: {
           assessment.recommendationPriority,
           assessment.model, assessment.promptVersion, assessment.escalated, assessment.warnings, Boolean(rank), rank ?? null],
       );
+      const discoveryCandidateKeys = [...new Set([
+        `domain:${candidate.domain}`,
+        ...(candidate.discoveryOccurrences ?? []).flatMap((occurrence) => occurrence.domain
+          ? [`domain:${occurrence.domain}`] : []),
+      ])];
+      await client.query(
+        `with matched as (
+           select id, count(*) over () as occurrence_count
+           from lead_search_provider_occurrence
+           where run_id=$1 and candidate_key=any($2::text[]) and normalized=true
+         )
+         update lead_search_provider_occurrence occurrence set
+           final_primary_role=$3, final_eligibility=$4, final_score=$5,
+           displayed=$6, selected=$6, downstream_used=$7,
+           discovery_credit=case when $7 then 1.0 / greatest(matched.occurrence_count, 1) else 0 end
+         from matched where occurrence.id=matched.id`,
+        [input.runId, discoveryCandidateKeys, assessment.primaryRole, assessment.eligibilityStatus,
+          assessment.totalScore, Boolean(rank), assessment.scoringStatus === "completed"],
+      );
       if (rank) await saveCompany(client, input.workspaceId,
         companyRecord(candidate, assessment, input.countryCode, input.countryName, input.runId), input.countryCode, input.runId);
     }

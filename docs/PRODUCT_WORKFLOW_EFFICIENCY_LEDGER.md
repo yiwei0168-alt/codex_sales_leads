@@ -110,6 +110,14 @@ GitHub 只保存聚合指标、质量门禁和优化事项，不保存密钥、�
 
 本阶段仍未激活外部调用，真实输入/有效输出/下游采用/API成本均为`not-observed`。自动测试覆盖16项provider/注册表/路由行为；下一阶段必须接入轻量门禁和数据库贡献回写后再激活，避免只增加provider调用而不减少重复下游成本。
 
+### Stage 3: active hybrid executor, light gate and contribution telemetry (implementation verification)
+
+The production discovery node now executes the versioned category-specific Gemini/SearchAPI/Google Places/Brave/Exa route with one shared real-time company registry. Tavily is excluded from discovery and retained for targeted evidence acquisition only. Newly discovered domain candidates receive a bounded direct-homepage read plus a compact DeepSeek Flash gate in batches of at most 10; this gate emits semantic signals only, is resolved to pass/hold/reject by code, never escalates to Pro, and holds candidates when the routine model is unavailable.
+
+Every provider call now records aggregate input characters, raw/normalized/new/duplicate/rejected output, credits, model tokens, latency, retries, fallback status, discard reasons and call status. Every candidate occurrence records first/assisted discovery provenance and the light-gate outcome. After scoring, the same occurrence rows receive final role, eligibility, score, displayed/selected/downstream-used state and equal fractional discovery credit across all normalized occurrences of that company. LangGraph stage telemetry records raw generated results versus new unique and downstream-used candidates. Raw provider responses, credentials and private user text are not persisted.
+
+This stage is verified with mocked providers, not a paid production benchmark: external input/output volume, unit cost and real downstream quality remain `not-observed`. The next real search run must compare per-category unique yield, duplicate rate, gate pass/hold/reject, downstream scored/displayed/selected use, credits and token cost. Automatically observed optimization candidates are: query-template tightening where paid validity is below 60%, route removal where assisted downstream contribution stays near zero, and reducing parallel core breadth when duplicate rate is high. None is auto-applied without a quality review.
+
 ## 持续优化事项
 
 | 优先级 | 工作流环节 | 可优化点 | 质量门禁 | 状态 |

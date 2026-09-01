@@ -107,7 +107,7 @@ async function finishJob(claim: LeadWorkflowJobClaim, result: LeadWorkflowResult
   await appendMessage(claim.userId, claim.conversationId, {
     role: "assistant",
     intent: "lead-search",
-    content: `${result.countryName} LangGraph 搜索完成：RAG 使用 ${result.ragCitationCount} 个知识片段，发现 ${result.discovered} 家、评估 ${result.assessed} 家、合格 ${result.qualified} 家，最终保存 ${result.accepted}/${result.requested} 家。共使用 ${result.creditsUsed} 个 Tavily credits。候选角色由 Market Playbook 动态分配，未使用固定类别配额。`,
+    content: `${result.countryName} LangGraph 搜索完成：RAG 使用 ${result.ragCitationCount} 个知识片段，发现 ${result.discovered} 家、评估 ${result.assessed} 家、合格 ${result.qualified} 家，最终保存 ${result.accepted}/${result.requested} 家。共使用 ${result.creditsUsed} 个付费搜索/证据 credits。候选角色由 Agent 基于证据决定，搜索类别仅保留为来源记录。`,
     metadata: { searchResult: result as unknown as Record<string, unknown> },
   });
 }

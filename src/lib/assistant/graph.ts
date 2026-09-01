@@ -63,7 +63,7 @@ export function buildAssistantWorkflowGraph(dependencies: AssistantGraphDependen
     .addNode("resolve_request", async (state) => {
       if (state.intent === "lead-search" && state.plan) {
         const objective = state.plan.objective === "new-market" ? "新市场并行开发" : "已有分销体系增长";
-        return { reply: `我已生成 ${state.plan.countryName} 的销售线索搜索计划。目标为 ${state.plan.targetCount} 家，采用“${objective}”模式。确认后，LangGraph 会先执行产品、Cudy 公司与行业知识 RAG；其中产品知识通过向量、全文与结构化事实三路融合并进行置信度校验，再生成 Market Playbook、调用 Tavily 搜索及官网取证，最后由独立评分 Agent 复核后保存。你也可以直接回复修改国家、数量或渠道类型。` };
+        return { reply: `我已生成 ${state.plan.countryName} 的销售线索搜索计划。目标为 ${state.plan.targetCount} 家，采用“${objective}”模式。确认后，LangGraph 会先执行产品、Cudy 公司与行业知识 RAG；其中产品知识通过向量、全文与结构化事实三路融合并进行置信度校验，再生成 Market Playbook、按候选类别调用混合搜索与轻量门禁；Tavily 仅用于后续定向补证，最后由独立评分 Agent 复核后保存。你也可以直接回复修改国家、数量或渠道类型。` };
       }
       if (state.intent === "general") {
         return { reply: state.reply || "我可以查询 Cudy 内部知识、结合实时网页信息回答，也可以先设计并等待你确认销售线索搜索计划。" };

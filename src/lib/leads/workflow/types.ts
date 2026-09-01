@@ -137,6 +137,13 @@ export interface LeadWorkflowCandidate {
   searchCategories?: string[];
   suspectedRelationships?: Array<{ relationshipType: string; relatedName: string; sourceUrl: string; status: "unresolved" }>;
   opportunitySignals?: Array<{ signalType: string; basis: "explicit" | "indirect"; sourceUrl: string; status: "unverified" | "verified" | "rejected" }>;
+  discoveryGate?: {
+    status: "pass" | "hold" | "reject";
+    reasonCodes: string[];
+    missingEvidence: string[];
+    roleHints: ChannelRole[];
+    model: string;
+  };
 }
 
 export interface LeadDiscoveryOccurrence {
@@ -373,7 +380,7 @@ export interface LeadWorkflowResult {
 }
 
 export interface WorkflowModelUsage {
-  stage: "intent" | "playbook" | "evidence-correction" | "qualification" | "secondary-review" | "judge"
+  stage: "intent" | "playbook" | "discovery-gate" | "evidence-correction" | "qualification" | "secondary-review" | "judge"
     | "strategy" | "email" | "memory-distillation";
   requestedModel: string;
   actualModel: string;

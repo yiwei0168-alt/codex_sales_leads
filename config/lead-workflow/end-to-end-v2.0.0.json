@@ -1,6 +1,6 @@
 {
   "workflowKey": "cudy-sales-lead-end-to-end",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "status": "active",
   "scope": "From the user's natural-language market-development request and workspace context to ranked companies, editable cooperation paths, development strategy, outreach email, and private-memory learning from user edits.",
   "principles": [
@@ -33,6 +33,13 @@
       "defaultModel": "LEAD_PLANNER_MODEL or OPENAI_GENERATION_MODEL; default gpt-5-mini",
       "escalationOrFallback": "Deterministic playbook with required role-family coverage",
       "callPolicy": "Cached standard playbook; light Kimi checks template fit; complex non-standard tasks use Kimi-k3 planning"
+    },
+    {
+      "stages": ["04-discovery"],
+      "purpose": "Lightweight candidate existence, relevance and category gate",
+      "defaultModel": "DEEPSEEK_MODEL; default deepseek-v4-flash",
+      "escalationOrFallback": "Same-tier resilient provider fallback; unavailable batches are held for downstream evidence, never upgraded to Pro",
+      "callPolicy": "Batches of up to 10 after direct lightweight homepage fetch; compact semantic signals only, with deterministic pass/hold/reject"
     },
     {
       "stages": ["06-correction-role"],
@@ -95,6 +102,8 @@
     "src/lib/leads/workflow/playbook-cache.ts",
     "src/lib/leads/workflow/hybrid-search-policy.ts",
     "src/lib/leads/workflow/candidate-registry.ts",
+    "src/lib/leads/workflow/discovery-gate.ts",
+    "src/lib/leads/workflow/hybrid-discovery-executor.ts",
     "src/lib/leads/workflow/discovery.ts",
     "src/lib/leads/global-search.ts",
     "src/lib/leads/workflow/evidence-correction-agent.ts",
@@ -141,25 +150,25 @@
       "name": "Market playbook and search plan",
       "inputs": ["LeadSearchPlan", "RAG citations", "Private cooperation-path memory"],
       "outputs": ["Market hypothesis", "Enabled product angles", "Preferred traits", "Exclusions", "Role-family search queries"],
-      "strategy": ["Use confirmed Cudy positioning and competitors", "Do not average all product families", "Keep original role lanes only as discovery coverage", "Validate the draft hybrid provider route without activating it until the executor and gate pass integration checks"],
+      "strategy": ["Use confirmed Cudy positioning and competitors", "Do not average all product families", "Keep original role lanes only as discovery coverage", "Use the versioned active category route; the playbook supplies market language and product focus without duplicating provider planning"],
       "failure": "Use a deterministic playbook fallback with warnings when the model cannot return a valid plan.",
       "downstream": ["Candidate discovery", "Qualification context"]
     },
     {
       "id": "04-discovery",
       "name": "Multi-source candidate discovery",
-      "inputs": ["Market playbook", "Role-family queries", "Target count"],
-      "outputs": ["Raw candidate names/domains", "Discovery provider provenance", "Search-lane provenance", "Initial URLs/snippets"],
-      "strategy": ["Current executor remains the legacy Tavily discovery path until the draft hybrid executor, light gate and contribution persistence pass integration checks", "Provider score and rank cannot enter final value scoring", "Canonicalize domains and retain multi-provider provenance"],
-      "failure": "A provider failure is isolated; the workflow continues with other discovery sources and records warnings.",
+      "inputs": ["Market playbook", "Role-family queries", "Target count", "Active hybrid-search policy"],
+      "outputs": ["Raw candidate names/domains", "Discovery provider and lane provenance", "Initial URLs/snippets", "Light-gate pass/hold/reject", "Per-call yield/cost/latency/retry/discard telemetry"],
+      "strategy": ["Run the confirmed category-specific provider tracks with shared real-time deduplication", "Use DeepSeek Flash only for a compact lightweight gate after direct homepage text; never upgrade this gate to Pro", "Stop a track after two consecutive no-value batches or when the quality pool reaches its task-sized target", "Tavily is forbidden in candidate discovery and remains evidence-only", "Provider score and rank cannot enter final value scoring", "Canonicalize domains and retain first, duplicate and assisted discovery provenance"],
+      "failure": "A provider failure is isolated; same-tier route alternatives continue and are recorded. A gate-model failure holds candidates for evidence instead of inventing rejection or escalating capability.",
       "downstream": ["Fresh evidence acquisition"]
     },
     {
       "id": "05-evidence",
       "name": "Fresh public evidence acquisition",
-      "inputs": ["Discovered candidates", "Official-site and targeted public search queries", "Evidence freshness policy"],
+      "inputs": ["Passed or held discovered candidates", "Official-site and targeted public search queries", "Evidence freshness policy"],
       "outputs": ["Immutable evidence snapshot", "capturedAt", "contentHash", "sourceType", "freshnessStatus", "evidenceRunId"],
-      "strategy": ["Old-run evidence is discovery-only until reacquired or validated", "Prefer official and independent public sources", "Search for defining business actions, product tracks, target customers, size and cooperation signals"],
+      "strategy": ["Reuse current public-evidence-library material before spending search credits", "Old-run evidence is discovery-only until reacquired or validated", "Use Tavily only for targeted evidence discovery/extraction, not candidate discovery", "Prefer official and independent public sources", "Search for defining business actions, product tracks, target customers, size and cooperation signals"],
       "failure": "Failed retrieval becomes unknown; it never becomes a negative fact.",
       "downstream": ["Entity correction", "Role classification", "Freshness audit"]
     },

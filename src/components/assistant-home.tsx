@@ -129,7 +129,7 @@ export function AssistantHome({ userName, onOpenResults }: { userName: string; o
     const retrying = conversation?.actions.find((action) => action.id === actionId)?.status === "failed";
     if (!window.confirm(retrying
       ? "从已保留的 checkpoint 重试该工作流？"
-      : "确认执行 LangGraph 销售线索工作流？系统会先调用三类知识 RAG，再使用 Tavily 搜索和抓取网页，并由独立评分 Agent 评估候选。")) return;
+      : "确认执行 LangGraph 销售线索工作流？系统会先调用三类知识 RAG，再按候选类别执行混合搜索和轻量门禁；Tavily 仅用于定向补证，最后由独立评分 Agent 评估候选。")) return;
     setConfirmingId(actionId); setError("");
     try {
       const response = await fetch(`/api/assistant/actions/${actionId}/confirm`, { method: "POST" });

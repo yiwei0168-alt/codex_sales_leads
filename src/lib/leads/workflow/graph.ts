@@ -146,17 +146,33 @@ export function buildLeadWorkflowGraph(
       await phase(dependencies, state, "discovering");
       if (!state.playbook) throw new Error("Market Playbook is missing before discovery");
       const discovered = await dependencies.discover(state.actionId, state.workspaceId, state.plan, state.playbook, state.graphThreadId);
+      const calls = discovered.callMetrics ?? [];
+      const rawResults = calls.reduce((sum, call) => sum + call.rawResults, 0);
+      const newUniqueCompanies = calls.reduce((sum, call) => sum + call.newUniqueCompanies, 0);
       const metric = completedStageMetric({ stage: "discover_candidates", startedAt,
-        input: state.playbook.searchQueries, output: discovered.candidates,
-        inputItems: state.playbook.searchQueries.length, outputItems: discovered.candidates.length,
-        paidSearchCredits: discovered.creditsUsed, generatedArtifacts: discovered.candidates.length,
-        validArtifacts: discovered.candidates.filter((candidate) => Boolean(candidate.domain)).length,
-        downstreamUsedArtifacts: discovered.candidates.length });
+        input: { plan: state.plan, playbookQueries: state.playbook.searchQueries }, output: discovered.candidates,
+        inputItems: calls.length || state.playbook.searchQueries.length, outputItems: discovered.candidates.length,
+        paidSearchCredits: discovered.creditsUsed,
+        generatedArtifacts: calls.length ? rawResults : discovered.candidates.length,
+        validArtifacts: calls.length ? newUniqueCompanies
+          : discovered.candidates.filter((candidate) => Boolean(candidate.domain)).length,
+        downstreamUsedArtifacts: discovered.candidates.length,
+        metadata: calls.length ? {
+          providerCalls: calls.length,
+          completedCalls: calls.filter((call) => call.status === "completed").length,
+          failedCalls: calls.filter((call) => call.status === "failed").length,
+          skippedCalls: calls.filter((call) => call.status === "skipped").length,
+          retries: calls.reduce((sum, call) => sum + call.retryCount, 0),
+          discardedOutputs: calls.reduce((sum, call) => sum + call.rejectedResults, 0),
+          duplicateOutputs: calls.reduce((sum, call) => sum + call.existingCompanyHits, 0),
+          totalProviderLatencyMs: calls.reduce((sum, call) => sum + call.latencyMs, 0),
+        } : {} });
       return {
         phase: "discovering" as const,
         runId: discovered.runId,
         candidates: discovered.candidates,
         creditsUsed: state.creditsUsed + discovered.creditsUsed,
+        modelUsage: [...(state.modelUsage ?? []), ...(discovered.modelUsage ?? [])],
         warnings: [...state.warnings, ...discovered.warnings],
         stageMetrics: [...(state.stageMetrics ?? []), metric],
       };

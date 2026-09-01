@@ -2,10 +2,10 @@
 
 > 本文档由 `scripts/generate-lead-workflow-doc.mjs` 自动生成。请修改版本化配置或实现代码，不要直接编辑生成文件。
 
-- 运行时策略版本：3.0.0（基础流程定义 2.0.0）
+- 运行时策略版本：3.0.0（基础流程定义 2.1.0）
 - 评分策略版本：2.0.0
 - 成本质量策略版本：3.0.0
-- 配置指纹：`b2b5117fc3725dfc7e0f78ee5105fcbc0ae2837c913c22087ffa040adc4c623c`
+- 配置指纹：`6f3bc00295b7cc4d7b2d856f01ca3bf6c05b36625e7f6c770580dfedb21e8c1c`
 - 范围：From the user's natural-language market-development request and workspace context to ranked companies, editable cooperation paths, development strategy, outreach email, and private-memory learning from user edits.
 
 ## 一、从用户输入到最终输出的总流程
@@ -49,6 +49,7 @@ flowchart TD
 | `01-user-input` | Intent classification and execution planning | KIMI_INTENT_LIGHT_MODEL; default kimi-k2.6 | KIMI_INTENT_MODEL or KIMI_MODEL; default kimi-k3 for materially complex planning | Light Kimi runs every turn; deterministic parsing is failure fallback only |
 | `02-context-memory` | Local-database RAG query and memory embeddings | EMBEDDING_MODEL; default text-embedding-v4 | No generative fallback | Required for vector retrieval; source documents remain in the local database |
 | `03-playbook` | Market playbook and search-query planning | LEAD_PLANNER_MODEL or OPENAI_GENERATION_MODEL; default gpt-5-mini | Deterministic playbook with required role-family coverage | Cached standard playbook; light Kimi checks template fit; complex non-standard tasks use Kimi-k3 planning |
+| `04-discovery` | Lightweight candidate existence, relevance and category gate | DEEPSEEK_MODEL; default deepseek-v4-flash | Same-tier resilient provider fallback; unavailable batches are held for downstream evidence, never upgraded to Pro | Batches of up to 10 after direct lightweight homepage fetch; compact semantic signals only, with deterministic pass/hold/reject |
 | `06-correction-role` | Entity correction, atomic facts and primary-role analysis | DEEPSEEK_MODEL; default deepseek-v4-flash | DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro; deterministic fallback is retry-only | Routine batches; upgrade only for expected score change >=8 or a resolvable critical-state change |
 | `09-scoring-paths` | Role-aware score and possible cooperation paths | DEEPSEEK_MODEL; default deepseek-v4-flash | DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro | Routine batches; confidence, alternative paths and Top-N position never trigger upgrade alone |
 | `10-review` | Blind secondary review and disagreement judgment | LEAD_REVIEW_MODEL default gpt-5.6-terra; LEAD_JUDGE_MODEL default gpt-5.6-sol | DeepSeek review adapter using deepseek-v4-pro when explicitly routed | Selective only; skipped for the search-tool leaderboard where cooperation-path review cannot affect the metric |
@@ -155,7 +156,7 @@ flowchart TD
 - Use confirmed Cudy positioning and competitors
 - Do not average all product families
 - Keep original role lanes only as discovery coverage
-- Validate the draft hybrid provider route without activating it until the executor and gate pass integration checks
+- Use the versioned active category route; the playbook supplies market language and product focus without duplicating provider planning
 
 失败与回退：Use a deterministic playbook fallback with warnings when the model cannot return a valid plan.
 
@@ -173,21 +174,26 @@ flowchart TD
 - Market playbook
 - Role-family queries
 - Target count
+- Active hybrid-search policy
 
 输出：
 
 - Raw candidate names/domains
-- Discovery provider provenance
-- Search-lane provenance
+- Discovery provider and lane provenance
 - Initial URLs/snippets
+- Light-gate pass/hold/reject
+- Per-call yield/cost/latency/retry/discard telemetry
 
 策略：
 
-- Current executor remains the legacy Tavily discovery path until the draft hybrid executor, light gate and contribution persistence pass integration checks
+- Run the confirmed category-specific provider tracks with shared real-time deduplication
+- Use DeepSeek Flash only for a compact lightweight gate after direct homepage text; never upgrade this gate to Pro
+- Stop a track after two consecutive no-value batches or when the quality pool reaches its task-sized target
+- Tavily is forbidden in candidate discovery and remains evidence-only
 - Provider score and rank cannot enter final value scoring
-- Canonicalize domains and retain multi-provider provenance
+- Canonicalize domains and retain first, duplicate and assisted discovery provenance
 
-失败与回退：A provider failure is isolated; the workflow continues with other discovery sources and records warnings.
+失败与回退：A provider failure is isolated; same-tier route alternatives continue and are recorded. A gate-model failure holds candidates for evidence instead of inventing rejection or escalating capability.
 
 流向下游：
 
@@ -199,7 +205,7 @@ flowchart TD
 
 输入：
 
-- Discovered candidates
+- Passed or held discovered candidates
 - Official-site and targeted public search queries
 - Evidence freshness policy
 
@@ -214,7 +220,9 @@ flowchart TD
 
 策略：
 
+- Reuse current public-evidence-library material before spending search credits
 - Old-run evidence is discovery-only until reacquired or validated
+- Use Tavily only for targeted evidence discovery/extraction, not candidate discovery
 - Prefer official and independent public sources
 - Search for defining business actions, product tracks, target customers, size and cooperation signals
 
@@ -690,7 +698,7 @@ flowchart TD
 | 文件 | SHA-256 |
 |---|---|
 | `config/lead-scoring/policy-v2.0.0.json` | `0039203aafb29ec73e4beb10f72dc5ec114785fb4c5f311c7b425de0d451fc1b` |
-| `config/lead-search/hybrid-search-v1.0.0.json` | `71e05a4ec2fd3133173fa243ed2540ad87ff53682ddb6a1f371cff080f96477c` |
+| `config/lead-search/hybrid-search-v1.0.0.json` | `bc018ba8682adf8912b13340070dd1f7ced63e1928431cfec4bc619bc60716c1` |
 | `config/lead-workflow/cost-quality-policy-v3.0.0.json` | `2e3d85b6ccd4a9fa13de39cdc66af32814c75b8b4a693cddd74638743b1def53` |
 | `config/lead-workflow/runtime-policy-v3.0.0.json` | `f58509eb101f842ae9c2e7b01484c8b2e429908166a13a502c5d8be477127989` |
 | `src/app/api/assistant/messages/route.ts` | `04bec90cc3d3f336195e8ab97a5ad4b1ec1e05b95606064225e098e94ed7a5cd` |
@@ -699,14 +707,16 @@ flowchart TD
 | `src/lib/assistant/intent-agent.ts` | `71a7a2e637266476f5f62610e3d8d186eb08a28539e395bcb740f97655713551` |
 | `src/lib/assistant/service.ts` | `1e2d9719d2937cc3081c3dbddf016d7cd665de1c1e9a88c775d10e3863ec00df` |
 | `src/lib/assistant/repository.ts` | `4243485613740437216b7867c0b8b420ea16d555f852397b436fd8a5f5414e67` |
-| `src/lib/leads/workflow/graph.ts` | `db53a606bcd9233361241cc89163bd71bd5ea396ee836415ceefc657750c9d25` |
-| `src/lib/leads/workflow/jobs.ts` | `73b446cdbf949c125a4ddd248cbf08ec01b5d780e26f756250d34a997bfd5c87` |
+| `src/lib/leads/workflow/graph.ts` | `4f6ff107db863d73eb7dacf00e08f500172f9fa60cfab66b381fb3590ff345de` |
+| `src/lib/leads/workflow/jobs.ts` | `138299e1dac31066c136382219f6177126ec3a0efe0de67c837f30b0132f4ce1` |
 | `src/lib/leads/workflow/rag-context.ts` | `d34f47db8308c4d89b6b81dfdcda530757b3af35a5d678725488335af127f410` |
 | `src/lib/leads/workflow/playbook.ts` | `ea73c0cfa94b987c68b054eae59acb77f5009e8415320aac3b99884c9731fcab` |
 | `src/lib/leads/workflow/playbook-cache.ts` | `945d3fc727312208650ee7b4e55e33860e7c54f7e3daa939f768952409a1803f` |
-| `src/lib/leads/workflow/hybrid-search-policy.ts` | `a34a06523189149918c2942bc7596c434b743354b49e56debd7c3702ea0a9fb0` |
-| `src/lib/leads/workflow/candidate-registry.ts` | `55d11ebb6d6add24161ca5ad9126f767102b002f14d08706845ac6a7b6d43666` |
-| `src/lib/leads/workflow/discovery.ts` | `1aa5ffc06dd9dcb6220942fd5056003c90031e95acb171cc25fa8048e4125879` |
+| `src/lib/leads/workflow/hybrid-search-policy.ts` | `c5b094fb015a4678d1182d05910bc6ee26e2face535c1496cbc89b4a548aa735` |
+| `src/lib/leads/workflow/candidate-registry.ts` | `a7d9bc2b971f854d7e5e092c6a3b6ccbe7cece0f3b5c0e1eae31f9e247f46cc5` |
+| `src/lib/leads/workflow/discovery-gate.ts` | `108606bdbc03986786f91a4b60d655b3172fc1556a9f44ae579f151cfc1dee1c` |
+| `src/lib/leads/workflow/hybrid-discovery-executor.ts` | `e25ea21da50e807ac50e925d8e7b91bab47b207ce4d48b8133a321b3751c035f` |
+| `src/lib/leads/workflow/discovery.ts` | `16ba822ad3a82a450d42477692f379cdcc61aa3bae42b4f5161b4bcfbafbc777` |
 | `src/lib/leads/global-search.ts` | `963d07622725531e72d7f1807d4228a23d59d6a320b5d1e508b602bcc05c65db` |
 | `src/lib/leads/workflow/evidence-correction-agent.ts` | `9f35d93f2913e6b77de3c988d8f2d44c9541e549441254fea5571f037dd22798` |
 | `src/lib/leads/workflow/evidence-packet.ts` | `1ca9577284952e245a8e8c51ae9fa82472fcbcf0b262ebaa83fc6463f379836f` |
@@ -714,19 +724,19 @@ flowchart TD
 | `src/lib/leads/workflow/assessment-cache.ts` | `d7fd5fe0b350aa56eb9fcfb283c2c81a2de9564f88a3ef677631b82d81474fb3` |
 | `src/lib/leads/workflow/assessment-review-agent.ts` | `df3499c777bd541bb220adbfbdd7066c79c7b49053967b2ae96225c45345290d` |
 | `src/providers/deepseek.ts` | `9cb9825adf079109e19f287cb9b079ce4bb4cd55283eb8225a521b82fc6d0982` |
-| `src/providers/discovery-contracts.ts` | `0c4b931ee82288cb7e114c919d21c9ac3383a9768f4d3b4f75d3fb2b1ce793ad` |
-| `src/providers/discovery.ts` | `c075b07c629db376f058532e8e7afa8543acad7bde0a7d45bdda2c9ec6ee070c` |
+| `src/providers/discovery-contracts.ts` | `9f874204184465ec30b8f448ee6f92c6e5dfb4bebf61a918f25da306e8ec3002` |
+| `src/providers/discovery.ts` | `585c24137daa89fd8e5abfb4b841dc0d9f66b68760505ec86bad75695bf8e1dc` |
 | `src/providers/resilient-ai.ts` | `3456780221fa361ca66142bd01bc2627c5aec194279fd040426d7f40a65c5b31` |
 | `src/providers/tavily.ts` | `5360b3bd415a0e53c13deb82c76b1718fc3e8990c54160f212b5df553ae9e377` |
 | `src/lib/leads/workflow/handoff-assembler.ts` | `606736bdfcced8f3a476a58808b07c65867b75f948c46b66b21354e5102f3827` |
-| `src/lib/leads/workflow/persistence.ts` | `f6d7a93a51da93de57870da279a3b191c2cab191c6342ed4502042a73b0838da` |
+| `src/lib/leads/workflow/persistence.ts` | `6904b044ef6334eee6fe42399b9489c3859eee9883aa9fbe26738632b791052d` |
 | `src/lib/sales/repository.ts` | `ba76e0227ec5c039bb8196df37322b24146b2d64a42af7e364e96dfd3dfdfef9` |
 | `src/lib/outreach/graph.ts` | `18dbb0c67613ab49cf69a61267c62d95f7e58da8b11b7beddfb2139aad78c19c` |
 | `src/lib/outreach/kimi-agent.ts` | `dd76bb48386350e1df6206385a3e90786249f2ca2a8116552fadd26a8ee94376` |
 | `src/lib/outreach/claude-agent.ts` | `21276b9b3b436efd22fe638bac9a128a21f594faa0b99fe7af7614d02913b588` |
 | `src/lib/outreach/repository.ts` | `9a70ae40ee817385f8bbbb9c9785ffc50efeb24eb4833c2e7fd8a8bfb77286ac` |
 | `src/lib/outreach/knowledge-repository.ts` | `59a023091f9adac80d4b502e1b4cf69b9d318bd5a7610112354fb95a8d802557` |
-| `db/migrations/033_hybrid_search_contribution.sql` | `4088eb1ae2f9dbf58c2150a5c7ce3b4f5a49e1e75e2fb372887aed9d153ffb05` |
+| `db/migrations/033_hybrid_search_contribution.sql` | `6e002fe0a49bddd75853b6d13fdc5759b9f4b90653ffda47ccc6c8f4fddbb0d0` |
 | `src/lib/leads/workflow/evidence-budget.ts` | `db035da87b8896ae5a81b12744a072810de80f160cb472724d5cedbcf06037f9` |
 | `src/lib/leads/workflow/pdf-extraction-policy.ts` | `6d8847827f1e96eab570114bca33cd447eaa3e64d7246ee09a748f8e6d6ade03` |
 | `src/lib/leads/workflow/public-evidence-repository.ts` | `5dcbfe60487eeb5d2ccab4b6e3eac9529705b21005abaa599359c992e51c4b03` |

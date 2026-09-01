@@ -29,7 +29,7 @@ export interface SearchProvider {
 }
 
 export interface StructuredAiRequest<TInput> {
-  task: "market-playbook" | "evidence-extraction" | "classification" | "relationship" | "development-plan" | "contact-verification" | "lead-evidence-correction" | "lead-qualification" | "lead-review-secondary" | "lead-review-judge";
+  task: "market-playbook" | "evidence-extraction" | "classification" | "relationship" | "development-plan" | "contact-verification" | "lead-discovery-gate" | "lead-evidence-correction" | "lead-qualification" | "lead-review-secondary" | "lead-review-judge";
   modelVersion: string;
   promptVersion: string;
   input: TInput;

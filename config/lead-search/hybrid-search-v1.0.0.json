@@ -2,7 +2,7 @@
   "policyKey": "cudy-hybrid-lead-search",
   "version": "1.0.0",
   "strategyDocumentVersion": "0.9.0-discussion",
-  "status": "draft",
+  "status": "active",
   "maxConsecutiveNoValueBatches": 2,
   "defaultBatchSize": 12,
   "maxBatchSize": 20,

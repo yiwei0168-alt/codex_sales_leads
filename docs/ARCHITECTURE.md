@@ -13,7 +13,7 @@ Natural-language request → Assistant StateGraph
   └─ lead search → proposed/revisable action → explicit user confirmation
                                       ↓
        Lead StateGraph + PostgreSQL checkpoints
-       RAG gate → Market Playbook → Tavily → evidence → independent score agent → qualified records
+       RAG gate → Market Playbook → role-aware hybrid discovery + light gate → Tavily evidence → independent score agent → qualified records
                                       ↓ selected company
        Development Strategy StateGraph
        context → dedicated outreach RAG + approved long-form templates → one-call Kimi strategy + draft → Claude review revision + feedback memory
@@ -23,7 +23,7 @@ Natural-language request → Assistant StateGraph
 
 | Layer | Current implementation | Production extension |
 |---|---|---|
-| Search/import | Tavily live-search and enrichment jobs | SerpAPI adapter and scheduled refresh jobs |
+| Search/import | Category-specific Gemini/SearchAPI/Places/Brave/Exa discovery; Tavily evidence-only | Scheduled gap search and measured route optimization |
 | Evidence | PostgreSQL search runs, URLs and captured excerpts | Source refresh and change detection |
 | Domain | Typed Company, ChannelNode context, scoring inputs, relationships and plans | Repository-backed services and audit log |
 | AI pipeline | Lingyu planner + DeepSeek Flash/Pro independent qualification | Separate strategic-customer graph |
@@ -74,7 +74,7 @@ The server loads the owner-scoped `global-sales` workspace and its live-search c
 
 ## Failure behavior
 
-Search and enrichment jobs fail explicitly when a provider is unavailable. Tavily requests use limited retries for transient network failures, and contact replacement happens per company only after the new evidence is ready. Mock companies are never substituted into live results.
+Search and enrichment jobs fail explicitly when a provider is unavailable. Discovery providers and Tavily evidence requests use limited retries for transient failures; same-tier route alternatives may continue, but mock companies are never substituted into live results. The lightweight DeepSeek Flash discovery gate holds a batch when its model is unavailable and never upgrades to Pro.
 
 The lead graph checkpoints every node in the RDS `langgraph` schema. Failed actions retain their thread and can be retried. Only evidence-qualified assessments with all eligibility gates passing and a server-recomputed score of at least 50 are published.
 
