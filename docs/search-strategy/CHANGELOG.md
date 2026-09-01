@@ -2,6 +2,13 @@
 
 版本采用`主版本.类别确认数.规则修订`的文档化语义。进入生产实现前使用`discussion`状态；生产路由上线后再发布稳定版本。
 
+## implementation-checkpoint-1 - 2026-09-01
+
+- `main@a4dfdcd`完成Agent、Brand Owner和OEM/ODM显式意图门禁。
+- 增加版本化混合搜索路由配置及Schema，但保持`draft`，未提前替换生产发现层。
+- 增加Brand Owner/Agent角色评分卡和历史v3工具榜隔离边界。
+- 全量270项测试、TypeScript、ESLint和端到端文档校验通过。
+
 ## 0.9.0-discussion - 2026-09-01
 
 - 确认Brand Owner / Product Company为正式、显式启用的候选主角色。
