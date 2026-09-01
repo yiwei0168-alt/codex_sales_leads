@@ -9,6 +9,14 @@
 - 增加Brand Owner/Agent角色评分卡和历史v3工具榜隔离边界。
 - 全量270项测试、TypeScript、ESLint和端到端文档校验通过。
 
+## implementation-checkpoint-2 - 2026-09-01
+
+- `main@e8613e6`增加六类生产搜索provider适配器和Google/Bing引擎区分。
+- 增加跨工具实时候选注册表及首次/辅助发现记录。
+- 增加provider调用与candidate occurrence数据库贡献Schema。
+- 模块保持未激活，真实搜索成本和质量记为`not-observed`。
+- 全量280项测试、TypeScript、ESLint和端到端文档校验通过。
+
 ## 0.9.0-discussion - 2026-09-01
 
 - 确认Brand Owner / Product Company为正式、显式启用的候选主角色。
