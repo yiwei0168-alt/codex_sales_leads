@@ -1,6 +1,6 @@
 import type { ChannelRole } from "@/lib/domain";
 
-export type ChannelMembershipLane = "distribution" | "resale" | "retail" | "services" | "isp";
+export type ChannelMembershipLane = "distribution" | "resale" | "retail" | "services" | "isp" | "agent" | "brand";
 
 export interface ChannelMembershipAssessment {
   lane: ChannelMembershipLane;
@@ -18,6 +18,8 @@ export const MULTI_ROLE_CHANNEL_POLICY = {
   distribution: "Distributor requires actual downstream channel supply or explicit distributor/wholesaler identity. VAD additionally requires Distributor status and substantive technical enablement.",
   resale: "Reseller requires actual product resale. VAR additionally requires resale to end customers plus substantive technical value; direct brand buying alone does not make VAD.",
   services: "SI requires solution/architecture/integration or project-outcome responsibility. Installer requires actual installation responsibility; installation execution alone does not prove SI.",
+  agent: "Agent requires target-industry manufacturer-representation or commission-sales activity; distribution or resale alone does not prove an agency role.",
+  brand: "Brand Owner requires a real owned networking product brand plus product-definition or market control; a trademark or third-party listing alone is insufficient.",
   uncertain: "When evidence suggests a role but does not prove its defining business action, retain it as a possible role for verification but do not pass that lane yet.",
   metric: "Benchmark category accuracy measures supported lane membership, not agreement on one forced primary role.",
 } as const;
@@ -67,6 +69,14 @@ const rolePatterns: Array<{ role: ChannelRole; pattern: RegExp }> = [
     role: "ISP",
     pattern: /\b(?:internet service provider|wireless internet service provider|\bWISP\b|broadband provider|internet provider|internetanbieter|breitbandanbieter)\b|\b(?:internet|broadband|breitband)\s+(?:plans?|packages?|tariffs?|tarife|anschluss)\b/i,
   },
+  {
+    role: "Agent",
+    pattern: /\b(?:manufacturer(?:'s)? representative|sales representative agency|commission sales agent|handelsvertretung|industrievertretung)\b/i,
+  },
+  {
+    role: "Brand Owner",
+    pattern: /\b(?:our own brand|owned brand|proprietary brand|eigenmarke|hausmarke|brand owner)\b.{0,100}\b(?:router|gateway|wi-?fi|wlan|switch|network|connectivity|cpe)\b|\b(?:router|gateway|wi-?fi|wlan|switch|network|connectivity|cpe)\b.{0,100}\b(?:our own brand|owned brand|proprietary brand|eigenmarke|hausmarke|brand owner)\b/i,
+  },
 ];
 
 const laneRoles: Record<ChannelMembershipLane, readonly ChannelRole[]> = {
@@ -75,6 +85,8 @@ const laneRoles: Record<ChannelMembershipLane, readonly ChannelRole[]> = {
   retail: ["Retailer", "E-tailer"],
   services: ["SI", "Installer", "MSP"],
   isp: ["ISP"],
+  agent: ["Agent"],
+  brand: ["Brand Owner"],
 };
 
 const b2bCommercePattern = /\b(?:b2b|business customers?|commercial customers?|business account|trade account|gesch(?:a|ä)ftskunden|gewerbekunden|firmenkunden|beh(?:o|ö)rden|(?:kauf|zahlung) auf rechnung|billie b2b)\b/i;

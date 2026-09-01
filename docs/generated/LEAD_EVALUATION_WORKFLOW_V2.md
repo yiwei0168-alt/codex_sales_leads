@@ -5,7 +5,7 @@
 - 运行时策略版本：3.0.0（基础流程定义 2.0.0）
 - 评分策略版本：2.0.0
 - 成本质量策略版本：3.0.0
-- 配置指纹：`949505ae6475d6dd216285041a8a804540e6632d5caaddb165b32ec7f2b236cc`
+- 配置指纹：`7cba0a90b0014bc160032de61b29e052e1044e119af585ca111045884bebca17`
 - 范围：From the user's natural-language market-development request and workspace context to ranked companies, editable cooperation paths, development strategy, outreach email, and private-memory learning from user edits.
 
 ## 一、从用户输入到最终输出的总流程
@@ -76,6 +76,9 @@ flowchart TD
 输出：
 
 - LeadSearchPlan
+- Explicit opportunity targets
+- Coverage mode
+- Verified-only flag
 - userId
 - workspaceId
 - actionId
@@ -85,6 +88,8 @@ flowchart TD
 
 - Preserve explicit user constraints
 - Treat requested roles as search intent, not final classification
+- Agent, Brand Owner and OEM/ODM are explicit-only
+- Never route OEM/ODM supplier sourcing
 - Mark nominated companies for deep research
 
 失败与回退：Reject only structurally unusable requests; do not silently invent a target market or role.
@@ -150,6 +155,7 @@ flowchart TD
 - Use confirmed Cudy positioning and competitors
 - Do not average all product families
 - Keep original role lanes only as discovery coverage
+- Validate the draft hybrid provider route without activating it until the executor and gate pass integration checks
 
 失败与回退：Use a deterministic playbook fallback with warnings when the model cannot return a valid plan.
 
@@ -177,7 +183,7 @@ flowchart TD
 
 策略：
 
-- Maximize recall across distribution, resale/retail, services and operator families
+- Current executor remains the legacy Tavily discovery path until the draft hybrid executor, light gate and contribution persistence pass integration checks
 - Provider score and rank cannot enter final value scoring
 - Canonicalize domains and retain multi-provider provenance
 
@@ -683,22 +689,24 @@ flowchart TD
 
 | 文件 | SHA-256 |
 |---|---|
-| `config/lead-scoring/policy-v2.0.0.json` | `aa0894967fd10096284b856c4654e2bf8615065aa9eafc3eb99dabe9567a31da` |
+| `config/lead-scoring/policy-v2.0.0.json` | `b0b387e6f66fb1723401a1d86445222682dcc6f8695de42ab67f1af84905580c` |
+| `config/lead-search/hybrid-search-v1.0.0.json` | `8e2b03dd13d3c8737004b650c301b177b9e39ca594bbb2c1b8ae4d6f66e447c0` |
 | `config/lead-workflow/cost-quality-policy-v3.0.0.json` | `2e3d85b6ccd4a9fa13de39cdc66af32814c75b8b4a693cddd74638743b1def53` |
 | `config/lead-workflow/runtime-policy-v3.0.0.json` | `f58509eb101f842ae9c2e7b01484c8b2e429908166a13a502c5d8be477127989` |
 | `src/app/api/assistant/messages/route.ts` | `04bec90cc3d3f336195e8ab97a5ad4b1ec1e05b95606064225e098e94ed7a5cd` |
-| `src/lib/assistant/types.ts` | `ddb4cc47c6d9c2523b115a32c0d74738fb66ddfd88f14a0e2cb37d77b308f667` |
-| `src/lib/assistant/intent.ts` | `bda42f827315a4cbc185a9bbd56263509613360d2db61b7434f5874d6bab86b9` |
-| `src/lib/assistant/intent-agent.ts` | `383351c0023037cff4c08a8ccf6ba88bebf2d5ff3c60dd1ee1c8eb8b7a696cb4` |
+| `src/lib/assistant/types.ts` | `0e588f15b29ba36dc5d3e235d28f859415d31f5fc447a0f8c970c6aa79ee71e4` |
+| `src/lib/assistant/intent.ts` | `c91b9808aa67fd78ccd80f1747c839ff69ff6d6a58822ec6b07f8524f3894fd6` |
+| `src/lib/assistant/intent-agent.ts` | `c5f90b10866ccd294bca4415e216a35218d611f247ccf636bf6779010e778107` |
 | `src/lib/assistant/service.ts` | `1e2d9719d2937cc3081c3dbddf016d7cd665de1c1e9a88c775d10e3863ec00df` |
 | `src/lib/assistant/repository.ts` | `4243485613740437216b7867c0b8b420ea16d555f852397b436fd8a5f5414e67` |
 | `src/lib/leads/workflow/graph.ts` | `db53a606bcd9233361241cc89163bd71bd5ea396ee836415ceefc657750c9d25` |
 | `src/lib/leads/workflow/jobs.ts` | `73b446cdbf949c125a4ddd248cbf08ec01b5d780e26f756250d34a997bfd5c87` |
 | `src/lib/leads/workflow/rag-context.ts` | `d34f47db8308c4d89b6b81dfdcda530757b3af35a5d678725488335af127f410` |
-| `src/lib/leads/workflow/playbook.ts` | `566a55bf71486a999a443ec364d7a316bba578eb3d0e5c9a3c37dcf223a45b98` |
+| `src/lib/leads/workflow/playbook.ts` | `8cbf633eadacbcccc36bb944f8c527107759e0a815d58f17d4d595da05642a4b` |
 | `src/lib/leads/workflow/playbook-cache.ts` | `945d3fc727312208650ee7b4e55e33860e7c54f7e3daa939f768952409a1803f` |
+| `src/lib/leads/workflow/hybrid-search-policy.ts` | `e7dc7a25457cf8cd1f08dc9309e9d95556991cd9288bae4ee608952cc7a564ec` |
 | `src/lib/leads/workflow/discovery.ts` | `1aa5ffc06dd9dcb6220942fd5056003c90031e95acb171cc25fa8048e4125879` |
-| `src/lib/leads/global-search.ts` | `d62691dd6ffaecad6b13d5d7f05abaa5bdc39bd8ff91c1257c71cc21bacc670c` |
+| `src/lib/leads/global-search.ts` | `21a1666a228a846826ec50301a78eb1eac0d8dc73de6d8db812e349ae6fbb7b9` |
 | `src/lib/leads/workflow/evidence-correction-agent.ts` | `9f35d93f2913e6b77de3c988d8f2d44c9541e549441254fea5571f037dd22798` |
 | `src/lib/leads/workflow/evidence-packet.ts` | `1ca9577284952e245a8e8c51ae9fa82472fcbcf0b262ebaa83fc6463f379836f` |
 | `src/lib/leads/workflow/qualification-agent.ts` | `97967abc62b11dae08b75483b3f6b555d4f576d7ae2776e675749e722398dff3` |
@@ -719,7 +727,7 @@ flowchart TD
 | `src/lib/leads/workflow/pdf-extraction-policy.ts` | `6d8847827f1e96eab570114bca33cd447eaa3e64d7246ee09a748f8e6d6ade03` |
 | `src/lib/leads/workflow/public-evidence-repository.ts` | `5dcbfe60487eeb5d2ccab4b6e3eac9529705b21005abaa599359c992e51c4b03` |
 | `src/lib/leads/workflow/workflow-telemetry.ts` | `47c86d6b05cd87f088eb110cae2603989aebc920b4203688fb899c4d48cbde95` |
-| `experiments/multi-source-lead-discovery/scripts/score-v3-tool-lead-value.ts` | `9657290e00e8007da28a05c1850b7b7c0e2c1bce4b7d2e4a1923aa64addef3e1` |
+| `experiments/multi-source-lead-discovery/scripts/score-v3-tool-lead-value.ts` | `0417c889812d19ff5b8f28a76102eb80bc827b1356fc26cb5a33a22240ee811d` |
 | `experiments/multi-source-lead-discovery/scripts/render-v3-tool-evaluation.ts` | `1fdb0d23c3465159403b54f4a42a19e28556ce31de320c118ada5d8fd2615a7c` |
 | `experiments/multi-source-lead-discovery/scripts/verify-v3-tool-evaluation.ts` | `447ed84f220192fbab192033ebde7d8b0b2f7d86552a0769cbe0f341d33797fd` |
 | `db/migrations/029_isolated_user_long_term_memory.sql` | `e3564a7328ffd643e60798c4d2bd6377c563aec0c224ad54589f534a0b5ae07c` |

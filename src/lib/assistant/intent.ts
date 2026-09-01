@@ -51,6 +51,12 @@ const roleSignals: Array<{ role: ChannelRole; pattern: RegExp }> = [
   { role: "Installer", pattern: /安装商|installer/i },
   { role: "MSP", pattern: /托管服务|\bmsp\b|managed service/i },
   { role: "ISP", pattern: /互联网服务|网络运营商|\bisp\b|\bwisp\b|internet service provider/i },
+  { role: "Agent", pattern: /销售代理|商业代理|制造商代表|manufacturer(?:'s)? representative|sales agent|handelsvertretung/i },
+  { role: "Brand Owner", pattern: /品牌商|品牌公司|自有品牌公司|brand owner|product company/i },
+];
+
+const DEFAULT_CHANNEL_ROLES: ChannelRole[] = [
+  "Distributor", "VAD", "VAR", "Dealer", "Reseller", "Retailer", "E-tailer", "SI", "Installer", "MSP", "ISP",
 ];
 
 export function interpretAssistantRequest(text: string): { intent: AssistantIntent; plan?: LeadSearchPlan; reply?: string } {
@@ -69,6 +75,10 @@ export function interpretAssistantRequest(text: string): { intent: AssistantInte
     reply: "我可以先为你生成销售线索搜索计划。请补充目标国家或市场，例如“搜索德国的分销商和系统集成商”。",
   };
   const roles = roleSignals.filter((item) => item.pattern.test(text)).map((item) => item.role);
+  const oemOdm = /\bOEM\b|\bODM\b|private[- ]?label|white[- ]?label|白牌|贴牌|定制(?:产品|硬件|路由器|CPE)/i.test(text);
+  const requestedRoles = roles.length ? roles : oemOdm
+    ? ["Distributor", "VAD", "Retailer", "E-tailer", "SI", "ISP", "Brand Owner"] as ChannelRole[]
+    : DEFAULT_CHANNEL_ROLES;
   const countMatch = text.match(/(?:前|搜索|寻找|find|top)\s*(\d{1,3})\s*(?:家|个|companies?|leads?)|(?<!\d)(\d{1,3})\s*(?:家|个|companies?|leads?)/i);
   const targetCount = Math.max(1, Math.min(Number(countMatch?.[1] ?? countMatch?.[2] ?? 20), 100));
   const objective = /已有|现有.{0,8}分销|existing distributor|增长|growth/i.test(text)
@@ -78,10 +88,15 @@ export function interpretAssistantRequest(text: string): { intent: AssistantInte
     plan: {
       ...country,
       objective,
-      roles: roles.length ? roles : ["Distributor", "VAD", "VAR", "Dealer", "Reseller", "Retailer", "E-tailer", "SI", "Installer", "MSP", "ISP"],
+      roles: requestedRoles,
       targetCount,
       queryLanguage: /[\u3400-\u9fff]/.test(text) ? "zh-CN" : "en",
       userRequest: text,
+      opportunityTargets: oemOdm ? ["OEM/ODM"] : [],
+      coverageMode: /本地|当地|城市|local|city/i.test(text) ? "local"
+        : /全国|国家级|national|enterprise/i.test(text) ? "national"
+          : /两类|两条|混合|mixed|both/i.test(text) ? "mixed" : "auto",
+      verifiedOnly: /已验证|已核实|verified/i.test(text),
     },
   };
 }

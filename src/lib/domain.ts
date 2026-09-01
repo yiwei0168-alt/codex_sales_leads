@@ -1,4 +1,4 @@
-export type ChannelLayer = "Tier-1 Distributor" | "Downstream Channel";
+export type ChannelLayer = "Tier-1 Distributor" | "Downstream Channel" | "Strategic Partner";
 
 export type ChannelRole =
   | "Distributor"
@@ -11,7 +11,9 @@ export type ChannelRole =
   | "SI"
   | "Installer"
   | "MSP"
-  | "ISP";
+  | "ISP"
+  | "Agent"
+  | "Brand Owner";
 
 export type AccountTier = "Strategic Distributor" | "Priority Distributor" | "Standard Distributor"
   | "Long-tail Distributor" | "KA" | "Priority" | "Standard" | "Long-tail";
@@ -115,6 +117,8 @@ export const roleFamilies = {
   retail: ["Retailer", "E-tailer"] as ChannelRole[],
   services: ["SI", "Installer", "MSP"] as ChannelRole[],
   isp: ["ISP"] as ChannelRole[],
+  agent: ["Agent"] as ChannelRole[],
+  brand: ["Brand Owner"] as ChannelRole[],
 };
 
 export function primaryRole(company: CompanyRecord): PrimaryBusinessRole {
@@ -174,6 +178,10 @@ export function validateTaxonomy(company: CompanyRecord): string[] {
   }
   if (company.roles.includes("ISP") && company.layer !== "Downstream Channel") {
     errors.push("ISP must be modeled as a downstream channel");
+  }
+  if (company.roles.some((role) => role === "Agent" || role === "Brand Owner")
+    && company.layer !== "Strategic Partner") {
+    errors.push("Agent and Brand Owner must be modeled as strategic partners");
   }
   if (company.evidence.length === 0) {
     errors.push("Every company requires identity evidence");

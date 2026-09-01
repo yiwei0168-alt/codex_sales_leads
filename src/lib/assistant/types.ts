@@ -3,6 +3,8 @@ import type { ChannelRole } from "@/lib/domain";
 
 export type AssistantIntent = "knowledge-question" | "hybrid-research" | "lead-search" | "clarification" | "general";
 export type AssistantActionStatus = "proposed" | "confirmed" | "running" | "completed" | "failed" | "cancelled";
+export type LeadSearchOpportunityTarget = "OEM/ODM";
+export type LeadSearchCoverageMode = "auto" | "local" | "national" | "mixed";
 
 export interface LeadSearchPlan {
   countryCode: string;
@@ -12,6 +14,10 @@ export interface LeadSearchPlan {
   targetCount: number;
   queryLanguage: string;
   userRequest: string;
+  /** Optional for backward compatibility with already-persisted plans; runtime normalization supplies safe defaults. */
+  opportunityTargets?: LeadSearchOpportunityTarget[];
+  coverageMode?: LeadSearchCoverageMode;
+  verifiedOnly?: boolean;
 }
 
 export interface AssistantConversationTurn {

@@ -2,7 +2,7 @@ import type { ChannelRole } from "@/lib/domain";
 
 import { CHANNEL_ROLE_FAMILIES, type ChannelRoleFamily, type PrimaryBusinessRole } from "./workflow/types";
 
-export type LeadDisplayChannel = "tier1-distribution" | "b2b-resale" | "project-services";
+export type LeadDisplayChannel = "tier1-distribution" | "b2b-resale" | "project-services" | "strategic-partners";
 
 export interface PrimaryChannelSelection {
   primaryRole: PrimaryBusinessRole;
@@ -20,7 +20,7 @@ export const PRIMARY_CHANNEL_POLICY = {
   hybridAllowed: "Use Hybrid when multiple business-role families are materially co-primary and Unresolved when evidence is insufficient or conflicting.",
 } as const;
 
-const familyOrder: ChannelRoleFamily[] = ["distribution", "resale", "retail", "services", "isp"];
+const familyOrder: ChannelRoleFamily[] = ["distribution", "resale", "retail", "services", "isp", "agent", "brand"];
 function familiesForRoles(roles: ChannelRole[]): ChannelRoleFamily[] {
   return familyOrder.filter((family) => roles.some((role) => CHANNEL_ROLE_FAMILIES[family].includes(role as never)));
 }
@@ -28,6 +28,7 @@ function familiesForRoles(roles: ChannelRole[]): ChannelRoleFamily[] {
 function displayChannel(family: ChannelRoleFamily): LeadDisplayChannel {
   if (family === "distribution") return "tier1-distribution";
   if (family === "resale" || family === "retail") return "b2b-resale";
+  if (family === "agent" || family === "brand") return "strategic-partners";
   return "project-services";
 }
 

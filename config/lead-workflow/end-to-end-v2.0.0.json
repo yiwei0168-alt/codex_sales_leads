@@ -79,6 +79,7 @@
   ],
   "sourceFiles": [
     "config/lead-scoring/policy-v2.0.0.json",
+    "config/lead-search/hybrid-search-v1.0.0.json",
     "config/lead-workflow/cost-quality-policy-v3.0.0.json",
     "config/lead-workflow/runtime-policy-v3.0.0.json",
     "src/app/api/assistant/messages/route.ts",
@@ -92,6 +93,7 @@
     "src/lib/leads/workflow/rag-context.ts",
     "src/lib/leads/workflow/playbook.ts",
     "src/lib/leads/workflow/playbook-cache.ts",
+    "src/lib/leads/workflow/hybrid-search-policy.ts",
     "src/lib/leads/workflow/discovery.ts",
     "src/lib/leads/global-search.ts",
     "src/lib/leads/workflow/evidence-correction-agent.ts",
@@ -116,8 +118,8 @@
       "id": "01-user-input",
       "name": "User request and editable business intent",
       "inputs": ["Natural-language request", "Target country/market", "Desired count", "Optional roles, products, constraints and nominated companies"],
-      "outputs": ["LeadSearchPlan", "userId", "workspaceId", "actionId", "graphThreadId"],
-      "strategy": ["Preserve explicit user constraints", "Treat requested roles as search intent, not final classification", "Mark nominated companies for deep research"],
+      "outputs": ["LeadSearchPlan", "Explicit opportunity targets", "Coverage mode", "Verified-only flag", "userId", "workspaceId", "actionId", "graphThreadId"],
+      "strategy": ["Preserve explicit user constraints", "Treat requested roles as search intent, not final classification", "Agent, Brand Owner and OEM/ODM are explicit-only", "Never route OEM/ODM supplier sourcing", "Mark nominated companies for deep research"],
       "failure": "Reject only structurally unusable requests; do not silently invent a target market or role.",
       "downstream": ["Knowledge retrieval", "Workflow checkpoint identity"]
     },
@@ -135,7 +137,7 @@
       "name": "Market playbook and search plan",
       "inputs": ["LeadSearchPlan", "RAG citations", "Private cooperation-path memory"],
       "outputs": ["Market hypothesis", "Enabled product angles", "Preferred traits", "Exclusions", "Role-family search queries"],
-      "strategy": ["Use confirmed Cudy positioning and competitors", "Do not average all product families", "Keep original role lanes only as discovery coverage"],
+      "strategy": ["Use confirmed Cudy positioning and competitors", "Do not average all product families", "Keep original role lanes only as discovery coverage", "Validate the draft hybrid provider route without activating it until the executor and gate pass integration checks"],
       "failure": "Use a deterministic playbook fallback with warnings when the model cannot return a valid plan.",
       "downstream": ["Candidate discovery", "Qualification context"]
     },
@@ -144,7 +146,7 @@
       "name": "Multi-source candidate discovery",
       "inputs": ["Market playbook", "Role-family queries", "Target count"],
       "outputs": ["Raw candidate names/domains", "Discovery provider provenance", "Search-lane provenance", "Initial URLs/snippets"],
-      "strategy": ["Maximize recall across distribution, resale/retail, services and operator families", "Provider score and rank cannot enter final value scoring", "Canonicalize domains and retain multi-provider provenance"],
+      "strategy": ["Current executor remains the legacy Tavily discovery path until the draft hybrid executor, light gate and contribution persistence pass integration checks", "Provider score and rank cannot enter final value scoring", "Canonicalize domains and retain multi-provider provenance"],
       "failure": "A provider failure is isolated; the workflow continues with other discovery sources and records warnings.",
       "downstream": ["Fresh evidence acquisition"]
     },

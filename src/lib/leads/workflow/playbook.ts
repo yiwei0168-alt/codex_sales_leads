@@ -22,11 +22,15 @@ const familyLabels: Record<ChannelRoleFamily, string[]> = {
   retail: ["network router switch retailer e-tailer", "consumer SMB networking electronics shop"],
   services: ["enterprise network system integrator installer MSP", "business WiFi switching infrastructure solutions provider"],
   isp: ["internet service provider WISP fiber operator", "telecom broadband network operator equipment procurement"],
+  agent: ["networking manufacturer representative sales agency", "Handelsvertretung Netzwerktechnik Herstellervertretung"],
+  brand: ["own brand networking product company", "network equipment brand owner product company"],
 };
+
+const DEFAULT_CHANNEL_ROLES: ChannelRole[] = ALL_CHANNEL_ROLES.filter((role) => role !== "Agent" && role !== "Brand Owner");
 
 function selectedRoles(plan: LeadSearchPlan): ChannelRole[] {
   const requested = plan.roles.filter((role): role is ChannelRole => ALL_CHANNEL_ROLES.includes(role as ChannelRole));
-  return requested.length > 0 ? [...new Set(requested)] : [...ALL_CHANNEL_ROLES];
+  return requested.length > 0 ? [...new Set(requested)] : [...DEFAULT_CHANNEL_ROLES];
 }
 
 function selectedFamilies(roles: ChannelRole[]): Array<{ family: ChannelRoleFamily; roles: ChannelRole[] }> {

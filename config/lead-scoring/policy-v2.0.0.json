@@ -90,6 +90,18 @@
       "customerReachEvidence": ["subscribers", "homes passed", "service footprint", "install base"],
       "scenarioEvidence": ["CPE", "xPON", "FWA", "mesh", "remote management", "mass deployment"],
       "executionEvidence": ["lab validation", "certification", "provisioning", "NOC", "firmware", "rollout"]
+    },
+    "sales-agent": {
+      "roles": ["Agent"],
+      "customerReachEvidence": ["represented territory", "active principals", "target-industry accounts", "qualified opportunity access"],
+      "scenarioEvidence": ["networking manufacturer representation", "channel introductions", "commission sales", "territory development"],
+      "executionEvidence": ["principal onboarding", "pipeline development", "technical coordination", "local-language selling", "account continuity"]
+    },
+    "brand-owner": {
+      "roles": ["Brand Owner"],
+      "customerReachEvidence": ["relevant product sales", "installed base", "target-market reach", "customer or channel network"],
+      "scenarioEvidence": ["owned networking products", "product-family fit", "customer use cases", "verifiable portfolio gap"],
+      "executionEvidence": ["product operations", "quality and certification", "firmware or technical support", "launch", "after-sales continuity"]
     }
   },
   "subweights": {

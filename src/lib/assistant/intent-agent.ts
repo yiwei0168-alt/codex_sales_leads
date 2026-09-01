@@ -7,7 +7,9 @@ import type { AssistantConversationTurn, IntentPlan, LeadSearchPlan } from "./ty
 const PROMPT_VERSION = "assistant-intent-plan-v1";
 const CHANNEL_ROLES = [
   "Distributor", "VAD", "VAR", "Dealer", "Reseller", "Retailer", "E-tailer", "SI", "Installer", "MSP", "ISP",
+  "Agent", "Brand Owner",
 ] as const satisfies readonly ChannelRole[];
+const DEFAULT_CHANNEL_ROLES = CHANNEL_ROLES.filter((role) => role !== "Agent" && role !== "Brand Owner");
 
 const rawPlanSchema = z.object({
   intent: z.preprocess(
@@ -25,6 +27,9 @@ const rawPlanSchema = z.object({
     roles: z.array(z.enum(CHANNEL_ROLES)).max(CHANNEL_ROLES.length).nullish().transform((value) => value ?? []),
     target_count: z.coerce.number().int().min(1).max(100).nullish().transform((value) => value ?? 20),
     query_language: z.string().max(20).nullish().transform((value) => value ?? ""),
+    opportunity_targets: z.array(z.enum(["OEM/ODM"])).max(1).nullish().transform((value) => value ?? []),
+    coverage_mode: z.enum(["auto", "local", "national", "mixed"]).nullish().transform((value) => value ?? "auto"),
+    verified_only: z.boolean().nullish().transform((value) => value ?? false),
   }).nullish().transform((value) => value ?? undefined),
   requires_k3_planning: z.boolean().nullish().transform((value) => value ?? false),
   planning_reason: z.string().max(500).nullish().transform((value) => value ?? ""),
@@ -59,16 +64,27 @@ function safeLeadPlan(raw: z.infer<typeof rawPlanSchema>, userRequest: string): 
   const countryText = `${raw.lead_plan?.country ?? ""} ${raw.lead_plan?.country_code ?? ""} ${userRequest}`;
   const country = resolveCountry(countryText) ?? deterministic.plan;
   if (!country) return undefined;
-  const roles = raw.lead_plan?.roles.length ? raw.lead_plan.roles : deterministic.plan?.roles;
+  const opportunityTargets = deterministic.plan?.opportunityTargets ?? [];
+  const deterministicRoles = deterministic.plan?.roles ?? [];
+  const explicitSpecialRoles = new Set(deterministicRoles.filter((role) => role === "Agent" || role === "Brand Owner"));
+  const modelRoles = (raw.lead_plan?.roles ?? []).filter((role) => (role !== "Agent" && role !== "Brand Owner")
+    || explicitSpecialRoles.has(role));
+  const roles = modelRoles.length ? modelRoles : deterministicRoles.length
+    ? deterministicRoles : opportunityTargets.includes("OEM/ODM")
+      ? ["Distributor", "VAD", "Retailer", "E-tailer", "SI", "ISP", "Brand Owner"] as ChannelRole[]
+      : [...DEFAULT_CHANNEL_ROLES];
   return {
     countryCode: country.countryCode,
     countryName: country.countryName,
     objective: raw.lead_plan?.objective ?? deterministic.plan?.objective ?? "new-market",
-    roles: roles?.length ? roles : [...CHANNEL_ROLES],
+    roles,
     targetCount: raw.lead_plan?.target_count ?? deterministic.plan?.targetCount ?? 20,
     queryLanguage: raw.lead_plan?.query_language.trim() || deterministic.plan?.queryLanguage
       || (/\p{Script=Han}/u.test(userRequest) ? "zh-CN" : "en"),
     userRequest,
+    opportunityTargets,
+    coverageMode: raw.lead_plan?.coverage_mode ?? deterministic.plan?.coverageMode ?? "auto",
+    verifiedOnly: raw.lead_plan?.verified_only ?? deterministic.plan?.verifiedOnly ?? false,
   };
 }
 
@@ -112,6 +128,9 @@ async function invokeKimiIntent(options: {
           "Choose internal_knowledge for questions answerable only from private Cudy product specs, technical parameters, company material, email-learned knowledge, or internal policy.",
           "Choose hybrid_research when a reliable answer needs both private Cudy knowledge and current/public web information. Split it into one self-contained internal_question and up to five self-contained external_questions.",
           "Choose lead_search only when the user wants companies or sales leads discovered/qualified. Produce the country, objective, channel roles and target count; execution still requires user confirmation.",
+          "Agent and Brand Owner are explicit-only roles. Never add either unless the user explicitly asks for sales agents/manufacturer representatives, brand/product companies, or an OEM/ODM customer-lead task.",
+          "OEM/ODM means potential customers that may buy Cudy hardware, firmware or a complete solution for their own brand. This product never searches for factories, design houses or suppliers that would provide OEM/ODM services to Cudy.",
+          "Set opportunity_targets=[\"OEM/ODM\"] only when the user explicitly asks for OEM, ODM, private-label, white-label or customized-product customer leads.",
           "Choose clarification when a lead search lacks a target country or when the requested operation is materially ambiguous.",
           "Choose general only for greetings, capability questions, or conversation that needs neither retrieval nor sales-lead execution.",
           "Set requires_k3_planning=true only when the request has multiple markets/objectives, unusual constraints, conflicting multi-turn instructions, or needs a materially customized plan that the standard template cannot represent.",
@@ -119,7 +138,7 @@ async function invokeKimiIntent(options: {
           options.complexityCheck
             ? "Perform lightweight intent and template-fit recognition. Keep reply and planning_reason concise."
             : "Produce the complete plan for the complex request, resolving the supplied multi-turn constraints.",
-          "The top-level JSON keys must be intent, confidence, internal_question, external_questions, reply, lead_plan, requires_k3_planning, and planning_reason.",
+          "The top-level JSON keys must be intent, confidence, internal_question, external_questions, reply, lead_plan, requires_k3_planning, and planning_reason. lead_plan also contains opportunity_targets, coverage_mode and verified_only.",
           `Allowed channel roles: ${CHANNEL_ROLES.join(", ")}. Prompt version: ${PROMPT_VERSION}.`,
         ].join("\n"),
       },

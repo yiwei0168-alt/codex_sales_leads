@@ -23,6 +23,21 @@ describe("assistant intent routing", () => {
     expect(result.plan).toMatchObject({ countryCode: "DE", targetCount: 20 });
   });
 
+  it("keeps Agent and Brand Owner out of ordinary searches", () => {
+    const result = interpretAssistantRequest("搜索德国 20 家网络渠道公司");
+    expect(result.plan?.roles).not.toContain("Agent");
+    expect(result.plan?.roles).not.toContain("Brand Owner");
+    expect(result.plan?.opportunityTargets).toEqual([]);
+  });
+
+  it("enables explicit sales-agent and OEM customer intents without supplier sourcing", () => {
+    const agents = interpretAssistantRequest("搜索德国 20 家制造商销售代理");
+    expect(agents.plan?.roles).toEqual(["Agent"]);
+    const oem = interpretAssistantRequest("搜索德国 30 家 OEM ODM 白牌客户线索");
+    expect(oem.plan?.opportunityTargets).toEqual(["OEM/ODM"]);
+    expect(oem.plan?.roles).toContain("Brand Owner");
+  });
+
   it("asks for a country before proposing an external search", () => {
     const result = interpretAssistantRequest("帮我搜索 30 家系统集成商");
     expect(result.intent).toBe("clarification");

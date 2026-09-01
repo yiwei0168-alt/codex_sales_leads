@@ -43,7 +43,8 @@ export function correctV17Roles(dossier: SharedEvidenceDossier): V17RoleCorrecti
   return {
     facts: { ...facts, supportedRoles: roles, correctedRoutes: routesForSelection(selection) },
     selection,
-    primaryRoute: selection.primaryChannel,
+    primaryRoute: selection.primaryChannel && benchmarkOrder.includes(selection.primaryChannel as BenchmarkLane)
+      ? selection.primaryChannel as BenchmarkLane : null,
     consensusRoles,
   };
 }

@@ -147,9 +147,12 @@ function normalize(raw: ModelAssessment, candidate: CorrectedLeadWorkflowCandida
   const supportedRoles = new Set<ChannelRole>(candidate.correction.resolvedRoles);
   let role = raw.toolPrimaryRole;
   if (candidate.correction.primaryRole !== "Hybrid" && candidate.correction.primaryRole !== "Unresolved") {
-    role = candidate.correction.primaryRole;
+    role = roleSchema.safeParse(candidate.correction.primaryRole).success
+      ? candidate.correction.primaryRole as ModelAssessment["toolPrimaryRole"] : "Unresolved";
   } else if (role !== "Unresolved" && !supportedRoles.has(role)) {
-    role = candidate.correction.resolvedRoles[0] ?? "Unresolved";
+    const resolvedBenchmarkRole = candidate.correction.resolvedRoles
+      .find((candidateRole) => roleSchema.safeParse(candidateRole).success);
+    role = resolvedBenchmarkRole ? resolvedBenchmarkRole as ModelAssessment["toolPrimaryRole"] : "Unresolved";
   }
   const invalidEvidenceIdsRemoved: string[] = [];
   const dimensions = Object.fromEntries(Object.entries(raw.dimensions).map(([key, value]) => {

@@ -5,7 +5,7 @@ import { TavilySearchProvider, type TavilySearchResult } from "@/providers/tavil
 import { ProviderUnavailableError } from "@/providers/contracts";
 import type { LeadSearchPlan } from "@/lib/assistant/types";
 
-const allowedRoles = new Set<ChannelRole>(["Distributor", "VAD", "VAR", "Dealer", "Reseller", "Retailer", "E-tailer", "SI", "Installer", "MSP", "ISP"]);
+const allowedRoles = new Set<ChannelRole>(["Distributor", "VAD", "VAR", "Dealer", "Reseller", "Retailer", "E-tailer", "SI", "Installer", "MSP", "ISP", "Agent", "Brand Owner"]);
 const blockedDomains = [
   "linkedin.com", "facebook.com", "instagram.com", "youtube.com", "tiktok.com", "x.com", "twitter.com",
   "wikipedia.org", "reddit.com", "pinterest.com", "medium.com", "google.com", "bing.com", "yahoo.com",
@@ -59,6 +59,8 @@ export function buildGlobalLeadSearchQueries(plan: LeadSearchPlan): Array<{ role
     Retailer: "network equipment retailer", "E-tailer": "online network equipment retailer",
     SI: "enterprise network system integrator", Installer: "business Wi-Fi network installer",
     MSP: "managed network service provider", ISP: "internet service provider WISP fiber operator",
+    Agent: "networking manufacturer sales representative Handelsvertretung",
+    "Brand Owner": "own brand networking product company",
   };
   const queryCountry = new Intl.DisplayNames(["en"], { type: "region" }).of(plan.countryCode) ?? plan.countryName;
   return selected.slice(0, 12).map((role) => ({ role, query: `${labels[role]} ${queryCountry} official company` }));
@@ -86,11 +88,12 @@ function toRecord(candidate: GlobalLeadSearchCandidate, plan: LeadSearchPlan, ru
   const fit = Math.round(55 + score * 35);
   const name = globalLeadDisplayName(candidate.result, candidate.domain);
   const isDistribution = candidate.role === "Distributor" || candidate.role === "VAD";
+  const isStrategicPartner = candidate.role === "Agent" || candidate.role === "Brand Owner";
   const isLargeIsp = candidate.role === "ISP" && score >= 0.72;
   return {
     id: `tavily-${plan.countryCode.toLowerCase()}-${uniqueId(candidate.domain)}`, legalName: name, displayName: name, domain: candidate.domain,
     city: plan.countryName, country: plan.countryName,
-    layer: isDistribution ? "Tier-1 Distributor" : "Downstream Channel", roles: [candidate.role],
+    layer: isDistribution ? "Tier-1 Distributor" : isStrategicPartner ? "Strategic Partner" : "Downstream Channel", roles: [candidate.role],
     accountTier: isLargeIsp ? "KA" : score >= 0.72 ? "Priority" : "Standard",
     supplyModel: isLargeIsp ? "Co-sell/Co-supply" : "TBD", brandInvolvement: isLargeIsp ? "Deep" : "Standard",
     fitScore: fit, accountValue: isLargeIsp ? 85 : 50, reachability: 50, evidenceConfidence: confidence,

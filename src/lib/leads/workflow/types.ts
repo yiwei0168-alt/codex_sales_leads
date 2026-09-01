@@ -5,7 +5,7 @@ import type { CooperationPathMemory } from "@/lib/leads/path-memory";
 
 export const ALL_CHANNEL_ROLES: ChannelRole[] = [
   "Distributor", "VAD", "VAR", "Dealer", "Reseller", "Retailer",
-  "E-tailer", "SI", "Installer", "MSP", "ISP",
+  "E-tailer", "SI", "Installer", "MSP", "ISP", "Agent", "Brand Owner",
 ];
 
 export const CHANNEL_ROLE_FAMILIES = {
@@ -14,6 +14,8 @@ export const CHANNEL_ROLE_FAMILIES = {
   retail: ["Retailer", "E-tailer"],
   services: ["SI", "Installer", "MSP"],
   isp: ["ISP"],
+  agent: ["Agent"],
+  brand: ["Brand Owner"],
 } as const satisfies Record<string, readonly ChannelRole[]>;
 
 export type ChannelRoleFamily = keyof typeof CHANNEL_ROLE_FAMILIES;

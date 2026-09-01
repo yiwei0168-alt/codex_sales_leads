@@ -58,4 +58,16 @@ describe("Kimi intent and planning agent", () => {
     expect(JSON.parse(fetchMock.mock.calls[1][1].body as string).model).toBe("kimi-k3");
     expect(result).toMatchObject({ plannerSource: "kimi-k3", leadPlan: { countryCode: "FR", targetCount: 40 } });
   });
+
+  it("removes special roles hallucinated by Kimi unless the user explicitly requests them", async () => {
+    vi.stubEnv("KIMI_API_KEY", "test-key");
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({
+      choices: [{ message: { content: JSON.stringify({ intent: "lead_search", confidence: 0.95,
+        lead_plan: { country: "Germany", country_code: "DE", roles: ["Distributor", "Agent", "Brand Owner"],
+          opportunity_targets: ["OEM/ODM"] } }) } }],
+    }), { status: 200 }));
+    const result = await planAssistantRequest("Search Germany distributors", [], fetchMock);
+    expect(result.leadPlan?.roles).toEqual(["Distributor"]);
+    expect(result.leadPlan?.opportunityTargets).toEqual([]);
+  });
 });
