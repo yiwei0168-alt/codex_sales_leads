@@ -37,7 +37,7 @@ import { buildControlUniqueGroups, buildProductRecordIndex, evaluateControlUniqu
 nextEnv.loadEnvConfig(process.cwd());
 const rateCard = rateCardJson as ExperimentRateCard;
 const experimentRoot = path.resolve("experiments/search-e2e-evaluation/uk-mx-v1");
-const frozenTag = "search-e2e-eval-v1.0.12-frozen";
+const frozenTag = "search-e2e-eval-v1.0.13-frozen";
 
 const frozenFiles = [
   "PROTOCOL.md", "README.md", "config/experiment.v1.0.0.json", "config/gemini-control-prompt.md",
@@ -88,9 +88,13 @@ async function verifyFrozenManifest(requireTag = true): Promise<void> {
   }
   if (mismatches.length > 0) throw new Error(`Frozen input hash mismatch: ${mismatches.join(", ")}`);
   if (requireTag) {
-    const tags = execFileSync("git", ["tag", "--points-at", "HEAD"], { cwd: process.cwd(), encoding: "utf8" })
-      .split(/\r?\n/).filter(Boolean);
-    if (!tags.includes(manifest.requiredGitTag)) throw new Error(`HEAD must be tagged ${manifest.requiredGitTag} before paid calls`);
+    try {
+      execFileSync("git", ["merge-base", "--is-ancestor", manifest.requiredGitTag, "HEAD"], {
+        cwd: process.cwd(), stdio: "ignore",
+      });
+    } catch {
+      throw new Error(`Frozen tag ${manifest.requiredGitTag} must be an ancestor of HEAD before paid calls`);
+    }
   }
 }
 
@@ -221,8 +225,8 @@ async function runPreflight(): Promise<void> {
   missing.push(...discoveryStatus.filter((item) => !item.configured).map((item) => item.apiKeyEnv));
   if (missing.length > 0) throw new Error(`Preflight missing required environment variables: ${[...new Set(missing)].join(", ")}`);
 
-  if (!hasPreflightCheck(state, "prior-before-v1.0.12-adjustment")) {
-    const productAdjustment = preflightEvent({ eventId: "preflight:prior-product-before-v1.0.12", runId: state.runId,
+  if (!hasPreflightCheck(state, "prior-before-v1.0.13-adjustment")) {
+    const productAdjustment = preflightEvent({ eventId: "preflight:prior-product-before-v1.0.13", runId: state.runId,
       ledger: "product-e2e-arm", arm: "product-e2e", stage: "prior-preflight-adjustment",
       provider: "mixed-product-preflight", startedAt: state.createdAt, completedAt: state.createdAt,
       latencyMs: 0, attempts: 50, retries: 8, fallbackUsed: false, status: "completed", usage: {},
@@ -231,7 +235,7 @@ async function runPreflight(): Promise<void> {
         discardedReasonCounts: { timeout: 1, schemaInvalid: 4, fallback: 1, semanticGateFailure: 5,
           transportFailure: 2 } },
       notes: ["Conservative carry-forward for v1.0.0-v1.0.10 product-side preflights, including all successful v1.0.10 discovery, evidence and score checks."] });
-    const controlAdjustment = preflightEvent({ eventId: "preflight:prior-gemini-control-before-v1.0.12",
+    const controlAdjustment = preflightEvent({ eventId: "preflight:prior-gemini-control-before-v1.0.13",
       runId: state.runId, ledger: "gemini-native-arm", arm: "gemini-native", stage: "prior-preflight-adjustment",
       provider: "gemini-full", requestedModel: "gemini-3.6-flash", actualModel: "gemini-3.6-flash",
       startedAt: state.createdAt, completedAt: state.createdAt, latencyMs: 0, attempts: 2, retries: 0,
@@ -248,7 +252,7 @@ async function runPreflight(): Promise<void> {
       volume: { inputItems: 2, rawOutputItems: 0, validOutputItems: 0, downstreamUsedItems: 0,
         discardedReasonCounts: { insufficientQuota: 2 } },
       notes: ["High-reasoning, no-tools, store=false full-schema probe returned HTTP 403 insufficient_user_quota; no model output or token usage."] });
-    await checkpointPreflight(state, "prior-before-v1.0.12-adjustment",
+    await checkpointPreflight(state, "prior-before-v1.0.13-adjustment",
       [productAdjustment, controlAdjustment, openAiGatewayProbe],
       { productUsd: EXPERIMENT_CONFIG.cost.priorProductPreflightAdjustmentUsd,
         geminiControlReserveUsd: EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd,
@@ -859,9 +863,9 @@ async function runEvaluation(): Promise<void> {
     schemaVersion: 1, runId: state.runId, generatedAt, contributions, findings,
     note: "Observed opportunities only; no frozen experiment or product route was modified post hoc.",
   });
-  await writeTextAtomic(path.join(artifactRunRoot(), "final/SEARCH_E2E_EVALUATION_REPORT.v1.0.12.md"),
+  await writeTextAtomic(path.join(artifactRunRoot(), "final/SEARCH_E2E_EVALUATION_REPORT.v1.0.13.md"),
     renderFinalReport({ metrics, blind, bundles, costs: state.costEvents, generatedAt })
-      .replace("evaluation v1.0.9", "evaluation v1.0.12"));
+      .replace("evaluation v1.0.9", "evaluation v1.0.13"));
   state.status = "completed";
   await saveRunState(state);
   console.log(JSON.stringify({ status: "completed", runId: state.runId, passed: metrics.passed,

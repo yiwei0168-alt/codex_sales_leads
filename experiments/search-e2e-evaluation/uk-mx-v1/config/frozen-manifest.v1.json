@@ -1,21 +1,21 @@
 {
   "schemaVersion": 1,
-  "experimentId": "search-e2e-eval-v1.0.12",
-  "runId": "2026-09-02-uk-mx-search-e2e-v1-12",
-  "createdAt": "2026-09-02T06:18:47.650Z",
-  "requiredGitTag": "search-e2e-eval-v1.0.12-frozen",
+  "experimentId": "search-e2e-eval-v1.0.13",
+  "runId": "2026-09-02-uk-mx-search-e2e-v1-13",
+  "createdAt": "2026-09-02T06:47:26.473Z",
+  "requiredGitTag": "search-e2e-eval-v1.0.13-frozen",
   "files": [
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/PROTOCOL.md",
-      "sha256": "4185a313b43095fba4953412b2a3eee5b58a2cd9f57be7798ae80964bb129dba"
+      "sha256": "771b0a89f618cc03d809eddd47cc02eec295980502316418ce137a8265285a1a"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/README.md",
-      "sha256": "c25bb763f9b60847d7ec0176a86b02641cb3887f3c2fc2e34d13a5fee9ffdf55"
+      "sha256": "c41675ae2785b3be33042f050e21dde368fb73b0521409f59180f57917dea0b2"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/config/experiment.v1.0.0.json",
-      "sha256": "5a29ce5a6050c51f3ba635f7592cdcc2f0128f720f76dba89e8b702f960d1469"
+      "sha256": "a5cce1ac0936936ac833fa8948d27a8fae753dc41c7e4a97f8ffe28c1381c9e6"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/config/gemini-control-prompt.md",
@@ -91,7 +91,7 @@
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/scripts/run-formal-experiment.ts",
-      "sha256": "9957385cd34713da19569aa755bbe0cbafdfd2d720544543a6e62c166ef24e2e"
+      "sha256": "5e17cfa5ababecd0054e34c8cfeceda336322977309cf180c71d9465751f845a"
     },
     {
       "path": "config/lead-search/hybrid-search-v1.0.0.json",

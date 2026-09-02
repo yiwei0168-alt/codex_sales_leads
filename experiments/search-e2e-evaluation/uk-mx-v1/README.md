@@ -31,7 +31,7 @@ npm run experiment:search-e2e:cell -- --cell=MX-retail
 npm run experiment:search-e2e:evaluate
 ```
 
-The runner refuses paid calls unless every manifest hash matches and `HEAD` carries the frozen preregistration tag. Raw provider responses are written only under ignored `runs/raw/`; Git artifacts contain structured company fields, short evidence excerpts, hashes, aggregate telemetry and cost checkpoints.
+The runner refuses paid calls unless every manifest hash matches and the frozen preregistration tag is an ancestor of `HEAD`. This permits later commits containing only runtime checkpoints while preserving byte-level verification of every frozen input. Raw provider responses are written only under ignored `runs/raw/`; Git artifacts contain structured company fields, short evidence excerpts, hashes, aggregate telemetry and cost checkpoints.
 
 The Gemini adapter follows Google's current [Interactions API](https://ai.google.dev/api/interactions-api) usage fields and [structured-output contract](https://ai.google.dev/gemini-api/docs/structured-output): JSON format controls are top-level, and structured output may be combined with Google Search on Gemini 3 models.
 
@@ -39,7 +39,7 @@ Preflight checks, formal-arm stages, Gemini-only shared evaluation and every bli
 
 ## Version and Git policy
 
-- Experiment version: `search-e2e-eval-v1.0.12`
+- Experiment version: `search-e2e-eval-v1.0.13`
 - Working branch: `experiment/search-e2e-uk-mx-v1`
 - A preregistration tag is created before experimental calls.
 - Runtime checkpoints are committed after every completed country/category cell.

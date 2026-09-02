@@ -1,6 +1,8 @@
-# Cudy端到端搜索能力正式测评协议 v1.0.12
+# Cudy端到端搜索能力正式测评协议 v1.0.13
 
 状态：`preregistered-pending-preflight`
+
+v1.0.13修复正式调用前Git冻结门禁与运行检查点提交之间的冲突。冻结标签现在必须是当前`HEAD`的祖先，且冻结清单中的每个协议、配置、Prompt、Schema、策略与执行文件仍须逐字节匹配SHA-256；因此标签之后可以提交和推送仅含运行产物的恢复检查点，但任何冻结输入变化仍会立即阻断付费调用。v1.0.12首次单元尝试在任何付费调用前被该旧门禁阻断，正式单元仍为0/8，成本没有增加。
 
 v1.0.12按用户明确授权采用三级盲审回退：`Claude Opus 5 → Lingyu Responses gpt-5.6-sol → codex-in-session`。Claude端点在有限重试后持续无法完成TLS连接；随后实际发送高推理、无工具、`store=false`、完整盲审Schema的Lingyu `gpt-5.6-sol`最小请求，网关返回HTTP 403 `insufficient_user_quota`，没有模型输出或token usage。因此本轮统一启用`codex-in-session`，不再调用Codex/OpenAI API，不通过Lingyu，不使用Web Search，只由当前对话中的Codex读取程序导出的随机化冻结证据包，不混用裁判。盲包隐藏实验组、搜索工具、来源排名和现有分数；每项决定必须声明`externalSearchUsed=false`并引用包内证据ID。程序校验包SHA-256、字段范围和证据引用，确定性重算总分。所有决定文件必须先提交并推送，且本地`HEAD`等于上游分支，之后程序才允许读取本地身份映射并汇总。对话内盲审无增量API现金成本；因运行时不暴露本对话token用量，台账明确记录该限制，不伪造token数。
 
