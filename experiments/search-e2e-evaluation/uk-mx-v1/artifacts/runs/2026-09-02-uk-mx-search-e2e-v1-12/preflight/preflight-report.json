@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-02-uk-mx-search-e2e-v1-12",
+  "status": "passed",
+  "completedAt": "2026-09-02T06:38:53.883Z",
+  "checks": [
+    {
+      "name": "prior-before-v1.0.12-adjustment",
+      "completedAt": "2026-09-02T06:38:53.840Z",
+      "detail": {
+        "productUsd": 0.531486457,
+        "geminiControlReserveUsd": 0.17466425,
+        "lingyuOpenAiProbeUsd": 0
+      }
+    },
+    {
+      "name": "inherited-non-judge-preflight",
+      "completedAt": "2026-09-02T06:38:53.861Z",
+      "detail": {
+        "sourceExperimentId": "search-e2e-eval-v1.0.10",
+        "sourceRunId": "2026-09-02-uk-mx-search-e2e-v1-10",
+        "checks": [
+          "kimi-intent",
+          "local-rag",
+          "discovery-gemini-full/google-grounded",
+          "discovery-brave/brave",
+          "discovery-searchapi/bing",
+          "discovery-exa/exa",
+          "discovery-gemini-product/google-grounded",
+          "discovery-google-places/google-places",
+          "discovery-searchapi/google",
+          "tavily-evidence",
+          "deepseek-score-only",
+          "gemini-3.6-flash-structured-search"
+        ],
+        "productUsd": 0.5314864571588553,
+        "geminiControlUsd": 0.17466425000000002
+      }
+    },
+    {
+      "name": "codex-in-session-blind-review",
+      "completedAt": "2026-09-02T06:38:53.868Z",
+      "detail": {
+        "fallbackChain": [
+          "claude-opus-5",
+          "gpt-5.6-sol",
+          "codex-in-session"
+        ],
+        "activationReason": "Claude transport remained unavailable after bounded retries. A subsequent Lingyu gpt-5.6-sol Responses probe returned HTTP 403 insufficient_user_quota, so the user-authorized direct Codex conversation fallback is activated.",
+        "externalSearchAllowed": false,
+        "apiCallUsed": false,
+        "requireDecisionCommitAndPushBeforeDeblind": true
+      }
+    }
+  ],
+  "chosenBlindJudgeModel": "codex-in-session",
+  "cost": {
+    "eventCount": 3,
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0.7061507069999999,
+    "unpricedEvents": [],
+    "byLedger": {
+      "gemini-native-arm": 0.17466425,
+      "product-e2e-arm": 0.531486457,
+      "evaluation-overhead": 0
+    },
+    "byStage": {
+      "preflight-blind-judge": 0,
+      "prior-preflight-adjustment": 0.7061507069999999
+    },
+    "anomalies": []
+  },
+  "budgetDecision": {
+    "totalBudgetUsd": 100,
+    "spentUsd": 0.7061507069999999,
+    "budgetFraction": 0.00706150707,
+    "newlyCrossedThresholdsUsd": [],
+    "forecast": {
+      "completedCells": 0,
+      "totalCells": 8,
+      "incurredUsd": 0.7061507069999999,
+      "expectedCompletionUsd": 30,
+      "lowerUsd": 0.7061507069999999,
+      "upperUsd": 40.5,
+      "method": "initial-estimate"
+    },
+    "warning": false,
+    "hardStop": false,
+    "requiresUserDecision": false,
+    "reasons": []
+  }
+}
