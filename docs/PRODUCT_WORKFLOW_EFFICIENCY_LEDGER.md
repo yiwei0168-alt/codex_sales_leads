@@ -154,6 +154,8 @@ The v1.0.8 harness also closes a previous observability gap after search: Gemini
 
 Preflight v1.0.8 stopped before any formal cell because Kimi returned an otherwise usable lead plan with a nonnumeric representation in one numeric field. The failed call was preserved: 531 input tokens (512 cached), 1,593 output tokens, 45.677 seconds and USD 0.0064423329. v1.0.9 normalizes only bounded presentation variants for confidence/count and still requires Kimi to supply the semantic intent; target counts that remain nonnumeric fall back to the user-text parser. The versioned end-to-end definition is 2.2.1. Product-side carry-forward is USD 0.216858 and the separate Gemini control reserve is USD 0.100000, for a USD 0.316858 starting total. Formal cells remain 0/8.
 
+Preflight v1.0.9 passed every product-side check after two recoverable TLS resets, then the Gemini control request rejected the richer structured-output Schema with HTTP 400. Controlled probes showed that Gemini 3 + Google Search + top-level `response_format` works and that the complete field hierarchy succeeds when the API-side Schema is limited to `type/properties/required/items/enum`; local Zod continues enforcing all strict bounds. The two successful probes used three grounding queries and cost an estimated USD 0.04518225 from official usage. v1.0.10 carries USD 0.372687 product-side and USD 0.145183 Gemini-control-side, USD 0.517870 total. Formal cells remain 0/8.
+
 ## 持续优化事项
 
 | 优先级 | 工作流环节 | 可优化点 | 质量门禁 | 状态 |

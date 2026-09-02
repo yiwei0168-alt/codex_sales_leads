@@ -1,21 +1,21 @@
 {
   "schemaVersion": 1,
-  "experimentId": "search-e2e-eval-v1.0.9",
-  "runId": "2026-09-02-uk-mx-search-e2e-v1-9",
-  "createdAt": "2026-09-02T05:12:34.145Z",
-  "requiredGitTag": "search-e2e-eval-v1.0.9-frozen",
+  "experimentId": "search-e2e-eval-v1.0.10",
+  "runId": "2026-09-02-uk-mx-search-e2e-v1-10",
+  "createdAt": "2026-09-02T05:24:01.194Z",
+  "requiredGitTag": "search-e2e-eval-v1.0.10-frozen",
   "files": [
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/PROTOCOL.md",
-      "sha256": "759f11a82453546a63c0e87978e3732c7c4ca7c5609b2bd879be64052caee1df"
+      "sha256": "f4f20d9142726f34b659367ae9a95b96ece8afcb40e8b1a975606b6237dfd7e1"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/README.md",
-      "sha256": "2995da7dec3224da1b300ae048cae4d4bd66049173835c4aebb061b5af05e875"
+      "sha256": "19df5396dd1e70b0a5b018fc70a97bf1a647696d5acd8e09e4d49165787336ff"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/config/experiment.v1.0.0.json",
-      "sha256": "091a8ca764fd28f02d90e474c29d0ef7dfbd2c7063bddbcbca122e60ec4a47bf"
+      "sha256": "ae0d8d447eef4214643f551f187cd4de706cdcce89f0eb259485c3202c9286ad"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/config/gemini-control-prompt.md",
@@ -71,7 +71,7 @@
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/provider-clients.ts",
-      "sha256": "4cf6a05b7bf5bc3456a0d8859cbf97d483c99e8a44e14845b9b6aae9cdab3244"
+      "sha256": "f5127ceebb35cb1e0e3e02da7442376a87ec746099a4fa7abdd9a5420cc81cc9"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/run-store.ts",
@@ -87,7 +87,7 @@
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/scripts/run-formal-experiment.ts",
-      "sha256": "ad651414ea17d8df285f618fb23fd357dce61fff9aa5ecd9f76f0883cf34d7ea"
+      "sha256": "e49bc9eaf2f7dd31f55cf3e471995ebecdc7740953a24f3e6bb3005f3cc2b233"
     },
     {
       "path": "config/lead-search/hybrid-search-v1.0.0.json",

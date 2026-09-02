@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-02-uk-mx-search-e2e-v1-9",
+  "experimentId": "search-e2e-eval-v1.0.9",
+  "status": "invalid-before-formal-cells",
+  "failedCheck": "gemini-3.6-flash-structured-search",
+  "formalCellsStarted": 0,
+  "productPreflightStatus": "all checks passed",
+  "reason": "Gemini Interactions accepted native structured output with Google Search but rejected the richer API-side JSON Schema constraint combination with HTTP 400.",
+  "transportAnomalies": [
+    "SearchAPI TLS reset recovered on the next checkpointed invocation.",
+    "Exa TLS reset recovered on the next checkpointed invocation."
+  ],
+  "diagnostics": {
+    "simpleSchema": { "status": "passed", "inputTokens": 143, "visibleOutputTokens": 12,
+      "thoughtTokens": 141, "groundingQueries": 1, "officialListPriceUsd": 0.014681 },
+    "fullFieldsMinimalConstraints": { "status": "passed", "inputTokens": 160, "visibleOutputTokens": 207,
+      "thoughtTokens": 428, "groundingQueries": 2, "officialListPriceUsd": 0.03050125 },
+    "totalOfficialListPriceUsd": 0.04518225
+  },
+  "costCarryToV1_0_10": {
+    "productSideUsd": 0.372687,
+    "geminiControlAndDiagnosticsUsd": 0.145183,
+    "totalUsd": 0.51787
+  },
+  "resolution": "v1.0.10 keeps the complete output field hierarchy but sends only type/properties/required/items/enum to Gemini; strict local Zod validation remains unchanged."
+}

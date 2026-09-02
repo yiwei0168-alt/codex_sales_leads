@@ -25,11 +25,10 @@ interface ProviderCall<T> {
 type JsonSchema = Record<string, unknown>;
 
 const geminiSchemaKeys = new Set([
-  "type", "title", "description", "properties", "required", "additionalProperties", "items", "prefixItems",
-  "enum", "minimum", "maximum", "minItems", "maxItems", "anyOf", "$ref",
+  "type", "properties", "required", "items", "enum",
 ]);
 
-/** Keep only the JSON Schema subset documented for Gemini structured output. */
+/** Keep the minimal cross-tool subset accepted by Gemini structured output with Google Search. */
 export function sanitizeGeminiJsonSchema(value: unknown): unknown {
   if (Array.isArray(value)) return value.map(sanitizeGeminiJsonSchema);
   if (!value || typeof value !== "object") return value;

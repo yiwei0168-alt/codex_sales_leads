@@ -15,8 +15,8 @@ describe("formal experiment Gemini adapter", () => {
       $id: "example", type: "object", additionalProperties: false, required: ["url"],
       properties: { url: { type: "string", format: "uri", minLength: 1, maxLength: 2_000 },
         score: { type: "integer", minimum: 0, maximum: 100 } },
-    })).toEqual({ type: "object", additionalProperties: false, required: ["url"],
-      properties: { url: { type: "string" }, score: { type: "integer", minimum: 0, maximum: 100 } } });
+    })).toEqual({ type: "object", required: ["url"],
+      properties: { url: { type: "string" }, score: { type: "integer" } } });
   });
 
   it("uses the larger of observable search steps and official grounding usage", () => {

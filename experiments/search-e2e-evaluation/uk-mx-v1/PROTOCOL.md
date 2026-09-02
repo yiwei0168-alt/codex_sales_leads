@@ -1,8 +1,10 @@
-# Cudy端到端搜索能力正式测评协议 v1.0.9
+# Cudy端到端搜索能力正式测评协议 v1.0.10
 
 状态：`preregistered-pending-preflight`
 
-v1.0.9修复Kimi对无害数字格式的兼容：`confidence`接受数值、百分比或high/medium/low等有限描述并归一到0–1；`target_count`接受纯数字或含数字的短文本，无法解析时回退到用户原文的确定性数量提取，不以确定性逻辑替代Kimi语义意图。Schema错误现在记录具体字段路径。v1.0.8的Kimi调用使用531输入token（512缓存）、1593输出token、45.677秒和0.0064423329美元；正式英国/墨西哥单元仍为0/8。产品侧累计结转更新为0.216858美元，Gemini控制保守预留仍为0.100000美元，v1.0.9初始累计预算为0.316858美元。
+v1.0.10把Gemini API侧Schema收敛为真实联调通过的跨工具最小子集：`type/properties/required/items/enum`。完整字段层级不变，本地Zod仍严格验证URL、长度、数组数量、分数范围和额外字段，因此不放宽最终输出门禁。v1.0.9所有产品侧预检已通过；两次TLS重置经冻结有限重试恢复，随后完整约束Schema返回HTTP 400。两次最小结构化搜索诊断分别使用1和2次grounding，合计实测约0.04518225美元。正式英国/墨西哥单元仍为0/8。产品侧结转为0.372687美元，Gemini控制与诊断结转为0.145183美元，v1.0.10初始累计预算为0.517870美元。
+
+v1.0.9已修复Kimi对无害数字格式的兼容：`confidence`接受数值、百分比或high/medium/low等有限描述并归一到0–1；`target_count`接受纯数字或含数字的短文本，无法解析时回退到用户原文的确定性数量提取，不以确定性逻辑替代Kimi语义意图。Schema错误记录具体字段路径。
 
 v1.0.8已修复Gemini Interactions API适配：使用顶层`response_format={type:text,mime_type:application/json,schema:...}`，将实验Schema裁剪为官方支持的JSON Schema子集，并读取`total_input_tokens`、`total_output_tokens`、`total_thought_tokens`、`total_cached_tokens`和`grounding_tool_count`。输出计费token按可见输出加thought token计算；Google grounding即使模型token为0也必须计费。解析失败调用先落账再终止。
 

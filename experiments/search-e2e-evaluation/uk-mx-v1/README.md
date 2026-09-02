@@ -39,7 +39,7 @@ Preflight checks, formal-arm stages, Gemini-only shared evaluation and every bli
 
 ## Version and Git policy
 
-- Experiment version: `search-e2e-eval-v1.0.9`
+- Experiment version: `search-e2e-eval-v1.0.10`
 - Working branch: `experiment/search-e2e-uk-mx-v1`
 - A preregistration tag is created before experimental calls.
 - Runtime checkpoints are committed after every completed country/category cell.

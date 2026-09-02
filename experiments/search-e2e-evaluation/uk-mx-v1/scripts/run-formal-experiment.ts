@@ -35,7 +35,7 @@ import { buildControlUniqueGroups, buildProductRecordIndex, evaluateControlUniqu
 nextEnv.loadEnvConfig(process.cwd());
 const rateCard = rateCardJson as ExperimentRateCard;
 const experimentRoot = path.resolve("experiments/search-e2e-evaluation/uk-mx-v1");
-const frozenTag = "search-e2e-eval-v1.0.9-frozen";
+const frozenTag = "search-e2e-eval-v1.0.10-frozen";
 
 const frozenFiles = [
   "PROTOCOL.md", "README.md", "config/experiment.v1.0.0.json", "config/gemini-control-prompt.md",
@@ -195,25 +195,26 @@ async function runPreflight(): Promise<void> {
   missing.push(...discoveryStatus.filter((item) => !item.configured).map((item) => item.apiKeyEnv));
   if (missing.length > 0) throw new Error(`Preflight missing required environment variables: ${[...new Set(missing)].join(", ")}`);
 
-  if (!hasPreflightCheck(state, "prior-before-v1.0.9-adjustment")) {
-    const productAdjustment = preflightEvent({ eventId: "preflight:prior-product-before-v1.0.9", runId: state.runId,
+  if (!hasPreflightCheck(state, "prior-before-v1.0.10-adjustment")) {
+    const productAdjustment = preflightEvent({ eventId: "preflight:prior-product-before-v1.0.10", runId: state.runId,
       ledger: "product-e2e-arm", arm: "product-e2e", stage: "prior-preflight-adjustment",
       provider: "mixed-product-preflight", startedAt: state.createdAt, completedAt: state.createdAt,
-      latencyMs: 0, attempts: 19, retries: 0, fallbackUsed: false, status: "completed", usage: {},
+      latencyMs: 0, attempts: 37, retries: 6, fallbackUsed: false, status: "completed", usage: {},
       accountCashCostUsd: EXPERIMENT_CONFIG.cost.priorProductPreflightAdjustmentUsd,
-      volume: { inputItems: 19, rawOutputItems: 18, validOutputItems: 12, downstreamUsedItems: 0,
-        discardedReasonCounts: { timeout: 1, schemaInvalid: 4, fallback: 1, semanticGateFailure: 5 } },
-      notes: ["Conservative carry-forward for v1.0.0-v1.0.8 product-side preflights, including corrected Gemini discovery grounding charges and the v1.0.8 Kimi schema-format failure."] });
-    const controlAdjustment = preflightEvent({ eventId: "preflight:prior-gemini-control-before-v1.0.9",
+      volume: { inputItems: 33, rawOutputItems: 29, validOutputItems: 23, downstreamUsedItems: 0,
+        discardedReasonCounts: { timeout: 1, schemaInvalid: 4, fallback: 1, semanticGateFailure: 5,
+          transportFailure: 2 } },
+      notes: ["Conservative carry-forward for v1.0.0-v1.0.9 product-side preflights, including all successful v1.0.9 discovery, evidence and score checks."] });
+    const controlAdjustment = preflightEvent({ eventId: "preflight:prior-gemini-control-before-v1.0.10",
       runId: state.runId, ledger: "gemini-native-arm", arm: "gemini-native", stage: "prior-preflight-adjustment",
       provider: "gemini-full", requestedModel: "gemini-3.6-flash", actualModel: "gemini-3.6-flash",
       startedAt: state.createdAt, completedAt: state.createdAt, latencyMs: 0, attempts: 1, retries: 0,
       fallbackUsed: false, status: "failed", usage: {},
       accountCashCostUsd: EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd,
-      volume: { inputItems: 1, rawOutputItems: 1, validOutputItems: 0, downstreamUsedItems: 0,
-        discardedReasonCounts: { schemaInvalid: 1, usageNotCheckpointed: 1 } },
-      notes: ["Conservative reserve for the v1.0.7 Gemini control call whose invalid structure and usage were not checkpointed."] });
-    await checkpointPreflight(state, "prior-before-v1.0.9-adjustment", [productAdjustment, controlAdjustment],
+      volume: { inputItems: 4, rawOutputItems: 3, validOutputItems: 2, downstreamUsedItems: 0,
+        discardedReasonCounts: { schemaInvalid: 1, usageNotCheckpointed: 1, invalidRequest: 1 } },
+      notes: ["Carries the v1.0.7 unknown-usage control reserve plus two measured v1.0.9 structured-search diagnostics (three total grounding queries)."] });
+    await checkpointPreflight(state, "prior-before-v1.0.10-adjustment", [productAdjustment, controlAdjustment],
       { productUsd: EXPERIMENT_CONFIG.cost.priorProductPreflightAdjustmentUsd,
         geminiControlReserveUsd: EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd });
   }
@@ -707,8 +708,9 @@ async function runEvaluation(): Promise<void> {
     schemaVersion: 1, runId: state.runId, generatedAt, contributions, findings,
     note: "Observed opportunities only; no frozen experiment or product route was modified post hoc.",
   });
-  await writeTextAtomic(path.join(artifactRunRoot(), "final/SEARCH_E2E_EVALUATION_REPORT.v1.0.9.md"),
-    renderFinalReport({ metrics, blind, bundles, costs: state.costEvents, generatedAt }));
+  await writeTextAtomic(path.join(artifactRunRoot(), "final/SEARCH_E2E_EVALUATION_REPORT.v1.0.10.md"),
+    renderFinalReport({ metrics, blind, bundles, costs: state.costEvents, generatedAt })
+      .replace("evaluation v1.0.9", "evaluation v1.0.10"));
   state.status = "completed";
   await saveRunState(state);
   console.log(JSON.stringify({ status: "completed", runId: state.runId, passed: metrics.passed,
