@@ -1,0 +1,112 @@
+{
+  "experimentId": "search-e2e-eval-v1.0.0",
+  "status": "preregistered-pending-preflight",
+  "objective": "Compare the current cold-start product end-to-end company-search workflow with an un-tuned Gemini Full baseline.",
+  "arms": {
+    "gemini-native": {
+      "model": "gemini-3.6-flash",
+      "tool": "google_search",
+      "interactionsPerCell": 1,
+      "maximumTransportAttempts": 2,
+      "followUpPrompts": 0,
+      "postSearchEvidenceBeforeFreeze": false,
+      "preserveProviderOrder": true
+    },
+    "product-e2e": {
+      "hybridSearchPolicy": "config/lead-search/hybrid-search-v1.0.0.json",
+      "workflowPolicy": "config/lead-workflow/end-to-end-v2.0.0.json",
+      "runtimePolicy": "config/lead-workflow/runtime-policy-v3.0.0.json",
+      "costQualityPolicy": "config/lead-workflow/cost-quality-policy-v3.0.0.json",
+      "scoringPolicy": "config/lead-scoring/policy-v2.0.0.json",
+      "stopAfter": "ranked-scored-companies",
+      "excludedOutputs": ["cooperation-paths", "development-strategy", "development-email", "contacts"]
+    }
+  },
+  "coldStart": {
+    "allowFrozenProductKnowledge": true,
+    "allowFrozenWorkflowPolicies": true,
+    "allowHistoricalCandidates": false,
+    "allowHistoricalEvidence": false,
+    "allowCachedPages": false,
+    "allowHistoricalScores": false,
+    "allowPrivateCompanyMemory": false,
+    "allowPriorBenchmarkCompanies": false,
+    "allowCrossArmVisibilityBeforeFreeze": false
+  },
+  "markets": [
+    { "countryCode": "GB", "countryName": "United Kingdom", "primaryLanguage": "en", "supplementaryLanguages": [] },
+    { "countryCode": "MX", "countryName": "Mexico", "primaryLanguage": "es", "supplementaryLanguages": ["en"] }
+  ],
+  "categories": [
+    { "id": "distribution", "label": "Distributor/VAD" },
+    { "id": "resale", "label": "Reseller/VAR" },
+    { "id": "retail", "label": "Retailer/E-tailer" },
+    { "id": "si-msp", "label": "SI/MSP" }
+  ],
+  "sample": {
+    "slotsPerArmPerCell": 30,
+    "cells": 8,
+    "slotsPerArm": 240,
+    "totalSlots": 480,
+    "missingSlotUtility": 0,
+    "duplicateSlotUtility": 0,
+    "wrongRoleSlotUtility": 0,
+    "invalidSlotUtility": 0
+  },
+  "thresholds": { "qualified": 65, "highValue": 75 },
+  "primaryMetric": "macro-mean-slot-utility-at-30",
+  "bootstrap": { "iterations": 10000, "confidenceLevel": 0.95, "stratifyByCell": true, "seed": 20260902 },
+  "winGate": {
+    "minimumMacroUtilityGain": 5,
+    "minimumCellsWon": 6,
+    "minimumMarketDelta": -3,
+    "minimumCellDelta": -5,
+    "requireMoreUniqueHighValueCandidates": true,
+    "requireBootstrapLowerBoundAboveZero": true,
+    "requireBlindAuditPass": true
+  },
+  "blindAudit": {
+    "primaryModel": "claude-opus-5",
+    "preflightOnlyFallbackModel": "claude-opus-4-8",
+    "allowWebSearch": false,
+    "initialSample": 32,
+    "expandedSample": 64,
+    "maximumSample": 64,
+    "primaryRoleAgreementMinimum": 0.95,
+    "qualifiedStatusAgreementMinimum": 0.90,
+    "spearmanMinimum": 0.70,
+    "maximumAbsoluteMeanBias": 5,
+    "maximumMeanAbsoluteError": 8,
+    "citationAlignmentMinimum": 0.98
+  },
+  "time": {
+    "latencyIsWinGate": false,
+    "requireSimilarArmDuration": false,
+    "recordWallClockAndSummedProviderTime": true,
+    "recordStageLatency": true
+  },
+  "cost": {
+    "hardBudgetUsd": 100,
+    "reviewThresholdUsd": [20, 40, 60, 80],
+    "pauseWhenForecastMayExceedBudget": true,
+    "requireUserDecisionBeforeDesignOptimization": true,
+    "ledgers": ["gemini-native-arm", "product-e2e-arm", "evaluation-overhead"],
+    "primaryComparisonBasis": "official-list-price",
+    "alsoReportAccountCashCost": true,
+    "primaryCurrency": "USD",
+    "secondaryCurrency": "CNY"
+  },
+  "anomalyThresholds": {
+    "duplicateRate": 0.70,
+    "lightGateDiscardRate": 0.60,
+    "unitCostVsRollingMedianMultiplier": 2,
+    "cellCostVsForecastMultiplier": 1.5,
+    "citationAlignmentMinimum": 0.98
+  },
+  "git": {
+    "branch": "experiment/search-e2e-uk-mx-v1",
+    "preregisterBeforePaidCalls": true,
+    "checkpointAfterEveryCell": true,
+    "mergeVerifiedFinalReportToMain": true
+  }
+}

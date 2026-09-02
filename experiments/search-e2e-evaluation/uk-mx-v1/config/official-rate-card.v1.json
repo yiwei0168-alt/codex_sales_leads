@@ -1,0 +1,82 @@
+{
+  "version": "1.0.0",
+  "asOf": "2026-09-02",
+  "purpose": "Normalized official list-price estimates. Account cash cost and verified free quotas are tracked separately.",
+  "models": {
+    "gemini-3.6-flash": {
+      "currency": "USD",
+      "perMillionTokens": { "input": 0.75, "outputIncludingThinking": 3.75, "cacheRead": 0.075 },
+      "googleSearchGrounding": { "freeSharedMonthlyQueries": 5000, "usdPerThousandQueriesAfterFree": 14 },
+      "effectiveThrough": "2026-12-31",
+      "source": "https://ai.google.dev/gemini-api/docs/pricing"
+    },
+    "deepseek-v4-flash": {
+      "currency": "USD",
+      "perMillionTokens": { "cacheHitInput": 0.0028, "cacheMissInput": 0.14, "output": 0.28 },
+      "source": "https://api-docs.deepseek.com/quick_start/pricing"
+    },
+    "deepseek-v4-pro": {
+      "currency": "USD",
+      "perMillionTokens": { "cacheHitInput": 0.003625, "cacheMissInput": 0.435, "output": 0.87 },
+      "source": "https://api-docs.deepseek.com/quick_start/pricing"
+    },
+    "kimi-k2.6": {
+      "currency": "CNY",
+      "perMillionTokens": { "cacheHitInput": 1.1, "cacheMissInput": 6.5, "output": 27 },
+      "source": "https://platform.kimi.com/docs/pricing/chat-k26"
+    },
+    "kimi-k3": {
+      "currency": "USD",
+      "perMillionTokens": { "cacheHitInput": 0.3, "cacheMissInput": 3, "outputIncludingReasoning": 15 },
+      "source": "https://platform.kimi.com/docs/pricing/chat-k3"
+    },
+    "claude-opus-5": {
+      "currency": "USD",
+      "perMillionTokens": { "input": 5, "output": 25 },
+      "source": "https://www.anthropic.com/claude/opus"
+    }
+  },
+  "searchAndExtraction": {
+    "tavily": {
+      "currency": "USD",
+      "payAsYouGoUsdPerCredit": 0.008,
+      "credits": { "basicSearch": 1, "advancedSearch": 2, "basicExtractPerFiveSuccessfulUrls": 1, "advancedExtractPerFiveSuccessfulUrls": 2 },
+      "source": "https://docs.tavily.com/documentation/api-credits"
+    },
+    "exa": {
+      "currency": "USD",
+      "autoSearchUpToTenResultsUsd": 0.007,
+      "additionalResultAboveTenUsd": 0.001,
+      "contentTextPerPageUsd": 0.001,
+      "source": "https://exa.ai/pricing?tab=api"
+    },
+    "brave-search": {
+      "currency": "USD",
+      "searchUsdPerThousandRequests": 5,
+      "source": "https://brave.com/search/api/"
+    },
+    "searchapi": {
+      "currency": "USD",
+      "developerPlanUsdPerThousandSuccessfulSearches": 4,
+      "source": "https://www.searchapi.io/"
+    },
+    "google-places-text-search-enterprise": {
+      "currency": "USD",
+      "freeMonthlyRequests": 1000,
+      "usdPerThousandRequestsAfterFree": 35,
+      "reason": "The frozen provider field mask requests websiteUri, which triggers Text Search Enterprise.",
+      "source": "https://developers.google.com/maps/billing-and-pricing/pricing"
+    }
+  },
+  "currencyConversion": {
+    "usdCny": null,
+    "source": null,
+    "freezeAtRunStart": true
+  },
+  "notes": [
+    "Official list-price cost ignores free quotas for normalized comparison.",
+    "Account cash cost applies only verified plan, free-quota and invoice information.",
+    "If a provider returns a billed amount, preserve it alongside the normalized estimate.",
+    "Unknown or changed pricing blocks cost finalization until the rate card is versioned; it does not silently become zero."
+  ]
+}
