@@ -1,0 +1,610 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-02-uk-mx-search-e2e-v1-10",
+  "experimentId": "search-e2e-eval-v1.0.10",
+  "status": "created",
+  "createdAt": "2026-09-02T05:25:02.581Z",
+  "updatedAt": "2026-09-02T05:28:11.059Z",
+  "preflightChecks": [
+    {
+      "name": "prior-before-v1.0.10-adjustment",
+      "completedAt": "2026-09-02T05:25:02.584Z",
+      "detail": {
+        "productUsd": 0.372687,
+        "geminiControlReserveUsd": 0.145183
+      }
+    },
+    {
+      "name": "kimi-intent",
+      "completedAt": "2026-09-02T05:25:28.497Z",
+      "detail": {
+        "model": "kimi-k2.6",
+        "source": "kimi-light",
+        "semanticsMatch": true,
+        "returnedRoles": [
+          "Distributor",
+          "VAD"
+        ],
+        "frozenExecutionRoles": [
+          "Distributor",
+          "VAD"
+        ]
+      }
+    },
+    {
+      "name": "local-rag",
+      "completedAt": "2026-09-02T05:25:28.948Z",
+      "detail": {
+        "citationCount": 16
+      }
+    },
+    {
+      "name": "discovery-gemini-full/google-grounded",
+      "completedAt": "2026-09-02T05:27:37.518Z",
+      "detail": {
+        "results": 2,
+        "retries": 1
+      }
+    },
+    {
+      "name": "discovery-brave/brave",
+      "completedAt": "2026-09-02T05:27:38.813Z",
+      "detail": {
+        "results": 2,
+        "retries": 0
+      }
+    },
+    {
+      "name": "discovery-searchapi/bing",
+      "completedAt": "2026-09-02T05:27:42.521Z",
+      "detail": {
+        "results": 2,
+        "retries": 0
+      }
+    },
+    {
+      "name": "discovery-exa/exa",
+      "completedAt": "2026-09-02T05:27:43.716Z",
+      "detail": {
+        "results": 2,
+        "retries": 0
+      }
+    },
+    {
+      "name": "discovery-gemini-product/google-grounded",
+      "completedAt": "2026-09-02T05:27:48.518Z",
+      "detail": {
+        "results": 2,
+        "retries": 0
+      }
+    },
+    {
+      "name": "discovery-google-places/google-places",
+      "completedAt": "2026-09-02T05:27:49.626Z",
+      "detail": {
+        "results": 2,
+        "retries": 0
+      }
+    },
+    {
+      "name": "discovery-searchapi/google",
+      "completedAt": "2026-09-02T05:27:52.538Z",
+      "detail": {
+        "results": 2,
+        "retries": 1
+      }
+    },
+    {
+      "name": "tavily-evidence",
+      "completedAt": "2026-09-02T05:27:53.849Z",
+      "detail": {
+        "results": 2
+      }
+    },
+    {
+      "name": "deepseek-score-only",
+      "completedAt": "2026-09-02T05:28:01.333Z",
+      "detail": {
+        "model": "deepseek-v4-flash",
+        "cooperationPathsGenerated": 0
+      }
+    },
+    {
+      "name": "gemini-3.6-flash-structured-search",
+      "completedAt": "2026-09-02T05:28:11.058Z",
+      "detail": {
+        "candidates": 2,
+        "searchQueries": 2
+      }
+    }
+  ],
+  "completedArmKeys": [],
+  "completedCellIds": [],
+  "completedEvaluationCellIds": [],
+  "completedBlindPacketIds": [],
+  "reportedBudgetThresholdsUsd": [],
+  "anomalies": [],
+  "costEvents": [
+    {
+      "eventId": "preflight:prior-product-before-v1.0.10",
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-10",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "stage": "prior-preflight-adjustment",
+      "provider": "mixed-product-preflight",
+      "startedAt": "2026-09-02T05:25:02.581Z",
+      "completedAt": "2026-09-02T05:25:02.581Z",
+      "latencyMs": 0,
+      "attempts": 37,
+      "retries": 6,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0.372687,
+      "volume": {
+        "inputItems": 33,
+        "rawOutputItems": 29,
+        "validOutputItems": 23,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "timeout": 1,
+          "schemaInvalid": 4,
+          "fallback": 1,
+          "semanticGateFailure": 5,
+          "transportFailure": 2
+        }
+      },
+      "notes": [
+        "Conservative carry-forward for v1.0.0-v1.0.9 product-side preflights, including all successful v1.0.9 discovery, evidence and score checks."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0.372687,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "preflight:prior-gemini-control-before-v1.0.10",
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-10",
+      "ledger": "gemini-native-arm",
+      "arm": "gemini-native",
+      "stage": "prior-preflight-adjustment",
+      "provider": "gemini-full",
+      "requestedModel": "gemini-3.6-flash",
+      "actualModel": "gemini-3.6-flash",
+      "startedAt": "2026-09-02T05:25:02.581Z",
+      "completedAt": "2026-09-02T05:25:02.581Z",
+      "latencyMs": 0,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "failed",
+      "usage": {},
+      "accountCashCostUsd": 0.145183,
+      "volume": {
+        "inputItems": 4,
+        "rawOutputItems": 3,
+        "validOutputItems": 2,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "schemaInvalid": 1,
+          "usageNotCheckpointed": 1,
+          "invalidRequest": 1
+        }
+      },
+      "notes": [
+        "Carries the v1.0.7 unknown-usage control reserve plus two measured v1.0.9 structured-search diagnostics (three total grounding queries)."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0.145183,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "preflight:intent:1",
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-10",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "stage": "preflight-intent",
+      "provider": "kimi",
+      "requestedModel": "kimi-k2.6",
+      "actualModel": "kimi-k2.6",
+      "startedAt": "2026-09-02T05:25:02.604Z",
+      "completedAt": "2026-09-02T05:25:28.497Z",
+      "latencyMs": 25890,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 533,
+        "cachedInputTokens": 512,
+        "outputTokens": 1218
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [],
+      "officialListPriceUsd": 0.004951525158855357,
+      "budgetCostUsd": 0.004951525158855357,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "preflight:rag:1",
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-10",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "stage": "preflight-rag",
+      "provider": "alibaba-model-studio",
+      "requestedModel": "text-embedding-v4",
+      "actualModel": "text-embedding-v4",
+      "startedAt": "2026-09-02T05:25:28.514Z",
+      "completedAt": "2026-09-02T05:25:28.948Z",
+      "latencyMs": 331,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 81,
+        "outputTokens": 0
+      },
+      "volume": {
+        "inputItems": 3,
+        "rawOutputItems": 3,
+        "validOutputItems": 3,
+        "downstreamUsedItems": 3,
+        "discardedReasonCounts": {}
+      },
+      "officialListPriceUsd": 0.000005832,
+      "budgetCostUsd": 0.000005832,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "preflight:discovery:gemini-full/google-grounded",
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-10",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "stage": "preflight-discovery",
+      "provider": "gemini-full",
+      "requestedModel": "gemini-3.6-flash",
+      "actualModel": "gemini-3.6-flash",
+      "startedAt": "2026-09-02T05:27:29.851Z",
+      "completedAt": "2026-09-02T05:27:37.517Z",
+      "latencyMs": 7663,
+      "attempts": 2,
+      "retries": 1,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "groundingQueries": 4,
+        "searchRequests": 2,
+        "searchResults": 2,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 2,
+        "validOutputItems": 2,
+        "downstreamUsedItems": 2,
+        "discardedReasonCounts": {}
+      },
+      "officialListPriceUsd": 0.056,
+      "budgetCostUsd": 0.056,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "preflight:discovery:brave/brave",
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-10",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "stage": "preflight-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-02T05:27:37.524Z",
+      "completedAt": "2026-09-02T05:27:38.813Z",
+      "latencyMs": 1288,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "searchResults": 2,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 2,
+        "validOutputItems": 2,
+        "downstreamUsedItems": 2,
+        "discardedReasonCounts": {}
+      },
+      "officialListPriceUsd": 0.005,
+      "budgetCostUsd": 0.005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "preflight:discovery:searchapi/bing",
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-10",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "stage": "preflight-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-02T05:27:38.822Z",
+      "completedAt": "2026-09-02T05:27:42.521Z",
+      "latencyMs": 3698,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "searchResults": 2,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 2,
+        "validOutputItems": 2,
+        "downstreamUsedItems": 2,
+        "discardedReasonCounts": {}
+      },
+      "officialListPriceUsd": 0.004,
+      "budgetCostUsd": 0.004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "preflight:discovery:exa/exa",
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-10",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "stage": "preflight-discovery",
+      "provider": "exa",
+      "startedAt": "2026-09-02T05:27:42.528Z",
+      "completedAt": "2026-09-02T05:27:43.716Z",
+      "latencyMs": 1188,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "searchResults": 2,
+        "extractedPages": 2,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 2,
+        "validOutputItems": 2,
+        "downstreamUsedItems": 2,
+        "discardedReasonCounts": {}
+      },
+      "officialListPriceUsd": 0.009000000000000001,
+      "budgetCostUsd": 0.009000000000000001,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "preflight:discovery:gemini-product/google-grounded",
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-10",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "stage": "preflight-discovery",
+      "provider": "gemini-product",
+      "requestedModel": "gemini-3.6-flash",
+      "actualModel": "gemini-3.6-flash",
+      "startedAt": "2026-09-02T05:27:43.723Z",
+      "completedAt": "2026-09-02T05:27:48.518Z",
+      "latencyMs": 4795,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "groundingQueries": 2,
+        "searchRequests": 1,
+        "searchResults": 2,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 2,
+        "validOutputItems": 2,
+        "downstreamUsedItems": 2,
+        "discardedReasonCounts": {}
+      },
+      "officialListPriceUsd": 0.028,
+      "budgetCostUsd": 0.028,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "preflight:discovery:google-places/google-places",
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-10",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "stage": "preflight-discovery",
+      "provider": "google-places",
+      "startedAt": "2026-09-02T05:27:48.525Z",
+      "completedAt": "2026-09-02T05:27:49.626Z",
+      "latencyMs": 1100,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "searchResults": 2,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 2,
+        "validOutputItems": 2,
+        "downstreamUsedItems": 2,
+        "discardedReasonCounts": {}
+      },
+      "officialListPriceUsd": 0.035,
+      "budgetCostUsd": 0.035,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "preflight:discovery:searchapi/google",
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-10",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "stage": "preflight-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-02T05:27:49.634Z",
+      "completedAt": "2026-09-02T05:27:52.537Z",
+      "latencyMs": 2903,
+      "attempts": 2,
+      "retries": 1,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 2,
+        "searchResults": 2,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 2,
+        "validOutputItems": 2,
+        "downstreamUsedItems": 2,
+        "discardedReasonCounts": {}
+      },
+      "officialListPriceUsd": 0.008,
+      "budgetCostUsd": 0.008,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "preflight:tavily",
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-10",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "stage": "preflight-evidence",
+      "provider": "tavily",
+      "startedAt": "2026-09-02T05:27:52.545Z",
+      "completedAt": "2026-09-02T05:27:53.849Z",
+      "latencyMs": 1303,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 2,
+        "validOutputItems": 2,
+        "downstreamUsedItems": 2,
+        "discardedReasonCounts": {}
+      },
+      "officialListPriceUsd": 0.008,
+      "budgetCostUsd": 0.008,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "preflight:score:1",
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-10",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "stage": "preflight-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek-v4-flash",
+      "startedAt": "2026-09-02T05:27:53.856Z",
+      "completedAt": "2026-09-02T05:28:01.332Z",
+      "latencyMs": 7455,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 3985,
+        "outputTokens": 1015,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "officialListPriceUsd": 0.0008421000000000001,
+      "budgetCostUsd": 0.0008421000000000001,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "preflight:gemini-control",
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-10",
+      "ledger": "gemini-native-arm",
+      "arm": "gemini-native",
+      "stage": "preflight-control",
+      "provider": "gemini-full",
+      "requestedModel": "gemini-3.6-flash",
+      "actualModel": "gemini-3.6-flash",
+      "startedAt": "2026-09-02T05:28:04.635Z",
+      "completedAt": "2026-09-02T05:28:11.058Z",
+      "latencyMs": 6421,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 75,
+        "cachedInputTokens": 0,
+        "outputTokens": 380,
+        "reasoningTokens": 0,
+        "groundingQueries": 2
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 2,
+        "validOutputItems": 2,
+        "downstreamUsedItems": 2,
+        "discardedReasonCounts": {}
+      },
+      "officialListPriceUsd": 0.02948125,
+      "budgetCostUsd": 0.02948125,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    }
+  ]
+}
