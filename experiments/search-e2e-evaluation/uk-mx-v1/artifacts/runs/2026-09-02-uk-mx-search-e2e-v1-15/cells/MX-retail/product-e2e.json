@@ -1,0 +1,1416 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-02-uk-mx-search-e2e-v1-15",
+  "cellId": "MX-retail",
+  "arm": "product-e2e",
+  "startedAt": "2026-09-02T07:25:09.300Z",
+  "completedAt": "2026-09-02T07:31:33.621Z",
+  "wallClockMs": 384321,
+  "plan": {
+    "countryCode": "MX",
+    "countryName": "Mexico",
+    "objective": "new-market",
+    "roles": [
+      "Retailer",
+      "E-tailer"
+    ],
+    "targetCount": 30,
+    "queryLanguage": "es",
+    "userRequest": "Busca y evalúa 30 empresas en Mexico cuya función principal sea Retailer/E-tailer. Limita la tarea a este mercado y esta categoría. Usa español y, cuando sea útil, inglés.",
+    "opportunityTargets": [],
+    "coverageMode": "auto",
+    "verifiedOnly": false
+  },
+  "intent": {
+    "plannerModel": "kimi-k2.6",
+    "plannerSource": "kimi-light",
+    "confidence": 0.95,
+    "warnings": []
+  },
+  "playbook": {
+    "marketHypothesis": "Mexico should be developed through a market-specific mix of supply, resale, retail, service and operator nodes. Candidate quality and public evidence determine the final mix; no role receives a fixed quota.",
+    "productAngles": [
+      "M11000(1-Pack): BE11000 2.5G Tri-Band Wi-Fi 7 Mesh Solution / Mesh Solution",
+      "M11000(2-Pack): BE11000 2.5G Tri-Band Wi-Fi 7 Mesh Solution / Mesh Solution",
+      "M1200(1-Pack): AC1200 Wi-Fi Mesh Solution / Mesh Solution",
+      "M1200(2-Pack): AC1200 Wi-Fi Mesh Solution / Mesh Solution",
+      "M1200(3-Pack): AC1200 Wi-Fi Mesh Solution / Mesh Solution",
+      "M1300(1-Pack): AC1200 Wi-Fi Gigabit Mesh Solution / Mesh Solution",
+      "M1300(2-Pack): AC1200 Wi-Fi Gigabit Mesh Solution / Mesh Solution",
+      "M1300(3-Pack): AC1200 Wi-Fi Gigabit Mesh Solution / Mesh Solution"
+    ],
+    "preferredCompanyTraits": [
+      "active target-market presence",
+      "networking-adjacent customer access",
+      "credible purchasing or project influence",
+      "observable execution capability"
+    ],
+    "exclusions": [
+      "directories and list pages",
+      "inactive or unverifiable entities",
+      "companies without target-market presence",
+      "unrelated consumer-only businesses"
+    ],
+    "rolePriorities": [
+      {
+        "family": "retail",
+        "roles": [
+          "Retailer",
+          "E-tailer"
+        ],
+        "weight": 1,
+        "reason": "Build or validate a reliable supply path while developing demand nodes in parallel."
+      }
+    ],
+    "searchQueries": [
+      {
+        "family": "retail",
+        "roles": [
+          "Retailer",
+          "E-tailer"
+        ],
+        "query": "network router switch retailer e-tailer Mexico official company networking",
+        "priority": 1
+      },
+      {
+        "family": "retail",
+        "roles": [
+          "Retailer",
+          "E-tailer"
+        ],
+        "query": "consumer SMB networking electronics shop Mexico official company networking",
+        "priority": 2
+      }
+    ],
+    "ragCitationIds": [
+      "095d68ef-a477-45e0-91f6-4afda8ffae83",
+      "27212d5e-7fa5-4f96-bbfd-6d033fb84d27",
+      "04c626c9-bed9-4059-ad3b-612077ce929b",
+      "6fc79b4f-9b1a-49c7-bcff-13cbfa064e6b",
+      "ce825250-5623-460b-98da-a7e8a8cb8b86",
+      "efd439fc-6cf4-48e7-87d1-2841d5a5f271",
+      "1a7c3634-d4f6-49b7-8d88-21a3aa2f9982",
+      "0e4ecf1b-f217-459d-b42f-a3a6bb639582",
+      "20277588-3c73-4f88-bb70-5b155a2016d0",
+      "38a043ac-b57b-47c3-b5b4-3378c1ee1a5b",
+      "0f7d9099-b2b5-46f8-8372-87e961de6ab5",
+      "6531a2ec-6d68-4efa-ac4b-a5fdc0cc9ba5",
+      "5c87c35a-15cb-4f1e-9122-a162b5f28103",
+      "d735875d-932e-4628-8d92-18838955af38",
+      "37fced1a-4611-4b69-b6e0-daaef81a0616",
+      "ac9b125c-cee7-4b85-a51e-b89f02f7abc8"
+    ],
+    "generatedBy": "deterministic-fallback",
+    "warnings": []
+  },
+  "rawDiscoveryCount": 43,
+  "discoveredCandidateCount": 12,
+  "correctedCandidateCount": 12,
+  "completedAssessmentCount": 12,
+  "finalCandidates": [
+    {
+      "rank": 1,
+      "candidateId": "lead-0fc005cdbdcd6f4e",
+      "companyName": "Wireless Shop, S.A. de C.V.",
+      "domain": "wirelessshop.mx",
+      "officialWebsiteUrl": "https://wirelessshop.mx",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 72,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-aff74a5e19b8bf75",
+        "evidence-66468decc0843e09",
+        "evidence-f3a44a99736a3b77",
+        "evidence-0345397e101a1c15"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-aff74a5e19b8bf75",
+          "url": "https://wirelessshop.mx/prod.asp?id=HK307500579",
+          "title": "Brazo con Iluminación LED de 6 mts para Barrera DS ...",
+          "excerpt": "Ayuda? Llámenos Ahora 55-78270052 y 53 Carrito: 0 artículos - $0.00 (IVA Incluido) PAGAR AHORA PAGAR AHORA Inicio > Control de Acceso > Barreras Vehiculares y Peatonales HK307500579 HK307500579 HK307500579 Brazo con Iluminación LED de 6 mts para Barrera DS-TMG520 a 24 VDC Precio: $3,016.86 MXN (IVA Incluido) ¡Obtén un Mejor Precio! Inicia Sesión o Regístrate Compartir: Producto Disponible En Existencia: 74 PP015PA015 Información de Producto Brazo con Iluminación LED de 6 mts para Barrera DS-TMG520 a 24 VDC Modelo: 307500579 Marca: HIKVISION Especificaciones: Especificaciones técnicas Requerimientos de instalación Consideraciones técnicas Descarga de Manuales y Documentos Adicionales: Ver Especificaciones Detalladas Marcas / Categorías Automatización / Casa Inteligente Cableado Estructurado",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-02T07:27:40.155Z",
+          "contentHash": "401c033e288c913bb03e93762fd72e06c346ae37fcb59156c2d92a2e00cd65f7",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-02-uk-mx-search-e2e-v1-15-MX-retail-product"
+        },
+        {
+          "id": "evidence-66468decc0843e09",
+          "url": "https://www.wirelessshop.mx/prod.asp?id=HKDS3D01RAB",
+          "title": "Convertidor Fibra Óptica, Receptor, Monomodo (RX), 1 ...",
+          "excerpt": "Ayuda? Llámenos Ahora 55-78270052 y 53 Carrito: 0 artículos - $0.00 (IVA Incluido) PAGAR AHORA PAGAR AHORA Inicio > Redes > Networking > Covertidores de Medios HKDS3D01RAB HKDS3D01RAB HKDS3D01RAB Convertidor Fibra Óptica, Receptor, Monomodo (RX), 1 Puerto SFP (SC) 100 Mbps, 1 Puerto RJ45 10/100 Mbps, HASTA 20 KM, Plug and Play Precio: $440.62 MXN (IVA Incluido) ¡Obtén un Mejor Precio! Inicia Sesión o Regístrate Compartir: Producto Disponible En Existencia: 80 PP015PA015 Convertidor Fibra Óptica / Receptor / Monomodo (RX) / 1 Puerto SFP (SC) 100 Mbps / 1 Puerto RJ45 10/100 Mbps / HASTA 20 KM / Plug and Play Imágenes del Producto Información Básica Características Principales Especificaciones Técnicas Características Principales Características Físicas y Eléctricas Consideraciones TASA DE RE",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-02T07:27:40.155Z",
+          "contentHash": "3e9a8c6a9114860843a3aca61bae7625307ce455dab2436af02c635bb8e7c81d",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-02-uk-mx-search-e2e-v1-15-MX-retail-product"
+        },
+        {
+          "id": "evidence-f3a44a99736a3b77",
+          "url": "https://wirelessshop.mx/prod.asp?id=RURGE120GE",
+          "title": "Tranceptores, POEs y Accesorios - Inyector PoE Ruijie RG- ...",
+          "excerpt": "Ayuda? Llámenos Ahora 55-78270052 y 53 Carrito: 0 artículos - $0.00 (IVA Incluido) PAGAR AHORA PAGAR AHORA Inicio > Ruijie Networks > Tranceptores, POEs y Accesorios RURGE120GE RURGE120GE RURGE120GE Inyector PoE Ruijie RG-E-120(GE), 802.3af, Gibagit, (50 V - 0.3 A - 15 W) Precio: $309.18 MXN (IVA Incluido) Compartir: Producto Disponible En Existencia: 2407 PP015PA015 Especificaciones: Protección: Puertos: Características Físicas y Eléctricas: Descarga de Manuales y Documentos Adicionales: Ver Especificaciones Detalladas Ver Manual Marcas / Categorías Automatización / Casa Inteligente Cableado Estructurado Cambium Control de Acceso Energía Equipo de Cómputo Grandstream IoT / GPS Mikrotik Mimosa Radiocomunicación Redes RF Elements Ruijie Networks Sanny Telecom Soluciones Marinas o Náuticas S",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-02T07:27:40.155Z",
+          "contentHash": "97e7fa1e5b92f07263125d583c7d3f365425d8fbcd8e5c0b0175aa4d3059e6bd",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-02-uk-mx-search-e2e-v1-15-MX-retail-product"
+        },
+        {
+          "id": "evidence-0345397e101a1c15",
+          "url": "https://www.wirelessshop.mx/prod.asp?id=HUAP361",
+          "title": "Punto de Acceso Huawei AP361, Wi-Fi 6, MU-MIMO 2x2: ...",
+          "excerpt": "Ayuda? Llámenos Ahora 55-78270052 y 53 Carrito: 0 artículos - $0.00 (IVA Incluido) PAGAR AHORA PAGAR AHORA Inicio > Redes > Redes Inalámbicas > Redes WiFi > Puntos de Acceso / Hotspots HUAP361 HUAP361 HUAP361 Punto de Acceso Huawei AP361, Wi-Fi 6, MU-MIMO 2x2:2, 1.775 Gbps, Pto Gb PoE, 128 Clientes Precio: $1,739.83 MXN (IVA Incluido) Compartir: Producto Disponible En Existencia: 508 PP015PA015 El Huawei eKitEngine AP361 es un punto de acceso (AP) interior que cumple con el estándar Wi-Fi 6 (802.11ax). Proporciona servicios simultáneamente en las bandas de frecuencia de 2,4 GHz (2x2 MIMO) y 5 GHz (2x2 MIMO), logrando una velocidad máxima del dispositivo de 1,775 Gbps. Este AP presenta un gran ancho de banda, alta concurrencia y tamaño compacto, lo que facilita una implementación flexible y",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-02T07:27:40.155Z",
+          "contentHash": "ed955667b8a94a39d9e20f706337cf0276dc6ab2271c20729f022fa55f04bb6a",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-02-uk-mx-search-e2e-v1-15-MX-retail-product"
+        }
+      ]
+    },
+    {
+      "rank": 2,
+      "candidateId": "lead-6d8a52590794a2ef",
+      "companyName": "Newegg",
+      "domain": "newegg.com",
+      "officialWebsiteUrl": "https://www.newegg.com",
+      "primaryRole": "E-tailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 67,
+      "eligibilityStatus": "research-required",
+      "eligible": false,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-81dab3b0f151c2df",
+        "evidence-2d12ed3dc5185eb8",
+        "evidence-d809d8faf09515d3",
+        "evidence-8fc9b17bbb595f72",
+        "evidence-d28de48c42834fbd"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-81dab3b0f151c2df",
+          "url": "https://www.newegg.com/global/mx-es/Category",
+          "title": "Computer parts, laptops, electronics, and more - Newegg Mexico",
+          "excerpt": "Newegg is proud to offer Mexico the best prices, fast shipping and top-rated customer service for Computer Parts, Laptops, Electronics and more!",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-02T07:28:03.802Z",
+          "contentHash": "6506cba633a3760395ee5b1030c736a58a6429e704c8b57cb7814b96c11ebb9c",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-02-uk-mx-search-e2e-v1-15-MX-retail-product"
+        },
+        {
+          "id": "evidence-2d12ed3dc5185eb8",
+          "url": "https://en.wikipedia.org/wiki/Newegg",
+          "title": "Newegg - Wikipedia",
+          "excerpt": "60. ↑ \"Evil Geniuses x Newegg hosts a collegiate eSports event March 21! Check it out\". Newegg.com/gamer/community/. 2026-03-21. 61. ↑ \"Raft of Labor Abuses Alleged at Newegg\". Courthousenews.com. Retrieved August 31, 2017. 62. ↑ \"Computer Parts, PC Components, Laptop Computers, LED LCD TV, Digital Cameras and more\". Newegg.com. Retrieved August 31, 2017. [...] | Type | Public | | Traded as | Nasdaq: NEGG | | Industry | Computers Computer hardware Computer software Consumer electronics Consumer (final) goods Logistics | | Founded | 2001; 25 years ago (2001) | | Founder | Fred Chang | | Headquarters | Diamond Bar, California , U.S. | | Area served | Worldwide | | Key people | Anthony Chow (CEO) Zhitao He (chairman) | [...] 41. ↑ Gassner, Mitchell (2025-09-08). \"Newegg Opens Gamer Zone, a $2",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-02T07:28:03.802Z",
+          "contentHash": "ad039f26f6f4efc8ffa2efa5b0f33c3b4e91b98a53cb8248ff8eec77d4d9ed57",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-02-uk-mx-search-e2e-v1-15-MX-retail-product"
+        },
+        {
+          "id": "evidence-d809d8faf09515d3",
+          "url": "https://www.newegg.com/d/ProductSort/TopSellerList",
+          "title": "Computer parts, laptops, electronics, and more - Newegg United States",
+          "excerpt": "DiscTech LLC DivineApertureSeller DiySecurityCameraWorld DK SONIC DoDo DIY Dogfish official store dongyingwugoukeji Dowinx [...] PlatinumMicro Plugable Technologies [...] WSDL Wu Hu Shi Liu Xie Dian Zi Shang Wu Xiao wuxingtech WYYG",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-02T07:28:03.802Z",
+          "contentHash": "a217e2462d9e79a98f16ca56feedacfb9e4680949de4206a918b367498e6f20c",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-02-uk-mx-search-e2e-v1-15-MX-retail-product"
+        },
+        {
+          "id": "evidence-8fc9b17bbb595f72",
+          "url": "https://www.newegg.com",
+          "title": "Newegg: PC Parts, Computers, Workstations & AI PCs",
+          "excerpt": "Make Newegg your one-stop electronics store for technology, consumer electronics, gaming components, and more! Newegg is an online electronics store based in North America. Its global reach as a go-to tech store expands into Europe, South America, Asia Pacific, and the Middle East. With competitive pricing and frequent promotions, Newegg features a diverse range of in-demand electronics and tech products. Online electronics shopping can be tricky, but Newegg spotlights products from well-known, [...] from well-known, quality, reliable brands. Whether you are buying electronics to outfit your home office, upgrading your mobile device or home entertainment system, or searching for tech accessories, Newegg has a comprehensive selection of the electronics and tech products that consumers want.",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-02T07:28:03.802Z",
+          "contentHash": "ace5d39d27bd82c25d15ee723823e00a61375b4ea469b937fa50f54bedb8ae53",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-02-uk-mx-search-e2e-v1-15-MX-retail-product"
+        },
+        {
+          "id": "evidence-d28de48c42834fbd",
+          "url": "https://www.neweggbusiness.com",
+          "title": "Save on workstations, servers, & more! | NeweggBusiness.com",
+          "excerpt": "Shop NeweggBusiness.com for all your business tech needs! From workstations to servers, plus flexible payments & rewards—it's the perfect solution!",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-02T07:28:03.802Z",
+          "contentHash": "7184bc25185d0ef40a902ce10d7b6f969f487b8e181be2fe6638ae62b2b39f34",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-02-uk-mx-search-e2e-v1-15-MX-retail-product"
+        }
+      ]
+    },
+    {
+      "rank": 3,
+      "candidateId": "lead-e999328c268b33b7",
+      "companyName": "MikroTik México",
+      "domain": "mikrotik-mexico.com.mx",
+      "officialWebsiteUrl": "https://mikrotik-mexico.com.mx",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 63,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-8512ee46d626a540",
+        "evidence-214c6b3f09288a7b",
+        "evidence-c03c4b72086d4e15",
+        "evidence-fc2734896d23760b",
+        "evidence-8781b20d74fdda3b"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-214c6b3f09288a7b",
+          "url": "https://mikrotik-mexico.com.mx/wp-content/uploads/2021/03/Chateau_5G.pdf",
+          "title": "Chateau 5G",
+          "excerpt": "But LTE is not the only option – Chateau also features 5 x Gigabit Ethernet ports and a full size USB port. Let's make more clients happy with MikroTik Chateau!",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-02T07:27:48.255Z",
+          "contentHash": "489c8cf843661146a8e15e56cf341762aea9a194cd24a21aeb90bb7ac1ca52d6",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-02-uk-mx-search-e2e-v1-15-MX-retail-product"
+        },
+        {
+          "id": "evidence-c03c4b72086d4e15",
+          "url": "https://mikrotik-mexico.com.mx/wp-content/uploads/2020/09/OTB-0604AIW.pdf",
+          "title": "OTB 0604AIW",
+          "excerpt": "OTB 0604AIW Fiber optic terminal box is available for the distribution and terminal connection of various kinds of optical fiber system, especially suitable",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-02T07:27:48.255Z",
+          "contentHash": "39ee430503a681ab56047107f0561fe1f6a3510591d87d57da20c437d8e468a5",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-02-uk-mx-search-e2e-v1-15-MX-retail-product"
+        },
+        {
+          "id": "evidence-fc2734896d23760b",
+          "url": "https://mikrotik-mexico.com.mx/wp-content/uploads/2020/09/OPB-21-SCS.pdf",
+          "title": "OPB-21-SCS",
+          "excerpt": "Is a fiber optic drop cable protection box that used for drop cable connecting, splice and protection. It can install 1pc SC simplex adapter and 2pcs fast",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-02T07:27:48.255Z",
+          "contentHash": "bfa8fa17690d1c60452f615388bb3e6f40bedde2c509a66a73ebdd12dee3ee5c",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-02-uk-mx-search-e2e-v1-15-MX-retail-product"
+        },
+        {
+          "id": "evidence-8781b20d74fdda3b",
+          "url": "https://mikrotik.com/buy/latinamerica/mexico",
+          "title": "MikroTik · Distributors",
+          "excerpt": "Distributors ; SYSCOM. Chihuahua. T: +52 614 415 2525. E: ; INTTELEC Networks S.A. de C.V. Cd. de México - Guadalajara - Monterrey. T: 55 5087 0029 - 33 3631 3232",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-02T07:27:59.509Z",
+          "contentHash": "c4ddb195179159d73901841fa88e8c51ec507a3c405a60df2ccdd218e1e83333",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-02-uk-mx-search-e2e-v1-15-MX-retail-product"
+        },
+        {
+          "id": "evidence-8512ee46d626a540",
+          "url": "https://mikrotik-mexico.com.mx",
+          "title": "MikroTik México",
+          "excerpt": "Routers Ethernet › Switches › Sistemas Inalámbricos › Soluciones para el hogar y la oficina › Antenas › Fuente de Alimentación › Accesorios › Fibra Óptica",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-02T07:27:59.509Z",
+          "contentHash": "21ff4d6b5732e2b3e2490dc2e75b76c2961259275146627af1617c98dd38e2ac",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-02-uk-mx-search-e2e-v1-15-MX-retail-product"
+        }
+      ]
+    },
+    {
+      "rank": 4,
+      "candidateId": "lead-bf0e5892a44616a5",
+      "companyName": "Supermex Digital",
+      "domain": "supermexdigital.mx",
+      "officialWebsiteUrl": "https://www.supermexdigital.mx",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 51,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-bf0e5892a44616a5",
+        "evidence-df3cd52c138930b0",
+        "evidence-a75ce3aa8149f0b5",
+        "evidence-34838d730c0618c5"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-bf0e5892a44616a5",
+          "url": "https://www.supermexdigital.mx/en",
+          "title": "Supermexdigital",
+          "excerpt": "Supermexdigital Skip to Content Guest Login Register My Cart ( 0 ) My Wishlist ( 0 ) Home Search 0 Wishlist Account Offers Brands Category Orders Envíos a todo México Facturación Atención al cliente [business contact redacted] Ayuda Venta a empresas Todas las categorías Hola, Inicia sesión Mi cuenta Favoritos Mi carrito 0 Todas las categorías Ofertas Nuevos lanzamientos NUEVO Productos Sucursales Contáctenos Agendar una cita English (US) Español (MX) Envíos a todo México Facturación [business contact redacted] Categorías Almacenamiento Componentes Computadoras Dispositivos y Redes Energia Impresoras y Scanners Kit Teclado y Mouse Gamer Monitores Tv Audio y Video Videovigilancia GAMERS Last Chance NUEVOS ACCESORIOS Ver todas las catego",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-02T07:25:56.020Z",
+          "contentHash": "2c58946cda23fd78d7e44753afcaba72584b09d2058834b53c595303d326cf1c",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-02-uk-mx-search-e2e-v1-15-MX-retail-product"
+        },
+        {
+          "id": "evidence-df3cd52c138930b0",
+          "url": "https://www.supermexdigital.mx/en/shop/category/dispositivos-y-redes-router-2458",
+          "title": "Router | Supermex Propuesta",
+          "excerpt": "ROUTER MSI RADIX AXE6600 6E TRI-BAND 4804MBITS 2.4/5/6GHZ RADIX AXE6600 WIFI 6E TRI-BAND GAMING ROUTER 11M DE GARANTIA. $ 2,745.00 2745.0 MXN. Add to Cart",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-02T07:27:57.242Z",
+          "contentHash": "84a7917ba846c71d9fb0f36607de05e4ab22433bbd2473df12b8b99ff4aa9648",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-02-uk-mx-search-e2e-v1-15-MX-retail-product"
+        },
+        {
+          "id": "evidence-a75ce3aa8149f0b5",
+          "url": "https://www.supermexdigital.mx/en/shop/category/dispositivos-y-redes-access-point-2376",
+          "title": "Access Point | Supermex Propuesta",
+          "excerpt": "Envíos a todo México Facturación Atención al cliente [business contact redacted]. Ayuda Venta a empresas · Supermex Propuesta.",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-02T07:27:57.242Z",
+          "contentHash": "023f8f62324675e94c39de5cee853c80cc6067953ffb8a6ad2b84463806a24a1",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-02-uk-mx-search-e2e-v1-15-MX-retail-product"
+        },
+        {
+          "id": "evidence-34838d730c0618c5",
+          "url": "https://www.instagram.com/supermexdigitalmx?hl=en",
+          "title": "Supermex Mkt MX",
+          "excerpt": "Empresa Mexicana líder en distribución de equipo de Cómputo Especializado , Gamer y Uso Cotidiano. 🖥️ Visita nuestro sitio web ⬇️⬇️⬇️.",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-02T07:27:57.242Z",
+          "contentHash": "a0024a222d3cbb81d4d9cde0a96d7f5fdbd5bbf3f8fc034c529cfde323d8a796",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-02-uk-mx-search-e2e-v1-15-MX-retail-product"
+        }
+      ]
+    },
+    {
+      "rank": 5,
+      "candidateId": "lead-87a217ab507437a7",
+      "companyName": "ORBITAL Store mx",
+      "domain": "orbitalstore.mx",
+      "officialWebsiteUrl": "https://orbitalstore.mx/",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 48,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-87a217ab507437a7",
+        "evidence-3b8d51298ed6b35c",
+        "evidence-51601cc3b0777459",
+        "evidence-44521b6400b85b50"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-87a217ab507437a7",
+          "url": "https://orbitalstore.mx/",
+          "title": "ORBITAL Store mx La Tienda en Línea más Grande de Productos y Accesorios de Cómputo en México",
+          "excerpt": "ORBITAL Store mx La Tienda en Línea más Grande de Productos y Accesorios de Cómputo en México Parece que JavaScript está deshabilitado en su navegador. Para obtener la mejor experiencia en nuestro sitio, asegúrese de activar Javascript en su navegador. TEL. 0155-5512-4712 / 0155-5518-0703 Mi cuenta Nosotros Contacto FAQs --> Toggle Nav Search Search Search Iniciar sesión Crear una cuenta Favoritos Mi lista de deseos --> 0 Mi carrito MXN $ 0 Todas las categorías MARCAS A - C ACER ACTECK ADATA AEROCOOL AMD AOC APPLE ARCTIC SILVER ASROCK ASUS ASPEL AUTODESK AVERMEDIA BALAM RUSH BENQ BROTHER BITDEFENDER BIOSTAR BOSCH CANON CDP COMPLET CONDUMEX COOLER MASTER COUGAR CORSAIR CNET CISCO CYBERPOWER ALPHACOOL CRUCIAL BLACKPCS D - F DAHUA D-LINK DELL DRON EAGLE WARRIOR DJI ECS EC LINE ENERMAX EPSON E",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-02T07:26:29.144Z",
+          "contentHash": "8de847810c6534903a486243ca083ddb91070eefdf95e84f54097abf97819cc0",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-02-uk-mx-search-e2e-v1-15-MX-retail-product"
+        },
+        {
+          "id": "evidence-3b8d51298ed6b35c",
+          "url": "https://newsroom.cisco.com/c/r/newsroom/en/us/a/y1993/m03/cisco-opens-subsidiary-in-mexico.html",
+          "title": "Cisco Opens Subsidiary in Mexico",
+          "excerpt": "MENLO PARK, Calif., March 3, 1993 -- Cisco Systems, Inc., the leading worldwide supplier of internetworking routers, has movedto strengthen its customer support in the Mexican marketplace byopening a subsidiary company, Cisco Systems de Mexico, S.A. deC.V. The subsidiary will be responsible for managing therelationships with distributors in Mexico such as Consorcio RedUno, Cisco's authorized distributor in Mexico City, and RSD (Redesy Systemas de Datos), a systems integrator. [...] Cisco Systems, Inc., is the leading worldwide supplier ofhigh-performance, multimedia and multiprotocol internetworkingproducts, including routers, bridges, communication servers androuter management software. Cisco technology can be used to buildenterprise-wide networks linking an unlimited number ofgeographica",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-02T07:28:02.784Z",
+          "contentHash": "018cdd2cb379a680a12fb47476e9d2d15d8f9fd97bcd632d312a996fc4cf9505",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-02-uk-mx-search-e2e-v1-15-MX-retail-product"
+        },
+        {
+          "id": "evidence-51601cc3b0777459",
+          "url": "https://netmatriks.com/brands/cisco-distributors-usa",
+          "title": "Cisco Systems Distributors in USA |Routers & Network Switches Supplier",
+          "excerpt": "Enjoy even greater savings with an expanded range of trending Cisco products! Netmatriks offers a large selection of Cisco enterprise products including Aironet, IP Phones, Modules, Cisco Network Switches, Routers and more. Available in the US and neighboring regions. Connect, support and elevate your business today. Netmatriks is an authorized reseller of Cisco products. Get in touch with our sales consultants at Cisco Contact Us [...] Netmatriks is a trusted name among Cisco distributors in the USA. Advanced networking solutions from Cisco help you stay connected, secure, and efficient with a wide variety of Cisco products, including routers, switches, and wireless access points. Our experienced team designs, deploys and manages your network infrastructure to ensure your business receive",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-02T07:28:02.785Z",
+          "contentHash": "3f6d0aefa8f05f276719430c64ca150487563f5f755f55129af4932cdd684e68",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-02-uk-mx-search-e2e-v1-15-MX-retail-product"
+        },
+        {
+          "id": "evidence-44521b6400b85b50",
+          "url": "https://cisco.com/go/partnerlocator?dtid=oblgzzz000659",
+          "title": "Partner Locator",
+          "excerpt": "# Find the right partner for your business needs Find trusted experts to support your business needs. Search our directory of partners by location, partner type, designations, and more. ## Match with your ideal partner Use Partner Locator to identify and connect with Cisco partners to meet your business outcomes. ## 1 ## Location Find partners for local support or global implementation. ## 2 ## Expertise [...] If you need advanced technical and sales expertise combined with full lifecycle management, choose a Preferred partner. These partners have made the deepest investments in their Cisco practices and are uniquely equipped to deliver tailored outcomes. ### Cisco Portfolio Partners [...] If you need deep expertise in Secure AI Infrastructure or Secure Networking, find a partner who has a",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-02T07:28:02.785Z",
+          "contentHash": "b64faf5b86ddcfa2227d9aa950973b6af5f6c419c49203e50c7046827398983f",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-02-uk-mx-search-e2e-v1-15-MX-retail-product"
+        }
+      ]
+    },
+    {
+      "rank": 6,
+      "candidateId": "lead-0546281d750ab9e6",
+      "companyName": "QuimiNet",
+      "domain": "quiminet.com",
+      "officialWebsiteUrl": "https://www.quiminet.com",
+      "primaryRole": "E-tailer",
+      "supportedRoles": [
+        "E-tailer"
+      ],
+      "totalScore": 35,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-d41976cd707bcd15",
+        "evidence-698718c73f4e4d62",
+        "evidence-83d12602c1332687",
+        "evidence-52b816816130e31c",
+        "evidence-5dfc36d9c6d73ccd",
+        "evidence-3b8d51298ed6b35c"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-d41976cd707bcd15",
+          "url": "https://www.quiminet.com/liga/174260",
+          "title": "Inicio | PepsiCo Mexico",
+          "excerpt": "AgroUniversity LATAM 2026, es la plataforma regional de PepsiCo que reunió en Monterrey a productores, especialistas, líderes empresariales y socios",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-02T07:27:53.939Z",
+          "contentHash": "2cd0f4450dfeacfb32ae37d57b2c20ef8f61fce875ce2ac31abc6ec8e30f5a22",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-02-uk-mx-search-e2e-v1-15-MX-retail-product"
+        },
+        {
+          "id": "evidence-698718c73f4e4d62",
+          "url": "https://www.quiminet.com/proveedores/switch-router-44510538888.htm?mkt_source=22&mkt_term=1_Contenido_Menu_secciones&mkt_medium=44510538888&mkt_campaign=3",
+          "title": "Proveedores de Switch, Router - Teléfonos, Distribuidores, ...",
+          "excerpt": "Rotosistemas: Suministramos Switch de flujo y estamos situados en Calzada De los Jinetes 29 - 7 Las Arboledas District, México, Edo. Méx. Zip Code 54950. México",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-02T07:28:03.528Z",
+          "contentHash": "96744184373fe97c8f6cf6af6d1a281e96bcc46f5d46fcac1c92f4be9104506d",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-02-uk-mx-search-e2e-v1-15-MX-retail-product"
+        },
+        {
+          "id": "evidence-83d12602c1332687",
+          "url": "https://www.quiminet.com/proveedores/switch-38208666575.htm",
+          "title": "Proveedores de SWITCH - Teléfonos, Distribuidores, ...",
+          "excerpt": "OFI.COM.MX: Suministramos SWITCH y estamos situados en Rousseau 14 - Piso 1 Col. Anzures, Ciudad de México, Ciudad de México C.P. 11590. México.",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-02T07:28:03.528Z",
+          "contentHash": "6b4a1455cf171c4cadf45c034bd5f6d7c12dcf6b8c8c258ada725a0cf4ff0fd3",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-02-uk-mx-search-e2e-v1-15-MX-retail-product"
+        },
+        {
+          "id": "evidence-52b816816130e31c",
+          "url": "https://www.quiminet.com/proveedores/redes-y-conectividad-switches-routers-cables-371014500627.htm",
+          "title": "Proveedores de Redes y conectividad (switches, routers, ...",
+          "excerpt": "MCS Network Solution, S.A. de C.V.: Somos un proveedor de Consultoría e Instalación de Routers, Firewalls y Switches en Distrito B3 206 Monterrey, Nuevo Leon",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-02T07:28:03.528Z",
+          "contentHash": "a61bcdb61f5de1c5ce5f47a3b04bb3a7133e4f6d8b5c1b39cc47604fcf35a559",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-02-uk-mx-search-e2e-v1-15-MX-retail-product"
+        },
+        {
+          "id": "evidence-5dfc36d9c6d73ccd",
+          "url": "https://www.quiminet.com/proveedores/routers-wifi-368142411617.htm",
+          "title": "Proveedores de Routers WiFi",
+          "excerpt": "Si usted desea saber quién vende, comercializa, distribuye u ofrece Routers WiFi o productos similares, a continuación le mostramos una lista de vendedores",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-02T07:28:03.528Z",
+          "contentHash": "b7113de6087ac6605976784d0bd6e7b16888ece940e74fc65337f5d2c6daeea2",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-02-uk-mx-search-e2e-v1-15-MX-retail-product"
+        },
+        {
+          "id": "evidence-3b8d51298ed6b35c",
+          "url": "https://newsroom.cisco.com/c/r/newsroom/en/us/a/y1993/m03/cisco-opens-subsidiary-in-mexico.html",
+          "title": "Cisco Opens Subsidiary in Mexico",
+          "excerpt": "MENLO PARK, Calif., March 3, 1993 -- Cisco Systems, Inc., the leading worldwide supplier of internetworking routers, has movedto strengthen its customer support in the Mexican marketplace byopening a subsidiary company, Cisco Systems de Mexico, S.A. deC.V. The subsidiary will be responsible for managing therelationships with distributors in Mexico such as Consorcio RedUno, Cisco's authorized distributor in Mexico City, and RSD (Redesy Systemas de Datos), a systems integrator. [...] Cisco Systems, Inc., is the leading worldwide supplier ofhigh-performance, multimedia and multiprotocol internetworkingproducts, including routers, bridges, communication servers androuter management software. Cisco technology can be used to buildenterprise-wide networks linking an unlimited number ofgeographica",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-02T07:28:03.528Z",
+          "contentHash": "48846aaa50ac4910d7a232e6247d530d47bd47c4b6def00ef06090766d12cdf1",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-02-uk-mx-search-e2e-v1-15-MX-retail-product"
+        }
+      ]
+    }
+  ],
+  "missingSlots": 24,
+  "warnings": [
+    "Discovery gate batch held after routine model failure: Primary model deepseek-v4-pro and approved equivalent fallbacks failed.",
+    "Hybrid discovery failed (retail/etail/searchapi): fetch failed",
+    "Hybrid discovery failed (retail/retail-national/searchapi): fetch failed",
+    "Hybrid discovery failed (retail/etail/gemini-product): fetch failed",
+    "No official-domain evidence was extracted for supermexdigital.mx.",
+    "Evidence collection failed for cityclub.com.mx: Provider tavily is unavailable. The application must show an explicit degraded state.",
+    "No official-domain evidence was extracted for migswitchmexico.com.",
+    "No official-domain evidence was extracted for newark.com.",
+    "No official-domain evidence was extracted for compusales.com.mx.",
+    "No official-domain evidence was extracted for orbitalstore.mx.",
+    "No official-domain evidence was extracted for newegg.com.",
+    "No official-domain evidence was extracted for teltonika-networks.com.",
+    "mikrotik-mexico.com.mx: The candidate uses 'MikroTik' in its name but is not listed as an authorized distributor on MikroTik's official page.",
+    "mikrotik-mexico.com.mx: Deterministic role hints were not auto-added: Reseller.",
+    "migswitchmexico.com: Escalation was skipped because the configured routine and escalation models are identical.",
+    "migswitchmexico.com: No evidence relates to the candidate entity.",
+    "migswitchmexico.com: The submitted name claims 'DISTRIBUIDOR OFICIAL', but no evidence supports this claim.",
+    "migswitchmexico.com: The MIG Switch product appears to be a gaming flash cart, not networking equipment.",
+    "migswitchmexico.com: Proposed official website was not supported by the cited company-owned evidence; original identity retained.",
+    "migswitchmexico.com: Deterministic role hints were not auto-added: Distributor.",
+    "wirelessshop.mx: Independent public evidence for this candidate is unrelated to the candidate entity and was not used for role determination.",
+    "wirelessshop.mx: Deterministic role hints were not auto-added: Distributor, Reseller, ISP.",
+    "mexico.newark.com: Submitted roles included Retailer, which is not supported by supplied evidence.",
+    "mexico.newark.com: Submitted domain 'newark.com' is the global domain; the Mexico-specific official website is mexico.newark.com.",
+    "compusales.com.mx: The supplied official website excerpt is dominated by CSS code, limiting the amount of substantive content available for analysis.",
+    "compusales.com.mx: The Cisco-specific page URL was submitted but its content was not included in the evidence.",
+    "compusales.com.mx: The Retailer and E-tailer roles remain unverified due to limited substantive website content.",
+    "compusales.com.mx: Roles without a supported atomic role finding were removed.",
+    "compusales.com.mx: Deterministic role hints were not auto-added: VAR, SI, Reseller.",
+    "orbitalstore.mx: The submitted company name appears misleading, referencing Cisco and claiming authorized distributor status without supporting evidence.",
+    "orbitalstore.mx: The submitted domain 'orbitalstore.mx' and submitted URL point to a Cisco brand page, but the official website root is the correct company-owned domain.",
+    "orbitalstore.mx: Deterministic role hints were not auto-added: Distributor, Reseller, SI.",
+    "tendacn.com: Submitted company name 'Tenda Mexico' is a regional designation, not the legal entity name.",
+    "tendacn.com: Submitted roles of Retailer and E-tailer are not supported by the supplied evidence.",
+    "tendacn.com: The candidate appears to be a manufacturer/brand owner, not a channel partner in the traditional sense.",
+    "quiminet.com: The submitted company name was a page title from QuimiNet's supplier directory, not the actual company name.",
+    "quiminet.com: The submitted official website URL was a specific supplier directory page, not the company's main official website.",
+    "quiminet.com: The submitted Retailer role is not supported by the evidence; only E-tailer is supported.",
+    "quiminet.com: The Cisco newsroom evidence is unrelated to QuimiNet and does not establish any brand relationship.",
+    "quiminet.com: Deterministic role hints were not auto-added: Distributor, SI.",
+    "supermexdigital.mx: The Instagram profile claims distribution, but no evidence of actual channel partner supply is available.",
+    "cityclub.com.mx: Escalation was skipped because the configured routine and escalation models are identical.",
+    "cityclub.com.mx: No evidence relates to the candidate entity.",
+    "cityclub.com.mx: The submitted domain cityclub.com.mx appears to be a retail club store, not a networking equipment company.",
+    "cityclub.com.mx: Proposed official website was not supported by the cited company-owned evidence; original identity retained.",
+    "newegg.com: Submitted domain 'newegg.com' is consistent with resolved official website.",
+    "newegg.com: Submitted roles (Retailer, E-tailer) are consistent with evidence.",
+    "teltonika-networks.com: Submitted roles (Retailer, E-tailer) are contradicted by evidence showing a manufacturer.",
+    "teltonika-networks.com: Submitted family 'retail' is inconsistent with the manufacturer role supported by evidence.",
+    "teltonika-networks.com: Mexico country presence is not demonstrated by supplied evidence.",
+    "teltonika-networks.com: Deterministic role hints were not auto-added: Distributor."
+  ],
+  "costEvents": [
+    {
+      "eventId": "MX-retail:intent:1",
+      "cellId": "MX-retail",
+      "stage": "intent",
+      "provider": "kimi",
+      "requestedModel": "kimi-k2.6",
+      "actualModel": "kimi-k2.6",
+      "startedAt": "2026-09-02T07:25:09.300Z",
+      "completedAt": "2026-09-02T07:25:44.447Z",
+      "latencyMs": 35143,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 559,
+        "cachedInputTokens": 559,
+        "outputTokens": 1071
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [],
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-15",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.004353875186129827,
+      "budgetCostUsd": 0.004353875186129827,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:rag-embedding:1",
+      "cellId": "MX-retail",
+      "stage": "rag-retrieval",
+      "provider": "alibaba-model-studio",
+      "requestedModel": "text-embedding-v4",
+      "actualModel": "text-embedding-v4",
+      "startedAt": "2026-09-02T07:25:44.456Z",
+      "completedAt": "2026-09-02T07:25:45.042Z",
+      "latencyMs": 395,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 83,
+        "outputTokens": 0
+      },
+      "volume": {
+        "inputItems": 3,
+        "rawOutputItems": 3,
+        "validOutputItems": 3,
+        "downstreamUsedItems": 3,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-15",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.000005976,
+      "budgetCostUsd": 0.000005976,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:playbook",
+      "cellId": "MX-retail",
+      "stage": "playbook",
+      "provider": "deterministic-template",
+      "startedAt": "2026-09-02T07:25:45.051Z",
+      "completedAt": "2026-09-02T07:25:45.052Z",
+      "latencyMs": 1,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "volume": {
+        "inputItems": 16,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-15",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:1",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-02T07:25:45.059Z",
+      "completedAt": "2026-09-02T07:27:33.327Z",
+      "latencyMs": 2790,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 10,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 10,
+        "validOutputItems": 10,
+        "downstreamUsedItems": 10,
+        "discardedReasonCounts": {
+          "duplicate": 0
+        }
+      },
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-15",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.004,
+      "budgetCostUsd": 0.004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:2",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-02T07:25:45.059Z",
+      "completedAt": "2026-09-02T07:27:33.327Z",
+      "latencyMs": 3792,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 9,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 9,
+        "validOutputItems": 9,
+        "downstreamUsedItems": 4,
+        "discardedReasonCounts": {
+          "duplicate": 5
+        }
+      },
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-15",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.004,
+      "budgetCostUsd": 0.004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:3",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-02T07:25:45.059Z",
+      "completedAt": "2026-09-02T07:27:33.327Z",
+      "latencyMs": 1964,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 12,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 12,
+        "validOutputItems": 12,
+        "downstreamUsedItems": 8,
+        "discardedReasonCounts": {
+          "duplicate": 4
+        }
+      },
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-15",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005,
+      "budgetCostUsd": 0.005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:4",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-02T07:25:45.059Z",
+      "completedAt": "2026-09-02T07:27:33.327Z",
+      "latencyMs": 2705,
+      "attempts": 2,
+      "retries": 1,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 2,
+        "groundingQueries": 0,
+        "searchResults": 12,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 12,
+        "validOutputItems": 12,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {
+          "duplicate": 11
+        }
+      },
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-15",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.01,
+      "budgetCostUsd": 0.01,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:5",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-02T07:25:45.059Z",
+      "completedAt": "2026-09-02T07:27:33.327Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "failed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "provider-error": 1,
+          "duplicate": 0
+        }
+      },
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-15",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:6",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-02T07:25:45.059Z",
+      "completedAt": "2026-09-02T07:27:33.327Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "failed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "provider-error": 1,
+          "duplicate": 0
+        }
+      },
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-15",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:7",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "gemini-product",
+      "requestedModel": "gemini-3.6-flash",
+      "actualModel": "gemini-3.6-flash",
+      "startedAt": "2026-09-02T07:25:45.059Z",
+      "completedAt": "2026-09-02T07:27:33.327Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "failed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "provider-error": 1,
+          "duplicate": 0
+        }
+      },
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-15",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery-gate:model:1",
+      "cellId": "MX-retail",
+      "stage": "discovery-gate",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-02T07:25:45.059Z",
+      "completedAt": "2026-09-02T07:27:33.327Z",
+      "latencyMs": 25683,
+      "attempts": 2,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 8452,
+        "outputTokens": 2847,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 12,
+        "downstreamUsedItems": 12,
+        "discardedReasonCounts": {
+          "rejected": 11
+        }
+      },
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-15",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.00615351,
+      "budgetCostUsd": 0.00615351,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:fresh-evidence",
+      "cellId": "MX-retail",
+      "stage": "fresh-evidence",
+      "provider": "tavily",
+      "startedAt": "2026-09-02T07:27:33.383Z",
+      "completedAt": "2026-09-02T07:27:53.940Z",
+      "latencyMs": 74075,
+      "attempts": 20,
+      "retries": 5,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 13
+      },
+      "volume": {
+        "inputItems": 12,
+        "rawOutputItems": 18,
+        "validOutputItems": 18,
+        "downstreamUsedItems": 18,
+        "discardedReasonCounts": {
+          "noFreshEvidence": 4
+        }
+      },
+      "notes": [
+        "historical evidence reads disabled",
+        "evidence-library writes disabled"
+      ],
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-15",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.10400000000000001,
+      "budgetCostUsd": 0.10400000000000001,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:correction-evidence",
+      "cellId": "MX-retail",
+      "stage": "evidence-correction-search",
+      "provider": "tavily",
+      "startedAt": "2026-09-02T07:27:53.947Z",
+      "completedAt": "2026-09-02T07:29:51.573Z",
+      "latencyMs": 30205,
+      "attempts": 13,
+      "retries": 1,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 12
+      },
+      "volume": {
+        "inputItems": 12,
+        "rawOutputItems": 12,
+        "validOutputItems": 12,
+        "downstreamUsedItems": 12,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-15",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.096,
+      "budgetCostUsd": 0.096,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:evidence-correction:model:1",
+      "cellId": "MX-retail",
+      "stage": "evidence-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-02T07:27:53.947Z",
+      "completedAt": "2026-09-02T07:29:51.573Z",
+      "latencyMs": 238031,
+      "attempts": 7,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 36345,
+        "outputTokens": 19416,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 12,
+        "rawOutputItems": 12,
+        "validOutputItems": 10,
+        "downstreamUsedItems": 12,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-15",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.032701995,
+      "budgetCostUsd": 0.032701995,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "MX-retail:qualification-score-only:model:1",
+      "cellId": "MX-retail",
+      "stage": "qualification-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-02T07:29:51.587Z",
+      "completedAt": "2026-09-02T07:31:33.606Z",
+      "latencyMs": 336870,
+      "attempts": 8,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 62128,
+        "outputTokens": 25004,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 12,
+        "rawOutputItems": 12,
+        "validOutputItems": 12,
+        "downstreamUsedItems": 12,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-15",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.04877916,
+      "budgetCostUsd": 0.04877916,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:ranking",
+      "cellId": "MX-retail",
+      "stage": "role-filter-ranking",
+      "provider": "deterministic",
+      "startedAt": "2026-09-02T07:31:33.606Z",
+      "completedAt": "2026-09-02T07:31:33.614Z",
+      "latencyMs": 8,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "volume": {
+        "inputItems": 12,
+        "rawOutputItems": 12,
+        "validOutputItems": 6,
+        "downstreamUsedItems": 6,
+        "discardedReasonCounts": {
+          "wrongPrimaryRoleOrGate": 6
+        }
+      },
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-15",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    }
+  ],
+  "coldStartAudit": {
+    "historicalCandidateReads": 0,
+    "historicalEvidenceReads": 0,
+    "privateMemoryReads": 0,
+    "historicalScoreReads": 0,
+    "evidenceLibraryWrites": 0,
+    "cooperationPathsGenerated": 0
+  },
+  "discoveryCalls": [
+    {
+      "callKey": "retail/retail-national/0/searchapi/google",
+      "route": {
+        "category": "retail",
+        "track": "retail-national",
+        "sequence": 0,
+        "provider": "searchapi",
+        "engine": "google",
+        "mechanism": "web-serp",
+        "trigger": "core",
+        "invocationReason": "Core mechanism for retail/retail-national"
+      },
+      "status": "completed",
+      "rawResults": 10,
+      "normalizedCompanies": 10,
+      "newUniqueCompanies": 10,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 2790,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "discardedReasonCounts": {},
+      "querySha256": "177ba2e0c567580012dc39b1f4fd90e9523eb3cc9457153eb8f0102089ad343c"
+    },
+    {
+      "callKey": "retail/etail/0/searchapi/google",
+      "route": {
+        "category": "retail",
+        "track": "etail",
+        "sequence": 0,
+        "provider": "searchapi",
+        "engine": "google",
+        "mechanism": "shopping-web-serp",
+        "trigger": "core",
+        "invocationReason": "Core mechanism for retail/etail"
+      },
+      "status": "completed",
+      "rawResults": 9,
+      "normalizedCompanies": 9,
+      "newUniqueCompanies": 4,
+      "existingCompanyHits": 5,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 3792,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "discardedReasonCounts": {},
+      "querySha256": "00a677df0e292bed1de5651968e31ec26d9d533121a342aa96c4ed48739168c9"
+    },
+    {
+      "callKey": "retail/etail/1/brave/brave",
+      "route": {
+        "category": "retail",
+        "track": "etail",
+        "sequence": 1,
+        "provider": "brave",
+        "engine": "brave",
+        "mechanism": "web-index",
+        "trigger": "index-gap",
+        "invocationReason": "index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "completed",
+      "rawResults": 12,
+      "normalizedCompanies": 12,
+      "newUniqueCompanies": 8,
+      "existingCompanyHits": 4,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 1964,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "discardedReasonCounts": {},
+      "querySha256": "1efb9b604977d12e2750ff89195fd196ae6cef09c5e5bdbf89ca88f4ffd9b1fe"
+    },
+    {
+      "callKey": "retail/retail-national/1/brave/brave",
+      "route": {
+        "category": "retail",
+        "track": "retail-national",
+        "sequence": 1,
+        "provider": "brave",
+        "engine": "brave",
+        "mechanism": "web-index",
+        "trigger": "index-gap",
+        "invocationReason": "index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "completed",
+      "rawResults": 12,
+      "normalizedCompanies": 12,
+      "newUniqueCompanies": 1,
+      "existingCompanyHits": 11,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 2,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 2705,
+      "retryCount": 1,
+      "fallbackUsed": false,
+      "discardedReasonCounts": {},
+      "querySha256": "0883eb7fab05ea6ec0dc34354b41cabc1eb880009dafcd9be04400ea27007eb2"
+    },
+    {
+      "callKey": "retail/etail/2/searchapi/bing",
+      "route": {
+        "category": "retail",
+        "track": "etail",
+        "sequence": 2,
+        "provider": "searchapi",
+        "engine": "bing",
+        "mechanism": "web-serp",
+        "trigger": "second-index-gap",
+        "invocationReason": "second-index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "failed",
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "requestCount": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 0,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "discardedReasonCounts": {
+        "provider-error": 1
+      },
+      "errorMessage": "fetch failed",
+      "querySha256": "00a677df0e292bed1de5651968e31ec26d9d533121a342aa96c4ed48739168c9"
+    },
+    {
+      "callKey": "retail/retail-national/2/searchapi/bing",
+      "route": {
+        "category": "retail",
+        "track": "retail-national",
+        "sequence": 2,
+        "provider": "searchapi",
+        "engine": "bing",
+        "mechanism": "web-serp",
+        "trigger": "second-index-gap",
+        "invocationReason": "second-index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "failed",
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "requestCount": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 0,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "discardedReasonCounts": {
+        "provider-error": 1
+      },
+      "errorMessage": "fetch failed",
+      "querySha256": "177ba2e0c567580012dc39b1f4fd90e9523eb3cc9457153eb8f0102089ad343c"
+    },
+    {
+      "callKey": "retail/etail/3/gemini-product/google-grounded",
+      "route": {
+        "category": "retail",
+        "track": "etail",
+        "sequence": 3,
+        "provider": "gemini-product",
+        "engine": "google-grounded",
+        "mechanism": "fixed-grounded-query",
+        "trigger": "complex-semantic-gap",
+        "invocationReason": "complex-semantic-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "failed",
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "requestCount": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 0,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "discardedReasonCounts": {
+        "provider-error": 1
+      },
+      "errorMessage": "fetch failed",
+      "querySha256": "36eb936fb00a286ebdc0f3b2c56f4687a7329dab26de87b528060257efdd4962"
+    }
+  ]
+}

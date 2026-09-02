@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "resumeNodeId": "search-e2e-v1.0.15-after-MX-retail",
+  "createdAt": "2026-09-02T07:31:33.645Z",
+  "branch": "experiment/search-e2e-uk-mx-v1",
+  "experimentId": "search-e2e-eval-v1.0.15",
+  "runId": "2026-09-02-uk-mx-search-e2e-v1-15",
+  "frozenTag": "search-e2e-eval-v1.0.15-frozen",
+  "runStatus": "running",
+  "activeProcess": false,
+  "completedCells": ["MX-retail"],
+  "completedArms": ["MX-retail:gemini-native", "MX-retail:product-e2e"],
+  "currentCellResult": {
+    "cellId": "MX-retail",
+    "geminiFinalCandidates": 30,
+    "productFinalCandidates": 6,
+    "productMissingSlots": 24
+  },
+  "budget": {
+    "hardLimitUsd": 100,
+    "spentUsd": 1.7460204110519397,
+    "fraction": 0.017460204110519396,
+    "crossedReviewThresholdsUsd": [],
+    "forecastExpectedCompletionUsd": 17.303791147407672,
+    "forecastLowerUsd": 14.580483486593362,
+    "forecastUpperUsd": 20.027098808221982,
+    "warning": false
+  },
+  "resumeOrder": [
+    "Verify the working branch is synchronized with origin and the frozen tag is an ancestor of HEAD.",
+    "Read this checkpoint, runtime/run-summary.json and cost/after-MX-retail.json.",
+    "Do not rerun MX-retail; both arms are checkpointed.",
+    "Record the six-of-thirty product fill and evidence-correction telemetry anomaly for final quality and efficiency analysis; neither requires changing the frozen run.",
+    "Run the next frozen cell GB-distribution and continue the remaining configured cell order.",
+    "After every completed cell, commit and push its structured artifacts and refreshed resume checkpoint.",
+    "Pause only if completion-cost forecast may exceed USD 100; otherwise continue automatically."
+  ],
+  "nextCell": "GB-distribution",
+  "nextCommand": "npm.cmd run experiment:search-e2e:cell -- --cell=GB-distribution",
+  "knownIssues": [
+    {
+      "code": "product-slot-underfill",
+      "detail": "MX-retail product arm produced 6 final in-role candidates for 30 requested slots; 24 missing slots remain zero-utility by protocol."
+    },
+    {
+      "code": "downstream-use-exceeds-valid-output",
+      "detail": "MX-retail evidence-correction model telemetry recorded 10 valid outputs and 12 downstream-used outputs; preserve for final observability optimization analysis."
+    },
+    {
+      "code": "recoverable-kimi-json-failure",
+      "detail": "The first v1.0.15 Kimi output reached 2,000 output tokens with unterminated JSON; one frozen retry succeeded and the failed USD 0.008496881864689144 remains in budget."
+    }
+  ],
+  "blindReview": {
+    "mode": "codex-in-session",
+    "externalSearchAllowed": false,
+    "apiCallAllowed": false,
+    "status": "not-started",
+    "instruction": "After all cells and unified evaluation, commit and push blind packets before opening them; commit and push all direct decisions before deblinding."
+  }
+}
