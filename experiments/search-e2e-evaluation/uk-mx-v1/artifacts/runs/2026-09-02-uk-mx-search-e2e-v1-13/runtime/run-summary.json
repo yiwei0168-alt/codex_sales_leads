@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "runId": "2026-09-02-uk-mx-search-e2e-v1-13",
   "experimentId": "search-e2e-eval-v1.0.13",
-  "status": "preflight-passed",
+  "status": "running",
   "createdAt": "2026-09-02T06:51:41.648Z",
-  "updatedAt": "2026-09-02T06:51:41.686Z",
+  "updatedAt": "2026-09-02T06:53:33.340Z",
   "blindJudgeModel": "codex-in-session",
   "preflightChecks": [
     {
@@ -56,12 +56,22 @@
       }
     }
   ],
-  "completedArmKeys": [],
+  "completedArmKeys": [
+    "MX-retail:gemini-native"
+  ],
   "completedCellIds": [],
   "completedEvaluationCellIds": [],
   "completedBlindPacketIds": [],
   "reportedBudgetThresholdsUsd": [],
-  "anomalies": [],
+  "anomalies": [
+    {
+      "at": "2026-09-02T06:53:33.340Z",
+      "cellId": "MX-retail",
+      "severity": "fatal",
+      "code": "cell-arm-failed",
+      "detail": "MX-retail Kimi intent plan diverged from the frozen task semantics"
+    }
+  ],
   "costEvents": [
     {
       "eventId": "preflight:prior-product-before-v1.0.13",
@@ -170,6 +180,82 @@
       "officialListPriceUsd": 0,
       "budgetCostUsd": 0,
       "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:intent:1",
+      "cellId": "MX-retail",
+      "stage": "intent",
+      "provider": "kimi",
+      "requestedModel": "kimi-k2.6",
+      "actualModel": "kimi-k2.6",
+      "startedAt": "2026-09-02T06:52:52.965Z",
+      "completedAt": "2026-09-02T06:53:05.722Z",
+      "latencyMs": 12754,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 559,
+        "cachedInputTokens": 0,
+        "outputTokens": 419
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [],
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-13",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.0022035560011204646,
+      "budgetCostUsd": 0.0022035560011204646,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:gemini-control",
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-13",
+      "cellId": "MX-retail",
+      "arm": "gemini-native",
+      "ledger": "gemini-native-arm",
+      "stage": "native-search",
+      "provider": "gemini-full",
+      "requestedModel": "gemini-3.6-flash",
+      "actualModel": "gemini-3.6-flash",
+      "startedAt": "2026-09-02T06:52:53.043Z",
+      "completedAt": "2026-09-02T06:53:33.308Z",
+      "latencyMs": 40264,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 561,
+        "cachedInputTokens": 162,
+        "outputTokens": 5170,
+        "reasoningTokens": 0,
+        "groundingQueries": 16
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 30,
+        "validOutputItems": 30,
+        "downstreamUsedItems": 30,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "one interaction",
+        "no follow-up",
+        "provider order preserved"
+      ],
+      "officialListPriceUsd": 0.2436989,
+      "budgetCostUsd": 0.2436989,
+      "cashCostBasis": "official-conservative",
       "costAnomalies": []
     }
   ]
