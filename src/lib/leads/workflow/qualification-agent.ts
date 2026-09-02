@@ -10,7 +10,9 @@ import { assessNetworkingRelevanceEvidence } from "../networking-relevance";
 import { ACTIVE_LEAD_SCORING_POLICY, scoringPolicyChecksum } from "../scoring-policy";
 import { ACTIVE_LEAD_COST_QUALITY_POLICY } from "./cost-quality-policy";
 import { buildModelEvidencePacket } from "./evidence-packet";
-import { leadAssessmentBatchSchema, leadAssessmentModelSchema, type LeadAssessmentModelOutput } from "./schemas";
+import { leadAssessmentBatchSchema, leadAssessmentModelSchema, leadAssessmentScoreOnlyBatchSchema,
+  leadAssessmentScoreOnlyModelSchema, type LeadAssessmentModelOutput,
+  type LeadAssessmentScoreOnlyModelOutput } from "./schemas";
 import type {
   LeadCandidateAssessment,
   CorrectedLeadWorkflowCandidate,
@@ -19,7 +21,8 @@ import type {
 } from "./types";
 
 export const LEAD_QUALIFICATION_PROMPT_VERSION = "lead-value-v5-role-aware-five-paths";
-const PROMPT_VERSION = LEAD_QUALIFICATION_PROMPT_VERSION;
+export const LEAD_SCORE_ONLY_PROMPT_VERSION = "lead-value-v6-role-aware-score-only";
+type QualificationModelOutput = LeadAssessmentModelOutput | LeadAssessmentScoreOnlyModelOutput;
 
 interface LeadAssessmentRequest {
   instructions: string[];
@@ -52,6 +55,7 @@ interface LeadQualificationAgentOptions {
   batchSize?: number;
   maxBatchInputCharacters?: number;
   concurrency?: number;
+  includeCooperationPaths?: boolean;
 }
 
 function clamp(value: number, maximum: number): number {
@@ -93,11 +97,12 @@ function pathRoleCompatible(path: LeadAssessmentModelOutput["cooperationPaths"][
 }
 
 export function normalizeAssessment(
-  value: LeadAssessmentModelOutput,
+  value: QualificationModelOutput,
   candidate: CorrectedLeadWorkflowCandidate,
   response: StructuredAiResponse<unknown>,
   escalated: boolean,
   allowOemOdm = false,
+  includeCooperationPaths = true,
 ): LeadCandidateAssessment {
   const currentScoringEvidence = candidate.evidence.filter((item) =>
     isCurrentLeadScoringEvidence(item, candidate.evidenceSnapshotRunId));
@@ -132,7 +137,9 @@ export function normalizeAssessment(
   };
   const allowedRoles = new Set(candidate.correction.resolvedRoles);
   const allowedFindings = new Set(candidate.correction.findings.map((finding) => finding.findingId));
-  const rankedPaths = value.cooperationPaths
+  const modelPaths = "cooperationPaths" in value ? value.cooperationPaths : [];
+  const selectedPathId = "selectedPathId" in value ? value.selectedPathId : null;
+  const rankedPaths = modelPaths
     .filter((path) => allowedRoles.has(path.candidateRole))
     .filter(pathRoleCompatible)
     .filter((path) => allowOemOdm || path.pathType !== "OEM/ODM")
@@ -145,7 +152,7 @@ export function normalizeAssessment(
     .map((path, index) => ({ ...path, rank: index + 1 }));
   const qualifiedPaths = rankedPaths.filter((path) => path.fitScore >= 65);
   const cooperationPaths = qualifiedPaths.length > 0 ? qualifiedPaths : rankedPaths.slice(0, 1);
-  const selectedPath = cooperationPaths.find((path) => path.pathId === value.selectedPathId) ?? cooperationPaths[0];
+  const selectedPath = cooperationPaths.find((path) => path.pathId === selectedPathId) ?? cooperationPaths[0];
   const hasNotSupportedGate = Object.values(gates).some((state) => state === "not-supported");
   const hasUnresolvedGate = Object.values(gates).some((state) => state !== "supported");
   const sizeFinding = candidate.correction.findings.some((finding) => finding.kind === "company-size"
@@ -155,7 +162,7 @@ export function normalizeAssessment(
     strongRelevanceSignal: networkingEvidence.demonstrated, userNominated: candidate.userNominated ?? false,
     hasConflict: candidate.correction.findings.some((finding) => finding.status === "conflicting") });
   const eligibilityStatus = hasNotSupportedGate ? "ineligible-for-current-task" as const
-    : hasUnresolvedGate || cooperationPaths.length === 0
+    : hasUnresolvedGate || (includeCooperationPaths && cooperationPaths.length === 0)
       ? researchDepth === "limited" && value.eligibilityStatus === "insufficient-evidence-for-recommendation"
         ? "insufficient-evidence-for-recommendation" as const : "research-required" as const
       : "eligible" as const;
@@ -221,20 +228,20 @@ export function normalizeAssessment(
       ...(!evidenceQuality.sufficient ? [`Evidence remains sparse: ${evidenceQuality.reason}`] : []),
       ...(value.dimensions.cooperationPathAndBuyingInfluence > pathEvidenceAssessment.cap * 3
         ? [`Cooperation-path model score exceeds the deterministic evidence signal of ${(pathEvidenceAssessment.cap * 3).toFixed(1)}/15 and requires review: ${pathEvidenceAssessment.reason}`] : []),
-      ...(cooperationPaths.length < value.cooperationPaths.length
+      ...(includeCooperationPaths && cooperationPaths.length < modelPaths.length
         ? ["Cooperation paths with unsupported roles, disabled OEM/ODM, or invalid evidence were removed."] : []),
       ...(evidenceIds.length < value.evidenceIds.length ? ["Model returned unsupported evidence IDs; they were removed."] : [])],
   };
 }
 
 function requiresEscalation(candidate: CorrectedLeadWorkflowCandidate, assessment: LeadCandidateAssessment,
-  value: LeadAssessmentModelOutput): boolean {
+  value: QualificationModelOutput): boolean {
   const hasCriticalStateChange = value.escalation.criticalStateChanges.length > 0;
   return value.escalation.required && value.escalation.higherCapabilityCanResolve
     && (value.escalation.expectedTotalScoreChange >= 8 || hasCriticalStateChange);
 }
 
-function failedAssessment(candidate: CorrectedLeadWorkflowCandidate, message: string): LeadCandidateAssessment {
+function failedAssessment(candidate: CorrectedLeadWorkflowCandidate, message: string, promptVersion: string): LeadCandidateAssessment {
   return {
     candidateId: candidate.candidateId,
     eligible: false,
@@ -280,7 +287,7 @@ function failedAssessment(candidate: CorrectedLeadWorkflowCandidate, message: st
     unknowns: ["Company identity", "Target-market presence", "Channel role", "Cudy product fit"],
     evidenceIds: [],
     model: "unavailable",
-    promptVersion: PROMPT_VERSION,
+    promptVersion,
     escalated: false,
     scoringStatus: "retry-required",
     warnings: [message],
@@ -293,6 +300,7 @@ export class LeadQualificationAgent {
   private readonly batchSize: number;
   private readonly maxBatchInputCharacters: number;
   private readonly concurrency: number;
+  private readonly includeCooperationPaths: boolean;
 
   constructor(private readonly provider: AiProvider = createLeadAiProvider(), options: LeadQualificationAgentOptions = {}) {
     this.routineModel = options.routineModel ?? process.env.DEEPSEEK_MODEL?.trim() ?? "deepseek-v4-flash";
@@ -301,25 +309,36 @@ export class LeadQualificationAgent {
     this.maxBatchInputCharacters = Math.max(10_000, options.maxBatchInputCharacters
       ?? ACTIVE_LEAD_COST_QUALITY_POLICY.evidencePackets.qualification.maxBatchInputCharacters);
     this.concurrency = Math.max(1, Math.min(8, options.concurrency ?? 2));
+    this.includeCooperationPaths = options.includeCooperationPaths ?? true;
+  }
+
+  private get promptVersion(): string {
+    return this.includeCooperationPaths ? LEAD_QUALIFICATION_PROMPT_VERSION : LEAD_SCORE_ONLY_PROMPT_VERSION;
   }
 
   private request(candidates: CorrectedLeadWorkflowCandidate[], playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string, modelVersion: string) {
+    const pathInstructions = this.includeCooperationPaths ? [
+      "Return at most two evidence-supported cooperation paths using only: Direct Tier-1 Supply, Distributor-Mediated Supply, Direct Downstream Channel Supply, OEM/ODM, or Other.",
+      "Score each path semantically with role/structure 0-30, user-stage/supply fit 0-25, product/customer/scenario fit 0-20, procurement/influence 0-15, and execution feasibility 0-10. Do not return a path total or path confidence; code computes and ranks the total.",
+      "Normally recommend paths scoring at least 65. If every path is below 65, code retains only the highest path. Keep path explanations short; later strategy and email agents add titles, value propositions and calls to action only after explicit user action.",
+      "Do not use an upward channel hierarchy. The recommended path depends on the user stage, market, product track, candidate roles and evidence.",
+      "Use supplied private cooperation-path memory as a higher-priority user preference for analogous contexts, never as an objective company fact or score evidence. Request escalation when it conflicts with current evidence.",
+      "OEM/ODM is disabled unless the task objective explicitly asks for OEM, ODM, private label or manufacturing cooperation.",
+    ] : [
+      "This is a scoring-only task. Do not generate cooperation paths, path IDs, a selected path, development strategy, email content or contacts.",
+      "Score cooperationPathAndBuyingInfluence directly from the primary role's evidenced ability to select, procure, specify, resell or influence networking products; an explicit generated path is not required for eligibility.",
+    ];
     const input: LeadAssessmentRequest = {
       instructions: [
-        "Act as an independent role-aware sales-lead qualification and cooperation-path agent. Ignore provider scores, discovery order and the original search lane.",
+        `Act as an independent role-aware sales-lead qualification${this.includeCooperationPaths ? " and cooperation-path" : ""} agent. Ignore provider scores, discovery order and the original search lane.`,
         "Assess only supplied current-run evidence. Never invent company facts, roles, scale, product fit, relationships, paths or evidence IDs.",
         "Treat old-run or discovery-only material as a search lead, never as scoring evidence unless it was freshly acquired or revalidated into this run.",
         "Every gate is supported, not-supported, unknown or conflicting. Failed acquisition and missing evidence are unknown, never a negative fact.",
-        "Use the candidate's primary business role for scale peer comparison. Use the role performed in each cooperation path for role-specific customer, scenario, positioning and execution criteria.",
+        "Use the candidate's primary business role for scale peer comparison and for role-specific customer, scenario, positioning and execution criteria.",
         "Product family fit uses the best enabled product track, not average coverage of every Cudy family. Full-portfolio breadth applies only when the task explicitly requests a full-line master distributor.",
         "A broadline distributor is not diluted by unrelated categories. A focused SMB specialist is not penalized for lacking home, ISP or industrial families.",
         "Selling competitor brands is normally positive category evidence. Penalize only evidenced exclusivity, hard vendor lock-in, direct own-brand conflict, refusal or lack of entry space.",
-        "Return at most two evidence-supported cooperation paths using only: Direct Tier-1 Supply, Distributor-Mediated Supply, Direct Downstream Channel Supply, OEM/ODM, or Other.",
-        "Score each path semantically with role/structure 0-30, user-stage/supply fit 0-25, product/customer/scenario fit 0-20, procurement/influence 0-15, and execution feasibility 0-10. Do not return a path total or path confidence; code computes and ranks the total.",
-        "Normally recommend paths scoring at least 65. If every path is below 65, code retains only the highest path. Keep path explanations short; later strategy and email agents add titles, value propositions and calls to action only after explicit user action.",
-        "Do not use an upward channel hierarchy. The recommended path depends on the user stage, market, product track, candidate roles and evidence.",
-        "Use supplied private cooperation-path memory as a higher-priority user preference for analogous contexts, never as an objective company fact or score evidence. Request escalation when it conflicts with current evidence.",
-        "OEM/ODM is disabled unless the task objective explicitly asks for OEM, ODM, private label or manufacturing cooperation.",
+        ...pathInstructions,
         "For very large or strategically important companies, request deep research when relevant business-unit or regional evidence is incomplete. For a positively identified small weak-signal long-tail company, limited research may end as insufficient-evidence-for-recommendation.",
         "Return exactly one evidence-linked rationale for each of the seven scoring dimensions. Evidence confidence is reported separately and has zero score weight.",
         "Product and use-case fit is 50 points: product family 25, customer/scenario 15, positioning 10. Other dimensions are path/influence 15, same-role scale/coverage 15, execution/enablement 10, opportunity/risk 10.",
@@ -375,7 +394,8 @@ export class LeadQualificationAgent {
         policyChecksum: scoringPolicyChecksum(),
         policy: ACTIVE_LEAD_SCORING_POLICY,
         evidenceSourcePolicy: LEAD_EVIDENCE_SOURCE_POLICY,
-        cooperationPathPolicy: COOPERATION_PATH_POLICY,
+        ...(this.includeCooperationPaths ? { cooperationPathPolicy: COOPERATION_PATH_POLICY } : {}),
+        outputMode: this.includeCooperationPaths ? "score-and-paths" : "score-only",
         eligibilityGates: ["correctedIdentityUsable", "companyExists", "targetCountryPresence", "networkingRelevant", "independentProspect"],
         dimensions: ACTIVE_LEAD_SCORING_POLICY.weights,
       },
@@ -383,12 +403,13 @@ export class LeadQualificationAgent {
     return {
       task: "lead-qualification" as const,
       modelVersion,
-      promptVersion: PROMPT_VERSION,
+      promptVersion: this.promptVersion,
       input,
       evidenceIds: candidates.flatMap((candidate) => candidate.evidence
         .filter((item) => isCurrentLeadScoringEvidence(item, candidate.evidenceSnapshotRunId))
         .map((item) => item.id)),
-      outputSchema: z.toJSONSchema(leadAssessmentBatchSchema) as Record<string, unknown>,
+      outputSchema: z.toJSONSchema(this.includeCooperationPaths
+        ? leadAssessmentBatchSchema : leadAssessmentScoreOnlyBatchSchema) as Record<string, unknown>,
       dataClassification: "private-workspace" as const,
     };
   }
@@ -405,7 +426,9 @@ export class LeadQualificationAgent {
       reasoningTokens: response.usage?.reasoningTokens ?? 0, totalTokens: response.usage?.totalTokens ?? 0,
       latencyMs: response.latencyMs, fallbackUsed: Boolean(response.requestedModelVersion
         && (response.requestedModelVersion !== response.modelVersion || response.actualProviderId !== "deepseek")) });
-    const parsed = leadAssessmentBatchSchema.parse(response.output);
+    const parsed = this.includeCooperationPaths
+      ? leadAssessmentBatchSchema.parse(response.output)
+      : leadAssessmentScoreOnlyBatchSchema.parse(response.output);
     return { response, parsed };
   }
 
@@ -418,7 +441,8 @@ export class LeadQualificationAgent {
         const value = values.get(candidate.candidateId);
         if (!value) return this.evaluateOneEscalated(candidate, playbook, countryCode, countryName, objective, "Routine batch omitted the candidate.", usageRecords);
         const allowOemOdm = /\b(?:oem|odm|private[ -]?label|manufactur(?:e|ing))\b/i.test(objective);
-        const normalized = normalizeAssessment(value, candidate, routine.response, false, allowOemOdm);
+        const normalized = normalizeAssessment(value, candidate, routine.response, false, allowOemOdm,
+          this.includeCooperationPaths);
         if (requiresEscalation(candidate, normalized, value)) {
           if (this.routineModel === this.escalationModel) {
             return { ...normalized, warnings: [
@@ -454,12 +478,17 @@ export class LeadQualificationAgent {
       const raw = typeof escalation.output === "object" && escalation.output !== null && "assessments" in escalation.output
         ? (escalation.output as { assessments?: unknown[] }).assessments?.[0]
         : escalation.output;
-      const parsed = leadAssessmentModelSchema.parse(raw);
+      const parsed = this.includeCooperationPaths
+        ? leadAssessmentModelSchema.parse(raw)
+        : leadAssessmentScoreOnlyModelSchema.parse(raw);
       const allowOemOdm = /\b(?:oem|odm|private[ -]?label|manufactur(?:e|ing))\b/i.test(objective);
-      const normalized = normalizeAssessment(parsed, candidate, escalation, true, allowOemOdm);
+      const normalized = normalizeAssessment(parsed, candidate, escalation, true, allowOemOdm,
+        this.includeCooperationPaths);
       return { ...normalized, warnings: [reason, ...normalized.warnings] };
     } catch (error) {
-      return failedAssessment(candidate, `${reason} Escalation failed: ${error instanceof Error ? error.message : String(error)}`);
+      return failedAssessment(candidate,
+        `${reason} Escalation failed: ${error instanceof Error ? error.message : String(error)}`,
+        this.promptVersion);
     }
   }
 

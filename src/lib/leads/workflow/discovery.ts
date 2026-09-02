@@ -172,14 +172,17 @@ async function enrichOne(
   candidate: LeadWorkflowCandidate,
   plan: LeadSearchPlan,
   tavily: TavilySearchProvider,
+  options: LeadEvidenceCollectionOptions,
 ): Promise<{ candidate: LeadWorkflowCandidate; credits: number; warning?: string }> {
   let credits = 0;
   try {
-    const reusable = await findReusablePublicEvidence({
-      domain: candidate.domain,
-      countryCode: plan.countryCode,
-      evidenceRunId: candidate.evidenceSnapshotRunId,
-    }).catch(() => ({ evidence: [], stale: false }));
+    const reusable = options.allowReusableEvidence
+      ? await findReusablePublicEvidence({
+        domain: candidate.domain,
+        countryCode: plan.countryCode,
+        evidenceRunId: candidate.evidenceSnapshotRunId,
+      }).catch(() => ({ evidence: [], stale: false }))
+      : { evidence: [], stale: false };
     if (reusable.evidence.length > 0) {
       const evidence = [...new Map([...candidate.evidence, ...reusable.evidence]
         .map((item) => [item.id, item])).values()];
@@ -221,14 +224,16 @@ async function enrichOne(
         (rawByUrl.get(result.url) || result.content).replace(/\s+/g, " ").trim().slice(0, 4_000),
       ),
     }));
-    await persistPublicEvidence({
-      companyName: candidate.companyName,
-      domain: candidate.domain,
-      countryCode: plan.countryCode,
-      evidence: added,
-    }).catch((error) => {
-      candidate.evidenceWarnings.push(`Public evidence persistence failed for ${candidate.domain}: ${error instanceof Error ? error.message : String(error)}`);
-    });
+    if (options.persistEvidence) {
+      await persistPublicEvidence({
+        companyName: candidate.companyName,
+        domain: candidate.domain,
+        countryCode: plan.countryCode,
+        evidence: added,
+      }).catch((error) => {
+        candidate.evidenceWarnings.push(`Public evidence persistence failed for ${candidate.domain}: ${error instanceof Error ? error.message : String(error)}`);
+      });
+    }
     return {
       candidate: { ...candidate, evidence: [...new Map([...candidate.evidence, ...added].map((item) => [item.url, item])).values()] },
       credits,
@@ -240,21 +245,36 @@ async function enrichOne(
   }
 }
 
+export interface LeadEvidenceCollectionOptions {
+  allowReusableEvidence?: boolean;
+  persistEvidence?: boolean;
+  concurrency?: number;
+  maximumAttempts?: number;
+}
+
 export async function collectLeadEvidence(
   candidates: LeadWorkflowCandidate[],
   plan: LeadSearchPlan,
+  inputOptions: LeadEvidenceCollectionOptions = {},
 ): Promise<{ candidates: LeadWorkflowCandidate[]; creditsUsed: number; warnings: string[] }> {
-  const tavily = new TavilySearchProvider({ maxAttempts: 3 });
+  const options = {
+    allowReusableEvidence: inputOptions.allowReusableEvidence ?? true,
+    persistEvidence: inputOptions.persistEvidence ?? true,
+    concurrency: inputOptions.concurrency,
+    maximumAttempts: Math.max(1, Math.min(3, inputOptions.maximumAttempts ?? 3)),
+  };
+  const tavily = new TavilySearchProvider({ maxAttempts: options.maximumAttempts });
   const results = new Array<Awaited<ReturnType<typeof enrichOne>>>(candidates.length);
   let cursor = 0;
   async function worker(): Promise<void> {
     while (true) {
       const index = cursor++;
       if (index >= candidates.length) return;
-      results[index] = await enrichOne(candidates[index], plan, tavily);
+      results[index] = await enrichOne(candidates[index], plan, tavily, options);
     }
   }
-  const configuredConcurrency = Number.parseInt(process.env.LEAD_EVIDENCE_CONCURRENCY ?? "8", 10);
+  const configuredConcurrency = options.concurrency
+    ?? Number.parseInt(process.env.LEAD_EVIDENCE_CONCURRENCY ?? "8", 10);
   const concurrency = Math.max(1, Math.min(16, Number.isFinite(configuredConcurrency) ? configuredConcurrency : 8));
   await Promise.all(Array.from({ length: Math.min(concurrency, candidates.length) }, () => worker()));
   return {

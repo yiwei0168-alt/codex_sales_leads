@@ -168,7 +168,7 @@
       "name": "Fresh public evidence acquisition",
       "inputs": ["Passed or held discovered candidates", "Official-site and targeted public search queries", "Evidence freshness policy"],
       "outputs": ["Immutable evidence snapshot", "capturedAt", "contentHash", "sourceType", "freshnessStatus", "evidenceRunId"],
-      "strategy": ["Reuse current public-evidence-library material before spending search credits", "Old-run evidence is discovery-only until reacquired or validated", "Use Tavily only for targeted evidence discovery/extraction, not candidate discovery", "Prefer official and independent public sources", "Search for defining business actions, product tracks, target customers, size and cooperation signals"],
+      "strategy": ["Reuse current public-evidence-library material before spending search credits", "Cold-start evaluation mode can explicitly disable both historical evidence reads and evidence-library writes while preserving fresh acquisition", "Old-run evidence is discovery-only until reacquired or validated", "Use Tavily only for targeted evidence discovery/extraction, not candidate discovery", "Prefer official and independent public sources", "Search for defining business actions, product tracks, target customers, size and cooperation signals"],
       "failure": "Failed retrieval becomes unknown; it never becomes a negative fact.",
       "downstream": ["Entity correction", "Role classification", "Freshness audit"]
     },
@@ -203,8 +203,8 @@
       "id": "09-scoring-paths",
       "name": "Role-aware scoring and possible cooperation paths",
       "inputs": ["Corrected candidate", "Atomic findings", "Evidence packet", "Cudy playbook", "Private path memory", "Versioned scoring policy"],
-      "outputs": ["Seven dimensions", "Total score", "Eligibility", "Score confidence", "At most two compact possible paths", "Selected path"],
-      "strategy": ["Product/use-case fit 50", "Path/influence 15", "Same-primary-role scale 15", "Execution 10", "Opportunity/risk 10", "Use the best enabled product track", "Use role-specific target-customer and scenario criteria", "Use only the five-path taxonomy", "Compute path FitScore deterministically from 30/25/20/15/10 sub-scores", "Do not output path Confidence", "Unknown is not zero", "Path memory is guidance, not unsupported public fact"],
+      "outputs": ["Seven dimensions", "Total score", "Eligibility", "Score confidence", "At most two compact possible paths in normal product mode", "Selected path in normal product mode"],
+      "strategy": ["Product/use-case fit 50", "Path/influence 15", "Same-primary-role scale 15", "Execution 10", "Opportunity/risk 10", "Use the best enabled product track", "Use role-specific target-customer and scenario criteria", "Normal product mode uses only the five-path taxonomy and computes path FitScore deterministically from 30/25/20/15/10 sub-scores", "Search-quality evaluation mode uses a score-only schema: score procurement/influence from role evidence and emit no paths, strategy, email or contacts", "Do not output path Confidence", "Unknown is not zero", "Path memory is guidance, not unsupported public fact"],
       "failure": "Unsupported evidence IDs and paths are removed; schema failures retry only the invalid candidate and reuse checkpoints.",
       "downstream": ["Independent review", "Ranking", "Development handoff"]
     },

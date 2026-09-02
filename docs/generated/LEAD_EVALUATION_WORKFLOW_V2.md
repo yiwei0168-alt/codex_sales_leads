@@ -5,7 +5,7 @@
 - 运行时策略版本：3.0.0（基础流程定义 2.1.0）
 - 评分策略版本：2.0.0
 - 成本质量策略版本：3.0.0
-- 配置指纹：`6f3bc00295b7cc4d7b2d856f01ca3bf6c05b36625e7f6c770580dfedb21e8c1c`
+- 配置指纹：`22e03bbe6698e686b224ff04fda6880adb5e2ede13cdfdddc6216a8ac58e2262`
 - 范围：From the user's natural-language market-development request and workspace context to ranked companies, editable cooperation paths, development strategy, outreach email, and private-memory learning from user edits.
 
 ## 一、从用户输入到最终输出的总流程
@@ -221,6 +221,7 @@ flowchart TD
 策略：
 
 - Reuse current public-evidence-library material before spending search credits
+- Cold-start evaluation mode can explicitly disable both historical evidence reads and evidence-library writes while preserving fresh acquisition
 - Old-run evidence is discovery-only until reacquired or validated
 - Use Tavily only for targeted evidence discovery/extraction, not candidate discovery
 - Prefer official and independent public sources
@@ -349,8 +350,8 @@ flowchart TD
 - Total score
 - Eligibility
 - Score confidence
-- At most two compact possible paths
-- Selected path
+- At most two compact possible paths in normal product mode
+- Selected path in normal product mode
 
 策略：
 
@@ -361,8 +362,8 @@ flowchart TD
 - Opportunity/risk 10
 - Use the best enabled product track
 - Use role-specific target-customer and scenario criteria
-- Use only the five-path taxonomy
-- Compute path FitScore deterministically from 30/25/20/15/10 sub-scores
+- Normal product mode uses only the five-path taxonomy and computes path FitScore deterministically from 30/25/20/15/10 sub-scores
+- Search-quality evaluation mode uses a score-only schema: score procurement/influence from role evidence and emit no paths, strategy, email or contacts
 - Do not output path Confidence
 - Unknown is not zero
 - Path memory is guidance, not unsupported public fact
@@ -698,7 +699,7 @@ flowchart TD
 | 文件 | SHA-256 |
 |---|---|
 | `config/lead-scoring/policy-v2.0.0.json` | `0039203aafb29ec73e4beb10f72dc5ec114785fb4c5f311c7b425de0d451fc1b` |
-| `config/lead-search/hybrid-search-v1.0.0.json` | `bc018ba8682adf8912b13340070dd1f7ced63e1928431cfec4bc619bc60716c1` |
+| `config/lead-search/hybrid-search-v1.0.0.json` | `68aa162040af9fb1df633ef4fa4e6eb5be93ca6209b85889fa2760c33cf1bb74` |
 | `config/lead-workflow/cost-quality-policy-v3.0.0.json` | `2e3d85b6ccd4a9fa13de39cdc66af32814c75b8b4a693cddd74638743b1def53` |
 | `config/lead-workflow/runtime-policy-v3.0.0.json` | `f58509eb101f842ae9c2e7b01484c8b2e429908166a13a502c5d8be477127989` |
 | `src/app/api/assistant/messages/route.ts` | `04bec90cc3d3f336195e8ab97a5ad4b1ec1e05b95606064225e098e94ed7a5cd` |
@@ -707,20 +708,20 @@ flowchart TD
 | `src/lib/assistant/intent-agent.ts` | `71a7a2e637266476f5f62610e3d8d186eb08a28539e395bcb740f97655713551` |
 | `src/lib/assistant/service.ts` | `1e2d9719d2937cc3081c3dbddf016d7cd665de1c1e9a88c775d10e3863ec00df` |
 | `src/lib/assistant/repository.ts` | `4243485613740437216b7867c0b8b420ea16d555f852397b436fd8a5f5414e67` |
-| `src/lib/leads/workflow/graph.ts` | `4f6ff107db863d73eb7dacf00e08f500172f9fa60cfab66b381fb3590ff345de` |
-| `src/lib/leads/workflow/jobs.ts` | `138299e1dac31066c136382219f6177126ec3a0efe0de67c837f30b0132f4ce1` |
+| `src/lib/leads/workflow/graph.ts` | `e64429c12083ed80715522fa6c8acfe9f0734314942b15f416a269b8f0fadd60` |
+| `src/lib/leads/workflow/jobs.ts` | `1287ad4fdedd2ca838e0592f82e062214465de01bc7c31f68d2529211f558c22` |
 | `src/lib/leads/workflow/rag-context.ts` | `d34f47db8308c4d89b6b81dfdcda530757b3af35a5d678725488335af127f410` |
 | `src/lib/leads/workflow/playbook.ts` | `ea73c0cfa94b987c68b054eae59acb77f5009e8415320aac3b99884c9731fcab` |
 | `src/lib/leads/workflow/playbook-cache.ts` | `945d3fc727312208650ee7b4e55e33860e7c54f7e3daa939f768952409a1803f` |
 | `src/lib/leads/workflow/hybrid-search-policy.ts` | `c5b094fb015a4678d1182d05910bc6ee26e2face535c1496cbc89b4a548aa735` |
 | `src/lib/leads/workflow/candidate-registry.ts` | `a7d9bc2b971f854d7e5e092c6a3b6ccbe7cece0f3b5c0e1eae31f9e247f46cc5` |
-| `src/lib/leads/workflow/discovery-gate.ts` | `108606bdbc03986786f91a4b60d655b3172fc1556a9f44ae579f151cfc1dee1c` |
-| `src/lib/leads/workflow/hybrid-discovery-executor.ts` | `e25ea21da50e807ac50e925d8e7b91bab47b207ce4d48b8133a321b3751c035f` |
-| `src/lib/leads/workflow/discovery.ts` | `16ba822ad3a82a450d42477692f379cdcc61aa3bae42b4f5161b4bcfbafbc777` |
+| `src/lib/leads/workflow/discovery-gate.ts` | `9bc5189818a360da97b19f551cf3dd722d25f8f4fe068ce11837cd1b3f831134` |
+| `src/lib/leads/workflow/hybrid-discovery-executor.ts` | `9012bfb0f652d34c32dc506931a3884c8e25168c198863a7f64188a440b725c2` |
+| `src/lib/leads/workflow/discovery.ts` | `057e35469114b84cf04d0f35e1f03bf7740a1178a9122d92579fe8ff89b6bb16` |
 | `src/lib/leads/global-search.ts` | `963d07622725531e72d7f1807d4228a23d59d6a320b5d1e508b602bcc05c65db` |
 | `src/lib/leads/workflow/evidence-correction-agent.ts` | `9f35d93f2913e6b77de3c988d8f2d44c9541e549441254fea5571f037dd22798` |
 | `src/lib/leads/workflow/evidence-packet.ts` | `1ca9577284952e245a8e8c51ae9fa82472fcbcf0b262ebaa83fc6463f379836f` |
-| `src/lib/leads/workflow/qualification-agent.ts` | `97967abc62b11dae08b75483b3f6b555d4f576d7ae2776e675749e722398dff3` |
+| `src/lib/leads/workflow/qualification-agent.ts` | `93d131fe3518a1713feb52e6b73acd82a463f22d9c6875db4f2471af9f1c18df` |
 | `src/lib/leads/workflow/assessment-cache.ts` | `d7fd5fe0b350aa56eb9fcfb283c2c81a2de9564f88a3ef677631b82d81474fb3` |
 | `src/lib/leads/workflow/assessment-review-agent.ts` | `df3499c777bd541bb220adbfbdd7066c79c7b49053967b2ae96225c45345290d` |
 | `src/providers/deepseek.ts` | `9cb9825adf079109e19f287cb9b079ce4bb4cd55283eb8225a521b82fc6d0982` |
@@ -729,7 +730,7 @@ flowchart TD
 | `src/providers/resilient-ai.ts` | `3456780221fa361ca66142bd01bc2627c5aec194279fd040426d7f40a65c5b31` |
 | `src/providers/tavily.ts` | `5360b3bd415a0e53c13deb82c76b1718fc3e8990c54160f212b5df553ae9e377` |
 | `src/lib/leads/workflow/handoff-assembler.ts` | `606736bdfcced8f3a476a58808b07c65867b75f948c46b66b21354e5102f3827` |
-| `src/lib/leads/workflow/persistence.ts` | `6904b044ef6334eee6fe42399b9489c3859eee9883aa9fbe26738632b791052d` |
+| `src/lib/leads/workflow/persistence.ts` | `3f4af4bfc40298cc477994e56d33a6a7a7a356672b94ee0d8be4335c8c8e721f` |
 | `src/lib/sales/repository.ts` | `ba76e0227ec5c039bb8196df37322b24146b2d64a42af7e364e96dfd3dfdfef9` |
 | `src/lib/outreach/graph.ts` | `18dbb0c67613ab49cf69a61267c62d95f7e58da8b11b7beddfb2139aad78c19c` |
 | `src/lib/outreach/kimi-agent.ts` | `dd76bb48386350e1df6206385a3e90786249f2ca2a8116552fadd26a8ee94376` |

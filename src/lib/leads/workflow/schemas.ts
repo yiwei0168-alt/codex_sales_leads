@@ -122,7 +122,7 @@ const escalationSchema = z.object({
   reason: z.string().max(300),
 });
 
-export const leadAssessmentModelSchema = z.object({
+const leadAssessmentCommonSchema = z.object({
   candidateId: z.string().min(8).max(80),
   gates: gatesSchema,
   eligibilityStatus: eligibilityStatusSchema,
@@ -130,8 +130,6 @@ export const leadAssessmentModelSchema = z.object({
   researchDepth: researchDepthSchema,
   supplyModel: z.string().min(1).max(2_000),
   brandInvolvement: z.string().min(1).max(2_000),
-  cooperationPaths: z.array(cooperationPathSchema).max(2),
-  selectedPathId: z.string().max(80).nullable(),
   dimensions: dimensionsSchema,
   dimensionRationales: z.array(z.object({
     dimension: dimensionNameSchema,
@@ -151,8 +149,19 @@ export const leadAssessmentModelSchema = z.object({
   warnings: z.array(z.string().max(300)).max(12),
 });
 
+export const leadAssessmentScoreOnlyModelSchema = leadAssessmentCommonSchema;
+
+export const leadAssessmentModelSchema = leadAssessmentCommonSchema.extend({
+  cooperationPaths: z.array(cooperationPathSchema).max(2),
+  selectedPathId: z.string().max(80).nullable(),
+});
+
 export const leadAssessmentBatchSchema = z.object({
   assessments: z.array(leadAssessmentModelSchema).min(1).max(5),
+});
+
+export const leadAssessmentScoreOnlyBatchSchema = z.object({
+  assessments: z.array(leadAssessmentScoreOnlyModelSchema).min(1).max(5),
 });
 
 export const leadAssessmentJudgeSchema = z.object({
@@ -167,3 +176,4 @@ export const leadAssessmentJudgeSchema = z.object({
 export type LeadMarketPlaybookModelOutput = z.infer<typeof leadMarketPlaybookModelSchema>;
 export type LeadCorrectionModelOutput = z.infer<typeof leadCorrectionModelSchema>;
 export type LeadAssessmentModelOutput = z.infer<typeof leadAssessmentModelSchema>;
+export type LeadAssessmentScoreOnlyModelOutput = z.infer<typeof leadAssessmentScoreOnlyModelSchema>;

@@ -193,6 +193,21 @@ describe("LeadQualificationAgent", () => {
     expect(result.cooperationPaths[0]).not.toHaveProperty("confidence");
   });
 
+  it("supports scoring-only evaluation without generating or requiring cooperation paths", async () => {
+    const provider = new FakeProvider();
+    const [result] = await new LeadQualificationAgent(provider, {
+      concurrency: 1,
+      includeCooperationPaths: false,
+    }).evaluate([candidate], playbook, "DE", "Germany", "search-quality-evaluation");
+    expect(result.totalScore).toBe(88);
+    expect(result.eligible).toBe(true);
+    expect(result.cooperationPaths).toEqual([]);
+    expect(result.selectedPathId).toBeNull();
+    expect(result.promptVersion).toBe("lead-value-v6-role-aware-score-only");
+    expect(JSON.stringify(provider.calls[0].outputSchema)).not.toContain("cooperationPaths");
+    expect(JSON.stringify(provider.calls[0].input)).toContain("scoring-only task");
+  });
+
   it("does not duplicate a semantic escalation when routine and escalation models are identical", async () => {
     const provider = new FakeProvider({ escalation: { required: true, expectedTotalScoreChange: 9,
       criticalStateChanges: [], higherCapabilityCanResolve: true, reason: "Material score ambiguity." } });

@@ -118,6 +118,14 @@ Every provider call now records aggregate input characters, raw/normalized/new/d
 
 This stage is verified with mocked providers, not a paid production benchmark: external input/output volume, unit cost and real downstream quality remain `not-observed`. The next real search run must compare per-category unique yield, duplicate rate, gate pass/hold/reject, downstream scored/displayed/selected use, credits and token cost. Automatically observed optimization candidates are: query-template tightening where paid validity is below 60%, route removal where assisted downstream contribution stays near zero, and reducing parallel core breadth when duplicate rate is high. None is auto-applied without a quality review.
 
+### Stage 4: cold-start evaluation isolation and score-only qualification (implementation verification)
+
+The qualification agent now has an explicit score-only mode for end-to-end search evaluation. It retains the same seven semantic dimensions, deterministic total, evidence gates and material-change escalation rule, but its model schema excludes cooperation paths and selected path. It also forbids development strategy, email and contact output. Normal product execution remains unchanged and continues to generate editable paths.
+
+Fresh evidence collection now accepts explicit cold-start controls. Formal evaluations can disable reads from the historical public-evidence library and disable writes back to that library while still acquiring current-run evidence. Defaults remain reusable and persistent for normal production work.
+
+This stage is implementation verification only: paid input/output volume, external latency and unit cost are `not-observed`. Type checking and 13 focused workflow tests pass. Expected savings come from eliminating unused path fields and avoiding experiment contamination; actual token and paid-search deltas will be measured by the UK/Mexico formal evaluation. The experiment must record zero historical evidence reads, zero private memory reads, score-only output utilization, and any model output rejected because it attempted to emit excluded fields.
+
 ## 持续优化事项
 
 | 优先级 | 工作流环节 | 可优化点 | 质量门禁 | 状态 |
