@@ -1,21 +1,21 @@
 {
   "schemaVersion": 1,
-  "experimentId": "search-e2e-eval-v1.0.11",
-  "runId": "2026-09-02-uk-mx-search-e2e-v1-11",
-  "createdAt": "2026-09-02T05:47:38.347Z",
-  "requiredGitTag": "search-e2e-eval-v1.0.11-frozen",
+  "experimentId": "search-e2e-eval-v1.0.12",
+  "runId": "2026-09-02-uk-mx-search-e2e-v1-12",
+  "createdAt": "2026-09-02T06:18:47.650Z",
+  "requiredGitTag": "search-e2e-eval-v1.0.12-frozen",
   "files": [
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/PROTOCOL.md",
-      "sha256": "89f6d420ccdfcb921614a630c80e13c6c3a61449a5f0c6d39e84a4c3d317cf78"
+      "sha256": "4185a313b43095fba4953412b2a3eee5b58a2cd9f57be7798ae80964bb129dba"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/README.md",
-      "sha256": "b17259efd3d08b3670f4020aacbd303d8dd289c3b23f9c4bb57ddc6d7f312af6"
+      "sha256": "c25bb763f9b60847d7ec0176a86b02641cb3887f3c2fc2e34d13a5fee9ffdf55"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/config/experiment.v1.0.0.json",
-      "sha256": "6383e02dab727c95a858d93561dc280be488b409f94c3a2d1d9ca3bb8910e5f8"
+      "sha256": "5a29ce5a6050c51f3ba635f7592cdcc2f0128f720f76dba89e8b702f960d1469"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/config/gemini-control-prompt.md",
@@ -54,12 +54,16 @@
       "sha256": "015b588725285a0d5729398ebc75db2e32e28988b366f911ccff92c0312ce913"
     },
     {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/codex-direct-review.ts",
+      "sha256": "868017ff8e292c9afc46cf9c6a52542db2ea35e7981134b52466e59941793dfe"
+    },
+    {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/evaluation-metrics.ts",
       "sha256": "ad6c5e610e0fad2f97a5c5f68134cd7cfdb39697579e061daccad21882947ac3"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/experiment.ts",
-      "sha256": "a600803a8e08bbc883684de6c0077144ad977dc83206a694aeef752fd61b106d"
+      "sha256": "18b9946d5add3f3e2b9fb35369ef83d25e7fd145e234839431b584d92dacf0e5"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/final-report.ts",
@@ -87,7 +91,7 @@
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/scripts/run-formal-experiment.ts",
-      "sha256": "91184a8578492725aac2a9936295efb1014b94c82ce3c675447d80bae48d55a1"
+      "sha256": "9957385cd34713da19569aa755bbe0cbafdfd2d720544543a6e62c166ef24e2e"
     },
     {
       "path": "config/lead-search/hybrid-search-v1.0.0.json",
@@ -144,6 +148,10 @@
     {
       "path": "src/providers/tavily.ts",
       "sha256": "e601eb4eae582628dec99f03e9bcbb6fdf38dc68bcf52daf7cad8d58a2e31485"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-02-uk-mx-search-e2e-v1-10/runtime/run-summary.json",
+      "sha256": "3dff4956ec687bd39371921584c3af2a39d4358e03178837f4766eae27d69f15"
     }
   ]
 }

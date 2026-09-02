@@ -25,6 +25,8 @@ import { cellById, experimentCells, EXPERIMENT_CONFIG, intentRolesStayWithinCate
 import { calculateProviderContributions, optimizationFindings, renderFinalReport } from "../lib/final-report";
 import { runProductCell, type ProductCellResult } from "../lib/product-cell";
 import { callClaudeBlindJudge, callGeminiControl } from "../lib/provider-clients";
+import { assertCodexDecisionFilesFrozen, codexDirectBlindDecision, codexPacketSha256,
+  validateCodexDirectDecision, type CodexDirectDecisionArtifact } from "../lib/codex-direct-review";
 import { artifactRunRoot, loadRunState, rawRunRoot, readJson, readJsonIfExists, saveRunState, writeJsonAtomic,
   writeTextAtomic,
   type FormalRunState } from "../lib/run-store";
@@ -35,14 +37,14 @@ import { buildControlUniqueGroups, buildProductRecordIndex, evaluateControlUniqu
 nextEnv.loadEnvConfig(process.cwd());
 const rateCard = rateCardJson as ExperimentRateCard;
 const experimentRoot = path.resolve("experiments/search-e2e-evaluation/uk-mx-v1");
-const frozenTag = "search-e2e-eval-v1.0.11-frozen";
+const frozenTag = "search-e2e-eval-v1.0.12-frozen";
 
 const frozenFiles = [
   "PROTOCOL.md", "README.md", "config/experiment.v1.0.0.json", "config/gemini-control-prompt.md",
   "config/blind-judge-rubric.md", "config/official-rate-card.v1.json",
   "schemas/gemini-control-output.schema.json", "schemas/blind-judge-output.schema.json",
   "schemas/runtime-cost-event.schema.json", "lib/blind-audit.ts", "lib/cost-ledger.ts", "lib/control-cell.ts",
-  "lib/evaluation-metrics.ts", "lib/experiment.ts", "lib/final-report.ts", "lib/product-cell.ts",
+  "lib/codex-direct-review.ts", "lib/evaluation-metrics.ts", "lib/experiment.ts", "lib/final-report.ts", "lib/product-cell.ts",
   "lib/provider-clients.ts", "lib/run-store.ts", "lib/runtime-schemas.ts", "lib/unified-evaluation.ts",
   "scripts/run-formal-experiment.ts",
   "../../../config/lead-search/hybrid-search-v1.0.0.json",
@@ -55,6 +57,7 @@ const frozenFiles = [
   "../../../src/lib/leads/workflow/discovery.ts", "../../../src/lib/leads/workflow/evidence-correction-agent.ts",
   "../../../src/lib/leads/workflow/qualification-agent.ts", "../../../src/lib/leads/workflow/schemas.ts",
   "../../../src/providers/discovery.ts", "../../../src/providers/tavily.ts",
+  "artifacts/runs/2026-09-02-uk-mx-search-e2e-v1-10/runtime/run-summary.json",
 ] as const;
 
 function sha256(value: string | Buffer): string {
@@ -187,6 +190,21 @@ function syntheticPlaybook(): LeadMarketPlaybook {
     generatedBy: "deterministic-fallback", warnings: [] };
 }
 
+async function completePreflight(state: FormalRunState): Promise<void> {
+  state.status = "preflight-passed";
+  await saveRunState(state);
+  const forecast = forecastCompletionCost(state.costEvents, { completedCellIds: [], totalCells: 8,
+    fixedRemainingUsd: 10, initialEstimateUsd: EXPERIMENT_CONFIG.cost.initialForecastUsd.expected });
+  const decision = evaluateBudget(state.costEvents, forecast, { totalBudgetUsd: 100, thresholdsUsd: [20, 40, 60, 80] });
+  await writeJsonAtomic(path.join(artifactRunRoot(), "preflight/preflight-report.json"), {
+    schemaVersion: 1, runId: state.runId, status: "passed", completedAt: new Date().toISOString(),
+    checks: state.preflightChecks, chosenBlindJudgeModel: state.blindJudgeModel,
+    cost: summarizeCostEvents(state.costEvents), budgetDecision: decision,
+  });
+  console.log(JSON.stringify({ status: "preflight-passed", blindJudgeModel: state.blindJudgeModel,
+    cost: summarizeCostEvents(state.costEvents), budgetDecision: decision }, null, 2));
+}
+
 async function runPreflight(): Promise<void> {
   await verifyFrozenManifest(true);
   const state = await loadRunState();
@@ -196,14 +214,15 @@ async function runPreflight(): Promise<void> {
     return;
   }
   const missing = ["SEARCH_E2E_USER_ID", "KIMI_API_KEY", "EMBEDDING_API_KEY", "EMBEDDING_BASE_URL",
-    "DEEPSEEK_API_KEY", "TAVILY_API_KEY", "GEMINI_API_KEY", "CLAUDE_API_KEY"]
+    "DEEPSEEK_API_KEY", "TAVILY_API_KEY", "GEMINI_API_KEY",
+    ...(EXPERIMENT_CONFIG.blindAudit.fallbackActivated ? [] : ["CLAUDE_API_KEY"])]
     .filter((name) => !process.env[name]?.trim());
   const discoveryStatus = discoveryEnvironmentStatus();
   missing.push(...discoveryStatus.filter((item) => !item.configured).map((item) => item.apiKeyEnv));
   if (missing.length > 0) throw new Error(`Preflight missing required environment variables: ${[...new Set(missing)].join(", ")}`);
 
-  if (!hasPreflightCheck(state, "prior-before-v1.0.11-adjustment")) {
-    const productAdjustment = preflightEvent({ eventId: "preflight:prior-product-before-v1.0.11", runId: state.runId,
+  if (!hasPreflightCheck(state, "prior-before-v1.0.12-adjustment")) {
+    const productAdjustment = preflightEvent({ eventId: "preflight:prior-product-before-v1.0.12", runId: state.runId,
       ledger: "product-e2e-arm", arm: "product-e2e", stage: "prior-preflight-adjustment",
       provider: "mixed-product-preflight", startedAt: state.createdAt, completedAt: state.createdAt,
       latencyMs: 0, attempts: 50, retries: 8, fallbackUsed: false, status: "completed", usage: {},
@@ -212,7 +231,7 @@ async function runPreflight(): Promise<void> {
         discardedReasonCounts: { timeout: 1, schemaInvalid: 4, fallback: 1, semanticGateFailure: 5,
           transportFailure: 2 } },
       notes: ["Conservative carry-forward for v1.0.0-v1.0.10 product-side preflights, including all successful v1.0.10 discovery, evidence and score checks."] });
-    const controlAdjustment = preflightEvent({ eventId: "preflight:prior-gemini-control-before-v1.0.11",
+    const controlAdjustment = preflightEvent({ eventId: "preflight:prior-gemini-control-before-v1.0.12",
       runId: state.runId, ledger: "gemini-native-arm", arm: "gemini-native", stage: "prior-preflight-adjustment",
       provider: "gemini-full", requestedModel: "gemini-3.6-flash", actualModel: "gemini-3.6-flash",
       startedAt: state.createdAt, completedAt: state.createdAt, latencyMs: 0, attempts: 2, retries: 0,
@@ -221,9 +240,52 @@ async function runPreflight(): Promise<void> {
       volume: { inputItems: 5, rawOutputItems: 5, validOutputItems: 4, downstreamUsedItems: 2,
         discardedReasonCounts: { schemaInvalid: 1, usageNotCheckpointed: 1, invalidRequest: 1 } },
       notes: ["Carries all Gemini control-side preflights and structured-search diagnostics through v1.0.10."] });
-    await checkpointPreflight(state, "prior-before-v1.0.11-adjustment", [productAdjustment, controlAdjustment],
+    const openAiGatewayProbe = preflightEvent({ eventId: "preflight:prior-lingyu-openai-probe", runId: state.runId,
+      ledger: "evaluation-overhead", arm: "shared-evaluation", stage: "preflight-blind-judge",
+      provider: "lingyu-openai-responses", requestedModel: "gpt-5.6-sol", actualModel: "gpt-5.6-sol",
+      startedAt: state.createdAt, completedAt: state.createdAt, latencyMs: 0, attempts: 2, retries: 1,
+      fallbackUsed: true, status: "failed", usage: {}, accountCashCostUsd: 0,
+      volume: { inputItems: 2, rawOutputItems: 0, validOutputItems: 0, downstreamUsedItems: 0,
+        discardedReasonCounts: { insufficientQuota: 2 } },
+      notes: ["High-reasoning, no-tools, store=false full-schema probe returned HTTP 403 insufficient_user_quota; no model output or token usage."] });
+    await checkpointPreflight(state, "prior-before-v1.0.12-adjustment",
+      [productAdjustment, controlAdjustment, openAiGatewayProbe],
       { productUsd: EXPERIMENT_CONFIG.cost.priorProductPreflightAdjustmentUsd,
-        geminiControlReserveUsd: EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd });
+        geminiControlReserveUsd: EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd,
+        lingyuOpenAiProbeUsd: 0 });
+  }
+
+  if (EXPERIMENT_CONFIG.blindAudit.fallbackActivated) {
+    const reuse = EXPERIMENT_CONFIG.preflightReuse;
+    const source = await readJson<{ experimentId: string; runId: string;
+      preflightChecks: Array<{ name: string }>; costEvents: ExperimentCostEvent[] }>(path.resolve(reuse.sourceSummaryPath));
+    if (source.experimentId !== reuse.sourceExperimentId || source.runId !== reuse.sourceRunId) {
+      throw new Error("Inherited preflight source identity mismatch");
+    }
+    const sourceChecks = new Set(source.preflightChecks.map((item) => item.name));
+    const missingChecks = reuse.requiredChecks.filter((name) => !sourceChecks.has(name));
+    if (missingChecks.length > 0) throw new Error(`Inherited preflight is missing checks: ${missingChecks.join(", ")}`);
+    const sourceProductUsd = source.costEvents.filter((event) => event.ledger === "product-e2e-arm")
+      .reduce((sum, event) => sum + (event.budgetCostUsd ?? 0), 0);
+    const sourceControlUsd = source.costEvents.filter((event) => event.ledger === "gemini-native-arm")
+      .reduce((sum, event) => sum + (event.budgetCostUsd ?? 0), 0);
+    if (Math.abs(sourceProductUsd - EXPERIMENT_CONFIG.cost.priorProductPreflightAdjustmentUsd) > 0.000001
+      || Math.abs(sourceControlUsd - EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd) > 0.000001) {
+      throw new Error("Inherited preflight cost does not match frozen carry-forward adjustments");
+    }
+    await checkpointPreflight(state, "inherited-non-judge-preflight", [], {
+      sourceExperimentId: source.experimentId, sourceRunId: source.runId,
+      checks: reuse.requiredChecks, productUsd: sourceProductUsd, geminiControlUsd: sourceControlUsd,
+    });
+    await checkpointPreflight(state, "codex-in-session-blind-review", [], {
+      fallbackChain: [EXPERIMENT_CONFIG.blindAudit.primaryModel,
+        EXPERIMENT_CONFIG.blindAudit.gatewayFallbackModel, EXPERIMENT_CONFIG.blindAudit.unavailableFallbackMode],
+      activationReason: EXPERIMENT_CONFIG.blindAudit.fallbackActivationReason,
+      externalSearchAllowed: false, apiCallUsed: false,
+      requireDecisionCommitAndPushBeforeDeblind: true,
+    }, EXPERIMENT_CONFIG.blindAudit.unavailableFallbackMode);
+    await completePreflight(state);
+    return;
   }
   const plan = canadaPlan("distribution");
   if (!hasPreflightCheck(state, "kimi-intent")) {
@@ -438,18 +500,7 @@ async function runPreflight(): Promise<void> {
       { model: blind.actualModel }, blindModel);
   }
 
-  state.status = "preflight-passed";
-  await saveRunState(state);
-  const forecast = forecastCompletionCost(state.costEvents, { completedCellIds: [], totalCells: 8,
-    fixedRemainingUsd: 10, initialEstimateUsd: EXPERIMENT_CONFIG.cost.initialForecastUsd.expected });
-  const decision = evaluateBudget(state.costEvents, forecast, { totalBudgetUsd: 100, thresholdsUsd: [20, 40, 60, 80] });
-  await writeJsonAtomic(path.join(artifactRunRoot(), "preflight/preflight-report.json"), {
-    schemaVersion: 1, runId: state.runId, status: "passed", completedAt: new Date().toISOString(),
-    checks: state.preflightChecks, chosenBlindJudgeModel: state.blindJudgeModel,
-    cost: summarizeCostEvents(state.costEvents), budgetDecision: decision,
-  });
-  console.log(JSON.stringify({ status: "preflight-passed", blindJudgeModel: state.blindJudgeModel,
-    cost: summarizeCostEvents(state.costEvents), budgetDecision: decision }, null, 2));
+  await completePreflight(state);
 }
 
 function publicProductResult(result: Awaited<ReturnType<typeof runProductCell>>) {
@@ -696,9 +747,71 @@ async function runEvaluation(): Promise<void> {
       packetSetSha256: sha256(JSON.stringify(sample.packets)), packets: sample.packets,
     });
     await writeJsonAtomic(path.join(rawRunRoot(), `blind-audit/mapping-${targetSize}.json`), sample.mappings);
+    const directReview = state.blindJudgeModel === "codex-in-session";
+    const directEntries = sample.packets.map((packet) => ({ packetId: packet.packetId,
+      packetSha256: codexPacketSha256(packet),
+      packetPath: `experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/${state.runId}/blind-audit/codex-direct/packets/${packet.packetId}.json`,
+      decisionPath: `experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/${state.runId}/blind-audit/codex-direct/decisions/${packet.packetId}.json`,
+    }));
+    if (directReview) {
+      for (let index = 0; index < sample.packets.length; index += 1) {
+        await writeJsonAtomic(path.resolve(directEntries[index].packetPath), sample.packets[index]);
+      }
+      await writeJsonAtomic(path.join(artifactRunRoot(), `blind-audit/codex-direct/manifest-${targetSize}.json`), {
+        schemaVersion: 1, runId: state.runId, targetSize, reviewer: "codex-in-session",
+        externalSearchAllowed: false, identitiesHidden: true, scoresHidden: true,
+        requireDecisionCommitAndPushBeforeDeblind: true, packets: directEntries,
+      });
+    }
     const decisions: BlindDecision[] = [];
     state.status = "blind-audit-running";
     await saveRunState(state);
+    if (directReview) {
+      const artifacts: Array<{ packet: (typeof sample.packets)[number]; artifact: CodexDirectDecisionArtifact;
+        decisionPath: string }> = [];
+      const missingDecisionPaths: string[] = [];
+      for (let index = 0; index < sample.packets.length; index += 1) {
+        const packet = sample.packets[index];
+        const decisionPath = directEntries[index].decisionPath;
+        const value = await readJsonIfExists<unknown>(path.resolve(decisionPath));
+        if (!value) {
+          missingDecisionPaths.push(decisionPath);
+          continue;
+        }
+        artifacts.push({ packet, artifact: validateCodexDirectDecision(packet, value), decisionPath });
+      }
+      if (missingDecisionPaths.length > 0) {
+        console.log(JSON.stringify({ status: "codex-direct-review-required", targetSize,
+          packetManifest: `experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/${state.runId}/blind-audit/codex-direct/manifest-${targetSize}.json`,
+          missingDecisionCount: missingDecisionPaths.length, missingDecisionPaths }, null, 2));
+        return null;
+      }
+      const freeze = assertCodexDecisionFilesFrozen([
+        `experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/${state.runId}/blind-audit/packets-${targetSize}.json`,
+        `experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/${state.runId}/blind-audit/codex-direct/manifest-${targetSize}.json`,
+        ...directEntries.map((entry) => entry.packetPath), ...artifacts.map((item) => item.decisionPath),
+      ]);
+      for (const { packet, artifact } of artifacts) {
+        const decision = codexDirectBlindDecision(packet, artifact, state.runId);
+        const filename = path.join(rawRunRoot(), `blind-audit/decisions/${packet.packetId}.json`);
+        await writeJsonAtomic(filename, decision);
+        await writeJsonAtomic(path.join(artifactRunRoot(), `blind-audit/decisions/${packet.packetId}.json`),
+          publicBlindDecision(decision));
+        decisions.push(decision);
+        if (!state.completedBlindPacketIds.includes(packet.packetId)) {
+          appendRecordedCostEvents(state, [decision.costEvent]);
+          state.completedBlindPacketIds.push(packet.packetId);
+          await saveRunState(state);
+          const budget = await persistBudgetReview(state, `blind-${packet.packetId}`);
+          if (budget.requiresUserDecision) return null;
+        }
+      }
+      await writeJsonAtomic(path.join(artifactRunRoot(), `blind-audit/codex-direct/freeze-${targetSize}.json`), {
+        schemaVersion: 1, runId: state.runId, targetSize, decisionCommit: freeze.commit,
+        upstreamCommit: freeze.upstream, validatedDecisionCount: artifacts.length,
+        deblindedAt: new Date().toISOString(),
+      });
+    } else {
     for (const packet of sample.packets) {
       const filename = path.join(rawRunRoot(), `blind-audit/decisions/${packet.packetId}.json`);
       let decision = await readJsonIfExists<BlindDecision>(filename);
@@ -716,6 +829,7 @@ async function runEvaluation(): Promise<void> {
       }
       const budget = await persistBudgetReview(state, `blind-${packet.packetId}`);
       if (budget.requiresUserDecision) return null;
+    }
     }
     const metrics = calculateBlindAuditMetrics(sample.mappings, decisions);
     await writeJsonAtomic(path.join(artifactRunRoot(), `blind-audit/calibration-${targetSize}.json`), {
@@ -745,9 +859,9 @@ async function runEvaluation(): Promise<void> {
     schemaVersion: 1, runId: state.runId, generatedAt, contributions, findings,
     note: "Observed opportunities only; no frozen experiment or product route was modified post hoc.",
   });
-  await writeTextAtomic(path.join(artifactRunRoot(), "final/SEARCH_E2E_EVALUATION_REPORT.v1.0.11.md"),
+  await writeTextAtomic(path.join(artifactRunRoot(), "final/SEARCH_E2E_EVALUATION_REPORT.v1.0.12.md"),
     renderFinalReport({ metrics, blind, bundles, costs: state.costEvents, generatedAt })
-      .replace("evaluation v1.0.9", "evaluation v1.0.11"));
+      .replace("evaluation v1.0.9", "evaluation v1.0.12"));
   state.status = "completed";
   await saveRunState(state);
   console.log(JSON.stringify({ status: "completed", runId: state.runId, passed: metrics.passed,

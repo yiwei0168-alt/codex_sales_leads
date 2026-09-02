@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { experimentCells, intentRolesStayWithinCategory, leadPlanForCell } from "./experiment";
+import { EXPERIMENT_CONFIG, experimentCells, intentRolesStayWithinCategory, leadPlanForCell } from "./experiment";
 
 describe("formal experiment intent normalization", () => {
   it("accepts one or all roles inside a frozen category", () => {
@@ -19,5 +19,11 @@ describe("formal experiment intent normalization", () => {
       expect(prompt).toContain(cell.categoryLabel);
       expect(prompt).not.toMatch(/agent|brand owner|oem|odm|agente|propietario de marca/i);
     }
+  });
+
+  it("freezes the user-approved blind-review fallback chain", () => {
+    expect(EXPERIMENT_CONFIG.blindAudit).toMatchObject({ primaryModel: "claude-opus-5",
+      gatewayFallbackModel: "gpt-5.6-sol", unavailableFallbackMode: "codex-in-session",
+      fallbackActivated: true, allowWebSearch: false, requireDecisionCommitAndPushBeforeDeblind: true });
   });
 });

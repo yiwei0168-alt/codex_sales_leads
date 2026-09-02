@@ -1,6 +1,6 @@
 {
-  "experimentId": "search-e2e-eval-v1.0.11",
-  "runId": "2026-09-02-uk-mx-search-e2e-v1-11",
+  "experimentId": "search-e2e-eval-v1.0.12",
+  "runId": "2026-09-02-uk-mx-search-e2e-v1-12",
   "status": "preregistered-pending-preflight",
   "objective": "Compare the current cold-start product end-to-end company-search workflow with an un-tuned Gemini Full baseline.",
   "arms": {
@@ -33,6 +33,12 @@
     "allowPrivateCompanyMemory": false,
     "allowPriorBenchmarkCompanies": false,
     "allowCrossArmVisibilityBeforeFreeze": false
+  },
+  "preflightReuse": {
+    "sourceExperimentId": "search-e2e-eval-v1.0.10",
+    "sourceRunId": "2026-09-02-uk-mx-search-e2e-v1-10",
+    "sourceSummaryPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-02-uk-mx-search-e2e-v1-10/runtime/run-summary.json",
+    "requiredChecks": ["kimi-intent", "local-rag", "discovery-gemini-full/google-grounded", "discovery-brave/brave", "discovery-searchapi/bing", "discovery-exa/exa", "discovery-gemini-product/google-grounded", "discovery-google-places/google-places", "discovery-searchapi/google", "tavily-evidence", "deepseek-score-only", "gemini-3.6-flash-structured-search"]
   },
   "markets": [
     { "countryCode": "GB", "countryName": "United Kingdom", "primaryLanguage": "en", "supplementaryLanguages": [] },
@@ -79,6 +85,12 @@
   "blindAudit": {
     "primaryModel": "claude-opus-5",
     "preflightOnlyFallbackModel": "claude-opus-4-8",
+    "gatewayFallbackModel": "gpt-5.6-sol",
+    "gatewayFallbackProvider": "lingyu-openai-responses",
+    "unavailableFallbackMode": "codex-in-session",
+    "fallbackActivated": true,
+    "fallbackActivationReason": "Claude transport remained unavailable after bounded retries. A subsequent Lingyu gpt-5.6-sol Responses probe returned HTTP 403 insufficient_user_quota, so the user-authorized direct Codex conversation fallback is activated.",
+    "requireDecisionCommitAndPushBeforeDeblind": true,
     "allowWebSearch": false,
     "initialSample": 32,
     "expandedSample": 64,

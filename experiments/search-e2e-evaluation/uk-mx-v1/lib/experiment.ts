@@ -57,6 +57,17 @@ export function validateExperimentConfig(): void {
     || config.blindAudit.primaryModel !== "claude-opus-5") {
     throw new Error("Frozen control or blind-judge model changed");
   }
+  if (config.blindAudit.gatewayFallbackModel !== "gpt-5.6-sol"
+    || config.blindAudit.unavailableFallbackMode !== "codex-in-session"
+    || !config.blindAudit.fallbackActivated
+    || config.blindAudit.allowWebSearch
+    || !config.blindAudit.requireDecisionCommitAndPushBeforeDeblind) {
+    throw new Error("Frozen blind-judge fallback chain or deblinding guard changed");
+  }
+  if (config.preflightReuse.sourceExperimentId !== "search-e2e-eval-v1.0.10"
+    || config.preflightReuse.requiredChecks.length !== 12) {
+    throw new Error("Frozen non-judge preflight inheritance changed");
+  }
 }
 
 export function experimentCells(): ExperimentCell[] {
