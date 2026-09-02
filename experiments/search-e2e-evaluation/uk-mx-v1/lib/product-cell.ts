@@ -109,10 +109,16 @@ function toFinalCandidate(candidate: CorrectedLeadWorkflowCandidate, assessment:
       freshnessStatus: item.freshnessStatus, evidenceRunId: item.evidenceRunId })) };
 }
 
-export async function runProductCell(cell: ExperimentCell): Promise<ProductCellResult> {
+export async function runProductCell(cell: ExperimentCell, options: {
+  onCostEvents?: (events: ExperimentCostEvent[]) => Promise<void> | void;
+} = {}): Promise<ProductCellResult> {
   const startedAt = new Date().toISOString();
   const wallStarted = Date.now();
   const costEvents: ExperimentCostEvent[] = [];
+  const recordCostEvents = async (events: ExperimentCostEvent[]): Promise<void> => {
+    costEvents.push(...events);
+    await options.onCostEvents?.(events);
+  };
   const warnings: string[] = [];
   const frozenPlan = leadPlanForCell(cell);
 
@@ -127,12 +133,12 @@ export async function runProductCell(cell: ExperimentCell): Promise<ProductCellR
     throw new Error(`${cell.cellId} Kimi intent plan diverged from the frozen task semantics`);
   }
   for (const [index, call] of (intent.plannerCalls ?? []).entries()) {
-    costEvents.push(event({ eventId: `${cell.cellId}:intent:${index + 1}`, cellId: cell.cellId, stage: "intent",
+    await recordCostEvents([event({ eventId: `${cell.cellId}:intent:${index + 1}`, cellId: cell.cellId, stage: "intent",
       provider: "kimi", requestedModel: call.requestedModel, actualModel: call.actualModel,
       startedAt: intentStarted, completedAt: intentCompleted, latencyMs: call.latencyMs,
       attempts: call.attempts, retries: call.retries, fallbackUsed: false, status: "completed",
       usage: { inputTokens: call.inputTokens, cachedInputTokens: call.cachedInputTokens,
-        outputTokens: call.outputTokens }, volume: volume(1, 1, 1, 1) }));
+        outputTokens: call.outputTokens }, volume: volume(1, 1, 1, 1) })]);
   }
   warnings.push(...intent.warnings);
   const plan: LeadSearchPlan = { ...intent.leadPlan, userRequest: frozenPlan.userRequest,
@@ -153,21 +159,21 @@ export async function runProductCell(cell: ExperimentCell): Promise<ProductCellR
     throw new Error(`${cell.cellId} frozen RAG quality gate failed`);
   }
   for (const [index, usage] of embeddingUsage.entries()) {
-    costEvents.push(event({ eventId: `${cell.cellId}:rag-embedding:${index + 1}`, cellId: cell.cellId,
+    await recordCostEvents([event({ eventId: `${cell.cellId}:rag-embedding:${index + 1}`, cellId: cell.cellId,
       stage: "rag-retrieval", provider: "alibaba-model-studio", requestedModel: "text-embedding-v4",
       actualModel: usage.model, startedAt: ragStarted, completedAt: ragCompleted, latencyMs: usage.latencyMs,
       attempts: 1, retries: 0, fallbackUsed: false, status: "completed",
       usage: { inputTokens: usage.inputTokens, outputTokens: 0 },
-      volume: volume(usage.inputItems, usage.inputItems, usage.inputItems, usage.inputItems) }));
+      volume: volume(usage.inputItems, usage.inputItems, usage.inputItems, usage.inputItems) })]);
   }
 
   const playbookStarted = new Date().toISOString();
   const playbook = buildStandardLeadMarketPlaybook(plan, ragContext);
   const playbookCompleted = new Date().toISOString();
-  costEvents.push(event({ eventId: `${cell.cellId}:playbook`, cellId: cell.cellId, stage: "playbook",
+  await recordCostEvents([event({ eventId: `${cell.cellId}:playbook`, cellId: cell.cellId, stage: "playbook",
     provider: "deterministic-template", startedAt: playbookStarted, completedAt: playbookCompleted,
     latencyMs: Math.max(0, Date.parse(playbookCompleted) - Date.parse(playbookStarted)), attempts: 0, retries: 0,
-    fallbackUsed: false, status: "completed", usage: {}, volume: volume(ragContext.length, 1, 1, 1) }));
+    fallbackUsed: false, status: "completed", usage: {}, volume: volume(ragContext.length, 1, 1, 1) })]);
 
   const discoveryStarted = new Date().toISOString();
   const discovered = await executeHybridDiscovery(`${EXPERIMENT_CONFIG.runId}-${cell.cellId}-product`, plan, playbook);
@@ -176,7 +182,7 @@ export async function runProductCell(cell: ExperimentCell): Promise<ProductCellR
     const model = call.route.provider === "gemini-full" || call.route.provider === "gemini-product"
       ? process.env.GEMINI_DISCOVERY_MODEL?.trim() || process.env.GEMINI_SEARCH_MODEL?.trim() || "gemini-3.6-flash"
       : undefined;
-    costEvents.push(event({ eventId: `${cell.cellId}:discovery:${index + 1}`, cellId: cell.cellId,
+    await recordCostEvents([event({ eventId: `${cell.cellId}:discovery:${index + 1}`, cellId: cell.cellId,
       stage: "hybrid-discovery", provider: call.route.provider, requestedModel: model, actualModel: model,
       startedAt: discoveryStarted, completedAt: discoveryCompleted, latencyMs: call.latencyMs,
       attempts: call.requestCount, retries: call.retryCount, fallbackUsed: call.fallbackUsed, status: call.status,
@@ -185,9 +191,9 @@ export async function runProductCell(cell: ExperimentCell): Promise<ProductCellR
         searchResults: call.rawResults, extractedPages: call.route.provider === "exa" ? call.rawResults : 0,
         paidSearchCredits: call.paidSearchCredits },
       volume: volume(1, call.rawResults, call.normalizedCompanies, call.newUniqueCompanies,
-        { ...call.discardedReasonCounts, duplicate: call.existingCompanyHits }) }));
+        { ...call.discardedReasonCounts, duplicate: call.existingCompanyHits }) })]);
   }
-  costEvents.push(...modelUsageEvents(cell, "discovery-gate", discovered.modelUsage,
+  await recordCostEvents(modelUsageEvents(cell, "discovery-gate", discovered.modelUsage,
     discoveryStarted, discoveryCompleted, volume(discovered.calls.reduce((sum, call) => sum + call.newUniqueCompanies, 0),
       discovered.candidates.length + discovered.rejectedCandidates.length, discovered.candidates.length,
       discovered.candidates.length, { rejected: discovered.rejectedCandidates.length })));
@@ -199,29 +205,29 @@ export async function runProductCell(cell: ExperimentCell): Promise<ProductCellR
   const evidenceCompleted = new Date().toISOString();
   const evidenceCount = enriched.candidates.reduce((sum, candidate) => sum
     + candidate.evidence.filter((item) => item.sourceType !== "discovery").length, 0);
-  costEvents.push(event({ eventId: `${cell.cellId}:fresh-evidence`, cellId: cell.cellId, stage: "fresh-evidence",
+  await recordCostEvents([event({ eventId: `${cell.cellId}:fresh-evidence`, cellId: cell.cellId, stage: "fresh-evidence",
     provider: "tavily", startedAt: evidenceStarted, completedAt: evidenceCompleted,
     latencyMs: enriched.providerMetrics?.latencyMs ?? Date.parse(evidenceCompleted) - Date.parse(evidenceStarted),
     attempts: enriched.providerMetrics?.attempts ?? 0, retries: enriched.providerMetrics?.retries ?? 0,
     fallbackUsed: false, status: "completed", usage: { paidSearchCredits: enriched.creditsUsed },
     volume: volume(discovered.candidates.length, evidenceCount, evidenceCount, evidenceCount,
       { noFreshEvidence: enriched.candidates.filter((candidate) => !candidate.evidence.some((item) => item.sourceType !== "discovery")).length }),
-    notes: ["historical evidence reads disabled", "evidence-library writes disabled"] }));
+    notes: ["historical evidence reads disabled", "evidence-library writes disabled"] })]);
   warnings.push(...enriched.warnings);
 
   const correctionStarted = new Date().toISOString();
   const corrected = await new LeadEvidenceCorrectionAgent().correct(enriched.candidates, plan);
   const correctionCompleted = new Date().toISOString();
   if (corrected.creditsUsed > 0 || corrected.providerMetrics.attempts > 0) {
-    costEvents.push(event({ eventId: `${cell.cellId}:correction-evidence`, cellId: cell.cellId,
+    await recordCostEvents([event({ eventId: `${cell.cellId}:correction-evidence`, cellId: cell.cellId,
       stage: "evidence-correction-search", provider: "tavily", startedAt: correctionStarted,
       completedAt: correctionCompleted, latencyMs: corrected.providerMetrics.latencyMs,
       attempts: corrected.providerMetrics.attempts, retries: corrected.providerMetrics.retries,
       fallbackUsed: false, status: "completed", usage: { paidSearchCredits: corrected.creditsUsed },
       volume: volume(enriched.candidates.length, corrected.candidates.length, corrected.candidates.length,
-        corrected.candidates.length) }));
+        corrected.candidates.length) })]);
   }
-  costEvents.push(...modelUsageEvents(cell, "evidence-correction", corrected.usage ?? [], correctionStarted,
+  await recordCostEvents(modelUsageEvents(cell, "evidence-correction", corrected.usage ?? [], correctionStarted,
     correctionCompleted, volume(enriched.candidates.length, corrected.candidates.length,
       corrected.candidates.filter((candidate) => candidate.correction.resolvedRoles.length > 0).length,
       corrected.candidates.length)));
@@ -231,7 +237,7 @@ export async function runProductCell(cell: ExperimentCell): Promise<ProductCellR
   const scored = await new LeadQualificationAgent(undefined, { includeCooperationPaths: false, concurrency: 4 })
     .evaluateWithUsage(corrected.candidates, playbook, plan.countryCode, plan.countryName, plan.objective);
   const scoringCompleted = new Date().toISOString();
-  costEvents.push(...modelUsageEvents(cell, "qualification-score-only", scored.usage, scoringStarted,
+  await recordCostEvents(modelUsageEvents(cell, "qualification-score-only", scored.usage, scoringStarted,
     scoringCompleted, volume(corrected.candidates.length, scored.assessments.length,
       scored.assessments.filter((assessment) => assessment.scoringStatus === "completed").length,
       scored.assessments.length, { retryRequired: scored.assessments.filter((assessment) => assessment.scoringStatus !== "completed").length })));
@@ -247,12 +253,12 @@ export async function runProductCell(cell: ExperimentCell): Promise<ProductCellR
     || a.candidate.companyName.localeCompare(b.candidate.companyName)).slice(0, 30);
   const finalCandidates = finalPairs.map(({ candidate, assessment }, index) => toFinalCandidate(candidate, assessment, index + 1));
   const rankingAt = new Date().toISOString();
-  costEvents.push(event({ eventId: `${cell.cellId}:ranking`, cellId: cell.cellId, stage: "role-filter-ranking",
+  await recordCostEvents([event({ eventId: `${cell.cellId}:ranking`, cellId: cell.cellId, stage: "role-filter-ranking",
     provider: "deterministic", startedAt: scoringCompleted, completedAt: rankingAt,
     latencyMs: Math.max(0, Date.parse(rankingAt) - Date.parse(scoringCompleted)), attempts: 0, retries: 0,
     fallbackUsed: false, status: "completed", usage: {}, volume: volume(scored.assessments.length,
       scored.assessments.length, finalPairs.length, finalCandidates.length,
-      { wrongPrimaryRoleOrGate: scored.assessments.length - finalPairs.length }) }));
+      { wrongPrimaryRoleOrGate: scored.assessments.length - finalPairs.length }) })]);
 
   if (costEvents.some((item) => item.budgetCostUsd === null)) {
     throw new Error(`${cell.cellId} contains unpriced product cost events: ${costEvents.filter((item) => item.budgetCostUsd === null).map((item) => item.eventId).join(", ")}`);

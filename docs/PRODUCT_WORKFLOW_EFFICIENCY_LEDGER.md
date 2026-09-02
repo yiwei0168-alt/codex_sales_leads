@@ -134,6 +134,8 @@ The runtime records light-Kimi and K3 calls separately, local-RAG embedding toke
 
 This stage is implementation verification only and has made no formal experimental calls. Type checking and 30 focused tests pass. The first real cells must measure provider output utilization, cost per requested/final/65+/75+ lead, retry waste, and market/category cost skew. The frozen experiment manifest and Git tag prevent post-start code, prompt, policy or rate-card drift.
 
+Preflight v1.0.0 found that Kimi could exceed the former 45-second safety timeout and could return the semantically equivalent enum `new_market`. Before any UK/Mexico cell ran, v1.0.1 increased the intent timeout to 120 seconds and added deterministic underscore/space-to-hyphen enum normalization. A conservative USD 0.01 adjustment carries the two v1.0.0 Kimi attempts into the v1.0.1 hard-budget ledger. Preflight checks and formal cell arms now checkpoint cost events immediately; retries skip completed checks/arms, while any repeated stage call in an incomplete arm is retained under a distinct event ID so retry waste remains visible.
+
 ## 持续优化事项
 
 | 优先级 | 工作流环节 | 可优化点 | 质量门禁 | 状态 |

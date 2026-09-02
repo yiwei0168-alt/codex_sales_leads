@@ -23,7 +23,10 @@ const rawPlanSchema = z.object({
   lead_plan: z.object({
     country: z.string().max(120).nullish().transform((value) => value ?? ""),
     country_code: z.string().max(2).nullish().transform((value) => value ?? ""),
-    objective: z.enum(["new-market", "existing-distributor-growth"]).nullish().transform((value) => value ?? "new-market"),
+    objective: z.preprocess(
+      (value) => typeof value === "string" ? value.trim().toLowerCase().replace(/[ _]+/g, "-") : value,
+      z.enum(["new-market", "existing-distributor-growth"]),
+    ).nullish().transform((value) => value ?? "new-market"),
     roles: z.array(z.enum(CHANNEL_ROLES)).max(CHANNEL_ROLES.length).nullish().transform((value) => value ?? []),
     target_count: z.coerce.number().int().min(1).max(100).nullish().transform((value) => value ?? 20),
     query_language: z.string().max(20).nullish().transform((value) => value ?? ""),
@@ -166,7 +169,7 @@ async function invokeKimiIntent(options: {
     const response = await options.fetchImplementation(`${kimiBaseUrl()}/chat/completions`, {
       method: "POST",
       headers: { authorization: `Bearer ${options.apiKey}`, "content-type": "application/json" },
-      signal: AbortSignal.timeout(Number(process.env.KIMI_INTENT_TIMEOUT_MS ?? 45_000)),
+      signal: AbortSignal.timeout(Number(process.env.KIMI_INTENT_TIMEOUT_MS ?? 120_000)),
       body: requestBody,
     });
     status = response.status;

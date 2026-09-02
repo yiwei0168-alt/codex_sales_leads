@@ -35,7 +35,9 @@ export interface ControlCellResult {
   raw: unknown;
 }
 
-export async function runControlCell(cell: ExperimentCell): Promise<ControlCellResult> {
+export async function runControlCell(cell: ExperimentCell, options: {
+  onCostEvents?: (events: ExperimentCostEvent[]) => Promise<void> | void;
+} = {}): Promise<ControlCellResult> {
   const prompt = await renderGeminiControlPrompt(cell);
   const call = await callGeminiControl(cell, { prompt });
   const candidates = (call.output?.candidates ?? []).slice(0, 30).map((candidate, index) => ({
@@ -58,6 +60,7 @@ export async function runControlCell(cell: ExperimentCell): Promise<ControlCellR
   ];
   if (extraAnomalies.length > 0) cost = { ...cost, costAnomalies: [...cost.costAnomalies, ...extraAnomalies] };
   if (cost.budgetCostUsd === null) throw new Error(`${cell.cellId} Gemini control cost is unpriced`);
+  await options.onCostEvents?.([cost]);
   return { schemaVersion: 1, runId: EXPERIMENT_CONFIG.runId, cellId: cell.cellId, arm: "gemini-native",
     startedAt: call.startedAt, completedAt: call.completedAt, wallClockMs: call.latencyMs,
     requestedModel: call.requestedModel, actualModel: call.actualModel,

@@ -12,6 +12,8 @@ export interface FormalRunState {
   createdAt: string;
   updatedAt: string;
   blindJudgeModel?: string;
+  preflightChecks: Array<{ name: string; completedAt: string; detail: Record<string, unknown> }>;
+  completedArmKeys: string[];
   completedCellIds: string[];
   reportedBudgetThresholdsUsd: number[];
   costEvents: ExperimentCostEvent[];
@@ -50,10 +52,12 @@ export async function readJsonIfExists<T>(filename: string): Promise<T | null> {
 export async function loadRunState(): Promise<FormalRunState> {
   const filename = path.join(rawRunRoot(), "run-state.json");
   const existing = await readJsonIfExists<FormalRunState>(filename);
-  if (existing) return existing;
+  if (existing) return { ...existing, preflightChecks: existing.preflightChecks ?? [],
+    completedArmKeys: existing.completedArmKeys ?? [] };
   const now = new Date().toISOString();
   return { schemaVersion: 1, runId: EXPERIMENT_CONFIG.runId, experimentId: EXPERIMENT_CONFIG.experimentId,
-    status: "created", createdAt: now, updatedAt: now, completedCellIds: [],
+    status: "created", createdAt: now, updatedAt: now, preflightChecks: [], completedArmKeys: [],
+    completedCellIds: [],
     reportedBudgetThresholdsUsd: [], costEvents: [], anomalies: [] };
 }
 
@@ -63,6 +67,7 @@ export async function saveRunState(state: FormalRunState): Promise<void> {
   await writeJsonAtomic(path.join(artifactRunRoot(state.runId), "runtime/run-summary.json"), {
     schemaVersion: next.schemaVersion, runId: next.runId, experimentId: next.experimentId, status: next.status,
     createdAt: next.createdAt, updatedAt: next.updatedAt, blindJudgeModel: next.blindJudgeModel,
+    preflightChecks: next.preflightChecks, completedArmKeys: next.completedArmKeys,
     completedCellIds: next.completedCellIds, reportedBudgetThresholdsUsd: next.reportedBudgetThresholdsUsd,
     anomalies: next.anomalies, costEvents: next.costEvents,
   });
