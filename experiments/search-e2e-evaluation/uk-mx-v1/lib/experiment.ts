@@ -91,3 +91,8 @@ export function leadPlanForCell(cell: ExperimentCell): LeadSearchPlan {
 export function primaryRoleMatchesCategory(primaryRole: string, categoryId: ExperimentCategoryId): boolean {
   return categoryDetails[categoryId].roles.includes(primaryRole as ChannelRole);
 }
+
+export function intentRolesStayWithinCategory(actual: ChannelRole[], expected: ChannelRole[]): boolean {
+  const allowed = new Set(expected);
+  return actual.length > 0 && actual.every((role) => allowed.has(role));
+}

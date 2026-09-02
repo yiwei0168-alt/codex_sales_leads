@@ -5,7 +5,7 @@
 - 运行时策略版本：3.0.0（基础流程定义 2.2.0）
 - 评分策略版本：2.0.0
 - 成本质量策略版本：3.0.0
-- 配置指纹：`b7b384ae3a8e2fb4f4fcaefb3515577c9ceac29cec9ca0bcff90a382bcca7c11`
+- 配置指纹：`b556a444858d94a17b8f08982f7c1b5bc522dbf9bf57f203f28d1fa1295ed7f4`
 - 范围：From the user's natural-language market-development request and workspace context to ranked companies, editable cooperation paths, development strategy, outreach email, and private-memory learning from user edits.
 
 ## 一、从用户输入到最终输出的总流程
@@ -95,6 +95,7 @@ flowchart TD
 - Mark nominated companies for deep research
 - Record the light Kimi call and any K3 escalation separately instead of attributing only the final model
 - Normalize non-critical objective and coverage-mode synonyms deterministically; unknown coverage mode uses the existing auto default
+- For frozen evaluations, require the recognized roles to stay inside the requested category, then execute the complete frozen role set
 - Preserve failed-call telemetry before deterministic fallback; formal evaluations reserve budget when provider usage is unavailable
 
 失败与回退：Reject only structurally unusable requests; do not silently invent a target market or role, and do not discard paid-call telemetry when falling back.
@@ -746,7 +747,7 @@ flowchart TD
 | `src/lib/outreach/knowledge-repository.ts` | `59a023091f9adac80d4b502e1b4cf69b9d318bd5a7610112354fb95a8d802557` |
 | `db/migrations/033_hybrid_search_contribution.sql` | `6e002fe0a49bddd75853b6d13fdc5759b9f4b90653ffda47ccc6c8f4fddbb0d0` |
 | `experiments/search-e2e-evaluation/uk-mx-v1/lib/cost-ledger.ts` | `56ae24a73596594c06fc7222328d7934367997e63d6de624b399ae2dce6388dd` |
-| `experiments/search-e2e-evaluation/uk-mx-v1/scripts/run-formal-experiment.ts` | `57b815b35ffbdab8d29987947f620a518292f87e307cfd6325c93107b101c2d9` |
+| `experiments/search-e2e-evaluation/uk-mx-v1/scripts/run-formal-experiment.ts` | `1406419702ac1beee721e8b4ed9442930eb312c82164749c78c9b44e6bfe7980` |
 | `src/lib/leads/workflow/evidence-budget.ts` | `db035da87b8896ae5a81b12744a072810de80f160cb472724d5cedbcf06037f9` |
 | `src/lib/leads/workflow/pdf-extraction-policy.ts` | `6d8847827f1e96eab570114bca33cd447eaa3e64d7246ee09a748f8e6d6ade03` |
 | `src/lib/leads/workflow/public-evidence-repository.ts` | `5dcbfe60487eeb5d2ccab4b6e3eac9529705b21005abaa599359c992e51c4b03` |

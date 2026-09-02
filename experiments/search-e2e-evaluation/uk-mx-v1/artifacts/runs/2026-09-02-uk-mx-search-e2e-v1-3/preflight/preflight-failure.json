@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-02-uk-mx-search-e2e-v1-3",
+  "experimentId": "search-e2e-eval-v1.0.3",
+  "status": "failed-before-formal-cells",
+  "failedStage": "kimi-intent-semantics",
+  "error": "The model-generated plan passed schema validation but failed an exact-role-set equality check for a multi-role category.",
+  "formalCellsStarted": 0,
+  "formalSlotsConsumed": 0,
+  "measuredCall": {
+    "requestedModel": "kimi-k2.6",
+    "actualModel": "kimi-k2.6",
+    "inputTokens": 538,
+    "cachedInputTokens": 538,
+    "outputTokens": 1070,
+    "latencyMs": 30503,
+    "attempts": 1,
+    "retries": 0,
+    "budgetCostUsd": 0.004346488964897021
+  },
+  "budgetTreatment": {
+    "carriedIntoV1_0_4Usd": 0.030768,
+    "basis": "USD 0.026421 prior carry-forward plus measured v1.0.3 list-price usage, rounded upward."
+  },
+  "remediation": "v1.0.4 accepts a non-empty in-category role subset for intent recognition and forces execution back to the complete frozen role set."
+}

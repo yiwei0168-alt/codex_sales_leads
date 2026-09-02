@@ -13,7 +13,7 @@ import type { EmbeddingCallUsage } from "@/lib/rag/openai-provider";
 import rateCardJson from "../config/official-rate-card.v1.json";
 import { priceCostEvent, type ExperimentCostEvent, type ExperimentCostEventInput,
   type ExperimentRateCard, type ExperimentVolume } from "./cost-ledger";
-import { EXPERIMENT_CONFIG, leadPlanForCell, primaryRoleMatchesCategory,
+import { EXPERIMENT_CONFIG, intentRolesStayWithinCategory, leadPlanForCell, primaryRoleMatchesCategory,
   type ExperimentCell } from "./experiment";
 
 const rateCard = rateCardJson as ExperimentRateCard;
@@ -58,10 +58,6 @@ export interface ProductCellResult {
   coldStartAudit: { historicalCandidateReads: 0; historicalEvidenceReads: 0; privateMemoryReads: 0;
     historicalScoreReads: 0; evidenceLibraryWrites: 0; cooperationPathsGenerated: 0 };
   raw: { ragContext: unknown; discovered: unknown; enriched: unknown; corrected: unknown; assessments: unknown };
-}
-
-function sameRoleSet(actual: string[], expected: string[]): boolean {
-  return actual.length === expected.length && [...actual].sort().join("|") === [...expected].sort().join("|");
 }
 
 function event(options: Omit<ExperimentCostEventInput, "runId" | "ledger" | "arm">): ExperimentCostEvent {
@@ -143,12 +139,13 @@ export async function runProductCell(cell: ExperimentCell, options: {
     throw new Error(`${cell.cellId} Kimi intent step did not return a usable model-generated lead plan: ${intent.warnings.join(" | ")}`);
   }
   if (intent.leadPlan.countryCode !== frozenPlan.countryCode || intent.leadPlan.targetCount !== 30
-    || !sameRoleSet(intent.leadPlan.roles, frozenPlan.roles)) {
+    || intent.leadPlan.objective !== frozenPlan.objective
+    || !intentRolesStayWithinCategory(intent.leadPlan.roles, frozenPlan.roles)) {
     throw new Error(`${cell.cellId} Kimi intent plan diverged from the frozen task semantics`);
   }
   warnings.push(...intent.warnings);
-  const plan: LeadSearchPlan = { ...intent.leadPlan, userRequest: frozenPlan.userRequest,
-    opportunityTargets: [], coverageMode: "auto" };
+  const plan: LeadSearchPlan = { ...frozenPlan, coverageMode: intent.leadPlan.coverageMode ?? "auto",
+    verifiedOnly: false };
 
   const userId = process.env.SEARCH_E2E_USER_ID?.trim();
   if (!userId) throw new Error("SEARCH_E2E_USER_ID is required for frozen local-database RAG");

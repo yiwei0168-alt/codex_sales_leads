@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-02-uk-mx-search-e2e-v1-3",
+  "experimentId": "search-e2e-eval-v1.0.3",
+  "status": "created",
+  "createdAt": "2026-09-02T03:38:15.419Z",
+  "updatedAt": "2026-09-02T03:38:45.937Z",
+  "preflightChecks": [
+    {
+      "name": "prior-before-v1.0.3-adjustment",
+      "completedAt": "2026-09-02T03:38:15.422Z",
+      "detail": {
+        "amountUsd": 0.026421,
+        "attempts": 4
+      }
+    }
+  ],
+  "completedArmKeys": [],
+  "completedCellIds": [],
+  "reportedBudgetThresholdsUsd": [],
+  "anomalies": [
+    {
+      "at": "2026-09-02T03:38:45.937Z",
+      "severity": "warning",
+      "code": "preflight-kimi-intent-semantics-failed",
+      "detail": "Kimi intent preflight diverged from the requested country, count or roles"
+    }
+  ],
+  "costEvents": [
+    {
+      "eventId": "preflight:prior-before-v1.0.3-adjustment",
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-3",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "stage": "prior-preflight-adjustment",
+      "provider": "kimi",
+      "requestedModel": "kimi-k2.6",
+      "actualModel": "kimi-k2.6",
+      "startedAt": "2026-09-02T03:38:15.419Z",
+      "completedAt": "2026-09-02T03:38:15.419Z",
+      "latencyMs": 0,
+      "attempts": 4,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0.026421,
+      "volume": {
+        "inputItems": 4,
+        "rawOutputItems": 3,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "timeout": 1,
+          "schemaInvalid": 2,
+          "fallback": 1
+        }
+      },
+      "notes": [
+        "Carries the v1.0.0-v1.0.2 Kimi preflight budget: USD 0.02 conservative unknown-usage allowance plus USD 0.0064203807 priced usage."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0.026421,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "preflight:intent:1",
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-3",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "stage": "preflight-intent",
+      "provider": "kimi",
+      "requestedModel": "kimi-k2.6",
+      "actualModel": "kimi-k2.6",
+      "startedAt": "2026-09-02T03:38:15.430Z",
+      "completedAt": "2026-09-02T03:38:45.937Z",
+      "latencyMs": 30503,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 538,
+        "cachedInputTokens": 538,
+        "outputTokens": 1070
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [],
+      "officialListPriceUsd": 0.004346488964897021,
+      "budgetCostUsd": 0.004346488964897021,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    }
+  ]
+}
