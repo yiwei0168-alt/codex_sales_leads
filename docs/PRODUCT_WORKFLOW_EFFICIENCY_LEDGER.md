@@ -136,6 +136,8 @@ This stage is implementation verification only and has made no formal experiment
 
 Preflight v1.0.0 found that Kimi could exceed the former 45-second safety timeout and could return the semantically equivalent enum `new_market`. Before any UK/Mexico cell ran, v1.0.1 increased the intent timeout to 120 seconds and added deterministic underscore/space-to-hyphen enum normalization. A conservative USD 0.01 adjustment carries the two v1.0.0 Kimi attempts into the v1.0.1 hard-budget ledger. Preflight checks and formal cell arms now checkpoint cost events immediately; retries skip completed checks/arms, while any repeated stage call in an incomplete arm is retained under a distinct event ID so retry waste remains visible.
 
+Preflight v1.0.1 then exposed a deterministic Kimi fallback whose failure detail and usage were not returned to the experiment ledger. Before formal cells, v1.0.2 preserves failed planner-call telemetry and uses a conservative USD 0.01 reserve whenever the provider returns no usage. The combined pre-v1.0.2 adjustment is USD 0.02 for three attempts; future failures are recorded individually rather than reconstructed later.
+
 ## 持续优化事项
 
 | 优先级 | 工作流环节 | 可优化点 | 质量门禁 | 状态 |

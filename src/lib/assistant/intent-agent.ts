@@ -50,6 +50,15 @@ interface KimiResponse {
   error?: { message?: string };
 }
 
+type PlannerCall = NonNullable<IntentPlan["plannerCalls"]>[number];
+
+class KimiIntentInvocationError extends Error {
+  constructor(message: string, readonly call: PlannerCall) {
+    super(message);
+    this.name = "KimiIntentInvocationError";
+  }
+}
+
 function kimiBaseUrl(): string {
   const parsed = new URL(process.env.KIMI_BASE_URL?.trim() || "https://api.moonshot.cn/v1");
   if (parsed.protocol !== "https:" || !["api.moonshot.cn", "api.moonshot.ai"].includes(parsed.hostname)
@@ -164,30 +173,7 @@ async function invokeKimiIntent(options: {
   let body: KimiResponse = {};
   let status = 500;
   let attempts = 0;
-  for (let attempt = 0; attempt < 3; attempt += 1) {
-    attempts = attempt + 1;
-    const response = await options.fetchImplementation(`${kimiBaseUrl()}/chat/completions`, {
-      method: "POST",
-      headers: { authorization: `Bearer ${options.apiKey}`, "content-type": "application/json" },
-      signal: AbortSignal.timeout(Number(process.env.KIMI_INTENT_TIMEOUT_MS ?? 120_000)),
-      body: requestBody,
-    });
-    status = response.status;
-    body = await response.json() as KimiResponse;
-    if (response.ok) break;
-    const transient = response.status === 429 || response.status >= 500 || /overload|temporar/i.test(body.error?.message ?? "");
-    if (!transient || attempt === 2) throw new Error(body.error?.message ?? `Kimi HTTP ${response.status}`);
-    await new Promise((resolve) => setTimeout(resolve, 500 * (attempt + 1)));
-  }
-  if (status < 200 || status >= 300) throw new Error(body.error?.message ?? `Kimi HTTP ${status}`);
-  const parsed = parseJson(body.choices?.[0]?.message?.content ?? "");
-  const validated = rawPlanSchema.safeParse(parsed);
-  if (!validated.success) {
-    const returnedIntent = parsed && typeof parsed === "object" && "intent" in parsed ? String(parsed.intent).slice(0, 80) : "missing";
-    const returnedKeys = parsed && typeof parsed === "object" ? Object.keys(parsed).slice(0, 12).join(",") : "none";
-    throw new Error(`Kimi plan schema invalid (intent=${returnedIntent}; keys=${returnedKeys}): ${validated.error.issues[0]?.message ?? "invalid JSON"}`);
-  }
-  return { raw: validated.data, body, call: {
+  const buildCall = (succeeded: boolean, failureReason?: string): PlannerCall => ({
     requestedModel: options.model,
     actualModel: body.model ?? options.model,
     inputTokens: body.usage?.prompt_tokens ?? 0,
@@ -196,9 +182,41 @@ async function invokeKimiIntent(options: {
     totalTokens: body.usage?.total_tokens
       ?? (body.usage?.prompt_tokens ?? 0) + (body.usage?.completion_tokens ?? 0),
     latencyMs: Date.now() - startedAt,
-    attempts,
+    attempts: Math.max(1, attempts),
     retries: Math.max(0, attempts - 1),
-  } };
+    succeeded,
+    usageAvailable: body.usage !== undefined,
+    ...(failureReason ? { failureReason: failureReason.slice(0, 300) } : {}),
+  });
+  try {
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      attempts = attempt + 1;
+      const response = await options.fetchImplementation(`${kimiBaseUrl()}/chat/completions`, {
+        method: "POST",
+        headers: { authorization: `Bearer ${options.apiKey}`, "content-type": "application/json" },
+        signal: AbortSignal.timeout(Number(process.env.KIMI_INTENT_TIMEOUT_MS ?? 120_000)),
+        body: requestBody,
+      });
+      status = response.status;
+      body = await response.json() as KimiResponse;
+      if (response.ok) break;
+      const transient = response.status === 429 || response.status >= 500 || /overload|temporar/i.test(body.error?.message ?? "");
+      if (!transient || attempt === 2) throw new Error(body.error?.message ?? `Kimi HTTP ${response.status}`);
+      await new Promise((resolve) => setTimeout(resolve, 500 * (attempt + 1)));
+    }
+    if (status < 200 || status >= 300) throw new Error(body.error?.message ?? `Kimi HTTP ${status}`);
+    const parsed = parseJson(body.choices?.[0]?.message?.content ?? "");
+    const validated = rawPlanSchema.safeParse(parsed);
+    if (!validated.success) {
+      const returnedIntent = parsed && typeof parsed === "object" && "intent" in parsed ? String(parsed.intent).slice(0, 80) : "missing";
+      const returnedKeys = parsed && typeof parsed === "object" ? Object.keys(parsed).slice(0, 12).join(",") : "none";
+      throw new Error(`Kimi plan schema invalid (intent=${returnedIntent}; keys=${returnedKeys}): ${validated.error.issues[0]?.message ?? "invalid JSON"}`);
+    }
+    return { raw: validated.data, body, call: buildCall(true) };
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : "unknown Kimi invocation error";
+    throw new KimiIntentInvocationError(detail, buildCall(false, detail));
+  }
 }
 
 export async function planAssistantRequest(
@@ -210,13 +228,16 @@ export async function planAssistantRequest(
   if (!apiKey) return fallbackPlan(content);
   const lightModel = process.env.KIMI_INTENT_LIGHT_MODEL?.trim() || "kimi-k2.6";
   const complexModel = process.env.KIMI_INTENT_MODEL?.trim() || process.env.KIMI_MODEL?.trim() || "kimi-k3";
+  const completedCalls: PlannerCall[] = [];
   try {
     const light = await invokeKimiIntent({ content, history, model: lightModel, apiKey, fetchImplementation,
       complexityCheck: true });
+    completedCalls.push(light.call);
     const selected = light.raw.requires_k3_planning && lightModel !== complexModel
       ? await invokeKimiIntent({ content, history, model: complexModel, apiKey, fetchImplementation,
         complexityCheck: false }) : light;
-    const plannerCalls = selected === light ? [light.call] : [light.call, selected.call];
+    if (selected !== light) completedCalls.push(selected.call);
+    const plannerCalls = completedCalls;
     const { raw, body } = selected;
     const model = body.model ?? (selected === light ? lightModel : complexModel);
     const plannerSource = selected === light ? "kimi-light" as const : "kimi-k3" as const;
@@ -248,6 +269,8 @@ export async function planAssistantRequest(
     };
   } catch (error) {
     const fallback = fallbackPlan(content);
+    if (error instanceof KimiIntentInvocationError) completedCalls.push(error.call);
+    if (completedCalls.length > 0) fallback.plannerCalls = completedCalls;
     const detail = error instanceof Error ? error.message.slice(0, 300) : "unknown error";
     fallback.warnings.push(`Kimi 降级原因：${detail}`);
     return fallback;

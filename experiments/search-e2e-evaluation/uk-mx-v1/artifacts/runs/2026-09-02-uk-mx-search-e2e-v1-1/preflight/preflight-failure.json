@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-02-uk-mx-search-e2e-v1-1",
+  "experimentId": "search-e2e-eval-v1.0.1",
+  "status": "failed-before-formal-cells",
+  "failedStage": "kimi-intent",
+  "error": "Kimi intent preflight returned deterministic fallback; v1.0.1 did not preserve the underlying failure detail or usage.",
+  "formalCellsStarted": 0,
+  "formalSlotsConsumed": 0,
+  "budgetTreatment": {
+    "includedInNextRun": true,
+    "combinedPriorAdjustmentUsdInV1_0_2": 0.02,
+    "basis": "Conservative allowance for three Kimi preflight attempts across v1.0.0 and v1.0.1."
+  },
+  "remediation": "v1.0.2 preserves failed planner-call telemetry and applies a USD 0.01 reserve when provider usage is unavailable."
+}

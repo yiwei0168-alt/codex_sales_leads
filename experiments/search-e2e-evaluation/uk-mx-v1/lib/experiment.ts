@@ -45,8 +45,9 @@ export function validateExperimentConfig(): void {
     throw new Error("Frozen sample invariants do not equal 8 cells / 240 slots per arm / 480 total slots");
   }
   if (config.cost.hardBudgetUsd !== 100
-    || JSON.stringify(config.cost.reviewThresholdUsd) !== JSON.stringify([20, 40, 60, 80])) {
-    throw new Error("Frozen budget invariants do not equal USD 100 with 20/40/60/80 checkpoints");
+    || JSON.stringify(config.cost.reviewThresholdUsd) !== JSON.stringify([20, 40, 60, 80])
+    || config.cost.unknownUsageCallReserveUsd !== 0.01) {
+    throw new Error("Frozen budget invariants do not equal USD 100, 20/40/60/80 checkpoints and USD 0.01 unknown-usage reserve");
   }
   const ids = new Set(config.executionOrder.map((cell) => cell.cellId));
   if (ids.size !== 8 || config.executionOrder.some((cell, index) => cell.sequence !== index + 1)) {

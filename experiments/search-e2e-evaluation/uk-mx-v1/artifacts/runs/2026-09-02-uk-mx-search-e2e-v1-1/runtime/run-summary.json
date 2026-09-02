@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-02-uk-mx-search-e2e-v1-1",
+  "experimentId": "search-e2e-eval-v1.0.1",
+  "status": "created",
+  "createdAt": "2026-09-02T03:23:01.401Z",
+  "updatedAt": "2026-09-02T03:23:01.404Z",
+  "preflightChecks": [
+    {
+      "name": "prior-v1.0.0-adjustment",
+      "completedAt": "2026-09-02T03:23:01.404Z",
+      "detail": {
+        "amountUsd": 0.01,
+        "attempts": 2
+      }
+    }
+  ],
+  "completedArmKeys": [],
+  "completedCellIds": [],
+  "reportedBudgetThresholdsUsd": [],
+  "anomalies": [],
+  "costEvents": [
+    {
+      "eventId": "preflight:prior-v1.0.0-adjustment",
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "stage": "prior-preflight-adjustment",
+      "provider": "kimi",
+      "requestedModel": "kimi-k2.6",
+      "actualModel": "kimi-k2.6",
+      "startedAt": "2026-09-02T03:23:01.401Z",
+      "completedAt": "2026-09-02T03:23:01.401Z",
+      "latencyMs": 0,
+      "attempts": 2,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0.01,
+      "volume": {
+        "inputItems": 2,
+        "rawOutputItems": 1,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "timeout": 1,
+          "schemaInvalid": 1
+        }
+      },
+      "notes": [
+        "Conservative budget allowance for v1.0.0 preflight attempts whose provider usage was not retained."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0.01,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    }
+  ]
+}

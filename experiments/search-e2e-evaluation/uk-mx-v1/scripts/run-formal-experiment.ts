@@ -28,7 +28,7 @@ import { artifactRunRoot, loadRunState, rawRunRoot, readJson, saveRunState, writ
 nextEnv.loadEnvConfig(process.cwd());
 const rateCard = rateCardJson as ExperimentRateCard;
 const experimentRoot = path.resolve("experiments/search-e2e-evaluation/uk-mx-v1");
-const frozenTag = "search-e2e-eval-v1.0.1-frozen";
+const frozenTag = "search-e2e-eval-v1.0.2-frozen";
 
 const frozenFiles = [
   "PROTOCOL.md", "README.md", "config/experiment.v1.0.0.json", "config/gemini-control-prompt.md",
@@ -41,7 +41,8 @@ const frozenFiles = [
   "../../../config/lead-workflow/end-to-end-v2.0.0.json",
   "../../../config/lead-workflow/runtime-policy-v3.0.0.json",
   "../../../config/lead-workflow/cost-quality-policy-v3.0.0.json",
-  "../../../src/lib/assistant/intent-agent.ts", "../../../src/lib/leads/workflow/hybrid-discovery-executor.ts",
+  "../../../src/lib/assistant/intent-agent.ts", "../../../src/lib/assistant/types.ts",
+  "../../../src/lib/leads/workflow/hybrid-discovery-executor.ts",
   "../../../src/lib/leads/workflow/discovery.ts", "../../../src/lib/leads/workflow/evidence-correction-agent.ts",
   "../../../src/lib/leads/workflow/qualification-agent.ts", "../../../src/lib/leads/workflow/schemas.ts",
   "../../../src/providers/discovery.ts", "../../../src/providers/tavily.ts",
@@ -89,18 +90,39 @@ function hasPreflightCheck(state: FormalRunState, name: string): boolean {
   return state.preflightChecks.some((item) => item.name === name);
 }
 
+function appendRecordedCostEvents(state: FormalRunState, events: ExperimentCostEvent[]): void {
+  const knownEventIds = new Set(state.costEvents.map((item) => item.eventId));
+  for (const event of events) {
+    let eventId = event.eventId;
+    let repeat = 1;
+    while (knownEventIds.has(eventId)) eventId = `${event.eventId}:repeat-${++repeat}`;
+    knownEventIds.add(eventId);
+    state.costEvents.push(eventId === event.eventId ? event : { ...event, eventId,
+      notes: [...(event.notes ?? []), `Repeated call; base event ${event.eventId}.`] });
+  }
+}
+
 async function checkpointPreflight(state: FormalRunState, name: string, events: ExperimentCostEvent[],
   detail: Record<string, unknown>, blindJudgeModel?: string): Promise<void> {
   const unpriced = events.filter((item) => item.budgetCostUsd === null);
   if (unpriced.length > 0) {
     throw new Error(`Preflight has unpriced events: ${unpriced.map((item) => item.eventId).join(", ")}`);
   }
-  const knownEventIds = new Set(state.costEvents.map((item) => item.eventId));
-  state.costEvents.push(...events.filter((item) => !knownEventIds.has(item.eventId)));
+  appendRecordedCostEvents(state, events);
   if (!hasPreflightCheck(state, name)) {
     state.preflightChecks.push({ name, completedAt: new Date().toISOString(), detail });
   }
   if (blindJudgeModel) state.blindJudgeModel = blindJudgeModel;
+  await saveRunState(state);
+}
+
+async function checkpointPreflightFailure(state: FormalRunState, name: string, events: ExperimentCostEvent[],
+  detail: string): Promise<void> {
+  const unpriced = events.filter((item) => item.budgetCostUsd === null);
+  if (unpriced.length > 0) throw new Error(`Failed preflight call is unpriced: ${unpriced.map((item) => item.eventId).join(", ")}`);
+  appendRecordedCostEvents(state, events);
+  state.anomalies.push({ at: new Date().toISOString(), severity: "warning",
+    code: `preflight-${name}-failed`, detail: detail.slice(0, 1_000) });
   await saveRunState(state);
 }
 
@@ -163,37 +185,50 @@ async function runPreflight(): Promise<void> {
   missing.push(...discoveryStatus.filter((item) => !item.configured).map((item) => item.apiKeyEnv));
   if (missing.length > 0) throw new Error(`Preflight missing required environment variables: ${[...new Set(missing)].join(", ")}`);
 
-  if (!hasPreflightCheck(state, "prior-v1.0.0-adjustment")) {
-    await checkpointPreflight(state, "prior-v1.0.0-adjustment", [preflightEvent({
-      eventId: "preflight:prior-v1.0.0-adjustment", runId: state.runId,
+  if (!hasPreflightCheck(state, "prior-before-v1.0.2-adjustment")) {
+    await checkpointPreflight(state, "prior-before-v1.0.2-adjustment", [preflightEvent({
+      eventId: "preflight:prior-before-v1.0.2-adjustment", runId: state.runId,
       ledger: "product-e2e-arm", arm: "product-e2e", stage: "prior-preflight-adjustment", provider: "kimi",
       requestedModel: "kimi-k2.6", actualModel: "kimi-k2.6", startedAt: state.createdAt,
-      completedAt: state.createdAt, latencyMs: 0, attempts: 2, retries: 0, fallbackUsed: false, status: "completed",
+      completedAt: state.createdAt, latencyMs: 0, attempts: 3, retries: 0, fallbackUsed: false, status: "completed",
       usage: {}, accountCashCostUsd: EXPERIMENT_CONFIG.cost.priorPreflightAdjustmentUsd,
-      volume: { inputItems: 2, rawOutputItems: 1, validOutputItems: 0, downstreamUsedItems: 0,
-        discardedReasonCounts: { timeout: 1, schemaInvalid: 1 } },
-      notes: ["Conservative budget allowance for v1.0.0 preflight attempts whose provider usage was not retained."]
-    })], { amountUsd: EXPERIMENT_CONFIG.cost.priorPreflightAdjustmentUsd, attempts: 2 });
+      volume: { inputItems: 3, rawOutputItems: 2, validOutputItems: 0, downstreamUsedItems: 0,
+        discardedReasonCounts: { timeout: 1, schemaInvalid: 1, fallback: 1 } },
+      notes: ["Conservative budget allowance for v1.0.0 and v1.0.1 Kimi preflight attempts whose usage was not retained."]
+    })], { amountUsd: EXPERIMENT_CONFIG.cost.priorPreflightAdjustmentUsd, attempts: 3 });
   }
   const plan = canadaPlan("distribution");
   if (!hasPreflightCheck(state, "kimi-intent")) {
     const intentStarted = new Date().toISOString();
     const intent = await planAssistantRequest(plan.userRequest);
     const intentCompleted = new Date().toISOString();
-    if (!intent.leadPlan || intent.plannerSource === "deterministic-fallback") throw new Error("Kimi intent preflight failed");
-    const sameRoles = intent.leadPlan.roles.length === plan.roles.length
-      && [...intent.leadPlan.roles].sort().join("|") === [...plan.roles].sort().join("|");
-    if (intent.leadPlan.countryCode !== plan.countryCode || intent.leadPlan.targetCount !== plan.targetCount || !sameRoles) {
-      throw new Error("Kimi intent preflight diverged from the requested country, count or roles");
-    }
     const intentEvents = (intent.plannerCalls ?? []).map((call, index) => preflightEvent({
       eventId: `preflight:intent:${index + 1}`, runId: state.runId,
       ledger: "product-e2e-arm", arm: "product-e2e", stage: "preflight-intent", provider: "kimi",
       requestedModel: call.requestedModel, actualModel: call.actualModel, startedAt: intentStarted,
       completedAt: intentCompleted, latencyMs: call.latencyMs, attempts: call.attempts, retries: call.retries,
-      fallbackUsed: false, status: "completed", usage: { inputTokens: call.inputTokens,
-        cachedInputTokens: call.cachedInputTokens, outputTokens: call.outputTokens }, volume: { inputItems: 1,
-        rawOutputItems: 1, validOutputItems: 1, downstreamUsedItems: 1, discardedReasonCounts: {} } }));
+      fallbackUsed: false, status: call.succeeded === false ? "failed" : "completed",
+      usage: { inputTokens: call.inputTokens, cachedInputTokens: call.cachedInputTokens,
+        outputTokens: call.outputTokens },
+      ...(call.usageAvailable === false ? { accountCashCostUsd: EXPERIMENT_CONFIG.cost.unknownUsageCallReserveUsd } : {}),
+      volume: { inputItems: 1, rawOutputItems: call.succeeded === false ? 0 : 1,
+        validOutputItems: call.succeeded === false ? 0 : 1,
+        downstreamUsedItems: call.succeeded === false ? 0 : 1,
+        discardedReasonCounts: call.succeeded === false ? { providerFailure: 1 } : {} },
+      notes: [...(call.failureReason ? [call.failureReason] : []),
+        ...(call.usageAvailable === false ? ["Provider usage unavailable; conservative reserve applied."] : [])] }));
+    if (!intent.leadPlan || intent.plannerSource === "deterministic-fallback") {
+      const detail = intent.warnings.join(" | ") || "Kimi intent preflight failed";
+      await checkpointPreflightFailure(state, "kimi-intent", intentEvents, detail);
+      throw new Error(detail);
+    }
+    const sameRoles = intent.leadPlan.roles.length === plan.roles.length
+      && [...intent.leadPlan.roles].sort().join("|") === [...plan.roles].sort().join("|");
+    if (intent.leadPlan.countryCode !== plan.countryCode || intent.leadPlan.targetCount !== plan.targetCount || !sameRoles) {
+      const detail = "Kimi intent preflight diverged from the requested country, count or roles";
+      await checkpointPreflightFailure(state, "kimi-intent-semantics", intentEvents, detail);
+      throw new Error(detail);
+    }
     await checkpointPreflight(state, "kimi-intent", intentEvents,
       { model: intent.plannerModel, source: intent.plannerSource, semanticsMatch: true });
   }
@@ -405,15 +440,7 @@ async function runCell(cellId: string): Promise<void> {
     return stateWriteQueue;
   };
   const onCostEvents = (events: ExperimentCostEvent[]): Promise<void> => enqueueStateWrite(() => {
-    const knownEventIds = new Set(state.costEvents.map((item) => item.eventId));
-    for (const event of events) {
-      let eventId = event.eventId;
-      let repeat = 1;
-      while (knownEventIds.has(eventId)) eventId = `${event.eventId}:repeat-${++repeat}`;
-      knownEventIds.add(eventId);
-      state.costEvents.push(eventId === event.eventId ? event : { ...event, eventId,
-        notes: [...(event.notes ?? []), `Repeated call while resuming an incomplete arm; base event ${event.eventId}.`] });
-    }
+    appendRecordedCostEvents(state, events);
   });
   const executeArm = async (arm: "gemini-native" | "product-e2e") => {
     const armKey = `${cell.cellId}:${arm}`;

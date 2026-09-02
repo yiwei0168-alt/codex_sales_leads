@@ -44,6 +44,9 @@ export interface IntentPlan {
     latencyMs: number;
     attempts: number;
     retries: number;
+    succeeded?: boolean;
+    usageAvailable?: boolean;
+    failureReason?: string;
   }>;
   warnings: string[];
 }

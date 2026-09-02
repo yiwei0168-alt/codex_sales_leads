@@ -125,20 +125,26 @@ export async function runProductCell(cell: ExperimentCell, options: {
   const intentStarted = new Date().toISOString();
   const intent = await planAssistantRequest(frozenPlan.userRequest);
   const intentCompleted = new Date().toISOString();
-  if (intent.plannerSource === "deterministic-fallback" || !intent.leadPlan) {
-    throw new Error(`${cell.cellId} Kimi intent step did not return a usable model-generated lead plan`);
-  }
-  if (intent.leadPlan.countryCode !== frozenPlan.countryCode || intent.leadPlan.targetCount !== 30
-    || !sameRoleSet(intent.leadPlan.roles, frozenPlan.roles)) {
-    throw new Error(`${cell.cellId} Kimi intent plan diverged from the frozen task semantics`);
-  }
   for (const [index, call] of (intent.plannerCalls ?? []).entries()) {
     await recordCostEvents([event({ eventId: `${cell.cellId}:intent:${index + 1}`, cellId: cell.cellId, stage: "intent",
       provider: "kimi", requestedModel: call.requestedModel, actualModel: call.actualModel,
       startedAt: intentStarted, completedAt: intentCompleted, latencyMs: call.latencyMs,
-      attempts: call.attempts, retries: call.retries, fallbackUsed: false, status: "completed",
+      attempts: call.attempts, retries: call.retries, fallbackUsed: false,
+      status: call.succeeded === false ? "failed" : "completed",
       usage: { inputTokens: call.inputTokens, cachedInputTokens: call.cachedInputTokens,
-        outputTokens: call.outputTokens }, volume: volume(1, 1, 1, 1) })]);
+        outputTokens: call.outputTokens },
+      ...(call.usageAvailable === false ? { accountCashCostUsd: EXPERIMENT_CONFIG.cost.unknownUsageCallReserveUsd } : {}),
+      volume: volume(1, call.succeeded === false ? 0 : 1, call.succeeded === false ? 0 : 1,
+        call.succeeded === false ? 0 : 1, call.succeeded === false ? { providerFailure: 1 } : {}),
+      notes: [...(call.failureReason ? [call.failureReason] : []),
+        ...(call.usageAvailable === false ? ["Provider usage unavailable; conservative reserve applied."] : [])] })]);
+  }
+  if (intent.plannerSource === "deterministic-fallback" || !intent.leadPlan) {
+    throw new Error(`${cell.cellId} Kimi intent step did not return a usable model-generated lead plan: ${intent.warnings.join(" | ")}`);
+  }
+  if (intent.leadPlan.countryCode !== frozenPlan.countryCode || intent.leadPlan.targetCount !== 30
+    || !sameRoleSet(intent.leadPlan.roles, frozenPlan.roles)) {
+    throw new Error(`${cell.cellId} Kimi intent plan diverged from the frozen task semantics`);
   }
   warnings.push(...intent.warnings);
   const plan: LeadSearchPlan = { ...intent.leadPlan, userRequest: frozenPlan.userRequest,

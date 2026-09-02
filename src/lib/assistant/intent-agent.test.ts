@@ -28,7 +28,7 @@ describe("Kimi intent and planning agent", () => {
     expect(result.plannerSource).toBe("kimi-light");
     expect(result.plannerCalls).toEqual([expect.objectContaining({ requestedModel: "kimi-k2.6",
       actualModel: "kimi-k3", inputTokens: 100, cachedInputTokens: 40, outputTokens: 20, totalTokens: 120,
-      attempts: 1, retries: 0 })]);
+      attempts: 1, retries: 0, succeeded: true, usageAvailable: true })]);
   });
 
   it("turns low-confidence classifications into a follow-up question", async () => {
@@ -44,6 +44,19 @@ describe("Kimi intent and planning agent", () => {
     vi.stubEnv("KIMI_API_KEY", "");
     const result = await planAssistantRequest("WR3000 支持哪些无线协议？");
     expect(result).toMatchObject({ intent: "knowledge-question", plannerSource: "deterministic-fallback" });
+  });
+
+  it("preserves failed-call telemetry when Kimi falls back", async () => {
+    vi.stubEnv("KIMI_API_KEY", "test-key");
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({
+      model: "kimi-k2.6", error: { message: "diagnostic failure" },
+    }), { status: 400 }));
+    const result = await planAssistantRequest("Find 2 distributors in Canada", [], fetchMock);
+    expect(result).toMatchObject({ plannerSource: "deterministic-fallback",
+      plannerCalls: [expect.objectContaining({ requestedModel: "kimi-k2.6", actualModel: "kimi-k2.6",
+        succeeded: false, usageAvailable: false, attempts: 1, retries: 0,
+        failureReason: "diagnostic failure" })] });
+    expect(result.warnings.join(" ")).toContain("diagnostic failure");
   });
 
   it("uses K3 only when the light Kimi model identifies a materially complex planning task", async () => {
