@@ -1,21 +1,21 @@
 {
   "schemaVersion": 1,
-  "experimentId": "search-e2e-eval-v1.0.6",
-  "runId": "2026-09-02-uk-mx-search-e2e-v1-6",
-  "createdAt": "2026-09-02T03:51:29.341Z",
-  "requiredGitTag": "search-e2e-eval-v1.0.6-frozen",
+  "experimentId": "search-e2e-eval-v1.0.7",
+  "runId": "2026-09-02-uk-mx-search-e2e-v1-7",
+  "createdAt": "2026-09-02T03:56:30.615Z",
+  "requiredGitTag": "search-e2e-eval-v1.0.7-frozen",
   "files": [
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/PROTOCOL.md",
-      "sha256": "02c2d2ee684c98dd0b7f6d085013704be6571fc9fdfa50a2ecd539f77089cba6"
+      "sha256": "a92bc90a236955b8aea08abf47f10ccb3c42d46dee3cd07f5faf1dd499db0b31"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/README.md",
-      "sha256": "59f8e31688cda6813c5f767e503254bbc5bac4923903341ebfa75bda4d663e28"
+      "sha256": "ba9e7b8a78729f8bd26f56aef5fca4b859ae001947da41076f39ab9d34a5e801"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/config/experiment.v1.0.0.json",
-      "sha256": "ef0ae4e32fd7eda9c6f47ccf674454ce27276d9a536d2f136916100098722d80"
+      "sha256": "13bceca97e794d2182f794c35227dd312a3542941e6ffe7c52eb6560e8cae930"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/config/gemini-control-prompt.md",
@@ -51,7 +51,7 @@
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/experiment.ts",
-      "sha256": "1047961347b9c85a9063847eaa02567f98b55ee6ee249e789a122089101b985d"
+      "sha256": "a600803a8e08bbc883684de6c0077144ad977dc83206a694aeef752fd61b106d"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/product-cell.ts",
@@ -67,7 +67,7 @@
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/scripts/run-formal-experiment.ts",
-      "sha256": "29832142127ee99b49c3019bffa80dbef2d53cfd587c0e82534e6cead175809b"
+      "sha256": "8bf9be2a187a0691d4f9939c5d80c3d01a030f19f05b0ad9b7fde8df1b857500"
     },
     {
       "path": "config/lead-search/hybrid-search-v1.0.0.json",

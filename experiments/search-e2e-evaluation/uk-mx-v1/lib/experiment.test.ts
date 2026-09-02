@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { intentRolesStayWithinCategory } from "./experiment";
+import { experimentCells, intentRolesStayWithinCategory, leadPlanForCell } from "./experiment";
 
 describe("formal experiment intent normalization", () => {
   it("accepts one or all roles inside a frozen category", () => {
@@ -11,5 +11,13 @@ describe("formal experiment intent normalization", () => {
   it("rejects empty or out-of-category role output", () => {
     expect(intentRolesStayWithinCategory([], ["Distributor", "VAD"])).toBe(false);
     expect(intentRolesStayWithinCategory(["Distributor", "Retailer"], ["Distributor", "VAD"])).toBe(false);
+  });
+
+  it("keeps formal intent prompts on the positive frozen boundary", () => {
+    for (const cell of experimentCells()) {
+      const prompt = leadPlanForCell(cell).userRequest;
+      expect(prompt).toContain(cell.categoryLabel);
+      expect(prompt).not.toMatch(/agent|brand owner|oem|odm|agente|propietario de marca/i);
+    }
   });
 });

@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-02-uk-mx-search-e2e-v1-6",
+  "experimentId": "search-e2e-eval-v1.0.6",
+  "status": "failed-before-formal-cells",
+  "failedStage": "kimi-intent-semantics",
+  "error": "Kimi again echoed Brand Owner after it was named inside a negative user-message instruction.",
+  "returnedSemantics": {
+    "countryCode": "CA",
+    "targetCount": 2,
+    "objective": "new-market",
+    "roles": ["Distributor", "VAD", "Brand Owner"]
+  },
+  "formalCellsStarted": 0,
+  "formalSlotsConsumed": 0,
+  "measuredCall": {
+    "requestedModel": "kimi-k2.6",
+    "actualModel": "kimi-k2.6",
+    "inputTokens": 538,
+    "cachedInputTokens": 538,
+    "outputTokens": 1246,
+    "latencyMs": 34976,
+    "attempts": 1,
+    "retries": 0,
+    "budgetCostUsd": 0.005047074260272156
+  },
+  "budgetTreatment": {
+    "carriedIntoV1_0_7Usd": 0.04728,
+    "basis": "USD 0.042232 prior carry-forward plus measured v1.0.6 list-price usage, rounded upward."
+  },
+  "remediation": "v1.0.7 removes excluded special-role keywords from the formal user message and states only the positive frozen market/category boundary."
+}

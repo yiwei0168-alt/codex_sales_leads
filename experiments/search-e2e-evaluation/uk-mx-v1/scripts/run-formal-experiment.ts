@@ -28,7 +28,7 @@ import { artifactRunRoot, loadRunState, rawRunRoot, readJson, saveRunState, writ
 nextEnv.loadEnvConfig(process.cwd());
 const rateCard = rateCardJson as ExperimentRateCard;
 const experimentRoot = path.resolve("experiments/search-e2e-evaluation/uk-mx-v1");
-const frozenTag = "search-e2e-eval-v1.0.6-frozen";
+const frozenTag = "search-e2e-eval-v1.0.7-frozen";
 
 const frozenFiles = [
   "PROTOCOL.md", "README.md", "config/experiment.v1.0.0.json", "config/gemini-control-prompt.md",
@@ -131,7 +131,7 @@ function canadaPlan(category: "distribution" | "resale" | "retail" | "si-msp" = 
     : category === "resale" ? ["Reseller", "VAR", "Dealer"] as const
       : category === "retail" ? ["Retailer", "E-tailer"] as const : ["SI", "MSP"] as const;
   return { countryCode: "CA", countryName: "Canada", objective: "new-market", roles: [...roles], targetCount: 2,
-    queryLanguage: "en", userRequest: `Find and evaluate 2 companies in Canada whose primary role is ${roles.join("/")}. Do not search for contacts, agents, brand owners or OEM/ODM opportunities.`,
+    queryLanguage: "en", userRequest: `Find and evaluate 2 companies in Canada whose primary role is ${roles.join("/")}. Restrict the task to this market and category.`,
     opportunityTargets: [], coverageMode: "auto", verifiedOnly: false };
 }
 
@@ -185,18 +185,18 @@ async function runPreflight(): Promise<void> {
   missing.push(...discoveryStatus.filter((item) => !item.configured).map((item) => item.apiKeyEnv));
   if (missing.length > 0) throw new Error(`Preflight missing required environment variables: ${[...new Set(missing)].join(", ")}`);
 
-  if (!hasPreflightCheck(state, "prior-before-v1.0.6-adjustment")) {
-    await checkpointPreflight(state, "prior-before-v1.0.6-adjustment", [preflightEvent({
-      eventId: "preflight:prior-before-v1.0.6-adjustment", runId: state.runId,
+  if (!hasPreflightCheck(state, "prior-before-v1.0.7-adjustment")) {
+    await checkpointPreflight(state, "prior-before-v1.0.7-adjustment", [preflightEvent({
+      eventId: "preflight:prior-before-v1.0.7-adjustment", runId: state.runId,
       ledger: "product-e2e-arm", arm: "product-e2e", stage: "prior-preflight-adjustment", provider: "kimi",
       requestedModel: "kimi-k2.6", actualModel: "kimi-k2.6", startedAt: state.createdAt,
-      completedAt: state.createdAt, latencyMs: 0, attempts: 7, retries: 0, fallbackUsed: false, status: "completed",
+      completedAt: state.createdAt, latencyMs: 0, attempts: 8, retries: 0, fallbackUsed: false, status: "completed",
       usage: {}, accountCashCostUsd: EXPERIMENT_CONFIG.cost.priorPreflightAdjustmentUsd,
-      volume: { inputItems: 7, rawOutputItems: 6, validOutputItems: 2, downstreamUsedItems: 0,
+      volume: { inputItems: 8, rawOutputItems: 7, validOutputItems: 3, downstreamUsedItems: 0,
         discardedReasonCounts: { timeout: 1, schemaInvalid: 3, fallback: 1, overlyStrictSemanticGate: 1,
-          negatedSpecialRoleMisread: 1 } },
-      notes: ["Carries the v1.0.0-v1.0.5 Kimi preflight budget: USD 0.02 conservative allowance plus USD 0.0222303439 priced usage, rounded upward."]
-    })], { amountUsd: EXPERIMENT_CONFIG.cost.priorPreflightAdjustmentUsd, attempts: 7 });
+          negatedSpecialRoleMisread: 2 } },
+      notes: ["Carries the v1.0.0-v1.0.6 Kimi preflight budget: USD 0.02 conservative allowance plus USD 0.0272774182 priced usage, rounded upward."]
+    })], { amountUsd: EXPERIMENT_CONFIG.cost.priorPreflightAdjustmentUsd, attempts: 8 });
   }
   const plan = canadaPlan("distribution");
   if (!hasPreflightCheck(state, "kimi-intent")) {

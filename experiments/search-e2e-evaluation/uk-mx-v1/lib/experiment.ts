@@ -81,8 +81,8 @@ export function cellById(cellId: string): ExperimentCell {
 
 export function leadPlanForCell(cell: ExperimentCell): LeadSearchPlan {
   const userRequest = cell.primaryLanguage === "es"
-    ? `Busca y evalúa 30 empresas en ${cell.countryName} cuya función principal sea ${cell.categoryLabel}. Usa español y, cuando sea útil, inglés. No busques contactos, agentes, propietarios de marcas ni oportunidades OEM/ODM.`
-    : `Find and evaluate 30 companies in ${cell.countryName} whose primary role is ${cell.categoryLabel}. Do not search for contacts, agents, brand owners or OEM/ODM opportunities.`;
+    ? `Busca y evalúa 30 empresas en ${cell.countryName} cuya función principal sea ${cell.categoryLabel}. Limita la tarea a este mercado y esta categoría. Usa español y, cuando sea útil, inglés.`
+    : `Find and evaluate 30 companies in ${cell.countryName} whose primary role is ${cell.categoryLabel}. Restrict the task to this market and category.`;
   return { countryCode: cell.countryCode, countryName: cell.countryName, objective: "new-market",
     roles: [...cell.roles], targetCount: 30, queryLanguage: cell.primaryLanguage, userRequest,
     opportunityTargets: [], coverageMode: "auto", verifiedOnly: false };
