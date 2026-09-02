@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "search-e2e-blind-judge-output-v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["packetId", "isRealOperatingCompany", "operatesInTargetMarket", "supportedRoles", "primaryRole", "requestedCategoryMatch", "dimensions", "totalScore", "eligibility", "dimensionReasons", "unsupportedOrContradictoryClaims", "citationAlignment"],
+  "properties": {
+    "packetId": { "type": "string", "minLength": 8, "maxLength": 100 },
+    "isRealOperatingCompany": { "type": "boolean" },
+    "operatesInTargetMarket": { "type": "boolean" },
+    "supportedRoles": { "type": "array", "maxItems": 8, "items": { "type": "string", "maxLength": 80 } },
+    "primaryRole": { "type": "string", "maxLength": 80 },
+    "requestedCategoryMatch": { "type": "boolean" },
+    "dimensions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["productAndUseCaseFit", "channelAndBuyingInfluence", "sameRoleScaleAndCoverage", "executionAndEnablement", "opportunityAndRisk"],
+      "properties": {
+        "productAndUseCaseFit": { "type": "integer", "minimum": 0, "maximum": 50 },
+        "channelAndBuyingInfluence": { "type": "integer", "minimum": 0, "maximum": 15 },
+        "sameRoleScaleAndCoverage": { "type": "integer", "minimum": 0, "maximum": 15 },
+        "executionAndEnablement": { "type": "integer", "minimum": 0, "maximum": 10 },
+        "opportunityAndRisk": { "type": "integer", "minimum": 0, "maximum": 10 }
+      }
+    },
+    "totalScore": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "eligibility": { "type": "string", "enum": ["eligible", "research-required", "ineligible-for-current-task", "insufficient-evidence-for-recommendation"] },
+    "dimensionReasons": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["dimension", "reason", "evidenceIds"],
+        "properties": {
+          "dimension": { "type": "string" },
+          "reason": { "type": "string", "maxLength": 500 },
+          "evidenceIds": { "type": "array", "maxItems": 12, "items": { "type": "string", "maxLength": 100 } }
+        }
+      }
+    },
+    "unsupportedOrContradictoryClaims": { "type": "array", "maxItems": 12, "items": { "type": "string", "maxLength": 500 } },
+    "citationAlignment": { "type": "boolean" }
+  }
+}

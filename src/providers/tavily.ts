@@ -11,13 +11,15 @@ async function fetchWithRetry(
   init: RequestInit,
   maxAttempts: number,
   fetchImplementation: typeof fetch,
-): Promise<Response> {
+): Promise<{ response: Response; attempts: number }> {
   let lastError: unknown;
   for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
     if (init.signal?.aborted) throw init.signal.reason ?? new DOMException("Aborted", "AbortError");
     try {
       const response = await fetchImplementation(url, init);
-      if (![429, 500, 502, 503, 504].includes(response.status) || attempt === maxAttempts - 1) return response;
+      if (![429, 500, 502, 503, 504].includes(response.status) || attempt === maxAttempts - 1) {
+        return { response, attempts: attempt + 1 };
+      }
       lastError = new Error(`Retryable HTTP ${response.status}`);
       const retryAfterSeconds = Number(response.headers.get("retry-after"));
       const retryDelay = Number.isFinite(retryAfterSeconds) && retryAfterSeconds > 0
@@ -56,6 +58,9 @@ export interface TavilySearchResponse {
   responseTime?: number;
   creditsUsed: number;
   requestId?: string;
+  attempts?: number;
+  retries?: number;
+  latencyMs?: number;
 }
 
 export interface TavilyExtractResult {
@@ -68,6 +73,9 @@ export interface TavilyExtractResponse {
   failedUrls: string[];
   creditsUsed: number;
   requestId?: string;
+  attempts?: number;
+  retries?: number;
+  latencyMs?: number;
 }
 
 interface TavilyWireResponse {
@@ -99,12 +107,13 @@ export class TavilySearchProvider {
   }
 
   async search(input: TavilySearchInput, signal?: AbortSignal): Promise<TavilySearchResponse> {
+    const startedAt = Date.now();
     const apiKey = process.env.TAVILY_API_KEY?.trim();
     if (!apiKey) throw new ProviderUnavailableError(this.id, new Error("TAVILY_API_KEY is not configured"));
     const depth = input.searchDepth ?? "basic";
-    let response: Response;
+    let result: { response: Response; attempts: number };
     try {
-      response = await fetchWithRetry(`${this.baseUrl}/search`, {
+      result = await fetchWithRetry(`${this.baseUrl}/search`, {
         method: "POST",
         headers: { "content-type": "application/json", authorization: `Bearer ${apiKey}` },
         body: JSON.stringify({
@@ -121,6 +130,7 @@ export class TavilySearchProvider {
     } catch (error) {
       throw new ProviderUnavailableError(this.id, error);
     }
+    const { response, attempts } = result;
     const body = await response.json() as TavilyWireResponse & { detail?: unknown };
     if (!response.ok) throw new ProviderUnavailableError(this.id, new Error(`HTTP ${response.status}: ${JSON.stringify(body.detail ?? body)}`));
     return {
@@ -135,16 +145,21 @@ export class TavilySearchProvider {
       responseTime: body.response_time,
       creditsUsed: body.usage?.credits ?? (depth === "advanced" ? 2 : 1),
       requestId: body.request_id,
+      attempts,
+      retries: Math.max(0, attempts - 1),
+      latencyMs: Date.now() - startedAt,
     };
   }
 
   async extract(urls: string[], signal?: AbortSignal): Promise<TavilyExtractResponse> {
+    const startedAt = Date.now();
     const apiKey = process.env.TAVILY_API_KEY?.trim();
     if (!apiKey) throw new ProviderUnavailableError(this.id, new Error("TAVILY_API_KEY is not configured"));
-    if (urls.length === 0) return { results: [], failedUrls: [], creditsUsed: 0 };
-    let response: Response;
+    if (urls.length === 0) return { results: [], failedUrls: [], creditsUsed: 0,
+      attempts: 0, retries: 0, latencyMs: 0 };
+    let result: { response: Response; attempts: number };
     try {
-      response = await fetchWithRetry(`${this.baseUrl}/extract`, {
+      result = await fetchWithRetry(`${this.baseUrl}/extract`, {
         method: "POST",
         headers: { "content-type": "application/json", authorization: `Bearer ${apiKey}` },
         body: JSON.stringify({
@@ -160,6 +175,7 @@ export class TavilySearchProvider {
     } catch (error) {
       throw new ProviderUnavailableError(this.id, error);
     }
+    const { response, attempts } = result;
     const body = await response.json() as {
       results?: Array<{ url?: string; raw_content?: string }>;
       failed_results?: Array<{ url?: string } | string>;
@@ -173,6 +189,9 @@ export class TavilySearchProvider {
       failedUrls: (body.failed_results ?? []).flatMap((item) => typeof item === "string" ? [item] : item.url ? [item.url] : []),
       creditsUsed: body.usage?.credits ?? Math.ceil((body.results?.length ?? 0) / 5),
       requestId: body.request_id,
+      attempts,
+      retries: Math.max(0, attempts - 1),
+      latencyMs: Date.now() - startedAt,
     };
   }
 }

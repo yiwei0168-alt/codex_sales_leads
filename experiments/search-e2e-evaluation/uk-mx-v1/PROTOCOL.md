@@ -212,6 +212,8 @@ Gemini记录请求开始到冻结列表的实际墙钟时间。产品分别记�
 - `product-e2e-arm`；
 - `evaluation-overhead`：Gemini独有候选统一补证/评分与Claude盲审。
 
+正式实验预检产生的实际API费用同样计入上述对应成本账和100美元硬上限，不作为免费或账外成本。
+
 每次调用记录provider、requested/actual model、输入/输出/思考/缓存token、搜索/提取credits、请求数、延迟、重试、fallback、原始输出、有效输出、下游使用、丢弃原因和成本。
 
 同时报告：

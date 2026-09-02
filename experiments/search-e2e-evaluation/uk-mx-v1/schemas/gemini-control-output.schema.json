@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "search-e2e-gemini-control-output-v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["market", "category", "candidates"],
+  "properties": {
+    "market": { "type": "string", "minLength": 2, "maxLength": 120 },
+    "category": { "type": "string", "enum": ["distribution", "resale", "retail", "si-msp"] },
+    "candidates": {
+      "type": "array",
+      "maxItems": 30,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["rank", "companyName", "officialWebsite", "marketSignal", "roleSignal", "relevanceSignal", "evidenceUrls"],
+        "properties": {
+          "rank": { "type": "integer", "minimum": 1, "maximum": 30 },
+          "companyName": { "type": "string", "minLength": 1, "maxLength": 240 },
+          "officialWebsite": { "type": "string", "format": "uri", "maxLength": 2000 },
+          "marketSignal": { "type": "string", "minLength": 1, "maxLength": 600 },
+          "roleSignal": { "type": "string", "minLength": 1, "maxLength": 600 },
+          "relevanceSignal": { "type": "string", "minLength": 1, "maxLength": 600 },
+          "evidenceUrls": { "type": "array", "minItems": 1, "maxItems": 8, "items": { "type": "string", "format": "uri", "maxLength": 2000 } }
+        }
+      }
+    }
+  }
+}

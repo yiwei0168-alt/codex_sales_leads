@@ -156,6 +156,8 @@ export class DeepSeekProvider implements AiProvider {
           latencyMs: Math.round(performance.now() - startedAt),
           warnings,
           providerRequestId: body.id,
+          attempts: attempt + 1,
+          retries: attempt,
           usage: body.usage ? {
             promptTokens: body.usage.prompt_tokens ?? body.usage.input_tokens ?? 0,
             completionTokens: body.usage.completion_tokens ?? body.usage.output_tokens ?? 0,

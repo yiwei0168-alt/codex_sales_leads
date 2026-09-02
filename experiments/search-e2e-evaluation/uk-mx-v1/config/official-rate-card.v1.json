@@ -34,6 +34,27 @@
       "currency": "USD",
       "perMillionTokens": { "input": 5, "output": 25 },
       "source": "https://www.anthropic.com/claude/opus"
+    },
+    "claude-opus-4-8": {
+      "currency": "USD",
+      "perMillionTokens": { "input": 5, "output": 25 },
+      "source": "https://www.anthropic.com/research/claude-opus-4-8"
+    },
+    "gpt-5.6-terra": {
+      "currency": "USD",
+      "perMillionTokens": { "input": 2, "cachedInput": 0.2, "outputIncludingReasoning": 12 },
+      "source": "https://developers.openai.com/api/docs/models/compare"
+    },
+    "gpt-5.6-sol": {
+      "currency": "USD",
+      "perMillionTokens": { "input": 4, "cachedInput": 0.4, "outputIncludingReasoning": 20 },
+      "source": "https://developers.openai.com/api/docs/models/compare"
+    },
+    "text-embedding-v4": {
+      "currency": "USD",
+      "region": "China (Beijing)",
+      "perMillionTokens": { "input": 0.072, "output": 0 },
+      "source": "https://www.alibabacloud.com/help/en/model-studio/model-pricing"
     }
   },
   "searchAndExtraction": {
@@ -69,8 +90,8 @@
     }
   },
   "currencyConversion": {
-    "usdCny": null,
-    "source": null,
+    "usdCny": 6.7829,
+    "source": "CFETS/PBOC central parity published for 2026-09-02 and reported by iFinD: https://fe.10jqka.com.cn/20260902/c679515731.shtml",
     "freezeAtRunStart": true
   },
   "notes": [

@@ -425,7 +425,8 @@ export class LeadQualificationAgent {
       promptTokens: response.usage?.promptTokens ?? 0, completionTokens: response.usage?.completionTokens ?? 0,
       reasoningTokens: response.usage?.reasoningTokens ?? 0, totalTokens: response.usage?.totalTokens ?? 0,
       latencyMs: response.latencyMs, fallbackUsed: Boolean(response.requestedModelVersion
-        && (response.requestedModelVersion !== response.modelVersion || response.actualProviderId !== "deepseek")) });
+        && (response.requestedModelVersion !== response.modelVersion || response.actualProviderId !== "deepseek")),
+      attempts: response.attempts, retries: response.retries });
     const parsed = this.includeCooperationPaths
       ? leadAssessmentBatchSchema.parse(response.output)
       : leadAssessmentScoreOnlyBatchSchema.parse(response.output);
@@ -474,7 +475,8 @@ export class LeadQualificationAgent {
         promptTokens: escalation.usage?.promptTokens ?? 0, completionTokens: escalation.usage?.completionTokens ?? 0,
         reasoningTokens: escalation.usage?.reasoningTokens ?? 0, totalTokens: escalation.usage?.totalTokens ?? 0,
         latencyMs: escalation.latencyMs, fallbackUsed: Boolean(escalation.requestedModelVersion
-          && (escalation.requestedModelVersion !== escalation.modelVersion || escalation.actualProviderId !== "deepseek")) });
+          && (escalation.requestedModelVersion !== escalation.modelVersion || escalation.actualProviderId !== "deepseek")),
+        attempts: escalation.attempts, retries: escalation.retries });
       const raw = typeof escalation.output === "object" && escalation.output !== null && "assessments" in escalation.output
         ? (escalation.output as { assessments?: unknown[] }).assessments?.[0]
         : escalation.output;

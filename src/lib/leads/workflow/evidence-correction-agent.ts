@@ -188,7 +188,8 @@ export class LeadEvidenceCorrectionAgent {
   }
 
   private async supplement(candidates: LeadWorkflowCandidate[], plan: LeadSearchPlan) {
-    const output = new Array<{ candidate: LeadWorkflowCandidate; credits: number; warning?: string }>(candidates.length);
+    const output = new Array<{ candidate: LeadWorkflowCandidate; credits: number; attempts: number;
+      retries: number; latencyMs: number; warning?: string }>(candidates.length);
     let cursor = 0;
     const worker = async () => {
       while (true) {
@@ -196,7 +197,7 @@ export class LeadEvidenceCorrectionAgent {
         if (index >= candidates.length) return;
         const candidate = candidates[index];
         if (!needsSupplement(candidate)) {
-          output[index] = { candidate, credits: 0 };
+          output[index] = { candidate, credits: 0, attempts: 0, retries: 0, latencyMs: 0 };
           continue;
         }
         try {
@@ -216,11 +217,15 @@ export class LeadEvidenceCorrectionAgent {
               evidence: [...new Map([...candidate.evidence, ...added].map((item) => [item.url, item])).values()],
             },
             credits: response.creditsUsed,
+            attempts: response.attempts ?? 1,
+            retries: response.retries ?? 0,
+            latencyMs: response.latencyMs ?? 0,
             warning: added.length === 0 ? `Correction search found no usable supplemental evidence for ${candidate.domain}.` : undefined,
           };
         } catch (error) {
           const warning = `Correction search failed for ${candidate.domain}: ${error instanceof Error ? error.message : String(error)}`;
-          output[index] = { candidate: { ...candidate, evidenceWarnings: [...candidate.evidenceWarnings, warning] }, credits: 0, warning };
+          output[index] = { candidate: { ...candidate, evidenceWarnings: [...candidate.evidenceWarnings, warning] },
+            credits: 0, attempts: 0, retries: 0, latencyMs: 0, warning };
         }
       }
     };
@@ -228,6 +233,10 @@ export class LeadEvidenceCorrectionAgent {
     return {
       candidates: output.map((item) => item.candidate),
       creditsUsed: output.reduce((sum, item) => sum + item.credits, 0),
+      providerMetrics: { provider: "tavily" as const,
+        attempts: output.reduce((sum, item) => sum + item.attempts, 0),
+        retries: output.reduce((sum, item) => sum + item.retries, 0),
+        latencyMs: output.reduce((sum, item) => sum + item.latencyMs, 0) },
       warnings: output.flatMap((item) => item.warning ? [item.warning] : []),
     };
   }
@@ -508,6 +517,7 @@ export class LeadEvidenceCorrectionAgent {
     return {
       candidates: corrected,
       creditsUsed: supplemented.creditsUsed,
+      providerMetrics: supplemented.providerMetrics,
       usage: usageRecords,
       warnings: [...supplemented.warnings,
         ...corrected.flatMap((candidate) => candidate.correction.warnings.map((warning) => `${candidate.domain}: ${warning}`))],
@@ -520,6 +530,7 @@ export class LeadEvidenceCorrectionAgent {
       promptTokens: response.usage?.promptTokens ?? 0, completionTokens: response.usage?.completionTokens ?? 0,
       reasoningTokens: response.usage?.reasoningTokens ?? 0, totalTokens: response.usage?.totalTokens ?? 0,
       latencyMs: response.latencyMs, fallbackUsed: Boolean(response.requestedModelVersion
-        && (response.requestedModelVersion !== response.modelVersion || response.actualProviderId !== "deepseek")) });
+        && (response.requestedModelVersion !== response.modelVersion || response.actualProviderId !== "deepseek")),
+      attempts: response.attempts, retries: response.retries });
   }
 }

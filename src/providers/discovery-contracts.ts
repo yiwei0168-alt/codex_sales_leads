@@ -30,6 +30,7 @@ export interface DiscoveryUsage {
   inputTokens: number;
   outputTokens: number;
   totalTokens: number;
+  groundingQueries?: number;
 }
 
 export interface DiscoveryProviderResult {

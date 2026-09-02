@@ -119,6 +119,15 @@ function usage(value: Record<string, unknown> | undefined, paidSearchCredits = 1
     totalTokens: number(["total_tokens", "totalTokenCount"]) || inputTokens + outputTokens };
 }
 
+function groundingQueries(value: unknown): number {
+  const body = value as { steps?: Array<{ type?: string; arguments?: { queries?: unknown[] } }> };
+  const calls = (body.steps ?? []).filter((step) => step.type === "google_search_call");
+  const queries = new Set(calls.flatMap((step) => step.arguments?.queries ?? [])
+    .filter((query): query is string => typeof query === "string" && query.trim().length > 0)
+    .map((query) => query.trim()));
+  return queries.size || calls.length;
+}
+
 function item(providerId: DiscoveryProviderId, value: Omit<DiscoveryItem, "providerId" | "rank">,
   index: number): DiscoveryItem { return { providerId, rank: index + 1, ...value }; }
 
@@ -174,7 +183,8 @@ class GeminiDiscoveryProvider extends BaseProvider implements DiscoveryProvider 
       snippet: answerText.slice(0, 2_000), sourceKind: "grounded-answer",
     }, index));
     return result(this.id, query, startedAt, items, response.attempts, { answerText, sourceUrls: urls,
-      usage: usage(response.body.usage), rawResponse: response.body });
+      usage: { ...usage(response.body.usage), groundingQueries: groundingQueries(response.body) },
+      rawResponse: response.body });
   }
 }
 

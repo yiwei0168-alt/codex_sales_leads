@@ -2,10 +2,10 @@
 
 > 本文档由 `scripts/generate-lead-workflow-doc.mjs` 自动生成。请修改版本化配置或实现代码，不要直接编辑生成文件。
 
-- 运行时策略版本：3.0.0（基础流程定义 2.1.0）
+- 运行时策略版本：3.0.0（基础流程定义 2.2.0）
 - 评分策略版本：2.0.0
 - 成本质量策略版本：3.0.0
-- 配置指纹：`22e03bbe6698e686b224ff04fda6880adb5e2ede13cdfdddc6216a8ac58e2262`
+- 配置指纹：`7df1380c4fb61e5e766a9ed012d0f18f57ee7f721460c09f993658ce373b86fd`
 - 范围：From the user's natural-language market-development request and workspace context to ranked companies, editable cooperation paths, development strategy, outreach email, and private-memory learning from user edits.
 
 ## 一、从用户输入到最终输出的总流程
@@ -80,6 +80,7 @@ flowchart TD
 - Explicit opportunity targets
 - Coverage mode
 - Verified-only flag
+- Kimi requested/actual model and token/latency/retry usage
 - userId
 - workspaceId
 - actionId
@@ -92,6 +93,7 @@ flowchart TD
 - Agent, Brand Owner and OEM/ODM are explicit-only
 - Never route OEM/ODM supplier sourcing
 - Mark nominated companies for deep research
+- Record the light Kimi call and any K3 escalation separately instead of attributing only the final model
 
 失败与回退：Reject only structurally unusable requests; do not silently invent a target market or role.
 
@@ -115,6 +117,7 @@ flowchart TD
 输出：
 
 - LeadRagCitation[]
+- Embedding request/token/latency usage
 - CooperationPathMemory[]
 - OutreachKnowledge[]
 
@@ -182,7 +185,7 @@ flowchart TD
 - Discovery provider and lane provenance
 - Initial URLs/snippets
 - Light-gate pass/hold/reject
-- Per-call yield/cost/latency/retry/discard telemetry
+- Per-call request, grounding-query, yield, cost, latency, retry and discard telemetry
 
 策略：
 
@@ -217,6 +220,7 @@ flowchart TD
 - sourceType
 - freshnessStatus
 - evidenceRunId
+- Tavily search/extract credits, attempts, retries and latency
 
 策略：
 
@@ -703,32 +707,33 @@ flowchart TD
 | `config/lead-workflow/cost-quality-policy-v3.0.0.json` | `2e3d85b6ccd4a9fa13de39cdc66af32814c75b8b4a693cddd74638743b1def53` |
 | `config/lead-workflow/runtime-policy-v3.0.0.json` | `f58509eb101f842ae9c2e7b01484c8b2e429908166a13a502c5d8be477127989` |
 | `src/app/api/assistant/messages/route.ts` | `04bec90cc3d3f336195e8ab97a5ad4b1ec1e05b95606064225e098e94ed7a5cd` |
-| `src/lib/assistant/types.ts` | `e9c9004fa6a69805a8a17fc2a139e5612abd5f909c086df6e146c3d17568ef78` |
+| `src/lib/assistant/types.ts` | `baa03671cf85f1db164e2e7402098046c4d6b223cfa8e786e337166f8c8cd23f` |
 | `src/lib/assistant/intent.ts` | `cb77a2854f0058d92bf758ce4610d298bc94dde0157ade4f0bd3d05343fad168` |
-| `src/lib/assistant/intent-agent.ts` | `71a7a2e637266476f5f62610e3d8d186eb08a28539e395bcb740f97655713551` |
+| `src/lib/assistant/intent-agent.ts` | `ffd67b82174ab7947cbf2fb06b04a6f22d1217b00d78cd0dc44d8b1ff3063481` |
+| `src/lib/rag/openai-provider.ts` | `76cfe7272860d08d280f29fdbde3aae6bb614c81abb3a149d42943be5482bb0d` |
 | `src/lib/assistant/service.ts` | `1e2d9719d2937cc3081c3dbddf016d7cd665de1c1e9a88c775d10e3863ec00df` |
 | `src/lib/assistant/repository.ts` | `4243485613740437216b7867c0b8b420ea16d555f852397b436fd8a5f5414e67` |
 | `src/lib/leads/workflow/graph.ts` | `e64429c12083ed80715522fa6c8acfe9f0734314942b15f416a269b8f0fadd60` |
 | `src/lib/leads/workflow/jobs.ts` | `1287ad4fdedd2ca838e0592f82e062214465de01bc7c31f68d2529211f558c22` |
-| `src/lib/leads/workflow/rag-context.ts` | `d34f47db8308c4d89b6b81dfdcda530757b3af35a5d678725488335af127f410` |
-| `src/lib/leads/workflow/playbook.ts` | `ea73c0cfa94b987c68b054eae59acb77f5009e8415320aac3b99884c9731fcab` |
+| `src/lib/leads/workflow/rag-context.ts` | `1e1ee21e77b90731e849426cd7130de7d1e50ee6aec9f196e44cb642bf81387b` |
+| `src/lib/leads/workflow/playbook.ts` | `2789fdd7c634dd5ba9fe6033d5bfa31c56707ed51e6574eb599cc55f4e023a02` |
 | `src/lib/leads/workflow/playbook-cache.ts` | `945d3fc727312208650ee7b4e55e33860e7c54f7e3daa939f768952409a1803f` |
 | `src/lib/leads/workflow/hybrid-search-policy.ts` | `c5b094fb015a4678d1182d05910bc6ee26e2face535c1496cbc89b4a548aa735` |
 | `src/lib/leads/workflow/candidate-registry.ts` | `a7d9bc2b971f854d7e5e092c6a3b6ccbe7cece0f3b5c0e1eae31f9e247f46cc5` |
-| `src/lib/leads/workflow/discovery-gate.ts` | `9bc5189818a360da97b19f551cf3dd722d25f8f4fe068ce11837cd1b3f831134` |
-| `src/lib/leads/workflow/hybrid-discovery-executor.ts` | `9012bfb0f652d34c32dc506931a3884c8e25168c198863a7f64188a440b725c2` |
-| `src/lib/leads/workflow/discovery.ts` | `057e35469114b84cf04d0f35e1f03bf7740a1178a9122d92579fe8ff89b6bb16` |
+| `src/lib/leads/workflow/discovery-gate.ts` | `ad9bfbe030f97001009c076463ce4d37f1177f6b24789c33b34c91a1587264a2` |
+| `src/lib/leads/workflow/hybrid-discovery-executor.ts` | `3587a661047a2cbc3f257440202a8f0207bd07567be29c710cd8c72558364404` |
+| `src/lib/leads/workflow/discovery.ts` | `27e03b8f6b8d1d09d7f7040b8f6274cbd9484cb5af3ba96bf13a8921d3be168d` |
 | `src/lib/leads/global-search.ts` | `963d07622725531e72d7f1807d4228a23d59d6a320b5d1e508b602bcc05c65db` |
-| `src/lib/leads/workflow/evidence-correction-agent.ts` | `9f35d93f2913e6b77de3c988d8f2d44c9541e549441254fea5571f037dd22798` |
+| `src/lib/leads/workflow/evidence-correction-agent.ts` | `43fa4fae58a3ce0deb30c1c4aa0668856abd23cebf77521a49c23a1afd825c36` |
 | `src/lib/leads/workflow/evidence-packet.ts` | `1ca9577284952e245a8e8c51ae9fa82472fcbcf0b262ebaa83fc6463f379836f` |
-| `src/lib/leads/workflow/qualification-agent.ts` | `93d131fe3518a1713feb52e6b73acd82a463f22d9c6875db4f2471af9f1c18df` |
+| `src/lib/leads/workflow/qualification-agent.ts` | `00fe467e454c86b2389654fbeacc497fd033bb7b2acae6f52627bf03ee828384` |
 | `src/lib/leads/workflow/assessment-cache.ts` | `d7fd5fe0b350aa56eb9fcfb283c2c81a2de9564f88a3ef677631b82d81474fb3` |
 | `src/lib/leads/workflow/assessment-review-agent.ts` | `df3499c777bd541bb220adbfbdd7066c79c7b49053967b2ae96225c45345290d` |
-| `src/providers/deepseek.ts` | `9cb9825adf079109e19f287cb9b079ce4bb4cd55283eb8225a521b82fc6d0982` |
-| `src/providers/discovery-contracts.ts` | `9f874204184465ec30b8f448ee6f92c6e5dfb4bebf61a918f25da306e8ec3002` |
-| `src/providers/discovery.ts` | `585c24137daa89fd8e5abfb4b841dc0d9f66b68760505ec86bad75695bf8e1dc` |
+| `src/providers/deepseek.ts` | `c9bbe00521915dd27b6c20508cd062ffc494d8f449c10e1085ada48103ed877c` |
+| `src/providers/discovery-contracts.ts` | `219328f21ca094e5c96c12b9cd3e638a8244629d7692271ee6b86ea39166143e` |
+| `src/providers/discovery.ts` | `f1d6bde9cf94867496e86065e02485f15ecb374a95c6d771c21f9bc822931c66` |
 | `src/providers/resilient-ai.ts` | `3456780221fa361ca66142bd01bc2627c5aec194279fd040426d7f40a65c5b31` |
-| `src/providers/tavily.ts` | `5360b3bd415a0e53c13deb82c76b1718fc3e8990c54160f212b5df553ae9e377` |
+| `src/providers/tavily.ts` | `e601eb4eae582628dec99f03e9bcbb6fdf38dc68bcf52daf7cad8d58a2e31485` |
 | `src/lib/leads/workflow/handoff-assembler.ts` | `606736bdfcced8f3a476a58808b07c65867b75f948c46b66b21354e5102f3827` |
 | `src/lib/leads/workflow/persistence.ts` | `3f4af4bfc40298cc477994e56d33a6a7a7a356672b94ee0d8be4335c8c8e721f` |
 | `src/lib/sales/repository.ts` | `ba76e0227ec5c039bb8196df37322b24146b2d64a42af7e364e96dfd3dfdfef9` |
@@ -738,6 +743,8 @@ flowchart TD
 | `src/lib/outreach/repository.ts` | `9a70ae40ee817385f8bbbb9c9785ffc50efeb24eb4833c2e7fd8a8bfb77286ac` |
 | `src/lib/outreach/knowledge-repository.ts` | `59a023091f9adac80d4b502e1b4cf69b9d318bd5a7610112354fb95a8d802557` |
 | `db/migrations/033_hybrid_search_contribution.sql` | `6e002fe0a49bddd75853b6d13fdc5759b9f4b90653ffda47ccc6c8f4fddbb0d0` |
+| `experiments/search-e2e-evaluation/uk-mx-v1/lib/cost-ledger.ts` | `56ae24a73596594c06fc7222328d7934367997e63d6de624b399ae2dce6388dd` |
+| `experiments/search-e2e-evaluation/uk-mx-v1/scripts/run-formal-experiment.ts` | `3e740ceded82449a2256c92213d9c3cded6f8bf61893a5976dcea11ad5aef126` |
 | `src/lib/leads/workflow/evidence-budget.ts` | `db035da87b8896ae5a81b12744a072810de80f160cb472724d5cedbcf06037f9` |
 | `src/lib/leads/workflow/pdf-extraction-policy.ts` | `6d8847827f1e96eab570114bca33cd447eaa3e64d7246ee09a748f8e6d6ade03` |
 | `src/lib/leads/workflow/public-evidence-repository.ts` | `5dcbfe60487eeb5d2ccab4b6e3eac9529705b21005abaa599359c992e51c4b03` |

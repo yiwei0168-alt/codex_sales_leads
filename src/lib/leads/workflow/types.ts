@@ -391,6 +391,8 @@ export interface WorkflowModelUsage {
   totalTokens: number;
   latencyMs: number;
   fallbackUsed: boolean;
+  attempts?: number;
+  retries?: number;
 }
 
 export interface WorkflowStageMetric {

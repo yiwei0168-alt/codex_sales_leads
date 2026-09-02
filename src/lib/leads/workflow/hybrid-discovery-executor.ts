@@ -20,6 +20,8 @@ export interface HybridSearchCallTelemetry {
   existingCompanyHits: number;
   rejectedResults: number;
   paidSearchCredits: number;
+  requestCount: number;
+  groundingQueries: number;
   inputTokens: number;
   outputTokens: number;
   latencyMs: number;
@@ -175,7 +177,8 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
       if (!decision.run) {
         const skipped: HybridSearchCallTelemetry = { callKey, route: step, query: searchQuery, status: "skipped",
           rawResults: 0, normalizedCompanies: 0, newUniqueCompanies: 0, existingCompanyHits: 0, rejectedResults: 0,
-          paidSearchCredits: 0, inputTokens: 0, outputTokens: 0, latencyMs: 0, retryCount: 0,
+          paidSearchCredits: 0, requestCount: 0, groundingQueries: 0,
+          inputTokens: 0, outputTokens: 0, latencyMs: 0, retryCount: 0,
           fallbackUsed: false, discardedReasonCounts: { [decision.reason ?? "not-required"]: 1 }, items: [] };
         calls.push(skipped); await options.onCall?.(skipped); return;
       }
@@ -210,6 +213,7 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
         const completed: HybridSearchCallTelemetry = { callKey, route: step, query: searchQuery, status: "completed",
           rawResults: response.items.length, normalizedCompanies, newUniqueCompanies, existingCompanyHits,
           rejectedResults: response.items.length - normalizedCompanies, paidSearchCredits: response.usage.paidSearchCredits,
+          requestCount: response.requestCount, groundingQueries: response.usage.groundingQueries ?? 0,
           inputTokens: response.usage.inputTokens, outputTokens: response.usage.outputTokens, latencyMs: response.latencyMs,
           retryCount: response.retryCount, fallbackUsed: failedByTrack.has(trackKey), discardedReasonCounts: discarded, items };
         calls.push(completed); await options.onCall?.(completed);
@@ -218,7 +222,8 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
         noValueByTrack.set(trackKey, (noValueByTrack.get(trackKey) ?? 0) + 1);
         const failed: HybridSearchCallTelemetry = { callKey, route: step, query: searchQuery, status: "failed",
           rawResults: 0, normalizedCompanies: 0, newUniqueCompanies: 0, existingCompanyHits: 0, rejectedResults: 0,
-          paidSearchCredits: 0, inputTokens: 0, outputTokens: 0, latencyMs: 0, retryCount: 0,
+          paidSearchCredits: 0, requestCount: 0, groundingQueries: 0,
+          inputTokens: 0, outputTokens: 0, latencyMs: 0, retryCount: 0,
           fallbackUsed: false, discardedReasonCounts: { "provider-error": 1 }, items: [],
           errorMessage: error instanceof Error ? error.message : String(error) };
         warnings.push(`Hybrid discovery failed (${trackKey}/${step.provider}): ${failed.errorMessage}`);

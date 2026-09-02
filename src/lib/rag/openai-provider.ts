@@ -14,20 +14,42 @@ function getEmbeddingClient(): OpenAI {
 }
 
 export async function embedTexts(inputs: string[]): Promise<number[][]> {
-  if (inputs.length === 0) return [];
+  return (await embedTextsWithUsage(inputs)).embeddings;
+}
+
+export interface EmbeddingCallUsage {
+  model: string;
+  inputItems: number;
+  inputTokens: number;
+  totalTokens: number;
+  latencyMs: number;
+}
+
+export async function embedTextsWithUsage(inputs: string[]): Promise<{
+  embeddings: number[][];
+  usage: EmbeddingCallUsage[];
+}> {
+  if (inputs.length === 0) return { embeddings: [], usage: [] };
   const config = getRagConfig();
   const embeddings: number[][] = [];
+  const usage: EmbeddingCallUsage[] = [];
   // Alibaba Cloud text-embedding-v4 accepts at most 10 inputs per synchronous request.
   for (let offset = 0; offset < inputs.length; offset += 10) {
+    const startedAt = Date.now();
+    const batch = inputs.slice(offset, offset + 10);
     const response = await getEmbeddingClient().embeddings.create({
       model: config.embeddingModel,
-      input: inputs.slice(offset, offset + 10),
+      input: batch,
       dimensions: config.embeddingDimensions,
       encoding_format: "float",
     });
     embeddings.push(...response.data.sort((a, b) => a.index - b.index).map((item) => item.embedding));
+    usage.push({ model: response.model || config.embeddingModel, inputItems: batch.length,
+      inputTokens: response.usage?.prompt_tokens ?? response.usage?.total_tokens ?? 0,
+      totalTokens: response.usage?.total_tokens ?? response.usage?.prompt_tokens ?? 0,
+      latencyMs: Date.now() - startedAt });
   }
-  return embeddings;
+  return { embeddings, usage };
 }
 
 function buildContext(chunks: RetrievedChunk[]): string {

@@ -126,6 +126,14 @@ Fresh evidence collection now accepts explicit cold-start controls. Formal evalu
 
 This stage is implementation verification only: paid input/output volume, external latency and unit cost are `not-observed`. Type checking and 13 focused workflow tests pass. Expected savings come from eliminating unused path fields and avoiding experiment contamination; actual token and paid-search deltas will be measured by the UK/Mexico formal evaluation. The experiment must record zero historical evidence reads, zero private memory reads, score-only output utilization, and any model output rejected because it attempted to emit excluded fields.
 
+### Stage 5: formal-evaluation cost observability and hard budget gate (implementation verification)
+
+The UK/Mexico formal search evaluation now has three separately priced ledgers (`gemini-native-arm`, `product-e2e-arm`, and `evaluation-overhead`) and a USD 100 hard cap. Official list price is the conservative budget basis unless an observed account cash charge is available. Unknown model rates, missing Gemini grounding-query counts, and missing currency conversion no longer become zero; they block cost finalization.
+
+The runtime records light-Kimi and K3 calls separately, local-RAG embedding tokens, search-provider requests, Gemini grounding queries, Tavily search/extract credits and retries, DeepSeek requested/actual model tokens and retries, stage latency, raw/valid/downstream-used output, and discard reasons. Cost snapshots are generated at USD 20/40/60/80. A completion forecast above USD 100 pauses the next paid stage and requires a user decision; sample size and quality gates are never silently reduced.
+
+This stage is implementation verification only and has made no formal experimental calls. Type checking and 30 focused tests pass. The first real cells must measure provider output utilization, cost per requested/final/65+/75+ lead, retry waste, and market/category cost skew. The frozen experiment manifest and Git tag prevent post-start code, prompt, policy or rate-card drift.
+
 ## 持续优化事项
 
 | 优先级 | 工作流环节 | 可优化点 | 质量门禁 | 状态 |

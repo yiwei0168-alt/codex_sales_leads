@@ -38,6 +38,12 @@ const rawPlanSchema = z.object({
 interface KimiResponse {
   model?: string;
   choices?: Array<{ message?: { content?: string | null } }>;
+  usage?: {
+    prompt_tokens?: number;
+    completion_tokens?: number;
+    total_tokens?: number;
+    prompt_tokens_details?: { cached_tokens?: number };
+  };
   error?: { message?: string };
 }
 
@@ -113,7 +119,8 @@ async function invokeKimiIntent(options: {
   apiKey: string;
   fetchImplementation: typeof fetch;
   complexityCheck: boolean;
-}): Promise<{ raw: z.infer<typeof rawPlanSchema>; body: KimiResponse }> {
+}): Promise<{ raw: z.infer<typeof rawPlanSchema>; body: KimiResponse; call: NonNullable<IntentPlan["plannerCalls"]>[number] }> {
+  const startedAt = Date.now();
   const requestBody = JSON.stringify({
     model: options.model,
     response_format: { type: "json_object" },
@@ -153,7 +160,9 @@ async function invokeKimiIntent(options: {
   });
   let body: KimiResponse = {};
   let status = 500;
+  let attempts = 0;
   for (let attempt = 0; attempt < 3; attempt += 1) {
+    attempts = attempt + 1;
     const response = await options.fetchImplementation(`${kimiBaseUrl()}/chat/completions`, {
       method: "POST",
       headers: { authorization: `Bearer ${options.apiKey}`, "content-type": "application/json" },
@@ -175,7 +184,18 @@ async function invokeKimiIntent(options: {
     const returnedKeys = parsed && typeof parsed === "object" ? Object.keys(parsed).slice(0, 12).join(",") : "none";
     throw new Error(`Kimi plan schema invalid (intent=${returnedIntent}; keys=${returnedKeys}): ${validated.error.issues[0]?.message ?? "invalid JSON"}`);
   }
-  return { raw: validated.data, body };
+  return { raw: validated.data, body, call: {
+    requestedModel: options.model,
+    actualModel: body.model ?? options.model,
+    inputTokens: body.usage?.prompt_tokens ?? 0,
+    cachedInputTokens: body.usage?.prompt_tokens_details?.cached_tokens ?? 0,
+    outputTokens: body.usage?.completion_tokens ?? 0,
+    totalTokens: body.usage?.total_tokens
+      ?? (body.usage?.prompt_tokens ?? 0) + (body.usage?.completion_tokens ?? 0),
+    latencyMs: Date.now() - startedAt,
+    attempts,
+    retries: Math.max(0, attempts - 1),
+  } };
 }
 
 export async function planAssistantRequest(
@@ -193,6 +213,7 @@ export async function planAssistantRequest(
     const selected = light.raw.requires_k3_planning && lightModel !== complexModel
       ? await invokeKimiIntent({ content, history, model: complexModel, apiKey, fetchImplementation,
         complexityCheck: false }) : light;
+    const plannerCalls = selected === light ? [light.call] : [light.call, selected.call];
     const { raw, body } = selected;
     const model = body.model ?? (selected === light ? lightModel : complexModel);
     const plannerSource = selected === light ? "kimi-light" as const : "kimi-k3" as const;
@@ -200,7 +221,7 @@ export async function planAssistantRequest(
       return {
         intent: "clarification", confidence: raw.confidence, externalQuestions: [],
         reply: raw.reply.trim() || "我还不能可靠判断你希望查询内部资料、结合外部信息，还是搜索销售线索。请补充目标和期望结果。",
-        plannerModel: model, plannerSource, warnings: [],
+        plannerModel: model, plannerSource, plannerCalls, warnings: [],
       };
     }
     const leadPlan = safeLeadPlan(raw, content);
@@ -208,7 +229,7 @@ export async function planAssistantRequest(
       return {
         intent: "clarification", confidence: raw.confidence, externalQuestions: [],
         reply: "我可以为你生成销售线索搜索计划。请补充目标国家或市场。",
-        plannerModel: model, plannerSource, warnings: [],
+        plannerModel: model, plannerSource, plannerCalls, warnings: [],
       };
     }
     const intent = raw.intent === "internal_knowledge" ? "knowledge-question"
@@ -220,7 +241,7 @@ export async function planAssistantRequest(
       intent, confidence: raw.confidence,
       internalQuestion: raw.internal_question.trim() || (intent === "knowledge-question" || intent === "hybrid-research" ? content : undefined),
       externalQuestions, leadPlan, reply: raw.reply.trim() || undefined,
-      plannerModel: model, plannerSource, warnings: [],
+      plannerModel: model, plannerSource, plannerCalls, warnings: [],
     };
   } catch (error) {
     const fallback = fallbackPlan(content);

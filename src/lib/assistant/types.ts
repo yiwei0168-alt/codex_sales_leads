@@ -34,6 +34,17 @@ export interface IntentPlan {
   reply?: string;
   plannerModel: string;
   plannerSource: "kimi-light" | "kimi-k3" | "deterministic-fallback";
+  plannerCalls?: Array<{
+    requestedModel: string;
+    actualModel: string;
+    inputTokens: number;
+    cachedInputTokens: number;
+    outputTokens: number;
+    totalTokens: number;
+    latencyMs: number;
+    attempts: number;
+    retries: number;
+  }>;
   warnings: string[];
 }
 

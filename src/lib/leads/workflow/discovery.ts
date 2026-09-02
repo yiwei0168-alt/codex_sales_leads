@@ -173,8 +173,12 @@ async function enrichOne(
   plan: LeadSearchPlan,
   tavily: TavilySearchProvider,
   options: LeadEvidenceCollectionOptions,
-): Promise<{ candidate: LeadWorkflowCandidate; credits: number; warning?: string }> {
+): Promise<{ candidate: LeadWorkflowCandidate; credits: number; requests: number; retries: number;
+  latencyMs: number; warning?: string }> {
   let credits = 0;
+  let requests = 0;
+  let retries = 0;
+  let latencyMs = 0;
   try {
     const reusable = options.allowReusableEvidence
       ? await findReusablePublicEvidence({
@@ -191,7 +195,8 @@ async function enrichOne(
         ? `Reusable evidence for ${candidate.domain} is stale; retained without automatic Web Search. User reverification is required.`
         : undefined;
       return { candidate: { ...candidate, evidence, evidenceWarnings: warning
-        ? [...candidate.evidenceWarnings, warning] : candidate.evidenceWarnings }, credits, warning };
+        ? [...candidate.evidenceWarnings, warning] : candidate.evidenceWarnings }, credits,
+      requests, retries, latencyMs, warning };
     }
     const official = await tavily.search({
       query: `site:${candidate.domain} company products solutions customers locations networking ${plan.countryName}`,
@@ -202,12 +207,18 @@ async function enrichOne(
       includeDomains: [candidate.domain],
     }, AbortSignal.timeout(45_000));
     credits += official.creditsUsed;
+    requests += official.attempts ?? 1;
+    retries += official.retries ?? 0;
+    latencyMs += official.latencyMs ?? 0;
     const officialResults = official.results.filter((item) => sameDomain(item.url, candidate.domain)).slice(0, 4);
     let extracted = { results: [] as Array<{ url: string; rawContent: string }>, creditsUsed: 0 };
     if (officialResults.length > 0) {
       const response = await tavily.extract(officialResults.map((item) => item.url), AbortSignal.timeout(45_000));
       extracted = { results: response.results, creditsUsed: response.creditsUsed };
       credits += response.creditsUsed;
+      requests += response.attempts ?? 1;
+      retries += response.retries ?? 0;
+      latencyMs += response.latencyMs ?? 0;
     }
     const rawByUrl = new Map(extracted.results.map((item) => [item.url, item.rawContent]));
     const added: LeadEvidenceItem[] = officialResults.map((result) => ({
@@ -237,11 +248,15 @@ async function enrichOne(
     return {
       candidate: { ...candidate, evidence: [...new Map([...candidate.evidence, ...added].map((item) => [item.url, item])).values()] },
       credits,
+      requests,
+      retries,
+      latencyMs,
       warning: added.length === 0 ? `No official-domain evidence was extracted for ${candidate.domain}.` : undefined,
     };
   } catch (error) {
     const warning = `Evidence collection failed for ${candidate.domain}: ${error instanceof Error ? error.message : String(error)}`;
-    return { candidate: { ...candidate, evidenceWarnings: [...candidate.evidenceWarnings, warning] }, credits, warning };
+    return { candidate: { ...candidate, evidenceWarnings: [...candidate.evidenceWarnings, warning] }, credits,
+      requests, retries, latencyMs, warning };
   }
 }
 
@@ -256,7 +271,8 @@ export async function collectLeadEvidence(
   candidates: LeadWorkflowCandidate[],
   plan: LeadSearchPlan,
   inputOptions: LeadEvidenceCollectionOptions = {},
-): Promise<{ candidates: LeadWorkflowCandidate[]; creditsUsed: number; warnings: string[] }> {
+): Promise<{ candidates: LeadWorkflowCandidate[]; creditsUsed: number; warnings: string[];
+  providerMetrics?: { provider: "tavily"; attempts: number; retries: number; latencyMs: number } }> {
   const options = {
     allowReusableEvidence: inputOptions.allowReusableEvidence ?? true,
     persistEvidence: inputOptions.persistEvidence ?? true,
@@ -281,5 +297,8 @@ export async function collectLeadEvidence(
     candidates: results.map((item) => item.candidate),
     creditsUsed: results.reduce((sum, item) => sum + item.credits, 0),
     warnings: results.flatMap((item) => item.warning ? [item.warning] : []),
+    providerMetrics: { provider: "tavily", attempts: results.reduce((sum, item) => sum + item.requests, 0),
+      retries: results.reduce((sum, item) => sum + item.retries, 0),
+      latencyMs: results.reduce((sum, item) => sum + item.latencyMs, 0) },
   };
 }

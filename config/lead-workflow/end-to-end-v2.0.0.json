@@ -1,6 +1,6 @@
 {
   "workflowKey": "cudy-sales-lead-end-to-end",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "status": "active",
   "scope": "From the user's natural-language market-development request and workspace context to ranked companies, editable cooperation paths, development strategy, outreach email, and private-memory learning from user edits.",
   "principles": [
@@ -93,6 +93,7 @@
     "src/lib/assistant/types.ts",
     "src/lib/assistant/intent.ts",
     "src/lib/assistant/intent-agent.ts",
+    "src/lib/rag/openai-provider.ts",
     "src/lib/assistant/service.ts",
     "src/lib/assistant/repository.ts",
     "src/lib/leads/workflow/graph.ts",
@@ -124,15 +125,17 @@
     "src/lib/outreach/claude-agent.ts",
     "src/lib/outreach/repository.ts",
     "src/lib/outreach/knowledge-repository.ts",
-    "db/migrations/033_hybrid_search_contribution.sql"
+    "db/migrations/033_hybrid_search_contribution.sql",
+    "experiments/search-e2e-evaluation/uk-mx-v1/lib/cost-ledger.ts",
+    "experiments/search-e2e-evaluation/uk-mx-v1/scripts/run-formal-experiment.ts"
   ],
   "stages": [
     {
       "id": "01-user-input",
       "name": "User request and editable business intent",
       "inputs": ["Natural-language request", "Target country/market", "Desired count", "Optional roles, products, constraints and nominated companies"],
-      "outputs": ["LeadSearchPlan", "Explicit opportunity targets", "Coverage mode", "Verified-only flag", "userId", "workspaceId", "actionId", "graphThreadId"],
-      "strategy": ["Preserve explicit user constraints", "Treat requested roles as search intent, not final classification", "Agent, Brand Owner and OEM/ODM are explicit-only", "Never route OEM/ODM supplier sourcing", "Mark nominated companies for deep research"],
+      "outputs": ["LeadSearchPlan", "Explicit opportunity targets", "Coverage mode", "Verified-only flag", "Kimi requested/actual model and token/latency/retry usage", "userId", "workspaceId", "actionId", "graphThreadId"],
+      "strategy": ["Preserve explicit user constraints", "Treat requested roles as search intent, not final classification", "Agent, Brand Owner and OEM/ODM are explicit-only", "Never route OEM/ODM supplier sourcing", "Mark nominated companies for deep research", "Record the light Kimi call and any K3 escalation separately instead of attributing only the final model"],
       "failure": "Reject only structurally unusable requests; do not silently invent a target market or role.",
       "downstream": ["Knowledge retrieval", "Workflow checkpoint identity"]
     },
@@ -140,7 +143,7 @@
       "id": "02-context-memory",
       "name": "Workspace context, shared knowledge and private memory",
       "inputs": ["LeadSearchPlan", "Shared product/company/industry RAG", "User-confirmed workspace knowledge", "Private cooperation-path memory", "Private email-style and edit memory"],
-      "outputs": ["LeadRagCitation[]", "CooperationPathMemory[]", "OutreachKnowledge[]"],
+      "outputs": ["LeadRagCitation[]", "Embedding request/token/latency usage", "CooperationPathMemory[]", "OutreachKnowledge[]"],
       "strategy": ["Keep shared and private stores physically/logically separated", "Give user-confirmed knowledge priority over ordinary retrieval", "Never let private edits contaminate the shared Cudy knowledge base"],
       "failure": "Pre-search gate blocks lead discovery when required product, company or industry context is missing or uncorroborated.",
       "downstream": ["Market playbook", "Path recommendation", "Development strategy", "Email style"]
@@ -158,7 +161,7 @@
       "id": "04-discovery",
       "name": "Multi-source candidate discovery",
       "inputs": ["Market playbook", "Role-family queries", "Target count", "Active hybrid-search policy"],
-      "outputs": ["Raw candidate names/domains", "Discovery provider and lane provenance", "Initial URLs/snippets", "Light-gate pass/hold/reject", "Per-call yield/cost/latency/retry/discard telemetry"],
+      "outputs": ["Raw candidate names/domains", "Discovery provider and lane provenance", "Initial URLs/snippets", "Light-gate pass/hold/reject", "Per-call request, grounding-query, yield, cost, latency, retry and discard telemetry"],
       "strategy": ["Run the confirmed category-specific provider tracks with shared real-time deduplication", "Use DeepSeek Flash only for a compact lightweight gate after direct homepage text; never upgrade this gate to Pro", "Stop a track after two consecutive no-value batches or when the quality pool reaches its task-sized target", "Tavily is forbidden in candidate discovery and remains evidence-only", "Provider score and rank cannot enter final value scoring", "Canonicalize domains and retain first, duplicate and assisted discovery provenance"],
       "failure": "A provider failure is isolated; same-tier route alternatives continue and are recorded. A gate-model failure holds candidates for evidence instead of inventing rejection or escalating capability.",
       "downstream": ["Fresh evidence acquisition"]
@@ -167,7 +170,7 @@
       "id": "05-evidence",
       "name": "Fresh public evidence acquisition",
       "inputs": ["Passed or held discovered candidates", "Official-site and targeted public search queries", "Evidence freshness policy"],
-      "outputs": ["Immutable evidence snapshot", "capturedAt", "contentHash", "sourceType", "freshnessStatus", "evidenceRunId"],
+      "outputs": ["Immutable evidence snapshot", "capturedAt", "contentHash", "sourceType", "freshnessStatus", "evidenceRunId", "Tavily search/extract credits, attempts, retries and latency"],
       "strategy": ["Reuse current public-evidence-library material before spending search credits", "Cold-start evaluation mode can explicitly disable both historical evidence reads and evidence-library writes while preserving fresh acquisition", "Old-run evidence is discovery-only until reacquired or validated", "Use Tavily only for targeted evidence discovery/extraction, not candidate discovery", "Prefer official and independent public sources", "Search for defining business actions, product tracks, target customers, size and cooperation signals"],
       "failure": "Failed retrieval becomes unknown; it never becomes a negative fact.",
       "downstream": ["Entity correction", "Role classification", "Freshness audit"]

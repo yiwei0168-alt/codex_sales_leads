@@ -1,4 +1,4 @@
-import { embedTexts } from "@/lib/rag/openai-provider";
+import { embedTextsWithUsage, type EmbeddingCallUsage } from "@/lib/rag/openai-provider";
 import { hybridSearch } from "@/lib/rag/repository";
 import type { LeadSearchPlan } from "@/lib/assistant/types";
 
@@ -43,9 +43,12 @@ function questions(plan: LeadSearchPlan): Array<{ collection: LeadRagCitation["c
   ];
 }
 
-export async function retrieveLeadRagContext(userId: string, plan: LeadSearchPlan): Promise<LeadRagCitation[]> {
+export async function retrieveLeadRagContext(userId: string, plan: LeadSearchPlan,
+  options: { onEmbeddingUsage?: (usage: EmbeddingCallUsage[]) => void | Promise<void> } = {}): Promise<LeadRagCitation[]> {
   const specs = questions(plan);
-  const embeddings = await embedTexts(specs.map((item) => item.question));
+  const embedded = await embedTextsWithUsage(specs.map((item) => item.question));
+  await options.onEmbeddingUsage?.(embedded.usage);
+  const embeddings = embedded.embeddings;
   const groups = await Promise.all(specs.map(async (spec, index) => {
     const chunks = await hybridSearch(userId, spec.question, embeddings[index], {
       collections: [spec.collection],

@@ -1,5 +1,6 @@
 {
   "experimentId": "search-e2e-eval-v1.0.0",
+  "runId": "2026-09-02-uk-mx-search-e2e-v1",
   "status": "preregistered-pending-preflight",
   "objective": "Compare the current cold-start product end-to-end company-search workflow with an un-tuned Gemini Full baseline.",
   "arms": {
@@ -56,6 +57,16 @@
   "thresholds": { "qualified": 65, "highValue": 75 },
   "primaryMetric": "macro-mean-slot-utility-at-30",
   "bootstrap": { "iterations": 10000, "confidenceLevel": 0.95, "stratifyByCell": true, "seed": 20260902 },
+  "executionOrder": [
+    { "sequence": 1, "cellId": "MX-retail", "countryCode": "MX", "categoryId": "retail", "armStartOrder": ["gemini-native", "product-e2e"] },
+    { "sequence": 2, "cellId": "GB-distribution", "countryCode": "GB", "categoryId": "distribution", "armStartOrder": ["product-e2e", "gemini-native"] },
+    { "sequence": 3, "cellId": "MX-si-msp", "countryCode": "MX", "categoryId": "si-msp", "armStartOrder": ["gemini-native", "product-e2e"] },
+    { "sequence": 4, "cellId": "GB-resale", "countryCode": "GB", "categoryId": "resale", "armStartOrder": ["product-e2e", "gemini-native"] },
+    { "sequence": 5, "cellId": "MX-distribution", "countryCode": "MX", "categoryId": "distribution", "armStartOrder": ["gemini-native", "product-e2e"] },
+    { "sequence": 6, "cellId": "GB-retail", "countryCode": "GB", "categoryId": "retail", "armStartOrder": ["product-e2e", "gemini-native"] },
+    { "sequence": 7, "cellId": "MX-resale", "countryCode": "MX", "categoryId": "resale", "armStartOrder": ["gemini-native", "product-e2e"] },
+    { "sequence": 8, "cellId": "GB-si-msp", "countryCode": "GB", "categoryId": "si-msp", "armStartOrder": ["product-e2e", "gemini-native"] }
+  ],
   "winGate": {
     "minimumMacroUtilityGain": 5,
     "minimumCellsWon": 6,
@@ -94,7 +105,8 @@
     "primaryComparisonBasis": "official-list-price",
     "alsoReportAccountCashCost": true,
     "primaryCurrency": "USD",
-    "secondaryCurrency": "CNY"
+    "secondaryCurrency": "CNY",
+    "initialForecastUsd": { "expected": 30, "upper": 60, "basis": "Conservative preregistration estimate before measured cells; replaced by cell run-rate after the first completed cell." }
   },
   "anomalyThresholds": {
     "duplicateRate": 0.70,

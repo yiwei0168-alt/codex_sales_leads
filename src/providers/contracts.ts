@@ -49,6 +49,8 @@ export interface StructuredAiResponse<TOutput> {
   latencyMs: number;
   warnings: string[];
   providerRequestId?: string;
+  attempts?: number;
+  retries?: number;
   requestedModelVersion?: string;
   actualProviderId?: string;
   usage?: {

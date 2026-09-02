@@ -192,7 +192,8 @@ export class LeadDiscoveryGate {
           actualModel: response.modelVersion, providerId: response.actualProviderId, promptTokens: response.usage?.promptTokens ?? 0,
           completionTokens: response.usage?.completionTokens ?? 0, reasoningTokens: response.usage?.reasoningTokens ?? 0,
           totalTokens: response.usage?.totalTokens ?? 0, latencyMs: response.latencyMs,
-          fallbackUsed: Boolean(response.requestedModelVersion && response.requestedModelVersion !== response.modelVersion) });
+          fallbackUsed: Boolean(response.requestedModelVersion && response.requestedModelVersion !== response.modelVersion),
+          attempts: response.attempts, retries: response.retries });
       } catch (error) {
         warnings.push(`Discovery gate batch held after routine model failure: ${error instanceof Error ? error.message : String(error)}`);
       }

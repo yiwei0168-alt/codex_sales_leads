@@ -21,6 +21,17 @@ No paid experiment calls may run before the preregistration commit is pushed. Co
 - [Independent blind-judge rubric](config/blind-judge-rubric.md)
 - [Official list-price rate card](config/official-rate-card.v1.json)
 
+## Frozen runner commands
+
+```text
+npm run experiment:search-e2e:freeze
+npm run experiment:search-e2e:verify
+npm run experiment:search-e2e:preflight
+npm run experiment:search-e2e:cell -- --cell=MX-retail
+```
+
+The runner refuses paid calls unless every manifest hash matches and `HEAD` carries the frozen preregistration tag. Raw provider responses are written only under ignored `runs/raw/`; Git artifacts contain structured company fields, short evidence excerpts, hashes, aggregate telemetry and cost checkpoints.
+
 ## Version and Git policy
 
 - Experiment version: `search-e2e-eval-v1.0.0`

@@ -27,6 +27,8 @@ Thumbs.db
 *.log
 tmp/
 temp/
+experiments/**/runs/raw/
+experiments/**/runs/raw/
 
 # Local database backups contain production data and must never enter Git
 backups/

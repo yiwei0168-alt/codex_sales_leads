@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "experimentId": "search-e2e-eval-v1.0.0",
+  "runId": "2026-09-02-uk-mx-search-e2e-v1",
+  "createdAt": "2026-09-02T03:00:43.935Z",
+  "requiredGitTag": "search-e2e-eval-v1.0.0-frozen",
+  "files": [
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/PROTOCOL.md",
+      "sha256": "df7848ebe4d0f8b9472ada457a09af77cd3acb41b73794249a3312372789c829"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/README.md",
+      "sha256": "3858b8d37416200ddd42269b9c7a77e4fd7f8b28e71ea08a167570c0ebbe64f6"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/config/experiment.v1.0.0.json",
+      "sha256": "d4edf8587b748251c306bf54b4d6f3b7d3a8a6bf27b57582fd6c04ea8012dc9d"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/config/gemini-control-prompt.md",
+      "sha256": "72a5691221dadabfcade8977c8f0b0e320560b5d43b73f5247ba0c94c0878204"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/config/blind-judge-rubric.md",
+      "sha256": "c0ac5f7548985692f5bb9417b2572961c34ced3962046deeab9edb89df654c7f"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/config/official-rate-card.v1.json",
+      "sha256": "8bb6a30d247d13d1657406e5d0b6334620b44067bfe1412046e4f9adf9923f4f"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/schemas/gemini-control-output.schema.json",
+      "sha256": "4ea8548e68ce096e0f8560f01214cd1248382dc4ab4a23374977ea5af5328d4f"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/schemas/blind-judge-output.schema.json",
+      "sha256": "cccfded69da19f86954cf4df47e4e29edbfa4b6ee04060d3ad383e261acfbeac"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/schemas/runtime-cost-event.schema.json",
+      "sha256": "06370a08eb93b2c47ba0606f5b5fa516f9c6ac5074b6280a6b1179698f42178e"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/cost-ledger.ts",
+      "sha256": "56ae24a73596594c06fc7222328d7934367997e63d6de624b399ae2dce6388dd"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/control-cell.ts",
+      "sha256": "056e9de700ee1bdd6788f4f4da482821304a74605b3e11a8e758b8ab7e814729"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/experiment.ts",
+      "sha256": "402fec5c860e5617b9ea4a7ec9ce7860cec7d60e60c78d6b8dcafa55b9916d4e"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/product-cell.ts",
+      "sha256": "e8d185c0c2a3881e9f81d02e32e2aaee1d8696a29e95d5585b4ee5bbbec09eb1"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/provider-clients.ts",
+      "sha256": "0362d858e44c5919965a5bcabb2e0f3886285648d5f34210543a4077edee3fea"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/run-store.ts",
+      "sha256": "8f42eb0b7b8ccae5824756bb1c821dea515262a88e15e81a0463579675ba1cd7"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/scripts/run-formal-experiment.ts",
+      "sha256": "3e740ceded82449a2256c92213d9c3cded6f8bf61893a5976dcea11ad5aef126"
+    },
+    {
+      "path": "config/lead-search/hybrid-search-v1.0.0.json",
+      "sha256": "68aa162040af9fb1df633ef4fa4e6eb5be93ca6209b85889fa2760c33cf1bb74"
+    },
+    {
+      "path": "config/lead-scoring/policy-v2.0.0.json",
+      "sha256": "0039203aafb29ec73e4beb10f72dc5ec114785fb4c5f311c7b425de0d451fc1b"
+    },
+    {
+      "path": "config/lead-workflow/end-to-end-v2.0.0.json",
+      "sha256": "97e8b9f37033c977c99c504a36be8b22550384d36f226d12d889d8fd38466a59"
+    },
+    {
+      "path": "config/lead-workflow/runtime-policy-v3.0.0.json",
+      "sha256": "f58509eb101f842ae9c2e7b01484c8b2e429908166a13a502c5d8be477127989"
+    },
+    {
+      "path": "config/lead-workflow/cost-quality-policy-v3.0.0.json",
+      "sha256": "2e3d85b6ccd4a9fa13de39cdc66af32814c75b8b4a693cddd74638743b1def53"
+    },
+    {
+      "path": "src/lib/assistant/intent-agent.ts",
+      "sha256": "ffd67b82174ab7947cbf2fb06b04a6f22d1217b00d78cd0dc44d8b1ff3063481"
+    },
+    {
+      "path": "src/lib/leads/workflow/hybrid-discovery-executor.ts",
+      "sha256": "3587a661047a2cbc3f257440202a8f0207bd07567be29c710cd8c72558364404"
+    },
+    {
+      "path": "src/lib/leads/workflow/discovery.ts",
+      "sha256": "27e03b8f6b8d1d09d7f7040b8f6274cbd9484cb5af3ba96bf13a8921d3be168d"
+    },
+    {
+      "path": "src/lib/leads/workflow/evidence-correction-agent.ts",
+      "sha256": "43fa4fae58a3ce0deb30c1c4aa0668856abd23cebf77521a49c23a1afd825c36"
+    },
+    {
+      "path": "src/lib/leads/workflow/qualification-agent.ts",
+      "sha256": "00fe467e454c86b2389654fbeacc497fd033bb7b2acae6f52627bf03ee828384"
+    },
+    {
+      "path": "src/lib/leads/workflow/schemas.ts",
+      "sha256": "17e5133724c48a4040b19fa52833c163cfee56a09ffb1dc46c6d2a58d9faf9ca"
+    },
+    {
+      "path": "src/providers/discovery.ts",
+      "sha256": "f1d6bde9cf94867496e86065e02485f15ecb374a95c6d771c21f9bc822931c66"
+    },
+    {
+      "path": "src/providers/tavily.ts",
+      "sha256": "e601eb4eae582628dec99f03e9bcbb6fdf38dc68bcf52daf7cad8d58a2e31485"
+    }
+  ]
+}

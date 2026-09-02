@@ -40,7 +40,7 @@ function selectedFamilies(roles: ChannelRole[]): Array<{ family: ChannelRoleFami
   });
 }
 
-function deterministicPlaybook(plan: LeadSearchPlan, citations: LeadRagCitation[], warning?: string): LeadMarketPlaybook {
+export function buildStandardLeadMarketPlaybook(plan: LeadSearchPlan, citations: LeadRagCitation[], warning?: string): LeadMarketPlaybook {
   const roles = selectedRoles(plan);
   const families = selectedFamilies(roles);
   const country = new Intl.DisplayNames(["en"], { type: "region" }).of(plan.countryCode) ?? plan.countryName;
@@ -96,7 +96,7 @@ function sanitizeModelPlaybook(
   model: string,
 ): LeadMarketPlaybook {
   const allowed = new Set(selectedRoles(plan));
-  const fallback = deterministicPlaybook(plan, citations);
+  const fallback = buildStandardLeadMarketPlaybook(plan, citations);
   const rolePriorities = output.rolePriorities.flatMap((item) => {
     const roles = item.roles.filter((role) => allowed.has(role));
     return roles.length ? [{ ...item, roles }] : [];
@@ -123,7 +123,7 @@ function sanitizeModelPlaybook(
 
 export async function buildLeadMarketPlaybook(plan: LeadSearchPlan, citations: LeadRagCitation[]): Promise<LeadMarketPlaybook> {
   const config = plannerConfiguration();
-  if (!config.apiKey) return deterministicPlaybook(plan, citations, "Lingyu lead-planner credentials are not configured.");
+  if (!config.apiKey) return buildStandardLeadMarketPlaybook(plan, citations, "Lingyu lead-planner credentials are not configured.");
   const model = new ChatOpenAI({
     apiKey: config.apiKey,
     model: config.model,
@@ -164,6 +164,6 @@ export async function buildLeadMarketPlaybook(plan: LeadSearchPlan, citations: L
     ]);
     return sanitizeModelPlaybook(output, plan, citations, config.model);
   } catch (error) {
-    return deterministicPlaybook(plan, citations, `LangChain playbook generation degraded safely: ${error instanceof Error ? error.message : String(error)}`);
+    return buildStandardLeadMarketPlaybook(plan, citations, `LangChain playbook generation degraded safely: ${error instanceof Error ? error.message : String(error)}`);
   }
 }

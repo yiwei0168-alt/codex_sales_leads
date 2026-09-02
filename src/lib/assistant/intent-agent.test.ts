@@ -9,6 +9,8 @@ describe("Kimi intent and planning agent", () => {
     vi.stubEnv("KIMI_API_KEY", "test-key");
     const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({
       model: "kimi-k3",
+      usage: { prompt_tokens: 100, completion_tokens: 20, total_tokens: 120,
+        prompt_tokens_details: { cached_tokens: 40 } },
       choices: [{ message: { content: JSON.stringify({
         intent: "lead_search", confidence: 0.96, internal_question: "", external_questions: [],
         lead_plan: { country: "法国", country_code: "FR", objective: "new-market", roles: ["Reseller"], target_count: 30, query_language: "zh-CN" },
@@ -24,6 +26,9 @@ describe("Kimi intent and planning agent", () => {
     expect(request.model).toBe("kimi-k2.6");
     expect(request.messages[1].content).toContain("已生成德国计划");
     expect(result.plannerSource).toBe("kimi-light");
+    expect(result.plannerCalls).toEqual([expect.objectContaining({ requestedModel: "kimi-k2.6",
+      actualModel: "kimi-k3", inputTokens: 100, cachedInputTokens: 40, outputTokens: 20, totalTokens: 120,
+      attempts: 1, retries: 0 })]);
   });
 
   it("turns low-confidence classifications into a follow-up question", async () => {

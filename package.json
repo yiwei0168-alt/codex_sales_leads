@@ -107,6 +107,10 @@
     "benchmark:v3:score-tools": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/score-v3-tool-lead-value.ts",
     "benchmark:v3:render-tools": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/render-v3-tool-evaluation.ts",
     "benchmark:v3:verify-tools": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/verify-v3-tool-evaluation.ts",
+    "experiment:search-e2e:freeze": "node scripts/run-tsx.cjs experiments/search-e2e-evaluation/uk-mx-v1/scripts/run-formal-experiment.ts --phase=freeze",
+    "experiment:search-e2e:verify": "node scripts/run-tsx.cjs experiments/search-e2e-evaluation/uk-mx-v1/scripts/run-formal-experiment.ts --phase=verify",
+    "experiment:search-e2e:preflight": "node --use-env-proxy scripts/run-tsx.cjs experiments/search-e2e-evaluation/uk-mx-v1/scripts/run-formal-experiment.ts --phase=preflight",
+    "experiment:search-e2e:cell": "node --use-env-proxy scripts/run-tsx.cjs experiments/search-e2e-evaluation/uk-mx-v1/scripts/run-formal-experiment.ts --phase=cell",
     "benchmark:v2:score-tools": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/score-v2-tool-lead-value.ts",
     "benchmark:v2:verify-tools": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/verify-v2-tool-leaderboard.ts",
     "benchmark:discovery:verify": "node scripts/run-tsx.cjs experiments/multi-source-lead-discovery/scripts/verify-discovery-run.ts"
