@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-02-uk-mx-search-e2e-v1-4",
+  "experimentId": "search-e2e-eval-v1.0.4",
+  "status": "failed-before-formal-cells",
+  "failedStage": "kimi-intent",
+  "error": "Kimi used a non-canonical objective phrase that failed the two-value strict enum.",
+  "formalCellsStarted": 0,
+  "formalSlotsConsumed": 0,
+  "measuredFailedCall": {
+    "requestedModel": "kimi-k2.6",
+    "actualModel": "kimi-k2.6",
+    "inputTokens": 538,
+    "cachedInputTokens": 538,
+    "outputTokens": 1625,
+    "latencyMs": 40614,
+    "attempts": 1,
+    "retries": 0,
+    "budgetCostUsd": 0.006555721004290201
+  },
+  "budgetTreatment": {
+    "carriedIntoV1_0_5Usd": 0.037324,
+    "basis": "USD 0.030768 prior carry-forward plus measured v1.0.4 list-price usage, rounded upward."
+  },
+  "remediation": "v1.0.5 normalizes bounded objective synonyms and falls back to the local deterministic objective when a phrase is unknown."
+}

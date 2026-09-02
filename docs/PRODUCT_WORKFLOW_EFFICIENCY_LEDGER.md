@@ -142,6 +142,8 @@ Preflight v1.0.2 retained the next failure correctly: 538 input tokens (all repo
 
 Preflight v1.0.3 then passed schema validation but exposed an over-strict exact-role-set check: a model can correctly identify one role within a frozen category such as Distributor/VAD without echoing every alias. v1.0.4 requires country/count/objective equality and a non-empty role subset with no out-of-category role, then forces the downstream plan back to the complete frozen role set. The v1.0.3 call used 538 cached input tokens, 1,070 output tokens, 30.503 seconds and USD 0.0043464890; cumulative carry-forward is USD 0.030768. No formal cell had started.
 
+Preflight v1.0.4 exposed another non-canonical model phrase, this time for `objective`. v1.0.5 accepts a bounded string and normalizes explicit new-market/market-entry and existing-distributor/channel-growth synonyms, falling back to the deterministic parser when unknown; the frozen experiment still overwrites the execution objective. The v1.0.4 call used 538 cached input tokens, 1,625 output tokens, 40.614 seconds and USD 0.0065557210; cumulative carry-forward is USD 0.037324. No formal cell had started.
+
 ## 持续优化事项
 
 | 优先级 | 工作流环节 | 可优化点 | 质量门禁 | 状态 |

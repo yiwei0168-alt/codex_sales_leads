@@ -13,7 +13,7 @@ describe("Kimi intent and planning agent", () => {
         prompt_tokens_details: { cached_tokens: 40 } },
       choices: [{ message: { content: JSON.stringify({
         intent: "lead_search", confidence: 0.96, internal_question: "", external_questions: [],
-        lead_plan: { country: "法国", country_code: "FR", objective: "new_market", roles: ["Reseller"], target_count: 30,
+        lead_plan: { country: "法国", country_code: "FR", objective: "market_entry", roles: ["Reseller"], target_count: 30,
           query_language: "zh-CN", coverage_mode: "nationwide" },
       }) } }],
     }), { status: 200 }));
@@ -46,6 +46,17 @@ describe("Kimi intent and planning agent", () => {
     vi.stubEnv("KIMI_API_KEY", "");
     const result = await planAssistantRequest("WR3000 支持哪些无线协议？");
     expect(result).toMatchObject({ intent: "knowledge-question", plannerSource: "deterministic-fallback" });
+  });
+
+  it("normalizes existing-channel objective synonyms", async () => {
+    vi.stubEnv("KIMI_API_KEY", "test-key");
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({
+      choices: [{ message: { content: JSON.stringify({ intent: "lead_search", confidence: 0.9,
+        lead_plan: { country: "Germany", country_code: "DE", objective: "existing_channel_growth",
+          roles: ["Distributor"], target_count: 10 } }) } }],
+    }), { status: 200 }));
+    const result = await planAssistantRequest("Grow an existing distributor in Germany", [], fetchMock);
+    expect(result.leadPlan?.objective).toBe("existing-distributor-growth");
   });
 
   it("preserves failed-call telemetry when Kimi falls back", async () => {

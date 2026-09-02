@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-02-uk-mx-search-e2e-v1-4",
+  "experimentId": "search-e2e-eval-v1.0.4",
+  "status": "created",
+  "createdAt": "2026-09-02T03:43:29.627Z",
+  "updatedAt": "2026-09-02T03:44:10.255Z",
+  "preflightChecks": [
+    {
+      "name": "prior-before-v1.0.4-adjustment",
+      "completedAt": "2026-09-02T03:43:29.630Z",
+      "detail": {
+        "amountUsd": 0.030768,
+        "attempts": 5
+      }
+    }
+  ],
+  "completedArmKeys": [],
+  "completedCellIds": [],
+  "reportedBudgetThresholdsUsd": [],
+  "anomalies": [
+    {
+      "at": "2026-09-02T03:44:10.255Z",
+      "severity": "warning",
+      "code": "preflight-kimi-intent-failed",
+      "detail": "Kimi 意图 Agent 不可用，已使用确定性路由兜底。 | Kimi 降级原因：Kimi plan schema invalid (intent=lead_search; keys=intent,confidence,internal_question,external_questions,reply,lead_plan,requires_k3_planning,planning_reason): Invalid option: expected one of \"new-market\"|\"existing-distributor-growth\""
+    }
+  ],
+  "costEvents": [
+    {
+      "eventId": "preflight:prior-before-v1.0.4-adjustment",
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-4",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "stage": "prior-preflight-adjustment",
+      "provider": "kimi",
+      "requestedModel": "kimi-k2.6",
+      "actualModel": "kimi-k2.6",
+      "startedAt": "2026-09-02T03:43:29.627Z",
+      "completedAt": "2026-09-02T03:43:29.627Z",
+      "latencyMs": 0,
+      "attempts": 5,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0.030768,
+      "volume": {
+        "inputItems": 5,
+        "rawOutputItems": 4,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "timeout": 1,
+          "schemaInvalid": 2,
+          "fallback": 1,
+          "overlyStrictSemanticGate": 1
+        }
+      },
+      "notes": [
+        "Carries the v1.0.0-v1.0.3 Kimi preflight budget: USD 0.02 conservative allowance plus USD 0.0107668696 priced usage, rounded upward."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0.030768,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "preflight:intent:1",
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-4",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "stage": "preflight-intent",
+      "provider": "kimi",
+      "requestedModel": "kimi-k2.6",
+      "actualModel": "kimi-k2.6",
+      "startedAt": "2026-09-02T03:43:29.638Z",
+      "completedAt": "2026-09-02T03:44:10.255Z",
+      "latencyMs": 40614,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "failed",
+      "usage": {
+        "inputTokens": 538,
+        "cachedInputTokens": 538,
+        "outputTokens": 1625
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "providerFailure": 1
+        }
+      },
+      "notes": [
+        "Kimi plan schema invalid (intent=lead_search; keys=intent,confidence,internal_question,external_questions,reply,lead_plan,requires_k3_planning,planning_reason): Invalid option: expected one of \"new-market\"|\"existing-distributor-growth\""
+      ],
+      "officialListPriceUsd": 0.006555721004290201,
+      "budgetCostUsd": 0.006555721004290201,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    }
+  ]
+}

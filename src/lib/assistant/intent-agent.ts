@@ -23,10 +23,7 @@ const rawPlanSchema = z.object({
   lead_plan: z.object({
     country: z.string().max(120).nullish().transform((value) => value ?? ""),
     country_code: z.string().max(2).nullish().transform((value) => value ?? ""),
-    objective: z.preprocess(
-      (value) => typeof value === "string" ? value.trim().toLowerCase().replace(/[ _]+/g, "-") : value,
-      z.enum(["new-market", "existing-distributor-growth"]),
-    ).nullish().transform((value) => value ?? "new-market"),
+    objective: z.string().max(120).nullish().transform((value) => value ?? ""),
     roles: z.array(z.enum(CHANNEL_ROLES)).max(CHANNEL_ROLES.length).nullish().transform((value) => value ?? []),
     target_count: z.coerce.number().int().min(1).max(100).nullish().transform((value) => value ?? 20),
     query_language: z.string().max(20).nullish().transform((value) => value ?? ""),
@@ -83,6 +80,19 @@ function cleanQuestions(values: string[]): string[] {
   return [...new Set(values.map((value) => value.trim()).filter(Boolean))].slice(0, 5);
 }
 
+function normalizeObjective(value: string | undefined,
+  fallback: LeadSearchPlan["objective"] | undefined): LeadSearchPlan["objective"] {
+  const normalized = (value ?? "").trim().toLowerCase().replace(/[ _]+/g, "-");
+  if (normalized === "existing-distributor-growth"
+    || /existing.*(?:distributor|channel).*growth|(?:distributor|channel).*growth/.test(normalized)) {
+    return "existing-distributor-growth";
+  }
+  if (normalized === "new-market" || /new.*market|market-entry|market-expansion/.test(normalized)) {
+    return "new-market";
+  }
+  return fallback ?? "new-market";
+}
+
 function safeLeadPlan(raw: z.infer<typeof rawPlanSchema>, userRequest: string): LeadSearchPlan | undefined {
   if (raw.intent !== "lead_search") return undefined;
   const deterministic = interpretAssistantRequest(userRequest);
@@ -101,7 +111,7 @@ function safeLeadPlan(raw: z.infer<typeof rawPlanSchema>, userRequest: string): 
   return {
     countryCode: country.countryCode,
     countryName: country.countryName,
-    objective: raw.lead_plan?.objective ?? deterministic.plan?.objective ?? "new-market",
+    objective: normalizeObjective(raw.lead_plan?.objective, deterministic.plan?.objective),
     roles,
     targetCount: raw.lead_plan?.target_count ?? deterministic.plan?.targetCount ?? 20,
     queryLanguage: raw.lead_plan?.query_language.trim() || deterministic.plan?.queryLanguage
