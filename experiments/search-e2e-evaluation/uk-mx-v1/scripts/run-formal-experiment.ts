@@ -20,7 +20,7 @@ import { evaluateBudget, forecastCompletionCost, priceCostEvent, summarizeCostEv
   type ExperimentCostEvent, type ExperimentRateCard } from "../lib/cost-ledger";
 import { runControlCell, type ControlCellResult } from "../lib/control-cell";
 import { calculateExperimentMetrics } from "../lib/evaluation-metrics";
-import { cellById, experimentCells, EXPERIMENT_CONFIG, intentRolesStayWithinCategory, validateExperimentConfig,
+import { cellById, experimentCells, EXPERIMENT_CONFIG, intentRolesRecognizeCategory, validateExperimentConfig,
   type ExperimentCell } from "../lib/experiment";
 import { calculateProviderContributions, optimizationFindings, renderFinalReport } from "../lib/final-report";
 import { runProductCell, type ProductCellResult } from "../lib/product-cell";
@@ -37,7 +37,7 @@ import { buildControlUniqueGroups, buildProductRecordIndex, evaluateControlUniqu
 nextEnv.loadEnvConfig(process.cwd());
 const rateCard = rateCardJson as ExperimentRateCard;
 const experimentRoot = path.resolve("experiments/search-e2e-evaluation/uk-mx-v1");
-const frozenTag = "search-e2e-eval-v1.0.13-frozen";
+const frozenTag = "search-e2e-eval-v1.0.14-frozen";
 
 const frozenFiles = [
   "PROTOCOL.md", "README.md", "config/experiment.v1.0.0.json", "config/gemini-control-prompt.md",
@@ -225,25 +225,25 @@ async function runPreflight(): Promise<void> {
   missing.push(...discoveryStatus.filter((item) => !item.configured).map((item) => item.apiKeyEnv));
   if (missing.length > 0) throw new Error(`Preflight missing required environment variables: ${[...new Set(missing)].join(", ")}`);
 
-  if (!hasPreflightCheck(state, "prior-before-v1.0.13-adjustment")) {
-    const productAdjustment = preflightEvent({ eventId: "preflight:prior-product-before-v1.0.13", runId: state.runId,
+  if (!hasPreflightCheck(state, "prior-before-v1.0.14-adjustment")) {
+    const productAdjustment = preflightEvent({ eventId: "preflight:prior-product-before-v1.0.14", runId: state.runId,
       ledger: "product-e2e-arm", arm: "product-e2e", stage: "prior-preflight-adjustment",
       provider: "mixed-product-preflight", startedAt: state.createdAt, completedAt: state.createdAt,
-      latencyMs: 0, attempts: 50, retries: 8, fallbackUsed: false, status: "completed", usage: {},
+      latencyMs: 0, attempts: 51, retries: 8, fallbackUsed: false, status: "completed", usage: {},
       accountCashCostUsd: EXPERIMENT_CONFIG.cost.priorProductPreflightAdjustmentUsd,
-      volume: { inputItems: 46, rawOutputItems: 50, validOutputItems: 44, downstreamUsedItems: 21,
-        discardedReasonCounts: { timeout: 1, schemaInvalid: 4, fallback: 1, semanticGateFailure: 5,
+      volume: { inputItems: 47, rawOutputItems: 51, validOutputItems: 45, downstreamUsedItems: 21,
+        discardedReasonCounts: { timeout: 1, schemaInvalid: 4, fallback: 1, semanticGateFailure: 6,
           transportFailure: 2 } },
-      notes: ["Conservative carry-forward for v1.0.0-v1.0.10 product-side preflights, including all successful v1.0.10 discovery, evidence and score checks."] });
-    const controlAdjustment = preflightEvent({ eventId: "preflight:prior-gemini-control-before-v1.0.13",
+      notes: ["Conservative carry-forward through the invalidated v1.0.13 run, including its Kimi intent call rejected by the semantic gate."] });
+    const controlAdjustment = preflightEvent({ eventId: "preflight:prior-gemini-control-before-v1.0.14",
       runId: state.runId, ledger: "gemini-native-arm", arm: "gemini-native", stage: "prior-preflight-adjustment",
       provider: "gemini-full", requestedModel: "gemini-3.6-flash", actualModel: "gemini-3.6-flash",
-      startedAt: state.createdAt, completedAt: state.createdAt, latencyMs: 0, attempts: 2, retries: 0,
+      startedAt: state.createdAt, completedAt: state.createdAt, latencyMs: 0, attempts: 3, retries: 0,
       fallbackUsed: false, status: "failed", usage: {},
       accountCashCostUsd: EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd,
-      volume: { inputItems: 5, rawOutputItems: 5, validOutputItems: 4, downstreamUsedItems: 2,
+      volume: { inputItems: 6, rawOutputItems: 35, validOutputItems: 34, downstreamUsedItems: 32,
         discardedReasonCounts: { schemaInvalid: 1, usageNotCheckpointed: 1, invalidRequest: 1 } },
-      notes: ["Carries all Gemini control-side preflights and structured-search diagnostics through v1.0.10."] });
+      notes: ["Carries prior Gemini diagnostics plus the invalidated v1.0.13 MX-retail control call; its companies are not reused."] });
     const openAiGatewayProbe = preflightEvent({ eventId: "preflight:prior-lingyu-openai-probe", runId: state.runId,
       ledger: "evaluation-overhead", arm: "shared-evaluation", stage: "preflight-blind-judge",
       provider: "lingyu-openai-responses", requestedModel: "gpt-5.6-sol", actualModel: "gpt-5.6-sol",
@@ -252,7 +252,7 @@ async function runPreflight(): Promise<void> {
       volume: { inputItems: 2, rawOutputItems: 0, validOutputItems: 0, downstreamUsedItems: 0,
         discardedReasonCounts: { insufficientQuota: 2 } },
       notes: ["High-reasoning, no-tools, store=false full-schema probe returned HTTP 403 insufficient_user_quota; no model output or token usage."] });
-    await checkpointPreflight(state, "prior-before-v1.0.13-adjustment",
+    await checkpointPreflight(state, "prior-before-v1.0.14-adjustment",
       [productAdjustment, controlAdjustment, openAiGatewayProbe],
       { productUsd: EXPERIMENT_CONFIG.cost.priorProductPreflightAdjustmentUsd,
         geminiControlReserveUsd: EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd,
@@ -318,7 +318,7 @@ async function runPreflight(): Promise<void> {
     }
     if (intent.leadPlan.countryCode !== plan.countryCode || intent.leadPlan.targetCount !== plan.targetCount
       || intent.leadPlan.objective !== plan.objective
-      || !intentRolesStayWithinCategory(intent.leadPlan.roles, plan.roles)) {
+      || !intentRolesRecognizeCategory(intent.leadPlan.roles, plan.roles)) {
       const detail = `Kimi intent preflight diverged: returned country=${intent.leadPlan.countryCode}, count=${intent.leadPlan.targetCount}, objective=${intent.leadPlan.objective}, roles=${intent.leadPlan.roles.join("|")}`;
       await checkpointPreflightFailure(state, "kimi-intent-semantics", intentEvents, detail);
       throw new Error(detail);
@@ -863,9 +863,9 @@ async function runEvaluation(): Promise<void> {
     schemaVersion: 1, runId: state.runId, generatedAt, contributions, findings,
     note: "Observed opportunities only; no frozen experiment or product route was modified post hoc.",
   });
-  await writeTextAtomic(path.join(artifactRunRoot(), "final/SEARCH_E2E_EVALUATION_REPORT.v1.0.13.md"),
+  await writeTextAtomic(path.join(artifactRunRoot(), "final/SEARCH_E2E_EVALUATION_REPORT.v1.0.14.md"),
     renderFinalReport({ metrics, blind, bundles, costs: state.costEvents, generatedAt })
-      .replace("evaluation v1.0.9", "evaluation v1.0.13"));
+      .replace("evaluation v1.0.9", "evaluation v1.0.14"));
   state.status = "completed";
   await saveRunState(state);
   console.log(JSON.stringify({ status: "completed", runId: state.runId, passed: metrics.passed,

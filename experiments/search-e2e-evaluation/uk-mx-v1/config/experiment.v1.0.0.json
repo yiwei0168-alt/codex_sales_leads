@@ -1,6 +1,6 @@
 {
-  "experimentId": "search-e2e-eval-v1.0.13",
-  "runId": "2026-09-02-uk-mx-search-e2e-v1-13",
+  "experimentId": "search-e2e-eval-v1.0.14",
+  "runId": "2026-09-02-uk-mx-search-e2e-v1-14",
   "status": "preregistered-pending-preflight",
   "objective": "Compare the current cold-start product end-to-end company-search workflow with an un-tuned Gemini Full baseline.",
   "arms": {
@@ -118,8 +118,8 @@
     "alsoReportAccountCashCost": true,
     "primaryCurrency": "USD",
     "secondaryCurrency": "CNY",
-    "priorProductPreflightAdjustmentUsd": 0.531486457,
-    "priorGeminiControlAdjustmentUsd": 0.17466425,
+    "priorProductPreflightAdjustmentUsd": 0.5336900130011205,
+    "priorGeminiControlAdjustmentUsd": 0.41836315,
     "unknownUsageCallReserveUsd": 0.01,
     "initialForecastUsd": { "expected": 30, "upper": 60, "basis": "Conservative preregistration estimate before measured cells; replaced by cell run-rate after the first completed cell." }
   },

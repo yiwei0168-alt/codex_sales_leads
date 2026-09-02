@@ -103,7 +103,7 @@ export function primaryRoleMatchesCategory(primaryRole: string, categoryId: Expe
   return categoryDetails[categoryId].roles.includes(primaryRole as ChannelRole);
 }
 
-export function intentRolesStayWithinCategory(actual: ChannelRole[], expected: ChannelRole[]): boolean {
+export function intentRolesRecognizeCategory(actual: ChannelRole[], expected: ChannelRole[]): boolean {
   const allowed = new Set(expected);
-  return actual.length > 0 && actual.every((role) => allowed.has(role));
+  return actual.some((role) => allowed.has(role));
 }

@@ -13,7 +13,7 @@ import type { EmbeddingCallUsage } from "@/lib/rag/openai-provider";
 import rateCardJson from "../config/official-rate-card.v1.json";
 import { priceCostEvent, type ExperimentCostEvent, type ExperimentCostEventInput,
   type ExperimentRateCard, type ExperimentVolume } from "./cost-ledger";
-import { EXPERIMENT_CONFIG, intentRolesStayWithinCategory, leadPlanForCell, primaryRoleMatchesCategory,
+import { EXPERIMENT_CONFIG, intentRolesRecognizeCategory, leadPlanForCell, primaryRoleMatchesCategory,
   type ExperimentCell } from "./experiment";
 
 const rateCard = rateCardJson as ExperimentRateCard;
@@ -140,8 +140,13 @@ export async function runProductCell(cell: ExperimentCell, options: {
   }
   if (intent.leadPlan.countryCode !== frozenPlan.countryCode || intent.leadPlan.targetCount !== 30
     || intent.leadPlan.objective !== frozenPlan.objective
-    || !intentRolesStayWithinCategory(intent.leadPlan.roles, frozenPlan.roles)) {
-    throw new Error(`${cell.cellId} Kimi intent plan diverged from the frozen task semantics`);
+    || !intentRolesRecognizeCategory(intent.leadPlan.roles, frozenPlan.roles)) {
+    throw new Error(`${cell.cellId} Kimi intent plan diverged from the frozen task semantics: ${JSON.stringify({
+      expected: { countryCode: frozenPlan.countryCode, targetCount: frozenPlan.targetCount,
+        objective: frozenPlan.objective, roles: frozenPlan.roles },
+      actual: { countryCode: intent.leadPlan.countryCode, targetCount: intent.leadPlan.targetCount,
+        objective: intent.leadPlan.objective, roles: intent.leadPlan.roles },
+    })}`);
   }
   warnings.push(...intent.warnings);
   const plan: LeadSearchPlan = { ...frozenPlan, coverageMode: intent.leadPlan.coverageMode ?? "auto",

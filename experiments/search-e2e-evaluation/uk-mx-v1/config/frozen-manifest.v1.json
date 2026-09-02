@@ -1,21 +1,21 @@
 {
   "schemaVersion": 1,
-  "experimentId": "search-e2e-eval-v1.0.13",
-  "runId": "2026-09-02-uk-mx-search-e2e-v1-13",
-  "createdAt": "2026-09-02T06:47:26.473Z",
-  "requiredGitTag": "search-e2e-eval-v1.0.13-frozen",
+  "experimentId": "search-e2e-eval-v1.0.14",
+  "runId": "2026-09-02-uk-mx-search-e2e-v1-14",
+  "createdAt": "2026-09-02T07:05:38.172Z",
+  "requiredGitTag": "search-e2e-eval-v1.0.14-frozen",
   "files": [
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/PROTOCOL.md",
-      "sha256": "771b0a89f618cc03d809eddd47cc02eec295980502316418ce137a8265285a1a"
+      "sha256": "b3f3b95123c0c0bf98540f10e106abe9c7e11e4295c8cec4c3d95647eb92a939"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/README.md",
-      "sha256": "c41675ae2785b3be33042f050e21dde368fb73b0521409f59180f57917dea0b2"
+      "sha256": "68d580fd93db25296b5692c58e7ee692b5d293dea0df8957962077e064b070a8"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/config/experiment.v1.0.0.json",
-      "sha256": "a5cce1ac0936936ac833fa8948d27a8fae753dc41c7e4a97f8ffe28c1381c9e6"
+      "sha256": "ec059a5660b0003709d34df04119a829921169f6d4de85d254728440b51a9633"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/config/gemini-control-prompt.md",
@@ -63,7 +63,7 @@
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/experiment.ts",
-      "sha256": "18b9946d5add3f3e2b9fb35369ef83d25e7fd145e234839431b584d92dacf0e5"
+      "sha256": "3d8e5f07e9a8254b94523f61bcf353096da8ed8ffa584942c2a36050be853ef8"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/final-report.ts",
@@ -71,7 +71,7 @@
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/product-cell.ts",
-      "sha256": "56924b7edbd1f609c19e4a2433b1c3f335773bc72602e54db94380ada5d63752"
+      "sha256": "0f36f33d442ebb961f141f529981450433df1a70d51068d54dfbf145a89b90db"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/provider-clients.ts",
@@ -91,7 +91,7 @@
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/scripts/run-formal-experiment.ts",
-      "sha256": "5e17cfa5ababecd0054e34c8cfeceda336322977309cf180c71d9465751f845a"
+      "sha256": "23168d5e639d2b8829a096c105bcda2f0ba04d272bf858c4590b27a6d786079c"
     },
     {
       "path": "config/lead-search/hybrid-search-v1.0.0.json",
