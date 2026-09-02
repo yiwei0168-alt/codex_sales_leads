@@ -37,7 +37,7 @@ import { buildControlUniqueGroups, buildProductRecordIndex, evaluateControlUniqu
 nextEnv.loadEnvConfig(process.cwd());
 const rateCard = rateCardJson as ExperimentRateCard;
 const experimentRoot = path.resolve("experiments/search-e2e-evaluation/uk-mx-v1");
-const frozenTag = "search-e2e-eval-v1.0.14-frozen";
+const frozenTag = "search-e2e-eval-v1.0.15-frozen";
 
 const frozenFiles = [
   "PROTOCOL.md", "README.md", "config/experiment.v1.0.0.json", "config/gemini-control-prompt.md",
@@ -225,8 +225,8 @@ async function runPreflight(): Promise<void> {
   missing.push(...discoveryStatus.filter((item) => !item.configured).map((item) => item.apiKeyEnv));
   if (missing.length > 0) throw new Error(`Preflight missing required environment variables: ${[...new Set(missing)].join(", ")}`);
 
-  if (!hasPreflightCheck(state, "prior-before-v1.0.14-adjustment")) {
-    const productAdjustment = preflightEvent({ eventId: "preflight:prior-product-before-v1.0.14", runId: state.runId,
+  if (!hasPreflightCheck(state, "prior-before-v1.0.15-adjustment")) {
+    const productAdjustment = preflightEvent({ eventId: "preflight:prior-product-before-v1.0.15", runId: state.runId,
       ledger: "product-e2e-arm", arm: "product-e2e", stage: "prior-preflight-adjustment",
       provider: "mixed-product-preflight", startedAt: state.createdAt, completedAt: state.createdAt,
       latencyMs: 0, attempts: 51, retries: 8, fallbackUsed: false, status: "completed", usage: {},
@@ -235,7 +235,7 @@ async function runPreflight(): Promise<void> {
         discardedReasonCounts: { timeout: 1, schemaInvalid: 4, fallback: 1, semanticGateFailure: 6,
           transportFailure: 2 } },
       notes: ["Conservative carry-forward through the invalidated v1.0.13 run, including its Kimi intent call rejected by the semantic gate."] });
-    const controlAdjustment = preflightEvent({ eventId: "preflight:prior-gemini-control-before-v1.0.14",
+    const controlAdjustment = preflightEvent({ eventId: "preflight:prior-gemini-control-before-v1.0.15",
       runId: state.runId, ledger: "gemini-native-arm", arm: "gemini-native", stage: "prior-preflight-adjustment",
       provider: "gemini-full", requestedModel: "gemini-3.6-flash", actualModel: "gemini-3.6-flash",
       startedAt: state.createdAt, completedAt: state.createdAt, latencyMs: 0, attempts: 3, retries: 0,
@@ -252,7 +252,7 @@ async function runPreflight(): Promise<void> {
       volume: { inputItems: 2, rawOutputItems: 0, validOutputItems: 0, downstreamUsedItems: 0,
         discardedReasonCounts: { insufficientQuota: 2 } },
       notes: ["High-reasoning, no-tools, store=false full-schema probe returned HTTP 403 insufficient_user_quota; no model output or token usage."] });
-    await checkpointPreflight(state, "prior-before-v1.0.14-adjustment",
+    await checkpointPreflight(state, "prior-before-v1.0.15-adjustment",
       [productAdjustment, controlAdjustment, openAiGatewayProbe],
       { productUsd: EXPERIMENT_CONFIG.cost.priorProductPreflightAdjustmentUsd,
         geminiControlReserveUsd: EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd,
@@ -273,9 +273,13 @@ async function runPreflight(): Promise<void> {
       .reduce((sum, event) => sum + (event.budgetCostUsd ?? 0), 0);
     const sourceControlUsd = source.costEvents.filter((event) => event.ledger === "gemini-native-arm")
       .reduce((sum, event) => sum + (event.budgetCostUsd ?? 0), 0);
-    if (Math.abs(sourceProductUsd - EXPERIMENT_CONFIG.cost.priorProductPreflightAdjustmentUsd) > 0.000001
-      || Math.abs(sourceControlUsd - EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd) > 0.000001) {
-      throw new Error("Inherited preflight cost does not match frozen carry-forward adjustments");
+    if (Math.abs(sourceProductUsd - reuse.sourceProductBudgetUsd) > 0.000001
+      || Math.abs(sourceControlUsd - reuse.sourceGeminiControlBudgetUsd) > 0.000001) {
+      throw new Error("Inherited preflight source cost does not match its frozen source ledger totals");
+    }
+    if (EXPERIMENT_CONFIG.cost.priorProductPreflightAdjustmentUsd + 0.000001 < sourceProductUsd
+      || EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd + 0.000001 < sourceControlUsd) {
+      throw new Error("Cumulative carry-forward cost cannot be lower than the inherited preflight source cost");
     }
     await checkpointPreflight(state, "inherited-non-judge-preflight", [], {
       sourceExperimentId: source.experimentId, sourceRunId: source.runId,
@@ -863,9 +867,9 @@ async function runEvaluation(): Promise<void> {
     schemaVersion: 1, runId: state.runId, generatedAt, contributions, findings,
     note: "Observed opportunities only; no frozen experiment or product route was modified post hoc.",
   });
-  await writeTextAtomic(path.join(artifactRunRoot(), "final/SEARCH_E2E_EVALUATION_REPORT.v1.0.14.md"),
+  await writeTextAtomic(path.join(artifactRunRoot(), "final/SEARCH_E2E_EVALUATION_REPORT.v1.0.15.md"),
     renderFinalReport({ metrics, blind, bundles, costs: state.costEvents, generatedAt })
-      .replace("evaluation v1.0.9", "evaluation v1.0.14"));
+      .replace("evaluation v1.0.9", "evaluation v1.0.15"));
   state.status = "completed";
   await saveRunState(state);
   console.log(JSON.stringify({ status: "completed", runId: state.runId, passed: metrics.passed,

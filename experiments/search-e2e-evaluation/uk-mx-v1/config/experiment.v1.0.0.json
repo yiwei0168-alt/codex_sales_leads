@@ -1,6 +1,6 @@
 {
-  "experimentId": "search-e2e-eval-v1.0.14",
-  "runId": "2026-09-02-uk-mx-search-e2e-v1-14",
+  "experimentId": "search-e2e-eval-v1.0.15",
+  "runId": "2026-09-02-uk-mx-search-e2e-v1-15",
   "status": "preregistered-pending-preflight",
   "objective": "Compare the current cold-start product end-to-end company-search workflow with an un-tuned Gemini Full baseline.",
   "arms": {
@@ -38,6 +38,8 @@
     "sourceExperimentId": "search-e2e-eval-v1.0.10",
     "sourceRunId": "2026-09-02-uk-mx-search-e2e-v1-10",
     "sourceSummaryPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-02-uk-mx-search-e2e-v1-10/runtime/run-summary.json",
+    "sourceProductBudgetUsd": 0.5314864571588553,
+    "sourceGeminiControlBudgetUsd": 0.17466425000000002,
     "requiredChecks": ["kimi-intent", "local-rag", "discovery-gemini-full/google-grounded", "discovery-brave/brave", "discovery-searchapi/bing", "discovery-exa/exa", "discovery-gemini-product/google-grounded", "discovery-google-places/google-places", "discovery-searchapi/google", "tavily-evidence", "deepseek-score-only", "gemini-3.6-flash-structured-search"]
   },
   "markets": [

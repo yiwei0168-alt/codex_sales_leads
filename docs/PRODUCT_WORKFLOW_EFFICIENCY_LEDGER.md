@@ -164,6 +164,8 @@ v1.0.13 removes a zero-cost orchestration defect discovered before the first for
 
 v1.0.14 addresses an intent-stage efficiency failure in the first MX Retail/E-tail attempt. An overly strict full-subset role check rejected an otherwise structured Kimi plan after the Gemini arm had already produced 30 valid outputs. The Spanish source was verified as valid UTF-8; apparent corruption was only terminal rendering. The invalidated run spent USD 0.2436989 on Gemini and USD 0.0022035560011204646 on Kimi, with zero product discovery/evidence/scoring output. Those costs remain in the cumulative budget while the result set is not reused. The new gate keeps Kimi as the required conversational model and template-fit detector, requires the correct market/count/objective plus at least one role-family match, and executes only the preregistered frozen role set. Safe expected/actual semantic fields are included in future failures. This prevents synonymous adjacent-role output from wasting an entire cell while preserving category isolation.
 
+v1.0.15 fixes a zero-call preflight accounting invariant exposed by that historical spend. The reused v1.0.10 preflight source total and the cumulative experiment carry-forward total are now separate frozen fields: the former must equal the hashed source ledger, while the latter must be at least the source total and includes invalidated formal calls. This prevents both omission of sunk experiment cost and false rejection when later failed runs legitimately increase the budget ledger. The v1.0.14 preflight produced zero provider inputs, outputs, tokens, credits and marginal cost.
+
 ## 持续优化事项
 
 | 优先级 | 工作流环节 | 可优化点 | 质量门禁 | 状态 |

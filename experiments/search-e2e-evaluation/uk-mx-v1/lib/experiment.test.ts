@@ -28,4 +28,13 @@ describe("formal experiment intent normalization", () => {
       gatewayFallbackModel: "gpt-5.6-sol", unavailableFallbackMode: "codex-in-session",
       fallbackActivated: true, allowWebSearch: false, requireDecisionCommitAndPushBeforeDeblind: true });
   });
+
+  it("separates inherited preflight source cost from cumulative carry-forward cost", () => {
+    expect(EXPERIMENT_CONFIG.preflightReuse.sourceProductBudgetUsd)
+      .toBeLessThanOrEqual(EXPERIMENT_CONFIG.cost.priorProductPreflightAdjustmentUsd);
+    expect(EXPERIMENT_CONFIG.preflightReuse.sourceGeminiControlBudgetUsd)
+      .toBeLessThanOrEqual(EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd);
+    expect(EXPERIMENT_CONFIG.cost.priorProductPreflightAdjustmentUsd
+      + EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd).toBeCloseTo(0.9520531630011205, 12);
+  });
 });
