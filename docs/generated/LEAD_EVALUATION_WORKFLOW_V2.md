@@ -5,7 +5,7 @@
 - 运行时策略版本：3.0.0（基础流程定义 2.2.0）
 - 评分策略版本：2.0.0
 - 成本质量策略版本：3.0.0
-- 配置指纹：`b556a444858d94a17b8f08982f7c1b5bc522dbf9bf57f203f28d1fa1295ed7f4`
+- 配置指纹：`2ccc2d641e5dbafc9c114808ddcd4e8d9987630dc4ab605bac78d64fe4d23f72`
 - 范围：From the user's natural-language market-development request and workspace context to ranked companies, editable cooperation paths, development strategy, outreach email, and private-memory learning from user edits.
 
 ## 一、从用户输入到最终输出的总流程
@@ -90,7 +90,7 @@ flowchart TD
 
 - Preserve explicit user constraints
 - Treat requested roles as search intent, not final classification
-- Agent, Brand Owner and OEM/ODM are explicit-only
+- Agent, Brand Owner and OEM/ODM are explicit-only; explicit English, Spanish or Chinese exclusions override keyword mentions
 - Never route OEM/ODM supplier sourcing
 - Mark nominated companies for deep research
 - Record the light Kimi call and any K3 escalation separately instead of attributing only the final model
@@ -712,7 +712,7 @@ flowchart TD
 | `src/app/api/assistant/messages/route.ts` | `04bec90cc3d3f336195e8ab97a5ad4b1ec1e05b95606064225e098e94ed7a5cd` |
 | `src/lib/assistant/types.ts` | `063d3688b6343d4c507e95960ed505ad80d8d778e8a22f10b574ec2668f64a9a` |
 | `src/lib/assistant/intent.ts` | `cb77a2854f0058d92bf758ce4610d298bc94dde0157ade4f0bd3d05343fad168` |
-| `src/lib/assistant/intent-agent.ts` | `a1c458fc0651b47fa28a3927c08e5f040f078a8416cf551170c1eb69970d2247` |
+| `src/lib/assistant/intent-agent.ts` | `f2ed5769389087961ca6f95e3e5b3916fd100014012195129de628db3b4ce255` |
 | `src/lib/rag/openai-provider.ts` | `76cfe7272860d08d280f29fdbde3aae6bb614c81abb3a149d42943be5482bb0d` |
 | `src/lib/assistant/service.ts` | `1e2d9719d2937cc3081c3dbddf016d7cd665de1c1e9a88c775d10e3863ec00df` |
 | `src/lib/assistant/repository.ts` | `4243485613740437216b7867c0b8b420ea16d555f852397b436fd8a5f5414e67` |
@@ -747,7 +747,7 @@ flowchart TD
 | `src/lib/outreach/knowledge-repository.ts` | `59a023091f9adac80d4b502e1b4cf69b9d318bd5a7610112354fb95a8d802557` |
 | `db/migrations/033_hybrid_search_contribution.sql` | `6e002fe0a49bddd75853b6d13fdc5759b9f4b90653ffda47ccc6c8f4fddbb0d0` |
 | `experiments/search-e2e-evaluation/uk-mx-v1/lib/cost-ledger.ts` | `56ae24a73596594c06fc7222328d7934367997e63d6de624b399ae2dce6388dd` |
-| `experiments/search-e2e-evaluation/uk-mx-v1/scripts/run-formal-experiment.ts` | `1406419702ac1beee721e8b4ed9442930eb312c82164749c78c9b44e6bfe7980` |
+| `experiments/search-e2e-evaluation/uk-mx-v1/scripts/run-formal-experiment.ts` | `29832142127ee99b49c3019bffa80dbef2d53cfd587c0e82534e6cead175809b` |
 | `src/lib/leads/workflow/evidence-budget.ts` | `db035da87b8896ae5a81b12744a072810de80f160cb472724d5cedbcf06037f9` |
 | `src/lib/leads/workflow/pdf-extraction-policy.ts` | `6d8847827f1e96eab570114bca33cd447eaa3e64d7246ee09a748f8e6d6ade03` |
 | `src/lib/leads/workflow/public-evidence-repository.ts` | `5dcbfe60487eeb5d2ccab4b6e3eac9529705b21005abaa599359c992e51c4b03` |

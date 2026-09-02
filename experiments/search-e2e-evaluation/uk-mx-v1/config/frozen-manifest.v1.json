@@ -1,21 +1,21 @@
 {
   "schemaVersion": 1,
-  "experimentId": "search-e2e-eval-v1.0.5",
-  "runId": "2026-09-02-uk-mx-search-e2e-v1-5",
-  "createdAt": "2026-09-02T03:46:40.917Z",
-  "requiredGitTag": "search-e2e-eval-v1.0.5-frozen",
+  "experimentId": "search-e2e-eval-v1.0.6",
+  "runId": "2026-09-02-uk-mx-search-e2e-v1-6",
+  "createdAt": "2026-09-02T03:51:29.341Z",
+  "requiredGitTag": "search-e2e-eval-v1.0.6-frozen",
   "files": [
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/PROTOCOL.md",
-      "sha256": "4a975167721d5bd1b0c34b8290227d8a5d7264b83e474b70fb0fefb64192ffb3"
+      "sha256": "02c2d2ee684c98dd0b7f6d085013704be6571fc9fdfa50a2ecd539f77089cba6"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/README.md",
-      "sha256": "927ebc931f9ded36621608a747d845ec824bd6b9f24aa4ea785093e99a7445a1"
+      "sha256": "59f8e31688cda6813c5f767e503254bbc5bac4923903341ebfa75bda4d663e28"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/config/experiment.v1.0.0.json",
-      "sha256": "6ea41e8af7fef51f2444ecb071777c6dbd8e2c123a4340a4bcc8e849ed122180"
+      "sha256": "ef0ae4e32fd7eda9c6f47ccf674454ce27276d9a536d2f136916100098722d80"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/config/gemini-control-prompt.md",
@@ -67,7 +67,7 @@
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/scripts/run-formal-experiment.ts",
-      "sha256": "ac6857d9fdd17908505be52d1dd9064b31fc8427ec54d531021577508f9adb63"
+      "sha256": "29832142127ee99b49c3019bffa80dbef2d53cfd587c0e82534e6cead175809b"
     },
     {
       "path": "config/lead-search/hybrid-search-v1.0.0.json",
@@ -79,7 +79,7 @@
     },
     {
       "path": "config/lead-workflow/end-to-end-v2.0.0.json",
-      "sha256": "ff97eb7964b246f5d5018a25e9fdc61e261a7a5d51b744afa4e9e7342e350f0c"
+      "sha256": "4cdeed8c04ef1a31a5692da69d9db0f71abc5dd61c0f2aa4bb83355dbce851f4"
     },
     {
       "path": "config/lead-workflow/runtime-policy-v3.0.0.json",
@@ -91,7 +91,7 @@
     },
     {
       "path": "src/lib/assistant/intent-agent.ts",
-      "sha256": "759a179bdf517b2e4753b018aa060e52402254a6df283ca0d6c03623ecfc1ca8"
+      "sha256": "f2ed5769389087961ca6f95e3e5b3916fd100014012195129de628db3b4ce255"
     },
     {
       "path": "src/lib/assistant/types.ts",

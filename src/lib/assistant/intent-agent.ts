@@ -93,15 +93,37 @@ function normalizeObjective(value: string | undefined,
   return fallback ?? "new-market";
 }
 
+function hasPositiveExplicitMention(content: string, term: RegExp): boolean {
+  const text = content.toLowerCase();
+  const matches = [...text.matchAll(new RegExp(term.source, `${term.flags.replace("g", "")}g`))];
+  return matches.some((match) => {
+    const index = match.index ?? 0;
+    const clauseStart = Math.max(text.lastIndexOf(".", index), text.lastIndexOf(";", index),
+      text.lastIndexOf("。", index), text.lastIndexOf("；", index), text.lastIndexOf("!", index),
+      text.lastIndexOf("！", index), text.lastIndexOf("?", index), text.lastIndexOf("？", index));
+    const prefix = text.slice(Math.max(clauseStart + 1, index - 160), index);
+    return !/(?:do\s+not|don['’]t|exclude|excluding|without|never|no\s+busques|no\s+buscar|sin|不要|不搜索|排除|无需)/i.test(prefix);
+  });
+}
+
 function safeLeadPlan(raw: z.infer<typeof rawPlanSchema>, userRequest: string): LeadSearchPlan | undefined {
   if (raw.intent !== "lead_search") return undefined;
   const deterministic = interpretAssistantRequest(userRequest);
   const countryText = `${raw.lead_plan?.country ?? ""} ${raw.lead_plan?.country_code ?? ""} ${userRequest}`;
   const country = resolveCountry(countryText) ?? deterministic.plan;
   if (!country) return undefined;
-  const opportunityTargets = deterministic.plan?.opportunityTargets ?? [];
+  const explicitlyRequestsAgent = hasPositiveExplicitMention(userRequest,
+    /\b(?:sales\s+agents?|manufacturer\s+representatives?|agentes?\s+comerciales?|representantes?\s+de\s+ventas?)\b|销售代理|厂家代表|代理人/iu);
+  const explicitlyRequestsBrandOwner = hasPositiveExplicitMention(userRequest,
+    /\b(?:brand\s+owners?|product\s+companies|propietarios?\s+de\s+marcas?)\b|品牌方|品牌所有者/iu);
+  const explicitlyRequestsOem = hasPositiveExplicitMention(userRequest,
+    /\b(?:oem\s*\/?\s*odm|private[- ]label|white[- ]label)\b|贴牌|白牌|定制品牌/iu);
+  const opportunityTargets = explicitlyRequestsOem ? ["OEM/ODM" as const] : [];
   const deterministicRoles = deterministic.plan?.roles ?? [];
-  const explicitSpecialRoles = new Set(deterministicRoles.filter((role) => role === "Agent" || role === "Brand Owner"));
+  const explicitSpecialRoles = new Set<ChannelRole>([
+    ...(explicitlyRequestsAgent ? ["Agent" as const] : []),
+    ...(explicitlyRequestsBrandOwner ? ["Brand Owner" as const] : []),
+  ]);
   const modelRoles = (raw.lead_plan?.roles ?? []).filter((role) => (role !== "Agent" && role !== "Brand Owner")
     || explicitSpecialRoles.has(role));
   const roles = modelRoles.length ? modelRoles : deterministicRoles.length

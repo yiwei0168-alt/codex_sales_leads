@@ -101,4 +101,31 @@ describe("Kimi intent and planning agent", () => {
     expect(result.leadPlan?.roles).toEqual(["Distributor"]);
     expect(result.leadPlan?.opportunityTargets).toEqual([]);
   });
+
+  it.each([
+    "Find and evaluate 2 companies in Canada whose primary role is Distributor/VAD. Do not search for contacts, agents, brand owners or OEM/ODM opportunities.",
+    "Busca y evalúa 2 empresas en Canadá cuya función principal sea Distributor/VAD. No busques contactos, agentes, propietarios de marcas ni oportunidades OEM/ODM.",
+  ])("gives explicit exclusions priority over special-role mentions: %s", async (request) => {
+    vi.stubEnv("KIMI_API_KEY", "test-key");
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({
+      choices: [{ message: { content: JSON.stringify({ intent: "lead_search", confidence: 0.95,
+        lead_plan: { country: "Canada", country_code: "CA", roles: ["Distributor", "VAD", "Agent", "Brand Owner"],
+          opportunity_targets: ["OEM/ODM"], target_count: 2 } }) } }],
+    }), { status: 200 }));
+    const result = await planAssistantRequest(request, [], fetchMock);
+    expect(result.leadPlan?.roles).toEqual(["Distributor", "VAD"]);
+    expect(result.leadPlan?.opportunityTargets).toEqual([]);
+  });
+
+  it("allows special roles and OEM/ODM only when positively requested", async () => {
+    vi.stubEnv("KIMI_API_KEY", "test-key");
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({
+      choices: [{ message: { content: JSON.stringify({ intent: "lead_search", confidence: 0.95,
+        lead_plan: { country: "Germany", country_code: "DE", roles: ["Agent", "Brand Owner"],
+          opportunity_targets: ["OEM/ODM"], target_count: 10 } }) } }],
+    }), { status: 200 }));
+    const result = await planAssistantRequest("Find sales agents, brand owners and OEM/ODM customers in Germany", [], fetchMock);
+    expect(result.leadPlan?.roles).toEqual(["Agent", "Brand Owner"]);
+    expect(result.leadPlan?.opportunityTargets).toEqual(["OEM/ODM"]);
+  });
 });
