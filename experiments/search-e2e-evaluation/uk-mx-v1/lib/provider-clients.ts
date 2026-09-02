@@ -20,6 +20,18 @@ interface ProviderCall<T> {
   attempts: number;
   retries: number;
   parseError?: string;
+  requestError?: string;
+  requestFailureKind?: ProviderRequestFailureKind;
+}
+
+export type ProviderRequestFailureKind = "transport" | "timeout" | "http" | "invalid-response";
+
+class ProviderRequestError extends Error {
+  constructor(message: string, readonly attempts: number, readonly failureKind: ProviderRequestFailureKind,
+    options: { cause?: unknown } = {}) {
+    super(message, options);
+    this.name = "ProviderRequestError";
+  }
 }
 
 type JsonSchema = Record<string, unknown>;
@@ -103,26 +115,31 @@ function tokenValue(usage: Record<string, unknown> | undefined, keys: string[]):
 
 async function requestJsonWithRetry(url: string, init: RequestInit, maximumAttempts: number,
   timeoutMs: number): Promise<{ body: unknown; attempts: number }> {
-  let lastError: unknown;
   for (let attempt = 1; attempt <= maximumAttempts; attempt += 1) {
+    let response: Response;
     try {
-      const response = await fetch(url, { ...init, signal: AbortSignal.timeout(timeoutMs) });
-      const text = await response.text();
-      if (!response.ok) {
-        const retryable = response.status === 408 || response.status === 429 || response.status >= 500;
-        const error = new Error(`HTTP ${response.status}: ${text.slice(0, 500)}`);
-        if (!retryable || attempt === maximumAttempts) throw error;
-        lastError = error;
-      } else {
-        try { return { body: JSON.parse(text) as unknown, attempts: attempt }; }
-        catch { throw new Error(`Provider returned non-JSON content: ${text.slice(0, 300)}`); }
-      }
+      response = await fetch(url, { ...init, signal: AbortSignal.timeout(timeoutMs) });
     } catch (error) {
-      lastError = error;
-      if (attempt === maximumAttempts) throw error;
+      if (attempt < maximumAttempts) continue;
+      const name = error instanceof Error ? error.name : "";
+      const failureKind: ProviderRequestFailureKind = ["AbortError", "TimeoutError"].includes(name)
+        ? "timeout" : "transport";
+      throw new ProviderRequestError(error instanceof Error ? error.message : String(error), attempt, failureKind,
+        { cause: error });
+    }
+    const text = await response.text();
+    if (!response.ok) {
+      const retryable = response.status === 408 || response.status === 429 || response.status >= 500;
+      if (retryable && attempt < maximumAttempts) continue;
+      throw new ProviderRequestError(`HTTP ${response.status}: ${text.slice(0, 500)}`, attempt, "http");
+    }
+    try { return { body: JSON.parse(text) as unknown, attempts: attempt }; }
+    catch (error) {
+      throw new ProviderRequestError(`Provider returned non-JSON content: ${text.slice(0, 300)}`,
+        attempt, "invalid-response", { cause: error });
     }
   }
-  throw lastError instanceof Error ? lastError : new Error("Provider request failed");
+  throw new ProviderRequestError("Provider request failed", maximumAttempts, "transport");
 }
 
 export async function renderGeminiControlPrompt(cell: ExperimentCell): Promise<string> {
@@ -149,12 +166,21 @@ export async function callGeminiControl(cell: ExperimentCell,
   const responseFormat = await geminiControlResponseFormat();
   const startedAt = new Date().toISOString();
   const started = Date.now();
-  const response = await requestJsonWithRetry(geminiInteractionsUrl(), {
-    method: "POST", headers: { "x-goog-api-key": apiKey, "content-type": "application/json" },
-    body: JSON.stringify({ model: requestedModel, input: prompt, tools: [{ type: "google_search" }],
-      response_format: responseFormat,
-      generation_config: { thinking_level: "low", max_output_tokens: options.maxOutputTokens ?? 32_768 } }),
-  }, 2, 180_000);
+  let response: Awaited<ReturnType<typeof requestJsonWithRetry>>;
+  try {
+    response = await requestJsonWithRetry(geminiInteractionsUrl(), {
+      method: "POST", headers: { "x-goog-api-key": apiKey, "content-type": "application/json" },
+      body: JSON.stringify({ model: requestedModel, input: prompt, tools: [{ type: "google_search" }],
+        response_format: responseFormat,
+        generation_config: { thinking_level: "low", max_output_tokens: options.maxOutputTokens ?? 32_768 } }),
+    }, 2, 180_000);
+  } catch (error) {
+    if (!(error instanceof ProviderRequestError)) throw error;
+    return { output: null, raw: null, requestedModel, actualModel: requestedModel, usage: {}, startedAt,
+      completedAt: new Date().toISOString(), latencyMs: Date.now() - started, attempts: error.attempts,
+      retries: Math.max(0, error.attempts - 1), requestError: error.message,
+      requestFailureKind: error.failureKind };
+  }
   const body = response.body as { model?: string; usage?: Record<string, unknown> };
   const text = geminiText(body);
   const parsed = parseStructured(text, geminiControlOutputSchema);
@@ -186,13 +212,22 @@ export async function callClaudeBlindJudge(packet: Record<string, unknown>, mode
   const schema = await readFile(path.resolve("experiments/search-e2e-evaluation/uk-mx-v1/schemas/blind-judge-output.schema.json"), "utf8");
   const startedAt = new Date().toISOString();
   const started = Date.now();
-  const response = await requestJsonWithRetry(anthropicMessagesUrl(), {
-    method: "POST", headers: { "x-api-key": apiKey,
-      "anthropic-version": process.env.CLAUDE_API_VERSION?.trim() || "2023-06-01", "content-type": "application/json" },
-    body: JSON.stringify({ model, max_tokens: maxTokens, output_config: { effort: "high" },
-      system: `${rubric}\n\nReturn one JSON object only. Exact JSON Schema:\n${schema}`,
-      messages: [{ role: "user", content: JSON.stringify(packet) }] }),
-  }, 2, 180_000);
+  let response: Awaited<ReturnType<typeof requestJsonWithRetry>>;
+  try {
+    response = await requestJsonWithRetry(anthropicMessagesUrl(), {
+      method: "POST", headers: { "x-api-key": apiKey,
+        "anthropic-version": process.env.CLAUDE_API_VERSION?.trim() || "2023-06-01", "content-type": "application/json" },
+      body: JSON.stringify({ model, max_tokens: maxTokens, output_config: { effort: "high" },
+        system: `${rubric}\n\nReturn one JSON object only. Exact JSON Schema:\n${schema}`,
+        messages: [{ role: "user", content: JSON.stringify(packet) }] }),
+    }, 2, 180_000);
+  } catch (error) {
+    if (!(error instanceof ProviderRequestError)) throw error;
+    return { output: null, raw: null, requestedModel: model, actualModel: model, usage: {}, startedAt,
+      completedAt: new Date().toISOString(), latencyMs: Date.now() - started, attempts: error.attempts,
+      retries: Math.max(0, error.attempts - 1), requestError: error.message,
+      requestFailureKind: error.failureKind };
+  }
   const body = response.body as { model?: string; content?: Array<{ type?: string; text?: string }>;
     usage?: { input_tokens?: number; output_tokens?: number } };
   const text = (body.content ?? []).filter((item) => item.type === "text").map((item) => item.text ?? "").join("");

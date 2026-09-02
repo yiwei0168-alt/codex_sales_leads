@@ -170,15 +170,24 @@ export async function judgeBlindPacket(packet: BlindPacket, model: string, optio
   onCostEvents?: (events: ExperimentCostEvent[]) => Promise<void> | void;
 } = {}): Promise<BlindDecision> {
   const call = await callClaudeBlindJudge(packet as unknown as Record<string, unknown>, model);
+  const discardedReason = call.requestError
+    ? call.requestFailureKind === "timeout" ? "timeout"
+      : call.requestFailureKind === "http" ? "providerHttpFailure"
+        : call.requestFailureKind === "invalid-response" ? "providerResponseInvalid" : "transportFailure"
+    : "schemaInvalid";
   const costEvent = priceCostEvent({ eventId: `${packet.packetId}:blind-judge`, runId: EXPERIMENT_CONFIG.runId,
     ledger: "evaluation-overhead", arm: "shared-evaluation", stage: "blind-judge", provider: "anthropic",
     requestedModel: call.requestedModel, actualModel: call.actualModel, startedAt: call.startedAt,
     completedAt: call.completedAt, latencyMs: call.latencyMs, attempts: call.attempts, retries: call.retries,
     fallbackUsed: call.actualModel !== call.requestedModel, status: call.output ? "completed" : "failed",
-    usage: call.usage, volume: { inputItems: 1, rawOutputItems: 1, validOutputItems: call.output ? 1 : 0,
-      downstreamUsedItems: call.output ? 1 : 0, discardedReasonCounts: call.output ? {} : { schemaInvalid: 1 } },
+    usage: call.usage, volume: { inputItems: 1, rawOutputItems: call.requestError ? 0 : 1,
+      validOutputItems: call.output ? 1 : 0,
+      downstreamUsedItems: call.output ? 1 : 0, discardedReasonCounts: call.output ? {} : { [discardedReason]: 1 } },
     notes: ["blind packet; no web search; arm/model/rank/unified score hidden"] }, rateCard);
   await options.onCostEvents?.([costEvent]);
+  if (call.requestError) {
+    throw new Error(`${packet.packetId} blind judge ${call.requestFailureKind ?? "request"} failure after ${call.attempts} attempt(s): ${call.requestError}`);
+  }
   if (!call.output) throw new Error(`${packet.packetId} blind judge schema failure: ${call.parseError ?? "unknown"}`);
   const deterministicTotal = Object.values(call.output.dimensions).reduce((sum, value) => sum + value, 0);
   const allowedEvidenceIds = new Set(packet.evidence.map((item) => item.evidenceId));

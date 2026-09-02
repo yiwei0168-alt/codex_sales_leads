@@ -35,7 +35,7 @@ import { buildControlUniqueGroups, buildProductRecordIndex, evaluateControlUniqu
 nextEnv.loadEnvConfig(process.cwd());
 const rateCard = rateCardJson as ExperimentRateCard;
 const experimentRoot = path.resolve("experiments/search-e2e-evaluation/uk-mx-v1");
-const frozenTag = "search-e2e-eval-v1.0.10-frozen";
+const frozenTag = "search-e2e-eval-v1.0.11-frozen";
 
 const frozenFiles = [
   "PROTOCOL.md", "README.md", "config/experiment.v1.0.0.json", "config/gemini-control-prompt.md",
@@ -93,6 +93,13 @@ async function verifyFrozenManifest(requireTag = true): Promise<void> {
 
 function preflightEvent(input: Parameters<typeof priceCostEvent>[0]): ExperimentCostEvent {
   return priceCostEvent(input, rateCard);
+}
+
+function providerFailureDiscardReason(kind: string | undefined): string {
+  if (kind === "timeout") return "timeout";
+  if (kind === "http") return "providerHttpFailure";
+  if (kind === "invalid-response") return "providerResponseInvalid";
+  return "transportFailure";
 }
 
 function hasPreflightCheck(state: FormalRunState, name: string): boolean {
@@ -195,26 +202,26 @@ async function runPreflight(): Promise<void> {
   missing.push(...discoveryStatus.filter((item) => !item.configured).map((item) => item.apiKeyEnv));
   if (missing.length > 0) throw new Error(`Preflight missing required environment variables: ${[...new Set(missing)].join(", ")}`);
 
-  if (!hasPreflightCheck(state, "prior-before-v1.0.10-adjustment")) {
-    const productAdjustment = preflightEvent({ eventId: "preflight:prior-product-before-v1.0.10", runId: state.runId,
+  if (!hasPreflightCheck(state, "prior-before-v1.0.11-adjustment")) {
+    const productAdjustment = preflightEvent({ eventId: "preflight:prior-product-before-v1.0.11", runId: state.runId,
       ledger: "product-e2e-arm", arm: "product-e2e", stage: "prior-preflight-adjustment",
       provider: "mixed-product-preflight", startedAt: state.createdAt, completedAt: state.createdAt,
-      latencyMs: 0, attempts: 37, retries: 6, fallbackUsed: false, status: "completed", usage: {},
+      latencyMs: 0, attempts: 50, retries: 8, fallbackUsed: false, status: "completed", usage: {},
       accountCashCostUsd: EXPERIMENT_CONFIG.cost.priorProductPreflightAdjustmentUsd,
-      volume: { inputItems: 33, rawOutputItems: 29, validOutputItems: 23, downstreamUsedItems: 0,
+      volume: { inputItems: 46, rawOutputItems: 50, validOutputItems: 44, downstreamUsedItems: 21,
         discardedReasonCounts: { timeout: 1, schemaInvalid: 4, fallback: 1, semanticGateFailure: 5,
           transportFailure: 2 } },
-      notes: ["Conservative carry-forward for v1.0.0-v1.0.9 product-side preflights, including all successful v1.0.9 discovery, evidence and score checks."] });
-    const controlAdjustment = preflightEvent({ eventId: "preflight:prior-gemini-control-before-v1.0.10",
+      notes: ["Conservative carry-forward for v1.0.0-v1.0.10 product-side preflights, including all successful v1.0.10 discovery, evidence and score checks."] });
+    const controlAdjustment = preflightEvent({ eventId: "preflight:prior-gemini-control-before-v1.0.11",
       runId: state.runId, ledger: "gemini-native-arm", arm: "gemini-native", stage: "prior-preflight-adjustment",
       provider: "gemini-full", requestedModel: "gemini-3.6-flash", actualModel: "gemini-3.6-flash",
-      startedAt: state.createdAt, completedAt: state.createdAt, latencyMs: 0, attempts: 1, retries: 0,
+      startedAt: state.createdAt, completedAt: state.createdAt, latencyMs: 0, attempts: 2, retries: 0,
       fallbackUsed: false, status: "failed", usage: {},
       accountCashCostUsd: EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd,
-      volume: { inputItems: 4, rawOutputItems: 3, validOutputItems: 2, downstreamUsedItems: 0,
+      volume: { inputItems: 5, rawOutputItems: 5, validOutputItems: 4, downstreamUsedItems: 2,
         discardedReasonCounts: { schemaInvalid: 1, usageNotCheckpointed: 1, invalidRequest: 1 } },
-      notes: ["Carries the v1.0.7 unknown-usage control reserve plus two measured v1.0.9 structured-search diagnostics (three total grounding queries)."] });
-    await checkpointPreflight(state, "prior-before-v1.0.10-adjustment", [productAdjustment, controlAdjustment],
+      notes: ["Carries all Gemini control-side preflights and structured-search diagnostics through v1.0.10."] });
+    await checkpointPreflight(state, "prior-before-v1.0.11-adjustment", [productAdjustment, controlAdjustment],
       { productUsd: EXPERIMENT_CONFIG.cost.priorProductPreflightAdjustmentUsd,
         geminiControlReserveUsd: EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd });
   }
@@ -354,11 +361,12 @@ async function runPreflight(): Promise<void> {
       completedAt: gemini.completedAt, latencyMs: gemini.latencyMs, attempts: gemini.attempts, retries: gemini.retries,
       fallbackUsed: gemini.actualModel !== gemini.requestedModel,
       status: gemini.output ? "completed" : "failed", usage: gemini.usage,
-      volume: { inputItems: 1, rawOutputItems: gemini.output ? validCandidates : 1,
+      volume: { inputItems: 1, rawOutputItems: gemini.requestError ? 0 : gemini.output ? validCandidates : 1,
         validOutputItems: validCandidates, downstreamUsedItems: validCandidates,
-        discardedReasonCounts: gemini.output ? {} : { schemaInvalid: 1 } } });
+        discardedReasonCounts: gemini.output ? {} : gemini.requestError
+          ? { [providerFailureDiscardReason(gemini.requestFailureKind)]: 1 } : { schemaInvalid: 1 } } });
     if (!gemini.output || gemini.output.candidates.length < 1 || (gemini.usage.groundingQueries ?? 0) < 1) {
-      const detail = `Gemini control preflight failed: ${gemini.parseError ?? "no candidates or search query"}`;
+      const detail = `Gemini control preflight failed: ${gemini.requestError ?? gemini.parseError ?? "no candidates or search query"}`;
       await checkpointPreflightFailure(state, "gemini-3.6-flash-structured-search", [geminiEvent], detail);
       throw new Error(detail);
     }
@@ -375,6 +383,21 @@ async function runPreflight(): Promise<void> {
     let blindModel = hasPreflightCheck(state, "claude-blind-primary-invalid")
       ? EXPERIMENT_CONFIG.blindAudit.preflightOnlyFallbackModel : EXPERIMENT_CONFIG.blindAudit.primaryModel;
     let blind = await callClaudeBlindJudge(blindPacket, blindModel);
+    if (blind.requestError) {
+      const failedEvent = preflightEvent({ eventId: "preflight:blind-judge-request-failed", runId: state.runId,
+        ledger: "evaluation-overhead", arm: "shared-evaluation", stage: "preflight-blind-judge",
+        provider: "anthropic", requestedModel: blind.requestedModel, actualModel: blind.actualModel,
+        startedAt: blind.startedAt, completedAt: blind.completedAt, latencyMs: blind.latencyMs,
+        attempts: blind.attempts, retries: blind.retries,
+        fallbackUsed: blindModel !== EXPERIMENT_CONFIG.blindAudit.primaryModel,
+        status: "failed", usage: blind.usage, volume: { inputItems: 1, rawOutputItems: 0,
+          validOutputItems: 0, downstreamUsedItems: 0,
+          discardedReasonCounts: { [providerFailureDiscardReason(blind.requestFailureKind)]: 1 } },
+        notes: [`Request failed before a valid provider response: ${blind.requestFailureKind ?? "unknown"}.`] });
+      const detail = `Claude blind-judge ${blind.requestFailureKind ?? "request"} failure after ${blind.attempts} attempt(s): ${blind.requestError}`;
+      await checkpointPreflightFailure(state, "claude-blind-judge-request", [failedEvent], detail);
+      throw new Error(detail);
+    }
     if (!blind.output && blindModel === EXPERIMENT_CONFIG.blindAudit.primaryModel) {
       const invalidEvent = preflightEvent({ eventId: "preflight:blind-primary-invalid", runId: state.runId,
         ledger: "evaluation-overhead", arm: "shared-evaluation", stage: "preflight-blind-judge",
@@ -387,6 +410,20 @@ async function runPreflight(): Promise<void> {
         { model: blind.actualModel, parseError: blind.parseError ?? "unknown" });
       blindModel = EXPERIMENT_CONFIG.blindAudit.preflightOnlyFallbackModel;
       blind = await callClaudeBlindJudge(blindPacket, blindModel);
+      if (blind.requestError) {
+        const failedEvent = preflightEvent({ eventId: "preflight:blind-fallback-request-failed", runId: state.runId,
+          ledger: "evaluation-overhead", arm: "shared-evaluation", stage: "preflight-blind-judge",
+          provider: "anthropic", requestedModel: blind.requestedModel, actualModel: blind.actualModel,
+          startedAt: blind.startedAt, completedAt: blind.completedAt, latencyMs: blind.latencyMs,
+          attempts: blind.attempts, retries: blind.retries, fallbackUsed: true,
+          status: "failed", usage: blind.usage, volume: { inputItems: 1, rawOutputItems: 0,
+            validOutputItems: 0, downstreamUsedItems: 0,
+            discardedReasonCounts: { [providerFailureDiscardReason(blind.requestFailureKind)]: 1 } },
+          notes: [`Fallback request failed before a valid provider response: ${blind.requestFailureKind ?? "unknown"}.`] });
+        const detail = `Claude blind-judge fallback ${blind.requestFailureKind ?? "request"} failure after ${blind.attempts} attempt(s): ${blind.requestError}`;
+        await checkpointPreflightFailure(state, "claude-blind-fallback-request", [failedEvent], detail);
+        throw new Error(detail);
+      }
     }
     if (!blind.output) throw new Error(`Claude blind-judge preflight failed: ${blind.parseError}`);
     const blindEvent = preflightEvent({ eventId: "preflight:blind-judge", runId: state.runId,
@@ -708,9 +745,9 @@ async function runEvaluation(): Promise<void> {
     schemaVersion: 1, runId: state.runId, generatedAt, contributions, findings,
     note: "Observed opportunities only; no frozen experiment or product route was modified post hoc.",
   });
-  await writeTextAtomic(path.join(artifactRunRoot(), "final/SEARCH_E2E_EVALUATION_REPORT.v1.0.10.md"),
+  await writeTextAtomic(path.join(artifactRunRoot(), "final/SEARCH_E2E_EVALUATION_REPORT.v1.0.11.md"),
     renderFinalReport({ metrics, blind, bundles, costs: state.costEvents, generatedAt })
-      .replace("evaluation v1.0.9", "evaluation v1.0.10"));
+      .replace("evaluation v1.0.9", "evaluation v1.0.11"));
   state.status = "completed";
   await saveRunState(state);
   console.log(JSON.stringify({ status: "completed", runId: state.runId, passed: metrics.passed,

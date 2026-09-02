@@ -1,11 +1,14 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { callGeminiControl, geminiSearchQueries, sanitizeGeminiJsonSchema } from "./provider-clients";
+import { callClaudeBlindJudge, callGeminiControl, geminiSearchQueries,
+  sanitizeGeminiJsonSchema } from "./provider-clients";
 
 afterEach(() => {
   vi.unstubAllGlobals();
   delete process.env.GEMINI_API_KEY;
   delete process.env.GEMINI_BASE_URL;
+  delete process.env.CLAUDE_API_KEY;
+  delete process.env.CLAUDE_BASE_URL;
 });
 
 describe("formal experiment Gemini adapter", () => {
@@ -56,5 +59,31 @@ describe("formal experiment Gemini adapter", () => {
     expect(call.output?.candidates).toHaveLength(1);
     expect(call.usage).toMatchObject({ inputTokens: 100, cachedInputTokens: 20, outputTokens: 15,
       reasoningTokens: 5, groundingQueries: 3 });
+  });
+
+  it("returns a non-retryable HTTP failure with auditable attempt metadata", async () => {
+    process.env.GEMINI_API_KEY = "test-only";
+    const fetchMock = vi.fn(async () => new Response(JSON.stringify({ error: "invalid request" }), { status: 400 }));
+    vi.stubGlobal("fetch", fetchMock);
+    const call = await callGeminiControl({ sequence: 1, cellId: "CA-test", countryCode: "GB",
+      countryName: "Canada", primaryLanguage: "en", supplementaryLanguages: [], categoryId: "distribution",
+      categoryLabel: "Distributor/VAD", categoryDefinition: "test", roles: ["Distributor", "VAD"],
+      armStartOrder: ["gemini-native", "product-e2e"] }, { prompt: "test" });
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(call).toMatchObject({ output: null, attempts: 1, retries: 0,
+      requestFailureKind: "http" });
+    expect(call.requestError).toContain("HTTP 400");
+  });
+
+  it("returns exhausted Claude transport retries instead of dropping their telemetry", async () => {
+    process.env.CLAUDE_API_KEY = "test-only";
+    process.env.CLAUDE_BASE_URL = "https://lingyuapi.com";
+    const fetchMock = vi.fn(async () => { throw new TypeError("fetch failed"); });
+    vi.stubGlobal("fetch", fetchMock);
+    const call = await callClaudeBlindJudge({ packetId: "test" }, "claude-opus-5", 64);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(call).toMatchObject({ output: null, attempts: 2, retries: 1,
+      requestFailureKind: "transport" });
+    expect(call.requestError).toBe("fetch failed");
   });
 });

@@ -156,6 +156,8 @@ Preflight v1.0.8 stopped before any formal cell because Kimi returned an otherwi
 
 Preflight v1.0.9 passed every product-side check after two recoverable TLS resets, then the Gemini control request rejected the richer structured-output Schema with HTTP 400. Controlled probes showed that Gemini 3 + Google Search + top-level `response_format` works and that the complete field hierarchy succeeds when the API-side Schema is limited to `type/properties/required/items/enum`; local Zod continues enforcing all strict bounds. The two successful probes used three grounding queries and cost an estimated USD 0.04518225 from official usage. v1.0.10 carries USD 0.372687 product-side and USD 0.145183 Gemini-control-side, USD 0.517870 total. Formal cells remain 0/8.
 
+Preflight v1.0.10 passed Kimi intent, local RAG, every product discovery provider, Tavily evidence, DeepSeek score-only and the Gemini 3.6 Flash structured-search control. The final Claude preflight could not establish TLS to `lingyuapi.com`; formal cells remain 0/8. A runtime audit found that thrown provider requests did not persist attempts, latency or discard reasons. v1.0.11 closes that observability gap without changing experiment semantics: transport, timeout, HTTP and invalid-response failures are checkpointed before a task remains retryable, non-retryable 4xx responses stop after one attempt, and transport failures cannot trigger blind-model fallback. Prior budget carry is USD 0.531486457 product-side plus USD 0.17466425 Gemini-control-side, USD 0.706150707 total. This prevents failed-call telemetry from becoming a hidden cost or reliability blind spot in later workflow optimization.
+
 ## 持续优化事项
 
 | 优先级 | 工作流环节 | 可优化点 | 质量门禁 | 状态 |
