@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-02-uk-mx-search-e2e-v1-8",
+  "experimentId": "search-e2e-eval-v1.0.8",
+  "status": "created",
+  "createdAt": "2026-09-02T05:01:49.286Z",
+  "updatedAt": "2026-09-02T05:02:34.977Z",
+  "preflightChecks": [
+    {
+      "name": "prior-before-v1.0.8-adjustment",
+      "completedAt": "2026-09-02T05:01:49.289Z",
+      "detail": {
+        "productUsd": 0.210415,
+        "geminiControlReserveUsd": 0.1
+      }
+    }
+  ],
+  "completedArmKeys": [],
+  "completedCellIds": [],
+  "completedEvaluationCellIds": [],
+  "completedBlindPacketIds": [],
+  "reportedBudgetThresholdsUsd": [],
+  "anomalies": [
+    {
+      "at": "2026-09-02T05:02:34.977Z",
+      "severity": "warning",
+      "code": "preflight-kimi-intent-failed",
+      "detail": "Kimi 意图 Agent 不可用，已使用确定性路由兜底。 | Kimi 降级原因：Kimi plan schema invalid (intent=lead_search; keys=intent,confidence,internal_question,external_questions,reply,lead_plan,requires_k3_planning,planning_reason): Invalid input: expected number, received NaN"
+    }
+  ],
+  "costEvents": [
+    {
+      "eventId": "preflight:prior-product-before-v1.0.8",
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-8",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "stage": "prior-preflight-adjustment",
+      "provider": "mixed-product-preflight",
+      "startedAt": "2026-09-02T05:01:49.286Z",
+      "completedAt": "2026-09-02T05:01:49.286Z",
+      "latencyMs": 0,
+      "attempts": 18,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0.210415,
+      "volume": {
+        "inputItems": 18,
+        "rawOutputItems": 17,
+        "validOutputItems": 12,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "timeout": 1,
+          "schemaInvalid": 3,
+          "fallback": 1,
+          "semanticGateFailure": 5
+        }
+      },
+      "notes": [
+        "Conservative carry-forward for v1.0.0-v1.0.7 product-side preflights, including corrected Gemini discovery grounding charges."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0.210415,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "preflight:prior-gemini-control-before-v1.0.8",
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-8",
+      "ledger": "gemini-native-arm",
+      "arm": "gemini-native",
+      "stage": "prior-preflight-adjustment",
+      "provider": "gemini-full",
+      "requestedModel": "gemini-3.6-flash",
+      "actualModel": "gemini-3.6-flash",
+      "startedAt": "2026-09-02T05:01:49.286Z",
+      "completedAt": "2026-09-02T05:01:49.286Z",
+      "latencyMs": 0,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "failed",
+      "usage": {},
+      "accountCashCostUsd": 0.1,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "schemaInvalid": 1,
+          "usageNotCheckpointed": 1
+        }
+      },
+      "notes": [
+        "Conservative reserve for the v1.0.7 Gemini control call whose invalid structure and usage were not checkpointed."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0.1,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "preflight:intent:1",
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-8",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "stage": "preflight-intent",
+      "provider": "kimi",
+      "requestedModel": "kimi-k2.6",
+      "actualModel": "kimi-k2.6",
+      "startedAt": "2026-09-02T05:01:49.297Z",
+      "completedAt": "2026-09-02T05:02:34.977Z",
+      "latencyMs": 45677,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "failed",
+      "usage": {
+        "inputTokens": 531,
+        "cachedInputTokens": 512,
+        "outputTokens": 1593
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "providerFailure": 1
+        }
+      },
+      "notes": [
+        "Kimi plan schema invalid (intent=lead_search; keys=intent,confidence,internal_question,external_questions,reply,lead_plan,requires_k3_planning,planning_reason): Invalid input: expected number, received NaN"
+      ],
+      "officialListPriceUsd": 0.006442332925444869,
+      "budgetCostUsd": 0.006442332925444869,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    }
+  ]
+}

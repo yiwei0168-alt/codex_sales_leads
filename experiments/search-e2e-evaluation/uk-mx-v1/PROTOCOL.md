@@ -1,10 +1,12 @@
-# Cudy端到端搜索能力正式测评协议 v1.0.8
+# Cudy端到端搜索能力正式测评协议 v1.0.9
 
 状态：`preregistered-pending-preflight`
 
-v1.0.8修复Gemini Interactions API适配：使用顶层`response_format={type:text,mime_type:application/json,schema:...}`，将实验Schema裁剪为官方支持的JSON Schema子集，并读取`total_input_tokens`、`total_output_tokens`、`total_thought_tokens`、`total_cached_tokens`和`grounding_tool_count`。输出计费token按可见输出加thought token计算；Google grounding即使模型token为0也必须计费。解析失败调用先落账再终止。v1.0.7已完成产品侧预检但Gemini控制结构无效；正式英国/墨西哥单元仍为0/8。此前产品侧实际与修正费用按0.210415美元结转，未保存usage的Gemini控制失败调用保守预留0.100000美元，v1.0.8初始累计预算为0.310415美元。
+v1.0.9修复Kimi对无害数字格式的兼容：`confidence`接受数值、百分比或high/medium/low等有限描述并归一到0–1；`target_count`接受纯数字或含数字的短文本，无法解析时回退到用户原文的确定性数量提取，不以确定性逻辑替代Kimi语义意图。Schema错误现在记录具体字段路径。v1.0.8的Kimi调用使用531输入token（512缓存）、1593输出token、45.677秒和0.0064423329美元；正式英国/墨西哥单元仍为0/8。产品侧累计结转更新为0.216858美元，Gemini控制保守预留仍为0.100000美元，v1.0.9初始累计预算为0.316858美元。
 
-本版同时补齐预注册后评估执行器：Gemini独有最终公司统一补证/纠偏/评分，32→64独立盲审，校准门禁，Slot Utility@30、NDCG@30、10,000次分层Bootstrap、七项胜负门禁、工具真实贡献、成本与最终报告均逐项断点保存。八个搜索单元完成只进入`cells-completed`，不得提前把实验标记为完成。这些修复不改变样本、搜索策略、模型、评分标准或胜负门禁。
+v1.0.8已修复Gemini Interactions API适配：使用顶层`response_format={type:text,mime_type:application/json,schema:...}`，将实验Schema裁剪为官方支持的JSON Schema子集，并读取`total_input_tokens`、`total_output_tokens`、`total_thought_tokens`、`total_cached_tokens`和`grounding_tool_count`。输出计费token按可见输出加thought token计算；Google grounding即使模型token为0也必须计费。解析失败调用先落账再终止。
+
+本版保留v1.0.8补齐的预注册后评估执行器：Gemini独有最终公司统一补证/纠偏/评分，32→64独立盲审，校准门禁，Slot Utility@30、NDCG@30、10,000次分层Bootstrap、七项胜负门禁、工具真实贡献、成本与最终报告均逐项断点保存。八个搜索单元完成只进入`cells-completed`，不得提前把实验标记为完成。这些修复不改变样本、搜索策略、模型、评分标准或胜负门禁。
 
 本协议是产品首次正式端到端搜索测评的预注册文件。实验开始后，不允许在同一run中修改提示词、模型、样本、评分、停止规则、预算规则或胜负标准。若必须修改，当前run作废，升级协议版本并重新开始。
 

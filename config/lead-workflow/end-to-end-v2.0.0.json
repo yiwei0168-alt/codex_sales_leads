@@ -1,6 +1,6 @@
 {
   "workflowKey": "cudy-sales-lead-end-to-end",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "status": "active",
   "scope": "From the user's natural-language market-development request and workspace context to ranked companies, editable cooperation paths, development strategy, outreach email, and private-memory learning from user edits.",
   "principles": [
@@ -18,7 +18,7 @@
       "purpose": "Intent classification and execution planning",
       "defaultModel": "KIMI_INTENT_LIGHT_MODEL; default kimi-k2.6",
       "escalationOrFallback": "KIMI_INTENT_MODEL or KIMI_MODEL; default kimi-k3 for materially complex planning",
-      "callPolicy": "Light Kimi runs every turn; deterministic parsing is failure fallback only"
+      "callPolicy": "Light Kimi runs every turn; deterministic parsing is failure fallback only; harmless confidence/count formatting is normalized before schema validation"
     },
     {
       "stages": ["02-context-memory"],
@@ -135,7 +135,7 @@
       "name": "User request and editable business intent",
       "inputs": ["Natural-language request", "Target country/market", "Desired count", "Optional roles, products, constraints and nominated companies"],
       "outputs": ["LeadSearchPlan", "Explicit opportunity targets", "Coverage mode", "Verified-only flag", "Kimi requested/actual model, success state, usage availability and token/latency/retry usage", "userId", "workspaceId", "actionId", "graphThreadId"],
-      "strategy": ["Preserve explicit user constraints", "Treat requested roles as search intent, not final classification", "Agent, Brand Owner and OEM/ODM are explicit-only; explicit English, Spanish or Chinese exclusions override keyword mentions", "Never route OEM/ODM supplier sourcing", "Mark nominated companies for deep research", "Record the light Kimi call and any K3 escalation separately instead of attributing only the final model", "Normalize non-critical objective and coverage-mode synonyms deterministically; unknown coverage mode uses the existing auto default", "For frozen evaluations, require the recognized roles to stay inside the requested category, then execute the complete frozen role set", "Preserve failed-call telemetry before deterministic fallback; formal evaluations reserve budget when provider usage is unavailable"],
+      "strategy": ["Preserve explicit user constraints", "Treat requested roles as search intent, not final classification", "Agent, Brand Owner and OEM/ODM are explicit-only; explicit English, Spanish or Chinese exclusions override keyword mentions", "Never route OEM/ODM supplier sourcing", "Mark nominated companies for deep research", "Record the light Kimi call and any K3 escalation separately instead of attributing only the final model", "Normalize non-critical objective and coverage-mode synonyms deterministically; unknown coverage mode uses the existing auto default", "Normalize numeric strings, percentages and bounded descriptive confidence without replacing Kimi semantic intent; nonnumeric target counts fall back to the user-request parser", "For frozen evaluations, require the recognized roles to stay inside the requested category, then execute the complete frozen role set", "Preserve failed-call telemetry before deterministic fallback; formal evaluations reserve budget when provider usage is unavailable"],
       "failure": "Reject only structurally unusable requests; do not silently invent a target market or role, and do not discard paid-call telemetry when falling back.",
       "downstream": ["Knowledge retrieval", "Workflow checkpoint identity"]
     },

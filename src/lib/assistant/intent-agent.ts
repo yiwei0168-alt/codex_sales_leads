@@ -4,19 +4,50 @@ import type { ChannelRole } from "@/lib/domain";
 import { interpretAssistantRequest, resolveCountry } from "./intent";
 import type { AssistantConversationTurn, IntentPlan, LeadSearchPlan } from "./types";
 
-const PROMPT_VERSION = "assistant-intent-plan-v1";
+const PROMPT_VERSION = "assistant-intent-plan-v1.1";
 const CHANNEL_ROLES = [
   "Distributor", "VAD", "VAR", "Dealer", "Reseller", "Retailer", "E-tailer", "SI", "Installer", "MSP", "ISP",
   "Agent", "Brand Owner",
 ] as const satisfies readonly ChannelRole[];
 const DEFAULT_CHANNEL_ROLES = CHANNEL_ROLES.filter((role) => role !== "Agent" && role !== "Brand Owner");
 
+function normalizeConfidence(value: unknown): number {
+  if (typeof value === "number" && Number.isFinite(value)) return value;
+  if (typeof value === "string") {
+    const normalized = value.trim().toLowerCase();
+    const percentage = normalized.match(/^(\d+(?:\.\d+)?)\s*%$/);
+    if (percentage) return Number(percentage[1]) / 100;
+    const numeric = Number(normalized);
+    if (Number.isFinite(numeric)) return numeric;
+    if (["high", "alta", "alto", "高"].includes(normalized)) return 0.85;
+    if (["medium", "moderate", "media", "medio", "中"].includes(normalized)) return 0.65;
+    if (["low", "baja", "bajo", "低"].includes(normalized)) return 0.35;
+  }
+  return 0.7;
+}
+
+function normalizeOptionalCount(value: unknown): number | undefined {
+  if (value === null || value === undefined || value === "") return undefined;
+  if (typeof value === "string") {
+    const normalized = value.trim().toLowerCase();
+    const direct = Number(normalized);
+    if (Number.isFinite(direct)) return direct;
+    const digits = normalized.match(/\b(\d+(?:\.\d+)?)\b/);
+    if (digits) return Number(digits[1]);
+    const words: Record<string, number> = { one: 1, two: 2, three: 3, four: 4, five: 5,
+      uno: 1, dos: 2, tres: 3, cuatro: 4, cinco: 5 };
+    if (words[normalized] !== undefined) return words[normalized];
+  }
+  const numeric = typeof value === "number" ? value : Number.NaN;
+  return Number.isFinite(numeric) ? numeric : undefined;
+}
+
 const rawPlanSchema = z.object({
   intent: z.preprocess(
     (value) => typeof value === "string" ? value.trim().toLowerCase().replace(/-/g, "_") : value,
     z.enum(["internal_knowledge", "hybrid_research", "lead_search", "clarification", "general"]),
   ),
-  confidence: z.coerce.number().min(0).max(1),
+  confidence: z.preprocess(normalizeConfidence, z.number().min(0).max(1)),
   internal_question: z.string().max(4_000).nullish().transform((value) => value ?? ""),
   external_questions: z.array(z.string().max(2_000)).max(5).nullish().transform((value) => value ?? []),
   reply: z.string().max(4_000).nullish().transform((value) => value ?? ""),
@@ -25,7 +56,7 @@ const rawPlanSchema = z.object({
     country_code: z.string().max(2).nullish().transform((value) => value ?? ""),
     objective: z.string().max(120).nullish().transform((value) => value ?? ""),
     roles: z.array(z.enum(CHANNEL_ROLES)).max(CHANNEL_ROLES.length).nullish().transform((value) => value ?? []),
-    target_count: z.coerce.number().int().min(1).max(100).nullish().transform((value) => value ?? 20),
+    target_count: z.preprocess(normalizeOptionalCount, z.number().int().min(1).max(100).optional()),
     query_language: z.string().max(20).nullish().transform((value) => value ?? ""),
     opportunity_targets: z.array(z.enum(["OEM/ODM"])).max(1).nullish().transform((value) => value ?? []),
     coverage_mode: z.preprocess((value) => {
@@ -249,7 +280,8 @@ async function invokeKimiIntent(options: {
     if (!validated.success) {
       const returnedIntent = parsed && typeof parsed === "object" && "intent" in parsed ? String(parsed.intent).slice(0, 80) : "missing";
       const returnedKeys = parsed && typeof parsed === "object" ? Object.keys(parsed).slice(0, 12).join(",") : "none";
-      throw new Error(`Kimi plan schema invalid (intent=${returnedIntent}; keys=${returnedKeys}): ${validated.error.issues[0]?.message ?? "invalid JSON"}`);
+      const firstIssue = validated.error.issues[0];
+      throw new Error(`Kimi plan schema invalid (intent=${returnedIntent}; keys=${returnedKeys}; path=${firstIssue?.path.join(".") || "root"}): ${firstIssue?.message ?? "invalid JSON"}`);
     }
     return { raw: validated.data, body, call: buildCall(true) };
   } catch (error) {

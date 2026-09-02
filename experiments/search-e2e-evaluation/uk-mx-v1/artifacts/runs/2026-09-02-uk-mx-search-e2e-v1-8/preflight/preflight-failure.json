@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-02-uk-mx-search-e2e-v1-8",
+  "experimentId": "search-e2e-eval-v1.0.8",
+  "status": "invalid-before-formal-cells",
+  "failedCheck": "kimi-intent",
+  "formalCellsStarted": 0,
+  "reason": "Kimi returned an otherwise structured lead-search plan with a nonnumeric representation in a numeric field; schema coercion produced NaN.",
+  "measuredCall": {
+    "inputTokens": 531,
+    "cachedInputTokens": 512,
+    "outputTokens": 1593,
+    "latencyMs": 45677,
+    "officialListPriceUsd": 0.006442332925444869
+  },
+  "costCarryToV1_0_9": {
+    "productSideUsd": 0.216858,
+    "geminiControlReserveUsd": 0.1,
+    "totalUsd": 0.316858
+  },
+  "resolution": "v1.0.9 normalizes bounded confidence/count presentation formats, falls back to the user-text count parser when needed, and reports the failing schema path."
+}

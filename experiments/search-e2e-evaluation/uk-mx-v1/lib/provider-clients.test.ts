@@ -30,8 +30,10 @@ describe("formal experiment Gemini adapter", () => {
 
   it("sends native response_format and accounts official Interactions usage fields", async () => {
     process.env.GEMINI_API_KEY = "test-only";
-    const fetchMock = vi.fn(async (_url: string | URL | Request, _init?: RequestInit) =>
-      new Response(JSON.stringify({ model: "gemini-3.6-flash", steps: [
+    const fetchMock = vi.fn(async (_url: string | URL | Request, _init?: RequestInit) => {
+      void _url;
+      void _init;
+      return new Response(JSON.stringify({ model: "gemini-3.6-flash", steps: [
       { type: "google_search_call", arguments: { queries: ["one"] } },
       { type: "model_output", content: [{ type: "text", text: JSON.stringify({ market: "Canada",
         category: "distribution", candidates: [{ rank: 1, companyName: "Example Distribution",
@@ -40,7 +42,8 @@ describe("formal experiment Gemini adapter", () => {
           evidenceUrls: ["https://example.com/about"] }] }) }] },
     ], usage: { total_input_tokens: 100, total_cached_tokens: 20, total_output_tokens: 10,
       total_thought_tokens: 5, grounding_tool_count: [{ type: "google_search", count: 3 }] } }),
-    { status: 200, headers: { "content-type": "application/json" } }));
+    { status: 200, headers: { "content-type": "application/json" } });
+    });
     vi.stubGlobal("fetch", fetchMock);
     const call = await callGeminiControl({ sequence: 1, cellId: "CA-test", countryCode: "GB",
       countryName: "Canada", primaryLanguage: "en", supplementaryLanguages: [], categoryId: "distribution",

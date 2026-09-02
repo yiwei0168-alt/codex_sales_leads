@@ -72,6 +72,20 @@ describe("Kimi intent and planning agent", () => {
     expect(result.warnings.join(" ")).toContain("diagnostic failure");
   });
 
+  it("normalizes descriptive confidence and falls back to deterministic count for nonnumeric model output", async () => {
+    vi.stubEnv("KIMI_API_KEY", "test-key");
+    const fetchMock = vi.fn(async () => new Response(JSON.stringify({ model: "kimi-k2.6", choices: [{ message: {
+      content: JSON.stringify({ intent: "lead_search", confidence: "high", internal_question: "",
+        external_questions: [], reply: "", requires_k3_planning: false, planning_reason: "standard",
+        lead_plan: { country: "Canada", country_code: "CA", objective: "new-market",
+          roles: ["Distributor"], target_count: "2 companies", query_language: "en" } }) } }],
+      usage: { prompt_tokens: 10, completion_tokens: 20, total_tokens: 30 } }), { status: 200 }));
+    const result = await planAssistantRequest("Find 2 distributors in Canada", [], fetchMock);
+    expect(result.plannerSource).toBe("kimi-light");
+    expect(result.confidence).toBe(0.85);
+    expect(result.leadPlan?.targetCount).toBe(2);
+  });
+
   it("uses K3 only when the light Kimi model identifies a materially complex planning task", async () => {
     vi.stubEnv("KIMI_API_KEY", "test-key");
     const response = (value: Record<string, unknown>, model: string) => new Response(JSON.stringify({ model,

@@ -152,6 +152,8 @@ Preflight v1.0.7 passed intent, local RAG, all discovery providers, Tavily and D
 
 The v1.0.8 harness also closes a previous observability gap after search: Gemini/product overlap reuses one current-run record; only Gemini-unique final candidates receive shared evidence/correction/score calls; blind packets and decisions checkpoint individually; 32-sample failure expands deterministically to 64; final statistics include slot utility, validity, 65+/75+, NDCG, deduplication, bootstrap gates, provider fractional Top-30 contribution, three cost ledgers, actual wall time and optimization findings. A run is no longer complete at 8/8 search cells; all shared evaluation, blind calibration and reports must finish.
 
+Preflight v1.0.8 stopped before any formal cell because Kimi returned an otherwise usable lead plan with a nonnumeric representation in one numeric field. The failed call was preserved: 531 input tokens (512 cached), 1,593 output tokens, 45.677 seconds and USD 0.0064423329. v1.0.9 normalizes only bounded presentation variants for confidence/count and still requires Kimi to supply the semantic intent; target counts that remain nonnumeric fall back to the user-text parser. The versioned end-to-end definition is 2.2.1. Product-side carry-forward is USD 0.216858 and the separate Gemini control reserve is USD 0.100000, for a USD 0.316858 starting total. Formal cells remain 0/8.
+
 ## 持续优化事项
 
 | 优先级 | 工作流环节 | 可优化点 | 质量门禁 | 状态 |

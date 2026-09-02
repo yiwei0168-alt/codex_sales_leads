@@ -1,21 +1,21 @@
 {
   "schemaVersion": 1,
-  "experimentId": "search-e2e-eval-v1.0.8",
-  "runId": "2026-09-02-uk-mx-search-e2e-v1-8",
-  "createdAt": "2026-09-02T04:59:30.427Z",
-  "requiredGitTag": "search-e2e-eval-v1.0.8-frozen",
+  "experimentId": "search-e2e-eval-v1.0.9",
+  "runId": "2026-09-02-uk-mx-search-e2e-v1-9",
+  "createdAt": "2026-09-02T05:12:34.145Z",
+  "requiredGitTag": "search-e2e-eval-v1.0.9-frozen",
   "files": [
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/PROTOCOL.md",
-      "sha256": "97ffcae4c7b4088357b30ea7abe8d650a8c97fbae514bbb65159cea4f6da3f7d"
+      "sha256": "759f11a82453546a63c0e87978e3732c7c4ca7c5609b2bd879be64052caee1df"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/README.md",
-      "sha256": "5655b7c6306a056963e36cd6969c33053744c5a59772c7de394eb5cea9311af0"
+      "sha256": "2995da7dec3224da1b300ae048cae4d4bd66049173835c4aebb061b5af05e875"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/config/experiment.v1.0.0.json",
-      "sha256": "5882fb3d5d6c9f48a4ed8537ce9203c0b74f16af551311268ee48c2f08f7fb2e"
+      "sha256": "091a8ca764fd28f02d90e474c29d0ef7dfbd2c7063bddbcbca122e60ec4a47bf"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/config/gemini-control-prompt.md",
@@ -63,7 +63,7 @@
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/final-report.ts",
-      "sha256": "967a4f56e8a988c10166f96ff25d7c257df398e57130c3ea47a7b9917477191e"
+      "sha256": "7eab28476179d1ee24e8d791e4a3990592a0bbc628b97b411c631646c47607c6"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/product-cell.ts",
@@ -87,7 +87,7 @@
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/scripts/run-formal-experiment.ts",
-      "sha256": "741aed9e5dcdcf2702ca863a7dbebb65a712ccffb3e91183f0eed49b587ba7f2"
+      "sha256": "ad651414ea17d8df285f618fb23fd357dce61fff9aa5ecd9f76f0883cf34d7ea"
     },
     {
       "path": "config/lead-search/hybrid-search-v1.0.0.json",
@@ -99,7 +99,7 @@
     },
     {
       "path": "config/lead-workflow/end-to-end-v2.0.0.json",
-      "sha256": "4cdeed8c04ef1a31a5692da69d9db0f71abc5dd61c0f2aa4bb83355dbce851f4"
+      "sha256": "1ad50eb1550b4cec22b0f07d59dc0636b7d90e65e2b16709ccd4c13ca5933e05"
     },
     {
       "path": "config/lead-workflow/runtime-policy-v3.0.0.json",
@@ -111,7 +111,7 @@
     },
     {
       "path": "src/lib/assistant/intent-agent.ts",
-      "sha256": "f2ed5769389087961ca6f95e3e5b3916fd100014012195129de628db3b4ce255"
+      "sha256": "811b836f94bbe70a2fe72eccf382cad195fc61eb91bab05852cc49f5bd45b626"
     },
     {
       "path": "src/lib/assistant/types.ts",
