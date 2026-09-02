@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-02-uk-mx-search-e2e-v1-14",
+  "experimentId": "search-e2e-eval-v1.0.14",
+  "status": "created",
+  "createdAt": "2026-09-02T07:12:58.475Z",
+  "updatedAt": "2026-09-02T07:12:58.477Z",
+  "preflightChecks": [
+    {
+      "name": "prior-before-v1.0.14-adjustment",
+      "completedAt": "2026-09-02T07:12:58.477Z",
+      "detail": {
+        "productUsd": 0.5336900130011205,
+        "geminiControlReserveUsd": 0.41836315,
+        "lingyuOpenAiProbeUsd": 0
+      }
+    }
+  ],
+  "completedArmKeys": [],
+  "completedCellIds": [],
+  "completedEvaluationCellIds": [],
+  "completedBlindPacketIds": [],
+  "reportedBudgetThresholdsUsd": [],
+  "anomalies": [],
+  "costEvents": [
+    {
+      "eventId": "preflight:prior-product-before-v1.0.14",
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-14",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "stage": "prior-preflight-adjustment",
+      "provider": "mixed-product-preflight",
+      "startedAt": "2026-09-02T07:12:58.475Z",
+      "completedAt": "2026-09-02T07:12:58.475Z",
+      "latencyMs": 0,
+      "attempts": 51,
+      "retries": 8,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0.5336900130011205,
+      "volume": {
+        "inputItems": 47,
+        "rawOutputItems": 51,
+        "validOutputItems": 45,
+        "downstreamUsedItems": 21,
+        "discardedReasonCounts": {
+          "timeout": 1,
+          "schemaInvalid": 4,
+          "fallback": 1,
+          "semanticGateFailure": 6,
+          "transportFailure": 2
+        }
+      },
+      "notes": [
+        "Conservative carry-forward through the invalidated v1.0.13 run, including its Kimi intent call rejected by the semantic gate."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0.5336900130011205,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "preflight:prior-gemini-control-before-v1.0.14",
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-14",
+      "ledger": "gemini-native-arm",
+      "arm": "gemini-native",
+      "stage": "prior-preflight-adjustment",
+      "provider": "gemini-full",
+      "requestedModel": "gemini-3.6-flash",
+      "actualModel": "gemini-3.6-flash",
+      "startedAt": "2026-09-02T07:12:58.475Z",
+      "completedAt": "2026-09-02T07:12:58.475Z",
+      "latencyMs": 0,
+      "attempts": 3,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "failed",
+      "usage": {},
+      "accountCashCostUsd": 0.41836315,
+      "volume": {
+        "inputItems": 6,
+        "rawOutputItems": 35,
+        "validOutputItems": 34,
+        "downstreamUsedItems": 32,
+        "discardedReasonCounts": {
+          "schemaInvalid": 1,
+          "usageNotCheckpointed": 1,
+          "invalidRequest": 1
+        }
+      },
+      "notes": [
+        "Carries prior Gemini diagnostics plus the invalidated v1.0.13 MX-retail control call; its companies are not reused."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0.41836315,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "preflight:prior-lingyu-openai-probe",
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-14",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "preflight-blind-judge",
+      "provider": "lingyu-openai-responses",
+      "requestedModel": "gpt-5.6-sol",
+      "actualModel": "gpt-5.6-sol",
+      "startedAt": "2026-09-02T07:12:58.475Z",
+      "completedAt": "2026-09-02T07:12:58.475Z",
+      "latencyMs": 0,
+      "attempts": 2,
+      "retries": 1,
+      "fallbackUsed": true,
+      "status": "failed",
+      "usage": {},
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 2,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "insufficientQuota": 2
+        }
+      },
+      "notes": [
+        "High-reasoning, no-tools, store=false full-schema probe returned HTTP 403 insufficient_user_quota; no model output or token usage."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    }
+  ]
+}
