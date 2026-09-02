@@ -35,6 +35,12 @@ describe("formal experiment cost ledger", () => {
     expect(event.officialListPriceUsd).toBeCloseTo(0.057, 8);
   });
 
+  it("prices Gemini grounding even when the adapter reports no model tokens", () => {
+    const event = priceCostEvent(input({ provider: "gemini-full", requestedModel: "gemini-3.6-flash",
+      actualModel: "gemini-3.6-flash", usage: { inputTokens: 0, outputTokens: 0, groundingQueries: 4 } }), rateCard);
+    expect(event.officialListPriceUsd).toBeCloseTo(0.056, 8);
+  });
+
   it("does not silently price unknown models or missing grounding counts at zero", () => {
     const unknown = priceCostEvent(input({ actualModel: "unknown-model" }), rateCard);
     const missingGrounding = priceCostEvent(input({ provider: "gemini-full", requestedModel: "gemini-3.6-flash",

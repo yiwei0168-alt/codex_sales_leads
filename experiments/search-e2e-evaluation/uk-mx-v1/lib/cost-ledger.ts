@@ -173,7 +173,8 @@ export function priceCostEvent(input: ExperimentCostEventInput,
   if (input.volume.downstreamUsedItems > input.volume.validOutputItems) anomalies.push("downstream-use-exceeds-valid-output");
 
   const resolvedModel = input.actualModel || input.requestedModel;
-  const hasModelUsage = nonNegative(input.usage.inputTokens) > 0 || nonNegative(input.usage.outputTokens) > 0;
+  const hasModelUsage = nonNegative(input.usage.inputTokens) > 0 || nonNegative(input.usage.outputTokens) > 0
+    || input.usage.groundingQueries !== undefined;
   const modelUsd = resolvedModel && hasModelUsage ? modelCost(resolvedModel, input.usage, rateCard, anomalies) : 0;
   const searchUsd = searchCost(input.provider, input.usage, rateCard, anomalies);
   const officialListPriceUsd = modelUsd === null || searchUsd === null ? null : modelUsd + searchUsd;

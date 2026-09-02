@@ -28,15 +28,18 @@ npm run experiment:search-e2e:freeze
 npm run experiment:search-e2e:verify
 npm run experiment:search-e2e:preflight
 npm run experiment:search-e2e:cell -- --cell=MX-retail
+npm run experiment:search-e2e:evaluate
 ```
 
 The runner refuses paid calls unless every manifest hash matches and `HEAD` carries the frozen preregistration tag. Raw provider responses are written only under ignored `runs/raw/`; Git artifacts contain structured company fields, short evidence excerpts, hashes, aggregate telemetry and cost checkpoints.
 
-Preflight checks and formal-arm cost events are checkpointed after each completed stage. A retry skips completed preflight checks and completed cell arms. If an incomplete product arm must restart, repeated stage calls receive distinct ledger event IDs so retry spend is never hidden from the USD 100 cap.
+The Gemini adapter follows Google's current [Interactions API](https://ai.google.dev/api/interactions-api) usage fields and [structured-output contract](https://ai.google.dev/gemini-api/docs/structured-output): JSON format controls are top-level, and structured output may be combined with Google Search on Gemini 3 models.
+
+Preflight checks, formal-arm stages, Gemini-only shared evaluation and every blind-judge decision are checkpointed as soon as their cost occurs. A retry skips completed preflight checks, cell arms, shared-evaluation cells and blind packets. If an incomplete stage must restart, repeated calls receive distinct ledger event IDs so retry spend is never hidden from the USD 100 cap. Eight frozen cells produce `cells-completed`; only unified evaluation, blind calibration, statistics and final reports produce `completed`.
 
 ## Version and Git policy
 
-- Experiment version: `search-e2e-eval-v1.0.7`
+- Experiment version: `search-e2e-eval-v1.0.8`
 - Working branch: `experiment/search-e2e-uk-mx-v1`
 - A preregistration tag is created before experimental calls.
 - Runtime checkpoints are committed after every completed country/category cell.

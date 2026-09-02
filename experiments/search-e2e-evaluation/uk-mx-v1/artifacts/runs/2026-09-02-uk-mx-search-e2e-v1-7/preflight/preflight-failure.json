@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-02-uk-mx-search-e2e-v1-7",
+  "experimentId": "search-e2e-eval-v1.0.7",
+  "status": "invalid-before-formal-cells",
+  "failedCheck": "gemini-3.6-flash-structured-search",
+  "formalCellsStarted": 0,
+  "reason": "Gemini returned JSON that did not contain the required top-level candidates array because the adapter did not use the Interactions API native response_format contract.",
+  "costCorrection": {
+    "recordedProductSideUsd": 0.126414775,
+    "omittedGeminiDiscoveryGroundingUsd": 0.084,
+    "correctedProductSideUsd": 0.210414775,
+    "carriedProductSideUsd": 0.210415,
+    "lostUsageGeminiControlReserveUsd": 0.1,
+    "totalCarryToV1_0_8Usd": 0.310415
+  },
+  "resolution": "v1.0.8 sends a sanitized schema through top-level response_format, records official usage and grounding counts, and checkpoints failed parse calls before throwing."
+}

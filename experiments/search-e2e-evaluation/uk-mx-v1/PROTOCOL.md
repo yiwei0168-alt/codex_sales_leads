@@ -1,8 +1,10 @@
-# Cudy端到端搜索能力正式测评协议 v1.0.7
+# Cudy端到端搜索能力正式测评协议 v1.0.8
 
 状态：`preregistered-pending-preflight`
 
-v1.0.7对意图提示做去噪：只正向陈述目标市场、类别和数量，并要求限制在该市场/类别，不再在用户消息中枚举未请求的Agent、Brand Owner或OEM/ODM。系统规则仍默认禁止所有未显式请求的特殊角色，因此实验范围不变，同时减少提示token和角色回显偏差。v1.0.6调用已保留538个输入token、1246个输出token、34.976秒和0.0050470743美元。v1.0.0至v1.0.6均未运行任何英国/墨西哥正式单元；此前八次Kimi预检合计以0.047280美元（向上取整）计入总预算。既有否定解析、目标归一化、类别门禁、120秒超时、逐阶段即时落账及断点续跑全部保留。这些修改不改变实验样本、搜索策略、模型、评分或胜负标准。
+v1.0.8修复Gemini Interactions API适配：使用顶层`response_format={type:text,mime_type:application/json,schema:...}`，将实验Schema裁剪为官方支持的JSON Schema子集，并读取`total_input_tokens`、`total_output_tokens`、`total_thought_tokens`、`total_cached_tokens`和`grounding_tool_count`。输出计费token按可见输出加thought token计算；Google grounding即使模型token为0也必须计费。解析失败调用先落账再终止。v1.0.7已完成产品侧预检但Gemini控制结构无效；正式英国/墨西哥单元仍为0/8。此前产品侧实际与修正费用按0.210415美元结转，未保存usage的Gemini控制失败调用保守预留0.100000美元，v1.0.8初始累计预算为0.310415美元。
+
+本版同时补齐预注册后评估执行器：Gemini独有最终公司统一补证/纠偏/评分，32→64独立盲审，校准门禁，Slot Utility@30、NDCG@30、10,000次分层Bootstrap、七项胜负门禁、工具真实贡献、成本与最终报告均逐项断点保存。八个搜索单元完成只进入`cells-completed`，不得提前把实验标记为完成。这些修复不改变样本、搜索策略、模型、评分标准或胜负门禁。
 
 本协议是产品首次正式端到端搜索测评的预注册文件。实验开始后，不允许在同一run中修改提示词、模型、样本、评分、停止规则、预算规则或胜负标准。若必须修改，当前run作废，升级协议版本并重新开始。
 

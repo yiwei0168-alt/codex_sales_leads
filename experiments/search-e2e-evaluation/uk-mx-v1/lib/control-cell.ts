@@ -50,8 +50,10 @@ export async function runControlCell(cell: ExperimentCell, options: {
     provider: "gemini-full", requestedModel: call.requestedModel, actualModel: call.actualModel,
     startedAt: call.startedAt, completedAt: call.completedAt, latencyMs: call.latencyMs,
     attempts: call.attempts, retries: call.retries, fallbackUsed: call.actualModel !== call.requestedModel,
-    status: "completed", usage: call.usage, volume: { inputItems: 1, rawOutputItems: candidates.length,
-      validOutputItems: candidates.length, downstreamUsedItems: candidates.length,
+    status: call.parseError ? "failed" : "completed", usage: call.usage,
+    volume: { inputItems: 1, rawOutputItems: call.parseError ? 1 : candidates.length,
+      validOutputItems: call.parseError ? 0 : candidates.length,
+      downstreamUsedItems: call.parseError ? 0 : candidates.length,
       discardedReasonCounts: call.parseError ? { parseFailure: 1 } : {} },
     notes: ["one interaction", "no follow-up", "provider order preserved"] }, rateCard);
   const extraAnomalies = [

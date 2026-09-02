@@ -148,6 +148,10 @@ Preflight v1.0.5 showed that a local keyword parser treated the explicit exclusi
 
 Preflight v1.0.6 still showed that naming excluded special roles in the user message primed Kimi to echo Brand Owner. v1.0.7 removes those negative keyword lists from formal intent prompts and states only the positive market/category boundary; the system-level explicit-only rule remains authoritative. The v1.0.6 call used 538 cached input tokens, 1,246 output tokens, 34.976 seconds and USD 0.0050470743; cumulative carry-forward is USD 0.047280. No formal cell had started.
 
+Preflight v1.0.7 passed intent, local RAG, all discovery providers, Tavily and DeepSeek score-only checks, then exposed an incorrect Gemini Interactions adapter: the JSON Schema was only copied into the prompt instead of sent through top-level `response_format`, and grounding charges were omitted when model token fields were zero. v1.0.8 uses native structured output, the official usage fields, visible-output-plus-thought billing and usage-level grounding counts. Failed parse calls now record raw/valid/downstream volume and cost before termination. Product-side v1.0.0–v1.0.7 spend is conservatively carried as USD 0.210415 after repricing six Gemini grounding queries; the lost-usage Gemini control call has a separate USD 0.100000 reserve. Total v1.0.8 starting budget is therefore USD 0.310415 (0.31% of the USD 100 cap). No UK/Mexico formal cell had started.
+
+The v1.0.8 harness also closes a previous observability gap after search: Gemini/product overlap reuses one current-run record; only Gemini-unique final candidates receive shared evidence/correction/score calls; blind packets and decisions checkpoint individually; 32-sample failure expands deterministically to 64; final statistics include slot utility, validity, 65+/75+, NDCG, deduplication, bootstrap gates, provider fractional Top-30 contribution, three cost ledgers, actual wall time and optimization findings. A run is no longer complete at 8/8 search cells; all shared evaluation, blind calibration and reports must finish.
+
 ## 持续优化事项
 
 | 优先级 | 工作流环节 | 可优化点 | 质量门禁 | 状态 |

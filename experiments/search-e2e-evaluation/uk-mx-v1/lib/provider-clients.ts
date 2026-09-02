@@ -22,6 +22,34 @@ interface ProviderCall<T> {
   parseError?: string;
 }
 
+type JsonSchema = Record<string, unknown>;
+
+const geminiSchemaKeys = new Set([
+  "type", "title", "description", "properties", "required", "additionalProperties", "items", "prefixItems",
+  "enum", "minimum", "maximum", "minItems", "maxItems", "anyOf", "$ref",
+]);
+
+/** Keep only the JSON Schema subset documented for Gemini structured output. */
+export function sanitizeGeminiJsonSchema(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(sanitizeGeminiJsonSchema);
+  if (!value || typeof value !== "object") return value;
+  const output: JsonSchema = {};
+  for (const [key, item] of Object.entries(value as JsonSchema)) {
+    if (!geminiSchemaKeys.has(key)) continue;
+    if (key === "properties" && item && typeof item === "object" && !Array.isArray(item)) {
+      output[key] = Object.fromEntries(Object.entries(item as JsonSchema)
+        .map(([property, schema]) => [property, sanitizeGeminiJsonSchema(schema)]));
+    } else if (["items", "additionalProperties"].includes(key)) {
+      output[key] = sanitizeGeminiJsonSchema(item);
+    } else if (["prefixItems", "anyOf"].includes(key) && Array.isArray(item)) {
+      output[key] = item.map(sanitizeGeminiJsonSchema);
+    } else {
+      output[key] = item;
+    }
+  }
+  return output;
+}
+
 function stripJsonFence(text: string): string {
   const trimmed = text.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "");
   const start = trimmed.indexOf("{");
@@ -55,13 +83,18 @@ function geminiText(response: unknown): string {
     .map((content) => content.text ?? "").join("");
 }
 
-function geminiSearchQueries(response: unknown): number {
-  const body = response as { steps?: Array<{ type?: string; arguments?: { queries?: unknown[] } }> };
+export function geminiSearchQueries(response: unknown): number {
+  const body = response as { steps?: Array<{ type?: string; arguments?: { queries?: unknown[] } }>;
+    usage?: { grounding_tool_count?: Array<{ type?: string; count?: number }> } };
   const calls = (body.steps ?? []).filter((step) => step.type === "google_search_call");
   const queries = new Set(calls.flatMap((step) => step.arguments?.queries ?? [])
     .filter((query): query is string => typeof query === "string" && query.trim().length > 0)
     .map((query) => query.trim()));
-  return queries.size || calls.length;
+  const observedSteps = queries.size || calls.length;
+  const reportedUsage = (body.usage?.grounding_tool_count ?? [])
+    .filter((item) => item.type === "google_search")
+    .reduce((sum, item) => sum + (typeof item.count === "number" ? Math.max(0, item.count) : 0), 0);
+  return Math.max(observedSteps, reportedUsage);
 }
 
 function tokenValue(usage: Record<string, unknown> | undefined, keys: string[]): number {
@@ -95,15 +128,17 @@ async function requestJsonWithRetry(url: string, init: RequestInit, maximumAttem
 
 export async function renderGeminiControlPrompt(cell: ExperimentCell): Promise<string> {
   const root = path.resolve("experiments/search-e2e-evaluation/uk-mx-v1");
-  const [template, schema] = await Promise.all([
-    readFile(path.join(root, "config/gemini-control-prompt.md"), "utf8"),
-    readFile(path.join(root, "schemas/gemini-control-output.schema.json"), "utf8"),
-  ]);
+  const template = await readFile(path.join(root, "config/gemini-control-prompt.md"), "utf8");
   return template.replace("[COUNTRY_NAME]", cell.countryName).replace("[COUNTRY_CODE]", cell.countryCode)
     .replace("[PRIMARY_LANGUAGE]", cell.primaryLanguage)
     .replace("[SUPPLEMENTARY_LANGUAGES]", cell.supplementaryLanguages.join(", ") || "none")
-    .replace("[CATEGORY_LABEL]", cell.categoryLabel).replace("[CATEGORY_DEFINITION]", cell.categoryDefinition)
-    .concat(`\n\nExact JSON Schema:\n${schema}`);
+    .replace("[CATEGORY_LABEL]", cell.categoryLabel).replace("[CATEGORY_DEFINITION]", cell.categoryDefinition);
+}
+
+async function geminiControlResponseFormat(): Promise<Record<string, unknown>> {
+  const filename = path.resolve("experiments/search-e2e-evaluation/uk-mx-v1/schemas/gemini-control-output.schema.json");
+  const schema = JSON.parse(await readFile(filename, "utf8")) as unknown;
+  return { type: "text", mime_type: "application/json", schema: sanitizeGeminiJsonSchema(schema) };
 }
 
 export async function callGeminiControl(cell: ExperimentCell,
@@ -112,21 +147,26 @@ export async function callGeminiControl(cell: ExperimentCell,
   if (!apiKey) throw new Error("GEMINI_API_KEY is not configured");
   const requestedModel = "gemini-3.6-flash";
   const prompt = options.prompt ?? await renderGeminiControlPrompt(cell);
+  const responseFormat = await geminiControlResponseFormat();
   const startedAt = new Date().toISOString();
   const started = Date.now();
   const response = await requestJsonWithRetry(geminiInteractionsUrl(), {
     method: "POST", headers: { "x-goog-api-key": apiKey, "content-type": "application/json" },
     body: JSON.stringify({ model: requestedModel, input: prompt, tools: [{ type: "google_search" }],
+      response_format: responseFormat,
       generation_config: { thinking_level: "low", max_output_tokens: options.maxOutputTokens ?? 32_768 } }),
   }, 2, 180_000);
   const body = response.body as { model?: string; usage?: Record<string, unknown> };
   const text = geminiText(body);
   const parsed = parseStructured(text, geminiControlOutputSchema);
-  const inputTokens = tokenValue(body.usage, ["input_tokens", "prompt_tokens", "inputTokenCount"]);
-  const outputTokens = tokenValue(body.usage, ["output_tokens", "completion_tokens", "outputTokenCount"]);
-  const reasoningTokens = tokenValue(body.usage, ["thoughtsTokenCount", "reasoning_tokens"]);
+  const inputTokens = tokenValue(body.usage, ["total_input_tokens", "input_tokens", "prompt_tokens", "inputTokenCount"]);
+  const cachedInputTokens = tokenValue(body.usage, ["total_cached_tokens", "cached_tokens", "cachedTokenCount"]);
+  const visibleOutputTokens = tokenValue(body.usage,
+    ["total_output_tokens", "output_tokens", "completion_tokens", "outputTokenCount"]);
+  const reasoningTokens = tokenValue(body.usage,
+    ["total_thought_tokens", "thoughtsTokenCount", "reasoning_tokens"]);
   return { output: parsed.output, raw: body, requestedModel, actualModel: body.model ?? requestedModel,
-    usage: { inputTokens, outputTokens: Math.max(outputTokens, reasoningTokens), reasoningTokens,
+    usage: { inputTokens, cachedInputTokens, outputTokens: visibleOutputTokens + reasoningTokens, reasoningTokens,
       groundingQueries: geminiSearchQueries(body) }, startedAt, completedAt: new Date().toISOString(),
     latencyMs: Date.now() - started, attempts: response.attempts, retries: response.attempts - 1,
     ...(parsed.error ? { parseError: parsed.error } : {}) };
