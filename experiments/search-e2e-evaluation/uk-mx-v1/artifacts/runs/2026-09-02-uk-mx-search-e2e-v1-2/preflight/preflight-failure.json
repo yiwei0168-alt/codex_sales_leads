@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-02-uk-mx-search-e2e-v1-2",
+  "experimentId": "search-e2e-eval-v1.0.2",
+  "status": "failed-before-formal-cells",
+  "failedStage": "kimi-intent",
+  "error": "Kimi returned a complete lead-search object, but coverage_mode used a non-canonical value and failed the strict enum.",
+  "formalCellsStarted": 0,
+  "formalSlotsConsumed": 0,
+  "measuredFailedCall": {
+    "requestedModel": "kimi-k2.6",
+    "actualModel": "kimi-k2.6",
+    "inputTokens": 538,
+    "cachedInputTokens": 538,
+    "outputTokens": 1591,
+    "latencyMs": 44805,
+    "attempts": 1,
+    "retries": 0,
+    "budgetCostUsd": 0.0064203806631381866
+  },
+  "budgetTreatment": {
+    "carriedIntoV1_0_3Usd": 0.026421,
+    "basis": "USD 0.02 prior conservative allowance plus measured v1.0.2 list-price usage, rounded upward."
+  },
+  "remediation": "v1.0.3 deterministically normalizes recognized coverage-mode synonyms and falls back to the existing auto default for unknown expressions."
+}

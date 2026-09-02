@@ -36,7 +36,7 @@ Preflight checks and formal-arm cost events are checkpointed after each complete
 
 ## Version and Git policy
 
-- Experiment version: `search-e2e-eval-v1.0.2`
+- Experiment version: `search-e2e-eval-v1.0.3`
 - Working branch: `experiment/search-e2e-uk-mx-v1`
 - A preregistration tag is created before experimental calls.
 - Runtime checkpoints are committed after every completed country/category cell.

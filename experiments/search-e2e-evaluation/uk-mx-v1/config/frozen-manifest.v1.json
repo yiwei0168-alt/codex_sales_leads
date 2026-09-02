@@ -1,21 +1,21 @@
 {
   "schemaVersion": 1,
-  "experimentId": "search-e2e-eval-v1.0.2",
-  "runId": "2026-09-02-uk-mx-search-e2e-v1-2",
-  "createdAt": "2026-09-02T03:32:11.362Z",
-  "requiredGitTag": "search-e2e-eval-v1.0.2-frozen",
+  "experimentId": "search-e2e-eval-v1.0.3",
+  "runId": "2026-09-02-uk-mx-search-e2e-v1-3",
+  "createdAt": "2026-09-02T03:37:11.583Z",
+  "requiredGitTag": "search-e2e-eval-v1.0.3-frozen",
   "files": [
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/PROTOCOL.md",
-      "sha256": "03b8d330df58d7c18d0b2383a1cd8daed19028733732cada6c8cd06a5043e19f"
+      "sha256": "8c7df310e0fccd05b31df3022e51d77bdb1352de418c47d5acccae44a839a3b9"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/README.md",
-      "sha256": "cfd88fb899b4bd6c8d7a052548f1961759080d3613214ee4ab9e6d034b652259"
+      "sha256": "b1bcdf91e0c718acd67b1a041666a02bef84df56e172ef061b0769601467e93e"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/config/experiment.v1.0.0.json",
-      "sha256": "ed33441d22bea45465091da208ffcbdebe0c02535f6a01002e0235c86e544d79"
+      "sha256": "e652ac9f8d8cd145b40c6a6cf9f3def1daf3855b5567e09f55c904d8a2995731"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/config/gemini-control-prompt.md",
@@ -55,7 +55,7 @@
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/product-cell.ts",
-      "sha256": "4c80d9d0c8d57139cd64e8d7d1a153a57105b974a77f2ba307b359949a4238ec"
+      "sha256": "390f8d7e999ad7bf239ed574d3bf21315de305bd1d9ade4b9a799a6559cdefa2"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/provider-clients.ts",
@@ -67,7 +67,7 @@
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/scripts/run-formal-experiment.ts",
-      "sha256": "e43bc6162cdc0ed0dcbbeb10a7876848949bf95c9552c2e9a9e0cf1de7ffab7e"
+      "sha256": "57b815b35ffbdab8d29987947f620a518292f87e307cfd6325c93107b101c2d9"
     },
     {
       "path": "config/lead-search/hybrid-search-v1.0.0.json",
@@ -79,7 +79,7 @@
     },
     {
       "path": "config/lead-workflow/end-to-end-v2.0.0.json",
-      "sha256": "d64ce2fbfeb8e8fdaee40584f43a18d71fcca889754a19ea3ac2562f43607868"
+      "sha256": "2b5cfe258aeac62315754ae3e90696dfc3c9e9434466e720aec977465ee2f4c4"
     },
     {
       "path": "config/lead-workflow/runtime-policy-v3.0.0.json",
@@ -91,7 +91,7 @@
     },
     {
       "path": "src/lib/assistant/intent-agent.ts",
-      "sha256": "94a2b0ebbb5bea118867caaa2a23a58765a974b8e960675c81e8006f3a33521d"
+      "sha256": "a1c458fc0651b47fa28a3927c08e5f040f078a8416cf551170c1eb69970d2247"
     },
     {
       "path": "src/lib/assistant/types.ts",

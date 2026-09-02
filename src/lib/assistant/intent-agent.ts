@@ -31,7 +31,14 @@ const rawPlanSchema = z.object({
     target_count: z.coerce.number().int().min(1).max(100).nullish().transform((value) => value ?? 20),
     query_language: z.string().max(20).nullish().transform((value) => value ?? ""),
     opportunity_targets: z.array(z.enum(["OEM/ODM"])).max(1).nullish().transform((value) => value ?? []),
-    coverage_mode: z.enum(["auto", "local", "national", "mixed"]).nullish().transform((value) => value ?? "auto"),
+    coverage_mode: z.preprocess((value) => {
+      if (typeof value !== "string") return value;
+      const normalized = value.trim().toLowerCase().replace(/[ _]+/g, "-");
+      if (["auto", "local", "national", "mixed"].includes(normalized)) return normalized;
+      if (["nationwide", "countrywide", "national-coverage"].includes(normalized)) return "national";
+      if (["hybrid", "local-and-national"].includes(normalized)) return "mixed";
+      return "auto";
+    }, z.enum(["auto", "local", "national", "mixed"])).nullish().transform((value) => value ?? "auto"),
     verified_only: z.boolean().nullish().transform((value) => value ?? false),
   }).nullish().transform((value) => value ?? undefined),
   requires_k3_planning: z.boolean().nullish().transform((value) => value ?? false),

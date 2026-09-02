@@ -28,7 +28,7 @@ import { artifactRunRoot, loadRunState, rawRunRoot, readJson, saveRunState, writ
 nextEnv.loadEnvConfig(process.cwd());
 const rateCard = rateCardJson as ExperimentRateCard;
 const experimentRoot = path.resolve("experiments/search-e2e-evaluation/uk-mx-v1");
-const frozenTag = "search-e2e-eval-v1.0.2-frozen";
+const frozenTag = "search-e2e-eval-v1.0.3-frozen";
 
 const frozenFiles = [
   "PROTOCOL.md", "README.md", "config/experiment.v1.0.0.json", "config/gemini-control-prompt.md",
@@ -185,17 +185,17 @@ async function runPreflight(): Promise<void> {
   missing.push(...discoveryStatus.filter((item) => !item.configured).map((item) => item.apiKeyEnv));
   if (missing.length > 0) throw new Error(`Preflight missing required environment variables: ${[...new Set(missing)].join(", ")}`);
 
-  if (!hasPreflightCheck(state, "prior-before-v1.0.2-adjustment")) {
-    await checkpointPreflight(state, "prior-before-v1.0.2-adjustment", [preflightEvent({
-      eventId: "preflight:prior-before-v1.0.2-adjustment", runId: state.runId,
+  if (!hasPreflightCheck(state, "prior-before-v1.0.3-adjustment")) {
+    await checkpointPreflight(state, "prior-before-v1.0.3-adjustment", [preflightEvent({
+      eventId: "preflight:prior-before-v1.0.3-adjustment", runId: state.runId,
       ledger: "product-e2e-arm", arm: "product-e2e", stage: "prior-preflight-adjustment", provider: "kimi",
       requestedModel: "kimi-k2.6", actualModel: "kimi-k2.6", startedAt: state.createdAt,
-      completedAt: state.createdAt, latencyMs: 0, attempts: 3, retries: 0, fallbackUsed: false, status: "completed",
+      completedAt: state.createdAt, latencyMs: 0, attempts: 4, retries: 0, fallbackUsed: false, status: "completed",
       usage: {}, accountCashCostUsd: EXPERIMENT_CONFIG.cost.priorPreflightAdjustmentUsd,
-      volume: { inputItems: 3, rawOutputItems: 2, validOutputItems: 0, downstreamUsedItems: 0,
-        discardedReasonCounts: { timeout: 1, schemaInvalid: 1, fallback: 1 } },
-      notes: ["Conservative budget allowance for v1.0.0 and v1.0.1 Kimi preflight attempts whose usage was not retained."]
-    })], { amountUsd: EXPERIMENT_CONFIG.cost.priorPreflightAdjustmentUsd, attempts: 3 });
+      volume: { inputItems: 4, rawOutputItems: 3, validOutputItems: 0, downstreamUsedItems: 0,
+        discardedReasonCounts: { timeout: 1, schemaInvalid: 2, fallback: 1 } },
+      notes: ["Carries the v1.0.0-v1.0.2 Kimi preflight budget: USD 0.02 conservative unknown-usage allowance plus USD 0.0064203807 priced usage."]
+    })], { amountUsd: EXPERIMENT_CONFIG.cost.priorPreflightAdjustmentUsd, attempts: 4 });
   }
   const plan = canadaPlan("distribution");
   if (!hasPreflightCheck(state, "kimi-intent")) {
@@ -211,7 +211,7 @@ async function runPreflight(): Promise<void> {
       usage: { inputTokens: call.inputTokens, cachedInputTokens: call.cachedInputTokens,
         outputTokens: call.outputTokens },
       ...(call.usageAvailable === false ? { accountCashCostUsd: EXPERIMENT_CONFIG.cost.unknownUsageCallReserveUsd } : {}),
-      volume: { inputItems: 1, rawOutputItems: call.succeeded === false ? 0 : 1,
+      volume: { inputItems: 1, rawOutputItems: call.outputTokens > 0 || call.usageAvailable ? 1 : 0,
         validOutputItems: call.succeeded === false ? 0 : 1,
         downstreamUsedItems: call.succeeded === false ? 0 : 1,
         discardedReasonCounts: call.succeeded === false ? { providerFailure: 1 } : {} },

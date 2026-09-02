@@ -13,7 +13,8 @@ describe("Kimi intent and planning agent", () => {
         prompt_tokens_details: { cached_tokens: 40 } },
       choices: [{ message: { content: JSON.stringify({
         intent: "lead_search", confidence: 0.96, internal_question: "", external_questions: [],
-        lead_plan: { country: "法国", country_code: "FR", objective: "new_market", roles: ["Reseller"], target_count: 30, query_language: "zh-CN" },
+        lead_plan: { country: "法国", country_code: "FR", objective: "new_market", roles: ["Reseller"], target_count: 30,
+          query_language: "zh-CN", coverage_mode: "nationwide" },
       }) } }],
     }), { status: 200 }));
     const result = await planAssistantRequest("改成法国 30 家 reseller", [
@@ -21,7 +22,8 @@ describe("Kimi intent and planning agent", () => {
       { role: "assistant", content: "已生成德国计划" },
     ], fetchMock);
     expect(result.intent).toBe("lead-search");
-    expect(result.leadPlan).toMatchObject({ countryCode: "FR", targetCount: 30, roles: ["Reseller"], objective: "new-market" });
+    expect(result.leadPlan).toMatchObject({ countryCode: "FR", targetCount: 30, roles: ["Reseller"],
+      objective: "new-market", coverageMode: "national" });
     const request = JSON.parse(fetchMock.mock.calls[0][1].body as string);
     expect(request.model).toBe("kimi-k2.6");
     expect(request.messages[1].content).toContain("已生成德国计划");

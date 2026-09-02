@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-02-uk-mx-search-e2e-v1-2",
+  "experimentId": "search-e2e-eval-v1.0.2",
+  "status": "created",
+  "createdAt": "2026-09-02T03:33:42.093Z",
+  "updatedAt": "2026-09-02T03:34:26.912Z",
+  "preflightChecks": [
+    {
+      "name": "prior-before-v1.0.2-adjustment",
+      "completedAt": "2026-09-02T03:33:42.095Z",
+      "detail": {
+        "amountUsd": 0.02,
+        "attempts": 3
+      }
+    }
+  ],
+  "completedArmKeys": [],
+  "completedCellIds": [],
+  "reportedBudgetThresholdsUsd": [],
+  "anomalies": [
+    {
+      "at": "2026-09-02T03:34:26.912Z",
+      "severity": "warning",
+      "code": "preflight-kimi-intent-failed",
+      "detail": "Kimi 意图 Agent 不可用，已使用确定性路由兜底。 | Kimi 降级原因：Kimi plan schema invalid (intent=lead_search; keys=intent,confidence,internal_question,external_questions,reply,lead_plan,requires_k3_planning,planning_reason): Invalid option: expected one of \"auto\"|\"local\"|\"national\"|\"mixed\""
+    }
+  ],
+  "costEvents": [
+    {
+      "eventId": "preflight:prior-before-v1.0.2-adjustment",
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "stage": "prior-preflight-adjustment",
+      "provider": "kimi",
+      "requestedModel": "kimi-k2.6",
+      "actualModel": "kimi-k2.6",
+      "startedAt": "2026-09-02T03:33:42.093Z",
+      "completedAt": "2026-09-02T03:33:42.093Z",
+      "latencyMs": 0,
+      "attempts": 3,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0.02,
+      "volume": {
+        "inputItems": 3,
+        "rawOutputItems": 2,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "timeout": 1,
+          "schemaInvalid": 1,
+          "fallback": 1
+        }
+      },
+      "notes": [
+        "Conservative budget allowance for v1.0.0 and v1.0.1 Kimi preflight attempts whose usage was not retained."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0.02,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "preflight:intent:1",
+      "runId": "2026-09-02-uk-mx-search-e2e-v1-2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "stage": "preflight-intent",
+      "provider": "kimi",
+      "requestedModel": "kimi-k2.6",
+      "actualModel": "kimi-k2.6",
+      "startedAt": "2026-09-02T03:33:42.104Z",
+      "completedAt": "2026-09-02T03:34:26.912Z",
+      "latencyMs": 44805,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "failed",
+      "usage": {
+        "inputTokens": 538,
+        "cachedInputTokens": 538,
+        "outputTokens": 1591
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "providerFailure": 1
+        }
+      },
+      "notes": [
+        "Kimi plan schema invalid (intent=lead_search; keys=intent,confidence,internal_question,external_questions,reply,lead_plan,requires_k3_planning,planning_reason): Invalid option: expected one of \"auto\"|\"local\"|\"national\"|\"mixed\""
+      ],
+      "officialListPriceUsd": 0.0064203806631381866,
+      "budgetCostUsd": 0.0064203806631381866,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    }
+  ]
+}

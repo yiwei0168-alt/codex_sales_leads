@@ -134,7 +134,7 @@ export async function runProductCell(cell: ExperimentCell, options: {
       usage: { inputTokens: call.inputTokens, cachedInputTokens: call.cachedInputTokens,
         outputTokens: call.outputTokens },
       ...(call.usageAvailable === false ? { accountCashCostUsd: EXPERIMENT_CONFIG.cost.unknownUsageCallReserveUsd } : {}),
-      volume: volume(1, call.succeeded === false ? 0 : 1, call.succeeded === false ? 0 : 1,
+      volume: volume(1, call.outputTokens > 0 || call.usageAvailable ? 1 : 0, call.succeeded === false ? 0 : 1,
         call.succeeded === false ? 0 : 1, call.succeeded === false ? { providerFailure: 1 } : {}),
       notes: [...(call.failureReason ? [call.failureReason] : []),
         ...(call.usageAvailable === false ? ["Provider usage unavailable; conservative reserve applied."] : [])] })]);
