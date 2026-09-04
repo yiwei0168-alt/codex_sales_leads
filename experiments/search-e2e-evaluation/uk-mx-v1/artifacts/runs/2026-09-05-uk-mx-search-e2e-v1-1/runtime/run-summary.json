@@ -1,0 +1,213 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+  "experimentId": "search-e2e-eval-v1.1.0",
+  "status": "preflight-passed",
+  "createdAt": "2026-09-04T21:43:10.079Z",
+  "updatedAt": "2026-09-04T21:43:45.282Z",
+  "blindJudgeModel": "codex-in-session",
+  "preflightChecks": [
+    {
+      "name": "prior-before-v1.1.0-adjustment",
+      "completedAt": "2026-09-04T21:43:10.082Z",
+      "detail": {
+        "productUsd": 0.857181411051939,
+        "geminiControlUsd": 0.888839
+      }
+    },
+    {
+      "name": "inherited-non-judge-preflight",
+      "completedAt": "2026-09-04T21:43:10.095Z",
+      "detail": {
+        "sourceExperimentId": "search-e2e-eval-v1.0.10",
+        "sourceRunId": "2026-09-02-uk-mx-search-e2e-v1-10",
+        "checks": [
+          "kimi-intent",
+          "local-rag",
+          "discovery-gemini-full/google-grounded",
+          "discovery-brave/brave",
+          "discovery-searchapi/bing",
+          "discovery-exa/exa",
+          "discovery-google-places/google-places",
+          "discovery-searchapi/google",
+          "tavily-evidence",
+          "deepseek-score-only",
+          "gemini-3.6-flash-structured-search"
+        ],
+        "productUsd": 0.5314864571588553,
+        "geminiControlUsd": 0.17466425000000002
+      }
+    },
+    {
+      "name": "openrouter-blind-judge",
+      "completedAt": "2026-09-04T21:43:45.270Z",
+      "detail": {
+        "selectedModel": "codex-in-session",
+        "fallbackChain": [
+          "claude-opus-5",
+          "gpt-5.6-sol",
+          "codex-in-session"
+        ],
+        "failures": [
+          "claude-opus-5: [\n  {\n    \"expected\": \"object\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"dimensions\"\n    ],\n    \"message\": \"Invalid input: expected object, received undefined\"\n  },\n  {\n    \"expected\": \"array\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"dimensionReasons\"\n    ],\n    \"message\": \"Invalid input: expected array, received undefined\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"unsupportedOrContradictoryClaims\",\n      0\n    ],\n    \"message\": \"Invalid input: expected string, received object\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"unsupportedOrContradictoryClaims\",\n      1\n    ],\n    \"message\": \"Invalid input: expected string, received object\"\n  },\n  {\n    \"expected\": \"boolean\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"citationAlignment\"\n    ],\n    \"message\": \"Invalid input: expected boolean, received object\"\n  }\n]",
+          "gpt-5.6-sol: HTTP 404: {\"error\":{\"message\":\"No endpoints found that can handle the requested parameters. To learn more about provider routing, visit: https://openrouter.ai/docs/guides/routing/provider-selection\",\"code\":404,\"metadata\":{\"routing_funnel\":[{\"step\":\"Initial Endpoints\",\"endpoint_count\":7},{\"step\":\"Filter by Regional Surcharge\",\"endpoint_count\":5},{\"step\":\"Filter by Tier Endpoint Rows\",\"endpoint_count\":3}],\"failed_routing_step\":\"Filter by Parameters\"}}}"
+        ],
+        "externalSearchAllowed": false,
+        "apiCallUsedForFinalFallback": false,
+        "requireDecisionCommitAndPushBeforeDeblind": true
+      }
+    }
+  ],
+  "completedArmKeys": [],
+  "completedCellIds": [],
+  "completedEvaluationCellIds": [],
+  "completedBlindPacketIds": [],
+  "reportedBudgetThresholdsUsd": [],
+  "anomalies": [],
+  "costEvents": [
+    {
+      "eventId": "preflight:prior-product-before-v1.1.0",
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "stage": "prior-preflight-adjustment",
+      "provider": "mixed-product-preflight",
+      "startedAt": "2026-09-04T21:43:10.079Z",
+      "completedAt": "2026-09-04T21:43:10.079Z",
+      "latencyMs": 0,
+      "attempts": 51,
+      "retries": 8,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "volume": {
+        "inputItems": 47,
+        "rawOutputItems": 51,
+        "validOutputItems": 45,
+        "downstreamUsedItems": 21,
+        "discardedReasonCounts": {
+          "timeout": 1,
+          "schemaInvalid": 4,
+          "fallback": 1,
+          "semanticGateFailure": 6,
+          "transportFailure": 2
+        }
+      },
+      "notes": [
+        "Exact product-ledger carry-forward through frozen v1.0.15, including its MX Retail product arm."
+      ],
+      "officialListPriceUsd": 0.857181411051939,
+      "budgetCostUsd": 0.857181411051939,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "preflight:prior-gemini-control-before-v1.1.0",
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "gemini-native-arm",
+      "arm": "gemini-native",
+      "stage": "prior-preflight-adjustment",
+      "provider": "gemini-full",
+      "requestedModel": "gemini-3.6-flash",
+      "actualModel": "gemini-3.6-flash",
+      "startedAt": "2026-09-04T21:43:10.079Z",
+      "completedAt": "2026-09-04T21:43:10.079Z",
+      "latencyMs": 0,
+      "attempts": 3,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "failed",
+      "usage": {},
+      "volume": {
+        "inputItems": 6,
+        "rawOutputItems": 35,
+        "validOutputItems": 34,
+        "downstreamUsedItems": 32,
+        "discardedReasonCounts": {
+          "schemaInvalid": 1,
+          "usageNotCheckpointed": 1,
+          "invalidRequest": 1
+        }
+      },
+      "notes": [
+        "Exact Gemini-ledger carry-forward through frozen v1.0.15; the unchanged MX Retail control arm is reused without a second charge."
+      ],
+      "officialListPriceUsd": 0.888839,
+      "budgetCostUsd": 0.888839,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "preflight:openrouter-blind-judge:1",
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "preflight-blind-judge",
+      "provider": "openrouter",
+      "requestedModel": "anthropic/claude-opus-5",
+      "actualModel": "anthropic/claude-opus-5",
+      "startedAt": "2026-09-04T21:43:10.103Z",
+      "completedAt": "2026-09-04T21:43:45.236Z",
+      "latencyMs": 35133,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "failed",
+      "usage": {
+        "inputTokens": 1217,
+        "outputTokens": 2701
+      },
+      "accountCashCostUsd": 0.07361,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "schemaInvalid": 1
+        }
+      },
+      "notes": [
+        "[\n  {\n    \"expected\": \"object\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"dimensions\"\n    ],\n    \"message\": \"Invalid input: expected object, received undefined\"\n  },\n  {\n    \"expected\": \"array\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"dimensionReasons\"\n    ],\n    \"message\": \"Invalid input: expected array, received undefined\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"unsupportedOrContradictoryClaims\",\n      0\n    ],\n    \"message\": \"Invalid input: expected string, received object\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"unsupportedOrContradictoryClaims\",\n      1\n    ],\n    \"message\": \"Invalid input: expected string, received object\"\n  },\n  {\n    \"expected\": \"boolean\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"citationAlignment\"\n    ],\n    \"message\": \"Invalid input: expected boolean, received object\"\n  }\n]"
+      ],
+      "officialListPriceUsd": 0.07361,
+      "budgetCostUsd": 0.07361,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "preflight:openrouter-blind-judge:2",
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "preflight-blind-judge",
+      "provider": "openrouter",
+      "requestedModel": "openai/gpt-5.6-sol",
+      "actualModel": "openai/gpt-5.6-sol",
+      "startedAt": "2026-09-04T21:43:45.238Z",
+      "completedAt": "2026-09-04T21:43:45.269Z",
+      "latencyMs": 31,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "failed",
+      "usage": {},
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "providerHttpFailure": 1
+        }
+      },
+      "notes": [
+        "HTTP 404: {\"error\":{\"message\":\"No endpoints found that can handle the requested parameters. To learn more about provider routing, visit: https://openrouter.ai/docs/guides/routing/provider-selection\",\"code\":404,\"metadata\":{\"routing_funnel\":[{\"step\":\"Initial Endpoints\",\"endpoint_count\":7},{\"step\":\"Filter by Regional Surcharge\",\"endpoint_count\":5},{\"step\":\"Filter by Tier Endpoint Rows\",\"endpoint_count\":3}],\"failed_routing_step\":\"Filter by Parameters\"}}}"
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    }
+  ]
+}

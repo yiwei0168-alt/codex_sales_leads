@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+  "status": "passed",
+  "completedAt": "2026-09-04T21:43:45.291Z",
+  "checks": [
+    {
+      "name": "prior-before-v1.1.0-adjustment",
+      "completedAt": "2026-09-04T21:43:10.082Z",
+      "detail": {
+        "productUsd": 0.857181411051939,
+        "geminiControlUsd": 0.888839
+      }
+    },
+    {
+      "name": "inherited-non-judge-preflight",
+      "completedAt": "2026-09-04T21:43:10.095Z",
+      "detail": {
+        "sourceExperimentId": "search-e2e-eval-v1.0.10",
+        "sourceRunId": "2026-09-02-uk-mx-search-e2e-v1-10",
+        "checks": [
+          "kimi-intent",
+          "local-rag",
+          "discovery-gemini-full/google-grounded",
+          "discovery-brave/brave",
+          "discovery-searchapi/bing",
+          "discovery-exa/exa",
+          "discovery-google-places/google-places",
+          "discovery-searchapi/google",
+          "tavily-evidence",
+          "deepseek-score-only",
+          "gemini-3.6-flash-structured-search"
+        ],
+        "productUsd": 0.5314864571588553,
+        "geminiControlUsd": 0.17466425000000002
+      }
+    },
+    {
+      "name": "openrouter-blind-judge",
+      "completedAt": "2026-09-04T21:43:45.270Z",
+      "detail": {
+        "selectedModel": "codex-in-session",
+        "fallbackChain": [
+          "claude-opus-5",
+          "gpt-5.6-sol",
+          "codex-in-session"
+        ],
+        "failures": [
+          "claude-opus-5: [\n  {\n    \"expected\": \"object\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"dimensions\"\n    ],\n    \"message\": \"Invalid input: expected object, received undefined\"\n  },\n  {\n    \"expected\": \"array\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"dimensionReasons\"\n    ],\n    \"message\": \"Invalid input: expected array, received undefined\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"unsupportedOrContradictoryClaims\",\n      0\n    ],\n    \"message\": \"Invalid input: expected string, received object\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"unsupportedOrContradictoryClaims\",\n      1\n    ],\n    \"message\": \"Invalid input: expected string, received object\"\n  },\n  {\n    \"expected\": \"boolean\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"citationAlignment\"\n    ],\n    \"message\": \"Invalid input: expected boolean, received object\"\n  }\n]",
+          "gpt-5.6-sol: HTTP 404: {\"error\":{\"message\":\"No endpoints found that can handle the requested parameters. To learn more about provider routing, visit: https://openrouter.ai/docs/guides/routing/provider-selection\",\"code\":404,\"metadata\":{\"routing_funnel\":[{\"step\":\"Initial Endpoints\",\"endpoint_count\":7},{\"step\":\"Filter by Regional Surcharge\",\"endpoint_count\":5},{\"step\":\"Filter by Tier Endpoint Rows\",\"endpoint_count\":3}],\"failed_routing_step\":\"Filter by Parameters\"}}}"
+        ],
+        "externalSearchAllowed": false,
+        "apiCallUsedForFinalFallback": false,
+        "requireDecisionCommitAndPushBeforeDeblind": true
+      }
+    }
+  ],
+  "chosenBlindJudgeModel": "codex-in-session",
+  "cost": {
+    "eventCount": 4,
+    "officialListPriceUsd": 1.819630411051939,
+    "budgetCostUsd": 1.819630411051939,
+    "unpricedEvents": [],
+    "byLedger": {
+      "gemini-native-arm": 0.888839,
+      "product-e2e-arm": 0.857181411051939,
+      "evaluation-overhead": 0.07361
+    },
+    "byStage": {
+      "preflight-blind-judge": 0.07361,
+      "prior-preflight-adjustment": 1.746020411051939
+    },
+    "anomalies": []
+  },
+  "budgetDecision": {
+    "totalBudgetUsd": 100,
+    "spentUsd": 1.819630411051939,
+    "budgetFraction": 0.01819630411051939,
+    "newlyCrossedThresholdsUsd": [],
+    "forecast": {
+      "completedCells": 0,
+      "totalCells": 8,
+      "incurredUsd": 1.819630411051939,
+      "expectedCompletionUsd": 30,
+      "lowerUsd": 1.819630411051939,
+      "upperUsd": 40.5,
+      "method": "initial-estimate"
+    },
+    "warning": false,
+    "hardStop": false,
+    "requiresUserDecision": false,
+    "reasons": []
+  }
+}
