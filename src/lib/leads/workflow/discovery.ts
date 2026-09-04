@@ -25,6 +25,13 @@ export interface DiscoveryResult {
   callMetrics?: HybridSearchCallTelemetry[];
 }
 
+export interface LeadDiscoveryInvocation {
+  queryRound?: number;
+  targetPoolOverride?: number;
+  excludeDomains?: string[];
+  existingRunId?: string;
+}
+
 function stableId(prefix: string, value: string): string {
   return `${prefix}-${createHash("sha256").update(value).digest("hex").slice(0, 16)}`;
 }
@@ -50,15 +57,16 @@ async function persistHybridSearchCall(runId: string, plan: LeadSearchPlan,
        input_characters, raw_result_count, normalized_company_count, new_unique_company_count,
        existing_company_hit_count, rejected_result_count, paid_search_credits, model_input_tokens,
        model_output_tokens, latency_ms, retry_count, fallback_used, discarded_reason_counts,
-       error_message, finished_at)
-     values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,now())
+       error_message, call_fingerprint, query_cluster_key, cache_status, failure_class, circuit_scope, finished_at)
+     values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,now())
      returning id`,
     [runId, searchQuery.id, call.route.provider, call.route.engine, call.route.mechanism,
       call.route.category, call.route.track, call.route.trigger, call.route.invocationReason, call.status,
       call.status === "skipped" ? 0 : 1, call.query.length, call.rawResults, call.normalizedCompanies,
       call.newUniqueCompanies, call.existingCompanyHits, call.rejectedResults, call.paidSearchCredits,
       call.inputTokens, call.outputTokens, call.latencyMs, call.retryCount, call.fallbackUsed,
-      JSON.stringify(call.discardedReasonCounts), call.errorMessage ?? null],
+      JSON.stringify(call.discardedReasonCounts), call.errorMessage ?? null, call.callFingerprint,
+      call.queryClusterKey, call.cacheStatus, call.failureClass ?? null, call.circuitScope ?? null],
   );
   for (const result of call.items) {
     const url = result.item.url ?? `place:${result.item.externalId ?? stableId("result", result.item.title)}`;
@@ -98,8 +106,9 @@ export async function discoverLeadCandidates(
   plan: LeadSearchPlan,
   playbook: LeadMarketPlaybook,
   graphThreadId: string,
+  invocation: LeadDiscoveryInvocation = {},
 ): Promise<DiscoveryResult> {
-  const [run] = await query<{ id: string }>(
+  const [createdRun] = invocation.existingRunId ? [] : await query<{ id: string }>(
     `insert into lead_search_run (workspace_id, provider, target_count, country_code, market_name, objective,
        scoring_policy_id, scoring_policy_version, scoring_policy_checksum, scoring_policy_snapshot, metadata)
      values ($1, 'langgraph+hybrid-search', $2, $3, $4, $5,
@@ -116,8 +125,13 @@ export async function discoverLeadCandidates(
       ACTIVE_LEAD_SCORING_POLICY.policyKey, ACTIVE_LEAD_SCORING_POLICY.version,
       scoringPolicyChecksum(), JSON.stringify(ACTIVE_LEAD_SCORING_POLICY)],
   );
+  const run = { id: invocation.existingRunId ?? createdRun?.id };
+  if (!run.id) throw new Error("Lead search run could not be created or resumed.");
   try {
     const execution = await executeHybridDiscovery(run.id, plan, playbook, {
+      queryRound: invocation.queryRound,
+      targetPoolOverride: invocation.targetPoolOverride,
+      initialExcludeDomains: invocation.excludeDomains,
       onCall: (call) => persistHybridSearchCall(run.id, plan, call),
     });
     await writeDiscoveryGateOutcomes([...execution.candidates, ...execution.rejectedCandidates]);
@@ -136,18 +150,21 @@ export async function discoverLeadCandidates(
       (counts, candidate) => { const status = candidate.discoveryGate?.status ?? "unknown";
         counts[status] = (counts[status] ?? 0) + 1; return counts; }, {});
     await query(
-      `update lead_search_run set query_count = $2, raw_result_count = $3, unique_candidate_count = $4,
-       credits_used = $5, metadata = metadata || $6::jsonb where id = $1`,
+      `update lead_search_run set query_count = query_count + $2,
+       raw_result_count = raw_result_count + $3,
+       unique_candidate_count = unique_candidate_count + $4,
+       credits_used = credits_used + $5, metadata = metadata || $6::jsonb where id = $1`,
       [run.id, execution.calls.filter((call) => call.status !== "skipped").length, rawResults, uniqueCandidates,
         Math.ceil(creditsUsed), JSON.stringify({ discoveryWarnings: execution.warnings,
           candidatePoolSize: execution.candidates.length, rejectedCandidateCount: execution.rejectedCandidates.length,
           targetPool: execution.targetPool, stopReason: execution.stopReason, gateCounts,
+          latestQueryRound: invocation.queryRound ?? 0,
           providerCallCount: execution.calls.length,
           providerCallStatuses: execution.calls.reduce<Record<string, number>>((counts, call) => {
             counts[call.status] = (counts[call.status] ?? 0) + 1; return counts;
           }, {}) })],
     );
-    if (execution.candidates.length === 0) throw new Error(
+    if (execution.candidates.length === 0 && !invocation.existingRunId) throw new Error(
       `No usable public-company candidates were discovered. ${execution.warnings.join(" ")}`.trim());
     return { runId: run.id, candidates: execution.candidates, creditsUsed,
       warnings: execution.warnings, modelUsage: execution.modelUsage, callMetrics: execution.calls };

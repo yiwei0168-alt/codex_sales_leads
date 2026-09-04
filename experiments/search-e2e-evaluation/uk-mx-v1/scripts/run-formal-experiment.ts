@@ -516,14 +516,17 @@ async function runPreflight(): Promise<void> {
 }
 
 function publicProductResult(result: Awaited<ReturnType<typeof runProductCell>>) {
-  const { raw: _raw, discoveryCalls, ...rest } = result;
-  return { ...rest, discoveryCalls: discoveryCalls.map(({ items: _items, query, ...call }) => ({
-    ...call, querySha256: sha256(query),
-  })) };
+  const { raw, discoveryCalls, ...rest } = result;
+  void raw;
+  return { ...rest, discoveryCalls: discoveryCalls.map(({ items, query, ...call }) => {
+    void items;
+    return { ...call, querySha256: sha256(query) };
+  }) };
 }
 
 function publicControlResult(result: Awaited<ReturnType<typeof runControlCell>>) {
-  const { raw: _raw, ...rest } = result;
+  const { raw, ...rest } = result;
+  void raw;
   return rest;
 }
 
@@ -643,6 +646,12 @@ async function runCell(cellId: string): Promise<void> {
   const [first, second] = settled.map((item) => (item as PromiseFulfilledResult<Awaited<ReturnType<typeof executeArm>>>).value);
   const control = (first.arm === "gemini-native" ? first : second) as Awaited<ReturnType<typeof runControlCell>>;
   const product = (first.arm === "product-e2e" ? first : second) as Awaited<ReturnType<typeof runProductCell>>;
+
+  if (product.missingSlots > 0) {
+    state.anomalies.push({ at: new Date().toISOString(), cellId: cell.cellId, severity: "warning",
+      code: "product-target-underfill",
+      detail: `Product returned ${product.finalCandidates.length}/30 after ${product.discoveryRounds.length} round(s); completion=${product.completionReason}.` });
+  }
 
   state.completedCellIds.push(cell.cellId);
   const decision = await budgetDecision(state);

@@ -17,9 +17,23 @@ function plan(overrides: Partial<LeadSearchPlan> = {}): LeadSearchPlan {
 
 describe("hybrid search policy", () => {
   it("keeps Tavily out of discovery and versions the confirmed strategy", () => {
-    expect(ACTIVE_HYBRID_SEARCH_POLICY.strategyDocumentVersion).toBe("0.9.0-discussion");
+    expect(ACTIVE_HYBRID_SEARCH_POLICY.strategyDocumentVersion).toBe("1.1.0-confirmed");
     expect(JSON.stringify(ACTIVE_HYBRID_SEARCH_POLICY.categories)).not.toContain("tavily");
     expect(hybridSearchPolicyChecksum()).toMatch(/^[a-f0-9]{64}$/);
+  });
+
+  it("starts all three retail tracks in the configured low-SEO market and removes Product Gemini", () => {
+    const route = buildHybridSearchRoute(plan({ countryCode: "MX", countryName: "Mexico",
+      queryLanguage: "es", roles: ["Retailer", "E-tailer"], targetCount: 30 }));
+    expect(new Set(route.map((step) => step.track))).toEqual(new Set(["etail", "retail-national", "retail-local"]));
+    expect(route.some((step) => step.provider === "gemini-product")).toBe(false);
+    expect(route.some((step) => step.provider === "google-places")).toBe(true);
+  });
+
+  it("uses complementary reseller mechanisms without Product Gemini", () => {
+    const route = buildHybridSearchRoute(plan({ roles: ["Reseller", "VAR"] }));
+    expect(route.some((step) => step.provider === "gemini-product")).toBe(false);
+    expect(route[0]).toMatchObject({ provider: "searchapi", engine: "google" });
   });
 
   it("routes distribution through Gemini Full without Product Gemini or Google SERP", () => {

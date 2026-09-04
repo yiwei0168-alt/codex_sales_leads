@@ -2,10 +2,12 @@ import type { LeadSearchPlan } from "@/lib/assistant/types";
 import { planAssistantRequest } from "@/lib/assistant/intent-agent";
 import { LeadEvidenceCorrectionAgent } from "@/lib/leads/workflow/evidence-correction-agent";
 import { collectLeadEvidence } from "@/lib/leads/workflow/discovery";
-import { executeHybridDiscovery } from "@/lib/leads/workflow/hybrid-discovery-executor";
+import { createHybridDiscoverySession, executeHybridDiscovery } from "@/lib/leads/workflow/hybrid-discovery-executor";
 import { buildStandardLeadMarketPlaybook } from "@/lib/leads/workflow/playbook";
 import { LeadQualificationAgent } from "@/lib/leads/workflow/qualification-agent";
 import { retrieveLeadRagContext } from "@/lib/leads/workflow/rag-context";
+import { nextNoFinalRoundCount, plannedCandidatePool, targetCompletionDecision,
+  type TargetCompletionReason } from "@/lib/leads/workflow/target-completion-policy";
 import type { CorrectedLeadWorkflowCandidate, LeadCandidateAssessment, LeadMarketPlaybook,
   WorkflowModelUsage } from "@/lib/leads/workflow/types";
 import type { EmbeddingCallUsage } from "@/lib/rag/openai-provider";
@@ -52,6 +54,10 @@ export interface ProductCellResult {
   completedAssessmentCount: number;
   finalCandidates: ProductFinalCandidate[];
   missingSlots: number;
+  completionReason: TargetCompletionReason;
+  discoveryRounds: Array<{ round: number; plannedCandidatePool: number; newUniqueCandidates: number;
+    lightGateCandidates: number; correctedCandidates: number; inRoleCandidates: number;
+    finalEligibleAdded: number; cumulativeFinalEligible: number; stopReason: string }>;
   discoveryCalls: Awaited<ReturnType<typeof executeHybridDiscovery>>["calls"];
   warnings: string[];
   costEvents: ExperimentCostEvent[];
@@ -183,90 +189,165 @@ export async function runProductCell(cell: ExperimentCell, options: {
     latencyMs: Math.max(0, Date.parse(playbookCompleted) - Date.parse(playbookStarted)), attempts: 0, retries: 0,
     fallbackUsed: false, status: "completed", usage: {}, volume: volume(ragContext.length, 1, 1, 1) })]);
 
-  const discoveryStarted = new Date().toISOString();
-  const discovered = await executeHybridDiscovery(`${EXPERIMENT_CONFIG.runId}-${cell.cellId}-product`, plan, playbook);
-  const discoveryCompleted = new Date().toISOString();
-  for (const [index, call] of discovered.calls.entries()) {
-    const model = call.route.provider === "gemini-full" || call.route.provider === "gemini-product"
-      ? process.env.GEMINI_DISCOVERY_MODEL?.trim() || process.env.GEMINI_SEARCH_MODEL?.trim() || "gemini-3.6-flash"
-      : undefined;
-    await recordCostEvents([event({ eventId: `${cell.cellId}:discovery:${index + 1}`, cellId: cell.cellId,
-      stage: "hybrid-discovery", provider: call.route.provider, requestedModel: model, actualModel: model,
-      startedAt: discoveryStarted, completedAt: discoveryCompleted, latencyMs: call.latencyMs,
-      attempts: call.requestCount, retries: call.retryCount, fallbackUsed: call.fallbackUsed, status: call.status,
-      usage: { inputTokens: call.inputTokens, outputTokens: call.outputTokens,
-        searchRequests: call.requestCount, groundingQueries: call.groundingQueries,
-        searchResults: call.rawResults, extractedPages: call.route.provider === "exa" ? call.rawResults : 0,
-        paidSearchCredits: call.paidSearchCredits },
-      volume: volume(1, call.rawResults, call.normalizedCompanies, call.newUniqueCompanies,
-        { ...call.discardedReasonCounts, duplicate: call.existingCompanyHits }) })]);
+  const discoverySession = createHybridDiscoverySession();
+  const correctionAgent = new LeadEvidenceCorrectionAgent(undefined, undefined, {
+    allowReusableCorrections: false, persistCorrections: false,
+  });
+  const qualificationAgent = new LeadQualificationAgent(undefined, { includeCooperationPaths: false, concurrency: 4 });
+  const discoveryRounds: ProductCellResult["discoveryRounds"] = [];
+  const discoveredRuns: unknown[] = [];
+  const enrichedRuns: unknown[] = [];
+  const correctedByDomain = new Map<string, CorrectedLeadWorkflowCandidate>();
+  const assessmentsByCandidate = new Map<string, LeadCandidateAssessment>();
+  const selectedPairs: Array<{ candidate: CorrectedLeadWorkflowCandidate; assessment: LeadCandidateAssessment }> = [];
+  const selectedDomains = new Set<string>();
+  const allDiscoveryCalls: Awaited<ReturnType<typeof executeHybridDiscovery>>["calls"] = [];
+  let totalUnique = 0;
+  let consecutiveNoFinalRounds = 0;
+  let completionReason: ProductCellResult["completionReason"] = "maximum-rounds";
+  const maximumRounds = 5;
+
+  for (let round = 0; round < maximumRounds && selectedPairs.length < plan.targetCount; round += 1) {
+    const plannedPool = plannedCandidatePool({ targetCount: plan.targetCount,
+      acceptedCount: selectedPairs.length, discoveredUniqueCount: totalUnique, round });
+    const roundPlan = { ...plan, coverageMode: round > 0 && plan.coverageMode === "auto" ? "mixed" as const
+      : plan.coverageMode };
+    const discoveryStarted = new Date().toISOString();
+    const discovered = await executeHybridDiscovery(`${EXPERIMENT_CONFIG.runId}-${cell.cellId}-product-r${round + 1}`,
+      roundPlan, playbook, { queryRound: round, targetPoolOverride: plannedPool,
+        session: discoverySession });
+    const discoveryCompleted = new Date().toISOString();
+    discoveredRuns.push(discovered);
+    allDiscoveryCalls.push(...discovered.calls);
+    const roundUnique = discovered.calls.reduce((sum, call) => sum + call.newUniqueCompanies, 0);
+    totalUnique += roundUnique;
+    for (const [index, call] of discovered.calls.entries()) {
+      const model = call.route.provider === "gemini-full" || call.route.provider === "gemini-product"
+        ? process.env.GEMINI_DISCOVERY_MODEL?.trim() || process.env.GEMINI_SEARCH_MODEL?.trim() || "gemini-3.6-flash"
+        : undefined;
+      await recordCostEvents([event({ eventId: `${cell.cellId}:discovery:r${round + 1}:${index + 1}`,
+        cellId: cell.cellId, stage: "hybrid-discovery", provider: call.route.provider,
+        requestedModel: model, actualModel: model, startedAt: discoveryStarted, completedAt: discoveryCompleted,
+        latencyMs: call.latencyMs, attempts: call.requestCount, retries: call.retryCount,
+        fallbackUsed: call.fallbackUsed, status: call.status,
+        usage: { inputTokens: call.inputTokens, outputTokens: call.outputTokens,
+          searchRequests: call.requestCount, groundingQueries: call.groundingQueries,
+          searchResults: call.rawResults, extractedPages: call.route.provider === "exa" ? call.rawResults : 0,
+          paidSearchCredits: call.paidSearchCredits },
+        volume: volume(1, call.rawResults, call.normalizedCompanies, call.newUniqueCompanies,
+          { ...call.discardedReasonCounts, duplicate: call.existingCompanyHits }),
+        notes: [`queryRound=${round + 1}`, `cacheStatus=${call.cacheStatus}`,
+          ...(call.failureClass ? [`failureClass=${call.failureClass}`, `circuitScope=${call.circuitScope}`] : [])] })]);
+    }
+    await recordCostEvents(modelUsageEvents(cell, `discovery-gate-r${round + 1}`, discovered.modelUsage,
+      discoveryStarted, discoveryCompleted, volume(roundUnique,
+        discovered.candidates.length + discovered.rejectedCandidates.length, discovered.candidates.length,
+        discovered.candidates.length, { rejected: discovered.rejectedCandidates.length })));
+    warnings.push(...discovered.warnings);
+
+    const evidenceStarted = new Date().toISOString();
+    const enriched = await collectLeadEvidence(discovered.candidates, roundPlan, { allowReusableEvidence: false,
+      persistEvidence: false, concurrency: 12, maximumAttempts: 3 });
+    const evidenceCompleted = new Date().toISOString();
+    enrichedRuns.push(enriched);
+    const evidenceCount = enriched.candidates.reduce((sum, candidate) => sum
+      + candidate.evidence.filter((item) => item.sourceType !== "discovery").length, 0);
+    await recordCostEvents([event({ eventId: `${cell.cellId}:fresh-evidence:r${round + 1}`,
+      cellId: cell.cellId, stage: "fresh-evidence", provider: "tavily", startedAt: evidenceStarted,
+      completedAt: evidenceCompleted, latencyMs: enriched.providerMetrics?.latencyMs
+        ?? Date.parse(evidenceCompleted) - Date.parse(evidenceStarted),
+      attempts: enriched.providerMetrics?.attempts ?? 0, retries: enriched.providerMetrics?.retries ?? 0,
+      fallbackUsed: false, status: "completed", usage: { paidSearchCredits: enriched.creditsUsed },
+      volume: volume(discovered.candidates.length, evidenceCount, evidenceCount, evidenceCount,
+        { noFreshEvidence: enriched.candidates.filter((candidate) =>
+          !candidate.evidence.some((item) => item.sourceType !== "discovery")).length }),
+      notes: ["historical evidence reads disabled", "evidence-library writes disabled",
+        "current-run evidence and missing-evidence records reused downstream"] })]);
+    warnings.push(...enriched.warnings);
+
+    const correctionStarted = new Date().toISOString();
+    const corrected = await correctionAgent.correct(enriched.candidates, roundPlan);
+    const correctionCompleted = new Date().toISOString();
+    for (const candidate of corrected.candidates) {
+      if (!correctedByDomain.has(candidate.domain)) correctedByDomain.set(candidate.domain, candidate);
+      discoverySession.excludedDomains.add(candidate.domain);
+    }
+    const inRoleCandidates = corrected.candidates.filter((candidate) =>
+      primaryRoleMatchesCategory(candidate.correction.primaryRole, cell.categoryId));
+    if (corrected.creditsUsed > 0 || corrected.providerMetrics.attempts > 0) {
+      await recordCostEvents([event({ eventId: `${cell.cellId}:correction-evidence:r${round + 1}`,
+        cellId: cell.cellId, stage: "evidence-correction-search", provider: "tavily",
+        startedAt: correctionStarted, completedAt: correctionCompleted,
+        latencyMs: corrected.providerMetrics.latencyMs, attempts: corrected.providerMetrics.attempts,
+        retries: corrected.providerMetrics.retries, fallbackUsed: false, status: "completed",
+        usage: { paidSearchCredits: corrected.creditsUsed },
+        volume: volume(enriched.candidates.length, corrected.candidates.length, corrected.candidates.length,
+          inRoleCandidates.length, { correctedToAnotherRole: corrected.candidates.length - inRoleCandidates.length }),
+        notes: ["Only missing evidence identified by the first evidence packet may trigger supplementation."] })]);
+    }
+    await recordCostEvents(modelUsageEvents(cell, `evidence-correction-r${round + 1}`,
+      corrected.usage ?? [], correctionStarted, correctionCompleted,
+      volume(enriched.candidates.length, corrected.candidates.length,
+        corrected.candidates.filter((candidate) => candidate.correction.resolvedRoles.length > 0).length,
+        inRoleCandidates.length, { correctedToAnotherRole: corrected.candidates.length - inRoleCandidates.length })));
+    warnings.push(...corrected.warnings);
+
+    const scoringStarted = new Date().toISOString();
+    const scored = inRoleCandidates.length > 0
+      ? await qualificationAgent.evaluateWithUsage(inRoleCandidates, playbook,
+        plan.countryCode, plan.countryName, plan.objective)
+      : { assessments: [] as LeadCandidateAssessment[], usage: [] as WorkflowModelUsage[] };
+    const scoringCompleted = new Date().toISOString();
+    scored.assessments.forEach((assessment) => assessmentsByCandidate.set(assessment.candidateId, assessment));
+    await recordCostEvents(modelUsageEvents(cell, `qualification-score-only-r${round + 1}`, scored.usage,
+      scoringStarted, scoringCompleted, volume(inRoleCandidates.length, scored.assessments.length,
+        scored.assessments.filter((assessment) => assessment.scoringStatus === "completed").length,
+        scored.assessments.length,
+        { retryRequired: scored.assessments.filter((assessment) => assessment.scoringStatus !== "completed").length })));
+
+    const assessmentById = new Map(scored.assessments.map((assessment) => [assessment.candidateId, assessment]));
+    let finalEligibleAdded = 0;
+    for (const candidate of inRoleCandidates) {
+      if (selectedPairs.length >= plan.targetCount || selectedDomains.has(candidate.domain)) continue;
+      const assessment = assessmentById.get(candidate.candidateId);
+      if (!assessment || assessment.scoringStatus !== "completed" || !assessment.eligible
+        || assessment.eligibilityStatus !== "eligible"
+        || Object.values(assessment.gates).some((state) => state === "not-supported")) continue;
+      selectedPairs.push({ candidate, assessment });
+      selectedDomains.add(candidate.domain);
+      finalEligibleAdded += 1;
+    }
+    const completedFreshCalls = discovered.calls.filter((call) => call.status === "completed"
+      && call.cacheStatus === "miss").length;
+    consecutiveNoFinalRounds = nextNoFinalRoundCount(consecutiveNoFinalRounds,
+      { finalEligibleAdded, completedFreshCalls });
+    discoveryRounds.push({ round: round + 1, plannedCandidatePool: plannedPool, newUniqueCandidates: roundUnique,
+      lightGateCandidates: discovered.candidates.length, correctedCandidates: corrected.candidates.length,
+      inRoleCandidates: inRoleCandidates.length, finalEligibleAdded,
+      cumulativeFinalEligible: selectedPairs.length, stopReason: discovered.stopReason });
+    const completion = targetCompletionDecision({ acceptedCount: selectedPairs.length,
+      targetCount: plan.targetCount, completedFreshCalls,
+      hadProviderFailureOrCircuit: discovered.calls.some((call) => call.status === "failed"
+        || call.discardedReasonCounts["circuit-open"] === 1),
+      consecutiveNoFinalRounds, round, maximumRounds });
+    if (completion.complete) {
+      completionReason = completion.reason!;
+      break;
+    }
   }
-  await recordCostEvents(modelUsageEvents(cell, "discovery-gate", discovered.modelUsage,
-    discoveryStarted, discoveryCompleted, volume(discovered.calls.reduce((sum, call) => sum + call.newUniqueCompanies, 0),
-      discovered.candidates.length + discovered.rejectedCandidates.length, discovered.candidates.length,
-      discovered.candidates.length, { rejected: discovered.rejectedCandidates.length })));
-  warnings.push(...discovered.warnings);
 
-  const evidenceStarted = new Date().toISOString();
-  const enriched = await collectLeadEvidence(discovered.candidates, plan, { allowReusableEvidence: false,
-    persistEvidence: false, concurrency: 12, maximumAttempts: 3 });
-  const evidenceCompleted = new Date().toISOString();
-  const evidenceCount = enriched.candidates.reduce((sum, candidate) => sum
-    + candidate.evidence.filter((item) => item.sourceType !== "discovery").length, 0);
-  await recordCostEvents([event({ eventId: `${cell.cellId}:fresh-evidence`, cellId: cell.cellId, stage: "fresh-evidence",
-    provider: "tavily", startedAt: evidenceStarted, completedAt: evidenceCompleted,
-    latencyMs: enriched.providerMetrics?.latencyMs ?? Date.parse(evidenceCompleted) - Date.parse(evidenceStarted),
-    attempts: enriched.providerMetrics?.attempts ?? 0, retries: enriched.providerMetrics?.retries ?? 0,
-    fallbackUsed: false, status: "completed", usage: { paidSearchCredits: enriched.creditsUsed },
-    volume: volume(discovered.candidates.length, evidenceCount, evidenceCount, evidenceCount,
-      { noFreshEvidence: enriched.candidates.filter((candidate) => !candidate.evidence.some((item) => item.sourceType !== "discovery")).length }),
-    notes: ["historical evidence reads disabled", "evidence-library writes disabled"] })]);
-  warnings.push(...enriched.warnings);
-
-  const correctionStarted = new Date().toISOString();
-  const corrected = await new LeadEvidenceCorrectionAgent().correct(enriched.candidates, plan);
-  const correctionCompleted = new Date().toISOString();
-  if (corrected.creditsUsed > 0 || corrected.providerMetrics.attempts > 0) {
-    await recordCostEvents([event({ eventId: `${cell.cellId}:correction-evidence`, cellId: cell.cellId,
-      stage: "evidence-correction-search", provider: "tavily", startedAt: correctionStarted,
-      completedAt: correctionCompleted, latencyMs: corrected.providerMetrics.latencyMs,
-      attempts: corrected.providerMetrics.attempts, retries: corrected.providerMetrics.retries,
-      fallbackUsed: false, status: "completed", usage: { paidSearchCredits: corrected.creditsUsed },
-      volume: volume(enriched.candidates.length, corrected.candidates.length, corrected.candidates.length,
-        corrected.candidates.length) })]);
-  }
-  await recordCostEvents(modelUsageEvents(cell, "evidence-correction", corrected.usage ?? [], correctionStarted,
-    correctionCompleted, volume(enriched.candidates.length, corrected.candidates.length,
-      corrected.candidates.filter((candidate) => candidate.correction.resolvedRoles.length > 0).length,
-      corrected.candidates.length)));
-  warnings.push(...corrected.warnings);
-
-  const scoringStarted = new Date().toISOString();
-  const scored = await new LeadQualificationAgent(undefined, { includeCooperationPaths: false, concurrency: 4 })
-    .evaluateWithUsage(corrected.candidates, playbook, plan.countryCode, plan.countryName, plan.objective);
-  const scoringCompleted = new Date().toISOString();
-  await recordCostEvents(modelUsageEvents(cell, "qualification-score-only", scored.usage, scoringStarted,
-    scoringCompleted, volume(corrected.candidates.length, scored.assessments.length,
-      scored.assessments.filter((assessment) => assessment.scoringStatus === "completed").length,
-      scored.assessments.length, { retryRequired: scored.assessments.filter((assessment) => assessment.scoringStatus !== "completed").length })));
-
-  const candidateById = new Map(corrected.candidates.map((candidate) => [candidate.candidateId, candidate]));
-  const finalPairs = scored.assessments.flatMap((assessment) => {
-    const candidate = candidateById.get(assessment.candidateId);
-    if (!candidate || assessment.scoringStatus !== "completed"
-      || !primaryRoleMatchesCategory(candidate.correction.primaryRole, cell.categoryId)
-      || Object.values(assessment.gates).some((state) => state === "not-supported")) return [];
-    return [{ candidate, assessment }];
-  }).sort((a, b) => b.assessment.totalScore - a.assessment.totalScore
-    || a.candidate.companyName.localeCompare(b.candidate.companyName)).slice(0, 30);
-  const finalCandidates = finalPairs.map(({ candidate, assessment }, index) => toFinalCandidate(candidate, assessment, index + 1));
+  const finalPairs = [...selectedPairs].sort((a, b) => b.assessment.totalScore - a.assessment.totalScore
+    || a.candidate.companyName.localeCompare(b.candidate.companyName));
+  const finalCandidates = finalPairs.map(({ candidate, assessment }, index) =>
+    toFinalCandidate(candidate, assessment, index + 1));
+  const rankingStarted = new Date().toISOString();
   const rankingAt = new Date().toISOString();
-  await recordCostEvents([event({ eventId: `${cell.cellId}:ranking`, cellId: cell.cellId, stage: "role-filter-ranking",
-    provider: "deterministic", startedAt: scoringCompleted, completedAt: rankingAt,
-    latencyMs: Math.max(0, Date.parse(rankingAt) - Date.parse(scoringCompleted)), attempts: 0, retries: 0,
-    fallbackUsed: false, status: "completed", usage: {}, volume: volume(scored.assessments.length,
-      scored.assessments.length, finalPairs.length, finalCandidates.length,
-      { wrongPrimaryRoleOrGate: scored.assessments.length - finalPairs.length }) })]);
+  await recordCostEvents([event({ eventId: `${cell.cellId}:ranking`, cellId: cell.cellId,
+    stage: "role-filter-ranking", provider: "deterministic", startedAt: rankingStarted,
+    completedAt: rankingAt, latencyMs: Math.max(0, Date.parse(rankingAt) - Date.parse(rankingStarted)),
+    attempts: 0, retries: 0, fallbackUsed: false, status: "completed", usage: {},
+    volume: volume(assessmentsByCandidate.size, assessmentsByCandidate.size, selectedPairs.length,
+      finalCandidates.length, { wrongPrimaryRoleOrGate: correctedByDomain.size - selectedPairs.length }) })]);
 
   if (costEvents.some((item) => item.budgetCostUsd === null)) {
     throw new Error(`${cell.cellId} contains unpriced product cost events: ${costEvents.filter((item) => item.budgetCostUsd === null).map((item) => item.eventId).join(", ")}`);
@@ -275,11 +356,14 @@ export async function runProductCell(cell: ExperimentCell, options: {
     startedAt, completedAt: new Date().toISOString(), wallClockMs: Date.now() - wallStarted, plan,
     intent: { plannerModel: intent.plannerModel, plannerSource: intent.plannerSource,
       confidence: intent.confidence, warnings: intent.warnings }, playbook,
-    rawDiscoveryCount: discovered.calls.reduce((sum, call) => sum + call.rawResults, 0),
-    discoveredCandidateCount: discovered.candidates.length, correctedCandidateCount: corrected.candidates.length,
-    completedAssessmentCount: scored.assessments.filter((assessment) => assessment.scoringStatus === "completed").length,
-    finalCandidates, missingSlots: Math.max(0, 30 - finalCandidates.length), discoveryCalls: discovered.calls,
+    rawDiscoveryCount: allDiscoveryCalls.reduce((sum, call) => sum + call.rawResults, 0),
+    discoveredCandidateCount: totalUnique, correctedCandidateCount: correctedByDomain.size,
+    completedAssessmentCount: [...assessmentsByCandidate.values()]
+      .filter((assessment) => assessment.scoringStatus === "completed").length,
+    finalCandidates, missingSlots: Math.max(0, plan.targetCount - finalCandidates.length), completionReason,
+    discoveryRounds, discoveryCalls: allDiscoveryCalls,
     warnings, costEvents, coldStartAudit: { historicalCandidateReads: 0, historicalEvidenceReads: 0,
       privateMemoryReads: 0, historicalScoreReads: 0, evidenceLibraryWrites: 0, cooperationPathsGenerated: 0 },
-    raw: { ragContext, discovered, enriched, corrected, assessments: scored.assessments } };
+    raw: { ragContext, discovered: discoveredRuns, enriched: enrichedRuns,
+      corrected: [...correctedByDomain.values()], assessments: [...assessmentsByCandidate.values()] } };
 }

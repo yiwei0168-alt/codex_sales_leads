@@ -12,6 +12,8 @@ import { assessNetworkingRelevanceEvidence } from "../networking-relevance";
 import { isCurrentLeadScoringEvidence, leadEvidenceContentHash } from "../evidence-snapshot";
 import { PRIMARY_CHANNEL_POLICY, selectPrimaryChannel } from "../primary-channel";
 import { leadCorrectionBatchSchema, leadCorrectionModelSchema, type LeadCorrectionModelOutput } from "./schemas";
+import { loadPublicRoleCorrection, savePublicRoleCorrection } from "./role-correction-cache";
+import { persistPublicEvidence } from "./public-evidence-repository";
 import {
   CHANNEL_ROLE_FAMILIES,
   type ChannelRoleFamily,
@@ -21,7 +23,7 @@ import {
   type WorkflowModelUsage,
 } from "./types";
 
-const PROMPT_VERSION = "lead-evidence-correction-v5-material-escalation";
+export const LEAD_EVIDENCE_CORRECTION_PROMPT_VERSION = "lead-evidence-correction-v6-cache-aware";
 
 interface CorrectionRequest {
   instructions: string[];
@@ -33,6 +35,7 @@ interface CorrectionRequest {
     submittedOfficialWebsiteUrl: string;
     submittedRoles: string[];
     submittedFamily: string;
+    missingEvidence: string[];
     evidence: Array<{ evidenceId: string; sourceType: string; url: string; title: string; excerpt: string }>;
   }>;
 }
@@ -43,6 +46,8 @@ interface EvidenceCorrectionAgentOptions {
   batchSize?: number;
   concurrency?: number;
   searchConcurrency?: number;
+  allowReusableCorrections?: boolean;
+  persistCorrections?: boolean;
 }
 
 type SupplementalSearch = Pick<TavilySearchProvider, "search">;
@@ -174,6 +179,8 @@ export class LeadEvidenceCorrectionAgent {
   private readonly batchSize: number;
   private readonly concurrency: number;
   private readonly searchConcurrency: number;
+  private readonly allowReusableCorrections: boolean;
+  private readonly persistCorrections: boolean;
 
   constructor(
     private readonly provider: AiProvider = createLeadAiProvider(),
@@ -185,6 +192,8 @@ export class LeadEvidenceCorrectionAgent {
     this.batchSize = Math.max(1, Math.min(5, options.batchSize ?? 5));
     this.concurrency = Math.max(1, Math.min(8, options.concurrency ?? 2));
     this.searchConcurrency = Math.max(1, Math.min(8, options.searchConcurrency ?? 3));
+    this.allowReusableCorrections = options.allowReusableCorrections ?? true;
+    this.persistCorrections = options.persistCorrections ?? true;
   }
 
   private async supplement(candidates: LeadWorkflowCandidate[], plan: LeadSearchPlan) {
@@ -201,8 +210,9 @@ export class LeadEvidenceCorrectionAgent {
           continue;
         }
         try {
+          const gaps = candidate.discoveryGate?.missingEvidence ?? [];
           const response = await this.searchProvider.search({
-            query: `\"${candidate.companyName}\" ${plan.countryName} official website router Wi-Fi access point switch distributor reseller installer system integrator ISP`,
+            query: `\"${candidate.companyName}\" ${plan.countryName} ${gaps.join(" ")} official website router Wi-Fi access point switch distributor reseller installer system integrator ISP`,
             searchDepth: "basic",
             maxResults: 5,
             includeRawContent: false,
@@ -211,6 +221,14 @@ export class LeadEvidenceCorrectionAgent {
             const evidence = supplementalEvidence(item, candidate.domain, candidate.evidenceSnapshotRunId);
             return evidence ? [evidence] : [];
           });
+          let persistenceWarning: string | undefined;
+          if (this.persistCorrections && added.length > 0) {
+            await persistPublicEvidence({ companyName: candidate.companyName, domain: candidate.domain,
+              countryCode: plan.countryCode, evidence: added }).catch((error) => {
+              persistenceWarning = `Supplemental evidence persistence failed for ${candidate.domain}: ${
+                error instanceof Error ? error.message : String(error)}`;
+            });
+          }
           output[index] = {
             candidate: {
               ...candidate,
@@ -220,7 +238,9 @@ export class LeadEvidenceCorrectionAgent {
             attempts: response.attempts ?? 1,
             retries: response.retries ?? 0,
             latencyMs: response.latencyMs ?? 0,
-            warning: added.length === 0 ? `Correction search found no usable supplemental evidence for ${candidate.domain}.` : undefined,
+            warning: added.length === 0
+              ? `Correction search found no usable supplemental evidence for ${candidate.domain}.`
+              : persistenceWarning,
           };
         } catch (error) {
           const warning = `Correction search failed for ${candidate.domain}: ${error instanceof Error ? error.message : String(error)}`;
@@ -273,6 +293,7 @@ export class LeadEvidenceCorrectionAgent {
           submittedOfficialWebsiteUrl: candidate.officialWebsiteUrl,
           submittedRoles: candidate.queryRoles,
           submittedFamily: candidate.queryFamily,
+          missingEvidence: candidate.discoveryGate?.missingEvidence ?? [],
           evidence: currentEvidence.map((item) => ({ evidenceId: item.id, sourceType: item.sourceType,
             url: item.url, title: item.title, excerpt: item.excerpt })),
         };
@@ -281,7 +302,7 @@ export class LeadEvidenceCorrectionAgent {
     return {
       task: "lead-evidence-correction" as const,
       modelVersion,
-      promptVersion: PROMPT_VERSION,
+      promptVersion: LEAD_EVIDENCE_CORRECTION_PROMPT_VERSION,
       input,
       evidenceIds: candidates.flatMap((candidate) => candidate.evidence
         .filter((item) => isCurrentLeadScoringEvidence(item, candidate.evidenceSnapshotRunId))
@@ -408,7 +429,7 @@ export class LeadEvidenceCorrectionAgent {
         reasons: ["Deterministic evidence fallback was used because model correction did not complete."],
         confidence: roles.length > 0 ? 50 : 20,
         model: "deterministic-fallback",
-        promptVersion: PROMPT_VERSION,
+        promptVersion: LEAD_EVIDENCE_CORRECTION_PROMPT_VERSION,
         escalated: false,
         warnings: [warning],
       },
@@ -498,7 +519,21 @@ export class LeadEvidenceCorrectionAgent {
 
   async correct(candidates: LeadWorkflowCandidate[], plan: LeadSearchPlan) {
     const usageRecords: WorkflowModelUsage[] = [];
-    const supplemented = await this.supplement(candidates, plan);
+    const cacheWarnings: string[] = [];
+    const cached = new Map<string, CorrectedLeadWorkflowCandidate>();
+    if (this.allowReusableCorrections) {
+      await Promise.all(candidates.map(async (candidate) => {
+        try {
+          const hit = await loadPublicRoleCorrection(candidate, plan, LEAD_EVIDENCE_CORRECTION_PROMPT_VERSION);
+          if (hit) cached.set(candidate.candidateId, hit);
+        } catch (error) {
+          cacheWarnings.push(`Role-correction cache read failed for ${candidate.domain}: ${
+            error instanceof Error ? error.message : String(error)}`);
+        }
+      }));
+    }
+    const missing = candidates.filter((candidate) => !cached.has(candidate.candidateId));
+    const supplemented = await this.supplement(missing, plan);
     const batches: LeadWorkflowCandidate[][] = [];
     for (let offset = 0; offset < supplemented.candidates.length; offset += this.batchSize) {
       batches.push(supplemented.candidates.slice(offset, offset + this.batchSize));
@@ -513,13 +548,30 @@ export class LeadEvidenceCorrectionAgent {
       }
     };
     await Promise.all(Array.from({ length: Math.min(this.concurrency, batches.length) }, worker));
-    const corrected = this.deduplicate(results.flat());
+    const generated = this.deduplicate(results.flat());
+    if (this.persistCorrections) {
+      await Promise.all(generated.map(async (candidate) => {
+        try {
+          await savePublicRoleCorrection(candidate, plan, LEAD_EVIDENCE_CORRECTION_PROMPT_VERSION);
+        } catch (error) {
+          cacheWarnings.push(`Role-correction cache write failed for ${candidate.domain}: ${
+            error instanceof Error ? error.message : String(error)}`);
+        }
+      }));
+    }
+    const corrected = this.deduplicate(candidates.flatMap((candidate) => {
+      const hit = cached.get(candidate.candidateId);
+      if (hit) return [hit];
+      return generated.filter((item) => item.candidateId === candidate.candidateId);
+    }));
     return {
       candidates: corrected,
+      cacheHits: cached.size,
+      cacheMisses: missing.length,
       creditsUsed: supplemented.creditsUsed,
       providerMetrics: supplemented.providerMetrics,
       usage: usageRecords,
-      warnings: [...supplemented.warnings,
+      warnings: [...cacheWarnings, ...supplemented.warnings,
         ...corrected.flatMap((candidate) => candidate.correction.warnings.map((warning) => `${candidate.domain}: ${warning}`))],
     };
   }

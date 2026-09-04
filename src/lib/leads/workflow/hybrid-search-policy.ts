@@ -36,6 +36,8 @@ export const hybridSearchPolicySchema = z.object({
   maxConsecutiveNoValueBatches: z.number().int().min(1).max(5),
   defaultBatchSize: z.number().int().min(1).max(20),
   maxBatchSize: z.number().int().min(1).max(20),
+  initialCandidateMultiplier: z.number().min(1).max(3),
+  earlyLocalMarketCountryCodes: z.array(z.string().regex(/^[A-Z]{2}$/)),
   discoveryForbiddenProviders: z.array(z.string()).min(1),
   explicitOnlyCategories: z.array(z.enum(SEARCH_CATEGORY_IDS)),
   categories: z.record(z.enum(SEARCH_CATEGORY_IDS), categorySchema),
@@ -126,7 +128,10 @@ function selectedCategoryTracks(plan: NormalizedLeadSearchPlan): Array<[LeadSear
     if (roles.has("Retailer")) {
       if (plan.coverageMode === "local") tracks.push("retail-local");
       else if (plan.coverageMode === "national") tracks.push("retail-national");
-      else if (plan.coverageMode === "mixed" || plan.targetCount >= 50) tracks.push("retail-national", "retail-local");
+      else if (plan.coverageMode === "mixed" || plan.targetCount >= 50
+        || ACTIVE_HYBRID_SEARCH_POLICY.earlyLocalMarketCountryCodes.includes(plan.countryCode.toUpperCase())) {
+        tracks.push("retail-national", "retail-local");
+      }
       else tracks.push("retail-national");
     }
     selected.push(["retail", [...new Set(tracks)]]);

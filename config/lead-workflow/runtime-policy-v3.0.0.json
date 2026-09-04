@@ -1,6 +1,6 @@
 {
   "workflowKey": "cudy-sales-lead-end-to-end-runtime",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "status": "active",
   "baseDefinition": "config/lead-workflow/end-to-end-v2.0.0.json",
   "scoringPolicy": "config/lead-scoring/policy-v2.0.0.json",
@@ -14,7 +14,10 @@
     "Production model escalation never depends on Top-N position.",
     "Semantic judgments and sub-scores come from the model; deterministic totals and states come from code.",
     "Every generated artifact records lineage, actual downstream use and cost.",
-    "Model failure may use an approved equivalent fallback; embeddings never switch model at runtime."
+    "Model failure may use an approved equivalent fallback; embeddings never switch model at runtime.",
+    "Provider failure is never an empty successful search and cannot advance a no-value stop counter.",
+    "A requested company count is fulfilled after identity, market and primary-role validation; low scores alone do not trigger replacement search.",
+    "Within-run search, evidence and role-correction caches remain mandatory even when historical cache reads are disabled for a cold-start evaluation."
   ],
   "cooperationPaths": {
     "maximumPerCompany": 2,

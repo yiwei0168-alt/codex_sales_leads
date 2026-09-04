@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type { DiscoveryProviderId } from "@/lib/leads/workflow/hybrid-search-policy";
 import type { DiscoveryQuery } from "./discovery-contracts";
-import { createDiscoveryProvider, discoveryEnvironmentStatus } from "./discovery";
+import { createDiscoveryProvider, DiscoveryProviderError, discoveryEnvironmentStatus } from "./discovery";
 
 const baseQuery: DiscoveryQuery = { query: "WLAN Systemhaus Germany", countryCode: "DE", countryName: "Germany",
   languageCode: "de", maxResults: 3, category: "si-msp", track: "local-smb", engine: "google",
@@ -66,6 +66,30 @@ describe("production discovery providers", () => {
     const output = await createDiscoveryProvider("brave", { fetchImplementation: fetchMock, maxAttempts: 2 })
       .search({ ...baseQuery, engine: "brave", mechanism: "web-index" });
     expect(output).toMatchObject({ requestCount: 2, retryCount: 1 });
+  });
+
+  it("does not retry a non-transient authentication failure and exposes failure telemetry", async () => {
+    configured("brave");
+    const fetchMock = vi.fn().mockResolvedValue(new Response("forbidden", { status: 403 }));
+    const request = createDiscoveryProvider("brave", { fetchImplementation: fetchMock, maxAttempts: 3 })
+      .search({ ...baseQuery, engine: "brave", mechanism: "web-index" });
+    await expect(request).rejects.toMatchObject({ name: "DiscoveryProviderError",
+      details: { kind: "authentication", attempts: 1, circuitScope: "provider" } });
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not retry a response parsing failure or discard its failure type", async () => {
+    configured("brave");
+    const fetchMock = vi.fn().mockResolvedValue(new Response("not-json", { status: 200 }));
+    try {
+      await createDiscoveryProvider("brave", { fetchImplementation: fetchMock, maxAttempts: 3 })
+        .search({ ...baseQuery, engine: "brave", mechanism: "web-index" });
+      throw new Error("Expected invalid response to fail");
+    } catch (error) {
+      expect(error).toBeInstanceOf(DiscoveryProviderError);
+      expect((error as DiscoveryProviderError).details.kind).toBe("invalid-response");
+    }
+    expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
   it("does not silently substitute another provider when credentials are absent", async () => {

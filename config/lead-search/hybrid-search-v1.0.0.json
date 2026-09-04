@@ -1,11 +1,13 @@
 {
   "policyKey": "cudy-hybrid-lead-search",
-  "version": "1.0.0",
-  "strategyDocumentVersion": "0.9.0-discussion",
+  "version": "1.1.0",
+  "strategyDocumentVersion": "1.1.0-confirmed",
   "status": "active",
   "maxConsecutiveNoValueBatches": 2,
   "defaultBatchSize": 12,
   "maxBatchSize": 20,
+  "initialCandidateMultiplier": 1.5,
+  "earlyLocalMarketCountryCodes": ["MX"],
   "discoveryForbiddenProviders": ["tavily"],
   "explicitOnlyCategories": ["agent", "brand-owner", "oem-odm-opportunity"],
   "categories": {
@@ -22,7 +24,7 @@
     "resale": {
       "tracks": {
         "national-b2b": [
-          { "provider": "gemini-product", "engine": "google-grounded", "mechanism": "fixed-grounded-query", "trigger": "core" },
+          { "provider": "searchapi", "engine": "google", "mechanism": "b2b-web-serp", "trigger": "core" },
           { "provider": "brave", "engine": "brave", "mechanism": "web-index", "trigger": "index-gap" },
           { "provider": "searchapi", "engine": "bing", "mechanism": "web-serp", "trigger": "second-index-gap" },
           { "provider": "exa", "engine": "exa", "mechanism": "semantic-pages", "trigger": "semantic-gap" }
@@ -41,16 +43,18 @@
           { "provider": "searchapi", "engine": "google", "mechanism": "shopping-web-serp", "trigger": "core" },
           { "provider": "brave", "engine": "brave", "mechanism": "web-index", "trigger": "index-gap" },
           { "provider": "searchapi", "engine": "bing", "mechanism": "web-serp", "trigger": "second-index-gap" },
-          { "provider": "gemini-product", "engine": "google-grounded", "mechanism": "fixed-grounded-query", "trigger": "complex-semantic-gap" }
+          { "provider": "exa", "engine": "exa", "mechanism": "semantic-merchant-pages", "trigger": "semantic-gap" }
         ],
         "retail-local": [
           { "provider": "google-places", "engine": "google-places", "mechanism": "local-text-search", "trigger": "core" },
-          { "provider": "searchapi", "engine": "google", "mechanism": "web-serp", "trigger": "web-gap" }
+          { "provider": "searchapi", "engine": "google", "mechanism": "local-web-serp", "trigger": "web-gap" },
+          { "provider": "brave", "engine": "brave", "mechanism": "local-web-index", "trigger": "index-gap" }
         ],
         "retail-national": [
           { "provider": "searchapi", "engine": "google", "mechanism": "web-serp", "trigger": "core" },
           { "provider": "brave", "engine": "brave", "mechanism": "web-index", "trigger": "index-gap" },
-          { "provider": "searchapi", "engine": "bing", "mechanism": "web-serp", "trigger": "second-index-gap" }
+          { "provider": "searchapi", "engine": "bing", "mechanism": "web-serp", "trigger": "second-index-gap" },
+          { "provider": "exa", "engine": "exa", "mechanism": "semantic-retailer-pages", "trigger": "semantic-gap" }
         ]
       }
     },

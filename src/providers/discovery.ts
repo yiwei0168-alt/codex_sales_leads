@@ -11,6 +11,18 @@ import type {
 
 interface ProviderOptions { fetchImplementation?: typeof fetch; timeoutMs?: number; maxAttempts?: number }
 
+export type DiscoveryFailureKind = "authentication" | "quota" | "rate-limit" | "timeout"
+  | "transport" | "http" | "invalid-response" | "configuration";
+
+export class DiscoveryProviderError extends Error {
+  constructor(message: string, readonly details: { provider: string; kind: DiscoveryFailureKind;
+    attempts: number; latencyMs: number; retryable: boolean; circuitScope: "provider" | "route";
+    statusCode?: number }) {
+    super(message);
+    this.name = "DiscoveryProviderError";
+  }
+}
+
 export const DISCOVERY_PROVIDER_ENVIRONMENTS: DiscoveryProviderEnvironment[] = [
   { id: "gemini-full", apiKeyEnv: "GEMINI_API_KEY", baseUrlEnv: "GEMINI_BASE_URL",
     defaultBaseUrl: "https://generativelanguage.googleapis.com/v1beta", purpose: "Planned Google-grounded discovery" },
@@ -58,6 +70,7 @@ export function trustedDiscoveryEndpoint(baseUrl: string, allowedHosts: string[]
 
 async function requestJson<T>(provider: string, url: string, init: RequestInit, options: Required<Pick<ProviderOptions,
   "fetchImplementation" | "timeoutMs" | "maxAttempts">>, signal?: AbortSignal): Promise<{ body: T; attempts: number }> {
+  const startedAt = Date.now();
   let lastError: unknown;
   for (let attempt = 1; attempt <= options.maxAttempts; attempt += 1) {
     try {
@@ -67,19 +80,40 @@ async function requestJson<T>(provider: string, url: string, init: RequestInit, 
       const text = await response.text();
       if (!response.ok) {
         const transient = response.status === 408 || response.status === 429 || response.status >= 500;
-        if (!transient || attempt === options.maxAttempts) throw new Error(`${provider} HTTP ${response.status}: ${text.slice(0, 500)}`);
+        const kind: DiscoveryFailureKind = response.status === 401 || response.status === 403 ? "authentication"
+          : response.status === 402 ? "quota" : response.status === 429 ? "rate-limit" : "http";
+        const failure = new DiscoveryProviderError(`${provider} HTTP ${response.status}: ${text.slice(0, 500)}`, {
+          provider, kind, attempts: attempt, latencyMs: Date.now() - startedAt, retryable: transient,
+          circuitScope: [401, 402, 403].includes(response.status) ? "provider" : "route", statusCode: response.status,
+        });
+        if (!transient || attempt === options.maxAttempts) throw failure;
         lastError = new Error(`${provider} HTTP ${response.status}`);
       } else {
         try { return { body: JSON.parse(text) as T, attempts: attempt }; }
-        catch { throw new Error(`${provider} returned non-JSON content`); }
+        catch { throw new DiscoveryProviderError(`${provider} returned non-JSON content`, {
+          provider, kind: "invalid-response", attempts: attempt, latencyMs: Date.now() - startedAt,
+          retryable: false, circuitScope: "route",
+        }); }
       }
     } catch (error) {
+      if (error instanceof DiscoveryProviderError && !error.details.retryable) throw error;
       lastError = error;
-      if (attempt === options.maxAttempts || signal?.aborted) throw error;
+      if (attempt === options.maxAttempts || signal?.aborted) {
+        if (error instanceof DiscoveryProviderError) throw error;
+        const timedOut = error instanceof DOMException && (error.name === "TimeoutError" || error.name === "AbortError");
+        throw new DiscoveryProviderError(`${provider} ${timedOut ? "timed out" : "transport failure"}: ${
+          error instanceof Error ? error.message : String(error)}`, {
+          provider, kind: timedOut ? "timeout" : "transport", attempts: attempt,
+          latencyMs: Date.now() - startedAt, retryable: true, circuitScope: "route",
+        });
+      }
     }
-    await new Promise((resolve) => setTimeout(resolve, 250 * attempt));
+    await new Promise((resolve) => setTimeout(resolve, 200 * (2 ** (attempt - 1)) + Math.floor(Math.random() * 100)));
   }
-  throw lastError instanceof Error ? lastError : new Error(`${provider} request failed`);
+  throw lastError instanceof Error ? lastError : new DiscoveryProviderError(`${provider} request failed`, {
+    provider, kind: "transport", attempts: options.maxAttempts, latencyMs: Date.now() - startedAt,
+    retryable: true, circuitScope: "route",
+  });
 }
 
 function boundedResults(value: number): number { return Math.max(1, Math.min(20, Math.round(value))); }

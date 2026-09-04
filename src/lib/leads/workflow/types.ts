@@ -426,6 +426,13 @@ export interface LeadWorkflowState {
   candidates: LeadWorkflowCandidate[];
   correctedCandidates: CorrectedLeadWorkflowCandidate[];
   assessments: LeadCandidateAssessment[];
+  discoveryRound?: number;
+  discoveredUniqueCount?: number;
+  searchExcludeDomains?: string[];
+  consecutiveNoFinalRounds?: number;
+  acceptedCandidateCount?: number;
+  targetShouldContinue?: boolean;
+  targetCompletionReason?: "target-met" | "confirmed-exhaustion" | "provider-unavailable" | "maximum-rounds";
   assessmentReviews: LeadAssessmentReview[];
   handoffs: LeadDevelopmentHandoff[];
   creditsUsed: number;

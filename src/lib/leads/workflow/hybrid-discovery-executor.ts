@@ -1,7 +1,10 @@
+import { createHash } from "node:crypto";
+
 import type { LeadSearchPlan } from "@/lib/assistant/types";
 import type { ChannelRole } from "@/lib/domain";
-import { createDiscoveryProvider } from "@/providers/discovery";
-import type { DiscoveryItem, DiscoveryProvider, DiscoveryQuery } from "@/providers/discovery-contracts";
+import { createDiscoveryProvider, DiscoveryProviderError, type DiscoveryFailureKind } from "@/providers/discovery";
+import type { DiscoveryItem, DiscoveryProvider, DiscoveryProviderResult,
+  DiscoveryQuery } from "@/providers/discovery-contracts";
 
 import { RealtimeCandidateRegistry } from "./candidate-registry";
 import { LeadDiscoveryGate, type DiscoveryGateResult } from "./discovery-gate";
@@ -11,6 +14,8 @@ import type { LeadMarketPlaybook, LeadWorkflowCandidate, WorkflowModelUsage } fr
 
 export interface HybridSearchCallTelemetry {
   callKey: string;
+  callFingerprint: string;
+  queryClusterKey: string;
   route: HybridSearchRouteStep;
   query: string;
   status: "completed" | "failed" | "skipped";
@@ -27,6 +32,9 @@ export interface HybridSearchCallTelemetry {
   latencyMs: number;
   retryCount: number;
   fallbackUsed: boolean;
+  cacheStatus: "miss" | "hit" | "failed-hit" | "skipped";
+  failureClass?: DiscoveryFailureKind;
+  circuitScope?: "provider" | "route";
   discardedReasonCounts: Record<string, number>;
   errorMessage?: string;
   items: Array<{ item: DiscoveryItem; candidateKey: string | null; domain: string | null;
@@ -47,7 +55,25 @@ interface ExecutorOptions {
   providerFactory?: (step: HybridSearchRouteStep) => DiscoveryProvider;
   gate?: Pick<LeadDiscoveryGate, "evaluate">;
   concurrency?: number;
+  queryRound?: number;
+  targetPoolOverride?: number;
+  initialExcludeDomains?: string[];
+  session?: HybridDiscoverySession;
   onCall?: (call: HybridSearchCallTelemetry) => Promise<void>;
+}
+
+export interface HybridDiscoverySession {
+  excludedDomains: Set<string>;
+  completedCalls: Map<string, DiscoveryProviderResult>;
+  failedCalls: Map<string, { kind: DiscoveryFailureKind; message: string }>;
+  providerCircuits: Map<string, string>;
+  routeCircuits: Map<string, string>;
+  providerFailureCounts: Map<string, number>;
+}
+
+export function createHybridDiscoverySession(): HybridDiscoverySession {
+  return { excludedDomains: new Set(), completedCalls: new Map(), failedCalls: new Map(),
+    providerCircuits: new Map(), routeCircuits: new Map(), providerFailureCounts: new Map() };
 }
 
 const rolesByCategory: Record<LeadSearchCategory, ChannelRole[]> = {
@@ -78,6 +104,32 @@ const queryTemplates: Record<LeadSearchCategory, string[]> = {
     "branded CPE device tender standardized deployment OEM ODM customer opportunity"],
 };
 
+const spanishQueryTemplates: Partial<Record<LeadSearchCategory, string[]>> = {
+  distribution: ["distribuidor mayorista de equipos de red canal revendedores inventario logística",
+    "mayorista TI telecomunicaciones marcas de redes programa para distribuidores"],
+  resale: ["revendedor B2B VAR equipos de red Wi-Fi empresarial switches routers cotización",
+    "integrador revendedor soluciones de red para pymes soporte configuración"],
+  retail: ["tienda de computación electrónica routers Wi-Fi mesh switches precio carrito compra en línea",
+    "tienda minorista equipos de red hogar SOHO entrega inventario sucursales"],
+  "si-msp": ["integrador de sistemas MSP redes empresariales Wi-Fi LAN servicios administrados casos de éxito",
+    "proveedor de soluciones WLAN switches para pymes instalación soporte"],
+};
+
+const roundFocusByLanguage: Record<string, Partial<Record<LeadSearchCategory, string[]>>> = {
+  en: {
+    retail: ["London", "Manchester Birmingham", "Leeds Glasgow", "Bristol Liverpool", "Edinburgh Cardiff"],
+    resale: ["London", "Manchester Birmingham", "Leeds Glasgow", "Bristol Liverpool"],
+    "si-msp": ["London", "Manchester Birmingham", "Leeds Glasgow", "Bristol Edinburgh"],
+    distribution: ["United Kingdom", "England Scotland Wales", "London Manchester"],
+  },
+  es: {
+    retail: ["Ciudad de México", "Guadalajara", "Monterrey", "Puebla Querétaro", "Tijuana León Mérida"],
+    resale: ["Ciudad de México", "Guadalajara Monterrey", "Querétaro Puebla", "Tijuana León"],
+    "si-msp": ["Ciudad de México", "Monterrey Guadalajara", "Querétaro Puebla", "Tijuana León"],
+    distribution: ["México", "Ciudad de México", "Monterrey Guadalajara"],
+  },
+};
+
 function familyForCategory(category: LeadSearchCategory): string | null {
   if (category === "distribution") return "distribution";
   if (category === "resale") return "resale";
@@ -90,17 +142,55 @@ function familyForCategory(category: LeadSearchCategory): string | null {
 }
 
 function queryForStep(plan: ReturnType<typeof normalizeLeadSearchPlan>, playbook: LeadMarketPlaybook,
-  step: HybridSearchRouteStep): string {
+  step: HybridSearchRouteStep, queryRound: number): string {
   const family = familyForCategory(step.category);
   const planned = family ? playbook.searchQueries.filter((query) => query.family === family) : [];
+  const templates = spanishQueryTemplates[step.category] && plan.queryLanguage.toLowerCase().startsWith("es")
+    ? spanishQueryTemplates[step.category]! : queryTemplates[step.category];
   const base = planned[step.sequence % Math.max(1, planned.length)]?.query
-    ?? queryTemplates[step.category][step.sequence % queryTemplates[step.category].length];
+    ?? templates[step.sequence % templates.length];
   const track = step.track.replace(/-/g, " ");
   const specialization = step.trigger.includes("semantic") || step.trigger === "technical-gap"
-    ? queryTemplates[step.category][1] : queryTemplates[step.category][0];
+    ? templates[1] : templates[0];
+  const language = plan.queryLanguage.toLowerCase().split(/[-_]/)[0];
+  const focusOptions = roundFocusByLanguage[language]?.[step.category] ?? [];
+  const roundFocus = focusOptions.length > 0 ? focusOptions[queryRound % focusOptions.length] : "";
+  const retailBoundary = step.category === "retail"
+    ? language === "es"
+      ? "venta minorista real con precio carrito inventario entrega o sucursales; excluir fabricante sitio oficial de marca mayorista directorio y vendedor particular de marketplace"
+      : "real consumer retailer with price cart inventory delivery or stores; exclude manufacturer brand site wholesale-only directory and individual marketplace listing"
+    : "";
   const direction = step.category === "oem-odm-opportunity"
     ? "potential customer buying customized or private-label networking products; exclude factories and suppliers to Cudy" : "real company official website";
-  return `${base} ${specialization} ${track} ${plan.countryName} ${direction}`.replace(/\s+/g, " ").trim().slice(0, 1_200);
+  return `${base} ${specialization} ${track} ${roundFocus} ${plan.countryName} ${retailBoundary} ${direction}`
+    .replace(/\s+/g, " ").trim().slice(0, 1_200);
+}
+
+function normalizedQuery(value: string): string {
+  return value.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, " ").trim();
+}
+
+function hash(value: string): string { return createHash("sha256").update(value).digest("hex"); }
+
+function queryClusterKey(plan: ReturnType<typeof normalizeLeadSearchPlan>, step: HybridSearchRouteStep,
+  query: string): string {
+  return hash([plan.countryCode, step.category, step.track, normalizedQuery(query)].join("|"));
+}
+
+function callFingerprint(plan: ReturnType<typeof normalizeLeadSearchPlan>, step: HybridSearchRouteStep,
+  query: string): string {
+  return hash([ACTIVE_HYBRID_SEARCH_POLICY.version, plan.countryCode, plan.queryLanguage, step.category,
+    step.track, step.provider, step.engine, step.mechanism, normalizedQuery(query)].join("|"));
+}
+
+function failureDetails(error: unknown): { kind: DiscoveryFailureKind; attempts: number;
+  latencyMs: number; circuitScope: "provider" | "route" } {
+  if (error instanceof DiscoveryProviderError) return error.details;
+  const message = error instanceof Error ? error.message : String(error);
+  const configuration = /not configured|unsupported|unknown discovery provider/i.test(message);
+  return { kind: configuration ? "configuration" : "transport", attempts: 0, latencyMs: 0,
+    circuitScope: configuration ? "provider" : "route" };
 }
 
 function hardPrefilter(item: DiscoveryItem): string | undefined {
@@ -146,6 +236,18 @@ async function runLimited<T>(tasks: Array<() => Promise<T>>, concurrency: number
   return results;
 }
 
+async function runProviderAware<T>(tasks: Array<{ provider: string; run: () => Promise<T> }>,
+  concurrency: number): Promise<T[]> {
+  const groups = new Map<string, Array<{ index: number; run: () => Promise<T> }>>();
+  tasks.forEach((task, index) => groups.set(task.provider,
+    [...(groups.get(task.provider) ?? []), { index, run: task.run }]));
+  const output = new Array<T>(tasks.length);
+  await runLimited([...groups.values()].map((group) => async () => {
+    for (const task of group) output[task.index] = await task.run();
+  }), concurrency);
+  return output;
+}
+
 export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearchPlan,
   playbook: LeadMarketPlaybook, options: ExecutorOptions = {}): Promise<HybridDiscoveryExecution> {
   const plan = normalizeLeadSearchPlan(inputPlan);
@@ -154,7 +256,15 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
   const gate = options.gate ?? new LeadDiscoveryGate();
   const providerFactory = options.providerFactory ?? ((step) => createDiscoveryProvider(step.provider));
   const concurrency = Math.max(1, Math.min(8, options.concurrency ?? Number(process.env.LEAD_DISCOVERY_CONCURRENCY ?? 6)));
-  const targetPool = Math.min(150, Math.max(plan.targetCount + 5, Math.ceil(plan.targetCount * 1.35)));
+  const defaultTargetPool = Math.max(plan.targetCount + 5,
+    Math.ceil(plan.targetCount * ACTIVE_HYBRID_SEARCH_POLICY.initialCandidateMultiplier));
+  const targetPool = Math.min(150, Math.max(1, Math.ceil(options.targetPoolOverride ?? defaultTargetPool)));
+  const queryRound = Math.max(0, Math.floor(options.queryRound ?? 0));
+  const session = options.session ?? createHybridDiscoverySession();
+  for (const domain of options.initialExcludeDomains ?? []) {
+    if (domain.trim()) session.excludedDomains.add(domain.trim().toLowerCase());
+  }
+  const initiallyExcludedDomains = new Set(session.excludedDomains);
   const calls: HybridSearchCallTelemetry[] = [];
   const warnings: string[] = [];
   const modelUsage: WorkflowModelUsage[] = [];
@@ -169,25 +279,45 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
 
   for (let sequence = 0; sequence <= maximumSequence; sequence += 1) {
     const wave = route.filter((step) => step.sequence === sequence);
-    const tasks = wave.map((step) => async () => {
+    const tasks = wave.map((step) => ({ provider: step.provider, run: async () => {
       const trackKey = `${step.category}/${step.track}`;
       const decision = shouldRun(step, plan, qualityCount(), targetPool, noValueByTrack.get(trackKey) ?? 0);
-      const searchQuery = queryForStep(plan, playbook, step);
+      const searchQuery = queryForStep(plan, playbook, step, queryRound);
       const callKey = `${trackKey}/${sequence}/${step.provider}/${step.engine}`;
+      const fingerprint = callFingerprint(plan, step, searchQuery);
+      const clusterKey = queryClusterKey(plan, step, searchQuery);
+      const routeCircuitKey = `${step.provider}/${step.engine}`;
+      const circuitReason = session.providerCircuits.get(step.provider) ?? session.routeCircuits.get(routeCircuitKey);
+      const cached = session.completedCalls.get(fingerprint);
+      const failedCache = session.failedCalls.get(fingerprint);
+      if (circuitReason || failedCache) {
+        const skipped: HybridSearchCallTelemetry = { callKey, callFingerprint: fingerprint,
+          queryClusterKey: clusterKey, route: step, query: searchQuery, status: "skipped",
+          rawResults: 0, normalizedCompanies: 0, newUniqueCompanies: 0, existingCompanyHits: 0, rejectedResults: 0,
+          paidSearchCredits: 0, requestCount: 0, groundingQueries: 0, inputTokens: 0, outputTokens: 0,
+          latencyMs: 0, retryCount: 0, fallbackUsed: failedByTrack.has(trackKey),
+          cacheStatus: failedCache ? "failed-hit" : "skipped",
+          discardedReasonCounts: { [failedCache ? "failed-call-cache-hit" : "circuit-open"]: 1 },
+          errorMessage: failedCache?.message ?? circuitReason, failureClass: failedCache?.kind, items: [] };
+        calls.push(skipped); await options.onCall?.(skipped); return;
+      }
       if (!decision.run) {
-        const skipped: HybridSearchCallTelemetry = { callKey, route: step, query: searchQuery, status: "skipped",
+        const skipped: HybridSearchCallTelemetry = { callKey, callFingerprint: fingerprint,
+          queryClusterKey: clusterKey, route: step, query: searchQuery, status: "skipped",
           rawResults: 0, normalizedCompanies: 0, newUniqueCompanies: 0, existingCompanyHits: 0, rejectedResults: 0,
           paidSearchCredits: 0, requestCount: 0, groundingQueries: 0,
           inputTokens: 0, outputTokens: 0, latencyMs: 0, retryCount: 0,
-          fallbackUsed: false, discardedReasonCounts: { [decision.reason ?? "not-required"]: 1 }, items: [] };
+          fallbackUsed: false, cacheStatus: "skipped",
+          discardedReasonCounts: { [decision.reason ?? "not-required"]: 1 }, items: [] };
         calls.push(skipped); await options.onCall?.(skipped); return;
       }
       const query: DiscoveryQuery = { query: searchQuery, countryCode: plan.countryCode, countryName: plan.countryName,
         languageCode: plan.queryLanguage, maxResults: ACTIVE_HYBRID_SEARCH_POLICY.defaultBatchSize,
         category: step.category, track: step.track, engine: step.engine, mechanism: step.mechanism,
-        excludeDomains: registry.domains() };
+        excludeDomains: [...new Set([...session.excludedDomains, ...registry.domains()])] };
       try {
-        const response = await providerFactory(step).search(query, AbortSignal.timeout(150_000));
+        const response = cached ?? await providerFactory(step).search(query, AbortSignal.timeout(150_000));
+        if (!cached) session.completedCalls.set(fingerprint, response);
         const discarded: Record<string, number> = {};
         let normalizedCompanies = 0;
         let newUniqueCompanies = 0;
@@ -204,34 +334,55 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
             discarded[reason] = (discarded[reason] ?? 0) + 1;
           } else {
             normalizedCompanies += 1;
-            if (added.firstDiscovery) newUniqueCompanies += 1; else existingCompanyHits += 1;
+            if (added.firstDiscovery && (!added.domain || !session.excludedDomains.has(added.domain))) {
+              newUniqueCompanies += 1;
+              if (added.domain) session.excludedDomains.add(added.domain);
+            } else existingCompanyHits += 1;
           }
           return { item, candidateKey: added.candidateKey, domain: added.domain,
             firstDiscovery: added.firstDiscovery, rejectionReason: added.rejectionReason };
         });
         noValueByTrack.set(trackKey, newUniqueCompanies === 0 ? (noValueByTrack.get(trackKey) ?? 0) + 1 : 0);
-        const completed: HybridSearchCallTelemetry = { callKey, route: step, query: searchQuery, status: "completed",
+        const completed: HybridSearchCallTelemetry = { callKey, callFingerprint: fingerprint,
+          queryClusterKey: clusterKey, route: step, query: searchQuery, status: "completed",
           rawResults: response.items.length, normalizedCompanies, newUniqueCompanies, existingCompanyHits,
-          rejectedResults: response.items.length - normalizedCompanies, paidSearchCredits: response.usage.paidSearchCredits,
-          requestCount: response.requestCount, groundingQueries: response.usage.groundingQueries ?? 0,
-          inputTokens: response.usage.inputTokens, outputTokens: response.usage.outputTokens, latencyMs: response.latencyMs,
-          retryCount: response.retryCount, fallbackUsed: failedByTrack.has(trackKey), discardedReasonCounts: discarded, items };
+          rejectedResults: response.items.length - normalizedCompanies,
+          paidSearchCredits: cached ? 0 : response.usage.paidSearchCredits,
+          requestCount: cached ? 0 : response.requestCount,
+          groundingQueries: cached ? 0 : response.usage.groundingQueries ?? 0,
+          inputTokens: cached ? 0 : response.usage.inputTokens,
+          outputTokens: cached ? 0 : response.usage.outputTokens,
+          latencyMs: cached ? 0 : response.latencyMs,
+          retryCount: cached ? 0 : response.retryCount, fallbackUsed: failedByTrack.has(trackKey),
+          cacheStatus: cached ? "hit" : "miss", discardedReasonCounts: discarded, items };
         calls.push(completed); await options.onCall?.(completed);
       } catch (error) {
         failedByTrack.add(trackKey);
-        noValueByTrack.set(trackKey, (noValueByTrack.get(trackKey) ?? 0) + 1);
-        const failed: HybridSearchCallTelemetry = { callKey, route: step, query: searchQuery, status: "failed",
+        const details = failureDetails(error);
+        session.failedCalls.set(fingerprint, { kind: details.kind,
+          message: error instanceof Error ? error.message : String(error) });
+        const failures = (session.providerFailureCounts.get(step.provider) ?? 0) + 1;
+        session.providerFailureCounts.set(step.provider, failures);
+        if (details.circuitScope === "provider" || failures >= 2) {
+          session.providerCircuits.set(step.provider, `${details.kind}: ${error instanceof Error ? error.message : String(error)}`);
+        } else if (!details.attempts && details.kind === "configuration") {
+          session.routeCircuits.set(routeCircuitKey, error instanceof Error ? error.message : String(error));
+        }
+        const failed: HybridSearchCallTelemetry = { callKey, callFingerprint: fingerprint,
+          queryClusterKey: clusterKey, route: step, query: searchQuery, status: "failed",
           rawResults: 0, normalizedCompanies: 0, newUniqueCompanies: 0, existingCompanyHits: 0, rejectedResults: 0,
-          paidSearchCredits: 0, requestCount: 0, groundingQueries: 0,
-          inputTokens: 0, outputTokens: 0, latencyMs: 0, retryCount: 0,
-          fallbackUsed: false, discardedReasonCounts: { "provider-error": 1 }, items: [],
+          paidSearchCredits: 0, groundingQueries: 0, inputTokens: 0, outputTokens: 0, latencyMs: details.latencyMs,
+          requestCount: details.attempts, retryCount: Math.max(0, details.attempts - 1),
+          fallbackUsed: false, cacheStatus: "miss", failureClass: details.kind,
+          circuitScope: details.circuitScope, discardedReasonCounts: { [`provider-${details.kind}`]: 1 }, items: [],
           errorMessage: error instanceof Error ? error.message : String(error) };
         warnings.push(`Hybrid discovery failed (${trackKey}/${step.provider}): ${failed.errorMessage}`);
         calls.push(failed); await options.onCall?.(failed);
       }
-    });
-    await runLimited(tasks, concurrency);
-    const current = registry.toWorkflowCandidates(250);
+    }}));
+    await runProviderAware(tasks, concurrency);
+    const current = registry.toWorkflowCandidates(250)
+      .filter((candidate) => !initiallyExcludedDomains.has(candidate.domain));
     const ungated = current.filter((candidate) => !gated.has(candidate.candidateId) && !rejected.has(candidate.candidateId));
     if (ungated.length > 0) {
       const gateResult: DiscoveryGateResult = await gate.evaluate(ungated);
@@ -243,7 +394,9 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
     if (qualityCount() >= targetPool) break;
   }
 
-  const currentById = new Map(registry.toWorkflowCandidates(250).map((candidate) => [candidate.candidateId, candidate]));
+  const currentById = new Map(registry.toWorkflowCandidates(250)
+    .filter((candidate) => !initiallyExcludedDomains.has(candidate.domain))
+    .map((candidate) => [candidate.candidateId, candidate]));
   const candidates = [...gated.values()].map((candidate) => {
     const current = currentById.get(candidate.candidateId);
     return current ? mergeGateCandidate(current, candidate) : candidate;

@@ -1,6 +1,6 @@
 {
   "workflowKey": "cudy-sales-lead-end-to-end",
-  "version": "2.2.2",
+  "version": "2.3.0",
   "status": "active",
   "scope": "From the user's natural-language market-development request and workspace context to ranked companies, editable cooperation paths, development strategy, outreach email, and private-memory learning from user edits.",
   "principles": [
@@ -11,7 +11,8 @@
     "User-confirmed knowledge has higher priority than ordinary retrieval, while shared knowledge and user/workspace memory remain isolated.",
     "Cooperation paths, roles and evidence restrictions travel into development strategy and email generation.",
     "User edits to paths and outreach are retained as private learning signals, not written into the shared knowledge base.",
-    "OpenAI and Anthropic generation is routed through the pinned OpenRouter HTTPS gateway; embeddings, Kimi, DeepSeek and Gemini retain their dedicated providers."
+    "OpenAI and Anthropic generation is routed through the pinned OpenRouter HTTPS gateway; embeddings, Kimi, DeepSeek and Gemini retain their dedicated providers.",
+    "Every potentially overlapping task must create and consume a versioned cache at first execution; downstream stages receive exact evidence IDs, role corrections and explicit missing-evidence gaps."
   ],
   "modelRouting": [
     {
@@ -164,26 +165,26 @@
       "id": "04-discovery",
       "name": "Multi-source candidate discovery",
       "inputs": ["Market playbook", "Role-family queries", "Target count", "Active hybrid-search policy"],
-      "outputs": ["Raw candidate names/domains", "Discovery provider and lane provenance", "Initial URLs/snippets", "Light-gate pass/hold/reject", "Per-call request, grounding-query, yield, cost, latency, retry and discard telemetry"],
-      "strategy": ["Run the confirmed category-specific provider tracks with shared real-time deduplication", "Use DeepSeek Flash only for a compact lightweight gate after direct homepage text; never upgrade this gate to Pro", "Stop a track after two consecutive no-value batches or when the quality pool reaches its task-sized target", "Tavily is forbidden in candidate discovery and remains evidence-only", "Provider score and rank cannot enter final value scoring", "Canonicalize domains and retain first, duplicate and assisted discovery provenance"],
-      "failure": "A provider failure is isolated; same-tier route alternatives continue and are recorded. A gate-model failure holds candidates for evidence instead of inventing rejection or escalating capability.",
+      "outputs": ["Raw candidate names/domains", "Discovery provider and lane provenance", "Initial URLs/snippets", "Light-gate pass/hold/reject", "Call fingerprint and query-cluster key", "Per-call request, grounding-query, cache, yield, cost, latency, retry, failure-class and discard telemetry"],
+      "strategy": ["Run the confirmed category-specific provider tracks with shared real-time deduplication", "Use DeepSeek Flash only for a compact lightweight gate after direct homepage text; never upgrade this gate to Pro", "Treat a requested count as final valid in-role companies and feed evidence/role outcomes back into dynamic search rounds", "Plan the first candidate buffer at 1.5 times the requested count, then adapt from conservative observed end-to-end yield", "Start national retail, E-tail and Google Places local retail together in configured low-SEO markets", "Use local-language commercial terminology and query clusters; expand mature markets to local coverage only after a measured gap", "Stop a track only after two completed no-value batches; provider failures never count as no-value", "Serialize calls sharing one provider while different provider mechanisms remain concurrent, so exclusions update before the next same-provider query", "Tavily is forbidden in candidate discovery and remains evidence-only", "Gemini Product is not a default Retail or Reseller route", "Provider score and rank cannot enter final value scoring", "Canonicalize domains and retain first, duplicate and assisted discovery provenance"],
+      "failure": "Classify authentication, quota, rate-limit, timeout, transport, HTTP, invalid-response and configuration failures. Non-transient failures open a scoped circuit; bounded same-tier complementary alternatives continue. Failed calls are cached briefly but never counted as empty successful searches. A gate-model failure holds candidates for evidence instead of inventing rejection or escalating capability.",
       "downstream": ["Fresh evidence acquisition"]
     },
     {
       "id": "05-evidence",
       "name": "Fresh public evidence acquisition",
       "inputs": ["Passed or held discovered candidates", "Official-site and targeted public search queries", "Evidence freshness policy"],
-      "outputs": ["Immutable evidence snapshot", "capturedAt", "contentHash", "sourceType", "freshnessStatus", "evidenceRunId", "Tavily search/extract credits, attempts, retries and latency"],
-      "strategy": ["Reuse current public-evidence-library material before spending search credits", "Cold-start evaluation mode can explicitly disable both historical evidence reads and evidence-library writes while preserving fresh acquisition", "Old-run evidence is discovery-only until reacquired or validated", "Use Tavily only for targeted evidence discovery/extraction, not candidate discovery", "Prefer official and independent public sources", "Search for defining business actions, product tracks, target customers, size and cooperation signals"],
+      "outputs": ["Immutable evidence snapshot", "capturedAt", "contentHash", "sourceType", "freshnessStatus", "evidenceRunId", "Explicit missing-evidence list", "Tavily search/extract credits, attempts, retries and latency"],
+      "strategy": ["Reuse current public-evidence-library material before spending search credits", "Cold-start evaluation mode can explicitly disable both historical evidence reads and evidence-library writes while preserving within-run cache and deduplication", "Old-run evidence is discovery-only until reacquired or validated", "Use Tavily only for targeted evidence discovery/extraction, not candidate discovery", "Prefer official and independent public sources", "Search for defining business actions, product tracks, target customers, size and cooperation signals", "Pass exact evidence IDs and missing gaps downstream; a later Agent may supplement only a material unresolved gap"],
       "failure": "Failed retrieval becomes unknown; it never becomes a negative fact.",
       "downstream": ["Entity correction", "Role classification", "Freshness audit"]
     },
     {
       "id": "06-correction-role",
       "name": "Entity correction, atomic facts and primary-role decision",
-      "inputs": ["Fresh evidence snapshot", "Submitted candidate identity and discovery roles"],
-      "outputs": ["Corrected company/domain", "Atomic fact ledger", "All supported roles", "Primary role or Hybrid/Unresolved", "Correction confidence"],
-      "strategy": ["No upward-priority rule", "Agent independently decides the primary business role", "Distributor requires evidence of supplying downstream channel partners", "A company may hold multiple supported roles", "Non-standard model labels are normalized without discarding semantic role evidence"],
+      "inputs": ["Fresh evidence snapshot", "Submitted candidate identity and discovery roles", "Exact evidence IDs", "Explicit missing-evidence list"],
+      "outputs": ["Corrected company/domain", "Atomic fact ledger", "All supported roles", "Primary role or Hybrid/Unresolved", "Correction confidence", "Versioned public role-correction cache entry"],
+      "strategy": ["Reuse an exact evidence/prompt/taxonomy role-correction cache hit before any model call", "No upward-priority rule", "Agent independently decides the primary business role", "Distributor requires evidence of supplying downstream channel partners", "A company may hold multiple supported roles", "Non-standard model labels are normalized without discarding semantic role evidence", "Keep public role-correction knowledge separate from private user/workspace memory"],
       "failure": "Ambiguity escalates to the high-capability model; deterministic fallback is retry-only and not externally publishable as a resolved identity.",
       "downstream": ["Research depth", "Role-aware scoring", "Cooperation paths"]
     },

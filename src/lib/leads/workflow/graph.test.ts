@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import type { LeadSearchPlan } from "@/lib/assistant/types";
 
 import { buildLeadWorkflowGraph, type LeadWorkflowDependencies } from "./graph";
+import type { DiscoveryResult } from "./discovery";
 import type {
   CorrectedLeadWorkflowCandidate,
   LeadCandidateAssessment,
@@ -101,6 +102,20 @@ const assessment: LeadCandidateAssessment = {
   promptVersion: "test", escalated: false, scoringStatus: "completed", warnings: [],
 };
 
+function discoveryMetric(newUniqueCompanies: number): NonNullable<DiscoveryResult["callMetrics"]>[number] {
+  return {
+    callKey: "distribution/national/0/test/test", callFingerprint: `fingerprint-${newUniqueCompanies}`,
+    queryClusterKey: `cluster-${newUniqueCompanies}`,
+    route: { category: "distribution", track: "national", sequence: 0, provider: "gemini-full",
+      engine: "google-grounded", mechanism: "planning-and-semantic-web-search", trigger: "core",
+      invocationReason: "test" },
+    query: "test query", status: "completed", rawResults: 1, normalizedCompanies: 1,
+    newUniqueCompanies, existingCompanyHits: 0, rejectedResults: 0, paidSearchCredits: 0,
+    requestCount: 1, groundingQueries: 1, inputTokens: 1, outputTokens: 1, latencyMs: 1,
+    retryCount: 0, fallbackUsed: false, cacheStatus: "miss", discardedReasonCounts: {}, items: [],
+  };
+}
+
 function dependencies(events: string[], context = ragContext): LeadWorkflowDependencies {
   const result: LeadWorkflowResult = { runId: "run-1", countryCode: "DE", countryName: "德国", requested: 20,
     discovered: 1, assessed: 1, qualified: 1, accepted: 1, creditsUsed: 3, ragCitationCount: context.length,
@@ -170,5 +185,38 @@ describe("LangGraph lead workflow", () => {
     expect(deps.qualificationAgent.evaluate).not.toHaveBeenCalled();
     expect(state.stageMetrics.filter((metric) => metric.status === "cache-hit").map((metric) => metric.stage))
       .toEqual(["build_playbook", "score_candidates"]);
+  });
+
+  it("repeats the production search loop until the requested valid count is reached", async () => {
+    const events: string[] = [];
+    const deps = dependencies(events);
+    const twoTargetPlan = { ...plan, targetCount: 2 };
+    const candidate2 = { ...candidate, candidateId: "lead-example-2", companyName: "Example Two GmbH",
+      domain: "example-two.de", officialWebsiteUrl: "https://example-two.de/" };
+    const corrected2 = { ...correctedCandidate, ...candidate2,
+      correction: { ...correctedCandidate.correction, originalCompanyName: candidate2.companyName,
+        originalDomain: candidate2.domain, originalOfficialWebsiteUrl: candidate2.officialWebsiteUrl } };
+    const assessment2 = { ...assessment, candidateId: candidate2.candidateId };
+    deps.discover = vi.fn()
+      .mockResolvedValueOnce({ runId: "run-1", candidates: [candidate], creditsUsed: 1,
+        warnings: [], callMetrics: [discoveryMetric(1)] })
+      .mockResolvedValueOnce({ runId: "run-1", candidates: [candidate2], creditsUsed: 1,
+        warnings: [], callMetrics: [discoveryMetric(1)] });
+    deps.collectEvidence = vi.fn(async (items: LeadWorkflowCandidate[]) =>
+      ({ candidates: items, creditsUsed: 0, warnings: [] }));
+    deps.correctionAgent.correct = vi.fn(async (items: LeadWorkflowCandidate[]) => ({
+      candidates: items.map((item) => item.candidateId === candidate.candidateId ? correctedCandidate : corrected2),
+      creditsUsed: 0, warnings: [],
+    }));
+    deps.qualificationAgent.evaluate = vi.fn(async (items: CorrectedLeadWorkflowCandidate[]) => items.map((item) =>
+      item.candidateId === candidate.candidateId ? assessment : assessment2));
+    const graph = buildLeadWorkflowGraph(deps);
+    const state = await graph.invoke({ userId: "user-1", actionId: "action-1", graphThreadId: "thread-1",
+      workspaceId: "workspace-1", plan: twoTargetPlan, phase: "queued", ragContext: [], candidates: [],
+      correctedCandidates: [], assessments: [], assessmentReviews: [], handoffs: [], creditsUsed: 0,
+      modelUsage: [], stageMetrics: [], warnings: [] }, { recursionLimit: 50 });
+    expect(deps.discover).toHaveBeenCalledTimes(2);
+    expect(state.acceptedCandidateCount).toBe(2);
+    expect(state.targetCompletionReason).toBe("target-met");
   });
 });

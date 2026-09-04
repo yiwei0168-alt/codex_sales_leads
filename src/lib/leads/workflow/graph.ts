@@ -16,6 +16,8 @@ import { retrieveCooperationPathMemory } from "../path-memory";
 import { completedStageMetric } from "./workflow-telemetry";
 import { loadCachedLeadAssessments, saveCachedLeadAssessments } from "./assessment-cache";
 import { loadCachedLeadPlaybook, saveCachedLeadPlaybook } from "./playbook-cache";
+import { nextNoFinalRoundCount, plannedCandidatePool, targetCompletionDecision,
+  type TargetCompletionReason } from "./target-completion-policy";
 import type {
   CorrectedLeadWorkflowCandidate,
   LeadCandidateAssessment,
@@ -43,6 +45,13 @@ const WorkflowAnnotation = Annotation.Root({
   candidates: Annotation<LeadWorkflowCandidate[]>(),
   correctedCandidates: Annotation<CorrectedLeadWorkflowCandidate[]>(),
   assessments: Annotation<LeadCandidateAssessment[]>(),
+  discoveryRound: Annotation<number | undefined>(),
+  discoveredUniqueCount: Annotation<number | undefined>(),
+  searchExcludeDomains: Annotation<string[] | undefined>(),
+  consecutiveNoFinalRounds: Annotation<number | undefined>(),
+  acceptedCandidateCount: Annotation<number | undefined>(),
+  targetShouldContinue: Annotation<boolean | undefined>(),
+  targetCompletionReason: Annotation<TargetCompletionReason | undefined>(),
   assessmentReviews: Annotation<LeadAssessmentReview[]>(),
   handoffs: Annotation<LeadDevelopmentHandoff[]>(),
   creditsUsed: Annotation<number>(),
@@ -62,6 +71,9 @@ export interface LeadWorkflowDependencies {
     creditsUsed: number;
     usage?: WorkflowModelUsage[];
     warnings: string[];
+    cacheHits?: number;
+    cacheMisses?: number;
+    providerMetrics?: { provider: "tavily"; attempts: number; retries: number; latencyMs: number };
   }> };
   qualificationAgent: Pick<LeadQualificationAgent, "evaluate"> & Partial<Pick<LeadQualificationAgent, "evaluateWithUsage">>;
   assessmentReviewAgent: Pick<LeadAssessmentReviewAgent, "review">;
@@ -95,6 +107,17 @@ const productionDependencies: LeadWorkflowDependencies = {
 
 async function phase(dependencies: LeadWorkflowDependencies, state: typeof WorkflowAnnotation.State, next: LeadWorkflowPhase): Promise<void> {
   await dependencies.updatePhase(state.userId, state.actionId, next);
+}
+
+function mergeByCandidateId<T extends { candidateId: string }>(previous: T[], current: T[]): T[] {
+  const merged = new Map(previous.map((item) => [item.candidateId, item]));
+  for (const item of current) merged.set(item.candidateId, item);
+  return [...merged.values()];
+}
+
+function candidateMatchesRequestedRole(candidate: CorrectedLeadWorkflowCandidate, plan: LeadSearchPlan): boolean {
+  return candidate.correction.primaryRole !== "Hybrid" && candidate.correction.primaryRole !== "Unresolved"
+    && plan.roles.includes(candidate.correction.primaryRole);
 }
 
 export function buildLeadWorkflowGraph(
@@ -145,7 +168,13 @@ export function buildLeadWorkflowGraph(
       const startedAt = Date.now();
       await phase(dependencies, state, "discovering");
       if (!state.playbook) throw new Error("Market Playbook is missing before discovery");
-      const discovered = await dependencies.discover(state.actionId, state.workspaceId, state.plan, state.playbook, state.graphThreadId);
+      const round = state.discoveryRound ?? 0;
+      const targetPool = plannedCandidatePool({ targetCount: state.plan.targetCount,
+        acceptedCount: state.acceptedCandidateCount ?? 0,
+        discoveredUniqueCount: state.discoveredUniqueCount ?? 0, round });
+      const discovered = await dependencies.discover(state.actionId, state.workspaceId, state.plan,
+        state.playbook, state.graphThreadId, { queryRound: round, targetPoolOverride: targetPool,
+          excludeDomains: state.searchExcludeDomains ?? [], existingRunId: state.runId });
       const calls = discovered.callMetrics ?? [];
       const rawResults = calls.reduce((sum, call) => sum + call.rawResults, 0);
       const newUniqueCompanies = calls.reduce((sum, call) => sum + call.newUniqueCompanies, 0);
@@ -160,17 +189,26 @@ export function buildLeadWorkflowGraph(
         metadata: calls.length ? {
           providerCalls: calls.length,
           completedCalls: calls.filter((call) => call.status === "completed").length,
+          completedFreshCalls: calls.filter((call) => call.status === "completed" && call.cacheStatus === "miss").length,
           failedCalls: calls.filter((call) => call.status === "failed").length,
+          unavailableCalls: calls.filter((call) => call.status === "failed"
+            || call.discardedReasonCounts["circuit-open"] > 0
+            || call.discardedReasonCounts["failed-call-cache-hit"] > 0).length,
           skippedCalls: calls.filter((call) => call.status === "skipped").length,
           retries: calls.reduce((sum, call) => sum + call.retryCount, 0),
           discardedOutputs: calls.reduce((sum, call) => sum + call.rejectedResults, 0),
           duplicateOutputs: calls.reduce((sum, call) => sum + call.existingCompanyHits, 0),
           totalProviderLatencyMs: calls.reduce((sum, call) => sum + call.latencyMs, 0),
+          round, targetPool,
         } : {} });
       return {
         phase: "discovering" as const,
         runId: discovered.runId,
         candidates: discovered.candidates,
+        discoveryRound: round + 1,
+        discoveredUniqueCount: (state.discoveredUniqueCount ?? 0) + newUniqueCompanies,
+        searchExcludeDomains: [...new Set([...(state.searchExcludeDomains ?? []),
+          ...discovered.candidates.map((candidate) => candidate.domain)])],
         creditsUsed: state.creditsUsed + discovered.creditsUsed,
         modelUsage: [...(state.modelUsage ?? []), ...(discovered.modelUsage ?? [])],
         warnings: [...state.warnings, ...discovered.warnings],
@@ -188,7 +226,10 @@ export function buildLeadWorkflowGraph(
         input: state.candidates.map((candidate) => candidate.candidateId), output: enriched.candidates,
         inputItems: state.candidates.length, outputItems: evidenceCount, paidSearchCredits: enriched.creditsUsed,
         generatedArtifacts: evidenceCount, validArtifacts: validEvidenceCount,
-        downstreamUsedArtifacts: validEvidenceCount });
+        downstreamUsedArtifacts: validEvidenceCount,
+        metadata: { providerAttempts: enriched.providerMetrics?.attempts ?? 0,
+          retries: enriched.providerMetrics?.retries ?? 0,
+          providerLatencyMs: enriched.providerMetrics?.latencyMs ?? 0 } });
       return {
         phase: "collecting-evidence" as const,
         candidates: enriched.candidates,
@@ -202,13 +243,22 @@ export function buildLeadWorkflowGraph(
       await phase(dependencies, state, "correcting-evidence");
       const corrected = await dependencies.correctionAgent.correct(state.candidates, state.plan);
       const valid = corrected.candidates.filter((candidate) => candidate.correction.resolvedRoles.length > 0).length;
+      const inScope = corrected.candidates.filter((candidate) => candidateMatchesRequestedRole(candidate, state.plan)).length;
+      const correctedCandidates = mergeByCandidateId(state.correctedCandidates ?? [], corrected.candidates);
       const metric = completedStageMetric({ stage: "correct_candidates", startedAt,
         input: state.candidates, output: corrected.candidates, inputItems: state.candidates.length,
         outputItems: corrected.candidates.length, paidSearchCredits: corrected.creditsUsed,
-        generatedArtifacts: corrected.candidates.length, validArtifacts: valid, downstreamUsedArtifacts: valid });
+        generatedArtifacts: corrected.candidates.length, validArtifacts: valid, downstreamUsedArtifacts: inScope,
+        metadata: { cacheHits: corrected.cacheHits ?? 0, cacheMisses: corrected.cacheMisses ?? state.candidates.length,
+          providerAttempts: corrected.providerMetrics?.attempts ?? 0,
+          retries: corrected.providerMetrics?.retries ?? 0,
+          providerLatencyMs: corrected.providerMetrics?.latencyMs ?? 0,
+          correctedOutOfRole: corrected.candidates.length - inScope } });
       return {
         phase: "correcting-evidence" as const,
-        correctedCandidates: corrected.candidates,
+        correctedCandidates,
+        searchExcludeDomains: [...new Set([...(state.searchExcludeDomains ?? []),
+          ...corrected.candidates.map((candidate) => candidate.domain)])],
         creditsUsed: state.creditsUsed + corrected.creditsUsed,
         modelUsage: [...(state.modelUsage ?? []), ...(corrected.usage ?? [])],
         stageMetrics: [...(state.stageMetrics ?? []), metric],
@@ -219,11 +269,15 @@ export function buildLeadWorkflowGraph(
       const startedAt = Date.now();
       await phase(dependencies, state, "scoring");
       if (!state.playbook) throw new Error("Market Playbook is missing before qualification");
+      const inScopeCandidates = state.correctedCandidates.filter((candidate) =>
+        candidateMatchesRequestedRole(candidate, state.plan));
       const cached = dependencies.loadAssessmentCache ? await dependencies.loadAssessmentCache({
-        userId: state.userId, workspaceId: state.workspaceId, candidates: state.correctedCandidates,
+        userId: state.userId, workspaceId: state.workspaceId, candidates: inScopeCandidates,
         playbook: state.playbook, objective: state.plan.objective,
       }) : new Map<string, LeadCandidateAssessment>();
-      const missing = state.correctedCandidates.filter((candidate) => !cached.has(candidate.candidateId));
+      const alreadyAssessed = new Map((state.assessments ?? []).map((item) => [item.candidateId, item]));
+      const missing = inScopeCandidates.filter((candidate) =>
+        !alreadyAssessed.has(candidate.candidateId) && !cached.has(candidate.candidateId));
       const evaluated = missing.length === 0 ? { assessments: [], usage: [] as WorkflowModelUsage[] }
         : dependencies.qualificationAgent.evaluateWithUsage
           ? await dependencies.qualificationAgent.evaluateWithUsage(
@@ -237,18 +291,40 @@ export function buildLeadWorkflowGraph(
         assessments: evaluated.assessments,
       });
       const evaluatedById = new Map(evaluated.assessments.map((assessment) => [assessment.candidateId, assessment]));
-      const assessments = state.correctedCandidates.flatMap((candidate) => {
-        const assessment = cached.get(candidate.candidateId) ?? evaluatedById.get(candidate.candidateId);
+      const assessments = inScopeCandidates.flatMap((candidate) => {
+        const assessment = alreadyAssessed.get(candidate.candidateId)
+          ?? cached.get(candidate.candidateId) ?? evaluatedById.get(candidate.candidateId);
         return assessment ? [assessment] : [];
       });
       const completed = assessments.filter((assessment) => assessment.scoringStatus === "completed").length;
+      const acceptedCount = assessments.filter((item) => item.eligible && item.eligibilityStatus === "eligible"
+        && item.scoringStatus === "completed").length;
+      const finalEligibleAdded = Math.max(0, acceptedCount - (state.acceptedCandidateCount ?? 0));
+      const discoveryMetric = [...(state.stageMetrics ?? [])].reverse()
+        .find((item) => item.stage === "discover_candidates");
+      const metricsAvailable = Boolean(discoveryMetric?.metadata && "completedCalls" in discoveryMetric.metadata);
+      const completedFreshCalls = metricsAvailable
+        ? Number(discoveryMetric?.metadata.completedFreshCalls ?? 0) : 0;
+      const unavailableCalls = metricsAvailable ? Number(discoveryMetric?.metadata.unavailableCalls ?? 0) : 0;
+      const consecutiveNoFinalRounds = nextNoFinalRoundCount(state.consecutiveNoFinalRounds ?? 0,
+        { finalEligibleAdded, completedFreshCalls });
+      const targetDecision = metricsAvailable ? targetCompletionDecision({ acceptedCount,
+        targetCount: state.plan.targetCount, completedFreshCalls,
+        hadProviderFailureOrCircuit: unavailableCalls > 0,
+        consecutiveNoFinalRounds, round: Math.max(0, (state.discoveryRound ?? 1) - 1), maximumRounds: 5 })
+        : { complete: true as const, reason: undefined };
       const metric = { ...completedStageMetric({ stage: "score_candidates", startedAt,
-        input: state.correctedCandidates, output: assessments, inputItems: state.correctedCandidates.length,
+        input: inScopeCandidates, output: assessments, inputItems: inScopeCandidates.length,
         outputItems: assessments.length, generatedArtifacts: evaluated.assessments.length,
         validArtifacts: completed, downstreamUsedArtifacts: completed,
-        metadata: { cacheHits: cached.size, cacheMisses: missing.length } }),
+        metadata: { cacheHits: cached.size, cacheMisses: missing.length,
+          outOfRoleNotScored: state.correctedCandidates.length - inScopeCandidates.length,
+          acceptedCount, finalEligibleAdded, consecutiveNoFinalRounds,
+          targetShouldContinue: !targetDecision.complete, targetCompletionReason: targetDecision.reason } }),
       status: missing.length === 0 ? "cache-hit" as const : "completed" as const };
       return { phase: "scoring" as const, assessments,
+        acceptedCandidateCount: acceptedCount, consecutiveNoFinalRounds,
+        targetShouldContinue: !targetDecision.complete, targetCompletionReason: targetDecision.reason,
         modelUsage: [...(state.modelUsage ?? []), ...evaluated.usage], stageMetrics: [...(state.stageMetrics ?? []), metric] };
     })
     .addNode("review_assessment_anomalies", async (state) => {
@@ -325,7 +401,11 @@ export function buildLeadWorkflowGraph(
     .addEdge("discover_candidates", "collect_evidence")
     .addEdge("collect_evidence", "correct_candidates")
     .addEdge("correct_candidates", "score_candidates")
-    .addEdge("score_candidates", "review_assessment_anomalies")
+    .addConditionalEdges("score_candidates", (state) => state.targetShouldContinue
+      ? "discover_candidates" : "review_assessment_anomalies", {
+      discover_candidates: "discover_candidates",
+      review_assessment_anomalies: "review_assessment_anomalies",
+    })
     .addEdge("review_assessment_anomalies", "assemble_handoff_briefs")
     .addEdge("assemble_handoff_briefs", "persist_results")
     .addEdge("persist_results", END);
@@ -356,6 +436,12 @@ export async function runLeadWorkflow(input: {
     candidates: [],
     correctedCandidates: [],
     assessments: [],
+    discoveryRound: 0,
+    discoveredUniqueCount: 0,
+    searchExcludeDomains: [],
+    consecutiveNoFinalRounds: 0,
+    acceptedCandidateCount: 0,
+    targetShouldContinue: false,
     assessmentReviews: [],
     handoffs: [],
     creditsUsed: 0,
@@ -365,7 +451,7 @@ export async function runLeadWorkflow(input: {
   };
   const state = await getProductionGraph().invoke(initial, {
     configurable: { thread_id: input.graphThreadId },
-    recursionLimit: 20,
+    recursionLimit: 50,
   });
   if (!state.result) throw new Error("LangGraph workflow completed without a result");
   return state.result;
