@@ -40,6 +40,8 @@ export interface StructuredAiRequest<TInput> {
   dataClassification?: "public" | "private-workspace";
   /** Tenant scope is required before private requests may be deduplicated. */
   tenantScope?: string;
+  /** Optional cross-provider reasoning budget for compatible gateways. */
+  reasoningEffort?: "low" | "medium" | "high";
 }
 
 export interface StructuredAiResponse<TOutput> {
@@ -58,6 +60,8 @@ export interface StructuredAiResponse<TOutput> {
     completionTokens: number;
     reasoningTokens: number;
     totalTokens: number;
+    cachedPromptTokens?: number;
+    accountCashCostUsd?: number;
   };
 }
 

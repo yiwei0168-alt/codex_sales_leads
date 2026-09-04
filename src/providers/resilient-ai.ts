@@ -25,7 +25,7 @@ interface CircuitState { failures: number; openedAt?: number }
 function requestKey(request: StructuredAiRequest<unknown>): string {
   return createHash("sha256").update(JSON.stringify({ task: request.task, modelVersion: request.modelVersion,
     promptVersion: request.promptVersion, input: request.input, evidenceIds: request.evidenceIds,
-    outputSchema: request.outputSchema })).digest("hex");
+    outputSchema: request.outputSchema, reasoningEffort: request.reasoningEffort })).digest("hex");
 }
 
 export class ResilientAiProvider implements AiProvider {

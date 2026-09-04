@@ -2,10 +2,10 @@
 
 > 本文档由 `scripts/generate-lead-workflow-doc.mjs` 自动生成。请修改版本化配置或实现代码，不要直接编辑生成文件。
 
-- 运行时策略版本：3.0.0（基础流程定义 2.2.1）
+- 运行时策略版本：3.0.0（基础流程定义 2.2.2）
 - 评分策略版本：2.0.0
 - 成本质量策略版本：3.0.0
-- 配置指纹：`0b0925f7bf8438f922d94aee814f3bb2e5de7bdf757712a3c8d062cd60066cee`
+- 配置指纹：`215a3ff53fe9492c0413c081b5ba91f5e4a2cc04ca6d83299cb02afcc8e482dc`
 - 范围：From the user's natural-language market-development request and workspace context to ranked companies, editable cooperation paths, development strategy, outreach email, and private-memory learning from user edits.
 
 ## 一、从用户输入到最终输出的总流程
@@ -41,6 +41,7 @@ flowchart TD
 - User-confirmed knowledge has higher priority than ordinary retrieval, while shared knowledge and user/workspace memory remain isolated.
 - Cooperation paths, roles and evidence restrictions travel into development strategy and email generation.
 - User edits to paths and outreach are retained as private learning signals, not written into the shared knowledge base.
+- OpenAI and Anthropic generation is routed through the pinned OpenRouter HTTPS gateway; embeddings, Kimi, DeepSeek and Gemini retain their dedicated providers.
 
 ## 三、模型调用路由
 
@@ -48,14 +49,14 @@ flowchart TD
 |---|---|---|---|---|
 | `01-user-input` | Intent classification and execution planning | KIMI_INTENT_LIGHT_MODEL; default kimi-k2.6 | KIMI_INTENT_MODEL or KIMI_MODEL; default kimi-k3 for materially complex planning | Light Kimi runs every turn; deterministic parsing is failure fallback only; harmless confidence/count formatting is normalized before schema validation |
 | `02-context-memory` | Local-database RAG query and memory embeddings | EMBEDDING_MODEL; default text-embedding-v4 | No generative fallback | Required for vector retrieval; source documents remain in the local database |
-| `03-playbook` | Market playbook and search-query planning | LEAD_PLANNER_MODEL or OPENAI_GENERATION_MODEL; default gpt-5-mini | Deterministic playbook with required role-family coverage | Cached standard playbook; light Kimi checks template fit; complex non-standard tasks use Kimi-k3 planning |
+| `03-playbook` | Market playbook and search-query planning | LEAD_PLANNER_MODEL or OPENAI_GENERATION_MODEL; default openai/gpt-5-mini through OpenRouter | Deterministic playbook with required role-family coverage | Cached standard playbook; light Kimi checks template fit; complex non-standard tasks use Kimi-k3 planning |
 | `04-discovery` | Lightweight candidate existence, relevance and category gate | DEEPSEEK_MODEL; default deepseek-v4-flash | Same-tier resilient provider fallback; unavailable batches are held for downstream evidence, never upgraded to Pro | Batches of up to 10 after direct lightweight homepage fetch; compact semantic signals only, with deterministic pass/hold/reject |
 | `06-correction-role` | Entity correction, atomic facts and primary-role analysis | DEEPSEEK_MODEL; default deepseek-v4-flash | DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro; deterministic fallback is retry-only | Routine batches; upgrade only for expected score change >=8 or a resolvable critical-state change |
 | `09-scoring-paths` | Role-aware score and possible cooperation paths | DEEPSEEK_MODEL; default deepseek-v4-flash | DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro | Routine batches; confidence, alternative paths and Top-N position never trigger upgrade alone |
-| `10-review` | Blind secondary review and disagreement judgment | LEAD_REVIEW_MODEL default gpt-5.6-terra; LEAD_JUDGE_MODEL default gpt-5.6-sol | DeepSeek review adapter using deepseek-v4-pro when explicitly routed | Selective only; skipped for the search-tool leaderboard where cooperation-path review cannot affect the metric |
+| `10-review` | Blind secondary review and disagreement judgment | LEAD_REVIEW_MODEL default openai/gpt-5.6-terra; LEAD_JUDGE_MODEL default openai/gpt-5.6-sol through OpenRouter | DeepSeek review adapter using deepseek-v4-pro when explicitly routed | Selective only; skipped for the search-tool leaderboard where cooperation-path review cannot affect the metric |
 | `14-strategy` | Path-specific development strategy | KIMI_OUTREACH_MODEL or KIMI_MODEL; default kimi-k3 | Restricted template fallback | One call per generated strategy |
 | `15-email` | Path-specific development email | KIMI_OUTREACH_MODEL or KIMI_MODEL; default kimi-k3 | Restricted template fallback | One call per generated email, plus one bounded retry only for invalid JSON/schema output |
-| `16-feedback-memory` | User-feedback revision and reusable private-memory extraction | CLAUDE_OUTREACH_MODEL or CLAUDE_MODEL; default claude-sonnet-4-6 | Keep the user draft and record a failed memory event | One call per requested revision; text-embedding-v4 embeds accepted private memory |
+| `16-feedback-memory` | User-feedback revision and reusable private-memory extraction | CLAUDE_OUTREACH_MODEL or CLAUDE_MODEL; default anthropic/claude-sonnet-4.6 through OpenRouter | Keep the user draft and record a failed memory event | One call per requested revision; text-embedding-v4 embeds accepted private memory |
 
 无生成模型阶段：多源搜索与网页抓取、研究深度确定性规则、证据包压缩、新鲜度校验、排行榜、账户等级、handoff 组装和持久化。
 
@@ -714,13 +715,13 @@ flowchart TD
 | `src/lib/assistant/types.ts` | `063d3688b6343d4c507e95960ed505ad80d8d778e8a22f10b574ec2668f64a9a` |
 | `src/lib/assistant/intent.ts` | `cb77a2854f0058d92bf758ce4610d298bc94dde0157ade4f0bd3d05343fad168` |
 | `src/lib/assistant/intent-agent.ts` | `811b836f94bbe70a2fe72eccf382cad195fc61eb91bab05852cc49f5bd45b626` |
-| `src/lib/rag/openai-provider.ts` | `76cfe7272860d08d280f29fdbde3aae6bb614c81abb3a149d42943be5482bb0d` |
+| `src/lib/rag/openai-provider.ts` | `8d3151fd671b7a791ac81885a91a09a9281be5b3ebd04edcd188f517da3e088d` |
 | `src/lib/assistant/service.ts` | `1e2d9719d2937cc3081c3dbddf016d7cd665de1c1e9a88c775d10e3863ec00df` |
 | `src/lib/assistant/repository.ts` | `4243485613740437216b7867c0b8b420ea16d555f852397b436fd8a5f5414e67` |
-| `src/lib/leads/workflow/graph.ts` | `e64429c12083ed80715522fa6c8acfe9f0734314942b15f416a269b8f0fadd60` |
+| `src/lib/leads/workflow/graph.ts` | `47cb44bf84c5469b2f27a454e3ac82b9b3cb0a14593a36e88f2d6e4a0f54dda0` |
 | `src/lib/leads/workflow/jobs.ts` | `1287ad4fdedd2ca838e0592f82e062214465de01bc7c31f68d2529211f558c22` |
 | `src/lib/leads/workflow/rag-context.ts` | `1e1ee21e77b90731e849426cd7130de7d1e50ee6aec9f196e44cb642bf81387b` |
-| `src/lib/leads/workflow/playbook.ts` | `2789fdd7c634dd5ba9fe6033d5bfa31c56707ed51e6574eb599cc55f4e023a02` |
+| `src/lib/leads/workflow/playbook.ts` | `a83d6fe0edf30c5e0504fbb7e3bdb059b5cdb8a9d8df45dc1756372b7df3e095` |
 | `src/lib/leads/workflow/playbook-cache.ts` | `945d3fc727312208650ee7b4e55e33860e7c54f7e3daa939f768952409a1803f` |
 | `src/lib/leads/workflow/hybrid-search-policy.ts` | `c5b094fb015a4678d1182d05910bc6ee26e2face535c1496cbc89b4a548aa735` |
 | `src/lib/leads/workflow/candidate-registry.ts` | `a7d9bc2b971f854d7e5e092c6a3b6ccbe7cece0f3b5c0e1eae31f9e247f46cc5` |
@@ -732,23 +733,25 @@ flowchart TD
 | `src/lib/leads/workflow/evidence-packet.ts` | `1ca9577284952e245a8e8c51ae9fa82472fcbcf0b262ebaa83fc6463f379836f` |
 | `src/lib/leads/workflow/qualification-agent.ts` | `00fe467e454c86b2389654fbeacc497fd033bb7b2acae6f52627bf03ee828384` |
 | `src/lib/leads/workflow/assessment-cache.ts` | `d7fd5fe0b350aa56eb9fcfb283c2c81a2de9564f88a3ef677631b82d81474fb3` |
-| `src/lib/leads/workflow/assessment-review-agent.ts` | `df3499c777bd541bb220adbfbdd7066c79c7b49053967b2ae96225c45345290d` |
+| `src/lib/leads/workflow/assessment-review-agent.ts` | `5ad58c980aa7b3642d349aa543a78a54f2695274490809ce00a65bf535dae974` |
 | `src/providers/deepseek.ts` | `c9bbe00521915dd27b6c20508cd062ffc494d8f449c10e1085ada48103ed877c` |
 | `src/providers/discovery-contracts.ts` | `219328f21ca094e5c96c12b9cd3e638a8244629d7692271ee6b86ea39166143e` |
 | `src/providers/discovery.ts` | `f1d6bde9cf94867496e86065e02485f15ecb374a95c6d771c21f9bc822931c66` |
-| `src/providers/resilient-ai.ts` | `3456780221fa361ca66142bd01bc2627c5aec194279fd040426d7f40a65c5b31` |
+| `src/providers/resilient-ai.ts` | `3fe571fe48f48c0f89ccbf7241ed303b554598243bd8bfa08dc7c2a76c85258b` |
+| `src/providers/openrouter.ts` | `b43ba8fdf08602cb7d3567ea88bdc2cfee704de0c1b197cc574abe5e9b89143d` |
+| `db/migrations/034_model_account_cash_cost.sql` | `4790c7ad12eda543e197c84ddd77c4a5ce296b7871ccee799f3aa2262684bdbb` |
 | `src/providers/tavily.ts` | `e601eb4eae582628dec99f03e9bcbb6fdf38dc68bcf52daf7cad8d58a2e31485` |
 | `src/lib/leads/workflow/handoff-assembler.ts` | `606736bdfcced8f3a476a58808b07c65867b75f948c46b66b21354e5102f3827` |
-| `src/lib/leads/workflow/persistence.ts` | `3f4af4bfc40298cc477994e56d33a6a7a7a356672b94ee0d8be4335c8c8e721f` |
+| `src/lib/leads/workflow/persistence.ts` | `9b7cf1bb48facb73efed66db75f3863e6f0544295340125317d9695ab16a78d4` |
 | `src/lib/sales/repository.ts` | `ba76e0227ec5c039bb8196df37322b24146b2d64a42af7e364e96dfd3dfdfef9` |
 | `src/lib/outreach/graph.ts` | `18dbb0c67613ab49cf69a61267c62d95f7e58da8b11b7beddfb2139aad78c19c` |
 | `src/lib/outreach/kimi-agent.ts` | `dd76bb48386350e1df6206385a3e90786249f2ca2a8116552fadd26a8ee94376` |
-| `src/lib/outreach/claude-agent.ts` | `21276b9b3b436efd22fe638bac9a128a21f594faa0b99fe7af7614d02913b588` |
+| `src/lib/outreach/claude-agent.ts` | `ed462d20fbdc983d50ff03bdd6ff42546b8734d430f7ed06428b372c395b373e` |
 | `src/lib/outreach/repository.ts` | `9a70ae40ee817385f8bbbb9c9785ffc50efeb24eb4833c2e7fd8a8bfb77286ac` |
 | `src/lib/outreach/knowledge-repository.ts` | `59a023091f9adac80d4b502e1b4cf69b9d318bd5a7610112354fb95a8d802557` |
 | `db/migrations/033_hybrid_search_contribution.sql` | `6e002fe0a49bddd75853b6d13fdc5759b9f4b90653ffda47ccc6c8f4fddbb0d0` |
-| `experiments/search-e2e-evaluation/uk-mx-v1/lib/cost-ledger.ts` | `fb123650b15955a598abafb44d8c1d91bba091de3e09194ef91d71d59a9d5d35` |
-| `experiments/search-e2e-evaluation/uk-mx-v1/scripts/run-formal-experiment.ts` | `e49bc9eaf2f7dd31f55cf3e471995ebecdc7740953a24f3e6bb3005f3cc2b233` |
+| `experiments/search-e2e-evaluation/uk-mx-v1/lib/cost-ledger.ts` | `ed80331dc58258e07b0f86b865cddf8c1ab1ba7521b613dfef6686086f762cac` |
+| `experiments/search-e2e-evaluation/uk-mx-v1/scripts/run-formal-experiment.ts` | `4e6f9a0de13c4b246f5a137e3f1eb99cb171cb967a8eeaa9955a8738b7aa0f50` |
 | `src/lib/leads/workflow/evidence-budget.ts` | `db035da87b8896ae5a81b12744a072810de80f160cb472724d5cedbcf06037f9` |
 | `src/lib/leads/workflow/pdf-extraction-policy.ts` | `6d8847827f1e96eab570114bca33cd447eaa3e64d7246ee09a748f8e6d6ade03` |
 | `src/lib/leads/workflow/public-evidence-repository.ts` | `5dcbfe60487eeb5d2ccab4b6e3eac9529705b21005abaa599359c992e51c4b03` |

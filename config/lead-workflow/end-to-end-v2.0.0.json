@@ -1,6 +1,6 @@
 {
   "workflowKey": "cudy-sales-lead-end-to-end",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "status": "active",
   "scope": "From the user's natural-language market-development request and workspace context to ranked companies, editable cooperation paths, development strategy, outreach email, and private-memory learning from user edits.",
   "principles": [
@@ -10,7 +10,8 @@
     "Product and use-case fit is evaluated against the best enabled Cudy product track and the candidate role's actual target customers.",
     "User-confirmed knowledge has higher priority than ordinary retrieval, while shared knowledge and user/workspace memory remain isolated.",
     "Cooperation paths, roles and evidence restrictions travel into development strategy and email generation.",
-    "User edits to paths and outreach are retained as private learning signals, not written into the shared knowledge base."
+    "User edits to paths and outreach are retained as private learning signals, not written into the shared knowledge base.",
+    "OpenAI and Anthropic generation is routed through the pinned OpenRouter HTTPS gateway; embeddings, Kimi, DeepSeek and Gemini retain their dedicated providers."
   ],
   "modelRouting": [
     {
@@ -30,7 +31,7 @@
     {
       "stages": ["03-playbook"],
       "purpose": "Market playbook and search-query planning",
-      "defaultModel": "LEAD_PLANNER_MODEL or OPENAI_GENERATION_MODEL; default gpt-5-mini",
+      "defaultModel": "LEAD_PLANNER_MODEL or OPENAI_GENERATION_MODEL; default openai/gpt-5-mini through OpenRouter",
       "escalationOrFallback": "Deterministic playbook with required role-family coverage",
       "callPolicy": "Cached standard playbook; light Kimi checks template fit; complex non-standard tasks use Kimi-k3 planning"
     },
@@ -58,7 +59,7 @@
     {
       "stages": ["10-review"],
       "purpose": "Blind secondary review and disagreement judgment",
-      "defaultModel": "LEAD_REVIEW_MODEL default gpt-5.6-terra; LEAD_JUDGE_MODEL default gpt-5.6-sol",
+      "defaultModel": "LEAD_REVIEW_MODEL default openai/gpt-5.6-terra; LEAD_JUDGE_MODEL default openai/gpt-5.6-sol through OpenRouter",
       "escalationOrFallback": "DeepSeek review adapter using deepseek-v4-pro when explicitly routed",
       "callPolicy": "Selective only; skipped for the search-tool leaderboard where cooperation-path review cannot affect the metric"
     },
@@ -79,7 +80,7 @@
     {
       "stages": ["16-feedback-memory"],
       "purpose": "User-feedback revision and reusable private-memory extraction",
-      "defaultModel": "CLAUDE_OUTREACH_MODEL or CLAUDE_MODEL; default claude-sonnet-4-6",
+      "defaultModel": "CLAUDE_OUTREACH_MODEL or CLAUDE_MODEL; default anthropic/claude-sonnet-4.6 through OpenRouter",
       "escalationOrFallback": "Keep the user draft and record a failed memory event",
       "callPolicy": "One call per requested revision; text-embedding-v4 embeds accepted private memory"
     }
@@ -116,6 +117,8 @@
     "src/providers/discovery-contracts.ts",
     "src/providers/discovery.ts",
     "src/providers/resilient-ai.ts",
+    "src/providers/openrouter.ts",
+    "db/migrations/034_model_account_cash_cost.sql",
     "src/providers/tavily.ts",
     "src/lib/leads/workflow/handoff-assembler.ts",
     "src/lib/leads/workflow/persistence.ts",

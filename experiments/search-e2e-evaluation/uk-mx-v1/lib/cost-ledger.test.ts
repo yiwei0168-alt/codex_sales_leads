@@ -29,6 +29,15 @@ describe("formal experiment cost ledger", () => {
     expect(event.costAnomalies).toEqual([]);
   });
 
+  it("prices provider-qualified OpenRouter model IDs against the frozen model rate", () => {
+    const event = priceCostEvent(input({ provider: "openrouter", requestedModel: "anthropic/claude-opus-5",
+      actualModel: "anthropic/claude-opus-5", usage: { inputTokens: 1_000, outputTokens: 100 },
+      accountCashCostUsd: 0.0076 }), rateCard);
+    expect(event.officialListPriceUsd).toBeCloseTo(0.0075, 8);
+    expect(event.budgetCostUsd).toBe(0.0076);
+    expect(event.cashCostBasis).toBe("account-observed");
+  });
+
   it("adds Gemini grounding queries to token cost", () => {
     const event = priceCostEvent(input({ provider: "gemini-full", requestedModel: "gemini-3.6-flash",
       actualModel: "gemini-3.6-flash", usage: { inputTokens: 10_000, outputTokens: 2_000, groundingQueries: 3 } }), rateCard);

@@ -166,6 +166,12 @@ v1.0.14 addresses an intent-stage efficiency failure in the first MX Retail/E-ta
 
 v1.0.15 fixes a zero-call preflight accounting invariant exposed by that historical spend. The reused v1.0.10 preflight source total and the cumulative experiment carry-forward total are now separate frozen fields: the former must equal the hashed source ledger, while the latter must be at least the source total and includes invalidated formal calls. This prevents both omission of sunk experiment cost and false rejection when later failed runs legitimately increase the budget ledger. The v1.0.14 preflight produced zero provider inputs, outputs, tokens, credits and marginal cost.
 
+### 2026-09-04：OpenRouter 统一路由与 MX Retail 欠填诊断
+
+OpenAI 与 Anthropic 生成调用已统一到 `https://openrouter.ai/api/v1/chat/completions`：RAG/混合回答、Market Playbook、独立复评使用 `openai/*`，开发信反馈修订与正式实验盲审使用 `anthropic/*`。密钥只从 `OPENROUTER_API_KEY` 读取；可选归因头使用官方的 `HTTP-Referer` 与 `X-OpenRouter-Title`。结构化调用要求端点支持参数并拒绝数据收集，模型 token 与 OpenRouter 返回的 `usage.cost` 分开记录。Embedding、Kimi、DeepSeek、Gemini 的既有直连不变。实现测试没有发起付费请求：5 个聚焦测试文件共 20 项通过，类型检查通过；真实连通性、实际模型可用性、首条延迟与现金成本仍为 `not-observed`，必须用轮换后的本地环境密钥完成最小预检。
+
+冻结的 v1.0.15 在 MX Retail 完成后累计投入 1.7460204111 美元，其中 Gemini 账本 0.888839 美元、产品账本 0.8571814111 美元；网关更换后不得继续把新调用写入该冻结版本。该单元产品组从 43 条原始结果得到 23 家唯一公司（20 次重复），轻门禁保留 12 家，最终主角色匹配仅 6 家，填充率 20%。两个 SearchAPI Bing 路由和 Gemini Product 在请求前失败；`auto + 30` 没有启用 `retail-local` 轨道；6 家后续被排除者分别落入 Distributor 2、Brand Owner 2、Unresolved 2。最关键的流程缺陷是发现阶段按路由耗尽/门禁池停止，而不是在角色校正与最终门禁后按 30 个有效槽位反馈补搜。候选利用率为：原始→唯一 53.5%，唯一→轻门禁 52.2%，轻门禁→最终在类 50%，端到端原始→最终 14.0%。本阶段只记录根因，不修改冻结搜索策略；建议在下一实验版本评审“最终有效槽位反馈补搜、低 SEO 市场本地轨道、失败路由替补、动态过采样”后重新预注册。
+
 ## 持续优化事项
 
 | 优先级 | 工作流环节 | 可优化点 | 质量门禁 | 状态 |

@@ -8,7 +8,7 @@ try { process.loadEnvFile(".env.local"); } catch { /* Deployment environments in
 const missing = [
   !process.env.KIMI_API_KEY && "KIMI_API_KEY",
   !process.env.GEMINI_API_KEY && "GEMINI_API_KEY",
-  !process.env.LINGYU_API_KEY && "LINGYU_API_KEY",
+  !process.env.OPENROUTER_API_KEY && "OPENROUTER_API_KEY",
 ].filter(Boolean);
 if (missing.length > 0) throw new Error(`Assistant model preflight missing: ${missing.join(", ")}`);
 

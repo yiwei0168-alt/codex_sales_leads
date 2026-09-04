@@ -263,7 +263,7 @@ export function buildLeadWorkflowGraph(
         requestedModel: usage.model, actualModel: usage.model,
         promptTokens: usage.usage.inputTokens, completionTokens: usage.usage.outputTokens,
         reasoningTokens: usage.usage.reasoningTokens, totalTokens: usage.usage.totalTokens,
-        latencyMs: 0, fallbackUsed: false,
+        latencyMs: 0, fallbackUsed: false, accountCashCostUsd: usage.usage.accountCashCostUsd,
       }));
       const valid = reviewed.reviews.filter((review) => review.status !== "review-failed").length;
       const metric = completedStageMetric({ stage: "review_assessment_anomalies", startedAt,

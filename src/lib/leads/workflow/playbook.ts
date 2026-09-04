@@ -2,6 +2,7 @@ import { ChatOpenAI } from "@langchain/openai";
 
 import type { ChannelRole } from "@/lib/domain";
 import type { LeadSearchPlan } from "@/lib/assistant/types";
+import { getOpenRouterConfig, resolveOpenRouterModel } from "@/providers/openrouter";
 
 import { leadMarketPlaybookModelSchema, type LeadMarketPlaybookModelOutput } from "./schemas";
 import {
@@ -77,16 +78,14 @@ export function buildStandardLeadMarketPlaybook(plan: LeadSearchPlan, citations:
   };
 }
 
-function plannerConfiguration(): { apiKey: string; baseUrl: string; model: string } {
-  const apiKey = process.env.LEAD_PLANNER_API_KEY?.trim() || process.env.LINGYU_API_KEY?.trim() || "";
-  const configuredBase = process.env.LEAD_PLANNER_BASE_URL?.trim();
-  const openAiBase = process.env.OPENAI_BASE_URL?.trim();
-  const baseUrl = (configuredBase || (process.env.LINGYU_API_KEY ? "https://lingyuapi.com/v1" : openAiBase) || "https://api.openai.com/v1").replace(/\/$/, "");
-  return {
-    apiKey,
-    baseUrl,
-    model: process.env.LEAD_PLANNER_MODEL?.trim() || process.env.OPENAI_GENERATION_MODEL?.trim() || "gpt-5-mini",
-  };
+function plannerConfiguration(): { apiKey: string; baseUrl: string; defaultHeaders: Record<string, string>;
+  providerPreferences: { require_parameters: true; data_collection: "deny" }; model: string } | null {
+  if (!process.env.OPENROUTER_API_KEY?.trim()) return null;
+  const config = getOpenRouterConfig();
+  return { apiKey: config.apiKey, baseUrl: config.baseUrl, defaultHeaders: config.defaultHeaders,
+    providerPreferences: config.providerPreferences,
+    model: resolveOpenRouterModel(process.env.LEAD_PLANNER_MODEL?.trim()
+      || process.env.OPENAI_GENERATION_MODEL?.trim() || "gpt-5-mini", "openai") };
 }
 
 function sanitizeModelPlaybook(
@@ -123,7 +122,7 @@ function sanitizeModelPlaybook(
 
 export async function buildLeadMarketPlaybook(plan: LeadSearchPlan, citations: LeadRagCitation[]): Promise<LeadMarketPlaybook> {
   const config = plannerConfiguration();
-  if (!config.apiKey) return buildStandardLeadMarketPlaybook(plan, citations, "Lingyu lead-planner credentials are not configured.");
+  if (!config) return buildStandardLeadMarketPlaybook(plan, citations, "OpenRouter lead-planner credentials are not configured.");
   const model = new ChatOpenAI({
     apiKey: config.apiKey,
     model: config.model,
@@ -131,7 +130,8 @@ export async function buildLeadMarketPlaybook(plan: LeadSearchPlan, citations: L
     maxRetries: 2,
     timeout: 90_000,
     streamUsage: false,
-    configuration: { baseURL: config.baseUrl },
+    modelKwargs: { provider: config.providerPreferences },
+    configuration: { baseURL: config.baseUrl, defaultHeaders: config.defaultHeaders },
   }).withStructuredOutput(leadMarketPlaybookModelSchema, {
     name: "lead_market_playbook",
     method: "jsonSchema",

@@ -90,7 +90,9 @@ function toUsd(value: number, currency: "USD" | "CNY", rateCard: ExperimentRateC
 
 function modelCost(model: string, usage: ExperimentUsage, rateCard: ExperimentRateCard,
   anomalies: string[]): number | null {
-  const rateKey = Object.keys(rateCard.models).find((key) => model === key || model.startsWith(`${key}-`));
+  const normalizedModel = model.includes("/") ? model.slice(model.lastIndexOf("/") + 1) : model;
+  const rateKey = Object.keys(rateCard.models).find((key) => normalizedModel === key
+    || normalizedModel.startsWith(`${key}-`));
   const rate = rateKey ? rateCard.models[rateKey] : undefined;
   if (!rate) {
     anomalies.push(`unknown-model-rate:${model}`);

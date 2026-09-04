@@ -219,7 +219,7 @@ async function runPreflight(): Promise<void> {
   }
   const missing = ["SEARCH_E2E_USER_ID", "KIMI_API_KEY", "EMBEDDING_API_KEY", "EMBEDDING_BASE_URL",
     "DEEPSEEK_API_KEY", "TAVILY_API_KEY", "GEMINI_API_KEY",
-    ...(EXPERIMENT_CONFIG.blindAudit.fallbackActivated ? [] : ["CLAUDE_API_KEY"])]
+    ...(EXPERIMENT_CONFIG.blindAudit.fallbackActivated ? [] : ["OPENROUTER_API_KEY"])]
     .filter((name) => !process.env[name]?.trim());
   const discoveryStatus = discoveryEnvironmentStatus();
   missing.push(...discoveryStatus.filter((item) => !item.configured).map((item) => item.apiKeyEnv));
@@ -456,11 +456,12 @@ async function runPreflight(): Promise<void> {
     if (blind.requestError) {
       const failedEvent = preflightEvent({ eventId: "preflight:blind-judge-request-failed", runId: state.runId,
         ledger: "evaluation-overhead", arm: "shared-evaluation", stage: "preflight-blind-judge",
-        provider: "anthropic", requestedModel: blind.requestedModel, actualModel: blind.actualModel,
+        provider: "openrouter", requestedModel: blind.requestedModel, actualModel: blind.actualModel,
         startedAt: blind.startedAt, completedAt: blind.completedAt, latencyMs: blind.latencyMs,
         attempts: blind.attempts, retries: blind.retries,
         fallbackUsed: blindModel !== EXPERIMENT_CONFIG.blindAudit.primaryModel,
-        status: "failed", usage: blind.usage, volume: { inputItems: 1, rawOutputItems: 0,
+        status: "failed", usage: blind.usage, accountCashCostUsd: blind.accountCashCostUsd,
+        volume: { inputItems: 1, rawOutputItems: 0,
           validOutputItems: 0, downstreamUsedItems: 0,
           discardedReasonCounts: { [providerFailureDiscardReason(blind.requestFailureKind)]: 1 } },
         notes: [`Request failed before a valid provider response: ${blind.requestFailureKind ?? "unknown"}.`] });
@@ -471,9 +472,10 @@ async function runPreflight(): Promise<void> {
     if (!blind.output && blindModel === EXPERIMENT_CONFIG.blindAudit.primaryModel) {
       const invalidEvent = preflightEvent({ eventId: "preflight:blind-primary-invalid", runId: state.runId,
         ledger: "evaluation-overhead", arm: "shared-evaluation", stage: "preflight-blind-judge",
-        provider: "anthropic", requestedModel: blind.requestedModel, actualModel: blind.actualModel,
+        provider: "openrouter", requestedModel: blind.requestedModel, actualModel: blind.actualModel,
         startedAt: blind.startedAt, completedAt: blind.completedAt, latencyMs: blind.latencyMs,
         attempts: blind.attempts, retries: blind.retries, fallbackUsed: false, status: "failed", usage: blind.usage,
+        accountCashCostUsd: blind.accountCashCostUsd,
         volume: { inputItems: 1, rawOutputItems: 1, validOutputItems: 0, downstreamUsedItems: 0,
           discardedReasonCounts: { schemaInvalid: 1 } } });
       await checkpointPreflight(state, "claude-blind-primary-invalid", [invalidEvent],
@@ -483,10 +485,11 @@ async function runPreflight(): Promise<void> {
       if (blind.requestError) {
         const failedEvent = preflightEvent({ eventId: "preflight:blind-fallback-request-failed", runId: state.runId,
           ledger: "evaluation-overhead", arm: "shared-evaluation", stage: "preflight-blind-judge",
-          provider: "anthropic", requestedModel: blind.requestedModel, actualModel: blind.actualModel,
+          provider: "openrouter", requestedModel: blind.requestedModel, actualModel: blind.actualModel,
           startedAt: blind.startedAt, completedAt: blind.completedAt, latencyMs: blind.latencyMs,
           attempts: blind.attempts, retries: blind.retries, fallbackUsed: true,
-          status: "failed", usage: blind.usage, volume: { inputItems: 1, rawOutputItems: 0,
+          status: "failed", usage: blind.usage, accountCashCostUsd: blind.accountCashCostUsd,
+          volume: { inputItems: 1, rawOutputItems: 0,
             validOutputItems: 0, downstreamUsedItems: 0,
             discardedReasonCounts: { [providerFailureDiscardReason(blind.requestFailureKind)]: 1 } },
           notes: [`Fallback request failed before a valid provider response: ${blind.requestFailureKind ?? "unknown"}.`] });
@@ -498,11 +501,12 @@ async function runPreflight(): Promise<void> {
     if (!blind.output) throw new Error(`Claude blind-judge preflight failed: ${blind.parseError}`);
     const blindEvent = preflightEvent({ eventId: "preflight:blind-judge", runId: state.runId,
       ledger: "evaluation-overhead", arm: "shared-evaluation", stage: "preflight-blind-judge",
-      provider: "anthropic", requestedModel: blind.requestedModel, actualModel: blind.actualModel,
+      provider: "openrouter", requestedModel: blind.requestedModel, actualModel: blind.actualModel,
       startedAt: blind.startedAt, completedAt: blind.completedAt, latencyMs: blind.latencyMs,
       attempts: blind.attempts, retries: blind.retries,
       fallbackUsed: blindModel !== EXPERIMENT_CONFIG.blindAudit.primaryModel,
-      status: "completed", usage: blind.usage, volume: { inputItems: 1, rawOutputItems: 1,
+      status: "completed", usage: blind.usage, accountCashCostUsd: blind.accountCashCostUsd,
+      volume: { inputItems: 1, rawOutputItems: 1,
         validOutputItems: 1, downstreamUsedItems: 1, discardedReasonCounts: {} } });
     await checkpointPreflight(state, "claude-blind-judge", [blindEvent],
       { model: blind.actualModel }, blindModel);

@@ -1,11 +1,11 @@
 import { createHash } from "node:crypto";
 
-import OpenAI from "openai";
-import { zodTextFormat } from "openai/helpers/zod";
 import { z } from "zod";
 
 import type { LeadSearchPlan } from "@/lib/assistant/types";
 import type { AiProvider, StructuredAiResponse } from "@/providers/contracts";
+import { OpenAiCompatibleProvider } from "@/providers/openai-compatible";
+import { getOpenRouterConfig, resolveOpenRouterModel } from "@/providers/openrouter";
 import { createLeadAiProvider } from "@/providers/resilient-ai";
 
 import { ACTIVE_LEAD_SCORING_POLICY, scoringPolicyChecksum } from "../scoring-policy";
@@ -40,7 +40,8 @@ export interface LeadReviewInvoker {
 export interface LeadReviewUsage {
   phase: "secondary" | "judge";
   model: string;
-  usage: { inputTokens: number; outputTokens: number; reasoningTokens: number; totalTokens: number };
+  usage: { inputTokens: number; outputTokens: number; reasoningTokens: number; totalTokens: number;
+    accountCashCostUsd?: number };
 }
 
 interface AssessmentReviewAgentOptions {
@@ -50,73 +51,68 @@ interface AssessmentReviewAgentOptions {
   concurrency?: number;
 }
 
-function openAiClient(): OpenAI {
-  const dedicatedKey = process.env.LEAD_REVIEW_API_KEY?.trim();
-  const lingyuKey = process.env.LINGYU_API_KEY?.trim();
-  const apiKey = dedicatedKey || lingyuKey || process.env.OPENAI_API_KEY?.trim();
-  if (!apiKey) throw new Error("LEAD_REVIEW_API_KEY, LINGYU_API_KEY or OPENAI_API_KEY is required for independent lead review");
-  const baseURL = process.env.LEAD_REVIEW_BASE_URL?.trim()
-    || (lingyuKey && !dedicatedKey ? "https://lingyuapi.com/v1" : process.env.OPENAI_BASE_URL?.trim())
-    || "https://api.openai.com/v1";
-  return new OpenAI({
-    apiKey,
-    baseURL,
-    timeout: 120_000,
-    maxRetries: 2,
-  });
+function openRouterReviewer(): AiProvider {
+  const config = getOpenRouterConfig();
+  return new OpenAiCompatibleProvider({ id: "openrouter-openai-review", apiKey: config.apiKey,
+    baseUrl: config.baseUrl, defaultHeaders: config.defaultHeaders,
+    extraBody: { provider: config.providerPreferences }, maxAttempts: 2 });
 }
 
 class OpenAiLeadReviewInvoker implements LeadReviewInvoker {
-  private client?: OpenAI;
+  private provider?: AiProvider;
 
   constructor(private readonly secondaryModel: string, private readonly judgeModel: string) {}
 
-  private getClient(): OpenAI {
-    this.client ??= openAiClient();
-    return this.client;
+  private getProvider(): AiProvider {
+    this.provider ??= openRouterReviewer();
+    return this.provider;
   }
 
   async assess(input: Record<string, unknown>) {
-    const response = await this.getClient().responses.parse({
-      model: this.secondaryModel,
-      store: false,
-      reasoning: { effort: "medium" },
-      instructions: [
+    const response = await this.getProvider().execute<Record<string, unknown>, unknown>({
+      task: "lead-review-secondary",
+      modelVersion: resolveOpenRouterModel(this.secondaryModel, "openai"),
+      promptVersion: REVIEW_PROMPT_VERSION,
+      evidenceIds: [],
+      dataClassification: "private-workspace",
+      reasoningEffort: "medium",
+      input: { instructions: [
         "Independently assess one Cudy sales lead from the frozen atomic fact ledger and public evidence.",
         "You are blind to the primary score and discovery provider. Do not infer missing facts.",
         "Use unknown for missing proof, not-supported only for affirmative contradiction, and conflicting for disagreement.",
         "Use role-specific customer and scenario criteria, best enabled product track, same-primary-role scale peers and at most two viable paths from the five-path taxonomy.",
         "Return exactly seven evidence-linked dimension rationales and use only supplied current-run finding/evidence IDs.",
-      ].join("\n"),
-      input: JSON.stringify(input),
-      text: { verbosity: "low", format: zodTextFormat(leadAssessmentModelSchema, "blind_lead_assessment") },
-    });
-    if (!response.output_parsed) throw new Error("OpenAI secondary reviewer returned no parsed assessment");
-    return { output: response.output_parsed, model: response.model, usage: response.usage ? {
-      inputTokens: response.usage.input_tokens, outputTokens: response.usage.output_tokens,
-      reasoningTokens: response.usage.output_tokens_details?.reasoning_tokens ?? 0,
-      totalTokens: response.usage.total_tokens,
+      ], payload: input },
+      outputSchema: z.toJSONSchema(leadAssessmentModelSchema) as Record<string, unknown>,
+    }, AbortSignal.timeout(120_000));
+    return { output: leadAssessmentModelSchema.parse(response.output), model: response.modelVersion,
+      usage: response.usage ? {
+      inputTokens: response.usage.promptTokens, outputTokens: response.usage.completionTokens,
+      reasoningTokens: response.usage.reasoningTokens, totalTokens: response.usage.totalTokens,
+      accountCashCostUsd: response.usage.accountCashCostUsd,
     } : undefined };
   }
 
   async judge(input: Record<string, unknown>) {
-    const response = await this.getClient().responses.parse({
-      model: this.judgeModel,
-      store: false,
-      reasoning: { effort: "high" },
-      instructions: [
+    const response = await this.getProvider().execute<Record<string, unknown>, unknown>({
+      task: "lead-review-judge",
+      modelVersion: resolveOpenRouterModel(this.judgeModel, "openai"),
+      promptVersion: JUDGE_PROMPT_VERSION,
+      evidenceIds: [],
+      dataClassification: "private-workspace",
+      reasoningEffort: "high",
+      input: { instructions: [
         "Resolve a material disagreement between two anonymous lead assessments using only the frozen fact ledger.",
         "Do not assume A or B is primary. You may accept one, merge dimension judgments, or request one targeted research question.",
         "Never create a fact or evidence ID. Missing evidence remains unknown.",
-      ].join("\n"),
-      input: JSON.stringify(input),
-      text: { verbosity: "low", format: zodTextFormat(leadAssessmentJudgeSchema, "lead_assessment_judgment") },
-    });
-    if (!response.output_parsed) throw new Error("OpenAI judge returned no parsed decision");
-    return { output: response.output_parsed, model: response.model, usage: response.usage ? {
-      inputTokens: response.usage.input_tokens, outputTokens: response.usage.output_tokens,
-      reasoningTokens: response.usage.output_tokens_details?.reasoning_tokens ?? 0,
-      totalTokens: response.usage.total_tokens,
+      ], payload: input },
+      outputSchema: z.toJSONSchema(leadAssessmentJudgeSchema) as Record<string, unknown>,
+    }, AbortSignal.timeout(120_000));
+    return { output: leadAssessmentJudgeSchema.parse(response.output), model: response.modelVersion,
+      usage: response.usage ? {
+      inputTokens: response.usage.promptTokens, outputTokens: response.usage.completionTokens,
+      reasoningTokens: response.usage.reasoningTokens, totalTokens: response.usage.totalTokens,
+      accountCashCostUsd: response.usage.accountCashCostUsd,
     } : undefined };
   }
 }

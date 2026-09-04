@@ -393,6 +393,7 @@ export interface WorkflowModelUsage {
   fallbackUsed: boolean;
   attempts?: number;
   retries?: number;
+  accountCashCostUsd?: number;
 }
 
 export interface WorkflowStageMetric {

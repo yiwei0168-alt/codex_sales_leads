@@ -176,11 +176,12 @@ export async function judgeBlindPacket(packet: BlindPacket, model: string, optio
         : call.requestFailureKind === "invalid-response" ? "providerResponseInvalid" : "transportFailure"
     : "schemaInvalid";
   const costEvent = priceCostEvent({ eventId: `${packet.packetId}:blind-judge`, runId: EXPERIMENT_CONFIG.runId,
-    ledger: "evaluation-overhead", arm: "shared-evaluation", stage: "blind-judge", provider: "anthropic",
+    ledger: "evaluation-overhead", arm: "shared-evaluation", stage: "blind-judge", provider: "openrouter",
     requestedModel: call.requestedModel, actualModel: call.actualModel, startedAt: call.startedAt,
     completedAt: call.completedAt, latencyMs: call.latencyMs, attempts: call.attempts, retries: call.retries,
     fallbackUsed: call.actualModel !== call.requestedModel, status: call.output ? "completed" : "failed",
-    usage: call.usage, volume: { inputItems: 1, rawOutputItems: call.requestError ? 0 : 1,
+    usage: call.usage, accountCashCostUsd: call.accountCashCostUsd,
+    volume: { inputItems: 1, rawOutputItems: call.requestError ? 0 : 1,
       validOutputItems: call.output ? 1 : 0,
       downstreamUsedItems: call.output ? 1 : 0, discardedReasonCounts: call.output ? {} : { [discardedReason]: 1 } },
     notes: ["blind packet; no web search; arm/model/rank/unified score hidden"] }, rateCard);

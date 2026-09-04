@@ -1,5 +1,7 @@
 # UK–Mexico formal search evaluation v1
 
+Current status (2026-09-04): frozen v1.0.15 is paused after MX Retail. Its completed artifacts and cost remain immutable. OpenAI/Claude traffic has moved to OpenRouter and therefore requires a new frozen experiment version; the MX Retail 6/30 underfill analysis is in `analysis/MX-retail-underfill-v1.0.15.md`. No further paid experiment call is allowed until a rotated local `OPENROUTER_API_KEY` passes the minimal preflight and the next protocol version is frozen.
+
 This directory contains the preregistered protocol, frozen configuration, prompts, schemas, runtime checkpoints and final reports for Cudy's first formal end-to-end search evaluation.
 
 The evaluation compares:

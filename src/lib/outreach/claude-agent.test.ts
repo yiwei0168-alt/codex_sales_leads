@@ -37,9 +37,8 @@ const current = {
 afterEach(() => vi.unstubAllEnvs());
 
 describe("Claude outreach feedback agent", () => {
-  it("uses the Anthropic Messages API and returns a grounded revision with memory", async () => {
-    vi.stubEnv("CLAUDE_API_KEY", "test-key");
-    vi.stubEnv("CLAUDE_BASE_URL", "https://lingyuapi.com");
+  it("uses OpenRouter Chat Completions and returns a grounded revision with memory", async () => {
+    vi.stubEnv("OPENROUTER_API_KEY", "test-key");
     vi.stubEnv("CLAUDE_OUTREACH_MODEL", "claude-opus-5");
     const responseValue = {
       subjectOptions: ["Revised subject"],
@@ -47,49 +46,39 @@ describe("Claude outreach feedback agent", () => {
       memoryEvaluation: { valuable: true, summary: "Introduce Steven as Cudy Sales Manager in future outreach.",
         reason: "Explicit private reusable sender identity", marketCodes: [], channelRoles: ["SI"] },
     };
-    const stream = [
-      `event: message_start\ndata: ${JSON.stringify({ type: "message_start", message: {
-        model: "claude-opus-5", usage: { input_tokens: 300 },
-      } })}`,
-      `event: content_block_delta\ndata: ${JSON.stringify({ type: "content_block_delta", delta: {
-        type: "text_delta", text: JSON.stringify(responseValue),
-      } })}`,
-      `event: message_delta\ndata: ${JSON.stringify({ type: "message_delta", delta: {
-        stop_reason: "end_turn",
-      }, usage: { output_tokens: 200 } })}`,
-      `event: message_stop\ndata: ${JSON.stringify({ type: "message_stop" })}`,
-    ].join("\n\n");
-    const fetchMock = vi.fn().mockResolvedValue(new Response(stream, {
-      status: 200,
-      headers: { "content-type": "text/event-stream" },
-    }));
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({
+      model: "anthropic/claude-opus-5", choices: [{ finish_reason: "stop",
+        message: { content: JSON.stringify(responseValue) } }],
+      usage: { prompt_tokens: 300, completion_tokens: 200, total_tokens: 500, cost: 0.0065 },
+    }), { status: 200, headers: { "content-type": "application/json" } }));
 
     const result = await reviseDevelopmentDraftWithClaude(context, current, "Introduce Steven", fetchMock);
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(fetchMock.mock.calls[0][0]).toBe("https://lingyuapi.com/v1/messages");
+    expect(fetchMock.mock.calls[0][0]).toBe("https://openrouter.ai/api/v1/chat/completions");
     const request = JSON.parse(fetchMock.mock.calls[0][1].body as string);
-    expect(request.model).toBe("claude-opus-5");
-    expect(request.stream).toBe(true);
-    expect(request.messages).toHaveLength(1);
+    expect(request.model).toBe("anthropic/claude-opus-5");
+    expect(request.stream).toBe(false);
+    expect(request.messages).toHaveLength(2);
+    expect(request.provider).toMatchObject({ require_parameters: true, data_collection: "deny" });
     expect(fetchMock.mock.calls[0][1].headers).toMatchObject({
-      "x-api-key": "test-key", "anthropic-version": "2023-06-01",
+      authorization: "Bearer test-key", "X-OpenRouter-Title": "Cudy Network Channel Copilot",
     });
-    expect(result.model).toBe("claude-opus-5");
+    expect(result.model).toBe("anthropic/claude-opus-5");
     expect(result.revisedBody).not.toContain("[KNOWLEDGE:");
     expect(result.memory.valuable).toBe(true);
     expect(result.generationMetrics.totalTokens).toBe(500);
+    expect(result.generationMetrics.accountCashCostUsd).toBe(0.0065);
   });
 
-  it("requires a dedicated Claude key instead of falling back to Kimi", async () => {
-    vi.stubEnv("CLAUDE_API_KEY", "");
+  it("requires the shared OpenRouter key instead of falling back to a direct provider", async () => {
+    vi.stubEnv("OPENROUTER_API_KEY", "");
     await expect(reviseDevelopmentDraftWithClaude(context, current, "Revise", vi.fn()))
-      .rejects.toThrow("CLAUDE_API_KEY");
+      .rejects.toThrow("OPENROUTER_API_KEY");
   });
 
   it("keeps feedback revisions inside the handoff email-fact boundary", async () => {
-    vi.stubEnv("CLAUDE_API_KEY", "test-key");
-    vi.stubEnv("CLAUDE_BASE_URL", "https://lingyuapi.com");
+    vi.stubEnv("OPENROUTER_API_KEY", "test-key");
     const handoffContext: DevelopmentContext = { ...context, handoff: {
       version: "lead-handoff-v2", provenance: { candidateId: "lead-1", runId: "run-1",
         evidenceSnapshotHash: "hash", correctionModel: "corrector", scoringModel: "scorer", reviewStatus: "not-required" },
@@ -113,12 +102,10 @@ describe("Claude outreach feedback agent", () => {
     const responseValue = { subjectOptions: ["Revised subject"],
       revisedBodyWithCitations: "Dear {{first_name}},\n\nYour network integration services caught my attention. [LEAD:fact-1] Cudy serves consumer and SMB networking markets. [KNOWLEDGE:00000000-0000-0000-0000-000000000001]\n\nWould a short call next week be useful?\n\nBest regards,\nSteven",
       memoryEvaluation: { valuable: false, reason: "No reusable rule", marketCodes: [], channelRoles: [] } };
-    const stream = [`event: message_start\ndata: ${JSON.stringify({ type: "message_start", message: { model: "claude-opus-5", usage: { input_tokens: 10 } } })}`,
-      `event: content_block_delta\ndata: ${JSON.stringify({ type: "content_block_delta", delta: { type: "text_delta", text: JSON.stringify(responseValue) } })}`,
-      `event: message_delta\ndata: ${JSON.stringify({ type: "message_delta", delta: { stop_reason: "end_turn" }, usage: { output_tokens: 10 } })}`,
-      `event: message_stop\ndata: ${JSON.stringify({ type: "message_stop" })}`].join("\n\n");
-    const fetchMock = vi.fn().mockResolvedValue(new Response(stream, { status: 200,
-      headers: { "content-type": "text/event-stream" } }));
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({ model: "anthropic/claude-sonnet-4.6",
+      choices: [{ finish_reason: "stop", message: { content: JSON.stringify(responseValue) } }],
+      usage: { prompt_tokens: 10, completion_tokens: 10, total_tokens: 20 },
+    }), { status: 200, headers: { "content-type": "application/json" } }));
     const result = await reviseDevelopmentDraftWithClaude(handoffContext, current, "Keep it concise", fetchMock);
     expect(result.evidenceIds).toEqual(["ev-1"]);
     expect(result.revisedBody).not.toContain("[LEAD:");

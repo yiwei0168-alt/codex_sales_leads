@@ -32,7 +32,7 @@ const ragContext: LeadRagCitation[] = [
 
 const playbook = await buildLeadMarketPlaybook({ ...plan, roles: [...plan.roles] }, ragContext);
 if (playbook.generatedBy !== "langchain-model") {
-  throw new Error(`Lingyu planner preflight degraded: ${playbook.warnings.join("; ")}`);
+  throw new Error(`OpenRouter OpenAI planner preflight degraded: ${playbook.warnings.join("; ")}`);
 }
 
 const candidate: LeadWorkflowCandidate = {

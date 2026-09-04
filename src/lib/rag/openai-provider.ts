@@ -65,7 +65,7 @@ function buildContext(chunks: RetrievedChunk[]): string {
 
 export async function generateGroundedAnswer(question: string, chunks: RetrievedChunk[]): Promise<string> {
   const config = getRagConfig();
-  if (!config.openaiApiKey) throw new Error("OPENAI_API_KEY or LINGYU_API_KEY is not configured");
+  if (!config.openaiApiKey) throw new Error("OPENROUTER_API_KEY is not configured");
   const model = new ChatOpenAI({
     apiKey: config.openaiApiKey,
     model: config.generationModel,
@@ -73,7 +73,8 @@ export async function generateGroundedAnswer(question: string, chunks: Retrieved
     maxRetries: 2,
     timeout: 90_000,
     streamUsage: false,
-    configuration: { baseURL: config.openaiBaseUrl },
+    modelKwargs: { provider: config.openaiProviderPreferences },
+    configuration: { baseURL: config.openaiBaseUrl, defaultHeaders: config.openaiDefaultHeaders },
   });
   const response = await model.invoke([
       {

@@ -345,11 +345,12 @@ export async function persistLeadWorkflowResult(input: {
         `insert into workflow_model_usage (
            user_id, workspace_id, lead_run_id, action_id, graph_thread_id, stage, requested_model,
            actual_model, provider_id, prompt_tokens, completion_tokens, reasoning_tokens, total_tokens,
-           latency_ms, fallback_used
-         ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)`,
+           latency_ms, fallback_used, account_cash_cost_usd
+         ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)`,
         [input.userId, input.workspaceId, input.runId, input.actionId, input.graphThreadId, usage.stage,
           usage.requestedModel, usage.actualModel, usage.providerId ?? null, usage.promptTokens,
-          usage.completionTokens, usage.reasoningTokens, usage.totalTokens, usage.latencyMs, usage.fallbackUsed],
+          usage.completionTokens, usage.reasoningTokens, usage.totalTokens, usage.latencyMs, usage.fallbackUsed,
+          usage.accountCashCostUsd ?? null],
       );
     }
     const citedEvidence = new Set(input.assessments.flatMap((assessment) => assessment.evidenceIds)).size;

@@ -8,7 +8,7 @@ The product uses one owner-scoped global workspace with country-partitioned sear
 Natural-language request → Assistant StateGraph
   → Kimi-k3 intent + plan Agent (recent conversation context)
   ├─ internal question → tenant-aware hybrid RAG → cited answer
-  ├─ internal + public question → internal RAG ∥ Gemini Google Search → OpenAI/Lingyu synthesis
+  ├─ internal + public question → internal RAG ∥ Gemini Google Search → OpenAI via OpenRouter synthesis
   ├─ uncertain request → targeted clarification → next conversation turn
   └─ lead search → proposed/revisable action → explicit user confirmation
                                       ↓
@@ -16,7 +16,7 @@ Natural-language request → Assistant StateGraph
        RAG gate → Market Playbook → role-aware hybrid discovery + light gate → Tavily evidence → independent score agent → qualified records
                                       ↓ selected company
        Development Strategy StateGraph
-       context → dedicated outreach RAG + approved long-form templates → one-call Kimi strategy + draft → Claude review revision + feedback memory
+       context → dedicated outreach RAG + approved long-form templates → one-call Kimi strategy + draft → Claude via OpenRouter review revision + feedback memory
 ```
 
 ## Layers
@@ -26,7 +26,7 @@ Natural-language request → Assistant StateGraph
 | Search/import | Category-specific Gemini/SearchAPI/Places/Brave/Exa discovery; Tavily evidence-only | Scheduled gap search and measured route optimization |
 | Evidence | PostgreSQL search runs, URLs and captured excerpts | Source refresh and change detection |
 | Domain | Typed Company, ChannelNode context, scoring inputs, relationships and plans | Repository-backed services and audit log |
-| AI pipeline | Lingyu planner + DeepSeek Flash/Pro independent qualification | Separate strategic-customer graph |
+| AI pipeline | OpenAI via OpenRouter planner/reviewer + DeepSeek Flash/Pro qualification | Separate strategic-customer graph |
 | Application | Next.js App Router, persistent conversations, inline graph and durable DB jobs | Deploy worker on ECS/long-running Node compute |
 
 ## RAG knowledge architecture
@@ -78,9 +78,9 @@ Search and enrichment jobs fail explicitly when a provider is unavailable. Disco
 
 The lead graph checkpoints every node in the RDS `langgraph` schema. Failed actions retain their thread and can be retried. Only evidence-qualified assessments with all eligibility gates passing and a server-recomputed score of at least 50 are published.
 
-The Assistant graph supplies the last eight conversation turns to the Kimi-k3 intent/plan Agent. Its JSON plan is schema-validated and normalized before routing. Low-confidence plans become clarification questions. A corrected lead request cancels only older `proposed` actions in the same conversation; confirmed or running work is never silently replaced. Hybrid research sends only the public subquestions to stable Gemini 3.6 Flash, requires an observed Google Search call and URL citations, then sends the bounded internal and external evidence to OpenAI through Lingyu for final synthesis. Gemini 3.6 is the reliability default because it completed all three v4 benchmark runs after 3.7 returned repeated high-demand failures.
+The Assistant graph supplies the last eight conversation turns to the Kimi-k3 intent/plan Agent. Its JSON plan is schema-validated and normalized before routing. Low-confidence plans become clarification questions. A corrected lead request cancels only older `proposed` actions in the same conversation; confirmed or running work is never silently replaced. Hybrid research sends only the public subquestions to stable Gemini 3.6 Flash, requires an observed Google Search call and URL citations, then sends the bounded internal and external evidence to an OpenAI model through OpenRouter for final synthesis. Gemini 3.6 is the reliability default because it completed all three v4 benchmark runs after 3.7 returned repeated high-demand failures.
 
-The Development Strategy graph is invoked manually for a selected qualified company rather than for every lead-search result. It loads the persisted assessment and Market Playbook, but does not query the detailed product-specification RAG. A dedicated `outreach_knowledge_item` hybrid index contains only the high-priority Cudy company profile, distribution policy, market-specific proof and Agent-screened private feedback memories. Role-matched sanitized long-form templates and approved private email styles provide structure and target length. Kimi-k3 produces the strategy and complete initial draft in one call; Claude applies explicit human feedback and screens private reusable memory. Latency and token usage are persisted for both stages. Company and Cudy factual sentences carry internal evidence markers during generation and revision, and the server rejects unknown IDs before removing valid markers from the recipient-facing body. Every generated or revised version returns to `generated` status and requires human approval. Feedback creates a new revision; only explicitly approved reusable market facts, sender identity, channel lessons or stable style preferences enter private memory. A future delivery tool must remain a separate, explicitly confirmed action.
+The Development Strategy graph is invoked manually for a selected qualified company rather than for every lead-search result. It loads the persisted assessment and Market Playbook, but does not query the detailed product-specification RAG. A dedicated `outreach_knowledge_item` hybrid index contains only the high-priority Cudy company profile, distribution policy, market-specific proof and Agent-screened private feedback memories. Role-matched sanitized long-form templates and approved private email styles provide structure and target length. Kimi-k3 produces the strategy and complete initial draft in one call; Claude through OpenRouter applies explicit human feedback and screens private reusable memory. Latency, token usage and the gateway-reported request cost are persisted when available. Company and Cudy factual sentences carry internal evidence markers during generation and revision, and the server rejects unknown IDs before removing valid markers from the recipient-facing body. Every generated or revised version returns to `generated` status and requires human approval. Feedback creates a new revision; only explicitly approved reusable market facts, sender identity, channel lessons or stable style preferences enter private memory. A future delivery tool must remain a separate, explicitly confirmed action.
 
 ## Security and privacy
 

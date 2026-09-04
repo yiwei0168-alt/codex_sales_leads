@@ -3,6 +3,9 @@ import path from "node:path";
 
 import { z } from "zod";
 
+import { getOpenRouterConfig, openRouterChatCompletionsUrl, openRouterRequestHeaders,
+  resolveOpenRouterModel } from "@/providers/openrouter";
+
 import type { ExperimentUsage } from "./cost-ledger";
 import type { ExperimentCell } from "./experiment";
 import { blindJudgeOutputSchema, geminiControlOutputSchema, type BlindJudgeOutput,
@@ -14,6 +17,7 @@ interface ProviderCall<T> {
   requestedModel: string;
   actualModel: string;
   usage: ExperimentUsage;
+  accountCashCostUsd?: number;
   startedAt: string;
   completedAt: string;
   latencyMs: number;
@@ -197,43 +201,40 @@ export async function callGeminiControl(cell: ExperimentCell,
     ...(parsed.error ? { parseError: parsed.error } : {}) };
 }
 
-function anthropicMessagesUrl(): string {
-  const raw = process.env.CLAUDE_BASE_URL?.trim() || "https://api.anthropic.com";
-  const parsed = new URL(raw);
-  if (parsed.protocol !== "https:" || parsed.username || parsed.password) throw new Error("CLAUDE_BASE_URL must be HTTPS");
-  return `${raw.replace(/\/+$/, "")}/v1/messages`;
-}
-
 export async function callClaudeBlindJudge(packet: Record<string, unknown>, model: string,
   maxTokens = 4_096): Promise<ProviderCall<BlindJudgeOutput>> {
-  const apiKey = process.env.CLAUDE_API_KEY?.trim();
-  if (!apiKey) throw new Error("CLAUDE_API_KEY is not configured");
+  const config = getOpenRouterConfig();
+  const requestedModel = resolveOpenRouterModel(model, /(?:^|\/)gpt-/i.test(model) ? "openai" : "anthropic");
   const rubric = await readFile(path.resolve("experiments/search-e2e-evaluation/uk-mx-v1/config/blind-judge-rubric.md"), "utf8");
-  const schema = await readFile(path.resolve("experiments/search-e2e-evaluation/uk-mx-v1/schemas/blind-judge-output.schema.json"), "utf8");
+  const schema = JSON.parse(await readFile(path.resolve("experiments/search-e2e-evaluation/uk-mx-v1/schemas/blind-judge-output.schema.json"), "utf8")) as Record<string, unknown>;
   const startedAt = new Date().toISOString();
   const started = Date.now();
   let response: Awaited<ReturnType<typeof requestJsonWithRetry>>;
   try {
-    response = await requestJsonWithRetry(anthropicMessagesUrl(), {
-      method: "POST", headers: { "x-api-key": apiKey,
-        "anthropic-version": process.env.CLAUDE_API_VERSION?.trim() || "2023-06-01", "content-type": "application/json" },
-      body: JSON.stringify({ model, max_tokens: maxTokens, output_config: { effort: "high" },
-        system: `${rubric}\n\nReturn one JSON object only. Exact JSON Schema:\n${schema}`,
-        messages: [{ role: "user", content: JSON.stringify(packet) }] }),
+    response = await requestJsonWithRetry(openRouterChatCompletionsUrl(config), {
+      method: "POST", headers: openRouterRequestHeaders(config),
+      body: JSON.stringify({ model: requestedModel, max_tokens: maxTokens, temperature: 0,
+        reasoning: { effort: "high" },
+        provider: config.providerPreferences,
+        response_format: { type: "json_schema", json_schema: { name: "blind_judge_output", strict: true, schema } },
+        messages: [{ role: "system", content: `${rubric}\n\nReturn one JSON object only.` },
+          { role: "user", content: JSON.stringify(packet) }] }),
     }, 2, 180_000);
   } catch (error) {
     if (!(error instanceof ProviderRequestError)) throw error;
-    return { output: null, raw: null, requestedModel: model, actualModel: model, usage: {}, startedAt,
+    return { output: null, raw: null, requestedModel, actualModel: requestedModel, usage: {}, startedAt,
       completedAt: new Date().toISOString(), latencyMs: Date.now() - started, attempts: error.attempts,
       retries: Math.max(0, error.attempts - 1), requestError: error.message,
       requestFailureKind: error.failureKind };
   }
-  const body = response.body as { model?: string; content?: Array<{ type?: string; text?: string }>;
-    usage?: { input_tokens?: number; output_tokens?: number } };
-  const text = (body.content ?? []).filter((item) => item.type === "text").map((item) => item.text ?? "").join("");
+  const body = response.body as { model?: string;
+    choices?: Array<{ message?: { content?: string | null } }>;
+    usage?: { prompt_tokens?: number; completion_tokens?: number; cost?: number } };
+  const text = body.choices?.[0]?.message?.content ?? "";
   const parsed = parseStructured(text, blindJudgeOutputSchema);
-  return { output: parsed.output, raw: body, requestedModel: model, actualModel: body.model ?? model,
-    usage: { inputTokens: body.usage?.input_tokens ?? 0, outputTokens: body.usage?.output_tokens ?? 0 },
+  return { output: parsed.output, raw: body, requestedModel, actualModel: body.model ?? requestedModel,
+    usage: { inputTokens: body.usage?.prompt_tokens ?? 0, outputTokens: body.usage?.completion_tokens ?? 0 },
+    accountCashCostUsd: body.usage?.cost,
     startedAt, completedAt: new Date().toISOString(), latencyMs: Date.now() - started,
     attempts: response.attempts, retries: response.attempts - 1,
     ...(parsed.error ? { parseError: parsed.error } : {}) };

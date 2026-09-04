@@ -1,5 +1,8 @@
 import { z } from "zod";
 
+import { getOpenRouterConfig, openRouterChatCompletionsUrl, openRouterRequestHeaders,
+  resolveOpenRouterModel } from "@/providers/openrouter";
+
 import {
   cleanCitations,
   cleanHandoffCitations,
@@ -13,59 +16,9 @@ import type { DevelopmentContext, DevelopmentStrategyDto } from "./types";
 
 interface ClaudeResponse {
   model?: string;
-  content?: Array<{ type?: string; text?: string }>;
-  stop_reason?: string | null;
+  choices?: Array<{ finish_reason?: string | null; message?: { content?: string | null } }>;
   error?: { message?: string };
-  usage?: { input_tokens?: number; output_tokens?: number };
-}
-
-interface ClaudeStreamEvent {
-  type?: string;
-  message?: ClaudeResponse;
-  delta?: { type?: string; text?: string; stop_reason?: string | null };
-  usage?: { input_tokens?: number; output_tokens?: number };
-  error?: { message?: string };
-}
-
-function parseClaudeStream(payload: string): ClaudeResponse {
-  const result: ClaudeResponse = { content: [] };
-  let text = "";
-  for (const block of payload.split(/\r?\n\r?\n/)) {
-    const data = block.split(/\r?\n/)
-      .filter((line) => line.startsWith("data:"))
-      .map((line) => line.slice(5).trim())
-      .join("\n");
-    if (!data || data === "[DONE]") continue;
-    const event = JSON.parse(data) as ClaudeStreamEvent;
-    if (event.type === "error") throw new Error(event.error?.message ?? "Claude streaming error");
-    if (event.type === "message_start") {
-      result.model = event.message?.model;
-      result.usage = { input_tokens: event.message?.usage?.input_tokens };
-    } else if (event.type === "content_block_delta" && event.delta?.type === "text_delta") {
-      text += event.delta.text ?? "";
-    } else if (event.type === "message_delta") {
-      result.stop_reason = event.delta?.stop_reason;
-      result.usage = { ...result.usage, output_tokens: event.usage?.output_tokens };
-    }
-  }
-  result.content = [{ type: "text", text }];
-  return result;
-}
-
-async function readClaudeResponse(response: Response): Promise<ClaudeResponse> {
-  const contentType = response.headers.get("content-type")?.toLowerCase() ?? "";
-  if (contentType.includes("text/event-stream")) return parseClaudeStream(await response.text());
-  return response.json() as Promise<ClaudeResponse>;
-}
-
-function messagesUrl(): string {
-  const parsed = new URL(process.env.CLAUDE_BASE_URL?.trim() || "https://api.anthropic.com");
-  if (parsed.protocol !== "https:" || !["api.anthropic.com", "lingyuapi.com"].includes(parsed.hostname)
-    || parsed.username || parsed.password) {
-    throw new Error("CLAUDE_BASE_URL 必须是受信任的 Anthropic 或 Lingyu HTTPS API 地址");
-  }
-  const base = parsed.toString().replace(/\/$/, "");
-  return /\/v1$/i.test(base) ? `${base}/messages` : `${base}/v1/messages`;
+  usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number; cost?: number };
 }
 
 async function invokeClaudeJson(
@@ -74,30 +27,26 @@ async function invokeClaudeJson(
   fetchImplementation: typeof fetch,
 ): Promise<{ value: unknown; model: string; metrics: DevelopmentStrategyDto["generationMetrics"] }> {
   const startedAt = Date.now();
-  const apiKey = process.env.CLAUDE_API_KEY?.trim();
-  if (!apiKey) throw new Error("CLAUDE_API_KEY is not configured for outreach revision");
-  const model = process.env.CLAUDE_OUTREACH_MODEL?.trim() || process.env.CLAUDE_MODEL?.trim() || "claude-sonnet-4-6";
+  const config = getOpenRouterConfig();
+  const model = resolveOpenRouterModel(process.env.CLAUDE_OUTREACH_MODEL?.trim()
+    || process.env.CLAUDE_MODEL?.trim() || "claude-sonnet-4.6", "anthropic");
   const requestBody = JSON.stringify({
     model,
     max_tokens: Number(process.env.CLAUDE_OUTREACH_MAX_TOKENS ?? 4_000),
     temperature: Number(process.env.CLAUDE_OUTREACH_TEMPERATURE ?? 0.4),
-    stream: true,
-    system,
-    messages: [{ role: "user", content: user }],
+    stream: false,
+    response_format: { type: "json_object" },
+    provider: config.providerPreferences,
+    messages: [{ role: "system", content: system }, { role: "user", content: user }],
   });
   let body: ClaudeResponse = {};
   let status = 500;
   for (let attempt = 0; attempt < 2; attempt += 1) {
     let response: Response;
     try {
-      response = await fetchImplementation(messagesUrl(), {
+      response = await fetchImplementation(openRouterChatCompletionsUrl(config), {
         method: "POST",
-        headers: {
-          authorization: `Bearer ${apiKey}`,
-          "x-api-key": apiKey,
-          "anthropic-version": process.env.CLAUDE_API_VERSION?.trim() || "2023-06-01",
-          "content-type": "application/json",
-        },
+        headers: openRouterRequestHeaders(config),
         signal: AbortSignal.timeout(Number(process.env.CLAUDE_OUTREACH_TIMEOUT_MS ?? 240_000)),
         body: requestBody,
       });
@@ -108,7 +57,7 @@ async function invokeClaudeJson(
       continue;
     }
     status = response.status;
-    body = await readClaudeResponse(response);
+    body = await response.json() as ClaudeResponse;
     if (response.ok) break;
     const transient = response.status === 429 || response.status >= 500
       || /overload|temporar|rate limit/i.test(body.error?.message ?? "");
@@ -116,10 +65,10 @@ async function invokeClaudeJson(
     await new Promise((resolve) => setTimeout(resolve, 500 * (attempt + 1)));
   }
   if (status < 200 || status >= 300) throw new Error(body.error?.message ?? `Claude HTTP ${status}`);
-  const content = body.content?.filter((item) => item.type === "text").map((item) => item.text ?? "").join("\n").trim();
-  if (!content) throw new Error(`Claude returned empty outreach JSON (stop_reason=${body.stop_reason ?? "unknown"})`);
-  const promptTokens = body.usage?.input_tokens;
-  const completionTokens = body.usage?.output_tokens;
+  const content = body.choices?.[0]?.message?.content?.trim();
+  if (!content) throw new Error(`Claude returned empty outreach JSON (finish_reason=${body.choices?.[0]?.finish_reason ?? "unknown"})`);
+  const promptTokens = body.usage?.prompt_tokens;
+  const completionTokens = body.usage?.completion_tokens;
   return {
     value: parseOutreachJson(content),
     model: body.model ?? model,
@@ -128,8 +77,9 @@ async function invokeClaudeJson(
       latencyMs: Date.now() - startedAt,
       promptTokens,
       completionTokens,
-      totalTokens: promptTokens === undefined && completionTokens === undefined
-        ? undefined : (promptTokens ?? 0) + (completionTokens ?? 0),
+      totalTokens: body.usage?.total_tokens ?? (promptTokens === undefined && completionTokens === undefined
+        ? undefined : (promptTokens ?? 0) + (completionTokens ?? 0)),
+      accountCashCostUsd: body.usage?.cost,
     },
   };
 }
@@ -224,6 +174,8 @@ export async function reviseDevelopmentDraftWithClaude(
           promptTokens: (attemptMetrics.promptTokens ?? 0) + (retried.generationMetrics.promptTokens ?? 0),
           completionTokens: (attemptMetrics.completionTokens ?? 0) + (retried.generationMetrics.completionTokens ?? 0),
           totalTokens: (attemptMetrics.totalTokens ?? 0) + (retried.generationMetrics.totalTokens ?? 0),
+          accountCashCostUsd: (attemptMetrics.accountCashCostUsd ?? 0)
+            + (retried.generationMetrics.accountCashCostUsd ?? 0),
         },
       };
     }

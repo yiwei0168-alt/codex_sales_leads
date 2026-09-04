@@ -59,7 +59,7 @@ Network Channel Copilot 是一个证据驱动的海外渠道销售线索产品�
                │                  │                  │
        ┌───────▼───────┐  ┌──────▼──────┐  ┌────────▼─────────┐
        │ 模型服务       │  │ 搜索服务     │  │ 阿里云 RDS        │
-       │ Lingyu/DeepSeek│  │ Tavily       │  │ PostgreSQL/pgvector│
+       │ OpenRouter/DeepSeek││ Tavily      │  │ PostgreSQL/pgvector│
        └───────────────┘  └─────────────┘  └──────────────────┘
 ```
 
@@ -71,7 +71,7 @@ Network Channel Copilot 是一个证据驱动的海外渠道销售线索产品�
 | API 层 | Next.js Route Handlers | 会话、授权、知识、RAG、工作流、联系方式和邮箱接口 |
 | 编排层 | LangChain + LangGraph | 请求路由、节点状态、条件分支、失败恢复和 checkpoint |
 | 领域层 | TypeScript 类型与服务 | 公司身份、渠道角色、资格门、评分、关系、机会和人工判断 |
-| Provider 层 | Lingyu、DeepSeek、Tavily、Qwen、Contact Provider | 模型、搜索、Embedding 和后置联系方式查询 |
+| Provider 层 | OpenRouter、DeepSeek、Tavily、Qwen、Contact Provider | OpenAI/Claude 生成、搜索、Embedding 和后置联系方式查询 |
 | 数据层 | 阿里云 RDS PostgreSQL + pgvector | 业务记录、三域知识、结构化事实、RLS、审计、job 和 checkpoint |
 
 Provider 边界集中定义，页面和核心领域规则不依赖具体搜索、模型或联系方式厂商。
@@ -88,7 +88,7 @@ Provider 边界集中定义，页面和核心领域规则不依赖具体搜索�
   → resolve_request
       ├─ general / clarification → 普通回复或追问
       ├─ knowledge-question      → 租户感知混合 RAG → 带引用回答
-      ├─ hybrid-research         → 内部 RAG ∥ Gemini Search → OpenAI/Lingyu 整合
+      ├─ hybrid-research         → 内部 RAG ∥ Gemini Search → OpenAI/OpenRouter 整合
       └─ lead-search             → proposed action → 用户明确确认
 ```
 
@@ -100,7 +100,7 @@ Assistant Graph 的主要职责：
 4. 在用户确认前禁止调用 Tavily；
 5. 持久化 conversation、message 和 action，保证页面刷新后仍可继续多轮纠正和反馈；
 6. 低置信度时发起针对性追问，用户修订线索计划时仅替换同一对话内尚未确认的旧计划；
-7. 混合研究只把公共问题交给 Gemini，并要求实际 Google Search 信号和 URL 引用，再由 OpenAI 经 Lingyu 合成内外证据。
+7. 混合研究只把公共问题交给 Gemini，并要求实际 Google Search 信号和 URL 引用，再由 OpenAI 经 OpenRouter 合成内外证据。
 
 用户确认是显式外部搜索边界。只有已认证用户确认属于自己的 action 后，系统才会原子 claim 工作流 job。
 
@@ -258,7 +258,7 @@ Market Playbook 根据目标国家、产品知识、公司能力和行业结构�
 
 | 阶段 | 当前模型 | 可靠性控制 |
 |---|---|---|
-| Market Playbook | LangChain ChatOpenAI through Lingyu | temperature 0、Zod structured output、90 秒超时、有限重试 |
+| Market Playbook | LangChain ChatOpenAI through OpenRouter | 固定 `openai/*` 模型、temperature 0、Zod structured output、90 秒超时、有限重试 |
 | 常规资格评分 | DeepSeek v4 Flash | 严格 JSON Schema、75 秒预算、batch 5、并发 2 |
 | 冲突升级 | DeepSeek v4 Pro | 低置信、证据 warning、冲突或 schema 失败时触发 |
 | 最终分数 | Application Server | 资格门校验、维度 clamp、确定性重算 |

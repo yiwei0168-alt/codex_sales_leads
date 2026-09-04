@@ -7,6 +7,8 @@ interface OpenAiCompatibleProviderOptions {
   baseUrl: string;
   fetchImplementation?: typeof fetch;
   maxAttempts?: number;
+  defaultHeaders?: Record<string, string>;
+  extraBody?: Record<string, unknown>;
 }
 
 interface WireResponse {
@@ -14,6 +16,8 @@ interface WireResponse {
   model?: string;
   choices?: Array<{ finish_reason?: string; message?: { content?: string | null } }>;
   usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number;
+    cost?: number;
+    prompt_tokens_details?: { cached_tokens?: number };
     completion_tokens_details?: { reasoning_tokens?: number } };
   error?: { message?: string };
 }
@@ -46,12 +50,17 @@ export class OpenAiCompatibleProvider implements AiProvider {
       try {
         const response = await this.fetchImplementation(`${this.baseUrl}/chat/completions`, {
           method: "POST",
-          headers: { authorization: `Bearer ${this.options.apiKey}`, "content-type": "application/json" },
+          headers: { authorization: `Bearer ${this.options.apiKey}`, "content-type": "application/json",
+            ...this.options.defaultHeaders },
           signal,
           body: JSON.stringify({
             model: request.modelVersion,
             temperature: 0,
-            response_format: { type: "json_object" },
+            ...(request.reasoningEffort ? { reasoning: { effort: request.reasoningEffort } } : {}),
+            response_format: request.outputSchema ? { type: "json_schema", json_schema: {
+              name: request.task.replace(/[^a-z0-9_-]/gi, "_").slice(0, 64), strict: true,
+              schema: request.outputSchema,
+            } } : { type: "json_object" },
             messages: [
               { role: "system", content: [
                 "Return one valid JSON object only, without Markdown.",
@@ -61,6 +70,7 @@ export class OpenAiCompatibleProvider implements AiProvider {
               { role: "user", content: JSON.stringify({ task: request.task, promptVersion: request.promptVersion,
                 evidenceIds: request.evidenceIds, input: request.input }) },
             ],
+            ...this.options.extraBody,
           }),
         });
         const body = await response.json() as WireResponse;
@@ -79,7 +89,9 @@ export class OpenAiCompatibleProvider implements AiProvider {
           usage: body.usage ? { promptTokens: body.usage.prompt_tokens ?? 0,
             completionTokens: body.usage.completion_tokens ?? 0,
             reasoningTokens: body.usage.completion_tokens_details?.reasoning_tokens ?? 0,
-            totalTokens: body.usage.total_tokens ?? (body.usage.prompt_tokens ?? 0) + (body.usage.completion_tokens ?? 0) } : undefined,
+            totalTokens: body.usage.total_tokens ?? (body.usage.prompt_tokens ?? 0) + (body.usage.completion_tokens ?? 0),
+            cachedPromptTokens: body.usage.prompt_tokens_details?.cached_tokens ?? 0,
+            accountCashCostUsd: body.usage.cost } : undefined,
         } satisfies StructuredAiResponse<TOutput>;
       } catch (error) {
         lastError = error;

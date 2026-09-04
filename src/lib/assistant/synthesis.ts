@@ -28,16 +28,16 @@ export async function synthesizeHybridAnswer(
   external: ExternalSearchAnswer,
 ): Promise<string> {
   const config = getRagConfig();
-  const lingyuApiKey = process.env.LINGYU_API_KEY?.trim();
-  if (!lingyuApiKey) throw new Error("LINGYU_API_KEY is not configured for OpenAI synthesis");
+  if (!config.openaiApiKey) throw new Error("OPENROUTER_API_KEY is not configured for OpenAI synthesis");
   const model = new ChatOpenAI({
-    apiKey: lingyuApiKey,
+    apiKey: config.openaiApiKey,
     model: config.generationModel,
     temperature: 0,
     maxRetries: 2,
     timeout: 90_000,
     streamUsage: false,
-    configuration: { baseURL: config.openaiBaseUrl },
+    modelKwargs: { provider: config.openaiProviderPreferences },
+    configuration: { baseURL: config.openaiBaseUrl, defaultHeaders: config.openaiDefaultHeaders },
   });
   const internalIds = internal.citations.map((citation) => citation.chunkId);
   const externalSources = external.citations.map((citation, index) => ({ marker: `WEB:${index + 1}`, ...citation }));

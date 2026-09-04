@@ -91,6 +91,7 @@ export interface DevelopmentGenerationMetrics {
   promptTokens?: number;
   completionTokens?: number;
   totalTokens?: number;
+  accountCashCostUsd?: number;
 }
 
 export interface DevelopmentStrategyDto {
