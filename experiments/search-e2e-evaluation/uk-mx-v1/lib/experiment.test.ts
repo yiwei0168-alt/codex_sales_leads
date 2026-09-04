@@ -25,8 +25,9 @@ describe("formal experiment intent normalization", () => {
 
   it("freezes the user-approved blind-review fallback chain", () => {
     expect(EXPERIMENT_CONFIG.blindAudit).toMatchObject({ primaryModel: "claude-opus-5",
-      gatewayFallbackModel: "gpt-5.6-sol", unavailableFallbackMode: "codex-in-session",
-      fallbackActivated: true, allowWebSearch: false, requireDecisionCommitAndPushBeforeDeblind: true });
+      gatewayFallbackModel: "gpt-5.6-sol", gatewayFallbackProvider: "openrouter-openai-chat-completions",
+      unavailableFallbackMode: "codex-in-session", fallbackActivated: false,
+      allowWebSearch: false, requireDecisionCommitAndPushBeforeDeblind: true });
   });
 
   it("separates inherited preflight source cost from cumulative carry-forward cost", () => {
@@ -35,6 +36,6 @@ describe("formal experiment intent normalization", () => {
     expect(EXPERIMENT_CONFIG.preflightReuse.sourceGeminiControlBudgetUsd)
       .toBeLessThanOrEqual(EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd);
     expect(EXPERIMENT_CONFIG.cost.priorProductPreflightAdjustmentUsd
-      + EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd).toBeCloseTo(0.9520531630011205, 12);
+      + EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd).toBeCloseTo(1.7460204110519397, 12);
   });
 });

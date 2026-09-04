@@ -59,13 +59,17 @@ export function validateExperimentConfig(): void {
   }
   if (config.blindAudit.gatewayFallbackModel !== "gpt-5.6-sol"
     || config.blindAudit.unavailableFallbackMode !== "codex-in-session"
-    || !config.blindAudit.fallbackActivated
+    || config.blindAudit.fallbackActivated
+    || config.blindAudit.gatewayFallbackProvider !== "openrouter-openai-chat-completions"
     || config.blindAudit.allowWebSearch
     || !config.blindAudit.requireDecisionCommitAndPushBeforeDeblind) {
     throw new Error("Frozen blind-judge fallback chain or deblinding guard changed");
   }
   if (config.preflightReuse.sourceExperimentId !== "search-e2e-eval-v1.0.10"
-    || config.preflightReuse.requiredChecks.length !== 12) {
+    || config.preflightReuse.requiredChecks.length !== 11
+    || config.reusedFrozenArms.length !== 1
+    || config.reusedFrozenArms[0].cellId !== "MX-retail"
+    || config.reusedFrozenArms[0].arm !== "gemini-native") {
     throw new Error("Frozen non-judge preflight inheritance changed");
   }
 }

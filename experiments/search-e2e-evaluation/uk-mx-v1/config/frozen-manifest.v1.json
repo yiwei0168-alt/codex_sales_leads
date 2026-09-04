@@ -1,21 +1,21 @@
 {
   "schemaVersion": 1,
-  "experimentId": "search-e2e-eval-v1.0.15",
-  "runId": "2026-09-02-uk-mx-search-e2e-v1-15",
-  "createdAt": "2026-09-02T07:19:34.600Z",
-  "requiredGitTag": "search-e2e-eval-v1.0.15-frozen",
+  "experimentId": "search-e2e-eval-v1.1.0",
+  "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+  "createdAt": "2026-09-04T21:38:03.086Z",
+  "requiredGitTag": "search-e2e-eval-v1.1.0-frozen",
   "files": [
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/PROTOCOL.md",
-      "sha256": "6b8bd5620ba4a1f1c18d485618e25e71de3e84286f92736ff3e3535a40b702d1"
+      "sha256": "04e08c9ce61c5ebff8b5377fe77cf8512a26bbf39d1e89521c9ecc207ba8772f"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/README.md",
-      "sha256": "d4ebf8c32c7943f7786c38df4fa474888eb99aae276c6e0d3352192f59540934"
+      "sha256": "6ddf7c705ddae3f5dfcc432ace82667a88c8f61e284c88180e4b1c0f05a2e3dc"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/config/experiment.v1.0.0.json",
-      "sha256": "0c81ecf921409b2a6031cb7455db7ab3ce0341e2d6d4d28573012d8302dbb92e"
+      "sha256": "104959bb9038fe41dbc85315f89f60df1ed086c9b73389eba520e9570b12d523"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/config/gemini-control-prompt.md",
@@ -43,11 +43,11 @@
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/blind-audit.ts",
-      "sha256": "a3f1cc973fd5575e245149811296af8b06cfc88590319ce31570797f34d65446"
+      "sha256": "9d5342c9f0be46fe13c90178638d5b5cb2995bb0be34047c49fe71944f09a5cf"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/cost-ledger.ts",
-      "sha256": "fb123650b15955a598abafb44d8c1d91bba091de3e09194ef91d71d59a9d5d35"
+      "sha256": "ed80331dc58258e07b0f86b865cddf8c1ab1ba7521b613dfef6686086f762cac"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/control-cell.ts",
@@ -63,7 +63,7 @@
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/experiment.ts",
-      "sha256": "3d8e5f07e9a8254b94523f61bcf353096da8ed8ffa584942c2a36050be853ef8"
+      "sha256": "529f9f56ffa7f1e0a9e990ca5469250364337ff2993a8665d87eefa665a9ced5"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/final-report.ts",
@@ -71,11 +71,11 @@
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/product-cell.ts",
-      "sha256": "0f36f33d442ebb961f141f529981450433df1a70d51068d54dfbf145a89b90db"
+      "sha256": "08b3619cdeed2956696798a8ab841ee7ebe0dbeb194c94f8f3271acd22e3800c"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/provider-clients.ts",
-      "sha256": "6b50b2baa9328352feb3dec669bb77d11efb96edc093e60de88a58cd455d05dc"
+      "sha256": "378e561f88f45ff178acd6a31b148cb1a417017cff0c2519d1d5d9c8058f89bf"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/run-store.ts",
@@ -91,11 +91,11 @@
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/scripts/run-formal-experiment.ts",
-      "sha256": "6ec48673070ac11ed91480544f39739a630d2101a6105e01e24efd6707a9c620"
+      "sha256": "817eabbdb7e33f9cb7e33fce333bb309ea1c534801d5bf00049c338d9d334e6f"
     },
     {
       "path": "config/lead-search/hybrid-search-v1.0.0.json",
-      "sha256": "68aa162040af9fb1df633ef4fa4e6eb5be93ca6209b85889fa2760c33cf1bb74"
+      "sha256": "95e1271a3cc6bd6c36515b0d168233f31f2470bf400967824cfe509e5c209d0f"
     },
     {
       "path": "config/lead-scoring/policy-v2.0.0.json",
@@ -103,11 +103,11 @@
     },
     {
       "path": "config/lead-workflow/end-to-end-v2.0.0.json",
-      "sha256": "1ad50eb1550b4cec22b0f07d59dc0636b7d90e65e2b16709ccd4c13ca5933e05"
+      "sha256": "0abc31085296736e067c48c562f04fce1aa255b572b3bef6a2c2e60f99b151e8"
     },
     {
       "path": "config/lead-workflow/runtime-policy-v3.0.0.json",
-      "sha256": "f58509eb101f842ae9c2e7b01484c8b2e429908166a13a502c5d8be477127989"
+      "sha256": "31a0f7030758c373a697c82afc85f31b940c3b9104f8eb9c846aa0249a6e6f4c"
     },
     {
       "path": "config/lead-workflow/cost-quality-policy-v3.0.0.json",
@@ -123,15 +123,43 @@
     },
     {
       "path": "src/lib/leads/workflow/hybrid-discovery-executor.ts",
-      "sha256": "3587a661047a2cbc3f257440202a8f0207bd07567be29c710cd8c72558364404"
+      "sha256": "8a511d6d17c2b551e8d61eed069f2f3c228f2589a3659e616f518e3b6312d977"
+    },
+    {
+      "path": "src/lib/leads/workflow/hybrid-search-policy.ts",
+      "sha256": "4c3ec5ff313a5551c68de8fd023deca8cf711d7a80971f52f47127d0f9a8bb87"
+    },
+    {
+      "path": "src/lib/leads/workflow/candidate-registry.ts",
+      "sha256": "a7d9bc2b971f854d7e5e092c6a3b6ccbe7cece0f3b5c0e1eae31f9e247f46cc5"
+    },
+    {
+      "path": "src/lib/leads/workflow/discovery-gate.ts",
+      "sha256": "ad9bfbe030f97001009c076463ce4d37f1177f6b24789c33b34c91a1587264a2"
+    },
+    {
+      "path": "src/lib/leads/workflow/playbook.ts",
+      "sha256": "a83d6fe0edf30c5e0504fbb7e3bdb059b5cdb8a9d8df45dc1756372b7df3e095"
+    },
+    {
+      "path": "src/lib/leads/workflow/rag-context.ts",
+      "sha256": "1e1ee21e77b90731e849426cd7130de7d1e50ee6aec9f196e44cb642bf81387b"
+    },
+    {
+      "path": "src/lib/leads/workflow/role-correction-cache.ts",
+      "sha256": "b594593f4b7e74f503458731826aa4154b16f8be1194b2ecbafb9d1563251ba6"
+    },
+    {
+      "path": "src/lib/leads/workflow/target-completion-policy.ts",
+      "sha256": "3239db048621ed0d3ee257bb109fd7a629c3ab68386f0d5c341bba4f111ae3de"
     },
     {
       "path": "src/lib/leads/workflow/discovery.ts",
-      "sha256": "27e03b8f6b8d1d09d7f7040b8f6274cbd9484cb5af3ba96bf13a8921d3be168d"
+      "sha256": "d0829756f30a16351a68f9e98fef4949549f0b2ff89062157ca75aa79400a2a3"
     },
     {
       "path": "src/lib/leads/workflow/evidence-correction-agent.ts",
-      "sha256": "43fa4fae58a3ce0deb30c1c4aa0668856abd23cebf77521a49c23a1afd825c36"
+      "sha256": "d9e7d4c76b496cd19393398dfa712a50b1ef6a2548f3cb596cbfaccd9cf8db60"
     },
     {
       "path": "src/lib/leads/workflow/qualification-agent.ts",
@@ -142,16 +170,80 @@
       "sha256": "17e5133724c48a4040b19fa52833c163cfee56a09ffb1dc46c6d2a58d9faf9ca"
     },
     {
+      "path": "src/lib/leads/workflow/types.ts",
+      "sha256": "72d5a4526b6b1694f5a43502a080dd7006d2c06924f8b3ce46b8225d848f0fc3"
+    },
+    {
+      "path": "src/lib/leads/workflow/cost-quality-policy.ts",
+      "sha256": "66d5bb989891bb13db5d76034e5ccd319db682ccc02ca97fff90df4e0b686a64"
+    },
+    {
+      "path": "src/lib/leads/workflow/evidence-packet.ts",
+      "sha256": "1ca9577284952e245a8e8c51ae9fa82472fcbcf0b262ebaa83fc6463f379836f"
+    },
+    {
+      "path": "src/lib/leads/candidate-value.ts",
+      "sha256": "b440c20a285c9456f0a6b7ea13134f88d87978678d75d447c0fe421f8dd89256"
+    },
+    {
+      "path": "src/lib/leads/channel-membership.ts",
+      "sha256": "0b2e52d76bde37933269010135c8fb97264d0df6adbd3a261716587cee112381"
+    },
+    {
+      "path": "src/lib/leads/cooperation-path.ts",
+      "sha256": "124e27529bb54a1cbbc04fd9c2f7b01997ff17e9b21ef44800e53704ce949374"
+    },
+    {
+      "path": "src/lib/leads/evidence-quality.ts",
+      "sha256": "8c2862552c8186ca98489bd424567fdd80b089da8bd9815f46c94c10f265bf73"
+    },
+    {
+      "path": "src/lib/leads/evidence-snapshot.ts",
+      "sha256": "8994deee6ebe7f137ed75af898b3e4d43cd4c3bc3c2cab551b52cf8f30d6751d"
+    },
+    {
+      "path": "src/lib/leads/networking-relevance.ts",
+      "sha256": "23cbe24ec5be0628e77c30e196de8a54374d28c56432a458c5b122a5fb98ddd8"
+    },
+    {
+      "path": "src/lib/leads/primary-channel.ts",
+      "sha256": "2f618fddb32818bc5cbd9a23122461a825760d93514887985b99086b0af60848"
+    },
+    {
+      "path": "src/lib/leads/scoring-policy.ts",
+      "sha256": "035db7ea82c532bd292e2de0773c760895114e8b40fbbe340d1e5a1aa0b060cf"
+    },
+    {
+      "path": "src/providers/contracts.ts",
+      "sha256": "ebf93de327a898200617596652f7437cfd8134b5f4f575fc83da585c3d44c0e1"
+    },
+    {
       "path": "src/providers/discovery.ts",
-      "sha256": "f1d6bde9cf94867496e86065e02485f15ecb374a95c6d771c21f9bc822931c66"
+      "sha256": "a828db0c68040360dff04f391f946ed7faa3d8bf647f76448fccab177b00837b"
+    },
+    {
+      "path": "src/providers/openrouter.ts",
+      "sha256": "b43ba8fdf08602cb7d3567ea88bdc2cfee704de0c1b197cc574abe5e9b89143d"
+    },
+    {
+      "path": "src/providers/resilient-ai.ts",
+      "sha256": "3fe571fe48f48c0f89ccbf7241ed303b554598243bd8bfa08dc7c2a76c85258b"
     },
     {
       "path": "src/providers/tavily.ts",
       "sha256": "e601eb4eae582628dec99f03e9bcbb6fdf38dc68bcf52daf7cad8d58a2e31485"
     },
     {
+      "path": "src/lib/rag/openai-provider.ts",
+      "sha256": "8d3151fd671b7a791ac81885a91a09a9281be5b3ebd04edcd188f517da3e088d"
+    },
+    {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-02-uk-mx-search-e2e-v1-10/runtime/run-summary.json",
       "sha256": "3dff4956ec687bd39371921584c3af2a39d4358e03178837f4766eae27d69f15"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-02-uk-mx-search-e2e-v1-15/cells/MX-retail/gemini-native.json",
+      "sha256": "b47125bbbd529432e1d2fcda25815706a26a29a4731cc359753fa11cacb580fb"
     }
   ]
 }

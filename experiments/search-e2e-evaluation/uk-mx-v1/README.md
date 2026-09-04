@@ -1,6 +1,6 @@
 # UK–Mexico formal search evaluation v1
 
-Current status (2026-09-04): frozen v1.0.15 is paused after MX Retail. Its completed artifacts and cost remain immutable. OpenAI/Claude traffic has moved to OpenRouter and therefore requires a new frozen experiment version; the MX Retail 6/30 underfill analysis is in `analysis/MX-retail-underfill-v1.0.15.md`. No further paid experiment call is allowed until a rotated local `OPENROUTER_API_KEY` passes the minimal preflight and the next protocol version is frozen.
+Current status (2026-09-05): v1.1.0 is preregistered pending its frozen tag and minimal OpenRouter blind-judge preflight. Frozen v1.0.15 artifacts and USD 1.7460204110519397 historical cost remain immutable. Its unchanged MX Retail Gemini control is reused without a second paid call; the product arm is rerun with the production target-completion, localized-track, failure-classification and current-run cache mechanisms. The v1.0.15 6/30 root-cause analysis remains in `analysis/MX-retail-underfill-v1.0.15.md`.
 
 This directory contains the preregistered protocol, frozen configuration, prompts, schemas, runtime checkpoints and final reports for Cudy's first formal end-to-end search evaluation.
 
@@ -41,7 +41,7 @@ Preflight checks, formal-arm stages, Gemini-only shared evaluation and every bli
 
 ## Version and Git policy
 
-- Experiment version: `search-e2e-eval-v1.0.15`
+- Experiment version: `search-e2e-eval-v1.1.0`
 - Working branch: `experiment/search-e2e-uk-mx-v1`
 - A preregistration tag is created before experimental calls.
 - Runtime checkpoints are committed after every completed country/category cell.

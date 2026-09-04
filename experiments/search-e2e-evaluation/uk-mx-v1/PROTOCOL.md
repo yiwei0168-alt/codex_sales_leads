@@ -1,4 +1,8 @@
-# Cudy端到端搜索能力正式测评协议 v1.0.15
+# Cudy端到端搜索能力正式测评协议 v1.1.0
+
+> 2026-09-05 preregistration: v1.1.0 replaces the invalidated product arm after the frozen v1.0.15 MX Retail underfill. The unchanged v1.0.15 MX Retail Gemini control result is reused byte-for-byte and its cost is carried forward, while the product arm is rerun with the same production target-completion controller now deployed in LangGraph. A valid slot requires an evidence-corrected primary role in the requested category plus a completed `eligible` assessment. The product may run up to five localized rounds and stops only at 30 valid companies, two completed zero-final-yield rounds, provider unavailability, or the safety bound. Provider failure never counts as zero yield. Current-run search/results/evidence/role work is cached and cannot be resent downstream. MX Retail starts national, E-tail and Google Places tracks; default Retail and Reseller routes exclude Gemini Product.
+
+> Blind review now uses `Claude Opus 5 via OpenRouter -> OpenAI gpt-5.6-sol via OpenRouter -> Codex in this conversation`. Each gateway model receives at most two transport attempts, every attempt and returned `usage.cost` is recorded, and Codex is selected only if both gateway models fail or return unusable structured output. No blind-review Web search is allowed. Frozen v1.0.15 artifacts remain immutable; USD 1.7460204110519397 historical spend is carried into the v1.1.0 budget ledger.
 
 > 2026-09-04 状态变更：v1.0.15 在完成 MX Retail 后保持不可变并暂停。用户要求把 OpenAI/Claude 改经 OpenRouter，已改变盲审 provider adapter；同时 MX Retail 暴露 6/30 的严重欠填。两项都不能回写到已冻结协议。现有结果、1.7460204111 美元累计成本与 resume checkpoint 原样保留；在轮换后的 `OPENROUTER_API_KEY` 通过最小预检、且下一版搜索补填机制完成确认之前，不得继续剩余付费单元。详细根因见 `analysis/MX-retail-underfill-v1.0.15.md`。
 

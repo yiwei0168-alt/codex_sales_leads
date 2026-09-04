@@ -37,7 +37,7 @@ import { buildControlUniqueGroups, buildProductRecordIndex, evaluateControlUniqu
 nextEnv.loadEnvConfig(process.cwd());
 const rateCard = rateCardJson as ExperimentRateCard;
 const experimentRoot = path.resolve("experiments/search-e2e-evaluation/uk-mx-v1");
-const frozenTag = "search-e2e-eval-v1.0.15-frozen";
+const frozenTag = "search-e2e-eval-v1.1.0-frozen";
 
 const frozenFiles = [
   "PROTOCOL.md", "README.md", "config/experiment.v1.0.0.json", "config/gemini-control-prompt.md",
@@ -54,10 +54,26 @@ const frozenFiles = [
   "../../../config/lead-workflow/cost-quality-policy-v3.0.0.json",
   "../../../src/lib/assistant/intent-agent.ts", "../../../src/lib/assistant/types.ts",
   "../../../src/lib/leads/workflow/hybrid-discovery-executor.ts",
+  "../../../src/lib/leads/workflow/hybrid-search-policy.ts",
+  "../../../src/lib/leads/workflow/candidate-registry.ts",
+  "../../../src/lib/leads/workflow/discovery-gate.ts",
+  "../../../src/lib/leads/workflow/playbook.ts",
+  "../../../src/lib/leads/workflow/rag-context.ts",
+  "../../../src/lib/leads/workflow/role-correction-cache.ts",
+  "../../../src/lib/leads/workflow/target-completion-policy.ts",
   "../../../src/lib/leads/workflow/discovery.ts", "../../../src/lib/leads/workflow/evidence-correction-agent.ts",
   "../../../src/lib/leads/workflow/qualification-agent.ts", "../../../src/lib/leads/workflow/schemas.ts",
-  "../../../src/providers/discovery.ts", "../../../src/providers/tavily.ts",
+  "../../../src/lib/leads/workflow/types.ts", "../../../src/lib/leads/workflow/cost-quality-policy.ts",
+  "../../../src/lib/leads/workflow/evidence-packet.ts",
+  "../../../src/lib/leads/candidate-value.ts", "../../../src/lib/leads/channel-membership.ts",
+  "../../../src/lib/leads/cooperation-path.ts", "../../../src/lib/leads/evidence-quality.ts",
+  "../../../src/lib/leads/evidence-snapshot.ts", "../../../src/lib/leads/networking-relevance.ts",
+  "../../../src/lib/leads/primary-channel.ts", "../../../src/lib/leads/scoring-policy.ts",
+  "../../../src/providers/contracts.ts", "../../../src/providers/discovery.ts",
+  "../../../src/providers/openrouter.ts", "../../../src/providers/resilient-ai.ts",
+  "../../../src/providers/tavily.ts", "../../../src/lib/rag/openai-provider.ts",
   "artifacts/runs/2026-09-02-uk-mx-search-e2e-v1-10/runtime/run-summary.json",
+  "artifacts/runs/2026-09-02-uk-mx-search-e2e-v1-15/cells/MX-retail/gemini-native.json",
 ] as const;
 
 function sha256(value: string | Buffer): string {
@@ -209,6 +225,47 @@ async function completePreflight(state: FormalRunState): Promise<void> {
     cost: summarizeCostEvents(state.costEvents), budgetDecision: decision }, null, 2));
 }
 
+async function selectBlindJudgeThroughOpenRouter(state: FormalRunState): Promise<void> {
+  if (hasPreflightCheck(state, "openrouter-blind-judge")) return;
+  const packet = { packetId: "preflight-packet-0001", targetMarket: "Canada",
+    requestedCategory: "resale", cudyBrief: "Affordable reliable networking for consumers and SMBs.",
+    company: { name: "Example Network Canada", domain: "example.com" }, evidence: [{
+      evidenceId: "preflight-evidence-0001", sourceType: "official-website", url: "https://example.com/",
+      excerpt: "Synthetic preflight: an operating Canadian SMB networking reseller selling routers and switches with support." }] };
+  const models = [EXPERIMENT_CONFIG.blindAudit.primaryModel,
+    EXPERIMENT_CONFIG.blindAudit.gatewayFallbackModel];
+  const events: ExperimentCostEvent[] = [];
+  const failures: string[] = [];
+  for (const [index, model] of models.entries()) {
+    const call = await callClaudeBlindJudge(packet, model);
+    const valid = Boolean(call.output);
+    events.push(preflightEvent({ eventId: `preflight:openrouter-blind-judge:${index + 1}`, runId: state.runId,
+      ledger: "evaluation-overhead", arm: "shared-evaluation", stage: "preflight-blind-judge",
+      provider: "openrouter", requestedModel: call.requestedModel, actualModel: call.actualModel,
+      startedAt: call.startedAt, completedAt: call.completedAt, latencyMs: call.latencyMs,
+      attempts: call.attempts, retries: call.retries, fallbackUsed: index > 0,
+      status: valid ? "completed" : "failed", usage: call.usage,
+      accountCashCostUsd: call.accountCashCostUsd,
+      volume: { inputItems: 1, rawOutputItems: call.requestError ? 0 : 1,
+        validOutputItems: valid ? 1 : 0, downstreamUsedItems: valid ? 1 : 0,
+        discardedReasonCounts: valid ? {} : call.requestError
+          ? { [providerFailureDiscardReason(call.requestFailureKind)]: 1 } : { schemaInvalid: 1 } },
+      notes: valid ? [] : [call.requestError ?? call.parseError ?? "No valid structured output"] }));
+    if (valid) {
+      await checkpointPreflight(state, "openrouter-blind-judge", events,
+        { selectedModel: call.actualModel, fallbackUsed: index > 0, failures }, call.actualModel);
+      return;
+    }
+    failures.push(`${model}: ${call.requestError ?? call.parseError ?? "invalid output"}`.slice(0, 1_000));
+  }
+  await checkpointPreflight(state, "openrouter-blind-judge", events, {
+    selectedModel: EXPERIMENT_CONFIG.blindAudit.unavailableFallbackMode,
+    fallbackChain: [...models, EXPERIMENT_CONFIG.blindAudit.unavailableFallbackMode], failures,
+    externalSearchAllowed: false, apiCallUsedForFinalFallback: false,
+    requireDecisionCommitAndPushBeforeDeblind: true,
+  }, EXPERIMENT_CONFIG.blindAudit.unavailableFallbackMode);
+}
+
 async function runPreflight(): Promise<void> {
   await verifyFrozenManifest(true);
   const state = await loadRunState();
@@ -218,15 +275,14 @@ async function runPreflight(): Promise<void> {
     return;
   }
   const missing = ["SEARCH_E2E_USER_ID", "KIMI_API_KEY", "EMBEDDING_API_KEY", "EMBEDDING_BASE_URL",
-    "DEEPSEEK_API_KEY", "TAVILY_API_KEY", "GEMINI_API_KEY",
-    ...(EXPERIMENT_CONFIG.blindAudit.fallbackActivated ? [] : ["OPENROUTER_API_KEY"])]
+    "DEEPSEEK_API_KEY", "TAVILY_API_KEY", "GEMINI_API_KEY", "OPENROUTER_API_KEY"]
     .filter((name) => !process.env[name]?.trim());
   const discoveryStatus = discoveryEnvironmentStatus();
   missing.push(...discoveryStatus.filter((item) => !item.configured).map((item) => item.apiKeyEnv));
   if (missing.length > 0) throw new Error(`Preflight missing required environment variables: ${[...new Set(missing)].join(", ")}`);
 
-  if (!hasPreflightCheck(state, "prior-before-v1.0.15-adjustment")) {
-    const productAdjustment = preflightEvent({ eventId: "preflight:prior-product-before-v1.0.15", runId: state.runId,
+  if (!hasPreflightCheck(state, "prior-before-v1.1.0-adjustment")) {
+    const productAdjustmentBase = preflightEvent({ eventId: "preflight:prior-product-before-v1.1.0", runId: state.runId,
       ledger: "product-e2e-arm", arm: "product-e2e", stage: "prior-preflight-adjustment",
       provider: "mixed-product-preflight", startedAt: state.createdAt, completedAt: state.createdAt,
       latencyMs: 0, attempts: 51, retries: 8, fallbackUsed: false, status: "completed", usage: {},
@@ -234,8 +290,12 @@ async function runPreflight(): Promise<void> {
       volume: { inputItems: 47, rawOutputItems: 51, validOutputItems: 45, downstreamUsedItems: 21,
         discardedReasonCounts: { timeout: 1, schemaInvalid: 4, fallback: 1, semanticGateFailure: 6,
           transportFailure: 2 } },
-      notes: ["Conservative carry-forward through the invalidated v1.0.13 run, including its Kimi intent call rejected by the semantic gate."] });
-    const controlAdjustment = preflightEvent({ eventId: "preflight:prior-gemini-control-before-v1.0.15",
+      notes: ["Exact product-ledger carry-forward through frozen v1.0.15, including its MX Retail product arm."] });
+    const productAdjustment = { ...productAdjustmentBase, accountCashCostUsd: undefined,
+      officialListPriceUsd: EXPERIMENT_CONFIG.cost.priorProductPreflightAdjustmentUsd,
+      budgetCostUsd: EXPERIMENT_CONFIG.cost.priorProductPreflightAdjustmentUsd,
+      cashCostBasis: "official-conservative" as const };
+    const controlAdjustmentBase = preflightEvent({ eventId: "preflight:prior-gemini-control-before-v1.1.0",
       runId: state.runId, ledger: "gemini-native-arm", arm: "gemini-native", stage: "prior-preflight-adjustment",
       provider: "gemini-full", requestedModel: "gemini-3.6-flash", actualModel: "gemini-3.6-flash",
       startedAt: state.createdAt, completedAt: state.createdAt, latencyMs: 0, attempts: 3, retries: 0,
@@ -243,23 +303,18 @@ async function runPreflight(): Promise<void> {
       accountCashCostUsd: EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd,
       volume: { inputItems: 6, rawOutputItems: 35, validOutputItems: 34, downstreamUsedItems: 32,
         discardedReasonCounts: { schemaInvalid: 1, usageNotCheckpointed: 1, invalidRequest: 1 } },
-      notes: ["Carries prior Gemini diagnostics plus the invalidated v1.0.13 MX-retail control call; its companies are not reused."] });
-    const openAiGatewayProbe = preflightEvent({ eventId: "preflight:prior-lingyu-openai-probe", runId: state.runId,
-      ledger: "evaluation-overhead", arm: "shared-evaluation", stage: "preflight-blind-judge",
-      provider: "lingyu-openai-responses", requestedModel: "gpt-5.6-sol", actualModel: "gpt-5.6-sol",
-      startedAt: state.createdAt, completedAt: state.createdAt, latencyMs: 0, attempts: 2, retries: 1,
-      fallbackUsed: true, status: "failed", usage: {}, accountCashCostUsd: 0,
-      volume: { inputItems: 2, rawOutputItems: 0, validOutputItems: 0, downstreamUsedItems: 0,
-        discardedReasonCounts: { insufficientQuota: 2 } },
-      notes: ["High-reasoning, no-tools, store=false full-schema probe returned HTTP 403 insufficient_user_quota; no model output or token usage."] });
-    await checkpointPreflight(state, "prior-before-v1.0.15-adjustment",
-      [productAdjustment, controlAdjustment, openAiGatewayProbe],
+      notes: ["Exact Gemini-ledger carry-forward through frozen v1.0.15; the unchanged MX Retail control arm is reused without a second charge."] });
+    const controlAdjustment = { ...controlAdjustmentBase, accountCashCostUsd: undefined,
+      officialListPriceUsd: EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd,
+      budgetCostUsd: EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd,
+      cashCostBasis: "official-conservative" as const };
+    await checkpointPreflight(state, "prior-before-v1.1.0-adjustment",
+      [productAdjustment, controlAdjustment],
       { productUsd: EXPERIMENT_CONFIG.cost.priorProductPreflightAdjustmentUsd,
-        geminiControlReserveUsd: EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd,
-        lingyuOpenAiProbeUsd: 0 });
+        geminiControlUsd: EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd });
   }
 
-  if (EXPERIMENT_CONFIG.blindAudit.fallbackActivated) {
+  if (EXPERIMENT_CONFIG.preflightReuse.requiredChecks.length > 0) {
     const reuse = EXPERIMENT_CONFIG.preflightReuse;
     const source = await readJson<{ experimentId: string; runId: string;
       preflightChecks: Array<{ name: string }>; costEvents: ExperimentCostEvent[] }>(path.resolve(reuse.sourceSummaryPath));
@@ -285,13 +340,7 @@ async function runPreflight(): Promise<void> {
       sourceExperimentId: source.experimentId, sourceRunId: source.runId,
       checks: reuse.requiredChecks, productUsd: sourceProductUsd, geminiControlUsd: sourceControlUsd,
     });
-    await checkpointPreflight(state, "codex-in-session-blind-review", [], {
-      fallbackChain: [EXPERIMENT_CONFIG.blindAudit.primaryModel,
-        EXPERIMENT_CONFIG.blindAudit.gatewayFallbackModel, EXPERIMENT_CONFIG.blindAudit.unavailableFallbackMode],
-      activationReason: EXPERIMENT_CONFIG.blindAudit.fallbackActivationReason,
-      externalSearchAllowed: false, apiCallUsed: false,
-      requireDecisionCommitAndPushBeforeDeblind: true,
-    }, EXPERIMENT_CONFIG.blindAudit.unavailableFallbackMode);
+    await selectBlindJudgeThroughOpenRouter(state);
     await completePreflight(state);
     return;
   }
@@ -612,6 +661,25 @@ async function runCell(cellId: string): Promise<void> {
       return arm === "gemini-native"
         ? readJson<Awaited<ReturnType<typeof runControlCell>>>(rawPath)
         : readJson<Awaited<ReturnType<typeof runProductCell>>>(rawPath);
+    }
+    const reuse = EXPERIMENT_CONFIG.reusedFrozenArms.find((item) =>
+      item.cellId === cell.cellId && item.arm === arm);
+    if (reuse) {
+      if (arm !== "gemini-native") throw new Error(`Unsupported frozen-arm reuse: ${armKey}`);
+      const source = await readJson<Omit<ControlCellResult, "raw">>(path.resolve(reuse.sourceArtifactPath));
+      if (source.cellId !== cell.cellId || source.arm !== arm
+        || source.requestedModel !== EXPERIMENT_CONFIG.arms["gemini-native"].model
+        || source.finalCandidates.length !== EXPERIMENT_CONFIG.sample.slotsPerArmPerCell) {
+        throw new Error(`Frozen-arm reuse validation failed for ${armKey}`);
+      }
+      const reused: ControlCellResult = { ...source, runId: state.runId, costEvents: [],
+        warnings: [...source.warnings, `Reused unchanged frozen control from ${reuse.sourceRunId}.`],
+        raw: { reusedFromRunId: reuse.sourceRunId, sourceArtifactPath: reuse.sourceArtifactPath } };
+      await writeJsonAtomic(rawPath, reused);
+      await writeJsonAtomic(path.join(artifactRunRoot(), `cells/${cell.cellId}/${arm}.json`),
+        publicControlResult(reused));
+      await enqueueStateWrite(() => { state.completedArmKeys.push(armKey); });
+      return reused;
     }
     const result = arm === "gemini-native"
       ? await runControlCell(cell, { onCostEvents }) : await runProductCell(cell, { onCostEvents });

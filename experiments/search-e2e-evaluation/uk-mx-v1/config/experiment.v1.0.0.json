@@ -1,6 +1,6 @@
 {
-  "experimentId": "search-e2e-eval-v1.0.15",
-  "runId": "2026-09-02-uk-mx-search-e2e-v1-15",
+  "experimentId": "search-e2e-eval-v1.1.0",
+  "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
   "status": "preregistered-pending-preflight",
   "objective": "Compare the current cold-start product end-to-end company-search workflow with an un-tuned Gemini Full baseline.",
   "arms": {
@@ -40,8 +40,17 @@
     "sourceSummaryPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-02-uk-mx-search-e2e-v1-10/runtime/run-summary.json",
     "sourceProductBudgetUsd": 0.5314864571588553,
     "sourceGeminiControlBudgetUsd": 0.17466425000000002,
-    "requiredChecks": ["kimi-intent", "local-rag", "discovery-gemini-full/google-grounded", "discovery-brave/brave", "discovery-searchapi/bing", "discovery-exa/exa", "discovery-gemini-product/google-grounded", "discovery-google-places/google-places", "discovery-searchapi/google", "tavily-evidence", "deepseek-score-only", "gemini-3.6-flash-structured-search"]
+    "requiredChecks": ["kimi-intent", "local-rag", "discovery-gemini-full/google-grounded", "discovery-brave/brave", "discovery-searchapi/bing", "discovery-exa/exa", "discovery-google-places/google-places", "discovery-searchapi/google", "tavily-evidence", "deepseek-score-only", "gemini-3.6-flash-structured-search"]
   },
+  "reusedFrozenArms": [
+    {
+      "cellId": "MX-retail",
+      "arm": "gemini-native",
+      "sourceRunId": "2026-09-02-uk-mx-search-e2e-v1-15",
+      "sourceArtifactPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-02-uk-mx-search-e2e-v1-15/cells/MX-retail/gemini-native.json",
+      "reason": "The control prompt, model and one-shot mechanism are unchanged; reuse prevents an unnecessary paid rerun."
+    }
+  ],
   "markets": [
     { "countryCode": "GB", "countryName": "United Kingdom", "primaryLanguage": "en", "supplementaryLanguages": [] },
     { "countryCode": "MX", "countryName": "Mexico", "primaryLanguage": "es", "supplementaryLanguages": ["en"] }
@@ -86,12 +95,12 @@
   },
   "blindAudit": {
     "primaryModel": "claude-opus-5",
-    "preflightOnlyFallbackModel": "claude-opus-4-8",
+    "preflightOnlyFallbackModel": "gpt-5.6-sol",
     "gatewayFallbackModel": "gpt-5.6-sol",
-    "gatewayFallbackProvider": "lingyu-openai-responses",
+    "gatewayFallbackProvider": "openrouter-openai-chat-completions",
     "unavailableFallbackMode": "codex-in-session",
-    "fallbackActivated": true,
-    "fallbackActivationReason": "Claude transport remained unavailable after bounded retries. A subsequent Lingyu gpt-5.6-sol Responses probe returned HTTP 403 insufficient_user_quota, so the user-authorized direct Codex conversation fallback is activated.",
+    "fallbackActivated": false,
+    "fallbackActivationReason": "Select Claude Opus 5 through OpenRouter first, then OpenAI gpt-5.6-sol through OpenRouter after bounded failure, then user-authorized Codex in this conversation if both gateway models are unavailable.",
     "requireDecisionCommitAndPushBeforeDeblind": true,
     "allowWebSearch": false,
     "initialSample": 32,
@@ -120,8 +129,8 @@
     "alsoReportAccountCashCost": true,
     "primaryCurrency": "USD",
     "secondaryCurrency": "CNY",
-    "priorProductPreflightAdjustmentUsd": 0.5336900130011205,
-    "priorGeminiControlAdjustmentUsd": 0.41836315,
+    "priorProductPreflightAdjustmentUsd": 0.857181411051939,
+    "priorGeminiControlAdjustmentUsd": 0.888839,
     "unknownUsageCallReserveUsd": 0.01,
     "initialForecastUsd": { "expected": 30, "upper": 60, "basis": "Conservative preregistration estimate before measured cells; replaced by cell run-rate after the first completed cell." }
   },
