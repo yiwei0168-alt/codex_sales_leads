@@ -2,6 +2,7 @@ import type { LeadSearchPlan } from "@/lib/assistant/types";
 import { planAssistantRequest } from "@/lib/assistant/intent-agent";
 import { LeadEvidenceCorrectionAgent } from "@/lib/leads/workflow/evidence-correction-agent";
 import { collectLeadEvidence } from "@/lib/leads/workflow/discovery";
+import { LeadDiscoveryGate } from "@/lib/leads/workflow/discovery-gate";
 import { createHybridDiscoverySession, executeHybridDiscovery } from "@/lib/leads/workflow/hybrid-discovery-executor";
 import { buildStandardLeadMarketPlaybook } from "@/lib/leads/workflow/playbook";
 import { LeadQualificationAgent } from "@/lib/leads/workflow/qualification-agent";
@@ -48,6 +49,12 @@ export interface ProductCellResult {
   plan: LeadSearchPlan;
   intent: { plannerModel: string; plannerSource: string; confidence: number; warnings: string[] };
   playbook: LeadMarketPlaybook;
+  treatmentModels: {
+    discoveryGateRoutine: string;
+    roleCorrectionRoutine: string;
+    qualificationRoutine: string;
+    materialEscalation: string;
+  };
   rawDiscoveryCount: number;
   discoveredCandidateCount: number;
   correctedCandidateCount: number;
@@ -190,10 +197,17 @@ export async function runProductCell(cell: ExperimentCell, options: {
     fallbackUsed: false, status: "completed", usage: {}, volume: volume(ragContext.length, 1, 1, 1) })]);
 
   const discoverySession = createHybridDiscoverySession();
+  const treatmentModels = EXPERIMENT_CONFIG.arms["product-e2e"].models;
+  const discoveryGate = new LeadDiscoveryGate(undefined, fetch,
+    { model: treatmentModels.discoveryGateRoutine });
   const correctionAgent = new LeadEvidenceCorrectionAgent(undefined, undefined, {
     allowReusableCorrections: false, persistCorrections: false,
+    routineModel: treatmentModels.roleCorrectionRoutine,
+    escalationModel: treatmentModels.materialEscalation,
   });
-  const qualificationAgent = new LeadQualificationAgent(undefined, { includeCooperationPaths: false, concurrency: 4 });
+  const qualificationAgent = new LeadQualificationAgent(undefined, { includeCooperationPaths: false, concurrency: 4,
+    routineModel: treatmentModels.qualificationRoutine,
+    escalationModel: treatmentModels.materialEscalation });
   const discoveryRounds: ProductCellResult["discoveryRounds"] = [];
   const discoveredRuns: unknown[] = [];
   const enrichedRuns: unknown[] = [];
@@ -215,7 +229,7 @@ export async function runProductCell(cell: ExperimentCell, options: {
     const discoveryStarted = new Date().toISOString();
     const discovered = await executeHybridDiscovery(`${EXPERIMENT_CONFIG.runId}-${cell.cellId}-product-r${round + 1}`,
       roundPlan, playbook, { queryRound: round, targetPoolOverride: plannedPool,
-        session: discoverySession });
+        session: discoverySession, gate: discoveryGate });
     const discoveryCompleted = new Date().toISOString();
     discoveredRuns.push(discovered);
     allDiscoveryCalls.push(...discovered.calls);
@@ -355,7 +369,7 @@ export async function runProductCell(cell: ExperimentCell, options: {
   return { schemaVersion: 1, runId: EXPERIMENT_CONFIG.runId, cellId: cell.cellId, arm: "product-e2e",
     startedAt, completedAt: new Date().toISOString(), wallClockMs: Date.now() - wallStarted, plan,
     intent: { plannerModel: intent.plannerModel, plannerSource: intent.plannerSource,
-      confidence: intent.confidence, warnings: intent.warnings }, playbook,
+      confidence: intent.confidence, warnings: intent.warnings }, playbook, treatmentModels,
     rawDiscoveryCount: allDiscoveryCalls.reduce((sum, call) => sum + call.rawResults, 0),
     discoveredCandidateCount: totalUnique, correctedCandidateCount: correctedByDomain.size,
     completedAssessmentCount: [...assessmentsByCandidate.values()]

@@ -11,6 +11,11 @@ import { createLeadAiProvider } from "@/providers/resilient-ai";
 import { ALL_CHANNEL_ROLES, type LeadEvidenceItem, type LeadWorkflowCandidate, type WorkflowModelUsage } from "./types";
 
 const PROMPT_VERSION = "lead-discovery-light-gate-v1.0.0";
+export const DEFAULT_DISCOVERY_GATE_MODEL = "deepseek-v4-flash";
+
+export function configuredDiscoveryGateModel(environment: NodeJS.ProcessEnv = process.env): string {
+  return environment.DEEPSEEK_DISCOVERY_GATE_MODEL?.trim() || DEFAULT_DISCOVERY_GATE_MODEL;
+}
 const signalSchema = z.enum(["supported", "not-supported", "unknown"]);
 const roleSchema = z.enum(ALL_CHANNEL_ROLES as [ChannelRole, ...ChannelRole[]]);
 const resultSchema = z.object({
@@ -143,7 +148,7 @@ export class LeadDiscoveryGate {
   private readonly concurrency: number;
   constructor(private readonly provider: AiProvider = createLeadAiProvider(), private readonly fetchImplementation: typeof fetch = fetch,
     options: { model?: string; batchSize?: number; concurrency?: number } = {}) {
-    this.model = options.model ?? process.env.DEEPSEEK_MODEL?.trim() ?? "deepseek-v4-flash";
+    this.model = options.model ?? configuredDiscoveryGateModel();
     this.batchSize = Math.max(1, Math.min(10, options.batchSize ?? 10));
     this.concurrency = Math.max(1, Math.min(8, options.concurrency ?? 4));
   }

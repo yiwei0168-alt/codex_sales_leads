@@ -57,6 +57,13 @@ export function validateExperimentConfig(): void {
     || config.blindAudit.primaryModel !== "claude-opus-5") {
     throw new Error("Frozen control or blind-judge model changed");
   }
+  const productModels = config.arms["product-e2e"].models;
+  if (productModels.discoveryGateRoutine !== "deepseek-v4-flash"
+    || productModels.roleCorrectionRoutine !== "deepseek-v4-flash"
+    || productModels.qualificationRoutine !== "deepseek-v4-flash"
+    || productModels.materialEscalation !== "deepseek-v4-pro") {
+    throw new Error("Frozen product-stage model bindings changed");
+  }
   if (config.blindAudit.gatewayFallbackModel !== "gpt-5.6-sol"
     || config.blindAudit.unavailableFallbackMode !== "codex-in-session"
     || config.blindAudit.fallbackActivated

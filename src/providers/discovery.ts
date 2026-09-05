@@ -117,6 +117,13 @@ async function requestJson<T>(provider: string, url: string, init: RequestInit, 
 }
 
 function boundedResults(value: number): number { return Math.max(1, Math.min(20, Math.round(value))); }
+
+function webQueryWithDomainExclusions(query: DiscoveryQuery): string {
+  const domains = [...new Set((query.excludeDomains ?? []).map((domain) => domain.trim().toLowerCase())
+    .filter((domain) => /^[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$/.test(domain)))];
+  const selected = domains.length <= 20 ? domains : [...domains.slice(0, 10), ...domains.slice(-10)];
+  return `${query.query} ${selected.map((domain) => `-site:${domain}`).join(" ")}`.trim();
+}
 function language(value: string): string { return value.toLowerCase().split(/[-_]/)[0] || "en"; }
 
 function publicUrls(value: unknown): string[] {
@@ -271,7 +278,7 @@ class BraveDiscoveryProvider extends BaseProvider implements DiscoveryProvider {
     const startedAt = Date.now();
     const { apiKey, baseUrl } = credentials(this.id);
     const url = new URL(trustedDiscoveryEndpoint(baseUrl, ["api.search.brave.com"], "web/search"));
-    url.search = new URLSearchParams({ q: query.query, country: query.countryCode,
+    url.search = new URLSearchParams({ q: webQueryWithDomainExclusions(query), country: query.countryCode,
       search_lang: language(query.languageCode), count: String(boundedResults(query.maxResults)) }).toString();
     const response = await requestJson<{ web?: { results?: Array<{ title?: string; url?: string; description?: string }> } }>(
       this.id, url.toString(), { headers: { "x-subscription-token": apiKey, accept: "application/json" } },
@@ -291,7 +298,7 @@ class SearchApiDiscoveryProvider extends BaseProvider implements DiscoveryProvid
     if (query.engine !== "google" && query.engine !== "bing") throw new Error(`SearchAPI engine ${query.engine} is unsupported`);
     const { apiKey, baseUrl } = credentials(this.id);
     const url = new URL(trustedDiscoveryEndpoint(baseUrl, ["www.searchapi.io"], "search"));
-    url.search = new URLSearchParams({ engine: query.engine, q: query.query, location: query.countryName,
+    url.search = new URLSearchParams({ engine: query.engine, q: webQueryWithDomainExclusions(query), location: query.countryName,
       gl: query.countryCode.toLowerCase(), hl: language(query.languageCode), num: String(boundedResults(query.maxResults)) }).toString();
     const response = await requestJson<{ organic_results?: Array<{ title?: string; link?: string; snippet?: string; position?: number }> }>(
       this.id, url.toString(), { headers: { authorization: `Bearer ${apiKey}`, accept: "application/json" } },

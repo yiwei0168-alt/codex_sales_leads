@@ -1,6 +1,6 @@
 # UK–Mexico formal search evaluation v1
 
-Current status (2026-09-05): v1.1.0 is preregistered pending its frozen tag and minimal OpenRouter blind-judge preflight. Frozen v1.0.15 artifacts and USD 1.7460204110519397 historical cost remain immutable. Its unchanged MX Retail Gemini control is reused without a second paid call; the product arm is rerun with the production target-completion, localized-track, failure-classification and current-run cache mechanisms. The v1.0.15 6/30 root-cause analysis remains in `analysis/MX-retail-underfill-v1.0.15.md`.
+Current status (2026-09-05): v1.1.1 is preregistered pending its frozen tag and zero-call inherited preflight. v1.1.0 was invalidated after MX Retail because mutable runtime configuration sent all routine DeepSeek stages to Pro; its actual USD 1.5705186596 cell cost and diagnostic output remain immutable. v1.1.1 explicitly freezes Flash routine models, connects planned candidate pools to provider result depth, shortens Places queries and excludes already-seen domains in later Brave/SearchAPI searches. Historical spend of USD 3.390149070637425 is fully carried. The unchanged v1.0.15 MX Retail Gemini control and v1.1.0 Codex blind-judge selection are reused without another paid call.
 
 This directory contains the preregistered protocol, frozen configuration, prompts, schemas, runtime checkpoints and final reports for Cudy's first formal end-to-end search evaluation.
 
@@ -41,7 +41,7 @@ Preflight checks, formal-arm stages, Gemini-only shared evaluation and every bli
 
 ## Version and Git policy
 
-- Experiment version: `search-e2e-eval-v1.1.0`
+- Experiment version: `search-e2e-eval-v1.1.1`
 - Working branch: `experiment/search-e2e-uk-mx-v1`
 - A preregistration tag is created before experimental calls.
 - Runtime checkpoints are committed after every completed country/category cell.

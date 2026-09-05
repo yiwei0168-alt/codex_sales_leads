@@ -50,6 +50,28 @@ describe("hybrid discovery executor", () => {
     expect(output.calls.filter((call) => call.status === "skipped").every((call) => call.paidSearchCredits === 0)).toBe(true);
   });
 
+  it("turns the adaptive target pool into wider provider requests", async () => {
+    const requested: number[] = [];
+    await executeHybridDiscovery("run-wide", { ...plan, countryCode: "MX", countryName: "Mexico",
+      queryLanguage: "es", roles: ["Retailer", "E-tailer"], targetCount: 30 }, playbook, {
+      gate: passGate, targetPoolOverride: 88,
+      providerFactory: (step) => ({ id: step.provider, search: async (query) => {
+        requested.push(query.maxResults);
+        return new FakeProvider(step.provider, null).search(query);
+      } }),
+    });
+    expect(new Set(requested)).toEqual(new Set([20]));
+  });
+
+  it("uses a compact commerce query for Google Places", async () => {
+    const output = await executeHybridDiscovery("run-places-query", { ...plan, countryCode: "MX",
+      countryName: "Mexico", queryLanguage: "es", roles: ["Retailer", "E-tailer"], targetCount: 30 },
+    playbook, { gate: passGate, providerFactory: (step) => new FakeProvider(step.provider, null) });
+    const places = output.calls.find((call) => call.route.provider === "google-places");
+    expect(places?.query.length).toBeLessThan(400);
+    expect(places?.query).not.toContain("excluir fabricante");
+  });
+
   it("does not count provider failures as no-value batches and continues with a complementary fallback", async () => {
     const output = await executeHybridDiscovery("run-fallback", { ...plan, targetCount: 20 }, playbook, {
       gate: passGate, concurrency: 2,
@@ -96,7 +118,7 @@ describe("hybrid discovery executor", () => {
     const factory = (step: HybridSearchRouteStep) => ({
       id: step.provider, search: async (query: DiscoveryQuery) => {
         providerCalls += 1;
-        return new FakeProvider(step.provider, "cached.example").search(query);
+        return new FakeProvider(step.provider, null).search(query);
       },
     });
     const first = await executeHybridDiscovery("cache-1", plan, playbook,
@@ -111,6 +133,21 @@ describe("hybrid discovery executor", () => {
       .every((call) => call.paidSearchCredits === 0 && call.inputTokens === 0 && call.outputTokens === 0)).toBe(true);
     expect(second.candidates).toHaveLength(0);
     expect(first.calls.some((call) => call.cacheStatus === "miss")).toBe(true);
+  });
+
+  it("does not reuse a response after exclusion inputs change", async () => {
+    const session = createHybridDiscoverySession();
+    let providerCalls = 0;
+    const factory = (step: HybridSearchRouteStep) => ({ id: step.provider, search: async (query: DiscoveryQuery) => {
+      providerCalls += 1;
+      return new FakeProvider(step.provider, "new-domain.example").search(query);
+    } });
+    await executeHybridDiscovery("cache-context-1", plan, playbook,
+      { gate: passGate, providerFactory: factory, session });
+    const firstCount = providerCalls;
+    await executeHybridDiscovery("cache-context-2", plan, playbook,
+      { gate: passGate, providerFactory: factory, session });
+    expect(providerCalls).toBeGreaterThan(firstCount);
   });
 
   it("uses only the OEM customer opportunity chain for an explicit OEM task", async () => {

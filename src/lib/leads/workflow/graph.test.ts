@@ -109,7 +109,7 @@ function discoveryMetric(newUniqueCompanies: number): NonNullable<DiscoveryResul
     route: { category: "distribution", track: "national", sequence: 0, provider: "gemini-full",
       engine: "google-grounded", mechanism: "planning-and-semantic-web-search", trigger: "core",
       invocationReason: "test" },
-    query: "test query", status: "completed", rawResults: 1, normalizedCompanies: 1,
+    query: "test query", status: "completed", requestedResults: 12, rawResults: 1, normalizedCompanies: 1,
     newUniqueCompanies, existingCompanyHits: 0, rejectedResults: 0, paidSearchCredits: 0,
     requestCount: 1, groundingQueries: 1, inputTokens: 1, outputTokens: 1, latencyMs: 1,
     retryCount: 0, fallbackUsed: false, cacheStatus: "miss", discardedReasonCounts: {}, items: [],

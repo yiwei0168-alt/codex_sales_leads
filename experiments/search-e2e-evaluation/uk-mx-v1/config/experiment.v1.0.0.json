@@ -1,6 +1,6 @@
 {
-  "experimentId": "search-e2e-eval-v1.1.0",
-  "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+  "experimentId": "search-e2e-eval-v1.1.1",
+  "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
   "status": "preregistered-pending-preflight",
   "objective": "Compare the current cold-start product end-to-end company-search workflow with an un-tuned Gemini Full baseline.",
   "arms": {
@@ -19,6 +19,12 @@
       "runtimePolicy": "config/lead-workflow/runtime-policy-v3.0.0.json",
       "costQualityPolicy": "config/lead-workflow/cost-quality-policy-v3.0.0.json",
       "scoringPolicy": "config/lead-scoring/policy-v2.0.0.json",
+      "models": {
+        "discoveryGateRoutine": "deepseek-v4-flash",
+        "roleCorrectionRoutine": "deepseek-v4-flash",
+        "qualificationRoutine": "deepseek-v4-flash",
+        "materialEscalation": "deepseek-v4-pro"
+      },
       "stopAfter": "ranked-scored-companies",
       "excludedOutputs": ["cooperation-paths", "development-strategy", "development-email", "contacts"]
     }
@@ -111,7 +117,14 @@
     "spearmanMinimum": 0.70,
     "maximumAbsoluteMeanBias": 5,
     "maximumMeanAbsoluteError": 8,
-    "citationAlignmentMinimum": 0.98
+    "citationAlignmentMinimum": 0.98,
+    "preflightReuse": {
+      "sourceExperimentId": "search-e2e-eval-v1.1.0",
+      "sourceRunId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "sourceReportPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-05-uk-mx-search-e2e-v1-1/preflight/preflight-report.json",
+      "selectedModel": "codex-in-session",
+      "sourceEvaluationBudgetUsd": 0.07361
+    }
   },
   "time": {
     "latencyIsWinGate": false,
@@ -129,10 +142,11 @@
     "alsoReportAccountCashCost": true,
     "primaryCurrency": "USD",
     "secondaryCurrency": "CNY",
-    "priorProductPreflightAdjustmentUsd": 0.857181411051939,
+    "priorProductPreflightAdjustmentUsd": 2.427700070637425,
     "priorGeminiControlAdjustmentUsd": 0.888839,
+    "priorEvaluationAdjustmentUsd": 0.07361,
     "unknownUsageCallReserveUsd": 0.01,
-    "initialForecastUsd": { "expected": 30, "upper": 60, "basis": "Conservative preregistration estimate before measured cells; replaced by cell run-rate after the first completed cell." }
+    "initialForecastUsd": { "expected": 30, "upper": 60, "basis": "Conservative preregistration estimate including all invalidated sunk cost; replaced by valid-cell run-rate after the first completed cell." }
   },
   "anomalyThresholds": {
     "duplicateRate": 0.70,

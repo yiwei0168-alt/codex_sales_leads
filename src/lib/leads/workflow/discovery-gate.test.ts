@@ -35,6 +35,14 @@ const fetchMock = vi.fn().mockImplementation(async () => new Response(homepage, 
   headers: { "content-type": "text/html" } }));
 
 describe("lightweight discovery gate", () => {
+  it("does not inherit a Pro model from the mutable global routine setting", async () => {
+    vi.stubEnv("DEEPSEEK_MODEL", "deepseek-v4-pro");
+    vi.stubEnv("DEEPSEEK_DISCOVERY_GATE_MODEL", "");
+    const provider = new FakeProvider();
+    await new LeadDiscoveryGate(provider, fetchMock).evaluate([candidate()]);
+    expect(provider.calls[0].modelVersion).toBe("deepseek-v4-flash");
+  });
+
   it("uses the routine Flash model and lets code compute pass", async () => {
     const provider = new FakeProvider();
     const result = await new LeadDiscoveryGate(provider, fetchMock, { model: "deepseek-v4-flash" }).evaluate([candidate()]);

@@ -1,6 +1,6 @@
 {
   "policyKey": "cudy-lead-workflow-cost-quality",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "status": "active",
   "objective": "Reduce model tokens by at least 40% and paid search/extract credits by at least 30% without weakening evidence, role, scoring, privacy or user-edit semantics.",
   "taskModes": {
@@ -61,6 +61,7 @@
   "modelRouting": {
     "intent": { "primary": "current-kimi-intent-model", "lightModelEvaluationAllowed": true, "deterministicFirst": false },
     "playbook": { "templateFirst": true, "lightKimiTemplateReviewRequired": true, "complexPlanner": "kimi-k3" },
+    "discoveryGate": { "routine": "DEEPSEEK_DISCOVERY_GATE_MODEL", "default": "deepseek-v4-flash", "escalation": "none" },
     "factAndRole": { "routine": "DEEPSEEK_MODEL", "default": "deepseek-v4-flash", "escalation": "DEEPSEEK_ESCALATION_MODEL", "escalationDefault": "deepseek-v4-pro" },
     "scoring": { "routine": "DEEPSEEK_MODEL", "default": "deepseek-v4-flash", "escalation": "DEEPSEEK_ESCALATION_MODEL", "escalationDefault": "deepseek-v4-pro" },
     "strategyAndEmail": { "primary": "current-kimi-outreach-model", "onDemandOnly": true },

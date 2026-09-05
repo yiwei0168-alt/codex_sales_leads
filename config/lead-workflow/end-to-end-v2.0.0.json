@@ -1,6 +1,6 @@
 {
   "workflowKey": "cudy-sales-lead-end-to-end",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "status": "active",
   "scope": "From the user's natural-language market-development request and workspace context to ranked companies, editable cooperation paths, development strategy, outreach email, and private-memory learning from user edits.",
   "principles": [
@@ -39,7 +39,7 @@
     {
       "stages": ["04-discovery"],
       "purpose": "Lightweight candidate existence, relevance and category gate",
-      "defaultModel": "DEEPSEEK_MODEL; default deepseek-v4-flash",
+      "defaultModel": "DEEPSEEK_DISCOVERY_GATE_MODEL; fixed default deepseek-v4-flash and never inherits a Pro global routine setting",
       "escalationOrFallback": "Same-tier resilient provider fallback; unavailable batches are held for downstream evidence, never upgraded to Pro",
       "callPolicy": "Batches of up to 10 after direct lightweight homepage fetch; compact semantic signals only, with deterministic pass/hold/reject"
     },

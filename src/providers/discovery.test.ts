@@ -42,10 +42,27 @@ describe("production discovery providers", () => {
       { position: 1, title: "Example", link: "https://example.de", snippet: "Networking" },
     ] }), { status: 200 }));
     await createDiscoveryProvider("searchapi", { fetchImplementation: fetchMock, maxAttempts: 1 })
-      .search({ ...baseQuery, engine: "bing" });
+      .search({ ...baseQuery, engine: "bing", excludeDomains: ["seen.example", "duplicate.example"] });
     const url = new URL(fetchMock.mock.calls[0][0] as string);
     expect(url.searchParams.get("engine")).toBe("bing");
+    expect(url.searchParams.get("q")).toContain("-site:seen.example");
+    expect(url.searchParams.get("q")).toContain("-site:duplicate.example");
     expect(url.searchParams.has("api_key")).toBe(false);
+  });
+
+  it("passes bounded safe domain exclusions to Brave without credentials in the URL", async () => {
+    configured("brave");
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({ web: { results: [] } }), { status: 200 }));
+    await createDiscoveryProvider("brave", { fetchImplementation: fetchMock, maxAttempts: 1 }).search({
+      ...baseQuery, engine: "brave", excludeDomains: ["seen.example", "bad domain", ...Array.from({ length: 25 },
+        (_, index) => `company-${index}.example`)],
+    });
+    const url = new URL(fetchMock.mock.calls[0][0] as string);
+    const query = url.searchParams.get("q") ?? "";
+    expect(query).toContain("-site:seen.example");
+    expect(query).not.toContain("bad domain");
+    expect((query.match(/-site:/g) ?? [])).toHaveLength(20);
+    expect(url.searchParams.has("subscription_token")).toBe(false);
   });
 
   it("returns Place ID and website while keeping map-only candidates resolvable", async () => {

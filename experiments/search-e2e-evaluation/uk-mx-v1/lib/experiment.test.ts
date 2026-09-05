@@ -36,6 +36,7 @@ describe("formal experiment intent normalization", () => {
     expect(EXPERIMENT_CONFIG.preflightReuse.sourceGeminiControlBudgetUsd)
       .toBeLessThanOrEqual(EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd);
     expect(EXPERIMENT_CONFIG.cost.priorProductPreflightAdjustmentUsd
-      + EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd).toBeCloseTo(1.7460204110519397, 12);
+      + EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd
+      + EXPERIMENT_CONFIG.cost.priorEvaluationAdjustmentUsd).toBeCloseTo(3.390149070637425, 12);
   });
 });

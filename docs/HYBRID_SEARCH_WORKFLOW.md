@@ -1,7 +1,7 @@
 # Hybrid Lead Search Workflow
 
 Status: active
-Current policy: `cudy-hybrid-lead-search` v1.1.0
+Current policy: `cudy-hybrid-lead-search` v1.2.0
 Scope: user request through final valid, primary-role-correct candidate set. Tavily evidence acquisition, scoring and downstream outreach are connected consumers, not additional discovery engines.
 
 ## End-to-end flow
@@ -38,6 +38,8 @@ remaining valid slots / max(0.25, min(0.80, observed yield * 0.80))
 
 The result is planning capacity, not an early-stop substitute. A task ends when the target is met, two completed search rounds add no final valid companies, all required providers are unavailable, or the five-round safety bound is reached. Every shortage is explicit.
 
+Planning capacity also controls request breadth. The executor divides the current pool target across active tracks and requests 12–20 results per provider call. Brave and SearchAPI queries include at most 20 safe `-site:` exclusions, split between the earliest and most recently seen domains, so a later localized round does not keep paying for the same top results.
+
 The formal-evaluation harness and production LangGraph import the same target-completion policy. Production executes discovery, evidence, role correction and in-role scoring per round; corrected off-category companies remain available in the candidate library but do not consume scoring-model calls for the current request.
 
 ## Provider failure and fallback
@@ -62,11 +64,13 @@ Mature markets begin with national/E-tail coverage and open the local track afte
 
 Spanish queries use local commercial language, retail checkout signals and major-city rotation. English markets also rotate commercial cities and product/task-family focus. Equivalent queries are grouped by query-cluster key; tools using the same mechanism are not repeated without a documented incremental capability.
 
+Google Places receives a compact category + city + market query rather than the longer Web-search exclusion prompt. Its candidates remain recall-only until evidence and role correction verify the business.
+
 ## Cache and downstream reuse
 
 The first execution creates:
 
-- a task-scoped call fingerprint and query-cluster record;
+- a task-scoped call fingerprint over provider, query, requested depth and domain-exclusion context, plus a broader query-cluster record;
 - a real-time company/domain/place registry;
 - search-result provenance and duplicate/assisted-discovery records;
 - immutable evidence IDs and content hashes;
@@ -84,6 +88,16 @@ Shared public evidence and role facts live under `public_evidence`. User/workspa
 Every route and stage records input count, raw output, normalized output, new unique companies, downstream-used output, cost, tokens/credits, latency, attempts, retries, cache state, failure class, duplicate/discard reasons and final in-role contribution. Optimization uses final-candidate contribution and cost, not provider rank.
 
 ## Version history
+
+### v1.2.0 — 2026-09-05
+
+- Isolated the discovery gate from mutable global model configuration; its production default and frozen experiment model are `deepseek-v4-flash`, with no Pro escalation.
+- Froze routine role correction and score-only qualification to Flash for the formal experiment; Pro remains material-trigger-only.
+- Connected adaptive candidate-pool size to provider request breadth up to 20 results.
+- Added bounded prior-domain exclusions to Brave and SearchAPI queries.
+- Replaced verbose Google Places prompts with compact local-commerce queries.
+- Added requested-result volume to every discovery call's telemetry.
+- Added request depth and exclusion-context hashes to the call cache key so broader follow-up searches cannot reuse a narrower stale response.
 
 ### v1.1.0 first formal cell — invalidated diagnostic
 

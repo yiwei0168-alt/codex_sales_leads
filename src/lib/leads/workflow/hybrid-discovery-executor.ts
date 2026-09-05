@@ -19,6 +19,7 @@ export interface HybridSearchCallTelemetry {
   route: HybridSearchRouteStep;
   query: string;
   status: "completed" | "failed" | "skipped";
+  requestedResults: number;
   rawResults: number;
   normalizedCompanies: number;
   newUniqueCompanies: number;
@@ -155,6 +156,9 @@ function queryForStep(plan: ReturnType<typeof normalizeLeadSearchPlan>, playbook
   const language = plan.queryLanguage.toLowerCase().split(/[-_]/)[0];
   const focusOptions = roundFocusByLanguage[language]?.[step.category] ?? [];
   const roundFocus = focusOptions.length > 0 ? focusOptions[queryRound % focusOptions.length] : "";
+  if (step.provider === "google-places") {
+    return `${templates[0]} ${roundFocus} ${plan.countryName}`.replace(/\s+/g, " ").trim().slice(0, 400);
+  }
   const retailBoundary = step.category === "retail"
     ? language === "es"
       ? "venta minorista real con precio carrito inventario entrega o sucursales; excluir fabricante sitio oficial de marca mayorista directorio y vendedor particular de marketplace"
@@ -179,9 +183,10 @@ function queryClusterKey(plan: ReturnType<typeof normalizeLeadSearchPlan>, step:
 }
 
 function callFingerprint(plan: ReturnType<typeof normalizeLeadSearchPlan>, step: HybridSearchRouteStep,
-  query: string): string {
+  query: string, requestedResults: number, excludeDomains: string[]): string {
   return hash([ACTIVE_HYBRID_SEARCH_POLICY.version, plan.countryCode, plan.queryLanguage, step.category,
-    step.track, step.provider, step.engine, step.mechanism, normalizedQuery(query)].join("|"));
+    step.track, step.provider, step.engine, step.mechanism, normalizedQuery(query), requestedResults,
+    hash([...excludeDomains].sort().join("|"))].join("|"));
 }
 
 function failureDetails(error: unknown): { kind: DiscoveryFailureKind; attempts: number;
@@ -259,6 +264,9 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
   const defaultTargetPool = Math.max(plan.targetCount + 5,
     Math.ceil(plan.targetCount * ACTIVE_HYBRID_SEARCH_POLICY.initialCandidateMultiplier));
   const targetPool = Math.min(150, Math.max(1, Math.ceil(options.targetPoolOverride ?? defaultTargetPool)));
+  const trackCount = Math.max(1, new Set(route.map((step) => `${step.category}/${step.track}`)).size);
+  const requestedResults = Math.min(ACTIVE_HYBRID_SEARCH_POLICY.maxBatchSize,
+    Math.max(ACTIVE_HYBRID_SEARCH_POLICY.defaultBatchSize, Math.ceil(targetPool / trackCount)));
   const queryRound = Math.max(0, Math.floor(options.queryRound ?? 0));
   const session = options.session ?? createHybridDiscoverySession();
   for (const domain of options.initialExcludeDomains ?? []) {
@@ -284,7 +292,8 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
       const decision = shouldRun(step, plan, qualityCount(), targetPool, noValueByTrack.get(trackKey) ?? 0);
       const searchQuery = queryForStep(plan, playbook, step, queryRound);
       const callKey = `${trackKey}/${sequence}/${step.provider}/${step.engine}`;
-      const fingerprint = callFingerprint(plan, step, searchQuery);
+      const excludeDomains = [...new Set([...session.excludedDomains, ...registry.domains()])];
+      const fingerprint = callFingerprint(plan, step, searchQuery, requestedResults, excludeDomains);
       const clusterKey = queryClusterKey(plan, step, searchQuery);
       const routeCircuitKey = `${step.provider}/${step.engine}`;
       const circuitReason = session.providerCircuits.get(step.provider) ?? session.routeCircuits.get(routeCircuitKey);
@@ -293,7 +302,7 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
       if (circuitReason || failedCache) {
         const skipped: HybridSearchCallTelemetry = { callKey, callFingerprint: fingerprint,
           queryClusterKey: clusterKey, route: step, query: searchQuery, status: "skipped",
-          rawResults: 0, normalizedCompanies: 0, newUniqueCompanies: 0, existingCompanyHits: 0, rejectedResults: 0,
+          requestedResults, rawResults: 0, normalizedCompanies: 0, newUniqueCompanies: 0, existingCompanyHits: 0, rejectedResults: 0,
           paidSearchCredits: 0, requestCount: 0, groundingQueries: 0, inputTokens: 0, outputTokens: 0,
           latencyMs: 0, retryCount: 0, fallbackUsed: failedByTrack.has(trackKey),
           cacheStatus: failedCache ? "failed-hit" : "skipped",
@@ -304,7 +313,7 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
       if (!decision.run) {
         const skipped: HybridSearchCallTelemetry = { callKey, callFingerprint: fingerprint,
           queryClusterKey: clusterKey, route: step, query: searchQuery, status: "skipped",
-          rawResults: 0, normalizedCompanies: 0, newUniqueCompanies: 0, existingCompanyHits: 0, rejectedResults: 0,
+          requestedResults, rawResults: 0, normalizedCompanies: 0, newUniqueCompanies: 0, existingCompanyHits: 0, rejectedResults: 0,
           paidSearchCredits: 0, requestCount: 0, groundingQueries: 0,
           inputTokens: 0, outputTokens: 0, latencyMs: 0, retryCount: 0,
           fallbackUsed: false, cacheStatus: "skipped",
@@ -312,9 +321,9 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
         calls.push(skipped); await options.onCall?.(skipped); return;
       }
       const query: DiscoveryQuery = { query: searchQuery, countryCode: plan.countryCode, countryName: plan.countryName,
-        languageCode: plan.queryLanguage, maxResults: ACTIVE_HYBRID_SEARCH_POLICY.defaultBatchSize,
+        languageCode: plan.queryLanguage, maxResults: requestedResults,
         category: step.category, track: step.track, engine: step.engine, mechanism: step.mechanism,
-        excludeDomains: [...new Set([...session.excludedDomains, ...registry.domains()])] };
+        excludeDomains };
       try {
         const response = cached ?? await providerFactory(step).search(query, AbortSignal.timeout(150_000));
         if (!cached) session.completedCalls.set(fingerprint, response);
@@ -345,7 +354,7 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
         noValueByTrack.set(trackKey, newUniqueCompanies === 0 ? (noValueByTrack.get(trackKey) ?? 0) + 1 : 0);
         const completed: HybridSearchCallTelemetry = { callKey, callFingerprint: fingerprint,
           queryClusterKey: clusterKey, route: step, query: searchQuery, status: "completed",
-          rawResults: response.items.length, normalizedCompanies, newUniqueCompanies, existingCompanyHits,
+          requestedResults, rawResults: response.items.length, normalizedCompanies, newUniqueCompanies, existingCompanyHits,
           rejectedResults: response.items.length - normalizedCompanies,
           paidSearchCredits: cached ? 0 : response.usage.paidSearchCredits,
           requestCount: cached ? 0 : response.requestCount,
@@ -370,7 +379,7 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
         }
         const failed: HybridSearchCallTelemetry = { callKey, callFingerprint: fingerprint,
           queryClusterKey: clusterKey, route: step, query: searchQuery, status: "failed",
-          rawResults: 0, normalizedCompanies: 0, newUniqueCompanies: 0, existingCompanyHits: 0, rejectedResults: 0,
+          requestedResults, rawResults: 0, normalizedCompanies: 0, newUniqueCompanies: 0, existingCompanyHits: 0, rejectedResults: 0,
           paidSearchCredits: 0, groundingQueries: 0, inputTokens: 0, outputTokens: 0, latencyMs: details.latencyMs,
           requestCount: details.attempts, retryCount: Math.max(0, details.attempts - 1),
           fallbackUsed: false, cacheStatus: "miss", failureClass: details.kind,

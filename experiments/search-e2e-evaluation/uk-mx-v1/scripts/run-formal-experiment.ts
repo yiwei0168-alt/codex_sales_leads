@@ -7,6 +7,7 @@ import nextEnv from "@next/env";
 
 import { planAssistantRequest } from "@/lib/assistant/intent-agent";
 import type { LeadSearchPlan } from "@/lib/assistant/types";
+import { configuredDiscoveryGateModel } from "@/lib/leads/workflow/discovery-gate";
 import { buildHybridSearchRoute } from "@/lib/leads/workflow/hybrid-search-policy";
 import { LeadQualificationAgent } from "@/lib/leads/workflow/qualification-agent";
 import { retrieveLeadRagContext } from "@/lib/leads/workflow/rag-context";
@@ -37,7 +38,7 @@ import { buildControlUniqueGroups, buildProductRecordIndex, evaluateControlUniqu
 nextEnv.loadEnvConfig(process.cwd());
 const rateCard = rateCardJson as ExperimentRateCard;
 const experimentRoot = path.resolve("experiments/search-e2e-evaluation/uk-mx-v1");
-const frozenTag = "search-e2e-eval-v1.1.0-frozen";
+const frozenTag = "search-e2e-eval-v1.1.1-frozen";
 
 const frozenFiles = [
   "PROTOCOL.md", "README.md", "config/experiment.v1.0.0.json", "config/gemini-control-prompt.md",
@@ -74,6 +75,9 @@ const frozenFiles = [
   "../../../src/providers/tavily.ts", "../../../src/lib/rag/openai-provider.ts",
   "artifacts/runs/2026-09-02-uk-mx-search-e2e-v1-10/runtime/run-summary.json",
   "artifacts/runs/2026-09-02-uk-mx-search-e2e-v1-15/cells/MX-retail/gemini-native.json",
+  "artifacts/runs/2026-09-05-uk-mx-search-e2e-v1-1/preflight/preflight-report.json",
+  "artifacts/runs/2026-09-05-uk-mx-search-e2e-v1-1/runtime/run-summary.json",
+  "artifacts/runs/2026-09-05-uk-mx-search-e2e-v1-1/analysis/invalidation.json",
 ] as const;
 
 function sha256(value: string | Buffer): string {
@@ -281,8 +285,8 @@ async function runPreflight(): Promise<void> {
   missing.push(...discoveryStatus.filter((item) => !item.configured).map((item) => item.apiKeyEnv));
   if (missing.length > 0) throw new Error(`Preflight missing required environment variables: ${[...new Set(missing)].join(", ")}`);
 
-  if (!hasPreflightCheck(state, "prior-before-v1.1.0-adjustment")) {
-    const productAdjustmentBase = preflightEvent({ eventId: "preflight:prior-product-before-v1.1.0", runId: state.runId,
+  if (!hasPreflightCheck(state, "prior-before-v1.1.1-adjustment")) {
+    const productAdjustmentBase = preflightEvent({ eventId: "preflight:prior-product-before-v1.1.1", runId: state.runId,
       ledger: "product-e2e-arm", arm: "product-e2e", stage: "prior-preflight-adjustment",
       provider: "mixed-product-preflight", startedAt: state.createdAt, completedAt: state.createdAt,
       latencyMs: 0, attempts: 51, retries: 8, fallbackUsed: false, status: "completed", usage: {},
@@ -290,12 +294,12 @@ async function runPreflight(): Promise<void> {
       volume: { inputItems: 47, rawOutputItems: 51, validOutputItems: 45, downstreamUsedItems: 21,
         discardedReasonCounts: { timeout: 1, schemaInvalid: 4, fallback: 1, semanticGateFailure: 6,
           transportFailure: 2 } },
-      notes: ["Exact product-ledger carry-forward through frozen v1.0.15, including its MX Retail product arm."] });
+      notes: ["Exact product-ledger carry-forward through invalidated v1.1.0, including its MX Retail diagnostic product arm."] });
     const productAdjustment = { ...productAdjustmentBase, accountCashCostUsd: undefined,
       officialListPriceUsd: EXPERIMENT_CONFIG.cost.priorProductPreflightAdjustmentUsd,
       budgetCostUsd: EXPERIMENT_CONFIG.cost.priorProductPreflightAdjustmentUsd,
       cashCostBasis: "official-conservative" as const };
-    const controlAdjustmentBase = preflightEvent({ eventId: "preflight:prior-gemini-control-before-v1.1.0",
+    const controlAdjustmentBase = preflightEvent({ eventId: "preflight:prior-gemini-control-before-v1.1.1",
       runId: state.runId, ledger: "gemini-native-arm", arm: "gemini-native", stage: "prior-preflight-adjustment",
       provider: "gemini-full", requestedModel: "gemini-3.6-flash", actualModel: "gemini-3.6-flash",
       startedAt: state.createdAt, completedAt: state.createdAt, latencyMs: 0, attempts: 3, retries: 0,
@@ -303,15 +307,43 @@ async function runPreflight(): Promise<void> {
       accountCashCostUsd: EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd,
       volume: { inputItems: 6, rawOutputItems: 35, validOutputItems: 34, downstreamUsedItems: 32,
         discardedReasonCounts: { schemaInvalid: 1, usageNotCheckpointed: 1, invalidRequest: 1 } },
-      notes: ["Exact Gemini-ledger carry-forward through frozen v1.0.15; the unchanged MX Retail control arm is reused without a second charge."] });
+      notes: ["Exact Gemini-ledger carry-forward through invalidated v1.1.0; the unchanged MX Retail control arm is reused without a second charge."] });
     const controlAdjustment = { ...controlAdjustmentBase, accountCashCostUsd: undefined,
       officialListPriceUsd: EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd,
       budgetCostUsd: EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd,
       cashCostBasis: "official-conservative" as const };
-    await checkpointPreflight(state, "prior-before-v1.1.0-adjustment",
-      [productAdjustment, controlAdjustment],
+    const evaluationAdjustmentBase = preflightEvent({ eventId: "preflight:prior-evaluation-before-v1.1.1",
+      runId: state.runId, ledger: "evaluation-overhead", arm: "shared-evaluation",
+      stage: "prior-preflight-adjustment", provider: "openrouter", startedAt: state.createdAt,
+      completedAt: state.createdAt, latencyMs: 0, attempts: 2, retries: 0, fallbackUsed: true,
+      status: "failed", usage: {}, accountCashCostUsd: EXPERIMENT_CONFIG.cost.priorEvaluationAdjustmentUsd,
+      volume: { inputItems: 2, rawOutputItems: 1, validOutputItems: 0, downstreamUsedItems: 0,
+        discardedReasonCounts: { schemaInvalid: 1, unsupportedParameters: 1 } },
+      notes: ["Carries the v1.1.0 Claude/OpenAI blind-judge preflight; selected Codex in-session is reused without another gateway call."] });
+    const evaluationAdjustment = { ...evaluationAdjustmentBase, accountCashCostUsd: undefined,
+      officialListPriceUsd: EXPERIMENT_CONFIG.cost.priorEvaluationAdjustmentUsd,
+      budgetCostUsd: EXPERIMENT_CONFIG.cost.priorEvaluationAdjustmentUsd,
+      cashCostBasis: "official-conservative" as const };
+    await checkpointPreflight(state, "prior-before-v1.1.1-adjustment",
+      [productAdjustment, controlAdjustment, evaluationAdjustment],
       { productUsd: EXPERIMENT_CONFIG.cost.priorProductPreflightAdjustmentUsd,
-        geminiControlUsd: EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd });
+        geminiControlUsd: EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd,
+        evaluationUsd: EXPERIMENT_CONFIG.cost.priorEvaluationAdjustmentUsd });
+  }
+
+  if (!hasPreflightCheck(state, "frozen-treatment-model-bindings")) {
+    const models = EXPERIMENT_CONFIG.arms["product-e2e"].models;
+    const productionGateModel = configuredDiscoveryGateModel();
+    if (models.discoveryGateRoutine !== "deepseek-v4-flash"
+      || models.roleCorrectionRoutine !== "deepseek-v4-flash"
+      || models.qualificationRoutine !== "deepseek-v4-flash"
+      || models.materialEscalation !== "deepseek-v4-pro"
+      || productionGateModel !== "deepseek-v4-flash") {
+      throw new Error(`Treatment model binding preflight failed: ${JSON.stringify({ models, productionGateModel })}`);
+    }
+    await checkpointPreflight(state, "frozen-treatment-model-bindings", [], {
+      ...models, productionGateModel, globalRoutineModelIgnoredByDiscoveryGate: true,
+    });
   }
 
   if (EXPERIMENT_CONFIG.preflightReuse.requiredChecks.length > 0) {
@@ -340,7 +372,26 @@ async function runPreflight(): Promise<void> {
       sourceExperimentId: source.experimentId, sourceRunId: source.runId,
       checks: reuse.requiredChecks, productUsd: sourceProductUsd, geminiControlUsd: sourceControlUsd,
     });
-    await selectBlindJudgeThroughOpenRouter(state);
+    const blindReuse = EXPERIMENT_CONFIG.blindAudit.preflightReuse;
+    if (blindReuse.sourceRunId) {
+      const blindSource = await readJson<{ runId: string; chosenBlindJudgeModel: string;
+        cost: { byLedger: Record<string, number> } }>(path.resolve(blindReuse.sourceReportPath));
+      if (blindSource.runId !== blindReuse.sourceRunId
+        || blindSource.chosenBlindJudgeModel !== blindReuse.selectedModel
+        || Math.abs((blindSource.cost.byLedger["evaluation-overhead"] ?? 0)
+          - blindReuse.sourceEvaluationBudgetUsd) > 0.000001) {
+        throw new Error("Inherited blind-judge preflight identity, selected model or cost mismatch");
+      }
+      await checkpointPreflight(state, "inherited-blind-judge-preflight", [], {
+        sourceExperimentId: blindReuse.sourceExperimentId,
+        sourceRunId: blindReuse.sourceRunId,
+        selectedModel: blindReuse.selectedModel,
+        evaluationUsd: blindReuse.sourceEvaluationBudgetUsd,
+        gatewayCallsRepeated: 0,
+      }, blindReuse.selectedModel);
+    } else {
+      await selectBlindJudgeThroughOpenRouter(state);
+    }
     await completePreflight(state);
     return;
   }
