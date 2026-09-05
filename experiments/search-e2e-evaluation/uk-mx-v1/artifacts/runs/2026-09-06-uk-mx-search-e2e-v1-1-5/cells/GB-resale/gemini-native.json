@@ -1,0 +1,389 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-06-uk-mx-search-e2e-v1-1-5",
+  "cellId": "GB-resale",
+  "arm": "gemini-native",
+  "startedAt": "2026-09-05T20:10:04.973Z",
+  "completedAt": "2026-09-05T20:10:41.521Z",
+  "wallClockMs": 36548,
+  "requestedModel": "gemini-3.6-flash",
+  "actualModel": "gemini-3.6-flash",
+  "searchQueries": 8,
+  "finalCandidates": [
+    {
+      "rank": 1,
+      "companyName": "Broadbandbuyer (Essence Retail Ltd)",
+      "officialWebsite": "https://www.broadbandbuyer.com",
+      "marketSignal": "Headquartered in Sheffield, UK, operating as a leading UK B2B supplier and reseller of networking equipment.",
+      "roleSignal": "B2B IT and networking reseller providing pre-configuration, technical pre-sales advice, and hardware supply to business customers.",
+      "relevanceSignal": "Directly sells SMB and consumer networking hardware, switches, Wi-Fi access points, and routers from brands like TP-Link, DrayTek, and Ubiquiti.",
+      "evidenceUrls": [
+        "https://www.broadbandbuyer.com"
+      ]
+    },
+    {
+      "rank": 2,
+      "companyName": "LinITX (LinITX.com Ltd)",
+      "officialWebsite": "https://linitx.com",
+      "marketSignal": "UK-based networking equipment reseller and distributor operating from Needham Market, Suffolk.",
+      "roleSignal": "Value-added reseller providing wireless, routing, and switching equipment alongside technical support and pre-configuration.",
+      "relevanceSignal": "Supplies affordable SMB wireless routers, switches, and access points matching Cudy's target customer segment.",
+      "evidenceUrls": [
+        "https://linitx.com"
+      ]
+    },
+    {
+      "rank": 3,
+      "companyName": "4Gon Solutions",
+      "officialWebsite": "https://www.4gon.co.uk",
+      "marketSignal": "UK operating reseller and trade supplier of wireless networking hardware located in Essex, UK.",
+      "roleSignal": "Specialised wireless networking VAR delivering pre-sales design, technical support, and hardware trade accounts for business buyers.",
+      "relevanceSignal": "Resells Wi-Fi routers, access points, PoE switches, and 4G/5G hardware to installer and SMB client bases.",
+      "evidenceUrls": [
+        "https://www.4gon.co.uk/gb/wp-content/uploads/2020/10/InstallersSideImage.jpg"
+      ]
+    },
+    {
+      "rank": 4,
+      "companyName": "Solwise Ltd",
+      "officialWebsite": "https://www.solwise.co.uk",
+      "marketSignal": "UK-based networking supplier based in Hessle, East Yorkshire, serving UK businesses and trade clients.",
+      "roleSignal": "Value-added reseller and hardware supplier specialising in home/SMB networking, Wi-Fi, and broadband equipment.",
+      "relevanceSignal": "Offers cost-effective routers, Ethernet/PoE switches, mesh Wi-Fi, and outdoor wireless bridging solutions.",
+      "evidenceUrls": [
+        "https://www.solwise.co.uk/sites/default/files/2024-08/TL-TSW210-7.png"
+      ]
+    },
+    {
+      "rank": 5,
+      "companyName": "Comms Express Ltd",
+      "officialWebsite": "https://www.commsexpress.com",
+      "marketSignal": "Based in Essex, UK, serving business customers across the United Kingdom.",
+      "roleSignal": "B2B reseller of network infrastructure, active networking devices, and structured cabling.",
+      "relevanceSignal": "Distributes and resells switches, routers, access points, and networking accessories to UK businesses and installers.",
+      "evidenceUrls": [
+        "https://www.commsexpress.com"
+      ]
+    },
+    {
+      "rank": 6,
+      "companyName": "Softcat plc",
+      "officialWebsite": "https://www.softcat.com",
+      "marketSignal": "Headquartered in Marlow, UK, operating across multiple UK regional offices.",
+      "roleSignal": "Leading UK value-added reseller providing full procurement, solution architecture, and ongoing IT support.",
+      "relevanceSignal": "Procures and deploys mid-market and SMB network switches, routers, and wireless infrastructure.",
+      "evidenceUrls": [
+        "https://www.softcat.com"
+      ]
+    },
+    {
+      "rank": 7,
+      "companyName": "Probrand Ltd",
+      "officialWebsite": "https://www.probrand.co.uk",
+      "marketSignal": "UK corporate headquarters in Birmingham, serving business, education, and public sectors across the UK.",
+      "roleSignal": "B2B IT hardware reseller and VAR providing IT solution procurement, staging, and technical deployment.",
+      "relevanceSignal": "Sells competitive networking hardware families including switches, access points, and VPN routers for SMB environments.",
+      "evidenceUrls": [
+        "https://www.probrand.co.uk"
+      ]
+    },
+    {
+      "rank": 8,
+      "companyName": "Insight Direct (UK) Ltd",
+      "officialWebsite": "https://uk.insight.com",
+      "marketSignal": "UK division headquartered in Sheffield, supplying UK enterprise and business clients.",
+      "roleSignal": "Global technology solutions reseller providing hardware sales, multi-vendor integration, and advice.",
+      "relevanceSignal": "Maintains an extensive catalog of active networking hardware, routers, PoE switches, and wireless access points.",
+      "evidenceUrls": [
+        "https://uk.insight.com"
+      ]
+    },
+    {
+      "rank": 9,
+      "companyName": "CCS Media Ltd",
+      "officialWebsite": "https://www.ccsmedia.com",
+      "marketSignal": "Headquartered in Chesterfield with nationwide sales offices across the UK.",
+      "roleSignal": "Established value-added reseller supplying IT infrastructure, network design, and deployment services.",
+      "relevanceSignal": "Supplies SMB and commercial customers with network connectivity hardware, switches, and wireless gear.",
+      "evidenceUrls": [
+        "https://www.ccsmedia.com"
+      ]
+    },
+    {
+      "rank": 10,
+      "companyName": "Bechtle Direct UK",
+      "officialWebsite": "https://www.bechtle.com/uk",
+      "marketSignal": "UK branch based in Chippenham, Wiltshire, serving UK business accounts.",
+      "roleSignal": "Value-added reseller providing IT hardware procurement, configuration, and IT infrastructure services.",
+      "relevanceSignal": "Resells active network devices including switches, routers, Wi-Fi 6 APs, and accessories.",
+      "evidenceUrls": [
+        "https://www.bechtle.com/uk"
+      ]
+    },
+    {
+      "rank": 11,
+      "companyName": "Network Warehouse",
+      "officialWebsite": "https://networkwarehouse.co.uk",
+      "marketSignal": "UK based networking supplier serving businesses nationwide.",
+      "roleSignal": "Network hardware reseller offering pre-sales consulting and hardware supply for routers, switches, and access points.",
+      "relevanceSignal": "Sells accessible networking solutions from brands like TP-Link, DrayTek, Ubiquiti, and Netgear.",
+      "evidenceUrls": [
+        "https://networkwarehouse.co.uk/cdn/shop/files/New_Top_Banners-03.webp?v=1781172275"
+      ]
+    },
+    {
+      "rank": 12,
+      "companyName": "Millgate Ltd",
+      "officialWebsite": "https://www.millgate.co.uk",
+      "marketSignal": "Based in Sheffield, UK, operating as a nationwide IT and telecoms reseller.",
+      "roleSignal": "Value-added reseller providing IT procurement, pre-configuration, and networking installation services.",
+      "relevanceSignal": "Supplies SMB, hospitality, and education clients with wireless networks, switches, and routers.",
+      "evidenceUrls": [
+        "https://www.millgate.co.uk"
+      ]
+    },
+    {
+      "rank": 13,
+      "companyName": "Transparent Communications Ltd",
+      "officialWebsite": "https://www.transparent-uk.com",
+      "marketSignal": "UK business registered in South Wales, supplying IT and networking hardware across Great Britain.",
+      "roleSignal": "B2B hardware reseller specializing in communications, networking products, and technical advice.",
+      "relevanceSignal": "Resells value-tier and SMB networking gear such as DrayTek, TP-Link, Netgear routers and PoE switches.",
+      "evidenceUrls": [
+        "https://www.transparent-uk.com"
+      ]
+    },
+    {
+      "rank": 14,
+      "companyName": "Misco UK",
+      "officialWebsite": "https://www.misco.co.uk",
+      "marketSignal": "UK operating entity providing IT hardware sales to UK private and public sector organisations.",
+      "roleSignal": "B2B IT reseller offering technology procurement and deployment services.",
+      "relevanceSignal": "Offers business networking switches, Wi-Fi access points, routers, and network accessories.",
+      "evidenceUrls": [
+        "https://www.misco.co.uk"
+      ]
+    },
+    {
+      "rank": 15,
+      "companyName": "Senetic UK",
+      "officialWebsite": "https://www.senetic.co.uk",
+      "marketSignal": "UK subsidiary based in London, supplying commercial customers nationwide.",
+      "roleSignal": "B2B IT hardware reseller providing active networking equipment, servers, and software.",
+      "relevanceSignal": "Sells switches, routers, mesh networks, and APs from competing SMB brands like MikroTik, Ubiquiti, and TP-Link.",
+      "evidenceUrls": [
+        "https://www.senetic.co.uk"
+      ]
+    },
+    {
+      "rank": 16,
+      "companyName": "Flux IT Hardware",
+      "officialWebsite": "https://www.fluxithardware.com",
+      "marketSignal": "Based in the UK, supplying new and refurbished networking equipment across the UK.",
+      "roleSignal": "Independent B2B IT hardware reseller providing network hardware, configuration, and quote services.",
+      "relevanceSignal": "Supplies network switches, routers, and wireless infrastructure to cost-conscious SMBs.",
+      "evidenceUrls": [
+        "https://www.fluxithardware.com"
+      ]
+    },
+    {
+      "rank": 17,
+      "companyName": "MicroSystem Support (MSS)",
+      "officialWebsite": "https://www.microsystem.co.uk",
+      "marketSignal": "UK-based company operating from Cheddar, Somerset, providing nationwide coverage.",
+      "roleSignal": "Independent network hardware VAR offering advice, hardware procurement, installation, and ongoing support.",
+      "relevanceSignal": "Sells and configures network routers, switches, and access points tailored for SME growth plans.",
+      "evidenceUrls": [
+        "https://www.microsystem.co.uk/wp-content/themes/mss13/img/logos/mss.svg"
+      ]
+    },
+    {
+      "rank": 18,
+      "companyName": "AbleWarton Limited",
+      "officialWebsite": "https://www.ablewarton.co.uk",
+      "marketSignal": "UK registered company delivering IT hardware and network solutions nationwide.",
+      "roleSignal": "VAR providing bespoke network planning, hardware sales, switch/router deployment, and maintenance.",
+      "relevanceSignal": "Procures and installs Layer 2/3 network switches, wireless APs, and VPN routers for business networks.",
+      "evidenceUrls": [
+        "https://www.ablewarton.co.uk/images/meta.jpg"
+      ]
+    },
+    {
+      "rank": 19,
+      "companyName": "Ultra Stream Technologies UK",
+      "officialWebsite": "https://www.ustech.co.uk",
+      "marketSignal": "Operating in London, UK, supplying IT infrastructure hardware nationwide.",
+      "roleSignal": "Reseller and stockist of IT networking products, switches, routers, and structured cabling.",
+      "relevanceSignal": "Distributes and resells SMB networking devices including TP-Link, DrayTek, Ubiquiti, and Tenda routers/switches.",
+      "evidenceUrls": [
+        "https://www.ustech.co.uk/static/uploads/pages/Network-Router-img-1.webp"
+      ]
+    },
+    {
+      "rank": 20,
+      "companyName": "Diskel",
+      "officialWebsite": "https://diskel.co.uk",
+      "marketSignal": "UK-based IT company providing network infrastructure and hardware procurement across the UK.",
+      "roleSignal": "Value-added reseller and IT partner delivering network installation, hardware procurement, and security setups.",
+      "relevanceSignal": "Deploys high-speed wired and wireless networks using switches, routers, firewalls, and VPN gateways.",
+      "evidenceUrls": [
+        "https://diskel.co.uk/wp-content/uploads/2019/07/UK_Diskel_cmyk-1.png"
+      ]
+    },
+    {
+      "rank": 21,
+      "companyName": "BDR Group",
+      "officialWebsite": "https://bdrgroup.co.uk",
+      "marketSignal": "UK IT and telecommunications company operating nationwide across multiple UK offices.",
+      "roleSignal": "VAR assisting business clients in hardware design, installation, procurement, and ongoing support.",
+      "relevanceSignal": "Supplies routers, managed switches, and Wi-Fi access points for business network upgrades.",
+      "evidenceUrls": [
+        "https://i0.wp.com/bdrgroup.co.uk/wp-content/uploads/Customised-Technology-for-Every-Need-IT-Hardware-Solutions.png?fit=800%2C533&ssl=1"
+      ]
+    },
+    {
+      "rank": 22,
+      "companyName": "Comms Unite",
+      "officialWebsite": "https://www.comms-unite.co.uk",
+      "marketSignal": "UK operating IT and communications hardware reseller based in East Anglia.",
+      "roleSignal": "Value-added reseller supplying hardware networking solutions, setup, and technical assistance.",
+      "relevanceSignal": "Sourcing and deploying active network hardware such as switches, routers, and Wi-Fi access points.",
+      "evidenceUrls": [
+        "https://www.comms-unite.co.uk/wp-content/uploads/fly-images/1999/090920CommsUnite-2625-1-scaled-4-1200x9999.jpg"
+      ]
+    },
+    {
+      "rank": 23,
+      "companyName": "Aspire Computers",
+      "officialWebsite": "https://aspire-computers.com",
+      "marketSignal": "UK-based IT solutions provider and hardware reseller.",
+      "roleSignal": "Value-added reseller providing broadband hardware, VPN firewalls, and networking equipment.",
+      "relevanceSignal": "Resells DrayTek, TP-Link, and related SMB routers, access points, and switches to regional UK businesses.",
+      "evidenceUrls": [
+        "https://aspire-computers.com/wp-content/uploads/2018/01/draytek-1024x298.jpg"
+      ]
+    },
+    {
+      "rank": 24,
+      "companyName": "Varciti Ltd",
+      "officialWebsite": "https://www.varciti.co.uk",
+      "marketSignal": "Based in Nottingham, UK, offering hardware supply services nationwide.",
+      "roleSignal": "IT hardware supply VAR offering assessment, professional installation, configuration, and support.",
+      "relevanceSignal": "Sources and installs business-grade networking hardware including routers, switches, and APs.",
+      "evidenceUrls": [
+        "https://www.varciti.co.uk"
+      ]
+    },
+    {
+      "rank": 25,
+      "companyName": "TGC Computers",
+      "officialWebsite": "https://www.tgccomputers.co.uk",
+      "marketSignal": "UK operating company with strategic inventory locations across Great Britain.",
+      "roleSignal": "IT hardware reseller and maintenance provider delivering fast hardware sourcing and support.",
+      "relevanceSignal": "Sources and maintains network switches, routers, and active IT infrastructure for UK business clients.",
+      "evidenceUrls": [
+        "https://www.tgccomputers.co.uk/wp-content/themes/tgc-computers/assets/images/header-bg2.png"
+      ]
+    },
+    {
+      "rank": 26,
+      "companyName": "Microbyte IT Solutions",
+      "officialWebsite": "https://www.microbyte.com",
+      "marketSignal": "UK IT provider offering hardware reseller and value-added technology services.",
+      "roleSignal": "Value-added reseller providing hardware procurement, network integration, and ongoing IT support.",
+      "relevanceSignal": "Procures and deploys network hardware, firewalls, and Wi-Fi gear for UK small and medium businesses.",
+      "evidenceUrls": [
+        "https://www.microbyte.com/wp-content/uploads/2018/07/microbyte-logo-2018.png"
+      ]
+    },
+    {
+      "rank": 27,
+      "companyName": "Network Integrators Ltd",
+      "officialWebsite": "https://networkintegrators.co.uk",
+      "marketSignal": "UK-based technology integrator and IT reseller.",
+      "roleSignal": "Value-added reseller offering architecture, implementation, training, and hardware sales.",
+      "relevanceSignal": "Delivers networking equipment, switches, and access solutions specifically tailored for SMB clients.",
+      "evidenceUrls": [
+        "https://networkintegrators.co.uk/media/wysiwyg/SMB.jpg"
+      ]
+    },
+    {
+      "rank": 28,
+      "companyName": "Renewtech Ltd",
+      "officialWebsite": "https://www.renewtech.co.uk",
+      "marketSignal": "UK operating business serving IT departments, service providers, and trade clients.",
+      "roleSignal": "B2B hardware reseller offering pre-configured network switches, transceivers, and routers.",
+      "relevanceSignal": "Provides value-oriented networking hardware and custom switch configurations for cost-conscious IT buyers.",
+      "evidenceUrls": [
+        "https://www.renewtech.co.uk/media/catalog/product/cache/253eaec7ebef0513cfc8bfcc50f11b3d/b/3/b300_overview.png"
+      ]
+    },
+    {
+      "rank": 29,
+      "companyName": "SHB Solutions",
+      "officialWebsite": "https://shbsolutions.co.uk",
+      "marketSignal": "UK IT hardware company supplying UK businesses with active network kit.",
+      "roleSignal": "Independent IT hardware reseller specializing in network switches, routers, and firewalls.",
+      "relevanceSignal": "Supplies value-driven hardware solutions for business networks across routing, switching, and Wi-Fi.",
+      "evidenceUrls": [
+        "https://shbsolutions.co.uk/wp-content/uploads/2025/01/Networks-Phones.jpg"
+      ]
+    },
+    {
+      "rank": 30,
+      "companyName": "IT Networks Trade UK",
+      "officialWebsite": "https://itnetworkstrade.co.uk",
+      "marketSignal": "UK hardware reseller supplying businesses and trade clients across the United Kingdom.",
+      "roleSignal": "IT hardware reseller providing pre-sales advice, network component sourcing, and infrastructure setups.",
+      "relevanceSignal": "Resells networking equipment including switches, routers, and wireless infrastructure.",
+      "evidenceUrls": [
+        "https://itnetworkstrade.co.uk"
+      ]
+    }
+  ],
+  "missingSlots": 0,
+  "warnings": [],
+  "costEvents": [
+    {
+      "eventId": "GB-resale:gemini-control",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-5",
+      "cellId": "GB-resale",
+      "arm": "gemini-native",
+      "ledger": "gemini-native-arm",
+      "stage": "native-search",
+      "provider": "gemini-full",
+      "requestedModel": "gemini-3.6-flash",
+      "actualModel": "gemini-3.6-flash",
+      "startedAt": "2026-09-05T20:10:04.973Z",
+      "completedAt": "2026-09-05T20:10:41.521Z",
+      "latencyMs": 36548,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 1137,
+        "cachedInputTokens": 355,
+        "outputTokens": 6423,
+        "reasoningTokens": 1751,
+        "groundingQueries": 8
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 30,
+        "validOutputItems": 30,
+        "downstreamUsedItems": 30,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "one interaction",
+        "no follow-up",
+        "provider order preserved"
+      ],
+      "officialListPriceUsd": 0.136699375,
+      "budgetCostUsd": 0.136699375,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    }
+  ]
+}

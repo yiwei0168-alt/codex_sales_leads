@@ -4,7 +4,7 @@
   "experimentId": "search-e2e-eval-v1.1.5",
   "status": "running",
   "createdAt": "2026-09-05T19:35:45.172Z",
-  "updatedAt": "2026-09-05T19:58:55.885Z",
+  "updatedAt": "2026-09-05T20:10:41.545Z",
   "blindJudgeModel": "codex-in-session",
   "preflightChecks": [
     {
@@ -69,7 +69,8 @@
     "GB-distribution:gemini-native",
     "GB-distribution:product-e2e",
     "MX-si-msp:gemini-native",
-    "MX-si-msp:product-e2e"
+    "MX-si-msp:product-e2e",
+    "GB-resale:gemini-native"
   ],
   "completedCellIds": [
     "MX-retail",
@@ -86,6 +87,13 @@
       "severity": "warning",
       "code": "product-target-underfill",
       "detail": "Product returned 21/30 after 5 round(s); completion=maximum-rounds."
+    },
+    {
+      "at": "2026-09-05T20:10:41.545Z",
+      "cellId": "GB-resale",
+      "severity": "fatal",
+      "code": "cell-arm-failed",
+      "detail": "GB-resale Kimi intent step did not return a usable model-generated lead plan: Kimi 意图 Agent 不可用，已使用确定性路由兜底。 | Kimi 降级原因：Expected ',' or '}' after property value in JSON at position 46 (line 3 column 18)"
     }
   ],
   "costEvents": [
@@ -2637,6 +2645,86 @@
       "arm": "product-e2e",
       "officialListPriceUsd": 0,
       "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-resale:intent:1",
+      "cellId": "GB-resale",
+      "stage": "intent",
+      "provider": "kimi",
+      "requestedModel": "kimi-k2.6",
+      "actualModel": "kimi-k2.6",
+      "startedAt": "2026-09-05T20:10:04.936Z",
+      "completedAt": "2026-09-05T20:10:31.133Z",
+      "latencyMs": 26195,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "failed",
+      "usage": {
+        "inputTokens": 534,
+        "cachedInputTokens": 0,
+        "outputTokens": 2000
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "providerFailure": 1
+        }
+      },
+      "notes": [
+        "Expected ',' or '}' after property value in JSON at position 46 (line 3 column 18)"
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-5",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.008472924560291322,
+      "budgetCostUsd": 0.008472924560291322,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-resale:gemini-control",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-5",
+      "cellId": "GB-resale",
+      "arm": "gemini-native",
+      "ledger": "gemini-native-arm",
+      "stage": "native-search",
+      "provider": "gemini-full",
+      "requestedModel": "gemini-3.6-flash",
+      "actualModel": "gemini-3.6-flash",
+      "startedAt": "2026-09-05T20:10:04.973Z",
+      "completedAt": "2026-09-05T20:10:41.521Z",
+      "latencyMs": 36548,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 1137,
+        "cachedInputTokens": 355,
+        "outputTokens": 6423,
+        "reasoningTokens": 1751,
+        "groundingQueries": 8
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 30,
+        "validOutputItems": 30,
+        "downstreamUsedItems": 30,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "one interaction",
+        "no follow-up",
+        "provider order preserved"
+      ],
+      "officialListPriceUsd": 0.136699375,
+      "budgetCostUsd": 0.136699375,
       "cashCostBasis": "official-conservative",
       "costAnomalies": []
     }
