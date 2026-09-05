@@ -1,0 +1,349 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+  "cellId": "GB-distribution",
+  "arm": "gemini-native",
+  "startedAt": "2026-09-05T19:36:39.080Z",
+  "completedAt": "2026-09-05T19:37:15.241Z",
+  "wallClockMs": 36161,
+  "requestedModel": "gemini-3.6-flash",
+  "actualModel": "gemini-3.6-flash",
+  "searchQueries": 12,
+  "finalCandidates": [
+    {
+      "rank": 1,
+      "companyName": "MS (Distribution) UK Ltd",
+      "officialWebsite": "https://www.msdist.co.uk",
+      "marketSignal": "Headquartered and operating in the United Kingdom, delivering wireless networking hardware to UK trade customers and installers.",
+      "roleSignal": "Specialist trade-only distributor offering wholesale accounts, technical pre-sales, and B2B fulfillment to resellers and integrators.",
+      "relevanceSignal": "Distributes wireless routers, switches, 4G/5G gateways, and access points from SMB/value brands matching Cudy's product portfolio.",
+      "evidenceUrls": [
+        "https://www.msdist.co.uk"
+      ]
+    },
+    {
+      "rank": 2,
+      "companyName": "Purdicom",
+      "officialWebsite": "https://www.purdi.com",
+      "marketSignal": "Based in Oxfordshire, UK, serving as a prominent distributor of wireless and networking equipment across the United Kingdom.",
+      "roleSignal": "Value-added distributor (VAD) supplying IT channel partners, MSPs, and network installers with technical support and trade pricing.",
+      "relevanceSignal": "Specializes in Wi-Fi access points, cloud networking, switches, and outdoor wireless solutions directly comparable to Cudy's offerings.",
+      "evidenceUrls": [
+        "https://www.purdi.com/wp-content/uploads/2026/01/ruckus-wireless-technology-distributor.svg"
+      ]
+    },
+    {
+      "rank": 3,
+      "companyName": "Solwise Ltd",
+      "officialWebsite": "https://www.solwise.co.uk",
+      "marketSignal": "Operating from Hessle, East Yorkshire, UK, as an established distributor of telecoms and networking solutions.",
+      "roleSignal": "Value-added trade distributor selling to IT dealers, installers, and resellers across the UK market.",
+      "relevanceSignal": "Distributes Wi-Fi routers, mesh systems, PoE switches, outdoor APs, and 4G/5G cellular routers for consumer and SMB connectivity.",
+      "evidenceUrls": [
+        "https://www.solwise.co.uk"
+      ]
+    },
+    {
+      "rank": 4,
+      "companyName": "LinITX (Enterprise Networking Ltd)",
+      "officialWebsite": "https://linitx.com",
+      "marketSignal": "Based in Needham Market, Suffolk, UK, supplying wireless and networking hardware to the UK trade market.",
+      "roleSignal": "Master distributor and value-added trade supplier providing technical training, channel sales, and trade accounts.",
+      "relevanceSignal": "Supplies SMB/ISP networking gear, including wireless access points, Ethernet switches, and routers competing alongside Cudy.",
+      "evidenceUrls": [
+        "https://linitx.com"
+      ]
+    },
+    {
+      "rank": 5,
+      "companyName": "CMS Distribution",
+      "officialWebsite": "https://www.cmsdistribution.com",
+      "marketSignal": "Major IT and technology distributor with extensive warehouse and sales operations across the United Kingdom.",
+      "roleSignal": "Authorised distributor connecting hardware vendors with VARs, system integrators, and retail partners.",
+      "relevanceSignal": "Distributes SMB networking equipment, routers, switches, and remote management connectivity solutions like DrayTek and TP-Link.",
+      "evidenceUrls": [
+        "https://www.cmsdistribution.com"
+      ]
+    },
+    {
+      "rank": 6,
+      "companyName": "NetXL",
+      "officialWebsite": "https://www.netxl.com",
+      "marketSignal": "UK-based trade distributor of network infrastructure, VoIP, and wireless technology.",
+      "roleSignal": "Trade-only distributor serving IT trade account holders, network installers, and resellers with express delivery.",
+      "relevanceSignal": "Distributes access points, Ethernet switches, PoE injectors, and 4G/5G routers matching Cudy's main lines.",
+      "evidenceUrls": [
+        "https://www.netxl.com"
+      ]
+    },
+    {
+      "rank": 7,
+      "companyName": "Target Components Ltd",
+      "officialWebsite": "https://www.targetcomponents.co.uk",
+      "marketSignal": "UK trade distributor based in West Yorkshire, supplying independent IT retailers, MSPs, and system integrators.",
+      "roleSignal": "Trade distributor offering trade account portals, credit facilities, and wholesale fulfillment.",
+      "relevanceSignal": "Distributes home and business networking ranges including TP-Link, DrayTek, and Ubiquiti routers and switches.",
+      "evidenceUrls": [
+        "https://www.targetcomponents.co.uk"
+      ]
+    },
+    {
+      "rank": 8,
+      "companyName": "Exertis UK",
+      "officialWebsite": "https://www.exertis.co.uk",
+      "marketSignal": "One of the largest technology distributors in the UK, operating multiple distribution centers across Great Britain.",
+      "roleSignal": "Broadline trade distributor supplying over 13,000 UK resellers, e-commerce platforms, and system integrators.",
+      "relevanceSignal": "Carries extensive consumer, SMB, and enterprise networking gear including Wi-Fi routers, mesh setups, and switches.",
+      "evidenceUrls": [
+        "https://www.exertis.co.uk"
+      ]
+    },
+    {
+      "rank": 9,
+      "companyName": "TD SYNNEX UK",
+      "officialWebsite": "https://uk.tdsynnex.com",
+      "marketSignal": "Operates nationwide in the UK with major distribution hubs supporting the British IT channel.",
+      "roleSignal": "Global IT distributor supplying trade resellers, VARs, and commercial system integrators across the UK market.",
+      "relevanceSignal": "Distributes comprehensive networking, wireless, and broadband connectivity hardware across consumer and SMB tiers.",
+      "evidenceUrls": [
+        "https://uk.tdsynnex.com"
+      ]
+    },
+    {
+      "rank": 10,
+      "companyName": "Ingram Micro UK",
+      "officialWebsite": "https://uk.ingrammicro.com",
+      "marketSignal": "Large-scale IT distributor with extensive commercial presence and logistics infrastructure in the UK.",
+      "roleSignal": "Primary technology distributor selling hardware, software, and cloud solutions strictly to business resellers.",
+      "relevanceSignal": "Distributes major networking brands competing directly with Cudy in switches, routers, and wireless access points.",
+      "evidenceUrls": [
+        "https://uk.ingrammicro.com"
+      ]
+    },
+    {
+      "rank": 11,
+      "companyName": "Northamber plc",
+      "officialWebsite": "https://www.northamber.com",
+      "marketSignal": "Longest-running independent UK trade distributor, operating out of Swindon and London.",
+      "roleSignal": "Trade-only IT and AV distributor providing value-add channel services and trade credit to UK resellers.",
+      "relevanceSignal": "Supplies SMB networking products, switches, wireless access points, and infrastructure hardware.",
+      "evidenceUrls": [
+        "https://www.northamber.com"
+      ]
+    },
+    {
+      "rank": 12,
+      "companyName": "Electronic Frontier Ltd (EFL)",
+      "officialWebsite": "https://www.efl.co.uk",
+      "marketSignal": "UK-based value-added distributor specializing in IP networking, telecommunications, and wireless solutions.",
+      "roleSignal": "VAD supplying UK IT resellers, installers, and telecom providers with trade pricing and technical support.",
+      "relevanceSignal": "Focuses on routers, switches, wireless access, and network gateways suitable for SMB, hospitality, and residential markets.",
+      "evidenceUrls": [
+        "https://www.efl.co.uk"
+      ]
+    },
+    {
+      "rank": 13,
+      "companyName": "Westbase.io",
+      "officialWebsite": "https://www.westbase.io",
+      "marketSignal": "Headquartered in the UK, distributing cellular and network connectivity solutions across Great Britain and Europe.",
+      "roleSignal": "Specialist VAD supplying 4G/5G, IoT, and networking hardware directly to channel partners and system integrators.",
+      "relevanceSignal": "Directly relevant to Cudy's 4G/5G cellular routers, FWA gateways, and industrial/SMB wireless connectivity products.",
+      "evidenceUrls": [
+        "https://www.westbase.io"
+      ]
+    },
+    {
+      "rank": 14,
+      "companyName": "Mayflex",
+      "officialWebsite": "https://www.mayflex.com",
+      "marketSignal": "UK distributor based in Birmingham, serving the UK infrastructure, networking, and security market.",
+      "roleSignal": "Trade distributor supplying installers, integrators, and resellers with pre-sales and logistical support.",
+      "relevanceSignal": "Distributes networking products, Ethernet switches, wireless access points, and PoE cabling solutions.",
+      "evidenceUrls": [
+        "https://www.mayflex.com"
+      ]
+    },
+    {
+      "rank": 15,
+      "companyName": "VIP Computers (VIP Computer Centre Ltd)",
+      "officialWebsite": "https://www.vip-computers.com",
+      "marketSignal": "Headquartered in Warrington, UK, as one of the country's largest independent PC hardware and peripheral distributors.",
+      "roleSignal": "Trade-only distributor serving system builders, retailers, e-tailers, and IT resellers.",
+      "relevanceSignal": "Supplies networking peripherals, Wi-Fi routers, add-in cards, and consumer/SMB connectivity hardware.",
+      "evidenceUrls": [
+        "https://www.vip-computers.com"
+      ]
+    },
+    {
+      "rank": 16,
+      "companyName": "Nimans",
+      "officialWebsite": "https://www.nimans.net",
+      "marketSignal": "UK distributor based in Manchester, serving the British telecom, unified communications, and networking trade.",
+      "roleSignal": "Trade distributor providing hardware, trade accounts, and technical services to UK installers and dealers.",
+      "relevanceSignal": "Carries routers, switches, wireless access points, and network accessories tailored for business and residential telecoms.",
+      "evidenceUrls": [
+        "https://www.nimans.net"
+      ]
+    },
+    {
+      "rank": 17,
+      "companyName": "EET UK",
+      "officialWebsite": "https://www.eetgroup.com",
+      "marketSignal": "Operates EET United Kingdom out of Uxbridge, supplying IT and technical components nationwide.",
+      "roleSignal": "Value-added trade distributor selling network hardware, surveillance, and IT spare parts to channel clients.",
+      "relevanceSignal": "Distributes network switches, wireless routers, cables, and network infrastructure matching Cudy product lines.",
+      "evidenceUrls": [
+        "https://www.eetgroup.com"
+      ]
+    },
+    {
+      "rank": 18,
+      "companyName": "ProVu Communications Ltd",
+      "officialWebsite": "https://www.provu.co.uk",
+      "marketSignal": "Based in West Yorkshire, UK, providing specialized telecom and networking distribution across the UK.",
+      "roleSignal": "Value-added distributor supporting UK resellers and service providers with trade provisioning and pre-sales.",
+      "relevanceSignal": "Supplies routers, switches, VoIP gateways, and network infrastructure products for business connectivity.",
+      "evidenceUrls": [
+        "https://www.provu.co.uk"
+      ]
+    },
+    {
+      "rank": 19,
+      "companyName": "Spire Technology Ltd",
+      "officialWebsite": "https://www.spire.co.uk",
+      "marketSignal": "Dorset-based trade-only IT distributor servicing technology retailers, integrators, and resellers across the UK.",
+      "roleSignal": "Trade distributor offering trade account services, bulk trade discounts, and trade delivery.",
+      "relevanceSignal": "Distributes consumer and SME networking gear, including routers, switches, network adapters, and mesh systems.",
+      "evidenceUrls": [
+        "https://www.spire.co.uk"
+      ]
+    },
+    {
+      "rank": 20,
+      "companyName": "CI Distribution",
+      "officialWebsite": "https://www.cidistribution.com",
+      "marketSignal": "UK technology distributor operating out of Telford, Shropshire.",
+      "roleSignal": "Specialist technology trade distributor supplying IT resellers, system integrators, and public sector suppliers.",
+      "relevanceSignal": "Supplies rugged computing, networking devices, switches, and wireless hardware relevant to Cudy's value portfolio.",
+      "evidenceUrls": [
+        "https://www.cidistribution.com"
+      ]
+    },
+    {
+      "rank": 21,
+      "companyName": "Mediatron Ltd",
+      "officialWebsite": "https://www.mediatron.co.uk",
+      "marketSignal": "Hertfordshire-based UK trade supplier for networking, KVM, and server room equipment.",
+      "roleSignal": "Strictly trade-only distributor supplying resellers, installers, and contractors with project pricing.",
+      "relevanceSignal": "Distributes networking hardware, switches, access points, and rackmount infrastructure products.",
+      "evidenceUrls": [
+        "https://www.mediatron.co.uk"
+      ]
+    },
+    {
+      "rank": 22,
+      "companyName": "Alltrade Ltd",
+      "officialWebsite": "https://www.alltrade.co.uk",
+      "marketSignal": "UK nationwide distributor with multiple trade counters supplying signal distribution, networking, and security gear.",
+      "roleSignal": "Trade-only distributor serving custom installers, electrical wholesalers, and trade contractors.",
+      "relevanceSignal": "Distributes Wi-Fi access points, network switches, routers, and outdoor wireless equipment for residential and commercial sites.",
+      "evidenceUrls": [
+        "https://www.alltrade.co.uk"
+      ]
+    },
+    {
+      "rank": 23,
+      "companyName": "Westcon-Comstor UK",
+      "officialWebsite": "https://www.westconcomstor.com",
+      "marketSignal": "Major presence in the UK IT channel with regional offices and logistics servicing Great Britain.",
+      "roleSignal": "Specialist technology VAD connecting networking vendors with VARs, integrators, and service providers.",
+      "relevanceSignal": "Focuses on enterprise and SMB networking, cybersecurity, and cloud-managed switches and access points.",
+      "evidenceUrls": [
+        "https://www.westconcomstor.com"
+      ]
+    },
+    {
+      "rank": 24,
+      "companyName": "Infinigate UK",
+      "officialWebsite": "https://www.infinigate.com",
+      "marketSignal": "Operates across the UK IT channel, delivering network infrastructure and cybersecurity hardware.",
+      "roleSignal": "Value-added distributor providing specialized channel support, technical training, and trade fulfillment.",
+      "relevanceSignal": "Distributes cloud-managed networking, switches, VPN gateways, and secure wireless access points.",
+      "evidenceUrls": [
+        "https://www.infinigate.com"
+      ]
+    },
+    {
+      "rank": 25,
+      "companyName": "Exclusive Networks UK",
+      "officialWebsite": "https://www.exclusive-networks.com",
+      "marketSignal": "UK distribution hub serving the national cybersecurity and networking channel.",
+      "roleSignal": "Global specialist VAD selling exclusively to trade resellers, VARs, and MSPs.",
+      "relevanceSignal": "Distributes secure networking hardware, switches, gateways, and wireless connectivity infrastructure.",
+      "evidenceUrls": [
+        "https://www.exclusive-networks.com"
+      ]
+    },
+    {
+      "rank": 26,
+      "companyName": "Arrow Enterprise Computing Solutions UK",
+      "officialWebsite": "https://www.arrow.com",
+      "marketSignal": "UK branch supplying enterprise computing and networking hardware to the UK trade.",
+      "roleSignal": "Technology distributor providing channel partner enablement, pre-sales support, and supply chain logistics.",
+      "relevanceSignal": "Distributes enterprise and SMB networking infrastructure, switches, and wireless access solutions.",
+      "evidenceUrls": [
+        "https://www.arrow.com"
+      ]
+    },
+    {
+      "rank": 27,
+      "companyName": "Connectec",
+      "officialWebsite": "https://connectec.uk",
+      "marketSignal": "UK distributor based in Wrexham, supplying trade installers with networking, security, and AV gear.",
+      "roleSignal": "Trade distributor providing trade accounts, technical advice, and wholesale pricing for installers.",
+      "relevanceSignal": "Stocks Wi-Fi access points, PoE switches, routers, and networking accessories suitable for SMB and home deployments.",
+      "evidenceUrls": [
+        "https://connectec.uk"
+      ]
+    },
+    {
+      "rank": 28,
+      "companyName": "Varlink Ltd",
+      "officialWebsite": "https://www.varlink.co.uk",
+      "marketSignal": "UK-based specialist distributor based in York, supplying mobile computing and networking solutions.",
+      "roleSignal": "Value-added distributor selling exclusively to IT resellers, system integrators, and solution providers.",
+      "relevanceSignal": "Distributes industrial/SMB wireless networking, routers, and mobile data gateways.",
+      "evidenceUrls": [
+        "https://www.varlink.co.uk"
+      ]
+    },
+    {
+      "rank": 29,
+      "companyName": "ADI Global Distribution UK",
+      "officialWebsite": "https://www.adiglobaldistribution.co.uk",
+      "marketSignal": "Operates numerous trade branches across the UK, supplying low-voltage and networking products.",
+      "roleSignal": "Wholesale distributor supplying trade contractors, installers, and system integrators.",
+      "relevanceSignal": "Carries network switches, Wi-Fi access points, PoE devices, and connectivity hardware.",
+      "evidenceUrls": [
+        "https://www.adiglobaldistribution.co.uk"
+      ]
+    },
+    {
+      "rank": 30,
+      "companyName": "Ultra Stream Technologies (Ustech UK)",
+      "officialWebsite": "https://www.ustech.co.uk",
+      "marketSignal": "London-based trade supplier and distributor of IT hardware and networking gear in the UK.",
+      "roleSignal": "Trade distributor supplying installers, dealers, and business buyers with networking components.",
+      "relevanceSignal": "Supplies TP-Link, DrayTek, MikroTik, and Ubiquiti switches, routers, access points, and media converters.",
+      "evidenceUrls": [
+        "https://www.ustech.co.uk"
+      ]
+    }
+  ],
+  "missingSlots": 0,
+  "warnings": [
+    "Reused unchanged frozen control from 2026-09-06-uk-mx-search-e2e-v1-1-5."
+  ],
+  "costEvents": []
+}

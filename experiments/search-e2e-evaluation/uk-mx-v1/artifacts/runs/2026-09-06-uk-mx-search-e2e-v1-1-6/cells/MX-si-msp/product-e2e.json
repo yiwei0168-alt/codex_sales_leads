@@ -1,0 +1,2457 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+  "cellId": "MX-si-msp",
+  "arm": "product-e2e",
+  "startedAt": "2026-09-05T19:46:38.676Z",
+  "completedAt": "2026-09-05T19:58:55.818Z",
+  "wallClockMs": 737142,
+  "plan": {
+    "countryCode": "MX",
+    "countryName": "Mexico",
+    "objective": "new-market",
+    "roles": [
+      "SI",
+      "MSP"
+    ],
+    "targetCount": 30,
+    "queryLanguage": "es",
+    "userRequest": "Busca y evalúa 30 empresas en Mexico cuya función principal sea SI/MSP. Limita la tarea a este mercado y esta categoría. Usa español y, cuando sea útil, inglés.",
+    "opportunityTargets": [],
+    "coverageMode": "auto",
+    "verifiedOnly": false
+  },
+  "intent": {
+    "plannerModel": "kimi-k2.6",
+    "plannerSource": "kimi-light",
+    "confidence": 0.95,
+    "warnings": []
+  },
+  "playbook": {
+    "marketHypothesis": "Mexico should be developed through a market-specific mix of supply, resale, retail, service and operator nodes. Candidate quality and public evidence determine the final mix; no role receives a fixed quota.",
+    "productAngles": [
+      "GS2048PS4-720W: 48-Port Layer 2 Managed Gigabit PoE++ Switch with 4 10G SFP ports 720W / L2 Managed PoE+ Switch",
+      "GS2008PS2: 8-Port Layer 2 Managed Gigabit PoE+ Switch with 2 Gigabit SFP Slots, 120W / L2 Managed PoE+ Switch",
+      "GS2018PS2-200W: 16-Port Layer 2 Managed Gigabit PoE+ Switch with 2 Uplink Gigabit Ports and 2 Gigabit SFP Slots, 200W / L2 Managed PoE+ Switch",
+      "GS2028PS4-300W: 24-Port Layer 2 Managed Gigabit PoE+ Switch with 4 Gigabit Combo Ports, 300W / L2 Managed PoE+ Switch",
+      "Cudy L2 Managed PoE+ Switch Product Catalog",
+      "AP1300D: AC1300 Wireless Desktop Access Point / Desktop AP",
+      "AP3000D: AX3000 Wi-Fi 6 Desktop Access Point / Desktop AP",
+      "Cudy Desktop AP Product Catalog"
+    ],
+    "preferredCompanyTraits": [
+      "active target-market presence",
+      "networking-adjacent customer access",
+      "credible purchasing or project influence",
+      "observable execution capability"
+    ],
+    "exclusions": [
+      "directories and list pages",
+      "inactive or unverifiable entities",
+      "companies without target-market presence",
+      "unrelated consumer-only businesses"
+    ],
+    "rolePriorities": [
+      {
+        "family": "services",
+        "roles": [
+          "SI",
+          "MSP"
+        ],
+        "weight": 1,
+        "reason": "Build or validate a reliable supply path while developing demand nodes in parallel."
+      }
+    ],
+    "searchQueries": [
+      {
+        "family": "services",
+        "roles": [
+          "SI",
+          "MSP"
+        ],
+        "query": "enterprise network system integrator installer MSP Mexico official company networking",
+        "priority": 1
+      },
+      {
+        "family": "services",
+        "roles": [
+          "SI",
+          "MSP"
+        ],
+        "query": "business WiFi switching infrastructure solutions provider Mexico official company networking",
+        "priority": 2
+      }
+    ],
+    "ragCitationIds": [
+      "1db2c336-ce71-47d7-891f-e3342c8c632f",
+      "923496ea-d85c-4d77-ae28-eef6bb6d531f",
+      "04c626c9-bed9-4059-ad3b-612077ce929b",
+      "ce825250-5623-460b-98da-a7e8a8cb8b86",
+      "6fc79b4f-9b1a-49c7-bcff-13cbfa064e6b",
+      "c097d04f-daa8-421a-a584-b57acd092937",
+      "1a7c3634-d4f6-49b7-8d88-21a3aa2f9982",
+      "0e4ecf1b-f217-459d-b42f-a3a6bb639582",
+      "20277588-3c73-4f88-bb70-5b155a2016d0",
+      "38a043ac-b57b-47c3-b5b4-3378c1ee1a5b",
+      "df270d18-c0a4-4196-b2b2-c16dc1e78e32",
+      "753a50ef-c6c1-47af-8d64-83835b913671",
+      "779c4bce-20df-41b3-a4df-db0dcbdd1f6d",
+      "dd4613fe-9b93-46d3-a421-fd764b6c4f9f",
+      "cd1742a2-adde-4cb8-ab1e-522dd6ceceb8",
+      "bbc51422-c421-4e07-8c47-287e26945cb7"
+    ],
+    "generatedBy": "deterministic-fallback",
+    "warnings": []
+  },
+  "treatmentModels": {
+    "discoveryGateRoutine": "deepseek-v4-flash",
+    "roleCorrectionRoutine": "deepseek-v4-flash",
+    "qualificationRoutine": "deepseek-v4-flash",
+    "materialEscalation": "deepseek-v4-pro"
+  },
+  "rawDiscoveryCount": 199,
+  "discoveredCandidateCount": 131,
+  "correctedCandidateCount": 92,
+  "completedAssessmentCount": 52,
+  "finalCandidates": [
+    {
+      "rank": 1,
+      "candidateId": "lead-a2922cc458397d41",
+      "companyName": "ERCONNECT Soluciones",
+      "domain": "erconnect.com.mx",
+      "officialWebsiteUrl": "https://erconnect.com.mx",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "Installer"
+      ],
+      "totalScore": 100,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-a2922cc458397d41",
+        "evidence-0a4a028ec19ef5a0",
+        "evidence-c6c344072ccb58d9",
+        "evidence-39df2349f02dd031",
+        "evidence-b8145ee1cb4ca0fa",
+        "evidence-30eb9fcdeb6c53b7"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-a2922cc458397d41",
+          "url": "https://erconnect.com.mx/",
+          "title": "ERCONNECT | Integrador de infraestructura tecnológica en México",
+          "excerpt": "ERCONNECT | Integrador de infraestructura tecnológica en México Ir al contenido principal Soluciones Industrias Proyectos Cómo trabajamos Nosotros Recursos Solicitar diagnóstico Abrir menú Integrador de infraestructura tecnológica y eléctrica · México Infraestructura para operaciones que no pueden detenerse. Diseñamos, integramos, documentamos y damos soporte a la conectividad, seguridad electrónica, energía crítica y espacios inteligentes de entornos industriales, logísticos y corporativos, con un solo responsable técnico. Solicitar diagnóstico Ver proyectos MANUFACTURA · LOGÍSTICA · CORPORATIVO · MISIÓN CRÍTICA PROYECTOS EN TODA LA REPÚBLICA MEXICANA CIUDAD DE MÉXICO · SAN LUIS POTOSÍ · MONTERREY · TIJUANA Un solo responsable técnico Conectividad, seguridad, energía y espacios inteligent",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:07.046Z",
+          "contentHash": "6be55913bd7328f063c8cbe86115b8147d838c5441dcc6bc6ef5414b915fdeb0",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-0a4a028ec19ef5a0",
+          "url": "https://erconnect.com.mx/soluciones/redes-empresariales-wifi",
+          "title": "Redes empresariales y Wi-Fi corporativo | ERCONNECT",
+          "excerpt": "Ir al contenido principal Solicitar diagnóstico Redes empresariales y Wi-Fi corporativo Switching, Wi-Fi medido en sitio y una sola política de conectividad de la nube al escritorio. Una red bien diseñada no se nota; una mal diseñada se nota todos los días. Qué es : Diseño, integración y documentación de redes empresariales, con switching de core a acceso, Wi-Fi validado con medición en sitio, SD-WAN multi-sitio y control de identidad en la red (NAC). Para quién : Corporativos, campus y organizaciones multi-sucursal donde la red sostiene la operación diaria y el equipo de TI necesita control y documentación, no otra caja negra. Qué problema resuelve : Zonas muertas de Wi-Fi, redes planas sin segmentación, sucursales conectadas con reglas distintas y crecimiento por parches del que nadie ti",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:33.835Z",
+          "contentHash": "a90f1e99b55a04b63ea894be251d5ced364e7b5ae2c5674f59c4169409dd1523",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-c6c344072ccb58d9",
+          "url": "https://erconnect.com.mx/soluciones/seguridad-electronica",
+          "title": "Seguridad electrónica para empresas | ERCONNECT",
+          "excerpt": "Ir al contenido principal Solicitar diagnóstico Seguridad electrónica para empresas Videovigilancia, control de acceso y alarmas diseñados por riesgo operativo y operando como un sistema integrado, con evidencia utilizable cuando algo ocurre. Qué es : Diseño e integración de sistemas de seguridad física empresarial, con videovigilancia (CCTV IP), control de acceso, alarmas y su operación en una sola plataforma, a partir de un análisis de riesgo del sitio. Para quién : Plantas, centros de distribución, corporativos y parques industriales que necesitan proteger personas, producto e instalaciones, y demostrar el control ante corporativo, clientes y aseguradoras. Qué problema resuelve : Merma sin evidencia, accesos administrados con llaves y listas de papel, cámaras que no cubren los puntos de",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:33.836Z",
+          "contentHash": "69f12529953383b7620c257a3b6a203f9006cb35200fb53270857213d4011bf6",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-39df2349f02dd031",
+          "url": "https://erconnect.com.mx/partners/verkada",
+          "title": "Videovigilancia Verkada en México | ERCONNECT",
+          "excerpt": "Partner tecnológico Videovigilancia Verkada en México instalada por un Silver Partner Seguridad física administrada desde la nube, sin NVR ni servidores locales. Cada cámara almacena y analiza a bordo, y toda la operación se gestiona desde una sola plataforma. El CCTV tradicional arrastra los mismos problemas desde hace veinte años: un NVR que es punto único de falla, VPNs y puertos abiertos para ver remoto, firmware que nadie actualiza y un sistema distinto por cada sitio. Cuando la operación crece, la videovigilancia se fragmenta. Verkada resuelve el problema desde la arquitectura. Cada cámara guarda su propio video (de 30 a 365 días a bordo) y lo analiza localmente, de modo que no existe un NVR ni un servidor que falle o se quede sin espacio. Todo se administra desde Command, una sola p",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:33.836Z",
+          "contentHash": "b1623a3b699aaef811e19320238f3f932c0a66a7a7f39d827146e6ded410676d",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-b8145ee1cb4ca0fa",
+          "url": "https://erconnect.com.mx/partners",
+          "title": "Partners y certificaciones de fabricante | ERCONNECT",
+          "excerpt": "Partners Certificaciones que se acreditan, no que se declaran Un nivel de partnership certificado cambia lo que recibe el cliente: diseño validado por el fabricante, personal entrenado en lo que instala y acceso a garantías de sistema que una instalación no certificada no puede ofrecer. PAR.01Partnerships certificados Niveles vigentes con evidencia documental Panduit, Silver Partner, Panduit ONE 2025 Panduit Silver Partner, Panduit ONE 2025 CommScope, Solution Provider CommScope Solution Provider Siemon, Certified Installer (CI) Siemon Certified Installer (CI) Schneider Electric (APC), Select Partner, APC IT Solution Provider Schneider Electric (APC) Select Partner, APC IT Solution Provider Chatsworth Products, Certified Solutions Partner (CSP) Chatsworth Products Certified Solutions Partn",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:33.836Z",
+          "contentHash": "a48b081c4f954898064470d617ee0cf48d3b33bdb25d730c4bf72b86ba3fcbf3",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-30eb9fcdeb6c53b7",
+          "url": "https://erconnect.com.mx",
+          "title": "ERCONNECT | Integrador de infraestructura tecnológica en México",
+          "excerpt": "Nuestra trayectoria en infraestructura tecnológica comenzó en 1997. En 2023 nació ERCONNECT con estructura propia y un modelo que integra ingeniería, suministro, instalación, certificación y documentación bajo una sola responsabilidad técnica. Casi 30 añosde experiencia técnica acumulada +700proyectos y servicios en nuestra trayectoria +150organizaciones atendidas en nuestra trayectoria 4bases operativas con cobertura nacional Conoce nuestra historia SEC.01El problema operativo [...] Cobertura nacional : Bases operativas en CDMX, San Luis Potosí, Monterrey y Tijuana; ejecución en sitio en toda la República. Diseño bajo normas de referencia : Ingeniería alineada a ANSI/TIA-568, NOM-001-SEDE y criterios NFPA aplicables a cada sistema. Trayectoria técnica ## Casi tres décadas de experiencia d",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:49:11.624Z",
+          "contentHash": "0aff1d62ba4d0e801591823f7765aa90792e01676745d799f13c274e98f45658",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 2,
+      "candidateId": "lead-80e08469eb2e8284",
+      "companyName": "ITM de México",
+      "domain": "itm.mx",
+      "officialWebsiteUrl": "https://www.itm.mx",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI"
+      ],
+      "totalScore": 100,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-80e08469eb2e8284",
+        "evidence-250683db2625d409"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-80e08469eb2e8284",
+          "url": "https://www.itm.mx/",
+          "title": "ITM de México — Integradores en Telecomunicaciones",
+          "excerpt": "ITM de México — Integradores en Telecomunicaciones Servicios Productos --> Certificaciones Seguridad Sostenibilidad Social Empresa Contacto Servicios Productos --> Certificaciones Seguridad Sostenibilidad Social Empresa Contacto Integradores de telecomunicaciones: Voz, Datos y Video. Cotiza tu proyecto Ver servicios +24 Años de experiencia 24/7 Asistencia Nacional Cobertura de servicio Diseño & Consultoría Levantamiento, site survey, arquitectura de red y roadmap de crecimiento. Implementación Servicio especializado de Cableado Estructurado y Certificaciones especializadas hasta 25 años de Garantía. Soporte & Monitoreo Implementación de Pólizas de Mantenimiento, Soporte en Sitio y Remoto de Marcas Enterprise. Servicios Soluciones en redes virtuales IP, inalámbricas, cableadas y privadas; a",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:47:42.279Z",
+          "contentHash": "d0626daed555c347d50be5f262c91ac68581309632adaaf935c222ceef65e843",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-250683db2625d409",
+          "url": "https://www.itm.mx",
+          "title": "ITM de México — Integradores en Telecomunicaciones",
+          "excerpt": "• Portátiles y discretas • Grabación audiovisual y almacenamiento seguro • Conectividad robusta y alta durabilidad Socios estratégicos ## Certificaciones y Alianzas En ITM de México colaboramos con fabricantes líderes para respaldar cada proyecto con la experiencia, la capacitación y las certificaciones que exige la industria. Avigilon Axis Communications Bosch Cisco CommScope Partner tecnológico Ekahau Hanwha Milestone Panduit Siemon Verkada [...] ## Sobre ITM Somos una empresa mexicana especializada en telecomunicaciones empresariales. Acompañamos a nuestros clientes desde el diseño hasta la operación continua, con un enfoque en disponibilidad y seguridad. 20+ Años de experiencia 100+ Clientes satisfechos Experiencia comprobada en implementación y soporte. Propuestas claras, tiempos real",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:49:01.209Z",
+          "contentHash": "1dbdaaae18a25548fd96291a904f551a8602b7f938fdba773d772d525b89ef05",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 3,
+      "candidateId": "lead-6d8e77baf34edc06",
+      "companyName": "SPConnet",
+      "domain": "spconnet.com",
+      "officialWebsiteUrl": "https://spconnet.com/",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "MSP"
+      ],
+      "totalScore": 89,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-6d8e77baf34edc06",
+        "evidence-7fc30f5d5c356acf",
+        "evidence-e956d13aa55c9be3",
+        "evidence-d443ee82ad63c33e",
+        "evidence-a7b6a9699eddc97d"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-6d8e77baf34edc06",
+          "url": "https://spconnet.com/",
+          "title": "SPConnet | Proveedor de Tecnología de Cisco",
+          "excerpt": "SPConnet | Proveedor de Tecnología de Cisco Inicio Nosotros ¿Quiénes somos? Certificaciones Sectores Servicios y Arquitectura SPCare Blog Contacto Portal del cliente Portal del Cliente Inicio Nosotros ¿Quiénes somos? Certificaciones Sectores Servicios y Arquitectura SPCare Blog Contacto Portal del cliente Inicio demo dos admestrasol 2026-05-12T00:41:06+00:00 + 0 Años - cisco premier partner - Diseñamos, instalamos y operamos su red SPConnet es su aliado tecnológico integral: desde el diseño e implementación de proyectos de infraestructura Cisco, hasta la operación continua de su red con nuestros Servicios Administrados SPCare. Ver soluciones y proyectos Conocer SPCare NOC Certificados por: Estado del NOC Todos los sistemas operativos En línea Disponibilidad NOC 99.6% Óptimo Sitios monitore",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:06.378Z",
+          "contentHash": "0cfbadf4ba8db8ca411111f5dd5a3e06246688266ea9e1a7d034cb8cd024894e",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-d443ee82ad63c33e",
+          "url": "https://spconnet.com",
+          "title": "SPConnet | Proveedor de Tecnología de Cisco",
+          "excerpt": "SPConnet SPConnetSPConnet Inicio Nosotros + ¿Quiénes somos? + Certificaciones + Sectores Servicios y Arquitectura Blog Contacto Portal del cliente Portal del Cliente Inicio Nosotros + ¿Quiénes somos? + Certificaciones + Sectores Servicios y Arquitectura + SPCare Blog Contacto Portal del cliente ## Inicio demo dos admestrasol2026-05-12T00:41:06+00:00 + 0 Años - cisco premier partner - # Diseñamos, instalamos y operamos su red [...] Diseñamos, implementamos, operamos y optimizamos. Somos su socio en todo el ciclo de vida tecnológico. ### Presencia local, alcance nacional Sede en Guadalajara, cobertura en toda la república. Soporte en español y facturación en pesos mexicanos. ## Empresas que confían en SPConnet ## ¿Listo para dar el siguiente paso? Proyectos de implementación. Servicios admin",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:49:06.886Z",
+          "contentHash": "9df38877c47de22d314d098110dcc931c4b11690683deeae090a6b0a381c1daf",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-7fc30f5d5c356acf",
+          "url": "https://spconnet.com/cisco",
+          "title": "Proveedor Cisco en México - SPConnet",
+          "excerpt": "SPConnet SPConnet SPConnet Cisco CERTIFICACIONES CCIE Collab​ CCIE Security​ CCIE Enterprise​ CCIE Service Provider​ CCNAs CCNPs​ Meraki CMNAs​ En SPConnet, somos más que un proveedor de servicios, somos un partner certificado a Nivel Premier por Cisco, una distinción que nos permite garantizar un dominio completo sobre las arquitecturas más avanzadas. Así que, como cliente, puedes respirar tranquilo. Estás en manos de los ingenieros más capacitados y reconocidos de la región. Nos especializamos en distintas áreas, lo que nos permite ofrecer una gama completa de soluciones adaptadas a tus necesidades. Nuestras especializaciones incluyen: Designaciones de partner: Nuestro equipo de ingenieros es un auténtico centro de excelencia.Cada uno de nuestros líderes posee certificaciones Cisco de pr",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:34.767Z",
+          "contentHash": "e5b5f5d32bbe5e88b6da4e63ab5ca8805ada134d8ed12a5f7bfa06b331f0670a",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-a7b6a9699eddc97d",
+          "url": "https://spconnet.com/fortisase-google-cloud-seguridad-nube",
+          "title": "FortiSASE y Google Cloud: Seguridad en la Nube Simplificada",
+          "excerpt": "SPConnet SPConnet SPConnet ¿Por qué FortiSASE y Google Cloud están revolucionando la seguridad en la nube? ¿Por qué FortiSASE y Google Cloud están revolucionando la seguridad en la nube? En un panorama tecnológico en constante evolución, la seguridad en la nube se ha convertido en un tema prioritario para las empresas que buscan proteger sus operaciones y datos, mientras optimizan su infraestructura digital. La alianza estratégica entre Fortinet y Google Cloud con su solución FortiSASE (Secure Access Service Edge) está marcando un antes y un después en la forma en que las organizaciones enfrentan los retos de seguridad, escalabilidad y experiencia de usuario en entornos de TI modernos. Hoy, en SPConnet, no solo observamos esta transformación; somos parte de ella, ayudando a las empresas a ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:34.768Z",
+          "contentHash": "2d27922003de92179b6db5811f3d8249eb9b072aac9a506091a9394ac49770d7",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-e956d13aa55c9be3",
+          "url": "https://mx.linkedin.com/company/spconnet",
+          "title": "SPconnet - Conectando Negocios",
+          "excerpt": "Somos una empresa orgullosamente mexicana con más de 15 años de experiencia conectando negocios, enfocada en potenciar a nuestros clientes a través de la integración de soluciones en tecnología avanzada. Generamos relaciones a largo plazo y satisfacemos sus necesidades mediante la entrega de servicios de excelencia. Deseamos ser su aliado tecnológico de confianza, generando experiencias únicas y liderando la transformación digital de las empresas. Oferta de Valor A través de soluciones [...] ### Investors N/A ### Specialties FortinetSecurity, HuaweiDataCom, FortinetPartner, HuaweiWiFi6, NetworkAnalytics, EndpointSecurity, CiscoSecuritySolutions, CiscoEnterpriseNetworking, CiscoBusinessArchitecture, HyperConvergedInfrastructure, SoftwareDefinedNetworking, StorageSolutions, Virtualization, B",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-05T19:49:06.886Z",
+          "contentHash": "141bd61acd034752f8bc16275d9cf0eed713620d554cca5f894ca9689af7e3a2",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 4,
+      "candidateId": "lead-f9200a39bbc1b587",
+      "companyName": "Extein",
+      "domain": "extein.com.mx",
+      "officialWebsiteUrl": "https://extein.com.mx/",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP",
+        "SI",
+        "Reseller"
+      ],
+      "totalScore": 84,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-f9200a39bbc1b587",
+        "evidence-661a1760c784bc7a",
+        "evidence-e81c38b238c9db59"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-f9200a39bbc1b587",
+          "url": "https://extein.com.mx/",
+          "title": "Extein | MSP Enterprise — Infraestructura TI, Cloud, Ciberseguridad · Monterrey",
+          "excerpt": "Extein | MSP Enterprise — Infraestructura TI, Cloud, Ciberseguridad · Monterrey Servicios Soluciones Enterprise IT & Soporte Empresarial Cloud & Hosting Ciberseguridad & CCTV Redes & Data Center Infraestructura & Fibra Más servicios Marketing & IA AV & Audiovisual Smart Solutions Pro Systems Gaming · Mining · Crypto Nosotros Contacto ES | EN +52 81 2897 8162 Servicios Enterprise IT & Soporte Empresarial Cloud & Hosting Ciberseguridad & CCTV Redes & Data Center Infraestructura & Fibra Nosotros Contacto Solicitar diagnóstico Llamar ahora MSP Enterprise · Monterrey · Desde 2004 Infraestructura TI para empresas que no pueden detenerse Soporte IT, cloud, ciberseguridad, redes y automatización empresarial. Partner tecnológico de PYMEs y corporativos en Monterrey, San Pedro, Santa Catarina y Salt",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:05.014Z",
+          "contentHash": "c5ac01959f7a634a621cede6383ed3aaab10104e1c534d93fd9eeabb895dc1eb",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-e81c38b238c9db59",
+          "url": "https://extein.com.mx",
+          "title": "Extein | MSP Enterprise — Infraestructura TI, Cloud, Ciberseguridad ...",
+          "excerpt": "Extein Infraestructura TI para empresas que no pueden detenerse Soporte IT, cloud, ciberseguridad, redes y automatización empresarial. Partner tecnológico de PYMEs y corporativos en Monterrey, San Pedro, Santa Catarina y Saltillo desde 2004. Tecnologías & Partners Trabajamos con las marcas líderes del sector Cisco Fortinet Microsoft VMware Dell HP Synology Ubiquiti Adobe Anthropic Starlink ASUS ROG Intel NVIDIA Unreal Engine Cómo trabaja Extein Un proceso estructurado que garantiza resultados desde el primer día. Sin improvisaciones, sin sobrecostos. Diagnóstico Auditamos tu infraestructura actual, identificamos riesgos, brechas de seguridad y oportunidades de mejora. Propuesta técnica Diseñamos una solución a medida con tecnología certificada, cronograma detallado y presupuesto cerrado. I",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:32.356Z",
+          "contentHash": "53291f0b07f19f92e09a783348c8f37f8a086e56ca596b4a1415bdecb2157426",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-661a1760c784bc7a",
+          "url": "https://extein.com.mx/aviso-privacidad.html",
+          "title": "Aviso de Privacidad Integral - Extein",
+          "excerpt": "Extein Aviso de Privacidad Integral Última actualización: 19 de mayo de 2026 · Responsable: Extein · Ámbito: México ⚠️ Importante: De conformidad con lo dispuesto por los artículos 15 y 16 de la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP), Extein pone a su disposición el presente Aviso de Privacidad Integral. I. Identidad y domicilio del Responsable EXTEIN, con domicilio en la ciudad de Monterrey, Nuevo León, México, es el responsable del uso y protección de sus datos personales. Nombre: Extein Correo electrónico: ventas@extein.com.mx Teléfono: +52 81 2897 8162 Sitio web: Atención: Lunes a Viernes, 9:00 a 18:00 horas (CST) II. Datos personales que se recaban Extein recaba los siguientes datos personales de manera directa (formularios web, correo ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:32.357Z",
+          "contentHash": "ee09b9f378d64bd38af70dc92bc8b149181764bd86d07b76bdcbebdbe1da5d82",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 5,
+      "candidateId": "lead-da8c0259fe4b4a69",
+      "companyName": "Perceptron Soluciones Tecnológicas",
+      "domain": "perceptron.mx",
+      "officialWebsiteUrl": "https://www.perceptron.mx/",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "MSP"
+      ],
+      "totalScore": 82,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-da8c0259fe4b4a69",
+        "evidence-93945613ba442f9f",
+        "evidence-49aef8a67f31f19e"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-da8c0259fe4b4a69",
+          "url": "https://www.perceptron.mx/",
+          "title": "Perceptron | Inicio",
+          "excerpt": "Perceptron | Inicio --> Home Soluciones SOLUCIONES PARA EL USUARIO FINAL CÓMPUTO PERSONAL DEVICE AS A SERVICE BACKUP PROTECCIÓN DE DATOS COMMVAULT HPE VEEAM BUSINESS INTELLIGENCE QLIK COMUNICACIÓN COLABORACIÓN --> CIBERSEGURIDAD --> INFRAESTRUCTURA TRANSFORMACIÓN TI HPE NUTANIX STORMAGIC REDES CONECTIVIDAD --> Industrias financiero manufactura retail Salud automotíz telecomunicaciones --> Recursos Blog Charlas de café Nosotros Contacto Home Nosotros Soluciones Industrias Blog Contacto SALUD RETAIL MANUFACTURA AUTOMOTRIZ TELECOMUNICACIONES FINANCIERO REGRESAR SOLUCIONES PARA EL CENTRO DE DATOS SOLUCIONES PARA EL USUARIO FINAL BUSINESS INTELLIGENCE CIBERSEGURIDAD REGRESAR HPE GREENLAKE REDES (SWITCHES) HIPERCONVERGENCIA REGRESAR DEVICE AS A SERVICE CÓMPUTO PERSONAL REDES (ACCESS POINTS) REGR",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:54:39.699Z",
+          "contentHash": "ece92e0130e827ad1af238cdd2b0bcb16a556fc601bf72f3a716448dfe99e1f2",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r2"
+        },
+        {
+          "id": "evidence-49aef8a67f31f19e",
+          "url": "https://www.perceptron.mx/soluciones-daas",
+          "title": "Soluciones DAAS - Perceptron",
+          "excerpt": "Perceptron Perceptron Home SOLUCIONES PARA EL USUARIO FINAL CÓMPUTO PERSONAL DEVICE AS A SERVICE BACKUP & PROTECCIÓN DE DATOS COMMVAULT HPE VEEAM BUSINESS INTELLIGENCE QLIK COMUNICACIÓN & COLABORACIÓN CIBERSEGURIDAD INFRAESTRUCTURA & TRANSFORMACIÓN TI HPE NUTANIX STORMAGIC REDES & CONECTIVIDAD financiero manufactura retail Salud Blog Charlas de café Nosotros Contacto Perceptron Perceptron Home Nosotros Soluciones Industrias Blog Contacto SALUD RETAIL MANUFACTURA AUTOMOTRIZ TELECOMUNICACIONES FINANCIERO REGRESAR SOLUCIONES PARA EL CENTRO DE DATOS SOLUCIONES PARA EL USUARIO FINAL BUSINESS INTELLIGENCE CIBERSEGURIDAD REGRESAR HPE GREENLAKE REDES (SWITCHES) HIPERCONVERGENCIA REGRESAR DEVICE AS A SERVICE CÓMPUTO PERSONAL REDES (ACCESS POINTS) REGRESAR QLIK REGRESAR NEMOTEK REGRESAR Aviso de pri",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:55:17.339Z",
+          "contentHash": "4f3efc340dd13c2ea2e780805de18d5e071f16acac9ba25bff2c1fc27bbc07b8",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r2"
+        },
+        {
+          "id": "evidence-93945613ba442f9f",
+          "url": "https://www.perceptron.mx",
+          "title": "Perceptron | Inicio",
+          "excerpt": "technology matters info@perceptron.mx Oficina: 81 83 46 00 50 hewlett packard aruba nemotek stormagic vmware intel veam logo hp Aviso de privacidad [...] Industrias Blog Contacto SALUD RETAIL MANUFACTURA AUTOMOTRIZ TELECOMUNICACIONES FINANCIERO REGRESAR SOLUCIONES PARA EL CENTRO DE DATOS SOLUCIONES PARA EL USUARIO FINAL BUSINESS INTELLIGENCE CIBERSEGURIDAD REGRESAR HPE GREENLAKE REDES (SWITCHES) HIPERCONVERGENCIA REGRESAR DEVICE AS A SERVICE CÓMPUTO PERSONAL REDES (ACCESS POINTS) REGRESAR QLIK REGRESAR NEMOTEK REGRESAR Aviso de privacidad Perceptron Home Perceptron Home [...] Diseño de soluciones de redes alámbricas e inalámbricas que garantizan la seguridad y facilitan la gestión de la infraestructura. SABER MÁS Perceptron Home REDES Perceptron Home Perceptron Home Diseño de arquitectura,",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:55:58.365Z",
+          "contentHash": "2115bcdef8c3f725c78e978f949da33eabcba4c0a8766804c4625e73df83c336",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r2"
+        }
+      ]
+    },
+    {
+      "rank": 6,
+      "candidateId": "lead-812e4eec8b6d1a33",
+      "companyName": "IT Experts de México",
+      "domain": "itxperts.com.mx",
+      "officialWebsiteUrl": "https://www.itxperts.com.mx/",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "SI",
+        "MSP"
+      ],
+      "totalScore": 81,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-812e4eec8b6d1a33"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-812e4eec8b6d1a33",
+          "url": "https://www.itxperts.com.mx/",
+          "title": "IT Experts de México | Infraestructura crítica y NOC 24×7",
+          "excerpt": "IT Experts de México | Infraestructura crítica y NOC 24×7 NOC/SOC OPERATIVO · MONITOREO CONTINUO CHIHUAHUA · COBERTURA NACIONAL REMOTA +52 (614) 426-2339 Centro de Operaciones Consultoría Hardware Cloud Ciberseguridad Herramientas Blog Contáctanos menu Centro de Operaciones Consultoría Hardware Cloud Ciberseguridad Herramientas Blog Centro de Operaciones NOC/SOC 24×7 Protegemos y operamos la infraestructura crítica de tu empresa. Administramos, monitoreamos y protegemos redes, servidores, entornos industriales (OT) y plataformas de misión crítica para garantizar la continuidad de tu negocio. Conocer nuestras capacidades arrow_forward Ver Centro de Operaciones 24×7 Monitoreo continuo +10 Años de experiencia 99.97% Disponibilidad de nuestro NOC i 7 Estados de cobertura Centro de Operaciones ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:54:40.136Z",
+          "contentHash": "2b3b37da796a8b87a3e0a12c3aece726aad2aae0834049f753128e3e7d34039d",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r2"
+        }
+      ]
+    },
+    {
+      "rank": 7,
+      "candidateId": "lead-2bcd4c56625a7966",
+      "companyName": "IT Fenix",
+      "domain": "itfenix.com",
+      "officialWebsiteUrl": "https://itfenix.com/",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "MSP"
+      ],
+      "totalScore": 81,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-2bcd4c56625a7966"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-2bcd4c56625a7966",
+          "url": "https://itfenix.com/",
+          "title": "IT Fenix | Integración Tecnológica Empresarial - Infraestructura TI de Alto Nivel",
+          "excerpt": "IT Fenix | Integración Tecnológica Empresarial - Infraestructura TI de Alto Nivel ventas@itfenix.com 55 1209 0363 56 2663 1899 Soporte Intranet Inicio Servicios Cableado Estructurado Fibra Óptica Telefonía IP Redes WiFi 6/7 CCTV y Videovigilancia Control de Acceso Electricidad Servidores y NAS Redes Administradas Tienda Clientes Proyectos Contacto +19 años de ingeniería empresarial Infraestructura tecnológica diseñada para no fallar Integramos tecnología empresarial con ingeniería real, respaldo documentado y garantía premium. No improvisamos. No usamos equipos de baja calidad. Diseñamos soluciones que duran. Solicitar Cotización Ver Servicios Panduit Certified Belden Partner Siemon Certified Ubiquiti Enterprise Cisco Select DESCUBRE MÁS Integración tecnológica con ingeniería real No vende",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:06.463Z",
+          "contentHash": "7c5d20d22b5df8c89b5dd2372bef900a1d603dbc354cf007eed741a917a4e54e",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 8,
+      "candidateId": "lead-c2cb8a8dbf933bc2",
+      "companyName": "Grupo Migesa",
+      "domain": "migesa.com.mx",
+      "officialWebsiteUrl": "https://www.migesa.com.mx",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "MSP",
+        "VAR"
+      ],
+      "totalScore": 80,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-c2cb8a8dbf933bc2",
+        "evidence-7ee5465101109d17",
+        "evidence-8aa56602f22415e2",
+        "evidence-0e73e2bce29e1524",
+        "evidence-40df3406d6c98d3f",
+        "evidence-109c39ce16420617"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-c2cb8a8dbf933bc2",
+          "url": "https://www.migesa.com.mx/",
+          "title": "Migesa - Soluciones Integrales en Redes, Soporte y Seguridad en TI.",
+          "excerpt": "Migesa - Soluciones Integrales en Redes, Soporte y Seguridad en TI. México 01 800 36 44372 / USA 001 855 644 3721 ENG Inicio Servicios Quiénes somos Socios Tecnológicos Contacto Bolsa de trabajo Inicio Servicios Quiénes somos Socios Tecnológicos Contacto Bolsa de trabajo Nuestras soluciones Diseñamos e implementamos soluciones a la medida de las necesidades de la mediana y grande empresa. Licenciamiento y Consultoría Licenciamiento por volumen Microsoft Administración de contratos a través de socios Microsoft Planeación e implementación Soluciones en la nube Campañas de adopción Outsourcing, soporte y monitoreo Redes, Colaboración y Seguridad Informática Soluciones de colaboración Centros de datos Redes LAN/WAN/WLAN Video-vigilancia Seguridad Informática Equipamiento Informático Servidores",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:05.575Z",
+          "contentHash": "327a41064e8fbb147972ab5d8b7bfd9b935e263fd7f970e0e9134200f753b9d0",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-7ee5465101109d17",
+          "url": "https://www.migesa.com.mx",
+          "title": "Migesa - Soluciones Integrales en Redes, Soporte y Seguridad en TI.",
+          "excerpt": "México 01 800 36 44372 / USA 001 855 644 3721 logo dark logoo light logo mobile logo Centro de contacto Ventas telefónicas Ventas por redes sociales Creación de base de datos Encuestas 8500 8800 8500-8800) Monterrey, Nuevo León Hidalgo 2294 Pte., Col. Obispado. CP.64060 +52 (81) 8389 0400 8389-0400) Chihuahua, Chih. (ConNext) Av. Francisco Villa No. 5306 Col. Arboledas Chih, Chih. C.P. 31110 +52 (614) 545-0300 545-0300) Cd. Juárez, Chih. (ConNext) [...] Av. López Mateos No.924 Oficina 130 Col. La playa (T-Hub workspace) Cd. Juarez, Chih. C.P. 32317 +52 (656) 389-0550 389-0550) Cancún, QR Av. Acanceh Mzn.2 Lt.3 , piso 3, SM 11 Torre Terra Viva, Cancún, Quintana Roo CP.77580 +52 (998) 500-1866 500-1866) +52 (81) 8389-0406 8389-0406) Houston TX (PBX On The Cloud) 10330 Lake Rd Ste F #40 Houst",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:49:01.868Z",
+          "contentHash": "d06add4027586ddf4e876222f3f315ac51d62ae0db7f11e56a17634c3b22b98e",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-8aa56602f22415e2",
+          "url": "https://www.linkedin.com/company/migesa",
+          "title": "Migesa - Integrando un futuro inteligente",
+          "excerpt": "Migesa has been present in the market for more than 35 years as the largest service for Information and Communication Technology, as well as a solution integrator in Mexico. We are part of a company conglomerate employing over 450 workers and 80 certified engineers in the main technologies of our business partners. We offer, as well, integrated services to our medium and large customers, with national coverage and support throughout our 40 service centers and presence in cities like Mexico [...] cities like Mexico City, Monterrey, Guadalajara, Chihuahua, Tijuana and Houston, TX. Our Mission: “Integrate Products and Services into Total Solutions tailored to our Customer needs, and oriented to reduce property costs while creating a competitive advantage”. [...] ## Overview",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-05T19:49:01.868Z",
+          "contentHash": "ae93bd36f3bfc37f0680c3a1b840dcf958c18ff9bd1a9733cdcb291d987798c8",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-0e73e2bce29e1524",
+          "url": "https://migesaequipamiento.com/en",
+          "title": "Migesa Equipamiento | Servers, Storage, Software, Network",
+          "excerpt": "Migesa, with more than 40 years of experience in the market, is one of Mexico’s largest Information & Communication Technologies services and solutions integrator. We comprise a group of companies with more than 450 employees and 80 engineers certified on the top technologies we promote. Migesa offers IT equipment, ranging from servers, storage units, software, networks, desktop virtualization, and logistical services surrounding IT. More information about Migesa… ## Solutions [...] At Migesa we provide Integral Solutions for Informatic Equipment. We have a solid team of certified consultants and engineers who provide services following the best practices and processes, backed by the best certifications from world-class manufacturers such as HPE, Dell EMC, Aruba Networks, Symantec, f5, Ver",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-05T19:49:01.868Z",
+          "contentHash": "69267c63219d390c4316fc35d0874c930c52f799f710821687cd9107eb0f491a",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-109c39ce16420617",
+          "url": "https://www.migesamicrosoft.com?lang=en",
+          "title": "Migesa Microsoft | Grupo Migesa: Soluciones Microsoft Para ...",
+          "excerpt": "Migesa ofrece todas las soluciones Microsoft para su empresa, licenciamiento por volumen y admin. de contactos, implementación y soporte de",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-05T19:49:01.868Z",
+          "contentHash": "f8bc4fcd17ab315e0b45eede57dbacdf79c75f2af9786b9992f8e04242450f34",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-40df3406d6c98d3f",
+          "url": "https://migesa.com",
+          "title": "Leader in IT Services - Migesa",
+          "excerpt": "Our team has solid experience designing, building, supporting, managing, and securing Networks initiatives. We can extend your business capabilities using software defined networks and virtualization. Migesa can support your data center design, migration and upgrade plans. We can help your IT team to manage the demands of new technologies as IOT, increasing mobile request and configure your environment for B2C operating models. ### Contact Center & Voice Services [...] ### Integrating superior services and products to optimize resources, innovate, and magnify our customer’s success - using our unique end-to-end approach. ## Our Solutions ### Applications & Cloud [...] ### For more than 40 years Migesa has become a digital leader in IT Solutions as: Collaboration, Productivity, Networks, Ap",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-05T19:49:01.868Z",
+          "contentHash": "7fbbfc34cdee4c3fcb259f7f540aeaae06d7a3b4e91f346debef6f87f2581575",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 9,
+      "candidateId": "lead-bb0b29265f5587e7",
+      "companyName": "LB Sistemas S.A. de C.V.",
+      "domain": "lbsistemas.com.mx",
+      "officialWebsiteUrl": "https://lbsistemas.com.mx/",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "MSP",
+        "Reseller",
+        "Installer"
+      ],
+      "totalScore": 78,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-bb0b29265f5587e7",
+        "evidence-d07344a2abbebf1d",
+        "evidence-67493324074ad04f",
+        "evidence-db01b02e20ea5454",
+        "evidence-83691f6f82e7d95b",
+        "evidence-36f323bba29d84d0"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-bb0b29265f5587e7",
+          "url": "https://lbsistemas.com.mx/",
+          "title": "LB Sistemas - Expertos integradores de Tecnologia",
+          "excerpt": "LB Sistemas - Expertos integradores de Tecnologia Somos expertos integradores de Tecnología ¿Necesitas asesoría? Llámanos Asesoría telefónica Whatsapp Asesoría en línea Escríbenos contacto@lbsistemas.com.mx --> Inicio Soluciones Licenciamiento Centro de datos Infraestructura tecnológica Ciberseguridad Servicios Financiamiento Póliza de servicio Consultores expertos --> Microsoft Casos de éxito --> Adobe LB Sistemas LB Store --> Contacto --> SOLUCIONES TECNOLOGICAS CON VALORES AGREGADOS Conoce más SOLUCIONES VANGUARDISTAS, PERSONALIZADAS Y A TU ALCANCE Conoce más TE LLEVAMOS DE LA MANO DURANTE TODO EL PROCESO Conoce más NUESTRA TIENDA EN LÍNEA lbstore.com.mx Visita el sitio --> Soluciones de conectividad y redes con excelencia en tecnología Soluciones Fortalece tu empresa de la mano de un e",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:04.661Z",
+          "contentHash": "80d190b36220c40955949ecc54050184c123ffecd5ab06c4c3e29baac14658d2",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-d07344a2abbebf1d",
+          "url": "https://www.ventasdeseguridad.com/directorio-de-proveedores/biometria/biometria/230410-lb-sistemas-sa-de-cv.html",
+          "title": "LB SISTEMAS SA DE CV",
+          "excerpt": "Somos expertos integradores de TecnologíaIntegradores experimentados en tecnología, brindando soluciones eficientes y a la medida de cada proyecto asignado",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-05T19:49:02.990Z",
+          "contentHash": "39c6b106d63db2eab130ce3f7cf92ba4ba2bba22ad006fb5187f0b5135380955",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-67493324074ad04f",
+          "url": "https://www.avilatinoamerica.com/en/component/mtree/cableado-y-redes/vga-comunicacion-y-cable-de-datos-y-ensambles/230410-lb-sistemas-sa-de-cv.html",
+          "title": "LB SISTEMAS SA DE CV",
+          "excerpt": "Somos expertos integradores de TecnologíaIntegradores experimentados en tecnología, brindando soluciones eficientes y a la medida de cada proyecto asignado",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-05T19:49:02.990Z",
+          "contentHash": "39c6b106d63db2eab130ce3f7cf92ba4ba2bba22ad006fb5187f0b5135380955",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-db01b02e20ea5454",
+          "url": "https://www.lbsistemas.com.mx",
+          "title": "LB Sistemas - Expertos integradores de Tecnologia",
+          "excerpt": "Nuestra empresa ofrece soluciones tecnológicas integrales que cubren sectores clave como educación, manufactura, salud, finanzas y gobierno. Fortalece. Obtén",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:49:02.990Z",
+          "contentHash": "c815ae15d7468cce472bf764bac3745fb356ee0dab44f2ec13c376ffe12124a7",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-83691f6f82e7d95b",
+          "url": "https://www.facebook.com/LBSistemas",
+          "title": "LB Sistemas S A de C V | Naucalpan",
+          "excerpt": "LB Sistemas S A de C V, Tenemos 30 años de experiencia en soluciones integrales de Tecnologías. Bohemia 4, Naucalpan, Mexico, 53330 ・ lbsistemas.com.mx",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-05T19:49:02.990Z",
+          "contentHash": "6dd1bc7c674c697c31e1718f105314e4d3fd9f7e044cf0003925df4e40d783b5",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-36f323bba29d84d0",
+          "url": "https://www.linkedin.com/company/lbsistemas",
+          "title": "LB Sistemas S. A. de C. V. - Soluciones Tecnológicas Acorde a tus Necesidades.",
+          "excerpt": "# LB Sistemas S. A. de C. V. Soluciones Tecnológicas Acorde a tus Necesidades. Information Technology & Services • Naucalpan de Juarez, Mexico • 1,643 followers • 51-200 employees [...] ### Investors N/A ### Specialties Microsoft Gold Partner Volume Licensing, Kaspersky Gold Patner, Eset Platinum Partner, Symantec Partner, HP Partner, DELL Partner, Hubbell Partner, Cisco Partner Netwroking, Ruckus Customer Value Agreement, and Extricom Customer Value Agreement [...] Somos una empresa mexicana con 30 años de experiencia en soluciones integrales de Tecnologías de la Información. Colaboramos y tenemos certificaciones con empresas líderes en el mercado de la tecnología para garantizarte el mejor servicio. Tenemos soluciones para trabajo colaborativo en la nube, servicio de mantenimiento preven",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-05T19:49:02.990Z",
+          "contentHash": "0c650133899ac9e366e06df604628085d8a856cb37e943de68df8468baa59e57",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 10,
+      "candidateId": "lead-ba05505631792e7c",
+      "companyName": "MCS Networks",
+      "domain": "mcs.com.mx",
+      "officialWebsiteUrl": "https://mcs.com.mx/",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "MSP"
+      ],
+      "totalScore": 78,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-ba05505631792e7c",
+        "evidence-5cda3fb94a9099aa",
+        "evidence-da800a8de0a9cf21",
+        "evidence-0a9aba0726d6907b",
+        "evidence-ba3600db23ac7fdc",
+        "evidence-41754a90ddbfac0c"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-ba05505631792e7c",
+          "url": "https://mcs.com.mx/",
+          "title": "MCS Networks | Redes, Ingeniería y Soluciones TI",
+          "excerpt": "MCS Networks | Redes, Ingeniería y Soluciones TI Skip to content Inicio Nosotros Quiénes somos Partners Valor social Sala de prensa Casos de estudio Qué hacemos Soluciones Colaboración Redes empresariales Data Center Ciberseguridad Redes industriales Cloud Seguridad física Redes inalámbricas Internet of Things Infraestructura Cableado estructurado Fibra óptica Energía Climatización Servicios de TI Sectores Educación Manufactura Retail Salud Finanzas Gobierno Contacto Carreras Idioma Español English Email LinkedIn Portal MENÚ Diseñamos, implementamos y administramos tecnología Innovamos en soluciones inteligentes y adoptamos nuevas tecnologías en su empresa. Aprender más Somos tu asesor tecnológico en tu transformación digital Visualizamos el futuro impulsando el progreso de las empresas un",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:47:40.058Z",
+          "contentHash": "faddce71bce2d41781ea6511e25330ca350d94840f97b0693379b63d9c357d3f",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-5cda3fb94a9099aa",
+          "url": "https://mcs.com.mx/en/home-en",
+          "title": "Networks, Engineering and IT Solutions",
+          "excerpt": "MCS MCS We design, implement and manage technology We innovate in smart solutions and adopt new technologies in your company. We’re your technological partner in your digital transformation We envision the future by driving companies progress, uniting people and technology. Integration and technological engineering for your projects We supervise your investment to optimize your resources and implement digital solutions tailored to your needs. Us We are technology integrators with more than 25 years of experience in the IT industry that seeks to contribute to businesses digital development. Solutions We design, implement and manage transformative IT solutions tailored to your company’s requirements. Infrastructure We provide the necessary infrastructure for the optimal operation of your net",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:28.704Z",
+          "contentHash": "f0102bbfb8fc3a5cfb231bca3452bcbea5eeb1bbb0b7a6bd7f0ab328a4523485",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-da800a8de0a9cf21",
+          "url": "https://mcs.com.mx/en/what-we-do",
+          "title": "What we do - MCS Networks",
+          "excerpt": "MCS MCS What we do Solutions At MCS we are experts in integrating solutions, we design technological solutions tailored to the needs of our clients. We are always seeking innovation and development, that is why we analyze our client’s processes to carry them out with greater efficiency through technology. We specialize in turnkey projects, since we have the In-House capacity to carry out complex projects, involving different solutions. Colaboración Redes empresariales Data Center Ciberseguridad Redes industriales Cloud Seguridad física Redes inalámbricas Internet of Things Colaboración Redes empresariales Data Center Ciberseguridad Redes industriales Cloud Seguridad física Redes inalámbricas Internet of Things Infrastructure Lighten and enhance your work experience by investing in infrastr",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:28.704Z",
+          "contentHash": "2710493bedeeb03fc7f3d8ec06b5cfbc090c83cff5b87c50bb918468768ea60e",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-0a9aba0726d6907b",
+          "url": "https://mcs.com.mx/en/what-we-do/cybersecurity",
+          "title": "Cybersecurity | MCS Networks",
+          "excerpt": "Skip to content What we do → Solutions Cybersecurity Detect and stop threats Network security has the objective of keeping the exchange of information risk-free and protecting the computing resources of users and organizations, allow MCS Networks to provide you with the necessary advice through an analysis to evaluate the solution more according to your needs. We take the security of an enterprise network very seriously, it is important to understand that all organizations will always be at risk of a cyber attack and our mission is to support our clients to be prepared to be the least vulnerable to a threat. Through our solutions, we reduce the risks of attacks by ensuring that any organization or company operates in a secure manner. Malware protection Protect your computer and business in",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:28.705Z",
+          "contentHash": "7c68663993d7f60a449f99f5820393fe43f047e07efbeee3029b60bdd39d0756",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-ba3600db23ac7fdc",
+          "url": "https://mcs.com.mx/en/about-us",
+          "title": "About Us - MCS Networks",
+          "excerpt": "MCS MCS About Us Who are we We design, implement and manage technology We are a group of qualified and experienced professionals who combine talents to solve problems through technology. We protect the investment and trust our customers place in us, always minding the quality of our solutions and the service of our staff, thus guaranteeing transformative projects. Since our foundation in 1999, our main objective has been to collaborate in the technological growth of companies and the country in order to provide the best experience and advice on your investment in T.I. We specialize in advising, consulting and technological integration, mastering various architectures and our purpose is to contribute to the digital development of businesses, promoting the adoption of new technologies. At MC",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:28.705Z",
+          "contentHash": "da6d8835fc99dec4bca0d856a892718b27df9b3f6d2226ad75124cbd4db8d012",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-41754a90ddbfac0c",
+          "url": "https://mcs.com.mx/en/wireless-networks",
+          "title": "Wireless Networks",
+          "excerpt": "MCS Networks wireless networking solutions provide the competitive advantage that growing businesses demand. We enable instant communication and information",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:55.426Z",
+          "contentHash": "d73bfb569941d845133e097b05b30938617d0cac67c0782e3b3d42405f13b629",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 11,
+      "candidateId": "lead-8c39ede4684ff45e",
+      "companyName": "GlobalIncom",
+      "domain": "globalincom.com.mx",
+      "officialWebsiteUrl": "https://globalincom.com.mx/",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "MSP"
+      ],
+      "totalScore": 77,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-8c39ede4684ff45e",
+        "evidence-17fad0da071feba0"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-8c39ede4684ff45e",
+          "url": "https://globalincom.com.mx/",
+          "title": "GlobalIncom | Soluciones en Infraestructura, Seguridad y Gobierno TI",
+          "excerpt": "GlobalIncom | Soluciones en Infraestructura, Seguridad y Gobierno TI Global Incom Inicio Soluciones Infraestructura Redes, Cableado y Wi-Fi Ciberseguridad Protección Lógica y Física Normatividad Aeronáutica Cumplimiento CO-SA-17.18/24 Consultoría y Gobierno TI Supervisión, Riesgo y Cumplimiento Servicios Administrados SOC, NOC y Staffing Mesa de Servicio Global Incom Portal General Mexicana de Aviación Portal Dedicado Empleados Webmail cPanel Calculadora IPv4 Calculadora IPv6 Arquitectura Mexicana Cerrar Sesión Contactar Inicio Soluciones Infraestructura Ciberseguridad └ Normatividad Aeronáutica Consultoría y Gobierno TI Servicios Administrados Clientes Global Incom (General) Mexicana de Aviación Empleados Webmail cPanel Calculadora IPv4 Calculadora IPv6 Arquitectura Mexicana Cerrar Sesión",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:06.896Z",
+          "contentHash": "9ccb1931d68533c1bf9abe3fac50593412610951b33d2942189853ba0aca0556",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-17fad0da071feba0",
+          "url": "https://globalincom.com.mx",
+          "title": "GlobalIncom | Soluciones en Infraestructura, Seguridad y Gobierno TI",
+          "excerpt": "## Nuestras Divisiones ### Soluciones Integrales #### Infraestructura Cableado, Fibra Óptica, VoIP y WiFi Empresarial. Ver catálogo #### Ciberseguridad Perimetral (Firewalls), Endpoint y Seguridad Física. Ver soluciones #### Normatividad Aeronáutica Especialistas en cumplimiento de la Circular CO-SA-17.18/24 AFAC. Ver detalles #### Consultoría Certificaciones, Auditoría y Gobierno de TI. Ver servicios ## Casos de Éxito Nuestra trayectoria y la confianza de clientes clave. [...] Cisco - Proveedor líder en equipos de networking, seguridad y soluciones empresariales Sophos - Solución de ciberseguridad y protección de endpoints Fortinet - Especialista en firewall y seguridad de red Aruba - Solución de redes inalámbricas empresariales y acceso seguro Extreme Networks - Proveedor de switches y n",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:49:09.609Z",
+          "contentHash": "07187723940f82efa8768422336cf997cfb8367a681f96a1a49ee20ee9d34969",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 12,
+      "candidateId": "lead-6b7dfbdca1f5a42c",
+      "companyName": "Net Land",
+      "domain": "net-land.com.mx",
+      "officialWebsiteUrl": "https://net-land.com.mx",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "MSP"
+      ],
+      "totalScore": 77,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-4b7396daa6f49172",
+        "evidence-051a8f44655e6bdd"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-4b7396daa6f49172",
+          "url": "https://net-land.com.mx",
+          "title": "Net Land — Infraestructura de Red y Ciberseguridad Empresarial",
+          "excerpt": "Más de 25 años diseñando, desplegando y operando redes empresariales críticas en México. Cisco, Fortinet, Palo Alto, Aruba y más.",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:28.544Z",
+          "contentHash": "8e58d39084d69e5e536ed7f1bcec24fbba551891137239a76b03a251be7eaf91",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-051a8f44655e6bdd",
+          "url": "https://net-land.com.mx/alerta.html",
+          "title": "Alerta de Ciberseguridad - Net Land",
+          "excerpt": "Net Land Estás infectado. Así de fácil un enlace o código QR malicioso puede comprometer tu información personal y la de toda tu empresa. Aprende en 2 minutos cómo protegerte. El engaño digital al descubierto. En el mundo digital actual, el peligro acecha en cada clic. Un simple escaneo de código QR o un mensaje aparentemente inofensivo puede ser la puerta de entrada para ciberdelincuentes. El correo que parece real Mensajes que imitan a tu banco, jefe o proveedor. Un clic en el enlace incorrecto entrega tus credenciales al atacante en segundos, sin que lo notes. El código que redirige Códigos QR en restaurantes, carteles o correos que llevan a páginas clonadas o descargan malware directamente en tu dispositivo móvil sin advertencia. La transferencia urgente El atacante suplanta a un direc",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:28.544Z",
+          "contentHash": "9da0a21f594f5e366931a267b903117c0120b1dcbe96b6925284fa8caffe1183",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 13,
+      "candidateId": "lead-ef62c7482d30f2ad",
+      "companyName": "Networking Technologies",
+      "domain": "nwt.com.mx",
+      "officialWebsiteUrl": "https://nwt.com.mx/",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "MSP"
+      ],
+      "totalScore": 77,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-ef62c7482d30f2ad",
+        "evidence-c9b6727a0a703f9e"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-ef62c7482d30f2ad",
+          "url": "https://nwt.com.mx/",
+          "title": "Networking &#8211; Technologies",
+          "excerpt": "Networking &#8211; Technologies Inicio Nosotros Servicios TELECOMUNICACIONES SEGURIDAD INFORMÁTICA DESARROLLO DE SOFTWARE CENTRO DE DATOS Áreas de negocios Clientes Contacto Soluciones Tecnológicas Simples de Operar Soluciones tecnológicas que implican menos recursos humanos y energéticos: menos espacio, menos energía, menor costo y mayor rapidez de implementación. Aseguramos la operación de tu negocio Nos especializamos en brindarte mejores resultados en la operación de tu negocio con la integración de tecnologías de información y comunicaciones de última generación. Potenciando tu negocio con Tecnologías de última generación. Integramos, implementamos y administramos tecnología e infraestructura de TIC`s con soluciones para diferentes sectores como Operadores, Mercado Empresarial y Gobie",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:47:41.755Z",
+          "contentHash": "9847697df192c9d963f42526655cfa393681ed1a9ed26154631a99ab874f4de3",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-c9b6727a0a703f9e",
+          "url": "https://nwt.com.mx",
+          "title": "Networking – Technologies",
+          "excerpt": "NetworkingNetworking Soluciones Tecnológicas Simples de Operar Soluciones tecnológicas que implican menos recursos humanos y energéticos: menos espacio, menos energía, menor costo y mayor rapidez de implementación. Aseguramos la operación de tu negocio Nos especializamos en brindarte mejores resultados en la operación de tu negocio con la integración de tecnologías de información y comunicaciones de última generación. Potenciando tu negocio con Tecnologías de última generación. Integramos, implementamos y administramos tecnología e infraestructura de TICs con soluciones para diferentes sectores como Operadores, Mercado Empresarial y Gobierno. Ingeniería Altamente Especializada Diseñamos soluciones enfocados en garantizar la operación de nuestros clientes, dándole con ello tranquilidad y ce",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:27.468Z",
+          "contentHash": "103b599fe54258fafd2aa101c84668a2b4282fa3b3e4fc1ab1a526fe67021c39",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 14,
+      "candidateId": "lead-fa4c57b5a10ada4e",
+      "companyName": "Grupo Intec Monterrey SA de CV",
+      "domain": "intecmty.com",
+      "officialWebsiteUrl": "https://intecmty.com/",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "Installer"
+      ],
+      "totalScore": 74,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-fa4c57b5a10ada4e"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-fa4c57b5a10ada4e",
+          "url": "https://intecmty.com/",
+          "title": "Grupo Intec Monterrey | CCTV, Control de Acceso y Redes",
+          "excerpt": "Grupo Intec Monterrey | CCTV, Control de Acceso y Redes Ir al contenido Inicio Nosotros Contacto Soluciones Videovigilancia / CCTV Control de acceso Redes empresariales Cableado estructurado Pólizas de mantenimiento Síganos inicie sesión Contacto Inicio Nosotros Contacto Soluciones Videovigilancia / CCTV Control de acceso Redes empresariales Cableado estructurado Pólizas de mantenimiento Síganos inicie sesión Contacto Videovigilancia, control de acceso y redes empresariales para empresas en Monterrey Transformamos tu confianza en resultados +1,500 Proyectos +200 Clientes atendidos +10 Años de experiencia Videovigilancia / CCTV Cableado Estructurado Redes Empresariales Pólizas de Mantenimiento Control de Acceso No entregamos solo equipo instalado Entregamos sistemas funcionando Algunos de n",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:53:36.374Z",
+          "contentHash": "10b80b21b06cc763d4e8a5ceec09acd77472e3d5ba1518687fe597e9ab5d4dd1",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r2"
+        }
+      ]
+    },
+    {
+      "rank": 15,
+      "candidateId": "lead-eae4888eade7a85a",
+      "companyName": "Neeps Telecomunicaciones",
+      "domain": "neeps.mx",
+      "officialWebsiteUrl": "https://neeps.mx/",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "Installer"
+      ],
+      "totalScore": 74,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-eae4888eade7a85a",
+        "evidence-9a374d6963d9b16f",
+        "evidence-5ed67aff15e42f8b",
+        "evidence-776e6e4335997ab7"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-eae4888eade7a85a",
+          "url": "https://neeps.mx/",
+          "title": "Inicio - Neeps Telecomunicaciones",
+          "excerpt": "Inicio - Neeps Telecomunicaciones , o en un Embed a nivel de página (Page Settings > Custom Code > Before tag) ============================================================ --> &times; Antes de irte ¿Tu red está lista para crecer sin fallar? Agenda un diagnóstico gratuito de tu infraestructura con nuestro equipo. Sin costo, sin compromiso — 15 minutos por WhatsApp. Quiero mi diagnóstico gratis Respondemos en menos de 24 horas hábiles INICIO INCIO NOSOTROS NOSOTROS SOLUCIONES SOLUCIONES Casos de ÉXITO CASOS DE ÉXITO Blog Blog ContactO CONTACTO Desarrollamos proyectos de Telecomunicaciones Desde el diseño y la creación, hasta la implementación e infraestructura. Contactar por WhatsApp Diagnóstico gratis INFRAESTRUCTURA CERTIFICADA CONFIABLE +30 años en el Sector Y más clientes que seguro cono",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:47:41.328Z",
+          "contentHash": "36dd64cea6319847e32be9e17cb213a2d8c64c71ed241fb01520c7f20e49fae7",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-5ed67aff15e42f8b",
+          "url": "https://neeps.mx/contacto",
+          "title": "Contacto - Neeps Telecomunicaciones",
+          "excerpt": "Antes de irte ¿Tu red está lista para crecer sin fallar? Agenda un diagnóstico gratuito de tu infraestructura con nuestro equipo. Sin costo, sin compromiso — 15 minutos por WhatsApp. Quiero mi diagnóstico gratis Respondemos en menos de 24 horas hábiles Ponte en contacto Contacto Escríbenos, queremos ser tus socios. Además, nuestro equipo de expertos se encuentra totalmente preparado para escuchar sobre el proyecto que tienes en marcha y resolver las necesidades que éste enfrente. Thank you! Your submission has been received! Oops! Something went wrong while submitting the form. O si lo deseas: Contactar por WhatsApp Uno de nuestros asesores te responderá en menos de 30 min\\ ask the team fAQ Lorem ipsum dolor sit amet, consectetur adipiscing elit. What is investing? Lorem ipsum dolor sit am",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:28.292Z",
+          "contentHash": "bad2da751a9347b9b5a2c04b91b82d78f090885fae277cfeb7d91edb724e616c",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-9a374d6963d9b16f",
+          "url": "https://neeps.mx/casos-de-exito",
+          "title": "Casos de Éxito - Neeps Telecomunicaciones",
+          "excerpt": "Antes de irte ¿Tu red está lista para crecer sin fallar? Agenda un diagnóstico gratuito de tu infraestructura con nuestro equipo. Sin costo, sin compromiso — 15 minutos por WhatsApp. Respondemos en menos de 24 horas hábiles Proyectos prácticos que nos respaldan. Casos de éxito. Algunos de los proyectos en los que hemos superado las expectativas de nuestros clientes, aliados y socios. Fibra Óptica externa UNAM CIUDAD UNIVERSITARIA La máxima casa de estudios necesitaba tener una red rápida y confiable en Ciudad Universitaria. conoce más conoce más This is modal 1 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. Cut out SVG Cut out SVG Cut out SVG %204.39.29%E2%80%AFp.m..png) red de cabl",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:28.292Z",
+          "contentHash": "56198d54226bceb1fcbcd7facd9df97f952afd595f76889a5f174c3f0c12eb3d",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-776e6e4335997ab7",
+          "url": "https://neeps.mx",
+          "title": "Inicio - Neeps Telecomunicaciones",
+          "excerpt": "Contact © 2026 Neeps Telecomunicaciones. Hecho por: [...] Diseñamos, implementamos y probamos las redes de comunicaciones inalámbricas, así como mantenimientos preventivos y correctivos. Aplicamos este servicio desde Small Business hasta Enterprise. Instalamos WiFi, LAN, WAN, etc. Lab. De Fibra Óptica Contamos con herramientas especializadas para instalar, crear y administrar redes de fibra óptica. Nuestros Partners, fabricantes de tecnología, pueden certificar nuestros procesos y asistirnos en casos que demanden mayor complejidad. VER más [...] Telecomunicaciones Somos líderes en la transmisión de señales, transporte de información, y cualquier medio de transmisión. Realizamos implementación de Redes Eléctricas, Mejoramos las comunicaciones a través de la Fibra Óptica, Desarrollamos proye",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:57.678Z",
+          "contentHash": "ebde7211bca3cd21095f7a12d418fc6c68b6ab44bbafb96901f9b9990815962f",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 16,
+      "candidateId": "lead-6c7d42c89bfde34a",
+      "companyName": "SieNetworks",
+      "domain": "sienetworks.com",
+      "officialWebsiteUrl": "https://www.sienetworks.com",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI"
+      ],
+      "totalScore": 74,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-c80f627032669205",
+        "evidence-b7ab856b2af895dd",
+        "evidence-2065beb3f4bf664b"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-b7ab856b2af895dd",
+          "url": "https://www.sienetworks.com/website/social/facebook",
+          "title": "Sienetworks | Benito Juarez - Facebook",
+          "excerpt": "Insurgentes sur #1020, Benito Juarez, Mexico, 03100 Contact info 󰛪 +52 55 5088 5904 ventas@sienetworks.com",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:55:21.647Z",
+          "contentHash": "895b75aa04744c3fcd7c9ba6c69d35474cd86ccfd398aa865dc848e827867b89",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r2"
+        },
+        {
+          "id": "evidence-2065beb3f4bf664b",
+          "url": "https://www.sienetworks.com/about-us",
+          "title": "Sobre nosotros - SieNetworks",
+          "excerpt": "SieNetworks SieNetworks Sobre nosotros Personal Certificado Nuestro Personal se mantiene en Capacitación constante. Descubre nuestros servicios Empresa con Reconocimientos Dos años consecutivos recibimos la Special Mention de México Partner Services en el evento de Aruba Atmosphere 2019 y 2020. Descubre nuestros servicios Centro de Redes de Computadoras Conoce a nuestro equipo Profesionales especializados que se encargan de nuestro éxito Oscar Arias Director General CEO Redes sociales Paola Razo Directora Financiera Facturación Redes sociales Erick Rivera Director de Ingeniería Especialista Redes sociales Moisés Nieto Director de Proyectos Seguimiento Redes sociales Diana Arias Directora Comercial Ventas Redes sociales Síganos Odoo",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:55:21.647Z",
+          "contentHash": "de6732a9289fa82eea503dd225318ee247e5ced7a443d7272ad35f2799416447",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r2"
+        },
+        {
+          "id": "evidence-c80f627032669205",
+          "url": "https://www.sienetworks.com",
+          "title": "SieNetworks: Home",
+          "excerpt": "SieNetworks SieNetworks La revolución de la conectividad Descubre nuestros servicios Conéctate por completo Ofrecemos servicios de instalación y mantenimiento de redes de computadoras. Nuestro objetivo es garantizar un rendimiento óptimo y una conectividad ininterrumpida para su negocio. Empiece con el análisis – descubra lo que necesita y déselo. Descubre nuestros servicios Descubre un nuevo horizonte Disfruta de nuestros servicios personalizados y forma parte de esta nueva era digital. Te damos la bienvenida a un nuevo mundo digital Ofrecemos servicios de instalación y mantenimiento de redes de computadoras. Nuestro objetivo es garantizar un rendimiento óptimo y una conectividad ininterrumpida para su negocio. Empiece con el análisis – descubra lo que necesita y déselo. Descubre nuestros",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:55:21.647Z",
+          "contentHash": "8776a5e8127b7a1cd8d4ab500376a67dd8785d32c618eb7c59eccca6981d5f90",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r2"
+        }
+      ]
+    },
+    {
+      "rank": 17,
+      "candidateId": "lead-1dbe9e4acff91f48",
+      "companyName": "Informática Empresarial Integrada (IEISA)",
+      "domain": "informaticaempresarial.mx",
+      "officialWebsiteUrl": "https://informaticaempresarial.mx",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "MSP"
+      ],
+      "totalScore": 72,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-1dbe9e4acff91f48",
+        "evidence-79a33022da08413a",
+        "evidence-7ee6c0bdcfd924c0",
+        "evidence-ca901baea33fbade"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-1dbe9e4acff91f48",
+          "url": "https://informaticaempresarial.mx/",
+          "title": "Inicio - Informática Empresarial",
+          "excerpt": "Inicio - Informática Empresarial Skip to content Inicio Nosotros Servicios Centro de datos Redes Empresariales Colaboración Empresarial Energía Gestión empresarial Equipo de oficina Ciberseguridad Servicios de nube Servicios administrados Servicios de Ingeniería Inicio Nosotros Servicios Centro de datos Redes Empresariales Colaboración Empresarial Energía Gestión empresarial Equipo de oficina Ciberseguridad Servicios de nube Servicios administrados Servicios de Ingeniería Contacto Contacto Inicio Nosotros Servicios Centro de datos Redes Empresariales Colaboración Empresarial Energía Gestión empresarial Equipo de oficina Ciberseguridad Servicios de nube Servicios administrados Servicios de Ingeniería Inicio Nosotros Servicios Centro de datos Redes Empresariales Colaboración Empresarial Ener",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:47:45.654Z",
+          "contentHash": "926e993f0d1fa588b0c4f5eac961cffc5142520b4dbcc965a2b31a87866ee192",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-ca901baea33fbade",
+          "url": "https://informaticaempresarial.mx/wp-content/uploads/2020/08/Surface-para-Empresas-Mexico-IEISA.pdf",
+          "title": "[PDF] Microsoft Surface para empresas",
+          "excerpt": "Microsoft Surface para empresas Diseñado para el Espacio de Trabajo Moderno Surface o Microsoft Hardware comenzó hace casi 20 años para optimizar las experiencias de hardware con Windows. Desde entonces, la línea Surface se ha convertido en el eje de la innovación de Microsoft en productividad personal. Con la introducción de los dispositivos Surface hace ocho años, Microsoft buscaba un equilibrio entre belleza y eficacia, formato y funcionalidad, para crear un dispositivo perfecto para usarlo todos los días. Hoy Surface reúne lo mejor de Microsoft, combinando toda la eficacia de la plataforma Windows en dispositivos que encantan a los usuarios. Una historia de innovación Surface Pro 4 Surface 3 Surface 2 y Pro 2 Surface RT Surface Pro Surface Studio Surface Dial Surface Book 2 de 13\" y 15",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:35.234Z",
+          "contentHash": "4b4010a2b669afc625d29fdc7d3743bab0d77a3f8ed570b65cf40725540c8c68",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-79a33022da08413a",
+          "url": "https://informaticaempresarial.mx/nosotros",
+          "title": "Nosotros - Informática Empresarial",
+          "excerpt": "Informática Empresarial Sobre nosotros +31 años de ser tu mejor aliado de tecnología Sobre nosotros Nuestra visión va más allá de simplemente cumplir con las regulaciones. Queremos crear valor compartido para nuestros empleados, clientes, socios y comunidades, convencidos de que la innovación tecnológica y el desarrollo sostenible deben ir de la mano. Nuestra invitación a los clientes y socios es unirse a esta visión común para forjar un futuro más justo, igualitario y respetuoso con el medio ambiente. Somos reconocidos como una empresa sólida, profesional y capaz de adaptarnos a las diversas necesidades, abarcando áreas como informática, equipamiento, centros de datos, seguridad, entre otras, según lo demande la industria. Nuestra propuesta de valor es brindar a nuestros clientes el más a",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:35.234Z",
+          "contentHash": "4602f058451982e91fdc222f7846841d6b1af68942e1e1a67aa3d7618cb72b31",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-7ee6c0bdcfd924c0",
+          "url": "https://informaticaempresarial.mx",
+          "title": "Informática Empresarial: Inicio",
+          "excerpt": "Informática Empresarial Transformamos con Tecnología Servicios tecnológicos para la innovación estratégica y adopción digital Somos tu Socio Estratégico en Soluciones de Tecnología Empresarial Soluciones Tecnológicas Empresariales para Grandes Retos de Infraestructura y Transformación Digital Somos una empresa 100% regiomontana especializada en diseñar, implementar y optimizar soluciones tecnológicas empresariales. Nuestro enfoque está en brindar servicios de alto nivel que respondan a los retos actuales de infraestructura, seguridad y escalabilidad. Nos distinguimos por ofrecer soluciones a la medida, priorizando la confiabilidad, la innovación y una relación cercana con nuestros clientes. Impulsando la transformación tecnológica en empresas líderes Certificaciones de TI que avalan nuestr",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:35.235Z",
+          "contentHash": "f692ee86f81b291e5ea10196ee2b2840d710193dc441fdb4e42dcc651306a604",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 18,
+      "candidateId": "lead-de404c23881b6b65",
+      "companyName": "Sitwifi S.A. de C.V.",
+      "domain": "sitwifi.com",
+      "officialWebsiteUrl": "https://sitwifi.com/",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP",
+        "SI"
+      ],
+      "totalScore": 72,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-de404c23881b6b65",
+        "evidence-113bb573ebad1c51",
+        "evidence-1fc58465c910ad11",
+        "evidence-247febe5fc002a5a",
+        "evidence-b1bbaaa0efec0790"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-de404c23881b6b65",
+          "url": "https://sitwifi.com/",
+          "title": "Descubre todo lo que puedes lograr con la mejor conexión",
+          "excerpt": "Descubre todo lo que puedes lograr con la mejor conexión --> ES EN ES MENÚ Home Empresarial Residencial --> Station MIA Nosotros Contáctanos Arsnet Blog ES EN ES COTIZA Imagina qué haría tu con el mejor WiFi ¡AVERÍGUALO! --> Hotelería VER MÁS Educación VER MÁS Aeropuertos y Terminales VER MÁS Tiendas, Restaurantes y Autoservicios VER MÁS Centros Comerciales VER MÁS Transporte Público VER MÁS Sector Salud VER MÁS Sector Financiero VER MÁS Fábricas VER MÁS Estadios VER MÁS Eventos VER MÁS Valor para tu negocio NEGOCIO Cero Inversión Sin pago inicial. Con nuestro Servicio y Soporte Administrado, el costo de la infraestructura corre por nuestra cuenta. Sin Gastos Adicionales Absorbemos todos los gastos derivados de garantías,refacciones y mantenimiento. ¡Seguridad sin costos extra! Servicio Ga",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:47:38.741Z",
+          "contentHash": "78844c75b3e398bc75354327de678bc69680555fabe87be9ebf6aee3b01708fd",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-113bb573ebad1c51",
+          "url": "https://sitwifi.com",
+          "title": "Descubre todo lo que puedes lograr con la mejor conexión",
+          "excerpt": "Imagina qué haría tu con el mejor WiFi Sitwifi Empresarial Servicio y Soporte Administrado en infraestructura de red. VER MÁS Sitwifi Station La plataforma de WiFi Marketing más grande en todo México. VER MÁS Sitwifi Empresarial Servicio y Soporte Administrado en infraestructura de red. VER MÁS Sitwifi Station La plataforma de WiFi Marketing más grande en todo México. VER MÁS Somos diferentes SSA (Servicio y Soporte Administrado): modelo de negocio probado por más de 15 años, convirtiéndonos en el proveedor líder en CALA. MIA (Monitoreo Inteligente y Analítico): vigilamos, medimos y reportamos el estado de tu red, desde el enlace hasta la experiencia del usuario. VMW (Venue Monetization WiFi): soluciones tecnológicas que ayudan a monetizar una red de WiFi. Sitwifi Station: la plataforma de",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:26.559Z",
+          "contentHash": "d7ee5d420c19c986404c4f1a4915889a7db5082d1ace51d117659326cea25d21",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-1fc58465c910ad11",
+          "url": "https://blog.sitwifi.com/index.php/2021/06/17/que-es-el-wifi-marketing",
+          "title": "¿Qué es el WiFi Marketing? – Sitwifi",
+          "excerpt": "SitwifiSitwifi Home Categorías Contacto Suscríbete ¿Qué es el WiFi Marketing? ¿Qué es el WiFi Marketing y cómo puede ayudar a tu negocio? Lectura 5 minutos Si bien al hablar de marketing digital se suelen tomar en cuenta redes sociales y plataformas de anuncios, pocas empresas aprovechan uno de los espacios más valiosos para promover su negocio: el WiFi Marketing. ¿Qué es el WiFi Marketing? El WiFi Marketing consiste en ofrecer acceso a una red gratuita, a los usuarios de un establecimiento, a cambio de que visualicen o interactúen con un anuncio. Este modelo es usado en múltiples lugares, desde aeropuertos, estaciones de metro y Metrobús, hasta centros comerciales y plazas públicas. Debido a su base tecnológica y presencia en gran cantidad de lugares, tiene beneficios que otros canales pu",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:26.559Z",
+          "contentHash": "a2abafda3e2dc6122052ba3f1d3980e9b77a2ab6a9c0ee1e6a232a508f2550ae",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-247febe5fc002a5a",
+          "url": "https://sitwifi.com/vmw",
+          "title": "Venue Monetization WiFi | Otra manera de llegar a tus clientes - Sitwifi",
+          "excerpt": "Sitwifi VMW Venue Monetization WiFi Nuestro modelo de negocio que brinda experiencias de conectividad aportando valor a tu sitio o negocio. WiFi de máxima calidad al alcance de todos. Soluciones tecnológicas que ayudan a monetizar una red de WiFi, garantizando y ampliando su cobertura. Descubre nuevas oportunidades de negocio. Genera satisfacción y lealtad entre los usuarios y reduce el Churn Rate o Tasa de Cancelación. VMW Descubre nuevas oportunidades de negocio. Genera satisfacción y lealtad entre los usuarios y reduce el ChurnRate o Tasa de Cancelación. Beneficios únicos Servicio garantizado Operamos bajo un contrato de SLA del 98% y un NPS de 94. Atención 24/7 Contamos con NOC, IT Concierge y Call Center para dar seguimiento y soluciones personalizadas. Contamos con NOC, IT y Call Cen",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:26.560Z",
+          "contentHash": "a09f41306ccfa27c59a7e4885f0cb5ccd640a9f52802e6768b94bf2f9f5c3e77",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-b1bbaaa0efec0790",
+          "url": "https://www.sitwifi.com/aviso-de-privacidad",
+          "title": "Aviso de privacidad Sitwifi | Conoce cómo tratamos tus datos",
+          "excerpt": "Sitwifi Aviso de privacidad SITWIFI, S.A. DE C.V. De conformidad con lo previsto en la Ley Federal de Protección de Datos Personales en Posesión de los Particulares, su Reglamento y los Lineamientos del Aviso de Privacidad, por medio del presente, le damos a conocer a usted (indistintamente \"Usted\" o el \"Titular\"), el presente Aviso de Privacidad (en lo sucesivo el \"Aviso de Privacidad\"), mismo que le aplicará a Usted como cliente, usuario, o proveedor de SITWIFI, S.A. de C.V. (\"Nosotros\"). Deseamos que Usted comprenda nuestras prácticas de privacidad, específicamente, qué datos personales e información recopilamos, como se usa esa información, con quien compartimos esa información y qué hacemos para protegerla; así mismo nos comprometemos en términos de Ley a velar por el cumplimiento ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:26.560Z",
+          "contentHash": "fbadec57bf427d7b699187e243b6f72fb94adf89471ab5c2da07547af0e80e01",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 19,
+      "candidateId": "lead-0cd26224fb2c095e",
+      "companyName": "Ingeniería en Sistemas Electrónicos Digitales, S.A. de C.V. (ISED)",
+      "domain": "ised.com.mx",
+      "officialWebsiteUrl": "https://ised.com.mx/",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "Installer"
+      ],
+      "totalScore": 71,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-0cd26224fb2c095e",
+        "evidence-587b8f7246124dd0",
+        "evidence-ee971411a2eaf6bc"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-0cd26224fb2c095e",
+          "url": "https://ised.com.mx/",
+          "title": "ISED - Principal",
+          "excerpt": "ISED - Principal You are using an outdated browser. Please upgrade your browser to improve your experience and security. Cargando ... Cerrar Cerrar 55 9180 0960 800 5812 999 ised@ised.com.mx Innovación en Comunicaciones 55 6170 2209 229 119 0606 Linkedin Facebook Instagram Menu Inicio Conócenos Historia Portafolio Casos de éxito Testimonios --> Soluciones Datos: Networking & Wireless Cableado: Fibra y Cobre Seguridad: CCTV y Control de Acceso Control: Automatización (BMS) Voz: Telefonía IP Protección: Tierra Física y UPS Torres de comunicación punto a punto Arrendamiento de equipos de cómputo Contacto Voz, datos y seguridad, optimizados para el crecimiento de tu empresa. Infraestructura Tecnológica Conocer Solución Optimiza tu red con infraestructura de calidad, diseñada para el rendimient",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:54:40.958Z",
+          "contentHash": "9aadbc0a4803ced9fbb125852f2b0f1865698adcefe49e08a18cfe00bf29385b",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r2"
+        },
+        {
+          "id": "evidence-587b8f7246124dd0",
+          "url": "https://www.ised.com.mx/quienes-somos.html",
+          "title": "ISED - ¿Quienes Somos?",
+          "excerpt": "Cargando ... Image 1Image 2 Cerrar Inicio Conócenos Historia Soluciones Datos: Networking & Wireless Cableado: Fibra y Cobre Seguridad: CCTV y Control de Acceso Control: Automatización (BMS) Voz: Telefonía IP Protección: Tierra Física y UPS Torres de comunicación punto a punto Arrendamiento de equipos de cómputo Contacto Cerrar 55 9180 0960 800 5812 999 ised@ised.com.mx Innovación en Comunicaciones 55 6170 2209 229 119 0606 Linkedin Facebook Instagram Image 3Image 4 Menu Inicio Conócenos Historia Soluciones Datos: Networking & Wireless Cableado: Fibra y Cobre Seguridad: CCTV y Control de Acceso Control: Automatización (BMS) Voz: Telefonía IP Protección: Tierra Física y UPS Torres de comunicación punto a punto Arrendamiento de equipos de cómputo Contacto Video 1 ¿Quiénes Somos? Empresa de I",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:55:17.313Z",
+          "contentHash": "7ad8a6629f460757dd9bdab409e004abbd75b1fea08691c3a2be962174e93055",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r2"
+        },
+        {
+          "id": "evidence-ee971411a2eaf6bc",
+          "url": "https://www.ised.com.mx/proteccion-tierra-fisica-y-ups.html",
+          "title": "Protección: Tierra Física y UPS",
+          "excerpt": "site logo Site Logo ISED [Desde 1990] image Protección de Infraestructura Tecnológica Implementamos sistemas de protección eléctrica como UPS y tierras físicas para cuidar tu infraestructura crítica frente a fallos o sobrecargas. Garantizamos continuidad y estabilidad en tus sistemas operativos. Protección: Tierras Físicas y UPS image Evita daños por picos eléctricos image Protección 24/7 de equipos image Continuidad operativa garantizada image Cumplimiento de normas eléctricas Le ayudamos a desbloquear y liberar el poder dentro de su negocio a gran escala Sitemap Contáctanos Suscríbete a nuestro boletín Todos los derechos reservados — 2025 © ISED",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:55:17.313Z",
+          "contentHash": "39c50996674dd846daf99adaf9ffcf6ecb8d7f3d31d8a9c7abdd60550a2f836f",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r2"
+        }
+      ]
+    },
+    {
+      "rank": 20,
+      "candidateId": "lead-921956445734d572",
+      "companyName": "Enter Keep it Simple",
+      "domain": "entercs.com.mx",
+      "officialWebsiteUrl": "https://entercs.com.mx/",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "MSP"
+      ],
+      "totalScore": 68,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-921956445734d572",
+        "evidence-726e1b5fece07958",
+        "evidence-352710c7bbceac98",
+        "evidence-b7e85264e2d8f00d",
+        "evidence-990c61a7b56c9c1d"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-921956445734d572",
+          "url": "https://entercs.com.mx/",
+          "title": "Enter &#8211; Keep it simple",
+          "excerpt": "Enter &#8211; Keep it simple Ir al contenido ENTER | Header Asistencia Técnica enter | Soluciones de TI *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; } html { font-size: 16px; scroll-behavior: smooth; } body { font-family: 'Montserrat', sans-serif; color: #1a2540; line-height: 1.65; -webkit-font-smoothing: antialiased; } :root { --red: #BD0827; --navy: #0E1A30; --navy2: #111f35; --navy3: #172847; --light: #F4F6FA; --white: #ffffff; --muted-d: rgba(180, 210, 240, .70); --muted-l: #5a6a8a; --border-d: rgba(255, 255, 255, .07); --border-l: rgba(0, 0, 0, .08); --radius: 14px; } #ehs h1, #ehs h2, #ehs h3, #ehs h4 { font-family: 'Rubik', sans-serif; line-height: 1.2; } #ehs a { color: inherit; text-decoration: none; } #ehs .container { max-width: 1360px; margin: 0 auto;",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:07.100Z",
+          "contentHash": "21e8e47ff48d7b0343c5b520544c1090a2ae204a6f934ddf00261de410c9eec7",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-726e1b5fece07958",
+          "url": "https://entercs.com.mx/en/enter",
+          "title": "Enter Keep it Simple | Soluciones tecnológicas y servicios de TI",
+          "excerpt": "Title: Enter Keep it Simple | Soluciones tecnológicas y servicios de TI Enter | Keep it SimpleEnter | Keep it SimpleEnter | Keep it Simple. # Keep it Simple. #### Generating value to companies with Technological Solutions. We have all the infrastructure to support all the services and systems of your company. We contribute to the fulfillment of the technological objectives of your business with the best technological solutions and IT services, aligned to the international standard for the management of IT services (ISO20000) and with processes designed in the best practices of ITIL. ##### Enterprise Networking Solutions. ##### Business strategies. ##### Optimally support all the services and applications your business needs. ##### Protection before, during, and after a cyber threat. ##### ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:49:11.490Z",
+          "contentHash": "5ef9c002765135c7db79588edfc3ae89b2450bdd7bab6e7681ec96f2416d8a70",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-352710c7bbceac98",
+          "url": "https://entercs.com.mx/en/products",
+          "title": "Soluciones para PyMEs | Enter | Soluciones tecnológicas y servicios de TI",
+          "excerpt": "# Our Products. ### We have strategic alliances formed by Leading Manufacturers in the IT market, which added to our services, strengthen and complement our solutions. ### Business Computing. Our enterprise computing solution enriches the user experience. Lenovo’s enterprise computing solutions deliver security, workplace efficiency, management, and business intelligence, high-quality equipment, and performance, we have a portfolio that meets the requirements and needs of each of our customers. ### Switches. We have Switch Core solutions and for user access connection. ### Routing. WAN network solutions for interconnection and communication abroad. ## MERAKI. Meraki’s enterprise networking solutions are 100% manageable in the cloud, allowing you to perform configurations from anywhere and ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:49:11.491Z",
+          "contentHash": "f92b836787cede5bcec3fa9b6867acdecb354a2cae8fb26b388394640f62671b",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-b7e85264e2d8f00d",
+          "url": "https://entercs.com.mx/en/about-us",
+          "title": "Nosotros | Enter Keep it Simple | Soluciones tecnológicas y servicios de TI",
+          "excerpt": "Title: Nosotros | Enter Keep it Simple | Soluciones tecnológicas y servicios de TI Enter | Keep it SimpleEnter | Keep it SimpleEnter | Keep it Simple. ##### Enter Keep it simple. # Simplify your company’s operations. ### We have all the infrastructure to support all the services and systems of your company. We have a wide portfolio of protection solutions and services before, during, and after a cyber threat. We work efficiently and streamline business processes increasing the productivity of your company. We have enterprise computing solutions based on the highest standards worldwide. ### Mission. “Market and deliver innovative technology solutions that generate value to our customers, satisfying their needs, increasing productivity and profitability to their business.”. ### Vission. “Ent",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:49:11.491Z",
+          "contentHash": "17e12b528e226c9ad64a137010ec9f7c939003cd53d9e6d3050c61542f4ef20e",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-990c61a7b56c9c1d",
+          "url": "https://entercs.com.mx/contacto",
+          "title": "Contacto | Enter Keep it Simple | Soluciones tecnológicas y servicios de TI",
+          "excerpt": "## Simplifique las operaciones de su empresa #### contacto@entersoluciones.com #### **Corporativo Toreo** Blvd. Manuel Ávila Camacho No. 5, Torre A, Piso 16, Fracc. Lomas de Sotelo. Municipio Naucalpan de Juarez. Estado de México, C.P 53390 #### **Oficina Azcapotzalco** Reforma No. 543, Col. Azcapotzalco, Alcaldía Azcapotzalco. CDMX C.P. 02000 **CONTACTO** **Teléfono:** +52 5530672750 **Email:** contacto@entersoluciones.com #### CONOZCA MÁS * Aviso de privacidad * Política anticorrupción * Noticias © 2026 Enter | Keep it Simple. * Nosotros * Soluciones + Soluciones de Infraestructura + Soluciones de Negocio + Soluciones de Centro de Datos + Soluciones y Servicios de Seguridad + Soluciones de Colaboración * Productos * Servicios Enter * Servicios Avanzados * Blog * Contacto * Centro de Solu",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:49:11.491Z",
+          "contentHash": "d977e8927df446a6dc4ed40ff7c7f1689d5070def61cb936ebae2ceeaf95bc6c",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 21,
+      "candidateId": "lead-2ca6d22199e83f62",
+      "companyName": "MMC Networks",
+      "domain": "mmcnet.com.mx",
+      "officialWebsiteUrl": "https://www.mmcnet.com.mx/",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI"
+      ],
+      "totalScore": 67,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-2ca6d22199e83f62"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-2ca6d22199e83f62",
+          "url": "https://www.mmcnet.com.mx/",
+          "title": "Official homepage",
+          "excerpt": "--> .Z0mg9X{color:rgb(var(--errorTextColor,#ff4040));direction:var(--errorDirection);align-items:center;gap:4px;justify-content:var(--errorAlign,inherit);flex-direction:row;padding:8px 0 0;display:flex}.Z0mg9X .mZemNb{flex:none;order:0}.Z0mg9X .TTK5ZL{font:var(--errorTextFont,var(--font_8));word-break:break-word;word-break:break-word;flex-grow:0;order:1;line-height:1;display:inline-block}.fRbOAc{text-align:var(--align);direction:var(--direction)}.fRbOAc .XXgBXC{-webkit-appearance:none;box-shadow:var(--shd,0 0 0 #0000);border-radius:var(--corvid-border-radius,var(--rd,0));font:var(--fnt,var(--font_8));border-width:var(--corvid-border-width,var(--brw,1px));resize:none;background-color:var(--corvid-background-color,rgba(var(--bg,255, 255, 255),var(--alpha-bg,1)));color:var(--corvid-color,rgb(",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:54:20.745Z",
+          "contentHash": "1d385457d24856e88b4bf676d94e3e4137cc056261e1642ed3d8265764833e87",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r2"
+        }
+      ]
+    },
+    {
+      "rank": 22,
+      "candidateId": "lead-a3169f358deae534",
+      "companyName": "STASSC Sistemas",
+      "domain": "sistemas.stassc.com.mx",
+      "officialWebsiteUrl": "https://sistemas.stassc.com.mx/",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "MSP"
+      ],
+      "totalScore": 67,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-a3169f358deae534",
+        "evidence-166cac2562377384",
+        "evidence-ff02fa13a67f42ef",
+        "evidence-8781b20d74fdda3b"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-a3169f358deae534",
+          "url": "https://sistemas.stassc.com.mx/",
+          "title": "Soporte Técnico para Empresas y Reparación de Computadoras en CDMX | STASSC",
+          "excerpt": "Soporte Técnico para Empresas y Reparación de Computadoras en CDMX | STASSC Servicios PyME Soporte Técnico para Empresas Contratos de Soporte TI Redes y Conectividad Instalación de Redes WiFi Cableado Estructurado Infraestructura TI Venta e Implementación de Equipos Reparación de Computadoras Nosotros Contacto Contacto BIENVENIDO A STASSC SISTEMAS Soporte técnico y reparación de computadoras para empresas en CDMX Tu operación no puede detenerse. Pólizas de soporte TI con tiempo de respuesta garantizado, reparación de computadoras con diagnóstico sin costo, redes WiFi empresariales y cableado estructurado en toda la Ciudad de México. ¿Tu equipo falló? Escríbenos por WhatsApp Solicitar cotización sin costo 980 + tickets e intervenciones resueltas 7 + años de experiencia en CDMX 20 + empresas",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:47:39.074Z",
+          "contentHash": "6fb1c4d432e14c935846fa565c4198851c1da02a883dfb3d3a58f530bcd4c0a6",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-166cac2562377384",
+          "url": "https://sistemas.stassc.com.mx/soluciones-de-red/Redes-Wifi",
+          "title": "Instalación de Redes WiFi Empresariales en CDMX | Unifi, MikroTik y TP-Link | STASSC",
+          "excerpt": "En STASSC instalamos redes WiFi empresariales en Ciudad de México con equipos Unifi, MikroTik y TP-Link — seleccionando siempre la solución más adecuada para el tamaño, densidad y necesidades específicas de tu empresa. Cada proyecto incluye survey de RF, diseño de cobertura, configuración de seguridad y entrega con pruebas de rendimiento. El resultado: una red que funciona el primer día y sigue funcionando cuando tu empresa crece. Solicitar análisis sin costo [...] Solicita tu proyecto por WhatsApp Cotiza tu red WiFi ## Instalación de redes WiFi empresariales en Ciudad de México En STASSC ofrecemos instalación de redes WiFi empresariales en CDMX para oficinas, corporativos, hoteles, naves industriales y espacios de alta densidad. Trabajamos con equipos Unifi (Ubiquiti), MikroTik y TP-Link ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:52.797Z",
+          "contentHash": "d6bdc3dd6d706c675508aa70c9776e955e2e6271d21df069896678b3a10d262a",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-ff02fa13a67f42ef",
+          "url": "https://www.omadanetworks.com/mx",
+          "title": "Networks Empower Business | TP-Link México - Omada",
+          "excerpt": "Omada ofrece numerosas opciones de swtiches, desde switches L3 administrados hasta no administrados PoE y no PoE, con puertos de 25G, 10G, 2.5G, 1G, o Ethernet rápida. Descrubre másarrow Omada Business Wi-Fi Wi-Fi de Negocios Omada Los access points de techo, placa de pared, exterior, escritorio y puente garantizan una conexión fluida en cualquier escenario. Descubre másarrow Omada Reliable Gateways Gateways Confiables Omada [...] SESSION, JSESSIONID, accepted\\_local\\_switcher, tp\\_privacy\\_banner, tp\\_privacy\\_base, tp\\_privacy\\_marketing, tp\\_top-banner, tp\\_popup-bottom, tp\\_popup-center, tp\\_popup-right-middle, tp\\_popup-right-bottom, tp\\_productCategoryType id, VISITOR\\_INFO1\\_LIVE, LOGIN\\_INFO, SIDCC, SAPISID, APISID, SSID, SID, YSC, \\_\\_Secure-1PSID, \\_\\_Secure-1PAPISID, \\_\\_Secure-",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-05T19:48:52.797Z",
+          "contentHash": "60576e8e9827172a7a3ab9a828c99fb724b819939188c1364769f542031a2c5b",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-8781b20d74fdda3b",
+          "url": "https://mikrotik.com/buy/latinamerica/mexico",
+          "title": "MikroTik · Distributors",
+          "excerpt": "MikroTik makes networking hardware and software, For purchases of Hardware or MikroTik RouterOS please contact our Official Distributors … +52 614 415 2525 E:",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-05T19:48:52.797Z",
+          "contentHash": "18614fbf6e8b04be4b37c8e7d4030d12e2327f67a597f928eda920f255995320",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 23,
+      "candidateId": "lead-5b3c3a87ddc3fb57",
+      "companyName": "IPEMEX",
+      "domain": "ipemex.com.mx",
+      "officialWebsiteUrl": "https://ipemex.com.mx/",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "Installer"
+      ],
+      "totalScore": 66,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-b8a7c538b84f6306",
+        "evidence-f44fddc864c26a60",
+        "evidence-12069ab459665f8f",
+        "evidence-e9d44fb5c5e3753a"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-b8a7c538b84f6306",
+          "url": "https://ipemex.com.mx",
+          "title": "IPEMEX: Inicio",
+          "excerpt": "Ingeniería Proyectos y Ejecución Misión Realizar proyectos de Ingeniería desde el concepto de la idea de nuestro cliente hasta la ejecución de operación de éste. Visión Consolidar los logros y el crecimiento de nuestros clientes a través de la tecnología, ofreciendo tranquilidad en la operación del proyecto. Objetivo Ser la empresa líder y referente nacional destacando la calidad de servicio y compromiso con el cliente ¿Quiénes somos? Somos una empresa que ofrece soluciones de telecomunicaciones, integrada por profesionales e ingenieros certificados con más de 15 años de experiencia y especialización en cada una de sus áreas. Dedicada a la venta, instalación y mantenimiento en: Oficinas Av. Prolongación División del Norte 5605 Barrio San MarcosXochimilco, 16050 Ciudad de México ¡Contáctano",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:32.307Z",
+          "contentHash": "a0176291c5b277cf2430b0329097c85073c6915433863ae53af765d6ab1c11a6",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-f44fddc864c26a60",
+          "url": "https://ipemex.com.mx/wifi-empresarial",
+          "title": "WIFI EMPRESARIAL - IPEMEX",
+          "excerpt": "© 2019 WIFI EMPRESARIAL Tener la Mayor Eficiencia en el control de tus operaciones depende de un ¡Excelente Servicio! Nuestros Desarrollos Te Permiten: • Comunicación inalámbrica. • Sistema incorruptible. • Control de entradas y salidas. • Localización exacta de unidades. • Información disponible para personal autorizado. • Reducción en tiempos de operación. • Reducción de accidentes. • Espacio siempre disponible. • Estar a la Vanguardia En IPE basamos Nuestro Servicio en Análisis Precisos y Desarrollo de Arquitecturas de Alta Fiabilidad para generar una Dinámica Inteligente y Adaptable de Intercomunicación entre Tus Dispositivos Inalámbricos para que Siempre estén Funcionando. Mediante el WiFi los dispositivos de tecnología RFID, Sensores de Peso, Cámaras de Reconocimiento Facial, Lector ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:32.307Z",
+          "contentHash": "6d881d0c511c82b450717100628cf9b18c6c61b0583bc009cae6c4dad25a1a49",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-12069ab459665f8f",
+          "url": "https://ipemex.com.mx/servicios",
+          "title": "Servicios - IPEMEX",
+          "excerpt": "© 2019 SERVICIOS Ponemos a su disposición nuestro gran equipo de profesionales con los siguientes servicios: ALGUNOS DE NUESTROS CLIENTES SOLO TRABAJAMOS CON LAS MEJORES MARCAS DEL MERCADO Logo de Panduit Logo de linkedpro Logo de tp-link Logo de Ubiquiti Logo de Hid Logo de 3CX Logo de Kenwood Logo de Radiowaves Logo de Mimosa Logo de Siemon Oficinas Avenida. Prolongación División del Norte 5605 Barrio San MarcosXochimilco, 16050 Ciudad de México ¡Contáctanos a través de nuestras redes sociales! Horario de trabajo Lunes - Viernes: 09:00 - 18:00 Sábados: 09:00 - 13:00",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:32.307Z",
+          "contentHash": "aede3c90c0498b41cf412a6b9c72822f6f929b94df803e4ac23e87b50e66f7f3",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-e9d44fb5c5e3753a",
+          "url": "https://ipemex.com.mx/producto/pmd-0-9",
+          "title": "PMD-0-9 - IPEMEX",
+          "excerpt": "© 2019 Tenemos grandes proyectos por anunciar Se está cocinando algo grande. Nuestra tienda está en obras y pronto abrirá sus puertas. SOLO TRABAJAMOS CON LAS MEJORES MARCAS DEL MERCADO Logo de Panduit Logo de linkedpro Logo de tp-link Logo de Ubiquiti Logo de Hid Logo de 3CX Logo de Kenwood Logo de Radiowaves Logo de Mimosa Logo de Siemon Oficinas Avenida. Prolongación División del Norte 5605 Barrio San MarcosXochimilco, 16050 Ciudad de México ¡Contáctanos a través de nuestras redes sociales! Horario de trabajo Lunes - Viernes: 09:00 - 18:00 Sábados: 09:00 - 13:00",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:32.307Z",
+          "contentHash": "5e716ac1c457a7371c375da31e1121f998019c262489ef54410bd3b5460f8197",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 24,
+      "candidateId": "lead-d27d1f7a4eb92c5d",
+      "companyName": "Hubara integradores",
+      "domain": "hubaraintegradores.com",
+      "officialWebsiteUrl": "https://www.hubaraintegradores.com/",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "Installer",
+        "Reseller"
+      ],
+      "totalScore": 65,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-d27d1f7a4eb92c5d"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-d27d1f7a4eb92c5d",
+          "url": "https://www.hubaraintegradores.com/",
+          "title": "Hubara integradores",
+          "excerpt": "Hubara integradores Inicio Portafolio Servicios Opciones de pago Contacto ☰ HUBARA Integradores en soluciones de inform&aacute;tica, sistemas, telefon&iacute;a, redes y computo avanzado Acerca de nosotros Somos una empresa MEXICANA dedica 100% a la consultor&iacute;a e integraci&oacute;n de soluciones de Inform&aacute;tica y comunicaciones. Con 19 a&ntilde;os de experiencia con aliados de negocios, mayoristas y fabricantes Atendemos necesidades explicitas de clientes que requiere de un portafolio de soluciones integrales, teniendo a cambio optimizaci&oacute;n de sus procesos y el incremento de productividad mediante la implementaci&oacute;n de nuevas tecnolog&iacute;as. Adicionalmente nuestros proveedores y fabricantes cuentan con cobertura en toda la Rep&uacute;blica Mexicana. Nuestros se",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:04.730Z",
+          "contentHash": "e1288284630c3b45814305123b7e1875eb4193516662f7b9694480c4acf8ee95",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 25,
+      "candidateId": "lead-88340830c63ecc14",
+      "companyName": "WFI de México",
+      "domain": "wfiweb.com",
+      "officialWebsiteUrl": "https://www.wfiweb.com",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "Installer"
+      ],
+      "totalScore": 65,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-31d2aaee035fa653"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-31d2aaee035fa653",
+          "url": "https://www.wfiweb.com",
+          "title": "Wfi",
+          "excerpt": "ABOUT US. WFI is a leading company in providing consulting, engineering and installation services ... Grateful to its clients and business partners, WFI de México",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:55:14.184Z",
+          "contentHash": "fb597e0a8cd1e6205f7b34b153f7a47b0bef11c9cf7e867baaaf9bd948fc8b21",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r2"
+        }
+      ]
+    },
+    {
+      "rank": 26,
+      "candidateId": "lead-04ed6879ded7414a",
+      "companyName": "RBNet Services",
+      "domain": "rbnets.com",
+      "officialWebsiteUrl": "https://rbnets.com/",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "Installer"
+      ],
+      "totalScore": 64,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-9429c4adaa7ab37a",
+        "evidence-e4ee414b48bf89d0"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-9429c4adaa7ab37a",
+          "url": "https://rbnets.com/enterprise-network-solutions-saltillo",
+          "title": "Enterprise Network Solutions in Saltillo, Mexico - RBNet Services",
+          "excerpt": "RBNet Services provides enterprise network solutions in Saltillo, Mexico, including Cisco and Fortinet design, installation, (844) 281-5946",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:37.618Z",
+          "contentHash": "7a6f8aa1a1f7dbabd368bfabc5e221c2c4a00a6b0f54b6889cc3b1dbb5a95b77",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-e4ee414b48bf89d0",
+          "url": "https://rbnets.com/about-rbnet-services",
+          "title": "About RBNet Services | Network Experts in Saltillo",
+          "excerpt": "RBNet Services, an enterprise network company with 17+ years of experience in Cisco and Fortinet solutions, ES +52 (844) 281-5946 … across Russia and Mexico,",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:37.618Z",
+          "contentHash": "ea66f0603198ea09c7f66e2d5d30a7518b7692b8a841a2984e6e87d45a3ef840",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 27,
+      "candidateId": "lead-6b58d353d87f18a5",
+      "companyName": "Altonet Tecnologías de Información S.A. de C.V.",
+      "domain": "altonet.mx",
+      "officialWebsiteUrl": "https://altonet.mx",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "MSP"
+      ],
+      "totalScore": 62,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-abf8fdbebe12a5e5",
+        "evidence-945edbfa4f499ca6"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-abf8fdbebe12a5e5",
+          "url": "https://altonet.mx",
+          "title": "Altonet Tecnologías de Información",
+          "excerpt": "Altonet Tecnologías de Información S.A. de C.V. es tu aliado en soluciones de TI en la región del Bajío. Con base en León, Guanajuato, ofrecemos servicios de",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:55:56.194Z",
+          "contentHash": "af9f0a0e64d32cdcd545c1338e114517938f61f5f96a05bf875363042d6a1572",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r2"
+        },
+        {
+          "id": "evidence-945edbfa4f499ca6",
+          "url": "https://www.linkedin.com/company/altonetmx",
+          "title": "Altonet Tecnologías de Información S.A. de C.V.",
+          "excerpt": "Somos una empresa ubicada en León Guanajuato nos dedicamos a la venta, consultoría y soporte en tecnologías de Información, somos especialistas en redes LAN",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-05T19:55:56.194Z",
+          "contentHash": "0c6fb6d98c6edc7d3f8c49c749b974604604e14ad20003814a57276dd4936639",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r2"
+        }
+      ]
+    },
+    {
+      "rank": 28,
+      "candidateId": "lead-b7258b25aae73dc2",
+      "companyName": "Soluciones Integrales en TI & WLAN S.A. de C.V.",
+      "domain": "sitiwlan.com",
+      "officialWebsiteUrl": "https://sitiwlan.com/",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "Installer"
+      ],
+      "totalScore": 62,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-dcd9d4b39b2a26b9",
+        "evidence-7a0a31ad58a1d610"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-dcd9d4b39b2a26b9",
+          "url": "https://sitiwlan.com/aviso-de-privacidad",
+          "title": "Aviso de privacidad - sitiwlan.com",
+          "excerpt": "INICIO ACERCA DE NOSOTROS SERVICIOS + CONTROL DE ACCESO + VIDEOVIGILANCIA + CABLEADO ESTRUCTURADO + SEGURIDAD + RESPALDO Y ALMACENAMIENTO + SOLUCIONES CORPORATIVAS GLOBALES PROYECTOS Y ALIANZAS + NUESTROS PROYECTOS + ALIANZAS ESTRATÉGICAS CONTACTO sitiwlan.com INICIO ACERCA DE NOSOTROS SERVICIOS + CONTROL DE ACCESO + VIDEOVIGILANCIA + CABLEADO ESTRUCTURADO + SEGURIDAD + RESPALDO Y ALMACENAMIENTO + SOLUCIONES CORPORATIVAS GLOBALES PROYECTOS Y ALIANZAS + NUESTROS PROYECTOS + ALIANZAS ESTRATÉGICAS CONTACTO © 2026 sitiwlan.com Aviso de privacidad SOLUCIONES INTEGRALES EN TI & WLAN, con domicilio en | | | --- | | Entidad Federativa: | QUERETARO | | Municipio o delegación: | QUERETARO | | Colonia: | JURICA ACUEDUCTO | | Tipo de vialidad: | CALLE | | Nombre de la vialidad: | CLEMENCIA BORJA TABOA",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:55:23.749Z",
+          "contentHash": "2fb4c57a1c166d087c8d3962b082c10a07dc609dacd3f80903920819915b6c45",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r2"
+        },
+        {
+          "id": "evidence-7a0a31ad58a1d610",
+          "url": "https://sitiwlan.com",
+          "title": "sitiwlan.com",
+          "excerpt": "Más de 12 años brindando soluciones en TI ... En SITIWLAN proporcionamos soluciones integrales de alta tecnología sobre conectivad, respaldo y seguridad de",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:56:03.290Z",
+          "contentHash": "afc73ef376f4806e9c33b6bfe009438742ba4f1f5cbcbd5fcc80a99e98dcd4d0",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r2"
+        }
+      ]
+    },
+    {
+      "rank": 29,
+      "candidateId": "lead-758690f3dc48670a",
+      "companyName": "DIM",
+      "domain": "dim-mx.com",
+      "officialWebsiteUrl": "https://dim-mx.com/",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI"
+      ],
+      "totalScore": 56,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-758690f3dc48670a"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-758690f3dc48670a",
+          "url": "https://dim-mx.com/",
+          "title": "DIM — Integrador de infraestructura de TI en México",
+          "excerpt": "DIM — Integrador de infraestructura de TI en México al CDN de Google Fonts. Las tipografías ahora se sirven desde este mismo dominio: se declaran con @font-face en `src/index.css` y los archivos viven en `src/assets/fonts/`. El porqué, y qué revisar al agregar un peso, está en ese bloque. --> Tu navegador es demasiado antiguo para mostrar este sitio correctamente. Te recomendamos actualizarlo, o escríbenos a contacto@dim-mx.com . DIM Design and Intelligent Materials — integración de infraestructura de TI. No pudimos cargar el sitio en este navegador. Escríbenos: contacto@dim-mx.com",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:54:40.637Z",
+          "contentHash": "1c1d3153d7d0a2eb17d76cabb5e3e97e72a7973ff0a94a5a439a1557baed7fb0",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r2"
+        }
+      ]
+    },
+    {
+      "rank": 30,
+      "candidateId": "lead-171f46fbdafb3151",
+      "companyName": "Integracion Tecnologica de Sistemas, SA de CV",
+      "domain": "itsnet.com.mx",
+      "officialWebsiteUrl": "https://www.itsnet.com.mx",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI"
+      ],
+      "totalScore": 55,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-44526a046c3ff621"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-44526a046c3ff621",
+          "url": "https://www.itsnet.com.mx/services.html",
+          "title": "Services",
+          "excerpt": "Business with our clients are made either in MXN pesos, US dollars or Euros. [...] ITSnet is part of an international referral program from SHI International Corp, called “Referral as a Service” (RaaS) to support customer requirements in Mexico, where SHI does not have a local presence. Essentially, SHI coordinates the quoting process and we take it from there. Therefore, we currently serve several customers with HQ not based in Mexico, specially from the USA and Europe, to fulfill their IT infrastructure needs in Mexico. [...] Contact an advisor ##### Offices: ITSnet Legal company name: INTEGRACION TECNOLOGICA DE SISTEMAS, SA de CV Address: Insurgentes Sur #1180 office 102 Col. Del Valle CP 03200, Mexico City Consult our PRIVACY POLICY ##### Contact: Email: contacto@itsnet.com.mx Sales: l",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T19:48:39.806Z",
+          "contentHash": "83b495404373ebef67203b2f9087d69fb24f648a56419719801a0f16f9732273",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5-MX-si-msp-product-r1"
+        }
+      ]
+    }
+  ],
+  "missingSlots": 0,
+  "completionReason": "target-met",
+  "discoveryRounds": [
+    {
+      "round": 1,
+      "plannedCandidatePool": 45,
+      "newUniqueCandidates": 66,
+      "lightGateCandidates": 48,
+      "correctedCandidates": 47,
+      "inRoleCandidates": 25,
+      "finalEligibleAdded": 20,
+      "cumulativeFinalEligible": 20,
+      "stopReason": "quality-pool-target"
+    },
+    {
+      "round": 2,
+      "plannedCandidatePool": 40,
+      "newUniqueCandidates": 65,
+      "lightGateCandidates": 46,
+      "correctedCandidates": 46,
+      "inRoleCandidates": 27,
+      "finalEligibleAdded": 10,
+      "cumulativeFinalEligible": 30,
+      "stopReason": "quality-pool-target"
+    }
+  ],
+  "warnings": [
+    "Evidence collection failed for rbnets.com`: Provider tavily is unavailable. The application must show an explicit degraded state.",
+    "Evidence collection failed for coresoporte.com`: Provider tavily is unavailable. The application must show an explicit degraded state.",
+    "No official-domain evidence was extracted for lared.mx.",
+    "Evidence collection failed for it.com`: Provider tavily is unavailable. The application must show an explicit degraded state.",
+    "Evidence collection failed for networksecurity.mx`: Provider tavily is unavailable. The application must show an explicit degraded state.",
+    "Evidence collection failed for com.mx`: Provider tavily is unavailable. The application must show an explicit degraded state.",
+    "Evidence collection failed for novitek.mx`: Provider tavily is unavailable. The application must show an explicit degraded state.",
+    "Evidence collection failed for lannet.net`: Provider tavily is unavailable. The application must show an explicit degraded state.",
+    "Evidence collection failed for grupoapotecnologia.com`: Provider tavily is unavailable. The application must show an explicit degraded state.",
+    "Evidence collection failed for coeficientemx.com`: Provider tavily is unavailable. The application must show an explicit degraded state.",
+    "Evidence collection failed for solidem.mx`: Provider tavily is unavailable. The application must show an explicit degraded state.",
+    "Evidence collection failed for redfibra.mx`: Provider tavily is unavailable. The application must show an explicit degraded state.",
+    "Evidence collection failed for bisnes.mx`: Provider tavily is unavailable. The application must show an explicit degraded state.",
+    "Evidence collection failed for grupotimexico.com`: Provider tavily is unavailable. The application must show an explicit degraded state.",
+    "Evidence collection failed for flo.net`: Provider tavily is unavailable. The application must show an explicit degraded state.",
+    "No official-domain evidence was extracted for stassc.com.mx.",
+    "No official-domain evidence was extracted for redfibra.mx.",
+    "No official-domain evidence was extracted for migesa.com.mx.",
+    "No official-domain evidence was extracted for lbsistemas.com.mx.",
+    "No official-domain evidence was extracted for hubaraintegradores.com.",
+    "No official-domain evidence was extracted for itfenix.com.",
+    "No official-domain evidence was extracted for entercs.com.mx.",
+    "No official-domain evidence was extracted for integrass.mx.",
+    "com.mx`: Routine correction requested ambiguity escalation. Escalation failed: [\n  {\n    \"origin\": \"string\",\n    \"code\": \"too_big\",\n    \"maximum\": 300,\n    \"inclusive\": true,\n    \"path\": [\n      \"escalation\",\n      \"reason\"\n    ],\n    \"message\": \"Too big: expected string to have <=300 characters\"\n  }\n]",
+    "omadanetworks.com: The submitted company name is a brand page title rather than a distinct legal entity name.",
+    "omadanetworks.com: The submitted SI and MSP roles are contradicted by evidence showing the candidate as a product manufacturer and brand owner.",
+    "omadanetworks.com: Deterministic role hints were not auto-added: SI, MSP.",
+    "ezma.com.mx: The submitted roles (SI, MSP) are incomplete; evidence also supports Reseller and Installer roles.",
+    "ezma.com.mx: The submitted domain (ezma.com.mx) matches the official website, but the submitted URL uses http:// while the evidence uses https://.",
+    "ezma.com.mx: Evidence IDs 82ec4ebfb75aca71, 299ed49242ea22bf, and 42d2155e6d006ede appear unrelated to the candidate and were excluded from findings.",
+    "rbnets.com: Submitted domain contains a trailing backtick and was corrected.",
+    "rbnets.com: MSP role is unverified by supplied evidence.",
+    "rbnets.com: Three supplied evidence items are unrelated to the candidate.",
+    "cisco.com: The submitted company name was a page title, not a legal entity name; corrected to Cisco Systems, Inc.",
+    "cisco.com: The submitted SI and MSP roles were not supported by the supplied evidence and were removed.",
+    "cisco.com: The independent-public evidence source (netmatriks.com) is a third-party reseller site and was not used as the official website.",
+    "cisco.com: Deterministic role hints were not auto-added: Distributor, SI.",
+    "coresoporte.com`: Submitted company name and domain contain a trailing backtick character.",
+    "coresoporte.com`: All supplied evidence appears unrelated to the candidate entity.",
+    "coresoporte.com`: No official website evidence was supplied.",
+    "lared.mx: The official website excerpt contains no substantive content about services or products.",
+    "lared.mx: The independent public evidence appears unrelated to the candidate and may indicate evidence acquisition failure.",
+    "redinet.com.mx: Evidence excerpts are sparse and do not provide detailed service descriptions.",
+    "redinet.com.mx: The independent-public source redinetnm.org appears to be a different entity and should not be used for identity claims.",
+    "redinet.com.mx: The Facebook source describes Redinet as a consulting agency, which may indicate a different or additional role family.",
+    "itsnet.com.mx: Submitted company name and domain appear malformed and do not match the evidence.",
+    "itsnet.com.mx: Most supplied evidence items are unrelated to the candidate.",
+    "itsnet.com.mx: The MSP role is not affirmatively supported by the supplied evidence.",
+    "itsnet.com.mx: Roles without a supported atomic role finding were removed.",
+    "coeficiente.mx: Submitted roles SI and MSP are supported, but ISP is also strongly supported and was not submitted.",
+    "coeficiente.mx: Independent evidence sources evidence-2581df0427da7617, evidence-98b86750730b8608, and evidence-456107714c70f8e7 do not relate to Coeficiente and were excluded from findings.",
+    "coeficiente.mx: Deterministic role hints were not auto-added: Reseller.",
+    "tp-link.com: Deterministic role hints were not auto-added: SI.",
+    "plannet.mx: Evidence-5762833fcfa93bef (Plan B Networks, Inc.) appears to be an unrelated entity with a similar name and should not be used for candidate scoring.",
+    "plannet.mx: The submitted company name 'Expertos en servicios para redes empresariales | PlanNet' is a tagline combined with the company name; the resolved name is PlanNet.",
+    "plannet.mx: Deterministic role hints were not auto-added: Reseller.",
+    "networksecurity.mx`: The submitted company name and domain contain a trailing backtick character, which may indicate a data-entry error.",
+    "networksecurity.mx`: None of the supplied evidence is candidate-specific; all evidence is generic Mexico security industry or government content.",
+    "networksecurity.mx`: Proposed official website was not supported by the cited company-owned evidence; original identity retained.",
+    "networksecurity.mx`: Deterministic role hints were not auto-added: Reseller, SI.",
+    "sitwifi.com: Deterministic role hints were not auto-added: VAR, Reseller.",
+    "migesa.com.mx: Deterministic role hints were not auto-added: Reseller.",
+    "lbsistemas.com.mx: The submitted company name 'LB Sistemas - Expertos integradores de Tecnologia' is a marketing tagline rather than the legal name; corrected to 'LB Sistemas S.A. de C.V.'",
+    "lbsistemas.com.mx: The submitted roles of SI and MSP are confirmed, but evidence also supports Reseller and Installer roles that were not originally submitted.",
+    "novitek.mx`: Routine correction requested ambiguity escalation. Escalation failed: [\n  {\n    \"origin\": \"string\",\n    \"code\": \"too_big\",\n    \"maximum\": 300,\n    \"inclusive\": true,\n    \"path\": [\n      \"escalation\",\n      \"reason\"\n    ],\n    \"message\": \"Too big: expected string to have <=300 characters\"\n  }\n]",
+    "wiif.mx: Deterministic role hints were not auto-added: Reseller.",
+    "lannet.net: No evidence for SI role; only MSP is supported.",
+    "hubaraintegradores.com: Submitted MSP role is not supported by supplied evidence.",
+    "hubaraintegradores.com: Independent public evidence sources do not reference Hubara integradores directly.",
+    "hubaraintegradores.com: Deterministic role hints were not auto-added: Distributor, VAR.",
+    "mcs.com.mx: The independent-public evidence from mcsnetworks.com refers to a different company (MCS Networks Inc.) in the US, not the Mexican entity.",
+    "icotera.com: The submitted company name and domain contain a trailing backtick character, likely a data-entry artifact.",
+    "icotera.com: Two supplied evidence items are unrelated to the candidate and may indicate evidence collection errors.",
+    "icotera.com: No evidence demonstrates presence in Mexico; this remains unknown.",
+    "syscom.mx: The independent-public evidence from syscom.com refers to a different company (SYSCOM) in the US, not the Mexican entity.",
+    "ipemex.com.mx: The independent-public evidence about ISP market is not directly relevant to this candidate.",
+    "dunsguide.com: Submitted domain dunsguide.com is a directory, not a company-owned domain.",
+    "dunsguide.com: All supplied evidence appears unrelated to the candidate company.",
+    "dunsguide.com: No official website evidence ID is available for the candidate.",
+    "dunsguide.com: Proposed official website was not supported by the cited company-owned evidence; original identity retained.",
+    "dunsguide.com: Deterministic role hints were not auto-added: Reseller, SI.",
+    "sictel.com: Submitted company name 'Inicio - Sictel' appears to be a page title rather than the legal entity name.",
+    "sictel.com: The Distributor role is supported by only one independent source; additional evidence would strengthen confidence.",
+    "sictel.com: Evidence-f4c9f44815dfc82a appears unrelated to Grupo Sictel and was excluded from findings.",
+    "entercs.com.mx: Deterministic role hints were not auto-added: VAR, Reseller.",
+    "neeps.mx: The independent-public evidence from incom.mx is not directly relevant to this candidate.",
+    "neeps.mx: Deterministic role hints were not auto-added: ISP.",
+    "solidem.mx`: Routine correction requested ambiguity escalation. Escalation failed: [\n  {\n    \"origin\": \"string\",\n    \"code\": \"too_big\",\n    \"maximum\": 300,\n    \"inclusive\": true,\n    \"path\": [\n      \"escalation\",\n      \"reason\"\n    ],\n    \"message\": \"Too big: expected string to have <=300 characters\"\n  }\n]",
+    "nwt.com.mx: The independent-public evidence from ispsupplies.com is not directly relevant to this candidate.",
+    "nwt.com.mx: Deterministic role hints were not auto-added: Distributor.",
+    "redfibra.mx`: Proposed official website was not supported by the cited company-owned evidence; original identity retained.",
+    "redfibra.mx`: Deterministic role hints were not auto-added: ISP.",
+    "bisnes.mx`: Submitted domain and official website URL contain a trailing backtick character.",
+    "bisnes.mx`: No supplied evidence mentions the candidate company or its domain.",
+    "bisnes.mx`: Submitted roles SI and MSP are unsupported by the supplied evidence.",
+    "bisnes.mx`: Proposed official website was not supported by the cited company-owned evidence; original identity retained.",
+    "grupotimexico.com: The submitted domain 'grupotimexico.com`' contains a trailing backtick typo and was corrected to 'grupotimexico.com'.",
+    "grupotimexico.com: Evidence 56435dc328b27c51 refers to Grupo México (gmexico.com), a different company, and was not used for identity resolution.",
+    "flo.net`: Routine correction failed: [\n  {\n    \"code\": \"invalid_value\",\n    \"values\": [\n      \"Distributor\",\n      \"VAD\",\n      \"VAR\",\n      \"Dealer\",\n      \"Reseller\",\n      \"Retailer\",\n      \"E-tailer\",\n      \"SI\",\n      \"Installer\",\n      \"MSP\",\n      \"ISP\",\n      \"Agent\",\n      \"Brand Owner\"\n    ],\n    \"path\": [\n      \"corrections\",\n      1,\n      \"roles\",\n      0\n    ],\n    \"message\": \"Invalid option: expected one of \\\"Distributor\\\"|\\\"VAD\\\"|\\\"VAR\\\"|\\\"Dealer\\\"|\\\"Reseller\\\"|\\\"Retailer\\\"|\\\"E-tailer\\\"|\\\"SI\\\"|\\\"Installer\\\"|\\\"MSP\\\"|\\\"ISP\\\"|\\\"Agent\\\"|\\\"Brand Owner\\\"\"\n  }\n] Escalation failed: [\n  {\n    \"origin\": \"string\",\n    \"code\": \"too_big\",\n    \"maximum\": 300,\n    \"inclusive\": true,\n    \"path\": [\n      \"escalation\",\n      \"reason\"\n    ],\n    \"message\": \"Too big: expected string to have <=300 characters\"\n  }\n]",
+    "informaticaempresarial.mx: Deterministic role hints were not auto-added: ISP.",
+    "redfibra.mx: Deterministic role hints were not auto-added: Installer.",
+    "dirind.com: Routine correction requested ambiguity escalation. Escalation failed: [\n  {\n    \"origin\": \"string\",\n    \"code\": \"too_big\",\n    \"maximum\": 300,\n    \"inclusive\": true,\n    \"path\": [\n      \"escalation\",\n      \"reason\"\n    ],\n    \"message\": \"Too big: expected string to have <=300 characters\"\n  }\n]",
+    "No official-domain evidence was extracted for intecmty.com.",
+    "No official-domain evidence was extracted for republicaintegra.com.",
+    "No official-domain evidence was extracted for grupoapotecnologia.com.",
+    "No official-domain evidence was extracted for wlanfx.mx.",
+    "No official-domain evidence was extracted for smeconsulting.com.mx.",
+    "No official-domain evidence was extracted for overclockers.com.mx.",
+    "No official-domain evidence was extracted for mmcnet.com.mx.",
+    "No official-domain evidence was extracted for mtnet.com.mx.",
+    "No official-domain evidence was extracted for itxperts.com.mx.",
+    "No official-domain evidence was extracted for ersoluciones.com.",
+    "No official-domain evidence was extracted for wifiempresarial.com.",
+    "No official-domain evidence was extracted for dim-mx.com.",
+    "No official-domain evidence was extracted for accesspointqro.com.",
+    "No official-domain evidence was extracted for datanet-si.com.",
+    "spconnet.com: Submitted domain exa.ai is unrelated to the company.",
+    "spconnet.com: Deterministic role hints were not auto-added: Reseller.",
+    "c3ntro.com: Deterministic role hints were not auto-added: Distributor, Reseller.",
+    "wfiweb.com: Deterministic role hints were not auto-added: Distributor, VAD, VAR, Reseller.",
+    "sienetworks.com: Roles without a supported atomic role finding were removed.",
+    "itxperts.com.mx: Deterministic role hints were not auto-added: Reseller.",
+    "itxperts.com.mx: Unsupported evidence IDs were removed.",
+    "perceptron.mx: Deterministic role hints were not auto-added: Reseller.",
+    "ersoluciones.com: Routine correction requested ambiguity escalation. Escalation failed: [\n  {\n    \"origin\": \"string\",\n    \"code\": \"too_big\",\n    \"maximum\": 300,\n    \"inclusive\": true,\n    \"path\": [\n      \"escalation\",\n      \"reason\"\n    ],\n    \"message\": \"Too big: expected string to have <=300 characters\"\n  }\n]",
+    "wifiempresarial.com: Supplied evidence does not mention the candidate.",
+    "wifiempresarial.com: Some evidence targets Mexico, Indiana (US), not Mexico the country.",
+    "wifiempresarial.com: Submitted roles and official website could not be verified.",
+    "wifiempresarial.com: Deterministic role hints were not auto-added: Installer, ISP.",
+    "redlinktelecomunicaciones.com: Deterministic role hints were not auto-added: Distributor.",
+    "dim-mx.com: Roles without a supported atomic role finding were removed.",
+    "dim-mx.com: Deterministic role hints were not auto-added: Reseller.",
+    "syemex.com: Deterministic role hints were not auto-added: Distributor.",
+    "xpertic.com.mx: Deterministic role hints were not auto-added: Reseller, Installer.",
+    "overclockers.com.mx: Routine correction requested ambiguity escalation. Escalation failed: [\n  {\n    \"origin\": \"string\",\n    \"code\": \"too_big\",\n    \"maximum\": 300,\n    \"inclusive\": true,\n    \"path\": [\n      \"escalation\",\n      \"reason\"\n    ],\n    \"message\": \"Too big: expected string to have <=300 characters\"\n  }\n]",
+    "sitiwlan.com: Deterministic role hints were not auto-added: VAR, Reseller.",
+    "mmcnet.com.mx: Official website content is mostly CSS, but title provides info.",
+    "mmcnet.com.mx: Deterministic role hints were not auto-added: Reseller, VAR, Installer.",
+    "linkit.mx: Deterministic role hints were not auto-added: Installer.",
+    "mtnet.com.mx: Supplied evidence does not reference the candidate company or domain.",
+    "mtnet.com.mx: Submitted roles could not be validated against the supplied evidence.",
+    "mtnet.com.mx: Roles without a supported atomic role finding were removed.",
+    "mtnet.com.mx: Deterministic role hints were not auto-added: SI, ISP.",
+    "accesspointqro.com: Deterministic role hints were not auto-added: Distributor, E-tailer, Reseller.",
+    "wlanfx.mx: Deterministic role hints were not auto-added: ISP.",
+    "datanet-si.com: Limited evidence for MSP role.",
+    "datanet-si.com: Roles without a supported atomic role finding were removed.",
+    "datanet-si.com: Deterministic role hints were not auto-added: Distributor.",
+    "ezma.mx: Deterministic role hints were not auto-added: Reseller, Installer.",
+    "konecta.mx: Submitted roles SI/MSP are not supported.",
+    "industriasionet.com.mx: Some evidence from unrelated domains (ionunited.com, onnet.mx) should be ignored.",
+    "industriasionet.com.mx: Deterministic role hints were not auto-added: Installer.",
+    "internetintegratedservices.com: Deterministic role hints were not auto-added: VAR, MSP, Reseller.",
+    "proyectoscsi.mx: Some evidence from unrelated companies (CSI Mexico, CSI Global) should be ignored.",
+    "interlace.com.mx: Deterministic role hints were not auto-added: Reseller, Installer.",
+    "integrisys.com.mx: Some evidence from unrelated domains (ispsupplies.com, integrisysgroup.com) should be ignored.",
+    "integrisys.com.mx: Deterministic role hints were not auto-added: Distributor, SI.",
+    "bbsred.com.mx: Submitted roles included SI but no evidence found.",
+    "cas.mx: Deterministic role hints were not auto-added: Distributor.",
+    "siete.com.mx: Evidence is limited to official website; independent sources are unrelated to the company.",
+    "siete.com.mx: Roles without a supported atomic role finding were removed.",
+    "Reused unchanged frozen product quality result from 2026-09-06-uk-mx-search-e2e-v1-1-5; its cost is carried once in the historical adjustment."
+  ],
+  "costEvents": [],
+  "coldStartAudit": {
+    "historicalCandidateReads": 0,
+    "historicalEvidenceReads": 0,
+    "privateMemoryReads": 0,
+    "historicalScoreReads": 0,
+    "evidenceLibraryWrites": 0,
+    "cooperationPathsGenerated": 0
+  },
+  "discoveryCalls": [
+    {
+      "callKey": "si-msp/local-smb/0/google-places/google-places",
+      "callFingerprint": "f068d8ecf9c5b6d83701194fe2cf1d6388326f6887cd0bbd4d49caa787dd2f48",
+      "queryClusterKey": "5231900b8e2fb08a3810ba5caafa7ee53a3b8cc0e66eee05f1ae83c71a9266e6",
+      "route": {
+        "category": "si-msp",
+        "track": "local-smb",
+        "sequence": 0,
+        "provider": "google-places",
+        "engine": "google-places",
+        "mechanism": "local-text-search",
+        "trigger": "core",
+        "invocationReason": "Core mechanism for si-msp/local-smb"
+      },
+      "status": "completed",
+      "requestedResults": 20,
+      "rawResults": 3,
+      "normalizedCompanies": 3,
+      "newUniqueCompanies": 3,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 414,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "86fdd3e4c784330ef24f2bb806f431a1471caa5c0bc5526bcb5bad6840241883"
+    },
+    {
+      "callKey": "si-msp/national-complex/0/gemini-full/google-grounded",
+      "callFingerprint": "3d94b0a2c3ea10064beda00ce64a3ef6386d2127bec88aef3a8e15295864bb5c",
+      "queryClusterKey": "836abe104ae355b6bb611a130dafb2d501aad6d9845b06a253ab9e7fb1a8602c",
+      "route": {
+        "category": "si-msp",
+        "track": "national-complex",
+        "sequence": 0,
+        "provider": "gemini-full",
+        "engine": "google-grounded",
+        "mechanism": "planning",
+        "trigger": "core",
+        "invocationReason": "Core mechanism for si-msp/national-complex"
+      },
+      "status": "completed",
+      "requestedResults": 20,
+      "rawResults": 20,
+      "normalizedCompanies": 20,
+      "newUniqueCompanies": 15,
+      "existingCompanyHits": 5,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 4,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 21987,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "f99e4d31081b9f55d21e254769bf8d084097e4cc69d66ca0ba31d4f7994d2591"
+    },
+    {
+      "callKey": "si-msp/national-complex/1/brave/brave",
+      "callFingerprint": "0045dbe7670aa861206bfc4bac2571a5d01d46eb5444386e19f9f2fbb0e70005",
+      "queryClusterKey": "df0163d9988a02510078c13fe8c3283889c4f0b1dc1e5c8ecf7fd54c6ce69b1d",
+      "route": {
+        "category": "si-msp",
+        "track": "national-complex",
+        "sequence": 1,
+        "provider": "brave",
+        "engine": "brave",
+        "mechanism": "web-index",
+        "trigger": "index-gap",
+        "invocationReason": "index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "completed",
+      "requestedResults": 20,
+      "rawResults": 20,
+      "normalizedCompanies": 20,
+      "newUniqueCompanies": 20,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 1393,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "c9848012a56d96683edbca99f6ea2b5d0c5311a735cda295f8ce8ec1507f990f"
+    },
+    {
+      "callKey": "si-msp/local-smb/1/searchapi/google",
+      "callFingerprint": "a9ab111fe2b9cee8c0b90a4e2831d280d28a26107e01b8459e59f80df4d84ac1",
+      "queryClusterKey": "a70a929f8791e039c2e36d0d2aeb11afa726383b3cb51cfe6e56bc53bef82160",
+      "route": {
+        "category": "si-msp",
+        "track": "local-smb",
+        "sequence": 1,
+        "provider": "searchapi",
+        "engine": "google",
+        "mechanism": "web-serp",
+        "trigger": "web-gap",
+        "invocationReason": "web-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "completed",
+      "requestedResults": 20,
+      "rawResults": 10,
+      "normalizedCompanies": 10,
+      "newUniqueCompanies": 8,
+      "existingCompanyHits": 2,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 2511,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "6e0372d3883e2f1c7a01fe4322b0ec5fdaf027ce001a7fbf78abb56b02d54a9a"
+    },
+    {
+      "callKey": "si-msp/national-complex/2/searchapi/bing",
+      "callFingerprint": "4727e6daa8f593febdbd460ec3c5c094d91064ae31232b6e4e7daaf235fcdc32",
+      "queryClusterKey": "836abe104ae355b6bb611a130dafb2d501aad6d9845b06a253ab9e7fb1a8602c",
+      "route": {
+        "category": "si-msp",
+        "track": "national-complex",
+        "sequence": 2,
+        "provider": "searchapi",
+        "engine": "bing",
+        "mechanism": "web-serp",
+        "trigger": "second-index-gap",
+        "invocationReason": "second-index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "completed",
+      "requestedResults": 20,
+      "rawResults": 10,
+      "normalizedCompanies": 8,
+      "newUniqueCompanies": 7,
+      "existingCompanyHits": 1,
+      "rejectedResults": 2,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 1227,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {
+        "list-page": 2
+      },
+      "querySha256": "f99e4d31081b9f55d21e254769bf8d084097e4cc69d66ca0ba31d4f7994d2591"
+    },
+    {
+      "callKey": "si-msp/local-smb/2/brave/brave",
+      "callFingerprint": "c0d9298d777d6a7a26104f5818f144d40ed706117bf281715c8a6acdb65968f5",
+      "queryClusterKey": "7eab0eda8e09e45f9ccc77795e7c78f11be10c079244a07bd406fc771464aadd",
+      "route": {
+        "category": "si-msp",
+        "track": "local-smb",
+        "sequence": 2,
+        "provider": "brave",
+        "engine": "brave",
+        "mechanism": "web-index",
+        "trigger": "index-gap",
+        "invocationReason": "index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "completed",
+      "requestedResults": 20,
+      "rawResults": 20,
+      "normalizedCompanies": 20,
+      "newUniqueCompanies": 13,
+      "existingCompanyHits": 7,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 1240,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "26aa83df693fc790eea4207e7aedf84e1fc17285e0e8afbe3100e2a48d2b66e2"
+    },
+    {
+      "callKey": "si-msp/local-smb/0/google-places/google-places",
+      "callFingerprint": "e5dad0eb6072055750f709055c499cdcbb5355d967db8da94dc180af620a1699",
+      "queryClusterKey": "8d4d241c3d9ae9f177092d18b33534b26642b9be9d1ab274b5f972a15c8b7c1a",
+      "route": {
+        "category": "si-msp",
+        "track": "local-smb",
+        "sequence": 0,
+        "provider": "google-places",
+        "engine": "google-places",
+        "mechanism": "local-text-search",
+        "trigger": "core",
+        "invocationReason": "Core mechanism for si-msp/local-smb"
+      },
+      "status": "completed",
+      "requestedResults": 20,
+      "rawResults": 6,
+      "normalizedCompanies": 6,
+      "newUniqueCompanies": 5,
+      "existingCompanyHits": 1,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 508,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "896d980b681f517bd19be55406d093e62b73fa8b5a546d137608baafa6b1ae6c"
+    },
+    {
+      "callKey": "si-msp/national-complex/0/gemini-full/google-grounded",
+      "callFingerprint": "f5fe8c7e27e9eb4c6fc35e78578049ad8a17fb9ae7fe2aaf40ba64a489719e78",
+      "queryClusterKey": "3ca55673a8cb6f7ca2463624c2135d8d2e76f201cb289db2df5259b2cca419f8",
+      "route": {
+        "category": "si-msp",
+        "track": "national-complex",
+        "sequence": 0,
+        "provider": "gemini-full",
+        "engine": "google-grounded",
+        "mechanism": "planning",
+        "trigger": "core",
+        "invocationReason": "Core mechanism for si-msp/national-complex"
+      },
+      "status": "completed",
+      "requestedResults": 20,
+      "rawResults": 20,
+      "normalizedCompanies": 20,
+      "newUniqueCompanies": 15,
+      "existingCompanyHits": 5,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 4,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 14547,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "74eabe58acddd3d37c816cf8c4fc3ff8dc0a537fb6a82d90e996c22fed329713"
+    },
+    {
+      "callKey": "si-msp/national-complex/1/brave/brave",
+      "callFingerprint": "01fae6306e3071e6faabcb0a116ead04f24c46d0079d3c989519993be4776786",
+      "queryClusterKey": "49366c2bba07276f4fa538b4bdcfb5f5475070b51e84797a2b3bacf3038cc92d",
+      "route": {
+        "category": "si-msp",
+        "track": "national-complex",
+        "sequence": 1,
+        "provider": "brave",
+        "engine": "brave",
+        "mechanism": "web-index",
+        "trigger": "index-gap",
+        "invocationReason": "index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "completed",
+      "requestedResults": 20,
+      "rawResults": 20,
+      "normalizedCompanies": 20,
+      "newUniqueCompanies": 7,
+      "existingCompanyHits": 13,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 1322,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "dedd2a5470ae3f89fd3443c53f8e4c35eb9320dc1ce4a2d364548f95caa5ce01"
+    },
+    {
+      "callKey": "si-msp/local-smb/1/searchapi/google",
+      "callFingerprint": "758f762e12e0db1da639aa71fe02e64c6ef6ac5a64c6960fb5dc73a3b3e689b0",
+      "queryClusterKey": "8b0508876c1fc02a1fe971a4002348e81526d818acb06918640640c2b1e63634",
+      "route": {
+        "category": "si-msp",
+        "track": "local-smb",
+        "sequence": 1,
+        "provider": "searchapi",
+        "engine": "google",
+        "mechanism": "web-serp",
+        "trigger": "web-gap",
+        "invocationReason": "web-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "completed",
+      "requestedResults": 20,
+      "rawResults": 10,
+      "normalizedCompanies": 9,
+      "newUniqueCompanies": 8,
+      "existingCompanyHits": 1,
+      "rejectedResults": 1,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 2146,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {
+        "document-not-company": 1
+      },
+      "querySha256": "b89e255f5297b8f2d4c3c53c968fb5154aa49761cef802e69f10b9a139fc7c07"
+    },
+    {
+      "callKey": "si-msp/local-smb/2/brave/brave",
+      "callFingerprint": "9ac74e42318a774f756b7bc676976b23caf69d615e4d053643adf3a8573c7234",
+      "queryClusterKey": "e510d34171b749bc62483f1dc20ca6693a18532f1dc1784c2abe428547607499",
+      "route": {
+        "category": "si-msp",
+        "track": "local-smb",
+        "sequence": 2,
+        "provider": "brave",
+        "engine": "brave",
+        "mechanism": "web-index",
+        "trigger": "index-gap",
+        "invocationReason": "index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "completed",
+      "requestedResults": 20,
+      "rawResults": 20,
+      "normalizedCompanies": 20,
+      "newUniqueCompanies": 6,
+      "existingCompanyHits": 14,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 1226,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "c51573d5af5b3f227e0c765b0c777c2da890d749b8d1a593f47f002914523e75"
+    },
+    {
+      "callKey": "si-msp/national-complex/2/searchapi/bing",
+      "callFingerprint": "fb8316ffc551ac44b5b523742561158cc4c0d86ec2ef5bb5e122687b825d141b",
+      "queryClusterKey": "3ca55673a8cb6f7ca2463624c2135d8d2e76f201cb289db2df5259b2cca419f8",
+      "route": {
+        "category": "si-msp",
+        "track": "national-complex",
+        "sequence": 2,
+        "provider": "searchapi",
+        "engine": "bing",
+        "mechanism": "web-serp",
+        "trigger": "second-index-gap",
+        "invocationReason": "second-index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "completed",
+      "requestedResults": 20,
+      "rawResults": 10,
+      "normalizedCompanies": 8,
+      "newUniqueCompanies": 1,
+      "existingCompanyHits": 7,
+      "rejectedResults": 2,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 1424,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {
+        "list-page": 2
+      },
+      "querySha256": "74eabe58acddd3d37c816cf8c4fc3ff8dc0a537fb6a82d90e996c22fed329713"
+    },
+    {
+      "callKey": "si-msp/local-smb/3/searchapi/bing",
+      "callFingerprint": "c122b345ad429a6e2627ac6539a94dedf8ddadbbbb58be9ac0af35740a1bdb2e",
+      "queryClusterKey": "8b0508876c1fc02a1fe971a4002348e81526d818acb06918640640c2b1e63634",
+      "route": {
+        "category": "si-msp",
+        "track": "local-smb",
+        "sequence": 3,
+        "provider": "searchapi",
+        "engine": "bing",
+        "mechanism": "web-serp",
+        "trigger": "second-index-gap",
+        "invocationReason": "second-index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "completed",
+      "requestedResults": 20,
+      "rawResults": 10,
+      "normalizedCompanies": 8,
+      "newUniqueCompanies": 3,
+      "existingCompanyHits": 5,
+      "rejectedResults": 2,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 1323,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {
+        "list-page": 2
+      },
+      "querySha256": "b89e255f5297b8f2d4c3c53c968fb5154aa49761cef802e69f10b9a139fc7c07"
+    },
+    {
+      "callKey": "si-msp/national-complex/3/exa/exa",
+      "callFingerprint": "3a92d72e61f8c83e10a1d87405273c06fbb22d5b2b9453c9e87f2be07c1eebdc",
+      "queryClusterKey": "bf33b64e344836823958c03cca584ffed04f6751e9d9ebd4aa67faceb19e1d41",
+      "route": {
+        "category": "si-msp",
+        "track": "national-complex",
+        "sequence": 3,
+        "provider": "exa",
+        "engine": "exa",
+        "mechanism": "case-solution-pages",
+        "trigger": "semantic-gap",
+        "invocationReason": "semantic-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "completed",
+      "requestedResults": 20,
+      "rawResults": 20,
+      "normalizedCompanies": 20,
+      "newUniqueCompanies": 20,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 1739,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "239d8f55ece510a1344965a8c66547990a600250da9b5307fcd15dbcd5495ee3"
+    }
+  ]
+}

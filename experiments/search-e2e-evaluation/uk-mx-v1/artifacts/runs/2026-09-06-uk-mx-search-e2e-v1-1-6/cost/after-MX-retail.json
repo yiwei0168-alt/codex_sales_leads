@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+  "generatedAt": "2026-09-05T20:20:26.567Z",
+  "cost": {
+    "eventCount": 3,
+    "officialListPriceUsd": 10.26588188199398,
+    "budgetCostUsd": 10.26588188199398,
+    "unpricedEvents": [],
+    "byLedger": {
+      "gemini-native-arm": 1.4122236000000001,
+      "product-e2e-arm": 8.78004828199398,
+      "evaluation-overhead": 0.07361
+    },
+    "byStage": {
+      "prior-preflight-adjustment": 10.26588188199398
+    },
+    "anomalies": []
+  },
+  "budgetDecision": {
+    "totalBudgetUsd": 100,
+    "spentUsd": 10.26588188199398,
+    "budgetFraction": 0.10265881881993981,
+    "newlyCrossedThresholdsUsd": [],
+    "forecast": {
+      "completedCells": 1,
+      "totalCells": 8,
+      "incurredUsd": 10.26588188199398,
+      "expectedCompletionUsd": 30,
+      "lowerUsd": 10.26588188199398,
+      "upperUsd": 40.5,
+      "method": "initial-estimate"
+    },
+    "warning": false,
+    "hardStop": false,
+    "requiresUserDecision": false,
+    "reasons": []
+  }
+}

@@ -1,0 +1,349 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+  "cellId": "MX-si-msp",
+  "arm": "gemini-native",
+  "startedAt": "2026-09-05T19:46:38.710Z",
+  "completedAt": "2026-09-05T19:47:17.678Z",
+  "wallClockMs": 38968,
+  "requestedModel": "gemini-3.6-flash",
+  "actualModel": "gemini-3.6-flash",
+  "searchQueries": 12,
+  "finalCandidates": [
+    {
+      "rank": 1,
+      "companyName": "Huus",
+      "officialWebsite": "https://huus.mx",
+      "marketSignal": "Headquartered in Mexico, delivering national connectivity and managed IT infrastructure services across the country.",
+      "roleSignal": "Operates as a Managed Service Provider (MSP) designing, deploying, and managing corporate Wi-Fi, LAN networks, and backup connectivity for B2B clients.",
+      "relevanceSignal": "Directly matches Cudy's commercial focus on managed Wi-Fi access points, PoE switches, and multi-WAN 4G/5G backup routers for SMBs and enterprise branches.",
+      "evidenceUrls": [
+        "https://huus.mx"
+      ]
+    },
+    {
+      "rank": 2,
+      "companyName": "Ubix",
+      "officialWebsite": "https://www.ubix.mx",
+      "marketSignal": "Mexican telecommunications and IT services company operating nationwide across major commercial and industrial regions.",
+      "roleSignal": "Acts as an MSP and system integrator providing centralized multi-site network management, SD-WAN, satellite, and LTE/5G connectivity.",
+      "relevanceSignal": "Strong synergy for Cudy’s 4G/5G cellular routers, FWA gateways, and managed switches used in multi-site distributed operations.",
+      "evidenceUrls": [
+        "https://www.ubix.mx"
+      ]
+    },
+    {
+      "rank": 3,
+      "companyName": "C3ntro Telecom",
+      "officialWebsite": "https://www.c3ntro.com",
+      "marketSignal": "Major Mexican telecommunications operator and managed service provider with operations across Mexico.",
+      "roleSignal": "Provides managed network services, enterprise Wi-Fi integration, SD-WAN, and IT infrastructure operations for enterprise and SMB clients.",
+      "relevanceSignal": "Highly relevant for Cudy’s unmanaged/managed switches, enterprise access points, and VPN gateways deployed in branch networks.",
+      "evidenceUrls": [
+        "https://www.c3ntro.com"
+      ]
+    },
+    {
+      "rank": 4,
+      "companyName": "BITS (Business IT Solutions)",
+      "officialWebsite": "https://bits.com.mx",
+      "marketSignal": "Mexican technology integrator delivering IT and networking solutions across major Mexican commercial hubs.",
+      "roleSignal": "System integrator and MSP delivering enterprise LAN/WAN deployments, managed Wi-Fi networks, and perimeter security architectures.",
+      "relevanceSignal": "Complements Cudy’s SMB/value tier networking portfio including access points, mesh Wi-Fi systems, and PoE switches.",
+      "evidenceUrls": [
+        "https://bits.com.mx"
+      ]
+    },
+    {
+      "rank": 5,
+      "companyName": "Censystems",
+      "officialWebsite": "https://censystems.com.mx",
+      "marketSignal": "Mexican IT company with over 130 collaborators supporting corporate and public sector clients nationwide.",
+      "roleSignal": "Acts as a system integrator and managed service provider specializing in connectivity, networking, and IT infrastructure administration.",
+      "relevanceSignal": "Ideal partner for deploying Cudy’s campus access points, Gigabit switches, and VPN routers into commercial and institutional projects.",
+      "evidenceUrls": [
+        "https://censystems.com.mx"
+      ]
+    },
+    {
+      "rank": 6,
+      "companyName": "XperTIC",
+      "officialWebsite": "https://xpertic.com.mx",
+      "marketSignal": "Mexico City-based system integrator delivering business IT and telecommunications solutions across Mexico.",
+      "roleSignal": "Designs, installs, and maintains converged telecommunications networks, data routing/switching, and wireless systems for B2B accounts.",
+      "relevanceSignal": "Fits Cudy’s SMB product portfolio, including Wi-Fi routers, PoE switches, and wireless access points for office and hospitality installations.",
+      "evidenceUrls": [
+        "https://xpertic.com.mx"
+      ]
+    },
+    {
+      "rank": 7,
+      "companyName": "Integra Technologies",
+      "officialWebsite": "https://cintegra.mx",
+      "marketSignal": "Headquartered in Monterrey, Nuevo León, serving enterprise and industrial clients throughout Mexico.",
+      "roleSignal": "System integrator offering network consulting, LAN/WAN routing and switching, wireless WAN, GPON, and data center connectivity.",
+      "relevanceSignal": "Relevance across Cudy's product lines including GPON/xPON ONTs, Ethernet/PoE switches, and enterprise Wi-Fi APs.",
+      "evidenceUrls": [
+        "https://cintegra.mx"
+      ]
+    },
+    {
+      "rank": 8,
+      "companyName": "MCS Networks",
+      "officialWebsite": "https://mcs.com.mx",
+      "marketSignal": "Mexican technology consulting and network integration firm with over 25 years of local experience.",
+      "roleSignal": "System integrator and network administrator delivering corporate wireless networks, structured cabling, and IT infrastructure management.",
+      "relevanceSignal": "Complements Cudy's affordable B2B line of ceiling-mount access points, switches, and outdoor wireless equipment.",
+      "evidenceUrls": [
+        "https://mcs.com.mx"
+      ]
+    },
+    {
+      "rank": 9,
+      "companyName": "ITS-Systems",
+      "officialWebsite": "https://its-systems.mx",
+      "marketSignal": "Mexican managed service provider delivering 24/7 IT and networking services to businesses across Mexico.",
+      "roleSignal": "MSP offering network architecture design, Wi-Fi heatmapping, 24/7 proactive monitoring, and managed IT maintenance.",
+      "relevanceSignal": "Directly applicable for Cudy Wi-Fi access points, controllers, and SMB PoE switches used in commercial deployments.",
+      "evidenceUrls": [
+        "https://its-systems.mx"
+      ]
+    },
+    {
+      "rank": 10,
+      "companyName": "ERISYSTEMS",
+      "officialWebsite": "https://erisystems.com.mx",
+      "marketSignal": "Operating in Mexico as a structured MSP providing corporate IT system management.",
+      "roleSignal": "Managed Service Provider structured around designing, operating, and maintaining B2B IT environments, user networks, and hardware.",
+      "relevanceSignal": "Relevant for Cudy’s value-tier routers, desktop switches, and mesh Wi-Fi devices targeted at growing SMBs.",
+      "evidenceUrls": [
+        "https://erisystems.com.mx"
+      ]
+    },
+    {
+      "rank": 11,
+      "companyName": "EN-TI",
+      "officialWebsite": "https://en-ti.com",
+      "marketSignal": "Mexican national technology integrator providing critical infrastructure and IT services.",
+      "roleSignal": "Integrates critical IT infrastructure, data centers, network backbones, and cybersecurity systems for business clients.",
+      "relevanceSignal": "Presents opportunities for Cudy’s rackmount PoE/PoE+ switches, VPN gateways, and fiber networking accessories.",
+      "evidenceUrls": [
+        "https://en-ti.com"
+      ]
+    },
+    {
+      "rank": 12,
+      "companyName": "Integra Industrial Networks",
+      "officialWebsite": "https://integraindustrialnetworks.com",
+      "marketSignal": "Operates across key Mexican industrial hubs including Querétaro, Manzanillo, and central Mexico.",
+      "roleSignal": "Industrial system integrator designing and deploying IT/OT network architectures, industrial switching, and cabling in plants and logistics centers.",
+      "relevanceSignal": "Relevant for Cudy’s light industrial networking products, DIN-rail or industrial-grade PoE switches, and outdoor wireless bridges.",
+      "evidenceUrls": [
+        "https://integraindustrialnetworks.com"
+      ]
+    },
+    {
+      "rank": 13,
+      "companyName": "Integra GICOM",
+      "officialWebsite": "https://integra.red",
+      "marketSignal": "Established network infrastructure provider in Mexico with strong regional presence in Querétaro and central states.",
+      "roleSignal": "System integrator providing IP network design, corporate Wi-Fi installations, CCTV integration, and structured cabling.",
+      "relevanceSignal": "Matches Cudy’s indoor/outdoor access points, PoE switches for video surveillance, and wireless mesh hardware.",
+      "evidenceUrls": [
+        "https://integra.red"
+      ]
+    },
+    {
+      "rank": 14,
+      "companyName": "Syemex (Sistemas y Enlaces de México)",
+      "officialWebsite": "https://www.syemex.com",
+      "marketSignal": "Mexican telecommunications integrator with over 20 years of experience serving public and private B2B clients.",
+      "roleSignal": "Integrates telecommunications networks, external fiber/wireless plant construction, and internal LAN/VLAN infrastructure.",
+      "relevanceSignal": "Aligns with Cudy’s long-range outdoor CPEs, fiber switches, and high-gain point-to-point wireless solutions.",
+      "evidenceUrls": [
+        "https://www.syemex.com"
+      ]
+    },
+    {
+      "rank": 15,
+      "companyName": "Grupo Imtelec",
+      "officialWebsite": "https://www.grupoimtelec.com.mx",
+      "marketSignal": "Mexican telecom engineering firm with 15+ years of operational history nationwide.",
+      "roleSignal": "System integrator focused on designing, installing, operating, and maintaining private B2B voice, data, and video networks.",
+      "relevanceSignal": "Serves SMB and light industrial clients who need Cudy’s affordable Wi-Fi routers, repeaters, and PoE switches.",
+      "evidenceUrls": [
+        "https://www.grupoimtelec.com.mx"
+      ]
+    },
+    {
+      "rank": 16,
+      "companyName": "Secproo",
+      "officialWebsite": "https://secproo.com",
+      "marketSignal": "National provider of IT infrastructure and network engineering based in Mexico.",
+      "roleSignal": "System integrator providing structured cabling, local area network (LAN) deployment, and unified business communication systems.",
+      "relevanceSignal": "Complements Cudy’s switching and access point line up for office, retail, and commercial network installations.",
+      "evidenceUrls": [
+        "https://secproo.com"
+      ]
+    },
+    {
+      "rank": 17,
+      "companyName": "Grupo Sistenet",
+      "officialWebsite": "https://www.sistenet.com.mx",
+      "marketSignal": "Monterrey-based system integrator executing telecom and security projects throughout Mexico.",
+      "roleSignal": "Integrates telecom solutions, business wireless networks, fiber optics, and physical security systems for commercial clients.",
+      "relevanceSignal": "Relevant for Cudy’s Wi-Fi access points, PoE switches powering security cameras, and network accessories.",
+      "evidenceUrls": [
+        "https://www.sistenet.com.mx"
+      ]
+    },
+    {
+      "rank": 18,
+      "companyName": "Promotech México",
+      "officialWebsite": "https://promotechmexico.com.mx",
+      "marketSignal": "Mexican IT services provider offering nationwide coverage for corporate communications.",
+      "roleSignal": "Provides network management, help desk, remote hands, wireless deployment, and SD-WAN integration services.",
+      "relevanceSignal": "Ideal match for Cudy’s multi-WAN routers, VPN gateways, and cloud/centralized managed networking products.",
+      "evidenceUrls": [
+        "https://promotechmexico.com.mx"
+      ]
+    },
+    {
+      "rank": 19,
+      "companyName": "Balder Telecom",
+      "officialWebsite": "https://www.balder.com.mx",
+      "marketSignal": "Based in Monterrey, Nuevo León, serving SMBs and corporate accounts across northern and central Mexico.",
+      "roleSignal": "Telecom integrator and MSP delivering managed IP telephony, wireless broadband access, and managed network services.",
+      "relevanceSignal": "Highly compatible with Cudy’s VoIP gateways, 4G/5G LTE routers, and Wi-Fi mesh systems for small-to-medium businesses.",
+      "evidenceUrls": [
+        "https://www.balder.com.mx"
+      ]
+    },
+    {
+      "rank": 20,
+      "companyName": "Q Tech Now",
+      "officialWebsite": "https://qtech.com.mx",
+      "marketSignal": "Mexico City-based technology firm serving B2B clients in central Mexico.",
+      "roleSignal": "Managed Service Provider delivering network infrastructure operations, telecommunications management, and IT support.",
+      "relevanceSignal": "Applicable for Cudy's SMB networking products, including Gigabit switches, access points, and consumer/commercial Wi-Fi routers.",
+      "evidenceUrls": [
+        "https://qtech.com.mx"
+      ]
+    },
+    {
+      "rank": 21,
+      "companyName": "iNet TI",
+      "officialWebsite": "https://inet-mx.net",
+      "marketSignal": "Mexican technology services company providing network integration across commercial sectors.",
+      "roleSignal": "System integrator specializing in structured cabling, wireless networks, VoIP, CCTV, and IoT connectivity.",
+      "relevanceSignal": "Fits Cudy’s SMB/residential networking line up, such as mesh Wi-Fi units, access points, and IoT-enabling 4G routers.",
+      "evidenceUrls": [
+        "https://inet-mx.net"
+      ]
+    },
+    {
+      "rank": 22,
+      "companyName": "TFI México",
+      "officialWebsite": "https://www.tfimexico.com",
+      "marketSignal": "Mexican IT services integrator with over 10 years in the domestic corporate market.",
+      "roleSignal": "IT system integrator providing network implementation, technical support, hardware integration, and managed IT services.",
+      "relevanceSignal": "Provides expansion opportunities for Cudy's cost-effective Ethernet switches, routers, and Wi-Fi expansion units.",
+      "evidenceUrls": [
+        "https://www.tfimexico.com"
+      ]
+    },
+    {
+      "rank": 23,
+      "companyName": "ISEMC (Ingeniería en Sistemas Eléctricos MC)",
+      "officialWebsite": "https://isemc.com.mx",
+      "marketSignal": "Mexican network and infrastructure engineering company serving corporate and industrial clients nationwide.",
+      "roleSignal": "System integrator designing and installing turnkey network infrastructure, structured cabling, Wi-Fi, and site connectivity.",
+      "relevanceSignal": "Good match for Cudy’s PoE network switches, patch panels/accessories, and business Wi-Fi access points.",
+      "evidenceUrls": [
+        "https://isemc.com.mx"
+      ]
+    },
+    {
+      "rank": 24,
+      "companyName": "ITM de México",
+      "officialWebsite": "https://www.itm.mx",
+      "marketSignal": "Mexican telecommunications integrator executing corporate networking and wireless projects across Mexico.",
+      "roleSignal": "System integrator focused on wireless network design (Ekahau surveys), structured cabling, and network maintenance contracts.",
+      "relevanceSignal": "Directly matches Cudy’s ceiling/wall access points and managed switches for indoor commercial installations.",
+      "evidenceUrls": [
+        "https://www.itm.mx"
+      ]
+    },
+    {
+      "rank": 25,
+      "companyName": "Constructora Bandwidth",
+      "officialWebsite": "https://bdw.com.mx",
+      "marketSignal": "Mexican infrastructure and telecommunications contractor operating nationwide.",
+      "roleSignal": "System integrator executing turnkey structured network installations, site rooms, LANs, and corporate connectivity.",
+      "relevanceSignal": "Relevant for Cudy’s unmanaged/managed PoE switches, media converters, and Wi-Fi routers for business sites.",
+      "evidenceUrls": [
+        "https://bdw.com.mx"
+      ]
+    },
+    {
+      "rank": 26,
+      "companyName": "New Gate",
+      "officialWebsite": "https://www.newgate.mx",
+      "marketSignal": "Mexican technology provider delivering network solutions for retail, financial, and multi-branch enterprises.",
+      "roleSignal": "System integrator delivering managed connectivity, LAN/Wi-Fi infrastructure, and multi-site network router deployments.",
+      "relevanceSignal": "Strong synergy with Cudy's 4G/5G cellular routers and VPN gateways for retail branch connectivity.",
+      "evidenceUrls": [
+        "https://www.newgate.mx"
+      ]
+    },
+    {
+      "rank": 27,
+      "companyName": "IPoSIT",
+      "officialWebsite": "https://iposit.mx",
+      "marketSignal": "Mexican IT service and infrastructure company catering to 24/7 mission-critical commercial operations.",
+      "roleSignal": "System integrator delivering enterprise network design, switching implementation, structured cabling, and IT maintenance.",
+      "relevanceSignal": "Applicable for Cudy's Gigabit switches, PoE power injection units, and commercial Wi-Fi access points.",
+      "evidenceUrls": [
+        "https://iposit.mx"
+      ]
+    },
+    {
+      "rank": 28,
+      "companyName": "TERIAN",
+      "officialWebsite": "https://terian.mx",
+      "marketSignal": "Mexican ICT technology integrator serving small-to-medium businesses and corporate customers.",
+      "roleSignal": "System integrator offering network design, corporate Wi-Fi, switching, routing, and structured cabling execution.",
+      "relevanceSignal": "Direct fit for Cudy’s core portfolio including Wi-Fi routers, access points, PoE switches, and network accessories.",
+      "evidenceUrls": [
+        "https://terian.mx"
+      ]
+    },
+    {
+      "rank": 29,
+      "companyName": "Reto Industrial",
+      "officialWebsite": "https://reto.com.mx",
+      "marketSignal": "Pioneer in network infrastructure with over 32 years operating in the Mexican ICT market.",
+      "roleSignal": "System integrator delivering full-scale structured cabling, network infrastructure, unified communications, and monitoring.",
+      "relevanceSignal": "Relevant for Cudy’s Ethernet switches, fiber SFP accessories, and commercial access point solutions.",
+      "evidenceUrls": [
+        "https://reto.com.mx"
+      ]
+    },
+    {
+      "rank": 30,
+      "companyName": "TSM Integraciones",
+      "officialWebsite": "http://www.tsmintegraciones.com.mx",
+      "marketSignal": "Mexico City-based network integrator operating across central Mexico.",
+      "roleSignal": "System integrator providing structured cabling, active network equipment deployment, server room setup, and wireless connectivity.",
+      "relevanceSignal": "Provides distribution/integration route for Cudy’s active networking hardware including switches and wireless devices.",
+      "evidenceUrls": [
+        "http://www.tsmintegraciones.com.mx"
+      ]
+    }
+  ],
+  "missingSlots": 0,
+  "warnings": [
+    "Reused unchanged frozen control from 2026-09-06-uk-mx-search-e2e-v1-1-5."
+  ],
+  "costEvents": []
+}
