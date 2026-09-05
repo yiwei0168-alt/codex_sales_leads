@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+  "status": "passed",
+  "completedAt": "2026-09-05T06:13:41.652Z",
+  "checks": [
+    {
+      "name": "prior-before-v1.1.1-adjustment",
+      "completedAt": "2026-09-05T06:13:41.616Z",
+      "detail": {
+        "productUsd": 2.427700070637425,
+        "geminiControlUsd": 0.888839,
+        "evaluationUsd": 0.07361
+      }
+    },
+    {
+      "name": "frozen-treatment-model-bindings",
+      "completedAt": "2026-09-05T06:13:41.623Z",
+      "detail": {
+        "discoveryGateRoutine": "deepseek-v4-flash",
+        "roleCorrectionRoutine": "deepseek-v4-flash",
+        "qualificationRoutine": "deepseek-v4-flash",
+        "materialEscalation": "deepseek-v4-pro",
+        "productionGateModel": "deepseek-v4-flash",
+        "globalRoutineModelIgnoredByDiscoveryGate": true
+      }
+    },
+    {
+      "name": "inherited-non-judge-preflight",
+      "completedAt": "2026-09-05T06:13:41.630Z",
+      "detail": {
+        "sourceExperimentId": "search-e2e-eval-v1.0.10",
+        "sourceRunId": "2026-09-02-uk-mx-search-e2e-v1-10",
+        "checks": [
+          "kimi-intent",
+          "local-rag",
+          "discovery-gemini-full/google-grounded",
+          "discovery-brave/brave",
+          "discovery-searchapi/bing",
+          "discovery-exa/exa",
+          "discovery-google-places/google-places",
+          "discovery-searchapi/google",
+          "tavily-evidence",
+          "deepseek-score-only",
+          "gemini-3.6-flash-structured-search"
+        ],
+        "productUsd": 0.5314864571588553,
+        "geminiControlUsd": 0.17466425000000002
+      }
+    },
+    {
+      "name": "inherited-blind-judge-preflight",
+      "completedAt": "2026-09-05T06:13:41.639Z",
+      "detail": {
+        "sourceExperimentId": "search-e2e-eval-v1.1.0",
+        "sourceRunId": "2026-09-05-uk-mx-search-e2e-v1-1",
+        "selectedModel": "codex-in-session",
+        "evaluationUsd": 0.07361,
+        "gatewayCallsRepeated": 0
+      }
+    }
+  ],
+  "chosenBlindJudgeModel": "codex-in-session",
+  "cost": {
+    "eventCount": 3,
+    "officialListPriceUsd": 3.390149070637425,
+    "budgetCostUsd": 3.390149070637425,
+    "unpricedEvents": [],
+    "byLedger": {
+      "gemini-native-arm": 0.888839,
+      "product-e2e-arm": 2.427700070637425,
+      "evaluation-overhead": 0.07361
+    },
+    "byStage": {
+      "prior-preflight-adjustment": 3.390149070637425
+    },
+    "anomalies": []
+  },
+  "budgetDecision": {
+    "totalBudgetUsd": 100,
+    "spentUsd": 3.390149070637425,
+    "budgetFraction": 0.03390149070637425,
+    "newlyCrossedThresholdsUsd": [],
+    "forecast": {
+      "completedCells": 0,
+      "totalCells": 8,
+      "incurredUsd": 3.390149070637425,
+      "expectedCompletionUsd": 30,
+      "lowerUsd": 3.390149070637425,
+      "upperUsd": 40.5,
+      "method": "initial-estimate"
+    },
+    "warning": false,
+    "hardStop": false,
+    "requiresUserDecision": false,
+    "reasons": []
+  }
+}

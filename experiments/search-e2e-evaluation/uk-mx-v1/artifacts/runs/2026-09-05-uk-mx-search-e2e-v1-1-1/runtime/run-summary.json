@@ -1,0 +1,179 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+  "experimentId": "search-e2e-eval-v1.1.1",
+  "status": "preflight-passed",
+  "createdAt": "2026-09-05T06:13:41.613Z",
+  "updatedAt": "2026-09-05T06:13:41.644Z",
+  "blindJudgeModel": "codex-in-session",
+  "preflightChecks": [
+    {
+      "name": "prior-before-v1.1.1-adjustment",
+      "completedAt": "2026-09-05T06:13:41.616Z",
+      "detail": {
+        "productUsd": 2.427700070637425,
+        "geminiControlUsd": 0.888839,
+        "evaluationUsd": 0.07361
+      }
+    },
+    {
+      "name": "frozen-treatment-model-bindings",
+      "completedAt": "2026-09-05T06:13:41.623Z",
+      "detail": {
+        "discoveryGateRoutine": "deepseek-v4-flash",
+        "roleCorrectionRoutine": "deepseek-v4-flash",
+        "qualificationRoutine": "deepseek-v4-flash",
+        "materialEscalation": "deepseek-v4-pro",
+        "productionGateModel": "deepseek-v4-flash",
+        "globalRoutineModelIgnoredByDiscoveryGate": true
+      }
+    },
+    {
+      "name": "inherited-non-judge-preflight",
+      "completedAt": "2026-09-05T06:13:41.630Z",
+      "detail": {
+        "sourceExperimentId": "search-e2e-eval-v1.0.10",
+        "sourceRunId": "2026-09-02-uk-mx-search-e2e-v1-10",
+        "checks": [
+          "kimi-intent",
+          "local-rag",
+          "discovery-gemini-full/google-grounded",
+          "discovery-brave/brave",
+          "discovery-searchapi/bing",
+          "discovery-exa/exa",
+          "discovery-google-places/google-places",
+          "discovery-searchapi/google",
+          "tavily-evidence",
+          "deepseek-score-only",
+          "gemini-3.6-flash-structured-search"
+        ],
+        "productUsd": 0.5314864571588553,
+        "geminiControlUsd": 0.17466425000000002
+      }
+    },
+    {
+      "name": "inherited-blind-judge-preflight",
+      "completedAt": "2026-09-05T06:13:41.639Z",
+      "detail": {
+        "sourceExperimentId": "search-e2e-eval-v1.1.0",
+        "sourceRunId": "2026-09-05-uk-mx-search-e2e-v1-1",
+        "selectedModel": "codex-in-session",
+        "evaluationUsd": 0.07361,
+        "gatewayCallsRepeated": 0
+      }
+    }
+  ],
+  "completedArmKeys": [],
+  "completedCellIds": [],
+  "completedEvaluationCellIds": [],
+  "completedBlindPacketIds": [],
+  "reportedBudgetThresholdsUsd": [],
+  "anomalies": [],
+  "costEvents": [
+    {
+      "eventId": "preflight:prior-product-before-v1.1.1",
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "stage": "prior-preflight-adjustment",
+      "provider": "mixed-product-preflight",
+      "startedAt": "2026-09-05T06:13:41.613Z",
+      "completedAt": "2026-09-05T06:13:41.613Z",
+      "latencyMs": 0,
+      "attempts": 51,
+      "retries": 8,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "volume": {
+        "inputItems": 47,
+        "rawOutputItems": 51,
+        "validOutputItems": 45,
+        "downstreamUsedItems": 21,
+        "discardedReasonCounts": {
+          "timeout": 1,
+          "schemaInvalid": 4,
+          "fallback": 1,
+          "semanticGateFailure": 6,
+          "transportFailure": 2
+        }
+      },
+      "notes": [
+        "Exact product-ledger carry-forward through invalidated v1.1.0, including its MX Retail diagnostic product arm."
+      ],
+      "officialListPriceUsd": 2.427700070637425,
+      "budgetCostUsd": 2.427700070637425,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "preflight:prior-gemini-control-before-v1.1.1",
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "gemini-native-arm",
+      "arm": "gemini-native",
+      "stage": "prior-preflight-adjustment",
+      "provider": "gemini-full",
+      "requestedModel": "gemini-3.6-flash",
+      "actualModel": "gemini-3.6-flash",
+      "startedAt": "2026-09-05T06:13:41.613Z",
+      "completedAt": "2026-09-05T06:13:41.613Z",
+      "latencyMs": 0,
+      "attempts": 3,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "failed",
+      "usage": {},
+      "volume": {
+        "inputItems": 6,
+        "rawOutputItems": 35,
+        "validOutputItems": 34,
+        "downstreamUsedItems": 32,
+        "discardedReasonCounts": {
+          "schemaInvalid": 1,
+          "usageNotCheckpointed": 1,
+          "invalidRequest": 1
+        }
+      },
+      "notes": [
+        "Exact Gemini-ledger carry-forward through invalidated v1.1.0; the unchanged MX Retail control arm is reused without a second charge."
+      ],
+      "officialListPriceUsd": 0.888839,
+      "budgetCostUsd": 0.888839,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "preflight:prior-evaluation-before-v1.1.1",
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "prior-preflight-adjustment",
+      "provider": "openrouter",
+      "startedAt": "2026-09-05T06:13:41.613Z",
+      "completedAt": "2026-09-05T06:13:41.613Z",
+      "latencyMs": 0,
+      "attempts": 2,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "failed",
+      "usage": {},
+      "volume": {
+        "inputItems": 2,
+        "rawOutputItems": 1,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "schemaInvalid": 1,
+          "unsupportedParameters": 1
+        }
+      },
+      "notes": [
+        "Carries the v1.1.0 Claude/OpenAI blind-judge preflight; selected Codex in-session is reused without another gateway call."
+      ],
+      "officialListPriceUsd": 0.07361,
+      "budgetCostUsd": 0.07361,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    }
+  ]
+}
