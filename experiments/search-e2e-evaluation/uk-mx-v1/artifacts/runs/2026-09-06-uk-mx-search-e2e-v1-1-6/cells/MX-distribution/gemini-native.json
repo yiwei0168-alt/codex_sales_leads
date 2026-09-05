@@ -1,0 +1,390 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+  "cellId": "MX-distribution",
+  "arm": "gemini-native",
+  "startedAt": "2026-09-05T20:51:14.344Z",
+  "completedAt": "2026-09-05T20:51:47.137Z",
+  "wallClockMs": 32793,
+  "requestedModel": "gemini-3.6-flash",
+  "actualModel": "gemini-3.6-flash",
+  "searchQueries": 12,
+  "finalCandidates": [
+    {
+      "rank": 1,
+      "companyName": "SYSCOM",
+      "officialWebsite": "https://www.syscom.mx",
+      "marketSignal": "Headquartered and operating nationwide across Mexico with 24 distribution centers.",
+      "roleSignal": "Major wholesale distributor (distribuidor mayorista) serving system integrators, dealers, and channel partners across telecom and IT.",
+      "relevanceSignal": "Distributes networking products including routers, switches, PoE, Wi-Fi access points, and outdoor wireless.",
+      "evidenceUrls": [
+        "https://www.syscom.mx",
+        "https://infochannel.info/el-nuevo-adn-del-mayorista-capacitacion-especializacion-y-servicios-como-motores-de-rentabilidad/"
+      ]
+    },
+    {
+      "rank": 2,
+      "companyName": "Grupo DICE",
+      "officialWebsite": "https://grupo-dice.com",
+      "marketSignal": "Operating across major Mexican cities with 14+ offices and national fulfillment infrastructure.",
+      "roleSignal": "Value-added distributor (VAD) supplying IT channels, VARs, and project integrators with networking and security hardware.",
+      "relevanceSignal": "Carries enterprise and SMB networking brands like Cisco and Fortinet, matching Cudy's ethernet switch and access point expansion.",
+      "evidenceUrls": [
+        "https://grupo-dice.com"
+      ]
+    },
+    {
+      "rank": 3,
+      "companyName": "CDC Group",
+      "officialWebsite": "https://www.cdc.com.mx",
+      "marketSignal": "Mexican mayorista authorized across national territory for telecommunications and IT infrastructure.",
+      "roleSignal": "Distributor dedicated to supplying downstream installers, integrators, and channel resellers with connectivity solutions.",
+      "relevanceSignal": "Focuses on telecommunications, fiber optic, structured cabling, and network switching suitable for Cudy product lines.",
+      "evidenceUrls": [
+        "https://www.cdc.com.mx"
+      ]
+    },
+    {
+      "rank": 4,
+      "companyName": "Ingram Micro México",
+      "officialWebsite": "https://mx.ingrammicro.com",
+      "marketSignal": "Extensive physical presence, warehouses, and partner channels operating throughout Mexico.",
+      "roleSignal": "Global technology distributor supplying local resellers, VARs, and managed service providers.",
+      "relevanceSignal": "Distributes home, SMB, and enterprise networking hardware, switches, and wireless equipment.",
+      "evidenceUrls": [
+        "https://mx.ingrammicro.com"
+      ]
+    },
+    {
+      "rank": 5,
+      "companyName": "CT Internacional",
+      "officialWebsite": "https://ctonline.mx",
+      "marketSignal": "Leading Mexican technology distributor with over 50 branch offices and national coverage.",
+      "roleSignal": "Wholesale IT distributor focused exclusively on selling to channel partners, dealers, and VARs.",
+      "relevanceSignal": "High-volume channel for consumer, home office, and SMB networking products including Wi-Fi routers and switches.",
+      "evidenceUrls": [
+        "https://ctonline.mx"
+      ]
+    },
+    {
+      "rank": 6,
+      "companyName": "Grupo CVA",
+      "officialWebsite": "https://www.grupocva.com",
+      "marketSignal": "Major Mexican mayorista with national distribution centers in Guadalajara, Mexico City, Monterrey, and 30+ branches.",
+      "roleSignal": "Wholesale technology distributor providing fulfillment and credit to channel resellers across Mexico.",
+      "relevanceSignal": "Carries SMB networking, switches, Wi-Fi routers, mesh systems, and consumer connectivity equipment.",
+      "evidenceUrls": [
+        "https://www.grupocva.com"
+      ]
+    },
+    {
+      "rank": 7,
+      "companyName": "Tecnosinergia",
+      "officialWebsite": "https://tecnosinergia.com",
+      "marketSignal": "Mexican electronic security and IT wholesale distributor with branch offices across Mexico.",
+      "roleSignal": "Wholesale distributor supplying security integrators, installers, and networking resellers.",
+      "relevanceSignal": "Distributes PoE switches, wireless access points, routers, and connectivity accessories for surveillance and SMB networks.",
+      "evidenceUrls": [
+        "https://tecnosinergia.com"
+      ]
+    },
+    {
+      "rank": 8,
+      "companyName": "TVC en Línea",
+      "officialWebsite": "https://www.tvc.mx",
+      "marketSignal": "Operates 20+ branch locations and logistics hubs throughout Mexico.",
+      "roleSignal": "Wholesale mayorista selling security and networking equipment to verified integrators and resellers.",
+      "relevanceSignal": "Distributes networking products including Wi-Fi access points, PoE switches, routers, and fiber accessories.",
+      "evidenceUrls": [
+        "https://www.tvc.mx"
+      ]
+    },
+    {
+      "rank": 9,
+      "companyName": "Inttelec Networks",
+      "officialWebsite": "https://www.inttelec.com",
+      "marketSignal": "Mexican importer and wholesale distributor operating in Mexico's telecommunications channel.",
+      "roleSignal": "Wholesale importer and distributor serving installers, WISPs, integrators, and resellers.",
+      "relevanceSignal": "Distributes MikroTik, Grandstream, and wireless/networking gear closely aligned with Cudy's target customer base.",
+      "evidenceUrls": [
+        "https://www.inttelec.com"
+      ]
+    },
+    {
+      "rank": 10,
+      "companyName": "West Telco",
+      "officialWebsite": "https://www.westtelco.com.mx",
+      "marketSignal": "Mexico-based technology distributor serving the Mexican market and Latin America.",
+      "roleSignal": "Value-added wholesale distributor providing unified communications and network solutions to VARs.",
+      "relevanceSignal": "Distributes telecom, IP communications, and edge connectivity hardware compatible with Cudy networking solutions.",
+      "evidenceUrls": [
+        "https://www.westtelco.com.mx"
+      ]
+    },
+    {
+      "rank": 11,
+      "companyName": "Daisytek México",
+      "officialWebsite": "https://www.daisytek.com.mx",
+      "marketSignal": "30+ years of operating history as an IT wholesaler in the Mexican market.",
+      "roleSignal": "Authorized wholesale distributor supplying computer hardware, office tech, and networks to resellers.",
+      "relevanceSignal": "Maintains a dedicated Networks & Connectivity division supplying routers, switches, and extenders to SMB channels.",
+      "evidenceUrls": [
+        "https://www.daisytek.com.mx"
+      ]
+    },
+    {
+      "rank": 12,
+      "companyName": "Incom",
+      "officialWebsite": "https://incom.mx",
+      "marketSignal": "Mexican distributor supplying telecommunications, industrial, and infrastructure channels.",
+      "roleSignal": "Wholesale distributor providing volume pricing, technical support, and supply to channel contractors and resellers.",
+      "relevanceSignal": "Supplies telecommunications infrastructure, fiber optic products, networking, and cabling accessories.",
+      "evidenceUrls": [
+        "https://incom.mx"
+      ]
+    },
+    {
+      "rank": 13,
+      "companyName": "MAPS Disruptivo",
+      "officialWebsite": "https://maps.com.mx",
+      "marketSignal": "Operating across Mexico with headquarters in Naucalpan and branches in Culiacan, Monterrey, Guadalajara, and Merida.",
+      "roleSignal": "Value-added wholesaler specializing in cybersecurity, network infrastructure, and cloud solutions for channel partners.",
+      "relevanceSignal": "Distributes network infrastructure, SD-WAN, and wireless solutions directly complementing Cudy's enterprise/SMB switch portfolio.",
+      "evidenceUrls": [
+        "https://maps.com.mx"
+      ]
+    },
+    {
+      "rank": 14,
+      "companyName": "CompuSoluciones",
+      "officialWebsite": "https://www.compusoluciones.com",
+      "marketSignal": "Major Mexican value-added IT wholesale distributor operating nationally.",
+      "roleSignal": "Value-added distributor (VAD) supplying enterprise and SMB integrators, VARs, and cloud partners.",
+      "relevanceSignal": "Distributes networking, cloud, and infrastructure brands (e.g. HPE, Aruba), providing channel access for Cudy hardware.",
+      "evidenceUrls": [
+        "https://www.compusoluciones.com"
+      ]
+    },
+    {
+      "rank": 15,
+      "companyName": "PCH Connect (PCH Mayoreo)",
+      "officialWebsite": "https://www.pchconnect.com",
+      "marketSignal": "Wholesale IT distributor with branches in CDMX, Guadalajara, Merida, Puebla, and national distribution.",
+      "roleSignal": "Mayorista supplying consumer electronics, IT equipment, and networking hardware to dealer channels.",
+      "relevanceSignal": "Carries SOHO and SMB networking brands, routers, switches, mesh Wi-Fi, and access points.",
+      "evidenceUrls": [
+        "https://www.pchconnect.com"
+      ]
+    },
+    {
+      "rank": 16,
+      "companyName": "Exel del Norte",
+      "officialWebsite": "https://exel.com.mx",
+      "marketSignal": "Mexican national IT mayorista with 15+ branches and logistics centers across Mexico.",
+      "roleSignal": "Wholesale distributor supplying corporate VARs, retailers, and computer dealers.",
+      "relevanceSignal": "Maintains dedicated networking and server lines including Wi-Fi routers, switches, and connectivity accessories.",
+      "evidenceUrls": [
+        "https://exel.com.mx"
+      ]
+    },
+    {
+      "rank": 17,
+      "companyName": "TEAM (Tecnología Especializada Asociada de México)",
+      "officialWebsite": "https://www.teamnet.com.mx",
+      "marketSignal": "Mexican value-added wholesale distributor with over 40 years operating in Mexico's IT sector.",
+      "roleSignal": "Value-added distributor supplying specialized VARs, system integrators, and channel partners.",
+      "relevanceSignal": "Distributes networking, open-source infrastructure, and cybersecurity solutions suitable for SMB and light industrial deployment.",
+      "evidenceUrls": [
+        "https://www.teamnet.com.mx"
+      ]
+    },
+    {
+      "rank": 18,
+      "companyName": "Licencias OnLine México",
+      "officialWebsite": "https://www.licenciasonline.com",
+      "marketSignal": "Active operations in Mexico City serving the local Mexican channel ecosystem.",
+      "roleSignal": "Value-added distributor focusing on software, cybersecurity, networking, and cloud services for VARs/MSPs.",
+      "relevanceSignal": "Complements hardware deployment with network security, edge access, and cloud management platforms.",
+      "evidenceUrls": [
+        "https://www.licenciasonline.com"
+      ]
+    },
+    {
+      "rank": 19,
+      "companyName": "Inalarm",
+      "officialWebsite": "https://inalarm-online.mx",
+      "marketSignal": "100% Mexican wholesale distributor operating nationwide for electronic security and networking.",
+      "roleSignal": "Wholesale distributor supplying security installers, integrators, and network dealers.",
+      "relevanceSignal": "Offers networking products such as PoE switches, access points, and routers designed for IP camera and SMB networks.",
+      "evidenceUrls": [
+        "https://inalarm-online.mx"
+      ]
+    },
+    {
+      "rank": 20,
+      "companyName": "Arka Mayorista",
+      "officialWebsite": "https://arkamayorista.mx",
+      "marketSignal": "Wholesale IT and security provider delivering hardware across Mexico.",
+      "roleSignal": "Wholesale distributor delivering network and video surveillance equipment to Mexican integrators.",
+      "relevanceSignal": "Distributes PoE switches, routers, Wi-Fi extenders, and network cabling accessories.",
+      "evidenceUrls": [
+        "https://arkamayorista.mx"
+      ]
+    },
+    {
+      "rank": 21,
+      "companyName": "Kritical Hardware",
+      "officialWebsite": "https://kritical.com.mx",
+      "marketSignal": "Specialized industrial and commercial network importer/distributor based in Mexico.",
+      "roleSignal": "Value-added distributor supplying industrial integrators, VARs, and telecom contractors.",
+      "relevanceSignal": "Specializes in industrial switches, PoE, media converters, DIN-rail networking, matching Cudy's light industrial switch range.",
+      "evidenceUrls": [
+        "https://kritical.com.mx"
+      ]
+    },
+    {
+      "rank": 22,
+      "companyName": "Gictronics (Grupo Mayorista Gictronics)",
+      "officialWebsite": "https://gictronics.com",
+      "marketSignal": "Mexican wholesale distributor of technology, networking, and electronic security.",
+      "roleSignal": "Wholesale distributor stocking hardware for secondary resellers, installers, and project integrators.",
+      "relevanceSignal": "Carries Gigabit switches, PoE switches, fiber SFP transceivers, and access points.",
+      "evidenceUrls": [
+        "https://gictronics.com"
+      ]
+    },
+    {
+      "rank": 23,
+      "companyName": "PC MAF Mayoreo",
+      "officialWebsite": "https://pcmafmayoreo.com",
+      "marketSignal": "Wholesale tech distributor located in Mexico City serving nationwide channels.",
+      "roleSignal": "Wholesale distributor providing volume pricing to technology installers, resellers, and integrators.",
+      "relevanceSignal": "Distributes TP-Link, switches, PoE injectors, mesh systems, and Wi-Fi routers direct competitors to Cudy.",
+      "evidenceUrls": [
+        "https://pcmafmayoreo.com"
+      ]
+    },
+    {
+      "rank": 24,
+      "companyName": "Sily.mx",
+      "officialWebsite": "https://sily.mx",
+      "marketSignal": "Authorized Mexican distributor with offices/warehouses in Naucalpan, Guadalajara, and Morelos.",
+      "roleSignal": "Wholesale channel supplier delivering networks, Wi-Fi, fiber optic, and cabling to B2B clients.",
+      "relevanceSignal": "Distributes Ubiquiti, Grandstream, MikroTik, PoE switches, and Wi-Fi access points directly in Cudy's target domain.",
+      "evidenceUrls": [
+        "https://sily.mx"
+      ]
+    },
+    {
+      "rank": 25,
+      "companyName": "SecurityNet",
+      "officialWebsite": "http://securitynet.com.mx",
+      "marketSignal": "Mexican wholesale provider of high-tech security and network systems with 30 years of operation.",
+      "roleSignal": "Wholesale distributor supplying project integrators and installers with CCTV and networking hardware.",
+      "relevanceSignal": "Offers CCTV networking, access control networking, switches, and connectivity infrastructure.",
+      "evidenceUrls": [
+        "http://securitynet.com.mx"
+      ]
+    },
+    {
+      "rank": 26,
+      "companyName": "Adises",
+      "officialWebsite": "https://adises.com.mx",
+      "marketSignal": "Mexican electronic security and networking wholesaler operating nationally.",
+      "roleSignal": "Wholesale distributor providing trade accounts, project engineering, and products to channel installers.",
+      "relevanceSignal": "Stockist for Ubiquiti, Dahua, ZKTeco, including switches, access points, and wireless networking gear.",
+      "evidenceUrls": [
+        "https://adises.com.mx"
+      ]
+    },
+    {
+      "rank": 27,
+      "companyName": "Neocenter",
+      "officialWebsite": "https://www.neocenter.com",
+      "marketSignal": "Headquartered in Mexico City, delivering IP communications and networking nationwide.",
+      "roleSignal": "Value-added wholesale distributor supplying IT integrators, telecom partners, and VARs.",
+      "relevanceSignal": "Specializes in VoIP, IP gateways, SBCs, and networking switches supporting office and SMB telecommunications.",
+      "evidenceUrls": [
+        "https://www.neocenter.com"
+      ]
+    },
+    {
+      "rank": 28,
+      "companyName": "Portenntum de México",
+      "officialWebsite": "https://www.portenntum.com",
+      "marketSignal": "Mexican mayorista with over 33 years in business and offices in Monterrey, CDMX, and Tijuana.",
+      "roleSignal": "Wholesale distributor specializing in voice, networking, security, and cloud infrastructure for resellers.",
+      "relevanceSignal": "Distributes networking products, fiber optics, structured cabling, Wi-Fi mesh systems, and PoE switches.",
+      "evidenceUrls": [
+        "https://www.portenntum.com"
+      ]
+    },
+    {
+      "rank": 29,
+      "companyName": "Grupo ABSA",
+      "officialWebsite": "https://www.grupoabsa.com",
+      "marketSignal": "National Mexican value-added distributor operating from Guadalajara with branches across Mexico.",
+      "roleSignal": "Value-added wholesale distributor supplying industrial integrators, network installers, and VARs.",
+      "relevanceSignal": "Distributes industrial networking, Cradlepoint wireless, and network switches matching Cudy's light industrial line.",
+      "evidenceUrls": [
+        "https://www.grupoabsa.com"
+      ]
+    },
+    {
+      "rank": 30,
+      "companyName": "Diten",
+      "officialWebsite": "https://diten.mx",
+      "marketSignal": "B2B technology supplier serving businesses in Estado de México and nationally.",
+      "roleSignal": "Wholesale business distributor providing specialized procurement, CFDI billing, and volume delivery for IT channels.",
+      "relevanceSignal": "Distributes TP-Link, HPE, Ubiquiti, switches, routers, access points, and PoE equipment.",
+      "evidenceUrls": [
+        "https://diten.mx"
+      ]
+    }
+  ],
+  "missingSlots": 0,
+  "warnings": [],
+  "costEvents": [
+    {
+      "eventId": "MX-distribution:gemini-control",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "cellId": "MX-distribution",
+      "arm": "gemini-native",
+      "ledger": "gemini-native-arm",
+      "stage": "native-search",
+      "provider": "gemini-full",
+      "requestedModel": "gemini-3.6-flash",
+      "actualModel": "gemini-3.6-flash",
+      "startedAt": "2026-09-05T20:51:14.344Z",
+      "completedAt": "2026-09-05T20:51:47.137Z",
+      "latencyMs": 32793,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 1628,
+        "cachedInputTokens": 758,
+        "outputTokens": 5984,
+        "reasoningTokens": 1673,
+        "groundingQueries": 12
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 30,
+        "validOutputItems": 30,
+        "downstreamUsedItems": 30,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "one interaction",
+        "no follow-up",
+        "provider order preserved"
+      ],
+      "officialListPriceUsd": 0.19114935,
+      "budgetCostUsd": 0.19114935,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    }
+  ]
+}
