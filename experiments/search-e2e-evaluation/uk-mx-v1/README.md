@@ -1,6 +1,6 @@
 # UK–Mexico formal search evaluation v1
 
-Current status (2026-09-06): v1.1.3 is preregistered as an instrumentation-only successor to v1.1.2. The v1.1.2 MX Retail treatment produced 21/30 after five rounds at USD 1.9103677258 and verified the query-bound, transient-recovery and exhaustion fixes. Its candidate quality result is valid and reused without paid calls. A telemetry defect copied aggregate stage output volume to both Flash and Pro cost events, producing two invalid utilization counters without changing candidates, scores, tokens or cost. v1.1.3 attributes aggregate stage volume once, retains every model's token/cost event, and treats historical carry as cost-only rather than duplicating old input/output volume. Cumulative spend is USD 6.257584059721488.
+Current status (2026-09-06): v1.1.4 supersedes a zero-cost v1.1.3 orchestration failure. v1.1.3 correctly fixed model-event volume attribution, but its MX Retail product reuse path tried to hash a raw `query` that public frozen artifacts intentionally replace with `querySha256`; it stopped before search, evidence or model calls. v1.1.4 accepts either representation and verifies the existing hash. The valid v1.1.2 MX Retail 21/30 quality result and its historical cost remain reused once. Cumulative spend is unchanged at USD 6.257584059721488.
 
 This directory contains the preregistered protocol, frozen configuration, prompts, schemas, runtime checkpoints and final reports for Cudy's first formal end-to-end search evaluation.
 
@@ -41,7 +41,7 @@ Preflight checks, formal-arm stages, Gemini-only shared evaluation and every bli
 
 ## Version and Git policy
 
-- Experiment version: `search-e2e-eval-v1.1.3`
+- Experiment version: `search-e2e-eval-v1.1.4`
 - Working branch: `experiment/search-e2e-uk-mx-v1`
 - A preregistration tag is created before experimental calls.
 - Runtime checkpoints are committed after every completed country/category cell.

@@ -25,6 +25,7 @@ import { cellById, experimentCells, EXPERIMENT_CONFIG, intentRolesRecognizeCateg
   type ExperimentCell } from "../lib/experiment";
 import { calculateProviderContributions, optimizationFindings, renderFinalReport } from "../lib/final-report";
 import { runProductCell, type ProductCellResult } from "../lib/product-cell";
+import { sanitizeDiscoveryCalls } from "../lib/public-artifact";
 import { callClaudeBlindJudge, callGeminiControl } from "../lib/provider-clients";
 import { assertCodexDecisionFilesFrozen, codexDirectBlindDecision, codexPacketSha256,
   validateCodexDirectDecision, type CodexDirectDecisionArtifact } from "../lib/codex-direct-review";
@@ -38,7 +39,7 @@ import { buildControlUniqueGroups, buildProductRecordIndex, evaluateControlUniqu
 nextEnv.loadEnvConfig(process.cwd());
 const rateCard = rateCardJson as ExperimentRateCard;
 const experimentRoot = path.resolve("experiments/search-e2e-evaluation/uk-mx-v1");
-const frozenTag = "search-e2e-eval-v1.1.3-frozen";
+const frozenTag = "search-e2e-eval-v1.1.4-frozen";
 
 const frozenFiles = [
   "PROTOCOL.md", "README.md", "config/experiment.v1.0.0.json", "config/gemini-control-prompt.md",
@@ -46,7 +47,7 @@ const frozenFiles = [
   "schemas/gemini-control-output.schema.json", "schemas/blind-judge-output.schema.json",
   "schemas/runtime-cost-event.schema.json", "lib/blind-audit.ts", "lib/cost-ledger.ts", "lib/control-cell.ts",
   "lib/codex-direct-review.ts", "lib/evaluation-metrics.ts", "lib/experiment.ts", "lib/final-report.ts", "lib/product-cell.ts",
-  "lib/provider-clients.ts", "lib/run-store.ts", "lib/runtime-schemas.ts", "lib/unified-evaluation.ts",
+  "lib/provider-clients.ts", "lib/public-artifact.ts", "lib/run-store.ts", "lib/runtime-schemas.ts", "lib/unified-evaluation.ts",
   "scripts/run-formal-experiment.ts",
   "../../../config/lead-search/hybrid-search-v1.0.0.json",
   "../../../config/lead-scoring/policy-v2.0.0.json",
@@ -88,6 +89,10 @@ const frozenFiles = [
   "artifacts/runs/2026-09-05-uk-mx-search-e2e-v1-1-2/cells/MX-retail/product-e2e.json",
   "artifacts/runs/2026-09-05-uk-mx-search-e2e-v1-1-2/cost/after-MX-retail.json",
   "artifacts/runs/2026-09-05-uk-mx-search-e2e-v1-1-2/analysis/supersession.json",
+  "artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-3/preflight/preflight-report.json",
+  "artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-3/runtime/run-summary.json",
+  "artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-3/cells/MX-retail/gemini-native.json",
+  "artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-3/analysis/invalidation.json",
 ] as const;
 
 function sha256(value: string | Buffer): string {
@@ -295,8 +300,8 @@ async function runPreflight(): Promise<void> {
   missing.push(...discoveryStatus.filter((item) => !item.configured).map((item) => item.apiKeyEnv));
   if (missing.length > 0) throw new Error(`Preflight missing required environment variables: ${[...new Set(missing)].join(", ")}`);
 
-  if (!hasPreflightCheck(state, "prior-before-v1.1.3-adjustment")) {
-    const productAdjustmentBase = preflightEvent({ eventId: "preflight:prior-product-before-v1.1.3", runId: state.runId,
+  if (!hasPreflightCheck(state, "prior-before-v1.1.4-adjustment")) {
+    const productAdjustmentBase = preflightEvent({ eventId: "preflight:prior-product-before-v1.1.4", runId: state.runId,
       ledger: "product-e2e-arm", arm: "product-e2e", stage: "prior-preflight-adjustment",
       provider: "mixed-product-preflight", startedAt: state.createdAt, completedAt: state.createdAt,
       latencyMs: 0, attempts: 0, retries: 0, fallbackUsed: false, status: "completed", usage: {},
@@ -308,7 +313,7 @@ async function runPreflight(): Promise<void> {
       officialListPriceUsd: EXPERIMENT_CONFIG.cost.priorProductPreflightAdjustmentUsd,
       budgetCostUsd: EXPERIMENT_CONFIG.cost.priorProductPreflightAdjustmentUsd,
       cashCostBasis: "official-conservative" as const };
-    const controlAdjustmentBase = preflightEvent({ eventId: "preflight:prior-gemini-control-before-v1.1.3",
+    const controlAdjustmentBase = preflightEvent({ eventId: "preflight:prior-gemini-control-before-v1.1.4",
       runId: state.runId, ledger: "gemini-native-arm", arm: "gemini-native", stage: "prior-preflight-adjustment",
       provider: "historical-carry", startedAt: state.createdAt, completedAt: state.createdAt,
       latencyMs: 0, attempts: 0, retries: 0, fallbackUsed: false, status: "completed", usage: {},
@@ -320,7 +325,7 @@ async function runPreflight(): Promise<void> {
       officialListPriceUsd: EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd,
       budgetCostUsd: EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd,
       cashCostBasis: "official-conservative" as const };
-    const evaluationAdjustmentBase = preflightEvent({ eventId: "preflight:prior-evaluation-before-v1.1.3",
+    const evaluationAdjustmentBase = preflightEvent({ eventId: "preflight:prior-evaluation-before-v1.1.4",
       runId: state.runId, ledger: "evaluation-overhead", arm: "shared-evaluation",
       stage: "prior-preflight-adjustment", provider: "historical-carry", startedAt: state.createdAt,
       completedAt: state.createdAt, latencyMs: 0, attempts: 0, retries: 0, fallbackUsed: false,
@@ -332,7 +337,7 @@ async function runPreflight(): Promise<void> {
       officialListPriceUsd: EXPERIMENT_CONFIG.cost.priorEvaluationAdjustmentUsd,
       budgetCostUsd: EXPERIMENT_CONFIG.cost.priorEvaluationAdjustmentUsd,
       cashCostBasis: "official-conservative" as const };
-    await checkpointPreflight(state, "prior-before-v1.1.3-adjustment",
+    await checkpointPreflight(state, "prior-before-v1.1.4-adjustment",
       [productAdjustment, controlAdjustment, evaluationAdjustment],
       { productUsd: EXPERIMENT_CONFIG.cost.priorProductPreflightAdjustmentUsd,
         geminiControlUsd: EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd,
@@ -626,10 +631,7 @@ async function runPreflight(): Promise<void> {
 function publicProductResult(result: Awaited<ReturnType<typeof runProductCell>>) {
   const { raw, discoveryCalls, ...rest } = result;
   void raw;
-  return { ...rest, discoveryCalls: discoveryCalls.map(({ items, query, ...call }) => {
-    void items;
-    return { ...call, querySha256: sha256(query) };
-  }) };
+  return { ...rest, discoveryCalls: sanitizeDiscoveryCalls(discoveryCalls) };
 }
 
 function publicControlResult(result: Awaited<ReturnType<typeof runControlCell>>) {

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "experimentId": "search-e2e-eval-v1.1.3",
+  "runId": "2026-09-06-uk-mx-search-e2e-v1-1-3",
+  "status": "invalid-orchestration-zero-cost",
+  "reasonCode": "public-artifact-reuse-query-hash",
+  "reason": "The product reuse sanitizer attempted to hash an absent raw query even though the frozen public artifact already contained querySha256.",
+  "paidCallsStarted": 0,
+  "marginalCostUsd": 0,
+  "completedArms": ["MX-retail:gemini-native"],
+  "qualityResultProduced": false,
+  "replacementExperimentId": "search-e2e-eval-v1.1.4"
+}

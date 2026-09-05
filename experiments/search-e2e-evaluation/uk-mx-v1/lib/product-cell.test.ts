@@ -4,6 +4,7 @@ import type { WorkflowModelUsage } from "@/lib/leads/workflow/types";
 
 import type { ExperimentCell } from "./experiment";
 import { modelUsageEvents } from "./product-cell";
+import { sanitizeDiscoveryCalls } from "./public-artifact";
 
 const cell: ExperimentCell = {
   sequence: 1,
@@ -39,5 +40,10 @@ describe("formal product-cell telemetry", () => {
       validOutputItems: 0, downstreamUsedItems: 0 });
     expect(events.reduce((sum, event) => sum + event.volume.rawOutputItems, 0)).toBe(26);
     expect(events.every((event) => event.volume.downstreamUsedItems <= event.volume.validOutputItems)).toBe(true);
+  });
+
+  it("can sanitize an already-public frozen product artifact during zero-call reuse", () => {
+    const result = sanitizeDiscoveryCalls([{ callKey: "retail/test", querySha256: "abc123", items: [] }]);
+    expect(result).toEqual([{ callKey: "retail/test", querySha256: "abc123" }]);
   });
 });

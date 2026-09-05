@@ -1,6 +1,6 @@
 {
-  "experimentId": "search-e2e-eval-v1.1.3",
-  "runId": "2026-09-06-uk-mx-search-e2e-v1-1-3",
+  "experimentId": "search-e2e-eval-v1.1.4",
+  "runId": "2026-09-06-uk-mx-search-e2e-v1-1-4",
   "status": "preregistered-pending-preflight",
   "objective": "Compare the current cold-start product end-to-end company-search workflow with an un-tuned Gemini Full baseline.",
   "arms": {

@@ -1,4 +1,6 @@
-# Cudy端到端搜索能力正式测评协议 v1.1.3
+# Cudy端到端搜索能力正式测评协议 v1.1.4
+
+> 2026-09-06 preregistration: v1.1.4 fixes a zero-paid-call orchestration failure in v1.1.3. Frozen public product artifacts contain `querySha256` instead of raw query text; the reuse sanitizer now accepts the existing hash and still rejects calls with neither representation. A unit test covers the public-artifact path. The v1.1.2 MX Retail quality result, treatment, costs and all remaining experiment rules are unchanged.
 
 > 2026-09-06 preregistration: v1.1.3 changes evaluation telemetry only. v1.1.2's MX Retail product result is a valid 21/30 quality observation and is reused byte-for-byte for scoring and provider contribution. Its USD 1.9103677258492517 cost is carried once. The instrumentation fix attributes aggregate stage input/output/downstream-use volume to one primary model cost event instead of copying it to both routine Flash and escalation Pro events; all model token and cost data remain separate. Historical cost-adjustment events now carry zero operational volume because the frozen source artifacts retain the original stage records. Search, evidence, role correction, scoring, models, stop policy, samples, control and win gates are unchanged.
 
