@@ -1,21 +1,21 @@
 {
   "schemaVersion": 1,
-  "experimentId": "search-e2e-eval-v1.1.3",
-  "runId": "2026-09-06-uk-mx-search-e2e-v1-1-3",
-  "createdAt": "2026-09-05T19:24:23.139Z",
-  "requiredGitTag": "search-e2e-eval-v1.1.3-frozen",
+  "experimentId": "search-e2e-eval-v1.1.4",
+  "runId": "2026-09-06-uk-mx-search-e2e-v1-1-4",
+  "createdAt": "2026-09-05T19:29:12.912Z",
+  "requiredGitTag": "search-e2e-eval-v1.1.4-frozen",
   "files": [
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/PROTOCOL.md",
-      "sha256": "2d580873dfc81d6d74e5b9977582167390a5aac88594e4f9a7ed762f0fa64728"
+      "sha256": "f4973dd42ef4ec484c974738677f602ceeb4c8a6f5fd1e9247d08e11a12ca449"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/README.md",
-      "sha256": "66c4bbc8f324c15ac3600b0ff2c1e71416ad977b0de0800a233e901620f9bc17"
+      "sha256": "a98c9bfebfed2424da273229e56f68bf23de076805813ef09ab1e415b49b92f4"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/config/experiment.v1.0.0.json",
-      "sha256": "a0e9510d9a0e0bc965a8094fb17d921846840d7591cc20eeffe3a674eb83ed4c"
+      "sha256": "e8d22d2719903cd9fcb45fb6e4a62faf1a2b5c69be7a8b24ba09dd649f744b63"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/config/gemini-control-prompt.md",
@@ -78,6 +78,10 @@
       "sha256": "378e561f88f45ff178acd6a31b148cb1a417017cff0c2519d1d5d9c8058f89bf"
     },
     {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/public-artifact.ts",
+      "sha256": "963447dd98aecf99826e5ca31d1478b5840db58c56e48a871949b0099fde0b88"
+    },
+    {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/run-store.ts",
       "sha256": "50b3fc5e6797eb0bbae0a79c50cb960affb516be1f6fad61ebb115ddd2c2e469"
     },
@@ -91,7 +95,7 @@
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/scripts/run-formal-experiment.ts",
-      "sha256": "b17b98708875d168aa1228236b5ccc94379f0df1fe1c9f5803bc49c9e25e392e"
+      "sha256": "d8a9580d01989f11df84811c576ab9feff92d12b45d2655da0a44426fe783e3f"
     },
     {
       "path": "config/lead-search/hybrid-search-v1.0.0.json",
@@ -296,6 +300,22 @@
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-05-uk-mx-search-e2e-v1-1-2/analysis/supersession.json",
       "sha256": "3b5b92ab459ff92fc1f34d0ea7142a80d5512739c258669aecae9d9c602e5734"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-3/preflight/preflight-report.json",
+      "sha256": "aea0347b8191b3c21c5c266def1eb6521558a0324d70ae5eca4b4dd91b92e50f"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-3/runtime/run-summary.json",
+      "sha256": "5f8865bc05aa78449bebaf4d4440c4c50451f3074b9dec5c0dc078b159cc9360"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-3/cells/MX-retail/gemini-native.json",
+      "sha256": "61fe22e963527ef54bb8b28ff3336fea112e5c6428d8a4871fb048905e9d0a0d"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-3/analysis/invalidation.json",
+      "sha256": "131a6c8bd8443cf90e11067b4cb71655a5d04f4c95f39a8ad9dd34a9d30c2889"
     }
   ]
 }
