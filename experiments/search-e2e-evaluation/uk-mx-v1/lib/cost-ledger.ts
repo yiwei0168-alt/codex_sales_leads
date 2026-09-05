@@ -212,13 +212,15 @@ export function forecastCompletionCost(events: ExperimentCostEvent[], options: {
   if (unknown.length > 0) throw new Error(`Cannot forecast with ${unknown.length} unpriced cost event(s)`);
   const incurredUsd = events.reduce((sum, event) => sum + (event.budgetCostUsd ?? 0), 0);
   const completed = [...new Set(options.completedCellIds)];
-  if (completed.length === 0) {
-    return { completedCells: 0, totalCells: options.totalCells, incurredUsd,
+  const costedCompleted = completed.filter((cellId) => events.some((event) => event.cellId === cellId
+    && (event.budgetCostUsd ?? 0) > 0));
+  if (costedCompleted.length === 0) {
+    return { completedCells: completed.length, totalCells: options.totalCells, incurredUsd,
       expectedCompletionUsd: Math.max(incurredUsd, options.initialEstimateUsd),
       lowerUsd: incurredUsd, upperUsd: Math.max(incurredUsd, options.initialEstimateUsd * 1.35),
       method: "initial-estimate" };
   }
-  const costs = completed.map((cellId) => events.filter((event) => event.cellId === cellId)
+  const costs = costedCompleted.map((cellId) => events.filter((event) => event.cellId === cellId)
     .reduce((sum, event) => sum + (event.budgetCostUsd ?? 0), 0));
   const mean = costs.reduce((sum, cost) => sum + cost, 0) / costs.length;
   const variance = costs.length > 1

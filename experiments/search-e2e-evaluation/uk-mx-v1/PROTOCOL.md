@@ -1,4 +1,6 @@
-# Cudy端到端搜索能力正式测评协议 v1.1.4
+# Cudy端到端搜索能力正式测评协议 v1.1.5
+
+> 2026-09-06 preregistration: v1.1.5 fixes cost forecasting after a completed zero-paid-call frozen-arm reuse. Reused cells still count as completed for progress and remaining-cell calculations, but only cells with positive current-run cell cost are eligible run-rate samples. Until the first newly paid cell completes, the forecast remains the conservative preregistered USD 30 expected / USD 40.50 upper estimate. Search, evidence, scoring, samples, models, MX Retail quality outputs and cumulative USD 6.2575840597 spend are unchanged.
 
 > 2026-09-06 preregistration: v1.1.4 fixes a zero-paid-call orchestration failure in v1.1.3. Frozen public product artifacts contain `querySha256` instead of raw query text; the reuse sanitizer now accepts the existing hash and still rejects calls with neither representation. A unit test covers the public-artifact path. The v1.1.2 MX Retail quality result, treatment, costs and all remaining experiment rules are unchanged.
 

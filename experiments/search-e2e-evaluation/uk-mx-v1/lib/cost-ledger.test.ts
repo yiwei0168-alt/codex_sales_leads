@@ -81,6 +81,15 @@ describe("formal experiment cost ledger", () => {
     expect(decision.reasons).toContain("forecast-may-exceed-budget");
   });
 
+  it("does not infer a zero run rate from a completed frozen-arm reuse cell", () => {
+    const events = [priceCostEvent(input({ eventId: "historical", cellId: undefined,
+      stage: "prior-preflight-adjustment", accountCashCostUsd: 6.25 }), rateCard)];
+    const forecast = forecastCompletionCost(events, { completedCellIds: ["MX-retail"], totalCells: 8,
+      fixedRemainingUsd: 10, initialEstimateUsd: 30 });
+    expect(forecast).toMatchObject({ completedCells: 1, method: "initial-estimate",
+      expectedCompletionUsd: 30, upperUsd: 40.5 });
+  });
+
   it("summarizes separate ledgers and anomalies", () => {
     const product = priceCostEvent(input({ accountCashCostUsd: 2 }), rateCard);
     const gemini = priceCostEvent(input({ eventId: "e2", ledger: "gemini-native-arm", arm: "gemini-native",

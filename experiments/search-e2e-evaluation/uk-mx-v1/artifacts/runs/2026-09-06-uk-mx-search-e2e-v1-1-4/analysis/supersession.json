@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "experimentId": "search-e2e-eval-v1.1.4",
+  "runId": "2026-09-06-uk-mx-search-e2e-v1-1-4",
+  "status": "quality-valid-forecast-telemetry-superseded",
+  "supersededByExperimentId": "search-e2e-eval-v1.1.5",
+  "supersededByRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5",
+  "qualityDisposition": {
+    "valid": true,
+    "cellId": "MX-retail",
+    "geminiCandidates": 30,
+    "productCandidates": 21,
+    "sourceProductQualityRunId": "2026-09-05-uk-mx-search-e2e-v1-1-2",
+    "newPaidCalls": 0
+  },
+  "costDisposition": {
+    "cumulativeBudgetCostUsd": 6.257584059721489,
+    "incrementalBudgetCostUsd": 0,
+    "incorrectForecastExpectedCompletionUsd": 16.257584059721488,
+    "incorrectForecastUpperUsd": 18.696221668679712,
+    "reason": "A completed zero-cost frozen-arm reuse was incorrectly treated as a zero run-rate sample."
+  },
+  "correction": "Count zero-cost reuse for completion progress, but require at least one positive-cost current-run cell before replacing the preregistered forecast with a cell-run-rate forecast."
+}
