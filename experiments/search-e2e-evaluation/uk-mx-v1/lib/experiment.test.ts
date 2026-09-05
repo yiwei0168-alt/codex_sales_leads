@@ -37,8 +37,12 @@ describe("formal experiment intent normalization", () => {
       .toBeLessThanOrEqual(EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd);
     expect(EXPERIMENT_CONFIG.cost.priorProductPreflightAdjustmentUsd
       + EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd
-      + EXPERIMENT_CONFIG.cost.priorEvaluationAdjustmentUsd).toBeCloseTo(6.257584059721488, 12);
-    expect(EXPERIMENT_CONFIG.reusedFrozenArms.map((item) => item.arm).sort())
-      .toEqual(["gemini-native", "product-e2e"]);
+      + EXPERIMENT_CONFIG.cost.priorEvaluationAdjustmentUsd).toBeCloseTo(10.26588188199398, 12);
+    expect(EXPERIMENT_CONFIG.reusedFrozenArms.map((item) => `${item.cellId}:${item.arm}`).sort())
+      .toEqual([
+        "GB-distribution:gemini-native", "GB-distribution:product-e2e", "GB-resale:gemini-native",
+        "MX-retail:gemini-native", "MX-retail:product-e2e", "MX-si-msp:gemini-native",
+        "MX-si-msp:product-e2e",
+      ].sort());
   });
 });

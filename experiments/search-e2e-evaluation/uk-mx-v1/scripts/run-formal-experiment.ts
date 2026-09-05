@@ -39,7 +39,7 @@ import { buildControlUniqueGroups, buildProductRecordIndex, evaluateControlUniqu
 nextEnv.loadEnvConfig(process.cwd());
 const rateCard = rateCardJson as ExperimentRateCard;
 const experimentRoot = path.resolve("experiments/search-e2e-evaluation/uk-mx-v1");
-const frozenTag = "search-e2e-eval-v1.1.5-frozen";
+const frozenTag = "search-e2e-eval-v1.1.6-frozen";
 
 const frozenFiles = [
   "PROTOCOL.md", "README.md", "config/experiment.v1.0.0.json", "config/gemini-control-prompt.md",
@@ -99,6 +99,19 @@ const frozenFiles = [
   "artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-4/cells/MX-retail/product-e2e.json",
   "artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-4/cost/after-MX-retail.json",
   "artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-4/analysis/supersession.json",
+  "artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-5/preflight/preflight-report.json",
+  "artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-5/runtime/run-summary.json",
+  "artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-5/cells/MX-retail/gemini-native.json",
+  "artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-5/cells/MX-retail/product-e2e.json",
+  "artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-5/cost/after-MX-retail.json",
+  "artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-5/cells/GB-distribution/gemini-native.json",
+  "artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-5/cells/GB-distribution/product-e2e.json",
+  "artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-5/cost/after-GB-distribution.json",
+  "artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-5/cells/MX-si-msp/gemini-native.json",
+  "artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-5/cells/MX-si-msp/product-e2e.json",
+  "artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-5/cost/after-MX-si-msp.json",
+  "artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-5/cells/GB-resale/gemini-native.json",
+  "artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-5/analysis/supersession.json",
 ] as const;
 
 function sha256(value: string | Buffer): string {
@@ -306,20 +319,20 @@ async function runPreflight(): Promise<void> {
   missing.push(...discoveryStatus.filter((item) => !item.configured).map((item) => item.apiKeyEnv));
   if (missing.length > 0) throw new Error(`Preflight missing required environment variables: ${[...new Set(missing)].join(", ")}`);
 
-  if (!hasPreflightCheck(state, "prior-before-v1.1.5-adjustment")) {
-    const productAdjustmentBase = preflightEvent({ eventId: "preflight:prior-product-before-v1.1.5", runId: state.runId,
+  if (!hasPreflightCheck(state, "prior-before-v1.1.6-adjustment")) {
+    const productAdjustmentBase = preflightEvent({ eventId: "preflight:prior-product-before-v1.1.6", runId: state.runId,
       ledger: "product-e2e-arm", arm: "product-e2e", stage: "prior-preflight-adjustment",
       provider: "mixed-product-preflight", startedAt: state.createdAt, completedAt: state.createdAt,
       latencyMs: 0, attempts: 0, retries: 0, fallbackUsed: false, status: "completed", usage: {},
       accountCashCostUsd: EXPERIMENT_CONFIG.cost.priorProductPreflightAdjustmentUsd,
       volume: { inputItems: 0, rawOutputItems: 0, validOutputItems: 0, downstreamUsedItems: 0,
         discardedReasonCounts: { historicalCostCarryOnly: 1 } },
-      notes: ["Exact product-ledger carry-forward through v1.1.2. Historical stage volumes remain in frozen source artifacts and are not double-counted in this run."] });
+      notes: ["Exact product-ledger carry-forward through v1.1.5. Historical stage volumes remain in frozen source artifacts and are not double-counted in this run."] });
     const productAdjustment = { ...productAdjustmentBase, accountCashCostUsd: undefined,
       officialListPriceUsd: EXPERIMENT_CONFIG.cost.priorProductPreflightAdjustmentUsd,
       budgetCostUsd: EXPERIMENT_CONFIG.cost.priorProductPreflightAdjustmentUsd,
       cashCostBasis: "official-conservative" as const };
-    const controlAdjustmentBase = preflightEvent({ eventId: "preflight:prior-gemini-control-before-v1.1.5",
+    const controlAdjustmentBase = preflightEvent({ eventId: "preflight:prior-gemini-control-before-v1.1.6",
       runId: state.runId, ledger: "gemini-native-arm", arm: "gemini-native", stage: "prior-preflight-adjustment",
       provider: "historical-carry", startedAt: state.createdAt, completedAt: state.createdAt,
       latencyMs: 0, attempts: 0, retries: 0, fallbackUsed: false, status: "completed", usage: {},
@@ -331,7 +344,7 @@ async function runPreflight(): Promise<void> {
       officialListPriceUsd: EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd,
       budgetCostUsd: EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd,
       cashCostBasis: "official-conservative" as const };
-    const evaluationAdjustmentBase = preflightEvent({ eventId: "preflight:prior-evaluation-before-v1.1.5",
+    const evaluationAdjustmentBase = preflightEvent({ eventId: "preflight:prior-evaluation-before-v1.1.6",
       runId: state.runId, ledger: "evaluation-overhead", arm: "shared-evaluation",
       stage: "prior-preflight-adjustment", provider: "historical-carry", startedAt: state.createdAt,
       completedAt: state.createdAt, latencyMs: 0, attempts: 0, retries: 0, fallbackUsed: false,
@@ -343,7 +356,7 @@ async function runPreflight(): Promise<void> {
       officialListPriceUsd: EXPERIMENT_CONFIG.cost.priorEvaluationAdjustmentUsd,
       budgetCostUsd: EXPERIMENT_CONFIG.cost.priorEvaluationAdjustmentUsd,
       cashCostBasis: "official-conservative" as const };
-    await checkpointPreflight(state, "prior-before-v1.1.5-adjustment",
+    await checkpointPreflight(state, "prior-before-v1.1.6-adjustment",
       [productAdjustment, controlAdjustment, evaluationAdjustment],
       { productUsd: EXPERIMENT_CONFIG.cost.priorProductPreflightAdjustmentUsd,
         geminiControlUsd: EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd,

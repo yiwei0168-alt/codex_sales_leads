@@ -1,4 +1,6 @@
-# Cudy端到端搜索能力正式测评协议 v1.1.5
+# Cudy端到端搜索能力正式测评协议 v1.1.6
+
+> 2026-09-06 preregistration: v1.1.6 fixes experiment-checkpoint reliability only. In v1.1.5, GB Reseller's first product attempt stopped after malformed Kimi JSON; its second attempt passed Kimi and RAG but a transient Windows `EPERM` blocked the atomic public-summary rename. The raw ledger retained every paid call. v1.1.6 uses a unique temporary filename and bounded 25/75/200/500 ms retries for `EPERM`, `EACCES` and `EBUSY`. It reuses the three completed quality cells plus the completed GB Reseller Gemini arm, carries USD 10.265881882 exactly once, and reruns only the incomplete product arm. Search, evidence, scoring, models, sample rules and win gates are unchanged.
 
 > 2026-09-06 preregistration: v1.1.5 fixes cost forecasting after a completed zero-paid-call frozen-arm reuse. Reused cells still count as completed for progress and remaining-cell calculations, but only cells with positive current-run cell cost are eligible run-rate samples. Until the first newly paid cell completes, the forecast remains the conservative preregistered USD 30 expected / USD 40.50 upper estimate. Search, evidence, scoring, samples, models, MX Retail quality outputs and cumulative USD 6.2575840597 spend are unchanged.
 

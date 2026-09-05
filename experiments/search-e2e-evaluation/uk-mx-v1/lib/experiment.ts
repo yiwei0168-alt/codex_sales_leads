@@ -74,10 +74,12 @@ export function validateExperimentConfig(): void {
   }
   if (config.preflightReuse.sourceExperimentId !== "search-e2e-eval-v1.0.10"
     || config.preflightReuse.requiredChecks.length !== 11
-    || config.reusedFrozenArms.length !== 2
-    || config.reusedFrozenArms.some((item) => item.cellId !== "MX-retail")
-    || !config.reusedFrozenArms.some((item) => item.arm === "gemini-native")
-    || !config.reusedFrozenArms.some((item) => item.arm === "product-e2e")) {
+    || JSON.stringify(config.reusedFrozenArms.map((item) => `${item.cellId}:${item.arm}`).sort())
+      !== JSON.stringify([
+        "GB-distribution:gemini-native", "GB-distribution:product-e2e", "GB-resale:gemini-native",
+        "MX-retail:gemini-native", "MX-retail:product-e2e", "MX-si-msp:gemini-native",
+        "MX-si-msp:product-e2e",
+      ].sort())) {
     throw new Error("Frozen non-judge preflight inheritance changed");
   }
 }

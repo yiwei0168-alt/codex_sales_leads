@@ -1,6 +1,6 @@
 # UK–Mexico formal search evaluation v1
 
-Current status (2026-09-06): v1.1.5 supersedes v1.1.4's cost-forecast telemetry after its successful zero-paid-call MX Retail reuse. v1.1.4 correctly reused both quality arms, but incorrectly treated the completed zero-cost reuse as a zero run-rate sample and reduced the forecast. v1.1.5 counts reuse for progress while requiring a positive-cost newly executed cell before replacing the conservative initial forecast. Search, evidence, scoring and the valid v1.1.2 MX Retail 21/30 quality result are unchanged. Cumulative spend remains USD 6.257584059721488.
+Current status (2026-09-06): v1.1.6 supersedes a v1.1.5 experiment-checkpoint failure without changing product treatment. Three completed quality cells and the completed GB Reseller Gemini arm are reused; all USD 10.26588188199398 incurred cost is carried exactly once. The public-artifact writer now uses unique temporary names and bounded retry for transient Windows file-lock errors. GB Reseller's incomplete product arm is the next paid action.
 
 This directory contains the preregistered protocol, frozen configuration, prompts, schemas, runtime checkpoints and final reports for Cudy's first formal end-to-end search evaluation.
 
@@ -41,7 +41,7 @@ Preflight checks, formal-arm stages, Gemini-only shared evaluation and every bli
 
 ## Version and Git policy
 
-- Experiment version: `search-e2e-eval-v1.1.5`
+- Experiment version: `search-e2e-eval-v1.1.6`
 - Working branch: `experiment/search-e2e-uk-mx-v1`
 - A preregistration tag is created before experimental calls.
 - Runtime checkpoints are committed after every completed country/category cell.

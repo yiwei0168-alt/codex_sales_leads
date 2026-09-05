@@ -4,7 +4,7 @@
   "experimentId": "search-e2e-eval-v1.1.5",
   "status": "running",
   "createdAt": "2026-09-05T19:35:45.172Z",
-  "updatedAt": "2026-09-05T20:10:41.545Z",
+  "updatedAt": "2026-09-05T20:12:29.261Z",
   "blindJudgeModel": "codex-in-session",
   "preflightChecks": [
     {
@@ -2725,6 +2725,104 @@
       ],
       "officialListPriceUsd": 0.136699375,
       "budgetCostUsd": 0.136699375,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-resale:intent:1:repeat-2",
+      "cellId": "GB-resale",
+      "stage": "intent",
+      "provider": "kimi",
+      "requestedModel": "kimi-k2.6",
+      "actualModel": "kimi-k2.6",
+      "startedAt": "2026-09-05T20:12:04.248Z",
+      "completedAt": "2026-09-05T20:12:27.815Z",
+      "latencyMs": 23562,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 534,
+        "cachedInputTokens": 512,
+        "outputTokens": 1839
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Repeated call; base event GB-resale:intent:1."
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-5",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.007424434976190126,
+      "budgetCostUsd": 0.007424434976190126,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-resale:rag-embedding:1",
+      "cellId": "GB-resale",
+      "stage": "rag-retrieval",
+      "provider": "alibaba-model-studio",
+      "requestedModel": "text-embedding-v4",
+      "actualModel": "text-embedding-v4",
+      "startedAt": "2026-09-05T20:12:27.827Z",
+      "completedAt": "2026-09-05T20:12:29.250Z",
+      "latencyMs": 1300,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 86,
+        "outputTokens": 0
+      },
+      "volume": {
+        "inputItems": 3,
+        "rawOutputItems": 3,
+        "validOutputItems": 3,
+        "downstreamUsedItems": 3,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-5",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.000006191999999999999,
+      "budgetCostUsd": 0.000006191999999999999,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-resale:playbook",
+      "cellId": "GB-resale",
+      "stage": "playbook",
+      "provider": "deterministic-template",
+      "startedAt": "2026-09-05T20:12:29.260Z",
+      "completedAt": "2026-09-05T20:12:29.261Z",
+      "latencyMs": 1,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "volume": {
+        "inputItems": 16,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-5",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
       "cashCostBasis": "official-conservative",
       "costAnomalies": []
     }

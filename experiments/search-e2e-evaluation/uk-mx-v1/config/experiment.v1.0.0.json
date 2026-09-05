@@ -1,6 +1,6 @@
 {
-  "experimentId": "search-e2e-eval-v1.1.5",
-  "runId": "2026-09-06-uk-mx-search-e2e-v1-1-5",
+  "experimentId": "search-e2e-eval-v1.1.6",
+  "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
   "status": "preregistered-pending-preflight",
   "objective": "Compare the current cold-start product end-to-end company-search workflow with an un-tuned Gemini Full baseline.",
   "arms": {
@@ -62,6 +62,41 @@
       "sourceRunId": "2026-09-05-uk-mx-search-e2e-v1-1-2",
       "sourceArtifactPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-05-uk-mx-search-e2e-v1-1-2/cells/MX-retail/product-e2e.json",
       "reason": "The treatment and candidate output are unchanged; v1.1.3 only fixes duplicate model-event volume attribution, so the frozen quality result is reused without paid calls while its cost is carried once."
+    },
+    {
+      "cellId": "GB-distribution",
+      "arm": "gemini-native",
+      "sourceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5",
+      "sourceArtifactPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-5/cells/GB-distribution/gemini-native.json",
+      "reason": "The completed frozen control is unchanged; reuse avoids a duplicate paid Gemini call after an experiment-checkpoint write failure."
+    },
+    {
+      "cellId": "GB-distribution",
+      "arm": "product-e2e",
+      "sourceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5",
+      "sourceArtifactPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-5/cells/GB-distribution/product-e2e.json",
+      "reason": "The completed frozen treatment and quality output are unchanged; all cost is carried once."
+    },
+    {
+      "cellId": "MX-si-msp",
+      "arm": "gemini-native",
+      "sourceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5",
+      "sourceArtifactPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-5/cells/MX-si-msp/gemini-native.json",
+      "reason": "The completed frozen control is unchanged; reuse avoids a duplicate paid Gemini call."
+    },
+    {
+      "cellId": "MX-si-msp",
+      "arm": "product-e2e",
+      "sourceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5",
+      "sourceArtifactPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-5/cells/MX-si-msp/product-e2e.json",
+      "reason": "The completed frozen treatment and quality output are unchanged; all cost is carried once."
+    },
+    {
+      "cellId": "GB-resale",
+      "arm": "gemini-native",
+      "sourceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-5",
+      "sourceArtifactPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-5/cells/GB-resale/gemini-native.json",
+      "reason": "The frozen control completed before the product-arm intent and checkpoint failures; reuse prevents a third paid control call."
     }
   ],
   "markets": [
@@ -149,8 +184,8 @@
     "alsoReportAccountCashCost": true,
     "primaryCurrency": "USD",
     "secondaryCurrency": "CNY",
-    "priorProductPreflightAdjustmentUsd": 5.295135059721488,
-    "priorGeminiControlAdjustmentUsd": 0.888839,
+    "priorProductPreflightAdjustmentUsd": 8.78004828199398,
+    "priorGeminiControlAdjustmentUsd": 1.4122236000000001,
     "priorEvaluationAdjustmentUsd": 0.07361,
     "unknownUsageCallReserveUsd": 0.01,
     "initialForecastUsd": { "expected": 30, "upper": 60, "basis": "Conservative preregistration estimate including all invalidated sunk cost; replaced by valid-cell run-rate after the first completed cell." }

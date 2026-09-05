@@ -1,4 +1,6 @@
+import { randomUUID } from "node:crypto";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
+import { setTimeout as wait } from "node:timers/promises";
 import path from "node:path";
 
 import type { ExperimentCostEvent } from "./cost-ledger";
@@ -39,9 +41,25 @@ export async function writeJsonAtomic(filename: string, value: unknown): Promise
 
 export async function writeTextAtomic(filename: string, value: string): Promise<void> {
   await mkdir(path.dirname(filename), { recursive: true });
-  const temporary = `${filename}.tmp-${process.pid}`;
+  const temporary = `${filename}.tmp-${process.pid}-${randomUUID()}`;
   await writeFile(temporary, value, "utf8");
-  await rename(temporary, filename);
+  await renameWithTransientRetry(temporary, filename);
+}
+
+export async function renameWithTransientRetry(source: string, destination: string,
+  renameImplementation: (source: string, destination: string) => Promise<void> = rename,
+  retryDelaysMs: number[] = [25, 75, 200, 500]): Promise<void> {
+  for (let attempt = 0; ; attempt += 1) {
+    try {
+      await renameImplementation(source, destination);
+      return;
+    } catch (error) {
+      const code = (error as NodeJS.ErrnoException).code;
+      const retryable = code === "EPERM" || code === "EACCES" || code === "EBUSY";
+      if (!retryable || attempt >= retryDelaysMs.length) throw error;
+      await wait(retryDelaysMs[attempt]);
+    }
+  }
 }
 
 export async function readJson<T>(filename: string): Promise<T> {

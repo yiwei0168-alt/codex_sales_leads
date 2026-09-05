@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "experimentId": "search-e2e-eval-v1.1.5",
+  "runId": "2026-09-06-uk-mx-search-e2e-v1-1-5",
+  "status": "completed-quality-valid-harness-superseded",
+  "supersededByExperimentId": "search-e2e-eval-v1.1.6",
+  "supersededByRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+  "qualityDisposition": {
+    "validCompletedCells": ["MX-retail", "GB-distribution", "MX-si-msp"],
+    "reusedCompletedArm": "GB-resale:gemini-native",
+    "incompleteArm": "GB-resale:product-e2e",
+    "searchEvidenceScoringPolicyChanged": false
+  },
+  "failureSequence": [
+    {
+      "stage": "GB-resale:intent:first-attempt",
+      "reason": "Kimi returned malformed JSON; deterministic fallback was correctly rejected.",
+      "costRetained": true
+    },
+    {
+      "stage": "GB-resale:product-checkpoint:second-attempt",
+      "reason": "A transient Windows EPERM prevented atomic rename of the public run summary after the Kimi and RAG events were recorded.",
+      "costRetained": true
+    }
+  ],
+  "costDisposition": {
+    "productBudgetUsd": 8.78004828199398,
+    "geminiBudgetUsd": 1.4122236000000001,
+    "evaluationBudgetUsd": 0.07361,
+    "cumulativeBudgetUsd": 10.26588188199398
+  },
+  "correction": "Use unique temporary file names and bounded retries for transient EPERM, EACCES and EBUSY rename failures. Reuse every completed frozen arm and carry all prior cost exactly once."
+}
