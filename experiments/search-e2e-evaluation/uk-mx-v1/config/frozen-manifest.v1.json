@@ -1,21 +1,21 @@
 {
   "schemaVersion": 1,
-  "experimentId": "search-e2e-eval-v1.1.0",
-  "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
-  "createdAt": "2026-09-04T21:38:03.086Z",
-  "requiredGitTag": "search-e2e-eval-v1.1.0-frozen",
+  "experimentId": "search-e2e-eval-v1.1.1",
+  "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+  "createdAt": "2026-09-05T06:11:36.618Z",
+  "requiredGitTag": "search-e2e-eval-v1.1.1-frozen",
   "files": [
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/PROTOCOL.md",
-      "sha256": "04e08c9ce61c5ebff8b5377fe77cf8512a26bbf39d1e89521c9ecc207ba8772f"
+      "sha256": "ce3944d8cc31d2006b84bd4c6429b89c1eb479b1949a2382fbf48156ea3e857d"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/README.md",
-      "sha256": "6ddf7c705ddae3f5dfcc432ace82667a88c8f61e284c88180e4b1c0f05a2e3dc"
+      "sha256": "80c6b00f115680da41bf446b2f03862f683bac8d916789e2900cae9f0aae8a4b"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/config/experiment.v1.0.0.json",
-      "sha256": "104959bb9038fe41dbc85315f89f60df1ed086c9b73389eba520e9570b12d523"
+      "sha256": "b9d076ad5e2b63d0a05d3b5bc17f2bbc1549ab40e50a840defe129ab4feb750e"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/config/gemini-control-prompt.md",
@@ -63,7 +63,7 @@
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/experiment.ts",
-      "sha256": "529f9f56ffa7f1e0a9e990ca5469250364337ff2993a8665d87eefa665a9ced5"
+      "sha256": "b9803a4f0f9bc844bae04cfaca84ec9ec9f5b9ec0e64a93da9c0d5dc9feee5e7"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/final-report.ts",
@@ -71,7 +71,7 @@
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/product-cell.ts",
-      "sha256": "08b3619cdeed2956696798a8ab841ee7ebe0dbeb194c94f8f3271acd22e3800c"
+      "sha256": "2182cb7def90080580e4f8e1df23324db99120d8026d0ddc39fdb8f5bcce8e6a"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/provider-clients.ts",
@@ -91,11 +91,11 @@
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/scripts/run-formal-experiment.ts",
-      "sha256": "817eabbdb7e33f9cb7e33fce333bb309ea1c534801d5bf00049c338d9d334e6f"
+      "sha256": "3074023865fa6fb5d2869addda6c012eb7aec4d870b7ffc40aece61799eae03d"
     },
     {
       "path": "config/lead-search/hybrid-search-v1.0.0.json",
-      "sha256": "95e1271a3cc6bd6c36515b0d168233f31f2470bf400967824cfe509e5c209d0f"
+      "sha256": "1efc25a3e7b2da8cc120073ebd97d7d22ffc45576e9230b06a7da62a855446c5"
     },
     {
       "path": "config/lead-scoring/policy-v2.0.0.json",
@@ -103,7 +103,7 @@
     },
     {
       "path": "config/lead-workflow/end-to-end-v2.0.0.json",
-      "sha256": "0abc31085296736e067c48c562f04fce1aa255b572b3bef6a2c2e60f99b151e8"
+      "sha256": "c73731df5c1801cf269abb659a0f93acf4061de485ad79e4612f808ee6d2b3c7"
     },
     {
       "path": "config/lead-workflow/runtime-policy-v3.0.0.json",
@@ -111,7 +111,7 @@
     },
     {
       "path": "config/lead-workflow/cost-quality-policy-v3.0.0.json",
-      "sha256": "2e3d85b6ccd4a9fa13de39cdc66af32814c75b8b4a693cddd74638743b1def53"
+      "sha256": "90bb896e2fdfd0738296ab4b82dae6bb0f75e1b06d95955f69e4eaaa55a7aae6"
     },
     {
       "path": "src/lib/assistant/intent-agent.ts",
@@ -123,7 +123,7 @@
     },
     {
       "path": "src/lib/leads/workflow/hybrid-discovery-executor.ts",
-      "sha256": "8a511d6d17c2b551e8d61eed069f2f3c228f2589a3659e616f518e3b6312d977"
+      "sha256": "d0bc0ee9fbdac914c012656546b120c1d1ad3b614bf72cbe24b8f0e66267a095"
     },
     {
       "path": "src/lib/leads/workflow/hybrid-search-policy.ts",
@@ -135,7 +135,7 @@
     },
     {
       "path": "src/lib/leads/workflow/discovery-gate.ts",
-      "sha256": "ad9bfbe030f97001009c076463ce4d37f1177f6b24789c33b34c91a1587264a2"
+      "sha256": "8269725ccda70dbc4b35c4031a654b0660f5d70073f49d7bd127ed1ae9238c11"
     },
     {
       "path": "src/lib/leads/workflow/playbook.ts",
@@ -219,7 +219,7 @@
     },
     {
       "path": "src/providers/discovery.ts",
-      "sha256": "a828db0c68040360dff04f391f946ed7faa3d8bf647f76448fccab177b00837b"
+      "sha256": "d3f5648e4f4b46159b23710661ce2d1dba6a91459334cdea061f87bd3bb01af5"
     },
     {
       "path": "src/providers/openrouter.ts",
@@ -244,6 +244,18 @@
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-02-uk-mx-search-e2e-v1-15/cells/MX-retail/gemini-native.json",
       "sha256": "b47125bbbd529432e1d2fcda25815706a26a29a4731cc359753fa11cacb580fb"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-05-uk-mx-search-e2e-v1-1/preflight/preflight-report.json",
+      "sha256": "047c377c535272e918aaa3033d423556278ad3ce1f624889c1b06231b314f0f5"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-05-uk-mx-search-e2e-v1-1/runtime/run-summary.json",
+      "sha256": "6006b627b0344dd3d5d3b5201ad9d796f485392b6402c2be05c4a9d63a459c44"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-05-uk-mx-search-e2e-v1-1/analysis/invalidation.json",
+      "sha256": "e84134f0bc160ffc1e3b022440b81e88530944b679e5a26191464ed055117d41"
     }
   ]
 }
