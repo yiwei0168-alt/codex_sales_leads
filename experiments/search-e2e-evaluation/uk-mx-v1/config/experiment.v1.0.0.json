@@ -1,6 +1,6 @@
 {
-  "experimentId": "search-e2e-eval-v1.1.2",
-  "runId": "2026-09-05-uk-mx-search-e2e-v1-1-2",
+  "experimentId": "search-e2e-eval-v1.1.3",
+  "runId": "2026-09-06-uk-mx-search-e2e-v1-1-3",
   "status": "preregistered-pending-preflight",
   "objective": "Compare the current cold-start product end-to-end company-search workflow with an un-tuned Gemini Full baseline.",
   "arms": {
@@ -55,6 +55,13 @@
       "sourceRunId": "2026-09-02-uk-mx-search-e2e-v1-15",
       "sourceArtifactPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-02-uk-mx-search-e2e-v1-15/cells/MX-retail/gemini-native.json",
       "reason": "The control prompt, model and one-shot mechanism are unchanged; reuse prevents an unnecessary paid rerun."
+    },
+    {
+      "cellId": "MX-retail",
+      "arm": "product-e2e",
+      "sourceRunId": "2026-09-05-uk-mx-search-e2e-v1-1-2",
+      "sourceArtifactPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-05-uk-mx-search-e2e-v1-1-2/cells/MX-retail/product-e2e.json",
+      "reason": "The treatment and candidate output are unchanged; v1.1.3 only fixes duplicate model-event volume attribution, so the frozen quality result is reused without paid calls while its cost is carried once."
     }
   ],
   "markets": [
@@ -142,7 +149,7 @@
     "alsoReportAccountCashCost": true,
     "primaryCurrency": "USD",
     "secondaryCurrency": "CNY",
-    "priorProductPreflightAdjustmentUsd": 3.384767333872236,
+    "priorProductPreflightAdjustmentUsd": 5.295135059721488,
     "priorGeminiControlAdjustmentUsd": 0.888839,
     "priorEvaluationAdjustmentUsd": 0.07361,
     "unknownUsageCallReserveUsd": 0.01,

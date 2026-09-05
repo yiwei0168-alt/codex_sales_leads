@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "experimentId": "search-e2e-eval-v1.1.2",
+  "runId": "2026-09-05-uk-mx-search-e2e-v1-1-2",
+  "status": "quality-valid-telemetry-superseded",
+  "supersededAt": "2026-09-06T00:00:00.000Z",
+  "affectedCell": "MX-retail",
+  "qualityResultReusable": true,
+  "candidateCount": 21,
+  "missingSlots": 9,
+  "wallClockMs": 1401235,
+  "marginalProductCostUsd": 1.9103677258492517,
+  "cumulativeBudgetCostUsd": 6.257584059721479,
+  "telemetryDefect": {
+    "code": "duplicate-model-stage-volume-attribution",
+    "affectedEvents": [
+      "MX-retail:qualification-score-only-r1:model:1",
+      "MX-retail:qualification-score-only-r1:model:2"
+    ],
+    "qualityImpact": "none",
+    "costImpact": "none",
+    "fix": "Attribute aggregate stage volume once, retain separate model token/cost records, and count only completed assessments as downstream-used."
+  },
+  "replacement": {
+    "experimentId": "search-e2e-eval-v1.1.3",
+    "reuse": "MX Retail control and product quality results; no paid calls",
+    "remainingCells": 7
+  }
+}

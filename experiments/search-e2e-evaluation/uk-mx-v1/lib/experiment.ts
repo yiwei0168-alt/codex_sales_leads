@@ -74,9 +74,10 @@ export function validateExperimentConfig(): void {
   }
   if (config.preflightReuse.sourceExperimentId !== "search-e2e-eval-v1.0.10"
     || config.preflightReuse.requiredChecks.length !== 11
-    || config.reusedFrozenArms.length !== 1
-    || config.reusedFrozenArms[0].cellId !== "MX-retail"
-    || config.reusedFrozenArms[0].arm !== "gemini-native") {
+    || config.reusedFrozenArms.length !== 2
+    || config.reusedFrozenArms.some((item) => item.cellId !== "MX-retail")
+    || !config.reusedFrozenArms.some((item) => item.arm === "gemini-native")
+    || !config.reusedFrozenArms.some((item) => item.arm === "product-e2e")) {
     throw new Error("Frozen non-judge preflight inheritance changed");
   }
 }

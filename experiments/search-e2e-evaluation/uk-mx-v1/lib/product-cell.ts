@@ -83,7 +83,7 @@ function volume(inputItems: number, rawOutputItems: number, validOutputItems: nu
   return { inputItems, rawOutputItems, validOutputItems, downstreamUsedItems, discardedReasonCounts };
 }
 
-function modelUsageEvents(cell: ExperimentCell, stage: string, usages: WorkflowModelUsage[], stageStartedAt: string,
+export function modelUsageEvents(cell: ExperimentCell, stage: string, usages: WorkflowModelUsage[], stageStartedAt: string,
   stageCompletedAt: string, stageVolume: ExperimentVolume): ExperimentCostEvent[] {
   const groups = new Map<string, WorkflowModelUsage[]>();
   for (const usage of usages) {
@@ -92,6 +92,10 @@ function modelUsageEvents(cell: ExperimentCell, stage: string, usages: WorkflowM
   }
   return [...groups.entries()].map(([key, items], index) => {
     const [provider, requestedModel, actualModel] = key.split("|");
+    const attributedVolume = index === 0 ? {
+      ...stageVolume,
+      downstreamUsedItems: Math.min(stageVolume.validOutputItems, stageVolume.downstreamUsedItems),
+    } : volume(0, 0, 0, 0, { stageVolumeAttributedToPrimaryModelEvent: items.length });
     return event({ eventId: `${cell.cellId}:${stage}:model:${index + 1}`, cellId: cell.cellId, stage,
       provider, requestedModel, actualModel, startedAt: stageStartedAt, completedAt: stageCompletedAt,
       latencyMs: items.reduce((sum, item) => sum + item.latencyMs, 0),
@@ -100,7 +104,9 @@ function modelUsageEvents(cell: ExperimentCell, stage: string, usages: WorkflowM
       fallbackUsed: items.some((item) => item.fallbackUsed), status: "completed",
       usage: { inputTokens: items.reduce((sum, item) => sum + item.promptTokens, 0),
         outputTokens: items.reduce((sum, item) => sum + item.completionTokens, 0),
-        reasoningTokens: items.reduce((sum, item) => sum + item.reasoningTokens, 0) }, volume: stageVolume });
+        reasoningTokens: items.reduce((sum, item) => sum + item.reasoningTokens, 0) }, volume: attributedVolume,
+      notes: index === 0 ? ["Aggregate stage output volume is attributed once to the primary model event."]
+        : ["Model cost and tokens are retained; aggregate stage output volume is already attributed to model event 1."] });
   });
 }
 
@@ -316,7 +322,7 @@ export async function runProductCell(cell: ExperimentCell, options: {
     await recordCostEvents(modelUsageEvents(cell, `qualification-score-only-r${round + 1}`, scored.usage,
       scoringStarted, scoringCompleted, volume(inRoleCandidates.length, scored.assessments.length,
         scored.assessments.filter((assessment) => assessment.scoringStatus === "completed").length,
-        scored.assessments.length,
+        scored.assessments.filter((assessment) => assessment.scoringStatus === "completed").length,
         { retryRequired: scored.assessments.filter((assessment) => assessment.scoringStatus !== "completed").length })));
 
     const assessmentById = new Map(scored.assessments.map((assessment) => [assessment.candidateId, assessment]));

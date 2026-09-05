@@ -751,7 +751,7 @@ flowchart TD
 | `src/lib/leads/workflow/assessment-review-agent.ts` | `5ad58c980aa7b3642d349aa543a78a54f2695274490809ce00a65bf535dae974` |
 | `src/providers/deepseek.ts` | `c9bbe00521915dd27b6c20508cd062ffc494d8f449c10e1085ada48103ed877c` |
 | `src/providers/discovery-contracts.ts` | `219328f21ca094e5c96c12b9cd3e638a8244629d7692271ee6b86ea39166143e` |
-| `src/providers/discovery.ts` | `3cd975a1ebc3b8ff52206ce5705ae0cc41ddc56b6eede4479e8997c087eb729f` |
+| `src/providers/discovery.ts` | `a7b93d1d5a8bc6412b70461d93f5c0dc1e412951100688b8ae04cee6e5113337` |
 | `src/providers/resilient-ai.ts` | `3fe571fe48f48c0f89ccbf7241ed303b554598243bd8bfa08dc7c2a76c85258b` |
 | `src/providers/openrouter.ts` | `b43ba8fdf08602cb7d3567ea88bdc2cfee704de0c1b197cc574abe5e9b89143d` |
 | `db/migrations/034_model_account_cash_cost.sql` | `4790c7ad12eda543e197c84ddd77c4a5ce296b7871ccee799f3aa2262684bdbb` |
@@ -766,7 +766,7 @@ flowchart TD
 | `src/lib/outreach/knowledge-repository.ts` | `59a023091f9adac80d4b502e1b4cf69b9d318bd5a7610112354fb95a8d802557` |
 | `db/migrations/033_hybrid_search_contribution.sql` | `6e002fe0a49bddd75853b6d13fdc5759b9f4b90653ffda47ccc6c8f4fddbb0d0` |
 | `experiments/search-e2e-evaluation/uk-mx-v1/lib/cost-ledger.ts` | `ed80331dc58258e07b0f86b865cddf8c1ab1ba7521b613dfef6686086f762cac` |
-| `experiments/search-e2e-evaluation/uk-mx-v1/scripts/run-formal-experiment.ts` | `95f6b9bd21f5fd0e995164dd7ac387af1b9ba06c9b4ecd7b06623ba2748c8a48` |
+| `experiments/search-e2e-evaluation/uk-mx-v1/scripts/run-formal-experiment.ts` | `b17b98708875d168aa1228236b5ccc94379f0df1fe1c9f5803bc49c9e25e392e` |
 | `src/lib/leads/workflow/evidence-budget.ts` | `db035da87b8896ae5a81b12744a072810de80f160cb472724d5cedbcf06037f9` |
 | `src/lib/leads/workflow/pdf-extraction-policy.ts` | `6d8847827f1e96eab570114bca33cd447eaa3e64d7246ee09a748f8e6d6ade03` |
 | `src/lib/leads/workflow/public-evidence-repository.ts` | `5dcbfe60487eeb5d2ccab4b6e3eac9529705b21005abaa599359c992e51c4b03` |

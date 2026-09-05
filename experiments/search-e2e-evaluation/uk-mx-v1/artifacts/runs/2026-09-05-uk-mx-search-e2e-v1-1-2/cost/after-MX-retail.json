@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-05-uk-mx-search-e2e-v1-1-2",
+  "generatedAt": "2026-09-05T07:09:21.878Z",
+  "cost": {
+    "eventCount": 91,
+    "officialListPriceUsd": 6.257584059721479,
+    "budgetCostUsd": 6.257584059721479,
+    "unpricedEvents": [],
+    "byLedger": {
+      "gemini-native-arm": 0.888839,
+      "product-e2e-arm": 5.29513505972148,
+      "evaluation-overhead": 0.07361
+    },
+    "byStage": {
+      "discovery-gate-r1": 0.007525840000000001,
+      "discovery-gate-r2": 0.00203126,
+      "discovery-gate-r3": 0.0009983400000000001,
+      "discovery-gate-r4": 0.0012661600000000001,
+      "discovery-gate-r5": 0.0007288400000000001,
+      "evidence-correction-r1": 0.088709175,
+      "evidence-correction-r2": 0.014860525000000003,
+      "evidence-correction-r3": 0.0047266800000000005,
+      "evidence-correction-r4": 0.0047488,
+      "evidence-correction-r5": 0.0021701400000000005,
+      "evidence-correction-search": 0.43200000000000005,
+      "fresh-evidence": 0.8400000000000001,
+      "hybrid-discovery": 0.4500000000000002,
+      "intent": 0.006600524849253269,
+      "playbook": 0,
+      "prior-preflight-adjustment": 4.347216333872237,
+      "qualification-score-only-r1": 0.03546483,
+      "qualification-score-only-r2": 0.00460558,
+      "qualification-score-only-r3": 0.001218,
+      "qualification-score-only-r4": 0.010449275000000001,
+      "qualification-score-only-r5": 0.00225778,
+      "rag-retrieval": 0.000005976,
+      "role-filter-ranking": 0
+    },
+    "anomalies": [
+      "MX-retail:qualification-score-only-r1:model:1:downstream-use-exceeds-valid-output",
+      "MX-retail:qualification-score-only-r1:model:2:downstream-use-exceeds-valid-output"
+    ]
+  },
+  "budgetDecision": {
+    "totalBudgetUsd": 100,
+    "spentUsd": 6.257584059721479,
+    "budgetFraction": 0.06257584059721479,
+    "newlyCrossedThresholdsUsd": [],
+    "forecast": {
+      "completedCells": 1,
+      "totalCells": 8,
+      "incurredUsd": 6.257584059721479,
+      "expectedCompletionUsd": 29.63015814066624,
+      "lowerUsd": 23.077596841003306,
+      "upperUsd": 36.18271944032917,
+      "method": "cell-run-rate"
+    },
+    "warning": false,
+    "hardStop": false,
+    "requiresUserDecision": false,
+    "reasons": []
+  }
+}

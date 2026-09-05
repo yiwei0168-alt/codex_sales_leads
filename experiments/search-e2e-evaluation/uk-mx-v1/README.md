@@ -1,6 +1,6 @@
 # UK–Mexico formal search evaluation v1
 
-Current status (2026-09-05): v1.1.2 is preregistered after invalidating v1.1.1's MX Retail diagnostic. v1.1.1 correctly restored routine Flash routing and lowered the cell cost to USD 0.9570672632, but returned only 8/30 because generated Brave queries exceeded its 600-character API limit, transient SearchAPI timeouts opened a task-long provider circuit, and partially unavailable rounds were incorrectly counted toward confirmed exhaustion. v1.1.2 caps submitted Web queries at 580 characters, resets transient circuits between discovery rounds with a one-call recovery probe, and prevents partial-provider rounds from proving exhaustion. Historical spend of USD 4.347216333872236 is fully carried. The unchanged v1.0.15 MX Retail Gemini control and v1.1.0 Codex blind-judge selection are reused without another paid call.
+Current status (2026-09-06): v1.1.3 is preregistered as an instrumentation-only successor to v1.1.2. The v1.1.2 MX Retail treatment produced 21/30 after five rounds at USD 1.9103677258 and verified the query-bound, transient-recovery and exhaustion fixes. Its candidate quality result is valid and reused without paid calls. A telemetry defect copied aggregate stage output volume to both Flash and Pro cost events, producing two invalid utilization counters without changing candidates, scores, tokens or cost. v1.1.3 attributes aggregate stage volume once, retains every model's token/cost event, and treats historical carry as cost-only rather than duplicating old input/output volume. Cumulative spend is USD 6.257584059721488.
 
 This directory contains the preregistered protocol, frozen configuration, prompts, schemas, runtime checkpoints and final reports for Cudy's first formal end-to-end search evaluation.
 
@@ -41,7 +41,7 @@ Preflight checks, formal-arm stages, Gemini-only shared evaluation and every bli
 
 ## Version and Git policy
 
-- Experiment version: `search-e2e-eval-v1.1.2`
+- Experiment version: `search-e2e-eval-v1.1.3`
 - Working branch: `experiment/search-e2e-uk-mx-v1`
 - A preregistration tag is created before experimental calls.
 - Runtime checkpoints are committed after every completed country/category cell.

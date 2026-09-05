@@ -1,0 +1,374 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-05-uk-mx-search-e2e-v1-1-2",
+  "cellId": "MX-retail",
+  "arm": "gemini-native",
+  "startedAt": "2026-09-02T07:22:58.821Z",
+  "completedAt": "2026-09-02T07:23:52.680Z",
+  "wallClockMs": 53859,
+  "requestedModel": "gemini-3.6-flash",
+  "actualModel": "gemini-3.6-flash",
+  "searchQueries": 32,
+  "finalCandidates": [
+    {
+      "rank": 1,
+      "companyName": "Cyberpuerta",
+      "officialWebsite": "https://www.cyberpuerta.mx",
+      "marketSignal": "Leading Mexican pure-play tech e-tailer operating nationwide with local warehousing andMX-bound shipping.",
+      "roleSignal": "Direct-to-consumer online store merchandising and fulfilling hardware and consumer electronics.",
+      "relevanceSignal": "Directly sells entry-level Wi-Fi 6 routers, mesh systems, switches and networking accessories suited for home/SMB buyers.",
+      "evidenceUrls": [
+        "https://www.cyberpuerta.mx",
+        "https://www.cyberpuerta.mx/img/product/S/CP-TP-LINK-ARCHERC80-1.jpg"
+      ]
+    },
+    {
+      "rank": 2,
+      "companyName": "Steren",
+      "officialWebsite": "https://www.steren.com.mx",
+      "marketSignal": "Mexican electronics retail chain with hundreds of physical stores across Mexico and a direct e-commerce channel.",
+      "roleSignal": "Consumer-facing retail chain and online store for electronic goods, home automation, and networking products.",
+      "relevanceSignal": "Merchandises consumer Wi-Fi routers, 4G LTE MiFi/routers, repeaters, and basic network switches for residential and SOHO use.",
+      "evidenceUrls": [
+        "https://www.steren.com.mx",
+        "https://www.steren.com.mx/media/catalog/product/cache/92457bf2b5977fff7efe99bd6badebc6/image/216955115/repetidor-router-wi-fi-300-mbps-2-4-ghz-hasta-20-m-de-cobertura.jpg"
+      ]
+    },
+    {
+      "rank": 3,
+      "companyName": "PCEL (PC Online)",
+      "officialWebsite": "https://www.pcel.com",
+      "marketSignal": "Long-established Monterrey-based computer and electronics retailer shipping across all Mexican states.",
+      "roleSignal": "Computer hardware e-tailer with retail storefront selling directly to end consumers and SMBs.",
+      "relevanceSignal": "Carries consumer Wi-Fi routers, mesh kits, and desktop Ethernet switches in affordable home/SMB price bands.",
+      "evidenceUrls": [
+        "https://www.pcel.com",
+        "https://www.pcel.com/catalog/view/theme/pcel-front/image/mobile/img-4.png"
+      ]
+    },
+    {
+      "rank": 4,
+      "companyName": "Digitalife",
+      "officialWebsite": "https://www.digitalife.com.mx",
+      "marketSignal": "Guadalajara-headquartered tech retail chain and online shop serving consumers throughout Mexico.",
+      "roleSignal": "E-tailer and brick-and-mortar retailer focused on computer components, gaming, and consumer networking.",
+      "relevanceSignal": "Retails Wi-Fi 5/6 routers, range extenders, and unmanaged PoE switches relevant to home and SOHO setups.",
+      "evidenceUrls": [
+        "https://www.digitalife.com.mx",
+        "https://www.digitalife.com.mx/images/social/whatsapp-2.svg"
+      ]
+    },
+    {
+      "rank": 5,
+      "companyName": "DDTech",
+      "officialWebsite": "https://ddtech.mx",
+      "marketSignal": "Major Mexican e-commerce retailer specialized in computer hardware, PC building, and consumer networking.",
+      "roleSignal": "Consumer-facing online store selling networking and PC components directly to end users.",
+      "relevanceSignal": "Stocks affordable Wi-Fi routers, mesh nodes, and desktop switches aligned with Cudy's retail spectrum.",
+      "evidenceUrls": [
+        "https://ddtech.mx"
+      ]
+    },
+    {
+      "rank": 6,
+      "companyName": "Office Depot México",
+      "officialWebsite": "https://www.officedepot.com.mx",
+      "marketSignal": "Nationwide office supply and consumer tech retailer operating stores and web shop across Mexico.",
+      "roleSignal": "Omnichannel consumer and SOHO retailer merchandising home office networking equipment.",
+      "relevanceSignal": "Sells value-priced Wi-Fi routers, repeaters, 4G gateways, and network switches to general consumers and SMBs.",
+      "evidenceUrls": [
+        "https://www.officedepot.com.mx",
+        "https://www.officedepot.com.mx/medias/?context=bWFzdGVyfGltYWdlc3wyOTQ1NHxpbWFnZS9wbmd8YVcxaFoyVnpMMmcyTnk5b1pHSXZPVFkwTkRFME1EQTJPRGc1TkM1d2JtY3xjY2MyMjQzM2IxMjE1MTBjZGY4NDA5YWFhMDBlYjk4ZGI2Y2Q5OGViMTNkY2IxZWQzYTg4ZDVkNTAzYTM1OWNi"
+      ]
+    },
+    {
+      "rank": 7,
+      "companyName": "RadioShack México",
+      "officialWebsite": "https://www.radioshack.com.mx",
+      "marketSignal": "Popular Mexican electronics retail chain operated under Grupo Gigante with nationwide coverage.",
+      "roleSignal": "Consumer electronics retailer operating physical stores and an e-commerce platform.",
+      "relevanceSignal": "Catalog includes accessible home routers, Wi-Fi repeaters, and basic Ethernet switches ideal for retail consumers.",
+      "evidenceUrls": [
+        "https://www.radioshack.com.mx",
+        "https://www.radioshack.com.mx/medias/300ftw-100040157.jpg?context=bWFzdGVyfHJvb3R8MjkzOTV8aW1hZ2UvanBlZ3xhRFZoTDJnMFlpODVNek00TVRjM01qa3dNamN3THpNd01HWjBkMTh4TURBd05EQXhOVGN1YW5CbnwxMWYzZmE3OWI1M2VhZmM4NmI5Zjc0ODU2YWVhZDgyNGQwMDM4YmY2Y2NkNDAxYmE0ODYyYjMwNThiOTM3OTU0"
+      ]
+    },
+    {
+      "rank": 8,
+      "companyName": "Coppel",
+      "officialWebsite": "https://www.coppel.com",
+      "marketSignal": "Massive Mexican department store and e-tailer with presence in every state offering store credit.",
+      "roleSignal": "Omnichannel consumer retailer selling home electronics and connectivity products to everyday consumers.",
+      "relevanceSignal": "Directly merchandises entry-level Wi-Fi routers, mesh systems, and connectivity accessories for home users.",
+      "evidenceUrls": [
+        "https://www.coppel.com",
+        "https://cdn5.coppel.com/pm/2285943-1.jpg"
+      ]
+    },
+    {
+      "rank": 9,
+      "companyName": "MiPC (Mi PC Comunicaciones)",
+      "officialWebsite": "https://mipc.com.mx",
+      "marketSignal": "Tech retail company with physical stores in Guadalajara, CDMX, Leon, and Querétaro plus national e-commerce.",
+      "roleSignal": "Retail store chain and e-tailer selling computer components and SOHO networking equipment.",
+      "relevanceSignal": "Displays consumer Wi-Fi 5/6 routers, range extenders, and unmanaged switches in value price tiers.",
+      "evidenceUrls": [
+        "https://mipc.com.mx",
+        "https://mipc.com.mx/media/easyslide/ban-voragopcs-mob.png"
+      ]
+    },
+    {
+      "rank": 10,
+      "companyName": "Dimercom",
+      "officialWebsite": "https://dimercom.mx",
+      "marketSignal": "Puebla-based computer hardware retailer providing online order fulfillment across Mexico.",
+      "roleSignal": "Specialized consumer e-tailer selling networking gear, PC components, and accessories.",
+      "relevanceSignal": "Offers Wi-Fi 6 routers, mesh systems, and desktop switches matching Cudy's core product lineup.",
+      "evidenceUrls": [
+        "https://dimercom.mx",
+        "https://dimercom.mx/wp-content/uploads/2022/12/bannprinci.webp"
+      ]
+    },
+    {
+      "rank": 11,
+      "companyName": "Supermex Digital",
+      "officialWebsite": "https://www.supermexdigital.mx",
+      "marketSignal": "Established computer hardware retailer in CDMX (Plaza de la Tecnología) with a national e-commerce store.",
+      "roleSignal": "Direct consumer-facing retailer selling computer peripherals, networking, and electronics.",
+      "relevanceSignal": "Merchandises entry-level routers, switches, and access points suitable for home and small business users.",
+      "evidenceUrls": [
+        "https://www.supermexdigital.mx",
+        "https://www.supermexdigital.mx/web/image/product.template/33456/image_512"
+      ]
+    },
+    {
+      "rank": 12,
+      "companyName": "Intercompras",
+      "officialWebsite": "https://intercompras.com",
+      "marketSignal": "Hermosillo-headquartered e-commerce platform operating across Mexico since 2004.",
+      "roleSignal": "Direct e-tailer selling consumer electronics, computing gear, and networking devices online.",
+      "relevanceSignal": "Sells budget-friendly Wi-Fi routers, network switches, and accessories targeting consumers and SOHO buyers.",
+      "evidenceUrls": [
+        "https://intercompras.com",
+        "https://ik.imagekit.io/intercompras/images/product/LENOVO_83GU00BFLM_260211132607.jpg?tr=w-200,h-150,cm-pad_resize"
+      ]
+    },
+    {
+      "rank": 13,
+      "companyName": "Decme Store (Grupo Decme)",
+      "officialWebsite": "https://grupodecme.com",
+      "marketSignal": "Veracruz-headquartered retailer with physical storefronts and a national online shop.",
+      "roleSignal": "Consumer tech store and e-tailer fulfilling PC components, laptops, and networking products.",
+      "relevanceSignal": "Carries consumer Wi-Fi routers and home/office network switches in mainstream price bands.",
+      "evidenceUrls": [
+        "https://grupodecme.com",
+        "http://grupodecme.com/cdn/shop/files/LogoDecmeStoreShopify2.jpg?v=1777321695"
+      ]
+    },
+    {
+      "rank": 14,
+      "companyName": "Zegucom Cómputo",
+      "officialWebsite": "https://www.zegucom.com.mx",
+      "marketSignal": "Aguascalientes/Guadalajara retail chain with multiple branches and nationwide online ordering.",
+      "roleSignal": "Tech e-tailer and brick-and-mortar retail store selling computers, peripherals, and networking.",
+      "relevanceSignal": "Merchandises consumer Wi-Fi 6 routers, mesh Wi-Fi, and small office network switches.",
+      "evidenceUrls": [
+        "https://www.zegucom.com.mx"
+      ]
+    },
+    {
+      "rank": 15,
+      "companyName": "Walmart México",
+      "officialWebsite": "https://www.walmart.com.mx",
+      "marketSignal": "Largest supermarket and mass merchandise retail chain in Mexico with nationwide e-commerce.",
+      "roleSignal": "Mass retailer merchandising consumer electronics and networking directly to end consumers.",
+      "relevanceSignal": "Sells accessible home Wi-Fi routers, range extenders, and 4G routers suited for mainstream buyers.",
+      "evidenceUrls": [
+        "https://www.walmart.com.mx",
+        "https://i5.walmartimages.com/asr/2c623c7a-c6ec-45ff-a77c-3e38089b847b.26f9189d3f94c4c220b2e7e0d4ddc59a.jpeg"
+      ]
+    },
+    {
+      "rank": 16,
+      "companyName": "Tony Superpapelerías",
+      "officialWebsite": "https://www.tony.com.mx",
+      "marketSignal": "Major Mexican stationery and office retail chain operating dozens of retail stores and an online store.",
+      "roleSignal": "Retailer merchandising school/office supplies and SOHO networking equipment to consumers.",
+      "relevanceSignal": "Features value-tier Wi-Fi routers, mesh nodes, and desktop switches for home office setup.",
+      "evidenceUrls": [
+        "https://www.tony.com.mx",
+        "https://tonypapelerias.vtexassets.com/arquivos/ids/281246-500-auto?v=638556549628970000&width=500&height=auto&aspect=true"
+      ]
+    },
+    {
+      "rank": 17,
+      "companyName": "OfficeMax México",
+      "officialWebsite": "https://www.officemax.com.mx",
+      "marketSignal": "Prominent office products and electronics retailer operating physical stores and an e-commerce portal.",
+      "roleSignal": "Retail chain selling tech accessories, office equipment, and home networking directly to buyers.",
+      "relevanceSignal": "Offers Wi-Fi routers, mesh systems, and Ethernet switches tailored for home office and SMB connectivity.",
+      "evidenceUrls": [
+        "https://www.officemax.com.mx",
+        "https://officemax.vtexassets.com/assets/vtex.file-manager-graphql/images/0a27cc03-c7fd-489c-a874-e203b036bc68___bdbc3bdbe2d6cf6ce490031c8249703a.jpg"
+      ]
+    },
+    {
+      "rank": 18,
+      "companyName": "Elektra",
+      "officialWebsite": "https://www.elektra.mx",
+      "marketSignal": "Leading Mexican retail chain owned by Grupo Salinas with physical stores nationwide and online fulfillment.",
+      "roleSignal": "Mass consumer retailer selling home electronics and connectivity solutions.",
+      "relevanceSignal": "Sells affordable home Wi-Fi routers, repeaters, and 4G MiFi devices targeted at consumer households.",
+      "evidenceUrls": [
+        "https://www.elektra.mx",
+        "https://elektra.vtexassets.com/assets/vtex.file-manager-graphql/images/ef8be11a-6432-4714-9227-426592a88c11___d99511d109cf57ac2079e60d96308e10.webp"
+      ]
+    },
+    {
+      "rank": 19,
+      "companyName": "The Home Depot México",
+      "officialWebsite": "https://www.homedepot.com.mx",
+      "marketSignal": "Home improvement retail giant in Mexico with nationwide stores and direct online sales.",
+      "roleSignal": "Retail chain merchandising smart home, electrical, and home networking hardware.",
+      "relevanceSignal": "Carries Wi-Fi routers, mesh systems, repeaters, and outdoor network hardware relevant for residential deployment.",
+      "evidenceUrls": [
+        "https://www.homedepot.com.mx",
+        "https://cdn.homedepot.com.mx/productos/222889/222889.jpg"
+      ]
+    },
+    {
+      "rank": 20,
+      "companyName": "PCMIG",
+      "officialWebsite": "https://pcmig.com.mx",
+      "marketSignal": "CDMX retail computer store located in Centro Histórico with online store delivering across Mexico.",
+      "roleSignal": "Specialized computer store selling PC hardware, peripherals, and networking directly to end users.",
+      "relevanceSignal": "Merchandises entry-level Wi-Fi routers, desktop switches, and network adapters.",
+      "evidenceUrls": [
+        "https://pcmig.com.mx",
+        "https://pcmig.com.mx/wp-content/uploads/2026/08/tarjeta_madre_pro_a620am_g_evo_wifi_1-300x300.png"
+      ]
+    },
+    {
+      "rank": 21,
+      "companyName": "Human Computer",
+      "officialWebsite": "https://humancomputer.com.mx",
+      "marketSignal": "Longstanding retail computer store in Plaza de la Tecnología CDMX with online e-commerce fulfillment.",
+      "roleSignal": "Retail store and e-tailer providing PC components and networking equipment.",
+      "relevanceSignal": "Offers Wi-Fi routers, Ethernet switches, and network cables suitable for budget-conscious home buyers.",
+      "evidenceUrls": [
+        "https://humancomputer.com.mx"
+      ]
+    },
+    {
+      "rank": 22,
+      "companyName": "Nestore",
+      "officialWebsite": "https://nestore.mx",
+      "marketSignal": "Mexican online store specializing in computing, consumer electronics, and home office tech.",
+      "roleSignal": "Pure-play e-tailer direct-to-consumer merchandising hardware and networking products.",
+      "relevanceSignal": "Lists consumer Wi-Fi routers, extenders, network switches, and cabling accessories.",
+      "evidenceUrls": [
+        "https://nestore.mx",
+        "https://nestore.mx/storage/media/M4VR0kSXiJIFhCBK9tPalWYtJlMviZfDpSoyw93a.png"
+      ]
+    },
+    {
+      "rank": 23,
+      "companyName": "TecnoTichi",
+      "officialWebsite": "https://tecnotichi.com",
+      "marketSignal": "Mexican e-commerce store dedicated to computing, SOHO networking, and accessories.",
+      "roleSignal": "E-tailer offering tech hardware directly to end consumers across Mexico.",
+      "relevanceSignal": "Stocks entry-level to mid-range Wi-Fi 6 routers and desktop Ethernet switches.",
+      "evidenceUrls": [
+        "https://tecnotichi.com"
+      ]
+    },
+    {
+      "rank": 24,
+      "companyName": "Wireless Shop",
+      "officialWebsite": "https://www.wirelessshop.mx",
+      "marketSignal": "Mexican online retailer specializing in wireless networking gear for end users, WISPs, and SOHO.",
+      "roleSignal": "Niche e-tailer selling wireless routers, CPEs, switches, and networking hardware.",
+      "relevanceSignal": "Directly relevant for Cudy's outdoor wireless, 4G/5G FWA routers, and value Wi-Fi router portfolio.",
+      "evidenceUrls": [
+        "https://www.wirelessshop.mx",
+        "https://www.wirelessshop.mx/images/banners_sitio_web_pareja.png"
+      ]
+    },
+    {
+      "rank": 25,
+      "companyName": "Sears México",
+      "officialWebsite": "https://www.sears.com.mx",
+      "marketSignal": "Major department store chain in Mexico operated by Grupo Sanborns with online store and click-and-collect.",
+      "roleSignal": "Consumer department store retailing home electronics, laptops, and networking products.",
+      "relevanceSignal": "Sells home Wi-Fi routers, mesh kits, and range extenders to retail shoppers.",
+      "evidenceUrls": [
+        "https://www.sears.com.mx",
+        "https://resources.sears.com.mx/medios-plazavip/mkt/6a62a1e891693_3-revolvente-modajpg.jpg?scale=400&qlty=75"
+      ]
+    },
+    {
+      "rank": 26,
+      "companyName": "Sanborns",
+      "officialWebsite": "https://www.sanborns.com.mx",
+      "marketSignal": "Iconic Mexican retail chain with hundreds of physical locations and an integrated e-commerce shop.",
+      "roleSignal": "Consumer retailer merchandising gadgets, consumer electronics, and home networking items.",
+      "relevanceSignal": "Stocks consumer-oriented Wi-Fi routers, repeaters, and basic network adapters.",
+      "evidenceUrls": [
+        "https://www.sanborns.com.mx",
+        "https://resources.sanborns.com.mx/medios-plazavip/swift/v1/Sanborns/category/icon/imgcat_1.png"
+      ]
+    },
+    {
+      "rank": 27,
+      "companyName": "Zona Digital 83",
+      "officialWebsite": "https://zonadigital83.com",
+      "marketSignal": "Yucatán-based technology retail chain with store locations in Mérida and Valladolid and online sales.",
+      "roleSignal": "Regional tech retailer selling computing accessories, mobile devices, and home networking.",
+      "relevanceSignal": "Sells consumer Wi-Fi routers, access points, and connectivity accessories for home and SOHO.",
+      "evidenceUrls": [
+        "https://zonadigital83.com"
+      ]
+    },
+    {
+      "rank": 28,
+      "companyName": "Macropay",
+      "officialWebsite": "https://macropay.mx",
+      "marketSignal": "Fast-growing Mexican mobile and electronics retail chain with hundreds of stores across southern/central MX and e-commerce.",
+      "roleSignal": "Consumer electronics retail chain selling mobile phones, gadgets, and connectivity gear.",
+      "relevanceSignal": "Merchandises mobile broadband, 4G LTE Wi-Fi routers, and consumer networking gadgets.",
+      "evidenceUrls": [
+        "https://macropay.mx",
+        "https://macropay.mx/wp-content/uploads/2026/08/MOBILE-SITIO-BTS_Mesa-de-trabajo-1-copia-6-1-1.png"
+      ]
+    },
+    {
+      "rank": 29,
+      "companyName": "Sam's Club México",
+      "officialWebsite": "https://www.sams.com.mx",
+      "marketSignal": "Major membership warehouse chain in Mexico operated by Walmart de México with strong e-commerce sales.",
+      "roleSignal": "Membership warehouse retailer selling consumer electronics and networking bundles to end users and SMBs.",
+      "relevanceSignal": "Retails multi-pack mesh Wi-Fi systems and high-performance Wi-Fi 6 routers at competitive prices.",
+      "evidenceUrls": [
+        "https://www.sams.com.mx",
+        "https://i5-mx.walmartimages.com/dfw/24b6d490-46d1/k2-_588a6b30-e071-497f-9f9d-665080583771.v1.jpg?odnHeight=192&odnWidth=343&odnBg="
+      ]
+    },
+    {
+      "rank": 30,
+      "companyName": "Costco México",
+      "officialWebsite": "https://www.costco.com.mx",
+      "marketSignal": "Prominent warehouse retail chain across Mexico with store pick-up and nationwide online delivery.",
+      "roleSignal": "Membership retailer merchandising consumer tech and home networking gear directly to members.",
+      "relevanceSignal": "Offers Wi-Fi mesh systems, dual-band routers, and smart home connectivity products.",
+      "evidenceUrls": [
+        "https://www.costco.com.mx",
+        "https://azure-na-images.contentstack.com/v3/assets/blt970087a473d9e2e7/bltd0dc8e6dfc350e28/6a9076f7793584b3759cbfa7/p13w3_fy26_carrusel_halloween_m.gif?auto=avif&format=pjpg&quality=80"
+      ]
+    }
+  ],
+  "missingSlots": 0,
+  "warnings": [
+    "Reused unchanged frozen control from 2026-09-02-uk-mx-search-e2e-v1-15."
+  ],
+  "costEvents": []
+}

@@ -37,6 +37,8 @@ describe("formal experiment intent normalization", () => {
       .toBeLessThanOrEqual(EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd);
     expect(EXPERIMENT_CONFIG.cost.priorProductPreflightAdjustmentUsd
       + EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd
-      + EXPERIMENT_CONFIG.cost.priorEvaluationAdjustmentUsd).toBeCloseTo(4.347216333872236, 12);
+      + EXPERIMENT_CONFIG.cost.priorEvaluationAdjustmentUsd).toBeCloseTo(6.257584059721488, 12);
+    expect(EXPERIMENT_CONFIG.reusedFrozenArms.map((item) => item.arm).sort())
+      .toEqual(["gemini-native", "product-e2e"]);
   });
 });
