@@ -1,21 +1,21 @@
 {
   "schemaVersion": 1,
-  "experimentId": "search-e2e-eval-v1.1.5",
-  "runId": "2026-09-06-uk-mx-search-e2e-v1-1-5",
-  "createdAt": "2026-09-05T19:35:08.682Z",
-  "requiredGitTag": "search-e2e-eval-v1.1.5-frozen",
+  "experimentId": "search-e2e-eval-v1.1.6",
+  "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+  "createdAt": "2026-09-05T20:18:38.308Z",
+  "requiredGitTag": "search-e2e-eval-v1.1.6-frozen",
   "files": [
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/PROTOCOL.md",
-      "sha256": "0bc86c9c0f1b6a4f0bed47c5dca1e5710465d41aecbbef437f749a021f13c5b6"
+      "sha256": "d2d8665ac04c2daba74aff319d7a96f0f573f1bd73e93e766431221aeb2dc9f6"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/README.md",
-      "sha256": "4bf99add02078504dce47d427f00eae2a951220d0e2dfdffa05ff72a55189d8a"
+      "sha256": "ecb952fceb703e4548318d936402148dc69ea9654c548c0e359182c57434a4aa"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/config/experiment.v1.0.0.json",
-      "sha256": "6c53faa4a59c05980d147043d8aa0d38ee45a714a673451525bf2cbcfcda3bfe"
+      "sha256": "0293c362728608a0ea92000fe4602583a06b1cad0ac980953d86ffbc7628957a"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/config/gemini-control-prompt.md",
@@ -63,7 +63,7 @@
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/experiment.ts",
-      "sha256": "17193c6cf63ec56d560b5f89e4814751de5f352432d1094173287d5cbde922b1"
+      "sha256": "a9f94597573f2a57b105e3ef0fbd45e276d2089932f40f7e88b4d57593d6824b"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/final-report.ts",
@@ -83,7 +83,7 @@
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/run-store.ts",
-      "sha256": "50b3fc5e6797eb0bbae0a79c50cb960affb516be1f6fad61ebb115ddd2c2e469"
+      "sha256": "1ebc53684b1f277a1c6a02c92b90852c2f2db76a7e7c09ae5ad6a2ae01650307"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/lib/runtime-schemas.ts",
@@ -95,7 +95,7 @@
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/scripts/run-formal-experiment.ts",
-      "sha256": "3ee7e8a1ecdd581426de97cc02530ca0e01fc6f35577ad5f0591fbbb55b10ebf"
+      "sha256": "451a71da72b9ec2f05744c2a5f174089a539481281761a93c44b44e7b5d3124a"
     },
     {
       "path": "config/lead-search/hybrid-search-v1.0.0.json",
@@ -340,6 +340,58 @@
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-4/analysis/supersession.json",
       "sha256": "ca7fb5bac6ac1eaf67f73761daed02b6f053d28033371b4bb97325c4f631e2db"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-5/preflight/preflight-report.json",
+      "sha256": "487739b3d058d7eb9e576f24f3735a6a93392f23587110c4382d621d71e424c4"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-5/runtime/run-summary.json",
+      "sha256": "ac482bc570b50cc70830dd6112a88b6d041646c9ab04cf956e2e8a35dba58980"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-5/cells/MX-retail/gemini-native.json",
+      "sha256": "2da578ea6eeaf544b31496426375c090d25dbeca49e01d0a1995ee05a1384c2f"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-5/cells/MX-retail/product-e2e.json",
+      "sha256": "7d879a6663fbb18b3d64de295c5e53a94a92cf44031d9dd1b365fd42e56805e9"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-5/cost/after-MX-retail.json",
+      "sha256": "175b5f95b247f851b64b503b1309042d0b5a9c72c1897a9e79f9d89a597b7662"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-5/cells/GB-distribution/gemini-native.json",
+      "sha256": "56e1609bdacdb2e1a42f4cbea35c6ad30e4c02202d0fb595515bb87e41d19b38"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-5/cells/GB-distribution/product-e2e.json",
+      "sha256": "7affff94a47c0416fbc6bf709abf8d65adb711442068ded4823c64f530c85661"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-5/cost/after-GB-distribution.json",
+      "sha256": "b5eb66f3420d283f5558318bd15458a46412c7376e55ee06fab3a28adf3e6015"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-5/cells/MX-si-msp/gemini-native.json",
+      "sha256": "ed2e010d9aa22c2ca2944f64858ca04ca3bf2c2305ee11301643b0e4e19ea81a"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-5/cells/MX-si-msp/product-e2e.json",
+      "sha256": "136e38ea8a1ea4d2894e80dd6ddb07c8254d7ecc27b6814915ee5995b42be010"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-5/cost/after-MX-si-msp.json",
+      "sha256": "bdbdc763ed01a3bf98ca2f23ac29374c4b7ebcc4915d5e420479ac15cc098f1d"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-5/cells/GB-resale/gemini-native.json",
+      "sha256": "d741c9f3358c29774629c0743392176e1fb36cbdb16d8ad450cdc74365af2c6d"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-5/analysis/supersession.json",
+      "sha256": "88af2be70ced8eec4ab58c4ac29c203ae089cc92e6daf801a4e04fb7cf5f9418"
     }
   ]
 }
