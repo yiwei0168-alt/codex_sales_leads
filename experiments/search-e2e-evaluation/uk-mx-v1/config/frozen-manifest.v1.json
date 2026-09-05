@@ -1,21 +1,21 @@
 {
   "schemaVersion": 1,
-  "experimentId": "search-e2e-eval-v1.1.1",
-  "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
-  "createdAt": "2026-09-05T06:11:36.618Z",
-  "requiredGitTag": "search-e2e-eval-v1.1.1-frozen",
+  "experimentId": "search-e2e-eval-v1.1.2",
+  "runId": "2026-09-05-uk-mx-search-e2e-v1-1-2",
+  "createdAt": "2026-09-05T06:38:44.907Z",
+  "requiredGitTag": "search-e2e-eval-v1.1.2-frozen",
   "files": [
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/PROTOCOL.md",
-      "sha256": "ce3944d8cc31d2006b84bd4c6429b89c1eb479b1949a2382fbf48156ea3e857d"
+      "sha256": "ba98372390b15e8c9ead8672fa298da7c24b9e6e0906f0678ff7e2fccbba924f"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/README.md",
-      "sha256": "80c6b00f115680da41bf446b2f03862f683bac8d916789e2900cae9f0aae8a4b"
+      "sha256": "6fc71c77491bc56074049f4ea514453093a75dbb603d1787f6d4c911fc4e5e96"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/config/experiment.v1.0.0.json",
-      "sha256": "b9d076ad5e2b63d0a05d3b5bc17f2bbc1549ab40e50a840defe129ab4feb750e"
+      "sha256": "fd05ef3cf312f9d30c3adfa073b6c7bc12bb6578c0ee22bcddc517a8860d8f42"
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/config/gemini-control-prompt.md",
@@ -91,11 +91,11 @@
     },
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/scripts/run-formal-experiment.ts",
-      "sha256": "3074023865fa6fb5d2869addda6c012eb7aec4d870b7ffc40aece61799eae03d"
+      "sha256": "95f6b9bd21f5fd0e995164dd7ac387af1b9ba06c9b4ecd7b06623ba2748c8a48"
     },
     {
       "path": "config/lead-search/hybrid-search-v1.0.0.json",
-      "sha256": "1efc25a3e7b2da8cc120073ebd97d7d22ffc45576e9230b06a7da62a855446c5"
+      "sha256": "f73cff95ae44a1bcff28cce31f352de70338872539b7b1e843366d8974044545"
     },
     {
       "path": "config/lead-scoring/policy-v2.0.0.json",
@@ -103,7 +103,7 @@
     },
     {
       "path": "config/lead-workflow/end-to-end-v2.0.0.json",
-      "sha256": "c73731df5c1801cf269abb659a0f93acf4061de485ad79e4612f808ee6d2b3c7"
+      "sha256": "10faceb1721314dd0b3065c79e4f83a9a14c221b45506018e6981bd8261df968"
     },
     {
       "path": "config/lead-workflow/runtime-policy-v3.0.0.json",
@@ -123,7 +123,7 @@
     },
     {
       "path": "src/lib/leads/workflow/hybrid-discovery-executor.ts",
-      "sha256": "d0bc0ee9fbdac914c012656546b120c1d1ad3b614bf72cbe24b8f0e66267a095"
+      "sha256": "09f16564be68bea10db374f0d08c600017cbfb1d360c01c80d90c62284aad4a0"
     },
     {
       "path": "src/lib/leads/workflow/hybrid-search-policy.ts",
@@ -151,7 +151,7 @@
     },
     {
       "path": "src/lib/leads/workflow/target-completion-policy.ts",
-      "sha256": "3239db048621ed0d3ee257bb109fd7a629c3ab68386f0d5c341bba4f111ae3de"
+      "sha256": "413cafedc7b463c1562a7448d88aff71f6b0ab386b4cddcc0fdfd57aab8049f1"
     },
     {
       "path": "src/lib/leads/workflow/discovery.ts",
@@ -219,7 +219,7 @@
     },
     {
       "path": "src/providers/discovery.ts",
-      "sha256": "d3f5648e4f4b46159b23710661ce2d1dba6a91459334cdea061f87bd3bb01af5"
+      "sha256": "a7b93d1d5a8bc6412b70461d93f5c0dc1e412951100688b8ae04cee6e5113337"
     },
     {
       "path": "src/providers/openrouter.ts",
@@ -256,6 +256,26 @@
     {
       "path": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-05-uk-mx-search-e2e-v1-1/analysis/invalidation.json",
       "sha256": "e84134f0bc160ffc1e3b022440b81e88530944b679e5a26191464ed055117d41"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-05-uk-mx-search-e2e-v1-1-1/runtime/run-summary.json",
+      "sha256": "f79647617bd6c9431f41eec64dc736c538bc810b3a6dcc4bf31e34c08a0f6dce"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-05-uk-mx-search-e2e-v1-1-1/cells/MX-retail/gemini-native.json",
+      "sha256": "e631a29619a252a63a73c9920ac0ecfbb6e6aadf1ed1ce49cfad0ca1e85c54b8"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-05-uk-mx-search-e2e-v1-1-1/cells/MX-retail/product-e2e.json",
+      "sha256": "81d201ee7fff5b3822d5063a15b6e0aed6742a90e0a3cab495957946b150adf7"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-05-uk-mx-search-e2e-v1-1-1/cost/after-MX-retail.json",
+      "sha256": "ad7da20c08e4ae3eb8eadca77468063ab5dde32680736c44a3f67d6f9fb6d0bd"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-05-uk-mx-search-e2e-v1-1-1/analysis/invalidation.json",
+      "sha256": "7d7ef5303446a03e85703e250bb2970896e98d7acd7d5289abe8fbe9dc69bf0b"
     }
   ]
 }
