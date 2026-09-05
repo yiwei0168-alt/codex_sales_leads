@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
   "experimentId": "search-e2e-eval-v1.1.0",
-  "status": "preflight-passed",
+  "status": "invalid",
   "createdAt": "2026-09-04T21:43:10.079Z",
-  "updatedAt": "2026-09-04T21:43:45.282Z",
+  "updatedAt": "2026-09-05T05:53:40.416Z",
   "blindJudgeModel": "codex-in-session",
   "preflightChecks": [
     {
@@ -58,12 +58,32 @@
       }
     }
   ],
-  "completedArmKeys": [],
-  "completedCellIds": [],
+  "completedArmKeys": [
+    "MX-retail:gemini-native",
+    "MX-retail:product-e2e"
+  ],
+  "completedCellIds": [
+    "MX-retail"
+  ],
   "completedEvaluationCellIds": [],
   "completedBlindPacketIds": [],
   "reportedBudgetThresholdsUsd": [],
-  "anomalies": [],
+  "anomalies": [
+    {
+      "at": "2026-09-05T05:44:11.018Z",
+      "cellId": "MX-retail",
+      "severity": "warning",
+      "code": "product-target-underfill",
+      "detail": "Product returned 15/30 after 5 round(s); completion=maximum-rounds."
+    },
+    {
+      "at": "2026-09-05T05:53:40.416Z",
+      "cellId": "MX-retail",
+      "severity": "fatal",
+      "code": "treatment-model-binding-drift",
+      "detail": "All routine DeepSeek stages inherited deepseek-v4-pro from mutable global configuration; the preregistered Flash-routine treatment was not executed. Remaining cells were not run."
+    }
+  ],
   "costEvents": [
     {
       "eventId": "preflight:prior-product-before-v1.1.0",
@@ -204,6 +224,3345 @@
       "notes": [
         "HTTP 404: {\"error\":{\"message\":\"No endpoints found that can handle the requested parameters. To learn more about provider routing, visit: https://openrouter.ai/docs/guides/routing/provider-selection\",\"code\":404,\"metadata\":{\"routing_funnel\":[{\"step\":\"Initial Endpoints\",\"endpoint_count\":7},{\"step\":\"Filter by Regional Surcharge\",\"endpoint_count\":5},{\"step\":\"Filter by Tier Endpoint Rows\",\"endpoint_count\":3}],\"failed_routing_step\":\"Filter by Parameters\"}}}"
       ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:intent:1",
+      "cellId": "MX-retail",
+      "stage": "intent",
+      "provider": "kimi",
+      "requestedModel": "kimi-k2.6",
+      "actualModel": "kimi-k2.6",
+      "startedAt": "2026-09-05T05:25:59.577Z",
+      "completedAt": "2026-09-05T05:26:29.370Z",
+      "latencyMs": 29788,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 559,
+        "cachedInputTokens": 0,
+        "outputTokens": 1468
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.006379203585487034,
+      "budgetCostUsd": 0.006379203585487034,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:rag-embedding:1",
+      "cellId": "MX-retail",
+      "stage": "rag-retrieval",
+      "provider": "alibaba-model-studio",
+      "requestedModel": "text-embedding-v4",
+      "actualModel": "text-embedding-v4",
+      "startedAt": "2026-09-05T05:26:29.378Z",
+      "completedAt": "2026-09-05T05:26:30.893Z",
+      "latencyMs": 1360,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 83,
+        "outputTokens": 0
+      },
+      "volume": {
+        "inputItems": 3,
+        "rawOutputItems": 3,
+        "validOutputItems": 3,
+        "downstreamUsedItems": 3,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.000005976,
+      "budgetCostUsd": 0.000005976,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:playbook",
+      "cellId": "MX-retail",
+      "stage": "playbook",
+      "provider": "deterministic-template",
+      "startedAt": "2026-09-05T05:26:30.900Z",
+      "completedAt": "2026-09-05T05:26:30.900Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "volume": {
+        "inputItems": 16,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r1:1",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "google-places",
+      "startedAt": "2026-09-05T05:26:30.917Z",
+      "completedAt": "2026-09-05T05:29:21.619Z",
+      "latencyMs": 400,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 3,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 3,
+        "validOutputItems": 3,
+        "downstreamUsedItems": 3,
+        "discardedReasonCounts": {
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.035,
+      "budgetCostUsd": 0.035,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r1:2",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T05:26:30.917Z",
+      "completedAt": "2026-09-05T05:29:21.619Z",
+      "latencyMs": 2417,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 10,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 10,
+        "validOutputItems": 10,
+        "downstreamUsedItems": 10,
+        "discardedReasonCounts": {
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.004,
+      "budgetCostUsd": 0.004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r1:3",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T05:26:30.917Z",
+      "completedAt": "2026-09-05T05:29:21.619Z",
+      "latencyMs": 1392,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 9,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 9,
+        "validOutputItems": 9,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {
+          "duplicate": 8
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.004,
+      "budgetCostUsd": 0.004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r1:4",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-05T05:26:30.917Z",
+      "completedAt": "2026-09-05T05:29:21.619Z",
+      "latencyMs": 1308,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 12,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 12,
+        "validOutputItems": 12,
+        "downstreamUsedItems": 5,
+        "discardedReasonCounts": {
+          "duplicate": 7
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005,
+      "budgetCostUsd": 0.005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r1:5",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T05:26:30.917Z",
+      "completedAt": "2026-09-05T05:29:21.619Z",
+      "latencyMs": 1992,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 10,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 10,
+        "validOutputItems": 10,
+        "downstreamUsedItems": 5,
+        "discardedReasonCounts": {
+          "duplicate": 5
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.004,
+      "budgetCostUsd": 0.004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r1:6",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-05T05:26:30.917Z",
+      "completedAt": "2026-09-05T05:29:21.619Z",
+      "latencyMs": 798,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 12,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 12,
+        "validOutputItems": 12,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {
+          "duplicate": 11
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005,
+      "budgetCostUsd": 0.005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r1:7",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-05T05:26:30.917Z",
+      "completedAt": "2026-09-05T05:29:21.619Z",
+      "latencyMs": 1278,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 12,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 12,
+        "validOutputItems": 12,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {
+          "duplicate": 11
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005,
+      "budgetCostUsd": 0.005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r1:8",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T05:26:30.917Z",
+      "completedAt": "2026-09-05T05:29:21.619Z",
+      "latencyMs": 6657,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.004,
+      "budgetCostUsd": 0.004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r1:9",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T05:26:30.917Z",
+      "completedAt": "2026-09-05T05:29:21.619Z",
+      "latencyMs": 1085,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.004,
+      "budgetCostUsd": 0.004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r1:10",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "exa",
+      "startedAt": "2026-09-05T05:26:30.917Z",
+      "completedAt": "2026-09-05T05:29:21.619Z",
+      "latencyMs": 1731,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 12,
+        "extractedPages": 12,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 12,
+        "validOutputItems": 12,
+        "downstreamUsedItems": 12,
+        "discardedReasonCounts": {
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.021,
+      "budgetCostUsd": 0.021,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r1:11",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "exa",
+      "startedAt": "2026-09-05T05:26:30.917Z",
+      "completedAt": "2026-09-05T05:29:21.619Z",
+      "latencyMs": 987,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.007,
+      "budgetCostUsd": 0.007,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery-gate-r1:model:1",
+      "cellId": "MX-retail",
+      "stage": "discovery-gate-r1",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-05T05:26:30.917Z",
+      "completedAt": "2026-09-05T05:29:21.619Z",
+      "latencyMs": 84639,
+      "attempts": 5,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 34445,
+        "outputTokens": 9067,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 38,
+        "rawOutputItems": 35,
+        "validOutputItems": 32,
+        "downstreamUsedItems": 32,
+        "discardedReasonCounts": {
+          "rejected": 3
+        }
+      },
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.022871865,
+      "budgetCostUsd": 0.022871865,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:fresh-evidence:r1",
+      "cellId": "MX-retail",
+      "stage": "fresh-evidence",
+      "provider": "tavily",
+      "startedAt": "2026-09-05T05:29:21.712Z",
+      "completedAt": "2026-09-05T05:29:43.043Z",
+      "latencyMs": 105718,
+      "attempts": 52,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 46
+      },
+      "volume": {
+        "inputItems": 32,
+        "rawOutputItems": 103,
+        "validOutputItems": 103,
+        "downstreamUsedItems": 103,
+        "discardedReasonCounts": {
+          "noFreshEvidence": 2
+        }
+      },
+      "notes": [
+        "historical evidence reads disabled",
+        "evidence-library writes disabled",
+        "current-run evidence and missing-evidence records reused downstream"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.368,
+      "budgetCostUsd": 0.368,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:correction-evidence:r1",
+      "cellId": "MX-retail",
+      "stage": "evidence-correction-search",
+      "provider": "tavily",
+      "startedAt": "2026-09-05T05:29:43.056Z",
+      "completedAt": "2026-09-05T05:33:28.185Z",
+      "latencyMs": 80544,
+      "attempts": 27,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 27
+      },
+      "volume": {
+        "inputItems": 32,
+        "rawOutputItems": 32,
+        "validOutputItems": 32,
+        "downstreamUsedItems": 11,
+        "discardedReasonCounts": {
+          "correctedToAnotherRole": 21
+        }
+      },
+      "notes": [
+        "Only missing evidence identified by the first evidence packet may trigger supplementation."
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.216,
+      "budgetCostUsd": 0.216,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:evidence-correction-r1:model:1",
+      "cellId": "MX-retail",
+      "stage": "evidence-correction-r1",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-05T05:29:43.056Z",
+      "completedAt": "2026-09-05T05:33:28.185Z",
+      "latencyMs": 383957,
+      "attempts": 7,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 144085,
+        "outputTokens": 37798,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 32,
+        "rawOutputItems": 32,
+        "validOutputItems": 30,
+        "downstreamUsedItems": 11,
+        "discardedReasonCounts": {
+          "correctedToAnotherRole": 21
+        }
+      },
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.095561235,
+      "budgetCostUsd": 0.095561235,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:qualification-score-only-r1:model:1",
+      "cellId": "MX-retail",
+      "stage": "qualification-score-only-r1",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-05T05:33:28.206Z",
+      "completedAt": "2026-09-05T05:34:29.992Z",
+      "latencyMs": 191045,
+      "attempts": 4,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 38056,
+        "outputTokens": 17358,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 11,
+        "rawOutputItems": 11,
+        "validOutputItems": 11,
+        "downstreamUsedItems": 11,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.03165582,
+      "budgetCostUsd": 0.03165582,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r2:1",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "google-places",
+      "startedAt": "2026-09-05T05:34:30.001Z",
+      "completedAt": "2026-09-05T05:35:04.639Z",
+      "latencyMs": 406,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 1,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.035,
+      "budgetCostUsd": 0.035,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r2:2",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T05:34:30.001Z",
+      "completedAt": "2026-09-05T05:35:04.639Z",
+      "latencyMs": 4357,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 9,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 9,
+        "validOutputItems": 9,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "duplicate": 9
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.004,
+      "budgetCostUsd": 0.004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r2:3",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T05:34:30.001Z",
+      "completedAt": "2026-09-05T05:35:04.639Z",
+      "latencyMs": 2429,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 10,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 10,
+        "validOutputItems": 10,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "duplicate": 10
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.004,
+      "budgetCostUsd": 0.004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r2:4",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-05T05:34:30.001Z",
+      "completedAt": "2026-09-05T05:35:04.639Z",
+      "latencyMs": 1312,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 12,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 12,
+        "validOutputItems": 12,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {
+          "duplicate": 11
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005,
+      "budgetCostUsd": 0.005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r2:5",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T05:34:30.001Z",
+      "completedAt": "2026-09-05T05:35:04.639Z",
+      "latencyMs": 1912,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 10,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 10,
+        "validOutputItems": 10,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "duplicate": 10
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.004,
+      "budgetCostUsd": 0.004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r2:6",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-05T05:34:30.001Z",
+      "completedAt": "2026-09-05T05:35:04.639Z",
+      "latencyMs": 784,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 12,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 12,
+        "validOutputItems": 12,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {
+          "duplicate": 11
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005,
+      "budgetCostUsd": 0.005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r2:7",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-05T05:34:30.001Z",
+      "completedAt": "2026-09-05T05:35:04.639Z",
+      "latencyMs": 1057,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 12,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 12,
+        "validOutputItems": 12,
+        "downstreamUsedItems": 2,
+        "discardedReasonCounts": {
+          "duplicate": 10
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005,
+      "budgetCostUsd": 0.005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r2:8",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T05:34:30.001Z",
+      "completedAt": "2026-09-05T05:35:04.639Z",
+      "latencyMs": 1299,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.004,
+      "budgetCostUsd": 0.004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r2:9",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T05:34:30.001Z",
+      "completedAt": "2026-09-05T05:35:04.639Z",
+      "latencyMs": 5262,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.004,
+      "budgetCostUsd": 0.004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r2:10",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "exa",
+      "startedAt": "2026-09-05T05:34:30.001Z",
+      "completedAt": "2026-09-05T05:35:04.639Z",
+      "latencyMs": 1354,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.007,
+      "budgetCostUsd": 0.007,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r2:11",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "exa",
+      "startedAt": "2026-09-05T05:34:30.001Z",
+      "completedAt": "2026-09-05T05:35:04.639Z",
+      "latencyMs": 1406,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.007,
+      "budgetCostUsd": 0.007,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery-gate-r2:model:1",
+      "cellId": "MX-retail",
+      "stage": "discovery-gate-r2",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-05T05:34:30.001Z",
+      "completedAt": "2026-09-05T05:35:04.639Z",
+      "latencyMs": 13691,
+      "attempts": 3,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 6757,
+        "outputTokens": 1107,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 5,
+        "rawOutputItems": 5,
+        "validOutputItems": 4,
+        "downstreamUsedItems": 4,
+        "discardedReasonCounts": {
+          "rejected": 1
+        }
+      },
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.0039023850000000004,
+      "budgetCostUsd": 0.0039023850000000004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:fresh-evidence:r2",
+      "cellId": "MX-retail",
+      "stage": "fresh-evidence",
+      "provider": "tavily",
+      "startedAt": "2026-09-05T05:35:04.722Z",
+      "completedAt": "2026-09-05T05:35:11.033Z",
+      "latencyMs": 14968,
+      "attempts": 7,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 4
+      },
+      "volume": {
+        "inputItems": 4,
+        "rawOutputItems": 15,
+        "validOutputItems": 15,
+        "downstreamUsedItems": 15,
+        "discardedReasonCounts": {
+          "noFreshEvidence": 0
+        }
+      },
+      "notes": [
+        "historical evidence reads disabled",
+        "evidence-library writes disabled",
+        "current-run evidence and missing-evidence records reused downstream"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.032,
+      "budgetCostUsd": 0.032,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:correction-evidence:r2",
+      "cellId": "MX-retail",
+      "stage": "evidence-correction-search",
+      "provider": "tavily",
+      "startedAt": "2026-09-05T05:35:11.044Z",
+      "completedAt": "2026-09-05T05:36:15.980Z",
+      "latencyMs": 16250,
+      "attempts": 4,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 4
+      },
+      "volume": {
+        "inputItems": 4,
+        "rawOutputItems": 4,
+        "validOutputItems": 4,
+        "downstreamUsedItems": 4,
+        "discardedReasonCounts": {
+          "correctedToAnotherRole": 0
+        }
+      },
+      "notes": [
+        "Only missing evidence identified by the first evidence packet may trigger supplementation."
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.032,
+      "budgetCostUsd": 0.032,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:evidence-correction-r2:model:1",
+      "cellId": "MX-retail",
+      "stage": "evidence-correction-r2",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-05T05:35:11.044Z",
+      "completedAt": "2026-09-05T05:36:15.980Z",
+      "latencyMs": 58180,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 27579,
+        "outputTokens": 5488,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 4,
+        "rawOutputItems": 4,
+        "validOutputItems": 4,
+        "downstreamUsedItems": 4,
+        "discardedReasonCounts": {
+          "correctedToAnotherRole": 0
+        }
+      },
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.016771425,
+      "budgetCostUsd": 0.016771425,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:qualification-score-only-r2:model:1",
+      "cellId": "MX-retail",
+      "stage": "qualification-score-only-r2",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-05T05:36:15.992Z",
+      "completedAt": "2026-09-05T05:37:00.453Z",
+      "latencyMs": 84771,
+      "attempts": 2,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 18566,
+        "outputTokens": 6995,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 4,
+        "rawOutputItems": 4,
+        "validOutputItems": 4,
+        "downstreamUsedItems": 4,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.01416186,
+      "budgetCostUsd": 0.01416186,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r3:1",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "google-places",
+      "startedAt": "2026-09-05T05:37:00.461Z",
+      "completedAt": "2026-09-05T05:37:40.760Z",
+      "latencyMs": 379,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 1,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=3",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.035,
+      "budgetCostUsd": 0.035,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r3:2",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T05:37:00.461Z",
+      "completedAt": "2026-09-05T05:37:40.760Z",
+      "latencyMs": 2676,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 10,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 10,
+        "validOutputItems": 10,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {
+          "duplicate": 9
+        }
+      },
+      "notes": [
+        "queryRound=3",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.004,
+      "budgetCostUsd": 0.004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r3:3",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T05:37:00.461Z",
+      "completedAt": "2026-09-05T05:37:40.760Z",
+      "latencyMs": 1868,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 9,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 9,
+        "validOutputItems": 9,
+        "downstreamUsedItems": 3,
+        "discardedReasonCounts": {
+          "duplicate": 6
+        }
+      },
+      "notes": [
+        "queryRound=3",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.004,
+      "budgetCostUsd": 0.004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r3:4",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-05T05:37:00.461Z",
+      "completedAt": "2026-09-05T05:37:40.760Z",
+      "latencyMs": 1060,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 12,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 12,
+        "validOutputItems": 12,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "duplicate": 12
+        }
+      },
+      "notes": [
+        "queryRound=3",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005,
+      "budgetCostUsd": 0.005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r3:5",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T05:37:00.461Z",
+      "completedAt": "2026-09-05T05:37:40.760Z",
+      "latencyMs": 1449,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 10,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 10,
+        "validOutputItems": 10,
+        "downstreamUsedItems": 3,
+        "discardedReasonCounts": {
+          "duplicate": 7
+        }
+      },
+      "notes": [
+        "queryRound=3",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.004,
+      "budgetCostUsd": 0.004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r3:6",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-05T05:37:00.461Z",
+      "completedAt": "2026-09-05T05:37:40.760Z",
+      "latencyMs": 879,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 12,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 12,
+        "validOutputItems": 12,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {
+          "duplicate": 11
+        }
+      },
+      "notes": [
+        "queryRound=3",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005,
+      "budgetCostUsd": 0.005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r3:7",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-05T05:37:00.461Z",
+      "completedAt": "2026-09-05T05:37:40.760Z",
+      "latencyMs": 1207,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 12,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 12,
+        "validOutputItems": 12,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {
+          "duplicate": 11
+        }
+      },
+      "notes": [
+        "queryRound=3",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005,
+      "budgetCostUsd": 0.005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r3:8",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T05:37:00.461Z",
+      "completedAt": "2026-09-05T05:37:40.760Z",
+      "latencyMs": 2792,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 1,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "duplicate": 1
+        }
+      },
+      "notes": [
+        "queryRound=3",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.004,
+      "budgetCostUsd": 0.004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r3:9",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T05:37:00.461Z",
+      "completedAt": "2026-09-05T05:37:40.760Z",
+      "latencyMs": 8305,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 1,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "duplicate": 1
+        }
+      },
+      "notes": [
+        "queryRound=3",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.004,
+      "budgetCostUsd": 0.004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r3:10",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "exa",
+      "startedAt": "2026-09-05T05:37:00.461Z",
+      "completedAt": "2026-09-05T05:37:40.760Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "two-consecutive-no-value-batches": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=3",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r3:11",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "exa",
+      "startedAt": "2026-09-05T05:37:00.461Z",
+      "completedAt": "2026-09-05T05:37:40.760Z",
+      "latencyMs": 1372,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=3",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.007,
+      "budgetCostUsd": 0.007,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery-gate-r3:model:1",
+      "cellId": "MX-retail",
+      "stage": "discovery-gate-r3",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-05T05:37:00.461Z",
+      "completedAt": "2026-09-05T05:37:40.760Z",
+      "latencyMs": 17597,
+      "attempts": 3,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 5500,
+        "outputTokens": 1613,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 10,
+        "rawOutputItems": 7,
+        "validOutputItems": 6,
+        "downstreamUsedItems": 6,
+        "discardedReasonCounts": {
+          "rejected": 1
+        }
+      },
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.00379581,
+      "budgetCostUsd": 0.00379581,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:fresh-evidence:r3",
+      "cellId": "MX-retail",
+      "stage": "fresh-evidence",
+      "provider": "tavily",
+      "startedAt": "2026-09-05T05:37:40.850Z",
+      "completedAt": "2026-09-05T05:37:55.895Z",
+      "latencyMs": 29214,
+      "attempts": 10,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 10
+      },
+      "volume": {
+        "inputItems": 6,
+        "rawOutputItems": 20,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 20,
+        "discardedReasonCounts": {
+          "noFreshEvidence": 1
+        }
+      },
+      "notes": [
+        "historical evidence reads disabled",
+        "evidence-library writes disabled",
+        "current-run evidence and missing-evidence records reused downstream"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.08,
+      "budgetCostUsd": 0.08,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:correction-evidence:r3",
+      "cellId": "MX-retail",
+      "stage": "evidence-correction-search",
+      "provider": "tavily",
+      "startedAt": "2026-09-05T05:37:55.904Z",
+      "completedAt": "2026-09-05T05:38:56.139Z",
+      "latencyMs": 10989,
+      "attempts": 4,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 4
+      },
+      "volume": {
+        "inputItems": 6,
+        "rawOutputItems": 6,
+        "validOutputItems": 6,
+        "downstreamUsedItems": 3,
+        "discardedReasonCounts": {
+          "correctedToAnotherRole": 3
+        }
+      },
+      "notes": [
+        "Only missing evidence identified by the first evidence packet may trigger supplementation."
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.032,
+      "budgetCostUsd": 0.032,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:evidence-correction-r3:model:1",
+      "cellId": "MX-retail",
+      "stage": "evidence-correction-r3",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-05T05:37:55.904Z",
+      "completedAt": "2026-09-05T05:38:56.139Z",
+      "latencyMs": 88804,
+      "attempts": 2,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 27409,
+        "outputTokens": 8930,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 6,
+        "rawOutputItems": 6,
+        "validOutputItems": 6,
+        "downstreamUsedItems": 3,
+        "discardedReasonCounts": {
+          "correctedToAnotherRole": 3
+        }
+      },
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.019692015,
+      "budgetCostUsd": 0.019692015,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:qualification-score-only-r3:model:1",
+      "cellId": "MX-retail",
+      "stage": "qualification-score-only-r3",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-05T05:38:56.162Z",
+      "completedAt": "2026-09-05T05:39:45.702Z",
+      "latencyMs": 49508,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 9923,
+        "outputTokens": 4663,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 3,
+        "rawOutputItems": 3,
+        "validOutputItems": 3,
+        "downstreamUsedItems": 3,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.008373315000000001,
+      "budgetCostUsd": 0.008373315000000001,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r4:1",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "google-places",
+      "startedAt": "2026-09-05T05:39:45.725Z",
+      "completedAt": "2026-09-05T05:40:10.361Z",
+      "latencyMs": 449,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 1,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "duplicate": 1
+        }
+      },
+      "notes": [
+        "queryRound=4",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.035,
+      "budgetCostUsd": 0.035,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r4:2",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T05:39:45.725Z",
+      "completedAt": "2026-09-05T05:40:10.361Z",
+      "latencyMs": 1638,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 9,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 9,
+        "validOutputItems": 9,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {
+          "duplicate": 8
+        }
+      },
+      "notes": [
+        "queryRound=4",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.004,
+      "budgetCostUsd": 0.004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r4:3",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T05:39:45.725Z",
+      "completedAt": "2026-09-05T05:40:10.361Z",
+      "latencyMs": 3744,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 10,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 10,
+        "validOutputItems": 10,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "duplicate": 10
+        }
+      },
+      "notes": [
+        "queryRound=4",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.004,
+      "budgetCostUsd": 0.004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r4:4",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-05T05:39:45.725Z",
+      "completedAt": "2026-09-05T05:40:10.361Z",
+      "latencyMs": 1076,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 12,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 12,
+        "validOutputItems": 12,
+        "downstreamUsedItems": 2,
+        "discardedReasonCounts": {
+          "duplicate": 10
+        }
+      },
+      "notes": [
+        "queryRound=4",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005,
+      "budgetCostUsd": 0.005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r4:5",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-05T05:39:45.725Z",
+      "completedAt": "2026-09-05T05:40:10.361Z",
+      "latencyMs": 720,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 12,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 12,
+        "validOutputItems": 12,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "duplicate": 12
+        }
+      },
+      "notes": [
+        "queryRound=4",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005,
+      "budgetCostUsd": 0.005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r4:6",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T05:39:45.725Z",
+      "completedAt": "2026-09-05T05:40:10.361Z",
+      "latencyMs": 1819,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 9,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 9,
+        "validOutputItems": 9,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {
+          "duplicate": 8
+        }
+      },
+      "notes": [
+        "queryRound=4",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.004,
+      "budgetCostUsd": 0.004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r4:7",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-05T05:39:45.725Z",
+      "completedAt": "2026-09-05T05:40:10.361Z",
+      "latencyMs": 1038,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 12,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 12,
+        "validOutputItems": 12,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "duplicate": 12
+        }
+      },
+      "notes": [
+        "queryRound=4",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005,
+      "budgetCostUsd": 0.005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r4:8",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T05:39:45.725Z",
+      "completedAt": "2026-09-05T05:40:10.361Z",
+      "latencyMs": 4515,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 1,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "duplicate": 1
+        }
+      },
+      "notes": [
+        "queryRound=4",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.004,
+      "budgetCostUsd": 0.004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r4:9",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T05:39:45.725Z",
+      "completedAt": "2026-09-05T05:40:10.361Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "two-consecutive-no-value-batches": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=4",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r4:10",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "exa",
+      "startedAt": "2026-09-05T05:39:45.725Z",
+      "completedAt": "2026-09-05T05:40:10.361Z",
+      "latencyMs": 1543,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=4",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.007,
+      "budgetCostUsd": 0.007,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r4:11",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "exa",
+      "startedAt": "2026-09-05T05:39:45.725Z",
+      "completedAt": "2026-09-05T05:40:10.361Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "two-consecutive-no-value-batches": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=4",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery-gate-r4:model:1",
+      "cellId": "MX-retail",
+      "stage": "discovery-gate-r4",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-05T05:39:45.725Z",
+      "completedAt": "2026-09-05T05:40:10.361Z",
+      "latencyMs": 10065,
+      "attempts": 2,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 4150,
+        "outputTokens": 872,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 4,
+        "rawOutputItems": 4,
+        "validOutputItems": 4,
+        "downstreamUsedItems": 4,
+        "discardedReasonCounts": {
+          "rejected": 0
+        }
+      },
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.0025638899999999997,
+      "budgetCostUsd": 0.0025638899999999997,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:fresh-evidence:r4",
+      "cellId": "MX-retail",
+      "stage": "fresh-evidence",
+      "provider": "tavily",
+      "startedAt": "2026-09-05T05:40:10.448Z",
+      "completedAt": "2026-09-05T05:40:12.920Z",
+      "latencyMs": 7605,
+      "attempts": 5,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 5
+      },
+      "volume": {
+        "inputItems": 4,
+        "rawOutputItems": 7,
+        "validOutputItems": 7,
+        "downstreamUsedItems": 7,
+        "discardedReasonCounts": {
+          "noFreshEvidence": 1
+        }
+      },
+      "notes": [
+        "historical evidence reads disabled",
+        "evidence-library writes disabled",
+        "current-run evidence and missing-evidence records reused downstream"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.04,
+      "budgetCostUsd": 0.04,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:correction-evidence:r4",
+      "cellId": "MX-retail",
+      "stage": "evidence-correction-search",
+      "provider": "tavily",
+      "startedAt": "2026-09-05T05:40:12.929Z",
+      "completedAt": "2026-09-05T05:41:16.967Z",
+      "latencyMs": 10275,
+      "attempts": 4,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 4
+      },
+      "volume": {
+        "inputItems": 4,
+        "rawOutputItems": 4,
+        "validOutputItems": 4,
+        "downstreamUsedItems": 3,
+        "discardedReasonCounts": {
+          "correctedToAnotherRole": 1
+        }
+      },
+      "notes": [
+        "Only missing evidence identified by the first evidence packet may trigger supplementation."
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.032,
+      "budgetCostUsd": 0.032,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:evidence-correction-r4:model:1",
+      "cellId": "MX-retail",
+      "stage": "evidence-correction-r4",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-05T05:40:12.929Z",
+      "completedAt": "2026-09-05T05:41:16.967Z",
+      "latencyMs": 59719,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 17320,
+        "outputTokens": 5595,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 4,
+        "rawOutputItems": 4,
+        "validOutputItems": 4,
+        "downstreamUsedItems": 3,
+        "discardedReasonCounts": {
+          "correctedToAnotherRole": 1
+        }
+      },
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.012401849999999999,
+      "budgetCostUsd": 0.012401849999999999,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:qualification-score-only-r4:model:1",
+      "cellId": "MX-retail",
+      "stage": "qualification-score-only-r4",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-05T05:41:16.980Z",
+      "completedAt": "2026-09-05T05:41:53.629Z",
+      "latencyMs": 36628,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 8090,
+        "outputTokens": 3579,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 3,
+        "rawOutputItems": 3,
+        "validOutputItems": 3,
+        "downstreamUsedItems": 3,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.00663288,
+      "budgetCostUsd": 0.00663288,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r5:1",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "google-places",
+      "startedAt": "2026-09-05T05:41:53.636Z",
+      "completedAt": "2026-09-05T05:42:24.551Z",
+      "latencyMs": 384,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 1,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=5",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.035,
+      "budgetCostUsd": 0.035,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r5:2",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T05:41:53.636Z",
+      "completedAt": "2026-09-05T05:42:24.551Z",
+      "latencyMs": 2357,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 9,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 9,
+        "validOutputItems": 9,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "duplicate": 9
+        }
+      },
+      "notes": [
+        "queryRound=5",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.004,
+      "budgetCostUsd": 0.004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r5:3",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T05:41:53.636Z",
+      "completedAt": "2026-09-05T05:42:24.551Z",
+      "latencyMs": 4243,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 9,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 9,
+        "validOutputItems": 9,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {
+          "duplicate": 8
+        }
+      },
+      "notes": [
+        "queryRound=5",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.004,
+      "budgetCostUsd": 0.004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r5:4",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-05T05:41:53.636Z",
+      "completedAt": "2026-09-05T05:42:24.551Z",
+      "latencyMs": 1144,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 12,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 12,
+        "validOutputItems": 12,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {
+          "duplicate": 11
+        }
+      },
+      "notes": [
+        "queryRound=5",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005,
+      "budgetCostUsd": 0.005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r5:5",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-05T05:41:53.636Z",
+      "completedAt": "2026-09-05T05:42:24.551Z",
+      "latencyMs": 728,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 12,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 12,
+        "validOutputItems": 12,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {
+          "duplicate": 11
+        }
+      },
+      "notes": [
+        "queryRound=5",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005,
+      "budgetCostUsd": 0.005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r5:6",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T05:41:53.636Z",
+      "completedAt": "2026-09-05T05:42:24.551Z",
+      "latencyMs": 3011,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 9,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 9,
+        "validOutputItems": 9,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {
+          "duplicate": 8
+        }
+      },
+      "notes": [
+        "queryRound=5",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.004,
+      "budgetCostUsd": 0.004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r5:7",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-05T05:41:53.636Z",
+      "completedAt": "2026-09-05T05:42:24.551Z",
+      "latencyMs": 1070,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 12,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 12,
+        "validOutputItems": 12,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "duplicate": 12
+        }
+      },
+      "notes": [
+        "queryRound=5",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005,
+      "budgetCostUsd": 0.005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r5:8",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T05:41:53.636Z",
+      "completedAt": "2026-09-05T05:42:24.551Z",
+      "latencyMs": 2366,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=5",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.004,
+      "budgetCostUsd": 0.004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r5:9",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T05:41:53.636Z",
+      "completedAt": "2026-09-05T05:42:24.551Z",
+      "latencyMs": 6091,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 1,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "duplicate": 1
+        }
+      },
+      "notes": [
+        "queryRound=5",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.004,
+      "budgetCostUsd": 0.004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r5:10",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "exa",
+      "startedAt": "2026-09-05T05:41:53.636Z",
+      "completedAt": "2026-09-05T05:42:24.551Z",
+      "latencyMs": 1236,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=5",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.007,
+      "budgetCostUsd": 0.007,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r5:11",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "exa",
+      "startedAt": "2026-09-05T05:41:53.636Z",
+      "completedAt": "2026-09-05T05:42:24.551Z",
+      "latencyMs": 1437,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=5",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.007,
+      "budgetCostUsd": 0.007,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery-gate-r5:model:1",
+      "cellId": "MX-retail",
+      "stage": "discovery-gate-r5",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-05T05:41:53.636Z",
+      "completedAt": "2026-09-05T05:42:24.551Z",
+      "latencyMs": 8314,
+      "attempts": 2,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 2532,
+        "outputTokens": 622,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 5,
+        "rawOutputItems": 3,
+        "validOutputItems": 3,
+        "downstreamUsedItems": 3,
+        "discardedReasonCounts": {
+          "rejected": 0
+        }
+      },
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.00164256,
+      "budgetCostUsd": 0.00164256,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:fresh-evidence:r5",
+      "cellId": "MX-retail",
+      "stage": "fresh-evidence",
+      "provider": "tavily",
+      "startedAt": "2026-09-05T05:42:24.684Z",
+      "completedAt": "2026-09-05T05:42:33.011Z",
+      "latencyMs": 13086,
+      "attempts": 4,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 4
+      },
+      "volume": {
+        "inputItems": 3,
+        "rawOutputItems": 7,
+        "validOutputItems": 7,
+        "downstreamUsedItems": 7,
+        "discardedReasonCounts": {
+          "noFreshEvidence": 0
+        }
+      },
+      "notes": [
+        "historical evidence reads disabled",
+        "evidence-library writes disabled",
+        "current-run evidence and missing-evidence records reused downstream"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.032,
+      "budgetCostUsd": 0.032,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:correction-evidence:r5",
+      "cellId": "MX-retail",
+      "stage": "evidence-correction-search",
+      "provider": "tavily",
+      "startedAt": "2026-09-05T05:42:33.032Z",
+      "completedAt": "2026-09-05T05:43:23.270Z",
+      "latencyMs": 6645,
+      "attempts": 3,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 3
+      },
+      "volume": {
+        "inputItems": 3,
+        "rawOutputItems": 3,
+        "validOutputItems": 3,
+        "downstreamUsedItems": 3,
+        "discardedReasonCounts": {
+          "correctedToAnotherRole": 0
+        }
+      },
+      "notes": [
+        "Only missing evidence identified by the first evidence packet may trigger supplementation."
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.024,
+      "budgetCostUsd": 0.024,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:evidence-correction-r5:model:1",
+      "cellId": "MX-retail",
+      "stage": "evidence-correction-r5",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-05T05:42:33.032Z",
+      "completedAt": "2026-09-05T05:43:23.270Z",
+      "latencyMs": 47803,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 10638,
+        "outputTokens": 4821,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 3,
+        "rawOutputItems": 3,
+        "validOutputItems": 3,
+        "downstreamUsedItems": 3,
+        "discardedReasonCounts": {
+          "correctedToAnotherRole": 0
+        }
+      },
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.0088218,
+      "budgetCostUsd": 0.0088218,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:qualification-score-only-r5:model:1",
+      "cellId": "MX-retail",
+      "stage": "qualification-score-only-r5",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-05T05:43:23.293Z",
+      "completedAt": "2026-09-05T05:44:10.944Z",
+      "latencyMs": 70807,
+      "attempts": 2,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 14912,
+        "outputTokens": 5515,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 3,
+        "rawOutputItems": 3,
+        "validOutputItems": 3,
+        "downstreamUsedItems": 3,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.011284770000000001,
+      "budgetCostUsd": 0.011284770000000001,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:ranking",
+      "cellId": "MX-retail",
+      "stage": "role-filter-ranking",
+      "provider": "deterministic",
+      "startedAt": "2026-09-05T05:44:10.955Z",
+      "completedAt": "2026-09-05T05:44:10.955Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "volume": {
+        "inputItems": 24,
+        "rawOutputItems": 24,
+        "validOutputItems": 15,
+        "downstreamUsedItems": 15,
+        "discardedReasonCounts": {
+          "wrongPrimaryRoleOrGate": 34
+        }
+      },
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
       "officialListPriceUsd": 0,
       "budgetCostUsd": 0,
       "cashCostBasis": "official-conservative",

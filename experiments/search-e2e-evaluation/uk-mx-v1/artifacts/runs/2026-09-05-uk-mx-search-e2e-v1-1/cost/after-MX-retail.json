@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+  "generatedAt": "2026-09-05T05:44:11.025Z",
+  "cost": {
+    "eventCount": 88,
+    "officialListPriceUsd": 3.390149070637426,
+    "budgetCostUsd": 3.390149070637426,
+    "unpricedEvents": [],
+    "byLedger": {
+      "gemini-native-arm": 0.888839,
+      "product-e2e-arm": 2.427700070637425,
+      "evaluation-overhead": 0.07361
+    },
+    "byStage": {
+      "discovery-gate-r1": 0.022871865,
+      "discovery-gate-r2": 0.0039023850000000004,
+      "discovery-gate-r3": 0.00379581,
+      "discovery-gate-r4": 0.0025638899999999997,
+      "discovery-gate-r5": 0.00164256,
+      "evidence-correction-r1": 0.095561235,
+      "evidence-correction-r2": 0.016771425,
+      "evidence-correction-r3": 0.019692015,
+      "evidence-correction-r4": 0.012401849999999999,
+      "evidence-correction-r5": 0.0088218,
+      "evidence-correction-search": 0.3360000000000001,
+      "fresh-evidence": 0.552,
+      "hybrid-discovery": 0.41600000000000015,
+      "intent": 0.006379203585487034,
+      "playbook": 0,
+      "preflight-blind-judge": 0.07361,
+      "prior-preflight-adjustment": 1.746020411051939,
+      "qualification-score-only-r1": 0.03165582,
+      "qualification-score-only-r2": 0.01416186,
+      "qualification-score-only-r3": 0.008373315000000001,
+      "qualification-score-only-r4": 0.00663288,
+      "qualification-score-only-r5": 0.011284770000000001,
+      "rag-retrieval": 0.000005976,
+      "role-filter-ranking": 0
+    },
+    "anomalies": []
+  },
+  "budgetDecision": {
+    "totalBudgetUsd": 100,
+    "spentUsd": 3.390149070637426,
+    "budgetFraction": 0.033901490706374264,
+    "newlyCrossedThresholdsUsd": [],
+    "forecast": {
+      "completedCells": 1,
+      "totalCells": 8,
+      "incurredUsd": 3.390149070637426,
+      "expectedCompletionUsd": 24.383779687735824,
+      "lowerUsd": 18.99690068535761,
+      "upperUsd": 29.77065869011404,
+      "method": "cell-run-rate"
+    },
+    "warning": false,
+    "hardStop": false,
+    "requiresUserDecision": false,
+    "reasons": []
+  }
+}

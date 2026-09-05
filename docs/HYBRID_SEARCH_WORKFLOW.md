@@ -85,6 +85,10 @@ Every route and stage records input count, raw output, normalized output, new un
 
 ## Version history
 
+### v1.1.0 first formal cell — invalidated diagnostic
+
+The first MX Retail cell improved final fill from the historical 6/30 to 15/30, but the run was invalidated because the mutable global `DEEPSEEK_MODEL` selected Pro for all routine discovery-gate, role-correction and scoring calls. The paid diagnostic also showed 345 raw results collapsing to 62 unique companies and 15 final companies. Adaptive planned pools reached 88, while each provider request still used the fixed 12-result batch size. SearchAPI and Brave produced 282 duplicate occurrences; Exa used eight credits and had zero first-discovery final contribution. The next version must freeze routine model bindings, connect planned pool to provider breadth, shorten Places queries, and send bounded domain exclusions to Web indexes. The detailed actual-cost record is stored with the invalidated run artifacts.
+
 ### v1.1.0 — 2026-09-05
 
 - Removed Gemini Product from default Retail and Reseller routes.

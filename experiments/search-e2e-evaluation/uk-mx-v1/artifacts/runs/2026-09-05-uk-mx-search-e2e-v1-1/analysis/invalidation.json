@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-05-uk-mx-search-e2e-v1-1",
+  "experimentId": "search-e2e-eval-v1.1.0",
+  "status": "invalid",
+  "invalidatedAfterCell": "MX-retail",
+  "reasonCode": "treatment-model-binding-drift",
+  "reason": "All DeepSeek treatment calls used deepseek-v4-pro because the mutable global DEEPSEEK_MODEL leaked into routine stages; the frozen workflow requires Flash routine execution and material-trigger-only Pro escalation.",
+  "completedCells": 1,
+  "remainingCellsNotRun": 7,
+  "diagnostic": {
+    "requestedSlots": 30,
+    "finalCandidates": 15,
+    "rawSearchResults": 345,
+    "uniqueCompanies": 62,
+    "lightGateCandidates": 49,
+    "inRoleCandidates": 24,
+    "wallClockMs": 1091386,
+    "cellBudgetCostUsd": 1.5705186595854859,
+    "deepseekCalls": 15,
+    "deepseekInputTokens": 369962,
+    "deepseekOutputTokens": 114023,
+    "deepseekActualModel": "deepseek-v4-pro"
+  }
+}
