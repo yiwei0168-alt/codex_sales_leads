@@ -307,7 +307,7 @@ export function buildLeadWorkflowGraph(
         ? Number(discoveryMetric?.metadata.completedFreshCalls ?? 0) : 0;
       const unavailableCalls = metricsAvailable ? Number(discoveryMetric?.metadata.unavailableCalls ?? 0) : 0;
       const consecutiveNoFinalRounds = nextNoFinalRoundCount(state.consecutiveNoFinalRounds ?? 0,
-        { finalEligibleAdded, completedFreshCalls });
+        { finalEligibleAdded, completedFreshCalls, hadProviderFailureOrCircuit: unavailableCalls > 0 });
       const targetDecision = metricsAvailable ? targetCompletionDecision({ acceptedCount,
         targetCount: state.plan.targetCount, completedFreshCalls,
         hadProviderFailureOrCircuit: unavailableCalls > 0,

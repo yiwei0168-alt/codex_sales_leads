@@ -15,8 +15,9 @@ export function plannedCandidatePool(input: { targetCount: number; acceptedCount
 }
 
 export function nextNoFinalRoundCount(previous: number, input: {
-  finalEligibleAdded: number; completedFreshCalls: number }): number {
+  finalEligibleAdded: number; completedFreshCalls: number; hadProviderFailureOrCircuit?: boolean }): number {
   if (input.finalEligibleAdded > 0) return 0;
+  if (input.hadProviderFailureOrCircuit) return previous;
   return input.completedFreshCalls > 0 ? previous + 1 : previous;
 }
 

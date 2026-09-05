@@ -38,7 +38,7 @@ import { buildControlUniqueGroups, buildProductRecordIndex, evaluateControlUniqu
 nextEnv.loadEnvConfig(process.cwd());
 const rateCard = rateCardJson as ExperimentRateCard;
 const experimentRoot = path.resolve("experiments/search-e2e-evaluation/uk-mx-v1");
-const frozenTag = "search-e2e-eval-v1.1.1-frozen";
+const frozenTag = "search-e2e-eval-v1.1.2-frozen";
 
 const frozenFiles = [
   "PROTOCOL.md", "README.md", "config/experiment.v1.0.0.json", "config/gemini-control-prompt.md",
@@ -78,6 +78,11 @@ const frozenFiles = [
   "artifacts/runs/2026-09-05-uk-mx-search-e2e-v1-1/preflight/preflight-report.json",
   "artifacts/runs/2026-09-05-uk-mx-search-e2e-v1-1/runtime/run-summary.json",
   "artifacts/runs/2026-09-05-uk-mx-search-e2e-v1-1/analysis/invalidation.json",
+  "artifacts/runs/2026-09-05-uk-mx-search-e2e-v1-1-1/runtime/run-summary.json",
+  "artifacts/runs/2026-09-05-uk-mx-search-e2e-v1-1-1/cells/MX-retail/gemini-native.json",
+  "artifacts/runs/2026-09-05-uk-mx-search-e2e-v1-1-1/cells/MX-retail/product-e2e.json",
+  "artifacts/runs/2026-09-05-uk-mx-search-e2e-v1-1-1/cost/after-MX-retail.json",
+  "artifacts/runs/2026-09-05-uk-mx-search-e2e-v1-1-1/analysis/invalidation.json",
 ] as const;
 
 function sha256(value: string | Buffer): string {
@@ -285,21 +290,21 @@ async function runPreflight(): Promise<void> {
   missing.push(...discoveryStatus.filter((item) => !item.configured).map((item) => item.apiKeyEnv));
   if (missing.length > 0) throw new Error(`Preflight missing required environment variables: ${[...new Set(missing)].join(", ")}`);
 
-  if (!hasPreflightCheck(state, "prior-before-v1.1.1-adjustment")) {
-    const productAdjustmentBase = preflightEvent({ eventId: "preflight:prior-product-before-v1.1.1", runId: state.runId,
+  if (!hasPreflightCheck(state, "prior-before-v1.1.2-adjustment")) {
+    const productAdjustmentBase = preflightEvent({ eventId: "preflight:prior-product-before-v1.1.2", runId: state.runId,
       ledger: "product-e2e-arm", arm: "product-e2e", stage: "prior-preflight-adjustment",
       provider: "mixed-product-preflight", startedAt: state.createdAt, completedAt: state.createdAt,
-      latencyMs: 0, attempts: 51, retries: 8, fallbackUsed: false, status: "completed", usage: {},
+      latencyMs: 0, attempts: 190, retries: 10, fallbackUsed: false, status: "completed", usage: {},
       accountCashCostUsd: EXPERIMENT_CONFIG.cost.priorProductPreflightAdjustmentUsd,
-      volume: { inputItems: 47, rawOutputItems: 51, validOutputItems: 45, downstreamUsedItems: 21,
+      volume: { inputItems: 347, rawOutputItems: 451, validOutputItems: 423, downstreamUsedItems: 334,
         discardedReasonCounts: { timeout: 1, schemaInvalid: 4, fallback: 1, semanticGateFailure: 6,
-          transportFailure: 2 } },
-      notes: ["Exact product-ledger carry-forward through invalidated v1.1.0, including its MX Retail diagnostic product arm."] });
+          transportFailure: 2, providerHttpFailure: 2, providerTimeout: 2, circuitOpen: 17 } },
+      notes: ["Exact product-ledger carry-forward through invalidated v1.1.0 and v1.1.1, including both MX Retail diagnostic product arms."] });
     const productAdjustment = { ...productAdjustmentBase, accountCashCostUsd: undefined,
       officialListPriceUsd: EXPERIMENT_CONFIG.cost.priorProductPreflightAdjustmentUsd,
       budgetCostUsd: EXPERIMENT_CONFIG.cost.priorProductPreflightAdjustmentUsd,
       cashCostBasis: "official-conservative" as const };
-    const controlAdjustmentBase = preflightEvent({ eventId: "preflight:prior-gemini-control-before-v1.1.1",
+    const controlAdjustmentBase = preflightEvent({ eventId: "preflight:prior-gemini-control-before-v1.1.2",
       runId: state.runId, ledger: "gemini-native-arm", arm: "gemini-native", stage: "prior-preflight-adjustment",
       provider: "gemini-full", requestedModel: "gemini-3.6-flash", actualModel: "gemini-3.6-flash",
       startedAt: state.createdAt, completedAt: state.createdAt, latencyMs: 0, attempts: 3, retries: 0,
@@ -312,7 +317,7 @@ async function runPreflight(): Promise<void> {
       officialListPriceUsd: EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd,
       budgetCostUsd: EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd,
       cashCostBasis: "official-conservative" as const };
-    const evaluationAdjustmentBase = preflightEvent({ eventId: "preflight:prior-evaluation-before-v1.1.1",
+    const evaluationAdjustmentBase = preflightEvent({ eventId: "preflight:prior-evaluation-before-v1.1.2",
       runId: state.runId, ledger: "evaluation-overhead", arm: "shared-evaluation",
       stage: "prior-preflight-adjustment", provider: "openrouter", startedAt: state.createdAt,
       completedAt: state.createdAt, latencyMs: 0, attempts: 2, retries: 0, fallbackUsed: true,
@@ -324,7 +329,7 @@ async function runPreflight(): Promise<void> {
       officialListPriceUsd: EXPERIMENT_CONFIG.cost.priorEvaluationAdjustmentUsd,
       budgetCostUsd: EXPERIMENT_CONFIG.cost.priorEvaluationAdjustmentUsd,
       cashCostBasis: "official-conservative" as const };
-    await checkpointPreflight(state, "prior-before-v1.1.1-adjustment",
+    await checkpointPreflight(state, "prior-before-v1.1.2-adjustment",
       [productAdjustment, controlAdjustment, evaluationAdjustment],
       { productUsd: EXPERIMENT_CONFIG.cost.priorProductPreflightAdjustmentUsd,
         geminiControlUsd: EXPERIMENT_CONFIG.cost.priorGeminiControlAdjustmentUsd,

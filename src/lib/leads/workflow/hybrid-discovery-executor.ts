@@ -280,6 +280,7 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
   const rejected = new Map<string, LeadWorkflowCandidate>();
   const noValueByTrack = new Map<string, number>();
   const failedByTrack = new Set<string>();
+  const invocationProviderCircuits = new Map<string, string>();
   const maximumSequence = Math.max(...route.map((step) => step.sequence), 0);
 
   const qualityCount = () => [...gated.values()].filter((candidate) => candidate.discoveryGate?.status === "pass"
@@ -296,7 +297,8 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
       const fingerprint = callFingerprint(plan, step, searchQuery, requestedResults, excludeDomains);
       const clusterKey = queryClusterKey(plan, step, searchQuery);
       const routeCircuitKey = `${step.provider}/${step.engine}`;
-      const circuitReason = session.providerCircuits.get(step.provider) ?? session.routeCircuits.get(routeCircuitKey);
+      const circuitReason = session.providerCircuits.get(step.provider)
+        ?? invocationProviderCircuits.get(step.provider) ?? session.routeCircuits.get(routeCircuitKey);
       const cached = session.completedCalls.get(fingerprint);
       const failedCache = session.failedCalls.get(fingerprint);
       if (circuitReason || failedCache) {
@@ -327,6 +329,10 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
       try {
         const response = cached ?? await providerFactory(step).search(query, AbortSignal.timeout(150_000));
         if (!cached) session.completedCalls.set(fingerprint, response);
+        if (!cached) {
+          session.providerFailureCounts.set(step.provider, 0);
+          invocationProviderCircuits.delete(step.provider);
+        }
         const discarded: Record<string, number> = {};
         let normalizedCompanies = 0;
         let newUniqueCompanies = 0;
@@ -372,8 +378,11 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
           message: error instanceof Error ? error.message : String(error) });
         const failures = (session.providerFailureCounts.get(step.provider) ?? 0) + 1;
         session.providerFailureCounts.set(step.provider, failures);
-        if (details.circuitScope === "provider" || failures >= 2) {
+        if (details.circuitScope === "provider") {
           session.providerCircuits.set(step.provider, `${details.kind}: ${error instanceof Error ? error.message : String(error)}`);
+        } else if (failures >= 2) {
+          invocationProviderCircuits.set(step.provider,
+            `${details.kind}: ${error instanceof Error ? error.message : String(error)}`);
         } else if (!details.attempts && details.kind === "configuration") {
           session.routeCircuits.set(routeCircuitKey, error instanceof Error ? error.message : String(error));
         }

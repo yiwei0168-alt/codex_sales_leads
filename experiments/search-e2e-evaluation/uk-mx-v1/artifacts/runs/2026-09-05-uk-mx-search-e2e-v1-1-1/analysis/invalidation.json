@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "experimentId": "search-e2e-eval-v1.1.1",
+  "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+  "status": "invalidated-diagnostic",
+  "invalidatedAt": "2026-09-05T06:30:00.000Z",
+  "reason": "MX Retail treatment underfilled because provider-query bounds, transient circuit lifetime and exhaustion semantics did not match the intended resilient search workflow.",
+  "affectedCells": ["MX-retail"],
+  "remainingCellsExecuted": 0,
+  "diagnostic": {
+    "targetCandidates": 30,
+    "finalCandidates": 8,
+    "rawDiscoveryResults": 70,
+    "newUniqueCompanies": 47,
+    "correctedCandidates": 36,
+    "assessedCandidates": 21,
+    "completionReason": "confirmed-exhaustion",
+    "wallClockMs": 510744,
+    "marginalProductCostUsd": 0.9570672632348112,
+    "cumulativeBudgetCostUsd": 4.347216333872235,
+    "routineModelDrift": false
+  },
+  "rootCauses": [
+    "Two Brave requests contained 824 and 834 characters after exclusions, exceeding the provider's 600-character limit.",
+    "Two SearchAPI requests timed out after two attempts and opened a provider circuit that persisted across discovery rounds.",
+    "Rounds with partial provider unavailability were counted toward the two-round confirmed-exhaustion threshold."
+  ],
+  "replacement": {
+    "experimentId": "search-e2e-eval-v1.1.2",
+    "hybridSearchPolicyVersion": "1.2.1",
+    "changes": [
+      "Cap complete Brave/SearchAPI queries at 580 characters.",
+      "Limit transient provider circuits to one discovery invocation and probe recovery in the next round.",
+      "Exclude partially unavailable rounds from confirmed-exhaustion counting."
+    ]
+  },
+  "reusePolicy": {
+    "productCandidates": "forbidden",
+    "geminiControl": "reuse unchanged v1.0.15 frozen arm",
+    "cost": "carry in full"
+  }
+}

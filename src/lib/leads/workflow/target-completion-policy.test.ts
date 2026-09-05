@@ -15,6 +15,15 @@ describe("target completion policy", () => {
       maximumRounds: 5 })).toEqual({ complete: true, reason: "provider-unavailable" });
   });
 
+  it("does not call a partially unavailable round confirmed exhaustion", () => {
+    const count = nextNoFinalRoundCount(1, { finalEligibleAdded: 0, completedFreshCalls: 2,
+      hadProviderFailureOrCircuit: true });
+    expect(count).toBe(1);
+    expect(targetCompletionDecision({ acceptedCount: 8, targetCount: 30, completedFreshCalls: 2,
+      hadProviderFailureOrCircuit: true, consecutiveNoFinalRounds: count, round: 2,
+      maximumRounds: 5 }).complete).toBe(false);
+  });
+
   it("requires two completed zero-value rounds before confirmed exhaustion", () => {
     const first = nextNoFinalRoundCount(0, { finalEligibleAdded: 0, completedFreshCalls: 3 });
     expect(targetCompletionDecision({ acceptedCount: 6, targetCount: 30, completedFreshCalls: 3,

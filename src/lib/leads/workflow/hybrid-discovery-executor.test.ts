@@ -112,6 +112,35 @@ describe("hybrid discovery executor", () => {
     expect(output.calls.some((call) => call.route.provider === "gemini-product")).toBe(false);
   });
 
+  it("reopens a transient provider circuit on the next discovery round", async () => {
+    const session = createHybridDiscoverySession();
+    let firstRoundAttempts = 0;
+    const retailPlan: LeadSearchPlan = { ...plan, countryCode: "MX", countryName: "Mexico", queryLanguage: "es",
+      roles: ["Retailer", "E-tailer"], targetCount: 30 };
+    const failingFactory = (step: HybridSearchRouteStep) => ({ id: step.provider, search: async (query: DiscoveryQuery) => {
+      if (step.provider === "searchapi") {
+        firstRoundAttempts += 1;
+        throw new DiscoveryProviderError("temporary timeout", { provider: "searchapi", kind: "timeout",
+          attempts: 2, latencyMs: 25, retryable: true, circuitScope: "route" });
+      }
+      return new FakeProvider(step.provider, null).search(query);
+    } });
+    const first = await executeHybridDiscovery("transient-1", retailPlan, playbook,
+      { gate: passGate, providerFactory: failingFactory, session, queryRound: 0 });
+    expect(firstRoundAttempts).toBe(2);
+    expect(first.calls.some((call) => call.route.provider === "searchapi"
+      && call.discardedReasonCounts["circuit-open"] === 1)).toBe(true);
+
+    let recoveryAttempts = 0;
+    const second = await executeHybridDiscovery("transient-2", retailPlan, playbook, { gate: passGate, session,
+      queryRound: 1, providerFactory: (step) => ({ id: step.provider, search: async (query) => {
+        if (step.provider === "searchapi") recoveryAttempts += 1;
+        return new FakeProvider(step.provider, null).search(query);
+      } }) });
+    expect(recoveryAttempts).toBeGreaterThan(0);
+    expect(second.calls.some((call) => call.route.provider === "searchapi" && call.status === "completed")).toBe(true);
+  });
+
   it("reuses an identical current-task search call without charging tokens or search credits twice", async () => {
     const session = createHybridDiscoverySession();
     let providerCalls = 0;

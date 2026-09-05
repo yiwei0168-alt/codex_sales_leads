@@ -62,7 +62,20 @@ describe("production discovery providers", () => {
     expect(query).toContain("-site:seen.example");
     expect(query).not.toContain("bad domain");
     expect((query.match(/-site:/g) ?? [])).toHaveLength(20);
+    expect(query.length).toBeLessThanOrEqual(580);
     expect(url.searchParams.has("subscription_token")).toBe(false);
+  });
+
+  it("keeps verbose Brave queries below the provider's 600-character limit", async () => {
+    configured("brave");
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({ web: { results: [] } }), { status: 200 }));
+    await createDiscoveryProvider("brave", { fetchImplementation: fetchMock, maxAttempts: 1 }).search({
+      ...baseQuery, engine: "brave", query: "networking retailer ".repeat(50),
+      excludeDomains: Array.from({ length: 30 }, (_, index) => `company-${index}.example`),
+    });
+    const query = new URL(fetchMock.mock.calls[0][0] as string).searchParams.get("q") ?? "";
+    expect(query.length).toBeLessThanOrEqual(580);
+    expect(query).toContain("networking retailer");
   });
 
   it("returns Place ID and website while keeping map-only candidates resolvable", async () => {

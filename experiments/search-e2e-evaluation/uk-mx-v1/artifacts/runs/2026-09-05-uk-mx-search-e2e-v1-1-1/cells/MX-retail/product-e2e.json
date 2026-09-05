@@ -1,0 +1,3792 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+  "cellId": "MX-retail",
+  "arm": "product-e2e",
+  "startedAt": "2026-09-05T06:14:46.899Z",
+  "completedAt": "2026-09-05T06:23:17.643Z",
+  "wallClockMs": 510744,
+  "plan": {
+    "countryCode": "MX",
+    "countryName": "Mexico",
+    "objective": "new-market",
+    "roles": [
+      "Retailer",
+      "E-tailer"
+    ],
+    "targetCount": 30,
+    "queryLanguage": "es",
+    "userRequest": "Busca y evalúa 30 empresas en Mexico cuya función principal sea Retailer/E-tailer. Limita la tarea a este mercado y esta categoría. Usa español y, cuando sea útil, inglés.",
+    "opportunityTargets": [],
+    "coverageMode": "auto",
+    "verifiedOnly": false
+  },
+  "intent": {
+    "plannerModel": "kimi-k2.6",
+    "plannerSource": "kimi-light",
+    "confidence": 0.95,
+    "warnings": []
+  },
+  "playbook": {
+    "marketHypothesis": "Mexico should be developed through a market-specific mix of supply, resale, retail, service and operator nodes. Candidate quality and public evidence determine the final mix; no role receives a fixed quota.",
+    "productAngles": [
+      "M11000(1-Pack): BE11000 2.5G Tri-Band Wi-Fi 7 Mesh Solution / Mesh Solution",
+      "M11000(2-Pack): BE11000 2.5G Tri-Band Wi-Fi 7 Mesh Solution / Mesh Solution",
+      "M1200(1-Pack): AC1200 Wi-Fi Mesh Solution / Mesh Solution",
+      "M1200(2-Pack): AC1200 Wi-Fi Mesh Solution / Mesh Solution",
+      "M1200(3-Pack): AC1200 Wi-Fi Mesh Solution / Mesh Solution",
+      "M1300(1-Pack): AC1200 Wi-Fi Gigabit Mesh Solution / Mesh Solution",
+      "M1300(2-Pack): AC1200 Wi-Fi Gigabit Mesh Solution / Mesh Solution",
+      "M1300(3-Pack): AC1200 Wi-Fi Gigabit Mesh Solution / Mesh Solution"
+    ],
+    "preferredCompanyTraits": [
+      "active target-market presence",
+      "networking-adjacent customer access",
+      "credible purchasing or project influence",
+      "observable execution capability"
+    ],
+    "exclusions": [
+      "directories and list pages",
+      "inactive or unverifiable entities",
+      "companies without target-market presence",
+      "unrelated consumer-only businesses"
+    ],
+    "rolePriorities": [
+      {
+        "family": "retail",
+        "roles": [
+          "Retailer",
+          "E-tailer"
+        ],
+        "weight": 1,
+        "reason": "Build or validate a reliable supply path while developing demand nodes in parallel."
+      }
+    ],
+    "searchQueries": [
+      {
+        "family": "retail",
+        "roles": [
+          "Retailer",
+          "E-tailer"
+        ],
+        "query": "network router switch retailer e-tailer Mexico official company networking",
+        "priority": 1
+      },
+      {
+        "family": "retail",
+        "roles": [
+          "Retailer",
+          "E-tailer"
+        ],
+        "query": "consumer SMB networking electronics shop Mexico official company networking",
+        "priority": 2
+      }
+    ],
+    "ragCitationIds": [
+      "095d68ef-a477-45e0-91f6-4afda8ffae83",
+      "27212d5e-7fa5-4f96-bbfd-6d033fb84d27",
+      "04c626c9-bed9-4059-ad3b-612077ce929b",
+      "6fc79b4f-9b1a-49c7-bcff-13cbfa064e6b",
+      "ce825250-5623-460b-98da-a7e8a8cb8b86",
+      "efd439fc-6cf4-48e7-87d1-2841d5a5f271",
+      "1a7c3634-d4f6-49b7-8d88-21a3aa2f9982",
+      "0e4ecf1b-f217-459d-b42f-a3a6bb639582",
+      "20277588-3c73-4f88-bb70-5b155a2016d0",
+      "38a043ac-b57b-47c3-b5b4-3378c1ee1a5b",
+      "0f7d9099-b2b5-46f8-8372-87e961de6ab5",
+      "6531a2ec-6d68-4efa-ac4b-a5fdc0cc9ba5",
+      "5c87c35a-15cb-4f1e-9122-a162b5f28103",
+      "d735875d-932e-4628-8d92-18838955af38",
+      "37fced1a-4611-4b69-b6e0-daaef81a0616",
+      "ac9b125c-cee7-4b85-a51e-b89f02f7abc8"
+    ],
+    "generatedBy": "deterministic-fallback",
+    "warnings": []
+  },
+  "treatmentModels": {
+    "discoveryGateRoutine": "deepseek-v4-flash",
+    "roleCorrectionRoutine": "deepseek-v4-flash",
+    "qualificationRoutine": "deepseek-v4-flash",
+    "materialEscalation": "deepseek-v4-pro"
+  },
+  "rawDiscoveryCount": 70,
+  "discoveredCandidateCount": 47,
+  "correctedCandidateCount": 36,
+  "completedAssessmentCount": 21,
+  "finalCandidates": [
+    {
+      "rank": 1,
+      "candidateId": "lead-8e666b0873d3fe2b",
+      "companyName": "Office Depot de México, S.A. de C.V.",
+      "domain": "officedepot.com.mx",
+      "officialWebsiteUrl": "https://www.officedepot.com.mx",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 84,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-ec1817526dde2c32",
+        "evidence-418108b5f379247f",
+        "evidence-0db9dd8ab3681d5e"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-ec1817526dde2c32",
+          "url": "https://www.officedepot.com.mx/officedepot/en/tops-products",
+          "title": "Productos TOPs: archiveros, folders y carpetas | Office Depot Mexico",
+          "excerpt": "En esta categoría de productos TOPs de Office Depot México se agrupan soluciones pensadas para el orden, archivo y gestión de documentos en distintos formatos.",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T06:19:25.106Z",
+          "contentHash": "ae3942b010f5a517d7ada7a5c8394c3262e9ece8aa7a782decba3264776f526e",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-05-uk-mx-search-e2e-v1-1-1-MX-retail-product-r1"
+        },
+        {
+          "id": "evidence-0db9dd8ab3681d5e",
+          "url": "https://www.officedepot.com.mx/officedepot/en/arranca-con-office-depot",
+          "title": "arranca-con-office-depot",
+          "excerpt": "Office Depot de México, Office Depot Miyana ubicada en Av. Ejército Nacional No. Hidalgo, Ciudad México, C.P. 11520.",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T06:19:25.106Z",
+          "contentHash": "3c1ce1ce9e1c20bed41a9c35358a0a9965bc2d55790ca213200824467702c2c7",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-05-uk-mx-search-e2e-v1-1-1-MX-retail-product-r1"
+        },
+        {
+          "id": "evidence-418108b5f379247f",
+          "url": "https://www.capirari.com?m=27285024031740",
+          "title": "Wifi Extender Repetidor Wifi Office Depot ...",
+          "excerpt": "Wifi Extender Repetidor Wifi Office Depot Office Depot Repetidor Wifi Home Depot Repetidores Office Depot Mexico. Item no : NFG91182374. sold recently",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-05T06:19:47.651Z",
+          "contentHash": "8fd2122040c2590c66c57cb0c3730ebd4272af8988a458b8284b58765d9f9374",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-05-uk-mx-search-e2e-v1-1-1-MX-retail-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 2,
+      "candidateId": "lead-fcfb1b8f56f14bfd",
+      "companyName": "RadioShack México",
+      "domain": "radioshack.com.mx",
+      "officialWebsiteUrl": "https://www.radioshack.com.mx/",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 82,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-d3e82c6c7a52bac4",
+        "evidence-e0e6490cb7a2d784",
+        "evidence-bb038fba147b5cce"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-d3e82c6c7a52bac4",
+          "url": "https://www.radioshack.com.mx/store/radioshack/en/blog-rs/que-necesito-para-mejorar-internet-en-mi-negocio",
+          "title": "Cómo Mejorar la Conexión a Internet en tu Negocio - RadioShack",
+          "excerpt": "Qué necesitas para mejorar el internet en tu negocio?: routers, soluciones satelitales, sistemas de malla y más. Mejora tu red y mantente",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T06:19:27.208Z",
+          "contentHash": "a0fd4b804285b4e657e17f35c7af6fe138380064033b665c3e73c35dfe0caeb6",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-05-uk-mx-search-e2e-v1-1-1-MX-retail-product-r1"
+        },
+        {
+          "id": "evidence-e0e6490cb7a2d784",
+          "url": "https://www.radioshack.com.mx/store/radioshack/en/faq",
+          "title": "Preguntas Frecuentes | RadioShack México",
+          "excerpt": "Frequently asked questions · Returns and refunds · Delivery information · Registration · Your online account · Orders · Promotions and discounts · Product and general",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T06:19:27.208Z",
+          "contentHash": "ff1433d64e9148f82fa4e20f03893a43e18258f62dfb9be53c96de02c18b8bd6",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-05-uk-mx-search-e2e-v1-1-1-MX-retail-product-r1"
+        },
+        {
+          "id": "evidence-bb038fba147b5cce",
+          "url": "https://www.radioshack.com.mx/store/radioshack/en/Directorio-WhatsApp",
+          "title": "[PDF] Contáctanos TAMBIÉN por DIRECTORIO WHATSAPP",
+          "excerpt": "SERVIPLAZA ECHEGARAY. 55 5373 2594. GALERÍAS PERINORTE. 55 5893 9620. PLAZA SATÉLITE. 55 5572 5980. MULTIPLAZA VALLE DORADO.",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T06:19:27.208Z",
+          "contentHash": "d5d8ac84a7d08a646690b722827f02e1e757c33a31acf4b8dfa16bf6808c55c3",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-05-uk-mx-search-e2e-v1-1-1-MX-retail-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 3,
+      "candidateId": "lead-ac54a316756ac5f7",
+      "companyName": "MiPC.com.mx",
+      "domain": "mipc.com.mx",
+      "officialWebsiteUrl": "https://mipc.com.mx",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 78,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-ac54a316756ac5f7",
+        "evidence-1103ce5daea0e7a5"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-ac54a316756ac5f7",
+          "url": "https://mipc.com.mx/",
+          "title": "mipc.com.mx Computadoras, Gaming, Hardware, Laptops, Impresoras y más.",
+          "excerpt": "mipc.com.mx Computadoras, Gaming, Hardware, Laptops, Impresoras y más. *,:before,:after{box-sizing:border-box}html{-webkit-text-size-adjust:100%;scrollbar-gutter:stable}body{margin:0;min-height:100vh;direction:ltr}hr{height:0;color:inherit;border-top-width:1px}abbr[title]{text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:500}:where(.font-semibold,.font-bold,.font-extrabold,.font-black) strong{font-weight:inherit}code,kbd,samp,pre{font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,:where(input:not([type=range])),optgroup,select,t",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T06:15:36.745Z",
+          "contentHash": "45140a2b187522981f29e761da015af22f3104d61928ecc0aa56943cfc4c8f5c",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-05-uk-mx-search-e2e-v1-1-1-MX-retail-product-r1"
+        },
+        {
+          "id": "evidence-1103ce5daea0e7a5",
+          "url": "https://mipc.com.mx/switch-aruba-cx-6200f-48g-class4-poe-l3-gigabit-ethernet-10-100-1000mpbs-4x-sfp-gestionado-jl727b.html",
+          "title": "Switch Aruba Cx 6200F 48G Class4 Poe L3 Gigabit Ethernet 10/100/1000Mpbs 4X Sfp Gestionado Jl727B",
+          "excerpt": "Su navegador parece tener JavaScript deshabilitado. Para la mejor experiencia en nuestro sitio, asegúrese de habilitar JavaScript en su navegador. 75583331 75583331 75583293 75583331 75583293 Switch Aruba Cx 6200F 48G Class4 Poe L3 Gigabit Ethernet 10/100/1000Mpbs 4X Sfp Gestionado Jl727B Más Información | | | --- | | SKU | ARU-JL727B | | Marca | ARUBA | | mpn | JL727B | | gtin | 190017634166 | MiPC.com.mx Compra segura en tecnología. Pagos protegidos · Envíos a México · Más de 30 años Ayuda Principales Categorías Información Atención Lun-Vie 9:00 am - 6:00 pm contacto@mipc.com.mx Facebook Instagram YouTube TikTok Envíos rápidos y seguros Envíos por Estafeta Envíos por Fedex Envíos por Paquetexpress Métodos de pago VISA Master Card American Express PayPal PayPal PayPal Depósitos y transfer",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T06:19:25.032Z",
+          "contentHash": "cbcad2ddfa3043610b271bc041ae2b93603f746d42b82cc8e94151455360d845",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-05-uk-mx-search-e2e-v1-1-1-MX-retail-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 4,
+      "candidateId": "lead-ba5467843a872e5b",
+      "companyName": "City Club",
+      "domain": "cityclub.com.mx",
+      "officialWebsiteUrl": "https://www.cityclub.com.mx",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 74,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-452bdec8dc94d402",
+        "evidence-05aab42403acc697"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-452bdec8dc94d402",
+          "url": "https://www.cityclub.com.mx",
+          "title": "City Club: ¡Compra todo para tu Hogar y Negocio!",
+          "excerpt": "Aceptando la recopilación de tus datos a través de nuestras cookies, mejoras la experiencia, personalización, recomendaciones y toda la funcionalidad de nuestro sitio. Política de tratamiento de la información Uso de Cookies Necesarias Nuestro sitio web utiliza cookies necesarias para garantizar su correcto funcionamiento y para proporcionarle una experiencia de navegación óptima. Estas cookies son esenciales para permitirle navegar por el sitio y utilizar sus funciones, como acceder a áreas seguras y realizar transacciones en línea. Las cookies necesarias incluyen, entre otras, las siguientes: Cookies de sesión: Estas cookies son temporales y se eliminan automáticamente al cerrar su navegador. Permiten mantener su sesión activa mientras navega por nuestro sitio web, facilitando el acceso ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T06:19:24.337Z",
+          "contentHash": "3ce6611df5033608498471ffbd73cdcb4751440d1a2f56c093c0f18bed5ccc12",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-05-uk-mx-search-e2e-v1-1-1-MX-retail-product-r1"
+        },
+        {
+          "id": "evidence-05aab42403acc697",
+          "url": "https://www.cityclub.com.mx/membresia-city-club.html",
+          "title": "Membresías City Club",
+          "excerpt": "Aceptando la recopilación de tus datos a través de nuestras cookies, mejoras la experiencia, personalización, recomendaciones y toda la funcionalidad de nuestro sitio. Uso de Cookies Necesarias Nuestro sitio web utiliza cookies necesarias para garantizar su correcto funcionamiento y para proporcionarle una experiencia de navegación óptima. Estas cookies son esenciales para permitirle navegar por el sitio y utilizar sus funciones, como acceder a áreas seguras y realizar transacciones en línea. Las cookies necesarias incluyen, entre otras, las siguientes: Estas cookies son necesarias para el funcionamiento técnico de nuestro sitio web y no requieren su consentimiento explícito de acuerdo con las leyes de privacidad aplicables. Al utilizar nuestro sitio web, usted acepta el uso de estas cooki",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T06:19:24.338Z",
+          "contentHash": "ada65b8aae79eceff352dd298aba93a9a187a65cec9020bac6e68a7ce17971e2",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-05-uk-mx-search-e2e-v1-1-1-MX-retail-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 5,
+      "candidateId": "lead-1bf5fa9f3c70dbf2",
+      "companyName": "Walmart de México y Centroamérica",
+      "domain": "walmart.com.mx",
+      "officialWebsiteUrl": "https://www.walmart.com.mx",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 73,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-1bf5fa9f3c70dbf2",
+        "evidence-ae6ab65bba968117",
+        "evidence-9063a2f0d7ff4cf8",
+        "evidence-8ee87d851a79d820"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-1bf5fa9f3c70dbf2",
+          "url": "https://www.walmart.com.mx/",
+          "title": "Haz tus compras por internet | Walmart tienda en línea",
+          "excerpt": "Haz tus compras por internet | Walmart tienda en línea Ir a contenido principal ¿Cómo quieres tus artículos? Cancelar Vuelve a pedirlos Tus productos Vuelve a pedirlos Listas Iniciar sesión Cuenta Inicia sesión o crea una cuenta Pedidos Walmart Pass Ayuda $0.00 Departamentos Beneficios | ¿Cómo quieres tus artículos? Haz tus compras por internet | Walmart tienda en línea Compra ahora Compra ahora Compra ahora Compra ahora Compra ahora Compra ahora . Compra ahora Compra ahora Compra ahora Precios que no se tocan ¡Ahorra más y recíbelo en horas! Ver más Atún Dolores aleta amarilla en agua 140 g MSI Agregar $25.00 precio actual $25.00 Hasta 12 meses sin intereses Dolores Atún Dolores aleta amarilla en agua 140 g 69 4.8 de 5 estrellas. 69 reseñas Envío sin costo con Pickup sin costo mañana Enví",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T06:15:38.868Z",
+          "contentHash": "8b6a8ea46e59fb81178ca34fade4bcdbaba9680861e1f49b988966a452ae3615",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-05-uk-mx-search-e2e-v1-1-1-MX-retail-product-r1"
+        },
+        {
+          "id": "evidence-9063a2f0d7ff4cf8",
+          "url": "https://tech.walmart.com/content/walmart-global-tech/en_us/blog/post/inside-the-network-powering-walmart.html",
+          "title": "Inside the network powering Walmart",
+          "excerpt": "Our scale is immense, comprising more than 100,000 routers and switches and 450,000 wireless access points. These systems manage interactions between the more than five million associate devices and countless enterprise devices that connect to our network at any given moment. [...] In today's dynamic retail landscape, our network is mission critical to provide a seamless shopping experience for our customers and members. To achieve this, we rely on a sophisticated infrastructure that supports every aspect of the business for our more than 10,000 stores, 1,000 supply chain locations, and e-commerce sites in 19 countries. [...] Skip to main Skip to footer Powered by generative AI. Results may not fully be accurate. Use is governed by the Generative AI Guidelines and other applicable Walmart ",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-05T06:19:46.257Z",
+          "contentHash": "dafc320e36bdb14a623fec9864a880309bc4cfbff779dd32dff012b86fbc678f",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-05-uk-mx-search-e2e-v1-1-1-MX-retail-product-r1"
+        },
+        {
+          "id": "evidence-ae6ab65bba968117",
+          "url": "https://mexicobusiness.news/trade-and-investment/news/walmart-expands-ai-powered-connected-stores-mexico",
+          "title": "Walmart Expands AI-Powered Connected Stores in Mexico",
+          "excerpt": "With the rollout, Walmart becomes the first retailer in Latin America to implement EdgeSense at scale. The initiative aligns with the company’s broader investment strategy. Walmart has indicated plans to invest approximately MX$43 billion in 2026, with a high portion directed toward technology, automation and store modernization. Ai Adoption Addresses Retail Friction [...] At the center of the transformation is EdgeSense, Vusion’s next-generation platform designed to convert stores into intelligent operating environments. The system combines electronic shelf labels, sensors, data analytics and AI-driven insights to automate operational tasks and generate real-time information from the sales floor. According to the companies, all Walmart Express stores in Mexico will be fully equipped with ",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-05T06:19:46.257Z",
+          "contentHash": "fa1feaf64b4eaa3582f06871b7a10cc2b8cd8d0655bea2d97baae574ed8f39a2",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-05-uk-mx-search-e2e-v1-1-1-MX-retail-product-r1"
+        },
+        {
+          "id": "evidence-8ee87d851a79d820",
+          "url": "https://www.vusion.com/newsroom/walmart-mexico-expands-strategic-partnership-with-vusion-to-deploy-connected-store-platform-across-express-stores-and-supercenters",
+          "title": "Walmart Mexico Expands Strategic Partnership with Vusion | Vusion",
+          "excerpt": "Under this agreement,Walmart Express stores will be fully deployed with EdgeSense technology by the end of 2026, marking the first large-scale rollout of the platform in Latin America. Following this phase, Walmart Mexico also plans to expand the deployment to Walmart Supercenters, significantly accelerating the company’s digital store modernization strategy. [...] Walmart Express Walmart Mexico selects EdgeSense by Vusion to power connected store transformation All Walmart Express stores fully deployed by the end of 2026 Expansion planned to all Walmart Supercenters [...] Walmart in Mexico About Vusion Vusion (formerly VusionGroup) is the global leader in AI-powered digitalization solutions for physical commerce, serving over 350 major retail groups in the world.",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-05T06:19:46.257Z",
+          "contentHash": "ac555c9e457281b7bd0cf963b4c10626a13d89dd4a865f39b33101633d81adbe",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-05-uk-mx-search-e2e-v1-1-1-MX-retail-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 6,
+      "candidateId": "lead-89668a26d76c0ce0",
+      "companyName": "Cyberpuerta",
+      "domain": "cyberpuerta.mx",
+      "officialWebsiteUrl": "https://www.cyberpuerta.mx",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 71,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-8f15ec7787341fe1",
+        "evidence-1e62d3a70d910d74"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-8f15ec7787341fe1",
+          "url": "https://cdn.cyberpuerta.mx/storage/articles/multimedia/Guia-IFP5550-E2.pdf",
+          "title": "[PDF] Serie IFP50-2 - Cyberpuerta",
+          "excerpt": "Global Product Services. Mar Caribe # 1987, Esquina con Golfo Pérsico. Fracc. Bernardo Reyes, CP 64280. Monterrey N.L. México. Tel: 8129-5103. E-Mail: aydeem",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T06:19:28.397Z",
+          "contentHash": "ce08482cbe4f8a83bea6de68c6bac0becbc02671341da3e5a47ad9b79985177a",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-05-uk-mx-search-e2e-v1-1-1-MX-retail-product-r1"
+        },
+        {
+          "id": "evidence-1e62d3a70d910d74",
+          "url": "https://cdn.cyberpuerta.mx/storage/articles/multimedia/561/465/ce9/59d032ed57fb0_561465ce94feb.pdf",
+          "title": "[PDF] Owner's Manual SmartOnline™ - Cyberpuerta",
+          "excerpt": "SmartOnline tower UPS Systems … suitable for all advanced networking applications. other network management products. Customer Support at 773.",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T06:19:28.397Z",
+          "contentHash": "3839481a470125095ac20b6ae8e36c0484473dbc6af40d7eba81dfc29eabe9a2",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-05-uk-mx-search-e2e-v1-1-1-MX-retail-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 7,
+      "candidateId": "lead-b7d742772b82d69c",
+      "companyName": "SIO Computación",
+      "domain": "siocomputacion.com.mx",
+      "officialWebsiteUrl": "https://www.siocomputacion.com.mx",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 63,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-b7d742772b82d69c",
+        "evidence-76be322269a501e4",
+        "evidence-7326f4287e0637de"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-b7d742772b82d69c",
+          "url": "https://www.siocomputacion.com.mx/",
+          "title": "Inicio",
+          "excerpt": "Inicio Search Search Inicio Tienda Soluciones Sobre nosotros Contáctanos Aviso legal Política de privacidad Tienda SSD Memorias RAM Punto de venta Teclados y Mouses Sillas Gamer Gabinetes Fuentes de Poder Audio Tarjetas Madre Tarjetas de video Procesadores Enfriamiento y Ventilación Redes <a data-page-id=\"04e07ea3-41fe-4890-b7cd-55c5ae25f4f7\" data-shop-page=\"true\" data-sh",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T06:15:36.814Z",
+          "contentHash": "ac96aa63be83dbe2cd0ff0232d0010d5450892c9b6e74bc29a31a8177a307303",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-05-uk-mx-search-e2e-v1-1-1-MX-retail-product-r1"
+        },
+        {
+          "id": "evidence-76be322269a501e4",
+          "url": "https://www.siocomputacion.com.mx/politica-de-privacidad",
+          "title": "Política de privacidad",
+          "excerpt": "Aviso de privacidad Ultima fecha de modificación: 15 de Enero del 2023 En cumplimiento con lo establecido por la Ley Federal de Protección de Datos Personales en Posesión de Particulares, Jose Guadalupe Frias Ramos, en lo sucesivo señalado como \"SIO Computación\", ubicado en Av Pacheco #1402, Colonia Obrera, CP 31350, Chihuahua, Chihuahua, Mexico, como Responsable de sus Datos Personales hacen de su conocimiento la política de privacidad y manejo de datos personales, en la que en todo momento buscarán que el tratamiento de los mismos sea legítimo, controlado e informado, a efecto de asegurar la privacidad, confidencialidad, integridad y el derecho a la autodeterminación informativa de sus datos. Este Aviso de Privacidad contempla en todo momento los principios de licitud, consentimiento, in",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T06:19:28.009Z",
+          "contentHash": "903b579b38cc70d8e1277c7cadb8688be10ca3533062a5891ac03bb663e4c709",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-05-uk-mx-search-e2e-v1-1-1-MX-retail-product-r1"
+        },
+        {
+          "id": "evidence-7326f4287e0637de",
+          "url": "https://www.siocomputacion.com.mx/aviso-legal",
+          "title": "Aviso legal",
+          "excerpt": "Aviso legal Encargado: Nombre de la empresa: SIO Computación Contacto: Teléfono: +52 614 412 03 90 E-mail: ventas@siocomputacion.com.mx Registro: Razon Social: Jose Guadalupe Frias Ramos RFC: FIRG680406RS1 Dirección Av Pacheco #1402, Colonia Obrera, CP 31350, Chihuahua, Chihuahua, Mexico © 2025 SIO Computación. Todos los derechos reservados. Necesitamos su consentimiento para cargar las traducciones Utilizamos un servicio de terceros para traducir el contenido del sitio web que puede recopilar datos sobre su actividad. Por favor revise los detalles en la política de privacidad y acepte el servicio para ver las traducciones. Este sitio web utiliza tecnologías de seguimiento de terceros para proporcionar y mejorar continuamente nuestros servicios, y mostrarte anuncios de acuerdo a tus intere",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T06:19:28.010Z",
+          "contentHash": "a75602625aeb5da025eba168bb702f9e8583218300e2d7cec23061e160b038c2",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-05-uk-mx-search-e2e-v1-1-1-MX-retail-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 8,
+      "candidateId": "lead-12a5abff2c622348",
+      "companyName": "CIMSystem",
+      "domain": "cimsystem.mx",
+      "officialWebsiteUrl": "https://www.cimsystem.mx/",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 61,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-12a5abff2c622348"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-12a5abff2c622348",
+          "url": "https://www.cimsystem.mx/",
+          "title": "EcommerceMex - Tu Tienda de Tecnología | Los Mejores Precios",
+          "excerpt": "EcommerceMex - Tu Tienda de Tecnología | Los Mejores Precios Rastrear Pedido Blog Ayuda +52 55 1234 5678 🇲🇽 ES 🇺🇸 EN Categorías Cargando categorías... Buscar Buscando productos... Ver todos los resultados Iniciar Sesión 0 Favoritos 0 Carrito Envío Gratis | En compras mayores a $999 Retiro en Tienda Pago Seguro Atención al Cliente &times; Iniciar Sesión Registrarse Rastrear Pedido Ayuda 🔥 ¡OFERTA ESPECIAL! Usa el cupón BIENVENIDO10 y obtén 10% descuento extra 🚚 Envío Gratis en compras +$999 💳 6 y 12 MESES SIN INTERESES 🔥 ¡OFERTA ESPECIAL! Usa el cupón BIENVENIDO10 Laptops Tabletas Servidores Celulares Monitores Ver Todo ¿Cómo te ayudamos? ¿Tienes dudas? Te respondemos Contáctanos Rastrea tu Pedido Consulta el estado de tu compra Rastrear Garantía Todos nuestros productos tienen gara",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-05T06:15:35.423Z",
+          "contentHash": "05de030d08dacc6761e48d2f0d23c204e2c6f04c3948949fb96ce871571a088e",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-05-uk-mx-search-e2e-v1-1-1-MX-retail-product-r1"
+        }
+      ]
+    }
+  ],
+  "missingSlots": 22,
+  "completionReason": "confirmed-exhaustion",
+  "discoveryRounds": [
+    {
+      "round": 1,
+      "plannedCandidatePool": 45,
+      "newUniqueCandidates": 42,
+      "lightGateCandidates": 32,
+      "correctedCandidates": 32,
+      "inRoleCandidates": 18,
+      "finalEligibleAdded": 8,
+      "cumulativeFinalEligible": 8,
+      "stopReason": "route-exhausted"
+    },
+    {
+      "round": 2,
+      "plannedCandidatePool": 88,
+      "newUniqueCandidates": 5,
+      "lightGateCandidates": 4,
+      "correctedCandidates": 4,
+      "inRoleCandidates": 3,
+      "finalEligibleAdded": 0,
+      "cumulativeFinalEligible": 8,
+      "stopReason": "route-exhausted"
+    },
+    {
+      "round": 3,
+      "plannedCandidatePool": 88,
+      "newUniqueCandidates": 0,
+      "lightGateCandidates": 0,
+      "correctedCandidates": 0,
+      "inRoleCandidates": 0,
+      "finalEligibleAdded": 0,
+      "cumulativeFinalEligible": 8,
+      "stopReason": "route-exhausted"
+    }
+  ],
+  "warnings": [
+    "Hybrid discovery failed (retail/etail/brave): brave HTTP 422: {\"type\":\"ErrorResponse\",\"error\":{\"id\":\"64df77d3-1c7f-4586-89f7-c255a6591508\",\"status\":422,\"detail\":\"Unable to validate request parameter(s)\",\"meta\":{\"errors\":[{\"type\":\"too_long\",\"loc\":[\"query\",\"q\"],\"msg\":\"Search query must be at most 600 characters (you entered 824).\",\"input\":\"consumer SMB networking electronics shop Mexico official company networking tienda de computación electrónica routers Wi-Fi mesh switches precio carrito compra en línea etail Ciudad de México Mexico venta minorista real co",
+    "Hybrid discovery failed (retail/retail-national/brave): brave HTTP 422: {\"type\":\"ErrorResponse\",\"error\":{\"id\":\"1017f7ab-0b90-4a7d-abef-b0f4a7f59c12\",\"status\":422,\"detail\":\"Unable to validate request parameter(s)\",\"meta\":{\"errors\":[{\"type\":\"too_long\",\"loc\":[\"query\",\"q\"],\"msg\":\"Search query must be at most 600 characters (you entered 834).\",\"input\":\"consumer SMB networking electronics shop Mexico official company networking tienda de computación electrónica routers Wi-Fi mesh switches precio carrito compra en línea retail national Ciudad de México Mexico venta minoris",
+    "Hybrid discovery failed (retail/etail/searchapi): searchapi timed out: The operation was aborted due to timeout",
+    "Hybrid discovery failed (retail/retail-national/searchapi): searchapi timed out: The operation was aborted due to timeout",
+    "Discovery gate batch held after routine model failure: [\n  {\n    \"code\": \"invalid_value\",\n    \"values\": [\n      \"Distributor\",\n      \"VAD\",\n      \"VAR\",\n      \"Dealer\",\n      \"Reseller\",\n      \"Retailer\",\n      \"E-tailer\",\n      \"SI\",\n      \"Installer\",\n      \"MSP\",\n      \"ISP\",\n      \"Agent\",\n      \"Brand Owner\"\n    ],\n    \"path\": [\n      \"candidates\",\n      5,\n      \"roleHints\",\n      1\n    ],\n    \"message\": \"Invalid option: expected one of \\\"Distributor\\\"|\\\"VAD\\\"|\\\"VAR\\\"|\\\"Dealer\\\"|\\\"Reseller\\\"|\\\"Retailer\\\"|\\\"E-tailer\\\"|\\\"SI\\\"|\\\"Installer\\\"|\\\"MSP\\\"|\\\"ISP\\\"|\\\"Agent\\\"|\\\"Brand Owner\\\"\"\n  },\n  {\n    \"code\": \"invalid_value\",\n    \"values\": [\n      \"Distributor\",\n      \"VAD\",\n      \"VAR\",\n      \"Dealer\",\n      \"Reseller\",\n      \"Retailer\",\n      \"E-tailer\",\n      \"SI\",\n      \"Installer\",\n      \"MSP\",\n      \"ISP\",\n      \"Agent\",\n      \"Brand Owner\"\n    ],\n    \"path\": [\n      \"candidates\",\n      9,\n      \"roleHints\",\n      1\n    ],\n    \"message\": \"Invalid option: expected one of \\\"Distributor\\\"|\\\"VAD\\\"|\\\"VAR\\\"|\\\"Dealer\\\"|\\\"Reseller\\\"|\\\"Retailer\\\"|\\\"E-tailer\\\"|\\\"SI\\\"|\\\"Installer\\\"|\\\"MSP\\\"|\\\"ISP\\\"|\\\"Agent\\\"|\\\"Brand Owner\\\"\"\n  }\n]",
+    "No official-domain evidence was extracted for cimsystem.mx.",
+    "No official-domain evidence was extracted for wirelessshop.mx.",
+    "No official-domain evidence was extracted for walmart.com.mx.",
+    "No official-domain evidence was extracted for tony.com.mx.",
+    "No official-domain evidence was extracted for steren.com.mx.",
+    "No official-domain evidence was extracted for pchconnect.com.",
+    "No official-domain evidence was extracted for tecnosmart.com.",
+    "No official-domain evidence was extracted for intelihogar.com.",
+    "No official-domain evidence was extracted for jmdistribuidores.com.",
+    "radioshack.com.mx: Deterministic role hints were not auto-added: Distributor, Reseller, VAR, ISP.",
+    "wirelessshop.mx: Deterministic role hints were not auto-added: ISP.",
+    "cityclub.com.mx: Deterministic role hints were not auto-added: Distributor.",
+    "tiendasch.com.mx: Deterministic role hints were not auto-added: ISP.",
+    "cimsystem.mx: Deterministic role hints were not auto-added: Distributor, Reseller.",
+    "expertosenoficina.com: Deterministic role hints were not auto-added: Reseller.",
+    "odemas.com: Deterministic role hints were not auto-added: Reseller, VAR, SI, ISP.",
+    "shop.pchconnect.com: Deterministic role hints were not auto-added: ISP.",
+    "tecnosmart.com: Submitted roles Retailer and E-tailer are not supported by the supplied evidence.",
+    "tecnosmart.com: Independent public evidence contains similarly named entities that may not be the same company.",
+    "tecnosmart.com: The TECNO Mobile and APTEC evidence do not establish relationships with TecnoSmart Solutions.",
+    "rimeit.mx: Deterministic role hints were not auto-added: VAR, Reseller.",
+    "abasteo.mx: Deterministic role hints were not auto-added: Reseller, SI, Installer.",
+    "intelihogar.com: Routine correction failed: [\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"corrections\",\n      1,\n      \"resolvedOfficialWebsiteUrl\"\n    ],\n    \"message\": \"Invalid input: expected string, received null\"\n  }\n] Escalation failed: [\n  {\n    \"origin\": \"string\",\n    \"code\": \"too_big\",\n    \"maximum\": 300,\n    \"inclusive\": true,\n    \"path\": [\n      \"escalation\",\n      \"reason\"\n    ],\n    \"message\": \"Too big: expected string to have <=300 characters\"\n  }\n]",
+    "pchconnect.com: The submitted official website URL was an Exa.ai library page, not a company-owned domain. The corrected official website is https://www.pchconnect.com.",
+    "pchconnect.com: The submitted roles were Retailer and E-tailer, but the evidence strongly supports a Distributor role as the primary business role.",
+    "pchconnect.com: The submitted search family was retail, but the evidence indicates a wholesale/distribution business model.",
+    "pchconnect.com: Deterministic role hints were not auto-added: MSP.",
+    "neobyte.es: Company appears to be based in Spain, not Mexico; may not be relevant for Mexico market.",
+    "neobyte.es: Deterministic role hints were not auto-added: SI.",
+    "mipc.com.mx: Deterministic role hints were not auto-added: VAR, Reseller.",
+    "microcomp.com.mx: Submitted roles (Retailer, E-tailer) are not supported by supplied evidence.",
+    "microcomp.com.mx: LinkedIn self-description uses 'distribuidor' but no downstream channel supply evidence is present.",
+    "siocomputacion.com.mx: Deterministic role hints were not auto-added: Reseller.",
+    "lanware.com.mx: Submitted roles (Retailer, E-tailer) are not supported by evidence and have been corrected.",
+    "lanware.com.mx: Distributor role is based solely on self-description without independent confirmation of downstream channel supply.",
+    "lanware.com.mx: Independent public evidence sources provided do not relate to Grupo Lanware.",
+    "lanware.com.mx: Deterministic role hints were not auto-added: Reseller.",
+    "tony.com.mx: Deterministic role hints were not auto-added: SI, Installer.",
+    "lifeinformatica.com: Deterministic role hints were not auto-added: Reseller, SI.",
+    "jmdistribuidores.com: The independent evidence IDs provided (evidence-34765efd592db86b, evidence-5224e1a86310291f, evidence-d1f4f1b5129ca6e7, evidence-b6afa6b3b9f03980) are unrelated to this candidate and were not used.",
+    "jmdistribuidores.com: Deterministic role hints were not auto-added: Distributor, VAR, Reseller.",
+    "gezatek.com.ar: Deterministic role hints were not auto-added: VAR, SI, Reseller.",
+    "intercompras.com: Roles without a supported atomic role finding were removed.",
+    "No official-domain evidence was extracted for sears.com.mx.",
+    "No official-domain evidence was extracted for sams.com.mx.",
+    "No official-domain evidence was extracted for compupricemx.com.",
+    "sams.com.mx: Deterministic role hints were not auto-added: Distributor.",
+    "compupricemx.com: Limited evidence; official website not directly verified."
+  ],
+  "costEvents": [
+    {
+      "eventId": "MX-retail:intent:1",
+      "cellId": "MX-retail",
+      "stage": "intent",
+      "provider": "kimi",
+      "requestedModel": "kimi-k2.6",
+      "actualModel": "kimi-k2.6",
+      "startedAt": "2026-09-05T06:14:46.899Z",
+      "completedAt": "2026-09-05T06:15:26.498Z",
+      "latencyMs": 39594,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 559,
+        "cachedInputTokens": 512,
+        "outputTokens": 1981
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.008013637234811069,
+      "budgetCostUsd": 0.008013637234811069,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:rag-embedding:1",
+      "cellId": "MX-retail",
+      "stage": "rag-retrieval",
+      "provider": "alibaba-model-studio",
+      "requestedModel": "text-embedding-v4",
+      "actualModel": "text-embedding-v4",
+      "startedAt": "2026-09-05T06:15:26.507Z",
+      "completedAt": "2026-09-05T06:15:28.897Z",
+      "latencyMs": 2266,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 83,
+        "outputTokens": 0
+      },
+      "volume": {
+        "inputItems": 3,
+        "rawOutputItems": 3,
+        "validOutputItems": 3,
+        "downstreamUsedItems": 3,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.000005976,
+      "budgetCostUsd": 0.000005976,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:playbook",
+      "cellId": "MX-retail",
+      "stage": "playbook",
+      "provider": "deterministic-template",
+      "startedAt": "2026-09-05T06:15:28.903Z",
+      "completedAt": "2026-09-05T06:15:28.904Z",
+      "latencyMs": 1,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "volume": {
+        "inputItems": 16,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r1:1",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "google-places",
+      "startedAt": "2026-09-05T06:15:28.910Z",
+      "completedAt": "2026-09-05T06:19:22.383Z",
+      "latencyMs": 433,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 15,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 15,
+        "validOutputItems": 15,
+        "downstreamUsedItems": 11,
+        "discardedReasonCounts": {
+          "duplicate": 4
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.035,
+      "budgetCostUsd": 0.035,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r1:2",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T06:15:28.910Z",
+      "completedAt": "2026-09-05T06:19:22.383Z",
+      "latencyMs": 2538,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 9,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 9,
+        "validOutputItems": 9,
+        "downstreamUsedItems": 8,
+        "discardedReasonCounts": {
+          "duplicate": 1
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.004,
+      "budgetCostUsd": 0.004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r1:3",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T06:15:28.910Z",
+      "completedAt": "2026-09-05T06:19:22.383Z",
+      "latencyMs": 2600,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 9,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 9,
+        "validOutputItems": 9,
+        "downstreamUsedItems": 2,
+        "discardedReasonCounts": {
+          "duplicate": 7
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.004,
+      "budgetCostUsd": 0.004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r1:4",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-05T06:15:28.910Z",
+      "completedAt": "2026-09-05T06:19:22.383Z",
+      "latencyMs": 516,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "failed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "provider-http": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=miss",
+        "failureClass=http",
+        "circuitScope=route"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005,
+      "budgetCostUsd": 0.005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r1:5",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-05T06:15:28.910Z",
+      "completedAt": "2026-09-05T06:19:22.383Z",
+      "latencyMs": 174,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "failed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "provider-http": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=miss",
+        "failureClass=http",
+        "circuitScope=route"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005,
+      "budgetCostUsd": 0.005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r1:6",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T06:15:28.910Z",
+      "completedAt": "2026-09-05T06:19:22.383Z",
+      "latencyMs": 1820,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 10,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 10,
+        "validOutputItems": 10,
+        "downstreamUsedItems": 6,
+        "discardedReasonCounts": {
+          "duplicate": 4
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.004,
+      "budgetCostUsd": 0.004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r1:7",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-05T06:15:28.910Z",
+      "completedAt": "2026-09-05T06:19:22.383Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "circuit-open": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r1:8",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T06:15:28.910Z",
+      "completedAt": "2026-09-05T06:19:22.383Z",
+      "latencyMs": 90240,
+      "attempts": 2,
+      "retries": 1,
+      "fallbackUsed": false,
+      "status": "failed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 2,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "provider-timeout": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=miss",
+        "failureClass=timeout",
+        "circuitScope=route"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.008,
+      "budgetCostUsd": 0.008,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r1:9",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T06:15:28.910Z",
+      "completedAt": "2026-09-05T06:19:22.383Z",
+      "latencyMs": 90270,
+      "attempts": 2,
+      "retries": 1,
+      "fallbackUsed": false,
+      "status": "failed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 2,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "provider-timeout": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=miss",
+        "failureClass=timeout",
+        "circuitScope=route"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.008,
+      "budgetCostUsd": 0.008,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r1:10",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "exa",
+      "startedAt": "2026-09-05T06:15:28.910Z",
+      "completedAt": "2026-09-05T06:19:22.383Z",
+      "latencyMs": 1398,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 15,
+        "extractedPages": 15,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 15,
+        "validOutputItems": 15,
+        "downstreamUsedItems": 15,
+        "discardedReasonCounts": {
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.027,
+      "budgetCostUsd": 0.027,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r1:11",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "exa",
+      "startedAt": "2026-09-05T06:15:28.910Z",
+      "completedAt": "2026-09-05T06:19:22.383Z",
+      "latencyMs": 2180,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.007,
+      "budgetCostUsd": 0.007,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery-gate-r1:model:1",
+      "cellId": "MX-retail",
+      "stage": "discovery-gate-r1",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek-v4-flash",
+      "startedAt": "2026-09-05T06:15:28.910Z",
+      "completedAt": "2026-09-05T06:19:22.383Z",
+      "latencyMs": 24114,
+      "attempts": 5,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 27434,
+        "outputTokens": 4588,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 42,
+        "rawOutputItems": 38,
+        "validOutputItems": 32,
+        "downstreamUsedItems": 32,
+        "discardedReasonCounts": {
+          "rejected": 6
+        }
+      },
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.0051254000000000004,
+      "budgetCostUsd": 0.0051254000000000004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:fresh-evidence:r1",
+      "cellId": "MX-retail",
+      "stage": "fresh-evidence",
+      "provider": "tavily",
+      "startedAt": "2026-09-05T06:19:22.459Z",
+      "completedAt": "2026-09-05T06:19:39.735Z",
+      "latencyMs": 106406,
+      "attempts": 55,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 47
+      },
+      "volume": {
+        "inputItems": 32,
+        "rawOutputItems": 113,
+        "validOutputItems": 113,
+        "downstreamUsedItems": 113,
+        "discardedReasonCounts": {
+          "noFreshEvidence": 1
+        }
+      },
+      "notes": [
+        "historical evidence reads disabled",
+        "evidence-library writes disabled",
+        "current-run evidence and missing-evidence records reused downstream"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.376,
+      "budgetCostUsd": 0.376,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:correction-evidence:r1",
+      "cellId": "MX-retail",
+      "stage": "evidence-correction-search",
+      "provider": "tavily",
+      "startedAt": "2026-09-05T06:19:39.752Z",
+      "completedAt": "2026-09-05T06:21:30.621Z",
+      "latencyMs": 64653,
+      "attempts": 28,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 28
+      },
+      "volume": {
+        "inputItems": 32,
+        "rawOutputItems": 32,
+        "validOutputItems": 32,
+        "downstreamUsedItems": 18,
+        "discardedReasonCounts": {
+          "correctedToAnotherRole": 14
+        }
+      },
+      "notes": [
+        "Only missing evidence identified by the first evidence packet may trigger supplementation."
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.224,
+      "budgetCostUsd": 0.224,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:evidence-correction-r1:model:1",
+      "cellId": "MX-retail",
+      "stage": "evidence-correction-r1",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek-v4-flash",
+      "startedAt": "2026-09-05T06:19:39.752Z",
+      "completedAt": "2026-09-05T06:21:30.621Z",
+      "latencyMs": 140548,
+      "attempts": 7,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 137234,
+        "outputTokens": 27137,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 32,
+        "rawOutputItems": 32,
+        "validOutputItems": 31,
+        "downstreamUsedItems": 18,
+        "discardedReasonCounts": {
+          "correctedToAnotherRole": 14
+        }
+      },
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.026811120000000004,
+      "budgetCostUsd": 0.026811120000000004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:evidence-correction-r1:model:2",
+      "cellId": "MX-retail",
+      "stage": "evidence-correction-r1",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-05T06:19:39.752Z",
+      "completedAt": "2026-09-05T06:21:30.621Z",
+      "latencyMs": 108372,
+      "attempts": 5,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 20257,
+        "outputTokens": 9153,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 32,
+        "rawOutputItems": 32,
+        "validOutputItems": 31,
+        "downstreamUsedItems": 18,
+        "discardedReasonCounts": {
+          "correctedToAnotherRole": 14
+        }
+      },
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.016774905,
+      "budgetCostUsd": 0.016774905,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:qualification-score-only-r1:model:1",
+      "cellId": "MX-retail",
+      "stage": "qualification-score-only-r1",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek-v4-flash",
+      "startedAt": "2026-09-05T06:21:30.636Z",
+      "completedAt": "2026-09-05T06:22:18.438Z",
+      "latencyMs": 116382,
+      "attempts": 5,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 55925,
+        "outputTokens": 20920,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 18,
+        "rawOutputItems": 18,
+        "validOutputItems": 18,
+        "downstreamUsedItems": 18,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.013687100000000002,
+      "budgetCostUsd": 0.013687100000000002,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:qualification-score-only-r1:model:2",
+      "cellId": "MX-retail",
+      "stage": "qualification-score-only-r1",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-05T06:21:30.636Z",
+      "completedAt": "2026-09-05T06:22:18.438Z",
+      "latencyMs": 19975,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 5177,
+        "outputTokens": 1413,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 18,
+        "rawOutputItems": 18,
+        "validOutputItems": 18,
+        "downstreamUsedItems": 18,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.0034813049999999996,
+      "budgetCostUsd": 0.0034813049999999996,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r2:1",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T06:22:18.446Z",
+      "completedAt": "2026-09-05T06:22:30.708Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "circuit-open": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r2:2",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T06:22:18.446Z",
+      "completedAt": "2026-09-05T06:22:30.708Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "circuit-open": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r2:3",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "google-places",
+      "startedAt": "2026-09-05T06:22:18.446Z",
+      "completedAt": "2026-09-05T06:22:30.708Z",
+      "latencyMs": 378,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 10,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 10,
+        "validOutputItems": 10,
+        "downstreamUsedItems": 4,
+        "discardedReasonCounts": {
+          "duplicate": 6
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.035,
+      "budgetCostUsd": 0.035,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r2:4",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-05T06:22:18.446Z",
+      "completedAt": "2026-09-05T06:22:30.708Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "circuit-open": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r2:5",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T06:22:18.446Z",
+      "completedAt": "2026-09-05T06:22:30.708Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "circuit-open": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r2:6",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-05T06:22:18.446Z",
+      "completedAt": "2026-09-05T06:22:30.708Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "circuit-open": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r2:7",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T06:22:18.446Z",
+      "completedAt": "2026-09-05T06:22:30.708Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "circuit-open": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r2:8",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-05T06:22:18.446Z",
+      "completedAt": "2026-09-05T06:22:30.708Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "circuit-open": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r2:9",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T06:22:18.446Z",
+      "completedAt": "2026-09-05T06:22:30.708Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "circuit-open": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r2:10",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "exa",
+      "startedAt": "2026-09-05T06:22:18.446Z",
+      "completedAt": "2026-09-05T06:22:30.708Z",
+      "latencyMs": 1514,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.007,
+      "budgetCostUsd": 0.007,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r2:11",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "exa",
+      "startedAt": "2026-09-05T06:22:18.446Z",
+      "completedAt": "2026-09-05T06:22:30.708Z",
+      "latencyMs": 2816,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 1,
+        "extractedPages": 1,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.008,
+      "budgetCostUsd": 0.008,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery-gate-r2:model:1",
+      "cellId": "MX-retail",
+      "stage": "discovery-gate-r2",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek-v4-flash",
+      "startedAt": "2026-09-05T06:22:18.446Z",
+      "completedAt": "2026-09-05T06:22:30.708Z",
+      "latencyMs": 5308,
+      "attempts": 2,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 3901,
+        "outputTokens": 924,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 5,
+        "rawOutputItems": 5,
+        "validOutputItems": 4,
+        "downstreamUsedItems": 4,
+        "discardedReasonCounts": {
+          "rejected": 1
+        }
+      },
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.0008048600000000001,
+      "budgetCostUsd": 0.0008048600000000001,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:fresh-evidence:r2",
+      "cellId": "MX-retail",
+      "stage": "fresh-evidence",
+      "provider": "tavily",
+      "startedAt": "2026-09-05T06:22:30.836Z",
+      "completedAt": "2026-09-05T06:22:33.701Z",
+      "latencyMs": 5691,
+      "attempts": 5,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 5
+      },
+      "volume": {
+        "inputItems": 4,
+        "rawOutputItems": 5,
+        "validOutputItems": 5,
+        "downstreamUsedItems": 5,
+        "discardedReasonCounts": {
+          "noFreshEvidence": 2
+        }
+      },
+      "notes": [
+        "historical evidence reads disabled",
+        "evidence-library writes disabled",
+        "current-run evidence and missing-evidence records reused downstream"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.04,
+      "budgetCostUsd": 0.04,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:correction-evidence:r2",
+      "cellId": "MX-retail",
+      "stage": "evidence-correction-search",
+      "provider": "tavily",
+      "startedAt": "2026-09-05T06:22:33.712Z",
+      "completedAt": "2026-09-05T06:22:53.491Z",
+      "latencyMs": 7769,
+      "attempts": 4,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 4
+      },
+      "volume": {
+        "inputItems": 4,
+        "rawOutputItems": 4,
+        "validOutputItems": 4,
+        "downstreamUsedItems": 3,
+        "discardedReasonCounts": {
+          "correctedToAnotherRole": 1
+        }
+      },
+      "notes": [
+        "Only missing evidence identified by the first evidence packet may trigger supplementation."
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.032,
+      "budgetCostUsd": 0.032,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:evidence-correction-r2:model:1",
+      "cellId": "MX-retail",
+      "stage": "evidence-correction-r2",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek-v4-flash",
+      "startedAt": "2026-09-05T06:22:33.712Z",
+      "completedAt": "2026-09-05T06:22:53.491Z",
+      "latencyMs": 16375,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 8542,
+        "outputTokens": 3164,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 4,
+        "rawOutputItems": 4,
+        "validOutputItems": 4,
+        "downstreamUsedItems": 3,
+        "discardedReasonCounts": {
+          "correctedToAnotherRole": 1
+        }
+      },
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.0020818,
+      "budgetCostUsd": 0.0020818,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:qualification-score-only-r2:model:1",
+      "cellId": "MX-retail",
+      "stage": "qualification-score-only-r2",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek-v4-flash",
+      "startedAt": "2026-09-05T06:22:53.511Z",
+      "completedAt": "2026-09-05T06:23:14.542Z",
+      "latencyMs": 21014,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 8806,
+        "outputTokens": 3744,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 3,
+        "rawOutputItems": 3,
+        "validOutputItems": 3,
+        "downstreamUsedItems": 3,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.0022811600000000004,
+      "budgetCostUsd": 0.0022811600000000004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r3:1",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T06:23:14.551Z",
+      "completedAt": "2026-09-05T06:23:17.540Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "circuit-open": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=3",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r3:2",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T06:23:14.551Z",
+      "completedAt": "2026-09-05T06:23:17.540Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "circuit-open": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=3",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r3:3",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "google-places",
+      "startedAt": "2026-09-05T06:23:14.551Z",
+      "completedAt": "2026-09-05T06:23:17.540Z",
+      "latencyMs": 385,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 1,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "duplicate": 1
+        }
+      },
+      "notes": [
+        "queryRound=3",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.035,
+      "budgetCostUsd": 0.035,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r3:4",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-05T06:23:14.551Z",
+      "completedAt": "2026-09-05T06:23:17.540Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "circuit-open": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=3",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r3:5",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T06:23:14.551Z",
+      "completedAt": "2026-09-05T06:23:17.540Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "circuit-open": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=3",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r3:6",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-05T06:23:14.551Z",
+      "completedAt": "2026-09-05T06:23:17.540Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "circuit-open": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=3",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r3:7",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T06:23:14.551Z",
+      "completedAt": "2026-09-05T06:23:17.540Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "circuit-open": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=3",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r3:8",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-05T06:23:14.551Z",
+      "completedAt": "2026-09-05T06:23:17.540Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "circuit-open": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=3",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r3:9",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-05T06:23:14.551Z",
+      "completedAt": "2026-09-05T06:23:17.540Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "circuit-open": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=3",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r3:10",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "exa",
+      "startedAt": "2026-09-05T06:23:14.551Z",
+      "completedAt": "2026-09-05T06:23:17.540Z",
+      "latencyMs": 1273,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=3",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.007,
+      "budgetCostUsd": 0.007,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:discovery:r3:11",
+      "cellId": "MX-retail",
+      "stage": "hybrid-discovery",
+      "provider": "exa",
+      "startedAt": "2026-09-05T06:23:14.551Z",
+      "completedAt": "2026-09-05T06:23:17.540Z",
+      "latencyMs": 1329,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=3",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.007,
+      "budgetCostUsd": 0.007,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:fresh-evidence:r3",
+      "cellId": "MX-retail",
+      "stage": "fresh-evidence",
+      "provider": "tavily",
+      "startedAt": "2026-09-05T06:23:17.619Z",
+      "completedAt": "2026-09-05T06:23:17.619Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 0,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "noFreshEvidence": 0
+        }
+      },
+      "notes": [
+        "historical evidence reads disabled",
+        "evidence-library writes disabled",
+        "current-run evidence and missing-evidence records reused downstream"
+      ],
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:ranking",
+      "cellId": "MX-retail",
+      "stage": "role-filter-ranking",
+      "provider": "deterministic",
+      "startedAt": "2026-09-05T06:23:17.637Z",
+      "completedAt": "2026-09-05T06:23:17.637Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "volume": {
+        "inputItems": 21,
+        "rawOutputItems": 21,
+        "validOutputItems": 8,
+        "downstreamUsedItems": 8,
+        "discardedReasonCounts": {
+          "wrongPrimaryRoleOrGate": 28
+        }
+      },
+      "runId": "2026-09-05-uk-mx-search-e2e-v1-1-1",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    }
+  ],
+  "coldStartAudit": {
+    "historicalCandidateReads": 0,
+    "historicalEvidenceReads": 0,
+    "privateMemoryReads": 0,
+    "historicalScoreReads": 0,
+    "evidenceLibraryWrites": 0,
+    "cooperationPathsGenerated": 0
+  },
+  "discoveryCalls": [
+    {
+      "callKey": "retail/retail-local/0/google-places/google-places",
+      "callFingerprint": "bb004fd8fae3bbe4daea8d995e3740b2c66d1487cbae29071b96f8841c186e2c",
+      "queryClusterKey": "5ab01319b2e3d0f54366f66add8879b5d9a804b644db7cc3890d5a6cebd3161c",
+      "route": {
+        "category": "retail",
+        "track": "retail-local",
+        "sequence": 0,
+        "provider": "google-places",
+        "engine": "google-places",
+        "mechanism": "local-text-search",
+        "trigger": "core",
+        "invocationReason": "Core mechanism for retail/retail-local"
+      },
+      "status": "completed",
+      "requestedResults": 15,
+      "rawResults": 15,
+      "normalizedCompanies": 15,
+      "newUniqueCompanies": 11,
+      "existingCompanyHits": 4,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 433,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "d03c822f096d5368af824cfe970b7059275c7e89ce2389ca43967fc0101c066b"
+    },
+    {
+      "callKey": "retail/etail/0/searchapi/google",
+      "callFingerprint": "193879fa0673f19f80b8aff3e9b939f00bbf698baeaa36002aeed7657e9d4360",
+      "queryClusterKey": "6a4a5704ab04e4661165f61074256e50624a310ac3a16e10c364090f87b103d6",
+      "route": {
+        "category": "retail",
+        "track": "etail",
+        "sequence": 0,
+        "provider": "searchapi",
+        "engine": "google",
+        "mechanism": "shopping-web-serp",
+        "trigger": "core",
+        "invocationReason": "Core mechanism for retail/etail"
+      },
+      "status": "completed",
+      "requestedResults": 15,
+      "rawResults": 9,
+      "normalizedCompanies": 9,
+      "newUniqueCompanies": 8,
+      "existingCompanyHits": 1,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 2538,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "1d8e7a0fc2276e903d2709e916149a033c578928f4146045578269f0896eeb94"
+    },
+    {
+      "callKey": "retail/retail-national/0/searchapi/google",
+      "callFingerprint": "3697d68f026c7f38a6862631ff3e0ef326fe2b806b94713e424655a998670226",
+      "queryClusterKey": "9657599692c736c7719eb902621ca56e85f28d484f45cd268268e6f10228fe8b",
+      "route": {
+        "category": "retail",
+        "track": "retail-national",
+        "sequence": 0,
+        "provider": "searchapi",
+        "engine": "google",
+        "mechanism": "web-serp",
+        "trigger": "core",
+        "invocationReason": "Core mechanism for retail/retail-national"
+      },
+      "status": "completed",
+      "requestedResults": 15,
+      "rawResults": 9,
+      "normalizedCompanies": 9,
+      "newUniqueCompanies": 2,
+      "existingCompanyHits": 7,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 2600,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "3695411de496bf4f914aa51e5fdb118e281145b5312c8f560e6287745e756b3c"
+    },
+    {
+      "callKey": "retail/etail/1/brave/brave",
+      "callFingerprint": "089f2ca69a471b47cf41615b14dbc0fe2637c63a80b8d0c7792b5fe84fdf568c",
+      "queryClusterKey": "55b85d654fed4666f20414be79520cf627fad66a41d5532d0ba88268175a43de",
+      "route": {
+        "category": "retail",
+        "track": "etail",
+        "sequence": 1,
+        "provider": "brave",
+        "engine": "brave",
+        "mechanism": "web-index",
+        "trigger": "index-gap",
+        "invocationReason": "index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "failed",
+      "requestedResults": 15,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 516,
+      "requestCount": 1,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "failureClass": "http",
+      "circuitScope": "route",
+      "discardedReasonCounts": {
+        "provider-http": 1
+      },
+      "errorMessage": "brave HTTP 422: {\"type\":\"ErrorResponse\",\"error\":{\"id\":\"64df77d3-1c7f-4586-89f7-c255a6591508\",\"status\":422,\"detail\":\"Unable to validate request parameter(s)\",\"meta\":{\"errors\":[{\"type\":\"too_long\",\"loc\":[\"query\",\"q\"],\"msg\":\"Search query must be at most 600 characters (you entered 824).\",\"input\":\"consumer SMB networking electronics shop Mexico official company networking tienda de computación electrónica routers Wi-Fi mesh switches precio carrito compra en línea etail Ciudad de México Mexico venta minorista real co",
+      "querySha256": "070e3989466c3582daffb1e85f7dcba8f89f875f1c48e71f50ea83791db393b9"
+    },
+    {
+      "callKey": "retail/retail-national/1/brave/brave",
+      "callFingerprint": "9b29246c9e8695b5cf1c948fd04df606b4b7bdcacea9309dc408866e70588080",
+      "queryClusterKey": "b19fdb255c61bb3061df3b1d84e1e7f946c879b28e1d08e31e5499e4419f4a12",
+      "route": {
+        "category": "retail",
+        "track": "retail-national",
+        "sequence": 1,
+        "provider": "brave",
+        "engine": "brave",
+        "mechanism": "web-index",
+        "trigger": "index-gap",
+        "invocationReason": "index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "failed",
+      "requestedResults": 15,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 174,
+      "requestCount": 1,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "failureClass": "http",
+      "circuitScope": "route",
+      "discardedReasonCounts": {
+        "provider-http": 1
+      },
+      "errorMessage": "brave HTTP 422: {\"type\":\"ErrorResponse\",\"error\":{\"id\":\"1017f7ab-0b90-4a7d-abef-b0f4a7f59c12\",\"status\":422,\"detail\":\"Unable to validate request parameter(s)\",\"meta\":{\"errors\":[{\"type\":\"too_long\",\"loc\":[\"query\",\"q\"],\"msg\":\"Search query must be at most 600 characters (you entered 834).\",\"input\":\"consumer SMB networking electronics shop Mexico official company networking tienda de computación electrónica routers Wi-Fi mesh switches precio carrito compra en línea retail national Ciudad de México Mexico venta minoris",
+      "querySha256": "6655af2eb1767ef19c1b0cb6d434486fff47573080041f130c6e930b6a967b38"
+    },
+    {
+      "callKey": "retail/retail-local/1/searchapi/google",
+      "callFingerprint": "f31f44f60bdcd0ef240662cbe1d8019702fdd5c518b8221d3b10e59f479f75fa",
+      "queryClusterKey": "a15fde939c0822410344e568fe68a0a91e93d31b383645c10e2b8563cb8e8974",
+      "route": {
+        "category": "retail",
+        "track": "retail-local",
+        "sequence": 1,
+        "provider": "searchapi",
+        "engine": "google",
+        "mechanism": "local-web-serp",
+        "trigger": "web-gap",
+        "invocationReason": "web-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "completed",
+      "requestedResults": 15,
+      "rawResults": 10,
+      "normalizedCompanies": 10,
+      "newUniqueCompanies": 6,
+      "existingCompanyHits": 4,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 1820,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "733c84e2558d0cd6236677fa4bae91c7700323b31ae508d71c619779c24dd52b"
+    },
+    {
+      "callKey": "retail/retail-local/2/brave/brave",
+      "callFingerprint": "b0b1ebc0d4ce55ad91c4895e170ad0e6a0682c4edeb3d380767367293775f353",
+      "queryClusterKey": "f8403fbddab944e6b4963913bd9718c351d552a2a2d88d726267fe249bdec798",
+      "route": {
+        "category": "retail",
+        "track": "retail-local",
+        "sequence": 2,
+        "provider": "brave",
+        "engine": "brave",
+        "mechanism": "local-web-index",
+        "trigger": "index-gap",
+        "invocationReason": "index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "skipped",
+      "requestedResults": 15,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "requestCount": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 0,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "skipped",
+      "discardedReasonCounts": {
+        "circuit-open": 1
+      },
+      "errorMessage": "http: brave HTTP 422: {\"type\":\"ErrorResponse\",\"error\":{\"id\":\"1017f7ab-0b90-4a7d-abef-b0f4a7f59c12\",\"status\":422,\"detail\":\"Unable to validate request parameter(s)\",\"meta\":{\"errors\":[{\"type\":\"too_long\",\"loc\":[\"query\",\"q\"],\"msg\":\"Search query must be at most 600 characters (you entered 834).\",\"input\":\"consumer SMB networking electronics shop Mexico official company networking tienda de computación electrónica routers Wi-Fi mesh switches precio carrito compra en línea retail national Ciudad de México Mexico venta minoris",
+      "querySha256": "f385180eb0d4fe58531c6cb8367991fa16c6f3878edc9c07371db223bd72bff1"
+    },
+    {
+      "callKey": "retail/etail/2/searchapi/bing",
+      "callFingerprint": "68f741c9e204b6fcdc6cdde8b59ae24821299f6655d389b9940f0aaf4daf626f",
+      "queryClusterKey": "6a4a5704ab04e4661165f61074256e50624a310ac3a16e10c364090f87b103d6",
+      "route": {
+        "category": "retail",
+        "track": "etail",
+        "sequence": 2,
+        "provider": "searchapi",
+        "engine": "bing",
+        "mechanism": "web-serp",
+        "trigger": "second-index-gap",
+        "invocationReason": "second-index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "failed",
+      "requestedResults": 15,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 90240,
+      "requestCount": 2,
+      "retryCount": 1,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "failureClass": "timeout",
+      "circuitScope": "route",
+      "discardedReasonCounts": {
+        "provider-timeout": 1
+      },
+      "errorMessage": "searchapi timed out: The operation was aborted due to timeout",
+      "querySha256": "1d8e7a0fc2276e903d2709e916149a033c578928f4146045578269f0896eeb94"
+    },
+    {
+      "callKey": "retail/retail-national/2/searchapi/bing",
+      "callFingerprint": "db76636ce4460018a7975800cd585e72ddb4d22e76ad7e9d9f9514bb633bfb3b",
+      "queryClusterKey": "9657599692c736c7719eb902621ca56e85f28d484f45cd268268e6f10228fe8b",
+      "route": {
+        "category": "retail",
+        "track": "retail-national",
+        "sequence": 2,
+        "provider": "searchapi",
+        "engine": "bing",
+        "mechanism": "web-serp",
+        "trigger": "second-index-gap",
+        "invocationReason": "second-index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "failed",
+      "requestedResults": 15,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 90270,
+      "requestCount": 2,
+      "retryCount": 1,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "failureClass": "timeout",
+      "circuitScope": "route",
+      "discardedReasonCounts": {
+        "provider-timeout": 1
+      },
+      "errorMessage": "searchapi timed out: The operation was aborted due to timeout",
+      "querySha256": "3695411de496bf4f914aa51e5fdb118e281145b5312c8f560e6287745e756b3c"
+    },
+    {
+      "callKey": "retail/etail/3/exa/exa",
+      "callFingerprint": "dbc779afd389e6be46e3003cb34d357d203724fa2f419582705543ee2d088999",
+      "queryClusterKey": "3005f74c7aeb9ebc8fa7fb3652a66b1292ee6adb056857a034f9e6a227177fcf",
+      "route": {
+        "category": "retail",
+        "track": "etail",
+        "sequence": 3,
+        "provider": "exa",
+        "engine": "exa",
+        "mechanism": "semantic-merchant-pages",
+        "trigger": "semantic-gap",
+        "invocationReason": "semantic-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "completed",
+      "requestedResults": 15,
+      "rawResults": 15,
+      "normalizedCompanies": 15,
+      "newUniqueCompanies": 15,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 1398,
+      "retryCount": 0,
+      "fallbackUsed": true,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "3eb11443f8e82dd5cf3d8f93b2a52d32b8a9a83e0bd06615be9f2cee67823367"
+    },
+    {
+      "callKey": "retail/retail-national/3/exa/exa",
+      "callFingerprint": "608509e99ee8eed31e1669ad7442a1c996d79f038fc6f756c318c69e983a7a58",
+      "queryClusterKey": "66ce3a315db2265c685a4d2f46c74d65de94fe2cb4e0a8a0f9b873184b0ab26c",
+      "route": {
+        "category": "retail",
+        "track": "retail-national",
+        "sequence": 3,
+        "provider": "exa",
+        "engine": "exa",
+        "mechanism": "semantic-retailer-pages",
+        "trigger": "semantic-gap",
+        "invocationReason": "semantic-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "completed",
+      "requestedResults": 15,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 2180,
+      "retryCount": 0,
+      "fallbackUsed": true,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "5d403655ca9ae9b8fa3637048f614c2a2aa35d197f3fc0158e3c5cdaad6a524f"
+    },
+    {
+      "callKey": "retail/etail/0/searchapi/google",
+      "callFingerprint": "897cb79404ad9c03f94f18c8992f67a7af40a7a28d11513fe86fda3c40814c41",
+      "queryClusterKey": "614a28d8ff5fb9a1b51c1e844d6041a51db6936b47d62a799716183586ef3a3f",
+      "route": {
+        "category": "retail",
+        "track": "etail",
+        "sequence": 0,
+        "provider": "searchapi",
+        "engine": "google",
+        "mechanism": "shopping-web-serp",
+        "trigger": "core",
+        "invocationReason": "Core mechanism for retail/etail"
+      },
+      "status": "skipped",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "requestCount": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 0,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "skipped",
+      "discardedReasonCounts": {
+        "circuit-open": 1
+      },
+      "errorMessage": "timeout: searchapi timed out: The operation was aborted due to timeout",
+      "querySha256": "9370bc07a8bb7c48ccb26dd74410d6e261fcf1d32e23de64b7bcfd2108da6210"
+    },
+    {
+      "callKey": "retail/retail-national/0/searchapi/google",
+      "callFingerprint": "7bae3fdab15c181b5e433ac38c1ae8311fe92161f794bdf892de9365f3fc86f7",
+      "queryClusterKey": "50019351b076a46ab5774f3e7875e07d88037d3172e4f7a66145e299bf35a2fb",
+      "route": {
+        "category": "retail",
+        "track": "retail-national",
+        "sequence": 0,
+        "provider": "searchapi",
+        "engine": "google",
+        "mechanism": "web-serp",
+        "trigger": "core",
+        "invocationReason": "Core mechanism for retail/retail-national"
+      },
+      "status": "skipped",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "requestCount": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 0,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "skipped",
+      "discardedReasonCounts": {
+        "circuit-open": 1
+      },
+      "errorMessage": "timeout: searchapi timed out: The operation was aborted due to timeout",
+      "querySha256": "254a9e7a313597093167cb0c067b9d7f5a9867fb875bf8c4677126f9530c1650"
+    },
+    {
+      "callKey": "retail/retail-local/0/google-places/google-places",
+      "callFingerprint": "27aa68da4599c54525788b767c85a8bd48d8471c804bc91af0ac03a77e2042e3",
+      "queryClusterKey": "c6e94400de6c6a922ffee3dcaba5b351ffbcc04d8c16bd71d2c7343b66e41585",
+      "route": {
+        "category": "retail",
+        "track": "retail-local",
+        "sequence": 0,
+        "provider": "google-places",
+        "engine": "google-places",
+        "mechanism": "local-text-search",
+        "trigger": "core",
+        "invocationReason": "Core mechanism for retail/retail-local"
+      },
+      "status": "completed",
+      "requestedResults": 20,
+      "rawResults": 10,
+      "normalizedCompanies": 10,
+      "newUniqueCompanies": 4,
+      "existingCompanyHits": 6,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 378,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "8e26a0f9bd5dbb640707bc83b2836c6f518ae26c642c0975f260bc8a3d361d7f"
+    },
+    {
+      "callKey": "retail/etail/1/brave/brave",
+      "callFingerprint": "f817d514482b595c1d9c7e935db649aebb7406adc25232c960ca60d23dc55692",
+      "queryClusterKey": "e38ae9cd9f0e77819512ecd083c245019e950a80916de622d5ca96938ae03e51",
+      "route": {
+        "category": "retail",
+        "track": "etail",
+        "sequence": 1,
+        "provider": "brave",
+        "engine": "brave",
+        "mechanism": "web-index",
+        "trigger": "index-gap",
+        "invocationReason": "index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "skipped",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "requestCount": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 0,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "skipped",
+      "discardedReasonCounts": {
+        "circuit-open": 1
+      },
+      "errorMessage": "http: brave HTTP 422: {\"type\":\"ErrorResponse\",\"error\":{\"id\":\"1017f7ab-0b90-4a7d-abef-b0f4a7f59c12\",\"status\":422,\"detail\":\"Unable to validate request parameter(s)\",\"meta\":{\"errors\":[{\"type\":\"too_long\",\"loc\":[\"query\",\"q\"],\"msg\":\"Search query must be at most 600 characters (you entered 834).\",\"input\":\"consumer SMB networking electronics shop Mexico official company networking tienda de computación electrónica routers Wi-Fi mesh switches precio carrito compra en línea retail national Ciudad de México Mexico venta minoris",
+      "querySha256": "1a55ad240f9c87d54441256a245462ce6816cb686f741f0e8079252d3edf4bc6"
+    },
+    {
+      "callKey": "retail/retail-local/1/searchapi/google",
+      "callFingerprint": "22087c8a0572bd480f37589eb6478bc58ad60c36fece8764655dea5bca5a0441",
+      "queryClusterKey": "691c0654d4fd64a83fc9cfb6eba192d8da61c1bd6ef6154e00a1023d286f0206",
+      "route": {
+        "category": "retail",
+        "track": "retail-local",
+        "sequence": 1,
+        "provider": "searchapi",
+        "engine": "google",
+        "mechanism": "local-web-serp",
+        "trigger": "web-gap",
+        "invocationReason": "web-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "skipped",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "requestCount": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 0,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "skipped",
+      "discardedReasonCounts": {
+        "circuit-open": 1
+      },
+      "errorMessage": "timeout: searchapi timed out: The operation was aborted due to timeout",
+      "querySha256": "0f123a8a57a63a11b5f3d7208cca49c2c9b4b64cde113786e406a414fe5b9c07"
+    },
+    {
+      "callKey": "retail/retail-national/1/brave/brave",
+      "callFingerprint": "f6b00e3fcf948b047c66fac1a79fc9e10cbea3ad9a786a5088b2fb603c64fb9d",
+      "queryClusterKey": "435fdaf49bdb225a23de5d1c1816397324b2c817ce5d57ad9096cc22bca33836",
+      "route": {
+        "category": "retail",
+        "track": "retail-national",
+        "sequence": 1,
+        "provider": "brave",
+        "engine": "brave",
+        "mechanism": "web-index",
+        "trigger": "index-gap",
+        "invocationReason": "index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "skipped",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "requestCount": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 0,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "skipped",
+      "discardedReasonCounts": {
+        "circuit-open": 1
+      },
+      "errorMessage": "http: brave HTTP 422: {\"type\":\"ErrorResponse\",\"error\":{\"id\":\"1017f7ab-0b90-4a7d-abef-b0f4a7f59c12\",\"status\":422,\"detail\":\"Unable to validate request parameter(s)\",\"meta\":{\"errors\":[{\"type\":\"too_long\",\"loc\":[\"query\",\"q\"],\"msg\":\"Search query must be at most 600 characters (you entered 834).\",\"input\":\"consumer SMB networking electronics shop Mexico official company networking tienda de computación electrónica routers Wi-Fi mesh switches precio carrito compra en línea retail national Ciudad de México Mexico venta minoris",
+      "querySha256": "7b210d14894a5160fbd58ee039c2738df9d18884d4787d91bae34156884eb317"
+    },
+    {
+      "callKey": "retail/etail/2/searchapi/bing",
+      "callFingerprint": "f08419def0d2c57d5b2f2f7edfc394448193969604b1be88db64bcc3c3fe8786",
+      "queryClusterKey": "614a28d8ff5fb9a1b51c1e844d6041a51db6936b47d62a799716183586ef3a3f",
+      "route": {
+        "category": "retail",
+        "track": "etail",
+        "sequence": 2,
+        "provider": "searchapi",
+        "engine": "bing",
+        "mechanism": "web-serp",
+        "trigger": "second-index-gap",
+        "invocationReason": "second-index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "skipped",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "requestCount": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 0,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "skipped",
+      "discardedReasonCounts": {
+        "circuit-open": 1
+      },
+      "errorMessage": "timeout: searchapi timed out: The operation was aborted due to timeout",
+      "querySha256": "9370bc07a8bb7c48ccb26dd74410d6e261fcf1d32e23de64b7bcfd2108da6210"
+    },
+    {
+      "callKey": "retail/retail-local/2/brave/brave",
+      "callFingerprint": "3077d5f79fa95b465e3183a953ce38be493460601d8ffe76131d32c876ae839a",
+      "queryClusterKey": "4215553c70bdf3dc3ba27309ea9b66a3811a43dc5526a66cfcfd285d54c05c1d",
+      "route": {
+        "category": "retail",
+        "track": "retail-local",
+        "sequence": 2,
+        "provider": "brave",
+        "engine": "brave",
+        "mechanism": "local-web-index",
+        "trigger": "index-gap",
+        "invocationReason": "index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "skipped",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "requestCount": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 0,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "skipped",
+      "discardedReasonCounts": {
+        "circuit-open": 1
+      },
+      "errorMessage": "http: brave HTTP 422: {\"type\":\"ErrorResponse\",\"error\":{\"id\":\"1017f7ab-0b90-4a7d-abef-b0f4a7f59c12\",\"status\":422,\"detail\":\"Unable to validate request parameter(s)\",\"meta\":{\"errors\":[{\"type\":\"too_long\",\"loc\":[\"query\",\"q\"],\"msg\":\"Search query must be at most 600 characters (you entered 834).\",\"input\":\"consumer SMB networking electronics shop Mexico official company networking tienda de computación electrónica routers Wi-Fi mesh switches precio carrito compra en línea retail national Ciudad de México Mexico venta minoris",
+      "querySha256": "e616f80ea9f7a69342dadbb6b6626ece1b06e7588f9db405036bbd9e1a762ea0"
+    },
+    {
+      "callKey": "retail/retail-national/2/searchapi/bing",
+      "callFingerprint": "f7870b0c66d33dfde0d78048c2a6d9f8bb4e65ed1646a031bafd68f0d1e2f6e6",
+      "queryClusterKey": "50019351b076a46ab5774f3e7875e07d88037d3172e4f7a66145e299bf35a2fb",
+      "route": {
+        "category": "retail",
+        "track": "retail-national",
+        "sequence": 2,
+        "provider": "searchapi",
+        "engine": "bing",
+        "mechanism": "web-serp",
+        "trigger": "second-index-gap",
+        "invocationReason": "second-index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "skipped",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "requestCount": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 0,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "skipped",
+      "discardedReasonCounts": {
+        "circuit-open": 1
+      },
+      "errorMessage": "timeout: searchapi timed out: The operation was aborted due to timeout",
+      "querySha256": "254a9e7a313597093167cb0c067b9d7f5a9867fb875bf8c4677126f9530c1650"
+    },
+    {
+      "callKey": "retail/etail/3/exa/exa",
+      "callFingerprint": "f6a03548647869855ce13800321c850359373572a8823db9a1eed20322743008",
+      "queryClusterKey": "dfd62cb6c23efd8e07bcaa4c1a1ad755c0ccf76eac195d64bd57fcdfdcb3bc33",
+      "route": {
+        "category": "retail",
+        "track": "etail",
+        "sequence": 3,
+        "provider": "exa",
+        "engine": "exa",
+        "mechanism": "semantic-merchant-pages",
+        "trigger": "semantic-gap",
+        "invocationReason": "semantic-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "completed",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 1514,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "166fcd793f843db0f8a838b4e8c671d654597d5c523e30181d509d03bf983ff3"
+    },
+    {
+      "callKey": "retail/retail-national/3/exa/exa",
+      "callFingerprint": "8a21584fcade28e7e3e659516aad112729154feb47a64e7da621e9f8b5125789",
+      "queryClusterKey": "f13caab0e84c4113ecc60cabc851a75b6849bfeedd3eef23e4b90ad6f021cb04",
+      "route": {
+        "category": "retail",
+        "track": "retail-national",
+        "sequence": 3,
+        "provider": "exa",
+        "engine": "exa",
+        "mechanism": "semantic-retailer-pages",
+        "trigger": "semantic-gap",
+        "invocationReason": "semantic-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "completed",
+      "requestedResults": 20,
+      "rawResults": 1,
+      "normalizedCompanies": 1,
+      "newUniqueCompanies": 1,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 2816,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "e82ff5a2059c86ea327247e6a973bf9061f39a2fb7a33a7575f61cb478027f3a"
+    },
+    {
+      "callKey": "retail/etail/0/searchapi/google",
+      "callFingerprint": "c77df47ed317d96981cb2b7b8070d84047aa4b5a81ca1ca453f64cdd1a9ff1ac",
+      "queryClusterKey": "68462a57ba7f9d9e02c240f68112ea5541aff0652c0f1055fbcc8e62933c3c19",
+      "route": {
+        "category": "retail",
+        "track": "etail",
+        "sequence": 0,
+        "provider": "searchapi",
+        "engine": "google",
+        "mechanism": "shopping-web-serp",
+        "trigger": "core",
+        "invocationReason": "Core mechanism for retail/etail"
+      },
+      "status": "skipped",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "requestCount": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 0,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "skipped",
+      "discardedReasonCounts": {
+        "circuit-open": 1
+      },
+      "errorMessage": "timeout: searchapi timed out: The operation was aborted due to timeout",
+      "querySha256": "26d5e40afa927a2aac25a0c5874a1274f3e78ff69149c0ea6698c991458d5cb7"
+    },
+    {
+      "callKey": "retail/retail-national/0/searchapi/google",
+      "callFingerprint": "b5462a61c1f19ffb3a49bd25abc8aeb13c013403542b18c867c5a4f9f8f8cde8",
+      "queryClusterKey": "5d554abe5dbbfae98328bc7911ff4e9257ba339234c478f848ddb3e14aa1edb2",
+      "route": {
+        "category": "retail",
+        "track": "retail-national",
+        "sequence": 0,
+        "provider": "searchapi",
+        "engine": "google",
+        "mechanism": "web-serp",
+        "trigger": "core",
+        "invocationReason": "Core mechanism for retail/retail-national"
+      },
+      "status": "skipped",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "requestCount": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 0,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "skipped",
+      "discardedReasonCounts": {
+        "circuit-open": 1
+      },
+      "errorMessage": "timeout: searchapi timed out: The operation was aborted due to timeout",
+      "querySha256": "9f335c96cf556a0bc4945bc1ae525a4bad450e86ac65c4edcc0f5ca89295a95b"
+    },
+    {
+      "callKey": "retail/retail-local/0/google-places/google-places",
+      "callFingerprint": "57510295393318c23d3a670c57f198e3865b4e7ba7b3fd0c410f59e9507b50d3",
+      "queryClusterKey": "aecad5c026893e6dc54450f5b08d113e1b490b35400e0bc115a0f8fbb74954c1",
+      "route": {
+        "category": "retail",
+        "track": "retail-local",
+        "sequence": 0,
+        "provider": "google-places",
+        "engine": "google-places",
+        "mechanism": "local-text-search",
+        "trigger": "core",
+        "invocationReason": "Core mechanism for retail/retail-local"
+      },
+      "status": "completed",
+      "requestedResults": 20,
+      "rawResults": 1,
+      "normalizedCompanies": 1,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 1,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 385,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "7c34b460446f6fde4f886193438a581de235ed24a0e45a52d0f62f7a9542e2c4"
+    },
+    {
+      "callKey": "retail/etail/1/brave/brave",
+      "callFingerprint": "d3aca35b9bf6b33f4fa1dd09b2da1ba6d12dc57fcfbd3c47ea0874540c16fa8d",
+      "queryClusterKey": "ac1db52b6d81ad06d8a59011b743bc20096193bdffe95af83d9bf84457b19e3b",
+      "route": {
+        "category": "retail",
+        "track": "etail",
+        "sequence": 1,
+        "provider": "brave",
+        "engine": "brave",
+        "mechanism": "web-index",
+        "trigger": "index-gap",
+        "invocationReason": "index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "skipped",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "requestCount": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 0,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "skipped",
+      "discardedReasonCounts": {
+        "circuit-open": 1
+      },
+      "errorMessage": "http: brave HTTP 422: {\"type\":\"ErrorResponse\",\"error\":{\"id\":\"1017f7ab-0b90-4a7d-abef-b0f4a7f59c12\",\"status\":422,\"detail\":\"Unable to validate request parameter(s)\",\"meta\":{\"errors\":[{\"type\":\"too_long\",\"loc\":[\"query\",\"q\"],\"msg\":\"Search query must be at most 600 characters (you entered 834).\",\"input\":\"consumer SMB networking electronics shop Mexico official company networking tienda de computación electrónica routers Wi-Fi mesh switches precio carrito compra en línea retail national Ciudad de México Mexico venta minoris",
+      "querySha256": "6122d529f9ba588bda8198e008f3c982cbbdfc0cba48a2ab8eab9eea324b263f"
+    },
+    {
+      "callKey": "retail/retail-local/1/searchapi/google",
+      "callFingerprint": "46562e91ab07d9157f39ff3f9477974b9cf3b164bbf24e7d75ce7b2476fdcda4",
+      "queryClusterKey": "425ca04fa094a448c5264bc2efecc6b4c8018c75fee042182243f3670176a246",
+      "route": {
+        "category": "retail",
+        "track": "retail-local",
+        "sequence": 1,
+        "provider": "searchapi",
+        "engine": "google",
+        "mechanism": "local-web-serp",
+        "trigger": "web-gap",
+        "invocationReason": "web-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "skipped",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "requestCount": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 0,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "skipped",
+      "discardedReasonCounts": {
+        "circuit-open": 1
+      },
+      "errorMessage": "timeout: searchapi timed out: The operation was aborted due to timeout",
+      "querySha256": "725f767cdc77ba4d43036214881ef37ae234f29c8fa4f2a6a3b191136ba39281"
+    },
+    {
+      "callKey": "retail/retail-national/1/brave/brave",
+      "callFingerprint": "65bb29080a0af687c76a36f51c05a806e570463a236e58b6a350e67d4cb0639f",
+      "queryClusterKey": "cf55dbf2a12048d688a19480ca38cb99278af3aa981cd48a4c39f9e056b6842d",
+      "route": {
+        "category": "retail",
+        "track": "retail-national",
+        "sequence": 1,
+        "provider": "brave",
+        "engine": "brave",
+        "mechanism": "web-index",
+        "trigger": "index-gap",
+        "invocationReason": "index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "skipped",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "requestCount": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 0,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "skipped",
+      "discardedReasonCounts": {
+        "circuit-open": 1
+      },
+      "errorMessage": "http: brave HTTP 422: {\"type\":\"ErrorResponse\",\"error\":{\"id\":\"1017f7ab-0b90-4a7d-abef-b0f4a7f59c12\",\"status\":422,\"detail\":\"Unable to validate request parameter(s)\",\"meta\":{\"errors\":[{\"type\":\"too_long\",\"loc\":[\"query\",\"q\"],\"msg\":\"Search query must be at most 600 characters (you entered 834).\",\"input\":\"consumer SMB networking electronics shop Mexico official company networking tienda de computación electrónica routers Wi-Fi mesh switches precio carrito compra en línea retail national Ciudad de México Mexico venta minoris",
+      "querySha256": "e0493034b900f31dec523750c1c1802c43c5f39e60948c389df98f90111d3248"
+    },
+    {
+      "callKey": "retail/etail/2/searchapi/bing",
+      "callFingerprint": "a4c4d0e3a38856649691e13e75eb5661978492149170ea77269fa34f16dffe2c",
+      "queryClusterKey": "68462a57ba7f9d9e02c240f68112ea5541aff0652c0f1055fbcc8e62933c3c19",
+      "route": {
+        "category": "retail",
+        "track": "etail",
+        "sequence": 2,
+        "provider": "searchapi",
+        "engine": "bing",
+        "mechanism": "web-serp",
+        "trigger": "second-index-gap",
+        "invocationReason": "second-index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "skipped",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "requestCount": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 0,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "skipped",
+      "discardedReasonCounts": {
+        "circuit-open": 1
+      },
+      "errorMessage": "timeout: searchapi timed out: The operation was aborted due to timeout",
+      "querySha256": "26d5e40afa927a2aac25a0c5874a1274f3e78ff69149c0ea6698c991458d5cb7"
+    },
+    {
+      "callKey": "retail/retail-local/2/brave/brave",
+      "callFingerprint": "ea7afb8b92f77d8515ef83f6a139ef788e4910cbf7ec51a964fa73f15e7e13e1",
+      "queryClusterKey": "24f44bcf5945ea7d5ce75aaff77a92241c1b2f05358c7185dfcdefa833856dd1",
+      "route": {
+        "category": "retail",
+        "track": "retail-local",
+        "sequence": 2,
+        "provider": "brave",
+        "engine": "brave",
+        "mechanism": "local-web-index",
+        "trigger": "index-gap",
+        "invocationReason": "index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "skipped",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "requestCount": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 0,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "skipped",
+      "discardedReasonCounts": {
+        "circuit-open": 1
+      },
+      "errorMessage": "http: brave HTTP 422: {\"type\":\"ErrorResponse\",\"error\":{\"id\":\"1017f7ab-0b90-4a7d-abef-b0f4a7f59c12\",\"status\":422,\"detail\":\"Unable to validate request parameter(s)\",\"meta\":{\"errors\":[{\"type\":\"too_long\",\"loc\":[\"query\",\"q\"],\"msg\":\"Search query must be at most 600 characters (you entered 834).\",\"input\":\"consumer SMB networking electronics shop Mexico official company networking tienda de computación electrónica routers Wi-Fi mesh switches precio carrito compra en línea retail national Ciudad de México Mexico venta minoris",
+      "querySha256": "a5578d60faf0921817ed556e1a827f07854f99c8c5fccb33da52ce7f866e8fb1"
+    },
+    {
+      "callKey": "retail/retail-national/2/searchapi/bing",
+      "callFingerprint": "02005a5fb544956f0a4a76d51f151b360df2a718597259bef3dd0879f64e41c7",
+      "queryClusterKey": "5d554abe5dbbfae98328bc7911ff4e9257ba339234c478f848ddb3e14aa1edb2",
+      "route": {
+        "category": "retail",
+        "track": "retail-national",
+        "sequence": 2,
+        "provider": "searchapi",
+        "engine": "bing",
+        "mechanism": "web-serp",
+        "trigger": "second-index-gap",
+        "invocationReason": "second-index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "skipped",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "requestCount": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 0,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "skipped",
+      "discardedReasonCounts": {
+        "circuit-open": 1
+      },
+      "errorMessage": "timeout: searchapi timed out: The operation was aborted due to timeout",
+      "querySha256": "9f335c96cf556a0bc4945bc1ae525a4bad450e86ac65c4edcc0f5ca89295a95b"
+    },
+    {
+      "callKey": "retail/etail/3/exa/exa",
+      "callFingerprint": "7513ea803c23ea0def01f5e300c715f1ce4b1a284ea4c91ff79161f4af2afcb1",
+      "queryClusterKey": "0401d7ce8e7a5c4c9cf4f96388e8e957d3ee3e1c517e72cdd82a3f8f218bc97a",
+      "route": {
+        "category": "retail",
+        "track": "etail",
+        "sequence": 3,
+        "provider": "exa",
+        "engine": "exa",
+        "mechanism": "semantic-merchant-pages",
+        "trigger": "semantic-gap",
+        "invocationReason": "semantic-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "completed",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 1273,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "b243860b3ec708e958e5b73ecce99005e0293cc1ac825729f40891c61c2d8501"
+    },
+    {
+      "callKey": "retail/retail-national/3/exa/exa",
+      "callFingerprint": "c510cb7d9d93d45187d0ff4404326d7da12b2620aa29dbbf0f382f9e24e681ae",
+      "queryClusterKey": "afafba57004d2208524e134410699b0678e54e412e506965fd434ec0623e1a66",
+      "route": {
+        "category": "retail",
+        "track": "retail-national",
+        "sequence": 3,
+        "provider": "exa",
+        "engine": "exa",
+        "mechanism": "semantic-retailer-pages",
+        "trigger": "semantic-gap",
+        "invocationReason": "semantic-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "completed",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 1329,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "3527902fd64d1762158a445048e714bf2b8b6cd58bddd5cc4fd7c2bfe62a3948"
+    }
+  ]
+}

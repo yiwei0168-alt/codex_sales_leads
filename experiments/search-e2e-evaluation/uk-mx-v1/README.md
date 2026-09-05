@@ -1,6 +1,6 @@
 # UK–Mexico formal search evaluation v1
 
-Current status (2026-09-05): v1.1.1 is preregistered pending its frozen tag and zero-call inherited preflight. v1.1.0 was invalidated after MX Retail because mutable runtime configuration sent all routine DeepSeek stages to Pro; its actual USD 1.5705186596 cell cost and diagnostic output remain immutable. v1.1.1 explicitly freezes Flash routine models, connects planned candidate pools to provider result depth, shortens Places queries and excludes already-seen domains in later Brave/SearchAPI searches. Historical spend of USD 3.390149070637425 is fully carried. The unchanged v1.0.15 MX Retail Gemini control and v1.1.0 Codex blind-judge selection are reused without another paid call.
+Current status (2026-09-05): v1.1.2 is preregistered after invalidating v1.1.1's MX Retail diagnostic. v1.1.1 correctly restored routine Flash routing and lowered the cell cost to USD 0.9570672632, but returned only 8/30 because generated Brave queries exceeded its 600-character API limit, transient SearchAPI timeouts opened a task-long provider circuit, and partially unavailable rounds were incorrectly counted toward confirmed exhaustion. v1.1.2 caps submitted Web queries at 580 characters, resets transient circuits between discovery rounds with a one-call recovery probe, and prevents partial-provider rounds from proving exhaustion. Historical spend of USD 4.347216333872236 is fully carried. The unchanged v1.0.15 MX Retail Gemini control and v1.1.0 Codex blind-judge selection are reused without another paid call.
 
 This directory contains the preregistered protocol, frozen configuration, prompts, schemas, runtime checkpoints and final reports for Cudy's first formal end-to-end search evaluation.
 
@@ -41,7 +41,7 @@ Preflight checks, formal-arm stages, Gemini-only shared evaluation and every bli
 
 ## Version and Git policy
 
-- Experiment version: `search-e2e-eval-v1.1.1`
+- Experiment version: `search-e2e-eval-v1.1.2`
 - Working branch: `experiment/search-e2e-uk-mx-v1`
 - A preregistration tag is created before experimental calls.
 - Runtime checkpoints are committed after every completed country/category cell.

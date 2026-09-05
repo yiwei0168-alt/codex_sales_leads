@@ -119,10 +119,19 @@ async function requestJson<T>(provider: string, url: string, init: RequestInit, 
 function boundedResults(value: number): number { return Math.max(1, Math.min(20, Math.round(value))); }
 
 function webQueryWithDomainExclusions(query: DiscoveryQuery): string {
+  const maximumCharacters = 580;
   const domains = [...new Set((query.excludeDomains ?? []).map((domain) => domain.trim().toLowerCase())
     .filter((domain) => /^[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$/.test(domain)))];
-  const selected = domains.length <= 20 ? domains : [...domains.slice(0, 10), ...domains.slice(-10)];
-  return `${query.query} ${selected.map((domain) => `-site:${domain}`).join(" ")}`.trim();
+  const selected = domains.length <= 20 ? [...domains].reverse()
+    : [...domains.slice(-10).reverse(), ...domains.slice(0, 10)];
+  const base = query.query.replace(/\s+/g, " ").trim().slice(0, 380).trim();
+  let output = base;
+  for (const domain of selected) {
+    const clause = `${output ? " " : ""}-site:${domain}`;
+    if (output.length + clause.length > maximumCharacters) break;
+    output += clause;
+  }
+  return output.slice(0, maximumCharacters).trim();
 }
 function language(value: string): string { return value.toLowerCase().split(/[-_]/)[0] || "en"; }
 

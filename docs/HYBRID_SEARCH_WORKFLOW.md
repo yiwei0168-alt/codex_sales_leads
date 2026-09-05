@@ -89,6 +89,14 @@ Every route and stage records input count, raw output, normalized output, new un
 
 ## Version history
 
+### v1.2.1 — 2026-09-05
+
+- Caps the complete Brave/SearchAPI query, including domain exclusions, at 580 characters so provider limits cannot reject generated search plans.
+- Keeps authentication, quota and configuration circuits task-wide, but confines repeated transient route failures to the current discovery round.
+- Reopens a transiently failed provider in the next round with a bounded recovery probe; a successful probe clears its accumulated transient failure count.
+- Does not count a round with provider failures or open circuits toward confirmed search exhaustion, even if another provider completed with zero final additions.
+- Invalidates the v1.1.1 MX Retail diagnostic rather than allowing its 8/30 underfill to bias the formal comparison.
+
 ### v1.2.0 — 2026-09-05
 
 - Isolated the discovery gate from mutable global model configuration; its production default and frozen experiment model are `deepseek-v4-flash`, with no Pro escalation.

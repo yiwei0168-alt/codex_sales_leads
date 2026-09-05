@@ -1,7 +1,7 @@
 {
   "policyKey": "cudy-hybrid-lead-search",
-  "version": "1.2.0",
-  "strategyDocumentVersion": "1.2.0-formal-cell-correction",
+  "version": "1.2.1",
+  "strategyDocumentVersion": "1.2.1-provider-recovery",
   "status": "active",
   "maxConsecutiveNoValueBatches": 2,
   "defaultBatchSize": 12,
