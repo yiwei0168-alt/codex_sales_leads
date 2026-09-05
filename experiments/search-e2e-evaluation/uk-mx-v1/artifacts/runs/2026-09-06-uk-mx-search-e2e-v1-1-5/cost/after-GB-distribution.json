@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-06-uk-mx-search-e2e-v1-1-5",
+  "generatedAt": "2026-09-05T19:44:46.558Z",
+  "cost": {
+    "eventCount": 34,
+    "officialListPriceUsd": 7.8055263116452505,
+    "budgetCostUsd": 7.8055263116452505,
+    "unpricedEvents": [],
+    "byLedger": {
+      "gemini-native-arm": 1.0818839,
+      "product-e2e-arm": 6.65003241164525,
+      "evaluation-overhead": 0.07361
+    },
+    "byStage": {
+      "discovery-gate-r1": 0.01015084,
+      "discovery-gate-r2": 0.00130466,
+      "discovery-gate-r3": 0.00271432,
+      "evidence-correction-r1": 0.043410250000000004,
+      "evidence-correction-r2": 0.008428895,
+      "evidence-correction-r3": 0.00475552,
+      "evidence-correction-search": 0.24,
+      "fresh-evidence": 0.544,
+      "hybrid-discovery": 0.4590000000000001,
+      "intent": 0.007636998923764172,
+      "native-search": 0.19304490000000002,
+      "playbook": 0,
+      "prior-preflight-adjustment": 6.257584059721489,
+      "qualification-score-only-r1": 0.026558840000000004,
+      "qualification-score-only-r2": 0.0046116,
+      "qualification-score-only-r3": 0.0023193800000000002,
+      "rag-retrieval": 0.0000060479999999999995,
+      "role-filter-ranking": 0
+    },
+    "anomalies": []
+  },
+  "budgetDecision": {
+    "totalBudgetUsd": 100,
+    "spentUsd": 7.8055263116452505,
+    "budgetFraction": 0.0780552631164525,
+    "newlyCrossedThresholdsUsd": [],
+    "forecast": {
+      "completedCells": 2,
+      "totalCells": 8,
+      "incurredUsd": 7.8055263116452505,
+      "expectedCompletionUsd": 27.09317982318784,
+      "lowerUsd": 22.542229602531968,
+      "upperUsd": 31.64413004384371,
+      "method": "cell-run-rate"
+    },
+    "warning": false,
+    "hardStop": false,
+    "requiresUserDecision": false,
+    "reasons": []
+  }
+}
