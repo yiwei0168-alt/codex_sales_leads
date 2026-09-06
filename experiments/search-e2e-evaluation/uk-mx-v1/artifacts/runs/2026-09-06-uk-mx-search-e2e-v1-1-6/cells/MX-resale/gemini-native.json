@@ -1,0 +1,224 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+  "cellId": "MX-resale",
+  "arm": "gemini-native",
+  "startedAt": "2026-09-06T05:39:56.066Z",
+  "completedAt": "2026-09-06T05:40:09.204Z",
+  "wallClockMs": 13138,
+  "requestedModel": "gemini-3.6-flash",
+  "actualModel": "gemini-3.6-flash",
+  "searchQueries": 4,
+  "finalCandidates": [
+    {
+      "rank": 1,
+      "companyName": "PlanNet",
+      "officialWebsite": "https://www.plannet.mx",
+      "marketSignal": "Headquartered and operating across Mexico with offices in Mexico City providing corporate network solutions.",
+      "roleSignal": "Acts as an IT solution reseller and VAR specializing in enterprise networking deployment, hardware resale, and infrastructure services.",
+      "relevanceSignal": "Directly relevant for Cudy's enterprise/SMB switch, router, and access point solutions into SMB and commercial network projects.",
+      "evidenceUrls": [
+        "https://www.plannet.mx"
+      ]
+    },
+    {
+      "rank": 2,
+      "companyName": "Redlink Telecomunicaciones",
+      "officialWebsite": "https://redlinktelecomunicaciones.com",
+      "marketSignal": "Based in Jalisco, Mexico, serving commercial clients nationwide across Mexico.",
+      "roleSignal": "Value-added reseller and system integrator providing Wi-Fi networks, routers, switches, firewalls, and structured cabling.",
+      "relevanceSignal": "Ideal partner candidate for reselling Cudy Wi-Fi 6 access points, PoE switches, and VPN routers to local SMBs.",
+      "evidenceUrls": [
+        "https://redlinktelecomunicaciones.com"
+      ]
+    },
+    {
+      "rank": 3,
+      "companyName": "RBNet Services",
+      "officialWebsite": "https://rbnets.com",
+      "marketSignal": "Operates locally in Coahuila and Northern Mexico, catering to industrial and corporate customers.",
+      "roleSignal": "VAR and IT integrator reselling networking equipment, structured cabling, Wi-Fi deployment, and ongoing technical support.",
+      "relevanceSignal": "Resells corporate network hardware; can integrate Cudy light industrial switches and high-density wireless access points.",
+      "evidenceUrls": [
+        "https://rbnets.com"
+      ]
+    },
+    {
+      "rank": 4,
+      "companyName": "Syemex (Sistemas y Enlaces de México)",
+      "officialWebsite": "https://www.syemex.com",
+      "marketSignal": "Operating in Mexico for over 20 years, serving enterprise, real estate, and public sector accounts.",
+      "roleSignal": "Telecommunications value-added reseller and integrator supplying internal and external wireless/wired networking equipment.",
+      "relevanceSignal": "Resells point-to-point wireless, FTTx/xPON hardware, and enterprise Wi-Fi systems similar to Cudy's outdoor wireless and xPON portfolio.",
+      "evidenceUrls": [
+        "https://www.syemex.com"
+      ]
+    },
+    {
+      "rank": 5,
+      "companyName": "XperTIC",
+      "officialWebsite": "https://xpertic.com.mx",
+      "marketSignal": "Headquartered in Mexico City, delivering IT and telecom integration services throughout Mexico.",
+      "roleSignal": "B2B VAR reselling enterprise voice/data hardware, Wi-Fi infrastructure, networking switches, and cybersecurity appliances.",
+      "relevanceSignal": "Resells Wi-Fi networks and IP infrastructure, aligning with Cudy's access points, mesh networks, and PoE switches.",
+      "evidenceUrls": [
+        "https://xpertic.com.mx"
+      ]
+    },
+    {
+      "rank": 6,
+      "companyName": "ITM de México",
+      "officialWebsite": "https://www.itm.mx",
+      "marketSignal": "Mexican telecommunications integrator operating across major commercial centers in Mexico.",
+      "roleSignal": "Value-added reseller offering voice/data design, enterprise Wi-Fi deployment, IP phone systems, and network switches.",
+      "relevanceSignal": "Resells business Wi-Fi, mesh routers, and network switches suited for Cudy's SMB networking range.",
+      "evidenceUrls": [
+        "https://www.itm.mx"
+      ]
+    },
+    {
+      "rank": 7,
+      "companyName": "Grupo Imtelec",
+      "officialWebsite": "https://www.grupoimtelec.com.mx",
+      "marketSignal": "Mexican company with over 15 years operating nationwide in telecom and wireless infrastructure.",
+      "roleSignal": "VAR and solution provider selling wireless bridges, Wi-Fi networks, routers, access control, and telecom hardware.",
+      "relevanceSignal": "Strong candidate for Cudy's outdoor wireless CPEs, 4G/5G FWA routers, and PoE switches.",
+      "evidenceUrls": [
+        "https://www.grupoimtelec.com.mx"
+      ]
+    },
+    {
+      "rank": 8,
+      "companyName": "CoveriX",
+      "officialWebsite": "https://coverix.mx",
+      "marketSignal": "Active B2B IT reseller in Mexico offering nationwide delivery and equipment financing.",
+      "roleSignal": "Technology reseller supplying corporate IT equipment, routers, access points, network switches, and racks to business clients.",
+      "relevanceSignal": "Direct B2B seller of access points, switches, and routers, perfectly complementary to Cudy's hardware portfolio.",
+      "evidenceUrls": [
+        "https://coverix.mx"
+      ]
+    },
+    {
+      "rank": 9,
+      "companyName": "Clanware",
+      "officialWebsite": "https://clanware.com.mx",
+      "marketSignal": "Headquartered in Monterrey with regional branches in Saltillo and Toluca covering all of Mexico.",
+      "roleSignal": "VAR specializing in network engineering, structured cabling, IP physical security, and corporate network deployments.",
+      "relevanceSignal": "Deploys enterprise network equipment where Cudy's PoE switches and commercial APs can fit value-conscious projects.",
+      "evidenceUrls": [
+        "https://clanware.com.mx"
+      ]
+    },
+    {
+      "rank": 10,
+      "companyName": "TRED México",
+      "officialWebsite": "https://tred.mx",
+      "marketSignal": "Serves corporate and mid-market business customers across Mexico.",
+      "roleSignal": "IT value-added reseller supplying network hardware, infrastructure, cloud connectivity, and managed IT services.",
+      "relevanceSignal": "Resells networking and security hardware suitable for Cudy's mesh, VPN gateway, and switch families.",
+      "evidenceUrls": [
+        "https://tred.mx"
+      ]
+    },
+    {
+      "rank": 11,
+      "companyName": "Arsite Integradores",
+      "officialWebsite": "https://arsite.com.mx",
+      "marketSignal": "Mexican IT integrator serving businesses nationwide.",
+      "roleSignal": "VAR reselling broadband wireless LAN/WAN systems, high-performance switches, router solutions, and network security.",
+      "relevanceSignal": "Regularly installs high-performance switches and wireless LANs, creating direct demand for Cudy's SMB product lineup.",
+      "evidenceUrls": [
+        "https://arsite.com.mx"
+      ]
+    },
+    {
+      "rank": 12,
+      "companyName": "REDCO (Redes y Comunicaciones)",
+      "officialWebsite": "https://www.redco.com.mx",
+      "marketSignal": "100% Mexican company operating in corporate network integration.",
+      "roleSignal": "Value-added reseller providing corporate network integration, hardware sales, and inter-network communication services.",
+      "relevanceSignal": "Resells routing and switching gear to business accounts needing economical connectivity solutions.",
+      "evidenceUrls": [
+        "https://www.redco.com.mx"
+      ]
+    },
+    {
+      "rank": 13,
+      "companyName": "Red Virtual México",
+      "officialWebsite": "https://www.rvtel.com.mx",
+      "marketSignal": "Mexican telecom provider with over 35 years of market presence in Mexico.",
+      "roleSignal": "Value-added reseller of network security, IP telephony, Wi-Fi hardware, and managed IT services.",
+      "relevanceSignal": "Resells IP networking products, routers, and switches, matching Cudy’s core SMB catalog.",
+      "evidenceUrls": [
+        "https://www.rvtel.com.mx"
+      ]
+    },
+    {
+      "rank": 14,
+      "companyName": "Value Booster",
+      "officialWebsite": "https://valuebooster.com.mx",
+      "marketSignal": "Mexican business consortium operating out of Mexico City.",
+      "roleSignal": "Value-added reseller and system integrator delivering wireless WLAN equipment, network hardware, and security solutions.",
+      "relevanceSignal": "Resells wireless network brands; Cudy provides a cost-effective alternative for SMB WLAN and access point projects.",
+      "evidenceUrls": [
+        "https://valuebooster.com.mx"
+      ]
+    },
+    {
+      "rank": 15,
+      "companyName": "MAGNET Telecommunications",
+      "officialWebsite": "https://magnet.com.mx",
+      "marketSignal": "Mexican technology integrator serving commercial and industrial clients nationwide.",
+      "roleSignal": "VAR providing advanced telecom infrastructure, business Wi-Fi hardware sales, and enterprise networking services.",
+      "relevanceSignal": "Fits Cudy’s target customer profile in hospitality, education, and light industrial wireless networking.",
+      "evidenceUrls": [
+        "https://magnet.com.mx"
+      ]
+    }
+  ],
+  "missingSlots": 15,
+  "warnings": [],
+  "costEvents": [
+    {
+      "eventId": "MX-resale:gemini-control",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "cellId": "MX-resale",
+      "arm": "gemini-native",
+      "ledger": "gemini-native-arm",
+      "stage": "native-search",
+      "provider": "gemini-full",
+      "requestedModel": "gemini-3.6-flash",
+      "actualModel": "gemini-3.6-flash",
+      "startedAt": "2026-09-06T05:39:56.066Z",
+      "completedAt": "2026-09-06T05:40:09.204Z",
+      "latencyMs": 13138,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 559,
+        "cachedInputTokens": 0,
+        "outputTokens": 2209,
+        "reasoningTokens": 0,
+        "groundingQueries": 4
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 15,
+        "validOutputItems": 15,
+        "downstreamUsedItems": 15,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "one interaction",
+        "no follow-up",
+        "provider order preserved"
+      ],
+      "officialListPriceUsd": 0.064703,
+      "budgetCostUsd": 0.064703,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    }
+  ]
+}
