@@ -38,6 +38,11 @@ export interface ProductFinalCandidate {
     capturedAt: string; contentHash?: string; freshnessStatus?: string; evidenceRunId?: string }>;
 }
 
+export interface ProductAttributionCandidate {
+  candidateId: string;
+  discoveryOccurrences?: Array<{ provider: string }>;
+}
+
 export interface ProductCellResult {
   schemaVersion: 1;
   runId: string;
@@ -59,6 +64,7 @@ export interface ProductCellResult {
   discoveredCandidateCount: number;
   correctedCandidateCount: number;
   completedAssessmentCount: number;
+  attributionCandidates?: ProductAttributionCandidate[];
   finalCandidates: ProductFinalCandidate[];
   missingSlots: number;
   completionReason: TargetCompletionReason;
@@ -380,6 +386,8 @@ export async function runProductCell(cell: ExperimentCell, options: {
     discoveredCandidateCount: totalUnique, correctedCandidateCount: correctedByDomain.size,
     completedAssessmentCount: [...assessmentsByCandidate.values()]
       .filter((assessment) => assessment.scoringStatus === "completed").length,
+    attributionCandidates: [...correctedByDomain.values()].map((candidate) => ({ candidateId: candidate.candidateId,
+      discoveryOccurrences: candidate.discoveryOccurrences?.map((occurrence) => ({ provider: occurrence.provider })) })),
     finalCandidates, missingSlots: Math.max(0, plan.targetCount - finalCandidates.length), completionReason,
     discoveryRounds, discoveryCalls: allDiscoveryCalls,
     warnings, costEvents, coldStartAudit: { historicalCandidateReads: 0, historicalEvidenceReads: 0,

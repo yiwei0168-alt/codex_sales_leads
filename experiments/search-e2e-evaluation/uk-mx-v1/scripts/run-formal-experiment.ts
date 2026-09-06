@@ -767,7 +767,19 @@ async function runCell(cellId: string): Promise<void> {
         || JSON.stringify(source.treatmentModels) !== JSON.stringify(EXPERIMENT_CONFIG.arms["product-e2e"].models)) {
         throw new Error(`Frozen-arm reuse validation failed for ${armKey}`);
       }
-      const reused: ProductCellResult = { ...source, runId: state.runId, costEvents: [],
+      const rawSource = await readJson<ProductCellResult>(path.join(rawRunRoot(reuse.sourceRunId),
+        `cells/${cell.cellId}/product-e2e.json`));
+      const legacyCorrected = Array.isArray(rawSource.raw?.corrected) ? rawSource.raw.corrected as Array<{
+        candidateId: string; discoveryOccurrences?: Array<{ provider: string }> }> : [];
+      const attributionCandidates = source.attributionCandidates ?? legacyCorrected.map((candidate) => ({
+        candidateId: candidate.candidateId,
+        discoveryOccurrences: candidate.discoveryOccurrences?.map((occurrence) => ({ provider: occurrence.provider })),
+      }));
+      const attributionIds = new Set(attributionCandidates.map((candidate) => candidate.candidateId));
+      if (source.finalCandidates.some((candidate) => !attributionIds.has(candidate.candidateId))) {
+        throw new Error(`Frozen-arm reuse is missing provider attribution for ${armKey}`);
+      }
+      const reused: ProductCellResult = { ...source, runId: state.runId, costEvents: [], attributionCandidates,
         warnings: [...source.warnings, `Reused unchanged frozen product quality result from ${reuse.sourceRunId}; its cost is carried once in the historical adjustment.`],
         raw: { ragContext: { reusedFromRunId: reuse.sourceRunId }, discovered: { sourceArtifactPath: reuse.sourceArtifactPath },
           enriched: null, corrected: null, assessments: null } };

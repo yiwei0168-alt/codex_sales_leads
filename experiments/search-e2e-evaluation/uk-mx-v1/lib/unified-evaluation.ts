@@ -177,14 +177,29 @@ function volume(inputItems: number, rawOutputItems: number, validOutputItems: nu
   return { inputItems, rawOutputItems, validOutputItems, downstreamUsedItems, discardedReasonCounts };
 }
 
-function modelEvents(cell: ExperimentCell, stage: string, usages: WorkflowModelUsage[], startedAt: string,
+export function evaluationModelUsageEvents(cell: ExperimentCell, stage: string, usages: WorkflowModelUsage[], startedAt: string,
   completedAt: string, stageVolume: ExperimentVolume): ExperimentCostEvent[] {
-  return usages.map((usage, index) => event({ eventId: `${cell.cellId}:${stage}:${index + 1}`,
-    cellId: cell.cellId, stage, provider: usage.providerId ?? "deepseek", requestedModel: usage.requestedModel,
-    actualModel: usage.actualModel, startedAt, completedAt, latencyMs: usage.latencyMs,
-    attempts: usage.attempts ?? 1, retries: usage.retries ?? 0, fallbackUsed: usage.fallbackUsed,
-    status: "completed", usage: { inputTokens: usage.promptTokens, outputTokens: usage.completionTokens,
-      reasoningTokens: usage.reasoningTokens }, volume: stageVolume }));
+  const groups = new Map<string, WorkflowModelUsage[]>();
+  for (const usage of usages) {
+    const key = `${usage.providerId ?? "deepseek"}|${usage.requestedModel}|${usage.actualModel}`;
+    groups.set(key, [...(groups.get(key) ?? []), usage]);
+  }
+  return [...groups.entries()].map(([key, items], index) => {
+    const [provider, requestedModel, actualModel] = key.split("|");
+    const attributedVolume = index === 0 ? { ...stageVolume,
+      downstreamUsedItems: Math.min(stageVolume.validOutputItems, stageVolume.downstreamUsedItems) }
+      : volume(0, 0, 0, 0, { stageVolumeAttributedToPrimaryModelEvent: items.length });
+    return event({ eventId: `${cell.cellId}:${stage}:${index + 1}`, cellId: cell.cellId, stage, provider,
+      requestedModel, actualModel, startedAt, completedAt,
+      latencyMs: items.reduce((sum, item) => sum + item.latencyMs, 0),
+      attempts: items.reduce((sum, item) => sum + (item.attempts ?? 1), 0),
+      retries: items.reduce((sum, item) => sum + (item.retries ?? 0), 0),
+      fallbackUsed: items.some((item) => item.fallbackUsed), status: "completed",
+      usage: { inputTokens: items.reduce((sum, item) => sum + item.promptTokens, 0),
+        outputTokens: items.reduce((sum, item) => sum + item.completionTokens, 0),
+        reasoningTokens: items.reduce((sum, item) => sum + item.reasoningTokens, 0) },
+      volume: attributedVolume });
+  });
 }
 
 function findingSupported(candidate: CorrectedLeadWorkflowCandidate, kind: "identity" | "country-presence"): boolean {
@@ -233,7 +248,7 @@ export async function evaluateControlUniqueGroup(cell: ExperimentCell, inputs: C
       volume: volume(enriched.candidates.length, corrected.candidates.length, corrected.candidates.length,
         corrected.candidates.length) })]);
   }
-  await record(modelEvents(cell, "evaluation-control-correction", corrected.usage ?? [], correctionStarted,
+  await record(evaluationModelUsageEvents(cell, "evaluation-control-correction", corrected.usage ?? [], correctionStarted,
     correctionCompleted, volume(enriched.candidates.length, corrected.candidates.length,
       corrected.candidates.filter((candidate) => candidate.correction.resolvedRoles.length > 0).length,
       corrected.candidates.length)));
@@ -242,7 +257,7 @@ export async function evaluateControlUniqueGroup(cell: ExperimentCell, inputs: C
   const scored = await new LeadQualificationAgent(undefined, { includeCooperationPaths: false, concurrency: 4 })
     .evaluateWithUsage(corrected.candidates, playbook, cell.countryCode, cell.countryName, plan.objective);
   const scoringCompleted = new Date().toISOString();
-  await record(modelEvents(cell, "evaluation-control-score-only", scored.usage, scoringStarted, scoringCompleted,
+  await record(evaluationModelUsageEvents(cell, "evaluation-control-score-only", scored.usage, scoringStarted, scoringCompleted,
     volume(corrected.candidates.length, scored.assessments.length,
       scored.assessments.filter((assessment) => assessment.scoringStatus === "completed").length,
       scored.assessments.filter((assessment) => assessment.scoringStatus === "completed").length,

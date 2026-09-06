@@ -39,12 +39,16 @@ export function calculateProviderContributions(bundles: FrozenCellBundle[], cost
       row.duplicateHits += call.existingCompanyHits;
       row.paidSearchCredits += call.paidSearchCredits;
     }
-    const corrected = product.raw.corrected as { candidates?: Array<{ candidateId: string;
-      discoveryOccurrences?: Array<{ provider: string }> }> } | null;
-    const finalIds = new Set(product.finalCandidates.map((candidate) => candidate.candidateId));
-    for (const candidate of corrected?.candidates ?? []) {
-      if (!finalIds.has(candidate.candidateId)) continue;
-      const providers = [...new Set((candidate.discoveryOccurrences ?? []).map((item) => item.provider))];
+    const legacyCorrected = Array.isArray(product.raw.corrected) ? product.raw.corrected as Array<{
+      candidateId: string; discoveryOccurrences?: Array<{ provider: string }> }> : [];
+    const corrected = product.attributionCandidates ?? legacyCorrected;
+    const correctedById = new Map(corrected.map((candidate) => [candidate.candidateId, candidate]));
+    for (const finalCandidate of product.finalCandidates) {
+      const candidate = correctedById.get(finalCandidate.candidateId);
+      if (!candidate) throw new Error(`Missing provider attribution for final candidate ${finalCandidate.candidateId}`);
+      const providers = [...new Set((candidate.discoveryOccurrences ?? []).map((item) => item.provider)
+        .filter((provider) => provider.trim().length > 0))];
+      if (providers.length === 0) throw new Error(`Empty provider attribution for final candidate ${finalCandidate.candidateId}`);
       for (const provider of providers) get(provider).downstreamFinalCredit += 1 / Math.max(1, providers.length);
     }
   }

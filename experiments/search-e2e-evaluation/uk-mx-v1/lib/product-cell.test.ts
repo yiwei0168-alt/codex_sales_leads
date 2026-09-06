@@ -4,6 +4,7 @@ import type { WorkflowModelUsage } from "@/lib/leads/workflow/types";
 
 import type { ExperimentCell } from "./experiment";
 import { modelUsageEvents } from "./product-cell";
+import { evaluationModelUsageEvents } from "./unified-evaluation";
 import { sanitizeDiscoveryCalls } from "./public-artifact";
 
 const cell: ExperimentCell = {
@@ -39,6 +40,18 @@ describe("formal product-cell telemetry", () => {
     expect(events[1].volume).toMatchObject({ inputItems: 0, rawOutputItems: 0,
       validOutputItems: 0, downstreamUsedItems: 0 });
     expect(events.reduce((sum, event) => sum + event.volume.rawOutputItems, 0)).toBe(26);
+    expect(events.every((event) => event.volume.downstreamUsedItems <= event.volume.validOutputItems)).toBe(true);
+  });
+
+  it("attributes shared-evaluation stage volume once across model groups", () => {
+    const events = evaluationModelUsageEvents(cell, "evaluation-control-correction",
+      [usage("deepseek-v4-flash"), usage("deepseek-v4-pro")],
+      "2026-09-06T00:00:00.000Z", "2026-09-06T00:00:01.000Z",
+      { inputItems: 20, rawOutputItems: 20, validOutputItems: 18, downstreamUsedItems: 20,
+        discardedReasonCounts: { correctedToAnotherRole: 2 } });
+    expect(events).toHaveLength(2);
+    expect(events.reduce((sum, event) => sum + event.volume.rawOutputItems, 0)).toBe(20);
+    expect(events.reduce((sum, event) => sum + event.volume.downstreamUsedItems, 0)).toBe(18);
     expect(events.every((event) => event.volume.downstreamUsedItems <= event.volume.validOutputItems)).toBe(true);
   });
 

@@ -2,6 +2,8 @@
 
 Current status (2026-09-07): completed. Product E2E reported a +22.69 Macro Slot Utility@30 advantage and won 7/8 cells, but the formal conclusion is inconclusive because the frozen 64-company independent blind-calibration gate failed. Total experiment spend was USD 24.9223087090, including invalidated attempts and shared evaluation; no USD 40 checkpoint or USD 100 budget warning was reached. The deterministic post-run audit corrects a reporting-only provider-attribution defect without changing frozen candidates, scores, blind decisions or win gates.
 
+Post-completion infrastructure repair: future product-cell artifacts now retain a minimal public candidate-to-provider attribution projection, frozen-arm reuse restores that projection from the source raw checkpoint, and the report consumes the projection directly. Shared-evaluation model events attribute aggregate stage volume once while retaining separate token/cost events for routine and escalation models. These changes do not rewrite the completed v1.1.6 artifacts; `POST_RUN_AUDIT.v1.0.16` remains the authoritative correction for that run.
+
 This directory contains the preregistered protocol, frozen configuration, prompts, schemas, runtime checkpoints and final reports for Cudy's first formal end-to-end search evaluation.
 
 The evaluation compares:
