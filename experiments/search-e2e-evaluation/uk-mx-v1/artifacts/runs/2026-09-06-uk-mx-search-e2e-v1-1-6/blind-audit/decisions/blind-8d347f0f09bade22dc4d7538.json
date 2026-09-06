@@ -1,0 +1,108 @@
+{
+  "packetId": "blind-8d347f0f09bade22dc4d7538",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 92,
+  "deterministicTotal": 92,
+  "output": {
+    "packetId": "blind-8d347f0f09bade22dc4d7538",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "Distributor",
+      "VAD"
+    ],
+    "primaryRole": "Distributor",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 45,
+      "channelAndBuyingInfluence": 15,
+      "sameRoleScaleAndCoverage": 15,
+      "executionAndEnablement": 10,
+      "opportunityAndRisk": 7
+    },
+    "totalScore": 92,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "Westcoast distributes networking and security products including switches, routers and firewalls to resellers.",
+        "evidenceIds": [
+          "evidence-7221f73b739d13b9",
+          "evidence-053ed890257856cc"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "It is explicitly a leading UK channel distributor supplying resellers and controlling vendor onboarding and wholesale access.",
+        "evidenceIds": [
+          "evidence-7221f73b739d13b9",
+          "evidence-82466894fb092e5d"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "Multiple UK locations and leading-distributor positioning support top-tier national coverage.",
+        "evidenceIds": [
+          "evidence-fde942f0553046ca",
+          "evidence-82466894fb092e5d"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Dedicated account management, in-house experts, services and special-bid/finance functions show complete distributor enablement.",
+        "evidenceIds": [
+          "evidence-82466894fb092e5d"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Scale and reseller reach are highly attractive, with moderate risk from an established competing vendor portfolio.",
+        "evidenceIds": [
+          "evidence-7221f73b739d13b9",
+          "evidence-82466894fb092e5d"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "No packet evidence confirms a present portfolio gap or onboarding intent."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-8d347f0f09bade22dc4d7538:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T20:35:00.000Z",
+    "completedAt": "2026-09-06T20:36:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

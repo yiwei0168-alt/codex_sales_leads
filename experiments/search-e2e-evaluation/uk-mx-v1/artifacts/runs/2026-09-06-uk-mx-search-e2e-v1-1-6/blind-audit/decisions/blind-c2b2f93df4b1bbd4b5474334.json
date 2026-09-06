@@ -1,0 +1,107 @@
+{
+  "packetId": "blind-c2b2f93df4b1bbd4b5474334",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 90,
+  "deterministicTotal": 90,
+  "output": {
+    "packetId": "blind-c2b2f93df4b1bbd4b5474334",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "Retailer",
+      "E-tailer"
+    ],
+    "primaryRole": "Retailer",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 45,
+      "channelAndBuyingInfluence": 14,
+      "sameRoleScaleAndCoverage": 15,
+      "executionAndEnablement": 10,
+      "opportunityAndRisk": 6
+    },
+    "totalScore": 90,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "Currys actively sells routers, mobile Wi-Fi and network switches for home and business, directly matching Cudy retail families.",
+        "evidenceIds": [
+          "evidence-84de8ae7ad3ccab6",
+          "evidence-739ffa997d7f57b5"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "Direct merchandising, pricing, bundles, delivery and collection demonstrate strong category buying influence.",
+        "evidenceIds": [
+          "evidence-84de8ae7ad3ccab6"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "The evidence supports a broad UK retail operation with large networking assortment and national fulfilment.",
+        "evidenceIds": [
+          "evidence-84de8ae7ad3ccab6",
+          "evidence-56279739f012e08f"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Detailed merchandising, financing, bundles, delivery and rapid store collection demonstrate mature execution.",
+        "evidenceIds": [
+          "evidence-84de8ae7ad3ccab6"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Excellent home-network fit is balanced by prominent TP-Link and other incumbent competition.",
+        "evidenceIds": [
+          "evidence-84de8ae7ad3ccab6",
+          "evidence-56279739f012e08f"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "No evidence shows current openness to listing Cudy."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-c2b2f93df4b1bbd4b5474334:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T20:53:00.000Z",
+    "completedAt": "2026-09-06T20:54:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

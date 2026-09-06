@@ -1,0 +1,107 @@
+{
+  "packetId": "blind-975d71c3a9f6671298a43650",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 93,
+  "deterministicTotal": 93,
+  "output": {
+    "packetId": "blind-975d71c3a9f6671298a43650",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "SI",
+      "VAR"
+    ],
+    "primaryRole": "SI",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 48,
+      "channelAndBuyingInfluence": 14,
+      "sameRoleScaleAndCoverage": 13,
+      "executionAndEnablement": 10,
+      "opportunityAndRisk": 8
+    },
+    "totalScore": 93,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "ERCONNECT designs switching, measured Wi-Fi, SD-WAN and NAC for multi-site business environments, directly matching Cudy SMB networking scenarios.",
+        "evidenceIds": [
+          "evidence-0a4a028ec19ef5a0"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "Its integrated engineering, supply, installation and certification model directly influences technical selection and procurement.",
+        "evidenceIds": [
+          "evidence-home-a2922cc458397d41",
+          "evidence-30eb9fcdeb6c53b7"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "More than 700 projects, 150 organisations, four operating bases and nationwide execution demonstrate strong SI scale.",
+        "evidenceIds": [
+          "evidence-30eb9fcdeb6c53b7"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Design, site measurement, integration, documentation, support and certified partnerships form a complete project lifecycle.",
+        "evidenceIds": [
+          "evidence-0a4a028ec19ef5a0",
+          "evidence-b8145ee1cb4ca0fa"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "National project reach and networking depth create a strong opportunity, with manageable incumbent-partner competition.",
+        "evidenceIds": [
+          "evidence-b8145ee1cb4ca0fa",
+          "evidence-30eb9fcdeb6c53b7"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "No packet evidence shows current willingness to add Cudy."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-975d71c3a9f6671298a43650:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T20:39:00.000Z",
+    "completedAt": "2026-09-06T20:40:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

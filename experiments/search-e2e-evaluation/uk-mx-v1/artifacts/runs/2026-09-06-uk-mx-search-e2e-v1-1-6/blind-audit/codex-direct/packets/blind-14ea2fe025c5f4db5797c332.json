@@ -1,0 +1,23 @@
+{
+  "packetId": "blind-14ea2fe025c5f4db5797c332",
+  "targetMarket": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom"
+  },
+  "requestedCategory": "si-msp",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "Bytes Digital Limited",
+    "domain": "bytesdigital.co.uk",
+    "officialWebsiteUrl": "https://www.bytesdigital.co.uk/"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-home-f5153f547254f073",
+      "sourceType": "official-website",
+      "url": "https://www.bytesdigital.co.uk/",
+      "title": "Bytes Digital | Telecoms - Cloud - Connectivity",
+      "excerpt": "Bytes Digital | Telecoms - Cloud - Connectivity × Question: 1/2 How can we help? Hosted VoIP Phone System 3CX Phone System Business Mobiles Business WiFi 4G WiFi Solution Machine 2 Machine SIMs Office in a Box Business Broadband Superfast Fibre Website Design Hardware/Accessories Multiple Continue › Question: 2/3 Do you currently have a solution in place? Yes No I&#x27;m not sure ‹ Go Back Continue › Question: 3/3 (Optional) Any more information? ‹ Go Back Continue › Let&#x27;s send you your quote... Contact Details We&#x27;ll never sign you up to anything or send you unsolicited emails—that&#x27;s our privacy promise. ‹ Go Back Thank you! Your submission has been received! Oops! Something went wrong while submitting the form. Home About Solutions › Portfolio › Wholesale Contact Online Quo"
+    }
+  ]
+}

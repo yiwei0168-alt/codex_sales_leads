@@ -1,0 +1,111 @@
+{
+  "packetId": "blind-8d8dde034e52e33b01b52604",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 78,
+  "deterministicTotal": 78,
+  "output": {
+    "packetId": "blind-8d8dde034e52e33b01b52604",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "E-tailer",
+      "Retailer",
+      "Business Reseller"
+    ],
+    "primaryRole": "E-tailer",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 38,
+      "channelAndBuyingInfluence": 12,
+      "sameRoleScaleAndCoverage": 12,
+      "executionAndEnablement": 9,
+      "opportunityAndRisk": 7
+    },
+    "totalScore": 78,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "Overclockers UK sells routers and serves gaming/home connectivity, although PCs and components remain its primary focus.",
+        "evidenceIds": [
+          "evidence-b211fc329893f871",
+          "evidence-b1afbf9089a7d711"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "It is an established direct online retailer with business solutions and product merchandising control.",
+        "evidenceIds": [
+          "evidence-6472d3ab9b6b1572",
+          "evidence-8248aaf5ab8a76e1"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "A longstanding UK online retailer with 51–200 employees and a large enthusiast audience has strong specialist reach.",
+        "evidenceIds": [
+          "evidence-8248aaf5ab8a76e1",
+          "evidence-041139c3f59f8972"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Seven-day delivery, finance, hardware expertise and strong customer ratings support mature retail execution.",
+        "evidenceIds": [
+          "evidence-b4026c90e669547c",
+          "evidence-639847febdffdc28",
+          "evidence-3512f71a74cddf13"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Gaming/home networking adjacency is useful, though networking is secondary to high-performance computing.",
+        "evidenceIds": [
+          "evidence-b211fc329893f871",
+          "evidence-8248aaf5ab8a76e1"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "No evidence quantifies networking-category sales."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-8d8dde034e52e33b01b52604:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T20:50:00.000Z",
+    "completedAt": "2026-09-06T20:51:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

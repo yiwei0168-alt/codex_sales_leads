@@ -1,0 +1,30 @@
+{
+  "packetId": "blind-569cf031c8edf0c0f189fba0",
+  "targetMarket": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom"
+  },
+  "requestedCategory": "retail",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "The Electronics Hub Ltd",
+    "domain": "tehonline.co.uk",
+    "officialWebsiteUrl": "https://www.tehonline.co.uk"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-19b890792c9f2ddd",
+      "sourceType": "independent-public",
+      "url": "https://www.cambiumnetworks.com/products/wifi",
+      "title": "Indoor and Outdoor Cloud-Managed Wi-Fi Products & Solution",
+      "excerpt": "XE5-8 Wi-Fi 6E Access Point Data Sheet cnWave 5G Fixed Customer Premises Equipment Data Sheet XV2-2T0 Wi-Fi 6 Access Point Data Sheet cnPilot™ r195 Series Wi-Fi Router XV2-2X Wi-Fi 6 Access Point Data Sheet XV3-8 Wi-Fi 6 Access Point Data Sheet cnPilot e510 Data Sheet cnPilot e425H / e430 Data Sheet XR-320 Data Sheet Rugged Outdoor Cable cnPilot e700 Data Sheet ISP Managed Home and Business Routers Home and Business Router Solutions cnPilot R190V cnPilot r190W Data Sheet [...] Enterprise Wi-Fi 6 Access Point Hardware and Installation Guide 6.5.3 ePMP CLI User Guide v3.4.1 cnPilot R190 Quick Start Guide cnPilot Home Router User Guide XR-320 Installation Guide CNPILOT E425 QUICK START GUIDE (pmp-2532) cnPilot e600 Quick Start Guide (pmp-2239) cnPilot e700 Quick Start Guide (pmp-2217) [...] W"
+    },
+    {
+      "evidenceId": "evidence-6c4545c02e06bffb",
+      "sourceType": "independent-public",
+      "url": "https://www.tp-link.com/us",
+      "title": "TP-Link: Your Smart Home, Simplified",
+      "excerpt": "Blog > News > ### TP-Link and Tapo Recognized for Three Products at the IFA Innovation Awards 2026 News|09-04-2026 ### Wi-Fi 7 Speed: Real-World Performance and What to Expect Blog|09-04-2026 ### Powerline Adapter Setup: From Unboxing to Connected Blog|09-04-2026 ### Portable Wi-Fi Router vs. Mobile Hotspot: What's the Difference? Blog|09-04-2026 ### Smart Devices Keep Disconnecting From Wi-Fi? Here Are the Causes and Fixes Blog|09-04-2026 [...] Learn more ### SG3452X Omada Access Plus 48-Port Gigabit Switch with 4× 10G SFP+ Slots Learn more ### SL2428P Omada 24-Port 10/100Mbps + 4-Port Gigabit Switch with 24-Port PoE+ Learn more ### Beam Bridge 7 KIT Omada Wi-Fi 7 5 GHz & 6 GHz MLO PtP Wireless Bridge Learn more ### EAP660 HD AX3600 Wireless Dual Band Multi-Gigabit Ceiling Mount Access Po"
+    }
+  ]
+}

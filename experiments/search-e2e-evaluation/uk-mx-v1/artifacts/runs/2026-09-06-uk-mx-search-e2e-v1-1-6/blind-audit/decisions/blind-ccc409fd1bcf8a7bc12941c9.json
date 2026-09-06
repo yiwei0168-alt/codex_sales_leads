@@ -1,0 +1,109 @@
+{
+  "packetId": "blind-ccc409fd1bcf8a7bc12941c9",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 93,
+  "deterministicTotal": 93,
+  "output": {
+    "packetId": "blind-ccc409fd1bcf8a7bc12941c9",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "Distributor",
+      "VAD"
+    ],
+    "primaryRole": "Distributor",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 47,
+      "channelAndBuyingInfluence": 15,
+      "sameRoleScaleAndCoverage": 13,
+      "executionAndEnablement": 10,
+      "opportunityAndRisk": 8
+    },
+    "totalScore": 93,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "CDC is a Mexican telecom wholesaler covering networking, fibre, structured cabling, power and security with multiple relevant vendors.",
+        "evidenceIds": [
+          "evidence-home-54a078c3e59d003a",
+          "evidence-8fe0978d0b92f489"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "It explicitly serves commercial partners as a wholesaler and provides complete project solutions.",
+        "evidenceIds": [
+          "evidence-2ad54658abbfbd00",
+          "evidence-eec88345ada406d3"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "Nine regional branches, a Mexico City headquarters and claimed national presence support strong coverage.",
+        "evidenceIds": [
+          "evidence-eec88345ada406d3",
+          "evidence-79134b7a8ced0921"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Training, project advice, logistics, tenders, e-commerce and warranty capability demonstrate full channel enablement.",
+        "evidenceIds": [
+          "evidence-home-54a078c3e59d003a",
+          "evidence-2ad54658abbfbd00"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Strong SMB networking adjacency and partner reach create a compelling opportunity despite incumbent brands.",
+        "evidenceIds": [
+          "evidence-8fe0978d0b92f489",
+          "evidence-2ad54658abbfbd00"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "No packet evidence confirms current interest in Cudy."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-ccc409fd1bcf8a7bc12941c9:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T20:47:00.000Z",
+    "completedAt": "2026-09-06T20:48:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

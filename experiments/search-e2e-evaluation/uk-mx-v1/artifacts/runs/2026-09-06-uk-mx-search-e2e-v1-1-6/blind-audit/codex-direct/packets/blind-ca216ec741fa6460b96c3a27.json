@@ -1,0 +1,58 @@
+{
+  "packetId": "blind-ca216ec741fa6460b96c3a27",
+  "targetMarket": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom"
+  },
+  "requestedCategory": "resale",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "SHI International Corp.",
+    "domain": "shi.com",
+    "officialWebsiteUrl": "https://www.shi.com"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-900ef0c51f7ae1dc",
+      "sourceType": "official-website",
+      "url": "https://www.uk.shi.com",
+      "title": "SHI UK | Global IT Solutions Provider | Trusted Software ...",
+      "excerpt": "Explore SHI About SHI SHI Overview Value Added Reseller Software Licensing Reseller Our Leadership Our Facilities and Locations Awards and Accolades Diversity and Inclusion Sustainability Resources SHI Resource Hub Customer Success Stories News and Media Events and Webinars Public Sector Solutions [...] View all partners ## Award-winning partnerships. Proven results. Trusted by thousands. SHI is proud to be recognized as a top partner across the industry, delivering excellence and impact for our customers. ### Partner Network Rising Star Solution Provider of the Year 2026 Image 67: NVIDIA Logo ### Solution Provider Disruptor of the Year 2025 Image 68: Intel Logo ### Outstanding Climate Action Award 2026 Image 69: Lenovo Logo Image 70: Man in a headset [...] Networking & Security Access Poi"
+    },
+    {
+      "evidenceId": "evidence-2d3051c466bd1f75",
+      "sourceType": "official-website",
+      "url": "https://www.uk.shi.com/uk/about",
+      "title": "Global Software Licensing Agreements and Hardware ...",
+      "excerpt": "SHI UK brings global software licensing and IT solutions expertise to customers in the UK and EMEA."
+    },
+    {
+      "evidenceId": "evidence-5c1210ca474a1bf1",
+      "sourceType": "official-website",
+      "url": "https://www.uk.shi.com/uk/about/locations-and-facilities",
+      "title": "SHI UK International Office Locations in London, Milton ...",
+      "excerpt": "SHI UK sales and support Locations in Milton Keynes, London, Barnsley and international locations in USA, Canada, France and more."
+    },
+    {
+      "evidenceId": "evidence-9b76255687b459ad",
+      "sourceType": "official-website",
+      "url": "https://www.uk.shi.com/emea/partners/aruba",
+      "title": "Aruba | EMEA | Featured partner",
+      "excerpt": "Our certified specialists and dedicated sales teams will keep your distributed workforce operational with HPE Aruba Networking products, available worldwide.Read more"
+    },
+    {
+      "evidenceId": "evidence-86714e72b45d32e7",
+      "sourceType": "independent-public",
+      "url": "https://en.wikipedia.org/wiki/SHI_International_Corp",
+      "title": "SHI International Corp - Wikipedia",
+      "excerpt": "SHI International Corp. (commonly referred to as SHI), headquartered in Somerset, New Jersey, is a privately owned provider of IT infrastructure, end-user computing, cybersecurity, and IT optimization products and services. SHI has customers in the non-profit, private, and public sectors. It has 6,000 employees across more than 35 offices in the United States, Canada, France, Hong Kong, Singapore, and the United Kingdom. SHI has amassed 17,000 customers, including companies such as Boeing, [...] | Type | Private | | Industry | B2B, IT products and services | | Founded | November 1989 | | Founder | Thai Lee and Leo KoGuan | | Headquarters | Somerset, New Jersey , United States | | Area served | Worldwide | | Owner | Thai Lee, CEO and President | | Number of employees | 6,000 employees | | W"
+    },
+    {
+      "evidenceId": "evidence-544f085bcc123b41",
+      "sourceType": "official-website",
+      "url": "https://www.shi.com",
+      "title": "SHI | Infrastructure IT solutions and systems integrator | IT services ...",
+      "excerpt": "Networking & Security Access Points & Bridges Hubs & Switches KVM Switch Products Modems Network Attached Storage (NAS)) Network Cables Network Security Routers PC & Server Components Memory (RAM)) Motherboards Processors (CPU) Sound Cards Video Cards (GPU) [...] We bring you the most advanced solutions and products on the market by teaming up with tech giants like Microsoft, AWS, Cisco, and hundreds of other industry leaders. [...] Explore SHI About SHI SHI Overview Value Added Reseller Software Licensing Reseller Our Leadership Our Facilities and Locations Awards and Accolades Diversity and Inclusion Sustainability Resources SHI Resource Hub Customer Success Stories News and Media Events and Webinars"
+    }
+  ]
+}

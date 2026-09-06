@@ -1,0 +1,106 @@
+{
+  "packetId": "blind-7ca0576569a678b9f9e73d70",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 32,
+  "deterministicTotal": 32,
+  "output": {
+    "packetId": "blind-7ca0576569a678b9f9e73d70",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "B2B Marketplace",
+      "Directory"
+    ],
+    "primaryRole": "B2B Marketplace",
+    "requestedCategoryMatch": false,
+    "dimensions": {
+      "productAndUseCaseFit": 10,
+      "channelAndBuyingInfluence": 5,
+      "sameRoleScaleAndCoverage": 10,
+      "executionAndEnablement": 4,
+      "opportunityAndRisk": 3
+    },
+    "totalScore": 32,
+    "eligibility": "ineligible-for-current-task",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "Networking supplier listings exist, but they describe third parties rather than QuimiNet-owned retail inventory.",
+        "evidenceIds": [
+          "evidence-698718c73f4e4d62",
+          "evidence-5dfc36d9c6d73ccd"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "QuimiNet sells advertising and supplier visibility rather than directly buying and retailing networking products.",
+        "evidenceIds": [
+          "evidence-c37f7b5d0b956486"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "The directory exposes many Mexican suppliers, but marketplace reach is not comparable with retail-channel scale.",
+        "evidenceIds": [
+          "evidence-52b816816130e31c"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "The packet supports directory and chat functions, not fulfilment, returns or product support.",
+        "evidenceIds": [
+          "evidence-698718c73f4e4d62",
+          "evidence-c37f7b5d0b956486"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "It may be a marketing source, but the lack of a retail procurement path is a structural blocker for this task.",
+        "evidenceIds": [
+          "evidence-c37f7b5d0b956486"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "Supplier directory entries do not establish QuimiNet as a retailer or product buyer."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-7ca0576569a678b9f9e73d70:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T20:32:00.000Z",
+    "completedAt": "2026-09-06T20:33:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

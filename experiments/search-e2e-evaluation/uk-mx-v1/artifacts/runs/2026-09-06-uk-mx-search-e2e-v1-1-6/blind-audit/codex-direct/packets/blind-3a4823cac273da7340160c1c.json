@@ -1,0 +1,37 @@
+{
+  "packetId": "blind-3a4823cac273da7340160c1c",
+  "targetMarket": {
+    "countryCode": "MX",
+    "countryName": "Mexico"
+  },
+  "requestedCategory": "retail",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "DDTech",
+    "domain": "ddtech.mx",
+    "officialWebsiteUrl": "https://ddtech.mx"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-cf3516f4e94f9ef6",
+      "sourceType": "official-website",
+      "url": "https://ddtech.mx/productos/redes/access-point",
+      "title": "Access Point",
+      "excerpt": "Wi-Fi 802.11n 802.11ac Velocidad Wi-Fi. Hasta 8 SSIDs / 2.4Ghz & 5GHz $1,999.00. DDTECH © 2026 Pride … 28 77 04 35 ventas@ddtech.mx Suc."
+    },
+    {
+      "evidenceId": "evidence-54e0bc9b1b8c3b84",
+      "sourceType": "independent-public",
+      "url": "https://www.reddit.com/r/mexico/comments/1lt5n76/cual_es_su_experiencia_con_ddtech?tl=en",
+      "title": "What's your experience with ddtech? : r/mexico",
+      "excerpt": "They're super good with warranties, shipping, and advice. If I could recommend a tech supplier in Mexico, it would be them."
+    },
+    {
+      "evidenceId": "evidence-edbe0eff53396097",
+      "sourceType": "official-website",
+      "url": "https://ddtech.mx/productos/redes/router",
+      "title": "Router",
+      "excerpt": "Router Inalambrico Tenda N301 / Wifi / Access Point / 4 Puertos. $299.00. CON EXISTENCIA. Agregar; Ver más · DD Tech · Router TP-Link Inalambrico N 300MB/s /"
+    }
+  ]
+}

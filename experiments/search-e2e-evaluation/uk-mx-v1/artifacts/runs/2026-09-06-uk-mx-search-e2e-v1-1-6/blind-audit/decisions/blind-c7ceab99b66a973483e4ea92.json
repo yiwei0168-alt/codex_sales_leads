@@ -1,0 +1,107 @@
+{
+  "packetId": "blind-c7ceab99b66a973483e4ea92",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 85,
+  "deterministicTotal": 85,
+  "output": {
+    "packetId": "blind-c7ceab99b66a973483e4ea92",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "SI",
+      "Telecommunications Integrator",
+      "VAR"
+    ],
+    "primaryRole": "SI",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 44,
+      "channelAndBuyingInfluence": 13,
+      "sameRoleScaleAndCoverage": 11,
+      "executionAndEnablement": 10,
+      "opportunityAndRisk": 7
+    },
+    "totalScore": 85,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "ITM designs and implements enterprise voice, data, video and network architecture with site surveys and growth roadmaps.",
+        "evidenceIds": [
+          "evidence-home-80e08469eb2e8284"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "End-to-end design, implementation and continuous support give ITM strong specification and procurement influence.",
+        "evidenceIds": [
+          "evidence-home-80e08469eb2e8284",
+          "evidence-250683db2625d409"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "More than 20 years and national assistance are supported, with over 100 clients indicated.",
+        "evidenceIds": [
+          "evidence-home-80e08469eb2e8284",
+          "evidence-250683db2625d409"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Consulting, site survey, implementation, certification, onsite/remote support and monitoring cover the full lifecycle.",
+        "evidenceIds": [
+          "evidence-home-80e08469eb2e8284"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Strong telecom project fit is attractive, with moderate competition from established certified manufacturers.",
+        "evidenceIds": [
+          "evidence-250683db2625d409"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "The packet does not quantify networking-specific annual volume."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-c7ceab99b66a973483e4ea92:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T20:41:00.000Z",
+    "completedAt": "2026-09-06T20:42:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

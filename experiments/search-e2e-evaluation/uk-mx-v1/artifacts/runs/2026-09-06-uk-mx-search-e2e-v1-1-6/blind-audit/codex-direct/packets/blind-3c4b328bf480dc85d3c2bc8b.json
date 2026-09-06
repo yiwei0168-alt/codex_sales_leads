@@ -1,0 +1,37 @@
+{
+  "packetId": "blind-3c4b328bf480dc85d3c2bc8b",
+  "targetMarket": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom"
+  },
+  "requestedCategory": "resale",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "Westcom Networks (UK) Limited",
+    "domain": "westcomnetworks.co.uk",
+    "officialWebsiteUrl": "https://www.westcomnetworks.co.uk/"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-364240c8b29820e5",
+      "sourceType": "independent-public",
+      "url": "https://uk.linkedin.com/company/westcomnetworks",
+      "title": "Westcom Networks (UK) Limited - We provide our clients with extensive, flexible & scalable IT solutions at affordable prices.",
+      "excerpt": "Westcom Networks was founded in 2002 with the vision of providing simple and effective networking solutions for clients. Based in Leeds we provide extensive, pragmatic and cost-effective network solutions for clients nationwide. A leading provider in a wide range of sectors Our client base ranges across multiple sectors, and we are the leading provider of wireless and wired networking solutions to large educational institutions as well as Government bodies and private sector organisations, such [...] organisations, such as manufacturing, finance, professional services, retail and leisure facilities. Our services revolve around you! All of our clients are provided with their own dedicated technical specialist, who they can contact directly for professional support and technical advice at an"
+    },
+    {
+      "evidenceId": "evidence-93a0589f3e7fc616",
+      "sourceType": "official-website",
+      "url": "https://www.westcomnetworks.co.uk/solutions/wi-fi-services",
+      "title": "Wi-Fi Services - Solutions",
+      "excerpt": "Westcom specialises in designing Wi-Fi networks tailored to the unique needs of businesses, including the setup of guest networks and secure staff access."
+    },
+    {
+      "evidenceId": "evidence-acc554cd0d94810e",
+      "sourceType": "official-website",
+      "url": "https://www.westcomnetworks.co.uk",
+      "title": "Network Solutions at Affordable Prices | Westcom Networks",
+      "excerpt": "Hundreds of companies in the UK are already benefiting from Westcom Networks’ expertise and professionalism. To know how you can benefit from our products and services, or to just find out more about us, give us a call and we’d be more than happy to help! Get in touch Manage Consent [...] A security focus with everything we do. #### for any size of organisation ## Popular solutions ### IT Support IT Support which works as hard as you do ### Cyber Security Defences against today's threats ### Business Class Wi-Fi Put an end once and for all to bad Wi-Fi ### Data Backup Secure your companies critical data ### Compliance Services Help with your Cyber Essentials accreditation ### Business Hardware Laptops, desktops, tablets and servers ### Voice Services [...] A solution is only as good as the"
+    }
+  ]
+}

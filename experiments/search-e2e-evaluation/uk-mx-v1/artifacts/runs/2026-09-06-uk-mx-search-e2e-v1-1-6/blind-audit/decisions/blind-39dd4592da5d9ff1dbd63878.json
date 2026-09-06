@@ -1,0 +1,110 @@
+{
+  "packetId": "blind-39dd4592da5d9ff1dbd63878",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 81,
+  "deterministicTotal": 81,
+  "output": {
+    "packetId": "blind-39dd4592da5d9ff1dbd63878",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "MSP",
+      "ISP",
+      "Network Integrator"
+    ],
+    "primaryRole": "MSP",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 44,
+      "channelAndBuyingInfluence": 12,
+      "sameRoleScaleAndCoverage": 9,
+      "executionAndEnablement": 9,
+      "opportunityAndRisk": 7
+    },
+    "totalScore": 81,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "Huus designs dedicated fibre, SD-WAN, managed connectivity and Wi-Fi for business and hospitality scenarios aligned with Cudy SMB/FWA products.",
+        "evidenceIds": [
+          "evidence-fe62f303f7ebf5fb",
+          "evidence-e5b31ebf3bd98d43"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "Its engineers propose and manage customer connectivity solutions, giving it meaningful design and equipment-selection influence.",
+        "evidenceIds": [
+          "evidence-d9b6d3ee65939f0c",
+          "evidence-e5b31ebf3bd98d43"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "It serves businesses across Mexico, but client count and delivery-team scale are not established.",
+        "evidenceIds": [
+          "evidence-e5b31ebf3bd98d43",
+          "evidence-d9b6d3ee65939f0c"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Cloud management, monitoring, failover and engineer-led proposals support strong ongoing service execution.",
+        "evidenceIds": [
+          "evidence-fe62f303f7ebf5fb",
+          "evidence-d9b6d3ee65939f0c"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Clear managed-network demand is attractive, with some risk that Huus is primarily a connectivity service provider rather than a reseller.",
+        "evidenceIds": [
+          "evidence-e3c2011a30c8289d",
+          "evidence-fe62f303f7ebf5fb"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "The packet does not identify current hardware vendors or procurement volume."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-39dd4592da5d9ff1dbd63878:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T20:38:00.000Z",
+    "completedAt": "2026-09-06T20:39:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

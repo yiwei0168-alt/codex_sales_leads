@@ -1,0 +1,44 @@
+{
+  "packetId": "blind-8c57ff248470c90c52b6d776",
+  "targetMarket": {
+    "countryCode": "MX",
+    "countryName": "Mexico"
+  },
+  "requestedCategory": "distribution",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "West Telco",
+    "domain": "westtelco.com.mx",
+    "officialWebsiteUrl": "https://www.westtelco.com.mx"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-e29734f0ef83076e",
+      "sourceType": "official-website",
+      "url": "https://www.westtelco.com.mx",
+      "title": "West Telco | Mayoristas de Tecnología en Latinoamérica.",
+      "excerpt": "Gestor de base de datos relacionada Productividad empresarialSalas de juntas inteligentesMonitoreo de redes y observabilidadEspacios interactivosPlataformas contact centerGestor de base de datos relacionada SOLUCIONES ## Somos el distribuidor de tecnología enfocado en partners con el objetivo de crecer juntos Sé nuestro partner icono - rayo ### Asesoramiento integral de proyectos Nuestros expertos te asesorarán en la planeación y selección de tecnología para cada proyecto. [...] detalle West Telco MARCAS ALIADAS ## Un portafolio integral para construir negocios diversificados Distribuidores de tecnología aliados con marcas líderes e interoperables que impulsan la creación de proyectos rentables Sé nuestro partner <alt>Zoom</alt> <alt>BenQ</alt> <alt>Boom Collaboration</alt> <alt>Workvivo</"
+    },
+    {
+      "evidenceId": "evidence-8b7d03a3263e7bcf",
+      "sourceType": "official-website",
+      "url": "https://www.westtelco.com.mx/se-nuestro-partner",
+      "title": "Sé nuestro Partner - West Telco",
+      "excerpt": "Westelco white logo Westelco white logo Ícono de Ojo Monitoreo de redes y observabilidad Garantiza el funcionamiento óptimo de la infraestructura tecnológica, permitiendo la gestión de sistemas. Ícono de Ojo Espacios interactivos Enfocada en transformar entornos con tecnologías que fomentan la interacción y participación activa. Ícono de Ojo Salas de juntas inteligentes Ofrece espacios modernos que facilitan la comunicación presencial y remota con tecnología avanzada. Ícono de Ojo Productividad empresarial Responde a la necesidad de herramientas de colaboración para el entorno laboral, especialmente en contextos híbridos y remotos. Ícono de Ojo Plataformas Contact Center Crucial para empresas que requieren gestionar eficientemente la comunicación con clientes a través de múltiples can"
+    },
+    {
+      "evidenceId": "evidence-2ad361a5b13a4ca7",
+      "sourceType": "independent-public",
+      "url": "https://www.i3-technologies.com/simple-dealer-locator/dealer/west-telco",
+      "title": "West Telco",
+      "excerpt": "West Telco Distributor Mexico Address Av. Phone +52 33 3687 0745 Email informes@westtelco.com.mx Website https://www.westtelco.com.mx/"
+    },
+    {
+      "evidenceId": "evidence-c15c163de4305a5a",
+      "sourceType": "independent-public",
+      "url": "https://westtelco.zoom.us",
+      "title": "Zoom - West Telco | Mayoristas de Tecnología en Latinoamérica",
+      "excerpt": "Plataforma de atención al cliente con enrutamiento inteligente, analíticas en tiempo real y herramientas de colaboración integradas. ## ¿Por qué West Telco? Te acompañamos en cada etapa del proceso comercial 💼 ### Negociación con marcas Gestionamos descuentos y precios especiales directamente con Zoom para potenciar la rentabilidad de tus proyectos. 🎓 ### Capacitación especializada [...] Te capacitamos en la propuesta de valor de cada solución con soporte técnico especializado para garantizar el éxito. 🔧 ### Dimensionamiento de proyectos Analizamos cada oportunidad contigo para elegir la solución adecuada y transformar propuestas en negocios rentables. 🎯 ### POC y Licencias trial Creamos ambientes de prueba y gestionamos licencias trial para validar el funcionamiento antes de invertir."
+    }
+  ]
+}

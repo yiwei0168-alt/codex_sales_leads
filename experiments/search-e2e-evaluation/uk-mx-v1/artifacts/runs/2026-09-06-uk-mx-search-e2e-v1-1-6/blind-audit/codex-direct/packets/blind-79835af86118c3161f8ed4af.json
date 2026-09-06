@@ -1,0 +1,44 @@
+{
+  "packetId": "blind-79835af86118c3161f8ed4af",
+  "targetMarket": {
+    "countryCode": "MX",
+    "countryName": "Mexico"
+  },
+  "requestedCategory": "resale",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "Carol Technologies, SA de CV",
+    "domain": "cisco-meraki.com.mx",
+    "officialWebsiteUrl": "https://www.cisco-meraki.com.mx/"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-9ee075436f2a4594",
+      "sourceType": "official-website",
+      "url": "https://www.cisco-meraki.com.mx",
+      "title": "Cisco-Meraki.com.mx: Inicio",
+      "excerpt": "Cisco-Meraki.com.mx +52(55)5741-53555741-5355) Cisco-Meraki.com.mx Bienvenido al Futuro Redes Empresariales 100% administrables en la nube meraki-logo Descuentos sobre precios de lista Descuentos especiales por tipos de producto - solicita tu cotización. Cotiza tus productos Cisco Select Partner para México. Simplicidad Pago con transferencia bancaria o tarjeta de crédito. Wireless Proteja, inspeccione y adapte proactivamente su red con la plataforma Meraki de autoconfiguración y automantenimiento. Switching Haz tu TI más poderosa y fácil de escalar controlandola desde la nube. Seguridad Bienvenido a la SD-WAN más confiada en el mundo. Productos Destacados Solicita tu cotización y obtén descuentos especiales para México. Sale! Catalyst 9300 Switch de agregación de capa 3 Switching ## Catal"
+    },
+    {
+      "evidenceId": "evidence-ea4fc06dac243187",
+      "sourceType": "official-website",
+      "url": "https://www.cisco-meraki.com.mx/contacto",
+      "title": "Contacto - Cisco-Meraki.com.mx",
+      "excerpt": "Cisco-Meraki.com.mx +52(55)5741-53555741-5355) Cisco-Meraki.com.mx Contáctanos Datos de Contacto Ingeniero Cisco Meraki: Sr. Pablo Martínez Pérez Oficinas Centrales Prolongación paseo de la reforma 799 – Oficina 619 Santa Fé, Alvaro Obregón, CDMX México, 01310 Teléfonos oficinas +52 55 5741-5355 cel. y whatsapp +52 55 8018 3370 Email info@cisco-meraki.com.mx jose.espejel@caroltech.com.mx Envíanos un mensaje Por favor, activa JavaScript en tu navegador para completar este formulario. Nombre Completo \\ Email \\ Teléfono Pregunta \\ Comment Enviar Find Us Cisco Select Partner para México Carol Technologies, SA de CV Prolongación paseo de la reforma 799 – Oficina 619 Santa Fé, Alvaro Obregón, CDMX México, 01310 Soporte Técnico o Cotizaciones +52(55)5741-53555741-5355) info@cisco-meraki.com.mx Co"
+    },
+    {
+      "evidenceId": "evidence-65935105b432ae49",
+      "sourceType": "official-website",
+      "url": "https://www.cisco-meraki.com.mx/product/cw9164-wi-fi-6e-de-alto-rendimiento",
+      "title": "CW9164 - Wi-Fi 6E de alto rendimiento - Cisco-Meraki.com.mx",
+      "excerpt": "Ir al contenido +52(55)5741-53555741-5355) Cisco-Meraki.com.mx Cisco-Meraki.com.mx Sale! CW9164 - Wi-Fi 6E de alto rendimiento CW9164 - Wi-Fi 6E de alto rendimiento - Image 2 CW9164 - Wi-Fi 6E de alto rendimiento - Image 3 Wireless CW9164 – Wi-Fi 6E de alto rendimiento 43,450.00 Original price was: 43,450.00.28,242.00Current price is: 28,242.00. Disponible para reserva SKU: CW9164 Categoría: Wireless Descripción CW9164 ¿Wi-Fi 6E gestionado en la nube? Sí, por favor. El punto de acceso inalámbrico Catalyst 9164 diseñado para entornos de alto rendimiento. Dos MU-MIMO 802.11ax 2:2 y 4×4:4, velocidad de cuadros agregada de tri-radio de hasta 7,5 Gbps Radios de 2,4 GHz, 5 GHz y 6 GHz; radio de escaneo de doble banda; radio Bluetooth® Low Energy/IoT Seguimiento de ubicación de Wi-Fi en tiempo re"
+    },
+    {
+      "evidenceId": "evidence-d31e0d3f16dfb7cc",
+      "sourceType": "official-website",
+      "url": "https://www.cisco-meraki.com.mx/request-quote",
+      "title": "Mi Lista - Cisco-Meraki.com.mx",
+      "excerpt": "Cisco-Meraki.com.mx +52(55)5741-53555741-5355) Cisco-Meraki.com.mx Mi Lista No products in list Cisco Select Partner para México Carol Technologies, SA de CV Prolongación paseo de la reforma 799 – Oficina 619 Santa Fé, Alvaro Obregón, CDMX México, 01310 Soporte Técnico o Cotizaciones +52(55)5741-53555741-5355) info@cisco-meraki.com.mx Copyright © 2026 Cisco-Meraki.com.mx Powered by Carol Technologies - Política de Privacidad"
+    }
+  ]
+}

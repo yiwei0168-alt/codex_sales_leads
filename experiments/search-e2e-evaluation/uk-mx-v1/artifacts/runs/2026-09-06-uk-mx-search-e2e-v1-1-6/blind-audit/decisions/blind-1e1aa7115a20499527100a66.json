@@ -1,0 +1,106 @@
+{
+  "packetId": "blind-1e1aa7115a20499527100a66",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 85,
+  "deterministicTotal": 85,
+  "output": {
+    "packetId": "blind-1e1aa7115a20499527100a66",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "Distributor"
+    ],
+    "primaryRole": "Distributor",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 42,
+      "channelAndBuyingInfluence": 14,
+      "sameRoleScaleAndCoverage": 13,
+      "executionAndEnablement": 9,
+      "opportunityAndRisk": 7
+    },
+    "totalScore": 85,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "TVC distributes radio links, networking and major wireless/security brands, with strong installer-channel adjacency.",
+        "evidenceIds": [
+          "evidence-62e28fbe60c12725",
+          "evidence-539cc3809cb4bb65"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "It actively recruits a distributor network and operates as a security-solutions wholesaler.",
+        "evidenceIds": [
+          "evidence-9dcd1552a46dc183",
+          "evidence-73102f97799d806a"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "Twenty branches and a claimed large national distributor network indicate strong Mexican reach.",
+        "evidenceIds": [
+          "evidence-9dcd1552a46dc183",
+          "evidence-62e28fbe60c12725"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Training, warranty, loyalty and branch services support effective channel operations.",
+        "evidenceIds": [
+          "evidence-9dcd1552a46dc183"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Relevant radio and networking sales create opportunity, with some concentration in security and entrenched Ubiquiti competition.",
+        "evidenceIds": [
+          "evidence-62e28fbe60c12725"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "The packet does not quantify networking revenue versus security revenue."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-1e1aa7115a20499527100a66:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T20:48:00.000Z",
+    "completedAt": "2026-09-06T20:49:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

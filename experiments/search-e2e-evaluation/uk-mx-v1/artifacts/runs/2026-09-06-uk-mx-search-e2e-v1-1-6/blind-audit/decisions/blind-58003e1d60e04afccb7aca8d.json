@@ -1,0 +1,109 @@
+{
+  "packetId": "blind-58003e1d60e04afccb7aca8d",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 84,
+  "deterministicTotal": 84,
+  "output": {
+    "packetId": "blind-58003e1d60e04afccb7aca8d",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "MSP",
+      "VAR"
+    ],
+    "primaryRole": "MSP",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 45,
+      "channelAndBuyingInfluence": 13,
+      "sameRoleScaleAndCoverage": 8,
+      "executionAndEnablement": 10,
+      "opportunityAndRisk": 8
+    },
+    "totalScore": 84,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "MSP247 designs and supports business routers, switches, Wi-Fi, 4G/5G broadband and broader IT estates.",
+        "evidenceIds": [
+          "evidence-home-d9ee0baca104bf87",
+          "evidence-98ea97ac76942ff8"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "Managed service, consultancy and hardware procurement give it direct specification and purchasing influence.",
+        "evidenceIds": [
+          "evidence-2722dbaeb057776d",
+          "evidence-8d29f64d3239b770"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "A credible Yorkshire regional operation is shown, but client count and broader UK coverage are not.",
+        "evidenceIds": [
+          "evidence-home-d9ee0baca104bf87",
+          "evidence-aeffb88c1d478ae9"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "24/7 monitoring, support, installation, consultancy, procurement and supplier management form a complete MSP capability.",
+        "evidenceIds": [
+          "evidence-aeffb88c1d478ae9",
+          "evidence-2722dbaeb057776d"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Strong SMB solution fit and explicit procurement create an actionable opportunity despite regional scale.",
+        "evidenceIds": [
+          "evidence-98ea97ac76942ff8",
+          "evidence-8d29f64d3239b770"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "No current hardware-vendor mix or annual purchase volume is evidenced."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-58003e1d60e04afccb7aca8d:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T21:00:00.000Z",
+    "completedAt": "2026-09-06T21:01:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "packetId": "blind-aec51389bfbaaee476f1f047",
+  "targetMarket": {
+    "countryCode": "MX",
+    "countryName": "Mexico"
+  },
+  "requestedCategory": "retail",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "MikroTik México",
+    "domain": "mikrotik-mexico.com.mx",
+    "officialWebsiteUrl": "https://mikrotik-mexico.com.mx/"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-home-e999328c268b33b7",
+      "sourceType": "official-website",
+      "url": "https://mikrotik-mexico.com.mx/",
+      "title": "MikroTik México",
+      "excerpt": "MikroTik México .woocommerce .woocommerce-result-count, .woocommerce-page .woocommerce-result-count { float: left; } .woocommerce .woocommerce-ordering { float: right; margin-bottom: 2.5em; } #customer_details h3:not(.elementor-widget-woocommerce-checkout-page h3){padding:20px 0 14px;margin:0 0 20px;border-bottom:1px solid var(--ast-border-color);}form #order_re"
+    }
+  ]
+}

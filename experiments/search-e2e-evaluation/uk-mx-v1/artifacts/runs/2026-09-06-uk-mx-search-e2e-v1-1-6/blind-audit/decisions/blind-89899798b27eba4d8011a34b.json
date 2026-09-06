@@ -1,0 +1,105 @@
+{
+  "packetId": "blind-89899798b27eba4d8011a34b",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 68,
+  "deterministicTotal": 68,
+  "output": {
+    "packetId": "blind-89899798b27eba4d8011a34b",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "SI",
+      "VAR",
+      "IT Consultant"
+    ],
+    "primaryRole": "SI",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 35,
+      "channelAndBuyingInfluence": 11,
+      "sameRoleScaleAndCoverage": 8,
+      "executionAndEnablement": 8,
+      "opportunityAndRisk": 6
+    },
+    "totalScore": 68,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "The company integrates IT, systems, telephony, networks and advanced computing, but the packet provides limited product-family detail.",
+        "evidenceIds": [
+          "evidence-home-d27d1f7a4eb92c5d"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "Consulting and integrated-solution delivery imply influence over customer technology selection.",
+        "evidenceIds": [
+          "evidence-home-d27d1f7a4eb92c5d"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "Nineteen years of operation are supported, but customer, geographic and team scale are not quantified.",
+        "evidenceIds": [
+          "evidence-home-d27d1f7a4eb92c5d"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Consulting and implementation of integrated solutions support project execution, though support depth is unclear.",
+        "evidenceIds": [
+          "evidence-home-d27d1f7a4eb92c5d"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Networking integration is relevant, balanced by sparse evidence about active portfolio and demand.",
+        "evidenceIds": [
+          "evidence-home-d27d1f7a4eb92c5d"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "No client scale, current networking vendors or nationwide coverage is evidenced."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-89899798b27eba4d8011a34b:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T20:40:00.000Z",
+    "completedAt": "2026-09-06T20:41:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

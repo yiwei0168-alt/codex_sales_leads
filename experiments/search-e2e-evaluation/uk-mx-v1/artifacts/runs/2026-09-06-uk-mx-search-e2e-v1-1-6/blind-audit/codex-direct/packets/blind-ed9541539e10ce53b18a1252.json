@@ -1,0 +1,23 @@
+{
+  "packetId": "blind-ed9541539e10ce53b18a1252",
+  "targetMarket": {
+    "countryCode": "MX",
+    "countryName": "Mexico"
+  },
+  "requestedCategory": "si-msp",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "WFI de México",
+    "domain": "wfiweb.com",
+    "officialWebsiteUrl": "https://www.wfiweb.com"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-31d2aaee035fa653",
+      "sourceType": "official-website",
+      "url": "https://www.wfiweb.com",
+      "title": "Wfi",
+      "excerpt": "ABOUT US. WFI is a leading company in providing consulting, engineering and installation services ... Grateful to its clients and business partners, WFI de México"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "packetId": "blind-229ccab2bda5d3f5e63af883",
+  "targetMarket": {
+    "countryCode": "MX",
+    "countryName": "Mexico"
+  },
+  "requestedCategory": "resale",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "GreenTek Solutions, LLC",
+    "domain": "guadalajara.greenteksolutions.mx",
+    "officialWebsiteUrl": "https://guadalajara.greenteksolutions.mx"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-home-a7ba1d1e88e6e803",
+      "sourceType": "official-website",
+      "url": "https://guadalajara.greenteksolutions.mx/",
+      "title": "Compra y venta de Equipo TI Usado en | Cisco | Netapp Guadalajara, JAL",
+      "excerpt": "Compra y venta de Equipo TI Usado en | Cisco | Netapp Guadalajara, JAL sales@greenteksolutions.com +17135909720 Inicio Vender Equipo Usado Vender Telefonía Usada Vender Computadoras Usadas Vender Equipo de Telecomunicaciones Usado Apple HP Dell IBM EMC Brocade Netapp Juniper Comprar Equipo TI Usado Nuestro Inventario Nuestros Servicios Eliminación de Datos Destrucción de Datos Certificados y Reportes Destrucción de Cintas Reciclado Deshecho Electrónico Reciclaje de Computadoras Disposición de Computadoras Estadísticas Reciclaje de Computadoras Sobre Nosotros Problems Que Resolvemos Presencia Contáctanos Vende tu equipo informático en Guadalajara, JAL ¿Su empresa en Guadalajara, JAL está pasando por una actualización? Véndanos su equipo informático no deseado. ¡Contáctenos, obtenga una coti"
+    }
+  ]
+}

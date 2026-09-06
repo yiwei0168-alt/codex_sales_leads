@@ -1,0 +1,51 @@
+{
+  "packetId": "blind-c5cff5c28198708eb24e1eba",
+  "targetMarket": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom"
+  },
+  "requestedCategory": "si-msp",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "Axia Computer Systems",
+    "domain": "axia.co.uk",
+    "officialWebsiteUrl": "https://axia.co.uk"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-f8fe05609cb9514b",
+      "sourceType": "independent-public",
+      "url": "https://www.datacentermap.com/c/axia-computer-systems-ltd",
+      "title": "Axia Computer Systems Ltd - Company Profile",
+      "excerpt": "Founded in 1994, Axia Computer Systems Ltd. is a fast growing IT solutions organisation. Our services includes flexible IT support, professional IT project"
+    },
+    {
+      "evidenceId": "evidence-82cfae3469825ae0",
+      "sourceType": "official-website",
+      "url": "https://axia.co.uk/about",
+      "title": "About Axia — IT Support & Cloud Experts Since 1994 — Axia",
+      "excerpt": "Axia Computer Systems Ltd 01923 333111Get in touch About Axia # About Us Founded in 1994, Axia Computer Systems Ltd is a fast growing IT solutions organisation supporting small and medium-sized businesses throughout the UK. About Us [...] About Us Founded in 1994, Axia Computer Systems Ltd. is a fast growing IT solutions organisation. Our services includes flexible IT support, professional IT project delivery and expert technical advice. We support small and medium-sized businesses throughout the UK. With flexible approach, we can act as a client's IT department, or supplement an existing IT function. [...] ## Contact Info Address: Axia House, 3D Regal Way, Watford, Hertfordshire, WD24 4YJ. United Kingdom Phone: 01923 333111 Email: info@axia.co.uk Website: ## Ready to talk? Discuss your IT"
+    },
+    {
+      "evidenceId": "evidence-2177aff3a36f8d4b",
+      "sourceType": "independent-public",
+      "url": "https://uk.linkedin.com/company/axiauk",
+      "title": "Axia Computer Systems Limited - IT Services, Maintenance and Support IT Business Solutions",
+      "excerpt": "COMPUTER SUPPORT, Maintenance, Networks, Cisco, Juniper, IBM, Microsoft, Axianet, HP, Fujitsu, Conultancy, Web Design, IBM, Lenovo, hosting, zyxel, novell, Fortinet, Dell, VMWare, apc, ISP, Watchguard, netgear, trend micro, avast, veritas, symantec, belkin, dlink, vertiv, apc, 3com, quantum, project management, network security, it support, it support watford, it support london, it support hertfordshire, computer software, computer hardware, computer consultancy , inetrnet service provider , [...] service provider , isp, hosting, colocation, backup, linux, voip, MSP, Dell, Office365, cybersecurity, EMC, sophos, trend, avast, juniper, d-link, axis, avast, and d-link [...] ### Website ### Crunchbase N/A ### LinkedIn N/A ### Industry Computer and Network Security ### Company Size 51-200 emplo"
+    },
+    {
+      "evidenceId": "evidence-1c88f4ff79cbc66b",
+      "sourceType": "independent-public",
+      "url": "https://axia.ltd.uk",
+      "title": "Axia Limited — A UK technology group",
+      "excerpt": "1. 01 ### Axia Computer Systems axia.co.uk Role Managed IT servicesEst. 1994 Operating Watford · London · UK The group’s foundational operating company. Managed IT support, infrastructure consulting and cloud services for UK SMEs, with a 24/7 helpdesk and three decades of continuous trading. IT support Cloud & backup Network consulting Telephony Read profile Visit site 2. 02 ### AxiaNET axia.net.uk Role Connectivity & hostingEst. 2001 [...] The group’s advisory arm. Independent, vendor-neutral IT consultancy for ambitious UK SMBs — from project management and procurement to cloud, Microsoft 365, migration and VoIP. Project management Procurement Cloud & M365 Migration Read profile Visit site 5. 05 ### Axia Telecom axia-tele.com Role Business comms & connectivityEst. 1994 Operating Watford "
+    },
+    {
+      "evidenceId": "evidence-a14eb8798fd08f98",
+      "sourceType": "independent-public",
+      "url": "https://www.facebook.com/axiauk",
+      "title": "Axia Computer Systems Ltd | Watford",
+      "excerpt": "Axia House, 3d Regal Way, Watford, United Kingdom, WD24 4YJ. Stanmore, UK ... Axia Computer Systems Ltd can show how this would work for your setup."
+    }
+  ]
+}

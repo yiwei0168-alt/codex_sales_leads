@@ -1,0 +1,108 @@
+{
+  "packetId": "blind-32f49aca17f31eddad4e6409",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 85,
+  "deterministicTotal": 85,
+  "output": {
+    "packetId": "blind-32f49aca17f31eddad4e6409",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "MSP",
+      "Telecommunications Provider"
+    ],
+    "primaryRole": "MSP",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 42,
+      "channelAndBuyingInfluence": 13,
+      "sameRoleScaleAndCoverage": 13,
+      "executionAndEnablement": 10,
+      "opportunityAndRisk": 7
+    },
+    "totalScore": 85,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "Croft provides managed IT, connectivity and communications to business customers, fitting SMB managed-network scenarios.",
+        "evidenceIds": [
+          "evidence-8a5314551b086b8b",
+          "evidence-bafede4e0cc48fc3"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "Tailored managed solutions and customer technology EwT ownership give Croft significant selection and procurement influence.",
+        "evidenceIds": [
+          "evidence-8a5314551b086b8b",
+          "evidence-69929be298ce4a35"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "More than 5,000 clients and UK-wide B2B service indicate strong MSP scale.",
+        "evidenceIds": [
+          "evidence-8a5314551b086b8b",
+          "evidence-34d3f2fa22790c75"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Managed IT support, communications management and project delivery cover ongoing service execution.",
+        "evidenceIds": [
+          "evidence-8a5314551b086b8b",
+          "evidence-69929be298ce4a35"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Large SMB client reach is attractive, with moderate uncertainty about hardware-standardisation and current vendors.",
+        "evidenceIds": [
+          "evidence-bafede4e0cc48fc3"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "The packet does not identify current network-hardware vendors or volume."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-32f49aca17f31eddad4e6409:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T20:58:00.000Z",
+    "completedAt": "2026-09-06T20:59:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

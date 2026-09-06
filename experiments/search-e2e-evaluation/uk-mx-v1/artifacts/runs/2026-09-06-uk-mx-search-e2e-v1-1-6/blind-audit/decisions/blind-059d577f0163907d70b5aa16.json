@@ -1,0 +1,109 @@
+{
+  "packetId": "blind-059d577f0163907d70b5aa16",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 77,
+  "deterministicTotal": 77,
+  "output": {
+    "packetId": "blind-059d577f0163907d70b5aa16",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "VAD",
+      "Distributor",
+      "Services Aggregator"
+    ],
+    "primaryRole": "VAD",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 33,
+      "channelAndBuyingInfluence": 15,
+      "sameRoleScaleAndCoverage": 15,
+      "executionAndEnablement": 10,
+      "opportunityAndRisk": 4
+    },
+    "totalScore": 77,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "Arrow has deep networking and security capability, but the packet emphasizes enterprise data-centre and cloud environments above Cudy's value/SMB core.",
+        "evidenceIds": [
+          "evidence-40104e90dd82c4a8",
+          "evidence-e92fa550e586947f"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "Arrow explicitly operates beyond traditional distribution and can scale partner services and solution capabilities.",
+        "evidenceIds": [
+          "evidence-c47b07ebf9daf03b",
+          "evidence-e92fa550e586947f"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "Leading global aggregator positioning and international logistics support top-tier coverage.",
+        "evidenceIds": [
+          "evidence-6da7a353dd205b03",
+          "evidence-c47b07ebf9daf03b"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Technical sales engineering, training, financing, logistics and managed services form a complete VAD execution stack.",
+        "evidenceIds": [
+          "evidence-c47b07ebf9daf03b"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Large strategic value is offset by portfolio complexity and strong enterprise networking incumbents.",
+        "evidenceIds": [
+          "evidence-40104e90dd82c4a8",
+          "evidence-6da7a353dd205b03"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "The packet does not show a Cudy-fit portfolio gap or active UK onboarding interest."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-059d577f0163907d70b5aa16:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T20:37:00.000Z",
+    "completedAt": "2026-09-06T20:38:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

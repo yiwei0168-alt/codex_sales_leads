@@ -1,0 +1,23 @@
+{
+  "packetId": "blind-79b519c76abeceaeeeb80e3b",
+  "targetMarket": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom"
+  },
+  "requestedCategory": "si-msp",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "MF Telecom Services",
+    "domain": "mftelecomservices.co.uk",
+    "officialWebsiteUrl": "https://www.mftelecomservices.co.uk/"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-home-ba378c00b52b247c",
+      "sourceType": "official-website",
+      "url": "https://www.mftelecomservices.co.uk/",
+      "title": "MF Telecom Services - Business Telecoms &amp; Managed IT Services",
+      "excerpt": "MF Telecom Services - Business Telecoms Managed IT Services @font-face{font-family:ETmodules;font-display:block;src:url(//www.mftelecomservices.co.uk/wp-content/themes/Divi/core/admin/fonts/modules/all/modules.eot);src:url(//www.mftelecomservices.co.uk/wp-content/themes/Divi/core/admin/fonts/modules/all/modules.eot?#iefix) format(\"embedded-opentype\"),url(//www.mftelecomservices.co.uk/wp-content/themes/Divi/core/admin/fonts/modules/all/modules.woff) format(\"woff\"),url(//www.mftelecomservices.co.uk/wp-content/themes/Divi/core/admin/fonts/modules/all/modules.ttf) format(\"truetype\"),url(//www.mftelecomservices.co.uk/wp-content/themes/Divi/core/admin/fonts/modules/all/modules.svg#ETmodules) format(\"svg\");font-weight:400;font-style:normal} @font-face{font-family:FontAwesome;font-style:normal;fon"
+    }
+  ]
+}

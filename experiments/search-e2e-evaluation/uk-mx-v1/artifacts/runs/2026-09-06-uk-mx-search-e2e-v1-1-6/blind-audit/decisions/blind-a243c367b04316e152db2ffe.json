@@ -1,0 +1,109 @@
+{
+  "packetId": "blind-a243c367b04316e152db2ffe",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 86,
+  "deterministicTotal": 86,
+  "output": {
+    "packetId": "blind-a243c367b04316e152db2ffe",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "VAR",
+      "SI"
+    ],
+    "primaryRole": "VAR",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 48,
+      "channelAndBuyingInfluence": 13,
+      "sameRoleScaleAndCoverage": 9,
+      "executionAndEnablement": 9,
+      "opportunityAndRisk": 7
+    },
+    "totalScore": 86,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "Redlink sells and installs switching, routing, structured cabling and high-density business Wi-Fi, closely matching Cudy SMB project families.",
+        "evidenceIds": [
+          "evidence-ba06016bfb5704cd",
+          "evidence-16cda66595c19590",
+          "evidence-daca077caf56fcc4"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "Its design-and-install model directly influences specification and equipment purchasing for business projects.",
+        "evidenceIds": [
+          "evidence-ba06016bfb5704cd",
+          "evidence-daca077caf56fcc4"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "Mexican operations and Guadalajara specialization are explicit, but national project and customer scale are not quantified.",
+        "evidenceIds": [
+          "evidence-4b07b21d7d75fbe1"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Audit, design, installation and standards-based delivery support strong project execution.",
+        "evidenceIds": [
+          "evidence-16cda66595c19590",
+          "evidence-daca077caf56fcc4"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Direct project fit creates a strong opportunity, with moderate uncertainty about current vendor mix and purchasing volume.",
+        "evidenceIds": [
+          "evidence-4b07b21d7d75fbe1",
+          "evidence-ba06016bfb5704cd"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "No current vendor partnerships or annual networking volume are provided."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-a243c367b04316e152db2ffe:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T20:54:00.000Z",
+    "completedAt": "2026-09-06T20:55:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

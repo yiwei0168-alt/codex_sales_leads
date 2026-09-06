@@ -1,0 +1,106 @@
+{
+  "packetId": "blind-1acc3520451ee4df2ddbd6fe",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 48,
+  "deterministicTotal": 48,
+  "output": {
+    "packetId": "blind-1acc3520451ee4df2ddbd6fe",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "Brand Owner",
+      "Manufacturer"
+    ],
+    "primaryRole": "Brand Owner",
+    "requestedCategoryMatch": false,
+    "dimensions": {
+      "productAndUseCaseFit": 20,
+      "channelAndBuyingInfluence": 5,
+      "sameRoleScaleAndCoverage": 15,
+      "executionAndEnablement": 7,
+      "opportunityAndRisk": 1
+    },
+    "totalScore": 48,
+    "eligibility": "ineligible-for-current-task",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "The named entity is a competing networking brand rather than a retail account; evidence lists its own routers, mesh, switches and access points.",
+        "evidenceIds": [
+          "evidence-f6ae7b16e3bc4c31",
+          "evidence-d4fdc51896dd7837"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "The packet does not establish that tapo.com acts as a third-party UK retailer or buys external networking brands.",
+        "evidenceIds": [
+          "evidence-home-640f0b7799d533e2"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "The evidence supports a globally recognised networking brand, but that scale is outside the requested retailer peer group.",
+        "evidenceIds": [
+          "evidence-fc90851a4874d47e"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Product breadth is evident, but retail fulfilment and third-party merchandising are not.",
+        "evidenceIds": [
+          "evidence-d4fdc51896dd7837"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Direct brand competition and role mismatch are structural blockers for the requested retail search.",
+        "evidenceIds": [
+          "evidence-d4fdc51896dd7837",
+          "evidence-fc90851a4874d47e"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "The candidate name is a product/brand label, not evidence of an independent retailer."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-1acc3520451ee4df2ddbd6fe:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T20:51:00.000Z",
+    "completedAt": "2026-09-06T20:52:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

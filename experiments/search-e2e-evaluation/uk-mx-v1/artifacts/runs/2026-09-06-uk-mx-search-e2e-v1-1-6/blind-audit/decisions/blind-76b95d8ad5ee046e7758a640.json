@@ -1,0 +1,108 @@
+{
+  "packetId": "blind-76b95d8ad5ee046e7758a640",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 79,
+  "deterministicTotal": 79,
+  "output": {
+    "packetId": "blind-76b95d8ad5ee046e7758a640",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "E-tailer",
+      "Reseller"
+    ],
+    "primaryRole": "E-tailer",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 45,
+      "channelAndBuyingInfluence": 12,
+      "sameRoleScaleAndCoverage": 8,
+      "executionAndEnablement": 7,
+      "opportunityAndRisk": 7
+    },
+    "totalScore": 79,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "The Mexican store lists switches, cloud-managed networking, Wi-Fi 6E backhaul and outdoor equipment closely aligned with Cudy families.",
+        "evidenceIds": [
+          "evidence-0fbcca724a49f29c",
+          "evidence-a89fce04a0e7f229",
+          "evidence-7a001bcbe457717a"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "Direct nationwide online sales and visible multi-brand inventory support meaningful procurement influence.",
+        "evidenceIds": [
+          "evidence-0fbcca724a49f29c"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "Nationwide Mexican shipping is supported, but the packet does not establish large traffic, revenue or store scale.",
+        "evidenceIds": [
+          "evidence-0fbcca724a49f29c"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "The store offers advice, warranties and product-level technical merchandising, including enterprise subscriptions.",
+        "evidenceIds": [
+          "evidence-46ac700744f2c58b",
+          "evidence-0fbcca724a49f29c"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Strong category adjacency creates an actionable opportunity, balanced by several incumbent wireless brands.",
+        "evidenceIds": [
+          "evidence-46ac700744f2c58b",
+          "evidence-7a001bcbe457717a"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "No reliable size or current Cudy-onboarding evidence is included."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-76b95d8ad5ee046e7758a640:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T20:31:00.000Z",
+    "completedAt": "2026-09-06T20:32:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

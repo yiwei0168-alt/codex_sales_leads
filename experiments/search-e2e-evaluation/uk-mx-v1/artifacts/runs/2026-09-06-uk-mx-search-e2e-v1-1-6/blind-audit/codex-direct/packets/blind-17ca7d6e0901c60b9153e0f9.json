@@ -1,0 +1,44 @@
+{
+  "packetId": "blind-17ca7d6e0901c60b9153e0f9",
+  "targetMarket": {
+    "countryCode": "MX",
+    "countryName": "Mexico"
+  },
+  "requestedCategory": "resale",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "SMB Technology Partners MX",
+    "domain": "smb.mx",
+    "officialWebsiteUrl": "https://www.smb.mx/"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-home-d79722c2eb0cc2fe",
+      "sourceType": "official-website",
+      "url": "https://www.smb.mx/",
+      "title": "Official homepage",
+      "excerpt": "--> .StylableButton2545352419__root{-archetype:box;cursor:pointer;box-sizing:border-box;touch-action:manipulation;border:0;width:100%;min-width:10px;height:100%;min-height:10px;padding:0;display:block}.StylableButton2545352419__root[disabled]{pointer-events:none}.StylableButton2545352419__root:not(:hover):not([disabled]).StylableButton2545352419--hasBackgroundColor{background-color:var(--corvid-background-color)!important}.StylableButton2545352419__root:hover:not([disabled]).StylableButton2545352419--hasHoverBackgroundColor{background-color:var(--corvid-hover-background-color)!important}.StylableButton2545352419__root:not(:hover)[disabled].StylableButton2545352419--hasDisabledBackgroundColor{background-color:var(--corvid-disabled-background-color)!important}.StylableButton2545352419__root:"
+    },
+    {
+      "evidenceId": "evidence-c7d4f1f6e051f5c2",
+      "sourceType": "official-website",
+      "url": "https://www.smb.mx/blank-18",
+      "title": "Soluciones Financieras | SMB TECHNOLOGY PARTNERS MX",
+      "excerpt": "7.png Fair Market Value (FMV) Esquema de rentas atractivas con devolución de los equipos al final del plazo. Full Pay Out (FPO) Esquema en donde al final del plazo el valor residual es simbólico. Crédito Simple Esquema donde se adquiere la solución en modo de venta a plazos, con atractivas tasas de interés para la compra de la solución en parcialidades. SOLUCIONES FINANCIERAS ENFOCADAS A LA RENOVACIÓN TECNOLÓGICA PARA EMPRESAS,PROYECTOS MULTIMARCA QUE INTEGREN: imágenes SMB (8).png.png) Servicios Software imágenes SMB (9).png.png) imágenes SMB (11).png.png) Hardware 196.jpg PLAZOS 79.jpg 24-60 MESES CARACTERÍSTICAS GENERALES Nuestras Soluciones 173.jpg PUEDE APLICAR A PROYECTOS MULTIMARCA. PERSONAS MORALES MÍNIMO CON 3 AÑOS EN OPERACIÓN. PROYECTOS EN TODO EL TERRITORIO NACIONAL. 190.jpg AL"
+    },
+    {
+      "evidenceId": "evidence-93aea4311b722e5d",
+      "sourceType": "official-website",
+      "url": "https://www.smb.mx",
+      "title": "Nosotros | SMB TECHNOLOGY PARTNERS MX",
+      "excerpt": "top of page ## Valores Agregados Ofrecemos un completo portafolio de servicios TIC que van desde la infraestructura de TI, ciberseguridad, servicios administrados, entre otras. ​ En SMB Technology Partners nos hemos preparado para que nuestros clientes transiten una ruta hacia la transformación digital de su negocio de forma segura y efectiva. ​ Impactamos positivamente en el negocio de nuestros clientes al ayudarles a crecer, optimizar su infraestructura y darles soporte continuo. ​ [...] ​ Somos el mejor integrador de redes, seguridad y soluciones de TIC en México, tenemos personal capacitado y con amplia experiencia en la industria tecnológica. ## #pensandoentic RESPONSALIBILIDAD CALIDAD HONESTIDAD RENTABILIDAD ## Nosotros Somos una empresa orientada a ofertar soluciones de valor vincul"
+    },
+    {
+      "evidenceId": "evidence-70817a65dd02a4e5",
+      "sourceType": "official-website",
+      "url": "https://www.smb.mx/blank-20",
+      "title": "Gamer | SMB TECHNOLOGY PARTNERS MX",
+      "excerpt": "7.png GAMER NUESTRA OFERTA INCLUYE: 106.jpg Asesoría Servicio Técnico Venta de Equipos Gamer Ensambles Actualizaciones 181.jpg Explora las mejores PC Gamer personalizadas, workstation y accesorios para tu computadora en México Accesorios Audifonos & Bocinas Almacenamiento Enfriamiento Fuentes de Poder Gabinetes Computadoras Motherboard Monitores Mouse Tarjetas Gráficas Teclados Procesadores Ram Ensambles Premium Cables 96.jpg NUESTROS PARTNERS © 2026 Realizado por SMB Technology Partners"
+    }
+  ]
+}

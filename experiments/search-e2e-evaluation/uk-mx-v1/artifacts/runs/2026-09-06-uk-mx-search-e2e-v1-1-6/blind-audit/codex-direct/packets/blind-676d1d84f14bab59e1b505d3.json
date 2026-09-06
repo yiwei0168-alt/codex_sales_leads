@@ -1,0 +1,37 @@
+{
+  "packetId": "blind-676d1d84f14bab59e1b505d3",
+  "targetMarket": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom"
+  },
+  "requestedCategory": "distribution",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "Fairline Distribution Ltd",
+    "domain": "fairline.co.uk",
+    "officialWebsiteUrl": "https://fairline.co.uk/"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-home-de32f35da294ce5c",
+      "sourceType": "official-website",
+      "url": "https://fairline.co.uk/",
+      "title": "Fairline | IT Networking, KVM, Desk Power &amp; Mains Cabling",
+      "excerpt": "Fairline | IT Networking, KVM, Desk Power Mains Cabling @font-face{font-family:ETmodules;font-display:block;src:url(//fairline.co.uk/wp-content/themes/Divi/core/admin/fonts/modules/all/modules.eot);src:url(//fairline.co.uk/wp-content/themes/Divi/core/admin/fonts/modules/all/modules.eot?#iefix) format(\"embedded-opentype\"),url(//fairline.co.uk/wp-content/themes/Divi/core/admin/fonts/modules/all/modules.woff) format(\"woff\"),url(//fairline.co.uk/wp-content/themes/Divi/core/admin/fonts/modules/all/modules.ttf) format(\"truetype\"),url(//fairline.co.uk/wp-content/themes/Divi/core/admin/fonts/modules/all/modules.svg#ETmodules) format(\"svg\");font-weight:400;font-style:normal} @media (min-width:981px){.et_pb_gutters3 .et_pb_column,.et_pb_gutters3.et_pb_row .et_pb_column{margin-right:5.5%}.et_pb_gutte"
+    },
+    {
+      "evidenceId": "evidence-b210a09f28c94dcd",
+      "sourceType": "official-website",
+      "url": "https://fairline.co.uk",
+      "title": "Fairline | IT Networking, KVM, Desk Power & Mains Cabling",
+      "excerpt": "Fairline IT, AV & Networking Products You Can Trust From everyday requirements to complex installations, Fairline delivers an extensive UK stock range and expert advice so you can move forward with confidence. Need help choosing the right product? Use our Workplace Solution Solver Fairline Distribution Ltd Customer Reviews Trusted by Buyers Across the UK See why customers choose Fairline. Google Simon Edwards profile picture Google star 1 Google star 2 Google star 3 Google star 4 Google star 5 Google Martin Smith profile picture Google star 1 Google star 2 Google star 3 Google star 4 Google star 5 Google Yusuf Aziz profile picture Google star 1 Google star 2 Google star 3 Google star 4 Google star 5 Google John Barnett profile picture Google star 1 Google star 2 Google star 3 Google star 4"
+    },
+    {
+      "evidenceId": "evidence-04624ec56b9a7996",
+      "sourceType": "official-website",
+      "url": "https://fairline.co.uk/account-registration",
+      "title": "Online Account Registration - Fairline Distribution",
+      "excerpt": "Fairline Create Your Fairline Online Account Register now and gain access to quantity discounts. Complete the form below and we’ll email you when your account is live! Already registered? please log in here. First Name \\ Last Name \\ Phone (optional) Email \\ Username \\ Company Name \\ Country \\ AfghanistanÅland IslandsAlbaniaAlgeriaAmerican SamoaAndorraAngolaAnguillaAntarcticaAntigua and BarbudaArgentinaArmeniaArubaAustraliaAustriaAzerbaijanBahamasBahrainBangladeshBarbadosBelarusBelauBelgiumBelizeBeninBermudaBhutanBoliviaBonaire, Saint Eustatius and SabaBosnia and HerzegovinaBotswanaBouvet IslandBrazilBritish Indian Ocean TerritoryBruneiBulgariaBurkina FasoBurundiCambodiaCameroonCanadaCape VerdeCayman IslandsCentral African RepublicChadChileChinaChristmas IslandCocos (Keeling) IslandsColombi"
+    }
+  ]
+}

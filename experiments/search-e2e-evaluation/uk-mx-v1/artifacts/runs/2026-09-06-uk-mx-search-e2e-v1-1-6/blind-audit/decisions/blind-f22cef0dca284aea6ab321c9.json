@@ -1,0 +1,109 @@
+{
+  "packetId": "blind-f22cef0dca284aea6ab321c9",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 96,
+  "deterministicTotal": 96,
+  "output": {
+    "packetId": "blind-f22cef0dca284aea6ab321c9",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "MSP",
+      "SI",
+      "Connectivity Provider"
+    ],
+    "primaryRole": "MSP",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 48,
+      "channelAndBuyingInfluence": 15,
+      "sameRoleScaleAndCoverage": 15,
+      "executionAndEnablement": 10,
+      "opportunityAndRisk": 8
+    },
+    "totalScore": 96,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "Wavenet delivers managed IT, enterprise connectivity, networks, security and cloud to business customers across the UK.",
+        "evidenceIds": [
+          "evidence-home-31a5593691ab2c31",
+          "evidence-ccb6bfbb8f0e0ae4"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "As an end-to-end MSP and integrator, Wavenet has exceptional solution-design, procurement and customer-standardisation influence.",
+        "evidenceIds": [
+          "evidence-home-31a5593691ab2c31",
+          "evidence-51e86cd24ddd6045"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "A £500 million business serving over 22,000 customers with nationwide reach is top-tier within the MSP role.",
+        "evidenceIds": [
+          "evidence-fb0bc41f1f36be1e",
+          "evidence-ccb6bfbb8f0e0ae4"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Managed services, technical delivery, support and multi-domain integration demonstrate comprehensive execution.",
+        "evidenceIds": [
+          "evidence-home-31a5593691ab2c31",
+          "evidence-ccb6bfbb8f0e0ae4"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Scale and network demand make it highly valuable, while complexity and incumbent standards remain manageable risks.",
+        "evidenceIds": [
+          "evidence-fb0bc41f1f36be1e"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "No packet evidence confirms current willingness to standardise on Cudy."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-f22cef0dca284aea6ab321c9:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T21:01:00.000Z",
+    "completedAt": "2026-09-06T21:02:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

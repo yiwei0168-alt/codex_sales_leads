@@ -1,0 +1,51 @@
+{
+  "packetId": "blind-1fa12d00feb2c112ba890355",
+  "targetMarket": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom"
+  },
+  "requestedCategory": "si-msp",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "Axians UK",
+    "domain": "axians.co.uk",
+    "officialWebsiteUrl": "https://www.axians.co.uk"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-77ed975ebda54a66",
+      "sourceType": "official-website",
+      "url": "https://www.axians.co.uk",
+      "title": "Axians UK | Digital Transformation & IT Managed Services",
+      "excerpt": "Go to main content Go to main menu Go to main search form Go to footer Contact Us Careers linkedin twitter facebook youtube Your search needs to be 3 character long at least/ test Axians UK We Drive Digital Transformation Through Expert Networking and Cybersecurity. Our experts build and secure your critical network infrastructure, enabling seamless connectivity and service excellence through comprehensive IT Managed Services. LEARN MORE ABOUT US Cloud Computing Concept, Digital Network Data, Cyber Security, Infrastructure, Networking, Axians Uk Computing Service Excellence.jpeg Welcome to Axians UK At Axians UK, we understand the specific and individual IT challenges our customers face in a digital world that is constantly evolving. We offer comprehensive and innovative IT services and so"
+    },
+    {
+      "evidenceId": "evidence-37b15a7f8796746f",
+      "sourceType": "official-website",
+      "url": "https://www.axians.co.uk/about-us",
+      "title": "About Us | Axians UK | ICT Solutions Company",
+      "excerpt": "The strength of Axians’ global network means you can rely on our incredible people to deploy technology that achieves critical operational outcomes, wherever you are and whatever your need. Partnerships 06 August 2026 #### Axians bolsters telecommunications and utilities leadership with the appointment of Steve Kingdom. Read more 14 July 2026 #### Plenty of Room in the Data centre Boom for Non-Hyperscalers Read more 23 June 2026 [...] Axians UK is a technology services partner that delivers transformative solutions to accelerate your ambitions in today’s ever-changing world. Whether you need tried-and-tested platforms or cutting-edge innovation, we commit to customer excellence and invest in long-term thinking. [...] #### Axians UK launches Enterprise Architecture as a Service to bridge th"
+    },
+    {
+      "evidenceId": "evidence-dd52f5709ed6f018",
+      "sourceType": "official-website",
+      "url": "https://www.axians.co.uk/app/uploads/sites/75/2022/04/VEUK-Human-Trafficking-Statement-2022.pdf",
+      "title": "[PDF] Modern Slavery and Human Trafficking Statement 2022 - Axians UK",
+      "excerpt": "MODERN SLAVERY AND HUMAN TRAFFICKING STATEMENT VINCI Energies UK and RoI 2022 VINCI Energies UK & ROI - Modern Slavery and Human Trafficking Statement VINCI Energies UK Holding Limited and its subsidiaries which are listed below, (together, “VE UK & RoI”) opposes slavery and human trafficking in all its forms. This statement sets out the steps we have taken in the financial year ending 31st December 2022 to ensure that there is no slavery or human trafficking in our business or in our supply chain. Group Overview VE UK & RoI are a group of companies operating under the global VINCI Group, that contribute to a changing world by connecting infrastructure, buildings and industrial sites to information and energy systems to improve your life every day. Whilst our annual turnover is under £36 m"
+    },
+    {
+      "evidenceId": "evidence-cb3a460d18863543",
+      "sourceType": "official-website",
+      "url": "https://www.axians.co.uk/news/super-wi-fi-and-the-sustainable-network",
+      "title": "From Legacy to Limitless: Super-Wi-Fi and the Sustainable Network",
+      "excerpt": "At Axians UK, we're committed to helping universities and enterprises unlock the full potential of Super-Wi-Fi and build a network that is both"
+    },
+    {
+      "evidenceId": "evidence-f6151e04e9ec7331",
+      "sourceType": "official-website",
+      "url": "https://www.axians.co.uk/industries/carriers-and-service-providers",
+      "title": "Core Network Solutions for Carriers & Service Providers | Axians UK",
+      "excerpt": "Carrier & Service Providers (CSPs) face increasing pressure to deliver essential services, from fiber-to-the-home (FTTH) to expanded mobile coverage, all while maintaining a strong ROI. Our telecom solutions enable faster time to market, efficient operations, and enhanced user experience. With top certifications, global expertise, and a commitment to innovation & sustainability, we deliver modern network solutions to meet today’s challenges and future needs. Axians Global [...] Future proofing to keep up with transformative technology and cybersecurity [...] At Axians, we deliver solutions that enhance network efficiency, enabling organisations to effectively roll out and deliver new services. Our comprehensive, white-labelled managed service can take care of managing and monitoring your n"
+    }
+  ]
+}

@@ -1,0 +1,106 @@
+{
+  "packetId": "blind-b3cf891d0df3d51168d2a747",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 90,
+  "deterministicTotal": 90,
+  "output": {
+    "packetId": "blind-b3cf891d0df3d51168d2a747",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "Distributor",
+      "E-tailer"
+    ],
+    "primaryRole": "Distributor",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 49,
+      "channelAndBuyingInfluence": 15,
+      "sameRoleScaleAndCoverage": 11,
+      "executionAndEnablement": 9,
+      "opportunityAndRisk": 6
+    },
+    "totalScore": 90,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "LinITX carries routers, switches, Wi-Fi 6, mobile broadband, fibre, access points and related networking families.",
+        "evidenceIds": [
+          "evidence-daade51480518b0d",
+          "evidence-56e953264811a3a4"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "It explicitly identifies as a MikroTik and Ubiquiti master distributor with trade-oriented professional support.",
+        "evidenceIds": [
+          "evidence-daade51480518b0d"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "It supports UK purchasing and multiple currencies, but no broadline-scale figures are included.",
+        "evidenceIds": [
+          "evidence-daade51480518b0d"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Professional support, training and deep product merchandising indicate strong channel execution.",
+        "evidenceIds": [
+          "evidence-daade51480518b0d",
+          "evidence-9004436d23033a77"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Excellent portfolio adjacency is offset by strong incumbent Ubiquiti and MikroTik relationships.",
+        "evidenceIds": [
+          "evidence-daade51480518b0d"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "No evidence demonstrates openness to another networking vendor."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-b3cf891d0df3d51168d2a747:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T20:34:00.000Z",
+    "completedAt": "2026-09-06T20:35:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

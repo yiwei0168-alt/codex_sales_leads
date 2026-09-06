@@ -1,0 +1,44 @@
+{
+  "packetId": "blind-6326f21e2b53e1bae1f53726",
+  "targetMarket": {
+    "countryCode": "MX",
+    "countryName": "Mexico"
+  },
+  "requestedCategory": "distribution",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "Kritical Hardware",
+    "domain": "kritical.com.mx",
+    "officialWebsiteUrl": "https://kritical.com.mx"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-6c160e62392671e2",
+      "sourceType": "official-website",
+      "url": "https://kritical.com.mx/iex-402-shdsl-series.html",
+      "title": "IEX-402-SHDSL Series",
+      "excerpt": "| | | IEX-402-SHDSL Extensor Ethernet SHDSL gestionado con 1 puerto 10 / 100BaseT (X) y 1 puerto DSL, temperatura de funcionamiento de -10 a 60 ° C. | | IEX-402-SHDSL-T Extensor Ethernet SHDSL gestionado con 1 puerto 10 / 100BaseT (X) y 1 puerto DSL, temperatura de funcionamiento de -40 a 75 ° C. |"
+    },
+    {
+      "evidenceId": "evidence-5bf8e63de5fb814c",
+      "sourceType": "official-website",
+      "url": "https://kritical.com.mx/iologik-2512-hspa-series.html",
+      "title": "ioLogik 2512 HSPA Series",
+      "excerpt": "| | | ioLogik 2512-HSPA E / S remotas HSPA con Click & Go Plus, 8 DI, 8 DI / Os, -10 a 60 ° C de temperatura de funcionamiento. | | ioLogik 2512-HSPA-T E / S remotas HSPA con Click & Go Plus, 8 DI, 8 DI / Os, -30 a 70 ° C de temperatura de funcionamiento. |"
+    },
+    {
+      "evidenceId": "evidence-a04acc080b64cc52",
+      "sourceType": "official-website",
+      "url": "https://kritical.com.mx/cisco.html",
+      "title": "Cisco - KRITICAL HARDWARE",
+      "excerpt": "Cisco IE 1000 Cisco IE 2000 Cisco IE 2000U Cisco IE 3100 Cisco IE 3200 Cisco IE 3300 Cisco IE 3400 Cisco IE 4000 Cisco IE 3010 Cisco IE 4010 Cisco IE 5000 Cisco IE 9300"
+    },
+    {
+      "evidenceId": "evidence-5900e50c98f08e5b",
+      "sourceType": "official-website",
+      "url": "https://kritical.com.mx/distribuidor-moxa-en-mexico.html",
+      "title": "Distribuidor moxa en mexico",
+      "excerpt": "Distribuidor moxa en mexico Buscar × Página de inicio Nosotros Servicios + Redes de comunicaciones + Vigilancia y seguridad + Automatizacion + Aire acondicionado Productos + Axiomtek eBOX671-521-FL eBOX800-900-FL GOT107W-319 UST500-517-FL GOT110-316-PoE-PD + Cisco + Durabook durabook Z14I Laptop durabook S14I Laptop durabook S15AB Laptop durabook U11I Tablet durabook R11 Tablet durabook R11L Tablet + Hirschmann + Meanwell Fuente de energia DIN-Rail PLP-60-12 XLG-100-12-A MDR-40-24 DRC-100B SD-150C-24 DR-RDN20 DR-UPS40 RSP-1500-24 + MOXA Ethernet Industrial DIN-Rail no Administrado + EDS-205 Series + EDS-208 Series + EDS-205A Series + EDS-208A Series + EDS-G205 Series + EDS-2010-ML Series + EDS-305 Series + EDS-308 Series + EDS-G308 Series + EDS-309 Series + EDS-316 Series Rackmount + IKS-6"
+    }
+  ]
+}

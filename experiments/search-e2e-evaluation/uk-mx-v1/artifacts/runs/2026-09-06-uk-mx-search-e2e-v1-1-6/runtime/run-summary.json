@@ -4,7 +4,7 @@
   "experimentId": "search-e2e-eval-v1.1.6",
   "status": "blind-audit-running",
   "createdAt": "2026-09-05T20:20:22.396Z",
-  "updatedAt": "2026-09-06T20:22:24.343Z",
+  "updatedAt": "2026-09-06T20:36:20.459Z",
   "blindJudgeModel": "codex-in-session",
   "preflightChecks": [
     {
@@ -101,7 +101,40 @@
     "MX-resale",
     "GB-si-msp"
   ],
-  "completedBlindPacketIds": [],
+  "completedBlindPacketIds": [
+    "blind-f1d3f22475d1a59c64e9fc53",
+    "blind-76b95d8ad5ee046e7758a640",
+    "blind-7ca0576569a678b9f9e73d70",
+    "blind-f6607cd4485dfcdda3540cd7",
+    "blind-b3cf891d0df3d51168d2a747",
+    "blind-8d347f0f09bade22dc4d7538",
+    "blind-81f5e807f252883de7fedbb3",
+    "blind-059d577f0163907d70b5aa16",
+    "blind-39dd4592da5d9ff1dbd63878",
+    "blind-975d71c3a9f6671298a43650",
+    "blind-89899798b27eba4d8011a34b",
+    "blind-c7ceab99b66a973483e4ea92",
+    "blind-3b16a4d338bb38160a4a87c7",
+    "blind-3f2fd0efe0371ea85502a24e",
+    "blind-82dcf8c3df9db277190e996e",
+    "blind-a446cc431d7d94504be7b481",
+    "blind-f6740ed923441e446320bf41",
+    "blind-ccc409fd1bcf8a7bc12941c9",
+    "blind-1e1aa7115a20499527100a66",
+    "blind-d1f9193a5bad0f4095a8b28e",
+    "blind-8d8dde034e52e33b01b52604",
+    "blind-1acc3520451ee4df2ddbd6fe",
+    "blind-8ecb5ed046718318bab14333",
+    "blind-c2b2f93df4b1bbd4b5474334",
+    "blind-a243c367b04316e152db2ffe",
+    "blind-74a52ae217edaa66eb86c84a",
+    "blind-cd3e9403697b75acf461f452",
+    "blind-1a66964d44b72635cb46cc60",
+    "blind-32f49aca17f31eddad4e6409",
+    "blind-2c65216d19e5659823da9ba8",
+    "blind-58003e1d60e04afccb7aca8d",
+    "blind-f22cef0dca284aea6ab321c9"
+  ],
   "reportedBudgetThresholdsUsd": [
     20
   ],
@@ -16645,6 +16678,1158 @@
       "budgetCostUsd": 0.00433608,
       "cashCostBasis": "official-conservative",
       "costAnomalies": []
+    },
+    {
+      "eventId": "blind-f1d3f22475d1a59c64e9fc53:blind-judge",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge",
+      "provider": "codex-in-session",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-06T20:30:00.000Z",
+      "completedAt": "2026-09-06T20:31:00.000Z",
+      "latencyMs": 60000,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Direct blind review in the current Codex conversation; no API call and no external search.",
+        "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": [
+        "in-session-codex-token-usage-unavailable"
+      ]
+    },
+    {
+      "eventId": "blind-76b95d8ad5ee046e7758a640:blind-judge",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge",
+      "provider": "codex-in-session",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-06T20:31:00.000Z",
+      "completedAt": "2026-09-06T20:32:00.000Z",
+      "latencyMs": 60000,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Direct blind review in the current Codex conversation; no API call and no external search.",
+        "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": [
+        "in-session-codex-token-usage-unavailable"
+      ]
+    },
+    {
+      "eventId": "blind-7ca0576569a678b9f9e73d70:blind-judge",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge",
+      "provider": "codex-in-session",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-06T20:32:00.000Z",
+      "completedAt": "2026-09-06T20:33:00.000Z",
+      "latencyMs": 60000,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Direct blind review in the current Codex conversation; no API call and no external search.",
+        "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": [
+        "in-session-codex-token-usage-unavailable"
+      ]
+    },
+    {
+      "eventId": "blind-f6607cd4485dfcdda3540cd7:blind-judge",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge",
+      "provider": "codex-in-session",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-06T20:33:00.000Z",
+      "completedAt": "2026-09-06T20:34:00.000Z",
+      "latencyMs": 60000,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Direct blind review in the current Codex conversation; no API call and no external search.",
+        "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": [
+        "in-session-codex-token-usage-unavailable"
+      ]
+    },
+    {
+      "eventId": "blind-b3cf891d0df3d51168d2a747:blind-judge",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge",
+      "provider": "codex-in-session",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-06T20:34:00.000Z",
+      "completedAt": "2026-09-06T20:35:00.000Z",
+      "latencyMs": 60000,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Direct blind review in the current Codex conversation; no API call and no external search.",
+        "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": [
+        "in-session-codex-token-usage-unavailable"
+      ]
+    },
+    {
+      "eventId": "blind-8d347f0f09bade22dc4d7538:blind-judge",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge",
+      "provider": "codex-in-session",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-06T20:35:00.000Z",
+      "completedAt": "2026-09-06T20:36:00.000Z",
+      "latencyMs": 60000,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Direct blind review in the current Codex conversation; no API call and no external search.",
+        "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": [
+        "in-session-codex-token-usage-unavailable"
+      ]
+    },
+    {
+      "eventId": "blind-81f5e807f252883de7fedbb3:blind-judge",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge",
+      "provider": "codex-in-session",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-06T20:36:00.000Z",
+      "completedAt": "2026-09-06T20:37:00.000Z",
+      "latencyMs": 60000,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Direct blind review in the current Codex conversation; no API call and no external search.",
+        "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": [
+        "in-session-codex-token-usage-unavailable"
+      ]
+    },
+    {
+      "eventId": "blind-059d577f0163907d70b5aa16:blind-judge",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge",
+      "provider": "codex-in-session",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-06T20:37:00.000Z",
+      "completedAt": "2026-09-06T20:38:00.000Z",
+      "latencyMs": 60000,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Direct blind review in the current Codex conversation; no API call and no external search.",
+        "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": [
+        "in-session-codex-token-usage-unavailable"
+      ]
+    },
+    {
+      "eventId": "blind-39dd4592da5d9ff1dbd63878:blind-judge",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge",
+      "provider": "codex-in-session",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-06T20:38:00.000Z",
+      "completedAt": "2026-09-06T20:39:00.000Z",
+      "latencyMs": 60000,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Direct blind review in the current Codex conversation; no API call and no external search.",
+        "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": [
+        "in-session-codex-token-usage-unavailable"
+      ]
+    },
+    {
+      "eventId": "blind-975d71c3a9f6671298a43650:blind-judge",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge",
+      "provider": "codex-in-session",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-06T20:39:00.000Z",
+      "completedAt": "2026-09-06T20:40:00.000Z",
+      "latencyMs": 60000,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Direct blind review in the current Codex conversation; no API call and no external search.",
+        "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": [
+        "in-session-codex-token-usage-unavailable"
+      ]
+    },
+    {
+      "eventId": "blind-89899798b27eba4d8011a34b:blind-judge",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge",
+      "provider": "codex-in-session",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-06T20:40:00.000Z",
+      "completedAt": "2026-09-06T20:41:00.000Z",
+      "latencyMs": 60000,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Direct blind review in the current Codex conversation; no API call and no external search.",
+        "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": [
+        "in-session-codex-token-usage-unavailable"
+      ]
+    },
+    {
+      "eventId": "blind-c7ceab99b66a973483e4ea92:blind-judge",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge",
+      "provider": "codex-in-session",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-06T20:41:00.000Z",
+      "completedAt": "2026-09-06T20:42:00.000Z",
+      "latencyMs": 60000,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Direct blind review in the current Codex conversation; no API call and no external search.",
+        "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": [
+        "in-session-codex-token-usage-unavailable"
+      ]
+    },
+    {
+      "eventId": "blind-3b16a4d338bb38160a4a87c7:blind-judge",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge",
+      "provider": "codex-in-session",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-06T20:42:00.000Z",
+      "completedAt": "2026-09-06T20:43:00.000Z",
+      "latencyMs": 60000,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Direct blind review in the current Codex conversation; no API call and no external search.",
+        "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": [
+        "in-session-codex-token-usage-unavailable"
+      ]
+    },
+    {
+      "eventId": "blind-3f2fd0efe0371ea85502a24e:blind-judge",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge",
+      "provider": "codex-in-session",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-06T20:43:00.000Z",
+      "completedAt": "2026-09-06T20:44:00.000Z",
+      "latencyMs": 60000,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Direct blind review in the current Codex conversation; no API call and no external search.",
+        "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": [
+        "in-session-codex-token-usage-unavailable"
+      ]
+    },
+    {
+      "eventId": "blind-82dcf8c3df9db277190e996e:blind-judge",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge",
+      "provider": "codex-in-session",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-06T20:44:00.000Z",
+      "completedAt": "2026-09-06T20:45:00.000Z",
+      "latencyMs": 60000,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Direct blind review in the current Codex conversation; no API call and no external search.",
+        "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": [
+        "in-session-codex-token-usage-unavailable"
+      ]
+    },
+    {
+      "eventId": "blind-a446cc431d7d94504be7b481:blind-judge",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge",
+      "provider": "codex-in-session",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-06T20:45:00.000Z",
+      "completedAt": "2026-09-06T20:46:00.000Z",
+      "latencyMs": 60000,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Direct blind review in the current Codex conversation; no API call and no external search.",
+        "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": [
+        "in-session-codex-token-usage-unavailable"
+      ]
+    },
+    {
+      "eventId": "blind-f6740ed923441e446320bf41:blind-judge",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge",
+      "provider": "codex-in-session",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-06T20:46:00.000Z",
+      "completedAt": "2026-09-06T20:47:00.000Z",
+      "latencyMs": 60000,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Direct blind review in the current Codex conversation; no API call and no external search.",
+        "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": [
+        "in-session-codex-token-usage-unavailable"
+      ]
+    },
+    {
+      "eventId": "blind-ccc409fd1bcf8a7bc12941c9:blind-judge",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge",
+      "provider": "codex-in-session",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-06T20:47:00.000Z",
+      "completedAt": "2026-09-06T20:48:00.000Z",
+      "latencyMs": 60000,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Direct blind review in the current Codex conversation; no API call and no external search.",
+        "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": [
+        "in-session-codex-token-usage-unavailable"
+      ]
+    },
+    {
+      "eventId": "blind-1e1aa7115a20499527100a66:blind-judge",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge",
+      "provider": "codex-in-session",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-06T20:48:00.000Z",
+      "completedAt": "2026-09-06T20:49:00.000Z",
+      "latencyMs": 60000,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Direct blind review in the current Codex conversation; no API call and no external search.",
+        "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": [
+        "in-session-codex-token-usage-unavailable"
+      ]
+    },
+    {
+      "eventId": "blind-d1f9193a5bad0f4095a8b28e:blind-judge",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge",
+      "provider": "codex-in-session",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-06T20:49:00.000Z",
+      "completedAt": "2026-09-06T20:50:00.000Z",
+      "latencyMs": 60000,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Direct blind review in the current Codex conversation; no API call and no external search.",
+        "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": [
+        "in-session-codex-token-usage-unavailable"
+      ]
+    },
+    {
+      "eventId": "blind-8d8dde034e52e33b01b52604:blind-judge",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge",
+      "provider": "codex-in-session",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-06T20:50:00.000Z",
+      "completedAt": "2026-09-06T20:51:00.000Z",
+      "latencyMs": 60000,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Direct blind review in the current Codex conversation; no API call and no external search.",
+        "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": [
+        "in-session-codex-token-usage-unavailable"
+      ]
+    },
+    {
+      "eventId": "blind-1acc3520451ee4df2ddbd6fe:blind-judge",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge",
+      "provider": "codex-in-session",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-06T20:51:00.000Z",
+      "completedAt": "2026-09-06T20:52:00.000Z",
+      "latencyMs": 60000,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Direct blind review in the current Codex conversation; no API call and no external search.",
+        "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": [
+        "in-session-codex-token-usage-unavailable"
+      ]
+    },
+    {
+      "eventId": "blind-8ecb5ed046718318bab14333:blind-judge",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge",
+      "provider": "codex-in-session",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-06T20:52:00.000Z",
+      "completedAt": "2026-09-06T20:53:00.000Z",
+      "latencyMs": 60000,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Direct blind review in the current Codex conversation; no API call and no external search.",
+        "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": [
+        "in-session-codex-token-usage-unavailable"
+      ]
+    },
+    {
+      "eventId": "blind-c2b2f93df4b1bbd4b5474334:blind-judge",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge",
+      "provider": "codex-in-session",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-06T20:53:00.000Z",
+      "completedAt": "2026-09-06T20:54:00.000Z",
+      "latencyMs": 60000,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Direct blind review in the current Codex conversation; no API call and no external search.",
+        "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": [
+        "in-session-codex-token-usage-unavailable"
+      ]
+    },
+    {
+      "eventId": "blind-a243c367b04316e152db2ffe:blind-judge",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge",
+      "provider": "codex-in-session",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-06T20:54:00.000Z",
+      "completedAt": "2026-09-06T20:55:00.000Z",
+      "latencyMs": 60000,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Direct blind review in the current Codex conversation; no API call and no external search.",
+        "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": [
+        "in-session-codex-token-usage-unavailable"
+      ]
+    },
+    {
+      "eventId": "blind-74a52ae217edaa66eb86c84a:blind-judge",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge",
+      "provider": "codex-in-session",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-06T20:55:00.000Z",
+      "completedAt": "2026-09-06T20:56:00.000Z",
+      "latencyMs": 60000,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Direct blind review in the current Codex conversation; no API call and no external search.",
+        "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": [
+        "in-session-codex-token-usage-unavailable"
+      ]
+    },
+    {
+      "eventId": "blind-cd3e9403697b75acf461f452:blind-judge",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge",
+      "provider": "codex-in-session",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-06T20:56:00.000Z",
+      "completedAt": "2026-09-06T20:57:00.000Z",
+      "latencyMs": 60000,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Direct blind review in the current Codex conversation; no API call and no external search.",
+        "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": [
+        "in-session-codex-token-usage-unavailable"
+      ]
+    },
+    {
+      "eventId": "blind-1a66964d44b72635cb46cc60:blind-judge",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge",
+      "provider": "codex-in-session",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-06T20:57:00.000Z",
+      "completedAt": "2026-09-06T20:58:00.000Z",
+      "latencyMs": 60000,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Direct blind review in the current Codex conversation; no API call and no external search.",
+        "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": [
+        "in-session-codex-token-usage-unavailable"
+      ]
+    },
+    {
+      "eventId": "blind-32f49aca17f31eddad4e6409:blind-judge",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge",
+      "provider": "codex-in-session",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-06T20:58:00.000Z",
+      "completedAt": "2026-09-06T20:59:00.000Z",
+      "latencyMs": 60000,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Direct blind review in the current Codex conversation; no API call and no external search.",
+        "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": [
+        "in-session-codex-token-usage-unavailable"
+      ]
+    },
+    {
+      "eventId": "blind-2c65216d19e5659823da9ba8:blind-judge",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge",
+      "provider": "codex-in-session",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-06T20:59:00.000Z",
+      "completedAt": "2026-09-06T21:00:00.000Z",
+      "latencyMs": 60000,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Direct blind review in the current Codex conversation; no API call and no external search.",
+        "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": [
+        "in-session-codex-token-usage-unavailable"
+      ]
+    },
+    {
+      "eventId": "blind-58003e1d60e04afccb7aca8d:blind-judge",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge",
+      "provider": "codex-in-session",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-06T21:00:00.000Z",
+      "completedAt": "2026-09-06T21:01:00.000Z",
+      "latencyMs": 60000,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Direct blind review in the current Codex conversation; no API call and no external search.",
+        "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": [
+        "in-session-codex-token-usage-unavailable"
+      ]
+    },
+    {
+      "eventId": "blind-f22cef0dca284aea6ab321c9:blind-judge",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge",
+      "provider": "codex-in-session",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-06T21:01:00.000Z",
+      "completedAt": "2026-09-06T21:02:00.000Z",
+      "latencyMs": 60000,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {},
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Direct blind review in the current Codex conversation; no API call and no external search.",
+        "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": [
+        "in-session-codex-token-usage-unavailable"
+      ]
     }
   ]
 }

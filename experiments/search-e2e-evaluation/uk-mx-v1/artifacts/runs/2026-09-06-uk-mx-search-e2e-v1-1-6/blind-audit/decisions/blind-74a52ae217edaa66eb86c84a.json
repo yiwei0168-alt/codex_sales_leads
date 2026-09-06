@@ -1,0 +1,108 @@
+{
+  "packetId": "blind-74a52ae217edaa66eb86c84a",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 78,
+  "deterministicTotal": 78,
+  "output": {
+    "packetId": "blind-74a52ae217edaa66eb86c84a",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "VAR",
+      "SI"
+    ],
+    "primaryRole": "VAR",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 42,
+      "channelAndBuyingInfluence": 13,
+      "sameRoleScaleAndCoverage": 9,
+      "executionAndEnablement": 8,
+      "opportunityAndRisk": 6
+    },
+    "totalScore": 78,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "Perceptron designs wired and wireless networks and sells switches and access points for multiple business verticals.",
+        "evidenceIds": [
+          "evidence-home-da8c0259fe4b4a69",
+          "evidence-93945613ba442f9f"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "Solution design across infrastructure and connectivity implies strong specification and resale influence.",
+        "evidenceIds": [
+          "evidence-home-da8c0259fe4b4a69",
+          "evidence-49aef8a67f31f19e"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "Several Mexican verticals and a functioning office are supported, but project or client counts are absent.",
+        "evidenceIds": [
+          "evidence-home-da8c0259fe4b4a69",
+          "evidence-93945613ba442f9f"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Infrastructure transformation, device services and network design indicate solid solution execution.",
+        "evidenceIds": [
+          "evidence-home-da8c0259fe4b4a69",
+          "evidence-49aef8a67f31f19e"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Relevant business networking demand exists, while established HPE/Aruba alignment may constrain a new brand.",
+        "evidenceIds": [
+          "evidence-93945613ba442f9f"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "No customer count, geographic coverage or onboarding intent is established."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-74a52ae217edaa66eb86c84a:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T20:55:00.000Z",
+    "completedAt": "2026-09-06T20:56:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

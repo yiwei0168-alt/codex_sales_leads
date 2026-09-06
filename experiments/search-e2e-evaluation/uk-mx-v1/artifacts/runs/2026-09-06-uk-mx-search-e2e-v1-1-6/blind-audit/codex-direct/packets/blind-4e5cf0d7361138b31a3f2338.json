@@ -1,0 +1,51 @@
+{
+  "packetId": "blind-4e5cf0d7361138b31a3f2338",
+  "targetMarket": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom"
+  },
+  "requestedCategory": "distribution",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "Purdicom Limited",
+    "domain": "purdi.com",
+    "officialWebsiteUrl": "https://www.purdi.com/"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-home-47c4a38e08e0b6f5",
+      "sourceType": "official-website",
+      "url": "https://www.purdi.com/",
+      "title": "Purdicom: Cloud, Security &amp; Wireless IT Technology Distributors",
+      "excerpt": "Purdicom: Cloud, Security Wireless IT Technology Distributors +44 (0) 333 12 12 100 &#104;e&#108;l&#111;&#64;p&#117;r&#100;i.c&#111;m STORE LOGIN CONTACT ABOUT US What We Do IT Distribution : Routes To Market Case Studies Our Team Events &#038; Webinars Careers VENDORS Ruckus Networks Ruckus Indoor Access Points Ruckus Outdoor Access Points Ruckus WiFi 7 Access Points Ruckus WiFi 6 Access Points Ruckus ICX Switches RUCKUS ICX 7150 Switches RUCKUS ICX 7450 Switches RUCKUS ICX 7550 Switches RUCKUS ICX 7650 Switches RUCKUS ICX 7750 Switches RUCKUS ICX 7850 Switches RUCKUS ICX 8100 Switches RUCKUS ICX 8200 Switches Ruckus Network Management Ruckus SmartZone <a title=\"Ruckus Unleased network management solution\" href=\"https://www.purdi.com/vendors/ruckus-networks/ruckus-unleashed/\""
+    },
+    {
+      "evidenceId": "evidence-3d04592b22c6ddb8",
+      "sourceType": "official-website",
+      "url": "https://www.purdi.com",
+      "title": "Purdicom: Cloud, Security & Wireless IT Technology Distributors",
+      "excerpt": "+44 (0) 333 12 12 100 hello@purdi.com Logo Logo Logo Logo Logo STORE LOGIN CONTACT IT distributor specialising in Wireless, WiFi & security hardware and software Powering the future with wireless Welcome to Purdicom, the UK's leading cloud, security and wireless IT technology distributor - powering the future with next-generation tech from the worlds best vendors. Nomadix WiFi distributorRUCKUS Networks official distributorsCambium Networks DistributorWatchGuard firewalls & security technology productsTeltonika Official UK Value Added DistributorsShelterZoom Document GPS file security for resellers: Purdicom Official UK DistributorLegrand UPS, official UK DistributorsCerta UPS DistributorSiklu Distributor UK P2MP (Point to Multi Point) PtP & TerragraphTP-Link Omada business & enterprise wi"
+    },
+    {
+      "evidenceId": "evidence-7e75363a42d4bdb8",
+      "sourceType": "official-website",
+      "url": "https://www.purdi.com/news/dont-miss-cambium-networks-uk-partner-event",
+      "title": "Don't Miss Out - Cambium Networks UK Partner Event - Purdicom ...",
+      "excerpt": "+44 (0) 333 12 12 100 hello@purdi.com Logo Logo Logo Logo Logo ABOUT US SOLUTIONS TECHNOLOGIES VERTICALS SUPPORT PARTNERS Don’t Miss Out – Cambium Networks UK Partner Event Cambium Networks to display groundbreaking wireless technologies at world-famous venue The home of rugby union will play host to a different kind of event this month, with Cambium Networks, a leading global provider of wireless broadband solutions, announcing its ‘Reach New Heights’ seminar will take place at Twickenham Stadium. The exclusive event will give attendees a chance to hear about Cambium Networks’ newest innovations, including their recently upgraded cnPilot 2.0 Wi-Fi portfolio for fast, reliable connectivity and its innovative cnReach products, designed to deliver on the promise of the Internet of Things (Io"
+    },
+    {
+      "evidenceId": "evidence-451449f1308b7d44",
+      "sourceType": "official-website",
+      "url": "https://www.purdi.com/vendors/encapto",
+      "title": "Encapto - Purdicom Cloud, Security & Wireless Technology Distributors",
+      "excerpt": "+44 (0) 333 12 12 100 hello@purdi.com Logo Logo Logo Logo Logo STORE LOGIN CONTACT Encapto: Total Wi-Fi Control A managed service provider enabling user engagement, reporting and control for your public Wi-Fi networks. Encapto enables managed service providers to build flexible, feature-rich and easy to use Wi-Fi and network management systems. Having struggled to find a solution that enables bundling and management of multi-service offerings across different customer verticals, Encapto decided to build their own service platform, which is the core of their business. Encapto is a cloud hosted, captive web portal solution that works alongside key Wi-Fi vendors. It offers user-engagement through the portal builder, campaign manager, its data capture abilities and social media integrations. E"
+    },
+    {
+      "evidenceId": "evidence-610a6cf5e01a8f54",
+      "sourceType": "official-website",
+      "url": "https://www.purdi.com/privacy-policy",
+      "title": "Privacy Policy - Purdicom Cloud, Security & Wireless Technology Distributors",
+      "excerpt": "+44 (0) 333 12 12 100 hello@purdi.com Logo Logo Logo Logo Logo STORE LOGIN CONTACT Privacy Policy Notice The policy: This privacy policy tells you what will happen to any personal data that you provide to Purdicom as a result of using this website or contacting this organisation. We fully understand that your privacy is important to you and that you care about how your personal data is used and shared online and we will take account of, and respect, your concerns. This policy explains how we will use, and protect, the information that we gather, whether it be through this website, by way of telephone or personal conversations or through our normal business contacts with you. Please read this privacy policy carefully and ensure that you understand it. Details are given below of contacts sho"
+    }
+  ]
+}

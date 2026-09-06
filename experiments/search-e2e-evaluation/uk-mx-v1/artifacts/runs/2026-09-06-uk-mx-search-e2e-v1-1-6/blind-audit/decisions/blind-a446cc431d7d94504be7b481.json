@@ -1,0 +1,107 @@
+{
+  "packetId": "blind-a446cc431d7d94504be7b481",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 85,
+  "deterministicTotal": 85,
+  "output": {
+    "packetId": "blind-a446cc431d7d94504be7b481",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "Reseller",
+      "E-tailer"
+    ],
+    "primaryRole": "Reseller",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 47,
+      "channelAndBuyingInfluence": 13,
+      "sameRoleScaleAndCoverage": 10,
+      "executionAndEnablement": 8,
+      "opportunityAndRisk": 7
+    },
+    "totalScore": 85,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "Comms Express specializes in networking supplies and offers a wide portfolio across price points, directly matching Cudy positioning.",
+        "evidenceIds": [
+          "evidence-0249d285c00bbfbf",
+          "evidence-b37a6bfd4753b33f"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "Direct online selling and established manufacturer relationships support meaningful buying influence.",
+        "evidenceIds": [
+          "evidence-b37a6bfd4753b33f"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "A UK online specialist operating since 2002 has credible reach, although exact customer or revenue scale is absent.",
+        "evidenceIds": [
+          "evidence-b37a6bfd4753b33f"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Fast online replenishment, broad merchandising and manufacturer-backed products show solid retail/reseller execution.",
+        "evidenceIds": [
+          "evidence-0249d285c00bbfbf",
+          "evidence-b37a6bfd4753b33f"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Budget-friendly networking positioning is attractive, with moderate incumbent-brand competition.",
+        "evidenceIds": [
+          "evidence-a4ea23f2c93db541",
+          "evidence-b37a6bfd4753b33f"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "No current willingness to add Cudy is evidenced."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-a446cc431d7d94504be7b481:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T20:45:00.000Z",
+    "completedAt": "2026-09-06T20:46:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

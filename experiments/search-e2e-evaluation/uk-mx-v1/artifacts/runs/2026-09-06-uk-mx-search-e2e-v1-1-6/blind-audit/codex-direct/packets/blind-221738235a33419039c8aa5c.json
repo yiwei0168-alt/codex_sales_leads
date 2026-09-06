@@ -1,0 +1,23 @@
+{
+  "packetId": "blind-221738235a33419039c8aa5c",
+  "targetMarket": {
+    "countryCode": "MX",
+    "countryName": "Mexico"
+  },
+  "requestedCategory": "si-msp",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "IT Fenix",
+    "domain": "itfenix.com",
+    "officialWebsiteUrl": "https://itfenix.com/"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-home-2bcd4c56625a7966",
+      "sourceType": "official-website",
+      "url": "https://itfenix.com/",
+      "title": "IT Fenix | Integración Tecnológica Empresarial - Infraestructura TI de Alto Nivel",
+      "excerpt": "IT Fenix | Integración Tecnológica Empresarial - Infraestructura TI de Alto Nivel ventas@itfenix.com 55 1209 0363 56 2663 1899 Soporte Intranet Inicio Servicios Cableado Estructurado Fibra Óptica Telefonía IP Redes WiFi 6/7 CCTV y Videovigilancia Control de Acceso Electricidad Servidores y NAS Redes Administradas Tienda Clientes Proyectos Contacto +19 años de ingeniería empresarial Infraestructura tecnológica diseñada para no fallar Integramos tecnología empresarial con ingeniería real, respaldo documentado y garantía premium. No improvisamos. No usamos equipos de baja calidad. Diseñamos soluciones que duran. Solicitar Cotización Ver Servicios Panduit Certified Belden Partner Siemon Certified Ubiquiti Enterprise Cisco Select DESCUBRE MÁS Integración tecnológica con ingeniería real No vende"
+    }
+  ]
+}

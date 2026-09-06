@@ -1,0 +1,3872 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+  "generatedAt": "2026-09-06T20:36:20.212Z",
+  "metrics": {
+    "sampleSize": 32,
+    "primaryRoleAgreement": 0.625,
+    "qualifiedStatusAgreement": 0.78125,
+    "spearman": 0.5702715347322378,
+    "meanBias": -0.09375,
+    "meanAbsoluteError": 11.78125,
+    "citationAlignment": 1,
+    "gates": {
+      "primaryRoleAgreement": {
+        "passed": false,
+        "actual": 0.625,
+        "threshold": 0.95
+      },
+      "qualifiedStatusAgreement": {
+        "passed": false,
+        "actual": 0.78125,
+        "threshold": 0.9
+      },
+      "spearman": {
+        "passed": false,
+        "actual": 0.5702715347322378,
+        "threshold": 0.7
+      },
+      "absoluteMeanBias": {
+        "passed": true,
+        "actual": 0.09375,
+        "threshold": 5
+      },
+      "meanAbsoluteError": {
+        "passed": false,
+        "actual": 11.78125,
+        "threshold": 8
+      },
+      "citationAlignment": {
+        "passed": true,
+        "actual": 1,
+        "threshold": 0.98
+      }
+    },
+    "passed": false
+  },
+  "mappings": [
+    {
+      "packetId": "blind-f1d3f22475d1a59c64e9fc53",
+      "companyKey": "MX:domain:steren.com.mx",
+      "cellId": "MX-retail",
+      "stratum": "gemini-only-high-rank",
+      "presentInArms": [
+        "gemini-native"
+      ],
+      "unifiedPrimaryRole": "Hybrid",
+      "unifiedScore": 81,
+      "unifiedQualified": false
+    },
+    {
+      "packetId": "blind-76b95d8ad5ee046e7758a640",
+      "companyKey": "MX:domain:sierrastore.mx",
+      "cellId": "MX-retail",
+      "stratum": "product-only-high-rank",
+      "presentInArms": [
+        "product-e2e"
+      ],
+      "unifiedPrimaryRole": "Retailer",
+      "unifiedScore": 73,
+      "unifiedQualified": true
+    },
+    {
+      "packetId": "blind-7ca0576569a678b9f9e73d70",
+      "companyKey": "MX:domain:quiminet.com",
+      "cellId": "MX-retail",
+      "stratum": "score-boundary",
+      "presentInArms": [
+        "product-e2e"
+      ],
+      "unifiedPrimaryRole": "E-tailer",
+      "unifiedScore": 64,
+      "unifiedQualified": false
+    },
+    {
+      "packetId": "blind-f6607cd4485dfcdda3540cd7",
+      "companyKey": "MX:domain:tony.com.mx",
+      "cellId": "MX-retail",
+      "stratum": "overlap-rank-gap",
+      "presentInArms": [
+        "gemini-native",
+        "product-e2e"
+      ],
+      "unifiedPrimaryRole": "Retailer",
+      "unifiedScore": 79,
+      "unifiedQualified": true
+    },
+    {
+      "packetId": "blind-b3cf891d0df3d51168d2a747",
+      "companyKey": "GB:domain:linitx.com",
+      "cellId": "GB-distribution",
+      "stratum": "gemini-only-high-rank",
+      "presentInArms": [
+        "gemini-native"
+      ],
+      "unifiedPrimaryRole": "Hybrid",
+      "unifiedScore": 75,
+      "unifiedQualified": false
+    },
+    {
+      "packetId": "blind-8d347f0f09bade22dc4d7538",
+      "companyKey": "GB:domain:westcoast.co.uk",
+      "cellId": "GB-distribution",
+      "stratum": "product-only-high-rank",
+      "presentInArms": [
+        "product-e2e"
+      ],
+      "unifiedPrimaryRole": "Distributor",
+      "unifiedScore": 89,
+      "unifiedQualified": true
+    },
+    {
+      "packetId": "blind-81f5e807f252883de7fedbb3",
+      "companyKey": "GB:domain:mediatron.co.uk",
+      "cellId": "GB-distribution",
+      "stratum": "score-boundary",
+      "presentInArms": [
+        "gemini-native",
+        "product-e2e"
+      ],
+      "unifiedPrimaryRole": "Distributor",
+      "unifiedScore": 65,
+      "unifiedQualified": true
+    },
+    {
+      "packetId": "blind-059d577f0163907d70b5aa16",
+      "companyKey": "GB:domain:arrow.com",
+      "cellId": "GB-distribution",
+      "stratum": "overlap-rank-gap",
+      "presentInArms": [
+        "gemini-native",
+        "product-e2e"
+      ],
+      "unifiedPrimaryRole": "Distributor",
+      "unifiedScore": 100,
+      "unifiedQualified": true
+    },
+    {
+      "packetId": "blind-39dd4592da5d9ff1dbd63878",
+      "companyKey": "MX:domain:huus.mx",
+      "cellId": "MX-si-msp",
+      "stratum": "gemini-only-high-rank",
+      "presentInArms": [
+        "gemini-native"
+      ],
+      "unifiedPrimaryRole": "Hybrid",
+      "unifiedScore": 67,
+      "unifiedQualified": false
+    },
+    {
+      "packetId": "blind-975d71c3a9f6671298a43650",
+      "companyKey": "MX:domain:erconnect.com.mx",
+      "cellId": "MX-si-msp",
+      "stratum": "product-only-high-rank",
+      "presentInArms": [
+        "product-e2e"
+      ],
+      "unifiedPrimaryRole": "SI",
+      "unifiedScore": 100,
+      "unifiedQualified": true
+    },
+    {
+      "packetId": "blind-89899798b27eba4d8011a34b",
+      "companyKey": "MX:domain:hubaraintegradores.com",
+      "cellId": "MX-si-msp",
+      "stratum": "score-boundary",
+      "presentInArms": [
+        "product-e2e"
+      ],
+      "unifiedPrimaryRole": "SI",
+      "unifiedScore": 65,
+      "unifiedQualified": true
+    },
+    {
+      "packetId": "blind-c7ceab99b66a973483e4ea92",
+      "companyKey": "MX:domain:itm.mx",
+      "cellId": "MX-si-msp",
+      "stratum": "overlap-rank-gap",
+      "presentInArms": [
+        "gemini-native",
+        "product-e2e"
+      ],
+      "unifiedPrimaryRole": "SI",
+      "unifiedScore": 100,
+      "unifiedQualified": true
+    },
+    {
+      "packetId": "blind-3b16a4d338bb38160a4a87c7",
+      "companyKey": "GB:domain:4gon.co.uk",
+      "cellId": "GB-resale",
+      "stratum": "gemini-only-high-rank",
+      "presentInArms": [
+        "gemini-native"
+      ],
+      "unifiedPrimaryRole": "Reseller",
+      "unifiedScore": 48,
+      "unifiedQualified": false
+    },
+    {
+      "packetId": "blind-3f2fd0efe0371ea85502a24e",
+      "companyKey": "GB:domain:cdw.com",
+      "cellId": "GB-resale",
+      "stratum": "product-only-high-rank",
+      "presentInArms": [
+        "product-e2e"
+      ],
+      "unifiedPrimaryRole": "Reseller",
+      "unifiedScore": 100,
+      "unifiedQualified": true
+    },
+    {
+      "packetId": "blind-82dcf8c3df9db277190e996e",
+      "companyKey": "GB:domain:flux-it.co.uk",
+      "cellId": "GB-resale",
+      "stratum": "score-boundary",
+      "presentInArms": [
+        "gemini-native"
+      ],
+      "unifiedPrimaryRole": "Reseller",
+      "unifiedScore": 65,
+      "unifiedQualified": true
+    },
+    {
+      "packetId": "blind-a446cc431d7d94504be7b481",
+      "companyKey": "GB:domain:comms-express.com",
+      "cellId": "GB-resale",
+      "stratum": "overlap-rank-gap",
+      "presentInArms": [
+        "gemini-native",
+        "product-e2e"
+      ],
+      "unifiedPrimaryRole": "Reseller",
+      "unifiedScore": 68,
+      "unifiedQualified": true
+    },
+    {
+      "packetId": "blind-f6740ed923441e446320bf41",
+      "companyKey": "MX:domain:mx.ingrammicro.com",
+      "cellId": "MX-distribution",
+      "stratum": "gemini-only-high-rank",
+      "presentInArms": [
+        "gemini-native"
+      ],
+      "unifiedPrimaryRole": "Distributor",
+      "unifiedScore": 83,
+      "unifiedQualified": true
+    },
+    {
+      "packetId": "blind-ccc409fd1bcf8a7bc12941c9",
+      "companyKey": "MX:domain:cdcgroup.mx",
+      "cellId": "MX-distribution",
+      "stratum": "product-only-high-rank",
+      "presentInArms": [
+        "product-e2e"
+      ],
+      "unifiedPrimaryRole": "Distributor",
+      "unifiedScore": 98,
+      "unifiedQualified": true
+    },
+    {
+      "packetId": "blind-1e1aa7115a20499527100a66",
+      "companyKey": "MX:domain:tvc.mx",
+      "cellId": "MX-distribution",
+      "stratum": "score-boundary",
+      "presentInArms": [
+        "gemini-native",
+        "product-e2e"
+      ],
+      "unifiedPrimaryRole": "Distributor",
+      "unifiedScore": 75,
+      "unifiedQualified": true
+    },
+    {
+      "packetId": "blind-d1f9193a5bad0f4095a8b28e",
+      "companyKey": "MX:domain:portenntum.com",
+      "cellId": "MX-distribution",
+      "stratum": "overlap-rank-gap",
+      "presentInArms": [
+        "gemini-native",
+        "product-e2e"
+      ],
+      "unifiedPrimaryRole": "Distributor",
+      "unifiedScore": 86,
+      "unifiedQualified": true
+    },
+    {
+      "packetId": "blind-8d8dde034e52e33b01b52604",
+      "companyKey": "GB:domain:overclockers.co.uk",
+      "cellId": "GB-retail",
+      "stratum": "gemini-only-high-rank",
+      "presentInArms": [
+        "gemini-native"
+      ],
+      "unifiedPrimaryRole": "Retailer",
+      "unifiedScore": 69,
+      "unifiedQualified": true
+    },
+    {
+      "packetId": "blind-1acc3520451ee4df2ddbd6fe",
+      "companyKey": "GB:domain:uk.store.tapo.com",
+      "cellId": "GB-retail",
+      "stratum": "product-only-high-rank",
+      "presentInArms": [
+        "product-e2e"
+      ],
+      "unifiedPrimaryRole": "Retailer",
+      "unifiedScore": 100,
+      "unifiedQualified": true
+    },
+    {
+      "packetId": "blind-8ecb5ed046718318bab14333",
+      "companyKey": "GB:domain:huntoffice.co.uk",
+      "cellId": "GB-retail",
+      "stratum": "score-boundary",
+      "presentInArms": [
+        "product-e2e"
+      ],
+      "unifiedPrimaryRole": "Retailer",
+      "unifiedScore": 65,
+      "unifiedQualified": true
+    },
+    {
+      "packetId": "blind-c2b2f93df4b1bbd4b5474334",
+      "companyKey": "GB:domain:currys.co.uk",
+      "cellId": "GB-retail",
+      "stratum": "overlap-rank-gap",
+      "presentInArms": [
+        "gemini-native",
+        "product-e2e"
+      ],
+      "unifiedPrimaryRole": "Retailer",
+      "unifiedScore": 82,
+      "unifiedQualified": true
+    },
+    {
+      "packetId": "blind-a243c367b04316e152db2ffe",
+      "companyKey": "MX:domain:redlinktelecomunicaciones.com",
+      "cellId": "MX-resale",
+      "stratum": "gemini-only-high-rank",
+      "presentInArms": [
+        "gemini-native"
+      ],
+      "unifiedPrimaryRole": "Hybrid",
+      "unifiedScore": 68,
+      "unifiedQualified": false
+    },
+    {
+      "packetId": "blind-74a52ae217edaa66eb86c84a",
+      "companyKey": "MX:domain:perceptron.mx",
+      "cellId": "MX-resale",
+      "stratum": "product-only-high-rank",
+      "presentInArms": [
+        "product-e2e"
+      ],
+      "unifiedPrimaryRole": "SI",
+      "unifiedScore": 82,
+      "unifiedQualified": false
+    },
+    {
+      "packetId": "blind-cd3e9403697b75acf461f452",
+      "companyKey": "MX:domain:qtech.com.mx",
+      "cellId": "MX-resale",
+      "stratum": "score-boundary",
+      "presentInArms": [
+        "product-e2e"
+      ],
+      "unifiedPrimaryRole": "VAR",
+      "unifiedScore": 75,
+      "unifiedQualified": true
+    },
+    {
+      "packetId": "blind-1a66964d44b72635cb46cc60",
+      "companyKey": "MX:domain:valuebooster.com.mx",
+      "cellId": "MX-resale",
+      "stratum": "deterministic-cell-replacement",
+      "presentInArms": [
+        "gemini-native"
+      ],
+      "unifiedPrimaryRole": "Unresolved",
+      "unifiedScore": 0,
+      "unifiedQualified": false
+    },
+    {
+      "packetId": "blind-32f49aca17f31eddad4e6409",
+      "companyKey": "GB:domain:croftmsp.com",
+      "cellId": "GB-si-msp",
+      "stratum": "gemini-only-high-rank",
+      "presentInArms": [
+        "gemini-native"
+      ],
+      "unifiedPrimaryRole": "MSP",
+      "unifiedScore": 72,
+      "unifiedQualified": true
+    },
+    {
+      "packetId": "blind-2c65216d19e5659823da9ba8",
+      "companyKey": "GB:domain:simpli-fi.co.uk",
+      "cellId": "GB-si-msp",
+      "stratum": "product-only-high-rank",
+      "presentInArms": [
+        "product-e2e"
+      ],
+      "unifiedPrimaryRole": "SI",
+      "unifiedScore": 83,
+      "unifiedQualified": true
+    },
+    {
+      "packetId": "blind-58003e1d60e04afccb7aca8d",
+      "companyKey": "GB:domain:msp247.co.uk",
+      "cellId": "GB-si-msp",
+      "stratum": "score-boundary",
+      "presentInArms": [
+        "product-e2e"
+      ],
+      "unifiedPrimaryRole": "MSP",
+      "unifiedScore": 75,
+      "unifiedQualified": true
+    },
+    {
+      "packetId": "blind-f22cef0dca284aea6ab321c9",
+      "companyKey": "GB:domain:wavenet.co.uk",
+      "cellId": "GB-si-msp",
+      "stratum": "overlap-rank-gap",
+      "presentInArms": [
+        "gemini-native",
+        "product-e2e"
+      ],
+      "unifiedPrimaryRole": "MSP",
+      "unifiedScore": 77,
+      "unifiedQualified": true
+    }
+  ],
+  "decisions": [
+    {
+      "packetId": "blind-f1d3f22475d1a59c64e9fc53",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "modelReportedTotal": 84,
+      "deterministicTotal": 84,
+      "output": {
+        "packetId": "blind-f1d3f22475d1a59c64e9fc53",
+        "isRealOperatingCompany": true,
+        "operatesInTargetMarket": true,
+        "supportedRoles": [
+          "Retailer",
+          "E-tailer",
+          "Brand Owner"
+        ],
+        "primaryRole": "Retailer",
+        "requestedCategoryMatch": true,
+        "dimensions": {
+          "productAndUseCaseFit": 42,
+          "channelAndBuyingInfluence": 13,
+          "sameRoleScaleAndCoverage": 15,
+          "executionAndEnablement": 8,
+          "opportunityAndRisk": 6
+        },
+        "totalScore": 84,
+        "eligibility": "eligible",
+        "dimensionReasons": [
+          {
+            "dimension": "productAndUseCaseFit",
+            "reason": "A current Mexican retail signal explicitly lists a Wi-Fi 6 router and 4G MiFi, directly matching Cudy home connectivity.",
+            "evidenceIds": [
+              "evidence-453ea336c42a6902"
+            ]
+          },
+          {
+            "dimension": "channelAndBuyingInfluence",
+            "reason": "Steren directly operates a large consumer retail network and also reaches national chains.",
+            "evidenceIds": [
+              "evidence-f07453ff9beb6615"
+            ]
+          },
+          {
+            "dimension": "sameRoleScaleAndCoverage",
+            "reason": "More than 400 operated stores in Mexico demonstrate exceptional same-role national scale.",
+            "evidenceIds": [
+              "evidence-f07453ff9beb6615",
+              "evidence-129fe6edbea91328"
+            ]
+          },
+          {
+            "dimension": "executionAndEnablement",
+            "reason": "The live store, catalogue and large physical footprint support listing, fulfilment and consumer operations.",
+            "evidenceIds": [
+              "evidence-127f74a33eb76f9d",
+              "evidence-f07453ff9beb6615"
+            ]
+          },
+          {
+            "dimension": "opportunityAndRisk",
+            "reason": "Strong reach is attractive, though Steren also manufactures its own products and has potential portfolio conflict.",
+            "evidenceIds": [
+              "evidence-f07453ff9beb6615"
+            ]
+          }
+        ],
+        "unsupportedOrContradictoryClaims": [
+          "No packet evidence establishes current willingness to onboard Cudy."
+        ],
+        "citationAlignment": true
+      },
+      "costEvent": {
+        "eventId": "blind-f1d3f22475d1a59c64e9fc53:blind-judge",
+        "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+        "ledger": "evaluation-overhead",
+        "arm": "shared-evaluation",
+        "stage": "blind-judge",
+        "provider": "codex-in-session",
+        "requestedModel": "codex-in-session",
+        "actualModel": "codex-in-session",
+        "startedAt": "2026-09-06T20:30:00.000Z",
+        "completedAt": "2026-09-06T20:31:00.000Z",
+        "latencyMs": 60000,
+        "attempts": 1,
+        "retries": 0,
+        "fallbackUsed": true,
+        "status": "completed",
+        "usage": {},
+        "accountCashCostUsd": 0,
+        "volume": {
+          "inputItems": 1,
+          "rawOutputItems": 1,
+          "validOutputItems": 1,
+          "downstreamUsedItems": 1,
+          "discardedReasonCounts": {}
+        },
+        "notes": [
+          "Direct blind review in the current Codex conversation; no API call and no external search.",
+          "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+        ],
+        "officialListPriceUsd": 0,
+        "budgetCostUsd": 0,
+        "cashCostBasis": "account-observed",
+        "costAnomalies": [
+          "in-session-codex-token-usage-unavailable"
+        ]
+      }
+    },
+    {
+      "packetId": "blind-76b95d8ad5ee046e7758a640",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "modelReportedTotal": 79,
+      "deterministicTotal": 79,
+      "output": {
+        "packetId": "blind-76b95d8ad5ee046e7758a640",
+        "isRealOperatingCompany": true,
+        "operatesInTargetMarket": true,
+        "supportedRoles": [
+          "E-tailer",
+          "Reseller"
+        ],
+        "primaryRole": "E-tailer",
+        "requestedCategoryMatch": true,
+        "dimensions": {
+          "productAndUseCaseFit": 45,
+          "channelAndBuyingInfluence": 12,
+          "sameRoleScaleAndCoverage": 8,
+          "executionAndEnablement": 7,
+          "opportunityAndRisk": 7
+        },
+        "totalScore": 79,
+        "eligibility": "eligible",
+        "dimensionReasons": [
+          {
+            "dimension": "productAndUseCaseFit",
+            "reason": "The Mexican store lists switches, cloud-managed networking, Wi-Fi 6E backhaul and outdoor equipment closely aligned with Cudy families.",
+            "evidenceIds": [
+              "evidence-0fbcca724a49f29c",
+              "evidence-a89fce04a0e7f229",
+              "evidence-7a001bcbe457717a"
+            ]
+          },
+          {
+            "dimension": "channelAndBuyingInfluence",
+            "reason": "Direct nationwide online sales and visible multi-brand inventory support meaningful procurement influence.",
+            "evidenceIds": [
+              "evidence-0fbcca724a49f29c"
+            ]
+          },
+          {
+            "dimension": "sameRoleScaleAndCoverage",
+            "reason": "Nationwide Mexican shipping is supported, but the packet does not establish large traffic, revenue or store scale.",
+            "evidenceIds": [
+              "evidence-0fbcca724a49f29c"
+            ]
+          },
+          {
+            "dimension": "executionAndEnablement",
+            "reason": "The store offers advice, warranties and product-level technical merchandising, including enterprise subscriptions.",
+            "evidenceIds": [
+              "evidence-46ac700744f2c58b",
+              "evidence-0fbcca724a49f29c"
+            ]
+          },
+          {
+            "dimension": "opportunityAndRisk",
+            "reason": "Strong category adjacency creates an actionable opportunity, balanced by several incumbent wireless brands.",
+            "evidenceIds": [
+              "evidence-46ac700744f2c58b",
+              "evidence-7a001bcbe457717a"
+            ]
+          }
+        ],
+        "unsupportedOrContradictoryClaims": [
+          "No reliable size or current Cudy-onboarding evidence is included."
+        ],
+        "citationAlignment": true
+      },
+      "costEvent": {
+        "eventId": "blind-76b95d8ad5ee046e7758a640:blind-judge",
+        "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+        "ledger": "evaluation-overhead",
+        "arm": "shared-evaluation",
+        "stage": "blind-judge",
+        "provider": "codex-in-session",
+        "requestedModel": "codex-in-session",
+        "actualModel": "codex-in-session",
+        "startedAt": "2026-09-06T20:31:00.000Z",
+        "completedAt": "2026-09-06T20:32:00.000Z",
+        "latencyMs": 60000,
+        "attempts": 1,
+        "retries": 0,
+        "fallbackUsed": true,
+        "status": "completed",
+        "usage": {},
+        "accountCashCostUsd": 0,
+        "volume": {
+          "inputItems": 1,
+          "rawOutputItems": 1,
+          "validOutputItems": 1,
+          "downstreamUsedItems": 1,
+          "discardedReasonCounts": {}
+        },
+        "notes": [
+          "Direct blind review in the current Codex conversation; no API call and no external search.",
+          "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+        ],
+        "officialListPriceUsd": 0,
+        "budgetCostUsd": 0,
+        "cashCostBasis": "account-observed",
+        "costAnomalies": [
+          "in-session-codex-token-usage-unavailable"
+        ]
+      }
+    },
+    {
+      "packetId": "blind-7ca0576569a678b9f9e73d70",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "modelReportedTotal": 32,
+      "deterministicTotal": 32,
+      "output": {
+        "packetId": "blind-7ca0576569a678b9f9e73d70",
+        "isRealOperatingCompany": true,
+        "operatesInTargetMarket": true,
+        "supportedRoles": [
+          "B2B Marketplace",
+          "Directory"
+        ],
+        "primaryRole": "B2B Marketplace",
+        "requestedCategoryMatch": false,
+        "dimensions": {
+          "productAndUseCaseFit": 10,
+          "channelAndBuyingInfluence": 5,
+          "sameRoleScaleAndCoverage": 10,
+          "executionAndEnablement": 4,
+          "opportunityAndRisk": 3
+        },
+        "totalScore": 32,
+        "eligibility": "ineligible-for-current-task",
+        "dimensionReasons": [
+          {
+            "dimension": "productAndUseCaseFit",
+            "reason": "Networking supplier listings exist, but they describe third parties rather than QuimiNet-owned retail inventory.",
+            "evidenceIds": [
+              "evidence-698718c73f4e4d62",
+              "evidence-5dfc36d9c6d73ccd"
+            ]
+          },
+          {
+            "dimension": "channelAndBuyingInfluence",
+            "reason": "QuimiNet sells advertising and supplier visibility rather than directly buying and retailing networking products.",
+            "evidenceIds": [
+              "evidence-c37f7b5d0b956486"
+            ]
+          },
+          {
+            "dimension": "sameRoleScaleAndCoverage",
+            "reason": "The directory exposes many Mexican suppliers, but marketplace reach is not comparable with retail-channel scale.",
+            "evidenceIds": [
+              "evidence-52b816816130e31c"
+            ]
+          },
+          {
+            "dimension": "executionAndEnablement",
+            "reason": "The packet supports directory and chat functions, not fulfilment, returns or product support.",
+            "evidenceIds": [
+              "evidence-698718c73f4e4d62",
+              "evidence-c37f7b5d0b956486"
+            ]
+          },
+          {
+            "dimension": "opportunityAndRisk",
+            "reason": "It may be a marketing source, but the lack of a retail procurement path is a structural blocker for this task.",
+            "evidenceIds": [
+              "evidence-c37f7b5d0b956486"
+            ]
+          }
+        ],
+        "unsupportedOrContradictoryClaims": [
+          "Supplier directory entries do not establish QuimiNet as a retailer or product buyer."
+        ],
+        "citationAlignment": true
+      },
+      "costEvent": {
+        "eventId": "blind-7ca0576569a678b9f9e73d70:blind-judge",
+        "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+        "ledger": "evaluation-overhead",
+        "arm": "shared-evaluation",
+        "stage": "blind-judge",
+        "provider": "codex-in-session",
+        "requestedModel": "codex-in-session",
+        "actualModel": "codex-in-session",
+        "startedAt": "2026-09-06T20:32:00.000Z",
+        "completedAt": "2026-09-06T20:33:00.000Z",
+        "latencyMs": 60000,
+        "attempts": 1,
+        "retries": 0,
+        "fallbackUsed": true,
+        "status": "completed",
+        "usage": {},
+        "accountCashCostUsd": 0,
+        "volume": {
+          "inputItems": 1,
+          "rawOutputItems": 1,
+          "validOutputItems": 1,
+          "downstreamUsedItems": 1,
+          "discardedReasonCounts": {}
+        },
+        "notes": [
+          "Direct blind review in the current Codex conversation; no API call and no external search.",
+          "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+        ],
+        "officialListPriceUsd": 0,
+        "budgetCostUsd": 0,
+        "cashCostBasis": "account-observed",
+        "costAnomalies": [
+          "in-session-codex-token-usage-unavailable"
+        ]
+      }
+    },
+    {
+      "packetId": "blind-f6607cd4485dfcdda3540cd7",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "modelReportedTotal": 65,
+      "deterministicTotal": 65,
+      "output": {
+        "packetId": "blind-f6607cd4485dfcdda3540cd7",
+        "isRealOperatingCompany": true,
+        "operatesInTargetMarket": true,
+        "supportedRoles": [
+          "Retailer",
+          "Wholesaler"
+        ],
+        "primaryRole": "Retailer",
+        "requestedCategoryMatch": true,
+        "dimensions": {
+          "productAndUseCaseFit": 30,
+          "channelAndBuyingInfluence": 10,
+          "sameRoleScaleAndCoverage": 12,
+          "executionAndEnablement": 7,
+          "opportunityAndRisk": 6
+        },
+        "totalScore": 65,
+        "eligibility": "eligible",
+        "dimensionReasons": [
+          {
+            "dimension": "productAndUseCaseFit",
+            "reason": "Tony sells multiple network switches, including a professional PoE+ model, but networking appears secondary to office supplies.",
+            "evidenceIds": [
+              "evidence-41f38f8bf5d7471d",
+              "evidence-125ff93170101961"
+            ]
+          },
+          {
+            "dimension": "channelAndBuyingInfluence",
+            "reason": "It operates consumer, business and wholesale purchasing paths, supporting direct buying influence.",
+            "evidenceIds": [
+              "evidence-home-0931e6c2f2ade7c1",
+              "evidence-cc2a74189956a94a"
+            ]
+          },
+          {
+            "dimension": "sameRoleScaleAndCoverage",
+            "reason": "The site presents Tony as a national low-price leader with branches and wholesale access, although exact scale is absent.",
+            "evidenceIds": [
+              "evidence-cc2a74189956a94a"
+            ]
+          },
+          {
+            "dimension": "executionAndEnablement",
+            "reason": "Online ordering, branches, finance and wholesale onboarding show adequate retail execution.",
+            "evidenceIds": [
+              "evidence-home-0931e6c2f2ade7c1",
+              "evidence-cc2a74189956a94a"
+            ]
+          },
+          {
+            "dimension": "opportunityAndRisk",
+            "reason": "Existing affordable switching creates an entry point, while limited networking depth raises activation risk.",
+            "evidenceIds": [
+              "evidence-125ff93170101961"
+            ]
+          }
+        ],
+        "unsupportedOrContradictoryClaims": [
+          "The packet does not establish router, mesh or wireless assortment depth."
+        ],
+        "citationAlignment": true
+      },
+      "costEvent": {
+        "eventId": "blind-f6607cd4485dfcdda3540cd7:blind-judge",
+        "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+        "ledger": "evaluation-overhead",
+        "arm": "shared-evaluation",
+        "stage": "blind-judge",
+        "provider": "codex-in-session",
+        "requestedModel": "codex-in-session",
+        "actualModel": "codex-in-session",
+        "startedAt": "2026-09-06T20:33:00.000Z",
+        "completedAt": "2026-09-06T20:34:00.000Z",
+        "latencyMs": 60000,
+        "attempts": 1,
+        "retries": 0,
+        "fallbackUsed": true,
+        "status": "completed",
+        "usage": {},
+        "accountCashCostUsd": 0,
+        "volume": {
+          "inputItems": 1,
+          "rawOutputItems": 1,
+          "validOutputItems": 1,
+          "downstreamUsedItems": 1,
+          "discardedReasonCounts": {}
+        },
+        "notes": [
+          "Direct blind review in the current Codex conversation; no API call and no external search.",
+          "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+        ],
+        "officialListPriceUsd": 0,
+        "budgetCostUsd": 0,
+        "cashCostBasis": "account-observed",
+        "costAnomalies": [
+          "in-session-codex-token-usage-unavailable"
+        ]
+      }
+    },
+    {
+      "packetId": "blind-b3cf891d0df3d51168d2a747",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "modelReportedTotal": 90,
+      "deterministicTotal": 90,
+      "output": {
+        "packetId": "blind-b3cf891d0df3d51168d2a747",
+        "isRealOperatingCompany": true,
+        "operatesInTargetMarket": true,
+        "supportedRoles": [
+          "Distributor",
+          "E-tailer"
+        ],
+        "primaryRole": "Distributor",
+        "requestedCategoryMatch": true,
+        "dimensions": {
+          "productAndUseCaseFit": 49,
+          "channelAndBuyingInfluence": 15,
+          "sameRoleScaleAndCoverage": 11,
+          "executionAndEnablement": 9,
+          "opportunityAndRisk": 6
+        },
+        "totalScore": 90,
+        "eligibility": "eligible",
+        "dimensionReasons": [
+          {
+            "dimension": "productAndUseCaseFit",
+            "reason": "LinITX carries routers, switches, Wi-Fi 6, mobile broadband, fibre, access points and related networking families.",
+            "evidenceIds": [
+              "evidence-daade51480518b0d",
+              "evidence-56e953264811a3a4"
+            ]
+          },
+          {
+            "dimension": "channelAndBuyingInfluence",
+            "reason": "It explicitly identifies as a MikroTik and Ubiquiti master distributor with trade-oriented professional support.",
+            "evidenceIds": [
+              "evidence-daade51480518b0d"
+            ]
+          },
+          {
+            "dimension": "sameRoleScaleAndCoverage",
+            "reason": "It supports UK purchasing and multiple currencies, but no broadline-scale figures are included.",
+            "evidenceIds": [
+              "evidence-daade51480518b0d"
+            ]
+          },
+          {
+            "dimension": "executionAndEnablement",
+            "reason": "Professional support, training and deep product merchandising indicate strong channel execution.",
+            "evidenceIds": [
+              "evidence-daade51480518b0d",
+              "evidence-9004436d23033a77"
+            ]
+          },
+          {
+            "dimension": "opportunityAndRisk",
+            "reason": "Excellent portfolio adjacency is offset by strong incumbent Ubiquiti and MikroTik relationships.",
+            "evidenceIds": [
+              "evidence-daade51480518b0d"
+            ]
+          }
+        ],
+        "unsupportedOrContradictoryClaims": [
+          "No evidence demonstrates openness to another networking vendor."
+        ],
+        "citationAlignment": true
+      },
+      "costEvent": {
+        "eventId": "blind-b3cf891d0df3d51168d2a747:blind-judge",
+        "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+        "ledger": "evaluation-overhead",
+        "arm": "shared-evaluation",
+        "stage": "blind-judge",
+        "provider": "codex-in-session",
+        "requestedModel": "codex-in-session",
+        "actualModel": "codex-in-session",
+        "startedAt": "2026-09-06T20:34:00.000Z",
+        "completedAt": "2026-09-06T20:35:00.000Z",
+        "latencyMs": 60000,
+        "attempts": 1,
+        "retries": 0,
+        "fallbackUsed": true,
+        "status": "completed",
+        "usage": {},
+        "accountCashCostUsd": 0,
+        "volume": {
+          "inputItems": 1,
+          "rawOutputItems": 1,
+          "validOutputItems": 1,
+          "downstreamUsedItems": 1,
+          "discardedReasonCounts": {}
+        },
+        "notes": [
+          "Direct blind review in the current Codex conversation; no API call and no external search.",
+          "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+        ],
+        "officialListPriceUsd": 0,
+        "budgetCostUsd": 0,
+        "cashCostBasis": "account-observed",
+        "costAnomalies": [
+          "in-session-codex-token-usage-unavailable"
+        ]
+      }
+    },
+    {
+      "packetId": "blind-8d347f0f09bade22dc4d7538",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "modelReportedTotal": 92,
+      "deterministicTotal": 92,
+      "output": {
+        "packetId": "blind-8d347f0f09bade22dc4d7538",
+        "isRealOperatingCompany": true,
+        "operatesInTargetMarket": true,
+        "supportedRoles": [
+          "Distributor",
+          "VAD"
+        ],
+        "primaryRole": "Distributor",
+        "requestedCategoryMatch": true,
+        "dimensions": {
+          "productAndUseCaseFit": 45,
+          "channelAndBuyingInfluence": 15,
+          "sameRoleScaleAndCoverage": 15,
+          "executionAndEnablement": 10,
+          "opportunityAndRisk": 7
+        },
+        "totalScore": 92,
+        "eligibility": "eligible",
+        "dimensionReasons": [
+          {
+            "dimension": "productAndUseCaseFit",
+            "reason": "Westcoast distributes networking and security products including switches, routers and firewalls to resellers.",
+            "evidenceIds": [
+              "evidence-7221f73b739d13b9",
+              "evidence-053ed890257856cc"
+            ]
+          },
+          {
+            "dimension": "channelAndBuyingInfluence",
+            "reason": "It is explicitly a leading UK channel distributor supplying resellers and controlling vendor onboarding and wholesale access.",
+            "evidenceIds": [
+              "evidence-7221f73b739d13b9",
+              "evidence-82466894fb092e5d"
+            ]
+          },
+          {
+            "dimension": "sameRoleScaleAndCoverage",
+            "reason": "Multiple UK locations and leading-distributor positioning support top-tier national coverage.",
+            "evidenceIds": [
+              "evidence-fde942f0553046ca",
+              "evidence-82466894fb092e5d"
+            ]
+          },
+          {
+            "dimension": "executionAndEnablement",
+            "reason": "Dedicated account management, in-house experts, services and special-bid/finance functions show complete distributor enablement.",
+            "evidenceIds": [
+              "evidence-82466894fb092e5d"
+            ]
+          },
+          {
+            "dimension": "opportunityAndRisk",
+            "reason": "Scale and reseller reach are highly attractive, with moderate risk from an established competing vendor portfolio.",
+            "evidenceIds": [
+              "evidence-7221f73b739d13b9",
+              "evidence-82466894fb092e5d"
+            ]
+          }
+        ],
+        "unsupportedOrContradictoryClaims": [
+          "No packet evidence confirms a present portfolio gap or onboarding intent."
+        ],
+        "citationAlignment": true
+      },
+      "costEvent": {
+        "eventId": "blind-8d347f0f09bade22dc4d7538:blind-judge",
+        "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+        "ledger": "evaluation-overhead",
+        "arm": "shared-evaluation",
+        "stage": "blind-judge",
+        "provider": "codex-in-session",
+        "requestedModel": "codex-in-session",
+        "actualModel": "codex-in-session",
+        "startedAt": "2026-09-06T20:35:00.000Z",
+        "completedAt": "2026-09-06T20:36:00.000Z",
+        "latencyMs": 60000,
+        "attempts": 1,
+        "retries": 0,
+        "fallbackUsed": true,
+        "status": "completed",
+        "usage": {},
+        "accountCashCostUsd": 0,
+        "volume": {
+          "inputItems": 1,
+          "rawOutputItems": 1,
+          "validOutputItems": 1,
+          "downstreamUsedItems": 1,
+          "discardedReasonCounts": {}
+        },
+        "notes": [
+          "Direct blind review in the current Codex conversation; no API call and no external search.",
+          "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+        ],
+        "officialListPriceUsd": 0,
+        "budgetCostUsd": 0,
+        "cashCostBasis": "account-observed",
+        "costAnomalies": [
+          "in-session-codex-token-usage-unavailable"
+        ]
+      }
+    },
+    {
+      "packetId": "blind-81f5e807f252883de7fedbb3",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "modelReportedTotal": 66,
+      "deterministicTotal": 66,
+      "output": {
+        "packetId": "blind-81f5e807f252883de7fedbb3",
+        "isRealOperatingCompany": true,
+        "operatesInTargetMarket": true,
+        "supportedRoles": [
+          "Distributor"
+        ],
+        "primaryRole": "Distributor",
+        "requestedCategoryMatch": true,
+        "dimensions": {
+          "productAndUseCaseFit": 31,
+          "channelAndBuyingInfluence": 13,
+          "sameRoleScaleAndCoverage": 8,
+          "executionAndEnablement": 8,
+          "opportunityAndRisk": 6
+        },
+        "totalScore": 66,
+        "eligibility": "eligible",
+        "dimensionReasons": [
+          {
+            "dimension": "productAndUseCaseFit",
+            "reason": "Mediatron distributes rack, cabling, KVM and networking infrastructure, but evidence for active routers, Wi-Fi or switching is limited.",
+            "evidenceIds": [
+              "evidence-home-d434b61b001da0b0",
+              "evidence-53942fbd1ef33dfc"
+            ]
+          },
+          {
+            "dimension": "channelAndBuyingInfluence",
+            "reason": "It is an explicit UK trade distributor and supports authorised reseller access.",
+            "evidenceIds": [
+              "evidence-home-d434b61b001da0b0",
+              "evidence-53942fbd1ef33dfc"
+            ]
+          },
+          {
+            "dimension": "sameRoleScaleAndCoverage",
+            "reason": "Longstanding UK distribution is supported, but national reseller counts or business scale are absent.",
+            "evidenceIds": [
+              "evidence-53942fbd1ef33dfc"
+            ]
+          },
+          {
+            "dimension": "executionAndEnablement",
+            "reason": "Fast quoting, technical advice, quality assurance and support services demonstrate specialist execution.",
+            "evidenceIds": [
+              "evidence-53942fbd1ef33dfc",
+              "evidence-home-d434b61b001da0b0"
+            ]
+          },
+          {
+            "dimension": "opportunityAndRisk",
+            "reason": "Adjacent infrastructure provides a viable cross-sell path, but active networking-family demand requires confirmation.",
+            "evidenceIds": [
+              "evidence-home-d434b61b001da0b0"
+            ]
+          }
+        ],
+        "unsupportedOrContradictoryClaims": [
+          "No packet evidence establishes active wireless/router demand or broad reseller reach."
+        ],
+        "citationAlignment": true
+      },
+      "costEvent": {
+        "eventId": "blind-81f5e807f252883de7fedbb3:blind-judge",
+        "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+        "ledger": "evaluation-overhead",
+        "arm": "shared-evaluation",
+        "stage": "blind-judge",
+        "provider": "codex-in-session",
+        "requestedModel": "codex-in-session",
+        "actualModel": "codex-in-session",
+        "startedAt": "2026-09-06T20:36:00.000Z",
+        "completedAt": "2026-09-06T20:37:00.000Z",
+        "latencyMs": 60000,
+        "attempts": 1,
+        "retries": 0,
+        "fallbackUsed": true,
+        "status": "completed",
+        "usage": {},
+        "accountCashCostUsd": 0,
+        "volume": {
+          "inputItems": 1,
+          "rawOutputItems": 1,
+          "validOutputItems": 1,
+          "downstreamUsedItems": 1,
+          "discardedReasonCounts": {}
+        },
+        "notes": [
+          "Direct blind review in the current Codex conversation; no API call and no external search.",
+          "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+        ],
+        "officialListPriceUsd": 0,
+        "budgetCostUsd": 0,
+        "cashCostBasis": "account-observed",
+        "costAnomalies": [
+          "in-session-codex-token-usage-unavailable"
+        ]
+      }
+    },
+    {
+      "packetId": "blind-059d577f0163907d70b5aa16",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "modelReportedTotal": 77,
+      "deterministicTotal": 77,
+      "output": {
+        "packetId": "blind-059d577f0163907d70b5aa16",
+        "isRealOperatingCompany": true,
+        "operatesInTargetMarket": true,
+        "supportedRoles": [
+          "VAD",
+          "Distributor",
+          "Services Aggregator"
+        ],
+        "primaryRole": "VAD",
+        "requestedCategoryMatch": true,
+        "dimensions": {
+          "productAndUseCaseFit": 33,
+          "channelAndBuyingInfluence": 15,
+          "sameRoleScaleAndCoverage": 15,
+          "executionAndEnablement": 10,
+          "opportunityAndRisk": 4
+        },
+        "totalScore": 77,
+        "eligibility": "eligible",
+        "dimensionReasons": [
+          {
+            "dimension": "productAndUseCaseFit",
+            "reason": "Arrow has deep networking and security capability, but the packet emphasizes enterprise data-centre and cloud environments above Cudy's value/SMB core.",
+            "evidenceIds": [
+              "evidence-40104e90dd82c4a8",
+              "evidence-e92fa550e586947f"
+            ]
+          },
+          {
+            "dimension": "channelAndBuyingInfluence",
+            "reason": "Arrow explicitly operates beyond traditional distribution and can scale partner services and solution capabilities.",
+            "evidenceIds": [
+              "evidence-c47b07ebf9daf03b",
+              "evidence-e92fa550e586947f"
+            ]
+          },
+          {
+            "dimension": "sameRoleScaleAndCoverage",
+            "reason": "Leading global aggregator positioning and international logistics support top-tier coverage.",
+            "evidenceIds": [
+              "evidence-6da7a353dd205b03",
+              "evidence-c47b07ebf9daf03b"
+            ]
+          },
+          {
+            "dimension": "executionAndEnablement",
+            "reason": "Technical sales engineering, training, financing, logistics and managed services form a complete VAD execution stack.",
+            "evidenceIds": [
+              "evidence-c47b07ebf9daf03b"
+            ]
+          },
+          {
+            "dimension": "opportunityAndRisk",
+            "reason": "Large strategic value is offset by portfolio complexity and strong enterprise networking incumbents.",
+            "evidenceIds": [
+              "evidence-40104e90dd82c4a8",
+              "evidence-6da7a353dd205b03"
+            ]
+          }
+        ],
+        "unsupportedOrContradictoryClaims": [
+          "The packet does not show a Cudy-fit portfolio gap or active UK onboarding interest."
+        ],
+        "citationAlignment": true
+      },
+      "costEvent": {
+        "eventId": "blind-059d577f0163907d70b5aa16:blind-judge",
+        "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+        "ledger": "evaluation-overhead",
+        "arm": "shared-evaluation",
+        "stage": "blind-judge",
+        "provider": "codex-in-session",
+        "requestedModel": "codex-in-session",
+        "actualModel": "codex-in-session",
+        "startedAt": "2026-09-06T20:37:00.000Z",
+        "completedAt": "2026-09-06T20:38:00.000Z",
+        "latencyMs": 60000,
+        "attempts": 1,
+        "retries": 0,
+        "fallbackUsed": true,
+        "status": "completed",
+        "usage": {},
+        "accountCashCostUsd": 0,
+        "volume": {
+          "inputItems": 1,
+          "rawOutputItems": 1,
+          "validOutputItems": 1,
+          "downstreamUsedItems": 1,
+          "discardedReasonCounts": {}
+        },
+        "notes": [
+          "Direct blind review in the current Codex conversation; no API call and no external search.",
+          "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+        ],
+        "officialListPriceUsd": 0,
+        "budgetCostUsd": 0,
+        "cashCostBasis": "account-observed",
+        "costAnomalies": [
+          "in-session-codex-token-usage-unavailable"
+        ]
+      }
+    },
+    {
+      "packetId": "blind-39dd4592da5d9ff1dbd63878",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "modelReportedTotal": 81,
+      "deterministicTotal": 81,
+      "output": {
+        "packetId": "blind-39dd4592da5d9ff1dbd63878",
+        "isRealOperatingCompany": true,
+        "operatesInTargetMarket": true,
+        "supportedRoles": [
+          "MSP",
+          "ISP",
+          "Network Integrator"
+        ],
+        "primaryRole": "MSP",
+        "requestedCategoryMatch": true,
+        "dimensions": {
+          "productAndUseCaseFit": 44,
+          "channelAndBuyingInfluence": 12,
+          "sameRoleScaleAndCoverage": 9,
+          "executionAndEnablement": 9,
+          "opportunityAndRisk": 7
+        },
+        "totalScore": 81,
+        "eligibility": "eligible",
+        "dimensionReasons": [
+          {
+            "dimension": "productAndUseCaseFit",
+            "reason": "Huus designs dedicated fibre, SD-WAN, managed connectivity and Wi-Fi for business and hospitality scenarios aligned with Cudy SMB/FWA products.",
+            "evidenceIds": [
+              "evidence-fe62f303f7ebf5fb",
+              "evidence-e5b31ebf3bd98d43"
+            ]
+          },
+          {
+            "dimension": "channelAndBuyingInfluence",
+            "reason": "Its engineers propose and manage customer connectivity solutions, giving it meaningful design and equipment-selection influence.",
+            "evidenceIds": [
+              "evidence-d9b6d3ee65939f0c",
+              "evidence-e5b31ebf3bd98d43"
+            ]
+          },
+          {
+            "dimension": "sameRoleScaleAndCoverage",
+            "reason": "It serves businesses across Mexico, but client count and delivery-team scale are not established.",
+            "evidenceIds": [
+              "evidence-e5b31ebf3bd98d43",
+              "evidence-d9b6d3ee65939f0c"
+            ]
+          },
+          {
+            "dimension": "executionAndEnablement",
+            "reason": "Cloud management, monitoring, failover and engineer-led proposals support strong ongoing service execution.",
+            "evidenceIds": [
+              "evidence-fe62f303f7ebf5fb",
+              "evidence-d9b6d3ee65939f0c"
+            ]
+          },
+          {
+            "dimension": "opportunityAndRisk",
+            "reason": "Clear managed-network demand is attractive, with some risk that Huus is primarily a connectivity service provider rather than a reseller.",
+            "evidenceIds": [
+              "evidence-e3c2011a30c8289d",
+              "evidence-fe62f303f7ebf5fb"
+            ]
+          }
+        ],
+        "unsupportedOrContradictoryClaims": [
+          "The packet does not identify current hardware vendors or procurement volume."
+        ],
+        "citationAlignment": true
+      },
+      "costEvent": {
+        "eventId": "blind-39dd4592da5d9ff1dbd63878:blind-judge",
+        "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+        "ledger": "evaluation-overhead",
+        "arm": "shared-evaluation",
+        "stage": "blind-judge",
+        "provider": "codex-in-session",
+        "requestedModel": "codex-in-session",
+        "actualModel": "codex-in-session",
+        "startedAt": "2026-09-06T20:38:00.000Z",
+        "completedAt": "2026-09-06T20:39:00.000Z",
+        "latencyMs": 60000,
+        "attempts": 1,
+        "retries": 0,
+        "fallbackUsed": true,
+        "status": "completed",
+        "usage": {},
+        "accountCashCostUsd": 0,
+        "volume": {
+          "inputItems": 1,
+          "rawOutputItems": 1,
+          "validOutputItems": 1,
+          "downstreamUsedItems": 1,
+          "discardedReasonCounts": {}
+        },
+        "notes": [
+          "Direct blind review in the current Codex conversation; no API call and no external search.",
+          "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+        ],
+        "officialListPriceUsd": 0,
+        "budgetCostUsd": 0,
+        "cashCostBasis": "account-observed",
+        "costAnomalies": [
+          "in-session-codex-token-usage-unavailable"
+        ]
+      }
+    },
+    {
+      "packetId": "blind-975d71c3a9f6671298a43650",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "modelReportedTotal": 93,
+      "deterministicTotal": 93,
+      "output": {
+        "packetId": "blind-975d71c3a9f6671298a43650",
+        "isRealOperatingCompany": true,
+        "operatesInTargetMarket": true,
+        "supportedRoles": [
+          "SI",
+          "VAR"
+        ],
+        "primaryRole": "SI",
+        "requestedCategoryMatch": true,
+        "dimensions": {
+          "productAndUseCaseFit": 48,
+          "channelAndBuyingInfluence": 14,
+          "sameRoleScaleAndCoverage": 13,
+          "executionAndEnablement": 10,
+          "opportunityAndRisk": 8
+        },
+        "totalScore": 93,
+        "eligibility": "eligible",
+        "dimensionReasons": [
+          {
+            "dimension": "productAndUseCaseFit",
+            "reason": "ERCONNECT designs switching, measured Wi-Fi, SD-WAN and NAC for multi-site business environments, directly matching Cudy SMB networking scenarios.",
+            "evidenceIds": [
+              "evidence-0a4a028ec19ef5a0"
+            ]
+          },
+          {
+            "dimension": "channelAndBuyingInfluence",
+            "reason": "Its integrated engineering, supply, installation and certification model directly influences technical selection and procurement.",
+            "evidenceIds": [
+              "evidence-home-a2922cc458397d41",
+              "evidence-30eb9fcdeb6c53b7"
+            ]
+          },
+          {
+            "dimension": "sameRoleScaleAndCoverage",
+            "reason": "More than 700 projects, 150 organisations, four operating bases and nationwide execution demonstrate strong SI scale.",
+            "evidenceIds": [
+              "evidence-30eb9fcdeb6c53b7"
+            ]
+          },
+          {
+            "dimension": "executionAndEnablement",
+            "reason": "Design, site measurement, integration, documentation, support and certified partnerships form a complete project lifecycle.",
+            "evidenceIds": [
+              "evidence-0a4a028ec19ef5a0",
+              "evidence-b8145ee1cb4ca0fa"
+            ]
+          },
+          {
+            "dimension": "opportunityAndRisk",
+            "reason": "National project reach and networking depth create a strong opportunity, with manageable incumbent-partner competition.",
+            "evidenceIds": [
+              "evidence-b8145ee1cb4ca0fa",
+              "evidence-30eb9fcdeb6c53b7"
+            ]
+          }
+        ],
+        "unsupportedOrContradictoryClaims": [
+          "No packet evidence shows current willingness to add Cudy."
+        ],
+        "citationAlignment": true
+      },
+      "costEvent": {
+        "eventId": "blind-975d71c3a9f6671298a43650:blind-judge",
+        "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+        "ledger": "evaluation-overhead",
+        "arm": "shared-evaluation",
+        "stage": "blind-judge",
+        "provider": "codex-in-session",
+        "requestedModel": "codex-in-session",
+        "actualModel": "codex-in-session",
+        "startedAt": "2026-09-06T20:39:00.000Z",
+        "completedAt": "2026-09-06T20:40:00.000Z",
+        "latencyMs": 60000,
+        "attempts": 1,
+        "retries": 0,
+        "fallbackUsed": true,
+        "status": "completed",
+        "usage": {},
+        "accountCashCostUsd": 0,
+        "volume": {
+          "inputItems": 1,
+          "rawOutputItems": 1,
+          "validOutputItems": 1,
+          "downstreamUsedItems": 1,
+          "discardedReasonCounts": {}
+        },
+        "notes": [
+          "Direct blind review in the current Codex conversation; no API call and no external search.",
+          "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+        ],
+        "officialListPriceUsd": 0,
+        "budgetCostUsd": 0,
+        "cashCostBasis": "account-observed",
+        "costAnomalies": [
+          "in-session-codex-token-usage-unavailable"
+        ]
+      }
+    },
+    {
+      "packetId": "blind-89899798b27eba4d8011a34b",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "modelReportedTotal": 68,
+      "deterministicTotal": 68,
+      "output": {
+        "packetId": "blind-89899798b27eba4d8011a34b",
+        "isRealOperatingCompany": true,
+        "operatesInTargetMarket": true,
+        "supportedRoles": [
+          "SI",
+          "VAR",
+          "IT Consultant"
+        ],
+        "primaryRole": "SI",
+        "requestedCategoryMatch": true,
+        "dimensions": {
+          "productAndUseCaseFit": 35,
+          "channelAndBuyingInfluence": 11,
+          "sameRoleScaleAndCoverage": 8,
+          "executionAndEnablement": 8,
+          "opportunityAndRisk": 6
+        },
+        "totalScore": 68,
+        "eligibility": "eligible",
+        "dimensionReasons": [
+          {
+            "dimension": "productAndUseCaseFit",
+            "reason": "The company integrates IT, systems, telephony, networks and advanced computing, but the packet provides limited product-family detail.",
+            "evidenceIds": [
+              "evidence-home-d27d1f7a4eb92c5d"
+            ]
+          },
+          {
+            "dimension": "channelAndBuyingInfluence",
+            "reason": "Consulting and integrated-solution delivery imply influence over customer technology selection.",
+            "evidenceIds": [
+              "evidence-home-d27d1f7a4eb92c5d"
+            ]
+          },
+          {
+            "dimension": "sameRoleScaleAndCoverage",
+            "reason": "Nineteen years of operation are supported, but customer, geographic and team scale are not quantified.",
+            "evidenceIds": [
+              "evidence-home-d27d1f7a4eb92c5d"
+            ]
+          },
+          {
+            "dimension": "executionAndEnablement",
+            "reason": "Consulting and implementation of integrated solutions support project execution, though support depth is unclear.",
+            "evidenceIds": [
+              "evidence-home-d27d1f7a4eb92c5d"
+            ]
+          },
+          {
+            "dimension": "opportunityAndRisk",
+            "reason": "Networking integration is relevant, balanced by sparse evidence about active portfolio and demand.",
+            "evidenceIds": [
+              "evidence-home-d27d1f7a4eb92c5d"
+            ]
+          }
+        ],
+        "unsupportedOrContradictoryClaims": [
+          "No client scale, current networking vendors or nationwide coverage is evidenced."
+        ],
+        "citationAlignment": true
+      },
+      "costEvent": {
+        "eventId": "blind-89899798b27eba4d8011a34b:blind-judge",
+        "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+        "ledger": "evaluation-overhead",
+        "arm": "shared-evaluation",
+        "stage": "blind-judge",
+        "provider": "codex-in-session",
+        "requestedModel": "codex-in-session",
+        "actualModel": "codex-in-session",
+        "startedAt": "2026-09-06T20:40:00.000Z",
+        "completedAt": "2026-09-06T20:41:00.000Z",
+        "latencyMs": 60000,
+        "attempts": 1,
+        "retries": 0,
+        "fallbackUsed": true,
+        "status": "completed",
+        "usage": {},
+        "accountCashCostUsd": 0,
+        "volume": {
+          "inputItems": 1,
+          "rawOutputItems": 1,
+          "validOutputItems": 1,
+          "downstreamUsedItems": 1,
+          "discardedReasonCounts": {}
+        },
+        "notes": [
+          "Direct blind review in the current Codex conversation; no API call and no external search.",
+          "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+        ],
+        "officialListPriceUsd": 0,
+        "budgetCostUsd": 0,
+        "cashCostBasis": "account-observed",
+        "costAnomalies": [
+          "in-session-codex-token-usage-unavailable"
+        ]
+      }
+    },
+    {
+      "packetId": "blind-c7ceab99b66a973483e4ea92",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "modelReportedTotal": 85,
+      "deterministicTotal": 85,
+      "output": {
+        "packetId": "blind-c7ceab99b66a973483e4ea92",
+        "isRealOperatingCompany": true,
+        "operatesInTargetMarket": true,
+        "supportedRoles": [
+          "SI",
+          "Telecommunications Integrator",
+          "VAR"
+        ],
+        "primaryRole": "SI",
+        "requestedCategoryMatch": true,
+        "dimensions": {
+          "productAndUseCaseFit": 44,
+          "channelAndBuyingInfluence": 13,
+          "sameRoleScaleAndCoverage": 11,
+          "executionAndEnablement": 10,
+          "opportunityAndRisk": 7
+        },
+        "totalScore": 85,
+        "eligibility": "eligible",
+        "dimensionReasons": [
+          {
+            "dimension": "productAndUseCaseFit",
+            "reason": "ITM designs and implements enterprise voice, data, video and network architecture with site surveys and growth roadmaps.",
+            "evidenceIds": [
+              "evidence-home-80e08469eb2e8284"
+            ]
+          },
+          {
+            "dimension": "channelAndBuyingInfluence",
+            "reason": "End-to-end design, implementation and continuous support give ITM strong specification and procurement influence.",
+            "evidenceIds": [
+              "evidence-home-80e08469eb2e8284",
+              "evidence-250683db2625d409"
+            ]
+          },
+          {
+            "dimension": "sameRoleScaleAndCoverage",
+            "reason": "More than 20 years and national assistance are supported, with over 100 clients indicated.",
+            "evidenceIds": [
+              "evidence-home-80e08469eb2e8284",
+              "evidence-250683db2625d409"
+            ]
+          },
+          {
+            "dimension": "executionAndEnablement",
+            "reason": "Consulting, site survey, implementation, certification, onsite/remote support and monitoring cover the full lifecycle.",
+            "evidenceIds": [
+              "evidence-home-80e08469eb2e8284"
+            ]
+          },
+          {
+            "dimension": "opportunityAndRisk",
+            "reason": "Strong telecom project fit is attractive, with moderate competition from established certified manufacturers.",
+            "evidenceIds": [
+              "evidence-250683db2625d409"
+            ]
+          }
+        ],
+        "unsupportedOrContradictoryClaims": [
+          "The packet does not quantify networking-specific annual volume."
+        ],
+        "citationAlignment": true
+      },
+      "costEvent": {
+        "eventId": "blind-c7ceab99b66a973483e4ea92:blind-judge",
+        "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+        "ledger": "evaluation-overhead",
+        "arm": "shared-evaluation",
+        "stage": "blind-judge",
+        "provider": "codex-in-session",
+        "requestedModel": "codex-in-session",
+        "actualModel": "codex-in-session",
+        "startedAt": "2026-09-06T20:41:00.000Z",
+        "completedAt": "2026-09-06T20:42:00.000Z",
+        "latencyMs": 60000,
+        "attempts": 1,
+        "retries": 0,
+        "fallbackUsed": true,
+        "status": "completed",
+        "usage": {},
+        "accountCashCostUsd": 0,
+        "volume": {
+          "inputItems": 1,
+          "rawOutputItems": 1,
+          "validOutputItems": 1,
+          "downstreamUsedItems": 1,
+          "discardedReasonCounts": {}
+        },
+        "notes": [
+          "Direct blind review in the current Codex conversation; no API call and no external search.",
+          "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+        ],
+        "officialListPriceUsd": 0,
+        "budgetCostUsd": 0,
+        "cashCostBasis": "account-observed",
+        "costAnomalies": [
+          "in-session-codex-token-usage-unavailable"
+        ]
+      }
+    },
+    {
+      "packetId": "blind-3b16a4d338bb38160a4a87c7",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "modelReportedTotal": 60,
+      "deterministicTotal": 60,
+      "output": {
+        "packetId": "blind-3b16a4d338bb38160a4a87c7",
+        "isRealOperatingCompany": true,
+        "operatesInTargetMarket": true,
+        "supportedRoles": [
+          "Reseller",
+          "Managed Communications Provider"
+        ],
+        "primaryRole": "Reseller",
+        "requestedCategoryMatch": true,
+        "dimensions": {
+          "productAndUseCaseFit": 32,
+          "channelAndBuyingInfluence": 11,
+          "sameRoleScaleAndCoverage": 7,
+          "executionAndEnablement": 6,
+          "opportunityAndRisk": 4
+        },
+        "totalScore": 60,
+        "eligibility": "research-required",
+        "dimensionReasons": [
+          {
+            "dimension": "productAndUseCaseFit",
+            "reason": "Archived materials cover wireless broadband, routers and security, while current product activity is not well evidenced.",
+            "evidenceIds": [
+              "evidence-01367e6c415ea292",
+              "evidence-16979d57e8313931"
+            ]
+          },
+          {
+            "dimension": "channelAndBuyingInfluence",
+            "reason": "The materials support a reseller and managed-communications sales role, but current buying influence is uncertain.",
+            "evidenceIds": [
+              "evidence-5ad32569a9faeba9"
+            ]
+          },
+          {
+            "dimension": "sameRoleScaleAndCoverage",
+            "reason": "A UK operating address and telecom service scope are shown, but no current customer or revenue scale appears.",
+            "evidenceIds": [
+              "evidence-5ad32569a9faeba9"
+            ]
+          },
+          {
+            "dimension": "executionAndEnablement",
+            "reason": "Managed communications terms imply service capability, though the strongest technical documents are old vendor PDFs.",
+            "evidenceIds": [
+              "evidence-5ad32569a9faeba9",
+              "evidence-c2af0468301f570b"
+            ]
+          },
+          {
+            "dimension": "opportunityAndRisk",
+            "reason": "Historical category alignment exists, but evidence staleness creates material uncertainty about current operations and portfolio.",
+            "evidenceIds": [
+              "evidence-01367e6c415ea292",
+              "evidence-16979d57e8313931"
+            ]
+          }
+        ],
+        "unsupportedOrContradictoryClaims": [
+          "The packet does not establish a current active networking catalogue."
+        ],
+        "citationAlignment": true
+      },
+      "costEvent": {
+        "eventId": "blind-3b16a4d338bb38160a4a87c7:blind-judge",
+        "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+        "ledger": "evaluation-overhead",
+        "arm": "shared-evaluation",
+        "stage": "blind-judge",
+        "provider": "codex-in-session",
+        "requestedModel": "codex-in-session",
+        "actualModel": "codex-in-session",
+        "startedAt": "2026-09-06T20:42:00.000Z",
+        "completedAt": "2026-09-06T20:43:00.000Z",
+        "latencyMs": 60000,
+        "attempts": 1,
+        "retries": 0,
+        "fallbackUsed": true,
+        "status": "completed",
+        "usage": {},
+        "accountCashCostUsd": 0,
+        "volume": {
+          "inputItems": 1,
+          "rawOutputItems": 1,
+          "validOutputItems": 1,
+          "downstreamUsedItems": 1,
+          "discardedReasonCounts": {}
+        },
+        "notes": [
+          "Direct blind review in the current Codex conversation; no API call and no external search.",
+          "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+        ],
+        "officialListPriceUsd": 0,
+        "budgetCostUsd": 0,
+        "cashCostBasis": "account-observed",
+        "costAnomalies": [
+          "in-session-codex-token-usage-unavailable"
+        ]
+      }
+    },
+    {
+      "packetId": "blind-3f2fd0efe0371ea85502a24e",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "modelReportedTotal": 86,
+      "deterministicTotal": 86,
+      "output": {
+        "packetId": "blind-3f2fd0efe0371ea85502a24e",
+        "isRealOperatingCompany": true,
+        "operatesInTargetMarket": true,
+        "supportedRoles": [
+          "VAR",
+          "Reseller",
+          "SI"
+        ],
+        "primaryRole": "VAR",
+        "requestedCategoryMatch": true,
+        "dimensions": {
+          "productAndUseCaseFit": 40,
+          "channelAndBuyingInfluence": 15,
+          "sameRoleScaleAndCoverage": 15,
+          "executionAndEnablement": 10,
+          "opportunityAndRisk": 6
+        },
+        "totalScore": 86,
+        "eligibility": "eligible",
+        "dimensionReasons": [
+          {
+            "dimension": "productAndUseCaseFit",
+            "reason": "CDW combines hardware, software and integrated infrastructure services for business, government, education and healthcare; networking fit is broad rather than Cudy-specific.",
+            "evidenceIds": [
+              "evidence-home-7dd1b9c303ad4b2d",
+              "evidence-0f89b43bc86e2bff"
+            ]
+          },
+          {
+            "dimension": "channelAndBuyingInfluence",
+            "reason": "As a leading multi-brand solution provider, CDW has direct procurement and technology-selection influence.",
+            "evidenceIds": [
+              "evidence-0f89b43bc86e2bff"
+            ]
+          },
+          {
+            "dimension": "sameRoleScaleAndCoverage",
+            "reason": "Fortune 500 and S&P 500 status plus explicit UK operations demonstrate top-tier same-role scale.",
+            "evidenceIds": [
+              "evidence-0f89b43bc86e2bff",
+              "evidence-07595c70bc60a050"
+            ]
+          },
+          {
+            "dimension": "executionAndEnablement",
+            "reason": "Integrated IT solutions, services and supply-chain capability support comprehensive enterprise execution.",
+            "evidenceIds": [
+              "evidence-06e541c9b26a6a9b",
+              "evidence-0f89b43bc86e2bff"
+            ]
+          },
+          {
+            "dimension": "opportunityAndRisk",
+            "reason": "Scale creates high value, while broad portfolio complexity and enterprise orientation may make Cudy a smaller priority.",
+            "evidenceIds": [
+              "evidence-0f89b43bc86e2bff"
+            ]
+          }
+        ],
+        "unsupportedOrContradictoryClaims": [
+          "No packet evidence identifies a current Cudy-fit networking assortment gap."
+        ],
+        "citationAlignment": true
+      },
+      "costEvent": {
+        "eventId": "blind-3f2fd0efe0371ea85502a24e:blind-judge",
+        "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+        "ledger": "evaluation-overhead",
+        "arm": "shared-evaluation",
+        "stage": "blind-judge",
+        "provider": "codex-in-session",
+        "requestedModel": "codex-in-session",
+        "actualModel": "codex-in-session",
+        "startedAt": "2026-09-06T20:43:00.000Z",
+        "completedAt": "2026-09-06T20:44:00.000Z",
+        "latencyMs": 60000,
+        "attempts": 1,
+        "retries": 0,
+        "fallbackUsed": true,
+        "status": "completed",
+        "usage": {},
+        "accountCashCostUsd": 0,
+        "volume": {
+          "inputItems": 1,
+          "rawOutputItems": 1,
+          "validOutputItems": 1,
+          "downstreamUsedItems": 1,
+          "discardedReasonCounts": {}
+        },
+        "notes": [
+          "Direct blind review in the current Codex conversation; no API call and no external search.",
+          "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+        ],
+        "officialListPriceUsd": 0,
+        "budgetCostUsd": 0,
+        "cashCostBasis": "account-observed",
+        "costAnomalies": [
+          "in-session-codex-token-usage-unavailable"
+        ]
+      }
+    },
+    {
+      "packetId": "blind-82dcf8c3df9db277190e996e",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "modelReportedTotal": 69,
+      "deterministicTotal": 69,
+      "output": {
+        "packetId": "blind-82dcf8c3df9db277190e996e",
+        "isRealOperatingCompany": true,
+        "operatesInTargetMarket": true,
+        "supportedRoles": [
+          "Reseller",
+          "IT Asset Recovery Provider"
+        ],
+        "primaryRole": "Reseller",
+        "requestedCategoryMatch": true,
+        "dimensions": {
+          "productAndUseCaseFit": 34,
+          "channelAndBuyingInfluence": 12,
+          "sameRoleScaleAndCoverage": 9,
+          "executionAndEnablement": 8,
+          "opportunityAndRisk": 6
+        },
+        "totalScore": 69,
+        "eligibility": "eligible",
+        "dimensionReasons": [
+          {
+            "dimension": "productAndUseCaseFit",
+            "reason": "Flux buys, sells and rents enterprise networking infrastructure from Cisco, Aruba and Juniper, but emphasizes refurbished and end-of-life equipment.",
+            "evidenceIds": [
+              "evidence-158ffe52c671db59",
+              "evidence-60c00f05dcd501e6"
+            ]
+          },
+          {
+            "dimension": "channelAndBuyingInfluence",
+            "reason": "Direct sourcing and resale to organisations and IT resellers supports procurement influence.",
+            "evidenceIds": [
+              "evidence-158ffe52c671db59",
+              "evidence-60c00f05dcd501e6"
+            ]
+          },
+          {
+            "dimension": "sameRoleScaleAndCoverage",
+            "reason": "UK-wide collection and multiple institutional customer types are supported, without large scale figures.",
+            "evidenceIds": [
+              "evidence-158ffe52c671db59",
+              "evidence-60c00f05dcd501e6"
+            ]
+          },
+          {
+            "dimension": "executionAndEnablement",
+            "reason": "Sourcing, maintenance, rental and secure asset recovery demonstrate operational capability.",
+            "evidenceIds": [
+              "evidence-158ffe52c671db59"
+            ]
+          },
+          {
+            "dimension": "opportunityAndRisk",
+            "reason": "Networking expertise is relevant, but the circular-enterprise focus may not align strongly with new value-SMB products.",
+            "evidenceIds": [
+              "evidence-158ffe52c671db59"
+            ]
+          }
+        ],
+        "unsupportedOrContradictoryClaims": [
+          "No packet evidence shows a current new-product vendor onboarding program."
+        ],
+        "citationAlignment": true
+      },
+      "costEvent": {
+        "eventId": "blind-82dcf8c3df9db277190e996e:blind-judge",
+        "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+        "ledger": "evaluation-overhead",
+        "arm": "shared-evaluation",
+        "stage": "blind-judge",
+        "provider": "codex-in-session",
+        "requestedModel": "codex-in-session",
+        "actualModel": "codex-in-session",
+        "startedAt": "2026-09-06T20:44:00.000Z",
+        "completedAt": "2026-09-06T20:45:00.000Z",
+        "latencyMs": 60000,
+        "attempts": 1,
+        "retries": 0,
+        "fallbackUsed": true,
+        "status": "completed",
+        "usage": {},
+        "accountCashCostUsd": 0,
+        "volume": {
+          "inputItems": 1,
+          "rawOutputItems": 1,
+          "validOutputItems": 1,
+          "downstreamUsedItems": 1,
+          "discardedReasonCounts": {}
+        },
+        "notes": [
+          "Direct blind review in the current Codex conversation; no API call and no external search.",
+          "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+        ],
+        "officialListPriceUsd": 0,
+        "budgetCostUsd": 0,
+        "cashCostBasis": "account-observed",
+        "costAnomalies": [
+          "in-session-codex-token-usage-unavailable"
+        ]
+      }
+    },
+    {
+      "packetId": "blind-a446cc431d7d94504be7b481",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "modelReportedTotal": 85,
+      "deterministicTotal": 85,
+      "output": {
+        "packetId": "blind-a446cc431d7d94504be7b481",
+        "isRealOperatingCompany": true,
+        "operatesInTargetMarket": true,
+        "supportedRoles": [
+          "Reseller",
+          "E-tailer"
+        ],
+        "primaryRole": "Reseller",
+        "requestedCategoryMatch": true,
+        "dimensions": {
+          "productAndUseCaseFit": 47,
+          "channelAndBuyingInfluence": 13,
+          "sameRoleScaleAndCoverage": 10,
+          "executionAndEnablement": 8,
+          "opportunityAndRisk": 7
+        },
+        "totalScore": 85,
+        "eligibility": "eligible",
+        "dimensionReasons": [
+          {
+            "dimension": "productAndUseCaseFit",
+            "reason": "Comms Express specializes in networking supplies and offers a wide portfolio across price points, directly matching Cudy positioning.",
+            "evidenceIds": [
+              "evidence-0249d285c00bbfbf",
+              "evidence-b37a6bfd4753b33f"
+            ]
+          },
+          {
+            "dimension": "channelAndBuyingInfluence",
+            "reason": "Direct online selling and established manufacturer relationships support meaningful buying influence.",
+            "evidenceIds": [
+              "evidence-b37a6bfd4753b33f"
+            ]
+          },
+          {
+            "dimension": "sameRoleScaleAndCoverage",
+            "reason": "A UK online specialist operating since 2002 has credible reach, although exact customer or revenue scale is absent.",
+            "evidenceIds": [
+              "evidence-b37a6bfd4753b33f"
+            ]
+          },
+          {
+            "dimension": "executionAndEnablement",
+            "reason": "Fast online replenishment, broad merchandising and manufacturer-backed products show solid retail/reseller execution.",
+            "evidenceIds": [
+              "evidence-0249d285c00bbfbf",
+              "evidence-b37a6bfd4753b33f"
+            ]
+          },
+          {
+            "dimension": "opportunityAndRisk",
+            "reason": "Budget-friendly networking positioning is attractive, with moderate incumbent-brand competition.",
+            "evidenceIds": [
+              "evidence-a4ea23f2c93db541",
+              "evidence-b37a6bfd4753b33f"
+            ]
+          }
+        ],
+        "unsupportedOrContradictoryClaims": [
+          "No current willingness to add Cudy is evidenced."
+        ],
+        "citationAlignment": true
+      },
+      "costEvent": {
+        "eventId": "blind-a446cc431d7d94504be7b481:blind-judge",
+        "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+        "ledger": "evaluation-overhead",
+        "arm": "shared-evaluation",
+        "stage": "blind-judge",
+        "provider": "codex-in-session",
+        "requestedModel": "codex-in-session",
+        "actualModel": "codex-in-session",
+        "startedAt": "2026-09-06T20:45:00.000Z",
+        "completedAt": "2026-09-06T20:46:00.000Z",
+        "latencyMs": 60000,
+        "attempts": 1,
+        "retries": 0,
+        "fallbackUsed": true,
+        "status": "completed",
+        "usage": {},
+        "accountCashCostUsd": 0,
+        "volume": {
+          "inputItems": 1,
+          "rawOutputItems": 1,
+          "validOutputItems": 1,
+          "downstreamUsedItems": 1,
+          "discardedReasonCounts": {}
+        },
+        "notes": [
+          "Direct blind review in the current Codex conversation; no API call and no external search.",
+          "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+        ],
+        "officialListPriceUsd": 0,
+        "budgetCostUsd": 0,
+        "cashCostBasis": "account-observed",
+        "costAnomalies": [
+          "in-session-codex-token-usage-unavailable"
+        ]
+      }
+    },
+    {
+      "packetId": "blind-f6740ed923441e446320bf41",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "modelReportedTotal": 87,
+      "deterministicTotal": 87,
+      "output": {
+        "packetId": "blind-f6740ed923441e446320bf41",
+        "isRealOperatingCompany": true,
+        "operatesInTargetMarket": true,
+        "supportedRoles": [
+          "Distributor",
+          "Solutions Provider"
+        ],
+        "primaryRole": "Distributor",
+        "requestedCategoryMatch": true,
+        "dimensions": {
+          "productAndUseCaseFit": 41,
+          "channelAndBuyingInfluence": 15,
+          "sameRoleScaleAndCoverage": 15,
+          "executionAndEnablement": 10,
+          "opportunityAndRisk": 6
+        },
+        "totalScore": 87,
+        "eligibility": "eligible",
+        "dimensionReasons": [
+          {
+            "dimension": "productAndUseCaseFit",
+            "reason": "Ingram Micro is a technology distributor with major networking vendors and broad solution capability, though the packet has limited Mexico-specific product detail.",
+            "evidenceIds": [
+              "evidence-eb3dadbfe1344ec9",
+              "evidence-6663e769549fc004"
+            ]
+          },
+          {
+            "dimension": "channelAndBuyingInfluence",
+            "reason": "Its global distributor and solutions-provider role gives exceptional vendor and downstream partner influence.",
+            "evidenceIds": [
+              "evidence-eb3dadbfe1344ec9",
+              "evidence-6663e769549fc004"
+            ]
+          },
+          {
+            "dimension": "sameRoleScaleAndCoverage",
+            "reason": "Global reach plus Mexico City offices and multiple local teams establish top-tier same-role scale.",
+            "evidenceIds": [
+              "evidence-eb3dadbfe1344ec9",
+              "evidence-f3a1c6a792716ee9"
+            ]
+          },
+          {
+            "dimension": "executionAndEnablement",
+            "reason": "Xvantage, logistics, services and partner/vendor programs support full distributor execution.",
+            "evidenceIds": [
+              "evidence-6663e769549fc004"
+            ]
+          },
+          {
+            "dimension": "opportunityAndRisk",
+            "reason": "Very high strategic value is balanced by portfolio complexity and strong incumbent brands that may limit attention.",
+            "evidenceIds": [
+              "evidence-6663e769549fc004"
+            ]
+          }
+        ],
+        "unsupportedOrContradictoryClaims": [
+          "The packet does not establish a Mexico-specific networking portfolio gap or onboarding intent."
+        ],
+        "citationAlignment": true
+      },
+      "costEvent": {
+        "eventId": "blind-f6740ed923441e446320bf41:blind-judge",
+        "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+        "ledger": "evaluation-overhead",
+        "arm": "shared-evaluation",
+        "stage": "blind-judge",
+        "provider": "codex-in-session",
+        "requestedModel": "codex-in-session",
+        "actualModel": "codex-in-session",
+        "startedAt": "2026-09-06T20:46:00.000Z",
+        "completedAt": "2026-09-06T20:47:00.000Z",
+        "latencyMs": 60000,
+        "attempts": 1,
+        "retries": 0,
+        "fallbackUsed": true,
+        "status": "completed",
+        "usage": {},
+        "accountCashCostUsd": 0,
+        "volume": {
+          "inputItems": 1,
+          "rawOutputItems": 1,
+          "validOutputItems": 1,
+          "downstreamUsedItems": 1,
+          "discardedReasonCounts": {}
+        },
+        "notes": [
+          "Direct blind review in the current Codex conversation; no API call and no external search.",
+          "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+        ],
+        "officialListPriceUsd": 0,
+        "budgetCostUsd": 0,
+        "cashCostBasis": "account-observed",
+        "costAnomalies": [
+          "in-session-codex-token-usage-unavailable"
+        ]
+      }
+    },
+    {
+      "packetId": "blind-ccc409fd1bcf8a7bc12941c9",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "modelReportedTotal": 93,
+      "deterministicTotal": 93,
+      "output": {
+        "packetId": "blind-ccc409fd1bcf8a7bc12941c9",
+        "isRealOperatingCompany": true,
+        "operatesInTargetMarket": true,
+        "supportedRoles": [
+          "Distributor",
+          "VAD"
+        ],
+        "primaryRole": "Distributor",
+        "requestedCategoryMatch": true,
+        "dimensions": {
+          "productAndUseCaseFit": 47,
+          "channelAndBuyingInfluence": 15,
+          "sameRoleScaleAndCoverage": 13,
+          "executionAndEnablement": 10,
+          "opportunityAndRisk": 8
+        },
+        "totalScore": 93,
+        "eligibility": "eligible",
+        "dimensionReasons": [
+          {
+            "dimension": "productAndUseCaseFit",
+            "reason": "CDC is a Mexican telecom wholesaler covering networking, fibre, structured cabling, power and security with multiple relevant vendors.",
+            "evidenceIds": [
+              "evidence-home-54a078c3e59d003a",
+              "evidence-8fe0978d0b92f489"
+            ]
+          },
+          {
+            "dimension": "channelAndBuyingInfluence",
+            "reason": "It explicitly serves commercial partners as a wholesaler and provides complete project solutions.",
+            "evidenceIds": [
+              "evidence-2ad54658abbfbd00",
+              "evidence-eec88345ada406d3"
+            ]
+          },
+          {
+            "dimension": "sameRoleScaleAndCoverage",
+            "reason": "Nine regional branches, a Mexico City headquarters and claimed national presence support strong coverage.",
+            "evidenceIds": [
+              "evidence-eec88345ada406d3",
+              "evidence-79134b7a8ced0921"
+            ]
+          },
+          {
+            "dimension": "executionAndEnablement",
+            "reason": "Training, project advice, logistics, tenders, e-commerce and warranty capability demonstrate full channel enablement.",
+            "evidenceIds": [
+              "evidence-home-54a078c3e59d003a",
+              "evidence-2ad54658abbfbd00"
+            ]
+          },
+          {
+            "dimension": "opportunityAndRisk",
+            "reason": "Strong SMB networking adjacency and partner reach create a compelling opportunity despite incumbent brands.",
+            "evidenceIds": [
+              "evidence-8fe0978d0b92f489",
+              "evidence-2ad54658abbfbd00"
+            ]
+          }
+        ],
+        "unsupportedOrContradictoryClaims": [
+          "No packet evidence confirms current interest in Cudy."
+        ],
+        "citationAlignment": true
+      },
+      "costEvent": {
+        "eventId": "blind-ccc409fd1bcf8a7bc12941c9:blind-judge",
+        "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+        "ledger": "evaluation-overhead",
+        "arm": "shared-evaluation",
+        "stage": "blind-judge",
+        "provider": "codex-in-session",
+        "requestedModel": "codex-in-session",
+        "actualModel": "codex-in-session",
+        "startedAt": "2026-09-06T20:47:00.000Z",
+        "completedAt": "2026-09-06T20:48:00.000Z",
+        "latencyMs": 60000,
+        "attempts": 1,
+        "retries": 0,
+        "fallbackUsed": true,
+        "status": "completed",
+        "usage": {},
+        "accountCashCostUsd": 0,
+        "volume": {
+          "inputItems": 1,
+          "rawOutputItems": 1,
+          "validOutputItems": 1,
+          "downstreamUsedItems": 1,
+          "discardedReasonCounts": {}
+        },
+        "notes": [
+          "Direct blind review in the current Codex conversation; no API call and no external search.",
+          "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+        ],
+        "officialListPriceUsd": 0,
+        "budgetCostUsd": 0,
+        "cashCostBasis": "account-observed",
+        "costAnomalies": [
+          "in-session-codex-token-usage-unavailable"
+        ]
+      }
+    },
+    {
+      "packetId": "blind-1e1aa7115a20499527100a66",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "modelReportedTotal": 85,
+      "deterministicTotal": 85,
+      "output": {
+        "packetId": "blind-1e1aa7115a20499527100a66",
+        "isRealOperatingCompany": true,
+        "operatesInTargetMarket": true,
+        "supportedRoles": [
+          "Distributor"
+        ],
+        "primaryRole": "Distributor",
+        "requestedCategoryMatch": true,
+        "dimensions": {
+          "productAndUseCaseFit": 42,
+          "channelAndBuyingInfluence": 14,
+          "sameRoleScaleAndCoverage": 13,
+          "executionAndEnablement": 9,
+          "opportunityAndRisk": 7
+        },
+        "totalScore": 85,
+        "eligibility": "eligible",
+        "dimensionReasons": [
+          {
+            "dimension": "productAndUseCaseFit",
+            "reason": "TVC distributes radio links, networking and major wireless/security brands, with strong installer-channel adjacency.",
+            "evidenceIds": [
+              "evidence-62e28fbe60c12725",
+              "evidence-539cc3809cb4bb65"
+            ]
+          },
+          {
+            "dimension": "channelAndBuyingInfluence",
+            "reason": "It actively recruits a distributor network and operates as a security-solutions wholesaler.",
+            "evidenceIds": [
+              "evidence-9dcd1552a46dc183",
+              "evidence-73102f97799d806a"
+            ]
+          },
+          {
+            "dimension": "sameRoleScaleAndCoverage",
+            "reason": "Twenty branches and a claimed large national distributor network indicate strong Mexican reach.",
+            "evidenceIds": [
+              "evidence-9dcd1552a46dc183",
+              "evidence-62e28fbe60c12725"
+            ]
+          },
+          {
+            "dimension": "executionAndEnablement",
+            "reason": "Training, warranty, loyalty and branch services support effective channel operations.",
+            "evidenceIds": [
+              "evidence-9dcd1552a46dc183"
+            ]
+          },
+          {
+            "dimension": "opportunityAndRisk",
+            "reason": "Relevant radio and networking sales create opportunity, with some concentration in security and entrenched Ubiquiti competition.",
+            "evidenceIds": [
+              "evidence-62e28fbe60c12725"
+            ]
+          }
+        ],
+        "unsupportedOrContradictoryClaims": [
+          "The packet does not quantify networking revenue versus security revenue."
+        ],
+        "citationAlignment": true
+      },
+      "costEvent": {
+        "eventId": "blind-1e1aa7115a20499527100a66:blind-judge",
+        "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+        "ledger": "evaluation-overhead",
+        "arm": "shared-evaluation",
+        "stage": "blind-judge",
+        "provider": "codex-in-session",
+        "requestedModel": "codex-in-session",
+        "actualModel": "codex-in-session",
+        "startedAt": "2026-09-06T20:48:00.000Z",
+        "completedAt": "2026-09-06T20:49:00.000Z",
+        "latencyMs": 60000,
+        "attempts": 1,
+        "retries": 0,
+        "fallbackUsed": true,
+        "status": "completed",
+        "usage": {},
+        "accountCashCostUsd": 0,
+        "volume": {
+          "inputItems": 1,
+          "rawOutputItems": 1,
+          "validOutputItems": 1,
+          "downstreamUsedItems": 1,
+          "discardedReasonCounts": {}
+        },
+        "notes": [
+          "Direct blind review in the current Codex conversation; no API call and no external search.",
+          "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+        ],
+        "officialListPriceUsd": 0,
+        "budgetCostUsd": 0,
+        "cashCostBasis": "account-observed",
+        "costAnomalies": [
+          "in-session-codex-token-usage-unavailable"
+        ]
+      }
+    },
+    {
+      "packetId": "blind-d1f9193a5bad0f4095a8b28e",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "modelReportedTotal": 91,
+      "deterministicTotal": 91,
+      "output": {
+        "packetId": "blind-d1f9193a5bad0f4095a8b28e",
+        "isRealOperatingCompany": true,
+        "operatesInTargetMarket": true,
+        "supportedRoles": [
+          "Distributor",
+          "VAD"
+        ],
+        "primaryRole": "Distributor",
+        "requestedCategoryMatch": true,
+        "dimensions": {
+          "productAndUseCaseFit": 46,
+          "channelAndBuyingInfluence": 15,
+          "sameRoleScaleAndCoverage": 12,
+          "executionAndEnablement": 10,
+          "opportunityAndRisk": 8
+        },
+        "totalScore": 91,
+        "eligibility": "eligible",
+        "dimensionReasons": [
+          {
+            "dimension": "productAndUseCaseFit",
+            "reason": "Portenntum is a telecom wholesaler covering network connectivity and infrastructure and lists current Aruba PoE switching.",
+            "evidenceIds": [
+              "evidence-0452601cb5dd1cfc",
+              "evidence-9bb95fcecb2a31e0"
+            ]
+          },
+          {
+            "dimension": "channelAndBuyingInfluence",
+            "reason": "Its wholesale role, partner focus and customer-financing programs support strong buying and project influence.",
+            "evidenceIds": [
+              "evidence-a4ba230b620bce3b",
+              "evidence-0452601cb5dd1cfc"
+            ]
+          },
+          {
+            "dimension": "sameRoleScaleAndCoverage",
+            "reason": "More than 33 years in Mexican telecom wholesale establish substantial same-role scale, though branch counts are absent.",
+            "evidenceIds": [
+              "evidence-0452601cb5dd1cfc"
+            ]
+          },
+          {
+            "dimension": "executionAndEnablement",
+            "reason": "Financing, broad brands and support for partner growth demonstrate mature commercial enablement.",
+            "evidenceIds": [
+              "evidence-a4ba230b620bce3b",
+              "evidence-0452601cb5dd1cfc"
+            ]
+          },
+          {
+            "dimension": "opportunityAndRisk",
+            "reason": "Strong portfolio and project financing create an actionable route, with manageable incumbent-vendor competition.",
+            "evidenceIds": [
+              "evidence-a4ba230b620bce3b",
+              "evidence-9bb95fcecb2a31e0"
+            ]
+          }
+        ],
+        "unsupportedOrContradictoryClaims": [
+          "No current vendor-onboarding intent is shown."
+        ],
+        "citationAlignment": true
+      },
+      "costEvent": {
+        "eventId": "blind-d1f9193a5bad0f4095a8b28e:blind-judge",
+        "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+        "ledger": "evaluation-overhead",
+        "arm": "shared-evaluation",
+        "stage": "blind-judge",
+        "provider": "codex-in-session",
+        "requestedModel": "codex-in-session",
+        "actualModel": "codex-in-session",
+        "startedAt": "2026-09-06T20:49:00.000Z",
+        "completedAt": "2026-09-06T20:50:00.000Z",
+        "latencyMs": 60000,
+        "attempts": 1,
+        "retries": 0,
+        "fallbackUsed": true,
+        "status": "completed",
+        "usage": {},
+        "accountCashCostUsd": 0,
+        "volume": {
+          "inputItems": 1,
+          "rawOutputItems": 1,
+          "validOutputItems": 1,
+          "downstreamUsedItems": 1,
+          "discardedReasonCounts": {}
+        },
+        "notes": [
+          "Direct blind review in the current Codex conversation; no API call and no external search.",
+          "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+        ],
+        "officialListPriceUsd": 0,
+        "budgetCostUsd": 0,
+        "cashCostBasis": "account-observed",
+        "costAnomalies": [
+          "in-session-codex-token-usage-unavailable"
+        ]
+      }
+    },
+    {
+      "packetId": "blind-8d8dde034e52e33b01b52604",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "modelReportedTotal": 78,
+      "deterministicTotal": 78,
+      "output": {
+        "packetId": "blind-8d8dde034e52e33b01b52604",
+        "isRealOperatingCompany": true,
+        "operatesInTargetMarket": true,
+        "supportedRoles": [
+          "E-tailer",
+          "Retailer",
+          "Business Reseller"
+        ],
+        "primaryRole": "E-tailer",
+        "requestedCategoryMatch": true,
+        "dimensions": {
+          "productAndUseCaseFit": 38,
+          "channelAndBuyingInfluence": 12,
+          "sameRoleScaleAndCoverage": 12,
+          "executionAndEnablement": 9,
+          "opportunityAndRisk": 7
+        },
+        "totalScore": 78,
+        "eligibility": "eligible",
+        "dimensionReasons": [
+          {
+            "dimension": "productAndUseCaseFit",
+            "reason": "Overclockers UK sells routers and serves gaming/home connectivity, although PCs and components remain its primary focus.",
+            "evidenceIds": [
+              "evidence-b211fc329893f871",
+              "evidence-b1afbf9089a7d711"
+            ]
+          },
+          {
+            "dimension": "channelAndBuyingInfluence",
+            "reason": "It is an established direct online retailer with business solutions and product merchandising control.",
+            "evidenceIds": [
+              "evidence-6472d3ab9b6b1572",
+              "evidence-8248aaf5ab8a76e1"
+            ]
+          },
+          {
+            "dimension": "sameRoleScaleAndCoverage",
+            "reason": "A longstanding UK online retailer with 51–200 employees and a large enthusiast audience has strong specialist reach.",
+            "evidenceIds": [
+              "evidence-8248aaf5ab8a76e1",
+              "evidence-041139c3f59f8972"
+            ]
+          },
+          {
+            "dimension": "executionAndEnablement",
+            "reason": "Seven-day delivery, finance, hardware expertise and strong customer ratings support mature retail execution.",
+            "evidenceIds": [
+              "evidence-b4026c90e669547c",
+              "evidence-639847febdffdc28",
+              "evidence-3512f71a74cddf13"
+            ]
+          },
+          {
+            "dimension": "opportunityAndRisk",
+            "reason": "Gaming/home networking adjacency is useful, though networking is secondary to high-performance computing.",
+            "evidenceIds": [
+              "evidence-b211fc329893f871",
+              "evidence-8248aaf5ab8a76e1"
+            ]
+          }
+        ],
+        "unsupportedOrContradictoryClaims": [
+          "No evidence quantifies networking-category sales."
+        ],
+        "citationAlignment": true
+      },
+      "costEvent": {
+        "eventId": "blind-8d8dde034e52e33b01b52604:blind-judge",
+        "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+        "ledger": "evaluation-overhead",
+        "arm": "shared-evaluation",
+        "stage": "blind-judge",
+        "provider": "codex-in-session",
+        "requestedModel": "codex-in-session",
+        "actualModel": "codex-in-session",
+        "startedAt": "2026-09-06T20:50:00.000Z",
+        "completedAt": "2026-09-06T20:51:00.000Z",
+        "latencyMs": 60000,
+        "attempts": 1,
+        "retries": 0,
+        "fallbackUsed": true,
+        "status": "completed",
+        "usage": {},
+        "accountCashCostUsd": 0,
+        "volume": {
+          "inputItems": 1,
+          "rawOutputItems": 1,
+          "validOutputItems": 1,
+          "downstreamUsedItems": 1,
+          "discardedReasonCounts": {}
+        },
+        "notes": [
+          "Direct blind review in the current Codex conversation; no API call and no external search.",
+          "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+        ],
+        "officialListPriceUsd": 0,
+        "budgetCostUsd": 0,
+        "cashCostBasis": "account-observed",
+        "costAnomalies": [
+          "in-session-codex-token-usage-unavailable"
+        ]
+      }
+    },
+    {
+      "packetId": "blind-1acc3520451ee4df2ddbd6fe",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "modelReportedTotal": 48,
+      "deterministicTotal": 48,
+      "output": {
+        "packetId": "blind-1acc3520451ee4df2ddbd6fe",
+        "isRealOperatingCompany": true,
+        "operatesInTargetMarket": true,
+        "supportedRoles": [
+          "Brand Owner",
+          "Manufacturer"
+        ],
+        "primaryRole": "Brand Owner",
+        "requestedCategoryMatch": false,
+        "dimensions": {
+          "productAndUseCaseFit": 20,
+          "channelAndBuyingInfluence": 5,
+          "sameRoleScaleAndCoverage": 15,
+          "executionAndEnablement": 7,
+          "opportunityAndRisk": 1
+        },
+        "totalScore": 48,
+        "eligibility": "ineligible-for-current-task",
+        "dimensionReasons": [
+          {
+            "dimension": "productAndUseCaseFit",
+            "reason": "The named entity is a competing networking brand rather than a retail account; evidence lists its own routers, mesh, switches and access points.",
+            "evidenceIds": [
+              "evidence-f6ae7b16e3bc4c31",
+              "evidence-d4fdc51896dd7837"
+            ]
+          },
+          {
+            "dimension": "channelAndBuyingInfluence",
+            "reason": "The packet does not establish that tapo.com acts as a third-party UK retailer or buys external networking brands.",
+            "evidenceIds": [
+              "evidence-home-640f0b7799d533e2"
+            ]
+          },
+          {
+            "dimension": "sameRoleScaleAndCoverage",
+            "reason": "The evidence supports a globally recognised networking brand, but that scale is outside the requested retailer peer group.",
+            "evidenceIds": [
+              "evidence-fc90851a4874d47e"
+            ]
+          },
+          {
+            "dimension": "executionAndEnablement",
+            "reason": "Product breadth is evident, but retail fulfilment and third-party merchandising are not.",
+            "evidenceIds": [
+              "evidence-d4fdc51896dd7837"
+            ]
+          },
+          {
+            "dimension": "opportunityAndRisk",
+            "reason": "Direct brand competition and role mismatch are structural blockers for the requested retail search.",
+            "evidenceIds": [
+              "evidence-d4fdc51896dd7837",
+              "evidence-fc90851a4874d47e"
+            ]
+          }
+        ],
+        "unsupportedOrContradictoryClaims": [
+          "The candidate name is a product/brand label, not evidence of an independent retailer."
+        ],
+        "citationAlignment": true
+      },
+      "costEvent": {
+        "eventId": "blind-1acc3520451ee4df2ddbd6fe:blind-judge",
+        "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+        "ledger": "evaluation-overhead",
+        "arm": "shared-evaluation",
+        "stage": "blind-judge",
+        "provider": "codex-in-session",
+        "requestedModel": "codex-in-session",
+        "actualModel": "codex-in-session",
+        "startedAt": "2026-09-06T20:51:00.000Z",
+        "completedAt": "2026-09-06T20:52:00.000Z",
+        "latencyMs": 60000,
+        "attempts": 1,
+        "retries": 0,
+        "fallbackUsed": true,
+        "status": "completed",
+        "usage": {},
+        "accountCashCostUsd": 0,
+        "volume": {
+          "inputItems": 1,
+          "rawOutputItems": 1,
+          "validOutputItems": 1,
+          "downstreamUsedItems": 1,
+          "discardedReasonCounts": {}
+        },
+        "notes": [
+          "Direct blind review in the current Codex conversation; no API call and no external search.",
+          "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+        ],
+        "officialListPriceUsd": 0,
+        "budgetCostUsd": 0,
+        "cashCostBasis": "account-observed",
+        "costAnomalies": [
+          "in-session-codex-token-usage-unavailable"
+        ]
+      }
+    },
+    {
+      "packetId": "blind-8ecb5ed046718318bab14333",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "modelReportedTotal": 41,
+      "deterministicTotal": 41,
+      "output": {
+        "packetId": "blind-8ecb5ed046718318bab14333",
+        "isRealOperatingCompany": true,
+        "operatesInTargetMarket": true,
+        "supportedRoles": [
+          "E-tailer",
+          "Retailer"
+        ],
+        "primaryRole": "E-tailer",
+        "requestedCategoryMatch": true,
+        "dimensions": {
+          "productAndUseCaseFit": 15,
+          "channelAndBuyingInfluence": 8,
+          "sameRoleScaleAndCoverage": 8,
+          "executionAndEnablement": 6,
+          "opportunityAndRisk": 4
+        },
+        "totalScore": 41,
+        "eligibility": "insufficient-evidence-for-recommendation",
+        "dimensionReasons": [
+          {
+            "dimension": "productAndUseCaseFit",
+            "reason": "The site sells technology and office supplies, but no router, mesh, switching or wireless category evidence is included.",
+            "evidenceIds": [
+              "evidence-home-0b6e9f2a495508c4"
+            ]
+          },
+          {
+            "dimension": "channelAndBuyingInfluence",
+            "reason": "Direct UK online retail is supported, while networking-specific buying influence is unknown.",
+            "evidenceIds": [
+              "evidence-home-0b6e9f2a495508c4"
+            ]
+          },
+          {
+            "dimension": "sameRoleScaleAndCoverage",
+            "reason": "A functioning UK office-supply e-commerce operation is evident, but no traffic, customer or branch scale is provided.",
+            "evidenceIds": [
+              "evidence-home-0b6e9f2a495508c4"
+            ]
+          },
+          {
+            "dimension": "executionAndEnablement",
+            "reason": "Account, cart, quick-order and broad catalogue functions support baseline e-commerce execution.",
+            "evidenceIds": [
+              "evidence-home-0b6e9f2a495508c4"
+            ]
+          },
+          {
+            "dimension": "opportunityAndRisk",
+            "reason": "Technology adjacency offers a possible entry, but missing networking evidence prevents a recommendation.",
+            "evidenceIds": [
+              "evidence-home-0b6e9f2a495508c4"
+            ]
+          }
+        ],
+        "unsupportedOrContradictoryClaims": [
+          "No evidence demonstrates active networking-product demand."
+        ],
+        "citationAlignment": true
+      },
+      "costEvent": {
+        "eventId": "blind-8ecb5ed046718318bab14333:blind-judge",
+        "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+        "ledger": "evaluation-overhead",
+        "arm": "shared-evaluation",
+        "stage": "blind-judge",
+        "provider": "codex-in-session",
+        "requestedModel": "codex-in-session",
+        "actualModel": "codex-in-session",
+        "startedAt": "2026-09-06T20:52:00.000Z",
+        "completedAt": "2026-09-06T20:53:00.000Z",
+        "latencyMs": 60000,
+        "attempts": 1,
+        "retries": 0,
+        "fallbackUsed": true,
+        "status": "completed",
+        "usage": {},
+        "accountCashCostUsd": 0,
+        "volume": {
+          "inputItems": 1,
+          "rawOutputItems": 1,
+          "validOutputItems": 1,
+          "downstreamUsedItems": 1,
+          "discardedReasonCounts": {}
+        },
+        "notes": [
+          "Direct blind review in the current Codex conversation; no API call and no external search.",
+          "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+        ],
+        "officialListPriceUsd": 0,
+        "budgetCostUsd": 0,
+        "cashCostBasis": "account-observed",
+        "costAnomalies": [
+          "in-session-codex-token-usage-unavailable"
+        ]
+      }
+    },
+    {
+      "packetId": "blind-c2b2f93df4b1bbd4b5474334",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "modelReportedTotal": 90,
+      "deterministicTotal": 90,
+      "output": {
+        "packetId": "blind-c2b2f93df4b1bbd4b5474334",
+        "isRealOperatingCompany": true,
+        "operatesInTargetMarket": true,
+        "supportedRoles": [
+          "Retailer",
+          "E-tailer"
+        ],
+        "primaryRole": "Retailer",
+        "requestedCategoryMatch": true,
+        "dimensions": {
+          "productAndUseCaseFit": 45,
+          "channelAndBuyingInfluence": 14,
+          "sameRoleScaleAndCoverage": 15,
+          "executionAndEnablement": 10,
+          "opportunityAndRisk": 6
+        },
+        "totalScore": 90,
+        "eligibility": "eligible",
+        "dimensionReasons": [
+          {
+            "dimension": "productAndUseCaseFit",
+            "reason": "Currys actively sells routers, mobile Wi-Fi and network switches for home and business, directly matching Cudy retail families.",
+            "evidenceIds": [
+              "evidence-84de8ae7ad3ccab6",
+              "evidence-739ffa997d7f57b5"
+            ]
+          },
+          {
+            "dimension": "channelAndBuyingInfluence",
+            "reason": "Direct merchandising, pricing, bundles, delivery and collection demonstrate strong category buying influence.",
+            "evidenceIds": [
+              "evidence-84de8ae7ad3ccab6"
+            ]
+          },
+          {
+            "dimension": "sameRoleScaleAndCoverage",
+            "reason": "The evidence supports a broad UK retail operation with large networking assortment and national fulfilment.",
+            "evidenceIds": [
+              "evidence-84de8ae7ad3ccab6",
+              "evidence-56279739f012e08f"
+            ]
+          },
+          {
+            "dimension": "executionAndEnablement",
+            "reason": "Detailed merchandising, financing, bundles, delivery and rapid store collection demonstrate mature execution.",
+            "evidenceIds": [
+              "evidence-84de8ae7ad3ccab6"
+            ]
+          },
+          {
+            "dimension": "opportunityAndRisk",
+            "reason": "Excellent home-network fit is balanced by prominent TP-Link and other incumbent competition.",
+            "evidenceIds": [
+              "evidence-84de8ae7ad3ccab6",
+              "evidence-56279739f012e08f"
+            ]
+          }
+        ],
+        "unsupportedOrContradictoryClaims": [
+          "No evidence shows current openness to listing Cudy."
+        ],
+        "citationAlignment": true
+      },
+      "costEvent": {
+        "eventId": "blind-c2b2f93df4b1bbd4b5474334:blind-judge",
+        "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+        "ledger": "evaluation-overhead",
+        "arm": "shared-evaluation",
+        "stage": "blind-judge",
+        "provider": "codex-in-session",
+        "requestedModel": "codex-in-session",
+        "actualModel": "codex-in-session",
+        "startedAt": "2026-09-06T20:53:00.000Z",
+        "completedAt": "2026-09-06T20:54:00.000Z",
+        "latencyMs": 60000,
+        "attempts": 1,
+        "retries": 0,
+        "fallbackUsed": true,
+        "status": "completed",
+        "usage": {},
+        "accountCashCostUsd": 0,
+        "volume": {
+          "inputItems": 1,
+          "rawOutputItems": 1,
+          "validOutputItems": 1,
+          "downstreamUsedItems": 1,
+          "discardedReasonCounts": {}
+        },
+        "notes": [
+          "Direct blind review in the current Codex conversation; no API call and no external search.",
+          "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+        ],
+        "officialListPriceUsd": 0,
+        "budgetCostUsd": 0,
+        "cashCostBasis": "account-observed",
+        "costAnomalies": [
+          "in-session-codex-token-usage-unavailable"
+        ]
+      }
+    },
+    {
+      "packetId": "blind-a243c367b04316e152db2ffe",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "modelReportedTotal": 86,
+      "deterministicTotal": 86,
+      "output": {
+        "packetId": "blind-a243c367b04316e152db2ffe",
+        "isRealOperatingCompany": true,
+        "operatesInTargetMarket": true,
+        "supportedRoles": [
+          "VAR",
+          "SI"
+        ],
+        "primaryRole": "VAR",
+        "requestedCategoryMatch": true,
+        "dimensions": {
+          "productAndUseCaseFit": 48,
+          "channelAndBuyingInfluence": 13,
+          "sameRoleScaleAndCoverage": 9,
+          "executionAndEnablement": 9,
+          "opportunityAndRisk": 7
+        },
+        "totalScore": 86,
+        "eligibility": "eligible",
+        "dimensionReasons": [
+          {
+            "dimension": "productAndUseCaseFit",
+            "reason": "Redlink sells and installs switching, routing, structured cabling and high-density business Wi-Fi, closely matching Cudy SMB project families.",
+            "evidenceIds": [
+              "evidence-ba06016bfb5704cd",
+              "evidence-16cda66595c19590",
+              "evidence-daca077caf56fcc4"
+            ]
+          },
+          {
+            "dimension": "channelAndBuyingInfluence",
+            "reason": "Its design-and-install model directly influences specification and equipment purchasing for business projects.",
+            "evidenceIds": [
+              "evidence-ba06016bfb5704cd",
+              "evidence-daca077caf56fcc4"
+            ]
+          },
+          {
+            "dimension": "sameRoleScaleAndCoverage",
+            "reason": "Mexican operations and Guadalajara specialization are explicit, but national project and customer scale are not quantified.",
+            "evidenceIds": [
+              "evidence-4b07b21d7d75fbe1"
+            ]
+          },
+          {
+            "dimension": "executionAndEnablement",
+            "reason": "Audit, design, installation and standards-based delivery support strong project execution.",
+            "evidenceIds": [
+              "evidence-16cda66595c19590",
+              "evidence-daca077caf56fcc4"
+            ]
+          },
+          {
+            "dimension": "opportunityAndRisk",
+            "reason": "Direct project fit creates a strong opportunity, with moderate uncertainty about current vendor mix and purchasing volume.",
+            "evidenceIds": [
+              "evidence-4b07b21d7d75fbe1",
+              "evidence-ba06016bfb5704cd"
+            ]
+          }
+        ],
+        "unsupportedOrContradictoryClaims": [
+          "No current vendor partnerships or annual networking volume are provided."
+        ],
+        "citationAlignment": true
+      },
+      "costEvent": {
+        "eventId": "blind-a243c367b04316e152db2ffe:blind-judge",
+        "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+        "ledger": "evaluation-overhead",
+        "arm": "shared-evaluation",
+        "stage": "blind-judge",
+        "provider": "codex-in-session",
+        "requestedModel": "codex-in-session",
+        "actualModel": "codex-in-session",
+        "startedAt": "2026-09-06T20:54:00.000Z",
+        "completedAt": "2026-09-06T20:55:00.000Z",
+        "latencyMs": 60000,
+        "attempts": 1,
+        "retries": 0,
+        "fallbackUsed": true,
+        "status": "completed",
+        "usage": {},
+        "accountCashCostUsd": 0,
+        "volume": {
+          "inputItems": 1,
+          "rawOutputItems": 1,
+          "validOutputItems": 1,
+          "downstreamUsedItems": 1,
+          "discardedReasonCounts": {}
+        },
+        "notes": [
+          "Direct blind review in the current Codex conversation; no API call and no external search.",
+          "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+        ],
+        "officialListPriceUsd": 0,
+        "budgetCostUsd": 0,
+        "cashCostBasis": "account-observed",
+        "costAnomalies": [
+          "in-session-codex-token-usage-unavailable"
+        ]
+      }
+    },
+    {
+      "packetId": "blind-74a52ae217edaa66eb86c84a",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "modelReportedTotal": 78,
+      "deterministicTotal": 78,
+      "output": {
+        "packetId": "blind-74a52ae217edaa66eb86c84a",
+        "isRealOperatingCompany": true,
+        "operatesInTargetMarket": true,
+        "supportedRoles": [
+          "VAR",
+          "SI"
+        ],
+        "primaryRole": "VAR",
+        "requestedCategoryMatch": true,
+        "dimensions": {
+          "productAndUseCaseFit": 42,
+          "channelAndBuyingInfluence": 13,
+          "sameRoleScaleAndCoverage": 9,
+          "executionAndEnablement": 8,
+          "opportunityAndRisk": 6
+        },
+        "totalScore": 78,
+        "eligibility": "eligible",
+        "dimensionReasons": [
+          {
+            "dimension": "productAndUseCaseFit",
+            "reason": "Perceptron designs wired and wireless networks and sells switches and access points for multiple business verticals.",
+            "evidenceIds": [
+              "evidence-home-da8c0259fe4b4a69",
+              "evidence-93945613ba442f9f"
+            ]
+          },
+          {
+            "dimension": "channelAndBuyingInfluence",
+            "reason": "Solution design across infrastructure and connectivity implies strong specification and resale influence.",
+            "evidenceIds": [
+              "evidence-home-da8c0259fe4b4a69",
+              "evidence-49aef8a67f31f19e"
+            ]
+          },
+          {
+            "dimension": "sameRoleScaleAndCoverage",
+            "reason": "Several Mexican verticals and a functioning office are supported, but project or client counts are absent.",
+            "evidenceIds": [
+              "evidence-home-da8c0259fe4b4a69",
+              "evidence-93945613ba442f9f"
+            ]
+          },
+          {
+            "dimension": "executionAndEnablement",
+            "reason": "Infrastructure transformation, device services and network design indicate solid solution execution.",
+            "evidenceIds": [
+              "evidence-home-da8c0259fe4b4a69",
+              "evidence-49aef8a67f31f19e"
+            ]
+          },
+          {
+            "dimension": "opportunityAndRisk",
+            "reason": "Relevant business networking demand exists, while established HPE/Aruba alignment may constrain a new brand.",
+            "evidenceIds": [
+              "evidence-93945613ba442f9f"
+            ]
+          }
+        ],
+        "unsupportedOrContradictoryClaims": [
+          "No customer count, geographic coverage or onboarding intent is established."
+        ],
+        "citationAlignment": true
+      },
+      "costEvent": {
+        "eventId": "blind-74a52ae217edaa66eb86c84a:blind-judge",
+        "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+        "ledger": "evaluation-overhead",
+        "arm": "shared-evaluation",
+        "stage": "blind-judge",
+        "provider": "codex-in-session",
+        "requestedModel": "codex-in-session",
+        "actualModel": "codex-in-session",
+        "startedAt": "2026-09-06T20:55:00.000Z",
+        "completedAt": "2026-09-06T20:56:00.000Z",
+        "latencyMs": 60000,
+        "attempts": 1,
+        "retries": 0,
+        "fallbackUsed": true,
+        "status": "completed",
+        "usage": {},
+        "accountCashCostUsd": 0,
+        "volume": {
+          "inputItems": 1,
+          "rawOutputItems": 1,
+          "validOutputItems": 1,
+          "downstreamUsedItems": 1,
+          "discardedReasonCounts": {}
+        },
+        "notes": [
+          "Direct blind review in the current Codex conversation; no API call and no external search.",
+          "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+        ],
+        "officialListPriceUsd": 0,
+        "budgetCostUsd": 0,
+        "cashCostBasis": "account-observed",
+        "costAnomalies": [
+          "in-session-codex-token-usage-unavailable"
+        ]
+      }
+    },
+    {
+      "packetId": "blind-cd3e9403697b75acf461f452",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "modelReportedTotal": 78,
+      "deterministicTotal": 78,
+      "output": {
+        "packetId": "blind-cd3e9403697b75acf461f452",
+        "isRealOperatingCompany": true,
+        "operatesInTargetMarket": true,
+        "supportedRoles": [
+          "VAR",
+          "MSP",
+          "Reseller"
+        ],
+        "primaryRole": "VAR",
+        "requestedCategoryMatch": true,
+        "dimensions": {
+          "productAndUseCaseFit": 44,
+          "channelAndBuyingInfluence": 13,
+          "sameRoleScaleAndCoverage": 7,
+          "executionAndEnablement": 8,
+          "opportunityAndRisk": 6
+        },
+        "totalScore": 78,
+        "eligibility": "eligible",
+        "dimensionReasons": [
+          {
+            "dimension": "productAndUseCaseFit",
+            "reason": "Q Tech offers networking, wireless, data-centre and managed services with several relevant network vendors.",
+            "evidenceIds": [
+              "evidence-home-ed581ec3eb0accbe"
+            ]
+          },
+          {
+            "dimension": "channelAndBuyingInfluence",
+            "reason": "Products, solutions, managed services and an online store support both specification and resale influence.",
+            "evidenceIds": [
+              "evidence-home-ed581ec3eb0accbe",
+              "evidence-45434c2e0a69d912"
+            ]
+          },
+          {
+            "dimension": "sameRoleScaleAndCoverage",
+            "reason": "Mexican operation is clear, but a reported 11–50 employees indicates modest scale and coverage is unquantified.",
+            "evidenceIds": [
+              "evidence-0cba2e0c0bf6b9a6"
+            ]
+          },
+          {
+            "dimension": "executionAndEnablement",
+            "reason": "Managed services and partnerships across networking, security and cloud support adequate technical execution.",
+            "evidenceIds": [
+              "evidence-home-ed581ec3eb0accbe"
+            ]
+          },
+          {
+            "dimension": "opportunityAndRisk",
+            "reason": "Strong category fit is offset by a crowded incumbent-vendor portfolio and limited scale evidence.",
+            "evidenceIds": [
+              "evidence-home-ed581ec3eb0accbe",
+              "evidence-0cba2e0c0bf6b9a6"
+            ]
+          }
+        ],
+        "unsupportedOrContradictoryClaims": [
+          "The packet does not establish customer count or national deployment coverage."
+        ],
+        "citationAlignment": true
+      },
+      "costEvent": {
+        "eventId": "blind-cd3e9403697b75acf461f452:blind-judge",
+        "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+        "ledger": "evaluation-overhead",
+        "arm": "shared-evaluation",
+        "stage": "blind-judge",
+        "provider": "codex-in-session",
+        "requestedModel": "codex-in-session",
+        "actualModel": "codex-in-session",
+        "startedAt": "2026-09-06T20:56:00.000Z",
+        "completedAt": "2026-09-06T20:57:00.000Z",
+        "latencyMs": 60000,
+        "attempts": 1,
+        "retries": 0,
+        "fallbackUsed": true,
+        "status": "completed",
+        "usage": {},
+        "accountCashCostUsd": 0,
+        "volume": {
+          "inputItems": 1,
+          "rawOutputItems": 1,
+          "validOutputItems": 1,
+          "downstreamUsedItems": 1,
+          "discardedReasonCounts": {}
+        },
+        "notes": [
+          "Direct blind review in the current Codex conversation; no API call and no external search.",
+          "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+        ],
+        "officialListPriceUsd": 0,
+        "budgetCostUsd": 0,
+        "cashCostBasis": "account-observed",
+        "costAnomalies": [
+          "in-session-codex-token-usage-unavailable"
+        ]
+      }
+    },
+    {
+      "packetId": "blind-1a66964d44b72635cb46cc60",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "modelReportedTotal": 5,
+      "deterministicTotal": 5,
+      "output": {
+        "packetId": "blind-1a66964d44b72635cb46cc60",
+        "isRealOperatingCompany": false,
+        "operatesInTargetMarket": false,
+        "supportedRoles": [
+          "Unresolved"
+        ],
+        "primaryRole": "Unresolved",
+        "requestedCategoryMatch": false,
+        "dimensions": {
+          "productAndUseCaseFit": 4,
+          "channelAndBuyingInfluence": 1,
+          "sameRoleScaleAndCoverage": 0,
+          "executionAndEnablement": 0,
+          "opportunityAndRisk": 0
+        },
+        "totalScore": 5,
+        "eligibility": "ineligible-for-current-task",
+        "dimensionReasons": [
+          {
+            "dimension": "productAndUseCaseFit",
+            "reason": "The only product excerpt belongs to Setel and the other article concerns a Dubai installer; neither evidences Value Booster.",
+            "evidenceIds": [
+              "evidence-5f5ba3d341634e1f",
+              "evidence-4dd9642199496653"
+            ]
+          },
+          {
+            "dimension": "channelAndBuyingInfluence",
+            "reason": "No packet evidence establishes Value Booster as a buyer, reseller or integrator.",
+            "evidenceIds": []
+          },
+          {
+            "dimension": "sameRoleScaleAndCoverage",
+            "reason": "No company identity, Mexican operation, customers or coverage are evidenced.",
+            "evidenceIds": []
+          },
+          {
+            "dimension": "executionAndEnablement",
+            "reason": "No execution capability attributable to the named candidate is present.",
+            "evidenceIds": []
+          },
+          {
+            "dimension": "opportunityAndRisk",
+            "reason": "Identity and source mismatch are hard blockers for this task.",
+            "evidenceIds": [
+              "evidence-5f5ba3d341634e1f",
+              "evidence-4dd9642199496653"
+            ]
+          }
+        ],
+        "unsupportedOrContradictoryClaims": [
+          "Both excerpts concern other entities and do not validate Value Booster."
+        ],
+        "citationAlignment": true
+      },
+      "costEvent": {
+        "eventId": "blind-1a66964d44b72635cb46cc60:blind-judge",
+        "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+        "ledger": "evaluation-overhead",
+        "arm": "shared-evaluation",
+        "stage": "blind-judge",
+        "provider": "codex-in-session",
+        "requestedModel": "codex-in-session",
+        "actualModel": "codex-in-session",
+        "startedAt": "2026-09-06T20:57:00.000Z",
+        "completedAt": "2026-09-06T20:58:00.000Z",
+        "latencyMs": 60000,
+        "attempts": 1,
+        "retries": 0,
+        "fallbackUsed": true,
+        "status": "completed",
+        "usage": {},
+        "accountCashCostUsd": 0,
+        "volume": {
+          "inputItems": 1,
+          "rawOutputItems": 1,
+          "validOutputItems": 1,
+          "downstreamUsedItems": 1,
+          "discardedReasonCounts": {}
+        },
+        "notes": [
+          "Direct blind review in the current Codex conversation; no API call and no external search.",
+          "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+        ],
+        "officialListPriceUsd": 0,
+        "budgetCostUsd": 0,
+        "cashCostBasis": "account-observed",
+        "costAnomalies": [
+          "in-session-codex-token-usage-unavailable"
+        ]
+      }
+    },
+    {
+      "packetId": "blind-32f49aca17f31eddad4e6409",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "modelReportedTotal": 85,
+      "deterministicTotal": 85,
+      "output": {
+        "packetId": "blind-32f49aca17f31eddad4e6409",
+        "isRealOperatingCompany": true,
+        "operatesInTargetMarket": true,
+        "supportedRoles": [
+          "MSP",
+          "Telecommunications Provider"
+        ],
+        "primaryRole": "MSP",
+        "requestedCategoryMatch": true,
+        "dimensions": {
+          "productAndUseCaseFit": 42,
+          "channelAndBuyingInfluence": 13,
+          "sameRoleScaleAndCoverage": 13,
+          "executionAndEnablement": 10,
+          "opportunityAndRisk": 7
+        },
+        "totalScore": 85,
+        "eligibility": "eligible",
+        "dimensionReasons": [
+          {
+            "dimension": "productAndUseCaseFit",
+            "reason": "Croft provides managed IT, connectivity and communications to business customers, fitting SMB managed-network scenarios.",
+            "evidenceIds": [
+              "evidence-8a5314551b086b8b",
+              "evidence-bafede4e0cc48fc3"
+            ]
+          },
+          {
+            "dimension": "channelAndBuyingInfluence",
+            "reason": "Tailored managed solutions and customer technology EwT ownership give Croft significant selection and procurement influence.",
+            "evidenceIds": [
+              "evidence-8a5314551b086b8b",
+              "evidence-69929be298ce4a35"
+            ]
+          },
+          {
+            "dimension": "sameRoleScaleAndCoverage",
+            "reason": "More than 5,000 clients and UK-wide B2B service indicate strong MSP scale.",
+            "evidenceIds": [
+              "evidence-8a5314551b086b8b",
+              "evidence-34d3f2fa22790c75"
+            ]
+          },
+          {
+            "dimension": "executionAndEnablement",
+            "reason": "Managed IT support, communications management and project delivery cover ongoing service execution.",
+            "evidenceIds": [
+              "evidence-8a5314551b086b8b",
+              "evidence-69929be298ce4a35"
+            ]
+          },
+          {
+            "dimension": "opportunityAndRisk",
+            "reason": "Large SMB client reach is attractive, with moderate uncertainty about hardware-standardisation and current vendors.",
+            "evidenceIds": [
+              "evidence-bafede4e0cc48fc3"
+            ]
+          }
+        ],
+        "unsupportedOrContradictoryClaims": [
+          "The packet does not identify current network-hardware vendors or volume."
+        ],
+        "citationAlignment": true
+      },
+      "costEvent": {
+        "eventId": "blind-32f49aca17f31eddad4e6409:blind-judge",
+        "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+        "ledger": "evaluation-overhead",
+        "arm": "shared-evaluation",
+        "stage": "blind-judge",
+        "provider": "codex-in-session",
+        "requestedModel": "codex-in-session",
+        "actualModel": "codex-in-session",
+        "startedAt": "2026-09-06T20:58:00.000Z",
+        "completedAt": "2026-09-06T20:59:00.000Z",
+        "latencyMs": 60000,
+        "attempts": 1,
+        "retries": 0,
+        "fallbackUsed": true,
+        "status": "completed",
+        "usage": {},
+        "accountCashCostUsd": 0,
+        "volume": {
+          "inputItems": 1,
+          "rawOutputItems": 1,
+          "validOutputItems": 1,
+          "downstreamUsedItems": 1,
+          "discardedReasonCounts": {}
+        },
+        "notes": [
+          "Direct blind review in the current Codex conversation; no API call and no external search.",
+          "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+        ],
+        "officialListPriceUsd": 0,
+        "budgetCostUsd": 0,
+        "cashCostBasis": "account-observed",
+        "costAnomalies": [
+          "in-session-codex-token-usage-unavailable"
+        ]
+      }
+    },
+    {
+      "packetId": "blind-2c65216d19e5659823da9ba8",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "modelReportedTotal": 89,
+      "deterministicTotal": 89,
+      "output": {
+        "packetId": "blind-2c65216d19e5659823da9ba8",
+        "isRealOperatingCompany": true,
+        "operatesInTargetMarket": true,
+        "supportedRoles": [
+          "SI",
+          "MSP",
+          "Wireless Integrator"
+        ],
+        "primaryRole": "SI",
+        "requestedCategoryMatch": true,
+        "dimensions": {
+          "productAndUseCaseFit": 49,
+          "channelAndBuyingInfluence": 13,
+          "sameRoleScaleAndCoverage": 10,
+          "executionAndEnablement": 9,
+          "opportunityAndRisk": 8
+        },
+        "totalScore": 89,
+        "eligibility": "eligible",
+        "dimensionReasons": [
+          {
+            "dimension": "productAndUseCaseFit",
+            "reason": "Simpli-Fi specialises in enterprise Wi-Fi, managed connectivity, private 5G, CCTV and temporary internet across relevant sectors.",
+            "evidenceIds": [
+              "evidence-home-75646bfaf53a2a11"
+            ]
+          },
+          {
+            "dimension": "channelAndBuyingInfluence",
+            "reason": "Consultancy, managed services and converged-network delivery provide strong design and vendor-selection influence.",
+            "evidenceIds": [
+              "evidence-home-75646bfaf53a2a11"
+            ]
+          },
+          {
+            "dimension": "sameRoleScaleAndCoverage",
+            "reason": "Breadth across education, accommodation and public buildings is evident, though client and revenue scale are not quantified.",
+            "evidenceIds": [
+              "evidence-home-75646bfaf53a2a11"
+            ]
+          },
+          {
+            "dimension": "executionAndEnablement",
+            "reason": "Consultancy, managed services and multiple specialised connectivity offerings indicate mature delivery capability.",
+            "evidenceIds": [
+              "evidence-home-75646bfaf53a2a11",
+              "evidence-9243115734f96f33"
+            ]
+          },
+          {
+            "dimension": "opportunityAndRisk",
+            "reason": "Exceptional use-case alignment provides a clear opportunity, with only moderate uncertainty about incumbent vendors.",
+            "evidenceIds": [
+              "evidence-home-75646bfaf53a2a11"
+            ]
+          }
+        ],
+        "unsupportedOrContradictoryClaims": [
+          "No customer count or current hardware-vendor portfolio is provided."
+        ],
+        "citationAlignment": true
+      },
+      "costEvent": {
+        "eventId": "blind-2c65216d19e5659823da9ba8:blind-judge",
+        "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+        "ledger": "evaluation-overhead",
+        "arm": "shared-evaluation",
+        "stage": "blind-judge",
+        "provider": "codex-in-session",
+        "requestedModel": "codex-in-session",
+        "actualModel": "codex-in-session",
+        "startedAt": "2026-09-06T20:59:00.000Z",
+        "completedAt": "2026-09-06T21:00:00.000Z",
+        "latencyMs": 60000,
+        "attempts": 1,
+        "retries": 0,
+        "fallbackUsed": true,
+        "status": "completed",
+        "usage": {},
+        "accountCashCostUsd": 0,
+        "volume": {
+          "inputItems": 1,
+          "rawOutputItems": 1,
+          "validOutputItems": 1,
+          "downstreamUsedItems": 1,
+          "discardedReasonCounts": {}
+        },
+        "notes": [
+          "Direct blind review in the current Codex conversation; no API call and no external search.",
+          "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+        ],
+        "officialListPriceUsd": 0,
+        "budgetCostUsd": 0,
+        "cashCostBasis": "account-observed",
+        "costAnomalies": [
+          "in-session-codex-token-usage-unavailable"
+        ]
+      }
+    },
+    {
+      "packetId": "blind-58003e1d60e04afccb7aca8d",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "modelReportedTotal": 84,
+      "deterministicTotal": 84,
+      "output": {
+        "packetId": "blind-58003e1d60e04afccb7aca8d",
+        "isRealOperatingCompany": true,
+        "operatesInTargetMarket": true,
+        "supportedRoles": [
+          "MSP",
+          "VAR"
+        ],
+        "primaryRole": "MSP",
+        "requestedCategoryMatch": true,
+        "dimensions": {
+          "productAndUseCaseFit": 45,
+          "channelAndBuyingInfluence": 13,
+          "sameRoleScaleAndCoverage": 8,
+          "executionAndEnablement": 10,
+          "opportunityAndRisk": 8
+        },
+        "totalScore": 84,
+        "eligibility": "eligible",
+        "dimensionReasons": [
+          {
+            "dimension": "productAndUseCaseFit",
+            "reason": "MSP247 designs and supports business routers, switches, Wi-Fi, 4G/5G broadband and broader IT estates.",
+            "evidenceIds": [
+              "evidence-home-d9ee0baca104bf87",
+              "evidence-98ea97ac76942ff8"
+            ]
+          },
+          {
+            "dimension": "channelAndBuyingInfluence",
+            "reason": "Managed service, consultancy and hardware procurement give it direct specification and purchasing influence.",
+            "evidenceIds": [
+              "evidence-2722dbaeb057776d",
+              "evidence-8d29f64d3239b770"
+            ]
+          },
+          {
+            "dimension": "sameRoleScaleAndCoverage",
+            "reason": "A credible Yorkshire regional operation is shown, but client count and broader UK coverage are not.",
+            "evidenceIds": [
+              "evidence-home-d9ee0baca104bf87",
+              "evidence-aeffb88c1d478ae9"
+            ]
+          },
+          {
+            "dimension": "executionAndEnablement",
+            "reason": "24/7 monitoring, support, installation, consultancy, procurement and supplier management form a complete MSP capability.",
+            "evidenceIds": [
+              "evidence-aeffb88c1d478ae9",
+              "evidence-2722dbaeb057776d"
+            ]
+          },
+          {
+            "dimension": "opportunityAndRisk",
+            "reason": "Strong SMB solution fit and explicit procurement create an actionable opportunity despite regional scale.",
+            "evidenceIds": [
+              "evidence-98ea97ac76942ff8",
+              "evidence-8d29f64d3239b770"
+            ]
+          }
+        ],
+        "unsupportedOrContradictoryClaims": [
+          "No current hardware-vendor mix or annual purchase volume is evidenced."
+        ],
+        "citationAlignment": true
+      },
+      "costEvent": {
+        "eventId": "blind-58003e1d60e04afccb7aca8d:blind-judge",
+        "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+        "ledger": "evaluation-overhead",
+        "arm": "shared-evaluation",
+        "stage": "blind-judge",
+        "provider": "codex-in-session",
+        "requestedModel": "codex-in-session",
+        "actualModel": "codex-in-session",
+        "startedAt": "2026-09-06T21:00:00.000Z",
+        "completedAt": "2026-09-06T21:01:00.000Z",
+        "latencyMs": 60000,
+        "attempts": 1,
+        "retries": 0,
+        "fallbackUsed": true,
+        "status": "completed",
+        "usage": {},
+        "accountCashCostUsd": 0,
+        "volume": {
+          "inputItems": 1,
+          "rawOutputItems": 1,
+          "validOutputItems": 1,
+          "downstreamUsedItems": 1,
+          "discardedReasonCounts": {}
+        },
+        "notes": [
+          "Direct blind review in the current Codex conversation; no API call and no external search.",
+          "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+        ],
+        "officialListPriceUsd": 0,
+        "budgetCostUsd": 0,
+        "cashCostBasis": "account-observed",
+        "costAnomalies": [
+          "in-session-codex-token-usage-unavailable"
+        ]
+      }
+    },
+    {
+      "packetId": "blind-f22cef0dca284aea6ab321c9",
+      "requestedModel": "codex-in-session",
+      "actualModel": "codex-in-session",
+      "modelReportedTotal": 96,
+      "deterministicTotal": 96,
+      "output": {
+        "packetId": "blind-f22cef0dca284aea6ab321c9",
+        "isRealOperatingCompany": true,
+        "operatesInTargetMarket": true,
+        "supportedRoles": [
+          "MSP",
+          "SI",
+          "Connectivity Provider"
+        ],
+        "primaryRole": "MSP",
+        "requestedCategoryMatch": true,
+        "dimensions": {
+          "productAndUseCaseFit": 48,
+          "channelAndBuyingInfluence": 15,
+          "sameRoleScaleAndCoverage": 15,
+          "executionAndEnablement": 10,
+          "opportunityAndRisk": 8
+        },
+        "totalScore": 96,
+        "eligibility": "eligible",
+        "dimensionReasons": [
+          {
+            "dimension": "productAndUseCaseFit",
+            "reason": "Wavenet delivers managed IT, enterprise connectivity, networks, security and cloud to business customers across the UK.",
+            "evidenceIds": [
+              "evidence-home-31a5593691ab2c31",
+              "evidence-ccb6bfbb8f0e0ae4"
+            ]
+          },
+          {
+            "dimension": "channelAndBuyingInfluence",
+            "reason": "As an end-to-end MSP and integrator, Wavenet has exceptional solution-design, procurement and customer-standardisation influence.",
+            "evidenceIds": [
+              "evidence-home-31a5593691ab2c31",
+              "evidence-51e86cd24ddd6045"
+            ]
+          },
+          {
+            "dimension": "sameRoleScaleAndCoverage",
+            "reason": "A £500 million business serving over 22,000 customers with nationwide reach is top-tier within the MSP role.",
+            "evidenceIds": [
+              "evidence-fb0bc41f1f36be1e",
+              "evidence-ccb6bfbb8f0e0ae4"
+            ]
+          },
+          {
+            "dimension": "executionAndEnablement",
+            "reason": "Managed services, technical delivery, support and multi-domain integration demonstrate comprehensive execution.",
+            "evidenceIds": [
+              "evidence-home-31a5593691ab2c31",
+              "evidence-ccb6bfbb8f0e0ae4"
+            ]
+          },
+          {
+            "dimension": "opportunityAndRisk",
+            "reason": "Scale and network demand make it highly valuable, while complexity and incumbent standards remain manageable risks.",
+            "evidenceIds": [
+              "evidence-fb0bc41f1f36be1e"
+            ]
+          }
+        ],
+        "unsupportedOrContradictoryClaims": [
+          "No packet evidence confirms current willingness to standardise on Cudy."
+        ],
+        "citationAlignment": true
+      },
+      "costEvent": {
+        "eventId": "blind-f22cef0dca284aea6ab321c9:blind-judge",
+        "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+        "ledger": "evaluation-overhead",
+        "arm": "shared-evaluation",
+        "stage": "blind-judge",
+        "provider": "codex-in-session",
+        "requestedModel": "codex-in-session",
+        "actualModel": "codex-in-session",
+        "startedAt": "2026-09-06T21:01:00.000Z",
+        "completedAt": "2026-09-06T21:02:00.000Z",
+        "latencyMs": 60000,
+        "attempts": 1,
+        "retries": 0,
+        "fallbackUsed": true,
+        "status": "completed",
+        "usage": {},
+        "accountCashCostUsd": 0,
+        "volume": {
+          "inputItems": 1,
+          "rawOutputItems": 1,
+          "validOutputItems": 1,
+          "downstreamUsedItems": 1,
+          "discardedReasonCounts": {}
+        },
+        "notes": [
+          "Direct blind review in the current Codex conversation; no API call and no external search.",
+          "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+        ],
+        "officialListPriceUsd": 0,
+        "budgetCostUsd": 0,
+        "cashCostBasis": "account-observed",
+        "costAnomalies": [
+          "in-session-codex-token-usage-unavailable"
+        ]
+      }
+    }
+  ]
+}

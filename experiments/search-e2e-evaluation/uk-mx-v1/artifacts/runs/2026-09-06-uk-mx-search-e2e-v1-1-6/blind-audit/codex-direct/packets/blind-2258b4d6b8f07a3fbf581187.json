@@ -1,0 +1,51 @@
+{
+  "packetId": "blind-2258b4d6b8f07a3fbf581187",
+  "targetMarket": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom"
+  },
+  "requestedCategory": "distribution",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "Varlink Ltd",
+    "domain": "varlink.co.uk",
+    "officialWebsiteUrl": "https://www.varlink.co.uk"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-2bb2ec60b49162b6",
+      "sourceType": "official-website",
+      "url": "https://www.varlink.co.uk",
+      "title": "Home Page - Varlink Ltd",
+      "excerpt": "## Zebra 2026 Promotions Check out the latest rewards, deals and promotions. View here ➜ Your Trusted Technology Provider Your Trusted Technology Provider # Welcome to Varlink # Welcome to Varlink Varlink is your trusted technology provider, specialising in commercial and industrial computing systems for solution providers and system integrators across the UK. [...] Varlink is your trusted technology provider, specialising in commercial and industrial computing systems for solution providers and system integrators across the UK. [...] Built on trust and powered by expertise, our role is to lead the technical decision-making process — helping partners specify and deploy the right computing platforms for real-world environments. From mobile computing and EPoS solutions to industrial and IP-r"
+    },
+    {
+      "evidenceId": "evidence-229b967fed6bfb17",
+      "sourceType": "official-website",
+      "url": "https://www.varlink.co.uk/Company-Info/About-Us",
+      "title": "About Us - Varlink Ltd",
+      "excerpt": "## Our History Varlink was founded by CEO Mike Pullon in 2005. Originally established as an Auto ID hardware distributor, Varlink expanded into the EPoS industry as the business continued to grow. With over 20 premium brands in our portfolio, Varlink has become a leading distributor in the UK, operating from our Distribution Centre in Yorkshire. [...] Our unique blend of experiences in meeting the needs of IT resellers, gained over many years in IT distribution, has created an organisation that is rich in the resources that can really make a difference to your business. Our substantial UK specific experience gives credibility to the advice and support that we impart. Simply put: We really understand the products we distribute and what our customers sell them to do. [...] We distribute a ra"
+    },
+    {
+      "evidenceId": "evidence-9506cdb325808166",
+      "sourceType": "official-website",
+      "url": "https://www.varlink.co.uk/Company-Info/Why-Partner-with-Varlink",
+      "title": "Why Partner with Varlink?",
+      "excerpt": "At Varlink, we are a trusted technology provider specialising in commercial and industrial computing systems. We work alongside solution providers and system"
+    },
+    {
+      "evidenceId": "evidence-036f1ce303939b20",
+      "sourceType": "official-website",
+      "url": "https://www.varlink.co.uk/login",
+      "title": "Please Login - Varlink Ltd",
+      "excerpt": "Call Free 01904 717180 enquiries@varlink.co.uk. Monday - Friday | 9:00am - 5:30pm Order before 5.15pm for same day despatch Free standard UK delivery - online"
+    },
+    {
+      "evidenceId": "evidence-cb7b6924f6da0efd",
+      "sourceType": "official-website",
+      "url": "https://www.varlink.co.uk/Company-Info/Useful-Information/Sectors-experience",
+      "title": "Sector Experience - Varlink Ltd",
+      "excerpt": "#### #### - #### Stock Code: #### Stock Code: x ## Please make a selction below. High Res Orange PNG_Website Logo_with_Orange # Sectors ## Our sector experience, knowledge and products can help any Reseller develop and grow their business. [...] Varlink offer a range of devices that provide businesses with the ability to manage transport and logistics systems efficiently and accurately. Putting at their disposal a range of devices from durable and reliable mobile printers to handheld terminals with GPS capabilities and WWAN connectivity to make logistics simple, anywhere. [...] Varlink’s range of devices work with the demands of any project, allowing your customers to put support into the hands of their staff — making workers more mobile, connected and capable, making the whole site a virt"
+    }
+  ]
+}

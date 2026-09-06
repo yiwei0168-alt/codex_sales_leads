@@ -1,0 +1,107 @@
+{
+  "packetId": "blind-f6740ed923441e446320bf41",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 87,
+  "deterministicTotal": 87,
+  "output": {
+    "packetId": "blind-f6740ed923441e446320bf41",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "Distributor",
+      "Solutions Provider"
+    ],
+    "primaryRole": "Distributor",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 41,
+      "channelAndBuyingInfluence": 15,
+      "sameRoleScaleAndCoverage": 15,
+      "executionAndEnablement": 10,
+      "opportunityAndRisk": 6
+    },
+    "totalScore": 87,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "Ingram Micro is a technology distributor with major networking vendors and broad solution capability, though the packet has limited Mexico-specific product detail.",
+        "evidenceIds": [
+          "evidence-eb3dadbfe1344ec9",
+          "evidence-6663e769549fc004"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "Its global distributor and solutions-provider role gives exceptional vendor and downstream partner influence.",
+        "evidenceIds": [
+          "evidence-eb3dadbfe1344ec9",
+          "evidence-6663e769549fc004"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "Global reach plus Mexico City offices and multiple local teams establish top-tier same-role scale.",
+        "evidenceIds": [
+          "evidence-eb3dadbfe1344ec9",
+          "evidence-f3a1c6a792716ee9"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Xvantage, logistics, services and partner/vendor programs support full distributor execution.",
+        "evidenceIds": [
+          "evidence-6663e769549fc004"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Very high strategic value is balanced by portfolio complexity and strong incumbent brands that may limit attention.",
+        "evidenceIds": [
+          "evidence-6663e769549fc004"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "The packet does not establish a Mexico-specific networking portfolio gap or onboarding intent."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-f6740ed923441e446320bf41:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T20:46:00.000Z",
+    "completedAt": "2026-09-06T20:47:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

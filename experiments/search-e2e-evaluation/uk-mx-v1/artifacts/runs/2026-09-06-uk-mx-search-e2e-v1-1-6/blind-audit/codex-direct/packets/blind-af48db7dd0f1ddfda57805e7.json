@@ -1,0 +1,79 @@
+{
+  "packetId": "blind-af48db7dd0f1ddfda57805e7",
+  "targetMarket": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom"
+  },
+  "requestedCategory": "retail",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "CCL Computers Ltd",
+    "domain": "cclonline.com",
+    "officialWebsiteUrl": "https://www.cclonline.com"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-e6b54f4cbf861714",
+      "sourceType": "official-website",
+      "url": "https://www.cclonline.com/help/policies/returns-policy",
+      "title": "Returns policy - online consumer sales only",
+      "excerpt": "Jan 25, 2024 — For customers located outside the UK, it is often not cost effective for us to return a non-faulty product to you, due to additional import and ...Read more"
+    },
+    {
+      "evidenceId": "evidence-a63c6d84f264236c",
+      "sourceType": "official-website",
+      "url": "https://www.cclonline.com/help/policies/complaints",
+      "title": "- Policies - CCL Computers",
+      "excerpt": "CCL logo Desktop PCs Desktop PCs Our full collection DGX Spark boxes DGX Spark boxes AI Ready Pre-built PCs Pre-built PCs Next day delivery Gaming PCs Gaming PCs Optimised to win Help Me Choose Custom PCs Custom PCs You configure, we build Choose your own case Graphics Cards Graphics Cards Built for what's next CPU processors CPU processors The brains of your build RAM RAM Fast memory, faster builds Storage Storage Never run out of space Motherboards Cases Cooling Power Supplies Help Me Choose Motherboard Bundles Motherboard Bundles Curated and assembled AMD Socket Boards AMD Socket Boards For AMD processors Intel Socket Boards Intel Socket Boards For Intel processors Motherboards for AI Motherboards for AI Reliability under heavy loads All Motherboards All Motherboards View all AI Graphic"
+    },
+    {
+      "evidenceId": "evidence-c60aab60baaadbce",
+      "sourceType": "official-website",
+      "url": "https://www.cclonline.com/help/policies/terms-and-conditions-for-consumers",
+      "title": "- Policies - CCL Computers",
+      "excerpt": "CCL logo Desktop PCs Desktop PCs Our full collection DGX Spark boxes DGX Spark boxes AI Ready Pre-built PCs Pre-built PCs Next day delivery Gaming PCs Gaming PCs Optimised to win Help Me Choose Custom PCs Custom PCs You configure, we build Choose your own case Graphics Cards Graphics Cards Built for what's next CPU processors CPU processors The brains of your build RAM RAM Fast memory, faster builds Storage Storage Never run out of space Motherboards Cases Cooling Power Supplies Help Me Choose Motherboard Bundles Motherboard Bundles Curated and assembled AMD Socket Boards AMD Socket Boards For AMD processors Intel Socket Boards Intel Socket Boards For Intel processors Motherboards for AI Motherboards for AI Reliability under heavy loads All Motherboards All Motherboards View all AI Graphic"
+    },
+    {
+      "evidenceId": "evidence-a5a0444c915b8560",
+      "sourceType": "official-website",
+      "url": "https://www.cclonline.com/help/policies/treating-customers-fairly",
+      "title": "Treating Customers Fairly",
+      "excerpt": "We aim to ensure that: Consumers can be confident they are dealing with a company where the fair treatment of customers is central to its culture. The products ...Read more"
+    },
+    {
+      "evidenceId": "evidence-03011e695ee799fa",
+      "sourceType": "independent-public",
+      "url": "https://uk.linkedin.com/company/cclcomputersuk",
+      "title": "CCL Computers Ltd",
+      "excerpt": "About us ; Website: http://www.cclonline.com. External link for CCL Computers Ltd ; Industry: Computer Hardware Manufacturing ; Company size: 51-200 employees."
+    },
+    {
+      "evidenceId": "evidence-de0f9b0424dd0cc4",
+      "sourceType": "official-website",
+      "url": "https://www.cclonline.com/networking",
+      "title": "Networking | Home Network Wireless Hardware",
+      "excerpt": "Networking products available at CCL Computers. Latest wireless and wired network hardware products and solutions. Routers, wireless adapters and switches."
+    },
+    {
+      "evidenceId": "evidence-a39b41500d0c4dba",
+      "sourceType": "independent-public",
+      "url": "https://find-and-update.company-information.service.gov.uk/company/14818553",
+      "title": "UK CCL COMPUTERS LTD overview - Find and update company information - GOV.UK",
+      "excerpt": "We use cookies to make our services work and collect analytics information. To accept or reject analytics cookies, turn on JavaScript in your browser settings and reload this page. Search for a company or officer Please press ENTER to search # UK CCL COMPUTERS LTD Company number 14818553 ## Nature of business (SIC) ## Support links [...] ## Cookies on Companies House services We use some essential cookies to make our services work. We'd also like to use analytics cookies so we can understand how you use our services and to make improvements. You've accepted analytics cookies. You can change your cookie settings at any time. You've rejected analytics cookies. You can change your cookie settings at any time. ## Cookies on Companies House services"
+    },
+    {
+      "evidenceId": "evidence-12a424e99f028434",
+      "sourceType": "official-website",
+      "url": "https://www.cclonline.com/help/about/contact-us",
+      "title": "Contact Us",
+      "excerpt": "Email us at sales@cclonline.com Call us on 01274 471200. Reseller Sales Email us at dealer@cclonline.com. Our telephone lines are open Monday to Friday between"
+    },
+    {
+      "evidenceId": "evidence-e34335ab30fb8848",
+      "sourceType": "independent-public",
+      "url": "https://uk.trustpilot.com/review/www.cclonline.com",
+      "title": "CCL Computers Reviews | Read Customer Service ...",
+      "excerpt": "With over 23 years' of supplying IT components and PC building experience, United Kingdom 01274 471 201 sales@cclonline.com, TrustScore 4.5 out of 5 33k reviews"
+    }
+  ]
+}

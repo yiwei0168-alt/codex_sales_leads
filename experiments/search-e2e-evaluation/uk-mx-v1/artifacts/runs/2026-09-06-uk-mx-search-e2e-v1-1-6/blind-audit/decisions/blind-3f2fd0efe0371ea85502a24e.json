@@ -1,0 +1,108 @@
+{
+  "packetId": "blind-3f2fd0efe0371ea85502a24e",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 86,
+  "deterministicTotal": 86,
+  "output": {
+    "packetId": "blind-3f2fd0efe0371ea85502a24e",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "VAR",
+      "Reseller",
+      "SI"
+    ],
+    "primaryRole": "VAR",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 40,
+      "channelAndBuyingInfluence": 15,
+      "sameRoleScaleAndCoverage": 15,
+      "executionAndEnablement": 10,
+      "opportunityAndRisk": 6
+    },
+    "totalScore": 86,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "CDW combines hardware, software and integrated infrastructure services for business, government, education and healthcare; networking fit is broad rather than Cudy-specific.",
+        "evidenceIds": [
+          "evidence-home-7dd1b9c303ad4b2d",
+          "evidence-0f89b43bc86e2bff"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "As a leading multi-brand solution provider, CDW has direct procurement and technology-selection influence.",
+        "evidenceIds": [
+          "evidence-0f89b43bc86e2bff"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "Fortune 500 and S&P 500 status plus explicit UK operations demonstrate top-tier same-role scale.",
+        "evidenceIds": [
+          "evidence-0f89b43bc86e2bff",
+          "evidence-07595c70bc60a050"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Integrated IT solutions, services and supply-chain capability support comprehensive enterprise execution.",
+        "evidenceIds": [
+          "evidence-06e541c9b26a6a9b",
+          "evidence-0f89b43bc86e2bff"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Scale creates high value, while broad portfolio complexity and enterprise orientation may make Cudy a smaller priority.",
+        "evidenceIds": [
+          "evidence-0f89b43bc86e2bff"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "No packet evidence identifies a current Cudy-fit networking assortment gap."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-3f2fd0efe0371ea85502a24e:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T20:43:00.000Z",
+    "completedAt": "2026-09-06T20:44:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

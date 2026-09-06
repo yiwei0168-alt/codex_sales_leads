@@ -1,0 +1,44 @@
+{
+  "packetId": "blind-4c7fd54a88af27c1b0db2dc0",
+  "targetMarket": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom"
+  },
+  "requestedCategory": "resale",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "ICP Networks",
+    "domain": "icpnetworks.co.uk",
+    "officialWebsiteUrl": "https://www.icpnetworks.co.uk/"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-home-a50922fbb6705cb7",
+      "sourceType": "official-website",
+      "url": "https://www.icpnetworks.co.uk/",
+      "title": "Cisco Routers, Switches, &amp; IP Phones in stock | New &amp; Used | Buy &amp;amp; Sell | ICP Networks",
+      "excerpt": "Cisco Routers, Switches, IP Phones in stock | New Used | Buy amp; Sell | ICP Networks Request a Quote Home About About Us the ICP Journey Our Clients Our Location Lexicon House Facilities Environment Community Services Services Home IT Asset Management IT Equipment Disposal Buying From Us Cisco Rentals Maintain Support Operations Logistics Selling To Us Manufacturers Apple Arista Avaya Networks Check Point Systems Cisco Systems Dell EMC Fortinet Hewlett Packard Enterprise Jabra Juniper Networks Lenovo Group Limited Mellanox Technologies Ltd. NetApp NVIDIA Samsung Sennheiser Supermicro Computer, Inc Blog Clients Contact Search WE BUY SELL CISCO ROUTERS, CISCO SWITCHES, CISCO WIRELESS, CISCO IP PHONES. Buy Cisco Sell Cisco Request a quote Submit a project About us Buy Cisco Routers, Switches"
+    },
+    {
+      "evidenceId": "evidence-fdf1cda1343ab133",
+      "sourceType": "official-website",
+      "url": "https://www.icpnetworks.co.uk/netapp",
+      "title": "Buy or Sell NetApp Data Storage Solutions and Switches",
+      "excerpt": "ICP Networks ICP Networks ICP Networks on Instagram ICP Networks on LinkedIn ICP Networks Buy or Sell NetApp Data Storage Solutions and Switches Over 40 years of experience in the field of NetApp IT Asset procurement and disposal NetApp networking hardware NetApp New & used Data Storage Solutions and Switches including FlexPod, NFLEX, NetApp HCI and more. ICP Networks provides a comprehensive range of current and end of sale pre-owned, refurbished and used NetApp Data Storage from our large UK inventory. For customers seeking recognized quality and great value for money - in addition to flexible and innovative procurement, sparing, buyback options on NetApp, please contact our team on +44 1625 468 450 or fill in our easy-to-use request form below. NetApp Power NetApp Storage NetApp Switche"
+    },
+    {
+      "evidenceId": "evidence-9e325c62b05b91af",
+      "sourceType": "official-website",
+      "url": "https://www.icpnetworks.co.uk/terms-and-conditions.asp",
+      "title": "Terms & Conditions | ICP Networks",
+      "excerpt": "Click Here to buy & sell new & used Cisco Routers & Switches. Up to 90% off list price. ICP Networks is ISO 90001 Certified and a member of ASCDI and UNEDA."
+    },
+    {
+      "evidenceId": "evidence-e0daf0096db80d3f",
+      "sourceType": "official-website",
+      "url": "https://www.icpnetworks.co.uk/latest-news/icp-networks-support-circular-economy",
+      "title": "ICP Networks support the Circular Economy",
+      "excerpt": "ICP Networks ICP Networks ICP Networks on Instagram ICP Networks on LinkedIn ICP Networks Blog & Latest News Latest News From ICP Networks ICP Networks Showcase Circular Economy ICP-Networks-have-been-supporting-the-Circular-Economy-since-2002 ICP-Networks-have-been-supporting-the-Circular-Economy-since-2002 ICP Networks are proud supporters of the Circular Economy and now invite you behind the scenes look at Lexicon House. In the second of our exclusive fly-by videos the ICP Networks team are proud to showcase their stunning home – a purpose built 16,500 sq ft facility in Cheshire. Lexicon House was created from the ground up with the environment at its heart and boats one of the largest solar panel installations in the North West. Dubbed the ‘greenest IT HQ in Britain’ the facility inclu"
+    }
+  ]
+}

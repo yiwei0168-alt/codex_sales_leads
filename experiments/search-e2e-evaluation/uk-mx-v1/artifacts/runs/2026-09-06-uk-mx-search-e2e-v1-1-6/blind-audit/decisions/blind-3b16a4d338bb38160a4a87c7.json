@@ -1,0 +1,107 @@
+{
+  "packetId": "blind-3b16a4d338bb38160a4a87c7",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 60,
+  "deterministicTotal": 60,
+  "output": {
+    "packetId": "blind-3b16a4d338bb38160a4a87c7",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "Reseller",
+      "Managed Communications Provider"
+    ],
+    "primaryRole": "Reseller",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 32,
+      "channelAndBuyingInfluence": 11,
+      "sameRoleScaleAndCoverage": 7,
+      "executionAndEnablement": 6,
+      "opportunityAndRisk": 4
+    },
+    "totalScore": 60,
+    "eligibility": "research-required",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "Archived materials cover wireless broadband, routers and security, while current product activity is not well evidenced.",
+        "evidenceIds": [
+          "evidence-01367e6c415ea292",
+          "evidence-16979d57e8313931"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "The materials support a reseller and managed-communications sales role, but current buying influence is uncertain.",
+        "evidenceIds": [
+          "evidence-5ad32569a9faeba9"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "A UK operating address and telecom service scope are shown, but no current customer or revenue scale appears.",
+        "evidenceIds": [
+          "evidence-5ad32569a9faeba9"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Managed communications terms imply service capability, though the strongest technical documents are old vendor PDFs.",
+        "evidenceIds": [
+          "evidence-5ad32569a9faeba9",
+          "evidence-c2af0468301f570b"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Historical category alignment exists, but evidence staleness creates material uncertainty about current operations and portfolio.",
+        "evidenceIds": [
+          "evidence-01367e6c415ea292",
+          "evidence-16979d57e8313931"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "The packet does not establish a current active networking catalogue."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-3b16a4d338bb38160a4a87c7:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T20:42:00.000Z",
+    "completedAt": "2026-09-06T20:43:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}
