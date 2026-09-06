@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 
 import type { AiProvider, StructuredAiResponse } from "@/providers/contracts";
 import { createLeadAiProvider } from "@/providers/resilient-ai";
-import { TavilySearchProvider, type TavilySearchResult } from "@/providers/tavily";
+import { TavilySearchProvider, tavilyFailureMetrics, type TavilySearchResult } from "@/providers/tavily";
 import type { LeadSearchPlan } from "@/lib/assistant/types";
 import { z } from "zod";
 
@@ -11,7 +11,8 @@ import { assessLeadEvidenceQuality } from "../evidence-quality";
 import { assessNetworkingRelevanceEvidence } from "../networking-relevance";
 import { isCurrentLeadScoringEvidence, leadEvidenceContentHash } from "../evidence-snapshot";
 import { PRIMARY_CHANNEL_POLICY, selectPrimaryChannel } from "../primary-channel";
-import { leadCorrectionBatchSchema, leadCorrectionModelSchema, type LeadCorrectionModelOutput } from "./schemas";
+import { leadCorrectionBatchSchema, leadCorrectionModelSchema, sanitizeLeadCorrectionOutput,
+  type LeadCorrectionModelOutput } from "./schemas";
 import { loadPublicRoleCorrection, savePublicRoleCorrection } from "./role-correction-cache";
 import { persistPublicEvidence } from "./public-evidence-repository";
 import {
@@ -23,7 +24,7 @@ import {
   type WorkflowModelUsage,
 } from "./types";
 
-export const LEAD_EVIDENCE_CORRECTION_PROMPT_VERSION = "lead-evidence-correction-v6-cache-aware";
+export const LEAD_EVIDENCE_CORRECTION_PROMPT_VERSION = "lead-evidence-correction-v7-role-calibrated";
 
 interface CorrectionRequest {
   instructions: string[];
@@ -243,9 +244,10 @@ export class LeadEvidenceCorrectionAgent {
               : persistenceWarning,
           };
         } catch (error) {
+          const failed = tavilyFailureMetrics(error);
           const warning = `Correction search failed for ${candidate.domain}: ${error instanceof Error ? error.message : String(error)}`;
           output[index] = { candidate: { ...candidate, evidenceWarnings: [...candidate.evidenceWarnings, warning] },
-            credits: 0, attempts: 0, retries: 0, latencyMs: 0, warning };
+            credits: 0, attempts: failed.attempts, retries: failed.retries, latencyMs: failed.latencyMs, warning };
         }
       }
     };
@@ -270,7 +272,9 @@ export class LeadEvidenceCorrectionAgent {
         "Record every simultaneously supported channel role, then independently determine the primary business role from the supplied evidence.",
         `Primary-role policy: ${PRIMARY_CHANNEL_POLICY.noUpwardDefault} ${PRIMARY_CHANNEL_POLICY.hybridAllowed}`,
         "The original submitted search family is diagnostic provenance only. It must not influence the primary role or cooperation path.",
-        "Use Hybrid when two or more materially different role families are co-primary. Use Unresolved when evidence is insufficient or conflicting. Explain the decision.",
+        "Use Hybrid only when evidence proves that materially different role families are both substantial co-primary operations. Multiple supported roles, product lines or search-lane matches alone do not prove Hybrid. Use Unresolved when evidence is insufficient or conflicting. Explain the decision.",
+        "Subtype boundaries: VAD requires both downstream distribution and substantive technical or commercial enablement; E-tailer requires a working online product-purchase flow; Retailer requires a material physical-store consumer retail operation; VAR requires business-customer product resale plus material solution, configuration or service value.",
+        "A manufacturer's owned-brand store remains primarily Brand Owner unless evidence demonstrates a separate material independent multi-brand retail business. A directory, comparison, advertising or lead-generation platform is not a Retailer or E-tailer.",
         "For Distributor, prove that the candidate itself supplies downstream resellers, dealers, system houses or other channel partners. A shop, dealer portal or resale business does not negate a simultaneously supported Distributor role.",
         "For the small-long-tail exception, record atomic company-size findings only from positive public evidence. Sparse results, weak SEO or missing scale information never prove that exception.",
         "A role requires evidence of its defining business action. Generic IT, consulting or networking language alone does not prove distribution, resale, installation or system integration.",
@@ -444,7 +448,8 @@ export class LeadEvidenceCorrectionAgent {
       this.captureUsage(usageRecords, response, this.escalationModel);
       const raw = typeof response.output === "object" && response.output !== null && "corrections" in response.output
         ? (response.output as { corrections?: unknown[] }).corrections?.[0] : response.output;
-      return this.normalize(leadCorrectionModelSchema.parse(raw), candidate, response, true);
+      const repaired = sanitizeLeadCorrectionOutput({ corrections: [raw] }) as { corrections?: unknown[] };
+      return this.normalize(leadCorrectionModelSchema.parse(repaired.corrections?.[0]), candidate, response, true);
     } catch (error) {
       return this.fallback(candidate, `${reason} Escalation failed: ${error instanceof Error ? error.message : String(error)}`);
     }
@@ -456,7 +461,7 @@ export class LeadEvidenceCorrectionAgent {
       const response = await this.provider.execute<CorrectionRequest, unknown>(
         this.request(candidates, plan, this.routineModel), AbortSignal.timeout(75_000));
       this.captureUsage(usageRecords, response, this.routineModel);
-      const parsed = leadCorrectionBatchSchema.parse(response.output);
+      const parsed = leadCorrectionBatchSchema.parse(sanitizeLeadCorrectionOutput(response.output));
       const byId = new Map(parsed.corrections.map((item) => [item.candidateId, item]));
       return Promise.all(candidates.map((candidate) => {
         const value = byId.get(candidate.candidateId);
@@ -490,9 +495,8 @@ export class LeadEvidenceCorrectionAgent {
       }
       const evidence = [...new Map([...existing.evidence, ...candidate.evidence].map((item) => [item.url, item])).values()];
       const roles = [...new Set([...existing.correction.resolvedRoles, ...candidate.correction.resolvedRoles])];
-      const crossFamily = roleFamilies(roles).length > 1;
       const mergedPrimary = existing.correction.primaryRole === candidate.correction.primaryRole
-        ? existing.correction.primaryRole : crossFamily ? "Hybrid" : "Unresolved";
+        ? existing.correction.primaryRole : "Unresolved";
       const primary = selectPrimaryChannel({ roles, agentPrimaryRole: mergedPrimary });
       byDomain.set(candidate.domain, {
         ...existing,
@@ -510,7 +514,8 @@ export class LeadEvidenceCorrectionAgent {
           reliedEvidenceIds: [...new Set([...existing.correction.reliedEvidenceIds, ...candidate.correction.reliedEvidenceIds])],
           findings: [...new Map([...existing.correction.findings, ...candidate.correction.findings]
             .map((finding) => [finding.findingId, finding])).values()],
-          reasons: [...existing.correction.reasons, `Merged duplicate discovery candidate ${candidate.candidateId} after identity correction.`],
+          reasons: [...existing.correction.reasons,
+            `Merged duplicate discovery candidate ${candidate.candidateId} after identity correction. Conflicting Agent primary-role decisions remain Unresolved; duplicate merging never infers Hybrid.`],
         },
       });
     }

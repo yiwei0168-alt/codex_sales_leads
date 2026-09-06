@@ -1,7 +1,7 @@
 {
   "policyKey": "cudy-hybrid-lead-search",
-  "version": "1.2.1",
-  "strategyDocumentVersion": "1.2.1-provider-recovery",
+  "version": "1.3.0",
+  "strategyDocumentVersion": "1.3.0-category-purity-cost-control",
   "status": "active",
   "maxConsecutiveNoValueBatches": 2,
   "defaultBatchSize": 12,

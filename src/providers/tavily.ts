@@ -1,5 +1,25 @@
 import { ProviderUnavailableError } from "./contracts";
 
+export class TavilyProviderUnavailableError extends ProviderUnavailableError {
+  readonly attempts: number;
+  readonly retries: number;
+  readonly latencyMs: number;
+
+  constructor(cause: unknown, attempts: number, latencyMs: number) {
+    super("tavily", cause);
+    this.name = "TavilyProviderUnavailableError";
+    this.attempts = Math.max(0, attempts);
+    this.retries = Math.max(0, attempts - 1);
+    this.latencyMs = Math.max(0, latencyMs);
+  }
+}
+
+export function tavilyFailureMetrics(error: unknown): { attempts: number; retries: number; latencyMs: number } {
+  return error instanceof TavilyProviderUnavailableError
+    ? { attempts: error.attempts, retries: error.retries, latencyMs: error.latencyMs }
+    : { attempts: 0, retries: 0, latencyMs: 0 };
+}
+
 export interface TavilySearchProviderOptions {
   maxAttempts?: number;
   fetchImplementation?: typeof fetch;
@@ -13,8 +33,10 @@ async function fetchWithRetry(
   fetchImplementation: typeof fetch,
 ): Promise<{ response: Response; attempts: number }> {
   let lastError: unknown;
+  let attempts = 0;
   for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
     if (init.signal?.aborted) throw init.signal.reason ?? new DOMException("Aborted", "AbortError");
+    attempts = attempt + 1;
     try {
       const response = await fetchImplementation(url, init);
       if (![429, 500, 502, 503, 504].includes(response.status) || attempt === maxAttempts - 1) {
@@ -32,7 +54,7 @@ async function fetchWithRetry(
       if (attempt < maxAttempts - 1) await new Promise((resolve) => setTimeout(resolve, 500 * (2 ** attempt)));
     }
   }
-  throw lastError;
+  throw Object.assign(new Error("Tavily request failed after all attempts", { cause: lastError }), { attempts });
 }
 
 export interface TavilySearchInput {
@@ -109,7 +131,7 @@ export class TavilySearchProvider {
   async search(input: TavilySearchInput, signal?: AbortSignal): Promise<TavilySearchResponse> {
     const startedAt = Date.now();
     const apiKey = process.env.TAVILY_API_KEY?.trim();
-    if (!apiKey) throw new ProviderUnavailableError(this.id, new Error("TAVILY_API_KEY is not configured"));
+    if (!apiKey) throw new TavilyProviderUnavailableError(new Error("TAVILY_API_KEY is not configured"), 0, 0);
     const depth = input.searchDepth ?? "basic";
     let result: { response: Response; attempts: number };
     try {
@@ -128,11 +150,19 @@ export class TavilySearchProvider {
         signal,
       }, this.maxAttempts, this.fetchImplementation);
     } catch (error) {
-      throw new ProviderUnavailableError(this.id, error);
+      const attempts = typeof error === "object" && error !== null && "attempts" in error
+        ? Number((error as { attempts?: unknown }).attempts) || 0 : 0;
+      throw new TavilyProviderUnavailableError(error, attempts, Date.now() - startedAt);
     }
     const { response, attempts } = result;
-    const body = await response.json() as TavilyWireResponse & { detail?: unknown };
-    if (!response.ok) throw new ProviderUnavailableError(this.id, new Error(`HTTP ${response.status}: ${JSON.stringify(body.detail ?? body)}`));
+    let body: TavilyWireResponse & { detail?: unknown };
+    try {
+      body = await response.json() as TavilyWireResponse & { detail?: unknown };
+    } catch (error) {
+      throw new TavilyProviderUnavailableError(error, attempts, Date.now() - startedAt);
+    }
+    if (!response.ok) throw new TavilyProviderUnavailableError(
+      new Error(`HTTP ${response.status}: ${JSON.stringify(body.detail ?? body)}`), attempts, Date.now() - startedAt);
     return {
       query: body.query ?? input.query,
       results: (body.results ?? []).flatMap((item) => item.url && item.title ? [{
@@ -154,7 +184,7 @@ export class TavilySearchProvider {
   async extract(urls: string[], signal?: AbortSignal): Promise<TavilyExtractResponse> {
     const startedAt = Date.now();
     const apiKey = process.env.TAVILY_API_KEY?.trim();
-    if (!apiKey) throw new ProviderUnavailableError(this.id, new Error("TAVILY_API_KEY is not configured"));
+    if (!apiKey) throw new TavilyProviderUnavailableError(new Error("TAVILY_API_KEY is not configured"), 0, 0);
     if (urls.length === 0) return { results: [], failedUrls: [], creditsUsed: 0,
       attempts: 0, retries: 0, latencyMs: 0 };
     let result: { response: Response; attempts: number };
@@ -173,17 +203,25 @@ export class TavilySearchProvider {
         signal,
       }, this.maxAttempts, this.fetchImplementation);
     } catch (error) {
-      throw new ProviderUnavailableError(this.id, error);
+      const attempts = typeof error === "object" && error !== null && "attempts" in error
+        ? Number((error as { attempts?: unknown }).attempts) || 0 : 0;
+      throw new TavilyProviderUnavailableError(error, attempts, Date.now() - startedAt);
     }
     const { response, attempts } = result;
-    const body = await response.json() as {
+    let body: {
       results?: Array<{ url?: string; raw_content?: string }>;
       failed_results?: Array<{ url?: string } | string>;
       usage?: { credits?: number };
       request_id?: string;
       detail?: unknown;
     };
-    if (!response.ok) throw new ProviderUnavailableError(this.id, new Error(`HTTP ${response.status}: ${JSON.stringify(body.detail ?? body)}`));
+    try {
+      body = await response.json() as typeof body;
+    } catch (error) {
+      throw new TavilyProviderUnavailableError(error, attempts, Date.now() - startedAt);
+    }
+    if (!response.ok) throw new TavilyProviderUnavailableError(
+      new Error(`HTTP ${response.status}: ${JSON.stringify(body.detail ?? body)}`), attempts, Date.now() - startedAt);
     return {
       results: (body.results ?? []).flatMap((item) => item.url ? [{ url: item.url, rawContent: item.raw_content ?? "" }] : []),
       failedUrls: (body.failed_results ?? []).flatMap((item) => typeof item === "string" ? [item] : item.url ? [item.url] : []),

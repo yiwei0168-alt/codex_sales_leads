@@ -112,7 +112,7 @@ describe("hybrid discovery executor", () => {
     expect(output.calls.some((call) => call.route.provider === "gemini-product")).toBe(false);
   });
 
-  it("reopens a transient provider circuit on the next discovery round", async () => {
+  it("defers repeated transient failures for one round, then runs a bounded recovery probe", async () => {
     const session = createHybridDiscoverySession();
     let firstRoundAttempts = 0;
     const retailPlan: LeadSearchPlan = { ...plan, countryCode: "MX", countryName: "Mexico", queryLanguage: "es",
@@ -137,8 +137,17 @@ describe("hybrid discovery executor", () => {
         if (step.provider === "searchapi") recoveryAttempts += 1;
         return new FakeProvider(step.provider, null).search(query);
       } }) });
+    expect(recoveryAttempts).toBe(0);
+    expect(second.calls.some((call) => call.route.provider === "searchapi"
+      && call.discardedReasonCounts["provider-recovery-cooldown"] === 1)).toBe(true);
+
+    const third = await executeHybridDiscovery("transient-3", retailPlan, playbook, { gate: passGate, session,
+      queryRound: 2, providerFactory: (step) => ({ id: step.provider, search: async (query) => {
+        if (step.provider === "searchapi") recoveryAttempts += 1;
+        return new FakeProvider(step.provider, null).search(query);
+      } }) });
     expect(recoveryAttempts).toBeGreaterThan(0);
-    expect(second.calls.some((call) => call.route.provider === "searchapi" && call.status === "completed")).toBe(true);
+    expect(third.calls.some((call) => call.route.provider === "searchapi" && call.status === "completed")).toBe(true);
   });
 
   it("reuses an identical current-task search call without charging tokens or search credits twice", async () => {

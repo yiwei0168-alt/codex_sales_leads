@@ -17,6 +17,10 @@ function item(overrides: Partial<DiscoveryItem> = {}): DiscoveryItem {
 describe("real-time candidate registry", () => {
   it("normalizes root domains without collapsing public suffixes", () => {
     expect(normalizedCompanyDomain("https://shop.example.co.uk/products")).toBe("example.co.uk");
+    expect(normalizedCompanyDomain(" https://www.example.com/products` ")).toBe("example.com");
+    expect(normalizedCompanyDomain("https://co.uk/path")).toBeNull();
+    expect(normalizedCompanyDomain("https://com.mx/path")).toBeNull();
+    expect(normalizedCompanyDomain("https://bad_domain.co.uk/path")).toBeNull();
     expect(normalizedCompanyDomain("https://maps.google.com/example")).toBeNull();
   });
 

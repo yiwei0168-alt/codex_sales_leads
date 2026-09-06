@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { TavilySearchProvider } from "./tavily";
+import { TavilySearchProvider, tavilyFailureMetrics } from "./tavily";
 
 afterEach(() => {
   vi.unstubAllEnvs();
@@ -37,7 +37,30 @@ describe("TavilySearchProvider country scope", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     await expect(new TavilySearchProvider({ maxAttempts: 1 }).search({ query: "network distributor Germany" }))
-      .rejects.toMatchObject({ name: "ProviderUnavailableError", cause: expect.objectContaining({ message: expect.stringContaining("HTTP 503") }) });
+      .rejects.toMatchObject({ name: "TavilyProviderUnavailableError", attempts: 1, retries: 0,
+        cause: expect.objectContaining({ message: expect.stringContaining("HTTP 503") }) });
     expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("preserves attempted requests and retries when transport calls fail", async () => {
+    vi.stubEnv("TAVILY_API_KEY", "test-key");
+    const fetchMock = vi.fn().mockRejectedValue(new Error("network down"));
+    const provider = new TavilySearchProvider({ maxAttempts: 2, fetchImplementation: fetchMock });
+
+    const error = await provider.search({ query: "network distributor Germany" }).catch((value: unknown) => value);
+
+    expect(tavilyFailureMetrics(error)).toMatchObject({ attempts: 2, retries: 1 });
+    expect(tavilyFailureMetrics(error).latencyMs).toBeGreaterThanOrEqual(0);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("preserves the successful HTTP attempt when response JSON is invalid", async () => {
+    vi.stubEnv("TAVILY_API_KEY", "test-key");
+    const provider = new TavilySearchProvider({ maxAttempts: 1,
+      fetchImplementation: vi.fn().mockResolvedValue(new Response("not-json", { status: 200 })) });
+
+    const error = await provider.search({ query: "network distributor Germany" }).catch((value: unknown) => value);
+
+    expect(tavilyFailureMetrics(error)).toMatchObject({ attempts: 1, retries: 0 });
   });
 });

@@ -15,7 +15,7 @@ function candidate(category = "si-msp"): LeadWorkflowCandidate {
 class FakeProvider implements AiProvider {
   readonly id = "fake";
   calls: StructuredAiRequest<unknown>[] = [];
-  constructor(private readonly rejectCode?: "oem-supplier-not-customer") {}
+  constructor(private readonly rejectCode?: "oem-supplier-not-customer" | "direct-brand-store") {}
   async execute<TInput, TOutput>(request: StructuredAiRequest<TInput>): Promise<StructuredAiResponse<TOutput>> {
     this.calls.push(request as StructuredAiRequest<unknown>);
     const input = request.input as { candidates: Array<{ candidateId: string }> };
@@ -50,6 +50,8 @@ describe("lightweight discovery gate", () => {
     expect(provider.calls[0].modelVersion).toBe("deepseek-v4-flash");
     expect(JSON.stringify(provider.calls[0].outputSchema)).not.toContain("confidence");
     expect(result.candidates[0].evidence.some((item) => item.provider === "direct-http")).toBe(true);
+    expect(JSON.stringify(provider.calls[0].input)).toContain("working online purchase flow");
+    expect(JSON.stringify(provider.calls[0].input)).toContain("Do not call an SI a VAR unless resale is shown");
   });
 
   it("rejects the wrong OEM supplier direction without generating a path", async () => {
@@ -58,6 +60,13 @@ describe("lightweight discovery gate", () => {
     expect(result.candidates).toHaveLength(0);
     expect(result.rejected[0].discoveryGate?.reasonCodes).toContain("oem-supplier-not-customer");
     expect(JSON.stringify(provider.calls[0].input)).not.toContain("selectedPathId");
+  });
+
+  it("supports a pre-evidence hard rejection for a direct brand store in a retail task", async () => {
+    const result = await new LeadDiscoveryGate(new FakeProvider("direct-brand-store"), fetchMock)
+      .evaluate([candidate("retail")]);
+    expect(result.candidates).toHaveLength(0);
+    expect(result.rejected[0].discoveryGate?.reasonCodes).toContain("direct-brand-store");
   });
 
   it("holds rather than rejects when the routine model fails", async () => {

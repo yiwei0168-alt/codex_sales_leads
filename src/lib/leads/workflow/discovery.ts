@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 
 import { query } from "@/lib/rag/db";
 import type { LeadSearchPlan } from "@/lib/assistant/types";
-import { TavilySearchProvider } from "@/providers/tavily";
+import { TavilySearchProvider, tavilyFailureMetrics } from "@/providers/tavily";
 import { ACTIVE_LEAD_SCORING_POLICY, scoringPolicyChecksum } from "@/lib/leads/scoring-policy";
 import { leadEvidenceContentHash } from "@/lib/leads/evidence-snapshot";
 
@@ -271,6 +271,10 @@ async function enrichOne(
       warning: added.length === 0 ? `No official-domain evidence was extracted for ${candidate.domain}.` : undefined,
     };
   } catch (error) {
+    const failed = tavilyFailureMetrics(error);
+    requests += failed.attempts;
+    retries += failed.retries;
+    latencyMs += failed.latencyMs;
     const warning = `Evidence collection failed for ${candidate.domain}: ${error instanceof Error ? error.message : String(error)}`;
     return { candidate: { ...candidate, evidenceWarnings: [...candidate.evidenceWarnings, warning] }, credits,
       requests, retries, latencyMs, warning };

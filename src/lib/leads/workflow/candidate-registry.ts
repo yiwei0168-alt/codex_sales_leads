@@ -18,11 +18,14 @@ function hash(value: string): string { return createHash("sha256").update(value)
 export function normalizedCompanyDomain(value: string | null): string | null {
   if (!value) return null;
   try {
-    const hostname = new URL(value).hostname.toLowerCase().replace(/^www\./, "");
+    const sanitizedUrl = value.trim().replace(/^[<\[(\s'"`]+/, "").replace(/[>\])\s'"`,.;:]+$/, "");
+    const hostname = new URL(sanitizedUrl).hostname.toLowerCase().replace(/^www\./, "").replace(/\.$/, "");
     if (!hostname || blockedIdentityHosts.has(hostname)
       || [...blockedIdentityHosts].some((blocked) => hostname.endsWith(`.${blocked}`))) return null;
     const labels = hostname.split(".").filter(Boolean);
-    if (labels.length <= 2) return hostname;
+    if (labels.length < 2 || labels.some((label) => !/^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/i.test(label))) return null;
+    if (commonSecondLevelSuffixes.has(hostname)) return null;
+    if (labels.length === 2) return hostname;
     const lastTwo = labels.slice(-2).join(".");
     return commonSecondLevelSuffixes.has(lastTwo) ? labels.slice(-3).join(".") : lastTwo;
   } catch { return null; }

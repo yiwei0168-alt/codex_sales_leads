@@ -46,7 +46,7 @@ The formal-evaluation harness and production LangGraph import the same target-co
 
 Failures are classified as authentication, quota, rate limit, timeout, transport, HTTP, invalid response or configuration. Authentication/quota/configuration failures are not repeatedly retried. Transient failures receive at most two total attempts with exponential jitter. A provider failure never increments a no-value counter.
 
-Provider-level failures open a provider circuit; route-level failures isolate only the provider/engine route. Two route failures from one provider open the task-scoped provider circuit. A fallback must use a complementary index or mechanism. Tavily is never a discovery fallback.
+Provider-level failures open a provider circuit; route-level failures isolate only the provider/engine route. Two transient route failures from one provider open the current-round circuit, skip the next discovery round, and permit one bounded recovery probe in the following round. A successful probe clears the cooldown. A fallback must use a complementary index or mechanism. Tavily is never a discovery fallback.
 
 Default Retail/Reseller discovery excludes Gemini Product. It may return only after a measured experiment demonstrates independent incremental value.
 
@@ -88,6 +88,17 @@ Shared public evidence and role facts live under `public_evidence`. User/workspa
 Every route and stage records input count, raw output, normalized output, new unique companies, downstream-used output, cost, tokens/credits, latency, attempts, retries, cache state, failure class, duplicate/discard reasons and final in-role contribution. Optimization uses final-candidate contribution and cost, not provider rank.
 
 ## Version history
+
+### v1.3.0 category purity and cost-accounting repair — 2026-09-07
+
+- Rejects malformed DNS labels, punctuation-contaminated URLs and public-suffix-only identities such as `co.uk` or `com.mx` before any model gate or paid evidence step.
+- Defines Retail/E-tail, Reseller/VAR, Distributor/VAD and SI/MSP by their commercial actions in the Flash light gate. Retail tasks explicitly reject directories, non-retail ISPs, manufacturer-owned brand stores without a material independent multi-brand retail business, and general retailers with no demonstrated networking-products category.
+- Defers a provider for one complete round after two transient failures, then permits a bounded recovery probe. This retains SearchAPI's measured contribution while avoiding repeated timeout cost in every round.
+- Preserves attempts, retries and latency from failed Tavily search/extract calls in workflow telemetry.
+- Tightens role correction: multiple roles no longer imply `Hybrid`; subtype labels require their defining action, and duplicate-result conflicts remain `Unresolved` instead of deterministically inventing `Hybrid`.
+- Normalizes only structural output noise (bounded text and known enums) before schema validation. This prevents unnecessary Pro retries without converting unsupported claims into supported evidence.
+
+This implementation stage made no paid external calls. Input/output utilization and savings are therefore not yet observed; the next production run must compare pre-evidence category pass rate, Tavily calls per final in-role company, provider cooldown skips/probe recovery, role-family precision, exact subtype precision, `Hybrid` rate and schema-retry cost against formal v1.1.6.
 
 ### v1.2.1 formal UK/MX observation — 2026-09-07
 

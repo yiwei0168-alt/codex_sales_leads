@@ -74,6 +74,68 @@ export const leadCorrectionBatchSchema = z.object({
   corrections: z.array(leadCorrectionModelSchema).min(1).max(5),
 });
 
+const correctionRoleValues = new Set<string>([...ALL_CHANNEL_ROLES, "Hybrid", "Unresolved"]);
+const correctionCriticalStates = new Set([
+  "identity", "eligibility", "primary-role", "company-existence", "country-presence", "networking-relevance",
+]);
+
+function boundedString(value: unknown, maximum: number): unknown {
+  return typeof value === "string" ? value.slice(0, maximum) : value;
+}
+
+function boundedStringArray(value: unknown, maximumItems: number, maximumLength: number): unknown {
+  return Array.isArray(value) ? value.filter((item) => typeof item === "string").slice(0, maximumItems)
+    .map((item) => item.slice(0, maximumLength)) : value;
+}
+
+/**
+ * Repairs only transport/schema noise from a model response. It truncates oversized text and removes unknown enum
+ * labels; it never converts unsupported business claims into supported ones or invents evidence.
+ */
+export function sanitizeLeadCorrectionOutput(value: unknown): unknown {
+  if (typeof value !== "object" || value === null || !("corrections" in value)
+    || !Array.isArray((value as { corrections?: unknown }).corrections)) return value;
+  const corrections = (value as { corrections: unknown[] }).corrections.slice(0, 5).map((item) => {
+    if (typeof item !== "object" || item === null) return item;
+    const source = item as Record<string, unknown>;
+    const rawRoles = Array.isArray(source.roles) ? source.roles : [];
+    const roles = rawRoles.filter((role): role is string => typeof role === "string"
+      && correctionRoleValues.has(role) && role !== "Hybrid" && role !== "Unresolved").slice(0, 13);
+    const primaryValid = typeof source.primaryBusinessRole === "string"
+      && correctionRoleValues.has(source.primaryBusinessRole);
+    const repairWarnings = [
+      ...(Array.isArray(source.warnings) ? source.warnings.filter((warning): warning is string => typeof warning === "string") : []),
+      ...(!primaryValid ? ["Unknown primary-role label was normalized to Unresolved."] : []),
+      ...(roles.length < rawRoles.length ? ["Unknown role labels were removed before schema validation."] : []),
+    ].slice(0, 12).map((warning) => warning.slice(0, 300));
+    const findings = Array.isArray(source.findings) ? source.findings.slice(0, 30).map((finding) => {
+      if (typeof finding !== "object" || finding === null) return finding;
+      const record = finding as Record<string, unknown>;
+      return { ...record, kind: boundedString(record.kind, 80), statement: boundedString(record.statement, 500),
+        status: boundedString(record.status, 50),
+        roles: Array.isArray(record.roles) ? record.roles.filter((role) => typeof role === "string"
+          && correctionRoleValues.has(role) && role !== "Hybrid" && role !== "Unresolved").slice(0, 13) : record.roles,
+        evidenceIds: Array.isArray(record.evidenceIds) ? record.evidenceIds.slice(0, 100) : record.evidenceIds,
+        notes: boundedStringArray(record.notes, 12, 1_000) };
+    }) : source.findings;
+    const escalation = typeof source.escalation === "object" && source.escalation !== null
+      ? source.escalation as Record<string, unknown> : null;
+    return { ...source, candidateId: boundedString(source.candidateId, 80),
+      resolvedCompanyName: boundedString(source.resolvedCompanyName, 300),
+      resolvedOfficialWebsiteUrl: boundedString(source.resolvedOfficialWebsiteUrl, 1_000), roles,
+      primaryBusinessRole: primaryValid ? source.primaryBusinessRole : "Unresolved",
+      primaryBusinessRoleReason: boundedString(source.primaryBusinessRoleReason, 2_000),
+      evidenceIds: Array.isArray(source.evidenceIds) ? source.evidenceIds.slice(0, 100) : source.evidenceIds,
+      findings, reasons: boundedStringArray(source.reasons, 12, 300), warnings: repairWarnings,
+      escalation: escalation ? { ...escalation,
+        criticalStateChanges: Array.isArray(escalation.criticalStateChanges)
+          ? escalation.criticalStateChanges.filter((state) => typeof state === "string"
+            && correctionCriticalStates.has(state)).slice(0, 6) : escalation.criticalStateChanges,
+        reason: boundedString(escalation.reason, 300) } : source.escalation };
+  });
+  return { ...(value as Record<string, unknown>), corrections };
+}
+
 const gatesSchema = z.object({
   correctedIdentityUsable: claimStatusSchema,
   companyExists: claimStatusSchema,

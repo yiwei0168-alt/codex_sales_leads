@@ -10,7 +10,7 @@ import { createLeadAiProvider } from "@/providers/resilient-ai";
 
 import { ALL_CHANNEL_ROLES, type LeadEvidenceItem, type LeadWorkflowCandidate, type WorkflowModelUsage } from "./types";
 
-const PROMPT_VERSION = "lead-discovery-light-gate-v1.0.0";
+const PROMPT_VERSION = "lead-discovery-light-gate-v1.1.0-category-purity";
 export const DEFAULT_DISCOVERY_GATE_MODEL = "deepseek-v4-flash";
 
 export function configuredDiscoveryGateModel(environment: NodeJS.ProcessEnv = process.env): string {
@@ -30,7 +30,8 @@ const resultSchema = z.object({
   hardRejectCodes: z.array(z.enum([
     "non-company", "wrong-market", "unrelated-business", "pure-marketplace", "individual-seller",
     "wrong-agent-category", "wrong-isp-category", "wrong-installer-category", "oem-supplier-not-customer",
-    "trademark-only", "manufacturing-service-only",
+    "trademark-only", "manufacturing-service-only", "directory-or-lead-platform", "direct-brand-store",
+    "non-retail-isp", "category-business-action-not-shown",
   ])).max(5),
   opportunitySignals: z.array(z.object({
     signalType: z.enum(["own-brand-product", "branded-cpe", "private-label", "custom-hardware", "device-tender",
@@ -182,6 +183,10 @@ export class LeadDiscoveryGate {
               "Use only supplied search snippets and lightweight official-homepage text.",
               "Return compact enums, booleans, reason codes, missing evidence and tentative role hints. Do not score, rank, recommend paths, write strategy/email or return confidence.",
               "The original search category is a target to test, not a final role. Unknown stays unknown.",
+              "Test the requested category by its defining commercial action, not by generic networking words: Distributor/VAD supplies downstream channel partners; Reseller/VAR sells to business customers and VAR adds material solution or service value; Retailer/E-tailer sells products to consumers through physical stores or a working online purchase flow; SI/MSP designs, deploys, integrates or manages customer networks.",
+              "For Retailer/E-tailer searches, reject directories, comparison or lead-generation sites, ISPs selling connectivity without a genuine independent consumer-device retail operation, and a manufacturer's own brand store unless evidence also demonstrates a material independent multi-brand retail business.",
+              "For Reseller/VAR searches, reject directories and companies whose evidence shows only distribution, connectivity, consulting or installation without business-customer product resale. Do not call an SI a VAR unless resale is shown.",
+              "A broad electronics retailer is relevant only when supplied evidence shows actual router, mesh Wi-Fi, access-point, switch or closely related networking products; a generic electronics description is insufficient.",
               "Record brand/group/legal/regional relationships only as suspected relationships with a supplied source URL; do not resolve or merge entities.",
               "For OEM/ODM, find only possible customers buying Cudy solutions for own-brand/customized products. Reject factories/design houses that only supply OEM/ODM services.",
               "Agent means target-industry manufacturer representative or commission sales agency; reject real-estate, insurance, travel, recruiting, customs/logistics and AI agents.",

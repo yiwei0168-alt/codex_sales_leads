@@ -4,7 +4,7 @@ import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "@/pr
 import type { TavilySearchResponse } from "@/providers/tavily";
 
 import { LeadEvidenceCorrectionAgent } from "./evidence-correction-agent";
-import { leadCorrectionModelSchema } from "./schemas";
+import { leadCorrectionBatchSchema, leadCorrectionModelSchema, sanitizeLeadCorrectionOutput } from "./schemas";
 import type { LeadWorkflowCandidate } from "./types";
 
 class FakeCorrectionProvider implements AiProvider {
@@ -126,5 +126,26 @@ describe("LeadEvidenceCorrectionAgent", () => {
         criticalStateChanges: [], higherCapabilityCanResolve: false, reason: "" }, warnings: [],
     });
     expect(parsed.success).toBe(true);
+  });
+
+  it("repairs oversized text and unknown role enums without inventing a business claim", () => {
+    const raw = { corrections: [{ candidateId: "lead-schema-repair", resolvedCompanyName: "Example",
+      resolvedOfficialWebsiteUrl: "https://example.com/", roles: ["SI", "Unknown Partner Type"],
+      primaryBusinessRole: "Unknown Partner Type", primaryBusinessRoleReason: "x".repeat(2_500),
+      officialWebsiteEvidenceId: null, evidenceIds: [],
+      findings: [{ kind: "role", statement: "Integration is supported.", status: "supported",
+        roles: ["SI", "Unknown Partner Type"], evidenceIds: [], confidence: 50, notes: [] }],
+      reasons: ["r".repeat(500)], confidence: 50,
+      escalation: { required: false, expectedTotalScoreChange: 0, criticalStateChanges: ["not-a-state"],
+        higherCapabilityCanResolve: false, reason: "e".repeat(500) }, warnings: ["w".repeat(500)] }] };
+
+    const parsed = leadCorrectionBatchSchema.parse(sanitizeLeadCorrectionOutput(raw));
+
+    expect(parsed.corrections[0].roles).toEqual(["SI"]);
+    expect(parsed.corrections[0].primaryBusinessRole).toBe("Unresolved");
+    expect(parsed.corrections[0].primaryBusinessRoleReason).toHaveLength(2_000);
+    expect(parsed.corrections[0].reasons[0]).toHaveLength(300);
+    expect(parsed.corrections[0].escalation.criticalStateChanges).toEqual([]);
+    expect(parsed.corrections[0].warnings.join(" ")).toContain("normalized to Unresolved");
   });
 });

@@ -2,10 +2,10 @@
 
 > 本文档由 `scripts/generate-lead-workflow-doc.mjs` 自动生成。请修改版本化配置或实现代码，不要直接编辑生成文件。
 
-- 运行时策略版本：3.1.0（基础流程定义 2.3.2）
+- 运行时策略版本：3.1.0（基础流程定义 2.3.3）
 - 评分策略版本：2.0.0
 - 成本质量策略版本：3.0.1
-- 配置指纹：`3525b92ba9033dc58f2908ac10f8b055c89f68cb6f244a32b573fba9a3a80f88`
+- 配置指纹：`9ddeb0e3dbc464cdb7b449881bc54c0d72fa2954f4633c13591f3cba183cf19d`
 - 范围：From the user's natural-language market-development request and workspace context to ranked companies, editable cooperation paths, development strategy, outreach email, and private-memory learning from user edits.
 
 ## 一、从用户输入到最终输出的总流程
@@ -198,16 +198,18 @@ flowchart TD
 
 - Run the confirmed category-specific provider tracks with shared real-time deduplication
 - Use DeepSeek Flash only for a compact lightweight gate after direct homepage text; never upgrade this gate to Pro
+- Test each requested category by its defining commercial action before paid evidence: reject directories, direct brand stores without an independent multi-brand retail operation, non-retail ISPs, and category-irrelevant general retailers
 - Treat a requested count as final valid in-role companies and feed evidence/role outcomes back into dynamic search rounds
 - Plan the first candidate buffer at 1.5 times the requested count, then adapt from conservative observed end-to-end yield
 - Start national retail, E-tail and Google Places local retail together in configured low-SEO markets
 - Use local-language commercial terminology and query clusters; expand mature markets to local coverage only after a measured gap
 - Stop a track only after two completed no-value batches; provider failures never count as no-value
+- After two transient failures from one provider, skip the next discovery round and run a bounded recovery probe in the following round
 - Serialize calls sharing one provider while different provider mechanisms remain concurrent, so exclusions update before the next same-provider query
 - Tavily is forbidden in candidate discovery and remains evidence-only
 - Gemini Product is not a default Retail or Reseller route
 - Provider score and rank cannot enter final value scoring
-- Canonicalize domains and retain first, duplicate and assisted discovery provenance
+- Strip result punctuation, validate DNS labels, reject public-suffix-only identities, canonicalize registrable domains and retain first, duplicate and assisted discovery provenance
 
 失败与回退：Classify authentication, quota, rate-limit, timeout, transport, HTTP, invalid-response and configuration failures. Non-transient failures open a scoped circuit; bounded same-tier complementary alternatives continue. Failed calls are cached briefly but never counted as empty successful searches. A gate-model failure holds candidates for evidence instead of inventing rejection or escalating capability.
 
@@ -246,7 +248,7 @@ flowchart TD
 - Search for defining business actions, product tracks, target customers, size and cooperation signals
 - Pass exact evidence IDs and missing gaps downstream; a later Agent may supplement only a material unresolved gap
 
-失败与回退：Failed retrieval becomes unknown; it never becomes a negative fact.
+失败与回退：Failed retrieval becomes unknown; it never becomes a negative fact. Attempts, retries and latency from a failed Tavily request remain in stage telemetry rather than being reset to zero.
 
 流向下游：
 
@@ -279,9 +281,12 @@ flowchart TD
 - Reuse an exact evidence/prompt/taxonomy role-correction cache hit before any model call
 - No upward-priority rule
 - Agent independently decides the primary business role
+- Hybrid requires evidence that distinct role families are material co-primary operations; multiple supported roles alone are insufficient
+- Duplicate merging never invents Hybrid when Agent decisions conflict; it preserves Unresolved for later review
 - Distributor requires evidence of supplying downstream channel partners
+- VAD, E-tailer, Retailer and VAR use explicit subtype business-action boundaries
 - A company may hold multiple supported roles
-- Non-standard model labels are normalized without discarding semantic role evidence
+- Truncate oversized text and remove unknown enum labels before schema validation without upgrading or inventing business claims
 - Keep public role-correction knowledge separate from private user/workspace memory
 
 失败与回退：Ambiguity escalates to the high-capability model; deterministic fallback is retry-only and not externally publishable as a resolved identity.
@@ -723,7 +728,7 @@ flowchart TD
 | 文件 | SHA-256 |
 |---|---|
 | `config/lead-scoring/policy-v2.0.0.json` | `0039203aafb29ec73e4beb10f72dc5ec114785fb4c5f311c7b425de0d451fc1b` |
-| `config/lead-search/hybrid-search-v1.0.0.json` | `f73cff95ae44a1bcff28cce31f352de70338872539b7b1e843366d8974044545` |
+| `config/lead-search/hybrid-search-v1.0.0.json` | `5e4180ea8d35bb7facd1e23cb209946721c34563478ad606325aa2df57a72d09` |
 | `config/lead-workflow/cost-quality-policy-v3.0.0.json` | `90bb896e2fdfd0738296ab4b82dae6bb0f75e1b06d95955f69e4eaaa55a7aae6` |
 | `config/lead-workflow/runtime-policy-v3.0.0.json` | `31a0f7030758c373a697c82afc85f31b940c3b9104f8eb9c846aa0249a6e6f4c` |
 | `src/app/api/assistant/messages/route.ts` | `04bec90cc3d3f336195e8ab97a5ad4b1ec1e05b95606064225e098e94ed7a5cd` |
@@ -739,12 +744,12 @@ flowchart TD
 | `src/lib/leads/workflow/playbook.ts` | `a83d6fe0edf30c5e0504fbb7e3bdb059b5cdb8a9d8df45dc1756372b7df3e095` |
 | `src/lib/leads/workflow/playbook-cache.ts` | `945d3fc727312208650ee7b4e55e33860e7c54f7e3daa939f768952409a1803f` |
 | `src/lib/leads/workflow/hybrid-search-policy.ts` | `4c3ec5ff313a5551c68de8fd023deca8cf711d7a80971f52f47127d0f9a8bb87` |
-| `src/lib/leads/workflow/candidate-registry.ts` | `a7d9bc2b971f854d7e5e092c6a3b6ccbe7cece0f3b5c0e1eae31f9e247f46cc5` |
-| `src/lib/leads/workflow/discovery-gate.ts` | `8269725ccda70dbc4b35c4031a654b0660f5d70073f49d7bd127ed1ae9238c11` |
-| `src/lib/leads/workflow/hybrid-discovery-executor.ts` | `09f16564be68bea10db374f0d08c600017cbfb1d360c01c80d90c62284aad4a0` |
-| `src/lib/leads/workflow/discovery.ts` | `d0829756f30a16351a68f9e98fef4949549f0b2ff89062157ca75aa79400a2a3` |
+| `src/lib/leads/workflow/candidate-registry.ts` | `1bff2ba8049fc6ad5117f4047b0505aa08c11ac7093bd353efad01d5f91e30e8` |
+| `src/lib/leads/workflow/discovery-gate.ts` | `de9c21d15f701784441021d6cea3fe2a433c8498faf32bab0ce92746583a3db6` |
+| `src/lib/leads/workflow/hybrid-discovery-executor.ts` | `ea088033a73044060c0541f41dc258f538d0c5fdf9eaa501fb379cce0faf2b6a` |
+| `src/lib/leads/workflow/discovery.ts` | `7ebcf5e44a8b82c4308c630936f50aa32c9757c828d4d3b1402716fc86fa358d` |
 | `src/lib/leads/global-search.ts` | `963d07622725531e72d7f1807d4228a23d59d6a320b5d1e508b602bcc05c65db` |
-| `src/lib/leads/workflow/evidence-correction-agent.ts` | `d9e7d4c76b496cd19393398dfa712a50b1ef6a2548f3cb596cbfaccd9cf8db60` |
+| `src/lib/leads/workflow/evidence-correction-agent.ts` | `62c9d1a62310cc036c6f658f5d20d7122848656a70e7d45085964abfbfbb5d37` |
 | `src/lib/leads/workflow/evidence-packet.ts` | `1ca9577284952e245a8e8c51ae9fa82472fcbcf0b262ebaa83fc6463f379836f` |
 | `src/lib/leads/workflow/qualification-agent.ts` | `00fe467e454c86b2389654fbeacc497fd033bb7b2acae6f52627bf03ee828384` |
 | `src/lib/leads/workflow/assessment-cache.ts` | `d7fd5fe0b350aa56eb9fcfb283c2c81a2de9564f88a3ef677631b82d81474fb3` |
@@ -755,7 +760,7 @@ flowchart TD
 | `src/providers/resilient-ai.ts` | `3fe571fe48f48c0f89ccbf7241ed303b554598243bd8bfa08dc7c2a76c85258b` |
 | `src/providers/openrouter.ts` | `b43ba8fdf08602cb7d3567ea88bdc2cfee704de0c1b197cc574abe5e9b89143d` |
 | `db/migrations/034_model_account_cash_cost.sql` | `4790c7ad12eda543e197c84ddd77c4a5ce296b7871ccee799f3aa2262684bdbb` |
-| `src/providers/tavily.ts` | `e601eb4eae582628dec99f03e9bcbb6fdf38dc68bcf52daf7cad8d58a2e31485` |
+| `src/providers/tavily.ts` | `f4f1908e0f2673636db0902fb135d107da26c35257fe51d4e4bdfd85c2596a7a` |
 | `src/lib/leads/workflow/handoff-assembler.ts` | `606736bdfcced8f3a476a58808b07c65867b75f948c46b66b21354e5102f3827` |
 | `src/lib/leads/workflow/persistence.ts` | `9b7cf1bb48facb73efed66db75f3863e6f0544295340125317d9695ab16a78d4` |
 | `src/lib/sales/repository.ts` | `ba76e0227ec5c039bb8196df37322b24146b2d64a42af7e364e96dfd3dfdfef9` |

@@ -70,11 +70,13 @@ export interface HybridDiscoverySession {
   providerCircuits: Map<string, string>;
   routeCircuits: Map<string, string>;
   providerFailureCounts: Map<string, number>;
+  providerCooldownUntilRound: Map<string, number>;
 }
 
 export function createHybridDiscoverySession(): HybridDiscoverySession {
   return { excludedDomains: new Set(), completedCalls: new Map(), failedCalls: new Map(),
-    providerCircuits: new Map(), routeCircuits: new Map(), providerFailureCounts: new Map() };
+    providerCircuits: new Map(), routeCircuits: new Map(), providerFailureCounts: new Map(),
+    providerCooldownUntilRound: new Map() };
 }
 
 const rolesByCategory: Record<LeadSearchCategory, ChannelRole[]> = {
@@ -190,11 +192,12 @@ function callFingerprint(plan: ReturnType<typeof normalizeLeadSearchPlan>, step:
 }
 
 function failureDetails(error: unknown): { kind: DiscoveryFailureKind; attempts: number;
-  latencyMs: number; circuitScope: "provider" | "route" } {
+  latencyMs: number; retryable: boolean; circuitScope: "provider" | "route" } {
   if (error instanceof DiscoveryProviderError) return error.details;
   const message = error instanceof Error ? error.message : String(error);
   const configuration = /not configured|unsupported|unknown discovery provider/i.test(message);
   return { kind: configuration ? "configuration" : "transport", attempts: 0, latencyMs: 0,
+    retryable: !configuration,
     circuitScope: configuration ? "provider" : "route" };
 }
 
@@ -297,19 +300,24 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
       const fingerprint = callFingerprint(plan, step, searchQuery, requestedResults, excludeDomains);
       const clusterKey = queryClusterKey(plan, step, searchQuery);
       const routeCircuitKey = `${step.provider}/${step.engine}`;
+      const cached = session.completedCalls.get(fingerprint);
+      const cooldownUntilRound = session.providerCooldownUntilRound.get(step.provider) ?? 0;
+      const recoveryCooldown = !cached && queryRound < cooldownUntilRound;
       const circuitReason = session.providerCircuits.get(step.provider)
         ?? invocationProviderCircuits.get(step.provider) ?? session.routeCircuits.get(routeCircuitKey);
-      const cached = session.completedCalls.get(fingerprint);
       const failedCache = session.failedCalls.get(fingerprint);
-      if (circuitReason || failedCache) {
+      if (recoveryCooldown || circuitReason || failedCache) {
         const skipped: HybridSearchCallTelemetry = { callKey, callFingerprint: fingerprint,
           queryClusterKey: clusterKey, route: step, query: searchQuery, status: "skipped",
           requestedResults, rawResults: 0, normalizedCompanies: 0, newUniqueCompanies: 0, existingCompanyHits: 0, rejectedResults: 0,
           paidSearchCredits: 0, requestCount: 0, groundingQueries: 0, inputTokens: 0, outputTokens: 0,
           latencyMs: 0, retryCount: 0, fallbackUsed: failedByTrack.has(trackKey),
           cacheStatus: failedCache ? "failed-hit" : "skipped",
-          discardedReasonCounts: { [failedCache ? "failed-call-cache-hit" : "circuit-open"]: 1 },
-          errorMessage: failedCache?.message ?? circuitReason, failureClass: failedCache?.kind, items: [] };
+          discardedReasonCounts: { [circuitReason ? "circuit-open"
+            : recoveryCooldown ? "provider-recovery-cooldown" : "failed-call-cache-hit"]: 1 },
+          errorMessage: circuitReason ?? (recoveryCooldown
+            ? `Recovery probe deferred until discovery round ${cooldownUntilRound}.` : failedCache?.message),
+          failureClass: failedCache?.kind, items: [] };
         calls.push(skipped); await options.onCall?.(skipped); return;
       }
       if (!decision.run) {
@@ -331,6 +339,7 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
         if (!cached) session.completedCalls.set(fingerprint, response);
         if (!cached) {
           session.providerFailureCounts.set(step.provider, 0);
+          session.providerCooldownUntilRound.delete(step.provider);
           invocationProviderCircuits.delete(step.provider);
         }
         const discarded: Record<string, number> = {};
@@ -383,6 +392,7 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
         } else if (failures >= 2) {
           invocationProviderCircuits.set(step.provider,
             `${details.kind}: ${error instanceof Error ? error.message : String(error)}`);
+          if (details.retryable) session.providerCooldownUntilRound.set(step.provider, queryRound + 2);
         } else if (!details.attempts && details.kind === "configuration") {
           session.routeCircuits.set(routeCircuitKey, error instanceof Error ? error.message : String(error));
         }
