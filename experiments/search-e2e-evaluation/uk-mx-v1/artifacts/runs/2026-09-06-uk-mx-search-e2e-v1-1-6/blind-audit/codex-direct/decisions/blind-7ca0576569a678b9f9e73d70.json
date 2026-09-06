@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "packetId": "blind-7ca0576569a678b9f9e73d70",
+  "reviewer": "codex-in-session",
+  "externalSearchUsed": false,
+  "packetSha256": "3d5864e9def9297d30597f7b120a04a66790ba8d9929b7a7ca3c3d8aecce9e85",
+  "reviewStartedAt": "2026-09-06T20:32:00.000Z",
+  "reviewCompletedAt": "2026-09-06T20:33:00.000Z",
+  "output": {
+    "packetId": "blind-7ca0576569a678b9f9e73d70",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": ["B2B Marketplace", "Directory"],
+    "primaryRole": "B2B Marketplace",
+    "requestedCategoryMatch": false,
+    "dimensions": {"productAndUseCaseFit": 10, "channelAndBuyingInfluence": 5, "sameRoleScaleAndCoverage": 10, "executionAndEnablement": 4, "opportunityAndRisk": 3},
+    "totalScore": 32,
+    "eligibility": "ineligible-for-current-task",
+    "dimensionReasons": [
+      {"dimension": "productAndUseCaseFit", "reason": "Networking supplier listings exist, but they describe third parties rather than QuimiNet-owned retail inventory.", "evidenceIds": ["evidence-698718c73f4e4d62", "evidence-5dfc36d9c6d73ccd"]},
+      {"dimension": "channelAndBuyingInfluence", "reason": "QuimiNet sells advertising and supplier visibility rather than directly buying and retailing networking products.", "evidenceIds": ["evidence-c37f7b5d0b956486"]},
+      {"dimension": "sameRoleScaleAndCoverage", "reason": "The directory exposes many Mexican suppliers, but marketplace reach is not comparable with retail-channel scale.", "evidenceIds": ["evidence-52b816816130e31c"]},
+      {"dimension": "executionAndEnablement", "reason": "The packet supports directory and chat functions, not fulfilment, returns or product support.", "evidenceIds": ["evidence-698718c73f4e4d62", "evidence-c37f7b5d0b956486"]},
+      {"dimension": "opportunityAndRisk", "reason": "It may be a marketing source, but the lack of a retail procurement path is a structural blocker for this task.", "evidenceIds": ["evidence-c37f7b5d0b956486"]}
+    ],
+    "unsupportedOrContradictoryClaims": ["Supplier directory entries do not establish QuimiNet as a retailer or product buyer."],
+    "citationAlignment": true
+  }
+}

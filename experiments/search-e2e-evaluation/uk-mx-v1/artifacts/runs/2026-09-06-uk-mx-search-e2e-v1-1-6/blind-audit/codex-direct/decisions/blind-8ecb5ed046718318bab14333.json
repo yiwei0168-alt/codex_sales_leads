@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1, "packetId": "blind-8ecb5ed046718318bab14333", "reviewer": "codex-in-session", "externalSearchUsed": false,
+  "packetSha256": "887808390dd6c3f2edbc1c0de2e645d036236c59afe9cd00acf34c8126caf2a9", "reviewStartedAt": "2026-09-06T20:52:00.000Z", "reviewCompletedAt": "2026-09-06T20:53:00.000Z",
+  "output": {
+    "packetId": "blind-8ecb5ed046718318bab14333", "isRealOperatingCompany": true, "operatesInTargetMarket": true,
+    "supportedRoles": ["E-tailer", "Retailer"], "primaryRole": "E-tailer", "requestedCategoryMatch": true,
+    "dimensions": {"productAndUseCaseFit": 15, "channelAndBuyingInfluence": 8, "sameRoleScaleAndCoverage": 8, "executionAndEnablement": 6, "opportunityAndRisk": 4}, "totalScore": 41, "eligibility": "insufficient-evidence-for-recommendation",
+    "dimensionReasons": [
+      {"dimension": "productAndUseCaseFit", "reason": "The site sells technology and office supplies, but no router, mesh, switching or wireless category evidence is included.", "evidenceIds": ["evidence-home-0b6e9f2a495508c4"]},
+      {"dimension": "channelAndBuyingInfluence", "reason": "Direct UK online retail is supported, while networking-specific buying influence is unknown.", "evidenceIds": ["evidence-home-0b6e9f2a495508c4"]},
+      {"dimension": "sameRoleScaleAndCoverage", "reason": "A functioning UK office-supply e-commerce operation is evident, but no traffic, customer or branch scale is provided.", "evidenceIds": ["evidence-home-0b6e9f2a495508c4"]},
+      {"dimension": "executionAndEnablement", "reason": "Account, cart, quick-order and broad catalogue functions support baseline e-commerce execution.", "evidenceIds": ["evidence-home-0b6e9f2a495508c4"]},
+      {"dimension": "opportunityAndRisk", "reason": "Technology adjacency offers a possible entry, but missing networking evidence prevents a recommendation.", "evidenceIds": ["evidence-home-0b6e9f2a495508c4"]}
+    ], "unsupportedOrContradictoryClaims": ["No evidence demonstrates active networking-product demand."], "citationAlignment": true
+  }
+}

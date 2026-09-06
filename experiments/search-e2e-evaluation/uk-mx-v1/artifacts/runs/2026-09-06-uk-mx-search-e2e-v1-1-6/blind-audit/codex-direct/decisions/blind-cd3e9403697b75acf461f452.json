@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1, "packetId": "blind-cd3e9403697b75acf461f452", "reviewer": "codex-in-session", "externalSearchUsed": false,
+  "packetSha256": "5a68c305f1afe30b7d76f9b6127f08b31e16d7f5ef6dc81326942673e147e457", "reviewStartedAt": "2026-09-06T20:56:00.000Z", "reviewCompletedAt": "2026-09-06T20:57:00.000Z",
+  "output": {
+    "packetId": "blind-cd3e9403697b75acf461f452", "isRealOperatingCompany": true, "operatesInTargetMarket": true,
+    "supportedRoles": ["VAR", "MSP", "Reseller"], "primaryRole": "VAR", "requestedCategoryMatch": true,
+    "dimensions": {"productAndUseCaseFit": 44, "channelAndBuyingInfluence": 13, "sameRoleScaleAndCoverage": 7, "executionAndEnablement": 8, "opportunityAndRisk": 6}, "totalScore": 78, "eligibility": "eligible",
+    "dimensionReasons": [
+      {"dimension": "productAndUseCaseFit", "reason": "Q Tech offers networking, wireless, data-centre and managed services with several relevant network vendors.", "evidenceIds": ["evidence-home-ed581ec3eb0accbe"]},
+      {"dimension": "channelAndBuyingInfluence", "reason": "Products, solutions, managed services and an online store support both specification and resale influence.", "evidenceIds": ["evidence-home-ed581ec3eb0accbe", "evidence-45434c2e0a69d912"]},
+      {"dimension": "sameRoleScaleAndCoverage", "reason": "Mexican operation is clear, but a reported 11–50 employees indicates modest scale and coverage is unquantified.", "evidenceIds": ["evidence-0cba2e0c0bf6b9a6"]},
+      {"dimension": "executionAndEnablement", "reason": "Managed services and partnerships across networking, security and cloud support adequate technical execution.", "evidenceIds": ["evidence-home-ed581ec3eb0accbe"]},
+      {"dimension": "opportunityAndRisk", "reason": "Strong category fit is offset by a crowded incumbent-vendor portfolio and limited scale evidence.", "evidenceIds": ["evidence-home-ed581ec3eb0accbe", "evidence-0cba2e0c0bf6b9a6"]}
+    ], "unsupportedOrContradictoryClaims": ["The packet does not establish customer count or national deployment coverage."], "citationAlignment": true
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1, "packetId": "blind-f6740ed923441e446320bf41", "reviewer": "codex-in-session", "externalSearchUsed": false,
+  "packetSha256": "8e986602809be67fcf901f123b8812a2aae2f008acbc1a8fa835b3ffbddaaf53", "reviewStartedAt": "2026-09-06T20:46:00.000Z", "reviewCompletedAt": "2026-09-06T20:47:00.000Z",
+  "output": {
+    "packetId": "blind-f6740ed923441e446320bf41", "isRealOperatingCompany": true, "operatesInTargetMarket": true,
+    "supportedRoles": ["Distributor", "Solutions Provider"], "primaryRole": "Distributor", "requestedCategoryMatch": true,
+    "dimensions": {"productAndUseCaseFit": 41, "channelAndBuyingInfluence": 15, "sameRoleScaleAndCoverage": 15, "executionAndEnablement": 10, "opportunityAndRisk": 6}, "totalScore": 87, "eligibility": "eligible",
+    "dimensionReasons": [
+      {"dimension": "productAndUseCaseFit", "reason": "Ingram Micro is a technology distributor with major networking vendors and broad solution capability, though the packet has limited Mexico-specific product detail.", "evidenceIds": ["evidence-eb3dadbfe1344ec9", "evidence-6663e769549fc004"]},
+      {"dimension": "channelAndBuyingInfluence", "reason": "Its global distributor and solutions-provider role gives exceptional vendor and downstream partner influence.", "evidenceIds": ["evidence-eb3dadbfe1344ec9", "evidence-6663e769549fc004"]},
+      {"dimension": "sameRoleScaleAndCoverage", "reason": "Global reach plus Mexico City offices and multiple local teams establish top-tier same-role scale.", "evidenceIds": ["evidence-eb3dadbfe1344ec9", "evidence-f3a1c6a792716ee9"]},
+      {"dimension": "executionAndEnablement", "reason": "Xvantage, logistics, services and partner/vendor programs support full distributor execution.", "evidenceIds": ["evidence-6663e769549fc004"]},
+      {"dimension": "opportunityAndRisk", "reason": "Very high strategic value is balanced by portfolio complexity and strong incumbent brands that may limit attention.", "evidenceIds": ["evidence-6663e769549fc004"]}
+    ], "unsupportedOrContradictoryClaims": ["The packet does not establish a Mexico-specific networking portfolio gap or onboarding intent."], "citationAlignment": true
+  }
+}

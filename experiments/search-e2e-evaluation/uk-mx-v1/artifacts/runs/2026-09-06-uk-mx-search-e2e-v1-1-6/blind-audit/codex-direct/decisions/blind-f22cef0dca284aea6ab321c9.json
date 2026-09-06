@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1, "packetId": "blind-f22cef0dca284aea6ab321c9", "reviewer": "codex-in-session", "externalSearchUsed": false,
+  "packetSha256": "33a0a764c4cfd5d498b45b173d816977a4cf0e91b29e62cbb49d094256d04978", "reviewStartedAt": "2026-09-06T21:01:00.000Z", "reviewCompletedAt": "2026-09-06T21:02:00.000Z",
+  "output": {
+    "packetId": "blind-f22cef0dca284aea6ab321c9", "isRealOperatingCompany": true, "operatesInTargetMarket": true,
+    "supportedRoles": ["MSP", "SI", "Connectivity Provider"], "primaryRole": "MSP", "requestedCategoryMatch": true,
+    "dimensions": {"productAndUseCaseFit": 48, "channelAndBuyingInfluence": 15, "sameRoleScaleAndCoverage": 15, "executionAndEnablement": 10, "opportunityAndRisk": 8}, "totalScore": 96, "eligibility": "eligible",
+    "dimensionReasons": [
+      {"dimension": "productAndUseCaseFit", "reason": "Wavenet delivers managed IT, enterprise connectivity, networks, security and cloud to business customers across the UK.", "evidenceIds": ["evidence-home-31a5593691ab2c31", "evidence-ccb6bfbb8f0e0ae4"]},
+      {"dimension": "channelAndBuyingInfluence", "reason": "As an end-to-end MSP and integrator, Wavenet has exceptional solution-design, procurement and customer-standardisation influence.", "evidenceIds": ["evidence-home-31a5593691ab2c31", "evidence-51e86cd24ddd6045"]},
+      {"dimension": "sameRoleScaleAndCoverage", "reason": "A £500 million business serving over 22,000 customers with nationwide reach is top-tier within the MSP role.", "evidenceIds": ["evidence-fb0bc41f1f36be1e", "evidence-ccb6bfbb8f0e0ae4"]},
+      {"dimension": "executionAndEnablement", "reason": "Managed services, technical delivery, support and multi-domain integration demonstrate comprehensive execution.", "evidenceIds": ["evidence-home-31a5593691ab2c31", "evidence-ccb6bfbb8f0e0ae4"]},
+      {"dimension": "opportunityAndRisk", "reason": "Scale and network demand make it highly valuable, while complexity and incumbent standards remain manageable risks.", "evidenceIds": ["evidence-fb0bc41f1f36be1e"]}
+    ], "unsupportedOrContradictoryClaims": ["No packet evidence confirms current willingness to standardise on Cudy."], "citationAlignment": true
+  }
+}

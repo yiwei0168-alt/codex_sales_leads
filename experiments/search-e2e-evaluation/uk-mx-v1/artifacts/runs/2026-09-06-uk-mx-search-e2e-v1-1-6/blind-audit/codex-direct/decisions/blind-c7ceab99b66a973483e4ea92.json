@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1, "packetId": "blind-c7ceab99b66a973483e4ea92", "reviewer": "codex-in-session", "externalSearchUsed": false,
+  "packetSha256": "a04740cc38cfea55d4c544d868b7e32acaaea540e6530c25cead7bb638bfa632", "reviewStartedAt": "2026-09-06T20:41:00.000Z", "reviewCompletedAt": "2026-09-06T20:42:00.000Z",
+  "output": {
+    "packetId": "blind-c7ceab99b66a973483e4ea92", "isRealOperatingCompany": true, "operatesInTargetMarket": true,
+    "supportedRoles": ["SI", "Telecommunications Integrator", "VAR"], "primaryRole": "SI", "requestedCategoryMatch": true,
+    "dimensions": {"productAndUseCaseFit": 44, "channelAndBuyingInfluence": 13, "sameRoleScaleAndCoverage": 11, "executionAndEnablement": 10, "opportunityAndRisk": 7}, "totalScore": 85, "eligibility": "eligible",
+    "dimensionReasons": [
+      {"dimension": "productAndUseCaseFit", "reason": "ITM designs and implements enterprise voice, data, video and network architecture with site surveys and growth roadmaps.", "evidenceIds": ["evidence-home-80e08469eb2e8284"]},
+      {"dimension": "channelAndBuyingInfluence", "reason": "End-to-end design, implementation and continuous support give ITM strong specification and procurement influence.", "evidenceIds": ["evidence-home-80e08469eb2e8284", "evidence-250683db2625d409"]},
+      {"dimension": "sameRoleScaleAndCoverage", "reason": "More than 20 years and national assistance are supported, with over 100 clients indicated.", "evidenceIds": ["evidence-home-80e08469eb2e8284", "evidence-250683db2625d409"]},
+      {"dimension": "executionAndEnablement", "reason": "Consulting, site survey, implementation, certification, onsite/remote support and monitoring cover the full lifecycle.", "evidenceIds": ["evidence-home-80e08469eb2e8284"]},
+      {"dimension": "opportunityAndRisk", "reason": "Strong telecom project fit is attractive, with moderate competition from established certified manufacturers.", "evidenceIds": ["evidence-250683db2625d409"]}
+    ], "unsupportedOrContradictoryClaims": ["The packet does not quantify networking-specific annual volume."], "citationAlignment": true
+  }
+}

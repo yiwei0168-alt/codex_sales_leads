@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1, "packetId": "blind-2c65216d19e5659823da9ba8", "reviewer": "codex-in-session", "externalSearchUsed": false,
+  "packetSha256": "30781448061255f576c1fe43c7ccc4f41b78a3d619c1135d7cf3efc7a7003c91", "reviewStartedAt": "2026-09-06T20:59:00.000Z", "reviewCompletedAt": "2026-09-06T21:00:00.000Z",
+  "output": {
+    "packetId": "blind-2c65216d19e5659823da9ba8", "isRealOperatingCompany": true, "operatesInTargetMarket": true,
+    "supportedRoles": ["SI", "MSP", "Wireless Integrator"], "primaryRole": "SI", "requestedCategoryMatch": true,
+    "dimensions": {"productAndUseCaseFit": 49, "channelAndBuyingInfluence": 13, "sameRoleScaleAndCoverage": 10, "executionAndEnablement": 9, "opportunityAndRisk": 8}, "totalScore": 89, "eligibility": "eligible",
+    "dimensionReasons": [
+      {"dimension": "productAndUseCaseFit", "reason": "Simpli-Fi specialises in enterprise Wi-Fi, managed connectivity, private 5G, CCTV and temporary internet across relevant sectors.", "evidenceIds": ["evidence-home-75646bfaf53a2a11"]},
+      {"dimension": "channelAndBuyingInfluence", "reason": "Consultancy, managed services and converged-network delivery provide strong design and vendor-selection influence.", "evidenceIds": ["evidence-home-75646bfaf53a2a11"]},
+      {"dimension": "sameRoleScaleAndCoverage", "reason": "Breadth across education, accommodation and public buildings is evident, though client and revenue scale are not quantified.", "evidenceIds": ["evidence-home-75646bfaf53a2a11"]},
+      {"dimension": "executionAndEnablement", "reason": "Consultancy, managed services and multiple specialised connectivity offerings indicate mature delivery capability.", "evidenceIds": ["evidence-home-75646bfaf53a2a11", "evidence-9243115734f96f33"]},
+      {"dimension": "opportunityAndRisk", "reason": "Exceptional use-case alignment provides a clear opportunity, with only moderate uncertainty about incumbent vendors.", "evidenceIds": ["evidence-home-75646bfaf53a2a11"]}
+    ], "unsupportedOrContradictoryClaims": ["No customer count or current hardware-vendor portfolio is provided."], "citationAlignment": true
+  }
+}

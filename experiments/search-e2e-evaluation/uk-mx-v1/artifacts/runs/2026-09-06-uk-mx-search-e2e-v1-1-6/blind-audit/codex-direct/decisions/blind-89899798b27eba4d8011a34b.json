@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1, "packetId": "blind-89899798b27eba4d8011a34b", "reviewer": "codex-in-session", "externalSearchUsed": false,
+  "packetSha256": "5393c12374657e926e1c7097e49798d81059d1534f83db3c125a85a3f8043470", "reviewStartedAt": "2026-09-06T20:40:00.000Z", "reviewCompletedAt": "2026-09-06T20:41:00.000Z",
+  "output": {
+    "packetId": "blind-89899798b27eba4d8011a34b", "isRealOperatingCompany": true, "operatesInTargetMarket": true,
+    "supportedRoles": ["SI", "VAR", "IT Consultant"], "primaryRole": "SI", "requestedCategoryMatch": true,
+    "dimensions": {"productAndUseCaseFit": 35, "channelAndBuyingInfluence": 11, "sameRoleScaleAndCoverage": 8, "executionAndEnablement": 8, "opportunityAndRisk": 6}, "totalScore": 68, "eligibility": "eligible",
+    "dimensionReasons": [
+      {"dimension": "productAndUseCaseFit", "reason": "The company integrates IT, systems, telephony, networks and advanced computing, but the packet provides limited product-family detail.", "evidenceIds": ["evidence-home-d27d1f7a4eb92c5d"]},
+      {"dimension": "channelAndBuyingInfluence", "reason": "Consulting and integrated-solution delivery imply influence over customer technology selection.", "evidenceIds": ["evidence-home-d27d1f7a4eb92c5d"]},
+      {"dimension": "sameRoleScaleAndCoverage", "reason": "Nineteen years of operation are supported, but customer, geographic and team scale are not quantified.", "evidenceIds": ["evidence-home-d27d1f7a4eb92c5d"]},
+      {"dimension": "executionAndEnablement", "reason": "Consulting and implementation of integrated solutions support project execution, though support depth is unclear.", "evidenceIds": ["evidence-home-d27d1f7a4eb92c5d"]},
+      {"dimension": "opportunityAndRisk", "reason": "Networking integration is relevant, balanced by sparse evidence about active portfolio and demand.", "evidenceIds": ["evidence-home-d27d1f7a4eb92c5d"]}
+    ], "unsupportedOrContradictoryClaims": ["No client scale, current networking vendors or nationwide coverage is evidenced."], "citationAlignment": true
+  }
+}

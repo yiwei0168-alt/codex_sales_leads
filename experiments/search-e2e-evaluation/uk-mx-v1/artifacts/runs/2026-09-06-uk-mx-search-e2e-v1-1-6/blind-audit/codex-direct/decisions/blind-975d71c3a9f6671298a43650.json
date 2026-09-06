@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1, "packetId": "blind-975d71c3a9f6671298a43650", "reviewer": "codex-in-session", "externalSearchUsed": false,
+  "packetSha256": "c666a3a31921dd6219f346b65bbb4a94caf5f50e68b1163c08896dadf2278912", "reviewStartedAt": "2026-09-06T20:39:00.000Z", "reviewCompletedAt": "2026-09-06T20:40:00.000Z",
+  "output": {
+    "packetId": "blind-975d71c3a9f6671298a43650", "isRealOperatingCompany": true, "operatesInTargetMarket": true,
+    "supportedRoles": ["SI", "VAR"], "primaryRole": "SI", "requestedCategoryMatch": true,
+    "dimensions": {"productAndUseCaseFit": 48, "channelAndBuyingInfluence": 14, "sameRoleScaleAndCoverage": 13, "executionAndEnablement": 10, "opportunityAndRisk": 8}, "totalScore": 93, "eligibility": "eligible",
+    "dimensionReasons": [
+      {"dimension": "productAndUseCaseFit", "reason": "ERCONNECT designs switching, measured Wi-Fi, SD-WAN and NAC for multi-site business environments, directly matching Cudy SMB networking scenarios.", "evidenceIds": ["evidence-0a4a028ec19ef5a0"]},
+      {"dimension": "channelAndBuyingInfluence", "reason": "Its integrated engineering, supply, installation and certification model directly influences technical selection and procurement.", "evidenceIds": ["evidence-home-a2922cc458397d41", "evidence-30eb9fcdeb6c53b7"]},
+      {"dimension": "sameRoleScaleAndCoverage", "reason": "More than 700 projects, 150 organisations, four operating bases and nationwide execution demonstrate strong SI scale.", "evidenceIds": ["evidence-30eb9fcdeb6c53b7"]},
+      {"dimension": "executionAndEnablement", "reason": "Design, site measurement, integration, documentation, support and certified partnerships form a complete project lifecycle.", "evidenceIds": ["evidence-0a4a028ec19ef5a0", "evidence-b8145ee1cb4ca0fa"]},
+      {"dimension": "opportunityAndRisk", "reason": "National project reach and networking depth create a strong opportunity, with manageable incumbent-partner competition.", "evidenceIds": ["evidence-b8145ee1cb4ca0fa", "evidence-30eb9fcdeb6c53b7"]}
+    ], "unsupportedOrContradictoryClaims": ["No packet evidence shows current willingness to add Cudy."], "citationAlignment": true
+  }
+}

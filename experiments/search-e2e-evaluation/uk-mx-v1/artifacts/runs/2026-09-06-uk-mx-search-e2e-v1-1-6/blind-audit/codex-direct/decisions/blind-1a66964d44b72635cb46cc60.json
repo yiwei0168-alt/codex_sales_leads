@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1, "packetId": "blind-1a66964d44b72635cb46cc60", "reviewer": "codex-in-session", "externalSearchUsed": false,
+  "packetSha256": "28c8756d3f419ad535e5135c54b9d540136884a6fb2405fe3baa8240f3dba6d8", "reviewStartedAt": "2026-09-06T20:57:00.000Z", "reviewCompletedAt": "2026-09-06T20:58:00.000Z",
+  "output": {
+    "packetId": "blind-1a66964d44b72635cb46cc60", "isRealOperatingCompany": false, "operatesInTargetMarket": false,
+    "supportedRoles": ["Unresolved"], "primaryRole": "Unresolved", "requestedCategoryMatch": false,
+    "dimensions": {"productAndUseCaseFit": 4, "channelAndBuyingInfluence": 1, "sameRoleScaleAndCoverage": 0, "executionAndEnablement": 0, "opportunityAndRisk": 0}, "totalScore": 5, "eligibility": "ineligible-for-current-task",
+    "dimensionReasons": [
+      {"dimension": "productAndUseCaseFit", "reason": "The only product excerpt belongs to Setel and the other article concerns a Dubai installer; neither evidences Value Booster.", "evidenceIds": ["evidence-5f5ba3d341634e1f", "evidence-4dd9642199496653"]},
+      {"dimension": "channelAndBuyingInfluence", "reason": "No packet evidence establishes Value Booster as a buyer, reseller or integrator.", "evidenceIds": []},
+      {"dimension": "sameRoleScaleAndCoverage", "reason": "No company identity, Mexican operation, customers or coverage are evidenced.", "evidenceIds": []},
+      {"dimension": "executionAndEnablement", "reason": "No execution capability attributable to the named candidate is present.", "evidenceIds": []},
+      {"dimension": "opportunityAndRisk", "reason": "Identity and source mismatch are hard blockers for this task.", "evidenceIds": ["evidence-5f5ba3d341634e1f", "evidence-4dd9642199496653"]}
+    ], "unsupportedOrContradictoryClaims": ["Both excerpts concern other entities and do not validate Value Booster."], "citationAlignment": true
+  }
+}

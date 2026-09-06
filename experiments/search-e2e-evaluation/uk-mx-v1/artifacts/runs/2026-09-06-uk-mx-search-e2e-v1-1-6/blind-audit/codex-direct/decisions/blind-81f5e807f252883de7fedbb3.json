@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "packetId": "blind-81f5e807f252883de7fedbb3",
+  "reviewer": "codex-in-session",
+  "externalSearchUsed": false,
+  "packetSha256": "a12bc114b36056459af15e6292075cb40d56704416d1667fca169d3e5375497a",
+  "reviewStartedAt": "2026-09-06T20:36:00.000Z",
+  "reviewCompletedAt": "2026-09-06T20:37:00.000Z",
+  "output": {
+    "packetId": "blind-81f5e807f252883de7fedbb3",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": ["Distributor"],
+    "primaryRole": "Distributor",
+    "requestedCategoryMatch": true,
+    "dimensions": {"productAndUseCaseFit": 31, "channelAndBuyingInfluence": 13, "sameRoleScaleAndCoverage": 8, "executionAndEnablement": 8, "opportunityAndRisk": 6},
+    "totalScore": 66,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {"dimension": "productAndUseCaseFit", "reason": "Mediatron distributes rack, cabling, KVM and networking infrastructure, but evidence for active routers, Wi-Fi or switching is limited.", "evidenceIds": ["evidence-home-d434b61b001da0b0", "evidence-53942fbd1ef33dfc"]},
+      {"dimension": "channelAndBuyingInfluence", "reason": "It is an explicit UK trade distributor and supports authorised reseller access.", "evidenceIds": ["evidence-home-d434b61b001da0b0", "evidence-53942fbd1ef33dfc"]},
+      {"dimension": "sameRoleScaleAndCoverage", "reason": "Longstanding UK distribution is supported, but national reseller counts or business scale are absent.", "evidenceIds": ["evidence-53942fbd1ef33dfc"]},
+      {"dimension": "executionAndEnablement", "reason": "Fast quoting, technical advice, quality assurance and support services demonstrate specialist execution.", "evidenceIds": ["evidence-53942fbd1ef33dfc", "evidence-home-d434b61b001da0b0"]},
+      {"dimension": "opportunityAndRisk", "reason": "Adjacent infrastructure provides a viable cross-sell path, but active networking-family demand requires confirmation.", "evidenceIds": ["evidence-home-d434b61b001da0b0"]}
+    ],
+    "unsupportedOrContradictoryClaims": ["No packet evidence establishes active wireless/router demand or broad reseller reach."],
+    "citationAlignment": true
+  }
+}

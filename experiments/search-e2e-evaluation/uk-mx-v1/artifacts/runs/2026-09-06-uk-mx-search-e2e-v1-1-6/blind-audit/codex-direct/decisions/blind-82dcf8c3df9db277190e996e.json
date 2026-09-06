@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1, "packetId": "blind-82dcf8c3df9db277190e996e", "reviewer": "codex-in-session", "externalSearchUsed": false,
+  "packetSha256": "cde287d75cf888cc9a9c18279d4669a5cd247b87b20e1519a571d4ba7f57abbd", "reviewStartedAt": "2026-09-06T20:44:00.000Z", "reviewCompletedAt": "2026-09-06T20:45:00.000Z",
+  "output": {
+    "packetId": "blind-82dcf8c3df9db277190e996e", "isRealOperatingCompany": true, "operatesInTargetMarket": true,
+    "supportedRoles": ["Reseller", "IT Asset Recovery Provider"], "primaryRole": "Reseller", "requestedCategoryMatch": true,
+    "dimensions": {"productAndUseCaseFit": 34, "channelAndBuyingInfluence": 12, "sameRoleScaleAndCoverage": 9, "executionAndEnablement": 8, "opportunityAndRisk": 6}, "totalScore": 69, "eligibility": "eligible",
+    "dimensionReasons": [
+      {"dimension": "productAndUseCaseFit", "reason": "Flux buys, sells and rents enterprise networking infrastructure from Cisco, Aruba and Juniper, but emphasizes refurbished and end-of-life equipment.", "evidenceIds": ["evidence-158ffe52c671db59", "evidence-60c00f05dcd501e6"]},
+      {"dimension": "channelAndBuyingInfluence", "reason": "Direct sourcing and resale to organisations and IT resellers supports procurement influence.", "evidenceIds": ["evidence-158ffe52c671db59", "evidence-60c00f05dcd501e6"]},
+      {"dimension": "sameRoleScaleAndCoverage", "reason": "UK-wide collection and multiple institutional customer types are supported, without large scale figures.", "evidenceIds": ["evidence-158ffe52c671db59", "evidence-60c00f05dcd501e6"]},
+      {"dimension": "executionAndEnablement", "reason": "Sourcing, maintenance, rental and secure asset recovery demonstrate operational capability.", "evidenceIds": ["evidence-158ffe52c671db59"]},
+      {"dimension": "opportunityAndRisk", "reason": "Networking expertise is relevant, but the circular-enterprise focus may not align strongly with new value-SMB products.", "evidenceIds": ["evidence-158ffe52c671db59"]}
+    ], "unsupportedOrContradictoryClaims": ["No packet evidence shows a current new-product vendor onboarding program."], "citationAlignment": true
+  }
+}

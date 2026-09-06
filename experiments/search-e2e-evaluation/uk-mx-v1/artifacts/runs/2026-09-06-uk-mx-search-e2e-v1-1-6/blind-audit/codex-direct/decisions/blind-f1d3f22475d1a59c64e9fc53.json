@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "packetId": "blind-f1d3f22475d1a59c64e9fc53",
+  "reviewer": "codex-in-session",
+  "externalSearchUsed": false,
+  "packetSha256": "a2ba45146975b6a482628a0037604857f7f6ff7c0dd519d5165991ae11e6a5be",
+  "reviewStartedAt": "2026-09-06T20:30:00.000Z",
+  "reviewCompletedAt": "2026-09-06T20:31:00.000Z",
+  "output": {
+    "packetId": "blind-f1d3f22475d1a59c64e9fc53",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": ["Retailer", "E-tailer", "Brand Owner"],
+    "primaryRole": "Retailer",
+    "requestedCategoryMatch": true,
+    "dimensions": {"productAndUseCaseFit": 42, "channelAndBuyingInfluence": 13, "sameRoleScaleAndCoverage": 15, "executionAndEnablement": 8, "opportunityAndRisk": 6},
+    "totalScore": 84,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {"dimension": "productAndUseCaseFit", "reason": "A current Mexican retail signal explicitly lists a Wi-Fi 6 router and 4G MiFi, directly matching Cudy home connectivity.", "evidenceIds": ["evidence-453ea336c42a6902"]},
+      {"dimension": "channelAndBuyingInfluence", "reason": "Steren directly operates a large consumer retail network and also reaches national chains.", "evidenceIds": ["evidence-f07453ff9beb6615"]},
+      {"dimension": "sameRoleScaleAndCoverage", "reason": "More than 400 operated stores in Mexico demonstrate exceptional same-role national scale.", "evidenceIds": ["evidence-f07453ff9beb6615", "evidence-129fe6edbea91328"]},
+      {"dimension": "executionAndEnablement", "reason": "The live store, catalogue and large physical footprint support listing, fulfilment and consumer operations.", "evidenceIds": ["evidence-127f74a33eb76f9d", "evidence-f07453ff9beb6615"]},
+      {"dimension": "opportunityAndRisk", "reason": "Strong reach is attractive, though Steren also manufactures its own products and has potential portfolio conflict.", "evidenceIds": ["evidence-f07453ff9beb6615"]}
+    ],
+    "unsupportedOrContradictoryClaims": ["No packet evidence establishes current willingness to onboard Cudy."],
+    "citationAlignment": true
+  }
+}

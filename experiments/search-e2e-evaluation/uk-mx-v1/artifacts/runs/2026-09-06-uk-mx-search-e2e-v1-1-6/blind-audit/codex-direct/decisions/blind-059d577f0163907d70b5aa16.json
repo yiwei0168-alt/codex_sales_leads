@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "packetId": "blind-059d577f0163907d70b5aa16",
+  "reviewer": "codex-in-session",
+  "externalSearchUsed": false,
+  "packetSha256": "9976593de2b368cb96b986171b6255a8a121a714aa3cd1123fde2453d8c98553",
+  "reviewStartedAt": "2026-09-06T20:37:00.000Z",
+  "reviewCompletedAt": "2026-09-06T20:38:00.000Z",
+  "output": {
+    "packetId": "blind-059d577f0163907d70b5aa16",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": ["VAD", "Distributor", "Services Aggregator"],
+    "primaryRole": "VAD",
+    "requestedCategoryMatch": true,
+    "dimensions": {"productAndUseCaseFit": 33, "channelAndBuyingInfluence": 15, "sameRoleScaleAndCoverage": 15, "executionAndEnablement": 10, "opportunityAndRisk": 4},
+    "totalScore": 77,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {"dimension": "productAndUseCaseFit", "reason": "Arrow has deep networking and security capability, but the packet emphasizes enterprise data-centre and cloud environments above Cudy's value/SMB core.", "evidenceIds": ["evidence-40104e90dd82c4a8", "evidence-e92fa550e586947f"]},
+      {"dimension": "channelAndBuyingInfluence", "reason": "Arrow explicitly operates beyond traditional distribution and can scale partner services and solution capabilities.", "evidenceIds": ["evidence-c47b07ebf9daf03b", "evidence-e92fa550e586947f"]},
+      {"dimension": "sameRoleScaleAndCoverage", "reason": "Leading global aggregator positioning and international logistics support top-tier coverage.", "evidenceIds": ["evidence-6da7a353dd205b03", "evidence-c47b07ebf9daf03b"]},
+      {"dimension": "executionAndEnablement", "reason": "Technical sales engineering, training, financing, logistics and managed services form a complete VAD execution stack.", "evidenceIds": ["evidence-c47b07ebf9daf03b"]},
+      {"dimension": "opportunityAndRisk", "reason": "Large strategic value is offset by portfolio complexity and strong enterprise networking incumbents.", "evidenceIds": ["evidence-40104e90dd82c4a8", "evidence-6da7a353dd205b03"]}
+    ],
+    "unsupportedOrContradictoryClaims": ["The packet does not show a Cudy-fit portfolio gap or active UK onboarding interest."],
+    "citationAlignment": true
+  }
+}

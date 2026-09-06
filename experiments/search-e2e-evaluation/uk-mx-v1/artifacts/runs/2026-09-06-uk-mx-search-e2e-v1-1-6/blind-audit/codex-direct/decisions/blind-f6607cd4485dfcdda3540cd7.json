@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "packetId": "blind-f6607cd4485dfcdda3540cd7",
+  "reviewer": "codex-in-session",
+  "externalSearchUsed": false,
+  "packetSha256": "0854b5d0373d00a6038a9d046df3f5cbd85e8154b13bd318e490cd1f011ac9c4",
+  "reviewStartedAt": "2026-09-06T20:33:00.000Z",
+  "reviewCompletedAt": "2026-09-06T20:34:00.000Z",
+  "output": {
+    "packetId": "blind-f6607cd4485dfcdda3540cd7",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": ["Retailer", "Wholesaler"],
+    "primaryRole": "Retailer",
+    "requestedCategoryMatch": true,
+    "dimensions": {"productAndUseCaseFit": 30, "channelAndBuyingInfluence": 10, "sameRoleScaleAndCoverage": 12, "executionAndEnablement": 7, "opportunityAndRisk": 6},
+    "totalScore": 65,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {"dimension": "productAndUseCaseFit", "reason": "Tony sells multiple network switches, including a professional PoE+ model, but networking appears secondary to office supplies.", "evidenceIds": ["evidence-41f38f8bf5d7471d", "evidence-125ff93170101961"]},
+      {"dimension": "channelAndBuyingInfluence", "reason": "It operates consumer, business and wholesale purchasing paths, supporting direct buying influence.", "evidenceIds": ["evidence-home-0931e6c2f2ade7c1", "evidence-cc2a74189956a94a"]},
+      {"dimension": "sameRoleScaleAndCoverage", "reason": "The site presents Tony as a national low-price leader with branches and wholesale access, although exact scale is absent.", "evidenceIds": ["evidence-cc2a74189956a94a"]},
+      {"dimension": "executionAndEnablement", "reason": "Online ordering, branches, finance and wholesale onboarding show adequate retail execution.", "evidenceIds": ["evidence-home-0931e6c2f2ade7c1", "evidence-cc2a74189956a94a"]},
+      {"dimension": "opportunityAndRisk", "reason": "Existing affordable switching creates an entry point, while limited networking depth raises activation risk.", "evidenceIds": ["evidence-125ff93170101961"]}
+    ],
+    "unsupportedOrContradictoryClaims": ["The packet does not establish router, mesh or wireless assortment depth."],
+    "citationAlignment": true
+  }
+}

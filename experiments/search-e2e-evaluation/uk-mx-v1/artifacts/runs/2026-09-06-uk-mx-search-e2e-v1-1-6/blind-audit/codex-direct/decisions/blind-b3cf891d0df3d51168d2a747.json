@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "packetId": "blind-b3cf891d0df3d51168d2a747",
+  "reviewer": "codex-in-session",
+  "externalSearchUsed": false,
+  "packetSha256": "ca0c23ef53a226bb0c8a6c30acd130b2114befcf72b96d470bf3274066cd3626",
+  "reviewStartedAt": "2026-09-06T20:34:00.000Z",
+  "reviewCompletedAt": "2026-09-06T20:35:00.000Z",
+  "output": {
+    "packetId": "blind-b3cf891d0df3d51168d2a747",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": ["Distributor", "E-tailer"],
+    "primaryRole": "Distributor",
+    "requestedCategoryMatch": true,
+    "dimensions": {"productAndUseCaseFit": 49, "channelAndBuyingInfluence": 15, "sameRoleScaleAndCoverage": 11, "executionAndEnablement": 9, "opportunityAndRisk": 6},
+    "totalScore": 90,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {"dimension": "productAndUseCaseFit", "reason": "LinITX carries routers, switches, Wi-Fi 6, mobile broadband, fibre, access points and related networking families.", "evidenceIds": ["evidence-daade51480518b0d", "evidence-56e953264811a3a4"]},
+      {"dimension": "channelAndBuyingInfluence", "reason": "It explicitly identifies as a MikroTik and Ubiquiti master distributor with trade-oriented professional support.", "evidenceIds": ["evidence-daade51480518b0d"]},
+      {"dimension": "sameRoleScaleAndCoverage", "reason": "It supports UK purchasing and multiple currencies, but no broadline-scale figures are included.", "evidenceIds": ["evidence-daade51480518b0d"]},
+      {"dimension": "executionAndEnablement", "reason": "Professional support, training and deep product merchandising indicate strong channel execution.", "evidenceIds": ["evidence-daade51480518b0d", "evidence-9004436d23033a77"]},
+      {"dimension": "opportunityAndRisk", "reason": "Excellent portfolio adjacency is offset by strong incumbent Ubiquiti and MikroTik relationships.", "evidenceIds": ["evidence-daade51480518b0d"]}
+    ],
+    "unsupportedOrContradictoryClaims": ["No evidence demonstrates openness to another networking vendor."],
+    "citationAlignment": true
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1, "packetId": "blind-c2b2f93df4b1bbd4b5474334", "reviewer": "codex-in-session", "externalSearchUsed": false,
+  "packetSha256": "74112c98302df4d8397460ce63d3f7c4a52b56dfbff1fd1b1d0aa8e0c76a8af8", "reviewStartedAt": "2026-09-06T20:53:00.000Z", "reviewCompletedAt": "2026-09-06T20:54:00.000Z",
+  "output": {
+    "packetId": "blind-c2b2f93df4b1bbd4b5474334", "isRealOperatingCompany": true, "operatesInTargetMarket": true,
+    "supportedRoles": ["Retailer", "E-tailer"], "primaryRole": "Retailer", "requestedCategoryMatch": true,
+    "dimensions": {"productAndUseCaseFit": 45, "channelAndBuyingInfluence": 14, "sameRoleScaleAndCoverage": 15, "executionAndEnablement": 10, "opportunityAndRisk": 6}, "totalScore": 90, "eligibility": "eligible",
+    "dimensionReasons": [
+      {"dimension": "productAndUseCaseFit", "reason": "Currys actively sells routers, mobile Wi-Fi and network switches for home and business, directly matching Cudy retail families.", "evidenceIds": ["evidence-84de8ae7ad3ccab6", "evidence-739ffa997d7f57b5"]},
+      {"dimension": "channelAndBuyingInfluence", "reason": "Direct merchandising, pricing, bundles, delivery and collection demonstrate strong category buying influence.", "evidenceIds": ["evidence-84de8ae7ad3ccab6"]},
+      {"dimension": "sameRoleScaleAndCoverage", "reason": "The evidence supports a broad UK retail operation with large networking assortment and national fulfilment.", "evidenceIds": ["evidence-84de8ae7ad3ccab6", "evidence-56279739f012e08f"]},
+      {"dimension": "executionAndEnablement", "reason": "Detailed merchandising, financing, bundles, delivery and rapid store collection demonstrate mature execution.", "evidenceIds": ["evidence-84de8ae7ad3ccab6"]},
+      {"dimension": "opportunityAndRisk", "reason": "Excellent home-network fit is balanced by prominent TP-Link and other incumbent competition.", "evidenceIds": ["evidence-84de8ae7ad3ccab6", "evidence-56279739f012e08f"]}
+    ], "unsupportedOrContradictoryClaims": ["No evidence shows current openness to listing Cudy."], "citationAlignment": true
+  }
+}

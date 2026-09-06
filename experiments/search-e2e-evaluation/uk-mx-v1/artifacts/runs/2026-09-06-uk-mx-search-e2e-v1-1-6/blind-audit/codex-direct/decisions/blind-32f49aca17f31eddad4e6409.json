@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1, "packetId": "blind-32f49aca17f31eddad4e6409", "reviewer": "codex-in-session", "externalSearchUsed": false,
+  "packetSha256": "c473c909399eb0c0120b0f1b6dcd2a4fd73e5f3394c76380770e462b5ec930f2", "reviewStartedAt": "2026-09-06T20:58:00.000Z", "reviewCompletedAt": "2026-09-06T20:59:00.000Z",
+  "output": {
+    "packetId": "blind-32f49aca17f31eddad4e6409", "isRealOperatingCompany": true, "operatesInTargetMarket": true,
+    "supportedRoles": ["MSP", "Telecommunications Provider"], "primaryRole": "MSP", "requestedCategoryMatch": true,
+    "dimensions": {"productAndUseCaseFit": 42, "channelAndBuyingInfluence": 13, "sameRoleScaleAndCoverage": 13, "executionAndEnablement": 10, "opportunityAndRisk": 7}, "totalScore": 85, "eligibility": "eligible",
+    "dimensionReasons": [
+      {"dimension": "productAndUseCaseFit", "reason": "Croft provides managed IT, connectivity and communications to business customers, fitting SMB managed-network scenarios.", "evidenceIds": ["evidence-8a5314551b086b8b", "evidence-bafede4e0cc48fc3"]},
+      {"dimension": "channelAndBuyingInfluence", "reason": "Tailored managed solutions and customer technology EwT ownership give Croft significant selection and procurement influence.", "evidenceIds": ["evidence-8a5314551b086b8b", "evidence-69929be298ce4a35"]},
+      {"dimension": "sameRoleScaleAndCoverage", "reason": "More than 5,000 clients and UK-wide B2B service indicate strong MSP scale.", "evidenceIds": ["evidence-8a5314551b086b8b", "evidence-34d3f2fa22790c75"]},
+      {"dimension": "executionAndEnablement", "reason": "Managed IT support, communications management and project delivery cover ongoing service execution.", "evidenceIds": ["evidence-8a5314551b086b8b", "evidence-69929be298ce4a35"]},
+      {"dimension": "opportunityAndRisk", "reason": "Large SMB client reach is attractive, with moderate uncertainty about hardware-standardisation and current vendors.", "evidenceIds": ["evidence-bafede4e0cc48fc3"]}
+    ], "unsupportedOrContradictoryClaims": ["The packet does not identify current network-hardware vendors or volume."], "citationAlignment": true
+  }
+}
