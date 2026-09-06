@@ -1,0 +1,104 @@
+{
+  "packetId": "blind-a98d6fcb5d7f089bd95e0ba7",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 71,
+  "deterministicTotal": 71,
+  "output": {
+    "packetId": "blind-a98d6fcb5d7f089bd95e0ba7",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "ISP"
+    ],
+    "primaryRole": "ISP",
+    "requestedCategoryMatch": false,
+    "dimensions": {
+      "productAndUseCaseFit": 38,
+      "channelAndBuyingInfluence": 8,
+      "sameRoleScaleAndCoverage": 13,
+      "executionAndEnablement": 9,
+      "opportunityAndRisk": 3
+    },
+    "totalScore": 71,
+    "eligibility": "ineligible-for-current-task",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "Full-fibre broadband and Wi-Fi services align with Cudy CPE use cases, but this is an ISP rather than a retail account.",
+        "evidenceIds": [
+          "evidence-home-7784d92e8fe08ac9",
+          "evidence-472e1fef4f18994d"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "The ISP can influence subscriber equipment but does not evidence third-party consumer retail purchasing.",
+        "evidenceIds": [
+          "evidence-472e1fef4f18994d"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "More than 300,000 London residents and businesses demonstrate substantial ISP scale outside the requested peer group.",
+        "evidenceIds": [
+          "evidence-988377f32b0ee7ed"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "A live fibre network, account support and bundled broadband services show mature operator execution.",
+        "evidenceIds": [
+          "evidence-472e1fef4f18994d"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "The company may be an ISP prospect in another task, but role mismatch is a hard blocker for retail evaluation.",
+        "evidenceIds": [
+          "evidence-472e1fef4f18994d"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "No evidence establishes Community Fibre as a retailer or e-tailer."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-a98d6fcb5d7f089bd95e0ba7:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T21:30:00.000Z",
+    "completedAt": "2026-09-06T21:31:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

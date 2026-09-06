@@ -1,0 +1,104 @@
+{
+  "packetId": "blind-ed9541539e10ce53b18a1252",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 57,
+  "deterministicTotal": 57,
+  "output": {
+    "packetId": "blind-ed9541539e10ce53b18a1252",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "SI",
+      "Engineering Services Provider"
+    ],
+    "primaryRole": "SI",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 28,
+      "channelAndBuyingInfluence": 10,
+      "sameRoleScaleAndCoverage": 6,
+      "executionAndEnablement": 8,
+      "opportunityAndRisk": 5
+    },
+    "totalScore": 57,
+    "eligibility": "research-required",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "WFI provides consulting, engineering and installation, but the packet does not identify networking product families or customer scenarios.",
+        "evidenceIds": [
+          "evidence-31d2aaee035fa653"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "Engineering and installation imply some specification influence, though procurement control is not shown.",
+        "evidenceIds": [
+          "evidence-31d2aaee035fa653"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "A Mexican operating identity is supported, but no customer, team or coverage scale appears.",
+        "evidenceIds": [
+          "evidence-31d2aaee035fa653"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Consulting, engineering and installation support baseline project execution.",
+        "evidenceIds": [
+          "evidence-31d2aaee035fa653"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Potential project relevance exists, but sparse scope evidence prevents recommendation.",
+        "evidenceIds": [
+          "evidence-31d2aaee035fa653"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "Networking scope, client base and vendor relationships are not evidenced."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-ed9541539e10ce53b18a1252:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T21:19:00.000Z",
+    "completedAt": "2026-09-06T21:20:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

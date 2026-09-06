@@ -1,0 +1,105 @@
+{
+  "packetId": "blind-5dd772110aed8989db199d27",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 47,
+  "deterministicTotal": 47,
+  "output": {
+    "packetId": "blind-5dd772110aed8989db199d27",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "VAR",
+      "SI"
+    ],
+    "primaryRole": "VAR",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 24,
+      "channelAndBuyingInfluence": 9,
+      "sameRoleScaleAndCoverage": 5,
+      "executionAndEnablement": 6,
+      "opportunityAndRisk": 3
+    },
+    "totalScore": 47,
+    "eligibility": "insufficient-evidence-for-recommendation",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "One third-party excerpt attributes security and communications solution integration to the named company, but provides little networking detail.",
+        "evidenceIds": [
+          "evidence-7d6afa082fcbabe4"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "Sale and integration imply some purchasing influence, but evidence is minimal.",
+        "evidenceIds": [
+          "evidence-7d6afa082fcbabe4"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "A Mexican legal-style name is present, but customer, team and geographic scale are not established.",
+        "evidenceIds": [
+          "evidence-7d6afa082fcbabe4"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Integration capability is claimed, but the second excerpt concerns a differently named company and cannot substantiate execution.",
+        "evidenceIds": [
+          "evidence-7d6afa082fcbabe4",
+          "evidence-51880829520a278e"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Sparse identity evidence and probable entity conflation require verification before recommendation.",
+        "evidenceIds": [
+          "evidence-51880829520a278e"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "The Servicios en TIC excerpt appears to concern a different entity."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-5dd772110aed8989db199d27:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T21:37:00.000Z",
+    "completedAt": "2026-09-06T21:38:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

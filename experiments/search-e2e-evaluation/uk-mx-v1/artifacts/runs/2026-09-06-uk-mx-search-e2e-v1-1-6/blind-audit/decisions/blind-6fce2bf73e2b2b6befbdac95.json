@@ -1,0 +1,107 @@
+{
+  "packetId": "blind-6fce2bf73e2b2b6befbdac95",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 71,
+  "deterministicTotal": 71,
+  "output": {
+    "packetId": "blind-6fce2bf73e2b2b6befbdac95",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "VAD",
+      "Distributor"
+    ],
+    "primaryRole": "VAD",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 30,
+      "channelAndBuyingInfluence": 14,
+      "sameRoleScaleAndCoverage": 13,
+      "executionAndEnablement": 9,
+      "opportunityAndRisk": 5
+    },
+    "totalScore": 71,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "Neocenter is relevant to IP telephony, conferencing and hospitality communications, but packet evidence for routers, Wi-Fi and switching is limited.",
+        "evidenceIds": [
+          "evidence-8b7a31034a7aa151",
+          "evidence-8cce8a129390dc04"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "Its specialist VAD and commercial-representative model gives strong vendor and reseller influence.",
+        "evidenceIds": [
+          "evidence-44de2a509653187c",
+          "evidence-5f587e854e09919d"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "More than 2,000 reseller partners nationwide establish strong same-role coverage, although the count is dated 2017.",
+        "evidenceIds": [
+          "evidence-44de2a509653187c"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Partner portals, pre-sales training and broad communications brands support mature enablement.",
+        "evidenceIds": [
+          "evidence-5f587e854e09919d",
+          "evidence-12e9785a14323ab7"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Hospitality and communications adjacency is useful, but product-track depth and entrenched brands limit fit.",
+        "evidenceIds": [
+          "evidence-8b7a31034a7aa151"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "The 2,000-partner scale figure is historical rather than current."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-6fce2bf73e2b2b6befbdac95:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T21:26:00.000Z",
+    "completedAt": "2026-09-06T21:27:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

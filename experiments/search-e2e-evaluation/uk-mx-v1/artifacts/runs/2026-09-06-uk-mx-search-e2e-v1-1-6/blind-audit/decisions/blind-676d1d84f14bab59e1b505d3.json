@@ -1,0 +1,107 @@
+{
+  "packetId": "blind-676d1d84f14bab59e1b505d3",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 73,
+  "deterministicTotal": 73,
+  "output": {
+    "packetId": "blind-676d1d84f14bab59e1b505d3",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "Distributor",
+      "E-tailer"
+    ],
+    "primaryRole": "Distributor",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 38,
+      "channelAndBuyingInfluence": 12,
+      "sameRoleScaleAndCoverage": 8,
+      "executionAndEnablement": 8,
+      "opportunityAndRisk": 7
+    },
+    "totalScore": 73,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "Fairline distributes IT networking, cabling and installation products, though specific active wireless/router families are not shown.",
+        "evidenceIds": [
+          "evidence-home-de32f35da294ce5c",
+          "evidence-b210a09f28c94dcd"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "UK stock, quantity discounts and company-account registration support trade distribution influence.",
+        "evidenceIds": [
+          "evidence-b210a09f28c94dcd",
+          "evidence-04624ec56b9a7996"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "UK-wide buyers and stock are supported, but reseller count and company scale are absent.",
+        "evidenceIds": [
+          "evidence-b210a09f28c94dcd"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Stock availability, expert advice, account access and quantity discounts show capable specialist execution.",
+        "evidenceIds": [
+          "evidence-b210a09f28c94dcd",
+          "evidence-04624ec56b9a7996"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Adjacent networking assortment creates a viable opportunity with limited evidence of direct wireless competition.",
+        "evidenceIds": [
+          "evidence-home-de32f35da294ce5c"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "No current router, AP or switch vendor list is included."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-676d1d84f14bab59e1b505d3:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T21:15:00.000Z",
+    "completedAt": "2026-09-06T21:16:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

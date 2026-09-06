@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
-  "targetSize": 32,
+  "targetSize": 64,
   "decisionCommit": "67c0d067029b8e063e2a093ebf967e08edf1ab31",
   "upstreamCommit": "67c0d067029b8e063e2a093ebf967e08edf1ab31",
-  "validatedDecisionCount": 32,
-  "deblindedAt": "2026-09-06T20:47:48.469Z"
+  "validatedDecisionCount": 64,
+  "deblindedAt": "2026-09-06T20:48:18.080Z"
 }

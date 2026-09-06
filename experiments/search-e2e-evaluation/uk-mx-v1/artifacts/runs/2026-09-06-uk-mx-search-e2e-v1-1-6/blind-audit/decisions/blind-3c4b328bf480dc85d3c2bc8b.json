@@ -1,0 +1,108 @@
+{
+  "packetId": "blind-3c4b328bf480dc85d3c2bc8b",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 84,
+  "deterministicTotal": 84,
+  "output": {
+    "packetId": "blind-3c4b328bf480dc85d3c2bc8b",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "VAR",
+      "SI",
+      "MSP"
+    ],
+    "primaryRole": "VAR",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 45,
+      "channelAndBuyingInfluence": 13,
+      "sameRoleScaleAndCoverage": 10,
+      "executionAndEnablement": 9,
+      "opportunityAndRisk": 7
+    },
+    "totalScore": 84,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "Westcom delivers affordable wired and wireless networks, business Wi-Fi, IT support and security across relevant verticals.",
+        "evidenceIds": [
+          "evidence-364240c8b29820e5",
+          "evidence-93a0589f3e7fc616"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "Network design and nationwide solution delivery provide strong specification influence.",
+        "evidenceIds": [
+          "evidence-364240c8b29820e5"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "Hundreds of UK companies and nationwide sector coverage support meaningful scale.",
+        "evidenceIds": [
+          "evidence-acc554cd0d94810e",
+          "evidence-364240c8b29820e5"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Design, Wi-Fi implementation, IT support and security capability cover the project lifecycle.",
+        "evidenceIds": [
+          "evidence-93a0589f3e7fc616",
+          "evidence-acc554cd0d94810e"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Value-oriented business networking aligns well, with moderate unknown incumbent-vendor risk.",
+        "evidenceIds": [
+          "evidence-364240c8b29820e5"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "No specific vendor portfolio or procurement volume is shown."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-3c4b328bf480dc85d3c2bc8b:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T21:22:00.000Z",
+    "completedAt": "2026-09-06T21:23:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

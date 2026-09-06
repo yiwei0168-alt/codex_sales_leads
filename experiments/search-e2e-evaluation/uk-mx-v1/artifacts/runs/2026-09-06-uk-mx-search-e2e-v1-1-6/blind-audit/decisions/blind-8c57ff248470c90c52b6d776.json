@@ -1,0 +1,107 @@
+{
+  "packetId": "blind-8c57ff248470c90c52b6d776",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 67,
+  "deterministicTotal": 67,
+  "output": {
+    "packetId": "blind-8c57ff248470c90c52b6d776",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "VAD",
+      "Distributor"
+    ],
+    "primaryRole": "VAD",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 28,
+      "channelAndBuyingInfluence": 14,
+      "sameRoleScaleAndCoverage": 10,
+      "executionAndEnablement": 9,
+      "opportunityAndRisk": 6
+    },
+    "totalScore": 67,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "West Telco covers network observability and technology projects, but its visible focus is collaboration and business productivity rather than Cudy hardware families.",
+        "evidenceIds": [
+          "evidence-e29734f0ef83076e",
+          "evidence-8b7d03a3263e7bcf"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "It explicitly recruits partners and negotiates vendor discounts for projects, supporting strong channel influence.",
+        "evidenceIds": [
+          "evidence-e29734f0ef83076e",
+          "evidence-c15c163de4305a5a"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "Mexican operations and Latin American distribution are indicated, without partner or branch counts.",
+        "evidenceIds": [
+          "evidence-e29734f0ef83076e",
+          "evidence-2ad361a5b13a4ca7"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Project sizing, vendor negotiation, training and technical support provide mature VAD enablement.",
+        "evidenceIds": [
+          "evidence-c15c163de4305a5a"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Partner-led project capability is attractive, while weak product-family evidence makes demand uncertain.",
+        "evidenceIds": [
+          "evidence-e29734f0ef83076e"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "No active router, switch, AP or FWA assortment is evidenced."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-8c57ff248470c90c52b6d776:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T21:28:00.000Z",
+    "completedAt": "2026-09-06T21:29:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

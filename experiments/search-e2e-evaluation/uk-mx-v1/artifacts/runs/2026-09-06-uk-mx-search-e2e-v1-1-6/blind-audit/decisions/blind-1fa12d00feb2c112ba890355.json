@@ -1,0 +1,110 @@
+{
+  "packetId": "blind-1fa12d00feb2c112ba890355",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 92,
+  "deterministicTotal": 92,
+  "output": {
+    "packetId": "blind-1fa12d00feb2c112ba890355",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "SI",
+      "MSP",
+      "Network Integrator"
+    ],
+    "primaryRole": "SI",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 47,
+      "channelAndBuyingInfluence": 14,
+      "sameRoleScaleAndCoverage": 14,
+      "executionAndEnablement": 10,
+      "opportunityAndRisk": 7
+    },
+    "totalScore": 92,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "Axians specialises in networking, managed services, carrier networks, fibre, mobile coverage and cybersecurity across relevant enterprise scenarios.",
+        "evidenceIds": [
+          "evidence-77ed975ebda54a66",
+          "evidence-f6151e04e9ec7331"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "Critical-infrastructure design and managed delivery provide high specification and procurement influence.",
+        "evidenceIds": [
+          "evidence-37b15a7f8796746f",
+          "evidence-f6151e04e9ec7331"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "A global network backed by VINCI and UK operations support top-tier SI coverage.",
+        "evidenceIds": [
+          "evidence-37b15a7f8796746f",
+          "evidence-dd52f5709ed6f018"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Certified global expertise, managed services and end-to-end network delivery indicate comprehensive execution.",
+        "evidenceIds": [
+          "evidence-77ed975ebda54a66",
+          "evidence-f6151e04e9ec7331"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Very high technical and channel value is balanced by enterprise complexity and incumbent standards.",
+        "evidenceIds": [
+          "evidence-cb3a460d18863543",
+          "evidence-f6151e04e9ec7331"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "No current Cudy-fit portfolio gap or onboarding intent is shown."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-1fa12d00feb2c112ba890355:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T21:39:00.000Z",
+    "completedAt": "2026-09-06T21:40:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

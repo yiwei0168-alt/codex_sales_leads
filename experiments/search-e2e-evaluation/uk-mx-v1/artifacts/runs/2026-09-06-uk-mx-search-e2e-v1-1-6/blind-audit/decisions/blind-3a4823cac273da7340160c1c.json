@@ -1,0 +1,106 @@
+{
+  "packetId": "blind-3a4823cac273da7340160c1c",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 80,
+  "deterministicTotal": 80,
+  "output": {
+    "packetId": "blind-3a4823cac273da7340160c1c",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "E-tailer",
+      "Retailer"
+    ],
+    "primaryRole": "E-tailer",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 42,
+      "channelAndBuyingInfluence": 12,
+      "sameRoleScaleAndCoverage": 11,
+      "executionAndEnablement": 8,
+      "opportunityAndRisk": 7
+    },
+    "totalScore": 80,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "DDTech directly lists access points and affordable Tenda and TP-Link routers, matching Cudy home/SMB retail families.",
+        "evidenceIds": [
+          "evidence-cf3516f4e94f9ef6",
+          "evidence-edbe0eff53396097"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "Direct pricing and in-stock online sales demonstrate category procurement control.",
+        "evidenceIds": [
+          "evidence-edbe0eff53396097"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "The packet supports an established Mexican technology retailer, though exact national scale is not quantified.",
+        "evidenceIds": [
+          "evidence-54e0bc9b1b8c3b84"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Customer evidence supports warranties, shipping and advice alongside live product sales.",
+        "evidenceIds": [
+          "evidence-54e0bc9b1b8c3b84",
+          "evidence-edbe0eff53396097"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Affordable networking demand is highly relevant, with moderate incumbent-brand competition.",
+        "evidenceIds": [
+          "evidence-edbe0eff53396097"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "No customer or branch count is provided."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-3a4823cac273da7340160c1c:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T21:13:00.000Z",
+    "completedAt": "2026-09-06T21:14:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

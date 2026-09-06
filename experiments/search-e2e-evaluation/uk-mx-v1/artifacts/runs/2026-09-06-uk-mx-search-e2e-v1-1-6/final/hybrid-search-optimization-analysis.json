@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+  "generatedAt": "2026-09-06T20:48:18.152Z",
+  "contributions": [
+    {
+      "provider": "brave",
+      "calls": 55,
+      "rawResults": 994,
+      "normalizedCompanies": 984,
+      "newUniqueCompanies": 240,
+      "duplicateHits": 744,
+      "paidSearchCredits": 55,
+      "downstreamFinalCredit": 0,
+      "costUsd": 0.17000000000000007
+    },
+    {
+      "provider": "exa",
+      "calls": 28,
+      "rawResults": 219,
+      "normalizedCompanies": 219,
+      "newUniqueCompanies": 174,
+      "duplicateHits": 45,
+      "paidSearchCredits": 28,
+      "downstreamFinalCredit": 0,
+      "costUsd": 0.3440000000000001
+    },
+    {
+      "provider": "google-places",
+      "calls": 22,
+      "rawResults": 203,
+      "normalizedCompanies": 203,
+      "newUniqueCompanies": 143,
+      "duplicateHits": 60,
+      "paidSearchCredits": 22,
+      "downstreamFinalCredit": 0,
+      "costUsd": 0.5250000000000002
+    },
+    {
+      "provider": "searchapi",
+      "calls": 105,
+      "rawResults": 417,
+      "normalizedCompanies": 398,
+      "newUniqueCompanies": 135,
+      "duplicateHits": 263,
+      "paidSearchCredits": 49,
+      "downstreamFinalCredit": 0,
+      "costUsd": 0.2680000000000002
+    },
+    {
+      "provider": "gemini-full",
+      "calls": 10,
+      "rawResults": 166,
+      "normalizedCompanies": 166,
+      "newUniqueCompanies": 113,
+      "duplicateHits": 53,
+      "paidSearchCredits": 10,
+      "downstreamFinalCredit": 0,
+      "costUsd": 0.504
+    }
+  ],
+  "findings": [
+    "brave: only 0.0% of newly unique output received fractional Top-30 credit; review category-specific activation before removing it.",
+    "brave: duplicate/normalized ratio was 75.6%; tighten real-time stopping or start this route after cheaper core routes.",
+    "exa: only 0.0% of newly unique output received fractional Top-30 credit; review category-specific activation before removing it.",
+    "google-places: only 0.0% of newly unique output received fractional Top-30 credit; review category-specific activation before removing it.",
+    "searchapi: only 0.0% of newly unique output received fractional Top-30 credit; review category-specific activation before removing it.",
+    "searchapi: duplicate/normalized ratio was 66.1%; tighten real-time stopping or start this route after cheaper core routes.",
+    "gemini-full: only 0.0% of newly unique output received fractional Top-30 credit; review category-specific activation before removing it.",
+    "Do not optimize from Top-N alone in production; use accumulated unique yield, final downstream use, quality and cost by market/category.",
+    "Any route change remains a future versioned product decision and does not alter this frozen experiment."
+  ],
+  "note": "Observed opportunities only; no frozen experiment or product route was modified post hoc."
+}

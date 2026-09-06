@@ -1,0 +1,106 @@
+{
+  "packetId": "blind-93e4cdce05c33c9569f56dcd",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 84,
+  "deterministicTotal": 84,
+  "output": {
+    "packetId": "blind-93e4cdce05c33c9569f56dcd",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "SI",
+      "Network Integrator"
+    ],
+    "primaryRole": "SI",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 44,
+      "channelAndBuyingInfluence": 13,
+      "sameRoleScaleAndCoverage": 10,
+      "executionAndEnablement": 9,
+      "opportunityAndRisk": 8
+    },
+    "totalScore": 84,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "Neeps designs, implements and maintains Wi-Fi, LAN, WAN and fibre networks from small business through enterprise.",
+        "evidenceIds": [
+          "evidence-home-eae4888eade7a85a",
+          "evidence-776e6e4335997ab7"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "End-to-end project design and implementation create strong equipment-selection influence.",
+        "evidenceIds": [
+          "evidence-home-eae4888eade7a85a",
+          "evidence-5ed67aff15e42f8b"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "Documented work for UNAM and multiple practical projects supports credible scale, though counts are absent.",
+        "evidenceIds": [
+          "evidence-9a374d6963d9b16f"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Design, testing, preventive/corrective maintenance and manufacturer-certified fibre capability show strong execution.",
+        "evidenceIds": [
+          "evidence-776e6e4335997ab7"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Strong SMB-to-enterprise networking fit is attractive with manageable unknown vendor competition.",
+        "evidenceIds": [
+          "evidence-776e6e4335997ab7"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "Current hardware brands and purchase volume are not shown."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-93e4cdce05c33c9569f56dcd:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T21:20:00.000Z",
+    "completedAt": "2026-09-06T21:21:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

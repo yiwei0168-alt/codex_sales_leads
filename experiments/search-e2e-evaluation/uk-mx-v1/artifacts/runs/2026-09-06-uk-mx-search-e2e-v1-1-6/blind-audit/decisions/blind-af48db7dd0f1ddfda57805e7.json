@@ -1,0 +1,107 @@
+{
+  "packetId": "blind-af48db7dd0f1ddfda57805e7",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 82,
+  "deterministicTotal": 82,
+  "output": {
+    "packetId": "blind-af48db7dd0f1ddfda57805e7",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "E-tailer",
+      "Reseller"
+    ],
+    "primaryRole": "E-tailer",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 42,
+      "channelAndBuyingInfluence": 13,
+      "sameRoleScaleAndCoverage": 11,
+      "executionAndEnablement": 9,
+      "opportunityAndRisk": 7
+    },
+    "totalScore": 82,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "CCL has a dedicated networking range covering routers, wireless adapters, switches and wired/wireless solutions.",
+        "evidenceIds": [
+          "evidence-de0f9b0424dd0cc4"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "Direct consumer e-commerce and a dedicated reseller-sales channel support substantial buying influence.",
+        "evidenceIds": [
+          "evidence-12a424e99f028434",
+          "evidence-a63c6d84f264236c"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "More than 23 years, 51–200 employees and 33,000 reviews demonstrate strong specialist scale.",
+        "evidenceIds": [
+          "evidence-03011e695ee799fa",
+          "evidence-e34335ab30fb8848"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Next-day sales, custom builds, returns policy and direct support demonstrate mature online operations.",
+        "evidenceIds": [
+          "evidence-a63c6d84f264236c",
+          "evidence-e6b54f4cbf861714"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Good home-network retail fit is attractive, with moderate incumbent-brand competition.",
+        "evidenceIds": [
+          "evidence-de0f9b0424dd0cc4"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "No current vendor onboarding intent is established."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-af48db7dd0f1ddfda57805e7:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T21:33:00.000Z",
+    "completedAt": "2026-09-06T21:34:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

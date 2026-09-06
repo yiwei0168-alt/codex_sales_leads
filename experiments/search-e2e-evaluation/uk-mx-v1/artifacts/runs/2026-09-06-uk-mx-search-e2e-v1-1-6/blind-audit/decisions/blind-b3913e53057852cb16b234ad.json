@@ -1,0 +1,108 @@
+{
+  "packetId": "blind-b3913e53057852cb16b234ad",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 84,
+  "deterministicTotal": 84,
+  "output": {
+    "packetId": "blind-b3913e53057852cb16b234ad",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "Distributor",
+      "VAR"
+    ],
+    "primaryRole": "Distributor",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 38,
+      "channelAndBuyingInfluence": 15,
+      "sameRoleScaleAndCoverage": 14,
+      "executionAndEnablement": 10,
+      "opportunityAndRisk": 7
+    },
+    "totalScore": 84,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "CoveriX distributes networks alongside computing, servers, telecom and enterprise technology, though specific network families are not detailed.",
+        "evidenceIds": [
+          "evidence-home-05a65c74faccfb89",
+          "evidence-b77160f943fb9025"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "Wholesale distribution, project consulting, financing and a portfolio above 100 brands support strong buying influence.",
+        "evidenceIds": [
+          "evidence-b77160f943fb9025",
+          "evidence-c7a36085a23b1c9d",
+          "evidence-3cd7ebdf286d193b"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "National delivery, warehouses and distribution centres throughout Mexico establish high same-role coverage.",
+        "evidenceIds": [
+          "evidence-6cdf9a6da94efd9c"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Consulting, support, project help, financing and national logistics form a comprehensive distribution stack.",
+        "evidenceIds": [
+          "evidence-c7a36085a23b1c9d",
+          "evidence-6cdf9a6da94efd9c"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Broad enterprise reach is attractive, while a very large multi-brand catalogue can dilute Cudy priority.",
+        "evidenceIds": [
+          "evidence-3cd7ebdf286d193b"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "No networking-specific brand list or revenue share is shown."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-b3913e53057852cb16b234ad:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T21:29:00.000Z",
+    "completedAt": "2026-09-06T21:30:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

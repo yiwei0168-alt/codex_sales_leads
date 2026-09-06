@@ -1,0 +1,107 @@
+{
+  "packetId": "blind-6326f21e2b53e1bae1f53726",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 80,
+  "deterministicTotal": 80,
+  "output": {
+    "packetId": "blind-6326f21e2b53e1bae1f53726",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "Distributor",
+      "Industrial Network Integrator"
+    ],
+    "primaryRole": "Distributor",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 44,
+      "channelAndBuyingInfluence": 13,
+      "sameRoleScaleAndCoverage": 8,
+      "executionAndEnablement": 8,
+      "opportunityAndRisk": 7
+    },
+    "totalScore": 80,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "Kritical carries industrial Ethernet, SHDSL, HSPA remote I/O, Cisco industrial switches and Moxa networking, aligning with Cudy industrial tracks.",
+        "evidenceIds": [
+          "evidence-6c160e62392671e2",
+          "evidence-5bf8e63de5fb814c",
+          "evidence-a04acc080b64cc52"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "Explicit Moxa distribution and a multi-vendor industrial catalogue support meaningful procurement influence.",
+        "evidenceIds": [
+          "evidence-5900e50c98f08e5b"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "Mexican industrial distribution is supported, but customer, branch and revenue scale are absent.",
+        "evidenceIds": [
+          "evidence-5900e50c98f08e5b"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Communications-network services and specialised industrial products indicate technical sales capability.",
+        "evidenceIds": [
+          "evidence-5900e50c98f08e5b"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Strong industrial relevance creates opportunity, with established Cisco, Moxa and Hirschmann competition.",
+        "evidenceIds": [
+          "evidence-a04acc080b64cc52",
+          "evidence-5900e50c98f08e5b"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "No downstream partner scale or current onboarding openness is shown."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-6326f21e2b53e1bae1f53726:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T21:27:00.000Z",
+    "completedAt": "2026-09-06T21:28:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

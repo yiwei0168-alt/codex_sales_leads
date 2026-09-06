@@ -1,0 +1,109 @@
+{
+  "packetId": "blind-c5cff5c28198708eb24e1eba",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 81,
+  "deterministicTotal": 81,
+  "output": {
+    "packetId": "blind-c5cff5c28198708eb24e1eba",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "MSP",
+      "SI",
+      "VAR"
+    ],
+    "primaryRole": "MSP",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 42,
+      "channelAndBuyingInfluence": 13,
+      "sameRoleScaleAndCoverage": 9,
+      "executionAndEnablement": 9,
+      "opportunityAndRisk": 8
+    },
+    "totalScore": 81,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "Axia provides managed IT, network consulting, connectivity and infrastructure services specifically for UK SMBs.",
+        "evidenceIds": [
+          "evidence-82cfae3469825ae0",
+          "evidence-1c88f4ff79cbc66b"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "Acting as an outsourced IT department with procurement and project advice gives strong selection influence.",
+        "evidenceIds": [
+          "evidence-82cfae3469825ae0",
+          "evidence-1c88f4ff79cbc66b"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "Thirty years of operation and UK-wide SMB support show credible scale, though client count is absent.",
+        "evidenceIds": [
+          "evidence-82cfae3469825ae0",
+          "evidence-1c88f4ff79cbc66b"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "24/7 helpdesk, IT support, project delivery, network consulting and cloud services form a strong MSP stack.",
+        "evidenceIds": [
+          "evidence-1c88f4ff79cbc66b",
+          "evidence-f8fe05609cb9514b"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Direct UK SMB alignment creates a strong opportunity with moderate incumbent-vendor competition.",
+        "evidenceIds": [
+          "evidence-2177aff3a36f8d4b"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "No current hardware purchasing volume is provided."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-c5cff5c28198708eb24e1eba:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T21:40:00.000Z",
+    "completedAt": "2026-09-06T21:41:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

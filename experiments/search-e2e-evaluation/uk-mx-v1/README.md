@@ -1,6 +1,6 @@
 # UK–Mexico formal search evaluation v1
 
-Current status (2026-09-06): v1.1.6 supersedes a v1.1.5 experiment-checkpoint failure without changing product treatment. Three completed quality cells and the completed GB Reseller Gemini arm are reused; all USD 10.26588188199398 incurred cost is carried exactly once. The public-artifact writer now uses unique temporary names and bounded retry for transient Windows file-lock errors. GB Reseller's incomplete product arm is the next paid action.
+Current status (2026-09-07): completed. Product E2E reported a +22.69 Macro Slot Utility@30 advantage and won 7/8 cells, but the formal conclusion is inconclusive because the frozen 64-company independent blind-calibration gate failed. Total experiment spend was USD 24.9223087090, including invalidated attempts and shared evaluation; no USD 40 checkpoint or USD 100 budget warning was reached. The deterministic post-run audit corrects a reporting-only provider-attribution defect without changing frozen candidates, scores, blind decisions or win gates.
 
 This directory contains the preregistered protocol, frozen configuration, prompts, schemas, runtime checkpoints and final reports for Cudy's first formal end-to-end search evaluation.
 
@@ -22,6 +22,8 @@ No paid experiment calls may run before the preregistration commit is pushed. Co
 - [Gemini control prompt](config/gemini-control-prompt.md)
 - [Independent blind-judge rubric](config/blind-judge-rubric.md)
 - [Official list-price rate card](config/official-rate-card.v1.json)
+- [Frozen final report](artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/final/SEARCH_E2E_EVALUATION_REPORT.v1.0.15.md)
+- [Post-run audit and provider-attribution correction](artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/final/POST_RUN_AUDIT.v1.0.16.md)
 
 ## Frozen runner commands
 

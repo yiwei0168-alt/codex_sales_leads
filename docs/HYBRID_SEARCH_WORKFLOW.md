@@ -1,7 +1,7 @@
 # Hybrid Lead Search Workflow
 
 Status: active
-Current policy: `cudy-hybrid-lead-search` v1.2.0
+Current policy: `cudy-hybrid-lead-search` v1.2.1
 Scope: user request through final valid, primary-role-correct candidate set. Tavily evidence acquisition, scoring and downstream outreach are connected consumers, not additional discovery engines.
 
 ## End-to-end flow
@@ -88,6 +88,14 @@ Shared public evidence and role facts live under `public_evidence`. User/workspa
 Every route and stage records input count, raw output, normalized output, new unique companies, downstream-used output, cost, tokens/credits, latency, attempts, retries, cache state, failure class, duplicate/discard reasons and final in-role contribution. Optimization uses final-candidate contribution and cost, not provider rank.
 
 ## Version history
+
+### v1.2.1 formal UK/MX observation — 2026-09-07
+
+The completed cold-start experiment produced 200/240 Product E2E final outputs versus 225/240 for Gemini. Product's shared scorer reported higher slot utility in 7/8 cells, but independent blind calibration failed, so the experiment does not yet prove superiority. The main quality bottlenecks were GB/MX Retail role purity, overuse of `Hybrid`, direct brand stores/ISPs/directories entering Retail, and wrong-role candidates reaching paid evidence acquisition.
+
+A reporting-only defect originally assigned zero final contribution to every discovery provider. A deterministic audit restored source-run provenance for reused cells and accounted for all 200 final Product E2E outputs: Brave 77.5 fractional credits, Gemini Full 44, Exa 27, Google Places 27 and SearchAPI 24.5. SearchAPI therefore must not be removed; repeated timeouts should instead use a lower-frequency bounded recovery probe. The corrected productive discovery cost was USD 2.979. Future provider optimization must validate complete fractional attribution before suggesting route removal.
+
+The eight productive product executions cost USD 15.409182 for 200 final outputs, or USD 0.077046/output. Model cost per output was 66.0% below the v2.0 preselected-pool baseline and Tavily credits per corrected candidate were 33.1% lower, but combined model+Tavily cost per final output was 32.2% higher because too many wrong-role or weak candidates reached evidence collection. The next cost improvement must therefore increase pre-evidence category precision rather than reduce model capability or remove contributing search mechanisms.
 
 ### v1.2.1 — 2026-09-05
 

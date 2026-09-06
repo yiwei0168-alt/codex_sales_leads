@@ -1,0 +1,105 @@
+{
+  "packetId": "blind-221738235a33419039c8aa5c",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 85,
+  "deterministicTotal": 85,
+  "output": {
+    "packetId": "blind-221738235a33419039c8aa5c",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "SI",
+      "VAR",
+      "MSP"
+    ],
+    "primaryRole": "SI",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 45,
+      "channelAndBuyingInfluence": 13,
+      "sameRoleScaleAndCoverage": 10,
+      "executionAndEnablement": 9,
+      "opportunityAndRisk": 8
+    },
+    "totalScore": 85,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "IT Fenix explicitly integrates Wi-Fi 6/7, managed networks, fibre, IP telephony, servers and security for enterprises.",
+        "evidenceIds": [
+          "evidence-home-2bcd4c56625a7966"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "Engineering, a product store and managed services imply direct specification and purchasing influence.",
+        "evidenceIds": [
+          "evidence-home-2bcd4c56625a7966"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "More than 19 years of Mexican enterprise engineering are supported, but customer and geographic counts are absent.",
+        "evidenceIds": [
+          "evidence-home-2bcd4c56625a7966"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Documented engineering, installation, support and premium warranty positioning indicate strong execution.",
+        "evidenceIds": [
+          "evidence-home-2bcd4c56625a7966"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Very close SMB networking fit creates a strong opportunity, with vendor mix still unknown.",
+        "evidenceIds": [
+          "evidence-home-2bcd4c56625a7966"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "No customer count or named networking vendors are included."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-221738235a33419039c8aa5c:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T21:21:00.000Z",
+    "completedAt": "2026-09-06T21:22:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

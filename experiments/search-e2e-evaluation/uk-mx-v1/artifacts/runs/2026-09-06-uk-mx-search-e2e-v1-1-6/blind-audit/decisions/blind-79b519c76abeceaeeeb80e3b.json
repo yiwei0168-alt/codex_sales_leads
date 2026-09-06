@@ -1,0 +1,104 @@
+{
+  "packetId": "blind-79b519c76abeceaeeeb80e3b",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 52,
+  "deterministicTotal": 52,
+  "output": {
+    "packetId": "blind-79b519c76abeceaeeeb80e3b",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "MSP",
+      "Telecommunications Provider"
+    ],
+    "primaryRole": "MSP",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 25,
+      "channelAndBuyingInfluence": 9,
+      "sameRoleScaleAndCoverage": 6,
+      "executionAndEnablement": 7,
+      "opportunityAndRisk": 5
+    },
+    "totalScore": 52,
+    "eligibility": "research-required",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "The homepage identifies business telecoms and managed IT, but contains no specific networking family or customer-scenario evidence.",
+        "evidenceIds": [
+          "evidence-home-ba378c00b52b247c"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "A managed telecom and IT role implies customer influence, though procurement scope is not shown.",
+        "evidenceIds": [
+          "evidence-home-ba378c00b52b247c"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "A UK operating identity is supported, but no client, team or coverage scale is available.",
+        "evidenceIds": [
+          "evidence-home-ba378c00b52b247c"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Managed IT and telecom positioning supports baseline ongoing service capability.",
+        "evidenceIds": [
+          "evidence-home-ba378c00b52b247c"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Potential SMB adjacency exists, but evidence is too sparse for a recommendation.",
+        "evidenceIds": [
+          "evidence-home-ba378c00b52b247c"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "No product portfolio, project cases, client count or coverage evidence is included."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-79b519c76abeceaeeeb80e3b:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T21:41:00.000Z",
+    "completedAt": "2026-09-06T21:42:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

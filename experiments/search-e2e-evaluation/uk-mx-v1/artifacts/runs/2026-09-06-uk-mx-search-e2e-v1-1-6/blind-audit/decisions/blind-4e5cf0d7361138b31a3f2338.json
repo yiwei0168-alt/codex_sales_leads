@@ -1,0 +1,108 @@
+{
+  "packetId": "blind-4e5cf0d7361138b31a3f2338",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 92,
+  "deterministicTotal": 92,
+  "output": {
+    "packetId": "blind-4e5cf0d7361138b31a3f2338",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "VAD",
+      "Distributor"
+    ],
+    "primaryRole": "VAD",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 49,
+      "channelAndBuyingInfluence": 15,
+      "sameRoleScaleAndCoverage": 12,
+      "executionAndEnablement": 10,
+      "opportunityAndRisk": 6
+    },
+    "totalScore": 92,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "Purdicom specialises in wireless, Wi-Fi, switching, security and managed-network technology across highly relevant vendors.",
+        "evidenceIds": [
+          "evidence-home-47c4a38e08e0b6f5",
+          "evidence-3d04592b22c6ddb8"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "Official VAD relationships and reseller-focused routes to market indicate strong buying and partner influence.",
+        "evidenceIds": [
+          "evidence-3d04592b22c6ddb8",
+          "evidence-7e75363a42d4bdb8"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "Leading UK specialist positioning and multiple official vendor mandates support strong scale, though counts are absent.",
+        "evidenceIds": [
+          "evidence-3d04592b22c6ddb8"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Store access, partner events, technical solutions and managed-service enablement demonstrate comprehensive VAD execution.",
+        "evidenceIds": [
+          "evidence-7e75363a42d4bdb8",
+          "evidence-451449f1308b7d44"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Exceptional category fit is tempered by entrenched Ruckus, Cambium and Teltonika relationships.",
+        "evidenceIds": [
+          "evidence-home-47c4a38e08e0b6f5",
+          "evidence-3d04592b22c6ddb8"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "No current interest in adding Cudy is evidenced."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-4e5cf0d7361138b31a3f2338:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T21:16:00.000Z",
+    "completedAt": "2026-09-06T21:17:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

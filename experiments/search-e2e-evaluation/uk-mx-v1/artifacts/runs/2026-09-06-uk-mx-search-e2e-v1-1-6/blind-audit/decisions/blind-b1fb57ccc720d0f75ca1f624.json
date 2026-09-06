@@ -1,0 +1,106 @@
+{
+  "packetId": "blind-b1fb57ccc720d0f75ca1f624",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 58,
+  "deterministicTotal": 58,
+  "output": {
+    "packetId": "blind-b1fb57ccc720d0f75ca1f624",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "Reseller",
+      "Telecommunications Integrator"
+    ],
+    "primaryRole": "Reseller",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 27,
+      "channelAndBuyingInfluence": 11,
+      "sameRoleScaleAndCoverage": 7,
+      "executionAndEnablement": 8,
+      "opportunityAndRisk": 5
+    },
+    "totalScore": 58,
+    "eligibility": "research-required",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "Telecom Central sells and installs business VoIP, cloud PBX and hotel phone systems, with little direct evidence for Cudy networking families.",
+        "evidenceIds": [
+          "evidence-home-c1ae0bffa338adfc"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "Delivery and installation of hardware and telecom services support customer purchasing influence.",
+        "evidenceIds": [
+          "evidence-home-c1ae0bffa338adfc",
+          "evidence-8bd10249ee5f9188"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "A Birmingham business operation is evidenced, but customer and geographic scale are absent.",
+        "evidenceIds": [
+          "evidence-home-c1ae0bffa338adfc"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Installation, setup, support and contracted hardware delivery demonstrate solid telecom execution.",
+        "evidenceIds": [
+          "evidence-home-c1ae0bffa338adfc",
+          "evidence-8bd10249ee5f9188"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Hospitality and business telecom adjacency is useful, but direct networking demand requires confirmation.",
+        "evidenceIds": [
+          "evidence-home-c1ae0bffa338adfc"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "No router, AP, switching or managed-network portfolio is evidenced."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-b1fb57ccc720d0f75ca1f624:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T21:24:00.000Z",
+    "completedAt": "2026-09-06T21:25:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

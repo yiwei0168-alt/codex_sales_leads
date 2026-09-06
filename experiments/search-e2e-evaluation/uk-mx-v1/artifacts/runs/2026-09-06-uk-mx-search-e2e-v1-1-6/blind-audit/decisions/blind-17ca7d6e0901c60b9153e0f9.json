@@ -1,0 +1,108 @@
+{
+  "packetId": "blind-17ca7d6e0901c60b9153e0f9",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 82,
+  "deterministicTotal": 82,
+  "output": {
+    "packetId": "blind-17ca7d6e0901c60b9153e0f9",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "VAR",
+      "SI",
+      "MSP"
+    ],
+    "primaryRole": "VAR",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 44,
+      "channelAndBuyingInfluence": 13,
+      "sameRoleScaleAndCoverage": 9,
+      "executionAndEnablement": 9,
+      "opportunityAndRisk": 7
+    },
+    "totalScore": 82,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "SMB Technology Partners integrates networks, IT infrastructure, managed services and multi-brand hardware for Mexican businesses.",
+        "evidenceIds": [
+          "evidence-93aea4311b722e5d",
+          "evidence-c7d4f1f6e051f5c2"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "Integrator-led projects, equipment sales and financing create strong specification and purchasing influence.",
+        "evidenceIds": [
+          "evidence-c7d4f1f6e051f5c2",
+          "evidence-70817a65dd02a4e5"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "A functioning Mexican multi-service integrator is supported, but client and project scale are not quantified.",
+        "evidenceIds": [
+          "evidence-93aea4311b722e5d"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Advisory, technical service, financing, managed services and ongoing support indicate strong execution.",
+        "evidenceIds": [
+          "evidence-c7d4f1f6e051f5c2",
+          "evidence-93aea4311b722e5d"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "SMB positioning aligns closely, with moderate uncertainty about current networking brands.",
+        "evidenceIds": [
+          "evidence-93aea4311b722e5d"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "No customer count or specific network-hardware vendor mix is shown."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-17ca7d6e0901c60b9153e0f9:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T21:35:00.000Z",
+    "completedAt": "2026-09-06T21:36:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

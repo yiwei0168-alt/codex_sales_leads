@@ -1,0 +1,107 @@
+{
+  "packetId": "blind-79835af86118c3161f8ed4af",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 74,
+  "deterministicTotal": 74,
+  "output": {
+    "packetId": "blind-79835af86118c3161f8ed4af",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "VAR",
+      "Reseller"
+    ],
+    "primaryRole": "VAR",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 42,
+      "channelAndBuyingInfluence": 13,
+      "sameRoleScaleAndCoverage": 7,
+      "executionAndEnablement": 8,
+      "opportunityAndRisk": 4
+    },
+    "totalScore": 74,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "Carol Technologies sells cloud-managed enterprise wireless, switching and SD-WAN products with direct business-network relevance.",
+        "evidenceIds": [
+          "evidence-9ee075436f2a4594",
+          "evidence-65935105b432ae49"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "Cisco Select Partner status, quotations, discounts and direct product sales support meaningful buying influence.",
+        "evidenceIds": [
+          "evidence-ea4fc06dac243187",
+          "evidence-9ee075436f2a4594"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "A staffed Mexico City operation is evidenced, but customer, project and geographic scale are absent.",
+        "evidenceIds": [
+          "evidence-ea4fc06dac243187"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Engineer contact, technical support, quoting and product reservation demonstrate capable VAR execution.",
+        "evidenceIds": [
+          "evidence-ea4fc06dac243187",
+          "evidence-65935105b432ae49"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Strong network fit is offset by an apparently dedicated Cisco Meraki identity and high vendor conflict.",
+        "evidenceIds": [
+          "evidence-d31e0d3f16dfb7cc"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "No evidence shows multi-brand openness beyond Cisco Meraki."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-79835af86118c3161f8ed4af:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T21:34:00.000Z",
+    "completedAt": "2026-09-06T21:35:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "packetId": "blind-8c0e8666fb9f34bdcff61d0c",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 86,
+  "deterministicTotal": 86,
+  "output": {
+    "packetId": "blind-8c0e8666fb9f34bdcff61d0c",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "E-tailer",
+      "Distributor",
+      "Retailer"
+    ],
+    "primaryRole": "E-tailer",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 45,
+      "channelAndBuyingInfluence": 14,
+      "sameRoleScaleAndCoverage": 11,
+      "executionAndEnablement": 9,
+      "opportunityAndRisk": 7
+    },
+    "totalScore": 86,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "Connectec stocks routers, switches, APs and wireless bridges for home through large business installations.",
+        "evidenceIds": [
+          "evidence-d238bf8a9939c498"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "It sells online to end users and trade customers while also acting as a wholesale distributor.",
+        "evidenceIds": [
+          "evidence-17c70505b9b53759",
+          "evidence-d238bf8a9939c498"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "Nationwide UK multichannel distribution is supported, though customer and revenue scale are absent.",
+        "evidenceIds": [
+          "evidence-d6e11e4238c4a13b"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Trade accounts, expert support, reliable delivery and installation-focused merchandising show mature execution.",
+        "evidenceIds": [
+          "evidence-17c70505b9b53759",
+          "evidence-d6e11e4238c4a13b"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Strong SMB/value fit creates opportunity, tempered by incumbent Ruijie and IP-COM relationships.",
+        "evidenceIds": [
+          "evidence-17c70505b9b53759",
+          "evidence-d0b77868c5874f87"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "No current willingness to add Cudy is shown."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-8c0e8666fb9f34bdcff61d0c:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T21:32:00.000Z",
+    "completedAt": "2026-09-06T21:33:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}

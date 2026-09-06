@@ -1,0 +1,108 @@
+{
+  "packetId": "blind-4c7fd54a88af27c1b0db2dc0",
+  "requestedModel": "codex-in-session",
+  "actualModel": "codex-in-session",
+  "modelReportedTotal": 74,
+  "deterministicTotal": 74,
+  "output": {
+    "packetId": "blind-4c7fd54a88af27c1b0db2dc0",
+    "isRealOperatingCompany": true,
+    "operatesInTargetMarket": true,
+    "supportedRoles": [
+      "Reseller",
+      "IT Asset Recovery Provider"
+    ],
+    "primaryRole": "Reseller",
+    "requestedCategoryMatch": true,
+    "dimensions": {
+      "productAndUseCaseFit": 36,
+      "channelAndBuyingInfluence": 13,
+      "sameRoleScaleAndCoverage": 10,
+      "executionAndEnablement": 9,
+      "opportunityAndRisk": 6
+    },
+    "totalScore": 74,
+    "eligibility": "eligible",
+    "dimensionReasons": [
+      {
+        "dimension": "productAndUseCaseFit",
+        "reason": "ICP buys and sells new and used Cisco routers, switches and enterprise networking hardware, but focuses on secondary-market infrastructure.",
+        "evidenceIds": [
+          "evidence-home-a50922fbb6705cb7",
+          "evidence-fdf1cda1343ab133"
+        ]
+      },
+      {
+        "dimension": "channelAndBuyingInfluence",
+        "reason": "Direct purchasing, resale, rentals and buyback operations give it meaningful hardware procurement influence.",
+        "evidenceIds": [
+          "evidence-home-a50922fbb6705cb7",
+          "evidence-fdf1cda1343ab133"
+        ]
+      },
+      {
+        "dimension": "sameRoleScaleAndCoverage",
+        "reason": "A 16,500-square-foot UK facility and more than 20 years of operation support credible specialist scale.",
+        "evidenceIds": [
+          "evidence-e0daf0096db80d3f"
+        ]
+      },
+      {
+        "dimension": "executionAndEnablement",
+        "reason": "Large inventory, logistics, maintenance, rentals and certified asset disposal indicate strong operations.",
+        "evidenceIds": [
+          "evidence-home-a50922fbb6705cb7",
+          "evidence-9e325c62b05b91af",
+          "evidence-e0daf0096db80d3f"
+        ]
+      },
+      {
+        "dimension": "opportunityAndRisk",
+        "reason": "Networking expertise is relevant, but refurbished Cisco focus reduces new-brand fit.",
+        "evidenceIds": [
+          "evidence-9e325c62b05b91af"
+        ]
+      }
+    ],
+    "unsupportedOrContradictoryClaims": [
+      "No evidence shows active onboarding of new value-SMB hardware brands."
+    ],
+    "citationAlignment": true
+  },
+  "costEvent": {
+    "eventId": "blind-4c7fd54a88af27c1b0db2dc0:blind-judge",
+    "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-judge",
+    "provider": "codex-in-session",
+    "requestedModel": "codex-in-session",
+    "actualModel": "codex-in-session",
+    "startedAt": "2026-09-06T21:23:00.000Z",
+    "completedAt": "2026-09-06T21:24:00.000Z",
+    "latencyMs": 60000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "completed",
+    "usage": {},
+    "accountCashCostUsd": 0,
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 1,
+      "validOutputItems": 1,
+      "downstreamUsedItems": 1,
+      "discardedReasonCounts": {}
+    },
+    "notes": [
+      "Direct blind review in the current Codex conversation; no API call and no external search.",
+      "Incremental API cash cost is zero; conversation token usage is not exposed to the experiment runner."
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": [
+      "in-session-codex-token-usage-unavailable"
+    ]
+  }
+}
