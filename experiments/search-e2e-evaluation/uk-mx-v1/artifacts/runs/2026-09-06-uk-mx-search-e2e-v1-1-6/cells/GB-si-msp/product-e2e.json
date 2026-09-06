@@ -1,0 +1,2907 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+  "cellId": "GB-si-msp",
+  "arm": "product-e2e",
+  "startedAt": "2026-09-06T06:05:26.970Z",
+  "completedAt": "2026-09-06T06:14:02.474Z",
+  "wallClockMs": 515504,
+  "plan": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom",
+    "objective": "new-market",
+    "roles": [
+      "SI",
+      "MSP"
+    ],
+    "targetCount": 30,
+    "queryLanguage": "en",
+    "userRequest": "Find and evaluate 30 companies in United Kingdom whose primary role is SI/MSP. Restrict the task to this market and category.",
+    "opportunityTargets": [],
+    "coverageMode": "auto",
+    "verifiedOnly": false
+  },
+  "intent": {
+    "plannerModel": "kimi-k2.6",
+    "plannerSource": "kimi-light",
+    "confidence": 0.95,
+    "warnings": []
+  },
+  "playbook": {
+    "marketHypothesis": "United Kingdom should be developed through a market-specific mix of supply, resale, retail, service and operator nodes. Candidate quality and public evidence determine the final mix; no role receives a fixed quota.",
+    "productAngles": [
+      "GS2048PS4-720W: 48-Port Layer 2 Managed Gigabit PoE++ Switch with 4 10G SFP ports 720W / L2 Managed PoE+ Switch",
+      "GS2008PS2: 8-Port Layer 2 Managed Gigabit PoE+ Switch with 2 Gigabit SFP Slots, 120W / L2 Managed PoE+ Switch",
+      "GS2018PS2-200W: 16-Port Layer 2 Managed Gigabit PoE+ Switch with 2 Uplink Gigabit Ports and 2 Gigabit SFP Slots, 200W / L2 Managed PoE+ Switch",
+      "GS2028PS4-300W: 24-Port Layer 2 Managed Gigabit PoE+ Switch with 4 Gigabit Combo Ports, 300W / L2 Managed PoE+ Switch",
+      "Cudy L2 Managed PoE+ Switch Product Catalog",
+      "AP1300D: AC1300 Wireless Desktop Access Point / Desktop AP",
+      "AP3000D: AX3000 Wi-Fi 6 Desktop Access Point / Desktop AP",
+      "Cudy Desktop AP Product Catalog"
+    ],
+    "preferredCompanyTraits": [
+      "active target-market presence",
+      "networking-adjacent customer access",
+      "credible purchasing or project influence",
+      "observable execution capability"
+    ],
+    "exclusions": [
+      "directories and list pages",
+      "inactive or unverifiable entities",
+      "companies without target-market presence",
+      "unrelated consumer-only businesses"
+    ],
+    "rolePriorities": [
+      {
+        "family": "services",
+        "roles": [
+          "SI",
+          "MSP"
+        ],
+        "weight": 1,
+        "reason": "Build or validate a reliable supply path while developing demand nodes in parallel."
+      }
+    ],
+    "searchQueries": [
+      {
+        "family": "services",
+        "roles": [
+          "SI",
+          "MSP"
+        ],
+        "query": "enterprise network system integrator installer MSP United Kingdom official company networking",
+        "priority": 1
+      },
+      {
+        "family": "services",
+        "roles": [
+          "SI",
+          "MSP"
+        ],
+        "query": "business WiFi switching infrastructure solutions provider United Kingdom official company networking",
+        "priority": 2
+      }
+    ],
+    "ragCitationIds": [
+      "1db2c336-ce71-47d7-891f-e3342c8c632f",
+      "04c626c9-bed9-4059-ad3b-612077ce929b",
+      "ce825250-5623-460b-98da-a7e8a8cb8b86",
+      "6fc79b4f-9b1a-49c7-bcff-13cbfa064e6b",
+      "923496ea-d85c-4d77-ae28-eef6bb6d531f",
+      "c097d04f-daa8-421a-a584-b57acd092937",
+      "1a7c3634-d4f6-49b7-8d88-21a3aa2f9982",
+      "0e4ecf1b-f217-459d-b42f-a3a6bb639582",
+      "20277588-3c73-4f88-bb70-5b155a2016d0",
+      "38a043ac-b57b-47c3-b5b4-3378c1ee1a5b",
+      "df270d18-c0a4-4196-b2b2-c16dc1e78e32",
+      "753a50ef-c6c1-47af-8d64-83835b913671",
+      "dd4613fe-9b93-46d3-a421-fd764b6c4f9f",
+      "779c4bce-20df-41b3-a4df-db0dcbdd1f6d",
+      "cd1742a2-adde-4cb8-ab1e-522dd6ceceb8",
+      "adf8196f-0d9f-4db8-8df5-45828b2bb510"
+    ],
+    "generatedBy": "deterministic-fallback",
+    "warnings": []
+  },
+  "treatmentModels": {
+    "discoveryGateRoutine": "deepseek-v4-flash",
+    "roleCorrectionRoutine": "deepseek-v4-flash",
+    "qualificationRoutine": "deepseek-v4-flash",
+    "materialEscalation": "deepseek-v4-pro"
+  },
+  "rawDiscoveryCount": 84,
+  "discoveredCandidateCount": 72,
+  "correctedCandidateCount": 67,
+  "completedAssessmentCount": 60,
+  "finalCandidates": [
+    {
+      "rank": 1,
+      "candidateId": "lead-75646bfaf53a2a11",
+      "companyName": "Simpli-Fi (MetaTech Group)",
+      "domain": "simpli-fi.co.uk",
+      "officialWebsiteUrl": "https://www.simpli-fi.co.uk/",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "MSP"
+      ],
+      "totalScore": 83,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-75646bfaf53a2a11",
+        "evidence-9243115734f96f33"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-75646bfaf53a2a11",
+          "url": "https://www.simpli-fi.co.uk/",
+          "title": "Enterprise WiFi, connectivity solutions, managed services Simpli-Fi",
+          "excerpt": "--> Enterprise WiFi, connectivity solutions, managed services Simpli-Fi Menu Open Website Menu Our Solutions Enterprise WiFi In-Building Mobile Connectivity Solutions AI-Powered IP CCTV Emergency and Temporary Internet Connectivity Consultancy Managed Services Converged Network Services Private 5G Simpli-Connect Sectors About Us Our Work Blog Contact Us --> Menu Solutions Enterprise WiFi In-Building Mobile Signal Solutions AI-Powered IP CCTV Emergency &#038; Temporary Internet Connectivity Consultancy Managed Services Converged Network Services Private 5G Simpli-Connect Sectors Education Schools &#038; Academies Colleges &#038; Universities Student Accommodation Libraries &#038; Public Buildings Care Care Homes &#038; Assisted Living Hospitals &#038; Clinics Leisure Caravan &#038; Holiday ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:06:21.858Z",
+          "contentHash": "94bfb2ce76f338497e43db17cf781d7d2051df1d5bf942161397b9fbc216c265",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-9243115734f96f33",
+          "url": "https://www.simpli-fi.co.uk/privacy-policy",
+          "title": "Privacy Policy - Simpli-Fi",
+          "excerpt": "Privacy Policy - Simpli-Fi Menu Open Website Menu Our Solutions + Enterprise WiFi + In-Building Mobile Connectivity Solutions + AI-Powered IP CCTV + Emergency and Temporary Internet + Connectivity Consultancy + Managed Services + Converged Network Services + Private 5G + Simpli-Connect Sectors About Us Our Work Blog Contact Us Menu Solutions + - enterpriseEnterprise WiFi inbuildingIn-Building Mobile Signal Solutions aiAI-Powered IP CCTV + - emergencyEmergency & Temporary Internet consultConnectivity Consultancy managedservicesManaged Services + - convergedConverged Network Services Wireless P2P IconPrivate 5G nextgenSimpli-Connect Sectors + - Education IconEducation Schools & Academies Colleges & Universities Student Accommodation Libraries & Public Buildings + - Care Menu IconCare Care Ho",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:24.642Z",
+          "contentHash": "60f78240ff75bb1320a45b63f2a4bfe0ff5d7db00c15c76d330dd82ecde3dbd2",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 2,
+      "candidateId": "lead-3b88b7cead9c53b3",
+      "companyName": "Exponential-e Ltd",
+      "domain": "exponential-e.com",
+      "officialWebsiteUrl": "https://www.exponential-e.com/",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "SI",
+        "MSP"
+      ],
+      "totalScore": 82,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-c9a08e5a8df0d5bc",
+        "evidence-3368055c5f66c51a",
+        "evidence-97589a85c36cdffa",
+        "evidence-f29cc5dc8ec04e54",
+        "evidence-eb042b7a4b8e5d22"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-c9a08e5a8df0d5bc",
+          "url": "https://www.exponential-e.com/services/connectivity-services/managed-lan-wifi",
+          "title": "Managed LAN & Wi‑Fi Solutions UK - Exponential-e",
+          "excerpt": "Secure, resilient connectivity that keeps your business moving. High-performance, secure network solutions designed to connect your people, sites and clouds.",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:34.378Z",
+          "contentHash": "47dddee993c07dc62c06400f87e577d5fef96f801dc77dff39cdf6d865386565",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-3368055c5f66c51a",
+          "url": "https://expert.broadcom.com/partners/vcsp/exponential-e-ltd",
+          "title": "Exponential-e Ltd | Broadcom Insights Partner | PRODUCTION",
+          "excerpt": "Exponential-e is a British Hybrid Cloud & Connectivity Specialist, with a rich value-add portfolio encompassing Cyber Security, Unified Communications, and IT Services capabilities. Exponential-e wholly owns a super-fast 100 Gigabit Ethernet Layer 2 VPLS Network that guarantees a superior level of resilience, reliability and performance to maximise availability of Virtual machines, applications and data. Exponential-e also integrates with third party providers and bespoke applications for both [...] Exponential-e is a British Hybrid Cloud & Connectivity Specialist, with a rich value-add portfolio encompassing Cyber Security, Unified Communications, and IT Services capabilities. Exponential-e wholly owns a super-fast 100 Gigabit Ethernet Layer 2 VPLS Network that guarantees a superior level",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-06T06:07:34.378Z",
+          "contentHash": "d275c7a1e8626aab0092c7f9beee081c7f0a8dcbf531c4ecf5f759cbca50ddb2",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-97589a85c36cdffa",
+          "url": "https://www.exponential-e.com",
+          "title": "Exponential-e - UK Cloud, Connectivity, Cyber & IT Services",
+          "excerpt": "Exponential-e delivers secure UK connectivity, cloud, cyber and IT services. Trusted by 3000+ organisations and backed by 9 ISOs.",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:34.378Z",
+          "contentHash": "d7c7c8b2b43c9373dd4af8db731f38dc122b349825b190055de936ba49814af2",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-f29cc5dc8ec04e54",
+          "url": "https://www.linkedin.com/company/exponential-e",
+          "title": "Exponential-e - We help organisations digitally transform and grow with innovative IT, cyber, cloud and communications services.",
+          "excerpt": "that comes with multiple service providers and varying service levels. At Exponential-e, we strive to constantly exceed expectations in innovation and service; what’s more we can provide a single end-to-end SLA. At Exponential-e, our Cloud services do not transcend the public Internet. Instead, they reside on a customer's LAN, on the clean side of the firewall, so security and privacy concerns are negated. Our vast product portfolio enables us to create tailored solutions for each individual [...] ### Investors N/A ### Specialties Connectivity, Cloud Computing, Unified Communications, Data Centre Services, IT Services, IT Security, Voice, DDoS, VPLS, Colocation, 10GigE, Network, Internet Service, SD-Cloud, SD-WAN, and MPLS ## Locations 100 Leman Street, London, E1 8EU, GB, Abbey House, 165",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-06T06:07:34.378Z",
+          "contentHash": "faa49211e86823c78f91eca0883dfca0f215fc94934c551089d33b1fe7b7811c",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-eb042b7a4b8e5d22",
+          "url": "https://www.applytosupply.digitalmarketplace.service.gov.uk/g-cloud/services/407157911098503",
+          "title": "Cloud Connectivity - Digital Marketplace",
+          "excerpt": "If you use assistive technology (such as a screen reader) and need versions of these documents in a more accessible format, email the supplier at psbids@exponential-e.com. Tell them what format you need. It will help if you say what assistive technology you use. [...] If required, we will provide the necessary connectivity details which enable you to commission the service into your network, where you manage the routers. If Exponential-e are providing managed routers, we will commission the service. [...] driving equality throughout our supply chain. MAC 3.3: Scalable & future-proofed methods to modernise delivery/increase productivity We work with innovative and agile supplier organisations who bring innovative technology solutions to market, by providing a framework to enable the deploym",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-06T06:07:34.378Z",
+          "contentHash": "fdc3bbae5f32ad4d98406cc94b221222fe3b07d8d4bc5689ad2172c3238ce479",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 3,
+      "candidateId": "lead-15fb91be881da77c",
+      "companyName": "Performance Networks",
+      "domain": "performancenetworks.co.uk",
+      "officialWebsiteUrl": "https://www.performancenetworks.co.uk/",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "SI",
+        "MSP"
+      ],
+      "totalScore": 82,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-15fb91be881da77c",
+        "evidence-85fc26ad8de8ccc1",
+        "evidence-1eb07a4442e69442"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-15fb91be881da77c",
+          "url": "https://www.performancenetworks.co.uk/",
+          "title": "Managed WiFi &amp; Networking Solutions | Performance Networks",
+          "excerpt": "Managed WiFi Networking Solutions | Performance Networks window.nitro_lazySizesConfig=window.nitro_lazySizesConfig||{};window.nitro_lazySizesConfig.lazyClass=\"nitro-lazy\";nitro_lazySizesConfig.srcAttr=\"nitro-lazy-src\";nitro_lazySizesConfig.srcsetAttr=\"nitro-lazy-srcset\";nitro_lazySizesConfig.expand=10;nitro_lazySizesConfig.expFactor=1;nitro_lazySizesConfig.hFac=1;nitro_lazySizesConfig.loadMode=1;nitro_lazySizesConfig.ricTimeout=50;nitro_lazySizesConfig.loadHidden=true;(function(){let t=null;let e=false;let a=false;let i=window.scrollY;let r=Date.now();function n(){window.removeEventListener(\"scroll\",n);window.nitro_lazySizesConfig.expand=300}function o(t){let e=t.timeStamp-r;let a=Math.abs(i-window.scrollY)/e;let n=Math.max(a*200,300);r=t.timeStamp;i=window.scrollY;window.nitro_lazySizesCo",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:01.767Z",
+          "contentHash": "6094eda3c77008f86c76fc84aa83f81b7fa58b949ac8459fc6d8990f68deafad",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-1eb07a4442e69442",
+          "url": "https://www.performancenetworks.co.uk/news/ukwa-members",
+          "title": "Performance Networks Joins UKWA | Trusted WiFi Solutions for ...",
+          "excerpt": "phone icon phone icon Reviews.io stars Performance Networks phone icon Performance Networks are backed by the UK Warehousing Association warehouse automation technology on a tablet Performance Networks becomes UK Warehousing Association member to Support the Future of Warehousing Performance Networks is proud to announce our official membership with the UK Warehousing Association (UKWA), the leading trade organisation for the warehousing and logistics sector in the United Kingdom. About the UK Warehousing Association The United Kingdom Warehousing Association (UKWA) is the leading trade body for the UK’s warehousing, logistics, supply chain, and storage industries. Established in 1944 and rebranded in 1994, it currently has over 900 full members, ranging from warehouse operators and logist",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:30.997Z",
+          "contentHash": "f2b05dcf66b19718dee0453189725efd4b7474078e621bc67a4814c6228150c2",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-85fc26ad8de8ccc1",
+          "url": "https://www.performancenetworks.co.uk/case-studies/ineos",
+          "title": "Case Study - INEOS | Performance Networks",
+          "excerpt": "phone iconNottingham: 0115 822 1212 phone iconLondon: 0207 148 1780 Reviews.io stars Close Search Performance Networks Performance Networks / Case Studies / INEOS INEOS INEOS INEOS are one of the largest global manufacturers of petrochemicals, speciality chemicals and oil products with revenues over $60 billion. The challenge INEOS are one of the largest global manufacturers of petrochemicals, speciality chemicals and oil products with revenues over $60 billion. It comprises of 34 businesses each with a major chemical company heritage. Its production network spans 181 sites in 22 countries throughout the world. INEOS engaged Performance Networks to conduct a wireless site survey covering their Hans Crescent Knightsbridge Offices. Users were experiencing drop outs across the WiFi network us",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:30.998Z",
+          "contentHash": "2b51ff690e101d25ccadc2291f8176a8a09566f346e3bdbc07985b811f9ed85b",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 4,
+      "candidateId": "lead-05f42392354d7351",
+      "companyName": "Proxar IT Consulting",
+      "domain": "proxar.co.uk",
+      "officialWebsiteUrl": "https://www.proxar.co.uk/",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP",
+        "SI",
+        "Reseller"
+      ],
+      "totalScore": 82,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-bdd9f9287b393931",
+        "evidence-80d3cb7f0a94df95",
+        "evidence-72005e519ae329bf",
+        "evidence-773cd1e41fbe57cb"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-bdd9f9287b393931",
+          "url": "https://www.proxar.co.uk/it-infrastructure-services/procurement/meraki-products",
+          "title": "Top Meraki Products Supplier in London and UK",
+          "excerpt": "Services Proxar - getting IT done. Proxar IT Consulting Meraki Products As a leading provider of Procurement Services, we offer comprehensive services which are in demand in London and the United Kingdom As a leading provider of Procurement Services, we offer comprehensive services which are in demand in London and the United Kingdom Trustpilot rating Trustpilot rating Google rating Google rating 15 + YEARS OF EXPERIENCE 1000 + SUCCESSFUL Projects 80 + Satisfied Clients Network Support and maintenance Meraki Products: Elevate Your Network with Proxar IT In today’s interconnected world, reliable and efficient network infrastructure is paramount. Meraki, a Cisco company, offers innovative networking solutions that simplify network management and deliver exceptional performance. Proxar IT, a ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:23.294Z",
+          "contentHash": "1292411d68e41cc3dcb3f32eb28880ef79ccf0e17cef5f537b0f32b4be5decd7",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-80d3cb7f0a94df95",
+          "url": "https://www.proxar.co.uk/uploads/On-Boarding-checklist.pdf",
+          "title": "[PDF] Dear Reader, We wanted to share our on-boarding documentation ...",
+          "excerpt": "Tel: 0203 196 6566 E-Mail: Sales@Proxar.co.uk Unit 1, 205 London Road, Sevenoaks TN13 1DW Tel: 0203 196 6566 Registered in England and Wales: 6744401 VAT: 942985479 Dear Reader, We wanted to share our on-boarding documentation because we see so many frustrated businesses, let down by poor preparation and management of a migration from an internal IT Team, or incumbent MSP to a new provider, which results in a poor relationship from the outset. Here is our list of items which must be considered when moving between IT providers – this is based on a company using Microsoft Office but the same will apply for alternative suites. Section 1: Accounts 1 Create/Obtain logon details to Office 365 Tenant from current provider with Global Admin permission 2 Create/Obtain logon details to Public DNS / ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:23.294Z",
+          "contentHash": "93f31d80b94a20dfc711f2d4915b8e5fc831832c8afe98eb4a14f37c275aa53e",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-72005e519ae329bf",
+          "url": "https://www.proxar.co.uk/it-outsourcing-services/it-support-outsourcing/cisco-support-outsourcing",
+          "title": "Cisco Support Outsourcing in London - Proxar IT Consulting",
+          "excerpt": "Services Proxar - getting IT done. Proxar IT Consulting Cisco Support Outsourcing As a leading provider of IT Support Outsourcing, we offer comprehensive services which are in demand in London and the United Kingdom As a leading provider of IT Support Outsourcing, we offer comprehensive services which are in demand in London and the United Kingdom Trustpilot rating Trustpilot rating Google rating Google rating 15 + YEARS OF EXPERIENCE 1000 + SUCCESSFUL Projects 80 + Satisfied Clients Choosing-a-Cisco-Service-Provider At Proxar IT Consulting, we offer specialized Cisco Support Outsourcing services designed to enhance your IT infrastructure while allowing you to focus on your core business. Our expert team provides comprehensive support for Cisco products and solutions, ensuring that your ne",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:23.295Z",
+          "contentHash": "2d767f914cd74789f6bf70e79c366f80ea9dfd306aec977998b5ea99c4285bf0",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-773cd1e41fbe57cb",
+          "url": "https://www.proxar.co.uk/managed-service-provider/managed-service-provider-in-london/benefits-of-msp-in-london",
+          "title": "Benefits of MSP in London - Proxar IT Consulting",
+          "excerpt": "Services Proxar - getting IT done. Proxar IT Consulting Benefits of MSP in London As a leading provider of Managed Service Provider in London, we offer comprehensive services which are in demand in London and the United Kingdom As a leading provider of Managed Service Provider in London, we offer comprehensive services which are in demand in London and the United Kingdom Trustpilot rating Trustpilot rating Google rating Google rating 15 + YEARS OF EXPERIENCE 1000 + SUCCESSFUL Projects 80 + Satisfied Clients it-support-north-london1 In today’s fast-paced and highly competitive business environment, companies need to ensure their IT systems are running smoothly and efficiently. Whether you’re a startup or an established enterprise, choosing the right IT support provider can significantly imp",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:23.295Z",
+          "contentHash": "37de1de03f6010fe26cef99fede6abc6ee38d31bf1ebfb4615cc8678104e0fea",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 5,
+      "candidateId": "lead-0518c44b1b492788",
+      "companyName": "Edge7 Networks",
+      "domain": "edge7networks.com",
+      "officialWebsiteUrl": "https://www.edge7networks.com/",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP",
+        "SI"
+      ],
+      "totalScore": 79,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-0518c44b1b492788"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-0518c44b1b492788",
+          "url": "https://www.edge7networks.com/",
+          "title": "Managed Network & Security Services Ireland & UK | Edge7 Networks",
+          "excerpt": "Managed Network & Security Services Ireland & UK | Edge7 Networks Managed Services Provider | Ireland UK One team. Networking, security, and compliance. Edge7 Networks is a managed services partner for businesses across Ireland and the UK. Take one service or the full stack. Either way, you get dedicated engineers who know your environment. No ticket queues. No gaps between providers. Talk to us See how we work 24/7 SOC ISO 27001 Dedicated engineers Ireland UK Security overview Active incidents 0 Threats blocked 0 Alerts triaged 0 MTTR (P1) 4m 12s MTTD 2min Endpoints monitored 0 False positive rate 3.2% Compliance maturity. NIST CSF Govern 2 /5 Identify 3 /5 Protect 3 /5 Detect 2 /5 Respond 1 /5 Recover 1 /5 Avg maturity: 2 / 5 12 gaps identified Network uptime and managed sites 99.9% 0 si",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:06:21.622Z",
+          "contentHash": "0290cb896d3559d97ee5e4ef984c4e37b0318f508aa70d55781146b91ab2e8e2",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 6,
+      "candidateId": "lead-cbc12f3747a1c6fb",
+      "companyName": "BCN Group",
+      "domain": "bcn.co.uk",
+      "officialWebsiteUrl": "https://bcn.co.uk/",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP",
+        "SI"
+      ],
+      "totalScore": 78,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-cbc12f3747a1c6fb",
+        "evidence-2368e8cd9954778f",
+        "evidence-95fad5f1f98a33cb",
+        "evidence-46f084094f6011e3",
+        "evidence-e546a276b1bc71cd"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-cbc12f3747a1c6fb",
+          "url": "https://bcn.co.uk/",
+          "title": "Managed IT, AI &amp; Microsoft 365 Solutions | BCN",
+          "excerpt": "Managed IT, AI Microsoft 365 Solutions | BCN Your AI roadmap starts here AI Pathfinder Careers Customer Portal Service Status Call us on 0345 095 7000 AI AI Build your future with AI Unlock new levels of productivity with transformational solutions driven by the latest advancements in AI. Find out more Pathfinder Microsoft Copilot Copilot Chat Adoption Programme AI Agents AI Kickstarters LLM Integration IT Solutions IT Solutions The next level Depend on us to get your organisation to the next level. Find out more Infrastructure and Cloud Cloud Infrastructure Hybrid Infrastructure Microsoft Azure Cloud Connectivity Data Centre Managed IT Support Infrastructure as Code Cyber Security Cyber Essentials Cyber Security Assessment Cyber Security Awareness Firewall Security Managed Detection &#038",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:11:36.807Z",
+          "contentHash": "c5a050e7f70647805989b8ed93a955beb31e8c4bf8901b0a1e1eeffb226fede9",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r2"
+        },
+        {
+          "id": "evidence-e546a276b1bc71cd",
+          "url": "https://bcn.co.uk/resources/eci-partners-invests-in-digital-transformation-specialists-bcn-group",
+          "title": "ECI Partners invests in BCN Group",
+          "excerpt": "bcn down AI Build your future with AI Unlock new levels of productivity with transformational solutions driven by the latest advancements in AI. down Pathfinderdown down Microsoft Copilotdown down Copilot Chat Adoption Programmedown down AI Agentsdown down AI Kickstartersdown down LLM Integrationdown down down IT Solutions The next level Depend on us to get your organisation to the next level. down Infrastructure and Clouddown down down down down down down down down Cyber Securitydown down down down down down down down down Modern Workplacedown down down down down down down down Business Applications & Developmentdown down down down down down down down down Data & AIdown down down down down down down down down down down down down Managed & Professional Servicesdown down down down down down",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:12:01.923Z",
+          "contentHash": "68b1b474eb604a27f5743ac08a480758a601ab922738c017b737acdc0722d0f9",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r2"
+        },
+        {
+          "id": "evidence-2368e8cd9954778f",
+          "url": "https://bcn.co.uk/location/it-support-leeds",
+          "title": "IT Support Leeds | BCN Group",
+          "excerpt": "bcn down AI Build your future with AI Unlock new levels of productivity with transformational solutions driven by the latest advancements in AI. down Pathfinderdown down Microsoft Copilotdown down Copilot Chat Adoption Programmedown down AI Agentsdown down AI Kickstartersdown down LLM Integrationdown down down IT Solutions The next level Depend on us to get your organisation to the next level. down Infrastructure and Clouddown down down down down down down down down Cyber Securitydown down down down down down down down down Modern Workplacedown down down down down down down down Business Applications & Developmentdown down down down down down down down down Data & AIdown down down down down down down down down down down down down Managed & Professional Servicesdown down down down down down",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:12:01.930Z",
+          "contentHash": "7a7f580d009c5ea5ebf27847a939c8d42183e931100b47a5defcb82683757d43",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r2"
+        },
+        {
+          "id": "evidence-95fad5f1f98a33cb",
+          "url": "https://www.beechtreepe.com/portfolio/bcn-group",
+          "title": "Beech Tree PE Website",
+          "excerpt": "Beech Tree PE Logo BCN Group # BCN Group A fast-growing provider of IT managed services to UK businesses ###### Year of investment: ###### 2018 ###### Year of Initial investment: ###### Year of Re-investment: ### BCN delivers, manages and supports business-critical technology across cloud, security, software and telecoms. [...] Headquartered near Manchester Airport, BCN provide a full suite of solutions comprising on-premise, hybrid and cloud hosting solutions, cloud migration services, application support, voice solutions, data management and hardware sales and maintenance. The team has a strong focus on technical knowledge and customer services leading to BCN’s sector leading Net Promoter Score of 89. [...] BCN Group Matt and I founded the company in 2006 with a vision of building a mark",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-06T06:12:18.076Z",
+          "contentHash": "30b8e3ace0078687fe2601208df2b8b1334a334bf6d6f2c82695cff8a26b4f5b",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r2"
+        },
+        {
+          "id": "evidence-46f084094f6011e3",
+          "url": "https://uk.linkedin.com/company/bcn-uk",
+          "title": "BCN",
+          "excerpt": "# BCN N/A IT Services and IT Consulting • Manchester • 9,044 followers • 201-500 employees [...] ### Specialties [...] ### Website ### Crunchbase N/A ### LinkedIn N/A ### Industry IT Services and IT Consulting ### Company Size 201-500 employees 403 associated members (LinkedIn members who've listed BCN as their current workplace on their profile) ### Founded 2009 ### Funding Last Round Date: N/A Last Round Type: N/A Total Rounds: N/A Last Round Raised: N/A ### Investors N/A",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-06T06:12:18.076Z",
+          "contentHash": "8bbe3270fbb21cce9821549e22e637eb24424c474915dc2f184bd9a4320617f6",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r2"
+        }
+      ]
+    },
+    {
+      "rank": 7,
+      "candidateId": "lead-f5153f547254f073",
+      "companyName": "Bytes Digital Limited",
+      "domain": "bytesdigital.co.uk",
+      "officialWebsiteUrl": "https://www.bytesdigital.co.uk/",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "MSP",
+        "Reseller"
+      ],
+      "totalScore": 78,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-f5153f547254f073"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-f5153f547254f073",
+          "url": "https://www.bytesdigital.co.uk/",
+          "title": "Bytes Digital | Telecoms - Cloud - Connectivity",
+          "excerpt": "Bytes Digital | Telecoms - Cloud - Connectivity × Question: 1/2 How can we help? Hosted VoIP Phone System 3CX Phone System Business Mobiles Business WiFi 4G WiFi Solution Machine 2 Machine SIMs Office in a Box Business Broadband Superfast Fibre Website Design Hardware/Accessories Multiple Continue › Question: 2/3 Do you currently have a solution in place? Yes No I&#x27;m not sure ‹ Go Back Continue › Question: 3/3 (Optional) Any more information? ‹ Go Back Continue › Let&#x27;s send you your quote... Contact Details We&#x27;ll never sign you up to anything or send you unsolicited emails—that&#x27;s our privacy promise. ‹ Go Back Thank you! Your submission has been received! Oops! Something went wrong while submitting the form. Home About Solutions › Portfolio › Wholesale Contact Online Quo",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:03.126Z",
+          "contentHash": "6557203acb1528f073f4f0fc519fcb8441982a0c2b9d7e62d8ae889dabb4efb4",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 8,
+      "candidateId": "lead-9a841bbe2e70c610",
+      "companyName": "Convergence Group",
+      "domain": "convergencegroup.co.uk",
+      "officialWebsiteUrl": "https://www.convergencegroup.co.uk/",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "SI",
+        "MSP"
+      ],
+      "totalScore": 77,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-9a841bbe2e70c610",
+        "evidence-b99a84b29c99f929",
+        "evidence-86fae278f399485b",
+        "evidence-4f3cfcd367e9b116",
+        "evidence-988abc06923bfeb6"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-9a841bbe2e70c610",
+          "url": "https://www.convergencegroup.co.uk/",
+          "title": "Convergence Group &#8211; Networking at speed",
+          "excerpt": "Convergence Group &#8211; Networking at speed Skip to content Services LAN Delivering in-building connectivity solutions that keep businesses running smoothly while saving them money. WAN Connecting business securely over MPLS, to the internet and also via hybrid SD-WAN services Security Keeping your network, infrastructure and people secure and safe 24x7x365 Datacentre When it comes to keeping the lights on, you need infrastructure that remains always on. CaaS Connectivity-as-a-Service is a plug and play, total network solution delivered via a single supplier contract LAN Delivering in-building connectivity solutions that keep businesses running smoothly while saving them money. Security Keeping your network safe is a 24/7 job. That’s why we provide a 24/7 managed security service. WAN Co",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:04.206Z",
+          "contentHash": "2444d1b04fc071b79a4d771e65cb6c0d62de214963bd66b3fc0e340e420b532c",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-b99a84b29c99f929",
+          "url": "https://www.convergencegroup.co.uk/about-us",
+          "title": "About Us | Convergence Group – Convergence Group",
+          "excerpt": "Skip to content CG Logo Get a quote CG Logo CG Logo It’s not that everyone else is rubbish. We’re just better. We are Convergence Group – one company, total connectivity We are one of the UK’s leading networking specialists trusted by more than 800,000 clients, including major household names and across all sectors from local and central government, to healthcare, financial services, professional services, and charities. We design, deploy and manage some of the most complex networking solutions for organisations across the UK. Flexible, agile, innovative and other buzz words that also apply… We’ve made it our business to be the best in our field. We do that through: Offering the broadest end-to-end portfolio of network and connectivity products Continually innovating to support the changin",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:30.152Z",
+          "contentHash": "4054a00788aef93ea9e74fb5d51eb6a46b104fd850beac9aa98fd5aba843cd81",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-86fae278f399485b",
+          "url": "https://www.convergencegroup.co.uk",
+          "title": "Convergence Group – Networking at speed",
+          "excerpt": "Skip to content CG Logo Get a quote CG Logo CG Logo Connectivity solutions that keep up with your business, no matter how fast you run. Reliable | Scalable | Secure We are a leading provider of networking solutions for some of the UK’s leading organisations. As trusted networking experts, IT leaders turn to us to support all their connectivity requirements– now and in the future. Watch more about how we’re leading the way with connectivity But don’t just take our word for it… Here’s a flavour of who we work for. What we’re great at (aka \"our services\") WiFi and Local Area Networks (LAN) Don’t you hate it when the WiFi lets you down? So do we. Our team of experts design, deploy and manage enterprise WiFi networks, to ensure maximum uptime and performance. So your teams can connect to their ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:30.152Z",
+          "contentHash": "3013c4457c1670eb33f80bf82785b77e8c40a803e0b3360b9b5f7c1b29b9b8fa",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-4f3cfcd367e9b116",
+          "url": "https://www.convergencegroup.co.uk/wan-services-convergence-group",
+          "title": "WAN Services | Convergence Group – Convergence Group",
+          "excerpt": "Skip to content CG Logo Get a quote CG Logo CG Logo Unleash your organisation’s potential with our high performing WAN connectivity solutions When it comes to business-critical services, connectivity is high on the list. In the age of hybrid and remote working, keeping your employees connected – no matter where they are – is a major factor in your business’ performance. As you should expect our WAN (wide area network) services ensure the local area networks (LANs) within your business can communicate with each other and employees working remotely to securely access business systems and applications. However, it’s so much more than that… Connectivity is the power behind your business’ ability to perform and grow. More than ever, we rely on cloud-based applications and infrastructure to run ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:30.153Z",
+          "contentHash": "68a06b4b7918e4603cddc76e9dfe5f33dccfa318f1b1f115bcfe716a250b7cf2",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-988abc06923bfeb6",
+          "url": "https://www.convergencegroup.co.uk/accreditations-and-certifications-2",
+          "title": "Accreditations and Certifications - Convergence Group",
+          "excerpt": "CG Logo LAN Delivering in-building connectivity solutions that keep businesses running smoothly while saving them money. WAN Connecting business securely over MPLS, to the internet and also via hybrid SD-WAN services security-2black.png Security Keeping your network, infrastructure and people secure and safe 24x7x365 Datacentre When it comes to keeping the lights on, you need infrastructure that remains always on. CaaS Connectivity-as-a-Service is a plug and play, total network solution delivered via a single supplier contract LAN Delivering in-building connectivity solutions that keep businesses running smoothly while saving them money. Security Keeping your network safe is a 24/7 job. That’s why we provide a 24/7 managed security service. WAN Connecting businesses to the world wide web o",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:30.153Z",
+          "contentHash": "4743e55472ec117d7a17c307eef822820ea210342aa552e4aaacfcfc12978f59",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 9,
+      "candidateId": "lead-31a5593691ab2c31",
+      "companyName": "Wavenet",
+      "domain": "wavenet.co.uk",
+      "officialWebsiteUrl": "https://www.wavenet.co.uk/",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "SI",
+        "MSP"
+      ],
+      "totalScore": 77,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-31a5593691ab2c31",
+        "evidence-51e86cd24ddd6045",
+        "evidence-ccb6bfbb8f0e0ae4",
+        "evidence-c216d1cc9a247b7b",
+        "evidence-fb0bc41f1f36be1e"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-31a5593691ab2c31",
+          "url": "https://www.wavenet.co.uk/",
+          "title": "Wavenet | Managed IT, Security, Cloud, AI &amp; Connectivity | UK",
+          "excerpt": "Wavenet | Managed IT, Security, Cloud, AI Connectivity | UK --> Search 0333 234 0011 Incident response Connected Wholesale Careers Find us Support portals _svg]:-bottom-[7px] [ [data-active]_>_svg]:-scale-y-[1] lg:[ [data-active]_>_svg]:scale-y-[1]\" aria-label=\"Solutions\"> Solutions Intelligent connectivity Cloud modern workplace Unified communications voice Mobile IoT Cyber security (CyberGuard) Contact centre Business continuity AI automation All products PSTN replacement services Play the switch-off game PSTN planning toolkit Download the switch-off eBook Services _svg]:-bottom-[7px] [ [data-active]_>_svg]:-scale-y-[1] lg:[ [data-active]_>_svg]:scale-y-[1]\" aria-label=\"Sectors\"> Sectors Public sector Education - schools MATs Education - HE/FE Local government Healthcare Housing Commerci",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:01.598Z",
+          "contentHash": "dc84fa47a14f570ddfe2981759447caf0942d9b68fa26004e99352e4a1658fc0",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-fb0bc41f1f36be1e",
+          "url": "https://www.wavenet.co.uk/news-and-events/wavenet-and-daisy-corporate-services-join-forces",
+          "title": "Wavenet and Daisy Corporate Services Join Forces",
+          "excerpt": "Wavenet and Daisy Corporate Services Join Forces 03/05/24 Wavenet Wavenet and Daisy Corporate Services Join Forces placeholder thumbnail Wavenet and Daisy Corporate Services Join Forces to Create UK’s Largest Independent IT Managed Service Provider. Wavenet and Daisy Corporate Services announce plans to combine. The newly combined business will become the largest independent MSP in the UK. The new £500m revenue company will support over 22,000 businesses and public sector organisations delivering cloud, cyber security and connectivity solutions. Wavenet and Daisy Corporate Services have announced the decision to combine, creating the UK’s largest independent IT managed services provider. The business will be a key innovator with scale, focusing on delivering cyber, cloud and intelligent ne",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:27.859Z",
+          "contentHash": "f3f811373db1372250861fa3589f2f9c60981f8a555a59f8b1a8c265bea457f7",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-51e86cd24ddd6045",
+          "url": "https://www.wavenet.co.uk",
+          "title": "Wavenet | Managed IT, Security, Cloud, AI & Connectivity | UK",
+          "excerpt": "Wavenet · The UK’s most trusted managed service and security provider Enterprise IT & security - without big company complexity Wavenet is the UK's most trusted managed service and security provider. We deliver secure, scalable IT, communications and cloud services with the responsiveness of a specialist partner - so you can modernise faster without managing multiple suppliers. See customer outcomes organisations supported engineers & specialists CSAT score years' operation Our customers Understanding your business and delivering industry-leading solutions Costain_Group_logo NatWest_logo NHS-logo Driver_and_Vehicle_Licensing_Agency_(UK).svg) Workspace_Group_logo Transport_for_London_logo John_Lewis_&_Partners_logo Greene-King Trusted by organisations that can't afford to get IT wrong “Wave",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:27.859Z",
+          "contentHash": "a010b99a41844f18c0821119a5ef05a83bd2b9d563bbb653cc37c2994f5cb9c4",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-c216d1cc9a247b7b",
+          "url": "https://www.wavenet.co.uk/news-and-events/tag/news/page/2",
+          "title": "News blog | News (2) - Wavenet",
+          "excerpt": "red circle location-icon-grey-1 portal-icon wvn-logo-black all-products-icon-white Industries & Sectors overview wvn-logo-black all-products-icon-white Industries & Sectors overview red circle location-icon-grey-1 portal-icon Posts about News (2) Wavenet has announced that its existing CEO Philip Grannum will lead the combined business of Wavenet and Daisy Corporate Services following regulatory approval and completion of the deal this week. It has also been confirmed that the new company, which will be the UK’s largest independent IT managed services and security provider, will operate under the Wavenet brand. United Kingdom, 10th June 2024 – Wavenet, a managed services provider offering businesses cybersecurity, communications, and connectivity, has onboarded a range of Multifunctional P",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:27.860Z",
+          "contentHash": "421ba0042569656214d9ee2862a1b27ffb39fbd3facded782bde7b0f0557f044",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-ccb6bfbb8f0e0ae4",
+          "url": "https://www.wavenet.co.uk/solutions/networking-and-connectivity",
+          "title": "Networking & Connectivity | IT Solutions & Services - Wavenet",
+          "excerpt": "# Network connectivity solutions ## Network connectivity solutions for every organisation. ## Technology tailored to your processes **Run your business the way you choose with our network connectivity solutions — essential infrastructure for security and efficiency.** From supplying broadband to designing networks from scratch, we connect your people, places, and data. #### UK-wide reach #### 99% network coverage #### 24/7 support #### High-capacity and low-latency #### Flexibility to scale as your business changes #### Price points for every budget ## Network connectivity solutions Low-cost, high-performance connectivity that keeps your business running smoothly. Cisco Secure Connect is Wavenet’s fully managed Secure Access Service Edge (SASE) solution, designed for organisations embracin",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:08:01.105Z",
+          "contentHash": "c5cf08bfebe5f1d09809a957002293bafb5e9b0058cca9f062383a36aeca204c",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 10,
+      "candidateId": "lead-31896b794a5470b3",
+      "companyName": "Wifinity",
+      "domain": "wifinity.co.uk",
+      "officialWebsiteUrl": "https://wifinity.co.uk/",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP",
+        "SI"
+      ],
+      "totalScore": 77,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-31896b794a5470b3",
+        "evidence-00f652c0d9379944",
+        "evidence-42a26c0c9c561419",
+        "evidence-56094433c01817c8"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-31896b794a5470b3",
+          "url": "https://wifinity.co.uk/",
+          "title": "Business Networks | Ultrafast Broadband | High-Performance WiFi | Wifinity",
+          "excerpt": "Business Networks | Ultrafast Broadband | High-Performance WiFi | Wifinity Business | Consumer Sectors Defence Public sector Holiday parks &#038; leisure Build-to-rent Later living Social keyworker housing Student housing Corporate Construction Offshore Data Centre Connectivity Facilities management service providers Services Community network, personal broadband Corporate &#038; enterprise connectivity Business critical networking Public &#038; guest WiFi Armed Forces home broadband Travel eSIM About Wifinity About Wifinity Leadership team Careers at Wifinity Defence community Good Connections Customer service Get in touch Resources Customer success Awards certifications News &#038; insight Resource library Get Online My Account Support Get Online My Account Support --> --> --> --> Busine",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:01.497Z",
+          "contentHash": "3dbbbf1e2d45fdc7e63f077ff923adfd30f95b47b91df221f383160057213269",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-00f652c0d9379944",
+          "url": "https://wifinity.co.uk/business",
+          "title": "Business Networks | Ultrafast Broadband | High-Performance WiFi | Wifinity",
+          "excerpt": "Title: Business Networks | Ultrafast Broadband | High-Performance WiFi | Wifinity connect Get Online My Account Support. # Business internet provider. Managed, high-performance WiFi and fibre broadband for complex, multi-user places. ## Transform your organisation with better connectivity. A specialist business internet provider, our ultrafast broadband, dark fibre and managed WiFi networks connect multi-site, multi-user environments like, defence, leisure, BTR, later living, construction, corporate, student, social housing, leisure, offshore, data centres and the public sector. Technical solution expertise | Regulatory and procurement knowledge | Agile partnerships. | Flexible contracting | Rapid deployment | Excellent Customer Service. ## Trusted by major UK organisations. ## Unmatched i",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:56.212Z",
+          "contentHash": "723b5dec3cb9a93a6cb6041ae6210e19b5cb21e050c7ec83ce77665c838852cc",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-42a26c0c9c561419",
+          "url": "http://www.wifinity.co.uk",
+          "title": "Business Networks | Ultrafast Broadband | High-Performance WiFi | Wifinity",
+          "excerpt": "Title: Business Networks | Ultrafast Broadband | High-Performance WiFi | Wifinity connect Get Online My Account Support. # Business internet provider. Fully-managed WiFi & fibre broadband networks for complex, multi-tenant venues. ## Transform your organisation with better connectivity. A specialist business internet provider, our ultrafast broadband, dark fibre and managed WiFi networks connect multi-site, multi-user environments like, defence, leisure, BTR, later living, construction, corporate, student, social housing, leisure, offshore, data centres and the public sector. Technical solution expertise | Regulatory and procurement knowledge | Agile partnerships. | Flexible contracting | Rapid deployment | Excellent Customer Service. ## Trusted by major UK organisations. ## Unmatched indu",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:56.212Z",
+          "contentHash": "c277d2efded8f96ef57e17813d22f26506147d3c499d8deb88f3e8dff21bc115",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-56094433c01817c8",
+          "url": "https://wifinity.co.uk",
+          "title": "Business Networks | Ultrafast Broadband | High-Performance WiFi | Wifinity",
+          "excerpt": "A specialist managed business internet provider, our ultrafast networks connect multi-site, multi-user environments like, defence, leisure, BTR, later living, construction, corporate, student, social housing, leisure, offshore, data centres and the public sector. Technical solution expertise | Regulatory and procurement knowledge | Agile partnerships | Flexible contracting | Rapid deployment | Excellent customer service Talk to our team ## Trusted by major UK organisations. [...] #### Choose fibre broadband, 5G, national ethernet and LEO. Core network with 100 Gbit/s interconnections. National coverage. #### Cut your team workload. Reduce incidents. Support large-scale use. #### Network-as-a-service. Fully-managed service. Somewhere in between… #### Trusted by the UK’s largest brands in sp",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:56.212Z",
+          "contentHash": "59b3b9cfdffe6b106a22d1fde324a3574fb463fe519a2fcfc41d5157f53136b1",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 11,
+      "candidateId": "lead-ff534e7db4b18952",
+      "companyName": "DuoCall Communications Ltd",
+      "domain": "duocall.co.uk",
+      "officialWebsiteUrl": "https://duocall.co.uk/",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP",
+        "SI",
+        "Dealer"
+      ],
+      "totalScore": 76,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-ff534e7db4b18952",
+        "evidence-328e7b3dde7b4c33",
+        "evidence-d98460a9e2ebc7e1"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-ff534e7db4b18952",
+          "url": "https://duocall.co.uk/",
+          "title": "Connectivity, Voice, Mobiles, IT &amp; Managed Services | DuoCall",
+          "excerpt": "Connectivity, Voice, Mobiles, IT Managed Services | DuoCall /********* Compiled CSS - Do not edit *********/ :root{--button_padding:11px 23px;}.has-awb-color-1-color{color:#ffffff;}.has-awb-color-1-background-color{background-color:#ffffff;}.has-awb-color-2-color{color:#f4f6f7;}.has-awb-color-2-background-color{background-color:#f4f6f7;}.has-awb-color-3-color{color:#edeef2;}.has-awb-color-3-background-color{background-color:#edeef2;}.has-awb-color-4-color{color:#74c5da;}.has-awb-color-4-background-color{background-color:#74c5da;}.has-awb-color-5-color{color:#35a8df;}.has-awb-color-5-background-color{background-color:#35a8df;}.has-awb-color-6-color{color:#6239bd;}.has-awb-color-6-background-color{background-color:#6239bd;}.has-awb-color-7-color{color:#333333;}.has-awb-color-7-background-col",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:06:23.341Z",
+          "contentHash": "8ed75643e9da322a42ff37423a64bbf00e9e0b49fa9c4d3cebca48cf6c177497",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-d98460a9e2ebc7e1",
+          "url": "https://duocall.co.uk/case-studies/fps",
+          "title": "FPS - DuoCall",
+          "excerpt": "DuoCall Logo DuoCall Logo FPS | Hosted telephony project Project objectives • Provide a fully hosted platform • Provide a system that can operate with one extension range across the business, to over 400 end users (including multiple contact centre users across 21 sites) • Provide a cost-effective solution • Provide a licensing model that gives different team members access to different features • Provide the ability to connect existing Mitel IP Handsets to reduce capital expenditure • Provide an online call logging application to assist in trend analysis and KPIs • Ensure that the web interface is easy to use and user friendly for the in-house IT team • Enable hot-desking within the organisation • Deliver a resilient and stable platform • Offer Program disaster recovery at the core • Inco",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:27.750Z",
+          "contentHash": "d258d86e12c09ecf37eb28bd1ad1ba819ecbb0da8e0be9682337a8f319d41b92",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-328e7b3dde7b4c33",
+          "url": "https://duocall.co.uk/products-services/it",
+          "title": "IT & managed services for business | DuoCall",
+          "excerpt": "DuoCall Logo DuoCall Logo IT & managed services As a managed service provider, we offer a flexible range of IT service options, from the remote backup and monitoring of your in-house infrastructure to managing all aspects of your business’ IT. All of our solutions are managed by our in-house team of specialists and are suitable for both single-site and multi-site operations. IT & Managed Services with DuoCall MSP Why choose DuoCall MSP for your business’ IT & managed services? Our experienced and forward-thinking IT team is passionate about delivering the most effective services and support for your unique business. So whether you’re looking to maximise data security, enhance network efficiency, implement a seamless remote working policy, or all of the above, our product specialists are on",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:27.753Z",
+          "contentHash": "ddbd0d15a647fa8873eaacc2499650190ee143eab5321baa04e23c517caceb40",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 12,
+      "candidateId": "lead-1bb8d0c8f978473d",
+      "companyName": "HelpDesk Heroes",
+      "domain": "helpdeskheroes.co.uk",
+      "officialWebsiteUrl": "https://helpdeskheroes.co.uk/",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP",
+        "SI"
+      ],
+      "totalScore": 75,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-1bb8d0c8f978473d",
+        "evidence-770d1769665a8ce0",
+        "evidence-8103b9ca7cb0a631",
+        "evidence-22f13226ed667f90",
+        "evidence-0258ca89d13b1ae8"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-1bb8d0c8f978473d",
+          "url": "https://helpdeskheroes.co.uk/",
+          "title": "Home - HelpDesk Heroes",
+          "excerpt": "Home - HelpDesk Heroes 020 3831 2780 Click for IT Support IT Support London IT Security Managed IT Services Cloud Solutions Sectors Advanced IT Support for Law Firms Creative Media & Entertainment IT Solutions Accurate IT Support for Accountants Dedicated Real Estate IT Support Specialised IT Support for Engineering Firms Bespoke Recruitment Agency IT Support Guest-Centric Hospitality IT Support Agile IT Support for Startups Classroom-Ready IT Support for Schools IT Support for Charities Home BUSINESS IT SUPPORT &#038; CLOUD SOLUTIONS Your IT Heroes for a Smooth-Running Business. We're not just IT experts – we're your tech superheroes! We offer proactive solutions, lightning-fast response times, and a comprehensive suite of services designed to keep your business running smoothly. With Hel",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:02.869Z",
+          "contentHash": "d9ee94c1691095438fe5c964277a5b08b4803e918a285ea9742962e70affc522",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-770d1769665a8ce0",
+          "url": "https://helpdeskheroes.co.uk/it-support-london/local-it-support",
+          "title": "Local IT Support London for Small Business - Onsite IT Services Company",
+          "excerpt": "phone-call 020 3831 2780 phone-support Click for IT Support Home > IT Support London > Local IT Support LOCAL IT SUPPORT - ONSITE SUPPORT SERVICE FOR BUSINESS Local IT support for when your situation demands hands-on troubleshooting. One of our IT specialists can be on-location in no time. Whether you’re dealing with network outages, security breaches, critical hardware failures, or other urgent issues, we have the skills to diagnose and resolve the problem on-site. ONSITE LOCAL IT SUPPORT NEAR YOU When remote troubleshooting isn't enough, rely on our prompt onsite IT support to get your business back up and running quickly. Our experienced technicians can be at your London office or facility in no time to diagnose and resolve urgent technical issues in person. With guaranteed rapid respon",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:30.632Z",
+          "contentHash": "5263af913c74cf1ff0450cea99d03c4e37d9756f403ef4a6ee1aef58d9a56dcc",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-22f13226ed667f90",
+          "url": "https://helpdeskheroes.co.uk/uk-it-partner-for-american-companies",
+          "title": "UK IT Partner for American Companies - HelpDesk Heroes",
+          "excerpt": "hdh-xmark phone-call phone-support IT Support Company London UK - Business IT Support Services hdh-bars hdh-xmark hdh-chevron-down search-icon American Companies in the UK: Eliminate IT Challenges Whether you’re building your UK presence from scratch, looking to upgrade your current IT support, or an MSP needing a reliable UK partner, you need a local team that understands British infrastructure and American service expectations. That local team is HelpDesk Heroes. We are your on-site team when you have none, the expert upgrade you deserve, and the reliable UK partner your MSP requires. Whether you’re building your UK presence from scratch, looking to upgrade your current IT support, or an MSP needing a reliable UK partner, you need a local team that understands British infrastructure and ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:30.633Z",
+          "contentHash": "5d671254124ba125d86c451c3aa3cdd4bf974696a6161079c65a9a133168ef05",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-8103b9ca7cb0a631",
+          "url": "https://helpdeskheroes.co.uk",
+          "title": "Home - HelpDesk Heroes",
+          "excerpt": "phone-call 020 3831 2780 phone-support Click for IT Support BUSINESS IT SUPPORT & CLOUD SOLUTIONS hdh-logo-animation hdh-city-Illustration-redux HDH_Logo_Strip_v2.2 (1) Your IT Heroes for a Smooth-Running Business. We're not just IT experts – we're your tech superheroes! We offer proactive solutions, lightning-fast response times, and a comprehensive suite of services designed to keep your business running smoothly. With HelpDesk Heroes, you get more than just IT support – you get a team of dedicated IT veterans who are passionate about your success and security. Let's chat about your IT goals today. Book your FREE IT Consultation today and discover the HelpDesk Heroes difference. ➟ CONTACT US! hdh-cyber-essentials TP_logo google_reviews helpdesk heroes london uk company logo About HelpDes",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:30.633Z",
+          "contentHash": "43c915a3e1e4176be077148c4e8fb41c38c93bc42b11a66591947a21ac591f1d",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-0258ca89d13b1ae8",
+          "url": "https://helpdeskheroes.co.uk/blog/it-solutions/5-best-cloud-backup-solutions-for-uk-small-business",
+          "title": "5 Best Cloud Backup Solutions for UK Small Business",
+          "excerpt": "hdh-xmark phone-call phone-support IT Support Company London UK - Business IT Support Services hdh-bars hdh-xmark hdh-chevron-down search-icon 5 Best Cloud Backup Solutions for UK Small Business 5 Best Cloud Backup Solutions for UK Small Business Getting the best cloud backup solutions for business is critical for all types of companies. Even if you only have a few employees, keeping files and documents secure is important. We know and we’ve heard about far too many businesses that have lost work in progress or completed work because it was not backed up regularly or off-site in the cloud. When it comes to online backup, UK users have the same requirements as everyone else in the world. The one improvement is having servers in the UK itself being a huge benefit in terms of speed, privacy a",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:30.633Z",
+          "contentHash": "9d406f162b5fcfaec0e8a9897092a1bb0d42fdb58f1f90229935a1ee7fe0508a",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 13,
+      "candidateId": "lead-d9ee0baca104bf87",
+      "companyName": "MSP247",
+      "domain": "msp247.co.uk",
+      "officialWebsiteUrl": "https://www.msp247.co.uk/",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP",
+        "SI"
+      ],
+      "totalScore": 75,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-d9ee0baca104bf87",
+        "evidence-98ea97ac76942ff8",
+        "evidence-8d29f64d3239b770",
+        "evidence-2722dbaeb057776d",
+        "evidence-aeffb88c1d478ae9"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-d9ee0baca104bf87",
+          "url": "https://www.msp247.co.uk/",
+          "title": "Managed IT &amp; Technology Services Across Yorkshire | MSP247",
+          "excerpt": "Managed IT Technology Services Across Yorkshire | MSP247 Skip to content Talk to our team Mon–Fri 08:00–17:30 0330 301 0500 Toggle navigation About Us How MSP247 Works Services Hosting Managed IT Support IT Procurement IT Consultancy Physical Site Security Backup &#038; Continuity Microsoft 365 Cybersecurity Apple Support IT Support by Sector IT Support Cost &#038; Coverage Estimator Business Downtime Cost Calculator Proactive IT Monitoring &#038; Maintenance Connectivity Telephone Systems Network &#038; Wi-Fi Internet 4G/5G Broadband VoIP Trunks Yorkshire Coverage Leeds York Contact Us Support Tech Hub Remote Support Helpdesk Free Business IT Tools Complete IT Support for Every Device, Network and Workplace One trusted team for every device, network and workplace. MSP247 keeps your Window",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:06:26.169Z",
+          "contentHash": "8ccaea5689d78d7b8115a5a821151bbfa8113ad231cf1637b0113945181adcc4",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-98ea97ac76942ff8",
+          "url": "https://www.msp247.co.uk/network-and-wi-fi-services-for-businesses",
+          "title": "Business Network & Wi-Fi Services in York | MSP247",
+          "excerpt": "MSP247 # Network and Wi-Fi Services for Businesses Welcome to MSP247, your trusted partner in advanced Network and Wi-Fi solutions for Businesses. Embrace the power of software-defined networking (SDN) for seamless device updates and centralized management. Whether you need robust Unifi routers, high-performance switches, or cutting-edge Wi-Fi access points, we’ve got you covered. ## Router Features [...] Our switching solutions are tailored for businesses that demand reliability and scalability: ## Wi-Fi Access Points [...] Our access points are designed for dense environments like offices, retail spaces, or multi-floor buildings, delivering consistent performance even with high user counts. Their beamforming technology directs the strongest signal to devices, ensuring stable connections ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:49.422Z",
+          "contentHash": "d8e4ae8934b7ff93ed8bf17f595265eeb7b76c708cfe065d82de2603e2b05917",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-aeffb88c1d478ae9",
+          "url": "https://www.msp247.co.uk/about-us",
+          "title": "About MSP247 | York Technology Partner",
+          "excerpt": "We specialize in 24/7 proactive monitoring, ensuring your systems run efficiently, minimising downtime, and maximizing productivity. Our team designs tailored IT solutions, enhancing your network infrastructure and optimizing connectivity to meet the unique demands of your business. Whether it’s managed IT services, network installation, or strategic consultancy, MSP247 is the trusted partner you can count on. Let us handle the complexities of IT, so you can concentrate on driving your business [...] your business forward. [...] At MSP247, we pride ourselves on delivering top-tier IT solutions with a personal touch. Our expert team, with a wealth of experience, is committed to providing proactive, reliable, and tailored IT services that empower your business to thrive. From managed IT serv",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:49.422Z",
+          "contentHash": "9e59a725400359119352d66ad8da100b6e027d5811292445b530d7eebfbdb740",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-2722dbaeb057776d",
+          "url": "https://www.msp247.co.uk",
+          "title": "MSP247: Managed IT & Technology Services Across Yorkshire",
+          "excerpt": "## One Partner for Your Whole Technology Estate From the devices your employees use to the networks, servers and cloud services behind them, MSP247 provides a complete technology solution. We handle everyday support, proactive monitoring, security, patching, connectivity, procurement and third-party suppliers—giving your business one dependable place to turn. ### Technology We Support [...] Proactive monitoring, maintenance and responsive support that keeps your business productive and minimises downtime. Explore managed IT support ## Device & User Support Expert help for Windows, macOS, iOS, ChromeOS, Linux and Android across desktops, laptops, mobiles and tablets. Explore device support ## Networks & Wi-Fi Secure, high-performance routers, switches and Wi-Fi designed, installed and manag",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:49.422Z",
+          "contentHash": "10cc9e6db2d06c34ccc345e506fc29350d4e810896dd854e181b7a5ab61aca37",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-8d29f64d3239b770",
+          "url": "https://www.msp247.co.uk/it-procurement",
+          "title": "Business IT Procurement & Hardware Supply | MSP247",
+          "excerpt": "Source the right laptops, desktops, servers, networking and business technology with expert specification, supply and support from MSP247.",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:49.422Z",
+          "contentHash": "989dc216e27b250777f8b427149c5dcbf3a61e7c5f7bffc25be60876fc197c5e",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 14,
+      "candidateId": "lead-8f5b2bde11a59aa9",
+      "companyName": "UK Cloud",
+      "domain": "ukcloud.co.uk",
+      "officialWebsiteUrl": "https://ukcloud.co.uk/",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP",
+        "SI"
+      ],
+      "totalScore": 74,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-8f5b2bde11a59aa9"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-8f5b2bde11a59aa9",
+          "url": "https://ukcloud.co.uk/",
+          "title": "Business Connectivity Solutions By UK Cloud | Business Internet",
+          "excerpt": "Business Connectivity Solutions By UK Cloud | Business Internet Skip to content UK Cloud About Us Careers Solutions Partners News Insight Contact Us --> --> Business Connectivity, Expertly Delivered Welcome to UK Cloud. We deliver fast, secure, and resilient internet, Wi-Fi, and communication solutions tailored to the needs of modern businesses. From multi-site enterprises to agile SMEs, our expert team ensures seamless global connectivity and local support—keeping your business connected, productive, and future-ready. Ready To Connect? Call us on: 0330 0947 560 --> Business Connectivity Expertise Redefining Business Connectivity for Forward -Thinking Businesses All our business connectivity solutions are designed to keep your business running at full speed, without compromise. From reliab",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:01.562Z",
+          "contentHash": "9121484ac81df56970355470003173c0742806da7394771e1cdca72af0fc2b70",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 15,
+      "candidateId": "lead-cb36fc6ff16b4eb4",
+      "companyName": "Digital Avenue",
+      "domain": "digitalavenue.co.uk",
+      "officialWebsiteUrl": "https://www.digitalavenue.co.uk/",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP",
+        "SI"
+      ],
+      "totalScore": 71,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-cb36fc6ff16b4eb4"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-cb36fc6ff16b4eb4",
+          "url": "https://www.digitalavenue.co.uk/",
+          "title": "Wireless Connectivity Solutions for Businesses &amp; Events by Digital Avenue",
+          "excerpt": "Wireless Connectivity Solutions for Businesses Events by Digital Avenue What We Do Core Services Fixed Wireless Access Get primary, enterprise-grade 5G internet installed in days, not months. True Diverse Path Ensure 100% uptime with a backup path independent of your fibre line. Fibre Bond We combine fibre with 5G for the ultimate in speed and reliability. Other Services Day 1 Internet Remote Site Emergency Internet Event Connectivity Portable WiFi Guides Resources Temporary Internet for IT Managers Jump right in — get an overview of the basics and get started on building. Event Connectivity made simple Once you’re ready, learn more about advanced analytics, features and shortcuts. View All Guides Resources Industries Office Design Build Provide instant connectivity for site offices and ne",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:06:23.266Z",
+          "contentHash": "1c098b184d9ede0a576f93a168843fd3415ca47554a1baa86904afe3d5372f41",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 16,
+      "candidateId": "lead-0f30d8fc2f6369ec",
+      "companyName": "Wanstor Ltd",
+      "domain": "wanstor.com",
+      "officialWebsiteUrl": "https://www.wanstor.com/",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP",
+        "Reseller"
+      ],
+      "totalScore": 70,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-0f30d8fc2f6369ec",
+        "evidence-d02d916e94291cb9",
+        "evidence-1cea6d753d9c0d63",
+        "evidence-36200564bab44ebd",
+        "evidence-e11eb5f6722ee0d9",
+        "evidence-1d339c1b553898ed",
+        "evidence-249015ddc6d6607f",
+        "evidence-c6c4369fea04f162"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-0f30d8fc2f6369ec",
+          "url": "https://www.wanstor.com/",
+          "title": "Managed IT Services UK: Transform Your IT Operations",
+          "excerpt": "Managed IT Services UK: Transform Your IT Operations Skip to main content Customer Portal Open main menu Who we work with Who we work with Industries Industries Solutions Solutions This is us This is us Insights Insights Positions CIO IT Manager Operations Finance Popular Solutions Transformation &#038; AI Intelligent Operations Secure by Default Latest Blogs AI in Hospitality: A New Frontier for Guest Experiences Why CIOs are Choosing Managed IT for Strategic Freedom Industries Not-for-profit Housing Associations Legal Services Consultancies Hospitality Our Solutions Transformation &#038; AI Secure by Default Intelligent Operations Digital Experience Management Connectivity 24/7 Managed IT Service Desk Digital Foundations Latest News Wanstor Celebrates Double Win at Spark2025 Wanstor Feat",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:06:21.640Z",
+          "contentHash": "cfc2c890f3df35043c3e40b2aa829bad48ca8fb7ba7006f9af67eddfa3be0091",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-d02d916e94291cb9",
+          "url": "https://shop.wanstor.com/customer_registration",
+          "title": "Register as a new customer - Shop one-stop IT solutions with Wanstor",
+          "excerpt": "We use cookies to personalise content and ads, to provide social media features and to analyse our traffic. We also share information about your use of our site with our social media, advertising and analytics partners. Wanstor Ltd Suggested products Suggested categories Suggested search words Register as a new customer Account information Settings Customer Information Invoice address United Kingdom Delivery address United Kingdom Top Sellers C2G Value Series 2m High Speed HDMI to HDMI Mini Cable with Ethernet £6 Logitech USB Headset H570e £36 Logitech MK235 - Keyboard and mouse set £21",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:27.585Z",
+          "contentHash": "02ea7295d60c7d5f674c8340ae291c3f20262964642f38575c20b5b48ca60703",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-1cea6d753d9c0d63",
+          "url": "https://www.wanstor.com",
+          "title": "Managed IT Services UK: Transform Your IT Operations",
+          "excerpt": "# The Intelligent MSP for ambitious mid-market organisations Wanstor is the managed service partner for UK organisations who want technology that is experience-first, AI-fluent and secure by default. We measure ourselves on whether your people get more done, every day, with less friction. Book a 30-minute Experience Review See our customer stories ## Your partner for secure, productive, future-ready IT. Business IT support that actually improves performance. [...] Catch22 logo > Wanstor have been epic. From implementing massive migrations seamlessly to huge improvements in efficiency and functionality. Daniel Swithinbank Head of IT & Digital, Catch22 The Arch Co logo > I feel I have the best of everything with Wanstor - from our initial requirement around in- and out-of-hours IT support, t",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:37.733Z",
+          "contentHash": "5261b86f18c18add098cb7df51fe0fa7847f99227cd0bd054393e1c9694a8c98",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-249015ddc6d6607f",
+          "url": "https://www.wanstor.com/cookie-policy",
+          "title": "Wanstor Cookie Policy: What You Need to Know",
+          "excerpt": "Cookie Policy This Cookie Policy was last updated on 17 March 2025 and applies to citizens and legal permanent residents of the United Kingdom. 1. Introduction Our website, (hereinafter: \"the website\") uses cookies and other related technologies (for convenience all technologies are referred to as \"cookies\"). Cookies are also placed by third parties we have engaged. In the document below we inform you about the use of cookies on our website. 2. What are cookies? A cookie is a small simple file that is sent along with pages of this website and stored by your browser on the hard drive of your computer or another device. The information stored therein may be returned to our servers or to the servers of the relevant third parties during a subsequent visit. 3. What are scripts? A script is a pi",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:27.586Z",
+          "contentHash": "0c9d3b109ebfbe1838afdabbae026b09c8b98d54219045524b3cd25a649c20d9",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-36200564bab44ebd",
+          "url": "https://www.wanstor.com/terms-and-conditions",
+          "title": "Terms and Conditions You Should Know About - Wanstor",
+          "excerpt": "Wanstor Positions Popular Solutions Latest Blogs AI in Hospitality: A New Frontier for Guest Experiences Why CIOs are Choosing Managed IT for Strategic Freedom Industries Our Solutions Latest News Wanstor Celebrates Double Win at Spark2025 Wanstor Featured in Oxygen 250 2025 Report Solutions Who we work with Microsoft Partnership Microsoft Partnership This is us Industries Blog Data Security for Remote Teams Future-Proofing IT for Rapid Market Changes Our Events Latest Insights Resources Who we work with AI in Hospitality: A New Frontier for Guest Experiences Why CIOs are Choosing Managed IT for Strategic Freedom Industries Wanstor Celebrates Double Win at Spark2025 Wanstor Featured in Oxygen 250 2025 Report Solutions Microsoft Partnership This is us Data Security for Remote Teams Future-P",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:27.586Z",
+          "contentHash": "3bda734ac9bb59161aa63d39e19ca6ec193906c21e5babf3e554c8758773d10b",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-c6c4369fea04f162",
+          "url": "https://www.wanstor.com/this-is-us/partnerships",
+          "title": "Wanstor Partnerships for Business Growth and Success",
+          "excerpt": "Wanstor works with leading technology partners to deliver best-in-class IT solutions. Explore our partner ecosystem.",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:37.733Z",
+          "contentHash": "a8e6fcc3cfd0f930a2b58b1fc6c8588fbe5e6b928089a2223b98afb54e5a49da",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-e11eb5f6722ee0d9",
+          "url": "https://uk.linkedin.com/company/wanstor",
+          "title": "Wanstor - We are an award-winning Managed IT Service Provider enabling customers to build better businesses through technology.",
+          "excerpt": "and grow without limits. [...] ## Overview [...] ## Additional",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-06T06:07:37.733Z",
+          "contentHash": "1384683046f651f597dc8960a307b1f0098a00057e31b8b03e62f2f2fda57106",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-1d339c1b553898ed",
+          "url": "https://www.wanstor.com/solutions/connectivity-updated",
+          "title": "Business Connectivity Services for Modern Organisations - Wanstor",
+          "excerpt": "Wanstor delivers reliable business connectivity services for commercial organisations; scalable, secure and resilient solutions managed 24/7.",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:37.733Z",
+          "contentHash": "47907e458359a518a2fbe3da337892954333bd1b39a4a16c24b984c47442d9d6",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 17,
+      "candidateId": "lead-11b06c13ad4f9718",
+      "companyName": "Innovated IT (part of Microbyte Solutions)",
+      "domain": "microbyte.com",
+      "officialWebsiteUrl": "https://www.microbyte.com/innovated-it/",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP",
+        "SI"
+      ],
+      "totalScore": 68,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-11b06c13ad4f9718"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-11b06c13ad4f9718",
+          "url": "https://www.microbyte.com/innovated-it/",
+          "title": "Innovated IT | Microbyte",
+          "excerpt": "Innovated IT | Microbyte Home IT Support IT Support Peterborough | 24/7 Managed IT Services | Microbyte IT Support Services London IT Support Dubai IT Support Portland White Label Helpdesk Managed IT Services AMC Services Virtual IT Director Managed IT London NetAdmin Value Added Reseller IT Solutions AI Services Cloud Migrations Cyber Security for Small Business IT Security Microsoft 365 Virtual Desktops Sectors Small Business Legal Finance Healthcare Property Construction Manufacturing Produce &#038; Agriculture VoIP 3CX SimplyCalls Blog About Our clients Case Studies Careers Contact us Pboro: +44 (0)1733 577055 London: +44 (0)20 3598 8412 Portland: +1 971 350 2061 Dubai: +971 (0)4450 9720 Home IT Support IT Support Peterborough | 24/7 Managed IT Services | Microbyte IT Support Services ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:06:25.935Z",
+          "contentHash": "d1efedb46e983a38ebcf6d3e73d7f6411fdf2d288ff2771add7f084e434a1c8d",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 18,
+      "candidateId": "lead-7f39620a2cbcc42a",
+      "companyName": "IT Managed 247",
+      "domain": "itm247.com",
+      "officialWebsiteUrl": "https://www.itm247.com/",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP",
+        "SI"
+      ],
+      "totalScore": 68,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-7f39620a2cbcc42a"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-7f39620a2cbcc42a",
+          "url": "https://www.itm247.com/",
+          "title": "Home - IT Managed 247 London - IT Support and Cyber Security",
+          "excerpt": "Home - IT Managed 247 London - IT Support and Cyber Security Skip to main content IT Managed 247 London &#8211; IT Support and Cyber Security Home Why ITM247 Our IT Services IT Support Network Field Engineers IT Infrastructure Internet Connectivity Growth Consultancy​ Remote IT Solutions Cyber Security Business Continuity Cyber Security Secure WiFi Cloud Services Office 365 VoIP FWaaS Managed Office 365 Data Backup Acronis Disaster Recovery Cloud Acronis Cyber Cloud Backup Contact us Home Why ITM247 Our IT Services IT Support Network Field Engineers IT Infrastructure Internet Connectivity Growth Consultancy​ Remote IT Solutions Cyber Security Business Continuity Cyber Security Secure WiFi Cloud Services Office 365 VoIP FWaaS Managed Office 365 Data Backup Acronis Disaster Recovery Cloud Ac",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:06:26.315Z",
+          "contentHash": "3096f7e045d6cb895892aaf2f73c58be58c9757fd23b758ec52344542efe11c1",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 19,
+      "candidateId": "lead-4de5d6021e1ac52d",
+      "companyName": "Horizon Networks",
+      "domain": "horizonetwork.co.uk",
+      "officialWebsiteUrl": "https://www.horizonetwork.co.uk/",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "SI",
+        "MSP"
+      ],
+      "totalScore": 66,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-4de5d6021e1ac52d",
+        "evidence-b1c1f04eef912ca5",
+        "evidence-a543d2595e5afca3",
+        "evidence-1e4ef12a7ce594b4"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-4de5d6021e1ac52d",
+          "url": "https://www.horizonetwork.co.uk/",
+          "title": "Horizon Networks - Digital Marketing Agency London - Network solutions London",
+          "excerpt": "Horizon Networks - Digital Marketing Agency London - Network solutions London 42-44 High Street, Slough, Berkshire, UK +44 7714 440546 info@horizonetwork.co.uk Let&#039;s Talk Primary Menu Home Network Solutions IT Consultancy Managed Services Network Services Wireless Solutions Collaboration Services Small Business IT Support Network Security Solutions 24/7 Remote Desktop/Server Support Web Solutions Branding Google Ads SEO Services Social Media Marketing Hire Dedicated Resources Web Design &#038; Development About us Contact Us THAT PROVIDE NETWORKING & WEB SOLUTIONS! CREATIVE PEOPLE DYNAMIC TEAM OF WE ARE A &#xf1f9; &#xf1f9; SERVICES THAT BRING YOU RESULTS &#xf283; &#xf283; PACKAGES FOR ALL BUDGETS &#xf543; &#xf543; RESPONSIVE WEBSITES &#xf2f6; &#xf2f6; STRATEGIC CREATIVE THINKERS Horiz",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:06:30.181Z",
+          "contentHash": "3078e3a6eae6d6f206ac018e8180f5ec9a5a9b7bcbaf9881965e48451853e541",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-b1c1f04eef912ca5",
+          "url": "https://www.horizonetwork.co.uk/web-solutions",
+          "title": "Web Solutions - Horizon Networks",
+          "excerpt": "Horizon Networks Horizon Networks Web Solutions WE ASPIRE TO PROVIDE TOP-NOTCH WEB SOLUTIONS FOR YOU Quality of services is our pride. Our vision is to establish your brand with a unique identity by utilizing our state-of-the-art web and digital tools combined with a team of technology freaks who are well-versed in working with all the sophisticated web development and web design tools. And this is the secret to our high-quality digital marketing, Google ads, SEO, Social media marketing, and website development services. Branding Our creative Branding Agency London reveals and transforms your business ideas into reality from logo design, email designing, and stationery designs to the final establishment of your business identity. We have experts at our branding company in London who focus ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:30.870Z",
+          "contentHash": "bf41eb54879fd74c8e0021059ecab71d2907c83cf17ceb7207121ff629b461d2",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-a543d2595e5afca3",
+          "url": "https://www.horizonetwork.co.uk/web-solutions/branding",
+          "title": "Creative Branding Agency London - Branding Company London",
+          "excerpt": "Horizon Networks Horizon Networks Branding Our Focused Branding Services Logo Design Our creative and innovative logo designers at creative branding agency London always create unique logos that will be the personification of your business from its unique colour scheme to the appealing design of the logo. Create the best logo with us! Web Design Horizon Network provides highly interactive, user-friendly, and appealing web design by our incredible web developers letting the visitors switch between pages and ultimately opt for your product or service. Our designers do it dexterously! Social Media Design Effective Interaction with your audience is the core of creating a business identity, and we do it with the help of our inspired graphic designers and ingenious content writers to keep up wit",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:30.871Z",
+          "contentHash": "97494880d23c010858a929743dbe0292550b9f0c81dde0e12b17f95324ffb8cb",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-1e4ef12a7ce594b4",
+          "url": "https://www.horizonetwork.co.uk/web-solutions/social-media-marketing",
+          "title": "b2b Social Media Agency - Social Media Marketing Company London",
+          "excerpt": "Horizon Networks Horizon Networks Social Media Marketing Our experienced social media managers create and develop relevant content to engage the targeted audience regularly. Moreover, to introduce a brand identity or to offer B2B Social Media Agency London services at regular intervals, our branding company London utilizes the optimum tools and social media platforms. The specialists at Social Media Marketing Company London provide dedicated resources and also plan and execute successful marketing campaigns to drive up sales instantly and consistently. A precise and error-free approach towards social media marketing helps managers and businesses achieve the desired results with the minimum effort and in the minimum time at the minimum cost. The relevant, engaging and interactive content he",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:30.871Z",
+          "contentHash": "a482d49e313a8be7c5dd05b9886dfd86555713efbe60378b8ec1de4d418ae041",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 20,
+      "candidateId": "lead-3f33fcc121373c09",
+      "companyName": "TWC IT Solutions",
+      "domain": "twc-it-solutions.com",
+      "officialWebsiteUrl": "https://twc-it-solutions.com/",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "SI",
+        "MSP"
+      ],
+      "totalScore": 66,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-3f33fcc121373c09",
+        "evidence-ff1407066875dfff"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-3f33fcc121373c09",
+          "url": "https://twc-it-solutions.com/",
+          "title": "London’s leading IT Solutions company - TWC IT Solutions",
+          "excerpt": "London’s leading IT Solutions company - TWC IT Solutions @font-face{font-family:ETmodules;font-display:block;src:url(//twc-it-solutions.com/wp-content/themes/Divi/core/admin/fonts/modules/all/modules.eot);src:url(//twc-it-solutions.com/wp-content/themes/Divi/core/admin/fonts/modules/all/modules.eot?#iefix) format(\"embedded-opentype\"),url(//twc-it-solutions.com/wp-content/themes/Divi/core/admin/fonts/modules/all/modules.woff) format(\"woff\"),url(//twc-it-solutions.com/wp-content/themes/Divi/core/admin/fonts/modules/all/modules.ttf) format(\"truetype\"),url(//twc-it-solutions.com/wp-content/themes/Divi/core/admin/fonts/modules/all/modules.svg#ETmodules) format(\"svg\");font-weight:400;font-style:normal} @font-face{font-family:FontAwesome;font-style:normal;font-weight:400;font-display:block;src:ur",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:03.170Z",
+          "contentHash": "2f02b4f116af109b0ed64ffd64e52fe9cfdb14f026556cad67a762b4a0c4db7a",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-ff1407066875dfff",
+          "url": "https://twc-it-solutions.com/managed-lan-wifi",
+          "title": "Managed LAN services in London | TWC IT Solutions",
+          "excerpt": "Title: Managed LAN services in London | TWC IT Solutions # Managed LAN services. – Guarantees a Secure Business Network. TWC IT Solutions understands and meets this goal by providing fully managed LAN services and WiFi networking for an enterprise-grade managed solution. With proactive network management to spot and resolve issues, therefore minimising disruption, all our solutions are scalable and quick to deploy. With LAN switches and WiFi provided by the largest leading technology vendors, with proven reliability and performance, TWC implements a truly mobile solution for your business users. ## Managed LAN Services offered by TWC IT Solutions. Client/server LANs are responsible for file storage management, handling application, and device access, and network traffic. The number of LAN ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:08:00.728Z",
+          "contentHash": "cd7830bfb64b2298c07c1850b3fdf06034fbd4641981f359f1db918265fbfc1c",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 21,
+      "candidateId": "lead-52cef467e2446822",
+      "companyName": "Network London",
+      "domain": "networklondon.co.uk",
+      "officialWebsiteUrl": "https://www.networklondon.co.uk/",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP",
+        "SI"
+      ],
+      "totalScore": 65,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-52cef467e2446822"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-52cef467e2446822",
+          "url": "https://www.networklondon.co.uk/",
+          "title": "Premium IT Support London | No1 Fully Managed IT Services For Business",
+          "excerpt": "Premium IT Support London | No1 Fully Managed IT Services For Business 0333 335 5020 info@networklondon.co.uk remote support client portal Start Here Services Pricing About FAQs Speak to an IT specialist We help businesses manage their IT environment with fully managed IT support. Our London IT support services cover everything from advanced cybersecurity to end-user support, simplifying the management of your IT systems and freeing you to focus on your business. Speak to an IT specialist Get FREE cyber security Get full access to our IT experts who feel like an extension to your own team Collaborate closely with your personal IT director to maintain the perfect strategy Maintain a reliable IT environment that allows your team’s productivity to thrive Without the right strategy, technology",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:06:21.780Z",
+          "contentHash": "e1317e6359fcef1498ed3cb81728ef88794befe2ca9d558d248234653b952952",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 22,
+      "candidateId": "lead-1219fd3628519837",
+      "companyName": "IT-MSP Ltd",
+      "domain": "it-msp.net",
+      "officialWebsiteUrl": "https://it-msp.net/",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP"
+      ],
+      "totalScore": 64,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-1219fd3628519837",
+        "evidence-f8fecbf2c3715492"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-1219fd3628519837",
+          "url": "https://it-msp.net/",
+          "title": "IT Support London | IT-MSP — Managed IT, Cyber Security &amp; VoIP for SMBs",
+          "excerpt": "IT Support London | IT-MSP — Managed IT, Cyber Security VoIP for SMBs We use cookies We use cookies to enhance your browsing experience, analyse site traffic, and personalise content. By clicking \"Accept\", you consent to our use of cookies. Learn more Decline Accept Home Services About Blog Case Studies Testimonials Contact Quick Support Book a free IT review London / Managed IT / Trusted by 100+ businesses Your IT. Handled. So You Can Focus on Growth. We take full ownership of your technology, from day-to-day support to cyber security and cloud infrastructure, so your team stays productive and your business keeps moving. Book your free IT review See how we help No long-term contract to start Free 30-minute review 15 min Avg response 98 % Client retention CE + Cyber Essentials Live monitor",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:06:21.480Z",
+          "contentHash": "51d9d1f3682c3f8ea5f0acac21277307784b4a63eb80427ef71eeca8b723c409",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-f8fecbf2c3715492",
+          "url": "https://it-msp.net",
+          "title": "IT Support London | IT-MSP — Managed IT, Cyber Security & VoIP for SMBs",
+          "excerpt": "IT-MSP was founded on one idea: businesses deserve an IT partner who genuinely cares about their success. Based in South West London, we work alongside SMEs across the UK, not as a faceless help desk but as an extension of your team. Our certified engineers learn how your business operates, anticipate problems before they happen, and make sure technology is an advantage, never a bottleneck. From a five-person startup to a 200-seat enterprise, we scale with you. 01 ### Trusted partner [...] View all posts Cyber Essentials Explained: A Plain-English Guide for UK Businesses (2026) Cybersecurity/25 Jun 2026 ### Cyber Essentials Explained: A Plain-English Guide for UK Businesses (2026) Cyber Essentials in plain English: what it is, the five controls, the difference between Cyber Essentials and ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:35.287Z",
+          "contentHash": "4b2e04123eadad90884fce13cc82e7a7828aaab215a7fac6b8ce1a6642ac4eb6",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 23,
+      "candidateId": "lead-a2539ff27df8a579",
+      "companyName": "Synergi Tech Limited",
+      "domain": "synergitech.co.uk",
+      "officialWebsiteUrl": "https://synergitech.co.uk/",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "MSP"
+      ],
+      "totalScore": 64,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-a2539ff27df8a579"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-a2539ff27df8a579",
+          "url": "https://synergitech.co.uk/",
+          "title": "Synergi Tech Limited | Empowering Innovation, Delivering Solutions",
+          "excerpt": "Synergi Tech Limited | Empowering Innovation, Delivering Solutions Services Software and Applications Software Development Laravel Development Mobile Applications AI Development Software Integrations Automation Development Xero Approved Developers SaaS Development Managed IT and Cloud Managed IT Services Outsourced Helpdesk IT Support Services Cyber Security Microsoft 365 and Azure Amazon Web Services Cloud Management Infrastructure Security CCTV Systems Access Control Systems WiFi Installation VoIP Systems Structured Cabling Installation Connectivity Services Business Mobile Digital Transformation Modernise your business with expert digital transformation services. From cloud migration to process automation, we help you unlock growth and competitive advantage. Find out more Need a custom ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:06:22.669Z",
+          "contentHash": "9f570094d50e75e0bac63d7870953507f1d272c22d7c544af755139aa244d9b9",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 24,
+      "candidateId": "lead-1190a8d9f8309eca",
+      "companyName": "Systems IT Support & Consultancy Limited",
+      "domain": "systemsit.net",
+      "officialWebsiteUrl": "https://systemsit.net/",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP",
+        "SI"
+      ],
+      "totalScore": 62,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-1190a8d9f8309eca",
+        "evidence-993c4da9cba97aa6"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-1190a8d9f8309eca",
+          "url": "https://systemsit.net/",
+          "title": "IT support London . SystemsIT: Keeping your teams working",
+          "excerpt": "IT support London . SystemsIT: Keeping your teams working Skip to main content Remote Support 020 7227 9700 Our Services IT Support Cloud Solutions IT Security Connectivity Telecoms Business Continuity Client Stories About Us Resources Blog Contact Us Press enter to begin your search Search Close Search Mixing the right IT support and technology will Ensure remote teams can work effectively Deliver the IT security today&#039;s world demands Accelerate your business growth Boost productivity enable flexibility Delivering IT Support across London Find out how Mixing the right IT support and technology will Ensure remote teams can work effectively Deliver the IT security today&#039;s world demands Accelerate your business growth Boost productivity enable flexibility Delivering IT Support acro",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:06:22.042Z",
+          "contentHash": "cb881ca1b5b830db336500a127f38d166b9c997a4688a7ab737aabb7a249cdee",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-993c4da9cba97aa6",
+          "url": "https://systemsit.net",
+          "title": "IT support London . SystemsIT: Keeping your teams working",
+          "excerpt": "systemsIT 020 7227 9700 Ensure remote teams can work effectively Deliver the IT security today's world demands Accelerate your business growth Boost productivity & enable flexibility Delivering IT Support across London IT Support for London businesses from Systems IT Ensure remote teams can work effectively Deliver the IT security today's world demands Accelerate your business growth Boost productivity & enable flexibility Delivering IT Support across London IT Support for London businesses from Systems IT Trusted experts Trusted experts Delivering the right IT support to London businesses since 2004. Fixed cost support Fixed cost support Helping you control and manage costs & budgets. Keeping you up and running Effective & flexible Enabling your team to work wherever is best for them & fo",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:19.601Z",
+          "contentHash": "54f69739f1ce38cf1872d9615d4bb8248a235fb7fdb4fd28419cf4d29caa58b6",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 25,
+      "candidateId": "lead-1249c09db0f94e71",
+      "companyName": "Wireless Solutions",
+      "domain": "wireless.solutions",
+      "officialWebsiteUrl": "https://wireless.solutions/",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP",
+        "SI"
+      ],
+      "totalScore": 61,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-1249c09db0f94e71",
+        "evidence-deed3a40f517b33a"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-1249c09db0f94e71",
+          "url": "https://wireless.solutions/",
+          "title": "Wireless Solutions - Event connectivity &amp; technology",
+          "excerpt": "Wireless Solutions - Event connectivity technology .elementor-kit-8{--e-global-color-primary:#38903F;--e-global-color-secondary:#63666B;--e-global-color-text:#1F1F1F;--e-global-color-accent:#F0BE09;--e-global-color-5d767a8:#EFF1F9;--e-global-color-b910288:#006633;--e-global-color-0dae8d2:#FFFFFF;--e-global-color-3ea006e:#E7B913;--e-global-color-984eff8:#F5FFCF;--e-global-typography-primary-font-family:\"Stack Sans Notch\";--e-global-typography-primary-font-weight:600;--e-global-typography-secondary-font-family:\"Stack Sans Notch\";--e-global-typography-secondary-font-weight:600;--e-global-typography-text-font-family:\"Stack Sans Text\";--e-global-typography-text-font-weight:300;--e-global-typography-accent-font-family:\"Stack Sans Notch\";--e-global-typography-accent-font-weight:400;--e-global-typ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:03.525Z",
+          "contentHash": "cb36de5503fd04b0981d4c5bd4c8a21c618ed132bda3f09e1043679571d8f239",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-deed3a40f517b33a",
+          "url": "https://wireless.solutions/blog/uk-wifi-providers-business-and-consumer-suppliers-of-connectivity-solutions",
+          "title": "UK WiFi Providers - your comprehensive list - Wireless Solutions",
+          "excerpt": "Get a Quote Today UK WiFi Providers – your comprehensive list Table of Contents If you’re looking for a UK based WiFi provider, there are a multitude to choose from. It can be rather mind-boggling. But don’t despair, there are some simple ways that you can start to whittle down the market place. Perhaps the easiest is to start by segmenting them into business, consumer and temporary providers. Here we have done the hard work for you so you can contact suppliers to discuss a quote. Business WiFi providers Business Wifi is typically associated with permanent installations, that you may pay an initial installation charge for, plus a monthly ongoing fee. Some of the larger providers of business WiFi in the UK are: 1. BT Business – BT offers a range of business broadband and WiFi solutions tail",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:28.465Z",
+          "contentHash": "f514a776e9fec991e0cd964121d3b5b8ae5a38301ac183989c757889a42786b6",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 26,
+      "candidateId": "lead-15f73faecd649b71",
+      "companyName": "EC-MSP Limited",
+      "domain": "ecmsp.co.uk",
+      "officialWebsiteUrl": "https://www.ecmsp.co.uk/",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP"
+      ],
+      "totalScore": 59,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-15f73faecd649b71",
+        "evidence-d2ee6cee1f40dbff"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-15f73faecd649b71",
+          "url": "https://ecmsp.co.uk/",
+          "title": "IT Support London Providing Managed IT Services | EC-MSP",
+          "excerpt": "IT Support London Providing Managed IT Services | EC-MSP Call 020 3780 7200 Skip to content IT Services Managed IT Services IT Consultancy Cyber Security Services Cloud Computing Backup IT Relocation Network Services Small Business IT Support About Blog Contact Client Support Keeping Your IT Systems Healthy London's Top IT Support Provider On-call Engineers – No Hidden Charges Like Having Your Own IT Department One-off IT Support Services London or Managed Services Affordable Pricing For IT Support Book a Free Discovery Call 4.7 22+ Reviews from Google, Facebook and Cloudtango Download Free EBOOK IT Essentials For Business Owners Download EBOOK Now Our Partnerships IT Services & IT Support London Companies Can Trust Are you looking for an ongoing IT partner, or just one-off support? Whatev",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:06:22.009Z",
+          "contentHash": "c4a684112eef2d187fb4330cf7087becd698bbdb4962ffaad3420684ab705005",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-d2ee6cee1f40dbff",
+          "url": "https://www.ecmsp.co.uk/privacy.php",
+          "title": "Privacy Policy - EC-MSP",
+          "excerpt": "Call 020 3780 7200 Skip to content Privacy Policy EC-MSP’s privacy policy EC-MSP Limited understands that your privacy is important to you and that you care about how your personal data is used. We respect and value the privacy of everyone who visits this website, (“Our Site”) and will only collect and use personal data in ways that are described here, and in a way that is consistent with our obligations and your rights under the law. Please read this Privacy Policy carefully and ensure that you understand it. Your acceptance of this Privacy Policy is deemed to occur upon your first use of Our Site. If you do not accept and agree with this Privacy Policy, you must stop using Our Site immediately. 1. Definitions and Interpretation In this Policy the following terms shall have the following ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:23.515Z",
+          "contentHash": "91fa762422fd62fe4961dcecc8323e43bc68fc237de2707773c7db89730c0c20",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 27,
+      "candidateId": "lead-d87a806de21106eb",
+      "companyName": "Inlink Systems",
+      "domain": "inlink.systems",
+      "officialWebsiteUrl": "https://www.inlink.systems/",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "MSP"
+      ],
+      "totalScore": 58,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-45c16317822c7aa6",
+        "evidence-256f667d4468f156",
+        "evidence-3b6411bf084ee7e9",
+        "evidence-ace4f3ae3e870718",
+        "evidence-558cd754fc265525",
+        "evidence-99ec1f4bb4aa0f1f"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-45c16317822c7aa6",
+          "url": "https://www.inlink.systems/home-networking",
+          "title": "Home Networking - Inlink Systems",
+          "excerpt": "Address. 57 Rochester Place, London NW1 9JU, United Kingdom. Contact Us. Phone. 0207 101 3432. Address. 57 Rochester Place, London NW1 9JU, United Kingdom.",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:23.778Z",
+          "contentHash": "e3fd046ecc553ed5dacdeb6c38f97dc225e25f69943bcae013bec807cbafe658",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-558cd754fc265525",
+          "url": "https://www.inlink.systems/smart-homes",
+          "title": "Smart Homes - Inlink Systems",
+          "excerpt": "We are a London-based company with a wide range of home automation services, catering to different households, from family homes to one-person households. We",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:23.778Z",
+          "contentHash": "b288925c834c56c0766b2aab8069c2e9c2e69f611859a2cf2a746529612445d2",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-256f667d4468f156",
+          "url": "https://www.inlink.systems/residential-it-support",
+          "title": "Residential IT Support - Inlink Systems",
+          "excerpt": "Our in-home wireless networking services encompass installation, configuration, repair, maintenance, troubleshooting, and optimisation. We ensure your home is",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:23.778Z",
+          "contentHash": "544029cb73429ef646274df19b579affd3c6ea70486d589ec0e31134566f8e94",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-3b6411bf084ee7e9",
+          "url": "https://www.inlink.systems/office-cctv-security-installers",
+          "title": "Office CCTV Security Installers - Inlink Systems",
+          "excerpt": "Helping you keep your workspace safe and secure. Inlink Systems isyour trusted supplier for London and the South East.",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:23.778Z",
+          "contentHash": "3a3e52bb8eeeeeb35387f49defd61c468641b6de42b9308f520982c9171bc0ba",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-99ec1f4bb4aa0f1f",
+          "url": "https://uk.linkedin.com/company/inlink-systems",
+          "title": "Inlink Systems - IT & AV specliats.",
+          "excerpt": "### Website ### Crunchbase N/A ### LinkedIn N/A ### Industry Information Technology & Services ### Company Size 2-10 employees 0 associated members (LinkedIn members who've listed Inlink Systems as their current workplace on their profile) ### Founded 2022 ### Funding Last Round Date: N/A Last Round Type: N/A Total Rounds: N/A Last Round Raised: N/A ### Investors N/A ### Specialties N/A ## Locations London, GB ### Get Directions Directions ## Employees [...] # Inlink Systems IT & AV specliats. Information Technology & Services • London • 12 followers • 2-10 employees ## Overview Robust yet simple systems are at the heart of everything we do at Inlink Systems. Our team provide small businesses & homeowners with simple, easy to use and reliable IT solutions. Everything you need to help you a",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-06T06:07:48.028Z",
+          "contentHash": "16a0564f7247623b3a779dbe9193751e86c93b1c04e4e9a34062086cf388a601",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-ace4f3ae3e870718",
+          "url": "https://www.inlink.systems/wifi-installation-services",
+          "title": "WiFi Installation Services",
+          "excerpt": "When you ask for WiFi installation, we respond with a free survey to help us understand your needs. We ask for basics like the type of wireless devices you own",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:48.028Z",
+          "contentHash": "fb8fa0a500c55de58cf7e3db840917d80c4b6afa8ff8ce20758082c7ab65a40f",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 28,
+      "candidateId": "lead-01f2a1a60a0426f3",
+      "companyName": "Lanware",
+      "domain": "lanware.co.uk",
+      "officialWebsiteUrl": "https://www.lanware.co.uk/",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP"
+      ],
+      "totalScore": 58,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-01f2a1a60a0426f3",
+        "evidence-53f83d609d282ec7"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-01f2a1a60a0426f3",
+          "url": "https://www.lanware.co.uk/",
+          "title": "Official homepage",
+          "excerpt": "/* Original: https://fonts.googleapis.com/css?family=Lato:100,100italic,300,300italic,regular,italic,700,700italic,900,900italic|Open+Sans:300,300italic,regular,italic,600,600italic,700,700italic,800,800italic&#038;subset=latin,latin-ext&#038;display=swap *//* User Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1 *//* latin-ext */@font-face {font-family: 'Lato';font-style: italic;font-weight: 100;font-display: swap;src: url(https://fonts.gstatic.com/s/lato/v25/S6u-w4BMUTPHjxsIPx-mPCLC79U11vU.woff2) format('woff2');unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:06:27.579Z",
+          "contentHash": "79ce687de5982f91d6ce2b9b3f94e2372c4eab6337098fdc523a3de6c82c80d7",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-53f83d609d282ec7",
+          "url": "https://www.lanware.co.uk/people",
+          "title": "People - Lanware",
+          "excerpt": "Customer Portal Customer Portal Our People Find out more about our team About icon Henry 423 Henry Duncombe Managing Director For the last ten years Henry has been the driving force behind Lanware and its vision to be the leading technology outsourcing partner to the financial services industry. Follow Read more As Lanware’s Managing Director his client-focused approach and technical background has enabled the company to build long term relationships with its financial services clients. Henry’s key objective with all Lanware clients is to always deliver service excellence and then earn the reputation as a trusted partner who responds to the changing needs of their business. Research shows that very few service providers truly achieve this accolade from their clients as they struggle to del",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:25.457Z",
+          "contentHash": "7d240249292b306a861b71f01e326c7f84e1fcbb0fddbe577c629d2596008db2",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 29,
+      "candidateId": "lead-ba378c00b52b247c",
+      "companyName": "MF Telecom Services",
+      "domain": "mftelecomservices.co.uk",
+      "officialWebsiteUrl": "https://www.mftelecomservices.co.uk/",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "SI",
+        "MSP"
+      ],
+      "totalScore": 58,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-ba378c00b52b247c"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-ba378c00b52b247c",
+          "url": "https://www.mftelecomservices.co.uk/",
+          "title": "MF Telecom Services - Business Telecoms &amp; Managed IT Services",
+          "excerpt": "MF Telecom Services - Business Telecoms Managed IT Services @font-face{font-family:ETmodules;font-display:block;src:url(//www.mftelecomservices.co.uk/wp-content/themes/Divi/core/admin/fonts/modules/all/modules.eot);src:url(//www.mftelecomservices.co.uk/wp-content/themes/Divi/core/admin/fonts/modules/all/modules.eot?#iefix) format(\"embedded-opentype\"),url(//www.mftelecomservices.co.uk/wp-content/themes/Divi/core/admin/fonts/modules/all/modules.woff) format(\"woff\"),url(//www.mftelecomservices.co.uk/wp-content/themes/Divi/core/admin/fonts/modules/all/modules.ttf) format(\"truetype\"),url(//www.mftelecomservices.co.uk/wp-content/themes/Divi/core/admin/fonts/modules/all/modules.svg#ETmodules) format(\"svg\");font-weight:400;font-style:normal} @font-face{font-family:FontAwesome;font-style:normal;fon",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:07:01.593Z",
+          "contentHash": "7494ed87086b2dd1614348fabe61057a00f1d2ea15f1a9809bd632b720ae810a",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 30,
+      "candidateId": "lead-f8978b8578bc14d6",
+      "companyName": "Micro Pro Ltd",
+      "domain": "micropro.com",
+      "officialWebsiteUrl": "https://micropro.com/",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP",
+        "SI"
+      ],
+      "totalScore": 58,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-f8978b8578bc14d6",
+        "evidence-08c93191e739e406"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-f8978b8578bc14d6",
+          "url": "https://micropro.com/",
+          "title": "IT Support London | IT Support Kent | MicroPro",
+          "excerpt": "IT Support London | IT Support Kent | MicroPro Skip to content Micro Pro IT Support Home IT Support IT Support Contracts IT Strategy &#038; Technology Consulting Custom Business IT Solutions Managed IT &#038; Infrastructure Services Services 24/7 IT Support &#038; Helpdesk Cybersecurity IT Relocation 24/7 Monitoring Cloud Backup IT Infrastructure IT Outsourcing Microsoft 365 Locations London Your London IT Support Team Remote IT Support in London Outsourced IT Support in London Managed IT Support in London Managed Service Provider in London Other Locations IT Support in Kent IT Support in Surrey IT Support in Hampshire Blog Contact Us About Us Support 020 3714 7758 help@micropro.com Get Started Complete the form, and a member of the team will contact you to discuss your FREE IT audit and a",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-06T06:06:22.504Z",
+          "contentHash": "fa0106f7edb9748ee0133d1cbfe202acc4a1a5fc9b0433ce6d68df526987b8ef",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        },
+        {
+          "id": "evidence-08c93191e739e406",
+          "url": "https://uk.linkedin.com/company/micro-pro-ltd",
+          "title": "Micro Pro Ltd - Business IT Experts",
+          "excerpt": "# Micro Pro Ltd Business IT Experts Information Technology & Services • Addlestone, Surrey • 1,147 followers • 2-10 employees ## Overview A provider of authentic Expert Business IT Consultancy, Solutions, Services and Support to high growth professional service companies in London, across the UK and Globally. ### Website ### Crunchbase N/A ### LinkedIn N/A ### Industry Information Technology & Services [...] IT services needs to change. Outsourcing is often framed as a cost-saving exercise or an operational necessity. In practice, when done well, it becomes a strategic lever for growth. Managed IT support is not about replacing internal capability, it’s about extending it. By providing specialist depth in cybersecurity, infrastructure and IT strategy, managed services bridge the skills gap",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-06T06:07:42.850Z",
+          "contentHash": "7550fa22b83e521442e04682cd4773d3d603414c8a209b2c8ba56267deba0e7d",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-06-uk-mx-search-e2e-v1-1-6-GB-si-msp-product-r1"
+        }
+      ]
+    }
+  ],
+  "missingSlots": 0,
+  "completionReason": "target-met",
+  "discoveryRounds": [
+    {
+      "round": 1,
+      "plannedCandidatePool": 45,
+      "newUniqueCandidates": 50,
+      "lightGateCandidates": 47,
+      "correctedCandidates": 47,
+      "inRoleCandidates": 41,
+      "finalEligibleAdded": 29,
+      "cumulativeFinalEligible": 29,
+      "stopReason": "quality-pool-target"
+    },
+    {
+      "round": 2,
+      "plannedCandidatePool": 6,
+      "newUniqueCandidates": 22,
+      "lightGateCandidates": 21,
+      "correctedCandidates": 20,
+      "inRoleCandidates": 19,
+      "finalEligibleAdded": 1,
+      "cumulativeFinalEligible": 30,
+      "stopReason": "quality-pool-target"
+    }
+  ],
+  "warnings": [
+    "Hybrid discovery failed (si-msp/local-smb/searchapi): searchapi HTTP 429: {\n  \"error\": \"You have used all of the searches for the month. Please upgrade your plan on SearchApi.io.\"\n}",
+    "Discovery gate batch held after routine model failure: [\n  {\n    \"origin\": \"string\",\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"inclusive\": true,\n    \"path\": [\n      \"candidates\",\n      0,\n      \"reasonCodes\",\n      0\n    ],\n    \"message\": \"Too big: expected string to have <=80 characters\"\n  },\n  {\n    \"origin\": \"string\",\n    \"code\": \"too_big\",\n    \"maximum\": 80,\n    \"inclusive\": true,\n    \"path\": [\n      \"candidates\",\n      3,\n      \"reasonCodes\",\n      0\n    ],\n    \"message\": \"Too big: expected string to have <=80 characters\"\n  }\n]",
+    "No official-domain evidence was extracted for exponential-e.com.",
+    "No official-domain evidence was extracted for it-msp.net.",
+    "No official-domain evidence was extracted for networklondon.co.uk.",
+    "No official-domain evidence was extracted for mtechsystems.co.uk.",
+    "No official-domain evidence was extracted for innovatedit.co.uk.",
+    "No official-domain evidence was extracted for srcloudsolutions.com.",
+    "No official-domain evidence was extracted for itm247.com.",
+    "No official-domain evidence was extracted for synergitech.co.uk.",
+    "No official-domain evidence was extracted for totalityservices.co.uk.",
+    "No official-domain evidence was extracted for digitalavenue.co.uk.",
+    "No official-domain evidence was extracted for intelliworx.co.",
+    "No official-domain evidence was extracted for multiplenetworks.co.uk.",
+    "No official-domain evidence was extracted for msp247.co.uk.",
+    "No official-domain evidence was extracted for wifinity.co.uk.",
+    "No official-domain evidence was extracted for ukcloud.co.uk.",
+    "No official-domain evidence was extracted for mftelecomservices.co.uk.",
+    "No official-domain evidence was extracted for twc-it-solutions.com.",
+    "No official-domain evidence was extracted for focusgroup.co.uk.",
+    "No official-domain evidence was extracted for bytesdigital.co.uk.",
+    "ukcloud.co.uk: Deterministic role hints were not auto-added: Distributor.",
+    "it-msp.net: Deterministic role hints were not auto-added: Reseller.",
+    "wifinity.co.uk: Deterministic role hints were not auto-added: Installer, ISP.",
+    "ecmsp.co.uk: Deterministic role hints were not auto-added: Reseller.",
+    "wavex.co.uk: Deterministic role hints were not auto-added: Distributor, ISP.",
+    "mftelecomservices.co.uk: Deterministic role hints were not auto-added: Distributor, Reseller.",
+    "performancenetworks.co.uk: Deterministic role hints were not auto-added: Installer.",
+    "lpnetworks.com: Deterministic role hints were not auto-added: Reseller.",
+    "networklondon.co.uk: Deterministic role hints were not auto-added: Distributor, Reseller, Installer.",
+    "simpli-fi.co.uk: Deterministic role hints were not auto-added: Installer.",
+    "convergencegroup.co.uk: Deterministic role hints were not auto-added: Distributor.",
+    "mtechsystems.co.uk: Deterministic role hints were not auto-added: Distributor, Reseller.",
+    "systemsit.net: Deterministic role hints were not auto-added: Distributor.",
+    "wavenet.co.uk: Deterministic role hints were not auto-added: Distributor.",
+    "microbyte.com: Original domain innovatedit.co.uk not used; official website is Microbyte's page.",
+    "microbyte.com: Deterministic role hints were not auto-added: Distributor, Reseller, VAR, ISP.",
+    "srcloudsolutions.com: Official website not directly evidenced; using LinkedIn and other pages.",
+    "srcloudsolutions.com: Proposed official website was not supported by the cited company-owned evidence; original identity retained.",
+    "twc-it-solutions.com: Deterministic role hints were not auto-added: Installer.",
+    "itm247.com: Deterministic role hints were not auto-added: Distributor.",
+    "synergitech.co.uk: Deterministic role hints were not auto-added: Installer.",
+    "duocall.co.uk: Deterministic role hints were not auto-added: VAR, Reseller.",
+    "totalityservices.co.uk: Deterministic role hints were not auto-added: Distributor, VAR, Reseller.",
+    "sphereit.uk: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed. Escalation failed: Primary model deepseek-v4-pro and approved equivalent fallbacks failed.",
+    "croftmsp.com: Deterministic role hints were not auto-added: Distributor.",
+    "intelliworx.co: Deterministic role hints were not auto-added: VAR, Reseller.",
+    "multiplenetworks.co.uk: Routine correction requested ambiguity escalation. Escalation failed: [\n  {\n    \"origin\": \"string\",\n    \"code\": \"too_big\",\n    \"maximum\": 300,\n    \"inclusive\": true,\n    \"path\": [\n      \"escalation\",\n      \"reason\"\n    ],\n    \"message\": \"Too big: expected string to have <=300 characters\"\n  }\n]",
+    "proxar.co.uk: Deterministic role hints were not auto-added: ISP.",
+    "focusgroup.co.uk: The submitted official website URL was a deep product page; the corrected official website is the company root domain.",
+    "focusgroup.co.uk: Evidence from 2580.co.uk and connectedsolutionsgroup.com appears unrelated to Focus Group and may be noise in the evidence set.",
+    "focusgroup.co.uk: The 'Partner area' on the official website is not accompanied by evidence of distribution activity.",
+    "horizonetwork.co.uk: Deterministic role hints were not auto-added: Reseller, Installer.",
+    "inlink.systems: Deterministic role hints were not auto-added: Installer.",
+    "datacat.co.uk: Deterministic role hints were not auto-added: MSP.",
+    "msp247.co.uk: Deterministic role hints were not auto-added: Installer.",
+    "helpdeskheroes.co.uk: The submitted company name 'IT Connectivity Services London - Business Data Solutions' does not match the actual company name 'HelpDesk Heroes'.",
+    "helpdeskheroes.co.uk: The submitted official website URL pointed to a subpage rather than the root domain.",
+    "helpdeskheroes.co.uk: Several independent public evidence sources are unrelated to HelpDesk Heroes and provide no relevant information about this candidate.",
+    "helpdeskheroes.co.uk: Deterministic role hints were not auto-added: Distributor, Reseller.",
+    "lanware.co.uk: Original submitted roles included SI, but evidence only supports MSP.",
+    "glide.co.uk: Submitted company name was a marketing title rather than the legal entity name; corrected to Glide.",
+    "glide.co.uk: Submitted roles SI and MSP are supported, but ISP is the more prominent primary role.",
+    "atos.net: Deterministic role hints were not auto-added: VAR, Reseller.",
+    "wireless.solutions: The submitted company name was a blog article title rather than the actual company name.",
+    "wireless.solutions: The submitted official website URL pointed to a blog article rather than the company root domain.",
+    "wireless.solutions: The evidence is limited to the company's own website; no independent third-party sources were supplied.",
+    "wireless.solutions: Deterministic role hints were not auto-added: VAR, Installer, Reseller.",
+    "mdssupport.co.uk: Deterministic role hints were not auto-added: Installer.",
+    "networkdistri.co.uk: Deterministic role hints were not auto-added: Installer, Reseller.",
+    "bytesdigital.co.uk: Deterministic role hints were not auto-added: Distributor.",
+    "No official-domain evidence was extracted for axians.co.uk.",
+    "No official-domain evidence was extracted for gamma.co.uk.",
+    "No official-domain evidence was extracted for netmonkeys.co.uk.",
+    "No official-domain evidence was extracted for fc4.co.uk.",
+    "No official-domain evidence was extracted for creative-n.com.",
+    "No official-domain evidence was extracted for lima.co.uk.",
+    "No official-domain evidence was extracted for wirenetwork.co.uk.",
+    "No official-domain evidence was extracted for structured-networks.tech.",
+    "No official-domain evidence was extracted for remedian.co.uk.",
+    "No official-domain evidence was extracted for manageditsupport.net.",
+    "No official-domain evidence was extracted for bistech.co.uk.",
+    "seriun.co.uk: Deterministic role hints were not auto-added: ISP.",
+    "bcn.co.uk: Deterministic role hints were not auto-added: Distributor.",
+    "axians.co.uk: Deterministic role hints were not auto-added: Distributor.",
+    "gammagroup.co: Evidence for Gamma is limited to official website; additional independent sources would increase confidence.",
+    "gammagroup.co: Deterministic role hints were not auto-added: Reseller, VAR, Installer.",
+    "netmonkeys.co.uk: Deterministic role hints were not auto-added: VAR, Reseller.",
+    "fc4.co.uk: Deterministic role hints were not auto-added: Reseller, VAR, Installer.",
+    "creative-n.com: Deterministic role hints were not auto-added: VAR, Reseller.",
+    "lima.co.uk: Deterministic role hints were not auto-added: Distributor.",
+    "wirenetwork.co.uk: Deterministic role hints were not auto-added: Reseller.",
+    "structured-networks.tech: Deterministic role hints were not auto-added: Distributor, Reseller.",
+    "razorblue.com: Deterministic role hints were not auto-added: Reseller, Installer.",
+    "managedtech.uk: Deterministic role hints were not auto-added: Reseller.",
+    "tsg.com: Deterministic role hints were not auto-added: Reseller.",
+    "sentinelsecuretech.co.uk: Deterministic role hints were not auto-added: Installer.",
+    "bell-integration.com: Deterministic role hints were not auto-added: Distributor.",
+    "cms-group.net: Evidence from cms.gov, cms-electronics.com, cmsdistribution.com, and gsa.gov are unrelated to this candidate and were not used.",
+    "cms-group.net: Deterministic role hints were not auto-added: Distributor."
+  ],
+  "costEvents": [
+    {
+      "eventId": "GB-si-msp:intent:1",
+      "cellId": "GB-si-msp",
+      "stage": "intent",
+      "provider": "kimi",
+      "requestedModel": "kimi-k2.6",
+      "actualModel": "kimi-k2.6",
+      "startedAt": "2026-09-06T06:05:26.970Z",
+      "completedAt": "2026-09-06T06:06:01.758Z",
+      "latencyMs": 34783,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 533,
+        "cachedInputTokens": 512,
+        "outputTokens": 1408
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005707838829998968,
+      "budgetCostUsd": 0.005707838829998968,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:rag-embedding:1",
+      "cellId": "GB-si-msp",
+      "stage": "rag-retrieval",
+      "provider": "alibaba-model-studio",
+      "requestedModel": "text-embedding-v4",
+      "actualModel": "text-embedding-v4",
+      "startedAt": "2026-09-06T06:06:01.768Z",
+      "completedAt": "2026-09-06T06:06:03.728Z",
+      "latencyMs": 1833,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 80,
+        "outputTokens": 0
+      },
+      "volume": {
+        "inputItems": 3,
+        "rawOutputItems": 3,
+        "validOutputItems": 3,
+        "downstreamUsedItems": 3,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.00000576,
+      "budgetCostUsd": 0.00000576,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:playbook",
+      "cellId": "GB-si-msp",
+      "stage": "playbook",
+      "provider": "deterministic-template",
+      "startedAt": "2026-09-06T06:06:03.738Z",
+      "completedAt": "2026-09-06T06:06:03.739Z",
+      "latencyMs": 1,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "volume": {
+        "inputItems": 16,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:discovery:r1:1",
+      "cellId": "GB-si-msp",
+      "stage": "hybrid-discovery",
+      "provider": "google-places",
+      "startedAt": "2026-09-06T06:06:03.749Z",
+      "completedAt": "2026-09-06T06:07:17.215Z",
+      "latencyMs": 514,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 20,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 20,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 20,
+        "discardedReasonCounts": {
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.035,
+      "budgetCostUsd": 0.035,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:discovery:r1:2",
+      "cellId": "GB-si-msp",
+      "stage": "hybrid-discovery",
+      "provider": "gemini-full",
+      "requestedModel": "gemini-3.6-flash",
+      "actualModel": "gemini-3.6-flash",
+      "startedAt": "2026-09-06T06:06:03.749Z",
+      "completedAt": "2026-09-06T06:07:17.215Z",
+      "latencyMs": 17536,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 6,
+        "searchResults": 20,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 20,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 16,
+        "discardedReasonCounts": {
+          "duplicate": 4
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.084,
+      "budgetCostUsd": 0.084,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:discovery:r1:3",
+      "cellId": "GB-si-msp",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-06T06:06:03.749Z",
+      "completedAt": "2026-09-06T06:07:17.215Z",
+      "latencyMs": 830,
+      "attempts": 2,
+      "retries": 1,
+      "fallbackUsed": false,
+      "status": "failed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 2,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "provider-rate-limit": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=miss",
+        "failureClass=rate-limit",
+        "circuitScope=route"
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.008,
+      "budgetCostUsd": 0.008,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:discovery:r1:4",
+      "cellId": "GB-si-msp",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-06T06:06:03.749Z",
+      "completedAt": "2026-09-06T06:07:17.215Z",
+      "latencyMs": 1412,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 20,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 20,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 14,
+        "discardedReasonCounts": {
+          "duplicate": 6
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005,
+      "budgetCostUsd": 0.005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:discovery-gate-r1:model:1",
+      "cellId": "GB-si-msp",
+      "stage": "discovery-gate-r1",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek-v4-flash",
+      "startedAt": "2026-09-06T06:06:03.749Z",
+      "completedAt": "2026-09-06T06:07:17.215Z",
+      "latencyMs": 38131,
+      "attempts": 5,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 53195,
+        "outputTokens": 7553,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 50,
+        "rawOutputItems": 49,
+        "validOutputItems": 47,
+        "downstreamUsedItems": 47,
+        "discardedReasonCounts": {
+          "rejected": 2
+        }
+      },
+      "notes": [
+        "Aggregate stage output volume is attributed once to the primary model event."
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.009562140000000002,
+      "budgetCostUsd": 0.009562140000000002,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:fresh-evidence:r1",
+      "cellId": "GB-si-msp",
+      "stage": "fresh-evidence",
+      "provider": "tavily",
+      "startedAt": "2026-09-06T06:07:17.283Z",
+      "completedAt": "2026-09-06T06:07:32.680Z",
+      "latencyMs": 154397,
+      "attempts": 75,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 65
+      },
+      "volume": {
+        "inputItems": 47,
+        "rawOutputItems": 130,
+        "validOutputItems": 130,
+        "downstreamUsedItems": 130,
+        "discardedReasonCounts": {
+          "noFreshEvidence": 2
+        }
+      },
+      "notes": [
+        "historical evidence reads disabled",
+        "evidence-library writes disabled",
+        "current-run evidence and missing-evidence records reused downstream"
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.52,
+      "budgetCostUsd": 0.52,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:correction-evidence:r1",
+      "cellId": "GB-si-msp",
+      "stage": "evidence-correction-search",
+      "provider": "tavily",
+      "startedAt": "2026-09-06T06:07:32.692Z",
+      "completedAt": "2026-09-06T06:09:52.977Z",
+      "latencyMs": 88860,
+      "attempts": 34,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 34
+      },
+      "volume": {
+        "inputItems": 47,
+        "rawOutputItems": 47,
+        "validOutputItems": 47,
+        "downstreamUsedItems": 41,
+        "discardedReasonCounts": {
+          "correctedToAnotherRole": 6
+        }
+      },
+      "notes": [
+        "Only missing evidence identified by the first evidence packet may trigger supplementation."
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.272,
+      "budgetCostUsd": 0.272,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:evidence-correction-r1:model:1",
+      "cellId": "GB-si-msp",
+      "stage": "evidence-correction-r1",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek-v4-flash",
+      "startedAt": "2026-09-06T06:07:32.692Z",
+      "completedAt": "2026-09-06T06:09:52.977Z",
+      "latencyMs": 173105,
+      "attempts": 9,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 168521,
+        "outputTokens": 35416,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 47,
+        "rawOutputItems": 47,
+        "validOutputItems": 46,
+        "downstreamUsedItems": 41,
+        "discardedReasonCounts": {
+          "correctedToAnotherRole": 6
+        }
+      },
+      "notes": [
+        "Aggregate stage output volume is attributed once to the primary model event."
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.033509420000000005,
+      "budgetCostUsd": 0.033509420000000005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:evidence-correction-r1:model:2",
+      "cellId": "GB-si-msp",
+      "stage": "evidence-correction-r1",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T06:07:32.692Z",
+      "completedAt": "2026-09-06T06:09:52.977Z",
+      "latencyMs": 109095,
+      "attempts": 5,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 21375,
+        "outputTokens": 9923,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 0,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "stageVolumeAttributedToPrimaryModelEvent": 5
+        }
+      },
+      "notes": [
+        "Model cost and tokens are retained; aggregate stage output volume is already attributed to model event 1."
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.017931135,
+      "budgetCostUsd": 0.017931135,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:qualification-score-only-r1:model:1",
+      "cellId": "GB-si-msp",
+      "stage": "qualification-score-only-r1",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek-v4-flash",
+      "startedAt": "2026-09-06T06:09:52.997Z",
+      "completedAt": "2026-09-06T06:11:23.141Z",
+      "latencyMs": 315975,
+      "attempts": 13,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 135718,
+        "outputTokens": 55943,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 41,
+        "rawOutputItems": 41,
+        "validOutputItems": 41,
+        "downstreamUsedItems": 41,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "notes": [
+        "Aggregate stage output volume is attributed once to the primary model event."
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.03466456,
+      "budgetCostUsd": 0.03466456,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:discovery:r2:1",
+      "cellId": "GB-si-msp",
+      "stage": "hybrid-discovery",
+      "provider": "google-places",
+      "startedAt": "2026-09-06T06:11:23.157Z",
+      "completedAt": "2026-09-06T06:11:56.578Z",
+      "latencyMs": 675,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 12,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 12,
+        "validOutputItems": 12,
+        "downstreamUsedItems": 11,
+        "discardedReasonCounts": {
+          "duplicate": 1
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.035,
+      "budgetCostUsd": 0.035,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:discovery:r2:2",
+      "cellId": "GB-si-msp",
+      "stage": "hybrid-discovery",
+      "provider": "gemini-full",
+      "requestedModel": "gemini-3.6-flash",
+      "actualModel": "gemini-3.6-flash",
+      "startedAt": "2026-09-06T06:11:23.157Z",
+      "completedAt": "2026-09-06T06:11:56.578Z",
+      "latencyMs": 12258,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 6,
+        "searchResults": 12,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 12,
+        "validOutputItems": 12,
+        "downstreamUsedItems": 11,
+        "discardedReasonCounts": {
+          "duplicate": 1
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.084,
+      "budgetCostUsd": 0.084,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:discovery-gate-r2:model:1",
+      "cellId": "GB-si-msp",
+      "stage": "discovery-gate-r2",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek-v4-flash",
+      "startedAt": "2026-09-06T06:11:23.157Z",
+      "completedAt": "2026-09-06T06:11:56.578Z",
+      "latencyMs": 17314,
+      "attempts": 3,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 30398,
+        "outputTokens": 3359,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 22,
+        "rawOutputItems": 21,
+        "validOutputItems": 21,
+        "downstreamUsedItems": 21,
+        "discardedReasonCounts": {
+          "rejected": 0
+        }
+      },
+      "notes": [
+        "Aggregate stage output volume is attributed once to the primary model event."
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.00519624,
+      "budgetCostUsd": 0.00519624,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:fresh-evidence:r2",
+      "cellId": "GB-si-msp",
+      "stage": "fresh-evidence",
+      "provider": "tavily",
+      "startedAt": "2026-09-06T06:11:56.633Z",
+      "completedAt": "2026-09-06T06:12:15.514Z",
+      "latencyMs": 68914,
+      "attempts": 31,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 27
+      },
+      "volume": {
+        "inputItems": 21,
+        "rawOutputItems": 56,
+        "validOutputItems": 56,
+        "downstreamUsedItems": 56,
+        "discardedReasonCounts": {
+          "noFreshEvidence": 0
+        }
+      },
+      "notes": [
+        "historical evidence reads disabled",
+        "evidence-library writes disabled",
+        "current-run evidence and missing-evidence records reused downstream"
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.216,
+      "budgetCostUsd": 0.216,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:correction-evidence:r2",
+      "cellId": "GB-si-msp",
+      "stage": "evidence-correction-search",
+      "provider": "tavily",
+      "startedAt": "2026-09-06T06:12:15.532Z",
+      "completedAt": "2026-09-06T06:13:19.608Z",
+      "latencyMs": 47390,
+      "attempts": 20,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 20
+      },
+      "volume": {
+        "inputItems": 21,
+        "rawOutputItems": 20,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 19,
+        "discardedReasonCounts": {
+          "correctedToAnotherRole": 1
+        }
+      },
+      "notes": [
+        "Only missing evidence identified by the first evidence packet may trigger supplementation."
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.16,
+      "budgetCostUsd": 0.16,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:evidence-correction-r2:model:1",
+      "cellId": "GB-si-msp",
+      "stage": "evidence-correction-r2",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek-v4-flash",
+      "startedAt": "2026-09-06T06:12:15.532Z",
+      "completedAt": "2026-09-06T06:13:19.608Z",
+      "latencyMs": 88826,
+      "attempts": 5,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 90605,
+        "outputTokens": 18153,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 21,
+        "rawOutputItems": 20,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 19,
+        "discardedReasonCounts": {
+          "correctedToAnotherRole": 1
+        }
+      },
+      "notes": [
+        "Aggregate stage output volume is attributed once to the primary model event."
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.017767540000000002,
+      "budgetCostUsd": 0.017767540000000002,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:qualification-score-only-r2:model:1",
+      "cellId": "GB-si-msp",
+      "stage": "qualification-score-only-r2",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek-v4-flash",
+      "startedAt": "2026-09-06T06:13:19.627Z",
+      "completedAt": "2026-09-06T06:14:02.453Z",
+      "latencyMs": 157414,
+      "attempts": 7,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 70129,
+        "outputTokens": 27068,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 19,
+        "rawOutputItems": 19,
+        "validOutputItems": 19,
+        "downstreamUsedItems": 19,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "notes": [
+        "Aggregate stage output volume is attributed once to the primary model event."
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.017397100000000002,
+      "budgetCostUsd": 0.017397100000000002,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:ranking",
+      "cellId": "GB-si-msp",
+      "stage": "role-filter-ranking",
+      "provider": "deterministic",
+      "startedAt": "2026-09-06T06:14:02.463Z",
+      "completedAt": "2026-09-06T06:14:02.463Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "volume": {
+        "inputItems": 60,
+        "rawOutputItems": 60,
+        "validOutputItems": 30,
+        "downstreamUsedItems": 30,
+        "discardedReasonCounts": {
+          "wrongPrimaryRoleOrGate": 37
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    }
+  ],
+  "coldStartAudit": {
+    "historicalCandidateReads": 0,
+    "historicalEvidenceReads": 0,
+    "privateMemoryReads": 0,
+    "historicalScoreReads": 0,
+    "evidenceLibraryWrites": 0,
+    "cooperationPathsGenerated": 0
+  },
+  "discoveryCalls": [
+    {
+      "callKey": "si-msp/local-smb/0/google-places/google-places",
+      "callFingerprint": "1df163040575867991ccdaf6fae3b1fa4b6839724030b008ec00ee085524520d",
+      "queryClusterKey": "2a62ac104a36a6a20dd05ea7a34fd42fa8705eae5a12b2cce7c0c9ac389cec7f",
+      "route": {
+        "category": "si-msp",
+        "track": "local-smb",
+        "sequence": 0,
+        "provider": "google-places",
+        "engine": "google-places",
+        "mechanism": "local-text-search",
+        "trigger": "core",
+        "invocationReason": "Core mechanism for si-msp/local-smb"
+      },
+      "status": "completed",
+      "requestedResults": 20,
+      "rawResults": 20,
+      "normalizedCompanies": 20,
+      "newUniqueCompanies": 20,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 514,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "23a4151baaa617ada4fc30d98e5e98f7fe2bee21184f6c4c651ea7ce1c87f72b"
+    },
+    {
+      "callKey": "si-msp/national-complex/0/gemini-full/google-grounded",
+      "callFingerprint": "28f3161b391623a32c6c11932ffccae7cd5751010c47401781216714d706bf07",
+      "queryClusterKey": "aa8fa68d31320d9d8a7cdb70209d1727eda6ec95fe085ce72630bf9c9c9ef9c0",
+      "route": {
+        "category": "si-msp",
+        "track": "national-complex",
+        "sequence": 0,
+        "provider": "gemini-full",
+        "engine": "google-grounded",
+        "mechanism": "planning",
+        "trigger": "core",
+        "invocationReason": "Core mechanism for si-msp/national-complex"
+      },
+      "status": "completed",
+      "requestedResults": 20,
+      "rawResults": 20,
+      "normalizedCompanies": 20,
+      "newUniqueCompanies": 16,
+      "existingCompanyHits": 4,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 6,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 17536,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "6c3896246a1d4fa753817c66148c7c0a8177f87455a2940127d8072b762a4993"
+    },
+    {
+      "callKey": "si-msp/local-smb/1/searchapi/google",
+      "callFingerprint": "65286d56703da4bbd590fb71470bf9ccb266233cdfeb43e5c8e21894db527d5e",
+      "queryClusterKey": "22a23b72e250d3ba4d8c8c444205eae97c04dbd7a325ed393d0d7d7908944917",
+      "route": {
+        "category": "si-msp",
+        "track": "local-smb",
+        "sequence": 1,
+        "provider": "searchapi",
+        "engine": "google",
+        "mechanism": "web-serp",
+        "trigger": "web-gap",
+        "invocationReason": "web-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "failed",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 830,
+      "requestCount": 2,
+      "retryCount": 1,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "failureClass": "rate-limit",
+      "circuitScope": "route",
+      "discardedReasonCounts": {
+        "provider-rate-limit": 1
+      },
+      "errorMessage": "searchapi HTTP 429: {\n  \"error\": \"You have used all of the searches for the month. Please upgrade your plan on SearchApi.io.\"\n}",
+      "querySha256": "3e68aec8008b9a6bac92837c9dca64c0d66dab3b159f275276b0b074fc92991d"
+    },
+    {
+      "callKey": "si-msp/national-complex/1/brave/brave",
+      "callFingerprint": "34e60054693d03dbe2ca5ed45f0df0a47afdeb712c4ca8460593b484e604ba9b",
+      "queryClusterKey": "557b66e2dd5bc798e4dd7852bdef3edbcd113fdad9dc525131febde1501463b2",
+      "route": {
+        "category": "si-msp",
+        "track": "national-complex",
+        "sequence": 1,
+        "provider": "brave",
+        "engine": "brave",
+        "mechanism": "web-index",
+        "trigger": "index-gap",
+        "invocationReason": "index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "completed",
+      "requestedResults": 20,
+      "rawResults": 20,
+      "normalizedCompanies": 20,
+      "newUniqueCompanies": 14,
+      "existingCompanyHits": 6,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 1412,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "b2c589a67a3d7f50a842cde5917a3219fd77c1dbeed2a03f81c8f99dd1f3de28"
+    },
+    {
+      "callKey": "si-msp/local-smb/0/google-places/google-places",
+      "callFingerprint": "8554a5b59d583167c5a526062066d402e89a2a72cc174cf2e9dcc22381739615",
+      "queryClusterKey": "31dbf300565ccccfec4235ac08c1ac9ade1165204d2ad36dd06ce8376d8960c7",
+      "route": {
+        "category": "si-msp",
+        "track": "local-smb",
+        "sequence": 0,
+        "provider": "google-places",
+        "engine": "google-places",
+        "mechanism": "local-text-search",
+        "trigger": "core",
+        "invocationReason": "Core mechanism for si-msp/local-smb"
+      },
+      "status": "completed",
+      "requestedResults": 12,
+      "rawResults": 12,
+      "normalizedCompanies": 12,
+      "newUniqueCompanies": 11,
+      "existingCompanyHits": 1,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 675,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "178eecb78d36f00024604dd3817ca8ad572e3a3ad1dc61f45239bbe752c4c399"
+    },
+    {
+      "callKey": "si-msp/national-complex/0/gemini-full/google-grounded",
+      "callFingerprint": "a45a2494415a60f0c2c9902839e19c5e155f863fe3c562e73b1a8fd5194bf2cc",
+      "queryClusterKey": "032c56fcc3ae93843ded9fae2167406e4281f582c33d12a596fa613548701ef3",
+      "route": {
+        "category": "si-msp",
+        "track": "national-complex",
+        "sequence": 0,
+        "provider": "gemini-full",
+        "engine": "google-grounded",
+        "mechanism": "planning",
+        "trigger": "core",
+        "invocationReason": "Core mechanism for si-msp/national-complex"
+      },
+      "status": "completed",
+      "requestedResults": 12,
+      "rawResults": 12,
+      "normalizedCompanies": 12,
+      "newUniqueCompanies": 11,
+      "existingCompanyHits": 1,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 6,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 12258,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "90830af3874e6bfedfdcf5dc359f09aeb5015c5e4496b84a7872b37ab6d93aaf"
+    }
+  ]
+}

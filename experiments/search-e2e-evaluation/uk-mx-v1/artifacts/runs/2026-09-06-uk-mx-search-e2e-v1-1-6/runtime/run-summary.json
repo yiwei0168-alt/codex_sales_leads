@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
   "experimentId": "search-e2e-eval-v1.1.6",
-  "status": "running",
+  "status": "cells-completed",
   "createdAt": "2026-09-05T20:20:22.396Z",
-  "updatedAt": "2026-09-06T05:51:54.617Z",
+  "updatedAt": "2026-09-06T06:14:02.530Z",
   "blindJudgeModel": "codex-in-session",
   "preflightChecks": [
     {
@@ -77,7 +77,9 @@
     "GB-retail:gemini-native",
     "GB-retail:product-e2e",
     "MX-resale:gemini-native",
-    "MX-resale:product-e2e"
+    "MX-resale:product-e2e",
+    "GB-si-msp:gemini-native",
+    "GB-si-msp:product-e2e"
   ],
   "completedCellIds": [
     "MX-retail",
@@ -86,11 +88,14 @@
     "GB-resale",
     "MX-distribution",
     "GB-retail",
-    "MX-resale"
+    "MX-resale",
+    "GB-si-msp"
   ],
   "completedEvaluationCellIds": [],
   "completedBlindPacketIds": [],
-  "reportedBudgetThresholdsUsd": [],
+  "reportedBudgetThresholdsUsd": [
+    20
+  ],
   "anomalies": [
     {
       "at": "2026-09-05T20:20:26.561Z",
@@ -9967,6 +9972,849 @@
         "downstreamUsedItems": 13,
         "discardedReasonCounts": {
           "wrongPrimaryRoleOrGate": 72
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:gemini-control",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "cellId": "GB-si-msp",
+      "arm": "gemini-native",
+      "ledger": "gemini-native-arm",
+      "stage": "native-search",
+      "provider": "gemini-full",
+      "requestedModel": "gemini-3.6-flash",
+      "actualModel": "gemini-3.6-flash",
+      "startedAt": "2026-09-06T06:05:27.010Z",
+      "completedAt": "2026-09-06T06:06:01.113Z",
+      "latencyMs": 34103,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 1998,
+        "cachedInputTokens": 610,
+        "outputTokens": 6259,
+        "reasoningTokens": 1483,
+        "groundingQueries": 8
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 30,
+        "validOutputItems": 30,
+        "downstreamUsedItems": 30,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "one interaction",
+        "no follow-up",
+        "provider order preserved"
+      ],
+      "officialListPriceUsd": 0.136558,
+      "budgetCostUsd": 0.136558,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:intent:1",
+      "cellId": "GB-si-msp",
+      "stage": "intent",
+      "provider": "kimi",
+      "requestedModel": "kimi-k2.6",
+      "actualModel": "kimi-k2.6",
+      "startedAt": "2026-09-06T06:05:26.970Z",
+      "completedAt": "2026-09-06T06:06:01.758Z",
+      "latencyMs": 34783,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 533,
+        "cachedInputTokens": 512,
+        "outputTokens": 1408
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005707838829998968,
+      "budgetCostUsd": 0.005707838829998968,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:rag-embedding:1",
+      "cellId": "GB-si-msp",
+      "stage": "rag-retrieval",
+      "provider": "alibaba-model-studio",
+      "requestedModel": "text-embedding-v4",
+      "actualModel": "text-embedding-v4",
+      "startedAt": "2026-09-06T06:06:01.768Z",
+      "completedAt": "2026-09-06T06:06:03.728Z",
+      "latencyMs": 1833,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 80,
+        "outputTokens": 0
+      },
+      "volume": {
+        "inputItems": 3,
+        "rawOutputItems": 3,
+        "validOutputItems": 3,
+        "downstreamUsedItems": 3,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.00000576,
+      "budgetCostUsd": 0.00000576,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:playbook",
+      "cellId": "GB-si-msp",
+      "stage": "playbook",
+      "provider": "deterministic-template",
+      "startedAt": "2026-09-06T06:06:03.738Z",
+      "completedAt": "2026-09-06T06:06:03.739Z",
+      "latencyMs": 1,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "volume": {
+        "inputItems": 16,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:discovery:r1:1",
+      "cellId": "GB-si-msp",
+      "stage": "hybrid-discovery",
+      "provider": "google-places",
+      "startedAt": "2026-09-06T06:06:03.749Z",
+      "completedAt": "2026-09-06T06:07:17.215Z",
+      "latencyMs": 514,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 20,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 20,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 20,
+        "discardedReasonCounts": {
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.035,
+      "budgetCostUsd": 0.035,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:discovery:r1:2",
+      "cellId": "GB-si-msp",
+      "stage": "hybrid-discovery",
+      "provider": "gemini-full",
+      "requestedModel": "gemini-3.6-flash",
+      "actualModel": "gemini-3.6-flash",
+      "startedAt": "2026-09-06T06:06:03.749Z",
+      "completedAt": "2026-09-06T06:07:17.215Z",
+      "latencyMs": 17536,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 6,
+        "searchResults": 20,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 20,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 16,
+        "discardedReasonCounts": {
+          "duplicate": 4
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.084,
+      "budgetCostUsd": 0.084,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:discovery:r1:3",
+      "cellId": "GB-si-msp",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-06T06:06:03.749Z",
+      "completedAt": "2026-09-06T06:07:17.215Z",
+      "latencyMs": 830,
+      "attempts": 2,
+      "retries": 1,
+      "fallbackUsed": false,
+      "status": "failed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 2,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "provider-rate-limit": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=miss",
+        "failureClass=rate-limit",
+        "circuitScope=route"
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.008,
+      "budgetCostUsd": 0.008,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:discovery:r1:4",
+      "cellId": "GB-si-msp",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-06T06:06:03.749Z",
+      "completedAt": "2026-09-06T06:07:17.215Z",
+      "latencyMs": 1412,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 20,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 20,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 14,
+        "discardedReasonCounts": {
+          "duplicate": 6
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005,
+      "budgetCostUsd": 0.005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:discovery-gate-r1:model:1",
+      "cellId": "GB-si-msp",
+      "stage": "discovery-gate-r1",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek-v4-flash",
+      "startedAt": "2026-09-06T06:06:03.749Z",
+      "completedAt": "2026-09-06T06:07:17.215Z",
+      "latencyMs": 38131,
+      "attempts": 5,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 53195,
+        "outputTokens": 7553,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 50,
+        "rawOutputItems": 49,
+        "validOutputItems": 47,
+        "downstreamUsedItems": 47,
+        "discardedReasonCounts": {
+          "rejected": 2
+        }
+      },
+      "notes": [
+        "Aggregate stage output volume is attributed once to the primary model event."
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.009562140000000002,
+      "budgetCostUsd": 0.009562140000000002,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:fresh-evidence:r1",
+      "cellId": "GB-si-msp",
+      "stage": "fresh-evidence",
+      "provider": "tavily",
+      "startedAt": "2026-09-06T06:07:17.283Z",
+      "completedAt": "2026-09-06T06:07:32.680Z",
+      "latencyMs": 154397,
+      "attempts": 75,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 65
+      },
+      "volume": {
+        "inputItems": 47,
+        "rawOutputItems": 130,
+        "validOutputItems": 130,
+        "downstreamUsedItems": 130,
+        "discardedReasonCounts": {
+          "noFreshEvidence": 2
+        }
+      },
+      "notes": [
+        "historical evidence reads disabled",
+        "evidence-library writes disabled",
+        "current-run evidence and missing-evidence records reused downstream"
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.52,
+      "budgetCostUsd": 0.52,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:correction-evidence:r1",
+      "cellId": "GB-si-msp",
+      "stage": "evidence-correction-search",
+      "provider": "tavily",
+      "startedAt": "2026-09-06T06:07:32.692Z",
+      "completedAt": "2026-09-06T06:09:52.977Z",
+      "latencyMs": 88860,
+      "attempts": 34,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 34
+      },
+      "volume": {
+        "inputItems": 47,
+        "rawOutputItems": 47,
+        "validOutputItems": 47,
+        "downstreamUsedItems": 41,
+        "discardedReasonCounts": {
+          "correctedToAnotherRole": 6
+        }
+      },
+      "notes": [
+        "Only missing evidence identified by the first evidence packet may trigger supplementation."
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.272,
+      "budgetCostUsd": 0.272,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:evidence-correction-r1:model:1",
+      "cellId": "GB-si-msp",
+      "stage": "evidence-correction-r1",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek-v4-flash",
+      "startedAt": "2026-09-06T06:07:32.692Z",
+      "completedAt": "2026-09-06T06:09:52.977Z",
+      "latencyMs": 173105,
+      "attempts": 9,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 168521,
+        "outputTokens": 35416,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 47,
+        "rawOutputItems": 47,
+        "validOutputItems": 46,
+        "downstreamUsedItems": 41,
+        "discardedReasonCounts": {
+          "correctedToAnotherRole": 6
+        }
+      },
+      "notes": [
+        "Aggregate stage output volume is attributed once to the primary model event."
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.033509420000000005,
+      "budgetCostUsd": 0.033509420000000005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:evidence-correction-r1:model:2",
+      "cellId": "GB-si-msp",
+      "stage": "evidence-correction-r1",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T06:07:32.692Z",
+      "completedAt": "2026-09-06T06:09:52.977Z",
+      "latencyMs": 109095,
+      "attempts": 5,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 21375,
+        "outputTokens": 9923,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 0,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "stageVolumeAttributedToPrimaryModelEvent": 5
+        }
+      },
+      "notes": [
+        "Model cost and tokens are retained; aggregate stage output volume is already attributed to model event 1."
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.017931135,
+      "budgetCostUsd": 0.017931135,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:qualification-score-only-r1:model:1",
+      "cellId": "GB-si-msp",
+      "stage": "qualification-score-only-r1",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek-v4-flash",
+      "startedAt": "2026-09-06T06:09:52.997Z",
+      "completedAt": "2026-09-06T06:11:23.141Z",
+      "latencyMs": 315975,
+      "attempts": 13,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 135718,
+        "outputTokens": 55943,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 41,
+        "rawOutputItems": 41,
+        "validOutputItems": 41,
+        "downstreamUsedItems": 41,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "notes": [
+        "Aggregate stage output volume is attributed once to the primary model event."
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.03466456,
+      "budgetCostUsd": 0.03466456,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:discovery:r2:1",
+      "cellId": "GB-si-msp",
+      "stage": "hybrid-discovery",
+      "provider": "google-places",
+      "startedAt": "2026-09-06T06:11:23.157Z",
+      "completedAt": "2026-09-06T06:11:56.578Z",
+      "latencyMs": 675,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 12,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 12,
+        "validOutputItems": 12,
+        "downstreamUsedItems": 11,
+        "discardedReasonCounts": {
+          "duplicate": 1
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.035,
+      "budgetCostUsd": 0.035,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:discovery:r2:2",
+      "cellId": "GB-si-msp",
+      "stage": "hybrid-discovery",
+      "provider": "gemini-full",
+      "requestedModel": "gemini-3.6-flash",
+      "actualModel": "gemini-3.6-flash",
+      "startedAt": "2026-09-06T06:11:23.157Z",
+      "completedAt": "2026-09-06T06:11:56.578Z",
+      "latencyMs": 12258,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 6,
+        "searchResults": 12,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 12,
+        "validOutputItems": 12,
+        "downstreamUsedItems": 11,
+        "discardedReasonCounts": {
+          "duplicate": 1
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.084,
+      "budgetCostUsd": 0.084,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:discovery-gate-r2:model:1",
+      "cellId": "GB-si-msp",
+      "stage": "discovery-gate-r2",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek-v4-flash",
+      "startedAt": "2026-09-06T06:11:23.157Z",
+      "completedAt": "2026-09-06T06:11:56.578Z",
+      "latencyMs": 17314,
+      "attempts": 3,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 30398,
+        "outputTokens": 3359,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 22,
+        "rawOutputItems": 21,
+        "validOutputItems": 21,
+        "downstreamUsedItems": 21,
+        "discardedReasonCounts": {
+          "rejected": 0
+        }
+      },
+      "notes": [
+        "Aggregate stage output volume is attributed once to the primary model event."
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.00519624,
+      "budgetCostUsd": 0.00519624,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:fresh-evidence:r2",
+      "cellId": "GB-si-msp",
+      "stage": "fresh-evidence",
+      "provider": "tavily",
+      "startedAt": "2026-09-06T06:11:56.633Z",
+      "completedAt": "2026-09-06T06:12:15.514Z",
+      "latencyMs": 68914,
+      "attempts": 31,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 27
+      },
+      "volume": {
+        "inputItems": 21,
+        "rawOutputItems": 56,
+        "validOutputItems": 56,
+        "downstreamUsedItems": 56,
+        "discardedReasonCounts": {
+          "noFreshEvidence": 0
+        }
+      },
+      "notes": [
+        "historical evidence reads disabled",
+        "evidence-library writes disabled",
+        "current-run evidence and missing-evidence records reused downstream"
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.216,
+      "budgetCostUsd": 0.216,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:correction-evidence:r2",
+      "cellId": "GB-si-msp",
+      "stage": "evidence-correction-search",
+      "provider": "tavily",
+      "startedAt": "2026-09-06T06:12:15.532Z",
+      "completedAt": "2026-09-06T06:13:19.608Z",
+      "latencyMs": 47390,
+      "attempts": 20,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 20
+      },
+      "volume": {
+        "inputItems": 21,
+        "rawOutputItems": 20,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 19,
+        "discardedReasonCounts": {
+          "correctedToAnotherRole": 1
+        }
+      },
+      "notes": [
+        "Only missing evidence identified by the first evidence packet may trigger supplementation."
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.16,
+      "budgetCostUsd": 0.16,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:evidence-correction-r2:model:1",
+      "cellId": "GB-si-msp",
+      "stage": "evidence-correction-r2",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek-v4-flash",
+      "startedAt": "2026-09-06T06:12:15.532Z",
+      "completedAt": "2026-09-06T06:13:19.608Z",
+      "latencyMs": 88826,
+      "attempts": 5,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 90605,
+        "outputTokens": 18153,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 21,
+        "rawOutputItems": 20,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 19,
+        "discardedReasonCounts": {
+          "correctedToAnotherRole": 1
+        }
+      },
+      "notes": [
+        "Aggregate stage output volume is attributed once to the primary model event."
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.017767540000000002,
+      "budgetCostUsd": 0.017767540000000002,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:qualification-score-only-r2:model:1",
+      "cellId": "GB-si-msp",
+      "stage": "qualification-score-only-r2",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek-v4-flash",
+      "startedAt": "2026-09-06T06:13:19.627Z",
+      "completedAt": "2026-09-06T06:14:02.453Z",
+      "latencyMs": 157414,
+      "attempts": 7,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 70129,
+        "outputTokens": 27068,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 19,
+        "rawOutputItems": 19,
+        "validOutputItems": 19,
+        "downstreamUsedItems": 19,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "notes": [
+        "Aggregate stage output volume is attributed once to the primary model event."
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.017397100000000002,
+      "budgetCostUsd": 0.017397100000000002,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:ranking",
+      "cellId": "GB-si-msp",
+      "stage": "role-filter-ranking",
+      "provider": "deterministic",
+      "startedAt": "2026-09-06T06:14:02.463Z",
+      "completedAt": "2026-09-06T06:14:02.463Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "volume": {
+        "inputItems": 60,
+        "rawOutputItems": 60,
+        "validOutputItems": 30,
+        "downstreamUsedItems": 30,
+        "discardedReasonCounts": {
+          "wrongPrimaryRoleOrGate": 37
         }
       },
       "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",

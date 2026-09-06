@@ -1,0 +1,389 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+  "cellId": "GB-si-msp",
+  "arm": "gemini-native",
+  "startedAt": "2026-09-06T06:05:27.010Z",
+  "completedAt": "2026-09-06T06:06:01.113Z",
+  "wallClockMs": 34103,
+  "requestedModel": "gemini-3.6-flash",
+  "actualModel": "gemini-3.6-flash",
+  "searchQueries": 8,
+  "finalCandidates": [
+    {
+      "rank": 1,
+      "companyName": "Blaze Networks",
+      "officialWebsite": "https://blazenetworks.co.uk",
+      "marketSignal": "Headquartered and operating in Macclesfield, Cheshire, delivering UK-wide managed IT and network infrastructure services.",
+      "roleSignal": "Operates as a Managed Service Provider (MSP) designing and managing wide area networks, SD-WAN, SASE, and Wi-Fi infrastructure for UK businesses.",
+      "relevanceSignal": "High relevance for Cudy's enterprise/SMB switching, Wi-Fi access points, and VPN gateway routers deployed in managed multi-site SME networks.",
+      "evidenceUrls": [
+        "https://blazenetworks.co.uk"
+      ]
+    },
+    {
+      "rank": 2,
+      "companyName": "Switchshop",
+      "officialWebsite": "https://www.switchshop.co.uk",
+      "marketSignal": "Headquartered in Hertfordshire, operating across the UK as a networking hardware and solution system integrator.",
+      "roleSignal": "Specialist network system integrator designing, installing, and supporting wired LAN, Wi-Fi, and security infrastructure for education, public sector, and SMBs.",
+      "relevanceSignal": "Strong fit for Cudy's core networking portfolio including Managed PoE switches, outdoor Wi-Fi APs, and Ethernet gateways.",
+      "evidenceUrls": [
+        "https://www.switchshop.co.uk"
+      ]
+    },
+    {
+      "rank": 3,
+      "companyName": "Wavenet",
+      "officialWebsite": "https://www.wavenet.co.uk",
+      "marketSignal": "UK-headquartered managed service provider supplying connectivity and IT services across Solihull, London, and nationwide.",
+      "roleSignal": "Acts as an MSP and SI designing, deploying, and managing IT infrastructure, secure Wi-Fi, cloud networking, and unified communications.",
+      "relevanceSignal": "Directly relevant for Cudy's SMB switches, Wi-Fi repeaters/mesh systems, and 4G/5G cellular backup routers.",
+      "evidenceUrls": [
+        "https://www.wavenet.co.uk"
+      ]
+    },
+    {
+      "rank": 4,
+      "companyName": "Croft Communications",
+      "officialWebsite": "https://www.croftmsp.com",
+      "marketSignal": "UK-based managed service provider with regional offices across England, Wales, and Scotland.",
+      "roleSignal": "Managed Service Provider offering end-to-end IT support, managed network deployments, business Wi-Fi, and telecoms for B2B clients.",
+      "relevanceSignal": "Matches Cudy's value-driven networking gear for small-to-medium offices, hospitality sites, and retail branches.",
+      "evidenceUrls": [
+        "https://www.croftmsp.com"
+      ]
+    },
+    {
+      "rank": 5,
+      "companyName": "Axia Computer Systems",
+      "officialWebsite": "https://www.axia.co.uk",
+      "marketSignal": "Headquartered in Watford, Hertfordshire, serving B2B clients across London and the Home Counties.",
+      "roleSignal": "Managed Service Provider delivering network architecture design, Wi-Fi solutions, structured cabling, and 24/7 IT management for SMBs.",
+      "relevanceSignal": "Ideal for Cudy's accessible Wi-Fi 6 access points, PoE desktop/rackmount switches, and VPN routers for regional businesses.",
+      "evidenceUrls": [
+        "https://www.axia.co.uk"
+      ]
+    },
+    {
+      "rank": 6,
+      "companyName": "Netteam tX",
+      "officialWebsite": "https://netteam.co.uk",
+      "marketSignal": "Operating from Berkshire, UK, offering nationwide managed IT services.",
+      "roleSignal": "MSP and network integrator specialising in designing and operating B2B network environments for hospitality, education, and corporate clients.",
+      "relevanceSignal": "Directly aligns with Cudy's hospitality Wi-Fi access points, multi-gigabit switches, and mesh router deployment capabilities.",
+      "evidenceUrls": [
+        "https://netteam.co.uk"
+      ]
+    },
+    {
+      "rank": 7,
+      "companyName": "Systemagic",
+      "officialWebsite": "https://systemagic.co.uk",
+      "marketSignal": "Headquartered in Bradford-on-Avon with London presence, serving clients across South West England and the UK.",
+      "roleSignal": "Managed Service Provider delivering IT infrastructure, network design, guest Wi-Fi installations, and managed connectivity for SMBs and hospitality.",
+      "relevanceSignal": "Relevance in offering cost-effective Cudy networking switches, Wi-Fi 6 APs, and router hardware to budget-conscious commercial clients.",
+      "evidenceUrls": [
+        "https://systemagic.co.uk"
+      ]
+    },
+    {
+      "rank": 8,
+      "companyName": "Technical Drive",
+      "officialWebsite": "https://technicaldrive.co.uk",
+      "marketSignal": "Based in Bromsgrove, Birmingham, delivering managed IT services across the West Midlands and broader UK.",
+      "roleSignal": "Managed Service Provider designing, modernising, and managing internal networks, Wi-Fi access, and firewall infrastructure for B2B SMEs.",
+      "relevanceSignal": "Strong candidate for integrated Cudy Wi-Fi mesh systems, PoE switches, and VPN gateways in local B2B projects.",
+      "evidenceUrls": [
+        "https://technicaldrive.co.uk"
+      ]
+    },
+    {
+      "rank": 9,
+      "companyName": "Connect Systems",
+      "officialWebsite": "https://connectsystems.co.uk",
+      "marketSignal": "Headquartered in Buckinghamshire, operating across London, South East England, and nationwide.",
+      "roleSignal": "Managed IT service provider delivering end-to-end network installations, business Wi-Fi systems, and ongoing infrastructure maintenance for SMEs.",
+      "relevanceSignal": "Well suited for integrating Cudy's SMB switches, Wi-Fi 6 routers, and 4G/5G failover solutions for small business clients.",
+      "evidenceUrls": [
+        "https://connectsystems.co.uk"
+      ]
+    },
+    {
+      "rank": 10,
+      "companyName": "Laton Technical",
+      "officialWebsite": "https://www.laton.co.uk",
+      "marketSignal": "Based in Hastings, East Sussex, serving business clients across South East England.",
+      "roleSignal": "IT and network integrator providing structured cabling, Wi-Fi design, network configuration, and managed IT contracts.",
+      "relevanceSignal": "High fit for Cudy's unmanaged/managed switches, outdoor Wi-Fi access points, and light industrial network deployment.",
+      "evidenceUrls": [
+        "https://www.laton.co.uk"
+      ]
+    },
+    {
+      "rank": 11,
+      "companyName": "RJ Cortel",
+      "officialWebsite": "https://www.rjcortel.co.uk",
+      "marketSignal": "Headquartered in Polegate, East Sussex, operating throughout Sussex, Kent, Surrey, and the South East.",
+      "roleSignal": "Managed Service Provider offering complete in-house Wi-Fi deployment, network cabling, firewall setups, and ongoing IT support.",
+      "relevanceSignal": "Aligns with Cudy's indoor/outdoor APs, PoE distribution switches, and 4G/5G mobile routers for SME client deployments.",
+      "evidenceUrls": [
+        "https://www.rjcortel.co.uk"
+      ]
+    },
+    {
+      "rank": 12,
+      "companyName": "Evolve",
+      "officialWebsite": "https://evolvebg.co.uk",
+      "marketSignal": "Based in Wigan, Greater Manchester, serving multi-site retail, QSR, forecourt, and hospitality brands across the UK.",
+      "roleSignal": "Managed Network Service Provider (MNSP) delivering fully managed multi-site Wi-Fi, SD-WAN, Dual-WAN routing, and cellular continuity.",
+      "relevanceSignal": "Highly relevant for Cudy's 4G/5G cellular failover routers, multi-WAN gateways, and enterprise-grade switches in multi-site retail/hospitality.",
+      "evidenceUrls": [
+        "https://evolvebg.co.uk"
+      ]
+    },
+    {
+      "rank": 13,
+      "companyName": "MAS Networks",
+      "officialWebsite": "https://www.mas-networks.co.uk",
+      "marketSignal": "Operating from Sussex and London, delivering managed technology services to UK clients.",
+      "roleSignal": "MSP and systems integrator providing network installations, Wi-Fi systems, structured cabling, and 24/7 B2B support.",
+      "relevanceSignal": "Complements Cudy's portfolio of access points, switches, and broadband routers for education, retail, and SME client installations.",
+      "evidenceUrls": [
+        "https://www.mas-networks.co.uk"
+      ]
+    },
+    {
+      "rank": 14,
+      "companyName": "MLR Networks",
+      "officialWebsite": "https://www.mlrnetworks.co.uk",
+      "marketSignal": "Headquartered in Widnes, Cheshire, delivering enterprise and commercial network projects across the UK.",
+      "roleSignal": "Network system integrator and MSP specialising in LAN, WAN, wireless site surveys, network security, and infrastructure management.",
+      "relevanceSignal": "Direct overlap with Cudy's high-density Wi-Fi access points, managed PoE switches, and VPN controllers for education and hospitality networks.",
+      "evidenceUrls": [
+        "https://www.mlrnetworks.co.uk"
+      ]
+    },
+    {
+      "rank": 15,
+      "companyName": "Focus Group",
+      "officialWebsite": "https://focusgroup.co.uk",
+      "marketSignal": "Headquartered in Shoreham-by-Sea, West Sussex, with nationwide offices across the UK.",
+      "roleSignal": "Major UK technology MSP providing network infrastructure, hospitality Wi-Fi, cyber security, and managed IT support.",
+      "relevanceSignal": "High volume market footprint for deploying Cudy switches, mesh Wi-Fi, and 4G/5G access routers across hospitality, retail, and office environments.",
+      "evidenceUrls": [
+        "https://focusgroup.co.uk"
+      ]
+    },
+    {
+      "rank": 16,
+      "companyName": "Passmonds Communications",
+      "officialWebsite": "https://passmonds.co.uk",
+      "marketSignal": "Based in Rochdale, Greater Manchester, operating across the North West and nationwide UK.",
+      "roleSignal": "Systems integrator and telecom/network installer offering business Wi-Fi, network switches, cabling, and managed connectivity.",
+      "relevanceSignal": "Direct applicability for Cudy's ceiling-mount access points, PoE switches, and outdoor long-range wireless equipment in venue and hospitality projects.",
+      "evidenceUrls": [
+        "https://passmonds.co.uk"
+      ]
+    },
+    {
+      "rank": 17,
+      "companyName": "Fluent2",
+      "officialWebsite": "https://fluent2.co.uk",
+      "marketSignal": "Headquartered in London, operating across the UK and internationally in hospitality IT.",
+      "roleSignal": "Managed Service Provider providing end-to-end network infrastructure management, IT support, and 24/7 monitoring for hotel and hospitality clients.",
+      "relevanceSignal": "Matches Cudy's access points, switch range, and Wi-Fi management software engineered for affordable hospitality network setups.",
+      "evidenceUrls": [
+        "https://fluent2.co.uk"
+      ]
+    },
+    {
+      "rank": 18,
+      "companyName": "Switchnet Systems",
+      "officialWebsite": "http://www.switchnet.co.uk",
+      "marketSignal": "Established in 1996, operating across the UK as a dedicated networking services integrator.",
+      "roleSignal": "Specialised network systems integrator focusing on designing, installing, maintaining, and supporting LAN/WAN and wireless infrastructures.",
+      "relevanceSignal": "Ideal alignment with Cudy's core switching family, Ethernet hardware, and Wi-Fi AP controllers.",
+      "evidenceUrls": [
+        "http://www.switchnet.co.uk"
+      ]
+    },
+    {
+      "rank": 19,
+      "companyName": "Systems Integration (UK)",
+      "officialWebsite": "https://www.systems-integration.co.uk",
+      "marketSignal": "Based in Swindon, Wiltshire, serving B2B clients in South West England and across the UK.",
+      "roleSignal": "System integrator and MSP managing IT infrastructure, network architecture, security controls, and hardware supply for corporate clients.",
+      "relevanceSignal": "Relevant partner for distributing Cudy's enterprise switches, Mesh routers, and SMB networking products.",
+      "evidenceUrls": [
+        "https://www.systems-integration.co.uk"
+      ]
+    },
+    {
+      "rank": 20,
+      "companyName": "Axians UK",
+      "officialWebsite": "https://www.axians.co.uk",
+      "marketSignal": "Headquartered in Birmingham with nationwide delivery capabilities across the United Kingdom.",
+      "roleSignal": "ICT system integrator and MSP delivering enterprise networking, cloud infrastructure, cybersecurity, and managed network services.",
+      "relevanceSignal": "Capable of integrating Cudy's SMB/edge routing, PoE switches, and wireless access hardware in public sector or mid-market projects.",
+      "evidenceUrls": [
+        "https://www.axians.co.uk"
+      ]
+    },
+    {
+      "rank": 21,
+      "companyName": "Redsquid",
+      "officialWebsite": "https://redsquid.co.uk",
+      "marketSignal": "Headquartered in Borehamwood, Hertfordshire, serving commercial and non-profit clients across the UK.",
+      "roleSignal": "Managed service provider and system integrator specialising in IoT, voice & data, network infrastructure, Wi-Fi, and cyber security.",
+      "relevanceSignal": "Fits Cudy's IoT-friendly switches, Wi-Fi 6 access points, and 4G/5G cellular gateway products.",
+      "evidenceUrls": [
+        "https://redsquid.co.uk"
+      ]
+    },
+    {
+      "rank": 22,
+      "companyName": "Principle Networks",
+      "officialWebsite": "https://principlenetworks.com",
+      "marketSignal": "UK-based network specialist operating nationwide out of Leeds, West Yorkshire.",
+      "roleSignal": "Network systems integrator and MSP designing, implementing, and managing simplified LAN, WAN, wireless, and Zero Trust network architectures.",
+      "relevanceSignal": "Applicable for Cudy's managed switch portfolio, VPN routers, and Wi-Fi solutions in mid-market network simplification projects.",
+      "evidenceUrls": [
+        "https://principlenetworks.com"
+      ]
+    },
+    {
+      "rank": 23,
+      "companyName": "Flotek Group",
+      "officialWebsite": "https://flotek.io",
+      "marketSignal": "Headquartered in Swansea with regional hubs across the UK, delivering IT & telecoms services to SMEs.",
+      "roleSignal": "Managed IT and comms service provider offering network infrastructure design, Wi-Fi installation, cloud migration, and managed support.",
+      "relevanceSignal": "Strong match for Cudy's SME-targeted wireless routers, mesh systems, and desktop/rackmount PoE switches.",
+      "evidenceUrls": [
+        "https://flotek.io"
+      ]
+    },
+    {
+      "rank": 24,
+      "companyName": "TDM Group",
+      "officialWebsite": "https://tdmgroup.net",
+      "marketSignal": "Based in Berkshire, operating UK-wide as a strategic technology partner for mid-market organisations.",
+      "roleSignal": "Managed Service and Security Provider delivering network design, managed IT infrastructure, and proactive 24/7 monitoring.",
+      "relevanceSignal": "Suitable for Cudy's managed Ethernet switches, VPN security gateways, and Wi-Fi access solutions.",
+      "evidenceUrls": [
+        "https://tdmgroup.net"
+      ]
+    },
+    {
+      "rank": 25,
+      "companyName": "entrustIT",
+      "officialWebsite": "https://entrustit.co.uk",
+      "marketSignal": "Headquartered in Ringwood, Hampshire, serving UK SME and mid-market organisations.",
+      "roleSignal": "Managed Service Provider and IP Integrator delivering network infrastructure, cloud environments, and converged IT management.",
+      "relevanceSignal": "Direct relevance for deploying Cudy's switching and Wi-Fi hardware across client branch networks and hybrid working setups.",
+      "evidenceUrls": [
+        "https://entrustit.co.uk"
+      ]
+    },
+    {
+      "rank": 26,
+      "companyName": "The HBP Group",
+      "officialWebsite": "https://thehbpgroup.co.uk",
+      "marketSignal": "Operating out of Scunthorpe and Hull, serving hundreds of SMEs across Yorkshire, Lincolnshire, and nationwide.",
+      "roleSignal": "Managed IT Service Provider delivering network installation, IT security, hardware provisioning, and ongoing infrastructure management.",
+      "relevanceSignal": "Good match for Cudy's value-tier switches, Wi-Fi APs, and backup routers for SMB client environments.",
+      "evidenceUrls": [
+        "https://thehbpgroup.co.uk"
+      ]
+    },
+    {
+      "rank": 27,
+      "companyName": "AdEPT Technology Group",
+      "officialWebsite": "https://adept.co.uk",
+      "marketSignal": "Headquartered in Tunbridge Wells, Kent, supplying over 12,000 corporate and public sector clients across the UK.",
+      "roleSignal": "Managed service provider delivering managed LAN/WAN, professional Wi-Fi networks, IT support, and unified comms.",
+      "relevanceSignal": "Provides broad channel reach for Cudy's Ethernet switches, outdoor wireless gear, and mesh Wi-Fi solutions in school and SMB projects.",
+      "evidenceUrls": [
+        "https://adept.co.uk"
+      ]
+    },
+    {
+      "rank": 28,
+      "companyName": "Chess ICT",
+      "officialWebsite": "https://chessict.co.uk",
+      "marketSignal": "Headquartered in Alderley Edge, Cheshire, operating as a leading independent UK technology provider.",
+      "roleSignal": "Major MSP offering managed network infrastructure, Wi-Fi deployment, hardware integration, and IT support services.",
+      "relevanceSignal": "Excellent potential channel for Cudy's Wi-Fi 6 access points, switches, and 4G/5G gateway products for cost-sensitive SME clients.",
+      "evidenceUrls": [
+        "https://chessict.co.uk"
+      ]
+    },
+    {
+      "rank": 29,
+      "companyName": "Spitfire Network Services",
+      "officialWebsite": "https://www.spitfire.co.uk",
+      "marketSignal": "Headquartered in London, providing network and telecommunication services to UK businesses for over 30 years.",
+      "roleSignal": "Managed network service provider supplying business connectivity, managed routers, private networks, and Wi-Fi infrastructure.",
+      "relevanceSignal": "Directly relevant for Cudy's WAN/VPN routers, 4G/5G mobile broadband backup units, and Ethernet switches.",
+      "evidenceUrls": [
+        "https://www.spitfire.co.uk"
+      ]
+    },
+    {
+      "rank": 30,
+      "companyName": "IT Connect",
+      "officialWebsite": "https://itconnect.uk.com",
+      "marketSignal": "UK-based specialist network engineering company operating across the UK and Europe.",
+      "roleSignal": "Network system integrator delivering LAN infrastructure design, Ekahau wireless site surveys, security deployment, and ongoing management.",
+      "relevanceSignal": "Targeted relevance for Cudy's enterprise LAN switching portfolio, wireless AP line, and outdoor networking hardware.",
+      "evidenceUrls": [
+        "https://itconnect.uk.com"
+      ]
+    }
+  ],
+  "missingSlots": 0,
+  "warnings": [],
+  "costEvents": [
+    {
+      "eventId": "GB-si-msp:gemini-control",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "cellId": "GB-si-msp",
+      "arm": "gemini-native",
+      "ledger": "gemini-native-arm",
+      "stage": "native-search",
+      "provider": "gemini-full",
+      "requestedModel": "gemini-3.6-flash",
+      "actualModel": "gemini-3.6-flash",
+      "startedAt": "2026-09-06T06:05:27.010Z",
+      "completedAt": "2026-09-06T06:06:01.113Z",
+      "latencyMs": 34103,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 1998,
+        "cachedInputTokens": 610,
+        "outputTokens": 6259,
+        "reasoningTokens": 1483,
+        "groundingQueries": 8
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 30,
+        "validOutputItems": 30,
+        "downstreamUsedItems": 30,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "one interaction",
+        "no follow-up",
+        "provider order preserved"
+      ],
+      "officialListPriceUsd": 0.136558,
+      "budgetCostUsd": 0.136558,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    }
+  ]
+}
