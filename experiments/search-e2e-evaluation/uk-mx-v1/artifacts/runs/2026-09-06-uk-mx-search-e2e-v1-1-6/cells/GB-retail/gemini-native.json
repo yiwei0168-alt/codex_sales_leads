@@ -1,0 +1,389 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+  "cellId": "GB-retail",
+  "arm": "gemini-native",
+  "startedAt": "2026-09-06T05:21:12.781Z",
+  "completedAt": "2026-09-06T05:21:38.155Z",
+  "wallClockMs": 25374,
+  "requestedModel": "gemini-3.6-flash",
+  "actualModel": "gemini-3.6-flash",
+  "searchQueries": 4,
+  "finalCandidates": [
+    {
+      "rank": 1,
+      "companyName": "Currys PLC",
+      "officialWebsite": "https://www.currys.co.uk",
+      "marketSignal": "Operates nationwide retail stores and a major e-commerce web platform serving consumers and home office buyers across the United Kingdom.",
+      "roleSignal": "Primary business is direct-to-consumer electrical and technology retailing via physical stores and online e-tail store.",
+      "relevanceSignal": "Retails home Wi-Fi routers, mesh systems, network switches, range extenders, and powerline kits suitable for Cudy's core consumer/SOHO product catalogue.",
+      "evidenceUrls": [
+        "https://www.currys.co.uk/networking/networking-devices"
+      ]
+    },
+    {
+      "rank": 2,
+      "companyName": "Argos Limited",
+      "officialWebsite": "https://www.argos.co.uk",
+      "marketSignal": "Established UK high-street and online multi-channel consumer goods retailer supplying customers across England, Scotland, Wales, and Northern Ireland.",
+      "roleSignal": "Operates direct consumer-facing retail platforms and order collection points across the UK.",
+      "relevanceSignal": "Sells home networking essentials including Wi-Fi 6 routers, mesh Wi-Fi, switches, and travel routers competing directly in Cudy's price and usage category.",
+      "evidenceUrls": [
+        "https://www.argos.co.uk"
+      ]
+    },
+    {
+      "rank": 3,
+      "companyName": "Scan Computers International Ltd",
+      "officialWebsite": "https://www.scan.co.uk",
+      "marketSignal": "UK-based computer hardware and technology online store operating from Lancashire to deliver across the United Kingdom.",
+      "roleSignal": "Retailer and e-tailer offering PC hardware, peripherals, and networking hardware directly to individual consumers and SOHO customers.",
+      "relevanceSignal": "Merchandises an extensive selection of SOHO networking products including wireless routers, PoE switches, outdoor APs, and network adapters.",
+      "evidenceUrls": [
+        "https://www.scan.co.uk"
+      ]
+    },
+    {
+      "rank": 4,
+      "companyName": "Overclockers UK (OCUK Limited)",
+      "officialWebsite": "https://www.overclockers.co.uk",
+      "marketSignal": "UK online tech retailer operating from Stoke-on-Trent, delivering computer hardware across the United Kingdom.",
+      "roleSignal": "Direct-to-consumer and SOHO e-tailer specializing in PC components, gaming gear, and network hardware.",
+      "relevanceSignal": "Stocks consumer networking gear including Wi-Fi routers, mesh systems, wireless adapters, and desktop switches.",
+      "evidenceUrls": [
+        "https://www.overclockers.co.uk"
+      ]
+    },
+    {
+      "rank": 5,
+      "companyName": "CCL Computers Ltd",
+      "officialWebsite": "https://www.cclonline.com",
+      "marketSignal": "UK-focused online technology store located in West Yorkshire, shipping throughout the UK market.",
+      "roleSignal": "E-commerce retailer focused on end-user computer components, PC systems, and home/office networking gear.",
+      "relevanceSignal": "Offers Wi-Fi routers, mesh solutions, switches, and SOHO network adapters directly aligned with Cudy's value product spectrum.",
+      "evidenceUrls": [
+        "https://www.cclonline.com"
+      ]
+    },
+    {
+      "rank": 6,
+      "companyName": "Box Ltd (Box.co.uk)",
+      "officialWebsite": "https://www.box.co.uk",
+      "marketSignal": "UK online tech and electronics retail platform fulfilling orders to UK residential and business end-users.",
+      "roleSignal": "Specialist consumer electronics and technology e-tail store operating direct retail sales online.",
+      "relevanceSignal": "Retails home Wi-Fi routers, mesh network kits, range extenders, and Ethernet switches.",
+      "evidenceUrls": [
+        "https://www.box.co.uk"
+      ]
+    },
+    {
+      "rank": 7,
+      "companyName": "Novatech Ltd",
+      "officialWebsite": "https://www.novatech.co.uk",
+      "marketSignal": "UK technology retailer based in Portsmouth, Hampshire, serving UK consumers and small business buyers online and in-store.",
+      "roleSignal": "Retailer and e-tailer selling IT hardware, PC components, and networking accessories directly to end customers.",
+      "relevanceSignal": "Sells Wi-Fi access points, wireless routers, Ethernet switches, and network adapters.",
+      "evidenceUrls": [
+        "https://www.novatech.co.uk"
+      ]
+    },
+    {
+      "rank": 8,
+      "companyName": "Computer Orbit Ltd",
+      "officialWebsite": "https://computerorbit.com",
+      "marketSignal": "UK computer store and e-tailer based in Gateshead, Tyne and Wear, delivering across the UK.",
+      "roleSignal": "Independent PC and tech retailer operating physical retail and online e-commerce operations for end users.",
+      "relevanceSignal": "Stocks networking accessories, Wi-Fi routers, mesh systems, and desktop Ethernet switches suited for home and SOHO setups.",
+      "evidenceUrls": [
+        "https://computerorbit.com"
+      ]
+    },
+    {
+      "rank": 9,
+      "companyName": "Maplin Electronics Ltd",
+      "officialWebsite": "https://www.maplin.co.uk",
+      "marketSignal": "UK online consumer electronics brand and retailer shipping across the United Kingdom.",
+      "roleSignal": "Consumer-facing e-tail store merchandising consumer electricals, smart home, cables, and home networking items.",
+      "relevanceSignal": "Retails home networking essentials such as Wi-Fi extenders, routers, Ethernet switches, and network adapters.",
+      "evidenceUrls": [
+        "https://www.maplin.co.uk"
+      ]
+    },
+    {
+      "rank": 10,
+      "companyName": "Buy It Direct Ltd (Laptops Direct / Servers Direct)",
+      "officialWebsite": "https://www.buyitdirect.co.uk",
+      "marketSignal": "UK e-commerce retail group headquartered in Huddersfield, West Yorkshire, operating multiple retail sites across the UK.",
+      "roleSignal": "Consumer and SOHO e-tailer selling hardware and electrical products directly to end consumers.",
+      "relevanceSignal": "Sells entry-level to mid-tier Wi-Fi routers, 4G/5G mobile routers, access points, and unmanaged PoE switches.",
+      "evidenceUrls": [
+        "https://www.buyitdirect.co.uk"
+      ]
+    },
+    {
+      "rank": 11,
+      "companyName": "Aria PC Ltd",
+      "officialWebsite": "https://www.aria.co.uk",
+      "marketSignal": "Long-established UK online computer store based in Manchester, shipping to customers throughout the UK.",
+      "roleSignal": "Specialist online retailer supplying PC hardware, tech accessories, and networking components directly to consumers.",
+      "relevanceSignal": "Lists consumer and SOHO networking devices including Wi-Fi routers, network expansion adapters, and switches.",
+      "evidenceUrls": [
+        "https://www.aria.co.uk"
+      ]
+    },
+    {
+      "rank": 12,
+      "companyName": "Ebuyer (UK) Limited",
+      "officialWebsite": "https://www.ebuyer.com",
+      "marketSignal": "Major UK online retailer of technology and electronics located in East Yorkshire, serving the entire UK consumer market.",
+      "roleSignal": "E-commerce platform providing direct retail sales of IT hardware and networking gear to consumers and SOHO buyers.",
+      "relevanceSignal": "Extensively merchandises budget and mid-range Wi-Fi routers, mesh systems, switches, and 4G/5G routers competing with Cudy.",
+      "evidenceUrls": [
+        "https://www.ebuyer.com"
+      ]
+    },
+    {
+      "rank": 13,
+      "companyName": "Very (Shop Direct Finance Company Limited)",
+      "officialWebsite": "https://www.very.co.uk",
+      "marketSignal": "UK digital department store and e-tailer based in Liverpool, serving millions of UK online shoppers.",
+      "roleSignal": "Consumer-facing digital retailer providing home electronics, technology, and online retail fulfillment.",
+      "relevanceSignal": "Retails mass-market consumer networking products like Wi-Fi range extenders, mesh kits, and home routers.",
+      "evidenceUrls": [
+        "https://www.very.co.uk"
+      ]
+    },
+    {
+      "rank": 14,
+      "companyName": "Richer Sounds Ltd",
+      "officialWebsite": "https://www.richersounds.com",
+      "marketSignal": "UK high-street and online retailer operating stores across major UK cities alongside a national web store.",
+      "roleSignal": "Consumer electronics retailer focused on home technology, AV, smart home, and home connectivity products.",
+      "relevanceSignal": "Sells home networking infrastructure like Wi-Fi mesh systems, switches, and routers for home entertainment setups.",
+      "evidenceUrls": [
+        "https://www.richersounds.com"
+      ]
+    },
+    {
+      "rank": 15,
+      "companyName": "John Lewis PLC",
+      "officialWebsite": "https://www.johnlewis.com",
+      "marketSignal": "Omnichannel UK department store retailer operating physical department stores and a major national online shop.",
+      "roleSignal": "Consumer retailer selling electricals, home technology, and personal computing hardware to retail buyers.",
+      "relevanceSignal": "Merchandises mainstream consumer Wi-Fi routers, mesh Wi-Fi networks, and SOHO connectivity gear.",
+      "evidenceUrls": [
+        "https://www.johnlewis.com"
+      ]
+    },
+    {
+      "rank": 16,
+      "companyName": "CPC (Farnell UK Ltd)",
+      "officialWebsite": "https://cpc.farnell.com",
+      "marketSignal": "UK-based consumer and trade electronics online store based in Preston, Lancashire, shipping nationwide.",
+      "roleSignal": "Retailer and catalog supplier serving end consumers, hobbyists, and light business buyers.",
+      "relevanceSignal": "Stocks affordable networking products including Ethernet switches, PoE injectors, Wi-Fi dongles, and routers.",
+      "evidenceUrls": [
+        "https://cpc.farnell.com"
+      ]
+    },
+    {
+      "rank": 17,
+      "companyName": "VeryPC Ltd",
+      "officialWebsite": "https://www.verypc.co.uk",
+      "marketSignal": "UK computer hardware maker and tech provider based in Sheffield, delivering systems across the UK market.",
+      "roleSignal": "Direct tech supplier and retailer providing PC systems, peripherals, and network accessories to education and SMB buyers.",
+      "relevanceSignal": "Offers network infrastructure hardware, wireless access points, and switches suitable for SOHO and light business deployments.",
+      "evidenceUrls": [
+        "https://www.verypc.co.uk"
+      ]
+    },
+    {
+      "rank": 18,
+      "companyName": "Network Webcams Ltd",
+      "officialWebsite": "https://www.networkwebcams.co.uk",
+      "marketSignal": "UK e-tailer based in Northern England, delivering IP networking and camera hardware across the UK.",
+      "roleSignal": "Specialist online retailer supplying network video, PoE switches, and wireless equipment direct to end-users.",
+      "relevanceSignal": "Retails PoE switches, network gateways, and outdoor wireless links relevant to Cudy's PoE switch and AP lineup.",
+      "evidenceUrls": [
+        "https://www.networkwebcams.co.uk"
+      ]
+    },
+    {
+      "rank": 19,
+      "companyName": "BT Shop (British Telecommunications plc)",
+      "officialWebsite": "https://shop.bt.com",
+      "marketSignal": "UK consumer e-commerce store operated by BT plc for selling hardware across Great Britain and Northern Ireland.",
+      "roleSignal": "Consumer online tech retailer merchandising computing and home connectivity products directly to individual buyers.",
+      "relevanceSignal": "Sells Wi-Fi extenders, mesh systems, Ethernet switches, and 4G/5G mobile broadband routers.",
+      "evidenceUrls": [
+        "https://shop.bt.com"
+      ]
+    },
+    {
+      "rank": 20,
+      "companyName": "MoreComputers (MoreCo Ltd)",
+      "officialWebsite": "https://www.morecomputers.com",
+      "marketSignal": "UK online computer store operating from Sheffield, providing IT goods across the UK.",
+      "roleSignal": "E-commerce retailer supplying PC hardware, consumer electronics, and networking gear directly to consumers.",
+      "relevanceSignal": "Sells Wi-Fi routers, access points, Ethernet switches, and network adapters in Cudy's product domain.",
+      "evidenceUrls": [
+        "https://www.morecomputers.com"
+      ]
+    },
+    {
+      "rank": 21,
+      "companyName": "Watercooling UK (WCUK Tech Ltd)",
+      "officialWebsite": "https://www.watercoolinguk.co.uk",
+      "marketSignal": "UK online hardware shop delivering enthusiast computer hardware and networking gear across the UK.",
+      "roleSignal": "Specialist tech e-tailer retailing hardware components and network adapters to domestic end-users.",
+      "relevanceSignal": "Carries SOHO network adapters, routers, Ethernet switches, and Wi-Fi antennas.",
+      "evidenceUrls": [
+        "https://www.watercoolinguk.co.uk"
+      ]
+    },
+    {
+      "rank": 22,
+      "companyName": "Pebble Tech Ltd (Pebble.com)",
+      "officialWebsite": "https://www.pebble.com",
+      "marketSignal": "UK online consumer electronics shop delivering personal tech and home networking accessories nationwide.",
+      "roleSignal": "Direct-to-consumer online retail store merchandising tech accessories and smart connectivity tools.",
+      "relevanceSignal": "Retails accessible consumer Wi-Fi adapters, repeaters, and home connectivity accessories.",
+      "evidenceUrls": [
+        "https://www.pebble.com"
+      ]
+    },
+    {
+      "rank": 23,
+      "companyName": "Studio Retail Ltd",
+      "officialWebsite": "https://www.studio.co.uk",
+      "marketSignal": "UK digital retail company based in Lancashire serving online consumer shoppers nationwide.",
+      "roleSignal": "Consumer e-tailer merchandising home electricals, computing peripherals, and consumer gadgets.",
+      "relevanceSignal": "Sells consumer networking products like Wi-Fi range extenders, home Wi-Fi routers, and network cables.",
+      "evidenceUrls": [
+        "https://www.studio.co.uk"
+      ]
+    },
+    {
+      "rank": 24,
+      "companyName": "PCWorld (Currys Group)",
+      "officialWebsite": "https://www.currys.co.uk/pcworld",
+      "marketSignal": "UK retail brand focused on consumer and SOHO computing hardware operating online and in retail locations across the UK.",
+      "roleSignal": "Consumer tech high-street retailer and online shop selling computer and networking hardware.",
+      "relevanceSignal": "Merchandises consumer Wi-Fi 6 routers, mesh kits, desktop switches, and mobile routers.",
+      "evidenceUrls": [
+        "https://www.currys.co.uk"
+      ]
+    },
+    {
+      "rank": 25,
+      "companyName": "Connectec Ltd",
+      "officialWebsite": "https://connectec.uk",
+      "marketSignal": "UK networking and security retailer operating online and from a trade counter in Wrexham serving UK buyers.",
+      "roleSignal": "Retailer and direct seller catering to SOHO end-users, installers, and consumers for networking goods.",
+      "relevanceSignal": "Stocks Wi-Fi access points, SOHO routers, PoE switches, and wireless bridges closely aligned with Cudy's catalog.",
+      "evidenceUrls": [
+        "https://connectec.uk/networking"
+      ]
+    },
+    {
+      "rank": 26,
+      "companyName": "Visunext UK Ltd",
+      "officialWebsite": "https://www.visunext.co.uk",
+      "marketSignal": "UK e-tail platform selling AV, smart office, and network equipment to UK consumers and businesses.",
+      "roleSignal": "Online retailer merchandising technology hardware and wireless equipment directly to buyers.",
+      "relevanceSignal": "Offers Wi-Fi access points, desktop routers, and network switches for home and office environments.",
+      "evidenceUrls": [
+        "https://www.visunext.co.uk"
+      ]
+    },
+    {
+      "rank": 27,
+      "companyName": "The Electronics Hub Ltd",
+      "officialWebsite": "https://www.tehonline.co.uk",
+      "marketSignal": "UK-based online shop offering consumer electronics and networking peripherals nationwide.",
+      "roleSignal": "Direct consumer e-tailer selling tech accessories, networking components, and smart home devices online.",
+      "relevanceSignal": "Retails Wi-Fi range extenders, powerline kits, routers, desktop switches, and USB network adapters.",
+      "evidenceUrls": [
+        "https://www.tehonline.co.uk"
+      ]
+    },
+    {
+      "rank": 28,
+      "companyName": "Tekheads Ltd",
+      "officialWebsite": "https://www.tekheads.co.uk",
+      "marketSignal": "UK computer hardware e-tailer based in South Yorkshire, shipping products across Great Britain.",
+      "roleSignal": "Direct online retailer of PC components, home connectivity equipment, and storage accessories.",
+      "relevanceSignal": "Sells Wi-Fi routers, network switches, wireless adapters, and networking accessories.",
+      "evidenceUrls": [
+        "https://www.tekheads.co.uk"
+      ]
+    },
+    {
+      "rank": 29,
+      "companyName": "Kustom PCs Ltd",
+      "officialWebsite": "https://www.kustompcs.co.uk",
+      "marketSignal": "Independent UK PC hardware store located in Dunfermline, Scotland, operating nationwide e-commerce delivery.",
+      "roleSignal": "Retail shop and online e-tailer selling PC hardware, peripherals, and SOHO networking products.",
+      "relevanceSignal": "Stocks home networking accessories, Ethernet switches, Wi-Fi expansion cards, and wireless routers.",
+      "evidenceUrls": [
+        "https://www.kustompcs.co.uk"
+      ]
+    },
+    {
+      "rank": 30,
+      "companyName": "Quiet PC Ltd",
+      "officialWebsite": "https://www.quietpc.com",
+      "marketSignal": "UK PC and computing retailer operating from North Yorkshire, fulfilling orders across the UK.",
+      "roleSignal": "Online tech retailer selling silent PC systems, components, and networking accessories directly to end users.",
+      "relevanceSignal": "Merchandises desktop switches, wireless adapters, and home networking items suitable for home office users.",
+      "evidenceUrls": [
+        "https://www.quietpc.com"
+      ]
+    }
+  ],
+  "missingSlots": 0,
+  "warnings": [],
+  "costEvents": [
+    {
+      "eventId": "GB-retail:gemini-control",
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "cellId": "GB-retail",
+      "arm": "gemini-native",
+      "ledger": "gemini-native-arm",
+      "stage": "native-search",
+      "provider": "gemini-full",
+      "requestedModel": "gemini-3.6-flash",
+      "actualModel": "gemini-3.6-flash",
+      "startedAt": "2026-09-06T05:21:12.781Z",
+      "completedAt": "2026-09-06T05:21:38.155Z",
+      "latencyMs": 25374,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 562,
+        "cachedInputTokens": 0,
+        "outputTokens": 4580,
+        "reasoningTokens": 0,
+        "groundingQueries": 4
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 30,
+        "validOutputItems": 30,
+        "downstreamUsedItems": 30,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "one interaction",
+        "no follow-up",
+        "provider order preserved"
+      ],
+      "officialListPriceUsd": 0.07359650000000001,
+      "budgetCostUsd": 0.07359650000000001,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    }
+  ]
+}
