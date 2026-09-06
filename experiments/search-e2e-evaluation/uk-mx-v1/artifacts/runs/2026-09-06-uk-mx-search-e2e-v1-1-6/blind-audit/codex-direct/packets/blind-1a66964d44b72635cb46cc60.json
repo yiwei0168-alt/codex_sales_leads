@@ -1,0 +1,30 @@
+{
+  "packetId": "blind-1a66964d44b72635cb46cc60",
+  "targetMarket": {
+    "countryCode": "MX",
+    "countryName": "Mexico"
+  },
+  "requestedCategory": "resale",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "Value Booster",
+    "domain": "valuebooster.com.mx",
+    "officialWebsiteUrl": "https://valuebooster.com.mx"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-5f5ba3d341634e1f",
+      "sourceType": "independent-public",
+      "url": "https://setel.com.mx/producto/acb-isp-access-point-router-wi-fi-aircube-mimo-2x2-802-11n-2-4-ghz-hasta-300-mbps",
+      "title": "ACB-ISP Access Point/Router Wi-Fi airCube, MIMO 2×2, 802.11n, 2.4 GHz (hasta 300 Mbps) – Setel",
+      "excerpt": "Esta es una tienda de demostración con fines de prueba; no se tramitarán pedidos. Descartar Skip to navigation Skip to content Bienvenido a nuestro Catalogó Tienda Catalogó Mi cuenta SETEL SETEL Access point Audio / Video Conferencia Cámaras Controles de Acceso y Asistencia Conmutadores Cableado Estructurado Grandstream Grandstream Smart Home Panasonic Smart Home Yealink Ventas +52 81 1476 1125 Email: contacto@setel.com.mx [...] 802.11n, MIMO 2×2. Hasta 300 Mbps en 2.4 GHz, con antena integrada de 4 dBi. Características Físicas y Eléctricas: Alimentación: PoE 24 V, 1 A de entrada en puerto LAN1 o Adaptador Micro USB 2 A (No incluidos). Dimensiones: 87.80 x 89.50 x 89.25 mm. Peso: 215 g. Temperatura de Operación: -10 a 50 °C. Garantía: 1 Año. SKU: ACB-ISP Categorías: Access point, Ubiquiti "
+    },
+    {
+      "evidenceId": "evidence-4dd9642199496653",
+      "sourceType": "independent-public",
+      "url": "https://itman.ae/2026/01/18/router-vs-switch-vs-access-point",
+      "title": "Router vs Switch vs Access Point: What You Actually Need?",
+      "excerpt": "Choose a router because you need internet connectivity, firewalling, and network control. Add a switch when you need more wired devices, more ports, and stable internal connections. Add access points when you need strong, reliable Wi-Fi coverage in multiple areas. If you want a modern, reliable setup, especially for a business or a large villa, the best long-term solution is usually: Router + Switch + Access Points. ### Network Installation and Setup Services in Dubai [...] A router is the device that connects your local network (your home or office devices) to the internet. It’s basically the “traffic manager” between your internal network and the outside world. If you have an ISP connection (Etisalat, du, or any other provider), the router is usually the first device in your network that"
+    }
+  ]
+}

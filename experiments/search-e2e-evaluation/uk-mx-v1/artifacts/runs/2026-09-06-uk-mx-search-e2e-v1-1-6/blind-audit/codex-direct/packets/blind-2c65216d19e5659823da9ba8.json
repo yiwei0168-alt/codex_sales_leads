@@ -1,0 +1,30 @@
+{
+  "packetId": "blind-2c65216d19e5659823da9ba8",
+  "targetMarket": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom"
+  },
+  "requestedCategory": "si-msp",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "Simpli-Fi (MetaTech Group)",
+    "domain": "simpli-fi.co.uk",
+    "officialWebsiteUrl": "https://www.simpli-fi.co.uk/"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-home-75646bfaf53a2a11",
+      "sourceType": "official-website",
+      "url": "https://www.simpli-fi.co.uk/",
+      "title": "Enterprise WiFi, connectivity solutions, managed services Simpli-Fi",
+      "excerpt": "--> Enterprise WiFi, connectivity solutions, managed services Simpli-Fi Menu Open Website Menu Our Solutions Enterprise WiFi In-Building Mobile Connectivity Solutions AI-Powered IP CCTV Emergency and Temporary Internet Connectivity Consultancy Managed Services Converged Network Services Private 5G Simpli-Connect Sectors About Us Our Work Blog Contact Us --> Menu Solutions Enterprise WiFi In-Building Mobile Signal Solutions AI-Powered IP CCTV Emergency &#038; Temporary Internet Connectivity Consultancy Managed Services Converged Network Services Private 5G Simpli-Connect Sectors Education Schools &#038; Academies Colleges &#038; Universities Student Accommodation Libraries &#038; Public Buildings Care Care Homes &#038; Assisted Living Hospitals &#038; Clinics Leisure Caravan &#038; Holiday "
+    },
+    {
+      "evidenceId": "evidence-9243115734f96f33",
+      "sourceType": "official-website",
+      "url": "https://www.simpli-fi.co.uk/privacy-policy",
+      "title": "Privacy Policy - Simpli-Fi",
+      "excerpt": "Privacy Policy - Simpli-Fi Menu Open Website Menu Our Solutions + Enterprise WiFi + In-Building Mobile Connectivity Solutions + AI-Powered IP CCTV + Emergency and Temporary Internet + Connectivity Consultancy + Managed Services + Converged Network Services + Private 5G + Simpli-Connect Sectors About Us Our Work Blog Contact Us Menu Solutions + - enterpriseEnterprise WiFi inbuildingIn-Building Mobile Signal Solutions aiAI-Powered IP CCTV + - emergencyEmergency & Temporary Internet consultConnectivity Consultancy managedservicesManaged Services + - convergedConverged Network Services Wireless P2P IconPrivate 5G nextgenSimpli-Connect Sectors + - Education IconEducation Schools & Academies Colleges & Universities Student Accommodation Libraries & Public Buildings + - Care Menu IconCare Care Ho"
+    }
+  ]
+}

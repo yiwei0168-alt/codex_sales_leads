@@ -1,0 +1,2283 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+  "cellId": "GB-retail",
+  "inputCount": 25,
+  "records": [
+    {
+      "companyKey": "GB:domain:overclockers.co.uk",
+      "countryCode": "GB",
+      "companyName": "OCUK Limited (trading as Overclockers UK)",
+      "domain": "overclockers.co.uk",
+      "officialWebsiteUrl": "https://www.overclockers.co.uk",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 69,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-b1afbf9089a7d711",
+          "url": "https://www.overclockers.co.uk",
+          "title": "PCs & Components | Custom Built or Ready to Ship | OcUK",
+          "excerpt": "You can shop online and collect from reception at Overclockers UK HQ in Stoke-on-Trent Opening Times Monday to Saturday: 09:00 - 16:30 youtube instagram facebook twitter twitch tiktok forums discord threads CREDIT_CARD CREDIT_CARD PayPal KLARNA_PAYMENTS AMAZON_PAY GooglePay v12 DHL_GB RM_48_TRACKED DPD_GB Overclockers UK Copyright © 2026 OCUK Limited payment certificates ##### Remove Product? Are you sure you want to remove the following product from the basket? [...] Overclockers UK Logo NVIDIA - Control Resonant Medion - Erazer Laptops ASUS - BTS Nitro Concepts AMD - Radeon AI PRO Intel Gamer Days OCUK - Finance TRYX HOLO OCUK - Finance Endgame Gear - OP1 8K V2 Pink MSI laptops OCUK - Finance delivery icon customer satisfaction icon financing icon community icon OCUK - Back To School Int",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-6472d3ab9b6b1572",
+          "url": "https://www.overclockers.co.uk/renda-business-solutions",
+          "title": "Renda Business Solutions | OcUK",
+          "excerpt": "UK's leading retailer of custom built and ready to ship PCs, components & peripherals with a wide product range available next day at competitive prices.",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-b4026c90e669547c",
+          "url": "https://www.overclockers.co.uk/price-promise",
+          "title": "Login  | OcUK",
+          "excerpt": "Logo Logo Picture of Navigation - PC Systems - NVIDIA - Control Resonant Picture of Medion Picture of Navigation - Gaming - ASUS - BTS Picture of Navigation - Simulation - Nitro Concepts Simulation Picture of Navigation - AMD - Radeon AI Pro Picture of Navigation - PC Components - Intel Gamer Days 2026 Picture of Navigation - Air Cooling - Lian Li - UNI Fan SL Picture of Navigation - Perif - OCUK - ar - OP1 8k v2 Picture of truck icon DELIVERING 7 DAYS A WEEK Picture of money icon SPREAD THE COST Picture of star icon RATED 4.7/5 TRUSTPILOT Picture of tool icon HARDWARE EXPERTS Picture of people icon COMMUNITY FOCUS Bank Holiday Shipping Orders will begin shipping after the bank holiday for delivery from Thursday 3rd September. Overclockers UK's Price Promise Here at Overclockers UK, we pri",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-639847febdffdc28",
+          "url": "https://www.overclockers.co.uk/finance",
+          "title": "Finance FAQ",
+          "excerpt": "Overclockers UK Logo NVIDIA - Control Resonant Medion - Erazer Laptops ASUS - BTS Nitro Concepts AMD - Radeon AI PRO Intel Gamer Days OCUK - Finance TRYX HOLO OCUK - Finance Endgame Gear - OP1 8K V2 Pink MSI laptops OCUK - Finance delivery icon customer satisfaction icon financing icon community icon Overclockers UK Finance Available on all orders over £250 (Excluding Delivery) Gaming Laptops What is Overclockers UK Finance Overclockers UK Online Finance is the convenient way to get your hands on the technology you want today without breaking the bank! In short, our online finance options give you the ability to spread the cost of the products you want NOW, over a time frame that suits your budget. Think about how much you can afford each month and maybe you can up your budget and get the ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-b211fc329893f871",
+          "url": "https://www.overclockers.co.uk/networking/routers",
+          "title": "Routers - Networking",
+          "excerpt": "Create your ideal network with a router from Overclockers UK, providing exceptional data transfer speeds for both ethernet and Wi-Fi connections.",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-8248aaf5ab8a76e1",
+          "url": "https://uk.linkedin.com/company/overclockers-co-uk",
+          "title": "Overclockers UK - PC Hardware retailer and business solutions. The home of the UK PC enthusiast!",
+          "excerpt": "## Overview Established in 1999 Overclockers UK is on online retailer of performance computer hardware, based in Staffordshire. We sell a wide range of high performance computer components, hardware and gaming systems. From the latest graphics card through to a custom built watercooled gaming system, Overclockers UK have got it covered! ### Website ### Crunchbase N/A ### LinkedIn N/A ### Industry IT Services and IT Consulting [...] ## Additional [...] # Overclockers UK PC Hardware retailer and business solutions. The home of the UK PC enthusiast! IT Services and IT Consulting • Stoke-on-Trent, Staffordshire • 4,125 followers • 51-200 employees",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-3512f71a74cddf13",
+          "url": "https://www.trustpilot.com/review/www.overclockers.co.uk",
+          "title": "Overclockers UK Reviews - Trustpilot",
+          "excerpt": "16 hours ago Image 20: Rated 5 out of 5 stars ## Fast delivery Fast delivery, good communication and HARIBO GUMMY BEARS!!! 😆 September 3, 2026 Unprompted review Useful 1 Share Image 21: Overclockers UK logo Reply from Overclockers UK 3 hours ago Thank you for the excellent review, Mr. We’re pleased to hear you had a great experience and appreciate your support. Kind Regards, Chris M QD qdSP GB•7 reviews 16 hours ago Image 22: Rated 5 out of 5 stars Verified [...] August 2, 2026 Unprompted review Useful Share Image 53: Overclockers UK logo Reply from Overclockers UK A day ago Thanks for taking the time to leave a review. We're pleased to know you were happy with your order and experience. Previous1234Next page ### The Trustpilot Experience #### We're open to all Anyone can write a Trustpil",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-041139c3f59f8972",
+          "url": "https://x.com/OverclockersUK?lang=en",
+          "title": "Overclockers UK (@OverclockersUK) / X",
+          "excerpt": "Log inSign up Overclockers UK Overclockers UK profile banner @OverclockersUK # Overclockers UK Home of the UK PC Hardware Enthusiast! Components, Custom-Built Systems, Peripherals & more! ✨ Customer Support: overclockers.co.uk/support Staffordshire, UK overclockers.co.uk Joined February 2009 456 Following97.2K Followers RepliesRepliesRepostsRepostsMediaMedia @OverclockersUK Overclockers UK @OverclockersUK 2h [...] @OverclockersUK Overclockers UK @OverclockersUK Sep 2 RTX 5090. Ryzen 7 9850X3D. 64GB DDR5. 2TB Gen5 storage. Meet the OcUK Gaming Prism, a seriously high-end system built around some of the best hardware available right now! The Ryzen 7 9850X3D and RTX 5090 give this machine an enormous amount of gaming horsepower, while the HAVN [...] 2h Ready to upgrade your CPU? 🤔 Take your ",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:cclonline.com",
+      "countryCode": "GB",
+      "companyName": "CCL Computers Ltd",
+      "domain": "cclonline.com",
+      "officialWebsiteUrl": "https://www.cclonline.com",
+      "primaryRole": "Hybrid",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer",
+        "Reseller"
+      ],
+      "totalScore": 71,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-e6b54f4cbf861714",
+          "url": "https://www.cclonline.com/help/policies/returns-policy",
+          "title": "Returns policy - online consumer sales only",
+          "excerpt": "Jan 25, 2024 — For customers located outside the UK, it is often not cost effective for us to return a non-faulty product to you, due to additional import and ...Read more",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-a63c6d84f264236c",
+          "url": "https://www.cclonline.com/help/policies/complaints",
+          "title": "- Policies - CCL Computers",
+          "excerpt": "CCL logo Desktop PCs Desktop PCs Our full collection DGX Spark boxes DGX Spark boxes AI Ready Pre-built PCs Pre-built PCs Next day delivery Gaming PCs Gaming PCs Optimised to win Help Me Choose Custom PCs Custom PCs You configure, we build Choose your own case Graphics Cards Graphics Cards Built for what's next CPU processors CPU processors The brains of your build RAM RAM Fast memory, faster builds Storage Storage Never run out of space Motherboards Cases Cooling Power Supplies Help Me Choose Motherboard Bundles Motherboard Bundles Curated and assembled AMD Socket Boards AMD Socket Boards For AMD processors Intel Socket Boards Intel Socket Boards For Intel processors Motherboards for AI Motherboards for AI Reliability under heavy loads All Motherboards All Motherboards View all AI Graphic",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-c60aab60baaadbce",
+          "url": "https://www.cclonline.com/help/policies/terms-and-conditions-for-consumers",
+          "title": "- Policies - CCL Computers",
+          "excerpt": "CCL logo Desktop PCs Desktop PCs Our full collection DGX Spark boxes DGX Spark boxes AI Ready Pre-built PCs Pre-built PCs Next day delivery Gaming PCs Gaming PCs Optimised to win Help Me Choose Custom PCs Custom PCs You configure, we build Choose your own case Graphics Cards Graphics Cards Built for what's next CPU processors CPU processors The brains of your build RAM RAM Fast memory, faster builds Storage Storage Never run out of space Motherboards Cases Cooling Power Supplies Help Me Choose Motherboard Bundles Motherboard Bundles Curated and assembled AMD Socket Boards AMD Socket Boards For AMD processors Intel Socket Boards Intel Socket Boards For Intel processors Motherboards for AI Motherboards for AI Reliability under heavy loads All Motherboards All Motherboards View all AI Graphic",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-a5a0444c915b8560",
+          "url": "https://www.cclonline.com/help/policies/treating-customers-fairly",
+          "title": "Treating Customers Fairly",
+          "excerpt": "We aim to ensure that: Consumers can be confident they are dealing with a company where the fair treatment of customers is central to its culture. The products ...Read more",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-03011e695ee799fa",
+          "url": "https://uk.linkedin.com/company/cclcomputersuk",
+          "title": "CCL Computers Ltd",
+          "excerpt": "About us ; Website: http://www.cclonline.com. External link for CCL Computers Ltd ; Industry: Computer Hardware Manufacturing ; Company size: 51-200 employees.",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-de0f9b0424dd0cc4",
+          "url": "https://www.cclonline.com/networking",
+          "title": "Networking | Home Network Wireless Hardware",
+          "excerpt": "Networking products available at CCL Computers. Latest wireless and wired network hardware products and solutions. Routers, wireless adapters and switches.",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-a39b41500d0c4dba",
+          "url": "https://find-and-update.company-information.service.gov.uk/company/14818553",
+          "title": "UK CCL COMPUTERS LTD overview - Find and update company information - GOV.UK",
+          "excerpt": "We use cookies to make our services work and collect analytics information. To accept or reject analytics cookies, turn on JavaScript in your browser settings and reload this page. Search for a company or officer Please press ENTER to search # UK CCL COMPUTERS LTD Company number 14818553 ## Nature of business (SIC) ## Support links [...] ## Cookies on Companies House services We use some essential cookies to make our services work. We'd also like to use analytics cookies so we can understand how you use our services and to make improvements. You've accepted analytics cookies. You can change your cookie settings at any time. You've rejected analytics cookies. You can change your cookie settings at any time. ## Cookies on Companies House services",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-12a424e99f028434",
+          "url": "https://www.cclonline.com/help/about/contact-us",
+          "title": "Contact Us",
+          "excerpt": "Email us at sales@cclonline.com Call us on 01274 471200. Reseller Sales Email us at dealer@cclonline.com. Our telephone lines are open Monday to Friday between",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-e34335ab30fb8848",
+          "url": "https://uk.trustpilot.com/review/www.cclonline.com",
+          "title": "CCL Computers Reviews | Read Customer Service ...",
+          "excerpt": "With over 23 years' of supplying IT components and PC building experience, United Kingdom 01274 471 201 sales@cclonline.com, TrustScore 4.5 out of 5 33k reviews",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:box.co.uk",
+      "countryCode": "GB",
+      "companyName": "Box Ltd (trading as Box.co.uk)",
+      "domain": "box.co.uk",
+      "officialWebsiteUrl": "https://www.box.co.uk",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 75,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-65916beb2c3b2543",
+          "url": "https://box.co.uk/blog/norton-360-scam-email-text-protection",
+          "title": "Scam Email & Text Protection: Stay Safer with Norton 360 Deluxe",
+          "excerpt": "Box Home> Blog> Why Norton 360 Deluxe Is Essential for Scam Email and Text Protection LAST UPDATED: January 27, 2026 Why Norton 360 Deluxe Is Essential for Scam Email and Text Protection Scam emails and text messages have become a daily nuisance for UK users, as fraudsters consistently find new ways to appear convincing. According to recent UK reports, millions of scam attempts are made every week, often targeting people through fake delivery updates, banking alerts, or subscription warnings. This is why having reliable scam email and text protection is no longer optional; it's essential. Norton 360 Deluxe is designed to help users stay one step ahead of scam emails and text messages by combining advanced security features into a single solution. With threats becoming more sophisticated, r",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-9fede7d9f104ac7b",
+          "url": "https://box.co.uk/contact-us",
+          "title": "Contact Us - Box Customer Support And Enquiries",
+          "excerpt": "Copyright © 1996-2026 Fivetech LTD | Terms and Conditions box.co.uk & Box are trading names of Five Tech Limited. Registered office: Box LTD, Unit 10 Woodford Trading Estate, Woodford Green IG8 8HF [...] About BoxAbout UsBlogPrivacy And Cookie PolicyWebsite Terms And ConditionsWEEE Regulations & RecyclingModern Slavery StatementOur BrandsSitemap Follow UsFacebookTikTokTwitterInstagramYoutubeLinkedIn Frequently Asked QuestionsContact UsDelivery InformationTrack Your OrderWarranty & Returns Information Go To Basket About UsBlogPrivacy And Cookie PolicyWebsite Terms And ConditionsWEEE Regulations & RecyclingOur BrandsSitemap FacebookTikTokTwitterInstagramYoutubeLinkedIn [...] You can pay with: \\PayPal Credit Representative Example : Assumed credit limit £1,200 , Representative 23.9% APR (vari",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-c40320e7c215a51f",
+          "url": "https://box.co.uk/blog/wwdc-preview-expected-announcements",
+          "title": "Apple WWDC 2026: Siri AI, iOS 27 & Feature Updates",
+          "excerpt": "Box Home> Blog> WWDC 2026 Recap: Everything Apple Announced, From Siri AI to iOS 27 LAST UPDATED: July 24, 2026 WWDC 2026 Recap: Everything Apple Announced, From Siri AI to iOS 27 WWDC 2026 is no longer just a rumour-filled preview. Apple has now held its Worldwide Developers Conference keynote, and the biggest Apple updates of the year are officially out in the open. The Apple event 2026 focused heavily on software, Apple Intelligence, Siri AI, iOS 27, macOS 27 Golden Gate, iPadOS 27, child safety, smart home features and wider ecosystem improvements. As expected, WWDC 2026 was not a major hardware launch. Instead, Apple used its developer conference to show how the next generation of software will change the way iPhone, iPad, Mac, Apple Watch, Vision Pro and smart home devices work toget",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-89b1d327bb675626",
+          "url": "https://box.co.uk/blog/iphone-18-release-date",
+          "title": "Apple iPhone 18 Series: Release Date, Price and Features",
+          "excerpt": "Box Home> Blog> iPhone 18 Series: Everything About Release Date, Price, and Features LAST UPDATED: September 03, 2026 iPhone 18 Series: Everything About Release Date, Price, and Features The iPhone 18 is already generating plenty of interest, even though Apple has not officially announced the device. While details remain unconfirmed, early reports after the WWDC 26 suggest the next iPhone could bring notable upgrades in performance, cameras and AI-powered features, making it one of the most anticipated smartphone launches in Apple's roadmap. One of the biggest talking points is the iPhone 18 release date. Apple has now confirmed its “Surprise and shine” event for 9 September 2026, adding a firm date to the calendar even though the company has not revealed which products will appear. Curren",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-94d7a0b66c51679b",
+          "url": "https://box.co.uk/networking",
+          "title": "Networking Devices | Routers, Mesh WiFi & Network Accessories",
+          "excerpt": "Copyright © 1996-2026 Fivetech LTD | Terms and Conditions box.co.uk & Box are trading names of Five Tech LTD. Registered address: Unit 10, Woodford Trading Estate, Woodford Green IG8 8HF [...] Whether you're planning a full router upgrade, expanding coverage with whole-home WiFi, installing a WiFi access point, improving reach with a Powerline adapter or strengthening your setup with a network switch, you'll find dependable networking devices at Box. [...] At Box, we offer a wide selection of network devices designed to improve WiFi signal strength, support high-speed internet, and deliver stable connections for everything from gaming and streaming to cloud backups and video conferencing. If your current setup struggles under pressure, a strategic router upgrade or expanded coverage soluti",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-f9a9197568ba6cd4",
+          "url": "https://uk.linkedin.com/company/boxltd",
+          "title": "Box - The Online Technology Store",
+          "excerpt": "### Website ### Crunchbase N/A ### LinkedIn N/A ### Industry Retail ### Company Size 51-200 employees 46 associated members (LinkedIn members who've listed Box as their current workplace on their profile) ### Founded N/A ### Funding Last Round Date: N/A Last Round Type: N/A Total Rounds: N/A Last Round Raised: N/A ### Investors N/A [...] Box (5mo): Happy New Year from all of us at Box! 🎆 Thank you to our customers, partners, and suppliers for an incredible year of growth, innovation, and collaboration. A huge thank you to everyone who supported Box this year. We can’t wait to bring you even more cutting‑edge tech, unbeatable deals, and exciting partnerships in 2026. Here’s to a successful year ahead! [Likes: 12, Comments: 0]; Box (5mo): Happy Holidays from the team at Box! 🎄 [Likes: 16, ",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-acef55e3a250b4ae",
+          "url": "https://boxxe.com",
+          "title": "Tech solutions | Hardware, Software, Managed IT Services | boxxe",
+          "excerpt": "As an award-winning reseller and trusted partner to some of the UK’s most secure organisations, we're committed to making technology human—empowering our customers to perform at their best. From consulting and products to fully managed services, our 360° technology solutions are designed to increase operational efficiency, strengthen cybersecurity, and transform the way businesses work. Contact us ## Don't get stuck with a Bill! [...] ### Contact Us We welcome any comments regarding this policy. You can contact our Data Protection Officer by email at legal@boxxe.com or by mail to boxxe Limited, Artemis House, Eboracum Way, York, YO31 7RE. This is in addition to your right to contact the Information Commissioners Office if you are unsatisfied with our response to any issues you raise at . T",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-1f313e81fb23c539",
+          "url": "https://itstechnologygroup.com",
+          "title": "ITS Technology Group | UK Wholesale Connectivity",
+          "excerpt": "podcast News ## Connected Tech Talks – Why Best-of-Breed Connectivity Matters ITS Insights 22/06/2026 Read More podcast News ## Connected Tech Talks – Managing Risk in a Connected World ITS Insights 10/06/2026 Read More Showing Slide 1 of 6 # Best-of-Breed Connectivity ## Connected Tech Talks S2E1 [...] A brand new next-generation full fibre network is now live across Crawley, giving more than 1,500 organisations, including over 700 in the Manor Royal Business District, access to gigabit-capable connectivity services. Read More # Sunday Times ## 100 Tech 2026 ITS has secured a place in the 2026 Sunday Times 100 Tech, cementing its status as one of Britain’s fastest-growing private technology companies. Read More # Newcastle upon Tyne & Glasgow ## Full Fibre rollout [...] Skip to content Ne",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:novatech.co.uk",
+      "countryCode": "GB",
+      "companyName": "Novatech Ltd",
+      "domain": "novatech.co.uk",
+      "officialWebsiteUrl": "https://www.novatech.co.uk",
+      "primaryRole": "Hybrid",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer",
+        "MSP",
+        "SI"
+      ],
+      "totalScore": 68,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-d1b66d2929285ad5",
+          "url": "https://www.novatech.co.uk",
+          "title": "Novatech | Custom Servers, Workstations, PCs & Device Lifecycle Management",
+          "excerpt": "## About Novatech Novatech Limited is a UK-based company that specialises in providing custom built computer hardware, and IT managed services to businesses and individuals. The company was founded in 1987 and is headquartered in Portsmouth, UK. We are trusted by some of the largest businesses in the UK to deliver their requirements. [...] Novatech Ltd Harbour House, Hamilton Road, Cosham, Portsmouth, Hants. PO6 4PU, UK Company Reg No: 2605046 Information Contact Us Careers at Novatech Terms & Conditions Complaints Compliance How we use your information Modern Slavery Statement Carbon Reduction Plan Quality & Environmental Policies Privacy & Cookies WEEE Regulations Your Account Login Create Account Track an Order Cookie preferences;) [...] © Copyright 2000-2026 Novatech Ltd WSV 10.7.3-NEW",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-745c6308f360597d",
+          "url": "https://www.novatech.co.uk/termsandconditions.html",
+          "title": "Terms and Conditions for Consumers at Novatech",
+          "excerpt": "Basket Updating... Workstations & Gaming 1080 Gaming 1440 & 4K Gaming 4K Gaming & Content Creation Info: Our business is closing early on 2nd July 26 for a company wide event. Orders placed after 11:30am are not guaranteed for next day delivery. Home > Terms & Conditions Terms and Conditions Consumer Terms and Conditions 1. About us We are Novatech Limited, a company registered in England and Wales under company number: 02605046. Our registered office is at: Harbour House, Hamilton Road Cosham, Portsmouth, Hampshire, PO6 4PU. 2. How to contact us You can contact us: By phone on 02392 322 500, By email at customer.services@novatech.co.uk Via Live Chat at www.novatech.co.uk/contact.html 3. These terms 3.1 These terms apply to any purchases you make on our website or when making a purchase by",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-e3260988928c52d0",
+          "url": "https://www.novatech.co.uk/pc/gaming-pc",
+          "title": "Powerful Custom Gaming PCs | UK Gaming PC Builder - Novatech",
+          "excerpt": "Basket Updating... Workstations & Gaming 1080 Gaming 1440 & 4K Gaming 4K Gaming & Content Creation Info: Our business is closing early on 2nd July 26 for a company wide event. Orders placed after 11:30am are not guaranteed for next day delivery. Gaming PCs prebuilt by experts and with lifetime support, Reign Gaming offers a range of systems for every game and budget. As one of the UK's most trusted Gaming PC providers, and with over 30 years’ experience, Novatech's Reign Engineers design, build and tune every Reign Gaming PC to perfection. That means awesome processing power that you can trust, no matter which Reign Gaming PC you choose. Perks of a Prebuilt Premium 3 year warranty Premium 3 Year Warranty Every Reign Gaming PC comes with a 3-year warranty, for your peace of mind. Prebuilt b",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-6650828b9a4fbc55",
+          "url": "https://www.novatech.co.uk/products/nvidia-dgx-spark/940-54242-0009-000.html",
+          "title": "NVIDIA DGX Spark - 940-54242-0009-000",
+          "excerpt": "Basket Updating... Workstations & Gaming 1080 Gaming 1440 & 4K Gaming 4K Gaming & Content Creation Info: Our business is closing early on 2nd July 26 for a company wide event. Orders placed after 11:30am are not guaranteed for next day delivery. NVIDIA DGX Spark NVIDIA DGX Spark question tooltip £4959.98 inc vat £4133.32 ex vat view a finance example with 10% deposit of £496.00 payment types we accept Order Code: NVD-DGXSFU Manf.Code: 940-54242-0009-000 What our customers say about us Share this product Delivery options Express Delivery More delivery options including Weekend, timed and European delivery are also available at the checkout. Finance options Low Rate 14.9% Finance Spread the cost of your purchase with a low rate 14.9% APR over 12, 24, 36 or 48 months. Returns In the unlikely ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-5a8fa2e79bbda467",
+          "url": "https://uk.linkedin.com/company/novatech",
+          "title": "Novatech - Our mission is to solve complex technology problems for businesses in the most sustainable way",
+          "excerpt": "confidently deliver their projects on time and on budget. Based in Portsmouth on the South-Coast, from our humble beginnings as a spare part supplier for the iconic Vauxhall Nova, Novatech has evolved into one of the UK's most trusted technology partners. Through more than 35 years of experience and deep-rooted technical knowledge, flexible project design, and partnerships with industry leading manufacturers and software houses, no matter who our customers are, we bring precisely the right [...] ### Website ### Crunchbase N/A ### LinkedIn N/A ### Industry IT Services and IT Consulting ### Company Size 201-500 employees 288 associated members (LinkedIn members who've listed Novatech as their current workplace on their profile) ### Founded 1987 ### Funding Last Round Date: N/A Last Round Typ",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-16b51f34609dd476",
+          "url": "https://find-and-update.company-information.service.gov.uk/company/15510483",
+          "title": "NOVATECH TRADING LTD overview - Find and update company information - GOV.UK",
+          "excerpt": "Registered office address : 315 Lordship Lane, London, United Kingdom, N17 6AB Company status : Active Company type : Private limited Company Incorporated on : 21 February 2024 ## Accounts Next accounts made up to 28 February 2026 due by 30 November 2026 Last accounts made up to 28 February 2025 ## Confirmation statement Next statement date 22 August 2027 due by 5 September 2027 Last statement dated 22 August 2026 ## Nature of business (SIC) [...] Companies House does not check the accuracy of the information filed(link opens a new window) Sign in / Register Advanced company searchLink opens in new window # NOVATECH TRADING LTD Company number 15510483 Follow this company File for this company Company Overview for NOVATECH TRADING LTD (15510483) Filing history for NOVATECH TRADING LTD (1551",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-c37501d170d334df",
+          "url": "https://novatechsystem.co.uk",
+          "title": "NovaTech Systems | Technology Platforms for Infrastructure, Innovation & Trading Intelligence",
+          "excerpt": "Reach out to discuss platforms, support, or a new technology project. (/cdn-cgi/l/email-protection#b8dbd7d6ccd9dbccf8d6d7ced9ccdddbd0cbc1cbccddd596dbd796cdd3) Phone / WhatsApp +44 7538533646 Contact SupportStart a Project [...] Business IT solutions, system architecture and professional technical support. ### Hardware & Technology Marketplace Modern computing systems and technology infrastructure solutions. ### Innovation & Idea Validation Tools like VentureScan that help validate startup ideas and business opportunities. ### Trading Intelligence Platforms Advanced trading technology and automation platforms such as NovaQuant. The NovaTech Ecosystem ## The NovaTech Ecosystem [...] Software platforms Technology marketplaces Startup validation tools Advanced trading systems Positioning A con",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:us.computerorbit.com",
+      "countryCode": "GB",
+      "companyName": "Computer Orbit Ltd",
+      "domain": "us.computerorbit.com",
+      "officialWebsiteUrl": "https://us.computerorbit.com",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 53,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-6312e487ae9f6379",
+          "url": "https://us.computerorbit.com/pages/about-us",
+          "title": "About Us — Computer Orbit",
+          "excerpt": "Computer Orbit, a family-run UK computer retailer established in 1996 with an in-store showroom in Gateshead and nationwide online delivery.",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-4a3608da45a3de07",
+          "url": "https://uk.linkedin.com/company/computer-orbit",
+          "title": "Computer Orbit",
+          "excerpt": "COMPUTER orBIT is the retail forefront of our business. Established since 1996, we have supplied hardware, support and excellent customer service to thousands of local residents, businesses and local authorities. Expanding into serving business and educational bodies as well as home users, we cater for every type of user. Understanding that each client is unique, we tailor our products and services to suit your requirements. Our success has been built upon customer satisfaction, loyalty and [...] ### Website ### Crunchbase N/A ### LinkedIn N/A ### Industry IT Services and IT Consulting ### Company Size 11-50 employees 14 associated members (LinkedIn members who've listed Computer Orbit as their current workplace on their profile) ### Founded 1996 ### Funding Last Round Date: N/A Last Round",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-418f70733ba2c31a",
+          "url": "https://find-and-update.company-information.service.gov.uk/company/01537885",
+          "title": "COMPUTER ORBIT LIMITED overview - Companies House",
+          "excerpt": "COMPUTER ORBIT LIMITED Company number. Registered office address 400-408 Old Durham Road, Gateshead, Tyne & Wear, NE9. Retail sale of computers, peripheral",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-1ad2a1b6fb0e60f5",
+          "url": "https://us.computerorbit.com",
+          "title": "Computer Orbit | Gaming PCs, PC Components & Peripherals.",
+          "excerpt": "# Computer Orbit - We're the North Easts leading independent retailer of com... Going Strong for 30 Years Established in 1996! - A company you can trust Next Day Delivery Get your item fast with one of our many Next Day delivery services. Get FREE Expert Advice Speak to an expert today via live chat, email or on the phone. Visit Our Experience Store Browse our wide offerings in-store We're open 6 days a week! Computer Orbit image Computer Orbit image Computer Orbit image [...] - View All + Monitors - 22\" Monitors - 24\" Monitors - 27\" Monitors - 32\" and above Monitors - View All + Audio - Headsets - Speakers - Microphones - View All + Printers - Inkjet Printers - Laser Printers - View All + Networking - External Network Dongles - Internal Network Cards - Wireless Routers - Network Switches ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-fb752832e20e4533",
+          "url": "https://www.trustpilot.com/review/computerorbit.com",
+          "title": "Computer Orbit Ltd Reviews",
+          "excerpt": "Amazing company, great prices and great customer services. Ordered some RAM which of course is currently a pain to get for a good price.",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:maplin.co.uk",
+      "countryCode": "GB",
+      "companyName": "Maplin Electronics",
+      "domain": "maplin.co.uk",
+      "officialWebsiteUrl": "https://www.maplin.co.uk",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 70,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-f85976c93444f3c7",
+          "url": "https://www.maplin.co.uk/pages/business",
+          "title": "Business & Education | Maplin Electronics",
+          "excerpt": "Custom Event Setup × Click on the elements you want to track as custom events. Selected elements will appear in the list below. Selected Elements (0) Skip to content For business 🌞 Get ready for Plug-In Solar Power with Maplin! 🌞 Browse Account Other Sign In Options Log in Orders Profile Cart Log in Account Other Sign In Options Log in Orders Profile Cart FREE DELIVERY ON SMALL ITEMS OVER £35 INSTANT DELIVERY WITH DELIVEROO & GOPUFF NATIONWIDE STOCKISTS FIND A STORE NEAR YOU Item added to your cart Home > Business & Education Business & Education Let us handle the technology requirements for your business. We know you're busy growing and that no two businesses are the same. We've worked with teams of all different sizes from sole traders to enterprises across a range of industries. For t",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-599afb34aee30658",
+          "url": "https://www.maplin.co.uk/pages/about-us",
+          "title": "About Maplin — The UK's Trusted Electronics Specialist | Maplin Electronics",
+          "excerpt": "Custom Event Setup × Click on the elements you want to track as custom events. Selected elements will appear in the list below. Selected Elements (0) Skip to content For business 🌞 Get ready for Plug-In Solar Power with Maplin! 🌞 Browse Account Other Sign In Options Log in Orders Profile Cart Log in Account Other Sign In Options Log in Orders Profile Cart FREE DELIVERY ON SMALL ITEMS OVER £35 INSTANT DELIVERY WITH DELIVEROO & GOPUFF NATIONWIDE STOCKISTS FIND A STORE NEAR YOU Item added to your cart Home > About Us About Us About Maplin SINCE 1972 The Electronics Specialists At Maplin we believe passionately in a world where connecting people with brilliant technology enriches lives. We exist to bring those ideas to you, even if you’re not an expert. When it comes to electronics, we belie",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-da45f8cda71f9300",
+          "url": "https://www.maplin.co.uk/pages/store-locator",
+          "title": "Store Locator | Maplin Electronics",
+          "excerpt": "Custom Event Setup × Click on the elements you want to track as custom events. Selected elements will appear in the list below. Selected Elements (0) Skip to content For business 🌞 Get ready for Plug-In Solar Power with Maplin! 🌞 Browse Account Other Sign In Options Log in Orders Profile Cart Log in Account Other Sign In Options Log in Orders Profile Cart FREE DELIVERY ON SMALL ITEMS OVER £35 INSTANT DELIVERY WITH DELIVEROO & GOPUFF NATIONWIDE STOCKISTS FIND A STORE NEAR YOU Item added to your cart Home > Store Locator Store Locator Find a Stockist Near You Featured Official Partners The Electronics Hub - majoring in all things electronic such as Raspberry Pi and Arduino, to Audio, PC & Gaming, as well as many hard to find cables, connectors and components. Now an Official Partner with a",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-48eff60a5b1bad83",
+          "url": "https://www.maplin.co.uk/a/press",
+          "title": "Maplin | Maplin Electronics",
+          "excerpt": "Custom Event Setup × Click on the elements you want to track as custom events. Selected elements will appear in the list below. Selected Elements (0) Skip to content For business 🌞 Get ready for Plug-In Solar Power with Maplin! 🌞 Browse Account Other Sign In Options Log in Orders Profile Cart Log in Account Other Sign In Options Log in Orders Profile Cart Power & Solar Computing & Mobile Smart Home & Lighting Security & Safety Photo & Video Audio & Entertainment Car Cables & Adapters Offers FREE DELIVERY ON SMALL ITEMS OVER £35 INSTANT DELIVERY WITH DELIVEROO & GOPUFF NATIONWIDE STOCKISTS FIND A STORE NEAR YOU Item added to your cart Media & PR Centre Maplin Electronics, founded in 1972, has long been the UK's electronics specialist. Known for quality, reliability, and excellent customer",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-cab43f08506fe19e",
+          "url": "https://en.wikipedia.org/wiki/Maplin_(retailer)",
+          "title": "Maplin (retailer) - Wikipedia",
+          "excerpt": "Maplin Electronics is the trading name of an online retailer of electronic goods in the United Kingdom and Ireland launched in 2019, using the brand of the former company Maplin Electronics Limited, which operated from 1972 to 2018. The original Maplin company began life as a mail order supplier of electronic components focussed on the hobbyist market, something which would remain a significant core of the business for much of its life. [...] 8. 1 2 3 \"DIGITAL-FIRST RETAIL LIMITED\". Companies House. Archived from the original on 26 August 2025. Retrieved 19 August 2021. Incorporated on 29 June 2018 [..] Previous company names [..] MAPLIN ONLINE LIMITED 29 Jun 2018 - 30 May 2019 9. 1 2 [\"[Maplin new website]\"]( Maplin Online Limited. Archived from the original on 31 January 2019. Retrieved ",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-45b82158a169f2c4",
+          "url": "https://www.maplin.co.uk/pages/suppliers",
+          "title": "Become a Supplier | Maplin Electronics",
+          "excerpt": "Maplin Electronics stands as the UK's foremost electronics specialist, an enduring and iconic brand in the British electronics landscape. It continues to be a trusted companion for those passionate about all things electronic, symbolizing the ever-present curiosity and innovation of the British public. [...] #### UK Trusted Brand Your electronics specialist since 1972 #### Free UK Shipping On most items when you spend over £35 #### Easy Returns Our returns portal makes things quick & easy #### Support Our friendly support team is here to help Choosing a selection results in a full page refresh. [...] Established in 1972, Maplin's range spans batteries, cables, tools, components, and the latest gadgets, making it the destination for DIY enthusiasts and tech-savvy consumers. We firmly believ",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:buyitdirect.co.uk",
+      "countryCode": "GB",
+      "companyName": "Buy It Direct Ltd",
+      "domain": "buyitdirect.co.uk",
+      "officialWebsiteUrl": "https://www.buyitdirect.co.uk",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 70,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-a22a4db6c71565ad",
+          "url": "https://www.buyitdirect.co.uk",
+          "title": "Buy it Direct | One of the UK's Largest Online Retailers",
+          "excerpt": "Copyright © Buy It Direct 2001 - 2026 All Rights Reserved. Back to top [...] In 1999, we opened our very first shop in Huddersfield. But we didn't wait long to start shaking up our industry... plus a handful of other sectors. Our journey Privacy Policy Terms & Conditions Contact Us Help & Advice Cookie Policy Gender Pay Modern Slavery Act BID Tax Strategy Buy It Direct Ltd is a limited company registered in England. Registered number 04171412. Registered office: Trident Business Park, Leeds Road, Huddersfield, West Yorkshire, HD2 1UA. [...] ## Visit Us Meet us in Huddersfield or the East Midlands to browse our gadgets instore – from laptops to air conditioning units, and beyond. Or pop in for a brew and a natter at our HQ, inside Huddersfield’s Poundstretcher building. We’ve also opened a ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-85fdb9386e921c69",
+          "url": "https://find-and-update.company-information.service.gov.uk/company/04171412",
+          "title": "BUY IT DIRECT LTD overview - Find and update company information - GOV.UK",
+          "excerpt": "Registered office address : Trident Business Park, Neptune Way, Huddersfield, England, HD2 1UA Company status : Active Company type : Private limited Company Incorporated on : 2 March 2001 ## Accounts Next accounts made up to 30 March 2026 due by 30 December 2026 Last accounts made up to 31 March 2025 ## Confirmation statement Next statement date 2 March 2027 due by 16 March 2027 Last statement dated 2 March 2026 ## Nature of business (SIC) [...] 47910 - Retail sale via mail order houses or via Internet ## Previous company names Previous company names | Name | Period | | EASY COMPUTERS LIMITED | 02 Mar 2001 - 31 Mar 2009 | Tell us what you think of this service(link opens a new window) Is there anything wrong with this page?(link opens a new window) [...] ## Cookies on Companies House serv",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-d6175f49879705cc",
+          "url": "https://www.linkedin.com/company/buy-it-direct-ltd.",
+          "title": "Buy It Direct Group - Established in 1999, we’re one of the UK’s largest online retailers employing circa 900 people. We are #poweredbypeople!",
+          "excerpt": "buyers and trading teams to our warehouse, delivery, and customer service teams! Over the last 12 months, we’ve: - Strengthened our position as the UK’s go-to destination for laptops and tech - Expanded our market share in gaming and delivered double-digit growth in key categories - Championed sustainability, with refurbished tech diverting 20,000+ devices from landfill - Continued to invest in people, infrastructure, and service innovation And while we might be best known for our consumer [...] Buy It Direct Group has three main divisions - online product sales, TV recycling, and refurbishment and repair. Our online brands include Laptops Direct, Appliances Direct, Furniture123, Better Bathrooms, and Outdoor Living Hot Tubs. We sell to both end-users and businesses with turnover heading t",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-2d14b8aa6e6ea624",
+          "url": "https://www.serversdirect.co.uk/content/about-us",
+          "title": "About Us",
+          "excerpt": "Since formation, Servers Direct has grown immensely and in collaboration with BuyItDirect and its umbrella companies have produced a turnover of over £100m. Today, we manage over 750,000sq ft of warehouse, care for over 600 employees and maintain a specialist 2 person delivery service – plus 50 vans. Together, we source, stock and ship oodles of items from our warehouses in Huddersfield, Elland and the East Midlands; for Laptops Direct, Appliances Direct, BetterBathrooms and Furniture123. [...] Track my orderTrack Order Business AccountsBusiness Accounts Public Sector EnquiriesPublic Sector Enquiries Inc. VAT vat switch show inc Ex. VAT Inc. VAT vat switch show ex Ex. VAT £ currency switch€ EU flag £ currency switch€ EU flag Basket Servers Direct We’re not robots, get sales advice 7 days a",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:aria.co.uk",
+      "countryCode": "GB",
+      "companyName": "Aria PC",
+      "domain": "aria.co.uk",
+      "officialWebsiteUrl": "https://www.aria.co.uk",
+      "primaryRole": "Unresolved",
+      "supportedRoles": [],
+      "totalScore": 0,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-2ab878988559b870",
+          "url": "https://www.aria.co.uk",
+          "title": "Aria PC - Message to our customers",
+          "excerpt": "As of August 2022, we will be closing our online retail website and will no longer offer retail component sales, systems, or services to the general public.",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-bde1e2ea699c4ff0",
+          "url": "https://www.facebook.com/AriaPCTechnology",
+          "title": "Aria PC Technology (@AriaPCTechnology)",
+          "excerpt": "Aria PC is a major supplier of PC compatible computer components and peripherals across the UK. We are one of the Top 500 online retailers in the UK.",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-0437561e00d67a33",
+          "url": "https://www.ariatech.com",
+          "title": "ARIA Technologies: Fiber Optic Connectivity Products",
+          "excerpt": "Welcome to ARIA [...] # ARIA Technologies is an industry leading designer, manufacturer, and provider of fiber optic connectivity products located in the San Francisco Bay Area. Our commitment to responsive, informative, timely, and knowledgeable customer service and support makes ARIA stand out among suppliers. Dedication to customer satisfaction allows us to provide innovative, performance driven, high quality products that transform the telecommunications industry. We specialize in the manufacturing of high [...] ARIA Technologies, Inc. | Fiber Optic Connectivity emailsales@ariatech.com phone(925) 447-7500 Dedicated to Our Customers Top tier provider of fiber optic connectivity to New York City's high security Financial, Telecom and Cable TV business networks because performance matters",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-1c84856ccc92152b",
+          "url": "https://www.ariasolutionsllc.com/technology-integration",
+          "title": "Technology Integration | Aria Solutions LLC",
+          "excerpt": "top of page aria%20website%20logo_edited.png # Technology # Integration Technical Services: Aria provides professional and managed services specializing in designing, building, implementing, supporting, and securing high-availability environments and data communication networks (wired and wireless). ​ [...] ​ Converged Technologies: Aria specializes in design, installation and support for technologies that are Internet Protocol (IP) based services, and competing for network bandwidth. ​ IT Services Staff Augmentation Network Administration Network Security Global Deployments ERP System Design Implementation On-Site Support Cabling Workstation/Backbone Fiber-Optics Design Services (RCDD) Rack & Stack Moves, Adds & Changes Wireless Systems [...] Wireless Systems Wireless Network Design Wirel",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-f8bd8ea4b2026bbe",
+          "url": "https://www.ariasystems.com/solutions/information-technology",
+          "title": "Information Technology - Aria Systems",
+          "excerpt": "#### Automate billing processes Reduce human error and streamline billing processes to create more efficiency and improve the customer experience. #### Ensure security Aria is PCI compliant and TRUSTe certified for data privacy, and we are audited regularly by highly reputable third-party assessors. [...] In his latest IDC Link reviewing monetization solutions he saw at TM Forum DTW 2026 Chris Silberberg, Research Manager, Telecom Operations & Monetization, said: “The most striking was the announcement and demonstration of Aria Systems AllegroTM ACE (Adaptive Charging Engine).” Read more Get started ## Got questions or need guidance? We’re happy to help. Speak to an industry expert [...] Our operational maturity is second to none in the industry – delivering exceptional system security, bu",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:ebuyer.com",
+      "countryCode": "GB",
+      "companyName": "Ebuyer",
+      "domain": "ebuyer.com",
+      "officialWebsiteUrl": "https://www.ebuyer.com",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 68,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-07adf238a342e696",
+          "url": "https://www.ebuyer.com",
+          "title": "Ebuyer.com: Laptops, Gaming PCs, 4K Monitors, Graphics ...",
+          "excerpt": "### Memory Prices June 2026: Latest RAM & SSD Trends Explained Published on 5th June 2026 Stay in the know \\By submitting your email address, you agree to receive marketing emails from EBUYER. Click here to read our privacy policy & terms and conditions Customer services Information About us Ways to pay Frasers Plus [...] EBYR (Investco) Limited (FRN: 1042339), trading as 'Ebuyer', is an introducer appointed representative of Frasers Group Financial Services Limited (FRN: 311908) who are authorised and regulated by the Financial Conduct Authority as a lender. Frasers Plus is a credit product provided by Frasers Group Financial Services Limited and is subject to your financial circumstances. Missed payments may affect your credit score. \\ Exclusive access to discounts on selected products f",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-e47163e538429f57",
+          "url": "https://help.ebuyer.com/hc/en-gb/articles/6017071208735-TERMS-AND-CONDITIONS-ALL-SECTIONS",
+          "title": "TERMS AND CONDITIONS (ALL SECTIONS)",
+          "excerpt": "Return to main website TERMS AND CONDITIONS (ALL SECTIONS) Ebuyer Terms and Conditions WHO WE ARE If you access or use the Website, including placing an order for goods, you agree to be bound by these terms and conditions. Please read these terms and conditions carefully before accessing, using and/or ordering any goods from the Website. You should save a copy of these terms and conditions for future reference and if you have any questions about the Website please contact Customer Service. The following definitions are used in these terms: | | | --- | | Customer, you | You, the customer accessing and/or using the Website. | | Website | www.ebuyer.com | | Seller, us, we | Purchases paid for using a debit/credit card are sold to you by Wareshop2 Limited (Registered Address: Unit A, Brook Par",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-0abe3386e721c3fd",
+          "url": "https://help.ebuyer.com/hc/en-gb/articles/6018231341599-PRIVACY-AND-COOKIES",
+          "title": "PRIVACY AND COOKIES",
+          "excerpt": "Return to main website PRIVACY AND COOKIES Ebuyer - Privacy Policy Privacy Policy Frasers Group consists of different brands and legal entities and the company responsible for the processing of your personal data is dependent on the purpose for which it is collected. For each processing purpose you will be informed of the responsible company We take appropriate technical and organisational measures to protect against unauthorised or unlawful processing of your personal data, including encrypting your data to applicable industry standards. Where we have given you (or where you have chosen) a password which enables you to access certain parts of our site, you are responsible for keeping this password confidential. We ask you not to share a password with anyone. So, you only need to look in o",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-62bb45568211d6c9",
+          "url": "https://en.wikipedia.org/wiki/Ebuyer",
+          "title": "Ebuyer - Wikipedia",
+          "excerpt": "Ebuyer is an electronic commerce retailer previously based in Howden, East Riding of Yorkshire, England. It is an independent online retailer of computer and electrical goods in the United Kingdom.[citation needed] The Ebuyer website was the 210th most visited site in the United Kingdom [Alexa.com ranking] and had 4 million registered customers. [...] | Logo used since 2021 | | Type | Private | | Industry | Computers Computer hardware Software Electronics Consumer goods Gadgets | | Founded | 1999; 27 years ago (1999) | | Founders | Paul Cusack Mike Naylor Steve Kay Neeraj Patel Adam Ashmore | | Headquarters | Howden, East Riding of Yorkshire , England | | Products | Computer hardware, software, peripherals, gaming, electronics, accessories, DVDs and more | | Revenue | £136.5 Million (2023)",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-d5266da257f5a713",
+          "url": "https://www.ebuyer.com/computing/networking/routers",
+          "title": "Cheap Routers | Networking | Low Prices UK Deals",
+          "excerpt": "Discover our wide range of Routers at Ebuyer. Shop online today for the best deals on laptops, components, gaming, and tech.",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-661559c73afba486",
+          "url": "https://www.tomshardware.com/tech-industry/major-uk-pc-retailer-ebuyer-bought-out-of-administration-by-notorious-backer-pc-component-listings-mostly-nuked-in-favor-of-furniture-garish-iphone-cases-and-air-fryers-as-frasers-group-takes-the-helm",
+          "title": "Major UK PC retailer, Ebuyer, bought out of administration by notorious backer — PC component listings mostly nuked in favor of furniture, garish iPhone cases, and air fryers as Frasers Group takes the helm | Tom's Hardware",
+          "excerpt": "Ebuyer is a bit of an institution within the UK's PC enthusiast space. Founded in 2000, the site was well known for offering a wide selection of DIY components and pre-built systems, and competed with the likes of Scan and Overclockers UK for customers. It even expanded during the pandemic when PC and component sales picked up, but it's faced a downturn in sales ever since, and increasing competition has seen it fail to retain profitability. [...] The ebuyer website at the end of July... (Image credit: Ebuyer) Ebuyer website on August 13 And the Ebuyer website today. Scroll down a little and you'll find home appliances like air fryers and juicers. (Image credit: Ebuyer) [...] 1. Tech Industry # Major UK PC retailer, Ebuyer, bought out of administration by notorious backer — PC component li",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:very.co.uk",
+      "countryCode": "GB",
+      "companyName": "Very",
+      "domain": "very.co.uk",
+      "officialWebsiteUrl": "https://www.very.co.uk",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 68,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-75ec615017c74f27",
+          "url": "https://www.very.co.uk",
+          "title": "Very | Womens, Mens and Kids Fashion, Furniture, Electricals & More! | very.co.uk",
+          "excerpt": "Shop Direct Finance Company Limited act as a credit broker and earn a commission if you choose to take a loan product. ClearScore are also a broker and not a lender. Learn more ## Get 6 months free insurance Get 6 months free Very Protect - Repair Monthly insurance on selected electrical items see Product Pages for details. Shop offer ## 10% back [...] ### New In Browse our latest products ### Sale Your favourite brands for less ### Offers Find all our deals in one place ### Holiday Shop Shop getaway essentials ### Father's Day Celebrate your hero ## SALE - Up to 50% off Offers added & removed throughout Shop now ## Claim up to 20% cashback on selected Samsung TVs & Soundbars. Offer ends 16/06/2026. Shop now ## Claim a free QLED TV When you buy selected Hisense TVs, Laser Cinemas, and Frid",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-6b4daffe3636d612",
+          "url": "https://www.very.co.uk/tp-link-re200-ac750-dual-band-range-extender/1423211069.prd",
+          "title": "TP Link RE200 AC750 Dual Band Range Extender - Very",
+          "excerpt": "TP-Link RE200 AC750 Dual Band Range Extender - extends WiFi range and removes dead spots around the home. TP-LINK's RE200 expands your existing Wi-Fi",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-0870b4185f3b2c21",
+          "url": "https://en.wikipedia.org/wiki/The_Very_Group",
+          "title": "The Very Group - Wikipedia",
+          "excerpt": "The Very Group Limited is a multi-brand online retailer and financial services provider in the United Kingdom and Ireland. Its head offices are based in the Speke area of the city of Liverpool, England. The brand was established in November 2005 as a result of the merger of the former Littlewoods and Shop Direct companies. The retailer was known as Littlewoods Shop Direct Group until a corporate rebranding to Shop Direct Group in May 2008. In 2013, the company rebranded to Shop Direct, dropping [...] 1. ↑ Ryan, Belinda (2 October 2025). \"Tories choose devo mayoral candidate\". Congleton Chronicle. Local Democracy Reporting Service. p. 3. 2. 1 2 \"THE VERY GROUP LIMITED overview - Find and update company information - GOV.UK\". Companies House. 11 April 2003. Retrieved 3 September 2023. 3. ↑ \"",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-fe326ca8ba29bb0c",
+          "url": "https://www.business-humanrights.org/en/companies/very-shop-direct",
+          "title": "Very.co.uk (part of The Very Group) - Business and Human Rights Centre",
+          "excerpt": "Sâmia Bomfim, Flickr ### From invisibility to protection: ILO adopts landmark protections for platform workers 14 Jul 2026 Donate About us Find out more about our impact, who we are and how we are funded. ### Featured pages Media centre Meet the team Contact us Our board Annual reports Strategic plan Join our email lists [...] Clothing & textile, Retail United Kingdom Very.co.uk is a subsidiary of British online retailer and financial services provider The Very Group (formerly Shop Direct) that specialises in online retail. ### Related companies The Very Group [...] Events | Jobs | Media | Data Usage & Cookies | Contact Us | Join our email lists | Subscribe on LinkedIn",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-2663c3c90dfce5c0",
+          "url": "https://find-and-update.company-information.service.gov.uk/company/04660974",
+          "title": "SHOP DIRECT FINANCE COMPANY LIMITED overview - Find and update company information - GOV.UK",
+          "excerpt": "Next statement date 10 February 2027 due by 24 February 2027 Last statement dated 10 February 2026 ## Nature of business (SIC) ## Previous company names Previous company names | Name | Period | | LITTLEWOODS FINANCE COMPANY LIMITED | 20 Feb 2003 - 05 Jan 2009 | | LITTLEWOODS7 LIMITED | 10 Feb 2003 - 20 Feb 2003 | ## Support links [...] We use cookies to make our services work and collect analytics information. To accept or reject analytics cookies, turn on JavaScript in your browser settings and reload this page. Search for a company or officer Please press ENTER to search # SHOP DIRECT FINANCE COMPANY LIMITED Company number 04660974 ## Accounts Next accounts made up to 30 June 2026 due by 31 March 2027 Last accounts made up to 30 June 2025 ## Confirmation statement [...] ## Cookies on Com",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-a57f08a67a0d8571",
+          "url": "https://www.theverygroup.com",
+          "title": "The Very Group",
+          "excerpt": "Read more July 15, 2026 Company ### Very.ie Appoints new CEO Read more July 13, 2026 Company ### The Very Group welcomes Estée Lauder as its latest beauty brand Read more View all news and insights ## About us ### We combine amazing brands and products with flexible payment options About us ## Our brands Very.co.uk Visit Very.co.uk Littlewoods.com Visit Littlewoods.com 3100 engaged people 4.2m active customers 2000 famous brands £2.1bn annual revenue ## Sustainability [...] Skip to navigationSkip to search Logotype Logotype # Helping families get more out of life Providing ease, choice and understanding ## Careers ### Get more out of life at Very. We're looking for engineers, buyers, analysts and more. Careers at Very ## Careers ### We’re looking for analysts, engineers, creators and more ",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:richersounds.com",
+      "countryCode": "GB",
+      "companyName": "Richer Sounds Ltd",
+      "domain": "richersounds.com",
+      "officialWebsiteUrl": "https://www.richersounds.com",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer",
+        "Installer"
+      ],
+      "totalScore": 67,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-273459ce4138c704",
+          "url": "https://www.richersounds.com",
+          "title": "Richer Sounds | TVs, Hi-Fi, Home Cinema",
+          "excerpt": "Projectors #### Projectors Home Cinema #### Home Cinema Wireless Streaming #### Wireless Streaming Headphones #### Headphones Accessories #### Accessories Gaming #### Gaming ## Packages deals Home cinema system with speakers displayed on a wooden cabinet. Hi-Fi audio system with speakers and a record player on a wooden table. Racing simulators # Why shop with Richer Sounds? Lowest price guaranteed [...] Richer Sounds Logo Which retailer of the year Sign in or sign up for FREE access to HUGE VIP exclusive savings! Sign in Basket #### Free delivery to most of GB mainland on all purchases over £50 Next working day delivery #### Next working day delivery, or pick a delivery day Nominated day delivery Mon - Sat. Click & Collect #### Click & collect From any of our stores with next working day f",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-113f9ad29a688491",
+          "url": "https://find-and-update.company-information.service.gov.uk/company/01402643",
+          "title": "RICHER SOUNDS LIMITED overview - Find and update company information - GOV.UK",
+          "excerpt": "Company Overview for RICHER SOUNDS LIMITED (01402643) Filing history for RICHER SOUNDS LIMITED (01402643) People for RICHER SOUNDS LIMITED (01402643) Charges for RICHER SOUNDS LIMITED (01402643) More for RICHER SOUNDS LIMITED (01402643) Registered office address : Richer House, Hankey Place, London, SE1 4BB Company status : Active Company type : Private limited Company Incorporated on : 29 November 1978 ## Accounts [...] ## Accounts Next accounts made up to 30 April 2026 due by 31 January 2027 Last accounts made up to 3 May 2025 ## Confirmation statement Next statement date 13 August 2027 due by 27 August 2027 Last statement dated 13 August 2026 ## Nature of business (SIC) 47430 - Retail sale of audio and video equipment in specialised stores ## Previous company names Previous company name",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-52239ddfe663f2f9",
+          "url": "https://www.richersounds.com/wireless-streaming",
+          "title": "Buy Wireless Streaming",
+          "excerpt": "Shop for Wireless Streaming with Richer Sounds. Richer Sounds Limited acts as a broker ・ t Place, London, United Kingdom, EC4M ・ registration number is",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-ed5074ffa17fa9c9",
+          "url": "https://www.richersounds.com/stores/sheffield",
+          "title": "Sheffield | Richer Sounds",
+          "excerpt": "If for any reason you're thinking of making a major or complex purchase, are within a 10-mile radius, and find it difficult to visit, we will happily come to your home or place of work and carry out a free on-site survey. Give one of our team a call to discuss the best option for you For our VIP Club members - We will happily pay your parking for the first hour. Join for FREE in seconds, with no fees EVER!Sign up onlineor in-store. ### Installation gallery and brochures [...] For both homes and businesses, we offer a free consultation to assess your needs. We cover everything from home demos to simple equipment set-ups and complete installations. We are also available for video call consultations. Call us or read more details here. #### Lowest Price Guaranteed Our Price Beat is valid for 1",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:johnlewis.com",
+      "countryCode": "GB",
+      "companyName": "John Lewis PLC",
+      "domain": "johnlewis.com",
+      "officialWebsiteUrl": "https://www.johnlewis.com",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer",
+        "ISP"
+      ],
+      "totalScore": 82,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-b8c178c9f0f0a14b",
+          "url": "https://www.johnlewis.com",
+          "title": "John Lewis & Partners | Never Knowingly Undersold",
+          "excerpt": "are trading names of John Lewis plc. Registered office: 1 Drummond Gate, Pimlico, London SW1V 2QQ. Registered in England and Wales (Company Number: 233462). Authorised and regulated by the Financial Conduct Authority (Firm Reference Number: 416011) for the purpose of introducing the credit provided by Creation Consumer Finance Ltd (Company Number: NI032565). Registered office: Wellington Buildings, 2-4 Wellington Street, Belfast BT1 6HT. Creation Consumer Finance Ltd is authorised and regulated [...] Find out more about Payment Plans. © John Lewis plc 2001 - 2026 Protect Plus policies are provided by Domestic & General Insurance PLC. Registered Office: Swan Court, 11 Worple Road, Wimbledon, London SW19 4JS, United Kingdom. Registered in England and Wales, Company No. 485850. Domestic & Gen",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-33b3ac853ecbed42",
+          "url": "https://find-and-update.company-information.service.gov.uk/company/00233462",
+          "title": "JOHN LEWIS PLC overview - Find and update company information - GOV.UK",
+          "excerpt": "Registered office address : 1 Drummond Gate, Pimlico, London, United Kingdom, SW1V 2QQ Company status : Active Company type : Public limited Company Incorporated on : 20 September 1928 ## Accounts Next accounts made up to 31 January 2027 due by 31 July 2027 Last accounts made up to 31 January 2026 ## Confirmation statement Next statement date 27 June 2027 due by 11 July 2027 Last statement dated 27 June 2026 ## Nature of business (SIC) [...] Companies House does not check the accuracy of the information filed(link opens a new window) Sign in / Register Advanced company searchLink opens in new window # JOHN LEWIS PLC Company number 00233462 Follow this company File for this company Company Overview for JOHN LEWIS PLC (00233462) Filing history for JOHN LEWIS PLC (00233462) People for JOHN LE",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-3ff8899542cb4dbd",
+          "url": "https://www.johnlewis.com/electricals-laptops-macbooks/networking-broadband/c600002762",
+          "title": "Broadband | Networking | John Lewis & Partners",
+          "excerpt": "Shop our Networking & Broadband range at John Lewis & Partners. Browse routers, range extenders and powerline adapters, with Free UK mainland Delivery on",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-13ff3c316e02d41f",
+          "url": "https://www.johnlewisbroadband.com/support/customer-service/server-addresses.html",
+          "title": "Server Addresses — John Lewis Broadband",
+          "excerpt": "at your location at www.johnlewisbroadband.com. [...] \\Broadband speed is described as 'average download speed of 10Mb' and 'average upload speed of 1Mb' as it is based on speed available to at least 50% of customers at peak time (8-10pm). Your actual speed will be dependent on your location, phone line, home wiring, wifi connection and time of day. Find out why speeds vary. Check your speed and products available at your location at www.johnlewisbroadband.com. [...] #### If you're using your own VDSL router Use the settings below as a guide. Note, not all VDSL routers include these options - if yours doesn't, just make sure what's available matches the details below. | Fibre Broadband connection settings | | Broadband username | USERNAME@john-lewis.com - username guide | | Connection type",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-e8b73d43d0f28ce3",
+          "url": "https://www.johnlewispartnership.co.uk",
+          "title": "John Lewis Partnership",
+          "excerpt": "At John Lewis, we’ve got BIG ambitions to be the most inspiring omni-channel retailer in the UK, built on longstanding customer trust and loyalty. We’re focused on offering the very best products for our customers, from stylish fashion and homeware to innovative technology. And, we’re committed to creating unforgettable experiences that inspire and delight our customers. Reigniting performance with Never Knowingly Undersold relaunch [...] We’re aiming to create a kinder, fairer future for Partners, customers, suppliers and the communities in which we operate, building strong and trusted relationships with them whilst ensuring we listen to and understand their concerns. Each area of our strategy is critical if we are to protect the planet and respect and support the interests of all those t",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:cpc.farnell.com",
+      "countryCode": "GB",
+      "companyName": "CPC (Farnell UK Ltd)",
+      "domain": "cpc.farnell.com",
+      "officialWebsiteUrl": "https://cpc.farnell.com",
+      "primaryRole": "Distributor",
+      "supportedRoles": [
+        "Distributor",
+        "E-tailer"
+      ],
+      "totalScore": 77,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-011d3aecfbb221cc",
+          "url": "https://cpc.farnell.com",
+          "title": "Electronic Parts & Components, Raspberry Pi | CPC UK",
+          "excerpt": "Track Orders Register My Account 0 0 Items£0.00 ex VAT ex VAT Cleaning Essentials Everything you need for the home, office, site or workplace. Headsets Communicate with confidence Outdoor Lighting Great range of garden, security and solar options! Pro Sound & Lighting Audio, Visual and Performance. Garden Essentials Power tools, hand tools, lawn and plant care, and outdoor power. Buying GuideSales CounterEmail Sign-upLatest CatalogueTrade AccountContact Us ### Weekly Deals Great savings on products every week!### New Products Stay up-to-date with the best new products.### Bargain Corner Where exceptional value meets incredible quality. Featured Brands Pro-ElecPRO-ELEC Trusted Electricals Huge range of electricals, lighting, batteries, fans and more. Shop Now PulsePULSE Feel Every Beat Prof",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-5fb085355aa09324",
+          "url": "https://cpc.farnell.com/terms-of-purchase",
+          "title": "Terms of Purchase | CPC UK",
+          "excerpt": "Terms of Purchase CPC, a trading division of Premier Farnell UK Limited Conditions of Supply (Not applicable to export transactions) | | | --- | | 1. Definitions | 17. Intellectual property rights | | 2. Conditions | 18. Use of Personal Data | | 3. Prices | 19. Promotions | | 4. Payment | 20. Country of origin | | 5. New accounts | 21. Trade counter | | 6. Orders | 22. Export | | 7. Delivery | 23. Age requirements for certain Goods | | 8. Inspection, defects and non delivery | 24. Medical and life support applications | | 9. Returns | 25. Force majeure | | 10. Consumer Contracts Regulations | 26. Recording of communications | | 11. Description | 27. Legal construction | | 12. Risk and ownership | 28. General | | 13. Quality Assurance | 29. Direct Ship orders | | 14. Performance and fitness",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-1785463e358c95c2",
+          "url": "https://cpc.farnell.com/c/computer-office/computing/networking/wired-networking/network-switches?brand=tp-link&product-range=tp-link-tl-sg100xd",
+          "title": "TP-Link TL-SG100xD TP-LINK Network Switches | CPC UK",
+          "excerpt": "Displaying products for Network Switches - from our range of leading brand manufacturers. + Read More. Wire Switches · Managed Switches · Stop Switches.",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-196c4dd1616a4fd6",
+          "url": "https://uk.linkedin.com/company/cpcfarnell",
+          "title": "CPC Farnell - Good People To Deal With - Providing 50+ years of quality, value, and service for all your electrical and tech needs!",
+          "excerpt": "Founded in 1967, CPC has earned its place as one of the UK's leading distributors of electrical, electronics and related products. With over 100,000 products across multiple ranges, including Mains Electrical, Lighting, Audio Visual, Computing, Tools and Maker, CPC offer customers a unique everything-under-one-roof shopping experience. We distribute our comprehensive range to a wide variety of customers, including businesses, tradespeople and DIY enthusiasts; consistently providing value that [...] CPC Farnell (N/A): (Preston, Lancashire); Farnell Electronics (Appliances, Electrical, and Electronics Manufacturing): (N/A); Farnell Global (Appliances, Electrical, and Electronics Manufacturing): (N/A); RS (Parts Distribution): (London, England); RS Components & Controls (I) Ltd. (Appliances, ",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-06db19044cdce99e",
+          "url": "https://cpc.farnell.com/about-us",
+          "title": "About Us | CPC UK",
+          "excerpt": "Track Orders Register My Account 0 0 Items£0.00 ex VAT ex VAT # About Us ## Established in 1967, CPC has over 55 years' experience as one of the UK’s leading distributors of electrical, electronics and related products. Founded in 1967, CPC has earned its place as one of the UK's leading distributors of electrical, electronics and related products. [...] We offer free standard delivery (usually 48 hours), on all UK mainland orders over £24.99 (ex VAT). If you order before 6pm Monday-Friday we'll despatch the order the same day. You can pay for your goods using credit/debit card and BACS transfer. You can also open a credit account with CPC (subject to status). Apply for a credit account. [...] Whether it's a £1 order or a £1000 order we value all customers and will continue to strive to me",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:verypc.co.uk",
+      "countryCode": "GB",
+      "companyName": "VeryPC Ltd",
+      "domain": "verypc.co.uk",
+      "officialWebsiteUrl": "https://www.verypc.co.uk",
+      "primaryRole": "Hybrid",
+      "supportedRoles": [
+        "Brand Owner",
+        "SI",
+        "MSP"
+      ],
+      "totalScore": 49,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-e9bd8f00a180e81b",
+          "url": "https://find-and-update.company-information.service.gov.uk/company/05044896",
+          "title": "VERY PC LTD overview - Find and update company information - GOV.UK",
+          "excerpt": "Registered office address : Unit 5 Parkwood Business Park, 75 Parkwood Road, Sheffield, South Yorkshire, England, S3 8AL Company status : Active Company type : Private limited Company Incorporated on : 16 February 2004 ## Accounts Next accounts made up to 30 September 2026 due by 30 June 2027 Last accounts made up to 30 September 2025 ## Confirmation statement Next statement date 16 February 2027 due by 2 March 2027 Last statement dated 16 February 2026 [...] ## Nature of business (SIC) 62090 - Other information technology service activities Tell us what you think of this service(link opens a new window) Is there anything wrong with this page?(link opens a new window) [...] Companies House does not check the accuracy of the information filed(link opens a new window) Sign in / Register Adva",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-34afd7a332978b55",
+          "url": "https://www.madeinsheffield.org/license_holder/very-pc-ltd",
+          "title": "Very PC Ltd - Made in Sheffield",
+          "excerpt": "+44 (0)114 272 8456 EXT:202 Made in Sheffield Logo Apply Now # Very PC Ltd Visit Website Very PC make computers and customise IT and AV solutions for education and business across the UK and globally. Very PC devices are built and customised to suit specific requirements at their factory in Sheffield. [...] Information Our Supporters About Sheffield & South Yorkshire Education Get in Touch Subscribe for Updates Made In Sheffield Mark is registered with the UK Patent Office (British Design Application No. 3021457) Made in Sheffield. All Rights Reserved. Website design and build by Brand North | website design sheffield [...] Products and services include desktop PCs, laptops, mobile devices, 3D workstations, servers, backup and storage solutions, industrial computer appliances, audio visual",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-782bcc06a1d13bb5",
+          "url": "https://very-pc.co.uk",
+          "title": "VeryPC | UK PC Manufacturer for Schools & Business",
+          "excerpt": "We specialise in designing and delivering high-performance hardware and fully managed IT services tailored to your needs.",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-c13d9f85573a9c18",
+          "url": "https://uk.linkedin.com/company/verypc",
+          "title": "VeryPC - Our mission is to manufacture computers and provide solutions that solve problems and save our customers time.",
+          "excerpt": "### Website ### Crunchbase N/A ### LinkedIn N/A ### Industry Computer Hardware ### Company Size 11-50 employees 40 associated members (LinkedIn members who've listed VeryPC as their current workplace on their profile) ### Founded 2004 ### Funding Last Round Date: N/A Last Round Type: N/A Total Rounds: N/A Last Round Raised: N/A ### Investors N/A [...] Established in 2004, VeryPC initially provided computer hardware and managed IT services to charities and local businesses. Recognising a gap in the UK market, VeryPC set out to manufacture high-quality, sustainable computer hardware tailored for the education sector. We manufacture and supply IT products and services to schools across the UK. We are dedicated to simplifying our customers’ work lives, saving them time, and delivering a world-",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:networkwebcams.co.uk",
+      "countryCode": "GB",
+      "companyName": "Network Webcams Ltd",
+      "domain": "networkwebcams.co.uk",
+      "officialWebsiteUrl": "https://www.networkwebcams.co.uk",
+      "primaryRole": "Unresolved",
+      "supportedRoles": [
+        "E-tailer"
+      ],
+      "totalScore": 23,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-9a92996f0b648c19",
+          "url": "https://www.networkwebcams.co.uk",
+          "title": "Specialist UK IP Camera Store | Network Webcams",
+          "excerpt": "So VMS products can offer multi-site installation with central system management, granular user access authorisation for close data protection controls, data back-ups, and an ever-increasing AI-driven intelligent feature-set enabling the system",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-2da3048ba6606e6b",
+          "url": "https://www.networkwebcams.co.uk/contact-us",
+          "title": "Contact Network WebcamsHelp Centre and Customer Services | Network WebcamsCustomer Service | Network WebcamsNETWORK WEBCAMS LIMITED overview - Find and update company ...",
+          "excerpt": "Contact us for advice and expertise in all things IP cameras and IP video. You can expect a knowledgeable team member to contact you. Whether you're a beginner or an experienced user, our blog provides concise and easy-to-understand content that will enhance your understanding of IP camera technology. Stay updated with our regular posts, and allow us to be your trusted source for all things IP camera-related. Customer Service Information and frequently asked questions on how to buy IP cameras and IP video technology from us. NETWORK WEBCAMS LIMITED - Free company information from Companies House including registered office address, filing history, accounts, annual return, officers, charges, business activity",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:shop.bt.com",
+      "countryCode": "GB",
+      "companyName": "BT Shop (British Telecommunications plc)",
+      "domain": "shop.bt.com",
+      "officialWebsiteUrl": "https://shop.bt.com",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 71,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-6fc1646736a99422",
+          "url": "https://www.broadband.co.uk/providers/bt/broadband/routers",
+          "title": "BT Broadband router round-up 2026",
+          "excerpt": "| BT Smart Hub 3 specifications Wi-Fi:802.11ax (Wi-Fi 6) Dual-Band Wi-Fi: Yes (1x 2.4Ghz, 1x 5Ghz) Tri-band Wi-Fi: No Ethernet: 4x gigabit LAN, WAN port Extras: USB 2.0 port, Digital Voice landline port, BT Smart Scan, beamforming, and MU-MIMO support | | BT Smart Hub 2 specifications Wi-Fi:802.11ac Dual-Band Wi-Fi: Yes (1x 2.4Ghz, 1x 5Ghz) Tri-band Wi-Fi: No Ethernet: 4x gigabit LAN Extras: USB 2.0 port, DECT wireless phone support, Complete Wi-Fi mesh networking | [...] ADSL2+ is now available at nearly all exchanges across the UK with slightly faster data transfer rates of around 10-11Mb. | Router Name | Included with package: | | Smart Hub 3 | BT Full Fibre 150, BT Full Fibre 300, BT Full Fibre 500, BT Full Fibre 900 | | Smart Hub 2 | BT Fibre Essential (36Mb), BT Fibre 1 (50Mb), BT Fi",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-b8bb048b4296f52a",
+          "url": "https://www.uswitch.com/broadband/providers/bt",
+          "title": "BT Broadband Deals and TV Bundles August 2026 - Uswitch",
+          "excerpt": "## What Wi-Fi features do you get with BT broadband plans? Here's what you get when you purchase a BT broadband package. Here we’ll cover everything from routers to connection guarantees to internet security. ### BT Smart Hub and BT Smart Hub 2 Wi-Fi routers Available for free for all new customers signing up to BT Superfast Fibre packages, the original BT Smart Hub router is designed to give you a fast and reliable wireless internet connection throughout your home. [...] Why choose BT? Connect your whole home: Get a strong and reliable connection with a BT Smart Hub router, plus Wi-Fi boosters. Bundle up: Access popular channels like TNT Sports with a TV & broadband package. Support if you need it: Expert customer service from UK and Ireland based teams. 10 of 19 results Sort by Filter by",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-60b035c1bbebcb5a",
+          "url": "https://business.bt.com",
+          "title": "Business Broadband & Connectivity solutions | BT Business",
+          "excerpt": "Visit us in store, book an appointment, or choose a time that works best for you. Discover BT local business Cyber security is everyone’s business #### To verify our claims visit bt.com/claims British Telecommunications plc re-registered as British Telecommunications Limited on 24 June 2026. The legal entity remains the same with the same company number (01800000). [...] BT Business ## MORE SPEED. SAME PRICE. Your business, but three times faster. On the UK’s best broadband. Get 900Mbps on award-winning BT Full Fibre for the price of 300Mbps. With £0 to pay upfront all on business broadband plans. 36-month contract. Prices exclude VAT. New customers only. T&Cs apply. Offer ends 27 September. Explore broadband deals September online offer ## BT Business. Behind brilliant things. [...] ## Bu",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:morecomputers.com",
+      "countryCode": "GB",
+      "companyName": "MoreComputers (MoreCo Ltd)",
+      "domain": "morecomputers.com",
+      "officialWebsiteUrl": "https://www.morecomputers.com",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 47,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-bd83279b2e9355c3",
+          "url": "https://www.morecoco.co.uk",
+          "title": "Computer Hardware, PC Parts & Laptops | MoreCoCo",
+          "excerpt": "MoreCoCo Looking for our business site # Shop Computer Hardware & Everyday Tech Ricoh document scanners - speed, reliability, quality Price Drop Deals - Monitors Price Drop Deals - Laptops ## Recently Viewed Laptops Laptops Desktops Desktops Phones Phones Monitors Monitors Networking Networking Printers Printers Office Office Clearance Clearance Contact Us Buy now Pay Later Business Site © 2026 MoreComputers Limited PayPal VISA Mastercard Maestro ## Menu",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-f099b665fbbbca53",
+          "url": "https://www.linkedin.com/company/more-computers-limited",
+          "title": "More Computers Limited - All Things Tech",
+          "excerpt": "# More Computers Limited All Things Tech Computer Networking • N/A • 93 followers • 11-50 employees ## Overview More Computers ### Website ### Crunchbase N/A ### LinkedIn N/A ### Industry Computer Networking ### Company Size 11-50 employees 0 associated members (LinkedIn members who've listed More Computers Limited as their current workplace on their profile) ### Founded 2000 ### Funding Last Round Date: N/A Last Round Type: N/A Total Rounds: N/A Last Round Raised: N/A [...] ### Investors N/A ### Specialties N/A ## Locations ### Get Directions ## Employees [...] ## Similar Companies",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:watercoolinguk.co.uk",
+      "countryCode": "GB",
+      "companyName": "Watercooling UK (WCUK Online Ltd)",
+      "domain": "watercoolinguk.co.uk",
+      "officialWebsiteUrl": "https://www.watercoolinguk.co.uk",
+      "primaryRole": "Hybrid",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer",
+        "Distributor"
+      ],
+      "totalScore": 49,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-9b36b40857c14053",
+          "url": "https://www.watercoolinguk.co.uk/customer-reviews",
+          "title": "Customer Reviews - Watercooling UK",
+          "excerpt": "Watercooling UK Watercooling UK Water Blocks Radiators Reservoirs Pumps & Accessories Hose & Tubing Hose Fittings Water Cooling Kits Coolant & Additives Accessories Case Fans CPU Coolers Other Coolers Fan Controllers Thermal Compound Accessories Server CPU Cooling GPU & AI Cooling External & Rack Radiators Pumps & Monitoring Industrial & Server Fans Fittings & Tubing Quick Disconnects Rack Hardware & Power Chillers & Externals All PC Cases Top Selling Brands Case Accessories Modding Power Supplies Memory Storage Cables Motherboards Everything Else Mice Keyboards Speakers Monitors Streaming Sim Racing Gaming Chairs Gaming Desks Gaming Peripherals Spec | Watercooling Kits Spec | Watercooled Cases Spec | Bundles Water Blocks Radiators Reservoirs Pumps & Accessories Hose & Tubing Hose Fittings",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-bded89d3b7d33e42",
+          "url": "https://www.watercoolinguk.co.uk/contact-us",
+          "title": "Contact Us - Watercooling UK",
+          "excerpt": "Watercooling UK Watercooling UK Water Blocks Radiators Reservoirs Pumps & Accessories Hose & Tubing Hose Fittings Water Cooling Kits Coolant & Additives Accessories Case Fans CPU Coolers Other Coolers Fan Controllers Thermal Compound Accessories Server CPU Cooling GPU & AI Cooling External & Rack Radiators Pumps & Monitoring Industrial & Server Fans Fittings & Tubing Quick Disconnects Rack Hardware & Power Chillers & Externals All PC Cases Top Selling Brands Case Accessories Modding Power Supplies Memory Storage Cables Motherboards Everything Else Mice Keyboards Speakers Monitors Streaming Sim Racing Gaming Chairs Gaming Desks Gaming Peripherals Spec | Watercooling Kits Spec | Watercooled Cases Spec | Bundles Water Blocks Radiators Reservoirs Pumps & Accessories Hose & Tubing Hose Fittings",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-0a668ff237c6329c",
+          "url": "https://www.watercoolinguk.co.uk/product-category/water-cooling/pumps-accessories/laing-xylem-d5-tops",
+          "title": "Buy Laing / Xylem D5 Tops Online - Watercooling UK",
+          "excerpt": "Watercooling UK Watercooling UK Water Blocks Radiators Reservoirs Pumps & Accessories Hose & Tubing Hose Fittings Water Cooling Kits Coolant & Additives Accessories Case Fans CPU Coolers Other Coolers Fan Controllers Thermal Compound Accessories Server CPU Cooling GPU & AI Cooling External & Rack Radiators Pumps & Monitoring Industrial & Server Fans Fittings & Tubing Quick Disconnects Rack Hardware & Power Chillers & Externals All PC Cases Top Selling Brands Case Accessories Modding Power Supplies Memory Storage Cables Motherboards Everything Else Mice Keyboards Speakers Monitors Streaming Sim Racing Gaming Chairs Gaming Desks Gaming Peripherals Spec | Watercooling Kits Spec | Watercooled Cases Spec | Bundles Water Blocks Radiators Reservoirs Pumps & Accessories Hose & Tubing Hose Fittings",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-71e0905a32317389",
+          "url": "https://www.watercoolinguk.co.uk/trade-contact-us",
+          "title": "Trade Contact Us",
+          "excerpt": "Contact Watercooling UK's trade team for wholesale, distribution, and bulk order enquiries. Get expert support for your business needs.",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-9e32a8924950c95d",
+          "url": "https://find-and-update.company-information.service.gov.uk/company/07382807",
+          "title": "WCUK ONLINE LTD overview - Companies House - GOV.UK",
+          "excerpt": "Registered office address: Unit 8 First Avenue, Trafford Park, Manchester, England, M17 1JZ. Company status: Active. Company type: Private limited Company.Read more",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:pebble.com",
+      "countryCode": "GB",
+      "companyName": "Pebble Tech Ltd (Pebble.com)",
+      "domain": "pebble.com",
+      "officialWebsiteUrl": "https://www.pebble.com",
+      "primaryRole": "Unresolved",
+      "supportedRoles": [],
+      "totalScore": 0,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": false,
+      "operatesInTargetMarket": false,
+      "evidence": [],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:studio.co.uk",
+      "countryCode": "GB",
+      "companyName": "Studio Retail Ltd",
+      "domain": "studio.co.uk",
+      "officialWebsiteUrl": "https://www.studio.co.uk",
+      "primaryRole": "Unresolved",
+      "supportedRoles": [],
+      "totalScore": 0,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": false,
+      "operatesInTargetMarket": false,
+      "evidence": [],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:visunext.co.uk",
+      "countryCode": "GB",
+      "companyName": "Visunext UK Ltd",
+      "domain": "visunext.co.uk",
+      "officialWebsiteUrl": "https://www.visunext.co.uk",
+      "primaryRole": "Hybrid",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer",
+        "SI",
+        "Installer"
+      ],
+      "totalScore": 26,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-7eaf56b735a64578",
+          "url": "https://www.visunext.co.uk",
+          "title": "visunext - Your AV technology supplier for Projectors, Projector ...",
+          "excerpt": "Launched in the early 2000s as Beamershop24, visunext is now much more than just an online portal: we support our customers from planning and integration through to the implementation of modern AV solutions. Our range of services: media technology planning & integration, installation & services, consulting, training & on-site showrooms. More about visunext.co.uk From the idea to perfect realisation. [...] About visunext.co.uk About visunext.co.uk The visunext Group The visunext Group Manufacturer Manufacturer Downloads and press kit Downloads and press kit Call now and get advice! 01508 53 50 59 Go to homepage Your account Log in or sign up Overview Addresses Payment methods Orders # SMART VISUAL SOLUTIONS We create places where ideas grow, knowledge is generated and experiences inspire. D",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-02ac2d80cb77505d",
+          "url": "https://www.visunext.co.uk/lp/solutions",
+          "title": "Solutions: We are your partner for audio & video technology! - visunext",
+          "excerpt": "Whether you are looking for product solutions for business customers, educational institutions or private customers, you have come to the right place!",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-022b41110f8cf74c",
+          "url": "https://www.visunext.co.uk/lp/the-visunext-group",
+          "title": "Company profile",
+          "excerpt": "About visunext.co.uk About visunext.co.uk The visunext Group The visunext Group Manufacturer Manufacturer Downloads and press kit Downloads and press kit Call now and get advice! 01508 53 50 59 Go to homepage Your account Log in or sign up Overview Addresses Payment methods Orders The visunext Group Expertise, infrastructure and brand platform for Smart media technology and room concepts in Europe. 🇩🇪 Switch to German Version The visunext Group is the entrepreneurial parent company behind several strong brands and operating units in the field of professional media technology. Since its foundation in 2003, the group has been developing structures, processes and competences to provide media technology reliably, efficiently and internationally scalable. Our claim Smart Tech × Smart Spaces s",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-3d4b25a6cae57a21",
+          "url": "https://www.visunext.co.uk/lp/innovative-digital-signage-solutions",
+          "title": "Modern digital signage solutions for your company - visunext",
+          "excerpt": "About visunext.co.uk The visunext Group Manufacturer Downloads and press kit Go to homepage Go to homepage vx-led-signage-solution Solutions for business customers Innovative digital signage solutions Discover the new dimension of communication Attracting attention in an increasingly crowded media landscape is a challenge for many businesses. With modern digital signage solutions, you can effectively communicate your message and capture the attention of your audience. Digital signage refers to visual communication in which digital content such as text, images, videos or animations are displayed on electronic screens such as LED walls, video walls or projectors to convey information or advertise. Places of use for digital signage Digital signage is revolutionising the way companies and orga",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-735bd9bf5e9178da",
+          "url": "https://www.visunext.co.uk/lp/about-visunext.co.uk",
+          "title": "The Corporate Group",
+          "excerpt": "About visunext.co.uk About visunext.co.uk The visunext Group The visunext Group Manufacturer Manufacturer Downloads and press kit Downloads and press kit Call now and get advice! 01508 53 50 59 Go to homepage Your account Log in or sign up Overview Addresses Payment methods Orders £0.00\\ The Corporate Group # About visunext.co.uk Started in the early 2000s in Germany as projectorshop24, visunext is your partner for presentation, media and home cinema technology across Europe. [...] visunext / visunext.co.uk is part of the visunext Group, one of the largest and most important suppliers of home cinema and presentation technology in Europe. Originally started in Germany in 2003, the group quickly established a broad presence in Europe. In the meantime, eight other sister companies are active ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-b76ae10bf36d2d90",
+          "url": "https://www.facebook.com/visunext.co.uk",
+          "title": "visunext.co.uk - Facebook",
+          "excerpt": "visunext.co.uk is the online shop of visunext UK Ltd, part of the visunext group. Audio Visual Equipment Store",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:tehonline.co.uk",
+      "countryCode": "GB",
+      "companyName": "The Electronics Hub Ltd",
+      "domain": "tehonline.co.uk",
+      "officialWebsiteUrl": "https://www.tehonline.co.uk",
+      "primaryRole": "Unresolved",
+      "supportedRoles": [],
+      "totalScore": 0,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": false,
+      "operatesInTargetMarket": false,
+      "evidence": [
+        {
+          "id": "evidence-19b890792c9f2ddd",
+          "url": "https://www.cambiumnetworks.com/products/wifi",
+          "title": "Indoor and Outdoor Cloud-Managed Wi-Fi Products & Solution",
+          "excerpt": "XE5-8 Wi-Fi 6E Access Point Data Sheet cnWave 5G Fixed Customer Premises Equipment Data Sheet XV2-2T0 Wi-Fi 6 Access Point Data Sheet cnPilot™ r195 Series Wi-Fi Router XV2-2X Wi-Fi 6 Access Point Data Sheet XV3-8 Wi-Fi 6 Access Point Data Sheet cnPilot e510 Data Sheet cnPilot e425H / e430 Data Sheet XR-320 Data Sheet Rugged Outdoor Cable cnPilot e700 Data Sheet ISP Managed Home and Business Routers Home and Business Router Solutions cnPilot R190V cnPilot r190W Data Sheet [...] Enterprise Wi-Fi 6 Access Point Hardware and Installation Guide 6.5.3 ePMP CLI User Guide v3.4.1 cnPilot R190 Quick Start Guide cnPilot Home Router User Guide XR-320 Installation Guide CNPILOT E425 QUICK START GUIDE (pmp-2532) cnPilot e600 Quick Start Guide (pmp-2239) cnPilot e700 Quick Start Guide (pmp-2217) [...] W",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-6c4545c02e06bffb",
+          "url": "https://www.tp-link.com/us",
+          "title": "TP-Link: Your Smart Home, Simplified",
+          "excerpt": "Blog > News > ### TP-Link and Tapo Recognized for Three Products at the IFA Innovation Awards 2026 News|09-04-2026 ### Wi-Fi 7 Speed: Real-World Performance and What to Expect Blog|09-04-2026 ### Powerline Adapter Setup: From Unboxing to Connected Blog|09-04-2026 ### Portable Wi-Fi Router vs. Mobile Hotspot: What's the Difference? Blog|09-04-2026 ### Smart Devices Keep Disconnecting From Wi-Fi? Here Are the Causes and Fixes Blog|09-04-2026 [...] Learn more ### SG3452X Omada Access Plus 48-Port Gigabit Switch with 4× 10G SFP+ Slots Learn more ### SL2428P Omada 24-Port 10/100Mbps + 4-Port Gigabit Switch with 24-Port PoE+ Learn more ### Beam Bridge 7 KIT Omada Wi-Fi 7 5 GHz & 6 GHz MLO PtP Wireless Bridge Learn more ### EAP660 HD AX3600 Wireless Dual Band Multi-Gigabit Ceiling Mount Access Po",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:tekheads.co.uk",
+      "countryCode": "GB",
+      "companyName": "Tekheads Ltd",
+      "domain": "tekheads.co.uk",
+      "officialWebsiteUrl": "https://www.tekheads.co.uk",
+      "primaryRole": "Unresolved",
+      "supportedRoles": [],
+      "totalScore": 0,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": false,
+      "operatesInTargetMarket": false,
+      "evidence": [
+        {
+          "id": "evidence-4dd9642199496653",
+          "url": "https://itman.ae/2026/01/18/router-vs-switch-vs-access-point",
+          "title": "Router vs Switch vs Access Point: What You Actually Need?",
+          "excerpt": "If your issue is “I want a network for my business that never fails” You need router + managed switch + professional access points, with proper configuration and cabling. [...] A router is the device that connects your local network (your home or office devices) to the internet. It’s basically the “traffic manager” between your internal network and the outside world. If you have an ISP connection (Etisalat, du, or any other provider), the router is usually the first device in your network that handles your public IP address and distributes access to your laptops, phones, smart TVs, and other devices. [...] Choose a router because you need internet connectivity, firewalling, and network control. Add a switch when you need more wired devices, more ports, and stable internal connections. Add ",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-2b519efe45f2d9d4",
+          "url": "https://www.croma.com/unboxed/modem-router-switch-and-access-point-whats-the-difference",
+          "title": "Modem vs router vs switch vs access point | Croma Unboxed",
+          "excerpt": "Image 39: Portronics Power Shutter Air 20K with wireless charging support launched in India### Portronics Power Shutter Air 20K with wireless charging support launched in India Aug 31, 2026 Image 40: Best TVs under Rs 20,000 in India 2026### Best TVs under Rs 20,000 in India 2026 Sep 03, 2026 Image 41: Search unboxed blog Image 42: Search Image 43: Croma # Modem, router, switch, and access point: What’s the difference? Building a home network 101 [...] Image 35: Portronics Power Shutter Air 20K with wireless charging support launched in India### Portronics Power Shutter Air 20K with wireless charging support launched in India Aug 31, 2026 Image 36: Best TVs under Rs 20,000 in India 2026### Best TVs under Rs 20,000 in India 2026 Sep 03, 2026 ## Popular ReadsView More [...] please connect on",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:quietpc.com",
+      "countryCode": "GB",
+      "companyName": "Quiet PC Ltd",
+      "domain": "quietpc.com",
+      "officialWebsiteUrl": "https://www.quietpc.com",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 18,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-f73e733536051ba6",
+          "url": "https://www.quietpc.com/ethics",
+          "title": "Ethics and Eco - Quiet PC",
+          "excerpt": "Quiet PC PC Components Cases Cooling Peripherals Cables Gaming Software Taking care of business Quiet PC Ethics and Eco There’s more to life than buying and selling, and it’s important to feel right about the things we do and how we live and work on an everyday basis. As with any debate, there are always two sides to the story, and contentious issues are never black and white. Quiet PC doesn’t claim to have the answers to all mankind’s problems or a foolproof plan for preservation of our fragile planet or its economy. All we can do to try to ensure a bright future for our children and our children’s children is to do what we think is right, even though like everyone else, we are a small fish in a big sea. At the end of the day, our decisions are ruled by our conscience and it’s important t",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-65e7ee0f86201198",
+          "url": "https://www.quietpc.com/terms",
+          "title": "Terms and Conditions of Sale - Quiet PC",
+          "excerpt": "Quiet PC PC Components Cases Cooling Peripherals Cables Gaming Software Terms and Conditions of Sale Payment and Delivery Full payment is required in advance for all purchases unless otherwise agreed. We reserve the right to decline acceptance of an order if we deem there is a good reason for doing so. If we export an order to you at an address outside the UK, the total order charge made does not include any international customs and/or brokerage fees you may incur, or any applicable local sales taxes imposed by your own country of residence. Value-Added Tax (VAT) will be added to orders automatically if applicable and this amount will be calculated and shown before you commit to the order. Ownership of goods remains with Quiet PC Ltd until paid for in full. For trade credit account custom",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-0707d97eabd4fba5",
+          "url": "https://www.trustpilot.com/review/www.quietpc.com",
+          "title": "Quiet PC.com is rated \"Excellent\" with 5 / 5 on Trustpilot",
+          "excerpt": "July 13, 2026 Useful Share Advertisement IR Iain Rawson GB•2 reviews Jul 9, 2026 Image 45: Rated 5 out of 5 stars Verified [...] Useful Share JG Jason gillen GB•11 reviews Jul 6, 2026 Image 46: Rated 5 out of 5 stars Verified ## 5 for winning at everything 5 for price, delivery speed and just providing what a decent firm would do. July 6, 2026 Useful Share DR David Richmond GB•12 reviews Jun 29, 2026 Image 47: Rated 5 out of 5 stars Verified ## All good Order arrived promptly and well packaged. Good communication and prices. June 29, 2026 Useful Share Previous1234Next page [...] July 28, 2026 Unprompted review Useful Share GW Gareth Williams GB•5 reviews Aug 10, 2026 Image 34: Rated 5 out of 5 stars Verified",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-1adbffcda82c27cf",
+          "url": "https://quietpc-usa.com",
+          "title": "Quiet PC | Custom Built PC Specialist | Buy a PC",
+          "excerpt": "Quiet PC specialise in developing custom PCs and quiet PC components, from PSUs and CPU coolers to computer fans and quiet cases, for a silent PC.",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    }
+  ],
+  "aliasToCompanyKey": {
+    "GB:domain:overclockers.co.uk": "GB:domain:overclockers.co.uk",
+    "GB:name:overclockersukocuk": "GB:domain:overclockers.co.uk",
+    "GB:domain:cclonline.com": "GB:domain:cclonline.com",
+    "GB:name:cclcomputers": "GB:domain:cclonline.com",
+    "GB:domain:box.co.uk": "GB:domain:box.co.uk",
+    "GB:name:boxboxcouk": "GB:domain:box.co.uk",
+    "GB:domain:novatech.co.uk": "GB:domain:novatech.co.uk",
+    "GB:name:novatech": "GB:domain:novatech.co.uk",
+    "GB:domain:computerorbit.com": "GB:domain:us.computerorbit.com",
+    "GB:name:computerorbit": "GB:domain:us.computerorbit.com",
+    "GB:domain:maplin.co.uk": "GB:domain:maplin.co.uk",
+    "GB:name:maplinelectronics": "GB:domain:maplin.co.uk",
+    "GB:domain:buyitdirect.co.uk": "GB:domain:buyitdirect.co.uk",
+    "GB:name:buyitdirectlaptopsdirectserversdirect": "GB:domain:buyitdirect.co.uk",
+    "GB:domain:aria.co.uk": "GB:domain:aria.co.uk",
+    "GB:name:ariapc": "GB:domain:aria.co.uk",
+    "GB:domain:ebuyer.com": "GB:domain:ebuyer.com",
+    "GB:name:ebuyeruk": "GB:domain:ebuyer.com",
+    "GB:domain:very.co.uk": "GB:domain:very.co.uk",
+    "GB:name:veryshopdirectfinancecompany": "GB:domain:very.co.uk",
+    "GB:domain:richersounds.com": "GB:domain:richersounds.com",
+    "GB:name:richersounds": "GB:domain:richersounds.com",
+    "GB:domain:johnlewis.com": "GB:domain:johnlewis.com",
+    "GB:name:johnlewis": "GB:domain:johnlewis.com",
+    "GB:domain:cpc.farnell.com": "GB:domain:cpc.farnell.com",
+    "GB:name:cpcfarnelluk": "GB:domain:cpc.farnell.com",
+    "GB:domain:verypc.co.uk": "GB:domain:verypc.co.uk",
+    "GB:name:verypc": "GB:domain:verypc.co.uk",
+    "GB:domain:networkwebcams.co.uk": "GB:domain:networkwebcams.co.uk",
+    "GB:name:networkwebcams": "GB:domain:networkwebcams.co.uk",
+    "GB:domain:shop.bt.com": "GB:domain:shop.bt.com",
+    "GB:name:btshopbritishtelecommunications": "GB:domain:shop.bt.com",
+    "GB:domain:morecomputers.com": "GB:domain:morecomputers.com",
+    "GB:name:morecomputersmoreco": "GB:domain:morecomputers.com",
+    "GB:domain:watercoolinguk.co.uk": "GB:domain:watercoolinguk.co.uk",
+    "GB:name:watercoolingukwcuktech": "GB:domain:watercoolinguk.co.uk",
+    "GB:domain:pebble.com": "GB:domain:pebble.com",
+    "GB:name:pebbletechpebblecom": "GB:domain:pebble.com",
+    "GB:domain:studio.co.uk": "GB:domain:studio.co.uk",
+    "GB:name:studioretail": "GB:domain:studio.co.uk",
+    "GB:domain:visunext.co.uk": "GB:domain:visunext.co.uk",
+    "GB:name:visunextuk": "GB:domain:visunext.co.uk",
+    "GB:domain:tehonline.co.uk": "GB:domain:tehonline.co.uk",
+    "GB:name:theelectronicshub": "GB:domain:tehonline.co.uk",
+    "GB:domain:tekheads.co.uk": "GB:domain:tekheads.co.uk",
+    "GB:name:tekheads": "GB:domain:tekheads.co.uk",
+    "GB:domain:quietpc.com": "GB:domain:quietpc.com",
+    "GB:name:quietpc": "GB:domain:quietpc.com"
+  },
+  "costEvents": [
+    {
+      "eventId": "GB-retail:evaluation:fresh-evidence",
+      "cellId": "GB-retail",
+      "stage": "evaluation-control-fresh-evidence",
+      "provider": "tavily",
+      "startedAt": "2026-09-06T20:08:16.113Z",
+      "completedAt": "2026-09-06T20:08:33.318Z",
+      "latencyMs": 86805,
+      "attempts": 38,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 35
+      },
+      "volume": {
+        "inputItems": 25,
+        "rawOutputItems": 49,
+        "validOutputItems": 49,
+        "downstreamUsedItems": 49,
+        "discardedReasonCounts": {
+          "noFreshEvidence": 12
+        }
+      },
+      "notes": [
+        "Gemini-unique final candidates only",
+        "historical evidence reads and writes disabled"
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.28,
+      "budgetCostUsd": 0.28,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-retail:evaluation:correction-search",
+      "cellId": "GB-retail",
+      "stage": "evaluation-control-correction-search",
+      "provider": "tavily",
+      "startedAt": "2026-09-06T20:08:33.338Z",
+      "completedAt": "2026-09-06T20:11:41.637Z",
+      "latencyMs": 55880,
+      "attempts": 25,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 25
+      },
+      "volume": {
+        "inputItems": 25,
+        "rawOutputItems": 25,
+        "validOutputItems": 25,
+        "downstreamUsedItems": 25,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.2,
+      "budgetCostUsd": 0.2,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-retail:evaluation-control-correction:1",
+      "cellId": "GB-retail",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:08:33.338Z",
+      "completedAt": "2026-09-06T20:11:41.637Z",
+      "latencyMs": 64210,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 13689,
+        "outputTokens": 6760,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 25,
+        "rawOutputItems": 25,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 25,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.011835915,
+      "budgetCostUsd": 0.011835915,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "GB-retail:evaluation-control-correction:2",
+      "cellId": "GB-retail",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:08:33.338Z",
+      "completedAt": "2026-09-06T20:11:41.637Z",
+      "latencyMs": 21075,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 1682,
+        "outputTokens": 1887,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 25,
+        "rawOutputItems": 25,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 25,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00237336,
+      "budgetCostUsd": 0.00237336,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "GB-retail:evaluation-control-correction:3",
+      "cellId": "GB-retail",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:08:33.338Z",
+      "completedAt": "2026-09-06T20:11:41.637Z",
+      "latencyMs": 24259,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 3463,
+        "outputTokens": 2220,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 25,
+        "rawOutputItems": 25,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 25,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.0034378050000000004,
+      "budgetCostUsd": 0.0034378050000000004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "GB-retail:evaluation-control-correction:4",
+      "cellId": "GB-retail",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:08:33.338Z",
+      "completedAt": "2026-09-06T20:11:41.637Z",
+      "latencyMs": 27540,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 5328,
+        "outputTokens": 2423,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 25,
+        "rawOutputItems": 25,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 25,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.0044256899999999995,
+      "budgetCostUsd": 0.0044256899999999995,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "GB-retail:evaluation-control-correction:5",
+      "cellId": "GB-retail",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:08:33.338Z",
+      "completedAt": "2026-09-06T20:11:41.637Z",
+      "latencyMs": 33111,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 5072,
+        "outputTokens": 3273,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 25,
+        "rawOutputItems": 25,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 25,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00505383,
+      "budgetCostUsd": 0.00505383,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "GB-retail:evaluation-control-correction:6",
+      "cellId": "GB-retail",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:08:33.338Z",
+      "completedAt": "2026-09-06T20:11:41.637Z",
+      "latencyMs": 36130,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 4181,
+        "outputTokens": 3386,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 25,
+        "rawOutputItems": 25,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 25,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.004764555,
+      "budgetCostUsd": 0.004764555,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "GB-retail:evaluation-control-correction:7",
+      "cellId": "GB-retail",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:08:33.338Z",
+      "completedAt": "2026-09-06T20:11:41.637Z",
+      "latencyMs": 52153,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 11880,
+        "outputTokens": 5412,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 25,
+        "rawOutputItems": 25,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 25,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00987624,
+      "budgetCostUsd": 0.00987624,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "GB-retail:evaluation-control-correction:8",
+      "cellId": "GB-retail",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:08:33.338Z",
+      "completedAt": "2026-09-06T20:11:41.637Z",
+      "latencyMs": 56462,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 11096,
+        "outputTokens": 6089,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 25,
+        "rawOutputItems": 25,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 25,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.01012419,
+      "budgetCostUsd": 0.01012419,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "GB-retail:evaluation-control-correction:9",
+      "cellId": "GB-retail",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:08:33.338Z",
+      "completedAt": "2026-09-06T20:11:41.637Z",
+      "latencyMs": 51956,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 12634,
+        "outputTokens": 5467,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 25,
+        "rawOutputItems": 25,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 25,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.01025208,
+      "budgetCostUsd": 0.01025208,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "GB-retail:evaluation-control-score-only:1",
+      "cellId": "GB-retail",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:11:41.658Z",
+      "completedAt": "2026-09-06T20:14:13.516Z",
+      "latencyMs": 24824,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 7592,
+        "outputTokens": 2032,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 25,
+        "rawOutputItems": 25,
+        "validOutputItems": 24,
+        "downstreamUsedItems": 24,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.0050703599999999995,
+      "budgetCostUsd": 0.0050703599999999995,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-retail:evaluation-control-score-only:2",
+      "cellId": "GB-retail",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:11:41.658Z",
+      "completedAt": "2026-09-06T20:14:13.516Z",
+      "latencyMs": 37990,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 9949,
+        "outputTokens": 3471,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 25,
+        "rawOutputItems": 25,
+        "validOutputItems": 24,
+        "downstreamUsedItems": 24,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.007347584999999999,
+      "budgetCostUsd": 0.007347584999999999,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-retail:evaluation-control-score-only:3",
+      "cellId": "GB-retail",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:11:41.658Z",
+      "completedAt": "2026-09-06T20:14:13.516Z",
+      "latencyMs": 43345,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 10614,
+        "outputTokens": 4031,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 25,
+        "rawOutputItems": 25,
+        "validOutputItems": 24,
+        "downstreamUsedItems": 24,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.008124059999999999,
+      "budgetCostUsd": 0.008124059999999999,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-retail:evaluation-control-score-only:4",
+      "cellId": "GB-retail",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:11:41.658Z",
+      "completedAt": "2026-09-06T20:14:13.516Z",
+      "latencyMs": 56596,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 10261,
+        "outputTokens": 5173,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 25,
+        "rawOutputItems": 25,
+        "validOutputItems": 24,
+        "downstreamUsedItems": 24,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.008964045,
+      "budgetCostUsd": 0.008964045,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-retail:evaluation-control-score-only:5",
+      "cellId": "GB-retail",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:11:41.658Z",
+      "completedAt": "2026-09-06T20:14:13.516Z",
+      "latencyMs": 36858,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 8996,
+        "outputTokens": 3401,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 25,
+        "rawOutputItems": 25,
+        "validOutputItems": 24,
+        "downstreamUsedItems": 24,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.006872129999999999,
+      "budgetCostUsd": 0.006872129999999999,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-retail:evaluation-control-score-only:6",
+      "cellId": "GB-retail",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:11:41.658Z",
+      "completedAt": "2026-09-06T20:14:13.516Z",
+      "latencyMs": 52676,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 10422,
+        "outputTokens": 4900,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 25,
+        "rawOutputItems": 25,
+        "validOutputItems": 24,
+        "downstreamUsedItems": 24,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00879657,
+      "budgetCostUsd": 0.00879657,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-retail:evaluation-control-score-only:7",
+      "cellId": "GB-retail",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:11:41.658Z",
+      "completedAt": "2026-09-06T20:14:13.516Z",
+      "latencyMs": 50985,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 9364,
+        "outputTokens": 4643,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 25,
+        "rawOutputItems": 25,
+        "validOutputItems": 24,
+        "downstreamUsedItems": 24,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00811275,
+      "budgetCostUsd": 0.00811275,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-retail:evaluation-control-score-only:8",
+      "cellId": "GB-retail",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:11:41.658Z",
+      "completedAt": "2026-09-06T20:14:13.516Z",
+      "latencyMs": 49379,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 9018,
+        "outputTokens": 4982,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 25,
+        "rawOutputItems": 25,
+        "validOutputItems": 24,
+        "downstreamUsedItems": 24,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00825717,
+      "budgetCostUsd": 0.00825717,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-retail:evaluation-control-score-only:9",
+      "cellId": "GB-retail",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:11:41.658Z",
+      "completedAt": "2026-09-06T20:14:13.516Z",
+      "latencyMs": 23031,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 5639,
+        "outputTokens": 1906,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 25,
+        "rawOutputItems": 25,
+        "validOutputItems": 24,
+        "downstreamUsedItems": 24,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.004111185000000001,
+      "budgetCostUsd": 0.004111185000000001,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-retail:evaluation-control-score-only:10",
+      "cellId": "GB-retail",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:11:41.658Z",
+      "completedAt": "2026-09-06T20:14:13.516Z",
+      "latencyMs": 66821,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 9775,
+        "outputTokens": 6679,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 25,
+        "rawOutputItems": 25,
+        "validOutputItems": 24,
+        "downstreamUsedItems": 24,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.010062854999999999,
+      "budgetCostUsd": 0.010062854999999999,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-retail:evaluation-control-score-only:11",
+      "cellId": "GB-retail",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:11:41.658Z",
+      "completedAt": "2026-09-06T20:14:13.516Z",
+      "latencyMs": 22193,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 7,
+        "outputTokens": 1811,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 25,
+        "rawOutputItems": 25,
+        "validOutputItems": 24,
+        "downstreamUsedItems": 24,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.001578615,
+      "budgetCostUsd": 0.001578615,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-retail:evaluation-control-score-only:12",
+      "cellId": "GB-retail",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:11:41.658Z",
+      "completedAt": "2026-09-06T20:14:13.516Z",
+      "latencyMs": 11791,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 4204,
+        "outputTokens": 1134,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 25,
+        "rawOutputItems": 25,
+        "validOutputItems": 24,
+        "downstreamUsedItems": 24,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00281532,
+      "budgetCostUsd": 0.00281532,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-retail:evaluation-control-score-only:13",
+      "cellId": "GB-retail",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:11:41.658Z",
+      "completedAt": "2026-09-06T20:14:13.516Z",
+      "latencyMs": 13741,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 4091,
+        "outputTokens": 1207,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 25,
+        "rawOutputItems": 25,
+        "validOutputItems": 24,
+        "downstreamUsedItems": 24,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.0028296750000000002,
+      "budgetCostUsd": 0.0028296750000000002,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-retail:evaluation-control-score-only:14",
+      "cellId": "GB-retail",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:11:41.658Z",
+      "completedAt": "2026-09-06T20:14:13.516Z",
+      "latencyMs": 22234,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 6387,
+        "outputTokens": 1873,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 25,
+        "rawOutputItems": 25,
+        "validOutputItems": 24,
+        "downstreamUsedItems": 24,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.004407855,
+      "budgetCostUsd": 0.004407855,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-retail:evaluation-control-score-only:15",
+      "cellId": "GB-retail",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:11:41.658Z",
+      "completedAt": "2026-09-06T20:14:13.516Z",
+      "latencyMs": 23258,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 5134,
+        "outputTokens": 1893,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 25,
+        "rawOutputItems": 25,
+        "validOutputItems": 24,
+        "downstreamUsedItems": 24,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.0038802,
+      "budgetCostUsd": 0.0038802,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    }
+  ],
+  "warnings": [
+    "No official-domain evidence was extracted for computerorbit.com.",
+    "No official-domain evidence was extracted for buyitdirect.co.uk.",
+    "No official-domain evidence was extracted for aria.co.uk.",
+    "No official-domain evidence was extracted for richersounds.com.",
+    "No official-domain evidence was extracted for verypc.co.uk.",
+    "No official-domain evidence was extracted for networkwebcams.co.uk.",
+    "No official-domain evidence was extracted for shop.bt.com.",
+    "No official-domain evidence was extracted for morecomputers.com.",
+    "No official-domain evidence was extracted for pebble.com.",
+    "No official-domain evidence was extracted for studio.co.uk.",
+    "No official-domain evidence was extracted for tehonline.co.uk.",
+    "No official-domain evidence was extracted for tekheads.co.uk.",
+    "overclockers.co.uk: The LinkedIn excerpt mentions 'business solutions' but no supplied evidence demonstrates a material business-to-business role distinct from retail.",
+    "overclockers.co.uk: The 'Renda Business Solutions' page title suggests a business solutions offering, but the excerpt only repeats the retail description without evidence of distribution or integration activity.",
+    "cclonline.com: Terms and conditions reference 'Chillblast Limited trading as CCL Computers' with company number 15489941, while Companies House evidence references CCL COMPUTERS LTD with company number 14818553. This discrepancy may indicate a corporate restructuring or acquisition.",
+    "cclonline.com: The LinkedIn industry classification 'Computer Hardware Manufacturing' is not corroborated by other evidence and may be inaccurate.",
+    "cclonline.com: No evidence was supplied to confirm the Distributor role.",
+    "box.co.uk: The submitted company name 'Box Ltd (Box.co.uk)' is consistent with the evidence, but the legal entity is Five Tech Limited trading as Box Ltd.",
+    "box.co.uk: The evidence sources boxxe.com and itstechnologygroup.com are unrelated to the candidate and should not be used for scoring.",
+    "box.co.uk: The submitted roles Retailer and E-tailer are both supported by the evidence.",
+    "box.co.uk: Deterministic role hints were not auto-added: Distributor, Reseller.",
+    "novatech.co.uk: Submitted roles (Retailer, E-tailer) are incomplete; evidence also supports MSP, SI, and Brand Owner roles.",
+    "novatech.co.uk: Two similarly named entities (Novatech Trading Ltd and NovaTech Systems) appear in evidence but are distinct from the candidate.",
+    "novatech.co.uk: No evidence was supplied to support a Distributor role.",
+    "us.computerorbit.com: Submitted domain computerorbit.com differs from the official website URL found in evidence (us.computerorbit.com).",
+    "us.computerorbit.com: No evidence of channel partner relationships or distribution activities was found in the supplied sources.",
+    "maplin.co.uk: Submitted company name 'Maplin Electronics Ltd' refers to the former company in administration; the current trading entity is Digital-First Retail Limited.",
+    "buyitdirect.co.uk: Submitted company name includes 'Laptops Direct / Servers Direct' which are retail brands operated by Buy It Direct Ltd, not separate legal entities.",
+    "aria.co.uk: Escalation was skipped because the configured routine and escalation models are identical.",
+    "aria.co.uk: Official website indicates retail closure as of August 2022, which may affect company existence assessment.",
+    "aria.co.uk: Several evidence items refer to unrelated companies with similar names (ARIA Technologies, Aria Solutions LLC, Aria Systems).",
+    "aria.co.uk: Roles without a supported atomic role finding were removed.",
+    "aria.co.uk: Deterministic role hints were not auto-added: SI.",
+    "ebuyer.com: Submitted company name 'Ebuyer (UK) Limited' does not match the legal entities identified in evidence (EBYR (Investco) Limited, Wareshop2 Limited, Wareshop3 Limited).",
+    "very.co.uk: Submitted company name 'Very (Shop Direct Finance Company Limited)' conflates the retail brand with a finance subsidiary; the retail brand is operated by The Very Group Limited.",
+    "networkwebcams.co.uk: Sparse evidence for Network Webcams; primary business role remains unresolved.",
+    "networkwebcams.co.uk: Roles without a supported atomic role finding were removed.",
+    "networkwebcams.co.uk: Deterministic role hints were not auto-added: Distributor, Reseller, VAR, SI, Installer, MSP, ISP.",
+    "shop.bt.com: The submitted official website URL shop.bt.com is not directly evidenced in the supplied evidence set, but the BT Business and consumer broadband evidence supports the BT Shop identity.",
+    "shop.bt.com: Deterministic role hints were not auto-added: Distributor, SI, ISP.",
+    "morecomputers.com: The submitted official website URL morecomputers.com is not directly evidenced in the supplied evidence set, but the MoreCoCo site is associated with MoreComputers Limited.",
+    "morecomputers.com: Deterministic role hints were not auto-added: SI.",
+    "watercoolinguk.co.uk: The submitted company name 'WCUK Tech Ltd' is corrected to 'WCUK Online Ltd' based on official website and Companies House evidence.",
+    "pebble.com: Escalation was skipped because the configured routine and escalation models are identical.",
+    "pebble.com: The supplied evidence does not mention Pebble Tech Ltd or Pebble.com.",
+    "pebble.com: The evidence consists of generic networking articles and unrelated product listings.",
+    "pebble.com: Roles without a supported atomic role finding were removed.",
+    "pebble.com: Deterministic role hints were not auto-added: SI, Installer.",
+    "studio.co.uk: Escalation was skipped because the configured routine and escalation models are identical.",
+    "studio.co.uk: The supplied evidence does not mention Studio Retail Ltd or studio.co.uk.",
+    "studio.co.uk: The evidence consists of unrelated networking distributor and technology company pages.",
+    "studio.co.uk: Roles without a supported atomic role finding were removed.",
+    "studio.co.uk: Deterministic role hints were not auto-added: Distributor, SI.",
+    "visunext.co.uk: Evidence IDs 9c99decff6f4f9eb and 854a32a675c27267 reference unrelated companies (VIS Solutions and Vislink) and were excluded from findings.",
+    "tehonline.co.uk: Escalation was skipped because the configured routine and escalation models are identical.",
+    "tehonline.co.uk: All supplied evidence for this candidate is unrelated to The Electronics Hub Ltd or tehonline.co.uk.",
+    "tehonline.co.uk: Deterministic role hints were not auto-added: Installer, MSP, ISP.",
+    "tekheads.co.uk: Escalation was skipped because the configured routine and escalation models are identical.",
+    "tekheads.co.uk: All supplied evidence for this candidate is unrelated to Tekheads Ltd or tekheads.co.uk.",
+    "tekheads.co.uk: Deterministic role hints were not auto-added: Installer.",
+    "kustompcs.co.uk: Evidence ID b1afbf9089a7d711 references Overclockers UK, an unrelated company, and was excluded from findings.",
+    "quietpc.com: Evidence IDs e17e52eee4087bbd and 2edff5820aae7805 reference unrelated entities (SilentPC.com and Wikipedia article on Quiet PC concept) and were excluded from findings.",
+    "quietpc.com: Evidence ID 9d05ec4739157142 references Quiet PC USA, a related but separate entity, and was used only as supplementary context.",
+    "quietpc.com: Deterministic role hints were not auto-added: Reseller, SI."
+  ]
+}

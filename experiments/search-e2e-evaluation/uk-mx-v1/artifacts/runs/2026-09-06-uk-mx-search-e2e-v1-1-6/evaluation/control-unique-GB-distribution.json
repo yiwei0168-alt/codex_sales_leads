@@ -1,0 +1,1487 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+  "cellId": "GB-distribution",
+  "inputCount": 17,
+  "records": [
+    {
+      "companyKey": "GB:domain:linitx.com",
+      "countryCode": "GB",
+      "companyName": "LinITX (Multithread Consultants Ltd)",
+      "domain": "linitx.com",
+      "officialWebsiteUrl": "https://linitx.com",
+      "primaryRole": "Hybrid",
+      "supportedRoles": [
+        "Distributor",
+        "Reseller",
+        "E-tailer"
+      ],
+      "totalScore": 75,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-daade51480518b0d",
+          "url": "https://linitx.com/category/network-switches/1258",
+          "title": "Buy Network Switches Online. UK Networking Experts.",
+          "excerpt": "shop@linitx.com Professional Support 01449 888000 My Account Register LinITX logo Mikrotik & Ubiquiti Master Distributors Wireless & Networking Products Online UK Flag, UK Pounds £ GBP EU Flag, Euro € EUR US Flag, US Dollar $ USD INC VAT EX VAT Shopping Cart £0.00 0 itemsView CartCheckout 3G 4G 5G LTE MobileAccess PointsCablesFirewallsInstallation AccessoriesMounting AccessoriesNetwork SwitchesPower SuppliesRoutersTrainingVideo & CCTVVoIP PhonesWiFi 6Working From Home ClearanceSpares UbiquitiMikroTikLatest ProductsSaleLinITX Services Ubiquiti 60GHzUbiquiti airFiberUbiquiti airMaxUbiquiti AmpliFiUbiquiti AntennasUbiquiti BundlesUbiquiti CableUbiquiti ControllerUbiquiti Fiber & SFPsUbiquiti GPONUbiquiti LTUUbiquiti Mounting AccessoriesUbiquiti Network SwitchesUbiquiti Open BoxUbiquiti PowerU",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-9004436d23033a77",
+          "url": "https://linitx.com/category/sale/1025",
+          "title": "Wireless Networking WiFi Sale. Ubiquiti, MikroTik, UniFi",
+          "excerpt": "shop@linitx.com Professional Support 01449 888000 My Account Register LinITX logo Mikrotik & Ubiquiti Master Distributors Wireless & Networking Products Online UK Flag, UK Pounds £ GBP EU Flag, Euro € EUR US Flag, US Dollar $ USD INC VAT EX VAT Shopping Cart £0.00 0 itemsView CartCheckout 3G 4G 5G LTE MobileAccess PointsCablesFirewallsInstallation AccessoriesMounting AccessoriesNetwork SwitchesPower SuppliesRoutersTrainingVideo & CCTVVoIP PhonesWiFi 6Working From Home ClearanceSpares UbiquitiMikroTikLatest ProductsSaleLinITX Services Ubiquiti 60GHzUbiquiti airFiberUbiquiti airMaxUbiquiti AmpliFiUbiquiti AntennasUbiquiti BundlesUbiquiti CableUbiquiti ControllerUbiquiti Fiber & SFPsUbiquiti GPONUbiquiti LTUUbiquiti Mounting AccessoriesUbiquiti Network SwitchesUbiquiti Open BoxUbiquiti PowerU",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-56e953264811a3a4",
+          "url": "https://linitx.com/category/routers/1260",
+          "title": "Buy Network Routers Online. Wireless Networking Experts.",
+          "excerpt": "shop@linitx.com Professional Support 01449 888000 My Account Register LinITX logo Mikrotik & Ubiquiti Master Distributors Wireless & Networking Products Online UK Flag, UK Pounds £ GBP EU Flag, Euro € EUR US Flag, US Dollar $ USD INC VAT EX VAT Shopping Cart £0.00 0 itemsView CartCheckout 3G 4G 5G LTE MobileAccess PointsCablesFirewallsInstallation AccessoriesMounting AccessoriesNetwork SwitchesPower SuppliesRoutersTrainingVideo & CCTVVoIP PhonesWiFi 6Working From Home ClearanceSpares UbiquitiMikroTikLatest ProductsSaleLinITX Services Ubiquiti 60GHzUbiquiti airFiberUbiquiti airMaxUbiquiti AmpliFiUbiquiti AntennasUbiquiti BundlesUbiquiti CableUbiquiti ControllerUbiquiti Fiber & SFPsUbiquiti GPONUbiquiti LTUUbiquiti Mounting AccessoriesUbiquiti Network SwitchesUbiquiti Open BoxUbiquiti PowerU",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-084a4455a5a45008",
+          "url": "https://linitx.com/category/working-from-home/1274",
+          "title": "Working From Home? Buy Routers, Access Points, Switches UK.",
+          "excerpt": "shop@linitx.com Professional Support 01449 888000 My Account Register LinITX logo Mikrotik & Ubiquiti Master Distributors Wireless & Networking Products Online UK Flag, UK Pounds £ GBP EU Flag, Euro € EUR US Flag, US Dollar $ USD INC VAT EX VAT Shopping Cart £0.00 0 itemsView CartCheckout 3G 4G 5G LTE MobileAccess PointsCablesFirewallsInstallation AccessoriesMounting AccessoriesNetwork SwitchesPower SuppliesRoutersTrainingVideo & CCTVVoIP PhonesWiFi 6Working From Home ClearanceSpares UbiquitiMikroTikLatest ProductsSaleLinITX Services Ubiquiti 60GHzUbiquiti airFiberUbiquiti airMaxUbiquiti AmpliFiUbiquiti AntennasUbiquiti BundlesUbiquiti CableUbiquiti ControllerUbiquiti Fiber & SFPsUbiquiti GPONUbiquiti LTUUbiquiti Mounting AccessoriesUbiquiti Network SwitchesUbiquiti Open BoxUbiquiti PowerU",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:targetcomponents.co.uk",
+      "countryCode": "GB",
+      "companyName": "Target Components Ltd",
+      "domain": "targetcomponents.co.uk",
+      "officialWebsiteUrl": "https://www.targetcomponents.co.uk",
+      "primaryRole": "Distributor",
+      "supportedRoles": [
+        "Distributor"
+      ],
+      "totalScore": 80,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-c517fb142b2805a0",
+          "url": "https://www.targetcomponents.co.uk/networking",
+          "title": "Home & Business Networking - Target Components",
+          "excerpt": "Target Components Target Components Target Components Home & Business Networking Reliable Internet connectivity has become an unofficial utility and there's a lot you can't do without it, whether it's at home, work or, as has become more and more important, on the move. We stock a comprehensive range of wired and wireless solutions from leading manufacturers like Tenda, Ubiquiti, HPE and Linksys, using the very latest and fastest protocols: for the home there's the next gen MESH WiFi, covering large areas with adaptable wireless signals; for SMEs and home workers, there is a plethora of solutions to give you the best wired and wireless Internet access with wireless access points, switches, outdoor WiFi and the means to control several sites remotely; for those travelling and on the move, w",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-a07d502f01eea514",
+          "url": "https://www.targetcomponents.co.uk/about-us",
+          "title": "About Us - Target Components",
+          "excerpt": "Target Components Target Components Target Components At Target Components, our mantra is simple: \"we're successful if our customers are successful\". It fuels everything we do, from providing exceptional customer service and support to leveraging our knowledgeable procurement team and dedicated account managers. We're committed to making Target your go-to source for all your IT needs. A Legacy of Excellence: Target Components is an employee-owned national IT distributor, providing a comprehensive range of hardware, software, and accessories for over 25 years. From individual components to custom PC builds and enterprise-level solutions, we've got you covered. Target comprises two business units, Target Components and Servers Plus. Servers Plus specialises in servers, networking and enterpr",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-1d43dda6dc694ef2",
+          "url": "https://www.targetcomponents.co.uk/news/Mercusys-Launch",
+          "title": "Mercusys Launches Extended Networking Range at Target",
+          "excerpt": "Target Components Target Components Target Components Target News Mercusys Launches Extended Networking Range at Target Mercusys has launched its new and extended range of networking devices at its official distributor, Target Components. Mercusys, a brand of the World’s most popular networking manufacturer TP-Link, produces high-performance, secure, easy-to-use networking and smart home solutions for homes and small businesses. Guided by the mission “Empowering Every Connection, Inspiring Smarter Living”, Mercusys is committed to bringing the experience of advanced connectivity and smart technology into everyday life-for everyone. All available through Target Components, Mercusys offers a wide range of products such as whole-home mesh WiFi systems, routers, range extenders, powerline adap",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-3d9cf9d4567e3ef8",
+          "url": "https://www.targetcomponents.co.uk/services-homepage",
+          "title": "Services Homepage - Target Components",
+          "excerpt": "Target Components Target Components Target Components Far from simply offering products, we also offer a range of online services to compliment and support your business. From our newly-updated Flexible Product Feeds that provide you with data and images to populate your own website and systems like a virtual warehouse, to our customisable from-scratch PC configurator, the unique In-Store PC Builder, we aim to arm all Target customers with the resources they need to succeed both on and offline. Whilst services like our Flexible Product Feeds and XML Ordering do require some technical understanding, we have tried to make each one as easy to get up-and-running as possible, including providing templates for popular e-commerce sites and intuitive interfaces that explain each step of the way. T",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:exertis.co.uk",
+      "countryCode": "GB",
+      "companyName": "Exertis (UK) Ltd",
+      "domain": "exertis.co.uk",
+      "officialWebsiteUrl": "https://www.exertis.co.uk",
+      "primaryRole": "Distributor",
+      "supportedRoles": [
+        "Distributor"
+      ],
+      "totalScore": 74,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-8866be78ba7f5bfa",
+          "url": "https://www.exertis.co.uk",
+          "title": "Exertis | Technology Distribution",
+          "excerpt": "EXERTIS - Welcome to EXERTIS EXERTIS - Supply Chain Services Supply Chain Services Our European Supply Chain Services business, Exertis SCS, works right across the supply chain to stream line the supply side activities of numerous internationally renowned brands, creating competitive advantages in their market places. EXERTIS - Credit & Finance Credit & Finance The Exertis group offers an extensive range of credit services, leasing and financial options to enable our partners and their customers to afford the solutions they need to grow. Follow Exertis News Strategic update - New owners for Exertis IT On 14 July 2025, DCC plc announced that it had reached an agreement with AURELIUS for the sale of Exertis IT (Info Tech businesses in UK and Ireland), subject to regulatory approval. Business",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-1f736254687e3824",
+          "url": "https://www.exertis.co.uk/Exertis_Overview.html",
+          "title": "Exertis Overview",
+          "excerpt": "Exertis EXERTIS - About Us Who are we? As a leading technology distribution and service provider in the UK and Ireland, we specialise in consumer technology, business solutions, cloud services, supply chain services, credit and finance, diversity and inclusion, and strong industry partnerships. We boast 700+ global tech partnerships, and collaborate with over 13,000 resellers, e-commerce operators, and retailers. Our extensive network ensures efficient distribution and comprehensive solutions. With a dedicated focus on understanding individual needs, our team ensures that every customer interaction is a step toward success.. Icon 1 Our vision To be our partners’ best partner, by making it simpler, better and faster. We enable businesses and people to grow and progress. We do this through t",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-830eddef16690b0e",
+          "url": "https://www.exertis.co.uk/exertis-named-colortokens-first-pan-european-distributor.html",
+          "title": "Exertis | Technology Distribution",
+          "excerpt": "Exertis named ColorTokens’ first pan-European distributor Monday, 31st July 2023 Basingstoke, 1st August 2023 Leading distributor Exertis today announced that it has been named as ColorTokens’ first pan-European distributor. ColorTokens is a leading provider of Unified Zero Trust Platforms, and with this partnership, Exertis has opened up a great opportunity to drive significant new business, focusing first on the UK and a number of countries across Europe. ColorTokens allows customers to manage microsegmentation across all asset types, with comprehensive visibility into deployed assets and traffic via an intuitive visual dashboard. Users can simplify the creation of least-privilege microsegmentation policies through automated tagging, use centralised policy management to automatically org",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-ff75136ac9f404da",
+          "url": "https://uk.linkedin.com/company/exertis-uk",
+          "title": "Exertis UK",
+          "excerpt": "Exertis is the UK’s leading technology distributor with one goal – to be your best partner. We excel in distributing consumer, business, and enterprise products from leading brands across the tech industry, enabled through our specialist AV, Mobile, Consumer, IT Solutions, and Components teams. Our priority is ensuring that we, and our partners, drive innovation and achieve business growth whist remaining socially responsible, with an approach that is beneficial to the planet, local [...] ### Website ### Crunchbase N/A ### LinkedIn N/A ### Industry IT Services and IT Consulting ### Company Size 1,001-5,000 employees 534 associated members (LinkedIn members who've listed Exertis UK as their current workplace on their profile) ### Founded N/A ### Funding Last Round Date: N/A Last Round Type:",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-f07640391e99c9d4",
+          "url": "https://itchanneloxygen.com/exertis-uk-has-gone-into-administration-website-confirms",
+          "title": "Exertis UK Has Gone Into Administration, Website Confirms",
+          "excerpt": "No Result View All Result Home Distributor # Exertis UK has gone into administration, website confirms ## Move comes after dramatic downsizing in December and January Doug Woodburn by Doug Woodburn 2 June 2026 in Distributor, News Exertis HQ Share on LinkedinShare on Twitter Exertis UK went into administration on Friday, according to a note on its website. [...] Please note that Martin Armstrong and Andrew Bailey of Turpin Barker Armstrong, together with James Hopkirk of Kreston Reeves, were appointed as Joint Administrators of Exertis (UK) Ltd on 29 May 2026. The affairs, business and property of Exertis (UK) Ltd are being managed by the Joint Administrators, who act as agents of the Company and contract without personal liability. The move comes after a last-gasp effort to sell Exertis U",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-4890d64cf620efd5",
+          "url": "https://www.avinteractive.com/news/business/exertis-av-to-close-its-doors-in-uk-from-1-march-2026-26-02-2026",
+          "title": "Exertis AV to close its doors in UK from 1 March 2026 | AV Magazine",
+          "excerpt": "Exertis AV, the AV distribution business of Exertis UK, is to close with effect from 1 March 2026. The closure was confirmed in a LinkedIn post where the company thanked its social media followers for being part of the Exertis AV story. Only last month, Exertis UK announced that it planned to make fewer than 400 of its employees involuntarily redundant out of a total of more than 1,000. [...] Editorial content Testimonials Why register? Advertising Login / Register AV MagazineAV Magazine AV Magazine Home » News » Business # Exertis AV to close its doors in UK from 1 March 2026 By AV Magazine in Business, UK&I February 26, 2026 0 AV will not be one of the parts of the technology distribution business to be saved, following the announcement of proposed mass redundancies in December. The-Exer",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:uk.tdsynnex.com",
+      "countryCode": "GB",
+      "companyName": "TD SYNNEX UK",
+      "domain": "uk.tdsynnex.com",
+      "officialWebsiteUrl": "https://uk.tdsynnex.com",
+      "primaryRole": "Distributor",
+      "supportedRoles": [
+        "Distributor"
+      ],
+      "totalScore": 83,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-d2182ff61b0bc8c2",
+          "url": "https://uk.linkedin.com/company/tdsynnexukandireland",
+          "title": "TD SYNNEX UK&I",
+          "excerpt": "### Website ### Crunchbase N/A ### LinkedIn N/A ### Industry IT Services and IT Consulting ### Company Size 10,001+ employees 400 associated members (LinkedIn members who've listed TD SYNNEX UK&I as their current workplace on their profile) ### Founded N/A ### Funding Last Round Date: N/A Last Round Type: N/A Total Rounds: N/A Last Round Raised: N/A ### Investors N/A ### Specialties N/A ## Locations 200 Crockford Lane, Maplewood, Chineham, England RG24 8WD, GB [...] We’re TD SYNNEX (NYSE: SNX), a leading distributor and solutions aggregator for the IT ecosystem. We’re 22,000 of the IT industry’s best and brightest, who share an unwavering passion for bringing compelling technology products, services and solutions to the world. We’re an innovative partner that helps our customers maximize t",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-531b0d938b996391",
+          "url": "https://find-and-update.company-information.service.gov.uk/company/01691472",
+          "title": "TD SYNNEX UK LIMITED overview - Find and update company information - GOV.UK",
+          "excerpt": "Registered office address : Maplewood Crockford Lane, Chineham Park, Basingstoke, Hampshire, United Kingdom, RG24 8YB Company status : Active Company type : Private limited Company Incorporated on : 14 January 1983 ## Accounts Next accounts made up to 30 November 2025 due by 30 November 2026 Last accounts made up to 30 November 2024 ## Confirmation statement Next statement date 4 January 2027 due by 18 January 2027 Last statement dated 4 January 2026 [...] ## Nature of business (SIC) 46510 - Wholesale of computers, computer peripheral equipment and software ## Previous company names Previous company names | Name | Period | | TECH DATA LIMITED | 04 Oct 2013 - 17 Oct 2022 | | COMPUTER 2000 DISTRIBUTION LIMITED | 03 Nov 1997 - 04 Oct 2013 | | FRONTLINE DISTRIBUTION LIMITED | 13 Jul 1988 - 03 ",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-9ee6f46fbd06a140",
+          "url": "https://newsflash.tdsynnex.co.uk",
+          "title": "IT Distributor News: Latest Updates & Insight | TD SYNNEX",
+          "excerpt": "## Your hub for IT distributor and technology distributor updates As one of the largest technology distributors in the UK and globally, TD SYNNEX leverages strong vendor relationships and extensive resources to support partner growth. Newsflash reflects that commitment by delivering curated content on the latest IT distributor news, IT channel news, and computer reseller news. From product innovations to strategic programmes, we aim to empower partners with knowledge that drives success. [...] Behold your next sidekick: the mighty HP Premium AI range Learn More > HPE’s new CW switches simplify networking for SMBs Ransomware rises 43% in Q2 2026 as AI boosts cybercriminal productivity Transport for London approves self-driving taxis ## Cybersecurity TD SYNNEX extends security portfolio with",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-62e3f4a56672b9b0",
+          "url": "https://academy.tdsynnex.com/uk/locations/index",
+          "title": "Locations UK - TD SYNNEX Academy",
+          "excerpt": "Google Maps ## WOKINGHAM Wokingham - Innovation House Molly Millars Lane, RG41 2RX Wokingham academy.uk@tdsynnex.com Google Maps Academy UK Team +44(0)1344 355 866 academy.uk@tdsynnex.com © 2026 TD SYNNEX Services and Support Privacy Statement Investor relations Ethics and Compliance Ethics Line CSR & Environmental Sustainability Human Rights Statement Gender Pay Gap Report Terms and Conditions of Supply Cookie Settings [...] Maplewood, Crockford Ln, RG24 8YB Chineham, Basingstoke Google Maps ## Edinburgh Origo 7 Lochside View, EH12 9DH Edinburgh Google Maps ## Hørsholm Bøge Allé 1 DK-2970, DK-2970 Hørsholm Google Maps ## LONDON Brentford - EMC Tower Great West Road, TW8 9AN Brentford academy.uk@tdsynnex.com Google Maps TD SYNNEX 2nd Floor, Broadwall House, 21 Broadwall Street, SE1 9PL Lon",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:uk.ingrammicro.com",
+      "countryCode": "GB",
+      "companyName": "Ingram Micro UK",
+      "domain": "uk.ingrammicro.com",
+      "officialWebsiteUrl": "https://uk.ingrammicro.com",
+      "primaryRole": "Distributor",
+      "supportedRoles": [
+        "Distributor"
+      ],
+      "totalScore": 82,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-bdc96fd6c1bad5f5",
+          "url": "https://uk-new.ingrammicro.com/site/productdetail?id=CR10686",
+          "title": "Cisco Wi-Fi Adapter for Access Point - USB",
+          "excerpt": "United Kingdom Ingram Micro Inc. Cisco Wi-Fi Adapter for Access Point - USB … 2026 Ingram Micro. Ingram Micro only sells to and through professional resellers.",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-6dc2713b1fc1a25d",
+          "url": "http://uk-new.ingrammicro.com/site/cms?page=Vendors%2FBoutiques%2FCisco",
+          "title": "Cisco",
+          "excerpt": "2026 Ingram Micro. Ingram Micro only sells to and through professional resellers. a limited company registered in England and Wales.",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-604af363abd64e95",
+          "url": "https://en.wikipedia.org/wiki/Ingram_Micro",
+          "title": "Ingram Micro - Wikipedia",
+          "excerpt": "1. 1 2 3 4 5 6 7 8 9 \"Ingram Micro Reports Continued Strong 2025 Net Sales Growth, Up 11.5% for Fiscal Fourth Quarter and Up 9.5% for Fiscal Year\". Ingram Micro / Business Wire. March 2, 2026. Retrieved March 2, 2026. 2. ↑ \"Transforming distribution: How Ingram Micro is becoming a platform business\". CIO. Retrieved 2026-06-06. 3. ↑ \"About Ingram Micro\". Ingram Micro. Retrieved March 2, 2026. 4. 1 2 3 \"Ingram Micro Launches Xvantage in the US and Germany\". Business Wire. September 7, 2022. [...] 42. ↑ Fairfield, C. J. \"Partners: Ingram Micro Xvantage Mobile App A 'Game Changer' | CRN\". www.crn.com. Retrieved 2026-06-06. 43. 1 2 \"Ingram Micro on LinkedIn: Xvantage has won its first UK Award!\". www.linkedin.com. Retrieved 2026-06-06. 44. ↑ Jordan, Sarah (November 8, 2024). \"Ingram Micro Annou",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-a5c6d9aecbbfeac7",
+          "url": "https://uk.ingrammicro.eu/imagine-next-hub/press-releases",
+          "title": "Press Releases | Ingram Micro United Kingdom",
+          "excerpt": "Ingram Micro U.K. & Ireland are delighted to announce the partnership with software vendor Flexcom to become their first UK distributor. Flexcom is well known for its software quality and excellent customer satisfaction rate. Read more >> Ingram Micro Expands Vendor Portfolio with SY Electronics Partnership ## Ingram Micro Expands Vendor Portfolio with SY Electronics Partnership [...] Lindy Electronics Ltd and Ingram Micro (UK) Ltd have signed a new distribution agreement for the United Kingdom & Ireland. Read more >> Ingram Micro expands NiceLabel coverage across EMEA ## Ingram Micro expands NiceLabel coverage across EMEA Distribution partnership will help Ingram Micro’s resellers meet the customer demand for the digital transformation of labeling Read more >> SilverNet Form New Partnersh",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-6663e769549fc004",
+          "url": "https://www.ingrammicro.com",
+          "title": "Ingram Micro - The business behind the world's brands",
+          "excerpt": "The business behind the world's brands Microsoft AWS Cisco Nvidia Apple HP Inc Palo Alto Networks Fortinet ###### Why Ingram Micro ## You need it? We’ve got it. [...] Xvantage Uncover business insights Automate your business Optimize your offerings Stay ahead of competition ###### Partner with us ## Be part of the bigger picture Partner with Ingram Micro to learn how you can create a better experience for your customers. Partner with us Become a customer Become a vendor ###### Ingram Micro Sustainable Impact ## Measuring what matters ESG Serving up IT success Ransomware recovery [...] Xvantage is saving us time and helping us streamline the way we do our work. — Anna Wesley International Partner Alliance Manager, Distribution at SHI Testimonials Ingram Micro ## How far can you grow? Join m",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:elecfron.com",
+      "countryCode": "GB",
+      "companyName": "Electronic Frontier Ltd (EFL)",
+      "domain": "elecfron.com",
+      "officialWebsiteUrl": "https://www.elecfron.com",
+      "primaryRole": "Distributor",
+      "supportedRoles": [
+        "Distributor",
+        "VAD"
+      ],
+      "totalScore": 78,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-2d31524c3f1ba3e2",
+          "url": "https://www.elecfron.com/about-us",
+          "title": "About Electronic Frontier Limited | Electronic Frontier Ltd",
+          "excerpt": "EFL was founded in 1993 and is a member of the Arcum Group of companies. Based in Theale Berkshire, we are in the heart of the Thames ‘Silicon’ Valley and are ideally placed to service the whole of the UK. Today, our business is focussed on serving our growing number of customers – from small network resellers right up to some of the largest ISP, System Integrators and Telcos in the UK. Our products are backed with a high level of support which offer real value to our customers to enable them [...] ### Who are we? Electronic Frontier Ltd (EFL) is a leading specialist value-added distributor of converged IP solutions and a Yealink master distributor. We talk about convergence these days because it has finally arrived. Our products and services are therefore geared towards enabling our resel",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-33ed439fbdee59f2",
+          "url": "https://uk.linkedin.com/company/electronic-frontier-ltd",
+          "title": "Electronic Frontier Ltd - Leading specialist value-added distributor of converged IP solutions | Products alone don’t make up the package",
+          "excerpt": "One of the UK’s leading specialist value-added distributors of converged IP solutions, supplying to networking and UC resellers and service providers (SPs & ISPs) Since 1993 from our background as an ISDN specialist, EFL has grown into a provider of Data Networking, Voice over IP and IP Video Surveillance solutions – supplying best-of breed products, a high level of pre- and post-sales support and a comprehensive range of value-added services. So today, with over 30 years’ experience in IP [...] ### Website ### Crunchbase N/A ### LinkedIn N/A ### Industry Telecommunications ### Company Size 11-50 employees 20 associated members (LinkedIn members who've listed Electronic Frontier Ltd as their current workplace on their profile) ### Founded 1993 ### Funding Last Round Date: N/A Last Round Ty",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:westbase.io",
+      "countryCode": "GB",
+      "companyName": "Westbase.io",
+      "domain": "westbase.io",
+      "officialWebsiteUrl": "https://www.westbase.io",
+      "primaryRole": "Distributor",
+      "supportedRoles": [
+        "Distributor",
+        "VAD"
+      ],
+      "totalScore": 77,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-17b23d63040f9b7e",
+          "url": "https://www.westbase.io",
+          "title": "Westbase.io | Leading Services & Network Access Distributor",
+          "excerpt": "Westbase Hardware delivered. Services wrapped. Partners Better Connected. Get started with Westbase.io WESTBASE SERVICES WESTBASE.IO NETWORKING Access and networking solutions to ensure the best fit technology for every location and application. Westbase.io Networking WESTBASE.IO SERVICES From initial network planning to in-life technical support, our partner services cover the whole project lifecycle. Westbase.io Partner Services BECOME A PARTNER Ready to partner with Westbase.io? Open your account today and unlock access to our expertise, solutions, and services. Westbase.io Partner Hub Browse our featured content Webinar: The RealWear Partner Playbook The RealWear Partner Playbook Introducing the Rapid Connectivity Case Pro Introducing the RCC Pro Tile Discover the RealWear Arc 3 Westba",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-a47a8b7a1a1e3886",
+          "url": "https://www.westbase.io/wp-content/uploads/2023/07/AerLingus-Case-Study-1.pdf",
+          "title": "[PDF] 4G LTE to High-Speed WiFi for Aer Lingus - Westbase.io",
+          "excerpt": "CASE STUDY The Challenge To deliver secure, high-speed mobile WiFi for 250 guests as Aer Lingus unveiled its new branding at a high-profile aircraft hangar event. The Westbase.io Solution + Working with Aer Lingus partners, Vodafone and Touchcom + Implementing a rapid, scalable Cradlepoint solution incorporating LTE routers and WiFi access points + On-hand technical advice and expertise before and during the event + Simple but secure user access via a password authentication process The Results + A pop-up solution that was simple, rapid and eﬃ cient to implement, and worked seamlessly + Delivery of two high-speed, stable and secure WiFi channels + The ability to remotely monitor and manage the solution via the NetCloud platform + The ability to easily deploy the solution to other parts of ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-a3a5cb0356449303",
+          "url": "https://www.westbase.io/blog/page/14",
+          "title": "Blog | Page 14 of 15 | Westbase - Westbase.io",
+          "excerpt": "Westbase Latest Articles Westbase.io expands RealWear support across DACH Westbase.io expands RealWear support across DACH Ericsson Edge July 2026 Ericsson Edge | July 2026 Westbase.io appointed Authorised Distributor as Teltonika Networks strengthens its UK channel Westbase.io appointed Authorised Distributor as Teltonika Networks strengthens its UK channel SEARCH ARTICLES SEARCH CATEGORIES More articles Top Five Benefits The 5G Network Brings Top Five Benefits the 5G Network Brings! So you’ve heard about the up-and-coming 5G network, and all of the new technological advances it will action, but what are the immediate benefits the new 5G network will bring? Well, in our latest article, we break-down the top five most beneficial attributes that 5G will have to offer! sierra wireless airlin",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-cade0e73385b5077",
+          "url": "https://www.westbase.io/what-is-ar-the-future-is-assisted-reality-subheader",
+          "title": "Westbase Group Acquires Equity Share in Wireless Coverage ...",
+          "excerpt": "Westbase Westbase Group Acquires Equity Share in Wireless Coverage, Bringing the Most Efficient and Reliable Network Planning to its Customers Written by Westbase Admin Published on July 19, 2021 Westbase Group Acquires Equity Share in Wireless Coverage header The Westbase Group has acquired a 51% share of Wireless Coverage Ltd, the company behind advanced wireless modelling system, WISDM. The investment brings next generation wireless network planning to the Group’s solution range and customers. Wireless Coverage’s ground-breaking WISDM platform supports fixed wireless access (FWA) and 5G network modelling. WISDM uses state-of-the-art hardware and software methods to break performance boundaries encountered by traditional planning tools, enabling real-time, high definition visualisation o",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:vip-computers.com",
+      "countryCode": "GB",
+      "companyName": "VIP Computer Centre Ltd",
+      "domain": "vip-computers.com",
+      "officialWebsiteUrl": "https://www.vip-computers.com",
+      "primaryRole": "Distributor",
+      "supportedRoles": [
+        "Distributor",
+        "VAD"
+      ],
+      "totalScore": 58,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-aa467e3d2318d20d",
+          "url": "https://www.vip-computers.com/uk/termsconditions.aspx",
+          "title": "Terms and Conditions - Vip-computers.com",
+          "excerpt": "PRODUCTION - SAFE FOR PAYMENTS PAYMENTS UNAVAILABLE AT THIS TIME PLEASE CHECK BACK LATER Customer Services 01925 286 900 Sales 01925 286 901 5th December 2023 6th September 2026 +44 (0)1925 286 901 (UK) +44 (0) 1925 286 900 (Overseas) +44 (0)1925 286 900 (UK) +44 (0) 1925 286 900 (Overseas) Search Search Products Search Manufacturer Advanced Search Address Terms and Conditions Last updated: 15th December 2024 PLEASE READ THESE TERMS AND CONDITIONS CAREFULLY BEFORE USING THIS SITE What's in these terms? These terms tell the user, referred to as You, the rules for using our website www.vip-computers.com (our website). You agree to use our website in accordance with these terms. Who we are and how to contact us www.vip-computers.com is a website operated by VIP Computer Centre Ltd (\"We\" and \"",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-33be213217e968b6",
+          "url": "https://www.vip-computers.com/uk/contactus.aspx",
+          "title": "Contact Us - Vip-computers.com",
+          "excerpt": "PRODUCTION - SAFE FOR PAYMENTS PAYMENTS UNAVAILABLE AT THIS TIME PLEASE CHECK BACK LATER Customer Services 01925 286 900 Sales 01925 286 901 5th December 2023 6th September 2026 +44 (0)1925 286 901 (UK) +44 (0) 1925 286 900 (Overseas) +44 (0)1925 286 900 (UK) +44 (0) 1925 286 900 (Overseas) Search Search Products Search Manufacturer Advanced Search Contact VIP Computers. Head Office VIP Computer Centre Ltd. VIP House Unit 4 Hardwick Grange Woolston Warrington Cheshire WA1 4RF Fax: +44 (0)871 622 7561 Query Details Please complete the information below and click send to submit your message. Send to: Sales Marketing Customer Services Purchasing Accounts Human Resources Website Technical Contact Account Number: Company Name: Contact Name: Contact Telephone: Email: Query Subject: Invoice Numbe",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-11cc0f2adb6faf3c",
+          "url": "https://vip-computers.com/uk/about/companyhistory.aspx",
+          "title": "Company History",
+          "excerpt": "## Other VIP Services Copyright © 2026 VIP Computer Centre Ltd. All rights reserved. All prices displayed throughout the site are exclusive of VAT. Sales: 01925 286 901 Back to Top [...] # Company History VIP works closely with retail, reseller and system builder customers to understand their individual needs and strategic business focus: then offers a personalised service to fulfill these requirements. [...] VIP Computers ADDON products logo VIP Computers AMD products logo VIP Computers AOC products logo VIP Computers AORUS products logo VIP Computers ARCTIC products logo VIP Computers ASUS products logo VIP Computers BROADCOM products logo VIP Computers COOLERMASTER products logo VIP Computers CORSAIR products logo VIP Computers DELL products logo VIP Computers ELGATO products logo VIP C",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-3ada008b6242bc13",
+          "url": "https://uk.linkedin.com/company/vip-uk",
+          "title": "VIP UK - https://www.vip-computers.com/uk/",
+          "excerpt": "Since 1990 VIP UK have been at the core of the IT distribution channel. Based in Warrington, Cheshire we are ideally located 30 minutes away from Manchester and Liverpool and only 2 hours from London. We are the UK’s largest independent distributor of PC components, gaming peripherals, PC gaming hardware and IT products. Over the years we have built a respected reputation of putting Vendors and customers at the forefront of our business. At the heart of our business is our people, longevity [...] to celebrating your achievements at the awards. #PCRAwards #ResellerAwards #ChannelPartners #ITChannel #TechnologyResellers #VIPUK [Likes: 37, Comments: 1]; VIP UK (2w): We're delighted to announce that VIP has been shortlisted for Gaming Distributor of the Year at the upcoming PCR Awards 2026! Th",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-e4d241a959a30efd",
+          "url": "https://vip-group.co.uk",
+          "title": "VIP Group Home - VIP Group",
+          "excerpt": "### Miami, USA. VIP Computers LLC provides focused distribution solutions to clients throughout the Latin American region. The office partners with selected manufacturers as the distributor of choice for well known technology brands. Visit Site ### Warrington, UK. [...] Together, we achieve more. Explore the VIP Group difference and discover how we can propel your brand to new heights within the IT distribution landscape. ### Warrington, UK. VIP Computers is one of the leading distributors of PC components, peripherals and associated products. VIP Computers is an authorised or master distributor for Microsoft, Nvidia, ASUS, AMD, CORSAIR and Razer and many more. Visit Site ### Miami, USA. [...] We are more than a distributor or system builder; we drive innovation and enable success… empower",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:nimans.net",
+      "countryCode": "GB",
+      "companyName": "Nimans Limited",
+      "domain": "nimans.net",
+      "officialWebsiteUrl": "https://www.nimans.net",
+      "primaryRole": "Distributor",
+      "supportedRoles": [
+        "Distributor",
+        "VAD"
+      ],
+      "totalScore": 72,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-950bac598eba351e",
+          "url": "https://www.nimans.net",
+          "title": "Nimans - Welcome to Nimans, where experience is everything",
+          "excerpt": "Sign in + 60 Second Tech-Talks + Experience Nimans + About Nimans + Our History + Contact Us + - One Plan Sustainable Development Goals + AV Products Indoor LED LED Controllers Outdoor LED Pro Audio Solutions Hospitality TV Interactive Display Desktop Monitors Mounting Solutions + - Audio Conferencing Units Video Conferencing Units + - Audio Conferencing Corded Binaural Corded Monaural Cordless Binaural Cordless Monaural Headset Accessories Headset Amplifiers Headset Cords Headsets UC + - Cable Management Copper Connectivity Door Entry Systems Fibre Connectivity Installation Accessories Network Audio And PA Power Products Racks & Enclosures Test & Measurement Tools & Site Equipment Trunking Systems + IT Hardware Cables Power & Adaptors Mice & Keyboards Webcams & Cameras + Networking Gatewa",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-d7d906298467edbb",
+          "url": "https://www.nimans.net/about-nimans",
+          "title": "Nimans - About Nimans",
+          "excerpt": "Sign in + 60 Second Tech-Talks + Experience Nimans + About Nimans + Our History + Contact Us + - One Plan Sustainable Development Goals + AV Products Indoor LED LED Controllers Outdoor LED Pro Audio Solutions Hospitality TV Interactive Display Desktop Monitors Mounting Solutions + - Audio Conferencing Units Video Conferencing Units + - Audio Conferencing Corded Binaural Corded Monaural Cordless Binaural Cordless Monaural Headset Accessories Headset Amplifiers Headset Cords Headsets UC Mobile-Bluetooth + Infrastructure Cable Management Copper Connectivity Door Entry Systems Fibre Connectivity Installation Accessories Network Audio And PA Power Products Racks & Enclosures Test & Measurement Tools & Site Equipment Trunking Systems + IT Hardware Cables Power & Adaptors Mice & Keyboards Webcams",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-343ecdfe4c4bced9",
+          "url": "https://www.nimans.net/getmedia/86ec5afa-2c1e-4d43-af08-700977c45c80/MK8634-NimansHome-Vendor-Showcase-2026-v6b.pdf",
+          "title": "[PDF] 2026 Vendor Showcase - Nimans",
+          "excerpt": "Nimans Home is the UK's leading specialist distributor of lifestyle technology products. We're committed to delivering choice and value to our customers.",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-47a5de232a3e5a5f",
+          "url": "https://www.nimans.net/getmedia/8b25e6b7-3f66-4757-9ec4-734a099c64e6/Nimans-Software-Purchasing-Agreement.pdf",
+          "title": "[PDF] Software Purchasing Agreement - Nimans",
+          "excerpt": "Software Purchasing Agreement Supplier Supplier Name Click here to enter text Registered Number Click here to enter text Address Click here to enter text Click here to enter text Click here to enter text Postcode Click here to enter text Supplier’s Representative Name Click here to enter text Title/Position Click here to enter text Phone Click here to enter text Email Click here to enter text Customer (“Nimans”) Customer Name Nimans Limited Registered Number 1876587 Address Agecroft Road Pendlebury, Swinton Manchester Postcode M27 8SB Nimans’ Representative Name Click here to enter text Title/Position Click here to enter text Phone Click here to enter text Email Click here to enter text Contract Particulars Commencment Date Click here to enter date Initial Term Extended Term Territory Appo",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:eetgroup.com",
+      "countryCode": "GB",
+      "companyName": "EET UK",
+      "domain": "eetgroup.com",
+      "officialWebsiteUrl": "https://www.eetgroup.com",
+      "primaryRole": "Distributor",
+      "supportedRoles": [
+        "Distributor",
+        "VAD"
+      ],
+      "totalScore": 77,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-9417f86ab4d90d95",
+          "url": "https://www.eetgroup.com/en-gb/brands/planet",
+          "title": "Planet Networking & Communication Solutions | EET - EET",
+          "excerpt": "PLANET is a global provider of IP-based networking products, United Kingdom 0333 241 9 251. Opening hours: Monday – Friday: 9:00 - 17:30 EET United Kingdom",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-9eebdd20ee07cd62",
+          "url": "https://www.eetgroup.com/en-gb/network/c-40",
+          "title": "Network | Localized expertise",
+          "excerpt": "We offer solutions and local expertise within Network infrastructure. Wi-Fi is a wireless networking technology. Contact EET United Kingdom 0333 241 9 251 info",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-059007f320229827",
+          "url": "https://www.eetgroup.com/en-gb/brands/lanview",
+          "title": "Lanview - Professional network solutions - EET",
+          "excerpt": "Lanview is your one-stop shop for structured cabling, fibre networking, United Kingdom 0333 241 9 251. Waterside House, Riverside Way UB8 2YF Uxbridge Company",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-2adafe486f3f125c",
+          "url": "https://www.eetgroup.com/en-gb/news/2021/new-master-distribution-agreement-with-cambium-networks",
+          "title": "New master distribution agreement with Cambium Networks - EET",
+          "excerpt": "Cambium Networks is a leading global provider of trusted wireless solutions that connect the unconnected – People, Places and Things. Through its extensive",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-66423d1dd4da7109",
+          "url": "https://uk.linkedin.com/company/eetuk",
+          "title": "EET UK - EET are a value added specialist distributor of technology products",
+          "excerpt": "2026 - Evolution London Register here: 📍 Paris – April 22, 2026 - Palais Brongniart Register here: 📍 Munich – April 23, 2026 - Showpalast München Register here: At UniFi World Conference you will get the opportunity to: ✅ Discover the newest UniFi technologies and product innovations ✅ Gain strategic insights directly from Founder & CEO Robert J. Pera ✅ Learn more about the UniFi roadmap and future direction ✅ Network with industry peers, experts, and the UniFi community ✨This event is [...] full replacements or downtime during maintenance. Future-proofing made simple. View the solutions here: Visiting the Retail Technology Show 22-23 April? Drop by stand M18 ( Ergonomic Solutions ) and N52 ( Star Micronics EMEA ) and see the solutions for yourself! #ModularKiosks #SelfServiceKiosks #Poi",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:provu.co.uk",
+      "countryCode": "GB",
+      "companyName": "ProVu Communications Ltd",
+      "domain": "provu.co.uk",
+      "officialWebsiteUrl": "https://www.provu.co.uk",
+      "primaryRole": "Distributor",
+      "supportedRoles": [
+        "Distributor",
+        "VAD"
+      ],
+      "totalScore": 71,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-3a5d014f319192b7",
+          "url": "https://www.provu.co.uk/gigaset-pro-network.html",
+          "title": "The professional solution for businesses with more than one office",
+          "excerpt": "ProVu Logo mobile menu navigation gigaset The professional solution for businesses with more than one office System networking The standardisation of Gigaset Pro links together all of your offices, creating one big communication network. All inter-site calls are free regardless of geographical location. If you have offices in countries outside the United Kingdom (e.g. the USA), then external calls to the \"USA\" are routed via the office in the \"USA\", as a result you pay for a local call rather than an international call. Furthermore, thanks to the integrated fax and voicemail server, everybody has their own personal voicemail account. The business phone book and other functions within the call manager ensure unprecedentedly easy telephone communication. This enables user-friendliness for ev",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-5bcbf57a519bb841",
+          "url": "https://www.provu.co.uk/products/netgear/GS105PE/GS105PE.pdf",
+          "title": "[PDF] ProSAFE® Gigabit Plus Switches",
+          "excerpt": "Highlights • Enable network configuration and management at the price point of Unmanaged Switches • Gigabit connection delivers up to 2000 Mbps of dedicated, non-blocking bandwidth per port • Simple, yet useful network set-up on top of plug-and-play connectivity • Flexible management via PC-based Utility Tool • VLAN support for traffic segmentation • Quality of Service (QoS) for traffic prioritization • Auto “denial-of-service” (DoS) prevention • Troubleshoot connection issues via cable test • Loop detection and broadcast storm controls • IGMP snooping v1, v2 and v3 support for multicast optimization • Rate limiting for better bandwidth allocation • Port mirroring for network monitoring • Port trunking for bigger uplink bandwidth • Jumbo frame support • Energy Efficient Ethernet (IEEE802.3",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-9593e4dae3b378cc",
+          "url": "https://blog.provu.co.uk/tag/fidelity-energy",
+          "title": "Fidelity Energy – ProVu Blog",
+          "excerpt": "ProVu Blog ProVu Website Apply to be a reseller Login to ProSys Browse Tag Fidelity Energy 5 Star Savings! By Jake Womack / Oct 16, 2024 / Product Information Do you work with the hospitality sector? Energy usage in this area is a major cost; no one wants to offer guests a cold welcome when they’re relaxing or entertaining clients. We can help you to ensure your customers can access and lock in the lowest rates while providing long-term savings. Specialising in securing the best energy deals for hotels, restaurants, and other hospitality businesses, Fidelity Energy has the expertise to manage your customers’ complex energy needs and are ready to let you in on a share of the profits! Check Out Fidelity’s Materials To make tackling the hospitality sector that bit easier, Fidelity have alread",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-6db89aa94556f27f",
+          "url": "https://www.provu.co.uk/products/gigaset/R700H/R700H-userguide.pdf",
+          "title": "[PDF] Gigaset R700H PRO - ProVu Communications",
+          "excerpt": "pro R700 H PRO Up-to-date information on your product: wiki.gigasetpro.com Contents 2 Availability and operation of the functions may differ on your telephone. Contents Overview . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .3 Safety precautions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .5 Getting started . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .7 Using the telephone . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:spire.co.uk",
+      "countryCode": "GB",
+      "companyName": "Spire Technology Ltd",
+      "domain": "spire.co.uk",
+      "officialWebsiteUrl": "https://www.spire.co.uk",
+      "primaryRole": "Distributor",
+      "supportedRoles": [
+        "Distributor"
+      ],
+      "totalScore": 69,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-33825452cb30841b",
+          "url": "https://www.spire.co.uk",
+          "title": "Westcoast's Components | Computer Component Distribution, PC Parts and Computer Hardware",
+          "excerpt": "My Basket My Account Orders Special Bids Finance Reports Admin Services Westcoast Open an account/Login Say hello to Components at Westcoast New name, new potential for Spire Technology Say hello to components at Westcoast - a merger of Spire Technology and Westcoast. Bringing together the proactive, specialist services you’d expect from Spire and the award-winning operations and logistics of Westcoast. The result? A broader vendor portfolio and services that can help with any technology challenge you might face. Whatever you need, we’re more ready to help than ever. Shop our Computer Components ACCESS YOUR ACCOUNT Spire and Westcoast: What’s in it for you? Whether you’re a long-time or recent Spire customer, you might be wondering whether this change will benefit you. It will. You’ll gain",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-db3dfc645b3953ad",
+          "url": "https://uk.linkedin.com/company/spire-technology-ltd",
+          "title": "Spire Technology Ltd - Leading UK IT Components Distribution – Proudly Trading as Westcoast since January 2026.",
+          "excerpt": "Spire Technology Ltd (7mo): Spire Technology is now part of Westcoast Limited . Since 1990, Spire Technology has been a trusted name in the UK IT channel, delivering PC components, systems, and hardware from leading manufacturers with exceptional service. In April 2024, we joined Westcoast, one of the UK’s largest IT distributors. As of January 2026, we’re officially trading as Westcoast, combining specialist expertise with scale to offer even more value, choice, and support to our customers. [...] ### Website ### Crunchbase N/A ### LinkedIn N/A ### Industry Computer Hardware Manufacturing ### Company Size 51-200 employees 22 associated members (LinkedIn members who've listed Spire Technology Ltd as their current workplace on their profile) ### Founded 1990 ### Funding Last Round Date: N/A",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-3d71db91c11607c2",
+          "url": "https://www.cbinsights.com/company/spire-technology",
+          "title": "Spire Technology - Products, Competitors, Financials, Employees, Headquarters Locations",
+          "excerpt": "Spire Technology is a trade distributor specializing in computer components and IT hardware. The company offers a broad range of products including motherboards, graphics cards, and storage solutions, catering to the needs of the IT channel. Spire Technology serves various sectors within the IT industry, providing essential components for building and upgrading computers, complete systems, and networking solutions. It was founded in 1990 and is based in Dorset, United Kingdom. In April 2024, [...] Technology Vendors Recent Research Newsletter Media Support Login CB Insights Spire Technology company logo # Spire Technology spire.co.uk ## Founded Year 1990 ## Stage Acquired | Acquired ## About Spire Technology [...] ## Headquarters Location 5 Black Moor Road, Ebblake Industrial Estate, Verwo",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-e271ee2461e5d5ec",
+          "url": "https://x.com/SpireTechnology",
+          "title": "Spire Technology (@SpireTechnology) / X",
+          "excerpt": "Log inSign up Spire Technology Spire Technology profile banner @SpireTechnology # Spire Technology @SpireTechnology One of the UK's leading #distributors of #PChardware, #laptops, #tablets, #networkingproducts, #gaming #servers, #IT and #bespokesystems. Based in Dorset, UK. Dorset, UK spire.co.uk Joined March 2009 3,111 Following2,784 Followers RepliesRepliesRepostsRepostsMediaMedia Pinned @SpireTechnology Spire Technology @SpireTechnology Mar 11, 2021 [...] Dec 10, 2025 𝗙𝗹𝗲𝘅𝗶𝗯𝗶𝗹𝗶𝘁𝘆. 𝗖𝗼𝗼𝗹𝗶𝗻𝗴. 𝗣𝗲𝗿𝗳𝗼𝗿𝗺𝗮𝗻𝗰𝗲. 🤩 Discover PRIME H610 and A620 motherboards from @ASUS. These motherboards are expertly engineered to unleash the full potential of current generation processors. Available here: spire.co.uk/product\\_search… [...] Dec 11, 2025 𝗦𝗺𝗮𝗿𝘁𝗲𝗿 𝘃𝗶𝘀𝗶𝗼𝗻. 𝗦\ud835",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-415f6aabed6c4e63",
+          "url": "https://www.consultancy.uk/news/37053/quantuma-advises-on-spire-technology-westcoast-group-deal",
+          "title": "Quantuma advises on Spire Technology-Westcoast Group deal",
+          "excerpt": "Headquartered in Verwood, Spire is a UK trade-only distributor of computer components and peripherals Dorset, and has supplied laptops, tablets, computers, PC components and peripherals to the IT industry for more than 30 years. From its office in Verwood, the business offers over 2,500 products, with more than 60 employees – and generating an annual turnover in excess of £100 million. [...] 27 August 2026 Out now! Consultancy.org App Improve your experience. Now available in your app store. AppStore GooglePlay About Consultancy.uk About us Advertise News archive Support us Contact Consultancy.org network Consultancy.org network United States Canada Latin America United Kingdom Europe Netherlands Middle East India Asia Australia Africa South Africa [...] 13 February 2026 Quantuma promotes ",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:alltrade.co.uk",
+      "countryCode": "GB",
+      "companyName": "Alltrade Ltd",
+      "domain": "alltrade.co.uk",
+      "officialWebsiteUrl": "https://www.alltrade.co.uk",
+      "primaryRole": "Distributor",
+      "supportedRoles": [
+        "Distributor"
+      ],
+      "totalScore": 54,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-341c85fac2770163",
+          "url": "https://www.alltrade.co.uk/vacancy/hemel-am-ise",
+          "title": "Hemel Hempstead Branch: Assistant Manager & Internal Sales ...",
+          "excerpt": "Alltrade Hemel Hempstead Branch: Assistant Manager & Internal Sales Executive Location: Hemel Hempstead - HP3 9HD Job Title: Assistant Manager & Internal Sales Executive Job Purpose: To support the Branch Manager in the successful day-to-day operation of the Hemel Hempstead branch, ensuring excellent customer service, efficient branch operations, and the achievement of sales targets. The Assistant Branch Manager / Internal Sales Executive will play a key role in developing existing customer relationships whilst proactively generating new business opportunities through outbound sales activity, prospecting, and customer engagement. The role will also involve handling inbound sales enquiries, supporting trade counter operations, and taking full responsibility for the branch during periods whe",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-3fe89d990c085afd",
+          "url": "https://www.alltrade.co.uk/register-customer",
+          "title": "New Customer Registration - Alltrade",
+          "excerpt": "Alltrade New Customer Registration Please complete the form below to sign up for a trade account with Alltrade. Company Details Details of Main Contact Other Information Submit Alltrade Payment Methods: Mastercard, Mastero, American Express, VISA Responsive website designed & developed by Madison Web Solutions Madison Web Solutions We use cookies to help improve your experience of this website. By using this website, you agree to accept cookies from this site. Accept and close",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-8c3d4b69aaf177d4",
+          "url": "https://www.alltrade.co.uk/public/product/hub-2g-4g-jeweller-user-manual-ajax-systems-support.pdf",
+          "title": "[PDF] Hub (2G) / (4G) Jeweller user manual | Ajax Systems Support - Alltrade",
+          "excerpt": "Hub (2G) / (4G) Jeweller user manual Updated September 3, 2025 Hub (2G) / (4G) Jeweller is a control panel of the Ajax system. It controls the operation of connected devices and interacts with users, PROs, and security companies. Please note that Hub (2G) / (4G) Jeweller does not support some Ajax devices. Refer to the Ajax devices compatibility table for a detailed list of compatible devices. Hub (2G) / (4G) Jeweller requires internet access to connect to the Ajax Cloud server. The available communication channels are Ethernet and a SIM card. Both Hub (2G) Jeweller and Hub (4G) Jeweller have identical technical characteristics and settings, differing only in the GSM modem. The 2G version supports only 2G networks, and the 4G version supports 4G (LTE) networks. Learn more Use both communic",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:connectec.uk",
+      "countryCode": "GB",
+      "companyName": "Connectec",
+      "domain": "connectec.uk",
+      "officialWebsiteUrl": "https://connectec.uk",
+      "primaryRole": "Distributor",
+      "supportedRoles": [
+        "Distributor"
+      ],
+      "totalScore": 78,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-17c70505b9b53759",
+          "url": "https://connectec.uk",
+          "title": "Trade Security, Networking, AV, TV & Satellite Supplier - Connectec.uk",
+          "excerpt": "gb flag Clearance sticker Refurbished badge Five star rating Google Reviews Spend £75.00 for free delivery\\ Best advice & support Trade accounts Nationwide Distributor of Fire, Security, Networking & Electrical Nationwide Distributor of Fire, Security, Networking & Electrical Industry-leading products at trade prices, backed by expert support and reliable service. Ruijie Networking Products Ruijie Networking Products Ventcroft Fire Cable Ventcroft Fire Cable HiLook by Hikvision - Best budget CCTV range HiLook by Hikvision - Best budget CCTV range Professional two way radios from Mitex Professional two way radios from Mitex Professional wireless alarm systems Professional wireless alarm systems EZVIZ trade security products EZVIZ trade security products Monitor Audio - Custom install range ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-d238bf8a9939c498",
+          "url": "https://connectec.uk/networking",
+          "title": "Networking products",
+          "excerpt": "gb flag Clearance sticker Refurbished badge Five star rating Google Reviews Spend £75.00 for free delivery\\ Best advice & support Trade accounts NETWORKING We stock a massive selection of networking products for both professional and home installations at trade prices, including routers, switches, access points and wireless bridges. Connectec are a trade supplier and wholesale distributor for both trade customers and end users, and can supply everything from small scale home Wi-Fi jobs to large scale business networking solutions and CCTV installation. You can get everything you need for your networking requirement either from the website, or from our Wrexham based trade counter, where you will find helpful and knowledgeable staff ready to assist you with any questions you may have. We sto",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-d6e11e4238c4a13b",
+          "url": "https://connectec.uk/about-connectec",
+          "title": "Everything you need to know about Connectec",
+          "excerpt": "EUR Euro GBP Pound Sterling PLN złoty EX VAT INC VAT Tax based on shipping to Ukraine ua flag , Change? Company Logo Basket0 NEW CLEARANCE Five star rating Google Reviews Spend £75.00 for free delivery\\ Best advice & support Trade accounts Welcome to Connectec Connectec stands for connected technology, and everything we do is focused on making it easier for our customers to buy, install, and integrate professional technology solutions. We are a multi-channel distributor based in North Wales, specialising in the supply of Fire, Security, Networking, Electrical and Communications Technology to trade professionals and businesses across the UK. Our extensive product range includes thousands of high-quality items from trusted industry brands - all backed by expert advice, dependable service, an",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-d0b77868c5874f87",
+          "url": "https://connectec.uk/brands/ip-com",
+          "title": "Information about IP-COM",
+          "excerpt": "EUR Euro GBP Pound Sterling PLN złoty EX VAT INC VAT Tax based on shipping to United Kingdom gb flag , Change? Company Logo Basket0 NEW CLEARANCE Five star rating Google Reviews Spend £75.00 for free delivery\\ Best advice & support Trade accounts IP-COM IP-COM Products IP-COM Support Site IP-COM Website About IP-COM IP-Com is a global manufacturer of network solutions designed for small to medium businesses. IP-Com's product range includes routers, Ethernet switches, POE devices and WiFi equipment. IP-Com has thousands of employees in multiple countries around the world and is dedicated to driving innovation and advancement in the small business network market. You can buy IP-Com networking products online at connectec.uk or in store at the Connectec trade counter in North Wales. You can a",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:varlink.co.uk",
+      "countryCode": "GB",
+      "companyName": "Varlink Ltd",
+      "domain": "varlink.co.uk",
+      "officialWebsiteUrl": "https://www.varlink.co.uk",
+      "primaryRole": "Distributor",
+      "supportedRoles": [
+        "Distributor"
+      ],
+      "totalScore": 44,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-2bb2ec60b49162b6",
+          "url": "https://www.varlink.co.uk",
+          "title": "Home Page - Varlink Ltd",
+          "excerpt": "## Zebra 2026 Promotions Check out the latest rewards, deals and promotions. View here ➜ Your Trusted Technology Provider Your Trusted Technology Provider # Welcome to Varlink # Welcome to Varlink Varlink is your trusted technology provider, specialising in commercial and industrial computing systems for solution providers and system integrators across the UK. [...] Varlink is your trusted technology provider, specialising in commercial and industrial computing systems for solution providers and system integrators across the UK. [...] Built on trust and powered by expertise, our role is to lead the technical decision-making process — helping partners specify and deploy the right computing platforms for real-world environments. From mobile computing and EPoS solutions to industrial and IP-r",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-229b967fed6bfb17",
+          "url": "https://www.varlink.co.uk/Company-Info/About-Us",
+          "title": "About Us - Varlink Ltd",
+          "excerpt": "## Our History Varlink was founded by CEO Mike Pullon in 2005. Originally established as an Auto ID hardware distributor, Varlink expanded into the EPoS industry as the business continued to grow. With over 20 premium brands in our portfolio, Varlink has become a leading distributor in the UK, operating from our Distribution Centre in Yorkshire. [...] Our unique blend of experiences in meeting the needs of IT resellers, gained over many years in IT distribution, has created an organisation that is rich in the resources that can really make a difference to your business. Our substantial UK specific experience gives credibility to the advice and support that we impart. Simply put: We really understand the products we distribute and what our customers sell them to do. [...] We distribute a ra",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-9506cdb325808166",
+          "url": "https://www.varlink.co.uk/Company-Info/Why-Partner-with-Varlink",
+          "title": "Why Partner with Varlink?",
+          "excerpt": "At Varlink, we are a trusted technology provider specialising in commercial and industrial computing systems. We work alongside solution providers and system",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-036f1ce303939b20",
+          "url": "https://www.varlink.co.uk/login",
+          "title": "Please Login - Varlink Ltd",
+          "excerpt": "Call Free 01904 717180 enquiries@varlink.co.uk. Monday - Friday | 9:00am - 5:30pm Order before 5.15pm for same day despatch Free standard UK delivery - online",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-cb7b6924f6da0efd",
+          "url": "https://www.varlink.co.uk/Company-Info/Useful-Information/Sectors-experience",
+          "title": "Sector Experience - Varlink Ltd",
+          "excerpt": "#### #### - #### Stock Code: #### Stock Code: x ## Please make a selction below. High Res Orange PNG_Website Logo_with_Orange # Sectors ## Our sector experience, knowledge and products can help any Reseller develop and grow their business. [...] Varlink offer a range of devices that provide businesses with the ability to manage transport and logistics systems efficiently and accurately. Putting at their disposal a range of devices from durable and reliable mobile printers to handheld terminals with GPS capabilities and WWAN connectivity to make logistics simple, anywhere. [...] Varlink’s range of devices work with the demands of any project, allowing your customers to put support into the hands of their staff — making workers more mobile, connected and capable, making the whole site a virt",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:adiglobal.com",
+      "countryCode": "GB",
+      "companyName": "ADI Global Distribution",
+      "domain": "adiglobal.com",
+      "officialWebsiteUrl": "https://www.adiglobal.com",
+      "primaryRole": "Distributor",
+      "supportedRoles": [
+        "Distributor",
+        "VAD"
+      ],
+      "totalScore": 70,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": false,
+      "evidence": [
+        {
+          "id": "evidence-9d2f9d7c78063065",
+          "url": "https://www.adiglobal.com",
+          "title": "ADI Global: Security, AV & Smart Product Distributor",
+          "excerpt": "Whether a small, independent contractor or a large national account, ADI customers can expect an exceptional experience every time. With our robust product portfolio, software and services, we offer everything needed to succeed in today's market. View the testimonials to hear from industry professionals who have trusted ADI to help them succeed. ## Company Headlines View All July 14, 2026 ADI Expands Araknis Wi-Fi 7 Portfolio with Premium 830 Access Point Read More July 8, 2026 [...] Read More As of August 4, 2026, ADI Global Distribution Inc. and its affiliates (\"ADI\") has separated from Resideo Technologies, Inc. and its affiliates (\"Resideo\"). ADI is fully responsible for the operations of the ADI business, including its website. If you are looking for information on Resideo please go t",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-d1cd2d700753e618",
+          "url": "https://www.securityinfowatch.com/distributors/company/10216133/adi-global",
+          "title": "ADI Global | Security Info Watch",
+          "excerpt": "April 8, 2026 ADI’s booth at ISC West 2026 features integrated security solutions spanning video surveillance, access control and smart automation across multiple vertical markets. Distributors ## ADI Highlights End-to-End Security Ecosystem at ISC West 2026 ADI showcases its integrated ecosystem of exclusive and distributed brands at ISC West 2026, highlighting end-to-end security solutions and value-added services for integrators... March 26, 2026 Distributors [...] ADI introduces the Araknis Networks 530 Wi-Fi 7 access point, combining high-performance wireless connectivity with intelligent management tools for residential and SMB environments... April 1, 2026 Alarm Systems & Intrusion Detection ## Videofied, Available at ADI Global Distribution Videofied, part of Honeywell Security & F",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-f6092e0519abf0de",
+          "url": "https://security-net.com/products/adi-global-distribution",
+          "title": "ADI Global Distribution - Security-Net",
+          "excerpt": "Our broad category offerings and live sales support are designed to allow customers to approach jobs with confidence, knowing they have the right products for each installation, improving productivity, reducing callbacks and making more money. We have complete AV, fire, access control, security and smart home solutions for dealers, installers and integrators who work in residential and commercial markets. #### ADI Awarded Distributor of the Year by AXIS Communications [...] Altronix manufactures power and transmission solutions for professional security, surveillance, access control and fire products. Altronix solutions are designed to integrate diversified infrastructure and bolster performance and efficiency. #### ADI Global is a large stocking distributor of ASSA ABLOY [...] ADI is the ",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-9d6db7c77a0a0557",
+          "url": "https://www.adiglobaldistribution.us",
+          "title": "ADI Global: Wholesale Distributor of Security, AV & Low ...",
+          "excerpt": "ADI is the leading global wholesale distributor of security, AV, and low-voltage products. Shop today and learn more about ADI Global Distribution US.",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-727ff2aacfc3694d",
+          "url": "https://www.sharry.tech/partners-network/adi",
+          "title": "Sharry Partner – ADI",
+          "excerpt": "Genuine CITC We innovate technology that fits your business and more! iControl Professional services in the field of security systems. IDE Experts in the field of integration of technical security systems Intes UK Integrated Technology Solution provider to commercial markets. IKA DATA Market leader in CAFM solutions. Providing services since 2000. Intertek Corporate Networking Services Information technology, security & communication systems installation [...] Our broad category offerings and live sales support are designed to allow customers to approach jobs with confidence, knowing they have the right products for each installation, improving productivity, reducing callbacks and making more money. We have complete AV, fire, access control, security and smart home solutions for dealers, i",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:ustech.co.uk",
+      "countryCode": "GB",
+      "companyName": "Ultra Stream Technologies Limited",
+      "domain": "ustech.co.uk",
+      "officialWebsiteUrl": "https://www.ustech.co.uk",
+      "primaryRole": "Hybrid",
+      "supportedRoles": [
+        "Distributor",
+        "Reseller",
+        "Dealer"
+      ],
+      "totalScore": 67,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-7fe65f83539e4cab",
+          "url": "https://www.ustech.co.uk/netgear",
+          "title": "Netgear Supplier in London and the UK",
+          "excerpt": "ustech.co.uk Home About Brands + APC + Aruba + Avaya + Axis + Belden + Bosch + Cisco + Commscope + Corning + Dahua + Dell + D-Link + Draytek + Eaton + Engenius + Excel + Fanvil + Fortinet + Grandstream + Hikvision + HP + Lenovo + Linksys + MikroTik + Moxa + Netgear + Nexans + Norden + Panduit + QNAP + Ruckus + Seagate + Sonicwall + Sophos + Synology + TP-Link + Ubiquiti + UNV + WD + Yealink + Yeastar + ZkTeco Products + Access Control Cable + Access Point + Anti-Virus + Armored Fiber Optic Cable + Audio Cable + Cat6 Cable + Cat6 Outdoor Cable + Cat6 SFTP Cable + Cat6a Cable + Cat6A SFTP Cable + Cat7 Cable + CCTV Cable + Coaxial Cable + Control Cable + Copper Patch Panels + Desktops + EIB BUS Cable + Fiber Adaptor + Fiber Optic Cable + Fiber Optic Distribution Box + Fiber Optic Patch Cord +",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-9252e1f74c9cec5e",
+          "url": "https://www.ustech.co.uk/cisco",
+          "title": "Cisco supplier & distributor in London, UK| Ultra Stream Technologies",
+          "excerpt": "ustech.co.uk Home About Brands + APC + Aruba + Avaya + Axis + Belden + Bosch + Cisco + Commscope + Corning + Dahua + Dell + D-Link + Draytek + Eaton + Engenius + Excel + Fanvil + Fortinet + Grandstream + Hikvision + HP + Lenovo + Linksys + MikroTik + Moxa + Netgear + Nexans + Norden + Panduit + QNAP + Ruckus + Seagate + Sonicwall + Sophos + Synology + TP-Link + Ubiquiti + UNV + WD + Yealink + Yeastar + ZkTeco Products + Access Control Cable + Access Point + Anti-Virus + Armored Fiber Optic Cable + Audio Cable + Cat6 Cable + Cat6 Outdoor Cable + Cat6 SFTP Cable + Cat6a Cable + Cat6A SFTP Cable + Cat7 Cable + CCTV Cable + Coaxial Cable + Control Cable + Copper Patch Panels + Desktops + EIB BUS Cable + Fiber Adaptor + Fiber Optic Cable + Fiber Optic Distribution Box + Fiber Optic Patch Cord +",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-f988699f69a0daed",
+          "url": "https://www.ustech.co.uk/access-point",
+          "title": "Access Point Supplier in London and the UK",
+          "excerpt": "ustech.co.uk Home About Brands + APC + Aruba + Avaya + Axis + Belden + Bosch + Cisco + Commscope + Corning + Dahua + Dell + D-Link + Draytek + Eaton + Engenius + Excel + Fanvil + Fortinet + Grandstream + Hikvision + HP + Lenovo + Linksys + MikroTik + Moxa + Netgear + Nexans + Norden + Panduit + QNAP + Ruckus + Seagate + Sonicwall + Sophos + Synology + TP-Link + Ubiquiti + UNV + WD + Yealink + Yeastar + ZkTeco Products + Access Control Cable + Access Point + Anti-Virus + Armored Fiber Optic Cable + Audio Cable + Cat6 Cable + Cat6 Outdoor Cable + Cat6 SFTP Cable + Cat6a Cable + Cat6A SFTP Cable + Cat7 Cable + CCTV Cable + Coaxial Cable + Control Cable + Copper Patch Panels + Desktops + EIB BUS Cable + Fiber Adaptor + Fiber Optic Cable + Fiber Optic Distribution Box + Fiber Optic Patch Cord +",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-4144eb9f55af756b",
+          "url": "https://www.ustech.co.uk/tp-link",
+          "title": "TP-Link Supplier & distributor in London, UK | Ultra Stream Technologies",
+          "excerpt": "ustech.co.uk Home About Brands + APC + Aruba + Avaya + Axis + Belden + Bosch + Cisco + Commscope + Corning + Dahua + Dell + D-Link + Draytek + Eaton + Engenius + Excel + Fanvil + Fortinet + Grandstream + Hikvision + HP + Lenovo + Linksys + MikroTik + Moxa + Netgear + Nexans + Norden + Panduit + QNAP + Ruckus + Seagate + Sonicwall + Sophos + Synology + TP-Link + Ubiquiti + UNV + WD + Yealink + Yeastar + ZkTeco Products + Access Control Cable + Access Point + Anti-Virus + Armored Fiber Optic Cable + Audio Cable + Cat6 Cable + Cat6 Outdoor Cable + Cat6 SFTP Cable + Cat6a Cable + Cat6A SFTP Cable + Cat7 Cable + CCTV Cable + Coaxial Cable + Control Cable + Copper Patch Panels + Desktops + EIB BUS Cable + Fiber Adaptor + Fiber Optic Cable + Fiber Optic Distribution Box + Fiber Optic Patch Cord +",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    }
+  ],
+  "aliasToCompanyKey": {
+    "GB:domain:linitx.com": "GB:domain:linitx.com",
+    "GB:name:linitxenterprisenetworking": "GB:domain:linitx.com",
+    "GB:name:linitxlinitxcom": "GB:domain:linitx.com",
+    "GB:domain:targetcomponents.co.uk": "GB:domain:targetcomponents.co.uk",
+    "GB:name:targetcomponents": "GB:domain:targetcomponents.co.uk",
+    "GB:domain:exertis.co.uk": "GB:domain:exertis.co.uk",
+    "GB:name:exertisuk": "GB:domain:exertis.co.uk",
+    "GB:domain:uk.tdsynnex.com": "GB:domain:uk.tdsynnex.com",
+    "GB:name:tdsynnexuk": "GB:domain:uk.tdsynnex.com",
+    "GB:domain:uk.ingrammicro.com": "GB:domain:uk.ingrammicro.com",
+    "GB:name:ingrammicrouk": "GB:domain:uk.ingrammicro.com",
+    "GB:domain:efl.co.uk": "GB:domain:elecfron.com",
+    "GB:name:electronicfrontierefl": "GB:domain:elecfron.com",
+    "GB:domain:westbase.io": "GB:domain:westbase.io",
+    "GB:name:westbaseio": "GB:domain:westbase.io",
+    "GB:domain:vip-computers.com": "GB:domain:vip-computers.com",
+    "GB:name:vipcomputersvipcomputercentre": "GB:domain:vip-computers.com",
+    "GB:domain:nimans.net": "GB:domain:nimans.net",
+    "GB:name:nimans": "GB:domain:nimans.net",
+    "GB:domain:eetgroup.com": "GB:domain:eetgroup.com",
+    "GB:name:eetuk": "GB:domain:eetgroup.com",
+    "GB:domain:provu.co.uk": "GB:domain:provu.co.uk",
+    "GB:name:provucommunications": "GB:domain:provu.co.uk",
+    "GB:domain:spire.co.uk": "GB:domain:spire.co.uk",
+    "GB:name:spiretechnology": "GB:domain:spire.co.uk",
+    "GB:domain:alltrade.co.uk": "GB:domain:alltrade.co.uk",
+    "GB:name:alltrade": "GB:domain:alltrade.co.uk",
+    "GB:domain:connectec.uk": "GB:domain:connectec.uk",
+    "GB:name:connectec": "GB:domain:connectec.uk",
+    "GB:domain:varlink.co.uk": "GB:domain:varlink.co.uk",
+    "GB:name:varlink": "GB:domain:varlink.co.uk",
+    "GB:domain:adiglobaldistribution.co.uk": "GB:domain:adiglobal.com",
+    "GB:name:adiglobaldistributionuk": "GB:domain:adiglobal.com",
+    "GB:domain:ustech.co.uk": "GB:domain:ustech.co.uk",
+    "GB:name:ultrastreamtechnologiesustechuk": "GB:domain:ustech.co.uk",
+    "GB:name:ultrastreamtechnologiesuk": "GB:domain:ustech.co.uk"
+  },
+  "costEvents": [
+    {
+      "eventId": "GB-distribution:evaluation:fresh-evidence",
+      "cellId": "GB-distribution",
+      "stage": "evaluation-control-fresh-evidence",
+      "provider": "tavily",
+      "startedAt": "2026-09-06T19:47:57.584Z",
+      "completedAt": "2026-09-06T19:48:04.504Z",
+      "latencyMs": 48404,
+      "attempts": 30,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 27
+      },
+      "volume": {
+        "inputItems": 17,
+        "rawOutputItems": 45,
+        "validOutputItems": 45,
+        "downstreamUsedItems": 45,
+        "discardedReasonCounts": {
+          "noFreshEvidence": 4
+        }
+      },
+      "notes": [
+        "Gemini-unique final candidates only",
+        "historical evidence reads and writes disabled"
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.216,
+      "budgetCostUsd": 0.216,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-distribution:evaluation:correction-search",
+      "cellId": "GB-distribution",
+      "stage": "evaluation-control-correction-search",
+      "provider": "tavily",
+      "startedAt": "2026-09-06T19:48:04.531Z",
+      "completedAt": "2026-09-06T19:49:50.862Z",
+      "latencyMs": 17415,
+      "attempts": 9,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 9
+      },
+      "volume": {
+        "inputItems": 17,
+        "rawOutputItems": 17,
+        "validOutputItems": 17,
+        "downstreamUsedItems": 17,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.07200000000000001,
+      "budgetCostUsd": 0.07200000000000001,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-distribution:evaluation-control-correction:1",
+      "cellId": "GB-distribution",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:48:04.531Z",
+      "completedAt": "2026-09-06T19:49:50.862Z",
+      "latencyMs": 47276,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 13374,
+        "outputTokens": 5528,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 17,
+        "rawOutputItems": 17,
+        "validOutputItems": 17,
+        "downstreamUsedItems": 17,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.010627049999999999,
+      "budgetCostUsd": 0.010627049999999999,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-distribution:evaluation-control-correction:2",
+      "cellId": "GB-distribution",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:48:04.531Z",
+      "completedAt": "2026-09-06T19:49:50.862Z",
+      "latencyMs": 53368,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 15802,
+        "outputTokens": 6030,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 17,
+        "rawOutputItems": 17,
+        "validOutputItems": 17,
+        "downstreamUsedItems": 17,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.01211997,
+      "budgetCostUsd": 0.01211997,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-distribution:evaluation-control-correction:3",
+      "cellId": "GB-distribution",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:48:04.531Z",
+      "completedAt": "2026-09-06T19:49:50.862Z",
+      "latencyMs": 33548,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 5936,
+        "outputTokens": 3403,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 17,
+        "rawOutputItems": 17,
+        "validOutputItems": 17,
+        "downstreamUsedItems": 17,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.005542770000000001,
+      "budgetCostUsd": 0.005542770000000001,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-distribution:evaluation-control-correction:4",
+      "cellId": "GB-distribution",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:48:04.531Z",
+      "completedAt": "2026-09-06T19:49:50.862Z",
+      "latencyMs": 52561,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 13619,
+        "outputTokens": 5489,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 17,
+        "rawOutputItems": 17,
+        "validOutputItems": 17,
+        "downstreamUsedItems": 17,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.010699695,
+      "budgetCostUsd": 0.010699695,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-distribution:evaluation-control-score-only:1",
+      "cellId": "GB-distribution",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:49:50.882Z",
+      "completedAt": "2026-09-06T19:51:44.137Z",
+      "latencyMs": 37152,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 8950,
+        "outputTokens": 3340,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 17,
+        "rawOutputItems": 17,
+        "validOutputItems": 17,
+        "downstreamUsedItems": 17,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00679905,
+      "budgetCostUsd": 0.00679905,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-distribution:evaluation-control-score-only:2",
+      "cellId": "GB-distribution",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:49:50.882Z",
+      "completedAt": "2026-09-06T19:51:44.137Z",
+      "latencyMs": 44041,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 7530,
+        "outputTokens": 3870,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 17,
+        "rawOutputItems": 17,
+        "validOutputItems": 17,
+        "downstreamUsedItems": 17,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.006642450000000001,
+      "budgetCostUsd": 0.006642450000000001,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-distribution:evaluation-control-score-only:3",
+      "cellId": "GB-distribution",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:49:50.882Z",
+      "completedAt": "2026-09-06T19:51:44.137Z",
+      "latencyMs": 56119,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 9488,
+        "outputTokens": 5239,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 17,
+        "rawOutputItems": 17,
+        "validOutputItems": 17,
+        "downstreamUsedItems": 17,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.008685209999999999,
+      "budgetCostUsd": 0.008685209999999999,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-distribution:evaluation-control-score-only:4",
+      "cellId": "GB-distribution",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:49:50.882Z",
+      "completedAt": "2026-09-06T19:51:44.137Z",
+      "latencyMs": 58723,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 10118,
+        "outputTokens": 5442,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 17,
+        "rawOutputItems": 17,
+        "validOutputItems": 17,
+        "downstreamUsedItems": 17,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.009135869999999999,
+      "budgetCostUsd": 0.009135869999999999,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-distribution:evaluation-control-score-only:5",
+      "cellId": "GB-distribution",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:49:50.882Z",
+      "completedAt": "2026-09-06T19:51:44.137Z",
+      "latencyMs": 21447,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 5704,
+        "outputTokens": 1864,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 17,
+        "rawOutputItems": 17,
+        "validOutputItems": 17,
+        "downstreamUsedItems": 17,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00410292,
+      "budgetCostUsd": 0.00410292,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-distribution:evaluation-control-score-only:6",
+      "cellId": "GB-distribution",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:49:50.882Z",
+      "completedAt": "2026-09-06T19:51:44.137Z",
+      "latencyMs": 24570,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 5237,
+        "outputTokens": 2055,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 17,
+        "rawOutputItems": 17,
+        "validOutputItems": 17,
+        "downstreamUsedItems": 17,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.004065945,
+      "budgetCostUsd": 0.004065945,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-distribution:evaluation-control-score-only:7",
+      "cellId": "GB-distribution",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:49:50.882Z",
+      "completedAt": "2026-09-06T19:51:44.137Z",
+      "latencyMs": 28521,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 6137,
+        "outputTokens": 2243,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 17,
+        "rawOutputItems": 17,
+        "validOutputItems": 17,
+        "downstreamUsedItems": 17,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.004621005,
+      "budgetCostUsd": 0.004621005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-distribution:evaluation-control-score-only:8",
+      "cellId": "GB-distribution",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:49:50.882Z",
+      "completedAt": "2026-09-06T19:51:44.137Z",
+      "latencyMs": 61080,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 9777,
+        "outputTokens": 5659,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 17,
+        "rawOutputItems": 17,
+        "validOutputItems": 17,
+        "downstreamUsedItems": 17,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.009176325,
+      "budgetCostUsd": 0.009176325,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-distribution:evaluation-control-score-only:9",
+      "cellId": "GB-distribution",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:49:50.882Z",
+      "completedAt": "2026-09-06T19:51:44.137Z",
+      "latencyMs": 24984,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 121,
+        "outputTokens": 1946,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 17,
+        "rawOutputItems": 17,
+        "validOutputItems": 17,
+        "downstreamUsedItems": 17,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.001745655,
+      "budgetCostUsd": 0.001745655,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-distribution:evaluation-control-score-only:10",
+      "cellId": "GB-distribution",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:49:50.882Z",
+      "completedAt": "2026-09-06T19:51:44.137Z",
+      "latencyMs": 57068,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 9620,
+        "outputTokens": 5116,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 17,
+        "rawOutputItems": 17,
+        "validOutputItems": 17,
+        "downstreamUsedItems": 17,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.008635619999999998,
+      "budgetCostUsd": 0.008635619999999998,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    }
+  ],
+  "warnings": [
+    "No official-domain evidence was extracted for uk.tdsynnex.com.",
+    "No official-domain evidence was extracted for uk.ingrammicro.com.",
+    "No official-domain evidence was extracted for efl.co.uk.",
+    "No official-domain evidence was extracted for adiglobaldistribution.co.uk.",
+    "linitx.com: Submitted company name 'Enterprise Networking Ltd' does not match the legal entity 'Multithread Consultants Ltd' found in evidence.",
+    "linitx.com: Deterministic role hints were not auto-added: Installer, ISP.",
+    "exertis.co.uk: Escalation was skipped because the configured routine and escalation models are identical.",
+    "exertis.co.uk: Exertis UK entered administration on 29 May 2026 according to IT Channel Oxygen.",
+    "exertis.co.uk: Deterministic role hints were not auto-added: Reseller.",
+    "uk.tdsynnex.com: Deterministic role hints were not auto-added: Reseller.",
+    "uk.ingrammicro.com: Deterministic role hints were not auto-added: Reseller, MSP.",
+    "elecfron.com: Submitted domain efl.co.uk was not found in supplied evidence; corrected to elecfron.com based on About page URL.",
+    "elecfron.com: Deterministic role hints were not auto-added: Reseller, E-tailer, Installer, ISP.",
+    "westbase.io: Deterministic role hints were not auto-added: SI.",
+    "vip-computers.com: Deterministic role hints were not auto-added: Reseller.",
+    "nimans.net: Deterministic role hints were not auto-added: Reseller, Installer.",
+    "eetgroup.com: Deterministic role hints were not auto-added: Installer.",
+    "provu.co.uk: Deterministic role hints were not auto-added: Reseller.",
+    "spire.co.uk: Submitted VAD role is not supported by supplied evidence.",
+    "alltrade.co.uk: Submitted VAD role is not supported by supplied evidence.",
+    "alltrade.co.uk: Deterministic role hints were not auto-added: Installer.",
+    "connectec.uk: Submitted VAD role is not supported by supplied evidence.",
+    "connectec.uk: Deterministic role hints were not auto-added: Installer.",
+    "varlink.co.uk: Submitted VAD role is not supported by supplied evidence.",
+    "varlink.co.uk: Deterministic role hints were not auto-added: Reseller.",
+    "adiglobal.com: Submitted domain adiglobaldistribution.co.uk was not present in supplied evidence; corrected to adiglobal.com based on official company source.",
+    "adiglobal.com: UK-specific presence is not explicitly confirmed in supplied evidence.",
+    "adiglobal.com: Deterministic role hints were not auto-added: SI.",
+    "ustech.co.uk: Submitted VAD role is not supported by supplied evidence.",
+    "ustech.co.uk: Distributor role relies solely on self-description; no independent evidence confirms downstream channel partner supply."
+  ]
+}

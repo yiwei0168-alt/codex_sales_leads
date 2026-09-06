@@ -1,0 +1,1223 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+  "cellId": "MX-distribution",
+  "inputCount": 16,
+  "records": [
+    {
+      "companyKey": "MX:domain:mx.ingrammicro.com",
+      "countryCode": "MX",
+      "companyName": "Ingram Micro México",
+      "domain": "mx.ingrammicro.com",
+      "officialWebsiteUrl": "https://mx.ingrammicro.com",
+      "primaryRole": "Distributor",
+      "supportedRoles": [
+        "Distributor",
+        "VAD"
+      ],
+      "totalScore": 83,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-d79474c0f04cd380",
+          "url": "https://mx.ingrammicro.com/x4v/app",
+          "title": "Xvantage - Ingram Micro",
+          "excerpt": "You need to enable JavaScript to run this app.",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-eb3dadbfe1344ec9",
+          "url": "https://careers.ingrammicro.com/en/locations/latam/mexico",
+          "title": "Let's shape tomorrow | Ingram Micro",
+          "excerpt": "Ingram Micro is a global technology distributor and solutions provider. In the United States, we support partners and customers through technology solutions, services, and logistics capabilities across the country. With our corporate offices located in Mexico City and teams across multiple locations, we combine scale, expertise, and local impact to support innovation and long‑term growth. What it's like to work here ## What it’s like to work at Ingram Micro Mexico [...] Su trayectoria en Ingram Micro Brasil inició en septiembre del 2018. Ingresó como Marketing Manager, fue promovido a Sr. Manager Marketing en el 2020, y desde el año 2023 ocupaba la posición de Associate Director, Marketing , en 2025 fue promovido a la posición de LATAM Marketing Director con el objetivo de transformar la e",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-f3a1c6a792716ee9",
+          "url": "https://www.intel.com/content/www/us/en/partner/showcase/storefront/a5s3b00000051tteaq/ingram-micro-mexico.html",
+          "title": "Ingram Micro Mexico",
+          "excerpt": "Founded in 1983, Company has more than 5,000 employees worldwide and a global reach with teams in seven geographic regions. Mexico, 53398 Mexico Authorized for",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-6663e769549fc004",
+          "url": "https://www.ingrammicro.com",
+          "title": "Ingram Micro - The business behind the world's brands",
+          "excerpt": "Xvantage Uncover business insights Automate your business Optimize your offerings Stay ahead of competition ###### Partner with us ## Be part of the bigger picture Partner with Ingram Micro to learn how you can create a better experience for your customers. Partner with us Become a customer Become a vendor ###### Ingram Micro Sustainable Impact ## Measuring what matters ESG Serving up IT success Ransomware recovery [...] The business behind the world's brands Microsoft AWS Cisco Nvidia Apple HP Inc Palo Alto Networks Fortinet ###### Why Ingram Micro ## You need it? We’ve got it. [...] Xvantage is saving us time and helping us streamline the way we do our work. — Anna Wesley International Partner Alliance Manager, Distribution at SHI Testimonials Ingram Micro ## How far can you grow? Join m",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:tecnosinergia.com",
+      "countryCode": "MX",
+      "companyName": "Tecnosinergia",
+      "domain": "tecnosinergia.com",
+      "officialWebsiteUrl": "https://tecnosinergia.com",
+      "primaryRole": "Distributor",
+      "supportedRoles": [
+        "Distributor",
+        "VAD"
+      ],
+      "totalScore": 74,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-579c2df0c64e7975",
+          "url": "https://tecnosinergia.com",
+          "title": "Tecnosinergia.com - Líder mayorista de soluciones en ...",
+          "excerpt": "Tecnosinergia es un mayorista de soluciones de CCTV, Video IP, Acceso y Asistencia, Alarmas, Redes, Incendio, Radiocomunicación, Intrusion,",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-9ff86eacff75a0af",
+          "url": "https://global.uniview.com/de/About_Us/Partner",
+          "title": "Partner—Zhejiang Uniview Technologies Co., Ltd.",
+          "excerpt": ": +52 (55) 12048000 / 01800 5555 832 (TEC): distribuidores@tecnosinergia.com: www.tecnosinergia.com: Santo Domingo 220, Col. Industrial San Antonio, Azcapotzalco, CDMX, 02760 México. Branches: Guadalajara, Querétaro, Puebla, Veracruz, Merida, Monterrey.: Tecnosinergia es una empresa mexicana innovadora en la importación y distribución mayorista de productos de seguridad y tecnología y telecomunicaciones. [...] : 023 80 76 95: 023 80 76 63: 0560 96 60 00: info@mbm-technology.com: www.mbm-technology.com: Cité Baha N°96 Lido El-Mohammadia, Alger: MBM is integrator and a value added distributor that provides customers, resellers and installers a large range of innovative products and solutions, in Security (Video-surveillance, Access Control,…), Networking, IT infrastructure and ECM areas. [..",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-322be262e1b5aaa0",
+          "url": "https://zw.linkedin.com/company/tecnosinergia",
+          "title": "Tecnosinergia - Mayorista de Soluciones",
+          "excerpt": "Tecnosinergia es un mayorista líder en soluciones de seguridad electrónica, tecnologías de la información y telecomunicaciones. Con presencia nacional, ofrecemos una red logística eficiente, atención personalizada y un amplio portafolio de marcas reconocidas. Impulsamos el crecimiento de integradores y distribuidores en México mediante innovación, capacitación y soporte técnico especializado. Tecnosinergia is a leading wholesaler of electronic security, IT solutions, and telecommunications. [...] telecommunications. With nationwide reach, we provide efficient logistics, personalized service, and a broad portfolio of top-tier brands. We empower integrators and resellers across Mexico through innovation, training, and expert technical support. [...] está expuesta al sol, lluvia, polvo, humed",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-15e93c7aa819927b",
+          "url": "https://ajax.systems/blog/mexico-distributor-tecnosinergia",
+          "title": "Ajax Systems expands its network in Mexico through the ...",
+          "excerpt": "Ajax Systems has partnered with Tecnosinergia, one of the leading distributors of security solutions in Mexico. Tecnosinergia has over 16",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:westtelco.com.mx",
+      "countryCode": "MX",
+      "companyName": "West Telco",
+      "domain": "westtelco.com.mx",
+      "officialWebsiteUrl": "https://www.westtelco.com.mx",
+      "primaryRole": "Distributor",
+      "supportedRoles": [
+        "Distributor",
+        "VAD"
+      ],
+      "totalScore": 70,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-e29734f0ef83076e",
+          "url": "https://www.westtelco.com.mx",
+          "title": "West Telco | Mayoristas de Tecnología en Latinoamérica.",
+          "excerpt": "Gestor de base de datos relacionada Productividad empresarialSalas de juntas inteligentesMonitoreo de redes y observabilidadEspacios interactivosPlataformas contact centerGestor de base de datos relacionada SOLUCIONES ## Somos el distribuidor de tecnología enfocado en partners con el objetivo de crecer juntos Sé nuestro partner icono - rayo ### Asesoramiento integral de proyectos Nuestros expertos te asesorarán en la planeación y selección de tecnología para cada proyecto. [...] detalle West Telco MARCAS ALIADAS ## Un portafolio integral para construir negocios diversificados Distribuidores de tecnología aliados con marcas líderes e interoperables que impulsan la creación de proyectos rentables Sé nuestro partner <alt>Zoom</alt> <alt>BenQ</alt> <alt>Boom Collaboration</alt> <alt>Workvivo</",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-8b7d03a3263e7bcf",
+          "url": "https://www.westtelco.com.mx/se-nuestro-partner",
+          "title": "Sé nuestro Partner - West Telco",
+          "excerpt": "Westelco white logo Westelco white logo Ícono de Ojo Monitoreo de redes y observabilidad Garantiza el funcionamiento óptimo de la infraestructura tecnológica, permitiendo la gestión de sistemas. Ícono de Ojo Espacios interactivos Enfocada en transformar entornos con tecnologías que fomentan la interacción y participación activa. Ícono de Ojo Salas de juntas inteligentes Ofrece espacios modernos que facilitan la comunicación presencial y remota con tecnología avanzada. Ícono de Ojo Productividad empresarial Responde a la necesidad de herramientas de colaboración para el entorno laboral, especialmente en contextos híbridos y remotos. Ícono de Ojo Plataformas Contact Center Crucial para empresas que requieren gestionar eficientemente la comunicación con clientes a través de múltiples can",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-2ad361a5b13a4ca7",
+          "url": "https://www.i3-technologies.com/simple-dealer-locator/dealer/west-telco",
+          "title": "West Telco",
+          "excerpt": "West Telco Distributor Mexico Address Av. Phone +52 33 3687 0745 Email informes@westtelco.com.mx Website https://www.westtelco.com.mx/",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-c15c163de4305a5a",
+          "url": "https://westtelco.zoom.us",
+          "title": "Zoom - West Telco | Mayoristas de Tecnología en Latinoamérica",
+          "excerpt": "Plataforma de atención al cliente con enrutamiento inteligente, analíticas en tiempo real y herramientas de colaboración integradas. ## ¿Por qué West Telco? Te acompañamos en cada etapa del proceso comercial 💼 ### Negociación con marcas Gestionamos descuentos y precios especiales directamente con Zoom para potenciar la rentabilidad de tus proyectos. 🎓 ### Capacitación especializada [...] Te capacitamos en la propuesta de valor de cada solución con soporte técnico especializado para garantizar el éxito. 🔧 ### Dimensionamiento de proyectos Analizamos cada oportunidad contigo para elegir la solución adecuada y transformar propuestas en negocios rentables. 🎯 ### POC y Licencias trial Creamos ambientes de prueba y gestionamos licencias trial para validar el funcionamiento antes de invertir.",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:daisytek.com.mx",
+      "countryCode": "MX",
+      "companyName": "Daisytek México",
+      "domain": "daisytek.com.mx",
+      "officialWebsiteUrl": "https://www.daisytek.com.mx",
+      "primaryRole": "Distributor",
+      "supportedRoles": [
+        "Distributor"
+      ],
+      "totalScore": 43,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-0f08d3860bd946ed",
+          "url": "https://www.daisytek.com.mx",
+          "title": "Daisytek México",
+          "excerpt": "Únete a nuestro ecosistema de distribuidores y potencia tu negocio con las plataformas y beneficios que tenemos para ti. Date de alta como distribuidor hoy mismo Quiero ser socio distribuidor # Contáctanos Comunícate a las sucursales y pregunta por las promociones Monterrey 55 5000 3590 Se debe especificar una dirección para poder insertar un mapa CDMX(Vallejo y Sur) 55 5000 3500 Se debe especificar una dirección para poder insertar un mapa 55 5000 3556 [...] 55 5000 3556 Se debe especificar una dirección para poder insertar un mapa ### Cercanía y Servicio Nuestro equipo está para ayudarte ### Inventario Disponible Amplia disponibilidad de inventario cerca de ti ### Logística de Primera Envío rápido y entregas a todo el país ### Facilidades de Crédito Opciones de pago, crédito, y financiam",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-ade8efe8cb9fb023",
+          "url": "https://www.daisytek.com.mx/quienes-somos",
+          "title": "Quienes Somos | Daisytek, Potencia tu Negocio",
+          "excerpt": "Daisytek, Potencia tu Negocio 0 + Inicio + Tienda + Líneas de Negocio Accesorios Complementa tu portafolio Consumibles Calidad y originalidad siempre Limpieza Para mantener el hardware en óptimas condiciones Telefonía Movilidad y cómputo en la palma de la mano Almacenamiento Amplía las capacidades Energía Protege los equipos y dispositivos tecnológicos Papel Impresiones confiables y de calidad Software Soluciones para todo tipo de negocios Ciberseguridad Protección de la información y de los sistemas Electrónica Para una productividad inigualable Punto de venta Optimiza los cobros y el inventario Cómputo Equipos de escritorio y portátiles Impresión Soluciones avanzadas en equipo y servicio Redes y conectividad Dale más confianza a la conectividad + Marcas + Exclusivo Socios #### Canal Plus",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-13f4039e3ff81b11",
+          "url": "https://www.encyclopedia.com/books/politics-and-business-magazines/daisytek-international-corporation",
+          "title": "Daisytek International Corporation | Encyclopedia.com",
+          "excerpt": "Daisytek International Corporation is the largest wholesale distributor of non-paper computer and office automation supplies and accessories in the United States. The company sells primarily nationally known, name-brand products manufactured by over 145 original equipment manufacturers. It distributes more than 6,000 products to approximately 20,000 customer locations from one superhub in Memphis, Tennessee, two regional centers in Canada, and one center in Mexico. Through a contractual [...] \"Daisytek International Corporation .\" International Directory of Company Histories. . Encyclopedia.com. (July 10, 2026). \"Daisytek International Corporation .\" International Directory of Company Histories. . Retrieved July 10, 2026 from Encyclopedia.com: Learn more about citation styles ### Citation ",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:incom.mx",
+      "countryCode": "MX",
+      "companyName": "Incom",
+      "domain": "incom.mx",
+      "officialWebsiteUrl": "https://incom.mx",
+      "primaryRole": "Unresolved",
+      "supportedRoles": [],
+      "totalScore": 26,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-d2e0f10912200fbd",
+          "url": "https://incom.mx/en-us/pages/acerca-de-nosotros",
+          "title": "About Us – INCOM SHOP",
+          "excerpt": "Subscribe to our newsletter Discover news and offers Follow us on our social media! Facebook Twitter Instagram YouTube TikTok Linkedin Pagos 100% Seguros © 2026 INCOM SHOP | Made in Mexico by INCOM Development Powered by Shopify Popular searches Products Brands Quotes Help Center Catalogs Location Contact [...] ##### About INCOM At INCOM, we are proud to be a 100% Mexican company with over 20 years of experience. Since 1999, we have served the needs of companies in various sectors such as telecommunications, construction, IT integration, cable television, radio, internet, telephony, industrial security, and hardware. [...] ### Throughout our history, we have supplied materials to companies such as Contact us Call us at (55) 5243 - 6900 Email us at ventas@incom.mx Visit us at Plutarco Elías",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:maps.com.mx",
+      "countryCode": "MX",
+      "companyName": "MAPS Disruptivo",
+      "domain": "maps.com.mx",
+      "officialWebsiteUrl": "https://www.maps.com.mx",
+      "primaryRole": "Hybrid",
+      "supportedRoles": [
+        "Distributor",
+        "VAD",
+        "SI",
+        "Installer"
+      ],
+      "totalScore": 60,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-cedd7b94051b38b9",
+          "url": "https://www.maps.com.mx/infoblox-trusted-by-12000-customers",
+          "title": "Infoblox - Cloud-First Security & Networking - MAPS Disruptivo",
+          "excerpt": "Teléfono 55 5387 3500 contacto@maps.com.mx Especialistas y Líderes en Ciberseguridad por más de 26 años MAPS Disruptivo MAPS Disruptivo MAPS Disruptivo Infoblox Soluciones de ciberseguridad y DDI de vanguardia basadas en SaaS La ciberseguridad de siguiente nivel ayuda a las empresas de cualquier industria a protegerse contra la creciente avalancha de ciberataques, aprovechando 14 mil millones de indicadores de amenazas y más de 30 integraciones de seguridad API Teléfono: 55 5387 3500 Ext. 496 Correo: jonathan.rodriguez@maps.com.mx Móvil: 55 1923 1061 MicrosoftTeams-image (126)\") Teléfono: 55 5387 3500 Ext. 472 Correo: cinthya.cervantes@maps.com.mx Móvil: 56 37 10 0881 Simplifique su viaje hacia una empresa habilitada para SaaS Simplifique su viaje hacia una empresa habilitada para SaaS LA ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-ed33ccaa303db1aa",
+          "url": "https://www.maps.com.mx/wp-content/uploads/2026/05/directorio-2026JUNIO-1.pdf",
+          "title": "[PDF] PORTAFOLIO DE SOLUCIONES",
+          "excerpt": "PORTAFOLIO DE SOLUCIONES Mayo - Junio 2026 Lidera en redes escalables y automatizadas con switches y soluciones basadas en cloud networking. Acelera y protege experiencias digitales con soluciones de CDN, ciberseguridad y edge computing. Ofrece soluciones de visibilidad de red y monitoreo de rendimiento que ayudan a las organizaciones a optimizar la infraestructura de TI y proteger contra amenazas cibernéticas. Soluciones de seguridad para entornos industriales y OT (tecnologías operacionales), protegiendo infraestructuras críticas contra amenazas cibernéticas. Redefine la seguridad con su enfoque de Zero Trust Network Access (ZTNA), garantizando accesos seguros y dinámicos a aplicaciones y datos. Soluciones avanzadas de pruebas y análisis de redes, ayudando a las organizaciones a optimiza",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-91d94c336079f5c0",
+          "url": "https://www.maps.com.mx/wp-content/uploads/2021/02/MAPS-Directorio_V22.pdf",
+          "title": "[PDF] MAPS Directorio_V22",
+          "excerpt": "Cybersecurity, ICS, OT Security, SCADA Security, Industrial Internet, MES Security, Firewall Integration, Regulatory Compliance, NIST, NERC CIP, Anomalous Activity Recognition, Deep-Packet Inspection y IIoT Cloud Computing, Virtualization, Big Data Clusters and High Performance Computing Information Technologies, Security, Protection, IT, Mobile Security, Virus Protection, Antimalware, Mobile Phone Antivirus and Virus Scan Converged IP Testing, Network Performance, 5G, Security, Ethernet, Wireless Testing, Wi-Fi Testing, Network Security and Network Monitoring Software, Internet Security, Cloud Security and IT Business Solutions Virtualization, Private Cloud, VDI, Big Data, Enterprise Applications and Server Virtualization Firewall, Prevent Ransomware, Advanced Threats and Application Inte",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-68001563da8bf859",
+          "url": "https://www.maps.com.mx/wp-content/uploads/2022/08/MAPS-Directorio_2022v6_Ago22.pdf",
+          "title": "[PDF] MAPS Directorio_2022v6",
+          "excerpt": "Cybersecurity, ICS, OT Security, SCADA Security, Industrial Internet, MES Security, Firewall Integration, Regulatory Compliance, NIST, NERC CIP, Anomalous Activity Recognition, Deep-Packet Inspection y IIoT Cloud Computing, Virtualization, Big Data Clusters and High Performance Computing Information Technologies, Security, Protection, IT, Mobile Security, Virus Protection, Antimalware, Mobile Phone Antivirus and Virus Scan Privileged access management, privileged identity management, cybersecurity, cyber security, PAM, cloud identity y privileged access Converged IP Testing, Network Performance, 5G, Security, Ethernet, Wireless Testing, Wi-Fi Testing, Network Security and Network Monitoring Software, Internet Security, Cloud Security and IT Business Solutions Virtualization, Private Cloud,",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:pchconnect.com",
+      "countryCode": "MX",
+      "companyName": "PCH Connect",
+      "domain": "pchconnect.com",
+      "officialWebsiteUrl": "https://www.pchconnect.com",
+      "primaryRole": "Distributor",
+      "supportedRoles": [
+        "Distributor",
+        "VAD",
+        "Reseller",
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 81,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-d08f2d35b9e502b2",
+          "url": "https://www.pchconnect.com",
+          "title": "PCHCONNECT - Soluciones en tecnología de primer nivel en ...",
+          "excerpt": "En PCH Connect, somos un líder indiscutible en la provisión de soluciones tecnológicas avanzadas, enfocados en impulsar el crecimiento y la innovación en diversos sectores, incluyendo empresas, educación y gobierno. Nuestra especialización abarca desde la implementación de infraestructuras de data centers hasta soluciones de vanguardia en ciberseguridad, seguridad física, servicios en la nube, AI y más. Operando como un mayorista de tecnología de primer nivel en México, nos dedicamos a ofrecer [...] La regionalización de PCH Connect en México demuestra nuestro compromiso con el crecimiento y la innovación tecnológica en todo el país. Nuestra red de sucursales, junto con nuestro centro de distribución y almacén, nos permite ofrecer soluciones tecnológicas de punta y un servicio al cliente e",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-26bf947f3c031220",
+          "url": "https://shop.pchconnect.com/blog?category=Tecnolog%C3%ADa",
+          "title": "Noticias y guías de tecnología para distribuidores y expertos TI - PCH SHOP",
+          "excerpt": "PCH Connect - Mayorista líder en tecnología y cómputo en México ¿Eres distribuidor? Accede a precios mayoreo. Conoce los beneficios Iniciar sesión / Registrarse Iniciar sesión / Registrarse Carrito Carrito Cerrar Carrito vacio ¿Eres distribuidor? Accede a precios mayoreo. Conoce los beneficios T.C.: $17.00 Buscar categoría ACCESORIOS ACCESORIOS + ACCESORIOS ACCESORIOS + ADAPTADORES 3.5MM 30M CAT6 CONVERTIDOR DISPLAY PORT DVI HDMI HUB LECTORES PS2 SVGA USB-C USB VGA VIDEO + AUDIO USB + BASES BASES SOPORTES + BOCINAS USB + CABLES DISPLAY PORT DISTRIBUIDOR DE CORRIENTE GENERICO HDMI ORGANIZADOR SATA USB-C USB VGA + CANDADOS LAPTOP PARA TABLET + CARGADORES 10PTOS ACCESORIOS AUTOMOVIL DOCKING INALAMBRICO KIT LAPTOP PARA LAPTOP PARED UNIVERSAL USB-C + COMPUTO KIT + CONCENTRADORES 10PTOS 4PTOS 7P",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-76cd1034b6ca1ad8",
+          "url": "https://www.pchconnect.com/soluciones",
+          "title": "Soluciones integrales en tecnología en México - PCHCONNECT",
+          "excerpt": ": (33)1368439013684390) (/cdn-cgi/l/email-protection#8ee6e1e2efcefeede6ede1e0e0ebedfaa0ede1e3) Siguenos en PCHCONNECT PCHCONNECT Soluciones integrales en tecnología Brindamos soluciones integrales diseñadas para el éxito empresarial. Con un enfoque serio y comprometido, abordamos cada desafío con la máxima integridad, asegurando resultados que no solo satisfacen, sino que superan las expectativas. 1. Data centers Nuestros data centers están diseñados para ofrecer la máxima fiabilidad y rendimiento. Utilizamos tecnología de vanguardia para asegurar la continuidad operativa de tu negocio, con una infraestructura escalable que se adapta a tus necesidades crecientes. Ofrecemos soluciones energéticamente eficientes, con seguridad avanzada y monitoreo en tiempo real, garantizando que tus datos e",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-5adc27465c507526",
+          "url": "https://shop.pchconnect.com/blog/pantum-y-pch-la-firma-de-una-alianza-estrategica",
+          "title": "Pantum y PCH: La firma de una alianza estratégica - PCH SHOP",
+          "excerpt": "PCH Connect - Mayorista líder en tecnología y cómputo en México Carrito de compras para distribuidores PCH ACCESORIOS ## ACCESORIOS ALMACENAMIENTO ## ALMACENAMIENTO AUDIO ## AUDIO BACKPACKS Y MALETINES ## BACKPACKS Y MALETINES CABLEADO ESTRUCTURADO ## CABLEADO ESTRUCTURADO CABLES ## CABLES CAMARAS PROFESIONALES ## CAMARAS PROFESIONALES CIBERSEGURIDAD ## CIBERSEGURIDAD COMPONENTES ## COMPONENTES COMPUTO ## COMPUTO ### CÓMPUTO ### COMPONENTES ### MONITORES ### IMPRESIÓN ### REDES ### SOLUCIONES ### OUTLET ### AYUDA # Pantum y PCH: La firma de una alianza estratégica Pantum y PCH: La firma de una alianza estratégica ## Pantum y PCH: La firma de una alianza estratégica El lanzamiento oficial de Pantum en PCH Connect marcó el inicio de una alianza que transformará la forma en que empresas y pro",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-2592db903f0c607d",
+          "url": "https://mx.linkedin.com/company/pch-connect",
+          "title": "PCH Connect - Somos una de las compañías mayoristas de tecnología más importantes en el mercado nacional.",
+          "excerpt": "operamos con honestidad y altos estándares éticos, trayendo siempre la tecnología más avanzada al mercado mexicano. [...] ### Website ### Crunchbase N/A ### LinkedIn N/A ### Industry Wholesale ### Company Size 501-1,000 employees 240 associated members (LinkedIn members who've listed PCH Connect as their current workplace on their profile) ### Founded 2002 ### Funding Last Round Date: N/A Last Round Type: N/A Total Rounds: N/A Last Round Raised: N/A ### Investors N/A ### Specialties Mayorista en tecnología and Mayorista de computo [...] CT Internacional (Information Technology & Services): (Hermosillo, Sonora); Exel del Norte SA de CV (Wholesale): (Monterrey, Nuevo León); GRUPO CVA (IT Services and IT Consulting): (Guadalajara, Jalisco); CompuSoluciones (IT Services and IT Consulting): (Gu",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-deaca5782698c0d6",
+          "url": "https://shop.pchconnect.com",
+          "title": "Compra tecnología al mejor precio | Mayorista y tienda online PCH",
+          "excerpt": "PCH Connect - Mayorista líder en tecnología y cómputo en México ¿Eres distribuidor? Accede a precios mayoreo. Conoce los beneficios Iniciar sesión / Registrarse Iniciar sesión / Registrarse Carrito Carrito Cerrar Carrito vacio ¿Eres distribuidor? Accede a precios mayoreo. Conoce los beneficios T.C.: $17.00 Buscar categoría ACCESORIOS [...] T.C.: $17.00 # Distribuidor de Tecnología y Cómputo al Mayoreo y Menudeo | SHOP PCH PCH SHOP PCH SHOP Envíos a todo México Rápidos y seguros Precios mayoreo Desde una pieza Crédito para distribuidores Solicita tu línea Compra segura Protegemos tus datos y transacciones +50,000 productos De las mejores marcas ## OFERTAS TOP 00:00:00:00 MULTIFUNCIONAL CANON D1620 LASER 45 PPM ADF DUPLEX 1YR 2223C024AA ### MULTIFUNCIONAL CANON D1620 LASER 45 PPM ADF DUPLEX ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-e73143180f7ff786",
+          "url": "https://x.com/PCH_Connect",
+          "title": "PCH Connect (@PCH_Connect) / X",
+          "excerpt": "Log inSign up PCH Connect PCH Connect profile banner @PCH_Connect # PCH Connect @PCH\\_Connect Somos una de las compañías mayoristas más importantes en el mercado nacional. Dedicada a la compra-venta de Tecnología Guadalajara shop.pchconnect.com Joined May 2010 110 Following3,273 Followers RepliesRepliesRepostsRepostsMediaMedia Pinned @PCH_Connect PCH Connect @PCH\\_Connect Aug 17 [...] Sep 3 Tu negocio puede gestionarse de forma más sencilla Conoce @MyBusinessPOSD y @3nStar\\_Inc y encuentra la versión que mejor se adapte a cada necesidad. 💼 Ideal para ti o para tus clientes. Ver más: shop.pchconnect.com/punto-de-venta… 📲 Cotiza aquí: wa.link/22z2ur [...] 8h ⏰ Cada segundo cuenta cuando hay clientes esperando... Aprovecha la #PromoFlash de @3nStar\\_Inc y equipa tu punto de venta Ver más⬇️ ",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-7fcdb5d97a07b861",
+          "url": "https://shop.pchconnect.com/asociate",
+          "title": "Los mejores mayoristas en tecnología en México Beneficios Socio de PCH Mayorista en Tecnología",
+          "excerpt": "Políticas PCH · Aviso de privacidad · Aviso legal · PROFECO · CONDUSEF Copyright © 2026 PCH SHOP. Todos los derechos reservados. ## CÓMPUTO ## COMPONENTES ## MONITORES ## IMPRESIÓN ## REDES ## SOLUCIONES ## OUTLET ## AYUDA [...] PCH Connect - Mayorista líder en tecnología y cómputo en México Carrito de compras para distribuidores PCH ACCESORIOS ## ACCESORIOS ALMACENAMIENTO ## ALMACENAMIENTO AUDIO ## AUDIO BACKPACKS Y MALETINES ## BACKPACKS Y MALETINES CABLEADO ESTRUCTURADO ## CABLEADO ESTRUCTURADO CABLES ## CABLES CAMARAS PROFESIONALES ## CAMARAS PROFESIONALES CIBERSEGURIDAD ## CIBERSEGURIDAD COMPONENTES ## COMPONENTES COMPUTO ## COMPUTO ### CÓMPUTO ### COMPONENTES ### MONITORES ### IMPRESIÓN [...] ##### SUCURSALES ##### PAGOS Y ENVÍOS Pagos Seguros Envio a todo Mexico Ocurre ##### CONECTA",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:licenciasonline.com",
+      "countryCode": "MX",
+      "companyName": "Licencias OnLine",
+      "domain": "licenciasonline.com",
+      "officialWebsiteUrl": "https://www.licenciasonline.com",
+      "primaryRole": "Distributor",
+      "supportedRoles": [
+        "Distributor",
+        "VAD",
+        "Reseller"
+      ],
+      "totalScore": 16,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-65a393f42b9d27b7",
+          "url": "https://www.licenciasonline.com/br/en/lol-about-us",
+          "title": "Purchase software licenses through Licencias OnLine - Latam distributor",
+          "excerpt": "Licencias OnLine is the online Software Business platform which offers value services to the small, medium and corporative-level clients through its wide net of partners across Latin America. Start browsing our platform right away and find out about all the advantages Licencias OnLine has to offer to boost your company’s growth. Continue reading » Business model Offices and phone numbers Our experience in the field #### Work with us If you wish to join our staff, please send us your résumé. [...] ### New? Start here... #### What would you like to do? #### About Licencias OnLine #### Partners ### Follow Us! ### Tweets @LicenciasOnLine Licencias OnLine Dollar icon Argentina Icon Bolivia Icon Brasil Icon Chile Icon Colombia Icon Costa Rica Icon Mexico Icon Paraguay Icon Perú Icon Uruguay Icon",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:inalarm-online.mx",
+      "countryCode": "MX",
+      "companyName": "Inalarm",
+      "domain": "inalarm-online.mx",
+      "officialWebsiteUrl": "https://inalarm-online.mx",
+      "primaryRole": "Distributor",
+      "supportedRoles": [
+        "Distributor",
+        "Reseller",
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 0,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-16fd4c05289d4cb8",
+          "url": "https://inalarm-online.mx/wp-content/uploads/2020/06/1-Aviso-de-Privacidad-Candidatos.pdf",
+          "title": "[PDF] aviso de privacidad - inalarm-online.mx",
+          "excerpt": "AVISO DE PRIVACIDAD CORPORATIVO INALARM, S.A. DE C.V., constituida conforme a las leyes de la República Mexicana, con domicilio ubicado en calle Rey Maxtla 213, Colonia San Francisco Tetecala, Alcaldía Azcapotzalco, C.P. 02730, Ciudad de México, es el responsable del tratamiento de sus datos personales, los cuales se recaban y tratan de manera lícita cumpliendo en todo momento los principios de licitud, consentimiento, información, calidad, finalidad, lealtad, proporcionalidad y responsabilidad previstos en la Ley Federal de Protección de Datos Personales en Posesión de los Particulares, en lo sucesivo “La Ley”, por lo que ponemos a su disposición el presente Aviso de Privacidad. DATOS PERSONALES El tipo de datos personales que recabaremos serán datos de identificación nombre, nacionalidad",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-7e4be40c47cbbbf6",
+          "url": "https://inalarm-online.mx/tienda",
+          "title": "Tienda - Distribuidora de Equipos de Seguridad - inalarm-online.mx",
+          "excerpt": "(55) 4188-5272 41885272) | 09/07/26 T.C. Preferencial $16.8 MXN (aplican restricciones) Actualización diaria tipo de cambio 9:15 am. Distribuidora de Equipos de Seguridad Distribuidora de Equipos de Seguridad Distribuidora de Equipos de Seguridad Distribuidora de Equipos de Seguridad Tienda Marca Swatch image Swatch image Swatch image Swatch image Swatch image Swatch image Swatch image Swatch image Swatch image Swatch image Swatch image Swatch image Swatch image Swatch image Swatch image Swatch image Swatch image Swatch image Swatch image Swatch image Swatch image Swatch image Swatch image Swatch image Swatch image Swatch image Swatch image Swatch image Swatch image Swatch image Swatch image Swatch image Swatch image Swatch image Swatch image Swatch image Swatch image Swatch image Swatch i",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-497ec5eb39982e2a",
+          "url": "https://inalarm-online.mx/categoria-producto/incendio/dispositivos-convencionales/detectores-fotobeam",
+          "title": "Detectores Fotobeam - Distribuidora de Equipos de Seguridad",
+          "excerpt": "(55) 4188-5272 41885272) | 09/07/26 T.C. Preferencial $16.8 MXN (aplican restricciones) Actualización diaria tipo de cambio 9:15 am. Distribuidora de Equipos de Seguridad Distribuidora de Equipos de Seguridad Distribuidora de Equipos de Seguridad Distribuidora de Equipos de Seguridad Detectores Fotobeam Marca Swatch image Swatch image Por Tipo Material Mostrando el único resultado KIT MONTAJE SUPERFICIAL PARA BEAM1224 (LOC-ALMACEN-F0201) (BEAMSMK) KIT MONTAJE SUPERFICIAL PARA BEAM1224 (LOC-ALMACEN-F0201) (BEAMSMK) KIT MONTAJE SUPERFICIAL PARA BEAM1224 (LOC-ALMACEN-F0201) (BEAMSMK) Información Categorías Nombre de usuario o correo electrónico \\Obligatorio Password \\Obligatorio Log in Lost your password? Remember me No account yet?",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-1c41d8b96f92b1bf",
+          "url": "https://www.ventasdeseguridad.com/en/news/latest-news/431-enterprises/20456-inalarm-left-its-mark-on-the-security-industry.html",
+          "title": "Inalarm left its mark on the security industry - Ventas de Seguridad",
+          "excerpt": "InalarmMexico. One of the most important electronic security wholesalers in Mexico has been Corporativo Inalarm S.A de C.V., a company that was born in 1988 and that in its 32 years of history left an indelible mark. For different reasons, in addition to Covid, Inalarm will leave the security business, but will be remembered as a flagship company in the sector and a benchmark in the Mexican market. [...] Ventas de Seguridad Ventas de Seguridad Select your language Español # Inalarm left its mark on the security industry [...] + Me da una gran tristeza enterarme así de esta noticia. Lucy es una historia de exito y generosidad. La industria de seguridad pierde mucho sin ella adentro. ESS+ 2026 will turn Bogota into the Latin American epicenter of comprehensive security #### ESS+ 2026 will tu",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:arkamayorista.mx",
+      "countryCode": "MX",
+      "companyName": "Arka Mayorista",
+      "domain": "arkamayorista.mx",
+      "officialWebsiteUrl": "https://arkamayorista.mx",
+      "primaryRole": "Unresolved",
+      "supportedRoles": [],
+      "totalScore": 0,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": false,
+      "operatesInTargetMarket": false,
+      "evidence": [],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:kritical.com.mx",
+      "countryCode": "MX",
+      "companyName": "Kritical Hardware",
+      "domain": "kritical.com.mx",
+      "officialWebsiteUrl": "https://kritical.com.mx",
+      "primaryRole": "Distributor",
+      "supportedRoles": [
+        "Distributor",
+        "VAD"
+      ],
+      "totalScore": 68,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-6c160e62392671e2",
+          "url": "https://kritical.com.mx/iex-402-shdsl-series.html",
+          "title": "IEX-402-SHDSL Series",
+          "excerpt": "| | | IEX-402-SHDSL Extensor Ethernet SHDSL gestionado con 1 puerto 10 / 100BaseT (X) y 1 puerto DSL, temperatura de funcionamiento de -10 a 60 ° C. | | IEX-402-SHDSL-T Extensor Ethernet SHDSL gestionado con 1 puerto 10 / 100BaseT (X) y 1 puerto DSL, temperatura de funcionamiento de -40 a 75 ° C. |",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-5bf8e63de5fb814c",
+          "url": "https://kritical.com.mx/iologik-2512-hspa-series.html",
+          "title": "ioLogik 2512 HSPA Series",
+          "excerpt": "| | | ioLogik 2512-HSPA E / S remotas HSPA con Click & Go Plus, 8 DI, 8 DI / Os, -10 a 60 ° C de temperatura de funcionamiento. | | ioLogik 2512-HSPA-T E / S remotas HSPA con Click & Go Plus, 8 DI, 8 DI / Os, -30 a 70 ° C de temperatura de funcionamiento. |",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-a04acc080b64cc52",
+          "url": "https://kritical.com.mx/cisco.html",
+          "title": "Cisco - KRITICAL HARDWARE",
+          "excerpt": "Cisco IE 1000 Cisco IE 2000 Cisco IE 2000U Cisco IE 3100 Cisco IE 3200 Cisco IE 3300 Cisco IE 3400 Cisco IE 4000 Cisco IE 3010 Cisco IE 4010 Cisco IE 5000 Cisco IE 9300",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-5900e50c98f08e5b",
+          "url": "https://kritical.com.mx/distribuidor-moxa-en-mexico.html",
+          "title": "Distribuidor moxa en mexico",
+          "excerpt": "Distribuidor moxa en mexico Buscar × Página de inicio Nosotros Servicios + Redes de comunicaciones + Vigilancia y seguridad + Automatizacion + Aire acondicionado Productos + Axiomtek eBOX671-521-FL eBOX800-900-FL GOT107W-319 UST500-517-FL GOT110-316-PoE-PD + Cisco + Durabook durabook Z14I Laptop durabook S14I Laptop durabook S15AB Laptop durabook U11I Tablet durabook R11 Tablet durabook R11L Tablet + Hirschmann + Meanwell Fuente de energia DIN-Rail PLP-60-12 XLG-100-12-A MDR-40-24 DRC-100B SD-150C-24 DR-RDN20 DR-UPS40 RSP-1500-24 + MOXA Ethernet Industrial DIN-Rail no Administrado + EDS-205 Series + EDS-208 Series + EDS-205A Series + EDS-208A Series + EDS-G205 Series + EDS-2010-ML Series + EDS-305 Series + EDS-308 Series + EDS-G308 Series + EDS-309 Series + EDS-316 Series Rackmount + IKS-6",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:pcmafmayoreo.com",
+      "countryCode": "MX",
+      "companyName": "PC MAF Mayoreo",
+      "domain": "pcmafmayoreo.com",
+      "officialWebsiteUrl": "https://pcmafmayoreo.com",
+      "primaryRole": "Reseller",
+      "supportedRoles": [
+        "Reseller",
+        "Retailer"
+      ],
+      "totalScore": 47,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-294bcfb0952820dd",
+          "url": "https://pcmafmayoreo.com/sobre-nosotros",
+          "title": "Sobre Nosotros - PC MAF MAYOREO",
+          "excerpt": "PC MAF MAYOREO No hay productos en el carrito. PC MAF MAYOREO About Us Passion may be a friendly or eager interest in or admiration for a proposal, cause, discovery, or activity or love to a feeling of unusual excitement. What we really do? Donec libero dolor, tincidunt id laoreet vitae,ullamcorper eu tortor. Maecenas pellentesque,dui vitae iaculis mattis, tortor nisi faucibus magna,vitae ultrices lacus purus vitae metus. Our Vision Donec libero dolor, tincidunt id laoreet vitae,ullamcorper eu tortor. Maecenas pellentesque,dui vitae iaculis mattis, tortor nisi faucibus magna,vitae ultrices lacus purus vitae metus. History of Beginning Donec libero dolor, tincidunt id laoreet vitae,ullamcorper eu tortor. Maecenas pellentesque,dui vitae iaculis mattis, tortor nisi faucibus magna,vitae ultric",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-7a877510b64ea0bb",
+          "url": "https://pcmafmayoreo.com/product-category/redes/access-point",
+          "title": "ACCESS POINT archivos - PC MAF MAYOREO",
+          "excerpt": "Skip to navigation Skip to content PC MAF MAYOREO Acceso y Asistencia + Accesorios + Cerraduras + Control de acceso + Control de asistencia Alarmas + Controles + Paquete de alarma + Sensores + Sirenas Almacenamiento + Case + Discos externos + Discos internos + Memorias micro SD Cableado Estructurado + Accesorios + Categoría 5 + Categoría 6 + SIAMES Computo + Accesorios + Fuentes de poder Energía + No breack + Reguladores Monitores / Proyectores + Accesorios + Monitores Redes + Access point + Adaptadores USB + MESH + Router + Router Multiusos + Switch POE + Tarjetas de red internas Smart Home + Amazon + Power bank Video Portero + Analógico + IP Video Vigilancia + DVR + Camaras IP + Accesorios Kits de CCTV + Automovil + NVR + Camaras HD + Fuentes de poder 0 0 0 Tu carrito$0.00 + No hay produ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-9ac47ab18bb17732",
+          "url": "https://pcmafmayoreo.com/contacto",
+          "title": "Contacto - PC MAF MAYOREO",
+          "excerpt": "PC MAF MAYOREO No hay productos en el carrito. PC MAF MAYOREO Contacto Déjanos un mensaje ¿Tiene alguna duda o requiere de asistencia técnica? Envianos un mensaje y con gusto te contactaremos. Por favor, activa JavaScript en tu navegador para completar este formulario. Nuestra dirección República del Salvador 14 Local 33Pb ( Entrada 3, Colonia Centro, Cuauhtémoc, 06000 CDMX Teléfono: 55 8486 4342 Email: info@pcmafmayoreo.com Horario Lunes 10:30 a.m.–7:15 p.m Martes 10 a.m.–7:15 p.m. Miércoles 10 a.m.–7:15 p.m. Jueves 10 a.m.–7:15 p.m. Viernes 10 a.m.–7:15 p.m. Sábado 10 a.m.–7:15 p.m. Domingo 11 a.m.–5:00 p.m. PC MAF MAYOREO Pago 100% Seguro mastercard visa paypal maestro Asegurada por: norton mcafee Encuéntralo rápido Atención al cliente",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:securitynet.com.mx",
+      "countryCode": "MX",
+      "companyName": "SecurityNet",
+      "domain": "securitynet.com.mx",
+      "officialWebsiteUrl": "http://securitynet.com.mx",
+      "primaryRole": "Hybrid",
+      "supportedRoles": [
+        "Distributor",
+        "SI"
+      ],
+      "totalScore": 35,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-7d5276ca7083696b",
+          "url": "http://securitynet.com.mx",
+          "title": "Proveedor Mayorista de Sistemas de Alta Tecnología en CCTV ...",
+          "excerpt": "security net formulario de contacto Estoy deacuerdo y Acepto los Terminos de Uso y Politicad de Privacidad Proveedor Mayorista de Sistemas CCTV 30 años de Experiencia Industrial Seguridad Proyectos Protección Perimetral Equipos Profesionales de CCTV SecurityNet Empresa en Soluciones de Seguridad Compartir en Redes Sociales securitynet quienes somos ■ Con 30 años de experiencia en la Industria de la Seguridad. ■ A la vanguardia tecnológica en el ramo de la Seguridad. ■ Proveedores mayoristas de sistemas de alta tecnología en CCTV. ■ Contamos con un departamento especializado en el diseño e ingeniería de proyectos (Soluciones completas, robustas, durables y a la medida de cada proyecto). SECURITYNET servicios Protección Perimetral ■ Son métodos de defensa basados en recursos de seguridad don",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:adises.com.mx",
+      "countryCode": "MX",
+      "companyName": "Adises",
+      "domain": "adises.com.mx",
+      "officialWebsiteUrl": "https://adises.com.mx",
+      "primaryRole": "Distributor",
+      "supportedRoles": [
+        "Distributor",
+        "VAD"
+      ],
+      "totalScore": 60,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-5676ea22553b7b2b",
+          "url": "https://adises.com.mx",
+          "title": "ADISES Mayoristas de Seguridad Electrónica",
+          "excerpt": "Mayorista en Soluciones de Seguridad Integrada Videovigilancia, Control de Acceso, Detección Incendio, Energía, Redes e Intrusión. Facebook-f · Youtube.",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-5d2829ade9bd7008",
+          "url": "https://adises.com.mx/media/EL-1U-spec-0711.pdf",
+          "title": "[PDF] exacqVision EL-1U PAR T NUMBERS - adises",
+          "excerpt": "• IP Camera Server – Up to 24 IP Cameras (excaqVision Pro) or 16 IP Cameras (exacqVision Start) per server • High Reliability – Linux OS operating on a flash drive ensures unit keeps functioning and alerts you of hard drive failures. • Enterprise Class Storage – Up to 8TB storage on four front-loading, removable enterprise-class disk drives. • Redundant Storage – RAID-5 option for redundant storage. • Professional Rackmount Chassis – 1U rackmount chassis with optional sliding rail kit. • High Performance – Intel® Atom™ processor provides high performance with low power consumption and heat generation. • DVD/CD RW Drive Included – Quickly backup recorded video on the included DVD/CD RW drive. • Dual NIC Included – Keep surveillance video seperate from other network functions. • Low Cost – C",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-85c3afc2c85d1151",
+          "url": "https://adises.com.mx/media/IB9389-EHT-v2_MU-3.pdf",
+          "title": "[PDF] Create certificate request and install 1. Select the option ... - adises",
+          "excerpt": "The network devices, intermediary switch/access point/hub, and RADIUS server must support and enable 802.1x settings. The 802.1x standard is",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-d319cd855f54e913",
+          "url": "https://adises.com.mx/media/EC-TNXPU7.pdf",
+          "title": "[PDF] Departamento de Ingeniería - adises",
+          "excerpt": "SMARTRAC’s DogBone inlays and tags are designed for global supply chain, industrial, RTI and sports timing applications, and ofer excellent performance in demanding environments and on diferent materials. DogBone inlays and tags have a good tolerance to the detuning efect of high-electric materials, providing efective global performance even on difﬁ cult-to-tag materials. They are available with the NXP UCODE 7 chip that ofers unique TID, enables pre-serialized EPC and parallel encoding, and provides a product status ﬂ ag. The inlay is size-optimized for 100 mm / 4 inch wide converted labels, and is available in dry, wet and paper tag delivery formats. SMARTRAC’s inlays and tags are compliant with ISO 9001:2008 Quality Management and ISO 14001:2004 Environmental Management, which ensure a ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-4f2ca1bb93e3a660",
+          "url": "https://www.axxonsoft.com/partners/partner-locator/mexico/adises",
+          "title": "ADISES",
+          "excerpt": "We are a proudly Mexican company dedicated to the marketing and distribution of comprehensive security systems.",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-7fe132ca708dd002",
+          "url": "https://en.tiandy.com/projects/adises/3197.html",
+          "title": "Adises",
+          "excerpt": "You can upload images, spreadsheets, documents, and PDF files. Adises Mexico, Latin America region Tel: 3341622261 Website: www.adises.com.mx. Email: sales@",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:neocenter.com",
+      "countryCode": "MX",
+      "companyName": "Neocenter",
+      "domain": "neocenter.com",
+      "officialWebsiteUrl": "https://www.neocenter.com",
+      "primaryRole": "Distributor",
+      "supportedRoles": [
+        "Distributor",
+        "VAD"
+      ],
+      "totalScore": 62,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-8b7a31034a7aa151",
+          "url": "https://www.neocenter.com",
+          "title": "Neocenter, Mayorista de Telefonía IP y Videoconferencia",
+          "excerpt": "infocomm latinoamerica mexico Yealink 2026 Neocenter Neocenter Mayorista Telefonía en la nube Videoconferencia Xdroid IA generativa mexico analitica voz contac call center Neocenter GoTo Connect CX IA recepcionista virtual Neocenter Mexico Yealink Headsets UH4 Mexico Neocenter Xorcom Hotelería PMS Micros Marriott Logitech MeetUp 2 Mexico Neocenter Yeastar Mexico Sangoma Mexico Neocenter FreePBX PBXact SBC # Nuestras Marcas ## Nuestras Marcas [...] ## Nuestras Marcas Barco ClickShare Biamp Blustream Boom Collaboration CUE epos FreePBX Lenovo Logitech Mitel Sangoma Snom Snom vtech Xdroid Xorcom Yealink Yeastar Yeastar ## Contenido destacado en nuestro Blog EPOS Aston Martin Mexico El equipo de EPOS y Aston Martin Aramco F1® fortalecen su asociación de audio global Logitech la nueva fuerza la",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-8cce8a129390dc04",
+          "url": "https://www.neocenter.com/net2phone",
+          "title": "net2phone México - Neocenter",
+          "excerpt": "Soluciones Modernas de Comunicación Empresarial Descubra soluciones confiables, intuitivas y flexibles para optimizar los flujos de trabajo, colaborar sin esfuerzo y construir relaciones duraderas con los clientes. Gestione cada interacción desde un único lugar Libere todo el potencial de su equipo con soluciones en la nube que simplifican cada interacción. UNITE: Solución de comunicaciones unificadas Plataforma integral de comunicación empresarial Maximice la productividad de su equipo y agilice la comunicación con Unite. Acceda a sus herramientas de voz, mensajería y videoconferencia desde una plataforma centralizada y fácil de usar. TELÉFONO: Lleva tu teléfono de empresa a cualquier parte Manténgase conectado y productivo mientras viaja con su teléfono comercial a su alcance. MENSAJES: ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-12e9785a14323ab7",
+          "url": "https://www.neocenter.com/landing/FreePBX/Certificados/FreePBXCertificate_ArmandoGuadalupeBarajasDiaz.pdf",
+          "title": "[PDF] Armando Guadalupe Barajas Diaz - Neocenter",
+          "excerpt": "THIS CERTIFICATE IS AWARDED TO Armando Guadalupe Barajas Diaz FOR COMPLETING THE FREEPBX TRAINING 2017 - GUADALAJARA, MEXICO February 22-23, 2017 Certificate is Valid for Two Years After Issue Date Sangoma Technologies Inc. 100 Renfrew Drive, Suite 100, Markham, ON Canada L#R 9R6 ERNESTO CASAS Pre-Sales Engineering Director, Cala & Iberia FREDERIC DICKEY VP, Professional Services and Product Management",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-d9306fe34f149fa4",
+          "url": "https://www.neocenter.com/landing/FreePBX/Certificados/FreePBXCertificate_AndresAlbertoLavariega.pdf",
+          "title": "[PDF] Andres Alberto Lavariega Castellanos - Neocenter",
+          "excerpt": "THIS CERTIFICATE IS AWARDED TO Andres Alberto Lavariega Castellanos FOR COMPLETING THE FREEPBX TRAINING 2017 - GUADALAJARA, MEXICO February 22-23, 2017 Sangoma Technologies Inc. 100 Renfrew Drive, Suite 100, Markham, ON Canada L#R 9R6 ERNESTO CASAS Pre-Sales Engineering Director, Cala & Iberia FREDERIC DICKEY VP, Professional Services and Product Management",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-44de2a509653187c",
+          "url": "https://mx.linkedin.com/company/neocentermx",
+          "title": "Neocenter - Mayorista en soluciones para comunicaciones y colaboración.",
+          "excerpt": "Founded in 2003, Neocenter is the leading specialty and value-added distributor in Mexico of high-end technology products for open standards, open source and emerging technologies for telecommunications and IP Telephony, Videoconference and Unified Communications. In 2017 we have partnered with more than 2,000 resellers nationwide who are focused in many economic segments and vertical markets. Our business model is based on the fact that we are the commercial representative for our brands [...] e inteligencia artificial en una sola plataforma diseñada para equipos modernos. Contrata durante junio y comienza a pagar hasta enero de 2027. GoTo Mexico Solicita más info 👉 #GoToConnect #GoToConnectCX #ComunicacionesUnificadas #TelefoniaEmpresarial #ExperienciaDelCliente #CX #IA #TransformacionD",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-5f587e854e09919d",
+          "url": "https://www.neocenter.com/portal?pag=",
+          "title": "Portal de Partners. Neocenter, Mayorista de Telefonía IP y ...",
+          "excerpt": "Neocenter, Mayorista de Telefonía IP. Neocenter S.A. Sur 1446 Piso 10 Actipan, Benito Juárez CDMX Tel. 52 (55) 85 90 90 00",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:diten.mx",
+      "countryCode": "MX",
+      "companyName": "Diten Mayorista de Tecnología S.A. de C.V.",
+      "domain": "diten.mx",
+      "officialWebsiteUrl": "https://diten.mx",
+      "primaryRole": "Reseller",
+      "supportedRoles": [
+        "Reseller",
+        "E-tailer",
+        "Dealer"
+      ],
+      "totalScore": 64,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-3d6cda1a4caf8de2",
+          "url": "https://diten.mx/Switch-H3C-S5130S-10P-HPWR-EI-Gigabit-Ethernet-8-P-9801A1NF",
+          "title": "Switch H3C 8 Puertos PoE Gestionado - Modelo 9801A1NF - Diten.mx",
+          "excerpt": "Diten.mx Diten.mx DITEN.MX Cómputo Explora opciones destacadas de cómputo para casa, oficina y proyectos. Barebones Laptops Impresión Explora opciones destacadas de impresión para casa, oficina y proyectos. Accesorios de Impresión Cabezales Cartuchos Cintas Consumibles y Ribbons Térmicos Escáneres Impresora 3D Impresora de Etiquetas Impresora de Tarjetas Impresora Mini Impresoras Multifuncionales Explora opciones destacadas de hardware para casa, oficina y proyectos. Cables de Red Cables SATA, SAS y Datos Internos Enfriamiento Liquido Fuentes de Poder Gabinetes Procesadores Soportes y Montajes Tarjetas de Expansión Tarjetas de Puertos y Expansión Tarjetas de Video Explora opciones destacadas de almacenamiento para casa, oficina y proyectos. Accesorios de Almacenamiento Discos Duros Externo",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-c879697c0e059fbc",
+          "url": "https://diten.mx/Grandstream?route=product%2Fmanufacturer.info&page=5",
+          "title": "Grandstream Networks en México - Diten.mx",
+          "excerpt": "Diten.mx Diten.mx DITEN.MX Cómputo Explora opciones destacadas de cómputo para casa, oficina y proyectos. Barebones Laptops Impresión Explora opciones destacadas de impresión para casa, oficina y proyectos. Accesorios de Impresión Cabezales Cartuchos Cintas Consumibles y Ribbons Térmicos Escáneres Impresora 3D Impresora de Etiquetas Impresora de Tarjetas Impresora Mini Impresoras Multifuncionales Explora opciones destacadas de hardware para casa, oficina y proyectos. Cables de Red Cables SATA, SAS y Datos Internos Enfriamiento Liquido Fuentes de Poder Gabinetes Procesadores Soportes y Montajes Tarjetas de Expansión Tarjetas de Puertos y Expansión Tarjetas de Video Explora opciones destacadas de almacenamiento para casa, oficina y proyectos. Accesorios de Almacenamiento Discos Duros Externo",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-0a2b06a9adb3154a",
+          "url": "https://diten.mx/ruijie-networks",
+          "title": "Ruijie Networks en México - Diten.mx",
+          "excerpt": "Diten.mx Diten.mx DITEN.MX Cómputo Explora opciones destacadas de cómputo para casa, oficina y proyectos. Barebones Laptops Impresión Explora opciones destacadas de impresión para casa, oficina y proyectos. Accesorios de Impresión Cabezales Cartuchos Cintas Consumibles y Ribbons Térmicos Escáneres Impresora 3D Impresora de Etiquetas Impresora de Tarjetas Impresora Mini Impresoras Multifuncionales Explora opciones destacadas de hardware para casa, oficina y proyectos. Cables de Red Cables SATA, SAS y Datos Internos Enfriamiento Liquido Fuentes de Poder Gabinetes Procesadores Soportes y Montajes Tarjetas de Expansión Tarjetas de Puertos y Expansión Tarjetas de Video Explora opciones destacadas de almacenamiento para casa, oficina y proyectos. Accesorios de Almacenamiento Discos Duros Externo",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-0bebe44cf4fa60dd",
+          "url": "https://diten.mx/punto-de-venta-para-empresas-en-cdmx",
+          "title": "Punto de venta para empresas en CDMX | POS DITEN",
+          "excerpt": "Diten.mx Diten.mx DITEN.MX Cómputo Explora opciones destacadas de cómputo para casa, oficina y proyectos. Barebones Laptops Impresión Explora opciones destacadas de impresión para casa, oficina y proyectos. Accesorios de Impresión Cabezales Cartuchos Cintas Consumibles y Ribbons Térmicos Escáneres Impresora 3D Impresora de Etiquetas Impresora de Tarjetas Impresora Mini Impresoras Multifuncionales Explora opciones destacadas de hardware para casa, oficina y proyectos. Cables de Red Cables SATA, SAS y Datos Internos Enfriamiento Liquido Fuentes de Poder Gabinetes Procesadores Soportes y Montajes Tarjetas de Expansión Tarjetas de Puertos y Expansión Tarjetas de Video Explora opciones destacadas de almacenamiento para casa, oficina y proyectos. Accesorios de Almacenamiento Discos Duros Externo",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    }
+  ],
+  "aliasToCompanyKey": {
+    "MX:domain:mx.ingrammicro.com": "MX:domain:mx.ingrammicro.com",
+    "MX:name:ingrammicromexico": "MX:domain:mx.ingrammicro.com",
+    "MX:domain:tecnosinergia.com": "MX:domain:tecnosinergia.com",
+    "MX:name:tecnosinergia": "MX:domain:tecnosinergia.com",
+    "MX:domain:westtelco.com.mx": "MX:domain:westtelco.com.mx",
+    "MX:name:westtelco": "MX:domain:westtelco.com.mx",
+    "MX:domain:daisytek.com.mx": "MX:domain:daisytek.com.mx",
+    "MX:name:daisytekmexico": "MX:domain:daisytek.com.mx",
+    "MX:domain:incom.mx": "MX:domain:incom.mx",
+    "MX:name:incom": "MX:domain:incom.mx",
+    "MX:domain:maps.com.mx": "MX:domain:maps.com.mx",
+    "MX:name:mapsdisruptivo": "MX:domain:maps.com.mx",
+    "MX:domain:pchconnect.com": "MX:domain:pchconnect.com",
+    "MX:name:pchconnectpchmayoreo": "MX:domain:pchconnect.com",
+    "MX:domain:licenciasonline.com": "MX:domain:licenciasonline.com",
+    "MX:name:licenciasonlinemexico": "MX:domain:licenciasonline.com",
+    "MX:domain:inalarm-online.mx": "MX:domain:inalarm-online.mx",
+    "MX:name:inalarm": "MX:domain:inalarm-online.mx",
+    "MX:domain:arkamayorista.mx": "MX:domain:arkamayorista.mx",
+    "MX:name:arkamayorista": "MX:domain:arkamayorista.mx",
+    "MX:domain:kritical.com.mx": "MX:domain:kritical.com.mx",
+    "MX:name:kriticalhardware": "MX:domain:kritical.com.mx",
+    "MX:domain:pcmafmayoreo.com": "MX:domain:pcmafmayoreo.com",
+    "MX:name:pcmafmayoreo": "MX:domain:pcmafmayoreo.com",
+    "MX:domain:securitynet.com.mx": "MX:domain:securitynet.com.mx",
+    "MX:name:securitynet": "MX:domain:securitynet.com.mx",
+    "MX:domain:adises.com.mx": "MX:domain:adises.com.mx",
+    "MX:name:adises": "MX:domain:adises.com.mx",
+    "MX:domain:neocenter.com": "MX:domain:neocenter.com",
+    "MX:name:neocenter": "MX:domain:neocenter.com",
+    "MX:domain:diten.mx": "MX:domain:diten.mx",
+    "MX:name:diten": "MX:domain:diten.mx"
+  },
+  "costEvents": [
+    {
+      "eventId": "MX-distribution:evaluation:fresh-evidence",
+      "cellId": "MX-distribution",
+      "stage": "evaluation-control-fresh-evidence",
+      "provider": "tavily",
+      "startedAt": "2026-09-06T20:04:13.909Z",
+      "completedAt": "2026-09-06T20:04:31.054Z",
+      "latencyMs": 68030,
+      "attempts": 28,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 22
+      },
+      "volume": {
+        "inputItems": 16,
+        "rawOutputItems": 42,
+        "validOutputItems": 42,
+        "downstreamUsedItems": 42,
+        "discardedReasonCounts": {
+          "noFreshEvidence": 4
+        }
+      },
+      "notes": [
+        "Gemini-unique final candidates only",
+        "historical evidence reads and writes disabled"
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.176,
+      "budgetCostUsd": 0.176,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-distribution:evaluation:correction-search",
+      "cellId": "MX-distribution",
+      "stage": "evaluation-control-correction-search",
+      "provider": "tavily",
+      "startedAt": "2026-09-06T20:04:31.065Z",
+      "completedAt": "2026-09-06T20:06:40.016Z",
+      "latencyMs": 35537,
+      "attempts": 15,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 15
+      },
+      "volume": {
+        "inputItems": 16,
+        "rawOutputItems": 16,
+        "validOutputItems": 16,
+        "downstreamUsedItems": 16,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.12,
+      "budgetCostUsd": 0.12,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-distribution:evaluation-control-correction:1",
+      "cellId": "MX-distribution",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:04:31.065Z",
+      "completedAt": "2026-09-06T20:06:40.016Z",
+      "latencyMs": 59533,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 16397,
+        "outputTokens": 6329,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 16,
+        "rawOutputItems": 16,
+        "validOutputItems": 14,
+        "downstreamUsedItems": 16,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.012638924999999999,
+      "budgetCostUsd": 0.012638924999999999,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "MX-distribution:evaluation-control-correction:2",
+      "cellId": "MX-distribution",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:04:31.065Z",
+      "completedAt": "2026-09-06T20:06:40.016Z",
+      "latencyMs": 68794,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 20332,
+        "outputTokens": 7057,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 16,
+        "rawOutputItems": 16,
+        "validOutputItems": 14,
+        "downstreamUsedItems": 16,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.01498401,
+      "budgetCostUsd": 0.01498401,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "MX-distribution:evaluation-control-correction:3",
+      "cellId": "MX-distribution",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:04:31.065Z",
+      "completedAt": "2026-09-06T20:06:40.016Z",
+      "latencyMs": 23736,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 6703,
+        "outputTokens": 2235,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 16,
+        "rawOutputItems": 16,
+        "validOutputItems": 14,
+        "downstreamUsedItems": 16,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.004860255,
+      "budgetCostUsd": 0.004860255,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "MX-distribution:evaluation-control-correction:4",
+      "cellId": "MX-distribution",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:04:31.065Z",
+      "completedAt": "2026-09-06T20:06:40.016Z",
+      "latencyMs": 56788,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 17380,
+        "outputTokens": 6046,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 16,
+        "rawOutputItems": 16,
+        "validOutputItems": 14,
+        "downstreamUsedItems": 16,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.01282032,
+      "budgetCostUsd": 0.01282032,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "MX-distribution:evaluation-control-score-only:1",
+      "cellId": "MX-distribution",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:06:40.037Z",
+      "completedAt": "2026-09-06T20:08:16.064Z",
+      "latencyMs": 38567,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 9285,
+        "outputTokens": 3372,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 16,
+        "rawOutputItems": 16,
+        "validOutputItems": 16,
+        "downstreamUsedItems": 16,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.006972615,
+      "budgetCostUsd": 0.006972615,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-distribution:evaluation-control-score-only:2",
+      "cellId": "MX-distribution",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:06:40.037Z",
+      "completedAt": "2026-09-06T20:08:16.064Z",
+      "latencyMs": 56324,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 10416,
+        "outputTokens": 5134,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 16,
+        "rawOutputItems": 16,
+        "validOutputItems": 16,
+        "downstreamUsedItems": 16,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00899754,
+      "budgetCostUsd": 0.00899754,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-distribution:evaluation-control-score-only:3",
+      "cellId": "MX-distribution",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:06:40.037Z",
+      "completedAt": "2026-09-06T20:08:16.064Z",
+      "latencyMs": 57034,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 10666,
+        "outputTokens": 5425,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 16,
+        "rawOutputItems": 16,
+        "validOutputItems": 16,
+        "downstreamUsedItems": 16,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.009359459999999998,
+      "budgetCostUsd": 0.009359459999999998,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-distribution:evaluation-control-score-only:4",
+      "cellId": "MX-distribution",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:06:40.037Z",
+      "completedAt": "2026-09-06T20:08:16.064Z",
+      "latencyMs": 61428,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 11501,
+        "outputTokens": 5726,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 16,
+        "rawOutputItems": 16,
+        "validOutputItems": 16,
+        "downstreamUsedItems": 16,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.009984555,
+      "budgetCostUsd": 0.009984555,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-distribution:evaluation-control-score-only:5",
+      "cellId": "MX-distribution",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:06:40.037Z",
+      "completedAt": "2026-09-06T20:08:16.064Z",
+      "latencyMs": 22386,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 7148,
+        "outputTokens": 1867,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 16,
+        "rawOutputItems": 16,
+        "validOutputItems": 16,
+        "downstreamUsedItems": 16,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00473367,
+      "budgetCostUsd": 0.00473367,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-distribution:evaluation-control-score-only:6",
+      "cellId": "MX-distribution",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:06:40.037Z",
+      "completedAt": "2026-09-06T20:08:16.064Z",
+      "latencyMs": 57354,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 10517,
+        "outputTokens": 4976,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 16,
+        "rawOutputItems": 16,
+        "validOutputItems": 16,
+        "downstreamUsedItems": 16,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.008904015,
+      "budgetCostUsd": 0.008904015,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    }
+  ],
+  "warnings": [
+    "No official-domain evidence was extracted for tecnosinergia.com.",
+    "No official-domain evidence was extracted for incom.mx.",
+    "No official-domain evidence was extracted for licenciasonline.com.",
+    "No official-domain evidence was extracted for arkamayorista.mx.",
+    "daisytek.com.mx: Submitted VAD role is not clearly supported by evidence; only Distributor is recorded.",
+    "incom.mx: Escalation was skipped because the configured routine and escalation models are identical.",
+    "incom.mx: Submitted roles of Distributor and VAD are not clearly supported by evidence.",
+    "incom.mx: Independent sources are unrelated to the candidate and do not provide evidence about INCOM's business role.",
+    "incom.mx: Roles without a supported atomic role finding were removed.",
+    "maps.com.mx: Distributor role is supported by multi-vendor portfolio but lacks explicit evidence of supplying downstream channel partners.",
+    "maps.com.mx: Some independent-public evidence is irrelevant to this candidate (e.g., Indonesian distributor article, generic networking articles).",
+    "licenciasonline.com: Most independent-public evidence is irrelevant to this candidate (e.g., Winncom, Access Media, trade.gov, highspeedinternet.com).",
+    "licenciasonline.com: Active networking involvement is not clearly evidenced.",
+    "licenciasonline.com: Deterministic role hints were not auto-added: VAR, ISP.",
+    "inalarm-online.mx: Independent-public evidence suggests Inalarm may have left the security business, conflicting with the active official website.",
+    "inalarm-online.mx: Active networking involvement is not evidenced; the company focuses on security equipment.",
+    "arkamayorista.mx: Escalation was skipped because the configured routine and escalation models are identical.",
+    "arkamayorista.mx: All supplied evidence is irrelevant to the candidate 'Arka Mayorista'.",
+    "arkamayorista.mx: The submitted domain 'arkamayorista.mx' has no corresponding evidence.",
+    "arkamayorista.mx: Evidence appears to be from similarly-named but unrelated companies (Arka Fiber, Araknis Networks, Grupo Arca, ARK Technologies).",
+    "kritical.com.mx: Independent public evidence for this candidate is sparse; most evidence is from the official website.",
+    "kritical.com.mx: Deterministic role hints were not auto-added: SI.",
+    "pcmafmayoreo.com: The submitted roles of Distributor and VAD are not supported by the evidence.",
+    "pcmafmayoreo.com: The official website contains placeholder text (Lorem ipsum) on the About Us page, indicating incomplete content.",
+    "pcmafmayoreo.com: Deterministic role hints were not auto-added: ISP.",
+    "securitynet.com.mx: Independent public evidence for this candidate is sparse; most evidence is from the official website.",
+    "securitynet.com.mx: The submitted VAD role is not explicitly supported by the evidence.",
+    "adises.com.mx: One independent public evidence item (CCHP telehealth consent) is irrelevant to this candidate.",
+    "diten.mx: The submitted roles 'Distributor' and 'VAD' are not supported by the supplied evidence.",
+    "diten.mx: The legal entity name 'Mayorista de Tecnología' suggests wholesale intent, but no channel supply evidence was found.",
+    "diten.mx: Several independent-public evidence items are irrelevant to this candidate (government contact pages, unrelated providers)."
+  ]
+}

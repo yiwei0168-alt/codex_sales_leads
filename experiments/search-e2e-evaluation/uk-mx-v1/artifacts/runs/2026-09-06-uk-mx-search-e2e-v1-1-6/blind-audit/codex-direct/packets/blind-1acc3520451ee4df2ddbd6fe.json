@@ -1,0 +1,44 @@
+{
+  "packetId": "blind-1acc3520451ee4df2ddbd6fe",
+  "targetMarket": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom"
+  },
+  "requestedCategory": "retail",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "TP-Link Mesh WiFi & Routers | Tapo UK",
+    "domain": "tapo.com",
+    "officialWebsiteUrl": "https://uk.store.tapo.com/collections/networking-wifi"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-home-640f0b7799d533e2",
+      "sourceType": "official-website",
+      "url": "https://uk.store.tapo.com/",
+      "title": "Official homepage",
+      "excerpt": "(function(rootPath, template, themeRole, themeId, isThemePreview){ /* Generated on 2026-09-05T13:00:02.1829411Z */(function(){\"use strict\";var te=document.createElement(\"style\");te.textContent=`#shoplift-preview-control{position:fixed;max-width:332px;height:56px;background-color:#141414;z-index:9999;bottom:20px;display:flex;border-radius:8px;box-shadow:13px 22px 7px #0000,9px 14px 7px #00000003,5px 8px 6px #0000000d,2px 4px 4px #00000017,1px 1px 2px #0000001a,0 0 #0000001a;align-items:center;margin:0 auto;left:16px;right:16px;opacity:0;transform:translateY(20px);visibility:hidden;transition:opacity .4s ease-in-out,transform .4s ease-in-out,visibility 0s .4s}#shoplift-preview-control.visible{opacity:1;transform:translateY(0);visibility:visible;transition:opacity .4s ease-in-out,transform .4"
+    },
+    {
+      "evidenceId": "evidence-f6ae7b16e3bc4c31",
+      "sourceType": "independent-public",
+      "url": "https://miro.co.za/01-wi-fi-tp-link-indoor-mesh-wi-fi/6997-tp-link-ac1200-router-whole-home-mesh-system-1-pack-.html",
+      "title": "TP-Link Aginet AC1200 Router Whole Home Mesh System (1 Pack)",
+      "excerpt": "Title: TP-Link Aginet AC1200 Router Whole Home Mesh System (1 Pack) # TP-Link Aginet AC1200 Router Whole Home Mesh System (1 Pack). TP-Link Aginet AC1200 Router Whole Home Mesh System (1 Pack)\"). TP-Link Aginet AC1200 Router Whole Home Mesh System (1 Pack)\"). TP-Link Aginet AC1200 Router Whole Home Mesh System (1 Pack)\"). TP-Link Aginet AC1200 Router Whole Home Mesh System (1 Pack)\"). # TP-Link Aginet AC1200 Router Whole Home Mesh System (1 Pack). It is also the perfect ISP solution as it can be managed and configured with TP -Link Aginet Unified Cloud (TAUC) where you can easily manage, monitor and deploy Wi-Fi routers, DECO and PON products. ## Explore TP-Link’s range of Wi-Fi routers, mesh devices, Tapo smart devices, and Omada enterprise Wi-Fi:. ### Who is TP-Link and what are their pr"
+    },
+    {
+      "evidenceId": "evidence-d4fdc51896dd7837",
+      "sourceType": "independent-public",
+      "url": "https://miro.co.za/01-wi-fi-tp-link-indoor-wi-fi/7216-tp-link-ax3000-agile-configuration-wi-fi-6-router-4897098685839.html",
+      "title": "TP-Link AX3000 Agile Configuration Wi-Fi 6 Router",
+      "excerpt": "Title: TP-Link AX3000 Agile Configuration Wi-Fi 6 Router # TP-Link AX3000 Agile Configuration Wi-Fi 6 Router. TP-Link AX3000 Agile Configuration Wi-Fi 6 Router. TP-Link AX3000 Agile Configuration Wi-Fi 6 Router. TP-Link AX3000 Agile Configuration Wi-Fi 6 Router. TP-Link AX3000 Agile Configuration Wi-Fi 6 Router. # TP-Link AX3000 Agile Configuration Wi-Fi 6 Router. ## Explore TP-Link’s range of Wi-Fi routers, mesh devices, Tapo smart devices, and Omada enterprise Wi-Fi:. **TP-Link Wi-Fi Routers:** Perfect for high-speed internet access, TP-Link’s range of Wi-Fi routers offers various models—AC1200, AX1500, AX1800, and AX3000—tailored to meet the needs of both home and business users. **TP-Link Mesh Wi-Fi Routers:** TP-Link’s mesh units provide a complete home or office Wi-Fi solution, elimi"
+    },
+    {
+      "evidenceId": "evidence-fc90851a4874d47e",
+      "sourceType": "independent-public",
+      "url": "https://fgtechstore.com/product/tp-link-tapo-rva100-robot-vacuum?add-to-cart=18780",
+      "title": "Tp-link Tapo RVA100 Robot Vacuum Replacement Kit - FGTECH STORE",
+      "excerpt": "Title: Tp-link Tapo RVA100 Robot Vacuum Replacement Kit - FGTECH STORE Tp-link Tapo RVA100 Robot Vacuum Replacement Kit. Tp-link Tapo RVA100 Robot Vacuum Replacement Kit - Image 2. ### **TP-Link: Reliable and Affordable Networking Solutions in India**. TP-Link is a globally recognized leader in networking solutions, offering a wide range of **WiFi routers, mesh systems, switches, access points, range extenders, and smart home devices**. With a strong presence in India, TP-Link provides **high-performance, affordable, and user-friendly networking products** for homes, businesses, and gaming enthusiasts. ✅ **Reliable & Affordable:** TP-Link delivers top-tier networking solutions at budget-friendly prices, making it the preferred choice for Indian consumers. ✅ **Advanced WiFi Technologies:** "
+    }
+  ]
+}

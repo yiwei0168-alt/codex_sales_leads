@@ -1,0 +1,44 @@
+{
+  "packetId": "blind-3b16a4d338bb38160a4a87c7",
+  "targetMarket": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom"
+  },
+  "requestedCategory": "resale",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "4Gon Solutions",
+    "domain": "4gon.co.uk",
+    "officialWebsiteUrl": "https://www.4gon.co.uk"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-01367e6c415ea292",
+      "sourceType": "official-website",
+      "url": "https://www.4gon.co.uk/documents/airspan_wimax_brochure.pdf",
+      "title": "[PDF] WiMAX Solutions - 4Gon",
+      "excerpt": "Industry’s most complete WiMAX product family in the widest selection of frequency bands WiMAX Solutions 4Gon www.4Gon.co.uk info@4gon.co.uk Tel: +44 (0)1245 808295 Fax: +44 (0)1245 808299 Airspan’s WiMAX Deployments Around the World 4Gon www.4Gon.co.uk info@4gon.co.uk Tel: +44 (0)1245 808295 Fax: +44 (0)1245 808299 Airspan - The Recognized Leader in WiMAX Airspan is a worldwide leader in broadband wireless with over 500 customers in more than 100 countries. As a founding member of the WiMAX Forum™, Airspan has led the way in WiMAX, being among the first wave of companies to achieve certification for its base station and end user premises equipment. Airspan has a wide variety of Fixed and Mobile WiMAX solutions. Incorporating advance technologies, MicroMAXd addresses the basic fixed needs,"
+    },
+    {
+      "evidenceId": "evidence-c2af0468301f570b",
+      "sourceType": "official-website",
+      "url": "https://www.4gon.co.uk/documents/watchguard_xcs_user_guide.pdf",
+      "title": "[PDF] WatchGuard XCS 9.1 Update 2 User Guide - 4Gon Solutions",
+      "excerpt": "WatchGuard XCS 9.1 Update 2 User Guide WatchGuard XCS Extensible Content Security 9.1 Update 2 User Guide WatchGuardXCS 170,370,570,770,770R,970,1170 4Gon www.4Gon.co.uk info@4gon.co.uk Tel: +44 (0)1245 808295 Fax: +44 (0)1245 808299 About this User Guide The WatchGuard XCS User Guide is updated with each major product release. For minor product releases, only the WatchGuard XCS Help system is updated. Information in this guide is subject to change without notice. Companies, names, and data used in examples herein are fictitious unless otherwise noted. No part of this guide may be reproduced or transmitted in any form or by any means, electronic or mechanical, for any purpose, without the express written permission of WatchGuard Technologies, Inc. Guide revised: 2/7/2011 Copyright, Tradema"
+    },
+    {
+      "evidenceId": "evidence-16979d57e8313931",
+      "sourceType": "official-website",
+      "url": "https://www.4gon.co.uk/documents/option_globesurfer_iii_reference_manual.pdf",
+      "title": "[PDF] GlobeSurfer® III+ - 4Gon",
+      "excerpt": "GlobeSurfer® III+ Technical Reference Manual Copyright © 2011, Option. All information about Option GlobeSurfer® III+ may change without prior notice. Information published in this reference manual is accurate at the time of publication. Although all security precautions were taken during the creation of this reference manual, Option is not liable toward persons or organizations for losses or damages caused either directly or indirectly due to instructions contained in this reference manual. All brands and registered brands are property of their respective owners. Services may be changed, added, or deleted. For the newest firmware version of your GlobeSurfer® III+, visit www.option.com Questions and answers regarding the GlobeSurfer® III+ can be found on our Support website: Technical ques"
+    },
+    {
+      "evidenceId": "evidence-5ad32569a9faeba9",
+      "sourceType": "official-website",
+      "url": "https://www.4gon.co.uk/documents/Cadmus-Distribution-Group-Limited-SIM-Terms.pdf",
+      "title": "[PDF] SIM Services General Terms and Conditions - 4Gon Solutions",
+      "excerpt": "Cadmus Distribution Group Limited t/a Cadmus Products, VoIPon Solutions & 4Gon Solutions Unit 5 Suffolk Dr, Chelmsford, CM2 6UN Tel: +44(0)330 088 0595 Email: info@cdgl.co.uk - Web: www.cdgl.co.uk SIM Services General Terms and Conditions CDGL (Cadmus Distribution Group Ltd.) is a provider of managed communications services including leased lines, telephone lines, mobile services, local national and international telecommunications services, hosted telephone services, PCI compliance, hosted desktop products and broadband. By ordering and using the services you agree to the following Terms and Conditions and that they set out the basis upon which CDGL will provide the services to you the Customer. Some clauses in these General Terms and Conditions may conflict with similar clauses in terms "
+    }
+  ]
+}

@@ -1,0 +1,2315 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+  "cellId": "MX-si-msp",
+  "inputCount": 27,
+  "records": [
+    {
+      "companyKey": "MX:domain:huus.mx",
+      "countryCode": "MX",
+      "companyName": "Huus",
+      "domain": "huus.mx",
+      "officialWebsiteUrl": "https://www.huus.mx",
+      "primaryRole": "Hybrid",
+      "supportedRoles": [
+        "ISP",
+        "MSP"
+      ],
+      "totalScore": 67,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-fe62f303f7ebf5fb",
+          "url": "https://www.huus.mx/soluciones/alta-disponibilidad",
+          "title": "Internet Dedicado y Ciberseguridad Empresarial en México - Huus",
+          "excerpt": "Huus Logo Huus Logo Alta Disponibilidad Tu conexión respaldada por múltiples proveedores, para que una falla en uno de ellos nunca detenga tu operación. Beneficios Huus: Solicita una Propuesta Te respondemos en menos de 24 horas hábiles. Sin compromiso. Diferenciadores clave de Huus Inspección Profunda Visibilidad completa de cómo se usa tu internet, por categoría o sitio. Gestión en Nube Monitorea el estado de tus enlaces desde cualquier lugar, en tiempo real. Monitoreo Libre Consulta el historial de consumo y desempeño cuando lo necesites. Equipo Compatible Compatible con otros proveedores de internet que ya tengas contratados. Preguntas Frecuentes Es una solución que combina múltiples proveedores y tecnologías de acceso, para que si uno falla, otro tome el control automáticamente y tu n",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-e5b31ebf3bd98d43",
+          "url": "https://www.huus.mx",
+          "title": "Huus – Internet Dedicado y Ciberseguridad Empresarial en México",
+          "excerpt": "Huus Logo +52 55 9020 3418WhatsAppCotiza Aquí Huus Logo Cotiza AquíWhatsApp +52 55 9020 3418 10110011 01001010 01010010 11001011 11010101 00101100 00101101 11010010 01101010 11010101 10101100 00101101 11010010 01101010 00101100 10101100 11010010 01101010 00101100 10101100 01101010 11010101 10101100 00101101 Internet dedicado para negocios en México # Huus, te conecta donde lo necesites [...] ### Conectividad 10Gbps para 8 propiedades simultáneas Implementamos fibra dedicada simétrica con alta disponibilidad y SD-WAN para garantizar WiFi sin interrupciones en cada habitación. ✓ Excelente satisfacción de huéspedes Alta disponibilidad <50ms Failover Distribuidora Sigma S.A. Manufactura & Logística ### Zero downtime en planta de 1,200 empleados Diseño de red redundante con failover automático ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-e3c2011a30c8289d",
+          "url": "https://www.huus.mx/legales/politica-de-uso-justo",
+          "title": "Política de Uso Justo | Huus",
+          "excerpt": "Huus Logo Huus Logo Política de Uso Justo A. Objeto y alcance Esta Política de Uso Justo (la \"Política\") establece las conductas permitidas y prohibidas en el aprovechamiento de los servicios de conectividad, red y ciberseguridad que HUUS VAS, S.A. de C.V. (\"Huus\") presta a sus Clientes. Su finalidad es preservar la calidad, la estabilidad y la seguridad de la red para el conjunto de los Clientes, y evitar que un uso desproporcionado o indebido por parte de uno degrade el servicio de los demás. La Política es parte integrante de los Términos y Condiciones y aplica al Cliente, a su personal y a cualquier usuario final que acceda al servicio a través de su infraestructura. El Cliente es responsable del uso que sus usuarios finales hagan del servicio. B. Naturaleza de los servicios contratado",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-d9b6d3ee65939f0c",
+          "url": "https://www.huus.mx/contacto",
+          "title": "Contacto y Cotización - Huus",
+          "excerpt": "Huus Logo Huus Logo Cotiza tu red en minutos Cuéntanos qué necesita tu negocio y un ingeniero especializado te arma una propuesta a la medida. Sin costo y sin compromiso. Hablemos de tu proyecto Te contactamos en menos de 24 horas Sofía 12, Col. Campestre, Alcaldía Álvaro Obregón, Ciudad de México, C.P. 01040 Solicita tu propuesta Respuesta garantizada en menos de 24 horas. ¿Listo para conectarte? ¡Hablemos! Cuéntanos sobre tu negocio y un ingeniero especializado te contactará en menos de 24 horas. Huus Logo Conectando tu negocio en cualquier lugar de México con fibra dedicada y ciberseguridad corporativa. Empresa Soluciones Términos y Políticas Newsletter Tendencias tecnológicas para tu negocio cada mes.",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:ubix.mx",
+      "countryCode": "MX",
+      "companyName": "Ubix",
+      "domain": "ubix.mx",
+      "officialWebsiteUrl": "https://www.ubix.mx",
+      "primaryRole": "Hybrid",
+      "supportedRoles": [
+        "ISP",
+        "Reseller",
+        "Installer",
+        "MSP"
+      ],
+      "totalScore": 67,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-f0c0b108b4b3ea79",
+          "url": "https://www.ubix.mx/ubix-satellite",
+          "title": "Ubix Satellite - EN - Ubix",
+          "excerpt": "Ir al contenido Portal de Cliente THE BEST ENTERPRISE CONNECTIVITY VIA SATELLITE IN MEXICO Logo de Ubix Satelital Our satellite connectivity solutions are a tool for business development, communities, and institutions across all Mexico. We are experts in enterprise connectivity, integrating customized solutions for internet, private networks, and telecommunication tailored to your operations. Our services use low-orbit technology with Starlink equipment and geostationary KA-Band, with the highest quality and support in any location, connecting and enhancing communication between businesses. Main satellite products + Business Plan + Private Satellite Network + Satellital Mobile Backhaul + Residential Plan As an Authorized Starlink Reseller, we strengthen our telecommunications solutions by ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-75a347423a69c34c",
+          "url": "https://www.ubix.mx/en",
+          "title": "En - Ubix",
+          "excerpt": "Telecommunications Solutions for Business Across Mexico OUR PORTFOLIO We offer a wide portfolio of customized business solutions focused on connectivity and business technology integration 4G network ready for 5G network evolution in México. Advanced technological solution for MVNOs to integrate their networks to eSIM technology. Logo de Ubix Satelital Business Internet in KA Band with the best speeds for remote areas. Use different telecommunications technologies to interconnect operations in a single, integrated network. Our technology will allow you to increase productivity and optimize costs for your company. Ubix GTP (Global Traveler Plan) is a B2C data plan product for mobile phones in 190 countries worldwide. Ubix is Technology Maximum speed Innovation We integrate the highest techn",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-0d93c87b18612294",
+          "url": "https://www.ubix.mx/viasat-ubix-offer-high-speed-satellite-internet-to-businesses-across-mexico",
+          "title": "Viasat, Ubix Offer High-Speed Satellite Internet to Businesses ...",
+          "excerpt": "Viasat, Ubix Offer High-Speed Satellite Internet to Businesses across Mexico Partnership Brings Competitive High-Speed Internet Service Offering—Anywhere in Mexico—From Major Urban Areas to the Hardest-to-Reach Locations in the Country Viasat Inc. (NASDAQ: VSAT), a global communications company, and Ubix, a trusted wholesale satellite internet and telecommunications company, announced today a strategic partnership to bring high-speed satellite internet to enterprises, businesses and federal programs across Mexico. Through this relationship, Ubix will sell, install and provide customer support for Viasat’s high-quality satellite internet service to businesses throughout Mexico. Viasat currently has satellite internet coverage over Mexico with its ViaSat-2 satellite—the world’s most powerful",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-26340ab0cfd00f88",
+          "url": "https://www.ubix.mx/acercade",
+          "title": "Acerca de - Ubix",
+          "excerpt": "Tu socio de telecomunicaciones en México y en el mundo Acerca de Ubix Uno de los principales objetivos en Ubix es aumentar la productividad de los procesos de negocio, es por eso que ofrecemos un amplio portafolio de soluciones empresariales a medida enfocadas en la conectividad e integración tecnológica de las empresas. Mantenemos altos estándares de calidad sobre nuestros servicios con la finalidad de garantizar que nuestros clientes puedan disfrutar de una experiencia en conectividad integral, confiable y de alto rendimiento a nivel nacional Más de 10 años conectando empresas en México Ofrecemos un amplio portafolio de soluciones empresariales a medida enfocadas en la conectividad e integración tecnológica de las empresas. Mantenemos altos estándares de calidad sobre nuestros servici",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:c3ntro.com",
+      "countryCode": "MX",
+      "companyName": "C3ntro Telecom",
+      "domain": "c3ntro.com",
+      "officialWebsiteUrl": "https://www.c3ntro.com",
+      "primaryRole": "Hybrid",
+      "supportedRoles": [
+        "ISP",
+        "MSP",
+        "SI"
+      ],
+      "totalScore": 71,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-722c200ea82e6ed6",
+          "url": "https://www.c3ntro.com/en",
+          "title": "C3ntro Telecom — We connect Mexico with what's next.",
+          "excerpt": "The IT infrastructure your company needs for what comes next. We operate every layer — from the physical fiber to the cloud, security, and collaboration — on our own network, with a single engineering standard and a team that already knows your operation. Scroll C3ntro Enterprise C3ntro Enterprise C3ntro Enterprise IT and telecom, in a single service. The complete portfolio for your company, with three solutions under one roof: Connect, Enterprise, and AV Solutions. Explore Enterprise → C3ntro INFRA C3ntro INFRA C3ntro INFRA · MX ⇄ US Proprietary infrastructure for the AI era. Underground dark fiber scalable to 800 Gb, ready for AI workloads and massive data transfer between Mexico and the U.S. Fiber today6,000 km DCs on-net60+ Tikva2,500 km · Q4 2026 AI-ReadyYes View INFRA → C3ntro Global",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-9ec4b7affac4966b",
+          "url": "https://www.c3ntro.com/en/about",
+          "title": "About Us — C3ntro Telecom",
+          "excerpt": "We are C3ntro. We have established ourselves as a world-class carrier with over 30 years of experience committed to technological innovation as a driver of change. Trusted by over 500 clients and backed by a team of 700 professionals across 6 offices and points of presence in more than 50 data centers. Our History Our inspiration for success. 1994 – 2000 Rapid Growth 1994 — Networks México (Netmex) is founded, becoming one of the country's pioneer ISPs. We accelerated our growth to reach a base of 6,000 internet users by 1999. The company was acquired by IFX Networks (NAS: FUTR). In 1997 we launched VoIP services through the international long-distance division. We deployed over 300 POPs across Mexico's largest cities. 2001 – 2009 Connecting LATAM We consolidated Grupo IPBTel, leaders in i",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-31fda8fca54a980a",
+          "url": "https://www.c3ntro.com/noticias/c3ntro-telecom-unveils-tikva-project",
+          "title": "C3ntro Telecom Unveils Tikva Project: A 2,500 km Fiber Network",
+          "excerpt": "Este sitio web almacena cookies en tu ordenador que se utilizan para recoger información acerca de tu interacción con nuestro sitio web y nos permite recordarte. Usamos esta información con el fin de mejorar y personalizar tu experiencia de navegación y para generar analíticas y métricas acerca de nuestros visitantes en este sitio web y otros medios. Para obtener más información sobre las cookies, consulta nuestra Política de privacidad. Si rechazas, no se hará seguimiento de tu información cuando visites este sitio web. Se usará una sola cookie en tu navegador para recordar tu preferencia de que no se te haga seguimiento. Aceptar Declinar Image 1: C3ntro TelecomImage 2 Infraestructura Nuestra RedProyecto Tikva Soluciones ConnectNetwork TechnologyCloudCiberseguridad y resilienciaExperienci",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-0f01917ed4d7349b",
+          "url": "https://www.c3ntro.com/en/solutions/connectivity",
+          "title": "C3ntro Connect — Connectivity & Digital Infrastructure.",
+          "excerpt": "C3ntro Connect · MX ⇄ USA ⇄ LATAM · Proprietary Network Your expert to transform and connect. Dedicated, symmetric, and secure internet over C3ntro's proprietary fiber network, with a guaranteed real SLA. Talk to an expert → Products Our products. LAN to LAN Connect your sites as a single private network, with Layer 2 transport over proprietary fiber. Learn more → Dedicated Internet Dedicated symmetric link with guaranteed SLA and assured bandwidth at all times. Learn more → Datacenter Interconnect High-capacity links between datacenters for replication, backup, and continuity. Learn more → Cloud Connectivity Direct, private connection to major cloud providers: AWS, Azure, and Google Cloud. Learn more → Why C3ntro Connect Enterprise Connectivity. Symmetric dedicated internet with enterpris",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:us.bits.com.mx",
+      "countryCode": "MX",
+      "companyName": "BITS (Business IT Solutions)",
+      "domain": "us.bits.com.mx",
+      "officialWebsiteUrl": "https://us.bits.com.mx",
+      "primaryRole": "Hybrid",
+      "supportedRoles": [
+        "MSP",
+        "SI"
+      ],
+      "totalScore": 70,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-4343fcfd88d940c5",
+          "url": "https://us.bits.com.mx/telecommunications-service-providers-in-mexico",
+          "title": "Telecommunications Service Providers in Mexico - Bits",
+          "excerpt": "Now Hiring: Are you a driven and motivated 1st Line IT Support Engineer? BITS INNOVATION 2B GREAT English + Español Blog Home IT articles and digital transformation Telecommunications Telecommunications Service Providers in Mexico Telecommunications Service Providers in Mexico Telecommunications Service Providers in Mexico Telecommunications Telecommunications Service Providers in Mexico Bits June 15, 2023 0 Comment Telecommunications Service Providers in Mexico Telecommunications Service Providers in Mexico play a crucial role in our daily lives in today’s modern world. Whether we are working, studying, or simply enjoying our free time, we rely heavily on telecommunications services to stay connected. In Mexico, telecommunications service providers play a vital role in providing access to",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-b5320e23f2b43b63",
+          "url": "https://us.bits.com.mx/glossary/help-desk",
+          "title": "Help Desk - BITS INNOVATION 2B GREAT",
+          "excerpt": "BITS INNOVATION 2B GREAT Managed ITSM BITS helps you delegate the entire IT service, under the highest standards of compliance and security. Enjoy the experience of our expertise in ITIL and Cobit. Managed Endpoint security & Patching Achieve management, compliance and security for the entire universe of your endpoints, even in heterogeneous environments. Managed Help Desk Join our success stories with an expert help desk for service and resolution. see our references. Managed IT & Telecomunications Service Unify, standardize and save with one global provider for IT and telecommunications installations and maintenance. Managed Datacenter Mantenaince Achieve the uptime needed to provide security and continuity to your business, plus add security and compliance processes based on ISO 27001 a",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-5af3006ca8eeb855",
+          "url": "https://us.bits.com.mx/network-management-as-a-service",
+          "title": "Network Management as a Service - BITS INNOVATION 2B GREAT",
+          "excerpt": "Now Hiring: Are you a driven and motivated 1st Line IT Support Engineer? BITS INNOVATION 2B GREAT BITS INNOVATION 2B GREAT Network Management as a Service Welcome to our Network ManagementNetwork management refers to the processes and tools used to... More as a Service (NMaaS) by Bits! Our NMaaS solution offers comprehensive network managementNetwork management refers to the processes and tools used to... More for businesses of all sizes. We understand that managing a network can be complex and time-consuming, which is why we’re here to take that burden off your shoulders. Schedule a call with our experts Network Management as a Service Network managementNetwork management refers to the processes and tools used to... More services involve the configuration of these networks to optimize per",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-452b49b1f24baec5",
+          "url": "https://us.bits.com.mx/technology-and-services-partners/vmware-mexico-distributor-partner",
+          "title": "VMware Mexico distributor partner - BITS INNOVATION 2B GREAT",
+          "excerpt": "BITS INNOVATION 2B GREAT Managed ITSM BITS helps you delegate the entire IT service, under the highest standards of compliance and security. Enjoy the experience of our expertise in ITIL and Cobit. Managed Endpoint security & Patching Achieve management, compliance and security for the entire universe of your endpoints, even in heterogeneous environments. Managed Help Desk Join our success stories with an expert help desk for service and resolution. see our references. Managed IT & Telecomunications Service Unify, standardize and save with one global provider for IT and telecommunications installations and maintenance. Managed Datacenter Mantenaince Achieve the uptime needed to provide security and continuity to your business, plus add security and compliance processes based on ISO 27001 a",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:censystems.com.mx",
+      "countryCode": "MX",
+      "companyName": "Censystems",
+      "domain": "censystems.com.mx",
+      "officialWebsiteUrl": "https://censystems.com.mx",
+      "primaryRole": "Hybrid",
+      "supportedRoles": [
+        "SI",
+        "MSP"
+      ],
+      "totalScore": 78,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-184243f2c5130e6b",
+          "url": "https://censystems.com.mx",
+          "title": "Homepage - Censystems",
+          "excerpt": "Ayudamos a las empresas a reducir su exposición de riesgo a través de la incorporación de procesos y tecnología que protegen los accesos no autorizados a los recursos de la empresa, garantizando la confidencialidad, integridad y disponibilidad de la información. Alineados a estándares de la industria y mejores prácticas para la seguridad, continuidad de negocio y cumplimiento de las normas de la Comisión Nacional Bancaria, como pueden ser ITIL, ISO27001, ISO22301, Circular 14/2017, entre otras. [...] ### IOT (Internet de las Cosas) El Internet de las Cosas, (IOT por sus siglas en inglés) es la evolución en la conectividad de empresas, industrias, personas, hogares, gobiernos y más; sistemas avanzados que permiten un acceso seguro a una arquitectura sofisticada que nos mantiene interconecta",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-47e0c4b1834a18bd",
+          "url": "https://censystems.com.mx/project/xcaret",
+          "title": "Xcaret - Censystems",
+          "excerpt": "Censys Xcaret Parque Natural En 2013, Grupo Experiencias Xcaret que se conforma por los parques naturales Xcaret, Xplor y Xel-Há en la Riviera Maya, Quintana Roo, se acercaron a Cisco y a su partner Censys para desplegar tecnología que fundamentalmente incrementara la experiencia de sus clientes. Resultados Antecedente Estos tres parques son parte de los atractivos turísticos más importantes de la Riviera Maya, donde se viven experiencias mágicas a la orilla de las aguas del Mar Caribe. Requerían ampliar su gama tecnológica para: Solución Por lo cual, se optó por desplegar: Tener conectividad inalámbrica en: Hoy los empleados cuentan con herramientas tecnológicas para atender mucho mejor a sus visitantes, completar entrenamientos y capacitaciones, así como herramientas de colaboración entr",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-74e9f168b65b3d6d",
+          "url": "https://censystems.com.mx/acerca-de-censys",
+          "title": "Quiénes Somos - Censystems",
+          "excerpt": "Censys Impactamos positivamente en el negocio de nuestros clientes 16 años de crear valor a tu negocio, mediante el diseño, venta y servicios especializados y certificados CISCO. Somos empresa mexicana fundada en 2010 bajo la razón social de Cen Systems, S.A. de C.V., socio de negocios estratégico que cubre las necesidades tecnológicas de organizaciones públicas y privadas a través de una amplia gama de soluciones y servicios de TI. Nuestra Gente Ingenieros Certificados en Soluciones de los diferentes fabricantes. Ingenieros Certificados en Cisco. Equipo de Ingeniería en Campo. Equipo de Ingenieros en ServicesDesk – N1 y N2. Equipo Comercial Especializado. +130 Colaboradores. En Censys nos hemos preparado para que nuestros clientes transiten una ruta hacia la transformación digital de su n",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-651e3e56136d3874",
+          "url": "https://censystems.com.mx/project/universidad-de-arkansas",
+          "title": "Universidad de Arkansas - Censystems",
+          "excerpt": "Censys Arkansas State University Querétaro Educación Censys desplegó múltiples soluciones para lograr que este nuevo campus se convirtiera en una Universidad de vanguardia. Resultados Antecedentes En septiembre de 2017, la Arkansas State University inauguró su primer campus en México, eligió a Querétaro para expandir su sistema de estudios a jóvenes deseosos de recibir educación más allá de las fronteras. Para arrancar este nuevo proyecto, requería de una infraestructura tecnológica robusta, escalable y de fácil administración, por lo cual contactó a Censys como único proveedor; esto le proporcionó la garantía de compatibilidad y eficiencia para cubrir sus necesidades. Juntos lograron construir un campus inteligente que cuenta con conectividad ininterrumpida, acceso en cualquier rincón de ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-ff81816886d696c9",
+          "url": "https://mx.linkedin.com/company/cen-systems",
+          "title": "Censys - Thinking ideas... Connecting solutions",
+          "excerpt": "Empresa mexicana fundada en el 2010, se constituye como un socio estratégico que cubre las necesidades tecnológicas de empresas públicas y privadas, a través de una amplia gama de servicios y soluciones en TI, buscando generar un impacto positivo al negocio de nuestros clientes. Siendo Gold Partner de CISCO e integrador de redes, seguridad y soluciones de TI, contamos con personal certificado y calificado con amplia experiencia en las tecnologías donde somos especialistas. Presencia en la [...] ### Investors N/A ### Specialties Cisco Gold Partner, Switching, Routing, Wireless, Collaboration, Security, IOT, Datacenter, Meraki, Service Desk, Field Services, Managed Services, and XaaS ## Locations Avenida Río San Joaquín 436, Miguel Hidalgo, Mexico City 11529, MX, Av. San Jerónimo #310 Piso 2",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:its-systems.mx",
+      "countryCode": "MX",
+      "companyName": "ITS-Systems",
+      "domain": "its-systems.mx",
+      "officialWebsiteUrl": "https://its-systems.mx",
+      "primaryRole": "Unresolved",
+      "supportedRoles": [],
+      "totalScore": 0,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": false,
+      "operatesInTargetMarket": false,
+      "evidence": [
+        {
+          "id": "evidence-90d624e309c5f22b",
+          "url": "https://www.cudy.com/en-us/blogs/faq/how-to-install-cudy-wi-fi-router",
+          "title": "How to install Cudy Wi-Fi Router?",
+          "excerpt": "4. Connect the power adapter to the router and wait the System LED turn to solid on (red or blue). 5. Connect your computer to the router via Wi-Fi or Ethernet. 6. Check the LEDs to confirm the hardware connection are correct. Note: Please make sure you can access internet when you connect the computer directly to the modem. If it failed to get the internet, please contact your Internet Service Provider. Step 1: Open a web browser and go to or [...] “Tengo un rauters Ax 3000. No sincroniza se queda el led en rojo. Lo he reiniciado y sigue igual . Que debo hacer.” Tengo un rauters Ax 3000. No sincroniza se queda el led en rojo. Lo he reiniciado y sigue igual . Que debo hacer. @Estimado Радик Минханифович Батршин, puede intentar restablecer el router a los ajustes de fábrica manteniendo puls",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-14a74b84361079e3",
+          "url": "https://www.paloaltonetworks.com",
+          "title": "Palo Alto Networks",
+          "excerpt": "2026 Gartner® Magic Quadrant™ for SASE Platforms The Forrester Wave™: Enterprise Firewall Solutions Gartner® Magic Quadrant™ for Single-Vendor SASE Gartner® Magic Quadrant™ for Network Firewalls Gartner® Magic Quadrant™ for SD-WAN ABI Research Industrial FW Competitive Assessment 2026 Gartner® Magic Quadrant™ for Security Service Edge Forrester Wave™: Operational Technology Security Solutions Forrester New Wave™: ZTNA Forrester New Wave™: Zero Trust Platform Providers [...] Discover how prevention starts before the attack at InterSECt 2026. Watch Now Prisma AIRS AI Gateway is now generally available Search Tech Docs # Control the chaos. Secure every identity. ## Introducing Idira®, the next-generation identity security platform that secures every identity for the AI enterprise. Discover Id",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-fef997a2fbf912e2",
+          "url": "https://docs.thousandeyes.com/whats-new/changelog",
+          "title": "Changelog | ThousandEyes Documentation",
+          "excerpt": "For more information on these tools, see ThousandEyes MCP Server. ## 2026-06-09 ### Endpoint Agent Client Version 2.47.2 The following enhancements have been made to the Endpoint Agent client: #### All Platforms Fixed an issue where a VPN node incorrectly appeared in Test Views and the segment visualization in Agent Views for Cisco ZTA application tests when VPN and ZTA were both active on the same endpoint. ## 2026-06-01 [...] The Endpoint Agent utilizes the radios on your Cisco C9172H access point to continuously rotate through SSIDs and BSSIDs across the 2.4 GHz, 5 GHz, and 6 GHz bands. It performs both pre-connection and synthetic tests, enabling seamless, real-time monitoring of your Wi-Fi network’s performance. Key features include: [...] Pre-connection tests, such as Wi-Fi associati",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-20c253e2ed33000e",
+          "url": "https://www.dayzim.com/careers",
+          "title": "D&Z Careers - Dayzim",
+          "excerpt": "# Careers We put people to work, we protect our freedoms, and we help our customers power and improve the world. © 2026 Day & Zimmermann. All rights reserved. Privacy Policy Employee Information and Income Verification",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-9a8ef56a471d1706",
+          "url": "https://www.fcc.gov/general/universal-service",
+          "title": "Universal Service | Federal Communications Commission",
+          "excerpt": "An official website of the United States government Here’s how you know Official websites use .gov A .gov website belongs to an official government organization in the United States. Secure .gov websites use HTTPS A lock ( Lock Locked padlock icon ) or means you’ve safely connected to the .gov website. Share sensitive information only on official, secure websites. Federal Communications Commission logo # Universal Service ## Universal Service [...] areas. Today, the FCC recognizes high-speed Internet access as an essential communications technology of the 21st century, and is working to make broadband as widely available as voice service, while continuing to support voice service. [...] of universal service programs that serve the public interest nationwide.",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:erisystems.com.mx",
+      "countryCode": "MX",
+      "companyName": "ERIS Systems Corporation, S.A. de C.V.",
+      "domain": "erisystems.com.mx",
+      "officialWebsiteUrl": "https://erisystems.com.mx",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP"
+      ],
+      "totalScore": 53,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-560bd1f0d8fb9a57",
+          "url": "https://erisystems.com.mx",
+          "title": "ERISYSTEMS: Servicios Administrados de TI para Empresas",
+          "excerpt": "Estructuramos tu área de TI mediante servicios administrados de TI. Ideal para empresas sin área de TI o que buscan estabilidad y continuidad.",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-12c40638e7a2a552",
+          "url": "https://erisystems.com.mx/privacidad",
+          "title": "Privacidad y Alcances | ERISYSTEMS® | Servicios Administrados de TI para Empresas | MSP",
+          "excerpt": "ERIS Imagotipo H Inicio Conócenos Contáctanos Blog Información de Privacidad y Alcance de Servicio En ERISYSTEMS cumplimos cabalmente con la Ley Federal de Protección de Datos Personales en Posesión de los Particulares, así como con los principios éticos de operación profesional en tecnología de la información. IDENTIFICACIÓN COMERCIAL ERIS Systems Corporation, S.A. de C.V., será denominado en este documento como \"ERISYSTEMS\", a efectos de identificación como nombre comercial. SERVICIOS DE ADMINISTRACIÓN DE ÁREA DE SISTEMAS Para poder llevar a cabo nuestros servicios, es necesario que el cliente proporcione acceso físico o remoto a las áreas y equipos de cómputo cubiertos por la póliza, así como las claves de usuario y contraseñas de todo producto o servicio relacionado, siempre y cuando e",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-b53b71d62a1a0178",
+          "url": "https://erisystems.com.mx/blog",
+          "title": "Blog | ERISYSTEMS® | Servicios Administrados de TI para Empresas",
+          "excerpt": "ERISYSTEMS® es un proveedor de Servicios Administrados de TI para Empresas | MSP, especializado en estructurar y administrar áreas de sistemas para mantener",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-f4c527341436d9ce",
+          "url": "https://erisystems.com.mx/optimizacion-recursos-tecnologicos",
+          "title": "Optimización de recursos TI para empresas | MSP - ERISYSTEMS",
+          "excerpt": "Optimizamos tu infraestructura de TI para mejorar rendimiento, control y alineación con la operación real de tu empresa.",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-6aadc4cade6654a4",
+          "url": "https://erisystems.com",
+          "title": "ER Information Systems",
+          "excerpt": "Established for 20 years, ER Information Systems provides IT Support Services, proactive network monitoring, hardware, software, cloud services and strategic IT",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-bd9c055d9227f37f",
+          "url": "https://www.erisys.com",
+          "title": "Home | My Site",
+          "excerpt": "ERISYS RF Solutions provides professional hardware and software tools that are in use by the world's leading Electronic Warfare (EW),",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-4c7fdffd7349d0c8",
+          "url": "https://erisconnects.com",
+          "title": "eRIS | Your Information...Smarter",
+          "excerpt": "CONTACT US Page load link Go to Top [...] #### intuitive user experience with tools & integrators [...] #### ABOUT US #### TOOLS & INTEGRATORS #### HOW TO STAY CONNECTED #### PRODUCTS #### TRAINING #### CONTACT US #### ABOUT US # ABOUT eRIS",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-07215aed809ad0ad",
+          "url": "https://www.eiresystems.com",
+          "title": "EIRE Systems: IT Support Tokyo, Japan & Asia Pacific-wide",
+          "excerpt": "out-of-control timelines are a thing of the past with EIRE Systems. With an array of talented professionals skilled in a variety of disciplines, EIRE Systems will help you achieve your business, technology and infrastructure goals on time, on budget and completely to spec. [...] ## Get a Consultation and Learn More about Project Managment Contact Us Now services ### Cloud Solutions Cloud and wireless concept image for cloud service unlimited storage space Don’t let server woes keep you from scaling up to the appropriate level for your growing business. EIRE Systems cloud solutions help you manage data and processes by accessing reliable cloud networks, so the sky is literally the limit when it comes to technology for your company. [...] Skip to content EIRE Home2026-03-06T05:20:35-05:00 # ",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-1627d84448779f6c",
+          "url": "https://www.erisinfo.com",
+          "title": "ERIS Environmental Risk Information Services",
+          "excerpt": "During this period, access to the ALL ERIS’ system and related services will not be available (ERIS web order form, Xplorer, Mobile app, ERIS Direct and SCRIVA applications will not be available). We recommend completing any critical work before the maintenance window begins. We apologize for any inconvenience and appreciate your patience as we work to improve our services. [...] ###### About Us About ERIS Our Story Who Uses ERIS? ###### Software as a Service Scriva ERIS Direct © 2026 ERIS Environmental Risk Information Services. All Rights Reserved. Privacy Policy Careers Scheduled System Maintenance Please be advised that our systems will be unavailable on Saturday, July 4th, from 12:00 AM to 10:00 PM Eastern Time due to scheduled maintenance. [...] #### By providing the most current dat",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:integraindustrialnetworks.com",
+      "countryCode": "MX",
+      "companyName": "Integra Industrial Networks",
+      "domain": "integraindustrialnetworks.com",
+      "officialWebsiteUrl": "https://integraindustrialnetworks.com",
+      "primaryRole": "Unresolved",
+      "supportedRoles": [],
+      "totalScore": 0,
+      "eligibilityStatus": "ineligible-for-current-task",
+      "isRealOperatingCompany": false,
+      "operatesInTargetMarket": false,
+      "evidence": [
+        {
+          "id": "evidence-fb9d9d06c014ebdf",
+          "url": "https://integranetwork.es",
+          "title": "Integra Network | Soluciones completas de equipamiento informático",
+          "excerpt": "Política de Privacidad|Aviso Legal|Política de Cookies | Condiciones generales de venta | Código de Conducta | Política de Medioambiente © 2026 Integra Network. Política de Privacidad|Aviso Legal|Política de Cookies | Condiciones generales de venta | Código de Conducta | Política de Medioambiente © 2025 Integra Network casino50 Betsalvador ödeme yöntemleri hakkında resmi web sitesi üzerinden ayrıntılı bilgi bulunuyor. Gestionar consentimiento [...] Inicio Conócenos Productos Boards and módulos Sistemas y plataformas Panel PC industrial Antenas Soluciones alot Switches industriales Hardened routers Soluciones Aten Servidores y workstations Digital signage Soluciones PC industriales y plataformas integradas Switches Ethernet Soluciones Antenas [...] ## Integra Network EnIntegra Networkdesarr",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-396773b4111b79cc",
+          "url": "https://www.integranets.com",
+          "title": "One Stop Shop for Business Technology | Integra Network Services",
+          "excerpt": "are pleasant and thorough. We highly recommend Integra Network Services! [...] continues to be a great partner to us on our projects. [...] their client’s satisfaction.",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-7f1aae00b26e35f7",
+          "url": "https://www.integra-tech.com/about-us/facilities-locations",
+          "title": "Facilities & Locations",
+          "excerpt": "For over 40 years, Integra has been the backbone of the aerospace, defense, space, medical, automotive, and communications sectors, delivering the most comprehensive suite of microelectronic products and services globally. In January 2025 Micross acquired Integra, leading U.S. OSAT provider. View Now ▶ About Us ▶ Facilities & Locations # Facilities & Locations [...] + - Products & Services - Hi-Rel Components - Apopka, FL - Hi-Rel Power - San Jose, CA - Hi-Rel RF Solutions - Shirley, MA - Couplers & Harnesses - Sunrise, FL - Hi-Rel Diodes - Reynosa, MX - Integra Technologies - Wichita, KS - Integra Technologies - Milpitas, CA - AIT - Raleigh, NC - STS - Milpitas, CA - Premier Services - Clearwater, FL + - Component Modification - CMS - Manchester, NH - CMS - Round Rock, TX [...] Destructiv",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-614e700971214b19",
+          "url": "https://www.integratechnologies.com/contact-us",
+          "title": "Contact Us | INTEGRA Technologies Service, Rental, Products",
+          "excerpt": "Skip to content INTEGRA Technologies Logo INTEGRA Technologies Logo INTEGRA Technologies Logo ## CONTACT US # REQUEST A QUOTE Contact Usadmin2026-01-06T17:12:52+00:00 ## ON-CALL TO SUPPORT YOU 24 HOURS A DAY ### REQUEST A QUOTE ## OUR LOCATIONS Toll-Free: 1800-779-2658 INTEGRA Hex Icon LOUISIANA INTEGRA Services Technologies, Inc. 35238 Hwy 30 Geismar, LA 70734 Tel: 713-920-2400 Fax: 713-920-2313 INTEGRA Hex Icon [...] INTEGRA Hex Icon Ellesmere Port Poole Hall Industrial Estate Poole Hall Rd Ellesmere Port CH66 1ST United Kingdom Tel: 44 (0) 7548 779500 7548 779500) Email: dliddle@integratechnologies.com Page load link This website uses cookies and third party services. Ok Terms and Conditions Go to Top [...] INTEGRA Hex Icon TEXAS INTEGRA Services Technologies, Inc. 5812 Genoa Red Bluff ",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-11eac29f1cad8328",
+          "url": "https://www.integracustomsystems.com/computer-network",
+          "title": "Integra Custom Systems | WiFi & Wired Network Solutions & Repair",
+          "excerpt": "Fill out the form to get a quote or more information on any and all of your networking needs! network Home About Services + Alarm Systems & Monitoring + Home Theater + Home Audio + Computer Networking + Video Doorbells + Home Automation + Door & Gate Access Control + Surveillance Cameras + Commercial Services + Existing Systems Service Project Gallery Testimonials Contact Us [...] Skip to content Integra Custom Systems Integra Custom Systems ### No Alarm Company Keeps You Safer! ### (520) 546-2982 Free Quote Login network (1)\") ### Comprehensive Network Solutions Integra Custom Systems is your go to for all things networking! From adding new devices, running new lines, hard-wired in-wall CAT6 outlets, wireless network set-up, range extension and maintenance, we do it all!",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:integra.red",
+      "countryCode": "MX",
+      "companyName": "Integra GICOM",
+      "domain": "integra.red",
+      "officialWebsiteUrl": "https://integra.red",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "Installer"
+      ],
+      "totalScore": 47,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": false,
+      "evidence": [
+        {
+          "id": "evidence-efcbc4091231740b",
+          "url": "https://integra.red/redes-inalambricas-para-entornos-industriales-la-clave-de-la-conectividad-eficiente",
+          "title": "Redes Inalámbricas para Entornos Industriales: La Clave de la Conectividad Eficiente – INTEGRA GIC COM",
+          "excerpt": "Redes Inalámbricas para Entornos Industriales: La Clave de la Conectividad Eficiente Redes Inalambricas En Entornos Industriales En un mundo donde la automatización y la conectividad son esenciales para la competitividad de cualquier industria, las redes inalámbricas para entornos industriales han evolucionado como una solución clave para optimizar procesos, reducir costos y mejorar la productividad. En este artículo, exploraremos por qué la conectividad sin cables es el futuro de la industria y cómo Integra.Red ofrece las mejores soluciones en este campo. ¿Qué son las redes inalámbricas para entornos industriales? Las redes inalámbricas industriales son sistemas de comunicación que permiten la transmisión de datos sin cables en entornos de manufactura, logística y automatización. A difere",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-1d77827e26cbf1a5",
+          "url": "https://integra.red/que-soluciones-de-red-ofrecen-para-mejorar-la-conectividad-en-mi-empresa",
+          "title": "¿Qué soluciones de red ofrecen para mejorar la conectividad en mi ...",
+          "excerpt": "Implementación de redes cableadas y Wi-Fi optimizadas para empresas. Adaptación de soluciones según el tamaño y giro del negocio. Seguridad avanzada para",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-4359aefb04406e5e",
+          "url": "https://integra.red/conectividad-para-negocios-impulsando-el-crecimiento-empresarial",
+          "title": "Conectividad para Negocios: Impulsando el Crecimiento Empresarial",
+          "excerpt": "La conectividad empresarial se refiere a la interconexión de los diversos sistemas, dispositivos y personas dentro de una empresa. Esto incluye desde la",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-2a318cd6dc1f491f",
+          "url": "https://integra.red/puertos",
+          "title": "Puertos - INTEGRA GIC COM",
+          "excerpt": "En Integra Industrial Networks, nos especializamos en desarrollar y desplegar soluciones tecnológicas que transforman los puertos en centros más eficientes,",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:syemex.com",
+      "countryCode": "MX",
+      "companyName": "Syemex (Sistemas y Enlaces de México)",
+      "domain": "syemex.com",
+      "officialWebsiteUrl": "https://www.syemex.com",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "Installer"
+      ],
+      "totalScore": 61,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-f49c2172bb90b3bd",
+          "url": "https://www.syemex.com",
+          "title": "Syemex | Integración en Telecomunicaciones",
+          "excerpt": "Sistemas y Enlaces de México es una empresa mexicana con más de 20 años de experiencia en telecomunicaciones. Analizamos la tecnología disponible para seleccionar las opciones que aseguran facilidad en la administración de información, impulso a la productividad y reducción de costos. [...] Syemex Fibra Óptica Nosotros Servicios Proyectos Socios Comerciales Contacto Integración en Telecomunicaciones # Conectamos México con fibra óptica Sistemas y Enlaces de México — soluciones de infraestructura de telecomunicaciones a la vanguardia de la tecnología, desde la planta externa hasta tu instalación interna. Conoce nuestros servicios → Contáctanos 20+ Años de experiencia 12+ Socios comerciales Áreas de servicio // Quiénes somos ## Más de dos décadas transformando redes [...] 📍 UbicaciónNance #",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-f154d9cb48fe6b2a",
+          "url": "https://www.syemex.com/proyecto/imss-de-occidente",
+          "title": "I.M.S.S. De Occidente | Syemex",
+          "excerpt": "Actualización de nodos de Voz y Datos Actualización de nodos de Voz y Datos I.M.S.S. De Occidente Actualización de nodos de Voz, Datos y Salidas Reguladas en unidades médicas familiares y hospitales del I.M.S.S. de Occidente. Compartir: facebook twitter google+ AVISO DE PRIVACIDAD De acuerdo a lo Previsto en la “Ley Federal de Protección de Datos Personales”, declara Sistemas y Enlaces de México, S.A. de C.V., ser una empresa legalmente constituida de conformidad con las leyes mexicanas, con domicilio en Nance #1412, colonia del Fresno, C.P. 44900 en Guadalajara, Jaisco; y como responsable del tratamiento de sus datos personales, hace de su conocimiento que la información de nuestros clientes es tratada de forma estrictamente confidencial por lo que al proporcionar sus datos personales, ta",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:grupoimtelec.com.mx",
+      "countryCode": "MX",
+      "companyName": "Grupo Imtelec",
+      "domain": "grupoimtelec.com.mx",
+      "officialWebsiteUrl": "https://www.grupoimtelec.com.mx",
+      "primaryRole": "Unresolved",
+      "supportedRoles": [],
+      "totalScore": 0,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": false,
+      "operatesInTargetMarket": false,
+      "evidence": [
+        {
+          "id": "evidence-e938cf2f71633ae3",
+          "url": "https://ensun.io/search/system-integrator/mexico",
+          "title": "Top 100 System Integrator Companies in Mexico (2026) | ensun",
+          "excerpt": "INTEGRA Instalaciones y Mantenimiento's Logo INTEGRA Instalaciones y Mantenimiento Hermosillo, Mexico D 501-1000 Employees 2002 Key takeaway INTEGRA IM specializes in engineering and construction solutions for fluid conduction systems, emphasizing their ability to meet international codes and requirements. With nearly 20 years of experience, they are well-equipped to deliver high-quality, efficient systems, making them a valuable partner for system integration needs. Reference [...] Mexico D 1-10 Employees - Key takeaway ITS Integradores is a telecommunications company in Mexico that specializes in providing innovative solutions and services, making it well-suited for clients seeking effective communication strategies. Reference Find employees Similar companies Core business ITS Integrador",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-072d040857030d49",
+          "url": "https://www.avilatinoamerica.com/en/news/latest-news/293-enterprises/24278-integratec-mexico-event-for-technology-integrators.html",
+          "title": "IntegraTEC Mexico: event for technology integrators",
+          "excerpt": "Jul 2, 2024 — IntegraTEC Mexico, the leading trade fair and conference in technological systems integration in Latin America, will be held on August 14 and 15 ...Read more",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-3bb67f4bd8961cee",
+          "url": "https://www.internexa.com/en",
+          "title": "Internexa: Wholesale Fiber Optic Connectivity Services Carrier.",
+          "excerpt": "Connectivity Ethernet services for business Dedicated high-speed Internet Direct Connectivity to Public Clouds Datacenter Datacenter Datacenter for business More than 20 years connecting telecommunications operators and ISPs in Latin America with the world, through reliable connectivity and infrastructure solutions that positively impact the optimization of your operation and the satisfaction of your customers and users. Connectivity Connectivity [...] Logo InterNexa RGB_ING-02 Logo InterNexa RGB_ING-02 Data Center Interconnection 01 Data Center Interconnection Connect to the region's leading data centers through a robust and highly available network. Discover it! >> Dedicated Internet for ISPs 02 Dedicated Internet for ISPs Discover our Dedicated Internet solution for ISPs and access the ",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-f8c3475f2d67e38a",
+          "url": "https://www.integratec.show/en",
+          "title": "IntegraTEC™ - Conference & Exhibition for Pro A/V and Systems Integration",
+          "excerpt": "Select your language Español IntegraTEC™ Show ## Sidebar IntegraTEC: The only event for technology integration in Latin America ## IntegraTEC: The only event for technology integration in Latin America Attend and be part of the new RoadShows. • Lima, Peru – September 3rd, 2026 | Costa del Sol Wyndham Lima City • Panama City, Panamá – September 24th, 2026 | RIU Plaza Panamá • Asuncion, Paraguay – October 29th, 2026 | Esplendor by Wyndham Asunción [...] Monterrey becomes the epicenter of technology and business in Latin America. An innovative city with world-class infrastructure and the perfect environment to connect with top leaders from the tech industry at IntegraTEC. ## Submit your project and compete for the CALA Award 2025 ### Strategic location [...] Technicians, Sales Professionals, ",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-e6504458729ac2f5",
+          "url": "https://intellinetsolutions.com",
+          "title": "Intellinet Network Solutions - Provider of PoE & Data Center Products",
+          "excerpt": "Our 30-day money-back guarantee badge proves our products' quality. If you're unhappy within 30 days of purchase, we'll refund your entire purchase. We prioritize your satisfaction, and this guarantee ensures a hassle-free experience and your confidence and peace of mind in every transaction. Fast and Free Shipping for orders starting at $50 ### Fast & Free Shipping [...] Unit price / per 1 / of 10 SSL Encrypted Secure Checkout ### Secure Checkout With our SSL trust badge, your online security is our top priority. We protect your sensitive data from cyberattacks with industry-leading encryption. Our high security standards ensure a safe and reliable browsing experience for our customers. 30 Day Money Back Guarantee ### 30 Day Money Back Guarantee [...] Cost-saving PoE technology gives stea",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:secproo.com",
+      "countryCode": "MX",
+      "companyName": "Secproo",
+      "domain": "secproo.com",
+      "officialWebsiteUrl": "https://secproo.com",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "Installer"
+      ],
+      "totalScore": 64,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-3e98d7c12c5b960a",
+          "url": "https://secproo.com",
+          "title": "SecProo",
+          "excerpt": "Secproo, nos especializamos en diseñar e . Estos sistemas de comunicación incluyen routers, switches, puntos de acceso, servidores y cableado de red.",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-e78c51abb0c165ee",
+          "url": "https://secproo.com/instalacion-de-redes-de-cableado-para-empresas",
+          "title": "Instalacion de redes de cableado para empresas en México - SecProo",
+          "excerpt": "Instalacion de redes de cableado para empresas con diseño, certificación y normas ISO para garantizar conectividad estable y operación segura en México.",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-e7dfa2267398a401",
+          "url": "https://secproo.com/author/secproo/page/7",
+          "title": "Mauro Proo, Autor SecProo - Página 7 de 8",
+          "excerpt": "Mauro Proo es Director General en SecProo y cuenta con más de 25 años de experiencia en ventas de soluciones de infraestructura de TI. Ha colaborado con",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-997750a415dc7312",
+          "url": "https://secproo.com/redes-troncales",
+          "title": "¿Qué son las Redes troncales y para qué sirven? - SecProo",
+          "excerpt": "Las Redes troncales son la base que permite a internet y a las redes empresariales transportar grandes volúmenes de datos de forma estable y",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-c3755203aadcf653",
+          "url": "https://rocketreach.co/secproo-profile_b6ee8583c6f0d788",
+          "title": "SecProo Information",
+          "excerpt": "SecProo is a Telecommunications company located in Monterrey, Nuevo León with 2 employees ... Website, https://www.secproo.com. Employees, 2 (1 on RocketReach).Read more",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-324116614c757d55",
+          "url": "https://secproo.com/servicios",
+          "title": "Servicios",
+          "excerpt": "Ofrecemos soluciones avanzadas para mejorar tus sistemas de video vigilancia. Nuestro objetivo es proporcionar tecnología de vanguardia y servicios ...Read more",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:sistenet.com.mx",
+      "countryCode": "MX",
+      "companyName": "Grupo Sistenet",
+      "domain": "sistenet.com.mx",
+      "officialWebsiteUrl": "https://www.sistenet.com.mx",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "Installer"
+      ],
+      "totalScore": 69,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-ca2ec4b9e18dae2b",
+          "url": "https://www.sistenet.com.mx/cableado/acerca.html",
+          "title": "Cableado estructurado| Sistenet | Telecom & Security Business Solutions",
+          "excerpt": "expertos en CABLEADO ESTRUCTURADO contáctanos INSTALACIÓN DE REDES PARA VOZ Y DATOS contáctanos SWITCHES, WIRELESS Y ROUTEO contáctanos INSTALACIÓN DE FIBRA ÓPTICA contáctanos ACERCA DE NUESTROS SERVICIOS DE CABLEADO ESTRUCTURADO Instalación y diseño de redes para voz y datos. Personal especializado en la orientación, diseño e instalación del cableado de Red Lan en sus instalaciones, expertos en las mejores marcas. 01 Diseñamos de cableado especialmente para la industria y negocios. El cableado estructurado es un sistema completo de cables y dispositivos que forman la infraestructura de comunicación para la transmisión de voz y datos de un edificio . 02 Gracias a nuestras soluciones de conectividad e implantación equipamos infraestructuras y redes inalámbricas, fibra óptica y cobre que hab",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-8d795b6131ecbac2",
+          "url": "https://sistenet.com.mx/nosotros.html",
+          "title": "acerca - Sistenet",
+          "excerpt": "INICIO SERVICIOS CONTACTO FACEBOOK LINKEDIN ACCESO CLIENTES Conoce grupo sistenet Nuestra Visión Innovamos y mejoramos la operatividad en Seguridad Electrónica e infraestructura de redes corporativas. Desde la planeación hasta la entrega final, siempre cumplimos con la completa satisfacción de nuestros clientes. Nuestra Visión Ser la empresa más confiable en México, expertos en entender las problemáticas de nuestros clientes, conocidos por nuestro crecimiento, estructura, calidad en el servicio y trato excepcional. CONOCE NUESTRA GAMA DE SERVICIOS Grupo Sistenet ofrece soluciones integrales en Cableado Estructurado, Sistemas de Seguridad, CCTV que favorecen e impulsan tu negocio, apoyados por personal capacitado y calificado en las competencias técnicas requeridas, convirtiéndose así en un",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-44126b8c3529e0a3",
+          "url": "https://www.sistenet.com.mx/welcome.html",
+          "title": "Hola | Sistenet | Telecom & Security Business Solutions",
+          "excerpt": "SEE MORE Telecom & Security Business Solutions SIT Sistemas Especiales SA. de CV. Independencia Pte #611, Col. Centro Guadalupe NL CP 67100 InicioAcercaServicios Social Media Facebook contacto@sistenet.comT +52 (81) 1493 2299 [...] > Voice Alarms - Megaphone & Emergency - Maintenance‍ 03 ### Networking Switches Wireless ‍ 04 ### Energy Electrical Power Supply ‍ Solar Earth Ground ‍ UPS/Backup MEET OUR TEAM # CONTACT US Our experience, quality and customer focus has allowed us to collaborate with world class companies in different cities of Mexico. In Grupo Sistenet we have the ability to offer our services in the physical place where the client so requires leave a messagecall Contact us [...] BUSINESS TELECOM SOLUTIONS # MONITOR THE PULSE OF TELECOMMUNICATIONS MORE INFO A NEW EXPERIENCE IN",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-1e626032720d68a7",
+          "url": "https://www.sistenet.com.mx/acerca.html",
+          "title": "Acerca | Sistenet | Telecom & Security Business Solutions Copy 2",
+          "excerpt": "CONOCE ACERCA DE NUESTRA EMPRESA Y SERVICIOS CONFIANZA, CALIDAD E INNOVACIÓN NOS DISTINGUEN DESDE MONTERREY, NL PARA TODO MÉXICO CONOCE GRUPO SISTENET Somos con un grupo de profesionistas, consultores especializados en las diferentes áreas sobre proyectos de Telecomunicaciones, Seguridad y Consultoría ‍ Nuestra Misión Ser la empresa más confiable en México, expertos en entender las problemáticas de nuestros clientes, conocidos por nuestro crecimiento, estructura, calidad en el servicio y trato excepcional. ‍ ‍ Nuestra Visión Innovamos y mejoramos la operatividad en Seguridad Electrónica e infraestructura de redes corporativas. ‍ ‍ ‍ Nuestros servicios ‍ TELECOMUNICACIÓN ● Cableado Estructurado Racks y gabinetes Cableado de cobre Canalización ● Fibra Óptica ● Data Center ● Pólizas de manten",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-46eeea7e37d5e76c",
+          "url": "https://www.linkedin.com/company/sistenet",
+          "title": "Sistenet",
+          "excerpt": "Website: http://www.sistenet.com.mx. External link for Sistenet ; Industry: Telecommunications ; Company size: 11-50 employees ; Headquarters: Guadalupe, Nuevo",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-3e3802014839d5a1",
+          "url": "https://www.facebook.com/sistenetmx",
+          "title": "Sistenet | Guadalupe",
+          "excerpt": "En Sistenet realizamos instalaciones de cableado estructurado pensadas para las necesidades de cada espacio, desde oficinas hasta instalaciones industriales.",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:promotechmexico.com.mx",
+      "countryCode": "MX",
+      "companyName": "Promotech México",
+      "domain": "promotechmexico.com.mx",
+      "officialWebsiteUrl": "https://promotechmexico.com.mx",
+      "primaryRole": "Unresolved",
+      "supportedRoles": [],
+      "totalScore": 24,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-bd68f1896f08ce2a",
+          "url": "https://promotechmexico.com.mx",
+          "title": "Promotech México Especialistas en Comunicaciones ...",
+          "excerpt": "Promotech México es para nosotros nuestra área de TI, somos una empresa global pero en México nuestra oficina es pequeña como para tener un departamento de TI. Promotech resuelve nuestras necesidades y mantienen una comunicación efectiva con al área de TI del Corporativo. Director de Trasnacional de fabricación de Maquinaria.",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-79082f53fcc99b58",
+          "url": "https://www.zoominfo.com/c/promotech-mexico/372827203",
+          "title": "Promotech Mexico - Overview, News & Similar companies | ZoomInfo.com",
+          "excerpt": "View Promotech Mexico (www.promotechmexico.com.mx) location in Mexico City, Mexico , revenue, industry and description. Find related and similar companies as well as employees by title and much more.",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-8e4d9e90a8487115",
+          "url": "https://www.linkedin.com/company/promotech-mexico",
+          "title": "Promotech Mexico",
+          "excerpt": "1 billion members | Manage your professional identity. Build and engage with your professional network. Access knowledge, insights and opportunities.",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-2c15ba86d47080f3",
+          "url": "https://forum.gl-inet.com/t/mexico-distributors/17082",
+          "title": "Mexico distributors - Router - GL.iNet Official Forum",
+          "excerpt": "# Mexico distributors Hello. We are a technology integrator and developer company in Mexico. We are using your modems in our developments and we buy them from Amazon but we are interested in becoming a distributor for your products. Is this possible or do you have a distributor for Mexico’s market? Thank you very much For business collaboration issues pls contact sales at gl-inet.com Powered by Discourse, best viewed with JavaScript enabled",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:balder.com.mx",
+      "countryCode": "MX",
+      "companyName": "Balder Telecom",
+      "domain": "balder.com.mx",
+      "officialWebsiteUrl": "https://www.balder.com.mx",
+      "primaryRole": "ISP",
+      "supportedRoles": [
+        "ISP"
+      ],
+      "totalScore": 50,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-e864adb9ba779f94",
+          "url": "https://www.balder.com.mx",
+          "title": "BALDER TELECOM | INICIO",
+          "excerpt": "Nuestra VISIÓN es ser el aliado estratégico de referencia como proveedor de Telefonía por Internet Para la Micro, pequeña y mediana empresa en México. SERVICIOS",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:inet-mx.net",
+      "countryCode": "MX",
+      "companyName": "iNet TI",
+      "domain": "inet-mx.net",
+      "officialWebsiteUrl": "https://inet-mx.net",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "Installer"
+      ],
+      "totalScore": 75,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-45b658b6bb6f80ad",
+          "url": "https://inet-mx.net",
+          "title": "iNet - TI Solution for your Networks",
+          "excerpt": "##### 2. Cableado estructurado ##### 3. Consultoría, étc... ##### Router inalámbrico ##### Sistemas CCTV ##### Redes de voz y datos ##### Cableado estructurado ##### Voz sobre IP ##### Redes inalámbricas ##### Consultoria de TI Anterior Siguiente ## IOT [...] iNet iNet ## Soluciones integrales de TI para la creación de un ambiente más seguro. #### Datos En la integración de tecnologías derivado de la necesidad de obtener velocidades cada vez más rápidas, el cableado estructurado ha cobrado importancia dentro de las corporaciones y gobiernos que necesitan comunicarse más rápido, más seguro y más sencillo. #### Voz [...] análisis en tiempo real, aprendizaje automático, sensores de productos básicos y sistemas integrados. Campos tradicionales de sistemas embebidos, redes inalámbricas de senso",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-32ba1413084529c2",
+          "url": "http://inet-mx.net/quienes_somos.php",
+          "title": "Quienes somos - iNet - TI Solution for your Networks",
+          "excerpt": "iNet iNet Quienes Somos Empresa Mexicana con más de 15 años de experiencia en las Telecomunicaciones y la Informática, desarrollando proyectos para: (Auditoría Superior de la Federación, Instituto Nacional de Migración, Registro Público de la Propiedad de Pachuca, General DataComm de México, Instituto Nacional de Investigaciones Forestales Agrícolas y Pecuarias, Telmex, La Dirección General de Educación Normal y Actualización del Magisterio, Servicio de Administración Tributaria, Instituto Nacional De Aguas Potables Y Alcantarillados. etc.) Y en los últimos cinco años, a partir de la convergencia de las Telecomunicaciones de Voz y Datos, integrando tecnologías que ayudan a las empresas a ser más rentables aumentando sus niveles de seguridad en sus redes de datos y bajando costos de comunic",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-9ef4a719dd29b6e4",
+          "url": "https://www.inet-mx.net/aviso_privacidad.php",
+          "title": "Aviso de privacidad - iNet - TI Solution for your Networks",
+          "excerpt": "iNet iNet Aviso de privacidad Para INSCOM NETWORKS SA DE CV es muy importante el respeto y la preservación de la confianza de nuestros clientes, colegas y vendedores. Su información personal siempre será tratada de manera confidencial y de acuerdo con las leyes, las directivas, los reglamentos y los principios aplicables a la protección de datos personales. De conformidad con lo dispuesto en la Ley Federal de Protección de Datos Personales en Posesión de los Particulares y a los requisitos que dicha legislación establece, INSCOM NETWORKS SA DE CV, da a conocer el presente documento: Para efectos del presente Aviso de Privacidad, se entenderá por: Aviso de Privacidad: Se refiere al presente documento, el cual es puesto a disposición del TITULAR, previo al tratamiento de sus datos personales",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-33c7ec87cd635b71",
+          "url": "https://www.inet-mx.net/PDF/4_fortinet_fortigate_1500.pdf",
+          "title": "[PDF] FortiGate 1500D - iNet",
+          "excerpt": "Every day you’re on the lookout for sophisticated attacks designed to penetrate your organization and steal valuable information. At the same time, you need to increase network speeds and capacities to accommodate the proliferation of consumer-grade applications and devices. To adequately defend against threats across such a broad range of applications and devices — without slowing down your network — you need a high performance next generation/edge firewall (NGFW) appliance for deep inspection, visibility and control. Breakthrough Performance The FortiGate 1500D and 1500D-DC high performance next generation/edge firewalls deliver best-in-class performance with an exceptional 80 Gbps of firewall and 15 Gbps of next generation threat protection. Custom hardware, including the latest FortiAS",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:tfimexico.com",
+      "countryCode": "MX",
+      "companyName": "TFI México",
+      "domain": "tfimexico.com",
+      "officialWebsiteUrl": "https://www.tfimexico.com",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI"
+      ],
+      "totalScore": 61,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-af5212b066cede27",
+          "url": "https://www.tfimexico.com",
+          "title": "TFImexico",
+          "excerpt": "contacto@tfimexico.com 55-1950-1838 Chat en Vivo contacto@tfimexico.com 55-1950-1838 Chat en Vivo ¿Por que Nosotros? Somos profesionales dedicados a mejorar la infraestructura de TI en su empresa, incrementando su rentabilidad y acelerando el retorno de la inversión. Nuestra experiencia hace la diferencia. Portafolios Contacto Atención a toda la República Mexicana (55) 1950-1838 contacto@tfimexico.com Asesoria en TI Nuestra Empresa provee las mejores soluciones en TI Tenemos a los mejores ingenieros con más de 10 años de experiencia en asesoría informatica. Más sobre nosotros Especialistas en Hardware y Software Podemos llevarlo hasta donde usted quiera Contamos con especialistas con experiencia tan amplia que va desde el área de Telecomunicaciones hasta IA. Más sobre nosotros Somos su mej",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:isemc.com.mx",
+      "countryCode": "MX",
+      "companyName": "ISEMC (Ingeniería en Sistemas Eléctricos MC)",
+      "domain": "isemc.com.mx",
+      "officialWebsiteUrl": "https://isemc.com.mx",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "Installer"
+      ],
+      "totalScore": 68,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-80aefc65a11c0b7f",
+          "url": "https://isemc.com.mx",
+          "title": "Instalaciones eléctricas industriales en México | ISEMC",
+          "excerpt": "En Ingeniería en Sistemas Eléctricos MC (ISEMC) desarrollamos, ejecutamos y damos mantenimiento a instalaciones eléctricas para plantas industriales, corporativos y comercios en todo México. Diseñamos y ponemos en operación tus instalaciones de redes eléctricas, desde obra nueva hasta remodelaciones y expansiones, integrando materiales, mano de obra especializada y gestión técnica en un solo frente. Cotizar por WhatsAppEspecialidades Ingeniero eléctrico trabajando en planta industrial [...] Estamos listos para escuchar sus necesidades. Uno de nuestros ingenieros le atenderá personalmente para dar solución a sus requerimientos. ### Ubicación Carretera Federal México Toluca 5305, Col. Lomas de Vista Hermosa, Cuajimalpa de Morelos. CDMX 05100. ### Email Enviar mensaje ### Teléfono +52 (56) 20",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-dfe10f288ee2c66a",
+          "url": "https://isemc.com.mx/iluminacion-industrial-comercial",
+          "title": "Empresa de Iluminación industrial y comercial en México | ISEMC",
+          "excerpt": "Ingeniería MC logo Ingeniería enSistemas Eléctricos MC Técnicos instalando alumbrado led industrial en una nave y estacionamiento de empresa en México Instalación de Iluminación Industrial y Comercial para empresas en México Proyectos de alumbrado led industrial y comercial llave en mano En Ingeniería en Sistemas Eléctricos MC (ISEMC) diseñamos e instalamos proyectos de Iluminación Industrial y Comercial para plantas, parques industriales, patios de maniobras, estacionamientos y edificios corporativos en todo México. Integramos alumbrado led, alumbrado industrial y alumbrado comercial en soluciones completas, desde la ingeniería hasta la puesta en marcha. Cotizar por WhatsApp Soluciones especializadas: alumbrado público y alumbrado de emergencia No vendemos luminarias sueltas: desarrollamo",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-e6f811322aad2b3c",
+          "url": "https://isemc.com.mx/cableado-estructurado",
+          "title": "Cableado estructurado y fibra óptica para empresas | ISEMC",
+          "excerpt": "Ingeniería MC logo Ingeniería enSistemas Eléctricos MC Ingenieros revisando tableros y equipos de media tensión eléctrica en una planta industrial Instalación de Cableado estructurado y fibra óptica para empresas e industria en México Cableado estructurado de redes para oficinas, plantas y centros de datos. En Ingeniería en Sistemas Eléctricos MC (ISEMC) diseñamos e instalamos cableado estructurado de redes para oficinas corporativas, plantas industriales y centros de datos en todo México. Integramos datos, voz, WiFi, CCTV y servicios especiales en una sola infraestructura física, ordenada y preparada para crecer. Cotizar por WhatsApp Instalación de cableado estructurado llave en mano Diseñamos e implementamos proyectos completos de instalación de cableado estructurado categoría 6/6A para ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-437c3b34a2b2970b",
+          "url": "https://isemc.com.mx/tierras-fisicas",
+          "title": "Instalación de Tierras físicas industriales en México | ISEMC",
+          "excerpt": "Ingeniería MC logo Ingeniería enSistemas Eléctricos MC Ingenieros realizando pruebas de tierras físicas en una planta industrial en México Instalación de Tierras físicas industriales en México Tierras físicas para plantas industriales y corporativos En Ingeniería en Sistemas Eléctricos MC (ISEMC) diseñamos e instalamos tierras físicas para plantas industriales, centros de distribución y edificios corporativos en todo México. Nos encargamos del estudio, diseño, suministro de materiales, obra e integración con tus sistemas de media y baja tensión para que tu infraestructura esté protegida frente a fallas a tierra y sobretensiones. Cotizar por WhatsApp Varilla para tierra fisica y sistema de puesta a tierra Varilla para tierra fisica y sistema de puesta a tierra La varilla para tierra física ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-36a1da36cf399bee",
+          "url": "https://isemc.com.mx/sistemas-alarmas",
+          "title": "Sistemas de alarmas de seguridad para negocios | ISEMC",
+          "excerpt": "Ingeniería MC logo Ingeniería enSistemas Eléctricos MC Técnico configurando un panel de sistemas de alarmas de seguridad en una empresa en México Instalación de sistemas de alarmas de seguridad para negocios e industria en México Alarmas de seguridad industriales y comerciales integradas a tu operación. En Ingeniería en Sistemas Eléctricos MC (ISEMC) diseñamos, instalamos e integramos sistemas de alarmas para negocios, naves industriales y corporativos en todo México. Combinamos alarmas de seguridad, alarmas industriales, sensores, cámaras y alarmas sonoras en proyectos completos que protegen accesos, perímetros, equipo crítico y a tu personal. Solución llave en mano: ingeniería + materiales + instalación + puesta en marcha. Integración con cámaras y notificaciones para respuesta en tiempo",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-8f65b4fa839bf8e6",
+          "url": "https://8msp.com/listings/mexico/cuajimalpa-de-morelos-mexico-city/cabling-integration/isemc-ingenieria-en-sistemas-electricos-mc?lang=zh",
+          "title": "ISEMC (Ingeniería en Sistemas Eléctricos MC) - 8MSP – 全球IT 服务 ...",
+          "excerpt": "ISEMC (Ingeniería en Sistemas Eléctricos MC) is an electrical and low-voltage systems integrator based in Cuajimalpa, Mexico City, with more than 25 years",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-ac69130a69a6fb91",
+          "url": "https://isemc.com.mx/nosotros",
+          "title": "Nosotros – Ingeniería en Sistemas Eléctricos MC - ISEMC",
+          "excerpt": "En Ingeniería en Sistemas Eléctricos MC (ISEMC) somos una empresa mexicana especializada en instalaciones eléctricas industriales y comerciales,",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-fcd123ed41e58ec6",
+          "url": "https://www.facebook.com/p/Ingenier%C3%ADa-En-Sistemas-El%C3%A9ctricos-Mc-61555765325976",
+          "title": "Ingeniería En Sistemas Eléctricos Mc - Facebook",
+          "excerpt": "En Sistemas Eléctricos Mc. 3 likes. Somos una empresa constructora especializada en instalaciones eléctricas de alta calidad y seguridad. isemc.com.mx Contact",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-3e6d6f9f0614c79c",
+          "url": "https://www.instagram.com/isemc.mx",
+          "title": "isemc.mx - Instagram",
+          "excerpt": "Sistemas Eléctricos MC (Instalaciones Eléctricas) desde la 52 56 2036 1365 📧 [contacto@isemc.com.mx](mailto:contacto@isemc.com.mx) https://f.mtr.cool/b287gi93ra",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:bdw.com.mx",
+      "countryCode": "MX",
+      "companyName": "Constructora Bandwidth",
+      "domain": "bdw.com.mx",
+      "officialWebsiteUrl": "https://bdw.com.mx",
+      "primaryRole": "Unresolved",
+      "supportedRoles": [],
+      "totalScore": 0,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": false,
+      "operatesInTargetMarket": false,
+      "evidence": [
+        {
+          "id": "evidence-0295d7549027b9df",
+          "url": "https://www.griyasis.com/hubungan-switch-router-dan-access-point-dalam-jaringan-komputer",
+          "title": "Hubungan Switch, Router, dan Access Point dalam Jaringan Komputer – Griyasis | Official Partner Server HPE, Dell & Lenovo Enterprise",
+          "excerpt": "Access point dihubungkan ke switch (atau kadang langsung ke router) untuk menyediakan koneksi nirkabel kepada perangkat Wi-Fi. Contohnya dalam jaringan kantor: Router menerima koneksi dari ISP. Switch terhubung ke router, dan menghubungkan beberapa komputer, printer, dan server. Access point disebar di beberapa titik dalam gedung kantor dan dihubungkan ke switch untuk menyediakan konektivitas Wi-Fi di seluruh area. [...] Ketiga perangkat ini saling terhubung dan bekerja sama untuk menciptakan jaringan yang lengkap. Berikut adalah skenario umum bagaimana mereka terhubung: Router menerima koneksi dari ISP (penyedia layanan internet) dan membagikan koneksi tersebut ke jaringan lokal. Dari router, koneksi LAN dikirim ke switch, terutama jika ada banyak perangkat kabel yang perlu dihubungkan. [",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-2b519efe45f2d9d4",
+          "url": "https://www.croma.com/unboxed/modem-router-switch-and-access-point-whats-the-difference",
+          "title": "Modem vs router vs switch vs access point | Croma Unboxed",
+          "excerpt": "Image 39: Portronics Power Shutter Air 20K with wireless charging support launched in India### Portronics Power Shutter Air 20K with wireless charging support launched in India Aug 31, 2026 Image 40: Best TVs under Rs 20,000 in India 2026### Best TVs under Rs 20,000 in India 2026 Sep 03, 2026 Image 41: Search unboxed blog Image 42: Search Image 43: Croma # Modem, router, switch, and access point: What’s the difference? Building a home network 101 [...] Image 35: Portronics Power Shutter Air 20K with wireless charging support launched in India### Portronics Power Shutter Air 20K with wireless charging support launched in India Aug 31, 2026 Image 36: Best TVs under Rs 20,000 in India 2026### Best TVs under Rs 20,000 in India 2026 Sep 03, 2026 ## Popular ReadsView More [...] They’re essential",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:newgate.mx",
+      "countryCode": "MX",
+      "companyName": "New Gate",
+      "domain": "newgate.mx",
+      "officialWebsiteUrl": "https://www.newgate.mx",
+      "primaryRole": "Unresolved",
+      "supportedRoles": [],
+      "totalScore": 0,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": false,
+      "operatesInTargetMarket": false,
+      "evidence": [
+        {
+          "id": "evidence-34765efd592db86b",
+          "url": "https://www.ispsupplies.com",
+          "title": "Wireless & Fiber Network Equipment for ISPs & WISPs | ISP Supplies",
+          "excerpt": "ISP Supplies is a leading distributor of wired and wireless networking equipment, helping ISPs and network builders design, deploy, and maintain reliable broadband networks. Based in College Station, Texas, our expert team supports projects of all sizes — from rural connectivity to enterprise Wi-Fi solutions. Who We Are Facebook Instagram Youtube Linkedin © 2026 www.ispsupplies.com ##### About cookies on this site [...] ISP Supplies provides an extensive range of Wireless and Fiber network equipment and devices to fulfill all your networking needs. Browse our vast selection of wireless routers, network switches, radios, wireless access points, CPEs, LTE devices, cables, Indoor & Outdoor enclosures, and more on our website. From futuristic and blazing-fast access points for seamless connect",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-4037eda3d634731a",
+          "url": "https://mikrotik.com",
+          "title": "MikroTik · Routers and Wireless",
+          "excerpt": "- - New - Search - Ethernet routers - Switches - Wireless systems - Indoor Wireless - LTE/5G products - IoT products - 60 GHz products - RouterBOARD - Enclosures - Interfaces - Accessories - Antennas - SFP/QSFP - - Downloads - Changelogs - RouterOS - WinBox - Mobile apps - Back to Home - Connectivity - - Buy something (find a distributor) - Sell something (become a distributor) - Made for MikroTik - - Documentation - Consultants - Forum - Help [...] TikTube YouTube Newsletter Highlights Thumbnail image Newsletter #133 | June 2026 The most affordable Wi-Fi 7 hAP be lite, useful accessories, LoRaWAN sensor tags, and so much more to start the summer! Thumbnail image.png) Newsletter #132 | April 2026 New hardware and practical tools, from the Wi-Fi 7 hAP be³ Media and LTE7 devices to compact I",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:iposit.mx",
+      "countryCode": "MX",
+      "companyName": "IPoSIT",
+      "domain": "iposit.mx",
+      "officialWebsiteUrl": "https://iposit.mx",
+      "primaryRole": "Unresolved",
+      "supportedRoles": [],
+      "totalScore": 0,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": false,
+      "operatesInTargetMarket": false,
+      "evidence": [
+        {
+          "id": "evidence-34765efd592db86b",
+          "url": "https://www.ispsupplies.com",
+          "title": "Wireless & Fiber Network Equipment for ISPs & WISPs | ISP Supplies",
+          "excerpt": "ISP Supplies is a leading distributor of wired and wireless networking equipment, helping ISPs and network builders design, deploy, and maintain reliable broadband networks. Based in College Station, Texas, our expert team supports projects of all sizes — from rural connectivity to enterprise Wi-Fi solutions. Who We Are Facebook Instagram Youtube Linkedin © 2026 www.ispsupplies.com ##### About cookies on this site [...] ISP Supplies provides an extensive range of Wireless and Fiber network equipment and devices to fulfill all your networking needs. Browse our vast selection of wireless routers, network switches, radios, wireless access points, CPEs, LTE devices, cables, Indoor & Outdoor enclosures, and more on our website. From futuristic and blazing-fast access points for seamless connect",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-3c8328b6a1b38152",
+          "url": "https://www.purple.ai/en-us/blogs/best-home-access-points",
+          "title": "Best Home Access Points (2026 Review): WiFi 6E & Mesh | Purple",
+          "excerpt": "An access point, or AP, has a much more specific job. It takes the wired internet connection from your router and turns it into a powerful wireless signal. While the all-in-one box your internet provider gave you has a basic AP built-in, a dedicated access point is a specialist, designed from the ground up to deliver better WiFi performance, range, and capacity. ### Can I Mix and Match Access Point Brands? [...] For large homes, properties with very thick walls, or anyone demanding the absolute best performance, a multi-AP setup using wired connections is the ultimate solution. This involves installing several dedicated access points throughout the home and connecting each one back to a central network switch with an Ethernet cable. [...] This professional-grade architecture is often power",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:terian.mx",
+      "countryCode": "MX",
+      "companyName": "TERIAN",
+      "domain": "terian.mx",
+      "officialWebsiteUrl": "https://terian.mx",
+      "primaryRole": "Unresolved",
+      "supportedRoles": [],
+      "totalScore": 0,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": false,
+      "operatesInTargetMarket": false,
+      "evidence": [
+        {
+          "id": "evidence-9c470edc509a5bad",
+          "url": "https://eterian.com",
+          "title": "Eterian - Specialized VoIP and IT Networking Solutions",
+          "excerpt": "We provide complete installation, configuration, and management of your business PBX system and phones.",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-e285ca211d8fcc55",
+          "url": "https://en.wikipedia.org/wiki/Therian",
+          "title": "Therian - Wikipedia",
+          "excerpt": "Jump to content Wikipedia The Free Encyclopedia Search ## Contents (Top) 1 See also # Therian فارسی \"تریان (ابهام‌زدایی) – Persian\") Bahasa Melayu Simple English Edit links Article Talk Read View source View history Tools Actions Read View source View history General What links here Related changes Upload file Permanent link Page information Cite this page Get shortened URL Switch to legacy parser Print/export Download as PDF Printable version [...] This disambiguation page lists articles associated with the title Therian. If an internal link incorrectly led you here, you may wish to change the link to point directly to the intended article. Retrieved from \"\" Category: Disambiguation pages Hidden categories: Wikipedia indefinitely semi-protected pages Short description is different from Wi",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:reto.com.mx",
+      "countryCode": "MX",
+      "companyName": "Reto Industrial",
+      "domain": "reto.com.mx",
+      "officialWebsiteUrl": "https://reto.com.mx",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "Installer",
+        "MSP"
+      ],
+      "totalScore": 74,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-649764444425759f",
+          "url": "https://reto.com.mx/en/network-monitoring",
+          "title": "Network monitoring - Reto",
+          "excerpt": "At RETO we offer our clients monitoring services … +52(55)8503-9020. Colonia Plaza del Condado Atizapán de Zaragoza, C.P. 52930 Edo. of Mexico, Mexico",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-8200f0944fd36d64",
+          "url": "https://reto.com.mx/en/structured-cabling",
+          "title": "Structured Cabling - Reto",
+          "excerpt": "Soporte Structured Cabling Solutions Integration For Each Of Your Projects At RETO we create integral projects with certified and high quality materials. We help you develop a consolidated and secure technological infrastructure for the daily performance of your network, reducing risks and other technical incidents. We are constantly updating our technology and together with our 32 years of experience we can offer you the best solutions in structured cabling, fiber optics, interruptible power, cooling and intelligent lighting to suit your needs. Structured Cabling IT Energy Cabinets and Cooling Lighting Structured Cabling Since the beginning, RETO has been a pioneer in the incursion of structured cabling in Mexico, and that is why we understand that networks must be solid and reliable, but",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-ec62affc5b7e4ff0",
+          "url": "https://reto.com.mx/en/network-infrastructure",
+          "title": "Network Infrastructure - Reto Industrial",
+          "excerpt": "Network Infrastructure Specialized Services For Your Networks Experience, highly specialized personnel and alliances with industry-leading manufacturers give us the backing to guide our clients on the journey to digital transformation. Our commitment is to provide our customers with anytime, anywhere access to secure, scalable and efficient networks, providing solutions for sectors such as: education, retail, service providers, government, industry, healthcare, hospitality and sports. Our services for LAN networks include: Design And Implementation Of Switching And Routing Equipment IT Infrastructure Management & Monitoring Our WLAN Networking Services Include: Wireless Network Design and Implementation WLAN Infrastructure Management and Monitoring Active and Passive Site Surveys Contact M",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-6df2135b6470c0cb",
+          "url": "https://reto.com.mx/en/technological-offer",
+          "title": "Technological offer - Reto Industrial",
+          "excerpt": "Technological Offering Get to know our offer in ideal solutions for your company. Unified Communications Aware of the technological convergence and the current needs of the corporate world where the traffic and volume of information has increased. Cybersecurity At RETO we have the best combination of solutions to achieve an IT security ecosystem and ensure the correct use of your information. Network Infrastructure Experience, highly specialized personnel and alliances with industry-leading manufacturers give us the backing to guide our clients on the journey to digital transformation. Structured Cabling At RETO we create integral projects with certified and high quality materials. We help you develop a consolidated and secure technological infrastructure for the daily performance of your ",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:tsmintegraciones.com.mx",
+      "countryCode": "MX",
+      "companyName": "TSM Integraciones",
+      "domain": "tsmintegraciones.com.mx",
+      "officialWebsiteUrl": "https://tsmintegraciones.com.mx",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "Installer"
+      ],
+      "totalScore": 50,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-3c92ef6c729f5fe8",
+          "url": "https://tsmintegraciones.com.mx",
+          "title": "TSM Integraciones: Seguridad y Comunicacion",
+          "excerpt": "Tels: (55) 4737 0882 / (55) 4151 0400 E-mail: ventas@tsmintegraciones.com.mx. Normandía # 172 PA, Col. San Andrés Tetepilco Iztapalapa, México D.F.",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-c7cab6088173e0a7",
+          "url": "http://www.tsmintegraciones.com.mx/cableado-estructurado.html",
+          "title": "cableado-estructurado - TSM Integraciones",
+          "excerpt": "Tels: (55) 4737 0882 / (55) 4151 0400 E-mail: ventas@tsmintegraciones.com.mx Dirección Oficinas: Normandía 172 Int B San Andrés Tetepilco, Iztapalapa México, D",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-35f7fb74a0615837",
+          "url": "https://tsmintegraciones.com.mx/nosotros.html",
+          "title": "nosotros - TSM Integraciones",
+          "excerpt": "Tels: (55) 4737 0882 / (55) 4151 0400 E-mail: ventas@tsmintegraciones.com.mx Dirección Oficinas: Normandía 172 Int B San Andrés Tetepilco, Iztapalapa México, D",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-ed7b6bf2d2d71d39",
+          "url": "https://www.tsmintegraciones.com.mx/software-para-empresas-y-negocios.html",
+          "title": "software-para-empresas-y-negocios - TSM Integraciones",
+          "excerpt": "Implementamos software empresarial de las marcas más reconocidas, Open Source y Desarrollo de Software a la medida. Contamos con un grupo de personal e",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    }
+  ],
+  "aliasToCompanyKey": {
+    "MX:domain:huus.mx": "MX:domain:huus.mx",
+    "MX:name:huus": "MX:domain:huus.mx",
+    "MX:domain:ubix.mx": "MX:domain:ubix.mx",
+    "MX:name:ubix": "MX:domain:ubix.mx",
+    "MX:domain:c3ntro.com": "MX:domain:c3ntro.com",
+    "MX:name:c3ntrotelecom": "MX:domain:c3ntro.com",
+    "MX:domain:bits.com.mx": "MX:domain:us.bits.com.mx",
+    "MX:name:bitsbusinessitsolutions": "MX:domain:us.bits.com.mx",
+    "MX:domain:censystems.com.mx": "MX:domain:censystems.com.mx",
+    "MX:name:censystems": "MX:domain:censystems.com.mx",
+    "MX:domain:its-systems.mx": "MX:domain:its-systems.mx",
+    "MX:name:itssystems": "MX:domain:its-systems.mx",
+    "MX:domain:erisystems.com.mx": "MX:domain:erisystems.com.mx",
+    "MX:name:erisystems": "MX:domain:erisystems.com.mx",
+    "MX:domain:integraindustrialnetworks.com": "MX:domain:integraindustrialnetworks.com",
+    "MX:name:integraindustrialnetworks": "MX:domain:integraindustrialnetworks.com",
+    "MX:domain:integra.red": "MX:domain:integra.red",
+    "MX:name:integragicom": "MX:domain:integra.red",
+    "MX:domain:syemex.com": "MX:domain:syemex.com",
+    "MX:name:syemexsistemasyenlacesdemexico": "MX:domain:syemex.com",
+    "MX:domain:grupoimtelec.com.mx": "MX:domain:grupoimtelec.com.mx",
+    "MX:name:imtelec": "MX:domain:grupoimtelec.com.mx",
+    "MX:domain:secproo.com": "MX:domain:secproo.com",
+    "MX:name:secproo": "MX:domain:secproo.com",
+    "MX:domain:sistenet.com.mx": "MX:domain:sistenet.com.mx",
+    "MX:name:sistenet": "MX:domain:sistenet.com.mx",
+    "MX:domain:promotechmexico.com.mx": "MX:domain:promotechmexico.com.mx",
+    "MX:name:promotechmexico": "MX:domain:promotechmexico.com.mx",
+    "MX:domain:balder.com.mx": "MX:domain:balder.com.mx",
+    "MX:name:baldertelecom": "MX:domain:balder.com.mx",
+    "MX:domain:inet-mx.net": "MX:domain:inet-mx.net",
+    "MX:name:inetti": "MX:domain:inet-mx.net",
+    "MX:domain:tfimexico.com": "MX:domain:tfimexico.com",
+    "MX:name:tfimexico": "MX:domain:tfimexico.com",
+    "MX:domain:isemc.com.mx": "MX:domain:isemc.com.mx",
+    "MX:name:isemcingenieriaensistemaselectricosmc": "MX:domain:isemc.com.mx",
+    "MX:domain:bdw.com.mx": "MX:domain:bdw.com.mx",
+    "MX:name:constructorabandwidth": "MX:domain:bdw.com.mx",
+    "MX:domain:newgate.mx": "MX:domain:newgate.mx",
+    "MX:name:newgate": "MX:domain:newgate.mx",
+    "MX:domain:iposit.mx": "MX:domain:iposit.mx",
+    "MX:name:iposit": "MX:domain:iposit.mx",
+    "MX:domain:terian.mx": "MX:domain:terian.mx",
+    "MX:name:terian": "MX:domain:terian.mx",
+    "MX:domain:reto.com.mx": "MX:domain:reto.com.mx",
+    "MX:name:retoindustrial": "MX:domain:reto.com.mx",
+    "MX:domain:tsmintegraciones.com.mx": "MX:domain:tsmintegraciones.com.mx",
+    "MX:name:tsmintegraciones": "MX:domain:tsmintegraciones.com.mx"
+  },
+  "costEvents": [
+    {
+      "eventId": "MX-si-msp:evaluation:fresh-evidence",
+      "cellId": "MX-si-msp",
+      "stage": "evaluation-control-fresh-evidence",
+      "provider": "tavily",
+      "startedAt": "2026-09-06T19:51:44.194Z",
+      "completedAt": "2026-09-06T19:52:01.922Z",
+      "latencyMs": 117707,
+      "attempts": 45,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 35
+      },
+      "volume": {
+        "inputItems": 27,
+        "rawOutputItems": 67,
+        "validOutputItems": 67,
+        "downstreamUsedItems": 67,
+        "discardedReasonCounts": {
+          "noFreshEvidence": 9
+        }
+      },
+      "notes": [
+        "Gemini-unique final candidates only",
+        "historical evidence reads and writes disabled"
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.28,
+      "budgetCostUsd": 0.28,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-si-msp:evaluation:correction-search",
+      "cellId": "MX-si-msp",
+      "stage": "evaluation-control-correction-search",
+      "provider": "tavily",
+      "startedAt": "2026-09-06T19:52:01.941Z",
+      "completedAt": "2026-09-06T19:55:06.499Z",
+      "latencyMs": 53296,
+      "attempts": 24,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 24
+      },
+      "volume": {
+        "inputItems": 27,
+        "rawOutputItems": 27,
+        "validOutputItems": 27,
+        "downstreamUsedItems": 27,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.192,
+      "budgetCostUsd": 0.192,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-si-msp:evaluation-control-correction:1",
+      "cellId": "MX-si-msp",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:52:01.941Z",
+      "completedAt": "2026-09-06T19:55:06.499Z",
+      "latencyMs": 40210,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 17469,
+        "outputTokens": 4440,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 27,
+        "rawOutputItems": 27,
+        "validOutputItems": 19,
+        "downstreamUsedItems": 27,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.011461815,
+      "budgetCostUsd": 0.011461815,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "MX-si-msp:evaluation-control-correction:2",
+      "cellId": "MX-si-msp",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:52:01.941Z",
+      "completedAt": "2026-09-06T19:55:06.499Z",
+      "latencyMs": 50504,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 19874,
+        "outputTokens": 5303,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 27,
+        "rawOutputItems": 27,
+        "validOutputItems": 19,
+        "downstreamUsedItems": 27,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.0132588,
+      "budgetCostUsd": 0.0132588,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "MX-si-msp:evaluation-control-correction:3",
+      "cellId": "MX-si-msp",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:52:01.941Z",
+      "completedAt": "2026-09-06T19:55:06.499Z",
+      "latencyMs": 18076,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 2148,
+        "outputTokens": 1776,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 27,
+        "rawOutputItems": 27,
+        "validOutputItems": 19,
+        "downstreamUsedItems": 27,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.0024795,
+      "budgetCostUsd": 0.0024795,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "MX-si-msp:evaluation-control-correction:4",
+      "cellId": "MX-si-msp",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:52:01.941Z",
+      "completedAt": "2026-09-06T19:55:06.499Z",
+      "latencyMs": 21476,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 3002,
+        "outputTokens": 1879,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 27,
+        "rawOutputItems": 27,
+        "validOutputItems": 19,
+        "downstreamUsedItems": 27,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.0029406,
+      "budgetCostUsd": 0.0029406,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "MX-si-msp:evaluation-control-correction:5",
+      "cellId": "MX-si-msp",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:52:01.941Z",
+      "completedAt": "2026-09-06T19:55:06.499Z",
+      "latencyMs": 21496,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 3214,
+        "outputTokens": 1905,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 27,
+        "rawOutputItems": 27,
+        "validOutputItems": 19,
+        "downstreamUsedItems": 27,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.0030554399999999995,
+      "budgetCostUsd": 0.0030554399999999995,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "MX-si-msp:evaluation-control-correction:6",
+      "cellId": "MX-si-msp",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:52:01.941Z",
+      "completedAt": "2026-09-06T19:55:06.499Z",
+      "latencyMs": 25552,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 6053,
+        "outputTokens": 2399,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 27,
+        "rawOutputItems": 27,
+        "validOutputItems": 19,
+        "downstreamUsedItems": 27,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.004720184999999999,
+      "budgetCostUsd": 0.004720184999999999,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "MX-si-msp:evaluation-control-correction:7",
+      "cellId": "MX-si-msp",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:52:01.941Z",
+      "completedAt": "2026-09-06T19:55:06.499Z",
+      "latencyMs": 28989,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 5836,
+        "outputTokens": 2597,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 27,
+        "rawOutputItems": 27,
+        "validOutputItems": 19,
+        "downstreamUsedItems": 27,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.004798049999999999,
+      "budgetCostUsd": 0.004798049999999999,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "MX-si-msp:evaluation-control-correction:8",
+      "cellId": "MX-si-msp",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:52:01.941Z",
+      "completedAt": "2026-09-06T19:55:06.499Z",
+      "latencyMs": 57393,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 10631,
+        "outputTokens": 6169,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 27,
+        "rawOutputItems": 27,
+        "validOutputItems": 19,
+        "downstreamUsedItems": 27,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.009991515,
+      "budgetCostUsd": 0.009991515,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "MX-si-msp:evaluation-control-correction:9",
+      "cellId": "MX-si-msp",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:52:01.941Z",
+      "completedAt": "2026-09-06T19:55:06.499Z",
+      "latencyMs": 68773,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 12155,
+        "outputTokens": 6736,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 27,
+        "rawOutputItems": 27,
+        "validOutputItems": 19,
+        "downstreamUsedItems": 27,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.011147744999999999,
+      "budgetCostUsd": 0.011147744999999999,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "MX-si-msp:evaluation-control-correction:10",
+      "cellId": "MX-si-msp",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:52:01.941Z",
+      "completedAt": "2026-09-06T19:55:06.499Z",
+      "latencyMs": 37088,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 11631,
+        "outputTokens": 4230,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 27,
+        "rawOutputItems": 27,
+        "validOutputItems": 19,
+        "downstreamUsedItems": 27,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.008739585,
+      "budgetCostUsd": 0.008739585,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "MX-si-msp:evaluation-control-correction:11",
+      "cellId": "MX-si-msp",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:52:01.941Z",
+      "completedAt": "2026-09-06T19:55:06.499Z",
+      "latencyMs": 26454,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 4528,
+        "outputTokens": 2604,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 27,
+        "rawOutputItems": 27,
+        "validOutputItems": 19,
+        "downstreamUsedItems": 27,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00423516,
+      "budgetCostUsd": 0.00423516,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "MX-si-msp:evaluation-control-score-only:1",
+      "cellId": "MX-si-msp",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:55:06.520Z",
+      "completedAt": "2026-09-06T19:58:20.335Z",
+      "latencyMs": 38012,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 8547,
+        "outputTokens": 3334,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 27,
+        "rawOutputItems": 27,
+        "validOutputItems": 24,
+        "downstreamUsedItems": 24,
+        "discardedReasonCounts": {
+          "retryRequired": 3
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.006618524999999999,
+      "budgetCostUsd": 0.006618524999999999,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-si-msp:evaluation-control-score-only:2",
+      "cellId": "MX-si-msp",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:55:06.520Z",
+      "completedAt": "2026-09-06T19:58:20.335Z",
+      "latencyMs": 43396,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 8801,
+        "outputTokens": 4207,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 27,
+        "rawOutputItems": 27,
+        "validOutputItems": 24,
+        "downstreamUsedItems": 24,
+        "discardedReasonCounts": {
+          "retryRequired": 3
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.007488524999999999,
+      "budgetCostUsd": 0.007488524999999999,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-si-msp:evaluation-control-score-only:3",
+      "cellId": "MX-si-msp",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:55:06.520Z",
+      "completedAt": "2026-09-06T19:58:20.335Z",
+      "latencyMs": 56675,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 10239,
+        "outputTokens": 4606,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 27,
+        "rawOutputItems": 27,
+        "validOutputItems": 24,
+        "downstreamUsedItems": 24,
+        "discardedReasonCounts": {
+          "retryRequired": 3
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.008461185,
+      "budgetCostUsd": 0.008461185,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-si-msp:evaluation-control-score-only:4",
+      "cellId": "MX-si-msp",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:55:06.520Z",
+      "completedAt": "2026-09-06T19:58:20.335Z",
+      "latencyMs": 68528,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 10119,
+        "outputTokens": 6024,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 27,
+        "rawOutputItems": 27,
+        "validOutputItems": 24,
+        "downstreamUsedItems": 24,
+        "discardedReasonCounts": {
+          "retryRequired": 3
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.009642645,
+      "budgetCostUsd": 0.009642645,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-si-msp:evaluation-control-score-only:5",
+      "cellId": "MX-si-msp",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:55:06.520Z",
+      "completedAt": "2026-09-06T19:58:20.335Z",
+      "latencyMs": 45659,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 10000,
+        "outputTokens": 3928,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 27,
+        "rawOutputItems": 27,
+        "validOutputItems": 24,
+        "downstreamUsedItems": 24,
+        "discardedReasonCounts": {
+          "retryRequired": 3
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.007767360000000001,
+      "budgetCostUsd": 0.007767360000000001,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-si-msp:evaluation-control-score-only:6",
+      "cellId": "MX-si-msp",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:55:06.520Z",
+      "completedAt": "2026-09-06T19:58:20.335Z",
+      "latencyMs": 29784,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 6442,
+        "outputTokens": 2390,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 27,
+        "rawOutputItems": 27,
+        "validOutputItems": 24,
+        "downstreamUsedItems": 24,
+        "discardedReasonCounts": {
+          "retryRequired": 3
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00488157,
+      "budgetCostUsd": 0.00488157,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-si-msp:evaluation-control-score-only:7",
+      "cellId": "MX-si-msp",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:55:06.520Z",
+      "completedAt": "2026-09-06T19:58:20.335Z",
+      "latencyMs": 29931,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 7192,
+        "outputTokens": 2216,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 27,
+        "rawOutputItems": 27,
+        "validOutputItems": 24,
+        "downstreamUsedItems": 24,
+        "discardedReasonCounts": {
+          "retryRequired": 3
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.005056440000000001,
+      "budgetCostUsd": 0.005056440000000001,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-si-msp:evaluation-control-score-only:8",
+      "cellId": "MX-si-msp",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:55:06.520Z",
+      "completedAt": "2026-09-06T19:58:20.335Z",
+      "latencyMs": 43664,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 9710,
+        "outputTokens": 4331,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 27,
+        "rawOutputItems": 27,
+        "validOutputItems": 24,
+        "downstreamUsedItems": 24,
+        "discardedReasonCounts": {
+          "retryRequired": 3
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00799182,
+      "budgetCostUsd": 0.00799182,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-si-msp:evaluation-control-score-only:9",
+      "cellId": "MX-si-msp",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:55:06.520Z",
+      "completedAt": "2026-09-06T19:58:20.335Z",
+      "latencyMs": 21172,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 5487,
+        "outputTokens": 2038,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 27,
+        "rawOutputItems": 27,
+        "validOutputItems": 24,
+        "downstreamUsedItems": 24,
+        "discardedReasonCounts": {
+          "retryRequired": 3
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.004159904999999999,
+      "budgetCostUsd": 0.004159904999999999,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-si-msp:evaluation-control-score-only:10",
+      "cellId": "MX-si-msp",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:55:06.520Z",
+      "completedAt": "2026-09-06T19:58:20.335Z",
+      "latencyMs": 29469,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 7908,
+        "outputTokens": 2205,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 27,
+        "rawOutputItems": 27,
+        "validOutputItems": 24,
+        "downstreamUsedItems": 24,
+        "discardedReasonCounts": {
+          "retryRequired": 3
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00535833,
+      "budgetCostUsd": 0.00535833,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-si-msp:evaluation-control-score-only:11",
+      "cellId": "MX-si-msp",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:55:06.520Z",
+      "completedAt": "2026-09-06T19:58:20.335Z",
+      "latencyMs": 61237,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 10882,
+        "outputTokens": 5883,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 27,
+        "rawOutputItems": 27,
+        "validOutputItems": 24,
+        "downstreamUsedItems": 24,
+        "discardedReasonCounts": {
+          "retryRequired": 3
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00985188,
+      "budgetCostUsd": 0.00985188,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-si-msp:evaluation-control-score-only:12",
+      "cellId": "MX-si-msp",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:55:06.520Z",
+      "completedAt": "2026-09-06T19:58:20.335Z",
+      "latencyMs": 51796,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 9000,
+        "outputTokens": 4589,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 27,
+        "rawOutputItems": 27,
+        "validOutputItems": 24,
+        "downstreamUsedItems": 24,
+        "discardedReasonCounts": {
+          "retryRequired": 3
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00790743,
+      "budgetCostUsd": 0.00790743,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-si-msp:evaluation-control-score-only:13",
+      "cellId": "MX-si-msp",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:55:06.520Z",
+      "completedAt": "2026-09-06T19:58:20.335Z",
+      "latencyMs": 54119,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 9047,
+        "outputTokens": 6031,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 27,
+        "rawOutputItems": 27,
+        "validOutputItems": 24,
+        "downstreamUsedItems": 24,
+        "discardedReasonCounts": {
+          "retryRequired": 3
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.009182415000000001,
+      "budgetCostUsd": 0.009182415000000001,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-si-msp:evaluation-control-score-only:14",
+      "cellId": "MX-si-msp",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:55:06.520Z",
+      "completedAt": "2026-09-06T19:58:20.335Z",
+      "latencyMs": 52305,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 7462,
+        "outputTokens": 4287,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 27,
+        "rawOutputItems": 27,
+        "validOutputItems": 24,
+        "downstreamUsedItems": 24,
+        "discardedReasonCounts": {
+          "retryRequired": 3
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00697566,
+      "budgetCostUsd": 0.00697566,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-si-msp:evaluation-control-score-only:15",
+      "cellId": "MX-si-msp",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:55:06.520Z",
+      "completedAt": "2026-09-06T19:58:20.335Z",
+      "latencyMs": 23561,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 5302,
+        "outputTokens": 1919,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 27,
+        "rawOutputItems": 27,
+        "validOutputItems": 24,
+        "downstreamUsedItems": 24,
+        "discardedReasonCounts": {
+          "retryRequired": 3
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.003975899999999999,
+      "budgetCostUsd": 0.003975899999999999,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-si-msp:evaluation-control-score-only:16",
+      "cellId": "MX-si-msp",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:55:06.520Z",
+      "completedAt": "2026-09-06T19:58:20.335Z",
+      "latencyMs": 28242,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 5555,
+        "outputTokens": 2199,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 27,
+        "rawOutputItems": 27,
+        "validOutputItems": 24,
+        "downstreamUsedItems": 24,
+        "discardedReasonCounts": {
+          "retryRequired": 3
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.0043295550000000006,
+      "budgetCostUsd": 0.0043295550000000006,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    }
+  ],
+  "warnings": [
+    "No official-domain evidence was extracted for its-systems.mx.",
+    "No official-domain evidence was extracted for integraindustrialnetworks.com.",
+    "No official-domain evidence was extracted for grupoimtelec.com.mx.",
+    "No official-domain evidence was extracted for promotechmexico.com.mx.",
+    "No official-domain evidence was extracted for balder.com.mx.",
+    "No official-domain evidence was extracted for bdw.com.mx.",
+    "No official-domain evidence was extracted for newgate.mx.",
+    "No official-domain evidence was extracted for iposit.mx.",
+    "No official-domain evidence was extracted for terian.mx.",
+    "huus.mx: Submitted SI role is not supported by supplied evidence.",
+    "ubix.mx: Submitted SI role is not supported by supplied evidence.",
+    "ubix.mx: Deterministic role hints were not auto-added: Distributor, SI.",
+    "c3ntro.com: Deterministic role hints were not auto-added: Distributor, Installer.",
+    "us.bits.com.mx: Independent public evidence includes unrelated companies with similar names (bitsmanagedit.com, bits.guru, bitsbusinessit.com) that are not the candidate.",
+    "us.bits.com.mx: Deterministic role hints were not auto-added: ISP.",
+    "censystems.com.mx: Independent public evidence includes unrelated companies with similar names (censys.com, CCI Systems) that are not the candidate.",
+    "xpertic.com.mx: Evidence evidence-2fc38c977a064c7c (xxpert.com) appears to be a different company (Xpert Technologies) and was excluded from identity findings.",
+    "xpertic.com.mx: Evidence evidence-e5160339c86e9ace (itfenix.com) appears to be a different company (IT Fenix) and was excluded from identity findings.",
+    "xpertic.com.mx: Evidence evidence-c2f2eba32fb71115 (xpertic.co) may be a related but distinct domain; it was used only as corroborating independent evidence, not as the official website.",
+    "cintegra.mx: Independent public evidence for 'Integra Technologies' from LinkedIn, integratech.com, integra-tech.com, and integratechnologies.com appears to refer to different companies and was not used for entity resolution.",
+    "cintegra.mx: The submitted roles (SI, MSP) are supported, but evidence also supports a Distributor role, resulting in a Hybrid primary business role.",
+    "its-systems.mx: All supplied evidence is unrelated to the candidate ITS-Systems.",
+    "its-systems.mx: The submitted official website URL could not be verified from the supplied evidence.",
+    "its-systems.mx: No supported channel roles could be established.",
+    "its-systems.mx: Deterministic role hints were not auto-added: Installer, ISP.",
+    "erisystems.com.mx: The submitted SI role is not supported by the supplied evidence.",
+    "erisystems.com.mx: Several independent public evidence sources refer to unrelated companies with similar names and should not be used for this candidate.",
+    "en-ti.com: The submitted roles included MSP, which is supported but secondary to the SI role.",
+    "en-ti.com: The independent-public evidence about ISPs is irrelevant to EN-TI and should not be used to infer an ISP role.",
+    "en-ti.com: The submitted company name 'EN-TI' is a brand name; the legal entity name differs.",
+    "en-ti.com: Deterministic role hints were not auto-added: ISP.",
+    "integraindustrialnetworks.com: Submitted domain 'integraindustrialnetworks.com' is not present in any supplied evidence.",
+    "integraindustrialnetworks.com: Multiple unrelated 'Integra' entities appear in evidence, creating identity ambiguity.",
+    "integraindustrialnetworks.com: Proposed official website was not supported by the cited company-owned evidence; original identity retained.",
+    "integra.red: Mexico presence is not explicitly confirmed in supplied evidence.",
+    "integra.red: Independent evidence includes unrelated 'Integra' entities that should not be conflated with this candidate.",
+    "syemex.com: Independent evidence includes unrelated entities such as Sysmex Corporation and SYSCOM, which should not be conflated with this candidate.",
+    "grupoimtelec.com.mx: Submitted domain 'grupoimtelec.com.mx' is not present in any supplied evidence.",
+    "grupoimtelec.com.mx: Evidence references unrelated entities such as IntegraTEC, Internexa, and Intellinet.",
+    "grupoimtelec.com.mx: Proposed official website was not supported by the cited company-owned evidence; original identity retained.",
+    "grupoimtelec.com.mx: Deterministic role hints were not auto-added: Distributor, SI.",
+    "secproo.com: Independent evidence from SYSCOM and MITSPRO references unrelated entities and should not be conflated with this candidate.",
+    "sistenet.com.mx: Submitted MSP role is not clearly supported by evidence; only maintenance services are mentioned.",
+    "sistenet.com.mx: Evidence for company size is limited to a single LinkedIn source.",
+    "sistenet.com.mx: Deterministic role hints were not auto-added: Reseller.",
+    "promotechmexico.com.mx: Official website evidence is minimal and consists primarily of a client testimonial.",
+    "promotechmexico.com.mx: Independent evidence is sparse and does not clearly support submitted roles.",
+    "promotechmexico.com.mx: Forum post attribution to Promotech México is uncertain.",
+    "promotechmexico.com.mx: Roles without a supported atomic role finding were removed.",
+    "promotechmexico.com.mx: Deterministic role hints were not auto-added: Distributor.",
+    "balder.com.mx: Submitted SI and MSP roles are not supported by evidence.",
+    "balder.com.mx: Independent evidence sources are unrelated to Balder Telecom.",
+    "balder.com.mx: Official website evidence is limited to a single page.",
+    "balder.com.mx: Deterministic role hints were not auto-added: Distributor.",
+    "inet-mx.net: Submitted MSP role is not supported by evidence.",
+    "inet-mx.net: Independent evidence sources include unrelated companies with similar names (inet.global, inetmexico.net, inet.com.bo).",
+    "inet-mx.net: Deterministic role hints were not auto-added: Reseller.",
+    "tfimexico.com: Submitted MSP role is not supported by evidence.",
+    "tfimexico.com: Independent evidence sources are unrelated to TFI México.",
+    "tfimexico.com: Official website evidence is limited to a single page.",
+    "bdw.com.mx: Escalation was skipped because the configured routine and escalation models are identical.",
+    "bdw.com.mx: Supplied evidence does not mention Constructora Bandwidth or bdw.com.mx.",
+    "bdw.com.mx: Deterministic role hints were not auto-added: Installer.",
+    "newgate.mx: Escalation was skipped because the configured routine and escalation models are identical.",
+    "newgate.mx: Supplied evidence does not mention New Gate or newgate.mx.",
+    "newgate.mx: Deterministic role hints were not auto-added: Distributor, ISP.",
+    "iposit.mx: Escalation was skipped because the configured routine and escalation models are identical.",
+    "iposit.mx: Supplied evidence does not mention IPoSIT or iposit.mx.",
+    "iposit.mx: Deterministic role hints were not auto-added: Distributor, ISP.",
+    "terian.mx: Escalation was skipped because the configured routine and escalation models are identical.",
+    "terian.mx: Supplied evidence does not mention TERIAN or terian.mx.",
+    "tsmintegraciones.com.mx: Independent public evidence sources for TSM Integraciones appear to refer to unrelated companies with similar names."
+  ]
+}

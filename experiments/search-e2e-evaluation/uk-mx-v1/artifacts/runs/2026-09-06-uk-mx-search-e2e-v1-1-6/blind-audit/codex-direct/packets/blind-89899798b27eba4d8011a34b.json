@@ -1,0 +1,23 @@
+{
+  "packetId": "blind-89899798b27eba4d8011a34b",
+  "targetMarket": {
+    "countryCode": "MX",
+    "countryName": "Mexico"
+  },
+  "requestedCategory": "si-msp",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "Hubara integradores",
+    "domain": "hubaraintegradores.com",
+    "officialWebsiteUrl": "https://www.hubaraintegradores.com/"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-home-d27d1f7a4eb92c5d",
+      "sourceType": "official-website",
+      "url": "https://www.hubaraintegradores.com/",
+      "title": "Hubara integradores",
+      "excerpt": "Hubara integradores Inicio Portafolio Servicios Opciones de pago Contacto ☰ HUBARA Integradores en soluciones de inform&aacute;tica, sistemas, telefon&iacute;a, redes y computo avanzado Acerca de nosotros Somos una empresa MEXICANA dedica 100% a la consultor&iacute;a e integraci&oacute;n de soluciones de Inform&aacute;tica y comunicaciones. Con 19 a&ntilde;os de experiencia con aliados de negocios, mayoristas y fabricantes Atendemos necesidades explicitas de clientes que requiere de un portafolio de soluciones integrales, teniendo a cambio optimizaci&oacute;n de sus procesos y el incremento de productividad mediante la implementaci&oacute;n de nuevas tecnolog&iacute;as. Adicionalmente nuestros proveedores y fabricantes cuentan con cobertura en toda la Rep&uacute;blica Mexicana. Nuestros se"
+    }
+  ]
+}

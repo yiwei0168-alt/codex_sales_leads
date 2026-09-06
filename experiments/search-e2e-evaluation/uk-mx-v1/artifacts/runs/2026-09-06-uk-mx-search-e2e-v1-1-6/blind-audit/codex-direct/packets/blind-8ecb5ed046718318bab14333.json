@@ -1,0 +1,23 @@
+{
+  "packetId": "blind-8ecb5ed046718318bab14333",
+  "targetMarket": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom"
+  },
+  "requestedCategory": "retail",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "Hunt Office UK",
+    "domain": "huntoffice.co.uk",
+    "officialWebsiteUrl": "https://huntoffice.co.uk/"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-home-0b6e9f2a495508c4",
+      "sourceType": "official-website",
+      "url": "https://huntoffice.co.uk/",
+      "title": "Office Supplies UK - Hunt Office UK",
+      "excerpt": "Office Supplies UK - Hunt Office UK HuntOffice.co.uk 08445 443558 Contact Us Help Hello, Sign in Your Account Sign In New customer? Start here. Your Account Your Address Book Your Order History Your Wish List Quick Order 0 Cart Ink & Toner Paper Office Supplies Post & Packing Technology Machines Furniture Interiors Breaktime Cleaning Health & Security This site requires JavaScript to function properly. Please enable JavaScript in your web browser. Popular Categories Ink & Toner &raquo; Paper &raquo; Stationery & Office Supplies &raquo; Post & Packing &raquo; Technology &raquo; All Categories &raquo; Machines & Printers &raquo; Office Furniture &raquo; Interiors &raquo; Breaktime &raquo; Cleaning Products &raquo; Health & Security &raquo; Top Sellers Luxor Home Office Workstation & Martinez"
+    }
+  ]
+}

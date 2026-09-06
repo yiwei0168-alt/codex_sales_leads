@@ -1,0 +1,2245 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+  "cellId": "GB-si-msp",
+  "inputCount": 29,
+  "records": [
+    {
+      "companyKey": "GB:domain:croftmsp.com",
+      "countryCode": "GB",
+      "companyName": "Croft Communications",
+      "domain": "croftmsp.com",
+      "officialWebsiteUrl": "https://www.croftmsp.com",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP",
+        "ISP",
+        "SI"
+      ],
+      "totalScore": 72,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-8a5314551b086b8b",
+          "url": "https://www.croftmsp.com",
+          "title": "Croft | Managed Service Provider | IT | Communications | Mobiles",
+          "excerpt": "Your IT and communications should work for you, not against you. We partner with you to understand your needs and then provide a tailored solution that helps your business operate at its peak. Our mission is to wow our customers with uncomplicated technology and service. Trusted by over 5000 clients across the UK and worldwide ## Some of our clients Fanduel logo Molson Group logo WilmerHale logo ## Your technology in one place [...] Seamless integration across our IT, Communications and Mobile teams is why clients chose Croft as their Managed Service Provider. Together, our teams address client challenges, ensuring that projects are delivered on time, within budget and support is of the highest standard. Want to find out what collaborative success looks like? Partner with Croft. ## Nationa",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-34d3f2fa22790c75",
+          "url": "https://www.croftmsp.com/slavery-policy",
+          "title": "Modern Slavery Policy | Croft",
+          "excerpt": "Client Hub Client Hub Home » Modern Slavery Policy Slavery Policy Modern Slavery Policy About us Croft Communications deliver bespoke mobile, telephone and hosted solutions to business across the United Kingdom. Our aim is to help businesses with the management of their communications in order to reduce expenditure and to improve efficiency. This is succeeded by providing customers with high-levels of support, offering a complete management solution that reduces the time business owners and IT managers often waste managing team communications. Introduction Modern slavery is a crime resulting in an abhorrent abuse of human rights. It is constituted in the Modern Slavery Act 2015 by the offences of ‘slavery, servitude and forced or compulsory labour’ and ‘human trafficking’. Over 21 million ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-70eae5d13daee6dc",
+          "url": "https://www.croftmsp.com/general-terms-and-conditions",
+          "title": "General Terms and Conditions | Croft",
+          "excerpt": "Client Hub Client Hub Home » General Terms and Conditions General Terms and Conditions (A) These terms & conditions (as amended from time to time in accordance with Clause 16) (\"Conditions\") shall apply to all Order Forms (as defined below) entered into between the parties. (B) Each Croft Communications Order Form (including all schedules, appendices and other documents referenced therein, and as varied by any applicable Variation Letters entered into by the parties from time to time) incorporating these Conditions (“Order Form”) forms, together with these Conditions, a separate contract (“Contract”, as defined below) between the parties for the provision of the goods and services set out in that Order Form. (C) Croft shall be under no obligation to provide, and the Customer shall not be r",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-079bce367046829c",
+          "url": "https://www.croftmsp.com/code-of-practice",
+          "title": "Code of Practice | Croft",
+          "excerpt": "Client Hub Client Hub Home » Code of Practice Ofcom Code of Practice Ofcom Code of Practice Introduction Croft Communications have been providing business telecommunications for over a decade. During this time, we have become renowned for our impeccable customer service and ability to build and maintain excellent relationships with businesses from every industry, both large and small. Contact details Unit E1, The Chase, John Tate Road, Hertford, SG13 7NN Phone: 01920 466466 Email: (/cdn-cgi/l/email-protection#8fe6e1e9e0cfecfde0e9fbece0e2e2fae1e6eceefbe6e0e1fca1ece0a1fae4) Terms & Conditions (including prices and tariffs) We provide mobile, landline and cloud-telephony solutions to businesses across the United Kingdom. These services include contract management, equipment installation and t",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-69929be298ce4a35",
+          "url": "https://www.croftmsp.com/it-support-services-terms-and-conditions",
+          "title": "IT Support Services Terms and Conditions | Croft",
+          "excerpt": "Client Hub Client Hub Home » IT Support Services Terms and Conditions IT Support Services Terms and Conditions (1) CROFT COMMUNICATIONS LIMITED (registered number 09585068) a company incorporated in England and Wales whose registered office is at Ground Floor, Unit E1, The Chase, John Tate Road, Hertford, England, SG13 7NN (“Croft”); and (2) CUSTOMER (as identified on the quotation) Each a “party” and collectively the “parties”. The Customer wishes Croft to provide specific IT support services in exchange for payment of the Charges, subject to and in accordance with the terms of this agreement (the “Agreement”). Such support excludes Telephony related activities which if to be provided will be covered under a separate agreement. IT IS AGREED AS FOLLOWS 1 INTERPRETATION 1.1 The following ex",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-bafede4e0cc48fc3",
+          "url": "https://uk.linkedin.com/company/croftmsp",
+          "title": "Croft - Keeping your team connected with bespoke managed service solutions.",
+          "excerpt": "Keeping your team connected with bespoke managed service solutions. Set up your business to benefit from increased security, productivity and profitability across telecoms, the cloud and cyber security. Established in 2006, Croft is a B2B telecommunications and managed IT provider, supplying innovative communication and IT services across the UK. Croft currently offer a comprehensive range of fully managed services including business mobiles, connectivity, hosted telephony, business phones, IT [...] Blackstar Solutions - part of the Croft Group (Telecommunications): (N/A); Croft Communications (Telecommunications): (Culpeper, Virginia); Alleviate IT Solutions (IT Services and IT Consulting): (Wakefield, England); Air IT Group (Information Technology & Services): (Nottingham, Nottinghamshir",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:axia.co.uk",
+      "countryCode": "GB",
+      "companyName": "Axia Computer Systems",
+      "domain": "axia.co.uk",
+      "officialWebsiteUrl": "https://axia.co.uk",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP",
+        "SI"
+      ],
+      "totalScore": 68,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-f8fe05609cb9514b",
+          "url": "https://www.datacentermap.com/c/axia-computer-systems-ltd",
+          "title": "Axia Computer Systems Ltd - Company Profile",
+          "excerpt": "Founded in 1994, Axia Computer Systems Ltd. is a fast growing IT solutions organisation. Our services includes flexible IT support, professional IT project",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-82cfae3469825ae0",
+          "url": "https://axia.co.uk/about",
+          "title": "About Axia — IT Support & Cloud Experts Since 1994 — Axia",
+          "excerpt": "Axia Computer Systems Ltd 01923 333111Get in touch About Axia # About Us Founded in 1994, Axia Computer Systems Ltd is a fast growing IT solutions organisation supporting small and medium-sized businesses throughout the UK. About Us [...] About Us Founded in 1994, Axia Computer Systems Ltd. is a fast growing IT solutions organisation. Our services includes flexible IT support, professional IT project delivery and expert technical advice. We support small and medium-sized businesses throughout the UK. With flexible approach, we can act as a client's IT department, or supplement an existing IT function. [...] ## Contact Info Address: Axia House, 3D Regal Way, Watford, Hertfordshire, WD24 4YJ. United Kingdom Phone: 01923 333111 Email: info@axia.co.uk Website: ## Ready to talk? Discuss your IT",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-2177aff3a36f8d4b",
+          "url": "https://uk.linkedin.com/company/axiauk",
+          "title": "Axia Computer Systems Limited - IT Services, Maintenance and Support IT Business Solutions",
+          "excerpt": "COMPUTER SUPPORT, Maintenance, Networks, Cisco, Juniper, IBM, Microsoft, Axianet, HP, Fujitsu, Conultancy, Web Design, IBM, Lenovo, hosting, zyxel, novell, Fortinet, Dell, VMWare, apc, ISP, Watchguard, netgear, trend micro, avast, veritas, symantec, belkin, dlink, vertiv, apc, 3com, quantum, project management, network security, it support, it support watford, it support london, it support hertfordshire, computer software, computer hardware, computer consultancy , inetrnet service provider , [...] service provider , isp, hosting, colocation, backup, linux, voip, MSP, Dell, Office365, cybersecurity, EMC, sophos, trend, avast, juniper, d-link, axis, avast, and d-link [...] ### Website ### Crunchbase N/A ### LinkedIn N/A ### Industry Computer and Network Security ### Company Size 51-200 emplo",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-1c88f4ff79cbc66b",
+          "url": "https://axia.ltd.uk",
+          "title": "Axia Limited — A UK technology group",
+          "excerpt": "1. 01 ### Axia Computer Systems axia.co.uk Role Managed IT servicesEst. 1994 Operating Watford · London · UK The group’s foundational operating company. Managed IT support, infrastructure consulting and cloud services for UK SMEs, with a 24/7 helpdesk and three decades of continuous trading. IT support Cloud & backup Network consulting Telephony Read profile Visit site 2. 02 ### AxiaNET axia.net.uk Role Connectivity & hostingEst. 2001 [...] The group’s advisory arm. Independent, vendor-neutral IT consultancy for ambitious UK SMBs — from project management and procurement to cloud, Microsoft 365, migration and VoIP. Project management Procurement Cloud & M365 Migration Read profile Visit site 5. 05 ### Axia Telecom axia-tele.com Role Business comms & connectivityEst. 1994 Operating Watford ",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-a14eb8798fd08f98",
+          "url": "https://www.facebook.com/axiauk",
+          "title": "Axia Computer Systems Ltd | Watford",
+          "excerpt": "Axia House, 3d Regal Way, Watford, United Kingdom, WD24 4YJ. Stanmore, UK ... Axia Computer Systems Ltd can show how this would work for your setup.",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:netteam.co.uk",
+      "countryCode": "GB",
+      "companyName": "Netteam tX",
+      "domain": "netteam.co.uk",
+      "officialWebsiteUrl": "https://netteam.co.uk",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP"
+      ],
+      "totalScore": 58,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-69bf49869571b1a9",
+          "url": "https://uk.linkedin.com/company/netteam-consultants-ltd",
+          "title": "Netteam tX Ltd - Delivering IT Technology, Communication & Security Solutions to Your Business",
+          "excerpt": "Netteam tX Ltd - Delivering Technology Services Welcome to Netteam tX. We’re a comprehensive IT Managed Service Provider (MSP) offering a complete suite of technology solutions to all Businesses and the Hospitality sector across the UK. Our Team works alongside your Team to understand current & future needs ensuring the best possible solutions Netteam was established in 2003, and have offices in Newbury, Berkshire, and in Manchester, delivering solutions & support to clients across the UK. [...] all of the time. We’re delighted that at Netteam we have official partner status with some of the leading names in the technology sector, so you know we have the highest endorsement of the quality service we provide. Contact Us whatever your business’s technology needs are, the team at Netteam tX h",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:systemagic.co.uk",
+      "countryCode": "GB",
+      "companyName": "Systemagic",
+      "domain": "systemagic.co.uk",
+      "officialWebsiteUrl": "https://systemagic.co.uk",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP",
+        "Reseller"
+      ],
+      "totalScore": 57,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-8cc68bda1e1c738d",
+          "url": "https://systemagic.co.uk/services/eset",
+          "title": "ESET Antivirus & Protection - ESET Gold Partner - Systemagic",
+          "excerpt": "Systemagic logo Systemagic logo logo Tel: 01225 426 800 curve ESET Antivirus & Protection Protect Your Business With ESET Security As a trusted Managed Service Provider (MSP) and proud ESET Gold Partner, we deliver enterprise-grade cybersecurity solutions tailored to shield your business from an increasingly sophisticated digital threat landscape. Leveraging ESET’s advanced, multi-layered security technology, we ensure your organisation remains secure, compliant, and fully resilient against cyberattacks. ESET Gold Partner Logo Why Choose ESET? Proven, Multi-Layered Protection Trusted by millions of users globally, ESET deploys proactive layers of defence to neutralise malware, ransomware, phishing, and complex zero-day exploits before they reach your network. Lightweight, Uncompromising Pe",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-50a11b6202a7e7ac",
+          "url": "https://systemagic.co.uk/5-reasons-to-consider-an-apple-macbook-for-your-next-laptop",
+          "title": "5 Reasons to Consider an Apple MacBook For Your Next Laptop",
+          "excerpt": "Systemagic logo Systemagic logo logo Tel: 01225 426 800 MacBook Pro's Why not share this article? Recent Posts 5 Reasons to Consider an Apple MacBook For Your Next Laptop At Systemagic we’re huge fans of Apple devices. Almost all our techs are Apple Certified and around 75% of our clients have at least one Mac, with 20% being exclusively Apple-based. Here are our top 5 reasons why you might want to consider an Apple MacBook for your next business laptop: Battery Life MacBook battery life is far better than most standard Windows laptops. The 2024 MacBook Air model with the latest M3 chip lasts up to 18 hours of actual use, so if you’re on the move a lot with your laptop there’s no need to always carry a charger with you. Even the more powerful M3 MacBook Pro battery life is fantastic, boast",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-b7f482eb2b1dd097",
+          "url": "https://systemagic.co.uk/how-much-does-it-support-cost-in-2025",
+          "title": "How Much Does IT Support Cost For a Small Business in 2025 - Systemagic",
+          "excerpt": "T: 01225 426800 E: info@systemagic.co.uk Resource Centre Switching Service Videos Blog Remote Support Systemagic logo Systemagic logo Tel: 01225 426 800 logo Tel: 01225 426 800 IT Technician working at his desk Why not share this article? Recent Posts 21st August 2026 The Hidden Risk in Your Team’s Password Habits (And How to Fix It) 6th August 2026 How Much RAM Does a Business Computer Really Need? 15th July 2026 Why Cyber Essentials Plus Matters More Than Ever for NHS Suppliers How Much Does IT Support Cost For a Small Business in 2025 As an SME, finding cost-effective business IT support in the UK is hard. With so many managed service providers and different levels of support, the vast array of options can be overwhelming. In this blog we explore the different types of IT support availa",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-c58287ddf2ed0519",
+          "url": "https://systemagic.co.uk/services/apple-support",
+          "title": "Business IT Support for Apple Devices - Systemagic",
+          "excerpt": "Systemagic logo Systemagic logo logo Tel: 01225 426 800 curve Apple IT Support for Businesses Business IT Support for Apple Devices Our team of Apple Certified Technicians support a variety of businesses and organisations running Apple devices and services, in addition to hybrid networks relying on both macOS and Windows machines. Apple Support- Jimmy Some of our biggest clients are exclusively Apple-based and work in industries, such as video production, marketing, media creation, software development and education. With knowledge and experience across Apple’s entire product portfolio, we can provide your business with IT support for iMacs, Mac Minis, MacBooks, iPads, and iPhones. Our Apple IT Support Includes: Apple Discount As an Apple Partner, we can supply you with new Apple devices w",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-ed500abeeb46217d",
+          "url": "https://systemagic.co.uk/services/business-connectivity",
+          "title": "Business Connectivity - Broadband, Telephony & WiFi - Systemagic",
+          "excerpt": "Since 1999, we have provided UK businesses with fast and reliable business connectivity solutions. Discover our connectivity solutions here.",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-6ae79358b5ee9bda",
+          "url": "https://uk.linkedin.com/company/systemagic-ltd",
+          "title": "Systemagic | Multi-Award-Winning IT Support | Microsoft Solutions Partner - IT Support and Cloud Solutions for businesses in the South West and beyond. #DoingITDifferently since 1999",
+          "excerpt": "-Support & Maintenance -Cloud Services -Business Connectivity -Business Telecoms Find out much more about us on our website, www.systemagic.co.uk [...] ### Investors N/A ### Specialties Business IT Support, Managed Service & Support, Business Connectivity & VPN, Cloud Computing Services, Office 365, Hardware & Software Procurement, VoIP Telephone Systems, and Azure ## Locations The Old Gas Warehouse, Bradford on Avon, Wiltshire BA15 1HA, GB, 7 Bell Yard, London, England WC2A 2JR, GB ### Get Directions Directions, Directions [...] # Systemagic | Multi-Award-Winning IT Support | Microsoft Solutions Partner IT Support and Cloud Solutions for businesses in the South West and beyond. #DoingITDifferently since 1999 IT Services and IT Consulting • Bradford on Avon, Wiltshire • 882 followers • 11-",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:technicaldrive.co.uk",
+      "countryCode": "GB",
+      "companyName": "Technical Drive",
+      "domain": "technicaldrive.co.uk",
+      "officialWebsiteUrl": "https://technicaldrive.co.uk",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP"
+      ],
+      "totalScore": 0,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-efab3df4a701da6d",
+          "url": "https://technicaldrive.co.uk/terms-conditions",
+          "title": "Terms & Conditions | Technical Drive",
+          "excerpt": "fbpx td-footer 1 Terms & Conditions 1. Agreement to Terms 1.1 These Terms and Conditions constitute a legally binding agreement made between you, whether personally or on behalf of an entity (you), and Technical Drive LTD,located atGrosvenor House, Market Street, Bromsgrove, Worcestershire B61 8DA, United Kingdom (we, us), concerning your access to and use of the Technical Drive ( website as well as any related applications (the Site). The Site provides the following services: (IT Support Services). You agree that by accessing the Site and/or Services, you have read, understood and agree to be bound by all of these Terms and Conditions. If you do not agree with all of these Terms and Conditions, then you are prohibited from using the Site and Services and you must discontinue use immediate",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:connectsystems.co.uk",
+      "countryCode": "GB",
+      "companyName": "Connect Systems",
+      "domain": "connectsystems.co.uk",
+      "officialWebsiteUrl": "https://connectsystems.co.uk",
+      "primaryRole": "Unresolved",
+      "supportedRoles": [],
+      "totalScore": 0,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": false,
+      "operatesInTargetMarket": false,
+      "evidence": [
+        {
+          "id": "evidence-3d04592b22c6ddb8",
+          "url": "https://www.purdi.com",
+          "title": "Purdicom: Cloud, Security & Wireless IT Technology Distributors",
+          "excerpt": "- official UK distributorsAginet Routers for ISPs and Network & Customer Management Systems by TP-LinkMikrotik Distributor UK - Routers, Switches & Wireless P2P SolutionsRF Elements wireless supplierEncapto Wifi Expert TrainingUbiquity Networks UI Distributors UK Wifi and Wireless TechPatchbox professional network rack cable management & hardware installation toolsHuawei Enterprise Grade Wi-Fi, Security Technology & Wireless Hardware [...] ### Purdicom & Teltonika Networks: Connecting UK Businesses Through Smarter Industrial Networking on 04 August 2026, in Teltonika ### Purdicom & Teltonika Networks: Connecting UK Businesses Through Smarter Industrial Networking on 04 August 2026, in Teltonika ### AuthPoint Single Sign-On: Modern Security For Hybrid Work on 31 July 2026, in WatchGuard ###",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-8d3395fc4e8b9afd",
+          "url": "https://www.cogentdistribution.com",
+          "title": "Cogent Distribution | Global Business Connectivity Solutions",
+          "excerpt": "© 2026 Cogent Distribution Ltd | Registered in England & Wales | Company Registration No. 09375183 Registered Office Address: Technology House, Kennet Side, Bone Ln, Newbury, RG14 5PX | VAT Registration No. 205173345 ### Contact Us What are you contacting us about? \\Please select an optionGeneral EnquiriesSalesCustomer SupportTechnical SupportOur Services Name: \\ Company: Email address: \\ Phone number: Services Message0 / 180 Send Message [...] For resellers (VARs) and system integrators, we don’t just supply premium connectivity products but solutions design and many other value-added services too. For vertical markets, we offer advanced connectivity solutions tailored to your industry. Consumers and end-users can purchase from us too, taking advantage of the online shopping facility in o",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:laton.co.uk",
+      "countryCode": "GB",
+      "companyName": "Laton Technical",
+      "domain": "laton.co.uk",
+      "officialWebsiteUrl": "https://www.laton.co.uk",
+      "primaryRole": "Installer",
+      "supportedRoles": [
+        "Installer",
+        "MSP"
+      ],
+      "totalScore": 52,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-6e196e189583f126",
+          "url": "https://www.laton.co.uk",
+          "title": "Laton Technical",
+          "excerpt": "Call: 01424 422562 Laton. We install and maintain Network, Voice and Fibre Optic cabling for small and large businesses across South East England. Network",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-8791aa0f9a16be5c",
+          "url": "https://uk.linkedin.com/company/laton-technical",
+          "title": "Laton Technical",
+          "excerpt": "ICT Support company for small and medium companies. Other services include CAT5e, CAT6, fiber optic and wireless installation and repair.",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-904849339d1b00e6",
+          "url": "https://www.facebook.com/latontech?locale=en_GB",
+          "title": "Laton Technical | Hastings",
+          "excerpt": "Laton Technical, Computer support to business. 11-15 Fearon Road, Hastings, United Kingdom, TN34 2EP … +44 1424 422562 in practice with Laton Technical &",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:rjcortel.co.uk",
+      "countryCode": "GB",
+      "companyName": "RJ Cortel",
+      "domain": "rjcortel.co.uk",
+      "officialWebsiteUrl": "https://www.rjcortel.co.uk",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP",
+        "Installer",
+        "Reseller"
+      ],
+      "totalScore": 69,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-c1bee561a933ea93",
+          "url": "https://www.rjcortel.co.uk/msa-v01-effective-from-10th-july-2024",
+          "title": "MSA-V01 effective from 10th July 2024 | Learn More Today - RJ Cortel",
+          "excerpt": "RJ Cortel RJ Cortel MSA-V01 effective from 10th July 2024 MASTER SERVICES AGREEMENT BACKGROUND (A) The Supplier has developed and will provide the Services (each as defined below). (B) The Client (as defined below) wishes to use the Supplier’s Services in its business operations. (C) The Supplier has agreed to provide, and the Client has agreed to take and pay for, the Services, subject to the terms and conditions of this Agreement (as defined below). (D) This Agreement is intended to be a framework agreement, such that once entered into on the Commencement Date (as defined below), these terms and conditions will apply to each subsequent Statement of Work entered into between the Parties. AGREED TERMS 1. INTERPRETATION 1.1 The definitions and rules of interpretation in this Clause apply in",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-9f3ac86bc247d552",
+          "url": "https://www.facebook.com/rjcortelltd?locale=en_GB",
+          "title": "RJ Cortel Ltd | Polegate",
+          "excerpt": "+44 1435 811580. RJ Cortel offers expert remote IT support and cutting- edge connectivity solutions including SoGEA, FTTP, Leased Lines, SD-WAN, and Mobile",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-0ad22412b4d175c0",
+          "url": "https://www.rjcortel.co.uk/wifi-deployment",
+          "title": "Wifi Deployment | Enhance Your Connectivity",
+          "excerpt": "RJ Cortel offer a complete in house wifi solution, providing all of the hardware, installation, structure cabling, networking and underlying data connections.",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-2e2be8cd0c1fc09e",
+          "url": "https://find-and-update.company-information.service.gov.uk/company/04196783",
+          "title": "R J CORTEL LIMITED overview - Companies House - GOV.UK",
+          "excerpt": "R J CORTEL LIMITED - Free company information from Companies House including registered office address, filing history, accounts, annual return, officers,",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:evolvebg.co.uk",
+      "countryCode": "GB",
+      "companyName": "Evolve",
+      "domain": "evolvebg.co.uk",
+      "officialWebsiteUrl": "https://evolvebg.co.uk",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP",
+        "SI"
+      ],
+      "totalScore": 72,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-7232db1d172ed7d1",
+          "url": "https://evolvebg.co.uk/blog/investment-annoucement-faq",
+          "title": "Evolve Answer Your Questions About The Recent Investment.",
+          "excerpt": "evolve-bg-logo-dark All Solutions Business Connectivity SD-WAN Guest Wi-Fi IT Services FAQs Integrations All Sectors Retail Forecourts QSR Hospitality About Evolve 24/7/365 NOC Partners Careers News Contact Us evolve-bg-logo-dark Georgia Mather’s avatar Investment Announcement; Your Questions Answered. As you may have heard, Evolve has now officially announced the successful transition into its first-ever investment. This is an incredible milestone that not only highlights the businesses significant growth but also represents a strategic move in its mission to take the pain out of connectivity for as many global customers as possible. As with any announcement on this scale, there are bound to be questions, some of which are answered here. There are exciting changes ahead, but one thing tha",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-564a86b3f9da9458",
+          "url": "https://evolvebg.co.uk/news/purple-and-evolve-collaborate-to-provide-businesses-improved-wi-fi",
+          "title": "EvolveODM is turning Purple | Guest Wi-Fi",
+          "excerpt": "evolve-bg-logo-dark All Solutions Business Connectivity SD-WAN Guest Wi-Fi IT Services FAQs Integrations All Sectors Retail Forecourts QSR Hospitality About Evolve 24/7/365 NOC Partners Careers News Contact Us evolve-bg-logo-dark Georgia Mather’s avatar Purple and Evolve Collaborate to Provide Businesses Improved Wi-Fi Options The BGF portfolio includes both Purple and Evolve. Purple has already grown rapidly under BGF's direction since October 2023, while Evolve announced its investment with BGF early this year. Because the two businesses share similar goals and principles, Evolve was a logical addition to Purple's growth plan, promoting more productivity and freeing up funds for other company development initiatives. Purple will take advantage of Evolve's extensive knowledge as it enters",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:mas-networks.co.uk",
+      "countryCode": "GB",
+      "companyName": "MAS Networks",
+      "domain": "mas-networks.co.uk",
+      "officialWebsiteUrl": "https://www.mas-networks.co.uk",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP",
+        "SI"
+      ],
+      "totalScore": 62,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-ba726ae63fa117e7",
+          "url": "https://www.mas-networks.co.uk",
+          "title": "MAS Networks: Home",
+          "excerpt": "Call Us: Email: Open: MAS Networks Your friendly experts in the complicated world of IT As your dedicated Managed Solutions Provider, we simplify your operations by being your single point of contact for IT set up and support, one single bill to manage and a trusted partner you can count on to give you peace of mind every step of the way. Learn More Care Provider IT Services I need care sector IT solutions I need hospitality IT solutions Learn more I need retail IT solutions Learn more I need SME IT solutions Why you should choose MAS Networks At MAS Networks, we believe IT shouldn’t be a headache, it should simply work. That’s why we’re here: to take the complexity out of technology so you can focus on what you do best – running your business. Based in Sussex, we specialise in supporting ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-ec288fc27651ecaa",
+          "url": "https://www.mas-networks.co.uk/our-solutions/wifi",
+          "title": "WiFi",
+          "excerpt": "We have installed WiFi systems in places where public access needs to be monitored, businesses where stability is key and private residences in excess of 10,000",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:mlrnetworks.co.uk",
+      "countryCode": "GB",
+      "companyName": "MLR Networks",
+      "domain": "mlrnetworks.co.uk",
+      "officialWebsiteUrl": "https://www.mlrnetworks.co.uk",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP",
+        "SI"
+      ],
+      "totalScore": 73,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-b213075963490bfb",
+          "url": "https://www.cloudtango.net/providers/11826/mlr-networks-ltd",
+          "title": "MLR Networks Ltd Client Reviews",
+          "excerpt": "We are an IT network infrastructure managed services provider , Networking & Wi-Fi, United Kingdom Tel: 0331 630 0450 Website: Visit Website",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-ab6b0c14d892a7da",
+          "url": "https://www.facebook.com/MLRNetworks",
+          "title": "MLR Networks Ltd | Runcorn",
+          "excerpt": "We are an IT network infrastructure specialist, supplying copper and fibre cabling, wireless network. United Kingdom, WA7. Contact info +44 151 423 3633",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-0118f5d625c8a421",
+          "url": "https://uk.linkedin.com/company/mlr-networks",
+          "title": "MLR Networks Ltd - Enterprise network & security specialists. Delivering powerful, agile solutions for all your infrastructure requirements",
+          "excerpt": "### Website ### Crunchbase N/A ### LinkedIn N/A ### Industry Information Technology & Services ### Company Size 11-50 employees 67 associated members (LinkedIn members who've listed MLR Networks Ltd as their current workplace on their profile) ### Founded 1982 ### Funding Last Round Date: N/A Last Round Type: N/A Total Rounds: N/A Last Round Raised: N/A ### Investors N/A [...] We are an IT network infrastructure managed services provider delivering enterprise networking, wireless networks, structured cabling and security solutions to customers across the public and private sectors. We ensure our customers can always connect to their applications and their data wherever they work – on premise or remotely, through secure connectivity underpinned by resilient, high performance networks and in",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-2bab0ce10d81bc85",
+          "url": "https://www.mlrnetworks.co.uk/wireless-networks",
+          "title": "Wireless Networking",
+          "excerpt": "MLR manages every aspect of your WiFi installation, from design and development through deployment to evaluation.",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-134387693310bb18",
+          "url": "https://find-and-update.company-information.service.gov.uk/company/02311887/filing-history",
+          "title": "MLR NETWORKS LTD filing history - Companies House",
+          "excerpt": "MLR NETWORKS LTD - Free company information from Companies House including registered office address, filing history, accounts, annual return, officers,",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:focusgroup.co.uk",
+      "countryCode": "GB",
+      "companyName": "Focus Group",
+      "domain": "focusgroup.co.uk",
+      "officialWebsiteUrl": "https://focusgroup.co.uk",
+      "primaryRole": "Unresolved",
+      "supportedRoles": [],
+      "totalScore": 0,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": false,
+      "operatesInTargetMarket": false,
+      "evidence": [
+        {
+          "id": "evidence-4dd9642199496653",
+          "url": "https://itman.ae/2026/01/18/router-vs-switch-vs-access-point",
+          "title": "Router vs Switch vs Access Point: What You Actually Need?",
+          "excerpt": "A router is the device that connects your local network (your home or office devices) to the internet. It’s basically the “traffic manager” between your internal network and the outside world. If you have an ISP connection (Etisalat, du, or any other provider), the router is usually the first device in your network that handles your public IP address and distributes access to your laptops, phones, smart TVs, and other devices. [...] Choose a router because you need internet connectivity, firewalling, and network control. Add a switch when you need more wired devices, more ports, and stable internal connections. Add access points when you need strong, reliable Wi-Fi coverage in multiple areas. If you want a modern, reliable setup, especially for a business or a large villa, the best long-te",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-2b519efe45f2d9d4",
+          "url": "https://www.croma.com/unboxed/modem-router-switch-and-access-point-whats-the-difference",
+          "title": "Modem vs router vs switch vs access point | Croma Unboxed",
+          "excerpt": "Image 39: Portronics Power Shutter Air 20K with wireless charging support launched in India### Portronics Power Shutter Air 20K with wireless charging support launched in India Aug 31, 2026 Image 40: Best TVs under Rs 20,000 in India 2026### Best TVs under Rs 20,000 in India 2026 Sep 03, 2026 Image 41: Search unboxed blog Image 42: Search Image 43: Croma # Modem, router, switch, and access point: What’s the difference? Building a home network 101 [...] Image 35: Portronics Power Shutter Air 20K with wireless charging support launched in India### Portronics Power Shutter Air 20K with wireless charging support launched in India Aug 31, 2026 Image 36: Best TVs under Rs 20,000 in India 2026### Best TVs under Rs 20,000 in India 2026 Sep 03, 2026 ## Popular ReadsView More [...] They’re essential",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:passmonds.com",
+      "countryCode": "GB",
+      "companyName": "Passmonds Communications",
+      "domain": "passmonds.com",
+      "officialWebsiteUrl": "https://passmonds.com",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "MSP"
+      ],
+      "totalScore": 52,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-447c1279b1814d50",
+          "url": "https://www.facebook.com/groups/332579393935832/posts/2367745023752582",
+          "title": "Whether your office is at home, on the high street or across multiple ...",
+          "excerpt": "Passmonds Communications supports home businesses, small businesses, shops, pubs, warehouses and larger offices across Rochdale, Greater",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-a6aec1c6cd9f35f3",
+          "url": "https://passmonds.com/business-wifi-southport",
+          "title": "Business WiFi Southport – Cabling & Telecoms Installers | Passmonds",
+          "excerpt": "Passmonds provides Business WiFi Southport services. Installers Contact Us 01706 527 940 sales@passmonds.com. Phone: 01706 527 940 Email: sales@passmonds.com",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-0a545602799f6968",
+          "url": "https://passmonds.com/hospitality-wifi-cabling",
+          "title": "Hospitality WiFi, Cabling & Guest Connectivity | Passmonds",
+          "excerpt": "From guest WiFi to EPOS systems and CCTV, we design and install network infrastructure that keeps hospitality environments running smoothly. Our engineers work",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-a15d12eea082e756",
+          "url": "https://find-and-update.company-information.service.gov.uk/company/07261768",
+          "title": "passmonds communications limited - Companies House - GOV.UK",
+          "excerpt": "PASSMONDS COMMUNICATIONS LIMITED - Free company information from Companies House including registered office address, filing history, accounts,",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:fluent2.co.uk",
+      "countryCode": "GB",
+      "companyName": "Fluent2 Limited",
+      "domain": "fluent2.co.uk",
+      "officialWebsiteUrl": "https://fluent2.co.uk",
+      "primaryRole": "Hybrid",
+      "supportedRoles": [
+        "SI",
+        "MSP"
+      ],
+      "totalScore": 62,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-eedb1d7b858ed4b2",
+          "url": "https://uk.linkedin.com/company/fluent2-ltd",
+          "title": "Fluent2 Limited",
+          "excerpt": "### Investors N/A ### Specialties Hotel IT Specialists, Hospitality IT Specialists, IT Managed Services, IT Project Implementation, Hospitality Cloud Computing, Hotel IT Project Management , Hospitality IT Design & Infrastructure, IT Procurement, Network Security, Network Management, Wireless Networking, IT Outsourcing, Technology Consultancy, and PCI / Data Security ## Locations 34 Bloomsbury Way, London, England WC1A 2, GB ### Get Directions Directions [...] ## Overview [...] Welcome to Fluent2 Limited. We are experts in Hotel Technology. We aim to enrich your guest experience through state of the art technology & systems. Established in 2002, Fluent2 manages the IT Systems of over 50 hotels and commercial companies across 3 continents. Our knowledge and expertise lie in two key areas: ■",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-0de0ffe5f6518f9d",
+          "url": "https://www.fluent2it.com",
+          "title": "Fluent2 IT",
+          "excerpt": "## Ensuring success through trusted partnerships With long-standing relationships across major IT manufacturers and carefully chosen technology providers, Fluent2 IT delivers reliable solutions, competitive pricing, and expert support that help businesses operate with confidence. ## Ensuring success through trusted partnerships [...] Fluent2 IT simplifies your technology by providing end-to-end IT solutions, expert advice, and proactive support. Get in touch [...] #### Hardware & Software Solutions Source the right hardware and software without the sales noise #### IT Infrastructure & Managed Support Build a resilient, scalable digital foundation backed by continuous maintenance and strategic IT oversight #### Network Security & Backup Stay protected with smart, proactive cybersecurity ###",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-3bec53360cbce854",
+          "url": "https://www.fluent-group.co.uk/solutions/connectivity/wifi-solutions",
+          "title": "WiFi Solutions | Ubiquiti UniFi Access Points",
+          "excerpt": "From small offices to large open-plan workspaces, Fluent can design and install a UniFi solution that gives your organisation strong, consistent coverage.",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-34336e43de043465",
+          "url": "https://fluent2.co.uk/it-architecture-design",
+          "title": "IT Architecture & Design - Fluent2 Limited",
+          "excerpt": "Property Management System (PMS) Point of Sale system (POS) Telephone system Audio Visual Guest Wi-Fi CCTV Converged network Television system Administration IT network (servers, networking, PCs and printers) Data cabling We also work with the construction team to make sure that where they are managing the install of system that aspects of IT integration, such as door locking and alarm systems, they are correctly specified and coordinated. [...] You get to have the IT system in your hotel exactly the way you want it, aligned to the standard of service you want to provide for your guests. Your IT system will be tailored to you. Planned, designed and integrated into the way your hotel works. [...] Working with Fluent2 at the beginning means planning for success. You’ll be future-proofing you",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:switchnet.co.uk",
+      "countryCode": "GB",
+      "companyName": "Switchnet Systems",
+      "domain": "switchnet.co.uk",
+      "officialWebsiteUrl": "http://www.switchnet.co.uk",
+      "primaryRole": "Hybrid",
+      "supportedRoles": [
+        "SI",
+        "MSP"
+      ],
+      "totalScore": 62,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-8d0a4c203f4f28bb",
+          "url": "https://uk.linkedin.com/company/switchnet-systems-ltd",
+          "title": "Switchnet Systems Ltd",
+          "excerpt": "Established in 1996, Switchnet Systems is a trusted provider of network integration services, delivering robust, scalable infrastructure solutions to SMEs, healthcare organisations, educational institutions, construction and many more sectors and industries across the UK. With over 30 years of industry experience, we specialise in the design, implementation, and management of tailored network solutions. Our services include network design, wireless solutions, structured cabling, fibre optic [...] into our offering, further strengthening our ability to deliver fully integrated systems. At Switchnet Systems, we are committed to building long-term partnerships through technical excellence, proven delivery on major projects, and a deep understanding of our clients’ environments. Our vision is ",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-8cf72f719588d5c5",
+          "url": "https://www.switchnetsys.com/about",
+          "title": "About | - SwitchnetSYS",
+          "excerpt": "We provide a comprehensive range of products, solutions and services which are tailored to meet your specific requirements from designing and installation to a custom support service · Switchnet Systems Ltd, established in 1996 is a leading networking services integrator specialising in the",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-53dd9d7ea66af3ac",
+          "url": "https://www.crunchbase.com/organization/switchnet-systems",
+          "title": "Switchnet Systems - Crunchbase Company Profile & Funding",
+          "excerpt": "Switchnet Systems is a leading networking services integrator development and support of networking infrastructures.",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:systems-integration.co.uk",
+      "countryCode": "GB",
+      "companyName": "Systems Integration (UK)",
+      "domain": "systems-integration.co.uk",
+      "officialWebsiteUrl": "https://www.systems-integration.co.uk",
+      "primaryRole": "Unresolved",
+      "supportedRoles": [],
+      "totalScore": 0,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": false,
+      "operatesInTargetMarket": false,
+      "evidence": [
+        {
+          "id": "evidence-a0e5d0b3964621b3",
+          "url": "https://www.systems-integration.co.uk/back-up-or-not-back-up-that-is-the-question",
+          "title": "Back up or not back up? That is the question. - Systems Integration ...",
+          "excerpt": "support@software-systems.co.uk​​ 01793481981 Systems Integration Logo Google star 1 Google star 2 Google star 3 Google star 4 Google star 5 Google Google Jono Gould profile picture Google star 1 Google star 2 Google star 3 Google star 4 Google star 5 Back up or not back up? That is the question. by admin | Sep 3, 2018 | Systems Integration | 0 comments backup solutions in swindon We have previously mentioned the importance of backing up and what your business should be looking for from any backup product. In May of this year, data and how everyone uses it was brought to the forefront with the introduction of GDPR, but it isn’t just personal data that we have to be wary of. Data is collected and used in such a variety of ways that it’s very difficult for any law or industry regulation to fu",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-d042d0049042e1be",
+          "url": "https://business.bt.com/insights/how-system-integrators-can-deliver-network-transformation",
+          "title": "System integrators and network transformation | BT Business",
+          "excerpt": "you and your customers. [...] We offer our channel partners an extensive and future proof portfolio built on our global technology partnerships and continuously improving investments. We’re able to offer secure connectivity in over 203 countries and direct connection into all the major third-party cloud providers across every continent. Plus, we understand the importance of thorough digital integration, so our design brilliance team is always on hand to develop, orchestrate and deploy new network solutionsfor you and your [...] ## A trusted global provider",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-3d530e8ba2f93be1",
+          "url": "https://neosnetworks.com/sectors/enterprise/system-integrators",
+          "title": "High capacity connectivity for systems integrators | Neos Networks",
+          "excerpt": "### Mission-critical resilience and security Stringent network uptime SLAs and 24/7 monitoring and technical support from our UK-based NOC give you peace of mind. ### Competitive pricing and flexible terms Get a quote and order fast online with LIVEQUOTE with terms that work for you and your customers. ### Long-term support Your dedicated account manager supports you at every step, from initial design to provisioning and future growth. ## Connectivity tailored to your needs [...] As a systems integrator (SI), you need to seamlessly link disparate networks and deliver integrated solutions to your customers. Resilient, high capacity, low latency connectivity is vital to enable emerging technologies like AI, 5G and IoT. We’re a UK Critical National Infrastructure provider with over 20 years’ ",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:axians.co.uk",
+      "countryCode": "GB",
+      "companyName": "Axians UK",
+      "domain": "axians.co.uk",
+      "officialWebsiteUrl": "https://www.axians.co.uk",
+      "primaryRole": "Hybrid",
+      "supportedRoles": [
+        "SI",
+        "MSP"
+      ],
+      "totalScore": 76,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-77ed975ebda54a66",
+          "url": "https://www.axians.co.uk",
+          "title": "Axians UK | Digital Transformation & IT Managed Services",
+          "excerpt": "Go to main content Go to main menu Go to main search form Go to footer Contact Us Careers linkedin twitter facebook youtube Your search needs to be 3 character long at least/ test Axians UK We Drive Digital Transformation Through Expert Networking and Cybersecurity. Our experts build and secure your critical network infrastructure, enabling seamless connectivity and service excellence through comprehensive IT Managed Services. LEARN MORE ABOUT US Cloud Computing Concept, Digital Network Data, Cyber Security, Infrastructure, Networking, Axians Uk Computing Service Excellence.jpeg Welcome to Axians UK At Axians UK, we understand the specific and individual IT challenges our customers face in a digital world that is constantly evolving. We offer comprehensive and innovative IT services and so",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-37b15a7f8796746f",
+          "url": "https://www.axians.co.uk/about-us",
+          "title": "About Us | Axians UK | ICT Solutions Company",
+          "excerpt": "The strength of Axians’ global network means you can rely on our incredible people to deploy technology that achieves critical operational outcomes, wherever you are and whatever your need. Partnerships 06 August 2026 #### Axians bolsters telecommunications and utilities leadership with the appointment of Steve Kingdom. Read more 14 July 2026 #### Plenty of Room in the Data centre Boom for Non-Hyperscalers Read more 23 June 2026 [...] Axians UK is a technology services partner that delivers transformative solutions to accelerate your ambitions in today’s ever-changing world. Whether you need tried-and-tested platforms or cutting-edge innovation, we commit to customer excellence and invest in long-term thinking. [...] #### Axians UK launches Enterprise Architecture as a Service to bridge th",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-dd52f5709ed6f018",
+          "url": "https://www.axians.co.uk/app/uploads/sites/75/2022/04/VEUK-Human-Trafficking-Statement-2022.pdf",
+          "title": "[PDF] Modern Slavery and Human Trafficking Statement 2022 - Axians UK",
+          "excerpt": "MODERN SLAVERY AND HUMAN TRAFFICKING STATEMENT VINCI Energies UK and RoI 2022 VINCI Energies UK & ROI - Modern Slavery and Human Trafficking Statement VINCI Energies UK Holding Limited and its subsidiaries which are listed below, (together, “VE UK & RoI”) opposes slavery and human trafficking in all its forms. This statement sets out the steps we have taken in the financial year ending 31st December 2022 to ensure that there is no slavery or human trafficking in our business or in our supply chain. Group Overview VE UK & RoI are a group of companies operating under the global VINCI Group, that contribute to a changing world by connecting infrastructure, buildings and industrial sites to information and energy systems to improve your life every day. Whilst our annual turnover is under £36 m",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-cb3a460d18863543",
+          "url": "https://www.axians.co.uk/news/super-wi-fi-and-the-sustainable-network",
+          "title": "From Legacy to Limitless: Super-Wi-Fi and the Sustainable Network",
+          "excerpt": "At Axians UK, we're committed to helping universities and enterprises unlock the full potential of Super-Wi-Fi and build a network that is both",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-f6151e04e9ec7331",
+          "url": "https://www.axians.co.uk/industries/carriers-and-service-providers",
+          "title": "Core Network Solutions for Carriers & Service Providers | Axians UK",
+          "excerpt": "Carrier & Service Providers (CSPs) face increasing pressure to deliver essential services, from fiber-to-the-home (FTTH) to expanded mobile coverage, all while maintaining a strong ROI. Our telecom solutions enable faster time to market, efficient operations, and enhanced user experience. With top certifications, global expertise, and a commitment to innovation & sustainability, we deliver modern network solutions to meet today’s challenges and future needs. Axians Global [...] Future proofing to keep up with transformative technology and cybersecurity [...] At Axians, we deliver solutions that enhance network efficiency, enabling organisations to effectively roll out and deliver new services. Our comprehensive, white-labelled managed service can take care of managing and monitoring your n",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:flotek.io",
+      "countryCode": "GB",
+      "companyName": "Flotek Group",
+      "domain": "flotek.io",
+      "officialWebsiteUrl": "https://www.flotek.io",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP",
+        "SI",
+        "Installer"
+      ],
+      "totalScore": 65,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-9458591777ff1499",
+          "url": "https://www.flotek.io",
+          "title": "Flotek UK | Business IT Solutions & Communications",
+          "excerpt": "Join our Security Awareness Training Webinar 9th September Book Now How we help Kickstart your journey with solutions tailored to your needs. Simplifying business tech with products that just work. Solutions Managed IT Support Always on, always ready—managed IT support, 7 days a week. Cyber Security Protecting your business 24/7 with compliant, expert cyber security. Microsoft 365 & Azure Your business in the cloud—secure, compliant, and ready to scale. Hosted VoIP Telephony Hosted VoIP to Microsoft Teams—one platform, endless potential. Mobile Telephony All networks, one provider—mobile made simple for your business. Internet Services From quick installs to enterprise-grade—connectivity that scales. Data & Fibre Installation Reliable cabling, expert delivery—by an Approved CommScope Partn",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-9ad3747525fac733",
+          "url": "https://www.flotek.io/contact",
+          "title": "Contact Flotek | UK-Wide IT Support & Tech Experts Near You",
+          "excerpt": "Join our Security Awareness Training Webinar 9th September Book Now How we help Kickstart your journey with solutions tailored to your needs. Simplifying business tech with products that just work. Solutions Managed IT Support Always on, always ready—managed IT support, 7 days a week. Cyber Security Protecting your business 24/7 with compliant, expert cyber security. Microsoft 365 & Azure Your business in the cloud—secure, compliant, and ready to scale. Hosted VoIP Telephony Hosted VoIP to Microsoft Teams—one platform, endless potential. Mobile Telephony All networks, one provider—mobile made simple for your business. Internet Services From quick installs to enterprise-grade—connectivity that scales. Data & Fibre Installation Reliable cabling, expert delivery—by an Approved CommScope Partn",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-6fe9651e21d4db71",
+          "url": "https://www.flotek.io/how-we-help/solutions/data-fibre-installation",
+          "title": "Fibre & Data Cabling Installation Services UK - Flotek.io",
+          "excerpt": "Join our Security Awareness Training Webinar 9th September Managed IT Support Cyber Security Microsoft 365 & Azure Hosted VoIP Telephony Mobile Telephony Internet Services Data & Fibre Installation Managed Print Branded Intranet Flotek Virtual Desktop Online Learning Cloud Detection & Response Microsoft Teams Rooms Microsoft Teams Phone CyberGuard Security Breach Monitor Who we are Meet the team Join our team Legal Hospitality Estate Agents Local Councils Case Studies Data and fibre connectivity solution icon Fibre & Network cabling that’s guaranteed to keep you up and running Cabling is the essential web that holds your IT system together; clean, fast and, once installed, invisible. Flotek’s end-to-end expertise and fuss-free installation ensure you get your infrastructure right, first ti",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-c3efcefa225ea6e1",
+          "url": "https://www.flotek.io/news/flotek-group-acquires-flexinet",
+          "title": "Flotek Group acquires FlexiNet | Flotek Group",
+          "excerpt": "Join our Security Awareness Training Webinar 9th September Book Now How we help Kickstart your journey with solutions tailored to your needs. Simplifying business tech with products that just work. Solutions Managed IT Support Always on, always ready—managed IT support, 7 days a week. Cyber Security Protecting your business 24/7 with compliant, expert cyber security. Microsoft 365 & Azure Your business in the cloud—secure, compliant, and ready to scale. Hosted VoIP Telephony Hosted VoIP to Microsoft Teams—one platform, endless potential. Mobile Telephony All networks, one provider—mobile made simple for your business. Internet Services From quick installs to enterprise-grade—connectivity that scales. Data & Fibre Installation Reliable cabling, expert delivery—by an Approved CommScope Partn",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:tdmgroup.net",
+      "countryCode": "GB",
+      "companyName": "TDM Group",
+      "domain": "tdmgroup.net",
+      "officialWebsiteUrl": "https://www.tdmgroup.net",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP"
+      ],
+      "totalScore": 50,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-a3836c92e2d79e27",
+          "url": "https://www.tdmgroup.net",
+          "title": "Managed IT Support | TDM Group",
+          "excerpt": "TDM Group, a Managed Business IT Services Provider company with over 25 years of experience, excels at integrating technical expertise with business acumen. Our holistic M-BiTS drives innovation and aims to establish us as the leading business-focused IT partner. We are dedicated to empowering our partners through a committed team that strives for excellence. By transcending conventional IT service provisions, we utilise technology as a significant business enabler. Whether upgrading existing [...] Skip to content Sales: 0808 129 22 99 SmartSupport: 0800 888 66 45 hello@tdmgroup.net Customer portal TDM Group TDM Group # Align Technology With Your Business Through our Managed Business IT Services (M-BiTS) we partner with organisations to ensure that technology is not just supporting, but en",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-acd972485b63454e",
+          "url": "https://www.dnb.com/business-directory/company-profiles.tdm_group_limited.df3603363f6f65fb69299b1a9f068525.html",
+          "title": "TDM GROUP LIMITED | D&B Business Directory",
+          "excerpt": "Image 11: AddressAddress:2nd Floor Connaught House 1-3 Entrance Via Davies Street, Mount Street LONDON, England, W1K 3NB United KingdomImage 12: opens in new tab Image 13: PhonePhone:+44-2070173300 Image 14: WebsiteWebsite:www.tdmgroup.net Image 15: opens in new tab Image 16: EmployeesEmployees (All sites):25-99Image 17ModelledEmployees (this site):25-99Image 18Estimated Image 19: RevenueRevenue: - Image 20: Year IncorporatedYear Started: [...] ### Support Customer Service Update Company Information MyD&B Login Contact Us Communication Preferences Solutions and Insights Company Support Your Privacy Choices Policies & Codes of Conduct Trust Centre Accessibility Terms of Use Cookie Preferences Data Source Attribution © Dun & Bradstreet, Inc. 2000 - 2026. All rights reserved. Cookie Preferenc",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-71cfa7cf8f9ccca1",
+          "url": "https://leadiq.com/c/tdm-group/5a1d9a292300005a00892cd1",
+          "title": "TDM Group Company Overview, Contact Details & Competitors | LeadIQ",
+          "excerpt": "| | | | --- | TDM Group Email Formats | Example | Percentage | | First.Last@tdmgroup.net | John.Doe@tdmgroup.net | 94% | | FirstLast@tdmgroup.net | JohnDoe@tdmgroup.net | 4% | | LastF@tdmgroup.net | DoeJ@tdmgroup.net | 1% | | First.L@tdmgroup.net | John.D@tdmgroup.net | 1% | ## Frequently Asked Questions ### What is TDM Group's official website and social media links? Minus sign iconPlus sign iconTDM Group's official website is tdmgroup.net and has social profiles on LinkedIn. [...] TDM Group Ltd operates in IT services and IT consulting, delivering managed business IT services on a global basis. It pursues a holistic approach that weighs how technology affects the entire organization, not just the technology itself. The company emphasizes tailoring IT services to fit a partner’s business ",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-ffc0a835362951b5",
+          "url": "https://rocketreach.co/tdm-group-profile_b5c749e0f42e0d17",
+          "title": "TDM Group Information",
+          "excerpt": "TDM Group is an IT Services and IT Consulting, Custom Software & Technical Consulting, and IT Outsourcing company located in UK with $18.1 million in revenue and 145 employees. Find top employees, contact details and business statistics at",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:entrustit.co.uk",
+      "countryCode": "GB",
+      "companyName": "entrustIT",
+      "domain": "entrustit.co.uk",
+      "officialWebsiteUrl": "https://www.entrustit.co.uk",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP",
+        "SI"
+      ],
+      "totalScore": 61,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-beb75ef75a5aef35",
+          "url": "https://www.linkedin.com/company/entrustitgroup",
+          "title": "entrustIT - Multi‑Award Winning UK MSP | Empowering Midmarket Growth via IT Support, Cyber & AI",
+          "excerpt": "Most MSPs manage IT. entrustIT integrates environments. entrustIT is a multi-award-winning UK-based Managed Service Provider and IP Integrator delivering converged technology solutions for large SME and mid-market organisations operating across multiple sites. Privately owned and family funded, we combine long-term financial stability with the scale and capability required to deliver complex, enterprise-grade projects. With over 75 people across four UK locations, supported by field engineers [...] representing a significant proportion of our turnover and underpinned by experience delivering large-scale IP projects in blue-chip and multi-site environments. As a family-owned business with a long-term view, we focus on service quality, evidence-based recommendations, and honest commercial re",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-5b1ca792b3216bf1",
+          "url": "https://www.instagram.com/entrustit",
+          "title": "entrustIT",
+          "excerpt": "Multi Award Winning IT Managed Service Provider IT Support & Consultancy ☁️ Cloud Services Connectivity Smart Building Technology UK Based.",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-3df4d4322f60baa8",
+          "url": "https://www.facebook.com/p/entrust-IT-Limited-100052566141246",
+          "title": "entrust IT Limited",
+          "excerpt": "entrust IT Limited. Award-winning Managed Service Provider assisting large SMEs and midmarket businesses to overcome their greatest technology challenges.",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-a20054eb5bcf1982",
+          "url": "https://www.entrustit.co.uk",
+          "title": "entrustIT: Managed IT Services",
+          "excerpt": "Our strategic partners entrustIT partner with many of the world's leading technology companies. Cyber Essentials is a UK government-backed certification",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:thehbpgroup.co.uk",
+      "countryCode": "GB",
+      "companyName": "The HBP Group",
+      "domain": "thehbpgroup.co.uk",
+      "officialWebsiteUrl": "https://thehbpgroup.co.uk",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP",
+        "SI"
+      ],
+      "totalScore": 33,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-c20c8bc652d4105e",
+          "url": "https://thehbpgroup.co.uk",
+          "title": "The HBP Group | Award-Winning Managed IT Services & ERP ...",
+          "excerpt": "Cornwall Office Location Icon Penstraze Business Centre, Truro, Cornwall, TR4 8PN Contact Us Email Iconinfo@thehbpgroup.co.uk Phone Icon01482 423910 FOLLOW US facebook linkedin HBP Logo © 2026 The HBP Group Registration No. 02263783 [...] Find Out More > The HBP Group are an award-winning provider of Managed IT Services & ERP Software in UK with over 30 years' experience IT HBP Gradient Bar (210mm).png?width=100&name=HBP%20Gradient%20Bar%20(210mm).png) + Managed IT Services + Outsourced IT Support + Cyber Security + Modern Workplace ERP HBP Gradient Bar (210mm).png?width=100&name=HBP%20Gradient%20Bar%20(210mm).png) Microsoft Dynamics 365 Business Central Sage 200 Sage Intacct Pegasus Opera 3 About Us [...] Sales & Enquiries: 01482 423910 info@thehbpgroup.co.uk Support: 01724 400300 Custome",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-eaf1906049cfb03b",
+          "url": "https://thehbpgroup.co.uk/about",
+          "title": "About Us | The HBP Group",
+          "excerpt": "Sales & Enquiries: 01482 423910 info@thehbpgroup.co.uk Support: 01724 400300 Customer Support About Us Managed IT Services & ERP Software Since 1991 Technology should help your business run better — not become another daily problem to manage. At The HBP Group, we help growing UK businesses take control of their technology through Managed IT Services and ERP Software that are secure, stable and built to scale. For over 30 years, we’ve supported thousands of organisations by making IT simpler, support more human and systems genuinely useful for growth. HBP Gradient Bar (210mm).png?width=2400&height=10&name=HBP%20Gradient%20Bar%20(210mm).png \"HBP Gradient Bar (210mm)\") The HBP Group: At A Glance At The HBP Group, we’re more than just a technology provider. We’re a team of people who care abou",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-329838148d49a99e",
+          "url": "https://thehbpgroup.co.uk/blog/why-should-you-block-non-uk-ip-addresses-from-your-servers",
+          "title": "Why Limiting Server Access to UK IPs Can Boost Security",
+          "excerpt": "Sales & Enquiries: 01482 423910 info@thehbpgroup.co.uk Support: 01724 400300 Customer Support 29 July 2025 | IT | Helder Figueiredo Why Limiting Server Access to UK IPs Can Boost Security Table Of Contents Why Should You Consider This Security Measure? When Should You Allow Non-UK Access? What Are the Risks of Not Blocking Foreign IPs? How We’re Making This Change at The HBP Group Frequently Asked Questions How We Can Help You Further Table Of Contents Why Should You Consider This Security Measure? When Should You Allow Non-UK Access? What Are the Risks of Not Blocking Foreign IPs? How We’re Making This Change at The HBP Group Frequently Asked Questions How We Can Help You Further Are your business applications hosted on a remote platform? If so, ensuring they’re protected against rising g",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-a1f56b7080b9d659",
+          "url": "https://thehbpgroup.co.uk/blog/made-smarter-match-funding-grant",
+          "title": "Made Smarter Match Funding: A Practical Guide for Manufacturers",
+          "excerpt": "HBP Group Full Logo Managed-IT-Services-Menu Core Services By Industry ERP-Menu Unlike many ERP providers we don't specialise in just one solution, meaning we can match your business to the right software package. Software Support About Resources Rachelle-G Core Services By Industry Managed-IT-Services-Menu Software Support ERP-Menu Unlike many ERP providers we don't specialise in just one solution, meaning we can match your business to the right software package. About Resources Rachelle-G 16 March 2026 | Industry News | The HBP Group Made Smarter Match Funding: A Practical Guide for Manufacturers Table Of Contents Table Of Contents Made smarter match funding blog header for manufacturing For manufacturers across England, the Made Smarter match funding grant is one of the most valuable op",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-4861df1911deb299",
+          "url": "https://www.facebook.com/thehbpgroup",
+          "title": "The HBP Group | Scunthorpe",
+          "excerpt": "The HBP Group is a leading UK provider of Managed IT Support and cloud-based ERP solutions, including Microsoft Dynamics 365 Business Central & Sage Intacct.",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-786a1367267e1af2",
+          "url": "https://uk.linkedin.com/company/thehbpgroup",
+          "title": "The HBP Group | LinkedIn",
+          "excerpt": "At The HBP Group, we pride ourselves on being more than just a technology company. For over 30 years, we've been empowering businesses across the UK with tailored IT solutions, ERP systems, and expert support that enable growth and streamline operations. Our organisation consists of three businesses; HBP Systems, Kamarin Computers and Jugo Systems. HBP Systems are based in North Lincolnshire and Hull, Kamarin Computers in Cambridgeshire and Jugo Systems in Hampshire. Between us, we cover the [...] HBP Systems Ltd (IT Services and IT Consulting): (Scunthorpe, North Lincolnshire); Kamarin Computers Ltd (IT Services and IT Consulting): (N/A); VisiSoft (IT Services and IT Consulting): (Peterborough, Cambridgeshire); HBP Group (Turned Products and Fastener Manufacturing): (N/A); Xperience (IT S",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:adept.co.uk",
+      "countryCode": "GB",
+      "companyName": "AdEPT Technology Group",
+      "domain": "adept.co.uk",
+      "officialWebsiteUrl": "https://adept.co.uk",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP"
+      ],
+      "totalScore": 71,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-1dca7a7d6cb2670b",
+          "url": "https://www.cybersecurityintelligence.com/adept-technology-group-7701.html",
+          "title": "AdEPT Technology Group",
+          "excerpt": "AdEPT are a managed services and telecommunications provider offering award-winning, proven and uncomplicated technical solutions for over 12,000 organisations",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-77b7d0da4474ec40",
+          "url": "https://www.wavenet.co.uk/adept",
+          "title": "AdEPT Technology Group",
+          "excerpt": "Wavenet is an award-winning cyber security, telecoms and technology company, renowned for customer service, with a broad portfolio of managed services and IT solutions. We also have a Check & CREST accredited cyber security division and a 24/7 UK Security Operations Centre. Wavenet holds Platinum and Premier status with many companies and partners such as Microsoft. This will allow AdEPT to offer even more innovative and competitive solutions that complement the services already offered today. [...] # AdEPT_LogoAdEPT Technology Group Plc is now part of Wavenet Ltd On the 14 April 2023 Wavenet announced the take-private acquisition of AdEPT Technology Group plc – a UK-based provider of managed technology and communications services, with a specialism in delivering solutions to the public se",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-c9460069f9ef4c88",
+          "url": "https://www.annualreports.com/Company/adept-technology-group-plc",
+          "title": "AdEPT Technology Group plc - AnnualReports.com",
+          "excerpt": "## Older/Archived Annual Reports AdEPT Technology Group plc AdEPT Technology Group plc AdEPT Technology Group plc AdEPT Technology Group plc AdEPT Technology Group plc AdEPT Technology Group plc AdEPT Technology Group plc AdEPT Technology Group plc Logo Image ## ## Rate This Report Thank you for your feedback! [...] AnnualReports.com AdEPT Technology Group plc Banner Image # AdEPT Technology Group plc AdEPT Technology Group plc Logo Image AdEPT Technology Group plc reports have an aggregate usefulness score of 4.8 based on 114 reviews. ## Most Recent Annual Report AdEPT Technology Group plc ## View 2022 Environmental, Social and Governance Report This company has a Environmental, Social and Governance Report available to view on our partner site, ResponsibilityReports.com",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-e4e6473c961abce2",
+          "url": "https://adeptcts.co.uk",
+          "title": "Managed IT Services | North East IT Provider | Adept CTS",
+          "excerpt": "0303 330 1560 / helpdesk@adeptcts.co.uk Adept CTS Your smart technology partner in a changing world Are you ready for the ISDN switch off? If your business is still using the circuit switched telephone network system? You must prepare for the ISDN switch off now. It's a good thing we're here to help. Find Out More Stay in touch, wherever you are Get the best business mobile deals from Adept CTS Find Out More [...] #### Get in Touch Whether you need IT support, telephone technology, faster business broadband or our Cyber Essentials software, we'd love to hear from you! Simply fill out the form on the left and we'll get back to you as soon as possible. Alternatively, you can email us at info@adeptcts.co.uk or give us a call on 0191 70 70 700 #### Contact Form [contact-form-7 id=\"9\"] ## Remot",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-2d246126ee4fe570",
+          "url": "https://www.adept-techconsulting.com/contact",
+          "title": "Contact Us | High Level IT Support | Adept Technology Consulting",
+          "excerpt": "Careers Contact Enquire Today About Services + Emergency Services + Business Continuity + Vendor Management + IT Consulting Services + Network Management + Backup Solutions/On Premise Industries + Emergency Services + Government and Municipal + Small Business + Non Profit + Education Video Surveillance Access Control IP Telephony Partners Contracts # Contact Us Please fill out the form below and someone will get back to you shortly. [...] ##### IP Telephony Partners Contracts Contact Us ##### Contact us Adept Technology Consulting 125 Wireless Blvd. Unit B Hauppauge, NY 11788 United States Phone: 1-631-676-1756167-61756) Fax: 1-631-910-2030 © 2021 Adept Technology Consulting. All Rights Reserved Sitemap [...] \"\\\" indicates required fields 125 Wireless Blvd. Unit B Hauppauge, NY 11788 Unite",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:chessict.co.uk",
+      "countryCode": "GB",
+      "companyName": "Chess ICT",
+      "domain": "chessict.co.uk",
+      "officialWebsiteUrl": "https://chessict.co.uk",
+      "primaryRole": "MSP",
+      "supportedRoles": [
+        "MSP",
+        "SI",
+        "VAR"
+      ],
+      "totalScore": 78,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-ee7a74449eb68699",
+          "url": "https://chessict.co.uk",
+          "title": "Chess | Making IT Work for you",
+          "excerpt": "Skip to footer Chess ICT Making IT Workfor you Chess are your trusted partner reducing your costs, delivering efficiency, keeping you secure and unlocking AI’s potential. Chess Wheel outlining reduce your costs, make you efficient, keep you secure and unlock your AI potential Our Solutions Chess is one of the UK’s leading independent and trusted technology service providers, employing more than 240 skilled people across the UK, supporting over 18,000 organisations. Internet Access Calls WAN LAN WiFi Cloud Collaboration Productivity Public Private Continuity Contact Centre Voice Devices Servers Networks Storage End User Accessories Digital AI Document & Content Management Applications Automation BI & Data Security Detect Protect Support Certify Services Managed Services Consultancy Projects",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-d33ec3afb7073b6d",
+          "url": "https://chessict.co.uk/products/connect-wifi-1",
+          "title": "WiFI - Chess ICT",
+          "excerpt": "Business-Grade WiFi for Secure, Seamless Connectivity Keep your people, customers and devices connected with fast, reliable and secure WiFi. Chess designs, delivers and manages business WiFi solutions across the UK, so you can focus on your organisation – not your network. Speak to a WiFi Expert Book a Free WiFi Health Check The Cost of Unreliable WiFi Unreliable WiFi slows your people down, frustrates customers and exposes your organisation to risk. Slow speeds, drop-outs and blackspots quickly turn into lost revenue, poor service and extra pressure on your IT team. Explore Our WiFi Options Industry research estimates that network outages can cost organisations thousands of pounds per hour in lost productivity and revenue. Source: Gartner – Cost of Downtime Research Business WiFi Solution",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-2c4c3b0cba4aba9d",
+          "url": "https://chessict.co.uk/products/local-area-networks",
+          "title": "Local Area Networks - Chess ICT",
+          "excerpt": "Reliable Local Area Networking That Keeps Your Business Connected Your network is the backbone of your business. A well‑designed Local Area Network (LAN) from Chess keeps your people connected, productive and secure – whether you’re in one office or across nearby sites. Speak to a Network Specialist Book a Network Review The Cost of Unreliable Local Networks When your local network isn’t reliable, everything slows down. From lost productivity to frustrated users and growing IT costs, even short outages can have a serious impact on your business. Pain points: Find out how a managed LAN can reduce risk and improve reliability Network outages now account for 31% of all IT service outages. Annual outages analysis 2023, Uptime Institute. What is a Local Area Network (LAN)? A Local Area Network ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-8f40505c62f1d8a8",
+          "url": "https://chessict.co.uk/digital-transformation",
+          "title": "What is digital transformation?",
+          "excerpt": "Skip to footer Chess ICT Get more from the software you already use. Contact us What does Digital Transformation mean? Digital Transformation is about more than just adopting new technologies—it's about reimagining how your organisation operates. By leveraging tools like automation, data analytics, and online platforms, businesses can streamline operations, improve efficiency, and stay ahead in a competitive landscape. At Chess, we don’t just implement technology—we help shape your digital transformation strategy. As part of a 260-strong technology provider supporting over 25,000 customers, our Digital Transformation team works closely with organisations across sectors to provide a clear framework for transformation. We support every step of your journey, from defining goals to implementin",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:spitfire.co.uk",
+      "countryCode": "GB",
+      "companyName": "Spitfire Network Services",
+      "domain": "spitfire.co.uk",
+      "officialWebsiteUrl": "https://www.spitfire.co.uk",
+      "primaryRole": "ISP",
+      "supportedRoles": [
+        "ISP",
+        "MSP",
+        "SI"
+      ],
+      "totalScore": 60,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-36ed203549b8c98b",
+          "url": "https://www.spitfire.co.uk",
+          "title": "Business Telecoms & Internet Services from Spitfire: VoIP, SIP, Ethernet, Fibre Broadband",
+          "excerpt": "Sales: 020 7501 3333 or Partner Service: 020 7501 3150 enquiries@spitfire.co.uk Contact Login + Customer Portal + Partner Portal + Web Billing + Web Ordering + Webmail Email + Sales | enquiries@spitfire.co.uk + Support | support@spitfire.co.uk + Partners | partnerservices@spitfire.co.uk Spitfire Network Services Ltd Select Page ## WINNER ## Channel Champions Awards 2026 Service Provider - Marketing Team ## Channel National Awards 2026 ## Finalists in four categories: [...] Discover more ... Dedicated to providing exceptional customer service, Spitfire is proud to have won multiple awards. We offer outstanding UK-based support across our full range of services and solutions, with support calls answered in an average of 8 seconds. ### • Innovative ### • Flexible ### • Reliable ### • Supporti",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-68fe9718d2430af9",
+          "url": "https://www.spitfire.co.uk/contact-us",
+          "title": "Contact - Spitfire Network Services Ltd",
+          "excerpt": "Sales: 020 7501 3333 or Partner Service: 020 7501 3150 enquiries@spitfire.co.uk Contact Login + Customer Portal + Partner Portal + Web Billing + Web Ordering + Webmail Email + Sales | enquiries@spitfire.co.uk + Support | support@spitfire.co.uk + Partners | partnerservices@spitfire.co.uk Spitfire Network Services Ltd Select Page Contact Us How can we help? Need help finding the right solution for your office? Got a question about one of our products or services? Our experts are here to support you - so choose your preferred option below, to get in touch. Opening hours: 8am - 8pm, Monday - Friday Customer Sales  020 7501 3333  enquiries@spitfire.co.uk Support  020 7501 3030  Email Support Partner Services  020 7501 3150  partnerservice@spitfire.co.uk Accounts  020 7501 3050  accounts",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-39a97337f393c7a5",
+          "url": "https://www.spitfire.co.uk/about/case-studies",
+          "title": "Case Studies - Spitfire Network Services Ltd",
+          "excerpt": "Sales: 020 7501 3333 or Partner Service: 020 7501 3150 enquiries@spitfire.co.uk Contact Login + Customer Portal + Partner Portal + Web Billing + Web Ordering + Webmail Email + Sales | enquiries@spitfire.co.uk + Support | support@spitfire.co.uk + Partners | partnerservices@spitfire.co.uk Spitfire Network Services Ltd Select Page Case Studies LH Agro UK Ltd CUSTOMER CASE STUDY: IoT SIMs | LH Agro UK Ltd supplies precision farming technology to UK farms. Its core business is auto-steering, which guides tractors and combines across a field. To reach the highest accuracy, LH Agro delivers a real-time correction signal (RTK) to machines over cellular networks. That connection has to hold up wherever the machines are – in remote locations and while they're constantly on the move.... Read more ...",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-5583d7dceef6c6f1",
+          "url": "https://www.spitfire.co.uk/wp-content/uploads/2021/04/11Winter-spitfire_news_win11fin.pdf",
+          "title": "[PDF] Inside - Spitfire Network Services",
+          "excerpt": "Spitfire News WINTER 2011/12 for the latest communications news, views and comment Inside Comms out of the cloud. The provision of 'cloud' based services is rising... Talking about converged solutions. Spitfire offers business quality secure technology... The value of call recording. More businesses are realising the true value of call recording... p3 p5 p6 Cisco and Spitfire SIP Trunk Interoperability Testing Successfully Completed Spitfire and Cisco have successfully completed Interoperability Testing with Spitfire SIP Trunks and the Cisco UC320 and UC500 telephone systems. Cisco are one of the global leaders in telephone equipment and in conjunction with Spitfire’s award winning SIP Trunk Service the combination offers a truly superb telecommunica-tions solution. www.spitfire.co.uk Spit",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-c6d043b4b4a152b3",
+          "url": "https://uk.linkedin.com/company/spitfire",
+          "title": "Spitfire Network Services Ltd - Telecoms and IP Engineering Solutions for Business since 1988",
+          "excerpt": "Spitfire Network Services is a UK-based, multi-award winning telecoms and ISP provider for businesses. Established in 1988, we were one of the first providers of business broadband in the UK and have been pioneers in business VoIP, SIP Trunking and Hosted Telephony. This continuing commitment to stay at the cutting edge of our industry is what drives us today and is reflected in our impressive list of awards, most recently the Editor’s Choice Award from Technology Reseller and The Challenger [...] telephone system to: 💥 8 extension FireSwitch Hosted PBX 2.3 💥 FTTP Ethernet 1Gbps circuit 💥 Free UK call bundle All for £135 per month which is £30 cheaper than our normal rates! Offer ends 31st July 2026 - don't miss out! #offer #hostedpbx #fireswitch #summerupgradeoffer [Likes: 4, Comments:",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-0a8cfeb8ae24bb38",
+          "url": "https://www.facebook.com/spitfirenetworkservices",
+          "title": "Spitfire Network Services Ltd (@spitfirenetworkservices)",
+          "excerpt": "Spitfire Network Services is a UK-based, multi-award winning telecoms & ISP provider for businesses. call 020 7501 3333 to discuss your options! Contact",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-06218961e3058f74",
+          "url": "https://www.trustpilot.com/review/www.spitfire.co.uk",
+          "title": "Spitfire Network Services Ltd Reviews",
+          "excerpt": "providing Telecoms and IP Engineering solutions for business since 1988. 020 7501 3000 info@spitfire.co.uk uk 4.2 Great TrustScore 4 out of 5 129 reviews",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-2898cc28cadd5306",
+          "url": "https://technologyreseller.uk/moving-to-all-ip-spitfire-network-services-ltd-announces-bespoke-switch-off-migration-service-for-uk-businesses",
+          "title": "Moving to All-IP: Spitfire Network Services Ltd Announces ...",
+          "excerpt": "Spitfire Network Services Ltd Announces Bespoke Switch Off Migration Service. PSTN Switch Off Migration service, providers by 100% by October",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:itconnect.uk.com",
+      "countryCode": "GB",
+      "companyName": "IT Connect",
+      "domain": "itconnect.uk.com",
+      "officialWebsiteUrl": "https://itconnect.uk.com",
+      "primaryRole": "Unresolved",
+      "supportedRoles": [],
+      "totalScore": 0,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": false,
+      "operatesInTargetMarket": false,
+      "evidence": [
+        {
+          "id": "evidence-1f313e81fb23c539",
+          "url": "https://itstechnologygroup.com",
+          "title": "ITS Technology Group | UK Wholesale Connectivity",
+          "excerpt": "podcast News ## Connected Tech Talks – Why Best-of-Breed Connectivity Matters ITS Insights 22/06/2026 Read More podcast News ## Connected Tech Talks – Managing Risk in a Connected World ITS Insights 10/06/2026 Read More Showing Slide 1 of 6 # Best-of-Breed Connectivity ## Connected Tech Talks S2E1 [...] Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. [...] [placeholder] information about daresbury o",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-90d624e309c5f22b",
+          "url": "https://www.cudy.com/en-us/blogs/faq/how-to-install-cudy-wi-fi-router",
+          "title": "How to install Cudy Wi-Fi Router?",
+          "excerpt": "4. Connect the power adapter to the router and wait the System LED turn to solid on (red or blue). 5. Connect your computer to the router via Wi-Fi or Ethernet. 6. Check the LEDs to confirm the hardware connection are correct. Note: Please make sure you can access internet when you connect the computer directly to the modem. If it failed to get the internet, please contact your Internet Service Provider. Step 1: Open a web browser and go to or [...] For details, please refer to How to log into the web interface of Cudy Router? Step 2: The Quick Setup window will pop up, choose 'Wireless Router', then go 'Next'. Step 3: Choose your 'Time Zone'. Step 4: Here, we select 'DHCP' as the WAN Internet connection type. The system will auto detect the Internet connect type, you may have a try, but i",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-4ea85e28ae4d4fa9",
+          "url": "https://ensormsp.co.uk/it-installations",
+          "title": "IT Installations with ENSOR MSP | Data cabling, WiFi surveys",
+          "excerpt": "## The team at Ensor has years of IT Installation and network cabling experience. From installing servers and network switches to working with CAT5e, 6 and 6A. Ensor are happy to install a few to hundreds of data points. Network Cabling Install Ensor will begin looking at your companies requirements with a comprehensive survey, analysis and design of the network system. then Ensor supply, install and test Cat5e, 6, 6A network cabling along with fibre optic lines. [...] IT Installation is the backbone of the modern business. Your network, its cabling and WIFI is probably the least visible component of your IT infrastructure but the most crucially important part of your company’s systems strategy. It carries voice, data or video around your office, building and beyond. Most of your business ",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-a7616d70413ee3d3",
+          "url": "https://www.instagram.com/p/DZ_Yvv8Rl5K",
+          "title": "Instagram",
+          "excerpt": "Photo by NB || The Network DNA 🇮🇳🇨🇦🇺🇸 on September 05, 2026. May be an image of ‎text that says '‎UUniFi ر SIMPLE, SCALABLE. SECURE, UniFi Controller (Network Management) Network Diagram A Complete UniFi Setup UniFi Network UniFi AP FiAccess Pont) Centralized Management Secure Network Scalable Design Ideal for Home Business 0 Clients =٥= .اامادا Wired Clients UniFi Switch Devices) Server gNAS,Applicacion) ปกเค UniFi Security Gateway Firewall Router) Trunk Trunk/Upink Upink www.thenetworkdna.com [...] UniFi Switch Additional| Devices) เลโค BAفدكاه ዜባትሞሞ! UniFi Switch (VolP Devices) มกโจ Internet 나주 山ち นกโค มก๋้จ Ethernet(LAN) (LAN) Iinternet(WAN) (WAN) Wi-Fi(Wireless) Wi-Fi UniFi VolP Phones PPhones) Build Smarter Networks Today! www.thenetworkdna.com‎'‎. [...] Photo by NB || The Netw",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-4f836cd26ba1f9ba",
+          "url": "https://www.xfinity.com",
+          "title": "Xfinity - Internet, WiFi, Mobile, TV and Streaming",
+          "excerpt": "Save up to $60/mo vs Verizon, AT&T, & T-Mobile Get online in minutes with same-day WiFi, equipment and unlimited data included with no contract. Plus try Xfinity Mobile free for 1 year. /mo for 5 years /mo for 5 years Internet Mobile TV & Streaming Home Security Build your plan ## New home, same great service. Make your move with Xfinity. Transfer your service, explore new plans, and get connected at your new address as soon as the same day. ## Streaming, simplified [...] ## New Mobile Plus, qualifying trade-in, and device payment plan required. Offer ends 9/10. ## $600 off eligible Google Pixel phones, no trade-in needed ## New Mobile Plus line and device payment plan required. Offer ends 9/24. [...] ## Cut your mobile bill in half. Plus, try free for a year. No commitment. ## Only Xfinit",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    }
+  ],
+  "aliasToCompanyKey": {
+    "GB:domain:croftmsp.com": "GB:domain:croftmsp.com",
+    "GB:name:croftcommunications": "GB:domain:croftmsp.com",
+    "GB:domain:axia.co.uk": "GB:domain:axia.co.uk",
+    "GB:name:axiacomputersystems": "GB:domain:axia.co.uk",
+    "GB:domain:netteam.co.uk": "GB:domain:netteam.co.uk",
+    "GB:name:netteamtx": "GB:domain:netteam.co.uk",
+    "GB:domain:systemagic.co.uk": "GB:domain:systemagic.co.uk",
+    "GB:name:systemagic": "GB:domain:systemagic.co.uk",
+    "GB:domain:technicaldrive.co.uk": "GB:domain:technicaldrive.co.uk",
+    "GB:name:technicaldrive": "GB:domain:technicaldrive.co.uk",
+    "GB:domain:connectsystems.co.uk": "GB:domain:connectsystems.co.uk",
+    "GB:name:connectsystems": "GB:domain:connectsystems.co.uk",
+    "GB:domain:laton.co.uk": "GB:domain:laton.co.uk",
+    "GB:name:latontechnical": "GB:domain:laton.co.uk",
+    "GB:domain:rjcortel.co.uk": "GB:domain:rjcortel.co.uk",
+    "GB:name:rjcortel": "GB:domain:rjcortel.co.uk",
+    "GB:domain:evolvebg.co.uk": "GB:domain:evolvebg.co.uk",
+    "GB:name:evolve": "GB:domain:evolvebg.co.uk",
+    "GB:domain:mas-networks.co.uk": "GB:domain:mas-networks.co.uk",
+    "GB:name:masnetworks": "GB:domain:mas-networks.co.uk",
+    "GB:domain:mlrnetworks.co.uk": "GB:domain:mlrnetworks.co.uk",
+    "GB:name:mlrnetworks": "GB:domain:mlrnetworks.co.uk",
+    "GB:domain:focusgroup.co.uk": "GB:domain:focusgroup.co.uk",
+    "GB:name:focus": "GB:domain:focusgroup.co.uk",
+    "GB:domain:passmonds.co.uk": "GB:domain:passmonds.com",
+    "GB:name:passmondscommunications": "GB:domain:passmonds.com",
+    "GB:domain:fluent2.co.uk": "GB:domain:fluent2.co.uk",
+    "GB:name:fluent2": "GB:domain:fluent2.co.uk",
+    "GB:domain:switchnet.co.uk": "GB:domain:switchnet.co.uk",
+    "GB:name:switchnetsystems": "GB:domain:switchnet.co.uk",
+    "GB:domain:systems-integration.co.uk": "GB:domain:systems-integration.co.uk",
+    "GB:name:systemsintegrationuk": "GB:domain:systems-integration.co.uk",
+    "GB:domain:axians.co.uk": "GB:domain:axians.co.uk",
+    "GB:name:axiansuk": "GB:domain:axians.co.uk",
+    "GB:domain:flotek.io": "GB:domain:flotek.io",
+    "GB:name:flotek": "GB:domain:flotek.io",
+    "GB:domain:tdmgroup.net": "GB:domain:tdmgroup.net",
+    "GB:name:tdm": "GB:domain:tdmgroup.net",
+    "GB:domain:entrustit.co.uk": "GB:domain:entrustit.co.uk",
+    "GB:name:entrustit": "GB:domain:entrustit.co.uk",
+    "GB:domain:thehbpgroup.co.uk": "GB:domain:thehbpgroup.co.uk",
+    "GB:name:thehbp": "GB:domain:thehbpgroup.co.uk",
+    "GB:domain:adept.co.uk": "GB:domain:adept.co.uk",
+    "GB:name:adepttechnology": "GB:domain:adept.co.uk",
+    "GB:domain:chessict.co.uk": "GB:domain:chessict.co.uk",
+    "GB:name:chessict": "GB:domain:chessict.co.uk",
+    "GB:domain:spitfire.co.uk": "GB:domain:spitfire.co.uk",
+    "GB:name:spitfirenetworkservices": "GB:domain:spitfire.co.uk",
+    "GB:domain:itconnect.uk.com": "GB:domain:itconnect.uk.com",
+    "GB:name:itconnect": "GB:domain:itconnect.uk.com"
+  },
+  "costEvents": [
+    {
+      "eventId": "GB-si-msp:evaluation:fresh-evidence",
+      "cellId": "GB-si-msp",
+      "stage": "evaluation-control-fresh-evidence",
+      "provider": "tavily",
+      "startedAt": "2026-09-06T20:16:13.287Z",
+      "completedAt": "2026-09-06T20:16:25.677Z",
+      "latencyMs": 90524,
+      "attempts": 43,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 40
+      },
+      "volume": {
+        "inputItems": 29,
+        "rawOutputItems": 40,
+        "validOutputItems": 40,
+        "downstreamUsedItems": 40,
+        "discardedReasonCounts": {
+          "noFreshEvidence": 15
+        }
+      },
+      "notes": [
+        "Gemini-unique final candidates only",
+        "historical evidence reads and writes disabled"
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.32,
+      "budgetCostUsd": 0.32,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:evaluation:correction-search",
+      "cellId": "GB-si-msp",
+      "stage": "evaluation-control-correction-search",
+      "provider": "tavily",
+      "startedAt": "2026-09-06T20:16:25.689Z",
+      "completedAt": "2026-09-06T20:19:38.577Z",
+      "latencyMs": 61622,
+      "attempts": 28,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 28
+      },
+      "volume": {
+        "inputItems": 29,
+        "rawOutputItems": 29,
+        "validOutputItems": 29,
+        "downstreamUsedItems": 29,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.224,
+      "budgetCostUsd": 0.224,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:evaluation-control-correction:1",
+      "cellId": "GB-si-msp",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:16:25.689Z",
+      "completedAt": "2026-09-06T20:19:38.577Z",
+      "latencyMs": 46971,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 12053,
+        "outputTokens": 5042,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 29,
+        "rawOutputItems": 29,
+        "validOutputItems": 25,
+        "downstreamUsedItems": 29,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.009629595000000001,
+      "budgetCostUsd": 0.009629595000000001,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "GB-si-msp:evaluation-control-correction:2",
+      "cellId": "GB-si-msp",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:16:25.689Z",
+      "completedAt": "2026-09-06T20:19:38.577Z",
+      "latencyMs": 63190,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 12993,
+        "outputTokens": 6660,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 29,
+        "rawOutputItems": 29,
+        "validOutputItems": 25,
+        "downstreamUsedItems": 29,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.011446155,
+      "budgetCostUsd": 0.011446155,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "GB-si-msp:evaluation-control-correction:3",
+      "cellId": "GB-si-msp",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:16:25.689Z",
+      "completedAt": "2026-09-06T20:19:38.577Z",
+      "latencyMs": 37218,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 9885,
+        "outputTokens": 4130,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 29,
+        "rawOutputItems": 29,
+        "validOutputItems": 25,
+        "downstreamUsedItems": 29,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.007893075000000001,
+      "budgetCostUsd": 0.007893075000000001,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "GB-si-msp:evaluation-control-correction:4",
+      "cellId": "GB-si-msp",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:16:25.689Z",
+      "completedAt": "2026-09-06T20:19:38.577Z",
+      "latencyMs": 16017,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 3213,
+        "outputTokens": 1470,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 29,
+        "rawOutputItems": 29,
+        "validOutputItems": 25,
+        "downstreamUsedItems": 29,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.002676555,
+      "budgetCostUsd": 0.002676555,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "GB-si-msp:evaluation-control-correction:5",
+      "cellId": "GB-si-msp",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:16:25.689Z",
+      "completedAt": "2026-09-06T20:19:38.577Z",
+      "latencyMs": 16740,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 1720,
+        "outputTokens": 1604,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 29,
+        "rawOutputItems": 29,
+        "validOutputItems": 25,
+        "downstreamUsedItems": 29,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.0021436800000000002,
+      "budgetCostUsd": 0.0021436800000000002,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "GB-si-msp:evaluation-control-correction:6",
+      "cellId": "GB-si-msp",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:16:25.689Z",
+      "completedAt": "2026-09-06T20:19:38.577Z",
+      "latencyMs": 22530,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 4592,
+        "outputTokens": 2138,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 29,
+        "rawOutputItems": 29,
+        "validOutputItems": 25,
+        "downstreamUsedItems": 29,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.0038575799999999998,
+      "budgetCostUsd": 0.0038575799999999998,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "GB-si-msp:evaluation-control-correction:7",
+      "cellId": "GB-si-msp",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:16:25.689Z",
+      "completedAt": "2026-09-06T20:19:38.577Z",
+      "latencyMs": 27143,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 5673,
+        "outputTokens": 2383,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 29,
+        "rawOutputItems": 29,
+        "validOutputItems": 25,
+        "downstreamUsedItems": 29,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.004540965,
+      "budgetCostUsd": 0.004540965,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "GB-si-msp:evaluation-control-correction:8",
+      "cellId": "GB-si-msp",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:16:25.689Z",
+      "completedAt": "2026-09-06T20:19:38.577Z",
+      "latencyMs": 49768,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 10314,
+        "outputTokens": 5268,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 29,
+        "rawOutputItems": 29,
+        "validOutputItems": 25,
+        "downstreamUsedItems": 29,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00906975,
+      "budgetCostUsd": 0.00906975,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "GB-si-msp:evaluation-control-correction:9",
+      "cellId": "GB-si-msp",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:16:25.689Z",
+      "completedAt": "2026-09-06T20:19:38.577Z",
+      "latencyMs": 59061,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 10916,
+        "outputTokens": 6283,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 29,
+        "rawOutputItems": 29,
+        "validOutputItems": 25,
+        "downstreamUsedItems": 29,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.01021467,
+      "budgetCostUsd": 0.01021467,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "GB-si-msp:evaluation-control-score-only:1",
+      "cellId": "GB-si-msp",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:19:38.598Z",
+      "completedAt": "2026-09-06T20:22:24.099Z",
+      "latencyMs": 47701,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 8331,
+        "outputTokens": 4276,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 29,
+        "rawOutputItems": 29,
+        "validOutputItems": 25,
+        "downstreamUsedItems": 25,
+        "discardedReasonCounts": {
+          "retryRequired": 4
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.007344104999999999,
+      "budgetCostUsd": 0.007344104999999999,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:evaluation-control-score-only:2",
+      "cellId": "GB-si-msp",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:19:38.598Z",
+      "completedAt": "2026-09-06T20:22:24.099Z",
+      "latencyMs": 54962,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 10142,
+        "outputTokens": 5534,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 29,
+        "rawOutputItems": 29,
+        "validOutputItems": 25,
+        "downstreamUsedItems": 25,
+        "discardedReasonCounts": {
+          "retryRequired": 4
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.009226349999999998,
+      "budgetCostUsd": 0.009226349999999998,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:evaluation-control-score-only:3",
+      "cellId": "GB-si-msp",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:19:38.598Z",
+      "completedAt": "2026-09-06T20:22:24.099Z",
+      "latencyMs": 61976,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 10205,
+        "outputTokens": 5691,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 29,
+        "rawOutputItems": 29,
+        "validOutputItems": 25,
+        "downstreamUsedItems": 25,
+        "discardedReasonCounts": {
+          "retryRequired": 4
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.009390345000000001,
+      "budgetCostUsd": 0.009390345000000001,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:evaluation-control-score-only:4",
+      "cellId": "GB-si-msp",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:19:38.598Z",
+      "completedAt": "2026-09-06T20:22:24.099Z",
+      "latencyMs": 62813,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 9987,
+        "outputTokens": 6121,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 29,
+        "rawOutputItems": 29,
+        "validOutputItems": 25,
+        "downstreamUsedItems": 25,
+        "discardedReasonCounts": {
+          "retryRequired": 4
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.009669615,
+      "budgetCostUsd": 0.009669615,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:evaluation-control-score-only:5",
+      "cellId": "GB-si-msp",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:19:38.598Z",
+      "completedAt": "2026-09-06T20:22:24.099Z",
+      "latencyMs": 26378,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 5447,
+        "outputTokens": 1998,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 29,
+        "rawOutputItems": 29,
+        "validOutputItems": 25,
+        "downstreamUsedItems": 25,
+        "discardedReasonCounts": {
+          "retryRequired": 4
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.004107705,
+      "budgetCostUsd": 0.004107705,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:evaluation-control-score-only:6",
+      "cellId": "GB-si-msp",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:19:38.598Z",
+      "completedAt": "2026-09-06T20:22:24.099Z",
+      "latencyMs": 29109,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 6286,
+        "outputTokens": 2354,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 29,
+        "rawOutputItems": 29,
+        "validOutputItems": 25,
+        "downstreamUsedItems": 25,
+        "discardedReasonCounts": {
+          "retryRequired": 4
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.004782389999999999,
+      "budgetCostUsd": 0.004782389999999999,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:evaluation-control-score-only:7",
+      "cellId": "GB-si-msp",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:19:38.598Z",
+      "completedAt": "2026-09-06T20:22:24.099Z",
+      "latencyMs": 25227,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 5743,
+        "outputTokens": 1997,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 29,
+        "rawOutputItems": 29,
+        "validOutputItems": 25,
+        "downstreamUsedItems": 25,
+        "discardedReasonCounts": {
+          "retryRequired": 4
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.004235595,
+      "budgetCostUsd": 0.004235595,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:evaluation-control-score-only:8",
+      "cellId": "GB-si-msp",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:19:38.598Z",
+      "completedAt": "2026-09-06T20:22:24.099Z",
+      "latencyMs": 25573,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 5273,
+        "outputTokens": 2044,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 29,
+        "rawOutputItems": 29,
+        "validOutputItems": 25,
+        "downstreamUsedItems": 25,
+        "discardedReasonCounts": {
+          "retryRequired": 4
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.004072035,
+      "budgetCostUsd": 0.004072035,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:evaluation-control-score-only:9",
+      "cellId": "GB-si-msp",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:19:38.598Z",
+      "completedAt": "2026-09-06T20:22:24.099Z",
+      "latencyMs": 39451,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 9724,
+        "outputTokens": 3467,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 29,
+        "rawOutputItems": 29,
+        "validOutputItems": 25,
+        "downstreamUsedItems": 25,
+        "discardedReasonCounts": {
+          "retryRequired": 4
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.007246229999999999,
+      "budgetCostUsd": 0.007246229999999999,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:evaluation-control-score-only:10",
+      "cellId": "GB-si-msp",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:19:38.598Z",
+      "completedAt": "2026-09-06T20:22:24.099Z",
+      "latencyMs": 44481,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 9088,
+        "outputTokens": 3595,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 29,
+        "rawOutputItems": 29,
+        "validOutputItems": 25,
+        "downstreamUsedItems": 25,
+        "discardedReasonCounts": {
+          "retryRequired": 4
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00708093,
+      "budgetCostUsd": 0.00708093,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:evaluation-control-score-only:11",
+      "cellId": "GB-si-msp",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:19:38.598Z",
+      "completedAt": "2026-09-06T20:22:24.099Z",
+      "latencyMs": 66950,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 10420,
+        "outputTokens": 7051,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 29,
+        "rawOutputItems": 29,
+        "validOutputItems": 25,
+        "downstreamUsedItems": 25,
+        "discardedReasonCounts": {
+          "retryRequired": 4
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.010667069999999999,
+      "budgetCostUsd": 0.010667069999999999,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:evaluation-control-score-only:12",
+      "cellId": "GB-si-msp",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:19:38.598Z",
+      "completedAt": "2026-09-06T20:22:24.099Z",
+      "latencyMs": 35237,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 8502,
+        "outputTokens": 3491,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 29,
+        "rawOutputItems": 29,
+        "validOutputItems": 25,
+        "downstreamUsedItems": 25,
+        "discardedReasonCounts": {
+          "retryRequired": 4
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00673554,
+      "budgetCostUsd": 0.00673554,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:evaluation-control-score-only:13",
+      "cellId": "GB-si-msp",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:19:38.598Z",
+      "completedAt": "2026-09-06T20:22:24.099Z",
+      "latencyMs": 51642,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 8116,
+        "outputTokens": 4181,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 29,
+        "rawOutputItems": 29,
+        "validOutputItems": 25,
+        "downstreamUsedItems": 25,
+        "discardedReasonCounts": {
+          "retryRequired": 4
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00716793,
+      "budgetCostUsd": 0.00716793,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:evaluation-control-score-only:14",
+      "cellId": "GB-si-msp",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:19:38.598Z",
+      "completedAt": "2026-09-06T20:22:24.099Z",
+      "latencyMs": 24547,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 5742,
+        "outputTokens": 2010,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 29,
+        "rawOutputItems": 29,
+        "validOutputItems": 25,
+        "downstreamUsedItems": 25,
+        "discardedReasonCounts": {
+          "retryRequired": 4
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.0042464700000000005,
+      "budgetCostUsd": 0.0042464700000000005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-si-msp:evaluation-control-score-only:15",
+      "cellId": "GB-si-msp",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:19:38.598Z",
+      "completedAt": "2026-09-06T20:22:24.099Z",
+      "latencyMs": 25687,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 5776,
+        "outputTokens": 2096,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 29,
+        "rawOutputItems": 29,
+        "validOutputItems": 25,
+        "downstreamUsedItems": 25,
+        "discardedReasonCounts": {
+          "retryRequired": 4
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00433608,
+      "budgetCostUsd": 0.00433608,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    }
+  ],
+  "warnings": [
+    "No official-domain evidence was extracted for switchshop.co.uk.",
+    "No official-domain evidence was extracted for axia.co.uk.",
+    "No official-domain evidence was extracted for netteam.co.uk.",
+    "No official-domain evidence was extracted for connectsystems.co.uk.",
+    "No official-domain evidence was extracted for laton.co.uk.",
+    "No official-domain evidence was extracted for mlrnetworks.co.uk.",
+    "No official-domain evidence was extracted for focusgroup.co.uk.",
+    "No official-domain evidence was extracted for passmonds.co.uk.",
+    "No official-domain evidence was extracted for fluent2.co.uk.",
+    "No official-domain evidence was extracted for switchnet.co.uk.",
+    "No official-domain evidence was extracted for redsquid.co.uk.",
+    "No official-domain evidence was extracted for principlenetworks.com.",
+    "No official-domain evidence was extracted for entrustit.co.uk.",
+    "No official-domain evidence was extracted for adept.co.uk.",
+    "No official-domain evidence was extracted for itconnect.uk.com.",
+    "blazenetworks.co.uk: Deterministic role hints were not auto-added: Installer.",
+    "switchshop.co.uk: Deterministic role hints were not auto-added: Installer.",
+    "croftmsp.com: Deterministic role hints were not auto-added: Distributor.",
+    "netteam.co.uk: No official website evidence was supplied for Netteam tX; the submitted official website URL could not be verified from the supplied evidence.",
+    "netteam.co.uk: Several supplied evidence pages (net-team.ro, netis-systems.com, nettechgroup.co.uk, netgear.com) appear to be unrelated third-party entities and do not describe Netteam tX.",
+    "netteam.co.uk: Deterministic role hints were not auto-added: Installer.",
+    "systemagic.co.uk: Submitted SI role is not clearly supported by supplied evidence; deployment/configuration language is suggestive but not definitive for system integration.",
+    "systemagic.co.uk: Deterministic role hints were not auto-added: Installer.",
+    "technicaldrive.co.uk: Submitted SI role is not supported by supplied evidence.",
+    "technicaldrive.co.uk: Independent public evidence provided does not relate to Technical Drive; it appears to be from unrelated companies.",
+    "technicaldrive.co.uk: Deterministic role hints were not auto-added: Distributor, Reseller, SI, Installer.",
+    "connectsystems.co.uk: Escalation was skipped because the configured routine and escalation models are identical.",
+    "connectsystems.co.uk: No supplied evidence relates to Connect Systems or connectsystems.co.uk.",
+    "connectsystems.co.uk: All evidence appears to be from unrelated companies in the connectivity/distribution space.",
+    "connectsystems.co.uk: Deterministic role hints were not auto-added: Distributor, Reseller, VAR, Installer, MSP, ISP.",
+    "laton.co.uk: Submitted SI role is not supported by supplied evidence.",
+    "laton.co.uk: Evidence from ITS Technology Group and Xfinity is unrelated to Laton Technical.",
+    "laton.co.uk: Deterministic role hints were not auto-added: Distributor.",
+    "rjcortel.co.uk: Submitted SI role is not supported by supplied evidence.",
+    "rjcortel.co.uk: Evidence from Cortel Technologies (cortel.com) is a different company (US-based) and unrelated to RJ Cortel.",
+    "rjcortel.co.uk: Evidence from Protel Solutions is unrelated to RJ Cortel.",
+    "rjcortel.co.uk: Deterministic role hints were not auto-added: SI.",
+    "evolvebg.co.uk: Deterministic role hints were not auto-added: Distributor, Reseller, ISP.",
+    "mas-networks.co.uk: Deterministic role hints were not auto-added: Distributor, Installer, ISP.",
+    "mlrnetworks.co.uk: Deterministic role hints were not auto-added: Installer.",
+    "focusgroup.co.uk: Escalation was skipped because the configured routine and escalation models are identical.",
+    "focusgroup.co.uk: All supplied evidence for Focus Group is unrelated to the company.",
+    "focusgroup.co.uk: Deterministic role hints were not auto-added: Installer.",
+    "passmonds.com: Deterministic role hints were not auto-added: Installer.",
+    "fluent2.co.uk: Evidence for Ubiquiti installation refers to Fluent rather than explicitly Fluent2 Limited.",
+    "switchnet.co.uk: The submitted official website could not be confirmed from the supplied evidence.",
+    "switchnet.co.uk: Deterministic role hints were not auto-added: Distributor, VAD, Reseller, Installer.",
+    "systems-integration.co.uk: Escalation was skipped because the configured routine and escalation models are identical.",
+    "systems-integration.co.uk: Most supplied evidence is generic industry content and does not relate to the candidate.",
+    "systems-integration.co.uk: The candidate-specific blog post is insufficient to confirm SI or MSP roles.",
+    "systems-integration.co.uk: Roles without a supported atomic role finding were removed.",
+    "systems-integration.co.uk: Deterministic role hints were not auto-added: SI.",
+    "redsquid.co.uk: Explicit system integration evidence is limited; SI role is inferred from technology solutions and consultancy language.",
+    "redsquid.co.uk: Deterministic role hints were not auto-added: Reseller.",
+    "principlenetworks.com: Routine correction failed: Primary model deepseek-v4-pro and approved equivalent fallbacks failed. Escalation failed: Primary model deepseek-v4-pro and approved equivalent fallbacks failed.",
+    "flotek.io: Several independent public evidence sources are unrelated to Flotek Group and appear to be generic networking articles or product listings.",
+    "flotek.io: The official website contains placeholder text such as '0 experts' and '0+ businesses', indicating incomplete content.",
+    "tdmgroup.net: The submitted SI role is not affirmatively supported by the supplied evidence.",
+    "tdmgroup.net: The evidence-3d04592b22c6ddb8 source (Purdicom) appears unrelated to TDM Group and may be a false positive.",
+    "tdmgroup.net: Roles without a supported atomic role finding were removed.",
+    "tdmgroup.net: Deterministic role hints were not auto-added: Installer.",
+    "entrustit.co.uk: The ITS Technology Group evidence (evidence-1f313e81fb23c539) appears unrelated to entrustIT and may be a false positive from the evidence acquisition process.",
+    "entrustit.co.uk: Deterministic role hints were not auto-added: Distributor.",
+    "thehbpgroup.co.uk: The Companies House evidence (evidence-cd205a8c54305888) appears to be for HBP SYSTEMS GROUP LIMITED (00966229), which may be a related but different entity from The HBP Group (registration 02263783).",
+    "thehbpgroup.co.uk: The independent-public evidence from hbp.group (evidence-538103dc018a4129) appears to be for a different HBP Group entity focused on fastening solutions and manufacturing, not the IT services company.",
+    "adept.co.uk: The submitted official website https://adept.co.uk is not directly evidenced in the supplied evidence set.",
+    "adept.co.uk: AdEPT Technology Group plc was acquired by Wavenet Ltd in April 2023, which may affect current entity status.",
+    "adept.co.uk: Roles without a supported atomic role finding were removed.",
+    "chessict.co.uk: Deterministic role hints were not auto-added: Installer.",
+    "spitfire.co.uk: The submitted roles (SI, MSP) do not include ISP, which is the most clearly evidenced role.",
+    "spitfire.co.uk: Deterministic role hints were not auto-added: Reseller.",
+    "itconnect.uk.com: Escalation was skipped because the configured routine and escalation models are identical.",
+    "itconnect.uk.com: All supplied evidence appears unrelated to the candidate IT Connect.",
+    "itconnect.uk.com: The submitted official website https://itconnect.uk.com is not evidenced.",
+    "itconnect.uk.com: Evidence retrieval may have failed or returned incorrect results.",
+    "itconnect.uk.com: Deterministic role hints were not auto-added: Distributor, SI, Installer, MSP, ISP."
+  ]
+}

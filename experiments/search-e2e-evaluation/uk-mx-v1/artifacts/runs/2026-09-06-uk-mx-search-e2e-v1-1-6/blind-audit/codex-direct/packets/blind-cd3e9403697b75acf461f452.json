@@ -1,0 +1,37 @@
+{
+  "packetId": "blind-cd3e9403697b75acf461f452",
+  "targetMarket": {
+    "countryCode": "MX",
+    "countryName": "Mexico"
+  },
+  "requestedCategory": "resale",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "Q TECH NOW SA DE CV",
+    "domain": "qtech.com.mx",
+    "officialWebsiteUrl": "https://qtech.com.mx/"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-home-ed581ec3eb0accbe",
+      "sourceType": "official-website",
+      "url": "https://qtech.com.mx/",
+      "title": "Telecomunicaciones y Servicios Administrados | Q Tech Now",
+      "excerpt": "Telecomunicaciones y Servicios Administrados | Q Tech Now Products search Quiénes somos Soluciones Servicios Tienda Productos Servicios en la nube AWS Ciberseguridad Data Center Networking Software de escritorio remoto (RDC) Servicios Vigilancia Wireless Fabricantes AnyDesk Axis Cambium Networks Cisco Cisco Meraki Extreme Networks Fortinet Hikvision Kaspersky Lab Netapp Palo Alto Networks Veeam VMware Zebra Technologies Todos los productos Recursos Socios de Negocio Cisco Cisco Duo Cisco Umbrella Cisco SD-WAN Cisco Security Cisco Webex Palo Alto Fortinet Veeam VMware Axis Hikvision AnyDesk Kaspersky NetApp Zebra Technologies Cambium Networks Extreme Networks Blog Contacto Formulario WhatsApp Quiénes somos Soluciones Servicios Tienda Productos Servicios en la nube AWS Ciberseguridad Data Ce"
+    },
+    {
+      "evidenceId": "evidence-0cba2e0c0bf6b9a6",
+      "sourceType": "independent-public",
+      "url": "https://mx.linkedin.com/company/qtech-now",
+      "title": "Q TECH NOW SA DE CV | LinkedIn",
+      "excerpt": "Sitio web: https://qtech.com.mx/. Enlace externo para Q TECH NOW SA DE CV ; Sector: Servicios y consultoría de TI ; Tamaño de la empresa: De 11 a 50 empleados."
+    },
+    {
+      "evidenceId": "evidence-45434c2e0a69d912",
+      "sourceType": "official-website",
+      "url": "https://qtech.com.mx/about-us",
+      "title": "About Us | Q Tech Now",
+      "excerpt": "In Q TECH NOW we are dedicated to provide products and solutions in the area of information technology and telecommunications. 9000-0120 sales@qtech.com.mx"
+    }
+  ]
+}

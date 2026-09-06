@@ -1,0 +1,51 @@
+{
+  "packetId": "blind-76b95d8ad5ee046e7758a640",
+  "targetMarket": {
+    "countryCode": "MX",
+    "countryName": "Mexico"
+  },
+  "requestedCategory": "retail",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "Sierra Store MX",
+    "domain": "sierrastore.mx",
+    "officialWebsiteUrl": "https://sierrastore.mx/"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-home-678e9fd91ed56fcd",
+      "sourceType": "official-website",
+      "url": "https://sierrastore.mx/",
+      "title": "Equipos de Seguridad, Comunicación y Tecnología | Sierra Store MX",
+      "excerpt": "Equipos de Seguridad, Comunicación y Tecnología | Sierra Store MX (function() { var jdgmThemeFixes = null; if (!jdgmThemeFixes) return; // \"All themes\" fix: CSS and JS applied on every theme. CSS is injected // before the per-theme fix so the theme-specific CSS wins the cascade. // HTML is never applied globally (too risky). var allThemesFix = jdgmThemeFixes['all']; if (allThemesFix && allThemesFix.css) { var allStyleTag = document.createElement('style'); allStyleTag.classList.add('jdgm-theme-fix-style-all'); allStyleTag.innerHTML = allThemesFix.css; document.head.appen"
+    },
+    {
+      "evidenceId": "evidence-0fbcca724a49f29c",
+      "sourceType": "official-website",
+      "url": "https://sierrastore.mx/products/switch-administrable-capa-2-8-puertos-sfp-10g-160-gbps-pantalla-tactil-1-3-1u-rack-4-7-pies-de-profundidad",
+      "title": "USW-AGGREGATION Switches Networking Redes e IT México | Sierra Store",
+      "excerpt": "Saltar al contenido Tarjeta, OXXO, SPEI | Garantia en todos los productos | Envios a toda la Republica | Asesoria: 631-314-3560 631-314-3560 ventas@sierraco.mx SIERRASTORE Iniciar sesión Carrito Necesitas elegir opciones para el producto. UniFi Switch Aggregation, administrable capa 2, 8 puertos SFP+ de 10G - UBIQUITI files/USW-AGGREGATION-p.png UniFi Switch Aggregation, administrable capa 2, 8 puertos SFP+ de 10G UBIQUITI - Vista 2 files/USWAGGREGATION-AD-1-p.png UniFi Switch Aggregation, administrable capa 2, 8 puertos SFP+ de 10G UBIQUITI - Vista 3 files/USWAGGREGATION-AD-2-p.png UniFi Switch Aggregation, administrable capa 2, 8 puertos SFP+ de 10G UBIQUITI - Vista 4 files/USWAGGREGATION-AD-3-p.png UniFi Switch Aggregation, administrable capa 2, 8 puertos SFP+ de 10G UBIQUITI - Vista 5 "
+    },
+    {
+      "evidenceId": "evidence-a89fce04a0e7f229",
+      "sourceType": "official-website",
+      "url": "https://sierrastore.mx/products/licencia-de-gestion-multiservicio-instancia-privada-local-hasta-2-000-dispositivos-6-562-ft-equivalente-en-alcance-logico-escalable-a-10-000-linux-8-nucleos-cpu-16-gb-ram",
+      "title": "MIMOSA NETWORKS MMP-LICENSE-D-MULTISERVER México | Sierra Store",
+      "excerpt": "Saltar al contenido Tarjeta, OXXO, SPEI | Garantia en todos los productos | Envios a toda la Republica | Asesoria: 631-314-3560 631-314-3560 ventas@sierraco.mx SIERRASTORE Iniciar sesión Carrito Necesitas elegir opciones para el producto. Sin Existencia Licencia de gestión multiservicio / Instancia privada local / Hasta 2,000 dispositivos (6,562 ft equivalente en alcance lógico) / | SIERRA STORE files/portada\\_0S400\\_35c5aafc-2dac-48bd-83d2-a3f4b1f5ed4c.png Licencia de gestión multiservicio / Instancia privada local / Hasta 2,000 dispositivos (6,562 ft equivalente en alcance lógico) / | SIERRA STORE files/sec\\_5\\_1S400\\_1edae7db-47ec-4d65-af39-6ce90bbe8bb9.png Licencia de gestión multiservicio / Instancia privada local / Hasta 2,000 dispositivos (6,562 ft equivalente en alcance lógico) / |"
+    },
+    {
+      "evidenceId": "evidence-46ac700744f2c58b",
+      "sourceType": "official-website",
+      "url": "https://sierrastore.mx/products/suscripcion-de-gestion-cloud-3-anos-soporte-tecnico-24-7-almacenamiento-historico-2-anos-analiticos-avanzados",
+      "title": "CAMBIUM NETWORKS MSX-SUB-EX1010-3 Accesorios México | Sierra Store",
+      "excerpt": "Saltar al contenido Tarjeta, OXXO, SPEI | Garantia en todos los productos | Envios a toda la Republica | Asesoria: 631-314-3560 631-314-3560 ventas@sierraco.mx SIERRASTORE Iniciar sesión Carrito Necesitas elegir opciones para el producto. Sin Existencia Suscripción de gestión cloud / 3 años / Soporte técnico 24/7 / Almacenamiento histórico 2 años / Analíticos avanzados | SIERRA STORE files/portada\\_0S400\\_52fb6b94-8395-4d38-a07e-d53eaa8cc07d.png Suscripción de gestión cloud / 3 años / Soporte técnico 24/7 / Almacenamiento histórico 2 años / Analíticos avanzados | SIERRA STORE Precio regular : $ 1,501.13 Sin Existencia Marca: CAMBIUM NETWORKS No reviews Precio regular : $ 1,501.13 Sin Existencia SKU: MSX-SUB-EX1010-3 IVA INCLUIDO Agotado Producto bajo pedido. Contáctanos para confirmar disp"
+    },
+    {
+      "evidenceId": "evidence-7a001bcbe457717a",
+      "sourceType": "official-website",
+      "url": "https://sierrastore.mx/products/radio-backhaul-ptp-wi-fi-6e-3-4-gbps-5-1-6-4-ghz-mimo-4x4-ip67-alcance-hasta-10-km-32-808-ft",
+      "title": "MIMOSA NETWORKS B6X Otras Bandas México | Sierra Store",
+      "excerpt": "Saltar al contenido Tarjeta, OXXO, SPEI | Garantia en todos los productos | Envios a toda la Republica | Asesoria: 631-314-3560 631-314-3560 ventas@sierraco.mx SIERRASTORE Iniciar sesión Carrito Necesitas elegir opciones para el producto. Radio Backhaul PTP / Wi-Fi 6E / 3.4 Gbps / 5.1-6.4 GHz / MIMO 4x4 / IP67 / Alcance hasta 10 km (32,808 ft) | SIERRA STORE files/portada\\_0S400\\_34ebdb3c-083d-4674-88bd-d661b882a910.png Radio Backhaul PTP / Wi-Fi 6E / 3.4 Gbps / 5.1-6.4 GHz / MIMO 4x4 / IP67 / Alcance hasta 10 km (32,808 ft) | SIERRA STORE files/B6X-AD-1-l.png Radio Backhaul PTP / Wi-Fi 6E / 3.4 Gbps / 5.1-6.4 GHz / MIMO 4x4 / IP67 / Alcance hasta 10 km (32,808 ft) | SIERRA STORE files/B6X-AD-2-l.png Radio Backhaul PTP / Wi-Fi 6E / 3.4 Gbps / 5.1-6.4 GHz / MIMO 4x4 / IP67 / Alcance hasta 1"
+    }
+  ]
+}

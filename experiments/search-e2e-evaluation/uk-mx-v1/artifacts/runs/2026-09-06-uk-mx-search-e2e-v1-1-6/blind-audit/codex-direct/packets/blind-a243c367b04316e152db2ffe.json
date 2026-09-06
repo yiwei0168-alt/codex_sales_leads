@@ -1,0 +1,44 @@
+{
+  "packetId": "blind-a243c367b04316e152db2ffe",
+  "targetMarket": {
+    "countryCode": "MX",
+    "countryName": "Mexico"
+  },
+  "requestedCategory": "resale",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "Redlink Telecomunicaciones",
+    "domain": "redlinktelecomunicaciones.com",
+    "officialWebsiteUrl": "https://redlinktelecomunicaciones.com"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-4b07b21d7d75fbe1",
+      "sourceType": "official-website",
+      "url": "https://redlinktelecomunicaciones.com",
+      "title": "Telecomunicaciones y Seguridad Electrónica | Redlink",
+      "excerpt": "## Tecnología de punta, telecomunicaciones y seguridad electrónica en México para impulsar la digitalización y seguridad de tu compañía con amplias soluciones a tu medida. MÁS INFORMACIÓN ## LA MEJOR EXPERIENCIA EN TECNOLOGÍA ESPECIALIZADA. ## Somos una empresa de telecomunicaciones y seguridad electrónica en México especialista en brindar soluciones. [...] ## Tecnología de punta, telecomunicaciones y seguridad electrónica en México para impulsar la digitalización y seguridad de tu compañía con amplias soluciones a tu medida. MÁS INFORMACIÓN ## EMPRESA DE TELECOMUNICACIONES Y SEGURIDAD ELECTRÓNICA EN GUADALAJARA, MÉXICO. ## Tecnología de punta, telecomunicaciones y seguridad electrónica en México para impulsar la digitalización y seguridad de tu compañía con amplias soluciones a tu medida."
+    },
+    {
+      "evidenceId": "evidence-ba06016bfb5704cd",
+      "sourceType": "official-website",
+      "url": "https://redlinktelecomunicaciones.com/switching-routing-empresas",
+      "title": "Configuración switching y routing empresarial | Redlink",
+      "excerpt": "Ir al contenido Se muestra el logotipo de la empresa Redlink en color blanco que se dedica a soluciones de telecomunicaciones y seguridad electrónica en Guadalajara, Jalisco , México. Flyout Menu Se muestra el logotipo de la empresa Redlink en color blanco que se dedica a soluciones de telecomunicaciones y seguridad electrónica en Guadalajara, Jalisco , México. Flyout Menu Venta e Instalación de Switching y Routing: Conectividad Confiable y Conmutación de Alto Rendimiento para Empresas. Diseñamos e implementamos la arquitectura lógica de tu red empresarial, garantizando un tráfico de datos fluido, segmentación segura y cero pérdidas de paquetes en entornos de misión crítica. ¡Agendar visita gratuita! Partners Marcas Líderes. Soporte técnico especializado. ¡Empieza con una análisis de tu re"
+    },
+    {
+      "evidenceId": "evidence-16cda66595c19590",
+      "sourceType": "official-website",
+      "url": "https://redlinktelecomunicaciones.com/servicio-de-cableado-estructurado",
+      "title": "Servicio de Cableado. Auditoría ¡Sin Costo!. | Redlink",
+      "excerpt": "Ir al contenido Se muestra el logotipo de la empresa Redlink en color blanco que se dedica a soluciones de telecomunicaciones y seguridad electrónica en Guadalajara, Jalisco , México. Flyout Menu Se muestra el logotipo de la empresa Redlink en color blanco que se dedica a soluciones de telecomunicaciones y seguridad electrónica en Guadalajara, Jalisco , México. Flyout Menu Servicio de Cableado Estructurado: Infraestructura de Voz, Datos y Video para Empresas. Diseñamos e implementamos instalaciones de cableado estructurado que garantizan la velocidad y estabilidad que las empresas actuales necesitan. ¡Agendar visita gratuita! Cumplimiento ISO/IEC 11801 ANSI/TIA-568 Ready ¡Solicita tu Levantamiento Técnico y Auditoría de Nodos SIN COSTO! La Base de tu Conectividad: Instalaciones de Cableado"
+    },
+    {
+      "evidenceId": "evidence-daca077caf56fcc4",
+      "sourceType": "official-website",
+      "url": "https://redlinktelecomunicaciones.com/redes-wifi-empresariales",
+      "title": "Venta e instalación Redes Wifi para Empresas | Redlink",
+      "excerpt": "Ir al contenido Se muestra el logotipo de la empresa Redlink en color blanco que se dedica a soluciones de telecomunicaciones y seguridad electrónica en Guadalajara, Jalisco , México. Flyout Menu Se muestra el logotipo de la empresa Redlink en color blanco que se dedica a soluciones de telecomunicaciones y seguridad electrónica en Guadalajara, Jalisco , México. Flyout Menu Redes WiFi para empresas: Especialistas en la venta e instalación de redes inalámbricas de alta densidad. Diseñamos infraestructuras de conectividad inalámbrica robustas que eliminan los puntos muertos y garantizan una señal fluida para tus colaboradores y maquinaria industrial. ¡Agendar visita gratuita! IEEE 802.11ax (Wi-Fi 6) Industry 4.0 Ready ¡Solicita tu Estudio de Cobertura SIN COSTO! Conectividad que impulsa la pr"
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "packetId": "blind-74a52ae217edaa66eb86c84a",
+  "targetMarket": {
+    "countryCode": "MX",
+    "countryName": "Mexico"
+  },
+  "requestedCategory": "resale",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "Perceptron Soluciones Tecnológicas",
+    "domain": "perceptron.mx",
+    "officialWebsiteUrl": "https://www.perceptron.mx/"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-home-da8c0259fe4b4a69",
+      "sourceType": "official-website",
+      "url": "https://www.perceptron.mx/",
+      "title": "Perceptron | Inicio",
+      "excerpt": "Perceptron | Inicio --> Home Soluciones SOLUCIONES PARA EL USUARIO FINAL CÓMPUTO PERSONAL DEVICE AS A SERVICE BACKUP PROTECCIÓN DE DATOS COMMVAULT HPE VEEAM BUSINESS INTELLIGENCE QLIK COMUNICACIÓN COLABORACIÓN --> CIBERSEGURIDAD --> INFRAESTRUCTURA TRANSFORMACIÓN TI HPE NUTANIX STORMAGIC REDES CONECTIVIDAD --> Industrias financiero manufactura retail Salud automotíz telecomunicaciones --> Recursos Blog Charlas de café Nosotros Contacto Home Nosotros Soluciones Industrias Blog Contacto SALUD RETAIL MANUFACTURA AUTOMOTRIZ TELECOMUNICACIONES FINANCIERO REGRESAR SOLUCIONES PARA EL CENTRO DE DATOS SOLUCIONES PARA EL USUARIO FINAL BUSINESS INTELLIGENCE CIBERSEGURIDAD REGRESAR HPE GREENLAKE REDES (SWITCHES) HIPERCONVERGENCIA REGRESAR DEVICE AS A SERVICE CÓMPUTO PERSONAL REDES (ACCESS POINTS) REGR"
+    },
+    {
+      "evidenceId": "evidence-49aef8a67f31f19e",
+      "sourceType": "official-website",
+      "url": "https://www.perceptron.mx/soluciones-daas",
+      "title": "Soluciones DAAS - Perceptron",
+      "excerpt": "Perceptron Perceptron Home SOLUCIONES PARA EL USUARIO FINAL CÓMPUTO PERSONAL DEVICE AS A SERVICE BACKUP & PROTECCIÓN DE DATOS COMMVAULT HPE VEEAM BUSINESS INTELLIGENCE QLIK COMUNICACIÓN & COLABORACIÓN CIBERSEGURIDAD INFRAESTRUCTURA & TRANSFORMACIÓN TI HPE NUTANIX STORMAGIC REDES & CONECTIVIDAD financiero manufactura retail Salud Blog Charlas de café Nosotros Contacto Perceptron Perceptron Home Nosotros Soluciones Industrias Blog Contacto SALUD RETAIL MANUFACTURA AUTOMOTRIZ TELECOMUNICACIONES FINANCIERO REGRESAR SOLUCIONES PARA EL CENTRO DE DATOS SOLUCIONES PARA EL USUARIO FINAL BUSINESS INTELLIGENCE CIBERSEGURIDAD REGRESAR HPE GREENLAKE REDES (SWITCHES) HIPERCONVERGENCIA REGRESAR DEVICE AS A SERVICE CÓMPUTO PERSONAL REDES (ACCESS POINTS) REGRESAR QLIK REGRESAR NEMOTEK REGRESAR Aviso de pri"
+    },
+    {
+      "evidenceId": "evidence-93945613ba442f9f",
+      "sourceType": "official-website",
+      "url": "https://www.perceptron.mx",
+      "title": "Perceptron | Inicio",
+      "excerpt": "technology matters info@perceptron.mx Oficina: 81 83 46 00 50 hewlett packard aruba nemotek stormagic vmware intel veam logo hp Aviso de privacidad [...] Industrias Blog Contacto SALUD RETAIL MANUFACTURA AUTOMOTRIZ TELECOMUNICACIONES FINANCIERO REGRESAR SOLUCIONES PARA EL CENTRO DE DATOS SOLUCIONES PARA EL USUARIO FINAL BUSINESS INTELLIGENCE CIBERSEGURIDAD REGRESAR HPE GREENLAKE REDES (SWITCHES) HIPERCONVERGENCIA REGRESAR DEVICE AS A SERVICE CÓMPUTO PERSONAL REDES (ACCESS POINTS) REGRESAR QLIK REGRESAR NEMOTEK REGRESAR Aviso de privacidad Perceptron Home Perceptron Home [...] Diseño de soluciones de redes alámbricas e inalámbricas que garantizan la seguridad y facilitan la gestión de la infraestructura. SABER MÁS Perceptron Home REDES Perceptron Home Perceptron Home Diseño de arquitectura,"
+    }
+  ]
+}

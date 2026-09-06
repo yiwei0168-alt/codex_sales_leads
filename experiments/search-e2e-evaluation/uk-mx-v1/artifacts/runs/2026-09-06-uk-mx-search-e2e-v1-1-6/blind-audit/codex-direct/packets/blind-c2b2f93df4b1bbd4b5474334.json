@@ -1,0 +1,37 @@
+{
+  "packetId": "blind-c2b2f93df4b1bbd4b5474334",
+  "targetMarket": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom"
+  },
+  "requestedCategory": "retail",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "Currys plc",
+    "domain": "currys.co.uk",
+    "officialWebsiteUrl": "https://www.currys.co.uk"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-739ffa997d7f57b5",
+      "sourceType": "official-website",
+      "url": "https://www.currys.co.uk/computing/networking/network-switches",
+      "title": "Network switches - Cheap Network switches Deals | Currys",
+      "excerpt": "Network switches are designed with low power consumption in mind, with most, including our · Netgear network switches, boasting auto power-down functions that automatically shut down idle ports to save energy. If you’re looking for a way to transfer large files, images, data and to share streaming across your home or business, a network switch provides a fast, reliable, and easy-to-use solution."
+    },
+    {
+      "evidenceId": "evidence-84de8ae7ad3ccab6",
+      "sourceType": "official-website",
+      "url": "https://www.currys.co.uk/computing/networking/routers",
+      "title": "Routers - Cheap Routers Deals | Currys",
+      "excerpt": "TP-LINK Archer AX55 Pro WiFi Cable & Fibre Router - AX 3000, Dual-band £69.97 Save £12.02 Was £81.99 (from 09/04/26 to 06/08/26) Image 247: TP-LINK M7350 4G LTE Mobile WiFi 4.50 out of 5 stars 4.5/5 69 reviews TP-LINK M7350 4G LTE Mobile WiFi £59.99 Image 248: ASUS RT-AX57 Go WiFi 5G Travel Router - AX 3000, Dual-band 5.00 out of 5 stars 5/5 1 reviews ASUS RT-AX57 Go WiFi 5G Travel Router - AX 3000, Dual-band £78.99 _next image_ Compare Clear all ## Back _close_ [...] £214.99 From £8.71 per month for 36 months Buy a bundle Available for delivery FREE in-store collection in as little as 1 hour View product Add to basket Add to basket Buy a bundle Available for delivery FREE in-store collection in as little as 1 hour Available for delivery FREE in-store collection in as little as 1 hour Get "
+    },
+    {
+      "evidenceId": "evidence-56279739f012e08f",
+      "sourceType": "official-website",
+      "url": "https://business.currys.co.uk/catalogue/computing/servers-networking/networking/switches",
+      "title": "Network switches - Best Cheap Deals for your Business ...",
+      "excerpt": "Product Data Sheet User Manual Device Type - Switch - 16 ports Additional Features - Flow control, full duplex capability, auto-negotiation, auto-uplink (auto MDI/MDI-X),... TP-Link TL-SG1428PE Switch smart 24 x 10/100/1000 (PoE+) + 2 x 10/100/1000 rack-mountable PoE+ (250 W) P298753P / TL-SG1428PE Price comparison on Switches. Find the cheapest prices and in-depth product information for 2,336 Switches on idealo.co.uk. 1-16 of over 2,000 results for \"network switches\" Results Check each product page for other buying options. Online shopping for Network Switches from a great selection at Computers & Accessories Store. Network Switches : Ubiquiti Switches , MikroTik Switches , TP-Link Switches , Netonix Switches , Teltonika Switches , JetStream Switches , UniFi Switches . Compare prices on "
+    }
+  ]
+}

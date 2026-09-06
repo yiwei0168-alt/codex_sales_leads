@@ -1,0 +1,44 @@
+{
+  "packetId": "blind-39dd4592da5d9ff1dbd63878",
+  "targetMarket": {
+    "countryCode": "MX",
+    "countryName": "Mexico"
+  },
+  "requestedCategory": "si-msp",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "Huus",
+    "domain": "huus.mx",
+    "officialWebsiteUrl": "https://www.huus.mx"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-fe62f303f7ebf5fb",
+      "sourceType": "official-website",
+      "url": "https://www.huus.mx/soluciones/alta-disponibilidad",
+      "title": "Internet Dedicado y Ciberseguridad Empresarial en México - Huus",
+      "excerpt": "Huus Logo Huus Logo Alta Disponibilidad Tu conexión respaldada por múltiples proveedores, para que una falla en uno de ellos nunca detenga tu operación. Beneficios Huus: Solicita una Propuesta Te respondemos en menos de 24 horas hábiles. Sin compromiso. Diferenciadores clave de Huus Inspección Profunda Visibilidad completa de cómo se usa tu internet, por categoría o sitio. Gestión en Nube Monitorea el estado de tus enlaces desde cualquier lugar, en tiempo real. Monitoreo Libre Consulta el historial de consumo y desempeño cuando lo necesites. Equipo Compatible Compatible con otros proveedores de internet que ya tengas contratados. Preguntas Frecuentes Es una solución que combina múltiples proveedores y tecnologías de acceso, para que si uno falla, otro tome el control automáticamente y tu n"
+    },
+    {
+      "evidenceId": "evidence-e5b31ebf3bd98d43",
+      "sourceType": "official-website",
+      "url": "https://www.huus.mx",
+      "title": "Huus – Internet Dedicado y Ciberseguridad Empresarial en México",
+      "excerpt": "Huus Logo +52 55 9020 3418WhatsAppCotiza Aquí Huus Logo Cotiza AquíWhatsApp +52 55 9020 3418 10110011 01001010 01010010 11001011 11010101 00101100 00101101 11010010 01101010 11010101 10101100 00101101 11010010 01101010 00101100 10101100 11010010 01101010 00101100 10101100 01101010 11010101 10101100 00101101 Internet dedicado para negocios en México # Huus, te conecta donde lo necesites [...] ### Conectividad 10Gbps para 8 propiedades simultáneas Implementamos fibra dedicada simétrica con alta disponibilidad y SD-WAN para garantizar WiFi sin interrupciones en cada habitación. ✓ Excelente satisfacción de huéspedes Alta disponibilidad <50ms Failover Distribuidora Sigma S.A. Manufactura & Logística ### Zero downtime en planta de 1,200 empleados Diseño de red redundante con failover automático "
+    },
+    {
+      "evidenceId": "evidence-e3c2011a30c8289d",
+      "sourceType": "official-website",
+      "url": "https://www.huus.mx/legales/politica-de-uso-justo",
+      "title": "Política de Uso Justo | Huus",
+      "excerpt": "Huus Logo Huus Logo Política de Uso Justo A. Objeto y alcance Esta Política de Uso Justo (la \"Política\") establece las conductas permitidas y prohibidas en el aprovechamiento de los servicios de conectividad, red y ciberseguridad que HUUS VAS, S.A. de C.V. (\"Huus\") presta a sus Clientes. Su finalidad es preservar la calidad, la estabilidad y la seguridad de la red para el conjunto de los Clientes, y evitar que un uso desproporcionado o indebido por parte de uno degrade el servicio de los demás. La Política es parte integrante de los Términos y Condiciones y aplica al Cliente, a su personal y a cualquier usuario final que acceda al servicio a través de su infraestructura. El Cliente es responsable del uso que sus usuarios finales hagan del servicio. B. Naturaleza de los servicios contratado"
+    },
+    {
+      "evidenceId": "evidence-d9b6d3ee65939f0c",
+      "sourceType": "official-website",
+      "url": "https://www.huus.mx/contacto",
+      "title": "Contacto y Cotización - Huus",
+      "excerpt": "Huus Logo Huus Logo Cotiza tu red en minutos Cuéntanos qué necesita tu negocio y un ingeniero especializado te arma una propuesta a la medida. Sin costo y sin compromiso. Hablemos de tu proyecto Te contactamos en menos de 24 horas Sofía 12, Col. Campestre, Alcaldía Álvaro Obregón, Ciudad de México, C.P. 01040 Solicita tu propuesta Respuesta garantizada en menos de 24 horas. ¿Listo para conectarte? ¡Hablemos! Cuéntanos sobre tu negocio y un ingeniero especializado te contactará en menos de 24 horas. Huus Logo Conectando tu negocio en cualquier lugar de México con fibra dedicada y ciberseguridad corporativa. Empresa Soluciones Términos y Políticas Newsletter Tendencias tecnológicas para tu negocio cada mes."
+    }
+  ]
+}

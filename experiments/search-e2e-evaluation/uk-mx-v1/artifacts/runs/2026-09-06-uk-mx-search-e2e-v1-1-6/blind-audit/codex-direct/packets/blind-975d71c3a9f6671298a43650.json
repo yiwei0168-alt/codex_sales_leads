@@ -1,0 +1,58 @@
+{
+  "packetId": "blind-975d71c3a9f6671298a43650",
+  "targetMarket": {
+    "countryCode": "MX",
+    "countryName": "Mexico"
+  },
+  "requestedCategory": "si-msp",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "ERCONNECT Soluciones",
+    "domain": "erconnect.com.mx",
+    "officialWebsiteUrl": "https://erconnect.com.mx"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-home-a2922cc458397d41",
+      "sourceType": "official-website",
+      "url": "https://erconnect.com.mx/",
+      "title": "ERCONNECT | Integrador de infraestructura tecnológica en México",
+      "excerpt": "ERCONNECT | Integrador de infraestructura tecnológica en México Ir al contenido principal Soluciones Industrias Proyectos Cómo trabajamos Nosotros Recursos Solicitar diagnóstico Abrir menú Integrador de infraestructura tecnológica y eléctrica · México Infraestructura para operaciones que no pueden detenerse. Diseñamos, integramos, documentamos y damos soporte a la conectividad, seguridad electrónica, energía crítica y espacios inteligentes de entornos industriales, logísticos y corporativos, con un solo responsable técnico. Solicitar diagnóstico Ver proyectos MANUFACTURA · LOGÍSTICA · CORPORATIVO · MISIÓN CRÍTICA PROYECTOS EN TODA LA REPÚBLICA MEXICANA CIUDAD DE MÉXICO · SAN LUIS POTOSÍ · MONTERREY · TIJUANA Un solo responsable técnico Conectividad, seguridad, energía y espacios inteligent"
+    },
+    {
+      "evidenceId": "evidence-0a4a028ec19ef5a0",
+      "sourceType": "official-website",
+      "url": "https://erconnect.com.mx/soluciones/redes-empresariales-wifi",
+      "title": "Redes empresariales y Wi-Fi corporativo | ERCONNECT",
+      "excerpt": "Ir al contenido principal Solicitar diagnóstico Redes empresariales y Wi-Fi corporativo Switching, Wi-Fi medido en sitio y una sola política de conectividad de la nube al escritorio. Una red bien diseñada no se nota; una mal diseñada se nota todos los días. Qué es : Diseño, integración y documentación de redes empresariales, con switching de core a acceso, Wi-Fi validado con medición en sitio, SD-WAN multi-sitio y control de identidad en la red (NAC). Para quién : Corporativos, campus y organizaciones multi-sucursal donde la red sostiene la operación diaria y el equipo de TI necesita control y documentación, no otra caja negra. Qué problema resuelve : Zonas muertas de Wi-Fi, redes planas sin segmentación, sucursales conectadas con reglas distintas y crecimiento por parches del que nadie ti"
+    },
+    {
+      "evidenceId": "evidence-c6c344072ccb58d9",
+      "sourceType": "official-website",
+      "url": "https://erconnect.com.mx/soluciones/seguridad-electronica",
+      "title": "Seguridad electrónica para empresas | ERCONNECT",
+      "excerpt": "Ir al contenido principal Solicitar diagnóstico Seguridad electrónica para empresas Videovigilancia, control de acceso y alarmas diseñados por riesgo operativo y operando como un sistema integrado, con evidencia utilizable cuando algo ocurre. Qué es : Diseño e integración de sistemas de seguridad física empresarial, con videovigilancia (CCTV IP), control de acceso, alarmas y su operación en una sola plataforma, a partir de un análisis de riesgo del sitio. Para quién : Plantas, centros de distribución, corporativos y parques industriales que necesitan proteger personas, producto e instalaciones, y demostrar el control ante corporativo, clientes y aseguradoras. Qué problema resuelve : Merma sin evidencia, accesos administrados con llaves y listas de papel, cámaras que no cubren los puntos de"
+    },
+    {
+      "evidenceId": "evidence-39df2349f02dd031",
+      "sourceType": "official-website",
+      "url": "https://erconnect.com.mx/partners/verkada",
+      "title": "Videovigilancia Verkada en México | ERCONNECT",
+      "excerpt": "Partner tecnológico Videovigilancia Verkada en México instalada por un Silver Partner Seguridad física administrada desde la nube, sin NVR ni servidores locales. Cada cámara almacena y analiza a bordo, y toda la operación se gestiona desde una sola plataforma. El CCTV tradicional arrastra los mismos problemas desde hace veinte años: un NVR que es punto único de falla, VPNs y puertos abiertos para ver remoto, firmware que nadie actualiza y un sistema distinto por cada sitio. Cuando la operación crece, la videovigilancia se fragmenta. Verkada resuelve el problema desde la arquitectura. Cada cámara guarda su propio video (de 30 a 365 días a bordo) y lo analiza localmente, de modo que no existe un NVR ni un servidor que falle o se quede sin espacio. Todo se administra desde Command, una sola p"
+    },
+    {
+      "evidenceId": "evidence-b8145ee1cb4ca0fa",
+      "sourceType": "official-website",
+      "url": "https://erconnect.com.mx/partners",
+      "title": "Partners y certificaciones de fabricante | ERCONNECT",
+      "excerpt": "Partners Certificaciones que se acreditan, no que se declaran Un nivel de partnership certificado cambia lo que recibe el cliente: diseño validado por el fabricante, personal entrenado en lo que instala y acceso a garantías de sistema que una instalación no certificada no puede ofrecer. PAR.01Partnerships certificados Niveles vigentes con evidencia documental Panduit, Silver Partner, Panduit ONE 2025 Panduit Silver Partner, Panduit ONE 2025 CommScope, Solution Provider CommScope Solution Provider Siemon, Certified Installer (CI) Siemon Certified Installer (CI) Schneider Electric (APC), Select Partner, APC IT Solution Provider Schneider Electric (APC) Select Partner, APC IT Solution Provider Chatsworth Products, Certified Solutions Partner (CSP) Chatsworth Products Certified Solutions Partn"
+    },
+    {
+      "evidenceId": "evidence-30eb9fcdeb6c53b7",
+      "sourceType": "official-website",
+      "url": "https://erconnect.com.mx",
+      "title": "ERCONNECT | Integrador de infraestructura tecnológica en México",
+      "excerpt": "Nuestra trayectoria en infraestructura tecnológica comenzó en 1997. En 2023 nació ERCONNECT con estructura propia y un modelo que integra ingeniería, suministro, instalación, certificación y documentación bajo una sola responsabilidad técnica. Casi 30 añosde experiencia técnica acumulada +700proyectos y servicios en nuestra trayectoria +150organizaciones atendidas en nuestra trayectoria 4bases operativas con cobertura nacional Conoce nuestra historia SEC.01El problema operativo [...] Cobertura nacional : Bases operativas en CDMX, San Luis Potosí, Monterrey y Tijuana; ejecución en sitio en toda la República. Diseño bajo normas de referencia : Ingeniería alineada a ANSI/TIA-568, NOM-001-SEDE y criterios NFPA aplicables a cada sistema. Trayectoria técnica ## Casi tres décadas de experiencia d"
+    }
+  ]
+}

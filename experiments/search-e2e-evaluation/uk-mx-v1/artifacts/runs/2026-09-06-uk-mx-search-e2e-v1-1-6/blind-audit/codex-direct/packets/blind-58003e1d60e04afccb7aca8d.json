@@ -1,0 +1,51 @@
+{
+  "packetId": "blind-58003e1d60e04afccb7aca8d",
+  "targetMarket": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom"
+  },
+  "requestedCategory": "si-msp",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "MSP247",
+    "domain": "msp247.co.uk",
+    "officialWebsiteUrl": "https://www.msp247.co.uk/"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-home-d9ee0baca104bf87",
+      "sourceType": "official-website",
+      "url": "https://www.msp247.co.uk/",
+      "title": "Managed IT &amp; Technology Services Across Yorkshire | MSP247",
+      "excerpt": "Managed IT Technology Services Across Yorkshire | MSP247 Skip to content Talk to our team Mon–Fri 08:00–17:30 0330 301 0500 Toggle navigation About Us How MSP247 Works Services Hosting Managed IT Support IT Procurement IT Consultancy Physical Site Security Backup &#038; Continuity Microsoft 365 Cybersecurity Apple Support IT Support by Sector IT Support Cost &#038; Coverage Estimator Business Downtime Cost Calculator Proactive IT Monitoring &#038; Maintenance Connectivity Telephone Systems Network &#038; Wi-Fi Internet 4G/5G Broadband VoIP Trunks Yorkshire Coverage Leeds York Contact Us Support Tech Hub Remote Support Helpdesk Free Business IT Tools Complete IT Support for Every Device, Network and Workplace One trusted team for every device, network and workplace. MSP247 keeps your Window"
+    },
+    {
+      "evidenceId": "evidence-98ea97ac76942ff8",
+      "sourceType": "official-website",
+      "url": "https://www.msp247.co.uk/network-and-wi-fi-services-for-businesses",
+      "title": "Business Network & Wi-Fi Services in York | MSP247",
+      "excerpt": "MSP247 # Network and Wi-Fi Services for Businesses Welcome to MSP247, your trusted partner in advanced Network and Wi-Fi solutions for Businesses. Embrace the power of software-defined networking (SDN) for seamless device updates and centralized management. Whether you need robust Unifi routers, high-performance switches, or cutting-edge Wi-Fi access points, we’ve got you covered. ## Router Features [...] Our switching solutions are tailored for businesses that demand reliability and scalability: ## Wi-Fi Access Points [...] Our access points are designed for dense environments like offices, retail spaces, or multi-floor buildings, delivering consistent performance even with high user counts. Their beamforming technology directs the strongest signal to devices, ensuring stable connections "
+    },
+    {
+      "evidenceId": "evidence-aeffb88c1d478ae9",
+      "sourceType": "official-website",
+      "url": "https://www.msp247.co.uk/about-us",
+      "title": "About MSP247 | York Technology Partner",
+      "excerpt": "We specialize in 24/7 proactive monitoring, ensuring your systems run efficiently, minimising downtime, and maximizing productivity. Our team designs tailored IT solutions, enhancing your network infrastructure and optimizing connectivity to meet the unique demands of your business. Whether it’s managed IT services, network installation, or strategic consultancy, MSP247 is the trusted partner you can count on. Let us handle the complexities of IT, so you can concentrate on driving your business [...] your business forward. [...] At MSP247, we pride ourselves on delivering top-tier IT solutions with a personal touch. Our expert team, with a wealth of experience, is committed to providing proactive, reliable, and tailored IT services that empower your business to thrive. From managed IT serv"
+    },
+    {
+      "evidenceId": "evidence-2722dbaeb057776d",
+      "sourceType": "official-website",
+      "url": "https://www.msp247.co.uk",
+      "title": "MSP247: Managed IT & Technology Services Across Yorkshire",
+      "excerpt": "## One Partner for Your Whole Technology Estate From the devices your employees use to the networks, servers and cloud services behind them, MSP247 provides a complete technology solution. We handle everyday support, proactive monitoring, security, patching, connectivity, procurement and third-party suppliers—giving your business one dependable place to turn. ### Technology We Support [...] Proactive monitoring, maintenance and responsive support that keeps your business productive and minimises downtime. Explore managed IT support ## Device & User Support Expert help for Windows, macOS, iOS, ChromeOS, Linux and Android across desktops, laptops, mobiles and tablets. Explore device support ## Networks & Wi-Fi Secure, high-performance routers, switches and Wi-Fi designed, installed and manag"
+    },
+    {
+      "evidenceId": "evidence-8d29f64d3239b770",
+      "sourceType": "official-website",
+      "url": "https://www.msp247.co.uk/it-procurement",
+      "title": "Business IT Procurement & Hardware Supply | MSP247",
+      "excerpt": "Source the right laptops, desktops, servers, networking and business technology with expert specification, supply and support from MSP247."
+    }
+  ]
+}

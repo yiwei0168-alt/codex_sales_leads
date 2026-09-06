@@ -1,0 +1,767 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+  "cellId": "MX-resale",
+  "inputCount": 9,
+  "records": [
+    {
+      "companyKey": "MX:domain:redlinktelecomunicaciones.com",
+      "countryCode": "MX",
+      "companyName": "Redlink Telecomunicaciones",
+      "domain": "redlinktelecomunicaciones.com",
+      "officialWebsiteUrl": "https://redlinktelecomunicaciones.com",
+      "primaryRole": "Hybrid",
+      "supportedRoles": [
+        "Reseller",
+        "VAR",
+        "Installer",
+        "SI"
+      ],
+      "totalScore": 68,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-4b07b21d7d75fbe1",
+          "url": "https://redlinktelecomunicaciones.com",
+          "title": "Telecomunicaciones y Seguridad Electrónica | Redlink",
+          "excerpt": "## Tecnología de punta, telecomunicaciones y seguridad electrónica en México para impulsar la digitalización y seguridad de tu compañía con amplias soluciones a tu medida. MÁS INFORMACIÓN ## LA MEJOR EXPERIENCIA EN TECNOLOGÍA ESPECIALIZADA. ## Somos una empresa de telecomunicaciones y seguridad electrónica en México especialista en brindar soluciones. [...] ## Tecnología de punta, telecomunicaciones y seguridad electrónica en México para impulsar la digitalización y seguridad de tu compañía con amplias soluciones a tu medida. MÁS INFORMACIÓN ## EMPRESA DE TELECOMUNICACIONES Y SEGURIDAD ELECTRÓNICA EN GUADALAJARA, MÉXICO. ## Tecnología de punta, telecomunicaciones y seguridad electrónica en México para impulsar la digitalización y seguridad de tu compañía con amplias soluciones a tu medida.",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-ba06016bfb5704cd",
+          "url": "https://redlinktelecomunicaciones.com/switching-routing-empresas",
+          "title": "Configuración switching y routing empresarial | Redlink",
+          "excerpt": "Ir al contenido Se muestra el logotipo de la empresa Redlink en color blanco que se dedica a soluciones de telecomunicaciones y seguridad electrónica en Guadalajara, Jalisco , México. Flyout Menu Se muestra el logotipo de la empresa Redlink en color blanco que se dedica a soluciones de telecomunicaciones y seguridad electrónica en Guadalajara, Jalisco , México. Flyout Menu Venta e Instalación de Switching y Routing: Conectividad Confiable y Conmutación de Alto Rendimiento para Empresas. Diseñamos e implementamos la arquitectura lógica de tu red empresarial, garantizando un tráfico de datos fluido, segmentación segura y cero pérdidas de paquetes en entornos de misión crítica. ¡Agendar visita gratuita! Partners Marcas Líderes. Soporte técnico especializado. ¡Empieza con una análisis de tu re",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-16cda66595c19590",
+          "url": "https://redlinktelecomunicaciones.com/servicio-de-cableado-estructurado",
+          "title": "Servicio de Cableado. Auditoría ¡Sin Costo!. | Redlink",
+          "excerpt": "Ir al contenido Se muestra el logotipo de la empresa Redlink en color blanco que se dedica a soluciones de telecomunicaciones y seguridad electrónica en Guadalajara, Jalisco , México. Flyout Menu Se muestra el logotipo de la empresa Redlink en color blanco que se dedica a soluciones de telecomunicaciones y seguridad electrónica en Guadalajara, Jalisco , México. Flyout Menu Servicio de Cableado Estructurado: Infraestructura de Voz, Datos y Video para Empresas. Diseñamos e implementamos instalaciones de cableado estructurado que garantizan la velocidad y estabilidad que las empresas actuales necesitan. ¡Agendar visita gratuita! Cumplimiento ISO/IEC 11801 ANSI/TIA-568 Ready ¡Solicita tu Levantamiento Técnico y Auditoría de Nodos SIN COSTO! La Base de tu Conectividad: Instalaciones de Cableado",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-daca077caf56fcc4",
+          "url": "https://redlinktelecomunicaciones.com/redes-wifi-empresariales",
+          "title": "Venta e instalación Redes Wifi para Empresas | Redlink",
+          "excerpt": "Ir al contenido Se muestra el logotipo de la empresa Redlink en color blanco que se dedica a soluciones de telecomunicaciones y seguridad electrónica en Guadalajara, Jalisco , México. Flyout Menu Se muestra el logotipo de la empresa Redlink en color blanco que se dedica a soluciones de telecomunicaciones y seguridad electrónica en Guadalajara, Jalisco , México. Flyout Menu Redes WiFi para empresas: Especialistas en la venta e instalación de redes inalámbricas de alta densidad. Diseñamos infraestructuras de conectividad inalámbrica robustas que eliminan los puntos muertos y garantizan una señal fluida para tus colaboradores y maquinaria industrial. ¡Agendar visita gratuita! IEEE 802.11ax (Wi-Fi 6) Industry 4.0 Ready ¡Solicita tu Estudio de Cobertura SIN COSTO! Conectividad que impulsa la pr",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:clanware.com.mx",
+      "countryCode": "MX",
+      "companyName": "Clanware",
+      "domain": "clanware.com.mx",
+      "officialWebsiteUrl": "https://www.clanware.com.mx",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "Installer",
+        "VAR"
+      ],
+      "totalScore": 71,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-7e088321b8140946",
+          "url": "https://www.clanware.com.mx",
+          "title": "Clanware | Telecomunicaciones & Seguridad",
+          "excerpt": "Cableado Estructurado para empresas Diseño e implementación de infraestructura de telecomunicaciones de clase mundial para proyectos industriales y corporativos. Sistemas de Seguridad inteligentes CCTV, control de acceso y detección de seguridad con hardware y software de las marcas líderes del mercado. Conectividad y redes empresariales Diseño, implementación y soporte de redes robustas para plants industriales, call centers y oficinas corporativas. Nuestros servicios especializados Soluciones integrales de telecomunicaciones e infraestructura tecnológica a nivel nacional. Cableado Estructurado Diseñamos e implementamos soluciones de cableado estructurado para los sistemas de datos, video (cctv) y sistemas de control (CDA), garantizando alto desempeño, estabilidad y escalabilidad para ent",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-a5a7f07723194528",
+          "url": "https://clanware.mx",
+          "title": "Clanware | Telecomunicaciones & Seguridad",
+          "excerpt": "Somos una empresa certificada en las principales marcas líderes del mercado, garantizando la total satisfacción de nuestros proyectos. Nuestra oficina matriz se ubica en Monterrey, con sucursales en Saltillo y Toluca, cubriendo proyectos en todo el territorio mexicano. 1996 Fundación de la empresa 3 Oficinas en el país 30+ Años en el mercado MX Cobertura nacional ### Misión [...] Desde 1996, liderando el mercado de telecomunicaciones y seguridad en México con presencia nacional y personal certificado. Quiénes somos ## Más de 30 años construyendo confianza Con más de 30 años en el mercado, en Clanware desarrollamos proyectos de cableado estructurado, cableado UTP y fibra óptica, infraestructura de centros de datos, además de servicios en sistemas de seguridad como CCTV, control de acceso y ",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:tred.mx",
+      "countryCode": "MX",
+      "companyName": "TRED México",
+      "domain": "tred.mx",
+      "officialWebsiteUrl": "https://tred.mx",
+      "primaryRole": "Unresolved",
+      "supportedRoles": [],
+      "totalScore": 0,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": false,
+      "operatesInTargetMarket": false,
+      "evidence": [
+        {
+          "id": "evidence-0295d7549027b9df",
+          "url": "https://www.griyasis.com/hubungan-switch-router-dan-access-point-dalam-jaringan-komputer",
+          "title": "Hubungan Switch, Router, dan Access Point dalam Jaringan Komputer - Distributor Server HPE, Lenovo & DELL Indonesia",
+          "excerpt": "Access point dihubungkan ke switch (atau kadang langsung ke router) untuk menyediakan koneksi nirkabel kepada perangkat Wi-Fi. Contohnya dalam jaringan kantor: Router menerima koneksi dari ISP. Switch terhubung ke router, dan menghubungkan beberapa komputer, printer, dan server. Access point disebar di beberapa titik dalam gedung kantor dan dihubungkan ke switch untuk menyediakan konektivitas Wi-Fi di seluruh area. [...] Ketiga perangkat ini saling terhubung dan bekerja sama untuk menciptakan jaringan yang lengkap. Berikut adalah skenario umum bagaimana mereka terhubung: Router menerima koneksi dari ISP (penyedia layanan internet) dan membagikan koneksi tersebut ke jaringan lokal. Dari router, koneksi LAN dikirim ke switch, terutama jika ada banyak perangkat kabel yang perlu dihubungkan. [",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-5f5ba3d341634e1f",
+          "url": "https://setel.com.mx/producto/acb-isp-access-point-router-wi-fi-aircube-mimo-2x2-802-11n-2-4-ghz-hasta-300-mbps",
+          "title": "ACB-ISP Access Point/Router Wi-Fi airCube, MIMO 2×2, 802.11n, 2.4 GHz (hasta 300 Mbps) – Setel",
+          "excerpt": "Esta es una tienda de demostración con fines de prueba; no se tramitarán pedidos. Descartar Skip to navigation Skip to content Bienvenido a nuestro Catalogó Tienda Catalogó Mi cuenta SETEL SETEL Access point Audio / Video Conferencia Cámaras Controles de Acceso y Asistencia Conmutadores Cableado Estructurado Grandstream Grandstream Smart Home Panasonic Smart Home Yealink Ventas +52 81 1476 1125 Email: contacto@setel.com.mx [...] Access point Audio / Video Conferencia Cámaras Controles de Acceso y Asistencia Conmutadores Cableado Estructurado Grandstream Grandstream Smart Home Panasonic Smart Home Yealink SETEL SETEL Search -7% ACB-ISP Access Point/Router Wi-Fi airCube, MIMO 2x2, 802.11n, 2.4 GHz (hasta 300 Mbps) ACB-ISP Access Point/Router Wi-Fi airCube, MIMO 2x2, 802.11n, 2.4 GHz (hasta 3",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-4dd9642199496653",
+          "url": "https://itman.ae/2026/01/18/router-vs-switch-vs-access-point",
+          "title": "Router vs Switch vs Access Point: What You Actually Need?",
+          "excerpt": "Choose a router because you need internet connectivity, firewalling, and network control. Add a switch when you need more wired devices, more ports, and stable internal connections. Add access points when you need strong, reliable Wi-Fi coverage in multiple areas. If you want a modern, reliable setup, especially for a business or a large villa, the best long-term solution is usually: Router + Switch + Access Points. ### Network Installation and Setup Services in Dubai [...] A router is the device that connects your local network (your home or office devices) to the internet. It’s basically the “traffic manager” between your internal network and the outside world. If you have an ISP connection (Etisalat, du, or any other provider), the router is usually the first device in your network that",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-2b519efe45f2d9d4",
+          "url": "https://www.croma.com/unboxed/modem-router-switch-and-access-point-whats-the-difference",
+          "title": "Modem vs router vs switch vs access point | Croma Unboxed",
+          "excerpt": "Image 39: Portronics Power Shutter Air 20K with wireless charging support launched in India### Portronics Power Shutter Air 20K with wireless charging support launched in India Aug 31, 2026 Image 40: Best TVs under Rs 20,000 in India 2026### Best TVs under Rs 20,000 in India 2026 Sep 03, 2026 Image 41: Search unboxed blog Image 42: Search Image 43: Croma # Modem, router, switch, and access point: What’s the difference? Building a home network 101 [...] Image 35: Portronics Power Shutter Air 20K with wireless charging support launched in India### Portronics Power Shutter Air 20K with wireless charging support launched in India Aug 31, 2026 Image 36: Best TVs under Rs 20,000 in India 2026### Best TVs under Rs 20,000 in India 2026 Sep 03, 2026 ## Popular ReadsView More [...] They’re essential",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-10814fd8ff7144f2",
+          "url": "https://www.slideshare.net/slideshow/set-router-wi-fi-wireless-access-point-repeater-configuration-pptx/276588867",
+          "title": "Set Router/Wi-fi/Wireless Access Point/ Repeater Configuration.pptx",
+          "excerpt": "•Click the save button and the browser will ask you to log in again with the new User Name and Password this time. Connect network to a router 1. Simply connect a UTP cable from one of the ports of your switch to one of the LAN ports to your router. 2. Configure your Ethernet network to Obtain IP address. The router will automatically assign an IP address for your computer. [...] OhhPro: Enhancing Community Engagement and Connectivity in Residential Societies OpenMetadata & Collate 2.0 Showcase Aug 2026 From APIs to Agents: Rethinking Testing for Dynamic Systems The Dawn of Personalized Pharma: 3D Printed Medicines Your npm dependencies can see everything | How we lock them down with SES + L... Comprehensive Guide to Buying Old Gmail Accounts Safely in 2026 Salesforce Headless 360: Revolut",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:arsite.com.mx",
+      "countryCode": "MX",
+      "companyName": "Arsite Integradores",
+      "domain": "arsite.com.mx",
+      "officialWebsiteUrl": "https://arsite.com.mx",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "VAR",
+        "SI",
+        "Installer",
+        "Reseller"
+      ],
+      "totalScore": 70,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-07394a59ae9f7605",
+          "url": "https://arsite.com.mx",
+          "title": "Arsite Integradores",
+          "excerpt": "## Bienvenidos Somos una compañía de telecomunicaciones, informática y seguridad de la información, certificada por nuestros partners. Nuestro mercado incluye el sector privado, el gobierno y las instituciones educativas, Atendiendo a las crecientes necesidades de productos y servicios de telecomunicaciones que están en demanda en estos sectores. ## Ar-Site Security Day 2022 ## Gracias por su asistencia [...] Obtenga información integral de IA, seguridad y capacidades de gestión unificada para sus conexiones remotas con una solución completamente integrada en la red corporativa con Aruba Central. Leer más previous arrow next arrow ## Bienvenidos [...] Leer Más []( ##### Infoblox 3.0 Une La DDI Híbrida Y La Seguridad Para Impulsar Estrategias Centradas En La Nube​ Leer Más []( ##### Silver ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-e745f454ac15a1fb",
+          "url": "https://arsite.com.mx/contacto",
+          "title": "Contacto - Arsite Integradores",
+          "excerpt": "contacto Contáctanos Información Teléfonos +52 55 6390 33 99 +52 55 8662 55 80 +52 55 8662 55 81 +52 55 8662 55 82 +52 993 3 65 78 04 Localización Oficina Villahermosa, Tabasco Calle Músicos 714 Colonia Gaviotas Sur C.P. 86090. Oficina Ciudad de México Calle Unión 161, Escandón Sección 2, CP 11800, Alcaldía Miguel Hidalgo Email contacto@arsite.com.mx ventas@arsite.com.mx Horario de oficina Lunes – Viernes: 9:00 AM a 6:00 PM Almacenamiento Copyright © 2026 Arsite Integradores Términos y Condiciones",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-8de71d7f1dd471c1",
+          "url": "https://arsite.com.mx/nosotros",
+          "title": "Nosotros - Arsite Integradores",
+          "excerpt": "nosotros Años de Experiencia Los alcances de nuestros productos y servicios incluyen redes de datos inalámbricas de banda ancha WAN y LAN, WiMAX, fibra óptica, voz IP, CCTV circuito cerrado de TV análogo y digital, virtualización, almacenamiento, switches de alto desempeño, seguridad, recuperación de desastres, aceleración WAN, servidores. ofreciendo productos con tecnología de vanguardia que cuenten con la garantía y servicio con un valor agregado al mejor precio del mercado. Certificaciones Misión Ser una empresa líder de integración de tecnologías de información y Telecomunicaciones en México, ofreciendo servicios de consultoría de alto nivel, distinguiéndonos por traducir la tecnología en rentabilidad para el negocio y que estas representen una oferta competitiva en precio y calidad, e",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:redco.com.mx",
+      "countryCode": "MX",
+      "companyName": "REDCO (Redes y Comunicaciones)",
+      "domain": "redco.com.mx",
+      "officialWebsiteUrl": "https://www.redco.com.mx",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI",
+        "Installer"
+      ],
+      "totalScore": 51,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-41528ed5763864e4",
+          "url": "https://www.redco.com.mx",
+          "title": "REDCO – Redes y Comunicaciones",
+          "excerpt": "Somos una empresa mexicana dedicada a la integración de “inter-redes“ corporativas ofreciendo servicios de tecnología para la industria y negocios. Menú.",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-31b9e1ba36b95328",
+          "url": "https://www.redco.com.mx/contacto",
+          "title": "Contacto - Redes y Comunicaciones - REDCO",
+          "excerpt": "Somos una empresa mexicana dedicada a la integración de “inter-redes“ corporativas ofreciendo servicios de tecnología para la industria y negocios.",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-1ae703a482376978",
+          "url": "https://www.redco.com.mx/nosotros",
+          "title": "Nosotros - Redes y Comunicaciones - REDCO",
+          "excerpt": "Redes y Comunicaciones Nosotros REDCO Redes y Comunicaciones QUIÉNES SOMOS Somos una organización 100% mexicana dedicada a la integración de “inter-redes“ corporativas. Necesidad que se deriva de hacer compatibles diversos tipos de redes y plataformas de equipo de cómputo, telefonía y teleproceso para que los usuarios puedan compartir dichos recursos en forma “transparente“. Nuestro propósito fundamental es la integración de estas redes utilizando tecnologías de punta y ofreciendo un amplio portafolio de servicios especializados. Lo que nos distingue de otras empresas convencionales de comunicaciones en México es la capacidad de integrar en red dispositivos incompatibles entre sí y el servicio personalizado que puede brindar a sus clientes. image image Tecnología y experiencia que nos perm",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:rvtel.com.mx",
+      "countryCode": "MX",
+      "companyName": "Red Virtual México",
+      "domain": "rvtel.com.mx",
+      "officialWebsiteUrl": "https://www.rvtel.com.mx",
+      "primaryRole": "Hybrid",
+      "supportedRoles": [
+        "SI",
+        "MSP",
+        "VAR"
+      ],
+      "totalScore": 68,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-5ebb52fb62712bb8",
+          "url": "https://www.rvtel.com.mx",
+          "title": "Telecomunicaciones - Red Virtual México",
+          "excerpt": "Logo - Red Virtual La RedVirtual deMexico. Con más de 35 años de trayectoria en el mercado, nuestra empresa se ha consolidado como referente en el sector de las telecomunicaciones. LOGO LOGO LOGO LOGO LOGO LOGO LOGO LOGO LOGO LOGO LOGO LOGO LOGO LOGO LOGO Lo mejor de México Descubre cómo nuestra empresa se destaca al ofrecer soluciones a medida, adaptadas a las necesidades específicas de nuestros clientes. Seguridad En el vertiginoso mundo digital actual, ofrecemos soluciones de ciberseguridad personalizadas para brindarte una defensa robusta y adaptada a tus necesidades específicas. Logo - Fortinet Ciberseguridad, firewall, protección de redes y seguridad en la nube. Logo - CheckPoint Soluciones innovadoras y robustas para proteger activos digitales. Logo - Hikvision Videovigilancia y seg",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-b73f4f2062ad7a32",
+          "url": "https://www.rvtel.com.mx/contacto",
+          "title": "Red Virtual México - Telecomunicaciones",
+          "excerpt": "Logo - Red Virtual Let's build something beautiful Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum fuga temporibus dolores sed animi vero adipisci neque, tempora totam voluptatem ipsum sequi eaque nemo! Aliquam tempore laudantium soluta enim blanditiis. Envianos un mensaje Donde Encontrarnos Av. Insurgentes Sur 1685, Guadalupe Inn, Álvaro Obregón, 01020 Ciudad de México, CDMX Logo - Red Virtual Respuesta rápida y eficiente a las necesidades del mercado, proveyendo soluciones a la medida, para cubrir los requerimientos del cliente con profesionalismo en servicio y soporte. Menu Contacto Lunes a Viernes de 9:00 hrs. a 19:00 hrs. Copyright © 2024 RED VIRTUAL EN TELECOMUNICACIONES S. de R.L. de C.V.",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:valuebooster.com.mx",
+      "countryCode": "MX",
+      "companyName": "Value Booster",
+      "domain": "valuebooster.com.mx",
+      "officialWebsiteUrl": "https://valuebooster.com.mx",
+      "primaryRole": "Unresolved",
+      "supportedRoles": [],
+      "totalScore": 0,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": false,
+      "operatesInTargetMarket": false,
+      "evidence": [
+        {
+          "id": "evidence-5f5ba3d341634e1f",
+          "url": "https://setel.com.mx/producto/acb-isp-access-point-router-wi-fi-aircube-mimo-2x2-802-11n-2-4-ghz-hasta-300-mbps",
+          "title": "ACB-ISP Access Point/Router Wi-Fi airCube, MIMO 2×2, 802.11n, 2.4 GHz (hasta 300 Mbps) – Setel",
+          "excerpt": "Esta es una tienda de demostración con fines de prueba; no se tramitarán pedidos. Descartar Skip to navigation Skip to content Bienvenido a nuestro Catalogó Tienda Catalogó Mi cuenta SETEL SETEL Access point Audio / Video Conferencia Cámaras Controles de Acceso y Asistencia Conmutadores Cableado Estructurado Grandstream Grandstream Smart Home Panasonic Smart Home Yealink Ventas +52 81 1476 1125 Email: contacto@setel.com.mx [...] 802.11n, MIMO 2×2. Hasta 300 Mbps en 2.4 GHz, con antena integrada de 4 dBi. Características Físicas y Eléctricas: Alimentación: PoE 24 V, 1 A de entrada en puerto LAN1 o Adaptador Micro USB 2 A (No incluidos). Dimensiones: 87.80 x 89.50 x 89.25 mm. Peso: 215 g. Temperatura de Operación: -10 a 50 °C. Garantía: 1 Año. SKU: ACB-ISP Categorías: Access point, Ubiquiti ",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-4dd9642199496653",
+          "url": "https://itman.ae/2026/01/18/router-vs-switch-vs-access-point",
+          "title": "Router vs Switch vs Access Point: What You Actually Need?",
+          "excerpt": "Choose a router because you need internet connectivity, firewalling, and network control. Add a switch when you need more wired devices, more ports, and stable internal connections. Add access points when you need strong, reliable Wi-Fi coverage in multiple areas. If you want a modern, reliable setup, especially for a business or a large villa, the best long-term solution is usually: Router + Switch + Access Points. ### Network Installation and Setup Services in Dubai [...] A router is the device that connects your local network (your home or office devices) to the internet. It’s basically the “traffic manager” between your internal network and the outside world. If you have an ISP connection (Etisalat, du, or any other provider), the router is usually the first device in your network that",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:magnet.com.mx",
+      "countryCode": "MX",
+      "companyName": "MAGNET Telecommunications",
+      "domain": "magnet.com.mx",
+      "officialWebsiteUrl": "https://magnet.com.mx",
+      "primaryRole": "Unresolved",
+      "supportedRoles": [],
+      "totalScore": 0,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": false,
+      "operatesInTargetMarket": false,
+      "evidence": [
+        {
+          "id": "evidence-4cda8d977e069570",
+          "url": "https://www.router-switch.com",
+          "title": "Router‑Switch.com: One‑Stop Global IT Distributor for ...",
+          "excerpt": "D-Link Core Switches Series Access Switches Access Switches Cisco Firewalls Cisco Firewalls FortiGate Firewall C9115AXI-E Cisco C9120AXI-E HPE Aruba Instant On Indoor Access Points HPE Aruba 300 Series Access Points AirEngine 5760-51 Huawei AirEngine 6760-X1 Fortinet FortiAP Wireless Access Point Ruckus Indoor AP. Ruckus Outdoor AP. D-Link Panel Access Points. D-Link Ceiling Access Points. UBNT Ceiling Access Points. UBNT Wireless Controllers. H3C Access Points. Indoor WiFi 6 Access Points [...] Indoor WiFi 6 Access Points Nvidia RTX Pro 6000 Blackwell Workstation AI Servers IP Phones IP Phones IP Phones IP Phones Modules & Cards Modules & Cards HPE DL388 Gen10. HPE DL360 Gen10. Dell R740. Dell R640. Huawei RH2288H V3 Rack Server. Huawei 1288H V5, Intel 4110. Lenovo SR530, Intel 3204, 8 x ",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-b01eff1f85de2bf6",
+          "url": "https://www.newamerica.org/insights/cost-connectivity-2020/focus-on-the-fees",
+          "title": "Focus on the Fees - New America",
+          "excerpt": "19. We calculate the average early contract termination fee using two data points for the Magnet plan advertised in Dublin. Magnet charges between $124.62 and $249.25 for early contract termination. We include one data point for the minimum fee and another for the maximum, coming to an average contract termination fee of $186.94 for Magnet. [...] ISPs may sometimes impose additional equipment-related costs. For instance, KCCoyote charges an additional $25 wireless router set up fee if it is done at the time of installation. Our analysis does not account for these additional fees. [...] A modem connects a home network to the internet by translating the traffic into a format that can be sent over the ISPs infrastructure.63 A router directs traffic from the internet to devices on the home net",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    }
+  ],
+  "aliasToCompanyKey": {
+    "MX:domain:redlinktelecomunicaciones.com": "MX:domain:redlinktelecomunicaciones.com",
+    "MX:name:redlinktelecomunicaciones": "MX:domain:redlinktelecomunicaciones.com",
+    "MX:domain:clanware.com.mx": "MX:domain:clanware.com.mx",
+    "MX:name:clanware": "MX:domain:clanware.com.mx",
+    "MX:domain:tred.mx": "MX:domain:tred.mx",
+    "MX:name:tredmexico": "MX:domain:tred.mx",
+    "MX:domain:arsite.com.mx": "MX:domain:arsite.com.mx",
+    "MX:name:arsiteintegradores": "MX:domain:arsite.com.mx",
+    "MX:domain:redco.com.mx": "MX:domain:redco.com.mx",
+    "MX:name:redcoredesycomunicaciones": "MX:domain:redco.com.mx",
+    "MX:domain:rvtel.com.mx": "MX:domain:rvtel.com.mx",
+    "MX:name:redvirtualmexico": "MX:domain:rvtel.com.mx",
+    "MX:domain:valuebooster.com.mx": "MX:domain:valuebooster.com.mx",
+    "MX:name:valuebooster": "MX:domain:valuebooster.com.mx",
+    "MX:domain:magnet.com.mx": "MX:domain:magnet.com.mx",
+    "MX:name:magnettelecommunications": "MX:domain:magnet.com.mx"
+  },
+  "costEvents": [
+    {
+      "eventId": "MX-resale:evaluation:fresh-evidence",
+      "cellId": "MX-resale",
+      "stage": "evaluation-control-fresh-evidence",
+      "provider": "tavily",
+      "startedAt": "2026-09-06T20:14:13.583Z",
+      "completedAt": "2026-09-06T20:14:31.374Z",
+      "latencyMs": 59642,
+      "attempts": 15,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 12
+      },
+      "volume": {
+        "inputItems": 9,
+        "rawOutputItems": 18,
+        "validOutputItems": 18,
+        "downstreamUsedItems": 18,
+        "discardedReasonCounts": {
+          "noFreshEvidence": 3
+        }
+      },
+      "notes": [
+        "Gemini-unique final candidates only",
+        "historical evidence reads and writes disabled"
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.096,
+      "budgetCostUsd": 0.096,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-resale:evaluation:correction-search",
+      "cellId": "MX-resale",
+      "stage": "evaluation-control-correction-search",
+      "provider": "tavily",
+      "startedAt": "2026-09-06T20:14:31.388Z",
+      "completedAt": "2026-09-06T20:15:15.959Z",
+      "latencyMs": 26881,
+      "attempts": 9,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 9
+      },
+      "volume": {
+        "inputItems": 9,
+        "rawOutputItems": 9,
+        "validOutputItems": 9,
+        "downstreamUsedItems": 9,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.07200000000000001,
+      "budgetCostUsd": 0.07200000000000001,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-resale:evaluation-control-correction:1",
+      "cellId": "MX-resale",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:14:31.388Z",
+      "completedAt": "2026-09-06T20:15:15.959Z",
+      "latencyMs": 18768,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 2791,
+        "outputTokens": 1897,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 9,
+        "rawOutputItems": 9,
+        "validOutputItems": 6,
+        "downstreamUsedItems": 9,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.0028644750000000004,
+      "budgetCostUsd": 0.0028644750000000004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "MX-resale:evaluation-control-correction:2",
+      "cellId": "MX-resale",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:14:31.388Z",
+      "completedAt": "2026-09-06T20:15:15.959Z",
+      "latencyMs": 20069,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 3589,
+        "outputTokens": 1866,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 9,
+        "rawOutputItems": 9,
+        "validOutputItems": 6,
+        "downstreamUsedItems": 9,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.0031846350000000003,
+      "budgetCostUsd": 0.0031846350000000003,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "MX-resale:evaluation-control-correction:3",
+      "cellId": "MX-resale",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:14:31.388Z",
+      "completedAt": "2026-09-06T20:15:15.959Z",
+      "latencyMs": 24721,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 5453,
+        "outputTokens": 2208,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 9,
+        "rawOutputItems": 9,
+        "validOutputItems": 6,
+        "downstreamUsedItems": 9,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.004293014999999999,
+      "budgetCostUsd": 0.004293014999999999,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "MX-resale:evaluation-control-correction:4",
+      "cellId": "MX-resale",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:14:31.388Z",
+      "completedAt": "2026-09-06T20:15:15.959Z",
+      "latencyMs": 25129,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 3425,
+        "outputTokens": 2115,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 9,
+        "rawOutputItems": 9,
+        "validOutputItems": 6,
+        "downstreamUsedItems": 9,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.003329925,
+      "budgetCostUsd": 0.003329925,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "MX-resale:evaluation-control-correction:5",
+      "cellId": "MX-resale",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:14:31.388Z",
+      "completedAt": "2026-09-06T20:15:15.959Z",
+      "latencyMs": 34256,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 10013,
+        "outputTokens": 3493,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 9,
+        "rawOutputItems": 9,
+        "validOutputItems": 6,
+        "downstreamUsedItems": 9,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.007394565,
+      "budgetCostUsd": 0.007394565,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "MX-resale:evaluation-control-score-only:1",
+      "cellId": "MX-resale",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:15:15.980Z",
+      "completedAt": "2026-09-06T20:16:13.242Z",
+      "latencyMs": 17583,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 4982,
+        "outputTokens": 2073,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 9,
+        "rawOutputItems": 9,
+        "validOutputItems": 8,
+        "downstreamUsedItems": 8,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00397068,
+      "budgetCostUsd": 0.00397068,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-resale:evaluation-control-score-only:2",
+      "cellId": "MX-resale",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:15:15.980Z",
+      "completedAt": "2026-09-06T20:16:13.242Z",
+      "latencyMs": 22377,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 6893,
+        "outputTokens": 1892,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 9,
+        "rawOutputItems": 9,
+        "validOutputItems": 8,
+        "downstreamUsedItems": 8,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.004644495,
+      "budgetCostUsd": 0.004644495,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-resale:evaluation-control-score-only:3",
+      "cellId": "MX-resale",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:15:15.980Z",
+      "completedAt": "2026-09-06T20:16:13.242Z",
+      "latencyMs": 43200,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 9878,
+        "outputTokens": 3990,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 9,
+        "rawOutputItems": 9,
+        "validOutputItems": 8,
+        "downstreamUsedItems": 8,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00776823,
+      "budgetCostUsd": 0.00776823,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-resale:evaluation-control-score-only:4",
+      "cellId": "MX-resale",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:15:15.980Z",
+      "completedAt": "2026-09-06T20:16:13.242Z",
+      "latencyMs": 57222,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 10198,
+        "outputTokens": 5209,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 9,
+        "rawOutputItems": 9,
+        "validOutputItems": 8,
+        "downstreamUsedItems": 8,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.008967959999999999,
+      "budgetCostUsd": 0.008967959999999999,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    }
+  ],
+  "warnings": [
+    "No official-domain evidence was extracted for tred.mx.",
+    "No official-domain evidence was extracted for valuebooster.com.mx.",
+    "No official-domain evidence was extracted for magnet.com.mx.",
+    "plannet.mx: Routine correction failed: Primary model deepseek-v4-pro and approved equivalent fallbacks failed. Escalation failed: Primary model deepseek-v4-pro and approved equivalent fallbacks failed.",
+    "redlinktelecomunicaciones.com: Independent evidence for Redlink entities in the Philippines and Myanmar refers to different companies and should not be used for this candidate.",
+    "redlinktelecomunicaciones.com: The submitted Dealer role is not directly supported by the supplied evidence and remains unknown.",
+    "redlinktelecomunicaciones.com: Deterministic role hints were not auto-added: Distributor, ISP.",
+    "clanware.com.mx: Submitted roles Reseller and Dealer are not supported by supplied evidence.",
+    "clanware.com.mx: Several supplied evidence sources are unrelated to Clanware and were excluded.",
+    "clanware.com.mx: Deterministic role hints were not auto-added: Distributor, Reseller, ISP.",
+    "tred.mx: All supplied evidence is unrelated to the candidate.",
+    "tred.mx: The submitted official website could not be verified.",
+    "tred.mx: The submitted roles could not be verified.",
+    "tred.mx: Deterministic role hints were not auto-added: Installer.",
+    "arsite.com.mx: Independent public evidence sources did not specifically reference Arsite Integradores; all material findings rely on official website evidence.",
+    "arsite.com.mx: The submitted roles included Dealer, but no evidence specifically supports a Dealer role distinct from Reseller/VAR.",
+    "redco.com.mx: Submitted roles (Reseller, VAR, Dealer) are not supported by evidence and were corrected to SI/Installer.",
+    "redco.com.mx: Independent public evidence supplied for this candidate is unrelated to REDCO.",
+    "rvtel.com.mx: Submitted roles (Reseller, VAR, Dealer) were partially corrected; SI and MSP roles were added based on evidence.",
+    "rvtel.com.mx: Independent public evidence supplied for this candidate is unrelated to Red Virtual México.",
+    "rvtel.com.mx: Deterministic role hints were not auto-added: Reseller, Installer, ISP.",
+    "valuebooster.com.mx: Escalation was skipped because the configured routine and escalation models are identical.",
+    "valuebooster.com.mx: No evidence about Value Booster was supplied; all evidence is unrelated.",
+    "valuebooster.com.mx: Official website URL could not be verified from supplied evidence.",
+    "valuebooster.com.mx: Deterministic role hints were not auto-added: Installer.",
+    "magnet.com.mx: Escalation was skipped because the configured routine and escalation models are identical.",
+    "magnet.com.mx: No evidence about MAGNET Telecommunications was supplied; all evidence is unrelated.",
+    "magnet.com.mx: Official website URL could not be verified from supplied evidence.",
+    "magnet.com.mx: Deterministic role hints were not auto-added: Distributor, Installer, MSP."
+  ]
+}

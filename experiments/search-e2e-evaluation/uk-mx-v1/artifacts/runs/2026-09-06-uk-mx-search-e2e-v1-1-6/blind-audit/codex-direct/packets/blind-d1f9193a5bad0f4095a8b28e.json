@@ -1,0 +1,44 @@
+{
+  "packetId": "blind-d1f9193a5bad0f4095a8b28e",
+  "targetMarket": {
+    "countryCode": "MX",
+    "countryName": "Mexico"
+  },
+  "requestedCategory": "distribution",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "Portenntum de México",
+    "domain": "portenntum.com",
+    "officialWebsiteUrl": "https://www.portenntum.com/"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-a4ba230b620bce3b",
+      "sourceType": "official-website",
+      "url": "https://www.portenntum.com/FinancialServices",
+      "title": "Servicios Financieros - Portenntum de México",
+      "excerpt": "Somos Líder Mayorista en el Mercado de Telecomunicaciones facebook-portenntum facebook-portenntum facebook-portenntum Portenntum phone Contacto+52 (81) 8625-5300 Impulsa tus proyectos con financiamiento para tus clientes. Contactamos a tus clienyes con las mejores soluciones financieras para que puedan hacer realidad sus proyectos, mientras tú recibes el pago de forma rápida y segura. ¿Por qué ofrecer financiamiento a tus clientes? Pago más rápido Recibe el pago total de tus proyectos en menos tiempo. Sin riesgo de impago La institución financiera se encarga del cobro al usuario final. Más oportunidades Ofrece alternativas accesibles y cierra más proyectos. Esquemas flexibles Soluciones adaptadas a las necesidades de cada cliente y proyecto. Alianzas confiables Trabajamos con instituciones"
+    },
+    {
+      "evidenceId": "evidence-0452601cb5dd1cfc",
+      "sourceType": "official-website",
+      "url": "https://www.portenntum.com/SobrePortenntum",
+      "title": "Sobre Nosotros - Portenntum de México",
+      "excerpt": "Somos Líder Mayorista en el Mercado de Telecomunicaciones facebook-portenntum facebook-portenntum facebook-portenntum Portenntum phone Contacto+52 (81) 8625-5300 Sobre Nosotros INSPIRING YOUR COMMUNICATION BUSINESS Somos una empresa mexicana con más de 33 años de experiencia en el mercado mayorista de telecomunicaciones, destacándonos como líderes en el sector, motor que nos impulsa a seguir innovando manteniendo una postura abierta al cambio. Para continuar apoyando el crecimiento de nuestros socios, hemos ampliado nuestra gama de marcas y soluciones, adaptándonos a sus diversas necesidades. Telecomunicaciones Seguridad y Control de Acceso Conectividad e Infraestructura de Red Cloud e Infraestructura de Red Seguridad de Datos Nuestra Trayectoria Iniciamos como J&R Importaciones, nombre qu"
+    },
+    {
+      "evidenceId": "evidence-8b681ff13ed5699f",
+      "sourceType": "official-website",
+      "url": "https://www.portenntum.com/Blog/PostDetail/1",
+      "title": "Poly y HP son más fuertes juntos - Portenntum de México",
+      "excerpt": "Somos Líder Mayorista en el Mercado de Telecomunicaciones facebook-portenntum facebook-portenntum facebook-portenntum Portenntum phone Contacto+52 (81) 8625-5300 Post Poly y HP son más fuertes juntos El día de hoy marca un hito histórico con la unión de dos empresas icónicas que han desempeñado un papel pionero en el desarrollo y la evolución de la informática moderna y la tecnología de colaboración. Desde historias de orígenes humildes con fundadores que construyen prototipos de productos en garajes de Silicon Valley hasta impulsar negocios para Fortune 500, HP y Poly son empresas construidas sobre valores sólidos, talento increíble y cuyas culturas están arraigadas en la innovación y un impulso incesante para poner a los clientes en primer lugar. Hoy, somos una empresa. La adquisición de"
+    },
+    {
+      "evidenceId": "evidence-9bb95fcecb2a31e0",
+      "sourceType": "official-website",
+      "url": "https://www.portenntum.com/Products?partNum=JL675A",
+      "title": "Switch HPE Aruba Networking 6100 48G Clase 4 PoE 4 SFP+ 370W...",
+      "excerpt": "Somos Líder Mayorista en el Mercado de Telecomunicaciones facebook-portenntum facebook-portenntum facebook-portenntum Portenntum phone Contacto+52 (81) 8625-5300 product product product product product product-thumbnail product-thumbnail product-thumbnail product-thumbnail product-thumbnail SKU: JL675A MARCA: ARUBA Switch HPE Aruba Networking 6100 48G Clase 4 PoE 4 SFP+ 370W JL675A Esta serie de switches de capa 2 simplifica la implementación, con gran capacidad de PoE para loT, enlaces ascendes rápidos de 10 GbE y características de seguridad sólidas, como ACL y enrutamiento estático, que ayudan a proteger la red. Proporcionan rendimiento, la seguridad y la simplicidad que necesitas, lo que los have ideales para redes sucursales, empresas del mercado medio y pymes. Admite ACL, calidad de "
+    }
+  ]
+}

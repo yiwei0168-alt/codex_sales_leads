@@ -1,0 +1,44 @@
+{
+  "packetId": "blind-f6740ed923441e446320bf41",
+  "targetMarket": {
+    "countryCode": "MX",
+    "countryName": "Mexico"
+  },
+  "requestedCategory": "distribution",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "Ingram Micro México",
+    "domain": "mx.ingrammicro.com",
+    "officialWebsiteUrl": "https://mx.ingrammicro.com"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-d79474c0f04cd380",
+      "sourceType": "official-website",
+      "url": "https://mx.ingrammicro.com/x4v/app",
+      "title": "Xvantage - Ingram Micro",
+      "excerpt": "You need to enable JavaScript to run this app."
+    },
+    {
+      "evidenceId": "evidence-eb3dadbfe1344ec9",
+      "sourceType": "independent-public",
+      "url": "https://careers.ingrammicro.com/en/locations/latam/mexico",
+      "title": "Let's shape tomorrow | Ingram Micro",
+      "excerpt": "Ingram Micro is a global technology distributor and solutions provider. In the United States, we support partners and customers through technology solutions, services, and logistics capabilities across the country. With our corporate offices located in Mexico City and teams across multiple locations, we combine scale, expertise, and local impact to support innovation and long‑term growth. What it's like to work here ## What it’s like to work at Ingram Micro Mexico [...] Su trayectoria en Ingram Micro Brasil inició en septiembre del 2018. Ingresó como Marketing Manager, fue promovido a Sr. Manager Marketing en el 2020, y desde el año 2023 ocupaba la posición de Associate Director, Marketing , en 2025 fue promovido a la posición de LATAM Marketing Director con el objetivo de transformar la e"
+    },
+    {
+      "evidenceId": "evidence-f3a1c6a792716ee9",
+      "sourceType": "independent-public",
+      "url": "https://www.intel.com/content/www/us/en/partner/showcase/storefront/a5s3b00000051tteaq/ingram-micro-mexico.html",
+      "title": "Ingram Micro Mexico",
+      "excerpt": "Founded in 1983, Company has more than 5,000 employees worldwide and a global reach with teams in seven geographic regions. Mexico, 53398 Mexico Authorized for"
+    },
+    {
+      "evidenceId": "evidence-6663e769549fc004",
+      "sourceType": "independent-public",
+      "url": "https://www.ingrammicro.com",
+      "title": "Ingram Micro - The business behind the world's brands",
+      "excerpt": "Xvantage Uncover business insights Automate your business Optimize your offerings Stay ahead of competition ###### Partner with us ## Be part of the bigger picture Partner with Ingram Micro to learn how you can create a better experience for your customers. Partner with us Become a customer Become a vendor ###### Ingram Micro Sustainable Impact ## Measuring what matters ESG Serving up IT success Ransomware recovery [...] The business behind the world's brands Microsoft AWS Cisco Nvidia Apple HP Inc Palo Alto Networks Fortinet ###### Why Ingram Micro ## You need it? We’ve got it. [...] Xvantage is saving us time and helping us streamline the way we do our work. — Anna Wesley International Partner Alliance Manager, Distribution at SHI Testimonials Ingram Micro ## How far can you grow? Join m"
+    }
+  ]
+}

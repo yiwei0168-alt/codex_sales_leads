@@ -1,0 +1,2113 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+  "cellId": "GB-resale",
+  "inputCount": 23,
+  "records": [
+    {
+      "companyKey": "GB:domain:4gon.co.uk",
+      "countryCode": "GB",
+      "companyName": "4Gon Solutions",
+      "domain": "4gon.co.uk",
+      "officialWebsiteUrl": "https://www.4gon.co.uk",
+      "primaryRole": "Reseller",
+      "supportedRoles": [
+        "Reseller",
+        "VAR",
+        "Dealer"
+      ],
+      "totalScore": 48,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-01367e6c415ea292",
+          "url": "https://www.4gon.co.uk/documents/airspan_wimax_brochure.pdf",
+          "title": "[PDF] WiMAX Solutions - 4Gon",
+          "excerpt": "Industry’s most complete WiMAX product family in the widest selection of frequency bands WiMAX Solutions 4Gon www.4Gon.co.uk info@4gon.co.uk Tel: +44 (0)1245 808295 Fax: +44 (0)1245 808299 Airspan’s WiMAX Deployments Around the World 4Gon www.4Gon.co.uk info@4gon.co.uk Tel: +44 (0)1245 808295 Fax: +44 (0)1245 808299 Airspan - The Recognized Leader in WiMAX Airspan is a worldwide leader in broadband wireless with over 500 customers in more than 100 countries. As a founding member of the WiMAX Forum™, Airspan has led the way in WiMAX, being among the first wave of companies to achieve certification for its base station and end user premises equipment. Airspan has a wide variety of Fixed and Mobile WiMAX solutions. Incorporating advance technologies, MicroMAXd addresses the basic fixed needs,",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-c2af0468301f570b",
+          "url": "https://www.4gon.co.uk/documents/watchguard_xcs_user_guide.pdf",
+          "title": "[PDF] WatchGuard XCS 9.1 Update 2 User Guide - 4Gon Solutions",
+          "excerpt": "WatchGuard XCS 9.1 Update 2 User Guide WatchGuard XCS Extensible Content Security 9.1 Update 2 User Guide WatchGuardXCS 170,370,570,770,770R,970,1170 4Gon www.4Gon.co.uk info@4gon.co.uk Tel: +44 (0)1245 808295 Fax: +44 (0)1245 808299 About this User Guide The WatchGuard XCS User Guide is updated with each major product release. For minor product releases, only the WatchGuard XCS Help system is updated. Information in this guide is subject to change without notice. Companies, names, and data used in examples herein are fictitious unless otherwise noted. No part of this guide may be reproduced or transmitted in any form or by any means, electronic or mechanical, for any purpose, without the express written permission of WatchGuard Technologies, Inc. Guide revised: 2/7/2011 Copyright, Tradema",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-16979d57e8313931",
+          "url": "https://www.4gon.co.uk/documents/option_globesurfer_iii_reference_manual.pdf",
+          "title": "[PDF] GlobeSurfer® III+ - 4Gon",
+          "excerpt": "GlobeSurfer® III+ Technical Reference Manual Copyright © 2011, Option. All information about Option GlobeSurfer® III+ may change without prior notice. Information published in this reference manual is accurate at the time of publication. Although all security precautions were taken during the creation of this reference manual, Option is not liable toward persons or organizations for losses or damages caused either directly or indirectly due to instructions contained in this reference manual. All brands and registered brands are property of their respective owners. Services may be changed, added, or deleted. For the newest firmware version of your GlobeSurfer® III+, visit www.option.com Questions and answers regarding the GlobeSurfer® III+ can be found on our Support website: Technical ques",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-5ad32569a9faeba9",
+          "url": "https://www.4gon.co.uk/documents/Cadmus-Distribution-Group-Limited-SIM-Terms.pdf",
+          "title": "[PDF] SIM Services General Terms and Conditions - 4Gon Solutions",
+          "excerpt": "Cadmus Distribution Group Limited t/a Cadmus Products, VoIPon Solutions & 4Gon Solutions Unit 5 Suffolk Dr, Chelmsford, CM2 6UN Tel: +44(0)330 088 0595 Email: info@cdgl.co.uk - Web: www.cdgl.co.uk SIM Services General Terms and Conditions CDGL (Cadmus Distribution Group Ltd.) is a provider of managed communications services including leased lines, telephone lines, mobile services, local national and international telecommunications services, hosted telephone services, PCI compliance, hosted desktop products and broadband. By ordering and using the services you agree to the following Terms and Conditions and that they set out the basis upon which CDGL will provide the services to you the Customer. Some clauses in these General Terms and Conditions may conflict with similar clauses in terms ",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:softcat.com",
+      "countryCode": "GB",
+      "companyName": "Softcat plc",
+      "domain": "softcat.com",
+      "officialWebsiteUrl": "https://www.softcat.com",
+      "primaryRole": "Hybrid",
+      "supportedRoles": [
+        "Reseller",
+        "VAR",
+        "SI",
+        "MSP"
+      ],
+      "totalScore": 85,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-8ceac656b176beba",
+          "url": "https://www.softcat.com/news/softcat-wins-bid-to-provide-uk-public-sector-with-enhanced-network-services",
+          "title": "Softcat wins bid to provide UK public sector with enhanced network services",
+          "excerpt": "Login to eCAT Customer Support uk UK ie IE de DE ca CA ca-fr CA-FR Home Contact Sales Article Softcat wins bid to provide UK public sector with enhanced network services Softcat wins UK public sector enhanced network services bid Networking & security Softcat news The Softcat News Team Twitter Linked In Leading IT infrastructure provider Softcat has successfully landed a place as a supplier for the Network Services 2 framework (RM3808). Created by the Crown Commercial Service (CCS) on behalf of the UK public sector, the framework will deliver networking, local area connectivity, data access, conferencing, telephony and unified communications services for all public sector organisations. Softcat has been awarded places on the following Lots: Lot 1: Data Access Services Lot 2: Local Area Con",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-71922f421ee5e3e4",
+          "url": "https://www.softcat.com/solutions/cyber-security/secure-your-network",
+          "title": "Secure your network :: Softcat",
+          "excerpt": "Login to eCAT Customer Support uk UK ie IE de DE ca CA ca-fr CA-FR Home Contact Sales Secure your network Assisting in securing your networks by evaluating, architecting, and implementing security measures across network edge, connectivity, and cloud networking. Whilst also ensuring compliance with industry regulations to help you stay connected How can Softcat help? With digital transformation also comes an evolving threat landscape and increasing complexity of network security. As technology continues redefining network boundaries, safeguarding the network edge, maintaining secure traffic in your internal network and instilling best practice management of your cloud networking, have become crucial to ensure robust and resilient networks in an interconnected world. We can help you secure ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-27281953dfedb442",
+          "url": "https://www.softcat.com/careers/locations",
+          "title": "Softcat Office Locations | Careers | Softcat",
+          "excerpt": "Login to eCAT Customer Support uk UK ie IE de DE ca CA ca-fr CA-FR Home Contact Sales We are aware of a recruitment scam impersonating Softcat. Softcat will never send unsolicited messages about jobs through SMS or social networks, always verify communications with us if you are unsure. Offices in the UK, Ireland and the USA Softcat is a major UK success story in technology solutions. We’re growing fast, with ambitious plans for the future. So, if you share our drive and ambition, get ready to achieve more from your career, and take a look at where you could be working soon: ### Marlow (HQ) Explore ### London Explore ### Manchester Explore ### Bristol Explore ### Birmingham Explore ### Dublin Explore ### Leeds Explore ### South Coast Explore ### Glasgow Explore ### Newcastle Explore ### Ar",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-051379813a2b22e9",
+          "url": "https://www.softcat.com/solutions/cyber-security",
+          "title": "Cyber Security Solutions | Softcat",
+          "excerpt": "Login to eCAT Customer Support uk UK ie IE de DE ca CA ca-fr CA-FR Home Contact Sales Cyber security Providing a comprehensive suite of cyber security solutions and services designed to protect your organisation's people, network, platforms and data. We offer expert consultancy and a customer-led approach to ensure you stay protected. Thrive securely When looking at cyber security, we think of the four main areas you want to protect: your people, network, platforms and data. With our expertise, we can empower your organisation to thrive securely in today's digital landscape. Our solutions are designed to empower your people, fortify network resilience, optimise platform operations, and ensure the robust security of your valuable data. ### Secure your people Protecting your greatest asset -",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-671384bec4c3b013",
+          "url": "https://www.linkedin.com/company/softcat",
+          "title": "Softcat",
+          "excerpt": "Softcat is a leading provider of IT infrastructure to corporate and public sectors. Over the last 30 years, we’ve built a vibrantly successful, industry-leading business with an unwavering dedication to transformative solutions and customer excellence. We’re certified by Great Place to Work in the UK and Ireland, and ranked 5th in the Super Large category in 2024. We’re headquartered in Marlow (UK) and are proud to have offices across the globe. You can also find us in London, Bristol, [...] in London, Bristol, Birmingham, Leeds, Manchester, Newcastle, South Coast, Glasgow, Dublin, Singapore and Arlington (USA). Find out more about us at softcat.com, or visit our careers site at softcat.com/careers. [...] ### Website ### Crunchbase N/A ### LinkedIn N/A ### Industry IT Services and IT Consu",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-ed88e6ed75ff2361",
+          "url": "https://www.imprivata.com/partners/resellers/softcat-plc",
+          "title": "Softcat Plc | Imprivata",
+          "excerpt": "# Softcat Plc Softcat (LSE: SCT) is a leading IT infrastructure provider to corporate and public sector organisations. It provides customers with core IT platforms, encapsulating software licensing, client computing, data centre infrastructure, networking and security, and IT services for on-going support and management. With a 99% customer satisfaction rating and a Net Promoter Score of +73, Softcat enjoys an excellent trading relationship with over 11,000 longstanding customers. [...] phone: (+44) 01628 403403 address: Fieldhouse Lane city: Marlow, Buckinghamshire postal code: SL7 1LW country: GB near non-host countries: United Kingdom United States United States DACH France United Kingdom [...] Founded in 1993, Softcat currently employs over 850 people across six UK locations. It achiev",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-e51694ebd6e15063",
+          "url": "https://find-and-update.company-information.service.gov.uk/company/02174990",
+          "title": "SOFTCAT PLC overview - Find and update company information - GOV.UK",
+          "excerpt": "Registered office address : Solar House, Fieldhouse Lane, Marlow, Buckinghamshire, United Kingdom, SL7 1LW Company status : Active Company type : Public limited Company Incorporated on : 7 October 1987 ## Accounts Next accounts made up to 31 July 2026 due by 31 January 2027 Last accounts made up to 31 July 2025 ## Confirmation statement Next statement date 17 May 2027 due by 31 May 2027 Last statement dated 17 May 2026 ## Nature of business (SIC) [...] Companies House does not check the accuracy of the information filed(link opens a new window) Sign in / Register Advanced company searchLink opens in new window # SOFTCAT PLC Company number 02174990 Follow this company File for this company Company Overview for SOFTCAT PLC (02174990) Filing history for SOFTCAT PLC (02174990) People for SOFTC",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-4c51f311d4cd0397",
+          "url": "https://www.softcat.com/about-us/investor-centre",
+          "title": "Investor Centre | Softcat",
+          "excerpt": "We have released our half year results for the 2026 financial year. Click here to view them. Report ### Full Year Annual Report 2025 In 2025 we delivered our 20th consecutive year of organic profit growth. ## FY25 Financial Highlights £1,458.4m ### Revenue (FY24: £962.6m) £494.3m ### Gross Profit (FY24: £417.8m) £180.1m ### Underlying Operating Profit (FY24: £154.1m) 69.5p ### Underlying Basic EPS (FY24: 59.7p) 95.6% ### Cash Conversion (95.9%) 10,200 [...] Login to eCAT Customer Support uk UK ie IE de DE ca CA ca-fr CA-FR Home Contact Sales # Taking care of our people and customers We are a leading provider of IT solutions and services to businesses and public sector organisations",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-f5fc05037f45cb65",
+          "url": "https://www.globaldata.com/company-profile/softcat-plc",
+          "title": "Softcat plc Company Profile - Softcat plc Overview - GlobalData",
+          "excerpt": "Gain a 360-degree view of Softcat Plc and make more informed decisions for your business Gain a 360-degree view of Softcat Plc and make more informed decisions for your business Register your interest Headquarters United Kingdom Address Solar House, Fieldhouse Lane, Marlow, Buckinghamshire, SL71TB Website www.softcat.com Telephone 44 1628 403403 No of Employees 2,768 Industry Technology and Communications Ticker Symbol & Exchange SCT (LON) Revenue (2025) $1.9B 51.5% (2025 vs 2024) [...] Softcat Plc (Softcat) is a provider of information technology (IT) infrastructure solutions. The company offers software licensing, workplace technology, networking, security, and cloud and datacenter services. It offers workspace creation, cyber security, networking and connectivity, data, automation and A",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:marketplace.probrand.co.uk",
+      "countryCode": "GB",
+      "companyName": "Probrand Ltd",
+      "domain": "marketplace.probrand.co.uk",
+      "officialWebsiteUrl": "https://marketplace.probrand.co.uk",
+      "primaryRole": "Hybrid",
+      "supportedRoles": [
+        "Reseller",
+        "VAR",
+        "MSP"
+      ],
+      "totalScore": 73,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-b0259ee8f874b426",
+          "url": "https://marketplace.probrand.co.uk",
+          "title": "Probrand Marketplace: Platform for IT Products, Services & Solutions",
+          "excerpt": "Probrand logo ###### All computing ###### Desktop Devices ###### Warranties ###### Mobile Devices ###### Servers ###### Brands Dell HP Inc Lenovo Microsoft ###### All printing ###### Scanners ###### Printers ###### Printer Consumables ###### Brands Brother Ricoh Kyocera Zebra ###### All software ###### Operating Systems ###### Applications ###### Subscriptions & Support ###### Brands Microsoft Sonicwall ###### All networking ###### Switches & Routers [...] ##### 0121 248 7932 ##### Live Chat Want to talk to an advisor? Click the chat button below Alpha Tower 11th Floor Suffolk Street Queensway Birmingham B1 1TT The queens award for enterprise ICAEW Accredited Software CIPS Certification Government Commercial Agency Commercial Services BSI ISO/IEC 27001 [...] decisions with unparalleled spe",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-cd4e78d1da7171ac",
+          "url": "https://marketplace.probrand.co.uk/it-support-yardley",
+          "title": "IT Support Yardley | Birmingham - Probrand Marketplace",
+          "excerpt": "Probrand logo All computing Desktop Devices Warranties Mobile Devices Servers Brands Dell HP Inc Lenovo Microsoft All printing Scanners Printers Printer Consumables Brands Brother Ricoh Kyocera Zebra All software Operating Systems Applications Subscriptions & Support Brands Microsoft Sonicwall All networking Switches & Routers Cables & Adapters Security & Support Brands Dell HP Inc Lenovo TP-LINK Store All Sound & Vision Presentation Audio & Video Communications Cameras & Camcorders Brands Samsung Logitech Store All Storage & Memory Storage Devices Storage Drives Memory Upgrades Storage Media Brands APC Store HP Inc Kingston Origin Storage Samsung All peripherals PC Components Web Cameras Keyboards & Mice Cables & Adapters Power Brands Logitech All Office Supplies Office Equipment IT Suppo",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-5a2ff6266bec2042",
+          "url": "https://marketplace.probrand.co.uk/it-support-bournville",
+          "title": "IT Support Bournville | Birmingham - Probrand Marketplace",
+          "excerpt": "Probrand logo All computing Desktop Devices Warranties Mobile Devices Servers Brands Dell HP Inc Lenovo Microsoft All printing Scanners Printers Printer Consumables Brands Brother Ricoh Kyocera Zebra All software Operating Systems Applications Subscriptions & Support Brands Microsoft Sonicwall All networking Switches & Routers Cables & Adapters Security & Support Brands Dell HP Inc Lenovo TP-LINK Store All Sound & Vision Presentation Audio & Video Communications Cameras & Camcorders Brands Samsung Logitech Store All Storage & Memory Storage Devices Storage Drives Memory Upgrades Storage Media Brands APC Store HP Inc Kingston Origin Storage Samsung All peripherals PC Components Web Cameras Keyboards & Mice Cables & Adapters Power Brands Logitech All Office Supplies Office Equipment IT Suppo",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-dbcde96e0a43f423",
+          "url": "https://marketplace.probrand.co.uk/it-support-northfield",
+          "title": "IT Support Northfield | Birmingham - Probrand Marketplace",
+          "excerpt": "Probrand logo All computing Desktop Devices Warranties Mobile Devices Servers Brands Dell HP Inc Lenovo Microsoft All printing Scanners Printers Printer Consumables Brands Brother Ricoh Kyocera Zebra All software Operating Systems Applications Subscriptions & Support Brands Microsoft Sonicwall All networking Switches & Routers Cables & Adapters Security & Support Brands Dell HP Inc Lenovo TP-LINK Store All Sound & Vision Presentation Audio & Video Communications Cameras & Camcorders Brands Samsung Logitech Store All Storage & Memory Storage Devices Storage Drives Memory Upgrades Storage Media Brands APC Store HP Inc Kingston Origin Storage Samsung All peripherals PC Components Web Cameras Keyboards & Mice Cables & Adapters Power Brands Logitech All Office Supplies Office Equipment IT Suppo",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-ca351bf5331a7a5d",
+          "url": "https://uk.linkedin.com/company/probrand",
+          "title": "Probrand - A unified platform that streamlines the procurement of IT products, services, and cloud solutions",
+          "excerpt": "Probrand makes IT procurement effortless by connecting you to the UK’s authorised supply chain, with access to over 300,000 products and services. Our online platform centralises everything in one place, making it easy to source the right IT solutions for your organisation. We are transforming how public and private sector organisations centralise and manage their IT procurement, fully aligned with the Procurement Act 2023. Powered by advanced technology and intelligent automation, our platform [...] ### Website ### Crunchbase N/A ### LinkedIn N/A ### Industry IT Services and IT Consulting ### Company Size 51-200 employees 165 associated members (LinkedIn members who've listed Probrand as their current workplace on their profile) ### Founded 1992 ### Funding Last Round Date: N/A Last Round",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-a5d3604b2c622887",
+          "url": "https://find-and-update.company-information.service.gov.uk/company/02653446/filing-history",
+          "title": "PROBRAND LIMITED filing history - Companies House",
+          "excerpt": "PROBRAND LIMITED - Free company information from Companies House including registered office address, filing history, accounts, annual return, officers,",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-8901ea750e365e01",
+          "url": "https://www.facebook.com/ProbrandLtd",
+          "title": "Probrand Ltd (@ProbrandLtd)",
+          "excerpt": "Probrand Ltd. 163 likes · 5 talking about this. A unified platform that streamlines the procurement of IT products, services, and cloud solutions.",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:uk.insight.com",
+      "countryCode": "GB",
+      "companyName": "Insight Direct (UK) Ltd",
+      "domain": "uk.insight.com",
+      "officialWebsiteUrl": "https://uk.insight.com",
+      "primaryRole": "Hybrid",
+      "supportedRoles": [
+        "Reseller",
+        "VAR",
+        "SI",
+        "MSP"
+      ],
+      "totalScore": 77,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-a7216d8e9ff7084e",
+          "url": "https://uk.insight.com/en_GB/what-we-do/public-sector/frameworks/gca-network-services-3-rm6116.html",
+          "title": "Government Commercial Agency (GCA) - Network Services 3 - RM6116 | Insight UK",
+          "excerpt": "Article Government Commercial Agency (GCA) - Network Services 3 - RM6116 article-breaker By Insight UK / 25 Jul 2023 / Topics: Hardware , Software Framework provider: Government Commercial Agency (GCA) Coverage: UK Direct Award option: Yes Partner Alliance option (an ecosystem of specialist and niche providers) : Yes Customers eligible: Blue light Health Local Gov Central Gov Education (primary and secondary) Higher/Further Education Charities/third sector Purchasable products: Hardware Software Services: Consulting Services Hardware, Software and Lifecycle Services Managed Services Lot(s) description Lot 2a Intra site Connectivity (Local Area Network) / Local Connectivity Services Lot 3a loT and Smart Cities (Smart shared and connected spaces) Lot 3b Communication Platform as a Service Lo",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-a9eb78ea32c2e246",
+          "url": "https://uk.insight.com/en_GB/shop/partner/barracuda.html",
+          "title": "Barracuda - High-performance network solutions | Insight UK",
+          "excerpt": "Barracuda logo Your journey, secured. Your business is a journey. Let's secure it. Barracuda specialists for you The Insight Exchange : Discover Barracuda and Microsoft with Insight Friday, Nov 8, 2024, 2:00 PM - 2:30 PM Watch the webinar Barracuda are here to protect and support our customers for life. They build enterprise-grade, cloud-ready security solutions Barracuda Ransomware Solutions Email Protection Your email, secured. Stay protected against today's most advanced threats. Protect your emails Network and App Security Your business, secured. Protect networked sand apps with cloud-generation firewalls. Secure your network Data Protection Your data, secured. Get cloud-integrated security for data storage and recovery. Protect your data Public Cloud Security Your cloud, secured. Auto",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-34b97340ccf5c21e",
+          "url": "https://uk.insight.com/en_GB/home.html",
+          "title": "Solutions and Systems Integrator | Computer Hardware, Software, Technology Services | Insight UK",
+          "excerpt": "#### Get to know Insight. Discover how our impact extends beyond technology solutions as we strive to create purposeful change in our community and beyond. Learn about Insight › #### Let’s grow together. Our people are our greatest strength. Join us on an ambitious journey to transform the tech industry. Discover career opportunities › ## Let’s do big things together. [...] Your transformation begins here. Our technical experts are ready to help you accelerate tomorrow with the technology solutions you need to achieve more today. Create an account Log in Contact us › ## Transforming the Public Sector one Innovation at a Time Discover how you can better serve your government agencies, schools, and more with modern IT. Explore IPS solutions Shop all contracts › [...] # One partner. Infinite ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-02c331b44482a70c",
+          "url": "https://uk.insight.com/en_GB/about/overview.html",
+          "title": "About Insight | Technology Solutions Provider | Insight UK",
+          "excerpt": "We help businesses manage today and transform tomorrow Meet the new Insight You’ve seen a glimpse into who we are. Find out how we got here and how we’re committed to helping you. First Insight building ever created 1988 founders > \"When I look back at the business, the numbers change, a lot of the tactics change, and the products and services change — and the solutions change. But for me, it’s really about the culture and the people.\" > > Tim Crown Our story began with a college business plan. Many great entrepreneurial tales start with two innovators inspired by an initial idea. In 1988, Tim and Eric Crown began their story in this fashion. With a business plan that took root in a college assignment and a cash advance from a credit card, they established Hard Drives International — the c",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-65a3c7cb7f8ca037",
+          "url": "https://www.insight.com/en_US/home.html",
+          "title": "Insight | Insight Enterprises | Insight",
+          "excerpt": "## Let’s do big things together. Your transformation begins here. Our technical experts are ready to help you accelerate tomorrow with the technology solutions you need to achieve more today. Create an account Log in Contact us › Government facility icon ### Serve your community with Insight Public Sector. Discover how you can better serve your government agencies, schools, and more with modern IT. Explore IPS solutions Shop all contracts › [...] # One partner. Infinite possibilities. ## With an integrated IT strategy, you can reduce complexity, scale faster, and achieve more. Discover our capabilities Buy products ## As the leading Solutions Integrator, our experts solve our clients’ technology challenges by combining the right hardware, software, and services. ## Solutions See and surpas",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:ccsmedia.com",
+      "countryCode": "GB",
+      "companyName": "CCS Media Ltd",
+      "domain": "ccsmedia.com",
+      "officialWebsiteUrl": "https://www.ccsmedia.com",
+      "primaryRole": "Hybrid",
+      "supportedRoles": [
+        "Reseller",
+        "VAR",
+        "SI",
+        "MSP"
+      ],
+      "totalScore": 72,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-2f2fb3a712ac24cb",
+          "url": "https://www.ccsmedia.com",
+          "title": "Welcome to CCS Media - Exceptional IT Solutions and Services that ...",
+          "excerpt": "# CCS Media, exceptional IT Solutions and Services that work for everyone, everywhere []( Dell Logo White []( []( White Microsoft Logo []( []( As a multi-award-winning reseller, we’re proud to have received lots of recognition for the work that we do. We make technology work, whenever it’s needed supporting our customers at every touchpoint of their solution, completely end-to-end. Workspace Datacentre + Networking AV + Collaboration Security Print + Office Supplies [...] NQA_ISO9001 Recognised as the International Standard for Quality Management Systems #### Our Privacy Policy We have made changes to our privacy policy to be consistent with data protection laws. Please take a moment to review key points of CCS Media's Privacy Policy. By entering our site you are agreeing with our policy. ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-f4d780e85a29b43f",
+          "url": "https://www.ccsmedia.com/wp-content/uploads/CCS-Media-Ltd-9001-2015.pdf",
+          "title": "[PDF] CCS Media Ltd 80 Mount Street, Nottingham, NG61 6HH, Unit",
+          "excerpt": "The use of the UKAS Accreditation Mark indicates accreditation in respect of those activities covered by the accreditation certificate number 015 held by NQA. NQA is a trading name of NQA Certification Limited, Registration No. 09351758. Registered Office: Warwick House, Houghton Hall Park, Houghton Regis, Dunstable Bedfordshire LU5 5ZX, United Kingdom. This certificate is the property of NQA and must be returned on request. Page 1 of 2 This is to certify that the Quality Management System of: CCS Media Ltd 80 Mount Street, Nottingham, NG61 6HH, United Kingdom (Central function listed above. See appendix for additional locations) applicable to: The provision of B2B technology solutions and services. The CCS Media portfolio compromises of workspace and end user compute, collaboration, data ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-5bc347b088764c17",
+          "url": "https://www.ccsmedia.com/office-locations",
+          "title": "Office Locations - CCS Media",
+          "excerpt": "Bradford 6, Fieldhead Street Fieldhead Business Centre Bradford West Yorkshire BD7 1LW Tel: 01274 379 880 Fax: 01246 246 000 Leeds Ground Floor Leeds House Central Park New Lane Leeds LS11 5DZ Tel: 0113 2244 060 Fax: 0113 2244 061 Manchester Suite 1N-A, Floor 1, Trafford House, Chester Road, Old Trafford, M32 0RS Tel: 0161 7721 290 Fax: 0161 7721 291 Sheffield [...] Unit 3, Freshwaters Holmewood Industrial Estate Park Road Chesterfield S42 5UY Tel: 01246 858 890 Fax: 01246 857 612 ###### Back to the top #### Our Privacy Policy We have made changes to our privacy policy to be consistent with data protection laws. Please take a moment to review key points of CCS Media's Privacy Policy. By entering our site you are agreeing with our policy. More information I accept | | | Its official! CCS Me",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-0ebe226e6a9abec3",
+          "url": "https://www.ccsmedia.com/public-sector-and-frameworks",
+          "title": "Public Sector and Frameworks - CCS Media",
+          "excerpt": "CCS Media CCS Media CCS Media Public Sector and Frameworks We have the flexibility to help organisations reach their objectives, and we make technology work whenever, and wherever it is needed. From sourcing consumables and office peripherals to providing mission-critical solutions. We support Public Sector organisations at every touch-point, completely end-to-end. Our dedicated team support our Public Sector customers, we understand the unique way in which Public Sector organisations need to ensure their goals become a reality to meet the needs of our citizens. We understand the importance of the governance within the Public Sector and offer the most viable and economical solutions and services. Ensuring that quality, as well as price, is foremost. Frameworks can offer a safe and simplifi",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-7eb8fad84484e37e",
+          "url": "https://uk.linkedin.com/company/ccs-media-limited",
+          "title": "CCS Media Limited (Advania UK)",
+          "excerpt": "CCS Media is now officially part of Advania UK, the tech company with people at heart. We’re a leading Northern European IT services provider that delivers managed services, hardware, software and professional services. We empower people to create sustainable value through the clever use of technology. As a trusted technology partner, we’re ready to advance your business. Our approach combines technical excellence with genuine understanding of our clients' needs, building lasting relationships [...] ### Website ### Crunchbase N/A ### LinkedIn N/A ### Industry IT Services and IT Consulting ### Company Size 201-500 employees 292 associated members (LinkedIn members who've listed CCS Media Limited (Advania UK) as their current workplace on their profile) ### Founded N/A ### Funding Last Round",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-76071738b5d96360",
+          "url": "https://www.facebook.com/CCSMedia",
+          "title": "CCS Media Ltd (@CCSMedia) - Facebook",
+          "excerpt": "CCS Media is now Advania UK. A leading IT services provider, we empower people to create sustainable value through the clever use of technology.",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-b7cacf0dd40636e7",
+          "url": "https://find-and-update.company-information.service.gov.uk/company/14500914",
+          "title": "CCS MEDIA SERVICES LIMITED overview - Find and update company information - GOV.UK",
+          "excerpt": "Registered office address : Lowry Mill Lees Street, Swinton, Manchester, England, M27 6DB Company status : Active Company type : Private limited Company Incorporated on : 23 November 2022 ## Accounts Next accounts made up to 30 November 2026 due by 31 August 2027 Last accounts made up to 30 November 2025 ## Confirmation statement Next statement date 22 November 2026 due by 6 December 2026 Last statement dated 22 November 2025 ## Nature of business (SIC) [...] Companies House does not check the accuracy of the information filed(link opens a new window) Sign in / Register Advanced company searchLink opens in new window # CCS MEDIA SERVICES LIMITED Company number 14500914 Follow this company File for this company Company Overview for CCS MEDIA SERVICES LIMITED (14500914) Filing history for CC",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:bechtle.com",
+      "countryCode": "GB",
+      "companyName": "Bechtle Limited",
+      "domain": "bechtle.com",
+      "officialWebsiteUrl": "https://www.bechtle.com/uk",
+      "primaryRole": "Hybrid",
+      "supportedRoles": [
+        "Reseller",
+        "VAR",
+        "SI",
+        "MSP"
+      ],
+      "totalScore": 80,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-39dd44230d82951c",
+          "url": "https://www.bechtle.com/de-en/about-bechtle/press/press-releases/2022/bechtle-acquires-acs-systems-in-the-united-kingdom",
+          "title": "Bechtle acquires ACS Systems in the United Kingdom",
+          "excerpt": "About Bechtle Press Releases Bechtle acquires ACS Systems in the United Kingdom Bechtle UK headquarters in Chippenham. Bechtle acquires ACS Systems in the United Kingdom Bechtle continues to pursue international acquisition strategy IT service provider extends Bechtle’s portfolio of managed services Further growth planned in the UK Neckarsulm, 24 November 2022 – Bechtle AG acquires Northampton-based ACS Systems UK Ltd. The IT system house is very well established on the British market and enjoys an excellent reputation, building on over 27 years’ experience in IT services. ACS focuses on cybersecurity, modern work concepts as well as managed IT and cloud services, offering customers its own cloud hosting capacities. The IT service provider covers a wide customer spectrum from regional comp",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-a1c30eb6627801ac",
+          "url": "https://www.bechtle.com/de-en/about-bechtle/company/company-development",
+          "title": "Business development",
+          "excerpt": "Company development The Bechtle journey. A future-first history. A leading European IT provider, Bechtle began its journey in 1983 as a one-man operation in Heilbronn, where getting things done was a way of life. 43 years on, we’ve grown into an international organisation on a mission to build the future with IT. Firmly rooted in our home region and connected across the globe. With more than 16,000 people committed to our success—and that of our customers. Hello Future writing 2025. New chapters. The Supervisory Board designates COO Konstantin Ebert as the successor to long‑standing CEO Dr Thomas Olemotz, who will retire at the end of 2026. The Science Based Targets initiative validates Bechtle’s near‑term climate goals through 2030 and its net‑zero targets through 2050, confirming alignme",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-a87218b84455031d",
+          "url": "https://www.bechtle.com/gb/about-bechtle/references",
+          "title": "Case Studies",
+          "excerpt": "Bride over water Success stories of customers with future-proof IT. Every customer is different and each solution distinct. But every single project is implemented with an entrepreneurial spirit that prioritises flexibility, cost consciousness and uncompromising quality. While they won’t mirror your exact circumstances, our references will provide inspiration and ideas for your own IT goals. Modern Workplace Software Hybrid Infrastruture Security Services Document Solutions Efficient Procurement Cloud Modern Workplace. Allies & Morrison LLP ### Allies & Morrison LLP – Workstation Deployment. Gateshead College ### Gateshead College – Notebook Procurement. Wiltshire College ### Wiltshire College & University Centre – Modern Workplace Solutions with Technology & Interiors. DMC Cinema 4-Grid #",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-b90aeee84812c4f1",
+          "url": "https://www.bechtle.com/de-en/about-bechtle/company/bechtle-group-companies",
+          "title": "Bechtle Group companies",
+          "excerpt": "Green structure A future-first community. The Bechtle Group companies. The Bechtle Group counts more than 100 subsidiaries across Europe, including our e-commerce units and many companies specialising in IT solutions such as PLM systems, mobile working, collaboration tools, or industry-specific software products. Together, we deliver the full spectrum of future-focused IT that drives our customers’ success. Not all Bechtle Group companies share our name—but they all share the same passion for a bold, forward-looking mission. DACH region Logo Amaras Amaras AG Amaras is a specialist provider of services for client system environments, with a focus on future-ready, value-added solutions. A member of the Bechtle Group since 2014, Amaras operates as part of Bechtle Managed Services AG, supporti",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-cf683bdaad5eebe7",
+          "url": "https://www.bechtle.com/be/about-bechtle/company/locations/bechtle-direct-uk",
+          "title": "Bechtle direct Ltd.",
+          "excerpt": "Facts. Founded in: 1997 Number of offices in the UK: 4 - (Chippenham, London, Manchester and Northampton) A dedicated team of in-house specialists to support with all your IT requirements We work with all industry types from SMB and Corporate, to Enterprise and the Public Sector Focus. European-wide procurement: [...] Hands on keyboard # Bechtle Limited Phone: +44 1249 467-900 Fax: +44 1249 467-933 E-mail: sales.uk@bechtle.com Get in touch Address. Bechtle Limited Village Green Methuen Park SN14 0GF Chippenham, Wiltshire Directions Management board. James Napp James Napp Managing Director Facts. [...] We think beyond national borders, providing an international sales team for those times when you need a global procurement strategy. Our offices in 14 countries are connected to a high-perfor",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-9341329cf599206d",
+          "url": "https://find-and-update.company-information.service.gov.uk/company/03283032",
+          "title": "BECHTLE LIMITED overview - Find and update company information - GOV.UK",
+          "excerpt": "Registered office address : 128 High Street, Crediton, Devon, EX17 3LQ Company status : Active Company type : Private limited Company Incorporated on : 25 November 1996 ## Accounts Next accounts made up to 31 December 2025 due by 30 September 2026 Last accounts made up to 31 December 2024 ## Confirmation statement Next statement date 7 July 2027 due by 21 July 2027 Last statement dated 7 July 2026 ## Nature of business (SIC) [...] 46510 - Wholesale of computers, computer peripheral equipment and software 46650 - Wholesale of office furniture 61900 - Other telecommunications activities 62020 - Information technology consultancy activities ## Previous company names Previous company names | Name | Period | | BECHTLE DIRECT LIMITED | 25 Nov 1996 - 07 Jul 2023 | Tell us what you think of this s",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:millgate.co.uk",
+      "countryCode": "GB",
+      "companyName": "Millgate Limited",
+      "domain": "millgate.co.uk",
+      "officialWebsiteUrl": "https://www.millgate.co.uk",
+      "primaryRole": "Hybrid",
+      "supportedRoles": [
+        "Reseller",
+        "VAR",
+        "MSP"
+      ],
+      "totalScore": 69,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-4521432ee7dc2ee1",
+          "url": "https://millgate.co.uk",
+          "title": "Millgate IT & Telecoms: IT & Telecoms Reseller Solutions UK MSPs",
+          "excerpt": "Contact Us Contact Us Header banner static Homepage From Device Procurement to Fully Managed IT & Telecoms Solutions – We’ve Got You Covered # Delivering tech that actually works for your business Speak to our experts Our Solutions HPE Logo Ver.2 Cisco Logo Ver.2 BT Logo Sophos Logo Ver.2 Expo E Logo Iiyama Logo Ver.2 Draytek Logo BenQ Logo Ver.2 HP Logo Ver.2 O2 Logo Arctic Wolf Logo Ver.2 Zebra Technologies Logo Ver.2 Elevate Logo Lenovo Logo Ver.2 ESET Logo ver.2 [...] ### 1 mission to help you succeed ### Technology that works, service that cares At Millgate, we don't just sell technology; we build lasting partnerships. Whether you're a growing SMB or an established enterprise, our people-first approach means direct contact with real specialists. You'll always speak with a dedicated ac",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-9ed7a02ff0aa4c04",
+          "url": "https://millgate.co.uk/privacy-policy",
+          "title": "Privacy Policy | Millgate IT & Telecoms",
+          "excerpt": "Experienced a Cybersecurity incident? Our team can help you get things back on track. Get in touch today Experienced a Cybersecurity incident? Get in touch today Connect Logo Back to main menu Icon Icon Icon Icon Icon Icon Icon Icon Huntress Webpage Ad Untitled Design (4) Icon Icon Icon Icon Icon Icon Untitled Design (4) Untitled Design (4) Untitled Design (4) Privacy Policy We respect your privacy Privacy Notice: Millgate Limited understands that your privacy is important to you and that you care about how your personal data is used. We respect and value the privacy of everyone who visits our website, www.millgate.co.uk (Our Site) and we will only collect and use personal data in ways that are described here, and in a way that is consistent with our obligations and your rights under the l",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-0963a8ef8c92034f",
+          "url": "https://millgate.co.uk/millgate-connect-connectivity-telephony-terms-and-conditions",
+          "title": "Connectivity & Telephony Terms and Conditions | Millgate Connect",
+          "excerpt": "Experienced a Cybersecurity incident? Our team can help you get things back on track. Get in touch today Experienced a Cybersecurity incident? Get in touch today Connect Logo Back to main menu Icon Icon Icon Icon Icon Icon Icon Icon Huntress Webpage Ad Untitled Design (4) Icon Icon Icon Icon Icon Icon Untitled Design (4) Untitled Design (4) Untitled Design (4) Terms and Conditions The boring, but important bits Please read these Terms and Conditions (\"Terms\", \"Terms and Conditions\") carefully before using the Millgate Connect website (the \"Service\") operated by Millgate Connect (\"us\", \"we\", or \"our\"). 1. Acceptance of Terms By accessing or using our Service, you agree to be bound by these Terms. If you do not agree to all the terms and conditions, then you may not access the Service. 2. Ch",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-72c773ac05f0a037",
+          "url": "https://leadiq.com/c/millgate-it/5a1d7ea424000024005933e6",
+          "title": "Millgate IT Company Overview, Contact Details & ...",
+          "excerpt": "Millgate is an IT services and IT consulting company based at 7 Vantage Drive, Sheffield, England s9 1rg, United Kingdom. The company has between 51 and 200",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-fc4489d673f090f1",
+          "url": "https://www.facebook.com/millgateit",
+          "title": "Millgate | Sheffield",
+          "excerpt": "Millgate deliver tech products, services and solutions … 7 Vantage Drive, Sheffield, United Kingdom, S9. Contact info +44 114 242 7310 info@millgate.co.uk",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-5d7126a85ca823a6",
+          "url": "https://uk.linkedin.com/company/millgateit-it",
+          "title": "Millgate IT",
+          "excerpt": "At Millgate, our guiding principle is deceptively simple: we deliver tech products, services and solutions that actually work for your business needs. In nearly 30 years since our inception, Millgate has developed a reputation as a trusted adviser to our clients, able to understand their requirements and provide the very best IT & Tech solutions to meet and exceed their individual needs. We supply goods, services and solutions across the public and private sectors, including retail, [...] ### Website ### Crunchbase N/A ### LinkedIn N/A ### Industry IT Services and IT Consulting ### Company Size 51-200 employees 143 associated members (LinkedIn members who've listed Millgate IT as their current workplace on their profile) ### Founded N/A ### Funding Last Round Date: N/A Last Round Type: N/A",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-ca505233937a4be5",
+          "url": "https://find-and-update.company-information.service.gov.uk/company/03229619",
+          "title": "MILLGATE LIMITED overview - Companies House - GOV.UK",
+          "excerpt": "MILLGATE LIMITED - Free company information from Companies House including registered office address, filing history, accounts, annual return, officers,",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:transparent-uk.com",
+      "countryCode": "GB",
+      "companyName": "Transparent Communications Ltd",
+      "domain": "transparent-uk.com",
+      "officialWebsiteUrl": "https://transparent-uk.com",
+      "primaryRole": "Reseller",
+      "supportedRoles": [
+        "Reseller",
+        "VAR"
+      ],
+      "totalScore": 52,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-d8c6a6e4e3ffe00c",
+          "url": "https://uk.linkedin.com/company/transparent-communications-ltd",
+          "title": "Transparent Communications Ltd",
+          "excerpt": "Transparent Communications is a leading UK supplier of IT, AV and networking hardware, providing products from leading brands including Draytek, Drobo,",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-b485d6886b647da5",
+          "url": "https://www.facebook.com/TransparentCommunications",
+          "title": "Transparent Communications | Cosham",
+          "excerpt": "Transparent Communications. Transparent Communications is a leading UK supplier of IT, AV and networking hardware, providing pro. Computer Store. Follow",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-f91ad2390f1d7a1d",
+          "url": "https://transparent-uk.com",
+          "title": "Transparent Communications",
+          "excerpt": "We partner with leading technology providers to deliver cutting-edge solutions, ensuring you have access to the best and most reliable IT products and services.",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:misco.co.uk",
+      "countryCode": "GB",
+      "companyName": "Misco UK",
+      "domain": "misco.co.uk",
+      "officialWebsiteUrl": "https://www.misco.co.uk",
+      "primaryRole": "Reseller",
+      "supportedRoles": [
+        "Reseller",
+        "VAR"
+      ],
+      "totalScore": 57,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-d62c376e180c2930",
+          "url": "https://www.misco.co.uk",
+          "title": "IT Solutions & Services for Home, Business & Public Sector | Misco",
+          "excerpt": "0800 368 9646 sales@misco.co.uk Misco Excl VAT ## Suggested products ## Suggested categories ## Suggested search words Accessories Audio Visual Components Computing Mobile Phones Networking Print and Scan Servers and Storage Software Your products [...] Empower your organisation with technology solutions that improve performance, strengthen security, and support sustainable growth. From cloud and networking to workplace and infrastructure services, we help businesses stay agile, efficient, and ready for change. Our specialists deliver tailored solutions that simplify complexity, maximise IT investment, and help your teams work smarter every day. Learn MoreRequest a Conversation Misco solutions conversation [...] ## Trusted Technology Frameworks for the Public Sector We're proud to be a nam",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:senetic.co.uk",
+      "countryCode": "GB",
+      "companyName": "Senetic UK",
+      "domain": "senetic.co.uk",
+      "officialWebsiteUrl": "https://www.senetic.co.uk",
+      "primaryRole": "Reseller",
+      "supportedRoles": [
+        "Reseller",
+        "VAR"
+      ],
+      "totalScore": 73,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-1c19267ceff6eaa1",
+          "url": "https://find-and-update.company-information.service.gov.uk/company/07125121",
+          "title": "SENETIC LTD overview - Find and update company information - GOV.UK",
+          "excerpt": "Company status : Active Company type : Private limited Company Incorporated on : 14 January 2010 ## Accounts Next accounts made up to 31 December 2026 due by 30 September 2027 Last accounts made up to 31 December 2025 ## Confirmation statement Next statement date 24 April 2027 due by 8 May 2027 Last statement dated 24 April 2026 ## Nature of business (SIC) [...] Tell us what you think of this service(link opens a new window) Is there anything wrong with this page?(link opens a new window) [...] ## Cookies on Companies House services We use some essential cookies to make our services work. We'd also like to use analytics cookies so we can understand how you use our services and to make improvements. View cookies You've accepted analytics cookies. You can change your cookie settings at any t",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-eae42ee812f81d9f",
+          "url": "https://www.senetic.co.il",
+          "title": "IT hardware: configurators, networks, servers and storage | Senetic",
+          "excerpt": "2026 © Senetic® Senetic® is a registered trademark that can be used solely by Senetic SA All other trademarks on the website are the property of their respective holders and can not be read as an indication of the organizational, financial or personal relationship. This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply. [...] Senetic is a trusted provider of cloud and network solutions, focusing on a wide range of services and products for businesses. Our offer includes cloud solutions such as Office 365 or Azure, network equipment such as Ubiquiti and MikroTik, as well as complete solutions for server rooms, like servers, routers, switches, firewalls, UPS systems, racks, hard drivesand mass storage. [...] We not only guarantee excellent quality, but a",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-9104808be6607519",
+          "url": "https://www.senetic.net",
+          "title": "Senetic - Global IT hardware & software reseller",
+          "excerpt": "Senetic was established in 2009 in Poland, striving for international expansion from the very beginning. We opened our first foreign branch in 2010 in the United Kingdom, and in the following years we systematically expanded our area of operation to include other countries. We currently have 27 companies around the world and sell our products in 151 countries. 17 years of experience in the industry 27 companies worldwide 151 countries where we sell our products 2million customers per year [...] About us Senetic in numbers Our offer Benefits of cooperation Our team # Your Global IT partner from the Heart of Europe We have been supporting digital transformation since 2009 Let's get to know each other better ## About us [...] We design and implement IT solutions tailored to individual custome",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-a77ebd94b213dfaa",
+          "url": "https://www.linkedin.com/company/senetic",
+          "title": "Senetic - The IT solutions you need, the experience and knowledge you deserve.",
+          "excerpt": "every transaction there are real people and not every business relationship starts with an email. Some of the most valuable connections begin with a handshake, and a conversation after a session. Proud of the whole team for representing Senetic with confidence on an international stage. 👏 This is what internationalization looks like in practice. 🌍 #SouthSummit #SouthSummit2026 #Senetic #ITdistribution #Networking #AIConvergence #Startup #Technology #AI Business inSilesia Fundusz Górnośląski SA [...] South Summit Madrid 2026. And we were there! Javier Gutiérrez López , Krzysztof Andrzejewski and Igor Stojchev represented Senetic at South Summit Madrid, one of Europe's most influential innovation and entrepreneurship events. 🎤 A special moment for us: Javier took the stage to present Sene",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:flux-it.co.uk",
+      "countryCode": "GB",
+      "companyName": "Flux IT Hardware",
+      "domain": "flux-it.co.uk",
+      "officialWebsiteUrl": "https://flux-it.co.uk",
+      "primaryRole": "Reseller",
+      "supportedRoles": [
+        "Reseller",
+        "VAR",
+        "Dealer"
+      ],
+      "totalScore": 65,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-158ffe52c671db59",
+          "url": "https://flux-it.co.uk",
+          "title": "Enterprise IT Hardware Specialists | Buy, Sell, Rent & ITAD",
+          "excerpt": "Skip to content Flux IT Hardware Logo 03330 048885 Enterprise IT Hardware Specialists – Buy, Sell, Rent & Recover Enterprise InfrastructureFlux IT Hardware2026-08-06T15:43:41+00:00 # Independent Enterprise IT Hardware Specialists Buy, sell, rent and maintain enterprise IT hardware with an independent UK specialist. We help organisations source new, refurbished and end-of-life infrastructure while maximising the value of surplus equipment through secure IT asset recovery. 0t CO2 Saved 0+ [...] Flux IT Hardware helps organisations across the UK buy, sell, rent and recover enterprise IT infrastructure. From sourcing new and refurbished Cisco, HPE, Dell and Aruba equipment to recovering value from surplus hardware, we provide practical solutions backed by technical expertise, competitive prici",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-60c00f05dcd501e6",
+          "url": "https://uk.linkedin.com/company/flux-it-hardware",
+          "title": "Flux IT Hardware - Leaders in the Circular IT Economy, Networks, Servers, Storage, NEW - BSI Certified Laptops and Desktops",
+          "excerpt": "data centres, universities, public-sector organisations and IT resellers across the UK. We’re actively looking for: 🔹 𝗝𝘂𝗻𝗶𝗽𝗲𝗿 𝗘𝗫 𝗦𝗲𝗿𝗶𝗲𝘀 𝘀𝘄𝗶𝘁𝗰𝗵𝗲𝘀 – EX2300, EX3400, EX4300, EX4600, EX4650, EX9200 and more 🔹 𝗝𝘂𝗻𝗶𝗽𝗲𝗿 𝗤𝗙𝗫 𝘀𝘄𝗶𝘁𝗰𝗵𝗲𝘀 🔹 𝗝𝘂𝗻𝗶𝗽𝗲𝗿 𝗠𝗫 𝗦𝗲𝗿𝗶𝗲𝘀 𝗿𝗼𝘂𝘁𝗲𝗿𝘀 🔹 𝗝𝘂𝗻𝗶𝗽𝗲𝗿 𝗦𝗥𝗫 𝗲𝗾𝘂𝗶𝗽𝗺𝗲𝗻𝘁 🔹 𝗦𝗙𝗣, 𝗦𝗙𝗣+, 𝗤𝗦𝗙𝗣 𝗮𝗻𝗱 𝗻𝗲𝘁𝘄𝗼𝗿𝗸 𝗺𝗼𝗱𝘂𝗹𝗲𝘀 🔹 New surplus, used and decommissioned hardware Why sell to Flux IT? 💷 Competitive market valuations 🚚 UK-wide collection ⚡ Fast BACS payment 🔐 Secure handling and data erasure where [...] ### Investors N/A ### Specialties Cisco, HP, Asset recovery, Servers, networking, fibre cable, copper cable, cabinets and racks, networking switches, Routers, Firewalls, IT hard",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:microsystem.co.uk",
+      "countryCode": "GB",
+      "companyName": "MicroSystem Support (MSS)",
+      "domain": "microsystem.co.uk",
+      "officialWebsiteUrl": "https://www.microsystem.co.uk",
+      "primaryRole": "Hybrid",
+      "supportedRoles": [
+        "Reseller",
+        "VAR",
+        "MSP"
+      ],
+      "totalScore": 59,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-324a89b944d19822",
+          "url": "https://www.microsystem.co.uk/wp-content/uploads/2025/09/MSS-CSRB-white-paper.pdf",
+          "title": "[PDF] MSS CSRB white paper MASTER Final 11-8-25",
+          "excerpt": "UK CYBER SECURITY AND RESILIENCE BILL AND EU NETWORK AND INFORMATION SECURITY DIRECTIVE (NIS2) AND HOW DO THEY AFFECT YOUR BUSINESS? Index 2 INDEX Introduction 3 Cyber Threats 4 The Network and Information Security Directive (NIS2) 5 Which Organisations and Sectors Are In Scope? 6 The Three Pillars of NIS2 7 NIS2 Compliance Requirements 8 1. Governance 8 2. Cybersecurity Risk-Management Measures 8 3. Incident Reporting 9 4. Use of European Cybersecurity Certification Schemes 9 Supply Chain Security 10 What Happens If You Do Not Comply with NIS2? 10 The UK Cyber Security and Resilience Bill (CSRB) 11 Bringing More Entities into Scope of the Regulatory Framework 11 Managed Service Providers (MSPs) 12 Strengthening Supply Chain Security 12 Bringing Data Centres into Scope of the Regulatory Fr",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-1a339c24b70b7706",
+          "url": "https://www.microsystem.co.uk",
+          "title": "MicroSystem Support",
+          "excerpt": "MicroSystem Support Logo 01179 599 393 IT Infrastructure Services IT Consultancy Services Hardware Services IT Maintenance and Support MSS offers business quality advice and support to ensure you make the right IT decisions From servers, to storage or even if you are looking for a spare part, for IT Hardware Think MSS MSS have over 30 years experience supporting and maintaining IT systems From backups to visualization, count on MSS to support your business previous arrow next arrow Welcome to MicroSystem Support MicroSystem Support (MSS) is a leading IT services provider, specialising in the provision of high quality IT support and infrastructure services. Legacy Support Supporting IT legacy systems for businesses of all sizes. SME IT Services Providing bespoke IT support for your business",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-88becaeae0d1645c",
+          "url": "https://www.microsystem.co.uk/about-mss",
+          "title": "About MSS",
+          "excerpt": "MSS provides maintenance and support, consultancy and product purchase services. MicroSystem Support (MSS) are industry-leading experts in IT infrastructure",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:ablewarton.co.uk",
+      "countryCode": "GB",
+      "companyName": "AbleWarton Limited",
+      "domain": "ablewarton.co.uk",
+      "officialWebsiteUrl": "https://www.ablewarton.co.uk",
+      "primaryRole": "Hybrid",
+      "supportedRoles": [
+        "Reseller",
+        "VAR",
+        "Installer"
+      ],
+      "totalScore": 68,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-6e256f134c07ccde",
+          "url": "https://www.ablewarton.co.uk",
+          "title": "AbleWarton Limited | Networking Services, Equipment and Software Solutions | Keeping Business Simple",
+          "excerpt": "AbleWarton Logo Network Planning & Installation, Hardware Sales, and Software Solutions. The AbleWarton MTD VAT Portal has moved. Click Here. ## Main Content ## AbleWarton Limited Keeping Business Simple A British Organisation AbleWarton is a leading independent IT services and software solutions provider based in the North West of England, specialising in network planning and installation, server and system upgrades, and IT project management. [...] Whatever size your business is, from the smallest SME to multi-site organisations, AbleWarton can provide network support services, planning and installation to help you have the commercial network that you need to run your business. [...] As your business grows so do the demands on your network, and with the right setup this growth can be smo",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-a59fcfe92f918aaa",
+          "url": "https://www.ablewarton.co.uk/networking.html",
+          "title": "Network Planning and Installation",
+          "excerpt": "AbleWarton offer the complete networking package, from planning to installation our skilled engineers are here to get your network up and running, and crucially",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:diskel.co.uk",
+      "countryCode": "GB",
+      "companyName": "Diskel",
+      "domain": "diskel.co.uk",
+      "officialWebsiteUrl": "https://diskel.co.uk",
+      "primaryRole": "Unresolved",
+      "supportedRoles": [],
+      "totalScore": 0,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": false,
+      "evidence": [
+        {
+          "id": "evidence-9d715a8fcc6eff4b",
+          "url": "https://diskel.co.uk/wp-content/uploads/2024/12/Why-upgrade-to-Opera-3-SE-datasheet-002.pdf",
+          "title": "[PDF] Why upgrade to Opera 3 SE datasheet",
+          "excerpt": "An investment in Opera 3 SQL SE will protect your business as you move into the future. The design of Opera 3 SQL SE follows Microsoft best practice for modern client server applications and the technology on which it is built means that you are investing in a solution that will continually deliver intelligent additions to its functionality. At Pegasus we have always believed that your investment in our products is an investment in your business. Here we explore some of the features and functionality that the new technology used in Opera 3 SE can deliver. Technical foundation The technical foundation comprises: Microsoft SQL Server: well-established technology providing secure storage and retrieval of data. Opera 3 Server Edition is the latest addition to the Opera 3 family. Built on the s",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:bdrgroup.co.uk",
+      "countryCode": "GB",
+      "companyName": "BDR Group",
+      "domain": "bdrgroup.co.uk",
+      "officialWebsiteUrl": "https://bdrgroup.co.uk",
+      "primaryRole": "Hybrid",
+      "supportedRoles": [
+        "Reseller",
+        "VAR",
+        "MSP",
+        "Installer"
+      ],
+      "totalScore": 74,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-b61fc215bfb19d0b",
+          "url": "https://bdrgroup.co.uk/introducing-bdr-global",
+          "title": "Introducing BDR Global",
+          "excerpt": "BDR Group BDR Group 0800 975 3000 A PARTNER TO RELY ON BDR Global has built a reputation for providing high quality communications, networking and estate solutions. Our over 25-year long relationship with Avaya combined with our team’s vast experience means we’re perfectly positioned to represent your brand on the global stage as a white-label partner. GO GLOBAL. GO BDR. It takes just 30 seconds. Book a phone call with us and learn more about how we can support your global operations and increase revenue & profit. OUR SOLUTIONS. 📞 Communications We have a longstanding relationship with Avaya, working to deliver their PBX, cloud, contact centre and unified communications to the UK and EU markets. 📡 Networking Great connectivity is the lifeblood of modern businesses. Whether your global cl",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-407ebd91daec7fcf",
+          "url": "https://bdrgroup.co.uk/contact-bdr",
+          "title": "Contact BDR Group | Support, Sales and Locations | Contact Us",
+          "excerpt": "Skip to content BDR Group 0800 975 3000 contact bdr Contact BDR Group BDR Group is one of the UK’s fastest growing technology companies. We operate across the globe and help businesses reach the next level everyday. To contact our support or sales teams, please use the forms below. For anything else, please either call us on 0800 975 3000 or use our live chat. Contact UK Customer Support Request a Free Quote Live Chat Our live chat hours are Mon-Fri (9:00-17:00) – use our live chat to speak to our dedicated team. Speak to an Advisor Call Us Our office opening hours are Mon-Thur (9:00-17:30) and Fri (9:00-17:00). Call 0800 975 3000 United Kingdom Stratford-Upon-Avon hello@bdrgroup.co.uk 0800 975 3000 BDR Group, Caspian House, Timothy's Bridge Road, Stratford Upon Avon, CV37 9NR Kent hello@b",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-8344bf0245794901",
+          "url": "https://technologyreseller.uk/bdr-group-completes-three-acquisitions-in-as-many-months",
+          "title": "BDR Group completes three acquisitions in as many months – TECHNOLOGY RESELLER",
+          "excerpt": "Headquartered in Stratford-Upon-Avon, with five satellite offices and 200 employees, BDR Group supplies connectivity, unified comms, IT, cloud and energy services to organisations throughout the UK and Europe. It also provides a range of building services, including structured cabling, electrical services, access control and security. Bdrgroup.co.uk Caption: (l to r) Jon Buckley from Boffins, BDR Group MD Malek Rahimi, Tony Burrisson from ACR and Ian Warr from Integratech [...] Press \"Enter\" to skip to content Search TECHNOLOGY RESELLER phone TECHNOLOGY RESELLER August 31, 2026 The UK's leading Printed/Digital Magazine, News Site & Information Resource for Channel IT Resellers, MSPs, VAR's, IT Support & Tech Service Providers. # BDR Group completes three acquisitions in as many months By N",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-2f93f3247e95ab2c",
+          "url": "https://uk.linkedin.com/company/bdr-voice-&-data-solutions-limited",
+          "title": "BDR Group - Your Partner for IT, Cybersecurity, Energy, Communications and Building Solutions that Drive Business Success",
+          "excerpt": "BDR Group are a UK award-winning IT and Communications specialist, who provide a wide range of bespoke solutions to a broad spectrum of businesses across the UK and globally. We deliver a first class service through a team of highly trained technical personnel, BDR offer maximum return to its clients through integrated unified communication solutions. Family is at the heart of what we do, which means we like to work closely with our clients to ensure their IT & communications needs are suited [...] Telephony Solutions, IT Solutions, Managed Services, Technical Services, IT Hardware, Energy Services, IT Support, AI, Microsoft, Telecoms, Connectivity, Facilities Management, Data Storage, Servers, IBM, Dell, Avaya, Mobiles, Deskphones, Security, Access Control, CCTV, ANPR, Call Analytics, WiF",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-1088509d646d9c75",
+          "url": "https://bdrgroup.co.uk",
+          "title": "BDR Group | UK's Multi Award-Winning Choice for IT & Telecoms",
+          "excerpt": "Skip to content BDR Group ### 0800 975 3000 THE UK’S AWARD-WINNING CHOICE ### Delivering excellence for 32 years. # Improve IT infrastructure, increase productivity & reduce cost. [...] ### With BDR, say goodbye to Downtime Security breaches High energy costs Slow broadband speeds Compliance headaches High IT costs Complex IT systems Slow performance Limited scalability Lack of agility Outdated technology Poor customer service Employee frustration Lost productivity Data breaches Regulatory fines Lost business Sleepless nights Stress of IT Fear of the unknown Feeling of being overwhelmed Frustration of dealing with IT problems Get Started Today! Discover more with BDR Group [...] #### Unrivalled expertise, a phone call away. ### Communications ### Applications ### Cloud IT ### Building Solu",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:aspire-computers.com",
+      "countryCode": "GB",
+      "companyName": "Aspire Computers",
+      "domain": "aspire-computers.com",
+      "officialWebsiteUrl": "https://aspire-computers.com",
+      "primaryRole": "Hybrid",
+      "supportedRoles": [
+        "Reseller",
+        "VAR",
+        "MSP",
+        "Installer"
+      ],
+      "totalScore": 59,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-511e1ceb26d0ab84",
+          "url": "https://aspire-computers.com",
+          "title": "IT, Websites and Digital Marketing in Warrington - Aspire Computers",
+          "excerpt": "Skip to content Slide 1 Business IT Support in Warrington • Data Recovery • DrayTek Routers • Free Site Surveys • Installations • Network Support GET IN TOUCH Slide 2 - copy Digital Marketing • Websites • Social Media • Email Marketing • Help, Advice and Bespoke Training ENQUIRE TODAY Slide 3 Home PC Support • IT Support • Home/Gaming PCs CONTACT US Slide 2 Business Tools • Hosted Exchange • Websites • Social Media • Cloud Based Backup • Hosted Telephone Systems ENQUIRE TODAY previous arrow next arrow IT Support Hardware Supplies Web & Social Media 25 Years + For over 25 years Aspire Computers have been offering great value service to customers, and during this time have built up a loyal customer base in our base of Warrington, Cheshire. Whatever your requirements we are here to support yo",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-830ae027a68a3637",
+          "url": "https://uk.linkedin.com/company/aspire-network-solutions",
+          "title": "Aspire Network Solutions Ltd - Delivering complete managed installations across the UK and Europe for all your data, comms and network requirements",
+          "excerpt": "Cabling infrastructure should be designed for the long term Active equipment such as switches and wireless access points may be replaced every few years, but structured cabling is expected to remain in service for 10 years or more. Investing in the correct infrastructure today helps avoid costly upgrades and disruption in the future. At Aspire, we work with organisations to design and install structured cabling solutions that support current requirements while preparing for future technologies. [...] IT infrastructure needs. [...] have an important role to play. A well-designed building should provide seamless connectivity, ensuring users can communicate effectively wherever they are. At Aspire, we work with organisations to identify mobile coverage challenges and implement practical solut",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-18f974472b992d05",
+          "url": "https://www.netgear.com",
+          "title": "NETGEAR: Advanced WiFi & Networking",
+          "excerpt": "Privacy PolicyYour Privacy ChoicesTerms & ConditionsAccessibility ©1996-2026 NETGEAR® About UsNETGEAR 30CareersLeadershipAdvisory BoardCorporate ResponsibilityInvestor RelationsPress RoomContact UsLegal SupportDownload CenterCommunityReseller PolicyMyNETGEARBlog Shipping & ReturnsRegister ProductWarrantyProducts End of Service Enterprise SupportEnterprise Download CenterBecome a PartnerFind a PartnerNETGEAR Academy Security & TrustReport VulnerabilitySecurity Advisories [...] Privacy PolicyYour Privacy ChoicesTerms & ConditionsAccessibility ©1996-2026 NETGEAR® [...] About NETGEAR About UsNETGEAR 30CareersLeadershipAdvisory BoardCorporate ResponsibilityInvestor RelationsPress RoomContact UsLegal Resources SupportDownload CenterCommunityReseller PolicyMyNETGEARBlog Products & Orders Shipping",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:varciti.co.uk",
+      "countryCode": "GB",
+      "companyName": "Varciti Ltd",
+      "domain": "varciti.co.uk",
+      "officialWebsiteUrl": "https://www.varciti.co.uk",
+      "primaryRole": "Hybrid",
+      "supportedRoles": [
+        "Reseller",
+        "VAR",
+        "MSP",
+        "Installer"
+      ],
+      "totalScore": 33,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": false,
+      "evidence": [
+        {
+          "id": "evidence-8ffc1d8c7091f3af",
+          "url": "https://www.varciti.co.uk",
+          "title": "Varciti: Tailored IT Support & Solutions Specialists",
+          "excerpt": "We design, deliver, and support end-to-end technology installation solutions tailored to your business. From professional computer setups and robust server ...Read more",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-47691b092eccaf3c",
+          "url": "https://uk.linkedin.com/company/varciti-ltd",
+          "title": "VARCITI LTD",
+          "excerpt": "Varciti is a leading IT services and solutions provider that specialises in providing bespoke IT support and consultancy. We provide a number of turnkey ...Read more",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:tgccomputers.co.uk",
+      "countryCode": "GB",
+      "companyName": "TGC Computers",
+      "domain": "tgccomputers.co.uk",
+      "officialWebsiteUrl": "https://www.tgccomputers.co.uk",
+      "primaryRole": "Hybrid",
+      "supportedRoles": [
+        "Reseller",
+        "VAR",
+        "MSP"
+      ],
+      "totalScore": 54,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-f925f63c023a0446",
+          "url": "https://shop.tgccomputers.co.uk/docs/TGC_COS.pdf",
+          "title": "[PDF] TGC Computers LTD Conditions Of Sale Please read through these ...",
+          "excerpt": "TGC Computers LTD Conditions Of Sale Please read through these conditions of sale carefully and print a copy for future reference General Terms 1. These Conditions of Sale are for business customers and consumers. 2. Goods are subject to availability and may vary from those advertised. Any order placed by you for goods advertised on our website is an offer by you to purchase the goods selected in your order. No contract exists between you and us for the sale of any goods until we have received your order and accepted it. 3. Please note that we reserve the right to cancel or refuse orders for items shown on our website with an incorrect price or with any other incorrect information. No contract is made with you until we have despatched your order. 4. We have the right to terminate the contr",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-fb47b80159bdd27a",
+          "url": "https://rocketreach.co/tgc-computers-profile_b5f1f9d2f42d35e1",
+          "title": "TGC Computers Information",
+          "excerpt": "TGC Computers Ltd is a UK based provider of IT solution services to the SME and Corporate market. We offer first class consulting, technology and supply ...Read more",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-e20b329f6163c1a9",
+          "url": "https://www.facebook.com/www.tgccomputers",
+          "title": "TGC Computers Ltd | Pontefract",
+          "excerpt": "TGC Computers Ltd, TGC for all your IT needs. Friendly,experienced and professional staff offering consultancy, Lister Park, Green Lane, Pontefract, United",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-0fdf171e02d797c6",
+          "url": "https://www.tgccomputers.co.uk",
+          "title": "TGC Computers | Smart IT made simple",
+          "excerpt": "By bringing together innovation, technology and people we make it our business to understand your business so that we deliver the right solution 1st time.",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-3b840725bcf06adf",
+          "url": "https://find-and-update.company-information.service.gov.uk/company/06074223",
+          "title": "TGC COMPUTERS LTD overview - Companies House",
+          "excerpt": "TGC COMPUTERS LTD - Free company information from Companies House including registered office address, filing history, accounts, annual return, officers,",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-e6bbc8b623002303",
+          "url": "https://shop.tgccomputers.co.uk/webstore/productdetail/134752524",
+          "title": "Product Description",
+          "excerpt": "Easily connecting to your existing router, it extends strong, reliable WiFi to every corner—even hard-to-reach areas. Set up and manage your WiFi, including TP",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:networkintegrators.co.uk",
+      "countryCode": "GB",
+      "companyName": "Network Integrators Ltd",
+      "domain": "networkintegrators.co.uk",
+      "officialWebsiteUrl": "https://networkintegrators.co.uk",
+      "primaryRole": "Hybrid",
+      "supportedRoles": [
+        "Reseller",
+        "VAR",
+        "MSP"
+      ],
+      "totalScore": 71,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-ccfb808c2ee14094",
+          "url": "https://networkintegrators.co.uk/contact-us",
+          "title": "Contact Us - Network Integrators Ltd",
+          "excerpt": "JavaScript seems to be disabled in your browser. For the best experience on our site, be sure to turn on Javascript in your browser. SWITCHES WIRED & WIRELESS DEVICES NETWORKING ACCESSORIES HPE Dell Fujitus Lenovo QNAP SYNOLOGY ASUSTOR ALL-IN-ONE PC/WORKSTATION MOUNTS & STANDS DESKTOP COMPUTING THIN CLIENTS TABLETS EMBEDDED COMPUTERS Audio Visual Equipment Televisions Contact Us Contact US Address:— NETWORK INTEGRATORS LTD,159 Eltham High Street, London SE9 1TW United Kingdom. Phone:— 0208 054 9391. Email:— sales@networkintegrators.co.uk Support:—Support 24/7 Loading... BROWSE BY SECTOR BROWSE BY SOLUTION SERVICES & SUPPORT COMPANY INFORMATION",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-97c54f94122d02f8",
+          "url": "https://networkintegrators.co.uk/why-network-integrators-ltd",
+          "title": "Why Network Integrators Ltd",
+          "excerpt": "JavaScript seems to be disabled in your browser. For the best experience on our site, be sure to turn on Javascript in your browser. SWITCHES WIRED & WIRELESS DEVICES NETWORKING ACCESSORIES HPE Dell Fujitus Lenovo QNAP SYNOLOGY ASUSTOR ALL-IN-ONE PC/WORKSTATION MOUNTS & STANDS DESKTOP COMPUTING THIN CLIENTS TABLETS EMBEDDED COMPUTERS Audio Visual Equipment Televisions Why Network Integrators Ltd Why Network Integrators Ltd The origins of Network Integrators LTD can be traced back to the ambition and creative spirit of IT professionals with a common passion to invent and develop. The company has grown its customer base to include many corporate customers and several small companies, establishing itself as a leading IT service provider across the UK by combining their innovation and technolo",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-1339634272a9fc93",
+          "url": "https://networkintegrators.co.uk/careers",
+          "title": "Careers",
+          "excerpt": "The store will not work correctly when cookies are disabled. Skip to Content My Cart Wishlist Compare Sign In Sign In Create an Account Toggle Nav Menu Home SECTORS SERVICES FEATURED BRANDS CONTENT CLUB Account NETWORKING + SWITCHES Cisco Switches HPE Switches Juniper Switches Extreme Switches Dell Switches Ubiquiti Switches Netgear Switches Allied Telesis Switches WIRED & WIRELESS DEVICES Cisco Routers Zyxel Routers Juniper Routers Huawei Routers Ubiquiti Routers Asus Routers TP-Link Routers Netgear Routers NETWORKING ACCESSORIES Wireless Access Point Accessories Network Splitters Networking Cables Wireless Access Points Network Transceiver Modules Network Management Devices VPN Security Equipment Network Management & Monitoring SERVERS + HPE HPE Rack Servers HPE Tower Servers Processors ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-8c9508524c45d258",
+          "url": "https://networkintegrators.co.uk/enterprise",
+          "title": "Enterprise - Network Integrators Ltd",
+          "excerpt": "JavaScript seems to be disabled in your browser. For the best experience on our site, be sure to turn on Javascript in your browser. SWITCHES WIRED & WIRELESS DEVICES NETWORKING ACCESSORIES HPE Dell Fujitus Lenovo QNAP SYNOLOGY ASUSTOR ALL-IN-ONE PC/WORKSTATION MOUNTS & STANDS DESKTOP COMPUTING THIN CLIENTS TABLETS EMBEDDED COMPUTERS Audio Visual Equipment Televisions Enterprise Enterprise Network Integrators LTD provides enterprise companies with the technical IT skills, hardware and software solutions they need to introduce emerging technology. We help you to prolong the life of legacy systems, and modernise IT environments in order to take advantage of cloud computing's benefits. We've partnered with some of the most well-known businesses in the most forward-thinking sectors of the econ",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:renewtech.co.uk",
+      "countryCode": "GB",
+      "companyName": "Renewtech Ltd",
+      "domain": "renewtech.co.uk",
+      "officialWebsiteUrl": "https://www.renewtech.co.uk",
+      "primaryRole": "Reseller",
+      "supportedRoles": [
+        "Reseller",
+        "VAR",
+        "Dealer"
+      ],
+      "totalScore": 68,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-f1a232c4165707ef",
+          "url": "https://www.renewtech.co.uk",
+          "title": "Renewtech: Refurbished IT Hardware for UK Businesses",
+          "excerpt": "Configure servers, storage, or networking solutions – GBP pricing and fast delivery across the UK. from brands like Dell, HPE, Lenovo, and Cisco.",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-a2177c1c4352a716",
+          "url": "https://www.renewtech.co.uk/blog/kimbrer-acquire-renewtech.html",
+          "title": "Kimbrer Computer Acquires Renewtech: Leading Circular IT in Europe",
+          "excerpt": "the core of the business within the Dutch company lies within networking solutions. expertise in server, storage, and networking hardware.",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-7278f90e89da918c",
+          "url": "https://www.renewtech.co.uk/blog/renewtech-acquires-intelligent-servers.html",
+          "title": "Renewtech Acquires Intelligent Servers to Expand UK Operations",
+          "excerpt": "Renewtech, a leading European provider of sustainable IT hardware solutions, has acquired Intelligent Servers, one of the UK's well-renowned",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-2315873f40473ec8",
+          "url": "https://www.renewtech.co.uk/aboutus",
+          "title": "About Us - Renewtech.com",
+          "excerpt": "Renewtech ApS IT partnumber finder English Deutsch Español Français Italiano Svenska Dansk Suomi Portugal Dutch Česká Polska Norsk IT partnumber finder Checkout using your account Checkout as a new customer Creating an account has many benefits: About Renewtech one-stop-shop for sustainable it Renewtech is a global supplier of refurbished IT. We strive to be the best supplier in Europe, giving our customers the chance to enjoy the benefits of the sustainable choice. We are proudly offering everything you need for your IT infrastructure. From spare parts and entire configurations to repair and maintenance service – we got you covered. Expertise & experience At Renewtech, we bring expertise in servers, storage, and network equipment. With locations in Northern Denmark, Amsterdam, and Italy, ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-e2f736c74e93e93a",
+          "url": "https://find-and-update.company-information.service.gov.uk/company/07497261",
+          "title": "RENEWTECH LIMITED overview - Find and update company information - GOV.UK",
+          "excerpt": "Registered office address : Unit B3a, Crimple Court, Hornbeam Square North, Harrogate, North Yorkshire, England, HG2 8PB Company status : Active Company type : Private limited Company Incorporated on : 19 January 2011 ## Accounts Next accounts made up to 31 December 2025 due by 30 September 2026 Last accounts made up to 31 March 2025 ## Confirmation statement Next statement date 26 July 2027 due by 9 August 2027 Last statement dated 26 July 2026 [...] ## Nature of business (SIC) 46510 - Wholesale of computers, computer peripheral equipment and software ## Previous company names Previous company names | Name | Period | | INTELLIGENT SERVERS LIMITED | 30 Mar 2021 - 08 Apr 2026 | | INTELLIGENT BROKERAGE LIMITED | 19 Jan 2011 - 30 Mar 2021 | Tell us what you think of this service(link opens a ",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-dd1b142793b02010",
+          "url": "https://www.trustpilot.com/review/renewtech.com",
+          "title": "Read Customer Service Reviews of renewtech.com - Trustpilot",
+          "excerpt": "## Everything went successfully Everything went successfully. Express shipping and contact as well. Deadlines were chasing us and at Renewtech we got the order right away. August 4, 2026 Unprompted review Useful Share Image 43: Renewtech logo Reply from Renewtech Aug 26, 2026 We are delighted to hear that everything went smoothly and that our express shipping and communication met your expectations.🙌 [...] ## Good purchase experience Clear communication, express shipment. June 22, 2026 Unprompted review Useful Share Image 53: Renewtech logo Reply from Renewtech Jul 2, 2026 Happy to hear 🙌 Welcome back another time! See if a website is trustworthy without leaving the page Image 54 Get Chrome extension Image 55 Robert Töllner DE•2 reviews Jun 18, 2026 Image 56: Rated 5 out of 5 stars [...]",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-411cbe2e9e2596fb",
+          "url": "https://dk.linkedin.com/company/renewtech-dk",
+          "title": "Renewtech - LinkedIn",
+          "excerpt": "Renewtech is a global provider of refurbished and end-of-life IT hardware – specialized in servers, storage systems, and network equipment from leading brands such as IBM, Lenovo, Dell, EMC, HP, NetApp, Hitachi, Cisco, and Supermicro. Since 1995, we have helped companies extend the lifecycle of their IT infrastructure through reliable and sustainable alternatives. We purchase critical IT hardware from professional suppliers, ensure secure data erasure, and sort, test, refurbish, and clean every [...] 2024, we have been operating under the Renewtech name – combining forces to deliver even more value to our customers. [...] insight to make enterprise IT as simple, cost-effective, and sustainable as possible. Our role is to make the complex easy – and to give companies full control over their",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:shbsolutions.co.uk",
+      "countryCode": "GB",
+      "companyName": "SHB Solutions",
+      "domain": "shbsolutions.co.uk",
+      "officialWebsiteUrl": "https://shbsolutions.co.uk",
+      "primaryRole": "Reseller",
+      "supportedRoles": [
+        "Reseller",
+        "VAR",
+        "Dealer"
+      ],
+      "totalScore": 66,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-5defee4470c5b1d9",
+          "url": "https://shbsolutions.co.uk",
+          "title": "SHB Solutions – Buy New & Refurbished Networking Equipments",
+          "excerpt": "\") SUPPORT 24/7 We support online 24 hours a day Cart SHB Solutions All Categories Search New products Browse the collection of our new products, You’ll definitely find what you are looking for. NEW HPE J9995A – 5400R 8-Port 1/2.5/5/10GBASE-T PoE+ v3 zl2 Module Add To Quote Add To Quote NEW HPE J9995A – 5400R 8-Port 1/2.5/5/10GBASE-T PoE+ v3 zl2 Module NEW HPE J9995A – 5400R 8-Port 1/2.5/5/10GBASE-T PoE+ v3 zl2 Module Add To Quote NEW HPE J9995A – 5400R 8-Port 1/2.5/5/10GBASE-T PoE+ v3 zl2 Module HPE J9995A The 8-port 1/2.5/5/10GBASE-T PoE+ MACsec v3 zl2 module HPE J9995A is used with the 5400R zl2 Switch Series. NEW CISCO 1.80TB 2.5″ SAS 10000RPM INTERNAL HARD DRIVE UCS-HD18TB10KS4K Add To Quote Add To Quote NEW CISCO 1.80TB 2.5″ SAS 10000RPM INTERNAL HARD DRIVE UCS-HD18TB10KS4K NEW CISCO",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-35fc5c710065299b",
+          "url": "https://shbsolutions.co.uk/about-us",
+          "title": "About Us - SHB Solutions",
+          "excerpt": "\") SUPPORT 24/7 We support online 24 hours a day Cart SHB Solutions All Categories Search About Us ABOUT SHB SOLUTIONS Our goal is to help companies reduce capital expenditures on network equipment. It does this by offering industry-leading refurbished Cisco equipment and converting shb IT equipment into working capital. We work with all major brands of networks, servers and storage. With a team of experienced and dedicated employees, we want to make buying and selling IT equipment easier. We are located just outside London. If you are in a hurry, we can ship same day. There is an answering machine outside business hours, so please call us and we will respond. Feel free to contact us anytime. We are a friendly group that is genuinely happy to do everything in our power to help our customer",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-aee20bfeeeae44f3",
+          "url": "https://shbsolutions.co.uk/education-it-hardware",
+          "title": "Education-IT-Hardware - SHB Solutions",
+          "excerpt": "\") SUPPORT 24/7 We support online 24 hours a day Cart SHB Solutions All Categories Search Education-IT-Hardware EDUCATIONAL IT HARDWARE SUPPLIER SHB SOLUTIONS Hardware is a UK provider of network and server hardware for primary to university education. Our aim is to save a lot of money on a wide range of IT hardware and server equipment. We offer competitive prices on the products we sell, including servers, components, switches, routers, firewalls and other IT hardware from leading brands such as Cisco HPE, NetApp, and Dell. CONTACT US Network Phones WITH BUDGETS AND FUNDING STRETCHED EVEN FURTHER, IT’S NOT UNCOMMON FOR EDUCATIONAL ORGANISATIONS TO STRUGGLE WITH MAINTAINING FUNCTIONAL, UP-TO-DATE IT NETWORKS. Over the years SHB SOLUTIONS Hardware has worked with schools, colleges and univ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-48b834555d89a3f2",
+          "url": "https://shbsolutions.co.uk/cisco-hardware",
+          "title": "Cisco Hardware - SHB Solutions",
+          "excerpt": "\") SUPPORT 24/7 We support online 24 hours a day Cart SHB Solutions All Categories Search Cisco Hardware BUY NEW AND REFURBISHED CISCO HARDWARE SHB SOLUTIONS has a large inventory of new and refurbished Cisco hardware in the UK. Next day or same day delivery/pickup depending on your needs. If the item you need is not in stock in our Essex warehouse, most Cisco equipment can be sourced within 48 hours from his network of established UK and European suppliers. CONTACT US Each refurbished Cisco device is extensively tested by Cisco certified technicians. SHB SOLUTIONS hardware’s quality control process gives us confidence in our refurbishment process. That’s why all Cisco equipment comes with a 2-year warranty\\. Extended and extended replacement warranties are available upon request. Not sure",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "GB:domain:itnetworkstrade.co.uk",
+      "countryCode": "GB",
+      "companyName": "IT Networks Trade UK",
+      "domain": "itnetworkstrade.co.uk",
+      "officialWebsiteUrl": "https://itnetworkstrade.co.uk",
+      "primaryRole": "Reseller",
+      "supportedRoles": [
+        "Reseller",
+        "VAR",
+        "Dealer"
+      ],
+      "totalScore": 61,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-cac6249490db7bce",
+          "url": "https://itnetworkstrade.co.uk/terms-and-conditions",
+          "title": "Terms And Conditions | Leading IT Hardware Reseller",
+          "excerpt": "We Accept POs from Fortune Companies, Defense and Government Agencies (Federal, State, Local), Universities, Schools and Colleges. IT Networks Trade UK Call Now: 02079938331 Shopping Cart Terms and Conditions Terms and Conditions 1 – Website 2 – Definitions 3 – Orders 4 – Prices 5 – Ordering 6 - Risk, Title, and Delivery: 7 - Delivery terms 8– Availability 9– Payments 10 - Product Specifications 11 - Trade Names and Trade Marks 12 - Warranties and Returns 13 -Responsibilities: 14 - Health and Safety 15 - Force Majeure 16 - Clearance Bargains & Non-Current Catalog Requests ('NCCR') Products Special Rules 17 - Errors and Omissions 18 - Obligations for the Customer 19 - Administrator's Responsibilities 20 - Obligations of the User 21 - Security and Login 22– License 23 - Website-based materia",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    }
+  ],
+  "aliasToCompanyKey": {
+    "GB:domain:4gon.co.uk": "GB:domain:4gon.co.uk",
+    "GB:name:4gonsolutions": "GB:domain:4gon.co.uk",
+    "GB:domain:softcat.com": "GB:domain:softcat.com",
+    "GB:name:softcat": "GB:domain:softcat.com",
+    "GB:domain:probrand.co.uk": "GB:domain:marketplace.probrand.co.uk",
+    "GB:name:probrand": "GB:domain:marketplace.probrand.co.uk",
+    "GB:domain:uk.insight.com": "GB:domain:uk.insight.com",
+    "GB:name:insightdirectuk": "GB:domain:uk.insight.com",
+    "GB:domain:ccsmedia.com": "GB:domain:ccsmedia.com",
+    "GB:name:ccsmedia": "GB:domain:ccsmedia.com",
+    "GB:domain:bechtle.com": "GB:domain:bechtle.com",
+    "GB:name:bechtledirectuk": "GB:domain:bechtle.com",
+    "GB:domain:millgate.co.uk": "GB:domain:millgate.co.uk",
+    "GB:name:millgate": "GB:domain:millgate.co.uk",
+    "GB:domain:transparent-uk.com": "GB:domain:transparent-uk.com",
+    "GB:name:transparentcommunications": "GB:domain:transparent-uk.com",
+    "GB:domain:misco.co.uk": "GB:domain:misco.co.uk",
+    "GB:name:miscouk": "GB:domain:misco.co.uk",
+    "GB:domain:senetic.co.uk": "GB:domain:senetic.co.uk",
+    "GB:name:seneticuk": "GB:domain:senetic.co.uk",
+    "GB:domain:fluxithardware.com": "GB:domain:flux-it.co.uk",
+    "GB:name:fluxithardware": "GB:domain:flux-it.co.uk",
+    "GB:domain:microsystem.co.uk": "GB:domain:microsystem.co.uk",
+    "GB:name:microsystemsupportmss": "GB:domain:microsystem.co.uk",
+    "GB:domain:ablewarton.co.uk": "GB:domain:ablewarton.co.uk",
+    "GB:name:ablewarton": "GB:domain:ablewarton.co.uk",
+    "GB:domain:diskel.co.uk": "GB:domain:diskel.co.uk",
+    "GB:name:diskel": "GB:domain:diskel.co.uk",
+    "GB:domain:bdrgroup.co.uk": "GB:domain:bdrgroup.co.uk",
+    "GB:name:bdr": "GB:domain:bdrgroup.co.uk",
+    "GB:domain:aspire-computers.com": "GB:domain:aspire-computers.com",
+    "GB:name:aspirecomputers": "GB:domain:aspire-computers.com",
+    "GB:domain:varciti.co.uk": "GB:domain:varciti.co.uk",
+    "GB:name:varciti": "GB:domain:varciti.co.uk",
+    "GB:domain:tgccomputers.co.uk": "GB:domain:tgccomputers.co.uk",
+    "GB:name:tgccomputers": "GB:domain:tgccomputers.co.uk",
+    "GB:domain:networkintegrators.co.uk": "GB:domain:networkintegrators.co.uk",
+    "GB:name:networkintegrators": "GB:domain:networkintegrators.co.uk",
+    "GB:domain:renewtech.co.uk": "GB:domain:renewtech.co.uk",
+    "GB:name:renewtech": "GB:domain:renewtech.co.uk",
+    "GB:domain:shbsolutions.co.uk": "GB:domain:shbsolutions.co.uk",
+    "GB:name:shbsolutions": "GB:domain:shbsolutions.co.uk",
+    "GB:domain:itnetworkstrade.co.uk": "GB:domain:itnetworkstrade.co.uk",
+    "GB:name:itnetworkstradeuk": "GB:domain:itnetworkstrade.co.uk"
+  },
+  "costEvents": [
+    {
+      "eventId": "GB-resale:evaluation:fresh-evidence",
+      "cellId": "GB-resale",
+      "stage": "evaluation-control-fresh-evidence",
+      "provider": "tavily",
+      "startedAt": "2026-09-06T19:58:20.393Z",
+      "completedAt": "2026-09-06T19:58:33.219Z",
+      "latencyMs": 81094,
+      "attempts": 41,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 31
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 58,
+        "validOutputItems": 58,
+        "downstreamUsedItems": 58,
+        "discardedReasonCounts": {
+          "noFreshEvidence": 5
+        }
+      },
+      "notes": [
+        "Gemini-unique final candidates only",
+        "historical evidence reads and writes disabled"
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.248,
+      "budgetCostUsd": 0.248,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-resale:evaluation:correction-search",
+      "cellId": "GB-resale",
+      "stage": "evaluation-control-correction-search",
+      "provider": "tavily",
+      "startedAt": "2026-09-06T19:58:33.230Z",
+      "completedAt": "2026-09-06T20:01:27.630Z",
+      "latencyMs": 42291,
+      "attempts": 20,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 20
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 23,
+        "downstreamUsedItems": 23,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.16,
+      "budgetCostUsd": 0.16,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-resale:evaluation-control-correction:1",
+      "cellId": "GB-resale",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:58:33.230Z",
+      "completedAt": "2026-09-06T20:01:27.630Z",
+      "latencyMs": 55673,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 13229,
+        "outputTokens": 6003,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 22,
+        "downstreamUsedItems": 23,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.010977224999999998,
+      "budgetCostUsd": 0.010977224999999998,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "GB-resale:evaluation-control-correction:2",
+      "cellId": "GB-resale",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:58:33.230Z",
+      "completedAt": "2026-09-06T20:01:27.630Z",
+      "latencyMs": 74373,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 18442,
+        "outputTokens": 7784,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 22,
+        "downstreamUsedItems": 23,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.014794349999999998,
+      "budgetCostUsd": 0.014794349999999998,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "GB-resale:evaluation-control-correction:3",
+      "cellId": "GB-resale",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:58:33.230Z",
+      "completedAt": "2026-09-06T20:01:27.630Z",
+      "latencyMs": 61203,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 14401,
+        "outputTokens": 6756,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 22,
+        "downstreamUsedItems": 23,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.012142155,
+      "budgetCostUsd": 0.012142155,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "GB-resale:evaluation-control-correction:4",
+      "cellId": "GB-resale",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:58:33.230Z",
+      "completedAt": "2026-09-06T20:01:27.630Z",
+      "latencyMs": 60090,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 14655,
+        "outputTokens": 6524,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 22,
+        "downstreamUsedItems": 23,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.012050805,
+      "budgetCostUsd": 0.012050805,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "GB-resale:evaluation-control-correction:5",
+      "cellId": "GB-resale",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:58:33.230Z",
+      "completedAt": "2026-09-06T20:01:27.630Z",
+      "latencyMs": 41225,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 8756,
+        "outputTokens": 4127,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 22,
+        "downstreamUsedItems": 23,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.007399350000000001,
+      "budgetCostUsd": 0.007399350000000001,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "GB-resale:evaluation-control-score-only:1",
+      "cellId": "GB-resale",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:01:27.649Z",
+      "completedAt": "2026-09-06T20:04:13.834Z",
+      "latencyMs": 48637,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 9285,
+        "outputTokens": 4181,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 22,
+        "downstreamUsedItems": 22,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.007676445,
+      "budgetCostUsd": 0.007676445,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-resale:evaluation-control-score-only:2",
+      "cellId": "GB-resale",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:01:27.649Z",
+      "completedAt": "2026-09-06T20:04:13.834Z",
+      "latencyMs": 51385,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 9080,
+        "outputTokens": 4216,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 22,
+        "downstreamUsedItems": 22,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.007617720000000001,
+      "budgetCostUsd": 0.007617720000000001,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-resale:evaluation-control-score-only:3",
+      "cellId": "GB-resale",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:01:27.649Z",
+      "completedAt": "2026-09-06T20:04:13.834Z",
+      "latencyMs": 53543,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 9178,
+        "outputTokens": 4931,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 22,
+        "downstreamUsedItems": 22,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.008282399999999999,
+      "budgetCostUsd": 0.008282399999999999,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-resale:evaluation-control-score-only:4",
+      "cellId": "GB-resale",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:01:27.649Z",
+      "completedAt": "2026-09-06T20:04:13.834Z",
+      "latencyMs": 54953,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 9547,
+        "outputTokens": 4536,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 22,
+        "downstreamUsedItems": 22,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.008099265,
+      "budgetCostUsd": 0.008099265,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-resale:evaluation-control-score-only:5",
+      "cellId": "GB-resale",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:01:27.649Z",
+      "completedAt": "2026-09-06T20:04:13.834Z",
+      "latencyMs": 24643,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 5717,
+        "outputTokens": 1926,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 22,
+        "downstreamUsedItems": 22,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.0041625149999999994,
+      "budgetCostUsd": 0.0041625149999999994,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-resale:evaluation-control-score-only:6",
+      "cellId": "GB-resale",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:01:27.649Z",
+      "completedAt": "2026-09-06T20:04:13.834Z",
+      "latencyMs": 22904,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 6574,
+        "outputTokens": 1852,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 22,
+        "downstreamUsedItems": 22,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.0044709300000000006,
+      "budgetCostUsd": 0.0044709300000000006,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-resale:evaluation-control-score-only:7",
+      "cellId": "GB-resale",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:01:27.649Z",
+      "completedAt": "2026-09-06T20:04:13.834Z",
+      "latencyMs": 29552,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 7008,
+        "outputTokens": 2389,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 22,
+        "downstreamUsedItems": 22,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00512691,
+      "budgetCostUsd": 0.00512691,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-resale:evaluation-control-score-only:8",
+      "cellId": "GB-resale",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:01:27.649Z",
+      "completedAt": "2026-09-06T20:04:13.834Z",
+      "latencyMs": 26139,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 6413,
+        "outputTokens": 2133,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 22,
+        "downstreamUsedItems": 22,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.004645364999999999,
+      "budgetCostUsd": 0.004645364999999999,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-resale:evaluation-control-score-only:9",
+      "cellId": "GB-resale",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:01:27.649Z",
+      "completedAt": "2026-09-06T20:04:13.834Z",
+      "latencyMs": 54210,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 9912,
+        "outputTokens": 5136,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 22,
+        "downstreamUsedItems": 22,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.008780040000000001,
+      "budgetCostUsd": 0.008780040000000001,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-resale:evaluation-control-score-only:10",
+      "cellId": "GB-resale",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:01:27.649Z",
+      "completedAt": "2026-09-06T20:04:13.834Z",
+      "latencyMs": 65514,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 10101,
+        "outputTokens": 5595,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 22,
+        "downstreamUsedItems": 22,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.009261585,
+      "budgetCostUsd": 0.009261585,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-resale:evaluation-control-score-only:11",
+      "cellId": "GB-resale",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:01:27.649Z",
+      "completedAt": "2026-09-06T20:04:13.834Z",
+      "latencyMs": 43140,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 7737,
+        "outputTokens": 3844,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 22,
+        "downstreamUsedItems": 22,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.006709875,
+      "budgetCostUsd": 0.006709875,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-resale:evaluation-control-score-only:12",
+      "cellId": "GB-resale",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:01:27.649Z",
+      "completedAt": "2026-09-06T20:04:13.834Z",
+      "latencyMs": 58495,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 9406,
+        "outputTokens": 5696,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 22,
+        "downstreamUsedItems": 22,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.009047129999999999,
+      "budgetCostUsd": 0.009047129999999999,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-resale:evaluation-control-score-only:13",
+      "cellId": "GB-resale",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:01:27.649Z",
+      "completedAt": "2026-09-06T20:04:13.834Z",
+      "latencyMs": 26354,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 5410,
+        "outputTokens": 2039,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 22,
+        "downstreamUsedItems": 22,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00412728,
+      "budgetCostUsd": 0.00412728,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-resale:evaluation-control-score-only:14",
+      "cellId": "GB-resale",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:01:27.649Z",
+      "completedAt": "2026-09-06T20:04:13.834Z",
+      "latencyMs": 41545,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 9083,
+        "outputTokens": 3806,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 22,
+        "downstreamUsedItems": 22,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.007262325,
+      "budgetCostUsd": 0.007262325,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-resale:evaluation-control-score-only:15",
+      "cellId": "GB-resale",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:01:27.649Z",
+      "completedAt": "2026-09-06T20:04:13.834Z",
+      "latencyMs": 22612,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 5166,
+        "outputTokens": 1784,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 22,
+        "downstreamUsedItems": 22,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00379929,
+      "budgetCostUsd": 0.00379929,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-resale:evaluation-control-score-only:16",
+      "cellId": "GB-resale",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:01:27.649Z",
+      "completedAt": "2026-09-06T20:04:13.834Z",
+      "latencyMs": 24253,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 4857,
+        "outputTokens": 1973,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 22,
+        "downstreamUsedItems": 22,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.0038293050000000003,
+      "budgetCostUsd": 0.0038293050000000003,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-resale:evaluation-control-score-only:17",
+      "cellId": "GB-resale",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:01:27.649Z",
+      "completedAt": "2026-09-06T20:04:13.834Z",
+      "latencyMs": 28137,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 6263,
+        "outputTokens": 2197,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 22,
+        "downstreamUsedItems": 22,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.004635795,
+      "budgetCostUsd": 0.004635795,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "GB-resale:evaluation-control-score-only:18",
+      "cellId": "GB-resale",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T20:01:27.649Z",
+      "completedAt": "2026-09-06T20:04:13.834Z",
+      "latencyMs": 22805,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 34,
+        "outputTokens": 1792,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 22,
+        "downstreamUsedItems": 22,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00157383,
+      "budgetCostUsd": 0.00157383,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    }
+  ],
+  "warnings": [
+    "No official-domain evidence was extracted for transparent-uk.com.",
+    "No official-domain evidence was extracted for misco.co.uk.",
+    "No official-domain evidence was extracted for senetic.co.uk.",
+    "No official-domain evidence was extracted for fluxithardware.com.",
+    "No official-domain evidence was extracted for varciti.co.uk.",
+    "4gon.co.uk: The parent company name 'Cadmus Distribution Group' suggests possible distribution activity, but no direct evidence of 4Gon supplying downstream channel partners was found.",
+    "4gon.co.uk: Deterministic role hints were not auto-added: SI, Installer.",
+    "softcat.com: Softcat plc demonstrates multiple co-primary role families, warranting a Hybrid classification.",
+    "marketplace.probrand.co.uk: The evidence includes a reference to ProBrand International (probrandintl.com) which appears to be a different entity manufacturing LNB devices and IoT sensors.",
+    "uk.insight.com: Some independent-public evidence (NETGEAR, TP-Link, HPE) appears to be vendor websites rather than evidence about Insight Direct (UK) Ltd specifically.",
+    "ccsmedia.com: The Companies House evidence (evidence-b7cacf0dd40636e7) refers to 'CCS MEDIA SERVICES LIMITED' which may be a different entity from 'CCS Media Ltd'.",
+    "bechtle.com: Submitted company name 'Bechtle Direct UK' is outdated; legal name is Bechtle Limited.",
+    "bechtle.com: Deterministic role hints were not auto-added: Distributor.",
+    "transparent-uk.com: No Companies House evidence supplied for company existence verification.",
+    "transparent-uk.com: Deterministic role hints were not auto-added: Distributor.",
+    "misco.co.uk: No Companies House evidence supplied for company existence verification.",
+    "misco.co.uk: Deterministic role hints were not auto-added: Distributor, SI, Installer, MSP.",
+    "senetic.co.uk: Official website URL senetic.co.uk not directly evidenced; senetic.net and senetic.co.il are referenced instead.",
+    "senetic.co.uk: Deterministic role hints were not auto-added: Distributor, Installer.",
+    "flux-it.co.uk: Submitted domain fluxithardware.com differs from the official website domain flux-it.co.uk.",
+    "flux-it.co.uk: Deterministic role hints were not auto-added: Distributor.",
+    "microsystem.co.uk: Submitted roles did not include MSP, but evidence supports an MSP role.",
+    "microsystem.co.uk: Deterministic role hints were not auto-added: SI, Installer.",
+    "ablewarton.co.uk: Submitted roles did not include Installer, but evidence supports an Installer role.",
+    "ablewarton.co.uk: Deterministic role hints were not auto-added: Distributor, MSP, ISP.",
+    "diskel.co.uk: Escalation was skipped because the configured routine and escalation models are identical.",
+    "diskel.co.uk: Supplied evidence for Diskel is insufficient to confirm the submitted roles.",
+    "diskel.co.uk: Independent public evidence relates to other companies, not Diskel.",
+    "diskel.co.uk: Roles without a supported atomic role finding were removed.",
+    "diskel.co.uk: Deterministic role hints were not auto-added: Distributor, Reseller, VAR, SI, Installer, MSP, ISP.",
+    "bdrgroup.co.uk: Submitted roles did not include MSP or Installer, but evidence supports these roles.",
+    "comms-unite.co.uk: Submitted roles did not include MSP or Installer, but evidence supports these roles.",
+    "aspire-computers.com: Submitted roles did not include MSP or Installer, but evidence supports these roles.",
+    "aspire-computers.com: Several independent-public evidence items refer to unrelated companies with similar names and were excluded.",
+    "varciti.co.uk: Submitted roles did not include MSP or Installer, but evidence supports these roles.",
+    "varciti.co.uk: Several independent-public evidence items refer to unrelated companies with similar names and were excluded.",
+    "varciti.co.uk: Deterministic role hints were not auto-added: SI, ISP.",
+    "tgccomputers.co.uk: Submitted roles did not include MSP, but evidence supports this role.",
+    "tgccomputers.co.uk: Several official-website evidence items are product PDFs from third-party manufacturers and were not used for role classification.",
+    "networkintegrators.co.uk: Submitted roles did not include MSP, but evidence supports this role.",
+    "renewtech.co.uk: Submitted domain renewtech.co.uk is consistent with official website evidence.",
+    "renewtech.co.uk: Companies House SIC code suggests wholesale activity, but no direct evidence of distributor role.",
+    "renewtech.co.uk: Deterministic role hints were not auto-added: Distributor, SI, Installer.",
+    "shbsolutions.co.uk: No Companies House record was supplied for SHB Solutions, so legal entity details are not independently confirmed.",
+    "shbsolutions.co.uk: Submitted domain shbsolutions.co.uk is consistent with official website evidence.",
+    "itnetworkstrade.co.uk: Only one piece of evidence was supplied for this candidate, limiting independent verification.",
+    "itnetworkstrade.co.uk: No Companies House record was supplied, so legal entity details are not independently confirmed.",
+    "itnetworkstrade.co.uk: Several supplied evidence items relate to ADI/Snap One and are not relevant to IT Networks Trade UK."
+  ]
+}

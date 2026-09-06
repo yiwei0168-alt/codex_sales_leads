@@ -1,0 +1,44 @@
+{
+  "packetId": "blind-059d577f0163907d70b5aa16",
+  "targetMarket": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom"
+  },
+  "requestedCategory": "distribution",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "Arrow Electronics, Inc.",
+    "domain": "arrow.com",
+    "officialWebsiteUrl": "https://www.arrow.com/"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-40104e90dd82c4a8",
+      "sourceType": "official-website",
+      "url": "https://www.arrow.com/globalecs/na/vendors/arista-networks",
+      "title": "Arista Networks | Arista Networks Reseller & Partner Programs | Arrow ECS",
+      "excerpt": "banner-arista Arista Networks Arista Networks is an industry leader in data-driven, client to cloud networking for large data center, campus and routing environments. Arista Networks Logo Delivering software-driven networking solutions about-arista About Arista Networks Arista Networks was launched in 2008 and has undergone continuous innovation in both hardware and software to deliver data-driven networking systems and solutions for thousands of diverse customers ranging from major cloud providers to healthcare, government, carrier, finance, education, and production web/SaaS companies. Arista’s award-winning platforms deliver availability, agility, automation, analytics and security through an advanced network operating stack. Arista Networks is headquartered in Santa Clara, California, "
+    },
+    {
+      "evidenceId": "evidence-e92fa550e586947f",
+      "sourceType": "official-website",
+      "url": "https://www.arrow.com/globalecs/be/services",
+      "title": "Services for IT Value Added Distributors | Arrow ECS",
+      "excerpt": "Enterprise Computing Solutions Enterprise Computing Solutions Arrow Electronics, Inc. 1. Home 2. Services: Services intersecting highways Services Accelerate the growth of your business Set yourself apart from competition, reduce customer churn and increase profitability potential with Arrow’s services. Get in Touch Services that help you differentiate Group business meeting in modern office Managed services Start your journey Expand your service and solution capabilities at scale — without a heavy investment. Arrow’s managed services can help you enhance your portfolio and achieve economies of scale. Our managed service areas are growing and encompass data management, networking and security and cloud. Eliminate barriers to growth, complement your capabilities, take full advantage of exis"
+    },
+    {
+      "evidenceId": "evidence-6da7a353dd205b03",
+      "sourceType": "official-website",
+      "url": "https://www.arrow.com/globalecs/na",
+      "title": "Enterprise Computing Solutions | Arrow ECS",
+      "excerpt": "Enterprise Computing Solutions Enterprise Computing Solutions Arrow Electronics, Inc. 1. Arrow ECS Home snow mountaineers Grow with ease. Now you can. Growth happens in many ways. Do more with Arrow. As the leading AI and hybrid cloud aggregator, we deliver a tailored approach to support your business needs. Let's talk Exceed what’s possible. banner Take your business to new heights. Arrow is constantly evolving to meet the needs and demands of the technology ecosystem, so you can adapt and innovate — how, when and where you choose. Do more with services and solutions to augment your capabilities. Now you can. Learn more banner Now you can supercharge your growth. GL ARW AWARENESS 05Jul2024 PT CM Graphic ECS Home Page V1 Icons Relationships Fill Supercharge your relationships Boost your bu"
+    },
+    {
+      "evidenceId": "evidence-c47b07ebf9daf03b",
+      "sourceType": "official-website",
+      "url": "https://www.arrow.com/globalecs/uk/services-old",
+      "title": "Services Overview | Arrow ECS",
+      "excerpt": "Enterprise Computing Solutions Enterprise Computing Solutions Arrow Electronics, Inc. 1. Home 2. Services Crowd_Aerial Services Accelerate the growth of your business We go beyond the traditional distributor role, supporting you along the entire IT life cycle. Services that help you differentiate Managed services Support services Technical sales engineering International logistics Education and training Financing and leasing Start your journey Expand your service and solution capabilities at scale — without a heavy investment. Arrow’s managed services can help you enhance your portfolio and achieve economies of scale. Our managed service areas are growing and encompass data management, networking and security and cloud. Eliminate barriers to growth, complement your capabilities, take full "
+    }
+  ]
+}

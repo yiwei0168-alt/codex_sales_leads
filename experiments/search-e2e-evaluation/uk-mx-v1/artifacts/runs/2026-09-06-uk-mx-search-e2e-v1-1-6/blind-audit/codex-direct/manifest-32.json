@@ -1,0 +1,204 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+  "targetSize": 32,
+  "reviewer": "codex-in-session",
+  "externalSearchAllowed": false,
+  "identitiesHidden": true,
+  "scoresHidden": true,
+  "requireDecisionCommitAndPushBeforeDeblind": true,
+  "packets": [
+    {
+      "packetId": "blind-f1d3f22475d1a59c64e9fc53",
+      "packetSha256": "a2ba45146975b6a482628a0037604857f7f6ff7c0dd519d5165991ae11e6a5be",
+      "packetPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/packets/blind-f1d3f22475d1a59c64e9fc53.json",
+      "decisionPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/decisions/blind-f1d3f22475d1a59c64e9fc53.json"
+    },
+    {
+      "packetId": "blind-76b95d8ad5ee046e7758a640",
+      "packetSha256": "308aa87e04edcfad6919f7ffa8e1c3197e5fb895588559bf6e31a4f7734fab1a",
+      "packetPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/packets/blind-76b95d8ad5ee046e7758a640.json",
+      "decisionPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/decisions/blind-76b95d8ad5ee046e7758a640.json"
+    },
+    {
+      "packetId": "blind-7ca0576569a678b9f9e73d70",
+      "packetSha256": "3d5864e9def9297d30597f7b120a04a66790ba8d9929b7a7ca3c3d8aecce9e85",
+      "packetPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/packets/blind-7ca0576569a678b9f9e73d70.json",
+      "decisionPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/decisions/blind-7ca0576569a678b9f9e73d70.json"
+    },
+    {
+      "packetId": "blind-f6607cd4485dfcdda3540cd7",
+      "packetSha256": "0854b5d0373d00a6038a9d046df3f5cbd85e8154b13bd318e490cd1f011ac9c4",
+      "packetPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/packets/blind-f6607cd4485dfcdda3540cd7.json",
+      "decisionPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/decisions/blind-f6607cd4485dfcdda3540cd7.json"
+    },
+    {
+      "packetId": "blind-b3cf891d0df3d51168d2a747",
+      "packetSha256": "ca0c23ef53a226bb0c8a6c30acd130b2114befcf72b96d470bf3274066cd3626",
+      "packetPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/packets/blind-b3cf891d0df3d51168d2a747.json",
+      "decisionPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/decisions/blind-b3cf891d0df3d51168d2a747.json"
+    },
+    {
+      "packetId": "blind-8d347f0f09bade22dc4d7538",
+      "packetSha256": "deab41d33f87fcf837c7a066bdf75c5011a6e5eb698c5744b03db206e777ee0c",
+      "packetPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/packets/blind-8d347f0f09bade22dc4d7538.json",
+      "decisionPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/decisions/blind-8d347f0f09bade22dc4d7538.json"
+    },
+    {
+      "packetId": "blind-81f5e807f252883de7fedbb3",
+      "packetSha256": "a12bc114b36056459af15e6292075cb40d56704416d1667fca169d3e5375497a",
+      "packetPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/packets/blind-81f5e807f252883de7fedbb3.json",
+      "decisionPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/decisions/blind-81f5e807f252883de7fedbb3.json"
+    },
+    {
+      "packetId": "blind-059d577f0163907d70b5aa16",
+      "packetSha256": "9976593de2b368cb96b986171b6255a8a121a714aa3cd1123fde2453d8c98553",
+      "packetPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/packets/blind-059d577f0163907d70b5aa16.json",
+      "decisionPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/decisions/blind-059d577f0163907d70b5aa16.json"
+    },
+    {
+      "packetId": "blind-39dd4592da5d9ff1dbd63878",
+      "packetSha256": "b059f47d6972380cace580204a31957552750411ad6ff95d84c29dc34a151eda",
+      "packetPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/packets/blind-39dd4592da5d9ff1dbd63878.json",
+      "decisionPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/decisions/blind-39dd4592da5d9ff1dbd63878.json"
+    },
+    {
+      "packetId": "blind-975d71c3a9f6671298a43650",
+      "packetSha256": "c666a3a31921dd6219f346b65bbb4a94caf5f50e68b1163c08896dadf2278912",
+      "packetPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/packets/blind-975d71c3a9f6671298a43650.json",
+      "decisionPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/decisions/blind-975d71c3a9f6671298a43650.json"
+    },
+    {
+      "packetId": "blind-89899798b27eba4d8011a34b",
+      "packetSha256": "5393c12374657e926e1c7097e49798d81059d1534f83db3c125a85a3f8043470",
+      "packetPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/packets/blind-89899798b27eba4d8011a34b.json",
+      "decisionPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/decisions/blind-89899798b27eba4d8011a34b.json"
+    },
+    {
+      "packetId": "blind-c7ceab99b66a973483e4ea92",
+      "packetSha256": "a04740cc38cfea55d4c544d868b7e32acaaea540e6530c25cead7bb638bfa632",
+      "packetPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/packets/blind-c7ceab99b66a973483e4ea92.json",
+      "decisionPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/decisions/blind-c7ceab99b66a973483e4ea92.json"
+    },
+    {
+      "packetId": "blind-3b16a4d338bb38160a4a87c7",
+      "packetSha256": "d358457b3edc975c77d49350e6c87d19e56ecce0ce31fee8f8cf99bf2a4bcdce",
+      "packetPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/packets/blind-3b16a4d338bb38160a4a87c7.json",
+      "decisionPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/decisions/blind-3b16a4d338bb38160a4a87c7.json"
+    },
+    {
+      "packetId": "blind-3f2fd0efe0371ea85502a24e",
+      "packetSha256": "14a712b176a66d94d204835326761b00a63f3a2fcda98f55dff2b3d817b8a408",
+      "packetPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/packets/blind-3f2fd0efe0371ea85502a24e.json",
+      "decisionPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/decisions/blind-3f2fd0efe0371ea85502a24e.json"
+    },
+    {
+      "packetId": "blind-82dcf8c3df9db277190e996e",
+      "packetSha256": "cde287d75cf888cc9a9c18279d4669a5cd247b87b20e1519a571d4ba7f57abbd",
+      "packetPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/packets/blind-82dcf8c3df9db277190e996e.json",
+      "decisionPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/decisions/blind-82dcf8c3df9db277190e996e.json"
+    },
+    {
+      "packetId": "blind-a446cc431d7d94504be7b481",
+      "packetSha256": "8f33d86fbfefa78653dd3db35efba030bad6eb97d06c73a7c5a2ad21821689b3",
+      "packetPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/packets/blind-a446cc431d7d94504be7b481.json",
+      "decisionPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/decisions/blind-a446cc431d7d94504be7b481.json"
+    },
+    {
+      "packetId": "blind-f6740ed923441e446320bf41",
+      "packetSha256": "8e986602809be67fcf901f123b8812a2aae2f008acbc1a8fa835b3ffbddaaf53",
+      "packetPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/packets/blind-f6740ed923441e446320bf41.json",
+      "decisionPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/decisions/blind-f6740ed923441e446320bf41.json"
+    },
+    {
+      "packetId": "blind-ccc409fd1bcf8a7bc12941c9",
+      "packetSha256": "64e992602dfb71bea94c6a9521c4acd07fe19e74c8cd31b41516dff2d298e00d",
+      "packetPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/packets/blind-ccc409fd1bcf8a7bc12941c9.json",
+      "decisionPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/decisions/blind-ccc409fd1bcf8a7bc12941c9.json"
+    },
+    {
+      "packetId": "blind-1e1aa7115a20499527100a66",
+      "packetSha256": "4b927f5a4d3071ce47a35b95220dbc15138d240fba7c1f17296f1584b48f34d6",
+      "packetPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/packets/blind-1e1aa7115a20499527100a66.json",
+      "decisionPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/decisions/blind-1e1aa7115a20499527100a66.json"
+    },
+    {
+      "packetId": "blind-d1f9193a5bad0f4095a8b28e",
+      "packetSha256": "c663f08783aae23b2c27f6769bf6e86bb9fd47f6e7f10377d782a49531d5614b",
+      "packetPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/packets/blind-d1f9193a5bad0f4095a8b28e.json",
+      "decisionPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/decisions/blind-d1f9193a5bad0f4095a8b28e.json"
+    },
+    {
+      "packetId": "blind-8d8dde034e52e33b01b52604",
+      "packetSha256": "5f43f017c3360a7c945c6a7c88f79816214573557533ce5ca1a2251aa1c3e136",
+      "packetPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/packets/blind-8d8dde034e52e33b01b52604.json",
+      "decisionPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/decisions/blind-8d8dde034e52e33b01b52604.json"
+    },
+    {
+      "packetId": "blind-1acc3520451ee4df2ddbd6fe",
+      "packetSha256": "bcf1771edc28ab3d2b5cb0642de11a5db080033ad2868bd836b37df03ee16457",
+      "packetPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/packets/blind-1acc3520451ee4df2ddbd6fe.json",
+      "decisionPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/decisions/blind-1acc3520451ee4df2ddbd6fe.json"
+    },
+    {
+      "packetId": "blind-8ecb5ed046718318bab14333",
+      "packetSha256": "887808390dd6c3f2edbc1c0de2e645d036236c59afe9cd00acf34c8126caf2a9",
+      "packetPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/packets/blind-8ecb5ed046718318bab14333.json",
+      "decisionPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/decisions/blind-8ecb5ed046718318bab14333.json"
+    },
+    {
+      "packetId": "blind-c2b2f93df4b1bbd4b5474334",
+      "packetSha256": "74112c98302df4d8397460ce63d3f7c4a52b56dfbff1fd1b1d0aa8e0c76a8af8",
+      "packetPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/packets/blind-c2b2f93df4b1bbd4b5474334.json",
+      "decisionPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/decisions/blind-c2b2f93df4b1bbd4b5474334.json"
+    },
+    {
+      "packetId": "blind-a243c367b04316e152db2ffe",
+      "packetSha256": "e8e987e70ec804c4272e6af2f91920c94b4e569e0b9600d54e9affa1e18c6231",
+      "packetPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/packets/blind-a243c367b04316e152db2ffe.json",
+      "decisionPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/decisions/blind-a243c367b04316e152db2ffe.json"
+    },
+    {
+      "packetId": "blind-74a52ae217edaa66eb86c84a",
+      "packetSha256": "5fa5e7f20c37201b11f817ecc051961ebff026853d29900350dbcf11dd3d281e",
+      "packetPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/packets/blind-74a52ae217edaa66eb86c84a.json",
+      "decisionPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/decisions/blind-74a52ae217edaa66eb86c84a.json"
+    },
+    {
+      "packetId": "blind-cd3e9403697b75acf461f452",
+      "packetSha256": "5a68c305f1afe30b7d76f9b6127f08b31e16d7f5ef6dc81326942673e147e457",
+      "packetPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/packets/blind-cd3e9403697b75acf461f452.json",
+      "decisionPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/decisions/blind-cd3e9403697b75acf461f452.json"
+    },
+    {
+      "packetId": "blind-1a66964d44b72635cb46cc60",
+      "packetSha256": "28c8756d3f419ad535e5135c54b9d540136884a6fb2405fe3baa8240f3dba6d8",
+      "packetPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/packets/blind-1a66964d44b72635cb46cc60.json",
+      "decisionPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/decisions/blind-1a66964d44b72635cb46cc60.json"
+    },
+    {
+      "packetId": "blind-32f49aca17f31eddad4e6409",
+      "packetSha256": "c473c909399eb0c0120b0f1b6dcd2a4fd73e5f3394c76380770e462b5ec930f2",
+      "packetPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/packets/blind-32f49aca17f31eddad4e6409.json",
+      "decisionPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/decisions/blind-32f49aca17f31eddad4e6409.json"
+    },
+    {
+      "packetId": "blind-2c65216d19e5659823da9ba8",
+      "packetSha256": "30781448061255f576c1fe43c7ccc4f41b78a3d619c1135d7cf3efc7a7003c91",
+      "packetPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/packets/blind-2c65216d19e5659823da9ba8.json",
+      "decisionPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/decisions/blind-2c65216d19e5659823da9ba8.json"
+    },
+    {
+      "packetId": "blind-58003e1d60e04afccb7aca8d",
+      "packetSha256": "98c59193a03012cadf5e7a4438548e3e1912b1311b8614ae6fb4c5ef22a368fc",
+      "packetPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/packets/blind-58003e1d60e04afccb7aca8d.json",
+      "decisionPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/decisions/blind-58003e1d60e04afccb7aca8d.json"
+    },
+    {
+      "packetId": "blind-f22cef0dca284aea6ab321c9",
+      "packetSha256": "33a0a764c4cfd5d498b45b173d816977a4cf0e91b29e62cbb49d094256d04978",
+      "packetPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/packets/blind-f22cef0dca284aea6ab321c9.json",
+      "decisionPath": "experiments/search-e2e-evaluation/uk-mx-v1/artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/blind-audit/codex-direct/decisions/blind-f22cef0dca284aea6ab321c9.json"
+    }
+  ]
+}

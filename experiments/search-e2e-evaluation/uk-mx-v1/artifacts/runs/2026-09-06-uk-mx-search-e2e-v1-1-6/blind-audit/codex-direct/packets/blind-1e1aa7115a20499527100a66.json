@@ -1,0 +1,51 @@
+{
+  "packetId": "blind-1e1aa7115a20499527100a66",
+  "targetMarket": {
+    "countryCode": "MX",
+    "countryName": "Mexico"
+  },
+  "requestedCategory": "distribution",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "TVCenLínea",
+    "domain": "tvc.mx",
+    "officialWebsiteUrl": "https://tvc.mx/"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-73102f97799d806a",
+      "sourceType": "independent-public",
+      "url": "https://www.youtube.com/watch?v=DZQHdVSHSJs",
+      "title": "Foro TVC - YouTube",
+      "excerpt": "Conoce TVCenLínea y se parte de nuestra red de distribuidores! • https://info.tvc.mx/beneficios/ Compra en línea • https://tvc.mx/"
+    },
+    {
+      "evidenceId": "evidence-9dcd1552a46dc183",
+      "sourceType": "official-website",
+      "url": "https://tvc.mx",
+      "title": "TVCenLínea.com Mayorista Soluciones de Seguridad Electrónica",
+      "excerpt": "Image.jpg) Dale vida a tus mensajes con ZKDigimax, pantallas de señalización digital que impactan y conectan con tu audiencia en negocios y empresas. Ver más ##### Únete a nuestra red de distribuidores En tvc.mx le invitamos a formar parte del canal de distribución más grande y confiable de México. Login/Registrate ##### Razones para unirte a TVCenLínea.com # ### 20 Sucursales Ver sucursales # ### Capacitación Ver calendario # ### Garantía DOA Conócelas aquí # [...] # ### Programas de lealtad Conoce más # ### Descuentos exclusivos Leer más # ### El mejor tipo de cambio del mercado # ### Conciencia ambiental Leer más # ### World Vision México Conoce más ## Beneficios TVC # ### 19 Sucursales Ver sucursales # ### Capacitación Ver calendario # ### Programas de lealtad Conoce más # ### Descuent"
+    },
+    {
+      "evidenceId": "evidence-62e28fbe60c12725",
+      "sourceType": "official-website",
+      "url": "https://tvc.mx/productos/radio-enlaces-154",
+      "title": "Radio Enlaces - TVC",
+      "excerpt": "Distribuimos Cámaras de Seguridad, CCTV, Acceso, Alarmas, Redes. Marcas Dahua, DSC, Ubiquiti, Vivotek, ZKTeco. 20 sucursales."
+    },
+    {
+      "evidenceId": "evidence-0ae66bfa36209e56",
+      "sourceType": "independent-public",
+      "url": "https://play.google.com/store/apps/details?id=com.tvc.tvcmovil&hl=en_US",
+      "title": "tvc.mx - Apps on Google Play",
+      "excerpt": "We give you a renewed, practical and easy-to-use App. Intuitive with the essential functions to work efficiently from your cell phone."
+    },
+    {
+      "evidenceId": "evidence-539cc3809cb4bb65",
+      "sourceType": "independent-public",
+      "url": "https://www.youtube.com/@tvcenlineamx/videos",
+      "title": "TVCenLínea - YouTube",
+      "excerpt": "Somos una empresa Mayorista de Soluciones para la Seguridad Electrónica. Distribuimos productos y servicios innovadores, confiables y altamente competitivos"
+    }
+  ]
+}

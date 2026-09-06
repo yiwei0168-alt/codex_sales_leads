@@ -1,0 +1,44 @@
+{
+  "packetId": "blind-8d347f0f09bade22dc4d7538",
+  "targetMarket": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom"
+  },
+  "requestedCategory": "distribution",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "Westcoast Limited",
+    "domain": "westcoast.co.uk",
+    "officialWebsiteUrl": "https://www.westcoast.co.uk"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-7221f73b739d13b9",
+      "sourceType": "official-website",
+      "url": "https://www.westcoast.co.uk/juniper.html",
+      "title": "UK Juniper Distributor | Westcoast – Juniper Networking Solutions",
+      "excerpt": "Westcoast is a leading UK distributor of Juniper networking and security products. We supply Juniper switches, routers, firewalls and solutions to resellers"
+    },
+    {
+      "evidenceId": "evidence-053ed890257856cc",
+      "sourceType": "official-website",
+      "url": "https://www.westcoast.co.uk/TechnologySolutions.html",
+      "title": "Westcoast Technology Solutions UK | Assessment, Platform Design ...",
+      "excerpt": "we help you take your customers further, with storage, servers, networking, security, data, and hybrid cloud."
+    },
+    {
+      "evidenceId": "evidence-fde942f0553046ca",
+      "sourceType": "official-website",
+      "url": "https://www.westcoast.co.uk/what-we-do/contact_us.html",
+      "title": "Westcoast Contact Us UK | Speak to Our Sales, Support ...",
+      "excerpt": "OUR LOCATIONS ; Reading · Westcoast Ltd Arrowhead Park Arrowhead Road Theale Reading RG7 4AH ; Nottingham. Nottingham. Westcoast Ltd Unit B ; Dublin. Dublin."
+    },
+    {
+      "evidenceId": "evidence-82466894fb092e5d",
+      "sourceType": "official-website",
+      "url": "https://www.westcoast.co.uk",
+      "title": "Westcoast UK | Leading IT Distributor, Wholesale Hardware & Software",
+      "excerpt": "My Basket My Account Orders Special Bids Finance Reports Admin Services Westcoast Open an account/Login Westcoast Website Header Banner WELCOME TO WESTCOASTWhere your success is serious business At Westcoast, our partnerships are our core. As a renowned IT channel distributor, we can provide you with industry-leading brands and help you drive success with the perfect mix of services, support and expertise to grow your opportunities. And with a friendly team of in-house experts behind you, you have our specialist backing for every sale. green gradient green gradient WHY CHOOSE WESTCOAST? An in-house ally Your dedicated Account Manager is your guide to our personalised support, connecting you with our services and keeping you up to speed with the latest technology. WIN WITH WESTCOAST YOUR UN"
+    }
+  ]
+}

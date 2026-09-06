@@ -1,0 +1,30 @@
+{
+  "packetId": "blind-c7ceab99b66a973483e4ea92",
+  "targetMarket": {
+    "countryCode": "MX",
+    "countryName": "Mexico"
+  },
+  "requestedCategory": "si-msp",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "ITM de México",
+    "domain": "itm.mx",
+    "officialWebsiteUrl": "https://www.itm.mx"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-home-80e08469eb2e8284",
+      "sourceType": "official-website",
+      "url": "https://www.itm.mx/",
+      "title": "ITM de México — Integradores en Telecomunicaciones",
+      "excerpt": "ITM de México — Integradores en Telecomunicaciones Servicios Productos --> Certificaciones Seguridad Sostenibilidad Social Empresa Contacto Servicios Productos --> Certificaciones Seguridad Sostenibilidad Social Empresa Contacto Integradores de telecomunicaciones: Voz, Datos y Video. Cotiza tu proyecto Ver servicios +24 Años de experiencia 24/7 Asistencia Nacional Cobertura de servicio Diseño & Consultoría Levantamiento, site survey, arquitectura de red y roadmap de crecimiento. Implementación Servicio especializado de Cableado Estructurado y Certificaciones especializadas hasta 25 años de Garantía. Soporte & Monitoreo Implementación de Pólizas de Mantenimiento, Soporte en Sitio y Remoto de Marcas Enterprise. Servicios Soluciones en redes virtuales IP, inalámbricas, cableadas y privadas; a"
+    },
+    {
+      "evidenceId": "evidence-250683db2625d409",
+      "sourceType": "official-website",
+      "url": "https://www.itm.mx",
+      "title": "ITM de México — Integradores en Telecomunicaciones",
+      "excerpt": "• Portátiles y discretas • Grabación audiovisual y almacenamiento seguro • Conectividad robusta y alta durabilidad Socios estratégicos ## Certificaciones y Alianzas En ITM de México colaboramos con fabricantes líderes para respaldar cada proyecto con la experiencia, la capacitación y las certificaciones que exige la industria. Avigilon Axis Communications Bosch Cisco CommScope Partner tecnológico Ekahau Hanwha Milestone Panduit Siemon Verkada [...] ## Sobre ITM Somos una empresa mexicana especializada en telecomunicaciones empresariales. Acompañamos a nuestros clientes desde el diseño hasta la operación continua, con un enfoque en disponibilidad y seguridad. 20+ Años de experiencia 100+ Clientes satisfechos Experiencia comprobada en implementación y soporte. Propuestas claras, tiempos real"
+    }
+  ]
+}

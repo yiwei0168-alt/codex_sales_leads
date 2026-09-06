@@ -1,0 +1,44 @@
+{
+  "packetId": "blind-3f2fd0efe0371ea85502a24e",
+  "targetMarket": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom"
+  },
+  "requestedCategory": "resale",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "CDW Corporation",
+    "domain": "cdw.com",
+    "officialWebsiteUrl": "https://www.cdw.com/"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-home-7dd1b9c303ad4b2d",
+      "sourceType": "official-website",
+      "url": "https://www.cdw.com/",
+      "title": "CDW: IT Solutions and Services, Hardware, Software for Business",
+      "excerpt": "CDW: IT Solutions and Services, Hardware, Software for Business Skip to Main Content Cancel Notifications Notifications Sign In Cart Hardware Software Solutions Services Industries Partners Insights Why CDW Amazing happens when new AI possibilities change the way you work. CDW offers the latest technology to help you tackle your goals, including Windows PCs powered by AMD Ryzen™ AI processors, designed to deliver intelligent performance, enhanced productivity and a smarter work experience Explore AMD Ryzen Save in May—Unlock Exclusive Hardware Deals All Month Long Shop Deals Why Work With CDW? We bring together the services and technologies that solve your business problems. Expertise and Experience Industry-Leading Partnerships End-To-End Support Create An Account Industries we solve for:"
+    },
+    {
+      "evidenceId": "evidence-07595c70bc60a050",
+      "sourceType": "official-website",
+      "url": "https://www.uk.cdw.com/about/international-offices",
+      "title": "CDW UK, Europe & International Locations",
+      "excerpt": "Supply Chain: Due to ongoing supply chain challenges, neither CDW nor our hardware manufacturer partners can guarantee product availability or pricing until the product is shipped Learn More Learn More Search Suggestions IT Solutions IT Services AI About Supply Chain: Due to ongoing supply chain challenges, neither CDW nor our hardware manufacturer partners can guarantee product availability or pricing until the product is shipped Learn More Learn More Search Suggestions IT Solutions IT Services AI About + Integrated Technology Integrated Technology Hybrid Platforms Hybrid Platforms Cloud + Cloud + Cloud Design + Hybrid Multi-Cloud + Cloud Governance & Control + DevOps + Cloud Migration Data Centre Modernisation + Data Centre Modernisation + Storage & Compute + Software-Defined Data Centre"
+    },
+    {
+      "evidenceId": "evidence-06e541c9b26a6a9b",
+      "sourceType": "official-website",
+      "url": "https://www.uk.cdw.com",
+      "title": "IT Company | Technology Services & Products | CDW UK",
+      "excerpt": "Supply Chain: Due to ongoing supply chain challenges, neither CDW nor our hardware manufacturer partners can guarantee product availability or pricing until the product is shipped Learn More Learn More Search Suggestions IT Solutions IT Services AI About Supply Chain: Due to ongoing supply chain challenges, neither CDW nor our hardware manufacturer partners can guarantee product availability or pricing until the product is shipped Learn More Learn More Search Suggestions IT Solutions IT Services AI About + Integrated Technology Integrated Technology Hybrid Platforms Hybrid Platforms Cloud + Cloud + Cloud Design + Hybrid Multi-Cloud + Cloud Governance & Control + DevOps + Cloud Migration Data Centre Modernisation + Data Centre Modernisation + Storage & Compute + Software-Defined Data Centre"
+    },
+    {
+      "evidenceId": "evidence-0f89b43bc86e2bff",
+      "sourceType": "official-website",
+      "url": "https://www.cdw.com/content/cdw/en/why-cdw/about-us/overview.html",
+      "title": "About CDW | CDW",
+      "excerpt": "Skip to Main Content Notifications Sign In CDW Logo Sign In Cart About Us Get to Know CDW About CDW CDW Corporation is a leading multi-brand provider of information technology solutions to business, government, education and healthcare customers in the United States, the United Kingdom and Canada. A Fortune 500 company and member of the S&P 500 Index, CDW helps its customers to navigate an increasingly complex IT market and maximize return on their technology investments. For more information about CDW, please visit www.CDW.com. Our broad array of products and services range from hardware and software to integrated IT solutions such as security, cloud, hybrid infrastructure and digital experience. $22.4 bn. Annual Net Sales (2025) 250,000 Number of Customers ~14,800 Number of Coworkers Hea"
+    }
+  ]
+}

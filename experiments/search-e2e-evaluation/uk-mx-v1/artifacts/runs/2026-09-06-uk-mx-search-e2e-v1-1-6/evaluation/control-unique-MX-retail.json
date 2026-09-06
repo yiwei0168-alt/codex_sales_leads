@@ -1,0 +1,2070 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+  "cellId": "MX-retail",
+  "inputCount": 23,
+  "records": [
+    {
+      "companyKey": "MX:domain:steren.com.mx",
+      "countryCode": "MX",
+      "companyName": "Steren",
+      "domain": "steren.com.mx",
+      "officialWebsiteUrl": "https://www.steren.com.mx",
+      "primaryRole": "Hybrid",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer",
+        "Distributor",
+        "Brand Owner"
+      ],
+      "totalScore": 81,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-127f74a33eb76f9d",
+          "url": "https://www.steren.com.mx",
+          "title": "Steren La Mejor Tienda de Electrónica en México",
+          "excerpt": "Compare Products Mi cuenta # HOME STEREN 2026 sterencard envio envio envio ## Proyectores Ver más 95 % (8) Proyector multimedia Home Theater Full HD de 1100 ANSI lm con función espejo, ajuste automático de enfoque y trapecio $7,490.00 [VER MAS]( 92 % (19) Pantalla para proyector automática de 100\" $1,790.00 [VER MAS]( 87 % (54) Mini proyector multimedia HD de 110 ANSI lm $1,490.00 [VER MAS]( 80 % (9) Proyector multimedia Full HD de 250 ANSI lm $2,190.00 [...] The store will not work correctly in the case when cookies are disabled. Local Storage seems to be disabled in your browser. For the best experience on our site, be sure to turn on Local Storage in your browser. Sign in Please enter your email below and we will send you a new password. Create New Account Sign in with Facebook Messenge",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-5e1e3442459023b0",
+          "url": "https://catalog.steren.com.mx/flip-book/999514/2334461",
+          "title": "CATALOGO_2026_BAJA_2",
+          "excerpt": "CATALOGO\\_2026\\_BAJA\\_2 ¿Quién es Política de garantías y Índice por Catálogo de Índice por de tiendas ¿Quién es Steren? que nos hace acreedores del distintivo de Empresa Socialmente Responsable por quinto año consecutivo. A su vez, tenemos la certificación de Great Place to Work® 2024 como una de las Mejores Empresas para Trabajar en México destacando acciones que ponen en primer lugar a los colaboradores. Recibimos el galardón como Great Place to Work for Women® 2024 ya que estamos convencidos y comprometidos con la importancia de que el trabajo en equipo impere, el talento sea reconocido y donde las oportunidades de crecimiento profesional sean equitativas. También estamos certificados por la OEA (Operador Económico Autorizado) que nos avala como una empresa comprometida en fortalecer l",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-2b88dd92f75356cd",
+          "url": "https://catalog.steren.com.mx/flip-book/999514/2276347",
+          "title": "CATALOGO_2026_BAJA",
+          "excerpt": "CATALOGO\\_2026\\_BAJA ¿Quién es Política de garantías y Índice por Catálogo de Índice por de tiendas ¿Quién es Steren? que nos hace acreedores del distintivo de Empresa Socialmente Responsable por quinto año consecutivo. A su vez, tenemos la certificación de Great Place to Work® 2024 como una de las Mejores Empresas para Trabajar en México destacando acciones que ponen en primer lugar a los colaboradores. Recibimos el galardón como Great Place to Work for Women® 2024 ya que estamos convencidos y comprometidos con la importancia de que el trabajo en equipo impere, el talento sea reconocido y donde las oportunidades de crecimiento profesional sean equitativas. También estamos certificados por la OEA (Operador Económico Autorizado) que nos avala como una empresa comprometida en fortalecer la s",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-129fe6edbea91328",
+          "url": "https://blog.steren.com.mx/estado-de-mexico-y-steren-pondran-en-marcha-86-puntos-de-retorno-para-impulsar-el-reciclaje-electronico-en-la-entidad",
+          "title": "ESTADO DE MÉXICO Y STEREN PONDRÁN EN MARCHA 86 PUNTOS DE RETORNO PARA IMPULSAR EL RECICLAJE ELECTRÓNICO EN LA ENTIDAD",
+          "excerpt": "ESTADO DE MÉXICO Y STEREN PONDRÁN EN MARCHA 86 PUNTOS DE RETORNO PARA IMPULSAR EL RECICLAJE ELECTRÓNICO EN LA ENTIDAD La Secretaría del Medio Ambiente y Desarrollo Sostenible del Estado de México y Steren firmaron un convenio de colaboración para fortalecer el manejo responsable de residuos electrónicos, esta alianza inicia con 10 Puntos de Retorno estratégicos y contempla una expansión a las 86 tiendas Steren del Estado de México. ​​ ​ Ciudad de México, a 21 de julio de 2026.- En un esfuerzo conjunto por impulsar la economía circular y fomentar una cultura de consumo responsable, la Secretaría del Medio Ambiente y Desarrollo Sostenible del Estado de México y Steren firmaron un Convenio de Colaboración en Materia Ambiental para promover el manejo adecuado de residuos de aparatos eléctricos",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-2e0ef5fdf8960dfc",
+          "url": "https://area51esg.com/manufacturers/steren-electronics",
+          "title": "Steren Electronics | Manufacturers | Area51 Electronics",
+          "excerpt": "Steren Electronics is a leading provider of consumer electronics in Mexico that supplies some of the US’s largest cable and telecommunications companies. Steren Electronics offers connectivity solutions to broadband operators, and telecommunication system operators with many products including fiber optics, cable management, and HDMI products. Request Quote [...] Header Logo Request Quote Search Png stern logo Home> Manufacturers> Steren Electronics # Steren Electronics #### Product Categories : Audio & Video Cables, Wire, & Accessories Connectors & Interconnects Materials, Chemicals & Adhesives ## About the Manufacturer",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-f07453ff9beb6615",
+          "url": "https://sterensolutions.com/pages/about-us",
+          "title": "About us – Steren",
+          "excerpt": "Founded in 1956, family-owned Steren Electronics is the leading provider of consumer electronics in Mexico. Consumers can buy Steren’s quality products from more than 400 Steren-operated retail stores and major national chains in Mexico, and we are expanding into Costa Rica, Colombia, Panama and the Dominican Republic. [...] With coast-to-coast distribution in the U.S., hundreds of retail locations throughout Mexico, Central America, Colombia, and the Dominican Republic, as well as manufacturing facilities in Asia, Steren Solutions has a global reach. As a manufacturer with diversity credentials and decades of experience, we strive to offer products crafted with innovation, advanced design, and award-wining technology. See our services ## Our History [...] ## Our History For over 60 years,",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-98909719769a94d7",
+          "url": "https://sterensolutions.com",
+          "title": "Steren Solutions - Connectivity & Networking",
+          "excerpt": "Professional connectivity products, business pricing, and reliable support for installers, contractors, resellers, and commercial buyers. Create a Business Account ### Wholesale Pricing Special pricing for approved business accounts. ### Bulk Order Support Get help with large-volume purchases and recurring needs. ### Fast U.S. Shipping Reliable shipping for projects, jobsites, and business operations. ### Dedicated Support [...] Steren Solutions - Connectivity & Networking Steren Solutions - Connectivity & Networking # Trusted Quality & Compliance Steren Solutions - Connectivity & Networking Steren Solutions - Connectivity & Networking Steren Solutions - Connectivity & Networking Steren Solutions - Connectivity & Networking Steren Solutions - Connectivity & Networking Business Customer Ben",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-453ea336c42a6902",
+          "url": "https://www.facebook.com/Steren.Mexico/videos/-lo-nuevo-en-steren-descubre-a-los-reci%C3%A9n-llegados-httpsbitly4ucthdx-tenemos-las/1726652011844201",
+          "title": "LO NUEVO EN STEREN Descubre a los recién llegados https://bit ...",
+          "excerpt": "ly/4ucTHdx Tenemos las mejores #SolucionesEnTecnología como el Sistema Home Theater de 5.1 canales; el Módem / Router Wi-Fi 6 / MiFi portátil 4G",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:digitalife.com.mx",
+      "countryCode": "MX",
+      "companyName": "Digitalife",
+      "domain": "digitalife.com.mx",
+      "officialWebsiteUrl": "https://www.digitalife.com.mx",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 58,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-3989eb7deb5893f7",
+          "url": "https://www.digitalife.com.mx",
+          "title": "Digitalife: Todo en Computadoras",
+          "excerpt": "En Digitalife somos una tienda de tecnología en México especializada en la venta de PC, Mac, computadoras gamer, computadoras para diseñadores, youtuber,",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-74bc5b1854129273",
+          "url": "https://www.digitalife.com.mx/productos/ud256gui3v30a2sp-ra1/memoria-micro-sd-adata-speed-plus-256gb-sdxc-clase-10-read-180mb-s-write-160mb-s",
+          "title": "Memoria Micro SD Adata Speed Plus 256GB SDXC Clase 10 Read ...",
+          "excerpt": "Memoria Micro SD Adata Speed Plus 256GB SDXC Clase 10 Read 180Mb/S Write 160Mb/S ; Número de parte: UD256GUI3V30A2SP-RA1 ; Marca: ADATA ; Categoría: Micro SD.",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-8836af419a9698bf",
+          "url": "https://www.digitalife.com.mx/buscar/marca_deep-cool",
+          "title": "Buscar DEEPCOOL - Digitalife",
+          "excerpt": "Disipador para CPU DeepCool AG400 BK ARGB V2, Enfriador de Aire, 1x 120mm, 2100RPM, Negro. DEEPCOOL. RECOGE EN 15 MIN24 PAGOS FIJOSCON MSI. Normal$745.76.",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-a76bc2c57ffc08fe",
+          "url": "https://www.digitalife.com.mx/productos/c31ch76101/impresora-de-etiquetas-epson-colorworks-cw-c6000au-inyeccion-1200-x-1200-dpi-ethernet-usb-negro",
+          "title": "Impresora de Etiquetas Epson Colorworks Cw-C6000Au Inyeccion ...",
+          "excerpt": "Con una resolución de hasta 1200 ppp, la CW-C6000A produce imágenes nítidas comparables a las etiquetas preimpresas. Compatible con ZPL II, SAP® y más, y",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-2db2618d4a3f7824",
+          "url": "https://www.digitalife.com.mx/productos/sbavr2200/regulador-smartbitt-r-bitt-2200-1100-watts-8-contactos-negro",
+          "title": "Regulador Smartbitt R-Bitt 2200 1100 Watts 8 Contactos Negro",
+          "excerpt": "Todos sus contactos cuentan con supresión y regulación, esto es una ventaja ya que todo lo que conectes estará protegido de altos y bajos voltajes, ruido",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-7601edda5afc92a4",
+          "url": "https://www.facebook.com/p/Digitalife-100089826043213",
+          "title": "Digitalife | Guadalajara",
+          "excerpt": "Av. Adolfo López Mateos Sur 2040, Guadalajara, Mexico, 44500. Services. Specialties. In-store pickup. Contact info. +52 33 3630 0660. Photos.",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-c764ce51533b37de",
+          "url": "https://www.instagram.com/digitalifemx?hl=en",
+          "title": "Digitalife (@digitalifemx) · Guadalajara",
+          "excerpt": "Tienda de Cómputo, Gaming y Tecnología con 11 Tiendas en Guadalajara Envíos a todo México Tienda Online.",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-1c85bb78793e8122",
+          "url": "https://x.com/DigitalifeMx",
+          "title": "DIGITALIFE (@DigitalifeMx) / X",
+          "excerpt": "Más velocidad. Más cobertura. Más tranquilidad. ASUS RT-AX52 combina velocidad, cobertura y seguridad para mantener todos tus dispositivos conectados.",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:ddtech.mx",
+      "countryCode": "MX",
+      "companyName": "DDTech",
+      "domain": "ddtech.mx",
+      "officialWebsiteUrl": "https://ddtech.mx",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 49,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-cf3516f4e94f9ef6",
+          "url": "https://ddtech.mx/productos/redes/access-point",
+          "title": "Access Point",
+          "excerpt": "Wi-Fi 802.11n 802.11ac Velocidad Wi-Fi. Hasta 8 SSIDs / 2.4Ghz & 5GHz $1,999.00. DDTECH © 2026 Pride … 28 77 04 35 ventas@ddtech.mx Suc.",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-54e0bc9b1b8c3b84",
+          "url": "https://www.reddit.com/r/mexico/comments/1lt5n76/cual_es_su_experiencia_con_ddtech?tl=en",
+          "title": "What's your experience with ddtech? : r/mexico",
+          "excerpt": "They're super good with warranties, shipping, and advice. If I could recommend a tech supplier in Mexico, it would be them.",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-edbe0eff53396097",
+          "url": "https://ddtech.mx/productos/redes/router",
+          "title": "Router",
+          "excerpt": "Router Inalambrico Tenda N301 / Wifi / Access Point / 4 Puertos. $299.00. CON EXISTENCIA. Agregar; Ver más · DD Tech · Router TP-Link Inalambrico N 300MB/s /",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:coppel.com",
+      "countryCode": "MX",
+      "companyName": "Coppel",
+      "domain": "coppel.com",
+      "officialWebsiteUrl": "https://www.coppel.com",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 72,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-f76e1b86051ffb71",
+          "url": "https://en.wikipedia.org/wiki/Coppel",
+          "title": "Coppel - Wikipedia",
+          "excerpt": "## External links [edit] Wikimedia Commons logo Wikimedia Commons has media related to Coppel. Official website | v t e Department and discount stores in Mexico | [...] | Industry | Retail | | Founded | 1941; 85 years ago (1941) | | Headquarters | Culiacán, Sinaloa , Mexico | | Area served | Mexico, Argentina, Brazil | | Products | Consumer goods | | Number of employees | 500,000 | | Website | www.coppel.com | Coppel is a nationwide department store in Mexico based in Culiacán, Sinaloa and founded in 1941. It is noted for extending easy credit and for enabling payment of purchases via twice-monthly installments. [...] Coppel began with its creator Enrique Coppel Tamayo who set up shop in Mazatlán, later moving to Culiacán. By 1990 the chain had 24 stores. In 2002 it bought Canadá shoe stor",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-1610ec68314639f1",
+          "url": "https://www.coppel.com/main/index.html",
+          "title": "https://www.coppel.com/main/index.html",
+          "excerpt": "No information is available for this page.",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-93a90152e2891f3f",
+          "url": "https://www.coppel.com/ct/electronica/cat000061",
+          "title": "Electrónica en Coppel: Ofertas para transformar tu vida.",
+          "excerpt": "Días Flash Coppel. Hasta 45 por ciento de descuento en laptops. Válido al 6 de septiembre de 2026. Consulta productos participantes en tienda y Coppel.com. Pulsa aquí para aprovechar. Windows 11. El rendimiento ahora más accesible. Ese es el poder de las PC con Windows 11 con Intel Inside. Pulsa aquí para comprar. Ambienta la fiesta. Hasta 30% de descuento en bocinas. Válido al 30 de septiembre de 2026. Pulsa aquí para ver más [...] Tecnología portátil. Hasta 35% de descuento en cómputo y tablets. Válido al 30 de septiembre de 2026. Pulsa aquí para ver más Relájate y disfruta. Hasta 25% de descuento en pantallas. Válido al 30 de septiembre de 2026. Pulsa aquí para ver más [...] Una buena estrategia es priorizar la conectividad y la experiencia de usuario, como rapidez de procesamiento, cal",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-2c956bff5814a644",
+          "url": "https://www.coppel.com/ubicacion-de-tiendas-coppel",
+          "title": "Encuentra tu tienda Coppel más cercana - Coppel",
+          "excerpt": "Con tiendas a lo largo y ancho de toda la República Mexicana, siempre vas a encontrar una sucursal de Coppel cerca de ti para que te sea más fácil recibir todas las compras que hagas o incluso acercarte a nuestros mostradores si es que necesitas de nuestra ayuda. Todos los años de historia que tenemos en Coppel nos avalan, al igual que nuestros clientes que nos eligen una y otra vez porque saben que somos sinónimo de garantía y calidad. ## Preguntas frecuentes ### ¿Qué es Coppel? [...] MENÚ Ir a página principal de Coppel.com Carrito Ir a página principal de Coppel.com Loading... ### Servicios de tienda en línea Icono Coppel Icono Coppel Icono Coppel Icono Coppel # Ubica la tienda Coppel más cercana, y encuentra los servicios de BanCoppel y Afore Coppel Coppel es una tienda que ofrece una ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-e9cfaf16cf2cccb2",
+          "url": "https://play.google.com/store/apps/details?id=com.coppel.coppelapp&hl=en_IE&gl=MX",
+          "title": "Coppel: compras en línea – Apps on Google Play",
+          "excerpt": "With the Coppel App you can make online purchases very easily and pay 100% securely with your Coppel Credit, credit, debit or cash cards.",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:dimercom.mx",
+      "countryCode": "MX",
+      "companyName": "Dimercom",
+      "domain": "dimercom.mx",
+      "officialWebsiteUrl": "https://dimercom.mx",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 71,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-24103ffc3dcbfcd9",
+          "url": "https://dimercom.mx",
+          "title": "Dimercom | Tienda de Componentes y PC Gamer en Puebla, Mexico",
+          "excerpt": "Hot Sale 2026 Servicio de Reparacion dimerswap Para Empresas Preguntas Frecuentes Iniciar sesión / registrarse 0 artículos Carrito Mi cuenta 📦 Envío a todo México Entrega express en Guadalajara Monterrey Ciudad de México Querétaro Mérida Tijuana León [...] Redes e ITRedes e IT ImpresorasImpresoras AudioAudio Configura tu PC AMDConfigura tu PC AMDIA Configura tu PC IntelConfigura tu PC IntelIA [...] Sí. Aceptamos diferentes métodos de pago como tarjeta, PayPal y MercadoPago, con opciones a meses sin intereses dependiendo del banco. ¿Por qué comprar en Dimercom y no en otra tienda? Porque no solo compras piezas: recibes una configuración validada, asesoría real y un equipo listo para rendir desde el primer día. Ese es el diferencial. ✓ Compra segura en Dimercom Más de 18 años vendiendo tecn",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-045a7648ebfec2c4",
+          "url": "https://dimercom.mx/acerca-de-nosotros",
+          "title": "Acerca de Nosotros | Dimercom.mx",
+          "excerpt": "logodimer 300x36 logodimer 300x36 Recurso 1 laptop PARA GAMERS O PROFESIONALES Nombre de usuario o correo electrónico \\Obligatorio Contraseña \\Obligatorio Iniciar sesión ¿Ha olvidado su contraseña? Recordarme O iniciar sesión con Logo DIMERCOM Tecnología seria. Gaming real. Respaldo de verdad. DIMERCOM es una empresa mexicana especializada en tecnología de alto desempeño, gaming y soluciones profesionales. Nacimos en Puebla y hoy atendemos a clientes de todo México con enfoque técnico, trato humano y productos originales con garantía. Fachada de DIMERCOM Todo comenzó con una necesidad que nadie estaba resolviendo bien DIMERCOM nació en 2005 en Puebla con una misión clara: acercar productos de cómputo de alto desempeño que en ese momento eran difíciles de conseguir en el mercado local. Nues",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-64997c359e2abde7",
+          "url": "https://dimercom.mx/pyp",
+          "title": "Comprar Pyp en México | Dimercom.mx",
+          "excerpt": "logodimer 300x36 logodimer 300x36 Recurso 1 laptop PARA GAMERS O PROFESIONALES Nombre de usuario o correo electrónico \\Obligatorio Contraseña \\Obligatorio Iniciar sesión ¿Ha olvidado su contraseña? Recordarme O iniciar sesión con Mostrando 1–24 de 97 resultadosOrdenado por popularidad Filtrar por categoria Filtrar por subcategoria Angel Rojas Muy Buen Producto, es demasiado silenciosa y que cuente con cables de mas es un extra que se agradece ademas de contar con el nuevo cable para las graficas NVIDIA serie 5000, conseguirla a este precio siendo de 850W y modular es demasiado rentable CP MSI MAGA850GLPCIE5 72954d HECTOR MARTINEZ Propietario verificado Excelente monitor a muy buen precio, me contactaron por whatsapp para el envio y seguimiento de la orden. urlhttps3A2F2Fwww.cyberpuerta.mx2",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-d9fa30e2a55c664b",
+          "url": "https://dimercom.mx/tienda-dimercom",
+          "title": "Tienda DIMERCOM | Dimercom.mx",
+          "excerpt": "Hot Sale 2026 Servicio de Reparacion dimerswap Para Empresas Preguntas Frecuentes Iniciar sesión / registrarse 0 artículos Carrito Mi cuenta 📦 Envío a todo México Entrega express en Guadalajara Monterrey Ciudad de México Querétaro Mérida Tijuana León [...] Redes e ITRedes e IT ImpresorasImpresoras AudioAudio Configura tu PC AMDConfigura tu PC AMDIA Configura tu PC IntelConfigura tu PC IntelIA dimerswap [...] + Scanners - Scanners Energía Sillas para gamers Robots Industriales Redes e IT Pantallas Interactivas Configura tu PC AMDnuevo Configura tu PC Intelnuevo Configurador de Memoria RAM Reparación y Mantenimiento refurbishednovedad Iniciar sesión / registrarse Iniciar sesión Crear una cuenta fachada dimercom 31 Poniente 109-b Col, Chulavista , Puebla, Puebla , CP72420 #### Tienda Dimerco",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-081701a268a99ac0",
+          "url": "https://www.facebook.com/dimercom",
+          "title": "dimercom.mx | Puebla",
+          "excerpt": "Dimercom.mx es tu tienda de confianza para profesionales y gamers,... Colonia Chulavista , Puebla, Mexico, 72420. Contact info +52 222 246 0007 hola@dimercom.mx",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:intercompras.com",
+      "countryCode": "MX",
+      "companyName": "Intercompras Comercio Electrónico S.A. de C.V.",
+      "domain": "intercompras.com",
+      "officialWebsiteUrl": "https://intercompras.com",
+      "primaryRole": "Hybrid",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer",
+        "Distributor"
+      ],
+      "totalScore": 70,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-a12efdf5e2605913",
+          "url": "https://intercompras.com",
+          "title": "Intercompras: Venta de Computadoras y Electrónicos",
+          "excerpt": "Distribuidor autorizado de tecnología en México desde 2004. Más de 50000 productos HP, Lenovo, Dell y más. Envíos rápidos y pagos seguros.",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-6023b2bc9a66219f",
+          "url": "https://intercompras.com/blog/dell-un-impulsor-clave-en-el-desarrollo-de-la-nube-y-la-infraestructura-de-ti-en-mexico",
+          "title": "Dell: Un Impulsor Clave en el Desarrollo de la Nube y la Infraestructura de TI en México | Blog Intercompras",
+          "excerpt": "Ir al contenido CDMX (55) 8421-9962 | MTY (81) 8421-9962 | GDL (33) 8421-9962 | Interior 800-099-6868 logo intercompras blog 1 Vamos a la tiendaVamos a la tienda logo intercompras blog 1 Dell: Un Impulsor Clave en el Desarrollo de la Nube y la Infraestructura de TI en México 📅 Arturo Sanchez ♻️ 04/04/2025 null 36 Comparte este post La Importancia de la Nube y la Infraestructura de TI La nube y la infraestructura de TI son esenciales en el mundo empresarial actual. Estas tecnologías permiten a las empresas operar de manera más eficiente, reducir costos y mejorar la seguridad de sus datos1. En México, la adopción de software e infraestructura basada en la nube ha impulsado el crecimiento del mercado de TI2. El Rol de Dell en el Sector Tecnológico Mexicano Dell ha desempeñado un papel crucia",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-ccb05e02744426d3",
+          "url": "https://intercompras.com/c/redes-networking-694",
+          "title": "Redes y Networking - Routers, Switches y Access Points | Intercompras",
+          "excerpt": "Conoce más Cómo comprar Descubre cómo realizar tus pedidos. Conoce más Aprende cómo rastrear los envíos de tus pedidos. Conoce más Nuestros teléfonos | Ciudad de México | (55) 8421-9962 | | Monterrey | (81) 8421-9962 | | Guadalajara | (33) 8421-9962 | | Interior | 800-099-6868 | | | | Envíos y Garantías | 800-525-2525 | Formas de pago Pagos Envíos seguros Envíos Políticas y Aviso de Privacidad Política de formas de pago Aviso legal | Términos y Condiciones [...] CDMX (55) 8421-9962 | MTY (81) 8421-9962 | GDL (33) 8421-9962 | Interior 800-099-6868 Messenger Whatsapp Contacto Categorías Categorías Computadoras [...] Garantías, Devoluciones y Cancelaciones Formas y Costos de Envíos Formas de Pago Notificar Pago Preguntas Frecuentes Acerca de Intercompras Servicios empresariales Se nuestro pro",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-7304abb3cb3fc819",
+          "url": "https://intercompras.com/nosotros",
+          "title": "Acerca de Intercompras",
+          "excerpt": "Acerca de nosotros En Intercompras, hemos transformado la adquisición de tecnología en México. Somos más que una tienda en línea; somos el socio estratégico que impulsa la competitividad de empresas, gobierno y usuarios finales a través de una infraestructura logística y digital de clase mundial. Desde 2004 Desde 2004 [...] Razón Social: Intercompras Comercio Electrónico S.A. de C.V. RFC: INT-070927-D47 Matriz: Tamaulipas 34, Colonia Centro. Hermosillo, Sonora, CP 83000. Pagos y Facturación: Facturación inmediata y múltiples métodos de pago seguros (PayPal, Tarjetas, Transferencias). Operadores Logísticos: Cobertura nacional con FedEx, Estafeta, DHL y Paquetexpress. Minisplits de alto rendimiento - ppal Zebra Solutions - pie Selector de cables ManhattanConfigurar Selector de consumibles HP",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-d86ae2058e6f8f27",
+          "url": "https://x.com/intercomprasmx?lang=en",
+          "title": "Intercompras (@intercomprasmx) / X",
+          "excerpt": "Log inSign up Intercompras profile banner @intercomprasmx # Intercompras @intercomprasmx Descubre el universo tecnológico 💫🛒 #tiendaonline con + de 30,000 productos de #tecnología 🌐 Entrega en todo México 🇲🇽 ⬇️ Adquiere fácil y seguro ⬇️ Hermosillo, Sonora, MX intercompras.com Joined April 2009 157 Following1,693 Followers RepliesRepliesRepostsRepostsMediaMedia @intercomprasmx Intercompras @intercomprasmx 1h [...] 1h Xbox Game Pass septiembre 2026: los 8 juegos que llegan y los 10 que se van el 15 de septiembre #XboxSeries #GamerLife Xbox Game Pass septiembre 2026: lista completa y precios MXNFrom intercompras.com @intercomprasmx Intercompras @intercomprasmx 2h Lanzamientos de Xbox Game Pass este mes de Septiembre 🎮 Conoce los detalles en nuestro blog, ¡y comenta “Parte 2” si quieres",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:grupodecme.com",
+      "countryCode": "MX",
+      "companyName": "Decme Store (Grupo Decme)",
+      "domain": "grupodecme.com",
+      "officialWebsiteUrl": "https://grupodecme.com",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 53,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-ef04cbc96539d8dc",
+          "url": "https://grupodecme.com",
+          "title": "Decme Store | Tecnología de Alta Gama en México",
+          "excerpt": "Laptops, Pc Gamer, Monitores, Gaming, Audio y tecnología para empresas. Más de 20 años de experiencia y envíos a todo México. ¡Encuentra lo que buscas en",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-8124a8cd01b2be7a",
+          "url": "https://grupodecme.com/pages/lista-de-contactos",
+          "title": "Contáctanos – Decme Store",
+          "excerpt": "### Dirección Av 11 #2223-A Col. del Maestro, C.P. 94550 Córdoba, Ver. México. ### Escríbenos wsp: 271-215-0657 Correo: clientes@grupodecme.com.mx ### Teléfonos 554 624 4515 ## Contáctanos ## Formulario de contacto Regístrate y recibe nuestras promociones Asesoría Tel: 554 624 4515 Lun-Vie: 8:00 a.m. a 6:00 p.m. Sábado: 8:00 a.m a 1:00 p.m Soporte Xtreme Tel: 551-163-8825 WSP: 271 104 9508 Lun-Vie: 8:00 a.m. a 6:00 p.m. Sábado: 9:00 a.m a 1:00 p.m [...] ###### Ayuda Contacto Facturación Electrónica Cupones Políticas de privacidad Políticas de envío y devoluciones Políticas de garantía Preguntas Frecuentes Métodos de pago Soporte técnico ###### Métodos de pago []( []( ###### Paqueterías []( []( []( ###### Acerca de... Nosotros Marcas Beneficios © 2026 Decmestore. Todos los derechos reservad",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-34ef3e1ae891fe58",
+          "url": "https://www.instagram.com/decmestore",
+          "title": "Decme Store (@decmestore)",
+          "excerpt": "Gaming y tecnología Hasta 15 MSI *En tarjetas participantes* Envío Gratis en compras mayores a $2,999 Envíos a toda la República Mexicana.",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-58bf5f1bdf30ef9f",
+          "url": "https://grupodecme.com/collections/equipos-serie-50/red_ethernet-wifi",
+          "title": "EQUIPOS SERIE 50 – tagged \"RED_Ethernet / WIFI\"",
+          "excerpt": "Router · Router Gamer · Kit Router · Adaptador Inalambrico · Switch · Bobina Cable · Access Point · Extensor de Rango · Controlador Inalambrico · Accesorios",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:zegucom.com.mx",
+      "countryCode": "MX",
+      "companyName": "Zegucom Cómputo",
+      "domain": "zegucom.com.mx",
+      "officialWebsiteUrl": "https://www.zegucom.com.mx",
+      "primaryRole": "Hybrid",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer",
+        "Distributor"
+      ],
+      "totalScore": 68,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-bce22d36c9533efc",
+          "url": "https://www.zegucom.com.mx",
+          "title": "Inicio | Tecnología y Gaming | Zegucom Computo",
+          "excerpt": "close Las altas de distribuidores se hacen a través de nuestra empresa de mayoreo DICOTECH puede registrarse en la página www.dicotech.com.mx y subir sus documentos, una vez que envíe sus papeles en un máximo de 2 días hábiles se comunicarán con usted (no tendrá acceso al sitio con precios de mayoreo hasta que se revisen los papeles y sean autorizados). [...] Nuestro soporte técnico personalizado está siempre disponible para ayudarte en cada paso de tu compra, resolviendo cualquier duda o inconveniente de forma rápida y eficiente. Además, garantizamos envíos seguros y rápidos, para que recibas tus productos en perfectas condiciones y sin demoras. ## ¿Quieres ser Distribuidor? close [...] Banner Zegucom Superior Subasta 27 aniversario ORAIMO Nvidia2026 Ruijie agosto TPLINK Xzeal Agosto XPG ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-3972795173621651",
+          "url": "https://www.zegucom.com.mx/licenses/canjear",
+          "title": "Canje de licencias - Zegucom Cómputo",
+          "excerpt": "Zegucom Cómputo Zegucom Cómputo Categorías Marcas Sucursales Remates Productos Armar Pc Gamer Remates Marcas Subasta Canjear licencias Social Twitter Facebook Youtube Whatsapp Instagram TikTok Twitch Cupones Categorías Marcas Sucursales Remates Verificación de seguridad Un momento, por favor. Completa la verificación para continuar buscando. Cintillo promo Canje de licencias | Zegucom Obtén tus licencias de software. ticket de venta ¿Quieres ser Distribuidor? Las altas de distribuidores se hacen a través de nuestra empresa de mayoreo DICOTECH puede registrarse en la página www.dicotech.com.mx y subir sus documentos, una vez que envíe sus papeles en un máximo de 2 días hábiles se comunicarán con usted (no tendrá acceso al sitio con precios de mayoreo hasta que se revisen los papeles y sean ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-d60e98dac3581c47",
+          "url": "https://www.zegucom.com.mx/club-zegucom",
+          "title": "Club Zegucom | Zegucom Computo",
+          "excerpt": "close Las altas de distribuidores se hacen a través de nuestra empresa de mayoreo DICOTECH puede registrarse en la página www.dicotech.com.mx y subir sus documentos, una vez que envíe sus papeles en un máximo de 2 días hábiles se comunicarán con usted (no tendrá acceso al sitio con precios de mayoreo hasta que se revisen los papeles y sean autorizados). [...] Zegucom celebra tu pasión por el gaming y la tecnología. Conocemos tu deseo de mantener la ventaja competitiva con el mejor equipo y accesorios. Por eso hemos creado el CLUB ZEGUCOM, tu pasaporte a un mundo de beneficios exclusivos diseñados para los entusiastas de la tecnología y el gaming en México. 🎮🔥 Unirme al Club PreciosBajos PRECIOS BAJOS Ahorros garantizados en cada compra. EntregaSegura ENTREGA SEGURA Envíos rápidos y confi",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-f9b63d8a479a0269",
+          "url": "https://www.google.com/storepages?q=zegucom.com.mx&c=MX&v=19&hl=es_419",
+          "title": "Zegucom cómputo",
+          "excerpt": "⚡ Wi-Fi de doble banda, PoE y hasta 1,267 Mbps para mantener todos tus dispositivos conectados. #Ruijie #RuijieReyee #AccessPoint #WiFi #Networking #Zegucom.",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-2bfbe910f4ce0c96",
+          "url": "https://customerreviews.google.com/v/merchant?q=zegucom.com.mx&c=MX&v=19&hl=es_419&rf=FIVE_STARS",
+          "title": "Zegucom cómputo",
+          "excerpt": "⚡ Wi-Fi de doble banda, PoE y hasta 1,267 Mbps para mantener todos tus dispositivos conectados. #Ruijie #RuijieReyee #AccessPoint #WiFi #Networking #Zegucom.",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-6f7737b6e29034e3",
+          "url": "https://www.zegucom.com.mx/Subcategorias/access+point/AP/3",
+          "title": "Access Point | Zegucom Computo",
+          "excerpt": "Access Point Tp-link Pharos Cpe220, 2.4ghz, 300mbps, 12dbi, Exterior, Cpe, 802.11b/g/n, Adaptador Poe Pasivo, Blanco · favorite_border share.",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:walmart.com.mx",
+      "countryCode": "MX",
+      "companyName": "Walmart México",
+      "domain": "walmart.com.mx",
+      "officialWebsiteUrl": "https://www.walmart.com.mx",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 78,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-cae3f8922a7778f5",
+          "url": "https://corporate.walmart.com/news/2026/06/11/walmart-opens-walmartcom-to-international-customers-unlocking-access-to-hundreds-of-thousands-of-items-with-shipping-available-to-mexico",
+          "title": "Walmart Opens Walmart.com to International Customers, Unlocking Access to Hundreds of Thousands of Items with Shipping Available to Mexico",
+          "excerpt": "BENTONVILLE, Ark., June 11, 2026 —Walmart is giving customers in Mexico more choices than ever before. With an expanded assortment now available through Walmart.com, customers can shop a broader selection of products, discover new brands, and access options that were previously unavailable through Walmart. This milestone advances Walmart's commitment to expanding marketplace assortment and delivering greater convenience, value, and choice to more customers around the world, while complementing [...] # Walmart Opens Walmart.com to International Customers, Unlocking Access to Hundreds of Thousands of Items with Shipping Available to Mexico June 11, 2026 2 min read Business Share Facebook X LinkedIn Pinterest Email Copy Link [...] Walmart Inc. (Nasdaq: WMT) is a people-led, tech-powered omnic",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-e942dde135ec74a1",
+          "url": "https://corporate.walmart.com/about/international/markets/mexico",
+          "title": "Walmart in Mexico",
+          "excerpt": "Walmart Mexico celebrates its 35th anniversary in 2026. It currently operates Walmart hypermarkets, Bodega Aurrera discount stores, Superama supermarkets, Walmart Express supermarkets, and Sam’s Clubs. [...] Walmart de México's ecosystem offers solutions for Internet and mobile phones, education and health and financial services. ## Location Facts Walmart de México y Centroamérica President and CEO: Cristian Barrientos Pozo Corporate Website:walmartmexico.com Investor Relations: Career Website: walmartmexico.com/conocenos/unete-al-equipo eCommerce websites: ## Retail Units Total retail units1: 3,330 1. Total retail units as of April 30, 2026. ## Our Business ### Walmart de México [...] Walmart Corporate Homepage Powered by generative AI. Results may not fully be accurate. Use is governed b",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-3c341c937f846a8b",
+          "url": "https://en.wikipedia.org/wiki/Walmart_de_M%C3%A9xico_y_Centroam%C3%A9rica",
+          "title": "Walmart de México y Centroamérica - Wikipedia",
+          "excerpt": "| Revenue | Increase MXN$958.5 billion (2024) | | Number of employees | 241,000 (2025) | | Parent | Walmart Inc. (~70%) | | Divisions \"Division (business)\") | Bodega Aurrerá Sam's Club Walmart Express Bait (Telecommunications) | | Website | www.walmartmexico.com | [...] Beyond traditional retail, Walmex has diversified into telecommunications and financial services. Its mobile network operator, Bait, is the third-largest internet access provider in Mexico. ## History [edit] [...] ## References [edit]",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-743e603322e2a1cc",
+          "url": "https://www.walmex.mx/en",
+          "title": "Inicio | Walmart México y Centroamérica",
+          "excerpt": "Walmart de México y Centroamérica es una cadena de centros comerciales que se distingue por precios bajos que mejoran la calidad de vida de las familias.",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-3daeedb85c30d9fd",
+          "url": "https://www.walmart.com/browse/electronics/routers/3944_1089430_126297_1073784",
+          "title": "Router - Walmart.com",
+          "excerpt": "### Starlink Standard Kit V4 Satellite Internet System with WiFi Router, High-Speed Low-Latency Internet for Home, Rural & Remote Locations, Easy Self-Install # Router(1000+) ### Best seller Starlink Standard Kit V4 Satellite Internet System with WiFi Router, High-Speed Low-Latency Internet for Home, Rural & Remote Locations, Easy Self-Install [...] Walmart Banner title icon Walmart+ Banner title icon Starlink ### Starlink Standard Kit V4 Satellite Internet System with WiFi Router, High-Speed Low-Latency Internet for Home, Rural & Remote Locations, Easy Self-Install $349.00 Starlink Standard Kit V4 Satellite Internet System with WiFi Router, High-Speed Low-Latency Internet for Home, Rural & Remote Locations, Easy Self-Install [...] ### TP-Link Archer C54 | AC1200 MU-MIMO Dual-Band WiFi Rou",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:officemax.com.mx",
+      "countryCode": "MX",
+      "companyName": "OfficeMax México",
+      "domain": "officemax.com.mx",
+      "officialWebsiteUrl": "https://www.officemax.com.mx",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 66,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-4dca5af4c7a9966e",
+          "url": "https://www.officemax.com.mx",
+          "title": "OfficeMax | Arte, Papelería, Artículos Escolares y Muebles",
+          "excerpt": "SUCURSALES ABIERTAS 24 HRS REGRESO A CLASES Logo DepartamentosPrincipal) Factura Electrónica Lo esencial para el Regreso a Clases Lápices de Colores | OfficeMax | Uso Escolar | 12 PiezasLápices de Colores | OfficeMax | Uso Escolar | 12 Piezas Lápices de Colores | OfficeMax | Uso Escolar | 12 Piezas $35.00 Papel Bond | OfficeMax MaxBrite | 500 Hojas Carta | 75 g/m²Papel Bond | OfficeMax MaxBrite | 500 Hojas Carta | 75 g/m² Papel Bond | OfficeMax MaxBrite | 500 Hojas Carta | 75 g/m² $119.00 Lápices HB No. 2 | OfficeMax | Hexagonales | 12 PiezasLápices HB No. 2 | OfficeMax | Hexagonales | 12 Piezas Lápices HB No. 2 | OfficeMax | Hexagonales | 12 Piezas $49.00 Gomas para Borrar | OfficeMax | Migajón Blanco | 2 PiezasGomas para Borrar | OfficeMax | Migajón Blanco | 2 Piezas Gomas para Borrar | ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-629132963a05e070",
+          "url": "https://www.officeprov.officemax.com.mx",
+          "title": "Portal de Proveedores",
+          "excerpt": "Prolongación Reforma 1235, Santa Fe Cuajimalpa, México, Ciudad de México, Del. Cuajimalpa de Morelos, C.P. 05348, Telefono: 5591772800. Email: proveedores",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-81d33a53586aa063",
+          "url": "https://www.officemax.com.mx/computo/equipo-de-computo/asus/1822/12%20GB?O=OrderByPriceASC&PS=24&map=c%2Cc%2Cb%2CproductClusterSearchableIds%2CspecificationFilter_610",
+          "title": "12 Gb - Asus - Equipo de Cómputo | OfficeMax México",
+          "excerpt": "SUCURSALES ABIERTAS 24 HRS REGRESO A CLASES Icono CopyMax. Manda a imprimir desde cualquier lugar. Y recoge en tu tienda OfficeMax más cercana. Icono Business. Cuentas Globales Logo Departamentos principales Filtros ¿Qué debo hacer? Registra tu correo Crea el espacio que siempre soñaste. Únete a nuestra comunidad y recibe promociones especiales, tips de inspiración para tu oficina y herramientas para tus proyectos. Lo puedes todo. Haz también tus pedidos Teléfono +55 55650629 WhatsApp 55-2270-2987 Comentarios y sugerencias Formas de pago y compra 100% segura Icono VISA Icono MasterCard Icono AMEX Icono PayPal Icono KueskiPay Icono Aplazo Icono Google Pay También puedes encontrarnos en: Icono RAPPI Atención al cliente Acerca de OfficeMax Términos y Condiciones & Políticas de Compra Informac",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-f99528e90000ff20",
+          "url": "https://www.officemax.com.mx/articulos-de-oficina/3778/pintarron?map=c%2CproductClusterSearchableIds%2Cft",
+          "title": "Artículos de Oficina | OfficeMax México | Arch - Office Max",
+          "excerpt": "SUCURSALES ABIERTAS 24 HRS REGRESO A CLASES Icono CopyMax. Manda a imprimir desde cualquier lugar. Y recoge en tu tienda OfficeMax más cercana. Icono Business. Cuentas Globales Logo Departamentos principales Filtros Registra tu correo Crea el espacio que siempre soñaste. Únete a nuestra comunidad y recibe promociones especiales, tips de inspiración para tu oficina y herramientas para tus proyectos. Lo puedes todo. Haz también tus pedidos Teléfono +55 55650629 WhatsApp 55-2270-2987 Comentarios y sugerencias Formas de pago y compra 100% segura Icono VISA Icono MasterCard Icono AMEX Icono PayPal Icono KueskiPay Icono Aplazo Icono Google Pay También puedes encontrarnos en: Icono RAPPI Atención al cliente Acerca de OfficeMax Términos y Condiciones & Políticas de Compra Información Legal Tempora",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-53d3d10d3b02d7ae",
+          "url": "https://en.wikipedia.org/wiki/OfficeMax",
+          "title": "OfficeMax - Wikipedia",
+          "excerpt": "Hidden categories: Articles with short description Short description is different from Wikidata Use American English from June 2026 All Wikipedia articles written in American English Use mdy dates from June 2026 CS1: unfit URL Add topic [...] | Website | www.officedepot.com | [...] | v t e Sears Holdings |",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-6f53052b0f434140",
+          "url": "https://www.officedepot.com/b/wifi-routers/N-509739",
+          "title": "Wifi Routers - Office Depot",
+          "excerpt": "Copyright ©2026 by Office Depot, LLC. All rights reserved.Prices shown are in U.S. Dollars. Please log in for your pricing. Prices are subject to change. All use of the site is subject to the Terms of Use. Prices and offers onwww.officedepot.commay not apply to purchases made on www.odpbusiness.com. See Terms of Use details. 6 [...] 2563rew Paper deals as low as$39.99FREE next business-day delivery on ALL Ink & TonerShop Deals Image 1: Office Depott & OfficeMax))Image 2: Office Depott & OfficeMax Home)) Products School Supplies Ink & Toner Paper Office Supplies Art Supplies Furniture Computers & Accessories Printers Electronics Cleaning Breakroom Mailing & Shipping Shop Greener Products [...] What Is the Best Wireless Router?",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-6b8a8f0cccdc6864",
+          "url": "https://www.officedepot.com",
+          "title": "Office Depot OfficeMax | Official Online Store",
+          "excerpt": "### PROGRAMS Copyright © 2026 by Office Depot, LLC. All rights reserved. Prices shown are in U.S. Dollars. Please log in for your pricing. Prices are subject to change. All use of the site is subject to the Terms of Use. Prices and offers on www.officedepot.com may not apply to purchases made on www.odpbusiness.com. See Terms of Use details. This promotion is for Rewards members only. To take advantage of exclusive offers like these, join Office Depot® OfficeMax® Rewards now! Join Sign In [...] We've got your backpack! Shop Cute School Supplies [...] Filing Essentials Essentials Desk Accessories Desk Accessories Mailing & Shipping Mailing & Shipping Tech Services NEW PCs are in! NEW PCs are in! NEW Monitors are here! NEW Business Monitors are here! In store only- save 20% on any new Logite",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-83811da41d54bcbb",
+          "url": "https://www.officedepot.com/b/wireless-access-points/Availability--For_Store_Pickup/N-509735",
+          "title": "For Store Pickup Wireless Access Points",
+          "excerpt": "For Store Pickup Wireless Access Points at Office Depot & OfficeMax. Shop today online, in store or buy online and pick up in stores.",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-ce4be48e0c5b6774",
+          "url": "https://www.officedepot.com/b/wireless-access-points/N-509735",
+          "title": "Wireless Access Points",
+          "excerpt": "Netgear WAX610 Dual Band IEEE 802.11 a/b/g/n/ac/ax/i 1.80 Gbit/s Wireless Access Point - Indoor - 2.40 GHz, 5 GHz - WAX610PA100NAS. Item #6379627.Read more",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:elektra.mx",
+      "countryCode": "MX",
+      "companyName": "Elektra",
+      "domain": "elektra.mx",
+      "officialWebsiteUrl": "https://www.elektra.mx",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 72,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-38edefde2e9f258a",
+          "url": "https://www.elektra.mx/fiestas-patrias",
+          "title": "Promociones para fiestas patrias en Elektra",
+          "excerpt": "Logo Inicia sesión Distribuidores y Centros de Servicio Mundo Italika Italika Racing Home Departamento Promociones para Fiestas Patrias Audio Ollas y Vaporeras Plegables Toldos Muebles de Exterior Asadores y Accesorios Vajillas Baterías de Cocina Bufeteras Todo para tu Negocio Electrodomésticos y Decoración para una Fiesta Mexicana Inolvidable Fiestas_Patrias_LP_Sprite_Audio Audio Fiestas_Patrias_LP_Sprite_Ollas_y_Vaporeras Ollas y Vaporeras Fiestas_Patrias_LP_Sprite_Plegables Plegables Fiestas_Patrias_LP_Sprite_Toldos Toldos Fiestas_Patrias_LP_Sprite_Muebles_de_Exterior Muebles de Exterior Fiestas_Patrias_LP_Sprite_Asadores_y_Accesorios Asadores y Accesorios Fiestas_Patrias_LP_Sprite_Vajillas Vajillas Fiestas_Patrias_LP_Sprite_Baterias_de_Cocina Baterías de Cocina Fiestas_Patrias_LP_Sprit",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-ffff3b25519a7ad9",
+          "url": "https://www.elektra.mx/envios-y-transferencias",
+          "title": "Envíos y transferencias de dinero de EE. UU. y el extranjero",
+          "excerpt": "Logo Inicia sesión Distribuidores y Centros de Servicio Mundo Italika Italika Racing Envía y recibe tus envíos de dinero del extranjero donde lo prefieras. Conecta con tu familia y cumple tus sueños al enviar y recibir dinero de todo México y el mundo. ¡Solo con Elektra y Banco Azteca elijes cómo recibir dinero del extranjero en México fácil y seguro! App de Banco Azteca Cuenta de Banco Azteca Ventanilla Cajero automático Envía dinero de forma segura y rápida desde cualquier lugar con la App de Banco Azteca. ¡Tu solución financiera al alcance de tu mano! App Banco Azteca La opción más cómoda para recibir dinero en el momento que quieras, todos los días del año. Solo necesitas tu clave de envío y el dinero se deposita en tu cuenta al instante. Genera un QR para retirar efectivo en ventanill",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-279f942b5ca6f231",
+          "url": "https://www.elektra.mx/hot-sale",
+          "title": "Hot Sale 2027 | Mejores Ofertas en Tecnología y Hogar",
+          "excerpt": "Logo Inicia sesión Distribuidores y Centros de Servicio Mundo Italika Italika Racing Hot Sale terminó, ¡espéralo en 2027! ¡El evento de compras online más esperado de México ha llegado a su fin! Queremos agradecerte por hacer de este Hot Sale un rotundo éxito en Elektra, llenando tu hogar con las mejores ofertas y la confianza de nuestras Tiendas Oficiales. ¡Nos vemos en la próxima edición! Aunque esta temporada de descuentos concluyó, puedes seguir renovando tu estilo de vida con tecnología de punta, muebles y movilidad, disfrutando la comodidad de comprar desde casa con garantía de satisfacción total. ¡Recuerda que mantenemos grandes promociones todo el año con el Préstamo Elektra y también desde la app Elektra! Mejores ofertas del Hot Sale Como sabes, el Hot Sale te ofrece las mejores o",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-9bf0ecbc66085100",
+          "url": "https://leadiq.com/c/elektra/5a1d95ed2300005300848b63",
+          "title": "Elektra Company Overview, Contact Details & Competitors | LeadIQ",
+          "excerpt": "Minus sign iconPlus sign iconElektra's official website is elektra.com.mx and has social profiles on LinkedIn. ### How much revenue does Elektra generate? Minus sign iconPlus sign icon As of July 2026, Elektra's annual revenue is estimated to be $1B - $10B. ### What is Elektra's NAICS code? Minus sign iconPlus sign iconElektra's NAICS code is 44-45 - Retail Trade. ### How many employees does Elektra have currently? [...] Minus sign iconPlus sign iconAs of July 2026, Elektra has approximately 6.7K employees across 6 continents, including North AmericaSouth AmericaEurope. Key team members include Ceo: D. P.Cfo & Head Of Latin America: O. C.Cfo De La Red De Banco Azteca Y Tiendas Elektra: T. G. O.. Explore Elektra's employee directory with LeadIQ. ### What industry does Elektra belong to? Min",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-fb728a4c96ce22c5",
+          "url": "https://www.encyclopedia.com/books/politics-and-business-magazines/grupo-elektra-sa-de-cv",
+          "title": "Grupo Elektra, S.A. de C.V. | Encyclopedia.com",
+          "excerpt": "Avenida Insurgentes 3579 Mexico City, D.F. 14000 Mexico Telephone: (525) 629-9000 Toll Free: (800) 021-3535 Fax: (525) 629-9200 Web site: [...] accounts. Grupo Elektra claims as its target customers the 83 percent of the Mexican population with monthly household income between $400 and $2,600 in 1999. Controlled by Ricardo Salinas Pliego, the group cross-markets its goods and services by means of other Salinas-controlled companies, including TV Azteca (two national networks), Unefon (wireless telephone service), Movil@access (pagers), Radioed (radiocommunications equipment), and Todito.com (an Internet portal). [...] MLA Chicago APA \"Grupo Elektra, S.A. de C.V. .\" International Directory of Company Histories. . Encyclopedia.com. 9 Jul. 2026 <>. \"Grupo Elektra, S.A. de C.V. .\" International",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-d3084580142abf06",
+          "url": "https://en.wikipedia.org/wiki/Elektra_(stores)",
+          "title": "Elektra (stores) - Wikipedia",
+          "excerpt": "## External links [edit&action=edit&section=12 \"Edit section: External links\")] Official website (in Spanish) | v t e Department and discount stores in Mexico | [...] | Type | Private | | Industry | Retail | | Founded | 1950 | | Founder | Hugo Salinas Price | | Headquarters | Mexico, Mexico City | | Key people | Hugo Salinas Price (founder) Ricardo Salinas Pliego (president) | | Products | Mobile Devices\"), Appliances, Toys, Motorcycles, Forniture | | Brands | Italika Banco Azteca | | Website | Official website | [...] In 2022, Elektra ranked 73rd on Expansión \"Expansión (Spanish newspaper)\") magazine's list of the 500 most important companies in Mexico. A year later, it was included in Time magazine's ranking of the best companies in the world, compiled in partnership with the data provid",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-1a594c522b78cf66",
+          "url": "https://www.latibex.com/ing/Companies/Spreadsheet/GRUPO_ELEKTRA_MX01EL000003",
+          "title": "GRUPO ELEKTRA | Latibex",
+          "excerpt": "## Profile Grupo Elektra (BMV: ELEKTRA \\; Latibex: XEKT) is the leading specialized trade and financial services company in Latin America and the largest provider of short-term non-bank loans in the US. The Group operates more than 7,000 contact points in Mexico, the USA, Guatemala, Honduras, Panama and Peru. [...] Grupo Elektra is a Grupo Salinas company (www.gruposalinas.com), a group of dynamic companies, with strong growth and technologically advanced, focused on creating value for the investor, contributing to the construction of the middle class in the communities in which operates, and improve society through excellence. Created by businessman Ricardo B. Salinas (www.ricardosalinas.com), Grupo Salinas provides a forum for the exchange of ideas and best administrative practices betwe",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:homedepot.com.mx",
+      "countryCode": "MX",
+      "companyName": "The Home Depot México",
+      "domain": "homedepot.com.mx",
+      "officialWebsiteUrl": "https://www.homedepot.com.mx",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 78,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-c347662b27c5a32e",
+          "url": "https://www.homedepot.com.mx",
+          "title": "The Home Depot: Remodelación, Construcción y Hogar",
+          "excerpt": "The Home Depot México The Home Depot México Compra más fácil desde nuestra app Cuenta Órdenes Favoritos 04870 Juntos seguimos construyendo historia - 25 años The Home Depot - ¡Celebremos! Folleto con promociones únicas ¡Descarga la app! ## Compra por categoría [...] ### Equipa tu baño compartido Realidad aumentada ### Realidad aumentada Servicios de instalación ### Servicios de instalación # Juntos hacemos tu proyecto Entrega en tu hogar Servicio de instalación Calculadora de materiales Catálogo extendido Chat en línea # Métodos de pago Tarjeta The Home Depot Banamex PayPal Tarjetas de Crédito Tarjetas de Débito y Vales Transferencia electrónica Pago en efectivo en Oxxo Pago en tienda #### [...] Menos de 999 pesos Productos gratis ¡Se acaban! Descubre innovaciones y novedades para tu hogar",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-3374816e709cc8e4",
+          "url": "https://www.homedepot.com.mx/monterrey",
+          "title": "The Home Depot México",
+          "excerpt": "DESCUBRE TU NUEVA FORMA DE COMPRAR, APP HOME DEPOT MÉXICO ¡DESCÁRGALA YA! The Home Depot México The Home Depot México Compra más fácil desde nuestra app Descargar Catálogo Extendido The Home Depot Monterrey The Home Depot Monterrey Todo lo que necesitas para tus proyectos ¡muy cerca de ti! Encuentra tu tienda más cercana Galerías #1175 Dirección: Insurgentes #3945, Col. Colinas de San Jerónimo, Monterrey, C.P. 64630 Ver en Google Maps chevron\\_right Horario: Lunes a Domingo: 8:00 a.m. a 10:00 p.m. Teléfono: (811) 734 2500 (811) 734 2500 chevron\\_right La Rioja #8676 Dirección: Plaza Serena Carretera Nacional #500, Pueblo Serena, Col. Portal del Huajuco, Monterrey, C.P. 64989 Ver en Google Maps chevron\\_right Horario: Lunes a Domingo: 8:00 a.m. a 10:00 p.m. Teléfono: (81) 1224 0600 (81) 122",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-2b0f9e9edb32bb5b",
+          "url": "https://pro.homedepot.com.mx/pro/como-comprar",
+          "title": "Cómo comprar | The Home Depot México - Ventas a profesionales",
+          "excerpt": "logo Home Depot México Ventas a Profesionales ¿Estás seguro de que deseas eliminar \"{0}\"? | Usar ubicación actual | | --- | | | Ir a buscador de tiendas | | | | Regresar | | | | | | | | | | | | | | | | | | Ingresa tu correo para acceder a tus cuentas Ayuda para ingresar a mi cuenta ¿Aún no eres cliente Pro? Solicita una cuenta gratis y obtén beneficios especiales como precios preferenciales en tus compras, da seguimiento a tus órdenes, y más. Enlaces rápidos Agregaste al carrito: Promociones Descubre las mejores promociones que tenemos para ti Baños Todo para la instalación, reparación o mantenimiento de baños Pintura Variedad de colores y acabados para interiores y exteriores Catálogo Extendido Encuentra más variedad de productos a los mejores precios Materiales de construcción Productos ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-d8b37078c84e5892",
+          "url": "https://www.homedepot.com.mx/proveedores",
+          "title": "Quiero ser proveedor de Home Depot México",
+          "excerpt": "The Home Depot México The Home Depot México Compra más fácil desde nuestra app Cuenta Órdenes Favoritos 04870 Quiero ser proveedor Acércate con nosotros y hagamos más ¿Qué tipo de proveedor quieres ser? What kind of supplier do you want to be? Que tipo de fornecedor você quer ser? Proveedor de mercancías Conviértete en nuestro aliado comercial y ayúdanos a ofrecer productos de la mejor calidad a nuestros clientes de México, Estados Unidos y Canadá. Merchandise provider Become our commercial partner and help us to offer products of the best quality to our customers in Mexico, the United States and Canada. Fornecedor de mercadorias Seja nosso parceiro comercial e ajude-nos a oferecer produtos da melhor qualidade para nossos clientes do México, Estados Unidos e Canadá. Proveedor de servicios ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-f726cb49c0823ca7",
+          "url": "https://www.homedepot.com.mx/proveedores-mercancias",
+          "title": "Quiero vender mercancía en Home Depot México",
+          "excerpt": "DESCUBRE TU NUEVA FORMA DE COMPRAR, APP HOME DEPOT MÉXICO ¡DESCÁRGALA YA! The Home Depot México The Home Depot México Compra más fácil desde nuestra app Descargar Catálogo Extendido Proveedor de mercancías Quiero vender en Home Depot Español expand\\_more Español English Português Document index Application process Participation categories Evaluation criteria Apply as a supplier Índice do documento Requisitos Processo de inscrição Categorias participantes Critérios de avaliação Candidata-se como fornecedor error Requisitos The Home Depot se reserva el derecho de seleccionar a empresas de acuerdo a sus lineamientos y políticas. El intercambio de información necesario para este proceso de postulación se realizará mediante la existencia de un convenio de confidencialidad de mutuo acuerdo. Es f",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-f2a716858e292bc8",
+          "url": "https://www.homedepot.com/b/Electronics-WiFi-Networking-Devices-Wireless-Routers/N-5yc1vZc6mh",
+          "title": "Wireless Routers",
+          "excerpt": "Get free shipping on qualified Wireless Routers products or Buy Online Pick. Wireless speeds up to 4.3 Gbps Coverage up. Visit our Customer Service Center",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-71c3bea86c744c59",
+          "url": "https://www.homedepot.com/b/Electronics-WiFi-Networking-Devices/Wireless/N-5yc1vZc33vZ1z0sfns",
+          "title": "Wireless - WiFi & Networking Devices",
+          "excerpt": "Get free shipping on qualified Wireless WiFi & Networking Devices products or Buy Online Pick Up in Store today in the Electronics Department.",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-deb7a5eadbb5b19a",
+          "url": "https://www.homedepot.com.mx/b/electronica-y-tecnologia/smart-home/sistemas-de-wifi",
+          "title": "Sistemas WiFi para una Mejor Conexión",
+          "excerpt": "En la categoría de Sistemas de WiFi encontrarás soluciones como routers, extensores de señal, repetidores y sistemas en malla (mesh) que ayudan a ampliar la",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:pcmig.com.mx",
+      "countryCode": "MX",
+      "companyName": "PCMIG",
+      "domain": "pcmig.com.mx",
+      "officialWebsiteUrl": "https://pcmig.com.mx",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 46,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-1f0bf7e5b1d2f56d",
+          "url": "https://pcmig.com.mx/contacto",
+          "title": "Contacto - PCMIG",
+          "excerpt": "Matriz : República del Salvador No. 12 loc 4, Planta Alta, Col. Centro, Del. Cuauhtémoc, CDMX, CP 06000 · ventasloc4@pcmig.com.mx · 5518 7329 · 5510 1901 · 5512",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-3f6f766539ab3506",
+          "url": "https://pcmig.com.mx/etiqueta-producto/plaza-de-la-tecnologia",
+          "title": "plaza de la tecnologia – PCMIG",
+          "excerpt": "Skip to navigation Skip to content Venta de equipo de computo Nosotros Contacto Blog Aviso de Privacidad Terminos y Condiciones PCMIG PCMIG Inicio Productos + BOCINAS + CABLES Y ACCESORIOS + COMPUTADORAS GAMING + DIADEMAS + DISCOS DUROS + DISCOS EXTERNOS + ENERGIA + ENFRIAMIENTO > LIQUIDO AIRE + FUENTES + GABINETES + MEMORIAS RAM + MONITORES + MOUSE GAMING + MOUSEPAD + MULTIMEDIA + PROCESADORES > INTEL AMD + REDES + TARJETAS GRÁFICAS > GAMING PROFESIONALES + TARJETAS MADRE > INTEL AMD + TECLADO GAMING + TECLADOS Y MOUSE + UNIDADES SSD Zona Gaming + DIADEMAS + MONITORES + MOUSE + MOUSEPAD + TECLADOS + TARJETAS MADRE AMD INTEL Promociones Lista de precios Soporte (55) 5518-7329 Email: ventas@pcmig.com.mx Ver categorías BOCINAS DIADEMAS DISCOS DUROS DISCOS EXTERNOS ENERGIA ENFRIAMIENTO + LIQU",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-5bdcff044f6371af",
+          "url": "http://pcmig.com.mx/aviso-de-privacidad",
+          "title": "Aviso de Privacidad - PCMIG",
+          "excerpt": "Estos sitios están destinados para su uso por los residentes de México. Para cualquier duda relacionada con este aviso favor de comunicarse al departamento",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-ff188526f1e39315",
+          "url": "https://pcmig.com.mx/terminos-y-condiciones",
+          "title": "Terminos y Condiciones - PCMIG",
+          "excerpt": "Estas Condiciones Generales son aplicables a toda venta descrita en nuestros folletos, listas de precios, anuncios, presupuestos, Internet o verbalmente.",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:humancomputer.com.mx",
+      "countryCode": "MX",
+      "companyName": "Human Computer",
+      "domain": "humancomputer.com.mx",
+      "officialWebsiteUrl": "https://humancomputer.com.mx",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 26,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-84b55575955f7c72",
+          "url": "https://humancomputer.com.mx",
+          "title": "Human Computer los mejores productos de computo en CDMX",
+          "excerpt": "MDN Nombre de usuario Contraseña ¿Olvidaste tu contraseña? Human-Logo Human-Logo Human-LogoSlide\") Lo más vendido Gon Shop Gon Shop Testimonial Luis David Cano Rodriguez Rodrigo Olvera Zavala Marco Vinicio Garcia Cruz Israel Yañez G Nuevos productos Productos Destacados Los más vendidos Productos especiales your-logo Matriz maps Sucursal 1 maps Sucursal 2 maps © Human Computer | Todos los derechos reservados | Aviso de Privacidad | Términos y Condiciones | Puesto en línea por Vleeko ¡Escríbenos! Optimized by NitroPack.io Automated page speed optimizations for fast site performance",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:nestore.mx",
+      "countryCode": "MX",
+      "companyName": "Nestore",
+      "domain": "nestore.mx",
+      "officialWebsiteUrl": "https://nestore.mx",
+      "primaryRole": "Unresolved",
+      "supportedRoles": [],
+      "totalScore": 0,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": false,
+      "operatesInTargetMarket": false,
+      "evidence": [
+        {
+          "id": "evidence-9ccbdc4245d807d1",
+          "url": "https://netsergroup.com",
+          "title": "Netser Group | IT Services for Latin America and The Caribbean",
+          "excerpt": "06Branded or white-labeled delivery Let's talk ## Need a reliable IT partner across Latin America? Schedule a consultation [...] Our Services ## SLA-based IT support, delivered onsite and remotely. Every engagement runs against a defined SLA, coordinated in your language, executed in theirs. ### Managed IT Services End users, infrastructure, and daily operations with remote-first efficiency. Discover more → ### End User Field Services Onsite technical support delivered by bilingual engineers, coordinated centrally. Discover more → ### Smart Hands Cable patching to emergency hardware swaps, on demand. [...] Netser Group Select Page Netser Group | Homepage Onsite IT support · LATAM & Caribbean # IT Support field-ready across Latin America. We act as a reliable extension of your IT team. We d",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-6dd7d85ac57fe6ad",
+          "url": "https://www.netsource-inc.com",
+          "title": "NetSource, Inc. Fiber & Connectivity Solutions",
+          "excerpt": "ISO 9001:2015 Registered (800) 557-8818%20557-8818) (860) 649-6000%20649-6000) (860) 649-6002%20649-6002) info@netsource-inc.com 260 Progress Drive, Manchester, CT 06042 # Follow Us []( []( []( © 2026 NetSource, Inc. All Rights Reserved. | Privacy Policy | Terms and Conditions | Employment Opportunities Scroll to Top [...] ## Who We Are With over 30 years of experience, NetSource is a trusted partner in connectivity solutions for Telecom, Wireless, and Broadband industries. Our commitment to quality, excellent customer service, and customization sets us apart, allowing us to support our clients in building reliable, scalable networks. Learn More ## Why NetSource? Specialty in Customized Connectivity [...] At NetSource, we combine industry expertise with manufacturing precision to create pr",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-3f3de062f5ef2770",
+          "url": "https://www.nstechnology.com",
+          "title": "Home - NetSource Technology | Global Electronics Sourcing Experts",
+          "excerpt": "Our global reach not only empowers us to tap into a wide array of markets but also ensures that we can operate around the clock to meet client demands, no matter the time zone. [...] Flag of China NetSource Shenzhen Futian District Shenzhen, China Flag of United Kingdom NetSource UK Dormansland Surrey, England Flag of India NetSource India Announced! Q4, 2025 A GLOBAL ORGANIZATION WITH A LOCAL TOUCH ## Around the Clock Solutions: Our Offices Across Key Markets [...] Company Info - About UsLearn about our mission, values, and expertise. - Company NewsUpdates on certifications, platform improvements, and milestones. - CertificationsExplore our industry-recognized quality certifications. - Video GallerySee our services, sourcing, and quality standards in action. - FAQAnswers to the most commo",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-d6bc011d3602c5e6",
+          "url": "https://netsolutionspr.com",
+          "title": "NetSolutions - Empower your Network",
+          "excerpt": "45 Products We use cookies to enhance your browsing experience, serve personalized ads or content, and analyze our traffic. By clicking \"Allow cookies\", you consent to our use of cookies. More infor Thanks for subscribing! This email has been registered! Sorry! Products are not enough. Recipient email can't be blank. Send on must be within 90 days from now Thank you for registering! We will notify you by email when it is back in stock. [...] # NetSolutionsNetSolutions #### Search Our Site ## \"Your Trusted Partner in Advanced Telecommunications Solutions.\" (Reliable technology. Local expertise. Proven results.) ## \"Comprehensive Connectivity Solutions for Today’s Demands.\" (Products, support, and service designed to keep you connected.) ## \"Empowering Businesses and Institutions Across Puer",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-66b1d0751d979fac",
+          "url": "https://www.gob.mx/sre/en",
+          "title": "Secretaría de Relaciones Exteriores | Gobierno | gob.mx",
+          "excerpt": "Buscar # Sitio de Secretaría de Relaciones Exteriores # - - . logo gobierno de méxico #### Links #### What is gob.mx? A single portal for services, information and citizen participation. Read more A single portal for services, information and citizen participation. Read more ##### Denuncia contra servidores públicos #### Contact Us #### Follow us on Facebook Twitter gob.mx gob.mx logo 079",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:tecnotichi.com",
+      "countryCode": "MX",
+      "companyName": "TecnoTichi",
+      "domain": "tecnotichi.com",
+      "officialWebsiteUrl": "https://tecnotichi.com",
+      "primaryRole": "Unresolved",
+      "supportedRoles": [],
+      "totalScore": 0,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": false,
+      "operatesInTargetMarket": false,
+      "evidence": [
+        {
+          "id": "evidence-c1ae8694c1afbceb",
+          "url": "https://www.youtube.com/watch?v=9wF5K0DJ5JM",
+          "title": "Presentación Catálogo 2026-2027 Tecnosinergia - Sección TP-LINK",
+          "excerpt": "[música] En TPLink tenemos la sección de repetidores y extensores Wi-Fi 2.4. 5 GHz, la parte de los access point que tienen doble función como router y access point 2.4 = 5 GHz. Continuamos con este tipo de producto con mayores capacidades en su antena, hasta de ganancias de 7 dBIs. En la siguiente sección podemos ver productos tipo mesh más conocidos como deco en el mercado de los Access Point. En la siguiente sección podemos ver switches no administrables que van de los cinco hasta los ocho [...] siguiente sección podemos ver switches administrables con capacidades POE, diferentes cantidades de puertos, diferentes capacidades de entrega de POE. En nuestra siguiente sección podemos ver switch eh la parte de los eh routers, gateways y firewall. que son muy utilizables para la parte de la s",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-39abb85144dc5f6f",
+          "url": "https://aptec.com.mx/en",
+          "title": "Inicio - APTEC | Partner Cisco y Servicios TI Empresariales en México / Soluciones TI",
+          "excerpt": "La infraestructura de Redes es todo el hardware o equipo de red como computadoras, impresoras, servidores, switches, routers, cableado, etc. Otra parte son las aplicaciones o software para los sistemas. La infraestructura en red es escencial para la comunicación y conexión de una empresa. Aptec, como Partner de Cisco, estamos calificados para asesorar en la infraestructura de red de las empresas. Aptec es distribuidor de Cisco en México. [...] ## Microsoft Develops, manufactures, licenses, and provides support for software. Soluciones TI - Aptec Cisco Partner. Data Center, Ciberseguridad, infraestructura en redes, NOC, Mesa de Ayuda ## APC APC: Security in a connected world. Global Leader in UPS. Networks and energy. ## ¿Que hacemos en Aptec? ### Data Center Asesoría e instalación de Centr",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:wirelessshop.mx",
+      "countryCode": "MX",
+      "companyName": "Wireless Shop, S.A. de C.V.",
+      "domain": "wirelessshop.mx",
+      "officialWebsiteUrl": "https://www.wirelessshop.mx",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 56,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-6b752f2bf6302014",
+          "url": "https://www.wirelessshop.mx/webpage.asp?name=polpriv",
+          "title": "Wireless Shop | Todo para el WISP - Política de Privacidad",
+          "excerpt": "Ayuda? Llámenos Ahora 55-78270052 y 53 Registrar Iniciar Sesión Marcas Pagos Fijos Trámites IFT Pagar Mi Cuenta Carrito: 0 artículos - $0.00 (IVA Incluido) PAGAR AHORA Inicio Ubiquiti Mikrotik TP-Link Mimosa Cambium Teltonika Contacto Política de Privacidad Wireless Shop, S.A. de C.V. con domicilio en Pico de Orizaba No 33, Colonia Lomas de Occipaco, Naucalpan de Juárez, Estado de México, con código postal 53247 y teléfono +52 (55) 7827 0052, informa a los usuarios de la web de su propiedad www.wirelessshop.mx, acerca de su POLÍTICA DE PROTECCIÓN DE DATOS DE CARÁCTER PERSONAL. Siendo una de las prioridades de Wireless Shop, S.A. de C.V. respetar la privacidad de sus usuarios y mantener segura la información y los datos personales que recolecta. El usuario de la web www.wirelessshop.mx, al ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-d8f6faad1531b2e9",
+          "url": "https://wirelessshop.mx/download/ICF5021_6021%20Brochure.pdf",
+          "title": "[PDF] Potente, Robusto, Resistente - Wireless Shop",
+          "excerpt": "Dimensiones: 160 x 45 x 150 mm Peso: 1.1 Kg. Señalización 5 Tonos: Ã PTT-ID. Ã IdentiÀ cación en pantalla (ANI). Ã Llamada selectiva. Ã Llamada de grupo. Ã Autotransmisión remota. Ã Llamada de emergencia. Ã Supervisión remota de radio (radio check). Ã Desactivación y activación de radio vía aire. Características Generales: Ã Pantalla de 8 caracteres alfanuméricos. Ã Explorador de canales normal y prioritario. Ã Candado contra lectura y password de encendido. Ã Capacidad de enviar emergencia con botón de pánico. Ã Nivel de volumen mínimo programable. Ã Puerto para tarjetas opcionales (encriptores). Ã Programable por software CS-F3020/ 5020. IdentiÀ ca MDC-1200 en Pantalla Fabricado en ambiente ISO-9000 IC-F5021 VHF IC-F6021 UHF 128 Canales 50W VHF 45W UHF 3 Años de Garantía Señalizacion MDC",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-a668c74e2e17174b",
+          "url": "https://wirelessshop.mx/download/Brochure%20ICF5220D_6220D.pdf",
+          "title": "[PDF] Calidad Inigualable en Comunicación Profesional - Wireless Shop",
+          "excerpt": "Una Decisión Inteligente Dimensiones: 150 x 40 x 167.5 mm Peso: 1.1 kg. Fabricado en Ambiente ISO-9001: 2008 IC-F5220D VHF IC-F6220D UHF 128 Canales 50 W VHF 45 W UHF Digital / Analógico con o sin Repetidor Digital NXDN 6.25 kHz 3 Años de Garantía Calidad Inigualable en Comunicación Profesional Radio Móvil Digital Operación de modo digital IDASTM Las serie IC-F5220D le proporciona una operación de modo digital IDASTM basada en NXDNTM. Es compatible con IDASTM convencional multisitio, trunking, monositio y multitrunk. Altavoz de 4 W al frente El altavoz frontal de 4W ofrece un sonido claro y potente en toda la cabina de un vehículo. Además, la modulación digital ofrece claridad única incluso en los límites del rango de comunicación. Escaneo tipo roaming En el modo multitrunk si la condición",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:sears.com.mx",
+      "countryCode": "MX",
+      "companyName": "Sears Operadora México, S.A. de C.V.",
+      "domain": "sears.com.mx",
+      "officialWebsiteUrl": "https://www.sears.com.mx",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 55,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-26d0e442d5246e07",
+          "url": "https://www.sears.com.mx",
+          "title": "SEARS - Me entiende",
+          "excerpt": "Ver más ### Pantalla Lg 75 Pulgadas Nano 4K Uhd Ai 850 + Mueble de Pared + Accesorios $12,995MXN ### Bocina Alámbrica Sony Ult Tower 9Ac $12,699MXN ### Gopro Hero13 Black + Kit con Accesorios $9,449MXN ### Huawei Band 11 Pro Negro $1,119MXN ### Laptop Lenovo Ideapad Slim 3, 15.3\" Touch Wuxga Intel Ci5 24Gb Ram 512Gb Ssd+Mochila+Mouse+Audífonos $18,899MXN ### Pantalla LG 65 Nano80 Ai 4K + Mueble de Pared + Accesorios $9,995MXN ### Laptop Asus Gamer Fa506Ncq-Hn058W R7 16512 Rtx3050 [...] Electrodomésticos Ferretería y Jardinería Colchones Electrónica y Tecnología Audio Muebles Fotografía Hogar Blancos Cristaleria y Vajillas Aires acondicionados Juegos y Juguetes Aparatos de Ejercicio Movilidad Pole Position Autocenter Todas las categorías Regresa con clase Ofertas Reacondicionados Nuestras m",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-8e479748201c2e76",
+          "url": "https://en.wikipedia.org/wiki/Sears_Mexico",
+          "title": "Sears Mexico - Wikipedia",
+          "excerpt": "| Sears' freestanding store on Avenida Juárez in Downtown Mexico City. | | Trade name | Sears Mexico | | Type | Subsidiary | | Industry | Retail | | Founded | 26 February 1947; 79 years ago (1947-02-26) | | Headquarters | Mexico City , Mexico | | Number of locations | 93 (2024) | | Area served | Nationwide | | Products | Consumer goods | | Revenue | MX$25.4 billion (2017) | | Parent | Sears (1947–1997) Grupo Sanborns (1997–present) | | Website | www.sears.com.mx Edit this at Wikidata | [...] ## External links [edit source] Official website Edit this at Wikidata (in Spanish) Wikimedia Commons logo Wikimedia Commons has media related to Sears Mexico. | v t e Sears Holdings | [...] Sears Operadora México, S.A. de C.V. (Spanish pronunciation: ( \"Help:IPA/Spanish\")) is a department store chain ",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-2dbede99aaa8dd76",
+          "url": "https://www.facebook.com/100090083588018",
+          "title": "Sears México | Nezahualcóyotl - Facebook",
+          "excerpt": "Ave. Bordo de Xochiaca No. 3 Col. Jardín Bicentenario, Nezahualcóyotl, Mexico, 57205. Links. 󰤂. sears.com.mx. Contact info. 󰛪. +52 55 2619 7101. Photos.",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-cb8675567486429a",
+          "url": "https://play.google.com/store/apps/details?id=com.americamovil.sears&hl=en_US",
+          "title": "Sears - Apps on Google Play",
+          "excerpt": "Download our official SEARS MEXICO app! All the experience of Sears stores within the reach of a single click. Easy, fast and safe.",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-58b3771cb8125b81",
+          "url": "https://www.facebook.com/searsmexico/videos/en-tienda-y-en-l%C3%ADnea/2172117193585973",
+          "title": "¡En tienda y en línea! | Sears México | Facebook",
+          "excerpt": "La noche es tuya con hasta 50% de descuento más 20 Meses Sin Intereses en miles de productos. #SearsMeEntiende Consulta las bases aquí:",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:sanborns.com.mx",
+      "countryCode": "MX",
+      "companyName": "Grupo Sanborns S.A. de C.V.",
+      "domain": "sanborns.com.mx",
+      "officialWebsiteUrl": "https://www.sanborns.com.mx",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 71,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-27a0df76201fab55",
+          "url": "https://credito.sanborns.com.mx",
+          "title": "Crédito Sanborns",
+          "excerpt": "Sanborns Banner Sanborns Tu usuario es el mismo que en Sanborns.com.mx Iniciar Sesión \\ Introduzca su Correo Electrónico \\ Introduzca su Contraseña No tiene una cuenta Registrate aquí Beneﬁcios al ser Tarjetahabiente 10% de descuento adicional en tus compras de tienda a la cuenta revolvente Sin cargos Por apertura anualidad y tarjetas adicionales 20% de descuento En tu primer día de compra Plan tarifario Telcel Con cargo a tu tarjeta Programa de lealtad Puntos Sanborns LEGAL CONTÁCTANOS Aclaraciones crédito Sanborns: 800 710 5778 y 55 51 30 39 60 Email: sanborns@sanborns.com.mx Horario de atención vía telefónica: Lunes a Domingo de 9:00 a 20:00 hrs. Horario de atención vía chat: Lunes a Viernes de 10:00 a 18:00 hrs.",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-66217ea0921b2555",
+          "url": "https://admin.sanborns.com.mx/sisAnafic/wCambiarPass.aspx",
+          "title": "Cambiar Password - Sanborns",
+          "excerpt": "Cambiar Password. IdEmpleado: *. Password Anterior: *. Password Nuevo: *. Re-Password Nuevo: *. * *. Copyright © 2007 Sanborns S.A, México.",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-bd37e73905c8771b",
+          "url": "https://admin.sanborns.com.mx",
+          "title": "Portal de Proveedores",
+          "excerpt": "Portal de ADMIN | | | | --- | | | | | | | | | | | | --- --- | Administración de Pagos y Recepción de Facturación Electrónica | | Consulta de Documentos Corporativos | | Avisos de Privacidad Empleados Proveedores | | | | | | | | | | | | | | Ordenes de Compra y Pedidos de A y B | | | | Evaluaciones de Auditoria Interna | | | | | | | | | | | | | | | | | | | --- --- | Administración de Pagos y Recepción de Facturación Electrónica | | Consulta de Documentos Corporativos | | Avisos de Privacidad Empleados Proveedores | | | | | | | | | | | | | | Ordenes de Compra y Pedidos de A y B | | | | Evaluaciones de Auditoria Interna | | | | | | |",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-0534f0d699d2aff7",
+          "url": "https://facturaelectronica.sanborns.com.mx",
+          "title": "Facturación Electronica",
+          "excerpt": "Debes contar con ticket/orden de compra, RFC (Registro Federal de Contribuyentes) y correo electrónico. Tienes 7 días para tramitar tu factura después de",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-429c92a718aa8f32",
+          "url": "https://pitchbook.com/profiles/company/62363-17",
+          "title": "Grupo Sanborns 2026 Company Profile: Overview & Executives | PitchBook",
+          "excerpt": "PitchBook a Morningstar company logo RGB-white.png 2025-home-outlined-white-icon.svg 2025-market-intelligence-outlined-white-icon.svg 2025-deal sourcing-outlined-white-icon.svg 2025-deal execution-outlined-white-icon.svg 2025-networking-outlined-white-icon.svg 2025-due diligence-outlined-white-icon.svg 2025-fundraising-outlined-white-icon.svg 2025_global_icon_solutions_report_benchmarks.svg 2025-company-outlined-white-icon.svg 2025-infographic-asset-outlined-white-icon.svg [...] 2025-desktop-solution-outlined-white-icon.svg 2025-mobile-outlined-white-icon.svg 2025-plugin-integration-outlined-white-icon.svg 2025-direct-data-outlined-white-icon.svg 2025-crm-plugin-outlined-white-icon.svg 2025-infographic-asset-outlined-white-icon.svg 2025-light-smart-outlined-white-icon.svg 2025-arrow-right-",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-66c1aa026e8360a6",
+          "url": "https://en.wikipedia.org/wiki/Grupo_Sanborns",
+          "title": "Grupo Sanborns - Wikipedia",
+          "excerpt": "| Type | Private | | Founded | 1903; 123 years ago (1903) | | Headquarters | Mexico City, Mexico | | Key people | Carlos Slim Domit (CEO) | | Products | Cafeteria, Restaurant, Retail, Pharmacy, Department Store | | Number of employees | 18,000+ | | Parent | Grupo Carso | | Subsidiaries | DAX eduMac Grupo Sanborns Mixup iShop-Mixup Pam-Pam Sanborns Café Sears Roebuck México | | Website | www.sanborns.com.mx | at Plaza Carso Mexico City 2015 [...] General What links here Related changes Upload file Permanent link Page information Cite this page Get shortened URL Switch to legacy parser Print/export Download as PDF Printable version In other projects Wikimedia Commons Wikidata item Appearance From Wikipedia, the free encyclopedia Mexican retailing company Grupo Sanborns S.A. de C.V. [...] Hid",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-58fb56c3a715200a",
+          "url": "https://www.eng.carso.com.mx/business_unit/grupo-sanborns",
+          "title": "Grupo Sanborns - EN CARSO GROUP",
+          "excerpt": "Menu Search START TYPING AND PRESS ENTER TO SEARCH # Grupo Sanborns Grupo Sanborns is a Mexican company and a leader in retail sales, operating in multiple formats in every state of Mexico. [...] It has more than 549 thousand active SKUs, including electronic items, household items, furniture, clothing, pharmaceutical products, health and beauty products, books, videos, music, Apple brand products, toys, sports items, cell phones, and various technology products, among other merchandise. Additionally, it offers traditional Mexican food in its network of restaurants. [...] GRUPO CARSOBUSINESS UNITSINVESTORSSUSTAINABILITYPRESS ROOM © Grupo Carso 2020",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-07fbaa5aa128aa24",
+          "url": "https://mexiconewsdaily.com/culture/sanborns-mexico-iconic-department-store",
+          "title": "The story of Sanborns, Mexico's iconic department store",
+          "excerpt": "Logo Login Logo Wednesday, September 2, 2026 Mexico News Daily Sanborns is the biggest name in Mexican retail, but who are they and where did they come from? (Sanborns) [...] mall integrations and restaurant-department store fusions. [...] ## Sanborns today",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-9525c04c2c86fbc4",
+          "url": "https://www.mexperience.com/sanborns-mexicos-eclectic-department-store",
+          "title": "Sanborns: Mexico’s Eclectic Department Store – Mexperience",
+          "excerpt": "### Transport Getting Around Driving in Mexico Auto Insurance Flights & Air Travel Bus Travel Taxis Travel Car Rental ### Insurance Auto Insurance Health Insurance Medical Evacuation ### About Mexperience About Us Contact Mexperience ### Discover More Mexico A to Z Free Guides By FOREIGN NATIVE Food and Drink, Markets and Trade July 10, 2026 # Sanborns: Mexico’s Eclectic Department Store [...] Sanborns is owned by Carlos Slim, the telecoms magnate who bought the chain from the US drugstore chain Walgreens in 1985. But the original business was set up by the American brothers Frank and Walter Sanborn early in the 20th century; first as a drugstore, to which later a soda fountain was added. [...] ### Mexico Newsletter A colorful wall in Mexico ## Mexico Newsletter — Published Monthly, Free S",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:zonadigital83.com",
+      "countryCode": "MX",
+      "companyName": "Zona Digital 83",
+      "domain": "zonadigital83.com",
+      "officialWebsiteUrl": "https://zonadigital83.com",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 50,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-622c178bf511c5ee",
+          "url": "https://zonadigital83.com",
+          "title": "ZONA DIGITAL 83",
+          "excerpt": "Procesando tu pedido... zd83-150x40.png 🚚Contamos con envío a todo México Compras 100% seguras Calidad garantizada Asesoría en tus pedidos Aprovecha las Rebajas de la Pachanga Digital aires Movilidad Tablets slider home oficial slider home Categorías principales CÓMPUTO ELECTRÓNICA HOGAR MOVILIDAD HARDWARE Promociones de Verano Categoria destacada Un texto breve sobre esta seccion o producto. Solución en tecnología Electrónica, cómputo, línea blanca, gadgets, accesorios, movilidad y más Ofertas Descubre nuevas promociones Envíos a todo el país Paquetería segura y eficiente Envíos a todo México Entregas rápidas y seguras a tu domicilio Garantía y Devoluciones Políticas claras y atención rápida Soporte Especializado Asesoría personalizada por expertos Pagos 100% Seguros Tarjetas y plataform",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-806a4b1ca74867b3",
+          "url": "https://zonadigital83.com/pages/politicas-de-garantia",
+          "title": "politicas de garantia - ZONA DIGITAL 83",
+          "excerpt": "Procesando tu pedido... zd83-150x40.png Políticas de garantía I.- GARANTÍAS ZONA DIGITAL 83 realiza el soporte de atención técnica sobre los productos que ha comercializado, apegándose a las Normas Internacionales de Fabricación de los Productos. Si tiene duda sobre alguno de nuestros productos, por favor consulte antes de hacer su pedido en la página web por medio de un ejecutivo o del departamento de soporte técnico, las políticas de devoluciones y reembolsos solo aplican en productos de garantía. DOCUMENTACION NECESARIA La documentación para hacer valida la garantía: Original de su factura o nota de venta. Accesorios completos y empaques o cajas completos La caja del equipo coincidan con la serie del mismo. Falla correspondiente identificada, en caso de los productos que cuenten con cen",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-66b39ff71353dc5d",
+          "url": "https://zonadigital83.com/category/mantenimiento?zd83_267547%5Bconfigure%5D%5BhitsPerPage%5D=20&zd83_267547%5Btoggle%5D%5Ben_oc%5D=1&zd83_267547%5Brange%5D%5Bunit_price_included_tax%5D=0%3A&zd83_267547%5BsortBy%5D=zd83_267547%3Aentity_label%3Aasc&zd83_267547%5Bconfigure%5D%5Bfilters%5D=hierarchical_categories.lvl1%3D%22COMPUTADORAS+%3E+MANTENIMIENTO%22&zd83_267547%5BhierarchicalMenu%5D%5Bhierarchical_categories.lvl0%5D%5B0%5D=COMPUTADORAS&zd83_267547%5BhierarchicalMenu%5D%5Bhierarchical_categories.lvl0%5D%5B1%5D=MANTENIMIENTO",
+          "title": "MANTENIMIENTO - ZONA DIGITAL 83",
+          "excerpt": "Procesando tu pedido... zd83-150x40.png MANTENIMIENTO Elige lo mejor para ti Destacados Auriculares Xiaomi Redmi Buds 8 Active Bluetooth Color NEGROSMARTWATCH XIAOMI REDMI WATCH 5 ACTIVE NEGROKIT GAMER NAYAL TECLADO Y MOUSE GHAJ-520RGBPANTALLA THORUS 43CV100HDA 43SMARTWATCH XIAOMI REDMI WATCH 5 ACTIVE PLATASMART TV JVC LED SI43FRF 43PILA ENERGIZER MAX D-10PZGabinete Gamer Mini Torre Tank Core Pro GI925 Negro Envíos a todo México Entregas rápidas y seguras a tu domicilio Garantía y Devoluciones Políticas claras y atención rápida Soporte Especializado Asesoría personalizada por expertos Pagos 100% Seguros Tarjetas y plataformas protegidas Categorías Información Mi Cuenta ¿Tienes dudas? contáctanos: zd83-150x40.png",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-a1b665b334178ddb",
+          "url": "https://zonadigital83.com/product/redmi-note-13-midnight-black-6gb-128gb-1",
+          "title": "SMARTPHONE XIAOMI REDMI NOTE 13 6/128GB NEGRO",
+          "excerpt": "Procesando tu pedido... zd83-150x40.png SMARTPHONE XIAOMI REDMI NOTE 13 6/128GB NEGRO SMARTPHONE XIAOMI REDMI NOTE 13 6/128GB NEGRO SMARTPHONE XIAOMI REDMI NOTE 13 6/128GB NEGRO Preventa Fecha estimada Mercadopago Spei XIAOMI Preventa Fecha estimada Código: 23129RA5FLBLCK Reseñas SMARTPHONE SAMSUNG GALAXY A17 5G 4GB+128GB NEGROSMARTWATCH SAMSUNG GALAXY WATCH 4 CLASSIC NEGRO46 MMAIRE ACONDICIONAD MIRAGE MAGNUM INVERTER 24000BTU 230V CON WIFIAIRE ACONDICIONADO MIRAGE INVERTER X5 12000BTU 110V SOLO FRIOAIRE ACONDICIONADO PRIME CMPRC122-E5 12000 BTU ESTANDAR 220V SOLO FRIOAIRE ACONDICIONADO MIRAGE XR CXC181K 18000BTUS INVERTER 220 CON CALEFACCIÓN(ED) BOMBA DE CIRCULACIÓN UPA 15-90 127V 60HZ NEMA 5-15 PLUGAIRE ACONDICIONADO PRIME CMPRC122-B3 12000BTUS INVERTER SOLO FRIO 220VAIRE ACONDICIONADO P",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-c0819aa55f5d040d",
+          "url": "https://www.facebook.com/zonadigital83itzaez",
+          "title": "Zona Digital 83 | Mérida",
+          "excerpt": "Zona Digital 83, Mérida. Itzáes 484g, Centro, 97000 Mérida, Yucatán, Mérida, Mexico, 97000 Contact info +52 990 187 8858 Photos",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-e9cffda2de560273",
+          "url": "https://www.instagram.com/zonadigital_83?hl=en",
+          "title": "Zona Digital 83 (@zonadigital_83) · Mérida",
+          "excerpt": "Contamos con marcas de calidad, precio, tecnologia Wi-Fi! Envíos GRATIS dentro de la ciudad. ⚡Nos ubicamos en Mérida, sobre la Av. Itzáes a contra esquina",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-7caf6dcabde3934c",
+          "url": "https://listado.mercadolibre.com.mx/tienda/zona-digital-83",
+          "title": "ZONA DIGITAL 83",
+          "excerpt": "Digital ZONA DIGITAL 83 4.8 $253,20 Karaoke. ZONA DIGITAL 83 4.9 $689,30 … para Windows Mac iPad Android iPhone. Wi-Fi 5 Velocidades 97cm",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:macropay.mx",
+      "countryCode": "MX",
+      "companyName": "Macropay",
+      "domain": "macropay.mx",
+      "officialWebsiteUrl": "https://macropay.mx",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 42,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-6243fc99d755ac64",
+          "url": "https://macropay.mx",
+          "title": "Macropay - Estrena a crédito",
+          "excerpt": "[]( Todos los derechos reservados – © 2026 Macropay [...] []( ## Pantallas []( ## Línea blanca []( ## Oro []( ## Relojes inteligentes []( ## Chip Macropay []( ## Programa de lealtad []( ## Club Macropay []( ## Cambalache []( []( []( []( []( []( []( []( []( []( []( []( []( []( []( []( []( []( []( []( []( []( []( []( []( []( []( []( ## Estrena todo a crédito al instante Tramítalo con tu INE Menos de 10 minutos Pagos fijos chiquitos []( []( []( []( []( []( []( []( []( []( [...] ## Oferta ## SAMSUNG A57 256GB MORADO ## ~~$12,999.00~~ Original price was: $12,999.00.$12,299.00Current price is: $12,299.00. Ver más ## Llévatelo a crédito ## Oferta ## MOTO EDGE60 FSN 256GB AZUL ## ~~$8,999.00~~ Original price was: $8,999.00.$8,499.00Current price is: $8,499.00. Ver más ## Llévatelo a crédito ## Ofe",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-10629c458150f796",
+          "url": "https://macropay.mx/nosotros",
+          "title": "Nosotros - Macropay - Estrena a crédito",
+          "excerpt": "Lo mejor para este regreso a clases Macropay estrena a crédito Menú Por favor, ingresa tu SL para validar tu crédito Acercamos el crédito a millones de mexicanos Tiendas Millones de celulares vendidos Millones de clientes felices Años de experiencia Millones de créditos otorgados Transformando el acceso al crédito En Macropay creemos que todas las personas merecen acceso a productos y servicios que impulsen su calidad de vida. Por eso desarrollamos soluciones de crédito accesibles, rápidas y sencillas que permiten estrenar celulares, motocicletas, pantallas, electrodomésticos y mucho más.​ ​ Con presencia en todo país y cientos de tiendas físicas, trabajamos cada día para acercar oportunidades a millones de mexicanos mediante procesos ágiles, atención cercana y opciones de pago que se adap",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-904338480af9bf7d",
+          "url": "https://macropay.mx/quienes-somos",
+          "title": "Quienes somos - Macropay - Estrena a crédito",
+          "excerpt": "Ir al contenido Lo mejor para este regreso a clases Ver ofertas Mi pago semanal Menú Catálogo Sucursales Carterita Más promociones Mi pago semanal Por favor, ingresa tu SL para validar tu crédito + 0 Tiendas + 0 Millones de celulares vendidos + 0 Millones de clientes felices + 0 Años de experiencia + 0 Millones de créditos otorgados Somos una empresa que ha revolucionado la industria retail con una nueva forma de conectar a las personas a través de la venta de celulares a crédito. Ofrecemos diversos productos financieros, de manera eficiente, ágil, cómoda y confiable. Filosofía Corporativa La satisfacción del cliente es nuestro verdadero negocio. Misión Reinventamos la forma de dar productos financieros, logramos que sea fácil y rápido, creemos en la inclusión financiera y que la tecnologí",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-d37ffbe421770621",
+          "url": "https://macropay.mx/cambalache",
+          "title": "Cambalache - Macropay - Estrena a crédito",
+          "excerpt": "[]( Todos los derechos reservados – © 2026 Macropay [...] Ir al contenido Lo mejor para este regreso a clases Ver ofertas Macropay estrena a crédito Mi pago semanal ## Menú Catálogo Sucursales Carterita Más promociones Mi pago semanal Por favor, ingresa tu SL para validar tu crédito ## ¿Qué es Cambalache Macropay? ## Obtén hasta $7,750 por hacer Cambalache con tu equipo Conocer equipos válidos ## Marcas participantes ## Ubica tu Macropay más cercano ## En el mapa elige Cambalache y visítanos [...] | Realme Narzo 60 Pro 12GB 256GB | Realme | $ 2,637.00 | | Realme Narzo 60 Pro 8GB 256GB | Realme | $ 2,637.00 | | Realme 8i 6GB 128GB | Realme | $ 2,648.00 | | Realme 7 8GB 128GB | Realme | $ 2,649.00 | | Samsung Galaxy S20 8GB 128GB | Samsung | $ 2,650.00 | | Samsung Galaxy S20+ 8GB 128GB | Sam",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-5656b3dca44ae98e",
+          "url": "https://macropay.mx/aviso-de-privacidad",
+          "title": "Aviso de privacidad - Macropay - Estrena a crédito",
+          "excerpt": "Ir al contenido Lo mejor para este regreso a clases Ver ofertas Mi pago semanal Catálogo Sucursales Carterita Más promociones Mi pago semanal Por favor, ingresa tu SL para validar tu crédito Aviso de privacidad CELULARES Y ACCESORIOS DEL SURESTE S. A. DE C. V., mejor conocido como MACROPAY, con domicilio en calle 27número 55, colonia México, ciudad Mérida, municipio o delegación Mérida, C. P. 97125, en la entidad de Yucatán, país México, y portal de internet es el responsable del uso y protección de sus datos personales, y al respecto le informamos lo siguiente: ¿Para qué fines utilizaremos sus datos personales? Los datos personales que recabamos de usted, los utilizaremos para las siguientes finalidades que son necesarias para el servicio que solicita: Consultar su historial crediticio y ",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:sams.com.mx",
+      "countryCode": "MX",
+      "companyName": "Sam's Club México",
+      "domain": "sams.com.mx",
+      "officialWebsiteUrl": "https://www.sams.com.mx",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 66,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-8b3a64011a957489",
+          "url": "https://www.sams.com.mx",
+          "title": "Sam's Club México, los ahorros en grande ahora online",
+          "excerpt": "Del 4 al 30 de septiembre de 2026.Ver productos dulces mazapanes picafresa vero pelón pelo rico ## Nuestras dulces tradicionesNuestras dulces tradiciones Del 4 al 30 de septiembre de 2026. Ver productos Alen ## Elimina manchas difícilesElimina manchas difíciles y deja aroma frescoCompra ahora ## Prepárate para el regreso a clases HubSp-LP-BTS-Utiles-260820-580x580 Útiles HubSp-LP-BTS-Mochilas-260820-580x580 Mochilas y loncheras HubSp-LP-BTS-Tecnologia-260820-580x580 [...] Ir a contenido principal Sams Club Sams Club Icono de título de banner¿Cómo quieres tus artículos? # Sam's Club México, los ahorros en grande ahora online precio bajo despensa ## ¡Descúbrelos!¡Descúbrelos! Del 1 al 10 de septiembre de 2026.Ver productos coca cola doritos ruffles dos equis lager chivas ## El combo para la ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-265f6081e36a9817",
+          "url": "https://www.sams.com.mx/all-departments",
+          "title": "Todos los departamentos - sams.com.mx",
+          "excerpt": "Ir a contenido principal Sams Club Sams Club Todos los Departamentos Despensa Azúcar, Café y Té Bebidas y Jugos Pasteles, Panadería y Tortillas Leche Condensados y Saborizantes Aceites, Salsas y Sazonadores Cereales, Galletas y Barras Botanas Saladas Dulces y Chocolates Arroz, Frijoles y Pastas Sabores Internacionales Enlatados y Conservas Mermeladas, Untables y Jarabes Refrigerados, Congelados y Frescos Frutas y Verduras Lácteos y Huevos Carnes Frías y Salchichonería Comida congelada Helados y paletas Carne, pollo y pescado Pasteles y gelatinas Alimentos preparados Limpieza y Cuidado de la Ropa Limpieza de Baño y Cocina Cuidado de la Ropa Multiusos y Especializados Accesorios para Limpieza Papel y Desechables Desinfectantes Electrónica Pantallas Audio Cómputo Apple Casa Inteligente Mundo ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-87b1537829434134",
+          "url": "https://www.sams.com.mx/content/preventa/2770001",
+          "title": "Preventa exclusiva 2026 en Sam's Club en línea",
+          "excerpt": "A partir del 01 de octubre de 2026 nuestros Términos y Condiciones cambiarán. Consulta el detalle aquí > Sams Club Sams Club Icono de título de banner Preventa exclusiva 2026 en Sam's Club en línea Hazlo fácil, hazlo en línea Ahorra tiempo todos los días Nosotros nos encargamos Aprovecha el momento y compra a MSI Compra a tu ritmo y elige el tipo de envío sknnyd-plus-de-tu-membresia-1576x220.jpg Lo más Top hubspoke-catego-01-TV-2510 hubspoke-catego-02-cel-2510 hubspoke-catego-03-compu-2510 hubspoke-catego-04-LB-2510.png hubspoke-catego-05-Motos-2510 hubspoke-catego-10-Llantas-2510 Te va a encantar Se volverá tu marca favorita para volver tus días algo especial Son Socios que aman descubrir en Sam's Tenemos más de lo que imaginas Lo que quieres, aquí está Tus marcas Favs hubSp-Logos-MichelD",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-13416bc2504db17b",
+          "url": "https://www.samsclub.com/c/kp/gigabit-router",
+          "title": "gigabit router",
+          "excerpt": "\"gigabit router\"(8+). Prices may vary in club and online. ASUS RT-BE88U Dual-band WiFi 7 Router $299.00. ASUS RT-BE88U Dual-band WiFi 7 Router. $29900.",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-b35be91787267cf4",
+          "url": "https://www.samsclub.com/c/kp/wi-fi-routers",
+          "title": "Wi-Fi routers",
+          "excerpt": "TP-Link Deco BE4600 Wi-Fi 7 Whole Home System, 3-Pack. $23900. current price $239.00. TP-Link Deco BE4600 Wi-Fi 7 Whole Home System, 3-Pack. 4.2 out of 5 stars.",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    },
+    {
+      "companyKey": "MX:domain:costco.com.mx",
+      "countryCode": "MX",
+      "companyName": "Costco México",
+      "domain": "costco.com.mx",
+      "officialWebsiteUrl": "https://www.costco.com.mx",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 59,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": false,
+      "operatesInTargetMarket": false,
+      "evidence": [
+        {
+          "id": "evidence-9bbe54f19236ac0a",
+          "url": "https://www.costco.com/wifi-routers.html",
+          "title": "Wi-Fi Routers",
+          "excerpt": "Stream video and game smoothly with high speed reliable Wi-Fi routers available at Costco. Upgrade your home network performance and shop online today!",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-c8672dbdd8587560",
+          "url": "https://www.costco.com/routers-networking.html",
+          "title": "Routers, Wifi Extenders & Modems",
+          "excerpt": "Upgrade your network with Costco's selection of routers, wifi extenders & modems. Experience smart connectivity with top brands like TP-Link and ASUS.",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-46726e107eb674b3",
+          "url": "https://www.costco.com/opt/routers-for-fiber-internet",
+          "title": "Routers For Fiber Internet",
+          "excerpt": "Shop high-speed routers for fiber internet at Costco. Enjoy reliable connectivity and top performance for all your devices.",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-7356d16a68ce9cad",
+          "url": "https://www.costco.com/mesh-wifi-systems.html",
+          "title": "Mesh Wi-Fi Systems",
+          "excerpt": "Eliminate dead zones and boost home internet speed using mesh Wi Fi systems from Costco. Enjoy seamless whole home coverage and shop online today!",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-e61b64baa4f7bdce",
+          "url": "https://www.costco.com/f/-/connection-better-wifi-networks",
+          "title": "Better WIFI Networks",
+          "excerpt": "\"The wireless signal from a single Wi-Fi router fades every time it passes through a wall, especially at long distances, resulting in slower speeds,\" explains",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "assessmentModel": "deepseek-v4-pro"
+    }
+  ],
+  "aliasToCompanyKey": {
+    "MX:domain:steren.com.mx": "MX:domain:steren.com.mx",
+    "MX:name:steren": "MX:domain:steren.com.mx",
+    "MX:domain:digitalife.com.mx": "MX:domain:digitalife.com.mx",
+    "MX:name:digitalife": "MX:domain:digitalife.com.mx",
+    "MX:domain:ddtech.mx": "MX:domain:ddtech.mx",
+    "MX:name:ddtech": "MX:domain:ddtech.mx",
+    "MX:domain:coppel.com": "MX:domain:coppel.com",
+    "MX:name:coppel": "MX:domain:coppel.com",
+    "MX:domain:dimercom.mx": "MX:domain:dimercom.mx",
+    "MX:name:dimercom": "MX:domain:dimercom.mx",
+    "MX:domain:intercompras.com": "MX:domain:intercompras.com",
+    "MX:name:intercompras": "MX:domain:intercompras.com",
+    "MX:domain:grupodecme.com": "MX:domain:grupodecme.com",
+    "MX:name:decmestoredecme": "MX:domain:grupodecme.com",
+    "MX:domain:zegucom.com.mx": "MX:domain:zegucom.com.mx",
+    "MX:name:zegucomcomputo": "MX:domain:zegucom.com.mx",
+    "MX:domain:walmart.com.mx": "MX:domain:walmart.com.mx",
+    "MX:name:walmartmexico": "MX:domain:walmart.com.mx",
+    "MX:domain:officemax.com.mx": "MX:domain:officemax.com.mx",
+    "MX:name:officemaxmexico": "MX:domain:officemax.com.mx",
+    "MX:domain:elektra.mx": "MX:domain:elektra.mx",
+    "MX:name:elektra": "MX:domain:elektra.mx",
+    "MX:domain:homedepot.com.mx": "MX:domain:homedepot.com.mx",
+    "MX:name:thehomedepotmexico": "MX:domain:homedepot.com.mx",
+    "MX:domain:pcmig.com.mx": "MX:domain:pcmig.com.mx",
+    "MX:name:pcmig": "MX:domain:pcmig.com.mx",
+    "MX:domain:humancomputer.com.mx": "MX:domain:humancomputer.com.mx",
+    "MX:name:humancomputer": "MX:domain:humancomputer.com.mx",
+    "MX:domain:nestore.mx": "MX:domain:nestore.mx",
+    "MX:name:nestore": "MX:domain:nestore.mx",
+    "MX:domain:tecnotichi.com": "MX:domain:tecnotichi.com",
+    "MX:name:tecnotichi": "MX:domain:tecnotichi.com",
+    "MX:domain:wirelessshop.mx": "MX:domain:wirelessshop.mx",
+    "MX:name:wirelessshop": "MX:domain:wirelessshop.mx",
+    "MX:domain:sears.com.mx": "MX:domain:sears.com.mx",
+    "MX:name:searsmexico": "MX:domain:sears.com.mx",
+    "MX:domain:sanborns.com.mx": "MX:domain:sanborns.com.mx",
+    "MX:name:sanborns": "MX:domain:sanborns.com.mx",
+    "MX:domain:zonadigital83.com": "MX:domain:zonadigital83.com",
+    "MX:name:zonadigital83": "MX:domain:zonadigital83.com",
+    "MX:domain:macropay.mx": "MX:domain:macropay.mx",
+    "MX:name:macropay": "MX:domain:macropay.mx",
+    "MX:domain:sams.com.mx": "MX:domain:sams.com.mx",
+    "MX:name:samsclubmexico": "MX:domain:sams.com.mx",
+    "MX:domain:costco.com.mx": "MX:domain:costco.com.mx",
+    "MX:name:costcomexico": "MX:domain:costco.com.mx"
+  },
+  "costEvents": [
+    {
+      "eventId": "MX-retail:evaluation:fresh-evidence",
+      "cellId": "MX-retail",
+      "stage": "evaluation-control-fresh-evidence",
+      "provider": "tavily",
+      "startedAt": "2026-09-06T19:42:51.004Z",
+      "completedAt": "2026-09-06T19:43:11.138Z",
+      "latencyMs": 90511,
+      "attempts": 38,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 35
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 57,
+        "validOutputItems": 57,
+        "downstreamUsedItems": 57,
+        "discardedReasonCounts": {
+          "noFreshEvidence": 8
+        }
+      },
+      "notes": [
+        "Gemini-unique final candidates only",
+        "historical evidence reads and writes disabled"
+      ],
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.28,
+      "budgetCostUsd": 0.28,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:evaluation:correction-search",
+      "cellId": "MX-retail",
+      "stage": "evaluation-control-correction-search",
+      "provider": "tavily",
+      "startedAt": "2026-09-06T19:43:11.152Z",
+      "completedAt": "2026-09-06T19:45:52.418Z",
+      "latencyMs": 46340,
+      "attempts": 22,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 22
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 23,
+        "downstreamUsedItems": 23,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.176,
+      "budgetCostUsd": 0.176,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:evaluation-control-correction:1",
+      "cellId": "MX-retail",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:43:11.152Z",
+      "completedAt": "2026-09-06T19:45:52.418Z",
+      "latencyMs": 49337,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 11515,
+        "outputTokens": 5787,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 21,
+        "downstreamUsedItems": 23,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.010043715,
+      "budgetCostUsd": 0.010043715,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "MX-retail:evaluation-control-correction:2",
+      "cellId": "MX-retail",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:43:11.152Z",
+      "completedAt": "2026-09-06T19:45:52.418Z",
+      "latencyMs": 61316,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 15020,
+        "outputTokens": 7280,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 21,
+        "downstreamUsedItems": 23,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.0128673,
+      "budgetCostUsd": 0.0128673,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "MX-retail:evaluation-control-correction:3",
+      "cellId": "MX-retail",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:43:11.152Z",
+      "completedAt": "2026-09-06T19:45:52.418Z",
+      "latencyMs": 45224,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 13587,
+        "outputTokens": 5100,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 21,
+        "downstreamUsedItems": 23,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.010347345,
+      "budgetCostUsd": 0.010347345,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "MX-retail:evaluation-control-correction:4",
+      "cellId": "MX-retail",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:43:11.152Z",
+      "completedAt": "2026-09-06T19:45:52.418Z",
+      "latencyMs": 67291,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 17062,
+        "outputTokens": 7510,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 21,
+        "downstreamUsedItems": 23,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.01395567,
+      "budgetCostUsd": 0.01395567,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "MX-retail:evaluation-control-correction:5",
+      "cellId": "MX-retail",
+      "stage": "evaluation-control-correction",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:43:11.152Z",
+      "completedAt": "2026-09-06T19:45:52.418Z",
+      "latencyMs": 37689,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 9299,
+        "outputTokens": 4007,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 21,
+        "downstreamUsedItems": 23,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.007531155,
+      "budgetCostUsd": 0.007531155,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": [
+        "downstream-use-exceeds-valid-output"
+      ]
+    },
+    {
+      "eventId": "MX-retail:evaluation-control-score-only:1",
+      "cellId": "MX-retail",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:45:52.441Z",
+      "completedAt": "2026-09-06T19:47:57.492Z",
+      "latencyMs": 31912,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 8244,
+        "outputTokens": 3302,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 23,
+        "downstreamUsedItems": 23,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.006458879999999999,
+      "budgetCostUsd": 0.006458879999999999,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:evaluation-control-score-only:2",
+      "cellId": "MX-retail",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:45:52.441Z",
+      "completedAt": "2026-09-06T19:47:57.492Z",
+      "latencyMs": 37219,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 8609,
+        "outputTokens": 3507,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 23,
+        "downstreamUsedItems": 23,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.006796005,
+      "budgetCostUsd": 0.006796005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:evaluation-control-score-only:3",
+      "cellId": "MX-retail",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:45:52.441Z",
+      "completedAt": "2026-09-06T19:47:57.492Z",
+      "latencyMs": 45922,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 10942,
+        "outputTokens": 5060,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 23,
+        "downstreamUsedItems": 23,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00916197,
+      "budgetCostUsd": 0.00916197,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:evaluation-control-score-only:4",
+      "cellId": "MX-retail",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:45:52.441Z",
+      "completedAt": "2026-09-06T19:47:57.492Z",
+      "latencyMs": 48732,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 10656,
+        "outputTokens": 5036,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 23,
+        "downstreamUsedItems": 23,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.009016680000000001,
+      "budgetCostUsd": 0.009016680000000001,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:evaluation-control-score-only:5",
+      "cellId": "MX-retail",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:45:52.441Z",
+      "completedAt": "2026-09-06T19:47:57.492Z",
+      "latencyMs": 36531,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 10552,
+        "outputTokens": 3487,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 23,
+        "downstreamUsedItems": 23,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.007623809999999999,
+      "budgetCostUsd": 0.007623809999999999,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:evaluation-control-score-only:6",
+      "cellId": "MX-retail",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:45:52.441Z",
+      "completedAt": "2026-09-06T19:47:57.492Z",
+      "latencyMs": 55938,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 9957,
+        "outputTokens": 6090,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 23,
+        "downstreamUsedItems": 23,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.009629595000000001,
+      "budgetCostUsd": 0.009629595000000001,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:evaluation-control-score-only:7",
+      "cellId": "MX-retail",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:45:52.441Z",
+      "completedAt": "2026-09-06T19:47:57.492Z",
+      "latencyMs": 57215,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 11217,
+        "outputTokens": 5647,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 23,
+        "downstreamUsedItems": 23,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.009792285,
+      "budgetCostUsd": 0.009792285,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:evaluation-control-score-only:8",
+      "cellId": "MX-retail",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:45:52.441Z",
+      "completedAt": "2026-09-06T19:47:57.492Z",
+      "latencyMs": 71242,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 11149,
+        "outputTokens": 8064,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 23,
+        "downstreamUsedItems": 23,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.011865494999999998,
+      "budgetCostUsd": 0.011865494999999998,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:evaluation-control-score-only:9",
+      "cellId": "MX-retail",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:45:52.441Z",
+      "completedAt": "2026-09-06T19:47:57.492Z",
+      "latencyMs": 18726,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 5213,
+        "outputTokens": 1771,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 23,
+        "downstreamUsedItems": 23,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.0038084250000000003,
+      "budgetCostUsd": 0.0038084250000000003,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:evaluation-control-score-only:10",
+      "cellId": "MX-retail",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:45:52.441Z",
+      "completedAt": "2026-09-06T19:47:57.492Z",
+      "latencyMs": 19912,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 6282,
+        "outputTokens": 1792,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 23,
+        "downstreamUsedItems": 23,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00429171,
+      "budgetCostUsd": 0.00429171,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "MX-retail:evaluation-control-score-only:11",
+      "cellId": "MX-retail",
+      "stage": "evaluation-control-score-only",
+      "provider": "deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek-v4-pro",
+      "startedAt": "2026-09-06T19:45:52.441Z",
+      "completedAt": "2026-09-06T19:47:57.492Z",
+      "latencyMs": 23089,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 5154,
+        "outputTokens": 2076,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 23,
+        "rawOutputItems": 23,
+        "validOutputItems": 23,
+        "downstreamUsedItems": 23,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "runId": "2026-09-06-uk-mx-search-e2e-v1-1-6",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00404811,
+      "budgetCostUsd": 0.00404811,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    }
+  ],
+  "warnings": [
+    "No official-domain evidence was extracted for ddtech.mx.",
+    "No official-domain evidence was extracted for coppel.com.",
+    "No official-domain evidence was extracted for grupodecme.com.",
+    "No official-domain evidence was extracted for walmart.com.mx.",
+    "No official-domain evidence was extracted for nestore.mx.",
+    "No official-domain evidence was extracted for tecnotichi.com.",
+    "No official-domain evidence was extracted for sears.com.mx.",
+    "No official-domain evidence was extracted for costco.com.mx.",
+    "steren.com.mx: Submitted roles omitted Distributor and Brand Owner despite supporting evidence.",
+    "ddtech.mx: Evidence for DDTech is limited; some supplied evidence is not directly relevant to the candidate.",
+    "dimercom.mx: The dimercom.net domain appears to be a separate entity and its relationship to the candidate is unclear.",
+    "intercompras.com: Distributor role is based solely on self-identification on the official website; no independent evidence confirms downstream channel partner supply.",
+    "zegucom.com.mx: Distributor role is fulfilled through the related DICOTECH entity; the relationship between Zegucom and DICOTECH is not fully detailed in the evidence.",
+    "walmart.com.mx: Deterministic role hints were not auto-added: Installer.",
+    "officemax.com.mx: Some evidence references Office Depot US operations rather than OfficeMax México specifically; however, the brand family relationship is clear.",
+    "elektra.mx: The 'Distribuidores y Centros de Servicio' link on the official website refers to Italika motorcycle distributors, not Elektra acting as a distributor.",
+    "homedepot.com.mx: The Pro program at Home Depot serves professional customers with preferential pricing, not downstream resellers.",
+    "homedepot.com.mx: The supplier pages describe how to become a supplier TO Home Depot, not how Home Depot distributes to others.",
+    "pcmig.com.mx: Several independent-public evidence items are unrelated to PCMIG (e.g., pcmloscabos.com, pcm-group.com, meigsmart.com, pcm.com.mx).",
+    "pcmig.com.mx: The candidate appears to be a small local retailer with limited public evidence.",
+    "pcmig.com.mx: Deterministic role hints were not auto-added: Distributor, Reseller, VAR, ISP.",
+    "humancomputer.com.mx: Several independent-public evidence items are unrelated to Human Computer (e.g., human-i-t.org, paloaltonetworks.com, enx.com).",
+    "humancomputer.com.mx: The humancomputer.com domain is a different company (Human Computer, Inc. in the US).",
+    "humancomputer.com.mx: The candidate appears to be a small local retailer with limited public evidence.",
+    "humancomputer.com.mx: Deterministic role hints were not auto-added: Installer, ISP.",
+    "nestore.mx: Escalation was skipped because the configured routine and escalation models are identical.",
+    "nestore.mx: All supplied evidence items are unrelated to the candidate 'Nestore'.",
+    "nestore.mx: The candidate's identity and existence cannot be verified from the supplied evidence.",
+    "nestore.mx: The submitted roles of Retailer and E-tailer cannot be verified.",
+    "nestore.mx: Roles without a supported atomic role finding were removed.",
+    "tecnotichi.com: Submitted evidence appears to be for unrelated entities and does not describe TecnoTichi.",
+    "tecnotichi.com: Deterministic role hints were not auto-added: ISP.",
+    "wirelessshop.mx: Some PDFs hosted on the domain are third-party brochures printed by SYSCOM, not original Wireless Shop content.",
+    "wirelessshop.mx: Deterministic role hints were not auto-added: ISP.",
+    "sanborns.com.mx: The official website evidence is limited to subdomains (credito, admin, facturaelectronica) rather than the main storefront.",
+    "zonadigital83.com: One evidence item (evidence-b764fd6e1a8570e0) is for zonadigitalsv.com, a different company in El Salvador, and should not be used for this candidate.",
+    "macropay.mx: Evidence from macropay.net appears to reference a different company (payment gateway) and was excluded from identity resolution.",
+    "macropay.mx: Deterministic role hints were not auto-added: ISP.",
+    "sams.com.mx: Evidence from se.com (Schneider Electric distributor locator) returned no information and was excluded.",
+    "sams.com.mx: US-based samsclub.com evidence was used only to supplement networking product relevance, not Mexican operations.",
+    "costco.com.mx: All evidence provided is from costco.com (US site), not costco.com.mx. Mexican operations are not directly verified from supplied evidence.",
+    "costco.com.mx: Official website evidence for costco.com.mx is missing; officialWebsiteEvidenceId is null."
+  ]
+}

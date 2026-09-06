@@ -1,0 +1,51 @@
+{
+  "packetId": "blind-f22cef0dca284aea6ab321c9",
+  "targetMarket": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom"
+  },
+  "requestedCategory": "si-msp",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "Wavenet",
+    "domain": "wavenet.co.uk",
+    "officialWebsiteUrl": "https://www.wavenet.co.uk/"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-home-31a5593691ab2c31",
+      "sourceType": "official-website",
+      "url": "https://www.wavenet.co.uk/",
+      "title": "Wavenet | Managed IT, Security, Cloud, AI &amp; Connectivity | UK",
+      "excerpt": "Wavenet | Managed IT, Security, Cloud, AI Connectivity | UK --> Search 0333 234 0011 Incident response Connected Wholesale Careers Find us Support portals _svg]:-bottom-[7px] [ [data-active]_>_svg]:-scale-y-[1] lg:[ [data-active]_>_svg]:scale-y-[1]\" aria-label=\"Solutions\"> Solutions Intelligent connectivity Cloud modern workplace Unified communications voice Mobile IoT Cyber security (CyberGuard) Contact centre Business continuity AI automation All products PSTN replacement services Play the switch-off game PSTN planning toolkit Download the switch-off eBook Services _svg]:-bottom-[7px] [ [data-active]_>_svg]:-scale-y-[1] lg:[ [data-active]_>_svg]:scale-y-[1]\" aria-label=\"Sectors\"> Sectors Public sector Education - schools MATs Education - HE/FE Local government Healthcare Housing Commerci"
+    },
+    {
+      "evidenceId": "evidence-fb0bc41f1f36be1e",
+      "sourceType": "official-website",
+      "url": "https://www.wavenet.co.uk/news-and-events/wavenet-and-daisy-corporate-services-join-forces",
+      "title": "Wavenet and Daisy Corporate Services Join Forces",
+      "excerpt": "Wavenet and Daisy Corporate Services Join Forces 03/05/24 Wavenet Wavenet and Daisy Corporate Services Join Forces placeholder thumbnail Wavenet and Daisy Corporate Services Join Forces to Create UK’s Largest Independent IT Managed Service Provider. Wavenet and Daisy Corporate Services announce plans to combine. The newly combined business will become the largest independent MSP in the UK. The new £500m revenue company will support over 22,000 businesses and public sector organisations delivering cloud, cyber security and connectivity solutions. Wavenet and Daisy Corporate Services have announced the decision to combine, creating the UK’s largest independent IT managed services provider. The business will be a key innovator with scale, focusing on delivering cyber, cloud and intelligent ne"
+    },
+    {
+      "evidenceId": "evidence-51e86cd24ddd6045",
+      "sourceType": "official-website",
+      "url": "https://www.wavenet.co.uk",
+      "title": "Wavenet | Managed IT, Security, Cloud, AI & Connectivity | UK",
+      "excerpt": "Wavenet · The UK’s most trusted managed service and security provider Enterprise IT & security - without big company complexity Wavenet is the UK's most trusted managed service and security provider. We deliver secure, scalable IT, communications and cloud services with the responsiveness of a specialist partner - so you can modernise faster without managing multiple suppliers. See customer outcomes organisations supported engineers & specialists CSAT score years' operation Our customers Understanding your business and delivering industry-leading solutions Costain_Group_logo NatWest_logo NHS-logo Driver_and_Vehicle_Licensing_Agency_(UK).svg) Workspace_Group_logo Transport_for_London_logo John_Lewis_&_Partners_logo Greene-King Trusted by organisations that can't afford to get IT wrong “Wave"
+    },
+    {
+      "evidenceId": "evidence-c216d1cc9a247b7b",
+      "sourceType": "official-website",
+      "url": "https://www.wavenet.co.uk/news-and-events/tag/news/page/2",
+      "title": "News blog | News (2) - Wavenet",
+      "excerpt": "red circle location-icon-grey-1 portal-icon wvn-logo-black all-products-icon-white Industries & Sectors overview wvn-logo-black all-products-icon-white Industries & Sectors overview red circle location-icon-grey-1 portal-icon Posts about News (2) Wavenet has announced that its existing CEO Philip Grannum will lead the combined business of Wavenet and Daisy Corporate Services following regulatory approval and completion of the deal this week. It has also been confirmed that the new company, which will be the UK’s largest independent IT managed services and security provider, will operate under the Wavenet brand. United Kingdom, 10th June 2024 – Wavenet, a managed services provider offering businesses cybersecurity, communications, and connectivity, has onboarded a range of Multifunctional P"
+    },
+    {
+      "evidenceId": "evidence-ccb6bfbb8f0e0ae4",
+      "sourceType": "official-website",
+      "url": "https://www.wavenet.co.uk/solutions/networking-and-connectivity",
+      "title": "Networking & Connectivity | IT Solutions & Services - Wavenet",
+      "excerpt": "# Network connectivity solutions ## Network connectivity solutions for every organisation. ## Technology tailored to your processes **Run your business the way you choose with our network connectivity solutions — essential infrastructure for security and efficiency.** From supplying broadband to designing networks from scratch, we connect your people, places, and data. #### UK-wide reach #### 99% network coverage #### 24/7 support #### High-capacity and low-latency #### Flexibility to scale as your business changes #### Price points for every budget ## Network connectivity solutions Low-cost, high-performance connectivity that keeps your business running smoothly. Cisco Secure Connect is Wavenet’s fully managed Secure Access Service Edge (SASE) solution, designed for organisations embracin"
+    }
+  ]
+}

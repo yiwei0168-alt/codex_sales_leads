@@ -1,0 +1,37 @@
+{
+  "packetId": "blind-a446cc431d7d94504be7b481",
+  "targetMarket": {
+    "countryCode": "GB",
+    "countryName": "United Kingdom"
+  },
+  "requestedCategory": "resale",
+  "cudyBrief": "Cudy provides accessible, reliable, easy-to-deploy networking for consumers, homes, SMBs, hospitality, education, retail, light industry and ISP/FWA. Relevant families include Wi-Fi routers/mesh, 4G/5G FWA, AP/controller, Ethernet/PoE/fibre switching, gateways/VPN, outdoor wireless and xPON/ONT. Positioning is value and SMB rather than premium-enterprise-only.",
+  "company": {
+    "name": "Comms Express",
+    "domain": "comms-express.com",
+    "officialWebsiteUrl": "https://www.comms-express.com"
+  },
+  "evidence": [
+    {
+      "evidenceId": "evidence-0249d285c00bbfbf",
+      "sourceType": "official-website",
+      "url": "https://www.comms-express.com",
+      "title": "Comms Express | Top Supplier of Network Cables, Data ...",
+      "excerpt": "Express deliver a full range of network supplies so that you can browse and buy online and replenish your network supplies quickly and cheaply."
+    },
+    {
+      "evidenceId": "evidence-a4ea23f2c93db541",
+      "sourceType": "official-website",
+      "url": "https://www.comms-express.com/blog/hpe-and-aruba-best-sellers",
+      "title": "HPE Networking: Price Match Promo! - Comms Express",
+      "excerpt": "Discover the top-selling HPE and Aruba networking products at Comms Express. Explore our best-sellers in the Price Match Promo!"
+    },
+    {
+      "evidenceId": "evidence-b37a6bfd4753b33f",
+      "sourceType": "independent-public",
+      "url": "https://uk.linkedin.com/company/comms-express-limited",
+      "title": "Comms-Express.com - I.T Networking, Network Cables, Structured Cabling, Data & Server Racks, Active Equipment, and Data Centre Solutions",
+      "excerpt": "We have a carefully chosen portfolio of Networking Products in order to give our customers the widest choice possible in Networking Solutions. We offer brands that will suit everyone's budget without any compromise in quality. We're enormously proud of the working relationships we've built up over the years with renowned industry names such as Cisco, APC, Netgear, HP, Fluke Networks & D-Link to name but a few, giving our customers the peace of mind that all our products are backed up by full [...] backed up by full manufacturers support and guarantee. Our Ethos Comms Express was formed back in 2002. We started with a very simple ethos and that was to provide our customers with a friendly and hassle free service whilst keeping product quality and value for money our top priorities, and we'r"
+    }
+  ]
+}
