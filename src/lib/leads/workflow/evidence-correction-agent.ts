@@ -455,6 +455,31 @@ export class LeadEvidenceCorrectionAgent {
     }
   }
 
+  private async evaluateOneRoutineRepair(candidate: LeadWorkflowCandidate, plan: LeadSearchPlan, reason: string,
+    usageRecords: WorkflowModelUsage[]) {
+    try {
+      const response = await this.provider.execute<CorrectionRequest, unknown>(
+        this.request([candidate], plan, this.routineModel), AbortSignal.timeout(75_000));
+      this.captureUsage(usageRecords, response, this.routineModel);
+      const raw = typeof response.output === "object" && response.output !== null && "corrections" in response.output
+        ? (response.output as { corrections?: unknown[] }).corrections?.[0] : response.output;
+      const repaired = sanitizeLeadCorrectionOutput({ corrections: [raw] }) as { corrections?: unknown[] };
+      const value = leadCorrectionModelSchema.parse(repaired.corrections?.[0]);
+      const materialEscalation = value.escalation.required && value.escalation.higherCapabilityCanResolve
+        && (value.escalation.expectedTotalScoreChange >= 8 || value.escalation.criticalStateChanges.length > 0);
+      if (materialEscalation && this.routineModel !== this.escalationModel) {
+        return this.evaluateOneEscalated(candidate, plan,
+          `${reason} Same-tier schema repair requested material semantic escalation.`, usageRecords);
+      }
+      const normalized = this.normalize(value, candidate, response, false);
+      return { ...normalized, correction: { ...normalized.correction,
+        warnings: [`${reason} Same-tier single-candidate schema repair succeeded.`, ...normalized.correction.warnings] } };
+    } catch (error) {
+      return this.fallback(candidate,
+        `${reason} Same-tier schema repair failed without Pro escalation: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }
+
   private async evaluateBatch(candidates: LeadWorkflowCandidate[], plan: LeadSearchPlan,
     usageRecords: WorkflowModelUsage[]) {
     try {
@@ -480,8 +505,13 @@ export class LeadEvidenceCorrectionAgent {
           : normalized;
       }));
     } catch (error) {
-      return Promise.all(candidates.map((candidate) => this.evaluateOneEscalated(
-        candidate, plan, `Routine correction failed: ${error instanceof Error ? error.message : String(error)}`, usageRecords)));
+      const reason = `Routine correction failed: ${error instanceof Error ? error.message : String(error)}`;
+      if (error instanceof z.ZodError) {
+        return Promise.all(candidates.map((candidate) => this.evaluateOneRoutineRepair(
+          candidate, plan, reason, usageRecords)));
+      }
+      return candidates.map((candidate) => this.fallback(candidate,
+        `${reason} Infrastructure/provider failure does not qualify for Pro escalation.`));
     }
   }
 

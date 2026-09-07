@@ -9,12 +9,17 @@ import type { CorrectedLeadWorkflowCandidate, LeadMarketPlaybook } from "./types
 class FakeProvider implements AiProvider {
   readonly id = "fake";
   calls: StructuredAiRequest<unknown>[] = [];
-  constructor(private readonly options: { cooperationPaths?: unknown[]; escalation?: {
+  constructor(private readonly options: { cooperationPaths?: unknown[]; fail?: boolean; malformedFirst?: boolean; escalation?: {
     required: boolean; expectedTotalScoreChange: number; criticalStateChanges: string[];
     higherCapabilityCanResolve: boolean; reason: string;
   } } = {}) {}
   async execute<TInput, TOutput>(request: StructuredAiRequest<TInput>): Promise<StructuredAiResponse<TOutput>> {
     this.calls.push(request as StructuredAiRequest<unknown>);
+    if (this.options.fail) throw new Error("fixture provider unavailable");
+    if (this.options.malformedFirst && this.calls.length === 1) {
+      return { output: { invalid: true } as TOutput, modelVersion: request.modelVersion,
+        promptVersion: request.promptVersion, latencyMs: 5, warnings: [] };
+    }
     return {
       output: { assessments: [{
         candidateId: "lead-example", gates: { correctedIdentityUsable: "supported", companyExists: "supported",
@@ -226,5 +231,25 @@ describe("LeadQualificationAgent", () => {
     }).evaluate([candidate], playbook, "DE", "Germany", "new-market");
     expect(provider.calls).toHaveLength(1);
     expect(result.warnings[0]).toContain("identical");
+  });
+
+  it("does not promote an infrastructure failure to the Pro model", async () => {
+    const provider = new FakeProvider({ fail: true });
+    const [result] = await new LeadQualificationAgent(provider, {
+      routineModel: "routine-model", escalationModel: "pro-model", concurrency: 1,
+    }).evaluate([candidate], playbook, "DE", "Germany", "new-market");
+    expect(provider.calls.map((call) => call.modelVersion)).toEqual(["routine-model"]);
+    expect(result.scoringStatus).toBe("retry-required");
+    expect(result.warnings.join(" ")).toContain("does not qualify for Pro escalation");
+  });
+
+  it("uses one same-tier repair for malformed routine output before considering semantic escalation", async () => {
+    const provider = new FakeProvider({ malformedFirst: true });
+    const [result] = await new LeadQualificationAgent(provider, {
+      routineModel: "routine-model", escalationModel: "pro-model", concurrency: 1,
+    }).evaluate([candidate], playbook, "DE", "Germany", "new-market");
+    expect(provider.calls.map((call) => call.modelVersion)).toEqual(["routine-model", "routine-model"]);
+    expect(result.scoringStatus).toBe("completed");
+    expect(result.warnings.join(" ")).toContain("Same-tier single-candidate schema repair succeeded");
   });
 });

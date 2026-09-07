@@ -1,6 +1,6 @@
 {
   "workflowKey": "cudy-sales-lead-end-to-end",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "status": "active",
   "scope": "From the user's natural-language market-development request and workspace context to ranked companies, editable cooperation paths, development strategy, outreach email, and private-memory learning from user edits.",
   "principles": [
@@ -41,21 +41,21 @@
       "purpose": "Lightweight candidate existence, relevance and category gate",
       "defaultModel": "DEEPSEEK_DISCOVERY_GATE_MODEL; fixed default deepseek-v4-flash and never inherits a Pro global routine setting",
       "escalationOrFallback": "Same-tier resilient provider fallback, including public-only DeepSeek through OpenRouter; unavailable batches are held for downstream evidence, never upgraded to Pro",
-      "callPolicy": "Batches of up to 10 after direct lightweight homepage fetch; compact semantic signals only, with deterministic pass/hold/reject"
+      "callPolicy": "Batches of up to 10 after direct lightweight homepage fetch; compact semantic signals only, with deterministic pass/hold/reject; optional reasoning is disabled on the OpenRouter same-tier route"
     },
     {
       "stages": ["06-correction-role"],
       "purpose": "Entity correction, atomic facts and primary-role analysis",
       "defaultModel": "DEEPSEEK_MODEL; default deepseek-v4-flash",
       "escalationOrFallback": "DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro; public-only same-tier OpenRouter route on provider failure; deterministic fallback is retry-only",
-      "callPolicy": "Routine batches; upgrade only for expected score change >=8 or a resolvable critical-state change"
+      "callPolicy": "Routine batches with optional reasoning disabled on OpenRouter; malformed output permits one same-tier single-candidate repair; infrastructure failure never upgrades; Pro requires a valid routine prediction of score change >=8 or a resolvable critical-state change"
     },
     {
       "stages": ["09-scoring-paths"],
       "purpose": "Role-aware score and possible cooperation paths",
       "defaultModel": "DEEPSEEK_MODEL; default deepseek-v4-flash",
       "escalationOrFallback": "DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro; public-only same-tier OpenRouter route on provider failure",
-      "callPolicy": "Routine batches; confidence, alternative paths and Top-N position never trigger upgrade alone"
+      "callPolicy": "Routine batches with optional reasoning disabled on OpenRouter; malformed output permits one same-tier single-candidate repair; infrastructure failure never upgrades; confidence, alternative paths and Top-N position never trigger upgrade alone"
     },
     {
       "stages": ["10-review"],

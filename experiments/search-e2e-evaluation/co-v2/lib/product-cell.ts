@@ -13,6 +13,7 @@ import { nextNoFinalRoundCount, plannedCandidatePool, targetCompletionDecision,
 import type { CorrectedLeadWorkflowCandidate, LeadCandidateAssessment, LeadMarketPlaybook,
   WorkflowModelUsage } from "@/lib/leads/workflow/types";
 import type { EmbeddingCallUsage } from "@/lib/rag/openai-provider";
+import { createLeadAiProvider } from "@/providers/resilient-ai";
 
 import rateCardJson from "../config/official-rate-card.v1.json";
 import { priceCostEvent, type ExperimentCostEvent, type ExperimentCostEventInput,
@@ -241,14 +242,15 @@ export async function runProductCell(cell: ExperimentCell, options: {
 
   const discoverySession = createHybridDiscoverySession();
   const treatmentModels = EXPERIMENT_CONFIG.arms["product-e2e"].models;
-  const discoveryGate = new LeadDiscoveryGate(undefined, fetch,
+  const leadAiProvider = createLeadAiProvider();
+  const discoveryGate = new LeadDiscoveryGate(leadAiProvider, fetch,
     { model: treatmentModels.discoveryGateRoutine });
-  const correctionAgent = new LeadEvidenceCorrectionAgent(undefined, undefined, {
+  const correctionAgent = new LeadEvidenceCorrectionAgent(leadAiProvider, undefined, {
     allowReusableCorrections: false, persistCorrections: false,
     routineModel: treatmentModels.roleCorrectionRoutine,
     escalationModel: treatmentModels.materialEscalation,
   });
-  const qualificationAgent = new LeadQualificationAgent(undefined, { includeCooperationPaths: false, concurrency: 4,
+  const qualificationAgent = new LeadQualificationAgent(leadAiProvider, { includeCooperationPaths: false, concurrency: 4,
     routineModel: treatmentModels.qualificationRoutine,
     escalationModel: treatmentModels.materialEscalation });
   const discoveryRounds: ProductCellResult["discoveryRounds"] = [...(resumeFrom?.discoveryRounds ?? [])];
@@ -283,7 +285,7 @@ export async function runProductCell(cell: ExperimentCell, options: {
       retries: 0,
       latencyMs: 0,
     }) };
-    const recoveryAgent = new LeadEvidenceCorrectionAgent(undefined, noAcquisitionSearch, {
+    const recoveryAgent = new LeadEvidenceCorrectionAgent(leadAiProvider, noAcquisitionSearch, {
       allowReusableCorrections: false,
       persistCorrections: false,
       routineModel: treatmentModels.roleCorrectionRoutine,

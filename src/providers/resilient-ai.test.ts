@@ -58,7 +58,8 @@ describe("ResilientAiProvider", () => {
     const result = await provider.execute<typeof request.input, { ok: boolean }>(request);
     const body = JSON.parse(String(fetchMock.mock.calls[0][1]?.body));
     expect(body).toMatchObject({ model: "deepseek/deepseek-v4-flash",
-      provider: { require_parameters: true, data_collection: "deny" } });
+      provider: { require_parameters: true, data_collection: "deny" },
+      reasoning: { effort: "none" } });
     expect(result).toMatchObject({ actualProviderId: "openrouter-deepseek",
       requestedModelVersion: "deepseek-v4-flash", attempts: 2, retries: 0 });
     expect(result.warnings[0]).toContain("deepseek failed");
@@ -90,5 +91,16 @@ describe("ResilientAiProvider", () => {
     await expect(provider.execute({ ...request, input: { company: "Two" } })).rejects.toBeInstanceOf(AggregateError);
     await expect(provider.execute({ ...request, input: { company: "Three" } })).rejects.toBeInstanceOf(AggregateError);
     expect(primary.calls).toHaveLength(2);
+  });
+
+  it("does not count a circuit-skipped primary as a provider attempt", async () => {
+    const primary = new FakeAiProvider("primary", "fail");
+    const fallback = new FakeAiProvider("fallback");
+    const provider = new ResilientAiProvider(primary, { circuitFailureThreshold: 1, circuitCooldownMs: 60_000,
+      fallbacks: [{ provider: fallback, routineModel: "peer-flash", approvedDataClassifications: ["public"] }] });
+    await provider.execute({ ...request, input: { company: "One" } });
+    const result = await provider.execute({ ...request, input: { company: "Two" } });
+    expect(primary.calls).toHaveLength(1);
+    expect(result.attempts).toBe(1);
   });
 });

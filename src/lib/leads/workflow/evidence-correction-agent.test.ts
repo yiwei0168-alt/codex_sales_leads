@@ -10,11 +10,17 @@ import type { LeadWorkflowCandidate } from "./types";
 class FakeCorrectionProvider implements AiProvider {
   readonly id = "fake-corrector";
   calls: StructuredAiRequest<unknown>[] = [];
-  constructor(private readonly repairableOutput = false) {}
+  constructor(private readonly repairableOutput = false,
+    private readonly failureMode?: "provider" | "schema-once") {}
   async execute<TInput, TOutput>(request: StructuredAiRequest<TInput>): Promise<StructuredAiResponse<TOutput>> {
     this.calls.push(request as StructuredAiRequest<unknown>);
+    if (this.failureMode === "provider") throw new Error("fixture provider unavailable");
     const input = request.input as { candidates: Array<{ candidateId: string; evidence: Array<{ evidenceId: string; url: string }> }> };
     const candidate = input.candidates[0];
+    if (this.failureMode === "schema-once" && this.calls.length === 1) {
+      return { output: { invalid: true } as TOutput, modelVersion: request.modelVersion,
+        promptVersion: request.promptVersion, latencyMs: 5, warnings: [] };
+    }
     const official = candidate.evidence.find((item) => item.url.includes("smarttechnik.eu"));
     return {
       output: { corrections: [{ candidateId: candidate.candidateId, resolvedCompanyName: "Smart Technik GmbH",
@@ -147,5 +153,29 @@ describe("LeadEvidenceCorrectionAgent", () => {
     expect(parsed.corrections[0].reasons[0]).toHaveLength(300);
     expect(parsed.corrections[0].escalation.criticalStateChanges).toEqual([]);
     expect(parsed.corrections[0].warnings.join(" ")).toContain("normalized to Unresolved");
+  });
+
+  it("does not promote an infrastructure failure to the Pro correction model", async () => {
+    const provider = new FakeCorrectionProvider(false, "provider");
+    const result = await new LeadEvidenceCorrectionAgent(provider, searchProvider, {
+      batchSize: 1, concurrency: 1, searchConcurrency: 1,
+      routineModel: "routine-model", escalationModel: "pro-model",
+    }).correct([candidate], { countryCode: "DE", countryName: "Germany", objective: "new-market",
+      roles: ["Distributor"], targetCount: 10, queryLanguage: "en", userRequest: "Find prospects" });
+    expect(provider.calls.map((call) => call.modelVersion)).toEqual(["routine-model"]);
+    expect(result.candidates[0].correction.model).toBe("deterministic-fallback");
+    expect(result.candidates[0].correction.warnings.join(" ")).toContain("does not qualify for Pro escalation");
+  });
+
+  it("uses one same-tier correction repair for malformed routine output", async () => {
+    const provider = new FakeCorrectionProvider(false, "schema-once");
+    const result = await new LeadEvidenceCorrectionAgent(provider, searchProvider, {
+      batchSize: 1, concurrency: 1, searchConcurrency: 1,
+      routineModel: "routine-model", escalationModel: "pro-model",
+    }).correct([candidate], { countryCode: "DE", countryName: "Germany", objective: "new-market",
+      roles: ["Distributor"], targetCount: 10, queryLanguage: "en", userRequest: "Find prospects" });
+    expect(provider.calls.map((call) => call.modelVersion)).toEqual(["routine-model", "routine-model"]);
+    expect(result.candidates[0].correction.model).toBe("routine-model");
+    expect(result.candidates[0].correction.warnings.join(" ")).toContain("Same-tier single-candidate schema repair succeeded");
   });
 });

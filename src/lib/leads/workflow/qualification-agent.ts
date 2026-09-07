@@ -442,7 +442,8 @@ export class LeadQualificationAgent {
       const values = new Map(routine.parsed.assessments.map((item) => [item.candidateId, item]));
       return await Promise.all(candidates.map(async (candidate) => {
         const value = values.get(candidate.candidateId);
-        if (!value) return this.evaluateOneEscalated(candidate, playbook, countryCode, countryName, objective, "Routine batch omitted the candidate.", usageRecords);
+        if (!value) return this.evaluateOneRoutineRepair(candidate, playbook, countryCode, countryName,
+          objective, "Routine batch omitted the candidate.", usageRecords);
         const allowOemOdm = /\b(?:oem|odm|private[ -]?label|manufactur(?:e|ing))\b/i.test(objective);
         const normalized = normalizeAssessment(value, candidate, routine.response, false, allowOemOdm,
           this.includeCooperationPaths);
@@ -458,10 +459,43 @@ export class LeadQualificationAgent {
         return normalized;
       }));
     } catch (error) {
-      return Promise.all(candidates.map((candidate) => this.evaluateOneEscalated(
-        candidate, playbook, countryCode, countryName, objective,
-        `Routine batch failed: ${error instanceof Error ? error.message : String(error)}`, usageRecords,
-      )));
+      const reason = `Routine batch failed: ${error instanceof Error ? error.message : String(error)}`;
+      if (error instanceof z.ZodError) {
+        return Promise.all(candidates.map((candidate) => this.evaluateOneRoutineRepair(
+          candidate, playbook, countryCode, countryName, objective, reason, usageRecords)));
+      }
+      return candidates.map((candidate) => failedAssessment(candidate,
+        `${reason} Infrastructure/provider failure does not qualify for Pro escalation.`, this.promptVersion));
+    }
+  }
+
+  private async evaluateOneRoutineRepair(candidate: CorrectedLeadWorkflowCandidate,
+    playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string,
+    reason: string, usageRecords: WorkflowModelUsage[]): Promise<LeadCandidateAssessment> {
+    try {
+      const routine = await this.invokeBatch([candidate], playbook, countryCode, countryName,
+        objective, this.routineModel, usageRecords);
+      const value = routine.parsed.assessments.find((item) => item.candidateId === candidate.candidateId);
+      if (!value) {
+        return failedAssessment(candidate,
+          `${reason} Same-tier single-candidate schema repair omitted the candidate; Pro escalation was not used.`,
+          this.promptVersion);
+      }
+      const allowOemOdm = /\b(?:oem|odm|private[ -]?label|manufactur(?:e|ing))\b/i.test(objective);
+      const normalized = normalizeAssessment(value, candidate, routine.response, false, allowOemOdm,
+        this.includeCooperationPaths);
+      if (requiresEscalation(candidate, normalized, value) && this.routineModel !== this.escalationModel) {
+        return this.evaluateOneEscalated(candidate, playbook, countryCode, countryName, objective,
+          `${reason} Same-tier schema repair requested material semantic escalation.`, usageRecords);
+      }
+      return { ...normalized, warnings: [
+        `${reason} Same-tier single-candidate schema repair succeeded.`,
+        ...normalized.warnings,
+      ] };
+    } catch (error) {
+      return failedAssessment(candidate,
+        `${reason} Same-tier schema repair failed without Pro escalation: ${error instanceof Error ? error.message : String(error)}`,
+        this.promptVersion);
     }
   }
 

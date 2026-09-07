@@ -100,7 +100,8 @@ export class ResilientAiProvider implements AiProvider {
 
   private async executeUnshared<TInput, TOutput>(request: StructuredAiRequest<TInput>, signal?: AbortSignal) {
     const requestedModel = request.modelVersion;
-    let primaryError: unknown = new Error(`Circuit open for primary provider ${this.primary.id}.`);
+    let primaryError: unknown = new ProviderUnavailableError(this.primary.id,
+      new Error(`Circuit open for primary provider ${this.primary.id}.`), { attempts: 0, retries: 0 });
     if (!this.circuitOpen(this.primary.id)) {
       try {
         const response = await this.primary.execute<TInput, TOutput>(request, signal);
@@ -133,7 +134,7 @@ export class ResilientAiProvider implements AiProvider {
         }
       }
       throw new ResilientAiAggregateError(failures,
-        `Primary model ${requestedModel} and approved equivalent fallbacks failed.`);
+        `Primary model ${requestedModel} and approved equivalent fallbacks failed: ${failures.map(failureMessage).join(" | ")}`);
     }
   }
 
@@ -178,7 +179,7 @@ function openRouterDeepSeekFallbackRoute(): AiFallbackRoute | null {
       apiKey: config.apiKey,
       baseUrl: config.baseUrl,
       defaultHeaders: config.defaultHeaders,
-      extraBody: { provider: config.providerPreferences },
+      extraBody: { provider: config.providerPreferences, reasoning: { effort: "none" } },
     }),
     routineModel: process.env.OPENROUTER_DEEPSEEK_ROUTINE_MODEL?.trim()
       || "deepseek/deepseek-v4-flash",
