@@ -2,10 +2,10 @@
 
 > 本文档由 `scripts/generate-lead-workflow-doc.mjs` 自动生成。请修改版本化配置或实现代码，不要直接编辑生成文件。
 
-- 运行时策略版本：3.1.0（基础流程定义 2.3.3）
+- 运行时策略版本：3.1.0（基础流程定义 2.4.0）
 - 评分策略版本：2.0.0
 - 成本质量策略版本：3.0.1
-- 配置指纹：`9ddeb0e3dbc464cdb7b449881bc54c0d72fa2954f4633c13591f3cba183cf19d`
+- 配置指纹：`76f762871a7b90b468f69f86e1c30224d46f82996cda9f75080c0fcff221f09d`
 - 范围：From the user's natural-language market-development request and workspace context to ranked companies, editable cooperation paths, development strategy, outreach email, and private-memory learning from user edits.
 
 ## 一、从用户输入到最终输出的总流程
@@ -21,7 +21,7 @@ flowchart TD
   S7["Research-depth routing"] --> S8
   S8["Claim-linked model evidence packet"] --> S9
   S9["Role-aware scoring and possible cooperation paths"] --> S10
-  S10["Selective blind review and disagreement judge"] --> S11
+  S10["Selective production review and disagreement judge"] --> S11
   S11["Ranking, recommendation and sales-account tier"] --> S12
   S12["Restricted handoff and persistence"] --> S13
   S13["User presentation and cooperation-path override"] --> S14
@@ -54,7 +54,8 @@ flowchart TD
 | `04-discovery` | Lightweight candidate existence, relevance and category gate | DEEPSEEK_DISCOVERY_GATE_MODEL; fixed default deepseek-v4-flash and never inherits a Pro global routine setting | Same-tier resilient provider fallback; unavailable batches are held for downstream evidence, never upgraded to Pro | Batches of up to 10 after direct lightweight homepage fetch; compact semantic signals only, with deterministic pass/hold/reject |
 | `06-correction-role` | Entity correction, atomic facts and primary-role analysis | DEEPSEEK_MODEL; default deepseek-v4-flash | DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro; deterministic fallback is retry-only | Routine batches; upgrade only for expected score change >=8 or a resolvable critical-state change |
 | `09-scoring-paths` | Role-aware score and possible cooperation paths | DEEPSEEK_MODEL; default deepseek-v4-flash | DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro | Routine batches; confidence, alternative paths and Top-N position never trigger upgrade alone |
-| `10-review` | Blind secondary review and disagreement judgment | LEAD_REVIEW_MODEL default openai/gpt-5.6-terra; LEAD_JUDGE_MODEL default openai/gpt-5.6-sol through OpenRouter | DeepSeek review adapter using deepseek-v4-pro when explicitly routed | Selective only; skipped for the search-tool leaderboard where cooperation-path review cannot affect the metric |
+| `10-review` | Selective production secondary review and disagreement judgment | LEAD_REVIEW_MODEL default openai/gpt-5.6-terra; LEAD_JUDGE_MODEL default openai/gpt-5.6-sol through OpenRouter | DeepSeek review adapter using deepseek-v4-pro when explicitly routed | Selective only; this production control is distinct from the two-judge offline formal-evaluation calibration |
+| `offline-blind-calibration` | Formal search-evaluation calibration after both experiment arms and shared scoring are frozen | Two different high-capability provider/model families; current protocol pins Anthropic Claude Opus and OpenAI GPT-5.6-sol | A third high-capability arbitrator only for score delta >=8, role-family disagreement or critical qualification disagreement | No Web search; 48 representative cases control gates and 16 stress cases are diagnostic only; reuse frozen score-independent evidence packets |
 | `14-strategy` | Path-specific development strategy | KIMI_OUTREACH_MODEL or KIMI_MODEL; default kimi-k3 | Restricted template fallback | One call per generated strategy |
 | `15-email` | Path-specific development email | KIMI_OUTREACH_MODEL or KIMI_MODEL; default kimi-k3 | Restricted template fallback | One call per generated email, plus one bounded retry only for invalid JSON/schema output |
 | `16-feedback-memory` | User-feedback revision and reusable private-memory extraction | CLAUDE_OUTREACH_MODEL or CLAUDE_MODEL; default anthropic/claude-sonnet-4.6 through OpenRouter | Keep the user draft and record a failed memory event | One call per requested revision; text-embedding-v4 embeds accepted private memory |
@@ -64,6 +65,17 @@ flowchart TD
 意图识别每轮先调用轻量 Kimi 检查标准模板是否足够；仅在多市场、多目标、冲突约束或非标准复杂规划时升级 Kimi-k3。Lead 纠偏和评分以当前 DeepSeek 模型为主，只有预计改变总分至少 8 分或关键状态且高能力模型可解决时升级。主模型与升级模型相同则合并调用。最多允许两个显式批准、同级能力、同 Schema、同数据权限的跨公司 fallback；Embedding 不设置 fallback。
 
 ## 四、逐步输入、输出与策略
+
+## 离线正式测评治理
+
+- 盲审协议：`experiments/search-e2e-evaluation/uk-mx-v1/config/blind-audit-v2.0.0.json`
+- 适用范围：Offline calibration of a frozen formal search evaluation; it does not add two judges to every production lead.
+- 抽样：Six score/rank/arm-independent representative candidates plus two diagnostic stress candidates per cell; only the representative cohort controls pass/fail.
+- 评审：Two independent high-capability provider/model families. A third decision runs only when total scores differ by at least eight points, role families disagree, or identity/market/request-family/score-threshold/eligibility states disagree.
+- 证据：Packets reuse current-run cached evidence selected independently of scorer citations and include a same-market/same-role scale anchor. They hide arm, provider, rank, score, eligibility, cohort and stratum.
+- 指标：Role-family agreement is the main role gate; exact subtype is diagnostic. Qualification is decomposed into identity, market, requested family, score threshold and output eligibility. Citation ID validity and claim entailment are reported separately, with per-cell macro Spearman as the ranking gate and raw inter-judge agreement retained as a stability diagnostic.
+- 成本控制：No new search or evidence acquisition. Every judge output is consumed by consensus, arbitration is conditional, every cache miss requires atomic budget authorization, and judge/arbitrator token cost, latency, retries, discarded outputs and downstream use are recorded separately.
+- 历史边界：The completed v1.1.6 blind result remains immutable and is not recalculated under v2.
 
 ### 1. User request and editable business intent
 
@@ -405,7 +417,7 @@ flowchart TD
 - Ranking
 - Development handoff
 
-### 10. Selective blind review and disagreement judge
+### 10. Selective production review and disagreement judge
 
 阶段 ID：`10-review`
 
@@ -429,6 +441,7 @@ flowchart TD
 - Do not review solely for low confidence, alternative paths, generic warnings or Top-N position
 - Do not spend high-capability review on non-actionable long-tail research holds
 - Judge only outcome-sensitive disagreement of at least 8 points or a critical state
+- Keep this online selective review separate from formal offline blind calibration; the latter uses two independent judges and conditional arbitration on a frozen sample
 
 失败与回退：Retain a valid primary assessment when review service fails unless a severe unresolved trigger makes publication unsafe.
 
@@ -771,7 +784,16 @@ flowchart TD
 | `src/lib/outreach/knowledge-repository.ts` | `d38601efa6bf9911675774e3fea45d2041ef47907cf3bbbc2d0732bf036cd204` |
 | `db/migrations/033_hybrid_search_contribution.sql` | `4088eb1ae2f9dbf58c2150a5c7ce3b4f5a49e1e75e2fb372887aed9d153ffb05` |
 | `experiments/search-e2e-evaluation/uk-mx-v1/lib/cost-ledger.ts` | `111c94e229c1ec899b1049dda41279b01be4b86e06bfa99d3c18750ba1459291` |
-| `experiments/search-e2e-evaluation/uk-mx-v1/scripts/run-formal-experiment.ts` | `451a71da72b9ec2f05744c2a5f174089a539481281761a93c44b44e7b5d3124a` |
+| `experiments/search-e2e-evaluation/uk-mx-v1/lib/blind-audit-v2.ts` | `5277866771bcc47ed868ba13f816bbbd58ed5f6723328da6111afd17fc9ad878` |
+| `experiments/search-e2e-evaluation/uk-mx-v1/lib/provider-clients.ts` | `13f324ff47b80bb1c1bbe6c03e45cbc7b5acb3c99d67f4028938a0732191f1d1` |
+| `experiments/search-e2e-evaluation/uk-mx-v1/lib/runtime-schemas.ts` | `72c4514c9af39a64ac0780bfe3346bc0ee3fe0fb2ff65f8eb0a789526e20cc34` |
+| `experiments/search-e2e-evaluation/uk-mx-v1/lib/product-cell.ts` | `48fd5b76964dfe40fd861db0eac868317b407e87a7d56dbe93f235dea84e033f` |
+| `experiments/search-e2e-evaluation/uk-mx-v1/lib/unified-evaluation.ts` | `c38226403804269633e5dc8987caf490b40331070cdc27e2fd0151cd2de10fe5` |
+| `experiments/search-e2e-evaluation/uk-mx-v1/config/blind-audit-v2.0.0.json` | `b3a49d39300542f2a4ca22fd7c463a314054f9c7e113c87c73830b7cd44eca50` |
+| `experiments/search-e2e-evaluation/uk-mx-v1/config/blind-judge-rubric-v2.md` | `12ecf56002cb4ae94b5ce36e668791511cb4c6733ef3e25dd0e709bc5335611b` |
+| `experiments/search-e2e-evaluation/uk-mx-v1/config/blind-judge-arbitration-rubric-v2.md` | `9da86ada8d71641429c66190d080db994d9af3e364aa3c099d283e7ae038e42a` |
+| `experiments/search-e2e-evaluation/uk-mx-v1/schemas/blind-judge-output-v2.schema.json` | `9b902804a6462764a935311abb8ef7a602705bf5b6dd8e3a26e13b7beda42350` |
+| `experiments/search-e2e-evaluation/uk-mx-v1/scripts/run-formal-experiment.ts` | `b4d7c0254b51a6919e6885c602ac5debbd5dae64382fedd4ddf1df596ea940cd` |
 | `src/lib/leads/workflow/evidence-budget.ts` | `db035da87b8896ae5a81b12744a072810de80f160cb472724d5cedbcf06037f9` |
 | `src/lib/leads/workflow/pdf-extraction-policy.ts` | `6d8847827f1e96eab570114bca33cd447eaa3e64d7246ee09a748f8e6d6ade03` |
 | `src/lib/leads/workflow/public-evidence-repository.ts` | `5dcbfe60487eeb5d2ccab4b6e3eac9529705b21005abaa599359c992e51c4b03` |
