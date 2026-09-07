@@ -1,4 +1,4 @@
-# Colombia search E2E evaluation v2.0.6
+# Colombia search E2E evaluation v2.0.7
 
 This directory is the immutable, cold-start Colombia follow-up to the UK/Mexico formal evaluation. It compares the current product workflow with one un-tuned Gemini Full + Google Search interaction per category.
 
@@ -30,5 +30,13 @@ After a documented search-localization defect, `--repair-search` may retain cach
 ```powershell
 node scripts\run-tsx.cjs experiments\search-e2e-evaluation\co-v2\scripts\run-formal-experiment.ts --phase=cell --cell=CO-retail --repair-search
 ```
+
+If a completed Product artifact is proven invalid because candidate identity caused unrelated-country pages to be admitted as official or supplemental evidence, v2.0.7 requires a clean Product-only restart. The old raw/public Product artifact is archived, all sunk costs remain in the formal ledger, and the frozen Gemini control is reused:
+
+```powershell
+node scripts\run-tsx.cjs experiments\search-e2e-evaluation\co-v2\scripts\run-formal-experiment.ts --phase=cell --cell=CO-retail --restart-product
+```
+
+This is a narrow invalidation path, not a tuning retry. v2.0.7 rejects public-suffix-only evidence targets, admits independent evidence only when it is affiliated with the candidate entity, binds target-country eligibility to the correction-stage country finding, sanitizes overlong light-gate output without dropping a whole batch, counts only domain-bearing companies as discovery yield, and prevents incomplete model rounds from advancing confirmed exhaustion. A 50-company cell may run at most ten fresh rounds, still stopping earlier after two genuinely completed zero-final rounds.
 
 Raw checkpoints are local under `runs/raw/`. Sanitized artifacts and the final report are under `artifacts/runs/2026-09-08-co-search-e2e-v2/`.

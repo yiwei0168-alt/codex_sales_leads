@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import type { DiscoveryItem, DiscoveryQuery } from "@/providers/discovery-contracts";
 import type { HybridSearchRouteStep } from "./hybrid-search-policy";
-import { normalizedCompanyDomain, RealtimeCandidateRegistry } from "./candidate-registry";
+import { normalizedCompanyDomain, RealtimeCandidateRegistry, validCompanyDomainIdentity } from "./candidate-registry";
 
 const query: DiscoveryQuery = { query: "network company", countryCode: "DE", countryName: "Germany",
   languageCode: "de", maxResults: 10, category: "si-msp", track: "local-smb", engine: "google",
@@ -25,6 +25,8 @@ describe("real-time candidate registry", () => {
     expect(normalizedCompanyDomain("https://exa.ai/library/organization/example")).toBeNull();
     expect(normalizedCompanyDomain("https://bad_domain.co.uk/path")).toBeNull();
     expect(normalizedCompanyDomain("https://maps.google.com/example")).toBeNull();
+    expect(validCompanyDomainIdentity("technology.com.pe")).toBe(true);
+    expect(validCompanyDomainIdentity("com.pe")).toBe(false);
   });
 
   it("merges provider occurrences and preserves first-discovery attribution", () => {

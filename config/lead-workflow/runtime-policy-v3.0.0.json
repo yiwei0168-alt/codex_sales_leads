@@ -1,6 +1,6 @@
 {
   "workflowKey": "cudy-sales-lead-end-to-end-runtime",
-  "version": "3.5.0",
+  "version": "3.6.0",
   "status": "active",
   "baseDefinition": "config/lead-workflow/end-to-end-v2.0.0.json",
   "scoringPolicy": "config/lead-scoring/policy-v2.0.0.json",
@@ -20,7 +20,9 @@
     "Within-run search, evidence and role-correction caches remain mandatory even when historical cache reads are disabled for a cold-start evaluation.",
     "Routine structured-output requests disable optional model reasoning when reasoning is not required; malformed output receives one same-tier repair, while provider, timeout and balance failures never trigger a higher-capability model.",
     "Evidence-correction batches are packet- and token-aware; request-scoped timeouts do not open a provider-wide circuit, and an explicit cache-recovery run is closed to new search or evidence acquisition.",
-    "Localized discovery focuses are country-specific rather than language-specific; provider-owned profile URLs never become company identities, and same-family multi-role companies receive one concrete primary role instead of Hybrid."
+    "Localized discovery focuses are country-specific rather than language-specific; provider-owned profile URLs never become company identities, and same-family multi-role companies receive one concrete primary role instead of Hybrid.",
+    "Only domain-bearing company identities count as normalized discovery yield; schema-safe light-gate output cannot invalidate an entire batch, and failed model stages cannot advance confirmed-exhaustion counters.",
+    "Supplemental evidence must be deterministically affiliated with the candidate entity, and scoring cannot override correction-stage target-country evidence."
   ],
   "cooperationPaths": {
     "maximumPerCompany": 2,

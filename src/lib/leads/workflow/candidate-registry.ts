@@ -36,6 +36,11 @@ export function normalizedCompanyDomain(value: string | null): string | null {
   } catch { return null; }
 }
 
+export function validCompanyDomainIdentity(domain: string): boolean {
+  const normalized = domain.trim().toLowerCase().replace(/^www\./, "");
+  return Boolean(normalized) && normalizedCompanyDomain(`https://${normalized}/`) === normalized;
+}
+
 function normalizedName(value: string): string {
   return value.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
     .replace(/\b(?:gmbh|ag|kg|ltd|limited|inc|corp|corporation|llc|sarl|sas|bv)\b/g, "")

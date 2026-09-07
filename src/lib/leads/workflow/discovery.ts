@@ -15,6 +15,7 @@ import type {
 import { findReusablePublicEvidence, persistPublicEvidence } from "./public-evidence-repository";
 import { executeHybridDiscovery, type HybridSearchCallTelemetry } from "./hybrid-discovery-executor";
 import { ACTIVE_HYBRID_SEARCH_POLICY, hybridSearchPolicyChecksum } from "./hybrid-search-policy";
+import { validCompanyDomainIdentity } from "./candidate-registry";
 
 export interface DiscoveryResult {
   runId: string;
@@ -197,6 +198,11 @@ async function enrichOne(
   let retries = 0;
   let latencyMs = 0;
   try {
+    if (!validCompanyDomainIdentity(candidate.domain)) {
+      const warning = `Evidence acquisition skipped for invalid or public-suffix-only company domain ${candidate.domain}.`;
+      return { candidate: { ...candidate, evidenceWarnings: [...candidate.evidenceWarnings, warning] },
+        credits, requests, retries, latencyMs, warning };
+    }
     const reusable = options.allowReusableEvidence
       ? await findReusablePublicEvidence({
         domain: candidate.domain,

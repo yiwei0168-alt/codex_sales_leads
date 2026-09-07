@@ -27,7 +27,7 @@ import rateCardJson from "../config/official-rate-card.v1.json";
 nextEnv.loadEnvConfig(process.cwd());
 
 const experimentRoot = path.resolve("experiments/search-e2e-evaluation/co-v2");
-const frozenTag = "search-e2e-co-v2.0.6-preregistered";
+const frozenTag = "search-e2e-co-v2.0.7-preregistered";
 const totalCells = EXPERIMENT_CONFIG.sample.cells;
 const slotsPerCell = EXPERIMENT_CONFIG.sample.slotsPerArmPerCell;
 const rateCard = rateCardJson as ExperimentRateCard;
@@ -179,17 +179,17 @@ async function freezeManifest(): Promise<void> {
     const absolute = path.resolve(experimentRoot, relative);
     return { path: path.relative(process.cwd(), absolute).replace(/\\/g, "/"), sha256: sha256(await readFile(absolute)) };
   }));
-  await writeJsonAtomic(path.join(experimentRoot, "config/frozen-manifest.v2.0.6.json"), {
+  await writeJsonAtomic(path.join(experimentRoot, "config/frozen-manifest.v2.0.7.json"), {
     schemaVersion: 1, experimentId: EXPERIMENT_CONFIG.experimentId, runId: EXPERIMENT_CONFIG.runId,
     createdAt: new Date().toISOString(), requiredGitTag: frozenTag, files,
   });
   console.log(JSON.stringify({ status: "manifest-frozen", fileCount: files.length,
-    manifest: "experiments/search-e2e-evaluation/co-v2/config/frozen-manifest.v2.0.6.json" }, null, 2));
+    manifest: "experiments/search-e2e-evaluation/co-v2/config/frozen-manifest.v2.0.7.json" }, null, 2));
 }
 
 async function verifyFrozenManifest(requireTag = true): Promise<void> {
   validateExperimentConfig();
-  const manifest = JSON.parse(await readFile(path.join(experimentRoot, "config/frozen-manifest.v2.0.6.json"), "utf8")) as {
+  const manifest = JSON.parse(await readFile(path.join(experimentRoot, "config/frozen-manifest.v2.0.7.json"), "utf8")) as {
     requiredGitTag: string; files: Array<{ path: string; sha256: string }> };
   const mismatches: string[] = [];
   for (const item of manifest.files) {
@@ -286,8 +286,9 @@ async function runRecoveryPreflight(): Promise<void> {
   if (!["preflight-passed", "running"].includes(state.status)) {
     throw new Error(`Provider recovery check cannot run from status ${state.status}`);
   }
-  await runStructuredProviderCheck(state, "structured-model-runtime-v2.0.6");
-  const decision = await persistBudgetReview(state, "provider-recovery-v2.0.6");
+  state.experimentId = EXPERIMENT_CONFIG.experimentId;
+  await runStructuredProviderCheck(state, "structured-model-runtime-v2.0.7");
+  const decision = await persistBudgetReview(state, "provider-recovery-v2.0.7");
   console.log(JSON.stringify({ status: "provider-recovery-preflight-passed",
     runId: state.runId, cost: summarizeCostEvents(state.costEvents), budgetDecision: decision }, null, 2));
 }
@@ -298,24 +299,37 @@ async function runCell(cellId: string): Promise<void> {
   const state = await loadRunState();
   const resumeProduct = process.argv.includes("--resume-product");
   const repairSearch = process.argv.includes("--repair-search");
+  const restartProduct = process.argv.includes("--restart-product");
   const resumeRequested = resumeProduct || repairSearch;
+  const productRerunRequested = resumeRequested || restartProduct;
   if (!state.blindJudgeModel || !["preflight-passed", "running"].includes(state.status)) {
     throw new Error("Formal cells require a passed preflight and a non-paused budget state");
   }
-  if (state.completedCellIds.includes(cellId) && !resumeRequested) {
+  if (state.completedCellIds.includes(cellId) && !productRerunRequested) {
     console.log(JSON.stringify({ status: "cell-already-complete", cellId }, null, 2));
     return;
   }
   const productFilename = path.join(rawRunRoot(), `cells/${cellId}/product-e2e.json`);
   const resumeFrom = resumeRequested ? await readJsonIfExists<ProductCellResult>(productFilename) : null;
+  const restartFrom = restartProduct ? await readJsonIfExists<ProductCellResult>(productFilename) : null;
   if (resumeRequested && !resumeFrom) throw new Error(`Cannot resume ${cellId}: prior Product artifact is missing`);
   if (resumeProduct && resumeFrom && resumeFrom.finalCandidates.length > 0) {
     throw new Error(`Cannot resume ${cellId}: recovery is limited to a zero-output provider-outage artifact`);
   }
-  if (resumeRequested) {
+  if (restartProduct && !restartFrom) throw new Error(`Cannot restart ${cellId}: prior Product artifact is missing`);
+  if (productRerunRequested) {
     state.completedCellIds = state.completedCellIds.filter((id) => id !== cellId);
     state.completedArmKeys = state.completedArmKeys.filter((key) => key !== `${cellId}:product-e2e`);
   }
+  if (restartFrom) {
+    await writeJsonAtomic(path.join(rawRunRoot(), `superseded/${cellId}/product-e2e.v2.0.6.json`), restartFrom);
+    await writeJsonAtomic(path.join(artifactRunRoot(), `superseded/${cellId}/product-e2e.v2.0.6.json`),
+      publicProduct(restartFrom));
+    state.anomalies.push({ at: new Date().toISOString(), cellId, severity: "fatal",
+      code: "invalidated-product-arm-country-evidence-contamination",
+      detail: "v2.0.6 Product output was archived and excluded from outcome metrics. Sunk costs remain in the experiment ledger; the Product arm restarts cold under v2.0.7 while the frozen Gemini control is reused." });
+  }
+  state.experimentId = EXPERIMENT_CONFIG.experimentId;
   if (!await requireBudget(state, cellId, EXPERIMENT_CONFIG.cost.initialForecastUsd.expected / totalCells)) return;
   state.status = "running";
   await saveRunState(state);

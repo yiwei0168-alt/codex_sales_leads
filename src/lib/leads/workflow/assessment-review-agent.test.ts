@@ -63,7 +63,10 @@ const candidate: CorrectedLeadWorkflowCandidate = {
     supplementalEvidenceIds: [], reliedEvidenceIds: [evidenceId, "evidence-review-2"],
     findings: [{ findingId, kind: "commercial-action", statement: "The company sells active networking equipment.",
       status: "supported", roles: ["VAR", "Reseller"], evidenceIds: [evidenceId],
-      sourceTypes: ["official-website"], confidence: 90, notes: [] }],
+      sourceTypes: ["official-website"], confidence: 90, notes: [] },
+    { findingId: "finding-review-country", kind: "country-presence", statement: "Review GmbH operates in Germany.",
+      status: "supported", roles: [], evidenceIds: [evidenceId], sourceTypes: ["official-website"],
+      confidence: 90, notes: [] }],
     reasons: ["Atomic facts support the corrected route."], confidence: 90,
     model: "deepseek-primary", promptVersion: "correction-v2", escalated: false, warnings: [] },
 };

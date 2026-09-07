@@ -80,6 +80,8 @@ const candidate: CorrectedLeadWorkflowCandidate = {
     supplementalEvidenceIds: [], reliedEvidenceIds: ["evidence-valid"], findings: [
       { findingId: "finding-identity", kind: "identity", statement: "Example owns example.de.", status: "supported",
         roles: [], evidenceIds: ["evidence-valid"], sourceTypes: ["official-website"], confidence: 90, notes: [] },
+      { findingId: "finding-country", kind: "country-presence", statement: "Example operates in Germany.", status: "supported",
+        roles: [], evidenceIds: ["evidence-valid"], sourceTypes: ["official-website"], confidence: 90, notes: [] },
       { findingId: "finding-fit", kind: "product-family", statement: "Example sells routers and PoE switches.", status: "supported",
         roles: [], evidenceIds: ["evidence-valid"], sourceTypes: ["official-website"], confidence: 90, notes: [] },
       { findingId: "finding-path", kind: "cooperation-path", statement: "Business customers can request a quote.", status: "supported",
@@ -208,7 +210,7 @@ describe("LeadQualificationAgent", () => {
     expect(result.eligible).toBe(true);
     expect(result.cooperationPaths).toEqual([]);
     expect(result.selectedPathId).toBeNull();
-    expect(result.promptVersion).toBe("lead-value-v6-role-aware-score-only");
+    expect(result.promptVersion).toBe("lead-value-v7-role-aware-score-only-country-corroborated");
     expect(JSON.stringify(provider.calls[0].outputSchema)).not.toContain("cooperationPaths");
     expect(JSON.stringify(provider.calls[0].input)).toContain("scoring-only task");
     expect(provider.calls[0].dataClassification).toBe("public");
@@ -251,5 +253,18 @@ describe("LeadQualificationAgent", () => {
     expect(provider.calls.map((call) => call.modelVersion)).toEqual(["routine-model", "routine-model"]);
     expect(result.scoringStatus).toBe("completed");
     expect(result.warnings.join(" ")).toContain("Same-tier single-candidate schema repair succeeded");
+  });
+
+  it("cannot publish a target-country gate that contradicts correction-stage evidence", async () => {
+    const provider = new FakeProvider();
+    const wrongCountry = { ...candidate, correction: { ...candidate.correction,
+      findings: candidate.correction.findings.map((finding) => finding.kind === "country-presence"
+        ? { ...finding, status: "not-supported" as const, statement: "The company operates only in Peru." }
+        : finding) } };
+    const [result] = await new LeadQualificationAgent(provider, { concurrency: 1, includeCooperationPaths: false })
+      .evaluate([wrongCountry], playbook, "CO", "Colombia", "search-quality-evaluation");
+    expect(result.gates.targetCountryPresence).toBe("not-supported");
+    expect(result.eligible).toBe(false);
+    expect(result.warnings.join(" ")).toContain("not corroborated");
   });
 });

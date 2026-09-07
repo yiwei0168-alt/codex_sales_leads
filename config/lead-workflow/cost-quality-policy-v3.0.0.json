@@ -1,6 +1,6 @@
 {
   "policyKey": "cudy-lead-workflow-cost-quality",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "status": "active",
   "objective": "Reduce model tokens by at least 40% and paid search/extract credits by at least 30% without weakening evidence, role, scoring, privacy or user-edit semantics.",
   "taskModes": {
@@ -53,6 +53,7 @@
     "standard": { "searchDepth": "basic", "includeRawContent": false, "extractAfterSearch": true, "maximumExtractPages": 4, "maximumQueryGroups": 2 },
     "deep": { "initialSearchDepth": "basic", "advancedOnlyFor": ["entity-conflict", "complex-group", "basic-search-failure"], "maximumQueryGroups": 3 },
     "knownOfficialUrl": "extract-known-pages-before-search",
+    "independentEvidenceAffiliation": "require-candidate-name-owned-domain-or-unambiguous-entity-reference",
     "crawl": { "complexSitesOnly": true, "bounded": true },
     "pdf": {
       "preExtractionValueGate": 60,

@@ -166,14 +166,14 @@ export async function runProductCell(cell: ExperimentCell, options: {
     playbook = resumeFrom.playbook;
     intentSummary = resumeFrom.intent;
     const cacheAt = new Date().toISOString();
-    await recordCostEvents([event({ eventId: `${cell.cellId}:resume-cache:${resumeMode}:v2.0.6`, cellId: cell.cellId,
+    await recordCostEvents([event({ eventId: `${cell.cellId}:resume-cache:${resumeMode}:v2.0.7`, cellId: cell.cellId,
       stage: "within-run-cache-reuse", provider: "local-run-cache", startedAt: cacheAt, completedAt: cacheAt,
       latencyMs: 0, attempts: 0, retries: 0, fallbackUsed: false, status: "completed", usage: {},
       volume: volume(1, 1, 1, 1), notes: [
         "Reused the successful intent, local RAG, playbook, discovery, fresh evidence and supplemental evidence from the interrupted cell.",
         "No historical cross-run candidate, evidence, score or private-memory cache was read.",
       ] })]);
-    warnings.push("v2.0.3 resumed from the same cell's cached evidence after a model-provider outage; search and evidence acquisition were not repeated.");
+    warnings.push("Same-cell recovery reused version-compatible cached evidence; search and evidence acquisition were not repeated.");
   } else {
     const intentStarted = new Date().toISOString();
     const intent = await planAssistantRequest(frozenPlan.userRequest);
@@ -278,7 +278,8 @@ export async function runProductCell(cell: ExperimentCell, options: {
   let consecutiveNoFinalRounds = 0;
   let completionReason: ProductCellResult["completionReason"] = "maximum-rounds";
   const startingRound = resumeFrom?.discoveryRounds.length ?? 0;
-  const maximumRounds = resumeFrom && resumeMode === "search-extension" ? startingRound + 5 : 5;
+  const maximumRounds = resumeFrom && resumeMode === "search-extension" ? startingRound + 5
+    : plan.targetCount >= 50 ? 10 : 5;
 
   if (resumeFrom && priorCorrected.length > 0 && resumeMode === "semantic-recovery") {
     for (const candidate of priorCorrected) discoverySession.excludedDomains.add(candidate.domain);
@@ -490,16 +491,20 @@ export async function runProductCell(cell: ExperimentCell, options: {
     }
     const completedFreshCalls = discovered.calls.filter((call) => call.status === "completed"
       && call.cacheStatus === "miss").length;
+    const hadModelFailure = discovered.warnings.some((warning) => warning.includes("Discovery gate batch held"))
+      || corrected.candidates.some((candidate) => candidate.correction.model === "deterministic-fallback")
+      || scored.assessments.some((assessment) => assessment.scoringStatus !== "completed");
+    const hadProviderFailureOrCircuit = hadModelFailure || discovered.calls.some((call) => call.status === "failed"
+      || call.discardedReasonCounts["circuit-open"] === 1);
     consecutiveNoFinalRounds = nextNoFinalRoundCount(consecutiveNoFinalRounds,
-      { finalEligibleAdded, completedFreshCalls });
+      { finalEligibleAdded, completedFreshCalls, hadProviderFailureOrCircuit });
     discoveryRounds.push({ round: round + 1, plannedCandidatePool: plannedPool, newUniqueCandidates: roundUnique,
       lightGateCandidates: discovered.candidates.length, correctedCandidates: corrected.candidates.length,
       inRoleCandidates: inRoleCandidates.length, finalEligibleAdded,
       cumulativeFinalEligible: selectedPairs.length, stopReason: discovered.stopReason });
     const completion = targetCompletionDecision({ acceptedCount: selectedPairs.length,
       targetCount: plan.targetCount, completedFreshCalls,
-      hadProviderFailureOrCircuit: discovered.calls.some((call) => call.status === "failed"
-        || call.discardedReasonCounts["circuit-open"] === 1),
+      hadProviderFailureOrCircuit,
       consecutiveNoFinalRounds, round, maximumRounds });
     if (completion.complete) {
       completionReason = completion.reason!;
@@ -513,7 +518,7 @@ export async function runProductCell(cell: ExperimentCell, options: {
     toFinalCandidate(candidate, assessment, index + 1));
   const rankingStarted = new Date().toISOString();
   const rankingAt = new Date().toISOString();
-  await recordCostEvents([event({ eventId: resumeFrom ? `${cell.cellId}:ranking:${resumeMode}:v2.0.6` : `${cell.cellId}:ranking`, cellId: cell.cellId,
+  await recordCostEvents([event({ eventId: resumeFrom ? `${cell.cellId}:ranking:${resumeMode}:v2.0.7` : `${cell.cellId}:ranking`, cellId: cell.cellId,
     stage: "role-filter-ranking", provider: "deterministic", startedAt: rankingStarted,
     completedAt: rankingAt, latencyMs: Math.max(0, Date.parse(rankingAt) - Date.parse(rankingStarted)),
     attempts: 0, retries: 0, fallbackUsed: false, status: "completed", usage: {},

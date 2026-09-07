@@ -26,7 +26,7 @@ import {
   type WorkflowModelUsage,
 } from "./types";
 
-export const LEAD_EVIDENCE_CORRECTION_PROMPT_VERSION = "lead-evidence-correction-v8-concrete-primary-role";
+export const LEAD_EVIDENCE_CORRECTION_PROMPT_VERSION = "lead-evidence-correction-v9-affiliated-target-market";
 
 interface CorrectionRequest {
   instructions: string[];
@@ -73,9 +73,36 @@ function sameDomain(url: string, domain: string): boolean {
   return resolved === domain || Boolean(resolved?.endsWith(`.${domain}`));
 }
 
-function supplementalEvidence(result: TavilySearchResult, candidateDomain: string, evidenceRunId: string): LeadEvidenceItem | null {
+const genericEntityTokens = new Set([
+  "company", "solutions", "solution", "technology", "technologies", "group", "global", "international",
+  "store", "shop", "online", "retail", "services", "service", "sistemas", "tecnologia", "tienda",
+]);
+
+function normalizedEntityText(value: string): string {
+  return value.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, " ").trim();
+}
+
+export function evidenceAffiliatedWithCandidate(
+  result: Pick<TavilySearchResult, "url" | "title" | "content" | "rawContent">,
+  companyName: string,
+  candidateDomain: string,
+): boolean {
+  if (sameDomain(result.url, candidateDomain)) return true;
+  const haystack = normalizedEntityText(`${result.url} ${result.title} ${result.rawContent || result.content}`);
+  const name = normalizedEntityText(companyName);
+  if (name.length >= 5 && haystack.includes(name)) return true;
+  const domainLabel = candidateDomain.split(".")[0]?.replace(/-/g, "") ?? "";
+  if (domainLabel.length >= 6 && !genericEntityTokens.has(domainLabel)
+    && haystack.replace(/\s+/g, "").includes(domainLabel)) return true;
+  const tokens = name.split(" ").filter((token) => token.length >= 4 && !genericEntityTokens.has(token));
+  return tokens.length >= 2 && tokens.slice(0, 3).every((token) => haystack.includes(token));
+}
+
+function supplementalEvidence(result: TavilySearchResult, companyName: string,
+  candidateDomain: string, evidenceRunId: string): LeadEvidenceItem | null {
   const domain = domainOf(result.url);
-  if (!domain) return null;
+  if (!domain || !evidenceAffiliatedWithCandidate(result, companyName, candidateDomain)) return null;
   const excerpt = (result.rawContent || result.content).replace(/\s+/g, " ").trim().slice(0, 4_000);
   if (!excerpt) return null;
   return {
@@ -225,7 +252,8 @@ export class LeadEvidenceCorrectionAgent {
             includeRawContent: false,
           }, AbortSignal.timeout(45_000));
           const added = response.results.flatMap((item) => {
-            const evidence = supplementalEvidence(item, candidate.domain, candidate.evidenceSnapshotRunId);
+            const evidence = supplementalEvidence(item, candidate.companyName, candidate.domain,
+              candidate.evidenceSnapshotRunId);
             return evidence ? [evidence] : [];
           });
           let persistenceWarning: string | undefined;
@@ -280,13 +308,15 @@ export class LeadEvidenceCorrectionAgent {
         "The original submitted search family is diagnostic provenance only. It must not influence the primary role or cooperation path.",
         "Use Hybrid only when evidence proves that materially different role families are both substantial co-primary operations. Multiple supported roles, product lines or search-lane matches alone do not prove Hybrid. Use Unresolved when evidence is insufficient or conflicting. Explain the decision.",
         "Subtype boundaries: VAD requires both downstream distribution and substantive technical or commercial enablement; E-tailer requires a working online product-purchase flow; Retailer requires a material physical-store consumer retail operation; VAR requires business-customer product resale plus material solution, configuration or service value.",
-        "A manufacturer's owned-brand store remains primarily Brand Owner unless evidence demonstrates a separate material independent multi-brand retail business. A directory, comparison, advertising or lead-generation platform is not a Retailer or E-tailer.",
+        "A manufacturer's owned-brand store remains primarily Brand Owner unless evidence demonstrates a separate material independent multi-brand retail business. A directory, comparison, advertising, lead-generation platform or third-party seller marketplace is not a Retailer or E-tailer.",
         "For Distributor, prove that the candidate itself supplies downstream resellers, dealers, system houses or other channel partners. A shop, dealer portal or resale business does not negate a simultaneously supported Distributor role.",
         "For the small-long-tail exception, record atomic company-size findings only from positive public evidence. Sparse results, weak SEO or missing scale information never prove that exception.",
         "A role requires evidence of its defining business action. Generic IT, consulting or networking language alone does not prove distribution, resale, installation or system integration.",
         "The corrected official website must be a company-owned domain demonstrated by officialWebsiteEvidenceId. Directories, marketplaces and social profiles are evidence sources, not official websites.",
         "Use one clear official company source when adequate; supplement with independent public evidence when identity or material claims remain ambiguous.",
         "Return evidence IDs supporting identity, target-country presence, active-networking involvement, roles and cooperation path. Missing public proof is an unknown, not a negative claim.",
+        `A country-presence finding answers only whether this exact candidate operates in ${plan.countryName}. Mark it supported only when candidate-affiliated evidence explicitly proves operations, a location, or a functioning local sales channel in ${plan.countryName}; evidence of another country alone is not-supported, and missing evidence is unknown. Never use an unrelated page's currency, address or country wording.`,
+        "Every independent-public source cited for a finding must explicitly identify the candidate by company name, owned domain or an unambiguous brand/entity reference. Do not transfer facts from another search result or similarly named company.",
         "Return atomic findings for identity, country presence, active networking, every asserted role, relevant product families, brand relationships, commercial actions and cooperation path. Each finding must have its own status and evidence IDs.",
         "Use not-supported only when supplied evidence affirmatively contradicts a claim. Use unknown when evidence is absent or acquisition failed, and conflicting when supplied sources disagree.",
         "Choose one concrete primary role whenever the supported roles belong to one business-role family. Retailer plus E-tailer is not Hybrid. Use Hybrid only when roles from two or more families are materially co-primary.",

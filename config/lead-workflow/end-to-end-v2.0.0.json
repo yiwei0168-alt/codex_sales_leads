@@ -1,6 +1,6 @@
 {
   "workflowKey": "cudy-sales-lead-end-to-end",
-  "version": "2.8.0",
+  "version": "2.9.0",
   "status": "active",
   "scope": "From the user's natural-language market-development request and workspace context to ranked companies, editable cooperation paths, development strategy, outreach email, and private-memory learning from user edits.",
   "principles": [
@@ -13,7 +13,8 @@
     "User edits to paths and outreach are retained as private learning signals, not written into the shared knowledge base.",
     "OpenAI and Anthropic generation is routed through the pinned OpenRouter HTTPS gateway. DeepSeek keeps its dedicated provider as primary, while public-only packets may fail over to the same DeepSeek tier through OpenRouter; embeddings never fail over.",
     "Every potentially overlapping task must create and consume a versioned cache at first execution; downstream stages receive exact evidence IDs, role corrections and explicit missing-evidence gaps.",
-    "Search localization is keyed by market country, provider-owned result pages are provenance rather than candidate domains, and a primary role must be concrete unless two or more role families are genuinely co-primary."
+    "Search localization is keyed by market country, provider-owned result pages are provenance rather than candidate domains, and a primary role must be concrete unless two or more role families are genuinely co-primary.",
+    "Only evidence deterministically affiliated with the candidate entity may enter correction or scoring, and target-country eligibility must be corroborated by the correction-stage country finding."
   ],
   "modelRouting": [
     {

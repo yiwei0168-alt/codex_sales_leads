@@ -207,10 +207,13 @@ function failureDetails(error: unknown): { kind: DiscoveryFailureKind; attempts:
     circuitScope: configuration ? "provider" : "route" };
 }
 
-function hardPrefilter(item: DiscoveryItem): string | undefined {
+export function hardPrefilter(item: DiscoveryItem): string | undefined {
   if (!item.title.trim()) return "missing-company-name";
   if (!item.url && !item.externalId) return "missing-url-and-external-id";
   if (/\.(?:pdf|docx?|xlsx?)(?:$|\?)/i.test(item.url ?? "")) return "document-not-company";
+  if (item.providerId === "exa" && /^(?:https?:\/\/)?(?:www\.)?exa\.ai(?:\/|$)/i.test(item.url ?? "")) {
+    return "provider-profile-not-company";
+  }
   if (/\b(?:top\s*\d+|best companies|company list|directory ranking)\b/i.test(item.title)) return "list-page";
   return undefined;
 }
@@ -362,12 +365,14 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
           if (!added.accepted) {
             const reason = added.rejectionReason ?? "identity-normalization-failed";
             discarded[reason] = (discarded[reason] ?? 0) + 1;
-          } else {
+          } else if (added.domain) {
             normalizedCompanies += 1;
-            if (added.firstDiscovery && (!added.domain || !session.excludedDomains.has(added.domain))) {
+            if (added.firstDiscovery && !session.excludedDomains.has(added.domain)) {
               newUniqueCompanies += 1;
-              if (added.domain) session.excludedDomains.add(added.domain);
+              session.excludedDomains.add(added.domain);
             } else existingCompanyHits += 1;
+          } else {
+            discarded["unresolved-company-domain"] = (discarded["unresolved-company-domain"] ?? 0) + 1;
           }
           return { item, candidateKey: added.candidateKey, domain: added.domain,
             firstDiscovery: added.firstDiscovery, rejectionReason: added.rejectionReason };

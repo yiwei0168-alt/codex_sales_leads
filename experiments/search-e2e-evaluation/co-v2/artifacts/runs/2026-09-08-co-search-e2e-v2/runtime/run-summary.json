@@ -4,7 +4,7 @@
   "experimentId": "search-e2e-eval-co-v2.0.6",
   "status": "running",
   "createdAt": "2026-09-07T20:36:48.680Z",
-  "updatedAt": "2026-09-07T22:36:44.308Z",
+  "updatedAt": "2026-09-07T23:09:52.733Z",
   "blindJudgeModel": "blind-audit-v2.1-dual-judge",
   "preflightChecks": [
     {
@@ -113,6 +113,19 @@
         "fallbackUsed": true,
         "attempts": 2
       }
+    },
+    {
+      "name": "structured-model-runtime-v2.0.6",
+      "completedAt": "2026-09-07T22:50:40.749Z",
+      "detail": {
+        "paidCallsMade": 1,
+        "secretsRecorded": false,
+        "requestedModel": "deepseek-v4-flash",
+        "actualModel": "deepseek/deepseek-v4-flash",
+        "actualProvider": "openrouter-deepseek",
+        "fallbackUsed": true,
+        "attempts": 2
+      }
     }
   ],
   "completedArmKeys": [
@@ -167,6 +180,13 @@
       "severity": "warning",
       "code": "product-target-underfill",
       "detail": "Product returned 6/50 after 5 rounds; completion=maximum-rounds."
+    },
+    {
+      "at": "2026-09-07T23:09:52.721Z",
+      "cellId": "CO-retail",
+      "severity": "warning",
+      "code": "product-target-underfill",
+      "detail": "Product returned 11/50 after 8 rounds; completion=confirmed-exhaustion."
     }
   ],
   "costEvents": [
@@ -3747,6 +3767,2128 @@
         "downstreamUsedItems": 6,
         "discardedReasonCounts": {
           "wrongPrimaryRoleOrGate": 70
+        }
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "preflight:structured-model-runtime-v2.0.6",
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "arm": "product-e2e",
+      "ledger": "product-e2e-arm",
+      "stage": "model-provider-preflight",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek/deepseek-v4-flash",
+      "startedAt": "2026-09-07T22:50:38.335Z",
+      "completedAt": "2026-09-07T22:50:40.749Z",
+      "latencyMs": 1715,
+      "attempts": 2,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 103,
+        "outputTokens": 6,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "accountCashCostUsd": 0.00001018969,
+      "notes": [
+        "Model fallback used after deepseek failed (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek."
+      ],
+      "officialListPriceUsd": 0.000016100000000000002,
+      "budgetCostUsd": 0.00001018969,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:resume-cache:search-extension:v2.0.6",
+      "cellId": "CO-retail",
+      "stage": "within-run-cache-reuse",
+      "provider": "local-run-cache",
+      "startedAt": "2026-09-07T22:50:51.883Z",
+      "completedAt": "2026-09-07T22:50:51.883Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Reused the successful intent, local RAG, playbook, discovery, fresh evidence and supplemental evidence from the interrupted cell.",
+        "No historical cross-run candidate, evidence, score or private-memory cache was read."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:qualification-score-only-role-normalization:model:1",
+      "cellId": "CO-retail",
+      "stage": "qualification-score-only-role-normalization",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek/deepseek-v4-flash",
+      "startedAt": "2026-09-07T22:50:51.903Z",
+      "completedAt": "2026-09-07T22:52:19.642Z",
+      "latencyMs": 170707,
+      "attempts": 10,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 48526,
+        "outputTokens": 9345,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 6,
+        "rawOutputItems": 6,
+        "validOutputItems": 6,
+        "downstreamUsedItems": 6,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "accountCashCostUsd": 0.008584380462,
+      "notes": [
+        "Aggregate stage output volume is attributed once to the primary model event."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.009410240000000002,
+      "budgetCostUsd": 0.008584380462,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r6:1",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "google-places",
+      "startedAt": "2026-09-07T22:52:19.661Z",
+      "completedAt": "2026-09-07T22:56:11.268Z",
+      "latencyMs": 391,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 4,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 4,
+        "validOutputItems": 4,
+        "downstreamUsedItems": 3,
+        "discardedReasonCounts": {
+          "duplicate": 1
+        }
+      },
+      "notes": [
+        "queryRound=6",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.035,
+      "budgetCostUsd": 0.035,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r6:2",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-07T22:52:19.661Z",
+      "completedAt": "2026-09-07T22:56:11.268Z",
+      "latencyMs": 768,
+      "attempts": 2,
+      "retries": 1,
+      "fallbackUsed": false,
+      "status": "failed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 2,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "provider-rate-limit": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=6",
+        "cacheStatus=miss",
+        "failureClass=rate-limit",
+        "circuitScope=route"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.008,
+      "budgetCostUsd": 0.008,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r6:3",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-07T22:52:19.661Z",
+      "completedAt": "2026-09-07T22:56:11.268Z",
+      "latencyMs": 760,
+      "attempts": 2,
+      "retries": 1,
+      "fallbackUsed": false,
+      "status": "failed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 2,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "provider-rate-limit": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=6",
+        "cacheStatus=miss",
+        "failureClass=rate-limit",
+        "circuitScope=route"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.008,
+      "budgetCostUsd": 0.008,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r6:4",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-07T22:52:19.661Z",
+      "completedAt": "2026-09-07T22:56:11.268Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "circuit-open": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=6",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r6:5",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-07T22:52:19.661Z",
+      "completedAt": "2026-09-07T22:56:11.268Z",
+      "latencyMs": 1259,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 20,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 20,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 17,
+        "discardedReasonCounts": {
+          "duplicate": 3
+        }
+      },
+      "notes": [
+        "queryRound=6",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005,
+      "budgetCostUsd": 0.005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r6:6",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-07T22:52:19.661Z",
+      "completedAt": "2026-09-07T22:56:11.268Z",
+      "latencyMs": 787,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 20,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 20,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 8,
+        "discardedReasonCounts": {
+          "duplicate": 12
+        }
+      },
+      "notes": [
+        "queryRound=6",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005,
+      "budgetCostUsd": 0.005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r6:7",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-07T22:52:19.661Z",
+      "completedAt": "2026-09-07T22:56:11.268Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "circuit-open": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=6",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r6:8",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-07T22:52:19.661Z",
+      "completedAt": "2026-09-07T22:56:11.268Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "circuit-open": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=6",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r6:9",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-07T22:52:19.661Z",
+      "completedAt": "2026-09-07T22:56:11.268Z",
+      "latencyMs": 1256,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 20,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 20,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 6,
+        "discardedReasonCounts": {
+          "duplicate": 14
+        }
+      },
+      "notes": [
+        "queryRound=6",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005,
+      "budgetCostUsd": 0.005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r6:10",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "exa",
+      "startedAt": "2026-09-07T22:52:19.661Z",
+      "completedAt": "2026-09-07T22:56:11.268Z",
+      "latencyMs": 1183,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 20,
+        "extractedPages": 20,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 20,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 20,
+        "discardedReasonCounts": {
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=6",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.037000000000000005,
+      "budgetCostUsd": 0.037000000000000005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r6:11",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "exa",
+      "startedAt": "2026-09-07T22:52:19.661Z",
+      "completedAt": "2026-09-07T22:56:11.268Z",
+      "latencyMs": 1658,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 20,
+        "extractedPages": 20,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 20,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 2,
+        "discardedReasonCounts": {
+          "duplicate": 18
+        }
+      },
+      "notes": [
+        "queryRound=6",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.037000000000000005,
+      "budgetCostUsd": 0.037000000000000005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery-gate-r6:model:1",
+      "cellId": "CO-retail",
+      "stage": "discovery-gate-r6",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek/deepseek-v4-flash",
+      "startedAt": "2026-09-07T22:52:19.661Z",
+      "completedAt": "2026-09-07T22:56:11.268Z",
+      "latencyMs": 89009,
+      "attempts": 7,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 66610,
+        "outputTokens": 9063,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 56,
+        "rawOutputItems": 55,
+        "validOutputItems": 21,
+        "downstreamUsedItems": 21,
+        "discardedReasonCounts": {
+          "rejected": 34
+        }
+      },
+      "accountCashCostUsd": 0.011157953102,
+      "notes": [
+        "Aggregate stage output volume is attributed once to the primary model event."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.01186304,
+      "budgetCostUsd": 0.011157953102,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:fresh-evidence:r6",
+      "cellId": "CO-retail",
+      "stage": "fresh-evidence",
+      "provider": "tavily",
+      "startedAt": "2026-09-07T22:56:11.474Z",
+      "completedAt": "2026-09-07T22:56:29.057Z",
+      "latencyMs": 73127,
+      "attempts": 34,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 30
+      },
+      "volume": {
+        "inputItems": 21,
+        "rawOutputItems": 65,
+        "validOutputItems": 65,
+        "downstreamUsedItems": 65,
+        "discardedReasonCounts": {
+          "noFreshEvidence": 3
+        }
+      },
+      "notes": [
+        "historical evidence reads disabled",
+        "evidence-library writes disabled",
+        "current-run evidence and missing-evidence records reused downstream"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.24,
+      "budgetCostUsd": 0.24,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:correction-evidence:r6",
+      "cellId": "CO-retail",
+      "stage": "evidence-correction-search",
+      "provider": "tavily",
+      "startedAt": "2026-09-07T22:56:29.083Z",
+      "completedAt": "2026-09-07T23:01:30.904Z",
+      "latencyMs": 44058,
+      "attempts": 18,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 18
+      },
+      "volume": {
+        "inputItems": 21,
+        "rawOutputItems": 21,
+        "validOutputItems": 21,
+        "downstreamUsedItems": 5,
+        "discardedReasonCounts": {
+          "correctedToAnotherRole": 16
+        }
+      },
+      "notes": [
+        "Only missing evidence identified by the first evidence packet may trigger supplementation."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.14400000000000002,
+      "budgetCostUsd": 0.14400000000000002,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:evidence-correction-r6:model:1",
+      "cellId": "CO-retail",
+      "stage": "evidence-correction-r6",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek/deepseek-v4-flash",
+      "startedAt": "2026-09-07T22:56:29.083Z",
+      "completedAt": "2026-09-07T23:01:30.904Z",
+      "latencyMs": 146628,
+      "attempts": 7,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 26674,
+        "outputTokens": 6376,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 21,
+        "rawOutputItems": 21,
+        "validOutputItems": 17,
+        "downstreamUsedItems": 5,
+        "discardedReasonCounts": {
+          "correctedToAnotherRole": 16
+        }
+      },
+      "accountCashCostUsd": 0.0049213663000000005,
+      "notes": [
+        "Aggregate stage output volume is attributed once to the primary model event."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005519640000000001,
+      "budgetCostUsd": 0.0049213663000000005,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:evidence-correction-r6:model:2",
+      "cellId": "CO-retail",
+      "stage": "evidence-correction-r6",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek/deepseek-v4-pro",
+      "startedAt": "2026-09-07T22:56:29.083Z",
+      "completedAt": "2026-09-07T23:01:30.904Z",
+      "latencyMs": 53173,
+      "attempts": 2,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 8558,
+        "outputTokens": 2998,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 0,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "stageVolumeAttributedToPrimaryModelEvent": 2
+        }
+      },
+      "accountCashCostUsd": 0.008345071755,
+      "notes": [
+        "Model cost and tokens are retained; aggregate stage output volume is already attributed to model event 1."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.00633099,
+      "budgetCostUsd": 0.008345071755,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:qualification-score-only-r6:model:1",
+      "cellId": "CO-retail",
+      "stage": "qualification-score-only-r6",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek/deepseek-v4-flash",
+      "startedAt": "2026-09-07T23:01:30.981Z",
+      "completedAt": "2026-09-07T23:03:48.889Z",
+      "latencyMs": 148561,
+      "attempts": 7,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 39511,
+        "outputTokens": 7940,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 5,
+        "rawOutputItems": 5,
+        "validOutputItems": 4,
+        "downstreamUsedItems": 4,
+        "discardedReasonCounts": {
+          "retryRequired": 1
+        }
+      },
+      "accountCashCostUsd": 0.0059423268340000005,
+      "notes": [
+        "Aggregate stage output volume is attributed once to the primary model event."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.007754740000000001,
+      "budgetCostUsd": 0.0059423268340000005,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:qualification-score-only-r6:model:2",
+      "cellId": "CO-retail",
+      "stage": "qualification-score-only-r6",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek/deepseek-v4-pro",
+      "startedAt": "2026-09-07T23:01:30.981Z",
+      "completedAt": "2026-09-07T23:03:48.889Z",
+      "latencyMs": 30432,
+      "attempts": 2,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 7044,
+        "outputTokens": 1326,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 0,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "stageVolumeAttributedToPrimaryModelEvent": 1
+        }
+      },
+      "accountCashCostUsd": 0.01687104,
+      "notes": [
+        "Model cost and tokens are retained; aggregate stage output volume is already attributed to model event 1."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.00421776,
+      "budgetCostUsd": 0.01687104,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r7:1",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-07T23:03:48.907Z",
+      "completedAt": "2026-09-07T23:05:12.174Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "provider-recovery-cooldown": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=7",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r7:2",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-07T23:03:48.907Z",
+      "completedAt": "2026-09-07T23:05:12.174Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "provider-recovery-cooldown": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=7",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r7:3",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "google-places",
+      "startedAt": "2026-09-07T23:03:48.907Z",
+      "completedAt": "2026-09-07T23:05:12.174Z",
+      "latencyMs": 342,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 7,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 7,
+        "validOutputItems": 7,
+        "downstreamUsedItems": 5,
+        "discardedReasonCounts": {
+          "duplicate": 2
+        }
+      },
+      "notes": [
+        "queryRound=7",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.035,
+      "budgetCostUsd": 0.035,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r7:4",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-07T23:03:48.907Z",
+      "completedAt": "2026-09-07T23:05:12.174Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "provider-recovery-cooldown": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=7",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r7:5",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-07T23:03:48.907Z",
+      "completedAt": "2026-09-07T23:05:12.174Z",
+      "latencyMs": 1229,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 20,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 20,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 2,
+        "discardedReasonCounts": {
+          "duplicate": 18
+        }
+      },
+      "notes": [
+        "queryRound=7",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005,
+      "budgetCostUsd": 0.005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r7:6",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-07T23:03:48.907Z",
+      "completedAt": "2026-09-07T23:05:12.174Z",
+      "latencyMs": 805,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 20,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 20,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 2,
+        "discardedReasonCounts": {
+          "duplicate": 18
+        }
+      },
+      "notes": [
+        "queryRound=7",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005,
+      "budgetCostUsd": 0.005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r7:7",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-07T23:03:48.907Z",
+      "completedAt": "2026-09-07T23:05:12.174Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "provider-recovery-cooldown": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=7",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r7:8",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-07T23:03:48.907Z",
+      "completedAt": "2026-09-07T23:05:12.174Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "provider-recovery-cooldown": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=7",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r7:9",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-07T23:03:48.907Z",
+      "completedAt": "2026-09-07T23:05:12.174Z",
+      "latencyMs": 1231,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 20,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 20,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "duplicate": 20
+        }
+      },
+      "notes": [
+        "queryRound=7",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005,
+      "budgetCostUsd": 0.005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r7:10",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "exa",
+      "startedAt": "2026-09-07T23:03:48.907Z",
+      "completedAt": "2026-09-07T23:05:12.174Z",
+      "latencyMs": 1582,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 20,
+        "extractedPages": 20,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 20,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 20,
+        "discardedReasonCounts": {
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=7",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.037000000000000005,
+      "budgetCostUsd": 0.037000000000000005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r7:11",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "exa",
+      "startedAt": "2026-09-07T23:03:48.907Z",
+      "completedAt": "2026-09-07T23:05:12.174Z",
+      "latencyMs": 1459,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 20,
+        "extractedPages": 20,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 20,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 3,
+        "discardedReasonCounts": {
+          "duplicate": 17
+        }
+      },
+      "notes": [
+        "queryRound=7",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.037000000000000005,
+      "budgetCostUsd": 0.037000000000000005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery-gate-r7:model:1",
+      "cellId": "CO-retail",
+      "stage": "discovery-gate-r7",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek/deepseek-v4-flash",
+      "startedAt": "2026-09-07T23:03:48.907Z",
+      "completedAt": "2026-09-07T23:05:12.174Z",
+      "latencyMs": 54631,
+      "attempts": 3,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 11923,
+        "outputTokens": 1638,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 32,
+        "rawOutputItems": 17,
+        "validOutputItems": 10,
+        "downstreamUsedItems": 10,
+        "discardedReasonCounts": {
+          "rejected": 7
+        }
+      },
+      "accountCashCostUsd": 0.0016916762,
+      "notes": [
+        "Aggregate stage output volume is attributed once to the primary model event."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.00212786,
+      "budgetCostUsd": 0.0016916762,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:fresh-evidence:r7",
+      "cellId": "CO-retail",
+      "stage": "fresh-evidence",
+      "provider": "tavily",
+      "startedAt": "2026-09-07T23:05:12.378Z",
+      "completedAt": "2026-09-07T23:05:23.386Z",
+      "latencyMs": 39365,
+      "attempts": 16,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 16
+      },
+      "volume": {
+        "inputItems": 10,
+        "rawOutputItems": 33,
+        "validOutputItems": 33,
+        "downstreamUsedItems": 33,
+        "discardedReasonCounts": {
+          "noFreshEvidence": 0
+        }
+      },
+      "notes": [
+        "historical evidence reads disabled",
+        "evidence-library writes disabled",
+        "current-run evidence and missing-evidence records reused downstream"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.128,
+      "budgetCostUsd": 0.128,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:correction-evidence:r7",
+      "cellId": "CO-retail",
+      "stage": "evidence-correction-search",
+      "provider": "tavily",
+      "startedAt": "2026-09-07T23:05:23.407Z",
+      "completedAt": "2026-09-07T23:07:07.168Z",
+      "latencyMs": 21510,
+      "attempts": 9,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 9
+      },
+      "volume": {
+        "inputItems": 10,
+        "rawOutputItems": 10,
+        "validOutputItems": 10,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {
+          "correctedToAnotherRole": 9
+        }
+      },
+      "notes": [
+        "Only missing evidence identified by the first evidence packet may trigger supplementation."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.07200000000000001,
+      "budgetCostUsd": 0.07200000000000001,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:evidence-correction-r7:model:1",
+      "cellId": "CO-retail",
+      "stage": "evidence-correction-r7",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek/deepseek-v4-flash",
+      "startedAt": "2026-09-07T23:05:23.407Z",
+      "completedAt": "2026-09-07T23:07:07.168Z",
+      "latencyMs": 114413,
+      "attempts": 5,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 22058,
+        "outputTokens": 7830,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 10,
+        "rawOutputItems": 10,
+        "validOutputItems": 8,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {
+          "correctedToAnotherRole": 9
+        }
+      },
+      "accountCashCostUsd": 0.0046050486580000004,
+      "notes": [
+        "Aggregate stage output volume is attributed once to the primary model event."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.00528052,
+      "budgetCostUsd": 0.0046050486580000004,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:qualification-score-only-r7:model:1",
+      "cellId": "CO-retail",
+      "stage": "qualification-score-only-r7",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek/deepseek-v4-flash",
+      "startedAt": "2026-09-07T23:07:07.204Z",
+      "completedAt": "2026-09-07T23:07:21.251Z",
+      "latencyMs": 13361,
+      "attempts": 2,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 7916,
+        "outputTokens": 1379,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "accountCashCostUsd": 0.001379672,
+      "notes": [
+        "Aggregate stage output volume is attributed once to the primary model event."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.0014943600000000001,
+      "budgetCostUsd": 0.001379672,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r8:1",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "google-places",
+      "startedAt": "2026-09-07T23:07:21.271Z",
+      "completedAt": "2026-09-07T23:08:17.140Z",
+      "latencyMs": 378,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 8,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 8,
+        "validOutputItems": 8,
+        "downstreamUsedItems": 4,
+        "discardedReasonCounts": {
+          "duplicate": 4
+        }
+      },
+      "notes": [
+        "queryRound=8",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.035,
+      "budgetCostUsd": 0.035,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r8:2",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-07T23:07:21.271Z",
+      "completedAt": "2026-09-07T23:08:17.140Z",
+      "latencyMs": 793,
+      "attempts": 2,
+      "retries": 1,
+      "fallbackUsed": false,
+      "status": "failed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 2,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "provider-rate-limit": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=8",
+        "cacheStatus=miss",
+        "failureClass=rate-limit",
+        "circuitScope=route"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.008,
+      "budgetCostUsd": 0.008,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r8:3",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-07T23:07:21.271Z",
+      "completedAt": "2026-09-07T23:08:17.140Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "circuit-open": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=8",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r8:4",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-07T23:07:21.271Z",
+      "completedAt": "2026-09-07T23:08:17.140Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "circuit-open": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=8",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r8:5",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-07T23:07:21.271Z",
+      "completedAt": "2026-09-07T23:08:17.140Z",
+      "latencyMs": 1169,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 20,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 20,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {
+          "duplicate": 19
+        }
+      },
+      "notes": [
+        "queryRound=8",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005,
+      "budgetCostUsd": 0.005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r8:6",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-07T23:07:21.271Z",
+      "completedAt": "2026-09-07T23:08:17.140Z",
+      "latencyMs": 688,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 20,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 20,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "duplicate": 20
+        }
+      },
+      "notes": [
+        "queryRound=8",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005,
+      "budgetCostUsd": 0.005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r8:7",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-07T23:07:21.271Z",
+      "completedAt": "2026-09-07T23:08:17.140Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "circuit-open": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=8",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r8:8",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-07T23:07:21.271Z",
+      "completedAt": "2026-09-07T23:08:17.140Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "circuit-open": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=8",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r8:9",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-07T23:07:21.271Z",
+      "completedAt": "2026-09-07T23:08:17.140Z",
+      "latencyMs": 1147,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 20,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 20,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 2,
+        "discardedReasonCounts": {
+          "duplicate": 18
+        }
+      },
+      "notes": [
+        "queryRound=8",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005,
+      "budgetCostUsd": 0.005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r8:10",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "exa",
+      "startedAt": "2026-09-07T23:07:21.271Z",
+      "completedAt": "2026-09-07T23:08:17.140Z",
+      "latencyMs": 2019,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 20,
+        "extractedPages": 20,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 20,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 20,
+        "discardedReasonCounts": {
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=8",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.037000000000000005,
+      "budgetCostUsd": 0.037000000000000005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r8:11",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "exa",
+      "startedAt": "2026-09-07T23:07:21.271Z",
+      "completedAt": "2026-09-07T23:08:17.140Z",
+      "latencyMs": 1471,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 20,
+        "extractedPages": 20,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 20,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 2,
+        "discardedReasonCounts": {
+          "duplicate": 18
+        }
+      },
+      "notes": [
+        "queryRound=8",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.037000000000000005,
+      "budgetCostUsd": 0.037000000000000005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery-gate-r8:model:1",
+      "cellId": "CO-retail",
+      "stage": "discovery-gate-r8",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek/deepseek-v4-flash",
+      "startedAt": "2026-09-07T23:07:21.271Z",
+      "completedAt": "2026-09-07T23:08:17.140Z",
+      "latencyMs": 35438,
+      "attempts": 4,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 14049,
+        "outputTokens": 1585,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 29,
+        "rawOutputItems": 9,
+        "validOutputItems": 2,
+        "downstreamUsedItems": 2,
+        "discardedReasonCounts": {
+          "rejected": 7
+        }
+      },
+      "accountCashCostUsd": 0.002074080694,
+      "notes": [
+        "Aggregate stage output volume is attributed once to the primary model event."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.0024106600000000002,
+      "budgetCostUsd": 0.002074080694,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:fresh-evidence:r8",
+      "cellId": "CO-retail",
+      "stage": "fresh-evidence",
+      "provider": "tavily",
+      "startedAt": "2026-09-07T23:08:17.401Z",
+      "completedAt": "2026-09-07T23:08:34.715Z",
+      "latencyMs": 26272,
+      "attempts": 4,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 4
+      },
+      "volume": {
+        "inputItems": 2,
+        "rawOutputItems": 9,
+        "validOutputItems": 9,
+        "downstreamUsedItems": 9,
+        "discardedReasonCounts": {
+          "noFreshEvidence": 0
+        }
+      },
+      "notes": [
+        "historical evidence reads disabled",
+        "evidence-library writes disabled",
+        "current-run evidence and missing-evidence records reused downstream"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.032,
+      "budgetCostUsd": 0.032,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:correction-evidence:r8",
+      "cellId": "CO-retail",
+      "stage": "evidence-correction-search",
+      "provider": "tavily",
+      "startedAt": "2026-09-07T23:08:34.741Z",
+      "completedAt": "2026-09-07T23:09:52.561Z",
+      "latencyMs": 5125,
+      "attempts": 2,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 2
+      },
+      "volume": {
+        "inputItems": 2,
+        "rawOutputItems": 2,
+        "validOutputItems": 2,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "correctedToAnotherRole": 2
+        }
+      },
+      "notes": [
+        "Only missing evidence identified by the first evidence packet may trigger supplementation."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.016,
+      "budgetCostUsd": 0.016,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:ranking:search-extension:v2.0.6",
+      "cellId": "CO-retail",
+      "stage": "role-filter-ranking",
+      "provider": "deterministic",
+      "startedAt": "2026-09-07T23:09:52.616Z",
+      "completedAt": "2026-09-07T23:09:52.616Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "volume": {
+        "inputItems": 24,
+        "rawOutputItems": 24,
+        "validOutputItems": 11,
+        "downstreamUsedItems": 11,
+        "discardedReasonCounts": {
+          "wrongPrimaryRoleOrGate": 85
         }
       },
       "runId": "2026-09-08-co-search-e2e-v2",

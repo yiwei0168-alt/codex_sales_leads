@@ -8,9 +8,10 @@ import { leadEvidenceContentHash } from "@/lib/leads/evidence-snapshot";
 import type { AiProvider } from "@/providers/contracts";
 import { createLeadAiProvider } from "@/providers/resilient-ai";
 
+import { normalizedCompanyDomain } from "./candidate-registry";
 import { ALL_CHANNEL_ROLES, type LeadEvidenceItem, type LeadWorkflowCandidate, type WorkflowModelUsage } from "./types";
 
-const PROMPT_VERSION = "lead-discovery-light-gate-v1.1.0-category-purity";
+const PROMPT_VERSION = "lead-discovery-light-gate-v1.2.0-bounded-output-and-identity";
 export const DEFAULT_DISCOVERY_GATE_MODEL = "deepseek-v4-flash";
 
 export function configuredDiscoveryGateModel(environment: NodeJS.ProcessEnv = process.env): string {
@@ -46,6 +47,75 @@ const resultSchema = z.object({
 });
 const batchSchema = z.object({ candidates: z.array(resultSchema).min(1).max(10) });
 type GateModelResult = z.infer<typeof resultSchema>;
+
+const signalValues = new Set(["supported", "not-supported", "unknown"]);
+const hardRejectValues = new Set([
+  "non-company", "wrong-market", "unrelated-business", "pure-marketplace", "individual-seller",
+  "wrong-agent-category", "wrong-isp-category", "wrong-installer-category", "oem-supplier-not-customer",
+  "trademark-only", "manufacturing-service-only", "directory-or-lead-platform", "direct-brand-store",
+  "non-retail-isp", "category-business-action-not-shown",
+]);
+const opportunitySignalValues = new Set([
+  "own-brand-product", "branded-cpe", "private-label", "custom-hardware", "device-tender",
+  "centralized-procurement", "standardized-deployment", "product-portfolio-gap", "past-oem-odm-relationship",
+]);
+
+function boundedStrings(value: unknown, maximumItems: number, maximumCharacters: number): string[] {
+  return Array.isArray(value) ? value.filter((item): item is string => typeof item === "string")
+    .map((item) => item.trim().slice(0, maximumCharacters)).filter((item) => item.length >= 2)
+    .slice(0, maximumItems) : [];
+}
+
+function validUrl(value: unknown): value is string {
+  if (typeof value !== "string") return false;
+  try { return /^https?:$/.test(new URL(value).protocol); } catch { return false; }
+}
+
+export function sanitizeDiscoveryGateOutput(value: unknown): unknown {
+  const source = value && typeof value === "object" ? value as Record<string, unknown> : {};
+  const candidates = Array.isArray(source.candidates) ? source.candidates : [];
+  return { candidates: candidates.flatMap((raw) => {
+    if (!raw || typeof raw !== "object") return [];
+    const item = raw as Record<string, unknown>;
+    if (typeof item.candidateId !== "string" || item.candidateId.length < 8) return [];
+    const signal = (name: string) => typeof item[name] === "string" && signalValues.has(item[name] as string)
+      ? item[name] : "unknown";
+    const relationships = Array.isArray(item.suspectedRelationships) ? item.suspectedRelationships : [];
+    const opportunities = Array.isArray(item.opportunitySignals) ? item.opportunitySignals : [];
+    return [{
+      candidateId: item.candidateId.slice(0, 80),
+      companyExistsSignal: signal("companyExistsSignal"),
+      networkProductRelevance: signal("networkProductRelevance"),
+      targetCategorySignal: signal("targetCategorySignal"),
+      productOrBrandControlSignal: signal("productOrBrandControlSignal"),
+      volumeProcurementSignal: signal("volumeProcurementSignal"),
+      customizationSignal: signal("customizationSignal"),
+      roleHints: boundedStrings(item.roleHints, 5, 40).filter((role) => ALL_CHANNEL_ROLES.includes(role as never)),
+      hardRejectCodes: boundedStrings(item.hardRejectCodes, 5, 80).filter((code) => hardRejectValues.has(code)),
+      opportunitySignals: opportunities.flatMap((entry) => {
+        if (!entry || typeof entry !== "object") return [];
+        const signalEntry = entry as Record<string, unknown>;
+        if (typeof signalEntry.signalType !== "string" || !opportunitySignalValues.has(signalEntry.signalType)
+          || (signalEntry.basis !== "explicit" && signalEntry.basis !== "indirect")
+          || !validUrl(signalEntry.sourceUrl)) return [];
+        return [{ signalType: signalEntry.signalType, basis: signalEntry.basis, sourceUrl: signalEntry.sourceUrl }];
+      }).slice(0, 6),
+      suspectedRelationships: relationships.flatMap((entry) => {
+        if (!entry || typeof entry !== "object") return [];
+        const relationship = entry as Record<string, unknown>;
+        if (!validUrl(relationship.sourceUrl)) return [];
+        const relationshipType = typeof relationship.relationshipType === "string"
+          ? relationship.relationshipType.trim().slice(0, 80) : "";
+        const relatedName = typeof relationship.relatedName === "string"
+          ? relationship.relatedName.trim().slice(0, 200) : "";
+        return relationshipType.length >= 2 && relatedName.length >= 2
+          ? [{ relationshipType, relatedName, sourceUrl: relationship.sourceUrl }] : [];
+      }).slice(0, 5),
+      missingEvidence: boundedStrings(item.missingEvidence, 6, 120),
+      reasonCodes: boundedStrings(item.reasonCodes, 8, 80),
+    }];
+  }).slice(0, 10) };
+}
 
 function privateIp(hostname: string): boolean {
   if (hostname === "localhost" || hostname.endsWith(".local")) return true;
@@ -109,6 +179,9 @@ export async function fetchLightweightHomepage(candidate: LeadWorkflowCandidate,
       const redirected = new URL(location, target);
       if (redirected.protocol !== "https:" || !await publiclyResolvable(redirected.hostname, fetchImplementation === fetch)) {
         return { warning: "homepage-unsafe-redirect" };
+      }
+      if (normalizedCompanyDomain(redirected.toString()) !== normalizedCompanyDomain(candidate.officialWebsiteUrl)) {
+        return { warning: "homepage-cross-company-domain-redirect" };
       }
       target = redirected;
     }
@@ -196,7 +269,7 @@ export class LeadDiscoveryGate {
               sources: candidate.evidence.slice(0, 6).map((item) => ({ evidenceId: item.id, url: item.url,
                 sourceType: item.sourceType, excerpt: item.excerpt.slice(0, 4_000) })) })),
           } }, AbortSignal.timeout(60_000));
-        const parsed = batchSchema.parse(response.output);
+        const parsed = batchSchema.parse(sanitizeDiscoveryGateOutput(response.output));
         parsed.candidates.forEach((item) => outputs.set(item.candidateId, item));
         usage.push({ stage: "discovery-gate", requestedModel: response.requestedModelVersion ?? this.model,
           actualModel: response.modelVersion, providerId: response.actualProviderId, promptTokens: response.usage?.promptTokens ?? 0,

@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "@/providers/contracts";
 import type { TavilySearchResponse } from "@/providers/tavily";
 
-import { LeadEvidenceCorrectionAgent } from "./evidence-correction-agent";
+import { evidenceAffiliatedWithCandidate, LeadEvidenceCorrectionAgent } from "./evidence-correction-agent";
 import { leadCorrectionBatchSchema, leadCorrectionModelSchema, sanitizeLeadCorrectionOutput } from "./schemas";
 import type { LeadWorkflowCandidate } from "./types";
 
@@ -74,6 +74,13 @@ const candidate: LeadWorkflowCandidate = {
 };
 
 describe("LeadEvidenceCorrectionAgent", () => {
+  it("drops supplemental search results that do not identify the candidate entity", () => {
+    expect(evidenceAffiliatedWithCandidate({ url: "https://capitalcolombia.example/routers", title: "Routers Bogotá",
+      content: "Another company sells routers in Bogotá.", rawContent: "" }, "PC Mérida", "pcmerida.com")).toBe(false);
+    expect(evidenceAffiliatedWithCandidate({ url: "https://social.example/smart-technik", title: "Smart Technik GmbH",
+      content: "Smart Technik GmbH in Germany.", rawContent: "" }, "Smart Technik", "wrong-example.de")).toBe(true);
+  });
+
   it("supplements evidence, corrects the official domain, reroutes roles and preserves provenance", async () => {
     const provider = new FakeCorrectionProvider();
     const agent = new LeadEvidenceCorrectionAgent(provider, searchProvider,

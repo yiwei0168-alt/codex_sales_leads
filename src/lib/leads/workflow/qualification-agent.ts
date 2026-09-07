@@ -21,7 +21,7 @@ import type {
 } from "./types";
 
 export const LEAD_QUALIFICATION_PROMPT_VERSION = "lead-value-v5-role-aware-five-paths";
-export const LEAD_SCORE_ONLY_PROMPT_VERSION = "lead-value-v6-role-aware-score-only";
+export const LEAD_SCORE_ONLY_PROMPT_VERSION = "lead-value-v7-role-aware-score-only-country-corroborated";
 type QualificationModelOutput = LeadAssessmentModelOutput | LeadAssessmentScoreOnlyModelOutput;
 
 interface LeadAssessmentRequest {
@@ -80,6 +80,18 @@ function corroboratedGate(modelState: LeadAssessmentModelOutput["gates"][keyof L
   return modelState;
 }
 
+function correctedCountryGate(candidate: CorrectedLeadWorkflowCandidate,
+  modelState: LeadAssessmentModelOutput["gates"]["targetCountryPresence"]) {
+  const findings = candidate.correction.findings.filter((finding) => finding.kind === "country-presence"
+    && finding.evidenceIds.length > 0);
+  const supported = findings.some((finding) => finding.status === "supported");
+  const contradicted = findings.some((finding) => finding.status === "not-supported");
+  const conflicting = findings.some((finding) => finding.status === "conflicting") || supported && contradicted;
+  if (conflicting) return "conflicting" as const;
+  if (contradicted) return "not-supported" as const;
+  return corroboratedGate(modelState, supported);
+}
+
 function cooperationLane(lane: CorrectedLeadWorkflowCandidate["queryFamily"]): CooperationLane {
   if (lane === "distribution") return "tier1-distribution";
   if (lane === "resale" || lane === "retail") return "b2b-resale";
@@ -125,6 +137,7 @@ export function normalizeAssessment(
     correctedIdentityUsable: corroboratedGate(value.gates.correctedIdentityUsable,
       Boolean(candidate.companyName && candidate.domain) && evidenceQuality.identityConsistent),
     networkingRelevant: corroboratedGate(value.gates.networkingRelevant, networkingEvidence.demonstrated),
+    targetCountryPresence: correctedCountryGate(candidate, value.gates.targetCountryPresence),
   };
   const dimensions = {
     productFamilyMatch: clampDimension("productFamilyMatch", value.dimensions.productFamilyMatch),
@@ -225,6 +238,8 @@ export function normalizeAssessment(
         ? [`Networking evidence conflicts with the model gate: ${networkingEvidence.reason}`] : []),
       ...(value.gates.correctedIdentityUsable === "supported" && !evidenceQuality.identityConsistent
         ? [`Corrected identity evidence conflicts with the model gate: ${evidenceQuality.reason}`] : []),
+      ...(value.gates.targetCountryPresence === "supported" && gates.targetCountryPresence !== "supported"
+        ? ["Target-country presence claimed by scoring was not corroborated by the correction-stage country finding."] : []),
       ...(!evidenceQuality.sufficient ? [`Evidence remains sparse: ${evidenceQuality.reason}`] : []),
       ...(value.dimensions.cooperationPathAndBuyingInfluence > pathEvidenceAssessment.cap * 3
         ? [`Cooperation-path model score exceeds the deterministic evidence signal of ${(pathEvidenceAssessment.cap * 3).toFixed(1)}/15 and requires review: ${pathEvidenceAssessment.reason}`] : []),
@@ -334,6 +349,7 @@ export class LeadQualificationAgent {
         "Assess only supplied current-run evidence. Never invent company facts, roles, scale, product fit, relationships, paths or evidence IDs.",
         "Treat old-run or discovery-only material as a search lead, never as scoring evidence unless it was freshly acquired or revalidated into this run.",
         "Every gate is supported, not-supported, unknown or conflicting. Failed acquisition and missing evidence are unknown, never a negative fact.",
+        "The targetCountryPresence gate must follow the supplied correction-stage country-presence finding for this exact candidate and target market; never infer it from an unrelated page or from operations in a different country.",
         "Use the candidate's primary business role for scale peer comparison and for role-specific customer, scenario, positioning and execution criteria.",
         "Product family fit uses the best enabled product track, not average coverage of every Cudy family. Full-portfolio breadth applies only when the task explicitly requests a full-line master distributor.",
         "A broadline distributor is not diluted by unrelated categories. A focused SMB specialist is not penalized for lacking home, ISP or industrial families.",

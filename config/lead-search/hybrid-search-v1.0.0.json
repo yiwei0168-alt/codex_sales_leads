@@ -1,7 +1,7 @@
 {
   "policyKey": "cudy-hybrid-lead-search",
-  "version": "1.4.0",
-  "strategyDocumentVersion": "1.4.0-country-specific-local-focus-and-exa-identity-isolation",
+  "version": "1.5.0",
+  "strategyDocumentVersion": "1.5.0-domain-bearing-yield-and-bounded-gate-output",
   "status": "active",
   "maxConsecutiveNoValueBatches": 2,
   "defaultBatchSize": 12,

@@ -17,7 +17,7 @@ function plan(overrides: Partial<LeadSearchPlan> = {}): LeadSearchPlan {
 
 describe("hybrid search policy", () => {
   it("keeps Tavily out of discovery and versions the confirmed strategy", () => {
-    expect(ACTIVE_HYBRID_SEARCH_POLICY.strategyDocumentVersion).toBe("1.3.0-category-purity-cost-control");
+    expect(ACTIVE_HYBRID_SEARCH_POLICY.strategyDocumentVersion).toBe("1.5.0-domain-bearing-yield-and-bounded-gate-output");
     expect(JSON.stringify(ACTIVE_HYBRID_SEARCH_POLICY.categories)).not.toContain("tavily");
     expect(hybridSearchPolicyChecksum()).toMatch(/^[a-f0-9]{64}$/);
   });

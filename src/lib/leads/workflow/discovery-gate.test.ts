@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "@/providers/contracts";
-import { LeadDiscoveryGate } from "./discovery-gate";
+import { LeadDiscoveryGate, sanitizeDiscoveryGateOutput } from "./discovery-gate";
 import type { LeadWorkflowCandidate } from "./types";
 
 function candidate(category = "si-msp"): LeadWorkflowCandidate {
@@ -35,6 +35,16 @@ const fetchMock = vi.fn().mockImplementation(async () => new Response(homepage, 
   headers: { "content-type": "text/html" } }));
 
 describe("lightweight discovery gate", () => {
+  it("bounds overlong routine output without holding the whole batch", () => {
+    const parsed = sanitizeDiscoveryGateOutput({ candidates: [{ candidateId: "lead-example123",
+      companyExistsSignal: "supported", networkProductRelevance: "supported", targetCategorySignal: "supported",
+      productOrBrandControlSignal: "unknown", volumeProcurementSignal: "unknown", customizationSignal: "unknown",
+      roleHints: ["SI", "invented-role"], hardRejectCodes: [], opportunitySignals: [], suspectedRelationships: [],
+      missingEvidence: [], reasonCodes: ["x".repeat(200)] }] }) as { candidates: Array<{ reasonCodes: string[]; roleHints: string[] }> };
+    expect(parsed.candidates[0].reasonCodes[0]).toHaveLength(80);
+    expect(parsed.candidates[0].roleHints).toEqual(["SI"]);
+  });
+
   it("does not inherit a Pro model from the mutable global routine setting", async () => {
     vi.stubEnv("DEEPSEEK_MODEL", "deepseek-v4-pro");
     vi.stubEnv("DEEPSEEK_DISCOVERY_GATE_MODEL", "");

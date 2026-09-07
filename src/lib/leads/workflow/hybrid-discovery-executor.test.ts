@@ -4,7 +4,7 @@ import type { LeadSearchPlan } from "@/lib/assistant/types";
 import type { DiscoveryProvider, DiscoveryProviderResult, DiscoveryQuery } from "@/providers/discovery-contracts";
 import { DiscoveryProviderError } from "@/providers/discovery";
 import type { DiscoveryGateResult } from "./discovery-gate";
-import { createHybridDiscoverySession, executeHybridDiscovery } from "./hybrid-discovery-executor";
+import { createHybridDiscoverySession, executeHybridDiscovery, hardPrefilter } from "./hybrid-discovery-executor";
 import type { HybridSearchRouteStep } from "./hybrid-search-policy";
 import type { LeadMarketPlaybook, LeadWorkflowCandidate } from "./types";
 
@@ -195,6 +195,24 @@ describe("hybrid discovery executor", () => {
     await executeHybridDiscovery("cache-context-2", plan, playbook,
       { gate: passGate, providerFactory: factory, session });
     expect(providerCalls).toBeGreaterThan(firstCount);
+  });
+
+  it("does not count provider profiles or domainless external IDs as normalized companies", async () => {
+    const output = await executeHybridDiscovery("provider-profile", plan, playbook, { gate: passGate,
+      providerFactory: (step) => ({ id: step.provider, search: async (query) => {
+        const item = { providerId: step.provider, title: "Example profile",
+          url: step.provider === "exa" ? "https://exa.ai/library/organization/example" : null,
+          externalId: `${step.provider}-external`, snippet: "Networking company", rank: 1,
+          sourceKind: "web" as const };
+        return { providerId: step.provider, query, items: [item], sourceUrls: item.url ? [item.url] : [],
+          requestCount: 1, retryCount: 0, latencyMs: 1,
+          usage: { paidSearchCredits: 1, inputTokens: 0, outputTokens: 0, totalTokens: 0 } };
+      } }) });
+    expect(output.calls.every((call) => call.normalizedCompanies === 0 && call.newUniqueCompanies === 0)).toBe(true);
+    expect(output.calls.some((call) => call.discardedReasonCounts["unresolved-company-domain"] > 0)).toBe(true);
+    expect(hardPrefilter({ providerId: "exa", title: "Example profile",
+      url: "https://exa.ai/library/organization/example", externalId: "exa-example",
+      snippet: "Networking company", rank: 1, sourceKind: "web" })).toBe("provider-profile-not-company");
   });
 
   it("uses only the OEM customer opportunity chain for an explicit OEM task", async () => {
