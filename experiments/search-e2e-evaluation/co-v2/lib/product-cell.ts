@@ -173,7 +173,7 @@ export async function runProductCell(cell: ExperimentCell, options: {
     || intent.leadPlan.targetCount !== EXPERIMENT_CONFIG.sample.slotsPerArmPerCell
     || intent.leadPlan.objective !== frozenPlan.objective
     || !intentRolesRecognizeCategory(intent.leadPlan.roles, frozenPlan.roles)) {
-    throw new Error(`${cell.cellId} Kimi intent plan diverged from the frozen task semantics: ${JSON.stringify({
+    warnings.push(`${cell.cellId} Kimi intent plan diverged from the user-confirmed frozen task; execution retained the confirmed constraints: ${JSON.stringify({
       expected: { countryCode: frozenPlan.countryCode, targetCount: frozenPlan.targetCount,
         objective: frozenPlan.objective, roles: frozenPlan.roles },
       actual: { countryCode: intent.leadPlan.countryCode, targetCount: intent.leadPlan.targetCount,

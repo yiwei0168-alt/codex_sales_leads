@@ -1,4 +1,6 @@
-# Frozen protocol: Colombia search E2E v2.0.0
+# Frozen protocol: Colombia search E2E v2.0.1
+
+v2.0.1 supersedes the execution guard in v2.0.0 after the first Retail attempt exposed a Kimi constraint-copy failure before Product discovery. Kimi remains mandatory for lightweight intent/template-fit recognition, while the already user-confirmed preregistered country, count and category are authoritative for execution. Divergence is retained as a warning and efficiency loss. The valid unchanged Gemini control and all sunk cost remain in the same ledger.
 
 ## Hypothesis and arms
 

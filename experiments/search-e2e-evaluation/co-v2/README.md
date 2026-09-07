@@ -1,4 +1,4 @@
-# Colombia search E2E evaluation v2
+# Colombia search E2E evaluation v2.0.1
 
 This directory is the immutable, cold-start Colombia follow-up to the UK/Mexico formal evaluation. It compares the current product workflow with one un-tuned Gemini Full + Google Search interaction per category.
 

@@ -97,6 +97,7 @@ Every route and stage records input count, raw output, normalized output, new un
 - Applies blind-audit v2.1 with 24 representative and 8 stress packets, dual independent judges and conditional arbitration.
 - Enforces a USD 50 hard cap with real-cost checks at USD 10, 20 and 30; every checkpoint records forecast, stage/ledger cost, input/raw/valid/used volume, discard reasons, latency and retries.
 - Creates no external input/output or cost during preregistration. Measured route contribution and unit cost are recorded by the formal run rather than inferred.
+- v2.0.1 repair: a lightweight Kimi template-fit result cannot override already confirmed country, target count or category. Divergence remains visible in telemetry, while the confirmed plan controls execution. The first rejected CO Retail plan used USD 0.0051770629 and stopped before Product search; its unchanged Gemini control is reused.
 
 ### v1.3.0 category purity and cost-accounting repair — 2026-09-07
 

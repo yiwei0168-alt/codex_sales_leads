@@ -217,6 +217,7 @@ async function invokeKimiIntent(options: {
           "Choose internal_knowledge for questions answerable only from private Cudy product specs, technical parameters, company material, email-learned knowledge, or internal policy.",
           "Choose hybrid_research when a reliable answer needs both private Cudy knowledge and current/public web information. Split it into one self-contained internal_question and up to five self-contained external_questions.",
           "Choose lead_search only when the user wants companies or sales leads discovered/qualified. Produce the country, objective, channel roles and target count; execution still requires user confirmation.",
+          "When the current message explicitly states a country, numeric target count, or named role/category, copy those constraints exactly. Never replace an explicit count with a default and never broaden explicitly named roles into all channel roles.",
           "Agent and Brand Owner are explicit-only roles. Never add either unless the user explicitly asks for sales agents/manufacturer representatives, brand/product companies, or an OEM/ODM customer-lead task.",
           "OEM/ODM means potential customers that may buy Cudy hardware, firmware or a complete solution for their own brand. This product never searches for factories, design houses or suppliers that would provide OEM/ODM services to Cudy.",
           "Set opportunity_targets=[\"OEM/ODM\"] only when the user explicitly asks for OEM, ODM, private-label, white-label or customized-product customer leads.",
