@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-08-co-search-e2e-v2",
+  "experimentId": "search-e2e-eval-co-v2.0.0",
+  "status": "preflight-passed",
+  "createdAt": "2026-09-07T20:36:48.680Z",
+  "updatedAt": "2026-09-07T20:36:48.682Z",
+  "blindJudgeModel": "blind-audit-v2.1-dual-judge",
+  "preflightChecks": [
+    {
+      "name": "configuration-and-frozen-inputs",
+      "completedAt": "2026-09-07T20:36:48.682Z",
+      "detail": {
+        "requiredEnvironment": [
+          {
+            "name": "KIMI_API_KEY",
+            "configured": true
+          },
+          {
+            "name": "DEEPSEEK_API_KEY",
+            "configured": true
+          },
+          {
+            "name": "GEMINI_API_KEY",
+            "configured": true
+          },
+          {
+            "name": "TAVILY_API_KEY",
+            "configured": true
+          },
+          {
+            "name": "OPENROUTER_API_KEY",
+            "configured": true
+          },
+          {
+            "name": "EMBEDDING_API_KEY",
+            "configured": true
+          },
+          {
+            "name": "DATABASE_URL",
+            "configured": true
+          },
+          {
+            "name": "SEARCH_E2E_USER_ID",
+            "configured": true
+          }
+        ],
+        "discovery": [
+          {
+            "providerId": "gemini-full",
+            "configured": true
+          },
+          {
+            "providerId": "gemini-product",
+            "configured": true
+          },
+          {
+            "providerId": "google-places",
+            "configured": true
+          },
+          {
+            "providerId": "exa",
+            "configured": true
+          },
+          {
+            "providerId": "brave",
+            "configured": true
+          },
+          {
+            "providerId": "searchapi",
+            "configured": true
+          }
+        ],
+        "paidCallsMade": 0,
+        "secretsRecorded": false
+      }
+    }
+  ],
+  "completedArmKeys": [],
+  "completedCellIds": [],
+  "completedEvaluationCellIds": [],
+  "completedBlindPacketIds": [],
+  "reportedBudgetThresholdsUsd": [],
+  "anomalies": [],
+  "costEvents": []
+}
