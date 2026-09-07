@@ -1,0 +1,249 @@
+{
+  "schemaVersion": 1,
+  "experimentId": "search-e2e-eval-co-v2.0.0",
+  "runId": "2026-09-08-co-search-e2e-v2",
+  "createdAt": "2026-09-07T20:35:55.896Z",
+  "requiredGitTag": "search-e2e-co-v2-preregistered",
+  "files": [
+    {
+      "path": "experiments/search-e2e-evaluation/co-v2/PROTOCOL.md",
+      "sha256": "2e08466690dcbc4f9bf64e4e4ac26d5f7853faa6de8f83d4e53d2c01f256aa98"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/co-v2/README.md",
+      "sha256": "4f4bd03c52b52475ede13febc22c4763ae5d6515e1cd9c8a8be748403ebfb1c5"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/co-v2/config/experiment.v2.0.0.json",
+      "sha256": "66e59e6e90c271e405890759416f0b166e641c73e1899d828c6b7247eaf2626e"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/co-v2/config/gemini-control-prompt.md",
+      "sha256": "d1ca530d624d3167a9e30d059717a74935029e3e63d7fb319876ddcbf17c4aaf"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/co-v2/config/blind-audit-v2.1.0.json",
+      "sha256": "b870ef0c8fd0a2f66fd129f7b75bb8971186a9d8f021ddc436fb7eb2e7671574"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/co-v2/config/blind-judge-rubric-v2.md",
+      "sha256": "12ecf56002cb4ae94b5ce36e668791511cb4c6733ef3e25dd0e709bc5335611b"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/co-v2/config/blind-judge-arbitration-rubric-v2.md",
+      "sha256": "9da86ada8d71641429c66190d080db994d9af3e364aa3c099d283e7ae038e42a"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/co-v2/config/official-rate-card.v1.json",
+      "sha256": "8bb6a30d247d13d1657406e5d0b6334620b44067bfe1412046e4f9adf9923f4f"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/co-v2/schemas/gemini-control-output.schema.json",
+      "sha256": "db2a99971a0bf06e914d8e75f24723704a4225d3c158cceba734c8e514f07c1d"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/co-v2/schemas/blind-judge-output-v2.schema.json",
+      "sha256": "9b902804a6462764a935311abb8ef7a602705bf5b6dd8e3a26e13b7beda42350"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/co-v2/schemas/runtime-cost-event.schema.json",
+      "sha256": "06370a08eb93b2c47ba0606f5b5fa516f9c6ac5074b6280a6b1179698f42178e"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/co-v2/lib/blind-audit-v2.ts",
+      "sha256": "ea5e112c193958df11185c9654f0588184c503ce55dd54e46b8a8b2668ed4988"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/co-v2/lib/cost-ledger.ts",
+      "sha256": "111c94e229c1ec899b1049dda41279b01be4b86e06bfa99d3c18750ba1459291"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/co-v2/lib/control-cell.ts",
+      "sha256": "cce2dca18bbe2279338a999770aadcd77f39c9877e552cf37057d11956a6f1db"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/co-v2/lib/evaluation-metrics.ts",
+      "sha256": "7aa6b1b35d2f0d0b8002467d973aecabcb9fa35c4fde3faf0a16bffd922ef928"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/co-v2/lib/experiment.ts",
+      "sha256": "0c00a2ec94a69679e7aee8d3393682cfd992d5cb7e934bc7509f9acdf4d84ec7"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/co-v2/lib/final-report.ts",
+      "sha256": "ddddc42390ce3e8d39eee9ca2e7bf9f595666f4149a1054f8f99d874bf632a6a"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/co-v2/lib/product-cell.ts",
+      "sha256": "e826f2c05a4f67c025fc335e74a4f12b01c7cc55b3af0199cdc7cc24fdb2ec71"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/co-v2/lib/provider-clients.ts",
+      "sha256": "6ff6dd457d0d2cc21210406f4efdbf38503c4056fc747779cefca966ebb7bb9c"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/co-v2/lib/public-artifact.ts",
+      "sha256": "963447dd98aecf99826e5ca31d1478b5840db58c56e48a871949b0099fde0b88"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/co-v2/lib/run-store.ts",
+      "sha256": "585dde336d6350dffd22013d47c498f7bfa17c7481fe04e76110cb7f48b5dfe3"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/co-v2/lib/runtime-schemas.ts",
+      "sha256": "cf17532d1ed01b3d730b4b0349c5e76f06c5ba5771607b37da5ce07d455be123"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/co-v2/lib/unified-evaluation.ts",
+      "sha256": "43c20b49a35df44033f833a57497e9fec089e4c36418f66a4811add2af32545a"
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/co-v2/scripts/run-formal-experiment.ts",
+      "sha256": "2c22818ed6f1a8968e355081e57ee500c61b567ac747ee73459a9fca6b3e0016"
+    },
+    {
+      "path": "config/lead-search/hybrid-search-v1.0.0.json",
+      "sha256": "5e4180ea8d35bb7facd1e23cb209946721c34563478ad606325aa2df57a72d09"
+    },
+    {
+      "path": "config/lead-scoring/policy-v2.0.0.json",
+      "sha256": "0039203aafb29ec73e4beb10f72dc5ec114785fb4c5f311c7b425de0d451fc1b"
+    },
+    {
+      "path": "config/lead-workflow/end-to-end-v2.0.0.json",
+      "sha256": "43dac57afa6d83a83d285a6a97094d66aba9306de4c7e8a09ba142ef212ca47d"
+    },
+    {
+      "path": "config/lead-workflow/runtime-policy-v3.0.0.json",
+      "sha256": "31a0f7030758c373a697c82afc85f31b940c3b9104f8eb9c846aa0249a6e6f4c"
+    },
+    {
+      "path": "config/lead-workflow/cost-quality-policy-v3.0.0.json",
+      "sha256": "90bb896e2fdfd0738296ab4b82dae6bb0f75e1b06d95955f69e4eaaa55a7aae6"
+    },
+    {
+      "path": "src/lib/assistant/intent-agent.ts",
+      "sha256": "811b836f94bbe70a2fe72eccf382cad195fc61eb91bab05852cc49f5bd45b626"
+    },
+    {
+      "path": "src/lib/assistant/types.ts",
+      "sha256": "063d3688b6343d4c507e95960ed505ad80d8d778e8a22f10b574ec2668f64a9a"
+    },
+    {
+      "path": "src/lib/leads/workflow/hybrid-discovery-executor.ts",
+      "sha256": "ea088033a73044060c0541f41dc258f538d0c5fdf9eaa501fb379cce0faf2b6a"
+    },
+    {
+      "path": "src/lib/leads/workflow/hybrid-search-policy.ts",
+      "sha256": "4c3ec5ff313a5551c68de8fd023deca8cf711d7a80971f52f47127d0f9a8bb87"
+    },
+    {
+      "path": "src/lib/leads/workflow/candidate-registry.ts",
+      "sha256": "1bff2ba8049fc6ad5117f4047b0505aa08c11ac7093bd353efad01d5f91e30e8"
+    },
+    {
+      "path": "src/lib/leads/workflow/discovery-gate.ts",
+      "sha256": "de9c21d15f701784441021d6cea3fe2a433c8498faf32bab0ce92746583a3db6"
+    },
+    {
+      "path": "src/lib/leads/workflow/playbook.ts",
+      "sha256": "a83d6fe0edf30c5e0504fbb7e3bdb059b5cdb8a9d8df45dc1756372b7df3e095"
+    },
+    {
+      "path": "src/lib/leads/workflow/rag-context.ts",
+      "sha256": "1e1ee21e77b90731e849426cd7130de7d1e50ee6aec9f196e44cb642bf81387b"
+    },
+    {
+      "path": "src/lib/leads/workflow/role-correction-cache.ts",
+      "sha256": "b594593f4b7e74f503458731826aa4154b16f8be1194b2ecbafb9d1563251ba6"
+    },
+    {
+      "path": "src/lib/leads/workflow/target-completion-policy.ts",
+      "sha256": "413cafedc7b463c1562a7448d88aff71f6b0ab386b4cddcc0fdfd57aab8049f1"
+    },
+    {
+      "path": "src/lib/leads/workflow/discovery.ts",
+      "sha256": "7ebcf5e44a8b82c4308c630936f50aa32c9757c828d4d3b1402716fc86fa358d"
+    },
+    {
+      "path": "src/lib/leads/workflow/evidence-correction-agent.ts",
+      "sha256": "62c9d1a62310cc036c6f658f5d20d7122848656a70e7d45085964abfbfbb5d37"
+    },
+    {
+      "path": "src/lib/leads/workflow/qualification-agent.ts",
+      "sha256": "00fe467e454c86b2389654fbeacc497fd033bb7b2acae6f52627bf03ee828384"
+    },
+    {
+      "path": "src/lib/leads/workflow/schemas.ts",
+      "sha256": "dd711de27f90abe29c1b7d7d1b29e9a7afd0b98f151dbf4dbe4bfd91ce72f757"
+    },
+    {
+      "path": "src/lib/leads/workflow/types.ts",
+      "sha256": "72d5a4526b6b1694f5a43502a080dd7006d2c06924f8b3ce46b8225d848f0fc3"
+    },
+    {
+      "path": "src/lib/leads/workflow/cost-quality-policy.ts",
+      "sha256": "66d5bb989891bb13db5d76034e5ccd319db682ccc02ca97fff90df4e0b686a64"
+    },
+    {
+      "path": "src/lib/leads/workflow/evidence-packet.ts",
+      "sha256": "1ca9577284952e245a8e8c51ae9fa82472fcbcf0b262ebaa83fc6463f379836f"
+    },
+    {
+      "path": "src/lib/leads/candidate-value.ts",
+      "sha256": "b440c20a285c9456f0a6b7ea13134f88d87978678d75d447c0fe421f8dd89256"
+    },
+    {
+      "path": "src/lib/leads/channel-membership.ts",
+      "sha256": "0b2e52d76bde37933269010135c8fb97264d0df6adbd3a261716587cee112381"
+    },
+    {
+      "path": "src/lib/leads/evidence-quality.ts",
+      "sha256": "8c2862552c8186ca98489bd424567fdd80b089da8bd9815f46c94c10f265bf73"
+    },
+    {
+      "path": "src/lib/leads/evidence-snapshot.ts",
+      "sha256": "8994deee6ebe7f137ed75af898b3e4d43cd4c3bc3c2cab551b52cf8f30d6751d"
+    },
+    {
+      "path": "src/lib/leads/networking-relevance.ts",
+      "sha256": "23cbe24ec5be0628e77c30e196de8a54374d28c56432a458c5b122a5fb98ddd8"
+    },
+    {
+      "path": "src/lib/leads/primary-channel.ts",
+      "sha256": "2f618fddb32818bc5cbd9a23122461a825760d93514887985b99086b0af60848"
+    },
+    {
+      "path": "src/lib/leads/scoring-policy.ts",
+      "sha256": "035db7ea82c532bd292e2de0773c760895114e8b40fbbe340d1e5a1aa0b060cf"
+    },
+    {
+      "path": "src/providers/contracts.ts",
+      "sha256": "ebf93de327a898200617596652f7437cfd8134b5f4f575fc83da585c3d44c0e1"
+    },
+    {
+      "path": "src/providers/discovery.ts",
+      "sha256": "a7b93d1d5a8bc6412b70461d93f5c0dc1e412951100688b8ae04cee6e5113337"
+    },
+    {
+      "path": "src/providers/openrouter.ts",
+      "sha256": "b43ba8fdf08602cb7d3567ea88bdc2cfee704de0c1b197cc574abe5e9b89143d"
+    },
+    {
+      "path": "src/providers/resilient-ai.ts",
+      "sha256": "3fe571fe48f48c0f89ccbf7241ed303b554598243bd8bfa08dc7c2a76c85258b"
+    },
+    {
+      "path": "src/providers/tavily.ts",
+      "sha256": "f4f1908e0f2673636db0902fb135d107da26c35257fe51d4e4bdfd85c2596a7a"
+    },
+    {
+      "path": "src/providers/deepseek.ts",
+      "sha256": "c9bbe00521915dd27b6c20508cd062ffc494d8f449c10e1085ada48103ed877c"
+    },
+    {
+      "path": "src/lib/rag/openai-provider.ts",
+      "sha256": "8d3151fd671b7a791ac81885a91a09a9281be5b3ebd04edcd188f517da3e088d"
+    }
+  ]
+}
