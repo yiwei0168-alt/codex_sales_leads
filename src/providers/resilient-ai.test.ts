@@ -5,10 +5,11 @@ import { createLeadAiProvider, ResilientAiProvider } from "./resilient-ai";
 
 class FakeAiProvider implements AiProvider {
   calls: StructuredAiRequest<unknown>[] = [];
-  constructor(readonly id: string, private readonly behavior: "ok" | "fail" = "ok") {}
+  constructor(readonly id: string, private readonly behavior: "ok" | "fail" | "timeout" = "ok") {}
   async execute<TInput, TOutput>(request: StructuredAiRequest<TInput>): Promise<StructuredAiResponse<TOutput>> {
     this.calls.push(request as StructuredAiRequest<unknown>);
     if (this.behavior === "fail") throw new Error(`${this.id} unavailable`);
+    if (this.behavior === "timeout") throw new DOMException(`${this.id} timed out`, "TimeoutError");
     await new Promise((resolve) => setTimeout(resolve, 5));
     return { output: { ok: true } as TOutput, modelVersion: request.modelVersion,
       promptVersion: request.promptVersion, latencyMs: 5, warnings: [] };
@@ -102,5 +103,17 @@ describe("ResilientAiProvider", () => {
     const result = await provider.execute({ ...request, input: { company: "Two" } });
     expect(primary.calls).toHaveLength(1);
     expect(result.attempts).toBe(1);
+  });
+
+  it("does not open a provider-wide circuit for request-scoped timeouts", async () => {
+    const primary = new FakeAiProvider("primary", "fail");
+    const fallback = new FakeAiProvider("fallback", "timeout");
+    const provider = new ResilientAiProvider(primary, { circuitFailureThreshold: 2, circuitCooldownMs: 60_000,
+      fallbacks: [{ provider: fallback, routineModel: "peer-flash", approvedDataClassifications: ["public"] }] });
+    for (const company of ["One", "Two", "Three"]) {
+      await expect(provider.execute({ ...request, input: { company } })).rejects.toBeInstanceOf(AggregateError);
+    }
+    expect(primary.calls).toHaveLength(2);
+    expect(fallback.calls).toHaveLength(3);
   });
 });

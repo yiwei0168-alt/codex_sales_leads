@@ -1,6 +1,6 @@
 {
   "policyKey": "cudy-lead-workflow-cost-quality",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "status": "active",
   "objective": "Reduce model tokens by at least 40% and paid search/extract credits by at least 30% without weakening evidence, role, scoring, privacy or user-edit semantics.",
   "taskModes": {
@@ -22,6 +22,11 @@
     "deep": { "initialEvidenceTokens": 4000, "supplementalTokensPerRound": 2000, "maximumRounds": 2, "maximumTotalTokens": 8000 }
   },
   "evidencePackets": {
+    "correction": {
+      "maxUnlinkedItems": 10,
+      "maxExcerptCharacters": 1200,
+      "maxBatchInputCharacters": 28000
+    },
     "qualification": {
       "maxUnlinkedItems": 2,
       "maxExcerptCharacters": 1000,

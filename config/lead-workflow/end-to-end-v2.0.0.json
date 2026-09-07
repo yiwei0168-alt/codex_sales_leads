@@ -1,6 +1,6 @@
 {
   "workflowKey": "cudy-sales-lead-end-to-end",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "status": "active",
   "scope": "From the user's natural-language market-development request and workspace context to ranked companies, editable cooperation paths, development strategy, outreach email, and private-memory learning from user edits.",
   "principles": [
@@ -48,7 +48,7 @@
       "purpose": "Entity correction, atomic facts and primary-role analysis",
       "defaultModel": "DEEPSEEK_MODEL; default deepseek-v4-flash",
       "escalationOrFallback": "DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro; public-only same-tier OpenRouter route on provider failure; deterministic fallback is retry-only",
-      "callPolicy": "Routine batches with optional reasoning disabled on OpenRouter; malformed output permits one same-tier single-candidate repair; infrastructure failure never upgrades; Pro requires a valid routine prediction of score change >=8 or a resolvable critical-state change"
+      "callPolicy": "Relevance-prioritized compact evidence packets and token-aware routine batches; optional reasoning disabled on OpenRouter; malformed output permits one same-tier single-candidate repair; infrastructure failure never upgrades; request timeout does not open a global circuit; Pro requires a valid routine prediction of score change >=8 or a resolvable critical-state change"
     },
     {
       "stages": ["09-scoring-paths"],

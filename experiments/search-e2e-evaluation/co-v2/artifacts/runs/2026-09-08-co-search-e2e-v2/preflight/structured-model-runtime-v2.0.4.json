@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-08-co-search-e2e-v2",
+  "status": "passed",
+  "completedAt": "2026-09-07T22:00:49.105Z",
+  "provider": "openrouter-deepseek",
+  "requestedModel": "deepseek-v4-flash",
+  "actualModel": "deepseek/deepseek-v4-flash",
+  "fallbackUsed": true,
+  "attempts": 2,
+  "cost": {
+    "officialListPriceUsd": 0.000016100000000000002,
+    "budgetCostUsd": 0.00001541,
+    "cashCostBasis": "account-observed"
+  }
+}

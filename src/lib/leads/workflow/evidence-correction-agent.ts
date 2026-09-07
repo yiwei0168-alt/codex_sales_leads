@@ -13,6 +13,8 @@ import { isCurrentLeadScoringEvidence, leadEvidenceContentHash } from "../eviden
 import { PRIMARY_CHANNEL_POLICY, selectPrimaryChannel } from "../primary-channel";
 import { leadCorrectionBatchSchema, leadCorrectionModelSchema, sanitizeLeadCorrectionOutput,
   type LeadCorrectionModelOutput } from "./schemas";
+import { ACTIVE_LEAD_COST_QUALITY_POLICY } from "./cost-quality-policy";
+import { buildModelEvidencePacket } from "./evidence-packet";
 import { loadPublicRoleCorrection, savePublicRoleCorrection } from "./role-correction-cache";
 import { persistPublicEvidence } from "./public-evidence-repository";
 import {
@@ -45,6 +47,7 @@ interface EvidenceCorrectionAgentOptions {
   routineModel?: string;
   escalationModel?: string;
   batchSize?: number;
+  maxBatchInputCharacters?: number;
   concurrency?: number;
   searchConcurrency?: number;
   allowReusableCorrections?: boolean;
@@ -178,6 +181,7 @@ export class LeadEvidenceCorrectionAgent {
   private readonly routineModel: string;
   private readonly escalationModel: string;
   private readonly batchSize: number;
+  private readonly maxBatchInputCharacters: number;
   private readonly concurrency: number;
   private readonly searchConcurrency: number;
   private readonly allowReusableCorrections: boolean;
@@ -191,6 +195,8 @@ export class LeadEvidenceCorrectionAgent {
     this.routineModel = options.routineModel ?? process.env.DEEPSEEK_MODEL?.trim() ?? "deepseek-v4-flash";
     this.escalationModel = options.escalationModel ?? process.env.DEEPSEEK_ESCALATION_MODEL?.trim() ?? "deepseek-v4-pro";
     this.batchSize = Math.max(1, Math.min(5, options.batchSize ?? 5));
+    this.maxBatchInputCharacters = Math.max(10_000, options.maxBatchInputCharacters
+      ?? ACTIVE_LEAD_COST_QUALITY_POLICY.evidencePackets.correction.maxBatchInputCharacters);
     this.concurrency = Math.max(1, Math.min(8, options.concurrency ?? 2));
     this.searchConcurrency = Math.max(1, Math.min(8, options.searchConcurrency ?? 3));
     this.allowReusableCorrections = options.allowReusableCorrections ?? true;
@@ -288,8 +294,13 @@ export class LeadEvidenceCorrectionAgent {
       ],
       market: { countryCode: plan.countryCode, countryName: plan.countryName, objective: plan.objective },
       candidates: candidates.map((candidate) => {
-        const currentEvidence = candidate.evidence.filter((item) =>
-          isCurrentLeadScoringEvidence(item, candidate.evidenceSnapshotRunId));
+        const packetPolicy = ACTIVE_LEAD_COST_QUALITY_POLICY.evidencePackets.correction;
+        const currentEvidence = buildModelEvidencePacket(candidate, {
+          requiredEvidenceIds: [],
+          maxUnlinkedItems: packetPolicy.maxUnlinkedItems,
+          maxExcerptCharacters: packetPolicy.maxExcerptCharacters,
+          relevanceText: `${candidate.queryRoles.join(" ")} ${candidate.discoveryGate?.missingEvidence.join(" ") ?? ""}`,
+        });
         return {
           candidateId: candidate.candidateId,
           submittedCompanyName: candidate.companyName,
@@ -298,7 +309,7 @@ export class LeadEvidenceCorrectionAgent {
           submittedRoles: candidate.queryRoles,
           submittedFamily: candidate.queryFamily,
           missingEvidence: candidate.discoveryGate?.missingEvidence ?? [],
-          evidence: currentEvidence.map((item) => ({ evidenceId: item.id, sourceType: item.sourceType,
+          evidence: currentEvidence.map((item) => ({ evidenceId: item.evidenceId, sourceType: item.sourceType,
             url: item.url, title: item.title, excerpt: item.excerpt })),
         };
       }),
@@ -570,9 +581,19 @@ export class LeadEvidenceCorrectionAgent {
     const missing = candidates.filter((candidate) => !cached.has(candidate.candidateId));
     const supplemented = await this.supplement(missing, plan);
     const batches: LeadWorkflowCandidate[][] = [];
-    for (let offset = 0; offset < supplemented.candidates.length; offset += this.batchSize) {
-      batches.push(supplemented.candidates.slice(offset, offset + this.batchSize));
+    let pending: LeadWorkflowCandidate[] = [];
+    for (const candidate of supplemented.candidates) {
+      const proposed = [...pending, candidate];
+      const inputCharacters = JSON.stringify(this.request(proposed, plan, this.routineModel).input).length;
+      if (pending.length > 0 && (proposed.length > this.batchSize
+        || inputCharacters > this.maxBatchInputCharacters)) {
+        batches.push(pending);
+        pending = [candidate];
+      } else {
+        pending = proposed;
+      }
     }
+    if (pending.length > 0) batches.push(pending);
     const results = new Array<CorrectedLeadWorkflowCandidate[]>(batches.length);
     let cursor = 0;
     const worker = async () => {

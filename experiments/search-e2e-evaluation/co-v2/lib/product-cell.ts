@@ -247,10 +247,12 @@ export async function runProductCell(cell: ExperimentCell, options: {
     { model: treatmentModels.discoveryGateRoutine });
   const correctionAgent = new LeadEvidenceCorrectionAgent(leadAiProvider, undefined, {
     allowReusableCorrections: false, persistCorrections: false,
+    concurrency: 2,
     routineModel: treatmentModels.roleCorrectionRoutine,
     escalationModel: treatmentModels.materialEscalation,
   });
-  const qualificationAgent = new LeadQualificationAgent(leadAiProvider, { includeCooperationPaths: false, concurrency: 4,
+  const qualificationAgent = new LeadQualificationAgent(leadAiProvider, { includeCooperationPaths: false, concurrency: 2,
+    batchSize: 1,
     routineModel: treatmentModels.qualificationRoutine,
     escalationModel: treatmentModels.materialEscalation });
   const discoveryRounds: ProductCellResult["discoveryRounds"] = [...(resumeFrom?.discoveryRounds ?? [])];
@@ -288,6 +290,8 @@ export async function runProductCell(cell: ExperimentCell, options: {
     const recoveryAgent = new LeadEvidenceCorrectionAgent(leadAiProvider, noAcquisitionSearch, {
       allowReusableCorrections: false,
       persistCorrections: false,
+      batchSize: 1,
+      concurrency: 2,
       routineModel: treatmentModels.roleCorrectionRoutine,
       escalationModel: treatmentModels.materialEscalation,
     });
@@ -328,7 +332,8 @@ export async function runProductCell(cell: ExperimentCell, options: {
     warnings.push(`Cache recovery reclassified ${recovered.candidates.length} candidates, found ${inRoleCandidates.length} in-role and retained ${selectedPairs.length} eligible without another search or Tavily call.`);
   }
 
-  for (let round = startingRound; round < maximumRounds && selectedPairs.length < plan.targetCount; round += 1) {
+  for (let round = startingRound; !resumeFrom && round < maximumRounds
+    && selectedPairs.length < plan.targetCount; round += 1) {
     const plannedPool = plannedCandidatePool({ targetCount: plan.targetCount,
       acceptedCount: selectedPairs.length, discoveredUniqueCount: totalUnique, round });
     const roundPlan = { ...plan, coverageMode: round > 0 && plan.coverageMode === "auto" ? "mixed" as const
@@ -463,7 +468,7 @@ export async function runProductCell(cell: ExperimentCell, options: {
     toFinalCandidate(candidate, assessment, index + 1));
   const rankingStarted = new Date().toISOString();
   const rankingAt = new Date().toISOString();
-  await recordCostEvents([event({ eventId: resumeFrom ? `${cell.cellId}:ranking:resume-v2.0.3` : `${cell.cellId}:ranking`, cellId: cell.cellId,
+  await recordCostEvents([event({ eventId: resumeFrom ? `${cell.cellId}:ranking:resume-v2.0.5` : `${cell.cellId}:ranking`, cellId: cell.cellId,
     stage: "role-filter-ranking", provider: "deterministic", startedAt: rankingStarted,
     completedAt: rankingAt, latencyMs: Math.max(0, Date.parse(rankingAt) - Date.parse(rankingStarted)),
     attempts: 0, retries: 0, fallbackUsed: false, status: "completed", usage: {},

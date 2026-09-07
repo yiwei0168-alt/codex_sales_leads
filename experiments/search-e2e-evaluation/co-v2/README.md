@@ -1,4 +1,4 @@
-# Colombia search E2E evaluation v2.0.4
+# Colombia search E2E evaluation v2.0.5
 
 This directory is the immutable, cold-start Colombia follow-up to the UK/Mexico formal evaluation. It compares the current product workflow with one un-tuned Gemini Full + Google Search interaction per category.
 
@@ -18,7 +18,7 @@ node scripts\run-tsx.cjs experiments\search-e2e-evaluation\co-v2\scripts\run-for
 node scripts\run-tsx.cjs experiments\search-e2e-evaluation\co-v2\scripts\run-formal-experiment.ts --phase=evaluate
 ```
 
-If a completed zero-output Product artifact is explicitly diagnosed as a provider outage or model-routing defect, v2.0.4 permits same-run cache recovery without repeating valid Gemini, search or evidence work. OpenRouter DeepSeek requests explicitly disable reasoning; schema repair is limited to one same-tier single-candidate retry, while infrastructure failures cannot trigger Pro escalation:
+If a completed zero-output Product artifact is explicitly diagnosed as a provider outage or model-routing defect, v2.0.5 permits same-run cache recovery without repeating valid Gemini, search or evidence work. OpenRouter DeepSeek requests explicitly disable reasoning; correction packets are compacted and token-aware; recovery uses single-candidate calls with bounded concurrency; schema repair is limited to one same-tier retry; infrastructure failures cannot trigger Pro escalation; and recovery cannot open another discovery/evidence round:
 
 ```powershell
 node scripts\run-tsx.cjs experiments\search-e2e-evaluation\co-v2\scripts\run-formal-experiment.ts --phase=provider-check

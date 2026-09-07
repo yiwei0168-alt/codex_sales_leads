@@ -44,6 +44,17 @@ function failureMessage(error: unknown): string {
   return current instanceof Error ? current.message : String(current);
 }
 
+function shouldTripCircuit(error: unknown): boolean {
+  let current = error;
+  for (let depth = 0; depth < 5; depth += 1) {
+    if (!(current instanceof Error)) break;
+    if (current.name === "AbortError" || current.name === "TimeoutError"
+      || /abort(?:ed)? due to timeout|timed?\s*out/i.test(current.message)) return false;
+    current = current.cause;
+  }
+  return true;
+}
+
 class ResilientAiAggregateError extends AggregateError {
   readonly attempts: number;
   readonly retries: number;
@@ -109,7 +120,7 @@ export class ResilientAiProvider implements AiProvider {
         return { ...response, requestedModelVersion: requestedModel, actualProviderId: this.primary.id };
       } catch (error) {
         primaryError = error;
-        this.recordFailure(this.primary.id);
+        if (shouldTripCircuit(error)) this.recordFailure(this.primary.id);
       }
     }
     {
@@ -130,7 +141,7 @@ export class ResilientAiProvider implements AiProvider {
               ...response.warnings] };
         } catch (error) {
           failures.push(error);
-          this.recordFailure(route.provider.id);
+          if (shouldTripCircuit(error)) this.recordFailure(route.provider.id);
         }
       }
       throw new ResilientAiAggregateError(failures,

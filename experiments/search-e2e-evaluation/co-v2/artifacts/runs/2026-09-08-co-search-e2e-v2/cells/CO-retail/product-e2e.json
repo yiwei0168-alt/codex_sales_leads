@@ -4,8 +4,8 @@
   "cellId": "CO-retail",
   "arm": "product-e2e",
   "startedAt": "2026-09-07T21:00:26.976Z",
-  "completedAt": "2026-09-07T21:45:59.722Z",
-  "wallClockMs": 1002049,
+  "completedAt": "2026-09-07T22:02:59.046Z",
+  "wallClockMs": 1120907,
   "plan": {
     "countryCode": "CO",
     "countryName": "Colombia",
@@ -109,9 +109,9 @@
     "qualificationRoutine": "deepseek-v4-flash",
     "materialEscalation": "deepseek-v4-pro"
   },
-  "rawDiscoveryCount": 189,
-  "discoveredCandidateCount": 72,
-  "correctedCandidateCount": 51,
+  "rawDiscoveryCount": 250,
+  "discoveredCandidateCount": 89,
+  "correctedCandidateCount": 67,
   "completedAssessmentCount": 2,
   "attributionCandidates": [
     {
@@ -650,11 +650,142 @@
           "provider": "brave"
         }
       ]
+    },
+    {
+      "candidateId": "lead-f6b24b3f1877918d",
+      "discoveryOccurrences": [
+        {
+          "provider": "google-places"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-20cdb2095dee6338",
+      "discoveryOccurrences": [
+        {
+          "provider": "brave"
+        },
+        {
+          "provider": "brave"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-7498e2a2189a8548",
+      "discoveryOccurrences": [
+        {
+          "provider": "brave"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-cc68e45ef30392bc",
+      "discoveryOccurrences": [
+        {
+          "provider": "brave"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-0546281d750ab9e6",
+      "discoveryOccurrences": [
+        {
+          "provider": "brave"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-e1e653fdd8b71f1c",
+      "discoveryOccurrences": [
+        {
+          "provider": "brave"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-ccf78e402b6b2858",
+      "discoveryOccurrences": [
+        {
+          "provider": "brave"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-f0a45e91cd51c076",
+      "discoveryOccurrences": [
+        {
+          "provider": "brave"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-b1a380ca40261eaf",
+      "discoveryOccurrences": [
+        {
+          "provider": "brave"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-995588a9bcdb15d7",
+      "discoveryOccurrences": [
+        {
+          "provider": "brave"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-a84ed018f454438a",
+      "discoveryOccurrences": [
+        {
+          "provider": "brave"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-739131822debffec",
+      "discoveryOccurrences": [
+        {
+          "provider": "brave"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-8c72d2958d876b94",
+      "discoveryOccurrences": [
+        {
+          "provider": "brave"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-8ef36cf8c51f0848",
+      "discoveryOccurrences": [
+        {
+          "provider": "brave"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-b4646526d063fe1f",
+      "discoveryOccurrences": [
+        {
+          "provider": "brave"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-710605d790b5ac81",
+      "discoveryOccurrences": [
+        {
+          "provider": "brave"
+        }
+      ]
     }
   ],
   "finalCandidates": [],
   "missingSlots": 50,
-  "completionReason": "confirmed-exhaustion",
+  "completionReason": "maximum-rounds",
   "discoveryRounds": [
     {
       "round": 1,
@@ -696,6 +827,17 @@
       "lightGateCandidates": 5,
       "correctedCandidates": 5,
       "inRoleCandidates": 2,
+      "finalEligibleAdded": 0,
+      "cumulativeFinalEligible": 0,
+      "stopReason": "route-exhausted"
+    },
+    {
+      "round": 5,
+      "plannedCandidatePool": 150,
+      "newUniqueCandidates": 17,
+      "lightGateCandidates": 16,
+      "correctedCandidates": 16,
+      "inRoleCandidates": 0,
       "finalEligibleAdded": 0,
       "cumulativeFinalEligible": 0,
       "stopReason": "route-exhausted"
@@ -836,7 +978,118 @@
     "extremetechcr.com: Several independent-public evidence pieces (evidence-2d4f0a0c87850720, evidence-752255a4fd79084f, evidence-bf18b988653a2ab6, evidence-bb5ccc3a7b416759, evidence-fef5316d39fbe13c) are about other companies and do not provide information about the candidate.",
     "extremetechcr.com: The submitted official website URL was a product category page; the homepage was used instead.",
     "extremetechcr.com: Active networking involvement could not be confirmed from the supplied evidence; the submitted category page was not included in evidence.",
-    "extremetechcr.com: Deterministic role hints were not auto-added: Reseller."
+    "extremetechcr.com: Deterministic role hints were not auto-added: Reseller.",
+    "v2.0.3 resumed from the same cell's cached evidence after a model-provider outage; search and evidence acquisition were not repeated.",
+    "Correction search found no usable supplemental evidence for teklotengo.com.",
+    "Correction search found no usable supplemental evidence for ptytec.com.",
+    "Correction search found no usable supplemental evidence for netscompany.co.",
+    "Correction search found no usable supplemental evidence for totalmayorista.com.",
+    "Correction search found no usable supplemental evidence for homeelementsweb.com.",
+    "Correction search found no usable supplemental evidence for mgicomputadores.com.",
+    "Correction search found no usable supplemental evidence for techcomputers.co.",
+    "Correction search found no usable supplemental evidence for vendaenlinea.co.",
+    "Correction search found no usable supplemental evidence for electroequipos.com.",
+    "Correction search found no usable supplemental evidence for sigmaelectronica.net.",
+    "Correction search found no usable supplemental evidence for titec.co.",
+    "Correction search found no usable supplemental evidence for mdvdistribuidora.com.",
+    "Correction search found no usable supplemental evidence for grupoverytel.com.",
+    "Correction search found no usable supplemental evidence for exa.ai.",
+    "Correction search found no usable supplemental evidence for uelectronica.com.",
+    "Correction search found no usable supplemental evidence for smartbusiness.pe.",
+    "Correction search found no usable supplemental evidence for ingetet.com.",
+    "Correction search found no usable supplemental evidence for syscomcolombia.com.",
+    "Correction search found no usable supplemental evidence for computiendaelectronica.com.",
+    "Correction search found no usable supplemental evidence for techniservice.co.",
+    "Correction search found no usable supplemental evidence for redeban.com.",
+    "Correction search found no usable supplemental evidence for macrotics.com.",
+    "Correction search found no usable supplemental evidence for alkosto.com.",
+    "Correction search found no usable supplemental evidence for ciudadwireless.com.",
+    "Correction search found no usable supplemental evidence for com.ec.",
+    "Correction search found no usable supplemental evidence for coppel.com.",
+    "Correction search found no usable supplemental evidence for solutekla.com.",
+    "Correction search found no usable supplemental evidence for colombiaecommerce.com.",
+    "Correction search found no usable supplemental evidence for pcredcom.com.",
+    "Correction search found no usable supplemental evidence for pcel.com.",
+    "teklotengo.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Insufficient Balance | The operation was aborted due to timeout Infrastructure/provider failure does not qualify for Pro escalation.",
+    "exa.ai: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Insufficient Balance Infrastructure/provider failure does not qualify for Pro escalation.",
+    "syscomcolombia.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "net.co: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Insufficient Balance | The operation was aborted due to timeout Infrastructure/provider failure does not qualify for Pro escalation.",
+    "computiendaelectronica.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "ptytec.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Insufficient Balance | The operation was aborted due to timeout Infrastructure/provider failure does not qualify for Pro escalation.",
+    "uelectronica.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Insufficient Balance Infrastructure/provider failure does not qualify for Pro escalation.",
+    "smartbusiness.pe: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Insufficient Balance Infrastructure/provider failure does not qualify for Pro escalation.",
+    "techniservice.co: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "redeban.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "steren.com.gt: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "com.pe: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Insufficient Balance Infrastructure/provider failure does not qualify for Pro escalation.",
+    "netscompany.co: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Insufficient Balance | The operation was aborted due to timeout Infrastructure/provider failure does not qualify for Pro escalation.",
+    "nexsysla.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "totalmayorista.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Insufficient Balance | The operation was aborted due to timeout Infrastructure/provider failure does not qualify for Pro escalation.",
+    "telcolombia.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Insufficient Balance | The operation was aborted due to timeout Infrastructure/provider failure does not qualify for Pro escalation.",
+    "homeelementsweb.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Insufficient Balance | The operation was aborted due to timeout Infrastructure/provider failure does not qualify for Pro escalation.",
+    "mgicomputadores.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Insufficient Balance | The operation was aborted due to timeout Infrastructure/provider failure does not qualify for Pro escalation.",
+    "pcsystemcolombia.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Insufficient Balance | The operation was aborted due to timeout Infrastructure/provider failure does not qualify for Pro escalation.",
+    "multiredesytecnologia.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "router-switch.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "techcomputers.co: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Insufficient Balance | The operation was aborted due to timeout Infrastructure/provider failure does not qualify for Pro escalation.",
+    "macrotics.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "alkosto.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "lineacomunicaciones.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Insufficient Balance Infrastructure/provider failure does not qualify for Pro escalation.",
+    "com.sv: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "vendaenlinea.co: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Insufficient Balance Infrastructure/provider failure does not qualify for Pro escalation.",
+    "electroequipos.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Insufficient Balance Infrastructure/provider failure does not qualify for Pro escalation.",
+    "nexsa.net: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "prosuministros.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Insufficient Balance Infrastructure/provider failure does not qualify for Pro escalation.",
+    "com.co: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Insufficient Balance Infrastructure/provider failure does not qualify for Pro escalation.",
+    "sigmaelectronica.net: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Insufficient Balance Infrastructure/provider failure does not qualify for Pro escalation.",
+    "pmtechcol.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "sistetronics.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Insufficient Balance Infrastructure/provider failure does not qualify for Pro escalation.",
+    "ciudadwireless.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "com.ec: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "sonicolor.es: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "ti-innovadora.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Insufficient Balance Infrastructure/provider failure does not qualify for Pro escalation.",
+    "titec.co: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Insufficient Balance Infrastructure/provider failure does not qualify for Pro escalation.",
+    "mercadoit.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "mdvdistribuidora.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Insufficient Balance Infrastructure/provider failure does not qualify for Pro escalation.",
+    "tecnocompras.co: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "pcel.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "grupoverytel.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Insufficient Balance Infrastructure/provider failure does not qualify for Pro escalation.",
+    "coppel.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "solutekla.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "ingetet.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "colombiaecommerce.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "pcredcom.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "wirelessshop.mx: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "extremetechcr.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "Cache recovery reclassified 51 candidates, found 0 in-role and retained 0 eligible without another search or Tavily call.",
+    "Hybrid discovery failed (retail/etail/searchapi): searchapi HTTP 429: {\n  \"error\": \"You have used all of the searches for the month. Please upgrade your plan on SearchApi.io.\"\n}",
+    "Hybrid discovery failed (retail/retail-national/searchapi): searchapi HTTP 429: {\n  \"error\": \"You have used all of the searches for the month. Please upgrade your plan on SearchApi.io.\"\n}",
+    "Discovery gate batch held after routine model failure: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek.",
+    "Discovery gate batch held after routine model failure: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek.",
+    "Discovery gate batch held after routine model failure: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek.",
+    "Discovery gate batch held after routine model failure: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek.",
+    "No official-domain evidence was extracted for computadoresenbogota.com.",
+    "No official-domain evidence was extracted for tp-link.com.",
+    "No official-domain evidence was extracted for vvaindustrial.com.",
+    "No official-domain evidence was extracted for quiminet.com.",
+    "No official-domain evidence was extracted for liamexico.com.",
+    "No official-domain evidence was extracted for nuevoportal.co.",
+    "computadoresenbogota.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "tp-link.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "vvaindustrial.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "fctechstore.co: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "quiminet.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "pcmerida.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "comredes.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "vva-industrial.net: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "pchconnect.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "solutekcolombia.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "liamexico.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "co.cr: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "ctonline.mx: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "supercompdigital.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "electromedellin.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "nuevoportal.co: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation."
   ],
   "costEvents": [
     {
@@ -3362,6 +3615,611 @@
       "budgetCostUsd": 0,
       "cashCostBasis": "official-conservative",
       "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:resume-cache:v2.0.3",
+      "cellId": "CO-retail",
+      "stage": "within-run-cache-reuse",
+      "provider": "local-run-cache",
+      "startedAt": "2026-09-07T22:01:00.188Z",
+      "completedAt": "2026-09-07T22:01:00.188Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Reused the successful intent, local RAG, playbook, discovery, fresh evidence and supplemental evidence from the interrupted cell.",
+        "No historical cross-run candidate, evidence, score or private-memory cache was read."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r5:1",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "google-places",
+      "startedAt": "2026-09-07T22:02:17.460Z",
+      "completedAt": "2026-09-07T22:02:27.714Z",
+      "latencyMs": 450,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 1,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=5",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.035,
+      "budgetCostUsd": 0.035,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r5:2",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-07T22:02:17.460Z",
+      "completedAt": "2026-09-07T22:02:27.714Z",
+      "latencyMs": 797,
+      "attempts": 2,
+      "retries": 1,
+      "fallbackUsed": false,
+      "status": "failed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 2,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "provider-rate-limit": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=5",
+        "cacheStatus=miss",
+        "failureClass=rate-limit",
+        "circuitScope=route"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.008,
+      "budgetCostUsd": 0.008,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r5:3",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-07T22:02:17.460Z",
+      "completedAt": "2026-09-07T22:02:27.714Z",
+      "latencyMs": 734,
+      "attempts": 2,
+      "retries": 1,
+      "fallbackUsed": false,
+      "status": "failed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 2,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "provider-rate-limit": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=5",
+        "cacheStatus=miss",
+        "failureClass=rate-limit",
+        "circuitScope=route"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.008,
+      "budgetCostUsd": 0.008,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r5:4",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-07T22:02:17.460Z",
+      "completedAt": "2026-09-07T22:02:27.714Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "circuit-open": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=5",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r5:5",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-07T22:02:17.460Z",
+      "completedAt": "2026-09-07T22:02:27.714Z",
+      "latencyMs": 1375,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 20,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 20,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 8,
+        "discardedReasonCounts": {
+          "duplicate": 12
+        }
+      },
+      "notes": [
+        "queryRound=5",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005,
+      "budgetCostUsd": 0.005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r5:6",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-07T22:02:17.460Z",
+      "completedAt": "2026-09-07T22:02:27.714Z",
+      "latencyMs": 762,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 20,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 20,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 4,
+        "discardedReasonCounts": {
+          "duplicate": 16
+        }
+      },
+      "notes": [
+        "queryRound=5",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005,
+      "budgetCostUsd": 0.005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r5:7",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-07T22:02:17.460Z",
+      "completedAt": "2026-09-07T22:02:27.714Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "circuit-open": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=5",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r5:8",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-07T22:02:17.460Z",
+      "completedAt": "2026-09-07T22:02:27.714Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "circuit-open": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=5",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r5:9",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-07T22:02:17.460Z",
+      "completedAt": "2026-09-07T22:02:27.714Z",
+      "latencyMs": 774,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 20,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 20,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 4,
+        "discardedReasonCounts": {
+          "duplicate": 16
+        }
+      },
+      "notes": [
+        "queryRound=5",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005,
+      "budgetCostUsd": 0.005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r5:10",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "exa",
+      "startedAt": "2026-09-07T22:02:17.460Z",
+      "completedAt": "2026-09-07T22:02:27.714Z",
+      "latencyMs": 1341,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=5",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.007,
+      "budgetCostUsd": 0.007,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r5:11",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "exa",
+      "startedAt": "2026-09-07T22:02:17.460Z",
+      "completedAt": "2026-09-07T22:02:27.714Z",
+      "latencyMs": 1377,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=5",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.007,
+      "budgetCostUsd": 0.007,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:fresh-evidence:r5",
+      "cellId": "CO-retail",
+      "stage": "fresh-evidence",
+      "provider": "tavily",
+      "startedAt": "2026-09-07T22:02:27.903Z",
+      "completedAt": "2026-09-07T22:02:45.431Z",
+      "latencyMs": 63335,
+      "attempts": 26,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 21
+      },
+      "volume": {
+        "inputItems": 16,
+        "rawOutputItems": 47,
+        "validOutputItems": 47,
+        "downstreamUsedItems": 47,
+        "discardedReasonCounts": {
+          "noFreshEvidence": 1
+        }
+      },
+      "notes": [
+        "historical evidence reads disabled",
+        "evidence-library writes disabled",
+        "current-run evidence and missing-evidence records reused downstream"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.168,
+      "budgetCostUsd": 0.168,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:correction-evidence:r5",
+      "cellId": "CO-retail",
+      "stage": "evidence-correction-search",
+      "provider": "tavily",
+      "startedAt": "2026-09-07T22:02:45.450Z",
+      "completedAt": "2026-09-07T22:02:58.981Z",
+      "latencyMs": 36593,
+      "attempts": 15,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 15
+      },
+      "volume": {
+        "inputItems": 16,
+        "rawOutputItems": 16,
+        "validOutputItems": 16,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "correctedToAnotherRole": 16
+        }
+      },
+      "notes": [
+        "Only missing evidence identified by the first evidence packet may trigger supplementation."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.12,
+      "budgetCostUsd": 0.12,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:ranking:resume-v2.0.3",
+      "cellId": "CO-retail",
+      "stage": "role-filter-ranking",
+      "provider": "deterministic",
+      "startedAt": "2026-09-07T22:02:59.029Z",
+      "completedAt": "2026-09-07T22:02:59.029Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "volume": {
+        "inputItems": 2,
+        "rawOutputItems": 2,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "wrongPrimaryRoleOrGate": 67
+        }
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
     }
   ],
   "coldStartAudit": {
@@ -4916,6 +5774,388 @@
       "cacheStatus": "miss",
       "discardedReasonCounts": {},
       "querySha256": "6b7ceed678906427fb884c03f445feaf3eab99391f496ec966c12920fc11e241"
+    },
+    {
+      "callKey": "retail/retail-local/0/google-places/google-places",
+      "callFingerprint": "035cd014d95c4c0796b6b631cd2308dcd4990f85ec69d22dedd4a15e10f4819f",
+      "queryClusterKey": "0a053d6af6354f306338d8961427c5ea47c8d8b0a039ae390309e7eadc705220",
+      "route": {
+        "category": "retail",
+        "track": "retail-local",
+        "sequence": 0,
+        "provider": "google-places",
+        "engine": "google-places",
+        "mechanism": "local-text-search",
+        "trigger": "core",
+        "invocationReason": "Core mechanism for retail/retail-local"
+      },
+      "status": "completed",
+      "requestedResults": 20,
+      "rawResults": 1,
+      "normalizedCompanies": 1,
+      "newUniqueCompanies": 1,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 450,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "6d4aa0b46e3ee974148536f2fdb41743d868d54a70ced620d068c20852072e26"
+    },
+    {
+      "callKey": "retail/etail/0/searchapi/google",
+      "callFingerprint": "97954ec8e3a85af9f27dcb68eee2f979c9f80f1eea10058a40bfaa77b679ba53",
+      "queryClusterKey": "ada3a47468aab3298cfe281c4184b1ca0787d320dc38c5a762c423bc54c9a51a",
+      "route": {
+        "category": "retail",
+        "track": "etail",
+        "sequence": 0,
+        "provider": "searchapi",
+        "engine": "google",
+        "mechanism": "shopping-web-serp",
+        "trigger": "core",
+        "invocationReason": "Core mechanism for retail/etail"
+      },
+      "status": "failed",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 797,
+      "requestCount": 2,
+      "retryCount": 1,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "failureClass": "rate-limit",
+      "circuitScope": "route",
+      "discardedReasonCounts": {
+        "provider-rate-limit": 1
+      },
+      "errorMessage": "searchapi HTTP 429: {\n  \"error\": \"You have used all of the searches for the month. Please upgrade your plan on SearchApi.io.\"\n}",
+      "querySha256": "7a4cc69a8e5d5a7b13682de65d2f9afcd3fdf7182654727ba2ddad5475d8b995"
+    },
+    {
+      "callKey": "retail/retail-national/0/searchapi/google",
+      "callFingerprint": "b7ac114c321b30a75fe73d29359a590c3a0dc68d6a2018e7da67a45ef264c82a",
+      "queryClusterKey": "904c848d0edc26c897fb38d249aef3e5bc0f1891237d44d31077d1a7fef12e3e",
+      "route": {
+        "category": "retail",
+        "track": "retail-national",
+        "sequence": 0,
+        "provider": "searchapi",
+        "engine": "google",
+        "mechanism": "web-serp",
+        "trigger": "core",
+        "invocationReason": "Core mechanism for retail/retail-national"
+      },
+      "status": "failed",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 734,
+      "requestCount": 2,
+      "retryCount": 1,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "failureClass": "rate-limit",
+      "circuitScope": "route",
+      "discardedReasonCounts": {
+        "provider-rate-limit": 1
+      },
+      "errorMessage": "searchapi HTTP 429: {\n  \"error\": \"You have used all of the searches for the month. Please upgrade your plan on SearchApi.io.\"\n}",
+      "querySha256": "7b41d03a981e287d6664084779c4c7b25f63d8a69d1742b78b1fcf9fe9ad40a8"
+    },
+    {
+      "callKey": "retail/retail-local/1/searchapi/google",
+      "callFingerprint": "1d6d8b499694bb794b30a78dc825409fa92d6a3031b287b2fb4421fed1136ecb",
+      "queryClusterKey": "cd8f3103eb2e0cac97283ec671fa788e3b2d1edf80fd5c82d92f904b65cef907",
+      "route": {
+        "category": "retail",
+        "track": "retail-local",
+        "sequence": 1,
+        "provider": "searchapi",
+        "engine": "google",
+        "mechanism": "local-web-serp",
+        "trigger": "web-gap",
+        "invocationReason": "web-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "skipped",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "requestCount": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 0,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "skipped",
+      "discardedReasonCounts": {
+        "circuit-open": 1
+      },
+      "errorMessage": "rate-limit: searchapi HTTP 429: {\n  \"error\": \"You have used all of the searches for the month. Please upgrade your plan on SearchApi.io.\"\n}",
+      "querySha256": "4653954e96efa9e7b8061f59bb2c3e517111239ab37963cc06911dc89b3e2644"
+    },
+    {
+      "callKey": "retail/etail/1/brave/brave",
+      "callFingerprint": "af350678b9a2a9a1215351ae375f9916380209c4b97eca7b9ac108862729604e",
+      "queryClusterKey": "3d01b9afed0b4a6fb0ea336fb2955b602ea6446a9e332baddd7f5173de623d75",
+      "route": {
+        "category": "retail",
+        "track": "etail",
+        "sequence": 1,
+        "provider": "brave",
+        "engine": "brave",
+        "mechanism": "web-index",
+        "trigger": "index-gap",
+        "invocationReason": "index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "completed",
+      "requestedResults": 20,
+      "rawResults": 20,
+      "normalizedCompanies": 20,
+      "newUniqueCompanies": 8,
+      "existingCompanyHits": 12,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 1375,
+      "retryCount": 0,
+      "fallbackUsed": true,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "87facc388aac8956d51f719b90d913ad32068303381ef7d526cd648402f31161"
+    },
+    {
+      "callKey": "retail/retail-national/1/brave/brave",
+      "callFingerprint": "115621f1c6b3c75882aaf47d7f13fdc032b998c38778aa599e34b38c1ee83e70",
+      "queryClusterKey": "76a3f87e2a3888b63c5434ed1c9edc0375c492ee78de757116f7747455c6bead",
+      "route": {
+        "category": "retail",
+        "track": "retail-national",
+        "sequence": 1,
+        "provider": "brave",
+        "engine": "brave",
+        "mechanism": "web-index",
+        "trigger": "index-gap",
+        "invocationReason": "index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "completed",
+      "requestedResults": 20,
+      "rawResults": 20,
+      "normalizedCompanies": 20,
+      "newUniqueCompanies": 4,
+      "existingCompanyHits": 16,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 762,
+      "retryCount": 0,
+      "fallbackUsed": true,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "c9c5d8908449b6ed60bf9fb80135a161a53fa99e1895865eb4faa9d69ea42910"
+    },
+    {
+      "callKey": "retail/etail/2/searchapi/bing",
+      "callFingerprint": "36be0c96c48ffbf934b6cf5ce403b20e43b761aa472cef8718707ac595f8c2c0",
+      "queryClusterKey": "ada3a47468aab3298cfe281c4184b1ca0787d320dc38c5a762c423bc54c9a51a",
+      "route": {
+        "category": "retail",
+        "track": "etail",
+        "sequence": 2,
+        "provider": "searchapi",
+        "engine": "bing",
+        "mechanism": "web-serp",
+        "trigger": "second-index-gap",
+        "invocationReason": "second-index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "skipped",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "requestCount": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 0,
+      "retryCount": 0,
+      "fallbackUsed": true,
+      "cacheStatus": "skipped",
+      "discardedReasonCounts": {
+        "circuit-open": 1
+      },
+      "errorMessage": "rate-limit: searchapi HTTP 429: {\n  \"error\": \"You have used all of the searches for the month. Please upgrade your plan on SearchApi.io.\"\n}",
+      "querySha256": "7a4cc69a8e5d5a7b13682de65d2f9afcd3fdf7182654727ba2ddad5475d8b995"
+    },
+    {
+      "callKey": "retail/retail-national/2/searchapi/bing",
+      "callFingerprint": "f1b9d3962729fd559df827d731029f9808799adbab2bc3af1e0276ba7d11403f",
+      "queryClusterKey": "904c848d0edc26c897fb38d249aef3e5bc0f1891237d44d31077d1a7fef12e3e",
+      "route": {
+        "category": "retail",
+        "track": "retail-national",
+        "sequence": 2,
+        "provider": "searchapi",
+        "engine": "bing",
+        "mechanism": "web-serp",
+        "trigger": "second-index-gap",
+        "invocationReason": "second-index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "skipped",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "requestCount": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 0,
+      "retryCount": 0,
+      "fallbackUsed": true,
+      "cacheStatus": "skipped",
+      "discardedReasonCounts": {
+        "circuit-open": 1
+      },
+      "errorMessage": "rate-limit: searchapi HTTP 429: {\n  \"error\": \"You have used all of the searches for the month. Please upgrade your plan on SearchApi.io.\"\n}",
+      "querySha256": "7b41d03a981e287d6664084779c4c7b25f63d8a69d1742b78b1fcf9fe9ad40a8"
+    },
+    {
+      "callKey": "retail/retail-local/2/brave/brave",
+      "callFingerprint": "127006330272533b72bc7db3a9677311246f413f2285e9e418651c4f1790c3c1",
+      "queryClusterKey": "5f79390e1ce1c8eafa487db2171c7c8a827bcbd704e847b68f0c54291a580ee0",
+      "route": {
+        "category": "retail",
+        "track": "retail-local",
+        "sequence": 2,
+        "provider": "brave",
+        "engine": "brave",
+        "mechanism": "local-web-index",
+        "trigger": "index-gap",
+        "invocationReason": "index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "completed",
+      "requestedResults": 20,
+      "rawResults": 20,
+      "normalizedCompanies": 20,
+      "newUniqueCompanies": 4,
+      "existingCompanyHits": 16,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 774,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "a85045234a238ed9a3da07b2a17d7c097a598cc5f701568df25e1a311c07f859"
+    },
+    {
+      "callKey": "retail/etail/3/exa/exa",
+      "callFingerprint": "7d43df3769378983af5c2423b6af17ddfb3cf23d0451ad2626dea35412cc5eb9",
+      "queryClusterKey": "84cf7196f67061632035e1db1d30b00e84bc7132fd9d36e71c66d6ab1cd35cd6",
+      "route": {
+        "category": "retail",
+        "track": "etail",
+        "sequence": 3,
+        "provider": "exa",
+        "engine": "exa",
+        "mechanism": "semantic-merchant-pages",
+        "trigger": "semantic-gap",
+        "invocationReason": "semantic-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "completed",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 1341,
+      "retryCount": 0,
+      "fallbackUsed": true,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "f6ec27a865c729bc55aad53e0684c26b237e236848c32e44b2a5508f6112a033"
+    },
+    {
+      "callKey": "retail/retail-national/3/exa/exa",
+      "callFingerprint": "424410b0082b82671400c6c47e286da83068b76dd2212c1867c41a7e3b8babaa",
+      "queryClusterKey": "50edd8bf9dc4dcf988c9578ae41a44a0b3fe5462c42aed6f54e1f8b2c4fc3fe9",
+      "route": {
+        "category": "retail",
+        "track": "retail-national",
+        "sequence": 3,
+        "provider": "exa",
+        "engine": "exa",
+        "mechanism": "semantic-retailer-pages",
+        "trigger": "semantic-gap",
+        "invocationReason": "semantic-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "completed",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 1377,
+      "retryCount": 0,
+      "fallbackUsed": true,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "25accac41ed1fe366068bd8591811b6792e68824cb32345c85d34233c0b6b2a6"
     }
   ]
 }

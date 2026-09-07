@@ -1,7 +1,7 @@
 {
-  "experimentId": "search-e2e-eval-co-v2.0.4",
+  "experimentId": "search-e2e-eval-co-v2.0.5",
   "runId": "2026-09-08-co-search-e2e-v2",
-  "status": "preregistered-after-reasoning-timeout-and-escalation-repair",
+  "status": "preregistered-after-token-aware-batching-and-recovery-boundary-repair",
   "objective": "Compare the current cold-start product end-to-end company-search workflow with an un-tuned Gemini Full baseline in Colombia.",
   "arms": {
     "gemini-native": {

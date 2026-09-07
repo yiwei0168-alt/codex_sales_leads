@@ -1,5 +1,5 @@
 import { isCurrentLeadScoringEvidence } from "../evidence-snapshot";
-import type { CorrectedLeadWorkflowCandidate, LeadEvidenceItem } from "./types";
+import type { CorrectedLeadWorkflowCandidate, LeadEvidenceItem, LeadWorkflowCandidate } from "./types";
 
 interface EvidencePacketOptions {
   requiredEvidenceIds: Iterable<string>;
@@ -57,12 +57,16 @@ function evidenceScore(item: LeadEvidenceItem, terms: readonly string[]): number
   return sourceScore + terms.reduce((score, term) => score + (text.includes(term.toLowerCase()) ? 1 : 0), 0);
 }
 
-export function buildModelEvidencePacket(candidate: CorrectedLeadWorkflowCandidate,
+type ModelEvidenceCandidate = Pick<LeadWorkflowCandidate,
+  "companyName" | "evidence" | "evidenceSnapshotRunId"> &
+  Partial<Pick<CorrectedLeadWorkflowCandidate, "correction">>;
+
+export function buildModelEvidencePacket(candidate: ModelEvidenceCandidate,
   options: EvidencePacketOptions): ModelEvidenceItem[] {
   const required = new Set(options.requiredEvidenceIds);
   const current = candidate.evidence.filter((item) =>
     isCurrentLeadScoringEvidence(item, candidate.evidenceSnapshotRunId));
-  const terms = relevanceTerms(`${candidate.companyName} ${candidate.correction.resolvedRoles.join(" ")} ${options.relevanceText ?? ""}`);
+  const terms = relevanceTerms(`${candidate.companyName} ${candidate.correction?.resolvedRoles.join(" ") ?? ""} ${options.relevanceText ?? ""}`);
   const requiredItems = current.filter((item) => required.has(item.id));
   const requiredHashes = new Set(requiredItems.map((item) => item.contentHash).filter(Boolean));
   const extras = current.filter((item) => !required.has(item.id) && (!item.contentHash || !requiredHashes.has(item.contentHash)))

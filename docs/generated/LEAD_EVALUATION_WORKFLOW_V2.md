@@ -1,11 +1,11 @@
-# Cudy 销售线索端到端工作流 v3.3.0
+# Cudy 销售线索端到端工作流 v3.4.0
 
 > 本文档由 `scripts/generate-lead-workflow-doc.mjs` 自动生成。请修改版本化配置或实现代码，不要直接编辑生成文件。
 
-- 运行时策略版本：3.3.0（基础流程定义 2.6.0）
+- 运行时策略版本：3.4.0（基础流程定义 2.7.0）
 - 评分策略版本：2.0.0
-- 成本质量策略版本：3.0.1
-- 配置指纹：`7ee7b3a05304d6fdc83615294f6aafedf699fc92d59278750f25ecbab7ce7210`
+- 成本质量策略版本：3.0.2
+- 配置指纹：`06dce8aa0f1ac9bd34300f36e4b24a5d36c699c7ac2663dfce787d9784d88021`
 - 范围：From the user's natural-language market-development request and workspace context to ranked companies, editable cooperation paths, development strategy, outreach email, and private-memory learning from user edits.
 
 ## 一、从用户输入到最终输出的总流程
@@ -52,7 +52,7 @@ flowchart TD
 | `02-context-memory` | Local-database RAG query and memory embeddings | EMBEDDING_MODEL; default text-embedding-v4 | No generative fallback | Required for vector retrieval; source documents remain in the local database |
 | `03-playbook` | Market playbook and search-query planning | LEAD_PLANNER_MODEL or OPENAI_GENERATION_MODEL; default openai/gpt-5-mini through OpenRouter | Deterministic playbook with required role-family coverage | Cached standard playbook; light Kimi checks template fit; complex non-standard tasks use Kimi-k3 planning |
 | `04-discovery` | Lightweight candidate existence, relevance and category gate | DEEPSEEK_DISCOVERY_GATE_MODEL; fixed default deepseek-v4-flash and never inherits a Pro global routine setting | Same-tier resilient provider fallback, including public-only DeepSeek through OpenRouter; unavailable batches are held for downstream evidence, never upgraded to Pro | Batches of up to 10 after direct lightweight homepage fetch; compact semantic signals only, with deterministic pass/hold/reject; optional reasoning is disabled on the OpenRouter same-tier route |
-| `06-correction-role` | Entity correction, atomic facts and primary-role analysis | DEEPSEEK_MODEL; default deepseek-v4-flash | DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro; public-only same-tier OpenRouter route on provider failure; deterministic fallback is retry-only | Routine batches with optional reasoning disabled on OpenRouter; malformed output permits one same-tier single-candidate repair; infrastructure failure never upgrades; Pro requires a valid routine prediction of score change >=8 or a resolvable critical-state change |
+| `06-correction-role` | Entity correction, atomic facts and primary-role analysis | DEEPSEEK_MODEL; default deepseek-v4-flash | DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro; public-only same-tier OpenRouter route on provider failure; deterministic fallback is retry-only | Relevance-prioritized compact evidence packets and token-aware routine batches; optional reasoning disabled on OpenRouter; malformed output permits one same-tier single-candidate repair; infrastructure failure never upgrades; request timeout does not open a global circuit; Pro requires a valid routine prediction of score change >=8 or a resolvable critical-state change |
 | `09-scoring-paths` | Role-aware score and possible cooperation paths | DEEPSEEK_MODEL; default deepseek-v4-flash | DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro; public-only same-tier OpenRouter route on provider failure | Routine batches with optional reasoning disabled on OpenRouter; malformed output permits one same-tier single-candidate repair; infrastructure failure never upgrades; confidence, alternative paths and Top-N position never trigger upgrade alone |
 | `10-review` | Selective production secondary review and disagreement judgment | LEAD_REVIEW_MODEL default openai/gpt-5.6-terra; LEAD_JUDGE_MODEL default openai/gpt-5.6-sol through OpenRouter | DeepSeek review adapter using deepseek-v4-pro when explicitly routed | Selective only; this production control is distinct from the two-judge offline formal-evaluation calibration |
 | `offline-blind-calibration` | Formal search-evaluation calibration after both experiment arms and shared scoring are frozen | Two different high-capability provider/model families; current protocol pins Anthropic Claude Opus and OpenAI GPT-5.6-sol | A third high-capability arbitrator only for score delta >=8, role-family disagreement or critical qualification disagreement | No Web search; 48 representative cases control gates and 16 stress cases are diagnostic only; reuse frozen score-independent evidence packets |
@@ -742,8 +742,8 @@ flowchart TD
 |---|---|
 | `config/lead-scoring/policy-v2.0.0.json` | `0039203aafb29ec73e4beb10f72dc5ec114785fb4c5f311c7b425de0d451fc1b` |
 | `config/lead-search/hybrid-search-v1.0.0.json` | `a1104da9bfc2cad88f17eb30556b3d0797bd065b3650f10d7d856b2ffa287485` |
-| `config/lead-workflow/cost-quality-policy-v3.0.0.json` | `90bb896e2fdfd0738296ab4b82dae6bb0f75e1b06d95955f69e4eaaa55a7aae6` |
-| `config/lead-workflow/runtime-policy-v3.0.0.json` | `d18a6dc69da2eb3710646eb5212459bcc38574032e1d2b6ccbe07102e9eecc94` |
+| `config/lead-workflow/cost-quality-policy-v3.0.0.json` | `53bb462d223714632af323d1c1db7cb4687302edadee0e716ac62e856d6432c1` |
+| `config/lead-workflow/runtime-policy-v3.0.0.json` | `232a5ae6374233617915f4b3879cf99b45337a5bf45866068fcbc894cc8f7dbe` |
 | `src/app/api/assistant/messages/route.ts` | `04bec90cc3d3f336195e8ab97a5ad4b1ec1e05b95606064225e098e94ed7a5cd` |
 | `src/lib/assistant/types.ts` | `4094485a0d6751ef7eb296eb385d1ff8ac1c4357509c97e4343a728413329862` |
 | `src/lib/assistant/intent.ts` | `cb77a2854f0058d92bf758ce4610d298bc94dde0157ade4f0bd3d05343fad168` |
@@ -762,15 +762,15 @@ flowchart TD
 | `src/lib/leads/workflow/hybrid-discovery-executor.ts` | `ea088033a73044060c0541f41dc258f538d0c5fdf9eaa501fb379cce0faf2b6a` |
 | `src/lib/leads/workflow/discovery.ts` | `7ebcf5e44a8b82c4308c630936f50aa32c9757c828d4d3b1402716fc86fa358d` |
 | `src/lib/leads/global-search.ts` | `963d07622725531e72d7f1807d4228a23d59d6a320b5d1e508b602bcc05c65db` |
-| `src/lib/leads/workflow/evidence-correction-agent.ts` | `ce8be58f8b115501fdae3b0fcfcde49d3f4ba17585f42be114f01a04fb722e2f` |
-| `src/lib/leads/workflow/evidence-packet.ts` | `1ca9577284952e245a8e8c51ae9fa82472fcbcf0b262ebaa83fc6463f379836f` |
+| `src/lib/leads/workflow/evidence-correction-agent.ts` | `5fbb866d45974169951e85c895f05d41da8414b7e01fa0236d609b35a36c9d13` |
+| `src/lib/leads/workflow/evidence-packet.ts` | `8192c83a87eada51e9be0e5f4af3888d2c520d9a977552e5a8b01f37aa037604` |
 | `src/lib/leads/workflow/qualification-agent.ts` | `2829efb04ad326d76604e82baadf0209713f44cc2e121ed76f284a515831efaf` |
 | `src/lib/leads/workflow/assessment-cache.ts` | `d7fd5fe0b350aa56eb9fcfb283c2c81a2de9564f88a3ef677631b82d81474fb3` |
 | `src/lib/leads/workflow/assessment-review-agent.ts` | `5ad58c980aa7b3642d349aa543a78a54f2695274490809ce00a65bf535dae974` |
 | `src/providers/deepseek.ts` | `bd63eba1cb5a6eae4b345115fe187403606ed7e678524eceb5835d9321131f89` |
 | `src/providers/discovery-contracts.ts` | `219328f21ca094e5c96c12b9cd3e638a8244629d7692271ee6b86ea39166143e` |
 | `src/providers/discovery.ts` | `f1a97cf7ad6a492babc9d75af3bd4aa0d01abd405f3339b6ad3b4bef13a5fb50` |
-| `src/providers/resilient-ai.ts` | `16053c3d8893798ce443a8ed6afa5a0d9b2612a503941aaf59034c6e5bec9bc6` |
+| `src/providers/resilient-ai.ts` | `c5c89784fe03ae22e729a18370f52d91b2fabc63d865da8695a240e7bc823d2f` |
 | `src/providers/openrouter.ts` | `b43ba8fdf08602cb7d3567ea88bdc2cfee704de0c1b197cc574abe5e9b89143d` |
 | `db/migrations/034_model_account_cash_cost.sql` | `4790c7ad12eda543e197c84ddd77c4a5ce296b7871ccee799f3aa2262684bdbb` |
 | `src/providers/tavily.ts` | `f4f1908e0f2673636db0902fb135d107da26c35257fe51d4e4bdfd85c2596a7a` |

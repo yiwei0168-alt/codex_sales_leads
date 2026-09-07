@@ -1,0 +1,7 @@
+# CO-retail v2.0.4 batching and recovery-boundary incident
+
+The v2.0.4 same-run recovery attempted to reclassify 51 cached candidates. DeepSeek direct calls returned `Insufficient Balance`; the first OpenRouter Flash requests then exceeded the 75-second request budget because correction batches combined several large evidence dossiers. Their request-scoped timeouts opened the shared fallback circuit, causing remaining candidates to receive deterministic unresolved corrections. No valid model usage was billed or recorded for this recovery.
+
+The recovery then entered ordinary discovery round five. That was a product error: the cache-recovery promise covered semantic correction and scoring only and prohibited new acquisition. Round five added 16 corrected-but-unresolved candidates and spent USD 0.368: USD 0.080 hybrid discovery, USD 0.168 fresh Tavily evidence and USD 0.120 Tavily correction evidence. Product output remained 0/50. Cumulative experiment cost became USD 2.0435738961, with an expected completion forecast of USD 16.1742 and upper forecast of USD 19.1782. No USD 10 checkpoint was crossed.
+
+v2.0.5 compacts correction evidence, uses token-aware batching, forces one-candidate/two-way-concurrency calls during formal cache recovery, prevents request-local timeouts from opening a provider-wide circuit, and makes `--resume-product` acquisition-closed. All 67 cached candidates and their already acquired current-run evidence remain available; no acquisition is repeated. The USD 0.368 defect cost remains in the formal ledger.
