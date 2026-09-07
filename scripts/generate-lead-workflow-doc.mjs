@@ -87,6 +87,22 @@ const lines = [
   "",
 ];
 
+if (definition.evaluationGovernance) {
+  lines.push(
+    "## 离线正式测评治理",
+    "",
+    `- 盲审协议：\`${definition.evaluationGovernance.formalBlindAuditProtocol}\``,
+    `- 适用范围：${definition.evaluationGovernance.scope}`,
+    `- 抽样：${definition.evaluationGovernance.sampling}`,
+    `- 评审：${definition.evaluationGovernance.judging}`,
+    `- 证据：${definition.evaluationGovernance.evidence}`,
+    `- 指标：${definition.evaluationGovernance.metrics}`,
+    `- 成本控制：${definition.evaluationGovernance.costControl}`,
+    `- 历史边界：${definition.evaluationGovernance.historicalBoundary}`,
+    "",
+  );
+}
+
 for (const [index, stage] of definition.stages.entries()) {
   lines.push(`### ${index + 1}. ${stage.name}`, "", `阶段 ID：\`${stage.id}\``, "", "输入：", "",
     list(stage.inputs), "", "输出：", "", list(stage.outputs), "", "策略：", "", list(stage.strategy), "",

@@ -7,6 +7,7 @@ import { createHybridDiscoverySession, executeHybridDiscovery } from "@/lib/lead
 import { buildStandardLeadMarketPlaybook } from "@/lib/leads/workflow/playbook";
 import { LeadQualificationAgent } from "@/lib/leads/workflow/qualification-agent";
 import { retrieveLeadRagContext } from "@/lib/leads/workflow/rag-context";
+import { isCurrentLeadScoringEvidence } from "@/lib/leads/evidence-snapshot";
 import { nextNoFinalRoundCount, plannedCandidatePool, targetCompletionDecision,
   type TargetCompletionReason } from "@/lib/leads/workflow/target-completion-policy";
 import type { CorrectedLeadWorkflowCandidate, LeadCandidateAssessment, LeadMarketPlaybook,
@@ -35,6 +36,8 @@ export interface ProductFinalCandidate {
   scoringStatus: string;
   evidenceIds: string[];
   evidence: Array<{ id: string; url: string; title: string; excerpt: string; sourceType: string;
+    capturedAt: string; contentHash?: string; freshnessStatus?: string; evidenceRunId?: string }>;
+  blindAuditEvidence?: Array<{ id: string; url: string; title: string; excerpt: string; sourceType: string;
     capturedAt: string; contentHash?: string; freshnessStatus?: string; evidenceRunId?: string }>;
 }
 
@@ -119,15 +122,18 @@ export function modelUsageEvents(cell: ExperimentCell, stage: string, usages: Wo
 function toFinalCandidate(candidate: CorrectedLeadWorkflowCandidate, assessment: LeadCandidateAssessment,
   rank: number): ProductFinalCandidate {
   const relied = new Set(assessment.evidenceIds);
+  const compactEvidence = (items: typeof candidate.evidence) => items.map((item) => ({ id: item.id,
+    url: item.url, title: item.title.slice(0, 300), excerpt: item.excerpt.slice(0, 800),
+    sourceType: item.sourceType, capturedAt: item.capturedAt, contentHash: item.contentHash,
+    freshnessStatus: item.freshnessStatus, evidenceRunId: item.evidenceRunId }));
   return { rank, candidateId: candidate.candidateId, companyName: candidate.companyName, domain: candidate.domain,
     officialWebsiteUrl: candidate.officialWebsiteUrl, primaryRole: candidate.correction.primaryRole,
     supportedRoles: candidate.correction.resolvedRoles, totalScore: assessment.totalScore,
     eligibilityStatus: assessment.eligibilityStatus, eligible: assessment.eligible,
     scoringStatus: assessment.scoringStatus, evidenceIds: assessment.evidenceIds,
-    evidence: candidate.evidence.filter((item) => relied.has(item.id)).map((item) => ({ id: item.id,
-      url: item.url, title: item.title.slice(0, 300), excerpt: item.excerpt.slice(0, 800),
-      sourceType: item.sourceType, capturedAt: item.capturedAt, contentHash: item.contentHash,
-      freshnessStatus: item.freshnessStatus, evidenceRunId: item.evidenceRunId })) };
+    evidence: compactEvidence(candidate.evidence.filter((item) => relied.has(item.id))),
+    blindAuditEvidence: compactEvidence(candidate.evidence.filter((item) =>
+      isCurrentLeadScoringEvidence(item, candidate.evidenceSnapshotRunId))) };
 }
 
 export async function runProductCell(cell: ExperimentCell, options: {

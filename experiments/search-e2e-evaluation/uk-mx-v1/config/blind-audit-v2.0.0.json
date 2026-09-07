@@ -1,0 +1,99 @@
+{
+  "protocolVersion": "2.0.0",
+  "status": "active-for-next-evaluation",
+  "historicalResultPolicy": "Do not recalculate or overwrite the completed v1.1.6 experiment.",
+  "sampling": {
+    "cells": 8,
+    "representativePerCell": 6,
+    "stressPerCell": 2,
+    "total": 64,
+    "representativeSelection": "Deterministic hash sample of each cell union, independent of arm, rank, product score and scoring citations.",
+    "stressSelection": ["score-threshold-boundary", "arm-exclusivity-or-rank-gap"],
+    "mainGateCohort": "representative",
+    "stressCohortUse": "diagnostic-only"
+  },
+  "evidencePacket": {
+    "policyVersion": "blind-evidence-packet-v2",
+    "maximumItems": 12,
+    "maximumTitleCharacters": 300,
+    "maximumExcerptCharacters": 800,
+    "selectionIndependentOfScoringCitations": true,
+    "sourcePriority": ["official-website", "independent-public", "discovery"],
+    "includeSameMarketSameRoleScaleAnchors": true
+  },
+  "cache": {
+    "keyInputs": ["protocol-version", "full-blind-packet", "judge-id", "requested-model", "upstream-judge-outputs-for-arbitration"],
+    "checkpointAfterEveryValidModelOutput": true,
+    "reuseBeforeRetry": true,
+    "invalidatesOnAnyDependencyChange": true
+  },
+  "budgetGuard": {
+    "inheritHardLimitAndReviewThresholdsFromFrozenExperiment": true,
+    "requireAtomicAuthorizationBeforeEveryCacheMissModelCall": true,
+    "cacheHitsRequireNoBudgetReservation": true,
+    "includeJudgeAndArbitratorCallsInEvaluationOverheadLedger": true
+  },
+  "judging": {
+    "judgeCount": 2,
+    "requireDifferentModelFamiliesAndProviders": true,
+    "allowWebSearch": false,
+    "judgeA": "anthropic/claude-opus-5",
+    "judgeB": "openai/gpt-5.6-sol",
+    "arbitrator": "deepseek-v4-pro",
+    "arbitrationTriggers": {
+      "minimumAbsoluteTotalScoreDifference": 8,
+      "roleFamilyDisagreement": true,
+      "criticalStateDisagreement": [
+        "isRealOperatingCompany",
+        "operatesInTargetMarket",
+        "requestedCategoryFamilyMatch",
+        "scoreThresholdQualified",
+        "eligibility"
+      ]
+    },
+    "maximumArbitrationRateWarning": 0.35
+  },
+  "blindness": {
+    "hiddenFromJudges": [
+      "experiment-arm",
+      "search-provider",
+      "source-model",
+      "source-rank",
+      "product-score",
+      "product-eligibility",
+      "sample-cohort",
+      "stress-stratum"
+    ],
+    "companyIdentityVisible": true,
+    "reason": "Identity is required to judge entity validity, but judges are forbidden from using unstated knowledge."
+  },
+  "qualification": {
+    "scoreThreshold": 65,
+    "requiresEligibilityLabel": "eligible",
+    "requiresRealOperatingCompany": true,
+    "requiresTargetMarketOperation": true,
+    "requiresRequestedRoleFamily": true
+  },
+  "mainGates": {
+    "roleFamilyAgreementMinimum": 0.9,
+    "qualifiedStatusAgreementMinimum": 0.9,
+    "withinCellMacroSpearmanMinimum": 0.7,
+    "maximumAbsoluteMeanBias": 5,
+    "maximumMeanAbsoluteError": 8,
+    "citationIdAlignmentMinimum": 0.98,
+    "citationEntailmentMinimum": 0.9
+  },
+  "diagnostics": [
+    "exact-primary-role-subtype-agreement",
+    "pooled-spearman",
+    "identity-agreement",
+    "target-market-agreement",
+    "requested-family-agreement",
+    "score-threshold-agreement",
+    "eligibility-label-agreement",
+    "per-cell-metrics",
+    "stress-cohort-metrics",
+    "inter-judge-role-family-subtype-qualification-and-score-agreement",
+    "arbitration-rate-and-cost"
+  ]
+}

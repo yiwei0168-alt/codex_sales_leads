@@ -1,6 +1,6 @@
 {
   "workflowKey": "cudy-sales-lead-end-to-end",
-  "version": "2.3.3",
+  "version": "2.4.0",
   "status": "active",
   "scope": "From the user's natural-language market-development request and workspace context to ranked companies, editable cooperation paths, development strategy, outreach email, and private-memory learning from user edits.",
   "principles": [
@@ -59,10 +59,17 @@
     },
     {
       "stages": ["10-review"],
-      "purpose": "Blind secondary review and disagreement judgment",
+      "purpose": "Selective production secondary review and disagreement judgment",
       "defaultModel": "LEAD_REVIEW_MODEL default openai/gpt-5.6-terra; LEAD_JUDGE_MODEL default openai/gpt-5.6-sol through OpenRouter",
       "escalationOrFallback": "DeepSeek review adapter using deepseek-v4-pro when explicitly routed",
-      "callPolicy": "Selective only; skipped for the search-tool leaderboard where cooperation-path review cannot affect the metric"
+      "callPolicy": "Selective only; this production control is distinct from the two-judge offline formal-evaluation calibration"
+    },
+    {
+      "stages": ["offline-blind-calibration"],
+      "purpose": "Formal search-evaluation calibration after both experiment arms and shared scoring are frozen",
+      "defaultModel": "Two different high-capability provider/model families; current protocol pins Anthropic Claude Opus and OpenAI GPT-5.6-sol",
+      "escalationOrFallback": "A third high-capability arbitrator only for score delta >=8, role-family disagreement or critical qualification disagreement",
+      "callPolicy": "No Web search; 48 representative cases control gates and 16 stress cases are diagnostic only; reuse frozen score-independent evidence packets"
     },
     {
       "stages": ["14-strategy"],
@@ -86,6 +93,16 @@
       "callPolicy": "One call per requested revision; text-embedding-v4 embeds accepted private memory"
     }
   ],
+  "evaluationGovernance": {
+    "formalBlindAuditProtocol": "experiments/search-e2e-evaluation/uk-mx-v1/config/blind-audit-v2.0.0.json",
+    "scope": "Offline calibration of a frozen formal search evaluation; it does not add two judges to every production lead.",
+    "sampling": "Six score/rank/arm-independent representative candidates plus two diagnostic stress candidates per cell; only the representative cohort controls pass/fail.",
+    "judging": "Two independent high-capability provider/model families. A third decision runs only when total scores differ by at least eight points, role families disagree, or identity/market/request-family/score-threshold/eligibility states disagree.",
+    "evidence": "Packets reuse current-run cached evidence selected independently of scorer citations and include a same-market/same-role scale anchor. They hide arm, provider, rank, score, eligibility, cohort and stratum.",
+    "metrics": "Role-family agreement is the main role gate; exact subtype is diagnostic. Qualification is decomposed into identity, market, requested family, score threshold and output eligibility. Citation ID validity and claim entailment are reported separately, with per-cell macro Spearman as the ranking gate and raw inter-judge agreement retained as a stability diagnostic.",
+    "costControl": "No new search or evidence acquisition. Every judge output is consumed by consensus, arbitration is conditional, every cache miss requires atomic budget authorization, and judge/arbitrator token cost, latency, retries, discarded outputs and downstream use are recorded separately.",
+    "historicalBoundary": "The completed v1.1.6 blind result remains immutable and is not recalculated under v2."
+  },
   "sourceFiles": [
     "config/lead-scoring/policy-v2.0.0.json",
     "config/lead-search/hybrid-search-v1.0.0.json",
@@ -131,6 +148,15 @@
     "src/lib/outreach/knowledge-repository.ts",
     "db/migrations/033_hybrid_search_contribution.sql",
     "experiments/search-e2e-evaluation/uk-mx-v1/lib/cost-ledger.ts",
+    "experiments/search-e2e-evaluation/uk-mx-v1/lib/blind-audit-v2.ts",
+    "experiments/search-e2e-evaluation/uk-mx-v1/lib/provider-clients.ts",
+    "experiments/search-e2e-evaluation/uk-mx-v1/lib/runtime-schemas.ts",
+    "experiments/search-e2e-evaluation/uk-mx-v1/lib/product-cell.ts",
+    "experiments/search-e2e-evaluation/uk-mx-v1/lib/unified-evaluation.ts",
+    "experiments/search-e2e-evaluation/uk-mx-v1/config/blind-audit-v2.0.0.json",
+    "experiments/search-e2e-evaluation/uk-mx-v1/config/blind-judge-rubric-v2.md",
+    "experiments/search-e2e-evaluation/uk-mx-v1/config/blind-judge-arbitration-rubric-v2.md",
+    "experiments/search-e2e-evaluation/uk-mx-v1/schemas/blind-judge-output-v2.schema.json",
     "experiments/search-e2e-evaluation/uk-mx-v1/scripts/run-formal-experiment.ts"
   ],
   "stages": [
@@ -217,10 +243,10 @@
     },
     {
       "id": "10-review",
-      "name": "Selective blind review and disagreement judge",
+      "name": "Selective production review and disagreement judge",
       "inputs": ["Primary assessment", "Evidence packet", "Review-routing policy"],
       "outputs": ["not-required", "secondary-confirmed", "judge-resolved", "targeted-research-required", "review-failed"],
-      "strategy": ["Review only severe deterministic conflicts and unresolved critical states", "Do not review solely for low confidence, alternative paths, generic warnings or Top-N position", "Do not spend high-capability review on non-actionable long-tail research holds", "Judge only outcome-sensitive disagreement of at least 8 points or a critical state"],
+      "strategy": ["Review only severe deterministic conflicts and unresolved critical states", "Do not review solely for low confidence, alternative paths, generic warnings or Top-N position", "Do not spend high-capability review on non-actionable long-tail research holds", "Judge only outcome-sensitive disagreement of at least 8 points or a critical state", "Keep this online selective review separate from formal offline blind calibration; the latter uses two independent judges and conditional arbitration on a frozen sample"],
       "failure": "Retain a valid primary assessment when review service fails unless a severe unresolved trigger makes publication unsafe.",
       "downstream": ["Final assessment", "Research queue", "Cost telemetry"]
     },

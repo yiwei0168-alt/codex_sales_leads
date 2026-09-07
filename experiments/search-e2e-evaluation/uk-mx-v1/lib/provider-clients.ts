@@ -5,13 +5,14 @@ import { z } from "zod";
 
 import { getOpenRouterConfig, openRouterChatCompletionsUrl, openRouterRequestHeaders,
   resolveOpenRouterModel } from "@/providers/openrouter";
+import { DeepSeekProvider } from "@/providers/deepseek";
 
 import type { ExperimentUsage } from "./cost-ledger";
 import type { ExperimentCell } from "./experiment";
-import { blindJudgeOutputSchema, geminiControlOutputSchema, type BlindJudgeOutput,
-  type GeminiControlOutput } from "./runtime-schemas";
+import { blindJudgeOutputSchema, blindJudgeV2OutputSchema, geminiControlOutputSchema, type BlindJudgeOutput,
+  type BlindJudgeV2Output, type GeminiControlOutput } from "./runtime-schemas";
 
-interface ProviderCall<T> {
+export interface ProviderCall<T> {
   output: T | null;
   raw: unknown;
   requestedModel: string;
@@ -238,4 +239,95 @@ export async function callClaudeBlindJudge(packet: Record<string, unknown>, mode
     startedAt, completedAt: new Date().toISOString(), latencyMs: Date.now() - started,
     attempts: response.attempts, retries: response.attempts - 1,
     ...(parsed.error ? { parseError: parsed.error } : {}) };
+}
+
+async function callBlindReviewV2(input: Record<string, unknown>, model: string, rubricFilename: string,
+  maxTokens = 4_096): Promise<ProviderCall<BlindJudgeV2Output>> {
+  const config = getOpenRouterConfig();
+  const requestedModel = resolveOpenRouterModel(model, /(?:^|\/)gpt-/i.test(model) ? "openai" : "anthropic");
+  const root = path.resolve("experiments/search-e2e-evaluation/uk-mx-v1");
+  const rubric = await readFile(path.join(root, "config", rubricFilename), "utf8");
+  const schema: Record<string, unknown> = JSON.parse(
+    await readFile(path.join(root, "schemas/blind-judge-output-v2.schema.json"), "utf8")) as Record<string, unknown>;
+  const startedAt = new Date().toISOString();
+  const started = Date.now();
+  let response: Awaited<ReturnType<typeof requestJsonWithRetry>>;
+  try {
+    response = await requestJsonWithRetry(openRouterChatCompletionsUrl(config), {
+      method: "POST", headers: openRouterRequestHeaders(config),
+      body: JSON.stringify({ model: requestedModel, max_tokens: maxTokens, temperature: 0,
+        reasoning: { effort: "high" }, provider: config.providerPreferences,
+        response_format: { type: "json_schema", json_schema: {
+          name: "blind_judge_output_v2", strict: true, schema,
+        } },
+        messages: [{ role: "system", content: `${rubric}\n\nReturn one JSON object only.` },
+          { role: "user", content: JSON.stringify(input) }] }),
+    }, 2, 180_000);
+  } catch (error) {
+    if (!(error instanceof ProviderRequestError)) throw error;
+    return { output: null, raw: null, requestedModel, actualModel: requestedModel, usage: {}, startedAt,
+      completedAt: new Date().toISOString(), latencyMs: Date.now() - started, attempts: error.attempts,
+      retries: Math.max(0, error.attempts - 1), requestError: error.message,
+      requestFailureKind: error.failureKind };
+  }
+  const body = response.body as { model?: string;
+    choices?: Array<{ message?: { content?: string | null } }>;
+    usage?: { prompt_tokens?: number; completion_tokens?: number; cost?: number } };
+  const text = body.choices?.[0]?.message?.content ?? "";
+  const parsed = parseStructured(text, blindJudgeV2OutputSchema);
+  return { output: parsed.output, raw: body, requestedModel, actualModel: body.model ?? requestedModel,
+    usage: { inputTokens: body.usage?.prompt_tokens ?? 0, outputTokens: body.usage?.completion_tokens ?? 0 },
+    accountCashCostUsd: body.usage?.cost, startedAt, completedAt: new Date().toISOString(),
+    latencyMs: Date.now() - started, attempts: response.attempts, retries: response.attempts - 1,
+    ...(parsed.error ? { parseError: parsed.error } : {}) };
+}
+
+export function callBlindJudgeV2(packet: Record<string, unknown>, model: string,
+  maxTokens = 4_096): Promise<ProviderCall<BlindJudgeV2Output>> {
+  return callBlindReviewV2(packet, model, "blind-judge-rubric-v2.md", maxTokens);
+}
+
+async function callDeepSeekBlindArbitratorV2(input: Record<string, unknown>, model: string):
+  Promise<ProviderCall<BlindJudgeV2Output>> {
+  const requestedModel = model.trim();
+  const startedAt = new Date().toISOString();
+  const started = Date.now();
+  let requestAttempts = 0;
+  const trackedFetch: typeof fetch = (input, init) => {
+    requestAttempts += 1;
+    return fetch(input, init);
+  };
+  const provider = new DeepSeekProvider({ defaultModel: requestedModel, maxAttempts: 2,
+    fetchImplementation: trackedFetch });
+  if (!provider.isConfigured()) return { output: null, raw: null, requestedModel, actualModel: requestedModel,
+    usage: {}, startedAt, completedAt: new Date().toISOString(), latencyMs: Date.now() - started,
+    attempts: 0, retries: 0, requestError: "DEEPSEEK_API_KEY is not configured", requestFailureKind: "transport" };
+  const root = path.resolve("experiments/search-e2e-evaluation/uk-mx-v1");
+  const rubric = await readFile(path.join(root, "config/blind-judge-arbitration-rubric-v2.md"), "utf8");
+  const schema: Record<string, unknown> = JSON.parse(
+    await readFile(path.join(root, "schemas/blind-judge-output-v2.schema.json"), "utf8")) as Record<string, unknown>;
+  try {
+    const response = await provider.execute({ task: "lead-review-judge", modelVersion: requestedModel,
+      promptVersion: "blind-judge-arbitration-v2", input: { rubric, arbitrationInput: input }, evidenceIds: [],
+      outputSchema: schema, dataClassification: "public", reasoningEffort: "high" });
+    const parsed = blindJudgeV2OutputSchema.safeParse(response.output);
+    const usage = response.usage;
+    return { output: parsed.success ? parsed.data : null, raw: response.output, requestedModel,
+      actualModel: response.modelVersion, usage: usage ? { inputTokens: usage.promptTokens,
+        outputTokens: usage.completionTokens, reasoningTokens: usage.reasoningTokens } : {},
+      accountCashCostUsd: usage?.accountCashCostUsd, startedAt, completedAt: new Date().toISOString(),
+      latencyMs: response.latencyMs, attempts: response.attempts ?? 1, retries: response.retries ?? 0,
+      ...(!parsed.success ? { parseError: parsed.error.message } : {}) };
+  } catch (error) {
+    return { output: null, raw: null, requestedModel, actualModel: requestedModel, usage: {}, startedAt,
+      completedAt: new Date().toISOString(), latencyMs: Date.now() - started, attempts: requestAttempts,
+      retries: Math.max(0, requestAttempts - 1),
+      requestError: error instanceof Error ? error.message : String(error), requestFailureKind: "transport" };
+  }
+}
+
+export function callBlindArbitratorV2(input: Record<string, unknown>, model: string,
+  maxTokens = 4_096): Promise<ProviderCall<BlindJudgeV2Output>> {
+  if (/^deepseek-/i.test(model.trim())) return callDeepSeekBlindArbitratorV2(input, model);
+  return callBlindReviewV2(input, model, "blind-judge-arbitration-rubric-v2.md", maxTokens);
 }

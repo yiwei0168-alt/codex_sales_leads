@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { callClaudeBlindJudge, callGeminiControl, geminiSearchQueries,
+import { callBlindArbitratorV2, callBlindJudgeV2, callClaudeBlindJudge, callGeminiControl, geminiSearchQueries,
   sanitizeGeminiJsonSchema } from "./provider-clients";
 
 afterEach(() => {
@@ -9,6 +9,9 @@ afterEach(() => {
   delete process.env.GEMINI_BASE_URL;
   delete process.env.OPENROUTER_API_KEY;
   delete process.env.OPENROUTER_BASE_URL;
+  delete process.env.DEEPSEEK_API_KEY;
+  delete process.env.DEEPSEEK_BASE_URL;
+  delete process.env.DEEPSEEK_TRANSPORT;
 });
 
 describe("formal experiment Gemini adapter", () => {
@@ -111,5 +114,63 @@ describe("formal experiment Gemini adapter", () => {
     expect(body.response_format).toMatchObject({ type: "json_schema",
       json_schema: { strict: true } });
     expect(call.accountCashCostUsd).toBe(0.00175);
+  });
+
+  it("uses the v2 rubric and parses claim-level citation support", async () => {
+    process.env.OPENROUTER_API_KEY = "test-only";
+    const dimensionNames = ["productAndUseCaseFit", "channelAndBuyingInfluence", "sameRoleScaleAndCoverage",
+      "executionAndEnablement", "opportunityAndRisk"];
+    let capturedInit: RequestInit | undefined;
+    const fetchMock = vi.fn(async (url: string | URL | Request, init?: RequestInit) => {
+      void url;
+      capturedInit = init;
+      return new Response(JSON.stringify({
+      model: "openai/gpt-5.6-sol", choices: [{ message: { content: JSON.stringify({
+        packetId: "blind-v2-test-packet", externalSearchUsed: false, externalKnowledgeUsed: false,
+        isRealOperatingCompany: true, operatesInTargetMarket: true,
+        supportedRoles: ["Distributor"], primaryRole: "Distributor", dimensions: {
+          productAndUseCaseFit: 35, channelAndBuyingInfluence: 10, sameRoleScaleAndCoverage: 9,
+          executionAndEnablement: 8, opportunityAndRisk: 7 }, totalScore: 69, eligibility: "eligible",
+        dimensionReasons: dimensionNames.map((dimension) => ({ dimension, reason: "Supported",
+          citations: [{ evidenceId: "evidence-1", claim: "Supplies resellers", support: "direct" }] })),
+        unsupportedOrContradictoryClaims: [],
+      }) } }], usage: { prompt_tokens: 200, completion_tokens: 100, cost: 0.004 },
+      }), { status: 200, headers: { "content-type": "application/json" } });
+    });
+    vi.stubGlobal("fetch", fetchMock);
+    const call = await callBlindJudgeV2({ packetId: "blind-v2-test-packet" }, "openai/gpt-5.6-sol", 256);
+    const body = JSON.parse(String(capturedInit?.body));
+    expect(body.response_format.json_schema.name).toBe("blind_judge_output_v2");
+    expect(body.messages[0].content).toContain("Independent blind-judge rubric v2");
+    expect(call.output?.dimensionReasons[0].citations[0]).toMatchObject({ evidenceId: "evidence-1",
+      support: "direct" });
+    expect(call.accountCashCostUsd).toBe(0.004);
+  });
+
+  it("keeps the v2 arbitrator on the dedicated DeepSeek adapter", async () => {
+    process.env.DEEPSEEK_API_KEY = "test-only";
+    process.env.DEEPSEEK_BASE_URL = "https://deepseek.test";
+    process.env.DEEPSEEK_TRANSPORT = "anthropic";
+    const dimensionNames = ["productAndUseCaseFit", "channelAndBuyingInfluence", "sameRoleScaleAndCoverage",
+      "executionAndEnablement", "opportunityAndRisk"];
+    const fetchMock = vi.fn(async (url: string | URL | Request) => {
+      void url;
+      return new Response(JSON.stringify({
+      model: "deepseek-v4-pro", content: [{ type: "text", text: JSON.stringify({
+        packetId: "blind-v2-test-packet", externalSearchUsed: false, externalKnowledgeUsed: false,
+        isRealOperatingCompany: true, operatesInTargetMarket: true, supportedRoles: ["Distributor"],
+        primaryRole: "Distributor", dimensions: { productAndUseCaseFit: 35, channelAndBuyingInfluence: 10,
+          sameRoleScaleAndCoverage: 9, executionAndEnablement: 8, opportunityAndRisk: 7 }, totalScore: 69,
+        eligibility: "eligible", dimensionReasons: dimensionNames.map((dimension) => ({ dimension,
+          reason: "Supported", citations: [{ evidenceId: "evidence-1", claim: "Supplies resellers",
+            support: "direct" }] })), unsupportedOrContradictoryClaims: [],
+      }) }], usage: { input_tokens: 200, output_tokens: 100 }, stop_reason: "end_turn",
+    }), { status: 200, headers: { "content-type": "application/json" } });
+    });
+    vi.stubGlobal("fetch", fetchMock);
+    const call = await callBlindArbitratorV2({ packetId: "blind-v2-test-packet" }, "deepseek-v4-pro");
+    expect(String(fetchMock.mock.calls[0][0])).toBe("https://deepseek.test/anthropic/v1/messages");
+    expect(call.output?.primaryRole).toBe("Distributor");
+    expect(call).toMatchObject({ actualModel: "deepseek-v4-pro", attempts: 1, retries: 0 });
   });
 });

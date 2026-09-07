@@ -2,6 +2,8 @@
 
 Current status (2026-09-07): completed. Product E2E reported a +22.69 Macro Slot Utility@30 advantage and won 7/8 cells, but the formal conclusion is inconclusive because the frozen 64-company independent blind-calibration gate failed. Total experiment spend was USD 24.9223087090, including invalidated attempts and shared evaluation; no USD 40 checkpoint or USD 100 budget warning was reached. The deterministic post-run audit corrects a reporting-only provider-attribution defect without changing frozen candidates, scores, blind decisions or win gates.
 
+Next-evaluation blind protocol: [blind-audit-v2.0.0.json](config/blind-audit-v2.0.0.json). It does not rewrite the completed v1.1.6 result. V2 uses 48 representative cases for pass/fail and 16 deliberately difficult cases for diagnostics, two independent high-capability provider/model families, and a third decision only for material disagreement. Role-family agreement replaces exact subtype agreement as the primary role gate; exact subtype remains visible. Qualification components, within-cell ranking, citation-ID validity and claim entailment are reported separately.
+
 Post-completion infrastructure repair: future product-cell artifacts now retain a minimal public candidate-to-provider attribution projection, frozen-arm reuse restores that projection from the source raw checkpoint, and the report consumes the projection directly. Shared-evaluation model events attribute aggregate stage volume once while retaining separate token/cost events for routine and escalation models. These changes do not rewrite the completed v1.1.6 artifacts; `POST_RUN_AUDIT.v1.0.16` remains the authoritative correction for that run.
 
 This directory contains the preregistered protocol, frozen configuration, prompts, schemas, runtime checkpoints and final reports for Cudy's first formal end-to-end search evaluation.
@@ -23,6 +25,11 @@ No paid experiment calls may run before the preregistration commit is pushed. Co
 - [Frozen experiment configuration](config/experiment.v1.0.0.json)
 - [Gemini control prompt](config/gemini-control-prompt.md)
 - [Independent blind-judge rubric](config/blind-judge-rubric.md)
+- [Next-evaluation blind-audit protocol v2](config/blind-audit-v2.0.0.json)
+- [Next-evaluation independent judge rubric v2](config/blind-judge-rubric-v2.md)
+- [Next-evaluation conditional arbitration rubric v2](config/blind-judge-arbitration-rubric-v2.md)
+- [Next-evaluation blind output schema v2](schemas/blind-judge-output-v2.schema.json)
+- [Next-evaluation sampling, consensus and metrics implementation v2](lib/blind-audit-v2.ts)
 - [Official list-price rate card](config/official-rate-card.v1.json)
 - [Frozen final report](artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/final/SEARCH_E2E_EVALUATION_REPORT.v1.0.15.md)
 - [Post-run audit and provider-attribution correction](artifacts/runs/2026-09-06-uk-mx-search-e2e-v1-1-6/final/POST_RUN_AUDIT.v1.0.16.md)

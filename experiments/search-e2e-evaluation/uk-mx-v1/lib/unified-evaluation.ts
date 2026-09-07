@@ -4,6 +4,7 @@ import type { LeadSearchPlan } from "@/lib/assistant/types";
 import { LeadEvidenceCorrectionAgent } from "@/lib/leads/workflow/evidence-correction-agent";
 import { collectLeadEvidence } from "@/lib/leads/workflow/discovery";
 import { LeadQualificationAgent } from "@/lib/leads/workflow/qualification-agent";
+import { isCurrentLeadScoringEvidence } from "@/lib/leads/evidence-snapshot";
 import type { CorrectedLeadWorkflowCandidate, LeadMarketPlaybook, LeadWorkflowCandidate,
   WorkflowModelUsage } from "@/lib/leads/workflow/types";
 
@@ -34,6 +35,7 @@ export interface UnifiedCompanyRecord {
   isRealOperatingCompany: boolean;
   operatesInTargetMarket: boolean;
   evidence: Array<{ id: string; url: string; title: string; excerpt: string; sourceType: string }>;
+  blindAuditEvidence?: Array<{ id: string; url: string; title: string; excerpt: string; sourceType: string }>;
   source: "product-reused" | "gemini-unique-evaluated";
   assessmentModel: string;
 }
@@ -92,6 +94,8 @@ function productRecord(cell: ExperimentCell, candidate: ProductFinalCandidate): 
     eligibilityStatus: candidate.eligibilityStatus, isRealOperatingCompany: true, operatesInTargetMarket: true,
     evidence: candidate.evidence.map((item) => ({ id: item.id, url: item.url, title: item.title,
       excerpt: item.excerpt, sourceType: item.sourceType })), source: "product-reused",
+    ...(candidate.blindAuditEvidence ? { blindAuditEvidence: candidate.blindAuditEvidence.map((item) => ({ id: item.id,
+      url: item.url, title: item.title, excerpt: item.excerpt, sourceType: item.sourceType })) } : {}),
     assessmentModel: "product-current-run" };
 }
 
@@ -279,6 +283,10 @@ export async function evaluateControlUniqueGroup(cell: ExperimentCell, inputs: C
       evidence: candidate.evidence.filter((item) => relied.has(item.id)).map((item) => ({ id: item.id,
         url: item.url, title: item.title.slice(0, 300), excerpt: item.excerpt.slice(0, 800),
         sourceType: item.sourceType })), source: "gemini-unique-evaluated" as const,
+      blindAuditEvidence: candidate.evidence.filter((item) =>
+        isCurrentLeadScoringEvidence(item, candidate.evidenceSnapshotRunId)).map((item) => ({ id: item.id,
+        url: item.url, title: item.title.slice(0, 300), excerpt: item.excerpt.slice(0, 800),
+        sourceType: item.sourceType })),
       assessmentModel: assessment.model }];
   });
   const recordByCandidateId = new Map(records.map((item) => {
