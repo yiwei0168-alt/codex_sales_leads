@@ -1,0 +1,129 @@
+{
+  "experimentId": "search-e2e-eval-co-v2.0.0",
+  "runId": "2026-09-08-co-search-e2e-v2",
+  "status": "preregistered-pending-preflight",
+  "objective": "Compare the current cold-start product end-to-end company-search workflow with an un-tuned Gemini Full baseline in Colombia.",
+  "arms": {
+    "gemini-native": {
+      "model": "gemini-3.6-flash",
+      "tool": "google_search",
+      "interactionsPerCell": 1,
+      "maximumTransportAttempts": 2,
+      "followUpPrompts": 0,
+      "postSearchEvidenceBeforeFreeze": false,
+      "preserveProviderOrder": true
+    },
+    "product-e2e": {
+      "hybridSearchPolicy": "config/lead-search/hybrid-search-v1.0.0.json",
+      "workflowPolicy": "config/lead-workflow/end-to-end-v2.0.0.json",
+      "runtimePolicy": "config/lead-workflow/runtime-policy-v3.0.0.json",
+      "costQualityPolicy": "config/lead-workflow/cost-quality-policy-v3.0.0.json",
+      "scoringPolicy": "config/lead-scoring/policy-v2.0.0.json",
+      "blindAuditPolicy": "experiments/search-e2e-evaluation/co-v2/config/blind-audit-v2.1.0.json",
+      "models": {
+        "discoveryGateRoutine": "deepseek-v4-flash",
+        "roleCorrectionRoutine": "deepseek-v4-flash",
+        "qualificationRoutine": "deepseek-v4-flash",
+        "materialEscalation": "deepseek-v4-pro"
+      },
+      "stopAfter": "ranked-scored-companies",
+      "excludedOutputs": ["cooperation-paths", "development-strategy", "development-email", "contacts"]
+    }
+  },
+  "coldStart": {
+    "allowFrozenProductKnowledge": true,
+    "allowFrozenWorkflowPolicies": true,
+    "allowHistoricalCandidates": false,
+    "allowHistoricalEvidence": false,
+    "allowCachedPages": false,
+    "allowHistoricalScores": false,
+    "allowPrivateCompanyMemory": false,
+    "allowPriorBenchmarkCompanies": false,
+    "allowCrossArmVisibilityBeforeFreeze": false
+  },
+  "markets": [
+    { "countryCode": "CO", "countryName": "Colombia", "primaryLanguage": "es", "supplementaryLanguages": ["en"] }
+  ],
+  "categories": [
+    { "id": "distribution", "label": "Distributor/VAD" },
+    { "id": "resale", "label": "Reseller/VAR" },
+    { "id": "retail", "label": "Retailer/E-tailer" },
+    { "id": "si-msp", "label": "SI/MSP" }
+  ],
+  "sample": {
+    "slotsPerArmPerCell": 50,
+    "cells": 4,
+    "slotsPerArm": 200,
+    "totalSlots": 400,
+    "missingSlotUtility": 0,
+    "duplicateSlotUtility": 0,
+    "wrongRoleSlotUtility": 0,
+    "invalidSlotUtility": 0
+  },
+  "thresholds": { "qualified": 65, "highValue": 75 },
+  "primaryMetric": "macro-mean-slot-utility-at-50",
+  "bootstrap": { "iterations": 10000, "confidenceLevel": 0.95, "stratifyByCell": true, "seed": 20260908 },
+  "executionOrder": [
+    { "sequence": 1, "cellId": "CO-retail", "countryCode": "CO", "categoryId": "retail", "armStartOrder": ["gemini-native", "product-e2e"] },
+    { "sequence": 2, "cellId": "CO-distribution", "countryCode": "CO", "categoryId": "distribution", "armStartOrder": ["product-e2e", "gemini-native"] },
+    { "sequence": 3, "cellId": "CO-si-msp", "countryCode": "CO", "categoryId": "si-msp", "armStartOrder": ["gemini-native", "product-e2e"] },
+    { "sequence": 4, "cellId": "CO-resale", "countryCode": "CO", "categoryId": "resale", "armStartOrder": ["product-e2e", "gemini-native"] }
+  ],
+  "winGate": {
+    "minimumMacroUtilityGain": 5,
+    "minimumCellsWon": 3,
+    "minimumMarketDelta": -3,
+    "minimumCellDelta": -5,
+    "requireMoreUniqueHighValueCandidates": true,
+    "requireBootstrapLowerBoundAboveZero": true,
+    "requireBlindAuditPass": true
+  },
+  "blindAudit": {
+    "protocolVersion": "2.1.0",
+    "judgeModels": ["anthropic/claude-opus-5", "openai/gpt-5.6-sol"],
+    "arbitratorModel": "deepseek-v4-pro",
+    "fallbackMode": "codex-in-session",
+    "allowWebSearch": false,
+    "representativePerCell": 6,
+    "stressPerCell": 2,
+    "representativeTotal": 24,
+    "stressTotal": 8,
+    "total": 32
+  },
+  "time": {
+    "latencyIsWinGate": false,
+    "requireSimilarArmDuration": false,
+    "recordWallClockAndSummedProviderTime": true,
+    "recordStageLatency": true
+  },
+  "cost": {
+    "hardBudgetUsd": 50,
+    "reviewThresholdUsd": [10, 20, 30],
+    "pauseWhenForecastMayExceedBudget": true,
+    "requireUserDecisionBeforeDesignOptimization": true,
+    "ledgers": ["gemini-native-arm", "product-e2e-arm", "evaluation-overhead"],
+    "primaryComparisonBasis": "official-list-price",
+    "alsoReportAccountCashCost": true,
+    "primaryCurrency": "USD",
+    "secondaryCurrency": "CNY",
+    "unknownUsageCallReserveUsd": 0.01,
+    "initialForecastUsd": {
+      "expected": 32,
+      "upper": 46,
+      "basis": "Scaled from the verified UK/Mexico run by total requested slots, with additional allowance for 50-candidate cell completion and dual-judge blind audit."
+    }
+  },
+  "anomalyThresholds": {
+    "duplicateRate": 0.70,
+    "lightGateDiscardRate": 0.60,
+    "unitCostVsRollingMedianMultiplier": 2,
+    "cellCostVsForecastMultiplier": 1.5,
+    "citationAlignmentMinimum": 0.98
+  },
+  "git": {
+    "branch": "experiment/search-e2e-colombia-v2",
+    "preregisterBeforePaidCalls": true,
+    "checkpointAfterEveryCell": true,
+    "mergeVerifiedFinalReportToMain": true
+  }
+}

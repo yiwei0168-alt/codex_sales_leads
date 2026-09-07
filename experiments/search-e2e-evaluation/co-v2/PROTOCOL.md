@@ -1,0 +1,35 @@
+# Frozen protocol: Colombia search E2E v2.0.0
+
+## Hypothesis and arms
+
+The experiment tests whether the current product search, evidence, primary-role correction and scoring pipeline produces higher sales-lead value than an un-tuned Gemini Full baseline in Colombia.
+
+- Control: one Gemini `gemini-3.6-flash` Interactions call with Google Search per category, no follow-up or evidence repair before output freeze, provider order preserved.
+- Product: the current versioned hybrid search, fresh-evidence, primary-role correction and score-only qualification workflow. No cooperation path, strategy, email or contact output.
+- Both arms are cold start: no prior candidates, evidence, page cache, scores, private company memory or cross-arm visibility. Frozen product knowledge and policies are allowed. Within-run call, identity, evidence and correction caches remain mandatory to prevent repeated work.
+
+## Sample and execution
+
+Colombia is the only market. The four cells are Distributor/VAD, Reseller/VAR, Retailer/E-tailer and SI/MSP. Each arm receives 50 slots per cell, for 200 slots per arm and 400 total. Missing, duplicate, invalid and wrong-primary-role slots receive zero utility.
+
+Cell order and arm-start order are frozen in `config/experiment.v2.0.0.json`. Arms start together inside a cell. Runtime is recorded separately and is not a quality gate.
+
+## Shared evaluation and metrics
+
+Product candidates keep their current-run evidence and score. After both result sets are frozen, only Gemini-unique companies receive the identical fresh-evidence, role-correction and score-only mechanism. Overlap reuses one record, so no candidate is re-enriched or rescored merely because both arms found it.
+
+Primary metric: macro mean Slot Utility@50. Diagnostics include NDCG@50, valid/65+/75+ counts, unique high-value companies, per-category deltas, provider fractional contribution and a 10,000-iteration cell-stratified bootstrap.
+
+Frozen win gates: macro gain at least 5 points; Product wins at least 3/4 cells; market delta at least -3; worst-cell delta at least -5; more unique 75+ companies; bootstrap lower bound above zero; blind calibration passes.
+
+## Blind audit v2.1
+
+Each cell contributes six deterministic representative cases and two diagnostic stress cases, for 24 representative and 8 stress packets. Representative cases alone control gates. Evidence selection is independent of scoring citations and cannot trigger new search.
+
+Claude Opus 5 and OpenAI GPT-5.6-sol independently judge every packet without Web search. A DeepSeek Pro arbitrator is called only when scores differ by at least eight points or a critical identity, market, role-family, threshold or eligibility state conflicts. Cached valid decisions are reused before retry. If a required provider is unavailable, the run records the error and uses the previously authorized in-conversation Codex fallback only through a separately frozen decision checkpoint; no silent same-family substitution is allowed.
+
+## Budget and telemetry
+
+USD 50 is a hard experiment-wide cap across Control, Product and shared evaluation. Mandatory reviews occur at USD 10, 20 and 30. Every review records incurred and forecast cost, ledger/stage splits, input/raw/valid/downstream-used volume, discard reasons, latency and retries. If the expected or conservative completion forecast may exceed USD 50, the runner pauses before further paid work for user confirmation; the experiment design is not silently changed.
+
+Every workflow stage records the permanent efficiency fields required by `AGENTS.md`. Unexpected underfill, provider failure, unpriced calls, schema failures, abnormal duplicate/discard rates or cost spikes are reported immediately and preserved rather than erased.

@@ -89,6 +89,15 @@ Every route and stage records input count, raw output, normalized output, new un
 
 ## Version history
 
+### Colombia formal evaluation harness v2.0.0 — 2026-09-08
+
+- Freezes Colombia across the four core categories with 50 requested candidates per arm/category.
+- Preserves production within-run search, identity, evidence and role-correction reuse while disabling historical cold-start reads and writes.
+- Evaluates only Gemini-unique companies after arm freeze, so overlap never repeats evidence or scoring work.
+- Applies blind-audit v2.1 with 24 representative and 8 stress packets, dual independent judges and conditional arbitration.
+- Enforces a USD 50 hard cap with real-cost checks at USD 10, 20 and 30; every checkpoint records forecast, stage/ledger cost, input/raw/valid/used volume, discard reasons, latency and retries.
+- Creates no external input/output or cost during preregistration. Measured route contribution and unit cost are recorded by the formal run rather than inferred.
+
 ### v1.3.0 category purity and cost-accounting repair — 2026-09-07
 
 - Rejects malformed DNS labels, punctuation-contaminated URLs and public-suffix-only identities such as `co.uk` or `com.mx` before any model gate or paid evidence step.

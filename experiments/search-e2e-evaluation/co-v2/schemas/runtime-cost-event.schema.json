@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "search-e2e-runtime-cost-event-v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["eventId", "runId", "ledger", "stage", "provider", "startedAt", "completedAt", "latencyMs", "attempts", "retries", "fallbackUsed", "status", "usage", "volume", "officialListPriceUsd", "budgetCostUsd", "cashCostBasis", "costAnomalies"],
+  "properties": {
+    "eventId": { "type": "string" },
+    "runId": { "type": "string" },
+    "cellId": { "type": "string" },
+    "arm": { "type": "string", "enum": ["gemini-native", "product-e2e", "shared-evaluation"] },
+    "ledger": { "type": "string", "enum": ["gemini-native-arm", "product-e2e-arm", "evaluation-overhead"] },
+    "stage": { "type": "string" },
+    "provider": { "type": "string" },
+    "requestedModel": { "type": "string" },
+    "actualModel": { "type": "string" },
+    "startedAt": { "type": "string", "format": "date-time" },
+    "completedAt": { "type": "string", "format": "date-time" },
+    "latencyMs": { "type": "number", "minimum": 0 },
+    "attempts": { "type": "integer", "minimum": 0 },
+    "retries": { "type": "integer", "minimum": 0 },
+    "fallbackUsed": { "type": "boolean" },
+    "status": { "type": "string", "enum": ["completed", "failed", "skipped"] },
+    "usage": { "type": "object" },
+    "volume": { "type": "object" },
+    "accountCashCostUsd": { "type": "number", "minimum": 0 },
+    "notes": { "type": "array", "items": { "type": "string" } },
+    "officialListPriceUsd": { "type": ["number", "null"], "minimum": 0 },
+    "budgetCostUsd": { "type": ["number", "null"], "minimum": 0 },
+    "cashCostBasis": { "type": "string", "enum": ["account-observed", "official-conservative", "unknown"] },
+    "costAnomalies": { "type": "array", "items": { "type": "string" } }
+  }
+}
