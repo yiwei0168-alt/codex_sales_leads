@@ -1,0 +1,224 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-08-co-search-e2e-v2",
+  "cellId": "CO-retail",
+  "arm": "gemini-native",
+  "startedAt": "2026-09-07T20:37:32.243Z",
+  "completedAt": "2026-09-07T20:37:49.019Z",
+  "wallClockMs": 16776,
+  "requestedModel": "gemini-3.6-flash",
+  "actualModel": "gemini-3.6-flash",
+  "searchQueries": 12,
+  "finalCandidates": [
+    {
+      "rank": 1,
+      "companyName": "Alkosto",
+      "officialWebsite": "https://www.alkosto.com",
+      "marketSignal": "Operates major physical retail stores across Colombia (Bogotá, Medellín, Cali, etc.) and nationwide e-commerce.",
+      "roleSignal": "Consumer electronics retailer and e-tailer merchandising home technology, networking, appliances, and computers.",
+      "relevanceSignal": "Directly sells entry-level and mid-range Wi-Fi routers, mesh systems, and repeaters from competing brands like TP-Link and Tenda to home and SOHO buyers.",
+      "evidenceUrls": [
+        "https://www.alkosto.com/tecnologia/redes-routers-wifi/c/redes-routers-wifi"
+      ]
+    },
+    {
+      "rank": 2,
+      "companyName": "Éxito",
+      "officialWebsite": "https://www.exito.com",
+      "marketSignal": "Colombia's largest hypermarket chain and major nationwide e-commerce operator.",
+      "roleSignal": "Retailer and e-tailer offering consumer electronics, home technology, and computer networking products.",
+      "relevanceSignal": "Stocked with home Wi-Fi routers, mesh systems, and repeaters (TP-Link Deco, Mercusys, Google Wifi), ideal for Cudy's value connectivity lineup.",
+      "evidenceUrls": [
+        "https://www.exito.com"
+      ]
+    },
+    {
+      "rank": 3,
+      "companyName": "Ktronix",
+      "officialWebsite": "https://www.ktronix.com",
+      "marketSignal": "Nationwide specialized consumer electronics retail chain with prominent physical stores in Colombia.",
+      "roleSignal": "Specialized consumer technology retail and online store targeting home and SOHO users.",
+      "relevanceSignal": "Retails consumer networking devices including Wi-Fi 6/7 routers, mesh systems, and range extenders.",
+      "evidenceUrls": [
+        "https://www.ktronix.com"
+      ]
+    },
+    {
+      "rank": 4,
+      "companyName": "Panamericana",
+      "officialWebsite": "https://www.panamericana.com.co",
+      "marketSignal": "Extensive physical store network throughout major Colombian cities and nationwide online shop.",
+      "roleSignal": "Retailer of stationery, office technology, computers, and home connectivity equipment.",
+      "relevanceSignal": "Merchandises consumer Wi-Fi routers, Mercusys/TP-Link routers, switches, and network adapters.",
+      "evidenceUrls": [
+        "https://www.panamericana.com.co"
+      ]
+    },
+    {
+      "rank": 5,
+      "companyName": "Falabella Colombia",
+      "officialWebsite": "https://www.falabella.com.co",
+      "marketSignal": "Major department store chain and general retail e-commerce platform operating in Colombia.",
+      "roleSignal": "Consumer-facing retail chain and online store merchandising consumer technology and networking.",
+      "relevanceSignal": "Sells Wi-Fi routers, unmanaged switches, and range extenders from Cudy benchmark brands (TP-Link, Mercusys, Tenda, D-Link).",
+      "evidenceUrls": [
+        "https://www.falabella.com.co"
+      ]
+    },
+    {
+      "rank": 6,
+      "companyName": "Alkomprar",
+      "officialWebsite": "https://www.alkomprar.com",
+      "marketSignal": "Dedicated retail chain with physical outlets across multiple Colombian regions and an active web store.",
+      "roleSignal": "Consumer electronics retailer focused on flexible consumer financing and direct sales.",
+      "relevanceSignal": "Sells home Wi-Fi routers, mesh Wi-Fi kits, and signal extenders.",
+      "evidenceUrls": [
+        "https://www.alkomprar.com"
+      ]
+    },
+    {
+      "rank": 7,
+      "companyName": "Tauret Computadores",
+      "officialWebsite": "https://tauretcomputadores.com",
+      "marketSignal": "Physical store presence in CC Unilago (Bogotá) and nationwide shipping via online store.",
+      "roleSignal": "Specialized computer hardware, gaming, and technology e-tailer and retail store.",
+      "relevanceSignal": "Merchandises desktop switches, home Wi-Fi routers, and mesh systems (Tenda, TP-Link, Linksys).",
+      "evidenceUrls": [
+        "https://tauretcomputadores.com"
+      ]
+    },
+    {
+      "rank": 8,
+      "companyName": "Clones y Periféricos",
+      "officialWebsite": "https://clonesyperifericos.com",
+      "marketSignal": "Physical retail stores in Unilago (Bogotá), Monterrey (Medellín), Cali, and Barranquilla, plus online sales.",
+      "roleSignal": "Computer hardware retail store and e-tailer serving consumers, gamers, and SOHO clients.",
+      "relevanceSignal": "Offers networking accessories, switches, and routers tailored for home setup and SOHO networking.",
+      "evidenceUrls": [
+        "https://clonesyperifericos.com"
+      ]
+    },
+    {
+      "rank": 9,
+      "companyName": "Compulago",
+      "officialWebsite": "https://compulago.com",
+      "marketSignal": "Retail physical stores across northern Colombia and an online technology shop shipping nationwide.",
+      "roleSignal": "Consumer electronics and computing retailer/e-tailer.",
+      "relevanceSignal": "Catalog includes Wi-Fi routers, network extenders, and SMB/home Ethernet switches.",
+      "evidenceUrls": [
+        "https://compulago.com"
+      ]
+    },
+    {
+      "rank": 10,
+      "companyName": "Macrotics",
+      "officialWebsite": "https://macrotics.com",
+      "marketSignal": "Headquartered in Bogotá, Colombia with online store fulfillment across the country.",
+      "roleSignal": "Specialized e-tailer and retail store for telecommunications, networking, and home Wi-Fi.",
+      "relevanceSignal": "Distributes and retails SOHO routers, desktop switches, mesh Wi-Fi, and fiber ONTs.",
+      "evidenceUrls": [
+        "https://macrotics.com"
+      ]
+    },
+    {
+      "rank": 11,
+      "companyName": "Microcell Colombia",
+      "officialWebsite": "https://www.microcell.co",
+      "marketSignal": "Physical store location in Bogotá and specialized e-commerce platform in Colombia.",
+      "roleSignal": "Tech e-tailer focused on networking, Wi-Fi connectivity, and office electronics.",
+      "relevanceSignal": "Catalog covers access points, switches, PoE injectors, and wireless routers.",
+      "evidenceUrls": [
+        "https://www.microcell.co"
+      ]
+    },
+    {
+      "rank": 12,
+      "companyName": "Esfera Digital",
+      "officialWebsite": "https://www.esferadigital.co",
+      "marketSignal": "Online technology store delivering across Colombia.",
+      "roleSignal": "Computer hardware and electronics e-tailer for retail customers and individual buyers.",
+      "relevanceSignal": "Retails Tenda, Mercusys, and TP-Link routers, switches, and Wi-Fi adapters.",
+      "evidenceUrls": [
+        "https://www.esferadigital.co"
+      ]
+    },
+    {
+      "rank": 13,
+      "companyName": "Coltienda (Colombiatel)",
+      "officialWebsite": "https://www.coltienda.co",
+      "marketSignal": "Colombian online store shipping nationwide.",
+      "roleSignal": "Specialized telecommunications and consumer networking e-tailer.",
+      "relevanceSignal": "Stocks desktop routers, switches, 4G/LTE routers, and wireless networking accessories.",
+      "evidenceUrls": [
+        "https://www.coltienda.co"
+      ]
+    },
+    {
+      "rank": 14,
+      "companyName": "Tecno Shopping Colombia",
+      "officialWebsite": "https://tecnoshopping.com.co",
+      "marketSignal": "Colombian e-commerce tech store serving home and local business buyers nationwide.",
+      "roleSignal": "E-tailer of consumer tech, POS equipment, and home connectivity products.",
+      "relevanceSignal": "Retails TP-Link and D-Link wireless routers, desktop switches, and range extenders.",
+      "evidenceUrls": [
+        "https://tecnoshopping.com.co"
+      ]
+    },
+    {
+      "rank": 15,
+      "companyName": "Capital Colombia",
+      "officialWebsite": "https://www.capitalcolombia.com",
+      "marketSignal": "Based in Bogotá with online ordering serving all major Colombian cities.",
+      "roleSignal": "Online tech retailer selling hardware, computer parts, and home networking items.",
+      "relevanceSignal": "Lists Wi-Fi extenders, routers, and networking accessories suitable for Cudy's product focus.",
+      "evidenceUrls": [
+        "https://www.capitalcolombia.com"
+      ]
+    }
+  ],
+  "missingSlots": 35,
+  "warnings": [],
+  "costEvents": [
+    {
+      "eventId": "CO-retail:gemini-control",
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "cellId": "CO-retail",
+      "arm": "gemini-native",
+      "ledger": "gemini-native-arm",
+      "stage": "native-search",
+      "provider": "gemini-full",
+      "requestedModel": "gemini-3.6-flash",
+      "actualModel": "gemini-3.6-flash",
+      "startedAt": "2026-09-07T20:37:32.243Z",
+      "completedAt": "2026-09-07T20:37:49.019Z",
+      "latencyMs": 16776,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 561,
+        "cachedInputTokens": 238,
+        "outputTokens": 2188,
+        "reasoningTokens": 0,
+        "groundingQueries": 12
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 15,
+        "validOutputItems": 15,
+        "downstreamUsedItems": 15,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "one interaction",
+        "no follow-up",
+        "provider order preserved"
+      ],
+      "officialListPriceUsd": 0.1764651,
+      "budgetCostUsd": 0.1764651,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    }
+  ]
+}

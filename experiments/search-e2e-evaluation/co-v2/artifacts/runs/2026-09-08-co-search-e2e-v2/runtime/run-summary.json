@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "runId": "2026-09-08-co-search-e2e-v2",
   "experimentId": "search-e2e-eval-co-v2.0.0",
-  "status": "preflight-passed",
+  "status": "running",
   "createdAt": "2026-09-07T20:36:48.680Z",
-  "updatedAt": "2026-09-07T20:36:48.682Z",
+  "updatedAt": "2026-09-07T20:37:49.061Z",
   "blindJudgeModel": "blind-audit-v2.1-dual-judge",
   "preflightChecks": [
     {
@@ -76,11 +76,100 @@
       }
     }
   ],
-  "completedArmKeys": [],
+  "completedArmKeys": [
+    "CO-retail:gemini-native"
+  ],
   "completedCellIds": [],
   "completedEvaluationCellIds": [],
   "completedBlindPacketIds": [],
   "reportedBudgetThresholdsUsd": [],
-  "anomalies": [],
-  "costEvents": []
+  "anomalies": [
+    {
+      "at": "2026-09-07T20:37:49.061Z",
+      "cellId": "CO-retail",
+      "severity": "fatal",
+      "code": "cell-arm-failed",
+      "detail": "CO-retail Kimi intent plan diverged from the frozen task semantics: {\"expected\":{\"countryCode\":\"CO\",\"targetCount\":50,\"objective\":\"new-market\",\"roles\":[\"Retailer\",\"E-tailer\"]},\"actual\":{\"countryCode\":\"CO\",\"targetCount\":20,\"objective\":\"new-market\",\"roles\":[\"Distributor\",\"VAD\",\"VAR\",\"Dealer\",\"Reseller\",\"Retailer\",\"E-tailer\",\"SI\",\"Installer\",\"MSP\",\"ISP\"]}}"
+    }
+  ],
+  "costEvents": [
+    {
+      "eventId": "CO-retail:intent:1",
+      "cellId": "CO-retail",
+      "stage": "intent",
+      "provider": "kimi",
+      "requestedModel": "kimi-k2.6",
+      "actualModel": "kimi-k2.6",
+      "startedAt": "2026-09-07T20:37:32.211Z",
+      "completedAt": "2026-09-07T20:37:46.618Z",
+      "latencyMs": 14402,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 559,
+        "cachedInputTokens": 0,
+        "outputTokens": 1166
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "confirmedPlanMismatch": 1
+        }
+      },
+      "notes": [],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.0051770629081956095,
+      "budgetCostUsd": 0.0051770629081956095,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:gemini-control",
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "cellId": "CO-retail",
+      "arm": "gemini-native",
+      "ledger": "gemini-native-arm",
+      "stage": "native-search",
+      "provider": "gemini-full",
+      "requestedModel": "gemini-3.6-flash",
+      "actualModel": "gemini-3.6-flash",
+      "startedAt": "2026-09-07T20:37:32.243Z",
+      "completedAt": "2026-09-07T20:37:49.019Z",
+      "latencyMs": 16776,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 561,
+        "cachedInputTokens": 238,
+        "outputTokens": 2188,
+        "reasoningTokens": 0,
+        "groundingQueries": 12
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 15,
+        "validOutputItems": 15,
+        "downstreamUsedItems": 15,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "one interaction",
+        "no follow-up",
+        "provider order preserved"
+      ],
+      "officialListPriceUsd": 0.1764651,
+      "budgetCostUsd": 0.1764651,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    }
+  ]
 }
