@@ -142,4 +142,48 @@ describe("Kimi intent and planning agent", () => {
     expect(result.leadPlan?.roles).toEqual(["Agent", "Brand Owner"]);
     expect(result.leadPlan?.opportunityTargets).toEqual(["OEM/ODM"]);
   });
+
+  it("retries one invalid Kimi structured response and aggregates all attempt usage", async () => {
+    vi.stubEnv("KIMI_API_KEY", "test-key");
+    const valid = { intent: "lead_search", confidence: 0.95, internal_question: "",
+      external_questions: [], reply: "", requires_k3_planning: false, planning_reason: "standard",
+      lead_plan: { country: "Colombia", country_code: "CO", objective: "new-market",
+        roles: ["Retailer", "E-tailer"], target_count: 50, query_language: "es" } };
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce(new Response(JSON.stringify({ model: "kimi-k2.6",
+        choices: [{ message: { content: '{"intent":"lead_search"' } }],
+        usage: { prompt_tokens: 10, completion_tokens: 20, total_tokens: 30 } }), { status: 200 }))
+      .mockResolvedValueOnce(new Response(JSON.stringify({ model: "kimi-k2.6",
+        choices: [{ message: { content: JSON.stringify(valid) } }],
+        usage: { prompt_tokens: 11, completion_tokens: 21, total_tokens: 32 } }), { status: 200 }));
+    const result = await planAssistantRequest("Busca 50 Retailer/E-tailer en Colombia", [], fetchMock);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(result).toMatchObject({ plannerSource: "kimi-light", leadPlan: { countryCode: "CO",
+      targetCount: 50, roles: ["Retailer", "E-tailer"] }, plannerCalls: [expect.objectContaining({
+      providerId: "kimi", inputTokens: 21, outputTokens: 41, totalTokens: 62, attempts: 2, retries: 1,
+      succeeded: true })] });
+  });
+
+  it("uses a disclosed equivalent provider after bounded Kimi structured failures", async () => {
+    vi.stubEnv("KIMI_API_KEY", "test-key");
+    vi.stubEnv("DEEPSEEK_API_KEY", "fallback-key");
+    const fallback = { intent: "lead_search", confidence: 0.9, internal_question: "",
+      external_questions: [], reply: "", requires_k3_planning: false, planning_reason: "standard",
+      lead_plan: { country: "Colombia", country_code: "CO", objective: "new-market",
+        roles: ["Retailer", "E-tailer"], target_count: 50, query_language: "es" } };
+    const invalid = () => new Response(JSON.stringify({ model: "kimi-k2.6",
+      choices: [{ message: { content: '{"intent":"lead_search"' } }],
+      usage: { prompt_tokens: 10, completion_tokens: 20, total_tokens: 30 } }), { status: 200 });
+    const fetchMock = vi.fn().mockResolvedValueOnce(invalid()).mockResolvedValueOnce(invalid())
+      .mockResolvedValueOnce(new Response(JSON.stringify({ model: "deepseek-v4-flash",
+        choices: [{ finish_reason: "stop", message: { content: JSON.stringify(fallback) } }],
+        usage: { prompt_tokens: 30, completion_tokens: 40, total_tokens: 70 } }), { status: 200 }));
+    const result = await planAssistantRequest("Busca 50 Retailer/E-tailer en Colombia", [], fetchMock);
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+    expect(result).toMatchObject({ plannerSource: "provider-fallback", plannerModel: "deepseek-v4-flash",
+      leadPlan: { countryCode: "CO", targetCount: 50, roles: ["Retailer", "E-tailer"] },
+      plannerCalls: [expect.objectContaining({ providerId: "kimi", succeeded: false, attempts: 2 }),
+        expect.objectContaining({ providerId: "deepseek", fallbackUsed: true, succeeded: true })] });
+    expect(result.warnings.join(" ")).toContain("temporary equivalent provider");
+  });
 });

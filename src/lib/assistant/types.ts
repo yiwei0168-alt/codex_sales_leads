@@ -33,7 +33,7 @@ export interface IntentPlan {
   leadPlan?: LeadSearchPlan;
   reply?: string;
   plannerModel: string;
-  plannerSource: "kimi-light" | "kimi-k3" | "deterministic-fallback";
+  plannerSource: "kimi-light" | "kimi-k3" | "provider-fallback" | "deterministic-fallback";
   plannerCalls?: Array<{
     requestedModel: string;
     actualModel: string;
@@ -44,6 +44,8 @@ export interface IntentPlan {
     latencyMs: number;
     attempts: number;
     retries: number;
+    providerId?: string;
+    fallbackUsed?: boolean;
     succeeded?: boolean;
     usageAvailable?: boolean;
     failureReason?: string;

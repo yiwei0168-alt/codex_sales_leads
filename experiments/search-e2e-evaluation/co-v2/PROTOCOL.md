@@ -1,6 +1,8 @@
-# Frozen protocol: Colombia search E2E v2.0.1
+# Frozen protocol: Colombia search E2E v2.0.2
 
 v2.0.1 supersedes the execution guard in v2.0.0 after the first Retail attempt exposed a Kimi constraint-copy failure before Product discovery. Kimi remains mandatory for lightweight intent/template-fit recognition, while the already user-confirmed preregistered country, count and category are authoritative for execution. Divergence is retained as a warning and efficiency loss. The valid unchanged Gemini control and all sunk cost remain in the same ledger.
+
+v2.0.2 supersedes only intent recovery after the next Retail attempt returned truncated JSON at the exact former 2,000-token ceiling. Invalid structured output now receives one bounded Kimi retry with aggregate attempt usage; the light-response ceiling is 4,000 tokens. If Kimi remains invalid/unavailable, disclosed DeepSeek Flash supplies an equivalent structured intent plan. Deterministic fallback remains an observable degraded state and is not accepted in the formal run. Search, evidence, scoring, samples and win gates remain unchanged.
 
 ## Hypothesis and arms
 

@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import type { ChannelRole } from "@/lib/domain";
+import { DeepSeekProvider } from "@/providers/deepseek";
 import { interpretAssistantRequest, resolveCountry } from "./intent";
 import type { AssistantConversationTurn, IntentPlan, LeadSearchPlan } from "./types";
 
@@ -206,7 +207,7 @@ async function invokeKimiIntent(options: {
   const requestBody = JSON.stringify({
     model: options.model,
     response_format: { type: "json_object" },
-    max_tokens: options.complexityCheck ? 2_000 : 4_000,
+    max_tokens: 4_000,
     messages: [
       {
         role: "system",
@@ -244,19 +245,25 @@ async function invokeKimiIntent(options: {
   let body: KimiResponse = {};
   let status = 500;
   let attempts = 0;
+  let aggregateInputTokens = 0;
+  let aggregateCachedInputTokens = 0;
+  let aggregateOutputTokens = 0;
+  let aggregateTotalTokens = 0;
+  let anyUsage = false;
   const buildCall = (succeeded: boolean, failureReason?: string): PlannerCall => ({
     requestedModel: options.model,
     actualModel: body.model ?? options.model,
-    inputTokens: body.usage?.prompt_tokens ?? 0,
-    cachedInputTokens: body.usage?.prompt_tokens_details?.cached_tokens ?? 0,
-    outputTokens: body.usage?.completion_tokens ?? 0,
-    totalTokens: body.usage?.total_tokens
-      ?? (body.usage?.prompt_tokens ?? 0) + (body.usage?.completion_tokens ?? 0),
+    inputTokens: aggregateInputTokens,
+    cachedInputTokens: aggregateCachedInputTokens,
+    outputTokens: aggregateOutputTokens,
+    totalTokens: aggregateTotalTokens,
     latencyMs: Date.now() - startedAt,
     attempts: Math.max(1, attempts),
     retries: Math.max(0, attempts - 1),
+    providerId: "kimi",
+    fallbackUsed: false,
     succeeded,
-    usageAvailable: body.usage !== undefined,
+    usageAvailable: anyUsage,
     ...(failureReason ? { failureReason: failureReason.slice(0, 300) } : {}),
   });
   try {
@@ -270,25 +277,82 @@ async function invokeKimiIntent(options: {
       });
       status = response.status;
       body = await response.json() as KimiResponse;
-      if (response.ok) break;
+      if (body.usage) {
+        anyUsage = true;
+        aggregateInputTokens += body.usage.prompt_tokens ?? 0;
+        aggregateCachedInputTokens += body.usage.prompt_tokens_details?.cached_tokens ?? 0;
+        aggregateOutputTokens += body.usage.completion_tokens ?? 0;
+        aggregateTotalTokens += body.usage.total_tokens
+          ?? (body.usage.prompt_tokens ?? 0) + (body.usage.completion_tokens ?? 0);
+      }
+      if (response.ok) {
+        try {
+          const parsed = parseJson(body.choices?.[0]?.message?.content ?? "");
+          const validated = rawPlanSchema.safeParse(parsed);
+          if (!validated.success) {
+            const returnedIntent = parsed && typeof parsed === "object" && "intent" in parsed
+              ? String(parsed.intent).slice(0, 80) : "missing";
+            const returnedKeys = parsed && typeof parsed === "object"
+              ? Object.keys(parsed).slice(0, 12).join(",") : "none";
+            const firstIssue = validated.error.issues[0];
+            throw new Error(`Kimi plan schema invalid (intent=${returnedIntent}; keys=${returnedKeys}; path=${firstIssue?.path.join(".") || "root"}): ${firstIssue?.message ?? "invalid JSON"}`);
+          }
+          return { raw: validated.data, body, call: buildCall(true) };
+        } catch (error) {
+          if (attempt < 1) {
+            await new Promise((resolve) => setTimeout(resolve, 500));
+            continue;
+          }
+          throw error;
+        }
+      }
       const transient = response.status === 429 || response.status >= 500 || /overload|temporar/i.test(body.error?.message ?? "");
       if (!transient || attempt === 2) throw new Error(body.error?.message ?? `Kimi HTTP ${response.status}`);
       await new Promise((resolve) => setTimeout(resolve, 500 * (attempt + 1)));
     }
     if (status < 200 || status >= 300) throw new Error(body.error?.message ?? `Kimi HTTP ${status}`);
-    const parsed = parseJson(body.choices?.[0]?.message?.content ?? "");
-    const validated = rawPlanSchema.safeParse(parsed);
-    if (!validated.success) {
-      const returnedIntent = parsed && typeof parsed === "object" && "intent" in parsed ? String(parsed.intent).slice(0, 80) : "missing";
-      const returnedKeys = parsed && typeof parsed === "object" ? Object.keys(parsed).slice(0, 12).join(",") : "none";
-      const firstIssue = validated.error.issues[0];
-      throw new Error(`Kimi plan schema invalid (intent=${returnedIntent}; keys=${returnedKeys}; path=${firstIssue?.path.join(".") || "root"}): ${firstIssue?.message ?? "invalid JSON"}`);
-    }
-    return { raw: validated.data, body, call: buildCall(true) };
+    throw new Error("Kimi exhausted bounded structured-output retries");
   } catch (error) {
     const detail = error instanceof Error ? error.message : "unknown Kimi invocation error";
     throw new KimiIntentInvocationError(detail, buildCall(false, detail));
   }
+}
+
+async function invokeEquivalentIntentFallback(options: { content: string; history: AssistantConversationTurn[];
+  fetchImplementation: typeof fetch }): Promise<{ raw: z.infer<typeof rawPlanSchema>; model: string; call: PlannerCall }> {
+  const requestedModel = process.env.KIMI_INTENT_FALLBACK_MODEL?.trim() || "deepseek-v4-flash";
+  const provider = new DeepSeekProvider({ defaultModel: requestedModel,
+    fetchImplementation: options.fetchImplementation, maxAttempts: 2 });
+  const startedAt = Date.now();
+  const response = await provider.execute({ task: "assistant-intent", modelVersion: requestedModel,
+    promptVersion: `${PROMPT_VERSION}-equivalent-provider-fallback`, evidenceIds: [],
+    dataClassification: "private-workspace", tenantScope: "assistant-intent", reasoningEffort: "low",
+    input: {
+      instructions: [
+        "Classify and plan the Cudy request. Return the same top-level fields used by the Kimi intent planner.",
+        "Use lead_search only for company or sales-lead discovery. Copy every explicit country, numeric target count and named role/category exactly; never broaden named roles.",
+        "Agent, Brand Owner and OEM/ODM customer opportunities are explicit-only. Never search for OEM/ODM suppliers to Cudy.",
+        "Set requires_k3_planning only for materially complex tasks. Keep reply and planning_reason concise.",
+      ],
+      allowedRoles: CHANNEL_ROLES,
+      requiredTopLevelKeys: ["intent", "confidence", "internal_question", "external_questions", "reply",
+        "lead_plan", "requires_k3_planning", "planning_reason"],
+      recentConversation: options.history.slice(-8).map((turn) => ({ role: turn.role,
+        content: turn.content.slice(0, 4_000) })),
+      currentUserMessage: options.content.slice(0, 8_000),
+    } });
+  const validated = rawPlanSchema.safeParse(response.output);
+  if (!validated.success) {
+    throw new Error(`Equivalent intent fallback schema invalid: ${validated.error.issues[0]?.message ?? "unknown"}`);
+  }
+  const usage = response.usage;
+  return { raw: validated.data, model: response.modelVersion,
+    call: { requestedModel, actualModel: response.modelVersion,
+      providerId: response.actualProviderId ?? provider.id, fallbackUsed: true,
+      inputTokens: usage?.promptTokens ?? 0, cachedInputTokens: usage?.cachedPromptTokens ?? 0,
+      outputTokens: usage?.completionTokens ?? 0, totalTokens: usage?.totalTokens ?? 0,
+      latencyMs: response.latencyMs || Date.now() - startedAt, attempts: response.attempts ?? 1,
+      retries: response.retries ?? 0, succeeded: true, usageAvailable: Boolean(usage) } };
 }
 
 export async function planAssistantRequest(
@@ -302,22 +366,37 @@ export async function planAssistantRequest(
   const complexModel = process.env.KIMI_INTENT_MODEL?.trim() || process.env.KIMI_MODEL?.trim() || "kimi-k3";
   const completedCalls: PlannerCall[] = [];
   try {
-    const light = await invokeKimiIntent({ content, history, model: lightModel, apiKey, fetchImplementation,
-      complexityCheck: true });
-    completedCalls.push(light.call);
-    const selected = light.raw.requires_k3_planning && lightModel !== complexModel
-      ? await invokeKimiIntent({ content, history, model: complexModel, apiKey, fetchImplementation,
-        complexityCheck: false }) : light;
-    if (selected !== light) completedCalls.push(selected.call);
+    let raw: z.infer<typeof rawPlanSchema>;
+    let model: string;
+    let plannerSource: IntentPlan["plannerSource"];
+    try {
+      const light = await invokeKimiIntent({ content, history, model: lightModel, apiKey, fetchImplementation,
+        complexityCheck: true });
+      completedCalls.push(light.call);
+      const selected = light.raw.requires_k3_planning && lightModel !== complexModel
+        ? await invokeKimiIntent({ content, history, model: complexModel, apiKey, fetchImplementation,
+          complexityCheck: false }) : light;
+      if (selected !== light) completedCalls.push(selected.call);
+      raw = selected.raw;
+      model = selected.body.model ?? (selected === light ? lightModel : complexModel);
+      plannerSource = selected === light ? "kimi-light" : "kimi-k3";
+    } catch (error) {
+      if (error instanceof KimiIntentInvocationError) completedCalls.push(error.call);
+      const fallback = await invokeEquivalentIntentFallback({ content, history, fetchImplementation });
+      completedCalls.push(fallback.call);
+      raw = fallback.raw;
+      model = fallback.model;
+      plannerSource = "provider-fallback";
+    }
     const plannerCalls = completedCalls;
-    const { raw, body } = selected;
-    const model = body.model ?? (selected === light ? lightModel : complexModel);
-    const plannerSource = selected === light ? "kimi-light" as const : "kimi-k3" as const;
+    const plannerWarnings = plannerSource === "provider-fallback"
+      ? [`Kimi intent failed after bounded retries; temporary equivalent provider ${model} supplied the structured plan.`]
+      : [];
     if (raw.confidence < 0.55) {
       return {
         intent: "clarification", confidence: raw.confidence, externalQuestions: [],
         reply: raw.reply.trim() || "我还不能可靠判断你希望查询内部资料、结合外部信息，还是搜索销售线索。请补充目标和期望结果。",
-        plannerModel: model, plannerSource, plannerCalls, warnings: [],
+        plannerModel: model, plannerSource, plannerCalls, warnings: plannerWarnings,
       };
     }
     const leadPlan = safeLeadPlan(raw, content);
@@ -325,7 +404,7 @@ export async function planAssistantRequest(
       return {
         intent: "clarification", confidence: raw.confidence, externalQuestions: [],
         reply: "我可以为你生成销售线索搜索计划。请补充目标国家或市场。",
-        plannerModel: model, plannerSource, plannerCalls, warnings: [],
+        plannerModel: model, plannerSource, plannerCalls, warnings: plannerWarnings,
       };
     }
     const intent = raw.intent === "internal_knowledge" ? "knowledge-question"
@@ -337,12 +416,15 @@ export async function planAssistantRequest(
       intent, confidence: raw.confidence,
       internalQuestion: raw.internal_question.trim() || (intent === "knowledge-question" || intent === "hybrid-research" ? content : undefined),
       externalQuestions, leadPlan, reply: raw.reply.trim() || undefined,
-      plannerModel: model, plannerSource, plannerCalls, warnings: [],
+      plannerModel: model, plannerSource, plannerCalls, warnings: plannerWarnings,
     };
   } catch (error) {
     const fallback = fallbackPlan(content);
     if (error instanceof KimiIntentInvocationError) completedCalls.push(error.call);
     if (completedCalls.length > 0) fallback.plannerCalls = completedCalls;
+    for (const call of completedCalls) {
+      if (call.failureReason) fallback.warnings.push(`Intent model failure (${call.providerId ?? "kimi"}): ${call.failureReason}`);
+    }
     const detail = error instanceof Error ? error.message.slice(0, 300) : "unknown error";
     fallback.warnings.push(`Kimi 降级原因：${detail}`);
     return fallback;

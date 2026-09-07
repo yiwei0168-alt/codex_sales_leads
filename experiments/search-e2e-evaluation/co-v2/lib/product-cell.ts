@@ -154,9 +154,9 @@ export async function runProductCell(cell: ExperimentCell, options: {
   const intentCompleted = new Date().toISOString();
   for (const [index, call] of (intent.plannerCalls ?? []).entries()) {
     await recordCostEvents([event({ eventId: `${cell.cellId}:intent:${index + 1}`, cellId: cell.cellId, stage: "intent",
-      provider: "kimi", requestedModel: call.requestedModel, actualModel: call.actualModel,
+      provider: call.providerId ?? "kimi", requestedModel: call.requestedModel, actualModel: call.actualModel,
       startedAt: intentStarted, completedAt: intentCompleted, latencyMs: call.latencyMs,
-      attempts: call.attempts, retries: call.retries, fallbackUsed: false,
+      attempts: call.attempts, retries: call.retries, fallbackUsed: call.fallbackUsed ?? false,
       status: call.succeeded === false ? "failed" : "completed",
       usage: { inputTokens: call.inputTokens, cachedInputTokens: call.cachedInputTokens,
         outputTokens: call.outputTokens },

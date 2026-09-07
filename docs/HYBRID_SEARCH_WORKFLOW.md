@@ -98,6 +98,7 @@ Every route and stage records input count, raw output, normalized output, new un
 - Enforces a USD 50 hard cap with real-cost checks at USD 10, 20 and 30; every checkpoint records forecast, stage/ledger cost, input/raw/valid/used volume, discard reasons, latency and retries.
 - Creates no external input/output or cost during preregistration. Measured route contribution and unit cost are recorded by the formal run rather than inferred.
 - v2.0.1 repair: a lightweight Kimi template-fit result cannot override already confirmed country, target count or category. Divergence remains visible in telemetry, while the confirmed plan controls execution. The first rejected CO Retail plan used USD 0.0051770629 and stopped before Product search; its unchanged Gemini control is reused.
+- v2.0.2 recovery: invalid/truncated Kimi JSON receives one bounded retry with aggregate usage; persistent failure routes to disclosed DeepSeek Flash as the same-capability fallback. The second rejected intent used USD 0.0085371301 and still stopped before Product search. No search or scoring rule changed.
 
 ### v1.3.0 category purity and cost-accounting repair — 2026-09-07
 
