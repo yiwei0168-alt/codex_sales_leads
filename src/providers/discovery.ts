@@ -287,7 +287,11 @@ class BraveDiscoveryProvider extends BaseProvider implements DiscoveryProvider {
     const startedAt = Date.now();
     const { apiKey, baseUrl } = credentials(this.id);
     const url = new URL(trustedDiscoveryEndpoint(baseUrl, ["api.search.brave.com"], "web/search"));
-    url.search = new URLSearchParams({ q: webQueryWithDomainExclusions(query), country: query.countryCode,
+    const supportedCountries = new Set(["AR", "AU", "AT", "BE", "BR", "CA", "CL", "DK", "FI", "FR", "DE", "GR",
+      "HK", "IN", "ID", "IT", "JP", "KR", "MY", "MX", "NL", "NZ", "NO", "CN", "PL", "PT", "PH", "RU", "SA",
+      "ZA", "ES", "SE", "CH", "TW", "TR", "GB", "US"]);
+    const country = supportedCountries.has(query.countryCode.toUpperCase()) ? query.countryCode.toUpperCase() : "ALL";
+    url.search = new URLSearchParams({ q: webQueryWithDomainExclusions(query), country,
       search_lang: language(query.languageCode), count: String(boundedResults(query.maxResults)) }).toString();
     const response = await requestJson<{ web?: { results?: Array<{ title?: string; url?: string; description?: string }> } }>(
       this.id, url.toString(), { headers: { "x-subscription-token": apiKey, accept: "application/json" } },

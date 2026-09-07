@@ -203,7 +203,8 @@ export class LeadDiscoveryGate {
           completionTokens: response.usage?.completionTokens ?? 0, reasoningTokens: response.usage?.reasoningTokens ?? 0,
           totalTokens: response.usage?.totalTokens ?? 0, latencyMs: response.latencyMs,
           fallbackUsed: Boolean(response.requestedModelVersion && response.requestedModelVersion !== response.modelVersion),
-          attempts: response.attempts, retries: response.retries });
+          attempts: response.attempts, retries: response.retries,
+          accountCashCostUsd: response.usage?.accountCashCostUsd });
       } catch (error) {
         warnings.push(`Discovery gate batch held after routine model failure: ${error instanceof Error ? error.message : String(error)}`);
       }

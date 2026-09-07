@@ -46,7 +46,9 @@ export class OpenAiCompatibleProvider implements AiProvider {
   async execute<TInput, TOutput>(request: StructuredAiRequest<TInput>, signal?: AbortSignal) {
     const startedAt = performance.now();
     let lastError: unknown;
+    let attemptsMade = 0;
     for (let attempt = 0; attempt < this.maxAttempts; attempt += 1) {
+      attemptsMade = attempt + 1;
       try {
         const response = await this.fetchImplementation(`${this.baseUrl}/chat/completions`, {
           method: "POST",
@@ -99,6 +101,9 @@ export class OpenAiCompatibleProvider implements AiProvider {
         if (attempt < this.maxAttempts - 1) await delay(300 * (attempt + 1));
       }
     }
-    throw new ProviderUnavailableError(this.id, lastError);
+    throw new ProviderUnavailableError(this.id, lastError, {
+      attempts: attemptsMade,
+      retries: Math.max(0, attemptsMade - 1),
+    });
   }
 }

@@ -79,7 +79,11 @@ export interface ChannelRepository {
 }
 
 export class ProviderUnavailableError extends Error {
-  constructor(providerId: string, cause?: unknown) {
+  constructor(
+    readonly providerId: string,
+    cause?: unknown,
+    readonly telemetry: { attempts?: number; retries?: number } = {},
+  ) {
     super(`Provider ${providerId} is unavailable. The application must show an explicit degraded state.`);
     this.name = "ProviderUnavailableError";
     this.cause = cause;

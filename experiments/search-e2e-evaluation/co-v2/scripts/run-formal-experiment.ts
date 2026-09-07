@@ -6,11 +6,12 @@ import path from "node:path";
 import nextEnv from "@next/env";
 
 import { discoveryEnvironmentStatus } from "@/providers/discovery";
+import { createLeadAiProvider } from "@/providers/resilient-ai";
 
 import { buildBlindAuditV2Sample, executeBlindAuditV2, type BlindAuditV2DecisionCache,
   type BlindJudgeV2Decision } from "../lib/blind-audit-v2";
 import { evaluateBudget, forecastCompletionCost, summarizeCostEvents,
-  type ExperimentCostEvent } from "../lib/cost-ledger";
+  priceCostEvent, type ExperimentCostEvent, type ExperimentRateCard } from "../lib/cost-ledger";
 import { runControlCell, type ControlCellResult } from "../lib/control-cell";
 import { calculateExperimentMetrics } from "../lib/evaluation-metrics";
 import { cellById, experimentCells, EXPERIMENT_CONFIG, validateExperimentConfig } from "../lib/experiment";
@@ -21,13 +22,15 @@ import { artifactRunRoot, loadRunState, rawRunRoot, readJson, readJsonIfExists, 
   writeJsonAtomic, writeTextAtomic, type FormalRunState } from "../lib/run-store";
 import { buildControlUniqueGroups, buildProductRecordIndex, evaluateControlUniqueGroup, identityAliases,
   metricSlotsForBundles, type ControlUniqueEvaluationResult, type FrozenCellBundle } from "../lib/unified-evaluation";
+import rateCardJson from "../config/official-rate-card.v1.json";
 
 nextEnv.loadEnvConfig(process.cwd());
 
 const experimentRoot = path.resolve("experiments/search-e2e-evaluation/co-v2");
-const frozenTag = "search-e2e-co-v2.0.2-preregistered";
+const frozenTag = "search-e2e-co-v2.0.3-preregistered";
 const totalCells = EXPERIMENT_CONFIG.sample.cells;
 const slotsPerCell = EXPERIMENT_CONFIG.sample.slotsPerArmPerCell;
+const rateCard = rateCardJson as ExperimentRateCard;
 
 const frozenFiles = [
   "PROTOCOL.md", "README.md", "config/experiment.v2.0.0.json", "config/gemini-control-prompt.md",
@@ -59,7 +62,7 @@ const frozenFiles = [
   "../../../src/lib/leads/primary-channel.ts", "../../../src/lib/leads/scoring-policy.ts",
   "../../../src/providers/contracts.ts", "../../../src/providers/discovery.ts",
   "../../../src/providers/openrouter.ts", "../../../src/providers/resilient-ai.ts",
-  "../../../src/providers/tavily.ts", "../../../src/providers/deepseek.ts",
+  "../../../src/providers/openai-compatible.ts", "../../../src/providers/tavily.ts", "../../../src/providers/deepseek.ts",
   "../../../src/lib/rag/openai-provider.ts",
 ] as const;
 
@@ -176,17 +179,17 @@ async function freezeManifest(): Promise<void> {
     const absolute = path.resolve(experimentRoot, relative);
     return { path: path.relative(process.cwd(), absolute).replace(/\\/g, "/"), sha256: sha256(await readFile(absolute)) };
   }));
-  await writeJsonAtomic(path.join(experimentRoot, "config/frozen-manifest.v2.0.2.json"), {
+  await writeJsonAtomic(path.join(experimentRoot, "config/frozen-manifest.v2.0.3.json"), {
     schemaVersion: 1, experimentId: EXPERIMENT_CONFIG.experimentId, runId: EXPERIMENT_CONFIG.runId,
     createdAt: new Date().toISOString(), requiredGitTag: frozenTag, files,
   });
   console.log(JSON.stringify({ status: "manifest-frozen", fileCount: files.length,
-    manifest: "experiments/search-e2e-evaluation/co-v2/config/frozen-manifest.v2.0.2.json" }, null, 2));
+    manifest: "experiments/search-e2e-evaluation/co-v2/config/frozen-manifest.v2.0.3.json" }, null, 2));
 }
 
 async function verifyFrozenManifest(requireTag = true): Promise<void> {
   validateExperimentConfig();
-  const manifest = JSON.parse(await readFile(path.join(experimentRoot, "config/frozen-manifest.v2.0.2.json"), "utf8")) as {
+  const manifest = JSON.parse(await readFile(path.join(experimentRoot, "config/frozen-manifest.v2.0.3.json"), "utf8")) as {
     requiredGitTag: string; files: Array<{ path: string; sha256: string }> };
   const mismatches: string[] = [];
   for (const item of manifest.files) {
@@ -198,6 +201,50 @@ async function verifyFrozenManifest(requireTag = true): Promise<void> {
       { cwd: process.cwd(), stdio: "ignore" }); }
     catch { throw new Error(`Frozen tag ${manifest.requiredGitTag} must be an ancestor of HEAD before paid calls`); }
   }
+}
+
+async function runStructuredProviderCheck(state: FormalRunState, checkName: string): Promise<void> {
+  if (state.preflightChecks.some((item) => item.name === checkName)) return;
+  const startedAt = new Date().toISOString();
+  const response = await createLeadAiProvider().execute({
+    task: "assistant-intent",
+    modelVersion: EXPERIMENT_CONFIG.arms["product-e2e"].models.discoveryGateRoutine,
+    promptVersion: "co-provider-recovery-preflight-v1",
+    input: { instruction: "Return ok=true. This validates structured public-evidence model routing only." },
+    evidenceIds: [],
+    dataClassification: "public",
+    outputSchema: { type: "object", additionalProperties: false, required: ["ok"],
+      properties: { ok: { type: "boolean", const: true } } },
+  }, AbortSignal.timeout(30_000));
+  if (!(typeof response.output === "object" && response.output !== null
+    && (response.output as { ok?: unknown }).ok === true)) throw new Error("Structured provider check returned invalid output");
+  const completedAt = new Date().toISOString();
+  const costEvent = priceCostEvent({ eventId: `preflight:${checkName}`, runId: state.runId,
+    arm: "product-e2e", ledger: "product-e2e-arm", stage: "model-provider-preflight",
+    provider: response.actualProviderId ?? "deepseek", requestedModel: response.requestedModelVersion
+      ?? EXPERIMENT_CONFIG.arms["product-e2e"].models.discoveryGateRoutine,
+    actualModel: response.modelVersion, startedAt, completedAt, latencyMs: response.latencyMs,
+    attempts: response.attempts ?? 1, retries: response.retries ?? 0,
+    fallbackUsed: Boolean(response.actualProviderId && response.actualProviderId !== "deepseek"),
+    status: "completed", usage: { inputTokens: response.usage?.promptTokens ?? 0,
+      outputTokens: response.usage?.completionTokens ?? 0,
+      reasoningTokens: response.usage?.reasoningTokens ?? 0 },
+    volume: { inputItems: 1, rawOutputItems: 1, validOutputItems: 1, downstreamUsedItems: 1,
+      discardedReasonCounts: {} }, accountCashCostUsd: response.usage?.accountCashCostUsd,
+    notes: response.warnings }, rateCard);
+  appendCostEvents(state, [costEvent]);
+  state.preflightChecks.push({ name: checkName, completedAt,
+    detail: { paidCallsMade: 1, secretsRecorded: false, requestedModel: costEvent.requestedModel,
+      actualModel: costEvent.actualModel, actualProvider: costEvent.provider,
+      fallbackUsed: costEvent.fallbackUsed, attempts: costEvent.attempts } });
+  await saveRunState(state);
+  await writeJsonAtomic(path.join(artifactRunRoot(), `preflight/${checkName}.json`), {
+    schemaVersion: 1, runId: state.runId, status: "passed", completedAt,
+    provider: costEvent.provider, requestedModel: costEvent.requestedModel,
+    actualModel: costEvent.actualModel, fallbackUsed: costEvent.fallbackUsed,
+    attempts: costEvent.attempts, cost: { officialListPriceUsd: costEvent.officialListPriceUsd,
+      budgetCostUsd: costEvent.budgetCostUsd, cashCostBasis: costEvent.cashCostBasis },
+  });
 }
 
 async function runPreflight(): Promise<void> {
@@ -217,6 +264,7 @@ async function runPreflight(): Promise<void> {
   if (missing.length || unavailableDiscovery.length) {
     throw new Error(`Preflight configuration missing: ${[...missing, ...unavailableDiscovery].join(", ")}`);
   }
+  await runStructuredProviderCheck(state, "structured-model-runtime");
   state.preflightChecks.push({ name: "configuration-and-frozen-inputs", completedAt: new Date().toISOString(),
     detail: { requiredEnvironment: requiredEnvironment.map((name) => ({ name, configured: true })),
       discovery: discovery.map(({ providerId, configured }) => ({ providerId, configured })),
@@ -226,22 +274,45 @@ async function runPreflight(): Promise<void> {
   await saveRunState(state);
   await writeJsonAtomic(path.join(artifactRunRoot(), "preflight/preflight-report.json"), {
     schemaVersion: 1, runId: state.runId, status: "passed", completedAt: new Date().toISOString(),
-    checks: state.preflightChecks, paidCallsMade: 0, initialBudgetDecision: budgetDecision(state),
+    checks: state.preflightChecks, paidCallsMade: 1, initialBudgetDecision: budgetDecision(state),
   });
   console.log(JSON.stringify({ status: "preflight-passed", runId: state.runId,
     initialBudgetDecision: budgetDecision(state) }, null, 2));
+}
+
+async function runRecoveryPreflight(): Promise<void> {
+  await verifyFrozenManifest(true);
+  const state = await loadRunState();
+  if (!["preflight-passed", "running"].includes(state.status)) {
+    throw new Error(`Provider recovery check cannot run from status ${state.status}`);
+  }
+  await runStructuredProviderCheck(state, "structured-model-runtime-v2.0.3");
+  const decision = await persistBudgetReview(state, "provider-recovery-v2.0.3");
+  console.log(JSON.stringify({ status: "provider-recovery-preflight-passed",
+    runId: state.runId, cost: summarizeCostEvents(state.costEvents), budgetDecision: decision }, null, 2));
 }
 
 async function runCell(cellId: string): Promise<void> {
   await verifyFrozenManifest(true);
   const cell = cellById(cellId);
   const state = await loadRunState();
+  const resumeProduct = process.argv.includes("--resume-product");
   if (!state.blindJudgeModel || !["preflight-passed", "running"].includes(state.status)) {
     throw new Error("Formal cells require a passed preflight and a non-paused budget state");
   }
-  if (state.completedCellIds.includes(cellId)) {
+  if (state.completedCellIds.includes(cellId) && !resumeProduct) {
     console.log(JSON.stringify({ status: "cell-already-complete", cellId }, null, 2));
     return;
+  }
+  const productFilename = path.join(rawRunRoot(), `cells/${cellId}/product-e2e.json`);
+  const resumeFrom = resumeProduct ? await readJsonIfExists<ProductCellResult>(productFilename) : null;
+  if (resumeProduct && !resumeFrom) throw new Error(`Cannot resume ${cellId}: prior Product artifact is missing`);
+  if (resumeFrom && resumeFrom.finalCandidates.length > 0) {
+    throw new Error(`Cannot resume ${cellId}: recovery is limited to a zero-output provider-outage artifact`);
+  }
+  if (resumeProduct) {
+    state.completedCellIds = state.completedCellIds.filter((id) => id !== cellId);
+    state.completedArmKeys = state.completedArmKeys.filter((key) => key !== `${cellId}:product-e2e`);
   }
   if (!await requireBudget(state, cellId, EXPERIMENT_CONFIG.cost.initialForecastUsd.expected / totalCells)) return;
   state.status = "running";
@@ -264,7 +335,7 @@ async function runCell(cellId: string): Promise<void> {
       return arm === "gemini-native" ? readJson<ControlCellResult>(filename) : readJson<ProductCellResult>(filename);
     }
     const result = arm === "gemini-native" ? await runControlCell(cell, { onCostEvents })
-      : await runProductCell(cell, { onCostEvents });
+      : await runProductCell(cell, { onCostEvents, resumeFrom: resumeFrom ?? undefined });
     await writeJsonAtomic(filename, result);
     await writeJsonAtomic(path.join(artifactRunRoot(), `cells/${cellId}/${arm}.json`),
       arm === "gemini-native" ? publicControl(result as ControlCellResult) : publicProduct(result as ProductCellResult));
@@ -440,6 +511,7 @@ const phase = process.argv.find((value) => value.startsWith("--phase="))?.slice(
 if (phase === "freeze") await freezeManifest();
 else if (phase === "verify") await verifyOnly();
 else if (phase === "preflight") await runPreflight();
+else if (phase === "provider-check") await runRecoveryPreflight();
 else if (phase === "cell") {
   const cellId = process.argv.find((value) => value.startsWith("--cell="))?.slice(7);
   if (!cellId) throw new Error("--phase=cell requires --cell=<cellId>");

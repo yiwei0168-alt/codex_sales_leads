@@ -1,8 +1,10 @@
 import { createHash } from "node:crypto";
 
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "./contracts";
+import { ProviderUnavailableError } from "./contracts";
 import { DeepSeekProvider } from "./deepseek";
 import { OpenAiCompatibleProvider } from "./openai-compatible";
+import { getOpenRouterConfig } from "./openrouter";
 
 export type AiDataClassification = "public" | "private-workspace";
 
@@ -21,6 +23,37 @@ interface ResilientAiProviderOptions {
 }
 
 interface CircuitState { failures: number; openedAt?: number }
+
+function failureTelemetry(error: unknown): { attempts: number; retries: number } {
+  if (error instanceof ProviderUnavailableError) {
+    return { attempts: error.telemetry.attempts ?? 1, retries: error.telemetry.retries ?? 0 };
+  }
+  if (error instanceof ResilientAiAggregateError) {
+    return { attempts: error.attempts, retries: error.retries };
+  }
+  return { attempts: 1, retries: 0 };
+}
+
+function failureMessage(error: unknown): string {
+  let current = error;
+  for (let depth = 0; depth < 5; depth += 1) {
+    if (!(current instanceof Error)) break;
+    if (!(current.cause instanceof Error)) return current.message;
+    current = current.cause;
+  }
+  return current instanceof Error ? current.message : String(current);
+}
+
+class ResilientAiAggregateError extends AggregateError {
+  readonly attempts: number;
+  readonly retries: number;
+  constructor(errors: unknown[], message: string) {
+    super(errors, message);
+    const telemetry = errors.map(failureTelemetry);
+    this.attempts = telemetry.reduce((sum, item) => sum + item.attempts, 0);
+    this.retries = telemetry.reduce((sum, item) => sum + item.retries, 0);
+  }
+}
 
 function requestKey(request: StructuredAiRequest<unknown>): string {
   return createHash("sha256").update(JSON.stringify({ task: request.task, modelVersion: request.modelVersion,
@@ -88,15 +121,19 @@ export class ResilientAiProvider implements AiProvider {
         try {
           const response = await route.provider.execute<TInput, TOutput>({ ...request, modelVersion: fallbackModel }, signal);
           this.circuits.delete(route.provider.id);
+          const primaryTelemetry = failureTelemetry(primaryError);
           return { ...response, requestedModelVersion: requestedModel, actualProviderId: route.provider.id,
-            warnings: [`Model fallback used: requested=${requestedModel}; actual=${response.modelVersion}; provider=${route.provider.id}.`,
+            attempts: primaryTelemetry.attempts + (response.attempts ?? 1),
+            retries: primaryTelemetry.retries + (response.retries ?? 0),
+            warnings: [`Model fallback used after ${this.primary.id} failed (${failureMessage(primaryError)}): requested=${requestedModel}; actual=${response.modelVersion}; provider=${route.provider.id}.`,
               ...response.warnings] };
         } catch (error) {
           failures.push(error);
           this.recordFailure(route.provider.id);
         }
       }
-      throw new AggregateError(failures, `Primary model ${requestedModel} and approved equivalent fallbacks failed.`);
+      throw new ResilientAiAggregateError(failures,
+        `Primary model ${requestedModel} and approved equivalent fallbacks failed.`);
     }
   }
 
@@ -132,7 +169,27 @@ function fallbackRoute(index: 1 | 2): AiFallbackRoute | null {
   approvedDataClassifications: classifications };
 }
 
+function openRouterDeepSeekFallbackRoute(): AiFallbackRoute | null {
+  if (!process.env.OPENROUTER_API_KEY?.trim()) return null;
+  const config = getOpenRouterConfig();
+  return {
+    provider: new OpenAiCompatibleProvider({
+      id: "openrouter-deepseek",
+      apiKey: config.apiKey,
+      baseUrl: config.baseUrl,
+      defaultHeaders: config.defaultHeaders,
+      extraBody: { provider: config.providerPreferences },
+    }),
+    routineModel: process.env.OPENROUTER_DEEPSEEK_ROUTINE_MODEL?.trim()
+      || "deepseek/deepseek-v4-flash",
+    escalationModel: process.env.OPENROUTER_DEEPSEEK_ESCALATION_MODEL?.trim()
+      || "deepseek/deepseek-v4-pro",
+    approvedDataClassifications: ["public"],
+  };
+}
+
 export function createLeadAiProvider(primary: AiProvider = new DeepSeekProvider()): AiProvider {
-  const fallbacks = ([fallbackRoute(1), fallbackRoute(2)] as const).filter((route): route is AiFallbackRoute => Boolean(route));
+  const fallbacks = ([fallbackRoute(1), fallbackRoute(2), openRouterDeepSeekFallbackRoute()])
+    .filter((route): route is AiFallbackRoute => Boolean(route)).slice(0, 2);
   return new ResilientAiProvider(primary, { fallbacks });
 }

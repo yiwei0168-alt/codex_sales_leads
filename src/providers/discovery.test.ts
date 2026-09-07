@@ -78,6 +78,18 @@ describe("production discovery providers", () => {
     expect(query).toContain("networking retailer");
   });
 
+  it("uses Brave's global market code when a requested country is unsupported", async () => {
+    configured("brave");
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({ web: { results: [] } }), { status: 200 }));
+    await createDiscoveryProvider("brave", { fetchImplementation: fetchMock, maxAttempts: 1 }).search({
+      ...baseQuery, countryCode: "CO", countryName: "Colombia", engine: "brave",
+      query: "retailer networking Colombia",
+    });
+    const url = new URL(fetchMock.mock.calls[0][0] as string);
+    expect(url.searchParams.get("country")).toBe("ALL");
+    expect(url.searchParams.get("q")).toContain("Colombia");
+  });
+
   it("returns Place ID and website while keeping map-only candidates resolvable", async () => {
     configured("google-places");
     const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({ places: [

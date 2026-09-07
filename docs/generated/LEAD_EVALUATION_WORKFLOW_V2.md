@@ -1,11 +1,11 @@
-# Cudy 销售线索端到端工作流 v3.1.0
+# Cudy 销售线索端到端工作流 v3.2.0
 
 > 本文档由 `scripts/generate-lead-workflow-doc.mjs` 自动生成。请修改版本化配置或实现代码，不要直接编辑生成文件。
 
-- 运行时策略版本：3.1.0（基础流程定义 2.4.0）
+- 运行时策略版本：3.2.0（基础流程定义 2.5.0）
 - 评分策略版本：2.0.0
 - 成本质量策略版本：3.0.1
-- 配置指纹：`76f762871a7b90b468f69f86e1c30224d46f82996cda9f75080c0fcff221f09d`
+- 配置指纹：`7b6753913f6df1c1b47bcb33a9374f05cdcc899581b4970ef571c889d5f79105`
 - 范围：From the user's natural-language market-development request and workspace context to ranked companies, editable cooperation paths, development strategy, outreach email, and private-memory learning from user edits.
 
 ## 一、从用户输入到最终输出的总流程
@@ -41,7 +41,7 @@ flowchart TD
 - User-confirmed knowledge has higher priority than ordinary retrieval, while shared knowledge and user/workspace memory remain isolated.
 - Cooperation paths, roles and evidence restrictions travel into development strategy and email generation.
 - User edits to paths and outreach are retained as private learning signals, not written into the shared knowledge base.
-- OpenAI and Anthropic generation is routed through the pinned OpenRouter HTTPS gateway; embeddings, Kimi, DeepSeek and Gemini retain their dedicated providers.
+- OpenAI and Anthropic generation is routed through the pinned OpenRouter HTTPS gateway. DeepSeek keeps its dedicated provider as primary, while public-only packets may fail over to the same DeepSeek tier through OpenRouter; embeddings never fail over.
 - Every potentially overlapping task must create and consume a versioned cache at first execution; downstream stages receive exact evidence IDs, role corrections and explicit missing-evidence gaps.
 
 ## 三、模型调用路由
@@ -51,9 +51,9 @@ flowchart TD
 | `01-user-input` | Intent classification and execution planning | KIMI_INTENT_LIGHT_MODEL; default kimi-k2.6 | KIMI_INTENT_MODEL or KIMI_MODEL; default kimi-k3 for materially complex planning | Light Kimi runs every turn; deterministic parsing is failure fallback only; harmless confidence/count formatting is normalized before schema validation |
 | `02-context-memory` | Local-database RAG query and memory embeddings | EMBEDDING_MODEL; default text-embedding-v4 | No generative fallback | Required for vector retrieval; source documents remain in the local database |
 | `03-playbook` | Market playbook and search-query planning | LEAD_PLANNER_MODEL or OPENAI_GENERATION_MODEL; default openai/gpt-5-mini through OpenRouter | Deterministic playbook with required role-family coverage | Cached standard playbook; light Kimi checks template fit; complex non-standard tasks use Kimi-k3 planning |
-| `04-discovery` | Lightweight candidate existence, relevance and category gate | DEEPSEEK_DISCOVERY_GATE_MODEL; fixed default deepseek-v4-flash and never inherits a Pro global routine setting | Same-tier resilient provider fallback; unavailable batches are held for downstream evidence, never upgraded to Pro | Batches of up to 10 after direct lightweight homepage fetch; compact semantic signals only, with deterministic pass/hold/reject |
-| `06-correction-role` | Entity correction, atomic facts and primary-role analysis | DEEPSEEK_MODEL; default deepseek-v4-flash | DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro; deterministic fallback is retry-only | Routine batches; upgrade only for expected score change >=8 or a resolvable critical-state change |
-| `09-scoring-paths` | Role-aware score and possible cooperation paths | DEEPSEEK_MODEL; default deepseek-v4-flash | DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro | Routine batches; confidence, alternative paths and Top-N position never trigger upgrade alone |
+| `04-discovery` | Lightweight candidate existence, relevance and category gate | DEEPSEEK_DISCOVERY_GATE_MODEL; fixed default deepseek-v4-flash and never inherits a Pro global routine setting | Same-tier resilient provider fallback, including public-only DeepSeek through OpenRouter; unavailable batches are held for downstream evidence, never upgraded to Pro | Batches of up to 10 after direct lightweight homepage fetch; compact semantic signals only, with deterministic pass/hold/reject |
+| `06-correction-role` | Entity correction, atomic facts and primary-role analysis | DEEPSEEK_MODEL; default deepseek-v4-flash | DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro; public-only same-tier OpenRouter route on provider failure; deterministic fallback is retry-only | Routine batches; upgrade only for expected score change >=8 or a resolvable critical-state change |
+| `09-scoring-paths` | Role-aware score and possible cooperation paths | DEEPSEEK_MODEL; default deepseek-v4-flash | DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro; public-only same-tier OpenRouter route on provider failure | Routine batches; confidence, alternative paths and Top-N position never trigger upgrade alone |
 | `10-review` | Selective production secondary review and disagreement judgment | LEAD_REVIEW_MODEL default openai/gpt-5.6-terra; LEAD_JUDGE_MODEL default openai/gpt-5.6-sol through OpenRouter | DeepSeek review adapter using deepseek-v4-pro when explicitly routed | Selective only; this production control is distinct from the two-judge offline formal-evaluation calibration |
 | `offline-blind-calibration` | Formal search-evaluation calibration after both experiment arms and shared scoring are frozen | Two different high-capability provider/model families; current protocol pins Anthropic Claude Opus and OpenAI GPT-5.6-sol | A third high-capability arbitrator only for score delta >=8, role-family disagreement or critical qualification disagreement | No Web search; 48 representative cases control gates and 16 stress cases are diagnostic only; reuse frozen score-independent evidence packets |
 | `14-strategy` | Path-specific development strategy | KIMI_OUTREACH_MODEL or KIMI_MODEL; default kimi-k3 | Restricted template fallback | One call per generated strategy |
@@ -741,9 +741,9 @@ flowchart TD
 | 文件 | SHA-256 |
 |---|---|
 | `config/lead-scoring/policy-v2.0.0.json` | `0039203aafb29ec73e4beb10f72dc5ec114785fb4c5f311c7b425de0d451fc1b` |
-| `config/lead-search/hybrid-search-v1.0.0.json` | `5e4180ea8d35bb7facd1e23cb209946721c34563478ad606325aa2df57a72d09` |
+| `config/lead-search/hybrid-search-v1.0.0.json` | `a1104da9bfc2cad88f17eb30556b3d0797bd065b3650f10d7d856b2ffa287485` |
 | `config/lead-workflow/cost-quality-policy-v3.0.0.json` | `90bb896e2fdfd0738296ab4b82dae6bb0f75e1b06d95955f69e4eaaa55a7aae6` |
-| `config/lead-workflow/runtime-policy-v3.0.0.json` | `31a0f7030758c373a697c82afc85f31b940c3b9104f8eb9c846aa0249a6e6f4c` |
+| `config/lead-workflow/runtime-policy-v3.0.0.json` | `6d97fb08f0a49ec29a157cb362c87f0d4ddc3252053e8b7a41ab78dab9acc85d` |
 | `src/app/api/assistant/messages/route.ts` | `04bec90cc3d3f336195e8ab97a5ad4b1ec1e05b95606064225e098e94ed7a5cd` |
 | `src/lib/assistant/types.ts` | `4094485a0d6751ef7eb296eb385d1ff8ac1c4357509c97e4343a728413329862` |
 | `src/lib/assistant/intent.ts` | `cb77a2854f0058d92bf758ce4610d298bc94dde0157ade4f0bd3d05343fad168` |
@@ -758,19 +758,19 @@ flowchart TD
 | `src/lib/leads/workflow/playbook-cache.ts` | `945d3fc727312208650ee7b4e55e33860e7c54f7e3daa939f768952409a1803f` |
 | `src/lib/leads/workflow/hybrid-search-policy.ts` | `4c3ec5ff313a5551c68de8fd023deca8cf711d7a80971f52f47127d0f9a8bb87` |
 | `src/lib/leads/workflow/candidate-registry.ts` | `1bff2ba8049fc6ad5117f4047b0505aa08c11ac7093bd353efad01d5f91e30e8` |
-| `src/lib/leads/workflow/discovery-gate.ts` | `de9c21d15f701784441021d6cea3fe2a433c8498faf32bab0ce92746583a3db6` |
+| `src/lib/leads/workflow/discovery-gate.ts` | `ffab08a3bedfb3eb29ef529658e5526272bbf8612f1bf690135050ac835e998d` |
 | `src/lib/leads/workflow/hybrid-discovery-executor.ts` | `ea088033a73044060c0541f41dc258f538d0c5fdf9eaa501fb379cce0faf2b6a` |
 | `src/lib/leads/workflow/discovery.ts` | `7ebcf5e44a8b82c4308c630936f50aa32c9757c828d4d3b1402716fc86fa358d` |
 | `src/lib/leads/global-search.ts` | `963d07622725531e72d7f1807d4228a23d59d6a320b5d1e508b602bcc05c65db` |
-| `src/lib/leads/workflow/evidence-correction-agent.ts` | `62c9d1a62310cc036c6f658f5d20d7122848656a70e7d45085964abfbfbb5d37` |
+| `src/lib/leads/workflow/evidence-correction-agent.ts` | `cdc0e3595ab52ea10d8147f197c0696ccda17b0a4a1a0477741da8cb4aeeea53` |
 | `src/lib/leads/workflow/evidence-packet.ts` | `1ca9577284952e245a8e8c51ae9fa82472fcbcf0b262ebaa83fc6463f379836f` |
-| `src/lib/leads/workflow/qualification-agent.ts` | `00fe467e454c86b2389654fbeacc497fd033bb7b2acae6f52627bf03ee828384` |
+| `src/lib/leads/workflow/qualification-agent.ts` | `f239d0c2a1572b02e80d0b57f6ec0988a30bdca91fae65b365663b5f30649467` |
 | `src/lib/leads/workflow/assessment-cache.ts` | `d7fd5fe0b350aa56eb9fcfb283c2c81a2de9564f88a3ef677631b82d81474fb3` |
 | `src/lib/leads/workflow/assessment-review-agent.ts` | `5ad58c980aa7b3642d349aa543a78a54f2695274490809ce00a65bf535dae974` |
-| `src/providers/deepseek.ts` | `c9bbe00521915dd27b6c20508cd062ffc494d8f449c10e1085ada48103ed877c` |
+| `src/providers/deepseek.ts` | `bd63eba1cb5a6eae4b345115fe187403606ed7e678524eceb5835d9321131f89` |
 | `src/providers/discovery-contracts.ts` | `219328f21ca094e5c96c12b9cd3e638a8244629d7692271ee6b86ea39166143e` |
-| `src/providers/discovery.ts` | `a7b93d1d5a8bc6412b70461d93f5c0dc1e412951100688b8ae04cee6e5113337` |
-| `src/providers/resilient-ai.ts` | `3fe571fe48f48c0f89ccbf7241ed303b554598243bd8bfa08dc7c2a76c85258b` |
+| `src/providers/discovery.ts` | `f1a97cf7ad6a492babc9d75af3bd4aa0d01abd405f3339b6ad3b4bef13a5fb50` |
+| `src/providers/resilient-ai.ts` | `1e9abf46d71988cc03304a1703f055f72074c854aac6f98574fc80bdf737c328` |
 | `src/providers/openrouter.ts` | `b43ba8fdf08602cb7d3567ea88bdc2cfee704de0c1b197cc574abe5e9b89143d` |
 | `db/migrations/034_model_account_cash_cost.sql` | `4790c7ad12eda543e197c84ddd77c4a5ce296b7871ccee799f3aa2262684bdbb` |
 | `src/providers/tavily.ts` | `f4f1908e0f2673636db0902fb135d107da26c35257fe51d4e4bdfd85c2596a7a` |

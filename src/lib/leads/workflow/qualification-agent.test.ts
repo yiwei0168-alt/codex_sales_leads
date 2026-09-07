@@ -206,6 +206,16 @@ describe("LeadQualificationAgent", () => {
     expect(result.promptVersion).toBe("lead-value-v6-role-aware-score-only");
     expect(JSON.stringify(provider.calls[0].outputSchema)).not.toContain("cooperationPaths");
     expect(JSON.stringify(provider.calls[0].input)).toContain("scoring-only task");
+    expect(provider.calls[0].dataClassification).toBe("public");
+  });
+
+  it("keeps qualification private when a playbook contains user path memory", async () => {
+    const provider = new FakeProvider();
+    await new LeadQualificationAgent(provider, { concurrency: 1, includeCooperationPaths: false })
+      .evaluate([candidate], { ...playbook, cooperationPathMemory: [{
+        selectedPathType: "Direct Downstream Channel Supply", learnedAt: "2026-09-08T00:00:00Z",
+      }] }, "DE", "Germany", "search-quality-evaluation");
+    expect(provider.calls[0].dataClassification).toBe("private-workspace");
   });
 
   it("does not duplicate a semantic escalation when routine and escalation models are identical", async () => {

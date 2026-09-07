@@ -1,7 +1,7 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "./contracts";
-import { ResilientAiProvider } from "./resilient-ai";
+import { createLeadAiProvider, ResilientAiProvider } from "./resilient-ai";
 
 class FakeAiProvider implements AiProvider {
   calls: StructuredAiRequest<unknown>[] = [];
@@ -22,6 +22,11 @@ const request: StructuredAiRequest<{ company: string }> = {
 };
 
 describe("ResilientAiProvider", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.unstubAllGlobals();
+  });
+
   it("records the requested model and actual primary provider", async () => {
     const primary = new FakeAiProvider("primary");
     const result = await new ResilientAiProvider(primary).execute<typeof request.input, { ok: boolean }>(request);
@@ -38,6 +43,26 @@ describe("ResilientAiProvider", () => {
     expect(fallback.calls[0]).toMatchObject({ modelVersion: "peer-flash", outputSchema: request.outputSchema });
     expect(result.actualProviderId).toBe("fallback");
     expect(result.warnings[0]).toContain("requested=deepseek-v4-flash");
+  });
+
+  it("uses the configured OpenRouter gateway as the default public DeepSeek route fallback", async () => {
+    vi.stubEnv("OPENROUTER_API_KEY", "test-only");
+    vi.stubEnv("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1");
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({
+      id: "or-test", model: "deepseek/deepseek-v4-flash",
+      choices: [{ finish_reason: "stop", message: { content: JSON.stringify({ ok: true }) } }],
+      usage: { prompt_tokens: 10, completion_tokens: 2, total_tokens: 12, cost: 0.0001 },
+    }), { status: 200 }));
+    vi.stubGlobal("fetch", fetchMock);
+    const provider = createLeadAiProvider(new FakeAiProvider("deepseek", "fail"));
+    const result = await provider.execute<typeof request.input, { ok: boolean }>(request);
+    const body = JSON.parse(String(fetchMock.mock.calls[0][1]?.body));
+    expect(body).toMatchObject({ model: "deepseek/deepseek-v4-flash",
+      provider: { require_parameters: true, data_collection: "deny" } });
+    expect(result).toMatchObject({ actualProviderId: "openrouter-deepseek",
+      requestedModelVersion: "deepseek-v4-flash", attempts: 2, retries: 0 });
+    expect(result.warnings[0]).toContain("deepseek failed");
+    expect(result.usage?.accountCashCostUsd).toBe(0.0001);
   });
 
   it("never sends private workspace content to a fallback without equivalent permission", async () => {

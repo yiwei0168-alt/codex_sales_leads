@@ -410,7 +410,8 @@ export class LeadQualificationAgent {
         .map((item) => item.id)),
       outputSchema: z.toJSONSchema(this.includeCooperationPaths
         ? leadAssessmentBatchSchema : leadAssessmentScoreOnlyBatchSchema) as Record<string, unknown>,
-      dataClassification: "private-workspace" as const,
+      dataClassification: (playbook.cooperationPathMemory?.length
+        ? "private-workspace" : "public") as "private-workspace" | "public",
     };
   }
 
@@ -426,7 +427,8 @@ export class LeadQualificationAgent {
       reasoningTokens: response.usage?.reasoningTokens ?? 0, totalTokens: response.usage?.totalTokens ?? 0,
       latencyMs: response.latencyMs, fallbackUsed: Boolean(response.requestedModelVersion
         && (response.requestedModelVersion !== response.modelVersion || response.actualProviderId !== "deepseek")),
-      attempts: response.attempts, retries: response.retries });
+      attempts: response.attempts, retries: response.retries,
+      accountCashCostUsd: response.usage?.accountCashCostUsd });
     const parsed = this.includeCooperationPaths
       ? leadAssessmentBatchSchema.parse(response.output)
       : leadAssessmentScoreOnlyBatchSchema.parse(response.output);
@@ -476,7 +478,8 @@ export class LeadQualificationAgent {
         reasoningTokens: escalation.usage?.reasoningTokens ?? 0, totalTokens: escalation.usage?.totalTokens ?? 0,
         latencyMs: escalation.latencyMs, fallbackUsed: Boolean(escalation.requestedModelVersion
           && (escalation.requestedModelVersion !== escalation.modelVersion || escalation.actualProviderId !== "deepseek")),
-        attempts: escalation.attempts, retries: escalation.retries });
+        attempts: escalation.attempts, retries: escalation.retries,
+        accountCashCostUsd: escalation.usage?.accountCashCostUsd });
       const raw = typeof escalation.output === "object" && escalation.output !== null && "assessments" in escalation.output
         ? (escalation.output as { assessments?: unknown[] }).assessments?.[0]
         : escalation.output;

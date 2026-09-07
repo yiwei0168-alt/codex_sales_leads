@@ -114,6 +114,8 @@ export function modelUsageEvents(cell: ExperimentCell, stage: string, usages: Wo
       usage: { inputTokens: items.reduce((sum, item) => sum + item.promptTokens, 0),
         outputTokens: items.reduce((sum, item) => sum + item.completionTokens, 0),
         reasoningTokens: items.reduce((sum, item) => sum + item.reasoningTokens, 0) }, volume: attributedVolume,
+      accountCashCostUsd: items.some((item) => item.accountCashCostUsd !== undefined)
+        ? items.reduce((sum, item) => sum + (item.accountCashCostUsd ?? 0), 0) : undefined,
       notes: index === 0 ? ["Aggregate stage output volume is attributed once to the primary model event."]
         : ["Model cost and tokens are retained; aggregate stage output volume is already attributed to model event 1."] });
   });
@@ -138,82 +140,104 @@ function toFinalCandidate(candidate: CorrectedLeadWorkflowCandidate, assessment:
 
 export async function runProductCell(cell: ExperimentCell, options: {
   onCostEvents?: (events: ExperimentCostEvent[]) => Promise<void> | void;
+  resumeFrom?: ProductCellResult;
 } = {}): Promise<ProductCellResult> {
-  const startedAt = new Date().toISOString();
+  const resumeFrom = options.resumeFrom;
+  const startedAt = resumeFrom?.startedAt ?? new Date().toISOString();
   const wallStarted = Date.now();
-  const costEvents: ExperimentCostEvent[] = [];
+  const costEvents: ExperimentCostEvent[] = [...(resumeFrom?.costEvents ?? [])];
   const recordCostEvents = async (events: ExperimentCostEvent[]): Promise<void> => {
     costEvents.push(...events);
     await options.onCostEvents?.(events);
   };
-  const warnings: string[] = [];
+  const warnings: string[] = [...(resumeFrom?.warnings ?? [])];
   const frozenPlan = leadPlanForCell(cell);
+  let plan: LeadSearchPlan;
+  let ragContext: Awaited<ReturnType<typeof retrieveLeadRagContext>>;
+  let playbook: LeadMarketPlaybook;
+  let intentSummary: ProductCellResult["intent"];
+  if (resumeFrom) {
+    plan = resumeFrom.plan;
+    ragContext = resumeFrom.raw.ragContext as Awaited<ReturnType<typeof retrieveLeadRagContext>>;
+    playbook = resumeFrom.playbook;
+    intentSummary = resumeFrom.intent;
+    const cacheAt = new Date().toISOString();
+    await recordCostEvents([event({ eventId: `${cell.cellId}:resume-cache:v2.0.3`, cellId: cell.cellId,
+      stage: "within-run-cache-reuse", provider: "local-run-cache", startedAt: cacheAt, completedAt: cacheAt,
+      latencyMs: 0, attempts: 0, retries: 0, fallbackUsed: false, status: "completed", usage: {},
+      volume: volume(1, 1, 1, 1), notes: [
+        "Reused the successful intent, local RAG, playbook, discovery, fresh evidence and supplemental evidence from the interrupted cell.",
+        "No historical cross-run candidate, evidence, score or private-memory cache was read.",
+      ] })]);
+    warnings.push("v2.0.3 resumed from the same cell's cached evidence after a model-provider outage; search and evidence acquisition were not repeated.");
+  } else {
+    const intentStarted = new Date().toISOString();
+    const intent = await planAssistantRequest(frozenPlan.userRequest);
+    const intentCompleted = new Date().toISOString();
+    for (const [index, call] of (intent.plannerCalls ?? []).entries()) {
+      await recordCostEvents([event({ eventId: `${cell.cellId}:intent:${index + 1}`, cellId: cell.cellId, stage: "intent",
+        provider: call.providerId ?? "kimi", requestedModel: call.requestedModel, actualModel: call.actualModel,
+        startedAt: intentStarted, completedAt: intentCompleted, latencyMs: call.latencyMs,
+        attempts: call.attempts, retries: call.retries, fallbackUsed: call.fallbackUsed ?? false,
+        status: call.succeeded === false ? "failed" : "completed",
+        usage: { inputTokens: call.inputTokens, cachedInputTokens: call.cachedInputTokens,
+          outputTokens: call.outputTokens },
+        ...(call.usageAvailable === false ? { accountCashCostUsd: EXPERIMENT_CONFIG.cost.unknownUsageCallReserveUsd } : {}),
+        volume: volume(1, call.outputTokens > 0 || call.usageAvailable ? 1 : 0, call.succeeded === false ? 0 : 1,
+          call.succeeded === false ? 0 : 1, call.succeeded === false ? { providerFailure: 1 } : {}),
+        notes: [...(call.failureReason ? [call.failureReason] : []),
+          ...(call.usageAvailable === false ? ["Provider usage unavailable; conservative reserve applied."] : [])] })]);
+    }
+    if (intent.plannerSource === "deterministic-fallback" || !intent.leadPlan) {
+      throw new Error(`${cell.cellId} Kimi intent step did not return a usable model-generated lead plan: ${intent.warnings.join(" | ")}`);
+    }
+    if (intent.leadPlan.countryCode !== frozenPlan.countryCode
+      || intent.leadPlan.targetCount !== EXPERIMENT_CONFIG.sample.slotsPerArmPerCell
+      || intent.leadPlan.objective !== frozenPlan.objective
+      || !intentRolesRecognizeCategory(intent.leadPlan.roles, frozenPlan.roles)) {
+      warnings.push(`${cell.cellId} Kimi intent plan diverged from the user-confirmed frozen task; execution retained the confirmed constraints: ${JSON.stringify({
+        expected: { countryCode: frozenPlan.countryCode, targetCount: frozenPlan.targetCount,
+          objective: frozenPlan.objective, roles: frozenPlan.roles },
+        actual: { countryCode: intent.leadPlan.countryCode, targetCount: intent.leadPlan.targetCount,
+          objective: intent.leadPlan.objective, roles: intent.leadPlan.roles },
+      })}`);
+    }
+    warnings.push(...intent.warnings);
+    plan = { ...frozenPlan, coverageMode: intent.leadPlan.coverageMode ?? "auto", verifiedOnly: false };
+    intentSummary = { plannerModel: intent.plannerModel, plannerSource: intent.plannerSource,
+      confidence: intent.confidence, warnings: intent.warnings };
 
-  const intentStarted = new Date().toISOString();
-  const intent = await planAssistantRequest(frozenPlan.userRequest);
-  const intentCompleted = new Date().toISOString();
-  for (const [index, call] of (intent.plannerCalls ?? []).entries()) {
-    await recordCostEvents([event({ eventId: `${cell.cellId}:intent:${index + 1}`, cellId: cell.cellId, stage: "intent",
-      provider: call.providerId ?? "kimi", requestedModel: call.requestedModel, actualModel: call.actualModel,
-      startedAt: intentStarted, completedAt: intentCompleted, latencyMs: call.latencyMs,
-      attempts: call.attempts, retries: call.retries, fallbackUsed: call.fallbackUsed ?? false,
-      status: call.succeeded === false ? "failed" : "completed",
-      usage: { inputTokens: call.inputTokens, cachedInputTokens: call.cachedInputTokens,
-        outputTokens: call.outputTokens },
-      ...(call.usageAvailable === false ? { accountCashCostUsd: EXPERIMENT_CONFIG.cost.unknownUsageCallReserveUsd } : {}),
-      volume: volume(1, call.outputTokens > 0 || call.usageAvailable ? 1 : 0, call.succeeded === false ? 0 : 1,
-        call.succeeded === false ? 0 : 1, call.succeeded === false ? { providerFailure: 1 } : {}),
-      notes: [...(call.failureReason ? [call.failureReason] : []),
-        ...(call.usageAvailable === false ? ["Provider usage unavailable; conservative reserve applied."] : [])] })]);
-  }
-  if (intent.plannerSource === "deterministic-fallback" || !intent.leadPlan) {
-    throw new Error(`${cell.cellId} Kimi intent step did not return a usable model-generated lead plan: ${intent.warnings.join(" | ")}`);
-  }
-  if (intent.leadPlan.countryCode !== frozenPlan.countryCode
-    || intent.leadPlan.targetCount !== EXPERIMENT_CONFIG.sample.slotsPerArmPerCell
-    || intent.leadPlan.objective !== frozenPlan.objective
-    || !intentRolesRecognizeCategory(intent.leadPlan.roles, frozenPlan.roles)) {
-    warnings.push(`${cell.cellId} Kimi intent plan diverged from the user-confirmed frozen task; execution retained the confirmed constraints: ${JSON.stringify({
-      expected: { countryCode: frozenPlan.countryCode, targetCount: frozenPlan.targetCount,
-        objective: frozenPlan.objective, roles: frozenPlan.roles },
-      actual: { countryCode: intent.leadPlan.countryCode, targetCount: intent.leadPlan.targetCount,
-        objective: intent.leadPlan.objective, roles: intent.leadPlan.roles },
-    })}`);
-  }
-  warnings.push(...intent.warnings);
-  const plan: LeadSearchPlan = { ...frozenPlan, coverageMode: intent.leadPlan.coverageMode ?? "auto",
-    verifiedOnly: false };
+    const userId = process.env.SEARCH_E2E_USER_ID?.trim();
+    if (!userId) throw new Error("SEARCH_E2E_USER_ID is required for frozen local-database RAG");
+    const embeddingUsage: EmbeddingCallUsage[] = [];
+    const ragStarted = new Date().toISOString();
+    ragContext = await retrieveLeadRagContext(userId, plan, { onEmbeddingUsage: (usage) => {
+      embeddingUsage.push(...usage);
+    } });
+    const ragCompleted = new Date().toISOString();
+    const collections = new Set(ragContext.map((item) => item.collection));
+    if (!["product", "company", "industry"].every((collection) => collections.has(collection as never))
+      || !ragContext.some((item) => item.collection === "product" && item.corroborated
+        && item.retrievalSignals.includes("structured"))) {
+      throw new Error(`${cell.cellId} frozen RAG quality gate failed`);
+    }
+    for (const [index, usage] of embeddingUsage.entries()) {
+      await recordCostEvents([event({ eventId: `${cell.cellId}:rag-embedding:${index + 1}`, cellId: cell.cellId,
+        stage: "rag-retrieval", provider: "alibaba-model-studio", requestedModel: "text-embedding-v4",
+        actualModel: usage.model, startedAt: ragStarted, completedAt: ragCompleted, latencyMs: usage.latencyMs,
+        attempts: 1, retries: 0, fallbackUsed: false, status: "completed",
+        usage: { inputTokens: usage.inputTokens, outputTokens: 0 },
+        volume: volume(usage.inputItems, usage.inputItems, usage.inputItems, usage.inputItems) })]);
+    }
 
-  const userId = process.env.SEARCH_E2E_USER_ID?.trim();
-  if (!userId) throw new Error("SEARCH_E2E_USER_ID is required for frozen local-database RAG");
-  const embeddingUsage: EmbeddingCallUsage[] = [];
-  const ragStarted = new Date().toISOString();
-  const ragContext = await retrieveLeadRagContext(userId, plan, { onEmbeddingUsage: (usage) => {
-    embeddingUsage.push(...usage);
-  } });
-  const ragCompleted = new Date().toISOString();
-  const collections = new Set(ragContext.map((item) => item.collection));
-  if (!["product", "company", "industry"].every((collection) => collections.has(collection as never))
-    || !ragContext.some((item) => item.collection === "product" && item.corroborated
-      && item.retrievalSignals.includes("structured"))) {
-    throw new Error(`${cell.cellId} frozen RAG quality gate failed`);
+    const playbookStarted = new Date().toISOString();
+    playbook = buildStandardLeadMarketPlaybook(plan, ragContext);
+    const playbookCompleted = new Date().toISOString();
+    await recordCostEvents([event({ eventId: `${cell.cellId}:playbook`, cellId: cell.cellId, stage: "playbook",
+      provider: "deterministic-template", startedAt: playbookStarted, completedAt: playbookCompleted,
+      latencyMs: Math.max(0, Date.parse(playbookCompleted) - Date.parse(playbookStarted)), attempts: 0, retries: 0,
+      fallbackUsed: false, status: "completed", usage: {}, volume: volume(ragContext.length, 1, 1, 1) })]);
   }
-  for (const [index, usage] of embeddingUsage.entries()) {
-    await recordCostEvents([event({ eventId: `${cell.cellId}:rag-embedding:${index + 1}`, cellId: cell.cellId,
-      stage: "rag-retrieval", provider: "alibaba-model-studio", requestedModel: "text-embedding-v4",
-      actualModel: usage.model, startedAt: ragStarted, completedAt: ragCompleted, latencyMs: usage.latencyMs,
-      attempts: 1, retries: 0, fallbackUsed: false, status: "completed",
-      usage: { inputTokens: usage.inputTokens, outputTokens: 0 },
-      volume: volume(usage.inputItems, usage.inputItems, usage.inputItems, usage.inputItems) })]);
-  }
-
-  const playbookStarted = new Date().toISOString();
-  const playbook = buildStandardLeadMarketPlaybook(plan, ragContext);
-  const playbookCompleted = new Date().toISOString();
-  await recordCostEvents([event({ eventId: `${cell.cellId}:playbook`, cellId: cell.cellId, stage: "playbook",
-    provider: "deterministic-template", startedAt: playbookStarted, completedAt: playbookCompleted,
-    latencyMs: Math.max(0, Date.parse(playbookCompleted) - Date.parse(playbookStarted)), attempts: 0, retries: 0,
-    fallbackUsed: false, status: "completed", usage: {}, volume: volume(ragContext.length, 1, 1, 1) })]);
 
   const discoverySession = createHybridDiscoverySession();
   const treatmentModels = EXPERIMENT_CONFIG.arms["product-e2e"].models;
@@ -227,20 +251,82 @@ export async function runProductCell(cell: ExperimentCell, options: {
   const qualificationAgent = new LeadQualificationAgent(undefined, { includeCooperationPaths: false, concurrency: 4,
     routineModel: treatmentModels.qualificationRoutine,
     escalationModel: treatmentModels.materialEscalation });
-  const discoveryRounds: ProductCellResult["discoveryRounds"] = [];
-  const discoveredRuns: unknown[] = [];
-  const enrichedRuns: unknown[] = [];
-  const correctedByDomain = new Map<string, CorrectedLeadWorkflowCandidate>();
-  const assessmentsByCandidate = new Map<string, LeadCandidateAssessment>();
+  const discoveryRounds: ProductCellResult["discoveryRounds"] = [...(resumeFrom?.discoveryRounds ?? [])];
+  const discoveredRuns: unknown[] = [...((resumeFrom?.raw.discovered as unknown[] | undefined) ?? [])];
+  const enrichedRuns: unknown[] = [...((resumeFrom?.raw.enriched as unknown[] | undefined) ?? [])];
+  const priorCorrected = ((resumeFrom?.raw.corrected as CorrectedLeadWorkflowCandidate[] | undefined) ?? []);
+  const priorAssessments = ((resumeFrom?.raw.assessments as LeadCandidateAssessment[] | undefined) ?? []);
+  const correctedByDomain = new Map<string, CorrectedLeadWorkflowCandidate>(
+    priorCorrected.map((candidate) => [candidate.domain, candidate]),
+  );
+  const assessmentsByCandidate = new Map<string, LeadCandidateAssessment>(
+    priorAssessments.map((assessment) => [assessment.candidateId, assessment]),
+  );
   const selectedPairs: Array<{ candidate: CorrectedLeadWorkflowCandidate; assessment: LeadCandidateAssessment }> = [];
   const selectedDomains = new Set<string>();
-  const allDiscoveryCalls: Awaited<ReturnType<typeof executeHybridDiscovery>>["calls"] = [];
-  let totalUnique = 0;
+  const allDiscoveryCalls: Awaited<ReturnType<typeof executeHybridDiscovery>>["calls"] = [
+    ...(resumeFrom?.discoveryCalls ?? []),
+  ];
+  let totalUnique = resumeFrom?.discoveredCandidateCount ?? 0;
   let consecutiveNoFinalRounds = 0;
   let completionReason: ProductCellResult["completionReason"] = "maximum-rounds";
   const maximumRounds = 5;
+  const startingRound = resumeFrom?.discoveryRounds.length ?? 0;
 
-  for (let round = 0; round < maximumRounds && selectedPairs.length < plan.targetCount; round += 1) {
+  if (resumeFrom && priorCorrected.length > 0) {
+    for (const candidate of priorCorrected) discoverySession.excludedDomains.add(candidate.domain);
+    const noAcquisitionSearch = { search: async (input: { query: string }) => ({
+      query: input.query,
+      results: [],
+      creditsUsed: 0,
+      attempts: 0,
+      retries: 0,
+      latencyMs: 0,
+    }) };
+    const recoveryAgent = new LeadEvidenceCorrectionAgent(undefined, noAcquisitionSearch, {
+      allowReusableCorrections: false,
+      persistCorrections: false,
+      routineModel: treatmentModels.roleCorrectionRoutine,
+      escalationModel: treatmentModels.materialEscalation,
+    });
+    const correctionStarted = new Date().toISOString();
+    const recovered = await recoveryAgent.correct(priorCorrected, plan);
+    const correctionCompleted = new Date().toISOString();
+    for (const candidate of recovered.candidates) correctedByDomain.set(candidate.domain, candidate);
+    const inRoleCandidates = recovered.candidates.filter((candidate) =>
+      primaryRoleMatchesCategory(candidate.correction.primaryRole, cell.categoryId));
+    await recordCostEvents(modelUsageEvents(cell, "evidence-correction-cache-recovery",
+      recovered.usage ?? [], correctionStarted, correctionCompleted,
+      volume(priorCorrected.length, recovered.candidates.length,
+        recovered.candidates.filter((candidate) => candidate.correction.resolvedRoles.length > 0).length,
+        inRoleCandidates.length, { correctedToAnotherRole: recovered.candidates.length - inRoleCandidates.length })));
+    warnings.push(...recovered.warnings);
+
+    const scoringStarted = new Date().toISOString();
+    const scored = inRoleCandidates.length > 0
+      ? await qualificationAgent.evaluateWithUsage(inRoleCandidates, playbook,
+        plan.countryCode, plan.countryName, plan.objective)
+      : { assessments: [] as LeadCandidateAssessment[], usage: [] as WorkflowModelUsage[] };
+    const scoringCompleted = new Date().toISOString();
+    scored.assessments.forEach((assessment) => assessmentsByCandidate.set(assessment.candidateId, assessment));
+    await recordCostEvents(modelUsageEvents(cell, "qualification-score-only-cache-recovery", scored.usage,
+      scoringStarted, scoringCompleted, volume(inRoleCandidates.length, scored.assessments.length,
+        scored.assessments.filter((assessment) => assessment.scoringStatus === "completed").length,
+        scored.assessments.filter((assessment) => assessment.scoringStatus === "completed").length,
+        { retryRequired: scored.assessments.filter((assessment) => assessment.scoringStatus !== "completed").length })));
+    const assessmentById = new Map(scored.assessments.map((assessment) => [assessment.candidateId, assessment]));
+    for (const candidate of inRoleCandidates) {
+      const assessment = assessmentById.get(candidate.candidateId);
+      if (!assessment || assessment.scoringStatus !== "completed" || !assessment.eligible
+        || assessment.eligibilityStatus !== "eligible"
+        || Object.values(assessment.gates).some((state) => state === "not-supported")) continue;
+      selectedPairs.push({ candidate, assessment });
+      selectedDomains.add(candidate.domain);
+    }
+    warnings.push(`Cache recovery reclassified ${recovered.candidates.length} candidates, found ${inRoleCandidates.length} in-role and retained ${selectedPairs.length} eligible without another search or Tavily call.`);
+  }
+
+  for (let round = startingRound; round < maximumRounds && selectedPairs.length < plan.targetCount; round += 1) {
     const plannedPool = plannedCandidatePool({ targetCount: plan.targetCount,
       acceptedCount: selectedPairs.length, discoveredUniqueCount: totalUnique, round });
     const roundPlan = { ...plan, coverageMode: round > 0 && plan.coverageMode === "auto" ? "mixed" as const
@@ -375,7 +461,7 @@ export async function runProductCell(cell: ExperimentCell, options: {
     toFinalCandidate(candidate, assessment, index + 1));
   const rankingStarted = new Date().toISOString();
   const rankingAt = new Date().toISOString();
-  await recordCostEvents([event({ eventId: `${cell.cellId}:ranking`, cellId: cell.cellId,
+  await recordCostEvents([event({ eventId: resumeFrom ? `${cell.cellId}:ranking:resume-v2.0.3` : `${cell.cellId}:ranking`, cellId: cell.cellId,
     stage: "role-filter-ranking", provider: "deterministic", startedAt: rankingStarted,
     completedAt: rankingAt, latencyMs: Math.max(0, Date.parse(rankingAt) - Date.parse(rankingStarted)),
     attempts: 0, retries: 0, fallbackUsed: false, status: "completed", usage: {},
@@ -386,9 +472,8 @@ export async function runProductCell(cell: ExperimentCell, options: {
     throw new Error(`${cell.cellId} contains unpriced product cost events: ${costEvents.filter((item) => item.budgetCostUsd === null).map((item) => item.eventId).join(", ")}`);
   }
   return { schemaVersion: 1, runId: EXPERIMENT_CONFIG.runId, cellId: cell.cellId, arm: "product-e2e",
-    startedAt, completedAt: new Date().toISOString(), wallClockMs: Date.now() - wallStarted, plan,
-    intent: { plannerModel: intent.plannerModel, plannerSource: intent.plannerSource,
-      confidence: intent.confidence, warnings: intent.warnings }, playbook, treatmentModels,
+    startedAt, completedAt: new Date().toISOString(), wallClockMs: (resumeFrom?.wallClockMs ?? 0) + Date.now() - wallStarted, plan,
+    intent: intentSummary, playbook, treatmentModels,
     rawDiscoveryCount: allDiscoveryCalls.reduce((sum, call) => sum + call.rawResults, 0),
     discoveredCandidateCount: totalUnique, correctedCandidateCount: correctedByDomain.size,
     completedAssessmentCount: [...assessmentsByCandidate.values()]

@@ -77,6 +77,7 @@ export class DeepSeekProvider implements AiProvider {
     const model = request.modelVersion.trim() || this.defaultModel;
     const startedAt = performance.now();
     let lastError: unknown;
+    let attemptsMade = 0;
     const systemPrompt = [
       "Return one valid JSON object only, with no Markdown or commentary.",
       "Follow the task instructions and never invent evidence IDs or facts not present in the input JSON.",
@@ -95,6 +96,7 @@ export class DeepSeekProvider implements AiProvider {
       || (!process.env.DEEPSEEK_TRANSPORT && model.includes("pro"));
 
     for (let attempt = 0; attempt < this.maxAttempts; attempt += 1) {
+      attemptsMade = attempt + 1;
       try {
         const response = await this.fetchImplementation(useAnthropicTransport
           ? `${this.baseUrl}/anthropic/v1/messages` : `${this.baseUrl}/chat/completions`, {
@@ -178,6 +180,9 @@ export class DeepSeekProvider implements AiProvider {
       }
     }
 
-    throw new ProviderUnavailableError(this.id, lastError);
+    throw new ProviderUnavailableError(this.id, lastError, {
+      attempts: attemptsMade,
+      retries: Math.max(0, attemptsMade - 1),
+    });
   }
 }

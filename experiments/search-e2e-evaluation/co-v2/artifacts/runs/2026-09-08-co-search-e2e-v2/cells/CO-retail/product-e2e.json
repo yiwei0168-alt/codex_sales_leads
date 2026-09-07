@@ -1,0 +1,2522 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-08-co-search-e2e-v2",
+  "cellId": "CO-retail",
+  "arm": "product-e2e",
+  "startedAt": "2026-09-07T21:00:26.976Z",
+  "completedAt": "2026-09-07T21:01:53.737Z",
+  "wallClockMs": 86761,
+  "plan": {
+    "countryCode": "CO",
+    "countryName": "Colombia",
+    "objective": "new-market",
+    "roles": [
+      "Retailer",
+      "E-tailer"
+    ],
+    "targetCount": 50,
+    "queryLanguage": "es",
+    "userRequest": "Busca y evalúa 50 empresas en Colombia cuya función principal sea Retailer/E-tailer. Limita la tarea a este mercado y esta categoría. Usa español y, cuando sea útil, inglés.",
+    "opportunityTargets": [],
+    "coverageMode": "auto",
+    "verifiedOnly": false
+  },
+  "intent": {
+    "plannerModel": "kimi-k2.6",
+    "plannerSource": "kimi-light",
+    "confidence": 0.95,
+    "warnings": []
+  },
+  "playbook": {
+    "marketHypothesis": "Colombia should be developed through a market-specific mix of supply, resale, retail, service and operator nodes. Candidate quality and public evidence determine the final mix; no role receives a fixed quota.",
+    "productAngles": [
+      "M11000(1-Pack): BE11000 2.5G Tri-Band Wi-Fi 7 Mesh Solution / Mesh Solution",
+      "M11000(2-Pack): BE11000 2.5G Tri-Band Wi-Fi 7 Mesh Solution / Mesh Solution",
+      "M1200(1-Pack): AC1200 Wi-Fi Mesh Solution / Mesh Solution",
+      "M1200(2-Pack): AC1200 Wi-Fi Mesh Solution / Mesh Solution",
+      "M1200(3-Pack): AC1200 Wi-Fi Mesh Solution / Mesh Solution",
+      "M1300(1-Pack): AC1200 Wi-Fi Gigabit Mesh Solution / Mesh Solution",
+      "M1300(2-Pack): AC1200 Wi-Fi Gigabit Mesh Solution / Mesh Solution",
+      "M1300(3-Pack): AC1200 Wi-Fi Gigabit Mesh Solution / Mesh Solution"
+    ],
+    "preferredCompanyTraits": [
+      "active target-market presence",
+      "networking-adjacent customer access",
+      "credible purchasing or project influence",
+      "observable execution capability"
+    ],
+    "exclusions": [
+      "directories and list pages",
+      "inactive or unverifiable entities",
+      "companies without target-market presence",
+      "unrelated consumer-only businesses"
+    ],
+    "rolePriorities": [
+      {
+        "family": "retail",
+        "roles": [
+          "Retailer",
+          "E-tailer"
+        ],
+        "weight": 1,
+        "reason": "Build or validate a reliable supply path while developing demand nodes in parallel."
+      }
+    ],
+    "searchQueries": [
+      {
+        "family": "retail",
+        "roles": [
+          "Retailer",
+          "E-tailer"
+        ],
+        "query": "network router switch retailer e-tailer Colombia official company networking",
+        "priority": 1
+      },
+      {
+        "family": "retail",
+        "roles": [
+          "Retailer",
+          "E-tailer"
+        ],
+        "query": "consumer SMB networking electronics shop Colombia official company networking",
+        "priority": 2
+      }
+    ],
+    "ragCitationIds": [
+      "095d68ef-a477-45e0-91f6-4afda8ffae83",
+      "27212d5e-7fa5-4f96-bbfd-6d033fb84d27",
+      "04c626c9-bed9-4059-ad3b-612077ce929b",
+      "6fc79b4f-9b1a-49c7-bcff-13cbfa064e6b",
+      "ce825250-5623-460b-98da-a7e8a8cb8b86",
+      "efd439fc-6cf4-48e7-87d1-2841d5a5f271",
+      "0e4ecf1b-f217-459d-b42f-a3a6bb639582",
+      "1a7c3634-d4f6-49b7-8d88-21a3aa2f9982",
+      "20277588-3c73-4f88-bb70-5b155a2016d0",
+      "38a043ac-b57b-47c3-b5b4-3378c1ee1a5b",
+      "0f7d9099-b2b5-46f8-8372-87e961de6ab5",
+      "6531a2ec-6d68-4efa-ac4b-a5fdc0cc9ba5",
+      "37fced1a-4611-4b69-b6e0-daaef81a0616",
+      "d735875d-932e-4628-8d92-18838955af38",
+      "5c87c35a-15cb-4f1e-9122-a162b5f28103",
+      "ac9b125c-cee7-4b85-a51e-b89f02f7abc8"
+    ],
+    "generatedBy": "deterministic-fallback",
+    "warnings": []
+  },
+  "treatmentModels": {
+    "discoveryGateRoutine": "deepseek-v4-flash",
+    "roleCorrectionRoutine": "deepseek-v4-flash",
+    "qualificationRoutine": "deepseek-v4-flash",
+    "materialEscalation": "deepseek-v4-pro"
+  },
+  "rawDiscoveryCount": 65,
+  "discoveredCandidateCount": 31,
+  "correctedCandidateCount": 27,
+  "completedAssessmentCount": 0,
+  "attributionCandidates": [
+    {
+      "candidateId": "lead-19b8694a57c312bd",
+      "discoveryOccurrences": [
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-7adc2e58c1347709",
+      "discoveryOccurrences": [
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-a98b6f9418dfbe11",
+      "discoveryOccurrences": [
+        {
+          "provider": "google-places"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-a6fbd0338afbb695",
+      "discoveryOccurrences": [
+        {
+          "provider": "exa"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-7e53f3949bfb594d",
+      "discoveryOccurrences": [
+        {
+          "provider": "exa"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-6473148d4705a32e",
+      "discoveryOccurrences": [
+        {
+          "provider": "exa"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-6ceb2330843ae7a9",
+      "discoveryOccurrences": [
+        {
+          "provider": "exa"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-4b4e326a0c769132",
+      "discoveryOccurrences": [
+        {
+          "provider": "exa"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-bbf7735f0b69cb3e",
+      "discoveryOccurrences": [
+        {
+          "provider": "exa"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-33c7f1fcf23177e6",
+      "discoveryOccurrences": [
+        {
+          "provider": "exa"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-f9a7d61b75489ba8",
+      "discoveryOccurrences": [
+        {
+          "provider": "exa"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-e264e240e78fa72c",
+      "discoveryOccurrences": [
+        {
+          "provider": "exa"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-a6c28ffe66b3103d",
+      "discoveryOccurrences": [
+        {
+          "provider": "exa"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-f7c1b69723361462",
+      "discoveryOccurrences": [
+        {
+          "provider": "exa"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-7742a17ab0248656",
+      "discoveryOccurrences": [
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-0b4f3a7133db87a9",
+      "discoveryOccurrences": [
+        {
+          "provider": "exa"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-c1a5ba1e95567db6",
+      "discoveryOccurrences": [
+        {
+          "provider": "exa"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-dc499816a7fb4223",
+      "discoveryOccurrences": [
+        {
+          "provider": "exa"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-6812bfe56a3cd705",
+      "discoveryOccurrences": [
+        {
+          "provider": "exa"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-0def2b32e094a8f4",
+      "discoveryOccurrences": [
+        {
+          "provider": "exa"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-10f30e05ada813ff",
+      "discoveryOccurrences": [
+        {
+          "provider": "exa"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-5bc50d2ff73ad29a",
+      "discoveryOccurrences": [
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-640dad133106b314",
+      "discoveryOccurrences": [
+        {
+          "provider": "google-places"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-87f646cfb312c44d",
+      "discoveryOccurrences": [
+        {
+          "provider": "exa"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-b466c5f5008dda8a",
+      "discoveryOccurrences": [
+        {
+          "provider": "exa"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-b972c5b42d718e6c",
+      "discoveryOccurrences": [
+        {
+          "provider": "exa"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-b85fc05fa7d09f43",
+      "discoveryOccurrences": [
+        {
+          "provider": "exa"
+        }
+      ]
+    }
+  ],
+  "finalCandidates": [],
+  "missingSlots": 50,
+  "completionReason": "confirmed-exhaustion",
+  "discoveryRounds": [
+    {
+      "round": 1,
+      "plannedCandidatePool": 75,
+      "newUniqueCandidates": 23,
+      "lightGateCandidates": 21,
+      "correctedCandidates": 21,
+      "inRoleCandidates": 0,
+      "finalEligibleAdded": 0,
+      "cumulativeFinalEligible": 0,
+      "stopReason": "route-exhausted"
+    },
+    {
+      "round": 2,
+      "plannedCandidatePool": 150,
+      "newUniqueCandidates": 8,
+      "lightGateCandidates": 6,
+      "correctedCandidates": 6,
+      "inRoleCandidates": 0,
+      "finalEligibleAdded": 0,
+      "cumulativeFinalEligible": 0,
+      "stopReason": "route-exhausted"
+    }
+  ],
+  "warnings": [
+    "Hybrid discovery failed (retail/etail/searchapi): searchapi HTTP 429: {\n  \"error\": \"You have used all of the searches for the month. Please upgrade your plan on SearchApi.io.\"\n}",
+    "Hybrid discovery failed (retail/retail-national/searchapi): searchapi HTTP 429: {\n  \"error\": \"You have used all of the searches for the month. Please upgrade your plan on SearchApi.io.\"\n}",
+    "Discovery gate batch held after routine model failure: Primary model deepseek-v4-flash and approved equivalent fallbacks failed.",
+    "Hybrid discovery failed (retail/etail/brave): brave HTTP 422: {\"type\":\"ErrorResponse\",\"error\":{\"id\":\"8127041d-9b64-427e-9bfc-451cb8a035a8\",\"status\":422,\"detail\":\"Unable to validate request parameter(s)\",\"meta\":{\"errors\":[{\"type\":\"enum\",\"loc\":[\"query\",\"country\"],\"msg\":\"Input should be 'AR', 'AU', 'AT', 'BE', 'BR', 'CA', 'CL', 'DK', 'FI', 'FR', 'DE', 'GR', 'HK', 'IN', 'ID', 'IT', 'JP', 'KR', 'MY', 'MX', 'NL', 'NZ', 'NO', 'CN', 'PL', 'PT', 'PH', 'RU', 'SA', 'ZA', 'ES', 'SE', 'CH', 'TW', 'TR', 'GB', 'US' or 'ALL'\",\"input\":\"CO\",\"ctx\":{\"expected\":\"'AR', 'AU', 'A",
+    "Hybrid discovery failed (retail/retail-national/brave): brave HTTP 422: {\"type\":\"ErrorResponse\",\"error\":{\"id\":\"965e54b2-ddd6-465c-a2cb-7e93890b240b\",\"status\":422,\"detail\":\"Unable to validate request parameter(s)\",\"meta\":{\"errors\":[{\"type\":\"enum\",\"loc\":[\"query\",\"country\"],\"msg\":\"Input should be 'AR', 'AU', 'AT', 'BE', 'BR', 'CA', 'CL', 'DK', 'FI', 'FR', 'DE', 'GR', 'HK', 'IN', 'ID', 'IT', 'JP', 'KR', 'MY', 'MX', 'NL', 'NZ', 'NO', 'CN', 'PL', 'PT', 'PH', 'RU', 'SA', 'ZA', 'ES', 'SE', 'CH', 'TW', 'TR', 'GB', 'US' or 'ALL'\",\"input\":\"CO\",\"ctx\":{\"expected\":\"'AR', 'AU', 'A",
+    "Discovery gate batch held after routine model failure: Primary model deepseek-v4-flash and approved equivalent fallbacks failed.",
+    "Discovery gate batch held after routine model failure: Primary model deepseek-v4-flash and approved equivalent fallbacks failed.",
+    "No official-domain evidence was extracted for ptytec.com.",
+    "No official-domain evidence was extracted for teklotengo.com.",
+    "No official-domain evidence was extracted for homeelementsweb.com.",
+    "No official-domain evidence was extracted for electroequipos.com.",
+    "No official-domain evidence was extracted for sigmaelectronica.net.",
+    "No official-domain evidence was extracted for grupoverytel.com.",
+    "No official-domain evidence was extracted for com.co.",
+    "teklotengo.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed. Escalation failed: Primary model deepseek-v4-pro and approved equivalent fallbacks failed.",
+    "net.co: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed. Escalation failed: Primary model deepseek-v4-pro and approved equivalent fallbacks failed.",
+    "ptytec.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed. Escalation failed: Primary model deepseek-v4-pro and approved equivalent fallbacks failed.",
+    "netscompany.co: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed. Escalation failed: Primary model deepseek-v4-pro and approved equivalent fallbacks failed.",
+    "totalmayorista.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed. Escalation failed: Primary model deepseek-v4-pro and approved equivalent fallbacks failed.",
+    "telcolombia.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed. Escalation failed: Primary model deepseek-v4-pro and approved equivalent fallbacks failed.",
+    "homeelementsweb.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed. Escalation failed: Primary model deepseek-v4-pro and approved equivalent fallbacks failed.",
+    "mgicomputadores.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed. Escalation failed: Primary model deepseek-v4-pro and approved equivalent fallbacks failed.",
+    "pcsystemcolombia.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed. Escalation failed: Primary model deepseek-v4-pro and approved equivalent fallbacks failed.",
+    "techcomputers.co: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed. Escalation failed: Primary model deepseek-v4-pro and approved equivalent fallbacks failed.",
+    "lineacomunicaciones.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed. Escalation failed: Primary model deepseek-v4-pro and approved equivalent fallbacks failed.",
+    "vendaenlinea.co: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed. Escalation failed: Primary model deepseek-v4-pro and approved equivalent fallbacks failed.",
+    "electroequipos.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed. Escalation failed: Primary model deepseek-v4-pro and approved equivalent fallbacks failed.",
+    "prosuministros.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed. Escalation failed: Primary model deepseek-v4-pro and approved equivalent fallbacks failed.",
+    "com.co: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed. Escalation failed: Primary model deepseek-v4-pro and approved equivalent fallbacks failed.",
+    "sigmaelectronica.net: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed. Escalation failed: Primary model deepseek-v4-pro and approved equivalent fallbacks failed.",
+    "sistetronics.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed. Escalation failed: Primary model deepseek-v4-pro and approved equivalent fallbacks failed.",
+    "ti-innovadora.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed. Escalation failed: Primary model deepseek-v4-pro and approved equivalent fallbacks failed.",
+    "titec.co: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed. Escalation failed: Primary model deepseek-v4-pro and approved equivalent fallbacks failed.",
+    "mdvdistribuidora.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed. Escalation failed: Primary model deepseek-v4-pro and approved equivalent fallbacks failed.",
+    "grupoverytel.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed. Escalation failed: Primary model deepseek-v4-pro and approved equivalent fallbacks failed.",
+    "Discovery gate batch held after routine model failure: Primary model deepseek-v4-flash and approved equivalent fallbacks failed.",
+    "Hybrid discovery failed (retail/etail/brave): brave HTTP 422: {\"type\":\"ErrorResponse\",\"error\":{\"id\":\"c7183f34-0d8c-430f-829e-a9ba49b129f5\",\"status\":422,\"detail\":\"Unable to validate request parameter(s)\",\"meta\":{\"errors\":[{\"type\":\"enum\",\"loc\":[\"query\",\"country\"],\"msg\":\"Input should be 'AR', 'AU', 'AT', 'BE', 'BR', 'CA', 'CL', 'DK', 'FI', 'FR', 'DE', 'GR', 'HK', 'IN', 'ID', 'IT', 'JP', 'KR', 'MY', 'MX', 'NL', 'NZ', 'NO', 'CN', 'PL', 'PT', 'PH', 'RU', 'SA', 'ZA', 'ES', 'SE', 'CH', 'TW', 'TR', 'GB', 'US' or 'ALL'\",\"input\":\"CO\",\"ctx\":{\"expected\":\"'AR', 'AU', 'A",
+    "Discovery gate batch held after routine model failure: Primary model deepseek-v4-flash and approved equivalent fallbacks failed.",
+    "exa.ai: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed. Escalation failed: Primary model deepseek-v4-pro and approved equivalent fallbacks failed.",
+    "uelectronica.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed. Escalation failed: Primary model deepseek-v4-pro and approved equivalent fallbacks failed.",
+    "smartbusiness.pe: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed. Escalation failed: Primary model deepseek-v4-pro and approved equivalent fallbacks failed.",
+    "com.pe: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed. Escalation failed: Primary model deepseek-v4-pro and approved equivalent fallbacks failed.",
+    "nexsysla.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed. Escalation failed: Primary model deepseek-v4-pro and approved equivalent fallbacks failed.",
+    "ingetet.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed. Escalation failed: Primary model deepseek-v4-pro and approved equivalent fallbacks failed."
+  ],
+  "costEvents": [
+    {
+      "eventId": "CO-retail:intent:1",
+      "cellId": "CO-retail",
+      "stage": "intent",
+      "provider": "kimi",
+      "requestedModel": "kimi-k2.6",
+      "actualModel": "kimi-k2.6",
+      "startedAt": "2026-09-07T21:00:26.976Z",
+      "completedAt": "2026-09-07T21:00:44.046Z",
+      "latencyMs": 17061,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 601,
+        "cachedInputTokens": 512,
+        "outputTokens": 1305
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.0053630010762358285,
+      "budgetCostUsd": 0.0053630010762358285,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:rag-embedding:1",
+      "cellId": "CO-retail",
+      "stage": "rag-retrieval",
+      "provider": "alibaba-model-studio",
+      "requestedModel": "text-embedding-v4",
+      "actualModel": "text-embedding-v4",
+      "startedAt": "2026-09-07T21:00:44.068Z",
+      "completedAt": "2026-09-07T21:00:45.576Z",
+      "latencyMs": 1307,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 83,
+        "outputTokens": 0
+      },
+      "volume": {
+        "inputItems": 3,
+        "rawOutputItems": 3,
+        "validOutputItems": 3,
+        "downstreamUsedItems": 3,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.000005976,
+      "budgetCostUsd": 0.000005976,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:playbook",
+      "cellId": "CO-retail",
+      "stage": "playbook",
+      "provider": "deterministic-template",
+      "startedAt": "2026-09-07T21:00:45.592Z",
+      "completedAt": "2026-09-07T21:00:45.592Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "volume": {
+        "inputItems": 16,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r1:1",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "google-places",
+      "startedAt": "2026-09-07T21:00:45.606Z",
+      "completedAt": "2026-09-07T21:01:00.482Z",
+      "latencyMs": 407,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 1,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.035,
+      "budgetCostUsd": 0.035,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r1:2",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-07T21:00:45.606Z",
+      "completedAt": "2026-09-07T21:01:00.482Z",
+      "latencyMs": 743,
+      "attempts": 2,
+      "retries": 1,
+      "fallbackUsed": false,
+      "status": "failed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 2,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "provider-rate-limit": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=miss",
+        "failureClass=rate-limit",
+        "circuitScope=route"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.008,
+      "budgetCostUsd": 0.008,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r1:3",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-07T21:00:45.606Z",
+      "completedAt": "2026-09-07T21:01:00.482Z",
+      "latencyMs": 784,
+      "attempts": 2,
+      "retries": 1,
+      "fallbackUsed": false,
+      "status": "failed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 2,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "provider-rate-limit": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=miss",
+        "failureClass=rate-limit",
+        "circuitScope=route"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.008,
+      "budgetCostUsd": 0.008,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r1:4",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-07T21:00:45.606Z",
+      "completedAt": "2026-09-07T21:01:00.482Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "circuit-open": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r1:5",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-07T21:00:45.606Z",
+      "completedAt": "2026-09-07T21:01:00.482Z",
+      "latencyMs": 486,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "failed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "provider-http": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=miss",
+        "failureClass=http",
+        "circuitScope=route"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005,
+      "budgetCostUsd": 0.005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r1:6",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-07T21:00:45.606Z",
+      "completedAt": "2026-09-07T21:01:00.482Z",
+      "latencyMs": 173,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "failed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "provider-http": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=miss",
+        "failureClass=http",
+        "circuitScope=route"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005,
+      "budgetCostUsd": 0.005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r1:7",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-07T21:00:45.606Z",
+      "completedAt": "2026-09-07T21:01:00.482Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "circuit-open": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r1:8",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-07T21:00:45.606Z",
+      "completedAt": "2026-09-07T21:01:00.482Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "circuit-open": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r1:9",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-07T21:00:45.606Z",
+      "completedAt": "2026-09-07T21:01:00.482Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "circuit-open": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r1:10",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "exa",
+      "startedAt": "2026-09-07T21:00:45.606Z",
+      "completedAt": "2026-09-07T21:01:00.482Z",
+      "latencyMs": 1689,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 20,
+        "extractedPages": 20,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 20,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 18,
+        "discardedReasonCounts": {
+          "duplicate": 2
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.037000000000000005,
+      "budgetCostUsd": 0.037000000000000005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r1:11",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "exa",
+      "startedAt": "2026-09-07T21:00:45.606Z",
+      "completedAt": "2026-09-07T21:01:00.482Z",
+      "latencyMs": 1594,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 20,
+        "extractedPages": 20,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 20,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 4,
+        "discardedReasonCounts": {
+          "duplicate": 16
+        }
+      },
+      "notes": [
+        "queryRound=1",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.037000000000000005,
+      "budgetCostUsd": 0.037000000000000005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:fresh-evidence:r1",
+      "cellId": "CO-retail",
+      "stage": "fresh-evidence",
+      "provider": "tavily",
+      "startedAt": "2026-09-07T21:01:00.644Z",
+      "completedAt": "2026-09-07T21:01:15.542Z",
+      "latencyMs": 82258,
+      "attempts": 35,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 32
+      },
+      "volume": {
+        "inputItems": 21,
+        "rawOutputItems": 59,
+        "validOutputItems": 59,
+        "downstreamUsedItems": 59,
+        "discardedReasonCounts": {
+          "noFreshEvidence": 3
+        }
+      },
+      "notes": [
+        "historical evidence reads disabled",
+        "evidence-library writes disabled",
+        "current-run evidence and missing-evidence records reused downstream"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.256,
+      "budgetCostUsd": 0.256,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:correction-evidence:r1",
+      "cellId": "CO-retail",
+      "stage": "evidence-correction-search",
+      "provider": "tavily",
+      "startedAt": "2026-09-07T21:01:15.565Z",
+      "completedAt": "2026-09-07T21:01:32.395Z",
+      "latencyMs": 43573,
+      "attempts": 19,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 19
+      },
+      "volume": {
+        "inputItems": 21,
+        "rawOutputItems": 21,
+        "validOutputItems": 21,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "correctedToAnotherRole": 21
+        }
+      },
+      "notes": [
+        "Only missing evidence identified by the first evidence packet may trigger supplementation."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.152,
+      "budgetCostUsd": 0.152,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r2:1",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-07T21:01:32.438Z",
+      "completedAt": "2026-09-07T21:01:41.020Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "provider-recovery-cooldown": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r2:2",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-07T21:01:32.438Z",
+      "completedAt": "2026-09-07T21:01:41.020Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "provider-recovery-cooldown": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r2:3",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "google-places",
+      "startedAt": "2026-09-07T21:01:32.438Z",
+      "completedAt": "2026-09-07T21:01:41.020Z",
+      "latencyMs": 333,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 1,
+        "extractedPages": 0,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.035,
+      "budgetCostUsd": 0.035,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r2:4",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-07T21:01:32.438Z",
+      "completedAt": "2026-09-07T21:01:41.020Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "provider-recovery-cooldown": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r2:5",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-07T21:01:32.438Z",
+      "completedAt": "2026-09-07T21:01:41.020Z",
+      "latencyMs": 446,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "failed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "provider-http": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=miss",
+        "failureClass=http",
+        "circuitScope=route"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.005,
+      "budgetCostUsd": 0.005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r2:6",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-07T21:01:32.438Z",
+      "completedAt": "2026-09-07T21:01:41.020Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "circuit-open": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r2:7",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-07T21:01:32.438Z",
+      "completedAt": "2026-09-07T21:01:41.020Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "provider-recovery-cooldown": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r2:8",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "brave",
+      "startedAt": "2026-09-07T21:01:32.438Z",
+      "completedAt": "2026-09-07T21:01:41.020Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "circuit-open": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r2:9",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "searchapi",
+      "startedAt": "2026-09-07T21:01:32.438Z",
+      "completedAt": "2026-09-07T21:01:41.020Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "skipped",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 0,
+        "groundingQueries": 0,
+        "searchResults": 0,
+        "extractedPages": 0,
+        "paidSearchCredits": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "provider-recovery-cooldown": 1,
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=skipped"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r2:10",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "exa",
+      "startedAt": "2026-09-07T21:01:32.438Z",
+      "completedAt": "2026-09-07T21:01:41.020Z",
+      "latencyMs": 1611,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 20,
+        "extractedPages": 20,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 20,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 4,
+        "discardedReasonCounts": {
+          "duplicate": 16
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.037000000000000005,
+      "budgetCostUsd": 0.037000000000000005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:discovery:r2:11",
+      "cellId": "CO-retail",
+      "stage": "hybrid-discovery",
+      "provider": "exa",
+      "startedAt": "2026-09-07T21:01:32.438Z",
+      "completedAt": "2026-09-07T21:01:41.020Z",
+      "latencyMs": 1605,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "searchRequests": 1,
+        "groundingQueries": 0,
+        "searchResults": 3,
+        "extractedPages": 3,
+        "paidSearchCredits": 1
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 3,
+        "validOutputItems": 3,
+        "downstreamUsedItems": 3,
+        "discardedReasonCounts": {
+          "duplicate": 0
+        }
+      },
+      "notes": [
+        "queryRound=2",
+        "cacheStatus=miss"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.01,
+      "budgetCostUsd": 0.01,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:fresh-evidence:r2",
+      "cellId": "CO-retail",
+      "stage": "fresh-evidence",
+      "provider": "tavily",
+      "startedAt": "2026-09-07T21:01:41.193Z",
+      "completedAt": "2026-09-07T21:01:49.564Z",
+      "latencyMs": 31340,
+      "attempts": 12,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 8
+      },
+      "volume": {
+        "inputItems": 6,
+        "rawOutputItems": 27,
+        "validOutputItems": 27,
+        "downstreamUsedItems": 27,
+        "discardedReasonCounts": {
+          "noFreshEvidence": 0
+        }
+      },
+      "notes": [
+        "historical evidence reads disabled",
+        "evidence-library writes disabled",
+        "current-run evidence and missing-evidence records reused downstream"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.064,
+      "budgetCostUsd": 0.064,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:correction-evidence:r2",
+      "cellId": "CO-retail",
+      "stage": "evidence-correction-search",
+      "provider": "tavily",
+      "startedAt": "2026-09-07T21:01:49.593Z",
+      "completedAt": "2026-09-07T21:01:53.678Z",
+      "latencyMs": 8527,
+      "attempts": 5,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 5
+      },
+      "volume": {
+        "inputItems": 6,
+        "rawOutputItems": 6,
+        "validOutputItems": 6,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "correctedToAnotherRole": 6
+        }
+      },
+      "notes": [
+        "Only missing evidence identified by the first evidence packet may trigger supplementation."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.04,
+      "budgetCostUsd": 0.04,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:ranking",
+      "cellId": "CO-retail",
+      "stage": "role-filter-ranking",
+      "provider": "deterministic",
+      "startedAt": "2026-09-07T21:01:53.722Z",
+      "completedAt": "2026-09-07T21:01:53.722Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "volume": {
+        "inputItems": 0,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "wrongPrimaryRoleOrGate": 27
+        }
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    }
+  ],
+  "coldStartAudit": {
+    "historicalCandidateReads": 0,
+    "historicalEvidenceReads": 0,
+    "privateMemoryReads": 0,
+    "historicalScoreReads": 0,
+    "evidenceLibraryWrites": 0,
+    "cooperationPathsGenerated": 0
+  },
+  "discoveryCalls": [
+    {
+      "callKey": "retail/retail-local/0/google-places/google-places",
+      "callFingerprint": "677e39a789d2ed7b6dc113623010a9b52cb74ff4e8bc450d5bfbb1766dfbdb57",
+      "queryClusterKey": "96692083d9d233bf7d603826a15ed9cc7884341c38f7fdce1a3cab0c243e494d",
+      "route": {
+        "category": "retail",
+        "track": "retail-local",
+        "sequence": 0,
+        "provider": "google-places",
+        "engine": "google-places",
+        "mechanism": "local-text-search",
+        "trigger": "core",
+        "invocationReason": "Core mechanism for retail/retail-local"
+      },
+      "status": "completed",
+      "requestedResults": 20,
+      "rawResults": 1,
+      "normalizedCompanies": 1,
+      "newUniqueCompanies": 1,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 407,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "c2f994080543b538415367beaf0235c8132fd0b984d080b75f6944d4c73661b8"
+    },
+    {
+      "callKey": "retail/etail/0/searchapi/google",
+      "callFingerprint": "3a7f686b362fcc075b9ec06c26fd7a69a3b962159d08d100c373946318b788f2",
+      "queryClusterKey": "aeef821ce7dfc6389d9eb49c0004fdcea56fabf3eda427b27c9abf85d425a258",
+      "route": {
+        "category": "retail",
+        "track": "etail",
+        "sequence": 0,
+        "provider": "searchapi",
+        "engine": "google",
+        "mechanism": "shopping-web-serp",
+        "trigger": "core",
+        "invocationReason": "Core mechanism for retail/etail"
+      },
+      "status": "failed",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 743,
+      "requestCount": 2,
+      "retryCount": 1,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "failureClass": "rate-limit",
+      "circuitScope": "route",
+      "discardedReasonCounts": {
+        "provider-rate-limit": 1
+      },
+      "errorMessage": "searchapi HTTP 429: {\n  \"error\": \"You have used all of the searches for the month. Please upgrade your plan on SearchApi.io.\"\n}",
+      "querySha256": "7f9968fc744cc0a7d15df670456ec1381c0e671a77fcf62c2b70591e6f68b86c"
+    },
+    {
+      "callKey": "retail/retail-national/0/searchapi/google",
+      "callFingerprint": "9dfb72501a0c1609bdaf372c4d1ff1b5e8d3b445a28a0c5005d23019a1df6bbd",
+      "queryClusterKey": "cdad9154ab6feac213eb6156549d12830ed1b70ac80b487201eea497f3757f74",
+      "route": {
+        "category": "retail",
+        "track": "retail-national",
+        "sequence": 0,
+        "provider": "searchapi",
+        "engine": "google",
+        "mechanism": "web-serp",
+        "trigger": "core",
+        "invocationReason": "Core mechanism for retail/retail-national"
+      },
+      "status": "failed",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 784,
+      "requestCount": 2,
+      "retryCount": 1,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "failureClass": "rate-limit",
+      "circuitScope": "route",
+      "discardedReasonCounts": {
+        "provider-rate-limit": 1
+      },
+      "errorMessage": "searchapi HTTP 429: {\n  \"error\": \"You have used all of the searches for the month. Please upgrade your plan on SearchApi.io.\"\n}",
+      "querySha256": "61375f0af1ca6d043449735e4fc0c21d72e2e174d91adadc9d71f622a753de28"
+    },
+    {
+      "callKey": "retail/retail-local/1/searchapi/google",
+      "callFingerprint": "bc0141199d4217a85d789025666b36856b986f2395f78a783b23ec0e3015b056",
+      "queryClusterKey": "d1e40d4fefe122f70a1338a36d328c1d3aac5bccfd026b4a6a9d14e6de2e22cc",
+      "route": {
+        "category": "retail",
+        "track": "retail-local",
+        "sequence": 1,
+        "provider": "searchapi",
+        "engine": "google",
+        "mechanism": "local-web-serp",
+        "trigger": "web-gap",
+        "invocationReason": "web-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "skipped",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "requestCount": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 0,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "skipped",
+      "discardedReasonCounts": {
+        "circuit-open": 1
+      },
+      "errorMessage": "rate-limit: searchapi HTTP 429: {\n  \"error\": \"You have used all of the searches for the month. Please upgrade your plan on SearchApi.io.\"\n}",
+      "querySha256": "9ff334a00cbfdcf199930c75a23643d6624d9eaf4daff4d864ff83750639673a"
+    },
+    {
+      "callKey": "retail/etail/1/brave/brave",
+      "callFingerprint": "63886c06affb75b40500e25797f5b0a279f2d142819a277efc11fabce8209233",
+      "queryClusterKey": "8be5d28bafbcb92f2e3829456a8034091acd6ea7c8cdb86e0e976d48c4339f9d",
+      "route": {
+        "category": "retail",
+        "track": "etail",
+        "sequence": 1,
+        "provider": "brave",
+        "engine": "brave",
+        "mechanism": "web-index",
+        "trigger": "index-gap",
+        "invocationReason": "index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "failed",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 486,
+      "requestCount": 1,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "failureClass": "http",
+      "circuitScope": "route",
+      "discardedReasonCounts": {
+        "provider-http": 1
+      },
+      "errorMessage": "brave HTTP 422: {\"type\":\"ErrorResponse\",\"error\":{\"id\":\"8127041d-9b64-427e-9bfc-451cb8a035a8\",\"status\":422,\"detail\":\"Unable to validate request parameter(s)\",\"meta\":{\"errors\":[{\"type\":\"enum\",\"loc\":[\"query\",\"country\"],\"msg\":\"Input should be 'AR', 'AU', 'AT', 'BE', 'BR', 'CA', 'CL', 'DK', 'FI', 'FR', 'DE', 'GR', 'HK', 'IN', 'ID', 'IT', 'JP', 'KR', 'MY', 'MX', 'NL', 'NZ', 'NO', 'CN', 'PL', 'PT', 'PH', 'RU', 'SA', 'ZA', 'ES', 'SE', 'CH', 'TW', 'TR', 'GB', 'US' or 'ALL'\",\"input\":\"CO\",\"ctx\":{\"expected\":\"'AR', 'AU', 'A",
+      "querySha256": "4422751d8fb27374f88fa19a350f1edbbc1e7220e0da4ab7ed6d5157924ff458"
+    },
+    {
+      "callKey": "retail/retail-national/1/brave/brave",
+      "callFingerprint": "320f2f380236ddd934cf07fd74039abfd2f2923f083b6839caa6c92f78a8bfd1",
+      "queryClusterKey": "be63775047eb63bc1267a675dedcdc05c297f32870e3042a50dce0fec3b649d2",
+      "route": {
+        "category": "retail",
+        "track": "retail-national",
+        "sequence": 1,
+        "provider": "brave",
+        "engine": "brave",
+        "mechanism": "web-index",
+        "trigger": "index-gap",
+        "invocationReason": "index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "failed",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 173,
+      "requestCount": 1,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "failureClass": "http",
+      "circuitScope": "route",
+      "discardedReasonCounts": {
+        "provider-http": 1
+      },
+      "errorMessage": "brave HTTP 422: {\"type\":\"ErrorResponse\",\"error\":{\"id\":\"965e54b2-ddd6-465c-a2cb-7e93890b240b\",\"status\":422,\"detail\":\"Unable to validate request parameter(s)\",\"meta\":{\"errors\":[{\"type\":\"enum\",\"loc\":[\"query\",\"country\"],\"msg\":\"Input should be 'AR', 'AU', 'AT', 'BE', 'BR', 'CA', 'CL', 'DK', 'FI', 'FR', 'DE', 'GR', 'HK', 'IN', 'ID', 'IT', 'JP', 'KR', 'MY', 'MX', 'NL', 'NZ', 'NO', 'CN', 'PL', 'PT', 'PH', 'RU', 'SA', 'ZA', 'ES', 'SE', 'CH', 'TW', 'TR', 'GB', 'US' or 'ALL'\",\"input\":\"CO\",\"ctx\":{\"expected\":\"'AR', 'AU', 'A",
+      "querySha256": "6514d989fa2a490fb54d34a160733c8599a099672b4ed93039a5fbc0d263ca88"
+    },
+    {
+      "callKey": "retail/etail/2/searchapi/bing",
+      "callFingerprint": "e12041181142966dc240e677ed5a37e004a3b4390cb061856f5ab73f1f2ef7b5",
+      "queryClusterKey": "aeef821ce7dfc6389d9eb49c0004fdcea56fabf3eda427b27c9abf85d425a258",
+      "route": {
+        "category": "retail",
+        "track": "etail",
+        "sequence": 2,
+        "provider": "searchapi",
+        "engine": "bing",
+        "mechanism": "web-serp",
+        "trigger": "second-index-gap",
+        "invocationReason": "second-index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "skipped",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "requestCount": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 0,
+      "retryCount": 0,
+      "fallbackUsed": true,
+      "cacheStatus": "skipped",
+      "discardedReasonCounts": {
+        "circuit-open": 1
+      },
+      "errorMessage": "rate-limit: searchapi HTTP 429: {\n  \"error\": \"You have used all of the searches for the month. Please upgrade your plan on SearchApi.io.\"\n}",
+      "querySha256": "7f9968fc744cc0a7d15df670456ec1381c0e671a77fcf62c2b70591e6f68b86c"
+    },
+    {
+      "callKey": "retail/retail-local/2/brave/brave",
+      "callFingerprint": "add1a48da00a2deb2c4065053e24a2d514718a3515e1a9cf3367e8ad7d265788",
+      "queryClusterKey": "c6594aea8354af341f1ca01a130e0763d4cbb39a1406c0580524aee4ada300a3",
+      "route": {
+        "category": "retail",
+        "track": "retail-local",
+        "sequence": 2,
+        "provider": "brave",
+        "engine": "brave",
+        "mechanism": "local-web-index",
+        "trigger": "index-gap",
+        "invocationReason": "index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "skipped",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "requestCount": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 0,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "skipped",
+      "discardedReasonCounts": {
+        "circuit-open": 1
+      },
+      "errorMessage": "http: brave HTTP 422: {\"type\":\"ErrorResponse\",\"error\":{\"id\":\"965e54b2-ddd6-465c-a2cb-7e93890b240b\",\"status\":422,\"detail\":\"Unable to validate request parameter(s)\",\"meta\":{\"errors\":[{\"type\":\"enum\",\"loc\":[\"query\",\"country\"],\"msg\":\"Input should be 'AR', 'AU', 'AT', 'BE', 'BR', 'CA', 'CL', 'DK', 'FI', 'FR', 'DE', 'GR', 'HK', 'IN', 'ID', 'IT', 'JP', 'KR', 'MY', 'MX', 'NL', 'NZ', 'NO', 'CN', 'PL', 'PT', 'PH', 'RU', 'SA', 'ZA', 'ES', 'SE', 'CH', 'TW', 'TR', 'GB', 'US' or 'ALL'\",\"input\":\"CO\",\"ctx\":{\"expected\":\"'AR', 'AU', 'A",
+      "querySha256": "e646e7ade4514e33466131ebe2970b970a04c54233d33e92c61082c0edc4da6f"
+    },
+    {
+      "callKey": "retail/retail-national/2/searchapi/bing",
+      "callFingerprint": "4ed145cf3d7f00c379cf59f94c82a8a6c3e0f23446765bc3246b705b79fbffc1",
+      "queryClusterKey": "cdad9154ab6feac213eb6156549d12830ed1b70ac80b487201eea497f3757f74",
+      "route": {
+        "category": "retail",
+        "track": "retail-national",
+        "sequence": 2,
+        "provider": "searchapi",
+        "engine": "bing",
+        "mechanism": "web-serp",
+        "trigger": "second-index-gap",
+        "invocationReason": "second-index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "skipped",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "requestCount": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 0,
+      "retryCount": 0,
+      "fallbackUsed": true,
+      "cacheStatus": "skipped",
+      "discardedReasonCounts": {
+        "circuit-open": 1
+      },
+      "errorMessage": "rate-limit: searchapi HTTP 429: {\n  \"error\": \"You have used all of the searches for the month. Please upgrade your plan on SearchApi.io.\"\n}",
+      "querySha256": "61375f0af1ca6d043449735e4fc0c21d72e2e174d91adadc9d71f622a753de28"
+    },
+    {
+      "callKey": "retail/etail/3/exa/exa",
+      "callFingerprint": "20f235b78d720bd4d5bcf4a71c6cfb283d234b672133c1c0607fe87a51f803ad",
+      "queryClusterKey": "f4a6e2e629c54fa2b17999477c11c80686561af6f719c1a1abc34bf62a530158",
+      "route": {
+        "category": "retail",
+        "track": "etail",
+        "sequence": 3,
+        "provider": "exa",
+        "engine": "exa",
+        "mechanism": "semantic-merchant-pages",
+        "trigger": "semantic-gap",
+        "invocationReason": "semantic-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "completed",
+      "requestedResults": 20,
+      "rawResults": 20,
+      "normalizedCompanies": 20,
+      "newUniqueCompanies": 18,
+      "existingCompanyHits": 2,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 1689,
+      "retryCount": 0,
+      "fallbackUsed": true,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "4c714e876c8f80ae38bf4a4d4efbeae80e2d0e59c599b684d2607ddf55ccb6fe"
+    },
+    {
+      "callKey": "retail/retail-national/3/exa/exa",
+      "callFingerprint": "bce54b3bf0ab9960221af8b26bdd420c612a93a32522d58c4d58ec8cec9890cc",
+      "queryClusterKey": "561e341382efb124cf18d2643df04c7bda420f3fac8d02e77cc73f44b68095e7",
+      "route": {
+        "category": "retail",
+        "track": "retail-national",
+        "sequence": 3,
+        "provider": "exa",
+        "engine": "exa",
+        "mechanism": "semantic-retailer-pages",
+        "trigger": "semantic-gap",
+        "invocationReason": "semantic-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "completed",
+      "requestedResults": 20,
+      "rawResults": 20,
+      "normalizedCompanies": 20,
+      "newUniqueCompanies": 4,
+      "existingCompanyHits": 16,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 1594,
+      "retryCount": 0,
+      "fallbackUsed": true,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "d6f1b931dd50fa6bd38486bc791e4085ce9c393f1da1bc6b03ccc06cb1832029"
+    },
+    {
+      "callKey": "retail/etail/0/searchapi/google",
+      "callFingerprint": "e1bf497781f4f2afb76e46093cbd5394289d96595d77f5cb649098d30d1bda2b",
+      "queryClusterKey": "cc8ed29c6220383db730db9790c09495b4eb4669cf5053c236fb47ed3915e0a9",
+      "route": {
+        "category": "retail",
+        "track": "etail",
+        "sequence": 0,
+        "provider": "searchapi",
+        "engine": "google",
+        "mechanism": "shopping-web-serp",
+        "trigger": "core",
+        "invocationReason": "Core mechanism for retail/etail"
+      },
+      "status": "skipped",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "requestCount": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 0,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "skipped",
+      "discardedReasonCounts": {
+        "provider-recovery-cooldown": 1
+      },
+      "errorMessage": "Recovery probe deferred until discovery round 2.",
+      "querySha256": "a49bfd8386de4ca477b8c43e3a4de4a40ff8649ab6c6b25749a1d2c8931b4d25"
+    },
+    {
+      "callKey": "retail/retail-national/0/searchapi/google",
+      "callFingerprint": "1e77daa57bbd73c12a191061c952c783c93cd2b7b3b04d1647bc64ffe7db4901",
+      "queryClusterKey": "d3a6c8cbc8cad70b8d7b6b74979f741f889c0e2ad2731634fa59746f9fe45b46",
+      "route": {
+        "category": "retail",
+        "track": "retail-national",
+        "sequence": 0,
+        "provider": "searchapi",
+        "engine": "google",
+        "mechanism": "web-serp",
+        "trigger": "core",
+        "invocationReason": "Core mechanism for retail/retail-national"
+      },
+      "status": "skipped",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "requestCount": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 0,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "skipped",
+      "discardedReasonCounts": {
+        "provider-recovery-cooldown": 1
+      },
+      "errorMessage": "Recovery probe deferred until discovery round 2.",
+      "querySha256": "7107c33c14ab6129743408637a7cde9558c94c96559bf667351df2ef34d53094"
+    },
+    {
+      "callKey": "retail/retail-local/0/google-places/google-places",
+      "callFingerprint": "a16f41eee9440af212a83e7df6979fbcacab0210c0050a3229cdda9229707985",
+      "queryClusterKey": "c70cca93e9d5c6ba14a1c9079f2362f73bf8529a9a27d3035b3b95cb17ee82d9",
+      "route": {
+        "category": "retail",
+        "track": "retail-local",
+        "sequence": 0,
+        "provider": "google-places",
+        "engine": "google-places",
+        "mechanism": "local-text-search",
+        "trigger": "core",
+        "invocationReason": "Core mechanism for retail/retail-local"
+      },
+      "status": "completed",
+      "requestedResults": 20,
+      "rawResults": 1,
+      "normalizedCompanies": 1,
+      "newUniqueCompanies": 1,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 333,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "32734c597bc07c6c8307c3a788ad06d211e814f6dcb0e30ed83deb5787a427ca"
+    },
+    {
+      "callKey": "retail/retail-local/1/searchapi/google",
+      "callFingerprint": "8e846875e5e3841da0d79a6634a30c8e39b6812d361b09b2a35fcd8ffbf6a4fd",
+      "queryClusterKey": "9ae705e3b1693625e5866a84b429a3f9785a34aae730ad100beac07bac69a0b6",
+      "route": {
+        "category": "retail",
+        "track": "retail-local",
+        "sequence": 1,
+        "provider": "searchapi",
+        "engine": "google",
+        "mechanism": "local-web-serp",
+        "trigger": "web-gap",
+        "invocationReason": "web-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "skipped",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "requestCount": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 0,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "skipped",
+      "discardedReasonCounts": {
+        "provider-recovery-cooldown": 1
+      },
+      "errorMessage": "Recovery probe deferred until discovery round 2.",
+      "querySha256": "d594089b2a7637513044c139d070f2b884b6cefeeb04478f3493e698446b9134"
+    },
+    {
+      "callKey": "retail/etail/1/brave/brave",
+      "callFingerprint": "16df1b06db990ae6ecb585190b8452486acc5606d1e8ee25cb572c5a00141ff9",
+      "queryClusterKey": "6222ccd5a913732123a190b41cd70e5fcc2a68bea88a2d12540b3cd747ee2789",
+      "route": {
+        "category": "retail",
+        "track": "etail",
+        "sequence": 1,
+        "provider": "brave",
+        "engine": "brave",
+        "mechanism": "web-index",
+        "trigger": "index-gap",
+        "invocationReason": "index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "failed",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 446,
+      "requestCount": 1,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "failureClass": "http",
+      "circuitScope": "route",
+      "discardedReasonCounts": {
+        "provider-http": 1
+      },
+      "errorMessage": "brave HTTP 422: {\"type\":\"ErrorResponse\",\"error\":{\"id\":\"c7183f34-0d8c-430f-829e-a9ba49b129f5\",\"status\":422,\"detail\":\"Unable to validate request parameter(s)\",\"meta\":{\"errors\":[{\"type\":\"enum\",\"loc\":[\"query\",\"country\"],\"msg\":\"Input should be 'AR', 'AU', 'AT', 'BE', 'BR', 'CA', 'CL', 'DK', 'FI', 'FR', 'DE', 'GR', 'HK', 'IN', 'ID', 'IT', 'JP', 'KR', 'MY', 'MX', 'NL', 'NZ', 'NO', 'CN', 'PL', 'PT', 'PH', 'RU', 'SA', 'ZA', 'ES', 'SE', 'CH', 'TW', 'TR', 'GB', 'US' or 'ALL'\",\"input\":\"CO\",\"ctx\":{\"expected\":\"'AR', 'AU', 'A",
+      "querySha256": "65c27c55e5296f72567d63310338c78c6cd81c41bb834fc70872b0fa884a360e"
+    },
+    {
+      "callKey": "retail/retail-national/1/brave/brave",
+      "callFingerprint": "211652306619f21d2987cd93a05448cfc8a32c7b92372d845017e78ff0c0af24",
+      "queryClusterKey": "c9e04eb29bd4cb928d8bb46759a04df22a0ca1e2a80856d500f4ffefb0fad065",
+      "route": {
+        "category": "retail",
+        "track": "retail-national",
+        "sequence": 1,
+        "provider": "brave",
+        "engine": "brave",
+        "mechanism": "web-index",
+        "trigger": "index-gap",
+        "invocationReason": "index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "skipped",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "requestCount": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 0,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "skipped",
+      "discardedReasonCounts": {
+        "circuit-open": 1
+      },
+      "errorMessage": "http: brave HTTP 422: {\"type\":\"ErrorResponse\",\"error\":{\"id\":\"c7183f34-0d8c-430f-829e-a9ba49b129f5\",\"status\":422,\"detail\":\"Unable to validate request parameter(s)\",\"meta\":{\"errors\":[{\"type\":\"enum\",\"loc\":[\"query\",\"country\"],\"msg\":\"Input should be 'AR', 'AU', 'AT', 'BE', 'BR', 'CA', 'CL', 'DK', 'FI', 'FR', 'DE', 'GR', 'HK', 'IN', 'ID', 'IT', 'JP', 'KR', 'MY', 'MX', 'NL', 'NZ', 'NO', 'CN', 'PL', 'PT', 'PH', 'RU', 'SA', 'ZA', 'ES', 'SE', 'CH', 'TW', 'TR', 'GB', 'US' or 'ALL'\",\"input\":\"CO\",\"ctx\":{\"expected\":\"'AR', 'AU', 'A",
+      "querySha256": "e706fea827699051845cfd42927725c75e9bf35f87e6e94e2de471c66c2dbb1f"
+    },
+    {
+      "callKey": "retail/etail/2/searchapi/bing",
+      "callFingerprint": "ab074a4302052301ed27a74e598828a71f4ec14c855b027ff22f808f6fbcad08",
+      "queryClusterKey": "cc8ed29c6220383db730db9790c09495b4eb4669cf5053c236fb47ed3915e0a9",
+      "route": {
+        "category": "retail",
+        "track": "etail",
+        "sequence": 2,
+        "provider": "searchapi",
+        "engine": "bing",
+        "mechanism": "web-serp",
+        "trigger": "second-index-gap",
+        "invocationReason": "second-index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "skipped",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "requestCount": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 0,
+      "retryCount": 0,
+      "fallbackUsed": true,
+      "cacheStatus": "skipped",
+      "discardedReasonCounts": {
+        "provider-recovery-cooldown": 1
+      },
+      "errorMessage": "Recovery probe deferred until discovery round 2.",
+      "querySha256": "a49bfd8386de4ca477b8c43e3a4de4a40ff8649ab6c6b25749a1d2c8931b4d25"
+    },
+    {
+      "callKey": "retail/retail-local/2/brave/brave",
+      "callFingerprint": "7332ac7bd7e1af4be8eb315dec789cb86708411a4c91555ac3f85c156d97b80d",
+      "queryClusterKey": "5aac2e672faae038f6376b43c3564c337378a1ecf70da010398db5655339e764",
+      "route": {
+        "category": "retail",
+        "track": "retail-local",
+        "sequence": 2,
+        "provider": "brave",
+        "engine": "brave",
+        "mechanism": "local-web-index",
+        "trigger": "index-gap",
+        "invocationReason": "index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "skipped",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "requestCount": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 0,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "skipped",
+      "discardedReasonCounts": {
+        "circuit-open": 1
+      },
+      "errorMessage": "http: brave HTTP 422: {\"type\":\"ErrorResponse\",\"error\":{\"id\":\"c7183f34-0d8c-430f-829e-a9ba49b129f5\",\"status\":422,\"detail\":\"Unable to validate request parameter(s)\",\"meta\":{\"errors\":[{\"type\":\"enum\",\"loc\":[\"query\",\"country\"],\"msg\":\"Input should be 'AR', 'AU', 'AT', 'BE', 'BR', 'CA', 'CL', 'DK', 'FI', 'FR', 'DE', 'GR', 'HK', 'IN', 'ID', 'IT', 'JP', 'KR', 'MY', 'MX', 'NL', 'NZ', 'NO', 'CN', 'PL', 'PT', 'PH', 'RU', 'SA', 'ZA', 'ES', 'SE', 'CH', 'TW', 'TR', 'GB', 'US' or 'ALL'\",\"input\":\"CO\",\"ctx\":{\"expected\":\"'AR', 'AU', 'A",
+      "querySha256": "16a6e0e9b0281e59e5ddc0406ec886edde3b5c67008304a560841877ed4334f0"
+    },
+    {
+      "callKey": "retail/retail-national/2/searchapi/bing",
+      "callFingerprint": "b70d3475c11c7f0ea16dd8e97a7ecc2bab63125819534f326ddf9f2448314039",
+      "queryClusterKey": "d3a6c8cbc8cad70b8d7b6b74979f741f889c0e2ad2731634fa59746f9fe45b46",
+      "route": {
+        "category": "retail",
+        "track": "retail-national",
+        "sequence": 2,
+        "provider": "searchapi",
+        "engine": "bing",
+        "mechanism": "web-serp",
+        "trigger": "second-index-gap",
+        "invocationReason": "second-index-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "skipped",
+      "requestedResults": 20,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 0,
+      "requestCount": 0,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 0,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "skipped",
+      "discardedReasonCounts": {
+        "provider-recovery-cooldown": 1
+      },
+      "errorMessage": "Recovery probe deferred until discovery round 2.",
+      "querySha256": "7107c33c14ab6129743408637a7cde9558c94c96559bf667351df2ef34d53094"
+    },
+    {
+      "callKey": "retail/etail/3/exa/exa",
+      "callFingerprint": "4933fab10a783db1d6d47defa8131f60a4a27dc0c2d112bfc45199a2a0c32268",
+      "queryClusterKey": "9a0423ba40ee37d3698a276a63f3a91f45331b5eaa773cd28d30d49bbaa494ca",
+      "route": {
+        "category": "retail",
+        "track": "etail",
+        "sequence": 3,
+        "provider": "exa",
+        "engine": "exa",
+        "mechanism": "semantic-merchant-pages",
+        "trigger": "semantic-gap",
+        "invocationReason": "semantic-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "completed",
+      "requestedResults": 20,
+      "rawResults": 20,
+      "normalizedCompanies": 20,
+      "newUniqueCompanies": 4,
+      "existingCompanyHits": 16,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 1611,
+      "retryCount": 0,
+      "fallbackUsed": true,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "122f4cdf900d70a0fa43ea03d4ce7650397e7cc8dd0c4ab9fe2f9821d43fb9bb"
+    },
+    {
+      "callKey": "retail/retail-national/3/exa/exa",
+      "callFingerprint": "51577190d6d658e3887c696b75a62c861b61bff94a7cd5311e066ce195a53bff",
+      "queryClusterKey": "3521a5dbd53bd0a0a997b98858e4a662748548f0e73359b456cb1d7df75c3fa0",
+      "route": {
+        "category": "retail",
+        "track": "retail-national",
+        "sequence": 3,
+        "provider": "exa",
+        "engine": "exa",
+        "mechanism": "semantic-retailer-pages",
+        "trigger": "semantic-gap",
+        "invocationReason": "semantic-gap only after the preceding batch leaves a measured gap"
+      },
+      "status": "completed",
+      "requestedResults": 20,
+      "rawResults": 3,
+      "normalizedCompanies": 3,
+      "newUniqueCompanies": 3,
+      "existingCompanyHits": 0,
+      "rejectedResults": 0,
+      "paidSearchCredits": 1,
+      "requestCount": 1,
+      "groundingQueries": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "latencyMs": 1605,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "cacheStatus": "miss",
+      "discardedReasonCounts": {},
+      "querySha256": "29198299f149967b6ed3513041979b439c5d8123ccf258ac5c619361bc73ed29"
+    }
+  ]
+}

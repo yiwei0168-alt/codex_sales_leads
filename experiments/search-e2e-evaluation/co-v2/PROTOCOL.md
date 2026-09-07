@@ -1,8 +1,10 @@
-# Frozen protocol: Colombia search E2E v2.0.2
+# Frozen protocol: Colombia search E2E v2.0.3
 
 v2.0.1 supersedes the execution guard in v2.0.0 after the first Retail attempt exposed a Kimi constraint-copy failure before Product discovery. Kimi remains mandatory for lightweight intent/template-fit recognition, while the already user-confirmed preregistered country, count and category are authoritative for execution. Divergence is retained as a warning and efficiency loss. The valid unchanged Gemini control and all sunk cost remain in the same ledger.
 
 v2.0.2 supersedes only intent recovery after the next Retail attempt returned truncated JSON at the exact former 2,000-token ceiling. Invalid structured output now receives one bounded Kimi retry with aggregate attempt usage; the light-response ceiling is 4,000 tokens. If Kimi remains invalid/unavailable, disclosed DeepSeek Flash supplies an equivalent structured intent plan. Deterministic fallback remains an observable degraded state and is not accepted in the formal run. Search, evidence, scoring, samples and win gates remain unchanged.
+
+v2.0.3 supersedes only provider recovery after CO-retail discovered 31 unique candidates and enriched/corrected 27 but returned zero final candidates. The DeepSeek direct endpoint reported `Insufficient Balance`, no explicitly configured fallback route existed, and deterministic correction correctly left primary roles unresolved. Public-evidence DeepSeek work may now use the same DeepSeek tier through the configured OpenRouter gateway after the bounded primary failure. Qualification remains private when user cooperation-path memory is present; the automatic OpenRouter route is public-only. Brave uses its supported `ALL` market parameter when a country code such as `CO` is unavailable, while keeping Colombia in the query. The interrupted cell resumes from its same-run intent, RAG, playbook, discovery, evidence and supplemental-evidence artifacts; it may repeat semantic correction/scoring but must not repeat search or Tavily acquisition for those candidates. SearchAPI's exhausted monthly quota is retained as an observed provider failure, not a no-value batch. Samples, metrics, scoring and win gates remain unchanged.
 
 ## Hypothesis and arms
 
@@ -36,4 +38,4 @@ Claude Opus 5 and OpenAI GPT-5.6-sol independently judge every packet without We
 
 USD 50 is a hard experiment-wide cap across Control, Product and shared evaluation. Mandatory reviews occur at USD 10, 20 and 30. Every review records incurred and forecast cost, ledger/stage splits, input/raw/valid/downstream-used volume, discard reasons, latency and retries. If the expected or conservative completion forecast may exceed USD 50, the runner pauses before further paid work for user confirmation; the experiment design is not silently changed.
 
-Every workflow stage records the permanent efficiency fields required by `AGENTS.md`. Unexpected underfill, provider failure, unpriced calls, schema failures, abnormal duplicate/discard rates or cost spikes are reported immediately and preserved rather than erased.
+Every workflow stage records the permanent efficiency fields required by `AGENTS.md`. Unexpected underfill, provider failure, unpriced calls, schema failures, abnormal duplicate/discard rates or cost spikes are reported immediately and preserved rather than erased. Provider preflight must include a minimal structured inference, rather than treating the presence of an API key as proof of runtime availability.

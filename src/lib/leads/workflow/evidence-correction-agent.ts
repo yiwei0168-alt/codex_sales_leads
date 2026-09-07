@@ -588,6 +588,7 @@ export class LeadEvidenceCorrectionAgent {
       reasoningTokens: response.usage?.reasoningTokens ?? 0, totalTokens: response.usage?.totalTokens ?? 0,
       latencyMs: response.latencyMs, fallbackUsed: Boolean(response.requestedModelVersion
         && (response.requestedModelVersion !== response.modelVersion || response.actualProviderId !== "deepseek")),
-      attempts: response.attempts, retries: response.retries });
+      attempts: response.attempts, retries: response.retries,
+      accountCashCostUsd: response.usage?.accountCashCostUsd });
   }
 }

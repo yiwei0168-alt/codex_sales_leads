@@ -1,6 +1,6 @@
 {
   "workflowKey": "cudy-sales-lead-end-to-end",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "status": "active",
   "scope": "From the user's natural-language market-development request and workspace context to ranked companies, editable cooperation paths, development strategy, outreach email, and private-memory learning from user edits.",
   "principles": [
@@ -11,7 +11,7 @@
     "User-confirmed knowledge has higher priority than ordinary retrieval, while shared knowledge and user/workspace memory remain isolated.",
     "Cooperation paths, roles and evidence restrictions travel into development strategy and email generation.",
     "User edits to paths and outreach are retained as private learning signals, not written into the shared knowledge base.",
-    "OpenAI and Anthropic generation is routed through the pinned OpenRouter HTTPS gateway; embeddings, Kimi, DeepSeek and Gemini retain their dedicated providers.",
+    "OpenAI and Anthropic generation is routed through the pinned OpenRouter HTTPS gateway. DeepSeek keeps its dedicated provider as primary, while public-only packets may fail over to the same DeepSeek tier through OpenRouter; embeddings never fail over.",
     "Every potentially overlapping task must create and consume a versioned cache at first execution; downstream stages receive exact evidence IDs, role corrections and explicit missing-evidence gaps."
   ],
   "modelRouting": [
@@ -40,21 +40,21 @@
       "stages": ["04-discovery"],
       "purpose": "Lightweight candidate existence, relevance and category gate",
       "defaultModel": "DEEPSEEK_DISCOVERY_GATE_MODEL; fixed default deepseek-v4-flash and never inherits a Pro global routine setting",
-      "escalationOrFallback": "Same-tier resilient provider fallback; unavailable batches are held for downstream evidence, never upgraded to Pro",
+      "escalationOrFallback": "Same-tier resilient provider fallback, including public-only DeepSeek through OpenRouter; unavailable batches are held for downstream evidence, never upgraded to Pro",
       "callPolicy": "Batches of up to 10 after direct lightweight homepage fetch; compact semantic signals only, with deterministic pass/hold/reject"
     },
     {
       "stages": ["06-correction-role"],
       "purpose": "Entity correction, atomic facts and primary-role analysis",
       "defaultModel": "DEEPSEEK_MODEL; default deepseek-v4-flash",
-      "escalationOrFallback": "DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro; deterministic fallback is retry-only",
+      "escalationOrFallback": "DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro; public-only same-tier OpenRouter route on provider failure; deterministic fallback is retry-only",
       "callPolicy": "Routine batches; upgrade only for expected score change >=8 or a resolvable critical-state change"
     },
     {
       "stages": ["09-scoring-paths"],
       "purpose": "Role-aware score and possible cooperation paths",
       "defaultModel": "DEEPSEEK_MODEL; default deepseek-v4-flash",
-      "escalationOrFallback": "DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro",
+      "escalationOrFallback": "DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro; public-only same-tier OpenRouter route on provider failure",
       "callPolicy": "Routine batches; confidence, alternative paths and Top-N position never trigger upgrade alone"
     },
     {

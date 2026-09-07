@@ -1,7 +1,7 @@
 # Hybrid Lead Search Workflow
 
 Status: active
-Current policy: `cudy-hybrid-lead-search` v1.2.1
+Current policy: `cudy-hybrid-lead-search` v1.3.1
 Scope: user request through final valid, primary-role-correct candidate set. Tavily evidence acquisition, scoring and downstream outreach are connected consumers, not additional discovery engines.
 
 ## End-to-end flow
@@ -47,6 +47,10 @@ The formal-evaluation harness and production LangGraph import the same target-co
 Failures are classified as authentication, quota, rate limit, timeout, transport, HTTP, invalid response or configuration. Authentication/quota/configuration failures are not repeatedly retried. Transient failures receive at most two total attempts with exponential jitter. A provider failure never increments a no-value counter.
 
 Provider-level failures open a provider circuit; route-level failures isolate only the provider/engine route. Two transient route failures from one provider open the current-round circuit, skip the next discovery round, and permit one bounded recovery probe in the following round. A successful probe clears the cooldown. A fallback must use a complementary index or mechanism. Tavily is never a discovery fallback.
+
+Brave accepts only a limited market-country enum. When the requested country is unsupported (including Colombia), its request uses `country=ALL` while the localized query continues to name the country; an unsupported ISO code must never be sent as if it were valid. A confirmed quota failure such as SearchAPI HTTP 429 is a provider failure, not an empty successful batch and not evidence that the search track has no value.
+
+DeepSeek remains the primary semantic-gate, correction and scoring provider. After bounded direct-provider failure, public-only packets may use the same DeepSeek Flash/Pro tier through the configured OpenRouter gateway. Requests containing user/workspace cooperation-path memory remain private and cannot use this automatic public route. Requested/actual provider and model, aggregate attempts, tokens, gateway cash cost and fallback reason are retained.
 
 Default Retail/Reseller discovery excludes Gemini Product. It may return only after a measured experiment demonstrates independent incremental value.
 
@@ -99,6 +103,7 @@ Every route and stage records input count, raw output, normalized output, new un
 - Creates no external input/output or cost during preregistration. Measured route contribution and unit cost are recorded by the formal run rather than inferred.
 - v2.0.1 repair: a lightweight Kimi template-fit result cannot override already confirmed country, target count or category. Divergence remains visible in telemetry, while the confirmed plan controls execution. The first rejected CO Retail plan used USD 0.0051770629 and stopped before Product search; its unchanged Gemini control is reused.
 - v2.0.2 recovery: invalid/truncated Kimi JSON receives one bounded retry with aggregate usage; persistent failure routes to disclosed DeepSeek Flash as the same-capability fallback. The second rejected intent used USD 0.0085371301 and still stopped before Product search. No search or scoring rule changed.
+- v2.0.3 recovery: CO Retail produced 65 raw results, 31 unique companies and 27 evidence-enriched/corrected candidates but zero scored outputs because the DeepSeek account returned `Insufficient Balance` and no runtime fallback was configured. Public semantic packets now use the same DeepSeek tier through OpenRouter after bounded failure; private-memory packets do not. Brave unsupported countries use `ALL`. Same-run recovery reuses intent, RAG, playbook, search, fresh evidence and supplemental evidence before repeating correction/scoring, so the USD 0.7530831701 Product attempt is not followed by duplicate acquisition spend.
 
 ### v1.3.0 category purity and cost-accounting repair — 2026-09-07
 

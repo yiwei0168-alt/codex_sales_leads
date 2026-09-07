@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-08-co-search-e2e-v2",
+  "generatedAt": "2026-09-07T21:01:53.784Z",
+  "cell": {
+    "cellId": "CO-retail",
+    "controlCandidates": 15,
+    "productCandidates": 0,
+    "controlWallClockMs": 16776,
+    "productWallClockMs": 86761
+  },
+  "cost": {
+    "eventCount": 33,
+    "officialListPriceUsd": 0.9295482701205091,
+    "budgetCostUsd": 0.9295482701205091,
+    "unpricedEvents": [],
+    "byLedger": {
+      "gemini-native-arm": 0.1764651,
+      "product-e2e-arm": 0.7530831701205092,
+      "evaluation-overhead": 0
+    },
+    "byStage": {
+      "evidence-correction-search": 0.192,
+      "fresh-evidence": 0.32,
+      "hybrid-discovery": 0.22200000000000003,
+      "intent": 0.019077194120508928,
+      "native-search": 0.1764651,
+      "playbook": 0,
+      "rag-retrieval": 0.000005976,
+      "role-filter-ranking": 0
+    },
+    "anomalies": []
+  },
+  "utilization": {
+    "input": 99,
+    "raw": 200,
+    "valid": 199,
+    "used": 137,
+    "retries": 2,
+    "latencyMs": 259055,
+    "validOutputRate": 0.995,
+    "downstreamUtilization": 0.6884422110552764,
+    "discardedOutputReasons": {
+      "confirmedPlanMismatch": 1,
+      "providerFailure": 1,
+      "duplicate": 34,
+      "provider-rate-limit": 2,
+      "circuit-open": 6,
+      "provider-http": 3,
+      "noFreshEvidence": 3,
+      "correctedToAnotherRole": 27,
+      "provider-recovery-cooldown": 5,
+      "wrongPrimaryRoleOrGate": 27
+    }
+  },
+  "budgetDecision": {
+    "totalBudgetUsd": 50,
+    "spentUsd": 0.9295482701205091,
+    "budgetFraction": 0.018590965402410183,
+    "newlyCrossedThresholdsUsd": [],
+    "forecast": {
+      "completedCells": 1,
+      "totalCells": 4,
+      "incurredUsd": 0.9295482701205091,
+      "expectedCompletionUsd": 11.718193080482036,
+      "lowerUsd": 9.960464118409732,
+      "upperUsd": 13.475922042554341,
+      "method": "cell-run-rate"
+    },
+    "warning": false,
+    "hardStop": false,
+    "requiresUserDecision": false,
+    "reasons": []
+  }
+}
