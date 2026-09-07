@@ -4,7 +4,7 @@
   "experimentId": "search-e2e-eval-co-v2.0.1",
   "status": "running",
   "createdAt": "2026-09-07T20:36:48.680Z",
-  "updatedAt": "2026-09-07T20:37:49.061Z",
+  "updatedAt": "2026-09-07T20:45:31.937Z",
   "blindJudgeModel": "blind-audit-v2.1-dual-judge",
   "preflightChecks": [
     {
@@ -90,6 +90,13 @@
       "severity": "fatal",
       "code": "cell-arm-failed",
       "detail": "CO-retail Kimi intent plan diverged from the frozen task semantics: {\"expected\":{\"countryCode\":\"CO\",\"targetCount\":50,\"objective\":\"new-market\",\"roles\":[\"Retailer\",\"E-tailer\"]},\"actual\":{\"countryCode\":\"CO\",\"targetCount\":20,\"objective\":\"new-market\",\"roles\":[\"Distributor\",\"VAD\",\"VAR\",\"Dealer\",\"Reseller\",\"Retailer\",\"E-tailer\",\"SI\",\"Installer\",\"MSP\",\"ISP\"]}}"
+    },
+    {
+      "at": "2026-09-07T20:45:31.937Z",
+      "cellId": "CO-retail",
+      "severity": "fatal",
+      "code": "cell-arm-failed",
+      "detail": "CO-retail Kimi intent step did not return a usable model-generated lead plan: Kimi 意图 Agent 不可用，已使用确定性路由兜底。 | Kimi 降级原因：Unterminated string in JSON at position 530 (line 13 column 137)"
     }
   ],
   "costEvents": [
@@ -168,6 +175,46 @@
       ],
       "officialListPriceUsd": 0.1764651,
       "budgetCostUsd": 0.1764651,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:intent:1:repeat-2",
+      "cellId": "CO-retail",
+      "stage": "intent",
+      "provider": "kimi",
+      "requestedModel": "kimi-k2.6",
+      "actualModel": "kimi-k2.6",
+      "startedAt": "2026-09-07T20:44:57.964Z",
+      "completedAt": "2026-09-07T20:45:31.907Z",
+      "latencyMs": 33940,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "failed",
+      "usage": {
+        "inputTokens": 601,
+        "cachedInputTokens": 0,
+        "outputTokens": 2000
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "providerFailure": 1
+        }
+      },
+      "notes": [
+        "Unterminated string in JSON at position 530 (line 13 column 137)",
+        "Repeated call; base event CO-retail:intent:1."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.00853713013607749,
+      "budgetCostUsd": 0.00853713013607749,
       "cashCostBasis": "official-conservative",
       "costAnomalies": []
     }

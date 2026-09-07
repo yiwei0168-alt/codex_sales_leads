@@ -1,0 +1,7 @@
+# CO Retail structured-intent failure — v2.0.1
+
+The v2.0.1 Product retry stopped before discovery because Kimi exhausted the light-intent output limit and returned truncated JSON. The API call succeeded at transport level but failed deterministic parsing (`Unterminated string in JSON`), and the existing intent agent immediately selected a deterministic fallback. The formal protocol correctly rejected that fallback because Kimi/model intent recognition is mandatory.
+
+This attempt added 601 input and 2,000 output tokens, 33.940 seconds and USD 0.0085371301. It produced one raw but zero valid/downstream-used plan; discard reason is provider/structured-output failure. Cumulative experiment cost is USD 0.1901792930, still below the USD 10 review point. Product search, evidence, correction and scoring calls remain zero; the frozen Gemini result remains reusable.
+
+The root cause is a recovery gap: HTTP retry existed, but schema/JSON failure did not receive a bounded model retry and the approved cross-provider same-capability fallback was not wired into the intent agent. v2.0.2 adds one retry for invalid/truncated structured output with aggregated usage, raises the light response ceiling to avoid deterministic truncation, and then uses DeepSeek Flash as a disclosed temporary provider fallback if Kimi still cannot return a valid plan. Deterministic fallback remains a last degraded UI state and is not accepted by the formal evaluation.
