@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "runId": "2026-09-08-co-search-e2e-v2",
-  "experimentId": "search-e2e-eval-co-v2.0.5",
+  "experimentId": "search-e2e-eval-co-v2.0.6",
   "status": "running",
   "createdAt": "2026-09-07T20:36:48.680Z",
-  "updatedAt": "2026-09-07T22:02:59.105Z",
+  "updatedAt": "2026-09-07T22:36:44.308Z",
   "blindJudgeModel": "blind-audit-v2.1-dual-judge",
   "preflightChecks": [
     {
@@ -100,6 +100,19 @@
         "fallbackUsed": true,
         "attempts": 2
       }
+    },
+    {
+      "name": "structured-model-runtime-v2.0.5",
+      "completedAt": "2026-09-07T22:12:59.953Z",
+      "detail": {
+        "paidCallsMade": 1,
+        "secretsRecorded": false,
+        "requestedModel": "deepseek-v4-flash",
+        "actualModel": "deepseek/deepseek-v4-flash",
+        "actualProvider": "openrouter-deepseek",
+        "fallbackUsed": true,
+        "attempts": 2
+      }
     }
   ],
   "completedArmKeys": [
@@ -147,6 +160,13 @@
       "severity": "warning",
       "code": "product-target-underfill",
       "detail": "Product returned 0/50 after 5 rounds; completion=maximum-rounds."
+    },
+    {
+      "at": "2026-09-07T22:36:44.300Z",
+      "cellId": "CO-retail",
+      "severity": "warning",
+      "code": "product-target-underfill",
+      "detail": "Product returned 6/50 after 5 rounds; completion=maximum-rounds."
     }
   ],
   "costEvents": [
@@ -3476,6 +3496,266 @@
       "notes": [
         "Repeated call; base event CO-retail:ranking:resume-v2.0.3."
       ]
+    },
+    {
+      "eventId": "preflight:structured-model-runtime-v2.0.5",
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "arm": "product-e2e",
+      "ledger": "product-e2e-arm",
+      "stage": "model-provider-preflight",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek/deepseek-v4-flash",
+      "startedAt": "2026-09-07T22:12:57.625Z",
+      "completedAt": "2026-09-07T22:12:59.953Z",
+      "latencyMs": 1599,
+      "attempts": 2,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 103,
+        "outputTokens": 6,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "accountCashCostUsd": 0.00001018969,
+      "notes": [
+        "Model fallback used after deepseek failed (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek."
+      ],
+      "officialListPriceUsd": 0.000016100000000000002,
+      "budgetCostUsd": 0.00001018969,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:resume-cache:v2.0.3:repeat-3",
+      "cellId": "CO-retail",
+      "stage": "within-run-cache-reuse",
+      "provider": "local-run-cache",
+      "startedAt": "2026-09-07T22:13:09.702Z",
+      "completedAt": "2026-09-07T22:13:09.702Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Reused the successful intent, local RAG, playbook, discovery, fresh evidence and supplemental evidence from the interrupted cell.",
+        "No historical cross-run candidate, evidence, score or private-memory cache was read.",
+        "Repeated call; base event CO-retail:resume-cache:v2.0.3."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:evidence-correction-cache-recovery:model:1",
+      "cellId": "CO-retail",
+      "stage": "evidence-correction-cache-recovery",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek/deepseek-v4-flash",
+      "startedAt": "2026-09-07T22:13:09.723Z",
+      "completedAt": "2026-09-07T22:32:12.251Z",
+      "latencyMs": 1953890,
+      "attempts": 92,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 240342,
+        "outputTokens": 124140,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 67,
+        "rawOutputItems": 66,
+        "validOutputItems": 57,
+        "downstreamUsedItems": 15,
+        "discardedReasonCounts": {
+          "correctedToAnotherRole": 51
+        }
+      },
+      "accountCashCostUsd": 0.056290487892000016,
+      "notes": [
+        "Aggregate stage output volume is attributed once to the primary model event."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.06840708000000002,
+      "budgetCostUsd": 0.056290487892000016,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:evidence-correction-cache-recovery:model:2",
+      "cellId": "CO-retail",
+      "stage": "evidence-correction-cache-recovery",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek/deepseek-v4-pro",
+      "startedAt": "2026-09-07T22:13:09.723Z",
+      "completedAt": "2026-09-07T22:32:12.251Z",
+      "latencyMs": 47330,
+      "attempts": 2,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 6790,
+        "outputTokens": 2335,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 0,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "stageVolumeAttributedToPrimaryModelEvent": 2
+        }
+      },
+      "accountCashCostUsd": 0.006718741605,
+      "notes": [
+        "Model cost and tokens are retained; aggregate stage output volume is already attributed to model event 1."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.0049851,
+      "budgetCostUsd": 0.006718741605,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:qualification-score-only-cache-recovery:model:1",
+      "cellId": "CO-retail",
+      "stage": "qualification-score-only-cache-recovery",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek/deepseek-v4-flash",
+      "startedAt": "2026-09-07T22:32:12.276Z",
+      "completedAt": "2026-09-07T22:36:44.184Z",
+      "latencyMs": 263346,
+      "attempts": 18,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 104016,
+        "outputTokens": 21188,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 15,
+        "rawOutputItems": 15,
+        "validOutputItems": 12,
+        "downstreamUsedItems": 12,
+        "discardedReasonCounts": {
+          "retryRequired": 3
+        }
+      },
+      "accountCashCostUsd": 0.019042105246000002,
+      "notes": [
+        "Aggregate stage output volume is attributed once to the primary model event."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.02049488,
+      "budgetCostUsd": 0.019042105246000002,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:qualification-score-only-cache-recovery:model:2",
+      "cellId": "CO-retail",
+      "stage": "qualification-score-only-cache-recovery",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek/deepseek-v4-pro",
+      "startedAt": "2026-09-07T22:32:12.276Z",
+      "completedAt": "2026-09-07T22:36:44.184Z",
+      "latencyMs": 22320,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 7585,
+        "outputTokens": 1691,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 0,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "stageVolumeAttributedToPrimaryModelEvent": 1
+        }
+      },
+      "accountCashCostUsd": 0.015529272,
+      "notes": [
+        "Model cost and tokens are retained; aggregate stage output volume is already attributed to model event 1."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.0047706450000000004,
+      "budgetCostUsd": 0.015529272,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:ranking:resume-v2.0.5",
+      "cellId": "CO-retail",
+      "stage": "role-filter-ranking",
+      "provider": "deterministic",
+      "startedAt": "2026-09-07T22:36:44.218Z",
+      "completedAt": "2026-09-07T22:36:44.218Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "volume": {
+        "inputItems": 17,
+        "rawOutputItems": 17,
+        "validOutputItems": 6,
+        "downstreamUsedItems": 6,
+        "discardedReasonCounts": {
+          "wrongPrimaryRoleOrGate": 70
+        }
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
     }
   ]
 }

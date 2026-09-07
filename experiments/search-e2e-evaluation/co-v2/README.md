@@ -1,4 +1,4 @@
-# Colombia search E2E evaluation v2.0.5
+# Colombia search E2E evaluation v2.0.6
 
 This directory is the immutable, cold-start Colombia follow-up to the UK/Mexico formal evaluation. It compares the current product workflow with one un-tuned Gemini Full + Google Search interaction per category.
 
@@ -18,11 +18,17 @@ node scripts\run-tsx.cjs experiments\search-e2e-evaluation\co-v2\scripts\run-for
 node scripts\run-tsx.cjs experiments\search-e2e-evaluation\co-v2\scripts\run-formal-experiment.ts --phase=evaluate
 ```
 
-If a completed zero-output Product artifact is explicitly diagnosed as a provider outage or model-routing defect, v2.0.5 permits same-run cache recovery without repeating valid Gemini, search or evidence work. OpenRouter DeepSeek requests explicitly disable reasoning; correction packets are compacted and token-aware; recovery uses single-candidate calls with bounded concurrency; schema repair is limited to one same-tier retry; infrastructure failures cannot trigger Pro escalation; and recovery cannot open another discovery/evidence round:
+If a completed zero-output Product artifact is explicitly diagnosed as a provider outage or model-routing defect, v2.0.6 permits same-run cache recovery without repeating valid Gemini, search or evidence work. OpenRouter DeepSeek requests explicitly disable reasoning; correction packets are compacted and token-aware; recovery uses single-candidate calls with bounded concurrency; schema repair is limited to one same-tier retry; infrastructure failures cannot trigger Pro escalation; and semantic recovery cannot open another discovery/evidence round:
 
 ```powershell
 node scripts\run-tsx.cjs experiments\search-e2e-evaluation\co-v2\scripts\run-formal-experiment.ts --phase=provider-check
 node scripts\run-tsx.cjs experiments\search-e2e-evaluation\co-v2\scripts\run-formal-experiment.ts --phase=cell --cell=CO-retail --resume-product
+```
+
+After a documented search-localization defect, `--repair-search` may retain cached valid candidates, normalize same-family Hybrid roles, retry only incomplete cached assessments, exclude all cached domains, and open five corrected country-specific acquisition rounds:
+
+```powershell
+node scripts\run-tsx.cjs experiments\search-e2e-evaluation\co-v2\scripts\run-formal-experiment.ts --phase=cell --cell=CO-retail --repair-search
 ```
 
 Raw checkpoints are local under `runs/raw/`. Sanitized artifacts and the final report are under `artifacts/runs/2026-09-08-co-search-e2e-v2/`.

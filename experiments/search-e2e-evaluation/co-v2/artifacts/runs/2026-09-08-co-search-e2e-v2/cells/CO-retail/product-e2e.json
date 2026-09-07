@@ -4,8 +4,8 @@
   "cellId": "CO-retail",
   "arm": "product-e2e",
   "startedAt": "2026-09-07T21:00:26.976Z",
-  "completedAt": "2026-09-07T22:02:59.046Z",
-  "wallClockMs": 1120907,
+  "completedAt": "2026-09-07T22:36:44.242Z",
+  "wallClockMs": 2535447,
   "plan": {
     "countryCode": "CO",
     "countryName": "Colombia",
@@ -111,8 +111,8 @@
   },
   "rawDiscoveryCount": 250,
   "discoveredCandidateCount": 89,
-  "correctedCandidateCount": 67,
-  "completedAssessmentCount": 2,
+  "correctedCandidateCount": 76,
+  "completedAssessmentCount": 14,
   "attributionCandidates": [
     {
       "candidateId": "lead-19b8694a57c312bd",
@@ -660,13 +660,55 @@
       ]
     },
     {
-      "candidateId": "lead-20cdb2095dee6338",
+      "candidateId": "lead-19b8694a57c312bd",
       "discoveryOccurrences": [
         {
-          "provider": "brave"
+          "provider": "exa"
         },
         {
-          "provider": "brave"
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
         }
       ]
     },
@@ -781,10 +823,1017 @@
           "provider": "brave"
         }
       ]
+    },
+    {
+      "candidateId": "lead-5bc50d2ff73ad29a",
+      "discoveryOccurrences": [
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-7adc2e58c1347709",
+      "discoveryOccurrences": [
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-b466c5f5008dda8a",
+      "discoveryOccurrences": [
+        {
+          "provider": "exa"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-ad2dadab0e9cd19b",
+      "discoveryOccurrences": [
+        {
+          "provider": "brave"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-b1a380ca40261eaf",
+      "discoveryOccurrences": [
+        {
+          "provider": "brave"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-7742a17ab0248656",
+      "discoveryOccurrences": [
+        {
+          "provider": "exa"
+        },
+        {
+          "provider": "exa"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-6df9772653299cde",
+      "discoveryOccurrences": [
+        {
+          "provider": "brave"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-739131822debffec",
+      "discoveryOccurrences": [
+        {
+          "provider": "brave"
+        }
+      ]
+    },
+    {
+      "candidateId": "lead-6812bfe56a3cd705",
+      "discoveryOccurrences": [
+        {
+          "provider": "exa"
+        }
+      ]
     }
   ],
-  "finalCandidates": [],
-  "missingSlots": 50,
+  "finalCandidates": [
+    {
+      "rank": 1,
+      "candidateId": "lead-710605d790b5ac81",
+      "companyName": "Nuevoportal Tienda En Línea Colombiana",
+      "domain": "nuevoportal.co",
+      "officialWebsiteUrl": "https://www.nuevoportal.co/",
+      "primaryRole": "E-tailer",
+      "supportedRoles": [
+        "E-tailer"
+      ],
+      "totalScore": 56,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-710605d790b5ac81"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-710605d790b5ac81",
+          "url": "https://www.nuevoportal.co/",
+          "title": "Nuevoportal Tienda En Línea Colombiana",
+          "excerpt": "Nuevoportal Tienda En Línea Colombiana JavaScript seems to be disabled in your browser. You must have JavaScript enabled in your browser to utilize the functionality of this website. Inicio Mi cuenta Mi carrito Faq Acerca de nosotros Pol&iacute;tica de privacidad T&eacute;rminos y condiciones Cuentas bancarias Product Sitemap Category Sitemap Búsqueda avanzada Pedidos y Devoluciones WhatsApp: 300 2086220 ¡Una empresa colombiana, para colombianos! Mi cuenta Mi carrito Faq Nuevoportal Mi carrito: 0 item(s) - CO$ 0 No tiene artículos en su carrito de compras. 0 Ir a Pagar Acceder Search: Nuevos productos Accesorios Mouse Diademas Combos Teclado Mouse Teclados Microfono Accesorios Y Perifericos_n Audifonos Y Diademas Teclados Parlantes Memorias Monitores Perifericos Almacenamiento Storage Acce",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T22:02:24.992Z",
+          "contentHash": "2f734fa91349c66046bbb82aca9b21e6fb72e354e576af1e5d60eaea83578ddd",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        }
+      ],
+      "blindAuditEvidence": [
+        {
+          "id": "evidence-home-710605d790b5ac81",
+          "url": "https://www.nuevoportal.co/",
+          "title": "Nuevoportal Tienda En Línea Colombiana",
+          "excerpt": "Nuevoportal Tienda En Línea Colombiana JavaScript seems to be disabled in your browser. You must have JavaScript enabled in your browser to utilize the functionality of this website. Inicio Mi cuenta Mi carrito Faq Acerca de nosotros Pol&iacute;tica de privacidad T&eacute;rminos y condiciones Cuentas bancarias Product Sitemap Category Sitemap Búsqueda avanzada Pedidos y Devoluciones WhatsApp: 300 2086220 ¡Una empresa colombiana, para colombianos! Mi cuenta Mi carrito Faq Nuevoportal Mi carrito: 0 item(s) - CO$ 0 No tiene artículos en su carrito de compras. 0 Ir a Pagar Acceder Search: Nuevos productos Accesorios Mouse Diademas Combos Teclado Mouse Teclados Microfono Accesorios Y Perifericos_n Audifonos Y Diademas Teclados Parlantes Memorias Monitores Perifericos Almacenamiento Storage Acce",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T22:02:24.992Z",
+          "contentHash": "2f734fa91349c66046bbb82aca9b21e6fb72e354e576af1e5d60eaea83578ddd",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        },
+        {
+          "id": "evidence-b4a7f20bbe55de62",
+          "url": "https://www.capitalcolombia.com/clases/colombia/bogota/hardware/redes_routers_wifi_cc58c.php",
+          "title": "Redes, Routers, Wifi - Capital Colombia",
+          "excerpt": "Bogotá, Colombia - Tels: (+57) 6015373270 - 6014330527 - Cel: (+57) 3006171853 - Código Postal 111011 - Contáctenos Wsp | | USD $3,126.08 COP Distribuidor de Hardware y Software Especializado Fecha: 2026-09-07 TRM Dólar en Colombia = $3,126.08 pesos Caja de Rollos de Papel Térmico de 80mm X 60mts X 60 Unidades - Marca CapitalColombia Rollos de Papel Termico de 80mm X 60metros X 60 unidades $220,500 COP [...] switch l3 jetstream™ 24 puertos gigabit , rj45, 4 puertos combo gigabit sfp , y hasta 4 ranuras de 10 gbps sfp opcional, numerosos protocolos rip/ospf/ecmp/vrrp,soportan una red escalable, fuente de alimentación redudante, based vlan, q-in-q (double vlan), gvrp, stp/rstp/mstp, pim-sm/pim-dm, igmp v1/v2/v3 snooping, cos, dscp, rate limiting, 802. [ ... ]]( | Marca: Tp-link | Producto: N",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-07T22:02:58.897Z",
+          "contentHash": "7e1b470c53153e9f523583be970548baaab608281b9ac7c2a78ac45d9321ca7f",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        },
+        {
+          "id": "evidence-e751d20904d611ca",
+          "url": "https://www.tp-link.com/co",
+          "title": "TP-Link Colombia – Equipos de Red Wi-Fi para hogares y empresas",
+          "excerpt": "©2026 TPLINK Colombia LTDA and its affiliated companies. All rights reserved. Colombia / Español From United States? Obtenga productos, eventos y servicios para su región. IrOtra opción Close [...] ## Mantente Actualizado Blog >Noticias > Image 34 ### TP-Link presenta en IFA 2026 la primera línea completa de Wi-Fi 8 del mundo Blog|09-01-2026 Image 35 ### Reconstruir también es conectar Blog|08-24-2026 ### Por qué un buen switch puede hacer la diferencia en una solución CCTV. Noticias|08-18-2026### ¿La fibra ya no es la única respuesta? La nueva forma de conectar redes empresariales Blog|08-10-2026### Las redes cambiaron. ¿También cambió la forma de administrarlas? Blog|08-03-2026 [...] ## Síguenos TP-Link facebook TP-Link youtube Acerca de Nosotros Perfil Corporativo Contáctanos Nuestro Co",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-07T22:02:58.897Z",
+          "contentHash": "f8127d1cefc56df2ecb0d45eeffdb9b94df425d3ee14c8657a1db6a777fd9ab8",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        },
+        {
+          "id": "evidence-cea6a2b0385efab1",
+          "url": "https://sistemas.com.co/venta-routers-bogota",
+          "title": "Venta de routers en Bogotá con configuración incluida",
+          "excerpt": "Routers doble banda y wifi 6 para hogar y oficina en Bogotá, entregados ya configurados y probados. Pida la recomendación de modelo al 312 461 8140.",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-07T22:02:58.897Z",
+          "contentHash": "e6b1f27648a202201b4d374eb89093bb066e1fbcdf40ab75a109facc517c57af",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        },
+        {
+          "id": "evidence-2432e4b0547423a3",
+          "url": "https://redcomenlinea.com/categoria-producto/routers",
+          "title": "Routers archivos - REDCOM",
+          "excerpt": "Skip to navigation []( Horario hasta las 6PM []( #### Encuentra todo en un sólo lugar Distribuidores en soluciones integrales de networking Comprar ## Routers []( ### Accesorios 3 products []( ### Repetidor Wifi 13 products []( ### Router 4G 6 products []( ### Router 5G 0 products []( ### Router Administrables 81 products []( ### Router Balanceadores 9 products []( ### Router VPN 2 products []( ### Router WIFI 2.4Ghz 7 products []( ### Router WIFI 5Ghz [...] 5 products []( ### Router WIFI 6 18 products []( ### Router WIFI 7 2 products #### Consultoría para el Diseño de tus Proyectos en Networking Contamos con un grupo especializado en soluciones integrales para tus proyectos, no dudes en contactarnos. #### Productos Vistos Recientemente Popular requests Antenas Router Switch Punto de Acces",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-07T22:02:58.897Z",
+          "contentHash": "d6b38d47ec238b9e38cf03fd33b627155b125de10701fd1546692573fab4c3f1",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        },
+        {
+          "id": "evidence-7bd1c0b2c3978e9e",
+          "url": "https://us.rs-online.com/stores/store/redirect/___store/columbia_esp/___from_store/usa_eng/uenc/aHR0cHM6Ly9jby5ycy1vbmxpbmUuY29tLz9fX19zdG9yZT1jb2x1bWJpYV9lc3A~",
+          "title": "ESP",
+          "excerpt": "No information is available for this page.",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-07T22:02:58.897Z",
+          "contentHash": "ca76a14da84db7fd5b548263fef1351c7261d804de730f141b4f355b3c56f5ae",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        }
+      ]
+    },
+    {
+      "rank": 2,
+      "candidateId": "lead-ccf78e402b6b2858",
+      "companyName": "Comredes de Colombia",
+      "domain": "comredes.com",
+      "officialWebsiteUrl": "https://comredes.com/",
+      "primaryRole": "E-tailer",
+      "supportedRoles": [
+        "E-tailer"
+      ],
+      "totalScore": 54,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-ccf78e402b6b2858",
+        "evidence-9fcdccf29525e37f",
+        "evidence-f6b5bb949ab6ad03",
+        "evidence-3f207a27d7f91201",
+        "evidence-465235d8877767a7",
+        "evidence-9fed322959b69731",
+        "evidence-2c9477f4ebabc45a"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-ccf78e402b6b2858",
+          "url": "https://comredes.com/",
+          "title": "Comredes - Comredes de Colombia",
+          "excerpt": "Comredes - Comredes de Colombia Skip to content Portafolio Quienes Somos Contacto com redes Siempre en línea Siempre conectado Conéctate con lo que mas te importa Portafolio Contáctenos NUESTRAS MARCAS NUESTROS PILARES SERVICIO INNOVACIÓN . CALIDAD . RESPALDO . Formulario de Contacto: Preguntas Frecuentes Esta Información es Importante para Tí ¿Los productos disponibles para su compra en su sitio web son nuevos y genuinos? Sí, todos los productos disponibles para comprar en nuestro sitio web son nuevos y genuinos. Obtenemos nuestro inventario directamente de fabricantes acreditados lo que garantiza la autenticidad y la calidad de cada producto que ofrecemos. ¿Qué tipos de productos de red Wi-Fi vende? Ofrecemos una amplia gama de productos de red Wi-Fi para satisfacer diversas necesidades.",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T22:02:22.980Z",
+          "contentHash": "d7247efc136f295ede036124a233274f98a2e35f662aca6cfd5e934ac651988e",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        },
+        {
+          "id": "evidence-9fcdccf29525e37f",
+          "url": "https://comredes.com/producto/crs310-1g-5s-4sin",
+          "title": "CRS310-1G-5S-4S+IN - Comredes de Colombia",
+          "excerpt": "CRS310-1G-5S-4S+IN Routers Cloud Router Switch 310-1G-5S-4S+IN with RouterOS L5 license Related products CRS318-16P-2S+OUT CRS310-1G-5S-4S+OUT CRS310-8G+2S+IN CRS326-24G-2S+RM Page Link Productos Contact",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T22:02:30.835Z",
+          "contentHash": "a77d981ac43f99523ef265d856219b4ffec45b0936e10381c0423a0bceb72f67",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        },
+        {
+          "id": "evidence-f6b5bb949ab6ad03",
+          "url": "https://comredes.com/producto/teg1118p-16-250w",
+          "title": "TEG1118P-16-250W - Comredes de Colombia",
+          "excerpt": "TEG1118P-16-250W “””16-Port GE+2SFP Port Switch with 16-Port PoE; \\IEEE802.3af/at，PoE budgetr: 230W ” “””16-Port GE+2SFP Port Switch with 16-Port PoE; \\IEEE802.3af/at，PoE budgetr: 230W 1-16ports support IEEE802.3af /IEEE802.3at Maximum PoE Output Power: 135W,1U 13-inch rack-mountable steel case, Built-in Marvell chip ,6KV lightning protection for all port” Related products TEG1105P-4-63W TEG1024D N301 RX9 Pro/TX9 Pro Page Link Productos Contact",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T22:02:30.835Z",
+          "contentHash": "9b88ea5f3a2fb0d83fb4c403e8602da907c04c08d4cbf9f07577ae6dcc9c9311",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        },
+        {
+          "id": "evidence-3f207a27d7f91201",
+          "url": "https://comredes.com/producto/dis-100g-8sw",
+          "title": "DIS-100G-8SW - Comredes de Colombia",
+          "excerpt": "DIS-100G-8SW 8-PORT GIGABIT UNMANAGED INDUSTRIAL SWITCH Related products DES-1210-08P dwm-932C R8R45A DPE-301GI Page Link Productos Contact",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T22:02:30.835Z",
+          "contentHash": "157de7d6f90b284f2aedbc72dd08c3c596aa03b6535f87de3f584427e98802c0",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        },
+        {
+          "id": "evidence-465235d8877767a7",
+          "url": "https://comredes.com/producto/pro-s24-410w",
+          "title": "Pro-S24-410W - Comredes de Colombia",
+          "excerpt": "Pro-S24-410W \\ 24\\GE Ports +4\\SFP Ports L3 Management PoE+ Switch with 24 PoE Ports Compliant “\\ 24\\GE Ports +4\\SFP Ports L3 Management PoE+ Switch with 24 PoE Ports Compliant with IEEE802.3af/at; \\ Support managed by ProFi software controller \\ 1U,13-inch Rack-mountable Metal Case; PoE budget:370Watts; \\ IPv4 static routing; ARP; \\ Tag-based VLAN, STP/RSTP/MSTP, IGMP Snooping, 802.1P Qos, Rate Limiting, Port Trunking, Port Mirroring, SNMP, RMON;” Related products PoE15F TEG1118P-16-250W TEG1016G TEG1105PD Page Link Productos Contact",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T22:02:30.835Z",
+          "contentHash": "38bcb5b8e3d7730ab8f93248636840c94208846fcc5830b3cfdafe0ba9708078",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        },
+        {
+          "id": "evidence-2c9477f4ebabc45a",
+          "url": "https://comredes.com",
+          "title": "Comredes - Comredes de Colombia",
+          "excerpt": "Nuestro inventario incluye puntos de acceso, routers, redes de malla, extensores Wi-Fi, amplificadores de alcance, switches de red, adaptadores de red y otros",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T22:02:49.993Z",
+          "contentHash": "47ec03b336a17530814539dda7f0ce7a01efba72df2068a09874c0038787400f",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        },
+        {
+          "id": "evidence-9fed322959b69731",
+          "url": "https://www.facebook.com/comredescolombia",
+          "title": "Comredes (@comredescolombia)",
+          "excerpt": "Con el router DIR-825 vivirás la mejor velocidad y cobertura, y la doble banda de tecnología AC. Disfruta los descuentos especiales en nuestras tiendas.¡Nada te",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-07T22:02:49.993Z",
+          "contentHash": "6552e3007c33dafee6b0cb4aa28c33424eae7b9c7c52636612d093fcd650e1e6",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        }
+      ],
+      "blindAuditEvidence": [
+        {
+          "id": "evidence-home-ccf78e402b6b2858",
+          "url": "https://comredes.com/",
+          "title": "Comredes - Comredes de Colombia",
+          "excerpt": "Comredes - Comredes de Colombia Skip to content Portafolio Quienes Somos Contacto com redes Siempre en línea Siempre conectado Conéctate con lo que mas te importa Portafolio Contáctenos NUESTRAS MARCAS NUESTROS PILARES SERVICIO INNOVACIÓN . CALIDAD . RESPALDO . Formulario de Contacto: Preguntas Frecuentes Esta Información es Importante para Tí ¿Los productos disponibles para su compra en su sitio web son nuevos y genuinos? Sí, todos los productos disponibles para comprar en nuestro sitio web son nuevos y genuinos. Obtenemos nuestro inventario directamente de fabricantes acreditados lo que garantiza la autenticidad y la calidad de cada producto que ofrecemos. ¿Qué tipos de productos de red Wi-Fi vende? Ofrecemos una amplia gama de productos de red Wi-Fi para satisfacer diversas necesidades.",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T22:02:22.980Z",
+          "contentHash": "d7247efc136f295ede036124a233274f98a2e35f662aca6cfd5e934ac651988e",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        },
+        {
+          "id": "evidence-9fcdccf29525e37f",
+          "url": "https://comredes.com/producto/crs310-1g-5s-4sin",
+          "title": "CRS310-1G-5S-4S+IN - Comredes de Colombia",
+          "excerpt": "CRS310-1G-5S-4S+IN Routers Cloud Router Switch 310-1G-5S-4S+IN with RouterOS L5 license Related products CRS318-16P-2S+OUT CRS310-1G-5S-4S+OUT CRS310-8G+2S+IN CRS326-24G-2S+RM Page Link Productos Contact",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T22:02:30.835Z",
+          "contentHash": "a77d981ac43f99523ef265d856219b4ffec45b0936e10381c0423a0bceb72f67",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        },
+        {
+          "id": "evidence-f6b5bb949ab6ad03",
+          "url": "https://comredes.com/producto/teg1118p-16-250w",
+          "title": "TEG1118P-16-250W - Comredes de Colombia",
+          "excerpt": "TEG1118P-16-250W “””16-Port GE+2SFP Port Switch with 16-Port PoE; \\IEEE802.3af/at，PoE budgetr: 230W ” “””16-Port GE+2SFP Port Switch with 16-Port PoE; \\IEEE802.3af/at，PoE budgetr: 230W 1-16ports support IEEE802.3af /IEEE802.3at Maximum PoE Output Power: 135W,1U 13-inch rack-mountable steel case, Built-in Marvell chip ,6KV lightning protection for all port” Related products TEG1105P-4-63W TEG1024D N301 RX9 Pro/TX9 Pro Page Link Productos Contact",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T22:02:30.835Z",
+          "contentHash": "9b88ea5f3a2fb0d83fb4c403e8602da907c04c08d4cbf9f07577ae6dcc9c9311",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        },
+        {
+          "id": "evidence-3f207a27d7f91201",
+          "url": "https://comredes.com/producto/dis-100g-8sw",
+          "title": "DIS-100G-8SW - Comredes de Colombia",
+          "excerpt": "DIS-100G-8SW 8-PORT GIGABIT UNMANAGED INDUSTRIAL SWITCH Related products DES-1210-08P dwm-932C R8R45A DPE-301GI Page Link Productos Contact",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T22:02:30.835Z",
+          "contentHash": "157de7d6f90b284f2aedbc72dd08c3c596aa03b6535f87de3f584427e98802c0",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        },
+        {
+          "id": "evidence-465235d8877767a7",
+          "url": "https://comredes.com/producto/pro-s24-410w",
+          "title": "Pro-S24-410W - Comredes de Colombia",
+          "excerpt": "Pro-S24-410W \\ 24\\GE Ports +4\\SFP Ports L3 Management PoE+ Switch with 24 PoE Ports Compliant “\\ 24\\GE Ports +4\\SFP Ports L3 Management PoE+ Switch with 24 PoE Ports Compliant with IEEE802.3af/at; \\ Support managed by ProFi software controller \\ 1U,13-inch Rack-mountable Metal Case; PoE budget:370Watts; \\ IPv4 static routing; ARP; \\ Tag-based VLAN, STP/RSTP/MSTP, IGMP Snooping, 802.1P Qos, Rate Limiting, Port Trunking, Port Mirroring, SNMP, RMON;” Related products PoE15F TEG1118P-16-250W TEG1016G TEG1105PD Page Link Productos Contact",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T22:02:30.835Z",
+          "contentHash": "38bcb5b8e3d7730ab8f93248636840c94208846fcc5830b3cfdafe0ba9708078",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        },
+        {
+          "id": "evidence-2c9477f4ebabc45a",
+          "url": "https://comredes.com",
+          "title": "Comredes - Comredes de Colombia",
+          "excerpt": "Nuestro inventario incluye puntos de acceso, routers, redes de malla, extensores Wi-Fi, amplificadores de alcance, switches de red, adaptadores de red y otros",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T22:02:49.993Z",
+          "contentHash": "47ec03b336a17530814539dda7f0ce7a01efba72df2068a09874c0038787400f",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        },
+        {
+          "id": "evidence-9fed322959b69731",
+          "url": "https://www.facebook.com/comredescolombia",
+          "title": "Comredes (@comredescolombia)",
+          "excerpt": "Con el router DIR-825 vivirás la mejor velocidad y cobertura, y la doble banda de tecnología AC. Disfruta los descuentos especiales en nuestras tiendas.¡Nada te",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-07T22:02:49.993Z",
+          "contentHash": "6552e3007c33dafee6b0cb4aa28c33424eae7b9c7c52636612d093fcd650e1e6",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        },
+        {
+          "id": "evidence-bf28486301f68916",
+          "url": "https://comrades.com/race-information",
+          "title": "Race Information | The Ultimate Human Race - Comrades Marathon",
+          "excerpt": "Athletes who have not reached the finish line under their respective 12-hour cut-off, must leave the route and retire from the race immediately. Failure to do so may jeopardise the athlete’s participation in future years. ## THE CMA WILL NOT TOLERATE CHEATING IN ANY FORM. The CMA reserves the right to declare your 2027 result null and void and to reject your entry to future events. [...] and 15 (event cancellation) contain important limitations. You are entitled to seek independent legal advice before accepting these terms. [...] Official medical points and personnel will be stationed along the route to assist with injury or health issues during the race. Access to the medical tent at the finish will be monitored by appointed medical personnel. Athletes MUST retire if ordered to do so by M",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-07T22:02:49.993Z",
+          "contentHash": "10797be8fadcf4a557456107af2aedf1f139f999069c348794695c9042b5b347",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        },
+        {
+          "id": "evidence-e7f410c64bfeb312",
+          "url": "https://comresusa.com",
+          "title": "Telecommunications for Business | ComRes USA, Inc.",
+          "excerpt": "Providing telecommunications services since 1988 ComRes is a leader in voice & data cabling, fiber, wireless and VoIP solutions.",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-07T22:02:49.993Z",
+          "contentHash": "8786344256ea7e4f06b0e2fdce46fde966adc3926eb7832a74d118192b1ae334",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        },
+        {
+          "id": "evidence-2e6231c9ff1f7dd9",
+          "url": "https://www.cruzrojacolombiana.org/en",
+          "title": "Colombian Red Cross - Cruz Roja Colombiana",
+          "excerpt": "imunify-bot-check todos por colombia pop up [...] 0 Beneficiaries of emergencies and disasters Beneficiarios población migrante 0 Beneficiaries of migrant population and host community Beneficiarios cambio climático 0 Beneficiaries of climate change and risk reduction ## Be part of the change that saves lives Be the hand that accompanies, the voice that helps, and the strength that supports thousands of families in Colombia. Together we make a difference. I want to volunteer I want to donate ## Humanitarian Faces [...] Skip to content Logo Cruz Roja Colombiana Eng + Esp Logo Cruz Roja Colombiana # Join us to change realities We are present throughout the country to protect life, alleviate suffering, and support the most vulnerable communities. Learn about our work No active slides found ",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-07T22:02:49.993Z",
+          "contentHash": "f8feca114698b8883f88cfaecad6c81b6cd152dcb5eef901facd6c0d9ef7422c",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        }
+      ]
+    },
+    {
+      "rank": 3,
+      "candidateId": "lead-c02021a2dbf59639",
+      "companyName": "Macrotics",
+      "domain": "macrotics.com",
+      "officialWebsiteUrl": "https://www.macrotics.com/",
+      "primaryRole": "E-tailer",
+      "supportedRoles": [
+        "E-tailer",
+        "Retailer"
+      ],
+      "totalScore": 54,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-c02021a2dbf59639",
+        "evidence-4a1d82439d7e6974",
+        "evidence-bd46bd3499d65951",
+        "evidence-316c2a24f5277e27",
+        "evidence-0e1e39b8a4ba48c3",
+        "evidence-2496588c931f3460"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-c02021a2dbf59639",
+          "url": "https://www.macrotics.com/",
+          "title": "Macrotics / Productos de Telecomunicaciones - Repetidor Wifi",
+          "excerpt": "Macrotics / Productos de Telecomunicaciones - Repetidor Wifi ¡Te falta $ 1.200.000 para obtener envío gratis! 0 % 100% Categorias SU ALIADO INTEGRAL EN TELECOMUNICACIONES Optimice su red Desde soluciones de red para hogar hasta infraestructura de comunicaciones de alto rendimiento para empresas, en Macrotics ofrecemos tecnología de vanguardia en telecomunicaciones. Networking Fibra óptica Routers Switches WiFi Cableado UTP Enlaces <div aria-hidden=\"true\" role=\"none presentation\" class=\"macroti",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T21:32:04.644Z",
+          "contentHash": "f8526fc46fb3fcc068fc896cf7962151831cd366e9433a6c4a2c99d4096fe540",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r3"
+        },
+        {
+          "id": "evidence-4a1d82439d7e6974",
+          "url": "https://www.macrotics.com",
+          "title": "Macrotics / Productos de Telecomunicaciones - Repetidor Wifi",
+          "excerpt": "Title: Macrotics / Productos de Telecomunicaciones - Repetidor Wifi SU ALIADO INTEGRAL EN TELECOMUNICACIONES. Desde soluciones de red para hogar hasta infraestructura de comunicaciones de alto rendimiento para empresas, en Macrotics ofrecemos tecnología de vanguardia en telecomunicaciones. Descuentos exclusivos en routers, switches, puertos de acceso, accesorios, fibra óptica y mucho más. Punto de acceso WI-FI4 de MikroTik RBwAPR-2nD, chip 802.11n, MIMO 2X2, con una interfaz fast ethernet y posibilidad de añadir tarjeta Mini-PCIe. ### Punto de acceso WI-FI4 de MikroTik RBwAPR-2nD, chip 802.11n, MIMO 2X2, con una interfaz fast ethernet y posibilidad de añadir tarjeta Mini-PCIe. Switch Gigabit de sobremesa de 5 puertos. ### Switch Gigabit de sobremesa de 5 puertos. Receptor optico activo par",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T21:36:12.897Z",
+          "contentHash": "2c086805881baff4d22715afd0801a360b93b58fbe1f0460eddd22f92cfac409",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r3"
+        },
+        {
+          "id": "evidence-bd46bd3499d65951",
+          "url": "https://macrotics.com",
+          "title": "Macrotics / Productos de Telecomunicaciones - Repetidor Wifi",
+          "excerpt": "Title: Macrotics / Productos de Telecomunicaciones - Repetidor Wifi SU ALIADO INTEGRAL EN TELECOMUNICACIONES. Desde soluciones de red para hogar hasta infraestructura de comunicaciones de alto rendimiento para empresas, en Macrotics ofrecemos tecnología de vanguardia en telecomunicaciones. Descuentos exclusivos en routers, switches, puertos de acceso, accesorios, fibra óptica y mucho más. Punto de acceso WI-FI4 de MikroTik RBwAPR-2nD, chip 802.11n, MIMO 2X2, con una interfaz fast ethernet y posibilidad de añadir tarjeta Mini-PCIe. ### Punto de acceso WI-FI4 de MikroTik RBwAPR-2nD, chip 802.11n, MIMO 2X2, con una interfaz fast ethernet y posibilidad de añadir tarjeta Mini-PCIe. Switch Gigabit de sobremesa de 5 puertos. ### Switch Gigabit de sobremesa de 5 puertos. Receptor optico activo par",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T21:36:12.897Z",
+          "contentHash": "2c086805881baff4d22715afd0801a360b93b58fbe1f0460eddd22f92cfac409",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r3"
+        },
+        {
+          "id": "evidence-316c2a24f5277e27",
+          "url": "https://www.macrotics.com/ubiquiti",
+          "title": "Ubiquiti Networks - Macrotics / Productos de Telecomunicaciones - Repetidor Wifi",
+          "excerpt": "Title: Ubiquiti Networks - Macrotics / Productos de Telecomunicaciones - Repetidor Wifi Radioenlace UBIQUITI airMAX LBE-M5-23 de 23dBi para banda 5GHz. ### Radioenlace UBIQUITI airMAX LBE-M5-23 de 23dBi para banda 5GHz. EP-54V-150W-DC-Fuente Modular secundaria para Edge Power. ### EP-54V-150W-DC-Fuente Modular secundaria para Edge Power. Punto de Acceso Ubiquiti UniFi U7-Lite WiFi7, Dual band con puerto 2.5G ethernet. ### Punto de Acceso Ubiquiti UniFi U7-Lite WiFi7, Dual band con puerto 2.5G ethernet. UniFi Express UX Gateway y punto de acceso WiFi 6 (802.11ax) Ethernet LAN (RJ-45). ### UniFi Express UX Gateway y punto de acceso WiFi 6 (802.11ax) Ethernet LAN (RJ-45). UniFi Cloud Gateway UCG-Ultra puerta de enlace multi-WAN con funciones de enrutamiento y seguridad. ### UniFi Cloud Gatewa",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T21:36:12.897Z",
+          "contentHash": "22efeab5d411be26c7fa442e2b13a32e668d557c436085eb6e8fcec3284ce831",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r3"
+        },
+        {
+          "id": "evidence-0e1e39b8a4ba48c3",
+          "url": "https://www.macrotics.com/contacto",
+          "title": "Macrotics / Productos de Telecomunicaciones - Repetidor Wifi",
+          "excerpt": "Title: Macrotics / Productos de Telecomunicaciones - Repetidor Wifi En Macrotics estamos atentos para resolver cualquier inquietud . PBX: (+57) 333 033 3228. ## Suscríbete. Haz parte de nuestra comunidad. Ingresa a tu perfil¿Cómo comprar? ContáctenosConviértete en distribuidorGarantiasServicio al cliente. Política de tratamiento de datos personalesPolítica de PrivacidadDeclaración de orígenes de fondosPolítica de cambios y devolucionesRevisión SerialesTérminos y condiciones OUTLETTérminos y condiciones FREE SHIPPING. Política de tratamiento de datos personales. Declaración de orígenes de fondos. Política de cambios y devoluciones. Términos y condiciones FREE SHIPPING. PBX: 60 (1) 841 88 28 | +57 333 033 32 28. © Copyright 2024 Macrotics - Todos los derechos reservados.",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T21:36:12.897Z",
+          "contentHash": "697c59440c8f74c5ee97086c2d1b2f9810193ee89b022ba2be112c95d77508a7",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r3"
+        },
+        {
+          "id": "evidence-2496588c931f3460",
+          "url": "https://www.mercadolibre.com.ar/access-point-repetidor-router-sistema-wi-fi-mesh-cudy-roteador-mesh-m1300-ac1200-blanco-pack-x-3-unidades/p/MLA28714565",
+          "title": "Access point, Repetidor, Router, Sistema Wi-Fi mesh Cudy Roteador Mesh M1300 AC1200 blanco pack x 3 unidades | MercadoLibre",
+          "excerpt": "Title: Access point, Repetidor, Router, Sistema Wi-Fi mesh Cudy Roteador Mesh M1300 AC1200 blanco pack x 3 unidades | MercadoLibre Envío gratis en tu primera compra en Mercado Libre. Access point, Repetidor, Router, Sistema Wi-Fi mesh Cudy Roteador Mesh M1300 AC1200 blanco pack x 3 unidades. Access point, Repetidor, Router, Sistema Wi-Fi mesh Cudy Roteador Mesh M1300 AC1200 blanco pack x 3 unidades. Access point, Repetidor, Router, Sistema Wi-Fi mesh Cudy Roteador Mesh M1300 AC1200 blanco pack x 3 unidades. Access point, Repetidor, Router, Sistema Wi-Fi mesh Cudy Roteador Mesh M1300 AC1200 blanco pack x 3 unidades. Access point, Repetidor, Router, Sistema Wi-Fi mesh Cudy Roteador Mesh M1300 AC1200 blanco pack x 3 unidades. Access point, Repetidor, Router, Sistema Wi-Fi mesh Cudy Roteador M",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-07T21:36:12.897Z",
+          "contentHash": "10b7ccd39285e1c72470894998969cda788d56394b2b5128a2b8d172f43c36ac",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r3"
+        }
+      ],
+      "blindAuditEvidence": [
+        {
+          "id": "evidence-home-c02021a2dbf59639",
+          "url": "https://www.macrotics.com/",
+          "title": "Macrotics / Productos de Telecomunicaciones - Repetidor Wifi",
+          "excerpt": "Macrotics / Productos de Telecomunicaciones - Repetidor Wifi ¡Te falta $ 1.200.000 para obtener envío gratis! 0 % 100% Categorias SU ALIADO INTEGRAL EN TELECOMUNICACIONES Optimice su red Desde soluciones de red para hogar hasta infraestructura de comunicaciones de alto rendimiento para empresas, en Macrotics ofrecemos tecnología de vanguardia en telecomunicaciones. Networking Fibra óptica Routers Switches WiFi Cableado UTP Enlaces <div aria-hidden=\"true\" role=\"none presentation\" class=\"macroti",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T21:32:04.644Z",
+          "contentHash": "f8526fc46fb3fcc068fc896cf7962151831cd366e9433a6c4a2c99d4096fe540",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r3"
+        },
+        {
+          "id": "evidence-4a1d82439d7e6974",
+          "url": "https://www.macrotics.com",
+          "title": "Macrotics / Productos de Telecomunicaciones - Repetidor Wifi",
+          "excerpt": "Title: Macrotics / Productos de Telecomunicaciones - Repetidor Wifi SU ALIADO INTEGRAL EN TELECOMUNICACIONES. Desde soluciones de red para hogar hasta infraestructura de comunicaciones de alto rendimiento para empresas, en Macrotics ofrecemos tecnología de vanguardia en telecomunicaciones. Descuentos exclusivos en routers, switches, puertos de acceso, accesorios, fibra óptica y mucho más. Punto de acceso WI-FI4 de MikroTik RBwAPR-2nD, chip 802.11n, MIMO 2X2, con una interfaz fast ethernet y posibilidad de añadir tarjeta Mini-PCIe. ### Punto de acceso WI-FI4 de MikroTik RBwAPR-2nD, chip 802.11n, MIMO 2X2, con una interfaz fast ethernet y posibilidad de añadir tarjeta Mini-PCIe. Switch Gigabit de sobremesa de 5 puertos. ### Switch Gigabit de sobremesa de 5 puertos. Receptor optico activo par",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T21:36:12.897Z",
+          "contentHash": "2c086805881baff4d22715afd0801a360b93b58fbe1f0460eddd22f92cfac409",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r3"
+        },
+        {
+          "id": "evidence-bd46bd3499d65951",
+          "url": "https://macrotics.com",
+          "title": "Macrotics / Productos de Telecomunicaciones - Repetidor Wifi",
+          "excerpt": "Title: Macrotics / Productos de Telecomunicaciones - Repetidor Wifi SU ALIADO INTEGRAL EN TELECOMUNICACIONES. Desde soluciones de red para hogar hasta infraestructura de comunicaciones de alto rendimiento para empresas, en Macrotics ofrecemos tecnología de vanguardia en telecomunicaciones. Descuentos exclusivos en routers, switches, puertos de acceso, accesorios, fibra óptica y mucho más. Punto de acceso WI-FI4 de MikroTik RBwAPR-2nD, chip 802.11n, MIMO 2X2, con una interfaz fast ethernet y posibilidad de añadir tarjeta Mini-PCIe. ### Punto de acceso WI-FI4 de MikroTik RBwAPR-2nD, chip 802.11n, MIMO 2X2, con una interfaz fast ethernet y posibilidad de añadir tarjeta Mini-PCIe. Switch Gigabit de sobremesa de 5 puertos. ### Switch Gigabit de sobremesa de 5 puertos. Receptor optico activo par",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T21:36:12.897Z",
+          "contentHash": "2c086805881baff4d22715afd0801a360b93b58fbe1f0460eddd22f92cfac409",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r3"
+        },
+        {
+          "id": "evidence-316c2a24f5277e27",
+          "url": "https://www.macrotics.com/ubiquiti",
+          "title": "Ubiquiti Networks - Macrotics / Productos de Telecomunicaciones - Repetidor Wifi",
+          "excerpt": "Title: Ubiquiti Networks - Macrotics / Productos de Telecomunicaciones - Repetidor Wifi Radioenlace UBIQUITI airMAX LBE-M5-23 de 23dBi para banda 5GHz. ### Radioenlace UBIQUITI airMAX LBE-M5-23 de 23dBi para banda 5GHz. EP-54V-150W-DC-Fuente Modular secundaria para Edge Power. ### EP-54V-150W-DC-Fuente Modular secundaria para Edge Power. Punto de Acceso Ubiquiti UniFi U7-Lite WiFi7, Dual band con puerto 2.5G ethernet. ### Punto de Acceso Ubiquiti UniFi U7-Lite WiFi7, Dual band con puerto 2.5G ethernet. UniFi Express UX Gateway y punto de acceso WiFi 6 (802.11ax) Ethernet LAN (RJ-45). ### UniFi Express UX Gateway y punto de acceso WiFi 6 (802.11ax) Ethernet LAN (RJ-45). UniFi Cloud Gateway UCG-Ultra puerta de enlace multi-WAN con funciones de enrutamiento y seguridad. ### UniFi Cloud Gatewa",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T21:36:12.897Z",
+          "contentHash": "22efeab5d411be26c7fa442e2b13a32e668d557c436085eb6e8fcec3284ce831",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r3"
+        },
+        {
+          "id": "evidence-0e1e39b8a4ba48c3",
+          "url": "https://www.macrotics.com/contacto",
+          "title": "Macrotics / Productos de Telecomunicaciones - Repetidor Wifi",
+          "excerpt": "Title: Macrotics / Productos de Telecomunicaciones - Repetidor Wifi En Macrotics estamos atentos para resolver cualquier inquietud . PBX: (+57) 333 033 3228. ## Suscríbete. Haz parte de nuestra comunidad. Ingresa a tu perfil¿Cómo comprar? ContáctenosConviértete en distribuidorGarantiasServicio al cliente. Política de tratamiento de datos personalesPolítica de PrivacidadDeclaración de orígenes de fondosPolítica de cambios y devolucionesRevisión SerialesTérminos y condiciones OUTLETTérminos y condiciones FREE SHIPPING. Política de tratamiento de datos personales. Declaración de orígenes de fondos. Política de cambios y devoluciones. Términos y condiciones FREE SHIPPING. PBX: 60 (1) 841 88 28 | +57 333 033 32 28. © Copyright 2024 Macrotics - Todos los derechos reservados.",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T21:36:12.897Z",
+          "contentHash": "697c59440c8f74c5ee97086c2d1b2f9810193ee89b022ba2be112c95d77508a7",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r3"
+        },
+        {
+          "id": "evidence-2496588c931f3460",
+          "url": "https://www.mercadolibre.com.ar/access-point-repetidor-router-sistema-wi-fi-mesh-cudy-roteador-mesh-m1300-ac1200-blanco-pack-x-3-unidades/p/MLA28714565",
+          "title": "Access point, Repetidor, Router, Sistema Wi-Fi mesh Cudy Roteador Mesh M1300 AC1200 blanco pack x 3 unidades | MercadoLibre",
+          "excerpt": "Title: Access point, Repetidor, Router, Sistema Wi-Fi mesh Cudy Roteador Mesh M1300 AC1200 blanco pack x 3 unidades | MercadoLibre Envío gratis en tu primera compra en Mercado Libre. Access point, Repetidor, Router, Sistema Wi-Fi mesh Cudy Roteador Mesh M1300 AC1200 blanco pack x 3 unidades. Access point, Repetidor, Router, Sistema Wi-Fi mesh Cudy Roteador Mesh M1300 AC1200 blanco pack x 3 unidades. Access point, Repetidor, Router, Sistema Wi-Fi mesh Cudy Roteador Mesh M1300 AC1200 blanco pack x 3 unidades. Access point, Repetidor, Router, Sistema Wi-Fi mesh Cudy Roteador Mesh M1300 AC1200 blanco pack x 3 unidades. Access point, Repetidor, Router, Sistema Wi-Fi mesh Cudy Roteador Mesh M1300 AC1200 blanco pack x 3 unidades. Access point, Repetidor, Router, Sistema Wi-Fi mesh Cudy Roteador M",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-07T21:36:12.897Z",
+          "contentHash": "10b7ccd39285e1c72470894998969cda788d56394b2b5128a2b8d172f43c36ac",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r3"
+        }
+      ]
+    },
+    {
+      "rank": 4,
+      "candidateId": "lead-49b80866959614e2",
+      "companyName": "NEXSA S.A.S.",
+      "domain": "nexsa.net",
+      "officialWebsiteUrl": "https://www.nexsa.net/",
+      "primaryRole": "E-tailer",
+      "supportedRoles": [
+        "E-tailer"
+      ],
+      "totalScore": 54,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-49b80866959614e2",
+        "evidence-0a5feb2eca584429",
+        "evidence-08585ce63f163d0b",
+        "evidence-7c0e6fe2a4d33219"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-49b80866959614e2",
+          "url": "https://www.nexsa.net/",
+          "title": "NEXSA | Tienda Técnica de Redes y Fibra Óptica en Colombia",
+          "excerpt": "NEXSA | Tienda Técnica de Redes y Fibra Óptica en Colombia Soluciones en tecnología, redes y fibra óptica para empresas y hogares. Tienda Compra tecnología con asesoría real. Accede rápido a las líneas principales del catálogo Nexsa. Ir a la tienda Conectividad Redes y Networking Fibra Óptica ISP y Telecomunicaciones Cableado Estructurado Tecnología Computadores Impresoras Software y Licenciamiento Energía Accesos rápidos Videovigilancia y Seguridad Accesorios Hogar Ofertas Redes Redes y Networking. Switches, routers, access points, firewalls y accesorios para infraestructura de red. Explorar redes Equipos activos Switches Routers Access Points Firewalls WLAN y conectividad Controladoras WLAN Convertidores de Medios Inyectores PoE Adaptadores de Red Complementos Tarjetas de Red Accesorios ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T21:37:43.090Z",
+          "contentHash": "595efd32b866bb64d2b2f923e424b64408f47a28290ca4299bb2ce1baf0f84d3",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r4"
+        },
+        {
+          "id": "evidence-0a5feb2eca584429",
+          "url": "https://www.nexsa.net/en",
+          "title": "NEXSA | Networking & Fiber Optics Technical Store in Colombia",
+          "excerpt": "Technology, networking and fiber optic solutions for businesses and homes. NEXSA ES Search Get a Quote Store View storeDeals Networking NetworkingSwitchesRoutersAccess PointsFirewallsWLAN ControllersMedia ConvertersPoE InjectorsNetwork AdaptersNetwork CardsNetwork Accessories Fiber Optics Fiber OpticsTransceiversFiber Patch CordFiber Optic CablePigtailsAdaptersCouplersPLC SplittersODFSplice BoxesWall OutletsSplice TraysOrganizersFiber Tools ISP & Telecom ISP & TelecomOLTONTONUGPONEPONRadiosAntennasBridgesCPEWireless EquipmentHFC Video Surveillance & Security Video Surveillance & SecurityIP CamerasAnalog CamerasNVRDVRVideo IntercomsAccess ControlAlarmsCCTV AccessoriesCCTV Storage Cabling & Power Structured CablingUTP CableUTP Patch CordKeystoneFaceplatesPatch PanelCabinetsRacksOrganizersRac",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T21:40:24.612Z",
+          "contentHash": "f50fec486d46961d57dc5214b6793d8f79058cd4640cb3750900d77576f89f7e",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r4"
+        },
+        {
+          "id": "evidence-7c0e6fe2a4d33219",
+          "url": "https://www.portal.nexsa.net/web/content/234878?unique=32127d07f7a134edad32666ac78c61c053a78fd6&download=true&access_token=b2fdf5e9-346a-40eb-8916-1d3ca73e7125",
+          "title": "[PDF] Cordones de Parcheo UTP de Cat6A NetKey® - Panduit",
+          "excerpt": "Cordones de Parcheo UTP de Cat6A NetKey® www.panduit.com Los Cordones de Parcheo UTP de Categoría 6A NetKey® son un componente del Sistema de Cableado de Cobre de Categoría 6A NetKey®. Interoperable y compatible con versiones anteriores, este sistema de extremo a extremo otorga flexibilidad de diseño para proteger sus inversiones en red a largo plazo. Las aplicaciones principales incluyen: • Ethernet 10GBASE-T • Redes inalámbricas • Power over Ethernet (PoE) • Transmisión de video Componentes de red NetKey® Cordones de Parcheo UTP de Cat6A NetKey® Longitudes en pies: NK6APC3 Longitudes en metros: NK6APC1M Para longitudes estándar que no sean de 3 pies (5, 7, 10, 14, 20, 25, 30, 40 o 50) cambie la designación de longitud en el número de parte e ingrese la longitud deseada. Para colores de c",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T21:40:24.613Z",
+          "contentHash": "ef80f07a147ad099457ca034223cb67d0f3f70b2c3412bab7ef1871124d6c857",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r4"
+        },
+        {
+          "id": "evidence-08585ce63f163d0b",
+          "url": "https://www.portal.nexsa.net/terms",
+          "title": "Terms & Conditions | Portal Nexsa",
+          "excerpt": "Skip to Content STANDARD TERMS AND CONDITIONS OF SALE You should update this document to reflect your T&C. Below text serves as a suggestion and doesn’t engage Odoo S.A. responsibility. 1. The client explicitly waives its own standard terms and conditions, even if these were drawn up after these standard terms and conditions of sale. In order to be valid, any derogation must be expressly agreed to in advance in writing. 2. Our invoices are payable within 21 working days, unless another payment timeframe is indicated on either the invoice or the order. In the event of non-payment by the due date, NEXSA S.A.S. reserves the right to request a fixed interest payment amounting to 10% of the sum remaining due. NEXSA S.A.S. will be authorized to suspend any provision of services without prior war",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T21:40:24.613Z",
+          "contentHash": "8ace3c6da98bb41bc74b1be1a18dd5b839e90446891099ef49ebd9dc150da49a",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r4"
+        }
+      ],
+      "blindAuditEvidence": [
+        {
+          "id": "evidence-home-49b80866959614e2",
+          "url": "https://www.nexsa.net/",
+          "title": "NEXSA | Tienda Técnica de Redes y Fibra Óptica en Colombia",
+          "excerpt": "NEXSA | Tienda Técnica de Redes y Fibra Óptica en Colombia Soluciones en tecnología, redes y fibra óptica para empresas y hogares. Tienda Compra tecnología con asesoría real. Accede rápido a las líneas principales del catálogo Nexsa. Ir a la tienda Conectividad Redes y Networking Fibra Óptica ISP y Telecomunicaciones Cableado Estructurado Tecnología Computadores Impresoras Software y Licenciamiento Energía Accesos rápidos Videovigilancia y Seguridad Accesorios Hogar Ofertas Redes Redes y Networking. Switches, routers, access points, firewalls y accesorios para infraestructura de red. Explorar redes Equipos activos Switches Routers Access Points Firewalls WLAN y conectividad Controladoras WLAN Convertidores de Medios Inyectores PoE Adaptadores de Red Complementos Tarjetas de Red Accesorios ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T21:37:43.090Z",
+          "contentHash": "595efd32b866bb64d2b2f923e424b64408f47a28290ca4299bb2ce1baf0f84d3",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r4"
+        },
+        {
+          "id": "evidence-0a5feb2eca584429",
+          "url": "https://www.nexsa.net/en",
+          "title": "NEXSA | Networking & Fiber Optics Technical Store in Colombia",
+          "excerpt": "Technology, networking and fiber optic solutions for businesses and homes. NEXSA ES Search Get a Quote Store View storeDeals Networking NetworkingSwitchesRoutersAccess PointsFirewallsWLAN ControllersMedia ConvertersPoE InjectorsNetwork AdaptersNetwork CardsNetwork Accessories Fiber Optics Fiber OpticsTransceiversFiber Patch CordFiber Optic CablePigtailsAdaptersCouplersPLC SplittersODFSplice BoxesWall OutletsSplice TraysOrganizersFiber Tools ISP & Telecom ISP & TelecomOLTONTONUGPONEPONRadiosAntennasBridgesCPEWireless EquipmentHFC Video Surveillance & Security Video Surveillance & SecurityIP CamerasAnalog CamerasNVRDVRVideo IntercomsAccess ControlAlarmsCCTV AccessoriesCCTV Storage Cabling & Power Structured CablingUTP CableUTP Patch CordKeystoneFaceplatesPatch PanelCabinetsRacksOrganizersRac",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T21:40:24.612Z",
+          "contentHash": "f50fec486d46961d57dc5214b6793d8f79058cd4640cb3750900d77576f89f7e",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r4"
+        },
+        {
+          "id": "evidence-7c0e6fe2a4d33219",
+          "url": "https://www.portal.nexsa.net/web/content/234878?unique=32127d07f7a134edad32666ac78c61c053a78fd6&download=true&access_token=b2fdf5e9-346a-40eb-8916-1d3ca73e7125",
+          "title": "[PDF] Cordones de Parcheo UTP de Cat6A NetKey® - Panduit",
+          "excerpt": "Cordones de Parcheo UTP de Cat6A NetKey® www.panduit.com Los Cordones de Parcheo UTP de Categoría 6A NetKey® son un componente del Sistema de Cableado de Cobre de Categoría 6A NetKey®. Interoperable y compatible con versiones anteriores, este sistema de extremo a extremo otorga flexibilidad de diseño para proteger sus inversiones en red a largo plazo. Las aplicaciones principales incluyen: • Ethernet 10GBASE-T • Redes inalámbricas • Power over Ethernet (PoE) • Transmisión de video Componentes de red NetKey® Cordones de Parcheo UTP de Cat6A NetKey® Longitudes en pies: NK6APC3 Longitudes en metros: NK6APC1M Para longitudes estándar que no sean de 3 pies (5, 7, 10, 14, 20, 25, 30, 40 o 50) cambie la designación de longitud en el número de parte e ingrese la longitud deseada. Para colores de c",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T21:40:24.613Z",
+          "contentHash": "ef80f07a147ad099457ca034223cb67d0f3f70b2c3412bab7ef1871124d6c857",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r4"
+        },
+        {
+          "id": "evidence-08585ce63f163d0b",
+          "url": "https://www.portal.nexsa.net/terms",
+          "title": "Terms & Conditions | Portal Nexsa",
+          "excerpt": "Skip to Content STANDARD TERMS AND CONDITIONS OF SALE You should update this document to reflect your T&C. Below text serves as a suggestion and doesn’t engage Odoo S.A. responsibility. 1. The client explicitly waives its own standard terms and conditions, even if these were drawn up after these standard terms and conditions of sale. In order to be valid, any derogation must be expressly agreed to in advance in writing. 2. Our invoices are payable within 21 working days, unless another payment timeframe is indicated on either the invoice or the order. In the event of non-payment by the due date, NEXSA S.A.S. reserves the right to request a fixed interest payment amounting to 10% of the sum remaining due. NEXSA S.A.S. will be authorized to suspend any provision of services without prior war",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T21:40:24.613Z",
+          "contentHash": "8ace3c6da98bb41bc74b1be1a18dd5b839e90446891099ef49ebd9dc150da49a",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r4"
+        }
+      ]
+    },
+    {
+      "rank": 5,
+      "candidateId": "lead-b466c5f5008dda8a",
+      "companyName": "Technology Solutions Company A&G EIRL",
+      "domain": "technology.com.pe",
+      "officialWebsiteUrl": "https://technology.com.pe/",
+      "primaryRole": "E-tailer",
+      "supportedRoles": [
+        "E-tailer",
+        "Reseller"
+      ],
+      "totalScore": 52,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-b466c5f5008dda8a",
+        "evidence-ba1659f87f87a58c"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-b466c5f5008dda8a",
+          "url": "https://technology.com.pe/",
+          "title": "Technology - Tienda de computo",
+          "excerpt": "Technology - Tienda de computo Categorías almacenamiento Disco duro externo Disco duro interno Memoria flash NAS Unidad de estado sólido Ver todo antivirus PC Ver todo camaras de seguridad CAMARA EXTERIOR CAMARA INTERIOR Ver todo cases/fuentes/accesorios ACCESORIOS FUENTE DE PODER GAMING OFICINA Ver todo celulares Android iOS Ver todo computadoras All In One (AIO) FORMATO SMALL TORRE Ver todo consolas video juegos OCULUS PLAYSTATION PORTATIL Ver todo cpu cooler Cooler REFRIGERACIÓN LIQUIDA Ver todo estabilizadores ACCESORIOS ESTABILIZADOR UPS Ver todo impresoras LASER MATRICIAL/TERMICA TINTA Ver todo memoria DIMM SODIMM Ver todo microprocesadores AMD INTEL Ver todo microsoft software Office Sistema Operativo Ver todo monitores ACCESORIOS COMERCIAL GAMING OFICINA Ver todo motherboards AMD I",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T21:01:39.642Z",
+          "contentHash": "3cc9e42fc26c21290dce0e21eec6d8891cfe7fae5898db09afef9f1f62179e4d",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r2"
+        },
+        {
+          "id": "evidence-ba1659f87f87a58c",
+          "url": "https://www.facebook.com/TECHNOLOGYSCAG",
+          "title": "Technology Solutions Company A&G | Lima",
+          "excerpt": "Technology Solutions Company A&G, Lima. 1021 likes. Technology Solutions Company A&G Soluciones en hardware, software y consultoría.",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-07T21:01:51.942Z",
+          "contentHash": "811856ebc2ca6d0892b59047221e282f749066d0e378a504d1a54d9e0b5577a4",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r2"
+        }
+      ],
+      "blindAuditEvidence": [
+        {
+          "id": "evidence-home-b466c5f5008dda8a",
+          "url": "https://technology.com.pe/",
+          "title": "Technology - Tienda de computo",
+          "excerpt": "Technology - Tienda de computo Categorías almacenamiento Disco duro externo Disco duro interno Memoria flash NAS Unidad de estado sólido Ver todo antivirus PC Ver todo camaras de seguridad CAMARA EXTERIOR CAMARA INTERIOR Ver todo cases/fuentes/accesorios ACCESORIOS FUENTE DE PODER GAMING OFICINA Ver todo celulares Android iOS Ver todo computadoras All In One (AIO) FORMATO SMALL TORRE Ver todo consolas video juegos OCULUS PLAYSTATION PORTATIL Ver todo cpu cooler Cooler REFRIGERACIÓN LIQUIDA Ver todo estabilizadores ACCESORIOS ESTABILIZADOR UPS Ver todo impresoras LASER MATRICIAL/TERMICA TINTA Ver todo memoria DIMM SODIMM Ver todo microprocesadores AMD INTEL Ver todo microsoft software Office Sistema Operativo Ver todo monitores ACCESORIOS COMERCIAL GAMING OFICINA Ver todo motherboards AMD I",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T21:01:39.642Z",
+          "contentHash": "3cc9e42fc26c21290dce0e21eec6d8891cfe7fae5898db09afef9f1f62179e4d",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r2"
+        },
+        {
+          "id": "evidence-2c47a49fdb635bdc",
+          "url": "http://www.apmterminals.com.pe",
+          "title": "APM Terminals: Home",
+          "excerpt": "maersk-camden APM Terminals employee Lifting standards APM Terminals is on a pathway to be the World’s Best Terminal Company. We will achieve this by constantly lifting the standard of our customers’ experience at each of our 60 strategic locations around the globe. On our decarbonisation journey towards net zero by 2040, we will also lift the standard of responsibility. Global news & insights APM Terminals Laldia groundbreaking APM Terminals breaks ground for terminal in Laldia APM Terminals Maasvlakte II APM Terminals and Hapag-Lloyd partner to drive future growth at Maasvlakte II Pier400 Kalmar and APM Terminals announce strategic partnership to advance development of terminal technology Global information Team building event at APM Terminals Job Vacancies Use our global job search tool",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T21:01:47.439Z",
+          "contentHash": "f5f6bbca280a825bedc13f8af64c7c98e351a93ad1a371cbfd795904d4fa8c12",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r2"
+        },
+        {
+          "id": "evidence-3a02079701f83f15",
+          "url": "https://www.eplan.com.pe/eplan-partner-network/phoenix-contact",
+          "title": "Phoenix Contact - EPLAN",
+          "excerpt": "Phoenix Contact INSPIRING INNOVATIONS Phoenix Contact is the global market leader for components, systems and solutions in the field of electrical engineering, electronics and automation. Today, the family-owned company employs around 17,600 people worldwide and generated a revenue of 2.48 billion euros in 2019. The headquarter is in Blomberg, Westphalia/Germany. The Phoenix Contact Group includes eighteen German and four international companies as well as 55 sales organizations around the world. Phoenix Contact is present in more than 100 countries worldwide. Production takes place in eleven countries worldwide with a high degree of vertical integration. The product range includes components and system solutions for the generation, transport and distribution of energy, equipment and mecha",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T21:01:47.439Z",
+          "contentHash": "010ba21abda6834672ffc2dff43bfa9edc4bac00f8bb860dd7580bf0ed25b6cc",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r2"
+        },
+        {
+          "id": "evidence-cc82fd0319c7a2e7",
+          "url": "https://www.eplan.com.pe/eplan-partner-network/f-ee",
+          "title": "EPLAN Partner Network",
+          "excerpt": "F.EE „F.EEling for automation“ – for more than 40 years Founded in 1982, the F.EE company group is currently one of the German market leaders in manufacturing and automation technology with around 1,100 employees. In addition to its headquarters in Neunburg vorm Wald in Bavaria, the company has branches in Frankfurt and Leipzig as well as international locations in China, Great Britain, Croatia, Mexico, Spain, Turkey and the USA. With its four business units Electrical Engineering, Automation Robotics, Software+Systems and Power Engineering, the company very successfully offers customized solutions as well as products and services individually adapted to the customers' requirements in the fields of automation technology, robotics, control cabinet construction, electrical engineering as wel",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T21:01:47.439Z",
+          "contentHash": "0513c9cadfdb87dd6491a13043d33361e8d79e1d7d3da9157eaa0eccad693399",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r2"
+        },
+        {
+          "id": "evidence-9a2a1ab2ac84f89d",
+          "url": "https://www.protiviti.com.pe/us-en/location",
+          "title": "Office Locations | Protiviti US",
+          "excerpt": "Explore Protiviti's office locations in United States and discover 85+ global Protiviti office locations and addresses for business consulting services and",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T21:01:47.439Z",
+          "contentHash": "ee1469f55224d5cafc723b4a7b9ee4b43dc4c5babe9ff8770bb1b3b6d0cbd759",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r2"
+        },
+        {
+          "id": "evidence-a0826e76978baa91",
+          "url": "https://www.a-gtech.com",
+          "title": "A&G",
+          "excerpt": "OUR SERVICES · Expertise · Delivery Excellence · Innovative Manufacturing ... A&G Solutions Technology Sdn Bhd (947555 - M). Website Design by XANTEC SOLUTIONS.",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-07T21:01:51.942Z",
+          "contentHash": "23273fb6d44529524eb9fc61d84ae90d154a5bc310515f0084a8832e1424e512",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r2"
+        },
+        {
+          "id": "evidence-ba1659f87f87a58c",
+          "url": "https://www.facebook.com/TECHNOLOGYSCAG",
+          "title": "Technology Solutions Company A&G | Lima",
+          "excerpt": "Technology Solutions Company A&G, Lima. 1021 likes. Technology Solutions Company A&G Soluciones en hardware, software y consultoría.",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-07T21:01:51.942Z",
+          "contentHash": "811856ebc2ca6d0892b59047221e282f749066d0e378a504d1a54d9e0b5577a4",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r2"
+        },
+        {
+          "id": "evidence-63b9d9e816c2c33c",
+          "url": "https://www.linkedin.com/company/a-and-g-technology",
+          "title": "A&G Technology Co., LTD",
+          "excerpt": "## Overview [...] ### Website ### Crunchbase N/A ### LinkedIn N/A ### Industry Wholesale Building Materials ### Company Size 51-200 employees 3 associated members (LinkedIn members who've listed A&G Technology Co., LTD as their current workplace on their profile) ### Founded 2007 ### Funding Last Round Date: N/A Last Round Type: N/A Total Rounds: N/A Last Round Raised: N/A ### Investors N/A [...] ## Posts ## Media - Images: - Logo: Company Logo ## Additional None",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-07T21:01:51.942Z",
+          "contentHash": "7c7d314b1cadb46ddb9dc95c7a02f4031082741e5b7fec177c358c86c740b5e5",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r2"
+        },
+        {
+          "id": "evidence-29b742418b9c4eb9",
+          "url": "https://www.ting.com.co",
+          "title": "TING: Conectividad Industrial e IoT en Colombia",
+          "excerpt": "Cotizar ahora Conectividad industrial · IoT · SCADA en la nube · Colombia # Conectividad industrial, IoT y SCADA en la nube en Colombia Distribuidor de soluciones IoT industriales en Colombia: routers celulares 4G/5G, gateways y sensores LoRaWAN, telemetría y monitoreo SCADA en la nube. Representamos a Digi, Milesight y Queclink, con soporte de ingeniería local 24/7. Explorar catálogo Escríbenos por WhatsApp Productos en catálogo Marcas líderes globales Monitoreo en la nube Router 5G [...] Router 5G Gateway LoRaWAN Sensor CO₂ SCADA Cloud Acceso remoto Marcas que representamos Empresas líderes del sector energía y servicios públicos en Colombia confían en TING EPM Celsia Electrohuila Afinia Soluciones por industria ## Resolvemos retos reales de conectividad No vendemos cajas: diseñamos la s",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-07T21:01:51.942Z",
+          "contentHash": "fb7b8df9e9f0b60e6dcd9723840fcb71e3527f4202dd46497fe44c21cbf485bb",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r2"
+        },
+        {
+          "id": "evidence-5a47cbf77a48df41",
+          "url": "https://www.atgweb.com",
+          "title": "Home - Advanced Technology Group Inc.",
+          "excerpt": "Advanced Technology Group Inc. Select Page Home1 ON-TIME, ON BUDGET Home1 Home2 QUALITY PEOPLE, QUALITY WORK Home2 Home3 UNPARALLELED EXPERTISE Home3 Home4 COLLABORATIVE PARTNER Home4 Home5 VALUE-ORIENTED SOLUTIONS Home5 previous arrow next arrow # Building Each Project at the Highest Level of Quality and Value []( ### COMMERCIAL INDUSTRIAL LEARN MORE []( ### DATA CENTER TECHNOLOGY LEARN MORE []( ### MICROELECTRONICS SEMICONDUCTOR LEARN MORE []( [...] LEARN MORE []( ### PHARMACEUTICAL BIOTECHNOLOGY HEALTHCARE LEARN MORE ## Construction Services Dedicated to delivering winning solutions on every project. Our culture of responsiveness and ownership creates innovation, cost savings, quality improvements, safe environments, and superior performance. [](",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-07T21:01:51.942Z",
+          "contentHash": "a64309e4788195ff4bf2cf6e7fbb843a304f376d188afa807ce76c826853860d",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r2"
+        }
+      ]
+    },
+    {
+      "rank": 6,
+      "candidateId": "lead-18444c8551cd6ab4",
+      "companyName": "MercadoIT",
+      "domain": "mercadoit.com",
+      "officialWebsiteUrl": "https://mercadoit.com/en/",
+      "primaryRole": "E-tailer",
+      "supportedRoles": [
+        "Reseller",
+        "E-tailer"
+      ],
+      "totalScore": 43,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-18444c8551cd6ab4",
+        "evidence-a064944246fe2365",
+        "evidence-51fd19636e51359b",
+        "evidence-787e4ae97f77b7e8",
+        "evidence-c76970881659e124"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-18444c8551cd6ab4",
+          "url": "https://mercadoit.com/en/",
+          "title": "MercadoIT | Refurbished Equipment and EOS/EOL Services",
+          "excerpt": "MercadoIT | Refurbished Equipment and EOS/EOL Services :root{--wp--preset--aspect-ratio--square: 1;--wp--preset--aspect-ratio--4-3: 4/3;--wp--preset--aspect-ratio--3-4: 3/4;--wp--preset--aspect-ratio--3-2: 3/2;--wp--preset--aspect-ratio--2-3: 2/3;--wp--preset--aspect-ratio--16-9: 16/9;--wp--preset--aspect-ratio--9-16: 9/16;--wp--preset--color--black: #000000;--wp--preset--color--cyan-bluish-gray: #abb8c3;--wp--preset--color--white: #ffffff;--wp--preset--color--pale-pink: #f78da7;--wp--preset--color--vivid-red: #cf2e2e;--wp--preset--color--luminous-vivid-orange: #ff6900;--wp--preset--color--luminous-vivid-amber: #fcb900;--wp--preset--color--light-green-cyan: #7bdcb5;--wp--preset--color--vivid-green-cyan: #00d084;--wp--preset--color--pale-cyan-blue: #8ed1fc;--wp--preset--color--vivid-cyan-bl",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T21:32:06.258Z",
+          "contentHash": "c1b43cef3b021a4582614ee3566daca434ac13493ee3f3ac5f983fbd3d5c30e7",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r3"
+        },
+        {
+          "id": "evidence-a064944246fe2365",
+          "url": "https://mercadoit.com/en/shop/cbs250-16t-2g-na-cisco-business-250-series-250-16t-2g-switch-l3-smart-16-x-10-100-1000-2-x-gigabit-sfp-an-rack-montierbar-authentication-method-secure-shell-ssh-radius-secure-shell-v-2-ssh2-capacity-87146",
+          "title": "Cisco Business 250 Series 250-16T-2G - Switch - L3 - MercadoIT",
+          "excerpt": "MercadoIT Cisco Business 250 Series 250-16T-2G - Switch - L3 - Smart - 16 x 10/100/1000 + 2 x Gigabit SFP - an Rack montierbar Authentication Method: Secure Shell (SSH), RADIUS, Secure Shell v.2 (SSH2) Capacity Cisco Business 250 Series 250-16T-2G - Switch - L3 - Smart - 16 x 10/100/1000 + 2 x Gigabit SFP - an Rack montierbar Authentication Method: Secure Shell (SSH), RADIUS, Secure Shell v.2 (SSH2) Capacity Ref: CBS250-16T-2G-NA Cisco Business 250 Series 250-16T-2G - Switch - L3 - Smart - 16 x 10/100/1000 + 2 x Gigabit SFP - an Rack montierbar Authentication Method: Secure Shell (SSH), RADIUS, Secure Shell v.2 (SSH2) Capacity: RPVST+ instances: 126 ¦ MSTP instances: 8 ¦ VLANs supported: 255 ¦ ACL rules: 512 ¦ Buffer capacity (MB): 1.5 MB Compliant Standards: UL 60950, CSA 22.2, FCC CFR47 ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T21:35:52.013Z",
+          "contentHash": "c17e41eca569d1471d6467bf03b1d618cb8c796188cacd7b129665a5eaab8ade",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r3"
+        },
+        {
+          "id": "evidence-51fd19636e51359b",
+          "url": "https://mercadoit.com/shop/cbs350-12xs-na-cisco-systems-cbs350-12xs-na-managed-12-port-sfp-2x10ge-shared-authentication-method-secure-shell-ssh-radius-tacacs-tacacs-secure-shell-v-2-ssh2-capacity-rpvst-instances-126-mstp-inst-85076",
+          "title": "Cisco Systems CBS350-12XS-NA Managed 12-Port SFP+, 2x10GE ...",
+          "excerpt": "MercadoIT Cisco Systems CBS350-12XS-NA Managed 12-Port SFP+, 2x10GE Shared Authentication Method: Secure Shell (SSH), RADIUS, TACACS, TACACS+, Secure Shell v.2 (SSH2) Capacity: RPVST+ instances: 126 ¦ MSTP inst Cisco Systems CBS350-12XS-NA Managed 12-Port SFP+, 2x10GE Shared Authentication Method: Secure Shell (SSH), RADIUS, TACACS, TACACS+, Secure Shell v.2 (SSH2) Capacity: RPVST+ instances: 126 ¦ MSTP inst Ref: CBS350-12XS-NA Cisco Systems CBS350-12XS-NA Managed 12-Port SFP+, 2x10GE Shared Authentication Method: Secure Shell (SSH), RADIUS, TACACS, TACACS+, Secure Shell v.2 (SSH2) Capacity: RPVST+ instances: 126 ¦ MSTP instances: 8 ¦ VLANs supported: 4094 ¦ ACL rules: 1024 ¦ Buffer capacity (MB): 3 Compliant Standards: UL 60950, CSA 22.2, FCC CFR47 Part 15 B Class A, USGv6 Depth: 25.7 cm ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T21:35:52.013Z",
+          "contentHash": "d454551a373b604328e8e4c6ddfeaa73e4e8a2dceb9f884648f5c3b268cf5361",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r3"
+        },
+        {
+          "id": "evidence-787e4ae97f77b7e8",
+          "url": "https://mercadoit.com/recompra",
+          "title": "recompra | MercadoIT",
+          "excerpt": "MercadoIT Rentología - Compramos tu equipo informático usado Tasación inmediata y gratuita. Recogemos tu equipo. Recibe la mejor oferta. Pago inmediato. Hasta un 90% en reacondicionados 0.1 Consultoría Analizamos el listado de productos y sus características técnicas junto con las necesidades logísticas y técnicas del cliente. 0.2 Valoración Realizamos una valoración justa, estimamos los costes logísticos con su tratamiento y proponemos una oferta económica. 0.3 Recogida Podemos encargarnos de la gestión y recogida del material con personal cualificado, facilitando el proceso de desmontaje, empaquetado o envío. 0.4 Recepción e inventario Recepcionamos e inventariamos las unidades recibidas en nuestro sistema informático de gestión con trazabilidad por número de serie. 0.5 Borrado de datos ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T21:35:52.013Z",
+          "contentHash": "d9a92dd6800a793df16d4debfce1573d13e8a3f849e613dfe1dd6bd4a417e94e",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r3"
+        },
+        {
+          "id": "evidence-c76970881659e124",
+          "url": "https://mercadoit.com/shop/cbs220-48t-4x-na-cisco-business-220-series-cbs220-48t-4x-switch-smart-48-x-10-100-1000-4-x-10-gigabit-sfp-uplink-rack-mountable-authentication-method-secure-shell-ssh-radius-tacacs-tacacs-secure-s-87181",
+          "title": "Cisco Business 220 Series CBS220-48T-4X - Smart | MercadoIT",
+          "excerpt": "MercadoIT Cisco Business 220 Series CBS220-48T-4X - Switch - Smart - 48 x 10/100/1000 + 4 x 10 Gigabit SFP+ (Uplink) - rack-mountable Authentication Method: Secure Shell (SSH), RADIUS, TACACS, TACACS+, Secure S Cisco Business 220 Series CBS220-48T-4X - Switch - Smart - 48 x 10/100/1000 + 4 x 10 Gigabit SFP+ (Uplink) - rack-mountable Authentication Method: Secure Shell (SSH), RADIUS, TACACS, TACACS+, Secure S Ref: CBS220-48T-4X-NA Cisco Business 220 Series CBS220-48T-4X - Switch - Smart - 48 x 10/100/1000 + 4 x 10 Gigabit SFP+ (Uplink) - rack-mountable Authentication Method: Secure Shell (SSH), RADIUS, TACACS, TACACS+, Secure Shell v.2 (SSH2) Capacity: MSTP instances: 16 ¦ VLANs supported: 256 ¦ ACL rules: 512 ¦ Buffer capacity (MB): 16 Compliant Standards: C-Tick, UL 60950, CSA 22.2, FCC C",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T21:35:52.013Z",
+          "contentHash": "5e1d211e34fb51801d803ba1e7c8df5862ad85116b63f6cfe767cbd32e2e405c",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r3"
+        }
+      ],
+      "blindAuditEvidence": [
+        {
+          "id": "evidence-home-18444c8551cd6ab4",
+          "url": "https://mercadoit.com/en/",
+          "title": "MercadoIT | Refurbished Equipment and EOS/EOL Services",
+          "excerpt": "MercadoIT | Refurbished Equipment and EOS/EOL Services :root{--wp--preset--aspect-ratio--square: 1;--wp--preset--aspect-ratio--4-3: 4/3;--wp--preset--aspect-ratio--3-4: 3/4;--wp--preset--aspect-ratio--3-2: 3/2;--wp--preset--aspect-ratio--2-3: 2/3;--wp--preset--aspect-ratio--16-9: 16/9;--wp--preset--aspect-ratio--9-16: 9/16;--wp--preset--color--black: #000000;--wp--preset--color--cyan-bluish-gray: #abb8c3;--wp--preset--color--white: #ffffff;--wp--preset--color--pale-pink: #f78da7;--wp--preset--color--vivid-red: #cf2e2e;--wp--preset--color--luminous-vivid-orange: #ff6900;--wp--preset--color--luminous-vivid-amber: #fcb900;--wp--preset--color--light-green-cyan: #7bdcb5;--wp--preset--color--vivid-green-cyan: #00d084;--wp--preset--color--pale-cyan-blue: #8ed1fc;--wp--preset--color--vivid-cyan-bl",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T21:32:06.258Z",
+          "contentHash": "c1b43cef3b021a4582614ee3566daca434ac13493ee3f3ac5f983fbd3d5c30e7",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r3"
+        },
+        {
+          "id": "evidence-a064944246fe2365",
+          "url": "https://mercadoit.com/en/shop/cbs250-16t-2g-na-cisco-business-250-series-250-16t-2g-switch-l3-smart-16-x-10-100-1000-2-x-gigabit-sfp-an-rack-montierbar-authentication-method-secure-shell-ssh-radius-secure-shell-v-2-ssh2-capacity-87146",
+          "title": "Cisco Business 250 Series 250-16T-2G - Switch - L3 - MercadoIT",
+          "excerpt": "MercadoIT Cisco Business 250 Series 250-16T-2G - Switch - L3 - Smart - 16 x 10/100/1000 + 2 x Gigabit SFP - an Rack montierbar Authentication Method: Secure Shell (SSH), RADIUS, Secure Shell v.2 (SSH2) Capacity Cisco Business 250 Series 250-16T-2G - Switch - L3 - Smart - 16 x 10/100/1000 + 2 x Gigabit SFP - an Rack montierbar Authentication Method: Secure Shell (SSH), RADIUS, Secure Shell v.2 (SSH2) Capacity Ref: CBS250-16T-2G-NA Cisco Business 250 Series 250-16T-2G - Switch - L3 - Smart - 16 x 10/100/1000 + 2 x Gigabit SFP - an Rack montierbar Authentication Method: Secure Shell (SSH), RADIUS, Secure Shell v.2 (SSH2) Capacity: RPVST+ instances: 126 ¦ MSTP instances: 8 ¦ VLANs supported: 255 ¦ ACL rules: 512 ¦ Buffer capacity (MB): 1.5 MB Compliant Standards: UL 60950, CSA 22.2, FCC CFR47 ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T21:35:52.013Z",
+          "contentHash": "c17e41eca569d1471d6467bf03b1d618cb8c796188cacd7b129665a5eaab8ade",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r3"
+        },
+        {
+          "id": "evidence-51fd19636e51359b",
+          "url": "https://mercadoit.com/shop/cbs350-12xs-na-cisco-systems-cbs350-12xs-na-managed-12-port-sfp-2x10ge-shared-authentication-method-secure-shell-ssh-radius-tacacs-tacacs-secure-shell-v-2-ssh2-capacity-rpvst-instances-126-mstp-inst-85076",
+          "title": "Cisco Systems CBS350-12XS-NA Managed 12-Port SFP+, 2x10GE ...",
+          "excerpt": "MercadoIT Cisco Systems CBS350-12XS-NA Managed 12-Port SFP+, 2x10GE Shared Authentication Method: Secure Shell (SSH), RADIUS, TACACS, TACACS+, Secure Shell v.2 (SSH2) Capacity: RPVST+ instances: 126 ¦ MSTP inst Cisco Systems CBS350-12XS-NA Managed 12-Port SFP+, 2x10GE Shared Authentication Method: Secure Shell (SSH), RADIUS, TACACS, TACACS+, Secure Shell v.2 (SSH2) Capacity: RPVST+ instances: 126 ¦ MSTP inst Ref: CBS350-12XS-NA Cisco Systems CBS350-12XS-NA Managed 12-Port SFP+, 2x10GE Shared Authentication Method: Secure Shell (SSH), RADIUS, TACACS, TACACS+, Secure Shell v.2 (SSH2) Capacity: RPVST+ instances: 126 ¦ MSTP instances: 8 ¦ VLANs supported: 4094 ¦ ACL rules: 1024 ¦ Buffer capacity (MB): 3 Compliant Standards: UL 60950, CSA 22.2, FCC CFR47 Part 15 B Class A, USGv6 Depth: 25.7 cm ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T21:35:52.013Z",
+          "contentHash": "d454551a373b604328e8e4c6ddfeaa73e4e8a2dceb9f884648f5c3b268cf5361",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r3"
+        },
+        {
+          "id": "evidence-787e4ae97f77b7e8",
+          "url": "https://mercadoit.com/recompra",
+          "title": "recompra | MercadoIT",
+          "excerpt": "MercadoIT Rentología - Compramos tu equipo informático usado Tasación inmediata y gratuita. Recogemos tu equipo. Recibe la mejor oferta. Pago inmediato. Hasta un 90% en reacondicionados 0.1 Consultoría Analizamos el listado de productos y sus características técnicas junto con las necesidades logísticas y técnicas del cliente. 0.2 Valoración Realizamos una valoración justa, estimamos los costes logísticos con su tratamiento y proponemos una oferta económica. 0.3 Recogida Podemos encargarnos de la gestión y recogida del material con personal cualificado, facilitando el proceso de desmontaje, empaquetado o envío. 0.4 Recepción e inventario Recepcionamos e inventariamos las unidades recibidas en nuestro sistema informático de gestión con trazabilidad por número de serie. 0.5 Borrado de datos ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T21:35:52.013Z",
+          "contentHash": "d9a92dd6800a793df16d4debfce1573d13e8a3f849e613dfe1dd6bd4a417e94e",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r3"
+        },
+        {
+          "id": "evidence-c76970881659e124",
+          "url": "https://mercadoit.com/shop/cbs220-48t-4x-na-cisco-business-220-series-cbs220-48t-4x-switch-smart-48-x-10-100-1000-4-x-10-gigabit-sfp-uplink-rack-mountable-authentication-method-secure-shell-ssh-radius-tacacs-tacacs-secure-s-87181",
+          "title": "Cisco Business 220 Series CBS220-48T-4X - Smart | MercadoIT",
+          "excerpt": "MercadoIT Cisco Business 220 Series CBS220-48T-4X - Switch - Smart - 48 x 10/100/1000 + 4 x 10 Gigabit SFP+ (Uplink) - rack-mountable Authentication Method: Secure Shell (SSH), RADIUS, TACACS, TACACS+, Secure S Cisco Business 220 Series CBS220-48T-4X - Switch - Smart - 48 x 10/100/1000 + 4 x 10 Gigabit SFP+ (Uplink) - rack-mountable Authentication Method: Secure Shell (SSH), RADIUS, TACACS, TACACS+, Secure S Ref: CBS220-48T-4X-NA Cisco Business 220 Series CBS220-48T-4X - Switch - Smart - 48 x 10/100/1000 + 4 x 10 Gigabit SFP+ (Uplink) - rack-mountable Authentication Method: Secure Shell (SSH), RADIUS, TACACS, TACACS+, Secure Shell v.2 (SSH2) Capacity: MSTP instances: 16 ¦ VLANs supported: 256 ¦ ACL rules: 512 ¦ Buffer capacity (MB): 16 Compliant Standards: C-Tick, UL 60950, CSA 22.2, FCC C",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T21:35:52.013Z",
+          "contentHash": "5e1d211e34fb51801d803ba1e7c8df5862ad85116b63f6cfe767cbd32e2e405c",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r3"
+        }
+      ]
+    }
+  ],
+  "missingSlots": 44,
   "completionReason": "maximum-rounds",
   "discoveryRounds": [
     {
@@ -1089,7 +2138,229 @@
     "ctonline.mx: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
     "supercompdigital.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
     "electromedellin.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
-    "nuevoportal.co: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation."
+    "nuevoportal.co: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. Infrastructure/provider failure does not qualify for Pro escalation.",
+    "v2.0.3 resumed from the same cell's cached evidence after a model-provider outage; search and evidence acquisition were not repeated.",
+    "Correction search found no usable supplemental evidence for teklotengo.com.",
+    "Correction search found no usable supplemental evidence for ptytec.com.",
+    "Correction search found no usable supplemental evidence for netscompany.co.",
+    "Correction search found no usable supplemental evidence for totalmayorista.com.",
+    "Correction search found no usable supplemental evidence for homeelementsweb.com.",
+    "Correction search found no usable supplemental evidence for mgicomputadores.com.",
+    "Correction search found no usable supplemental evidence for techcomputers.co.",
+    "Correction search found no usable supplemental evidence for vendaenlinea.co.",
+    "Correction search found no usable supplemental evidence for electroequipos.com.",
+    "Correction search found no usable supplemental evidence for sigmaelectronica.net.",
+    "Correction search found no usable supplemental evidence for titec.co.",
+    "Correction search found no usable supplemental evidence for mdvdistribuidora.com.",
+    "Correction search found no usable supplemental evidence for grupoverytel.com.",
+    "Correction search found no usable supplemental evidence for exa.ai.",
+    "Correction search found no usable supplemental evidence for uelectronica.com.",
+    "Correction search found no usable supplemental evidence for smartbusiness.pe.",
+    "Correction search found no usable supplemental evidence for ingetet.com.",
+    "Correction search found no usable supplemental evidence for syscomcolombia.com.",
+    "Correction search found no usable supplemental evidence for computiendaelectronica.com.",
+    "Correction search found no usable supplemental evidence for techniservice.co.",
+    "Correction search found no usable supplemental evidence for redeban.com.",
+    "Correction search found no usable supplemental evidence for macrotics.com.",
+    "Correction search found no usable supplemental evidence for alkosto.com.",
+    "Correction search found no usable supplemental evidence for ciudadwireless.com.",
+    "Correction search found no usable supplemental evidence for com.ec.",
+    "Correction search found no usable supplemental evidence for coppel.com.",
+    "Correction search found no usable supplemental evidence for solutekla.com.",
+    "Correction search found no usable supplemental evidence for colombiaecommerce.com.",
+    "Correction search found no usable supplemental evidence for pcredcom.com.",
+    "Correction search found no usable supplemental evidence for pcel.com.",
+    "Correction search found no usable supplemental evidence for computadoresenbogota.com.",
+    "Correction search found no usable supplemental evidence for tp-link.com.",
+    "Correction search found no usable supplemental evidence for vvaindustrial.com.",
+    "Correction search found no usable supplemental evidence for fctechstore.co.",
+    "Correction search found no usable supplemental evidence for pcmerida.com.",
+    "Correction search found no usable supplemental evidence for comredes.com.",
+    "Correction search found no usable supplemental evidence for pchconnect.com.",
+    "Correction search found no usable supplemental evidence for solutekcolombia.com.",
+    "Correction search found no usable supplemental evidence for ctonline.mx.",
+    "Correction search found no usable supplemental evidence for supercompdigital.com.",
+    "Correction search found no usable supplemental evidence for electromedellin.com.",
+    "Correction search found no usable supplemental evidence for nuevoportal.co.",
+    "tp-link.com: Model fallback used after deepseek failed (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "tp-link.com: The submitted candidate name and domain are not supported by any evidence; the actual entity is TP-Link Colombia.",
+    "tp-link.com: The submitted roles of Retailer and E-tailer are not supported; TP-Link Colombia does not operate its own retail or e-commerce.",
+    "ting.com.co: Model fallback used after deepseek failed (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "ting.com.co: The submitted domain exa.ai is not the company's own website; it is a third-party search API platform.",
+    "syscomcolombia.com: Model fallback used after deepseek failed (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "syscomcolombia.com: The submitted roles (Retailer, E-tailer) are supported but not primary.",
+    "syscomcolombia.com: The submitted family 'retail' is not the primary business model.",
+    "smt.net.co: Model fallback used after deepseek failed (Circuit open for primary provider deepseek.): requested=deepseek-v4-pro; actual=deepseek/deepseek-v4-pro; provider=openrouter-deepseek.",
+    "smt.net.co: Supplied evidence contains websites for three other companies (ATI, WiCom Networks, IFC SAS) that are unrelated to the candidate SMT Colombia.",
+    "smt.net.co: The candidate's business role cannot be determined from the available evidence.",
+    "smt.net.co: Deterministic role hints were not auto-added: VAR, Reseller.",
+    "computiendaelectronica.com: Model fallback used after deepseek failed (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "ptytec.com: Model fallback used after deepseek failed (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "uelectronica.com: Model fallback used after deepseek failed (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "smartbusiness.pe: Model fallback used after deepseek failed (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "smartbusiness.pe: No evidence of physical retail stores; only online presence.",
+    "smartbusiness.pe: No evidence of operations in Colombia.",
+    "smartbusiness.pe: No evidence of channel partnerships or B2B cooperation.",
+    "techniservice.co: Model fallback used after deepseek failed (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "techniservice.co: The Distributor role is claimed but not strongly evidenced; further investigation may be needed to confirm a wholesale channel.",
+    "redeban.com: Model fallback used after deepseek failed (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "redeban.com: Submitted roles (Retailer, E-tailer) are not supported by evidence.",
+    "redeban.com: Primary business role is Unresolved due to lack of fit with standard channel roles.",
+    "steren.com.gt: Model fallback used after deepseek failed (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "steren.com.gt: Roles without a supported atomic role finding were removed.",
+    "computadoresenbogota.com: Model fallback used after deepseek failed (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "computadoresenbogota.com: No evidence of physical retail operations; Retailer role is not supported.",
+    "technology.com.pe: Model fallback used after deepseek failed (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "technology.com.pe: Submitted domain com.pe is not the official website; corrected to technology.com.pe.",
+    "technology.com.pe: Submitted roles included Retailer, but no physical store evidence found.",
+    "technology.com.pe: Deterministic role hints were not auto-added: Distributor, SI.",
+    "netscompany.co: Model fallback used after deepseek failed (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "netscompany.co: Evidence from LinkedIn (evidence-3cc1fae3a4d38cd9) and nets-international.com (evidence-204212c5e2012348) refers to a different entity (NETS International), not Nets Company SAS.",
+    "netscompany.co: Other evidence (ensun.io, teaminternet.com, sunonusa.com) is irrelevant to this candidate.",
+    "netscompany.co: Deterministic role hints were not auto-added: Reseller, SI.",
+    "nexsysla.com: Model fallback used after deepseek failed (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "nexsysla.com: The submitted roles (Retailer, E-tailer) are incorrect; the company is a Distributor/VAD.",
+    "nexsysla.com: The submitted company name 'Nexsys Paraguay Oficial' is inaccurate; the correct entity is Nexsys de Colombia.",
+    "nexsysla.com: Deterministic role hints were not auto-added: SI.",
+    "vvaindustrial.com: Model fallback used after deepseek failed (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "totalmayorista.com: Model fallback used after deepseek failed (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "totalmayorista.com: Retailer role not supported due to lack of physical store evidence.",
+    "totalmayorista.com: MSP, ISP, and Agent roles unknown due to insufficient evidence.",
+    "fctechstore.co: Model fallback used after deepseek failed (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "fctechstore.co: No evidence of distribution or channel partner activities.",
+    "fctechstore.co: Company is a brand of Full Circle Electronics, which may have other operations.",
+    "telcolombia.com: Model fallback used after deepseek failed (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "telcolombia.com: Submitted roles (Retailer, E-tailer) are not supported by evidence; corrected to Distributor and VAD.",
+    "telcolombia.com: Deterministic role hints were not auto-added: ISP.",
+    "homeelementsweb.com: Model fallback used after deepseek failed (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "homeelementsweb.com: Deterministic role hints were not auto-added: Distributor.",
+    "mgicomputadores.com: Model fallback used after deepseek failed (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "pcsystemcolombia.com: Model fallback used after deepseek failed (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "pcsystemcolombia.com: Submitted roles (Retailer, E-tailer) not supported by evidence.",
+    "pcsystemcolombia.com: No evidence of e-commerce or physical store operations.",
+    "pcsystemcolombia.com: Roles without a supported atomic role finding were removed.",
+    "pcsystemcolombia.com: Deterministic role hints were not auto-added: Reseller.",
+    "multiredesytecnologia.com: Model fallback used after deepseek failed (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "multiredesytecnologia.com: Submitted roles did not include Distributor, which is supported by evidence.",
+    "multiredesytecnologia.com: Submitted family 'retail' is incomplete; the company also operates as a distributor.",
+    "router-switch.com: Model fallback used after deepseek failed (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "router-switch.com: Submitted roles (Retailer, E-tailer) are not supported by evidence.",
+    "techcomputers.co: Model fallback used after deepseek failed (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "techcomputers.co: Submitted roles (Retailer, E-tailer) are not supported by evidence.",
+    "techcomputers.co: Submitted domain techcomputers.co appears to be a placeholder or for sale; official website is used as evidence.",
+    "quiminet.com: Model fallback used after deepseek failed (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "quiminet.com: Submitted roles (Retailer, E-tailer) are not supported by evidence.",
+    "quiminet.com: Submitted family 'retail' is not supported; QuimiNet is a directory.",
+    "quiminet.com: Roles without a supported atomic role finding were removed.",
+    "quiminet.com: Deterministic role hints were not auto-added: Distributor.",
+    "pcmerida.com: Model fallback used after deepseek failed (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "pcmerida.com: Third-party distributor listing not confirmed by company's own evidence.",
+    "pcmerida.com: No evidence of physical store operations beyond contact information.",
+    "macrotics.com: Model fallback used after deepseek failed (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "macrotics.com: Distributor role is unknown; 'Conviértete en distribuidor' link suggests potential but no evidence of active distribution.",
+    "alkosto.com: Model fallback used after deepseek failed (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "lineacomunicaciones.com: Model fallback used after deepseek failed (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "lineacomunicaciones.com: Original submitted roles (Retailer, E-tailer) are not supported by evidence.",
+    "lineacomunicaciones.com: VAR role is uncertain due to limited evidence of product resale with added value.",
+    "lineacomunicaciones.com: Deterministic role hints were not auto-added: ISP.",
+    "sterensolutions.com: Model fallback used after deepseek failed (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "comredes.com: Model fallback used after deepseek failed (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "comredes.com: Roles without a supported atomic role finding were removed.",
+    "vva-industrial.net: Model fallback used after deepseek failed (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "vva-industrial.net: Deterministic role hints were not auto-added: VAR.",
+    "vendaenlinea.co: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. | The operation was aborted due to timeout Infrastructure/provider failure does not qualify for Pro escalation.",
+    "electroequipos.com: Model fallback used after deepseek failed (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "electroequipos.com: Submitted roles (Retailer, E-tailer) are not supported by evidence.",
+    "electroequipos.com: Original search family 'retail' is not consistent with evidence.",
+    "electroequipos.com: Roles without a supported atomic role finding were removed.",
+    "nexsa.net: Model fallback used after deepseek failed (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "nexsa.net: Original submitted domain nexsa.net is correct.",
+    "nexsa.net: Original submitted roles included Retailer which is not supported by evidence.",
+    "nexsa.net: No evidence of physical retail operations.",
+    "nexsa.net: Deterministic role hints were not auto-added: SI.",
+    "prosuministros.com: Model fallback used after deepseek failed (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "prosuministros.com: Original submitted roles (Retailer, E-tailer) are not supported by evidence.",
+    "prosuministros.com: Original search family 'retail' is not consistent with actual business model.",
+    "prosuministros.com: Deterministic role hints were not auto-added: Distributor.",
+    "shop.pchconnect.com: Model fallback used after deepseek failed (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "shop.pchconnect.com: The company appears to operate only in Mexico, not Colombia, which may affect target country presence.",
+    "shop.pchconnect.com: The submitted roles included Retailer and E-tailer, but the primary role is Distributor based on evidence.",
+    "solutekcolombia.com: Model fallback used after deepseek failed (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "solutekcolombia.com: Submitted roles (Retailer, E-tailer) not supported by evidence.",
+    "solutekcolombia.com: Submitted company name was overly descriptive; corrected to Solutek Informática.",
+    "solutekcolombia.com: Submitted family 'retail' is not accurate; company is primarily B2B distribution and services.",
+    "rtm.com.co: Model fallback used after deepseek failed (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "rtm.com.co: The official website excerpt contains no meaningful business content.",
+    "rtm.com.co: No independent public evidence directly relates to RTM's operations.",
+    "rtm.com.co: Deterministic role hints were not auto-added: VAR, Installer, Reseller.",
+    "sigmaelectronica.net: Model fallback used after deepseek failed (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "sigmaelectronica.net: Evidence for physical retail storefront is weak; retail role is inferred from online sales.",
+    "store.pmtechcol.com: Model fallback used after deepseek failed (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "store.pmtechcol.com: No evidence of distribution or value-added services beyond basic resale.",
+    "store.pmtechcol.com: Company size and scale not clearly evidenced; small-long-tail exception not applicable.",
+    "store.pmtechcol.com: Deterministic role hints were not auto-added: Distributor.",
+    "sistetronics.com: Model fallback used after deepseek failed (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "sistetronics.com: Submitted roles (Retailer, E-tailer) are not supported by evidence.",
+    "sistetronics.com: Deterministic role hints were not auto-added: Installer.",
+    "ciudadwireless.com: Model fallback used after deepseek failed (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "ciudadwireless.com: The company is not present in Colombia; it is based in Spain.",
+    "ciudadwireless.com: The evidence from ciudadwireless.net is not clearly linked to the main company and may be a separate entity.",
+    "com.ec: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. | The operation was aborted due to timeout Infrastructure/provider failure does not qualify for Pro escalation.",
+    "sonicolor.es: Model fallback used after deepseek failed (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "sonicolor.es: The submitted company name included a product category description; the resolved name is simply Sonicolor.",
+    "sonicolor.es: The submitted domain sonicolor.es is correct and matches the official website.",
+    "sonicolor.es: The target country is Colombia, but the company's physical presence is in Spain; this may affect country-presence scoring.",
+    "sonicolor.es: Deterministic role hints were not auto-added: Installer.",
+    "liamexico.com: Model fallback used after deepseek failed (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "liamexico.com: No evidence of operations in target country Colombia.",
+    "liamexico.com: Retailer and E-tailer roles not confirmed due to insufficient evidence of physical retail or functional online purchase flow.",
+    "mercadolibre.co.cr: Model fallback used after deepseek failed (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "mercadolibre.co.cr: Some supplied evidence IDs (e.g., evidence-22810d2630e584b5, evidence-9e02b14e7da52441) are unrelated to the candidate and were ignored.",
+    "mercadolibre.co.cr: Deterministic role hints were not auto-added: Distributor.",
+    "ti-innovadora.com: Model fallback used after deepseek failed (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "ti-innovadora.com: Deterministic role hints were not auto-added: Reseller.",
+    "tiendascasio.titec.co: Model fallback used after deepseek failed (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "mercadoit.com: Model fallback used after deepseek failed (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "mercadoit.com: The original submitted roles included Retailer, but evidence does not support a physical retail operation.",
+    "mercadoit.com: The submitted domain 'mercadoit.com' is correct, but the official website URL was corrected to the homepage.",
+    "mercadoit.com: Deterministic role hints were not auto-added: VAR.",
+    "mdvdistribuidora.com: Model fallback used after deepseek failed (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "tecnocompras.co: Model fallback used after deepseek failed (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "tecnocompras.co: Deterministic role hints were not auto-added: Installer.",
+    "pcel.com: Model fallback used after deepseek failed (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "ctonline.mx: Model fallback used after deepseek failed (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "ctonline.mx: The submitted roles did not include Distributor or VAD, which are the primary roles supported by evidence.",
+    "ctonline.mx: The submitted family 'retail' is not accurate; the company is primarily a distributor.",
+    "supercompdigital.com: Model fallback used after deepseek failed (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "supercompdigital.com: The official website content is about online casinos, which may be a domain parking or unrelated content; however, other evidence confirms the company's identity.",
+    "supercompdigital.com: The company's retail and e-tail roles are secondary to its distribution role.",
+    "grupoverytel.com: Model fallback used after deepseek failed (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "coppel.com: Model fallback used after deepseek failed (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "coppel.com: Candidate operates in Mexico, not in target country Colombia.",
+    "coppel.com: No evidence of networking relevance.",
+    "solutekla.com: Model fallback used after deepseek failed (Circuit open for primary provider deepseek.): requested=deepseek-v4-pro; actual=deepseek/deepseek-v4-pro; provider=openrouter-deepseek.",
+    "solutekla.com: Supplied evidence is completely unrelated to the candidate. The candidate's identity, existence, and roles cannot be verified.",
+    "solutekla.com: Proposed official website was not supported by the cited company-owned evidence; original identity retained.",
+    "electromedellin.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. | The operation was aborted due to timeout Infrastructure/provider failure does not qualify for Pro escalation.",
+    "ingetet.com: Model fallback used after deepseek failed (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "ingetet.com: Submitted roles (Retailer, E-tailer) are not supported by evidence.",
+    "ingetet.com: Original search family 'retail' is not aligned with actual business model.",
+    "colombiaecommerce.com: Model fallback used after deepseek failed (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "pcredcom.com: Model fallback used after deepseek failed (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "pcredcom.com: The company's location appears to be Monterrey, Mexico, not Colombia; target country presence is unknown.",
+    "wirelessshop.mx: Model fallback used after deepseek failed (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "wirelessshop.mx: The submitted domain 'wirelessshop.mx' matches the official website.",
+    "wirelessshop.mx: The submitted roles 'Retailer' and 'E-tailer' are supported, but the primary role is Distributor.",
+    "wirelessshop.mx: Deterministic role hints were not auto-added: ISP.",
+    "extremetechcr.com: Model fallback used after deepseek failed (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "extremetechcr.com: The candidate's domain extremetechcr.com is unrelated to Extreme Networks.",
+    "extremetechcr.com: No evidence of Colombian presence or networking relevance.",
+    "extremetechcr.com: Roles without a supported atomic role finding were removed.",
+    "extremetechcr.com: Deterministic role hints were not auto-added: Reseller.",
+    "nuevoportal.co: Model fallback used after deepseek failed (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "nuevoportal.co: The submitted domain 'nuevoportal.co/redes/router.html' is a product page, not the official website.",
+    "nuevoportal.co: The submitted role 'Retailer' is not supported due to lack of physical store evidence.",
+    "Cache recovery reclassified 66 candidates, found 15 in-role and retained 6 eligible without another search or Tavily call."
   ],
   "costEvents": [
     {
@@ -4211,6 +5482,228 @@
         "downstreamUsedItems": 0,
         "discardedReasonCounts": {
           "wrongPrimaryRoleOrGate": 67
+        }
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:resume-cache:v2.0.3",
+      "cellId": "CO-retail",
+      "stage": "within-run-cache-reuse",
+      "provider": "local-run-cache",
+      "startedAt": "2026-09-07T22:13:09.702Z",
+      "completedAt": "2026-09-07T22:13:09.702Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Reused the successful intent, local RAG, playbook, discovery, fresh evidence and supplemental evidence from the interrupted cell.",
+        "No historical cross-run candidate, evidence, score or private-memory cache was read."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:evidence-correction-cache-recovery:model:1",
+      "cellId": "CO-retail",
+      "stage": "evidence-correction-cache-recovery",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek/deepseek-v4-flash",
+      "startedAt": "2026-09-07T22:13:09.723Z",
+      "completedAt": "2026-09-07T22:32:12.251Z",
+      "latencyMs": 1953890,
+      "attempts": 92,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 240342,
+        "outputTokens": 124140,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 67,
+        "rawOutputItems": 66,
+        "validOutputItems": 57,
+        "downstreamUsedItems": 15,
+        "discardedReasonCounts": {
+          "correctedToAnotherRole": 51
+        }
+      },
+      "accountCashCostUsd": 0.056290487892000016,
+      "notes": [
+        "Aggregate stage output volume is attributed once to the primary model event."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.06840708000000002,
+      "budgetCostUsd": 0.056290487892000016,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:evidence-correction-cache-recovery:model:2",
+      "cellId": "CO-retail",
+      "stage": "evidence-correction-cache-recovery",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek/deepseek-v4-pro",
+      "startedAt": "2026-09-07T22:13:09.723Z",
+      "completedAt": "2026-09-07T22:32:12.251Z",
+      "latencyMs": 47330,
+      "attempts": 2,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 6790,
+        "outputTokens": 2335,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 0,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "stageVolumeAttributedToPrimaryModelEvent": 2
+        }
+      },
+      "accountCashCostUsd": 0.006718741605,
+      "notes": [
+        "Model cost and tokens are retained; aggregate stage output volume is already attributed to model event 1."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.0049851,
+      "budgetCostUsd": 0.006718741605,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:qualification-score-only-cache-recovery:model:1",
+      "cellId": "CO-retail",
+      "stage": "qualification-score-only-cache-recovery",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek/deepseek-v4-flash",
+      "startedAt": "2026-09-07T22:32:12.276Z",
+      "completedAt": "2026-09-07T22:36:44.184Z",
+      "latencyMs": 263346,
+      "attempts": 18,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 104016,
+        "outputTokens": 21188,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 15,
+        "rawOutputItems": 15,
+        "validOutputItems": 12,
+        "downstreamUsedItems": 12,
+        "discardedReasonCounts": {
+          "retryRequired": 3
+        }
+      },
+      "accountCashCostUsd": 0.019042105246000002,
+      "notes": [
+        "Aggregate stage output volume is attributed once to the primary model event."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.02049488,
+      "budgetCostUsd": 0.019042105246000002,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:qualification-score-only-cache-recovery:model:2",
+      "cellId": "CO-retail",
+      "stage": "qualification-score-only-cache-recovery",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek/deepseek-v4-pro",
+      "startedAt": "2026-09-07T22:32:12.276Z",
+      "completedAt": "2026-09-07T22:36:44.184Z",
+      "latencyMs": 22320,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 7585,
+        "outputTokens": 1691,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 0,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "stageVolumeAttributedToPrimaryModelEvent": 1
+        }
+      },
+      "accountCashCostUsd": 0.015529272,
+      "notes": [
+        "Model cost and tokens are retained; aggregate stage output volume is already attributed to model event 1."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.0047706450000000004,
+      "budgetCostUsd": 0.015529272,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:ranking:resume-v2.0.5",
+      "cellId": "CO-retail",
+      "stage": "role-filter-ranking",
+      "provider": "deterministic",
+      "startedAt": "2026-09-07T22:36:44.218Z",
+      "completedAt": "2026-09-07T22:36:44.218Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "volume": {
+        "inputItems": 17,
+        "rawOutputItems": 17,
+        "validOutputItems": 6,
+        "downstreamUsedItems": 6,
+        "discardedReasonCounts": {
+          "wrongPrimaryRoleOrGate": 70
         }
       },
       "runId": "2026-09-08-co-search-e2e-v2",

@@ -8,6 +8,7 @@ import { buildStandardLeadMarketPlaybook } from "@/lib/leads/workflow/playbook";
 import { LeadQualificationAgent } from "@/lib/leads/workflow/qualification-agent";
 import { retrieveLeadRagContext } from "@/lib/leads/workflow/rag-context";
 import { isCurrentLeadScoringEvidence } from "@/lib/leads/evidence-snapshot";
+import { selectPrimaryChannel } from "@/lib/leads/primary-channel";
 import { nextNoFinalRoundCount, plannedCandidatePool, targetCompletionDecision,
   type TargetCompletionReason } from "@/lib/leads/workflow/target-completion-policy";
 import type { CorrectedLeadWorkflowCandidate, LeadCandidateAssessment, LeadMarketPlaybook,
@@ -142,8 +143,10 @@ function toFinalCandidate(candidate: CorrectedLeadWorkflowCandidate, assessment:
 export async function runProductCell(cell: ExperimentCell, options: {
   onCostEvents?: (events: ExperimentCostEvent[]) => Promise<void> | void;
   resumeFrom?: ProductCellResult;
+  resumeMode?: "semantic-recovery" | "search-extension";
 } = {}): Promise<ProductCellResult> {
   const resumeFrom = options.resumeFrom;
+  const resumeMode = options.resumeMode ?? "semantic-recovery";
   const startedAt = resumeFrom?.startedAt ?? new Date().toISOString();
   const wallStarted = Date.now();
   const costEvents: ExperimentCostEvent[] = [...(resumeFrom?.costEvents ?? [])];
@@ -163,7 +166,7 @@ export async function runProductCell(cell: ExperimentCell, options: {
     playbook = resumeFrom.playbook;
     intentSummary = resumeFrom.intent;
     const cacheAt = new Date().toISOString();
-    await recordCostEvents([event({ eventId: `${cell.cellId}:resume-cache:v2.0.3`, cellId: cell.cellId,
+    await recordCostEvents([event({ eventId: `${cell.cellId}:resume-cache:${resumeMode}:v2.0.6`, cellId: cell.cellId,
       stage: "within-run-cache-reuse", provider: "local-run-cache", startedAt: cacheAt, completedAt: cacheAt,
       latencyMs: 0, attempts: 0, retries: 0, fallbackUsed: false, status: "completed", usage: {},
       volume: volume(1, 1, 1, 1), notes: [
@@ -274,10 +277,10 @@ export async function runProductCell(cell: ExperimentCell, options: {
   let totalUnique = resumeFrom?.discoveredCandidateCount ?? 0;
   let consecutiveNoFinalRounds = 0;
   let completionReason: ProductCellResult["completionReason"] = "maximum-rounds";
-  const maximumRounds = 5;
   const startingRound = resumeFrom?.discoveryRounds.length ?? 0;
+  const maximumRounds = resumeFrom && resumeMode === "search-extension" ? startingRound + 5 : 5;
 
-  if (resumeFrom && priorCorrected.length > 0) {
+  if (resumeFrom && priorCorrected.length > 0 && resumeMode === "semantic-recovery") {
     for (const candidate of priorCorrected) discoverySession.excludedDomains.add(candidate.domain);
     const noAcquisitionSearch = { search: async (input: { query: string }) => ({
       query: input.query,
@@ -332,7 +335,49 @@ export async function runProductCell(cell: ExperimentCell, options: {
     warnings.push(`Cache recovery reclassified ${recovered.candidates.length} candidates, found ${inRoleCandidates.length} in-role and retained ${selectedPairs.length} eligible without another search or Tavily call.`);
   }
 
-  for (let round = startingRound; !resumeFrom && round < maximumRounds
+  if (resumeFrom && resumeMode === "search-extension") {
+    const normalizedPrior = priorCorrected.map((candidate) => {
+      const primary = selectPrimaryChannel({ roles: candidate.correction.resolvedRoles,
+        agentPrimaryRole: candidate.correction.primaryRole });
+      const normalized = primary.primaryRole === candidate.correction.primaryRole ? candidate : {
+        ...candidate,
+        correction: { ...candidate.correction, primaryRole: primary.primaryRole,
+          primaryFamily: primary.primaryFamily, primaryChannelReason: primary.reason,
+          warnings: [...candidate.correction.warnings,
+            "Stored same-family Hybrid primary role was normalized without new evidence acquisition."] },
+      };
+      correctedByDomain.set(normalized.domain, normalized);
+      return normalized;
+    });
+    const retryAssessments = normalizedPrior.filter((candidate) =>
+      primaryRoleMatchesCategory(candidate.correction.primaryRole, cell.categoryId)
+      && assessmentsByCandidate.get(candidate.candidateId)?.scoringStatus !== "completed");
+    const scoringStarted = new Date().toISOString();
+    const retried = retryAssessments.length > 0
+      ? await qualificationAgent.evaluateWithUsage(retryAssessments, playbook,
+        plan.countryCode, plan.countryName, plan.objective)
+      : { assessments: [] as LeadCandidateAssessment[], usage: [] as WorkflowModelUsage[] };
+    const scoringCompleted = new Date().toISOString();
+    retried.assessments.forEach((assessment) => assessmentsByCandidate.set(assessment.candidateId, assessment));
+    await recordCostEvents(modelUsageEvents(cell, "qualification-score-only-role-normalization", retried.usage,
+      scoringStarted, scoringCompleted, volume(retryAssessments.length, retried.assessments.length,
+        retried.assessments.filter((assessment) => assessment.scoringStatus === "completed").length,
+        retried.assessments.filter((assessment) => assessment.scoringStatus === "completed").length,
+        { retryRequired: retried.assessments.filter((assessment) => assessment.scoringStatus !== "completed").length })));
+    for (const candidate of normalizedPrior) {
+      if (selectedDomains.has(candidate.domain)
+        || !primaryRoleMatchesCategory(candidate.correction.primaryRole, cell.categoryId)) continue;
+      const assessment = assessmentsByCandidate.get(candidate.candidateId);
+      if (!assessment || assessment.scoringStatus !== "completed" || !assessment.eligible
+        || assessment.eligibilityStatus !== "eligible"
+        || Object.values(assessment.gates).some((state) => state === "not-supported")) continue;
+      selectedPairs.push({ candidate, assessment });
+      selectedDomains.add(candidate.domain);
+    }
+    warnings.push(`Search extension normalized ${normalizedPrior.filter((candidate) => candidate.correction.warnings.includes("Stored same-family Hybrid primary role was normalized without new evidence acquisition.")).length} same-family Hybrid roles, retried ${retryAssessments.length} cached assessments, retained ${selectedPairs.length} prior eligible candidates and excluded ${priorCorrected.length} cached domains from reacquisition.`);
+  }
+
+  for (let round = startingRound; (!resumeFrom || resumeMode === "search-extension") && round < maximumRounds
     && selectedPairs.length < plan.targetCount; round += 1) {
     const plannedPool = plannedCandidatePool({ targetCount: plan.targetCount,
       acceptedCount: selectedPairs.length, discoveredUniqueCount: totalUnique, round });
@@ -468,7 +513,7 @@ export async function runProductCell(cell: ExperimentCell, options: {
     toFinalCandidate(candidate, assessment, index + 1));
   const rankingStarted = new Date().toISOString();
   const rankingAt = new Date().toISOString();
-  await recordCostEvents([event({ eventId: resumeFrom ? `${cell.cellId}:ranking:resume-v2.0.5` : `${cell.cellId}:ranking`, cellId: cell.cellId,
+  await recordCostEvents([event({ eventId: resumeFrom ? `${cell.cellId}:ranking:${resumeMode}:v2.0.6` : `${cell.cellId}:ranking`, cellId: cell.cellId,
     stage: "role-filter-ranking", provider: "deterministic", startedAt: rankingStarted,
     completedAt: rankingAt, latencyMs: Math.max(0, Date.parse(rankingAt) - Date.parse(rankingStarted)),
     attempts: 0, retries: 0, fallbackUsed: false, status: "completed", usage: {},

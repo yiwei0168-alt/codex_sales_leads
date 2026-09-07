@@ -10,8 +10,13 @@ import type { LeadDiscoveryOccurrence, LeadEvidenceItem, LeadWorkflowCandidate }
 const blockedIdentityHosts = new Set([
   "google.com", "maps.google.com", "bing.com", "linkedin.com", "facebook.com", "instagram.com", "youtube.com",
   "wikipedia.org", "amazon.com", "alibaba.com",
+  "exa.ai",
 ]);
-const commonSecondLevelSuffixes = new Set(["co.uk", "org.uk", "com.au", "com.br", "com.mx", "co.jp", "co.kr"]);
+const commonSecondLevelSuffixes = new Set([
+  "co.uk", "org.uk", "com.au", "com.br", "com.mx", "com.co", "net.co", "org.co",
+  "com.pe", "net.pe", "org.pe", "com.ec", "com.gt", "com.sv", "co.cr", "com.ar", "com.cl",
+  "co.jp", "co.kr",
+]);
 
 function hash(value: string): string { return createHash("sha256").update(value).digest("hex").slice(0, 16); }
 

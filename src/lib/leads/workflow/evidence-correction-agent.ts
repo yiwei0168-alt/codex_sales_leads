@@ -26,7 +26,7 @@ import {
   type WorkflowModelUsage,
 } from "./types";
 
-export const LEAD_EVIDENCE_CORRECTION_PROMPT_VERSION = "lead-evidence-correction-v7-role-calibrated";
+export const LEAD_EVIDENCE_CORRECTION_PROMPT_VERSION = "lead-evidence-correction-v8-concrete-primary-role";
 
 interface CorrectionRequest {
   instructions: string[];
@@ -289,6 +289,7 @@ export class LeadEvidenceCorrectionAgent {
         "Return evidence IDs supporting identity, target-country presence, active-networking involvement, roles and cooperation path. Missing public proof is an unknown, not a negative claim.",
         "Return atomic findings for identity, country presence, active networking, every asserted role, relevant product families, brand relationships, commercial actions and cooperation path. Each finding must have its own status and evidence IDs.",
         "Use not-supported only when supplied evidence affirmatively contradicts a claim. Use unknown when evidence is absent or acquisition failed, and conflicting when supplied sources disagree.",
+        "Choose one concrete primary role whenever the supported roles belong to one business-role family. Retailer plus E-tailer is not Hybrid. Use Hybrid only when roles from two or more families are materially co-primary.",
         "Request a higher-capability model only when it can resolve the issue and is expected to change the eventual total score by at least 8 points or change a critical identity, eligibility, primary-role, existence, country-presence or networking-relevance state. Confidence, original search-lane mismatch and generic warnings alone are not escalation reasons.",
         "Do not score lead value. Do not decide eligibility or cooperation path. Your duties are evidence, entity correction, supported-role classification and primary-business-role analysis.",
       ],

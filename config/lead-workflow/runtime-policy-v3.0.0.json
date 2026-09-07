@@ -1,6 +1,6 @@
 {
   "workflowKey": "cudy-sales-lead-end-to-end-runtime",
-  "version": "3.4.0",
+  "version": "3.5.0",
   "status": "active",
   "baseDefinition": "config/lead-workflow/end-to-end-v2.0.0.json",
   "scoringPolicy": "config/lead-scoring/policy-v2.0.0.json",
@@ -19,7 +19,8 @@
     "A requested company count is fulfilled after identity, market and primary-role validation; low scores alone do not trigger replacement search.",
     "Within-run search, evidence and role-correction caches remain mandatory even when historical cache reads are disabled for a cold-start evaluation.",
     "Routine structured-output requests disable optional model reasoning when reasoning is not required; malformed output receives one same-tier repair, while provider, timeout and balance failures never trigger a higher-capability model.",
-    "Evidence-correction batches are packet- and token-aware; request-scoped timeouts do not open a provider-wide circuit, and an explicit cache-recovery run is closed to new search or evidence acquisition."
+    "Evidence-correction batches are packet- and token-aware; request-scoped timeouts do not open a provider-wide circuit, and an explicit cache-recovery run is closed to new search or evidence acquisition.",
+    "Localized discovery focuses are country-specific rather than language-specific; provider-owned profile URLs never become company identities, and same-family multi-role companies receive one concrete primary role instead of Hybrid."
   ],
   "cooperationPaths": {
     "maximumPerCompany": 2,

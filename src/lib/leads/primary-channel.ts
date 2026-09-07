@@ -14,10 +14,10 @@ export interface PrimaryChannelSelection {
 }
 
 export const PRIMARY_CHANNEL_POLICY = {
-  version: "primary-business-role-v2",
+  version: "primary-business-role-v3",
   allRolesRetained: "Retain every evidence-supported role; the evidence-correction agent independently determines the main business role.",
   noUpwardDefault: "The original search lane and any upward channel hierarchy are prohibited as primary-role inputs.",
-  hybridAllowed: "Use Hybrid when multiple business-role families are materially co-primary and Unresolved when evidence is insufficient or conflicting.",
+  hybridAllowed: "Use Hybrid only when multiple business-role families are materially co-primary; multiple roles inside one family still require a concrete primary role. Use Unresolved when evidence is insufficient or conflicting.",
 } as const;
 
 const familyOrder: ChannelRoleFamily[] = ["distribution", "resale", "retail", "services", "isp", "agent", "brand"];
@@ -39,6 +39,17 @@ export function selectPrimaryChannel(options: {
   const roles = [...new Set(options.roles)];
   const supportedFamilies = familiesForRoles(roles);
   const primaryRole = options.agentPrimaryRole;
+  if (primaryRole === "Hybrid" && supportedFamilies.length === 1 && roles.length > 0) {
+    const normalizedRole = roles[0];
+    return {
+      primaryRole: normalizedRole,
+      primaryFamily: supportedFamilies[0],
+      primaryChannel: displayChannel(supportedFamilies[0]),
+      supportedFamilies,
+      usedSmallLongTailException: false,
+      reason: `Hybrid was invalid because every supported role belongs to ${supportedFamilies[0]}; ${normalizedRole} was selected from the model-ordered supported roles.`,
+    };
+  }
   if (primaryRole === "Hybrid" || primaryRole === "Unresolved") {
     return {
       primaryRole,

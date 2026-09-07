@@ -118,18 +118,24 @@ const spanishQueryTemplates: Partial<Record<LeadSearchCategory, string[]>> = {
     "proveedor de soluciones WLAN switches para pymes instalación soporte"],
 };
 
-const roundFocusByLanguage: Record<string, Partial<Record<LeadSearchCategory, string[]>>> = {
-  en: {
+const roundFocusByCountry: Record<string, Partial<Record<LeadSearchCategory, string[]>>> = {
+  GB: {
     retail: ["London", "Manchester Birmingham", "Leeds Glasgow", "Bristol Liverpool", "Edinburgh Cardiff"],
     resale: ["London", "Manchester Birmingham", "Leeds Glasgow", "Bristol Liverpool"],
     "si-msp": ["London", "Manchester Birmingham", "Leeds Glasgow", "Bristol Edinburgh"],
     distribution: ["United Kingdom", "England Scotland Wales", "London Manchester"],
   },
-  es: {
+  MX: {
     retail: ["Ciudad de México", "Guadalajara", "Monterrey", "Puebla Querétaro", "Tijuana León Mérida"],
     resale: ["Ciudad de México", "Guadalajara Monterrey", "Querétaro Puebla", "Tijuana León"],
     "si-msp": ["Ciudad de México", "Monterrey Guadalajara", "Querétaro Puebla", "Tijuana León"],
     distribution: ["México", "Ciudad de México", "Monterrey Guadalajara"],
+  },
+  CO: {
+    retail: ["Bogotá", "Medellín", "Cali", "Barranquilla", "Bucaramanga Cartagena"],
+    resale: ["Bogotá", "Medellín Cali", "Barranquilla Bucaramanga", "Cartagena Pereira"],
+    "si-msp": ["Bogotá", "Medellín Cali", "Barranquilla Bucaramanga", "Cartagena Pereira"],
+    distribution: ["Colombia", "Bogotá Medellín", "Cali Barranquilla"],
   },
 };
 
@@ -156,7 +162,7 @@ function queryForStep(plan: ReturnType<typeof normalizeLeadSearchPlan>, playbook
   const specialization = step.trigger.includes("semantic") || step.trigger === "technical-gap"
     ? templates[1] : templates[0];
   const language = plan.queryLanguage.toLowerCase().split(/[-_]/)[0];
-  const focusOptions = roundFocusByLanguage[language]?.[step.category] ?? [];
+  const focusOptions = roundFocusByCountry[plan.countryCode.toUpperCase()]?.[step.category] ?? [];
   const roundFocus = focusOptions.length > 0 ? focusOptions[queryRound % focusOptions.length] : "";
   if (step.provider === "google-places") {
     return `${templates[0]} ${roundFocus} ${plan.countryName}`.replace(/\s+/g, " ").trim().slice(0, 400);

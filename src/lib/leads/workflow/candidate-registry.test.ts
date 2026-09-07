@@ -20,6 +20,9 @@ describe("real-time candidate registry", () => {
     expect(normalizedCompanyDomain(" https://www.example.com/products` ")).toBe("example.com");
     expect(normalizedCompanyDomain("https://co.uk/path")).toBeNull();
     expect(normalizedCompanyDomain("https://com.mx/path")).toBeNull();
+    expect(normalizedCompanyDomain("https://shop.technology.com.pe/products")).toBe("technology.com.pe");
+    expect(normalizedCompanyDomain("https://store.example.com.co/products")).toBe("example.com.co");
+    expect(normalizedCompanyDomain("https://exa.ai/library/organization/example")).toBeNull();
     expect(normalizedCompanyDomain("https://bad_domain.co.uk/path")).toBeNull();
     expect(normalizedCompanyDomain("https://maps.google.com/example")).toBeNull();
   });
@@ -42,5 +45,20 @@ describe("real-time candidate registry", () => {
     { ...route, provider: "google-places", engine: "google-places", mechanism: "local-text-search" }, ["Installer"]);
     expect(registry.unresolvedPlaceCount).toBe(1);
     expect(registry.toWorkflowCandidates(10)).toEqual([]);
+  });
+
+  it("does not merge different Exa library profiles into an existing company identity", () => {
+    const registry = new RealtimeCandidateRegistry("run-1", "CO");
+    registry.add(item({ title: "Teklotengo", url: "https://teklotengo.com" }), query, route, ["E-tailer"]);
+    const exaRoute = { ...route, provider: "exa" as const, engine: "exa" as const };
+    registry.add(item({ providerId: "exa", title: "Teklotengo",
+      url: "https://exa.ai/library/organization/teklotengo", externalId: "exa-1" }),
+    { ...query, engine: "exa" }, exaRoute, ["E-tailer"]);
+    registry.add(item({ providerId: "exa", title: "Another Company",
+      url: "https://exa.ai/library/organization/another", externalId: "exa-2" }),
+    { ...query, engine: "exa" }, exaRoute, ["E-tailer"]);
+    const [candidate] = registry.toWorkflowCandidates(10);
+    expect(candidate.domain).toBe("teklotengo.com");
+    expect(candidate.evidence.some((evidence) => evidence.title === "Another Company")).toBe(false);
   });
 });

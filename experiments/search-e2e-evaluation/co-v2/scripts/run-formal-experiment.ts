@@ -27,7 +27,7 @@ import rateCardJson from "../config/official-rate-card.v1.json";
 nextEnv.loadEnvConfig(process.cwd());
 
 const experimentRoot = path.resolve("experiments/search-e2e-evaluation/co-v2");
-const frozenTag = "search-e2e-co-v2.0.5-preregistered";
+const frozenTag = "search-e2e-co-v2.0.6-preregistered";
 const totalCells = EXPERIMENT_CONFIG.sample.cells;
 const slotsPerCell = EXPERIMENT_CONFIG.sample.slotsPerArmPerCell;
 const rateCard = rateCardJson as ExperimentRateCard;
@@ -179,17 +179,17 @@ async function freezeManifest(): Promise<void> {
     const absolute = path.resolve(experimentRoot, relative);
     return { path: path.relative(process.cwd(), absolute).replace(/\\/g, "/"), sha256: sha256(await readFile(absolute)) };
   }));
-  await writeJsonAtomic(path.join(experimentRoot, "config/frozen-manifest.v2.0.5.json"), {
+  await writeJsonAtomic(path.join(experimentRoot, "config/frozen-manifest.v2.0.6.json"), {
     schemaVersion: 1, experimentId: EXPERIMENT_CONFIG.experimentId, runId: EXPERIMENT_CONFIG.runId,
     createdAt: new Date().toISOString(), requiredGitTag: frozenTag, files,
   });
   console.log(JSON.stringify({ status: "manifest-frozen", fileCount: files.length,
-    manifest: "experiments/search-e2e-evaluation/co-v2/config/frozen-manifest.v2.0.5.json" }, null, 2));
+    manifest: "experiments/search-e2e-evaluation/co-v2/config/frozen-manifest.v2.0.6.json" }, null, 2));
 }
 
 async function verifyFrozenManifest(requireTag = true): Promise<void> {
   validateExperimentConfig();
-  const manifest = JSON.parse(await readFile(path.join(experimentRoot, "config/frozen-manifest.v2.0.5.json"), "utf8")) as {
+  const manifest = JSON.parse(await readFile(path.join(experimentRoot, "config/frozen-manifest.v2.0.6.json"), "utf8")) as {
     requiredGitTag: string; files: Array<{ path: string; sha256: string }> };
   const mismatches: string[] = [];
   for (const item of manifest.files) {
@@ -286,8 +286,8 @@ async function runRecoveryPreflight(): Promise<void> {
   if (!["preflight-passed", "running"].includes(state.status)) {
     throw new Error(`Provider recovery check cannot run from status ${state.status}`);
   }
-  await runStructuredProviderCheck(state, "structured-model-runtime-v2.0.5");
-  const decision = await persistBudgetReview(state, "provider-recovery-v2.0.5");
+  await runStructuredProviderCheck(state, "structured-model-runtime-v2.0.6");
+  const decision = await persistBudgetReview(state, "provider-recovery-v2.0.6");
   console.log(JSON.stringify({ status: "provider-recovery-preflight-passed",
     runId: state.runId, cost: summarizeCostEvents(state.costEvents), budgetDecision: decision }, null, 2));
 }
@@ -297,20 +297,22 @@ async function runCell(cellId: string): Promise<void> {
   const cell = cellById(cellId);
   const state = await loadRunState();
   const resumeProduct = process.argv.includes("--resume-product");
+  const repairSearch = process.argv.includes("--repair-search");
+  const resumeRequested = resumeProduct || repairSearch;
   if (!state.blindJudgeModel || !["preflight-passed", "running"].includes(state.status)) {
     throw new Error("Formal cells require a passed preflight and a non-paused budget state");
   }
-  if (state.completedCellIds.includes(cellId) && !resumeProduct) {
+  if (state.completedCellIds.includes(cellId) && !resumeRequested) {
     console.log(JSON.stringify({ status: "cell-already-complete", cellId }, null, 2));
     return;
   }
   const productFilename = path.join(rawRunRoot(), `cells/${cellId}/product-e2e.json`);
-  const resumeFrom = resumeProduct ? await readJsonIfExists<ProductCellResult>(productFilename) : null;
-  if (resumeProduct && !resumeFrom) throw new Error(`Cannot resume ${cellId}: prior Product artifact is missing`);
-  if (resumeFrom && resumeFrom.finalCandidates.length > 0) {
+  const resumeFrom = resumeRequested ? await readJsonIfExists<ProductCellResult>(productFilename) : null;
+  if (resumeRequested && !resumeFrom) throw new Error(`Cannot resume ${cellId}: prior Product artifact is missing`);
+  if (resumeProduct && resumeFrom && resumeFrom.finalCandidates.length > 0) {
     throw new Error(`Cannot resume ${cellId}: recovery is limited to a zero-output provider-outage artifact`);
   }
-  if (resumeProduct) {
+  if (resumeRequested) {
     state.completedCellIds = state.completedCellIds.filter((id) => id !== cellId);
     state.completedArmKeys = state.completedArmKeys.filter((key) => key !== `${cellId}:product-e2e`);
   }
@@ -335,7 +337,8 @@ async function runCell(cellId: string): Promise<void> {
       return arm === "gemini-native" ? readJson<ControlCellResult>(filename) : readJson<ProductCellResult>(filename);
     }
     const result = arm === "gemini-native" ? await runControlCell(cell, { onCostEvents })
-      : await runProductCell(cell, { onCostEvents, resumeFrom: resumeFrom ?? undefined });
+      : await runProductCell(cell, { onCostEvents, resumeFrom: resumeFrom ?? undefined,
+        resumeMode: repairSearch ? "search-extension" : "semantic-recovery" });
     await writeJsonAtomic(filename, result);
     await writeJsonAtomic(path.join(artifactRunRoot(), `cells/${cellId}/${arm}.json`),
       arm === "gemini-native" ? publicControl(result as ControlCellResult) : publicProduct(result as ProductCellResult));

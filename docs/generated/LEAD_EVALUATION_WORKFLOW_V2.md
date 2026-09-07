@@ -1,11 +1,11 @@
-# Cudy 销售线索端到端工作流 v3.4.0
+# Cudy 销售线索端到端工作流 v3.5.0
 
 > 本文档由 `scripts/generate-lead-workflow-doc.mjs` 自动生成。请修改版本化配置或实现代码，不要直接编辑生成文件。
 
-- 运行时策略版本：3.4.0（基础流程定义 2.7.0）
+- 运行时策略版本：3.5.0（基础流程定义 2.8.0）
 - 评分策略版本：2.0.0
 - 成本质量策略版本：3.0.2
-- 配置指纹：`06dce8aa0f1ac9bd34300f36e4b24a5d36c699c7ac2663dfce787d9784d88021`
+- 配置指纹：`8a99ceeda8ed05adb18414c463435ee1c9b437dea9e319fbe369019de2df28d9`
 - 范围：From the user's natural-language market-development request and workspace context to ranked companies, editable cooperation paths, development strategy, outreach email, and private-memory learning from user edits.
 
 ## 一、从用户输入到最终输出的总流程
@@ -43,6 +43,7 @@ flowchart TD
 - User edits to paths and outreach are retained as private learning signals, not written into the shared knowledge base.
 - OpenAI and Anthropic generation is routed through the pinned OpenRouter HTTPS gateway. DeepSeek keeps its dedicated provider as primary, while public-only packets may fail over to the same DeepSeek tier through OpenRouter; embeddings never fail over.
 - Every potentially overlapping task must create and consume a versioned cache at first execution; downstream stages receive exact evidence IDs, role corrections and explicit missing-evidence gaps.
+- Search localization is keyed by market country, provider-owned result pages are provenance rather than candidate domains, and a primary role must be concrete unless two or more role families are genuinely co-primary.
 
 ## 三、模型调用路由
 
@@ -741,9 +742,9 @@ flowchart TD
 | 文件 | SHA-256 |
 |---|---|
 | `config/lead-scoring/policy-v2.0.0.json` | `0039203aafb29ec73e4beb10f72dc5ec114785fb4c5f311c7b425de0d451fc1b` |
-| `config/lead-search/hybrid-search-v1.0.0.json` | `a1104da9bfc2cad88f17eb30556b3d0797bd065b3650f10d7d856b2ffa287485` |
+| `config/lead-search/hybrid-search-v1.0.0.json` | `cd365f7a2cf3ec7b1ac0372c9b99ab6f56d8cffbc2317571be8aab252a47c875` |
 | `config/lead-workflow/cost-quality-policy-v3.0.0.json` | `53bb462d223714632af323d1c1db7cb4687302edadee0e716ac62e856d6432c1` |
-| `config/lead-workflow/runtime-policy-v3.0.0.json` | `232a5ae6374233617915f4b3879cf99b45337a5bf45866068fcbc894cc8f7dbe` |
+| `config/lead-workflow/runtime-policy-v3.0.0.json` | `12b84145de18097a3fea3c19eb354452baa42ecedfc3813c6087175b7070c2a8` |
 | `src/app/api/assistant/messages/route.ts` | `04bec90cc3d3f336195e8ab97a5ad4b1ec1e05b95606064225e098e94ed7a5cd` |
 | `src/lib/assistant/types.ts` | `4094485a0d6751ef7eb296eb385d1ff8ac1c4357509c97e4343a728413329862` |
 | `src/lib/assistant/intent.ts` | `cb77a2854f0058d92bf758ce4610d298bc94dde0157ade4f0bd3d05343fad168` |
@@ -757,12 +758,12 @@ flowchart TD
 | `src/lib/leads/workflow/playbook.ts` | `a83d6fe0edf30c5e0504fbb7e3bdb059b5cdb8a9d8df45dc1756372b7df3e095` |
 | `src/lib/leads/workflow/playbook-cache.ts` | `945d3fc727312208650ee7b4e55e33860e7c54f7e3daa939f768952409a1803f` |
 | `src/lib/leads/workflow/hybrid-search-policy.ts` | `4c3ec5ff313a5551c68de8fd023deca8cf711d7a80971f52f47127d0f9a8bb87` |
-| `src/lib/leads/workflow/candidate-registry.ts` | `1bff2ba8049fc6ad5117f4047b0505aa08c11ac7093bd353efad01d5f91e30e8` |
+| `src/lib/leads/workflow/candidate-registry.ts` | `d70e3c9ea440701d539299c4e108348db94beab6893dd950481283b619d2ec2e` |
 | `src/lib/leads/workflow/discovery-gate.ts` | `ffab08a3bedfb3eb29ef529658e5526272bbf8612f1bf690135050ac835e998d` |
-| `src/lib/leads/workflow/hybrid-discovery-executor.ts` | `ea088033a73044060c0541f41dc258f538d0c5fdf9eaa501fb379cce0faf2b6a` |
+| `src/lib/leads/workflow/hybrid-discovery-executor.ts` | `599b02bc109c1892e8daf7be05563f709f0fd79068e6925084dd02d6f95b0a69` |
 | `src/lib/leads/workflow/discovery.ts` | `7ebcf5e44a8b82c4308c630936f50aa32c9757c828d4d3b1402716fc86fa358d` |
 | `src/lib/leads/global-search.ts` | `963d07622725531e72d7f1807d4228a23d59d6a320b5d1e508b602bcc05c65db` |
-| `src/lib/leads/workflow/evidence-correction-agent.ts` | `5fbb866d45974169951e85c895f05d41da8414b7e01fa0236d609b35a36c9d13` |
+| `src/lib/leads/workflow/evidence-correction-agent.ts` | `35aa3dadf34f918a707974f4345b0e28d0ed43e19915c4aa8d0a1905da07dfd3` |
 | `src/lib/leads/workflow/evidence-packet.ts` | `8192c83a87eada51e9be0e5f4af3888d2c520d9a977552e5a8b01f37aa037604` |
 | `src/lib/leads/workflow/qualification-agent.ts` | `2829efb04ad326d76604e82baadf0209713f44cc2e121ed76f284a515831efaf` |
 | `src/lib/leads/workflow/assessment-cache.ts` | `d7fd5fe0b350aa56eb9fcfb283c2c81a2de9564f88a3ef677631b82d81474fb3` |

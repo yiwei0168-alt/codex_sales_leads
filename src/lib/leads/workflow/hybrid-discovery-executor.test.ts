@@ -72,6 +72,15 @@ describe("hybrid discovery executor", () => {
     expect(places?.query).not.toContain("excluir fabricante");
   });
 
+  it("uses Colombia city focuses for a Spanish Colombia task without leaking Mexico cities", async () => {
+    const output = await executeHybridDiscovery("run-co-city-query", { ...plan, countryCode: "CO",
+      countryName: "Colombia", queryLanguage: "es", roles: ["Retailer", "E-tailer"], targetCount: 50 },
+    playbook, { queryRound: 1, gate: passGate,
+      providerFactory: (step) => new FakeProvider(step.provider, null) });
+    expect(output.calls.some((call) => call.query.includes("Medellín"))).toBe(true);
+    expect(output.calls.every((call) => !/Ciudad de México|Guadalajara|Monterrey/.test(call.query))).toBe(true);
+  });
+
   it("does not count provider failures as no-value batches and continues with a complementary fallback", async () => {
     const output = await executeHybridDiscovery("run-fallback", { ...plan, targetCount: 20 }, playbook, {
       gate: passGate, concurrency: 2,

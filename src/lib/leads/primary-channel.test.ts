@@ -29,6 +29,13 @@ describe("selectPrimaryChannel", () => {
     expect(result.primaryChannel).toBeNull();
   });
 
+  it("normalizes same-family retail roles to a concrete primary instead of Hybrid", () => {
+    const result = selectPrimaryChannel({ roles: ["Retailer", "E-tailer"], agentPrimaryRole: "Hybrid" });
+    expect(result.primaryRole).toBe("Retailer");
+    expect(result.primaryFamily).toBe("retail");
+    expect(result.primaryChannel).toBe("b2b-resale");
+  });
+
   it("returns no display route without an evidence-supported role", () => {
     expect(selectPrimaryChannel({ roles: [], agentPrimaryRole: "Unresolved" }).primaryChannel).toBeNull();
   });
