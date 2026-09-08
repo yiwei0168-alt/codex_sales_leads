@@ -1,0 +1,224 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-08-co-search-e2e-v2",
+  "cellId": "CO-si-msp",
+  "arm": "gemini-native",
+  "startedAt": "2026-09-08T20:45:58.111Z",
+  "completedAt": "2026-09-08T20:46:14.229Z",
+  "wallClockMs": 16118,
+  "requestedModel": "gemini-3.6-flash",
+  "actualModel": "gemini-3.6-flash",
+  "searchQueries": 8,
+  "finalCandidates": [
+    {
+      "rank": 1,
+      "companyName": "Site Tecnología S.A.S.",
+      "officialWebsite": "https://siteweb.com.co",
+      "marketSignal": "Headquartered and actively operating in Colombia delivering local Managed IT and infrastructure services.",
+      "roleSignal": "Operates as a Managed Service Provider (MSP) and Systems Integrator managing networks, servers, and IT operations under SLAs.",
+      "relevanceSignal": "Designs, deploys, and manages corporate Wi-Fi and wired networks for SMBs, fitting Cudy’s access point and switch portfolio.",
+      "evidenceUrls": [
+        "https://siteweb.com.co"
+      ]
+    },
+    {
+      "rank": 2,
+      "companyName": "MakroTIC S.A.S.",
+      "officialWebsite": "https://makrotic.com",
+      "marketSignal": "Colombian company headquartered in Bogotá providing Managed IT Services nationally.",
+      "roleSignal": "Primary activity as MSP and network systems integrator, handling structured cabling and network infrastructure for corporate clients.",
+      "relevanceSignal": "Integrates network edge infrastructure, Wi-Fi solutions, and routing hardware for B2B deployments.",
+      "evidenceUrls": [
+        "https://makrotic.com"
+      ]
+    },
+    {
+      "rank": 3,
+      "companyName": "HIT Communications Colombia",
+      "officialWebsite": "https://www.hitcommunications.com",
+      "marketSignal": "Active business operation across Colombia with regional technical support and connectivity services.",
+      "roleSignal": "Telecommunications systems integrator and MSP offering dedicated connectivity, SD-WAN, and managed IT services.",
+      "relevanceSignal": "Deploys enterprise network edge solutions, routers, and switches for multi-branch B2B customers.",
+      "evidenceUrls": [
+        "https://www.hitcommunications.com"
+      ]
+    },
+    {
+      "rank": 4,
+      "companyName": "Portlan S.A.S.",
+      "officialWebsite": "https://portlan.co",
+      "marketSignal": "Based in Medellín, Antioquia, offering nation-wide IT and networking services in Colombia.",
+      "roleSignal": "MSP and networking integrator providing 24/7 network monitoring, infrastructure management, and technical support.",
+      "relevanceSignal": "Implements B2B networking equipment including Wi-Fi routers, switches, and access points for SMBs.",
+      "evidenceUrls": [
+        "https://portlan.co"
+      ]
+    },
+    {
+      "rank": 5,
+      "companyName": "ITB Comunicaciones S.A.S.",
+      "officialWebsite": "https://www.itbcomunicaciones.com",
+      "marketSignal": "Operating out of Cúcuta with service reach across Colombia.",
+      "roleSignal": "System integrator specializing in structured cabling, VoIP, IP security, and network infrastructure setup.",
+      "relevanceSignal": "Installs LAN switches, IP gateways, and wireless networking hardware for commercial clients.",
+      "evidenceUrls": [
+        "https://www.itbcomunicaciones.com"
+      ]
+    },
+    {
+      "rank": 6,
+      "companyName": "Serotech S.A.S.",
+      "officialWebsite": "https://serotech.com.co",
+      "marketSignal": "Active IT and communications provider based in Bogotá, Colombia.",
+      "roleSignal": "System integrator designing, deploying, and supporting B2B network infrastructure, routers, and switches.",
+      "relevanceSignal": "Directly matches Cudy's core product deployment scenario of SMB Wi-Fi, Ethernet switches, and router installations.",
+      "evidenceUrls": [
+        "https://serotech.com.co"
+      ]
+    },
+    {
+      "rank": 7,
+      "companyName": "Modobit S.A.S.",
+      "officialWebsite": "https://modobit.co",
+      "marketSignal": "Headquartered in Bogotá D.C., Colombia, providing national IT services.",
+      "roleSignal": "MSP and IT system integrator delivering continuous network telemetry, managed connectivity, and infrastructure support.",
+      "relevanceSignal": "Deploys networking hardware, PoE switches, and wireless access systems for business clients.",
+      "evidenceUrls": [
+        "https://modobit.co"
+      ]
+    },
+    {
+      "rank": 8,
+      "companyName": "Kuars S.A.S.",
+      "officialWebsite": "https://kuars.com.co",
+      "marketSignal": "Colombian company providing managed tech support and network installations.",
+      "roleSignal": "System integrator and managed IT provider offering structured cabling, network deployment, and cybersecurity.",
+      "relevanceSignal": "Deploys cost-effective network devices, switches, and Wi-Fi access points for small and medium businesses.",
+      "evidenceUrls": [
+        "https://kuars.com.co"
+      ]
+    },
+    {
+      "rank": 9,
+      "companyName": "Connect Telecomunicaciones S.A.S.",
+      "officialWebsite": "https://connecttelecom.co",
+      "marketSignal": "Operating across Colombia for corporate and commercial telecommunications projects.",
+      "roleSignal": "System integrator specializing in wired and wireless networks, point-to-point wireless links, and enterprise connectivity.",
+      "relevanceSignal": "Deploys outdoor wireless, mesh networks, 4G/5G routers, and switches for SMB and ISP/FWA scenarios.",
+      "evidenceUrls": [
+        "https://connecttelecom.co"
+      ]
+    },
+    {
+      "rank": 10,
+      "companyName": "Help Soluciones S.A.S.",
+      "officialWebsite": "https://www.helpsoluciones.com.co",
+      "marketSignal": "Colombian IT solutions provider operating in main urban centers.",
+      "roleSignal": "Systems integrator and MSP focusing on network maintenance, structured cabling, and IT infrastructure administration.",
+      "relevanceSignal": "Installs and manages LAN switches, routers, and Wi-Fi networks for commercial operations.",
+      "evidenceUrls": [
+        "https://www.helpsoluciones.com.co"
+      ]
+    },
+    {
+      "rank": 11,
+      "companyName": "Q&C Ingeniería S.A.S.",
+      "officialWebsite": "https://www.qcingenieria.com.co",
+      "marketSignal": "Colombian engineering firm operating in B2B telecommunications nationwide.",
+      "roleSignal": "System integrator for datacenter networks, enterprise core routing, and structured cabling projects.",
+      "relevanceSignal": "Integrates active networking components, switches, routers, and fiber media converters.",
+      "evidenceUrls": [
+        "https://www.qcingenieria.com.co"
+      ]
+    },
+    {
+      "rank": 12,
+      "companyName": "BS Comunicaciones Integrales S.A.S.",
+      "officialWebsite": "https://bscomunicaciones.co",
+      "marketSignal": "Legally constituted Colombian company (NIT 1093752731) offering tech services nationally.",
+      "roleSignal": "System integrator offering network integration, IP telephony, and connectivity solutions for hospitality and commercial clients.",
+      "relevanceSignal": "Deploys network switches, access points, and routers in SMB and hospitality settings.",
+      "evidenceUrls": [
+        "https://bscomunicaciones.co"
+      ]
+    },
+    {
+      "rank": 13,
+      "companyName": "TIA S.A.S.",
+      "officialWebsite": "https://tiasas.com",
+      "marketSignal": "Actively operating in Colombia providing outsourcing and infrastructure management.",
+      "roleSignal": "Managed Service Provider (MSP) and system integrator managing business networks, cloud, and IT infrastructure.",
+      "relevanceSignal": "Requires reliable switches, VPN gateways, and Wi-Fi devices for client operational stability.",
+      "evidenceUrls": [
+        "https://tiasas.com"
+      ]
+    },
+    {
+      "rank": 14,
+      "companyName": "Intelcol S.A.S.",
+      "officialWebsite": "https://intelcolsas.com",
+      "marketSignal": "Telecommunications company operating in Colombia.",
+      "roleSignal": "System integrator providing unified communications, network connectivity, and managed VoIP solutions.",
+      "relevanceSignal": "Deploys VoIP gateways, network switches, and routers for B2B clients.",
+      "evidenceUrls": [
+        "https://intelcolsas.com"
+      ]
+    },
+    {
+      "rank": 15,
+      "companyName": "Fonet S.A.S. (GlobalSmartTech)",
+      "officialWebsite": "https://globalsmarttech.com.co",
+      "marketSignal": "Headquartered in Bogotá D.C., Colombia.",
+      "roleSignal": "B2B technology integrator specializing in IT infrastructure, corporate Wi-Fi, and cloud services.",
+      "relevanceSignal": "Deploys SMB Wi-Fi networks, PoE switches, and security gateways matching Cudy's value portfolio.",
+      "evidenceUrls": [
+        "https://globalsmarttech.com.co"
+      ]
+    }
+  ],
+  "missingSlots": 35,
+  "warnings": [],
+  "costEvents": [
+    {
+      "eventId": "CO-si-msp:gemini-control",
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "cellId": "CO-si-msp",
+      "arm": "gemini-native",
+      "ledger": "gemini-native-arm",
+      "stage": "native-search",
+      "provider": "gemini-full",
+      "requestedModel": "gemini-3.6-flash",
+      "actualModel": "gemini-3.6-flash",
+      "startedAt": "2026-09-08T20:45:58.111Z",
+      "completedAt": "2026-09-08T20:46:14.229Z",
+      "latencyMs": 16118,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 549,
+        "cachedInputTokens": 0,
+        "outputTokens": 2164,
+        "reasoningTokens": 0,
+        "groundingQueries": 8
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 15,
+        "validOutputItems": 15,
+        "downstreamUsedItems": 15,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "one interaction",
+        "no follow-up",
+        "provider order preserved"
+      ],
+      "officialListPriceUsd": 0.12052675,
+      "budgetCostUsd": 0.12052675,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    }
+  ]
+}
