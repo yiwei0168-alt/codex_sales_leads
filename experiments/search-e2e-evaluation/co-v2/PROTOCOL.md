@@ -1,4 +1,4 @@
-# Frozen protocol: Colombia search E2E v2.0.13
+# Frozen protocol: Colombia search E2E v2.0.14
 
 v2.0.1 supersedes the execution guard in v2.0.0 after the first Retail attempt exposed a Kimi constraint-copy failure before Product discovery. Kimi remains mandatory for lightweight intent/template-fit recognition, while the already user-confirmed preregistered country, count and category are authoritative for execution. Divergence is retained as a warning and efficiency loss. The valid unchanged Gemini control and all sunk cost remain in the same ledger.
 
@@ -25,6 +25,8 @@ v2.0.11 supersedes the search-extension cache boundary after the first v2.0.10 e
 v2.0.12 records the user's explicit budget decision. CO Retail is frozen at 14/50 and receives no additional search. The USD 50 hard cap and USD 10/20/30 reviews remain unchanged. A versioned `--phase=resume-budget` command records the authorization, baseline USD 45.7926 expected/USD 59.6814 upper forecast and permits exactly one next frozen cell start (`CO-distribution`). During that cell, cost events and any crossed checkpoint are still persisted; a forecast warning is evaluated again after the cell, while the absolute hard cap remains enforceable during execution. This prevents a forecast-only pause from discarding partial in-memory cell work. The authorization cannot bypass unpriced cost, a next-call hard-cap risk or the USD 50 hard stop. Arms, Product mechanism, samples and win gates remain unchanged.
 
 v2.0.13 supersedes only the OpenRouter request compatibility for the frozen blind audit. The first GPT-5.6-sol judge requests were rejected before inference because `temperature: 0` was combined with high reasoning, strict JSON Schema and `require_parameters: true`; both failures consumed zero tokens and USD 0. OpenRouter documents that routing with `require_parameters` retains only endpoints supporting every supplied parameter. Blind requests therefore omit the unnecessary sampling-temperature parameter while preserving the frozen model, high reasoning, schema, evidence packet, blindness, sampling, arbitration and win gates. All four completed control-evaluation cells and any valid cached judge decision are reused before retry.
+
+v2.0.14 supersedes only local schema-bound normalization after Claude Opus 5 returned an otherwise structured paid decision with one reason longer than the frozen 500-character maximum. Before Zod validation, strings and arrays are deterministically clipped to their existing JSON Schema maxima. Scores, role labels, identity/market/eligibility states, citation support and evidence packets are untouched; missing fields, invalid enums, invalid score ranges and semantic blindness violations still fail. This avoids buying the same judgment again for verbosity alone and does not tune any outcome rule.
 
 ## Hypothesis and arms
 

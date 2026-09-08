@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { callBlindJudgeV2 } from "./provider-clients";
+import { callBlindJudgeV2, normalizeBlindJudgeV2Output } from "./provider-clients";
 
 describe("Colombia blind-review OpenRouter request", () => {
   afterEach(() => {
@@ -30,5 +30,39 @@ describe("Colombia blind-review OpenRouter request", () => {
       response_format: { type: "json_schema" },
     });
     expect(requestBody).not.toHaveProperty("temperature");
+  });
+
+  it("truncates only schema-bounded narrative fields and arrays", () => {
+    const long = "x".repeat(600);
+    const input = {
+      packetId: "blind-v2-test-packet",
+      supportedRoles: Array.from({ length: 10 }, (_, index) => `${index}-${long}`),
+      primaryRole: long,
+      dimensions: { productAndUseCaseFit: 41, channelAndBuyingInfluence: 12,
+        sameRoleScaleAndCoverage: 9, executionAndEnablement: 8, opportunityAndRisk: 7 },
+      totalScore: 77,
+      dimensionReasons: Array.from({ length: 6 }, (_, index) => ({
+        dimension: ["productAndUseCaseFit", "channelAndBuyingInfluence", "sameRoleScaleAndCoverage",
+          "executionAndEnablement", "opportunityAndRisk", "extra"][index],
+        reason: long,
+        citations: Array.from({ length: 13 }, () => ({ evidenceId: long, claim: long, support: "direct" })),
+      })),
+      unsupportedOrContradictoryClaims: Array.from({ length: 13 }, () => long),
+    };
+
+    const output = normalizeBlindJudgeV2Output(input) as typeof input;
+
+    expect(output.totalScore).toBe(77);
+    expect(output.dimensions).toEqual(input.dimensions);
+    expect(output.supportedRoles).toHaveLength(8);
+    expect(output.supportedRoles.every((item) => item.length <= 80)).toBe(true);
+    expect(output.primaryRole).toHaveLength(80);
+    expect(output.dimensionReasons).toHaveLength(5);
+    expect(output.dimensionReasons.every((item) => item.reason.length === 500
+      && item.citations.length === 12
+      && item.citations.every((citation) => citation.evidenceId.length === 100
+        && citation.claim.length === 500))).toBe(true);
+    expect(output.unsupportedOrContradictoryClaims).toHaveLength(12);
+    expect(output.unsupportedOrContradictoryClaims.every((item) => item.length === 500)).toBe(true);
   });
 });

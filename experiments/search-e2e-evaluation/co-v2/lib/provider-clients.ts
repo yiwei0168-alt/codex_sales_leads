@@ -81,6 +81,33 @@ function parseStructured<T>(text: string, schema: z.ZodType<T>): { output: T | n
   }
 }
 
+export function normalizeBlindJudgeV2Output(value: unknown): unknown {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return value;
+  const output = value as Record<string, unknown>;
+  const compactString = (item: unknown, maximum: number) => typeof item === "string"
+    ? item.slice(0, maximum) : item;
+  const supportedRoles = Array.isArray(output.supportedRoles)
+    ? output.supportedRoles.slice(0, 8).map((item) => compactString(item, 80)) : output.supportedRoles;
+  const dimensionReasons = Array.isArray(output.dimensionReasons)
+    ? output.dimensionReasons.slice(0, 5).map((item) => {
+      if (!item || typeof item !== "object" || Array.isArray(item)) return item;
+      const reason = item as Record<string, unknown>;
+      const citations = Array.isArray(reason.citations) ? reason.citations.slice(0, 12).map((citation) => {
+        if (!citation || typeof citation !== "object" || Array.isArray(citation)) return citation;
+        const record = citation as Record<string, unknown>;
+        return { ...record, evidenceId: compactString(record.evidenceId, 100),
+          claim: compactString(record.claim, 500) };
+      }) : reason.citations;
+      return { ...reason, reason: compactString(reason.reason, 500), citations };
+    }) : output.dimensionReasons;
+  const unsupported = Array.isArray(output.unsupportedOrContradictoryClaims)
+    ? output.unsupportedOrContradictoryClaims.slice(0, 12).map((item) => compactString(item, 500))
+    : output.unsupportedOrContradictoryClaims;
+  return { ...output, packetId: compactString(output.packetId, 100), supportedRoles,
+    primaryRole: compactString(output.primaryRole, 80), dimensionReasons,
+    unsupportedOrContradictoryClaims: unsupported };
+}
+
 function geminiInteractionsUrl(): string {
   let base = (process.env.GEMINI_BASE_URL?.trim() || "https://generativelanguage.googleapis.com/v1beta")
     .replace(/\/+$/, "").replace(/\/openai(?:\/v1)?$/i, "");
@@ -274,7 +301,17 @@ async function callBlindReviewV2(input: Record<string, unknown>, model: string, 
     choices?: Array<{ message?: { content?: string | null } }>;
     usage?: { prompt_tokens?: number; completion_tokens?: number; cost?: number } };
   const text = body.choices?.[0]?.message?.content ?? "";
-  const parsed = parseStructured(text, blindJudgeV2OutputSchema);
+  const parsedJson = (() => {
+    try { return normalizeBlindJudgeV2Output(JSON.parse(stripJsonFence(text))); }
+    catch { return text; }
+  })();
+  const parsed = typeof parsedJson === "string"
+    ? parseStructured(parsedJson, blindJudgeV2OutputSchema)
+    : (() => {
+      const result = blindJudgeV2OutputSchema.safeParse(parsedJson);
+      return result.success ? { output: result.data }
+        : { output: null, error: result.error.message.slice(0, 2_000) };
+    })();
   return { output: parsed.output, raw: body, requestedModel, actualModel: body.model ?? requestedModel,
     usage: { inputTokens: body.usage?.prompt_tokens ?? 0, outputTokens: body.usage?.completion_tokens ?? 0 },
     accountCashCostUsd: body.usage?.cost, startedAt, completedAt: new Date().toISOString(),
