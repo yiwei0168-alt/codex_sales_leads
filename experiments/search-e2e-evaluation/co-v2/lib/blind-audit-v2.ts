@@ -423,7 +423,8 @@ function costEventFor(packet: BlindAuditV2Packet, call: ProviderCall<BlindJudgeV
     : semanticValidationError ?? "schemaInvalid";
   return priceCostEvent({ eventId: `${packet.packetId}:${stage}:${judgeId}`, runId: EXPERIMENT_CONFIG.runId,
     ledger: "evaluation-overhead", arm: "shared-evaluation", stage,
-    provider: providerFamily(call.actualModel) === "deepseek" ? "deepseek" : "openrouter",
+    provider: call.actualModel.includes("/") ? "openrouter"
+      : providerFamily(call.actualModel) === "deepseek" ? "deepseek" : "openrouter",
     requestedModel: call.requestedModel, actualModel: call.actualModel, startedAt: call.startedAt,
     completedAt: call.completedAt, latencyMs: call.latencyMs, attempts: call.attempts, retries: call.retries,
     fallbackUsed: call.actualModel !== call.requestedModel, status: validOutput ? "completed" : "failed",

@@ -1,4 +1,4 @@
-# Frozen protocol: Colombia search E2E v2.0.14
+# Frozen protocol: Colombia search E2E v2.0.15
 
 v2.0.1 supersedes the execution guard in v2.0.0 after the first Retail attempt exposed a Kimi constraint-copy failure before Product discovery. Kimi remains mandatory for lightweight intent/template-fit recognition, while the already user-confirmed preregistered country, count and category are authoritative for execution. Divergence is retained as a warning and efficiency loss. The valid unchanged Gemini control and all sunk cost remain in the same ledger.
 
@@ -27,6 +27,8 @@ v2.0.12 records the user's explicit budget decision. CO Retail is frozen at 14/5
 v2.0.13 supersedes only the OpenRouter request compatibility for the frozen blind audit. The first GPT-5.6-sol judge requests were rejected before inference because `temperature: 0` was combined with high reasoning, strict JSON Schema and `require_parameters: true`; both failures consumed zero tokens and USD 0. OpenRouter documents that routing with `require_parameters` retains only endpoints supporting every supplied parameter. Blind requests therefore omit the unnecessary sampling-temperature parameter while preserving the frozen model, high reasoning, schema, evidence packet, blindness, sampling, arbitration and win gates. All four completed control-evaluation cells and any valid cached judge decision are reused before retry.
 
 v2.0.14 supersedes only local schema-bound normalization after Claude Opus 5 returned an otherwise structured paid decision with one reason longer than the frozen 500-character maximum. Before Zod validation, strings and arrays are deterministically clipped to their existing JSON Schema maxima. Scores, role labels, identity/market/eligibility states, citation support and evidence packets are untouched; missing fields, invalid enums, invalid score ranges and semantic blindness violations still fail. This avoids buying the same judgment again for verbosity alone and does not tune any outcome rule.
+
+v2.0.15 supersedes only arbitration transport redundancy. The first required DeepSeek Pro arbitrations found the direct provider unavailable and stopped despite the previously confirmed same-tier gateway policy. DeepSeek Pro remains the frozen requested model; a missing/invalid direct result now makes one bounded OpenRouter request to `deepseek/deepseek-v4-pro`, preserving model family, rubric and schema. Combined telemetry retains direct and gateway attempts, actual model/provider, latency and account cost. If both routes fail, execution still stops for the authorized in-conversation Codex fallback rather than silently selecting a judge family.
 
 ## Hypothesis and arms
 

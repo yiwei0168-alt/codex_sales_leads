@@ -365,6 +365,23 @@ async function callDeepSeekBlindArbitratorV2(input: Record<string, unknown>, mod
 
 export function callBlindArbitratorV2(input: Record<string, unknown>, model: string,
   maxTokens = 4_096): Promise<ProviderCall<BlindJudgeV2Output>> {
-  if (/^deepseek-/i.test(model.trim())) return callDeepSeekBlindArbitratorV2(input, model);
+  if (/^deepseek-/i.test(model.trim())) return callDeepSeekBlindArbitratorWithFallback(input, model, maxTokens);
   return callBlindReviewV2(input, model, "blind-judge-arbitration-rubric-v2.md", maxTokens);
+}
+
+async function callDeepSeekBlindArbitratorWithFallback(input: Record<string, unknown>, model: string,
+  maxTokens: number): Promise<ProviderCall<BlindJudgeV2Output>> {
+  const primary = await callDeepSeekBlindArbitratorV2(input, model);
+  if (primary.output) return primary;
+  const fallbackModel = process.env.OPENROUTER_DEEPSEEK_ESCALATION_MODEL?.trim()
+    || `deepseek/${model.trim()}`;
+  const fallback = await callBlindReviewV2(input, fallbackModel,
+    "blind-judge-arbitration-rubric-v2.md", maxTokens);
+  return { ...fallback, requestedModel: primary.requestedModel, startedAt: primary.startedAt,
+    latencyMs: primary.latencyMs + fallback.latencyMs,
+    attempts: primary.attempts + fallback.attempts,
+    retries: primary.retries + fallback.retries,
+    raw: { primary: { actualModel: primary.actualModel, requestError: primary.requestError,
+      requestFailureKind: primary.requestFailureKind, parseError: primary.parseError,
+      attempts: primary.attempts, retries: primary.retries }, fallback: fallback.raw } };
 }

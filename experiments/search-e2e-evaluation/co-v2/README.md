@@ -1,4 +1,4 @@
-# Colombia search E2E evaluation v2.0.14
+# Colombia search E2E evaluation v2.0.15
 
 This directory is the immutable, cold-start Colombia follow-up to the UK/Mexico formal evaluation. It compares the current product workflow with one un-tuned Gemini Full + Google Search interaction per category.
 
@@ -69,5 +69,7 @@ v2.0.11 enforces that contract in code: before a search extension it preloads ev
 v2.0.13 removes `temperature` from high-reasoning blind-review requests after OpenRouter rejected the GPT-5.6-sol parameter combination before inference. High reasoning, strict JSON Schema, provider independence and the no-Web blind packet remain unchanged. Completed shared-evaluation cells are reused, and the two rejected zero-token/zero-cost judge calls remain in the ledger before the blind audit resumes from its per-decision cache.
 
 v2.0.14 deterministically clips blind-judge narrative strings and arrays to the already frozen JSON Schema limits before local validation. It does not change any score, role, state, citation-support label or evidence selection. This prevents a valid paid Claude response from being discarded solely because a reason exceeds 500 characters; genuinely missing, invalid or contradictory semantic fields still fail validation.
+
+v2.0.15 applies the confirmed same-tier model redundancy to conditional arbitration. DeepSeek Pro remains the requested arbitrator; if its direct endpoint fails or returns no valid structured output, the same DeepSeek Pro tier is tried through OpenRouter before any in-conversation Codex fallback. The combined event records direct attempts, fallback model/provider, latency and OpenRouter account cost.
 
 Raw checkpoints are local under `runs/raw/`. Sanitized artifacts and the final report are under `artifacts/runs/2026-09-08-co-search-e2e-v2/`.

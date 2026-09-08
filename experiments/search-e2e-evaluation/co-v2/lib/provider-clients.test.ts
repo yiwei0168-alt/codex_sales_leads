@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { callBlindJudgeV2, normalizeBlindJudgeV2Output } from "./provider-clients";
+import { callBlindArbitratorV2, callBlindJudgeV2, normalizeBlindJudgeV2Output } from "./provider-clients";
 
 describe("Colombia blind-review OpenRouter request", () => {
   afterEach(() => {
@@ -64,5 +64,30 @@ describe("Colombia blind-review OpenRouter request", () => {
         && citation.claim.length === 500))).toBe(true);
     expect(output.unsupportedOrContradictoryClaims).toHaveLength(12);
     expect(output.unsupportedOrContradictoryClaims.every((item) => item.length === 500)).toBe(true);
+  });
+
+  it("routes a failed direct DeepSeek arbitrator to the same tier through OpenRouter", async () => {
+    vi.stubEnv("DEEPSEEK_API_KEY", "test-deepseek-key");
+    vi.stubEnv("DEEPSEEK_BASE_URL", "https://api.deepseek.com");
+    vi.stubEnv("OPENROUTER_API_KEY", "test-openrouter-key");
+    const requests: Array<{ url: string; body: Record<string, unknown> }> = [];
+    vi.stubGlobal("fetch", vi.fn(async (input: string | URL | Request, init?: RequestInit) => {
+      const url = String(input);
+      requests.push({ url, body: JSON.parse(String(init?.body)) as Record<string, unknown> });
+      return new Response(JSON.stringify({ error: { message: "test stop" } }), {
+        status: url.includes("openrouter.ai") ? 404 : 503,
+        headers: { "content-type": "application/json" },
+      });
+    }));
+
+    const result = await callBlindArbitratorV2({ packetId: "test-packet" }, "deepseek-v4-pro", 128);
+
+    expect(requests.filter((item) => item.url.includes("api.deepseek.com"))).toHaveLength(2);
+    const openRouter = requests.find((item) => item.url.includes("openrouter.ai"));
+    expect(openRouter?.body).toMatchObject({ model: "deepseek/deepseek-v4-pro",
+      reasoning: { effort: "high" }, response_format: { type: "json_schema" } });
+    expect(result.requestedModel).toBe("deepseek-v4-pro");
+    expect(result.actualModel).toBe("deepseek/deepseek-v4-pro");
+    expect(result.attempts).toBe(3);
   });
 });
