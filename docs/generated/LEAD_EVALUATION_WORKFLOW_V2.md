@@ -1,11 +1,11 @@
-# Cudy 销售线索端到端工作流 v3.7.0
+# Cudy 销售线索端到端工作流 v3.8.0
 
 > 本文档由 `scripts/generate-lead-workflow-doc.mjs` 自动生成。请修改版本化配置或实现代码，不要直接编辑生成文件。
 
-- 运行时策略版本：3.7.0（基础流程定义 2.10.0）
+- 运行时策略版本：3.8.0（基础流程定义 2.11.0）
 - 评分策略版本：2.0.0
-- 成本质量策略版本：3.0.4
-- 配置指纹：`3d9546fdbde3a5b8cbd88fb483e25e0048a26f0686705b56c5df1985d93af3f7`
+- 成本质量策略版本：3.0.5
+- 配置指纹：`df3e93121d8eb5d5f4f70ab779051e09f000a4bed7b5af67b35798525af06850`
 - 范围：From the user's natural-language market-development request and workspace context to ranked companies, editable cooperation paths, development strategy, outreach email, and private-memory learning from user edits.
 
 ## 一、从用户输入到最终输出的总流程
@@ -45,6 +45,7 @@ flowchart TD
 - Every potentially overlapping task must create and consume a versioned cache at first execution; downstream stages receive exact evidence IDs, role corrections and explicit missing-evidence gaps.
 - Search localization is keyed by market country, provider-owned result pages are provenance rather than candidate domains, and a primary role must be concrete unless two or more role families are genuinely co-primary.
 - Only evidence deterministically affiliated with the candidate entity may enter correction or scoring, and target-country eligibility must be corroborated by the correction-stage country finding.
+- Explicit third-party marketplaces are not Retailer/E-tailer prospects; unknown scale receives a neutral nonzero cap, and buying influence cannot exceed the deterministic evidence cap.
 
 ## 三、模型调用路由
 
@@ -54,8 +55,8 @@ flowchart TD
 | `02-context-memory` | Local-database RAG query and memory embeddings | EMBEDDING_MODEL; default text-embedding-v4 | No generative fallback | Required for vector retrieval; source documents remain in the local database |
 | `03-playbook` | Market playbook and search-query planning | LEAD_PLANNER_MODEL or OPENAI_GENERATION_MODEL; default openai/gpt-5-mini through OpenRouter | Deterministic playbook with required role-family coverage | Cached standard playbook; light Kimi checks template fit; complex non-standard tasks use Kimi-k3 planning |
 | `04-discovery` | Lightweight candidate existence, relevance and category gate | DEEPSEEK_DISCOVERY_GATE_MODEL; fixed default deepseek-v4-flash and never inherits a Pro global routine setting | At most two public-only equivalent fallbacks: the same DeepSeek tier through OpenRouter, then openai/gpt-4o-mini; unavailable batches are held for downstream evidence, never upgraded to Pro | Batches of up to 10 after direct lightweight homepage fetch; compact semantic signals only, with deterministic pass/hold/reject; optional reasoning is disabled on the OpenRouter same-tier route |
-| `06-correction-role` | Entity correction, atomic facts and primary-role analysis | DEEPSEEK_MODEL; default deepseek-v4-flash | DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro for policy-qualified semantic escalation; provider recovery uses public-only same-tier OpenRouter then openai/gpt-4o-mini, while deterministic fallback is retry-only | Relevance-prioritized compact evidence packets and token-aware routine batches; each automatic fallback has an independent deadline; optional reasoning is disabled for OpenRouter DeepSeek; malformed output permits one same-tier single-candidate repair; infrastructure failure never upgrades to Pro; Pro requires a valid routine prediction of score change >=8 or a resolvable critical-state change |
-| `09-scoring-paths` | Role-aware score and possible cooperation paths | DEEPSEEK_MODEL; default deepseek-v4-flash | DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro for policy-qualified semantic escalation; provider recovery uses public-only same-tier OpenRouter then openai/gpt-4o-mini | Routine batches with independent fallback deadlines and optional reasoning disabled for OpenRouter DeepSeek; malformed output permits one same-tier single-candidate repair; infrastructure failure never upgrades to Pro; confidence, alternative paths and Top-N position never trigger upgrade alone |
+| `06-correction-role` | Entity correction, atomic facts and primary-role analysis | DEEPSEEK_MODEL; default deepseek-v4-flash | DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro for policy-qualified semantic escalation; provider recovery uses public-only same-tier OpenRouter then openai/gpt-4o-mini, while deterministic fallback is retry-only | Relevance-prioritized compact evidence packets and token-aware routine batches; each automatic fallback has an independent deadline; optional reasoning is disabled for OpenRouter DeepSeek; malformed output permits one same-tier single-candidate repair; infrastructure failure never upgrades to Pro; supported third-party-marketplace findings deterministically remove Retail/E-tail roles; Pro requires a valid routine prediction of score change >=8 or a resolvable critical-state change |
+| `09-scoring-paths` | Role-aware score and possible cooperation paths | DEEPSEEK_MODEL; default deepseek-v4-flash | DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro for policy-qualified semantic escalation; provider recovery uses public-only same-tier OpenRouter then openai/gpt-4o-mini | Routine batches with independent fallback deadlines and optional reasoning disabled for OpenRouter DeepSeek; malformed output permits one same-tier single-candidate repair; infrastructure failure never upgrades to Pro; unknown scale is capped at neutral 8/15 and cooperation influence is evidence-capped; confidence, alternative paths and Top-N position never trigger upgrade alone |
 | `10-review` | Selective production secondary review and disagreement judgment | LEAD_REVIEW_MODEL default openai/gpt-5.6-terra; LEAD_JUDGE_MODEL default openai/gpt-5.6-sol through OpenRouter | DeepSeek review adapter using deepseek-v4-pro when explicitly routed | Selective only; this production control is distinct from the two-judge offline formal-evaluation calibration |
 | `offline-blind-calibration` | Formal search-evaluation calibration after both experiment arms and shared scoring are frozen | Two different high-capability provider/model families; current protocol pins Anthropic Claude Opus and OpenAI GPT-5.6-sol | A third high-capability arbitrator only for score delta >=8, role-family disagreement or critical qualification disagreement | No Web search; 48 representative cases control gates and 16 stress cases are diagnostic only; reuse frozen score-independent evidence packets |
 | `14-strategy` | Path-specific development strategy | KIMI_OUTREACH_MODEL or KIMI_MODEL; default kimi-k3 | Restricted template fallback | One call per generated strategy |
@@ -744,8 +745,8 @@ flowchart TD
 |---|---|
 | `config/lead-scoring/policy-v2.0.0.json` | `3e0e88b26ad3e7923b2f21d6c0d9595983599832f59174a63f4d51eaf058307c` |
 | `config/lead-search/hybrid-search-v1.0.0.json` | `06204b9c96e9415e272888b37057b6686a8aacad5a58de4a3f91b727d56bc5ab` |
-| `config/lead-workflow/cost-quality-policy-v3.0.0.json` | `d554c91704a57fde3b29c1be9733eba1379db2561c6d1fb3e927e09ce42e97b9` |
-| `config/lead-workflow/runtime-policy-v3.0.0.json` | `9f9d633e60c35117e0ed4f5997b5e73eb476c5edf6c8473df5403d933190e77d` |
+| `config/lead-workflow/cost-quality-policy-v3.0.0.json` | `68b7ae1dd5020aa516cfec9b7e0dab88c8f94d63221aed3949178fcb5f22ccae` |
+| `config/lead-workflow/runtime-policy-v3.0.0.json` | `1f0742ef8360121a6a219b3c79bd1e8b14c4608070208efa03f6507b3de8443d` |
 | `src/app/api/assistant/messages/route.ts` | `04bec90cc3d3f336195e8ab97a5ad4b1ec1e05b95606064225e098e94ed7a5cd` |
 | `src/lib/assistant/types.ts` | `741da6b9e3e22f10bee1f6089c858d59b3a1bb62fe003996bec5993ebaff7653` |
 | `src/lib/assistant/intent.ts` | `5501e1e0a9617b34f40d14af6bf65fdae8250f9f9ed714647ec6878eb1179ab3` |
@@ -764,9 +765,9 @@ flowchart TD
 | `src/lib/leads/workflow/hybrid-discovery-executor.ts` | `4f496fa518c92fd4add158f3d5a1cb0131c453d0bca1f9755d3351104eadf860` |
 | `src/lib/leads/workflow/discovery.ts` | `99d8971a75e2ff68a43204e4aca0dba8784a4852397a4c270e0dfd9452d067d8` |
 | `src/lib/leads/global-search.ts` | `3e808deea189a90ca6686ec8348648e9f98d97080c9cb78aa9226f6384a4db30` |
-| `src/lib/leads/workflow/evidence-correction-agent.ts` | `192f49c7daa57fcd43b745d862b94fd75f06e8a3526e139099cd2d511c9e0242` |
+| `src/lib/leads/workflow/evidence-correction-agent.ts` | `924684a0c3e8aba2cdda2f2d0234886c6e9be7f73785fc79d23622b6a0087190` |
 | `src/lib/leads/workflow/evidence-packet.ts` | `b832b0ed99a9759c2656da65d65a004445ff63e1441b6cae5d5618b5fa889ba1` |
-| `src/lib/leads/workflow/qualification-agent.ts` | `7c7a60721a4a00e78267f2441c204db1eee9217acb736e96b1815af4ca459551` |
+| `src/lib/leads/workflow/qualification-agent.ts` | `2677b1edaa6aede3514439fd5052c53723b367bb7e8ea1290bd3b9f462dc1901` |
 | `src/lib/leads/workflow/assessment-cache.ts` | `d7fd5fe0b350aa56eb9fcfb283c2c81a2de9564f88a3ef677631b82d81474fb3` |
 | `src/lib/leads/workflow/assessment-review-agent.ts` | `14120dc50c23946269c3980466788dd81b68755d0c9d3c54b3c690de65b37ce6` |
 | `src/providers/deepseek.ts` | `3f3040a631ea2cf57a5e5c274f3449fe95fb294b63f7e93e47c447f5f73c27a8` |
