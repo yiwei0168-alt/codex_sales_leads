@@ -1,0 +1,162 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-08-co-search-e2e-v2",
+  "arbitrationReasons": [
+    "score-threshold-disagreement"
+  ],
+  "decision": {
+    "packetId": "blind-v2-79456d8c21db46f236ded22d",
+    "judgeId": "arbitrator",
+    "requestedModel": "deepseek-v4-pro",
+    "actualModel": "codex-in-session",
+    "modelReportedTotal": 66,
+    "deterministicTotal": 66,
+    "roleFamily": "unresolved",
+    "requestedCategoryFamilyMatch": false,
+    "citationValidation": {
+      "checkedClaims": 8,
+      "validEvidenceIds": 8,
+      "entailedClaims": 8,
+      "idAlignmentRate": 1,
+      "entailmentRate": 1
+    },
+    "output": {
+      "packetId": "blind-v2-79456d8c21db46f236ded22d",
+      "externalSearchUsed": false,
+      "externalKnowledgeUsed": false,
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "supportedRoles": [
+        "retail",
+        "e-tailer"
+      ],
+      "primaryRole": "retail",
+      "dimensions": {
+        "productAndUseCaseFit": 41,
+        "channelAndBuyingInfluence": 9,
+        "sameRoleScaleAndCoverage": 5,
+        "executionAndEnablement": 5,
+        "opportunityAndRisk": 6
+      },
+      "totalScore": 66,
+      "eligibility": "eligible",
+      "dimensionReasons": [
+        {
+          "dimension": "productAndUseCaseFit",
+          "reason": "The store directly covers home/SOHO and SMB routers, access points, PoE, switches and multi-WAN use cases; the packet does not show mesh, cellular FWA, outdoor wireless or xPON depth.",
+          "citations": [
+            {
+              "evidenceId": "evidence-8c17369744f729e1",
+              "claim": "Tecno Nacho lists a home and small-office Wi-Fi router.",
+              "support": "direct"
+            },
+            {
+              "evidenceId": "evidence-1f119867b585b40a",
+              "claim": "It lists a PoE and cloud-managed Wi-Fi access point.",
+              "support": "direct"
+            },
+            {
+              "evidenceId": "evidence-4e2a0724c66b082b",
+              "claim": "It lists a multi-WAN load-balancing router for SMB use.",
+              "support": "direct"
+            }
+          ]
+        },
+        {
+          "dimension": "channelAndBuyingInfluence",
+          "reason": "Its owned Colombian online storefront selects and merchandises networking products directly to shoppers, but purchasing volume and vendor authority are unproven.",
+          "citations": [
+            {
+              "evidenceId": "evidence-e3945039976c43fa",
+              "claim": "Tecno Nacho presents an owned Colombian technology shop with networking categories.",
+              "support": "direct"
+            }
+          ]
+        },
+        {
+          "dimension": "sameRoleScaleAndCoverage",
+          "reason": "Only one Colombia-facing online storefront is established, without branch, traffic, sales, fulfilment or multi-city evidence, fitting the local/small retail band.",
+          "citations": [
+            {
+              "evidenceId": "evidence-e3945039976c43fa",
+              "claim": "The site identifies Tecno Nacho as a technology store in Colombia.",
+              "support": "direct"
+            }
+          ]
+        },
+        {
+          "dimension": "executionAndEnablement",
+          "reason": "Structured categories, detailed local-language listings, cart and subscriber promotions show basic e-commerce execution; support, returns and installation are not evidenced.",
+          "citations": [
+            {
+              "evidenceId": "evidence-1f119867b585b40a",
+              "claim": "The store provides detailed product specifications, cart functionality and offer subscriptions.",
+              "support": "direct"
+            }
+          ]
+        },
+        {
+          "dimension": "opportunityAndRisk",
+          "reason": "Value-oriented home and SMB networking listings create an adjacent Cudy opportunity, while existing TP-Link and Tenda offers and unknown commercial scale are material constraints.",
+          "citations": [
+            {
+              "evidenceId": "evidence-8c17369744f729e1",
+              "claim": "The store offers a Tenda home/SOHO router.",
+              "support": "direct"
+            },
+            {
+              "evidenceId": "evidence-4e2a0724c66b082b",
+              "claim": "The store offers a TP-Link SMB router.",
+              "support": "direct"
+            }
+          ]
+        }
+      ],
+      "unsupportedOrContradictoryClaims": [
+        "No physical footprint, customer scale, sales volume, fulfilment or returns capacity is established.",
+        "No Cudy relationship or authority to onboard a new brand is established."
+      ]
+    },
+    "costEvent": {
+      "eventId": "blind-v2-79456d8c21db46f236ded22d:blind-arbitrator-v2:arbitrator-codex-in-session",
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-arbitrator-v2",
+      "provider": "in-conversation-codex",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-08T23:05:01.025Z",
+      "completedAt": "2026-09-08T23:05:01.025Z",
+      "latencyMs": 0,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0
+      },
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "blind-audit-v2",
+        "no web search",
+        "arm/model/rank/unified score hidden",
+        "output is consumed by consensus or conditional arbitration",
+        "authorized in-conversation Codex fallback",
+        "no API call or external search"
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    }
+  }
+}

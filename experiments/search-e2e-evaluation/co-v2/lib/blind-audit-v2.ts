@@ -423,7 +423,8 @@ function costEventFor(packet: BlindAuditV2Packet, call: ProviderCall<BlindJudgeV
     : semanticValidationError ?? "schemaInvalid";
   return priceCostEvent({ eventId: `${packet.packetId}:${stage}:${judgeId}`, runId: EXPERIMENT_CONFIG.runId,
     ledger: "evaluation-overhead", arm: "shared-evaluation", stage,
-    provider: call.actualModel.includes("/") ? "openrouter"
+    provider: call.actualModel === "codex-in-session" ? "in-conversation-codex"
+      : call.actualModel.includes("/") ? "openrouter"
       : providerFamily(call.actualModel) === "deepseek" ? "deepseek" : "openrouter",
     requestedModel: call.requestedModel, actualModel: call.actualModel, startedAt: call.startedAt,
     completedAt: call.completedAt, latencyMs: call.latencyMs, attempts: call.attempts, retries: call.retries,
@@ -434,6 +435,20 @@ function costEventFor(packet: BlindAuditV2Packet, call: ProviderCall<BlindJudgeV
       discardedReasonCounts: validOutput ? {} : { [discardedReason]: 1 } },
     notes: ["blind-audit-v2", "no web search", "arm/model/rank/unified score hidden",
       "output is consumed by consensus or conditional arbitration"] }, rateCard);
+}
+
+export function createInSessionCodexArbitrationDecisionV2(packet: BlindAuditV2Packet,
+  output: BlindJudgeV2Output, requestedModel: string): BlindJudgeV2Decision {
+  const timestamp = new Date().toISOString();
+  const call: ProviderCall<BlindJudgeV2Output> = { output, raw: null, requestedModel,
+    actualModel: "codex-in-session", usage: { inputTokens: 0, outputTokens: 0 },
+    accountCashCostUsd: 0, startedAt: timestamp, completedAt: timestamp,
+    latencyMs: 0, attempts: 1, retries: 0 };
+  const decision = decisionFromCall(packet, "arbitrator", call, "blind-arbitrator-v2");
+  const costEvent = costEventFor(packet, call, "blind-arbitrator-v2", "arbitrator-codex-in-session");
+  costEvent.notes = [...(costEvent.notes ?? []), "authorized in-conversation Codex fallback",
+    "no API call or external search"];
+  return { ...decision, costEvent };
 }
 
 function decisionFromCall(packet: BlindAuditV2Packet, judgeId: string, call: ProviderCall<BlindJudgeV2Output>,

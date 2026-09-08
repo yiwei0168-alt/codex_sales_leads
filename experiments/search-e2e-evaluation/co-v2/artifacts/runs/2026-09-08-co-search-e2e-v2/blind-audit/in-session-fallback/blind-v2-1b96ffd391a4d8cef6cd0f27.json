@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-08-co-search-e2e-v2",
+  "arbitrationReasons": [
+    "total-score-difference"
+  ],
+  "decision": {
+    "packetId": "blind-v2-1b96ffd391a4d8cef6cd0f27",
+    "judgeId": "arbitrator",
+    "requestedModel": "deepseek-v4-pro",
+    "actualModel": "codex-in-session",
+    "modelReportedTotal": 73,
+    "deterministicTotal": 73,
+    "roleFamily": "unresolved",
+    "requestedCategoryFamilyMatch": false,
+    "citationValidation": {
+      "checkedClaims": 5,
+      "validEvidenceIds": 5,
+      "entailedClaims": 5,
+      "idAlignmentRate": 1,
+      "entailmentRate": 1
+    },
+    "output": {
+      "packetId": "blind-v2-1b96ffd391a4d8cef6cd0f27",
+      "externalSearchUsed": false,
+      "externalKnowledgeUsed": false,
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "supportedRoles": [
+        "retail",
+        "resale"
+      ],
+      "primaryRole": "retail",
+      "dimensions": {
+        "productAndUseCaseFit": 43,
+        "channelAndBuyingInfluence": 11,
+        "sameRoleScaleAndCoverage": 6,
+        "executionAndEnablement": 7,
+        "opportunityAndRisk": 6
+      },
+      "totalScore": 73,
+      "eligibility": "eligible",
+      "dimensionReasons": [
+        {
+          "dimension": "productAndUseCaseFit",
+          "reason": "The packet directly shows broad Cudy adjacency across home and business routers, switches, access points, WLAN, PoE, fibre, ISP/telecom and GPON/ONT/FTTH; mesh and cellular FWA are not shown.",
+          "citations": [
+            {
+              "evidenceId": "evidence-0a5feb2eca584429",
+              "claim": "NEXSA offers routers, switches, access points, WLAN controllers, PoE and GPON/ONT/FTTH products for businesses and homes.",
+              "support": "direct"
+            }
+          ]
+        },
+        {
+          "dimension": "channelAndBuyingInfluence",
+          "reason": "An owned technical store, specialist advice and quotation path demonstrate direct influence over customer selection, although purchasing volume is not evidenced.",
+          "citations": [
+            {
+              "evidenceId": "evidence-0a5feb2eca584429",
+              "claim": "The store offers specialist contact and quote requests as purchase paths.",
+              "support": "direct"
+            }
+          ]
+        },
+        {
+          "dimension": "sameRoleScaleAndCoverage",
+          "reason": "The evidence establishes a Colombia-facing specialist online store with deep categories, but not physical branches, multi-city reach or national fulfilment scale, supporting the local/small band.",
+          "citations": [
+            {
+              "evidenceId": "evidence-home-49b80866959614e2",
+              "claim": "NEXSA operates a Colombian technical store spanning networking, fibre, ISP, technology and home categories.",
+              "support": "direct"
+            }
+          ]
+        },
+        {
+          "dimension": "executionAndEnablement",
+          "reason": "Technical advice, quotation and stated ISO 9001 and trust credentials support above-basic execution, while logistics and after-sales capacity remain unknown.",
+          "citations": [
+            {
+              "evidenceId": "evidence-0a5feb2eca584429",
+              "claim": "NEXSA displays ISO 9001 certification, a trust seal and specialist advisory access.",
+              "support": "direct"
+            }
+          ]
+        },
+        {
+          "dimension": "opportunityAndRisk",
+          "reason": "Its Colombian home/SMB and ISP networking focus is a clear adjacent opportunity; absence of scale, sales and incumbent-brand evidence limits the score.",
+          "citations": [
+            {
+              "evidenceId": "evidence-home-49b80866959614e2",
+              "claim": "The company targets businesses and homes with networking, fibre and ISP/telecom categories.",
+              "support": "direct"
+            }
+          ]
+        }
+      ],
+      "unsupportedOrContradictoryClaims": [
+        "No physical store count, multi-city footprint, sales volume or fulfilment scale is established.",
+        "No existing Cudy relationship or current networking-brand portfolio is established."
+      ]
+    },
+    "costEvent": {
+      "eventId": "blind-v2-1b96ffd391a4d8cef6cd0f27:blind-arbitrator-v2:arbitrator-codex-in-session",
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-arbitrator-v2",
+      "provider": "in-conversation-codex",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-08T23:04:59.885Z",
+      "completedAt": "2026-09-08T23:04:59.885Z",
+      "latencyMs": 0,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0
+      },
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "blind-audit-v2",
+        "no web search",
+        "arm/model/rank/unified score hidden",
+        "output is consumed by consensus or conditional arbitration",
+        "authorized in-conversation Codex fallback",
+        "no API call or external search"
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    }
+  }
+}
