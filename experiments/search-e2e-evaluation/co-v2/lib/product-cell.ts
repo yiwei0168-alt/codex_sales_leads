@@ -104,6 +104,32 @@ export function assessmentNeedsIncompleteRecovery(candidateId: string, scoringSt
   return recoveredCandidateIds.has(candidateId) || scoringStatus !== "completed";
 }
 
+export function cachedDomainsForSearchExtension(input: { corrected: Array<{ domain: string }>;
+  discoveredRuns: unknown[]; enrichedRuns: unknown[] }): string[] {
+  const domains = new Set<string>();
+  const addDomain = (value: unknown) => {
+    if (typeof value !== "string") return;
+    const normalized = value.trim().toLowerCase();
+    if (normalized) domains.add(normalized);
+  };
+  const addCandidates = (value: unknown) => {
+    if (!Array.isArray(value)) return;
+    for (const candidate of value) {
+      if (typeof candidate === "object" && candidate !== null && "domain" in candidate) {
+        addDomain((candidate as { domain?: unknown }).domain);
+      }
+    }
+  };
+  for (const candidate of input.corrected) addDomain(candidate.domain);
+  for (const run of [...input.discoveredRuns, ...input.enrichedRuns]) {
+    if (typeof run !== "object" || run === null) continue;
+    const record = run as { candidates?: unknown; rejectedCandidates?: unknown };
+    addCandidates(record.candidates);
+    addCandidates(record.rejectedCandidates);
+  }
+  return [...domains];
+}
+
 export function modelUsageEvents(cell: ExperimentCell, stage: string, usages: WorkflowModelUsage[], stageStartedAt: string,
   stageCompletedAt: string, stageVolume: ExperimentVolume): ExperimentCostEvent[] {
   const groups = new Map<string, WorkflowModelUsage[]>();
@@ -176,7 +202,7 @@ export async function runProductCell(cell: ExperimentCell, options: {
     playbook = resumeFrom.playbook;
     intentSummary = resumeFrom.intent;
     const cacheAt = new Date().toISOString();
-    await recordCostEvents([event({ eventId: `${cell.cellId}:resume-cache:${resumeMode}:v2.0.10`, cellId: cell.cellId,
+    await recordCostEvents([event({ eventId: `${cell.cellId}:resume-cache:${resumeMode}:v2.0.11`, cellId: cell.cellId,
       stage: "within-run-cache-reuse", provider: "local-run-cache", startedAt: cacheAt, completedAt: cacheAt,
       latencyMs: 0, attempts: 0, retries: 0, fallbackUsed: false, status: "completed", usage: {},
       volume: volume(1, 1, 1, 1), notes: [
@@ -290,6 +316,8 @@ export async function runProductCell(cell: ExperimentCell, options: {
   const startingRound = resumeFrom?.discoveryRounds.length ?? 0;
   const maximumRounds = resumeFrom && resumeMode === "search-extension" ? startingRound + 5
     : plan.targetCount >= 50 ? 10 : 5;
+  const cachedResumeDomains = cachedDomainsForSearchExtension({ corrected: priorCorrected,
+    discoveredRuns, enrichedRuns });
 
   if (resumeFrom && resumeMode === "consistency-recovery") {
     let roleChanges = 0;
@@ -317,7 +345,7 @@ export async function runProductCell(cell: ExperimentCell, options: {
       selectedDomains.add(candidate.domain);
     }
     const repairAt = new Date().toISOString();
-    await recordCostEvents([event({ eventId: `${cell.cellId}:deterministic-consistency-recovery:v2.0.10`,
+    await recordCostEvents([event({ eventId: `${cell.cellId}:deterministic-consistency-recovery:v2.0.11`,
       cellId: cell.cellId, stage: "deterministic-consistency-recovery", provider: "deterministic",
       startedAt: repairAt, completedAt: repairAt, latencyMs: 0, attempts: 0, retries: 0,
       fallbackUsed: false, status: "completed", usage: {},
@@ -460,6 +488,7 @@ export async function runProductCell(cell: ExperimentCell, options: {
   }
 
   if (resumeFrom && resumeMode === "search-extension") {
+    for (const domain of cachedResumeDomains) discoverySession.excludedDomains.add(domain);
     const normalizedPrior = priorCorrected.map((candidate) => {
       const primary = selectPrimaryChannel({ roles: candidate.correction.resolvedRoles,
         agentPrimaryRole: candidate.correction.primaryRole });
@@ -498,7 +527,7 @@ export async function runProductCell(cell: ExperimentCell, options: {
       selectedPairs.push({ candidate, assessment });
       selectedDomains.add(candidate.domain);
     }
-    warnings.push(`Search extension normalized ${normalizedPrior.filter((candidate) => candidate.correction.warnings.includes("Stored same-family Hybrid primary role was normalized without new evidence acquisition.")).length} same-family Hybrid roles, retried ${retryAssessments.length} cached assessments, retained ${selectedPairs.length} prior eligible candidates and excluded ${priorCorrected.length} cached domains from reacquisition.`);
+    warnings.push(`Search extension normalized ${normalizedPrior.filter((candidate) => candidate.correction.warnings.includes("Stored same-family Hybrid primary role was normalized without new evidence acquisition.")).length} same-family Hybrid roles, retried ${retryAssessments.length} cached assessments, retained ${selectedPairs.length} prior eligible candidates and excluded ${cachedResumeDomains.length} cached discovery/correction domains from reacquisition.`);
   }
 
   for (let round = startingRound; (!resumeFrom || resumeMode === "search-extension") && round < maximumRounds
@@ -641,7 +670,7 @@ export async function runProductCell(cell: ExperimentCell, options: {
     toFinalCandidate(candidate, assessment, index + 1));
   const rankingStarted = new Date().toISOString();
   const rankingAt = new Date().toISOString();
-  await recordCostEvents([event({ eventId: resumeFrom ? `${cell.cellId}:ranking:${resumeMode}:v2.0.10` : `${cell.cellId}:ranking`, cellId: cell.cellId,
+  await recordCostEvents([event({ eventId: resumeFrom ? `${cell.cellId}:ranking:${resumeMode}:v2.0.11` : `${cell.cellId}:ranking`, cellId: cell.cellId,
     stage: "role-filter-ranking", provider: "deterministic", startedAt: rankingStarted,
     completedAt: rankingAt, latencyMs: Math.max(0, Date.parse(rankingAt) - Date.parse(rankingStarted)),
     attempts: 0, retries: 0, fallbackUsed: false, status: "completed", usage: {},

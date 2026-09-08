@@ -1,6 +1,6 @@
 {
   "workflowKey": "cudy-sales-lead-end-to-end",
-  "version": "2.12.0",
+  "version": "2.13.0",
   "status": "active",
   "scope": "From the user's natural-language market-development request and workspace context to ranked companies, editable cooperation paths, development strategy, outreach email, and private-memory learning from user edits.",
   "principles": [
@@ -16,7 +16,8 @@
     "Search localization is keyed by market country, provider-owned result pages are provenance rather than candidate domains, and a primary role must be concrete unless two or more role families are genuinely co-primary.",
     "Only evidence deterministically affiliated with the candidate entity may enter correction or scoring, and target-country eligibility must be corroborated by the correction-stage country finding.",
     "Explicit third-party marketplaces are not Retailer/E-tailer prospects; unknown scale receives a neutral nonzero cap, and buying influence cannot exceed the deterministic evidence cap.",
-    "Configured SearchAPI-dependent Reseller and Retail tracks use Gemini Full only after observed provider unavailability; the backup is skipped at zero cost while SearchAPI is healthy."
+    "Configured SearchAPI-dependent Reseller and Retail tracks use Gemini Full only after observed provider unavailability; the backup is skipped at zero cost while SearchAPI is healthy.",
+    "Search extension preloads all same-task discovered, rejected, enriched and corrected domains; a cached entity cannot re-enter paid gating, evidence, correction or scoring."
   ],
   "modelRouting": [
     {

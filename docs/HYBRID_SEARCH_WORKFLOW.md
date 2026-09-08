@@ -105,6 +105,8 @@ Every route and stage records input count, raw output, normalized output, new un
 
 The trigger was the clean Colombia Retail run: across eight rounds, SearchAPI had 40 planned calls, five quota failures, 35 circuit/cooldown skips, zero raw results and zero unique companies. The deterministic consistency repair left 12/50 valid Retail/E-tail outputs. The new repair-search run will reuse those 12 outputs and all compatible evidence/role/score records; only new candidates can incur new downstream acquisition cost.
 
+The first extension measurement exposed an integration defect rather than a route-policy defect: prior candidate domains were not preloaded into the new discovery session. Runtime v3.9.1 now collects domains from cached discovered, rejected, enriched and corrected records before an extension starts. Matching search results remain visible as raw duplicate telemetry but are filtered before the semantic gate; they cannot re-enter homepage/evidence acquisition, role correction or scoring.
+
 ### Colombia formal evaluation harness v2.0.0 — 2026-09-08
 
 - Freezes Colombia across the four core categories with 50 requested candidates per arm/category.
@@ -123,6 +125,7 @@ The trigger was the clean Colombia Retail run: across eight rounds, SearchAPI ha
 - v2.0.8 model recovery: incomplete cached semantic records retry through bounded same-tier OpenRouter DeepSeek and then an OpenAI peer without repeating discovery or evidence acquisition.
 - v2.0.9 deterministic consistency: supported marketplace findings remove Retail/E-tail roles; unknown scale and buying influence obey deterministic caps without a model or acquisition call.
 - v2.0.10 provider-gap recovery: SearchAPI-dependent Retail and Reseller tracks use Gemini Full only during an observed SearchAPI outage and otherwise skip it at zero cost.
+- v2.0.11 cache-boundary repair: search extensions preload all earlier candidate identity domains before discovery, preventing repeated semantic-gate, Tavily, correction and scoring work.
 
 ### v1.3.0 category purity and cost-accounting repair — 2026-09-07
 

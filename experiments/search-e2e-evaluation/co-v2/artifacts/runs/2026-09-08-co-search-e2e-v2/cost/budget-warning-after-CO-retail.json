@@ -1,0 +1,21 @@
+{
+  "totalBudgetUsd": 50,
+  "spentUsd": 9.448229996713989,
+  "budgetFraction": 0.18896459993427978,
+  "newlyCrossedThresholdsUsd": [],
+  "forecast": {
+    "completedCells": 1,
+    "totalCells": 4,
+    "incurredUsd": 9.448229996713989,
+    "expectedCompletionUsd": 45.792615808515954,
+    "lowerUsd": 31.903866760732992,
+    "upperUsd": 59.68136485629891,
+    "method": "cell-run-rate"
+  },
+  "warning": true,
+  "hardStop": false,
+  "requiresUserDecision": true,
+  "reasons": [
+    "forecast-may-exceed-budget"
+  ]
+}
