@@ -1,4 +1,4 @@
-# Colombia search E2E evaluation v2.0.19
+# Colombia search E2E evaluation v2.0.20
 
 This directory is the immutable, cold-start Colombia follow-up to the UK/Mexico formal evaluation. It compares the current product workflow with one un-tuned Gemini Full + Google Search interaction per category.
 
@@ -79,6 +79,8 @@ v2.0.17 implements the preregistered `codex-in-session` fallback after both 8,19
 v2.0.18 fixes repair-cache identity after a later DeepSeek schema repair succeeded. The cache identity must retain the frozen requested model `deepseek-v4-pro`, while `actualModel` records `deepseek/deepseek-v4-pro`; using the actual route as both fields made a valid cache fail resumption validation. Two successful cached repairs are deterministically metadata-corrected without another model call or any score/output change. A third failed repair is resolved through the v2.0.17 in-session importer.
 
 v2.0.19 normalizes timeouts that occur while reading a provider response body, not only while awaiting response headers. The bounded request helper now retries that timeout once and returns a metered provider failure rather than crashing the runner. When provider usage is unavailable, token usage is conservatively estimated from the serialized blind input and maximum output budget and priced at the official rate; it is explicitly not labeled account-observed. The one timeout that exposed this defect is backfilled through the audited importer before its in-session arbitration is cached.
+
+v2.0.20 extends the same single schema-repair contract to independent judges and makes recovery ledger-aware. If the cost ledger already contains an initial schema failure for a packet/judge or arbitrator, resumption starts directly with the one 8,192-token same-model repair instead of repurchasing the 4,096-token call. If a repair failure is already recorded, no external model is called again and the run requests the configured in-session fallback. Logical requested-model identity remains stable across repair routing.
 
 ```powershell
 node scripts\run-tsx.cjs experiments\search-e2e-evaluation\co-v2\scripts\import-in-session-arbitration.ts --decision=<raw-output-json>

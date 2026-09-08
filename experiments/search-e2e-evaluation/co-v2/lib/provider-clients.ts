@@ -331,8 +331,8 @@ async function callBlindReviewV2(input: Record<string, unknown>, model: string, 
 }
 
 export function callBlindJudgeV2(packet: Record<string, unknown>, model: string,
-  maxTokens = 4_096): Promise<ProviderCall<BlindJudgeV2Output>> {
-  return callBlindReviewV2(packet, model, "blind-judge-rubric-v2.md", maxTokens);
+  maxTokens = 4_096, options: { schemaRepair?: boolean } = {}): Promise<ProviderCall<BlindJudgeV2Output>> {
+  return callBlindReviewV2(packet, model, "blind-judge-rubric-v2.md", maxTokens, options);
 }
 
 async function callDeepSeekBlindArbitratorV2(input: Record<string, unknown>, model: string):

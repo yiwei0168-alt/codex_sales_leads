@@ -469,10 +469,21 @@ function decisionFromCall(packet: BlindAuditV2Packet, judgeId: string, call: Pro
 
 export async function judgeBlindPacketV2(packet: BlindAuditV2Packet, judgeId: string, model: string, options: {
   onCostEvents?: (events: ExperimentCostEvent[]) => Promise<void> | void;
+  startWithSchemaRepair?: boolean;
 } = {}): Promise<BlindJudgeV2Decision> {
-  const call = await callBlindJudgeV2(packet as unknown as Record<string, unknown>, model);
-  const costEvent = costEventFor(packet, call, "blind-judge-v2", judgeId);
+  const requestedModel = model;
+  let call = await callBlindJudgeV2(packet as unknown as Record<string, unknown>, model,
+    options.startWithSchemaRepair ? 8_192 : 4_096, { schemaRepair: options.startWithSchemaRepair });
+  let costEvent = costEventFor(packet, call, "blind-judge-v2",
+    options.startWithSchemaRepair ? `${judgeId}-schema-repair` : judgeId);
   await options.onCostEvents?.([costEvent]);
+  if (!options.startWithSchemaRepair && !call.output && !call.requestError && call.parseError) {
+    const repaired = await callBlindJudgeV2(packet as unknown as Record<string, unknown>, call.actualModel,
+      8_192, { schemaRepair: true });
+    call = { ...repaired, requestedModel };
+    costEvent = costEventFor(packet, call, "blind-judge-v2", `${judgeId}-schema-repair`);
+    await options.onCostEvents?.([costEvent]);
+  }
   const decision = decisionFromCall(packet, judgeId, call, "blind-judge-v2");
   return { ...decision, costEvent };
 }
@@ -480,14 +491,20 @@ export async function judgeBlindPacketV2(packet: BlindAuditV2Packet, judgeId: st
 export async function arbitrateBlindPacketV2(packet: BlindAuditV2Packet,
   judges: [BlindJudgeV2Decision, BlindJudgeV2Decision], arbitrationReasons: string[], model: string, options: {
     onCostEvents?: (events: ExperimentCostEvent[]) => Promise<void> | void;
+    startWithSchemaRepair?: boolean;
   } = {}): Promise<BlindJudgeV2Decision> {
   const input = { packet, arbitrationReasons,
     judgeOutputs: judges.map((judge) => ({ judgeId: judge.judgeId, output: judge.output })) };
   const requestedModel = model;
-  let call = await callBlindArbitratorV2(input as unknown as Record<string, unknown>, model);
-  let costEvent = costEventFor(packet, call, "blind-arbitrator-v2", "arbitrator");
+  const callModel = options.startWithSchemaRepair && /^deepseek-/i.test(model.trim())
+    ? process.env.OPENROUTER_DEEPSEEK_ESCALATION_MODEL?.trim() || `deepseek/${model.trim()}` : model;
+  let call = await callBlindArbitratorV2(input as unknown as Record<string, unknown>, callModel,
+    options.startWithSchemaRepair ? 8_192 : 4_096, { schemaRepair: options.startWithSchemaRepair });
+  if (options.startWithSchemaRepair) call = { ...call, requestedModel };
+  let costEvent = costEventFor(packet, call, "blind-arbitrator-v2",
+    options.startWithSchemaRepair ? "arbitrator-schema-repair" : "arbitrator");
   await options.onCostEvents?.([costEvent]);
-  if (!call.output && !call.requestError && call.parseError) {
+  if (!options.startWithSchemaRepair && !call.output && !call.requestError && call.parseError) {
     const repaired = await callBlindArbitratorV2(input as unknown as Record<string, unknown>, call.actualModel,
       8_192, { schemaRepair: true });
     call = { ...repaired, requestedModel };
@@ -701,6 +718,7 @@ export async function executeBlindAuditV2(sample: { packets: BlindAuditV2Packet[
     arbitratorModel?: string;
     concurrency?: number;
     cache?: BlindAuditV2DecisionCache;
+    previousCostEvents?: ExperimentCostEvent[];
     onCostEvents?: (events: ExperimentCostEvent[]) => Promise<void> | void;
     authorizePaidCall: (call: { packetId: string; stage: "judge" | "arbitrator";
       judgeId: string; requestedModel: string }) => Promise<void> | void;
@@ -722,6 +740,14 @@ export async function executeBlindAuditV2(sample: { packets: BlindAuditV2Packet[
   const judge = options.judge ?? judgeBlindPacketV2;
   const arbitrate = options.arbitrate ?? arbitrateBlindPacketV2;
   const cacheStats = { reads: 0, hits: 0, misses: 0, writes: 0 };
+  const repairState = (packetId: string, stage: "blind-judge-v2" | "blind-arbitrator-v2", judgeId: string) => {
+    const events = options.previousCostEvents ?? [];
+    const base = `${packetId}:${stage}:${judgeId}`;
+    const failed = events.filter((event) => event.status === "failed"
+      && (event.volume.discardedReasonCounts.schemaInvalid ?? 0) > 0);
+    return { initialFailed: failed.some((event) => event.eventId === base || event.eventId.startsWith(`${base}:repeat-`)),
+      repairFailed: failed.some((event) => event.eventId.startsWith(`${base}-schema-repair`)) };
+  };
   const cachedDecision = async (cacheKey: string, packetId: string, judgeId: string, model: string) => {
     if (!options.cache) return null;
     cacheStats.reads += 1;
@@ -740,9 +766,12 @@ export async function executeBlindAuditV2(sample: { packets: BlindAuditV2Packet[
     const cacheKey = blindAuditV2DecisionCacheKey(packet, judgeId, model);
     const cached = await cachedDecision(cacheKey, packet.packetId, judgeId, model);
     if (cached) return cached;
+    const prior = repairState(packet.packetId, "blind-judge-v2", judgeId);
+    if (prior.repairFailed) throw new Error(`${packet.packetId} ${judgeId} requires codex-in-session fallback`);
     await options.authorizePaidCall({ packetId: packet.packetId, stage: "judge", judgeId,
       requestedModel: model });
-    const generated = await judge(packet, judgeId, model, { onCostEvents: options.onCostEvents });
+    const generated = await judge(packet, judgeId, model, { onCostEvents: options.onCostEvents,
+      startWithSchemaRepair: prior.initialFailed });
     if (options.cache) {
       await options.cache.set(cacheKey, generated);
       cacheStats.writes += 1;
@@ -759,10 +788,12 @@ export async function executeBlindAuditV2(sample: { packets: BlindAuditV2Packet[
     const cacheKey = blindAuditV2DecisionCacheKey(packet, "arbitrator", arbitratorModel, judges);
     let arbitrator = await cachedDecision(cacheKey, packet.packetId, "arbitrator", arbitratorModel);
     if (!arbitrator) {
+      const prior = repairState(packet.packetId, "blind-arbitrator-v2", "arbitrator");
+      if (prior.repairFailed) throw new Error(`${packet.packetId} arbitrator requires codex-in-session fallback`);
       await options.authorizePaidCall({ packetId: packet.packetId, stage: "arbitrator", judgeId: "arbitrator",
         requestedModel: arbitratorModel });
       arbitrator = await arbitrate(packet, judges, initial.arbitrationReasons, arbitratorModel,
-        { onCostEvents: options.onCostEvents });
+        { onCostEvents: options.onCostEvents, startWithSchemaRepair: prior.initialFailed });
       if (options.cache) {
         await options.cache.set(cacheKey, arbitrator);
         cacheStats.writes += 1;
