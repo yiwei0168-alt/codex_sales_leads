@@ -29,7 +29,7 @@ import rateCardJson from "../config/official-rate-card.v1.json";
 nextEnv.loadEnvConfig(process.cwd());
 
 const experimentRoot = path.resolve("experiments/search-e2e-evaluation/co-v2");
-const frozenTag = "search-e2e-co-v2.0.11-preregistered";
+const frozenTag = "search-e2e-co-v2.0.12-preregistered";
 const totalCells = EXPERIMENT_CONFIG.sample.cells;
 const slotsPerCell = EXPERIMENT_CONFIG.sample.slotsPerArmPerCell;
 const rateCard = rateCardJson as ExperimentRateCard;
@@ -165,6 +165,15 @@ async function requireBudget(state: FormalRunState, label: string, estimateUsd: 
   if (state.status === "budget-paused") return false;
   const decision = budgetDecision(state, estimateUsd);
   if (!decision.requiresUserDecision) return true;
+  const authorization = state.budgetForecastAuthorization;
+  if (!decision.hardStop && decision.reasons.every((reason) => reason === "forecast-may-exceed-budget")
+    && authorization && authorization.authorizedCellId === label && authorization.remainingCellStarts > 0) {
+    authorization.remainingCellStarts -= 1;
+    authorization.consumedAt = new Date().toISOString();
+    authorization.consumedForCellId = label;
+    await saveRunState(state);
+    return true;
+  }
   state.status = "budget-paused";
   state.anomalies.push({ at: new Date().toISOString(), severity: "warning", code: "budget-forecast-warning",
     detail: `${label}: ${decision.reasons.join(", ")}` });
@@ -175,23 +184,55 @@ async function requireBudget(state: FormalRunState, label: string, estimateUsd: 
   return false;
 }
 
+async function resumeBudgetAfterUserConfirmation(): Promise<void> {
+  await verifyFrozenManifest(true);
+  const state = await loadRunState();
+  if (state.status !== "budget-paused") {
+    throw new Error(`Budget resume requires budget-paused state; received ${state.status}`);
+  }
+  const decision = budgetDecision(state);
+  if (decision.hardStop) throw new Error(`Cannot resume after hard budget stop: ${decision.reasons.join(", ")}`);
+  const confirmedAt = new Date().toISOString();
+  state.budgetForecastAuthorization = {
+    confirmedAt,
+    reason: "User confirmed the recommended plan: freeze CO Retail at 14/50, continue the next frozen cell, retain the USD 50 hard stop and report USD 10/20/30 checkpoints.",
+    baselineSpentUsd: decision.spentUsd,
+    baselineExpectedUsd: decision.forecast.expectedCompletionUsd,
+    baselineUpperUsd: decision.forecast.upperUsd,
+    authorizedCellId: "CO-distribution",
+    remainingCellStarts: 1,
+  };
+  state.preflightChecks.push({ name: "budget-forecast-user-authorization-v2.0.12", completedAt: confirmedAt,
+    detail: { retailFrozenCandidateCount: 14, additionalRetailSearchAuthorized: false,
+      nextFrozenCellAuthorized: "CO-distribution", hardBudgetUsd: EXPERIMENT_CONFIG.cost.hardBudgetUsd,
+      reviewThresholdsUsd: EXPERIMENT_CONFIG.cost.reviewThresholdUsd,
+      baselineExpectedUsd: decision.forecast.expectedCompletionUsd,
+      baselineUpperUsd: decision.forecast.upperUsd } });
+  state.status = state.completedCellIds.length === totalCells ? "cells-completed" : "running";
+  await saveRunState(state);
+  const artifact = { schemaVersion: 1, runId: state.runId, confirmedAt,
+    authorization: state.budgetForecastAuthorization, budgetDecision: decision };
+  await writeJsonAtomic(path.join(artifactRunRoot(), "cost/budget-resume-user-confirmed-v2.0.12.json"), artifact);
+  console.log(JSON.stringify({ status: state.status, ...artifact }, null, 2));
+}
+
 async function freezeManifest(): Promise<void> {
   validateExperimentConfig();
   const files = await Promise.all(frozenFiles.map(async (relative) => {
     const absolute = path.resolve(experimentRoot, relative);
     return { path: path.relative(process.cwd(), absolute).replace(/\\/g, "/"), sha256: sha256(await readFile(absolute)) };
   }));
-  await writeJsonAtomic(path.join(experimentRoot, "config/frozen-manifest.v2.0.11.json"), {
+  await writeJsonAtomic(path.join(experimentRoot, "config/frozen-manifest.v2.0.12.json"), {
     schemaVersion: 1, experimentId: EXPERIMENT_CONFIG.experimentId, runId: EXPERIMENT_CONFIG.runId,
     createdAt: new Date().toISOString(), requiredGitTag: frozenTag, files,
   });
   console.log(JSON.stringify({ status: "manifest-frozen", fileCount: files.length,
-    manifest: "experiments/search-e2e-evaluation/co-v2/config/frozen-manifest.v2.0.11.json" }, null, 2));
+    manifest: "experiments/search-e2e-evaluation/co-v2/config/frozen-manifest.v2.0.12.json" }, null, 2));
 }
 
 async function verifyFrozenManifest(requireTag = true): Promise<void> {
   validateExperimentConfig();
-  const manifest = JSON.parse(await readFile(path.join(experimentRoot, "config/frozen-manifest.v2.0.11.json"), "utf8")) as {
+  const manifest = JSON.parse(await readFile(path.join(experimentRoot, "config/frozen-manifest.v2.0.12.json"), "utf8")) as {
     requiredGitTag: string; files: Array<{ path: string; sha256: string }> };
   const mismatches: string[] = [];
   for (const item of manifest.files) {
@@ -583,6 +624,7 @@ if (phase === "freeze") await freezeManifest();
 else if (phase === "verify") await verifyOnly();
 else if (phase === "preflight") await runPreflight();
 else if (phase === "provider-check") await runRecoveryPreflight();
+else if (phase === "resume-budget") await resumeBudgetAfterUserConfirmation();
 else if (phase === "cell") {
   const cellId = process.argv.find((value) => value.startsWith("--cell="))?.slice(7);
   if (!cellId) throw new Error("--phase=cell requires --cell=<cellId>");

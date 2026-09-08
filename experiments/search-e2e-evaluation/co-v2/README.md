@@ -1,10 +1,16 @@
-# Colombia search E2E evaluation v2.0.11
+# Colombia search E2E evaluation v2.0.12
 
 This directory is the immutable, cold-start Colombia follow-up to the UK/Mexico formal evaluation. It compares the current product workflow with one un-tuned Gemini Full + Google Search interaction per category.
 
 Scope: Colombia; Distributor/VAD, Reseller/VAR, Retailer/E-tailer and SI/MSP; 50 requested candidates per arm per category; 400 requested slots total.
 
 Budget: USD 50 hard cap. Mandatory reviews occur at cumulative USD 10, 20 and 30. The runner also pauses before a required call or stage when the expected or conservative completion forecast may exceed USD 50.
+
+After a documented forecast pause and explicit user confirmation, record a one-cell budget authorization before continuing. This does not weaken the hard cap and cannot authorize another CO Retail repair:
+
+```powershell
+node scripts\run-tsx.cjs experiments\search-e2e-evaluation\co-v2\scripts\run-formal-experiment.ts --phase=resume-budget
+```
 
 Run order:
 

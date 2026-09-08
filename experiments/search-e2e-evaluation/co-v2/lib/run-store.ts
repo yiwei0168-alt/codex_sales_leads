@@ -21,6 +21,17 @@ export interface FormalRunState {
   completedEvaluationCellIds: string[];
   completedBlindPacketIds: string[];
   reportedBudgetThresholdsUsd: number[];
+  budgetForecastAuthorization?: {
+    confirmedAt: string;
+    reason: string;
+    baselineSpentUsd: number;
+    baselineExpectedUsd: number;
+    baselineUpperUsd: number;
+    authorizedCellId: string;
+    remainingCellStarts: number;
+    consumedAt?: string;
+    consumedForCellId?: string;
+  };
   costEvents: ExperimentCostEvent[];
   anomalies: Array<{ at: string; cellId?: string; severity: "warning" | "fatal"; code: string; detail: string }>;
 }
@@ -97,6 +108,7 @@ export async function saveRunState(state: FormalRunState): Promise<void> {
     completedCellIds: next.completedCellIds, completedEvaluationCellIds: next.completedEvaluationCellIds,
     completedBlindPacketIds: next.completedBlindPacketIds,
     reportedBudgetThresholdsUsd: next.reportedBudgetThresholdsUsd,
+    budgetForecastAuthorization: next.budgetForecastAuthorization,
     anomalies: next.anomalies, costEvents: next.costEvents,
   });
 }
