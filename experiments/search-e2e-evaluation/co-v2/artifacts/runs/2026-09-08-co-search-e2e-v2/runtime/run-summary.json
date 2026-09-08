@@ -4,7 +4,7 @@
   "experimentId": "search-e2e-eval-co-v2.0.7",
   "status": "blind-audit-running",
   "createdAt": "2026-09-07T20:36:48.680Z",
-  "updatedAt": "2026-09-08T23:05:01.038Z",
+  "updatedAt": "2026-09-08T23:16:52.400Z",
   "blindJudgeModel": "blind-audit-v2.1-dual-judge",
   "preflightChecks": [
     {
@@ -32897,6 +32897,679 @@
       "actualModel": "codex-in-session",
       "startedAt": "2026-09-08T23:05:01.025Z",
       "completedAt": "2026-09-08T23:05:01.025Z",
+      "latencyMs": 0,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0
+      },
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "blind-audit-v2",
+        "no web search",
+        "arm/model/rank/unified score hidden",
+        "output is consumed by consensus or conditional arbitration",
+        "authorized in-conversation Codex fallback",
+        "no API call or external search"
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "blind-v2-a411345b83725c2f70d7f81e:blind-judge-v2:judge-b",
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge-v2",
+      "provider": "openrouter",
+      "requestedModel": "openai/gpt-5.6-sol",
+      "actualModel": "openai/gpt-5.6-sol",
+      "startedAt": "2026-09-08T23:07:49.007Z",
+      "completedAt": "2026-09-08T23:08:16.170Z",
+      "latencyMs": 27163,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 3659,
+        "outputTokens": 1811
+      },
+      "accountCashCostUsd": 0.027256,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "blind-audit-v2",
+        "no web search",
+        "arm/model/rank/unified score hidden",
+        "output is consumed by consensus or conditional arbitration"
+      ],
+      "officialListPriceUsd": 0.050856,
+      "budgetCostUsd": 0.027256,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "blind-v2-594532245bf6f25931963428:blind-judge-v2:judge-b",
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge-v2",
+      "provider": "openrouter",
+      "requestedModel": "openai/gpt-5.6-sol",
+      "actualModel": "openai/gpt-5.6-sol",
+      "startedAt": "2026-09-08T23:07:48.969Z",
+      "completedAt": "2026-09-08T23:08:18.304Z",
+      "latencyMs": 29335,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 4324,
+        "outputTokens": 1909
+      },
+      "accountCashCostUsd": 0.0298985,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "blind-audit-v2",
+        "no web search",
+        "arm/model/rank/unified score hidden",
+        "output is consumed by consensus or conditional arbitration"
+      ],
+      "officialListPriceUsd": 0.055476,
+      "budgetCostUsd": 0.0298985,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "blind-v2-594532245bf6f25931963428:blind-judge-v2:judge-a",
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge-v2",
+      "provider": "openrouter",
+      "requestedModel": "anthropic/claude-opus-5",
+      "actualModel": "anthropic/claude-opus-5",
+      "startedAt": "2026-09-08T23:07:48.999Z",
+      "completedAt": "2026-09-08T23:08:28.345Z",
+      "latencyMs": 39346,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 8576,
+        "outputTokens": 2878
+      },
+      "accountCashCostUsd": 0.11483,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "blind-audit-v2",
+        "no web search",
+        "arm/model/rank/unified score hidden",
+        "output is consumed by consensus or conditional arbitration"
+      ],
+      "officialListPriceUsd": 0.11483,
+      "budgetCostUsd": 0.11483,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "blind-v2-a411345b83725c2f70d7f81e:blind-judge-v2:judge-a",
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge-v2",
+      "provider": "openrouter",
+      "requestedModel": "anthropic/claude-opus-5",
+      "actualModel": "anthropic/claude-opus-5",
+      "startedAt": "2026-09-08T23:07:49.005Z",
+      "completedAt": "2026-09-08T23:08:41.029Z",
+      "latencyMs": 52024,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 7153,
+        "outputTokens": 3833
+      },
+      "accountCashCostUsd": 0.13159,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "blind-audit-v2",
+        "no web search",
+        "arm/model/rank/unified score hidden",
+        "output is consumed by consensus or conditional arbitration"
+      ],
+      "officialListPriceUsd": 0.13159,
+      "budgetCostUsd": 0.13159,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "blind-v2-b43a74469e6d928140c080b6:blind-judge-v2:judge-b",
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge-v2",
+      "provider": "openrouter",
+      "requestedModel": "openai/gpt-5.6-sol",
+      "actualModel": "openai/gpt-5.6-sol",
+      "startedAt": "2026-09-08T23:08:28.388Z",
+      "completedAt": "2026-09-08T23:08:53.351Z",
+      "latencyMs": 24963,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 3409,
+        "outputTokens": 1541
+      },
+      "accountCashCostUsd": 0.023931,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "blind-audit-v2",
+        "no web search",
+        "arm/model/rank/unified score hidden",
+        "output is consumed by consensus or conditional arbitration"
+      ],
+      "officialListPriceUsd": 0.044456,
+      "budgetCostUsd": 0.023931,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "blind-v2-b43a74469e6d928140c080b6:blind-judge-v2:judge-a",
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge-v2",
+      "provider": "openrouter",
+      "requestedModel": "anthropic/claude-opus-5",
+      "actualModel": "anthropic/claude-opus-5",
+      "startedAt": "2026-09-08T23:08:28.386Z",
+      "completedAt": "2026-09-08T23:09:05.061Z",
+      "latencyMs": 36675,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 6761,
+        "outputTokens": 2784
+      },
+      "accountCashCostUsd": 0.103405,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "blind-audit-v2",
+        "no web search",
+        "arm/model/rank/unified score hidden",
+        "output is consumed by consensus or conditional arbitration"
+      ],
+      "officialListPriceUsd": 0.103405,
+      "budgetCostUsd": 0.103405,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "blind-v2-e16c1b8e6d1f2cd4a52c6047:blind-judge-v2:judge-b",
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge-v2",
+      "provider": "openrouter",
+      "requestedModel": "openai/gpt-5.6-sol",
+      "actualModel": "openai/gpt-5.6-sol",
+      "startedAt": "2026-09-08T23:09:05.115Z",
+      "completedAt": "2026-09-08T23:09:33.280Z",
+      "latencyMs": 28165,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 2727,
+        "outputTokens": 1854
+      },
+      "accountCashCostUsd": 0.025356,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "blind-audit-v2",
+        "no web search",
+        "arm/model/rank/unified score hidden",
+        "output is consumed by consensus or conditional arbitration"
+      ],
+      "officialListPriceUsd": 0.047988,
+      "budgetCostUsd": 0.025356,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "blind-v2-e16c1b8e6d1f2cd4a52c6047:blind-judge-v2:judge-a",
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge-v2",
+      "provider": "openrouter",
+      "requestedModel": "anthropic/claude-opus-5",
+      "actualModel": "anthropic/claude-opus-5",
+      "startedAt": "2026-09-08T23:09:05.111Z",
+      "completedAt": "2026-09-08T23:09:44.296Z",
+      "latencyMs": 39185,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 5511,
+        "outputTokens": 2882
+      },
+      "accountCashCostUsd": 0.099605,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "blind-audit-v2",
+        "no web search",
+        "arm/model/rank/unified score hidden",
+        "output is consumed by consensus or conditional arbitration"
+      ],
+      "officialListPriceUsd": 0.099605,
+      "budgetCostUsd": 0.099605,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "blind-v2-a411345b83725c2f70d7f81e:blind-arbitrator-v2:arbitrator",
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-arbitrator-v2",
+      "provider": "openrouter",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek/deepseek-v4-pro",
+      "startedAt": "2026-09-08T23:08:41.081Z",
+      "completedAt": "2026-09-08T23:09:47.879Z",
+      "latencyMs": 66795,
+      "attempts": 2,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "failed",
+      "usage": {
+        "inputTokens": 6077,
+        "outputTokens": 4096
+      },
+      "accountCashCostUsd": 0.023547946,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "schemaInvalid": 1
+        }
+      },
+      "notes": [
+        "blind-audit-v2",
+        "no web search",
+        "arm/model/rank/unified score hidden",
+        "output is consumed by consensus or conditional arbitration"
+      ],
+      "officialListPriceUsd": 0.006207015,
+      "budgetCostUsd": 0.023547946,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "blind-v2-e16c1b8e6d1f2cd4a52c6047:blind-arbitrator-v2:arbitrator",
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-arbitrator-v2",
+      "provider": "openrouter",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek/deepseek-v4-pro",
+      "startedAt": "2026-09-08T23:09:44.344Z",
+      "completedAt": "2026-09-08T23:10:44.161Z",
+      "latencyMs": 59815,
+      "attempts": 2,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "failed",
+      "usage": {
+        "inputTokens": 5581,
+        "outputTokens": 4096
+      },
+      "accountCashCostUsd": 0.01296493809,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "schemaInvalid": 1
+        }
+      },
+      "notes": [
+        "blind-audit-v2",
+        "no web search",
+        "arm/model/rank/unified score hidden",
+        "output is consumed by consensus or conditional arbitration"
+      ],
+      "officialListPriceUsd": 0.005991255,
+      "budgetCostUsd": 0.01296493809,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "blind-v2-a411345b83725c2f70d7f81e:blind-arbitrator-v2:arbitrator-schema-repair",
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-arbitrator-v2",
+      "provider": "openrouter",
+      "requestedModel": "deepseek/deepseek-v4-pro",
+      "actualModel": "deepseek/deepseek-v4-pro",
+      "startedAt": "2026-09-08T23:09:47.908Z",
+      "completedAt": "2026-09-08T23:10:53.342Z",
+      "latencyMs": 65434,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 6801,
+        "outputTokens": 4556
+      },
+      "accountCashCostUsd": 0.01497938429,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "blind-audit-v2",
+        "no web search",
+        "arm/model/rank/unified score hidden",
+        "output is consumed by consensus or conditional arbitration"
+      ],
+      "officialListPriceUsd": 0.006922155,
+      "budgetCostUsd": 0.01497938429,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "blind-v2-9eec7b68f5ada30fea49f744:blind-judge-v2:judge-b",
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge-v2",
+      "provider": "openrouter",
+      "requestedModel": "openai/gpt-5.6-sol",
+      "actualModel": "openai/gpt-5.6-sol",
+      "startedAt": "2026-09-08T23:10:53.372Z",
+      "completedAt": "2026-09-08T23:11:13.375Z",
+      "latencyMs": 20003,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 1786,
+        "outputTokens": 1328
+      },
+      "accountCashCostUsd": 0.0177435,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "blind-audit-v2",
+        "no web search",
+        "arm/model/rank/unified score hidden",
+        "output is consumed by consensus or conditional arbitration"
+      ],
+      "officialListPriceUsd": 0.033704,
+      "budgetCostUsd": 0.0177435,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "blind-v2-9eec7b68f5ada30fea49f744:blind-judge-v2:judge-a",
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge-v2",
+      "provider": "openrouter",
+      "requestedModel": "anthropic/claude-opus-5",
+      "actualModel": "anthropic/claude-opus-5",
+      "startedAt": "2026-09-08T23:10:53.373Z",
+      "completedAt": "2026-09-08T23:11:25.815Z",
+      "latencyMs": 32442,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 3903,
+        "outputTokens": 2717
+      },
+      "accountCashCostUsd": 0.08744,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "blind-audit-v2",
+        "no web search",
+        "arm/model/rank/unified score hidden",
+        "output is consumed by consensus or conditional arbitration"
+      ],
+      "officialListPriceUsd": 0.08744,
+      "budgetCostUsd": 0.08744,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "blind-v2-9eec7b68f5ada30fea49f744:blind-arbitrator-v2:arbitrator",
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-arbitrator-v2",
+      "provider": "openrouter",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek/deepseek-v4-pro",
+      "startedAt": "2026-09-08T23:11:25.855Z",
+      "completedAt": "2026-09-08T23:12:55.231Z",
+      "latencyMs": 89373,
+      "attempts": 2,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "failed",
+      "usage": {
+        "inputTokens": 3270,
+        "outputTokens": 4096
+      },
+      "accountCashCostUsd": 0.0086095961105,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "schemaInvalid": 1
+        }
+      },
+      "notes": [
+        "blind-audit-v2",
+        "no web search",
+        "arm/model/rank/unified score hidden",
+        "output is consumed by consensus or conditional arbitration"
+      ],
+      "officialListPriceUsd": 0.00498597,
+      "budgetCostUsd": 0.0086095961105,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "blind-v2-e16c1b8e6d1f2cd4a52c6047:blind-arbitrator-v2:arbitrator-schema-repair",
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-arbitrator-v2",
+      "provider": "openrouter",
+      "requestedModel": "deepseek/deepseek-v4-pro",
+      "actualModel": "deepseek/deepseek-v4-pro",
+      "startedAt": "2026-09-08T23:10:44.199Z",
+      "completedAt": "2026-09-08T23:13:15.424Z",
+      "latencyMs": 151225,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "failed",
+      "usage": {
+        "inputTokens": 4913,
+        "outputTokens": 8192
+      },
+      "accountCashCostUsd": 0.0273789,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "schemaInvalid": 1
+        }
+      },
+      "notes": [
+        "blind-audit-v2",
+        "no web search",
+        "arm/model/rank/unified score hidden",
+        "output is consumed by consensus or conditional arbitration"
+      ],
+      "officialListPriceUsd": 0.009264195,
+      "budgetCostUsd": 0.0273789,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "blind-v2-9eec7b68f5ada30fea49f744:blind-arbitrator-v2:arbitrator-schema-repair",
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-arbitrator-v2",
+      "provider": "openrouter",
+      "requestedModel": "deepseek/deepseek-v4-pro",
+      "actualModel": "deepseek/deepseek-v4-pro",
+      "startedAt": "2026-09-08T23:12:55.264Z",
+      "completedAt": "2026-09-08T23:14:21.675Z",
+      "latencyMs": 86411,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 3298,
+        "outputTokens": 4549
+      },
+      "accountCashCostUsd": 0.0094608830775,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "blind-audit-v2",
+        "no web search",
+        "arm/model/rank/unified score hidden",
+        "output is consumed by consensus or conditional arbitration"
+      ],
+      "officialListPriceUsd": 0.00539226,
+      "budgetCostUsd": 0.0094608830775,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "blind-v2-e16c1b8e6d1f2cd4a52c6047:blind-arbitrator-v2:arbitrator-codex-in-session",
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-arbitrator-v2",
+      "provider": "in-conversation-codex",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-08T23:16:52.387Z",
+      "completedAt": "2026-09-08T23:16:52.387Z",
       "latencyMs": 0,
       "attempts": 1,
       "retries": 0,

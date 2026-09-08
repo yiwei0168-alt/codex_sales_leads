@@ -1,0 +1,157 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-08-co-search-e2e-v2",
+  "arbitrationReasons": [
+    "total-score-difference"
+  ],
+  "decision": {
+    "packetId": "blind-v2-e16c1b8e6d1f2cd4a52c6047",
+    "judgeId": "arbitrator",
+    "requestedModel": "deepseek-v4-pro",
+    "actualModel": "codex-in-session",
+    "modelReportedTotal": 70,
+    "deterministicTotal": 70,
+    "roleFamily": "unresolved",
+    "requestedCategoryFamilyMatch": false,
+    "citationValidation": {
+      "checkedClaims": 7,
+      "validEvidenceIds": 7,
+      "entailedClaims": 7,
+      "idAlignmentRate": 1,
+      "entailmentRate": 1
+    },
+    "output": {
+      "packetId": "blind-v2-e16c1b8e6d1f2cd4a52c6047",
+      "externalSearchUsed": false,
+      "externalKnowledgeUsed": false,
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "supportedRoles": [
+        "retail",
+        "e-tailer"
+      ],
+      "primaryRole": "retail",
+      "dimensions": {
+        "productAndUseCaseFit": 35,
+        "channelAndBuyingInfluence": 11,
+        "sameRoleScaleAndCoverage": 9,
+        "executionAndEnablement": 8,
+        "opportunityAndRisk": 7
+      },
+      "totalScore": 70,
+      "eligibility": "eligible",
+      "dimensionReasons": [
+        {
+          "dimension": "productAndUseCaseFit",
+          "reason": "The retailer directly covers routers, Wi-Fi repeaters, amplifiers and home coverage use cases, strongly matching Cudy's consumer range but not evidencing the wider SMB, switching, FWA or xPON families.",
+          "citations": [
+            {
+              "evidenceId": "evidence-c4f45652858f9d0c",
+              "claim": "Homecenter sells routers, Wi-Fi repeaters, amplifiers and coverage-extension products.",
+              "support": "direct"
+            }
+          ]
+        },
+        {
+          "dimension": "channelAndBuyingInfluence",
+          "reason": "Its owned transactional store controls assortment, pricing, delivery and pickup at the consumer point of purchase, though buying volume and vendor-onboarding authority are not explicit.",
+          "citations": [
+            {
+              "evidenceId": "evidence-37606ca6a9a1d8cf",
+              "claim": "Customers can buy networking products online with delivery or store pickup and online card payment.",
+              "support": "direct"
+            }
+          ]
+        },
+        {
+          "dimension": "sameRoleScaleAndCoverage",
+          "reason": "City-specific availability, store pickup and national service lines indicate material multi-location reach, but the packet does not quantify stores or prove full national coverage, supporting the upper regional band.",
+          "citations": [
+            {
+              "evidenceId": "evidence-7957fc41da8ea9e0",
+              "claim": "The store localizes availability by city and lets shoppers change location.",
+              "support": "direct"
+            },
+            {
+              "evidenceId": "evidence-37606ca6a9a1d8cf",
+              "claim": "Online purchases can be collected in store.",
+              "support": "direct"
+            }
+          ]
+        },
+        {
+          "dimension": "executionAndEnablement",
+          "reason": "Returns, warranty, customer-service, order-tracking and store-pickup capabilities demonstrate strong consumer retail execution; technical vendor enablement is not shown.",
+          "citations": [
+            {
+              "evidenceId": "evidence-cb4d77bd7033ef25",
+              "claim": "Homecenter publishes returns and warranty policies and customer-service contacts.",
+              "support": "direct"
+            },
+            {
+              "evidenceId": "evidence-7957fc41da8ea9e0",
+              "claim": "The site supports order tracking and expedited returns.",
+              "support": "direct"
+            }
+          ]
+        },
+        {
+          "dimension": "opportunityAndRisk",
+          "reason": "An established multi-brand home Wi-Fi category creates a credible value-brand placement opportunity, while narrow networking depth and no evidenced Cudy relationship constrain it.",
+          "citations": [
+            {
+              "evidenceId": "evidence-c4f45652858f9d0c",
+              "claim": "The retailer already merchandises consumer Wi-Fi products with visible prices.",
+              "support": "direct"
+            }
+          ]
+        }
+      ],
+      "unsupportedOrContradictoryClaims": [
+        "The packet does not establish store count, nationwide coverage or sales volume.",
+        "The packet does not establish SMB networking depth, vendor technical enablement or a Cudy relationship."
+      ]
+    },
+    "costEvent": {
+      "eventId": "blind-v2-e16c1b8e6d1f2cd4a52c6047:blind-arbitrator-v2:arbitrator-codex-in-session",
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-arbitrator-v2",
+      "provider": "in-conversation-codex",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-08T23:16:52.387Z",
+      "completedAt": "2026-09-08T23:16:52.387Z",
+      "latencyMs": 0,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0
+      },
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "blind-audit-v2",
+        "no web search",
+        "arm/model/rank/unified score hidden",
+        "output is consumed by consensus or conditional arbitration",
+        "authorized in-conversation Codex fallback",
+        "no API call or external search"
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    }
+  }
+}
