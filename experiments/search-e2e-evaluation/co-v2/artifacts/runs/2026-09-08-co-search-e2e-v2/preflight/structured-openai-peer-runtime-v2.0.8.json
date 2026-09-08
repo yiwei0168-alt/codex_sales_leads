@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-08-co-search-e2e-v2",
+  "status": "passed",
+  "completedAt": "2026-09-08T00:29:57.191Z",
+  "provider": "openrouter-openai-peer",
+  "requestedModel": "openai/gpt-4o-mini",
+  "actualModel": "openai/gpt-4o-mini",
+  "attempts": 1,
+  "cost": {
+    "officialListPriceUsd": 0.0000237,
+    "budgetCostUsd": 0.0000237,
+    "cashCostBasis": "account-observed"
+  }
+}

@@ -26,7 +26,7 @@ import {
   type WorkflowModelUsage,
 } from "./types";
 
-export const LEAD_EVIDENCE_CORRECTION_PROMPT_VERSION = "lead-evidence-correction-v9-affiliated-target-market";
+export const LEAD_EVIDENCE_CORRECTION_PROMPT_VERSION = "lead-evidence-correction-v10-business-model-consistency";
 
 interface CorrectionRequest {
   instructions: string[];
@@ -377,7 +377,9 @@ export class LeadEvidenceCorrectionAgent {
     const findings = normalizedFindings(value, evidence, candidate.candidateId, candidate.evidenceSnapshotRunId);
     const supportedFindingRoles = findings.filter((finding) => finding.kind === "role" && finding.status === "supported")
       .flatMap((finding) => finding.roles);
-    const roles = [...new Set(value.roles.filter((role) => supportedFindingRoles.includes(role)))];
+    const marketplace = explicitlyThirdPartyMarketplace(findings);
+    const roles = [...new Set(value.roles.filter((role) => supportedFindingRoles.includes(role)))]
+      .filter((role) => !(marketplace && (role === "Retailer" || role === "E-tailer")));
     const heuristicRoles = deterministicRoles(evidence, candidate.evidenceSnapshotRunId);
     const families = roleFamilies(roles);
     const primary = selectPrimaryChannel({ roles, agentPrimaryRole: value.primaryBusinessRole });
@@ -413,6 +415,8 @@ export class LeadEvidenceCorrectionAgent {
             ? ["Proposed official website was not supported by the cited company-owned evidence; original identity retained."] : []),
           ...(value.roles.length > roles.length
             ? ["Roles without a supported atomic role finding were removed."] : []),
+          ...(marketplace && value.roles.some((role) => role === "Retailer" || role === "E-tailer")
+            ? ["Retailer/E-tailer roles were removed because supported findings explicitly identify a third-party seller marketplace rather than an inventory-owning retail operation."] : []),
           ...(heuristicRoles.some((role) => !roles.includes(role))
             ? [`Deterministic role hints were not auto-added: ${heuristicRoles.filter((role) => !roles.includes(role)).join(", ")}.`] : []),
           ...(reliedEvidenceIds.length < value.evidenceIds.length ? ["Unsupported evidence IDs were removed."] : [])],
@@ -673,4 +677,28 @@ export class LeadEvidenceCorrectionAgent {
       attempts: response.attempts, retries: response.retries,
       accountCashCostUsd: response.usage?.accountCashCostUsd });
   }
+}
+
+function explicitlyThirdPartyMarketplace(findings: CorrectedLeadWorkflowCandidate["correction"]["findings"]): boolean {
+  return findings.some((finding) => finding.status === "supported" && /\b(?:third[- ]party (?:seller )?marketplace|online marketplace|marketplace (?:platform|for third[- ]party sellers)|plataforma de marketplace|mercado en l[ií]nea para terceros)\b/i
+    .test(`${finding.statement} ${finding.notes.join(" ")}`));
+}
+
+export function enforceCorrectedRoleBusinessModel(
+  candidate: CorrectedLeadWorkflowCandidate,
+): CorrectedLeadWorkflowCandidate {
+  if (!explicitlyThirdPartyMarketplace(candidate.correction.findings)) return candidate;
+  const resolvedRoles = candidate.correction.resolvedRoles.filter((role) =>
+    role !== "Retailer" && role !== "E-tailer");
+  if (resolvedRoles.length === candidate.correction.resolvedRoles.length) return candidate;
+  const resolvedFamilies = roleFamilies(resolvedRoles);
+  const retainedPrimary = resolvedRoles.find((role) => role === candidate.correction.primaryRole);
+  const primary = selectPrimaryChannel({ roles: resolvedRoles,
+    agentPrimaryRole: retainedPrimary ?? "Unresolved" });
+  return { ...candidate, correction: { ...candidate.correction, resolvedRoles, resolvedFamilies,
+    primaryRole: primary.primaryRole, primaryFamily: primary.primaryFamily,
+    primaryChannelReason: primary.reason,
+    routingChanged: primary.primaryFamily !== null && primary.primaryFamily !== candidate.queryFamily,
+    warnings: [...candidate.correction.warnings,
+      "Retailer/E-tailer roles were removed because supported findings explicitly identify a third-party seller marketplace rather than an inventory-owning retail operation."] } };
 }

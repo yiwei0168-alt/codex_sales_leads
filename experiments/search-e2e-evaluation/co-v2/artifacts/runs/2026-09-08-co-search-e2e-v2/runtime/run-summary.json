@@ -4,7 +4,7 @@
   "experimentId": "search-e2e-eval-co-v2.0.7",
   "status": "running",
   "createdAt": "2026-09-07T20:36:48.680Z",
-  "updatedAt": "2026-09-08T00:06:39.889Z",
+  "updatedAt": "2026-09-08T00:40:16.866Z",
   "blindJudgeModel": "blind-audit-v2.1-dual-judge",
   "preflightChecks": [
     {
@@ -139,6 +139,31 @@
         "fallbackUsed": true,
         "attempts": 2
       }
+    },
+    {
+      "name": "structured-model-runtime-v2.0.8",
+      "completedAt": "2026-09-08T00:29:56.583Z",
+      "detail": {
+        "paidCallsMade": 1,
+        "secretsRecorded": false,
+        "requestedModel": "deepseek-v4-flash",
+        "actualModel": "deepseek/deepseek-v4-flash",
+        "actualProvider": "openrouter-deepseek",
+        "fallbackUsed": true,
+        "attempts": 2
+      }
+    },
+    {
+      "name": "structured-openai-peer-runtime-v2.0.8",
+      "completedAt": "2026-09-08T00:29:57.191Z",
+      "detail": {
+        "paidCallsMade": 1,
+        "secretsRecorded": false,
+        "requestedModel": "openai/gpt-4o-mini",
+        "actualModel": "openai/gpt-4o-mini",
+        "actualProvider": "openrouter-openai-peer",
+        "attempts": 1
+      }
     }
   ],
   "completedArmKeys": [
@@ -214,6 +239,13 @@
       "severity": "warning",
       "code": "product-target-underfill",
       "detail": "Product returned 6/50 after 8 rounds; completion=confirmed-exhaustion."
+    },
+    {
+      "at": "2026-09-08T00:40:16.856Z",
+      "cellId": "CO-retail",
+      "severity": "warning",
+      "code": "product-target-underfill",
+      "detail": "Product returned 13/50 after 8 rounds; completion=confirmed-exhaustion."
     }
   ],
   "costEvents": [
@@ -10972,6 +11004,342 @@
       "notes": [
         "Repeated call; base event CO-retail:ranking."
       ]
+    },
+    {
+      "eventId": "preflight:structured-model-runtime-v2.0.8",
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "arm": "product-e2e",
+      "ledger": "product-e2e-arm",
+      "stage": "model-provider-preflight",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek/deepseek-v4-flash",
+      "startedAt": "2026-09-08T00:29:54.248Z",
+      "completedAt": "2026-09-08T00:29:56.583Z",
+      "latencyMs": 1644,
+      "attempts": 2,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 103,
+        "outputTokens": 6,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "accountCashCostUsd": 0.0000080017,
+      "notes": [
+        "Model fallback used after 1 route failure(s) (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek."
+      ],
+      "officialListPriceUsd": 0.000016100000000000002,
+      "budgetCostUsd": 0.0000080017,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "preflight:structured-openai-peer-runtime-v2.0.8",
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "arm": "product-e2e",
+      "ledger": "product-e2e-arm",
+      "stage": "model-peer-provider-preflight",
+      "provider": "openrouter-openai-peer",
+      "requestedModel": "openai/gpt-4o-mini",
+      "actualModel": "openai/gpt-4o-mini",
+      "startedAt": "2026-09-08T00:29:56.598Z",
+      "completedAt": "2026-09-08T00:29:57.191Z",
+      "latencyMs": 593,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 138,
+        "outputTokens": 5,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "accountCashCostUsd": 0.0000237,
+      "notes": [
+        "Direct public-only peer-route capability check; no candidate or private data sent."
+      ],
+      "officialListPriceUsd": 0.0000237,
+      "budgetCostUsd": 0.0000237,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:resume-cache:incomplete-recovery:v2.0.8",
+      "cellId": "CO-retail",
+      "stage": "within-run-cache-reuse",
+      "provider": "local-run-cache",
+      "startedAt": "2026-09-08T00:30:25.717Z",
+      "completedAt": "2026-09-08T00:30:25.717Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Reused the successful intent, local RAG, playbook, discovery, fresh evidence and supplemental evidence from the interrupted cell.",
+        "No historical cross-run candidate, evidence, score or private-memory cache was read."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:evidence-correction-incomplete-recovery:model:1",
+      "cellId": "CO-retail",
+      "stage": "evidence-correction-incomplete-recovery",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek/deepseek-v4-flash",
+      "startedAt": "2026-09-08T00:30:25.742Z",
+      "completedAt": "2026-09-08T00:37:39.457Z",
+      "latencyMs": 255695,
+      "attempts": 14,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 34711,
+        "outputTokens": 22035,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 21,
+        "rawOutputItems": 21,
+        "validOutputItems": 11,
+        "downstreamUsedItems": 6,
+        "discardedReasonCounts": {
+          "unresolvedAfterRecovery": 0
+        }
+      },
+      "accountCashCostUsd": 0.010410052414,
+      "notes": [
+        "Aggregate stage output volume is attributed once to the primary model event."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.01102934,
+      "budgetCostUsd": 0.010410052414,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:evidence-correction-incomplete-recovery:model:2",
+      "cellId": "CO-retail",
+      "stage": "evidence-correction-incomplete-recovery",
+      "provider": "openrouter-openai-peer",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "openai/gpt-4o-mini",
+      "startedAt": "2026-09-08T00:30:25.742Z",
+      "completedAt": "2026-09-08T00:37:39.457Z",
+      "latencyMs": 64552,
+      "attempts": 28,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 40359,
+        "outputTokens": 6223,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 0,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "stageVolumeAttributedToPrimaryModelEvent": 11
+        }
+      },
+      "accountCashCostUsd": 0.009221249999999999,
+      "notes": [
+        "Model cost and tokens are retained; aggregate stage output volume is already attributed to model event 1."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.00978765,
+      "budgetCostUsd": 0.009221249999999999,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:evidence-correction-incomplete-recovery:model:3",
+      "cellId": "CO-retail",
+      "stage": "evidence-correction-incomplete-recovery",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek/deepseek-v4-pro",
+      "startedAt": "2026-09-08T00:30:25.742Z",
+      "completedAt": "2026-09-08T00:37:39.457Z",
+      "latencyMs": 15331,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 1837,
+        "outputTokens": 536,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 0,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "stageVolumeAttributedToPrimaryModelEvent": 1
+        }
+      },
+      "accountCashCostUsd": 0.001622111085,
+      "notes": [
+        "Model cost and tokens are retained; aggregate stage output volume is already attributed to model event 1."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.001265415,
+      "budgetCostUsd": 0.001622111085,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:qualification-score-only-incomplete-recovery:model:1",
+      "cellId": "CO-retail",
+      "stage": "qualification-score-only-incomplete-recovery",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek/deepseek-v4-flash",
+      "startedAt": "2026-09-08T00:37:39.497Z",
+      "completedAt": "2026-09-08T00:40:16.737Z",
+      "latencyMs": 159162,
+      "attempts": 11,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 48432,
+        "outputTokens": 10836,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 9,
+        "rawOutputItems": 9,
+        "validOutputItems": 9,
+        "downstreamUsedItems": 9,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "accountCashCostUsd": 0.008771180888,
+      "notes": [
+        "Aggregate stage output volume is attributed once to the primary model event."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.009814560000000002,
+      "budgetCostUsd": 0.008771180888,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:qualification-score-only-incomplete-recovery:model:2",
+      "cellId": "CO-retail",
+      "stage": "qualification-score-only-incomplete-recovery",
+      "provider": "openrouter-openai-peer",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "openai/gpt-4o-mini",
+      "startedAt": "2026-09-08T00:37:39.497Z",
+      "completedAt": "2026-09-08T00:40:16.737Z",
+      "latencyMs": 17562,
+      "attempts": 4,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 17372,
+        "outputTokens": 2178,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 0,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "stageVolumeAttributedToPrimaryModelEvent": 2
+        }
+      },
+      "accountCashCostUsd": 0.0039126,
+      "notes": [
+        "Model cost and tokens are retained; aggregate stage output volume is already attributed to model event 1."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.0039126,
+      "budgetCostUsd": 0.0039126,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:ranking:incomplete-recovery:v2.0.8",
+      "cellId": "CO-retail",
+      "stage": "role-filter-ranking",
+      "provider": "deterministic",
+      "startedAt": "2026-09-08T00:40:16.769Z",
+      "completedAt": "2026-09-08T00:40:16.769Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "volume": {
+        "inputItems": 18,
+        "rawOutputItems": 18,
+        "validOutputItems": 13,
+        "downstreamUsedItems": 13,
+        "discardedReasonCounts": {
+          "wrongPrimaryRoleOrGate": 35
+        }
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
     }
   ]
 }

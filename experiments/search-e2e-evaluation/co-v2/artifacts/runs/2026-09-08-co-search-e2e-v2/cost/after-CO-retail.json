@@ -1,22 +1,22 @@
 {
   "schemaVersion": 1,
   "runId": "2026-09-08-co-search-e2e-v2",
-  "generatedAt": "2026-09-08T00:06:39.899Z",
+  "generatedAt": "2026-09-08T00:40:16.877Z",
   "cell": {
     "cellId": "CO-retail",
     "controlCandidates": 15,
-    "productCandidates": 6,
+    "productCandidates": 13,
     "controlWallClockMs": 16776,
-    "productWallClockMs": 1792245
+    "productWallClockMs": 2383325
   },
   "cost": {
-    "eventCount": 260,
-    "officialListPriceUsd": 5.137395552671981,
-    "budgetCostUsd": 5.23022192182598,
+    "eventCount": 269,
+    "officialListPriceUsd": 5.17324491767198,
+    "budgetCostUsd": 5.26419081791298,
     "unpricedEvents": [],
     "byLedger": {
       "gemini-native-arm": 0.1764651,
-      "product-e2e-arm": 5.05375682182598,
+      "product-e2e-arm": 5.08772571791298,
       "evaluation-overhead": 0
     },
     "byStage": {
@@ -29,6 +29,7 @@
       "discovery-gate-r7": 0.0016916762,
       "discovery-gate-r8": 0.002074080694,
       "evidence-correction-cache-recovery": 0.06300922949700001,
+      "evidence-correction-incomplete-recovery": 0.021253413498999996,
       "evidence-correction-r1": 0.01046861192,
       "evidence-correction-r2": 0.002726096,
       "evidence-correction-r3": 0.00171024,
@@ -39,10 +40,12 @@
       "fresh-evidence": 1.7280000000000002,
       "hybrid-discovery": 1.8759999999999968,
       "intent": 0.02665898067198396,
-      "model-provider-preflight": 0.00006969108,
+      "model-peer-provider-preflight": 0.0000237,
+      "model-provider-preflight": 0.00007769278,
       "native-search": 0.1764651,
       "playbook": 0,
       "qualification-score-only-cache-recovery": 0.034571377246,
+      "qualification-score-only-incomplete-recovery": 0.012683780887999999,
       "qualification-score-only-r1": 0.002255098668,
       "qualification-score-only-r2": 0.0029012960000000003,
       "qualification-score-only-r3": 0.002097818674,
@@ -57,14 +60,14 @@
     "anomalies": []
   },
   "utilization": {
-    "input": 1027,
-    "raw": 2557,
-    "valid": 2083,
-    "used": 1056,
+    "input": 1078,
+    "raw": 2608,
+    "valid": 2119,
+    "used": 1087,
     "retries": 14,
-    "latencyMs": 6157718,
-    "validOutputRate": 0.8146265154477904,
-    "downstreamUtilization": 0.5069611137782045,
+    "latencyMs": 6672257,
+    "validOutputRate": 0.8125,
+    "downstreamUtilization": 0.512977819726286,
     "discardedOutputReasons": {
       "confirmedPlanMismatch": 1,
       "providerFailure": 1,
@@ -75,26 +78,27 @@
       "noFreshEvidence": 13,
       "correctedToAnotherRole": 236,
       "provider-recovery-cooldown": 35,
-      "wrongPrimaryRoleOrGate": 342,
+      "wrongPrimaryRoleOrGate": 377,
       "rejected": 120,
       "retryRequired": 7,
-      "stageVolumeAttributedToPrimaryModelEvent": 6,
+      "stageVolumeAttributedToPrimaryModelEvent": 20,
       "unresolved-company-domain": 37,
-      "provider-profile-not-company": 243
+      "provider-profile-not-company": 243,
+      "unresolvedAfterRecovery": 0
     }
   },
   "budgetDecision": {
     "totalBudgetUsd": 50,
-    "spentUsd": 5.23022192182598,
-    "budgetFraction": 0.1046044384365196,
+    "spentUsd": 5.26419081791298,
+    "budgetFraction": 0.1052838163582596,
     "newlyCrossedThresholdsUsd": [],
     "forecast": {
       "completedCells": 1,
       "totalCells": 4,
-      "incurredUsd": 5.23022192182598,
-      "expectedCompletionUsd": 28.92067861406392,
-      "lowerUsd": 21.23235483486733,
-      "upperUsd": 36.60900239326051,
+      "incurredUsd": 5.26419081791298,
+      "expectedCompletionUsd": 29.05645909331192,
+      "lowerUsd": 21.318247638366437,
+      "upperUsd": 36.7946705482574,
       "method": "cell-run-rate"
     },
     "warning": false,

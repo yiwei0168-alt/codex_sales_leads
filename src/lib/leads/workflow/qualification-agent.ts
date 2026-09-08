@@ -21,7 +21,7 @@ import type {
 } from "./types";
 
 export const LEAD_QUALIFICATION_PROMPT_VERSION = "lead-value-v5-role-aware-five-paths";
-export const LEAD_SCORE_ONLY_PROMPT_VERSION = "lead-value-v7-role-aware-score-only-country-corroborated";
+export const LEAD_SCORE_ONLY_PROMPT_VERSION = "lead-value-v8-evidence-capped-score-only";
 type QualificationModelOutput = LeadAssessmentModelOutput | LeadAssessmentScoreOnlyModelOutput;
 
 interface LeadAssessmentRequest {
@@ -108,6 +108,53 @@ function pathRoleCompatible(path: LeadAssessmentModelOutput["cooperationPaths"][
   return true;
 }
 
+function assessmentEvidenceCaps(candidate: CorrectedLeadWorkflowCandidate,
+  companyScaleClass: LeadCandidateAssessment["companyScaleClass"]) {
+  const claimEvidence = candidate.evidence.filter((item) =>
+    isCurrentLeadScoringEvidence(item, candidate.evidenceSnapshotRunId));
+  const claimEvidenceText = claimEvidence.flatMap((item) => [item.title, item.excerpt]);
+  const pathEvidenceAssessment = (candidate.correction.resolvedFamilies.length > 0
+    ? candidate.correction.resolvedFamilies : [candidate.queryFamily])
+    .map((family) => assessCooperationPathEvidence({ lane: cooperationLane(family), evidence: claimEvidenceText }))
+    .sort((left, right) => right.cap - left.cap)[0];
+  return {
+    cooperationPathAndBuyingInfluence: pathEvidenceAssessment.cap * 3,
+    scaleAndChannelCoverage: companyScaleClass === "Unknown" ? 8 : 15,
+    pathReason: pathEvidenceAssessment.reason,
+  };
+}
+
+export function enforceAssessmentEvidenceCaps(candidate: CorrectedLeadWorkflowCandidate,
+  assessment: LeadCandidateAssessment): LeadCandidateAssessment {
+  const caps = assessmentEvidenceCaps(candidate, assessment.companyScaleClass);
+  const dimensions = { ...assessment.dimensions,
+    cooperationPathAndBuyingInfluence: Math.min(assessment.dimensions.cooperationPathAndBuyingInfluence,
+      caps.cooperationPathAndBuyingInfluence),
+    scaleAndChannelCoverage: Math.min(assessment.dimensions.scaleAndChannelCoverage,
+      caps.scaleAndChannelCoverage) };
+  if (dimensions.cooperationPathAndBuyingInfluence === assessment.dimensions.cooperationPathAndBuyingInfluence
+    && dimensions.scaleAndChannelCoverage === assessment.dimensions.scaleAndChannelCoverage) return assessment;
+  const totalScore = candidateValueScore(dimensions);
+  const selectedPath = assessment.cooperationPaths.find((path) => path.pathId === assessment.selectedPathId)
+    ?? assessment.cooperationPaths[0];
+  return { ...assessment, dimensions, totalScore,
+    scoreRange: { lower: Math.max(0, totalScore - (assessment.totalScore - assessment.scoreRange.lower)),
+      upper: Math.min(100, totalScore + (assessment.scoreRange.upper - assessment.totalScore)) },
+    recommendationPriority: recommendationPriority(totalScore, assessment.eligibilityStatus),
+    accountTier: salesAccountTier({ score: totalScore,
+      scaleAndChannelCoverage: dimensions.scaleAndChannelCoverage,
+      cooperationPathAndBuyingInfluence: dimensions.cooperationPathAndBuyingInfluence,
+      selectedPath, primaryRole: candidate.correction.primaryRole,
+      eligibilityStatus: assessment.eligibilityStatus, scaleClass: assessment.companyScaleClass }),
+    dimensionRationales: assessment.dimensionRationales.map((rationale) => ({ ...rationale,
+      score: dimensions[rationale.dimension] })),
+    warnings: [...assessment.warnings,
+      ...(dimensions.cooperationPathAndBuyingInfluence < assessment.dimensions.cooperationPathAndBuyingInfluence
+        ? [`Cooperation-path score was capped at ${caps.cooperationPathAndBuyingInfluence}/15 by deterministic evidence: ${caps.pathReason}`] : []),
+      ...(dimensions.scaleAndChannelCoverage < assessment.dimensions.scaleAndChannelCoverage
+        ? ["Scale/channel score was capped at the neutral 8/15 because no positive evidence established a scale class; unknown was not treated as zero."] : [])] };
+}
+
 export function normalizeAssessment(
   value: QualificationModelOutput,
   candidate: CorrectedLeadWorkflowCandidate,
@@ -139,12 +186,18 @@ export function normalizeAssessment(
     networkingRelevant: corroboratedGate(value.gates.networkingRelevant, networkingEvidence.demonstrated),
     targetCountryPresence: correctedCountryGate(candidate, value.gates.targetCountryPresence),
   };
+  const sizeFinding = candidate.correction.findings.some((finding) => finding.kind === "company-size"
+    && finding.status === "supported" && finding.evidenceIds.length > 0);
+  const companyScaleClass = sizeFinding ? value.companyScaleClass : "Unknown";
+  const caps = assessmentEvidenceCaps(candidate, companyScaleClass);
   const dimensions = {
     productFamilyMatch: clampDimension("productFamilyMatch", value.dimensions.productFamilyMatch),
     customerAndScenarioOverlap: clampDimension("customerAndScenarioOverlap", value.dimensions.customerAndScenarioOverlap),
     positioningCompatibility: clampDimension("positioningCompatibility", value.dimensions.positioningCompatibility),
-    cooperationPathAndBuyingInfluence: clampDimension("cooperationPathAndBuyingInfluence", value.dimensions.cooperationPathAndBuyingInfluence),
-    scaleAndChannelCoverage: clampDimension("scaleAndChannelCoverage", value.dimensions.scaleAndChannelCoverage),
+    cooperationPathAndBuyingInfluence: Math.min(caps.cooperationPathAndBuyingInfluence,
+      clampDimension("cooperationPathAndBuyingInfluence", value.dimensions.cooperationPathAndBuyingInfluence)),
+    scaleAndChannelCoverage: Math.min(caps.scaleAndChannelCoverage,
+      clampDimension("scaleAndChannelCoverage", value.dimensions.scaleAndChannelCoverage)),
     executionAndEnablement: clampDimension("executionAndEnablement", value.dimensions.executionAndEnablement),
     opportunityAndRisk: clampDimension("opportunityAndRisk", value.dimensions.opportunityAndRisk),
   };
@@ -168,9 +221,6 @@ export function normalizeAssessment(
   const selectedPath = cooperationPaths.find((path) => path.pathId === selectedPathId) ?? cooperationPaths[0];
   const hasNotSupportedGate = Object.values(gates).some((state) => state === "not-supported");
   const hasUnresolvedGate = Object.values(gates).some((state) => state !== "supported");
-  const sizeFinding = candidate.correction.findings.some((finding) => finding.kind === "company-size"
-    && finding.status === "supported" && finding.evidenceIds.length > 0);
-  const companyScaleClass = sizeFinding ? value.companyScaleClass : "Unknown";
   const researchDepth = selectResearchDepth({ scaleClass: companyScaleClass,
     strongRelevanceSignal: networkingEvidence.demonstrated, userNominated: candidate.userNominated ?? false,
     hasConflict: candidate.correction.findings.some((finding) => finding.status === "conflicting") });
@@ -241,8 +291,10 @@ export function normalizeAssessment(
       ...(value.gates.targetCountryPresence === "supported" && gates.targetCountryPresence !== "supported"
         ? ["Target-country presence claimed by scoring was not corroborated by the correction-stage country finding."] : []),
       ...(!evidenceQuality.sufficient ? [`Evidence remains sparse: ${evidenceQuality.reason}`] : []),
-      ...(value.dimensions.cooperationPathAndBuyingInfluence > pathEvidenceAssessment.cap * 3
-        ? [`Cooperation-path model score exceeds the deterministic evidence signal of ${(pathEvidenceAssessment.cap * 3).toFixed(1)}/15 and requires review: ${pathEvidenceAssessment.reason}`] : []),
+      ...(value.dimensions.cooperationPathAndBuyingInfluence > caps.cooperationPathAndBuyingInfluence
+        ? [`Cooperation-path score was capped at ${caps.cooperationPathAndBuyingInfluence}/15 by deterministic evidence: ${pathEvidenceAssessment.reason}`] : []),
+      ...(value.dimensions.scaleAndChannelCoverage > caps.scaleAndChannelCoverage
+        ? ["Scale/channel score was capped at the neutral 8/15 because no positive evidence established a scale class; unknown was not treated as zero."] : []),
       ...(includeCooperationPaths && cooperationPaths.length < modelPaths.length
         ? ["Cooperation paths with unsupported roles, disabled OEM/ODM, or invalid evidence were removed."] : []),
       ...(evidenceIds.length < value.evidenceIds.length ? ["Model returned unsupported evidence IDs; they were removed."] : [])],
@@ -358,6 +410,7 @@ export class LeadQualificationAgent {
         "For very large or strategically important companies, request deep research when relevant business-unit or regional evidence is incomplete. For a positively identified small weak-signal long-tail company, limited research may end as insufficient-evidence-for-recommendation.",
         "Return exactly one evidence-linked rationale for each of the seven scoring dimensions. Evidence confidence is reported separately and has zero score weight.",
         "Product and use-case fit is 50 points: product family 25, customer/scenario 15, positioning 10. Other dimensions are path/influence 15, same-role scale/coverage 15, execution/enablement 10, opportunity/risk 10.",
+        "Do not award more than the neutral 8/15 for scale/channel coverage unless a supported atomic company-size finding establishes a scale class. Unknown scale is neutral, not zero or maximum. Cooperation-path/influence is deterministically capped by demonstrated procurement, selection, resale or influence levers.",
         "Use current task fit for eligibility. No company-size gate exists. A small specialist with direct scenario evidence remains eligible.",
         "KA is never a tier-1 distributor label. Account tier and recommendation priority are computed deterministically after your assessment and must not influence dimension scores.",
         "Return one assessment for every candidateId. Request escalation only when a higher-capability model can resolve the issue and is expected to change total score by at least 8 points or change a critical identity, eligibility, primary-role, existence, country-presence or networking-relevance state. Top-N position and confidence alone never justify escalation.",

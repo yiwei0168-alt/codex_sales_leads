@@ -1,6 +1,6 @@
 {
   "policyKey": "cudy-lead-workflow-cost-quality",
-  "version": "3.0.4",
+  "version": "3.0.5",
   "status": "active",
   "objective": "Reduce model tokens by at least 40% and paid search/extract credits by at least 30% without weakening evidence, role, scoring, privacy or user-edit semantics.",
   "taskModes": {
@@ -134,6 +134,14 @@
     "incompleteRecoveryRepeatsAcquisition": false,
     "retryDeterministicCorrectionFallbacksOnly": true,
     "rescoreOnlyMissingRetryRequiredOrMateriallyChanged": true
+  },
+  "deterministicSemanticConsistency": {
+    "thirdPartyMarketplaceRetailRolesAllowed": false,
+    "unknownScaleNeutralScoreCap": 8,
+    "unknownScaleIsZero": false,
+    "cooperationInfluenceUsesEvidenceCap": true,
+    "repairReusesModelSemanticOutput": true,
+    "repairRepeatsPaidCalls": false
   },
   "qualityGates": {
     "strategicCandidateRecallPercent": 100,

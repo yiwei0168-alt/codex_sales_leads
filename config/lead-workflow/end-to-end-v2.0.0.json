@@ -1,6 +1,6 @@
 {
   "workflowKey": "cudy-sales-lead-end-to-end",
-  "version": "2.10.0",
+  "version": "2.11.0",
   "status": "active",
   "scope": "From the user's natural-language market-development request and workspace context to ranked companies, editable cooperation paths, development strategy, outreach email, and private-memory learning from user edits.",
   "principles": [
@@ -14,7 +14,8 @@
     "OpenAI and Anthropic generation is routed through the pinned OpenRouter HTTPS gateway. DeepSeek keeps its dedicated provider as primary; public-only packets first try the same DeepSeek tier through OpenRouter and then an OpenAI same-capability peer with an independent route deadline, while embeddings never fail over.",
     "Every potentially overlapping task must create and consume a versioned cache at first execution; downstream stages receive exact evidence IDs, role corrections and explicit missing-evidence gaps.",
     "Search localization is keyed by market country, provider-owned result pages are provenance rather than candidate domains, and a primary role must be concrete unless two or more role families are genuinely co-primary.",
-    "Only evidence deterministically affiliated with the candidate entity may enter correction or scoring, and target-country eligibility must be corroborated by the correction-stage country finding."
+    "Only evidence deterministically affiliated with the candidate entity may enter correction or scoring, and target-country eligibility must be corroborated by the correction-stage country finding.",
+    "Explicit third-party marketplaces are not Retailer/E-tailer prospects; unknown scale receives a neutral nonzero cap, and buying influence cannot exceed the deterministic evidence cap."
   ],
   "modelRouting": [
     {
@@ -50,14 +51,14 @@
       "purpose": "Entity correction, atomic facts and primary-role analysis",
       "defaultModel": "DEEPSEEK_MODEL; default deepseek-v4-flash",
       "escalationOrFallback": "DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro for policy-qualified semantic escalation; provider recovery uses public-only same-tier OpenRouter then openai/gpt-4o-mini, while deterministic fallback is retry-only",
-      "callPolicy": "Relevance-prioritized compact evidence packets and token-aware routine batches; each automatic fallback has an independent deadline; optional reasoning is disabled for OpenRouter DeepSeek; malformed output permits one same-tier single-candidate repair; infrastructure failure never upgrades to Pro; Pro requires a valid routine prediction of score change >=8 or a resolvable critical-state change"
+      "callPolicy": "Relevance-prioritized compact evidence packets and token-aware routine batches; each automatic fallback has an independent deadline; optional reasoning is disabled for OpenRouter DeepSeek; malformed output permits one same-tier single-candidate repair; infrastructure failure never upgrades to Pro; supported third-party-marketplace findings deterministically remove Retail/E-tail roles; Pro requires a valid routine prediction of score change >=8 or a resolvable critical-state change"
     },
     {
       "stages": ["09-scoring-paths"],
       "purpose": "Role-aware score and possible cooperation paths",
       "defaultModel": "DEEPSEEK_MODEL; default deepseek-v4-flash",
       "escalationOrFallback": "DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro for policy-qualified semantic escalation; provider recovery uses public-only same-tier OpenRouter then openai/gpt-4o-mini",
-      "callPolicy": "Routine batches with independent fallback deadlines and optional reasoning disabled for OpenRouter DeepSeek; malformed output permits one same-tier single-candidate repair; infrastructure failure never upgrades to Pro; confidence, alternative paths and Top-N position never trigger upgrade alone"
+      "callPolicy": "Routine batches with independent fallback deadlines and optional reasoning disabled for OpenRouter DeepSeek; malformed output permits one same-tier single-candidate repair; infrastructure failure never upgrades to Pro; unknown scale is capped at neutral 8/15 and cooperation influence is evidence-capped; confidence, alternative paths and Top-N position never trigger upgrade alone"
     },
     {
       "stages": ["10-review"],

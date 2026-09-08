@@ -1,4 +1,4 @@
-# Colombia search E2E evaluation v2.0.8
+# Colombia search E2E evaluation v2.0.9
 
 This directory is the immutable, cold-start Colombia follow-up to the UK/Mexico formal evaluation. It compares the current product workflow with one un-tuned Gemini Full + Google Search interaction per category.
 
@@ -44,6 +44,12 @@ If a valid Product run contains deterministic correction fallbacks or retry-requ
 ```powershell
 node scripts\run-tsx.cjs experiments\search-e2e-evaluation\co-v2\scripts\run-formal-experiment.ts --phase=provider-check
 node scripts\run-tsx.cjs experiments\search-e2e-evaluation\co-v2\scripts\run-formal-experiment.ts --phase=cell --cell=CO-retail --repair-incomplete
+```
+
+If model output contradicts an already explicit deterministic policy, v2.0.9 repairs only that inconsistency without another model call. It removes Retail/E-tail roles from supported third-party-marketplace findings, caps unknown scale at a neutral 8/15 rather than zero or maximum, caps cooperation influence by evidenced levers, recomputes totals/tiers and rebuilds the cached ranking:
+
+```powershell
+node scripts\run-tsx.cjs experiments\search-e2e-evaluation\co-v2\scripts\run-formal-experiment.ts --phase=cell --cell=CO-retail --repair-consistency
 ```
 
 Raw checkpoints are local under `runs/raw/`. Sanitized artifacts and the final report are under `artifacts/runs/2026-09-08-co-search-e2e-v2/`.

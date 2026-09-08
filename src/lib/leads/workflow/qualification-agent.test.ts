@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "@/providers/contracts";
 import { leadEvidenceContentHash } from "@/lib/leads/evidence-snapshot";
 
-import { LeadQualificationAgent } from "./qualification-agent";
+import { enforceAssessmentEvidenceCaps, LeadQualificationAgent } from "./qualification-agent";
 import type { CorrectedLeadWorkflowCandidate, LeadMarketPlaybook } from "./types";
 
 class FakeProvider implements AiProvider {
@@ -101,7 +101,7 @@ describe("LeadQualificationAgent", () => {
     const provider = new FakeProvider();
     const agent = new LeadQualificationAgent(provider, { batchSize: 5, concurrency: 1 });
     const [result] = await agent.evaluate([candidate], playbook, "DE", "Germany", "new-market");
-    expect(result.totalScore).toBe(88);
+    expect(result.totalScore).toBe(82);
     expect(result.roles).toEqual(["VAR", "Reseller"]);
     expect(result.primaryRole).toBe("VAR");
     expect(result.evidenceIds).toEqual(["evidence-valid"]);
@@ -121,7 +121,7 @@ describe("LeadQualificationAgent", () => {
     const [result] = await agent.evaluate([genericCandidate], playbook, "DE", "Germany", "new-market");
     expect(result.gates.networkingRelevant).toBe("conflicting");
     expect(result.eligible).toBe(false);
-    expect(result.totalScore).toBe(88);
+    expect(result.totalScore).toBe(76);
     expect(result.warnings.join(" ")).toContain("conflicts");
   });
 
@@ -152,7 +152,7 @@ describe("LeadQualificationAgent", () => {
       correction: { ...candidate.correction, resolvedFamilies: ["resale" as const], routingChanged: true } };
     const [result] = await agent.evaluate([rerouted], playbook, "DE", "Germany", "new-market");
     expect(result.eligible).toBe(true);
-    expect(result.totalScore).toBe(88);
+    expect(result.totalScore).toBe(82);
     expect(result.roles).toEqual(["VAR", "Reseller"]);
   });
 
@@ -206,11 +206,11 @@ describe("LeadQualificationAgent", () => {
       concurrency: 1,
       includeCooperationPaths: false,
     }).evaluate([candidate], playbook, "DE", "Germany", "search-quality-evaluation");
-    expect(result.totalScore).toBe(88);
+    expect(result.totalScore).toBe(82);
     expect(result.eligible).toBe(true);
     expect(result.cooperationPaths).toEqual([]);
     expect(result.selectedPathId).toBeNull();
-    expect(result.promptVersion).toBe("lead-value-v7-role-aware-score-only-country-corroborated");
+    expect(result.promptVersion).toBe("lead-value-v8-evidence-capped-score-only");
     expect(JSON.stringify(provider.calls[0].outputSchema)).not.toContain("cooperationPaths");
     expect(JSON.stringify(provider.calls[0].input)).toContain("scoring-only task");
     expect(provider.calls[0].dataClassification).toBe("public");
@@ -266,5 +266,19 @@ describe("LeadQualificationAgent", () => {
     expect(result.gates.targetCountryPresence).toBe("not-supported");
     expect(result.eligible).toBe(false);
     expect(result.warnings.join(" ")).toContain("not corroborated");
+  });
+
+  it("caps unsupported maximum scale and weak cooperation influence without treating unknown as zero", async () => {
+    const assessment = (await new LeadQualificationAgent(new FakeProvider(), {
+      concurrency: 1, includeCooperationPaths: false,
+    }).evaluate([candidate], playbook, "DE", "Germany", "search-quality-evaluation"))[0];
+    const exaggerated = { ...assessment, companyScaleClass: "Unknown" as const,
+      dimensions: { ...assessment.dimensions, scaleAndChannelCoverage: 15,
+        cooperationPathAndBuyingInfluence: 15 }, totalScore: 100 };
+    const normalized = enforceAssessmentEvidenceCaps(candidate, exaggerated);
+    expect(normalized.dimensions.scaleAndChannelCoverage).toBe(8);
+    expect(normalized.dimensions.cooperationPathAndBuyingInfluence).toBeLessThan(15);
+    expect(normalized.totalScore).toBeLessThan(100);
+    expect(normalized.warnings.join(" ")).toContain("neutral 8/15");
   });
 });

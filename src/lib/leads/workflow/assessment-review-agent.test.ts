@@ -4,6 +4,7 @@ import type { LeadSearchPlan } from "@/lib/assistant/types";
 import { leadEvidenceContentHash } from "@/lib/leads/evidence-snapshot";
 
 import { LeadAssessmentReviewAgent, assessmentReviewTriggers, type LeadReviewInvoker } from "./assessment-review-agent";
+import { enforceAssessmentEvidenceCaps } from "./qualification-agent";
 import type { LeadAssessmentModelOutput } from "./schemas";
 import type { CorrectedLeadWorkflowCandidate, LeadCandidateAssessment, LeadMarketPlaybook } from "./types";
 
@@ -73,7 +74,7 @@ const candidate: CorrectedLeadWorkflowCandidate = {
 
 function assessment(output = modelOutput()): LeadCandidateAssessment {
   const totalScore = Object.values(output.dimensions).reduce((sum, value) => sum + value, 0);
-  return { ...output, eligible: true, roles: ["VAR", "Reseller"], primaryRole: "VAR",
+  const value: LeadCandidateAssessment = { ...output, eligible: true, roles: ["VAR", "Reseller"], primaryRole: "VAR",
     companyScaleClass: "Regional", researchDepth: "standard", recommendationPriority: "High",
     supplyModel: "Brand Direct", brandInvolvement: "Standard",
     cooperationPaths: output.cooperationPaths.map((path, index) => ({ ...path,
@@ -81,6 +82,7 @@ function assessment(output = modelOutput()): LeadCandidateAssessment {
     accountTier: "KA", scoreRange: { lower: totalScore - 3, upper: totalScore + 3 },
     evidenceProfileAssessment: undefined, totalScore: Object.values(output.dimensions).reduce((sum, value) => sum + value, 0),
     model: "deepseek-primary", promptVersion: "primary-v3", escalated: false, scoringStatus: "completed" };
+  return enforceAssessmentEvidenceCaps(candidate, value);
 }
 
 const playbook: LeadMarketPlaybook = {

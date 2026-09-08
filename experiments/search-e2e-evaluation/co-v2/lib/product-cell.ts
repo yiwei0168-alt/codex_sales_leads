@@ -1,11 +1,12 @@
 import type { LeadSearchPlan } from "@/lib/assistant/types";
 import { planAssistantRequest } from "@/lib/assistant/intent-agent";
-import { LeadEvidenceCorrectionAgent } from "@/lib/leads/workflow/evidence-correction-agent";
+import { enforceCorrectedRoleBusinessModel,
+  LeadEvidenceCorrectionAgent } from "@/lib/leads/workflow/evidence-correction-agent";
 import { collectLeadEvidence } from "@/lib/leads/workflow/discovery";
 import { LeadDiscoveryGate } from "@/lib/leads/workflow/discovery-gate";
 import { createHybridDiscoverySession, executeHybridDiscovery } from "@/lib/leads/workflow/hybrid-discovery-executor";
 import { buildStandardLeadMarketPlaybook } from "@/lib/leads/workflow/playbook";
-import { LeadQualificationAgent } from "@/lib/leads/workflow/qualification-agent";
+import { enforceAssessmentEvidenceCaps, LeadQualificationAgent } from "@/lib/leads/workflow/qualification-agent";
 import { retrieveLeadRagContext } from "@/lib/leads/workflow/rag-context";
 import { isCurrentLeadScoringEvidence } from "@/lib/leads/evidence-snapshot";
 import { selectPrimaryChannel } from "@/lib/leads/primary-channel";
@@ -152,7 +153,7 @@ function toFinalCandidate(candidate: CorrectedLeadWorkflowCandidate, assessment:
 export async function runProductCell(cell: ExperimentCell, options: {
   onCostEvents?: (events: ExperimentCostEvent[]) => Promise<void> | void;
   resumeFrom?: ProductCellResult;
-  resumeMode?: "semantic-recovery" | "search-extension" | "incomplete-recovery";
+  resumeMode?: "semantic-recovery" | "search-extension" | "incomplete-recovery" | "consistency-recovery";
 } = {}): Promise<ProductCellResult> {
   const resumeFrom = options.resumeFrom;
   const resumeMode = options.resumeMode ?? "semantic-recovery";
@@ -175,7 +176,7 @@ export async function runProductCell(cell: ExperimentCell, options: {
     playbook = resumeFrom.playbook;
     intentSummary = resumeFrom.intent;
     const cacheAt = new Date().toISOString();
-    await recordCostEvents([event({ eventId: `${cell.cellId}:resume-cache:${resumeMode}:v2.0.8`, cellId: cell.cellId,
+    await recordCostEvents([event({ eventId: `${cell.cellId}:resume-cache:${resumeMode}:v2.0.9`, cellId: cell.cellId,
       stage: "within-run-cache-reuse", provider: "local-run-cache", startedAt: cacheAt, completedAt: cacheAt,
       latencyMs: 0, attempts: 0, retries: 0, fallbackUsed: false, status: "completed", usage: {},
       volume: volume(1, 1, 1, 1), notes: [
@@ -289,6 +290,44 @@ export async function runProductCell(cell: ExperimentCell, options: {
   const startingRound = resumeFrom?.discoveryRounds.length ?? 0;
   const maximumRounds = resumeFrom && resumeMode === "search-extension" ? startingRound + 5
     : plan.targetCount >= 50 ? 10 : 5;
+
+  if (resumeFrom && resumeMode === "consistency-recovery") {
+    let roleChanges = 0;
+    for (const candidate of priorCorrected) {
+      const normalized = enforceCorrectedRoleBusinessModel(candidate);
+      if (normalized !== candidate) roleChanges += 1;
+      correctedByDomain.set(normalized.domain, normalized);
+    }
+    const candidateById = new Map([...correctedByDomain.values()].map((candidate) =>
+      [candidate.candidateId, candidate]));
+    let scoreChanges = 0;
+    for (const assessment of priorAssessments) {
+      const candidate = candidateById.get(assessment.candidateId);
+      const normalized = candidate ? enforceAssessmentEvidenceCaps(candidate, assessment) : assessment;
+      if (normalized !== assessment) scoreChanges += 1;
+      assessmentsByCandidate.set(normalized.candidateId, normalized);
+    }
+    for (const candidate of [...correctedByDomain.values()]) {
+      if (!primaryRoleMatchesCategory(candidate.correction.primaryRole, cell.categoryId)) continue;
+      const assessment = assessmentsByCandidate.get(candidate.candidateId);
+      if (!assessment || assessment.scoringStatus !== "completed" || !assessment.eligible
+        || assessment.eligibilityStatus !== "eligible"
+        || Object.values(assessment.gates).some((state) => state === "not-supported")) continue;
+      selectedPairs.push({ candidate, assessment });
+      selectedDomains.add(candidate.domain);
+    }
+    const repairAt = new Date().toISOString();
+    await recordCostEvents([event({ eventId: `${cell.cellId}:deterministic-consistency-recovery:v2.0.9`,
+      cellId: cell.cellId, stage: "deterministic-consistency-recovery", provider: "deterministic",
+      startedAt: repairAt, completedAt: repairAt, latencyMs: 0, attempts: 0, retries: 0,
+      fallbackUsed: false, status: "completed", usage: {},
+      volume: volume(priorCorrected.length + priorAssessments.length,
+        priorCorrected.length + priorAssessments.length, priorCorrected.length + priorAssessments.length,
+        selectedPairs.length, { marketplaceRoleRemoved: roleChanges, evidenceScoreCapApplied: scoreChanges }),
+      notes: ["Reused all acquisition and model semantic output; applied only deterministic role-business-model and evidence-cap consistency rules."] })]);
+    completionReason = selectedPairs.length >= plan.targetCount ? "target-met" : resumeFrom.completionReason;
+    warnings.push(`Consistency recovery removed Retail/E-tail roles from ${roleChanges} explicit third-party marketplace candidate(s), evidence-capped ${scoreChanges} assessment(s), and retained ${selectedPairs.length} eligible candidates without a model, search or evidence call.`);
+  }
 
   if (resumeFrom && priorCorrected.length > 0 && resumeMode === "incomplete-recovery") {
     for (const candidate of priorCorrected) discoverySession.excludedDomains.add(candidate.domain);
@@ -602,7 +641,7 @@ export async function runProductCell(cell: ExperimentCell, options: {
     toFinalCandidate(candidate, assessment, index + 1));
   const rankingStarted = new Date().toISOString();
   const rankingAt = new Date().toISOString();
-  await recordCostEvents([event({ eventId: resumeFrom ? `${cell.cellId}:ranking:${resumeMode}:v2.0.8` : `${cell.cellId}:ranking`, cellId: cell.cellId,
+  await recordCostEvents([event({ eventId: resumeFrom ? `${cell.cellId}:ranking:${resumeMode}:v2.0.9` : `${cell.cellId}:ranking`, cellId: cell.cellId,
     stage: "role-filter-ranking", provider: "deterministic", startedAt: rankingStarted,
     completedAt: rankingAt, latencyMs: Math.max(0, Date.parse(rankingAt) - Date.parse(rankingStarted)),
     attempts: 0, retries: 0, fallbackUsed: false, status: "completed", usage: {},

@@ -4,8 +4,8 @@
   "cellId": "CO-retail",
   "arm": "product-e2e",
   "startedAt": "2026-09-07T23:36:47.572Z",
-  "completedAt": "2026-09-08T00:06:39.817Z",
-  "wallClockMs": 1792245,
+  "completedAt": "2026-09-08T00:40:16.796Z",
+  "wallClockMs": 2383325,
   "plan": {
     "countryCode": "CO",
     "countryName": "Colombia",
@@ -112,7 +112,7 @@
   "rawDiscoveryCount": 842,
   "discoveredCandidateCount": 103,
   "correctedCandidateCount": 48,
-  "completedAssessmentCount": 9,
+  "completedAssessmentCount": 18,
   "attributionCandidates": [
     {
       "candidateId": "lead-7ab43aa3b7d82c94",
@@ -529,6 +529,897 @@
   "finalCandidates": [
     {
       "rank": 1,
+      "candidateId": "lead-05b245f18c0d3b25",
+      "companyName": "Techniservice.co",
+      "domain": "techniservice.co",
+      "officialWebsiteUrl": "https://techniservice.co",
+      "primaryRole": "E-tailer",
+      "supportedRoles": [
+        "Reseller",
+        "E-tailer"
+      ],
+      "totalScore": 100,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-05b245f18c0d3b25",
+        "evidence-12870e583ef41f66",
+        "evidence-ef430338364ee29b",
+        "evidence-719aa13c671fd3ee",
+        "evidence-1aa3f5cdec795fc9",
+        "evidence-6a43a4fec54ca543",
+        "evidence-51601cc3b0777459",
+        "evidence-518bea38610f1f62",
+        "evidence-5175ac7ceb72a403",
+        "evidence-b037462b73ba0782"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-05b245f18c0d3b25",
+          "url": "https://techniservice.co/",
+          "title": "UPS APC Bogota, Discos Duros Externos, Redes Networking - Colombia",
+          "excerpt": "UPS APC Bogota, Discos Duros Externos, Redes Networking - Colombia ' /> ' /> +573166824791 info@techniservice.co Facebook Instagram Facebook Instagram 0 elementos 🏠 Inicio 📖Políticas de Garantía POLÍTICA DE DATOS PERSONALES 🏬Tienda 💽Discos Duros LaCie Kingston SanDisk SEAGATE Western Digital ☁️NAS Qnap Seagate Discos NAS Western Digital Toshiba 📶Switches y Access Point HPE Networking Instant On HPe Networking D-Link LINKSYS 🔋UPS APC CDP Netion 🛡️ Firewall Instant On Secure Gateways Fortinet 🔌 PDU 📞Contáctenos Seleccionar página 23 años comercializando productos de Networking Disco Duro Toshiba N300 para NAS 7200RPM 3.5 SATA III Interno para NAS 6Tb &#8211; 8Tb &#8211; 10Tb Entrega inmediata Compra aqui Seagate Discos duros externos Expansión 16 TB &#8211; 18 TB &#8211; 20 TB &#821",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:37:59.108Z",
+          "contentHash": "1274cc2ac2d70e9df2d0f2c8b4bc82402852cce206748eee16db87939889e80b",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-12870e583ef41f66",
+          "url": "https://techniservice.co/switches-router-access-point-colombia-ventas",
+          "title": "Switches, Router & Access Point - venta Colombia NetWorking",
+          "excerpt": "\" name=\"google-site-verification\">\" name=\"msvalidate.01\"> +573166824791 info@techniservice.co Facebook Instagram Facebook Instagram 0 elementos Techniservice.co Seleccionar página Switches, Router & Access Point Switches, Router & Access Point Techniservice es una compañía con más de diez años de experiencia en el mercado, en conectividad y networking ofrecemos marcas reconocidas y con respaldo en Colombia, como Hp networking, Cisco, Cisco SB, Meraki y Linksys. Estas grandes marcas tienen una gama completa de productos que ofrecen seguridad, garantía y un excelente precio. Tenemos switches Cisco y hewlett packard, administrables de capa 2 y capa 3, con o sin POE (power over Ethernet) de 8, 16, 24 y 48 puertos. Cisco tiene una variedad de router VPN y/o doble WAN, access point y firewall pa",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:17.213Z",
+          "contentHash": "5b5520706f343a147794c359614894e11f0c477db3836390a4b6297f41a8f3e2",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-ef430338364ee29b",
+          "url": "https://techniservice.co/hp-1920-24g-poe-370w-switch",
+          "title": "Hp JG926A - HPE OfficeConnect 1920 24G PoE+ (370 W) - Techniservice",
+          "excerpt": "\" name=\"google-site-verification\">\" name=\"msvalidate.01\"> +573166824791 info@techniservice.co Facebook Instagram Facebook Instagram 0 elementos Techniservice.co Seleccionar página HP JG926A 1920-24G-PoE+ (370W) Switch por Techniservice | Ene 19, 2016 | HP- Networking, Redes Networking- small business- Colombia JG926A : La serie de conmutadores HP 1920, parte de la cartera HP OfficeConnect, está diseñada para organizaciones más pequeñas que gestionan aplicaciones exigentes en cuanto a ancho de banda. Los conmutadores son ideales para entornos que requieren funciones avanzadas para un control granular y donde la flexibilidad de gestión inteligente es imprescindible para una gestión y configuración de red sencilla. Los conmutadores ofrecen conmutadores Gigabit de configuración fija con gestió",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:17.213Z",
+          "contentHash": "155b89a6a2d547d42f0050a2c034fd561f54d6e70a93f800ec167509ac1608e5",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-719aa13c671fd3ee",
+          "url": "https://techniservice.co",
+          "title": "UPS APC Bogota, Discos Duros Externos, Redes Networking - Colombia",
+          "excerpt": "\" name=\"google-site-verification\">\" name=\"msvalidate.01\"> +573166824791 info@techniservice.co Facebook Instagram Facebook Instagram 0 elementos Techniservice.co Seleccionar página 23 años comercializando productos de Networking Disco Duro Toshiba N300 para NAS 7200RPM 3.5 SATA III Interno para NAS 6Tb – 8Tb – 10TbEntrega inmediata Compra aqui Seagate Discos duros externos Expansión 16 TB – 18 TB – 20 TB – 24 TB – 28 TB Disponibles Cotiza ya !! NAS QNAP TS-233 2 Bahías Almacenamiento en Red para Hogar y Oficina. 2 GB on board (non-expandable) Memoria flash: 4 GB (protección del sistema operativo de doble arranque) Envío gratis Comprar ¡Potencia tu negocio con FortiNet FortiGate! 30G – 40F – 50G – 60F – 70G – 80F – 90G – 100F – 120G – 200F Firewall UTM Empresarial – Incluyen 1 Año de FortiCa",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:17.214Z",
+          "contentHash": "3c33ac38d714be533944a873854d67e2aa30f3cb8ae04a4ce95a30667c041f93",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-1aa3f5cdec795fc9",
+          "url": "https://techniservice.co/hp-networking-colombia",
+          "title": "Hp networking Colombia ventas equipos de alta velocidad para empresas",
+          "excerpt": "\" name=\"google-site-verification\">\" name=\"msvalidate.01\"> +573166824791 info@techniservice.co Facebook Instagram Facebook Instagram 0 elementos Techniservice.co Seleccionar página HPe networking HP Networking HP Networking Colombia Tienda Hpe Networking Serie de switches HPE OfficeConnect 1420 Conectividad gigabit Ethernet (1 GbE) económica, que ofrece a las pequeñas empresas 10 veces el rendimiento de Fast Ethernet con la sencillez de plug-and-play sin gestión. HPe JH019A JH019A HPe JH017A JH017A Con un rendimiento gigabit y una serie de funciones clave como PoE+ para la alimentación de dispositivos IP, Fibre y enlaces ascendentes de 10 G para conectividad con servidores y almacenamiento. Todos los modelos admiten un funcionamiento silencioso sin ventilador, funciones automatizadas para o",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:17.214Z",
+          "contentHash": "ee266859d7d979b4878c90de6cda0dc019cadfa4c4351729b584d9c9d1884901",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-6a43a4fec54ca543",
+          "url": "https://techniservice.co/cisco-small-business",
+          "title": "Cisco Small Business Distribuidores en Colombia - Techniservice.co",
+          "excerpt": "\" name=\"google-site-verification\">\" name=\"msvalidate.01\"> +573166824791 info@techniservice.co Facebook Instagram Facebook Instagram 0 elementos Techniservice.co Seleccionar página # Cisco small business Cisco small business Cisco Small Business Colombia Tienda Cisco ## Cisco Small Business – Routers & Switches ### Routers ### Routers Cisco Small Business RV Series Acceso de red altamente seguro para pequeñas empresas. [...] La serie Cisco 220 de switches inteligentes asequibles proporciona seguridad, rendimiento y facilidad de uso para pequeñas y medianas empresas con un presupuesto limitado. Estos switches ofrecen una poderosa combinación de características, rendimiento y facilidad de uso. Cree una red comercial simple, altamente segura e inteligente a un costo menor que el que puede con ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:40.917Z",
+          "contentHash": "25e6a98e29c046b06b9f386280660cd9acf400422f15984b121d96d44a3dd88f",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-51601cc3b0777459",
+          "url": "https://netmatriks.com/brands/cisco-distributors-usa",
+          "title": "Cisco Systems Distributors in USA |Routers & Network Switches Supplier",
+          "excerpt": "Whether you are a small business or a global service provider, a Cisco distributor or partner can help you build the perfect network with the latest technology, products, and resellers. Additionally, ordering Cisco Distributor products is easy through Cisco Networks partners. ## About the Cisco Network, Partners, and Distributors [...] Netmatriks is a trusted name among Cisco distributors in the USA. Advanced networking solutions from Cisco help you stay connected, secure, and efficient with a wide variety of Cisco products, including routers, switches, and wireless access points. Our experienced team designs, deploys and manages your network infrastructure to ensure your business receives the best possible service. Our bespoke solutions are tailored to your specific needs and budget and a",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-07T23:42:40.917Z",
+          "contentHash": "684969640d7781dea442ab87000a2be5446e57b561c54e0c024727eda9b0f93e",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-518bea38610f1f62",
+          "url": "https://www.cisco.com/c/en/us/solutions/small-business/networking/small-business-products.html",
+          "title": "Small and Medium Business Products - Cisco",
+          "excerpt": "| Cisco Business 200 Series access points Cisco Business 200 Series access points Superior performance supporting up to 200 wireless devices and a maximum wireless coverage up to 3000 square feet. View product details | 100 to 249 | Light to heavy | Simplified | [...] | Series | Users | Network Usage | Operations | --- --- | | Cisco Business 100 Series access points Cisco Business 100 Series Access Points Enterprise-grade performance delivering highly secure and reliable wireless connectivity for small and medium-sized businesses View product details | 50 or fewer | Light to medium | Simplified | [...] | Cisco Business 350 Series Managed Switches Cisco Business 350 Series Managed Switches Next-generation managed switches that combine affordability with excellent performance, rich features,",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-07T23:42:40.917Z",
+          "contentHash": "b3dd5afdc67c6a63db577dbd63714b56aa84b8751a8edb62f0a5722fd6353743",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-5175ac7ceb72a403",
+          "url": "https://www.cisco.com/site/us/en/solutions/small-business/index.html",
+          "title": "Small and Medium Enterprise Solutions - Cisco",
+          "excerpt": "Connect with certified Cisco partners who specialize in growing businesses to get custom quotes and expert implementation support. Get help from a partner ### Shop small and medium enterprise solutions Ready to buy? Compare products and purchase select networking and security gear directly from our licensed resellers. Buy now [...] Read report ### State of Wireless 2026: Unlocking the Multiplier Effect: How Strategic Wireless Investments Drive Enterprise Growth in the AI Era See why your wireless strategy is critical to growth, innovation, and security, and where to invest for maximum impact. Download report ### IDC Spotlight: Accelerate Business Growth and Drive Simplicity in the AI Era Gain analyst insights on challenges businesses face with the surge of AI and get a strategic blueprint ",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-07T23:42:40.917Z",
+          "contentHash": "da4453112211f0470b139c7dd43e0ec910fb5eac38378b722fcff6667406afc5",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-b037462b73ba0782",
+          "url": "https://www.cisco.com/c/en/us/solutions/small-business/resource-center.html",
+          "title": "Cisco Small Business Resource Center - Cisco",
+          "excerpt": "## Keep in touch for the latest in small business technology Engage in discussions with your peers and industry experts by joining our Customer Connection program. Get a direct line to Cisco product teams and access to exclusive product roadmaps, early-adopter trials, and monthly briefings. ## Learning center Find helpful tools, tips, videos, and more on specific topics written by small business experts for small business owners. small business networking resources [...] small business resource center # Cisco Small Business Resource Center Have questions? We’ve got you covered. Start with one of our basic guides to build an understanding of networking and security for small businesses. ### Contact Cisco ##### Call Sales: ## Tech connections Small business technology, trends, and insights. ",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-07T23:42:40.917Z",
+          "contentHash": "98c69626b0ec89418f7475a07e9781e4be40fa696c10ac5e6ac36b453e662152",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        }
+      ],
+      "blindAuditEvidence": [
+        {
+          "id": "evidence-home-05b245f18c0d3b25",
+          "url": "https://techniservice.co/",
+          "title": "UPS APC Bogota, Discos Duros Externos, Redes Networking - Colombia",
+          "excerpt": "UPS APC Bogota, Discos Duros Externos, Redes Networking - Colombia ' /> ' /> +573166824791 info@techniservice.co Facebook Instagram Facebook Instagram 0 elementos 🏠 Inicio 📖Políticas de Garantía POLÍTICA DE DATOS PERSONALES 🏬Tienda 💽Discos Duros LaCie Kingston SanDisk SEAGATE Western Digital ☁️NAS Qnap Seagate Discos NAS Western Digital Toshiba 📶Switches y Access Point HPE Networking Instant On HPe Networking D-Link LINKSYS 🔋UPS APC CDP Netion 🛡️ Firewall Instant On Secure Gateways Fortinet 🔌 PDU 📞Contáctenos Seleccionar página 23 años comercializando productos de Networking Disco Duro Toshiba N300 para NAS 7200RPM 3.5 SATA III Interno para NAS 6Tb &#8211; 8Tb &#8211; 10Tb Entrega inmediata Compra aqui Seagate Discos duros externos Expansión 16 TB &#8211; 18 TB &#8211; 20 TB &#821",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:37:59.108Z",
+          "contentHash": "1274cc2ac2d70e9df2d0f2c8b4bc82402852cce206748eee16db87939889e80b",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-12870e583ef41f66",
+          "url": "https://techniservice.co/switches-router-access-point-colombia-ventas",
+          "title": "Switches, Router & Access Point - venta Colombia NetWorking",
+          "excerpt": "\" name=\"google-site-verification\">\" name=\"msvalidate.01\"> +573166824791 info@techniservice.co Facebook Instagram Facebook Instagram 0 elementos Techniservice.co Seleccionar página Switches, Router & Access Point Switches, Router & Access Point Techniservice es una compañía con más de diez años de experiencia en el mercado, en conectividad y networking ofrecemos marcas reconocidas y con respaldo en Colombia, como Hp networking, Cisco, Cisco SB, Meraki y Linksys. Estas grandes marcas tienen una gama completa de productos que ofrecen seguridad, garantía y un excelente precio. Tenemos switches Cisco y hewlett packard, administrables de capa 2 y capa 3, con o sin POE (power over Ethernet) de 8, 16, 24 y 48 puertos. Cisco tiene una variedad de router VPN y/o doble WAN, access point y firewall pa",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:17.213Z",
+          "contentHash": "5b5520706f343a147794c359614894e11f0c477db3836390a4b6297f41a8f3e2",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-ef430338364ee29b",
+          "url": "https://techniservice.co/hp-1920-24g-poe-370w-switch",
+          "title": "Hp JG926A - HPE OfficeConnect 1920 24G PoE+ (370 W) - Techniservice",
+          "excerpt": "\" name=\"google-site-verification\">\" name=\"msvalidate.01\"> +573166824791 info@techniservice.co Facebook Instagram Facebook Instagram 0 elementos Techniservice.co Seleccionar página HP JG926A 1920-24G-PoE+ (370W) Switch por Techniservice | Ene 19, 2016 | HP- Networking, Redes Networking- small business- Colombia JG926A : La serie de conmutadores HP 1920, parte de la cartera HP OfficeConnect, está diseñada para organizaciones más pequeñas que gestionan aplicaciones exigentes en cuanto a ancho de banda. Los conmutadores son ideales para entornos que requieren funciones avanzadas para un control granular y donde la flexibilidad de gestión inteligente es imprescindible para una gestión y configuración de red sencilla. Los conmutadores ofrecen conmutadores Gigabit de configuración fija con gestió",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:17.213Z",
+          "contentHash": "155b89a6a2d547d42f0050a2c034fd561f54d6e70a93f800ec167509ac1608e5",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-719aa13c671fd3ee",
+          "url": "https://techniservice.co",
+          "title": "UPS APC Bogota, Discos Duros Externos, Redes Networking - Colombia",
+          "excerpt": "\" name=\"google-site-verification\">\" name=\"msvalidate.01\"> +573166824791 info@techniservice.co Facebook Instagram Facebook Instagram 0 elementos Techniservice.co Seleccionar página 23 años comercializando productos de Networking Disco Duro Toshiba N300 para NAS 7200RPM 3.5 SATA III Interno para NAS 6Tb – 8Tb – 10TbEntrega inmediata Compra aqui Seagate Discos duros externos Expansión 16 TB – 18 TB – 20 TB – 24 TB – 28 TB Disponibles Cotiza ya !! NAS QNAP TS-233 2 Bahías Almacenamiento en Red para Hogar y Oficina. 2 GB on board (non-expandable) Memoria flash: 4 GB (protección del sistema operativo de doble arranque) Envío gratis Comprar ¡Potencia tu negocio con FortiNet FortiGate! 30G – 40F – 50G – 60F – 70G – 80F – 90G – 100F – 120G – 200F Firewall UTM Empresarial – Incluyen 1 Año de FortiCa",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:17.214Z",
+          "contentHash": "3c33ac38d714be533944a873854d67e2aa30f3cb8ae04a4ce95a30667c041f93",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-1aa3f5cdec795fc9",
+          "url": "https://techniservice.co/hp-networking-colombia",
+          "title": "Hp networking Colombia ventas equipos de alta velocidad para empresas",
+          "excerpt": "\" name=\"google-site-verification\">\" name=\"msvalidate.01\"> +573166824791 info@techniservice.co Facebook Instagram Facebook Instagram 0 elementos Techniservice.co Seleccionar página HPe networking HP Networking HP Networking Colombia Tienda Hpe Networking Serie de switches HPE OfficeConnect 1420 Conectividad gigabit Ethernet (1 GbE) económica, que ofrece a las pequeñas empresas 10 veces el rendimiento de Fast Ethernet con la sencillez de plug-and-play sin gestión. HPe JH019A JH019A HPe JH017A JH017A Con un rendimiento gigabit y una serie de funciones clave como PoE+ para la alimentación de dispositivos IP, Fibre y enlaces ascendentes de 10 G para conectividad con servidores y almacenamiento. Todos los modelos admiten un funcionamiento silencioso sin ventilador, funciones automatizadas para o",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:17.214Z",
+          "contentHash": "ee266859d7d979b4878c90de6cda0dc019cadfa4c4351729b584d9c9d1884901",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-6a43a4fec54ca543",
+          "url": "https://techniservice.co/cisco-small-business",
+          "title": "Cisco Small Business Distribuidores en Colombia - Techniservice.co",
+          "excerpt": "\" name=\"google-site-verification\">\" name=\"msvalidate.01\"> +573166824791 info@techniservice.co Facebook Instagram Facebook Instagram 0 elementos Techniservice.co Seleccionar página # Cisco small business Cisco small business Cisco Small Business Colombia Tienda Cisco ## Cisco Small Business – Routers & Switches ### Routers ### Routers Cisco Small Business RV Series Acceso de red altamente seguro para pequeñas empresas. [...] La serie Cisco 220 de switches inteligentes asequibles proporciona seguridad, rendimiento y facilidad de uso para pequeñas y medianas empresas con un presupuesto limitado. Estos switches ofrecen una poderosa combinación de características, rendimiento y facilidad de uso. Cree una red comercial simple, altamente segura e inteligente a un costo menor que el que puede con ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:40.917Z",
+          "contentHash": "25e6a98e29c046b06b9f386280660cd9acf400422f15984b121d96d44a3dd88f",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-51601cc3b0777459",
+          "url": "https://netmatriks.com/brands/cisco-distributors-usa",
+          "title": "Cisco Systems Distributors in USA |Routers & Network Switches Supplier",
+          "excerpt": "Whether you are a small business or a global service provider, a Cisco distributor or partner can help you build the perfect network with the latest technology, products, and resellers. Additionally, ordering Cisco Distributor products is easy through Cisco Networks partners. ## About the Cisco Network, Partners, and Distributors [...] Netmatriks is a trusted name among Cisco distributors in the USA. Advanced networking solutions from Cisco help you stay connected, secure, and efficient with a wide variety of Cisco products, including routers, switches, and wireless access points. Our experienced team designs, deploys and manages your network infrastructure to ensure your business receives the best possible service. Our bespoke solutions are tailored to your specific needs and budget and a",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-07T23:42:40.917Z",
+          "contentHash": "684969640d7781dea442ab87000a2be5446e57b561c54e0c024727eda9b0f93e",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-518bea38610f1f62",
+          "url": "https://www.cisco.com/c/en/us/solutions/small-business/networking/small-business-products.html",
+          "title": "Small and Medium Business Products - Cisco",
+          "excerpt": "| Cisco Business 200 Series access points Cisco Business 200 Series access points Superior performance supporting up to 200 wireless devices and a maximum wireless coverage up to 3000 square feet. View product details | 100 to 249 | Light to heavy | Simplified | [...] | Series | Users | Network Usage | Operations | --- --- | | Cisco Business 100 Series access points Cisco Business 100 Series Access Points Enterprise-grade performance delivering highly secure and reliable wireless connectivity for small and medium-sized businesses View product details | 50 or fewer | Light to medium | Simplified | [...] | Cisco Business 350 Series Managed Switches Cisco Business 350 Series Managed Switches Next-generation managed switches that combine affordability with excellent performance, rich features,",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-07T23:42:40.917Z",
+          "contentHash": "b3dd5afdc67c6a63db577dbd63714b56aa84b8751a8edb62f0a5722fd6353743",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-5175ac7ceb72a403",
+          "url": "https://www.cisco.com/site/us/en/solutions/small-business/index.html",
+          "title": "Small and Medium Enterprise Solutions - Cisco",
+          "excerpt": "Connect with certified Cisco partners who specialize in growing businesses to get custom quotes and expert implementation support. Get help from a partner ### Shop small and medium enterprise solutions Ready to buy? Compare products and purchase select networking and security gear directly from our licensed resellers. Buy now [...] Read report ### State of Wireless 2026: Unlocking the Multiplier Effect: How Strategic Wireless Investments Drive Enterprise Growth in the AI Era See why your wireless strategy is critical to growth, innovation, and security, and where to invest for maximum impact. Download report ### IDC Spotlight: Accelerate Business Growth and Drive Simplicity in the AI Era Gain analyst insights on challenges businesses face with the surge of AI and get a strategic blueprint ",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-07T23:42:40.917Z",
+          "contentHash": "da4453112211f0470b139c7dd43e0ec910fb5eac38378b722fcff6667406afc5",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-b037462b73ba0782",
+          "url": "https://www.cisco.com/c/en/us/solutions/small-business/resource-center.html",
+          "title": "Cisco Small Business Resource Center - Cisco",
+          "excerpt": "## Keep in touch for the latest in small business technology Engage in discussions with your peers and industry experts by joining our Customer Connection program. Get a direct line to Cisco product teams and access to exclusive product roadmaps, early-adopter trials, and monthly briefings. ## Learning center Find helpful tools, tips, videos, and more on specific topics written by small business experts for small business owners. small business networking resources [...] small business resource center # Cisco Small Business Resource Center Have questions? We’ve got you covered. Start with one of our basic guides to build an understanding of networking and security for small businesses. ### Contact Cisco ##### Call Sales: ## Tech connections Small business technology, trends, and insights. ",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-07T23:42:40.917Z",
+          "contentHash": "98c69626b0ec89418f7475a07e9781e4be40fa696c10ac5e6ac36b453e662152",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 2,
+      "candidateId": "lead-9d166f56533ba842",
+      "companyName": "Alkosto Hiperahorro",
+      "domain": "alkosto.com",
+      "officialWebsiteUrl": "https://www.alkosto.com/",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 88,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-8dae469c23781e48",
+        "evidence-home-9d166f56533ba842",
+        "evidence-41ee81ac26333f1d",
+        "evidence-05f7b624994dfc73",
+        "evidence-d76de18b71771622"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-8dae469c23781e48",
+          "url": "https://www.alkosto.com/casa-inteligente-domotica/redes-wifi/routers/c/BI_5004_ALKOS",
+          "title": "Routers WiFi, Mesh y Repetidores",
+          "excerpt": "En Alkosto, entendemos la importancia de una conexión a internet estable y rápida para tu hogar o negocio en Colombia. Por eso, te ofrecemos una amplia selección de routers Wifi, esenciales para potenciar tu experiencia digital. Ya sea que busques el equipo ideal para streaming 4K, sesiones de gaming sin interrupciones o mantener todos tus dispositivos conectados, aquí encontrarás la solución perfecta. Nuestros routers garantizan una navegación fluida y segura, adaptándose a las necesidades de [...] Con el respaldo de Alkosto, una tienda líder en tecnología en Colombia, que te ofrece garantía oficial en todos tus equipos y la tranquilidad de una compra segura tanto online como en nuestras tiendas físicas. Nuestro amplio inventario incluye desde el router wifi TP-Link ideal para tu apartame",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:39.046Z",
+          "contentHash": "073b3ec98da9a2533d81a5f8eb61d9614eed258ce72d254b4f0cbca25d81caa8",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-home-9d166f56533ba842",
+          "url": "https://www.alkosto.com/",
+          "title": "Alkosto Hiperahorro | Orgullosamente Colombiano",
+          "excerpt": "Alkosto Hiperahorro | Orgullosamente Colombiano Skip to content Skip to navigation menu 🙏🏻¡Colombia nos necesita!🫶🏻 Apoyemos a través de la red del Banco de Alimentos QUIERO AYUDAR 🙏🏻¡Colombia nos necesita!🫶🏻 Apoyemos a través de la red del Banco de Alimentos QUIERO AYUDAR 00 Hrs : 00 Min : 00 Seg Hiperofertas Venta: (601) 746 8001 Servicio: (601) 407 3033 Sigue tu pedido Consulta tu factura Nuestras tiendas Catálogo Ayuda Mi cuenta Bienvenido/a Ingresar o crear cuenta Accede a tus datos personales, tus pedidos y solicita devoluciones: Correo electrónico Ingrese un correo válido @outlook.com @hotmail.com @gmail.com @yahoo.com Continuar Mi cuenta Aquí podrás consultar todos tus movimientos Mi Perfil Revisa y edita tus datos personales. Mis Pedidos Gestiona tus pedidos, devoluciones ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:37:55.865Z",
+          "contentHash": "d36c563d54590633e0c71307491b4c7a12b70984c7823b6561b1e017efcf4178",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-41ee81ac26333f1d",
+          "url": "https://www.alkosto.com/router-nexxt-mesh-wifi-6-4-antenas-ax1800-1800mbps/p/798303058087",
+          "title": "Router WiFi NEXXT Mesh WiFi 6 1800Mbps",
+          "excerpt": "Compra segura En Alkosto queremos que disfrutes una experiencia de compra completa, con beneficios pensados para darte más tranquilidad, flexibilidad y respaldo en cada compra 🛒 También te puede interesar Ir al carrito y pagar Continuar comprando Descuento con cualquier medio de pago Vigencia del 07-09-2026 al 30-09-2026 #### Compra en Kombo 🔥¡Compra en Kombo y ahorra más! #### Gratis en Kombo Compra en Kombo 🔥 ¡Compra en Kombo y ahorra más! [...] Skip to contentSkip to navigation menu BanderínBanderín 🙏🏻¡Colombia nos necesita!🫶🏻 Apoyemos a través de la red del Banco de Alimentos QUIERO AYUDAR 🙏🏻¡Colombia nos necesita!🫶🏻 Apoyemos a través de la red del Banco de Alimentos QUIERO AYUDAR 00Hrs : 00Min : 00Seg Logo alkosto Ingresa tu correo para guardar productos favoritos. Alkosto ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:39.046Z",
+          "contentHash": "6052f4c4c33679d15ad48f72048af478f4876df98cfcb8c97c7d91174778ed58",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-d76de18b71771622",
+          "url": "https://www.amazon.com/-/es/Los-m%C3%A1s-vendidos-Sistemas-Wi-Fi-para-todo-el-hogar-y-de-malla/zgbs/pc/17935294011",
+          "title": "Sistemas Wi-Fi para todo el hogar y de malla",
+          "excerpt": "Deco 7 Pro - Sistema de malla Wi-Fi 7 de tres bandas BE14000, Internet de | PCGamer's Best Mesh Pick 2026, 8-Stream 14Gbps, 1 Router wifi Amazon eero 6+ mesh como nuevo. Admite planes de internet de hasta un gigabit, cobertura de hasta 1500 pies² (139 TP-Link Deco X55 Pro AX3000 Sistema de malla Wi-Fi 6 para todo el hogar - Cobertura de hasta 6500 pies cuadrados y hasta 150 Google Wifi AC1200 - Sistema WiFi de malla - Enrutador Wifi - Cobertura de 1500 pies cuadrados - 1 paquete [...] ASUS ZenWiFi BT6 WiFi 7 Mesh Router - Tri-Band, 3k sq. ft. x2 WAN (1 PK) | 4 puertos 1G, seguridad de red sin suscripción, co sistema Google WiFi cobertura para toda la casa (NLS-1304-25) TP-Link Deco Mesh WiFi System (Deco M5) – Cobertura para todo el hogar de hasta 5500 pies cuadrados y más de 100 dispositi",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-07T23:42:39.046Z",
+          "contentHash": "bf1b615b9edcc09b70042480d0198c7a14106a6a728792188916dbd251ce7485",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-05f7b624994dfc73",
+          "url": "https://www.tp-link.com/co/mesh-wifi",
+          "title": "Whole-Home Mesh WiFi | TP-Link Colombia",
+          "excerpt": "Mesh WiFi is a whole home WiFi system built to eliminate dead zones and to provide uninterrupted WiFi throughout your home. Mesh systems enables devices in your network to have faster speeds, greater coverage, and a more reliable connection. While traditional routers broadcast WiFi from a single point, mesh WiFi systems have multiple access points. [...] VIGI The smart surveillance solution for small and medium business SOHO Networking The easy-to-use solution for SOHO networking Proveedor de Servicios menu GPON Soluciones de Fibra MESH Rápido, estable, en todas partes Wi-Fi Router La opción confiable para redes domésticas Switches Boosts your business network with premium performance. Business Wireless Takes your enterprise Wi-Fi to new levels. Hogar Atrás Wi-Fi Para toda la casa Deco Rou",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-07T23:42:39.047Z",
+          "contentHash": "ec67d8ad753cfbb340d31d5d963760c2c8061dae2636667ab1f02fc436d182b4",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        }
+      ],
+      "blindAuditEvidence": [
+        {
+          "id": "evidence-8dae469c23781e48",
+          "url": "https://www.alkosto.com/casa-inteligente-domotica/redes-wifi/routers/c/BI_5004_ALKOS",
+          "title": "Routers WiFi, Mesh y Repetidores",
+          "excerpt": "En Alkosto, entendemos la importancia de una conexión a internet estable y rápida para tu hogar o negocio en Colombia. Por eso, te ofrecemos una amplia selección de routers Wifi, esenciales para potenciar tu experiencia digital. Ya sea que busques el equipo ideal para streaming 4K, sesiones de gaming sin interrupciones o mantener todos tus dispositivos conectados, aquí encontrarás la solución perfecta. Nuestros routers garantizan una navegación fluida y segura, adaptándose a las necesidades de [...] Con el respaldo de Alkosto, una tienda líder en tecnología en Colombia, que te ofrece garantía oficial en todos tus equipos y la tranquilidad de una compra segura tanto online como en nuestras tiendas físicas. Nuestro amplio inventario incluye desde el router wifi TP-Link ideal para tu apartame",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:39.046Z",
+          "contentHash": "073b3ec98da9a2533d81a5f8eb61d9614eed258ce72d254b4f0cbca25d81caa8",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-home-9d166f56533ba842",
+          "url": "https://www.alkosto.com/",
+          "title": "Alkosto Hiperahorro | Orgullosamente Colombiano",
+          "excerpt": "Alkosto Hiperahorro | Orgullosamente Colombiano Skip to content Skip to navigation menu 🙏🏻¡Colombia nos necesita!🫶🏻 Apoyemos a través de la red del Banco de Alimentos QUIERO AYUDAR 🙏🏻¡Colombia nos necesita!🫶🏻 Apoyemos a través de la red del Banco de Alimentos QUIERO AYUDAR 00 Hrs : 00 Min : 00 Seg Hiperofertas Venta: (601) 746 8001 Servicio: (601) 407 3033 Sigue tu pedido Consulta tu factura Nuestras tiendas Catálogo Ayuda Mi cuenta Bienvenido/a Ingresar o crear cuenta Accede a tus datos personales, tus pedidos y solicita devoluciones: Correo electrónico Ingrese un correo válido @outlook.com @hotmail.com @gmail.com @yahoo.com Continuar Mi cuenta Aquí podrás consultar todos tus movimientos Mi Perfil Revisa y edita tus datos personales. Mis Pedidos Gestiona tus pedidos, devoluciones ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:37:55.865Z",
+          "contentHash": "d36c563d54590633e0c71307491b4c7a12b70984c7823b6561b1e017efcf4178",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-41ee81ac26333f1d",
+          "url": "https://www.alkosto.com/router-nexxt-mesh-wifi-6-4-antenas-ax1800-1800mbps/p/798303058087",
+          "title": "Router WiFi NEXXT Mesh WiFi 6 1800Mbps",
+          "excerpt": "Compra segura En Alkosto queremos que disfrutes una experiencia de compra completa, con beneficios pensados para darte más tranquilidad, flexibilidad y respaldo en cada compra 🛒 También te puede interesar Ir al carrito y pagar Continuar comprando Descuento con cualquier medio de pago Vigencia del 07-09-2026 al 30-09-2026 #### Compra en Kombo 🔥¡Compra en Kombo y ahorra más! #### Gratis en Kombo Compra en Kombo 🔥 ¡Compra en Kombo y ahorra más! [...] Skip to contentSkip to navigation menu BanderínBanderín 🙏🏻¡Colombia nos necesita!🫶🏻 Apoyemos a través de la red del Banco de Alimentos QUIERO AYUDAR 🙏🏻¡Colombia nos necesita!🫶🏻 Apoyemos a través de la red del Banco de Alimentos QUIERO AYUDAR 00Hrs : 00Min : 00Seg Logo alkosto Ingresa tu correo para guardar productos favoritos. Alkosto ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:39.046Z",
+          "contentHash": "6052f4c4c33679d15ad48f72048af478f4876df98cfcb8c97c7d91174778ed58",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-d76de18b71771622",
+          "url": "https://www.amazon.com/-/es/Los-m%C3%A1s-vendidos-Sistemas-Wi-Fi-para-todo-el-hogar-y-de-malla/zgbs/pc/17935294011",
+          "title": "Sistemas Wi-Fi para todo el hogar y de malla",
+          "excerpt": "Deco 7 Pro - Sistema de malla Wi-Fi 7 de tres bandas BE14000, Internet de | PCGamer's Best Mesh Pick 2026, 8-Stream 14Gbps, 1 Router wifi Amazon eero 6+ mesh como nuevo. Admite planes de internet de hasta un gigabit, cobertura de hasta 1500 pies² (139 TP-Link Deco X55 Pro AX3000 Sistema de malla Wi-Fi 6 para todo el hogar - Cobertura de hasta 6500 pies cuadrados y hasta 150 Google Wifi AC1200 - Sistema WiFi de malla - Enrutador Wifi - Cobertura de 1500 pies cuadrados - 1 paquete [...] ASUS ZenWiFi BT6 WiFi 7 Mesh Router - Tri-Band, 3k sq. ft. x2 WAN (1 PK) | 4 puertos 1G, seguridad de red sin suscripción, co sistema Google WiFi cobertura para toda la casa (NLS-1304-25) TP-Link Deco Mesh WiFi System (Deco M5) – Cobertura para todo el hogar de hasta 5500 pies cuadrados y más de 100 dispositi",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-07T23:42:39.046Z",
+          "contentHash": "bf1b615b9edcc09b70042480d0198c7a14106a6a728792188916dbd251ce7485",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-05f7b624994dfc73",
+          "url": "https://www.tp-link.com/co/mesh-wifi",
+          "title": "Whole-Home Mesh WiFi | TP-Link Colombia",
+          "excerpt": "Mesh WiFi is a whole home WiFi system built to eliminate dead zones and to provide uninterrupted WiFi throughout your home. Mesh systems enables devices in your network to have faster speeds, greater coverage, and a more reliable connection. While traditional routers broadcast WiFi from a single point, mesh WiFi systems have multiple access points. [...] VIGI The smart surveillance solution for small and medium business SOHO Networking The easy-to-use solution for SOHO networking Proveedor de Servicios menu GPON Soluciones de Fibra MESH Rápido, estable, en todas partes Wi-Fi Router La opción confiable para redes domésticas Switches Boosts your business network with premium performance. Business Wireless Takes your enterprise Wi-Fi to new levels. Hogar Atrás Wi-Fi Para toda la casa Deco Rou",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-07T23:42:39.047Z",
+          "contentHash": "ec67d8ad753cfbb340d31d5d963760c2c8061dae2636667ab1f02fc436d182b4",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 3,
+      "candidateId": "lead-0f94727f43652a4e",
+      "companyName": "Mercado Libre",
+      "domain": "mercadolibre.com.co",
+      "officialWebsiteUrl": "https://www.mercadolibre.com.co",
+      "primaryRole": "E-tailer",
+      "supportedRoles": [
+        "E-tailer"
+      ],
+      "totalScore": 83,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-0f94727f43652a4e",
+        "evidence-eaf6d45cd78ab679",
+        "evidence-872928794d2c90a0",
+        "evidence-7d6cea750afe6993"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-0f94727f43652a4e",
+          "url": "https://www.mercadolibre.com.co/gz/account-verification?go=https%3A%2F%2Flistado.mercadolibre.com.co%2F&tid=8bbbc16e-8aa5-479e-9ded-d8586650bcf6",
+          "title": "Mercado Libre",
+          "excerpt": "Mercado Libre ¡Hola! Para continuar, ingresa a tu cuenta Soy nuevo Ya tengo cuenta trace-id: 8bbbc16e-8aa5-479e-9ded-d8586650bcf6 Usamos cookies para mejorar tu experiencia en Mercado Libre. Consultar más en nuestro Centro de Privacidad. Aceptar cookies Configurar cookies ¡Listo! Guardamos tus preferencias. Cerrar Algo salió mal. Por favor, vuelve a intentarlo. Cerrar",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:37:57.617Z",
+          "contentHash": "93b0f415a4bc3d6fd88a169a6271c88fa275fc194340fd383eefb3062618c907",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-eaf6d45cd78ab679",
+          "url": "https://listado.mercadolibre.com.co/computacion/conectividad-redes/routers",
+          "title": "Routers | MercadoLibre.com.co",
+          "excerpt": "Router Inalambrico Tp-link Archer Ax12 AX1500 Wi-fi 6 Doble Color Negro · Repetidor Inalámbrico Wireless-N Wifi Repeater 300Mbps 2.4GHz Blanco · Extensor De",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:38.792Z",
+          "contentHash": "77cf7e4ff573d8b74c174af2d0fad1a5751ca93d71ba5501e42e678c78771ec1",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-872928794d2c90a0",
+          "url": "https://listado.mercadolibre.com.co/computacion/conectividad-redes/telefonia-ip/routers",
+          "title": "Telefonía IP Routers | MercadoLibre.com.co",
+          "excerpt": "Router Tenda AC8 AC1200 Doble Banda,Señal Estable Con Optimización Dinámica,4 Antenas Que Penetran 2 Paredes,Beamforming Para Menos Cortes,IPv6 Protege Tus",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:38.792Z",
+          "contentHash": "5f9defd0f8e5998de0025f15beb0c02b270dc34017a42cff5dd684e063ae8de5",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-7d6cea750afe6993",
+          "url": "https://www.mercadolibre.com.co/blog/mas-vendidos/routers-sistemas-inalambricos",
+          "title": "Routers y sistemas inalámbricos más vendidos de 2025",
+          "excerpt": "### Acerca de ### Otros sitios ### Ayuda / PQR ### Redes sociales ### Mi cuenta ### Suscripciones ### Temporadas Calle 100 #7-33, Torre I, Piso 16, Bogotá D.C., Colombia SIC - Industria y comercio Precio por unidad de medida Usamos cookies para mejorar tu experiencia en Mercado Libre. Consultar más en nuestro Centro de Privacidad. [...] #### Inmersión total: la evolución de los monitores curvos en 2026 | Mercado Libre Elige un monitor curvo con resolución QHD o 4K para lograr mayor inmersión y productividad. COMPUTACION MONITORES CURVOS MONITOR #### Mejora tu experiencia de gaming con un mouse de cable USB | Mercado Libre Un mouse USB con cable ofrece estabilidad y precisión, esencial para un buen rendimiento en gaming. MOUSE MOUSE CABLE USB COMPUTACION [...] REPETIDOR WIFI MOVISTAR #### M",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:38.792Z",
+          "contentHash": "c2ce2024c08389914e7f6be6449b67974a8fc78f756365bad8310a35621ac730",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        }
+      ],
+      "blindAuditEvidence": [
+        {
+          "id": "evidence-home-0f94727f43652a4e",
+          "url": "https://www.mercadolibre.com.co/gz/account-verification?go=https%3A%2F%2Flistado.mercadolibre.com.co%2F&tid=8bbbc16e-8aa5-479e-9ded-d8586650bcf6",
+          "title": "Mercado Libre",
+          "excerpt": "Mercado Libre ¡Hola! Para continuar, ingresa a tu cuenta Soy nuevo Ya tengo cuenta trace-id: 8bbbc16e-8aa5-479e-9ded-d8586650bcf6 Usamos cookies para mejorar tu experiencia en Mercado Libre. Consultar más en nuestro Centro de Privacidad. Aceptar cookies Configurar cookies ¡Listo! Guardamos tus preferencias. Cerrar Algo salió mal. Por favor, vuelve a intentarlo. Cerrar",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:37:57.617Z",
+          "contentHash": "93b0f415a4bc3d6fd88a169a6271c88fa275fc194340fd383eefb3062618c907",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-eaf6d45cd78ab679",
+          "url": "https://listado.mercadolibre.com.co/computacion/conectividad-redes/routers",
+          "title": "Routers | MercadoLibre.com.co",
+          "excerpt": "Router Inalambrico Tp-link Archer Ax12 AX1500 Wi-fi 6 Doble Color Negro · Repetidor Inalámbrico Wireless-N Wifi Repeater 300Mbps 2.4GHz Blanco · Extensor De",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:38.792Z",
+          "contentHash": "77cf7e4ff573d8b74c174af2d0fad1a5751ca93d71ba5501e42e678c78771ec1",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-872928794d2c90a0",
+          "url": "https://listado.mercadolibre.com.co/computacion/conectividad-redes/telefonia-ip/routers",
+          "title": "Telefonía IP Routers | MercadoLibre.com.co",
+          "excerpt": "Router Tenda AC8 AC1200 Doble Banda,Señal Estable Con Optimización Dinámica,4 Antenas Que Penetran 2 Paredes,Beamforming Para Menos Cortes,IPv6 Protege Tus",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:38.792Z",
+          "contentHash": "5f9defd0f8e5998de0025f15beb0c02b270dc34017a42cff5dd684e063ae8de5",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-7d6cea750afe6993",
+          "url": "https://www.mercadolibre.com.co/blog/mas-vendidos/routers-sistemas-inalambricos",
+          "title": "Routers y sistemas inalámbricos más vendidos de 2025",
+          "excerpt": "### Acerca de ### Otros sitios ### Ayuda / PQR ### Redes sociales ### Mi cuenta ### Suscripciones ### Temporadas Calle 100 #7-33, Torre I, Piso 16, Bogotá D.C., Colombia SIC - Industria y comercio Precio por unidad de medida Usamos cookies para mejorar tu experiencia en Mercado Libre. Consultar más en nuestro Centro de Privacidad. [...] #### Inmersión total: la evolución de los monitores curvos en 2026 | Mercado Libre Elige un monitor curvo con resolución QHD o 4K para lograr mayor inmersión y productividad. COMPUTACION MONITORES CURVOS MONITOR #### Mejora tu experiencia de gaming con un mouse de cable USB | Mercado Libre Un mouse USB con cable ofrece estabilidad y precisión, esencial para un buen rendimiento en gaming. MOUSE MOUSE CABLE USB COMPUTACION [...] REPETIDOR WIFI MOVISTAR #### M",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:38.792Z",
+          "contentHash": "c2ce2024c08389914e7f6be6449b67974a8fc78f756365bad8310a35621ac730",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 4,
+      "candidateId": "lead-2ea94beca6663e5d",
+      "companyName": "Homecenter",
+      "domain": "homecenter.com.co",
+      "officialWebsiteUrl": "https://www.homecenter.com.co",
+      "primaryRole": "Retailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 80,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-cb4d77bd7033ef25",
+        "evidence-7957fc41da8ea9e0",
+        "evidence-c6b4fc2f01147ab8",
+        "evidence-13b93592ee1b3880",
+        "evidence-37606ca6a9a1d8cf",
+        "evidence-c4f45652858f9d0c",
+        "evidence-9edc2ee0dacb69be"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-cb4d77bd7033ef25",
+          "url": "https://www.homecenter.com.co/homecenter-co/informacionadicional/devolucionesygarantias/1000",
+          "title": "Devoluciones y garantías",
+          "excerpt": "logo ! BOGOTA D.C. BOGOTA D.C. Estás viendo productos disponibles para comprar en esta ciudad. Si no es donde te encuentras,aquí puedes cambiar tu ubicación. Compra Telefónica 01 8000 12 7373 Servicio al Cliente 01 8000 115 150 Ocultar menú Proyectos e Ideas Servicios y Proyectos Categorías de Productos BOGOTA D.C. BOGOTA D.C. Estás viendo productos disponibles para comprar en esta ciudad. Si no es donde te encuentras,aquí puedes cambiar tu ubicación. Compra Telefónica 01 8000 12 7373 Servicio al Cliente 01 8000 115 150 Políticas de devolución Políticas de garantía",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:16.937Z",
+          "contentHash": "ce2801fed82c7eecd2c241dd8766846ae31cf6d4bdfaeab594a08d388f027476",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-7957fc41da8ea9e0",
+          "url": "https://www.homecenter.com.co/homecenter-co/web-tracking",
+          "title": "Web Tracking",
+          "excerpt": "logo Mi cuenta Mi cuenta !Hola BOGOTA D.C. BOGOTA D.C. Ests viendo productos disponibles para comprar en esta ciudad. Si no es donde te encuentras,aqu puedes cambiar tu ubicacin. Cambiar;) Mantener;) BOGOTA D.C. Compra Telefnica 01 8000 12 7373 Servicio al Cliente 01 8000 115 150 Haz click para ver los productos disponibles Ocultar menú Construccin y Ferretera Pisos, Pinturas y Acabados Herramientas y Maquinaria Bao, Cocina y Aseo Electro, Tecno y Climatizacin Muebles y Organizacin Decoracin, Menaje e Iluminacin Aire libre, Jardin y Mascotas Automviles y Carcenter Proyectos e Ideas Servicios y Proyectos Rastrear tu pedido Agiliza tu devolucin Categoras de Productos Construccin y Ferretera Materiales de Construccin + Cementos, Concreto y Morteros + Arenas y gravas + Aditivos para Concreto y",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:16.937Z",
+          "contentHash": "7d358ad8fe815c98c14627aea71ea3c29d2d113081caa12076f952be53060ab6",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-c6b4fc2f01147ab8",
+          "url": "https://www.homecenter.com.co/homecenter-co/servicioalcliente/ayuda",
+          "title": "Te escuchamos tus PQRS - Homecenter",
+          "excerpt": "logo Mi cuenta Mi cuenta !Hola BOGOTA D.C. BOGOTA D.C. Ests viendo productos disponibles para comprar en esta ciudad. Si no es donde te encuentras,aqu puedes cambiar tu ubicacin. Cambiar;) Mantener;) BOGOTA D.C. Compra Telefnica 01 8000 12 7373 Servicio al Cliente 01 8000 115 150 Haz click para ver los productos disponibles Ocultar menú Construccin y Ferretera Pisos, Pinturas y Acabados Herramientas y Maquinaria Bao, Cocina y Aseo Electro, Tecno y Climatizacin Muebles y Organizacin Decoracin, Menaje e Iluminacin Aire libre, Jardin y Mascotas Automviles y Carcenter Proyectos e Ideas Servicios y Proyectos Rastrear tu pedido Agiliza tu devolucin Categoras de Productos Construccin y Ferretera Materiales de Construccin + Cementos, Concreto y Morteros + Arenas y gravas + Aditivos para Concreto y",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:16.937Z",
+          "contentHash": "7d358ad8fe815c98c14627aea71ea3c29d2d113081caa12076f952be53060ab6",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-13b93592ee1b3880",
+          "url": "https://www.homecenter.com.co/homecenter-co/product/3028144/flor-de-loto-tres-divisiones-color-dorado/3028144",
+          "title": "Flor De Loto Tres Divisiones Color Dorado - Homecenter.com.co",
+          "excerpt": "SERVICIO AL CLIENTE 320 88 999 33 ++ TIENDAS CENTRO DE AYUDA VENTA TELEFÓNICA 310 242 7373 MUNDO CMR CONSTRUCTOR FALABELLA BANCO SEGUROS SEGUIMIENTO DE COMPRA Sodimac Logo cmr puntos image Flor De Loto Tres Divisiones Color Dorado, marca Cegrafic - Foto Principal Flor De Loto Tres Divisiones Color Dorado, marca Cegrafic - Foto 2 Flor De Loto Tres Divisiones Color Dorado, marca Cegrafic - Foto 3 Flor De Loto Tres Divisiones Color Dorado, marca Cegrafic - Foto 4 Flor De Loto Tres Divisiones Color Dorado, marca Cegrafic - Foto 5 1+ Flor De Loto Tres Divisiones Color Dorado, marca Cegrafic - Foto 6 Flor De Loto Tres Divisiones Color Dorado, marca Cegrafic - Foto Principal Flor De Loto Tres Divisiones Color Dorado Dale un toque de elegancia y armonía a tu hogar con la Flor de Loto Tres Division",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:16.938Z",
+          "contentHash": "e7649b650da9eabf75645a168bf00ced225de504555c6faed6ff08102ba63e27",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-37606ca6a9a1d8cf",
+          "url": "https://www.homecenter.com.co/homecenter-co/category/cat1670414/routers-y-rompemuros?f.product.brandName=e4u",
+          "title": "Routers y Rompemuros e4u",
+          "excerpt": "Compra en línea Routers y Rompemuros e4u en Homecenter, la Tienda con los mejores precios con envío gratis o retiro en tienda. Pagos Online con Tarjeta",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:42.771Z",
+          "contentHash": "769e30c2019e9dff14a0cb05e52de7d2a6dc5c9fc2af24b1c0fdcbf79781f69c",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-c4f45652858f9d0c",
+          "url": "https://www.homecenter.com.co/homecenter-co/landing/cat1670414?cid=lnd971452&=INTERNO",
+          "title": "Routers - Repetidores Wifi - Amplificador Wifi - Rompe Muros",
+          "excerpt": "Comprar Routers, repetidores wifi, amplificadores wifi y Rompemuros. Routers y Rompemuros. Precio normal: $149.900 UND Despacho. Precio normal: $336.900 UND",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:42.771Z",
+          "contentHash": "4889c6f7c312b89b21ef40c25f878a9bb0de4b4a521d05d0c46c62e3be503c61",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-9edc2ee0dacb69be",
+          "url": "https://www.homecenter.com.co/homecenter-co/category/cat1670414/routers-y-rompemuros?f.product.brandName=vcp",
+          "title": "Routers y Rompemuros vcp",
+          "excerpt": "Un router rompemuros es un dispositivo diseñado para mejorar la cobertura wifi en espacios donde existen obstáculos físicos que debilitan la señal. Utiliza",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:42.772Z",
+          "contentHash": "069ed1fad203c9363b9ab4ccac77bcd9c621677b14828f90858c83a72fa1f05b",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        }
+      ],
+      "blindAuditEvidence": [
+        {
+          "id": "evidence-cb4d77bd7033ef25",
+          "url": "https://www.homecenter.com.co/homecenter-co/informacionadicional/devolucionesygarantias/1000",
+          "title": "Devoluciones y garantías",
+          "excerpt": "logo ! BOGOTA D.C. BOGOTA D.C. Estás viendo productos disponibles para comprar en esta ciudad. Si no es donde te encuentras,aquí puedes cambiar tu ubicación. Compra Telefónica 01 8000 12 7373 Servicio al Cliente 01 8000 115 150 Ocultar menú Proyectos e Ideas Servicios y Proyectos Categorías de Productos BOGOTA D.C. BOGOTA D.C. Estás viendo productos disponibles para comprar en esta ciudad. Si no es donde te encuentras,aquí puedes cambiar tu ubicación. Compra Telefónica 01 8000 12 7373 Servicio al Cliente 01 8000 115 150 Políticas de devolución Políticas de garantía",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:16.937Z",
+          "contentHash": "ce2801fed82c7eecd2c241dd8766846ae31cf6d4bdfaeab594a08d388f027476",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-7957fc41da8ea9e0",
+          "url": "https://www.homecenter.com.co/homecenter-co/web-tracking",
+          "title": "Web Tracking",
+          "excerpt": "logo Mi cuenta Mi cuenta !Hola BOGOTA D.C. BOGOTA D.C. Ests viendo productos disponibles para comprar en esta ciudad. Si no es donde te encuentras,aqu puedes cambiar tu ubicacin. Cambiar;) Mantener;) BOGOTA D.C. Compra Telefnica 01 8000 12 7373 Servicio al Cliente 01 8000 115 150 Haz click para ver los productos disponibles Ocultar menú Construccin y Ferretera Pisos, Pinturas y Acabados Herramientas y Maquinaria Bao, Cocina y Aseo Electro, Tecno y Climatizacin Muebles y Organizacin Decoracin, Menaje e Iluminacin Aire libre, Jardin y Mascotas Automviles y Carcenter Proyectos e Ideas Servicios y Proyectos Rastrear tu pedido Agiliza tu devolucin Categoras de Productos Construccin y Ferretera Materiales de Construccin + Cementos, Concreto y Morteros + Arenas y gravas + Aditivos para Concreto y",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:16.937Z",
+          "contentHash": "7d358ad8fe815c98c14627aea71ea3c29d2d113081caa12076f952be53060ab6",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-c6b4fc2f01147ab8",
+          "url": "https://www.homecenter.com.co/homecenter-co/servicioalcliente/ayuda",
+          "title": "Te escuchamos tus PQRS - Homecenter",
+          "excerpt": "logo Mi cuenta Mi cuenta !Hola BOGOTA D.C. BOGOTA D.C. Ests viendo productos disponibles para comprar en esta ciudad. Si no es donde te encuentras,aqu puedes cambiar tu ubicacin. Cambiar;) Mantener;) BOGOTA D.C. Compra Telefnica 01 8000 12 7373 Servicio al Cliente 01 8000 115 150 Haz click para ver los productos disponibles Ocultar menú Construccin y Ferretera Pisos, Pinturas y Acabados Herramientas y Maquinaria Bao, Cocina y Aseo Electro, Tecno y Climatizacin Muebles y Organizacin Decoracin, Menaje e Iluminacin Aire libre, Jardin y Mascotas Automviles y Carcenter Proyectos e Ideas Servicios y Proyectos Rastrear tu pedido Agiliza tu devolucin Categoras de Productos Construccin y Ferretera Materiales de Construccin + Cementos, Concreto y Morteros + Arenas y gravas + Aditivos para Concreto y",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:16.937Z",
+          "contentHash": "7d358ad8fe815c98c14627aea71ea3c29d2d113081caa12076f952be53060ab6",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-13b93592ee1b3880",
+          "url": "https://www.homecenter.com.co/homecenter-co/product/3028144/flor-de-loto-tres-divisiones-color-dorado/3028144",
+          "title": "Flor De Loto Tres Divisiones Color Dorado - Homecenter.com.co",
+          "excerpt": "SERVICIO AL CLIENTE 320 88 999 33 ++ TIENDAS CENTRO DE AYUDA VENTA TELEFÓNICA 310 242 7373 MUNDO CMR CONSTRUCTOR FALABELLA BANCO SEGUROS SEGUIMIENTO DE COMPRA Sodimac Logo cmr puntos image Flor De Loto Tres Divisiones Color Dorado, marca Cegrafic - Foto Principal Flor De Loto Tres Divisiones Color Dorado, marca Cegrafic - Foto 2 Flor De Loto Tres Divisiones Color Dorado, marca Cegrafic - Foto 3 Flor De Loto Tres Divisiones Color Dorado, marca Cegrafic - Foto 4 Flor De Loto Tres Divisiones Color Dorado, marca Cegrafic - Foto 5 1+ Flor De Loto Tres Divisiones Color Dorado, marca Cegrafic - Foto 6 Flor De Loto Tres Divisiones Color Dorado, marca Cegrafic - Foto Principal Flor De Loto Tres Divisiones Color Dorado Dale un toque de elegancia y armonía a tu hogar con la Flor de Loto Tres Division",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:16.938Z",
+          "contentHash": "e7649b650da9eabf75645a168bf00ced225de504555c6faed6ff08102ba63e27",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-37606ca6a9a1d8cf",
+          "url": "https://www.homecenter.com.co/homecenter-co/category/cat1670414/routers-y-rompemuros?f.product.brandName=e4u",
+          "title": "Routers y Rompemuros e4u",
+          "excerpt": "Compra en línea Routers y Rompemuros e4u en Homecenter, la Tienda con los mejores precios con envío gratis o retiro en tienda. Pagos Online con Tarjeta",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:42.771Z",
+          "contentHash": "769e30c2019e9dff14a0cb05e52de7d2a6dc5c9fc2af24b1c0fdcbf79781f69c",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-c4f45652858f9d0c",
+          "url": "https://www.homecenter.com.co/homecenter-co/landing/cat1670414?cid=lnd971452&=INTERNO",
+          "title": "Routers - Repetidores Wifi - Amplificador Wifi - Rompe Muros",
+          "excerpt": "Comprar Routers, repetidores wifi, amplificadores wifi y Rompemuros. Routers y Rompemuros. Precio normal: $149.900 UND Despacho. Precio normal: $336.900 UND",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:42.771Z",
+          "contentHash": "4889c6f7c312b89b21ef40c25f878a9bb0de4b4a521d05d0c46c62e3be503c61",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-9edc2ee0dacb69be",
+          "url": "https://www.homecenter.com.co/homecenter-co/category/cat1670414/routers-y-rompemuros?f.product.brandName=vcp",
+          "title": "Routers y Rompemuros vcp",
+          "excerpt": "Un router rompemuros es un dispositivo diseñado para mejorar la cobertura wifi en espacios donde existen obstáculos físicos que debilitan la señal. Utiliza",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:42.772Z",
+          "contentHash": "069ed1fad203c9363b9ab4ccac77bcd9c621677b14828f90858c83a72fa1f05b",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 5,
+      "candidateId": "lead-97ca511e7c6171d6",
+      "companyName": "COMPUCENTER CARTAGENA S.A.S.",
+      "domain": "compucenterctg.co",
+      "officialWebsiteUrl": "https://compucenterctg.co/",
+      "primaryRole": "E-tailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 70,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-97ca511e7c6171d6",
+        "evidence-3a86d3baa0d44bc6",
+        "evidence-9d8416c79cf57e4c",
+        "evidence-e93ae8831a30286a",
+        "evidence-c9296c5ff014fc9e",
+        "evidence-6e0bc66c5f569bf5",
+        "evidence-ad4769a18c0db13a",
+        "evidence-9e57b949f5ee0679"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-97ca511e7c6171d6",
+          "url": "https://compucenterctg.co/",
+          "title": "Compucenter Cartagena",
+          "excerpt": "Compucenter Cartagena Menú 0 Equipos Portátiles Impresoras Tinta Continua Laser Ver todo Tablet Ver todo POS Impresora Lector Cajón Monedero Ver todo Remanufacturados Conectividad Adaptador Convertidor Cables Ver todo Periféricos Teclado Mouse Cámara Web Base Pad Mouse Ver todo Partes Repuestos Cargador Memoria RAM Chip Tarjeta PCIe Pantalla Herramientas Ver todo Redes Routers Switch Extensor Rango Ver todo Energía UPS Regulador Ver todo Consumibles Toner Tintas Pepeleria Ver todo Audio Video Diadema Monitores Parlantes Micrófono Ver todo NEW Equipos Portátiles Impresoras Tinta Continua Laser Ver todo Tablet Ver todo POS Impresora Lector Cajón Monedero Ver todo Remanufacturados Conectividad Adaptador Convertidor Cables Ver todo Periféricos Teclado Mouse Cámara Web Base Pad Mouse Ver todo P",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-08T00:02:44.102Z",
+          "contentHash": "1fa44d29a59e6904bc95dced07f2cca98ef1234ac745cb51e32773feabf7dce0",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        },
+        {
+          "id": "evidence-3a86d3baa0d44bc6",
+          "url": "https://compucenterctg.co/en/cart",
+          "title": "Cart | Compucenter Cartagena",
+          "excerpt": "Todo lo relacionado con Tecnología: Soporte, Venta y Accesorios de computadores. Accesorios, impresoras, PCs, Gamer, portátiles, energía, seguridad,",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-08T00:04:45.139Z",
+          "contentHash": "6eb59d3deb2f4167eed1ba12969e20e8e3307c43b0122b6eed487aa512cf559f",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        },
+        {
+          "id": "evidence-9d8416c79cf57e4c",
+          "url": "https://compucenterctg.co/en/pos/cajon-monedero",
+          "title": "Cajón Monedero - Compucenter Cartagena",
+          "excerpt": "Compucenter Cartagena Compucenter Cartagena Order summary Cajón Monedero 5 Billetes Y 8 Monedas Cajón Monedero 5 Billetes Y 8 Monedas Filter products Our brands Políticas Contact Us dirección Compucenter Cartagena PSE Bold Visa Mastercard Bold Wompi (Bancolombia) Efectivo",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-08T00:04:45.139Z",
+          "contentHash": "46f62d7c0ef0ba33e536a1fdba5a7bcd31dac5cc5833107cf7adf00b71285d5c",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        },
+        {
+          "id": "evidence-e93ae8831a30286a",
+          "url": "https://compucenterctg.co/en/computo/portatiles",
+          "title": "Portátiles - Compucenter Cartagena",
+          "excerpt": "Compucenter Cartagena Compucenter Cartagena Order summary Portatil Lenovo V14 G5 IRL- Intel Core I3 1315U - 8gb Ddr4 - 256gb Ssd - Pantalla 14 Portatil Lenovo V14 G5 IRL- Intel Core I3 1315U - 8gb Ddr4 - 256gb Ssd - Pantalla 14\" Fhd Iron Grey Filter products Our brands Políticas Contact Us dirección Compucenter Cartagena PSE Bold Visa Mastercard Bold Wompi (Bancolombia) Efectivo",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-08T00:04:45.139Z",
+          "contentHash": "ccdbe73c89633955df24f4dadfbd076e2438cc4276be92329f195e07732c81df",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        },
+        {
+          "id": "evidence-c9296c5ff014fc9e",
+          "url": "https://compucenterctg.co/contact",
+          "title": "Contacto - Compucenter Cartagena",
+          "excerpt": "Compucenter Cartagena Compucenter Cartagena Resumen del pedido Políticas Contáctanos dirección Compucenter Cartagena PSE Bold Visa Mastercard Bold Wompi (Bancolombia) Efectivo",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-08T00:04:45.139Z",
+          "contentHash": "add0a3fbee5c662dd4ae6cb3069aa074333e37a025a1b79285204ae673124ab1",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        },
+        {
+          "id": "evidence-6e0bc66c5f569bf5",
+          "url": "https://compucenterctg.co/en/contact",
+          "title": "Contact | Compucenter Cartagena",
+          "excerpt": "Compucenter Cartagena. Routers Switch Extensor Rango. Contact Us compucenterctg@gmail.com 573174832222",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-08T00:05:01.308Z",
+          "contentHash": "78142d82cec0aef7272fb9147b9cafae115aff124b1647422fb7032c710f0020",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        },
+        {
+          "id": "evidence-ad4769a18c0db13a",
+          "url": "https://m.facebook.com/COMPUCENTERCTG",
+          "title": "Compucenter Cartagena S.A.S - Facebook",
+          "excerpt": "Compucenter Cartagena S.A.S, Cartagena. 983 likes · 89 were here. Servicio de Mantenimiento de Software, Hardware a PC, Laptop e Impresoras Recarga de",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-08T00:05:01.308Z",
+          "contentHash": "b65f2e3006987e521acf0dd849609dc441bb94788073cc6c25e2771ff23a988c",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        },
+        {
+          "id": "evidence-9e57b949f5ee0679",
+          "url": "https://www.instagram.com/compucenter.ctg/p/CmwwPRGuDXm",
+          "title": "COMPUCENTER CARTAGENA S.A.S on Instagram",
+          "excerpt": "COMPUCENTER CARTAGENA S.A.S. Minimercados, droguerías, almacenes. En Compucenter encuentras todo lo que necesitas para tu PC gamer: desde perif",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-08T00:05:01.308Z",
+          "contentHash": "4ff5a641f47eb25cee3d0e5265d168ff364d429c40ed5cce04373232d63fd205",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        }
+      ],
+      "blindAuditEvidence": [
+        {
+          "id": "evidence-home-97ca511e7c6171d6",
+          "url": "https://compucenterctg.co/",
+          "title": "Compucenter Cartagena",
+          "excerpt": "Compucenter Cartagena Menú 0 Equipos Portátiles Impresoras Tinta Continua Laser Ver todo Tablet Ver todo POS Impresora Lector Cajón Monedero Ver todo Remanufacturados Conectividad Adaptador Convertidor Cables Ver todo Periféricos Teclado Mouse Cámara Web Base Pad Mouse Ver todo Partes Repuestos Cargador Memoria RAM Chip Tarjeta PCIe Pantalla Herramientas Ver todo Redes Routers Switch Extensor Rango Ver todo Energía UPS Regulador Ver todo Consumibles Toner Tintas Pepeleria Ver todo Audio Video Diadema Monitores Parlantes Micrófono Ver todo NEW Equipos Portátiles Impresoras Tinta Continua Laser Ver todo Tablet Ver todo POS Impresora Lector Cajón Monedero Ver todo Remanufacturados Conectividad Adaptador Convertidor Cables Ver todo Periféricos Teclado Mouse Cámara Web Base Pad Mouse Ver todo P",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-08T00:02:44.102Z",
+          "contentHash": "1fa44d29a59e6904bc95dced07f2cca98ef1234ac745cb51e32773feabf7dce0",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        },
+        {
+          "id": "evidence-3a86d3baa0d44bc6",
+          "url": "https://compucenterctg.co/en/cart",
+          "title": "Cart | Compucenter Cartagena",
+          "excerpt": "Todo lo relacionado con Tecnología: Soporte, Venta y Accesorios de computadores. Accesorios, impresoras, PCs, Gamer, portátiles, energía, seguridad,",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-08T00:04:45.139Z",
+          "contentHash": "6eb59d3deb2f4167eed1ba12969e20e8e3307c43b0122b6eed487aa512cf559f",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        },
+        {
+          "id": "evidence-9d8416c79cf57e4c",
+          "url": "https://compucenterctg.co/en/pos/cajon-monedero",
+          "title": "Cajón Monedero - Compucenter Cartagena",
+          "excerpt": "Compucenter Cartagena Compucenter Cartagena Order summary Cajón Monedero 5 Billetes Y 8 Monedas Cajón Monedero 5 Billetes Y 8 Monedas Filter products Our brands Políticas Contact Us dirección Compucenter Cartagena PSE Bold Visa Mastercard Bold Wompi (Bancolombia) Efectivo",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-08T00:04:45.139Z",
+          "contentHash": "46f62d7c0ef0ba33e536a1fdba5a7bcd31dac5cc5833107cf7adf00b71285d5c",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        },
+        {
+          "id": "evidence-e93ae8831a30286a",
+          "url": "https://compucenterctg.co/en/computo/portatiles",
+          "title": "Portátiles - Compucenter Cartagena",
+          "excerpt": "Compucenter Cartagena Compucenter Cartagena Order summary Portatil Lenovo V14 G5 IRL- Intel Core I3 1315U - 8gb Ddr4 - 256gb Ssd - Pantalla 14 Portatil Lenovo V14 G5 IRL- Intel Core I3 1315U - 8gb Ddr4 - 256gb Ssd - Pantalla 14\" Fhd Iron Grey Filter products Our brands Políticas Contact Us dirección Compucenter Cartagena PSE Bold Visa Mastercard Bold Wompi (Bancolombia) Efectivo",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-08T00:04:45.139Z",
+          "contentHash": "ccdbe73c89633955df24f4dadfbd076e2438cc4276be92329f195e07732c81df",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        },
+        {
+          "id": "evidence-c9296c5ff014fc9e",
+          "url": "https://compucenterctg.co/contact",
+          "title": "Contacto - Compucenter Cartagena",
+          "excerpt": "Compucenter Cartagena Compucenter Cartagena Resumen del pedido Políticas Contáctanos dirección Compucenter Cartagena PSE Bold Visa Mastercard Bold Wompi (Bancolombia) Efectivo",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-08T00:04:45.139Z",
+          "contentHash": "add0a3fbee5c662dd4ae6cb3069aa074333e37a025a1b79285204ae673124ab1",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        },
+        {
+          "id": "evidence-6e0bc66c5f569bf5",
+          "url": "https://compucenterctg.co/en/contact",
+          "title": "Contact | Compucenter Cartagena",
+          "excerpt": "Compucenter Cartagena. Routers Switch Extensor Rango. Contact Us compucenterctg@gmail.com 573174832222",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-08T00:05:01.308Z",
+          "contentHash": "78142d82cec0aef7272fb9147b9cafae115aff124b1647422fb7032c710f0020",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        },
+        {
+          "id": "evidence-ad4769a18c0db13a",
+          "url": "https://m.facebook.com/COMPUCENTERCTG",
+          "title": "Compucenter Cartagena S.A.S - Facebook",
+          "excerpt": "Compucenter Cartagena S.A.S, Cartagena. 983 likes · 89 were here. Servicio de Mantenimiento de Software, Hardware a PC, Laptop e Impresoras Recarga de",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-08T00:05:01.308Z",
+          "contentHash": "b65f2e3006987e521acf0dd849609dc441bb94788073cc6c25e2771ff23a988c",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        },
+        {
+          "id": "evidence-9e57b949f5ee0679",
+          "url": "https://www.instagram.com/compucenter.ctg/p/CmwwPRGuDXm",
+          "title": "COMPUCENTER CARTAGENA S.A.S on Instagram",
+          "excerpt": "COMPUCENTER CARTAGENA S.A.S. Minimercados, droguerías, almacenes. En Compucenter encuentras todo lo que necesitas para tu PC gamer: desde perif",
+          "sourceType": "independent-public",
+          "capturedAt": "2026-09-08T00:05:01.308Z",
+          "contentHash": "4ff5a641f47eb25cee3d0e5265d168ff364d429c40ed5cce04373232d63fd205",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r5"
+        }
+      ]
+    },
+    {
+      "rank": 6,
       "candidateId": "lead-539cb657cc294df3",
       "companyName": "Tecno Nacho",
       "domain": "tecnonacho.com",
@@ -665,7 +1556,7 @@
       ]
     },
     {
-      "rank": 2,
+      "rank": 7,
       "candidateId": "lead-38093353e30d08bc",
       "companyName": "TecnomaxGamer",
       "domain": "tecnomaxgamercol.com",
@@ -790,7 +1681,7 @@
       ]
     },
     {
-      "rank": 3,
+      "rank": 8,
       "candidateId": "lead-09de184541214aec",
       "companyName": "Tecnoplaza Colombia",
       "domain": "tecnoplaza.com.co",
@@ -880,7 +1771,7 @@
       ]
     },
     {
-      "rank": 4,
+      "rank": 9,
       "candidateId": "lead-ccf78e402b6b2858",
       "companyName": "Comredes de Colombia",
       "domain": "comredes.com",
@@ -1040,7 +1931,75 @@
       ]
     },
     {
-      "rank": 5,
+      "rank": 10,
+      "candidateId": "lead-49b80866959614e2",
+      "companyName": "NEXSA",
+      "domain": "nexsa.net",
+      "officialWebsiteUrl": "https://www.nexsa.net/",
+      "primaryRole": "E-tailer",
+      "supportedRoles": [
+        "E-tailer",
+        "Retailer"
+      ],
+      "totalScore": 60,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-49b80866959614e2",
+        "evidence-0a5feb2eca584429"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-49b80866959614e2",
+          "url": "https://www.nexsa.net/",
+          "title": "NEXSA | Tienda Técnica de Redes y Fibra Óptica en Colombia",
+          "excerpt": "NEXSA | Tienda Técnica de Redes y Fibra Óptica en Colombia Soluciones en tecnología, redes y fibra óptica para empresas y hogares. Tienda Compra tecnología con asesoría real. Accede rápido a las líneas principales del catálogo Nexsa. Ir a la tienda Conectividad Redes y Networking Fibra Óptica ISP y Telecomunicaciones Cableado Estructurado Tecnología Computadores Impresoras Software y Licenciamiento Energía Accesos rápidos Videovigilancia y Seguridad Accesorios Hogar Ofertas Redes Redes y Networking. Switches, routers, access points, firewalls y accesorios para infraestructura de red. Explorar redes Equipos activos Switches Routers Access Points Firewalls WLAN y conectividad Controladoras WLAN Convertidores de Medios Inyectores PoE Adaptadores de Red Complementos Tarjetas de Red Accesorios ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:37:58.492Z",
+          "contentHash": "595efd32b866bb64d2b2f923e424b64408f47a28290ca4299bb2ce1baf0f84d3",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-0a5feb2eca584429",
+          "url": "https://www.nexsa.net/en",
+          "title": "Networking & Fiber Optics Technical Store in Colombia - NEXSA",
+          "excerpt": "Technology, networking and fiber optic solutions for businesses and homes. NEXSA ES Search Get a Quote Store View storeDeals Networking NetworkingSwitchesRoutersAccess PointsFirewallsWLAN ControllersMedia ConvertersPoE InjectorsNetwork AdaptersNetwork CardsNetwork Accessories Fiber Optics Fiber OpticsTransceiversFiber Patch CordFiber Optic CablePigtailsAdaptersCouplersPLC SplittersODFSplice BoxesWall OutletsSplice TraysOrganizersFiber Tools ISP & Telecom [...] # Discover networking equipment, SFP transceivers and fiber optics at NEXSA Colombia The best way to buy networking and connectivity solutions. Talk to a specialist ↗ Request a quote ↗ OLT GPON ONT FTTH SFP Switches Routers Fiber HFC Fiber Patch Cord ISO 9001 certified · CO20/962358 SIGPRO Seal of trust Social Responsibility Fenalco ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:44.602Z",
+          "contentHash": "39bc6db989ccd51b8fb7b89da98b2ec8cf796b640dfbf4a77b778705ce3266b7",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        }
+      ],
+      "blindAuditEvidence": [
+        {
+          "id": "evidence-home-49b80866959614e2",
+          "url": "https://www.nexsa.net/",
+          "title": "NEXSA | Tienda Técnica de Redes y Fibra Óptica en Colombia",
+          "excerpt": "NEXSA | Tienda Técnica de Redes y Fibra Óptica en Colombia Soluciones en tecnología, redes y fibra óptica para empresas y hogares. Tienda Compra tecnología con asesoría real. Accede rápido a las líneas principales del catálogo Nexsa. Ir a la tienda Conectividad Redes y Networking Fibra Óptica ISP y Telecomunicaciones Cableado Estructurado Tecnología Computadores Impresoras Software y Licenciamiento Energía Accesos rápidos Videovigilancia y Seguridad Accesorios Hogar Ofertas Redes Redes y Networking. Switches, routers, access points, firewalls y accesorios para infraestructura de red. Explorar redes Equipos activos Switches Routers Access Points Firewalls WLAN y conectividad Controladoras WLAN Convertidores de Medios Inyectores PoE Adaptadores de Red Complementos Tarjetas de Red Accesorios ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:37:58.492Z",
+          "contentHash": "595efd32b866bb64d2b2f923e424b64408f47a28290ca4299bb2ce1baf0f84d3",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-0a5feb2eca584429",
+          "url": "https://www.nexsa.net/en",
+          "title": "Networking & Fiber Optics Technical Store in Colombia - NEXSA",
+          "excerpt": "Technology, networking and fiber optic solutions for businesses and homes. NEXSA ES Search Get a Quote Store View storeDeals Networking NetworkingSwitchesRoutersAccess PointsFirewallsWLAN ControllersMedia ConvertersPoE InjectorsNetwork AdaptersNetwork CardsNetwork Accessories Fiber Optics Fiber OpticsTransceiversFiber Patch CordFiber Optic CablePigtailsAdaptersCouplersPLC SplittersODFSplice BoxesWall OutletsSplice TraysOrganizersFiber Tools ISP & Telecom [...] # Discover networking equipment, SFP transceivers and fiber optics at NEXSA Colombia The best way to buy networking and connectivity solutions. Talk to a specialist ↗ Request a quote ↗ OLT GPON ONT FTTH SFP Switches Routers Fiber HFC Fiber Patch Cord ISO 9001 certified · CO20/962358 SIGPRO Seal of trust Social Responsibility Fenalco ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:44.602Z",
+          "contentHash": "39bc6db989ccd51b8fb7b89da98b2ec8cf796b640dfbf4a77b778705ce3266b7",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        }
+      ]
+    },
+    {
+      "rank": 11,
       "candidateId": "lead-2b2149b17554b96c",
       "companyName": "CompuComercial",
       "domain": "compucomercial.com",
@@ -1131,7 +2090,51 @@
       ]
     },
     {
-      "rank": 6,
+      "rank": 12,
+      "candidateId": "lead-710605d790b5ac81",
+      "companyName": "Nuevoportal",
+      "domain": "nuevoportal.co",
+      "officialWebsiteUrl": "https://www.nuevoportal.co/",
+      "primaryRole": "E-tailer",
+      "supportedRoles": [
+        "E-tailer"
+      ],
+      "totalScore": 56,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-710605d790b5ac81"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-710605d790b5ac81",
+          "url": "https://www.nuevoportal.co/",
+          "title": "Nuevoportal Tienda En Línea Colombiana",
+          "excerpt": "Nuevoportal Tienda En Línea Colombiana JavaScript seems to be disabled in your browser. You must have JavaScript enabled in your browser to utilize the functionality of this website. Inicio Mi cuenta Mi carrito Faq Acerca de nosotros Pol&iacute;tica de privacidad T&eacute;rminos y condiciones Cuentas bancarias Product Sitemap Category Sitemap Búsqueda avanzada Pedidos y Devoluciones WhatsApp: 300 2086220 ¡Una empresa colombiana, para colombianos! Mi cuenta Mi carrito Faq Nuevoportal Mi carrito: 0 item(s) - CO$ 0 No tiene artículos en su carrito de compras. 0 Ir a Pagar Acceder Search: Nuevos productos Accesorios Mouse Diademas Combos Teclado Mouse Teclados Microfono Accesorios Y Perifericos_n Audifonos Y Diademas Teclados Parlantes Memorias Monitores Perifericos Almacenamiento Storage Acce",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:52:16.054Z",
+          "contentHash": "2f734fa91349c66046bbb82aca9b21e6fb72e354e576af1e5d60eaea83578ddd",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r2"
+        }
+      ],
+      "blindAuditEvidence": [
+        {
+          "id": "evidence-home-710605d790b5ac81",
+          "url": "https://www.nuevoportal.co/",
+          "title": "Nuevoportal Tienda En Línea Colombiana",
+          "excerpt": "Nuevoportal Tienda En Línea Colombiana JavaScript seems to be disabled in your browser. You must have JavaScript enabled in your browser to utilize the functionality of this website. Inicio Mi cuenta Mi carrito Faq Acerca de nosotros Pol&iacute;tica de privacidad T&eacute;rminos y condiciones Cuentas bancarias Product Sitemap Category Sitemap Búsqueda avanzada Pedidos y Devoluciones WhatsApp: 300 2086220 ¡Una empresa colombiana, para colombianos! Mi cuenta Mi carrito Faq Nuevoportal Mi carrito: 0 item(s) - CO$ 0 No tiene artículos en su carrito de compras. 0 Ir a Pagar Acceder Search: Nuevos productos Accesorios Mouse Diademas Combos Teclado Mouse Teclados Microfono Accesorios Y Perifericos_n Audifonos Y Diademas Teclados Parlantes Memorias Monitores Perifericos Almacenamiento Storage Acce",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:52:16.054Z",
+          "contentHash": "2f734fa91349c66046bbb82aca9b21e6fb72e354e576af1e5d60eaea83578ddd",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r2"
+        }
+      ]
+    },
+    {
+      "rank": 13,
       "candidateId": "lead-640dad133106b314",
       "companyName": "Uelectronica",
       "domain": "uelectronica.com",
@@ -1290,7 +2293,7 @@
       ]
     }
   ],
-  "missingSlots": 44,
+  "missingSlots": 37,
   "completionReason": "confirmed-exhaustion",
   "discoveryRounds": [
     {
@@ -1488,7 +2491,74 @@
     "redcomenlinea.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Insufficient Balance | The operation was aborted due to timeout Infrastructure/provider failure does not qualify for Pro escalation.",
     "pcware.com.co: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Insufficient Balance | The operation was aborted due to timeout Infrastructure/provider failure does not qualify for Pro escalation.",
     "panamericana.com.co: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Insufficient Balance | The operation was aborted due to timeout Infrastructure/provider failure does not qualify for Pro escalation.",
-    "Hybrid discovery failed (retail/etail/searchapi): searchapi HTTP 429: {\n  \"error\": \"You have used all of the searches for the month. Please upgrade your plan on SearchApi.io.\"\n}"
+    "Hybrid discovery failed (retail/etail/searchapi): searchapi HTTP 429: {\n  \"error\": \"You have used all of the searches for the month. Please upgrade your plan on SearchApi.io.\"\n}",
+    "Same-cell recovery reused version-compatible cached evidence; search and evidence acquisition were not repeated.",
+    "Correction search found no usable supplemental evidence for speedlogic.com.co.",
+    "Correction search found no usable supplemental evidence for alkosto.com.",
+    "Correction search found no usable supplemental evidence for multiredesytecnologia.com.",
+    "Correction search found no usable supplemental evidence for teklotengo.com.",
+    "Correction search found no usable supplemental evidence for totalmayorista.com.",
+    "Correction search found no usable supplemental evidence for mercadolibre.com.co.",
+    "Correction search found no usable supplemental evidence for computienda.com.co.",
+    "Correction search found no usable supplemental evidence for prosuministros.com.",
+    "Correction search found no usable supplemental evidence for megacomputer.com.co.",
+    "Correction search found no usable supplemental evidence for nexsa.net.",
+    "Correction search found no usable supplemental evidence for sigmaelectronica.net.",
+    "Correction search found no usable supplemental evidence for mdvdistribuidora.com.",
+    "Correction search found no usable supplemental evidence for betacolor.com.co.",
+    "Correction search found no usable supplemental evidence for tectronics.co.",
+    "Correction search found no usable supplemental evidence for compucenterctg.co.",
+    "Correction search found no usable supplemental evidence for multitintasink.com.",
+    "Correction search found no usable supplemental evidence for basevirtual.com.co.",
+    "Correction search found no usable supplemental evidence for redcomenlinea.com.",
+    "Correction search found no usable supplemental evidence for pcware.com.co.",
+    "Correction search found no usable supplemental evidence for panamericana.com.co.",
+    "speedlogic.com.co: Model fallback used after 2 route failure(s) (Insufficient Balance | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "speedlogic.com.co: Evidence of online purchase flow is still missing.",
+    "speedlogic.com.co: Roles without a supported atomic role finding were removed.",
+    "alkosto.com: Model fallback used after 1 route failure(s) (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "multiredesytecnologia.com: Model fallback used after 2 route failure(s) (Circuit open for primary provider deepseek. | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "multiredesytecnologia.com: None",
+    "multiredesytecnologia.com: Roles without a supported atomic role finding were removed.",
+    "teklotengo.com: Model fallback used after 1 route failure(s) (Circuit open for primary provider deepseek.): requested=deepseek-v4-pro; actual=deepseek/deepseek-v4-pro; provider=openrouter-deepseek.",
+    "teklotengo.com: No evidence supplied. All findings are unknown.",
+    "tectronics.co: Model fallback used after 2 route failure(s) (Circuit open for primary provider deepseek. | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "tectronics.co: Roles without a supported atomic role finding were removed.",
+    "compucenterctg.co: Model fallback used after 1 route failure(s) (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "multitintasink.com: Model fallback used after 1 route failure(s) (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "totalmayorista.com: Model fallback used after 2 route failure(s) (Insufficient Balance | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "totalmayorista.com: None",
+    "totalmayorista.com: Roles without a supported atomic role finding were removed.",
+    "basevirtual.com.co: Model fallback used after 2 route failure(s) (Insufficient Balance | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "basevirtual.com.co: Roles without a supported atomic role finding were removed.",
+    "mercadolibre.com.co: Model fallback used after 1 route failure(s) (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "redcomenlinea.com: Model fallback used after 2 route failure(s) (Insufficient Balance | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "redcomenlinea.com: Roles without a supported atomic role finding were removed.",
+    "pcware.com.co: Model fallback used after 2 route failure(s) (Circuit open for primary provider deepseek. | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "pcware.com.co: Missing evidence of consumer-facing purchase flow and networking product listings.",
+    "pcware.com.co: Roles without a supported atomic role finding were removed.",
+    "computienda.com.co: Model fallback used after 2 route failure(s) (Circuit open for primary provider deepseek. | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "computienda.com.co: No conflicting evidence found, but the evidence for the E-tailer role is less robust than for Retailer.",
+    "computienda.com.co: Roles without a supported atomic role finding were removed.",
+    "computienda.com.co: Deterministic role hints were not auto-added: VAR, Reseller.",
+    "mymsystech.com.co: Model fallback used after 2 route failure(s) (Circuit open for primary provider deepseek. | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "mymsystech.com.co: None",
+    "mymsystech.com.co: Roles without a supported atomic role finding were removed.",
+    "mymsystech.com.co: Deterministic role hints were not auto-added: Distributor, SI.",
+    "prosuministros.com: Model fallback used after 2 route failure(s) (Insufficient Balance | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "prosuministros.com: None",
+    "prosuministros.com: Roles without a supported atomic role finding were removed.",
+    "megacomputer.com.co: Model fallback used after 2 route failure(s) (Insufficient Balance | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "megacomputer.com.co: Roles without a supported atomic role finding were removed.",
+    "nexsa.net: Model fallback used after 1 route failure(s) (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "sigmaelectronica.net: Model fallback used after 1 route failure(s) (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "sigmaelectronica.net: Submitted roles included Retailer and E-tailer, which are supported but not primary.",
+    "sigmaelectronica.net: Submitted family 'retail' is not the primary business role.",
+    "mdvdistribuidora.com: Model fallback used after 1 route failure(s) (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "panamericana.com.co: Model fallback used after 1 route failure(s) (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "panamericana.com.co: Deterministic role hints were not auto-added: VAR, Reseller.",
+    "betacolor.com.co: Model fallback used after 1 route failure(s) (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "Incomplete recovery retried 21 deterministic corrections and 9 missing, retry-required or materially affected assessments; it retained 13 eligible candidates with zero search or evidence-acquisition calls."
   ],
   "costEvents": [
     {
@@ -6375,6 +7445,268 @@
         "downstreamUsedItems": 6,
         "discardedReasonCounts": {
           "wrongPrimaryRoleOrGate": 42
+        }
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:resume-cache:incomplete-recovery:v2.0.8",
+      "cellId": "CO-retail",
+      "stage": "within-run-cache-reuse",
+      "provider": "local-run-cache",
+      "startedAt": "2026-09-08T00:30:25.717Z",
+      "completedAt": "2026-09-08T00:30:25.717Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Reused the successful intent, local RAG, playbook, discovery, fresh evidence and supplemental evidence from the interrupted cell.",
+        "No historical cross-run candidate, evidence, score or private-memory cache was read."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:evidence-correction-incomplete-recovery:model:1",
+      "cellId": "CO-retail",
+      "stage": "evidence-correction-incomplete-recovery",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek/deepseek-v4-flash",
+      "startedAt": "2026-09-08T00:30:25.742Z",
+      "completedAt": "2026-09-08T00:37:39.457Z",
+      "latencyMs": 255695,
+      "attempts": 14,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 34711,
+        "outputTokens": 22035,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 21,
+        "rawOutputItems": 21,
+        "validOutputItems": 11,
+        "downstreamUsedItems": 6,
+        "discardedReasonCounts": {
+          "unresolvedAfterRecovery": 0
+        }
+      },
+      "accountCashCostUsd": 0.010410052414,
+      "notes": [
+        "Aggregate stage output volume is attributed once to the primary model event."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.01102934,
+      "budgetCostUsd": 0.010410052414,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:evidence-correction-incomplete-recovery:model:2",
+      "cellId": "CO-retail",
+      "stage": "evidence-correction-incomplete-recovery",
+      "provider": "openrouter-openai-peer",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "openai/gpt-4o-mini",
+      "startedAt": "2026-09-08T00:30:25.742Z",
+      "completedAt": "2026-09-08T00:37:39.457Z",
+      "latencyMs": 64552,
+      "attempts": 28,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 40359,
+        "outputTokens": 6223,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 0,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "stageVolumeAttributedToPrimaryModelEvent": 11
+        }
+      },
+      "accountCashCostUsd": 0.009221249999999999,
+      "notes": [
+        "Model cost and tokens are retained; aggregate stage output volume is already attributed to model event 1."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.00978765,
+      "budgetCostUsd": 0.009221249999999999,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:evidence-correction-incomplete-recovery:model:3",
+      "cellId": "CO-retail",
+      "stage": "evidence-correction-incomplete-recovery",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek/deepseek-v4-pro",
+      "startedAt": "2026-09-08T00:30:25.742Z",
+      "completedAt": "2026-09-08T00:37:39.457Z",
+      "latencyMs": 15331,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 1837,
+        "outputTokens": 536,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 0,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "stageVolumeAttributedToPrimaryModelEvent": 1
+        }
+      },
+      "accountCashCostUsd": 0.001622111085,
+      "notes": [
+        "Model cost and tokens are retained; aggregate stage output volume is already attributed to model event 1."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.001265415,
+      "budgetCostUsd": 0.001622111085,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:qualification-score-only-incomplete-recovery:model:1",
+      "cellId": "CO-retail",
+      "stage": "qualification-score-only-incomplete-recovery",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek/deepseek-v4-flash",
+      "startedAt": "2026-09-08T00:37:39.497Z",
+      "completedAt": "2026-09-08T00:40:16.737Z",
+      "latencyMs": 159162,
+      "attempts": 11,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 48432,
+        "outputTokens": 10836,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 9,
+        "rawOutputItems": 9,
+        "validOutputItems": 9,
+        "downstreamUsedItems": 9,
+        "discardedReasonCounts": {
+          "retryRequired": 0
+        }
+      },
+      "accountCashCostUsd": 0.008771180888,
+      "notes": [
+        "Aggregate stage output volume is attributed once to the primary model event."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.009814560000000002,
+      "budgetCostUsd": 0.008771180888,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:qualification-score-only-incomplete-recovery:model:2",
+      "cellId": "CO-retail",
+      "stage": "qualification-score-only-incomplete-recovery",
+      "provider": "openrouter-openai-peer",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "openai/gpt-4o-mini",
+      "startedAt": "2026-09-08T00:37:39.497Z",
+      "completedAt": "2026-09-08T00:40:16.737Z",
+      "latencyMs": 17562,
+      "attempts": 4,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 17372,
+        "outputTokens": 2178,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 0,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "stageVolumeAttributedToPrimaryModelEvent": 2
+        }
+      },
+      "accountCashCostUsd": 0.0039126,
+      "notes": [
+        "Model cost and tokens are retained; aggregate stage output volume is already attributed to model event 1."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0.0039126,
+      "budgetCostUsd": 0.0039126,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:ranking:incomplete-recovery:v2.0.8",
+      "cellId": "CO-retail",
+      "stage": "role-filter-ranking",
+      "provider": "deterministic",
+      "startedAt": "2026-09-08T00:40:16.769Z",
+      "completedAt": "2026-09-08T00:40:16.769Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "volume": {
+        "inputItems": 18,
+        "rawOutputItems": 18,
+        "validOutputItems": 13,
+        "downstreamUsedItems": 13,
+        "discardedReasonCounts": {
+          "wrongPrimaryRoleOrGate": 35
         }
       },
       "runId": "2026-09-08-co-search-e2e-v2",

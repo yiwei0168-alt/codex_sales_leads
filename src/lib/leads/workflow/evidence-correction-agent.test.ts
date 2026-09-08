@@ -3,7 +3,8 @@ import { describe, expect, it } from "vitest";
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "@/providers/contracts";
 import type { TavilySearchResponse } from "@/providers/tavily";
 
-import { evidenceAffiliatedWithCandidate, LeadEvidenceCorrectionAgent } from "./evidence-correction-agent";
+import { enforceCorrectedRoleBusinessModel, evidenceAffiliatedWithCandidate,
+  LeadEvidenceCorrectionAgent } from "./evidence-correction-agent";
 import { leadCorrectionBatchSchema, leadCorrectionModelSchema, sanitizeLeadCorrectionOutput } from "./schemas";
 import type { LeadWorkflowCandidate } from "./types";
 
@@ -74,6 +75,22 @@ const candidate: LeadWorkflowCandidate = {
 };
 
 describe("LeadEvidenceCorrectionAgent", () => {
+  it("removes retail roles when supported findings explicitly describe a third-party marketplace", () => {
+    const corrected = enforceCorrectedRoleBusinessModel({ ...candidate, correction: {
+      originalCompanyName: candidate.companyName, originalDomain: candidate.domain,
+      originalOfficialWebsiteUrl: candidate.officialWebsiteUrl,
+      resolvedRoles: ["E-tailer"], resolvedFamilies: ["retail"], primaryRole: "E-tailer",
+      primaryFamily: "retail", primaryChannelReason: "Model-selected.", usedSmallLongTailChannelException: false,
+      identityChanged: false, routingChanged: false, supplementalEvidenceIds: [], reliedEvidenceIds: [],
+      findings: [{ findingId: "marketplace", kind: "role", status: "supported",
+        statement: "The company is an online marketplace for third-party sellers.", roles: ["E-tailer"],
+        evidenceIds: ["official"], sourceTypes: ["official-website"], confidence: 100, notes: [] }],
+      reasons: [], confidence: 100, model: "fixture", promptVersion: "fixture", escalated: false, warnings: [],
+    } });
+    expect(corrected.correction.resolvedRoles).toEqual([]);
+    expect(corrected.correction.primaryRole).toBe("Unresolved");
+    expect(corrected.correction.warnings.join(" ")).toContain("third-party seller marketplace");
+  });
   it("drops supplemental search results that do not identify the candidate entity", () => {
     expect(evidenceAffiliatedWithCandidate({ url: "https://capitalcolombia.example/routers", title: "Routers Bogotá",
       content: "Another company sells routers in Bogotá.", rawContent: "" }, "PC Mérida", "pcmerida.com")).toBe(false);

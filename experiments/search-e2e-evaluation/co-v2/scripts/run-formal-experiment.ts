@@ -29,7 +29,7 @@ import rateCardJson from "../config/official-rate-card.v1.json";
 nextEnv.loadEnvConfig(process.cwd());
 
 const experimentRoot = path.resolve("experiments/search-e2e-evaluation/co-v2");
-const frozenTag = "search-e2e-co-v2.0.8-preregistered";
+const frozenTag = "search-e2e-co-v2.0.9-preregistered";
 const totalCells = EXPERIMENT_CONFIG.sample.cells;
 const slotsPerCell = EXPERIMENT_CONFIG.sample.slotsPerArmPerCell;
 const rateCard = rateCardJson as ExperimentRateCard;
@@ -181,17 +181,17 @@ async function freezeManifest(): Promise<void> {
     const absolute = path.resolve(experimentRoot, relative);
     return { path: path.relative(process.cwd(), absolute).replace(/\\/g, "/"), sha256: sha256(await readFile(absolute)) };
   }));
-  await writeJsonAtomic(path.join(experimentRoot, "config/frozen-manifest.v2.0.8.json"), {
+  await writeJsonAtomic(path.join(experimentRoot, "config/frozen-manifest.v2.0.9.json"), {
     schemaVersion: 1, experimentId: EXPERIMENT_CONFIG.experimentId, runId: EXPERIMENT_CONFIG.runId,
     createdAt: new Date().toISOString(), requiredGitTag: frozenTag, files,
   });
   console.log(JSON.stringify({ status: "manifest-frozen", fileCount: files.length,
-    manifest: "experiments/search-e2e-evaluation/co-v2/config/frozen-manifest.v2.0.8.json" }, null, 2));
+    manifest: "experiments/search-e2e-evaluation/co-v2/config/frozen-manifest.v2.0.9.json" }, null, 2));
 }
 
 async function verifyFrozenManifest(requireTag = true): Promise<void> {
   validateExperimentConfig();
-  const manifest = JSON.parse(await readFile(path.join(experimentRoot, "config/frozen-manifest.v2.0.8.json"), "utf8")) as {
+  const manifest = JSON.parse(await readFile(path.join(experimentRoot, "config/frozen-manifest.v2.0.9.json"), "utf8")) as {
     requiredGitTag: string; files: Array<{ path: string; sha256: string }> };
   const mismatches: string[] = [];
   for (const item of manifest.files) {
@@ -342,8 +342,9 @@ async function runCell(cellId: string): Promise<void> {
   const resumeProduct = process.argv.includes("--resume-product");
   const repairSearch = process.argv.includes("--repair-search");
   const repairIncomplete = process.argv.includes("--repair-incomplete");
+  const repairConsistency = process.argv.includes("--repair-consistency");
   const restartProduct = process.argv.includes("--restart-product");
-  const resumeRequested = resumeProduct || repairSearch || repairIncomplete;
+  const resumeRequested = resumeProduct || repairSearch || repairIncomplete || repairConsistency;
   const productRerunRequested = resumeRequested || restartProduct;
   if (!state.blindJudgeModel || !["preflight-passed", "running"].includes(state.status)) {
     throw new Error("Formal cells require a passed preflight and a non-paused budget state");
@@ -404,7 +405,8 @@ async function runCell(cellId: string): Promise<void> {
     const result = arm === "gemini-native" ? await runControlCell(cell, { onCostEvents })
       : await runProductCell(cell, { onCostEvents, resumeFrom: resumeFrom ?? undefined,
         resumeMode: repairSearch ? "search-extension"
-          : repairIncomplete ? "incomplete-recovery" : "semantic-recovery" });
+          : repairIncomplete ? "incomplete-recovery"
+            : repairConsistency ? "consistency-recovery" : "semantic-recovery" });
     await writeJsonAtomic(filename, result);
     await writeJsonAtomic(path.join(artifactRunRoot(), `cells/${cellId}/${arm}.json`),
       arm === "gemini-native" ? publicControl(result as ControlCellResult) : publicProduct(result as ProductCellResult));
