@@ -1,0 +1,279 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-08-co-search-e2e-v2",
+  "cellId": "CO-distribution",
+  "arm": "gemini-native",
+  "startedAt": "2026-09-08T20:17:43.686Z",
+  "completedAt": "2026-09-08T20:18:08.372Z",
+  "wallClockMs": 24686,
+  "requestedModel": "gemini-3.6-flash",
+  "actualModel": "gemini-3.6-flash",
+  "searchQueries": 12,
+  "finalCandidates": [
+    {
+      "rank": 1,
+      "companyName": "MPS Mayorista de Colombia S.A.",
+      "officialWebsite": "https://www.mps.com.co",
+      "marketSignal": "Headquartered in Cota/Bogotá, Colombia, operating as Colombia's top technology hardware and infrastructure distributor for over 25 years.",
+      "roleSignal": "Primary business is wholesale distribution (distribuidor mayorista B2B) selling strictly to channel resellers, VARs, and system integrators.",
+      "relevanceSignal": "Distributes high-volume networking, consumer technology, and SMB ICT infrastructure directly competing or complementary to Cudy's product portfolio.",
+      "evidenceUrls": [
+        "https://www.mps.com.co"
+      ]
+    },
+    {
+      "rank": 2,
+      "companyName": "Macrotics S.A.S.",
+      "officialWebsite": "https://www.macrotics.com",
+      "marketSignal": "Headquartered in Cali with nationwide operations in Colombia specializing in telecommunications and networking.",
+      "roleSignal": "Acts as a primary value-added distributor and importer supplying WISPs, ISPs, integrators, and network resellers across Colombia.",
+      "relevanceSignal": "Direct product match as they specialize in Wi-Fi repeaters, routers, switches, fiber optic solutions, and wireless networking gear.",
+      "evidenceUrls": [
+        "https://www.macrotics.com"
+      ]
+    },
+    {
+      "rank": 3,
+      "companyName": "SED International de Colombia S.A.S.",
+      "officialWebsite": "https://www.sedinternational.com.co",
+      "marketSignal": "Major ICT hardware distributor operating across Colombia with main logistics centers in Tocancipá and Bogotá.",
+      "roleSignal": "Authorized wholesale distributor (mayorista de tecnología) supplying over 30 leading hardware brands to a vast B2B reseller network.",
+      "relevanceSignal": "Distributes routers, access points, and networking products to retail and channel partners targeted by Cudy.",
+      "evidenceUrls": [
+        "https://www.sedinternational.com.co"
+      ]
+    },
+    {
+      "rank": 4,
+      "companyName": "GVS Colombia S.A.S.",
+      "officialWebsite": "https://www.gvscolombia.com",
+      "marketSignal": "Established national importer and wholesale distributor with branches in Bogotá, Medellín, Cali, and Barranquilla.",
+      "roleSignal": "Wholesale distributor (importador mayorista) supplying security, electronic, and networking systems to integrators and dealers.",
+      "relevanceSignal": "Distributes network switches, access points, structured cabling, and wireless connectivity solutions ideal for Cudy's SOHO/SMB lines.",
+      "evidenceUrls": [
+        "https://www.gvscolombia.com"
+      ]
+    },
+    {
+      "rank": 5,
+      "companyName": "IZC Mayorista S.A.S.",
+      "officialWebsite": "https://izc.com.co",
+      "marketSignal": "Operating in Colombia for over 30 years with sales coverage in all major regions.",
+      "roleSignal": "Direct wholesale distributor (distribuidor mayorista) serving retail technology resellers, VARs, and POS/networking installers.",
+      "relevanceSignal": "Distributes Ruijie/Reyee, switches, routers, and wireless infrastructure, highly aligned with Cudy's network product lines.",
+      "evidenceUrls": [
+        "https://izc.com.co"
+      ]
+    },
+    {
+      "rank": 6,
+      "companyName": "SYSCOM Colombia S.A.S.",
+      "officialWebsite": "https://syscom.com.co",
+      "marketSignal": "Operating in Bogotá, Cali, and key Colombian economic hubs supplying electronic security and telecom products.",
+      "roleSignal": "Pure wholesale importer and distributor serving security integrators, network installers, and telecom dealers.",
+      "relevanceSignal": "Strong portfolio in networking, Wi-Fi routers, PoE switches, outdoor wireless bridges, and cellular connectivity equipment.",
+      "evidenceUrls": [
+        "https://syscom.com.co"
+      ]
+    },
+    {
+      "rank": 7,
+      "companyName": "América Comunicaciones S.A.S.",
+      "officialWebsite": "https://www.americacomunicaciones.com",
+      "marketSignal": "Based in Colombia providing telecommunications and unified communications hardware nationwide.",
+      "roleSignal": "Wholesale distributor (distribuidor mayorista) supplying reseller channels, IT dealers, and telecom installers.",
+      "relevanceSignal": "Distributes TP-Link, switches, SOHO/SMB routers, VoIP devices, and networking accessories matching Cudy's portfolio.",
+      "evidenceUrls": [
+        "https://www.americacomunicaciones.com"
+      ]
+    },
+    {
+      "rank": 8,
+      "companyName": "Elenst Mayorista",
+      "officialWebsite": "https://elenst.com",
+      "marketSignal": "Operates out of Bogotá and Medellín, delivering IT infrastructure and networking across Colombia.",
+      "roleSignal": "Value-added wholesale platform (distribuidor mayorista) focused on supplying integrators, ISPs, and corporate channel partners.",
+      "relevanceSignal": "Specializes in enterprise and SMB networking including Wi-Fi 6 APs, switches, routers, and fiber connectivity.",
+      "evidenceUrls": [
+        "https://elenst.com"
+      ]
+    },
+    {
+      "rank": 9,
+      "companyName": "Nexsys de Colombia S.A.",
+      "officialWebsite": "https://www.nexsysla.com/co",
+      "marketSignal": "Leading regional VAD with extensive operations and channel logistics throughout Colombia.",
+      "roleSignal": "Value-Added Distributor (VAD mayorista) delivering solutions strictly through a multi-tiered reseller network.",
+      "relevanceSignal": "Distributes IT infrastructure, networking, and security solutions for SMBs and enterprise environments.",
+      "evidenceUrls": [
+        "https://www.nexsysla.com/co"
+      ]
+    },
+    {
+      "rank": 10,
+      "companyName": "Colombiatel S.A.S.",
+      "officialWebsite": "https://colombiatel.co",
+      "marketSignal": "Headquartered in Cali, Valle del Cauca, serving the telecom and networking market across Colombia.",
+      "roleSignal": "Importer and wholesale distributor of networking equipment for local ISPs, WISPs, and network installers.",
+      "relevanceSignal": "Imports and distributes Wi-Fi routers, switches, fiber optic gear, outdoor radios, and ONTs directly competing with/complementing Cudy.",
+      "evidenceUrls": [
+        "https://colombiatel.co"
+      ]
+    },
+    {
+      "rank": 11,
+      "companyName": "Telcolombia S.A.S.",
+      "officialWebsite": "https://www.telcolombia.com",
+      "marketSignal": "Based in Colombia providing networking, VoIP, and collaboration hardware nationwide.",
+      "roleSignal": "Wholesale distributor (mayorista en hardware) dedicated to channel partners and integrators.",
+      "relevanceSignal": "Distributes networking hardware, switches, routers, and connectivity products appropriate for Cudy channel expansion.",
+      "evidenceUrls": [
+        "https://www.telcolombia.com"
+      ]
+    },
+    {
+      "rank": 12,
+      "companyName": "Lieferant S.A.S.",
+      "officialWebsite": "https://www.lieferant.com.co",
+      "marketSignal": "Operates in Colombia specializing in telecommunications and broadband infrastructure.",
+      "roleSignal": "Wholesale distributor (comercio mayorista) serving telecom operators, ISPs, and FTTH installers.",
+      "relevanceSignal": "Focuses on GPON/FTTH equipment, xPON ONTs, fiber switches, and routers central to Cudy's ISP product line.",
+      "evidenceUrls": [
+        "https://www.lieferant.com.co"
+      ]
+    },
+    {
+      "rank": 13,
+      "companyName": "Sumitelco S.A.S.",
+      "officialWebsite": "https://www.sumitelco.com",
+      "marketSignal": "Operating in Colombia as an importer and logistics supplier for ICT equipment.",
+      "roleSignal": "Wholesale importer and distributor (importador mayorista) supplying installers and resellers with networking hardware.",
+      "relevanceSignal": "Distributes switches, routers, structured cabling, and network accessories suitable for Cudy product categories.",
+      "evidenceUrls": [
+        "https://www.sumitelco.com"
+      ]
+    },
+    {
+      "rank": 14,
+      "companyName": "IMS Mayorista S.A.S.",
+      "officialWebsite": "https://imsmayorista.com",
+      "marketSignal": "Colombian wholesale distributor supplying tech hardware and energy solutions across the national territory.",
+      "roleSignal": "Wholesale distributor providing products, technical support, and channel financing to B2B resellers.",
+      "relevanceSignal": "Distributes electronic equipment, network devices, and connected hardware suitable for Cudy SMB/consumer target market.",
+      "evidenceUrls": [
+        "https://imsmayorista.com"
+      ]
+    },
+    {
+      "rank": 15,
+      "companyName": "Domotes S.A.S.",
+      "officialWebsite": "https://www.domotes.com",
+      "marketSignal": "Based in Colombia, offering technology distribution services dedicated exclusively to B2B channel partners.",
+      "roleSignal": "Wholesale distributor (distribuidor mayorista) selling strictly to IT channels, integrators, and dealers.",
+      "relevanceSignal": "Focuses on network hardware, NAS storage, network security, and connected devices suitable for SMBs.",
+      "evidenceUrls": [
+        "https://www.domotes.com"
+      ]
+    },
+    {
+      "rank": 16,
+      "companyName": "Redes Orión S.A.S.",
+      "officialWebsite": "https://redesorion.com",
+      "marketSignal": "Headquartered in Bogotá, serving security and network installers across Colombia.",
+      "roleSignal": "Wholesale distributor (distribuidor mayorista) supplying cameras, access control, and network infrastructure to installers.",
+      "relevanceSignal": "Supplies PoE switches, routers, wireless access points, UTP cables, and network racks matching Cudy's light industrial and SMB portfolio.",
+      "evidenceUrls": [
+        "https://redesorion.com"
+      ]
+    },
+    {
+      "rank": 17,
+      "companyName": "LC Distribuciones & Soluciones S.A.S.",
+      "officialWebsite": "http://lcdistribuciones.com.co",
+      "marketSignal": "Operates warehouses in Bogotá and Pereira, shipping telecommunications and networking gear nationwide in Colombia.",
+      "roleSignal": "Wholesale distributor (distribuidor mayorista) providing hardware to ISPs, telecom operators, and network installers.",
+      "relevanceSignal": "Offers xPON ONTs, fiber routers, switches, and FTTH network deployment devices aligned with Cudy's access portfolio.",
+      "evidenceUrls": [
+        "http://lcdistribuciones.com.co"
+      ]
+    },
+    {
+      "rank": 18,
+      "companyName": "Bismark Colombia S.A.S.",
+      "officialWebsite": "https://bismark.net.co",
+      "marketSignal": "Colombian B2B supplier specializing in industrial networking, IoT, and wireless connectivity.",
+      "roleSignal": "Value-added distributor and equipment supplier for corporate networks, integrators, and industrial partners.",
+      "relevanceSignal": "Distributes 4G/5G routers, industrial switches, cellular gateways, and SFP transceivers matching Cudy's industrial/cellular line.",
+      "evidenceUrls": [
+        "https://bismark.net.co"
+      ]
+    },
+    {
+      "rank": 19,
+      "companyName": "Redatel S.A.S.",
+      "officialWebsite": "https://www.redatel.net",
+      "marketSignal": "Has major distribution facilities in Bogotá and Medellín supplying electronic security and networks nationwide.",
+      "roleSignal": "Wholesale importer and distributor (importador mayorista) offering channel pricing to dealers and integrators.",
+      "relevanceSignal": "Distributes network switches, wireless access points, and structured cabling required for SOHO and SMB networks.",
+      "evidenceUrls": [
+        "https://www.redatel.net"
+      ]
+    },
+    {
+      "rank": 20,
+      "companyName": "NEXSA",
+      "officialWebsite": "https://www.nexsa.net",
+      "marketSignal": "Operates nationwide in Colombia supplying technical networking and fiber optic hardware to operators and integrators.",
+      "roleSignal": "Specialized wholesale supply platform providing volume pricing and pre-sale technical compatibility for network channels.",
+      "relevanceSignal": "Offers switches, routers, access points, PoE injectors, and media converters directly aligned with Cudy's networking family.",
+      "evidenceUrls": [
+        "https://www.nexsa.net"
+      ]
+    }
+  ],
+  "missingSlots": 30,
+  "warnings": [],
+  "costEvents": [
+    {
+      "eventId": "CO-distribution:gemini-control",
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "cellId": "CO-distribution",
+      "arm": "gemini-native",
+      "ledger": "gemini-native-arm",
+      "stage": "native-search",
+      "provider": "gemini-full",
+      "requestedModel": "gemini-3.6-flash",
+      "actualModel": "gemini-3.6-flash",
+      "startedAt": "2026-09-08T20:17:43.686Z",
+      "completedAt": "2026-09-08T20:18:08.372Z",
+      "latencyMs": 24686,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 552,
+        "cachedInputTokens": 185,
+        "outputTokens": 3119,
+        "reasoningTokens": 0,
+        "groundingQueries": 12
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 20,
+        "validOutputItems": 20,
+        "downstreamUsedItems": 20,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "one interaction",
+        "no follow-up",
+        "provider order preserved"
+      ],
+      "officialListPriceUsd": 0.179985375,
+      "budgetCostUsd": 0.179985375,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    }
+  ]
+}
