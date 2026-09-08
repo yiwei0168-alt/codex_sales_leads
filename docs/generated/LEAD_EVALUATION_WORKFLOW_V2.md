@@ -1,11 +1,11 @@
-# Cudy 销售线索端到端工作流 v3.9.0
+# Cudy 销售线索端到端工作流 v3.9.1
 
 > 本文档由 `scripts/generate-lead-workflow-doc.mjs` 自动生成。请修改版本化配置或实现代码，不要直接编辑生成文件。
 
-- 运行时策略版本：3.9.0（基础流程定义 2.12.0）
+- 运行时策略版本：3.9.1（基础流程定义 2.13.0）
 - 评分策略版本：2.0.0
-- 成本质量策略版本：3.0.6
-- 配置指纹：`edeec5fe987a6d4edc2af4c6746ea0d797daecd853702f7242663f998a434949`
+- 成本质量策略版本：3.0.7
+- 配置指纹：`1c7e8f4e406e2ec914bfeda0471b7e92a5dfa4cd65dadc8921ed86cb69012c67`
 - 范围：From the user's natural-language market-development request and workspace context to ranked companies, editable cooperation paths, development strategy, outreach email, and private-memory learning from user edits.
 
 ## 一、从用户输入到最终输出的总流程
@@ -47,6 +47,7 @@ flowchart TD
 - Only evidence deterministically affiliated with the candidate entity may enter correction or scoring, and target-country eligibility must be corroborated by the correction-stage country finding.
 - Explicit third-party marketplaces are not Retailer/E-tailer prospects; unknown scale receives a neutral nonzero cap, and buying influence cannot exceed the deterministic evidence cap.
 - Configured SearchAPI-dependent Reseller and Retail tracks use Gemini Full only after observed provider unavailability; the backup is skipped at zero cost while SearchAPI is healthy.
+- Search extension preloads all same-task discovered, rejected, enriched and corrected domains; a cached entity cannot re-enter paid gating, evidence, correction or scoring.
 
 ## 三、模型调用路由
 
@@ -747,8 +748,8 @@ flowchart TD
 |---|---|
 | `config/lead-scoring/policy-v2.0.0.json` | `3e0e88b26ad3e7923b2f21d6c0d9595983599832f59174a63f4d51eaf058307c` |
 | `config/lead-search/hybrid-search-v1.0.0.json` | `cad7e3967c9cf701bd59743025bfbd43d294a683a2797202f0689bdf7c8db771` |
-| `config/lead-workflow/cost-quality-policy-v3.0.0.json` | `59d7151d0d81abc2d36573a391d81bbec94179c563ac8518d64172c1fafb066d` |
-| `config/lead-workflow/runtime-policy-v3.0.0.json` | `ce74ca53aa34e9cf2605bc340a422aaa39ff3465e016b67f6a9934de78a6cee1` |
+| `config/lead-workflow/cost-quality-policy-v3.0.0.json` | `24bf881bff19bfd053d1c58ab127b62aeee17785b1fe7cdf86b478ed59516c59` |
+| `config/lead-workflow/runtime-policy-v3.0.0.json` | `38a184c9c01db605402b3d279c1e50f72b1cf61953f0fd71aae191dd0bcb154d` |
 | `src/app/api/assistant/messages/route.ts` | `04bec90cc3d3f336195e8ab97a5ad4b1ec1e05b95606064225e098e94ed7a5cd` |
 | `src/lib/assistant/types.ts` | `741da6b9e3e22f10bee1f6089c858d59b3a1bb62fe003996bec5993ebaff7653` |
 | `src/lib/assistant/intent.ts` | `5501e1e0a9617b34f40d14af6bf65fdae8250f9f9ed714647ec6878eb1179ab3` |
