@@ -1,11 +1,11 @@
-# Cudy 销售线索端到端工作流 v3.6.0
+# Cudy 销售线索端到端工作流 v3.7.0
 
 > 本文档由 `scripts/generate-lead-workflow-doc.mjs` 自动生成。请修改版本化配置或实现代码，不要直接编辑生成文件。
 
-- 运行时策略版本：3.6.0（基础流程定义 2.9.0）
+- 运行时策略版本：3.7.0（基础流程定义 2.10.0）
 - 评分策略版本：2.0.0
-- 成本质量策略版本：3.0.3
-- 配置指纹：`dc27adffc942c3c0c60865d989e7feb4f203a8a48476a6632d7770beef38a62d`
+- 成本质量策略版本：3.0.4
+- 配置指纹：`3d9546fdbde3a5b8cbd88fb483e25e0048a26f0686705b56c5df1985d93af3f7`
 - 范围：From the user's natural-language market-development request and workspace context to ranked companies, editable cooperation paths, development strategy, outreach email, and private-memory learning from user edits.
 
 ## 一、从用户输入到最终输出的总流程
@@ -41,7 +41,7 @@ flowchart TD
 - User-confirmed knowledge has higher priority than ordinary retrieval, while shared knowledge and user/workspace memory remain isolated.
 - Cooperation paths, roles and evidence restrictions travel into development strategy and email generation.
 - User edits to paths and outreach are retained as private learning signals, not written into the shared knowledge base.
-- OpenAI and Anthropic generation is routed through the pinned OpenRouter HTTPS gateway. DeepSeek keeps its dedicated provider as primary, while public-only packets may fail over to the same DeepSeek tier through OpenRouter; embeddings never fail over.
+- OpenAI and Anthropic generation is routed through the pinned OpenRouter HTTPS gateway. DeepSeek keeps its dedicated provider as primary; public-only packets first try the same DeepSeek tier through OpenRouter and then an OpenAI same-capability peer with an independent route deadline, while embeddings never fail over.
 - Every potentially overlapping task must create and consume a versioned cache at first execution; downstream stages receive exact evidence IDs, role corrections and explicit missing-evidence gaps.
 - Search localization is keyed by market country, provider-owned result pages are provenance rather than candidate domains, and a primary role must be concrete unless two or more role families are genuinely co-primary.
 - Only evidence deterministically affiliated with the candidate entity may enter correction or scoring, and target-country eligibility must be corroborated by the correction-stage country finding.
@@ -53,9 +53,9 @@ flowchart TD
 | `01-user-input` | Intent classification and execution planning | KIMI_INTENT_LIGHT_MODEL; default kimi-k2.6 | KIMI_INTENT_MODEL or KIMI_MODEL; default kimi-k3 for materially complex planning | Light Kimi runs every turn; deterministic parsing is failure fallback only; harmless confidence/count formatting is normalized before schema validation |
 | `02-context-memory` | Local-database RAG query and memory embeddings | EMBEDDING_MODEL; default text-embedding-v4 | No generative fallback | Required for vector retrieval; source documents remain in the local database |
 | `03-playbook` | Market playbook and search-query planning | LEAD_PLANNER_MODEL or OPENAI_GENERATION_MODEL; default openai/gpt-5-mini through OpenRouter | Deterministic playbook with required role-family coverage | Cached standard playbook; light Kimi checks template fit; complex non-standard tasks use Kimi-k3 planning |
-| `04-discovery` | Lightweight candidate existence, relevance and category gate | DEEPSEEK_DISCOVERY_GATE_MODEL; fixed default deepseek-v4-flash and never inherits a Pro global routine setting | Same-tier resilient provider fallback, including public-only DeepSeek through OpenRouter; unavailable batches are held for downstream evidence, never upgraded to Pro | Batches of up to 10 after direct lightweight homepage fetch; compact semantic signals only, with deterministic pass/hold/reject; optional reasoning is disabled on the OpenRouter same-tier route |
-| `06-correction-role` | Entity correction, atomic facts and primary-role analysis | DEEPSEEK_MODEL; default deepseek-v4-flash | DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro; public-only same-tier OpenRouter route on provider failure; deterministic fallback is retry-only | Relevance-prioritized compact evidence packets and token-aware routine batches; optional reasoning disabled on OpenRouter; malformed output permits one same-tier single-candidate repair; infrastructure failure never upgrades; request timeout does not open a global circuit; Pro requires a valid routine prediction of score change >=8 or a resolvable critical-state change |
-| `09-scoring-paths` | Role-aware score and possible cooperation paths | DEEPSEEK_MODEL; default deepseek-v4-flash | DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro; public-only same-tier OpenRouter route on provider failure | Routine batches with optional reasoning disabled on OpenRouter; malformed output permits one same-tier single-candidate repair; infrastructure failure never upgrades; confidence, alternative paths and Top-N position never trigger upgrade alone |
+| `04-discovery` | Lightweight candidate existence, relevance and category gate | DEEPSEEK_DISCOVERY_GATE_MODEL; fixed default deepseek-v4-flash and never inherits a Pro global routine setting | At most two public-only equivalent fallbacks: the same DeepSeek tier through OpenRouter, then openai/gpt-4o-mini; unavailable batches are held for downstream evidence, never upgraded to Pro | Batches of up to 10 after direct lightweight homepage fetch; compact semantic signals only, with deterministic pass/hold/reject; optional reasoning is disabled on the OpenRouter same-tier route |
+| `06-correction-role` | Entity correction, atomic facts and primary-role analysis | DEEPSEEK_MODEL; default deepseek-v4-flash | DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro for policy-qualified semantic escalation; provider recovery uses public-only same-tier OpenRouter then openai/gpt-4o-mini, while deterministic fallback is retry-only | Relevance-prioritized compact evidence packets and token-aware routine batches; each automatic fallback has an independent deadline; optional reasoning is disabled for OpenRouter DeepSeek; malformed output permits one same-tier single-candidate repair; infrastructure failure never upgrades to Pro; Pro requires a valid routine prediction of score change >=8 or a resolvable critical-state change |
+| `09-scoring-paths` | Role-aware score and possible cooperation paths | DEEPSEEK_MODEL; default deepseek-v4-flash | DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro for policy-qualified semantic escalation; provider recovery uses public-only same-tier OpenRouter then openai/gpt-4o-mini | Routine batches with independent fallback deadlines and optional reasoning disabled for OpenRouter DeepSeek; malformed output permits one same-tier single-candidate repair; infrastructure failure never upgrades to Pro; confidence, alternative paths and Top-N position never trigger upgrade alone |
 | `10-review` | Selective production secondary review and disagreement judgment | LEAD_REVIEW_MODEL default openai/gpt-5.6-terra; LEAD_JUDGE_MODEL default openai/gpt-5.6-sol through OpenRouter | DeepSeek review adapter using deepseek-v4-pro when explicitly routed | Selective only; this production control is distinct from the two-judge offline formal-evaluation calibration |
 | `offline-blind-calibration` | Formal search-evaluation calibration after both experiment arms and shared scoring are frozen | Two different high-capability provider/model families; current protocol pins Anthropic Claude Opus and OpenAI GPT-5.6-sol | A third high-capability arbitrator only for score delta >=8, role-family disagreement or critical qualification disagreement | No Web search; 48 representative cases control gates and 16 stress cases are diagnostic only; reuse frozen score-independent evidence packets |
 | `14-strategy` | Path-specific development strategy | KIMI_OUTREACH_MODEL or KIMI_MODEL; default kimi-k3 | Restricted template fallback | One call per generated strategy |
@@ -744,8 +744,8 @@ flowchart TD
 |---|---|
 | `config/lead-scoring/policy-v2.0.0.json` | `3e0e88b26ad3e7923b2f21d6c0d9595983599832f59174a63f4d51eaf058307c` |
 | `config/lead-search/hybrid-search-v1.0.0.json` | `06204b9c96e9415e272888b37057b6686a8aacad5a58de4a3f91b727d56bc5ab` |
-| `config/lead-workflow/cost-quality-policy-v3.0.0.json` | `cd6f17e730e2960757033f048b1b466b775ae6ca8bd5df3cb97d473aed26f16d` |
-| `config/lead-workflow/runtime-policy-v3.0.0.json` | `ac757b238b3f9d48eefe181135c7b0aa9fcf04f77c8367c744f32fdf531de269` |
+| `config/lead-workflow/cost-quality-policy-v3.0.0.json` | `d554c91704a57fde3b29c1be9733eba1379db2561c6d1fb3e927e09ce42e97b9` |
+| `config/lead-workflow/runtime-policy-v3.0.0.json` | `9f9d633e60c35117e0ed4f5997b5e73eb476c5edf6c8473df5403d933190e77d` |
 | `src/app/api/assistant/messages/route.ts` | `04bec90cc3d3f336195e8ab97a5ad4b1ec1e05b95606064225e098e94ed7a5cd` |
 | `src/lib/assistant/types.ts` | `741da6b9e3e22f10bee1f6089c858d59b3a1bb62fe003996bec5993ebaff7653` |
 | `src/lib/assistant/intent.ts` | `5501e1e0a9617b34f40d14af6bf65fdae8250f9f9ed714647ec6878eb1179ab3` |
@@ -772,7 +772,7 @@ flowchart TD
 | `src/providers/deepseek.ts` | `3f3040a631ea2cf57a5e5c274f3449fe95fb294b63f7e93e47c447f5f73c27a8` |
 | `src/providers/discovery-contracts.ts` | `063e409c3545060f1a7be3222cbaa9c9a118b513cf7f12f3d839a9dce7f491c9` |
 | `src/providers/discovery.ts` | `8e4d1527fe70259b8d972bcc24ceea284afaf1e45ba9335c756fccac031be5be` |
-| `src/providers/resilient-ai.ts` | `c5c89784fe03ae22e729a18370f52d91b2fabc63d865da8695a240e7bc823d2f` |
+| `src/providers/resilient-ai.ts` | `0c49f82dff1d249d3234e7b6d65499c73ea35f6df5d3b852644f9b81946f7959` |
 | `src/providers/openrouter.ts` | `b43ba8fdf08602cb7d3567ea88bdc2cfee704de0c1b197cc574abe5e9b89143d` |
 | `db/migrations/034_model_account_cash_cost.sql` | `4790c7ad12eda543e197c84ddd77c4a5ce296b7871ccee799f3aa2262684bdbb` |
 | `src/providers/tavily.ts` | `843b5ce4be45c7163249c7533d5116a129f8b5009b5ae800d97728639805ea5f` |
