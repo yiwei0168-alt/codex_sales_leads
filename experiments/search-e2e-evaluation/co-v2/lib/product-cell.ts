@@ -94,6 +94,15 @@ function volume(inputItems: number, rawOutputItems: number, validOutputItems: nu
   return { inputItems, rawOutputItems, validOutputItems, downstreamUsedItems, discardedReasonCounts };
 }
 
+export function correctionNeedsIncompleteRecovery(model: string): boolean {
+  return model === "deterministic-fallback";
+}
+
+export function assessmentNeedsIncompleteRecovery(candidateId: string, scoringStatus: string | undefined,
+  recoveredCandidateIds: ReadonlySet<string>): boolean {
+  return recoveredCandidateIds.has(candidateId) || scoringStatus !== "completed";
+}
+
 export function modelUsageEvents(cell: ExperimentCell, stage: string, usages: WorkflowModelUsage[], stageStartedAt: string,
   stageCompletedAt: string, stageVolume: ExperimentVolume): ExperimentCostEvent[] {
   const groups = new Map<string, WorkflowModelUsage[]>();
@@ -143,7 +152,7 @@ function toFinalCandidate(candidate: CorrectedLeadWorkflowCandidate, assessment:
 export async function runProductCell(cell: ExperimentCell, options: {
   onCostEvents?: (events: ExperimentCostEvent[]) => Promise<void> | void;
   resumeFrom?: ProductCellResult;
-  resumeMode?: "semantic-recovery" | "search-extension";
+  resumeMode?: "semantic-recovery" | "search-extension" | "incomplete-recovery";
 } = {}): Promise<ProductCellResult> {
   const resumeFrom = options.resumeFrom;
   const resumeMode = options.resumeMode ?? "semantic-recovery";
@@ -166,7 +175,7 @@ export async function runProductCell(cell: ExperimentCell, options: {
     playbook = resumeFrom.playbook;
     intentSummary = resumeFrom.intent;
     const cacheAt = new Date().toISOString();
-    await recordCostEvents([event({ eventId: `${cell.cellId}:resume-cache:${resumeMode}:v2.0.7`, cellId: cell.cellId,
+    await recordCostEvents([event({ eventId: `${cell.cellId}:resume-cache:${resumeMode}:v2.0.8`, cellId: cell.cellId,
       stage: "within-run-cache-reuse", provider: "local-run-cache", startedAt: cacheAt, completedAt: cacheAt,
       latencyMs: 0, attempts: 0, retries: 0, fallbackUsed: false, status: "completed", usage: {},
       volume: volume(1, 1, 1, 1), notes: [
@@ -280,6 +289,81 @@ export async function runProductCell(cell: ExperimentCell, options: {
   const startingRound = resumeFrom?.discoveryRounds.length ?? 0;
   const maximumRounds = resumeFrom && resumeMode === "search-extension" ? startingRound + 5
     : plan.targetCount >= 50 ? 10 : 5;
+
+  if (resumeFrom && priorCorrected.length > 0 && resumeMode === "incomplete-recovery") {
+    for (const candidate of priorCorrected) discoverySession.excludedDomains.add(candidate.domain);
+    const incompleteCorrections = priorCorrected.filter((candidate) =>
+      correctionNeedsIncompleteRecovery(candidate.correction.model));
+    const noAcquisitionSearch = { search: async (input: { query: string }) => ({
+      query: input.query, results: [], creditsUsed: 0, attempts: 0, retries: 0, latencyMs: 0,
+    }) };
+    const recoveryAgent = new LeadEvidenceCorrectionAgent(leadAiProvider, noAcquisitionSearch, {
+      allowReusableCorrections: false, persistCorrections: false, batchSize: 1, concurrency: 2,
+      routineModel: treatmentModels.roleCorrectionRoutine,
+      escalationModel: treatmentModels.materialEscalation,
+    });
+    const correctionStarted = new Date().toISOString();
+    const recovered = incompleteCorrections.length > 0
+      ? await recoveryAgent.correct(incompleteCorrections, plan)
+      : { candidates: [] as CorrectedLeadWorkflowCandidate[], usage: [] as WorkflowModelUsage[], warnings: [] as string[] };
+    const correctionCompleted = new Date().toISOString();
+    for (const candidate of recovered.candidates) correctedByDomain.set(candidate.domain, candidate);
+    const recoveredIds = new Set(recovered.candidates.map((candidate) => candidate.candidateId));
+    const allInRoleCandidates = [...correctedByDomain.values()].filter((candidate) =>
+      primaryRoleMatchesCategory(candidate.correction.primaryRole, cell.categoryId));
+    const correctionStageVolume = volume(incompleteCorrections.length, recovered.candidates.length,
+      recovered.candidates.filter((candidate) => candidate.correction.resolvedRoles.length > 0).length,
+      recovered.candidates.filter((candidate) =>
+        primaryRoleMatchesCategory(candidate.correction.primaryRole, cell.categoryId)).length,
+      { unresolvedAfterRecovery: recovered.candidates.filter((candidate) =>
+        candidate.correction.model === "deterministic-fallback").length });
+    const correctionEvents = modelUsageEvents(cell, "evidence-correction-incomplete-recovery",
+      recovered.usage ?? [], correctionStarted, correctionCompleted, correctionStageVolume);
+    await recordCostEvents(correctionEvents.length > 0 ? correctionEvents : [event({
+      eventId: `${cell.cellId}:evidence-correction-incomplete-recovery:no-valid-model-output`, cellId: cell.cellId,
+      stage: "evidence-correction-incomplete-recovery", provider: "resilient-ai",
+      requestedModel: treatmentModels.roleCorrectionRoutine, startedAt: correctionStarted,
+      completedAt: correctionCompleted, latencyMs: Math.max(0,
+        Date.parse(correctionCompleted) - Date.parse(correctionStarted)), attempts: 0, retries: 0,
+      fallbackUsed: true, status: "failed", usage: {}, volume: correctionStageVolume,
+      notes: ["No model-valid correction usage was returned; acquisition remained closed."] })]);
+    warnings.push(...recovered.warnings);
+
+    const scoringInputs = allInRoleCandidates.filter((candidate) => assessmentNeedsIncompleteRecovery(
+      candidate.candidateId, assessmentsByCandidate.get(candidate.candidateId)?.scoringStatus, recoveredIds));
+    const scoringStarted = new Date().toISOString();
+    const scored = scoringInputs.length > 0
+      ? await qualificationAgent.evaluateWithUsage(scoringInputs, playbook,
+        plan.countryCode, plan.countryName, plan.objective)
+      : { assessments: [] as LeadCandidateAssessment[], usage: [] as WorkflowModelUsage[] };
+    const scoringCompleted = new Date().toISOString();
+    scored.assessments.forEach((assessment) => assessmentsByCandidate.set(assessment.candidateId, assessment));
+    const scoringStageVolume = volume(scoringInputs.length, scored.assessments.length,
+      scored.assessments.filter((assessment) => assessment.scoringStatus === "completed").length,
+      scored.assessments.filter((assessment) => assessment.scoringStatus === "completed").length,
+      { retryRequired: scored.assessments.filter((assessment) => assessment.scoringStatus !== "completed").length });
+    const scoringEvents = modelUsageEvents(cell, "qualification-score-only-incomplete-recovery", scored.usage,
+      scoringStarted, scoringCompleted, scoringStageVolume);
+    if (scoringInputs.length > 0) await recordCostEvents(scoringEvents.length > 0 ? scoringEvents : [event({
+      eventId: `${cell.cellId}:qualification-score-only-incomplete-recovery:no-valid-model-output`, cellId: cell.cellId,
+      stage: "qualification-score-only-incomplete-recovery", provider: "resilient-ai",
+      requestedModel: treatmentModels.qualificationRoutine, startedAt: scoringStarted,
+      completedAt: scoringCompleted, latencyMs: Math.max(0, Date.parse(scoringCompleted) - Date.parse(scoringStarted)),
+      attempts: 0, retries: 0, fallbackUsed: true, status: "failed", usage: {}, volume: scoringStageVolume,
+      notes: ["No model-valid score usage was returned; acquisition remained closed."] })]);
+
+    for (const candidate of [...correctedByDomain.values()]) {
+      if (!primaryRoleMatchesCategory(candidate.correction.primaryRole, cell.categoryId)) continue;
+      const assessment = assessmentsByCandidate.get(candidate.candidateId);
+      if (!assessment || assessment.scoringStatus !== "completed" || !assessment.eligible
+        || assessment.eligibilityStatus !== "eligible"
+        || Object.values(assessment.gates).some((state) => state === "not-supported")) continue;
+      selectedPairs.push({ candidate, assessment });
+      selectedDomains.add(candidate.domain);
+    }
+    completionReason = selectedPairs.length >= plan.targetCount ? "target-met" : resumeFrom.completionReason;
+    warnings.push(`Incomplete recovery retried ${incompleteCorrections.length} deterministic corrections and ${scoringInputs.length} missing, retry-required or materially affected assessments; it retained ${selectedPairs.length} eligible candidates with zero search or evidence-acquisition calls.`);
+  }
 
   if (resumeFrom && priorCorrected.length > 0 && resumeMode === "semantic-recovery") {
     for (const candidate of priorCorrected) discoverySession.excludedDomains.add(candidate.domain);
@@ -518,7 +602,7 @@ export async function runProductCell(cell: ExperimentCell, options: {
     toFinalCandidate(candidate, assessment, index + 1));
   const rankingStarted = new Date().toISOString();
   const rankingAt = new Date().toISOString();
-  await recordCostEvents([event({ eventId: resumeFrom ? `${cell.cellId}:ranking:${resumeMode}:v2.0.7` : `${cell.cellId}:ranking`, cellId: cell.cellId,
+  await recordCostEvents([event({ eventId: resumeFrom ? `${cell.cellId}:ranking:${resumeMode}:v2.0.8` : `${cell.cellId}:ranking`, cellId: cell.cellId,
     stage: "role-filter-ranking", provider: "deterministic", startedAt: rankingStarted,
     completedAt: rankingAt, latencyMs: Math.max(0, Date.parse(rankingAt) - Date.parse(rankingStarted)),
     attempts: 0, retries: 0, fallbackUsed: false, status: "completed", usage: {},

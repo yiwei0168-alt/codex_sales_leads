@@ -1,4 +1,4 @@
-# Colombia search E2E evaluation v2.0.7
+# Colombia search E2E evaluation v2.0.8
 
 This directory is the immutable, cold-start Colombia follow-up to the UK/Mexico formal evaluation. It compares the current product workflow with one un-tuned Gemini Full + Google Search interaction per category.
 
@@ -38,5 +38,12 @@ node scripts\run-tsx.cjs experiments\search-e2e-evaluation\co-v2\scripts\run-for
 ```
 
 This is a narrow invalidation path, not a tuning retry. v2.0.7 rejects public-suffix-only evidence targets, admits independent evidence only when it is affiliated with the candidate entity, binds target-country eligibility to the correction-stage country finding, sanitizes overlong light-gate output without dropping a whole batch, counts only domain-bearing companies as discovery yield, and prevents incomplete model rounds from advancing confirmed exhaustion. A 50-company cell may run at most ten fresh rounds, still stopping earlier after two genuinely completed zero-final rounds.
+
+If a valid Product run contains deterministic correction fallbacks or retry-required scores, v2.0.8 performs an acquisition-closed incomplete-output recovery. Direct DeepSeek remains primary. Public packets then try the same DeepSeek tier through OpenRouter for at most 45 seconds and `openai/gpt-4o-mini` for at most 25 seconds; at most two fallbacks are attempted. Search, homepage reads, Tavily evidence and completed unaffected scores are cache hits and are not repeated:
+
+```powershell
+node scripts\run-tsx.cjs experiments\search-e2e-evaluation\co-v2\scripts\run-formal-experiment.ts --phase=provider-check
+node scripts\run-tsx.cjs experiments\search-e2e-evaluation\co-v2\scripts\run-formal-experiment.ts --phase=cell --cell=CO-retail --repair-incomplete
+```
 
 Raw checkpoints are local under `runs/raw/`. Sanitized artifacts and the final report are under `artifacts/runs/2026-09-08-co-search-e2e-v2/`.

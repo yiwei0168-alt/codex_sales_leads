@@ -1,6 +1,6 @@
 {
   "workflowKey": "cudy-sales-lead-end-to-end-runtime",
-  "version": "3.6.0",
+  "version": "3.7.0",
   "status": "active",
   "baseDefinition": "config/lead-workflow/end-to-end-v2.0.0.json",
   "scoringPolicy": "config/lead-scoring/policy-v2.0.0.json",
@@ -14,7 +14,7 @@
     "Production model escalation never depends on Top-N position.",
     "Semantic judgments and sub-scores come from the model; deterministic totals and states come from code.",
     "Every generated artifact records lineage, actual downstream use and cost.",
-    "Model failure may use an approved equivalent fallback; public DeepSeek packets may use the same model tier through the configured OpenRouter gateway, private packets require an explicitly approved private route, and embeddings never switch model at runtime.",
+    "Model failure may use at most two approved equivalent fallbacks; public DeepSeek packets try the same model tier and then an OpenAI peer tier through the configured OpenRouter gateway with independent route deadlines, private packets require an explicitly approved private route, and embeddings never switch model at runtime.",
     "Provider failure is never an empty successful search and cannot advance a no-value stop counter.",
     "A requested company count is fulfilled after identity, market and primary-role validation; low scores alone do not trigger replacement search.",
     "Within-run search, evidence and role-correction caches remain mandatory even when historical cache reads are disabled for a cold-start evaluation.",
@@ -22,7 +22,8 @@
     "Evidence-correction batches are packet- and token-aware; request-scoped timeouts do not open a provider-wide circuit, and an explicit cache-recovery run is closed to new search or evidence acquisition.",
     "Localized discovery focuses are country-specific rather than language-specific; provider-owned profile URLs never become company identities, and same-family multi-role companies receive one concrete primary role instead of Hybrid.",
     "Only domain-bearing company identities count as normalized discovery yield; schema-safe light-gate output cannot invalidate an entire batch, and failed model stages cannot advance confirmed-exhaustion counters.",
-    "Supplemental evidence must be deterministically affiliated with the candidate entity, and scoring cannot override correction-stage target-country evidence."
+    "Supplemental evidence must be deterministically affiliated with the candidate entity, and scoring cannot override correction-stage target-country evidence.",
+    "Incomplete-output recovery retries only deterministic semantic fallbacks and missing, retry-required or materially affected scores; it never repeats discovery or evidence acquisition."
   ],
   "cooperationPaths": {
     "maximumPerCompany": 2,

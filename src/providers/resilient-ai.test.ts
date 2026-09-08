@@ -6,10 +6,14 @@ import { createLeadAiProvider, ResilientAiProvider } from "./resilient-ai";
 class FakeAiProvider implements AiProvider {
   calls: StructuredAiRequest<unknown>[] = [];
   constructor(readonly id: string, private readonly behavior: "ok" | "fail" | "timeout" = "ok") {}
-  async execute<TInput, TOutput>(request: StructuredAiRequest<TInput>): Promise<StructuredAiResponse<TOutput>> {
+  async execute<TInput, TOutput>(request: StructuredAiRequest<TInput>, signal?: AbortSignal): Promise<StructuredAiResponse<TOutput>> {
     this.calls.push(request as StructuredAiRequest<unknown>);
     if (this.behavior === "fail") throw new Error(`${this.id} unavailable`);
-    if (this.behavior === "timeout") throw new DOMException(`${this.id} timed out`, "TimeoutError");
+    if (this.behavior === "timeout") {
+      await new Promise<void>((_resolve, reject) => signal?.addEventListener("abort", () => reject(signal.reason),
+        { once: true }));
+      throw new DOMException(`${this.id} timed out`, "TimeoutError");
+    }
     await new Promise((resolve) => setTimeout(resolve, 5));
     return { output: { ok: true } as TOutput, modelVersion: request.modelVersion,
       promptVersion: request.promptVersion, latencyMs: 5, warnings: [] };
@@ -63,8 +67,45 @@ describe("ResilientAiProvider", () => {
       reasoning: { effort: "none" } });
     expect(result).toMatchObject({ actualProviderId: "openrouter-deepseek",
       requestedModelVersion: "deepseek-v4-flash", attempts: 2, retries: 0 });
-    expect(result.warnings[0]).toContain("deepseek failed");
+    expect(result.warnings[0]).toContain("deepseek unavailable");
     expect(result.usage?.accountCashCostUsd).toBe(0.0001);
+  });
+
+  it("uses the public OpenAI peer only after the same-model OpenRouter route fails", async () => {
+    vi.stubEnv("OPENROUTER_API_KEY", "test-only");
+    vi.stubEnv("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1");
+    const models: string[] = [];
+    const fetchMock = vi.fn(async (_url: string | URL | Request, init?: RequestInit) => {
+      const body = JSON.parse(String(init?.body));
+      models.push(body.model);
+      if (body.model === "deepseek/deepseek-v4-flash") {
+        return new Response(JSON.stringify({ error: { message: "same-model route unavailable" } }), { status: 503 });
+      }
+      return new Response(JSON.stringify({ id: "or-peer", model: "openai/gpt-4o-mini",
+        choices: [{ finish_reason: "stop", message: { content: JSON.stringify({ ok: true }) } }],
+        usage: { prompt_tokens: 12, completion_tokens: 3, total_tokens: 15, cost: 0.00001 } }), { status: 200 });
+    });
+    vi.stubGlobal("fetch", fetchMock);
+    const result = await createLeadAiProvider(new FakeAiProvider("deepseek", "fail"))
+      .execute<typeof request.input, { ok: boolean }>(request);
+    expect(models).toEqual(["deepseek/deepseek-v4-flash", "deepseek/deepseek-v4-flash", "openai/gpt-4o-mini"]);
+    expect(result).toMatchObject({ actualProviderId: "openrouter-openai-peer",
+      requestedModelVersion: "deepseek-v4-flash", attempts: 4, retries: 1 });
+    expect(result.warnings[0]).toContain("2 route failure(s)");
+  });
+
+  it("gives a stalled fallback its own deadline and continues to the next route", async () => {
+    const primary = new FakeAiProvider("primary", "fail");
+    const stalled = new FakeAiProvider("stalled", "timeout");
+    const peer = new FakeAiProvider("peer");
+    const result = await new ResilientAiProvider(primary, { fallbacks: [
+      { provider: stalled, routineModel: "same-flash", approvedDataClassifications: ["public"], timeoutMs: 10 },
+      { provider: peer, routineModel: "peer-flash", approvedDataClassifications: ["public"], timeoutMs: 30 },
+    ] }).execute<typeof request.input, { ok: boolean }>(request, AbortSignal.timeout(100));
+    expect(stalled.calls).toHaveLength(1);
+    expect(peer.calls).toHaveLength(1);
+    expect(result.actualProviderId).toBe("peer");
+    expect(result.attempts).toBe(3);
   });
 
   it("never sends private workspace content to a fallback without equivalent permission", async () => {
@@ -109,7 +150,8 @@ describe("ResilientAiProvider", () => {
     const primary = new FakeAiProvider("primary", "fail");
     const fallback = new FakeAiProvider("fallback", "timeout");
     const provider = new ResilientAiProvider(primary, { circuitFailureThreshold: 2, circuitCooldownMs: 60_000,
-      fallbacks: [{ provider: fallback, routineModel: "peer-flash", approvedDataClassifications: ["public"] }] });
+      fallbacks: [{ provider: fallback, routineModel: "peer-flash", approvedDataClassifications: ["public"],
+        timeoutMs: 5 }] });
     for (const company of ["One", "Two", "Three"]) {
       await expect(provider.execute({ ...request, input: { company } })).rejects.toBeInstanceOf(AggregateError);
     }

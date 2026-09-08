@@ -1,6 +1,6 @@
 {
   "policyKey": "cudy-lead-workflow-cost-quality",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "status": "active",
   "objective": "Reduce model tokens by at least 40% and paid search/extract credits by at least 30% without weakening evidence, role, scoring, privacy or user-edit semantics.",
   "taskModes": {
@@ -107,6 +107,8 @@
     "maximumPrimaryRetries": 2,
     "maximumSchemaRepairRetries": 1,
     "maximumFallbackModels": 2,
+    "fallbackOrder": ["current-primary", "same-model-tier-openrouter", "same-capability-openai-peer-openrouter"],
+    "automaticPublicFallbackRouteTimeoutMs": [45000, 25000],
     "embeddingFallbackEnabled": false,
     "requireEquivalentDataPermission": true,
     "requireSameOutputSchema": true,
@@ -128,7 +130,10 @@
     "reusePrimaryAssessmentCheckpoint": true,
     "retryOnlyInvalidCandidates": true,
     "neverReacquireForSchemaFailure": true,
-    "resumeFromLatestValidArtifact": true
+    "resumeFromLatestValidArtifact": true,
+    "incompleteRecoveryRepeatsAcquisition": false,
+    "retryDeterministicCorrectionFallbacksOnly": true,
+    "rescoreOnlyMissingRetryRequiredOrMateriallyChanged": true
   },
   "qualityGates": {
     "strategicCandidateRecallPercent": 100,

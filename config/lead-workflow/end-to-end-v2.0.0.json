@@ -1,6 +1,6 @@
 {
   "workflowKey": "cudy-sales-lead-end-to-end",
-  "version": "2.9.0",
+  "version": "2.10.0",
   "status": "active",
   "scope": "From the user's natural-language market-development request and workspace context to ranked companies, editable cooperation paths, development strategy, outreach email, and private-memory learning from user edits.",
   "principles": [
@@ -11,7 +11,7 @@
     "User-confirmed knowledge has higher priority than ordinary retrieval, while shared knowledge and user/workspace memory remain isolated.",
     "Cooperation paths, roles and evidence restrictions travel into development strategy and email generation.",
     "User edits to paths and outreach are retained as private learning signals, not written into the shared knowledge base.",
-    "OpenAI and Anthropic generation is routed through the pinned OpenRouter HTTPS gateway. DeepSeek keeps its dedicated provider as primary, while public-only packets may fail over to the same DeepSeek tier through OpenRouter; embeddings never fail over.",
+    "OpenAI and Anthropic generation is routed through the pinned OpenRouter HTTPS gateway. DeepSeek keeps its dedicated provider as primary; public-only packets first try the same DeepSeek tier through OpenRouter and then an OpenAI same-capability peer with an independent route deadline, while embeddings never fail over.",
     "Every potentially overlapping task must create and consume a versioned cache at first execution; downstream stages receive exact evidence IDs, role corrections and explicit missing-evidence gaps.",
     "Search localization is keyed by market country, provider-owned result pages are provenance rather than candidate domains, and a primary role must be concrete unless two or more role families are genuinely co-primary.",
     "Only evidence deterministically affiliated with the candidate entity may enter correction or scoring, and target-country eligibility must be corroborated by the correction-stage country finding."
@@ -42,22 +42,22 @@
       "stages": ["04-discovery"],
       "purpose": "Lightweight candidate existence, relevance and category gate",
       "defaultModel": "DEEPSEEK_DISCOVERY_GATE_MODEL; fixed default deepseek-v4-flash and never inherits a Pro global routine setting",
-      "escalationOrFallback": "Same-tier resilient provider fallback, including public-only DeepSeek through OpenRouter; unavailable batches are held for downstream evidence, never upgraded to Pro",
+      "escalationOrFallback": "At most two public-only equivalent fallbacks: the same DeepSeek tier through OpenRouter, then openai/gpt-4o-mini; unavailable batches are held for downstream evidence, never upgraded to Pro",
       "callPolicy": "Batches of up to 10 after direct lightweight homepage fetch; compact semantic signals only, with deterministic pass/hold/reject; optional reasoning is disabled on the OpenRouter same-tier route"
     },
     {
       "stages": ["06-correction-role"],
       "purpose": "Entity correction, atomic facts and primary-role analysis",
       "defaultModel": "DEEPSEEK_MODEL; default deepseek-v4-flash",
-      "escalationOrFallback": "DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro; public-only same-tier OpenRouter route on provider failure; deterministic fallback is retry-only",
-      "callPolicy": "Relevance-prioritized compact evidence packets and token-aware routine batches; optional reasoning disabled on OpenRouter; malformed output permits one same-tier single-candidate repair; infrastructure failure never upgrades; request timeout does not open a global circuit; Pro requires a valid routine prediction of score change >=8 or a resolvable critical-state change"
+      "escalationOrFallback": "DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro for policy-qualified semantic escalation; provider recovery uses public-only same-tier OpenRouter then openai/gpt-4o-mini, while deterministic fallback is retry-only",
+      "callPolicy": "Relevance-prioritized compact evidence packets and token-aware routine batches; each automatic fallback has an independent deadline; optional reasoning is disabled for OpenRouter DeepSeek; malformed output permits one same-tier single-candidate repair; infrastructure failure never upgrades to Pro; Pro requires a valid routine prediction of score change >=8 or a resolvable critical-state change"
     },
     {
       "stages": ["09-scoring-paths"],
       "purpose": "Role-aware score and possible cooperation paths",
       "defaultModel": "DEEPSEEK_MODEL; default deepseek-v4-flash",
-      "escalationOrFallback": "DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro; public-only same-tier OpenRouter route on provider failure",
-      "callPolicy": "Routine batches with optional reasoning disabled on OpenRouter; malformed output permits one same-tier single-candidate repair; infrastructure failure never upgrades; confidence, alternative paths and Top-N position never trigger upgrade alone"
+      "escalationOrFallback": "DEEPSEEK_ESCALATION_MODEL; default deepseek-v4-pro for policy-qualified semantic escalation; provider recovery uses public-only same-tier OpenRouter then openai/gpt-4o-mini",
+      "callPolicy": "Routine batches with independent fallback deadlines and optional reasoning disabled for OpenRouter DeepSeek; malformed output permits one same-tier single-candidate repair; infrastructure failure never upgrades to Pro; confidence, alternative paths and Top-N position never trigger upgrade alone"
     },
     {
       "stages": ["10-review"],

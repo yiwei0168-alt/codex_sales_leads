@@ -13,6 +13,7 @@ export interface AiFallbackRoute {
   routineModel?: string;
   escalationModel?: string;
   approvedDataClassifications: AiDataClassification[];
+  timeoutMs?: number;
 }
 
 interface ResilientAiProviderOptions {
@@ -83,7 +84,7 @@ export class ResilientAiProvider implements AiProvider {
 
   constructor(private readonly primary: AiProvider, options: ResilientAiProviderOptions = {}) {
     this.id = `resilient:${primary.id}`;
-    this.fallbacks = (options.fallbacks ?? []).slice(0, 2);
+    this.fallbacks = (options.fallbacks ?? []).slice(0, 4);
     this.escalationPrimaryModel = options.escalationPrimaryModel ?? process.env.DEEPSEEK_ESCALATION_MODEL?.trim() ?? "deepseek-v4-pro";
     this.circuitFailureThreshold = Math.max(1, options.circuitFailureThreshold ?? 2);
     this.circuitCooldownMs = Math.max(1_000, options.circuitCooldownMs ?? 60_000);
@@ -126,18 +127,25 @@ export class ResilientAiProvider implements AiProvider {
     {
       const classification = request.dataClassification ?? "public";
       const failures = [primaryError];
+      let attemptedFallbacks = 0;
       for (const route of this.fallbacks) {
         if (!route.approvedDataClassifications.includes(classification) || this.circuitOpen(route.provider.id)) continue;
         const fallbackModel = this.modelFor(route, requestedModel);
         if (!fallbackModel) continue;
+        if (attemptedFallbacks >= 2) break;
+        attemptedFallbacks += 1;
         try {
-          const response = await route.provider.execute<TInput, TOutput>({ ...request, modelVersion: fallbackModel }, signal);
+          const routeSignal = route.timeoutMs
+            ? AbortSignal.any([...(signal ? [signal] : []), AbortSignal.timeout(route.timeoutMs)])
+            : signal;
+          const response = await route.provider.execute<TInput, TOutput>(
+            { ...request, modelVersion: fallbackModel }, routeSignal);
           this.circuits.delete(route.provider.id);
-          const primaryTelemetry = failureTelemetry(primaryError);
+          const priorTelemetry = failures.map(failureTelemetry);
           return { ...response, requestedModelVersion: requestedModel, actualProviderId: route.provider.id,
-            attempts: primaryTelemetry.attempts + (response.attempts ?? 1),
-            retries: primaryTelemetry.retries + (response.retries ?? 0),
-            warnings: [`Model fallback used after ${this.primary.id} failed (${failureMessage(primaryError)}): requested=${requestedModel}; actual=${response.modelVersion}; provider=${route.provider.id}.`,
+            attempts: priorTelemetry.reduce((sum, item) => sum + item.attempts, 0) + (response.attempts ?? 1),
+            retries: priorTelemetry.reduce((sum, item) => sum + item.retries, 0) + (response.retries ?? 0),
+            warnings: [`Model fallback used after ${failures.length} route failure(s) (${failures.map(failureMessage).join(" | ")}): requested=${requestedModel}; actual=${response.modelVersion}; provider=${route.provider.id}.`,
               ...response.warnings] };
         } catch (error) {
           failures.push(error);
@@ -197,11 +205,30 @@ function openRouterDeepSeekFallbackRoute(): AiFallbackRoute | null {
     escalationModel: process.env.OPENROUTER_DEEPSEEK_ESCALATION_MODEL?.trim()
       || "deepseek/deepseek-v4-pro",
     approvedDataClassifications: ["public"],
+    timeoutMs: 45_000,
+  };
+}
+
+function openRouterOpenAiPeerRoute(): AiFallbackRoute | null {
+  if (!process.env.OPENROUTER_API_KEY?.trim()) return null;
+  const config = getOpenRouterConfig();
+  return {
+    provider: new OpenAiCompatibleProvider({
+      id: "openrouter-openai-peer",
+      apiKey: config.apiKey,
+      baseUrl: config.baseUrl,
+      defaultHeaders: config.defaultHeaders,
+      extraBody: { provider: config.providerPreferences },
+    }),
+    routineModel: process.env.OPENROUTER_OPENAI_ROUTINE_MODEL?.trim() || "openai/gpt-4o-mini",
+    escalationModel: process.env.OPENROUTER_OPENAI_ESCALATION_MODEL?.trim() || "openai/gpt-4o",
+    approvedDataClassifications: ["public"],
+    timeoutMs: 25_000,
   };
 }
 
 export function createLeadAiProvider(primary: AiProvider = new DeepSeekProvider()): AiProvider {
-  const fallbacks = ([fallbackRoute(1), fallbackRoute(2), openRouterDeepSeekFallbackRoute()])
-    .filter((route): route is AiFallbackRoute => Boolean(route)).slice(0, 2);
+  const fallbacks = ([openRouterDeepSeekFallbackRoute(), openRouterOpenAiPeerRoute(), fallbackRoute(1),
+    fallbackRoute(2)]).filter((route): route is AiFallbackRoute => Boolean(route)).slice(0, 4);
   return new ResilientAiProvider(primary, { fallbacks });
 }

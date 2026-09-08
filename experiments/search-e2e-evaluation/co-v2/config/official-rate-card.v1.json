@@ -50,6 +50,16 @@
       "perMillionTokens": { "input": 4, "cachedInput": 0.4, "outputIncludingReasoning": 20 },
       "source": "https://developers.openai.com/api/docs/models/compare"
     },
+    "gpt-4o-mini": {
+      "currency": "USD",
+      "perMillionTokens": { "input": 0.15, "cachedInput": 0.075, "output": 0.6 },
+      "source": "https://developers.openai.com/api/docs/models/gpt-4o-mini"
+    },
+    "gpt-4o": {
+      "currency": "USD",
+      "perMillionTokens": { "input": 2.5, "cachedInput": 1.25, "output": 10 },
+      "source": "https://developers.openai.com/api/docs/models/gpt-4o"
+    },
     "text-embedding-v4": {
       "currency": "USD",
       "region": "China (Beijing)",
