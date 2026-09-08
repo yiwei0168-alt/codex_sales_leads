@@ -1,4 +1,4 @@
-# Colombia search E2E evaluation v2.0.9
+# Colombia search E2E evaluation v2.0.10
 
 This directory is the immutable, cold-start Colombia follow-up to the UK/Mexico formal evaluation. It compares the current product workflow with one un-tuned Gemini Full + Google Search interaction per category.
 
@@ -50,6 +50,12 @@ If model output contradicts an already explicit deterministic policy, v2.0.9 rep
 
 ```powershell
 node scripts\run-tsx.cjs experiments\search-e2e-evaluation\co-v2\scripts\run-formal-experiment.ts --phase=cell --cell=CO-retail --repair-consistency
+```
+
+If SearchAPI is actually unavailable, v2.0.10 permits Gemini Full to replace only the affected SearchAPI-dependent Retail/E-tail or Reseller/VAR route. It remains a zero-call skip when SearchAPI is healthy and never uses Gemini Product or Tavily for discovery. For CO Retail, reuse the 12 valid cached outputs and extend only the missing search/evidence/role/score work:
+
+```powershell
+node scripts\run-tsx.cjs experiments\search-e2e-evaluation\co-v2\scripts\run-formal-experiment.ts --phase=cell --cell=CO-retail --repair-search
 ```
 
 Raw checkpoints are local under `runs/raw/`. Sanitized artifacts and the final report are under `artifacts/runs/2026-09-08-co-search-e2e-v2/`.

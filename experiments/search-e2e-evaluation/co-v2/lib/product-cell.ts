@@ -176,7 +176,7 @@ export async function runProductCell(cell: ExperimentCell, options: {
     playbook = resumeFrom.playbook;
     intentSummary = resumeFrom.intent;
     const cacheAt = new Date().toISOString();
-    await recordCostEvents([event({ eventId: `${cell.cellId}:resume-cache:${resumeMode}:v2.0.9`, cellId: cell.cellId,
+    await recordCostEvents([event({ eventId: `${cell.cellId}:resume-cache:${resumeMode}:v2.0.10`, cellId: cell.cellId,
       stage: "within-run-cache-reuse", provider: "local-run-cache", startedAt: cacheAt, completedAt: cacheAt,
       latencyMs: 0, attempts: 0, retries: 0, fallbackUsed: false, status: "completed", usage: {},
       volume: volume(1, 1, 1, 1), notes: [
@@ -317,7 +317,7 @@ export async function runProductCell(cell: ExperimentCell, options: {
       selectedDomains.add(candidate.domain);
     }
     const repairAt = new Date().toISOString();
-    await recordCostEvents([event({ eventId: `${cell.cellId}:deterministic-consistency-recovery:v2.0.9`,
+    await recordCostEvents([event({ eventId: `${cell.cellId}:deterministic-consistency-recovery:v2.0.10`,
       cellId: cell.cellId, stage: "deterministic-consistency-recovery", provider: "deterministic",
       startedAt: repairAt, completedAt: repairAt, latencyMs: 0, attempts: 0, retries: 0,
       fallbackUsed: false, status: "completed", usage: {},
@@ -641,7 +641,7 @@ export async function runProductCell(cell: ExperimentCell, options: {
     toFinalCandidate(candidate, assessment, index + 1));
   const rankingStarted = new Date().toISOString();
   const rankingAt = new Date().toISOString();
-  await recordCostEvents([event({ eventId: resumeFrom ? `${cell.cellId}:ranking:${resumeMode}:v2.0.9` : `${cell.cellId}:ranking`, cellId: cell.cellId,
+  await recordCostEvents([event({ eventId: resumeFrom ? `${cell.cellId}:ranking:${resumeMode}:v2.0.10` : `${cell.cellId}:ranking`, cellId: cell.cellId,
     stage: "role-filter-ranking", provider: "deterministic", startedAt: rankingStarted,
     completedAt: rankingAt, latencyMs: Math.max(0, Date.parse(rankingAt) - Date.parse(rankingStarted)),
     attempts: 0, retries: 0, fallbackUsed: false, status: "completed", usage: {},

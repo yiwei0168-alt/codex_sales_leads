@@ -1,7 +1,7 @@
 # Hybrid Lead Search Workflow
 
 Status: active
-Current policy: `cudy-hybrid-lead-search` v1.3.1
+Current policy: `cudy-hybrid-lead-search` v1.6.0
 Scope: user request through final valid, primary-role-correct candidate set. Tavily evidence acquisition, scoring and downstream outreach are connected consumers, not additional discovery engines.
 
 ## End-to-end flow
@@ -50,6 +50,8 @@ Provider-level failures open a provider circuit; route-level failures isolate on
 
 Brave accepts only a limited market-country enum. When the requested country is unsupported (including Colombia), its request uses `country=ALL` while the localized query continues to name the country; an unsupported ISO code must never be sent as if it were valid. A confirmed quota failure such as SearchAPI HTTP 429 is a provider failure, not an empty successful batch and not evidence that the search track has no value.
 
+Retail/E-tail and Reseller/VAR routes that use SearchAPI for broad Web recall have a conditional Gemini Full provider-gap step. It is eligible only after the corresponding SearchAPI track fails, SearchAPI has opened a provider/invocation circuit, or its bounded recovery is in cooldown. A healthy SearchAPI route records the Gemini step as `fallback-provider-healthy` with zero provider request, tokens, credits and cash cost. The backup is neither Gemini Product nor a routine duplicate search, and it never turns Tavily into a discovery engine.
+
 DeepSeek remains the primary semantic-gate, correction and scoring provider. After bounded direct-provider failure, public-only packets may use the same DeepSeek Flash/Pro tier through the configured OpenRouter gateway. Requests containing user/workspace cooperation-path memory remain private and cannot use this automatic public route. Requested/actual provider and model, aggregate attempts, tokens, gateway cash cost and fallback reason are retained.
 
 Default Retail/Reseller discovery excludes Gemini Product. It may return only after a measured experiment demonstrates independent incremental value.
@@ -93,6 +95,16 @@ Every route and stage records input count, raw output, normalized output, new un
 
 ## Version history
 
+### v1.6.0 conditional provider-gap backup — 2026-09-08
+
+- Adds Gemini Full only behind observed SearchAPI unavailability on configured Retail/E-tail and Reseller/VAR tracks.
+- Keeps Gemini Full idle and records a zero-cost skip while SearchAPI is healthy, preserving the rule that equivalent search mechanisms are not routinely duplicated.
+- Treats provider failure, provider/invocation circuits and recovery cooldown as eligible fallback states; ordinary no-value output is not a provider failure.
+- Keeps shared identity deduplication, cached-domain exclusions, Tavily evidence-only scope and final-role feedback unchanged.
+- Introduces explicit `fallbackForProvider`, `fallbackUsed` and skip-reason telemetry so later contribution analysis can distinguish primary from contingency yield and cost.
+
+The trigger was the clean Colombia Retail run: across eight rounds, SearchAPI had 40 planned calls, five quota failures, 35 circuit/cooldown skips, zero raw results and zero unique companies. The deterministic consistency repair left 12/50 valid Retail/E-tail outputs. The new repair-search run will reuse those 12 outputs and all compatible evidence/role/score records; only new candidates can incur new downstream acquisition cost.
+
 ### Colombia formal evaluation harness v2.0.0 — 2026-09-08
 
 - Freezes Colombia across the four core categories with 50 requested candidates per arm/category.
@@ -108,6 +120,9 @@ Every route and stage records input count, raw output, normalized output, new un
 - v2.0.5 recovery: the next cached correction attempt exposed oversized multi-candidate packets and a recovery-boundary bug. The zero-result recovery mistakenly opened round five and spent USD 0.368 on new acquisition. Correction packets now retain ten relevance-prioritized current sources with 1,200-character excerpts, batch under 28,000 serialized characters, and use one-candidate/two-way-concurrency calls for formal recovery. Request timeouts remain local, and `--resume-product` is now acquisition-closed.
 - v2.0.6 localization repair: CO Retail queries incorrectly reused Mexico city focuses, Exa profile URLs merged unrelated identities, Latin American public suffixes collapsed to values such as `com.pe`, and same-family Retailer+E-tailer companies were incorrectly excluded as Hybrid. Country-code-specific focuses, provider-domain isolation, corrected registrable domains and concrete same-family primary roles are now enforced. The formal repair-search extension preserves cached evidence and valid scores while excluding every cached domain from new acquisition.
 - v2.0.7 evidence-lineage repair: only domain-bearing company identities count as normalized/new discovery yield; Exa-owned profile URLs and unresolved external IDs are retained only as discarded provenance. Light-gate strings and enum arrays are bounded before validation so one malformed reason cannot send an entire batch to paid downstream evidence. Official evidence acquisition requires a valid registrable company domain, correction search retains only candidate-affiliated independent sources, and target-country eligibility cannot override the correction-stage country finding. Model-failed rounds do not advance the no-final stop counter; explicit 50-company tasks have a bounded ten-round ceiling.
+- v2.0.8 model recovery: incomplete cached semantic records retry through bounded same-tier OpenRouter DeepSeek and then an OpenAI peer without repeating discovery or evidence acquisition.
+- v2.0.9 deterministic consistency: supported marketplace findings remove Retail/E-tail roles; unknown scale and buying influence obey deterministic caps without a model or acquisition call.
+- v2.0.10 provider-gap recovery: SearchAPI-dependent Retail and Reseller tracks use Gemini Full only during an observed SearchAPI outage and otherwise skip it at zero cost.
 
 ### v1.3.0 category purity and cost-accounting repair — 2026-09-07
 

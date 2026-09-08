@@ -22,8 +22,9 @@ const stepSchema = z.object({
   mechanism: z.string().min(2).max(80),
   trigger: z.enum([
     "core", "index-gap", "second-index-gap", "semantic-gap", "complex-semantic-gap", "web-gap",
-    "local-gap", "explicit-local-gap", "technical-gap",
+    "local-gap", "explicit-local-gap", "technical-gap", "provider-gap",
   ]),
+  fallbackForProvider: providerSchema.optional(),
 });
 const categorySchema = z.object({
   tracks: z.record(z.string().min(2), z.array(stepSchema).min(1)),
@@ -56,6 +57,10 @@ export const hybridSearchPolicySchema = z.object({
         });
         const identity = `${step.provider}:${step.engine}:${step.mechanism}`;
         if (seen.has(identity)) context.addIssue({ code: "custom", path: ["categories", category, "tracks", track, index], message: "Duplicate search mechanism in one track" });
+        if ((step.trigger === "provider-gap") !== Boolean(step.fallbackForProvider)) context.addIssue({
+          code: "custom", path: ["categories", category, "tracks", track, index, "fallbackForProvider"],
+          message: "provider-gap steps require fallbackForProvider and other triggers must omit it",
+        });
         seen.add(identity);
       }
     }
@@ -86,6 +91,7 @@ export interface HybridSearchRouteStep {
   engine: z.infer<typeof stepSchema>["engine"];
   mechanism: string;
   trigger: z.infer<typeof stepSchema>["trigger"];
+  fallbackForProvider?: DiscoveryProviderId;
   invocationReason: string;
 }
 
@@ -167,6 +173,7 @@ export function buildHybridSearchRoute(input: LeadSearchPlan): HybridSearchRoute
     return steps.map((step, sequence) => ({
       category, track, sequence, ...step,
       invocationReason: step.trigger === "core" ? `Core mechanism for ${category}/${track}`
+        : step.trigger === "provider-gap" ? `Conditional backup only when ${step.fallbackForProvider} is unavailable`
         : `${step.trigger} only after the preceding batch leaves a measured gap`,
     }));
   }));

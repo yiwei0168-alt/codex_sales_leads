@@ -1,6 +1,6 @@
 {
   "workflowKey": "cudy-sales-lead-end-to-end-runtime",
-  "version": "3.8.0",
+  "version": "3.9.0",
   "status": "active",
   "baseDefinition": "config/lead-workflow/end-to-end-v2.0.0.json",
   "scoringPolicy": "config/lead-scoring/policy-v2.0.0.json",
@@ -24,7 +24,8 @@
     "Only domain-bearing company identities count as normalized discovery yield; schema-safe light-gate output cannot invalidate an entire batch, and failed model stages cannot advance confirmed-exhaustion counters.",
     "Supplemental evidence must be deterministically affiliated with the candidate entity, and scoring cannot override correction-stage target-country evidence.",
     "Incomplete-output recovery retries only deterministic semantic fallbacks and missing, retry-required or materially affected scores; it never repeats discovery or evidence acquisition.",
-    "A supported third-party marketplace finding removes Retailer/E-tailer roles, and deterministic evidence caps prevent unknown scale or weak buying-influence evidence from receiving maximum scores."
+    "A supported third-party marketplace finding removes Retailer/E-tailer roles, and deterministic evidence caps prevent unknown scale or weak buying-influence evidence from receiving maximum scores.",
+    "Gemini Full is a conditional discovery backup for configured SearchAPI-dependent Reseller and Retail tracks only after an observed SearchAPI failure, open circuit or recovery cooldown; it remains idle while SearchAPI is healthy and never invokes Tavily discovery."
   ],
   "cooperationPaths": {
     "maximumPerCompany": 2,

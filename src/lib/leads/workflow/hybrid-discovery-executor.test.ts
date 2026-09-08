@@ -119,6 +119,27 @@ describe("hybrid discovery executor", () => {
       && call.discardedReasonCounts["circuit-open"] === 1)).toBe(true);
     expect(output.calls.some((call) => call.route.provider === "google-places")).toBe(true);
     expect(output.calls.some((call) => call.route.provider === "gemini-product")).toBe(false);
+    expect(output.calls.some((call) => call.route.provider === "gemini-full" && call.status === "completed"
+      && call.fallbackUsed)).toBe(true);
+  });
+
+  it("keeps the conditional Gemini Full backup idle while SearchAPI is healthy", async () => {
+    const retailPlan: LeadSearchPlan = { ...plan, countryCode: "CO", countryName: "Colombia", queryLanguage: "es",
+      roles: ["Retailer", "E-tailer"], targetCount: 50 };
+    let geminiCalls = 0;
+    const output = await executeHybridDiscovery("run-provider-healthy", retailPlan, playbook, {
+      gate: passGate, concurrency: 3,
+      providerFactory: (step) => ({ id: step.provider, search: async (query) => {
+        if (step.provider === "gemini-full") geminiCalls += 1;
+        return new FakeProvider(step.provider, null).search(query);
+      } }),
+    });
+    expect(geminiCalls).toBe(0);
+    expect(output.calls.filter((call) => call.route.provider === "gemini-full")).not.toHaveLength(0);
+    expect(output.calls.filter((call) => call.route.provider === "gemini-full")
+      .every((call) => call.status === "skipped"
+        && (call.discardedReasonCounts["fallback-provider-healthy"] === 1
+          || call.discardedReasonCounts["two-consecutive-no-value-batches"] === 1))).toBe(true);
   });
 
   it("defers repeated transient failures for one round, then runs a bounded recovery probe", async () => {

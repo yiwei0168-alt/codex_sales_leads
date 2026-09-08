@@ -1,11 +1,11 @@
-# Cudy 销售线索端到端工作流 v3.8.0
+# Cudy 销售线索端到端工作流 v3.9.0
 
 > 本文档由 `scripts/generate-lead-workflow-doc.mjs` 自动生成。请修改版本化配置或实现代码，不要直接编辑生成文件。
 
-- 运行时策略版本：3.8.0（基础流程定义 2.11.0）
+- 运行时策略版本：3.9.0（基础流程定义 2.12.0）
 - 评分策略版本：2.0.0
-- 成本质量策略版本：3.0.5
-- 配置指纹：`df3e93121d8eb5d5f4f70ab779051e09f000a4bed7b5af67b35798525af06850`
+- 成本质量策略版本：3.0.6
+- 配置指纹：`edeec5fe987a6d4edc2af4c6746ea0d797daecd853702f7242663f998a434949`
 - 范围：From the user's natural-language market-development request and workspace context to ranked companies, editable cooperation paths, development strategy, outreach email, and private-memory learning from user edits.
 
 ## 一、从用户输入到最终输出的总流程
@@ -46,6 +46,7 @@ flowchart TD
 - Search localization is keyed by market country, provider-owned result pages are provenance rather than candidate domains, and a primary role must be concrete unless two or more role families are genuinely co-primary.
 - Only evidence deterministically affiliated with the candidate entity may enter correction or scoring, and target-country eligibility must be corroborated by the correction-stage country finding.
 - Explicit third-party marketplaces are not Retailer/E-tailer prospects; unknown scale receives a neutral nonzero cap, and buying influence cannot exceed the deterministic evidence cap.
+- Configured SearchAPI-dependent Reseller and Retail tracks use Gemini Full only after observed provider unavailability; the backup is skipped at zero cost while SearchAPI is healthy.
 
 ## 三、模型调用路由
 
@@ -220,6 +221,7 @@ flowchart TD
 - Use local-language commercial terminology and query clusters; expand mature markets to local coverage only after a measured gap
 - Stop a track only after two completed no-value batches; provider failures never count as no-value
 - After two transient failures from one provider, skip the next discovery round and run a bounded recovery probe in the following round
+- Use Gemini Full only as the configured provider-gap backup for SearchAPI-dependent Reseller and Retail tracks after an observed SearchAPI failure, circuit or cooldown; skip it without a provider call while SearchAPI is healthy
 - Serialize calls sharing one provider while different provider mechanisms remain concurrent, so exclusions update before the next same-provider query
 - Tavily is forbidden in candidate discovery and remains evidence-only
 - Gemini Product is not a default Retail or Reseller route
@@ -744,9 +746,9 @@ flowchart TD
 | 文件 | SHA-256 |
 |---|---|
 | `config/lead-scoring/policy-v2.0.0.json` | `0039203aafb29ec73e4beb10f72dc5ec114785fb4c5f311c7b425de0d451fc1b` |
-| `config/lead-search/hybrid-search-v1.0.0.json` | `c39134da593e076aa8c60f52bd280da8a53515167bb0c03fc79f836aed7bc904` |
-| `config/lead-workflow/cost-quality-policy-v3.0.0.json` | `68b7ae1dd5020aa516cfec9b7e0dab88c8f94d63221aed3949178fcb5f22ccae` |
-| `config/lead-workflow/runtime-policy-v3.0.0.json` | `1f0742ef8360121a6a219b3c79bd1e8b14c4608070208efa03f6507b3de8443d` |
+| `config/lead-search/hybrid-search-v1.0.0.json` | `4e71a217eeeeeba693a7797b61c897ead8af833b8a3b0a6e2a37a1342183def2` |
+| `config/lead-workflow/cost-quality-policy-v3.0.0.json` | `59d7151d0d81abc2d36573a391d81bbec94179c563ac8518d64172c1fafb066d` |
+| `config/lead-workflow/runtime-policy-v3.0.0.json` | `ce74ca53aa34e9cf2605bc340a422aaa39ff3465e016b67f6a9934de78a6cee1` |
 | `src/app/api/assistant/messages/route.ts` | `04bec90cc3d3f336195e8ab97a5ad4b1ec1e05b95606064225e098e94ed7a5cd` |
 | `src/lib/assistant/types.ts` | `4094485a0d6751ef7eb296eb385d1ff8ac1c4357509c97e4343a728413329862` |
 | `src/lib/assistant/intent.ts` | `cb77a2854f0058d92bf758ce4610d298bc94dde0157ade4f0bd3d05343fad168` |
@@ -759,10 +761,10 @@ flowchart TD
 | `src/lib/leads/workflow/rag-context.ts` | `1e1ee21e77b90731e849426cd7130de7d1e50ee6aec9f196e44cb642bf81387b` |
 | `src/lib/leads/workflow/playbook.ts` | `a83d6fe0edf30c5e0504fbb7e3bdb059b5cdb8a9d8df45dc1756372b7df3e095` |
 | `src/lib/leads/workflow/playbook-cache.ts` | `945d3fc727312208650ee7b4e55e33860e7c54f7e3daa939f768952409a1803f` |
-| `src/lib/leads/workflow/hybrid-search-policy.ts` | `4c3ec5ff313a5551c68de8fd023deca8cf711d7a80971f52f47127d0f9a8bb87` |
+| `src/lib/leads/workflow/hybrid-search-policy.ts` | `410f41a3d336275a4c879ad06fdceab54cfd1c9f2d99f56cad2f70b9e09398d6` |
 | `src/lib/leads/workflow/candidate-registry.ts` | `f2d98cbce22ad02207047d782a12fe1fac98f5c1852e9f09df6525f4a71692e0` |
 | `src/lib/leads/workflow/discovery-gate.ts` | `df3cb5f6132e9e0c6417f4c2a45c201c9d34098915ed81450afb7e23d4fd0a64` |
-| `src/lib/leads/workflow/hybrid-discovery-executor.ts` | `4d1240aefacb79280c1d0d524228b824666a01ac3b85902624b1aa1af8a11444` |
+| `src/lib/leads/workflow/hybrid-discovery-executor.ts` | `4d56c8d48dc3989814a3eb7c62bed59665f6fbeb1a17da929217226f8d7aa99b` |
 | `src/lib/leads/workflow/discovery.ts` | `ec1ba10fc2c4053fc58ec21187dc48487ae02a278e6dfab06b7e8169b57694bf` |
 | `src/lib/leads/global-search.ts` | `963d07622725531e72d7f1807d4228a23d59d6a320b5d1e508b602bcc05c65db` |
 | `src/lib/leads/workflow/evidence-correction-agent.ts` | `a7dbbee72d0a8846b9eab0730ec146ded1f55d6d5486627c5c27163d1d039434` |

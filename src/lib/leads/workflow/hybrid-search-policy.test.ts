@@ -17,7 +17,7 @@ function plan(overrides: Partial<LeadSearchPlan> = {}): LeadSearchPlan {
 
 describe("hybrid search policy", () => {
   it("keeps Tavily out of discovery and versions the confirmed strategy", () => {
-    expect(ACTIVE_HYBRID_SEARCH_POLICY.strategyDocumentVersion).toBe("1.5.0-domain-bearing-yield-and-bounded-gate-output");
+    expect(ACTIVE_HYBRID_SEARCH_POLICY.strategyDocumentVersion).toBe("1.6.0-provider-gap-conditional-backup");
     expect(JSON.stringify(ACTIVE_HYBRID_SEARCH_POLICY.categories)).not.toContain("tavily");
     expect(hybridSearchPolicyChecksum()).toMatch(/^[a-f0-9]{64}$/);
   });
@@ -28,12 +28,17 @@ describe("hybrid search policy", () => {
     expect(new Set(route.map((step) => step.track))).toEqual(new Set(["etail", "retail-national", "retail-local"]));
     expect(route.some((step) => step.provider === "gemini-product")).toBe(false);
     expect(route.some((step) => step.provider === "google-places")).toBe(true);
+    expect(route.filter((step) => step.provider === "gemini-full")).toHaveLength(3);
+    expect(route.filter((step) => step.provider === "gemini-full")
+      .every((step) => step.trigger === "provider-gap" && step.fallbackForProvider === "searchapi")).toBe(true);
   });
 
   it("uses complementary reseller mechanisms without Product Gemini", () => {
     const route = buildHybridSearchRoute(plan({ roles: ["Reseller", "VAR"] }));
     expect(route.some((step) => step.provider === "gemini-product")).toBe(false);
     expect(route[0]).toMatchObject({ provider: "searchapi", engine: "google" });
+    expect(route.filter((step) => step.provider === "gemini-full")
+      .every((step) => step.trigger === "provider-gap" && step.fallbackForProvider === "searchapi")).toBe(true);
   });
 
   it("routes distribution through Gemini Full without Product Gemini or Google SERP", () => {

@@ -219,11 +219,15 @@ export function hardPrefilter(item: DiscoveryItem): string | undefined {
 }
 
 function shouldRun(step: HybridSearchRouteStep, plan: ReturnType<typeof normalizeLeadSearchPlan>,
-  qualityCount: number, targetPool: number, noValueCount: number): { run: boolean; reason?: string } {
+  qualityCount: number, targetPool: number, noValueCount: number,
+  providerFallbackRequired = false): { run: boolean; reason?: string } {
   if (step.trigger === "core") return { run: true };
   if (qualityCount >= targetPool) return { run: false, reason: "quality-pool-target-met" };
   if (noValueCount >= ACTIVE_HYBRID_SEARCH_POLICY.maxConsecutiveNoValueBatches) {
     return { run: false, reason: "two-consecutive-no-value-batches" };
+  }
+  if (step.trigger === "provider-gap" && !providerFallbackRequired) {
+    return { run: false, reason: "fallback-provider-healthy" };
   }
   if (step.trigger === "explicit-local-gap" && plan.coverageMode !== "local") {
     return { run: false, reason: "local-agent-search-not-explicit" };
@@ -302,7 +306,13 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
     const wave = route.filter((step) => step.sequence === sequence);
     const tasks = wave.map((step) => ({ provider: step.provider, run: async () => {
       const trackKey = `${step.category}/${step.track}`;
-      const decision = shouldRun(step, plan, qualityCount(), targetPool, noValueByTrack.get(trackKey) ?? 0);
+      const fallbackProvider = step.fallbackForProvider;
+      const providerFallbackRequired = Boolean(fallbackProvider && (failedByTrack.has(trackKey)
+        || session.providerCircuits.has(fallbackProvider)
+        || invocationProviderCircuits.has(fallbackProvider)
+        || queryRound < (session.providerCooldownUntilRound.get(fallbackProvider) ?? 0)));
+      const decision = shouldRun(step, plan, qualityCount(), targetPool, noValueByTrack.get(trackKey) ?? 0,
+        providerFallbackRequired);
       const searchQuery = queryForStep(plan, playbook, step, queryRound);
       const callKey = `${trackKey}/${sequence}/${step.provider}/${step.engine}`;
       const excludeDomains = [...new Set([...session.excludedDomains, ...registry.domains()])];
@@ -320,7 +330,8 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
           queryClusterKey: clusterKey, route: step, query: searchQuery, status: "skipped",
           requestedResults, rawResults: 0, normalizedCompanies: 0, newUniqueCompanies: 0, existingCompanyHits: 0, rejectedResults: 0,
           paidSearchCredits: 0, requestCount: 0, groundingQueries: 0, inputTokens: 0, outputTokens: 0,
-          latencyMs: 0, retryCount: 0, fallbackUsed: failedByTrack.has(trackKey),
+          latencyMs: 0, retryCount: 0,
+          fallbackUsed: failedByTrack.has(trackKey) || providerFallbackRequired,
           cacheStatus: failedCache ? "failed-hit" : "skipped",
           discardedReasonCounts: { [circuitReason ? "circuit-open"
             : recoveryCooldown ? "provider-recovery-cooldown" : "failed-call-cache-hit"]: 1 },
@@ -335,7 +346,7 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
           requestedResults, rawResults: 0, normalizedCompanies: 0, newUniqueCompanies: 0, existingCompanyHits: 0, rejectedResults: 0,
           paidSearchCredits: 0, requestCount: 0, groundingQueries: 0,
           inputTokens: 0, outputTokens: 0, latencyMs: 0, retryCount: 0,
-          fallbackUsed: false, cacheStatus: "skipped",
+          fallbackUsed: providerFallbackRequired, cacheStatus: "skipped",
           discardedReasonCounts: { [decision.reason ?? "not-required"]: 1 }, items: [] };
         calls.push(skipped); await options.onCall?.(skipped); return;
       }
@@ -388,7 +399,8 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
           inputTokens: cached ? 0 : response.usage.inputTokens,
           outputTokens: cached ? 0 : response.usage.outputTokens,
           latencyMs: cached ? 0 : response.latencyMs,
-          retryCount: cached ? 0 : response.retryCount, fallbackUsed: failedByTrack.has(trackKey),
+          retryCount: cached ? 0 : response.retryCount,
+          fallbackUsed: failedByTrack.has(trackKey) || providerFallbackRequired,
           cacheStatus: cached ? "hit" : "miss", discardedReasonCounts: discarded, items };
         calls.push(completed); await options.onCall?.(completed);
       } catch (error) {
