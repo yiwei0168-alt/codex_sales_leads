@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "runId": "2026-09-08-co-search-e2e-v2",
   "experimentId": "search-e2e-eval-co-v2.0.7",
-  "status": "budget-paused",
+  "status": "running",
   "createdAt": "2026-09-07T20:36:48.680Z",
-  "updatedAt": "2026-09-08T05:52:23.690Z",
+  "updatedAt": "2026-09-08T20:16:50.840Z",
   "blindJudgeModel": "blind-audit-v2.1-dual-judge",
   "preflightChecks": [
     {
@@ -164,6 +164,23 @@
         "actualProvider": "openrouter-openai-peer",
         "attempts": 1
       }
+    },
+    {
+      "name": "budget-forecast-user-authorization-v2.0.12",
+      "completedAt": "2026-09-08T20:16:50.837Z",
+      "detail": {
+        "retailFrozenCandidateCount": 14,
+        "additionalRetailSearchAuthorized": false,
+        "nextFrozenCellAuthorized": "CO-distribution",
+        "hardBudgetUsd": 50,
+        "reviewThresholdsUsd": [
+          10,
+          20,
+          30
+        ],
+        "baselineExpectedUsd": 45.792615808515954,
+        "baselineUpperUsd": 59.68136485629891
+      }
     }
   ],
   "completedArmKeys": [
@@ -176,6 +193,15 @@
   "completedEvaluationCellIds": [],
   "completedBlindPacketIds": [],
   "reportedBudgetThresholdsUsd": [],
+  "budgetForecastAuthorization": {
+    "confirmedAt": "2026-09-08T20:16:50.837Z",
+    "reason": "User confirmed the recommended plan: freeze CO Retail at 14/50, continue the next frozen cell, retain the USD 50 hard stop and report USD 10/20/30 checkpoints.",
+    "baselineSpentUsd": 9.448229996713989,
+    "baselineExpectedUsd": 45.792615808515954,
+    "baselineUpperUsd": 59.68136485629891,
+    "authorizedCellId": "CO-distribution",
+    "remainingCellStarts": 1
+  },
   "anomalies": [
     {
       "at": "2026-09-07T20:37:49.061Z",

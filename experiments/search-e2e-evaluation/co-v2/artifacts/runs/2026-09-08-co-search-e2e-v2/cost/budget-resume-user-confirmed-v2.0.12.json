@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-08-co-search-e2e-v2",
+  "confirmedAt": "2026-09-08T20:16:50.837Z",
+  "authorization": {
+    "confirmedAt": "2026-09-08T20:16:50.837Z",
+    "reason": "User confirmed the recommended plan: freeze CO Retail at 14/50, continue the next frozen cell, retain the USD 50 hard stop and report USD 10/20/30 checkpoints.",
+    "baselineSpentUsd": 9.448229996713989,
+    "baselineExpectedUsd": 45.792615808515954,
+    "baselineUpperUsd": 59.68136485629891,
+    "authorizedCellId": "CO-distribution",
+    "remainingCellStarts": 1
+  },
+  "budgetDecision": {
+    "totalBudgetUsd": 50,
+    "spentUsd": 9.448229996713989,
+    "budgetFraction": 0.18896459993427978,
+    "newlyCrossedThresholdsUsd": [],
+    "forecast": {
+      "completedCells": 1,
+      "totalCells": 4,
+      "incurredUsd": 9.448229996713989,
+      "expectedCompletionUsd": 45.792615808515954,
+      "lowerUsd": 31.903866760732992,
+      "upperUsd": 59.68136485629891,
+      "method": "cell-run-rate"
+    },
+    "warning": true,
+    "hardStop": false,
+    "requiresUserDecision": true,
+    "reasons": [
+      "forecast-may-exceed-budget"
+    ]
+  }
+}
