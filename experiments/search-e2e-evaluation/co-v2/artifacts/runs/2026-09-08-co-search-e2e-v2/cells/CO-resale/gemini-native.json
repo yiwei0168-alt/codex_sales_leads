@@ -1,0 +1,169 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-08-co-search-e2e-v2",
+  "cellId": "CO-resale",
+  "arm": "gemini-native",
+  "startedAt": "2026-09-08T21:34:41.678Z",
+  "completedAt": "2026-09-08T21:35:03.659Z",
+  "wallClockMs": 21981,
+  "requestedModel": "gemini-3.6-flash",
+  "actualModel": "gemini-3.6-flash",
+  "searchQueries": 16,
+  "finalCandidates": [
+    {
+      "rank": 1,
+      "companyName": "Macrotics S.A.S.",
+      "officialWebsite": "https://macrotics.com",
+      "marketSignal": "Headquartered and operating across Colombia, providing telecommunications and network equipment sales.",
+      "roleSignal": "Acts as a B2B network equipment reseller and value-added distributor offering routers, switches, access points, and fiber optic solutions.",
+      "relevanceSignal": "Directly relevant to Cudy's core product portfolio including Wi-Fi routers, PoE switches, access points, and xPON/ONT devices.",
+      "evidenceUrls": [
+        "https://macrotics.com"
+      ]
+    },
+    {
+      "rank": 2,
+      "companyName": "Lasus (Gestión de Compras Empresariales S.A.S.)",
+      "officialWebsite": "https://lasus.com.co",
+      "marketSignal": "Operating in Colombia offering enterprise B2B IT procurement and technology sales.",
+      "roleSignal": "B2B reseller specializing in network switches, routers, wireless access points, and structured cabling for corporate customers.",
+      "relevanceSignal": "Sells SMB and enterprise networking hardware, making them an ideal reseller partner for Cudy's switches, Wi-Fi 6 APs, and routers.",
+      "evidenceUrls": [
+        "https://lasus.com.co"
+      ]
+    },
+    {
+      "rank": 3,
+      "companyName": "Tecnocompras S.A.S.",
+      "officialWebsite": "https://tecnocompras.com.co",
+      "marketSignal": "Based in Bogotá, Colombia, serving businesses nationwide with IT infrastructure products.",
+      "roleSignal": "Value-added reseller providing commercial networking hardware, routers, switches, PoE injectors, and access points.",
+      "relevanceSignal": "Carries SMB networking brands such as TP-Link and Ruijie, directly aligning with Cudy's value-focused wireless and switching catalog.",
+      "evidenceUrls": [
+        "https://tecnocompras.com.co"
+      ]
+    },
+    {
+      "rank": 4,
+      "companyName": "Colombiatel S.A.S.",
+      "officialWebsite": "https://colombiatel.co",
+      "marketSignal": "Active in Colombia supplying telecommunications and networking gear to WISPs and corporate accounts.",
+      "roleSignal": "Reseller and solution supplier of active and passive networking equipment including routers, switches, access points, and radio links.",
+      "relevanceSignal": "Serves WISPs, ISPs, and local installers who use budget-friendly outdoor wireless, 4G/5G routers, and PoE switches like Cudy's.",
+      "evidenceUrls": [
+        "https://colombiatel.co"
+      ]
+    },
+    {
+      "rank": 5,
+      "companyName": "ITNC Colombia S.A.S.",
+      "officialWebsite": "https://itnc.com.co",
+      "marketSignal": "Operating in Colombia, offering IT renting, infrastructure, and hardware sales to commercial clients.",
+      "roleSignal": "VAR and IT service provider selling network active equipment, including switches, routers, and access points.",
+      "relevanceSignal": "Deploys local networking hardware for corporate LANs and Wi-Fi networks matching Cudy's SMB hardware spectrum.",
+      "evidenceUrls": [
+        "https://itnc.com.co"
+      ]
+    },
+    {
+      "rank": 6,
+      "companyName": "Q&C Ingeniería S.A.S.",
+      "officialWebsite": "https://qcingenieria.com.co",
+      "marketSignal": "Colombian engineering firm operating nationwide in telecommunications and IT infrastructure.",
+      "roleSignal": "Value-added reseller and system integrator providing networking solutions, enterprise Wi-Fi, switches, and routers.",
+      "relevanceSignal": "Integrates campus Wi-Fi, access points, and switching infrastructure relevant to Cudy's hospitality and enterprise networking lines.",
+      "evidenceUrls": [
+        "https://qcingenieria.com.co"
+      ]
+    },
+    {
+      "rank": 7,
+      "companyName": "Nixcom S.A.S.",
+      "officialWebsite": "https://nixcom.com.co",
+      "marketSignal": "Operating in Colombia, offering IT support and hardware supply to business customers.",
+      "roleSignal": "B2B IT reseller and service provider supplying managed switches, firewalls, routers, and wireless APs.",
+      "relevanceSignal": "Supplies SMB networking hardware, VPN gateways, and switches matching Cudy's commercial portfolio.",
+      "evidenceUrls": [
+        "https://nixcom.com.co"
+      ]
+    },
+    {
+      "rank": 8,
+      "companyName": "RentAdvisor Colombia",
+      "officialWebsite": "https://rentadvisor.com.co",
+      "marketSignal": "Operating in Colombia, providing technology supply, renting, and IT infrastructure solutions.",
+      "roleSignal": "B2B solution vendor supplying networking hardware, switches, routers, access points, and structured cabling.",
+      "relevanceSignal": "Distributes and deploys networking hardware for business projects, making them a target channel for Cudy switches and mesh routers.",
+      "evidenceUrls": [
+        "https://rentadvisor.com.co"
+      ]
+    },
+    {
+      "rank": 9,
+      "companyName": "RealTecno S.A.S.",
+      "officialWebsite": "http://realtecno.co",
+      "marketSignal": "Based in Bogotá, Colombia, executing Wi-Fi and network deployment projects nationwide.",
+      "roleSignal": "VAR and Wi-Fi integrator selling and installing access points, network controllers, and PoE switches.",
+      "relevanceSignal": "Deploys WLANs and LAN active hardware for hotels, schools, and corporate offices, aligning with Cudy APs and switches.",
+      "evidenceUrls": [
+        "http://realtecno.co"
+      ]
+    },
+    {
+      "rank": 10,
+      "companyName": "TBGroup S.A.S.",
+      "officialWebsite": "https://tbgroup.com.co",
+      "marketSignal": "Operating in Colombia, offering telecommunications infrastructure and IT hardware sales.",
+      "roleSignal": "Commercial reseller and integrator of routers, switches, wireless access points, and fiber optic accessories.",
+      "relevanceSignal": "Sells Wi-Fi gear and Ethernet switches suited for Cudy's consumer, SMB, and light industrial solutions.",
+      "evidenceUrls": [
+        "https://tbgroup.com.co"
+      ]
+    }
+  ],
+  "missingSlots": 40,
+  "warnings": [],
+  "costEvents": [
+    {
+      "eventId": "CO-resale:gemini-control",
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "cellId": "CO-resale",
+      "arm": "gemini-native",
+      "ledger": "gemini-native-arm",
+      "stage": "native-search",
+      "provider": "gemini-full",
+      "requestedModel": "gemini-3.6-flash",
+      "actualModel": "gemini-3.6-flash",
+      "startedAt": "2026-09-08T21:34:41.678Z",
+      "completedAt": "2026-09-08T21:35:03.659Z",
+      "latencyMs": 21981,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 1359,
+        "cachedInputTokens": 669,
+        "outputTokens": 2495,
+        "reasoningTokens": 924,
+        "groundingQueries": 16
+      },
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 10,
+        "validOutputItems": 10,
+        "downstreamUsedItems": 10,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "one interaction",
+        "no follow-up",
+        "provider order preserved"
+      ],
+      "officialListPriceUsd": 0.233923925,
+      "budgetCostUsd": 0.233923925,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    }
+  ]
+}

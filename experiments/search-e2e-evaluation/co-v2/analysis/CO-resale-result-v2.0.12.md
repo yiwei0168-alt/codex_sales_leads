@@ -1,0 +1,9 @@
+# CO Reseller/VAR result v2.0.12
+
+CO Reseller/VAR completed with 10/50 Gemini-control candidates and 7/50 Product candidates. Product processed 939 raw provider results into 152 new unique companies, 97 corrected companies, 10 completed assessments and seven eligible Reseller/VAR outputs. The cell ran ten rounds and ended at `maximum-rounds`; final additions by round were 1, 0, 1, 2, 1, 0, 0, 2, 0 and 0.
+
+Role resolution was again the main loss: 71/97 corrected companies were Unresolved, while eight were Distributor, eight VAR, five SI, two Reseller, two Retailer and one Hybrid. The seven final scores were 72, 70, 69, 68, 67, 66 and 60. Gemini Full discovered 82 unique candidates and first-discovered five finals; Brave discovered 33 unique and first-discovered two finals; Exa discovered 26 unique and Places 11, neither first-discovered a final. SearchAPI produced no result because of its confirmed monthly quota state.
+
+The cell cost was USD 5.0794309001 including the USD 0.233923925 Gemini control. Product discovery alone cost USD 2.880: Gemini Full USD 2.128, Places USD 0.350, Exa USD 0.259, Brave USD 0.095 and failed SearchAPI probes USD 0.048. Gemini fallback was expensive but not redundant in this cell because it first-discovered five of seven finals; future optimization must coalesce its two category tracks and use observed marginal yield rather than remove it categorically.
+
+The USD 20 checkpoint fired at USD 20.0346226322. At that point expected/upper completion forecasts were USD 33.4242/USD 38.4378, with no unpriced event or hard-stop risk. After all four search cells, cumulative cost is USD 21.2482857016 and the expected/upper forecast including evaluation is USD 30.2483/USD 34.7855. The Product wall time was 38.52 minutes. Shared evaluation and blind audit remain pending.
