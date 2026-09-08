@@ -1,0 +1,668 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-08-co-search-e2e-v2",
+  "cellId": "CO-si-msp",
+  "inputCount": 14,
+  "records": [
+    {
+      "companyKey": "CO:domain:serotech.com.co",
+      "countryCode": "CO",
+      "companyName": "Serotech S.A.S.",
+      "domain": "serotech.com.co",
+      "officialWebsiteUrl": "https://serotech.com.co",
+      "primaryRole": "Unresolved",
+      "supportedRoles": [],
+      "totalScore": 0,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": false,
+      "operatesInTargetMarket": false,
+      "evidence": [],
+      "source": "gemini-unique-evaluated",
+      "blindAuditEvidence": [],
+      "assessmentModel": "deepseek/deepseek-v4-pro"
+    },
+    {
+      "companyKey": "CO:domain:modobit.co",
+      "countryCode": "CO",
+      "companyName": "Modobit S.A.S.",
+      "domain": "modobit.co",
+      "officialWebsiteUrl": "https://modobit.co",
+      "primaryRole": "Unresolved",
+      "supportedRoles": [],
+      "totalScore": 0,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": false,
+      "operatesInTargetMarket": false,
+      "evidence": [],
+      "source": "gemini-unique-evaluated",
+      "blindAuditEvidence": [],
+      "assessmentModel": "deepseek/deepseek-v4-pro"
+    },
+    {
+      "companyKey": "CO:domain:kuars.com.co",
+      "countryCode": "CO",
+      "companyName": "Kuars S.A.S.",
+      "domain": "kuars.com.co",
+      "officialWebsiteUrl": "https://kuars.com.co",
+      "primaryRole": "Unresolved",
+      "supportedRoles": [],
+      "totalScore": 42,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": false,
+      "operatesInTargetMarket": false,
+      "evidence": [
+        {
+          "id": "evidence-fec3314083c50512",
+          "url": "https://kuars.com.co/quienes-somos-soporte-tecnico-it",
+          "title": "¿Quienes Somos? Soporte Técnico y Redes en Colombia - Kuars",
+          "excerpt": "Kuars Kuars Kuars Soporte técnico profesional para hogares y empresas en Colombia En Kuars somos una empresa colombiana especializada en servicios de soporte técnico, infraestructura de redes, ciberseguridad y mantenimiento de equipos. Trabajamos con hogares, pequeñas empresas y organizaciones que necesitan tecnología confiable, atención rápida y precios transparentes. Desde nuestra base en Colombia, atendemos a clientes que requieren soluciones IT reales, sin tecnicismos innecesarios y con resultados medibles. Nuestra misión Tecnología que funciona cuando la necesitas En Kuars somos una empresa colombiana especializada en servicios de soporte técnico, infraestructura de redes, ciberseguridad y mantenimiento de equipos. Trabajamos con hogares, pequeñas empresas y organizaciones que necesit",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-f464972e3343f49e",
+          "url": "https://kuars.com.co/blog",
+          "title": "Blog Kuars",
+          "excerpt": "Ir al contenido Solicitar DiagnosticoSolicitar Diagnostico Noticias sobre tecnología y consejos Blog Kuars No se encontraron publicaciones Scroll al inicio",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-167c2f16584afd46",
+          "url": "https://kuars.com.co/contacto-kuars",
+          "title": "Contacto Kuars - Soporte técnico para hogares y empresas",
+          "excerpt": "Ir al contenido Solicitar DiagnosticoSolicitar Diagnostico Diagnóstico gratuito · Sin compromiso Contacto Kuars — Soporte técnico para hogares y empresas en Colombia Contacto con equipo IT especializado Evaluamos el estado de tus equipos y sistemas tecnológicos. Te entregamos un diagnóstico claro con soluciones reales adaptadas a las necesidades de tu hogar o empresa. Clientes atendidos Diagnóstico gratuito h Tiempo de respuesta Solicitar diagnostico Escribir por WhatsApp ¿Por qué solicitarlo? Conoce el estado real de tu tecnología. En Kuars sabemos que cuando hay un problema tecnológico, cada minuto cuenta. Por eso ofrecemos un diagnóstico técnico gratuito y sin compromiso para que conozcas el estado real de tus equipos, redes y sistemas antes de tomar cualquier decisión. Atendemos hogare",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-8674781c9aa89f9d",
+          "url": "https://kuars.com.co/servicios-de-ciberseguridad-para-empresas-y-hogares",
+          "title": "Servicios de ciberseguridad para empresas y hogares - Kuars",
+          "excerpt": "Kuars Kuars Servicios de ciberseguridad para empresas y hogares En un mundo donde los ataques informáticos crecen cada día, proteger tu información ya no es opcional. En Kuars ofrecemos servicios profesionales de ciberseguridad en Bogotá para empresas, pymes y hogares que quieren blindar sus datos, redes y dispositivos frente a virus, ransomware, accesos no autorizados y otras amenazas digitales. Diagnóstico gratuito incluido, sin costos ocultos. ¿Qué incluye nuestro servicio de ciberseguridad? Ofrecemos una solución integral de seguridad informática adaptada al tamaño y las necesidades reales de tu empresa u hogar. Desde la detección de vulnerabilidades hasta la implementación de barreras de protección activa. Auditoría y diagnóstico de seguridad informática ✔ Análisis completo de vulnera",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-79d0f4bee328bf74",
+          "url": "https://kuars.com.co/redes",
+          "title": "Redes - Kuars",
+          "excerpt": "Ejecutamos la instalación del cableado, configuramos routers, switches y puntos WiFi con los parámetros de seguridad adecuados. ## Pruebas y documentación Verificamos velocidad, cobertura y seguridad. Entregamos un plano de la red instalada y manual de acceso. ##### Resultados ## ¿Qué obtienes al final? Resultados concretos y medibles que impactan directamente la operación de tu empresa u hogar. ## Conectividad estable [...] Revisión completa del estado del Diseño y planificación de redes LAN/WAN para oficinas y empresas Instalación de cableado estructurado Cat5e y Cat6 Configuración de routers, switches y puntos de acceso WiFi Segmentación de redes y configuración de VLANs Soporte y mantenimiento de infraestructura de red existente Diagnóstico de fallas de conectividad y velocidad Impleme",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "blindAuditEvidence": [
+        {
+          "id": "evidence-fec3314083c50512",
+          "url": "https://kuars.com.co/quienes-somos-soporte-tecnico-it",
+          "title": "¿Quienes Somos? Soporte Técnico y Redes en Colombia - Kuars",
+          "excerpt": "Kuars Kuars Kuars Soporte técnico profesional para hogares y empresas en Colombia En Kuars somos una empresa colombiana especializada en servicios de soporte técnico, infraestructura de redes, ciberseguridad y mantenimiento de equipos. Trabajamos con hogares, pequeñas empresas y organizaciones que necesitan tecnología confiable, atención rápida y precios transparentes. Desde nuestra base en Colombia, atendemos a clientes que requieren soluciones IT reales, sin tecnicismos innecesarios y con resultados medibles. Nuestra misión Tecnología que funciona cuando la necesitas En Kuars somos una empresa colombiana especializada en servicios de soporte técnico, infraestructura de redes, ciberseguridad y mantenimiento de equipos. Trabajamos con hogares, pequeñas empresas y organizaciones que necesit",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-f464972e3343f49e",
+          "url": "https://kuars.com.co/blog",
+          "title": "Blog Kuars",
+          "excerpt": "Ir al contenido Solicitar DiagnosticoSolicitar Diagnostico Noticias sobre tecnología y consejos Blog Kuars No se encontraron publicaciones Scroll al inicio",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-167c2f16584afd46",
+          "url": "https://kuars.com.co/contacto-kuars",
+          "title": "Contacto Kuars - Soporte técnico para hogares y empresas",
+          "excerpt": "Ir al contenido Solicitar DiagnosticoSolicitar Diagnostico Diagnóstico gratuito · Sin compromiso Contacto Kuars — Soporte técnico para hogares y empresas en Colombia Contacto con equipo IT especializado Evaluamos el estado de tus equipos y sistemas tecnológicos. Te entregamos un diagnóstico claro con soluciones reales adaptadas a las necesidades de tu hogar o empresa. Clientes atendidos Diagnóstico gratuito h Tiempo de respuesta Solicitar diagnostico Escribir por WhatsApp ¿Por qué solicitarlo? Conoce el estado real de tu tecnología. En Kuars sabemos que cuando hay un problema tecnológico, cada minuto cuenta. Por eso ofrecemos un diagnóstico técnico gratuito y sin compromiso para que conozcas el estado real de tus equipos, redes y sistemas antes de tomar cualquier decisión. Atendemos hogare",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-8674781c9aa89f9d",
+          "url": "https://kuars.com.co/servicios-de-ciberseguridad-para-empresas-y-hogares",
+          "title": "Servicios de ciberseguridad para empresas y hogares - Kuars",
+          "excerpt": "Kuars Kuars Servicios de ciberseguridad para empresas y hogares En un mundo donde los ataques informáticos crecen cada día, proteger tu información ya no es opcional. En Kuars ofrecemos servicios profesionales de ciberseguridad en Bogotá para empresas, pymes y hogares que quieren blindar sus datos, redes y dispositivos frente a virus, ransomware, accesos no autorizados y otras amenazas digitales. Diagnóstico gratuito incluido, sin costos ocultos. ¿Qué incluye nuestro servicio de ciberseguridad? Ofrecemos una solución integral de seguridad informática adaptada al tamaño y las necesidades reales de tu empresa u hogar. Desde la detección de vulnerabilidades hasta la implementación de barreras de protección activa. Auditoría y diagnóstico de seguridad informática ✔ Análisis completo de vulnera",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-79d0f4bee328bf74",
+          "url": "https://kuars.com.co/redes",
+          "title": "Redes - Kuars",
+          "excerpt": "Ejecutamos la instalación del cableado, configuramos routers, switches y puntos WiFi con los parámetros de seguridad adecuados. ## Pruebas y documentación Verificamos velocidad, cobertura y seguridad. Entregamos un plano de la red instalada y manual de acceso. ##### Resultados ## ¿Qué obtienes al final? Resultados concretos y medibles que impactan directamente la operación de tu empresa u hogar. ## Conectividad estable [...] Revisión completa del estado del Diseño y planificación de redes LAN/WAN para oficinas y empresas Instalación de cableado estructurado Cat5e y Cat6 Configuración de routers, switches y puntos de acceso WiFi Segmentación de redes y configuración de VLANs Soporte y mantenimiento de infraestructura de red existente Diagnóstico de fallas de conectividad y velocidad Impleme",
+          "sourceType": "official-website"
+        }
+      ],
+      "assessmentModel": "deepseek/deepseek-v4-flash"
+    },
+    {
+      "companyKey": "CO:domain:connecttelecom.co",
+      "countryCode": "CO",
+      "companyName": "Connect Telecomunicaciones S.A.S.",
+      "domain": "connecttelecom.co",
+      "officialWebsiteUrl": "https://connecttelecom.co",
+      "primaryRole": "Unresolved",
+      "supportedRoles": [],
+      "totalScore": 15,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": false,
+      "operatesInTargetMarket": false,
+      "evidence": [
+        {
+          "id": "evidence-77dc757ebe49910f",
+          "url": "https://www.connectsas.com.co",
+          "title": "CONNECT TELECOMUNICACIONES S.A.S.",
+          "excerpt": "## Contáctanos Estamos aquí para ayudarte. Comunícate con nosotros y te responderemos lo antes posible. ### Teléfono +57 312 434 1928 +57 312 561 8253 ### Correo Electrónico facturacion@connectsas.com.co soportetecnico@connectsas.com.co ventas@connectsas.com.co ### Dirección Cra 7 #4-54,Segundo piso, Local 2. TUTA-BOY, Colombia Síguenos Hola 👋 ¡BIENVENIDOS A CONNECT TELECOMUNICACIONES S.A.S! ¿En qué podemos ayudarte? Abrir chat [...] Nuestra tecnología de Radio Enlace utiliza frecuencias de microondas para proporcionar conexiones de internet de alta velocidad sin necesidad de cables. Ideal para zonas donde la fibra óptica no está disponible, ofreciendo una solución confiable y eficiente. Velocidades de hasta 100 Mbps Cobertura en zonas remotas Instalación en 24-48 horas Conexión segura y ",
+          "sourceType": "independent-public"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "blindAuditEvidence": [
+        {
+          "id": "evidence-77dc757ebe49910f",
+          "url": "https://www.connectsas.com.co",
+          "title": "CONNECT TELECOMUNICACIONES S.A.S.",
+          "excerpt": "## Contáctanos Estamos aquí para ayudarte. Comunícate con nosotros y te responderemos lo antes posible. ### Teléfono +57 312 434 1928 +57 312 561 8253 ### Correo Electrónico facturacion@connectsas.com.co soportetecnico@connectsas.com.co ventas@connectsas.com.co ### Dirección Cra 7 #4-54,Segundo piso, Local 2. TUTA-BOY, Colombia Síguenos Hola 👋 ¡BIENVENIDOS A CONNECT TELECOMUNICACIONES S.A.S! ¿En qué podemos ayudarte? Abrir chat [...] Nuestra tecnología de Radio Enlace utiliza frecuencias de microondas para proporcionar conexiones de internet de alta velocidad sin necesidad de cables. Ideal para zonas donde la fibra óptica no está disponible, ofreciendo una solución confiable y eficiente. Velocidades de hasta 100 Mbps Cobertura en zonas remotas Instalación en 24-48 horas Conexión segura y ",
+          "sourceType": "independent-public"
+        }
+      ],
+      "assessmentModel": "deepseek/deepseek-v4-flash"
+    },
+    {
+      "companyKey": "CO:domain:helpsoluciones.com.co",
+      "countryCode": "CO",
+      "companyName": "Help Soluciones S.A.S.",
+      "domain": "helpsoluciones.com.co",
+      "officialWebsiteUrl": "https://www.helpsoluciones.com.co",
+      "primaryRole": "Unresolved",
+      "supportedRoles": [],
+      "totalScore": 43,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": false,
+      "operatesInTargetMarket": false,
+      "evidence": [
+        {
+          "id": "evidence-5f17f2a80e6993cd",
+          "url": "https://www.helpsoluciones.com.co",
+          "title": "Help Soluciones | Soporte TI y Redes en Colombia",
+          "excerpt": "Help Soluciones 12 Años de Excelencia Tecnológica Expertos en Mantenimiento de Servidores e Infraestructura TIde Alto Impacto 12 años garantizando la continuidad TI en Colombia. Respondemos en menos de 2 horas, porque cada minuto de inactividad cuesta. Diagnóstico GratuitoVer Servicios Redes WiFi y Cableado EstructuradoConectividad que no Falla Cat6A certificado, fibra óptica y WiFi corporativo de alta densidad. Infraestructura diseñada para soportar el crecimiento sin cuellos de botella. Cotizar ProyectoVer Portafolio Soporte Técnico 24/7Respuesta en Menos de 2 Horas Ingenieros certificados listos para actuar en sitio o de forma remota, con el soporte TI más confiable de Bogotá. Contactar AhoraComo Trabajamos Outsourcing TI: Tecnología Dell, HP y Lenovosin Inversión Inicial Acceda a equip",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-26ce4e7b0b0673b9",
+          "url": "https://www.helpsoluciones.com.co/contactenos",
+          "title": "Contáctenos - Help Soluciones",
+          "excerpt": "Help Soluciones Hablemos de su Seguridad Estamos listos para ayudarle a proteger y optimizar su infraestructura tecnológica through. Envíenos un mensaje Email gerencia@helpsoluciones.com.co Respuesta en 24h Teléfono +57 311 3522760 Lunes a Viernes, 8am - 6pm Ubicación Bogotá, Colombia Calle 6c #82a-91 oficina 2 apto 204 torre 3 Aralia de Castilla Logo Su socio tecnológico de confianza para infraestructura, redes y mantenimiento empresarial. Enlaces Legal Contacto © 2026 Help Soluciones. Todos los derechos reservados.",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "blindAuditEvidence": [
+        {
+          "id": "evidence-5f17f2a80e6993cd",
+          "url": "https://www.helpsoluciones.com.co",
+          "title": "Help Soluciones | Soporte TI y Redes en Colombia",
+          "excerpt": "Help Soluciones 12 Años de Excelencia Tecnológica Expertos en Mantenimiento de Servidores e Infraestructura TIde Alto Impacto 12 años garantizando la continuidad TI en Colombia. Respondemos en menos de 2 horas, porque cada minuto de inactividad cuesta. Diagnóstico GratuitoVer Servicios Redes WiFi y Cableado EstructuradoConectividad que no Falla Cat6A certificado, fibra óptica y WiFi corporativo de alta densidad. Infraestructura diseñada para soportar el crecimiento sin cuellos de botella. Cotizar ProyectoVer Portafolio Soporte Técnico 24/7Respuesta en Menos de 2 Horas Ingenieros certificados listos para actuar en sitio o de forma remota, con el soporte TI más confiable de Bogotá. Contactar AhoraComo Trabajamos Outsourcing TI: Tecnología Dell, HP y Lenovosin Inversión Inicial Acceda a equip",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-26ce4e7b0b0673b9",
+          "url": "https://www.helpsoluciones.com.co/contactenos",
+          "title": "Contáctenos - Help Soluciones",
+          "excerpt": "Help Soluciones Hablemos de su Seguridad Estamos listos para ayudarle a proteger y optimizar su infraestructura tecnológica through. Envíenos un mensaje Email gerencia@helpsoluciones.com.co Respuesta en 24h Teléfono +57 311 3522760 Lunes a Viernes, 8am - 6pm Ubicación Bogotá, Colombia Calle 6c #82a-91 oficina 2 apto 204 torre 3 Aralia de Castilla Logo Su socio tecnológico de confianza para infraestructura, redes y mantenimiento empresarial. Enlaces Legal Contacto © 2026 Help Soluciones. Todos los derechos reservados.",
+          "sourceType": "official-website"
+        }
+      ],
+      "assessmentModel": "deepseek/deepseek-v4-flash"
+    },
+    {
+      "companyKey": "CO:domain:bscomunicaciones.com",
+      "countryCode": "CO",
+      "companyName": "BS Comunicaciones Integrales S.A.S.",
+      "domain": "bscomunicaciones.com",
+      "officialWebsiteUrl": "https://bscomunicaciones.com",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI"
+      ],
+      "totalScore": 62,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-5366f1e9c459de2a",
+          "url": "https://bscomunicaciones.com",
+          "title": "BS Comunicaciones Integrales S.A.S. - Conectamos tu mundo, desarrollamos tu futuro",
+          "excerpt": "BS Comunicaciones Integrales S.A.S. es una empresa colombiana dedicada a la telefonía, la conectividad y el desarrollo de software. Acompañamos a hoteles, empresas y negocios en su transformación digital: desde redes y telefonía hasta sistemas y automatización a la medida. Soluciones a la medida de cada negocio Acompañamiento técnico especializado Tecnología propia y de aliados certificados Empresa legalmente constituida en Colombia — NIT 1093752731 ### Misión [...] ### Misión Proveer soluciones integrales en telecomunicaciones y software, impulsando la transformación digital con calidad e innovación. ### Visión Ser líderes en Colombia en integración de redes y software inteligente. ### Valores Compromiso, transparencia, innovación, calidad y servicio al cliente. Servicios ## Todo lo que t",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "blindAuditEvidence": [
+        {
+          "id": "evidence-5366f1e9c459de2a",
+          "url": "https://bscomunicaciones.com",
+          "title": "BS Comunicaciones Integrales S.A.S. - Conectamos tu mundo, desarrollamos tu futuro",
+          "excerpt": "BS Comunicaciones Integrales S.A.S. es una empresa colombiana dedicada a la telefonía, la conectividad y el desarrollo de software. Acompañamos a hoteles, empresas y negocios en su transformación digital: desde redes y telefonía hasta sistemas y automatización a la medida. Soluciones a la medida de cada negocio Acompañamiento técnico especializado Tecnología propia y de aliados certificados Empresa legalmente constituida en Colombia — NIT 1093752731 ### Misión [...] ### Misión Proveer soluciones integrales en telecomunicaciones y software, impulsando la transformación digital con calidad e innovación. ### Visión Ser líderes en Colombia en integración de redes y software inteligente. ### Valores Compromiso, transparencia, innovación, calidad y servicio al cliente. Servicios ## Todo lo que t",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-bc0dac0091f9ecc2",
+          "url": "https://colombiatel.co/venta-de-equipos",
+          "title": "venta de equipos - Colombiatel",
+          "excerpt": "Web del fabricante Somos una compañía especializada en soluciones integrales de telecomunicaciones. Proporcionamos a nuestros clientes servicios de alta tecnología, innovadores y de clase mundial a través del desarrollo humano, de la aplicación y administración de tecnología de punta. PBX: 300-912-0675 / WhatsApp: 350-810-8100 Av 4 norte #4N-90 Piso 2 – Barrio san Vicente Cali – Valle del Cauca [...] Web del fabricante ## ROUTERS | SWITCHES | RADIOS | ANTENAS Web del fabricante ## ROUTERS | SWITCHES | RADIOS | ANTENAS Web del fabricante ## ROUTERS | SWITCHES | RADIOS | ANTENAS Web del fabricante ## ROUTERS | SWITCHES | RADIOS | ANTENAS Web del fabricante",
+          "sourceType": "independent-public"
+        }
+      ],
+      "assessmentModel": "deepseek/deepseek-v4-flash"
+    },
+    {
+      "companyKey": "CO:domain:tiasas.com",
+      "countryCode": "CO",
+      "companyName": "TIA S.A.S.",
+      "domain": "tiasas.com",
+      "officialWebsiteUrl": "https://tiasas.com",
+      "primaryRole": "Unresolved",
+      "supportedRoles": [],
+      "totalScore": 0,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": false,
+      "operatesInTargetMarket": false,
+      "evidence": [],
+      "source": "gemini-unique-evaluated",
+      "blindAuditEvidence": [],
+      "assessmentModel": "deepseek/deepseek-v4-pro"
+    },
+    {
+      "companyKey": "CO:domain:intelcolsas.com",
+      "countryCode": "CO",
+      "companyName": "Intelcol S.A.S.",
+      "domain": "intelcolsas.com",
+      "officialWebsiteUrl": "https://intelcolsas.com",
+      "primaryRole": "SI",
+      "supportedRoles": [
+        "SI"
+      ],
+      "totalScore": 67,
+      "eligibilityStatus": "eligible",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-acf220a2c64d37b7",
+          "url": "https://intelcolsas.com",
+          "title": "INTELCOL | Soluciones de telecomunicaciones y redes corporativas",
+          "excerpt": "Para usted, la garantía de estar en buenas manos. Para nosotros tener la acreditación de grandes marcas que representa nuestro alto nivel de experiencia y competencia técnica en el mercado de las telecomunicaciones empresariales. ## Aliados estratégicos Nuestros aliados son líderes de talla mundial, lo que nos permite garantizar soluciones de alta calidad. ALCATEL-LUCENT ENTERPRISE 3CX YEALINK KHOMP FORTINET UNIFY MOTOROLA LOGITECH GRANDSTREAM [...] Rentabilidad Invierta en soluciones a la medida de sus necesidades y ahorre en costos de comunicación. Tranquilidad Concéntrese en su negocio sin preocuparse por la complejidad de su infraestructura de comunicaciones. Integraciones Integre sus sistemas de comunicación, teléfono, SMS, vídeo, correo y redes sociales. Seguridad Cumpla con los está",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-f5f59e51d39b8551",
+          "url": "https://intelcolsas.com/servicios",
+          "title": "Servicios - INTELCOL",
+          "excerpt": "Ir al contenido Image 1 Servicios Productos Nosotros Contacto Image 2 Main Menu Servicios Productos Nosotros Contacto Servicios Las grandes empresas están migrando sus telecomunicaciones a la nube. ¡Asegúrese de que su negocio no se quede atrás Inicio Servicios Productos Nosotros Contacto Inicio Servicios Productos Nosotros Contacto Soluciones de telecomunicaciones, redes corporativas e infraestructura (Telefonía) (Vídeo) (Chat) (Seguridad) (Cableado estructurado) Image 3 Comunicaciones unificadas Disfrute de las ventajas de tener telecomunicaciones en una sola interfaz, sin tener que navegar entre distintas aplicaciones y tratar con diferentes proveedores. Implemente la tecnología adecuada y escale el crecimiento de su negocio. Integre todos sus canales de comunicación. Ahorre en costos d",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-d77a038abd1e0ffa",
+          "url": "https://intelcolsas.com/productos",
+          "title": "Productos - intelcol",
+          "excerpt": "Ir al contenido Aquí encontrará soluciones de telecomunicaciones diseñadas para impulsar su negocio. Soluciones de telecomunicaciones, redes corporativas e infraestructura (Telefonía) (Vídeo) (Chat) (Seguridad) (Cableado estructurado) Yealink KHOMP Grandstream UNIFY sistemas conectados + 0 años de experiencia + 0  Valorado con 5 de 5 terminales en servicio + 0 Nos enorgullece estar certificados por: 3CX GOLD PARTNER Professional Atos Unify OpenScape Enterprise Professional Atos Unify OpenScape 4000 Professional Atos Unify OpenScape Business Issabel Certified Advisor ¿Qué significa tener estas certificaciones? Para usted, la garantía de estar en buenas manos. Para nosotros tener la acreditación de grandes marcas que representa nuestro alto nivel de experiencia y competencia técnica en ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-88f996be2d1d53ea",
+          "url": "https://intelcolsas.com/nosotros",
+          "title": "Nosotros - INTELCOL",
+          "excerpt": "Ir al contenido ¿Quién dijo que las telecomunicaciones tienen que ser difíciles de entender? Soluciones de telecomunicaciones, redes corporativas e infraestructura (Telefonía) (Vídeo) (Chat) (Seguridad) (Cableado estructurado) En INTELCOL SAS, estamos comprometidos con democratizar el mundo de las telecomunicaciones empresariales. Nuestra prioridad es facilitarle la comprensión de las soluciones disponibles en el mercado, sin recurrir a tecnicismos, para que pueda elegir la opción que mejor se adapte a su negocio o empresa. En 2010, un grupo de ingenieros se unió con el objetivo de brindar servicios de instalación, soporte y mantenimiento de equipos de telecomunicaciones suministrados por Siemens SA, actualmente conocida como UNIFY. Desde entonces, hemos evolucionado y nos hemos convertido",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "blindAuditEvidence": [
+        {
+          "id": "evidence-acf220a2c64d37b7",
+          "url": "https://intelcolsas.com",
+          "title": "INTELCOL | Soluciones de telecomunicaciones y redes corporativas",
+          "excerpt": "Para usted, la garantía de estar en buenas manos. Para nosotros tener la acreditación de grandes marcas que representa nuestro alto nivel de experiencia y competencia técnica en el mercado de las telecomunicaciones empresariales. ## Aliados estratégicos Nuestros aliados son líderes de talla mundial, lo que nos permite garantizar soluciones de alta calidad. ALCATEL-LUCENT ENTERPRISE 3CX YEALINK KHOMP FORTINET UNIFY MOTOROLA LOGITECH GRANDSTREAM [...] Rentabilidad Invierta en soluciones a la medida de sus necesidades y ahorre en costos de comunicación. Tranquilidad Concéntrese en su negocio sin preocuparse por la complejidad de su infraestructura de comunicaciones. Integraciones Integre sus sistemas de comunicación, teléfono, SMS, vídeo, correo y redes sociales. Seguridad Cumpla con los está",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-f5f59e51d39b8551",
+          "url": "https://intelcolsas.com/servicios",
+          "title": "Servicios - INTELCOL",
+          "excerpt": "Ir al contenido Image 1 Servicios Productos Nosotros Contacto Image 2 Main Menu Servicios Productos Nosotros Contacto Servicios Las grandes empresas están migrando sus telecomunicaciones a la nube. ¡Asegúrese de que su negocio no se quede atrás Inicio Servicios Productos Nosotros Contacto Inicio Servicios Productos Nosotros Contacto Soluciones de telecomunicaciones, redes corporativas e infraestructura (Telefonía) (Vídeo) (Chat) (Seguridad) (Cableado estructurado) Image 3 Comunicaciones unificadas Disfrute de las ventajas de tener telecomunicaciones en una sola interfaz, sin tener que navegar entre distintas aplicaciones y tratar con diferentes proveedores. Implemente la tecnología adecuada y escale el crecimiento de su negocio. Integre todos sus canales de comunicación. Ahorre en costos d",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-d77a038abd1e0ffa",
+          "url": "https://intelcolsas.com/productos",
+          "title": "Productos - intelcol",
+          "excerpt": "Ir al contenido Aquí encontrará soluciones de telecomunicaciones diseñadas para impulsar su negocio. Soluciones de telecomunicaciones, redes corporativas e infraestructura (Telefonía) (Vídeo) (Chat) (Seguridad) (Cableado estructurado) Yealink KHOMP Grandstream UNIFY sistemas conectados + 0 años de experiencia + 0  Valorado con 5 de 5 terminales en servicio + 0 Nos enorgullece estar certificados por: 3CX GOLD PARTNER Professional Atos Unify OpenScape Enterprise Professional Atos Unify OpenScape 4000 Professional Atos Unify OpenScape Business Issabel Certified Advisor ¿Qué significa tener estas certificaciones? Para usted, la garantía de estar en buenas manos. Para nosotros tener la acreditación de grandes marcas que representa nuestro alto nivel de experiencia y competencia técnica en ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-88f996be2d1d53ea",
+          "url": "https://intelcolsas.com/nosotros",
+          "title": "Nosotros - INTELCOL",
+          "excerpt": "Ir al contenido ¿Quién dijo que las telecomunicaciones tienen que ser difíciles de entender? Soluciones de telecomunicaciones, redes corporativas e infraestructura (Telefonía) (Vídeo) (Chat) (Seguridad) (Cableado estructurado) En INTELCOL SAS, estamos comprometidos con democratizar el mundo de las telecomunicaciones empresariales. Nuestra prioridad es facilitarle la comprensión de las soluciones disponibles en el mercado, sin recurrir a tecnicismos, para que pueda elegir la opción que mejor se adapte a su negocio o empresa. En 2010, un grupo de ingenieros se unió con el objetivo de brindar servicios de instalación, soporte y mantenimiento de equipos de telecomunicaciones suministrados por Siemens SA, actualmente conocida como UNIFY. Desde entonces, hemos evolucionado y nos hemos convertido",
+          "sourceType": "official-website"
+        }
+      ],
+      "assessmentModel": "deepseek/deepseek-v4-flash"
+    },
+    {
+      "companyKey": "CO:domain:globalsmarttech.com.co",
+      "countryCode": "CO",
+      "companyName": "Fonet S.A.S. (GlobalSmartTech)",
+      "domain": "globalsmarttech.com.co",
+      "officialWebsiteUrl": "https://globalsmarttech.com.co",
+      "primaryRole": "Unresolved",
+      "supportedRoles": [],
+      "totalScore": 0,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": false,
+      "operatesInTargetMarket": false,
+      "evidence": [],
+      "source": "gemini-unique-evaluated",
+      "blindAuditEvidence": [],
+      "assessmentModel": "deepseek/deepseek-v4-pro"
+    }
+  ],
+  "aliasToCompanyKey": {
+    "CO:domain:serotech.com.co": "CO:domain:serotech.com.co",
+    "CO:name:serotechsas": "CO:domain:serotech.com.co",
+    "CO:domain:modobit.co": "CO:domain:modobit.co",
+    "CO:name:modobitsas": "CO:domain:modobit.co",
+    "CO:domain:kuars.com.co": "CO:domain:kuars.com.co",
+    "CO:name:kuarssas": "CO:domain:kuars.com.co",
+    "CO:domain:connecttelecom.co": "CO:domain:connecttelecom.co",
+    "CO:name:connecttelecomunicacionessas": "CO:domain:connecttelecom.co",
+    "CO:domain:helpsoluciones.com.co": "CO:domain:helpsoluciones.com.co",
+    "CO:name:helpsolucionessas": "CO:domain:helpsoluciones.com.co",
+    "CO:domain:bscomunicaciones.co": "CO:domain:bscomunicaciones.com",
+    "CO:name:bscomunicacionesintegralessas": "CO:domain:bscomunicaciones.com",
+    "CO:domain:tiasas.com": "CO:domain:tiasas.com",
+    "CO:name:tiasas": "CO:domain:tiasas.com",
+    "CO:domain:intelcolsas.com": "CO:domain:intelcolsas.com",
+    "CO:name:intelcolsas": "CO:domain:intelcolsas.com",
+    "CO:domain:globalsmarttech.com.co": "CO:domain:globalsmarttech.com.co",
+    "CO:name:fonetsasglobalsmarttech": "CO:domain:globalsmarttech.com.co"
+  },
+  "costEvents": [
+    {
+      "eventId": "CO-si-msp:evaluation:fresh-evidence",
+      "cellId": "CO-si-msp",
+      "stage": "evaluation-control-fresh-evidence",
+      "provider": "tavily",
+      "startedAt": "2026-09-08T22:22:18.644Z",
+      "completedAt": "2026-09-08T22:22:35.823Z",
+      "latencyMs": 56695,
+      "attempts": 21,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 18
+      },
+      "volume": {
+        "inputItems": 14,
+        "rawOutputItems": 23,
+        "validOutputItems": 23,
+        "downstreamUsedItems": 23,
+        "discardedReasonCounts": {
+          "noFreshEvidence": 7
+        }
+      },
+      "notes": [
+        "Gemini-unique final candidates only",
+        "historical evidence reads and writes disabled"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.14400000000000002,
+      "budgetCostUsd": 0.14400000000000002,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-si-msp:evaluation:correction-search",
+      "cellId": "CO-si-msp",
+      "stage": "evaluation-control-correction-search",
+      "provider": "tavily",
+      "startedAt": "2026-09-08T22:22:35.857Z",
+      "completedAt": "2026-09-08T22:24:40.758Z",
+      "latencyMs": 40355,
+      "attempts": 14,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 14
+      },
+      "volume": {
+        "inputItems": 14,
+        "rawOutputItems": 14,
+        "validOutputItems": 14,
+        "downstreamUsedItems": 14,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.112,
+      "budgetCostUsd": 0.112,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-si-msp:evaluation-control-correction:1",
+      "cellId": "CO-si-msp",
+      "stage": "evaluation-control-correction",
+      "provider": "openrouter-openai-peer",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "openai/gpt-4o-mini",
+      "startedAt": "2026-09-08T22:22:35.857Z",
+      "completedAt": "2026-09-08T22:24:40.758Z",
+      "latencyMs": 11258,
+      "attempts": 3,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 5993,
+        "outputTokens": 1628,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 14,
+        "rawOutputItems": 14,
+        "validOutputItems": 2,
+        "downstreamUsedItems": 2,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00187575,
+      "budgetCostUsd": 0.00187575,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-si-msp:evaluation-control-correction:2",
+      "cellId": "CO-si-msp",
+      "stage": "evaluation-control-correction",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek/deepseek-v4-pro",
+      "startedAt": "2026-09-08T22:22:35.857Z",
+      "completedAt": "2026-09-08T22:24:40.758Z",
+      "latencyMs": 38497,
+      "attempts": 5,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 5493,
+        "outputTokens": 1860,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 0,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "stageVolumeAttributedToPrimaryModelEvent": 3
+        }
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.004007655,
+      "budgetCostUsd": 0.004007655,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-si-msp:evaluation-control-correction:3",
+      "cellId": "CO-si-msp",
+      "stage": "evaluation-control-correction",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek/deepseek-v4-flash",
+      "startedAt": "2026-09-08T22:22:35.857Z",
+      "completedAt": "2026-09-08T22:24:40.758Z",
+      "latencyMs": 24779,
+      "attempts": 2,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 4122,
+        "outputTokens": 2972,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 0,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "stageVolumeAttributedToPrimaryModelEvent": 1
+        }
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.0014092400000000002,
+      "budgetCostUsd": 0.0014092400000000002,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-si-msp:evaluation-control-score-only:1",
+      "cellId": "CO-si-msp",
+      "stage": "evaluation-control-score-only",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek/deepseek-v4-flash",
+      "startedAt": "2026-09-08T22:24:40.813Z",
+      "completedAt": "2026-09-08T22:25:51.563Z",
+      "latencyMs": 85336,
+      "attempts": 4,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 15444,
+        "outputTokens": 10117,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 14,
+        "rawOutputItems": 14,
+        "validOutputItems": 9,
+        "downstreamUsedItems": 9,
+        "discardedReasonCounts": {
+          "retryRequired": 5
+        }
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00499492,
+      "budgetCostUsd": 0.00499492,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-si-msp:evaluation-control-score-only:2",
+      "cellId": "CO-si-msp",
+      "stage": "evaluation-control-score-only",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek/deepseek-v4-pro",
+      "startedAt": "2026-09-08T22:24:40.813Z",
+      "completedAt": "2026-09-08T22:25:51.563Z",
+      "latencyMs": 74809,
+      "attempts": 4,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 21516,
+        "outputTokens": 4029,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 0,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "stageVolumeAttributedToPrimaryModelEvent": 4
+        }
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.012864689999999998,
+      "budgetCostUsd": 0.012864689999999998,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    }
+  ],
+  "warnings": [
+    "No official-domain evidence was extracted for siteweb.com.co.",
+    "No official-domain evidence was extracted for serotech.com.co.",
+    "No official-domain evidence was extracted for modobit.co.",
+    "No official-domain evidence was extracted for connecttelecom.co.",
+    "No official-domain evidence was extracted for bscomunicaciones.co.",
+    "No official-domain evidence was extracted for tiasas.com.",
+    "No official-domain evidence was extracted for globalsmarttech.com.co.",
+    "Correction search found no usable supplemental evidence for siteweb.com.co.",
+    "Correction search found no usable supplemental evidence for makrotic.com.",
+    "Correction search found no usable supplemental evidence for portlan.co.",
+    "Correction search found no usable supplemental evidence for serotech.com.co.",
+    "Correction search found no usable supplemental evidence for modobit.co.",
+    "Correction search found no usable supplemental evidence for helpsoluciones.com.co.",
+    "Correction search found no usable supplemental evidence for tiasas.com.",
+    "Correction search found no usable supplemental evidence for globalsmarttech.com.co.",
+    "siteweb.com.co: Model fallback used after 1 route failure(s) (Circuit open for primary provider deepseek.): requested=deepseek-v4-pro; actual=deepseek/deepseek-v4-pro; provider=openrouter-deepseek.",
+    "siteweb.com.co: No evidence was provided for analysis. All findings are 'unknown'.",
+    "makrotic.com: Model fallback used after 2 route failure(s) (Insufficient Balance | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "makrotic.com: Roles without a supported atomic role finding were removed.",
+    "hitcommunications.com: Model fallback used after 2 route failure(s) (Insufficient Balance | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "hitcommunications.com: Roles without a supported atomic role finding were removed.",
+    "portlan.co: Model fallback used after 2 route failure(s) (Insufficient Balance | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "portlan.co: Roles without a supported atomic role finding were removed.",
+    "itbcomunicaciones.com: Model fallback used after 2 route failure(s) (Insufficient Balance | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "itbcomunicaciones.com: Roles without a supported atomic role finding were removed.",
+    "serotech.com.co: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Insufficient Balance | The operation was aborted due to timeout | The operation was aborted due to timeout Infrastructure/provider failure does not qualify for Pro escalation.",
+    "modobit.co: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Insufficient Balance | The operation was aborted due to timeout | The operation was aborted due to timeout Infrastructure/provider failure does not qualify for Pro escalation.",
+    "kuars.com.co: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Insufficient Balance | The operation was aborted due to timeout | The operation was aborted due to timeout Infrastructure/provider failure does not qualify for Pro escalation.",
+    "connecttelecom.co: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Insufficient Balance | The operation was aborted due to timeout | The operation was aborted due to timeout Infrastructure/provider failure does not qualify for Pro escalation.",
+    "helpsoluciones.com.co: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Insufficient Balance | The operation was aborted due to timeout | The operation was aborted due to timeout Infrastructure/provider failure does not qualify for Pro escalation.",
+    "bscomunicaciones.com: Model fallback used after 1 route failure(s) (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "tiasas.com: Model fallback used after 1 route failure(s) (Insufficient Balance): requested=deepseek-v4-pro; actual=deepseek/deepseek-v4-pro; provider=openrouter-deepseek.",
+    "tiasas.com: No evidence was provided for analysis. All findings are 'unknown'.",
+    "intelcolsas.com: Model fallback used after 1 route failure(s) (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "globalsmarttech.com.co: Model fallback used after 1 route failure(s) (Insufficient Balance): requested=deepseek-v4-pro; actual=deepseek/deepseek-v4-pro; provider=openrouter-deepseek.",
+    "globalsmarttech.com.co: No evidence was supplied. All findings are unknown."
+  ]
+}

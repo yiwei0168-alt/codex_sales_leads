@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-08-co-search-e2e-v2",
+  "cellId": "CO-resale",
+  "inputCount": 5,
+  "records": [],
+  "aliasToCompanyKey": {},
+  "costEvents": [
+    {
+      "eventId": "CO-resale:evaluation:fresh-evidence",
+      "cellId": "CO-resale",
+      "stage": "evaluation-control-fresh-evidence",
+      "provider": "tavily",
+      "startedAt": "2026-09-08T22:25:51.643Z",
+      "completedAt": "2026-09-08T22:26:01.325Z",
+      "latencyMs": 16199,
+      "attempts": 9,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 8
+      },
+      "volume": {
+        "inputItems": 5,
+        "rawOutputItems": 14,
+        "validOutputItems": 14,
+        "downstreamUsedItems": 14,
+        "discardedReasonCounts": {
+          "noFreshEvidence": 1
+        }
+      },
+      "notes": [
+        "Gemini-unique final candidates only",
+        "historical evidence reads and writes disabled"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.064,
+      "budgetCostUsd": 0.064,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-resale:evaluation:correction-search",
+      "cellId": "CO-resale",
+      "stage": "evaluation-control-correction-search",
+      "provider": "tavily",
+      "startedAt": "2026-09-08T22:26:01.346Z",
+      "completedAt": "2026-09-08T22:27:16.272Z",
+      "latencyMs": 9894,
+      "attempts": 4,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 4
+      },
+      "volume": {
+        "inputItems": 5,
+        "rawOutputItems": 5,
+        "validOutputItems": 5,
+        "downstreamUsedItems": 5,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.032,
+      "budgetCostUsd": 0.032,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-resale:evaluation-control-correction:1",
+      "cellId": "CO-resale",
+      "stage": "evaluation-control-correction",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek/deepseek-v4-flash",
+      "startedAt": "2026-09-08T22:26:01.346Z",
+      "completedAt": "2026-09-08T22:27:16.272Z",
+      "latencyMs": 13896,
+      "attempts": 2,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 2369,
+        "outputTokens": 1470,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 5,
+        "rawOutputItems": 5,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00074326,
+      "budgetCostUsd": 0.00074326,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-resale:evaluation-control-correction:2",
+      "cellId": "CO-resale",
+      "stage": "evaluation-control-correction",
+      "provider": "openrouter-openai-peer",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "openai/gpt-4o-mini",
+      "startedAt": "2026-09-08T22:26:01.346Z",
+      "completedAt": "2026-09-08T22:27:16.272Z",
+      "latencyMs": 24583,
+      "attempts": 3,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 7559,
+        "outputTokens": 1775,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 0,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "stageVolumeAttributedToPrimaryModelEvent": 1
+        }
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00219885,
+      "budgetCostUsd": 0.00219885,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    }
+  ],
+  "warnings": [
+    "No official-domain evidence was extracted for tecnocompras.com.co.",
+    "tecnocompras.com.co: Model fallback used after 2 route failure(s) (Insufficient Balance | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "tecnocompras.com.co: Roles without a supported atomic role finding were removed.",
+    "nixcom.com.co: Model fallback used after 2 route failure(s) (Insufficient Balance | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "nixcom.com.co: Roles without a supported atomic role finding were removed.",
+    "rentadvisor.com.co: Model fallback used after 2 route failure(s) (Insufficient Balance | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "rentadvisor.com.co: Roles without a supported atomic role finding were removed.",
+    "rentadvisor.com.co: Deterministic role hints were not auto-added: VAR, Reseller.",
+    "realtecno.co: Model fallback used after 2 route failure(s) (Insufficient Balance | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "realtecno.co: Roles without a supported atomic role finding were removed.",
+    "tbgroup.com.co: Model fallback used after 1 route failure(s) (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "tbgroup.com.co: The submitted roles (Reseller, VAR, Dealer) are not supported by the evidence; the company is an SI and Installer."
+  ]
+}

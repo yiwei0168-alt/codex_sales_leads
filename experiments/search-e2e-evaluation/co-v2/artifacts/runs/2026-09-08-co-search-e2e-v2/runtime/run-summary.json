@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "runId": "2026-09-08-co-search-e2e-v2",
   "experimentId": "search-e2e-eval-co-v2.0.7",
-  "status": "cells-completed",
+  "status": "blind-audit-running",
   "createdAt": "2026-09-07T20:36:48.680Z",
-  "updatedAt": "2026-09-08T22:13:12.747Z",
+  "updatedAt": "2026-09-08T22:28:27.391Z",
   "blindJudgeModel": "blind-audit-v2.1-dual-judge",
   "preflightChecks": [
     {
@@ -199,7 +199,12 @@
     "CO-si-msp",
     "CO-resale"
   ],
-  "completedEvaluationCellIds": [],
+  "completedEvaluationCellIds": [
+    "CO-retail",
+    "CO-distribution",
+    "CO-si-msp",
+    "CO-resale"
+  ],
   "completedBlindPacketIds": [],
   "reportedBudgetThresholdsUsd": [
     10,
@@ -31312,6 +31317,768 @@
       "runId": "2026-09-08-co-search-e2e-v2",
       "ledger": "product-e2e-arm",
       "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:evaluation:fresh-evidence",
+      "cellId": "CO-retail",
+      "stage": "evaluation-control-fresh-evidence",
+      "provider": "tavily",
+      "startedAt": "2026-09-08T22:15:33.795Z",
+      "completedAt": "2026-09-08T22:15:51.233Z",
+      "latencyMs": 46807,
+      "attempts": 20,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 15
+      },
+      "volume": {
+        "inputItems": 13,
+        "rawOutputItems": 28,
+        "validOutputItems": 28,
+        "downstreamUsedItems": 28,
+        "discardedReasonCounts": {
+          "noFreshEvidence": 6
+        }
+      },
+      "notes": [
+        "Gemini-unique final candidates only",
+        "historical evidence reads and writes disabled"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.12,
+      "budgetCostUsd": 0.12,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:evaluation:correction-search",
+      "cellId": "CO-retail",
+      "stage": "evaluation-control-correction-search",
+      "provider": "tavily",
+      "startedAt": "2026-09-08T22:15:51.258Z",
+      "completedAt": "2026-09-08T22:17:28.045Z",
+      "latencyMs": 26536,
+      "attempts": 12,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 12
+      },
+      "volume": {
+        "inputItems": 13,
+        "rawOutputItems": 13,
+        "validOutputItems": 13,
+        "downstreamUsedItems": 13,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.096,
+      "budgetCostUsd": 0.096,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:evaluation-control-correction:1",
+      "cellId": "CO-retail",
+      "stage": "evaluation-control-correction",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek/deepseek-v4-flash",
+      "startedAt": "2026-09-08T22:15:51.258Z",
+      "completedAt": "2026-09-08T22:17:28.045Z",
+      "latencyMs": 34744,
+      "attempts": 2,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 10111,
+        "outputTokens": 5059,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 13,
+        "rawOutputItems": 13,
+        "validOutputItems": 5,
+        "downstreamUsedItems": 5,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.0028320600000000004,
+      "budgetCostUsd": 0.0028320600000000004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:evaluation-control-correction:2",
+      "cellId": "CO-retail",
+      "stage": "evaluation-control-correction",
+      "provider": "openrouter-openai-peer",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "openai/gpt-4o-mini",
+      "startedAt": "2026-09-08T22:15:51.258Z",
+      "completedAt": "2026-09-08T22:17:28.045Z",
+      "latencyMs": 21893,
+      "attempts": 5,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 12498,
+        "outputTokens": 3148,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 0,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "stageVolumeAttributedToPrimaryModelEvent": 2
+        }
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.0037635,
+      "budgetCostUsd": 0.0037635,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:evaluation-control-score-only:1",
+      "cellId": "CO-retail",
+      "stage": "evaluation-control-score-only",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek/deepseek-v4-flash",
+      "startedAt": "2026-09-08T22:17:28.096Z",
+      "completedAt": "2026-09-08T22:18:38.955Z",
+      "latencyMs": 38904,
+      "attempts": 2,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 12209,
+        "outputTokens": 4046,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 13,
+        "rawOutputItems": 13,
+        "validOutputItems": 3,
+        "downstreamUsedItems": 3,
+        "discardedReasonCounts": {
+          "retryRequired": 10
+        }
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.0028421400000000004,
+      "budgetCostUsd": 0.0028421400000000004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-distribution:evaluation:fresh-evidence",
+      "cellId": "CO-distribution",
+      "stage": "evaluation-control-fresh-evidence",
+      "provider": "tavily",
+      "startedAt": "2026-09-08T22:18:39.049Z",
+      "completedAt": "2026-09-08T22:18:47.067Z",
+      "latencyMs": 43900,
+      "attempts": 29,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 25
+      },
+      "volume": {
+        "inputItems": 16,
+        "rawOutputItems": 52,
+        "validOutputItems": 52,
+        "downstreamUsedItems": 52,
+        "discardedReasonCounts": {
+          "noFreshEvidence": 3
+        }
+      },
+      "notes": [
+        "Gemini-unique final candidates only",
+        "historical evidence reads and writes disabled"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.2,
+      "budgetCostUsd": 0.2,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-distribution:evaluation:correction-search",
+      "cellId": "CO-distribution",
+      "stage": "evaluation-control-correction-search",
+      "provider": "tavily",
+      "startedAt": "2026-09-08T22:18:47.095Z",
+      "completedAt": "2026-09-08T22:21:07.610Z",
+      "latencyMs": 41745,
+      "attempts": 15,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 15
+      },
+      "volume": {
+        "inputItems": 16,
+        "rawOutputItems": 16,
+        "validOutputItems": 16,
+        "downstreamUsedItems": 16,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.12,
+      "budgetCostUsd": 0.12,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-distribution:evaluation-control-correction:1",
+      "cellId": "CO-distribution",
+      "stage": "evaluation-control-correction",
+      "provider": "openrouter-openai-peer",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "openai/gpt-4o-mini",
+      "startedAt": "2026-09-08T22:18:47.095Z",
+      "completedAt": "2026-09-08T22:21:07.610Z",
+      "latencyMs": 32546,
+      "attempts": 8,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 22370,
+        "outputTokens": 4651,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 16,
+        "rawOutputItems": 16,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.006146100000000001,
+      "budgetCostUsd": 0.006146100000000001,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-distribution:evaluation-control-score-only:1",
+      "cellId": "CO-distribution",
+      "stage": "evaluation-control-score-only",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek/deepseek-v4-flash",
+      "startedAt": "2026-09-08T22:21:07.657Z",
+      "completedAt": "2026-09-08T22:22:18.542Z",
+      "latencyMs": 41245,
+      "attempts": 3,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 11554,
+        "outputTokens": 3204,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 16,
+        "rawOutputItems": 16,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {
+          "retryRequired": 15
+        }
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.0025146800000000005,
+      "budgetCostUsd": 0.0025146800000000005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-si-msp:evaluation:fresh-evidence",
+      "cellId": "CO-si-msp",
+      "stage": "evaluation-control-fresh-evidence",
+      "provider": "tavily",
+      "startedAt": "2026-09-08T22:22:18.644Z",
+      "completedAt": "2026-09-08T22:22:35.823Z",
+      "latencyMs": 56695,
+      "attempts": 21,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 18
+      },
+      "volume": {
+        "inputItems": 14,
+        "rawOutputItems": 23,
+        "validOutputItems": 23,
+        "downstreamUsedItems": 23,
+        "discardedReasonCounts": {
+          "noFreshEvidence": 7
+        }
+      },
+      "notes": [
+        "Gemini-unique final candidates only",
+        "historical evidence reads and writes disabled"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.14400000000000002,
+      "budgetCostUsd": 0.14400000000000002,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-si-msp:evaluation:correction-search",
+      "cellId": "CO-si-msp",
+      "stage": "evaluation-control-correction-search",
+      "provider": "tavily",
+      "startedAt": "2026-09-08T22:22:35.857Z",
+      "completedAt": "2026-09-08T22:24:40.758Z",
+      "latencyMs": 40355,
+      "attempts": 14,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 14
+      },
+      "volume": {
+        "inputItems": 14,
+        "rawOutputItems": 14,
+        "validOutputItems": 14,
+        "downstreamUsedItems": 14,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.112,
+      "budgetCostUsd": 0.112,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-si-msp:evaluation-control-correction:1",
+      "cellId": "CO-si-msp",
+      "stage": "evaluation-control-correction",
+      "provider": "openrouter-openai-peer",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "openai/gpt-4o-mini",
+      "startedAt": "2026-09-08T22:22:35.857Z",
+      "completedAt": "2026-09-08T22:24:40.758Z",
+      "latencyMs": 11258,
+      "attempts": 3,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 5993,
+        "outputTokens": 1628,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 14,
+        "rawOutputItems": 14,
+        "validOutputItems": 2,
+        "downstreamUsedItems": 2,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00187575,
+      "budgetCostUsd": 0.00187575,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-si-msp:evaluation-control-correction:2",
+      "cellId": "CO-si-msp",
+      "stage": "evaluation-control-correction",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek/deepseek-v4-pro",
+      "startedAt": "2026-09-08T22:22:35.857Z",
+      "completedAt": "2026-09-08T22:24:40.758Z",
+      "latencyMs": 38497,
+      "attempts": 5,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 5493,
+        "outputTokens": 1860,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 0,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "stageVolumeAttributedToPrimaryModelEvent": 3
+        }
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.004007655,
+      "budgetCostUsd": 0.004007655,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-si-msp:evaluation-control-correction:3",
+      "cellId": "CO-si-msp",
+      "stage": "evaluation-control-correction",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek/deepseek-v4-flash",
+      "startedAt": "2026-09-08T22:22:35.857Z",
+      "completedAt": "2026-09-08T22:24:40.758Z",
+      "latencyMs": 24779,
+      "attempts": 2,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 4122,
+        "outputTokens": 2972,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 0,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "stageVolumeAttributedToPrimaryModelEvent": 1
+        }
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.0014092400000000002,
+      "budgetCostUsd": 0.0014092400000000002,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-si-msp:evaluation-control-score-only:1",
+      "cellId": "CO-si-msp",
+      "stage": "evaluation-control-score-only",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek/deepseek-v4-flash",
+      "startedAt": "2026-09-08T22:24:40.813Z",
+      "completedAt": "2026-09-08T22:25:51.563Z",
+      "latencyMs": 85336,
+      "attempts": 4,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 15444,
+        "outputTokens": 10117,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 14,
+        "rawOutputItems": 14,
+        "validOutputItems": 9,
+        "downstreamUsedItems": 9,
+        "discardedReasonCounts": {
+          "retryRequired": 5
+        }
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00499492,
+      "budgetCostUsd": 0.00499492,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-si-msp:evaluation-control-score-only:2",
+      "cellId": "CO-si-msp",
+      "stage": "evaluation-control-score-only",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek/deepseek-v4-pro",
+      "startedAt": "2026-09-08T22:24:40.813Z",
+      "completedAt": "2026-09-08T22:25:51.563Z",
+      "latencyMs": 74809,
+      "attempts": 4,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 21516,
+        "outputTokens": 4029,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 0,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "stageVolumeAttributedToPrimaryModelEvent": 4
+        }
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.012864689999999998,
+      "budgetCostUsd": 0.012864689999999998,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-resale:evaluation:fresh-evidence",
+      "cellId": "CO-resale",
+      "stage": "evaluation-control-fresh-evidence",
+      "provider": "tavily",
+      "startedAt": "2026-09-08T22:25:51.643Z",
+      "completedAt": "2026-09-08T22:26:01.325Z",
+      "latencyMs": 16199,
+      "attempts": 9,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 8
+      },
+      "volume": {
+        "inputItems": 5,
+        "rawOutputItems": 14,
+        "validOutputItems": 14,
+        "downstreamUsedItems": 14,
+        "discardedReasonCounts": {
+          "noFreshEvidence": 1
+        }
+      },
+      "notes": [
+        "Gemini-unique final candidates only",
+        "historical evidence reads and writes disabled"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.064,
+      "budgetCostUsd": 0.064,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-resale:evaluation:correction-search",
+      "cellId": "CO-resale",
+      "stage": "evaluation-control-correction-search",
+      "provider": "tavily",
+      "startedAt": "2026-09-08T22:26:01.346Z",
+      "completedAt": "2026-09-08T22:27:16.272Z",
+      "latencyMs": 9894,
+      "attempts": 4,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 4
+      },
+      "volume": {
+        "inputItems": 5,
+        "rawOutputItems": 5,
+        "validOutputItems": 5,
+        "downstreamUsedItems": 5,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.032,
+      "budgetCostUsd": 0.032,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-resale:evaluation-control-correction:1",
+      "cellId": "CO-resale",
+      "stage": "evaluation-control-correction",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek/deepseek-v4-flash",
+      "startedAt": "2026-09-08T22:26:01.346Z",
+      "completedAt": "2026-09-08T22:27:16.272Z",
+      "latencyMs": 13896,
+      "attempts": 2,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 2369,
+        "outputTokens": 1470,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 5,
+        "rawOutputItems": 5,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00074326,
+      "budgetCostUsd": 0.00074326,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-resale:evaluation-control-correction:2",
+      "cellId": "CO-resale",
+      "stage": "evaluation-control-correction",
+      "provider": "openrouter-openai-peer",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "openai/gpt-4o-mini",
+      "startedAt": "2026-09-08T22:26:01.346Z",
+      "completedAt": "2026-09-08T22:27:16.272Z",
+      "latencyMs": 24583,
+      "attempts": 3,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 7559,
+        "outputTokens": 1775,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 0,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "stageVolumeAttributedToPrimaryModelEvent": 1
+        }
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.00219885,
+      "budgetCostUsd": 0.00219885,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "blind-v2-0720dd583d8b08de82109ace:blind-judge-v2:judge-b",
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge-v2",
+      "provider": "openrouter",
+      "requestedModel": "openai/gpt-5.6-sol",
+      "actualModel": "openai/gpt-5.6-sol",
+      "startedAt": "2026-09-08T22:28:27.290Z",
+      "completedAt": "2026-09-08T22:28:27.363Z",
+      "latencyMs": 73,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "failed",
+      "usage": {},
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "providerHttpFailure": 1
+        }
+      },
+      "notes": [
+        "blind-audit-v2",
+        "no web search",
+        "arm/model/rank/unified score hidden",
+        "output is consumed by consensus or conditional arbitration"
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "blind-v2-2a2385665d1cf0e7ea74b9fe:blind-judge-v2:judge-b",
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-judge-v2",
+      "provider": "openrouter",
+      "requestedModel": "openai/gpt-5.6-sol",
+      "actualModel": "openai/gpt-5.6-sol",
+      "startedAt": "2026-09-08T22:28:27.288Z",
+      "completedAt": "2026-09-08T22:28:27.385Z",
+      "latencyMs": 97,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "failed",
+      "usage": {},
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "providerHttpFailure": 1
+        }
+      },
+      "notes": [
+        "blind-audit-v2",
+        "no web search",
+        "arm/model/rank/unified score hidden",
+        "output is consumed by consensus or conditional arbitration"
+      ],
       "officialListPriceUsd": 0,
       "budgetCostUsd": 0,
       "cashCostBasis": "official-conservative",

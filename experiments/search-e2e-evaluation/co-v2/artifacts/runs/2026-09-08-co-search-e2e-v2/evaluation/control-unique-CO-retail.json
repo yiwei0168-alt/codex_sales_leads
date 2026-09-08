@@ -1,0 +1,523 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-08-co-search-e2e-v2",
+  "cellId": "CO-retail",
+  "inputCount": 13,
+  "records": [
+    {
+      "companyKey": "CO:domain:clonesyperifericos.com",
+      "countryCode": "CO",
+      "companyName": "Clones y Periféricos",
+      "domain": "clonesyperifericos.com",
+      "officialWebsiteUrl": "https://clonesyperifericos.com",
+      "primaryRole": "E-tailer",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer"
+      ],
+      "totalScore": 22,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-170e909463ad3ff1",
+          "url": "https://clonesyperifericos.com",
+          "title": "PC Gamer y Componentes | Arma tu PC Gamer en Clones y Periféricos",
+          "excerpt": "Total parcial: $0 Ver carritoPagar ahora Ingresar Registrarme Lista de precios PCs Portátiles Tienda Clones Days Bogotá MEDELLÍN B/QUILLA #### Desde ~~$593,000~~ El precio original era: $593,000.$566,000El precio actual es: $566,000. #### Desde $641,000 Promo ## Recién llegados $500,000 $758,000 $518,000 $155,000 $278,000 $758,000 $500,000 $758,000 $518,000 $155,000 [...] $155,000 $278,000 $758,000 []( []( ## PC IA NEXUS PRO WORKSTATION $40,285,000 []( []( ## PC IA THREADRIPPER DUAL FORCE $64,427,000 ## ¿ERES ENSAMBLADOR? Conoce nuestra lista de precios exclusiva para ensambladores y arma tu PC a tu gusto LISTA DE PRECIOS",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "blindAuditEvidence": [
+        {
+          "id": "evidence-170e909463ad3ff1",
+          "url": "https://clonesyperifericos.com",
+          "title": "PC Gamer y Componentes | Arma tu PC Gamer en Clones y Periféricos",
+          "excerpt": "Total parcial: $0 Ver carritoPagar ahora Ingresar Registrarme Lista de precios PCs Portátiles Tienda Clones Days Bogotá MEDELLÍN B/QUILLA #### Desde ~~$593,000~~ El precio original era: $593,000.$566,000El precio actual es: $566,000. #### Desde $641,000 Promo ## Recién llegados $500,000 $758,000 $518,000 $155,000 $278,000 $758,000 $500,000 $758,000 $518,000 $155,000 [...] $155,000 $278,000 $758,000 []( []( ## PC IA NEXUS PRO WORKSTATION $40,285,000 []( []( ## PC IA THREADRIPPER DUAL FORCE $64,427,000 ## ¿ERES ENSAMBLADOR? Conoce nuestra lista de precios exclusiva para ensambladores y arma tu PC a tu gusto LISTA DE PRECIOS",
+          "sourceType": "official-website"
+        }
+      ],
+      "assessmentModel": "deepseek/deepseek-v4-flash"
+    },
+    {
+      "companyKey": "CO:domain:compulago.com",
+      "countryCode": "CO",
+      "companyName": "Compulago S.A.S.",
+      "domain": "compulago.com",
+      "officialWebsiteUrl": "https://compulago.com",
+      "primaryRole": "VAR",
+      "supportedRoles": [
+        "Retailer",
+        "E-tailer",
+        "VAR"
+      ],
+      "totalScore": 50,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-7a6e5e884864c5da",
+          "url": "https://compulago.com",
+          "title": "Compulago - Marcamos La Diferencia | Todo En Tecnologia",
+          "excerpt": "Saltar al contenido ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 [...] En cumplimiento de la Ley 1581 de 2012 y las demás normas que regulan la protección de datos personales en Colombia, autorizo de manera previa, expresa, libre e informada a COMPULAGO S.A.S., identificada con NIT 806.015.647-4, como responsable del tratamiento, para recolectar, almacenar, consultar, usar, actualizar, organizar, veri",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-d62e889c180b1d75",
+          "url": "https://compulago.com/producto/switch-hpe-aruba-networking-cx-6200f-24g-class-4-poe-4sfp-370w-1010-02486941",
+          "title": "Switch HPE Aruba Networking Cx 6200F 24G Class 4 PoE 4SFP+ 370 W | Compulago",
+          "excerpt": "Saltar al contenido ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-1257322657248233",
+          "url": "https://compulago.com/producto/suscripcion-anual-software-en-la-nube-plan-corporativo-1515-10474022",
+          "title": "Suscripcion Anual Software En La Nube Plan Corporativo | Compulago",
+          "excerpt": "Saltar al contenido ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-46e3359064d8f9c0",
+          "url": "https://compulago.com/nuestras-tiendas",
+          "title": "Nuestras Tiendas | Compulago",
+          "excerpt": "Saltar al contenido ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-877a475927978fd7",
+          "url": "https://compulago.com/sucursales/sede-centro-uno-too",
+          "title": "SEDE CENTRO UNO TOO | Compulago",
+          "excerpt": "Saltar al contenido ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-6c569788054aa9e7",
+          "url": "https://compulago.com/categoria/conectividad-corporativo",
+          "title": "Conectividad | Routers | Switchs | Amplificadores Y Mas - Compulago",
+          "excerpt": "Conecta sin límites con nuestros productos de redes. Rendimiento y fiabilidad para tu conectividad. ¡Compra ahora, elige entre crédito o contado!",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "blindAuditEvidence": [
+        {
+          "id": "evidence-7a6e5e884864c5da",
+          "url": "https://compulago.com",
+          "title": "Compulago - Marcamos La Diferencia | Todo En Tecnologia",
+          "excerpt": "Saltar al contenido ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 [...] En cumplimiento de la Ley 1581 de 2012 y las demás normas que regulan la protección de datos personales en Colombia, autorizo de manera previa, expresa, libre e informada a COMPULAGO S.A.S., identificada con NIT 806.015.647-4, como responsable del tratamiento, para recolectar, almacenar, consultar, usar, actualizar, organizar, veri",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-d62e889c180b1d75",
+          "url": "https://compulago.com/producto/switch-hpe-aruba-networking-cx-6200f-24g-class-4-poe-4sfp-370w-1010-02486941",
+          "title": "Switch HPE Aruba Networking Cx 6200F 24G Class 4 PoE 4SFP+ 370 W | Compulago",
+          "excerpt": "Saltar al contenido ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-1257322657248233",
+          "url": "https://compulago.com/producto/suscripcion-anual-software-en-la-nube-plan-corporativo-1515-10474022",
+          "title": "Suscripcion Anual Software En La Nube Plan Corporativo | Compulago",
+          "excerpt": "Saltar al contenido ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-46e3359064d8f9c0",
+          "url": "https://compulago.com/nuestras-tiendas",
+          "title": "Nuestras Tiendas | Compulago",
+          "excerpt": "Saltar al contenido ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-877a475927978fd7",
+          "url": "https://compulago.com/sucursales/sede-centro-uno-too",
+          "title": "SEDE CENTRO UNO TOO | Compulago",
+          "excerpt": "Saltar al contenido ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57 318 3519977 ¿Necesitas Ayuda? Llámanos o escríbenos para ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-6c569788054aa9e7",
+          "url": "https://compulago.com/categoria/conectividad-corporativo",
+          "title": "Conectividad | Routers | Switchs | Amplificadores Y Mas - Compulago",
+          "excerpt": "Conecta sin límites con nuestros productos de redes. Rendimiento y fiabilidad para tu conectividad. ¡Compra ahora, elige entre crédito o contado!",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-4457dc17a919d7cd",
+          "url": "https://www.instagram.com/reel/DIzf8l7uPt1",
+          "title": "En Compulago, la tecnología se vive fácil. Desde tu casa ... - Instagram",
+          "excerpt": "Desde tu casa hasta tu empresa y todo lo que te divierte, tenemos lo que necesitas para estar siempre conectado. Con más de 20 años de",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-12edd31cd2543dab",
+          "url": "https://compulago.com/etiqueta/corporativo",
+          "title": "CORPORATIVO Archivos - Compulago",
+          "excerpt": "Saltar al contenido. ¿Necesitas Ayuda? Llámanos o escríbenos para atenderte • Ventas HOGAR Cel: +57 3144450057 • Ventas EMPRESAS Cel: +57 314 8678956 / +57",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-257699400778edca",
+          "url": "https://compulago.com/categoria/conectividad-corporativo/amplificadores",
+          "title": "Amplificadores | Compulago Tienda Online",
+          "excerpt": "Encuentra todo lo que necesites en Amplificadores aquí, Adquiere tu producto ahora de contado o a crédito, Compra Tecnología en Línea de Forma Fácil!",
+          "sourceType": "official-website"
+        }
+      ],
+      "assessmentModel": "deepseek/deepseek-v4-flash"
+    },
+    {
+      "companyKey": "CO:domain:macrotics.com",
+      "countryCode": "CO",
+      "companyName": "Macrotics SAS",
+      "domain": "macrotics.com",
+      "officialWebsiteUrl": "https://www.macrotics.com",
+      "primaryRole": "Distributor",
+      "supportedRoles": [
+        "Distributor",
+        "E-tailer"
+      ],
+      "totalScore": 78,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "evidence": [
+        {
+          "id": "evidence-0e7a3ceeeb6d380d",
+          "url": "https://www.macrotics.com/aruba",
+          "title": "Macrotics / Productos de Telecomunicaciones - Repetidor Wifi",
+          "excerpt": "¡Te falta $ 1.200.000 para obtener envío gratis! 0% 100% HPE Networking Instant On HPE Networking Instant On es una solución de red diseñada específicamente para empresas. Ofrece una plataforma de redes inalámbricas y con cable fácil de usar que brinda conectividad de alto rendimiento sin la complejidad que a menudo se asocia con las soluciones empresariales. La simplicidad de instalación y administración, combinada con un conjunto completo de características, hace que HPE Networking Instant On sea una elección popular para empresas que buscan una conectividad robusta. ACCESS POINT  Conectividad Wi-Fi robusta y de alta velocidad, asegurando que los dispositivos de los usuarios siempre estén conectados de manera confiable.La tecnología Instant On facilita la configuración de los access poi",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-8fd23bed4af39912",
+          "url": "https://www.macrotics.com/mikrotik",
+          "title": "Mikrotik - Macrotics",
+          "excerpt": "¡Te falta $ 1.200.000 para obtener envío gratis! 0% 100% MikroTik Routers and Wireless MikroTik es una empresa letona que fue fundada en 1996 para desarrollar routers y sistemas ISP inalámbricos. MikroTik ahora proporciona hardware y software para la conectividad a Internet en la mayoría de los países de todo el mundo. mundo. Su experiencia en el uso de hardware de PC estándar de la industria y sistemas de enrutamiento completos nos permitió en 1997 crear el RouterOS sistema de software que proporciona una amplia estabilidad, controles y Flexibilidad para todo tipo de interfaces de datos y enrutamiento. En 2002 decidieron hacer nuestro su propio hardware, y así nació la marca RouterBOARD. MikroTik es líder en tecnología de redes, ofreciendo equipos confiables y de alto rendimiento para emp",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-955810cbbaa0a207",
+          "url": "https://www.macrotics.com/ruijie",
+          "title": "Ruijie - Macrotics",
+          "excerpt": "¡Te falta $ 1.200.000 para obtener envío gratis! 0% 100% Ruijie | Reyee Reyee by Ruijie es una marca innovadora enfocada en satisfacer las necesidades de las PYMES, combinando tecnología avanzada con simplicidad para ofrecer soluciones de red confiables y de alto rendimiento. Con una plataforma en la nube gratuita de por vida, funciones de nivel empresarial y mantenimiento sencillo, garantiza una disponibilidad del 99.99%, posicionándose como líder en conectividad estable, segura y eficiente para empresas de todo el mundo. Dispositivos para conectividad en oficinas pequeñas, hogares y hoteles, con capacidades de gestión en la nube y soporte para numerosos terminales. Switches Ethernet y PoE (Power over Ethernet) gestionables en la nube, diseñados para la eficiencia y escalabilidad en redes",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-d6b6e28967ce3fac",
+          "url": "https://www.macrotics.com/cambium-networks",
+          "title": "Cambium Networks - Macrotics / Productos de Telecomunicaciones",
+          "excerpt": "¡Te falta $ 1.200.000 para obtener envío gratis! 0% 100% Cambium Networks ANTENAS APLICACIÓN BANDA CANTIDAD DE BANDAS CLASIFICACIÓN ENTORNO Puertos ethernet PUERTOS SFP TECNOLOGÍA TIPO DE RADIO TOPOLOGÍA Rangos de precio 56 productos RADIOENLACE PTMP CAMBIUM C050910D301A Antena Sectorial 90° 17 dBi para AP ePMP 3000 4x4 MU-MIMO $ 1.525.200 RADIOENLACE PTMP CAMBIUM C050910D301A Antena Sectorial 90° 17 dBi para AP ePMP 3000 4x4 MU-MIMO Ver más RADIOENLACE PTMP CAMBIUM C050900D020A Antenna para ePMP 2000 5GHz $ 976.400 RADIOENLACE PTMP CAMBIUM C050900D020A Antenna para ePMP 2000 5GHz Ver más Inyector PoE Cambium Gigabit DC 55V 60W N000065L001C $ 339.100 Inyector PoE Cambium Gigabit DC 55V 60W N000065L001C Ver más Cable de alimentación Fig. 8 US para inyector PoE N000065L001 $ 18.200 Cable de ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-c10f0da96ee3e7de",
+          "url": "https://www.facebook.com/macroticssas",
+          "title": "Macrotics SAS | Bogotá",
+          "excerpt": "Somos distribuidores mayoristas Bogotá, Colombia. Aug 28, 2026· www.macrotics.com. PON #FibraÓptica #ISP #Internet #FTTH #Networking #Telecomunicaciones #",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-afdd6370e2e9070b",
+          "url": "https://guiatic.com/co/206-redes-inalambricas-y-wi-fi-empresarial/77-macrotics-switches-ethernet-enrutadores-soluciones-inalambricas-para-redes-wifi-y-enlaces-de-datos-de-alto-rendimiento",
+          "title": "Macrotics Switches Ethernet - Enrutadores en Colombia",
+          "excerpt": "Macrotics Switches Ethernet - Enrutadores. Soluciones inalámbricas para redes wifi y enlaces de datos de alto rendimiento. Solicitar información →.",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-4a1d82439d7e6974",
+          "url": "https://www.macrotics.com",
+          "title": "Macrotics / Productos de Telecomunicaciones - Repetidor Wifi",
+          "excerpt": "¡Te falta $ 1.200.000 para obtener envío gratis! 0% 100% SU ALIADO INTEGRAL EN TELECOMUNICACIONES Optimice su red Desde soluciones de red para hogar hasta infraestructura de comunicaciones de alto rendimiento para empresas, en Macrotics ofrecemos tecnología de vanguardia en telecomunicaciones. Routers Switches WiFi Cableado UTP Enlaces Ver Todo Networking ¡Conoce nuestro Outlet! Descuentos exclusivos en routers, switches, puertos de acceso, accesorios, fibra óptica y mucho más. [...] Nosotros ContáctenosConviértete en distribuidorGarantiasServicio al cliente Términos Legales Política de tratamiento de datos personalesPolítica de PrivacidadDeclaración de orígenes de fondosPolítica de cambios y devolucionesRevisión SerialesTérminos y condiciones OUTLETTérminos y condiciones FREE SHIPPING La ",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "blindAuditEvidence": [
+        {
+          "id": "evidence-0e7a3ceeeb6d380d",
+          "url": "https://www.macrotics.com/aruba",
+          "title": "Macrotics / Productos de Telecomunicaciones - Repetidor Wifi",
+          "excerpt": "¡Te falta $ 1.200.000 para obtener envío gratis! 0% 100% HPE Networking Instant On HPE Networking Instant On es una solución de red diseñada específicamente para empresas. Ofrece una plataforma de redes inalámbricas y con cable fácil de usar que brinda conectividad de alto rendimiento sin la complejidad que a menudo se asocia con las soluciones empresariales. La simplicidad de instalación y administración, combinada con un conjunto completo de características, hace que HPE Networking Instant On sea una elección popular para empresas que buscan una conectividad robusta. ACCESS POINT  Conectividad Wi-Fi robusta y de alta velocidad, asegurando que los dispositivos de los usuarios siempre estén conectados de manera confiable.La tecnología Instant On facilita la configuración de los access poi",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-8fd23bed4af39912",
+          "url": "https://www.macrotics.com/mikrotik",
+          "title": "Mikrotik - Macrotics",
+          "excerpt": "¡Te falta $ 1.200.000 para obtener envío gratis! 0% 100% MikroTik Routers and Wireless MikroTik es una empresa letona que fue fundada en 1996 para desarrollar routers y sistemas ISP inalámbricos. MikroTik ahora proporciona hardware y software para la conectividad a Internet en la mayoría de los países de todo el mundo. mundo. Su experiencia en el uso de hardware de PC estándar de la industria y sistemas de enrutamiento completos nos permitió en 1997 crear el RouterOS sistema de software que proporciona una amplia estabilidad, controles y Flexibilidad para todo tipo de interfaces de datos y enrutamiento. En 2002 decidieron hacer nuestro su propio hardware, y así nació la marca RouterBOARD. MikroTik es líder en tecnología de redes, ofreciendo equipos confiables y de alto rendimiento para emp",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-955810cbbaa0a207",
+          "url": "https://www.macrotics.com/ruijie",
+          "title": "Ruijie - Macrotics",
+          "excerpt": "¡Te falta $ 1.200.000 para obtener envío gratis! 0% 100% Ruijie | Reyee Reyee by Ruijie es una marca innovadora enfocada en satisfacer las necesidades de las PYMES, combinando tecnología avanzada con simplicidad para ofrecer soluciones de red confiables y de alto rendimiento. Con una plataforma en la nube gratuita de por vida, funciones de nivel empresarial y mantenimiento sencillo, garantiza una disponibilidad del 99.99%, posicionándose como líder en conectividad estable, segura y eficiente para empresas de todo el mundo. Dispositivos para conectividad en oficinas pequeñas, hogares y hoteles, con capacidades de gestión en la nube y soporte para numerosos terminales. Switches Ethernet y PoE (Power over Ethernet) gestionables en la nube, diseñados para la eficiencia y escalabilidad en redes",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-d6b6e28967ce3fac",
+          "url": "https://www.macrotics.com/cambium-networks",
+          "title": "Cambium Networks - Macrotics / Productos de Telecomunicaciones",
+          "excerpt": "¡Te falta $ 1.200.000 para obtener envío gratis! 0% 100% Cambium Networks ANTENAS APLICACIÓN BANDA CANTIDAD DE BANDAS CLASIFICACIÓN ENTORNO Puertos ethernet PUERTOS SFP TECNOLOGÍA TIPO DE RADIO TOPOLOGÍA Rangos de precio 56 productos RADIOENLACE PTMP CAMBIUM C050910D301A Antena Sectorial 90° 17 dBi para AP ePMP 3000 4x4 MU-MIMO $ 1.525.200 RADIOENLACE PTMP CAMBIUM C050910D301A Antena Sectorial 90° 17 dBi para AP ePMP 3000 4x4 MU-MIMO Ver más RADIOENLACE PTMP CAMBIUM C050900D020A Antenna para ePMP 2000 5GHz $ 976.400 RADIOENLACE PTMP CAMBIUM C050900D020A Antenna para ePMP 2000 5GHz Ver más Inyector PoE Cambium Gigabit DC 55V 60W N000065L001C $ 339.100 Inyector PoE Cambium Gigabit DC 55V 60W N000065L001C Ver más Cable de alimentación Fig. 8 US para inyector PoE N000065L001 $ 18.200 Cable de ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-c10f0da96ee3e7de",
+          "url": "https://www.facebook.com/macroticssas",
+          "title": "Macrotics SAS | Bogotá",
+          "excerpt": "Somos distribuidores mayoristas Bogotá, Colombia. Aug 28, 2026· www.macrotics.com. PON #FibraÓptica #ISP #Internet #FTTH #Networking #Telecomunicaciones #",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-d7ac48238b3a73e7",
+          "url": "https://www.instagram.com/reel/CsJsAosNnHL",
+          "title": "El especialista de marca Tp-Link David Acero extiende su ...",
+          "excerpt": "Photo by Macrotics on August 11, 2026. #Networking #WiFi6 #Switches #AccessPoints ・ www.macrotics.com ・ 2026 ⏰ Horario: 09:00 AM - 04:00 PM.",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-afdd6370e2e9070b",
+          "url": "https://guiatic.com/co/206-redes-inalambricas-y-wi-fi-empresarial/77-macrotics-switches-ethernet-enrutadores-soluciones-inalambricas-para-redes-wifi-y-enlaces-de-datos-de-alto-rendimiento",
+          "title": "Macrotics Switches Ethernet - Enrutadores en Colombia",
+          "excerpt": "Macrotics Switches Ethernet - Enrutadores. Soluciones inalámbricas para redes wifi y enlaces de datos de alto rendimiento. Solicitar información →.",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-4a1d82439d7e6974",
+          "url": "https://www.macrotics.com",
+          "title": "Macrotics / Productos de Telecomunicaciones - Repetidor Wifi",
+          "excerpt": "¡Te falta $ 1.200.000 para obtener envío gratis! 0% 100% SU ALIADO INTEGRAL EN TELECOMUNICACIONES Optimice su red Desde soluciones de red para hogar hasta infraestructura de comunicaciones de alto rendimiento para empresas, en Macrotics ofrecemos tecnología de vanguardia en telecomunicaciones. Routers Switches WiFi Cableado UTP Enlaces Ver Todo Networking ¡Conoce nuestro Outlet! Descuentos exclusivos en routers, switches, puertos de acceso, accesorios, fibra óptica y mucho más. [...] Nosotros ContáctenosConviértete en distribuidorGarantiasServicio al cliente Términos Legales Política de tratamiento de datos personalesPolítica de PrivacidadDeclaración de orígenes de fondosPolítica de cambios y devolucionesRevisión SerialesTérminos y condiciones OUTLETTérminos y condiciones FREE SHIPPING La ",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-5d8b8d69f23e7b8f",
+          "url": "https://www.youtube.com/macroticssas",
+          "title": "Macrotics SAS",
+          "excerpt": "Videos · How to Deploy a Profitable Network with Ruijie · UniFi 2026 News: New Solutions and Better Implementations | Webinar with Miguel Paz · Did you know",
+          "sourceType": "independent-public"
+        }
+      ],
+      "assessmentModel": "deepseek/deepseek-v4-flash"
+    }
+  ],
+  "aliasToCompanyKey": {
+    "CO:domain:clonesyperifericos.com": "CO:domain:clonesyperifericos.com",
+    "CO:name:clonesyperifericos": "CO:domain:clonesyperifericos.com",
+    "CO:domain:compulago.com": "CO:domain:compulago.com",
+    "CO:name:compulago": "CO:domain:compulago.com",
+    "CO:domain:macrotics.com": "CO:domain:macrotics.com",
+    "CO:name:macrotics": "CO:domain:macrotics.com",
+    "CO:name:macroticssas": "CO:domain:macrotics.com"
+  },
+  "costEvents": [
+    {
+      "eventId": "CO-retail:evaluation:fresh-evidence",
+      "cellId": "CO-retail",
+      "stage": "evaluation-control-fresh-evidence",
+      "provider": "tavily",
+      "startedAt": "2026-09-08T22:15:33.795Z",
+      "completedAt": "2026-09-08T22:15:51.233Z",
+      "latencyMs": 46807,
+      "attempts": 20,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 15
+      },
+      "volume": {
+        "inputItems": 13,
+        "rawOutputItems": 28,
+        "validOutputItems": 28,
+        "downstreamUsedItems": 28,
+        "discardedReasonCounts": {
+          "noFreshEvidence": 6
+        }
+      },
+      "notes": [
+        "Gemini-unique final candidates only",
+        "historical evidence reads and writes disabled"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.12,
+      "budgetCostUsd": 0.12,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:evaluation:correction-search",
+      "cellId": "CO-retail",
+      "stage": "evaluation-control-correction-search",
+      "provider": "tavily",
+      "startedAt": "2026-09-08T22:15:51.258Z",
+      "completedAt": "2026-09-08T22:17:28.045Z",
+      "latencyMs": 26536,
+      "attempts": 12,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 12
+      },
+      "volume": {
+        "inputItems": 13,
+        "rawOutputItems": 13,
+        "validOutputItems": 13,
+        "downstreamUsedItems": 13,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.096,
+      "budgetCostUsd": 0.096,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:evaluation-control-correction:1",
+      "cellId": "CO-retail",
+      "stage": "evaluation-control-correction",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek/deepseek-v4-flash",
+      "startedAt": "2026-09-08T22:15:51.258Z",
+      "completedAt": "2026-09-08T22:17:28.045Z",
+      "latencyMs": 34744,
+      "attempts": 2,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 10111,
+        "outputTokens": 5059,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 13,
+        "rawOutputItems": 13,
+        "validOutputItems": 5,
+        "downstreamUsedItems": 5,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.0028320600000000004,
+      "budgetCostUsd": 0.0028320600000000004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:evaluation-control-correction:2",
+      "cellId": "CO-retail",
+      "stage": "evaluation-control-correction",
+      "provider": "openrouter-openai-peer",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "openai/gpt-4o-mini",
+      "startedAt": "2026-09-08T22:15:51.258Z",
+      "completedAt": "2026-09-08T22:17:28.045Z",
+      "latencyMs": 21893,
+      "attempts": 5,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 12498,
+        "outputTokens": 3148,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 0,
+        "rawOutputItems": 0,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "stageVolumeAttributedToPrimaryModelEvent": 2
+        }
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.0037635,
+      "budgetCostUsd": 0.0037635,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:evaluation-control-score-only:1",
+      "cellId": "CO-retail",
+      "stage": "evaluation-control-score-only",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek/deepseek-v4-flash",
+      "startedAt": "2026-09-08T22:17:28.096Z",
+      "completedAt": "2026-09-08T22:18:38.955Z",
+      "latencyMs": 38904,
+      "attempts": 2,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 12209,
+        "outputTokens": 4046,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 13,
+        "rawOutputItems": 13,
+        "validOutputItems": 3,
+        "downstreamUsedItems": 3,
+        "discardedReasonCounts": {
+          "retryRequired": 10
+        }
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.0028421400000000004,
+      "budgetCostUsd": 0.0028421400000000004,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    }
+  ],
+  "warnings": [
+    "No official-domain evidence was extracted for falabella.com.co.",
+    "No official-domain evidence was extracted for tauretcomputadores.com.",
+    "No official-domain evidence was extracted for clonesyperifericos.com.",
+    "No official-domain evidence was extracted for esferadigital.co.",
+    "No official-domain evidence was extracted for coltienda.co.",
+    "No official-domain evidence was extracted for capitalcolombia.com.",
+    "Correction search found no usable supplemental evidence for panamericana.com.co.",
+    "exito.com: Model fallback used after 2 route failure(s) (Insufficient Balance | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "exito.com: Roles without a supported atomic role finding were removed.",
+    "exito.com: Unsupported evidence IDs were removed.",
+    "panamericana.com.co: Model fallback used after 2 route failure(s) (Insufficient Balance | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "panamericana.com.co: Roles without a supported atomic role finding were removed.",
+    "falabella.com.co: Model fallback used after 2 route failure(s) (Insufficient Balance | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "falabella.com.co: Roles without a supported atomic role finding were removed.",
+    "alkomprar.com: Model fallback used after 2 route failure(s) (Insufficient Balance | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "alkomprar.com: Roles without a supported atomic role finding were removed.",
+    "alkomprar.com: Deterministic role hints were not auto-added: VAR, Reseller.",
+    "tauretcomputadores.com: Model fallback used after 2 route failure(s) (Insufficient Balance | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "tauretcomputadores.com: Roles without a supported atomic role finding were removed.",
+    "clonesyperifericos.com: Model fallback used after 1 route failure(s) (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "compulago.com: Model fallback used after 1 route failure(s) (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "macrotics.com: Model fallback used after 1 route failure(s) (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "macrotics.com: Roles without a supported atomic role finding were removed.",
+    "microcell.co: Model fallback used after 1 route failure(s) (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "microcell.co: Deterministic role hints were not auto-added: SI.",
+    "esferadigital.co: Model fallback used after 1 route failure(s) (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
+    "coltienda.co: Model fallback used after 2 route failure(s) (Circuit open for primary provider deepseek. | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "coltienda.co: Roles without a supported atomic role finding were removed.",
+    "tecnoshopping.com.co: Model fallback used after 2 route failure(s) (Circuit open for primary provider deepseek. | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "tecnoshopping.com.co: Roles without a supported atomic role finding were removed.",
+    "capitalcolombia.com: Model fallback used after 2 route failure(s) (Circuit open for primary provider deepseek. | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "capitalcolombia.com: Roles without a supported atomic role finding were removed."
+  ]
+}

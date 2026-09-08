@@ -1,4 +1,4 @@
-# Colombia search E2E evaluation v2.0.12
+# Colombia search E2E evaluation v2.0.13
 
 This directory is the immutable, cold-start Colombia follow-up to the UK/Mexico formal evaluation. It compares the current product workflow with one un-tuned Gemini Full + Google Search interaction per category.
 
@@ -65,5 +65,7 @@ node scripts\run-tsx.cjs experiments\search-e2e-evaluation\co-v2\scripts\run-for
 ```
 
 v2.0.11 enforces that contract in code: before a search extension it preloads every domain from cached discovered, rejected, enriched and corrected records. Those entities are removed before the light semantic gate and cannot repeat Tavily, correction or scoring work. The first v2.0.10 extension cost remains visible, but its 25 repeated downstream inputs cannot recur after resumption.
+
+v2.0.13 removes `temperature` from high-reasoning blind-review requests after OpenRouter rejected the GPT-5.6-sol parameter combination before inference. High reasoning, strict JSON Schema, provider independence and the no-Web blind packet remain unchanged. Completed shared-evaluation cells are reused, and the two rejected zero-token/zero-cost judge calls remain in the ledger before the blind audit resumes from its per-decision cache.
 
 Raw checkpoints are local under `runs/raw/`. Sanitized artifacts and the final report are under `artifacts/runs/2026-09-08-co-search-e2e-v2/`.

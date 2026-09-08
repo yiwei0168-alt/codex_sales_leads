@@ -255,7 +255,7 @@ async function callBlindReviewV2(input: Record<string, unknown>, model: string, 
   try {
     response = await requestJsonWithRetry(openRouterChatCompletionsUrl(config), {
       method: "POST", headers: openRouterRequestHeaders(config),
-      body: JSON.stringify({ model: requestedModel, max_tokens: maxTokens, temperature: 0,
+      body: JSON.stringify({ model: requestedModel, max_tokens: maxTokens,
         reasoning: { effort: "high" }, provider: config.providerPreferences,
         response_format: { type: "json_schema", json_schema: {
           name: "blind_judge_output_v2", strict: true, schema,

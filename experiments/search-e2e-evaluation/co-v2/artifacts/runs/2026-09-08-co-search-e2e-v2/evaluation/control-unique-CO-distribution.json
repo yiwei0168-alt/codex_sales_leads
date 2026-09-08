@@ -1,0 +1,246 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-08-co-search-e2e-v2",
+  "cellId": "CO-distribution",
+  "inputCount": 16,
+  "records": [
+    {
+      "companyKey": "CO:domain:redatel.net",
+      "countryCode": "CO",
+      "companyName": "Redatel S.A.S.",
+      "domain": "redatel.net",
+      "officialWebsiteUrl": "https://www.redatel.net",
+      "primaryRole": "Unresolved",
+      "supportedRoles": [],
+      "totalScore": 63,
+      "eligibilityStatus": "research-required",
+      "isRealOperatingCompany": false,
+      "operatesInTargetMarket": false,
+      "evidence": [
+        {
+          "id": "evidence-2c71df7fb17ea1fe",
+          "url": "https://www.redatel.net",
+          "title": "Importador mayorista de cámaras de seguridad Bogotá y Medellín",
+          "excerpt": "Redatel · Capacitación · Nivel básico Inscribirme Confirmamos tu cupo por WhatsApp. Marca aliada · EZVIZ ## Cámaras de seguridad y vigilancia EZVIZ Wi-Fi Videovigilancia Wi-Fi con inteligencia artificial para hogar y negocio. Como importador y distribuidor mayorista en Colombia, entregamos el portafolio EZVIZ con garantía de 24 meses y despacho desde nuestras bodegas de Bogotá y Medellín. Ver toda la colección EZVIZ › EZVIZ H6c Pro 2K Cámara Wi-Fi 3MP PT Interior con IA [...] Redatel · Capacitación · Nivel básico Inscribirme Confirmamos tu cupo por WhatsApp. Octubre Oct15jueves #### Edificios y Negocios Energéticamente Inteligentes: Automatización y Gestión del Consumo Online5:30 – 6:15 p. m.Gratis Redatel · Capacitación · Nivel intermedio Inscribirme Confirmamos tu cupo por WhatsApp. Novi",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-a26e9fd5180f080e",
+          "url": "https://www.redatel.net/html/redes-de-datos.html",
+          "title": "Redes de datos y cableado estructurado",
+          "excerpt": "Distribuidor mayorista de redes de datos en Colombia: switches, access points, fibra óptica y cableado estructurado. Envíos a todo el país.",
+          "sourceType": "official-website"
+        }
+      ],
+      "source": "gemini-unique-evaluated",
+      "blindAuditEvidence": [
+        {
+          "id": "evidence-2c71df7fb17ea1fe",
+          "url": "https://www.redatel.net",
+          "title": "Importador mayorista de cámaras de seguridad Bogotá y Medellín",
+          "excerpt": "Redatel · Capacitación · Nivel básico Inscribirme Confirmamos tu cupo por WhatsApp. Marca aliada · EZVIZ ## Cámaras de seguridad y vigilancia EZVIZ Wi-Fi Videovigilancia Wi-Fi con inteligencia artificial para hogar y negocio. Como importador y distribuidor mayorista en Colombia, entregamos el portafolio EZVIZ con garantía de 24 meses y despacho desde nuestras bodegas de Bogotá y Medellín. Ver toda la colección EZVIZ › EZVIZ H6c Pro 2K Cámara Wi-Fi 3MP PT Interior con IA [...] Redatel · Capacitación · Nivel básico Inscribirme Confirmamos tu cupo por WhatsApp. Octubre Oct15jueves #### Edificios y Negocios Energéticamente Inteligentes: Automatización y Gestión del Consumo Online5:30 – 6:15 p. m.Gratis Redatel · Capacitación · Nivel intermedio Inscribirme Confirmamos tu cupo por WhatsApp. Novi",
+          "sourceType": "official-website"
+        },
+        {
+          "id": "evidence-92dfa7d4537c3dd5",
+          "url": "https://www.ventasdeseguridad.com/directorio-de-proveedores/alarmas/productos-electricos-bateria/231586-redatel-s-a-s.html",
+          "title": "REDATEL S.A.S. - Ventas de Seguridad",
+          "excerpt": "Address CIRCULAR 4 # 69 - 11, LAURELES, MEDELLIN, ANTIOQUIA, COLOMBIA, 050031 Telephone +57 4 444-4090 Website www.redatel.net Activity REVENTAS (MAYORISTA • DISTRIBUIDOR • MINORISTA) Categories [...] Ventas de Seguridad 0-9ABCDEFGHIJKLMNOPQRSTUVWXYZ ###### → Actualizar sus Datos Aquí # REDATEL S.A.S. 4430c335-1568-41ec-a5a1-58127488dbdb.jpg.jpeg Importación y distribución de sistemas de seguridad electrónica, capacitaciones CCTV, catálogo CCTVTenemos sedes en Bogotá y Medellín, donde atendemos vía telefónica y hacemos envíos a todo el país, contamos con un equipo de servicio técnico capacitado para ofrecerle resultados. ### Detalles de la empresa Address [...] VIDEOVIGILANCIA > SERVICIO DE MANTENIMIENTO Y REPARACION CONTROL DE ACCESOS > SISTEMAS DE CONTROL DE INVENTARIO",
+          "sourceType": "independent-public"
+        },
+        {
+          "id": "evidence-a26e9fd5180f080e",
+          "url": "https://www.redatel.net/html/redes-de-datos.html",
+          "title": "Redes de datos y cableado estructurado",
+          "excerpt": "Distribuidor mayorista de redes de datos en Colombia: switches, access points, fibra óptica y cableado estructurado. Envíos a todo el país.",
+          "sourceType": "official-website"
+        }
+      ],
+      "assessmentModel": "deepseek/deepseek-v4-flash"
+    }
+  ],
+  "aliasToCompanyKey": {
+    "CO:domain:redatel.net": "CO:domain:redatel.net",
+    "CO:name:redatelsas": "CO:domain:redatel.net"
+  },
+  "costEvents": [
+    {
+      "eventId": "CO-distribution:evaluation:fresh-evidence",
+      "cellId": "CO-distribution",
+      "stage": "evaluation-control-fresh-evidence",
+      "provider": "tavily",
+      "startedAt": "2026-09-08T22:18:39.049Z",
+      "completedAt": "2026-09-08T22:18:47.067Z",
+      "latencyMs": 43900,
+      "attempts": 29,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 25
+      },
+      "volume": {
+        "inputItems": 16,
+        "rawOutputItems": 52,
+        "validOutputItems": 52,
+        "downstreamUsedItems": 52,
+        "discardedReasonCounts": {
+          "noFreshEvidence": 3
+        }
+      },
+      "notes": [
+        "Gemini-unique final candidates only",
+        "historical evidence reads and writes disabled"
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.2,
+      "budgetCostUsd": 0.2,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-distribution:evaluation:correction-search",
+      "cellId": "CO-distribution",
+      "stage": "evaluation-control-correction-search",
+      "provider": "tavily",
+      "startedAt": "2026-09-08T22:18:47.095Z",
+      "completedAt": "2026-09-08T22:21:07.610Z",
+      "latencyMs": 41745,
+      "attempts": 15,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {
+        "paidSearchCredits": 15
+      },
+      "volume": {
+        "inputItems": 16,
+        "rawOutputItems": 16,
+        "validOutputItems": 16,
+        "downstreamUsedItems": 16,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.12,
+      "budgetCostUsd": 0.12,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-distribution:evaluation-control-correction:1",
+      "cellId": "CO-distribution",
+      "stage": "evaluation-control-correction",
+      "provider": "openrouter-openai-peer",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "openai/gpt-4o-mini",
+      "startedAt": "2026-09-08T22:18:47.095Z",
+      "completedAt": "2026-09-08T22:21:07.610Z",
+      "latencyMs": 32546,
+      "attempts": 8,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 22370,
+        "outputTokens": 4651,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 16,
+        "rawOutputItems": 16,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.006146100000000001,
+      "budgetCostUsd": 0.006146100000000001,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-distribution:evaluation-control-score-only:1",
+      "cellId": "CO-distribution",
+      "stage": "evaluation-control-score-only",
+      "provider": "openrouter-deepseek",
+      "requestedModel": "deepseek-v4-flash",
+      "actualModel": "deepseek/deepseek-v4-flash",
+      "startedAt": "2026-09-08T22:21:07.657Z",
+      "completedAt": "2026-09-08T22:22:18.542Z",
+      "latencyMs": 41245,
+      "attempts": 3,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 11554,
+        "outputTokens": 3204,
+        "reasoningTokens": 0
+      },
+      "volume": {
+        "inputItems": 16,
+        "rawOutputItems": 16,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {
+          "retryRequired": 15
+        }
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "officialListPriceUsd": 0.0025146800000000005,
+      "budgetCostUsd": 0.0025146800000000005,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    }
+  ],
+  "warnings": [
+    "No official-domain evidence was extracted for sedinternational.com.co.",
+    "No official-domain evidence was extracted for redesorion.com.",
+    "No official-domain evidence was extracted for redatel.net.",
+    "Correction search found no usable supplemental evidence for gvscolombia.com.",
+    "Correction search found no usable supplemental evidence for colombiatel.co.",
+    "Correction search found no usable supplemental evidence for lieferant.com.co.",
+    "Correction search found no usable supplemental evidence for imsmayorista.com.",
+    "Correction search found no usable supplemental evidence for redesorion.com.",
+    "mps.com.co: Model fallback used after 2 route failure(s) (Insufficient Balance | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "mps.com.co: Roles without a supported atomic role finding were removed.",
+    "mps.com.co: Deterministic role hints were not auto-added: Distributor, Reseller.",
+    "sedinternational.com.co: Model fallback used after 2 route failure(s) (Insufficient Balance | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "sedinternational.com.co: Roles without a supported atomic role finding were removed.",
+    "sedinternational.com.co: Deterministic role hints were not auto-added: Distributor.",
+    "gvscolombia.com: Model fallback used after 2 route failure(s) (Insufficient Balance | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "gvscolombia.com: Roles without a supported atomic role finding were removed.",
+    "izc.com.co: Model fallback used after 2 route failure(s) (Insufficient Balance | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "izc.com.co: Roles without a supported atomic role finding were removed.",
+    "syscom.com.co: Model fallback used after 2 route failure(s) (Insufficient Balance | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "syscom.com.co: Roles without a supported atomic role finding were removed.",
+    "syscom.com.co: Deterministic role hints were not auto-added: ISP.",
+    "elenst.com: Model fallback used after 2 route failure(s) (Insufficient Balance | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "elenst.com: Roles without a supported atomic role finding were removed.",
+    "elenst.com: Deterministic role hints were not auto-added: Distributor, SI.",
+    "colombiatel.co: Model fallback used after 2 route failure(s) (Insufficient Balance | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "colombiatel.co: Roles without a supported atomic role finding were removed.",
+    "telcolombia.com: Model fallback used after 2 route failure(s) (Circuit open for primary provider deepseek. | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "telcolombia.com: Roles without a supported atomic role finding were removed.",
+    "telcolombia.com: Deterministic role hints were not auto-added: ISP.",
+    "lieferant.com.co: Model fallback used after 2 route failure(s) (Circuit open for primary provider deepseek. | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "lieferant.com.co: Roles without a supported atomic role finding were removed.",
+    "sumitelco.com: Model fallback used after 2 route failure(s) (Circuit open for primary provider deepseek. | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "sumitelco.com: Roles without a supported atomic role finding were removed.",
+    "imsmayorista.com: Model fallback used after 2 route failure(s) (Circuit open for primary provider deepseek. | The operation was aborted due to timeout): requested=deepseek-v4-flash; actual=openai/gpt-4o-mini; provider=openrouter-openai-peer.",
+    "imsmayorista.com: Roles without a supported atomic role finding were removed.",
+    "domotes.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. | The operation was aborted due to timeout | The operation was aborted due to timeout Infrastructure/provider failure does not qualify for Pro escalation.",
+    "redesorion.com: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. | The operation was aborted due to timeout | The operation was aborted due to timeout Infrastructure/provider failure does not qualify for Pro escalation.",
+    "lcdistribuciones.com.co: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. | The operation was aborted due to timeout | The operation was aborted due to timeout Infrastructure/provider failure does not qualify for Pro escalation.",
+    "bismark.net.co: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. | The operation was aborted due to timeout | The operation was aborted due to timeout Infrastructure/provider failure does not qualify for Pro escalation.",
+    "redatel.net: Routine correction failed: Primary model deepseek-v4-flash and approved equivalent fallbacks failed: Circuit open for primary provider deepseek. | The operation was aborted due to timeout | The operation was aborted due to timeout Infrastructure/provider failure does not qualify for Pro escalation."
+  ]
+}
