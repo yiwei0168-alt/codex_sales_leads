@@ -90,4 +90,23 @@ describe("Colombia blind-review OpenRouter request", () => {
     expect(result.actualModel).toBe("deepseek/deepseek-v4-pro");
     expect(result.attempts).toBe(3);
   });
+
+  it("marks the bounded same-model schema-repair request and expands only its output budget", async () => {
+    vi.stubEnv("OPENROUTER_API_KEY", "test-openrouter-key");
+    let requestBody: Record<string, unknown> | undefined;
+    vi.stubGlobal("fetch", vi.fn(async (_input: string | URL | Request, init?: RequestInit) => {
+      requestBody = JSON.parse(String(init?.body)) as Record<string, unknown>;
+      return new Response(JSON.stringify({ error: { message: "test stop" } }), {
+        status: 404,
+        headers: { "content-type": "application/json" },
+      });
+    }));
+
+    await callBlindArbitratorV2({ packetId: "test-packet" }, "deepseek/deepseek-v4-pro", 8_192,
+      { schemaRepair: true });
+
+    expect(requestBody).toMatchObject({ model: "deepseek/deepseek-v4-pro", max_tokens: 8_192 });
+    const messages = requestBody?.messages as Array<{ role: string; content: string }>;
+    expect(messages[0]?.content).toContain("single schema-repair retry");
+  });
 });

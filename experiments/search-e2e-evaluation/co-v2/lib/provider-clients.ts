@@ -269,7 +269,7 @@ export async function callClaudeBlindJudge(packet: Record<string, unknown>, mode
 }
 
 async function callBlindReviewV2(input: Record<string, unknown>, model: string, rubricFilename: string,
-  maxTokens = 4_096): Promise<ProviderCall<BlindJudgeV2Output>> {
+  maxTokens = 4_096, options: { schemaRepair?: boolean } = {}): Promise<ProviderCall<BlindJudgeV2Output>> {
   const config = getOpenRouterConfig();
   const requestedModel = resolveOpenRouterModel(model, /(?:^|\/)gpt-/i.test(model) ? "openai" : "anthropic");
   const root = path.resolve("experiments/search-e2e-evaluation/co-v2");
@@ -287,7 +287,9 @@ async function callBlindReviewV2(input: Record<string, unknown>, model: string, 
         response_format: { type: "json_schema", json_schema: {
           name: "blind_judge_output_v2", strict: true, schema,
         } },
-        messages: [{ role: "system", content: `${rubric}\n\nReturn one JSON object only.` },
+        messages: [{ role: "system", content: `${rubric}\n\nReturn one JSON object only.${options.schemaRepair
+          ? "\n\nThis is the single schema-repair retry. Keep every reason and claim concise, and finish the complete JSON object within the token budget."
+          : ""}` },
           { role: "user", content: JSON.stringify(input) }] }),
     }, 2, 180_000);
   } catch (error) {
@@ -364,9 +366,9 @@ async function callDeepSeekBlindArbitratorV2(input: Record<string, unknown>, mod
 }
 
 export function callBlindArbitratorV2(input: Record<string, unknown>, model: string,
-  maxTokens = 4_096): Promise<ProviderCall<BlindJudgeV2Output>> {
+  maxTokens = 4_096, options: { schemaRepair?: boolean } = {}): Promise<ProviderCall<BlindJudgeV2Output>> {
   if (/^deepseek-/i.test(model.trim())) return callDeepSeekBlindArbitratorWithFallback(input, model, maxTokens);
-  return callBlindReviewV2(input, model, "blind-judge-arbitration-rubric-v2.md", maxTokens);
+  return callBlindReviewV2(input, model, "blind-judge-arbitration-rubric-v2.md", maxTokens, options);
 }
 
 async function callDeepSeekBlindArbitratorWithFallback(input: Record<string, unknown>, model: string,

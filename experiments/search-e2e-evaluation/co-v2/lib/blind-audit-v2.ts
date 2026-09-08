@@ -468,9 +468,15 @@ export async function arbitrateBlindPacketV2(packet: BlindAuditV2Packet,
   } = {}): Promise<BlindJudgeV2Decision> {
   const input = { packet, arbitrationReasons,
     judgeOutputs: judges.map((judge) => ({ judgeId: judge.judgeId, output: judge.output })) };
-  const call = await callBlindArbitratorV2(input as unknown as Record<string, unknown>, model);
-  const costEvent = costEventFor(packet, call, "blind-arbitrator-v2", "arbitrator");
+  let call = await callBlindArbitratorV2(input as unknown as Record<string, unknown>, model);
+  let costEvent = costEventFor(packet, call, "blind-arbitrator-v2", "arbitrator");
   await options.onCostEvents?.([costEvent]);
+  if (!call.output && !call.requestError && call.parseError) {
+    call = await callBlindArbitratorV2(input as unknown as Record<string, unknown>, call.actualModel,
+      8_192, { schemaRepair: true });
+    costEvent = costEventFor(packet, call, "blind-arbitrator-v2", "arbitrator-schema-repair");
+    await options.onCostEvents?.([costEvent]);
+  }
   const decision = decisionFromCall(packet, "arbitrator", call, "blind-arbitrator-v2");
   return { ...decision, costEvent };
 }

@@ -1,4 +1,4 @@
-# Colombia search E2E evaluation v2.0.15
+# Colombia search E2E evaluation v2.0.16
 
 This directory is the immutable, cold-start Colombia follow-up to the UK/Mexico formal evaluation. It compares the current product workflow with one un-tuned Gemini Full + Google Search interaction per category.
 
@@ -71,5 +71,7 @@ v2.0.13 removes `temperature` from high-reasoning blind-review requests after Op
 v2.0.14 deterministically clips blind-judge narrative strings and arrays to the already frozen JSON Schema limits before local validation. It does not change any score, role, state, citation-support label or evidence selection. This prevents a valid paid Claude response from being discarded solely because a reason exceeds 500 characters; genuinely missing, invalid or contradictory semantic fields still fail validation.
 
 v2.0.15 applies the confirmed same-tier model redundancy to conditional arbitration. DeepSeek Pro remains the requested arbitrator; if its direct endpoint fails or returns no valid structured output, the same DeepSeek Pro tier is tried through OpenRouter before any in-conversation Codex fallback. The combined event records direct attempts, fallback model/provider, latency and OpenRouter account cost.
+
+v2.0.16 adds one bounded schema-repair retry only when the same-tier gateway returns paid content that cannot be parsed as the frozen schema. The repair stays on the gateway's actual model, keeps the evidence packet and rubric unchanged, adds only a concise-complete-JSON instruction, and expands that single output budget from 4,096 to 8,192 tokens. The failed output and repair are separate cost events. Transport failures, semantic disagreement and valid decisions cannot trigger this retry.
 
 Raw checkpoints are local under `runs/raw/`. Sanitized artifacts and the final report are under `artifacts/runs/2026-09-08-co-search-e2e-v2/`.

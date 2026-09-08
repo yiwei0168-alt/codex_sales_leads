@@ -1,4 +1,4 @@
-# Frozen protocol: Colombia search E2E v2.0.15
+# Frozen protocol: Colombia search E2E v2.0.16
 
 v2.0.1 supersedes the execution guard in v2.0.0 after the first Retail attempt exposed a Kimi constraint-copy failure before Product discovery. Kimi remains mandatory for lightweight intent/template-fit recognition, while the already user-confirmed preregistered country, count and category are authoritative for execution. Divergence is retained as a warning and efficiency loss. The valid unchanged Gemini control and all sunk cost remain in the same ledger.
 
@@ -29,6 +29,8 @@ v2.0.13 supersedes only the OpenRouter request compatibility for the frozen blin
 v2.0.14 supersedes only local schema-bound normalization after Claude Opus 5 returned an otherwise structured paid decision with one reason longer than the frozen 500-character maximum. Before Zod validation, strings and arrays are deterministically clipped to their existing JSON Schema maxima. Scores, role labels, identity/market/eligibility states, citation support and evidence packets are untouched; missing fields, invalid enums, invalid score ranges and semantic blindness violations still fail. This avoids buying the same judgment again for verbosity alone and does not tune any outcome rule.
 
 v2.0.15 supersedes only arbitration transport redundancy. The first required DeepSeek Pro arbitrations found the direct provider unavailable and stopped despite the previously confirmed same-tier gateway policy. DeepSeek Pro remains the frozen requested model; a missing/invalid direct result now makes one bounded OpenRouter request to `deepseek/deepseek-v4-pro`, preserving model family, rubric and schema. Combined telemetry retains direct and gateway attempts, actual model/provider, latency and account cost. If both routes fail, execution still stops for the authorized in-conversation Codex fallback rather than silently selecting a judge family.
+
+v2.0.16 supersedes only malformed/truncated arbitrator-output recovery. Two OpenRouter DeepSeek Pro responses reached the exact 4,096-token output ceiling and failed JSON parsing after paid inference. An arbitrator call that has content and a parse error, but no transport/request failure, now receives exactly one separately metered retry on its actual same-tier model with the identical evidence packet, rubric, score rules and JSON Schema. The retry adds only a concise-output/completed-JSON instruction and an 8,192-token ceiling. Valid outputs, request failures and semantic-validation disagreements do not qualify; another invalid repair still stops for the authorized in-conversation Codex fallback. Existing failed events remain in the ledger and cached valid judge decisions are reused.
 
 ## Hypothesis and arms
 
