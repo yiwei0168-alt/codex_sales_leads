@@ -4,9 +4,11 @@ import path from "node:path";
 
 import { blindAuditV2DecisionCacheKey, createInSessionCodexArbitrationDecisionV2,
   resolveBlindConsensusV2, type BlindAuditV2Packet, type BlindJudgeV2Decision } from "../lib/blind-audit-v2";
+import { priceCostEvent, type ExperimentRateCard } from "../lib/cost-ledger";
 import { EXPERIMENT_CONFIG } from "../lib/experiment";
 import { artifactRunRoot, loadRunState, rawRunRoot, saveRunState, writeJsonAtomic } from "../lib/run-store";
 import { blindJudgeV2OutputSchema } from "../lib/runtime-schemas";
+import rateCardJson from "../config/official-rate-card.v1.json";
 
 function sha256(value: string): string {
   return createHash("sha256").update(value).digest("hex");
@@ -40,6 +42,32 @@ async function main(): Promise<void> {
   await writeJsonAtomic(cacheFile, decision);
 
   const state = await loadRunState();
+  let unobservedTimeoutEvent = undefined;
+  if (process.argv.includes("--record-unobserved-timeout")) {
+    const prior = [...state.costEvents].reverse().find((event) => event.eventId.startsWith(packet.packetId)
+      && event.stage === "blind-arbitrator-v2");
+    const startedAt = prior?.completedAt ?? new Date().toISOString();
+    const completedAt = new Date(new Date(startedAt).getTime() + 180_000).toISOString();
+    const rubric = await readFile(path.resolve("experiments/search-e2e-evaluation/co-v2/config/blind-judge-arbitration-rubric-v2.md"), "utf8");
+    const arbitrationInput = { packet, arbitrationReasons: initial.arbitrationReasons,
+      judgeOutputs: judgePair.map((judge) => ({ judgeId: judge.judgeId, output: judge.output })) };
+    const estimatedInputTokens = Math.ceil((rubric.length + JSON.stringify(arbitrationInput).length) / 3);
+    unobservedTimeoutEvent = priceCostEvent({
+      eventId: `${packet.packetId}:blind-arbitrator-v2:arbitrator-schema-repair-unobserved-timeout`,
+      runId: state.runId, ledger: "evaluation-overhead", arm: "shared-evaluation",
+      stage: "blind-arbitrator-v2", provider: "openrouter", requestedModel,
+      actualModel: "deepseek/deepseek-v4-pro", startedAt, completedAt, latencyMs: 180_000,
+      attempts: 1, retries: 0, fallbackUsed: true, status: "failed",
+      usage: { inputTokens: estimatedInputTokens, outputTokens: 8_192 },
+      volume: { inputItems: 1, rawOutputItems: 0, validOutputItems: 0, downstreamUsedItems: 0,
+        discardedReasonCounts: { timeout: 1 } },
+      notes: ["response body timed out before usage telemetry", "token usage is a conservative upper-bound estimate",
+        "account cash cost remains unavailable; budget uses official list-price estimate"],
+    }, rateCardJson as ExperimentRateCard);
+    if (!state.costEvents.some((event) => event.eventId === unobservedTimeoutEvent!.eventId)) {
+      state.costEvents.push(unobservedTimeoutEvent);
+    }
+  }
   if (!state.costEvents.some((event) => event.eventId === decision.costEvent.eventId)) {
     state.costEvents.push(decision.costEvent);
     await saveRunState(state);
@@ -47,7 +75,7 @@ async function main(): Promise<void> {
   const publicDecision = { ...decision, raw: undefined };
   await writeJsonAtomic(path.join(artifactRunRoot(), `blind-audit/in-session-fallback/${packet.packetId}.json`), {
     schemaVersion: 1, runId: state.runId, arbitrationReasons: initial.arbitrationReasons,
-    decision: publicDecision,
+    decision: publicDecision, ...(unobservedTimeoutEvent ? { precedingUnobservedTimeout: unobservedTimeoutEvent } : {}),
   });
   console.log(JSON.stringify({ status: "imported", packetId: packet.packetId,
     arbitrationReasons: initial.arbitrationReasons, cacheFile, eventId: decision.costEvent.eventId }, null, 2));

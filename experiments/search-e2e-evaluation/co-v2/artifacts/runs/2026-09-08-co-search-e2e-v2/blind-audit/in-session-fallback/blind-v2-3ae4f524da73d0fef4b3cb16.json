@@ -1,0 +1,192 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-08-co-search-e2e-v2",
+  "arbitrationReasons": [
+    "total-score-difference",
+    "score-threshold-disagreement"
+  ],
+  "decision": {
+    "packetId": "blind-v2-3ae4f524da73d0fef4b3cb16",
+    "judgeId": "arbitrator",
+    "requestedModel": "deepseek-v4-pro",
+    "actualModel": "codex-in-session",
+    "modelReportedTotal": 68,
+    "deterministicTotal": 68,
+    "roleFamily": "unresolved",
+    "requestedCategoryFamilyMatch": false,
+    "citationValidation": {
+      "checkedClaims": 6,
+      "validEvidenceIds": 6,
+      "entailedClaims": 6,
+      "idAlignmentRate": 1,
+      "entailmentRate": 1
+    },
+    "output": {
+      "packetId": "blind-v2-3ae4f524da73d0fef4b3cb16",
+      "externalSearchUsed": false,
+      "externalKnowledgeUsed": false,
+      "isRealOperatingCompany": true,
+      "operatesInTargetMarket": true,
+      "supportedRoles": [
+        "services",
+        "si-msp"
+      ],
+      "primaryRole": "services",
+      "dimensions": {
+        "productAndUseCaseFit": 38,
+        "channelAndBuyingInfluence": 10,
+        "sameRoleScaleAndCoverage": 5,
+        "executionAndEnablement": 8,
+        "opportunityAndRisk": 7
+      },
+      "totalScore": 68,
+      "eligibility": "eligible",
+      "dimensionReasons": [
+        {
+          "dimension": "productAndUseCaseFit",
+          "reason": "Corporate high-density Wi-Fi, Cat6A cabling, fibre and business infrastructure services align strongly with Cudy AP, switching and gateway use cases, while FWA and xPON depth are not evidenced.",
+          "citations": [
+            {
+              "evidenceId": "evidence-5f17f2a80e6993cd",
+              "claim": "Help Soluciones delivers corporate high-density Wi-Fi, certified Cat6A cabling and fibre infrastructure.",
+              "support": "direct"
+            }
+          ]
+        },
+        {
+          "dimension": "channelAndBuyingInfluence",
+          "reason": "Project quotation, infrastructure design and IT outsourcing show specification and procurement influence, but networking-brand sourcing volume is unknown.",
+          "citations": [
+            {
+              "evidenceId": "evidence-5f17f2a80e6993cd",
+              "claim": "The company quotes network projects and provides equipment through IT outsourcing.",
+              "support": "direct"
+            }
+          ]
+        },
+        {
+          "dimension": "sameRoleScaleAndCoverage",
+          "reason": "Twelve years of continuity and certified engineers support an established services firm, but only a Bogotá location is evidenced, placing it in the local/small band.",
+          "citations": [
+            {
+              "evidenceId": "evidence-5f17f2a80e6993cd",
+              "claim": "Help Soluciones states 12 years of operation and support delivery in Bogotá.",
+              "support": "direct"
+            },
+            {
+              "evidenceId": "evidence-26ce4e7b0b0673b9",
+              "claim": "Its listed location is Bogotá, Colombia.",
+              "support": "direct"
+            }
+          ]
+        },
+        {
+          "dimension": "executionAndEnablement",
+          "reason": "Certified engineers, on-site or remote response and 24/7 support with a sub-two-hour target demonstrate strong implementation and service continuity.",
+          "citations": [
+            {
+              "evidenceId": "evidence-5f17f2a80e6993cd",
+              "claim": "The firm advertises certified engineers, 24/7 support and response in under two hours on site or remotely.",
+              "support": "direct"
+            }
+          ]
+        },
+        {
+          "dimension": "opportunityAndRisk",
+          "reason": "A long-running Bogotá network-services firm is a credible outlet for value SMB networking hardware; single-city scale and no evidenced networking-vendor relationship constrain the opportunity.",
+          "citations": [
+            {
+              "evidenceId": "evidence-26ce4e7b0b0673b9",
+              "claim": "The company presents itself as an enterprise infrastructure, networks and maintenance partner in Colombia.",
+              "support": "direct"
+            }
+          ]
+        }
+      ],
+      "unsupportedOrContradictoryClaims": [
+        "No multi-city coverage, client count, revenue, staff count or project volume is established.",
+        "No networking-vendor partnership, Cudy relationship, FWA or xPON experience is established."
+      ]
+    },
+    "costEvent": {
+      "eventId": "blind-v2-3ae4f524da73d0fef4b3cb16:blind-arbitrator-v2:arbitrator-codex-in-session",
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-arbitrator-v2",
+      "provider": "in-conversation-codex",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "codex-in-session",
+      "startedAt": "2026-09-08T23:38:48.058Z",
+      "completedAt": "2026-09-08T23:38:48.058Z",
+      "latencyMs": 0,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0
+      },
+      "accountCashCostUsd": 0,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "blind-audit-v2",
+        "no web search",
+        "arm/model/rank/unified score hidden",
+        "output is consumed by consensus or conditional arbitration",
+        "authorized in-conversation Codex fallback",
+        "no API call or external search"
+      ],
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    }
+  },
+  "precedingUnobservedTimeout": {
+    "eventId": "blind-v2-3ae4f524da73d0fef4b3cb16:blind-arbitrator-v2:arbitrator-schema-repair-unobserved-timeout",
+    "runId": "2026-09-08-co-search-e2e-v2",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-arbitrator-v2",
+    "provider": "openrouter",
+    "requestedModel": "deepseek-v4-pro",
+    "actualModel": "deepseek/deepseek-v4-pro",
+    "startedAt": "2026-09-08T23:29:41.991Z",
+    "completedAt": "2026-09-08T23:32:41.991Z",
+    "latencyMs": 180000,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": true,
+    "status": "failed",
+    "usage": {
+      "inputTokens": 4857,
+      "outputTokens": 8192
+    },
+    "volume": {
+      "inputItems": 1,
+      "rawOutputItems": 0,
+      "validOutputItems": 0,
+      "downstreamUsedItems": 0,
+      "discardedReasonCounts": {
+        "timeout": 1
+      }
+    },
+    "notes": [
+      "response body timed out before usage telemetry",
+      "token usage is a conservative upper-bound estimate",
+      "account cash cost remains unavailable; budget uses official list-price estimate"
+    ],
+    "officialListPriceUsd": 0.009239834999999998,
+    "budgetCostUsd": 0.009239834999999998,
+    "cashCostBasis": "official-conservative",
+    "costAnomalies": []
+  }
+}

@@ -109,4 +109,20 @@ describe("Colombia blind-review OpenRouter request", () => {
     const messages = requestBody?.messages as Array<{ role: string; content: string }>;
     expect(messages[0]?.content).toContain("single schema-repair retry");
   });
+
+  it("normalizes a response-body timeout and conservatively meters both bounded attempts", async () => {
+    vi.stubEnv("OPENROUTER_API_KEY", "test-openrouter-key");
+    const fetchMock = vi.fn(async () => ({ ok: true, status: 200,
+      text: async () => { throw new DOMException("timed out", "TimeoutError"); } }) as unknown as Response);
+    vi.stubGlobal("fetch", fetchMock);
+
+    const result = await callBlindJudgeV2({ packetId: "test-packet" }, "openai/gpt-5.6-sol", 128);
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(result.requestFailureKind).toBe("timeout");
+    expect(result.attempts).toBe(2);
+    expect(result.retries).toBe(1);
+    expect(result.usage.outputTokens).toBe(256);
+    expect(result.usage.inputTokens).toBeGreaterThan(0);
+  });
 });

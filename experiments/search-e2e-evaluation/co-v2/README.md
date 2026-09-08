@@ -1,4 +1,4 @@
-# Colombia search E2E evaluation v2.0.18
+# Colombia search E2E evaluation v2.0.19
 
 This directory is the immutable, cold-start Colombia follow-up to the UK/Mexico formal evaluation. It compares the current product workflow with one un-tuned Gemini Full + Google Search interaction per category.
 
@@ -77,6 +77,8 @@ v2.0.16 adds one bounded schema-repair retry only when the same-tier gateway ret
 v2.0.17 implements the preregistered `codex-in-session` fallback after both 8,192-token schema repairs also failed. A manual fallback output can be imported only for a frozen packet with both independent judge decisions and an actual arbitration trigger. The importer validates the unchanged schema and blindness flags, binds the cache to the packet plus both judge outputs, verifies consensus resolution, and records a separate zero-token/zero-API-cost event and public decision artifact. It cannot alter the packet, independent decisions, rubric or trigger rules.
 
 v2.0.18 fixes repair-cache identity after a later DeepSeek schema repair succeeded. The cache identity must retain the frozen requested model `deepseek-v4-pro`, while `actualModel` records `deepseek/deepseek-v4-pro`; using the actual route as both fields made a valid cache fail resumption validation. Two successful cached repairs are deterministically metadata-corrected without another model call or any score/output change. A third failed repair is resolved through the v2.0.17 in-session importer.
+
+v2.0.19 normalizes timeouts that occur while reading a provider response body, not only while awaiting response headers. The bounded request helper now retries that timeout once and returns a metered provider failure rather than crashing the runner. When provider usage is unavailable, token usage is conservatively estimated from the serialized blind input and maximum output budget and priced at the official rate; it is explicitly not labeled account-observed. The one timeout that exposed this defect is backfilled through the audited importer before its in-session arbitration is cached.
 
 ```powershell
 node scripts\run-tsx.cjs experiments\search-e2e-evaluation\co-v2\scripts\import-in-session-arbitration.ts --decision=<raw-output-json>

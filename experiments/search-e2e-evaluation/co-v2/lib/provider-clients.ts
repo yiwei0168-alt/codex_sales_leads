@@ -149,8 +149,10 @@ async function requestJsonWithRetry(url: string, init: RequestInit, maximumAttem
   timeoutMs: number): Promise<{ body: unknown; attempts: number }> {
   for (let attempt = 1; attempt <= maximumAttempts; attempt += 1) {
     let response: Response;
+    let text: string;
     try {
       response = await fetch(url, { ...init, signal: AbortSignal.timeout(timeoutMs) });
+      text = await response.text();
     } catch (error) {
       if (attempt < maximumAttempts) continue;
       const name = error instanceof Error ? error.name : "";
@@ -159,7 +161,6 @@ async function requestJsonWithRetry(url: string, init: RequestInit, maximumAttem
       throw new ProviderRequestError(error instanceof Error ? error.message : String(error), attempt, failureKind,
         { cause: error });
     }
-    const text = await response.text();
     if (!response.ok) {
       const retryable = response.status === 408 || response.status === 429 || response.status >= 500;
       if (retryable && attempt < maximumAttempts) continue;
@@ -250,7 +251,11 @@ export async function callClaudeBlindJudge(packet: Record<string, unknown>, mode
     }, 2, 180_000);
   } catch (error) {
     if (!(error instanceof ProviderRequestError)) throw error;
-    return { output: null, raw: null, requestedModel, actualModel: requestedModel, usage: {}, startedAt,
+    const usage = error.failureKind === "timeout" ? {
+      inputTokens: Math.ceil((rubric.length + JSON.stringify(packet).length) / 3) * error.attempts,
+      outputTokens: maxTokens * error.attempts,
+    } : {};
+    return { output: null, raw: null, requestedModel, actualModel: requestedModel, usage, startedAt,
       completedAt: new Date().toISOString(), latencyMs: Date.now() - started, attempts: error.attempts,
       retries: Math.max(0, error.attempts - 1), requestError: error.message,
       requestFailureKind: error.failureKind };
@@ -294,7 +299,11 @@ async function callBlindReviewV2(input: Record<string, unknown>, model: string, 
     }, 2, 180_000);
   } catch (error) {
     if (!(error instanceof ProviderRequestError)) throw error;
-    return { output: null, raw: null, requestedModel, actualModel: requestedModel, usage: {}, startedAt,
+    const usage = error.failureKind === "timeout" ? {
+      inputTokens: Math.ceil((rubric.length + JSON.stringify(input).length) / 3) * error.attempts,
+      outputTokens: maxTokens * error.attempts,
+    } : {};
+    return { output: null, raw: null, requestedModel, actualModel: requestedModel, usage, startedAt,
       completedAt: new Date().toISOString(), latencyMs: Date.now() - started, attempts: error.attempts,
       retries: Math.max(0, error.attempts - 1), requestError: error.message,
       requestFailureKind: error.failureKind };
