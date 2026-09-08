@@ -4,8 +4,8 @@
   "cellId": "CO-retail",
   "arm": "product-e2e",
   "startedAt": "2026-09-07T23:36:47.572Z",
-  "completedAt": "2026-09-08T00:40:16.796Z",
-  "wallClockMs": 2383325,
+  "completedAt": "2026-09-08T00:59:04.917Z",
+  "wallClockMs": 2383415,
   "plan": {
     "countryCode": "CO",
     "countryName": "Colombia",
@@ -538,7 +538,7 @@
         "Reseller",
         "E-tailer"
       ],
-      "totalScore": 100,
+      "totalScore": 87,
       "eligibilityStatus": "eligible",
       "eligible": true,
       "scoringStatus": "completed",
@@ -790,7 +790,7 @@
         "Retailer",
         "E-tailer"
       ],
-      "totalScore": 88,
+      "totalScore": 78,
       "eligibilityStatus": "eligible",
       "eligible": true,
       "scoringStatus": "completed",
@@ -918,119 +918,6 @@
     },
     {
       "rank": 3,
-      "candidateId": "lead-0f94727f43652a4e",
-      "companyName": "Mercado Libre",
-      "domain": "mercadolibre.com.co",
-      "officialWebsiteUrl": "https://www.mercadolibre.com.co",
-      "primaryRole": "E-tailer",
-      "supportedRoles": [
-        "E-tailer"
-      ],
-      "totalScore": 83,
-      "eligibilityStatus": "eligible",
-      "eligible": true,
-      "scoringStatus": "completed",
-      "evidenceIds": [
-        "evidence-home-0f94727f43652a4e",
-        "evidence-eaf6d45cd78ab679",
-        "evidence-872928794d2c90a0",
-        "evidence-7d6cea750afe6993"
-      ],
-      "evidence": [
-        {
-          "id": "evidence-home-0f94727f43652a4e",
-          "url": "https://www.mercadolibre.com.co/gz/account-verification?go=https%3A%2F%2Flistado.mercadolibre.com.co%2F&tid=8bbbc16e-8aa5-479e-9ded-d8586650bcf6",
-          "title": "Mercado Libre",
-          "excerpt": "Mercado Libre ¡Hola! Para continuar, ingresa a tu cuenta Soy nuevo Ya tengo cuenta trace-id: 8bbbc16e-8aa5-479e-9ded-d8586650bcf6 Usamos cookies para mejorar tu experiencia en Mercado Libre. Consultar más en nuestro Centro de Privacidad. Aceptar cookies Configurar cookies ¡Listo! Guardamos tus preferencias. Cerrar Algo salió mal. Por favor, vuelve a intentarlo. Cerrar",
-          "sourceType": "official-website",
-          "capturedAt": "2026-09-07T23:37:57.617Z",
-          "contentHash": "93b0f415a4bc3d6fd88a169a6271c88fa275fc194340fd383eefb3062618c907",
-          "freshnessStatus": "fresh",
-          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
-        },
-        {
-          "id": "evidence-eaf6d45cd78ab679",
-          "url": "https://listado.mercadolibre.com.co/computacion/conectividad-redes/routers",
-          "title": "Routers | MercadoLibre.com.co",
-          "excerpt": "Router Inalambrico Tp-link Archer Ax12 AX1500 Wi-fi 6 Doble Color Negro · Repetidor Inalámbrico Wireless-N Wifi Repeater 300Mbps 2.4GHz Blanco · Extensor De",
-          "sourceType": "official-website",
-          "capturedAt": "2026-09-07T23:42:38.792Z",
-          "contentHash": "77cf7e4ff573d8b74c174af2d0fad1a5751ca93d71ba5501e42e678c78771ec1",
-          "freshnessStatus": "fresh",
-          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
-        },
-        {
-          "id": "evidence-872928794d2c90a0",
-          "url": "https://listado.mercadolibre.com.co/computacion/conectividad-redes/telefonia-ip/routers",
-          "title": "Telefonía IP Routers | MercadoLibre.com.co",
-          "excerpt": "Router Tenda AC8 AC1200 Doble Banda,Señal Estable Con Optimización Dinámica,4 Antenas Que Penetran 2 Paredes,Beamforming Para Menos Cortes,IPv6 Protege Tus",
-          "sourceType": "official-website",
-          "capturedAt": "2026-09-07T23:42:38.792Z",
-          "contentHash": "5f9defd0f8e5998de0025f15beb0c02b270dc34017a42cff5dd684e063ae8de5",
-          "freshnessStatus": "fresh",
-          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
-        },
-        {
-          "id": "evidence-7d6cea750afe6993",
-          "url": "https://www.mercadolibre.com.co/blog/mas-vendidos/routers-sistemas-inalambricos",
-          "title": "Routers y sistemas inalámbricos más vendidos de 2025",
-          "excerpt": "### Acerca de ### Otros sitios ### Ayuda / PQR ### Redes sociales ### Mi cuenta ### Suscripciones ### Temporadas Calle 100 #7-33, Torre I, Piso 16, Bogotá D.C., Colombia SIC - Industria y comercio Precio por unidad de medida Usamos cookies para mejorar tu experiencia en Mercado Libre. Consultar más en nuestro Centro de Privacidad. [...] #### Inmersión total: la evolución de los monitores curvos en 2026 | Mercado Libre Elige un monitor curvo con resolución QHD o 4K para lograr mayor inmersión y productividad. COMPUTACION MONITORES CURVOS MONITOR #### Mejora tu experiencia de gaming con un mouse de cable USB | Mercado Libre Un mouse USB con cable ofrece estabilidad y precisión, esencial para un buen rendimiento en gaming. MOUSE MOUSE CABLE USB COMPUTACION [...] REPETIDOR WIFI MOVISTAR #### M",
-          "sourceType": "official-website",
-          "capturedAt": "2026-09-07T23:42:38.792Z",
-          "contentHash": "c2ce2024c08389914e7f6be6449b67974a8fc78f756365bad8310a35621ac730",
-          "freshnessStatus": "fresh",
-          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
-        }
-      ],
-      "blindAuditEvidence": [
-        {
-          "id": "evidence-home-0f94727f43652a4e",
-          "url": "https://www.mercadolibre.com.co/gz/account-verification?go=https%3A%2F%2Flistado.mercadolibre.com.co%2F&tid=8bbbc16e-8aa5-479e-9ded-d8586650bcf6",
-          "title": "Mercado Libre",
-          "excerpt": "Mercado Libre ¡Hola! Para continuar, ingresa a tu cuenta Soy nuevo Ya tengo cuenta trace-id: 8bbbc16e-8aa5-479e-9ded-d8586650bcf6 Usamos cookies para mejorar tu experiencia en Mercado Libre. Consultar más en nuestro Centro de Privacidad. Aceptar cookies Configurar cookies ¡Listo! Guardamos tus preferencias. Cerrar Algo salió mal. Por favor, vuelve a intentarlo. Cerrar",
-          "sourceType": "official-website",
-          "capturedAt": "2026-09-07T23:37:57.617Z",
-          "contentHash": "93b0f415a4bc3d6fd88a169a6271c88fa275fc194340fd383eefb3062618c907",
-          "freshnessStatus": "fresh",
-          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
-        },
-        {
-          "id": "evidence-eaf6d45cd78ab679",
-          "url": "https://listado.mercadolibre.com.co/computacion/conectividad-redes/routers",
-          "title": "Routers | MercadoLibre.com.co",
-          "excerpt": "Router Inalambrico Tp-link Archer Ax12 AX1500 Wi-fi 6 Doble Color Negro · Repetidor Inalámbrico Wireless-N Wifi Repeater 300Mbps 2.4GHz Blanco · Extensor De",
-          "sourceType": "official-website",
-          "capturedAt": "2026-09-07T23:42:38.792Z",
-          "contentHash": "77cf7e4ff573d8b74c174af2d0fad1a5751ca93d71ba5501e42e678c78771ec1",
-          "freshnessStatus": "fresh",
-          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
-        },
-        {
-          "id": "evidence-872928794d2c90a0",
-          "url": "https://listado.mercadolibre.com.co/computacion/conectividad-redes/telefonia-ip/routers",
-          "title": "Telefonía IP Routers | MercadoLibre.com.co",
-          "excerpt": "Router Tenda AC8 AC1200 Doble Banda,Señal Estable Con Optimización Dinámica,4 Antenas Que Penetran 2 Paredes,Beamforming Para Menos Cortes,IPv6 Protege Tus",
-          "sourceType": "official-website",
-          "capturedAt": "2026-09-07T23:42:38.792Z",
-          "contentHash": "5f9defd0f8e5998de0025f15beb0c02b270dc34017a42cff5dd684e063ae8de5",
-          "freshnessStatus": "fresh",
-          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
-        },
-        {
-          "id": "evidence-7d6cea750afe6993",
-          "url": "https://www.mercadolibre.com.co/blog/mas-vendidos/routers-sistemas-inalambricos",
-          "title": "Routers y sistemas inalámbricos más vendidos de 2025",
-          "excerpt": "### Acerca de ### Otros sitios ### Ayuda / PQR ### Redes sociales ### Mi cuenta ### Suscripciones ### Temporadas Calle 100 #7-33, Torre I, Piso 16, Bogotá D.C., Colombia SIC - Industria y comercio Precio por unidad de medida Usamos cookies para mejorar tu experiencia en Mercado Libre. Consultar más en nuestro Centro de Privacidad. [...] #### Inmersión total: la evolución de los monitores curvos en 2026 | Mercado Libre Elige un monitor curvo con resolución QHD o 4K para lograr mayor inmersión y productividad. COMPUTACION MONITORES CURVOS MONITOR #### Mejora tu experiencia de gaming con un mouse de cable USB | Mercado Libre Un mouse USB con cable ofrece estabilidad y precisión, esencial para un buen rendimiento en gaming. MOUSE MOUSE CABLE USB COMPUTACION [...] REPETIDOR WIFI MOVISTAR #### M",
-          "sourceType": "official-website",
-          "capturedAt": "2026-09-07T23:42:38.792Z",
-          "contentHash": "c2ce2024c08389914e7f6be6449b67974a8fc78f756365bad8310a35621ac730",
-          "freshnessStatus": "fresh",
-          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
-        }
-      ]
-    },
-    {
-      "rank": 4,
       "candidateId": "lead-2ea94beca6663e5d",
       "companyName": "Homecenter",
       "domain": "homecenter.com.co",
@@ -1040,7 +927,7 @@
         "Retailer",
         "E-tailer"
       ],
-      "totalScore": 80,
+      "totalScore": 70,
       "eligibilityStatus": "eligible",
       "eligible": true,
       "scoringStatus": "completed",
@@ -1213,7 +1100,7 @@
       ]
     },
     {
-      "rank": 5,
+      "rank": 4,
       "candidateId": "lead-97ca511e7c6171d6",
       "companyName": "COMPUCENTER CARTAGENA S.A.S.",
       "domain": "compucenterctg.co",
@@ -1223,7 +1110,7 @@
         "Retailer",
         "E-tailer"
       ],
-      "totalScore": 70,
+      "totalScore": 64,
       "eligibilityStatus": "eligible",
       "eligible": true,
       "scoringStatus": "completed",
@@ -1419,7 +1306,7 @@
       ]
     },
     {
-      "rank": 6,
+      "rank": 5,
       "candidateId": "lead-539cb657cc294df3",
       "companyName": "Tecno Nacho",
       "domain": "tecnonacho.com",
@@ -1429,7 +1316,7 @@
         "Retailer",
         "E-tailer"
       ],
-      "totalScore": 68,
+      "totalScore": 64,
       "eligibilityStatus": "eligible",
       "eligible": true,
       "scoringStatus": "completed",
@@ -1556,7 +1443,7 @@
       ]
     },
     {
-      "rank": 7,
+      "rank": 6,
       "candidateId": "lead-38093353e30d08bc",
       "companyName": "TecnomaxGamer",
       "domain": "tecnomaxgamercol.com",
@@ -1566,7 +1453,7 @@
         "Retailer",
         "E-tailer"
       ],
-      "totalScore": 68,
+      "totalScore": 64,
       "eligibilityStatus": "eligible",
       "eligible": true,
       "scoringStatus": "completed",
@@ -1681,7 +1568,7 @@
       ]
     },
     {
-      "rank": 8,
+      "rank": 7,
       "candidateId": "lead-09de184541214aec",
       "companyName": "Tecnoplaza Colombia",
       "domain": "tecnoplaza.com.co",
@@ -1690,7 +1577,7 @@
       "supportedRoles": [
         "E-tailer"
       ],
-      "totalScore": 68,
+      "totalScore": 64,
       "eligibilityStatus": "eligible",
       "eligible": true,
       "scoringStatus": "completed",
@@ -1771,6 +1658,74 @@
       ]
     },
     {
+      "rank": 8,
+      "candidateId": "lead-49b80866959614e2",
+      "companyName": "NEXSA",
+      "domain": "nexsa.net",
+      "officialWebsiteUrl": "https://www.nexsa.net/",
+      "primaryRole": "E-tailer",
+      "supportedRoles": [
+        "E-tailer",
+        "Retailer"
+      ],
+      "totalScore": 60,
+      "eligibilityStatus": "eligible",
+      "eligible": true,
+      "scoringStatus": "completed",
+      "evidenceIds": [
+        "evidence-home-49b80866959614e2",
+        "evidence-0a5feb2eca584429"
+      ],
+      "evidence": [
+        {
+          "id": "evidence-home-49b80866959614e2",
+          "url": "https://www.nexsa.net/",
+          "title": "NEXSA | Tienda Técnica de Redes y Fibra Óptica en Colombia",
+          "excerpt": "NEXSA | Tienda Técnica de Redes y Fibra Óptica en Colombia Soluciones en tecnología, redes y fibra óptica para empresas y hogares. Tienda Compra tecnología con asesoría real. Accede rápido a las líneas principales del catálogo Nexsa. Ir a la tienda Conectividad Redes y Networking Fibra Óptica ISP y Telecomunicaciones Cableado Estructurado Tecnología Computadores Impresoras Software y Licenciamiento Energía Accesos rápidos Videovigilancia y Seguridad Accesorios Hogar Ofertas Redes Redes y Networking. Switches, routers, access points, firewalls y accesorios para infraestructura de red. Explorar redes Equipos activos Switches Routers Access Points Firewalls WLAN y conectividad Controladoras WLAN Convertidores de Medios Inyectores PoE Adaptadores de Red Complementos Tarjetas de Red Accesorios ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:37:58.492Z",
+          "contentHash": "595efd32b866bb64d2b2f923e424b64408f47a28290ca4299bb2ce1baf0f84d3",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-0a5feb2eca584429",
+          "url": "https://www.nexsa.net/en",
+          "title": "Networking & Fiber Optics Technical Store in Colombia - NEXSA",
+          "excerpt": "Technology, networking and fiber optic solutions for businesses and homes. NEXSA ES Search Get a Quote Store View storeDeals Networking NetworkingSwitchesRoutersAccess PointsFirewallsWLAN ControllersMedia ConvertersPoE InjectorsNetwork AdaptersNetwork CardsNetwork Accessories Fiber Optics Fiber OpticsTransceiversFiber Patch CordFiber Optic CablePigtailsAdaptersCouplersPLC SplittersODFSplice BoxesWall OutletsSplice TraysOrganizersFiber Tools ISP & Telecom [...] # Discover networking equipment, SFP transceivers and fiber optics at NEXSA Colombia The best way to buy networking and connectivity solutions. Talk to a specialist ↗ Request a quote ↗ OLT GPON ONT FTTH SFP Switches Routers Fiber HFC Fiber Patch Cord ISO 9001 certified · CO20/962358 SIGPRO Seal of trust Social Responsibility Fenalco ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:44.602Z",
+          "contentHash": "39bc6db989ccd51b8fb7b89da98b2ec8cf796b640dfbf4a77b778705ce3266b7",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        }
+      ],
+      "blindAuditEvidence": [
+        {
+          "id": "evidence-home-49b80866959614e2",
+          "url": "https://www.nexsa.net/",
+          "title": "NEXSA | Tienda Técnica de Redes y Fibra Óptica en Colombia",
+          "excerpt": "NEXSA | Tienda Técnica de Redes y Fibra Óptica en Colombia Soluciones en tecnología, redes y fibra óptica para empresas y hogares. Tienda Compra tecnología con asesoría real. Accede rápido a las líneas principales del catálogo Nexsa. Ir a la tienda Conectividad Redes y Networking Fibra Óptica ISP y Telecomunicaciones Cableado Estructurado Tecnología Computadores Impresoras Software y Licenciamiento Energía Accesos rápidos Videovigilancia y Seguridad Accesorios Hogar Ofertas Redes Redes y Networking. Switches, routers, access points, firewalls y accesorios para infraestructura de red. Explorar redes Equipos activos Switches Routers Access Points Firewalls WLAN y conectividad Controladoras WLAN Convertidores de Medios Inyectores PoE Adaptadores de Red Complementos Tarjetas de Red Accesorios ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:37:58.492Z",
+          "contentHash": "595efd32b866bb64d2b2f923e424b64408f47a28290ca4299bb2ce1baf0f84d3",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        },
+        {
+          "id": "evidence-0a5feb2eca584429",
+          "url": "https://www.nexsa.net/en",
+          "title": "Networking & Fiber Optics Technical Store in Colombia - NEXSA",
+          "excerpt": "Technology, networking and fiber optic solutions for businesses and homes. NEXSA ES Search Get a Quote Store View storeDeals Networking NetworkingSwitchesRoutersAccess PointsFirewallsWLAN ControllersMedia ConvertersPoE InjectorsNetwork AdaptersNetwork CardsNetwork Accessories Fiber Optics Fiber OpticsTransceiversFiber Patch CordFiber Optic CablePigtailsAdaptersCouplersPLC SplittersODFSplice BoxesWall OutletsSplice TraysOrganizersFiber Tools ISP & Telecom [...] # Discover networking equipment, SFP transceivers and fiber optics at NEXSA Colombia The best way to buy networking and connectivity solutions. Talk to a specialist ↗ Request a quote ↗ OLT GPON ONT FTTH SFP Switches Routers Fiber HFC Fiber Patch Cord ISO 9001 certified · CO20/962358 SIGPRO Seal of trust Social Responsibility Fenalco ",
+          "sourceType": "official-website",
+          "capturedAt": "2026-09-07T23:42:44.602Z",
+          "contentHash": "39bc6db989ccd51b8fb7b89da98b2ec8cf796b640dfbf4a77b778705ce3266b7",
+          "freshnessStatus": "fresh",
+          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
+        }
+      ]
+    },
+    {
       "rank": 9,
       "candidateId": "lead-ccf78e402b6b2858",
       "companyName": "Comredes de Colombia",
@@ -1781,7 +1736,7 @@
         "Retailer",
         "E-tailer"
       ],
-      "totalScore": 62,
+      "totalScore": 58,
       "eligibilityStatus": "eligible",
       "eligible": true,
       "scoringStatus": "completed",
@@ -1932,74 +1887,6 @@
     },
     {
       "rank": 10,
-      "candidateId": "lead-49b80866959614e2",
-      "companyName": "NEXSA",
-      "domain": "nexsa.net",
-      "officialWebsiteUrl": "https://www.nexsa.net/",
-      "primaryRole": "E-tailer",
-      "supportedRoles": [
-        "E-tailer",
-        "Retailer"
-      ],
-      "totalScore": 60,
-      "eligibilityStatus": "eligible",
-      "eligible": true,
-      "scoringStatus": "completed",
-      "evidenceIds": [
-        "evidence-home-49b80866959614e2",
-        "evidence-0a5feb2eca584429"
-      ],
-      "evidence": [
-        {
-          "id": "evidence-home-49b80866959614e2",
-          "url": "https://www.nexsa.net/",
-          "title": "NEXSA | Tienda Técnica de Redes y Fibra Óptica en Colombia",
-          "excerpt": "NEXSA | Tienda Técnica de Redes y Fibra Óptica en Colombia Soluciones en tecnología, redes y fibra óptica para empresas y hogares. Tienda Compra tecnología con asesoría real. Accede rápido a las líneas principales del catálogo Nexsa. Ir a la tienda Conectividad Redes y Networking Fibra Óptica ISP y Telecomunicaciones Cableado Estructurado Tecnología Computadores Impresoras Software y Licenciamiento Energía Accesos rápidos Videovigilancia y Seguridad Accesorios Hogar Ofertas Redes Redes y Networking. Switches, routers, access points, firewalls y accesorios para infraestructura de red. Explorar redes Equipos activos Switches Routers Access Points Firewalls WLAN y conectividad Controladoras WLAN Convertidores de Medios Inyectores PoE Adaptadores de Red Complementos Tarjetas de Red Accesorios ",
-          "sourceType": "official-website",
-          "capturedAt": "2026-09-07T23:37:58.492Z",
-          "contentHash": "595efd32b866bb64d2b2f923e424b64408f47a28290ca4299bb2ce1baf0f84d3",
-          "freshnessStatus": "fresh",
-          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
-        },
-        {
-          "id": "evidence-0a5feb2eca584429",
-          "url": "https://www.nexsa.net/en",
-          "title": "Networking & Fiber Optics Technical Store in Colombia - NEXSA",
-          "excerpt": "Technology, networking and fiber optic solutions for businesses and homes. NEXSA ES Search Get a Quote Store View storeDeals Networking NetworkingSwitchesRoutersAccess PointsFirewallsWLAN ControllersMedia ConvertersPoE InjectorsNetwork AdaptersNetwork CardsNetwork Accessories Fiber Optics Fiber OpticsTransceiversFiber Patch CordFiber Optic CablePigtailsAdaptersCouplersPLC SplittersODFSplice BoxesWall OutletsSplice TraysOrganizersFiber Tools ISP & Telecom [...] # Discover networking equipment, SFP transceivers and fiber optics at NEXSA Colombia The best way to buy networking and connectivity solutions. Talk to a specialist ↗ Request a quote ↗ OLT GPON ONT FTTH SFP Switches Routers Fiber HFC Fiber Patch Cord ISO 9001 certified · CO20/962358 SIGPRO Seal of trust Social Responsibility Fenalco ",
-          "sourceType": "official-website",
-          "capturedAt": "2026-09-07T23:42:44.602Z",
-          "contentHash": "39bc6db989ccd51b8fb7b89da98b2ec8cf796b640dfbf4a77b778705ce3266b7",
-          "freshnessStatus": "fresh",
-          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
-        }
-      ],
-      "blindAuditEvidence": [
-        {
-          "id": "evidence-home-49b80866959614e2",
-          "url": "https://www.nexsa.net/",
-          "title": "NEXSA | Tienda Técnica de Redes y Fibra Óptica en Colombia",
-          "excerpt": "NEXSA | Tienda Técnica de Redes y Fibra Óptica en Colombia Soluciones en tecnología, redes y fibra óptica para empresas y hogares. Tienda Compra tecnología con asesoría real. Accede rápido a las líneas principales del catálogo Nexsa. Ir a la tienda Conectividad Redes y Networking Fibra Óptica ISP y Telecomunicaciones Cableado Estructurado Tecnología Computadores Impresoras Software y Licenciamiento Energía Accesos rápidos Videovigilancia y Seguridad Accesorios Hogar Ofertas Redes Redes y Networking. Switches, routers, access points, firewalls y accesorios para infraestructura de red. Explorar redes Equipos activos Switches Routers Access Points Firewalls WLAN y conectividad Controladoras WLAN Convertidores de Medios Inyectores PoE Adaptadores de Red Complementos Tarjetas de Red Accesorios ",
-          "sourceType": "official-website",
-          "capturedAt": "2026-09-07T23:37:58.492Z",
-          "contentHash": "595efd32b866bb64d2b2f923e424b64408f47a28290ca4299bb2ce1baf0f84d3",
-          "freshnessStatus": "fresh",
-          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
-        },
-        {
-          "id": "evidence-0a5feb2eca584429",
-          "url": "https://www.nexsa.net/en",
-          "title": "Networking & Fiber Optics Technical Store in Colombia - NEXSA",
-          "excerpt": "Technology, networking and fiber optic solutions for businesses and homes. NEXSA ES Search Get a Quote Store View storeDeals Networking NetworkingSwitchesRoutersAccess PointsFirewallsWLAN ControllersMedia ConvertersPoE InjectorsNetwork AdaptersNetwork CardsNetwork Accessories Fiber Optics Fiber OpticsTransceiversFiber Patch CordFiber Optic CablePigtailsAdaptersCouplersPLC SplittersODFSplice BoxesWall OutletsSplice TraysOrganizersFiber Tools ISP & Telecom [...] # Discover networking equipment, SFP transceivers and fiber optics at NEXSA Colombia The best way to buy networking and connectivity solutions. Talk to a specialist ↗ Request a quote ↗ OLT GPON ONT FTTH SFP Switches Routers Fiber HFC Fiber Patch Cord ISO 9001 certified · CO20/962358 SIGPRO Seal of trust Social Responsibility Fenalco ",
-          "sourceType": "official-website",
-          "capturedAt": "2026-09-07T23:42:44.602Z",
-          "contentHash": "39bc6db989ccd51b8fb7b89da98b2ec8cf796b640dfbf4a77b778705ce3266b7",
-          "freshnessStatus": "fresh",
-          "evidenceRunId": "2026-09-08-co-search-e2e-v2-CO-retail-product-r1"
-        }
-      ]
-    },
-    {
-      "rank": 11,
       "candidateId": "lead-2b2149b17554b96c",
       "companyName": "CompuComercial",
       "domain": "compucomercial.com",
@@ -2009,7 +1896,7 @@
         "Retailer",
         "E-tailer"
       ],
-      "totalScore": 57,
+      "totalScore": 55,
       "eligibilityStatus": "eligible",
       "eligible": true,
       "scoringStatus": "completed",
@@ -2090,7 +1977,7 @@
       ]
     },
     {
-      "rank": 12,
+      "rank": 11,
       "candidateId": "lead-710605d790b5ac81",
       "companyName": "Nuevoportal",
       "domain": "nuevoportal.co",
@@ -2099,7 +1986,7 @@
       "supportedRoles": [
         "E-tailer"
       ],
-      "totalScore": 56,
+      "totalScore": 54,
       "eligibilityStatus": "eligible",
       "eligible": true,
       "scoringStatus": "completed",
@@ -2134,7 +2021,7 @@
       ]
     },
     {
-      "rank": 13,
+      "rank": 12,
       "candidateId": "lead-640dad133106b314",
       "companyName": "Uelectronica",
       "domain": "uelectronica.com",
@@ -2143,7 +2030,7 @@
       "supportedRoles": [
         "E-tailer"
       ],
-      "totalScore": 53,
+      "totalScore": 51,
       "eligibilityStatus": "eligible",
       "eligible": true,
       "scoringStatus": "completed",
@@ -2293,7 +2180,7 @@
       ]
     }
   ],
-  "missingSlots": 37,
+  "missingSlots": 38,
   "completionReason": "confirmed-exhaustion",
   "discoveryRounds": [
     {
@@ -2558,7 +2445,9 @@
     "panamericana.com.co: Model fallback used after 1 route failure(s) (Circuit open for primary provider deepseek.): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
     "panamericana.com.co: Deterministic role hints were not auto-added: VAR, Reseller.",
     "betacolor.com.co: Model fallback used after 1 route failure(s) (Insufficient Balance): requested=deepseek-v4-flash; actual=deepseek/deepseek-v4-flash; provider=openrouter-deepseek.",
-    "Incomplete recovery retried 21 deterministic corrections and 9 missing, retry-required or materially affected assessments; it retained 13 eligible candidates with zero search or evidence-acquisition calls."
+    "Incomplete recovery retried 21 deterministic corrections and 9 missing, retry-required or materially affected assessments; it retained 13 eligible candidates with zero search or evidence-acquisition calls.",
+    "Same-cell recovery reused version-compatible cached evidence; search and evidence acquisition were not repeated.",
+    "Consistency recovery removed Retail/E-tail roles from 1 explicit third-party marketplace candidate(s), evidence-capped 15 assessment(s), and retained 12 eligible candidates without a model, search or evidence call."
   ],
   "costEvents": [
     {
@@ -7707,6 +7596,102 @@
         "downstreamUsedItems": 13,
         "discardedReasonCounts": {
           "wrongPrimaryRoleOrGate": 35
+        }
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:resume-cache:consistency-recovery:v2.0.9",
+      "cellId": "CO-retail",
+      "stage": "within-run-cache-reuse",
+      "provider": "local-run-cache",
+      "startedAt": "2026-09-08T00:59:04.827Z",
+      "completedAt": "2026-09-08T00:59:04.827Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Reused the successful intent, local RAG, playbook, discovery, fresh evidence and supplemental evidence from the interrupted cell.",
+        "No historical cross-run candidate, evidence, score or private-memory cache was read."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:deterministic-consistency-recovery:v2.0.9",
+      "cellId": "CO-retail",
+      "stage": "deterministic-consistency-recovery",
+      "provider": "deterministic",
+      "startedAt": "2026-09-08T00:59:04.864Z",
+      "completedAt": "2026-09-08T00:59:04.864Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "volume": {
+        "inputItems": 66,
+        "rawOutputItems": 66,
+        "validOutputItems": 66,
+        "downstreamUsedItems": 12,
+        "discardedReasonCounts": {
+          "marketplaceRoleRemoved": 1,
+          "evidenceScoreCapApplied": 15
+        }
+      },
+      "notes": [
+        "Reused all acquisition and model semantic output; applied only deterministic role-business-model and evidence-cap consistency rules."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:ranking:consistency-recovery:v2.0.9",
+      "cellId": "CO-retail",
+      "stage": "role-filter-ranking",
+      "provider": "deterministic",
+      "startedAt": "2026-09-08T00:59:04.885Z",
+      "completedAt": "2026-09-08T00:59:04.885Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "volume": {
+        "inputItems": 18,
+        "rawOutputItems": 18,
+        "validOutputItems": 12,
+        "downstreamUsedItems": 12,
+        "discardedReasonCounts": {
+          "wrongPrimaryRoleOrGate": 36
         }
       },
       "runId": "2026-09-08-co-search-e2e-v2",

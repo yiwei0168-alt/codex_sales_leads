@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
   "runId": "2026-09-08-co-search-e2e-v2",
-  "generatedAt": "2026-09-08T00:40:16.877Z",
+  "generatedAt": "2026-09-08T00:59:05.011Z",
   "cell": {
     "cellId": "CO-retail",
     "controlCandidates": 15,
-    "productCandidates": 13,
+    "productCandidates": 12,
     "controlWallClockMs": 16776,
-    "productWallClockMs": 2383325
+    "productWallClockMs": 2383415
   },
   "cost": {
-    "eventCount": 269,
+    "eventCount": 272,
     "officialListPriceUsd": 5.17324491767198,
     "budgetCostUsd": 5.26419081791298,
     "unpricedEvents": [],
@@ -20,6 +20,7 @@
       "evaluation-overhead": 0
     },
     "byStage": {
+      "deterministic-consistency-recovery": 0,
       "discovery-gate-r1": 0.00640624689,
       "discovery-gate-r2": 0.003362324406,
       "discovery-gate-r3": 0.007543935240000001,
@@ -60,14 +61,14 @@
     "anomalies": []
   },
   "utilization": {
-    "input": 1078,
-    "raw": 2608,
-    "valid": 2119,
-    "used": 1087,
+    "input": 1163,
+    "raw": 2693,
+    "valid": 2198,
+    "used": 1112,
     "retries": 14,
     "latencyMs": 6672257,
-    "validOutputRate": 0.8125,
-    "downstreamUtilization": 0.512977819726286,
+    "validOutputRate": 0.8161901225399183,
+    "downstreamUtilization": 0.5059144676979072,
     "discardedOutputReasons": {
       "confirmedPlanMismatch": 1,
       "providerFailure": 1,
@@ -78,13 +79,15 @@
       "noFreshEvidence": 13,
       "correctedToAnotherRole": 236,
       "provider-recovery-cooldown": 35,
-      "wrongPrimaryRoleOrGate": 377,
+      "wrongPrimaryRoleOrGate": 413,
       "rejected": 120,
       "retryRequired": 7,
       "stageVolumeAttributedToPrimaryModelEvent": 20,
       "unresolved-company-domain": 37,
       "provider-profile-not-company": 243,
-      "unresolvedAfterRecovery": 0
+      "unresolvedAfterRecovery": 0,
+      "marketplaceRoleRemoved": 1,
+      "evidenceScoreCapApplied": 15
     }
   },
   "budgetDecision": {

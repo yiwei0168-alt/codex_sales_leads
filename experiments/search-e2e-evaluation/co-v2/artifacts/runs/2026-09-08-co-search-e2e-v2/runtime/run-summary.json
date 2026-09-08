@@ -4,7 +4,7 @@
   "experimentId": "search-e2e-eval-co-v2.0.7",
   "status": "running",
   "createdAt": "2026-09-07T20:36:48.680Z",
-  "updatedAt": "2026-09-08T00:40:16.866Z",
+  "updatedAt": "2026-09-08T00:59:05.001Z",
   "blindJudgeModel": "blind-audit-v2.1-dual-judge",
   "preflightChecks": [
     {
@@ -246,6 +246,13 @@
       "severity": "warning",
       "code": "product-target-underfill",
       "detail": "Product returned 13/50 after 8 rounds; completion=confirmed-exhaustion."
+    },
+    {
+      "at": "2026-09-08T00:59:04.991Z",
+      "cellId": "CO-retail",
+      "severity": "warning",
+      "code": "product-target-underfill",
+      "detail": "Product returned 12/50 after 8 rounds; completion=confirmed-exhaustion."
     }
   ],
   "costEvents": [
@@ -11331,6 +11338,102 @@
         "downstreamUsedItems": 13,
         "discardedReasonCounts": {
           "wrongPrimaryRoleOrGate": 35
+        }
+      },
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:resume-cache:consistency-recovery:v2.0.9",
+      "cellId": "CO-retail",
+      "stage": "within-run-cache-reuse",
+      "provider": "local-run-cache",
+      "startedAt": "2026-09-08T00:59:04.827Z",
+      "completedAt": "2026-09-08T00:59:04.827Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "Reused the successful intent, local RAG, playbook, discovery, fresh evidence and supplemental evidence from the interrupted cell.",
+        "No historical cross-run candidate, evidence, score or private-memory cache was read."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:deterministic-consistency-recovery:v2.0.9",
+      "cellId": "CO-retail",
+      "stage": "deterministic-consistency-recovery",
+      "provider": "deterministic",
+      "startedAt": "2026-09-08T00:59:04.864Z",
+      "completedAt": "2026-09-08T00:59:04.864Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "volume": {
+        "inputItems": 66,
+        "rawOutputItems": 66,
+        "validOutputItems": 66,
+        "downstreamUsedItems": 12,
+        "discardedReasonCounts": {
+          "marketplaceRoleRemoved": 1,
+          "evidenceScoreCapApplied": 15
+        }
+      },
+      "notes": [
+        "Reused all acquisition and model semantic output; applied only deterministic role-business-model and evidence-cap consistency rules."
+      ],
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "product-e2e-arm",
+      "arm": "product-e2e",
+      "officialListPriceUsd": 0,
+      "budgetCostUsd": 0,
+      "cashCostBasis": "official-conservative",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "CO-retail:ranking:consistency-recovery:v2.0.9",
+      "cellId": "CO-retail",
+      "stage": "role-filter-ranking",
+      "provider": "deterministic",
+      "startedAt": "2026-09-08T00:59:04.885Z",
+      "completedAt": "2026-09-08T00:59:04.885Z",
+      "latencyMs": 0,
+      "attempts": 0,
+      "retries": 0,
+      "fallbackUsed": false,
+      "status": "completed",
+      "usage": {},
+      "volume": {
+        "inputItems": 18,
+        "rawOutputItems": 18,
+        "validOutputItems": 12,
+        "downstreamUsedItems": 12,
+        "discardedReasonCounts": {
+          "wrongPrimaryRoleOrGate": 36
         }
       },
       "runId": "2026-09-08-co-search-e2e-v2",
