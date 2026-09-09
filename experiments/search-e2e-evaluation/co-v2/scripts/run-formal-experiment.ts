@@ -29,7 +29,7 @@ import rateCardJson from "../config/official-rate-card.v1.json";
 nextEnv.loadEnvConfig(process.cwd());
 
 const experimentRoot = path.resolve("experiments/search-e2e-evaluation/co-v2");
-const frozenTag = "search-e2e-co-v2.0.20-preregistered";
+const frozenTag = "search-e2e-co-v2.0.21-preregistered";
 const totalCells = EXPERIMENT_CONFIG.sample.cells;
 const slotsPerCell = EXPERIMENT_CONFIG.sample.slotsPerArmPerCell;
 const rateCard = rateCardJson as ExperimentRateCard;
@@ -223,17 +223,17 @@ async function freezeManifest(): Promise<void> {
     const absolute = path.resolve(experimentRoot, relative);
     return { path: path.relative(process.cwd(), absolute).replace(/\\/g, "/"), sha256: sha256(await readFile(absolute)) };
   }));
-  await writeJsonAtomic(path.join(experimentRoot, "config/frozen-manifest.v2.0.20.json"), {
+  await writeJsonAtomic(path.join(experimentRoot, "config/frozen-manifest.v2.0.21.json"), {
     schemaVersion: 1, experimentId: EXPERIMENT_CONFIG.experimentId, runId: EXPERIMENT_CONFIG.runId,
     createdAt: new Date().toISOString(), requiredGitTag: frozenTag, files,
   });
   console.log(JSON.stringify({ status: "manifest-frozen", fileCount: files.length,
-    manifest: "experiments/search-e2e-evaluation/co-v2/config/frozen-manifest.v2.0.20.json" }, null, 2));
+    manifest: "experiments/search-e2e-evaluation/co-v2/config/frozen-manifest.v2.0.21.json" }, null, 2));
 }
 
 async function verifyFrozenManifest(requireTag = true): Promise<void> {
   validateExperimentConfig();
-  const manifest = JSON.parse(await readFile(path.join(experimentRoot, "config/frozen-manifest.v2.0.20.json"), "utf8")) as {
+  const manifest = JSON.parse(await readFile(path.join(experimentRoot, "config/frozen-manifest.v2.0.21.json"), "utf8")) as {
     requiredGitTag: string; files: Array<{ path: string; sha256: string }> };
   const mismatches: string[] = [];
   for (const item of manifest.files) {
@@ -517,7 +517,7 @@ function renderReport(input: { metrics: ReturnType<typeof calculateExperimentMet
 async function runEvaluation(): Promise<void> {
   await verifyFrozenManifest(true);
   const state = await loadRunState();
-  if (!["cells-completed", "evaluation-running", "blind-audit-running"].includes(state.status)
+  if (!["cells-completed", "evaluation-running", "blind-audit-running", "completed"].includes(state.status)
     || state.completedCellIds.length !== totalCells) throw new Error("Evaluation requires all four frozen cells");
   const bundles = await loadBundles();
   const productIndex = buildProductRecordIndex(bundles);

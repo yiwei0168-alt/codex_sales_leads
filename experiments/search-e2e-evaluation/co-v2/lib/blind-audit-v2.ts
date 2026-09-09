@@ -204,9 +204,12 @@ function normalizedRole(value: string): string {
 }
 
 export function blindAuditRoleFamily(primaryRole: string): BlindAuditRoleFamily {
-  if (normalizedRole(primaryRole) === "hybrid") return "hybrid";
+  const normalized = normalizedRole(primaryRole);
+  if (normalized === "hybrid") return "hybrid";
+  const familyName = Object.keys(CHANNEL_ROLE_FAMILIES).find((family) => normalizedRole(family) === normalized);
+  if (familyName) return familyName as ChannelRoleFamily;
   for (const [family, roles] of Object.entries(CHANNEL_ROLE_FAMILIES)) {
-    if ((roles as readonly string[]).some((role) => normalizedRole(role) === normalizedRole(primaryRole))) {
+    if ((roles as readonly string[]).some((role) => normalizedRole(role) === normalized)) {
       return family as ChannelRoleFamily;
     }
   }
@@ -748,7 +751,7 @@ export async function executeBlindAuditV2(sample: { packets: BlindAuditV2Packet[
     return { initialFailed: failed.some((event) => event.eventId === base || event.eventId.startsWith(`${base}:repeat-`)),
       repairFailed: failed.some((event) => event.eventId.startsWith(`${base}-schema-repair`)) };
   };
-  const cachedDecision = async (cacheKey: string, packetId: string, judgeId: string, model: string) => {
+  const cachedDecision = async (cacheKey: string, packet: BlindAuditV2Packet, judgeId: string, model: string) => {
     if (!options.cache) return null;
     cacheStats.reads += 1;
     const cached = await options.cache.get(cacheKey);
@@ -756,15 +759,16 @@ export async function executeBlindAuditV2(sample: { packets: BlindAuditV2Packet[
       cacheStats.misses += 1;
       return null;
     }
-    if (cached.packetId !== packetId || cached.judgeId !== judgeId || cached.requestedModel !== model) {
-      throw new Error(`${packetId} invalid ${judgeId} cache entry`);
+    if (cached.packetId !== packet.packetId || cached.judgeId !== judgeId || cached.requestedModel !== model) {
+      throw new Error(`${packet.packetId} invalid ${judgeId} cache entry`);
     }
     cacheStats.hits += 1;
-    return cached;
+    const roleFamily = blindAuditRoleFamily(cached.output.primaryRole);
+    return { ...cached, roleFamily, requestedCategoryFamilyMatch: roleFamily === packet.requestedRoleFamily };
   };
   const getOrJudge = async (packet: BlindAuditV2Packet, judgeId: string, model: string) => {
     const cacheKey = blindAuditV2DecisionCacheKey(packet, judgeId, model);
-    const cached = await cachedDecision(cacheKey, packet.packetId, judgeId, model);
+    const cached = await cachedDecision(cacheKey, packet, judgeId, model);
     if (cached) return cached;
     const prior = repairState(packet.packetId, "blind-judge-v2", judgeId);
     if (prior.repairFailed) throw new Error(`${packet.packetId} ${judgeId} requires codex-in-session fallback`);
@@ -786,7 +790,7 @@ export async function executeBlindAuditV2(sample: { packets: BlindAuditV2Packet[
     const initial = resolveBlindConsensusV2(packet, judges);
     if (initial.status === "resolved") return initial.decision;
     const cacheKey = blindAuditV2DecisionCacheKey(packet, "arbitrator", arbitratorModel, judges);
-    let arbitrator = await cachedDecision(cacheKey, packet.packetId, "arbitrator", arbitratorModel);
+    let arbitrator = await cachedDecision(cacheKey, packet, "arbitrator", arbitratorModel);
     if (!arbitrator) {
       const prior = repairState(packet.packetId, "blind-arbitrator-v2", "arbitrator");
       if (prior.repairFailed) throw new Error(`${packet.packetId} arbitrator requires codex-in-session fallback`);
