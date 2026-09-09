@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-08-co-search-e2e-v2",
+  "generatedAt": "2026-09-09T00:27:38.728Z",
+  "inputCacheEntries": 92,
+  "arbitratorKeysWritten": 27,
+  "arbitratorKeysReused": 0,
+  "costEvent": {
+    "eventId": "blind-cache-key-migration-v2.0.22",
+    "runId": "2026-09-08-co-search-e2e-v2",
+    "ledger": "evaluation-overhead",
+    "arm": "shared-evaluation",
+    "stage": "blind-cache-key-migration-v2",
+    "provider": "deterministic-local",
+    "startedAt": "2026-09-09T00:27:38.580Z",
+    "completedAt": "2026-09-09T00:27:38.728Z",
+    "latencyMs": 146,
+    "attempts": 1,
+    "retries": 0,
+    "fallbackUsed": false,
+    "status": "completed",
+    "usage": {},
+    "volume": {
+      "inputItems": 92,
+      "rawOutputItems": 27,
+      "validOutputItems": 27,
+      "downstreamUsedItems": 27,
+      "discardedReasonCounts": {}
+    },
+    "accountCashCostUsd": 0,
+    "notes": [
+      "cache keys depend on immutable judge output, not derived role-family fields",
+      "semantic outputs, scores, evidence and prior cost events are unchanged"
+    ],
+    "officialListPriceUsd": 0,
+    "budgetCostUsd": 0,
+    "cashCostBasis": "account-observed",
+    "costAnomalies": []
+  }
+}

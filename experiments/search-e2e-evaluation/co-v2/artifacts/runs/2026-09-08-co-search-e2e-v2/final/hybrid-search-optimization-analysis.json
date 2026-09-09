@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-08-co-search-e2e-v2",
+  "generatedAt": "2026-09-09T00:27:42.630Z",
+  "contributions": [
+    {
+      "provider": "brave",
+      "calls": 89,
+      "rawResults": 1682,
+      "normalizedCompanies": 1650,
+      "newUniqueCompanies": 206,
+      "duplicateHits": 1444,
+      "paidSearchCredits": 85,
+      "downstreamFinalCredit": 16.5,
+      "costUsd": 0.5500000000000004
+    },
+    {
+      "provider": "gemini-full",
+      "calls": 57,
+      "rawResults": 1040,
+      "normalizedCompanies": 532,
+      "newUniqueCompanies": 226,
+      "duplicateHits": 306,
+      "paidSearchCredits": 52,
+      "downstreamFinalCredit": 12.5,
+      "costUsd": 5.754000000000001
+    },
+    {
+      "provider": "exa",
+      "calls": 50,
+      "rawResults": 920,
+      "normalizedCompanies": 173,
+      "newUniqueCompanies": 142,
+      "duplicateHits": 31,
+      "paidSearchCredits": 46,
+      "downstreamFinalCredit": 5,
+      "costUsd": 2.116999999999998
+    },
+    {
+      "provider": "google-places",
+      "calls": 35,
+      "rawResults": 116,
+      "normalizedCompanies": 114,
+      "newUniqueCompanies": 45,
+      "duplicateHits": 69,
+      "paidSearchCredits": 33,
+      "downstreamFinalCredit": 5,
+      "costUsd": 1.5049999999999994
+    },
+    {
+      "provider": "searchapi",
+      "calls": 54,
+      "rawResults": 0,
+      "normalizedCompanies": 0,
+      "newUniqueCompanies": 0,
+      "duplicateHits": 0,
+      "paidSearchCredits": 0,
+      "downstreamFinalCredit": 0,
+      "costUsd": 0.2880000000000002
+    }
+  ],
+  "findings": [
+    "brave: duplicate/normalized ratio was 87.5%; tighten real-time stopping or start this route after cheaper core routes.",
+    "gemini-full: duplicate/normalized ratio was 57.5%; tighten real-time stopping or start this route after cheaper core routes.",
+    "exa: only 3.5% of newly unique output received fractional Top-50 credit; review category-specific activation before removing it.",
+    "google-places: duplicate/normalized ratio was 60.5%; tighten real-time stopping or start this route after cheaper core routes.",
+    "searchapi: produced no new unique company in this run; keep disabled by default for the affected category unless it supplies a distinct capability.",
+    "Do not optimize from Top-N alone in production; use accumulated unique yield, final downstream use, quality and cost by market/category.",
+    "Any route change remains a future versioned product decision and does not alter this frozen experiment."
+  ],
+  "note": "Observed opportunities only; the frozen experiment and product route were not modified post hoc."
+}

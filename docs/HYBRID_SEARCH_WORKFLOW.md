@@ -185,3 +185,10 @@ The first MX Retail cell improved final fill from the historical 6/30 to 15/30, 
 
 - Initial category-specific hybrid route, real-time candidate registry, lightweight gate and provider-contribution telemetry.
 - Fixed `1.35 * N` light-gate pool and route-exhaustion stopping; later invalidated by the MX Retail 6/30 underfill.
+
+### Colombia final observation v2.0.22 — 2026-09-09
+
+- Product beat untuned Gemini in all four categories and improved Macro Slot Utility@50 by 9.80, with a positive 95% bootstrap lower bound of 6.31. The formal E2E result still failed because blind role agreement was 75.0%, qualification agreement 66.7%, within-category Spearman 0.285 and MAE 11.54. Search strategy improvement is supported; full role/scoring calibration is not.
+- Provider contribution was Brave 16.5 fractional finals/$0.550, Gemini Full 12.5/$5.754, Exa 5/$2.117, Places 5/$1.505 and SearchAPI 0/$0.288. Category routing must remain conditional: Places contributed only in Retail; Exa contributed in Distribution/SI but not Retail/Resale; Gemini was costly but supplied five Distribution and five Resale finals.
+- Product returned only 39/200 requested results: 14 Retail, 13 Distribution, five SI/MSP and seven Resale. SI/MSP and Resale remain recall/role-resolution priorities even though Product quality utility exceeded control.
+- The next work item is a no-new-search score/role calibration on frozen evidence. Do not purchase another market search merely to tune an unstable scoring yardstick.
