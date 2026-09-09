@@ -193,9 +193,7 @@ function hash(value: string): string {
 export function blindAuditV2DecisionCacheKey(packet: BlindAuditV2Packet, judgeId: string,
   requestedModel: string, judgeOutputs: BlindJudgeV2Decision[] = []): string {
   const dependencies = { protocolVersion: packet.protocolVersion, packet, judgeId, requestedModel,
-    judgeOutputs: judgeOutputs.map((decision) => ({ actualModel: decision.actualModel,
-      deterministicTotal: decision.deterministicTotal, roleFamily: decision.roleFamily,
-      requestedCategoryFamilyMatch: decision.requestedCategoryFamilyMatch, output: decision.output })) };
+    judgeOutputs: judgeOutputs.map((decision) => ({ actualModel: decision.actualModel, output: decision.output })) };
   return `blind-audit-v2:${hash(JSON.stringify(dependencies))}`;
 }
 

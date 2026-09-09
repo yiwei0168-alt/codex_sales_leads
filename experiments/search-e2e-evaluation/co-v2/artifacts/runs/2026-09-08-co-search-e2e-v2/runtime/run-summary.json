@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "runId": "2026-09-08-co-search-e2e-v2",
   "experimentId": "search-e2e-eval-co-v2.0.7",
-  "status": "completed",
+  "status": "blind-audit-running",
   "createdAt": "2026-09-07T20:36:48.680Z",
-  "updatedAt": "2026-09-09T00:17:34.468Z",
+  "updatedAt": "2026-09-09T00:25:00.350Z",
   "blindJudgeModel": "blind-audit-v2.1-dual-judge",
   "preflightChecks": [
     {
@@ -37064,6 +37064,87 @@
       ],
       "officialListPriceUsd": 0.007841745,
       "budgetCostUsd": 0.01427301729,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "blind-v2-0720dd583d8b08de82109ace:blind-arbitrator-v2:arbitrator:repeat-3",
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-arbitrator-v2",
+      "provider": "openrouter",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek/deepseek-v4-pro",
+      "startedAt": "2026-09-09T00:22:47.443Z",
+      "completedAt": "2026-09-09T00:23:50.395Z",
+      "latencyMs": 62949,
+      "attempts": 2,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "failed",
+      "usage": {
+        "inputTokens": 4282,
+        "outputTokens": 4097
+      },
+      "accountCashCostUsd": 0.02225195,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 0,
+        "downstreamUsedItems": 0,
+        "discardedReasonCounts": {
+          "schemaInvalid": 1
+        }
+      },
+      "notes": [
+        "blind-audit-v2",
+        "no web search",
+        "arm/model/rank/unified score hidden",
+        "output is consumed by consensus or conditional arbitration",
+        "Repeated call; base event blind-v2-0720dd583d8b08de82109ace:blind-arbitrator-v2:arbitrator."
+      ],
+      "officialListPriceUsd": 0.005427059999999999,
+      "budgetCostUsd": 0.02225195,
+      "cashCostBasis": "account-observed",
+      "costAnomalies": []
+    },
+    {
+      "eventId": "blind-v2-0720dd583d8b08de82109ace:blind-arbitrator-v2:arbitrator-schema-repair",
+      "runId": "2026-09-08-co-search-e2e-v2",
+      "ledger": "evaluation-overhead",
+      "arm": "shared-evaluation",
+      "stage": "blind-arbitrator-v2",
+      "provider": "openrouter",
+      "requestedModel": "deepseek-v4-pro",
+      "actualModel": "deepseek/deepseek-v4-pro",
+      "startedAt": "2026-09-09T00:23:50.428Z",
+      "completedAt": "2026-09-09T00:25:00.349Z",
+      "latencyMs": 69921,
+      "attempts": 1,
+      "retries": 0,
+      "fallbackUsed": true,
+      "status": "completed",
+      "usage": {
+        "inputTokens": 4308,
+        "outputTokens": 2911
+      },
+      "accountCashCostUsd": 0.00674684217,
+      "volume": {
+        "inputItems": 1,
+        "rawOutputItems": 1,
+        "validOutputItems": 1,
+        "downstreamUsedItems": 1,
+        "discardedReasonCounts": {}
+      },
+      "notes": [
+        "blind-audit-v2",
+        "no web search",
+        "arm/model/rank/unified score hidden",
+        "output is consumed by consensus or conditional arbitration"
+      ],
+      "officialListPriceUsd": 0.00440655,
+      "budgetCostUsd": 0.00674684217,
       "cashCostBasis": "account-observed",
       "costAnomalies": []
     }

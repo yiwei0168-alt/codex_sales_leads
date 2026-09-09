@@ -1,4 +1,4 @@
-# Colombia search E2E evaluation v2.0.21
+# Colombia search E2E evaluation v2.0.22
 
 This directory is the immutable, cold-start Colombia follow-up to the UK/Mexico formal evaluation. It compares the current product workflow with one un-tuned Gemini Full + Google Search interaction per category.
 
@@ -83,6 +83,8 @@ v2.0.19 normalizes timeouts that occur while reading a provider response body, n
 v2.0.20 extends the same single schema-repair contract to independent judges and makes recovery ledger-aware. If the cost ledger already contains an initial schema failure for a packet/judge or arbitrator, resumption starts directly with the one 8,192-token same-model repair instead of repurchasing the 4,096-token call. If a repair failure is already recorded, no external model is called again and the run requests the configured in-session fallback. Logical requested-model identity remains stable across repair routing.
 
 v2.0.21 fixes deterministic blind role-family normalization. The blind rubric permits both family labels (`distribution`, `resale`, `retail`, `services`, `isp`, `agent`, `brand`) and concrete subtypes, but the evaluator previously recognized only subtypes. Cached decisions are now re-derived against the packet on read, so no model call, evidence, score or raw response changes. Completed runs may be deterministically regenerated from cache.
+
+v2.0.22 removes derived role-family fields from arbitration cache identity. Arbitration depends on the immutable packet and judge outputs, not on a reparsable family label. A zero-cost migration writes new keys for the 27 existing arbitrations while preserving old forensic entries, semantic output and cost history; this permits the v2.0.21 report correction without any external call.
 
 ```powershell
 node scripts\run-tsx.cjs experiments\search-e2e-evaluation\co-v2\scripts\import-in-session-arbitration.ts --decision=<raw-output-json>
