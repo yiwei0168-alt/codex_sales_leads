@@ -10,7 +10,9 @@ Assistant intent/chat, development generation/revision and follow-up now establi
 
 Contact lookup, stored relationship analysis, independent RAG/knowledge ingestion, private memory embedding and mailbox learning now establish owner scopes too. Snov forms remain endpoint/size bounded and OAuth is not assumed free. Budget denials propagate through provider fallback and lead assessment layers and receive aggregate-only zero-cost **denied-attempt** telemetry; earlier attempts are not declared free. `/api/tasks/usage` exposes operation and HTTP ledgers separately; never add their overlapping costs.
 
-**Not complete:** audited provider/account request bounds, per-task sub-limits, finer semantic stage utilization and invoice reconciliation/release remain open. SDK-wrapped errors may still cause harmless local retries before being surfaced, but each transport attempt remains gated. No broad “all product costs capped and live-verified” claim is valid yet.
+Migration 050 adds optional per-search-action sub-limits and append-only budget-change audit. Owner budget locking serializes ceiling edits and each reservation; both global and task limits must permit the request. Nested aggregate operations retain the parent task billing ID. A continuation has its own task identity and never erases earlier charges. Task details load this data on expansion and require explicit confirmation to change the ceiling, without starting work.
+
+**Not complete:** audited provider/account request bounds, natural-language budget editing, finer semantic adoption events and invoice reconciliation/release remain open. SDK-wrapped errors may still cause harmless local retries before being surfaced, but each transport attempt remains gated. No broad “all product costs capped and live-verified” claim is valid yet.
 
 ## Storage and concurrency
 
@@ -28,4 +30,4 @@ New requests are not ready simply because a budget exists. Some existing SDK/Gem
 
 Reservation records contain IDs, phase, tariff version, byte/token counts when available, latency, reported cash and outcome. They contain no prompt, company text, response content, headers, URL query, API key or personal data. Unknown metrics remain null. A valid HTTP response is not a downstream-used candidate; downstream use belongs to the existing workflow metrics. Current conservative occupied funds are not actual spend or measured cost savings.
 
-Task Center lazy-loads budget UI; GET does not start work. PUT requires an explicit user's confirmation. All browser tests use synthetic data and intercepted network. SDK transport integration was checked against the installed OpenAI SDK's `fetch` option after consulting [official SDK documentation](https://developers.openai.com/api/docs/libraries); no model migration occurred.
+Task Center lazy-loads budget UI; GET does not start work. PUT requires an explicit user's confirmation. Isolated browser tests intercept network; authenticated acceptance uses synthetic owner/action data with real local APIs and database, without external providers. SDK transport integration was checked against the installed OpenAI SDK's `fetch` option after consulting [official SDK documentation](https://developers.openai.com/api/docs/libraries); no model migration occurred.

@@ -3,12 +3,20 @@ import { getRagConfig } from "./config";
 import { embedTexts, generateGroundedAnswer } from "./openai-provider";
 import { hybridSearch, logRagQuery } from "./repository";
 import type { RagAnswer, RagQuery } from "./types";
+import {trackedOperation} from "@/lib/tracked-operation";
 
 export function extractCitedChunkIds(answer: string): Set<string> {
   return new Set(Array.from(answer.matchAll(/\[KB:([0-9a-f-]{36})\]/gi)).map((match) => match[1].toLowerCase()));
 }
 
 export async function answerWithRag(userId: string, input: RagQuery): Promise<RagAnswer> {
+  return trackedOperation(userId,"rag-answer",1,input.question.length,()=>answerWithRagImpl(userId,input),result=>({
+    outputItems:1,validOutputItems:result.grounded?1:0,downstreamUsedItems:null,
+    usageBoundary:"answer-returned-user-adoption-unknown",discardedReasonCounts:{insufficientGrounding:result.grounded?0:1},
+    optimizationOpportunity:"Reuse retrieved evidence and measure cited passages before increasing retrieval or generation budgets",
+  }));
+}
+async function answerWithRagImpl(userId: string, input: RagQuery): Promise<RagAnswer> {
   const startedAt = Date.now();
   const config = getRagConfig();
   const maxChunks = Math.min(Math.max(input.maxChunks ?? config.maxContextChunks, 1), 12);

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { CompanyDetail } from "../../src/components/company-detail";
 import { TaskDetailView } from "../../src/components/task-detail-view";
 import { SpendBudget } from "../../src/components/spend-budget";
+import {TaskSpendBudget} from "../../src/components/task-spend-budget";
 import { OutboundComposer } from "../../src/components/outbound-composer";
 import { SearchContinuation } from "../../src/components/search-continuation";
 import { useDialogFocus } from "../../src/components/use-dialog-focus";
@@ -21,7 +22,7 @@ function Nested({close}:{close:()=>void}) {
 }
 function Fixture() {
   const [open,setOpen]=useState(""); const [nested,setNested]=useState(false);const [budget,setBudget]=useState(false);
-  return <><button onClick={()=>setOpen("company")}>打开公司</button><button onClick={()=>setOpen("task")}>打开任务</button>
+  return <><TaskSpendBudget actionId="fixture-action"/><button onClick={()=>setOpen("company")}>打开公司</button><button onClick={()=>setOpen("task")}>打开任务</button>
     {open==="company"&&<CompanyDetail company={company} onClose={()=>setOpen("")} onUpdate={()=>{}} onEvidence={()=>setNested(true)} onOpenAssistant={()=>{}}/>}
     {open==="task"&&<TaskDetailView id="fixture-task" kind="generation" onClose={()=>setOpen("")}/>}
     <button onClick={()=>setOpen('contact-task')}>打开异常联系人任务</button>{open==='contact-task'&&<TaskDetailView id="fixture-contact-task" kind="contacts" onClose={()=>setOpen('')}/>}

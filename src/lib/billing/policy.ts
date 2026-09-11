@@ -2,7 +2,7 @@ import { z } from "zod";
 import configuration from "../../../config/billing/request-bounds-v1.0.0.json";
 
 export class BudgetDeniedError extends Error {
-  constructor(readonly code:"missing-tariff"|"expired-tariff"|"request-out-of-bounds"|"missing-budget"|"budget-exhausted"|"budget-frozen") {
+  constructor(readonly code:"missing-tariff"|"expired-tariff"|"request-out-of-bounds"|"missing-budget"|"budget-exhausted"|"budget-frozen"|"task-budget-exhausted") {
     super(`付费调用已阻止：${code}。请检查预算与已审核费率，未自动放行。`);
     this.name="BudgetDeniedError";
   }

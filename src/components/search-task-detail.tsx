@@ -3,6 +3,7 @@ import { taskCounts, taskStatusLabels } from "@/lib/assistant/task-summary";
 import { marketHref } from "@/lib/sales/market-navigation";
 import { TaskRunControls } from "./task-run-controls";
 import { SearchContinuation } from "./search-continuation";
+import {TaskSpendBudget} from "./task-spend-budget";
 
 export function SearchTaskDetail({ action }: { action: AssistantActionDto }) {
   const counts = taskCounts(action.result);
@@ -15,6 +16,7 @@ export function SearchTaskDetail({ action }: { action: AssistantActionDto }) {
     <p>{action.payload.roles.join(" · ")}</p>
     {continuation&&<p>第 {String(continuation.depth)} 次缺口续搜 · 排除前序已评估 {String(continuation.excludedCount)} 家 · <a href={`/tasks/${encodeURIComponent(String(continuation.parentActionId))}?kind=search`}>查看原任务（原费用保留）</a></p>}
     <TaskRunControls actionId={action.id} status={action.status}/>
+    <TaskSpendBudget key={action.id} actionId={action.id}/>
     <p>创建：{action.createdAt} · 最近更新：{action.updatedAt}</p>
     <dl>{([["发现",counts.discovered],["已评估",counts.assessed],["合格",counts.qualified],["最终保存",counts.accepted],["搜索/补证额度",counts.creditsUsed]] as const).map(([label,value]) =>
       <div key={label}><dt>{label}</dt><dd>{value ?? "尚无记录"}</dd></div>)}</dl>

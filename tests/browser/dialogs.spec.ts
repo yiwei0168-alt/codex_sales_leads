@@ -68,6 +68,18 @@ test("budget shows unknown bills separately and editing needs explicit confirmat
   page.once("dialog",dialog=>dialog.dismiss());await page.getByRole("button",{name:"确认修改预算"}).click();expect(writes).toBe(0);
   page.once("dialog",dialog=>dialog.accept());await page.getByRole("button",{name:"确认修改预算"}).click();await expect.poll(()=>writes).toBe(1);
 });
+test("task budget loads only when expanded and changes neither the global limit nor task state",async({page})=>{
+  let reads=0,writes=0;
+  await page.route('**/api/budget**',route=>{
+    if(route.request().method()==='PUT'){expect(route.request().postDataJSON()).toEqual({actionId:'fixture-action',limitUsd:'3',confirmed:true});writes++;return route.fulfill({json:{saved:true}});}
+    reads++;expect(new URL(route.request().url()).searchParams.get('actionId')).toBe('fixture-action');return route.fulfill({json:{taskLimit:null,stages:[]}});
+  });
+  expect(reads).toBe(0);await page.getByText('任务预算与成本',{exact:true}).click();await expect(page.getByText('尚未设置任务单独上限。')).toBeVisible();
+  await page.getByLabel('任务累计上限（美元）').fill('3');
+  page.once('dialog',dialog=>dialog.dismiss());await page.getByRole('button',{name:'确认任务预算',exact:true}).click();expect(writes).toBe(0);
+  page.once('dialog',dialog=>dialog.accept());await page.getByRole('button',{name:'确认任务预算',exact:true}).click();await expect.poll(()=>writes).toBe(1);
+});
+
 test("legacy mail requires country confirmation before follow-up and never auto-sends",async({page})=>{
   let assignments=0;
   await page.route('**/api/mailbox/connections',route=>route.fulfill({json:{connections:[]}}));

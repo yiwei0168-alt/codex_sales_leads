@@ -18,7 +18,9 @@ try{
 const {getPool}=await import("../src/lib/rag/db");
 const {hashPassword}=await import("../src/lib/auth/password");
 const {addManualCompany}=await import("../src/lib/sales/manual-company");
+const {setSpendBudget,setTaskSpendBudget}=await import("../src/lib/billing/repository");
 const userId=randomUUID(),workspaceId=randomUUID();
+const conversationId=randomUUID(),actionId=randomUUID();
 const email=`ui-verification-${userId}@example.invalid`,password=randomBytes(32).toString("base64url");
 const domain=`ui-verification-${userId}.invalid`;
 const application=process.env.DATABASE_URL,migration=process.env.DATABASE_MIGRATION_URL;
@@ -34,8 +36,11 @@ try{
     await client.query("begin");
     await client.query("insert into app_user(id,email,display_name,password_hash,role,status) values($1,$2,'UI acceptance fixture',$3,'member','active')",[userId,email,hashPassword(password)]);
     await client.query("insert into market_workspace(id,owner_id,slug,name,market,country_code,objective) values($1,$2,'global-sales','UI acceptance fixture','Global','WW','Isolated local UI verification')",[workspaceId,userId]);
+    await client.query("insert into assistant_conversation(id,user_id,title) values($1,$2,'UI task fixture')",[conversationId,userId]);
+    await client.query("insert into assistant_action(id,user_id,conversation_id,action_type,status,payload) values($1,$2,$3,'lead-search','proposed',$4)",[actionId,userId,conversationId,JSON.stringify({countryCode:"GB",countryName:"United Kingdom",roles:["SI"],targetCount:1,userRequest:"Local UI fixture"})]);
     await client.query("commit");created=true;
   }catch(error){await client.query("rollback");throw error;}finally{client.release();}
+  await setSpendBudget(userId,1_000_000);await setTaskSpendBudget(userId,actionId,0);
   for(const [country,role] of [["GB","SI"],["MX","Retailer"]] as const){
     await addManualCompany(userId,{name:`UI Fixture ${country}`,country,website:`https://${domain}`,role});
   }
@@ -89,6 +94,12 @@ try{
     for(const path of ["/api/tasks","/api/tasks/markets","/api/tasks/usage","/api/budget"]){
       const read=await context.request.get(new URL(path,base).href);expect(read.status(),path).toBe(200);
     }
+    await page.goto(new URL(`/tasks/${actionId}?kind=search`,base).href);
+    await page.getByText("任务预算与成本",{exact:true}).click();
+    await expect(page.getByText(/任务上限 \$0.000000/)).toBeVisible();
+    const taskBudget=await context.request.get(new URL(`/api/budget?actionId=${actionId}`,base).href);
+    expect((await taskBudget.json()).taskLimit.limit_micros).toBe("0");
+    checks.push(`${viewport.width}:task-budget-real-api`);
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
     expect(errors).toEqual([]);checks.push(`${viewport.width}:navigation-apis-no-runtime-error`);
     await context.close();
@@ -104,8 +115,12 @@ try{
       await client.query("begin");
       const owner=await client.query("select id from app_user where id=$1 and email=$2 for update",[userId,email]);
       if(owner.rowCount!==1)throw new Error("Fixture identity mismatch; refusing cleanup");
+      await client.query("delete from task_spend_limit where user_id=$1",[userId]);
+      await client.query("delete from assistant_conversation where user_id=$1",[userId]);
       await client.query("delete from market_workspace where id=$1 and owner_id=$2",[workspaceId,userId]);
       await client.query("delete from sales_company where domain=$1 and not exists(select 1 from workspace_company where company_id=sales_company.id)",[domain]);
+      await client.query("delete from spend_budget_change where user_id=$1",[userId]);
+      await client.query("delete from user_spend_budget where user_id=$1",[userId]);
       await client.query("delete from app_user where id=$1 and email=$2",[userId,email]);
       await client.query("commit");console.log("Temporary synthetic user/workspace/company removed; no customer records changed.");
     }catch(error){await client.query("rollback");throw error;}finally{client.release();}

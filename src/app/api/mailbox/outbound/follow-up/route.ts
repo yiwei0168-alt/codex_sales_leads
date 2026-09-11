@@ -4,7 +4,7 @@ import { tenantQuery } from "@/lib/rag/db";
 import { encryptMailboxContent,decryptMailboxContent } from "@/lib/mailbox/crypto";
 import { followUpContext } from "@/lib/outreach/follow-up-context";
 import { generateFollowUp } from "@/lib/outreach/kimi-agent";
-import {withProductSpend} from "@/lib/billing/context";
+import {trackedOperation} from "@/lib/tracked-operation";
 import {BudgetDeniedError} from "@/lib/billing/policy";
 const schema=z.object({parentId:z.uuid(),instructions:z.string().trim().min(2).max(2000)}).strict();
 export async function GET(request:Request){
@@ -22,7 +22,12 @@ export async function POST(request:Request){
   if(!context)return Response.json({error:"原邮件不存在"},{status:404});
   try {
     const {original,thread,inbound,stylePreferences,threadTruncated}=context;
-    const result=await withProductSpend(session.userId,"follow-up-generation",()=>generateFollowUp({instructions:input.data.instructions,originalSubject:original.subject,originalBody:original.bodyText.slice(0,8000),thread,inbound,stylePreferences,threadTruncated}));
+    const generationInput={instructions:input.data.instructions,originalSubject:original.subject,originalBody:original.bodyText.slice(0,8000),thread,inbound,stylePreferences,threadTruncated};
+    const result=await trackedOperation(session.userId,"follow-up-generation",1+thread.length+inbound.length+stylePreferences.length,JSON.stringify(generationInput).length,
+      ()=>generateFollowUp(generationInput),value=>({outputItems:1,validOutputItems:1,downstreamUsedItems:0,
+        inputTokens:value.metrics?.promptTokens??null,outputTokens:value.metrics?.completionTokens??null,
+        usageBoundary:"draft-generated-not-yet-reviewed-or-sent; tokens-from-final-response-only",
+        optimizationOpportunity:"Reuse prior drafts and bounded correspondence before generating another version"}));
     const saved=await tenantQuery<{id:string}>(session.userId,`insert into workspace_audit_event(workspace_id,actor_user_id,entity_type,entity_id,action,changes)
       values($1,$2,'outbound-mail',$3,'follow-up.generated',$4) returning id`,[context.workspaceId,session.userId,input.data.parentId,JSON.stringify({promptVersion:"follow-up-v2",model:result.model,metrics:result.metrics,threadMessages:thread.length,styleMemoryIds:stylePreferences.map(item=>item.id),threadTruncated,
       draftCiphertext:encryptMailboxContent(session.userId,{subject:result.draft.subject,bodyText:result.draft.body,sender:original.sender,recipients:original.recipients}),

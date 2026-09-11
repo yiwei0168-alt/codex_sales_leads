@@ -2,8 +2,17 @@ import {withProductSpend} from "@/lib/billing/context";
 import { tenantTransaction } from "@/lib/rag/db";
 import { embedTextsWithUsage } from "@/lib/rag/openai-provider";
 import type { MemoryEditorInput } from "./memory-editor";
+import {trackedOperation} from "@/lib/tracked-operation";
 
 export async function saveManualMemory(userId:string,input:MemoryEditorInput){
+  return trackedOperation(userId,"manual-memory-save",1,input.content.length,()=>saveManualMemoryImpl(userId,input),status=>({
+    outputItems:status==="ok"||status==="already-exists"?1:0,validOutputItems:status==="ok"||status==="already-exists"?1:0,
+    downstreamUsedItems:status==="ok"||status==="already-exists"?1:0,costUsd:status!=="ok"?0:null,
+    discardedReasonCounts:status==="ok"||status==="already-exists"?{}:{[status]:1},
+    usageBoundary:"private-memory-storage-not-email-adoption",optimizationOpportunity:"Reuse unchanged vectors; avoid holding a database transaction during embedding",
+  }));
+}
+async function saveManualMemoryImpl(userId:string,input:MemoryEditorInput){
   const startedAt=Date.now();
   return tenantTransaction(userId,async client=>{
     // Stable ID prevents duplicate records when a client retries a create.

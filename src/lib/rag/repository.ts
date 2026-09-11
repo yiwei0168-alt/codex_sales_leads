@@ -3,6 +3,7 @@ import type { PoolClient } from "pg";
 import { tenantQuery, tenantTransaction, type AppDatabaseRole } from "./db";
 import { sha256, chunkDocument } from "./chunker";
 import { embedTexts } from "./openai-provider";
+import {trackedOperation} from "@/lib/tracked-operation";
 import type { KnowledgeBaseType, KnowledgeDocumentInput, KnowledgeStats, KnowledgeVisibility, RetrievedChunk, RetrievalFilters } from "./types";
 
 function vectorLiteral(vector: number[]): string {
@@ -11,6 +12,14 @@ function vectorLiteral(vector: number[]): string {
 
 export class KnowledgeConflictError extends Error {constructor(){super("知识版本已变化，请重新检查后确认覆盖");}}
 export async function upsertKnowledgeDocument(userId: string, input: KnowledgeDocumentInput, actorRole: AppDatabaseRole = "member",expectedHash?:string|null): Promise<{ documentId: string; chunks: number; skipped: boolean }> {
+  return trackedOperation(userId,"knowledge-document-save",1,input.content.length,()=>upsertKnowledgeDocumentImpl(userId,input,actorRole,expectedHash),result=>({
+    outputItems:result.chunks,validOutputItems:result.chunks,downstreamUsedItems:result.chunks,
+    costUsd:result.skipped?0:null,inputTokens:result.skipped?0:null,outputTokens:0,retries:result.skipped?0:null,
+    usageBoundary:result.skipped?"unchanged-document-cache-reused":"chunks-stored-not-yet-used-by-retrieval",
+    optimizationOpportunity:"Skip embedding unchanged content; measure later retrieval use separately from storage",
+  }));
+}
+async function upsertKnowledgeDocumentImpl(userId: string, input: KnowledgeDocumentInput, actorRole: AppDatabaseRole,expectedHash?:string|null): Promise<{ documentId: string; chunks: number; skipped: boolean }> {
   const contentHash = sha256(input.content);
   const visibility = input.visibility ?? "private";
   const existing = await tenantQuery<{ id: string; content_sha256: string; visibility: KnowledgeVisibility }>(userId,
