@@ -22,10 +22,10 @@ export async function getCurrentWorkspace(userId: string): Promise<MarketWorkspa
   const workspace = workspaces[0];
   if (!workspace) return null;
   const sentSummaries = await tenantQuery<{external_id:string;firstSentAt:string|null;lastSentAt:string|null;sentCount:number;followUpCount:number}>(userId,
-    `select c.external_id,min(m.sent_at)::text as "firstSentAt",max(m.sent_at)::text as "lastSentAt",
+    `select wc.candidate_id as external_id,min(m.sent_at)::text as "firstSentAt",max(m.sent_at)::text as "lastSentAt",
       count(*)::int as "sentCount",count(*) filter(where m.parent_id is not null)::int as "followUpCount"
-     from outbound_mail m join sales_company c on c.id=m.company_id
-     where m.user_id=$1 and m.workspace_id=$2 and m.status='sent' group by c.external_id`,[userId,workspace.id]);
+     from outbound_mail m join user_company_market wc on wc.company_id=m.company_id and wc.workspace_id=m.workspace_id and wc.market_country_code=m.market_country_code
+     where m.user_id=$1 and m.workspace_id=$2 and m.status='sent' group by wc.candidate_id`,[userId,workspace.id]);
   const taskMarkets = await tenantQuery<{ code: string }>(userId,
     `select distinct payload->>'countryCode' as code from assistant_action
      where user_id = $1 and action_type = 'lead-search' and payload->>'countryCode' is not null`, [userId]);
@@ -36,66 +36,67 @@ export async function getCurrentWorkspace(userId: string): Promise<MarketWorkspa
       priority: CompanyRecord["priority"]; owner_name: string | null; next_action: string | null; manually_edited: boolean;
       selected_path_id: string | null; selected_path_type: CompanyRecord["selectedCooperationPath"] | null;
     }>(userId,
-      `select c.record || wc.user_overrides || jsonb_build_object('recordCreatedAt',c.created_at,'updatedAt',wc.updated_at,'assessmentEligible',a.eligible) as record, wc.account_tier, wc.supply_model, wc.brand_involvement, wc.opportunity_stage,
+      `select wc.record || jsonb_build_object('assessmentEligible',case when wc.record->>'assessmentNeedsRefresh'='true' then null else a.eligible end) as record, wc.account_tier, wc.supply_model, wc.brand_involvement, wc.opportunity_stage,
               wc.priority, wc.owner_name, wc.next_action, wc.manually_edited,
               wc.selected_path_id, wc.selected_path_type
-       from workspace_company wc join sales_company c on c.id = wc.company_id
+       from user_company_market wc join sales_company c on c.id = wc.company_id
        left join lateral(select a.eligible from lead_candidate_assessment a where a.run_id=wc.search_run_id and a.user_id=$2 and lower(a.domain)=lower(c.domain) order by a.updated_at desc limit 1) a on true
        where wc.workspace_id = $1 order by c.canonical_name`,
       [workspace.id,userId],
     ),
-    query<{ provider: string; accepted_count: number; credits_used: number; finished_at: string }>(
+    tenantQuery<{ provider: string; accepted_count: number; credits_used: number; finished_at: string }>(userId,
       `select provider, accepted_count, credits_used, finished_at::text from lead_search_run
        where workspace_id = $1 and status = 'completed' order by finished_at desc limit 1`,
       [workspace.id],
     ),
-    query<{
+    tenantQuery<{
       external_id: string; id: string; full_name: string; job_title: string | null; public_profile_url: string | null;
       source_url: string; source_provider: string; status: ContactStatus; confidence: number;
-    }>(
-      `select c.external_id, ct.id, ct.full_name, ct.job_title, ct.public_profile_url, ct.source_url,
+    }>(userId,
+      `select wc.candidate_id as external_id, ct.id, ct.full_name, ct.job_title, ct.public_profile_url, ct.source_url,
               ct.source_provider, ct.status, ct.confidence
        from company_contact ct join sales_company c on c.id = ct.company_id
-       join workspace_company wc on wc.company_id = c.id
-       where wc.workspace_id = $1 and ct.workspace_id = $1 order by c.external_id, ct.confidence desc, ct.full_name`,
+       join user_company_market wc on wc.company_id = c.id
+       where wc.workspace_id = $1 and ct.workspace_id = $1 order by wc.candidate_id, ct.confidence desc, ct.full_name`,
       [workspace.id],
     ),
-    query<{
+    tenantQuery<{
       external_id: string; id: string; contact_id: string | null; email: string; status: EmailCandidateStatus;
       source_url: string | null; source_provider: string; derivation: string | null; confidence: number;
       decision_id: string | null; verification_category: "Official" | "HighConfidence" | "NeedsReview" | null;
       verification_lifecycle: "Active" | "Invalid" | null; verification_confidence: number | null;
       role_relevance_score: number | null; verification_reachability: number | null; development_priority: number | null;
       verification_reasons: string[] | null; verification_review_flags: string[] | null; verification_decided_at: string | null;
-    }>(
-      `select c.external_id, em.id, em.contact_id, em.email, em.status, em.source_url, em.source_provider,
+    }>(userId,
+      `select wc.candidate_id as external_id, em.id, em.contact_id, em.email, em.status, em.source_url, em.source_provider,
               em.derivation, em.confidence, vd.id as decision_id, vd.category as verification_category,
               vd.lifecycle_status as verification_lifecycle, vd.confidence_score as verification_confidence,
               vd.role_relevance_score, vd.reachability_score as verification_reachability,
               vd.development_priority, vd.reasons as verification_reasons,
               vd.review_flags as verification_review_flags, vd.decided_at::text as verification_decided_at
        from company_email_candidate em join sales_company c on c.id = em.company_id
-       join workspace_company wc on wc.company_id = c.id
+       join user_company_market wc on wc.company_id = c.id
        left join contact_verification_decision vd on vd.id = em.verification_decision_id
          and vd.current and not vd.shadow
-       where wc.workspace_id = $1 and em.workspace_id = $1 order by c.external_id,
+       where wc.workspace_id = $1 and em.workspace_id = $1 order by wc.candidate_id,
          case em.status when 'Verified' then 1 when 'Public' then 2 when 'Pattern-guessed' then 3 when 'Unknown' then 4 else 5 end,
          em.confidence desc, em.email`,
       [workspace.id],
     ),
-    query<{ external_id: string; evidence_count: number; provider_mix: string[]; enriched_at: string }>(
+    tenantQuery<{ external_id: string; evidence_count: number; provider_mix: string[]; enriched_at: string }>(userId,
       `with latest as (
          select distinct on (e.company_id) e.company_id, e.run_id
          from company_web_evidence e join company_enrichment_run r on r.id = e.run_id
          where r.workspace_id = $1 and r.status = 'completed'
          order by e.company_id, r.finished_at desc nulls last, r.started_at desc
        )
-       select c.external_id, count(e.id)::int as evidence_count, r.provider_mix,
+       select wc.candidate_id as external_id, count(e.id)::int as evidence_count, r.provider_mix,
               coalesce(r.finished_at, r.started_at)::text as enriched_at
        from latest l join company_web_evidence e on e.company_id = l.company_id and e.run_id = l.run_id
        join company_enrichment_run r on r.id = l.run_id
        join sales_company c on c.id = l.company_id
-       group by c.external_id, r.provider_mix, r.finished_at, r.started_at`,
+       join user_company_market wc on wc.company_id=c.id and wc.workspace_id=$1
+       group by wc.candidate_id, r.provider_mix, r.finished_at, r.started_at`,
       [workspace.id],
     ),
   ]);
@@ -213,10 +214,11 @@ export async function updateCompanyState(externalId: string, patch: CompanyEdita
     }>(
       `select wc.workspace_id, wc.company_id, wc.account_tier, wc.supply_model, wc.brand_involvement,
               wc.opportunity_stage, wc.priority, wc.owner_name, wc.next_action,
-              wc.selected_path_id, wc.selected_path_type, c.record || wc.user_overrides as record, c.country_code, w.mode, w.objective
-       from workspace_company wc join market_workspace w on w.id = wc.workspace_id
+              wc.selected_path_id, wc.selected_path_type, wc.record, wc.market_country_code as country_code, w.mode, w.objective
+       from user_company_market wc join market_workspace w on w.id = wc.workspace_id
        join sales_company c on c.id = wc.company_id
-       where w.owner_id = $1 and w.slug = $2 and c.external_id = $3 for update of wc`,
+       join workspace_company_market locked on locked.workspace_id=wc.workspace_id and locked.candidate_id=wc.candidate_id
+       where w.owner_id = $1 and w.slug = $2 and wc.candidate_id = $3 for update of locked`,
       [userId, WORKSPACE_SLUG, externalId],
     );
     const row = current.rows[0];
@@ -239,14 +241,15 @@ export async function updateCompanyState(externalId: string, patch: CompanyEdita
       selectedPathType: patch.selectedCooperationPath ?? selectedPath?.pathType ?? row.selected_path_type,
     };
     await client.query(
-      `update workspace_company set account_tier = $1, supply_model = $2, brand_involvement = $3,
-              opportunity_stage = $4, priority = $5, owner_name = $6, next_action = $7,
-              selected_path_id = $8, selected_path_type = $9,
-              user_overrides = user_overrides || $12::jsonb, manually_edited = true, updated_at = now()
-       where workspace_id = $10 and company_id = $11`,
+      `update workspace_company_market set user_overrides = user_overrides || $12::jsonb || jsonb_build_object(
+              'accountTier',$1::text,'supplyModel',$2::text,'brandInvolvement',$3::text,
+              'opportunityStage',$4::text,'priority',$5::text,'owner',$6::text,'nextAction',$7::text,
+              'selectedPathId',$8::text,'selectedCooperationPath',$9::text,'manuallyEdited',true),
+              revision=revision+1,updated_at = now()
+       where workspace_id = $10 and company_id = $11 and country_code=$13`,
       [next.accountTier, next.supplyModel, next.brandInvolvement, next.opportunityStage, next.priority,
         next.owner || null, next.nextAction || null, next.selectedPathId, next.selectedPathType,
-        row.workspace_id, row.company_id, JSON.stringify(overrides)],
+        row.workspace_id, row.company_id, JSON.stringify(overrides),row.country_code],
     );
     if (selectedPath && selectedPath.pathId !== row.selected_path_id) {
       const edit = await client.query<{ id: string }>(

@@ -4,7 +4,7 @@ vi.mock("@/lib/rag/db",()=>({tenantQuery:mocks.outside,tenantTransaction:async(_
 vi.mock("./repository",()=>({getMailboxConnection:async()=>({email:"sender@example.com",status:"active"}),connectionPassword:()=>"test-only"}));
 vi.mock("./crypto",()=>({encryptMailboxContent:()=>"encrypted-test-content",decryptMailboxContent:()=>({recipients:["recipient@example.com"]})}));
 vi.mock("nodemailer",()=>({default:{createTransport:()=>({sendMail:mocks.send,close:mocks.close})}}));
-import { sendOutbound,sendMailSchema,reconcileMailSchema,reconcileOutbound } from "./outbound";
+import { sendOutbound,sendMailSchema,reconcileMailSchema,reconcileOutbound,assignMailMarket,assignMailMarketSchema,listOutbound } from "./outbound";
 import { afterSuccessfulSend } from "@/lib/sales/opportunity-stages";
 const input={connectionId:"11111111-1111-4111-8111-111111111111",companyExternalId:"test-company",to:"recipient@example.com",
   subject:"Test",body:"Test body",idempotencyKey:"22222222-2222-4222-8222-222222222222",confirmed:true as const};
@@ -61,4 +61,32 @@ it("does not downgrade later opportunity stages on successful sends",()=>{
   expect(afterSuccessfulSend("Engaged")).toBe("Engaged");
   expect(afterSuccessfulSend("Cooperating")).toBe("Cooperating");
   expect(afterSuccessfulSend("Paused")).toBe("Paused");
+});
+it("records the sending country and scopes stage changes to that exact market",async()=>{
+  await sendOutbound('user',input);
+  const insert=mocks.query.mock.calls.find(([sql])=>String(sql).includes('insert into outbound_mail'))!;
+  expect(insert[0]).toContain('market_country_code');
+  const update=mocks.query.mock.calls.find(([sql])=>String(sql).includes('update workspace_company_market'))!;
+  expect(update[0]).toContain('wc.country_code=m.market_country_code');
+});
+it("shows unassigned historical mail explicitly without counting it as this country's mail",async()=>{
+  mocks.outside.mockResolvedValue([{id:'legacy',status:'sent',market_country_code:null,content_ciphertext:'fixture'}]);
+  const rows=await listOutbound('user','country-candidate');
+  expect(rows[0]).toMatchObject({countryUnassigned:true,marketCountry:null});
+  expect(mocks.outside.mock.calls[0][1]).toContain('m.market_country_code=wc.market_country_code or m.market_country_code is null');
+});
+it("requires explicit country confirmation and refuses existing or foreign assignments",async()=>{
+  const value={action:'assign-market',id:input.idempotencyKey,companyExternalId:'country-candidate',confirmed:true};
+  expect(assignMailMarketSchema.safeParse({...value,confirmed:false}).success).toBe(false);
+  mocks.query.mockResolvedValue({rows:[]});
+  await expect(assignMailMarket('user',assignMailMarketSchema.parse(value))).rejects.toThrow('仅可确认');
+  expect(mocks.query.mock.calls[0][0]).toContain('m.market_country_code is null for update of m');
+  expect(mocks.send).not.toHaveBeenCalled();
+});
+it("assigns an owned legacy receipt without replaying SMTP",async()=>{
+  mocks.query.mockResolvedValueOnce({rows:[{workspace_id:'workspace',company_id:'company',country:'CO',status:'sent'}]}).mockResolvedValue({rows:[]});
+  expect(await assignMailMarket('user',{action:'assign-market',id:input.idempotencyKey,companyExternalId:'co-company',confirmed:true})).toEqual({updated:true});
+  expect(mocks.query.mock.calls[1][1]).toEqual([input.idempotencyKey,'user','CO']);
+  expect(mocks.query.mock.calls[2][1]).toEqual(['workspace','company','CO']);
+  expect(mocks.send).not.toHaveBeenCalled();
 });

@@ -29,15 +29,17 @@ export async function POST(request: Request) {
   const rows = await tenantQuery<{
     id: string; canonical_name: string; domain: string; country_code: string; external_id: string; workspace_id:string;
   }>(session.userId,
-    `select company.id, company.canonical_name, company.domain, company.country_code, company.external_id,workspace.id as workspace_id
+    `select company.id, company.canonical_name, company.domain, workspace_company.market_country_code as country_code, workspace_company.candidate_id as external_id,workspace.id as workspace_id
        from sales_company company
-       join workspace_company workspace_company on workspace_company.company_id=company.id
+       join user_company_market workspace_company on workspace_company.company_id=company.id
        join market_workspace workspace on workspace.id=workspace_company.workspace_id
       where workspace.owner_id=$1 and workspace.slug='global-sales'
-        and (($2::text <> '' and company.external_id=$2) or ($3::text <> '' and lower(company.domain)=$3))
-      limit 1`,
+        and (($2::text <> '' and workspace_company.candidate_id=$2) or ($2='' and $3::text <> '' and lower(company.domain)=$3))
+        and ($3='' or lower(company.domain)=$3)
+      limit 2`,
     [session.userId, externalId, requestedDomain]);
   const company = rows[0];
+  if(rows.length>1)return Response.json({error:"该公司属于多个国家，请从对应国家的候选公司页查询联系人"},{status:409});
   if (!company) return Response.json({ error: "候选公司不存在或不属于当前工作区" }, { status: 404 });
   if(!company.domain||company.domain.endsWith(".invalid"))return Response.json({error:"公司尚无已确认官网域名，不能查询联系人"},{status:400});
   const provider = contactLookupProvider();

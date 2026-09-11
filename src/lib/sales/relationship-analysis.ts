@@ -6,8 +6,8 @@ import { relationshipCitationValid,relationshipEvidenceFingerprint } from "./rel
 const schema=z.object({suggestions:z.array(z.object({type:z.enum(["供货","转售","项目合作","技术合作","其他"]),basis:z.string().min(1).max(1000),evidenceId:z.string(),quote:z.string().max(1000)})).max(2)});
 export async function analyzeStoredRelationship(userId:string,country:string,from:string,to:string){
   const started=Date.now();const rows=await tenantQuery<{id:string;workspace_id:string;external_id:string;record:CompanyRecord}>(userId,
-    `select c.id,c.external_id,c.record,w.id as workspace_id from sales_company c join workspace_company wc on wc.company_id=c.id join market_workspace w on w.id=wc.workspace_id
-     where w.owner_id=$1 and w.slug='global-sales' and coalesce(wc.market_country_code,c.country_code)=$2 and c.external_id=any($3::text[])`,[userId,country,[from,to]]);
+    `select c.id,wc.candidate_id as external_id,wc.record,w.id as workspace_id from sales_company c join user_company_market wc on wc.company_id=c.id join market_workspace w on w.id=wc.workspace_id
+     where w.owner_id=$1 and w.slug='global-sales' and wc.market_country_code=$2 and wc.candidate_id=any($3::text[])`,[userId,country,[from,to]]);
   if(rows.length!==2)throw new Error("请选择当前国家的两家公司");const source=rows.find(row=>row.external_id===from)!,target=rows.find(row=>row.external_id===to)!;
   const records=rows.map(row=>row.record);const evidenceHash=relationshipEvidenceFingerprint(records);
   const model=process.env.DEEPSEEK_MODEL?.trim()||"deepseek-v4-flash";const fingerprint=`relation-v1:${model}:${evidenceHash}`;

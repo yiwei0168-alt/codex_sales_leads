@@ -1,5 +1,9 @@
 # Product UI v1.1 implementation workflow
 
+## 2026-09-12 country state cutover
+
+047/048 are now applied, superseding the foundation-only status below. Search/manual candidates, list/edit/assessment, assistant lookup, relationships, development strategy, contact aliases and outbound/follow-up resolve workspace-country candidates. Global identity is not overwritten on reassessment; matching-role reassessment can clear stale flags without removing user decisions or contact progress. New mail stores country and updates only that market. Old country-unconfirmed mail is labeled and excluded from market totals until an explicit audited assignment; no resend. Historical draft country is recovered only from a matching stored search run; otherwise task history says unknown. Real application-role reads and rollback isolation/reassessment probes passed, plus 10 isolated desktop/mobile browser checks. See `COMPANY_MARKET_STATE_CONTRACT.md`; no paid calls or authenticated/live-delivery acceptance claim.
+
 ## 2026-09-12 country state foundation (not enabled)
 
 Migration 047 and a country-state repository preserve global identity/legacy FKs while isolating workspace/country snapshots and overrides. Existing candidate IDs survive backfill; reassessment preserves development progress. Six tests and a real database rollback probe verified country/owner isolation. The migration is not yet applied and production readers/writers are not switched: mail/strategy provenance and all candidate-action lookups must be adapted together. See `COMPANY_MARKET_STATE_CONTRACT.md`. No new evidence/model/search/mail operation.

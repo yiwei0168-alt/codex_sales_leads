@@ -1,5 +1,11 @@
 # 产品工作流效率台账
 
+## Country-aware workflow cutover — 2026-09-12
+
+Follow-up optimization to research: existing-identity UPSERT currently retains an unnecessary no-op row update/lock. A read-first + conflict-safe insert/second-read helper could reduce write amplification; verify concurrent first creation and lock ordering before replacing it. This is recorded only, not silently bundled as a new optimization experiment.
+
+Search persistence now counts additions and updates per workspace/company/country, reusing global identity and public evidence. Contacts stay cached per identity/owner and are aliased to market candidate IDs without paid duplication. User business decisions and downstream development activity survive reassessment. Manual-add zero-score placeholders are no longer permanent user overrides. Legacy mail assignment is explicit, row-locked and locally audited with input/valid/used, latency, zero model/search cost and no retries; it never resends. Unknown-country history is excluded from market sent totals. Ten isolated browser checks and real rollback probes passed; no measured cash/token savings are asserted. Next opportunities remain broader budget coverage, crash reconciliation and underfilled-run continuation, not another country-classification model stage.
+
 ## Country business state foundation — 2026-09-12
 
 Added a local-only, not-yet-enabled per-country snapshot contract. Identity/public evidence can be reused without copying scores or user decisions between markets. Reassessment preserves development progress and explicit role overrides, avoiding paid regeneration caused by overwritten context. Six tests plus a fully rolled-back real database migration/isolation probe; no paid call. Cutover still requires all readers/writers and downstream mail/strategy market provenance. Production aggregate accounting will stay in the existing persistence/audit stage, not introduce a second model stage. No measured cost reduction claimed.

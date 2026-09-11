@@ -16,13 +16,13 @@ export const taskFeedSourceSql=`with feed as (
    jsonb_build_object('target',r.target_count,'processed',r.processed_count,'credits',r.search_credits_used+r.extract_credits_used)
  from company_enrichment_run r join market_workspace w on w.id=r.workspace_id where w.owner_id=$1
  union all
- select d.id,'draft',d.status,upper(c.country_code),coalesce(wc.user_overrides->>'displayName',c.canonical_name)||' · 开发草稿',d.created_at,d.updated_at,
+ select d.id,'draft',d.status,upper(d.market_country_code),c.canonical_name||case when d.market_country_code is null then ' · 国家未确认' else '' end||' · 开发草稿',d.created_at,d.updated_at,
    jsonb_build_object('revision',d.revision,'model',d.model,'promptTokens',d.generation_metrics->'promptTokens','completionTokens',d.generation_metrics->'completionTokens')
  from outreach_draft d join sales_company c on c.id=d.company_id
  join workspace_company wc on wc.workspace_id=d.workspace_id and wc.company_id=d.company_id
  join market_workspace w on w.id=d.workspace_id where d.user_id=$1 and w.owner_id=$1
  union all
- select m.id,'send',m.status,upper(c.country_code),coalesce(wc.user_overrides->>'displayName',c.canonical_name)||' · 邮件发送',m.created_at,coalesce(m.sent_at,m.created_at),
+ select m.id,'send',m.status,upper(m.market_country_code),c.canonical_name||case when m.market_country_code is null then ' · 国家未确认' else '' end||' · 邮件发送',m.created_at,coalesce(m.sent_at,m.created_at),
    jsonb_build_object('sentAt',m.sent_at,'followUp',m.parent_id is not null)
  from outbound_mail m join sales_company c on c.id=m.company_id
  join workspace_company wc on wc.workspace_id=m.workspace_id and wc.company_id=m.company_id

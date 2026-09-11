@@ -30,7 +30,9 @@ select wc.workspace_id,wc.company_id,trim(coalesce(wc.market_country_code,c.coun
     'assessmentNeedsRefresh',coalesce((c.record->>'assessmentNeedsRefresh')='true',false)
        or coalesce(wc.market_country_code,c.country_code)<>c.country_code
        or c.record->>'searchRunId' is distinct from wc.search_run_id::text),
-  wc.user_overrides,wc.search_run_id,
+  case when wc.user_overrides->>'userAdded'='true' then wc.user_overrides
+    - array['fitScore','accountValue','evidenceConfidence','summary','risks','unknowns','evidence','searchRunId','assessmentNeedsRefresh']
+    else wc.user_overrides end,wc.search_run_id,
   case when coalesce(wc.market_country_code,c.country_code)<>c.country_code
        or c.record->>'searchRunId' is distinct from wc.search_run_id::text
     then 'legacy-country-conflict' else 'legacy-snapshot' end,c.created_at,wc.updated_at

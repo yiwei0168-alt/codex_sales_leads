@@ -30,7 +30,7 @@ describe("sales workspace tenant isolation", () => {
     await getCurrentWorkspace("user-a");
     expect(tenantMock.mock.calls.every(([userId])=>userId==="user-a")).toBe(true);
     expect(tenantMock.mock.calls.some(([,sql])=>String(sql).includes("m.user_id=$1"))).toBe(true);
-    const statements = queryMock.mock.calls.map(([sql]) => String(sql));
+    const statements = tenantMock.mock.calls.map(([,sql]) => String(sql));
     expect(statements.some((sql) => sql.includes("ct.workspace_id = $1"))).toBe(true);
     expect(statements.some((sql) => sql.includes("em.workspace_id = $1"))).toBe(true);
   });

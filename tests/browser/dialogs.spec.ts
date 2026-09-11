@@ -19,7 +19,7 @@ test.beforeEach(async({page})=>{
     if(url.pathname==="/api/tasks/fixture-task")return route.fulfill({json:{kind:"generation",details:{stage:"development-generation",status:"completed",metrics:{inputTokens:null,outputItems:1},body:"Fixture draft"}}});
     return route.abort("blockedbyclient");
   });
-  await page.goto("http://ui.test/");
+  await page.goto("https://ui.test/");
   await page.addStyleTag({content:css});
   await page.addScriptTag({content:script});
 });
@@ -67,4 +67,22 @@ test("budget shows unknown bills separately and editing needs explicit confirmat
   await page.getByLabel("新的累计上限（美元）").fill("60");
   page.once("dialog",dialog=>dialog.dismiss());await page.getByRole("button",{name:"确认修改预算"}).click();expect(writes).toBe(0);
   page.once("dialog",dialog=>dialog.accept());await page.getByRole("button",{name:"确认修改预算"}).click();await expect.poll(()=>writes).toBe(1);
+});
+test("legacy mail requires country confirmation before follow-up and never auto-sends",async({page})=>{
+  let assignments=0;
+  await page.route('**/api/mailbox/connections',route=>route.fulfill({json:{connections:[]}}));
+  await page.route('**/api/mailbox/outbound**',route=>{
+    if(route.request().method()==='POST'){
+      expect(route.request().postDataJSON()).toEqual({action:'assign-market',id:'fixture-mail',companyExternalId:'fixture-country-company',confirmed:true});
+      assignments++;return route.fulfill({json:{updated:true}});
+    }
+    return route.fulfill({json:{hasMore:false,messages:[{id:'fixture-mail',subject:'Synthetic legacy mail',bodyText:'Fixture',sender:['sender@example.test'],recipients:['recipient@example.test'],status:'sent',sentAt:'2026-09-01',createdAt:'2026-09-01',countryUnassigned:assignments===0}]}});
+  });
+  await page.getByRole('button',{name:'打开邮件',exact:true}).click();
+  await page.getByText(/发送历史 · 第/).click();
+  await expect(page.getByRole('button',{name:'写跟进邮件',exact:true})).toBeDisabled();
+  expect(assignments).toBe(0);
+  page.once('dialog',dialog=>dialog.dismiss());await page.getByRole('button',{name:'确认归属当前国家'}).click();expect(assignments).toBe(0);
+  page.once('dialog',dialog=>dialog.accept());await page.getByRole('button',{name:'确认归属当前国家'}).click();
+  await expect(page.getByRole('button',{name:'写跟进邮件',exact:true})).toBeEnabled();expect(assignments).toBe(1);
 });

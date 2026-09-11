@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import { WorkflowPausedError } from "./pause";
+import { saveCompanyMarketAssessment } from "@/lib/sales/company-market-state";
 import type { PoolClient } from "pg";
 
 import type { CompanyRecord, Evidence } from "@/lib/domain";
@@ -178,37 +179,21 @@ async function saveEvidenceSnapshots(client: PoolClient, userId: string, runId: 
 }
 
 export async function saveCompany(client: PoolClient, workspaceId: string, record: CompanyRecord, countryCode: string, runId: string): Promise<{added:number;updated:number;roleChanged:number}> {
-  let company = await client.query<{ id: string }>(`select id from sales_company where lower(domain) = lower($1) limit 1`, [record.domain]);
-  const previous=company.rows[0]?await client.query<{role:string;overridden:boolean}>(`select coalesce(wc.user_overrides->>'primaryBusinessRole',c.record->>'primaryBusinessRole',c.record->'roles'->>0) as role,wc.user_overrides ? 'primaryBusinessRole' as overridden from workspace_company wc join sales_company c on c.id=wc.company_id where wc.workspace_id=$1 and wc.company_id=$2`,[workspaceId,company.rows[0].id]):{rows:[]};
-  if (!company.rows[0]) {
-    company = await client.query<{ id: string }>(
-      `insert into sales_company (external_id, canonical_name, domain, country_code, city, source_kind, record)
-       values ($1, $2, $3, $4, $5, 'langgraph-qualified', $6) returning id`,
-      [record.id, record.displayName, record.domain, countryCode, record.city, JSON.stringify(record)],
-    );
-  } else {
-    await client.query(
-      `update sales_company set canonical_name = $2, country_code = $3, city = $4,
-         source_kind = 'langgraph-qualified', record = $5, updated_at = now() where id = $1`,
-      [company.rows[0].id, record.displayName, countryCode, record.city, JSON.stringify(record)],
-    );
-  }
+  // Global identity is immutable here: all assessment/business changes belong to a country.
+  const company = await client.query<{ id: string }>(
+    `insert into sales_company(external_id,canonical_name,domain,country_code,city,source_kind,record)
+     values($1,$2,$3,$4,$5,'langgraph-qualified',$6)
+     on conflict(lower(domain)) do update set domain=sales_company.domain returning id`,
+    [record.id,record.displayName,record.domain,countryCode,record.city,JSON.stringify({id:record.id,displayName:record.displayName,domain:record.domain})]);
   await client.query(
-    `insert into workspace_company (workspace_id, company_id, account_tier, supply_model, brand_involvement,
-       opportunity_stage, priority, owner_name, next_action, manually_edited, market_country_code, search_run_id)
-     values ($1, $2, $3, $4, $5, $6, $7, $8, $9, false, $10, $11)
-     on conflict (workspace_id, company_id) do update set account_tier = excluded.account_tier,
-       supply_model = excluded.supply_model, brand_involvement = excluded.brand_involvement,
-       opportunity_stage = excluded.opportunity_stage, priority = excluded.priority,
-       next_action = excluded.next_action, market_country_code = excluded.market_country_code,
-       search_run_id = excluded.search_run_id, updated_at = now()
-     where workspace_company.manually_edited = false`,
-    [workspaceId, company.rows[0].id, record.accountTier, record.supplyModel, record.brandInvolvement,
-      record.opportunityStage, record.priority, record.owner, record.nextAction, countryCode, runId],
-  );
-  // Refresh the assessment link even when business fields are protected by user edits.
-  await client.query("update workspace_company set search_run_id=$3,updated_at=now() where workspace_id=$1 and company_id=$2 and manually_edited=true",[workspaceId,company.rows[0].id,runId]);
-  return {added:previous.rows.length?0:1,updated:previous.rows.length?1:0,roleChanged:previous.rows[0]&&!previous.rows[0].overridden&&previous.rows[0].role!==record.primaryBusinessRole?1:0};
+    `insert into workspace_company(workspace_id,company_id,account_tier,supply_model,brand_involvement,
+       opportunity_stage,priority,owner_name,next_action,market_country_code,search_run_id)
+     values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) on conflict(workspace_id,company_id) do nothing`,
+    [workspaceId,company.rows[0].id,record.accountTier,record.supplyModel,record.brandInvolvement,
+      record.opportunityStage,record.priority,record.owner,record.nextAction,countryCode,runId]);
+  const counts=await saveCompanyMarketAssessment(client,{
+    workspaceId,companyId:company.rows[0].id,country:countryCode,record,runId});
+  return {added:counts.added,updated:counts.updated,roleChanged:counts.roleChanged};
 }
 
 export async function persistLeadWorkflowResult(input: {

@@ -25,12 +25,12 @@ export async function readTaskDetail(userId:string,id:string,kind:string,offset=
     return {kind,details:{...rows[0],items:items.slice(0,50),hasMore:items.length>50,offset}};
   }
   if(kind==="draft"){
-    const rows=await tenantQuery(userId,`select d.id,c.canonical_name as company,d.status,d.revision,d.model,d.prompt_version,d.generation_metrics,d.strategy,
+    const rows=await tenantQuery(userId,`select d.id,c.canonical_name as company,d.market_country_code,d.status,d.revision,d.model,d.prompt_version,d.generation_metrics,d.strategy,
       coalesce(d.manual_body,d.body) as body,d.subject_options,d.created_at,d.updated_at from outreach_draft d
       join sales_company c on c.id=d.company_id where d.user_id=$1 and d.id=$2`,[userId,id]);return rows[0]?{kind,details:rows[0]}:null;
   }
   if(kind==="send"){
-    const rows=await tenantQuery<{content_ciphertext:string;[key:string]:unknown}>(userId,`select m.id,c.canonical_name as company,m.status,m.error_code,m.created_at,m.sent_at,m.parent_id,m.content_ciphertext
+    const rows=await tenantQuery<{content_ciphertext:string;[key:string]:unknown}>(userId,`select m.id,c.canonical_name as company,m.market_country_code,m.status,m.error_code,m.created_at,m.sent_at,m.parent_id,m.content_ciphertext
       from outbound_mail m join sales_company c on c.id=m.company_id where m.user_id=$1 and m.id=$2`,[userId,id]);
     if(!rows[0])return null;const {content_ciphertext,...metadata}=rows[0];return {kind,details:{...metadata,...decryptMailboxContent(userId,content_ciphertext)}};
   }

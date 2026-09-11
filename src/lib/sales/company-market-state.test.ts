@@ -39,7 +39,7 @@ describe("country business state", () => {
     const result = await saveCompanyMarketAssessment(client, { workspaceId: "workspace", companyId: "identity", country: "MX", record: { ...record, primaryBusinessRole: "Distributor" }, runId: "new-run" });
     expect(result).toEqual({ candidateId: "legacy", added: 0, updated: 1, roleChanged: 1 });
     expect(JSON.parse(query.mock.calls[2][1][4])).toMatchObject({ opportunityStage: "Contacted", nextAction: "Follow up", nextActionDueAt: "2026-10-01" });
-    expect(query.mock.calls[2][0]).not.toContain("user_overrides=");
+    expect(query.mock.calls[2][0]).toContain("user_overrides=workspace_company_market.user_overrides - 'assessmentNeedsRefresh'");
   });
   it("does not count a model role change as replacing a user-confirmed role", async () => {
     const { client } = clientWith(row({ user_overrides: { primaryBusinessRole: "SI" } }));

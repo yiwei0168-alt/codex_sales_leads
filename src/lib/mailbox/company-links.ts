@@ -20,8 +20,8 @@ export async function setMessageCompany(userId:string,messageId:string,externalI
   return tenantTransaction(userId,async client=>{
     const message=await client.query("select id from mailbox_message where user_id=$1 and id=$2 for update",[userId,messageId]);if(!message.rowCount)return false;
     let companyId:string|null=null;
-    if(externalId){const rows=await client.query<{id:string}>(`select c.id from sales_company c join workspace_company wc on wc.company_id=c.id join market_workspace w on w.id=wc.workspace_id
-      where w.owner_id=$1 and w.slug='global-sales' and c.external_id=$2`,[userId,externalId]);if(!rows.rows[0])throw new Error("公司不属于当前用户");companyId=rows.rows[0].id;}
+    if(externalId){const rows=await client.query<{id:string}>(`select c.id from sales_company c join user_company_market wc on wc.company_id=c.id join market_workspace w on w.id=wc.workspace_id
+      where w.owner_id=$1 and w.slug='global-sales' and wc.candidate_id=$2`,[userId,externalId]);if(!rows.rows[0])throw new Error("公司不属于当前用户");companyId=rows.rows[0].id;}
     await client.query(`insert into mailbox_message_company(user_id,message_id,company_id,source) values($1,$2,$3,$4)
       on conflict(user_id,message_id) do update set company_id=excluded.company_id,source=excluded.source,updated_at=now()`,[userId,messageId,companyId,companyId?'user-confirmed':'user-rejected']);return true;
   });

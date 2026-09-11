@@ -55,15 +55,21 @@ export async function saveCompanyMarketAssessment(client: PoolClient, input: {
   const current = previous.rows[0];
   const candidateId = current?.candidate_id ?? companyMarketCandidateId(input.companyId, country);
   const record = { ...input.record, id: candidateId, country };
+  const confirmedRole=current?.user_overrides.primaryBusinessRole;
+  const roleConflict=Boolean(confirmedRole&&confirmedRole!==record.primaryBusinessRole);
+  record.assessmentNeedsRefresh=roleConflict;
   if (current) {
     // New assessments never reset development activity, even if no classification edit exists.
     record.opportunityStage = current.record.opportunityStage;
     record.nextAction = current.record.nextAction;
     record.nextActionDueAt = current.record.nextActionDueAt;
+    if(roleConflict)record.accountTier=current.user_overrides.accountTier??current.record.accountTier;
   }
   await client.query(`insert into workspace_company_market(workspace_id,company_id,country_code,candidate_id,record,search_run_id,provenance)
     values($1,$2,$3,$4,$5,$6,'assessment') on conflict(workspace_id,company_id,country_code) do update set
-    record=excluded.record,search_run_id=excluded.search_run_id,provenance='assessment',revision=workspace_company_market.revision+1,updated_at=now()`,
+    record=excluded.record,search_run_id=excluded.search_run_id,provenance='assessment',
+    user_overrides=workspace_company_market.user_overrides - 'assessmentNeedsRefresh',
+    revision=workspace_company_market.revision+1,updated_at=now()`,
     [input.workspaceId, input.companyId, country, candidateId, JSON.stringify(record), input.runId]);
   return { candidateId, added: current ? 0 : 1, updated: current ? 1 : 0,
     roleChanged: current && !Object.hasOwn(current.user_overrides, "primaryBusinessRole")

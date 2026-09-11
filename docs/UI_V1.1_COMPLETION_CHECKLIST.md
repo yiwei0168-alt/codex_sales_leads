@@ -16,7 +16,8 @@ User has resumed and requested continuation until completion. Checked means impl
 - [x] Global overview full-history active-task counts, paginated company correspondence and optional manual-add role.
 - [x] Human-readable task summaries with raw records collapsed and JSX render tests enabled.
 - [ ] Authenticated detail UX review.
-- [ ] Relationship/private-knowledge context versions, crashed reservation reconciliation and multi-country membership correctness audit.
+- [ ] Crashed reservation reconciliation.
+- [x] Relationship/private-knowledge dependency versions and country-isolated business state; legacy mail country confirmation.
 - [ ] Authenticated responsive/keyboard/error-state UI checks and final PRD acceptance; live SMTP requires a designated test recipient.
 
-Latest full regression: 503 tests / 120 files; six isolated desktop/mobile Chrome checks passed (not authenticated E2E). Compatible security patches installed on 2026-09-12; install audit reports zero known vulnerabilities, not full security certification. Implemented stages and limitations are recorded in `PRODUCT_UI_V1.1_WORKFLOW.md`. Do not mass-reclassify historical data to satisfy a checklist. Preserve unrelated experiment artifacts and next-env changes.
+Latest full regression: 525 tests / 125 files; ten isolated desktop/mobile Chrome checks passed (not authenticated E2E). Compatible security patches installed on 2026-09-12; install audit reports zero known vulnerabilities, not full security certification. Implemented stages and limitations are recorded in `PRODUCT_UI_V1.1_WORKFLOW.md`. Do not mass-reclassify historical data to satisfy a checklist. Preserve unrelated experiment artifacts and next-env changes.

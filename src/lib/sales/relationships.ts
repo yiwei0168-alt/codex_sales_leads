@@ -21,10 +21,11 @@ export interface RelationshipRecord {
 
 export async function listRelationships(userId: string, country: string): Promise<RelationshipRecord[]> {
   return tenantQuery<RelationshipRecord>(userId,
-    `select r.id, f.external_id as "from", t.external_id as "to", r.relationship_type as type,
+    `select r.id, f.candidate_id as "from", t.candidate_id as "to", r.relationship_type as type,
        r.status, r.basis, r.source_url as "sourceUrl", r.updated_at::text as "updatedAt"
      from user_channel_relationship r
-     join sales_company f on f.id=r.from_company_id join sales_company t on t.id=r.to_company_id
+     join user_company_market f on f.company_id=r.from_company_id and f.workspace_id=r.workspace_id and f.market_country_code=r.country_code
+     join user_company_market t on t.company_id=r.to_company_id and t.workspace_id=r.workspace_id and t.market_country_code=r.country_code
      join market_workspace w on w.id=r.workspace_id
      where r.user_id=$1 and w.owner_id=$1 and w.slug='global-sales' and r.country_code=$2
      order by r.updated_at desc`, [userId, country]);
@@ -34,10 +35,10 @@ export async function saveRelationship(userId: string, input: z.infer<typeof rel
   const started = Date.now();
   return tenantTransaction(userId, async (client) => {
     const nodes = await client.query<{ id: string; external_id: string; workspace_id: string;record:CompanyRecord }>(
-      `select c.id,c.external_id,w.id as workspace_id,c.record from sales_company c
-       join workspace_company wc on wc.company_id=c.id join market_workspace w on w.id=wc.workspace_id
-       where w.owner_id=$1 and w.slug='global-sales' and c.external_id=any($2::text[])
-         and coalesce(wc.market_country_code,c.country_code)=$3`, [userId, [input.from,input.to],input.country]);
+      `select c.id,wc.candidate_id as external_id,w.id as workspace_id,wc.record from sales_company c
+       join user_company_market wc on wc.company_id=c.id join market_workspace w on w.id=wc.workspace_id
+       where w.owner_id=$1 and w.slug='global-sales' and wc.candidate_id=any($2::text[])
+         and wc.market_country_code=$3`, [userId, [input.from,input.to],input.country]);
     if (nodes.rows.length !== 2) throw new Error("请选择当前国家、当前工作区内的两家公司");
     const from = nodes.rows.find((node) => node.external_id === input.from)!;
     const to = nodes.rows.find((node) => node.external_id === input.to)!;

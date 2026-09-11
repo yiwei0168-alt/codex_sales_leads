@@ -91,19 +91,16 @@ async function loadRecipient(userId: string, workspaceId: string, companyId: str
 
 export async function loadDevelopmentContext(userId: string, options: DevelopmentGenerationOptions): Promise<DevelopmentContext> {
   const rows = await tenantQuery<CompanyContextRow>(userId,
-    `select w.id as workspace_id, c.id as company_id, c.external_id, c.country_code,
-            c.record || wc.user_overrides || jsonb_build_object('accountTier', wc.account_tier,
-              'selectedPathId', wc.selected_path_id, 'selectedCooperationPath', wc.selected_path_type,
-              'supplyModel', wc.supply_model, 'opportunityStage', wc.opportunity_stage,
-              'manuallyEdited', wc.manually_edited) as record, wc.search_run_id,
+    `select w.id as workspace_id, c.id as company_id, wc.candidate_id as external_id, wc.market_country_code as country_code,
+            wc.record, wc.search_run_id,
             a.dimensions, a.reasons, a.risks, a.unknowns, a.evidence_ids, a.handoff_report,
             r.metadata->'playbook' as playbook
        from market_workspace w
-       join workspace_company wc on wc.workspace_id=w.id
+       join user_company_market wc on wc.workspace_id=w.id
        join sales_company c on c.id=wc.company_id
        left join lead_candidate_assessment a on a.run_id=wc.search_run_id and lower(a.domain)=lower(c.domain) and a.user_id=$1
        left join lead_search_run r on r.id=wc.search_run_id
-      where w.owner_id=$1 and w.slug='global-sales' and c.external_id=$2 limit 1`,
+      where w.owner_id=$1 and w.slug='global-sales' and wc.candidate_id=$2 limit 1`,
     [userId, options.companyExternalId]);
   const row = rows[0];
   if (!row) throw new Error("候选公司不存在或不属于当前工作区");
@@ -146,14 +143,14 @@ export async function persistDevelopmentDraft(
     `insert into outreach_draft (
        user_id, workspace_id, company_id, contact_id, search_run_id, language, strategy,
        subject_options, body, evidence_ids, knowledge_chunk_ids, template_ids,
-       input_snapshot, handoff_report, model, prompt_version, warnings, generation_metrics
-     ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11::uuid[],$12::uuid[],$13,$14,$15,$16,$17,$18)
+       input_snapshot, handoff_report, model, prompt_version, warnings, generation_metrics, market_country_code
+     ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11::uuid[],$12::uuid[],$13,$14,$15,$16,$17,$18,$19)
      returning id, created_at::text, revision`,
     [context.userId, context.workspaceId, context.companyId, context.recipient?.contactId ?? null,
       context.searchRunId ?? null, result.draft.language, JSON.stringify(result.strategy), result.draft.subjectOptions,
       result.draft.body, result.evidenceIds, result.knowledgeIds, result.templateIds,
       JSON.stringify({...inputSnapshot,contextVersion:developmentContextVersion(context.company),dependencyVersion:context.dependencyVersion}), JSON.stringify(context.handoff ?? {}), result.model, result.promptVersion, result.warnings,
-      JSON.stringify(result.generationMetrics)]);
+      JSON.stringify(result.generationMetrics),context.company.country]);
   return { ...result, id: rows[0].id, companyExternalId: context.company.id, status: "generated",
     revision: rows[0].revision, createdAt: rows[0].created_at };
 }
@@ -197,11 +194,11 @@ export async function loadDraftForFeedback(userId: string, draftId: string): Pro
     template_ids: string[]; warnings: string[]; model: string; prompt_version: string; status: DevelopmentStrategyDto["status"];
     revision: number; generation_metrics: DevelopmentStrategyDto["generationMetrics"]; created_at: string;
   }>(userId,
-    `select c.external_id as company_external_id, d.contact_id, d.language, d.strategy,
+    `select wc.candidate_id as company_external_id, d.contact_id, d.language, d.strategy,
             d.subject_options, d.body, d.manual_body,
             d.evidence_ids, d.knowledge_chunk_ids, d.template_ids, d.warnings, d.model,
             d.prompt_version, d.status, d.revision, d.generation_metrics, d.created_at::text
-       from outreach_draft d join sales_company c on c.id=d.company_id
+       from outreach_draft d join user_company_market wc on wc.company_id=d.company_id and wc.workspace_id=d.workspace_id and wc.market_country_code=d.market_country_code
       where d.id=$1 and d.user_id=$2`, [draftId, userId]);
   const row = rows[0];
   if (!row) throw new Error("开发草稿不存在");

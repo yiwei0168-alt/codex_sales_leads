@@ -1,6 +1,6 @@
 "use client";
 import { useEffect,useState } from "react";
-type Mail={id:string;status:string;subject:string;bodyText:string;sender:string[];recipients:string[];sentAt:string|null;createdAt:string;reconciledByUser?:boolean};
+type Mail={id:string;status:string;subject:string;bodyText:string;sender:string[];recipients:string[];sentAt:string|null;createdAt:string;reconciledByUser?:boolean;countryUnassigned?:boolean;marketCountry?:string|null};
 export function OutboundComposer({companyId,draft,onSent}:{companyId:string;draft:string;onSent:()=>void}) {
   const [connections,setConnections]=useState<Array<{id:string;email:string;status:string}>>([]);
   const [connectionId,setConnectionId]=useState("");const [verified,setVerified]=useState(false);
@@ -30,6 +30,10 @@ export function OutboundComposer({companyId,draft,onSent}:{companyId:string;draf
       if(data.status==="sent")onSent();
     }catch(error){setNotice(`${String(error)} 请先核实发送状态。`);}finally{setRevision(value=>value+1);setBusy(false);}}
   async function generate(){if(!parent)return;setBusy(true);try{const data=await post("/api/mailbox/outbound/follow-up",{parentId:parent.id,instructions});setSubject(data.draft.subject);setBody(data.draft.body);setFollowUpDraftId(data.draftId);setRevision(value=>value+1);setConfirmed(false);}catch(error){setNotice(String(error));}finally{setBusy(false);}}
+  async function assignMarket(mail:Mail){
+    if(!window.confirm('确认这封历史邮件属于当前候选公司所在国家？这会保存国家归属，已发送邮件会计入此国家的联系记录，不会重发邮件。'))return;
+    setBusy(true);try{await post('/api/mailbox/outbound',{action:'assign-market',id:mail.id,companyExternalId:companyId,confirmed:true});setRevision(value=>value+1);onSent();setNotice('国家归属已保存，没有调用模型或发送邮件。');}catch(error){setNotice(String(error));}finally{setBusy(false);}
+  }
   function choose(mail:Mail,followUp=true){
     const sender=connections.find(item=>item.email===mail.sender[0]);
     setConnectionId(sender?.id??"");setVerified(false);setInstructions("");setNotice("");
@@ -48,12 +52,13 @@ export function OutboundComposer({companyId,draft,onSent}:{companyId:string;draf
   return <section className="panel"><h2>邮件发送与跟进</h2>{notice&&<p role="status">{notice}</p>}
     <label>发件邮箱<select disabled={busy||locked} value={connectionId} onChange={event=>{setConnectionId(event.target.value);setVerified(false);setConfirmed(false);}}><option value="">选择已连接邮箱</option>{connections.map(item=><option key={item.id} value={item.id}>{item.email}</option>)}</select></label>
     <button disabled={!connectionId||busy||locked} onClick={verify}>{verified?"发信连接已验证":"验证发信连接"}</button>
-    <details><summary>发送历史 · 第 {offset/50+1} 页 · 本页已发送 {messages.filter(mail=>mail.status==="sent").length} 封</summary>{messages.map(mail=><article key={mail.id}>
+    <details><summary>发送历史 · 第 {offset/50+1} 页 · 本页本国已发送 {messages.filter(mail=>mail.status==="sent"&&!mail.countryUnassigned).length} 封</summary>{messages.map(mail=><article key={mail.id}>
       <strong>{mail.subject}</strong><p>{mail.recipients.join(", ")} · {mail.sentAt??mail.createdAt} · {mail.status}{mail.reconciledByUser?"（用户核实）":""}</p>
+      {mail.countryUnassigned&&<p>历史邮件国家未确认，不计入当前国家开发进度。<button disabled={busy} onClick={()=>void assignMarket(mail)}>确认归属当前国家</button></p>}
       {["unknown","sending"].includes(mail.status)&&<details><summary>核实发送结果（不重发）</summary><p>请先在外部邮箱检查；发送中记录至少等待十分钟。</p><button disabled={busy} onClick={()=>void reconcile(mail,"sent")}>已核实发送成功</button><button disabled={busy} onClick={()=>void reconcile(mail,"not-sent")}>已核实未发送</button></details>}
       <details><summary>查看邮件详情</summary><pre style={{whiteSpace:"pre-wrap"}}>{mail.bodyText}</pre></details>
-      {mail.status==="sent"&&<button disabled={busy} onClick={()=>choose(mail)}>写跟进邮件</button>}
-      {mail.status==="sent"&&<button disabled={busy} onClick={()=>choose(mail,false)}>复用于本公司其他联系人</button>}
+      {mail.status==="sent"&&<button disabled={busy||mail.countryUnassigned} onClick={()=>choose(mail)}>写跟进邮件</button>}
+      {mail.status==="sent"&&<button disabled={busy||mail.countryUnassigned} onClick={()=>choose(mail,false)}>复用于本公司其他联系人</button>}
     </article>)}<button disabled={busy||offset===0} onClick={()=>{setMessages([]);setOffset(value=>Math.max(0,value-50));}}>上一页</button><button disabled={busy||!hasMore} onClick={()=>{setMessages([]);setOffset(value=>value+50);}}>下一页</button></details>
     {parent&&<div><details><summary>展开原开发邮件</summary><pre style={{whiteSpace:"pre-wrap"}}>{parent.bodyText}</pre></details>
       {savedFollowUps.length>0&&<details><summary>复用已保存跟进草稿（最近 10 版，不调用模型）</summary>{savedFollowUps.map(item=><div key={item.id}><span>{item.createdAt} · {item.subject}</span><button disabled={busy||locked} onClick={()=>{setSubject(item.subject);setBody(item.bodyText);setFollowUpDraftId(item.id);setConfirmed(false);}}>载入审核</button></div>)}</details>}
