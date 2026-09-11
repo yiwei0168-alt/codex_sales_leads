@@ -307,7 +307,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
         <nav aria-label="主导航">
           <p className="nav-label">Workspace</p>
           {navItems.map((item) => (
-            <button key={item.id} className={`nav-item ${view === item.id ? "active" : ""}`} onClick={() => setView(item.id)}>
+            <button key={item.id} aria-label={item.label} title={item.label} className={`nav-item ${view === item.id ? "active" : ""}`} onClick={() => setView(item.id)}>
               <Icon name={item.id} /><span>{item.label}</span>{item.meta && <em>{item.meta}</em>}
             </button>
           ))}

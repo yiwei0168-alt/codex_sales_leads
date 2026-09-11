@@ -61,7 +61,7 @@ export function UserChannelMap({country, companies,onSelect,onAdded}: {country:s
   const visible=companies.filter(company=>(!focus||neighbors.has(company.id))&&(role==="all"||primaryRole(company)===role)&&!collapsed.includes(primaryRole(company))&&`${company.displayName} ${company.domain} ${primaryRole(company)}`.toLowerCase().includes(query.toLowerCase())).sort((a,b)=>primaryRole(a).localeCompare(primaryRole(b))||a.displayName.localeCompare(b.displayName));
   const positions=new Map(visible.map((company,index)=>[company.id,{x:160+(index%3)*310,y:55+Math.floor(index/3)*100}]));
   const height=Math.max(220,Math.ceil(visible.length/3)*100+40);
-  return <div>
+  return <div className="channel-map-workspace">
     <details className="panel"><summary>添加公司</summary><p>已有候选自动显示为节点；新公司保存为待核实，不自动付费搜索或评分。</p>
       <form onSubmit={addCompany}><label>公司名称<input required minLength={2} maxLength={200} value={newName} onChange={event=>setNewName(event.target.value)}/></label>
         <label>官网（可选）<input maxLength={400} value={newWebsite} onChange={event=>setNewWebsite(event.target.value)}/></label>
@@ -70,12 +70,14 @@ export function UserChannelMap({country, companies,onSelect,onAdded}: {country:s
       </form></details>
     <section className="panel">
       <div className="panel-header"><h2>渠道节点与关系</h2><span>{visible.length} / {companies.length} 家</span></div>
+      <div className="relationship-controls">
       <input aria-label="搜索关系图公司" placeholder="搜索公司或角色" value={query} onChange={event=>setQuery(event.target.value)}/>
       <label>角色<select value={role} onChange={event=>setRole(event.target.value)}><option value="all">全部角色</option>{[...new Set(companies.map(primaryRole))].map(value=><option key={value}>{value}</option>)}</select></label>
       <label>缩放<input type="range" min="0.5" max="2" step="0.1" value={zoom} onChange={event=>setZoom(Number(event.target.value))}/>{Math.round(zoom*100)}%</label>
       <label>聚焦公司及关联节点<select value={focus} onChange={event=>setFocus(event.target.value)}><option value="">全部节点</option>{companies.map(company=><option key={company.id} value={company.id}>{company.displayName}</option>)}</select></label>
       <button onClick={()=>{setQuery("");setRole("all");setCollapsed([]);setZoom(1);setFocus("");}}>显示全部 / 重置视图</button>
       <details><summary>角色分组展开 / 折叠</summary>{[...new Set(companies.map(primaryRole))].map(value=><label key={value}><input type="checkbox" checked={!collapsed.includes(value)} onChange={()=>setCollapsed(items=>items.includes(value)?items.filter(item=>item!==value):[...items,value])}/>{value} · {companies.filter(company=>primaryRole(company)===value).length}</label>)}</details>
+      </div>
       {loading&&<p role="status">正在读取关系…</p>}
       {error&&<p role="alert">{error}<button onClick={()=>setVersion(value=>value+1)}>重试读取</button></p>}
       <div style={{overflow:"auto",maxHeight:"65vh"}}>
