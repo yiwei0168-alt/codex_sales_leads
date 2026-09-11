@@ -1,5 +1,5 @@
 import type { CompanyRecord } from "@/lib/domain";
-import { query, tenantTransaction, transaction } from "@/lib/rag/db";
+import { query, tenantQuery, tenantTransaction, transaction } from "@/lib/rag/db";
 import type {
   CompanyContactDetailsDto,
   CompanyEditablePatch,
@@ -20,6 +20,9 @@ export async function getCurrentWorkspace(userId: string): Promise<MarketWorkspa
   );
   const workspace = workspaces[0];
   if (!workspace) return null;
+  const taskMarkets = await tenantQuery<{ code: string }>(userId,
+    `select distinct payload->>'countryCode' as code from assistant_action
+     where user_id = $1 and action_type = 'lead-search' and payload->>'countryCode' is not null`, [userId]);
   const [rows, searches, contacts, emails, enrichmentSummaries] = await Promise.all([
     query<{
       record: CompanyRecord; account_tier: CompanyRecord["accountTier"]; supply_model: CompanyRecord["supplyModel"];
@@ -149,6 +152,7 @@ export async function getCurrentWorkspace(userId: string): Promise<MarketWorkspa
     name: workspace.name,
     market: workspace.market,
     countryCode: workspace.country_code,
+    taskCountries: taskMarkets.map((item) => item.code),
     mode: workspace.mode,
     objective: workspace.objective,
     companies: rows.map((row) => ({

@@ -1,7 +1,8 @@
 "use client";
 
-import { Fragment, useMemo, useState } from "react";
+import { Fragment, useState } from "react";
 import { useRouter } from "next/navigation";
+import { marketCode, marketHref, marketLabel } from "@/lib/sales/market-navigation";
 import { AssistantHome } from "@/components/assistant-home";
 import { KnowledgeBase } from "@/components/knowledge-base";
 import { ContactEnrichmentProgress } from "@/components/contact-enrichment-progress";
@@ -103,11 +104,20 @@ function providerLabel(provider: string): string {
   } as Record<string, string>)[provider] ?? provider;
 }
 
-export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner" }: { initialWorkspace?: MarketWorkspaceDto; userName?: string }) {
+export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", initialCountry = "all", initialView = "home" }: { initialWorkspace?: MarketWorkspaceDto; userName?: string; initialCountry?: string; initialView?: View }) {
   const router = useRouter();
-  const [view, setView] = useState<View>("home");
+  const [view, setViewState] = useState<View>(initialView);
+  const country = marketCode(initialCountry);
+  function setView(next: View) {
+    if (next === "results" || next === "map") {
+      router.push(marketHref(country, next === "results" ? "leads" : "channel-map"));
+    } else setViewState(next);
+  }
   const [mode, setMode] = useState<Mode>(initialWorkspace?.mode ?? "new-market");
   const [companies, setCompanies] = useState<CompanyRecord[]>(initialWorkspace?.companies ?? []);
+  const countries = [...new Set([...companies.map((company) => marketCode(company.country)), ...(initialWorkspace?.taskCountries ?? [])])];
+  if (country !== "all" && !countries.includes(country)) countries.push(country);
+  const countryCompanies = companies.filter((company) => country === "all" || marketCode(company.country) === country);
   const [selectedId, setSelectedId] = useState("syscom");
   const [detailOpen, setDetailOpen] = useState(false);
   const [evidenceOpen, setEvidenceOpen] = useState<Evidence | null>(null);
@@ -129,14 +139,15 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner" }: 
   const selectedCompany = companies.find((item) => item.id === selectedId) ?? companies[0];
   const shortlist = companies.filter((company) => !["Discovered", "Excluded"].includes(company.opportunityStage));
 
-  const filteredCompanies = useMemo(() => {
+  const filteredCompanies = (() => {
     const term = query.trim().toLowerCase();
     return companies
+      .filter((company) => country === "all" || marketCode(company.country) === country)
       .filter((company) => roleFilter === "All" || company.roles.includes(roleFilter))
       .filter((company) => tierFilter === "All" || company.accountTier === tierFilter)
       .filter((company) => !term || [company.displayName, company.city, company.domain, company.roles.join(" ")].join(" ").toLowerCase().includes(term))
       .sort((a, b) => priorityIndex(b) - priorityIndex(a));
-  }, [companies, query, roleFilter, tierFilter]);
+  })();
 
   async function updateCompany(id: string, patch: CompanyEditablePatch) {
     setCompanies((items) => items.map((item) => item.id === id ? { ...item, ...patch, manuallyEdited: true } : item));
@@ -312,10 +323,11 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner" }: 
 
           {searchState === "complete" && <div className="inline-notice success"><Icon name="check"/><span>当前工作区包含 {companies.length} 个 Tavily 实时候选、{sourceCount} 条来源；角色和适配度在证据复核前均为 Inferred。</span><button onClick={() => setSearchState("idle")} aria-label="关闭"><Icon name="close" size={15}/></button></div>}
 
-          {view === "home" && <AssistantHome userName={userName} onOpenResults={() => setView("results")} />}
+          {(view === "results" || view === "map") && <div className="results-toolbar"><label className="select-field">国家<select aria-label="选择国家" value={country} onChange={(event) => router.push(marketHref(event.target.value, view === "map" ? "channel-map" : "leads"))}><option value="all">{view === "map" ? "请选择国家" : "全部国家"}</option>{countries.sort().map((code) => <option key={code} value={code}>{marketLabel(code)} · {companies.filter((company) => marketCode(company.country) === code).length}</option>)}</select></label></div>}
+          {view === "home" && <AssistantHome userName={userName} onOpenResults={(code) => router.push(marketHref(code, "leads"))} />}
           {view === "overview" && <Overview mode={mode} companies={companies} onMode={(next) => { chooseMode(next); setView("results"); }} onSelect={selectCompany} />}
           {view === "results" && <Results companies={filteredCompanies} query={query} setQuery={setQuery} roleFilter={roleFilter} setRoleFilter={setRoleFilter} tierFilter={tierFilter} setTierFilter={setTierFilter} onSelect={selectCompany} onToggle={(company) => updateCompany(company.id, { opportunityStage: company.opportunityStage === "Discovered" ? "Qualified" : "Discovered" })} />}
-          {view === "map" && <ChannelMap companies={companies} onSelect={selectCompany} />}
+          {view === "map" && (country === "all" ? <p className="subtle">请选择国家以查看渠道节点与关系。</p> : <ChannelMap companies={countryCompanies} onSelect={selectCompany} />)}
           {view === "opportunities" && <OpportunityWorkspace companies={shortlist} onSelect={selectCompany} onUpdate={updateCompany} />}
           {view === "assistant" && selectedCompany && <DevelopmentAssistant company={selectedCompany} result={developmentResult} draft={draft} setDraft={setDraft} state={developmentState} error={developmentError} feedback={developmentFeedback} setFeedback={setDevelopmentFeedback} feedbackMessage={feedbackMessage} allowMemory={allowFeedbackMemory} setAllowMemory={setAllowFeedbackMemory} onGenerate={() => void generateDevelopment()} onRevise={() => void reviseDevelopmentDraft()} onApprove={() => void approveDevelopmentDraft()} onEvidence={setEvidenceOpen} onChoose={() => setDetailOpen(true)} />}
           {view === "tasks" && <ContactEnrichmentProgress />}

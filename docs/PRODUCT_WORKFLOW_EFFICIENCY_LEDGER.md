@@ -1,5 +1,9 @@
 # 产品工作流效率台账
 
+## PRD v1.1 / UI stage 1a — country navigation
+
+Input: authenticated owner's saved companies and distinct search-task country codes. Valid output: normalized country options and selected-country company records. Downstream use: leads list, map and conversation result navigation share the country URL. No model tokens, paid search credits or retries are introduced. Missing countries remain an explicit unknown partition; all-country maps request selection rather than mixing nodes. Runtime input/output counts and latency are not yet instrumented for this read-only UI stage and must not be reported as measured. Optimization opportunity: move large-workspace country filtering into paginated repository reads instead of loading the full workspace on each navigation. Verification: two country normalization/navigation tests and TypeScript passed. Full runtime telemetry and remaining PRD features are pending; see `docs/PRODUCT_UI_V1.1_WORKFLOW.md`.
+
 本台账把成本降低作为长期产品任务。所有产品工作流都应衡量“生成了多少”以及“最终有多少真正被下游使用”，避免只统计 API 请求或 token 总量。
 
 ## 强制记录口径

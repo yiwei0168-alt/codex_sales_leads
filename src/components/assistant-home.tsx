@@ -16,7 +16,7 @@ function actionForMessage(message: AssistantMessageDto, actions: AssistantAction
   return message.metadata.actionId ? actions.find((action) => action.id === message.metadata.actionId) : undefined;
 }
 
-export function AssistantHome({ userName, onOpenResults }: { userName: string; onOpenResults: () => void }) {
+export function AssistantHome({ userName, onOpenResults }: { userName: string; onOpenResults: (countryCode: string) => void }) {
   const [conversations, setConversations] = useState<AssistantConversationSummary[]>([]);
   const [activeId, setActiveId] = useState<string>();
   const [conversation, setConversation] = useState<AssistantConversationDto>();
@@ -179,7 +179,7 @@ export function AssistantHome({ userName, onOpenResults }: { userName: string; o
                 <dl><div><dt>开发模式</dt><dd>{action.payload.objective === "new-market" ? "新市场并行开发" : "已有分销体系增长"}</dd></div><div><dt>目标数量</dt><dd>{action.payload.targetCount} 家</dd></div><div><dt>渠道角色</dt><dd>{action.payload.roles.join(" · ")}</dd></div></dl>
                 {action.status === "proposed" && <button disabled={confirmingId === action.id} onClick={() => void confirmSearch(action.id)}>{confirmingId === action.id ? "正在启动工作流…" : "确认并开始搜索"}</button>}
                 {action.status === "failed" && <button disabled={confirmingId === action.id} onClick={() => void confirmSearch(action.id)}>{confirmingId === action.id ? "正在恢复工作流…" : "从 checkpoint 重试"}</button>}
-                {action.status === "completed" && <button onClick={onOpenResults}>查看 {action.payload.countryName} 结果</button>}
+                {action.status === "completed" && <button onClick={() => onOpenResults(action.payload.countryCode)}>查看 {action.payload.countryName} 结果</button>}
                 {action.errorMessage && <p>{action.errorMessage}</p>}
               </div>}
               {(message.metadata.citations?.length ?? 0) > 0 && <div className="ai-citations"><strong>知识库证据</strong>{message.metadata.citations?.map((citation) => <a key={citation.chunkId} href={citation.sourceUrl || undefined} target="_blank" rel="noreferrer"><span>[KB:{citation.chunkId.slice(0, 8)}]</span><b>{citation.documentTitle}</b><em>{Math.round(citation.score * 100)}%</em></a>)}</div>}
