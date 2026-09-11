@@ -29,10 +29,15 @@ try{
       const own=await client.query("select id from user_relationship_analysis where id=$1",[analysis.rows[0].id]);if(own.rowCount!==1)throw new Error('Owner RLS read failed');
       await client.query("insert into product_operation_metric(id,user_id,stage,status) values($1,$2,'verification','running')",[run.rows[0].id,userId]);
       const metricOwn=await client.query("select id from product_operation_metric where id=$1",[run.rows[0].id]);if(metricOwn.rowCount!==1)throw new Error('Owner metric read failed');
+      await client.query("insert into user_spend_budget(user_id,limit_micros) values($1,0) on conflict(user_id) do nothing",[userId]);
+      const ownBudget=await client.query("select user_id from user_spend_budget where user_id=$1 for update",[userId]);if(ownBudget.rowCount!==1)throw new Error('Owner budget read failed');
+      await client.query("insert into paid_call_reservation(id,user_id,operation_id,stage,tariff_key,tariff_version,reserved_micros,status) values($1,$2,'rollback-only','verification','fixture','fixture',1,'reserved')",[run.rows[0].id,userId]);
       await client.query("select set_config('app.current_user_id','00000000-0000-4000-8000-999999999999',true)");
       const other=await client.query("select id from user_relationship_analysis where id=$1",[analysis.rows[0].id]);
       const cache=await client.query("select company_id from user_contact_lookup_cache where run_id=$1",[run.rows[0].id]);
       const metricOther=await client.query("select id from product_operation_metric where id=$1",[run.rows[0].id]);if(metricOther.rowCount)throw new Error('Cross-owner metric read failed');
+      const otherBudget=await client.query("select user_id from user_spend_budget where user_id=$1",[userId]);
+      const otherReservation=await client.query("select id from paid_call_reservation where id=$1",[run.rows[0].id]);if(otherBudget.rowCount||otherReservation.rowCount)throw new Error('Cross-owner budget read failed');
       if(other.rowCount||cache.rowCount)throw new Error('Cross-owner RLS failed');throw rollback;
     });}catch(error){if(error!==rollback)throw error;}
   }

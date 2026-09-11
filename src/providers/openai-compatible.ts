@@ -1,3 +1,4 @@
+import { budgetedFetch } from "@/lib/billing/paid-fetch";
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "./contracts";
 import { ProviderUnavailableError } from "./contracts";
 
@@ -35,7 +36,7 @@ export class OpenAiCompatibleProvider implements AiProvider {
   constructor(private readonly options: OpenAiCompatibleProviderOptions) {
     this.id = options.id;
     this.baseUrl = options.baseUrl.replace(/\/$/, "");
-    this.fetchImplementation = options.fetchImplementation ?? fetch;
+    this.fetchImplementation = budgetedFetch(options.fetchImplementation ?? fetch);
     this.maxAttempts = Math.max(1, Math.min(2, options.maxAttempts ?? 2));
     const parsed = new URL(this.baseUrl);
     if (parsed.protocol !== "https:" || parsed.username || parsed.password) {

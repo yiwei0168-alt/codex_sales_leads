@@ -1,3 +1,4 @@
+import { budgetedFetch } from "@/lib/billing/paid-fetch";
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "./contracts";
 import { ProviderUnavailableError } from "./contracts";
 
@@ -61,7 +62,7 @@ export class DeepSeekProvider implements AiProvider {
     this.apiKey = options.apiKey?.trim() ?? process.env.DEEPSEEK_API_KEY?.trim() ?? "";
     this.baseUrl = (options.baseUrl?.trim() || process.env.DEEPSEEK_BASE_URL?.trim() || "https://api.deepseek.com").replace(/\/$/, "");
     this.defaultModel = options.defaultModel?.trim() || process.env.DEEPSEEK_MODEL?.trim() || "deepseek-v4-flash";
-    this.fetchImplementation = options.fetchImplementation ?? fetch;
+    this.fetchImplementation = budgetedFetch(options.fetchImplementation ?? fetch);
     this.maxAttempts = Math.max(1, options.maxAttempts ?? 3);
   }
 

@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import { budgetedFetch } from "@/lib/billing/paid-fetch";
 import { ChatOpenAI } from "@langchain/openai";
 import { getRagConfig } from "./config";
 import type { RetrievedChunk } from "./types";
@@ -9,7 +10,7 @@ function getEmbeddingClient(): OpenAI {
   const config = getRagConfig();
   if (!config.embeddingApiKey) throw new Error("EMBEDDING_API_KEY is not configured");
   if (!config.embeddingBaseUrl) throw new Error("EMBEDDING_BASE_URL is not configured");
-  embeddingClient ??= new OpenAI({ apiKey: config.embeddingApiKey, baseURL: config.embeddingBaseUrl });
+  embeddingClient ??= new OpenAI({ apiKey: config.embeddingApiKey, baseURL: config.embeddingBaseUrl,fetch:budgetedFetch() });
   return embeddingClient;
 }
 
@@ -74,7 +75,7 @@ export async function generateGroundedAnswer(question: string, chunks: Retrieved
     timeout: 90_000,
     streamUsage: false,
     modelKwargs: { provider: config.openaiProviderPreferences },
-    configuration: { baseURL: config.openaiBaseUrl, defaultHeaders: config.openaiDefaultHeaders },
+    configuration: { baseURL: config.openaiBaseUrl, defaultHeaders: config.openaiDefaultHeaders,fetch:budgetedFetch() },
   });
   const response = await model.invoke([
       {

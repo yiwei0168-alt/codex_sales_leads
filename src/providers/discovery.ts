@@ -1,3 +1,4 @@
+import { budgetedFetch } from "@/lib/billing/paid-fetch";
 import type { DiscoveryProviderId } from "@/lib/leads/workflow/hybrid-search-policy";
 
 import type {
@@ -193,7 +194,7 @@ abstract class BaseProvider {
   protected readonly timeoutMs: number;
   protected readonly maxAttempts: number;
   constructor(options: ProviderOptions = {}, defaultTimeout = 45_000) {
-    this.fetchImplementation = options.fetchImplementation ?? fetch;
+    this.fetchImplementation = budgetedFetch(options.fetchImplementation ?? fetch);
     this.timeoutMs = options.timeoutMs ?? defaultTimeout;
     this.maxAttempts = Math.max(1, Math.min(3, options.maxAttempts ?? 2));
   }

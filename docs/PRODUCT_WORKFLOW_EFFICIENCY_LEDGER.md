@@ -1,5 +1,9 @@
 # 产品工作流效率台账
 
+## Pre-request conservative budget foundation — 2026-09-12
+
+Stage-bound owner/action HTTP-attempt reservations keep byte/token/latency/outcome aggregates without payloads. Unknown and failed billing retains occupied funds; final metric-write errors cannot trigger repeated paid outputs. Model in-flight reuse is separated by owner/action where budgets apply. Cache hits precede transport and incur no reservation. Budget UI uses existing aggregates only when expanded. Verified request bounds remain empty, so covered live paid requests are blocked; no unsupported fee estimate is inserted. Remaining optimization: audit complete tariffs, settle verified invoices to release excess holds, bind all non-lead entry points, add task sub-limits and denied-request aggregation. No new model/search/SMTP bill occurred during development.
+
 ## Compatible dependency hardening — 2026-09-12
 
 Updated vulnerable runtime/test dependency patches and verified the existing behavior, with no new model/search/SMTP operation or pricing assumption. Registry/build/test traffic is development tooling, not candidate acquisition cost. Avoided an unconditional broad dependency upgrade; no claim of measured token savings. Point-in-time install audit: zero known vulnerabilities. Production acceptance still requires the separate workflow gates and authenticated/live-delivery checks.

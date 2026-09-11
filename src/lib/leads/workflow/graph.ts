@@ -1,5 +1,6 @@
 import { Annotation, END, START, StateGraph, type BaseCheckpointSaver } from "@langchain/langgraph";
 import { PostgresSaver } from "@langchain/langgraph-checkpoint-postgres";
+import { withSpendContext,setSpendStage } from "@/lib/billing/context";
 
 import type { LeadSearchPlan } from "@/lib/assistant/types";
 import { getPool } from "@/lib/rag/db";
@@ -107,6 +108,7 @@ const productionDependencies: LeadWorkflowDependencies = {
 };
 
 async function phase(dependencies: LeadWorkflowDependencies, state: typeof WorkflowAnnotation.State, next: LeadWorkflowPhase): Promise<void> {
+  setSpendStage(next);
   await dependencies.updatePhase(state.userId, state.actionId, next);
 }
 
@@ -455,7 +457,7 @@ export async function runLeadWorkflow(input: {
   const snapshot=await graph.getState(config);
   const mode=checkpointInvocation(snapshot,input.userId,input.actionId);
   if(mode==='complete')return snapshot.values.result as LeadWorkflowResult;
-  const state = await graph.invoke(mode==='resume'?null:initial,config);
+  const state = await withSpendContext({userId:input.userId,operationId:input.actionId,stage:"lead-workflow"},()=>graph.invoke(mode==='resume'?null:initial,config));
   if (!state.result) throw new Error("LangGraph workflow completed without a result");
   return state.result;
 }

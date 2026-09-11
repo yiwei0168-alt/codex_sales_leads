@@ -56,3 +56,15 @@ test("task details show unknown usage and fit viewport without opening raw conte
   await expect.poll(async()=>{const box=await dialog.boundingBox();return Math.round(box!.x+box!.width);}).toBeLessThanOrEqual(page.viewportSize()!.width);
   await page.keyboard.press("Escape"); await expect(page.getByRole("button",{name:"打开任务",exact:true})).toBeFocused();
 });
+test("budget shows unknown bills separately and editing needs explicit confirmation",async({page})=>{
+  let writes=0;
+  await page.route("**/api/budget",async route=>{
+    if(route.request().method()==="PUT"){writes++;expect(route.request().postDataJSON()).toEqual({limitUsd:"60",confirmed:true});return route.fulfill({json:{saved:true}});}
+    return route.fulfill({json:{budget:{limit_micros:"50000000",occupied_micros:"10000000",remaining_micros:"40000000",frozen:false},configuredRules:0,notice:"Fixture scope",stages:[{stage:"score",calls:1,reserved_micros:"10000000",reported_micros:null,unknown_bills:1}]}});
+  });
+  await page.getByRole("button",{name:"打开预算",exact:true}).click();
+  await expect(page.getByText(/服务商报告 未报告/)).toBeVisible();expect(writes).toBe(0);
+  await page.getByLabel("新的累计上限（美元）").fill("60");
+  page.once("dialog",dialog=>dialog.dismiss());await page.getByRole("button",{name:"确认修改预算"}).click();expect(writes).toBe(0);
+  page.once("dialog",dialog=>dialog.accept());await page.getByRole("button",{name:"确认修改预算"}).click();await expect.poll(()=>writes).toBe(1);
+});

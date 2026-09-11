@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { currentSpendContext } from "@/lib/billing/context";
 
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "./contracts";
 import { ProviderUnavailableError } from "./contracts";
@@ -160,7 +161,8 @@ export class ResilientAiProvider implements AiProvider {
   async execute<TInput, TOutput>(request: StructuredAiRequest<TInput>, signal?: AbortSignal) {
     const canShare = request.dataClassification !== "private-workspace";
     if (!canShare) return this.executeUnshared<TInput, TOutput>(request, signal);
-    const key = requestKey(request as StructuredAiRequest<unknown>);
+    const scope=currentSpendContext();
+    const key = `${scope?`${scope.userId}:${scope.operationId}:`:""}${requestKey(request as StructuredAiRequest<unknown>)}`;
     const existing = this.inFlight.get(key);
     if (existing) return existing as Promise<StructuredAiResponse<TOutput>>;
     const pending = this.executeUnshared<TInput, TOutput>(request, signal);

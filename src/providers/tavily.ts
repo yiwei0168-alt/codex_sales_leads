@@ -1,3 +1,4 @@
+import { budgetedFetch } from "@/lib/billing/paid-fetch";
 import { ProviderUnavailableError } from "./contracts";
 
 export class TavilyProviderUnavailableError extends ProviderUnavailableError {
@@ -120,7 +121,7 @@ export class TavilySearchProvider {
       throw new Error("Tavily maxAttempts must be an integer between 1 and 3");
     }
     this.maxAttempts = maxAttempts;
-    this.fetchImplementation = options.fetchImplementation ?? fetch;
+    this.fetchImplementation = budgetedFetch(options.fetchImplementation ?? fetch);
     const parsed = new URL(options.baseUrl?.trim() || process.env.TAVILY_BASE_URL?.trim() || "https://api.tavily.com");
     if (parsed.protocol !== "https:" || parsed.hostname !== "api.tavily.com" || parsed.username || parsed.password) {
       throw new Error("TAVILY_BASE_URL must be the trusted Tavily HTTPS endpoint");

@@ -1,4 +1,5 @@
 import { ChatOpenAI } from "@langchain/openai";
+import { budgetedFetch } from "@/lib/billing/paid-fetch";
 
 import type { ChannelRole } from "@/lib/domain";
 import type { LeadSearchPlan } from "@/lib/assistant/types";
@@ -131,7 +132,7 @@ export async function buildLeadMarketPlaybook(plan: LeadSearchPlan, citations: L
     timeout: 90_000,
     streamUsage: false,
     modelKwargs: { provider: config.providerPreferences },
-    configuration: { baseURL: config.baseUrl, defaultHeaders: config.defaultHeaders },
+    configuration: { baseURL: config.baseUrl, defaultHeaders: config.defaultHeaders,fetch:budgetedFetch() },
   }).withStructuredOutput(leadMarketPlaybookModelSchema, {
     name: "lead_market_playbook",
     method: "jsonSchema",

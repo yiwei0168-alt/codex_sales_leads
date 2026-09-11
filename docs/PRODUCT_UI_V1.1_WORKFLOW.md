@@ -1,5 +1,9 @@
 # Product UI v1.1 implementation workflow
 
+## 2026-09-12 conservative budget foundation
+
+User confirmed fail-closed missing prices and country-independent business states. Migration 046 adds integer micro-USD owner budgets and pre-network reservations. Task Center has lazy-loaded budget edit/refresh with explicit confirmation and separate occupied/reported/unknown amounts. The production lead workflow binds per-action scope through embedding/playbook/discovery/evidence/scoring transports and retries. Empty unverified tariff configuration blocks uncached paid work. This is a foundation: independent chat/mail/contact/knowledge entry scopes, reviewed provider bounds and task sub-limits are still pending. See `BILLING_BUDGET_CONTRACT.md`; no full-product cap or actual cost reduction is claimed. Real RLS probes passed with verification writes rolled back.
+
 ## 2026-09-12 compatible security patch verification
 
 Next.js and its lint config upgraded to 16.3.4, mailparser to 3.9.24, Vitest to 4.1.11 and compatible transitive js-yaml to 4.3.2. This addresses the preceding audit alerts without forced major upgrades or dependency overrides. Official Windows advisory: https://github.com/vercel/next.js/security/advisories/GHSA-p293-qw3h-jr36 . Final install audit reports zero known vulnerabilities; this is a point-in-time dependency check, not a full security certification. Running processes must restart to load new dependencies; an older loaded native binary was left untouched rather than killing an unidentified user process. Existing experiment artifacts and databases were not altered.
