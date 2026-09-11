@@ -787,7 +787,7 @@ flowchart TD
 | `src/lib/outreach/kimi-agent.ts` | `75e6ed9ab23c1cf506c425b3551e97c0129ff0fdb799f6b8d6f06037a3f02950` |
 | `src/lib/outreach/claude-agent.ts` | `85013925504a3c73aee5de50690a30e4eb15e5a98b8d4ab3ddfeee832cc164aa` |
 | `src/lib/outreach/repository.ts` | `8bcb7514cdb13fc7268e9f413dd40e775a5cbe12f19f86192dc579a0f3ef3d1a` |
-| `src/lib/outreach/knowledge-repository.ts` | `6ac748d0ec50590e495eba667480b4e7bdfaaca0d94dfe7dc571fc2fdc9f94fa` |
+| `src/lib/outreach/knowledge-repository.ts` | `d3f2cc75ab0da6004ff906df489f858250ad6f187a2dd247b597f725da99354a` |
 | `db/migrations/033_hybrid_search_contribution.sql` | `4088eb1ae2f9dbf58c2150a5c7ce3b4f5a49e1e75e2fb372887aed9d153ffb05` |
 | `experiments/search-e2e-evaluation/uk-mx-v1/lib/cost-ledger.ts` | `111c94e229c1ec899b1049dda41279b01be4b86e06bfa99d3c18750ba1459291` |
 | `experiments/search-e2e-evaluation/uk-mx-v1/lib/blind-audit-v2.ts` | `5277866771bcc47ed868ba13f816bbbd58ed5f6723328da6111afd17fc9ad878` |
