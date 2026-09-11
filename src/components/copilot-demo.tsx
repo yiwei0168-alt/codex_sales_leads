@@ -4,6 +4,9 @@ import { Fragment, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CompanyClassificationEditor } from "@/components/company-classification-editor";
 import { UserChannelMap } from "@/components/user-channel-map";
+import { OpportunityWorkspace } from "@/components/opportunity-workspace";
+import { OutboundComposer } from "@/components/outbound-composer";
+import { opportunityStages, stageLabel } from "@/lib/sales/opportunity-stages";
 import { evidenceFreshness } from "@/lib/sales/evidence-freshness";
 import { marketCode, marketHref, marketLabel } from "@/lib/sales/market-navigation";
 import { AssistantHome } from "@/components/assistant-home";
@@ -40,7 +43,7 @@ const supplyOptions: SupplyModel[] = ["Distributor Supply", "Brand Direct", "Co-
 const distributorTierOptions: AccountTier[] = ["Strategic Distributor", "Priority Distributor", "Standard Distributor", "Long-tail Distributor"];
 const downstreamTierOptions: AccountTier[] = ["KA", "Priority", "Standard", "Long-tail"];
 const tierOptions: AccountTier[] = [...distributorTierOptions, ...downstreamTierOptions];
-const stageOptions: OpportunityStage[] = ["Discovered", "Qualified", "Priority", "Contact Prepared", "Engaged", "Excluded"];
+const stageOptions: OpportunityStage[] = ["Discovered", ...opportunityStages.map(([stage])=>stage), "Excluded"];
 
 const icons: Record<string, React.ReactNode> = {
   home: <><path d="m4 11 8-7 8 7v9H4z"/><path d="M9 20v-6h6v6"/></>,
@@ -335,8 +338,9 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
           {view === "overview" && <Overview mode={mode} companies={companies} onMode={(next) => { chooseMode(next); setView("results"); }} onSelect={selectCompany} />}
           {view === "results" && <Results companies={filteredCompanies} query={query} setQuery={setQuery} roleFilter={roleFilter} setRoleFilter={setRoleFilter} tierFilter={tierFilter} setTierFilter={setTierFilter} onSelect={selectCompany} onToggle={(company) => updateCompany(company.id, { opportunityStage: company.opportunityStage === "Discovered" ? "Qualified" : "Discovered" })} />}
           {view === "map" && (country === "all" ? <p className="subtle">请选择国家以查看渠道节点与关系。</p> : <UserChannelMap key={country} country={country} companies={countryCompanies} onSelect={selectCompany} onAdded={(company)=>setCompanies(items=>[...items,company])} />)}
-          {view === "opportunities" && <OpportunityWorkspace companies={shortlist} onSelect={selectCompany} onUpdate={updateCompany} />}
+          {view === "opportunities" && <OpportunityWorkspace companies={shortlist} onSelect={selectCompany} onUpdate={updateCompany} onOpenMail={(id)=>{selectCompany(id,false);setView("assistant");}} />}
           {view === "assistant" && selectedCompany && <DevelopmentAssistant company={selectedCompany} result={developmentResult} draft={draft} setDraft={setDraft} state={developmentState} error={developmentError} feedback={developmentFeedback} setFeedback={setDevelopmentFeedback} feedbackMessage={feedbackMessage} allowMemory={allowFeedbackMemory} setAllowMemory={setAllowFeedbackMemory} onGenerate={() => void generateDevelopment()} onRevise={() => void reviseDevelopmentDraft()} onApprove={() => void approveDevelopmentDraft()} onEvidence={setEvidenceOpen} onChoose={() => setDetailOpen(true)} />}
+          {view === "assistant" && selectedCompany && <OutboundComposer key={selectedCompany.id} companyId={selectedCompany.id} draft={draft} onSent={()=>{void fetch("/api/workspaces/current",{cache:"no-store"}).then(async response=>{if(response.ok){const workspace=await response.json() as MarketWorkspaceDto;setCompanies(workspace.companies);}});}}/>}
           {view === "tasks" && <ContactEnrichmentProgress />}
           {view === "knowledge" && <KnowledgeBase />}
           {view === "mailbox" && <MailboxIntegration />}
@@ -448,7 +452,7 @@ function Results({ companies, query, setQuery, roleFilter, setRoleFilter, tierFi
               <td><StatusTag tone={company.accountTier === "KA" ? "amber" : company.accountTier === "Priority" ? "blue" : "neutral"}>{company.accountTier}</StatusTag></td>
               <td>{company.userAdded && company.assessmentNeedsRefresh ? "尚未评估" : company.assessmentNeedsRefresh ? <span title={`历史评分：${company.fitScore}`}>评分待更新</span> : <ScoreRing value={company.fitScore} compact/>}</td>
               <td><span className="supply-copy">{company.selectedCooperationPath ?? "未分析"}</span>{company.manuallyEdited && <small className="manual-badge">用户修改</small>}</td>
-              <td><span className={`stage-dot ${company.opportunityStage.toLowerCase().replace(" ", "-")}`}/>{company.opportunityStage}</td>
+              <td><span className={`stage-dot ${company.opportunityStage.toLowerCase().replace(" ", "-")}`}/>{stageLabel(company.opportunityStage)}</td>
               <td><button className="row-action" onClick={() => onSelect(company.id)} aria-label={`打开 ${company.displayName} 详情`}><Icon name="chevron" size={16}/></button></td>
             </tr>
           ))}</Fragment>)}{companies.length === 0 && <tr><td colSpan={8}>当前国家或筛选条件下暂无候选公司。</td></tr>}</tbody>
@@ -460,10 +464,6 @@ function Results({ companies, query, setQuery, roleFilter, setRoleFilter, tierFi
 }
 
 
-function OpportunityWorkspace({ companies, onSelect, onUpdate }: { companies: CompanyRecord[]; onSelect: (id: string) => void; onUpdate: (id: string, patch: Partial<CompanyRecord>) => void }) {
-  const groups: OpportunityStage[] = ["Qualified", "Priority", "Contact Prepared", "Engaged"];
-  return <div className="opportunity-board">{groups.map((stage) => { const items = companies.filter((item) => item.opportunityStage === stage); return <section key={stage} className="board-column"><header><div><span className={`stage-dot ${stage.toLowerCase().replace(" ", "-")}`}/><strong>{stage}</strong></div><em>{items.length}</em></header><div className="board-stack">{items.map((company) => <article key={company.id} className="opportunity-card"><button className="card-company" onClick={() => onSelect(company.id)}><span className="company-avatar">{company.displayName.slice(0, 2).toUpperCase()}</span><span><strong>{company.displayName}</strong><small>{company.roles.join(" · ")}</small></span></button><div className="opportunity-meta"><StatusTag tone={company.accountTier === "KA" ? "amber" : "blue"}>{company.accountTier}</StatusTag><span>Fit <b>{company.fitScore}</b></span></div><p>{company.nextAction}</p><div className="card-owner"><span className="avatar tiny">{company.owner === "Unassigned" ? "?" : company.owner.split(" ").map((part) => part[0]).join("")}</span><span>{company.owner}</span><select value={company.opportunityStage} onChange={(event) => onUpdate(company.id, { opportunityStage: event.target.value as OpportunityStage })} aria-label={`修改 ${company.displayName} 状态`}>{stageOptions.map((option) => <option key={option}>{option}</option>)}</select></div></article>)}{items.length === 0 && <div className="empty-column"><Icon name="plus"/><span>暂无节点</span></div>}</div></section>; })}</div>;
-}
 
 function DevelopmentAssistant({ company, result, draft, setDraft, state, error, feedback, setFeedback, feedbackMessage,
   allowMemory, setAllowMemory, onGenerate, onRevise, onApprove, onEvidence, onChoose }: {

@@ -5,7 +5,7 @@ import type { CompanyEditablePatch } from "@/lib/sales/types";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const allowedKeys = new Set(["accountTier", "supplyModel", "brandInvolvement", "opportunityStage", "priority", "owner", "nextAction", "selectedPathId", "primaryBusinessRole", "selectedCooperationPath"]);
+const allowedKeys = new Set(["accountTier", "supplyModel", "brandInvolvement", "opportunityStage", "priority", "owner", "nextAction", "selectedPathId", "primaryBusinessRole", "selectedCooperationPath", "nextActionDueAt"]);
 const allowedValues = {
   primaryBusinessRole: new Set(["Distributor", "VAD", "VAR", "Dealer", "Reseller", "Retailer", "E-tailer", "SI", "Installer", "MSP", "ISP", "Agent", "Brand Owner"]),
   selectedCooperationPath: new Set(["Direct Tier-1 Supply", "Distributor-Mediated Supply", "Direct Downstream Channel Supply", "OEM/ODM", "Other"]),
@@ -13,7 +13,7 @@ const allowedValues = {
     "KA", "Priority", "Standard", "Long-tail"]),
   supplyModel: new Set(["Distributor Supply", "Brand Direct", "Co-sell/Co-supply", "TBD"]),
   brandInvolvement: new Set(["Light", "Standard", "Deep"]),
-  opportunityStage: new Set(["Discovered", "Qualified", "Priority", "Contact Prepared", "Engaged", "Excluded"]),
+  opportunityStage: new Set(["Discovered", "Qualified", "Priority", "Contact Prepared", "Engaged", "Excluded", "Contacted", "Cooperating", "Paused", "Closed"]),
   priority: new Set(["High", "Medium", "Low"]),
 };
 
@@ -35,6 +35,10 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ ex
     return Response.json({ error: "Invalid text field" }, { status: 400 });
   }
   const { externalId } = await params;
+  if (body.nextActionDueAt !== undefined && (typeof body.nextActionDueAt !== "string" ||
+    (body.nextActionDueAt !== "" && (!/^\d{4}-\d{2}-\d{2}$/.test(body.nextActionDueAt) || !Number.isFinite(Date.parse(body.nextActionDueAt)))))) {
+    return Response.json({error:"到期日期无效"},{status:400});
+  }
   try {
     const company = await updateCompanyState(externalId, body, session.userId);
     return Response.json({ updated: true, company });

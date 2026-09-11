@@ -38,6 +38,7 @@ export type OpportunityStage =
   | "Priority"
   | "Contact Prepared"
   | "Engaged"
+  | "Contacted" | "Cooperating" | "Paused" | "Closed"
   | "Excluded";
 
 export interface Evidence {
@@ -91,6 +92,8 @@ export interface CompanyRecord {
   manuallyEdited?: boolean;
   assessmentNeedsRefresh?: boolean;
   userAdded?: boolean;
+  nextActionDueAt?: string;
+  outreachSummary?: { firstSentAt: string | null; lastSentAt: string | null; sentCount: number; followUpCount: number };
   relationshipContext?: Array<{ from: string; to: string; type: string; status: string; basis: string; updatedAt: string }>;
 }
 

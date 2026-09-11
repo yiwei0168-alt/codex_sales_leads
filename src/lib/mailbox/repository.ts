@@ -21,7 +21,7 @@ export async function upsertMailboxConnection(userId: string, email: string, pas
        (user_id, provider, email, host, port, credential_ciphertext, status, last_verified_at, last_error)
      values ($1, 'alimail-imap', $2, $3, $4, $5, 'active', now(), null)
      on conflict (user_id, email) do update set credential_ciphertext = excluded.credential_ciphertext,
-       host = excluded.host, port = excluded.port, status = 'active', last_verified_at = now(),
+       host = excluded.host, port = excluded.port, status = 'active', last_verified_at = now(), smtp_verified_at = null,
        last_error = null, updated_at = now()
      returning id`,
     [userId, email, ALIMAIL_IMAP_HOST, ALIMAIL_IMAP_PORT, encrypted],

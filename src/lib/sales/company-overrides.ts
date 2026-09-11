@@ -3,6 +3,7 @@ import type { CompanyEditablePatch } from "./types";
 
 export function companyOverride(current: CompanyRecord, patch: CompanyEditablePatch): Partial<CompanyRecord> {
   const result: Partial<CompanyRecord> = {};
+  if (patch.nextActionDueAt !== undefined) result.nextActionDueAt = patch.nextActionDueAt;
   if (patch.primaryBusinessRole !== undefined && patch.primaryBusinessRole !== current.primaryBusinessRole) {
     const role = patch.primaryBusinessRole;
     if (role === "Hybrid" || role === "Unresolved") throw new Error("请选择明确的主角色");

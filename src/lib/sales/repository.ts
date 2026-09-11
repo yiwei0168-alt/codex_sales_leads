@@ -21,6 +21,11 @@ export async function getCurrentWorkspace(userId: string): Promise<MarketWorkspa
   );
   const workspace = workspaces[0];
   if (!workspace) return null;
+  const sentSummaries = await tenantQuery<{external_id:string;firstSentAt:string|null;lastSentAt:string|null;sentCount:number;followUpCount:number}>(userId,
+    `select c.external_id,min(m.sent_at)::text as "firstSentAt",max(m.sent_at)::text as "lastSentAt",
+      count(*)::int as "sentCount",count(*) filter(where m.parent_id is not null)::int as "followUpCount"
+     from outbound_mail m join sales_company c on c.id=m.company_id
+     where m.user_id=$1 and m.workspace_id=$2 and m.status='sent' group by c.external_id`,[userId,workspace.id]);
   const taskMarkets = await tenantQuery<{ code: string }>(userId,
     `select distinct payload->>'countryCode' as code from assistant_action
      where user_id = $1 and action_type = 'lead-search' and payload->>'countryCode' is not null`, [userId]);
@@ -158,6 +163,7 @@ export async function getCurrentWorkspace(userId: string): Promise<MarketWorkspa
     objective: workspace.objective,
     companies: rows.map((row) => ({
       ...row.record,
+      outreachSummary: sentSummaries.find(item=>item.external_id===row.record.id),
       accountTier: row.account_tier,
       supplyModel: row.supply_model,
       brandInvolvement: row.brand_involvement,
@@ -267,7 +273,7 @@ export async function updateCompanyState(externalId: string, patch: CompanyEdita
             previousPathType: row.selected_path_type, developmentStage: `${row.mode}:${row.objective}` })],
       );
     }
-    if (Object.keys(overrides).length) await client.query(
+    if (patch.primaryBusinessRole !== undefined || patch.accountTier !== undefined || patch.selectedCooperationPath !== undefined) await client.query(
       `insert into user_outreach_memory (user_id, workspace_id, kind, external_id, title, content,
          market_codes, channel_roles, context) values ($1,$2,'company-classification',$3,$4,$5,$6,$7,$8)
        on conflict (user_id, external_id) do update set content=excluded.content, context=excluded.context,
@@ -291,6 +297,12 @@ export async function updateCompanyState(externalId: string, patch: CompanyEdita
           optimizationOpportunity: "Reuse confirmed company overrides without a model call" } })],
     );
     return { ...row.record, ...patch, ...overrides, accountTier: next.accountTier as CompanyRecord["accountTier"],
+      supplyModel: next.supplyModel as CompanyRecord["supplyModel"],
+      brandInvolvement: next.brandInvolvement as CompanyRecord["brandInvolvement"],
+      opportunityStage: next.opportunityStage as CompanyRecord["opportunityStage"],
+      priority: next.priority as CompanyRecord["priority"],
+      owner: next.owner ?? row.record.owner,
+      nextAction: next.nextAction ?? row.record.nextAction,
       selectedPathId: next.selectedPathId ?? undefined,
       selectedCooperationPath: next.selectedPathType as CompanyRecord["selectedCooperationPath"], manuallyEdited: true };
   });

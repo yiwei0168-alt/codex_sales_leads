@@ -1,5 +1,13 @@
 # 产品工作流效率台账
 
+## PRD v1.1 / UI stage 3a — opportunities and outbound mail
+
+Opportunity edits reuse deterministic company edit telemetry without creating classification memory for schedule-only changes. Outbound attempts store aggregate character/item input, accepted/used count, zero model tokens/search credits, SMTP call count, receipt reuse, latency, zero automatic retries, discard/status reasons and utilization in owner-scoped audit. Mailbox subscription allocation is explicitly unknown. Duplicate content under a new UI key reuses its receipt without another send. No personal content is committed here.
+
+Follow-up reuses the selected original and existing Kimi route with an 1,800-token cap, without strategy/search regeneration. Encrypted draft audit retains returned token/latency metrics and zero downstream use pending review. Measurement gaps remain: final edited-send attribution to draft, complete failed/retried-call tokens, provider price normalization and verify-call metering. Optimize with durable draft IDs and accepted-draft reuse while preserving user review and private data isolation. These are pending work, not claims of complete instrumentation.
+
+Verification: 11 focused tests, TypeScript and targeted lint; migration 038 applied. No paid inference or real SMTP delivery used. Authenticated visual/live-mailbox QA and uncertain-receipt reconciliation remain open.
+
 ## PRD v1.1 / UI stage 2a — manual company and relationships
 
 Relationship save records 1 input/1 valid/1 downstream-used output, zero model tokens/credits/cost, elapsed transaction latency, no automatic retries, empty successful discard reasons and utilization 1 in the owner-scoped audit event. Manual company creation records 1/1/1 and zero paid work; duplicate results reuse the current owned candidate. Relationship memory is exact scoped and excluded from broad classification-memory RAG, then explicitly joined to the matching company's strategy input. Runtime read and rejected-request aggregate telemetry remain pending, as does manual-create latency. Optimization opportunity: query only company-relevant relationships rather than all country relationships when country graphs grow. Migration and transactional RLS smoke passed with all test writes rolled back; no paid search/model use.

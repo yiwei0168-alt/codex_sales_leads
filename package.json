@@ -3,7 +3,9 @@
   "version": "0.3.0",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -125,6 +127,7 @@
     "langchain": "^1.5.10",
     "mailparser": "^3.9.15",
     "next": "^16.1.6",
+    "nodemailer": "^10.0.3",
     "openai": "^7.4.0",
     "pg": "^8.23.0",
     "react": "^19.2.4",
@@ -135,6 +138,7 @@
   "devDependencies": {
     "@types/mailparser": "^3.4.6",
     "@types/node": "^24.10.0",
+    "@types/nodemailer": "^8.0.1",
     "@types/pg": "^8.0.0",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",

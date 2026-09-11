@@ -17,8 +17,9 @@ try {
   await client.query("begin");
   await client.query(await readFile("db/migrations/036_company_user_overrides.sql", "utf8"));
   await client.query(await readFile("db/migrations/037_user_channel_relationship.sql", "utf8"));
+  await client.query(await readFile("db/migrations/038_outbound_mail.sql", "utf8"));
   await client.query("commit");
-  console.log("Applied UI v1.1 migrations (036, 037).");
+  console.log("Applied UI v1.1 migrations (036–038).");
 } catch (error) {
   await client.query("rollback");
   throw error;
