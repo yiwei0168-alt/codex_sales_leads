@@ -1,5 +1,9 @@
 # Product UI v1.1 implementation workflow
 
+## 2026-09-12 country state foundation (not enabled)
+
+Migration 047 and a country-state repository preserve global identity/legacy FKs while isolating workspace/country snapshots and overrides. Existing candidate IDs survive backfill; reassessment preserves development progress. Six tests and a real database rollback probe verified country/owner isolation. The migration is not yet applied and production readers/writers are not switched: mail/strategy provenance and all candidate-action lookups must be adapted together. See `COMPANY_MARKET_STATE_CONTRACT.md`. No new evidence/model/search/mail operation.
+
 ## 2026-09-12 conservative budget foundation
 
 User confirmed fail-closed missing prices and country-independent business states. Migration 046 adds integer micro-USD owner budgets and pre-network reservations. Task Center has lazy-loaded budget edit/refresh with explicit confirmation and separate occupied/reported/unknown amounts. The production lead workflow binds per-action scope through embedding/playbook/discovery/evidence/scoring transports and retries. Empty unverified tariff configuration blocks uncached paid work. This is a foundation: independent chat/mail/contact/knowledge entry scopes, reviewed provider bounds and task sub-limits are still pending. See `BILLING_BUDGET_CONTRACT.md`; no full-product cap or actual cost reduction is claimed. Real RLS probes passed with verification writes rolled back.
