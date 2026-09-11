@@ -1,5 +1,16 @@
 import { tenantQuery } from "@/lib/rag/db";
 import type { ProductActionPlan } from "./types";
+import { startOperation,finishOperation,bestEffortMetric } from "@/lib/operation-metrics";
+export async function measuredProductActionCompanies(userId:string,plan:ProductActionPlan){
+  const started=Date.now();const id=await startOperation(userId,"local-company-lookup",1,plan.companyQuery.length);
+  let result:Awaited<ReturnType<typeof findProductActionCompanies>>|undefined;
+  try{result=await findProductActionCompanies(userId,plan);return result;}
+  finally{const projected=result?.companies.length??0;const fetched=projected+(result?.hasMore?1:0);
+    await bestEffortMetric(()=>finishOperation(userId,id,result?"completed":"failed",{inputItems:1,inputCharacters:plan.companyQuery.length,outputItems:fetched,validOutputItems:projected,downstreamUsedItems:result?projected:0,
+      inputTokens:0,cachedInputTokens:0,outputTokens:0,apiCredits:0,costUsd:0,latencyMs:Date.now()-started,retries:0,
+      discardedReasonCounts:!result?{lookupFailed:1}:result.hasMore?{paginationSentinel:1}:{},utilizationEfficiency:fetched?projected/fetched:null,
+      usageBoundary:"projected-to-message-not-user-selected",optimizationOpportunity:"Prefer literal local lookup to duplicated external search; measure selected company separately"}));}
+}
 export async function findProductActionCompanies(userId:string,plan:ProductActionPlan){
   // Escape LIKE metacharacters: user/company text is a literal, not a wildcard program.
   const pattern=`%${plan.companyQuery.replace(/[\\%_]/g,"\\$&")}%`;

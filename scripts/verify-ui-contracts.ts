@@ -24,9 +24,12 @@ try{
       await client.query("insert into user_contact_lookup_cache(user_id,company_id,provider,status,run_id,result) values($1,$2,'rollback-test','completed',$3,'{}')",[userId,nodes[0].id,run.rows[0].id]);
       const analysis=await client.query<{id:string}>("insert into user_relationship_analysis(user_id,workspace_id,country_code,from_company_id,to_company_id,fingerprint,status) values($1,$2,'ZZ',$3,$4,$5,'completed') returning id",[userId,nodes[0].workspace_id,nodes[0].id,nodes[1].id,run.rows[0].id]);
       const own=await client.query("select id from user_relationship_analysis where id=$1",[analysis.rows[0].id]);if(own.rowCount!==1)throw new Error('Owner RLS read failed');
+      await client.query("insert into product_operation_metric(id,user_id,stage,status) values($1,$2,'verification','running')",[run.rows[0].id,userId]);
+      const metricOwn=await client.query("select id from product_operation_metric where id=$1",[run.rows[0].id]);if(metricOwn.rowCount!==1)throw new Error('Owner metric read failed');
       await client.query("select set_config('app.current_user_id','00000000-0000-4000-8000-999999999999',true)");
       const other=await client.query("select id from user_relationship_analysis where id=$1",[analysis.rows[0].id]);
       const cache=await client.query("select company_id from user_contact_lookup_cache where run_id=$1",[run.rows[0].id]);
+      const metricOther=await client.query("select id from product_operation_metric where id=$1",[run.rows[0].id]);if(metricOther.rowCount)throw new Error('Cross-owner metric read failed');
       if(other.rowCount||cache.rowCount)throw new Error('Cross-owner RLS failed');throw rollback;
     });}catch(error){if(error!==rollback)throw error;}
   }

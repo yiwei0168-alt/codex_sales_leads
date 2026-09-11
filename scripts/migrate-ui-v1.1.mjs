@@ -24,8 +24,9 @@ try {
   await client.query(await readFile("db/migrations/042_mailbox_company_links.sql", "utf8"));
   await client.query(await readFile("db/migrations/043_relationship_analysis_cache.sql", "utf8"));
   await client.query(await readFile("db/migrations/044_knowledge_document_revision.sql", "utf8"));
+  await client.query(await readFile("db/migrations/045_product_operation_metric.sql", "utf8"));
   await client.query("commit");
-  console.log("Applied UI v1.1 migrations (036–044).");
+  console.log("Applied UI v1.1 migrations (036–045).");
 } catch (error) {
   await client.query("rollback");
   throw error;

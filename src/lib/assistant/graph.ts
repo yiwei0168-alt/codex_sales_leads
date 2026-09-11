@@ -6,6 +6,8 @@ import type { RagAnswer } from "@/lib/rag/types";
 import { searchExternalWithGemini } from "./external-search";
 import { planAssistantRequest } from "./intent-agent";
 import { synthesizeHybridAnswer } from "./synthesis";
+import { startOperation,finishOperation,bestEffortMetric } from "@/lib/operation-metrics";
+import { intentMetrics } from "./intent-metrics";
 import type { AssistantConversationTurn, AssistantIntent, ExternalSearchAnswer, IntentPlan, LeadSearchPlan } from "./types";
 
 const AssistantState = Annotation.Root({
@@ -22,6 +24,7 @@ const AssistantState = Annotation.Root({
 });
 
 export interface AssistantGraphDependencies {
+  recordIntent?: (userId:string,content:string,history:AssistantConversationTurn[],run:()=>Promise<IntentPlan>)=>Promise<IntentPlan>;
   planRequest: typeof planAssistantRequest;
   answerKnowledge: typeof answerWithRag;
   searchExternal: typeof searchExternalWithGemini;
@@ -30,6 +33,15 @@ export interface AssistantGraphDependencies {
 }
 
 const productionDependencies: AssistantGraphDependencies = {
+  recordIntent:async(userId,content,history,run)=>{
+    const started=Date.now();const turns=history.slice(-8);const inputItems=turns.length+1;
+    const inputCharacters=content.slice(0,8000).length+turns.reduce((sum,turn)=>sum+turn.content.slice(0,4000).length,0);
+    // Reserve before invoking the provider: process loss remains running/unsettled, never zero cost.
+    const id=await startOperation(userId,"assistant-intent",inputItems,inputCharacters);
+    try{const result=await run();const saved=await bestEffortMetric(()=>finishOperation(userId,id,"completed",intentMetrics(result,inputItems,inputCharacters,Date.now()-started)));
+      if(!saved)result.warnings.push("意图识别已完成，但用量记录未结算；不要为修复统计而重复调用模型。");return result;
+    }catch(error){await bestEffortMetric(()=>finishOperation(userId,id,"failed",intentMetrics(undefined,inputItems,inputCharacters,Date.now()-started)));throw error;}
+  },
   planRequest: planAssistantRequest,
   answerKnowledge: answerWithRag,
   searchExternal: searchExternalWithGemini,
@@ -57,7 +69,8 @@ function emptyInternalAnswer(warning: string): RagAnswer {
 export function buildAssistantWorkflowGraph(dependencies: AssistantGraphDependencies = productionDependencies) {
   return new StateGraph(AssistantState)
     .addNode("plan_request", async (state) => {
-      const intentPlan = await dependencies.planRequest(state.content, state.history ?? []);
+      const run=()=>dependencies.planRequest(state.content,state.history??[]);
+      const intentPlan = await (dependencies.recordIntent?dependencies.recordIntent(state.userId,state.content,state.history??[],run):run());
       return { intent: intentPlan.intent, intentPlan, plan: intentPlan.leadPlan, reply: intentPlan.reply ?? "", warnings: intentPlan.warnings };
     })
     .addNode("resolve_request", async (state) => {

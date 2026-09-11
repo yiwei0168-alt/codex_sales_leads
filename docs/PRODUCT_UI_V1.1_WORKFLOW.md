@@ -1,5 +1,9 @@
 # Product UI v1.1 implementation workflow
 
+## 2026-09-11 resumed: durable non-lead usage
+
+Intent and local company lookup now reserve/settle owner-isolated product operation records (migration045). Unknown costs and incomplete token usage remain null. Finished intent telemetry is persisted before downstream routing; failed final telemetry does not discard the paid result. The new read-only `/api/tasks/usage` reports these sources separately from lead search/model ledgers, not as a complete budget. It has no UI hard-limit claim. Pending work remains in the completion checklist.
+
 Authoritative scope: `Network_Channel_Copilot_PRD_v1.1.md`. Product functionality is explicitly authorized; experiment mechanism migrations are not included.
 
 ## Stage 1a: country routing

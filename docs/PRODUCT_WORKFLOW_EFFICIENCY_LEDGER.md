@@ -1,5 +1,11 @@
 # 产品工作流效率台账
 
+## Durable intent and local lookup telemetry — 2026-09-11 resume
+
+Migration 045 adds force-RLS owner-scoped product_operation_metric for operations before a workspace exists. Intent reserves an unsettled row before Kimi, then saves input characters/items, valid/router-used output, reported token/cache usage, per-call attempts/retries, latency and failed-call discard reasons. Missing aggregate token/cash totals remain null; known per-call usage is retained. Prompts and provider error strings are excluded. A crash remains running/unsettled. Final metric-write failure warns without failing the completed paid result or replaying the model. Local lookup records fetched/projected counts with zero model/search cost and a projection-not-user-selection boundary.
+
+Read-only `/api/tasks/usage` exposes last-30-day aggregates from this new source only, unknown-cost count and an explicit incomplete-total flag. It is not a whole-product bill or hard budget gate. Remaining: all-stage adoption, missing fallback-failure usage, tariff settlement and budget reservation. Metering adds two bounded DB round trips per operation; batch only if durability is preserved. No paid benchmark or numeric savings claim.
+
 ## Local actions / follow-up reuse pause checkpoint — 2026-09-11
 
 Intent remains a routine Kimi multi-turn call (complex-task escalation unchanged). Local company actions stop before RAG/web search; SQL projects 21 rows for 20 choices. Task diagnostics use 51/50 pagination. Saved strategy comparison is a local hash. Follow-up omits duplicate parent text and caps same-contact incoming correspondence at four 2,000-character excerpts from 50 rows. The latest ten encrypted drafts can be retrieved without new inference. Draft use is linked durably at owner-validated send reservation, not successful delivery; existing send receipt metrics remain authoritative.
