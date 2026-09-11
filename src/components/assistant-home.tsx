@@ -181,6 +181,7 @@ export function AssistantHome({ userName, onOpenResults }: { userName: string; o
                 {action.status === "failed" && <button disabled={confirmingId === action.id} onClick={() => void confirmSearch(action.id)}>{confirmingId === action.id ? "正在恢复工作流…" : "从 checkpoint 重试"}</button>}
                 {action.status === "completed" && <button onClick={() => onOpenResults(action.payload.countryCode)}>查看 {action.payload.countryName} 结果</button>}
                 {action.errorMessage && <p>{action.errorMessage}</p>}
+                <a href={`/tasks/${action.id}`}>查看任务详情</a>
               </div>}
               {(message.metadata.citations?.length ?? 0) > 0 && <div className="ai-citations"><strong>知识库证据</strong>{message.metadata.citations?.map((citation) => <a key={citation.chunkId} href={citation.sourceUrl || undefined} target="_blank" rel="noreferrer"><span>[KB:{citation.chunkId.slice(0, 8)}]</span><b>{citation.documentTitle}</b><em>{Math.round(citation.score * 100)}%</em></a>)}</div>}
               {(message.metadata.webCitations?.length ?? 0) > 0 && <div className="ai-citations"><strong>外部网页证据</strong>{message.metadata.webCitations?.map((citation, index) => <a key={citation.url} href={citation.url} target="_blank" rel="noreferrer"><span>[WEB:{index + 1}]</span><b>{citation.title}</b></a>)}</div>}

@@ -1,5 +1,11 @@
 # 产品工作流效率台账
 
+## PRD v1.1 / UI stage 4a — search task read surfaces
+
+No model tokens, search credits or paid API requests are introduced. Each list request retrieves at most 51 owner-scoped rows, returns 50 summaries and uses the extra row only for pagination. Full result objects are excluded from list transport. Active visible pages poll at five-second intervals; terminal lists stop, hidden tabs pause, and collapsed contact history does not mount its polling component. These reduce unnecessary DB/API work without regenerating results. Task details reuse existing persisted actions rather than a duplicate task table.
+
+Successful reads emit anonymous versioned aggregate service-log events: input rows, valid/projected output rows, zero tokens/paid credits, latency, retries, pagination-sentinel discard, utilization and optimization opportunity. The downstream boundary is explicitly API projection, not user reading. Remaining instrumentation gap: failed reads, transmitted bytes, actual rendered usage and durable central collection; database operating cost is unallocated, not zero. Future improvement: cursor pagination and database-side filters (current filters explicitly apply to one page), visibility-aware deduplication of overlapping refreshes and a shared read-telemetry sink. No measured savings claimed. Four focused mocked tests cover tenant scoping, pagination, unauthenticated access and honest missing/zero counters.
+
 ## PRD v1.1 / UI stage 3a — opportunities and outbound mail
 
 Opportunity edits reuse deterministic company edit telemetry without creating classification memory for schedule-only changes. Outbound attempts store aggregate character/item input, accepted/used count, zero model tokens/search credits, SMTP call count, receipt reuse, latency, zero automatic retries, discard/status reasons and utilization in owner-scoped audit. Mailbox subscription allocation is explicitly unknown. Duplicate content under a new UI key reuses its receipt without another send. No personal content is committed here.

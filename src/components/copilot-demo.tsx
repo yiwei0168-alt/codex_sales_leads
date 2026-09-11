@@ -11,7 +11,7 @@ import { evidenceFreshness } from "@/lib/sales/evidence-freshness";
 import { marketCode, marketHref, marketLabel } from "@/lib/sales/market-navigation";
 import { AssistantHome } from "@/components/assistant-home";
 import { KnowledgeBase } from "@/components/knowledge-base";
-import { ContactEnrichmentProgress } from "@/components/contact-enrichment-progress";
+import { TaskCenter } from "@/components/task-center";
 import { MailboxIntegration } from "@/components/mailbox-integration";
 import {
   primaryRole,
@@ -341,7 +341,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
           {view === "opportunities" && <OpportunityWorkspace companies={shortlist} onSelect={selectCompany} onUpdate={updateCompany} onOpenMail={(id)=>{selectCompany(id,false);setView("assistant");}} />}
           {view === "assistant" && selectedCompany && <DevelopmentAssistant company={selectedCompany} result={developmentResult} draft={draft} setDraft={setDraft} state={developmentState} error={developmentError} feedback={developmentFeedback} setFeedback={setDevelopmentFeedback} feedbackMessage={feedbackMessage} allowMemory={allowFeedbackMemory} setAllowMemory={setAllowFeedbackMemory} onGenerate={() => void generateDevelopment()} onRevise={() => void reviseDevelopmentDraft()} onApprove={() => void approveDevelopmentDraft()} onEvidence={setEvidenceOpen} onChoose={() => setDetailOpen(true)} />}
           {view === "assistant" && selectedCompany && <OutboundComposer key={selectedCompany.id} companyId={selectedCompany.id} draft={draft} onSent={()=>{void fetch("/api/workspaces/current",{cache:"no-store"}).then(async response=>{if(response.ok){const workspace=await response.json() as MarketWorkspaceDto;setCompanies(workspace.companies);}});}}/>}
-          {view === "tasks" && <ContactEnrichmentProgress />}
+          {view === "tasks" && <TaskCenter />}
           {view === "knowledge" && <KnowledgeBase />}
           {view === "mailbox" && <MailboxIntegration />}
         </div>
