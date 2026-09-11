@@ -86,3 +86,20 @@ test("legacy mail requires country confirmation before follow-up and never auto-
   page.once('dialog',dialog=>dialog.accept());await page.getByRole('button',{name:'确认归属当前国家'}).click();
   await expect(page.getByRole('button',{name:'写跟进邮件',exact:true})).toBeEnabled();expect(assignments).toBe(1);
 });
+test('closing a stale contact task is explicit and never starts a replacement lookup',async({page})=>{
+  let writes=0;
+  await page.route('**/api/tasks/fixture-contact-task**',route=>{
+    if(route.request().method()==='POST'){
+      expect(new URL(route.request().url()).pathname).toBe('/api/tasks/fixture-contact-task/reconcile');
+      expect(route.request().postDataJSON()).toEqual({kind:'contacts',confirmed:true});writes++;
+      return route.fulfill({json:{reconciled:true,message:'本地已结束；费用仍未知，没有重新查询'}});
+    }
+    return route.fulfill({json:{kind:'contacts',details:{status:writes?'failed':'running',can_reconcile:!writes,items:[]}}});
+  });
+  await page.getByRole('button',{name:'打开异常联系人任务'}).click();
+  const close=page.getByRole('button',{name:'核实并结束异常查询（不重试）'});
+  await expect(close).toBeVisible();expect(writes).toBe(0);
+  page.once('dialog',dialog=>dialog.dismiss());await close.click();expect(writes).toBe(0);
+  page.once('dialog',dialog=>dialog.accept());await close.click();await expect(close).toHaveCount(0);
+  await expect(page.getByRole('status')).toHaveText('本地已结束；费用仍未知，没有重新查询');expect(writes).toBe(1);
+});

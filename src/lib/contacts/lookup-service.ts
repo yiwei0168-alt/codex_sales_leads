@@ -22,7 +22,13 @@ export async function lookupAndStoreContacts(userId:string,workspaceId:string,in
   if(reservation.cached)return {result:reservation.cached,cached:true,capturedAt:reservation.capturedAt};
   try{
     const result=await provider.lookupCompany(input,AbortSignal.timeout(90_000));
-    await tenantTransaction(userId,async client=>{
+    const persisted=await tenantTransaction(userId,async client=>{
+      const fence=await client.query<{run_id:string;status:string}>("select run_id,status from user_contact_lookup_cache where user_id=$1 and company_id=$2 and provider=$3 for update",[userId,input.companyId,provider.id]);
+      if(fence.rows[0]?.run_id!==reservation.runId||fence.rows[0]?.status!=='running'){
+        await client.query(`update company_enrichment_run set metadata=metadata || $2::jsonb where id=$1 and workspace_id=$3`,[reservation.runId,JSON.stringify({lateResult:{
+          outputItems:result.contacts.length,downstreamUsedItems:0,apiCredits:result.creditsUsed??null,costUsd:null,latencyMs:Date.now()-started,discardedReason:'reservation-reconciled-or-replaced',optimizationOpportunity:'Retain charge evidence without applying stale worker output'}}),workspaceId]);
+        return false;
+      }
       let contacts=0,emails=0;
       for(const item of result.contacts){
         let contactId:string|null=null;
@@ -46,14 +52,16 @@ export async function lookupAndStoreContacts(userId:string,workspaceId:string,in
         retries:0,discardedReasonCounts:{},utilizationEfficiency:result.contacts.length?1:0,optimizationOpportunity:"Reuse tenant-owned lookup cache; requery only after explicit refresh"};
       await client.query("update company_enrichment_run set status='completed',processed_count=1,finished_at=now(),metadata=metadata||$2::jsonb where id=$1",[reservation.runId,JSON.stringify({efficiency})]);
       await client.query("update company_enrichment_run_item set status='completed',phase='completed',named_contact_count=$3,email_count=$4,finished_at=now(),updated_at=now() where run_id=$1 and company_id=$2",[reservation.runId,input.companyId,contacts,emails]);
-      await client.query("update user_contact_lookup_cache set status='completed',result=$4,updated_at=now() where user_id=$1 and company_id=$2 and provider=$3",[userId,input.companyId,provider.id,JSON.stringify(result)]);
+      await client.query("update user_contact_lookup_cache set status='completed',result=$4,updated_at=now() where user_id=$1 and company_id=$2 and provider=$3 and run_id=$5 and status='running'",[userId,input.companyId,provider.id,JSON.stringify(result),reservation.runId]);
+      return true;
     });
+    if(!persisted)throw new Error('此查询已结束或由新任务替代；迟到结果未覆盖当前联系人，请查看任务费用记录。');
     return {result,cached:false,capturedAt:new Date().toISOString()};
   }catch(error){
     await tenantTransaction(userId,async client=>{
-      await client.query("update user_contact_lookup_cache set status='unknown',updated_at=now() where user_id=$1 and company_id=$2 and provider=$3",[userId,input.companyId,provider.id]);
-      await client.query("update company_enrichment_run set status='failed',error_message='Contact provider or persistence failed; charge unknown; no automatic retry',finished_at=now() where id=$1",[reservation.runId]);
-      await client.query("update company_enrichment_run_item set status='failed',phase='failed',error_message='Lookup incomplete; check provider usage before retry',finished_at=now(),updated_at=now() where run_id=$1 and company_id=$2",[reservation.runId,input.companyId]);
+      await client.query("update user_contact_lookup_cache set status='unknown',updated_at=now() where user_id=$1 and company_id=$2 and provider=$3 and run_id=$4 and status='running'",[userId,input.companyId,provider.id,reservation.runId]);
+      await client.query("update company_enrichment_run set status='failed',error_message='Contact provider or persistence failed; charge unknown; no automatic retry',finished_at=now() where id=$1 and status='running'",[reservation.runId]);
+      await client.query("update company_enrichment_run_item set status='failed',phase='failed',error_message='Lookup incomplete; check provider usage before retry',finished_at=now(),updated_at=now() where run_id=$1 and company_id=$2 and status='running'",[reservation.runId,input.companyId]);
     });throw error;
   }
 }

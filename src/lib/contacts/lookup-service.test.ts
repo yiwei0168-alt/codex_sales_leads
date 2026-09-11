@@ -6,6 +6,7 @@ const input={companyId:"c",companyName:"Test",domain:"example.com",websiteUrl:"h
 const provider={id:"test",isConfigured:()=>true,lookupCompany:mocks.lookup};
 beforeEach(()=>{vi.clearAllMocks();mocks.prior=null;mocks.query.mockImplementation(async(sql:string)=>{
   if(sql.includes("select status,result"))return {rows:mocks.prior?[mocks.prior]:[]};
+  if(sql.includes('select run_id,status'))return {rows:[{run_id:'run',status:'running'}]};
   if(sql.includes("returning id"))return {rows:[{id:"run"}]};return {rows:[]};
 });mocks.lookup.mockResolvedValue({provider:"test",contacts:[{fullName:"Test Person",email:"person@example.com",emailStatus:"Unknown"}],creditsUsed:1,warnings:[]});});
 it("persists contacts, email candidates and provider cost in the same completion transaction",async()=>{
@@ -29,4 +30,15 @@ it("requires explicit refresh after an ambiguous failure",async()=>{
 it("marks provider failure unknown and never retries",async()=>{
   mocks.lookup.mockRejectedValue(new Error("timeout"));await expect(lookupAndStoreContacts("u","w",input,provider)).rejects.toThrow("timeout");
   expect(mocks.lookup).toHaveBeenCalledTimes(1);expect(mocks.query.mock.calls.some(([sql])=>String(sql).includes("set status='unknown'"))).toBe(true);
+});
+it('discards a late result after reconciliation without writing contacts or changing the replacement cache',async()=>{
+  mocks.lookup.mockImplementation(async()=>{mocks.query.mockImplementation(async(sql:string)=>{
+    if(sql.includes('select run_id,status'))return {rows:[{run_id:'replacement',status:'running'}]};return {rows:[]};
+  });return {provider:'test',contacts:[{fullName:'Late Result'}],creditsUsed:2,warnings:[]};});
+  await expect(lookupAndStoreContacts('u','w',input,provider)).rejects.toThrow('迟到结果');
+  expect(mocks.query.mock.calls.some(([sql])=>String(sql).includes('insert into company_contact'))).toBe(false);
+  const failure=mocks.query.mock.calls.find(([sql])=>String(sql).includes("set status='unknown'"))!;
+  expect(failure[0]).toContain("run_id=$4 and status='running'");expect(failure[1]).toEqual(['u','c','test','run']);
+  expect(mocks.query.mock.calls.some(([,values])=>JSON.stringify(values).includes('reservation-reconciled-or-replaced'))).toBe(true);
+  expect(mocks.lookup).toHaveBeenCalledTimes(1);
 });

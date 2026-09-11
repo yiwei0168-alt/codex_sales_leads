@@ -23,6 +23,7 @@ function Fixture() {
   return <><button onClick={()=>setOpen("company")}>打开公司</button><button onClick={()=>setOpen("task")}>打开任务</button>
     {open==="company"&&<CompanyDetail company={company} onClose={()=>setOpen("")} onUpdate={()=>{}} onEvidence={()=>setNested(true)} onOpenAssistant={()=>{}}/>}
     {open==="task"&&<TaskDetailView id="fixture-task" kind="generation" onClose={()=>setOpen("")}/>}
+    <button onClick={()=>setOpen('contact-task')}>打开异常联系人任务</button>{open==='contact-task'&&<TaskDetailView id="fixture-contact-task" kind="contacts" onClose={()=>setOpen('')}/>}
     {nested&&<Nested close={()=>setNested(false)}/>}<button onClick={()=>setBudget(true)}>打开预算</button>{budget&&<SpendBudget/>}
     <button onClick={()=>setOpen('mail')}>打开邮件</button>{open==='mail'&&<OutboundComposer companyId="fixture-country-company" draft="" onSent={()=>{}}/>}</>;
 }

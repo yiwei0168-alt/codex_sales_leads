@@ -6,7 +6,9 @@ export async function readTaskDetail(userId:string,id:string,kind:string,offset=
     const rows=await tenantQuery(userId,"select id,stage,status,metrics,created_at,updated_at from product_operation_metric where user_id=$1 and id=$2 and stage in ('development-generation','development-revision')",[userId,id]);return rows[0]?{kind,details:rows[0]}:null;
   }
   if(kind==="relationship"){
-    const rows=await tenantQuery(userId,`select id,country_code,status,result,metrics,created_at,updated_at from user_relationship_analysis where user_id=$1 and id=$2`,[userId,id]);return rows[0]?{kind,details:rows[0]}:null;
+    const rows=await tenantQuery(userId,`select id,country_code,status,result,metrics,created_at,updated_at,
+      ((status='failed' or (status='running' and updated_at<now()-interval '10 minutes')) and not(metrics ? 'userReconciled')) as can_reconcile
+      from user_relationship_analysis where user_id=$1 and id=$2`,[userId,id]);return rows[0]?{kind,details:rows[0]}:null;
   }
   if(kind==="search"){
     const action=await getAssistantAction(userId,id);if(!action)return null;
@@ -17,7 +19,9 @@ export async function readTaskDetail(userId:string,id:string,kind:string,offset=
     return {kind,action,details:{candidates:candidates.slice(0,50),hasMore:candidates.length>50,offset}};
   }
   if(kind==="contacts"){
-    const rows=await tenantQuery(userId,`select r.id,r.status,r.provider_mix,r.target_count,r.processed_count,r.search_credits_used,r.extract_credits_used,r.started_at,r.finished_at,r.metadata
+    const rows=await tenantQuery(userId,`select r.id,r.status,r.provider_mix,r.target_count,r.processed_count,r.search_credits_used,r.extract_credits_used,r.started_at,r.finished_at,r.metadata,
+      exists(select 1 from user_contact_lookup_cache cache where cache.user_id=$1 and cache.run_id=r.id and cache.status='running'
+        and cache.updated_at<now()-interval '10 minutes' and r.status='running' and r.metadata->>'source'='company-detail') as can_reconcile
       from company_enrichment_run r join market_workspace w on w.id=r.workspace_id where r.id=$2 and w.owner_id=$1`,[userId,id]);if(!rows[0])return null;
     const items=await tenantQuery(userId,`select c.canonical_name as company,i.status,i.phase,i.attempts,i.named_contact_count,i.email_count,i.search_credits_used,i.extract_credits_used,i.error_message
       from company_enrichment_run_item i join company_enrichment_run r on r.id=i.run_id join market_workspace w on w.id=r.workspace_id

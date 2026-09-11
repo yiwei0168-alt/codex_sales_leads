@@ -16,7 +16,7 @@ User has resumed and requested continuation until completion. Checked means impl
 - [x] Global overview full-history active-task counts, paginated company correspondence and optional manual-add role.
 - [x] Human-readable task summaries with raw records collapsed and JSX render tests enabled.
 - [ ] Authenticated detail UX review.
-- [ ] Crashed reservation reconciliation.
+- [x] Explicit contact/relationship cache reconciliation, preserved unknown charges and stale-worker write protection (not provider cancellation/refund).
 - [x] Relationship/private-knowledge dependency versions and country-isolated business state; legacy mail country confirmation.
 - [ ] Authenticated responsive/keyboard/error-state UI checks and final PRD acceptance; live SMTP requires a designated test recipient.
 

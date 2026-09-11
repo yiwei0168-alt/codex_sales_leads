@@ -1,5 +1,9 @@
 # 产品工作流效率台账
 
+## Explicit abnormal-cache recovery — 2026-09-12
+
+Owner-confirmed task closure is a local-only stage: input/valid/used counts, zero tokens/credits/cash for the closure itself, latency, retries/discard reasons and usage boundary are audited. Old paid-call occupancy remains untouched. A late contact/model response retains available credit/token/cash metrics and a zero downstream-used count instead of overwriting current results; unavailable cost stays null. Recovery never automatically invokes another provider. Existing explicit refresh/analysis actions remain the only retry entry. Optimization opportunity: add provider job-status/receipt reconciliation where officially supported to recover a completed external result before paying again; do not blindly poll or assume refunds. Generation telemetry and billing reservations are distinct from these two caches.
+
 ## Country-aware workflow cutover — 2026-09-12
 
 Follow-up optimization to research: existing-identity UPSERT currently retains an unnecessary no-op row update/lock. A read-first + conflict-safe insert/second-read helper could reduce write amplification; verify concurrent first creation and lock ordering before replacing it. This is recorded only, not silently bundled as a new optimization experiment.

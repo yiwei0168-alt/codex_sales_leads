@@ -27,6 +27,12 @@ try{
       await client.query("insert into user_contact_lookup_cache(user_id,company_id,provider,status,run_id,result) values($1,$2,'rollback-test','completed',$3,'{}')",[userId,nodes[0].id,run.rows[0].id]);
       const analysis=await client.query<{id:string}>("insert into user_relationship_analysis(user_id,workspace_id,country_code,from_company_id,to_company_id,fingerprint,status) values($1,$2,'ZZ',$3,$4,$5,'completed') returning id",[userId,nodes[0].workspace_id,nodes[0].id,nodes[1].id,run.rows[0].id]);
       const own=await client.query("select id from user_relationship_analysis where id=$1",[analysis.rows[0].id]);if(own.rowCount!==1)throw new Error('Owner RLS read failed');
+      await client.query("update user_relationship_analysis set status='failed',fingerprint='closed:'||id::text||':'||fingerprint,metrics=metrics || '{\"userReconciled\":true}'::jsonb where id=$1",[analysis.rows[0].id]);
+      const replacement=await client.query<{id:string}>("insert into user_relationship_analysis(user_id,workspace_id,country_code,from_company_id,to_company_id,fingerprint,status) values($1,$2,'ZZ',$3,$4,$5,'running') returning id",[userId,nodes[0].workspace_id,nodes[0].id,nodes[1].id,run.rows[0].id]);
+      if(replacement.rows[0].id===analysis.rows[0].id)throw new Error('Replacement reused closed attempt ID');
+      const late=await client.query("update user_relationship_analysis set status='completed' where id=$1 and status='running' returning id",[analysis.rows[0].id]);if(late.rowCount)throw new Error('Late analysis escaped status fence');
+      await client.query("update user_contact_lookup_cache set status='unknown' where user_id=$1 and run_id=$2",[userId,run.rows[0].id]);
+      const lateContact=await client.query("update user_contact_lookup_cache set status='completed' where user_id=$1 and run_id=$2 and status='running' returning company_id",[userId,run.rows[0].id]);if(lateContact.rowCount)throw new Error('Late contact escaped status fence');
       await client.query("insert into product_operation_metric(id,user_id,stage,status) values($1,$2,'verification','running')",[run.rows[0].id,userId]);
       const metricOwn=await client.query("select id from product_operation_metric where id=$1",[run.rows[0].id]);if(metricOwn.rowCount!==1)throw new Error('Owner metric read failed');
       await client.query("insert into user_spend_budget(user_id,limit_micros) values($1,0) on conflict(user_id) do nothing",[userId]);
