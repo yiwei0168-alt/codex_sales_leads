@@ -10,6 +10,14 @@ Verification: country normalization unit tests and TypeScript. This stage does n
 
 ## Remaining stages
 
+### Stage 4e: multi-type task feed
+
+Task center now reads one owner-scoped projection of assistant searches, contact enrichment batches, outreach drafts and outbound SMTP records. Type/country/status filtering happens before pagination across history; 50 rows plus one sentinel. Existing search detail links remain unchanged. Draft approval is explicitly not proof of sending; SMTP acceptance is not delivery/read. Unknown SMTP status asks for verification, never auto-retry. Contact batches without reliable country snapshots remain unknown/mixed; draft/send countries reflect current canonical company country rather than an immutable task snapshot.
+
+Metadata-only list excludes email bodies/addresses, strategies, evidence and full model responses. Visible active pages poll at five seconds with per-effect in-flight deduplication; terminal pages use manual refresh. Existing latest-contact detail is lazily expanded and explicitly independent of feed filters. This is four-source history integration, not a fully unified execution engine: relationship analysis, standalone scoring, running/failed draft-generation attempts and follow-up generation audits are not yet integrated. Full typed detail/recovery and per-step budget accounting remain pending.
+
+Validation: three API/status tests, TypeScript, targeted lint and real DB read-only execution for all four branches under the application role, with unknown-owner results empty. No paid calls or data writes in feed verification. Authenticated visual QA remains outstanding.
+
 ### Stage 4d: transactional memory change audit
 
 Migration 039 adds owner-RLS `user_memory_audit` and an AFTER INSERT/UPDATE/DELETE trigger on private memories. Every source writer, including Agent upserts and workspace-less manual saves, now produces audit in the same transaction; timestamp-only changes are suppressed. Owner UI lazily opens paginated history, including deleted memory IDs. Snapshots contain status, kind, scope and content length, plus changed field names, but no title, body, embedding or arbitrary context. This is change auditing, not full-text version recovery; historical text rollback remains unsupported and pre-migration changes are not reconstructed.

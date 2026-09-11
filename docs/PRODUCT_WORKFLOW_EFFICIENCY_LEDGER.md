@@ -1,5 +1,11 @@
 # 产品工作流效率台账
 
+## PRD v1.1 / UI stage 4e — multi-type task metadata feed
+
+One filtered SQL projection reuses four existing record sources; no duplicate task storage or model calls. Server-side filters replace page-local filtering. At most 51 rows are fetched and 50 projected into the API; no mail decryption, strategy bodies, recipient data or full evidence is transported. Anonymous service events retain counts, latency, token/API-credit zeros, sentinel discard, utilization and downstream boundary (API projection, not user reading). DB cost is unallocated. Active visible polling is deduplicated per effect; collapsed contact details do not poll.
+
+Remaining opportunities: indexed cursor pagination for long histories, immutable country snapshots, normalized generation attempt records, durable failed-read telemetry and measured bytes/actual rendering utilization. The SQL UNION can scan substantial history before filtering; benchmark query plans before scale, without adding paid inference. Three mocked tests and real DB read-only branch/schema/owner checks pass. No measured cost reduction percentage claimed.
+
 ## PRD v1.1 / UI stage 4d — memory audit coverage
 
 One database trigger covers all memory writers instead of duplicating audit construction in every Agent. No-op timestamp updates produce no audit output. Snapshots omit full text/vectors and use field-level change metadata, preventing repeated storage of deleted private content. Audit reads are lazy and bounded to 51 input/50 API-used rows, with anonymous count, latency, zero token/API-credit cost, discard/utilization and optimization service-log events. Database storage/compute cost remains unallocated; failed-read and durable utilization metering remain pending. No model/search/embedding calls introduced.
