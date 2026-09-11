@@ -1,5 +1,22 @@
 import { requireApiSession } from "@/lib/auth/session";
 import { runDevelopmentStrategyAgent } from "@/lib/outreach/graph";
+import { tenantQuery } from "@/lib/rag/db";
+import type { DevelopmentStrategyDto } from "@/lib/outreach/types";
+
+export async function GET(request:Request){
+  const session=await requireApiSession();if(session instanceof Response)return session;
+  const company=new URL(request.url).searchParams.get("company")??"";
+  if(!company||company.length>180)return Response.json({error:"公司参数无效"},{status:400});
+  const rows=await tenantQuery<{result:DevelopmentStrategyDto}>(session.userId,`select jsonb_build_object(
+    'id',d.id,'companyExternalId',c.external_id,'strategy',d.strategy,'status',d.status,'revision',d.revision,
+    'draft',jsonb_build_object('language',d.language,'subjectOptions',d.subject_options,'body',coalesce(d.manual_body,d.body),'wordCount',0,'placeholders','[]'::jsonb),
+    'evidenceIds',d.evidence_ids,'knowledgeIds',d.knowledge_chunk_ids,'templateIds',d.template_ids,'warnings',d.warnings,
+    'model',d.model,'promptVersion',d.prompt_version,'generationMetrics',d.generation_metrics,'createdAt',d.created_at) as result
+    from outreach_draft d join sales_company c on c.id=d.company_id where d.user_id=$1 and c.external_id=$2
+    and d.status in ('generated','approved','sent') order by d.updated_at desc,d.id desc limit 1`,[session.userId,company]);
+  const result=rows[0]?.result??null;if(result)result.draft.wordCount=result.draft.body.split(/\s+/).filter(Boolean).length;
+  return Response.json({result},{headers:{"Cache-Control":"private, no-store"}});
+}
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";

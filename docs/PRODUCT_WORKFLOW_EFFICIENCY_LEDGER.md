@@ -1,5 +1,11 @@
 # 产品工作流效率台账
 
+## PRD v1.1 / persisted UI and checkpoint recovery — 2026-09-11
+
+Saved strategy reading replaces automatic regeneration on entering the assistant. Bulk changes reuse existing zero-model owner-scoped mutation/audit telemetry. Search retry now passes null into pending checkpoints, avoiding reset of prior paid artifacts and accumulated usage. Pause checks use the already-required phase update, with no extra model/search call. Progress is read-only, visible-tab-only at ten seconds, and exposes saved metrics rather than claiming real-time provider billing.
+
+Contact lookup reserves an owner/company/provider slot before any API call. Completed results (including empty results) are reusable; uncertain or concurrent calls are never automatically repeated. Task metadata records aggregate input/output, persisted downstream boundary, zero model tokens, provider credits (unknown retained as null), latency, retries and reuse opportunity. Contact details stay in tenant data, not telemetry. Dollar conversion, actual later Agent consumption, failed-call metering and cache-read metering still need completion; no numeric savings claim. Five mock cache tests and four checkpoint-decision tests cover avoided paid repeats. New optimization opportunities: server-side batch transaction, lightweight workspace revision refresh, paginated contacts and bounded progress projections.
+
 ## PRD v1.1 / UI stage 4e — multi-type task metadata feed
 
 One filtered SQL projection reuses four existing record sources; no duplicate task storage or model calls. Server-side filters replace page-local filtering. At most 51 rows are fetched and 50 projected into the API; no mail decryption, strategy bodies, recipient data or full evidence is transported. Anonymous service events retain counts, latency, token/API-credit zeros, sentinel discard, utilization and downstream boundary (API projection, not user reading). DB cost is unallocated. Active visible polling is deduplicated per effect; collapsed contact details do not poll.

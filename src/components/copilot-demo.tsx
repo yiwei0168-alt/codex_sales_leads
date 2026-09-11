@@ -1,12 +1,14 @@
 "use client";
 
-import { Fragment, useState } from "react";
+import { Fragment, useState, useEffect, useRef } from "react";
+import { GlobalMarketOverview } from "./global-market-overview";
+import { LeadFilters } from "./lead-filters";
+import { CompanyDetail } from "./company-detail";
 import { useRouter } from "next/navigation";
-import { CompanyClassificationEditor } from "@/components/company-classification-editor";
 import { UserChannelMap } from "@/components/user-channel-map";
 import { OpportunityWorkspace } from "@/components/opportunity-workspace";
 import { OutboundComposer } from "@/components/outbound-composer";
-import { opportunityStages, stageLabel } from "@/lib/sales/opportunity-stages";
+import { stageLabel } from "@/lib/sales/opportunity-stages";
 import { evidenceFreshness } from "@/lib/sales/evidence-freshness";
 import { marketCode, marketHref, marketLabel } from "@/lib/sales/market-navigation";
 import { AssistantHome } from "@/components/assistant-home";
@@ -15,19 +17,13 @@ import { TaskCenter } from "@/components/task-center";
 import { MailboxIntegration } from "@/components/mailbox-integration";
 import {
   primaryRole,
-  priorityIndex,
   type AccountTier,
   type ChannelRole,
   type CompanyRecord,
   type Evidence,
-  type OpportunityStage,
-  type SupplyModel,
 } from "@/lib/domain";
 import type {
-  CompanyContactDetailsDto,
   CompanyEditablePatch,
-  ContactStatus,
-  EmailCandidateStatus,
   MarketWorkspaceDto,
 } from "@/lib/sales/types";
 import type { DevelopmentStrategyDto } from "@/lib/outreach/types";
@@ -39,11 +35,9 @@ type SearchState = "idle" | "retrieving" | "complete";
 const roleOptions: ChannelRole[] = [
   "Distributor", "VAD", "VAR", "Dealer", "Reseller", "Retailer", "E-tailer", "SI", "Installer", "MSP", "ISP",
 ];
-const supplyOptions: SupplyModel[] = ["Distributor Supply", "Brand Direct", "Co-sell/Co-supply", "TBD"];
 const distributorTierOptions: AccountTier[] = ["Strategic Distributor", "Priority Distributor", "Standard Distributor", "Long-tail Distributor"];
 const downstreamTierOptions: AccountTier[] = ["KA", "Priority", "Standard", "Long-tail"];
 const tierOptions: AccountTier[] = [...distributorTierOptions, ...downstreamTierOptions];
-const stageOptions: OpportunityStage[] = ["Discovered", ...opportunityStages.map(([stage])=>stage), "Excluded"];
 
 const icons: Record<string, React.ReactNode> = {
   home: <><path d="m4 11 8-7 8 7v9H4z"/><path d="M9 20v-6h6v6"/></>,
@@ -81,40 +75,14 @@ function StatusTag({ children, tone = "neutral" }: { children: React.ReactNode; 
   return <span className={`tag ${tone}`}>{children}</span>;
 }
 
-function MiniBar({ value, tone = "mint" }: { value: number; tone?: "mint" | "blue" | "amber" }) {
-  return <div className="mini-bar" aria-label={`${value}%`}><span className={tone} style={{ width: `${value}%` }} /></div>;
-}
-
-function contactStatusTone(status: ContactStatus): "green" | "blue" | "amber" {
-  return status === "Verified" ? "green" : status === "Public" ? "blue" : "amber";
-}
-
-function emailStatusTone(status: EmailCandidateStatus): "green" | "blue" | "amber" | "violet" | "red" {
-  if (status === "Verified") return "green";
-  if (status === "Public") return "blue";
-  if (status === "Pattern-guessed") return "violet";
-  if (status === "Invalid") return "red";
-  return "amber";
-}
-
-function providerLabel(provider: string): string {
-  return ({
-    snov: "Snov.io",
-    "official-website": "官网",
-    "tavily-web-search": "网页搜索",
-    "deterministic-pattern": "邮箱规则猜测",
-    "tavily-search": "Tavily Search",
-    "tavily-extract": "Tavily Extract",
-  } as Record<string, string>)[provider] ?? provider;
-}
 
 export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", initialCountry = "all", initialView = "home" }: { initialWorkspace?: MarketWorkspaceDto; userName?: string; initialCountry?: string; initialView?: View }) {
   const router = useRouter();
   const [view, setViewState] = useState<View>(initialView);
   const country = marketCode(initialCountry);
   function setView(next: View) {
-    if (next === "results" || next === "map") {
-      router.push(marketHref(country, next === "results" ? "leads" : "channel-map"));
+    if (next === "results" || next === "map" || next === "opportunities") {
+      router.push(marketHref(country, next === "results" ? "leads" : next === "map" ? "channel-map" : "opportunities"));
     } else setViewState(next);
   }
   const [mode, setMode] = useState<Mode>(initialWorkspace?.mode ?? "new-market");
@@ -138,10 +106,23 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
   const [allowFeedbackMemory, setAllowFeedbackMemory] = useState(false);
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [failedEdit, setFailedEdit] = useState<{ id: string; patch: CompanyEditablePatch } | null>(null);
+  const saveQueue = useRef<Promise<unknown>>(Promise.resolve());
   const sourceCount = companies.reduce((total, company) => total + company.evidence.length, 0);
   const searchDate = initialWorkspace?.latestSearch?.finishedAt?.slice(0, 10) ?? "Not searched";
 
   const selectedCompany = countryCompanies.find((item) => item.id === selectedId) ?? countryCompanies[0];
+  const draftRequest = useRef(0);
+  const selectedCompanyId=selectedCompany?.id;
+  useEffect(()=>{
+    if(view!=="assistant"||!selectedCompanyId)return;
+    const controller=new AbortController();const requestId=++draftRequest.current;
+    fetch(`/api/development-strategies?company=${encodeURIComponent(selectedCompanyId)}`,{signal:controller.signal,cache:"no-store"})
+      .then(async response=>{if(!response.ok)throw new Error();return response.json();})
+      .then(({result}:{result:DevelopmentStrategyDto|null})=>{if(controller.signal.aborted||requestId!==draftRequest.current)return;
+        if(result){setDevelopmentResult(result);setDraft(result.draft.body);setDevelopmentState(result.status==="approved"?"approved":"ready");}})
+      .catch(()=>{if(!controller.signal.aborted)setDevelopmentError("已有草稿读取失败，请切换页面重试；未自动生成新版本。");});
+    return()=>controller.abort();
+  },[view,selectedCompanyId]);
   const shortlist = countryCompanies.filter((company) => !["Discovered", "Excluded"].includes(company.opportunityStage));
 
   const filteredCompanies = (() => {
@@ -151,11 +132,15 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
       .filter((company) => roleFilter === "All" || primaryRole(company) === roleFilter)
       .filter((company) => tierFilter === "All" || company.accountTier === tierFilter)
       .filter((company) => !term || [company.displayName, company.city, company.domain, company.roles.join(" ")].join(" ").toLowerCase().includes(term))
-      .sort((a, b) => priorityIndex(b) - priorityIndex(a));
+      .sort((a, b) => b.fitScore - a.fitScore);
   })();
 
-  async function updateCompany(id: string, patch: CompanyEditablePatch) {
-    if (saveState === "saving") return;
+  function updateCompany(id: string, patch: CompanyEditablePatch): Promise<boolean> {
+    const pending=saveQueue.current.then(()=>persistCompany(id,patch));
+    saveQueue.current=pending;
+    return pending;
+  }
+  async function persistCompany(id: string, patch: CompanyEditablePatch): Promise<boolean> {
     setSaveState("saving");
     try {
       const response = await fetch(`/api/workspaces/current/companies/${encodeURIComponent(id)}`, {
@@ -167,13 +152,16 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
       setFailedEdit(null);
       setSaveState("saved");
       window.setTimeout(() => setSaveState("idle"), 1600);
+      return true;
     } catch {
       setSaveState("error");
       setFailedEdit({ id, patch });
+      return false;
     }
   }
 
   function selectCompany(id: string, openDrawer = true) {
+    draftRequest.current++;
     setSelectedId(id);
     setDraft("");
     setDevelopmentResult(null);
@@ -187,6 +175,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
 
   async function generateDevelopment(company = selectedCompany) {
     if (!company || developmentState === "generating") return;
+    const requestId=++draftRequest.current;
     setDevelopmentState("generating");
     setDevelopmentError("");
     try {
@@ -196,6 +185,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
       });
       const payload = await response.json() as { result?: DevelopmentStrategyDto; error?: string };
       if (!response.ok || !payload.result) throw new Error(payload.error || "开发策略生成失败");
+      if(requestId!==draftRequest.current)return;
       setDevelopmentResult(payload.result);
       setDraft(payload.result.draft.body);
       setDevelopmentFeedback("");
@@ -203,6 +193,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
       setAllowFeedbackMemory(false);
       setDevelopmentState("ready");
     } catch (error) {
+      if(requestId!==draftRequest.current)return;
       setDevelopmentState("error");
       setDevelopmentError(error instanceof Error ? error.message : "开发策略生成失败");
     }
@@ -210,6 +201,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
 
   async function approveDevelopmentDraft() {
     if (!developmentResult || developmentState === "approving") return;
+    const requestId=++draftRequest.current;
     setDevelopmentState("approving");
     setDevelopmentError("");
     try {
@@ -219,9 +211,11 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
       });
       const payload = await response.json() as { error?: string };
       if (!response.ok) throw new Error(payload.error || "草稿批准失败");
+      if(requestId!==draftRequest.current)return;
       setDevelopmentResult({ ...developmentResult, status: "approved", draft: { ...developmentResult.draft, body: draft } });
       setDevelopmentState("approved");
     } catch (error) {
+      if(requestId!==draftRequest.current)return;
       setDevelopmentState("error");
       setDevelopmentError(error instanceof Error ? error.message : "草稿批准失败");
     }
@@ -229,6 +223,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
 
   async function reviseDevelopmentDraft() {
     if (!developmentResult || developmentFeedback.trim().length < 3 || developmentState === "revising") return;
+    const requestId=++draftRequest.current;
     setDevelopmentState("revising");
     setDevelopmentError("");
     setFeedbackMessage("");
@@ -240,6 +235,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
       });
       const payload = await response.json() as { result?: { draft: DevelopmentStrategyDto; memoryStored: boolean; memorySummary?: string; memoryReason: string }; error?: string };
       if (!response.ok || !payload.result) throw new Error(payload.error || "反馈修改失败");
+      if(requestId!==draftRequest.current)return;
       setDevelopmentResult(payload.result.draft);
       setDraft(payload.result.draft.draft.body);
       setDevelopmentFeedback("");
@@ -249,6 +245,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
         : `已完成第 ${payload.result.draft.revision} 版；该反馈用于本次修改，但未进入长期记忆：${payload.result.memoryReason}`);
       setDevelopmentState("ready");
     } catch (error) {
+      if(requestId!==draftRequest.current)return;
       setDevelopmentState("error");
       setDevelopmentError(error instanceof Error ? error.message : "反馈修改失败");
     }
@@ -311,7 +308,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
       <main className="main-shell">
         <header className="topbar">
           <div className="breadcrumbs"><span>Workspace</span><Icon name="chevron" size={13}/><strong>Global</strong><Icon name="chevron" size={13}/><span>{navItems.find((item) => item.id === view)?.label}</span></div>
-          <div className="top-actions"><span className={`snapshot-badge ${saveState === "error" ? "save-error" : ""}`}><span className="live-dot"/>{saveState === "saving" ? "正在保存…" : saveState === "saved" ? "已保存到 RDS" : saveState === "error" ? "保存失败，请重试" : `Global workspace · ${searchDate}`}</span><button className="icon-button" aria-label="通知">2</button><button className="avatar small">{userName.slice(0, 2).toUpperCase()}</button></div>
+          <div className="top-actions"><span className={`snapshot-badge ${saveState === "error" ? "save-error" : ""}`}><span className="live-dot"/>{saveState === "saving" ? "正在保存…" : saveState === "saved" ? "已保存到 RDS" : saveState === "error" ? "保存失败，请重试" : `Global workspace · ${searchDate}`}</span><button className="avatar small">{userName.slice(0, 2).toUpperCase()}</button></div>
         </header>
 
         <div className="workspace-content">
@@ -331,12 +328,13 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
             </div>
           </section>}
 
-          {searchState === "complete" && <div className="inline-notice success"><Icon name="check"/><span>当前工作区包含 {companies.length} 个 Tavily 实时候选、{sourceCount} 条来源；角色和适配度在证据复核前均为 Inferred。</span><button onClick={() => setSearchState("idle")} aria-label="关闭"><Icon name="close" size={15}/></button></div>}
+          {searchState === "complete" && <div className="inline-notice success"><Icon name="check"/><span>当前工作区包含 {companies.length} 个已存储候选、{sourceCount} 条证据；请在公司详情查看各自的评分版本与核实状态。</span><button onClick={() => setSearchState("idle")} aria-label="关闭"><Icon name="close" size={15}/></button></div>}
 
           {(view === "results" || view === "map") && <div className="results-toolbar"><label className="select-field">国家<select aria-label="选择国家" value={country} onChange={(event) => router.push(marketHref(event.target.value, view === "map" ? "channel-map" : "leads"))}><option value="all">{view === "map" ? "请选择国家" : "全部国家"}</option>{countries.sort().map((code) => <option key={code} value={code}>{marketLabel(code)} · {companies.filter((company) => marketCode(company.country) === code).length}</option>)}</select></label></div>}
           {view === "home" && <AssistantHome userName={userName} onOpenResults={(code) => router.push(marketHref(code, "leads"))} />}
-          {view === "overview" && <Overview mode={mode} companies={companies} onMode={(next) => { chooseMode(next); setView("results"); }} onSelect={selectCompany} />}
-          {view === "results" && <Results companies={filteredCompanies} query={query} setQuery={setQuery} roleFilter={roleFilter} setRoleFilter={setRoleFilter} tierFilter={tierFilter} setTierFilter={setTierFilter} onSelect={selectCompany} onToggle={(company) => updateCompany(company.id, { opportunityStage: company.opportunityStage === "Discovered" ? "Qualified" : "Discovered" })} />}
+          {view === "opportunities" && <label>国家<select value={country} onChange={event=>router.push(marketHref(event.target.value,"opportunities"))}><option value="all">全部国家</option>{countries.sort().map(code=><option key={code} value={code}>{marketLabel(code)}</option>)}</select></label>}
+          {view === "overview" && <GlobalMarketOverview companies={companies} />}
+          {view === "results" && <LeadFilters companies={filteredCompanies} onUpdate={updateCompany}>{items=><Results companies={items} query={query} setQuery={setQuery} roleFilter={roleFilter} setRoleFilter={setRoleFilter} tierFilter={tierFilter} setTierFilter={setTierFilter} onSelect={selectCompany} onToggle={(company) => updateCompany(company.id, { opportunityStage: company.opportunityStage === "Discovered" ? "Qualified" : "Discovered" })} />}</LeadFilters>}
           {view === "map" && (country === "all" ? <p className="subtle">请选择国家以查看渠道节点与关系。</p> : <UserChannelMap key={country} country={country} companies={countryCompanies} onSelect={selectCompany} onAdded={(company)=>setCompanies(items=>[...items,company])} />)}
           {view === "opportunities" && <OpportunityWorkspace companies={shortlist} onSelect={selectCompany} onUpdate={updateCompany} onOpenMail={(id)=>{selectCompany(id,false);setView("assistant");}} />}
           {view === "assistant" && selectedCompany && <DevelopmentAssistant company={selectedCompany} result={developmentResult} draft={draft} setDraft={setDraft} state={developmentState} error={developmentError} feedback={developmentFeedback} setFeedback={setDevelopmentFeedback} feedbackMessage={feedbackMessage} allowMemory={allowFeedbackMemory} setAllowMemory={setAllowFeedbackMemory} onGenerate={() => void generateDevelopment()} onRevise={() => void reviseDevelopmentDraft()} onApprove={() => void approveDevelopmentDraft()} onEvidence={setEvidenceOpen} onChoose={() => setDetailOpen(true)} />}
@@ -347,81 +345,12 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
         </div>
       </main>
 
-      {detailOpen && selectedCompany && <CompanyDrawer company={selectedCompany} contactDetails={initialWorkspace?.contactsByCompanyId[selectedCompany.id]} onClose={() => setDetailOpen(false)} onUpdate={(patch) => updateCompany(selectedCompany.id, patch)} onEvidence={setEvidenceOpen} onOpenAssistant={() => { setDetailOpen(false); setView("assistant"); void generateDevelopment(selectedCompany); }} />}
+      {detailOpen && selectedCompany && <CompanyDetail key={selectedCompany.id} company={selectedCompany} contactDetails={initialWorkspace?.contactsByCompanyId[selectedCompany.id]} onClose={() => setDetailOpen(false)} onUpdate={(patch) => updateCompany(selectedCompany.id, patch)} onEvidence={setEvidenceOpen} onOpenAssistant={() => { setDetailOpen(false); setView("assistant"); }} />}
       {evidenceOpen && <EvidenceModal evidence={evidenceOpen} onClose={() => setEvidenceOpen(null)} />}
     </div>
   );
 }
 
-function Overview({ mode, companies, onMode, onSelect }: { mode: Mode; companies: CompanyRecord[]; onMode: (mode: Mode) => void; onSelect: (id: string) => void }) {
-  const priority = companies.filter((item) => item.priority === "High").length;
-  const ka = companies.filter((item) => item.accountTier === "KA").length;
-  const distributors = companies.filter((item) => item.layer === "Tier-1 Distributor").length;
-  const downstream = companies.length - distributors;
-  const top = [...companies].sort((a, b) => priorityIndex(b) - priorityIndex(a)).slice(0, 5);
-  const laneNames = (predicate: (company: CompanyRecord) => boolean) => {
-    const names = companies.filter(predicate).slice(0, 3).map((company) => company.displayName);
-    return names.length ? names.join(" · ") : "等待从对话中选择国家并搜索";
-  };
-  return (
-    <div className="overview-grid">
-      <section className="metrics-row span-12">
-        <Metric label="已验证企业" value={String(companies.length)} delta="100% 有身份来源" tone="blue" />
-        <Metric label="一级分销节点" value={String(distributors)} delta="供货能力 P0" tone="violet" />
-        <Metric label="下级渠道节点" value={String(downstream)} delta="需求节点 P0" tone="mint" />
-        <Metric label="KA / 高优先" value={`${ka} / ${priority}`} delta="KA 与角色分离" tone="amber" />
-      </section>
-
-      <section className="panel playbook-panel span-8">
-        <div className="panel-header"><div><span className="section-kicker">MARKET PLAYBOOK</span><h2>{mode === "new-market" ? "Hybrid 冷启动策略" : "Distributor-led 增长修复"}</h2></div><button className="text-button">编辑策略</button></div>
-        <div className="playbook-banner">
-          <div className="strategy-icon"><Icon name="spark" size={22}/></div>
-          <div><strong>{mode === "new-market" ? "同步构建供货与需求，而非串行等待" : "由品牌主动创造下级需求，再连接现有供货体系"}</strong><p>{mode === "new-market" ? "在目标国家优先验证全国/区域分销节点，同时推进高匹配 E-tailer、SI/MSP 与大型 ISP。" : "以用户确认的现有分销体系为供货锚点，重点开发未覆盖的零售、集成和 ISP 节点。"}</p></div>
-        </div>
-        <div className="lane-grid">
-          <div className="lane"><span className="lane-number">01</span><div><strong>供货基础</strong><p>{laneNames((company) => company.layer === "Tier-1 Distributor")}</p></div><StatusTag tone="violet">Tier-1</StatusTag></div>
-          <div className="lane"><span className="lane-number">02</span><div><strong>规模需求</strong><p>{laneNames((company) => company.roles.some((role) => ["Retailer", "E-tailer", "Dealer", "Reseller"].includes(role)))}</p></div><StatusTag tone="blue">Retail</StatusTag></div>
-          <div className="lane"><span className="lane-number">03</span><div><strong>项目与服务</strong><p>{laneNames((company) => company.roles.some((role) => ["SI", "MSP", "Installer"].includes(role)))}</p></div><StatusTag tone="green">SI / MSP</StatusTag></div>
-          <div className="lane"><span className="lane-number">04</span><div><strong>大型机会</strong><p>{laneNames((company) => company.roles.includes("ISP") || company.accountTier === "KA")}</p></div><StatusTag tone="amber">ISP · KA</StatusTag></div>
-        </div>
-        <div className="risk-strip"><strong>策略边界</strong><span>大型 ISP 采用 Deep 参与；无公开证据的供货关系只显示为 Hypothesis。</span></div>
-      </section>
-
-      <section className="panel scenario-panel span-4">
-        <div className="panel-header"><div><span className="section-kicker">CORE SCENARIOS</span><h2>切换工作模式</h2></div></div>
-        <button className={`scenario-option ${mode === "new-market" ? "active" : ""}`} onClick={() => onMode("new-market")}><span className="scenario-code">S-01</span><div><strong>新市场并行开发</strong><p>Distributor + 多类下级节点</p></div><Icon name="chevron"/></button>
-        <button className={`scenario-option ${mode === "growth" ? "active" : ""}`} onClick={() => onMode("growth")}><span className="scenario-code">S-02</span><div><strong>已有市场增长</strong><p>覆盖空白 + 现有供货关联</p></div><Icon name="chevron"/></button>
-        <div className="scenario-foot"><StatusTag tone="amber">P0 变体</StatusTag><span>大型 KA / ISP 深度参与与直供评估</span></div>
-      </section>
-
-      <section className="panel span-7">
-        <div className="panel-header"><div><span className="section-kicker">PRIORITY QUEUE</span><h2>建议优先研究</h2></div><span className="subtle">Fit ≠ Evidence</span></div>
-        <div className="compact-table">
-          {top.map((company, index) => <button key={company.id} className="compact-row" onClick={() => onSelect(company.id)}><span className="rank">0{index + 1}</span><span className="company-avatar">{company.displayName.slice(0, 2).toUpperCase()}</span><span className="company-copy"><strong>{company.displayName}</strong><small>{company.roles.join(" · ")} · {company.city}</small></span><StatusTag tone={company.accountTier === "KA" ? "amber" : "blue"}>{company.accountTier}</StatusTag><span className="score-pair"><b>{company.fitScore}</b><small>Fit</small></span><Icon name="chevron" size={15}/></button>)}
-        </div>
-      </section>
-
-      <section className="panel span-5">
-        <div className="panel-header"><div><span className="section-kicker">COVERAGE SIGNAL</span><h2>节点组合健康度</h2></div><strong className="health-score">82</strong></div>
-        <div className="coverage-list">
-          <CoverageRow label="供货覆盖" value={84} note="11 distributors" tone="violet" />
-          <CoverageRow label="零售与转售" value={76} note="10 nodes" tone="blue" />
-          <CoverageRow label="项目交付" value={72} note="8 SI / MSP" tone="mint" />
-          <CoverageRow label="运营商机会" value={88} note="7 ISP nodes" tone="amber" />
-        </div>
-        <div className="coverage-note"><Icon name="spark"/><span><strong>AI 建议：</strong> 北部区域 Dealer / Installer 证据仍薄弱，下一轮应补充长尾发现。</span></div>
-      </section>
-    </div>
-  );
-}
-
-function Metric({ label, value, delta, tone }: { label: string; value: string; delta: string; tone: string }) {
-  return <div className={`metric-card ${tone}`}><div><span>{label}</span><strong>{value}</strong></div><small><i/> {delta}</small></div>;
-}
-
-function CoverageRow({ label, value, note, tone }: { label: string; value: number; note: string; tone: "violet" | "blue" | "mint" | "amber" }) {
-  return <div className="coverage-row"><div><strong>{label}</strong><small>{note}</small></div><MiniBar value={value} tone={tone === "violet" || tone === "blue" ? "blue" : tone === "amber" ? "amber" : "mint"}/><b>{value}%</b></div>;
-}
 
 function Results({ companies, query, setQuery, roleFilter, setRoleFilter, tierFilter, setTierFilter, onSelect, onToggle }: {
   companies: CompanyRecord[]; query: string; setQuery: (value: string) => void; roleFilter: "All" | ChannelRole; setRoleFilter: (value: "All" | ChannelRole) => void; tierFilter: "All" | AccountTier; setTierFilter: (value: "All" | AccountTier) => void; onSelect: (id: string) => void; onToggle: (company: CompanyRecord) => void;
@@ -485,38 +414,8 @@ function DevelopmentAssistant({ company, result, draft, setDraft, state, error, 
   </div>;
 }
 
-function ContactPanel({ details }: { details?: CompanyContactDetailsDto }) {
-  if (!details) return <section className="drawer-section contact-section"><div className="section-line"><span className="section-kicker">CONTACT INTELLIGENCE</span><StatusTag tone="neutral">Not enriched</StatusTag></div><div className="contact-empty"><Icon name="results" size={20}/><strong>尚未搜索联系人</strong><p>该公司不在当前 10 家验证批次中。运行联系人 enrichment 后，这里会显示公开姓名、职位、邮箱状态和来源。</p></div></section>;
 
-  const publicEmails = details.emails.filter((email) => email.status === "Public").length;
-  const verifiedEmails = details.emails.filter((email) => email.status === "Verified").length;
-  const guessedEmails = details.emails.filter((email) => email.status === "Pattern-guessed").length;
-  const reviewEmails = details.emails.filter((email) => email.verification?.category === "NeedsReview").length;
-  return <section className="drawer-section contact-section">
-    <div className="section-line"><div><span className="section-kicker">CONTACT INTELLIGENCE</span><small className="contact-meta">更新于 {details.enrichedAt.slice(0, 10)} · {details.evidenceCount} 条网页证据</small></div><StatusTag tone={details.contacts.length || details.emails.length ? "green" : "amber"}>{details.contacts.length || details.emails.length ? "Enriched" : "No match"}</StatusTag></div>
-    <div className="contact-stats" aria-label="联系人数据摘要"><div><strong>{details.contacts.length}</strong><span>公开姓名</span></div><div><strong>{publicEmails}</strong><span>公开邮箱</span></div><div><strong>{verifiedEmails}</strong><span>Agent 已验证</span></div><div><strong>{reviewEmails || guessedEmails}</strong><span>{reviewEmails ? "Agent 待审核" : "猜测邮箱"}</span></div></div>
-    <div className="contact-provider-row"><span>数据源</span>{details.providerMix.map((provider) => <StatusTag key={provider} tone={provider === "snov" ? "violet" : "neutral"}>{providerLabel(provider)}</StatusTag>)}</div>
-    {details.contacts.length > 0 && <div className="contact-group"><h3>公开联系人</h3>{details.contacts.map((contact) => <article className="contact-card" key={contact.id}><span className="contact-avatar">{contact.fullName.split(/\s+/).slice(0, 2).map((part) => part[0]).join("").toUpperCase()}</span><div><div className="contact-name-line"><strong>{contact.fullName}</strong><StatusTag tone={contactStatusTone(contact.status)}>{contact.status}</StatusTag></div><p>{contact.jobTitle || "职位尚待确认"}</p><small>{providerLabel(contact.sourceProvider)} · confidence {contact.confidence}%</small></div><a href={contact.publicProfileUrl || contact.sourceUrl} target="_blank" rel="noreferrer" aria-label={`打开 ${contact.fullName} 的公开来源`}><Icon name="external" size={15}/></a></article>)}</div>}
-    {details.emails.length > 0 && <div className="contact-group"><h3>邮箱候选</h3>{details.emails.map((email) => <article className={`email-card ${email.status === "Pattern-guessed" ? "guessed" : ""} ${email.verification?.category === "NeedsReview" ? "agent-review" : ""}`} key={email.id}><div className="email-main"><code>{email.email}</code><div><StatusTag tone={emailStatusTone(email.status)}>{email.status}</StatusTag><span>{email.confidence}%</span></div></div>{email.verification && <div className="contact-agent-decision"><div><span>Verification Agent</span><StatusTag tone={email.verification.category === "NeedsReview" ? "amber" : "green"}>{email.verification.category}</StatusTag></div><dl><div><dt>准确度</dt><dd>{email.verification.confidenceScore}</dd></div><div><dt>角色相关</dt><dd>{email.verification.roleRelevanceScore}</dd></div><div><dt>可触达</dt><dd>{email.verification.reachabilityScore}</dd></div><div><dt>开发优先</dt><dd>{email.verification.developmentPriority}</dd></div></dl>{email.verification.reasons[0] && <p>{email.verification.reasons[0]}</p>}</div>}<div className="email-actions"><span>{providerLabel(email.sourceProvider)}</span><button onClick={() => navigator.clipboard?.writeText(email.email)} aria-label={`复制 ${email.email}`}>复制</button>{email.sourceUrl && <a href={email.sourceUrl} target="_blank" rel="noreferrer">来源 <Icon name="external" size={12}/></a>}</div>{email.derivation && <p>{email.derivation}</p>}</article>)}</div>}
-    {details.contacts.length === 0 && details.emails.length === 0 && <div className="contact-empty compact"><strong>本轮未找到可靠联系人</strong><p>已保留 {details.evidenceCount} 条搜索证据；不会为了填满字段而生成姓名或邮箱。</p></div>}
-    <div className="contact-safety"><Icon name="spark" size={14}/><span>`Pattern-guessed` 不是公开或已验证邮箱，必须人工复核；系统不会自动发送邮件。</span></div>
-  </section>;
-}
-
-function CompanyDrawer({ company, contactDetails, onClose, onUpdate, onEvidence, onOpenAssistant }: { company: CompanyRecord; contactDetails?: CompanyContactDetailsDto; onClose: () => void; onUpdate: (patch: Partial<CompanyRecord>) => void; onEvidence: (evidence: Evidence) => void; onOpenAssistant: () => void }) {
-  return <div className="drawer-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}><aside className="company-drawer" aria-label={`${company.displayName} 公司详情`}>
-    <header className="drawer-header"><div className="drawer-title"><span className="company-avatar large">{company.displayName.slice(0, 2).toUpperCase()}</span><div><span className="layer-label">{company.layer}</span><h2>{company.displayName}</h2><a href={`https://${company.domain}`} target="_blank" rel="noreferrer">{company.domain} <Icon name="external" size={13}/></a></div></div><button className="close-button" onClick={onClose} aria-label="关闭详情"><Icon name="close"/></button></header>
-    <div className="drawer-body"><div className="drawer-score-row"><ScoreRing value={company.fitScore}/><div><span>Opportunity Fit</span><strong>{company.fitScore} / 100</strong><small>Evidence confidence {company.evidenceConfidence}%</small></div><StatusTag tone={company.accountTier === "KA" ? "amber" : "blue"}>{company.accountTier}</StatusTag></div><p className="company-summary">{company.summary}</p>
-      <section className="drawer-section"><div className="section-line"><span className="section-kicker">CHANNEL CLASSIFICATION</span>{company.manuallyEdited && <StatusTag tone="blue">Manual override</StatusTag>}</div><div className="role-tags large-tags">{company.roles.map((role) => <StatusTag key={role} tone={role === "ISP" ? "violet" : "neutral"}>{role}</StatusTag>)}</div><div className="edit-grid"><label>Account Tier<select value={company.accountTier} onChange={(event) => onUpdate({ accountTier: event.target.value as AccountTier })}>{(company.layer === "Tier-1 Distributor" ? distributorTierOptions : downstreamTierOptions).map((tier) => <option key={tier}>{tier}</option>)}</select></label>{company.cooperationPaths?.length ? <label>Cooperation Path<select value={company.selectedPathId ?? company.cooperationPaths[0].pathId} onChange={(event) => onUpdate({ selectedPathId: event.target.value })}>{[...company.cooperationPaths].sort((left, right) => left.rank - right.rank).map((path) => <option key={path.pathId} value={path.pathId}>{path.pathType} · {path.candidateRole}</option>)}</select></label> : null}<label>Supply Model<select value={company.supplyModel} onChange={(event) => onUpdate({ supplyModel: event.target.value as SupplyModel })}>{supplyOptions.map((supply) => <option key={supply}>{supply}</option>)}</select></label><label>Opportunity Stage<select value={company.opportunityStage} onChange={(event) => onUpdate({ opportunityStage: event.target.value as OpportunityStage })}>{stageOptions.map((stage) => <option key={stage}>{stage}</option>)}</select></label><label>Brand Involvement<select value={company.brandInvolvement} onChange={(event) => onUpdate({ brandInvolvement: event.target.value as CompanyRecord["brandInvolvement"] })}>{["Light", "Standard", "Deep"].map((value) => <option key={value}>{value}</option>)}</select></label></div></section>
-      <section className="drawer-section"><span className="section-kicker">ROLE-SPECIFIC ASSESSMENT</span><div className="assessment-grid"><div><span>Fit score</span><MiniBar value={company.fitScore}/><b>{company.fitScore}</b></div><div><span>Account value</span><MiniBar value={company.accountValue} tone="blue"/><b>{company.accountValue}</b></div><div><span>Reachability</span><MiniBar value={company.reachability} tone="amber"/><b>{company.reachability}</b></div><div><span>Evidence</span><MiniBar value={company.evidenceConfidence}/><b>{company.evidenceConfidence}</b></div></div></section>
-      <CompanyClassificationEditor company={company} onUpdate={onUpdate}/>
-      <ContactPanel details={contactDetails}/>
-      <section className="drawer-section"><span className="section-kicker">EVIDENCE · FACTS</span><div className="evidence-stack">{company.evidence.map((item) => <button key={item.id} className="evidence-card" onClick={() => onEvidence(item)}><div><StatusTag tone={item.status === "Verified" || item.status === "Corroborated" ? "green" : "amber"}>{item.status}</StatusTag><span>{item.id}</span></div><strong>{item.claim}</strong><small>{item.title} · captured {item.capturedAt}</small></button>)}</div></section>
-      <section className="drawer-section"><span className="section-kicker">RISKS & UNKNOWNS</span><ul className="risk-list">{company.risks.map((risk) => <li key={risk}><span>Risk</span>{risk}</li>)}{company.unknowns.map((unknown) => <li key={unknown}><span className="unknown">Unknown</span>{unknown}</li>)}</ul></section>
-    </div><footer className="drawer-footer"><button className="secondary-button" onClick={onClose}>关闭</button><button className="primary-button" onClick={onOpenAssistant}><Icon name="spark"/>生成开发计划</button></footer>
-  </aside></div>;
-}
 
 function EvidenceModal({ evidence, onClose }: { evidence: Evidence; onClose: () => void }) {
-  return <div className="modal-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}><section className="evidence-modal" role="dialog" aria-modal="true" aria-label="证据详情"><header><div><span className="section-kicker">EVIDENCE RECORD</span><h2>{evidence.id}</h2></div><button className="close-button" onClick={onClose} aria-label="关闭证据"><Icon name="close"/></button></header><div className="evidence-metadata"><div><span>Status</span><StatusTag tone={evidence.status === "Verified" || evidence.status === "Corroborated" ? "green" : "amber"}>{evidence.status}</StatusTag></div><div><span>Confidence</span><strong>{evidence.confidence}%</strong></div><div><span>Source type</span><strong>{evidence.sourceType}</strong></div><div><span>Captured</span><strong>{evidence.capturedAt}</strong></div></div><div className="claim-box"><span>SUPPORTED CLAIM</span><p>{evidence.claim}</p></div><div className="summary-box"><span>PUBLIC SOURCE SUMMARY</span><p>{evidence.summary}</p></div><a className="source-link" href={evidence.sourceUrl} target="_blank" rel="noreferrer"><Icon name="external"/>打开公开来源<span>{evidence.title}</span></a><p className="evidence-disclaimer">来源来自 Tavily 实时搜索；在商业决策、角色确认或外联前应再次核验官网身份与页面新鲜度。</p></section></div>;
+  return <div className="modal-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}><section className="evidence-modal" role="dialog" aria-modal="true" aria-label="证据详情"><header><div><span className="section-kicker">EVIDENCE RECORD</span><h2>{evidence.id}</h2></div><button className="close-button" onClick={onClose} aria-label="关闭证据"><Icon name="close"/></button></header><div className="evidence-metadata"><div><span>Status</span><StatusTag tone={evidence.status === "Verified" || evidence.status === "Corroborated" ? "green" : "amber"}>{evidence.status}</StatusTag></div><div><span>Confidence</span><strong>{evidence.confidence}%</strong></div><div><span>Source type</span><strong>{evidence.sourceType}</strong></div><div><span>Captured</span><strong>{evidence.capturedAt}</strong></div></div><div className="claim-box"><span>SUPPORTED CLAIM</span><p>{evidence.claim}</p></div><div className="summary-box"><span>PUBLIC SOURCE SUMMARY</span><p>{evidence.summary}</p></div><a className="source-link" href={evidence.sourceUrl} target="_blank" rel="noreferrer"><Icon name="external"/>打开公开来源<span>{evidence.title}</span></a><p className="evidence-disclaimer">此处展示已保存证据，并不代表刚刚重新核实。请参考来源类型和采集日期；超过一年仅提醒，不自动判无效。</p></section></div>;
 }

@@ -3,14 +3,16 @@ import { useState } from "react";
 import { primaryRole,type CompanyRecord } from "@/lib/domain";
 import type { CompanyEditablePatch } from "@/lib/sales/types";
 import { opportunityStages,stageLabel } from "@/lib/sales/opportunity-stages";
+import { BulkCompanyActions } from "./bulk-company-actions";
 
 export function OpportunityWorkspace({companies,onSelect,onUpdate,onOpenMail}: {
-  companies:CompanyRecord[];onSelect:(id:string)=>void;onUpdate:(id:string,patch:CompanyEditablePatch)=>void;onOpenMail:(id:string)=>void;
+  companies:CompanyRecord[];onSelect:(id:string)=>void;onUpdate:(id:string,patch:CompanyEditablePatch)=>Promise<boolean>;onOpenMail:(id:string)=>void;
 }) {
   const [view,setView]=useState("board");
   const [filter,setFilter]=useState("all");
   const [editing,setEditing]=useState<CompanyRecord|null>(null);
   const [action,setAction]=useState("");const [due,setDue]=useState("");
+  const [saving,setSaving]=useState(false);
   const now=new Date().toISOString().slice(0,10);
   const visible=companies.filter(company=>filter==="all"||
     (filter==="contacted"?company.opportunityStage==="Contacted":Boolean(company.nextActionDueAt&&company.nextActionDueAt<now)));
@@ -33,9 +35,10 @@ export function OpportunityWorkspace({companies,onSelect,onUpdate,onOpenMail}: {
     <div className="results-toolbar"><button onClick={()=>setView("board")} aria-pressed={view==="board"}>看板</button><button onClick={()=>setView("list")} aria-pressed={view==="list"}>列表</button>
       <select aria-label="筛选开发机会" value={filter} onChange={event=>setFilter(event.target.value)}><option value="all">全部机会</option><option value="contacted">已联系</option><option value="overdue">已逾期</option></select>
       <span>{visible.length} 家公司</span></div>
-    {editing&&<form className="panel" onSubmit={event=>{event.preventDefault();onUpdate(editing.id,{nextAction:action,nextActionDueAt:due});setEditing(null);}}>
+    <BulkCompanyActions companies={visible} onUpdate={onUpdate}/>
+    {editing&&<form className="panel" onSubmit={async event=>{event.preventDefault();if(saving)return;setSaving(true);try{if(await onUpdate(editing.id,{nextAction:action,nextActionDueAt:due}))setEditing(null);}finally{setSaving(false);}}}>
       <h3>{editing.displayName} · 下一步</h3><label>行动内容<textarea maxLength={2000} value={action} onChange={event=>setAction(event.target.value)}/></label>
-      <label>到期日期<input type="date" value={due} onChange={event=>setDue(event.target.value)}/></label><button>保存</button><button type="button" onClick={()=>setEditing(null)}>取消</button>
+      <label>到期日期<input type="date" value={due} onChange={event=>setDue(event.target.value)}/></label><button disabled={saving}>{saving?"保存中…":"保存"}</button><button type="button" disabled={saving} onClick={()=>setEditing(null)}>取消</button>
     </form>}
     {view==="board"?<div className="opportunity-board">{opportunityStages.map(([stage,label])=>{
       const items=visible.filter(company=>company.opportunityStage===stage||(stage==="Priority"&&company.opportunityStage==="Contact Prepared"));

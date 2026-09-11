@@ -8,6 +8,7 @@ import { collectLeadEvidence, discoverLeadCandidates } from "./discovery";
 import { LeadAssessmentReviewAgent } from "./assessment-review-agent";
 import { LeadEvidenceCorrectionAgent } from "./evidence-correction-agent";
 import { getGlobalWorkspaceId, persistLeadWorkflowResult, updateWorkflowPhase } from "./persistence";
+import { checkpointInvocation } from "./pause";
 import { LeadHandoffAssembler } from "./handoff-assembler";
 import { buildLeadMarketPlaybook } from "./playbook";
 import { LeadQualificationAgent } from "./qualification-agent";
@@ -449,10 +450,21 @@ export async function runLeadWorkflow(input: {
     stageMetrics: [],
     warnings: [],
   };
-  const state = await getProductionGraph().invoke(initial, {
-    configurable: { thread_id: input.graphThreadId },
-    recursionLimit: 50,
-  });
+  const graph=getProductionGraph();
+  const config={configurable:{thread_id:input.graphThreadId},recursionLimit:50};
+  const snapshot=await graph.getState(config);
+  const mode=checkpointInvocation(snapshot,input.userId,input.actionId);
+  if(mode==='complete')return snapshot.values.result as LeadWorkflowResult;
+  const state = await graph.invoke(mode==='resume'?null:initial,config);
   if (!state.result) throw new Error("LangGraph workflow completed without a result");
   return state.result;
+}
+
+export async function readWorkflowCheckpointProgress(userId:string,actionId:string,graphThreadId:string){
+  const snapshot=await getProductionGraph().getState({configurable:{thread_id:graphThreadId}});
+  if(!Object.keys(snapshot.values).length)return null;
+  checkpointInvocation(snapshot,userId,actionId);
+  const state=snapshot.values as LeadWorkflowState;
+  return {phase:state.phase,creditsUsed:state.creditsUsed,stageMetrics:state.stageMetrics,modelUsage:state.modelUsage,
+    discovered:state.discoveredUniqueCount,assessed:state.assessments?.length??0,warnings:state.warnings,next:snapshot.next};
 }

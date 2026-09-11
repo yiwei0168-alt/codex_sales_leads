@@ -1,6 +1,7 @@
 import type { AssistantActionDto } from "@/lib/assistant/types";
 import { taskCounts, taskStatusLabels } from "@/lib/assistant/task-summary";
 import { marketHref } from "@/lib/sales/market-navigation";
+import { TaskRunControls } from "./task-run-controls";
 
 export function SearchTaskDetail({ action }: { action: AssistantActionDto }) {
   const counts = taskCounts(action.result);
@@ -9,6 +10,7 @@ export function SearchTaskDetail({ action }: { action: AssistantActionDto }) {
     <h2>{action.payload.countryName} · 销售线索搜索</h2>
     <p>{partial ? "运行结束，目标未填满" : taskStatusLabels[action.status]} · 目标 {action.payload.targetCount} 家</p>
     <p>{action.payload.roles.join(" · ")}</p>
+    <TaskRunControls actionId={action.id} status={action.status}/>
     <p>创建：{action.createdAt} · 最近更新：{action.updatedAt}</p>
     <dl>{([["发现",counts.discovered],["已评估",counts.assessed],["合格",counts.qualified],["最终保存",counts.accepted],["搜索/补证额度",counts.creditsUsed]] as const).map(([label,value]) =>
       <div key={label}><dt>{label}</dt><dd>{value ?? "尚无记录"}</dd></div>)}</dl>

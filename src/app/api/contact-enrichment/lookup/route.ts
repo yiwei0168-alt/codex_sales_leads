@@ -1,6 +1,7 @@
 import { requireApiSession } from "@/lib/auth/session";
 import { tenantQuery } from "@/lib/rag/db";
 import { contactLookupProvider } from "@/providers/contact-lookup-factory";
+import { lookupAndStoreContacts } from "@/lib/contacts/lookup-service";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -26,9 +27,9 @@ export async function POST(request: Request) {
     return Response.json({ error: "externalId 或 websiteUrl 至少需要一个有效值" }, { status: 400 });
   }
   const rows = await tenantQuery<{
-    id: string; canonical_name: string; domain: string; country_code: string; external_id: string;
+    id: string; canonical_name: string; domain: string; country_code: string; external_id: string; workspace_id:string;
   }>(session.userId,
-    `select company.id, company.canonical_name, company.domain, company.country_code, company.external_id
+    `select company.id, company.canonical_name, company.domain, company.country_code, company.external_id,workspace.id as workspace_id
        from sales_company company
        join workspace_company workspace_company on workspace_company.company_id=company.id
        join market_workspace workspace on workspace.id=workspace_company.workspace_id
@@ -38,6 +39,7 @@ export async function POST(request: Request) {
     [session.userId, externalId, requestedDomain]);
   const company = rows[0];
   if (!company) return Response.json({ error: "候选公司不存在或不属于当前工作区" }, { status: 404 });
+  if(!company.domain||company.domain.endsWith(".invalid"))return Response.json({error:"公司尚无已确认官网域名，不能查询联系人"},{status:400});
   const provider = contactLookupProvider();
   if (!provider.isConfigured()) {
     return Response.json({
@@ -47,16 +49,16 @@ export async function POST(request: Request) {
     }, { status: 503 });
   }
   try {
-    const result = await provider.lookupCompany({
+    const saved = await lookupAndStoreContacts(session.userId,company.workspace_id,{
       companyId: company.id,
       companyName: company.canonical_name,
       websiteUrl: `https://${company.domain}/`,
       domain: company.domain,
       countryCode: company.country_code,
       targetRoles: ["Owner", "Founder", "CEO", "Procurement", "Purchasing", "Channel", "Sales", "Technical"],
-    }, AbortSignal.timeout(90_000));
+    },provider,typeof parsed==="object"&&parsed!==null&&"refresh" in parsed&&parsed.refresh===true);
     return Response.json({ company: { externalId: company.external_id, name: company.canonical_name,
-      websiteUrl: `https://${company.domain}/` }, result });
+      websiteUrl: `https://${company.domain}/` }, ...saved });
   } catch (error) {
     return Response.json({ error: error instanceof Error ? error.message : "联系方式平台查询失败" }, { status: 502 });
   }

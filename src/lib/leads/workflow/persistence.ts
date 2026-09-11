@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { WorkflowPausedError } from "./pause";
 import type { PoolClient } from "pg";
 
 import type { CompanyRecord, Evidence } from "@/lib/domain";
@@ -32,9 +33,10 @@ export async function getGlobalWorkspaceId(userId: string): Promise<string> {
 }
 
 export async function updateWorkflowPhase(userId: string, actionId: string, phase: LeadWorkflowPhase): Promise<void> {
-  await tenantQuery(userId,
-    `update lead_workflow_job set phase = $3, updated_at = now() where action_id = $1 and user_id = $2`,
+  const rows=await tenantQuery<{stop_requested:boolean}>(userId,
+    `update lead_workflow_job set phase = case when stop_requested and $3 <> 'completed' then phase else $3 end, updated_at = now() where action_id = $1 and user_id = $2 returning stop_requested`,
     [actionId, userId, phase]);
+  if(rows[0]?.stop_requested&&phase!=="completed")throw new WorkflowPausedError();
 }
 
 function companyEvidence(candidate: CorrectedLeadWorkflowCandidate, assessment: LeadCandidateAssessment): Evidence[] {

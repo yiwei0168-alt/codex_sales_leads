@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { WorkflowPausedError } from "./pause";
 
 import { appendMessage, getAssistantAction, setAssistantActionStatus } from "@/lib/assistant/repository";
 import type { LeadSearchPlan } from "@/lib/assistant/types";
@@ -24,19 +25,20 @@ export function configuredLeadWorkflowMode(): LeadWorkflowExecutionMode {
 
 export async function confirmAndQueueLeadWorkflow(userId: string, actionId: string, mode = configuredLeadWorkflowMode()): Promise<LeadWorkflowJobClaim | null> {
   return tenantTransaction(userId, async (client) => {
-    const action = await client.query<{ conversation_id: string; payload: LeadSearchPlan; status: "proposed" | "failed" }>(
+    const action = await client.query<{ conversation_id: string; payload: LeadSearchPlan; status: "proposed" | "failed" | "cancelled" }>(
       `select conversation_id, payload, status from assistant_action
-       where id=$1 and user_id=$2 and action_type='lead-search' and status in ('proposed','failed')
+       where id=$1 and user_id=$2 and action_type='lead-search' and (status in ('proposed','failed') or
+         (status='cancelled' and exists(select 1 from lead_workflow_job j where j.action_id=assistant_action.id and j.user_id=$2 and j.stop_requested and j.paused_at is not null)))
        for update`, [actionId, userId]);
     if (!action.rows[0]) return null;
     await client.query(
       `update assistant_action set status='confirmed', confirmed_at=coalesce(confirmed_at,now()),
          started_at=null, finished_at=null, error_message=null, updated_at=now()
        where id=$1 and user_id=$2`, [actionId, userId]);
-    if (action.rows[0].status === "failed") {
+    if (action.rows[0].status !== "proposed") {
       const existing = await client.query<{ id: string; graph_thread_id: string }>(
         `update lead_workflow_job set status='queued', phase='queued', execution_mode=$3,
-           worker_id=null, lease_until=null, error_message=null, finished_at=null, updated_at=now()
+           worker_id=null, lease_until=null, error_message=null, finished_at=null, stop_requested=false,paused_at=null,updated_at=now()
          where action_id=$1 and user_id=$2 and attempts < 20
          returning id, graph_thread_id`, [actionId, userId, mode]);
       if (!existing.rows[0]) {
@@ -113,6 +115,11 @@ async function finishJob(claim: LeadWorkflowJobClaim, result: LeadWorkflowResult
 }
 
 async function failJob(claim: LeadWorkflowJobClaim, error: unknown): Promise<void> {
+  if(error instanceof WorkflowPausedError){
+    await tenantQuery(claim.userId,"update lead_workflow_job set status='cancelled',paused_at=now(),lease_until=null,updated_at=now() where id=$1 and user_id=$2",[claim.jobId,claim.userId]);
+    await setAssistantActionStatus(claim.userId,claim.actionId,"cancelled",{error:error.message});
+    return;
+  }
   const message = error instanceof Error ? error.message : String(error);
   await tenantQuery(claim.userId,
     `update lead_workflow_job set status='failed', phase='failed', error_message=$3,
@@ -122,6 +129,20 @@ async function failJob(claim: LeadWorkflowJobClaim, error: unknown): Promise<voi
   await appendMessage(claim.userId, claim.conversationId, {
     role: "assistant", intent: "lead-search",
     content: `LangGraph 搜索未完成：${message}。工作流 checkpoint 已保留；没有使用模拟公司替代真实结果。`,
+  });
+}
+
+export async function requestWorkflowPause(userId:string,actionId:string){
+  return tenantTransaction(userId,async client=>{
+    // Use the same lock order as confirmation: action, then job.
+    await client.query("select id from assistant_action where id=$1 and user_id=$2 for update",[actionId,userId]);
+    const rows=await client.query<{status:string}>(`update lead_workflow_job set stop_requested=true,
+      paused_at=case when status='queued' then now() else paused_at end,
+      status=case when status='queued' then 'cancelled' else status end,updated_at=now()
+      where action_id=$1 and user_id=$2 and status in ('queued','running') returning status`,[actionId,userId]);
+    if(!rows.rows[0])return false;
+    if(rows.rows[0].status==='cancelled')await client.query("update assistant_action set status='cancelled',error_message='已在执行前暂停',updated_at=now() where id=$1 and user_id=$2",[actionId,userId]);
+    return true;
   });
 }
 

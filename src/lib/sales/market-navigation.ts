@@ -20,6 +20,6 @@ export function marketLabel(code: string): string {
   return /^[A-Z]{2}$/.test(code) ? new Intl.DisplayNames(["zh-CN"], { type: "region" }).of(code) ?? code : code;
 }
 
-export function marketHref(country: string, section: "leads" | "channel-map"): string {
+export function marketHref(country: string, section: "leads" | "channel-map" | "opportunities"): string {
   return `/markets/${encodeURIComponent(marketCode(country))}/${section}`;
 }
