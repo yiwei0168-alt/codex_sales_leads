@@ -1,6 +1,6 @@
-export type TaskKind="search"|"contacts"|"draft"|"send"|"relationship";
+export type TaskKind="search"|"contacts"|"draft"|"send"|"relationship"|"generation";
 export interface TaskFeedItem {id:string;kind:TaskKind;status:string;country:string|null;title:string;createdAt:string;updatedAt:string;metrics:Record<string,unknown>}
-export const taskKindLabels:Record<TaskKind,string>={search:"线索搜索",contacts:"联系人补充",draft:"策略与邮件草稿",send:"邮件发送",relationship:"关系分析"};
+export const taskKindLabels:Record<TaskKind,string>={search:"线索搜索",contacts:"联系人补充",draft:"策略与邮件草稿",send:"邮件发送",relationship:"关系分析",generation:"生成中 / 生成异常"};
 export function feedStatus(item:Pick<TaskFeedItem,"kind"|"status">){
   if(item.kind==="draft")return ({generated:"已生成（未发送）",approved:"已批准（非发送凭证）",sent:"草稿标记已发送（以发送记录为准）",cancelled:"已取消"} as Record<string,string>)[item.status]??item.status;
   if(item.kind==="send")return ({sending:"发送处理中，请勿重复发送",sent:"发信服务器已接受",failed:"发送失败",unknown:"发送结果不明，需核实"} as Record<string,string>)[item.status]??item.status;
@@ -31,6 +31,9 @@ export const taskFeedSourceSql=`with feed as (
  select r.id,'relationship',r.status,r.country_code,f.canonical_name||' → '||t.canonical_name||' · 关系分析',r.created_at,r.updated_at,r.metrics
  from user_relationship_analysis r join sales_company f on f.id=r.from_company_id join sales_company t on t.id=r.to_company_id
  join market_workspace w on w.id=r.workspace_id where r.user_id=$1 and w.owner_id=$1
+ union all
+ select o.id,'generation',o.status,null,case when o.stage='development-generation' then '开发策略生成' else '开发草稿修改' end,o.created_at,o.updated_at,o.metrics
+ from product_operation_metric o where o.user_id=$1 and o.stage in ('development-generation','development-revision') and o.status in ('running','failed')
  )`;
 export const taskFeedSql=`${taskFeedSourceSql} select id,kind,status,country,title,created_at::text as "createdAt",updated_at::text as "updatedAt",metrics
  from feed where ($2='all' or kind=$2) and ($3='all' or country=$3 or ($3='unknown' and country is null))

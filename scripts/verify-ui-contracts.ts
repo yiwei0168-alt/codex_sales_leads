@@ -5,10 +5,12 @@ const { getCurrentWorkspace }=await import("../src/lib/sales/repository");
 const { readTaskDetail }=await import("../src/lib/assistant/task-detail");
 const { taskFeedSql,taskFeedSourceSql }=await import("../src/lib/assistant/task-feed");
 const { findProductActionCompanies }=await import("../src/lib/assistant/product-actions");
+const { developmentDependencyVersion }=await import("../src/lib/outreach/dependency-version");
 try{
   const users=await query<{owner_id:string}>("select owner_id from market_workspace where slug='global-sales' and status='active' limit 1");
   if(!users[0])throw new Error("No active workspace for read-only verification");const userId=users[0].owner_id;
   const workspace=await getCurrentWorkspace(userId);if(!workspace)throw new Error("Workspace failed");
+  await developmentDependencyVersion(userId);
   await findProductActionCompanies(userId,{kind:"library",companyQuery:"%_",countryCode:"GB",roles:["SI"]});
   const tasks=await tenantQuery<{id:string;kind:string}>(userId,taskFeedSql,[userId,'all','all','all',0]);
   await tenantQuery(userId,`${taskFeedSourceSql} select country,count(*) from feed where status in ('running','confirmed','sending') group by country`,[userId]);

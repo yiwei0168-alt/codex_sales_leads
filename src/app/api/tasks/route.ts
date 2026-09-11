@@ -2,7 +2,7 @@ import { z } from "zod";
 import { requireApiSession } from "@/lib/auth/session";
 import { tenantQuery } from "@/lib/rag/db";
 import { taskFeedSql,type TaskFeedItem } from "@/lib/assistant/task-feed";
-const schema=z.object({kind:z.enum(["all","search","contacts","draft","send","relationship"]),country:z.string().regex(/^(all|unknown|[A-Z]{2})$/),status:z.enum(["all","active","attention","finished"]),offset:z.coerce.number().int().min(0).max(100000)});
+const schema=z.object({kind:z.enum(["all","search","contacts","draft","send","relationship","generation"]),country:z.string().regex(/^(all|unknown|[A-Z]{2})$/),status:z.enum(["all","active","attention","finished"]),offset:z.coerce.number().int().min(0).max(100000)});
 export async function GET(request:Request){
   const session=await requireApiSession();if(session instanceof Response)return session;
   const params=new URL(request.url).searchParams;

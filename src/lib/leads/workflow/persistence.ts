@@ -177,8 +177,9 @@ async function saveEvidenceSnapshots(client: PoolClient, userId: string, runId: 
   }
 }
 
-async function saveCompany(client: PoolClient, workspaceId: string, record: CompanyRecord, countryCode: string, runId: string): Promise<void> {
+export async function saveCompany(client: PoolClient, workspaceId: string, record: CompanyRecord, countryCode: string, runId: string): Promise<{added:number;updated:number;roleChanged:number}> {
   let company = await client.query<{ id: string }>(`select id from sales_company where lower(domain) = lower($1) limit 1`, [record.domain]);
+  const previous=company.rows[0]?await client.query<{role:string;overridden:boolean}>(`select coalesce(wc.user_overrides->>'primaryBusinessRole',c.record->>'primaryBusinessRole',c.record->'roles'->>0) as role,wc.user_overrides ? 'primaryBusinessRole' as overridden from workspace_company wc join sales_company c on c.id=wc.company_id where wc.workspace_id=$1 and wc.company_id=$2`,[workspaceId,company.rows[0].id]):{rows:[]};
   if (!company.rows[0]) {
     company = await client.query<{ id: string }>(
       `insert into sales_company (external_id, canonical_name, domain, country_code, city, source_kind, record)
@@ -205,6 +206,9 @@ async function saveCompany(client: PoolClient, workspaceId: string, record: Comp
     [workspaceId, company.rows[0].id, record.accountTier, record.supplyModel, record.brandInvolvement,
       record.opportunityStage, record.priority, record.owner, record.nextAction, countryCode, runId],
   );
+  // Refresh the assessment link even when business fields are protected by user edits.
+  await client.query("update workspace_company set search_run_id=$3,updated_at=now() where workspace_id=$1 and company_id=$2 and manually_edited=true",[workspaceId,company.rows[0].id,runId]);
+  return {added:previous.rows.length?0:1,updated:previous.rows.length?1:0,roleChanged:previous.rows[0]&&!previous.rows[0].overridden&&previous.rows[0].role!==record.primaryBusinessRole?1:0};
 }
 
 export async function persistLeadWorkflowResult(input: {
@@ -236,7 +240,11 @@ export async function persistLeadWorkflowResult(input: {
     .sort((left, right) => right.totalScore - left.totalScore || right.confidence - left.confidence)
     .slice(0, input.requested);
   const selectedIds = new Map(selected.map((item, index) => [item.candidateId, index + 1]));
-  await tenantTransaction(input.userId, async (client) => {
+  const deliveryCounts=await tenantTransaction(input.userId, async (client) => {
+    const saved=await client.query<{counts:{added:number;updated:number;roleChanged:number}|null}>("select metadata->'deliveryCounts' as counts from lead_search_run where id=$1 and workspace_id=$2 for update",[input.runId,input.workspaceId]);
+    if(!saved.rows[0])throw new Error("Search run is missing or outside this workspace");
+    if(saved.rows[0]?.counts)return saved.rows[0].counts;
+    const counts={added:0,updated:0,roleChanged:0};
     for (const assessment of input.assessments) {
       const candidate = candidateById.get(assessment.candidateId);
       if (!candidate) continue;
@@ -300,8 +308,9 @@ export async function persistLeadWorkflowResult(input: {
         [input.runId, discoveryCandidateKeys, assessment.primaryRole, assessment.eligibilityStatus,
           assessment.totalScore, Boolean(rank), assessment.scoringStatus === "completed"],
       );
-      if (rank) await saveCompany(client, input.workspaceId,
+      if (rank) {const change=await saveCompany(client, input.workspaceId,
         companyRecord(candidate, assessment, input.countryCode, input.countryName, input.runId), input.countryCode, input.runId);
+        counts.added+=change.added;counts.updated+=change.updated;counts.roleChanged+=change.roleChanged;}
     }
     const selectedDomains = selected.map((item) => candidateById.get(item.candidateId)!.domain);
     await client.query(`update lead_search_result set accepted = domain = any($2::text[]) where run_id = $1`, [input.runId, selectedDomains]);
@@ -310,7 +319,7 @@ export async function persistLeadWorkflowResult(input: {
          graph_thread_id=$4, workflow_phase='completed', rag_chunk_ids=$5::uuid[],
          metadata=metadata || $6::jsonb, finished_at=now() where id=$1`,
       [input.runId, selected.length, input.creditsUsed, input.graphThreadId, input.ragContext.map((item) => item.chunkId),
-        JSON.stringify({ playbook: input.playbook, assessmentCount: input.assessments.length,
+        JSON.stringify({ deliveryCounts:counts,playbook: input.playbook, assessmentCount: input.assessments.length,
           workflowWarnings: input.warnings, scoringPolicy: { key: ACTIVE_LEAD_SCORING_POLICY.policyKey,
             version: ACTIVE_LEAD_SCORING_POLICY.version, checksum: scoringPolicyChecksum() },
           evidenceFreshnessReport: {
@@ -392,8 +401,10 @@ export async function persistLeadWorkflowResult(input: {
           JSON.stringify(opportunity.evidence)],
       );
     }
+    return counts;
   });
   return {
+    deliveryCounts,
     runId: input.runId,
     countryCode: input.countryCode,
     countryName: input.countryName,

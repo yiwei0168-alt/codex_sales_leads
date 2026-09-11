@@ -1,4 +1,5 @@
 import { Annotation, END, START, StateGraph } from "@langchain/langgraph";
+import {recordGenerationAttempt} from "./generation-attempt";
 
 import { reviseDevelopmentDraftWithClaude } from "./claude-agent";
 import { generateDevelopmentEmailWithKimi, generateDevelopmentStrategyPlanWithKimi, type KimiDevelopmentResult } from "./kimi-agent";
@@ -73,9 +74,10 @@ export function buildDevelopmentStrategyGraph(dependencies: DevelopmentGraphDepe
 const productionGraph = buildDevelopmentStrategyGraph();
 
 export async function runDevelopmentStrategyAgent(userId: string, options: DevelopmentGenerationOptions) {
-  const state = await productionGraph.invoke({ userId, options });
-  if (!state.result) throw new Error("开发策略 Agent 未返回持久化结果");
-  return state.result;
+  return recordGenerationAttempt(userId,"development-generation",options.instructions?.length??0,async()=>{
+    const state = await productionGraph.invoke({ userId, options });
+    if (!state.result) throw new Error("开发策略 Agent 未返回持久化结果");return state.result;
+  },result=>result.generationMetrics);
 }
 
 const FeedbackState = Annotation.Root({
@@ -145,7 +147,8 @@ export function buildDevelopmentFeedbackGraph() {
 const feedbackGraph = buildDevelopmentFeedbackGraph();
 
 export async function runDevelopmentFeedbackAgent(userId: string, options: DevelopmentFeedbackOptions) {
-  const state = await feedbackGraph.invoke({ userId, options });
-  if (!state.result) throw new Error("开发反馈 Agent 未返回修改结果");
-  return state.result;
+  return recordGenerationAttempt(userId,"development-revision",options.currentBody.length+options.feedback.length,async()=>{
+    const state = await feedbackGraph.invoke({ userId, options });
+    if (!state.result) throw new Error("开发反馈 Agent 未返回修改结果");return state.result;
+  },result=>result.draft.generationMetrics);
 }

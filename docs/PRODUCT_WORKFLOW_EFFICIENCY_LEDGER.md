@@ -1,5 +1,15 @@
 # 产品工作流效率台账
 
+## Isolated browser interaction regression — 2026-09-11
+
+Six desktop/mobile cases exercise actual detail components and existing CSS with synthetic records. Browser requests are intercepted; external search/model/SMTP calls are zero by construction. DOM rendering, focus movement and retry presentation add no workflow/model stage. A successful explicit assessment retry removes stale failure UI, avoiding unnecessary further retries. This is a correctness improvement, not a measured token saving. Authentication/navigation/live delivery remain outside this isolated check. Dependency audit alerts are recorded as a deployment hardening opportunity; do not conflate a passing build with security clearance.
+
+## Dependency-aware reuse / generation attempts / delivery counts — 2026-09-11
+
+Strategy validity uses revision hashes, not model reassessment; manual edits mark loaded output stale. No content is copied into the dependency fingerprint query. Generation/revision now reserves durable records before paid work, with operation-level characters, produced/persisted output, reported tokens/cash, wall time, unknown retries, failure reasons as fixed categories and reuse opportunities. Final telemetry errors cannot trigger replay of successful paid output. Running/failed attempts appear in task history; completed usage is not an additional candidate/lead. Partial/fallback usage remains incomplete and must not be treated as the full bill.
+
+Persistence uses a locked per-run delivery-count marker to avoid repeating DB/metric writes after committed delivery. Added means new workspace membership, not a globally new company; updated excludes added and role-changed is contained in updated. Manual-role overrides are not counted as automatic role changes. The latest score link can update independently of protected user fields. Remaining: full model tariff/budget contracts, precise per-subcall generation retry/failure usage, multi-country same-domain membership and continuation semantics. Readable summaries reuse existing payloads and add no retrieval or inference.
+
 ## Market overview / saved correspondence — 2026-09-11
 
 Market totals reuse the feed CTE, aggregate in SQL and project country/count instead of every task. Visible-only 30-second non-overlapping refresh retains durable aggregate usage. Correspondence uses 21/20 pagination, metadata-only response and no sentinel decryption; bodies load on explicit expansion using the existing API. No model, paid search or mailbox sync. Manual role selection uses existing validated zero-model mutation/audit. These are avoided calls, not measured cash savings.

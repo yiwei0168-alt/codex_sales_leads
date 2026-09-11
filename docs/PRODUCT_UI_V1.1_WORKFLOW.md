@@ -1,5 +1,19 @@
 # Product UI v1.1 implementation workflow
 
+## 2026-09-11 isolated browser acceptance
+
+Company/task/evidence dialogs share topmost-only Escape handling, Tab containment, opener focus restoration and background scroll locking. Assessment retry clears the previous failure only after a successful read. Six Chrome checks pass at 1366px/390px using actual React components and production CSS, with synthetic fixtures and every network request intercepted. This verifies interaction, not authenticated Next.js navigation, real provider calls or live SMTP. Run `npm run test:browser` with installed Chrome; output stays in ignored `tmp/`. Test fixtures do not expose a product route or authentication bypass.
+
+Production dependency audit reports six affected packages, including a critical Next.js advisory; this is a deployment risk pending a separately verified compatible dependency fix, not introduced by the browser fixtures. No `npm audit fix --force` or unverified dependency override applied.
+
+## 2026-09-11 completion continuation: dependency invalidation and delivery accounting
+
+Development snapshots now store a conservative hash over visible knowledge revisions, owner memories/status and owner relationship revisions. Reading an old strategy compares this hash without embedding or generation; legacy snapshots remain unknown. Role/path/tier edits in the same page mark the loaded strategy for review immediately. This conservative scope can flag unrelated knowledge edits and should later narrow only with proven complete dependencies.
+
+Development generation/revision reserves a durable operation before execution, settles persisted-output metrics, and records failed/abandoned attempts as failed/running with unknown cash cost. Task feed shows running/failed generation attempts as a sixth kind, avoiding a duplicate completed task next to the saved draft. This supplements, not replaces, saved draft usage. Retries without source telemetry remain null. No failed model call is automatically replayed.
+
+Lead persistence stores added/updated/role-changed counts relative to the user's workspace; role changes are a subset of updates and exclude an explicit primary-role override. Counts are written in the result transaction and reused on persistence replay. Manually protected companies now advance their assessment run link without overwriting protected business fields. This does not yet implement multiple same-domain country memberships or completed-run continuation. Task detail defaults to readable metadata, candidate table and contact summary; complete raw data remains collapsed. JSX tests are now included in Vitest rather than silently omitted.
+
 ## 2026-09-11 resumed: market counts and company correspondence
 
 Global overview counts active (confirmed/running/sending) tasks across all five shared sources without list pagination. Countries with active tasks but no candidates appear; unknown/mixed counts stay separate. Refresh is visible-only/non-overlapping at 30 seconds; unavailable statistics are not zero. Manual company creation exposes optional role, remains unverified and invokes no model.

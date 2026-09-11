@@ -2,6 +2,9 @@ import { tenantQuery } from "@/lib/rag/db";
 import { getAssistantAction } from "./repository";
 import { decryptMailboxContent } from "@/lib/mailbox/crypto";
 export async function readTaskDetail(userId:string,id:string,kind:string,offset=0){
+  if(kind==="generation"){
+    const rows=await tenantQuery(userId,"select id,stage,status,metrics,created_at,updated_at from product_operation_metric where user_id=$1 and id=$2 and stage in ('development-generation','development-revision')",[userId,id]);return rows[0]?{kind,details:rows[0]}:null;
+  }
   if(kind==="relationship"){
     const rows=await tenantQuery(userId,`select id,country_code,status,result,metrics,created_at,updated_at from user_relationship_analysis where user_id=$1 and id=$2`,[userId,id]);return rows[0]?{kind,details:rows[0]}:null;
   }

@@ -35,6 +35,7 @@ export interface OutreachRecipient {
 }
 
 export interface DevelopmentContext {
+  dependencyVersion?:string;
   userId: string;
   workspaceId: string;
   companyId: string;

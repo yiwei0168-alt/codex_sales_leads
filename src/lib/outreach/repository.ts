@@ -3,6 +3,7 @@ import { embedTexts } from "@/lib/rag/openai-provider";
 import type { CompanyRecord } from "@/lib/domain";
 import { listRelationships } from "@/lib/sales/relationships";
 import { developmentContextVersion } from "./context-version";
+import { developmentDependencyVersion } from "./dependency-version";
 import type { LeadDevelopmentHandoff } from "@/lib/leads/workflow/types";
 import { insertFeedbackMemory, prepareFeedbackMemory, searchOutreachKnowledge } from "./knowledge-repository";
 import type {
@@ -106,6 +107,7 @@ export async function loadDevelopmentContext(userId: string, options: Developmen
     [userId, options.companyExternalId]);
   const row = rows[0];
   if (!row) throw new Error("候选公司不存在或不属于当前工作区");
+  const dependencyVersion=await developmentDependencyVersion(userId);
   const relationships = await listRelationships(userId, row.country_code.toUpperCase());
   row.record.relationshipContext = relationships.filter((item) => item.from === options.companyExternalId || item.to === options.companyExternalId)
     .map(({from,to,type,status,basis,updatedAt})=>({from,to,type,status,basis,updatedAt}));
@@ -123,7 +125,7 @@ export async function loadDevelopmentContext(userId: string, options: Developmen
     loadRecipient(userId, row.workspace_id, row.company_id, options.contactId),
   ]);
   return {
-    userId, workspaceId: row.workspace_id, companyId: row.company_id,
+    userId, workspaceId: row.workspace_id, companyId: row.company_id,dependencyVersion,
     searchRunId: row.search_run_id ?? undefined, company: row.record,
     assessment: row.dimensions && !row.record.assessmentNeedsRefresh ? {
       dimensions: row.dimensions, reasons: row.reasons ?? [], risks: row.risks ?? [],
@@ -150,7 +152,7 @@ export async function persistDevelopmentDraft(
     [context.userId, context.workspaceId, context.companyId, context.recipient?.contactId ?? null,
       context.searchRunId ?? null, result.draft.language, JSON.stringify(result.strategy), result.draft.subjectOptions,
       result.draft.body, result.evidenceIds, result.knowledgeIds, result.templateIds,
-      JSON.stringify({...inputSnapshot,contextVersion:developmentContextVersion(context.company)}), JSON.stringify(context.handoff ?? {}), result.model, result.promptVersion, result.warnings,
+      JSON.stringify({...inputSnapshot,contextVersion:developmentContextVersion(context.company),dependencyVersion:context.dependencyVersion}), JSON.stringify(context.handoff ?? {}), result.model, result.promptVersion, result.warnings,
       JSON.stringify(result.generationMetrics)]);
   return { ...result, id: rows[0].id, companyExternalId: context.company.id, status: "generated",
     revision: rows[0].revision, createdAt: rows[0].created_at };

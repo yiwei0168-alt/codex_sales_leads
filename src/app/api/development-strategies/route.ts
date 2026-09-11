@@ -4,12 +4,13 @@ import { tenantQuery } from "@/lib/rag/db";
 import type { DevelopmentStrategyDto } from "@/lib/outreach/types";
 import type { CompanyRecord } from "@/lib/domain";
 import { developmentContextVersion } from "@/lib/outreach/context-version";
+import { developmentDependencyVersion } from "@/lib/outreach/dependency-version";
 
 export async function GET(request:Request){
   const session=await requireApiSession();if(session instanceof Response)return session;
   const company=new URL(request.url).searchParams.get("company")??"";
   if(!company||company.length>180)return Response.json({error:"公司参数无效"},{status:400});
-  const rows=await tenantQuery<{result:DevelopmentStrategyDto;context_version:string|null;record:CompanyRecord}>(session.userId,`select d.input_snapshot->>'contextVersion' as context_version,
+  const rows=await tenantQuery<{result:DevelopmentStrategyDto;context_version:string|null;dependency_version:string|null;record:CompanyRecord}>(session.userId,`select d.input_snapshot->>'contextVersion' as context_version,d.input_snapshot->>'dependencyVersion' as dependency_version,
     c.record || wc.user_overrides || jsonb_build_object('accountTier',wc.account_tier,'selectedPathId',wc.selected_path_id,'selectedCooperationPath',wc.selected_path_type,'supplyModel',wc.supply_model) as record,jsonb_build_object(
     'id',d.id,'companyExternalId',c.external_id,'strategy',d.strategy,'status',d.status,'revision',d.revision,
     'draft',jsonb_build_object('language',d.language,'subjectOptions',d.subject_options,'body',coalesce(d.manual_body,d.body),'wordCount',0,'placeholders','[]'::jsonb),
@@ -19,6 +20,7 @@ export async function GET(request:Request){
     and d.status in ('generated','approved','sent') order by d.updated_at desc,d.id desc limit 1`,[session.userId,company]);
   const result=rows[0]?.result??null;if(result)result.draft.wordCount=result.draft.body.split(/\s+/).filter(Boolean).length;
   if(result)result.contextReview=!rows[0].context_version?"legacy-unknown":rows[0].context_version===developmentContextVersion(rows[0].record)?"current":"changed";
+  if(result&&result.contextReview!=="changed")result.contextReview=!rows[0].dependency_version||!rows[0].context_version?"legacy-unknown":rows[0].dependency_version===await developmentDependencyVersion(session.userId)?"current":"changed";
   return Response.json({result},{headers:{"Cache-Control":"private, no-store"}});
 }
 

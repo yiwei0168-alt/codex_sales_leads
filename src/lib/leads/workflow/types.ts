@@ -365,6 +365,7 @@ export interface LeadDevelopmentHandoff {
 }
 
 export interface LeadWorkflowResult {
+  deliveryCounts?:{added:number;updated:number;roleChanged:number};
   runId: string;
   countryCode: string;
   countryName: string;

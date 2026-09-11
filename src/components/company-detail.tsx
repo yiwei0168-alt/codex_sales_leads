@@ -6,11 +6,13 @@ import { CompanyClassificationEditor } from "./company-classification-editor";
 import { opportunityStages } from "@/lib/sales/opportunity-stages";
 import { assessmentDisplay } from "@/lib/sales/assessment-display";
 import { CompanyCorrespondence } from "./company-correspondence";
+import { useDialogFocus } from "./use-dialog-focus";
 export function CompanyDetail({company,contactDetails,onClose,onUpdate,onEvidence,onOpenAssistant}:{company:CompanyRecord;contactDetails?:CompanyContactDetailsDto;onClose:()=>void;onUpdate:(patch:Partial<CompanyRecord>)=>void;onEvidence:(evidence:Evidence)=>void;onOpenAssistant:()=>void}){
+  const dialogRef=useDialogFocus(onClose);
   const [tab,setTab]=useState("overview");const [assessment,setAssessment]=useState<Record<string,unknown>|null>(null);const [loaded,setLoaded]=useState(false);const [error,setError]=useState("");
   useEffect(()=>{if(tab!=="score")return;const controller=new AbortController();
     fetch(`/api/workspaces/current/companies/${encodeURIComponent(company.id)}/assessment`,{signal:controller.signal,cache:"no-store"})
-      .then(async response=>{if(!response.ok)throw new Error();return response.json();}).then(data=>{if(!controller.signal.aborted){setAssessment(data.assessment);setLoaded(true);}})
+      .then(async response=>{if(!response.ok)throw new Error();return response.json();}).then(data=>{if(!controller.signal.aborted){setAssessment(data.assessment);setLoaded(true);setError("");}})
       .catch(()=>{if(!controller.signal.aborted)setError("评分记录读取失败，请切换页签重试");});return()=>controller.abort();
   },[company.id,tab]);
   const [lookup,setLookup]=useState(false);const [lookupResult,setLookupResult]=useState("");
@@ -18,7 +20,7 @@ export function CompanyDetail({company,contactDetails,onClose,onUpdate,onEvidenc
   async function contacts(refresh=false){setLookup(true);setError("");try{const response=await fetch("/api/contact-enrichment/lookup",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({externalId:company.id,refresh})});const data=await response.json();if(!response.ok)throw new Error(data.error);setLookupResult(`${data.cached?"复用已保存结果，未再次查询服务商":"查询已完成并保存"} · ${data.capturedAt}`);
     const workspace=await fetch("/api/workspaces/current",{cache:"no-store"});if(!workspace.ok)throw new Error("查询已保存，但刷新联系人失败，请重新打开页面");const updated=await workspace.json();setDetails(updated.contactsByCompanyId?.[company.id]);
   }catch(error){setError(String(error));}finally{setLookup(false);}}
-  return <div className="drawer-backdrop" onMouseDown={event=>{if(event.target===event.currentTarget)onClose();}}><aside className="company-drawer" role="dialog" aria-modal="true" aria-label={`${company.displayName} 公司详情`}>
+  return <div className="drawer-backdrop" onMouseDown={event=>{if(event.target===event.currentTarget)onClose();}}><aside ref={dialogRef} tabIndex={-1} className="company-drawer" role="dialog" aria-modal="true" aria-label={`${company.displayName} 公司详情`}>
     <header className="drawer-header"><h2>{company.displayName}</h2><button onClick={onClose}>关闭</button></header>
     <nav className="results-toolbar">{[["overview","概览"],["score","评分与证据"],["development","开发记录"]].map(([id,label])=><button key={id} aria-pressed={tab===id} onClick={()=>setTab(id)}>{label}</button>)}</nav>
     <div className="drawer-body">{error&&<p role="alert">{error}</p>}

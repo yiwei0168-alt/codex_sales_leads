@@ -16,6 +16,7 @@ export function SearchTaskDetail({ action }: { action: AssistantActionDto }) {
     <dl>{([["发现",counts.discovered],["已评估",counts.assessed],["合格",counts.qualified],["最终保存",counts.accepted],["搜索/补证额度",counts.creditsUsed]] as const).map(([label,value]) =>
       <div key={label}><dt>{label}</dt><dd>{value ?? "尚无记录"}</dd></div>)}</dl>
     <p>各阶段数量不能相加；合格不等于已保存。额度不等于美元总成本。</p>
+    {action.result.deliveryCounts&&typeof action.result.deliveryCounts==="object"?<p>交付入库：新增 {String((action.result.deliveryCounts as Record<string,unknown>).added??"未知")} · 更新 {String((action.result.deliveryCounts as Record<string,unknown>).updated??"未知")} · 主角色发生变化 {String((action.result.deliveryCounts as Record<string,unknown>).roleChanged??"未知")}（包含在更新中，不额外相加；人工主角色仍优先）</p>:<p>历史任务未记录新增/更新拆分，未从当前候选库倒推。</p>}
     {action.errorMessage && <p role="alert">{action.errorMessage}</p>}
     {stopReason&&<p>停止原因：{stopReason}</p>}
     {partial && <p>缺口 {Math.max(0,action.payload.targetCount-(counts.accepted ?? 0))} 家；{stopReason??"历史记录未保存结构化停止原因，请展开检查点核实。"}</p>}

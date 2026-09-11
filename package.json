@@ -13,6 +13,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "test:browser": "playwright test",
     "db:migrate": "node scripts/run-tsx.cjs scripts/migrate.ts",
     "leads:publish-scoring-policy": "node scripts/run-tsx.cjs scripts/publish-lead-scoring-policy.ts",
     "assistant:verify": "tsx scripts/verify-assistant-workspace.ts",
@@ -136,12 +137,14 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "@types/mailparser": "^3.4.6",
     "@types/node": "^24.10.0",
     "@types/nodemailer": "^8.0.1",
     "@types/pg": "^8.0.0",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
+    "esbuild": "^0.28.2",
     "eslint": "^9.39.0",
     "eslint-config-next": "^16.1.6",
     "tsx": "^4.23.12",
