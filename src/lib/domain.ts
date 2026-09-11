@@ -90,6 +90,8 @@ export interface CompanyRecord {
   searchRunId?: string;
   manuallyEdited?: boolean;
   assessmentNeedsRefresh?: boolean;
+  userAdded?: boolean;
+  relationshipContext?: Array<{ from: string; to: string; type: string; status: string; basis: string; updatedAt: string }>;
 }
 
 export interface ChannelRelationship {

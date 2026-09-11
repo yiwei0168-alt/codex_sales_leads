@@ -1,5 +1,9 @@
 # 产品工作流效率台账
 
+## PRD v1.1 / UI stage 2a — manual company and relationships
+
+Relationship save records 1 input/1 valid/1 downstream-used output, zero model tokens/credits/cost, elapsed transaction latency, no automatic retries, empty successful discard reasons and utilization 1 in the owner-scoped audit event. Manual company creation records 1/1/1 and zero paid work; duplicate results reuse the current owned candidate. Relationship memory is exact scoped and excluded from broad classification-memory RAG, then explicitly joined to the matching company's strategy input. Runtime read and rejected-request aggregate telemetry remain pending, as does manual-create latency. Optimization opportunity: query only company-relevant relationships rather than all country relationships when country graphs grow. Migration and transactional RLS smoke passed with all test writes rolled back; no paid search/model use.
+
 ## PRD v1.1 / UI stage 1c — compact leads and freshness
 
 Uses saved companies/evidence only; zero model calls, tokens, paid credits or automatic retries. Primary-role filtering and six business columns consume existing fields; missing cooperation paths do not trigger generation. Freshness excludes unverified inference and future/invalid dates; no verification date is manufactured. Input/output counts remain visible via the country/list counters, while per-render utilization and latency are not yet instrumented. Opportunity: store per-field verification timestamps so one recent evidence source cannot imply all company facts are fresh. Freshness boundary regression, typecheck and targeted lint passed.

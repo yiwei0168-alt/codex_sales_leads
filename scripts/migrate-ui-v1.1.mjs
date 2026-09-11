@@ -16,8 +16,9 @@ const client = await pool.connect();
 try {
   await client.query("begin");
   await client.query(await readFile("db/migrations/036_company_user_overrides.sql", "utf8"));
+  await client.query(await readFile("db/migrations/037_user_channel_relationship.sql", "utf8"));
   await client.query("commit");
-  console.log("Applied UI v1.1 company overrides migration (036).");
+  console.log("Applied UI v1.1 migrations (036, 037).");
 } catch (error) {
   await client.query("rollback");
   throw error;

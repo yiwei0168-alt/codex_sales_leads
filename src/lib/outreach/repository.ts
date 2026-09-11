@@ -1,6 +1,7 @@
 import { tenantQuery, tenantTransaction } from "@/lib/rag/db";
 import { embedTexts } from "@/lib/rag/openai-provider";
 import type { CompanyRecord } from "@/lib/domain";
+import { listRelationships } from "@/lib/sales/relationships";
 import type { LeadDevelopmentHandoff } from "@/lib/leads/workflow/types";
 import { insertFeedbackMemory, prepareFeedbackMemory, searchOutreachKnowledge } from "./knowledge-repository";
 import type {
@@ -104,6 +105,9 @@ export async function loadDevelopmentContext(userId: string, options: Developmen
     [userId, options.companyExternalId]);
   const row = rows[0];
   if (!row) throw new Error("候选公司不存在或不属于当前工作区");
+  const relationships = await listRelationships(userId, row.country_code.toUpperCase());
+  row.record.relationshipContext = relationships.filter((item) => item.from === options.companyExternalId || item.to === options.companyExternalId)
+    .map(({from,to,type,status,basis,updatedAt})=>({from,to,type,status,basis,updatedAt}));
   const language = options.language?.trim() || "en";
   const query = [`Cudy company strengths, distribution partnership policy and market proof`,
     `${row.record.roles.join(" ")} partner in ${row.record.country}`, row.record.summary].join(". ");

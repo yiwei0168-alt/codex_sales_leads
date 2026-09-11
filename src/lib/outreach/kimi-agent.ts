@@ -180,6 +180,9 @@ export async function generateDevelopmentStrategyWithKimi(
           bodyWithCitations: "complete email with internal markers", placeholders: ["placeholder names"] } },
         target: { name: context.company.displayName, country: context.company.country, roles: context.company.roles,
           summary: context.company.summary, assessmentReasons: context.assessment?.reasons.slice(0, 4), recipient: context.recipient },
+        currentCompanyDecision: { primaryRole: context.company.primaryBusinessRole, accountTier: context.company.accountTier,
+          selectedPath: context.company.selectedCooperationPath, relationships: context.company.relationshipContext,
+          instruction: "User-confirmed decisions guide strategy; pending relationships are hypotheses and rejected relationships must not be proposed as facts." },
         companyEvidence: evidencePayload(context), outreachKnowledge: knowledgePayload(context),
         styleExamples: context.templates.map((template) => ({ title: template.title, visibility: template.visibility,
           subjectPattern: template.subjectPattern, body: template.body.slice(0, 2_000), styleProfile: template.styleProfile })),
@@ -235,6 +238,9 @@ export async function generateDevelopmentStrategyPlanWithKimi(
           knowledgeIds: ["allowed knowledge UUID"] },
         target: { name: context.company.displayName, country: context.company.country, roles: context.company.roles,
           recipient: context.recipient },
+        currentCompanyDecision: { primaryRole: context.company.primaryBusinessRole, accountTier: context.company.accountTier,
+          selectedPath: context.company.selectedCooperationPath, relationships: context.company.relationshipContext,
+          instruction: "Apply current user decisions; pending relationships are unverified and rejected relationships must not be recommended." },
         leadHandoff: context.handoff,
         assessment: context.assessment,
         outreachKnowledge: knowledgePayload(context),
@@ -290,7 +296,7 @@ export async function generateDevelopmentEmailWithKimi(
         requestedSchema: { language: "string", subjectOptions: ["2-3 subjects"],
           bodyWithCitations: "complete email with internal markers", placeholders: ["placeholder names"] },
         approvedStrategy: plan.strategy,
-        selectedCooperationPath: context.handoff?.decision.cooperationPaths.find((path) =>
+        selectedCooperationPath: context.company.selectedCooperationPath ?? context.handoff?.decision.cooperationPaths.find((path) =>
           path.pathId === context.handoff?.decision.selectedPathId),
         target: { name: context.company.displayName, country: context.company.country, roles: context.company.roles,
           recipient: context.recipient },

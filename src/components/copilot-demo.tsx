@@ -3,6 +3,7 @@
 import { Fragment, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CompanyClassificationEditor } from "@/components/company-classification-editor";
+import { UserChannelMap } from "@/components/user-channel-map";
 import { evidenceFreshness } from "@/lib/sales/evidence-freshness";
 import { marketCode, marketHref, marketLabel } from "@/lib/sales/market-navigation";
 import { AssistantHome } from "@/components/assistant-home";
@@ -15,7 +16,6 @@ import {
   type AccountTier,
   type ChannelRole,
   type CompanyRecord,
-  type ChannelRelationship,
   type Evidence,
   type OpportunityStage,
   type SupplyModel,
@@ -41,7 +41,6 @@ const distributorTierOptions: AccountTier[] = ["Strategic Distributor", "Priorit
 const downstreamTierOptions: AccountTier[] = ["KA", "Priority", "Standard", "Long-tail"];
 const tierOptions: AccountTier[] = [...distributorTierOptions, ...downstreamTierOptions];
 const stageOptions: OpportunityStage[] = ["Discovered", "Qualified", "Priority", "Contact Prepared", "Engaged", "Excluded"];
-const liveRelationships: ChannelRelationship[] = [];
 
 const icons: Record<string, React.ReactNode> = {
   home: <><path d="m4 11 8-7 8 7v9H4z"/><path d="M9 20v-6h6v6"/></>,
@@ -335,7 +334,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
           {view === "home" && <AssistantHome userName={userName} onOpenResults={(code) => router.push(marketHref(code, "leads"))} />}
           {view === "overview" && <Overview mode={mode} companies={companies} onMode={(next) => { chooseMode(next); setView("results"); }} onSelect={selectCompany} />}
           {view === "results" && <Results companies={filteredCompanies} query={query} setQuery={setQuery} roleFilter={roleFilter} setRoleFilter={setRoleFilter} tierFilter={tierFilter} setTierFilter={setTierFilter} onSelect={selectCompany} onToggle={(company) => updateCompany(company.id, { opportunityStage: company.opportunityStage === "Discovered" ? "Qualified" : "Discovered" })} />}
-          {view === "map" && (country === "all" ? <p className="subtle">请选择国家以查看渠道节点与关系。</p> : <ChannelMap companies={countryCompanies} onSelect={selectCompany} />)}
+          {view === "map" && (country === "all" ? <p className="subtle">请选择国家以查看渠道节点与关系。</p> : <UserChannelMap key={country} country={country} companies={countryCompanies} onSelect={selectCompany} onAdded={(company)=>setCompanies(items=>[...items,company])} />)}
           {view === "opportunities" && <OpportunityWorkspace companies={shortlist} onSelect={selectCompany} onUpdate={updateCompany} />}
           {view === "assistant" && selectedCompany && <DevelopmentAssistant company={selectedCompany} result={developmentResult} draft={draft} setDraft={setDraft} state={developmentState} error={developmentError} feedback={developmentFeedback} setFeedback={setDevelopmentFeedback} feedbackMessage={feedbackMessage} allowMemory={allowFeedbackMemory} setAllowMemory={setAllowFeedbackMemory} onGenerate={() => void generateDevelopment()} onRevise={() => void reviseDevelopmentDraft()} onApprove={() => void approveDevelopmentDraft()} onEvidence={setEvidenceOpen} onChoose={() => setDetailOpen(true)} />}
           {view === "tasks" && <ContactEnrichmentProgress />}
@@ -447,7 +446,7 @@ function Results({ companies, query, setQuery, roleFilter, setRoleFilter, tierFi
               <td><button className="company-cell" onClick={() => onSelect(company.id)}><span className="company-avatar">{company.displayName.slice(0, 2).toUpperCase()}</span><span><strong>{company.displayName}</strong><small>{company.city} · {company.domain}</small></span></button></td>
               <td><StatusTag>{primaryRole(company)}</StatusTag>{evidenceFreshness(company.evidence) === "older-than-year" && <small>超过一年未核实</small>}</td>
               <td><StatusTag tone={company.accountTier === "KA" ? "amber" : company.accountTier === "Priority" ? "blue" : "neutral"}>{company.accountTier}</StatusTag></td>
-              <td>{company.assessmentNeedsRefresh ? <span title={`历史评分：${company.fitScore}`}>评分待更新</span> : <ScoreRing value={company.fitScore} compact/>}</td>
+              <td>{company.userAdded && company.assessmentNeedsRefresh ? "尚未评估" : company.assessmentNeedsRefresh ? <span title={`历史评分：${company.fitScore}`}>评分待更新</span> : <ScoreRing value={company.fitScore} compact/>}</td>
               <td><span className="supply-copy">{company.selectedCooperationPath ?? "未分析"}</span>{company.manuallyEdited && <small className="manual-badge">用户修改</small>}</td>
               <td><span className={`stage-dot ${company.opportunityStage.toLowerCase().replace(" ", "-")}`}/>{company.opportunityStage}</td>
               <td><button className="row-action" onClick={() => onSelect(company.id)} aria-label={`打开 ${company.displayName} 详情`}><Icon name="chevron" size={16}/></button></td>
@@ -460,52 +459,6 @@ function Results({ companies, query, setQuery, roleFilter, setRoleFilter, tierFi
   );
 }
 
-function ChannelMap({ companies, onSelect }: { companies: CompanyRecord[]; onSelect: (id: string) => void }) {
-  const distributors = [...companies].filter((item) => item.layer === "Tier-1 Distributor").sort((a, b) => b.fitScore - a.fitScore).slice(0, 5);
-  const downstream = [...companies].filter((item) => item.layer === "Downstream Channel" && item.priority === "High").sort((a, b) => b.fitScore - a.fitScore).slice(0, 8);
-  const mapCompanies = [...distributors, ...downstream];
-  const positions = new Map<string, { x: number; y: number }>();
-  distributors.forEach((item, index) => positions.set(item.id, { x: 165, y: 92 + index * 88 }));
-  downstream.forEach((item, index) => positions.set(item.id, { x: 725, y: 54 + index * 54 }));
-  const lines = liveRelationships.filter((rel) => positions.has(rel.fromNode) && positions.has(rel.toNode));
-  return (
-    <div className="map-layout">
-      <section className="panel map-panel">
-        <div className="panel-header"><div><span className="section-kicker">RELATIONSHIP CANVAS</span><h2>供货与需求节点连接</h2></div><div className="map-legend"><span><i className="solid-line"/> 已验证</span><span><i className="dash-line"/> AI 假设</span></div></div>
-        <svg className="channel-map" viewBox="0 0 900 520" role="img" aria-label="全球渠道关系图">
-          <rect x="30" y="18" width="270" height="476" rx="18" className="map-zone distributor-zone"/>
-          <rect x="600" y="18" width="270" height="476" rx="18" className="map-zone downstream-zone"/>
-          <text x="52" y="48" className="zone-title">SUPPLY NODES · TIER-1</text>
-          <text x="622" y="48" className="zone-title">DEMAND NODES · DOWNSTREAM</text>
-          {lines.map((rel) => {
-            const from = positions.get(rel.fromNode)!; const to = positions.get(rel.toNode)!;
-            return <path key={rel.id} d={`M ${from.x + 94} ${from.y} C 390 ${from.y}, 510 ${to.y}, ${to.x - 94} ${to.y}`} className={`map-link ${rel.status === "Hypothesis" ? "hypothesis" : "verified"}`} />;
-          })}
-          <circle cx="450" cy="260" r="72" className="brand-node"/>
-          <text x="450" y="252" textAnchor="middle" className="brand-node-title">CUDY</text><text x="450" y="273" textAnchor="middle" className="brand-node-sub">GLOBAL MARKET</text>
-          {mapCompanies.map((company) => {
-            const position = positions.get(company.id)!;
-            return <g key={company.id} className="map-node" role="button" tabIndex={0} onClick={() => onSelect(company.id)} onKeyDown={(event) => { if (event.key === "Enter") onSelect(company.id); }}>
-              <rect x={position.x - 94} y={position.y - 27} width="188" height="54" rx="11"/>
-              <circle cx={position.x - 69} cy={position.y} r="16"/><text x={position.x - 69} y={position.y + 4} textAnchor="middle" className="node-initial">{company.displayName.slice(0, 1)}</text>
-              <text x={position.x - 44} y={position.y - 3} className="node-name">{company.displayName.length > 18 ? `${company.displayName.slice(0, 17)}…` : company.displayName}</text>
-              <text x={position.x - 44} y={position.y + 14} className="node-role">{primaryRole(company)} · {company.accountTier}</text>
-              <text x={position.x + 76} y={position.y + 4} textAnchor="end" className="node-score">{company.fitScore}</text>
-            </g>;
-          })}
-        </svg>
-        <div className="map-footnote"><Icon name="spark"/><span>图中虚线为基于角色适配生成的供货假设，不代表已验证商业关系。</span></div>
-      </section>
-      <aside className="panel map-inspector">
-        <div className="panel-header"><div><span className="section-kicker">HYPOTHESIS QUEUE</span><h2>待人工确认</h2></div><StatusTag tone="amber">{liveRelationships.filter((item) => item.status === "Hypothesis").length} 条</StatusTag></div>
-        <div className="relationship-list">{liveRelationships.map((relationship) => {
-          const from = companies.find((item) => item.id === relationship.fromNode); const to = companies.find((item) => item.id === relationship.toNode);
-          return <div key={relationship.id} className="relationship-card"><div><StatusTag tone={relationship.status === "Verified" ? "green" : "amber"}>{relationship.status}</StatusTag><small>{relationship.type}</small></div><strong>{from?.displayName} <span>→</span> {to?.displayName}</strong><p>{relationship.status === "Verified" ? "有公开来源支持该组织关联。" : "角色与供货适配推断；尚无直接关系证据。"}</p><div className="relationship-actions"><button>确认</button><button>拒绝</button><button onClick={() => to && onSelect(to.id)}>查看节点</button></div></div>;
-        })}{liveRelationships.length === 0 && <p className="subtle">实时线索尚未建立公司间关系；待证据抽取与关系分析后生成。</p>}</div>
-      </aside>
-    </div>
-  );
-}
 
 function OpportunityWorkspace({ companies, onSelect, onUpdate }: { companies: CompanyRecord[]; onSelect: (id: string) => void; onUpdate: (id: string, patch: Partial<CompanyRecord>) => void }) {
   const groups: OpportunityStage[] = ["Qualified", "Priority", "Contact Prepared", "Engaged"];
