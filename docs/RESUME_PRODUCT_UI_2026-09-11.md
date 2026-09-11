@@ -2,6 +2,8 @@
 
 ## 恢复后进展（优先读取）
 
+续搜阶段已实施：049已应用，search-continuation提案服务/API/组件、独立任务页proposed确认入口、运行时仅新任务加载前序已评估domain排除列表。原任务不变、每父任务仅一个child、最大三次/停滞门禁、用户单独确认才执行。真实数据库完整提案/重复点击/owner隔离/删除级联回滚探针通过；536测试/14隔离浏览器测试通过，最后追加cache-hit审计后需最终复查。后续主要剩余为全面预算入口和费用上界、完整usage汇总及登录验收，无新实验或付费调用。
+
 异常缓存阶段最终验证：532项测试/128文件、12项隔离浏览器检查、build/typecheck、真实SQL回滚探针通过；lint无错误、11旧警告。下一步准备“已完成但未填满”的新任务提案与原任务分离（已有discovery.excludeDomains可复用），尚未编写该阶段代码。然后继续全面预算入口覆盖及验收。
 
 异常缓存阶段：contacts/reconcile-lookup与sales/reconcile-relationship，统一/api/tasks/[id]/reconcile及任务详情按钮；前者只允许十分钟仍running的单公司查询，后者failed或十分钟running。无模型/退款/新任务自动执行；联系人run_id+status行锁、关系旧ID status fencing阻止迟到覆盖；原关系记录保留，cache fingerprint归档释放给后续用户显式分析。新增测试及真实SQL探针；本阶段无迁移。下一步仍是全面预算接入、完成但未满续搜与登录验收，不要把cache关闭当取消服务商任务。

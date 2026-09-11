@@ -10,6 +10,7 @@ import { LeadAssessmentReviewAgent } from "./assessment-review-agent";
 import { LeadEvidenceCorrectionAgent } from "./evidence-correction-agent";
 import { getGlobalWorkspaceId, persistLeadWorkflowResult, updateWorkflowPhase } from "./persistence";
 import { checkpointInvocation } from "./pause";
+import { continuationExclusions } from "@/lib/assistant/search-continuation";
 import { LeadHandoffAssembler } from "./handoff-assembler";
 import { buildLeadMarketPlaybook } from "./playbook";
 import { LeadQualificationAgent } from "./qualification-agent";
@@ -457,6 +458,7 @@ export async function runLeadWorkflow(input: {
   const snapshot=await graph.getState(config);
   const mode=checkpointInvocation(snapshot,input.userId,input.actionId);
   if(mode==='complete')return snapshot.values.result as LeadWorkflowResult;
+  if(mode!=='resume')initial.searchExcludeDomains=await continuationExclusions(input.userId,input.actionId);
   const state = await withSpendContext({userId:input.userId,operationId:input.actionId,stage:"lead-workflow"},()=>graph.invoke(mode==='resume'?null:initial,config));
   if (!state.result) throw new Error("LangGraph workflow completed without a result");
   return state.result;

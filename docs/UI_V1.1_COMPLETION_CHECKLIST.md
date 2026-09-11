@@ -12,7 +12,7 @@ User has resumed and requested continuation until completion. Checked means impl
 - [x] Kimi local-library/strategy/follow-up entry points without redundant external search.
 - [ ] Search budget editing/enforcement and accurate accumulated/remaining cost/latency summaries; current progress exposes saved raw checkpoint usage.
 - [ ] Normalized generation failures/attempts and complete durable per-stage usage/cache/retry/downstream-adoption telemetry.
-- [ ] Search result new/update/role-transfer counts and completed-but-underfilled continuation semantics.
+- [x] Search result country-relative new/update/role-transfer counts and bounded completed-but-underfilled child proposals (separate execution confirmation).
 - [x] Global overview full-history active-task counts, paginated company correspondence and optional manual-add role.
 - [x] Human-readable task summaries with raw records collapsed and JSX render tests enabled.
 - [ ] Authenticated detail UX review.

@@ -103,3 +103,15 @@ test('closing a stale contact task is explicit and never starts a replacement lo
   page.once('dialog',dialog=>dialog.accept());await close.click();await expect(close).toHaveCount(0);
   await expect(page.getByRole('status')).toHaveText('本地已结束；费用仍未知，没有重新查询');expect(writes).toBe(1);
 });
+test('continuation creates a reviewable proposal without confirming or executing it',async({page})=>{
+  let proposals=0;
+  await page.route('**/api/assistant/actions/**',route=>{
+    expect(new URL(route.request().url()).pathname).toBe('/api/assistant/actions/fixture-parent/continue');
+    expect(route.request().postDataJSON()).toEqual({propose:true});proposals++;
+    return route.fulfill({json:{actionId:'fixture-child',gap:15,excludedCount:35,reused:false}});
+  });
+  await page.getByRole('button',{name:'打开续搜',exact:true}).click();expect(proposals).toBe(0);
+  const button=page.getByRole('button',{name:'建立缺口续搜计划（不执行）'});await button.click();
+  await expect(page.getByRole('link',{name:'审阅续搜计划并确认费用'})).toHaveAttribute('href','/tasks/fixture-child?kind=search');
+  await expect(button).toBeDisabled();expect(proposals).toBe(1);
+});

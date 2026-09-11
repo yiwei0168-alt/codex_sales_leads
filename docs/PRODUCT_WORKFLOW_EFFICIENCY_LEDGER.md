@@ -1,5 +1,9 @@
 # 产品工作流效率台账
 
+## Completed-run continuation proposal — 2026-09-12
+
+The existing task produces a deterministic, local-only gap proposal; no intent/model/search stage is introduced for this explicit button action. Natural-language revisions still use the existing Kimi interaction flow. Parent/child/root linkage and cumulative assessed-domain exclusions avoid replaying completed work; duplicate clicks reuse the child. Creation/reuse audit input/valid/used counts, cache hits, zero paid-token/credit/cash cost, latency and discard reasons. Exclusions remain outside model planning prompts; existing provider exclusion caps and registry filtering remain unchanged. Each executed child has its own normal runtime stage/cost records, not a reset of the parent's bill. No measured cost-saving percentage claimed. Opportunity: evaluate whether large exclusion sets reduce fresh yield enough to justify a user-approved change in geographic coverage, using real downstream quality rather than automatic endless search.
+
 ## Explicit abnormal-cache recovery — 2026-09-12
 
 Owner-confirmed task closure is a local-only stage: input/valid/used counts, zero tokens/credits/cash for the closure itself, latency, retries/discard reasons and usage boundary are audited. Old paid-call occupancy remains untouched. A late contact/model response retains available credit/token/cash metrics and a zero downstream-used count instead of overwriting current results; unavailable cost stays null. Recovery never automatically invokes another provider. Existing explicit refresh/analysis actions remain the only retry entry. Optimization opportunity: add provider job-status/receipt reconciliation where officially supported to recover a completed external result before paying again; do not blindly poll or assume refunds. Generation telemetry and billing reservations are distinct from these two caches.

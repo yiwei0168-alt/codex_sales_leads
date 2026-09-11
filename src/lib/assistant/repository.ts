@@ -96,7 +96,10 @@ export async function getAssistantAction(userId: string, actionId: string): Prom
     id: string; action_type: "lead-search"; status: AssistantActionStatus; payload: LeadSearchPlan;
     result: Record<string, unknown>; error_message: string | null; created_at: string; updated_at: string;
   }>(userId,
-    `select id, action_type, status, payload, result, error_message, created_at::text, updated_at::text
+    `select id, action_type, status, payload, result || coalesce((select jsonb_build_object('continuation',jsonb_build_object(
+      'parentActionId',l.parent_action_id,'rootActionId',l.root_action_id,'depth',l.depth,'excludedCount',cardinality(l.excluded_domains)))
+      from lead_search_continuation l where l.child_action_id=assistant_action.id and l.user_id=$2),'{}'::jsonb) as result,
+      error_message, created_at::text, updated_at::text
      from assistant_action where id = $1 and user_id = $2 limit 1`,
     [actionId, userId],
   );
