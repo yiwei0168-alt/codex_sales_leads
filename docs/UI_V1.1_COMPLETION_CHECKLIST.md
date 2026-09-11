@@ -13,7 +13,8 @@ Paused at user request on 2026-09-11. Checked means implemented with code-level 
 - [ ] Search budget editing/enforcement and accurate accumulated/remaining cost/latency summaries; current progress exposes saved raw checkpoint usage.
 - [ ] Normalized generation failures/attempts and complete durable per-stage usage/cache/retry/downstream-adoption telemetry.
 - [ ] Search result new/update/role-transfer counts and completed-but-underfilled continuation semantics.
-- [ ] Global overview running-task counts, company correspondence view, manual-add role selector and detail UX review.
+- [x] Global overview full-history active-task counts, paginated company correspondence and optional manual-add role.
+- [ ] Human-readable task summaries and authenticated detail UX review.
 - [ ] Relationship/private-knowledge context versions, crashed reservation reconciliation and multi-country membership correctness audit.
 - [ ] Authenticated responsive/keyboard/error-state UI checks and final PRD acceptance; live SMTP requires a designated test recipient.
 

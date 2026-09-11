@@ -6,7 +6,7 @@ export function feedStatus(item:Pick<TaskFeedItem,"kind"|"status">){
   if(item.kind==="send")return ({sending:"发送处理中，请勿重复发送",sent:"发信服务器已接受",failed:"发送失败",unknown:"发送结果不明，需核实"} as Record<string,string>)[item.status]??item.status;
   return ({proposed:"待确认",confirmed:"已排队",running:"运行中",completed:"运行结束",failed:"失败",cancelled:"已取消"} as Record<string,string>)[item.status]??item.status;
 }
-export const taskFeedSql=`with feed as (
+export const taskFeedSourceSql=`with feed as (
  select a.id,'search'::text as kind,a.status,upper(a.payload->>'countryCode') as country,
    coalesce(a.payload->>'countryName','未知国家')||' · 线索搜索' as title,a.created_at,a.updated_at,
    jsonb_build_object('target',a.payload->'targetCount','saved',a.result->'accepted','credits',a.result->'creditsUsed') as metrics
@@ -31,7 +31,8 @@ export const taskFeedSql=`with feed as (
  select r.id,'relationship',r.status,r.country_code,f.canonical_name||' → '||t.canonical_name||' · 关系分析',r.created_at,r.updated_at,r.metrics
  from user_relationship_analysis r join sales_company f on f.id=r.from_company_id join sales_company t on t.id=r.to_company_id
  join market_workspace w on w.id=r.workspace_id where r.user_id=$1 and w.owner_id=$1
- ) select id,kind,status,country,title,created_at::text as "createdAt",updated_at::text as "updatedAt",metrics
+ )`;
+export const taskFeedSql=`${taskFeedSourceSql} select id,kind,status,country,title,created_at::text as "createdAt",updated_at::text as "updatedAt",metrics
  from feed where ($2='all' or kind=$2) and ($3='all' or country=$3 or ($3='unknown' and country is null))
  and ($4='all' or ($4='active' and status in ('running','confirmed','sending'))
    or ($4='attention' and status in ('proposed','failed','unknown'))

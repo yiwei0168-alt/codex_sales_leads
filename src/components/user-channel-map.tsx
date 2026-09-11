@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { primaryRole, type CompanyRecord } from "@/lib/domain";
+import { primaryRole,roleFamilies,type ChannelRole, type CompanyRecord } from "@/lib/domain";
 import type { RelationshipRecord } from "@/lib/sales/relationships";
 
 const statusLabels: Record<string,string> = { pending:"待核实", "user-confirmed":"用户确认", "user-rejected":"用户否定", "evidence-supported":"证据支持" };
@@ -20,14 +20,15 @@ export function UserChannelMap({country, companies,onSelect,onAdded}: {country:s
   const [analyzing,setAnalyzing]=useState(false);const [analysis,setAnalysis]=useState<{from:string;to:string;reason:string;suggestions:Array<{type:string;basis:string;quote:string;sourceUrl:string}>}|null>(null);
   const [newName,setNewName]=useState("");
   const [newWebsite,setNewWebsite]=useState("");
+  const [newRole,setNewRole]=useState<ChannelRole|"">("");
   const [adding,setAdding]=useState(false);
   async function addCompany(event:React.FormEvent) {
     event.preventDefault();setAdding(true);setError("");
     try {
-      const response=await fetch("/api/workspaces/current/companies",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({name:newName,website:newWebsite,country})});
+      const response=await fetch("/api/workspaces/current/companies",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({name:newName,website:newWebsite,country,role:newRole||undefined})});
       const result=await response.json();if(!response.ok)throw new Error(result.error);
       if(result.duplicate){setError("候选库中已存在同名或同域名公司；若不在当前图中，请切换至该公司所属国家查看。");if(companies.some(company=>company.id===result.externalId))onSelect(result.externalId);}
-      else {onAdded(result.company);setNewName("");setNewWebsite("");}
+      else {onAdded(result.company);setNewName("");setNewWebsite("");setNewRole("");}
     }catch(reason){setError(reason instanceof Error?reason.message:"添加失败");}finally{setAdding(false);}
   }
   const [version,setVersion] = useState(0);
@@ -61,6 +62,7 @@ export function UserChannelMap({country, companies,onSelect,onAdded}: {country:s
     <details className="panel"><summary>添加公司</summary><p>已有候选自动显示为节点；新公司保存为待核实，不自动付费搜索或评分。</p>
       <form onSubmit={addCompany}><label>公司名称<input required minLength={2} maxLength={200} value={newName} onChange={event=>setNewName(event.target.value)}/></label>
         <label>官网（可选）<input maxLength={400} value={newWebsite} onChange={event=>setNewWebsite(event.target.value)}/></label>
+        <label>主角色（可选，人工指定不代表已核实）<select value={newRole} onChange={event=>setNewRole(event.target.value as ChannelRole|"")}><option value="">尚未确定</option>{Object.values(roleFamilies).flat().map(value=><option key={value} value={value}>{value}</option>)}</select></label>
         <button disabled={adding}>{adding?"正在保存…":"加入当前国家"}</button>
       </form></details>
     <section className="panel">

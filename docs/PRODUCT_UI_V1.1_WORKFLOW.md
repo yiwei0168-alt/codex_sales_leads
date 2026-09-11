@@ -1,5 +1,11 @@
 # Product UI v1.1 implementation workflow
 
+## 2026-09-11 resumed: market counts and company correspondence
+
+Global overview counts active (confirmed/running/sending) tasks across all five shared sources without list pagination. Countries with active tasks but no candidates appear; unknown/mixed counts stay separate. Refresh is visible-only/non-overlapping at 30 seconds; unavailable statistics are not zero. Manual company creation exposes optional role, remains unverified and invokes no model.
+
+Company development records list locally imported, owner/company-associated correspondence in pages of twenty. The API fetches a twenty-first sentinel but decrypts only projected rows; body/ciphertext never enter the list response. Expansion uses the existing owner-protected mailbox API. No sync/learning/search is triggered. Association does not prove a shared thread. New read stages retain durable counts, zero model/search cost, latency/failure/discard and projection boundaries. 493 tests / 115 files, typecheck/build pass; lint zero errors/11 old warnings; real task aggregate SQL/RLS checks pass. Browser/SMTP acceptance remains outstanding.
+
 ## 2026-09-11 resumed: durable non-lead usage
 
 Intent and local company lookup now reserve/settle owner-isolated product operation records (migration045). Unknown costs and incomplete token usage remain null. Finished intent telemetry is persisted before downstream routing; failed final telemetry does not discard the paid result. The new read-only `/api/tasks/usage` reports these sources separately from lead search/model ledgers, not as a complete budget. It has no UI hard-limit claim. Pending work remains in the completion checklist.

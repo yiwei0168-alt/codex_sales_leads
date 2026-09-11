@@ -5,6 +5,7 @@ import type { CompanyContactDetailsDto } from "@/lib/sales/types";
 import { CompanyClassificationEditor } from "./company-classification-editor";
 import { opportunityStages } from "@/lib/sales/opportunity-stages";
 import { assessmentDisplay } from "@/lib/sales/assessment-display";
+import { CompanyCorrespondence } from "./company-correspondence";
 export function CompanyDetail({company,contactDetails,onClose,onUpdate,onEvidence,onOpenAssistant}:{company:CompanyRecord;contactDetails?:CompanyContactDetailsDto;onClose:()=>void;onUpdate:(patch:Partial<CompanyRecord>)=>void;onEvidence:(evidence:Evidence)=>void;onOpenAssistant:()=>void}){
   const [tab,setTab]=useState("overview");const [assessment,setAssessment]=useState<Record<string,unknown>|null>(null);const [loaded,setLoaded]=useState(false);const [error,setError]=useState("");
   useEffect(()=>{if(tab!=="score")return;const controller=new AbortController();
@@ -37,7 +38,7 @@ export function CompanyDetail({company,contactDetails,onClose,onUpdate,onEvidenc
         {assessment&&<><p>政策版本：{String(assessment.policyVersion??"历史版本未知")} · 评分时间：{String(assessment.assessedAt??"未知")}</p><dl>{assessmentDisplay(assessment.dimensions,assessment.policySnapshot).map(item=><div key={item.key}><dt>{item.label}</dt><dd>{item.score??"未知"} / {item.maximum??"历史上限未知"}</dd></div>)}</dl><details><summary>原始子项评分</summary><pre style={{whiteSpace:"pre-wrap"}}>{JSON.stringify(assessment.dimensions,null,2)}</pre></details><details><summary>评分政策及权重</summary><pre style={{whiteSpace:"pre-wrap"}}>{JSON.stringify(assessment.policySnapshot,null,2)}</pre></details></>}
         {company.evidence.map(item=><button className="evidence-card" key={item.id} onClick={()=>onEvidence(item)}>{item.claim} · {item.status} · {item.capturedAt}</button>)}
         <h3>风险与未知</h3>{[...company.risks,...company.unknowns].map((text,index)=><p key={index}>{text}</p>)}</>}
-      {tab==="development"&&<><p>生成或批准草稿不代表已发送。</p><label>开发阶段<select value={company.opportunityStage} onChange={event=>onUpdate({opportunityStage:event.target.value as CompanyRecord["opportunityStage"]})}><option value="Discovered">未加入开发</option>{opportunityStages.map(([value,label])=><option key={value} value={value}>{label}</option>)}</select></label>
+      {tab==="development"&&<><CompanyCorrespondence key={company.id} companyId={company.id}/><p>生成或批准草稿不代表已发送。</p><label>开发阶段<select value={company.opportunityStage} onChange={event=>onUpdate({opportunityStage:event.target.value as CompanyRecord["opportunityStage"]})}><option value="Discovered">未加入开发</option>{opportunityStages.map(([value,label])=><option key={value} value={value}>{label}</option>)}</select></label>
         <p>下一步：{company.nextAction||"未设置"} · {company.nextActionDueAt??"无到期日期"}</p><p>产品发信 {company.outreachSummary?.sentCount??0} 封 · 最近 {company.outreachSummary?.lastSentAt??"无记录"}</p>
         <button onClick={onOpenAssistant}>查看已有策略、邮件历史与跟进</button></>}
     </div><footer className="drawer-footer"><button onClick={onClose}>关闭</button><button className="primary-button" onClick={onOpenAssistant}>打开开发助手（不自动生成）</button></footer>

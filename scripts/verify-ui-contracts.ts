@@ -3,7 +3,7 @@ nextEnv.loadEnvConfig(process.cwd());
 const { query,tenantQuery,tenantTransaction,getPool }=await import("../src/lib/rag/db");
 const { getCurrentWorkspace }=await import("../src/lib/sales/repository");
 const { readTaskDetail }=await import("../src/lib/assistant/task-detail");
-const { taskFeedSql }=await import("../src/lib/assistant/task-feed");
+const { taskFeedSql,taskFeedSourceSql }=await import("../src/lib/assistant/task-feed");
 const { findProductActionCompanies }=await import("../src/lib/assistant/product-actions");
 try{
   const users=await query<{owner_id:string}>("select owner_id from market_workspace where slug='global-sales' and status='active' limit 1");
@@ -11,6 +11,7 @@ try{
   const workspace=await getCurrentWorkspace(userId);if(!workspace)throw new Error("Workspace failed");
   await findProductActionCompanies(userId,{kind:"library",companyQuery:"%_",countryCode:"GB",roles:["SI"]});
   const tasks=await tenantQuery<{id:string;kind:string}>(userId,taskFeedSql,[userId,'all','all','all',0]);
+  await tenantQuery(userId,`${taskFeedSourceSql} select country,count(*) from feed where status in ('running','confirmed','sending') group by country`,[userId]);
   for(const kind of ['search','contacts','draft','send']){const task=tasks.find(item=>item.kind===kind);if(task)await readTaskDetail(userId,task.id,kind);}
   await tenantQuery(userId,"select id from user_relationship_analysis where user_id=$1 limit 1",[userId]);
   await tenantQuery(userId,"select message_id from mailbox_message_company where user_id=$1 limit 1",[userId]);

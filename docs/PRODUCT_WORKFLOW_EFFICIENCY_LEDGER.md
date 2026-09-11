@@ -1,5 +1,11 @@
 # 产品工作流效率台账
 
+## Market overview / saved correspondence — 2026-09-11
+
+Market totals reuse the feed CTE, aggregate in SQL and project country/count instead of every task. Visible-only 30-second non-overlapping refresh retains durable aggregate usage. Correspondence uses 21/20 pagination, metadata-only response and no sentinel decryption; bodies load on explicit expansion using the existing API. No model, paid search or mailbox sync. Manual role selection uses existing validated zero-model mutation/audit. These are avoided calls, not measured cash savings.
+
+Remaining optimization: UNION query-plan/index analysis, encrypted subject-only metadata to avoid full-content decryption for titles, bounded body reuse on reopening, and durable telemetry for original-body reads. DB/subscription costs remain unallocated; zero denotes model/search calls only. 493 tests pass including auth, no body leakage, sentinel omission and >50 active task counts.
+
 ## Durable intent and local lookup telemetry — 2026-09-11 resume
 
 Migration 045 adds force-RLS owner-scoped product_operation_metric for operations before a workspace exists. Intent reserves an unsettled row before Kimi, then saves input characters/items, valid/router-used output, reported token/cache usage, per-call attempts/retries, latency and failed-call discard reasons. Missing aggregate token/cash totals remain null; known per-call usage is retained. Prompts and provider error strings are excluded. A crash remains running/unsettled. Final metric-write failure warns without failing the completed paid result or replaying the model. Local lookup records fetched/projected counts with zero model/search cost and a projection-not-user-selection boundary.
