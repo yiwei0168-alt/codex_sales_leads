@@ -1,5 +1,11 @@
 # 产品工作流效率台账
 
+## Local actions / follow-up reuse pause checkpoint — 2026-09-11
+
+Intent remains a routine Kimi multi-turn call (complex-task escalation unchanged). Local company actions stop before RAG/web search; SQL projects 21 rows for 20 choices. Task diagnostics use 51/50 pagination. Saved strategy comparison is a local hash. Follow-up omits duplicate parent text and caps same-contact incoming correspondence at four 2,000-character excerpts from 50 rows. The latest ten encrypted drafts can be retrieved without new inference. Draft use is linked durably at owner-validated send reservation, not successful delivery; existing send receipt metrics remain authoritative.
+
+Generation audits store packet item counts, model metrics, valid output and awaiting-review state. Usage events link generation ID, input/output/used counts, token/API-credit zeros and the reservation boundary. Unknown cash cost stays unknown. This is avoided redundant work, not a measured savings percentage. Remaining: durable intent/local-lookup/read aggregate metrics and failures, relationship proposal adoption, failed-call costs and later Agent consumption rather than API projection. No paid benchmark was run.
+
 ## Relationship/knowledge/mail-link completion — 2026-09-11
 
 Relationship analysis is explicit, evidence-only and bounded to two proposals. A durable tenant/pair/evidence/model/prompt cache prevents concurrent or unchanged paid repetition; rejected types are suppressed by evidence fingerprint. Analysis rows retain aggregate token usage, cash cost when supplied (otherwise null), API-credit zeros, latency, retries, validated outputs, withheld/unselected counts and downstream awaiting-user state. Suggestions are not marked used merely because generated. User relationship saves retain their own committed audit. Remaining optimization: link a chosen proposal ID to the save event to measure proposal adoption precisely; recovery of crashed reservations should be explicit and not silently billed again.

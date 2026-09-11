@@ -21,6 +21,11 @@ function dependencies(intentPlan: IntentPlan): AssistantGraphDependencies {
 }
 
 describe("assistant workflow graph", () => {
+  it("opens saved-company actions without RAG or external search",async()=>{
+    const deps=dependencies(plan({intent:"product-action",productAction:{kind:"follow-up",companyQuery:"Example"}}));
+    const state=await buildAssistantWorkflowGraph(deps).invoke({userId:"user",content:"跟进 Example",history:[],intent:"general",reply:"",warnings:[]});
+    expect(state.intent).toBe("product-action");expect(deps.answerKnowledge).not.toHaveBeenCalled();expect(deps.searchExternal).not.toHaveBeenCalled();
+  });
   it("routes a Kimi lead plan to confirmation without retrieval", async () => {
     const deps = dependencies(plan({
       intent: "lead-search",

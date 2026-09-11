@@ -2,19 +2,23 @@ import { requireApiSession } from "@/lib/auth/session";
 import { runDevelopmentStrategyAgent } from "@/lib/outreach/graph";
 import { tenantQuery } from "@/lib/rag/db";
 import type { DevelopmentStrategyDto } from "@/lib/outreach/types";
+import type { CompanyRecord } from "@/lib/domain";
+import { developmentContextVersion } from "@/lib/outreach/context-version";
 
 export async function GET(request:Request){
   const session=await requireApiSession();if(session instanceof Response)return session;
   const company=new URL(request.url).searchParams.get("company")??"";
   if(!company||company.length>180)return Response.json({error:"公司参数无效"},{status:400});
-  const rows=await tenantQuery<{result:DevelopmentStrategyDto}>(session.userId,`select jsonb_build_object(
+  const rows=await tenantQuery<{result:DevelopmentStrategyDto;context_version:string|null;record:CompanyRecord}>(session.userId,`select d.input_snapshot->>'contextVersion' as context_version,
+    c.record || wc.user_overrides || jsonb_build_object('accountTier',wc.account_tier,'selectedPathId',wc.selected_path_id,'selectedCooperationPath',wc.selected_path_type,'supplyModel',wc.supply_model) as record,jsonb_build_object(
     'id',d.id,'companyExternalId',c.external_id,'strategy',d.strategy,'status',d.status,'revision',d.revision,
     'draft',jsonb_build_object('language',d.language,'subjectOptions',d.subject_options,'body',coalesce(d.manual_body,d.body),'wordCount',0,'placeholders','[]'::jsonb),
     'evidenceIds',d.evidence_ids,'knowledgeIds',d.knowledge_chunk_ids,'templateIds',d.template_ids,'warnings',d.warnings,
     'model',d.model,'promptVersion',d.prompt_version,'generationMetrics',d.generation_metrics,'createdAt',d.created_at) as result
-    from outreach_draft d join sales_company c on c.id=d.company_id where d.user_id=$1 and c.external_id=$2
+    from outreach_draft d join sales_company c on c.id=d.company_id join workspace_company wc on wc.company_id=d.company_id and wc.workspace_id=d.workspace_id where d.user_id=$1 and c.external_id=$2
     and d.status in ('generated','approved','sent') order by d.updated_at desc,d.id desc limit 1`,[session.userId,company]);
   const result=rows[0]?.result??null;if(result)result.draft.wordCount=result.draft.body.split(/\s+/).filter(Boolean).length;
+  if(result)result.contextReview=!rows[0].context_version?"legacy-unknown":rows[0].context_version===developmentContextVersion(rows[0].record)?"current":"changed";
   return Response.json({result},{headers:{"Cache-Control":"private, no-store"}});
 }
 

@@ -104,7 +104,7 @@ function companyRecord(
     reachability: 50,
     evidenceConfidence: assessment.confidence,
     summary: assessment.summary,
-    opportunityStage: assessment.totalScore >= 80 ? "Priority" : "Qualified",
+    opportunityStage: "Discovered", // Qualification is not consent to join the user's development shortlist.
     priority: assessment.totalScore >= 80 ? "High" : assessment.totalScore >= 65 ? "Medium" : "Low",
     owner: "Workspace Owner",
     nextAction: "Review the evidence and decide whether to initiate the optional contact-enrichment workflow.",

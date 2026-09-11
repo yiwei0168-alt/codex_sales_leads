@@ -5,6 +5,12 @@ import { planAssistantRequest } from "./intent-agent";
 afterEach(() => vi.unstubAllEnvs());
 
 describe("Kimi intent and planning agent", () => {
+  it("uses Kimi multi-turn routing for saved-library actions",async()=>{
+    vi.stubEnv("KIMI_API_KEY","test-key");
+    const fetchMock=vi.fn().mockResolvedValue(new Response(JSON.stringify({choices:[{message:{content:JSON.stringify({intent:"product_action",confidence:0.95,product_action:{kind:"follow-up",company_query:"Example",country_code:"GB"}})}}]})));
+    const result=await planAssistantRequest("给它写跟进",[{role:"user",content:"Example 公司"}],fetchMock);
+    expect(result).toMatchObject({intent:"product-action",productAction:{kind:"follow-up",companyQuery:"Example",countryCode:"GB"},externalQuestions:[]});expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
   it("passes recent turns and returns a validated revised lead plan", async () => {
     vi.stubEnv("KIMI_API_KEY", "test-key");
     const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({

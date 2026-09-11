@@ -95,6 +95,7 @@ export interface DevelopmentGenerationMetrics {
 }
 
 export interface DevelopmentStrategyDto {
+  contextReview?: "current" | "changed" | "legacy-unknown";
   id: string;
   companyExternalId: string;
   recipient?: OutreachRecipient;

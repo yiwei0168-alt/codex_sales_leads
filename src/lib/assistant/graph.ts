@@ -61,6 +61,7 @@ export function buildAssistantWorkflowGraph(dependencies: AssistantGraphDependen
       return { intent: intentPlan.intent, intentPlan, plan: intentPlan.leadPlan, reply: intentPlan.reply ?? "", warnings: intentPlan.warnings };
     })
     .addNode("resolve_request", async (state) => {
+      if(state.intent==="product-action")return {reply:"正在查询当前账号已保存的候选公司；没有添加搜索或生成邮件。"};
       if (state.intent === "lead-search" && state.plan) {
         const objective = state.plan.objective === "new-market" ? "新市场并行开发" : "已有分销体系增长";
         return { reply: `我已生成 ${state.plan.countryName} 的销售线索搜索计划。目标为 ${state.plan.targetCount} 家，采用“${objective}”模式。确认后，LangGraph 会先执行产品、Cudy 公司与行业知识 RAG；其中产品知识通过向量、全文与结构化事实三路融合并进行置信度校验，再生成 Market Playbook、按候选类别调用混合搜索与轻量门禁；Tavily 仅用于后续定向补证，最后由独立评分 Agent 复核后保存。你也可以直接回复修改国家、数量或渠道类型。` };

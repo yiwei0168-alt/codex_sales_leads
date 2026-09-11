@@ -394,7 +394,7 @@ export function buildLeadWorkflowGraph(
         warnings: state.warnings,
       });
       await phase(dependencies, state, "completed");
-      return { phase: "completed" as const, result, stageMetrics };
+      return { phase: "completed" as const, result:{...result,targetCompletionReason:state.targetCompletionReason}, stageMetrics };
     })
     .addEdge(START, "retrieve_knowledge")
     .addEdge("retrieve_knowledge", "build_playbook")

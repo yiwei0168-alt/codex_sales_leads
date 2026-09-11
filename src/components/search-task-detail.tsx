@@ -6,6 +6,7 @@ import { TaskRunControls } from "./task-run-controls";
 export function SearchTaskDetail({ action }: { action: AssistantActionDto }) {
   const counts = taskCounts(action.result);
   const partial = action.status === "completed" && counts.accepted !== null && counts.accepted < action.payload.targetCount;
+  const stopReason=({"target-met":"目标已满足","confirmed-exhaustion":"新增有效候选持续不足，已达到停滞结束条件","provider-unavailable":"搜索服务不可用","maximum-rounds":"达到搜索轮次上限"} as Record<string,string>)[String(action.result.targetCompletionReason)];
   return <section className="panel">
     <h2>{action.payload.countryName} · 销售线索搜索</h2>
     <p>{partial ? "运行结束，目标未填满" : taskStatusLabels[action.status]} · 目标 {action.payload.targetCount} 家</p>
@@ -16,7 +17,8 @@ export function SearchTaskDetail({ action }: { action: AssistantActionDto }) {
       <div key={label}><dt>{label}</dt><dd>{value ?? "尚无记录"}</dd></div>)}</dl>
     <p>各阶段数量不能相加；合格不等于已保存。额度不等于美元总成本。</p>
     {action.errorMessage && <p role="alert">{action.errorMessage}</p>}
-    {partial && <p>缺口 {Math.max(0,action.payload.targetCount-(counts.accepted ?? 0))} 家；具体停止原因需结合运行日志核实。</p>}
+    {stopReason&&<p>停止原因：{stopReason}</p>}
+    {partial && <p>缺口 {Math.max(0,action.payload.targetCount-(counts.accepted ?? 0))} 家；{stopReason??"历史记录未保存结构化停止原因，请展开检查点核实。"}</p>}
     <a href={marketHref(action.payload.countryCode,"leads")}>查看该国家候选库（含其他任务结果）</a>
     <details><summary>原始任务要求</summary><p style={{whiteSpace:"pre-wrap"}}>{action.payload.userRequest}</p></details>
   </section>;

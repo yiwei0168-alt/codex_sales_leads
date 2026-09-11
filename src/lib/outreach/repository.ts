@@ -2,6 +2,7 @@ import { tenantQuery, tenantTransaction } from "@/lib/rag/db";
 import { embedTexts } from "@/lib/rag/openai-provider";
 import type { CompanyRecord } from "@/lib/domain";
 import { listRelationships } from "@/lib/sales/relationships";
+import { developmentContextVersion } from "./context-version";
 import type { LeadDevelopmentHandoff } from "@/lib/leads/workflow/types";
 import { insertFeedbackMemory, prepareFeedbackMemory, searchOutreachKnowledge } from "./knowledge-repository";
 import type {
@@ -149,7 +150,7 @@ export async function persistDevelopmentDraft(
     [context.userId, context.workspaceId, context.companyId, context.recipient?.contactId ?? null,
       context.searchRunId ?? null, result.draft.language, JSON.stringify(result.strategy), result.draft.subjectOptions,
       result.draft.body, result.evidenceIds, result.knowledgeIds, result.templateIds,
-      JSON.stringify(inputSnapshot), JSON.stringify(context.handoff ?? {}), result.model, result.promptVersion, result.warnings,
+      JSON.stringify({...inputSnapshot,contextVersion:developmentContextVersion(context.company)}), JSON.stringify(context.handoff ?? {}), result.model, result.promptVersion, result.warnings,
       JSON.stringify(result.generationMetrics)]);
   return { ...result, id: rows[0].id, companyExternalId: context.company.id, status: "generated",
     revision: rows[0].revision, createdAt: rows[0].created_at };

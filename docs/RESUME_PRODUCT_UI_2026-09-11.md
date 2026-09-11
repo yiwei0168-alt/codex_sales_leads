@@ -1,0 +1,53 @@
+# 产品开发恢复节点 — 2026-09-11
+
+## 状态与指令
+
+用户最新指令：在适合节点暂停并保存上下文。此阶段验证、提交、推送后停止；下次「继续 / resume」才恢复。**所有剩余代码尚未完成。** 当前任务是已确认PRD v1.1开发，不是重启实验。实验搜索/评分策略更改须用户另行同意才能进入真实产品。
+
+目录 `F:\codex_sales_leads`，PowerShell。本地分支 `experiment/search-e2e-colombia-v2`；已验证提交使用 `git push origin HEAD:main` 同步 `origin/main`。本轮已推送 `22cea8b`（持久UI/缓存/checkpoint）、`6ae344a`（邮件管理/任务详情）、`f8106d3`（知识版本/邮件关联/关系分析）。本文所在提交保存最新后续代码，最终哈希用 `git log -5 --oneline` 获取。
+
+## 已保存实现
+
+1. 国家线索/关系/机会页、资格分区与高级筛选、批量操作、公司三页签、历史评分/证据、角色/等级/路径人工覆盖和私有记忆、自动刷新与保存冲突保护。
+2. 关系维护、聚合/缩放/聚焦、一年提醒、主动存量证据分析。最多两条建议、精确引用、同输入缓存、无新证据不再建议用户否定类型。
+3. 私有/共享/公共证据库，上传冲突保护，精确新内容版本及明确标注的旧分块重建版本。个人记忆CRUD/启停/审计；邮箱范围同步、断开、本地邮件删除和知识独立；无歧义域名关联与人工确认。
+4. 单封SMTP明确确认、幂等快照、不明发送人工核实；时间/历史分页。策略只读复用；业务上下文fingerprint变化或旧版未知提示，不自动收费生成。
+5. 跟进原邮件 + 有界祖先 + 私有风格 + 有界同联系人来信；不把同联系人来信冒充同线程回复、不自动同步邮箱。加密草稿审计可重新载入最近十版；采用事件链接发送预留，不冒充投递成功。
+6. 五类任务共同详情；搜索/联系人50条分页；安全checkpoint暂停恢复不清空结果/成本；进度不是正在调用中的实时账单。
+7. Kimi prompt v1.2识别库内查询/策略/跟进入口，tenant SQL返回最多20个公司选择；无重复RAG/网页搜索；打开已有工作流不自动发信/生成。助理任务卡用共同抽屉。
+8. 新搜索入库默认Discovered，不因高分自动进入开发名单；没有批量改动历史公司。新完成结果保留结构化停止原因。
+
+## 验证与数据库
+
+- 479 tests / 110 files passed；TypeScript、production build通过；Lint发现的effect同步setState已修复并复查。已有11个warnings主要来自旧实验/评分代码。
+- `node scripts/run-tsx.cjs scripts/verify-ui-contracts.ts`：真实应用角色读取工作区、任务与本地公司查询；临时缓存/关系插入验证owner可见、其他tenant不可见并完全回滚。只输出聚合PASS。
+- 迁移036–044已应用。此最新入口/跟进阶段无新迁移。044新版本保留精确原文，legacy reconstructed不能冒充原件。
+- 未调用付费搜索/模型、未真实发送或删除用户邮件。未做已登录视觉验收。浏览器控制无可用表面，Playwright/Puppeteer未安装。build不等于视觉验收。
+
+## 下一次优先项
+
+1. 产品搜索预算输入/自然语言修改/计费预留/阶段门禁。LeadSearchPlan目前**没有预算字段**，不能仅加输入框就声称美元硬上限生效。复用workflow_model_usage/stage_metric；未知费用不可按零。
+2. 持久输入/有效/下游采用/费用/耗时/重试/弃用原因/机会遥测：UI read多为console；plannerCalls未完整持久化；生成失败任务未统一；关系建议缺精确采用ID链路。
+3. 任务新增/更新/错类转移统计，部分完成续搜与费用说明。completed checkpoint幂等复用不是新补满轮次。
+4. 全球运行任务数；公司开发页关联往来；手工公司可选角色；详情JSON需紧凑人类可读摘要。
+5. 策略fingerprint未包含关系/私有知识版本，页面内公司修改后提示刷新时机待复核；旧版为legacy-unknown。知识版本按内容hash，不保证同内容不同标题独立版本。
+6. 审核多国家membership与重搜人工覆盖：saveCompany按全局domain定位，manually_edited阻止整行更新可能使评分run关联不刷新。不可丢失人工偏好/历史市场。缓存running崩溃尚无安全人工核实清理入口；相同failed/unknown不自动再收费。
+7. 响应式/键盘焦点/空错状态/鉴权集成验收；真实SMTP仅用用户指定测试收件人，不向客户试发。
+
+## 恢复操作
+
+```powershell
+git status --short
+git log -5 --oneline
+Get-Content -Encoding utf8 docs/UI_V1.1_COMPLETION_CHECKLIST.md
+Get-Content -Encoding utf8 Network_Channel_Copilot_PRD_v1.1.md
+npm.cmd run typecheck
+npm.cmd test
+npm.cmd run lint
+npm.cmd run build
+node scripts/run-tsx.cjs scripts/verify-ui-contracts.ts
+```
+
+写Next代码前读 `node_modules/next/dist/docs/` 相关指南。编辑用apply_patch；无明确要求不用子Agent。每个验证阶段同更PRD/工作流/效率台账，检查diff再提交推送。不得提交env/key/依赖目录。
+
+原有未跟踪实验产物（2026-08-26 / 2026-08-30 runs下evaluation、assessment、fresh-evidence等JSON）保留、不提交、不删除、不重跑。不输出凭证/用户邮件内容。本轮未启动新后台付费执行，暂停后不自动继续。

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { TaskDetailView } from "./task-detail-view";
 import type {
   AssistantActionDto, AssistantConversationDto, AssistantConversationSummary, AssistantMessageDto,
 } from "@/lib/assistant/types";
@@ -16,7 +17,9 @@ function actionForMessage(message: AssistantMessageDto, actions: AssistantAction
   return message.metadata.actionId ? actions.find((action) => action.id === message.metadata.actionId) : undefined;
 }
 
-export function AssistantHome({ userName, onOpenResults }: { userName: string; onOpenResults: (countryCode: string) => void }) {
+export function AssistantHome({ userName, onOpenResults,onOpenCompany }: { userName: string; onOpenResults: (countryCode: string) => void;onOpenCompany:(id:string,kind:"library"|"strategy"|"follow-up")=>void }) {
+  const [taskId,setTaskId]=useState<string>();
+  const conversationRequest=useRef(0);
   const [conversations, setConversations] = useState<AssistantConversationSummary[]>([]);
   const [activeId, setActiveId] = useState<string>();
   const [conversation, setConversation] = useState<AssistantConversationDto>();
@@ -37,11 +40,12 @@ export function AssistantHome({ userName, onOpenResults }: { userName: string; o
   }
 
   async function openConversation(id: string) {
+    const requestId=++conversationRequest.current;
     setActiveId(id); setError("");
     const response = await fetch(`/api/assistant/conversations/${id}`, { cache: "no-store" });
     const body = await response.json() as { conversation?: AssistantConversationDto; error?: string };
     if (!response.ok || !body.conversation) throw new Error(body.error ?? "对话读取失败");
-    setConversation(body.conversation);
+    if(requestId===conversationRequest.current)setConversation(body.conversation);
   }
 
   useEffect(() => {
@@ -72,14 +76,16 @@ export function AssistantHome({ userName, onOpenResults }: { userName: string; o
   useEffect(() => {
     if (!activeId || !workflowActive) return;
     const controller = new AbortController();
+    let pending=false;
     const timer = window.setInterval(() => {
+      if(pending||document.hidden)return;pending=true;
       void fetch(`/api/assistant/conversations/${activeId}`, { cache: "no-store", signal: controller.signal })
         .then(async (response) => {
           const body = await response.json() as { conversation?: AssistantConversationDto; error?: string };
           if (!response.ok || !body.conversation) throw new Error(body.error ?? "工作流状态读取失败");
-          setConversation(body.conversation);
+          if(!controller.signal.aborted)setConversation(body.conversation);
         })
-        .catch((reason: Error) => { if (reason.name !== "AbortError") setError(reason.message); });
+        .catch((reason: Error) => { if (reason.name !== "AbortError") setError(reason.message); }).finally(()=>{pending=false;});
     }, 4_000);
     return () => { controller.abort(); window.clearInterval(timer); };
   }, [activeId, workflowActive]);
@@ -104,6 +110,7 @@ export function AssistantHome({ userName, onOpenResults }: { userName: string; o
   async function submit(event: FormEvent) { event.preventDefault(); await send(input); }
 
   async function newConversation() {
+    conversationRequest.current++;
     setActiveId(undefined); setConversation(undefined); setInput(""); setError("");
   }
 
@@ -174,6 +181,7 @@ export function AssistantHome({ userName, onOpenResults }: { userName: string; o
             <div className="ai-message-avatar">{message.role === "user" ? userName.slice(0, 1).toUpperCase() : "✦"}</div>
             <div className="ai-message-body"><div className="ai-message-meta"><strong>{message.role === "user" ? userName : "Network Copilot"}</strong><span>{new Date(message.createdAt).toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" })}</span></div>
               <div className="ai-message-copy">{message.content}</div>
+              {message.metadata.productAction&&<div className="ai-action-card">{message.metadata.productAction.companies.map(company=><button key={company.id} onClick={()=>onOpenCompany(company.id,message.metadata.productAction!.kind)}>{company.name} · {company.countryCode} · {message.metadata.productAction!.kind==="library"?"公司详情":message.metadata.productAction!.kind==="strategy"?"开发策略":"邮件与跟进"}</button>)}{message.metadata.productAction.hasMore&&<p>仅列出最近 20 家，请补充公司名称或市场缩小范围。</p>}</div>}
               {action && <div className={`ai-action-card ${action.status}`}>
                 <div className="ai-action-head"><div><span>{action.payload.countryCode}</span><strong>{action.payload.countryName} 销售线索计划</strong></div><em>{action.status === "proposed" ? "等待确认" : action.status === "completed" ? "已完成" : action.status === "failed" ? "失败" : "执行中"}</em></div>
                 <dl><div><dt>开发模式</dt><dd>{action.payload.objective === "new-market" ? "新市场并行开发" : "已有分销体系增长"}</dd></div><div><dt>目标数量</dt><dd>{action.payload.targetCount} 家</dd></div><div><dt>渠道角色</dt><dd>{action.payload.roles.join(" · ")}</dd></div></dl>
@@ -181,7 +189,7 @@ export function AssistantHome({ userName, onOpenResults }: { userName: string; o
                 {action.status === "failed" && <button disabled={confirmingId === action.id} onClick={() => void confirmSearch(action.id)}>{confirmingId === action.id ? "正在恢复工作流…" : "从 checkpoint 重试"}</button>}
                 {action.status === "completed" && <button onClick={() => onOpenResults(action.payload.countryCode)}>查看 {action.payload.countryName} 结果</button>}
                 {action.errorMessage && <p>{action.errorMessage}</p>}
-                <a href={`/tasks/${action.id}`}>查看任务详情</a>
+                <button onClick={()=>setTaskId(action.id)}>查看任务详情</button>
               </div>}
               {(message.metadata.citations?.length ?? 0) > 0 && <div className="ai-citations"><strong>知识库证据</strong>{message.metadata.citations?.map((citation) => <a key={citation.chunkId} href={citation.sourceUrl || undefined} target="_blank" rel="noreferrer"><span>[KB:{citation.chunkId.slice(0, 8)}]</span><b>{citation.documentTitle}</b><em>{Math.round(citation.score * 100)}%</em></a>)}</div>}
               {(message.metadata.webCitations?.length ?? 0) > 0 && <div className="ai-citations"><strong>外部网页证据</strong>{message.metadata.webCitations?.map((citation, index) => <a key={citation.url} href={citation.url} target="_blank" rel="noreferrer"><span>[WEB:{index + 1}]</span><b>{citation.title}</b></a>)}</div>}
@@ -194,5 +202,6 @@ export function AssistantHome({ userName, onOpenResults }: { userName: string; o
       {error && <div className="ai-chat-error">{error}</div>}
       <form className="ai-composer" onSubmit={submit}><textarea value={input} onChange={(event) => setInput(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); void send(input); } }} placeholder="询问产品、结合网页调研，或描述销售线索目标…" rows={1}/><div><span>支持多轮纠正 · 线索搜索执行前需确认</span><button disabled={busy || !input.trim()} aria-label="发送">↑</button></div></form>
     </section>
+    {taskId&&<TaskDetailView key={taskId} id={taskId} kind="search" onClose={()=>setTaskId(undefined)}/>}
   </div>;
 }
