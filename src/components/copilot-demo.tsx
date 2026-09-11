@@ -162,7 +162,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
       });
       if (!response.ok) throw new Error("保存失败");
       const result = await response.json() as { company: CompanyRecord };
-      setCompanies((items) => items.map((item) => item.id === id ? result.company : item));
+      setCompanies((items) => items.map((item) => item.id === id ? {...item,...result.company} : item));
       setFailedEdit(null);
       setSaveState("saved");
       window.setTimeout(() => {if(!pendingSaves.current)setSaveState("idle");}, 1600);

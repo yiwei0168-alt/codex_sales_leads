@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { PersonalMemory } from "./personal-memory";
+import { KnowledgeLibrary } from "./knowledge-library";
 import type { KnowledgeBaseType, KnowledgeStats, RagAnswer } from "@/lib/rag/types";
 
 const labels: Record<KnowledgeBaseType, { title: string; eyebrow: string; description: string }> = {
@@ -113,13 +114,8 @@ export function KnowledgeBase() {
         : uploadType === "company"
           ? `company:cudy-technology:${fileSlug}`
           : `industry:${fileSlug}`;
-      const response = await fetch("/api/knowledge/documents", {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          ...(adminToken ? { authorization: `Bearer ${adminToken}` } : {}),
-        },
-        body: JSON.stringify({
+      setUploadMessage("正在检查版本并生成检索片段…");
+      const payload={
           collection: uploadType, externalId, title: uploadTitle.trim(), content,
           sourceUrl: uploadSource.trim() || undefined,
           sourceType: uploadSource.trim() ? "user-upload-with-source" : "user-upload-internal",
@@ -129,9 +125,14 @@ export function KnowledgeBase() {
           companyId: uploadType === "company" ? "cudy-technology" : undefined,
           productId: uploadType === "product" ? entityId.trim() : undefined,
           metadata: { originalFilename: uploadFile.name, uploadedBy: "knowledge-admin-ui" },
-        }),
-      });
-      const body = await response.json() as { chunks?: number; error?: string };
+        };
+      async function submit(expectedContentHash?:string){return fetch("/api/knowledge/documents",{method:"POST",headers:{"content-type":"application/json",...(adminToken?{authorization:`Bearer ${adminToken}`}:{})},body:JSON.stringify({...payload,expectedContentHash})});}
+      let response=await submit();
+      let body=await response.json() as {chunks?:number;error?:string;conflict?:boolean;expectedContentHash?:string};
+      if(response.status===409&&body.conflict&&body.expectedContentHash){
+        if(!window.confirm("同名知识存在不同内容，覆盖会替换其检索片段。确认用当前上传内容更新吗？")){setUploadMessage("已取消覆盖，原知识未改变。");return;}
+        setUploadMessage("正在保存已确认的新版本…");response=await submit(body.expectedContentHash);body=await response.json();
+      }
       if (!response.ok) throw new Error(body.error ?? "上传失败");
       setUploadMessage(`上传成功：已生成 ${body.chunks ?? 0} 个知识片段。`);
       setUploadFile(null); setUploadTitle(""); setUploadSource(""); setEntityId("");
@@ -145,6 +146,7 @@ export function KnowledgeBase() {
 
   return <div className="knowledge-layout">
     <PersonalMemory />
+    <KnowledgeLibrary />
     {!loading && !stats.configured && <div className="kb-config-banner"><span>!</span><div><strong>RAG 尚未完成运行配置</strong><p>{stats.error ?? "请配置 PostgreSQL、pgvector 与 OpenAI API Key。"}</p></div><code>docker compose up -d → npm run db:migrate → npm run kb:seed</code></div>}
 
     <section className="kb-stats-grid">

@@ -1,5 +1,7 @@
 import { z } from "zod";
 import { tenantQuery, tenantTransaction } from "@/lib/rag/db";
+import type { CompanyRecord } from "@/lib/domain";
+import { relationshipEvidenceFingerprint } from "./relationship-evidence";
 
 export const relationshipSchema = z.object({
   country: z.string().regex(/^[A-Z]{2}$/),
@@ -29,8 +31,8 @@ export async function listRelationships(userId: string, country: string): Promis
 export async function saveRelationship(userId: string, input: z.infer<typeof relationshipSchema>) {
   const started = Date.now();
   return tenantTransaction(userId, async (client) => {
-    const nodes = await client.query<{ id: string; external_id: string; workspace_id: string }>(
-      `select c.id,c.external_id,w.id as workspace_id from sales_company c
+    const nodes = await client.query<{ id: string; external_id: string; workspace_id: string;record:CompanyRecord }>(
+      `select c.id,c.external_id,w.id as workspace_id,c.record from sales_company c
        join workspace_company wc on wc.company_id=c.id join market_workspace w on w.id=wc.workspace_id
        where w.owner_id=$1 and w.slug='global-sales' and c.external_id=any($2::text[])
          and coalesce(wc.market_country_code,c.country_code)=$3`, [userId, [input.from,input.to],input.country]);
@@ -47,6 +49,7 @@ export async function saveRelationship(userId: string, input: z.infer<typeof rel
        do update set status=excluded.status,basis=excluded.basis,source_url=excluded.source_url,updated_at=now() returning id`,
       [userId,from.workspace_id,input.country,from.id,to.id,input.type,input.status,input.basis,input.sourceUrl]);
     const id = result.rows[0].id;
+    if(input.status==='user-rejected')await client.query("update user_channel_relationship set rejected_evidence_hash=$2 where id=$1",[id,relationshipEvidenceFingerprint(nodes.rows.map(row=>row.record))]);
     await client.query(`insert into workspace_audit_event(workspace_id,actor_user_id,entity_type,entity_id,action,changes)
       values($1,$2,'relationship',$3,'relationship.updated',$4)`, [from.workspace_id,userId,id,JSON.stringify({
       before: previous.rows[0] ?? null, after: input,

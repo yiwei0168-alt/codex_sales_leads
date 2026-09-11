@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState, type FormEvent } from "react";
+import { MailCompanyLink } from "./mail-company-link";
 
 interface Connection {
   id: string;
@@ -100,19 +101,21 @@ function addressLabel(item: { name?: string; address: string }): string {
   return item.name ? `${item.name} <${item.address}>` : item.address;
 }
 
-function MailboxMessageDisclosure({ messageId }: { messageId: string }) {
+function MailboxMessageDisclosure({ messageId,onChanged }: { messageId: string;onChanged:()=>void }) {
   const [content, setContent] = useState<MailboxMessageContent | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [companyLink,setCompanyLink]=useState<{companyId?:string;companyName?:string;source?:string}>();
 
   async function load() {
     if (content || loading) return;
     setLoading(true); setError("");
     try {
       const response = await fetch(`/api/mailbox/messages/${messageId}`, { cache: "no-store" });
-      const body = await response.json() as { message?: MailboxMessageContent; error?: string };
+      const body = await response.json() as { message?: MailboxMessageContent; error?: string;companyLink?:{companyId?:string;companyName?:string;source?:string} };
       if (!response.ok || !body.message) throw new Error(body.error ?? "邮件原文读取失败");
       setContent(body.message);
+      setCompanyLink(body.companyLink);
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "邮件原文读取失败");
     } finally { setLoading(false); }
@@ -131,6 +134,7 @@ function MailboxMessageDisclosure({ messageId }: { messageId: string }) {
         {content.sentAt && <div><dt>时间</dt><dd>{new Date(content.sentAt).toLocaleString("zh-CN")}</dd></div>}
       </dl>
       <pre>{content.bodyText || "无正文"}</pre>
+      <MailCompanyLink messageId={messageId} current={companyLink} onChanged={onChanged}/>
     </div>}
   </details>;
 }
@@ -354,7 +358,7 @@ export function MailboxIntegration() {
             </div>
             <p>{item.excerpt || "无正文预览"}</p>
             <div className="mailbox-screening-reasons">{item.screening_reasons.map((reason) => <span key={reason}>{reason}</span>)}{item.thread_key && <span>线程 {item.thread_key.slice(0, 8)}</span>}</div>
-            <MailboxMessageDisclosure messageId={item.id} />
+            <MailboxMessageDisclosure messageId={item.id} onChanged={()=>void refresh()} />
             {(item.learning_status === "pending" || item.learning_status === "failed") && <div className="mailbox-message-actions">
               <button className="secondary-button" disabled={learningId === item.id} onClick={() => decideMessage(item.id, "skip")}>跳过，不外发</button>
               <button className="primary-button" disabled={learningId === item.id || status?.kimiConfigured === false} onClick={() => decideMessage(item.id, "authorize")}>{learningId === item.id ? "处理中…" : "同意脱敏后交给 Kimi"}</button>
@@ -382,7 +386,7 @@ export function MailboxIntegration() {
           <div className="mailbox-candidate-head"><span className="tag neutral">{{ "company-policy": "公司政策", "customer-signal": "客户信号", "email-template": "邮件模板" }[candidate.kind]}</span><small>{candidate.created_at.slice(0, 10)}</small></div>
           <strong>{candidate.title || "无主题邮件"}</strong><p>{candidate.excerpt}</p>
           <details className="mailbox-disclosure"><summary>展开完整提取内容</summary><div className="mailbox-artifact-content">{candidate.content}</div></details>
-          <MailboxMessageDisclosure messageId={candidate.message_id} />
+          <MailboxMessageDisclosure messageId={candidate.message_id} onChanged={()=>void refresh()} />
           <div className="mailbox-ai-meta"><span>{candidate.model ?? "kimi-k3"}</span>{candidate.confidence !== null && <span>置信度 {Math.round(candidate.confidence * 100)}%</span>}</div>
           {candidate.rationale && <small className="mailbox-rationale">{candidate.rationale}</small>}
           <div><button className="secondary-button" disabled={reviewingId === candidate.id} onClick={() => review(candidate.id, candidate.kind, "rejected")}>拒绝</button><button className="primary-button" disabled={reviewingId === candidate.id} onClick={() => review(candidate.id, candidate.kind, "approved")}>{reviewingId === candidate.id ? "处理中…" : "批准进入私有知识库"}</button></div>

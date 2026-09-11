@@ -1,5 +1,11 @@
 # 产品工作流效率台账
 
+## Relationship/knowledge/mail-link completion — 2026-09-11
+
+Relationship analysis is explicit, evidence-only and bounded to two proposals. A durable tenant/pair/evidence/model/prompt cache prevents concurrent or unchanged paid repetition; rejected types are suppressed by evidence fingerprint. Analysis rows retain aggregate token usage, cash cost when supplied (otherwise null), API-credit zeros, latency, retries, validated outputs, withheld/unselected counts and downstream awaiting-user state. Suggestions are not marked used merely because generated. User relationship saves retain their own committed audit. Remaining optimization: link a chosen proposal ID to the save event to measure proposal adoption precisely; recovery of crashed reservations should be explicit and not silently billed again.
+
+Knowledge lists and revision previews are lazy and paginated, with anonymous aggregate service events; no model or search call. Conflicting uploads are rejected before embedding unless explicitly confirmed. Hash checks prevent concurrent overwrite; exact new revisions reuse upload text without extra embeddings. Legacy revisions reconstruct text from stored chunks without retaining vectors twice. Mail/domain associations use deterministic owned-company matching and are persisted on first import; uncertain matches require user input. Planned measurement improvement: bulk-import domain-index prefetch rather than a per-message SQL lookup, and a durable sink for UI read metrics.
+
 ## Mail/task completion continuation — 2026-09-11
 
 History uses 51 fetched/50 projected rows rather than a fixed inaccessible last-100 window. Follow-up uses deterministic scoped memory retrieval (no embedding query), bounded sent-mail ancestors, and the existing Kimi call; no search/strategy generation. Reconciliation has zero SMTP/model calls and preserves immutable receipt ownership. Historical IMAP imports filter locally known UIDs before body fetching and keep incremental cursors unchanged. Completed task progress stops polling; workspace refresh is visible-only, non-overlapping and protected from stale edit races.

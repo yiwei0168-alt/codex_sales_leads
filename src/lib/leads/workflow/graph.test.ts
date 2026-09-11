@@ -1,4 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
+import { MemorySaver } from "@langchain/langgraph";
+import { WorkflowPausedError } from "./pause";
 
 import type { LeadSearchPlan } from "@/lib/assistant/types";
 
@@ -138,6 +140,14 @@ function dependencies(events: string[], context = ragContext): LeadWorkflowDepen
 }
 
 describe("LangGraph lead workflow", () => {
+  it("resumes after a phase pause without repeating completed discovery or resetting credits",async()=>{
+    const events:string[]=[];const deps=dependencies(events);let paused=true;
+    deps.updatePhase=vi.fn(async(_u,_a,phase)=>{if(paused&&phase==='collecting-evidence')throw new WorkflowPausedError();});
+    const graph=buildLeadWorkflowGraph(deps,new MemorySaver());const config={configurable:{thread_id:'resume-test'}};
+    await expect(graph.invoke({userId:'u',actionId:'a',graphThreadId:'resume-test',workspaceId:'w',plan,phase:'queued',ragContext:[],candidates:[],assessments:[],assessmentReviews:[],handoffs:[],creditsUsed:0,warnings:[]},config)).rejects.toThrow('阶段边界暂停');
+    expect(deps.discover).toHaveBeenCalledTimes(1);expect(deps.collectEvidence).not.toHaveBeenCalled();paused=false;
+    const state=await graph.invoke(null,config);expect(state.result).toBeDefined();expect(deps.discover).toHaveBeenCalledTimes(1);expect(deps.buildPlaybook).toHaveBeenCalledTimes(1);expect(state.creditsUsed).toBe(4);
+  });
   it("retrieves all three RAG domains before search and scores before persistence", async () => {
     const events: string[] = [];
     const graph = buildLeadWorkflowGraph(dependencies(events));

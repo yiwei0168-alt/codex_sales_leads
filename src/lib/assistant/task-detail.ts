@@ -2,6 +2,9 @@ import { tenantQuery } from "@/lib/rag/db";
 import { getAssistantAction } from "./repository";
 import { decryptMailboxContent } from "@/lib/mailbox/crypto";
 export async function readTaskDetail(userId:string,id:string,kind:string){
+  if(kind==="relationship"){
+    const rows=await tenantQuery(userId,`select id,country_code,status,result,metrics,created_at,updated_at from user_relationship_analysis where user_id=$1 and id=$2`,[userId,id]);return rows[0]?{kind,details:rows[0]}:null;
+  }
   if(kind==="search"){
     const action=await getAssistantAction(userId,id);if(!action)return null;
     const candidates=await tenantQuery(userId,`select a.company_name as "company",a.domain,a.primary_role as "role",a.eligible,a.total_score as "score",a.selected,a.reasons,a.risks,a.unknowns

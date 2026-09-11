@@ -8,7 +8,8 @@ function vectorLiteral(vector: number[]): string {
   return `[${vector.join(",")}]`;
 }
 
-export async function upsertKnowledgeDocument(userId: string, input: KnowledgeDocumentInput, actorRole: AppDatabaseRole = "member"): Promise<{ documentId: string; chunks: number; skipped: boolean }> {
+export class KnowledgeConflictError extends Error {constructor(){super("知识版本已变化，请重新检查后确认覆盖");}}
+export async function upsertKnowledgeDocument(userId: string, input: KnowledgeDocumentInput, actorRole: AppDatabaseRole = "member",expectedHash?:string|null): Promise<{ documentId: string; chunks: number; skipped: boolean }> {
   const contentHash = sha256(input.content);
   const visibility = input.visibility ?? "private";
   const existing = await tenantQuery<{ id: string; content_sha256: string; visibility: KnowledgeVisibility }>(userId,
@@ -27,6 +28,13 @@ export async function upsertKnowledgeDocument(userId: string, input: KnowledgeDo
   const embeddings = await embedTexts(chunks.map((chunk) => chunk.content));
 
   return tenantTransaction(userId, async (client: PoolClient) => {
+    await client.query("select pg_advisory_xact_lock(hashtextextended($1,0))",[`${userId}:${input.collection}:${input.externalId}`]);
+    if(expectedHash!==undefined){const current=await client.query<{content_sha256:string}>(`select d.content_sha256 from knowledge_document d join knowledge_collection c on c.id=d.collection_id where d.owner_id=$1 and c.slug=$2 and d.external_id=$3 for update of d`,[userId,input.collection,input.externalId]);
+      if((current.rows[0]?.content_sha256??null)!==expectedHash)throw new KnowledgeConflictError();}
+    await client.query(`insert into knowledge_document_revision(document_id,user_id,content_sha256,title,content,reconstructed)
+      select d.id,d.owner_id,d.content_sha256,d.title,coalesce(string_agg(k.content,E'\n\n' order by k.chunk_index),''),true
+      from knowledge_document d join knowledge_collection c on c.id=d.collection_id left join knowledge_chunk k on k.document_id=d.id
+      where d.owner_id=$1 and c.slug=$2 and d.external_id=$3 and d.content_sha256<>$4 group by d.id on conflict do nothing`,[userId,input.collection,input.externalId,contentHash]);
     const result = await client.query<{ id: string }>(
       `insert into knowledge_document (
         collection_id, external_id, title, source_url, source_type, authority_level,
@@ -49,6 +57,7 @@ export async function upsertKnowledgeDocument(userId: string, input: KnowledgeDo
         input.capturedAt ?? null, input.publishedAt ?? null, userId, visibility],
     );
     const documentId = result.rows[0].id;
+    await client.query("insert into knowledge_document_revision(document_id,user_id,content_sha256,title,content,reconstructed) values($1,$2,$3,$4,$5,false) on conflict do nothing",[documentId,userId,contentHash,input.title,input.content]);
     await client.query("delete from knowledge_chunk where document_id = $1", [documentId]);
     for (const [index, chunk] of chunks.entries()) {
       await client.query(

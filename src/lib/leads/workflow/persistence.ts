@@ -93,7 +93,7 @@ function companyRecord(
     roles,
     primaryBusinessRole: assessment.primaryRole,
     cooperationPaths: assessment.cooperationPaths.map((path) => ({ pathId: path.pathId,
-      pathType: path.pathType, candidateRole: path.candidateRole, fitScore: path.fitScore, rank: path.rank })),
+      pathType: path.pathType, candidateRole: path.candidateRole, fitScore: path.fitScore, rank: path.rank,reason:path.reason,prerequisites:path.prerequisites })),
     selectedPathId: assessment.selectedPathId ?? undefined,
     selectedCooperationPath: assessment.cooperationPaths.find((path) => path.pathId === assessment.selectedPathId)?.pathType,
     accountTier: assessment.accountTier,

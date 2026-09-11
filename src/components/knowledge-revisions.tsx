@@ -1,0 +1,7 @@
+"use client";
+import { useEffect,useState } from "react";
+export function KnowledgeRevisions({documentId}:{documentId:string}){
+  const [open,setOpen]=useState(false);const [offset,setOffset]=useState(0);const [items,setItems]=useState<Array<{id:string;title:string;time:string;content:string;truncated:boolean;reconstructed:boolean}>>([]);const [more,setMore]=useState(false);const [error,setError]=useState("");
+  useEffect(()=>{if(!open)return;const controller=new AbortController();fetch(`/api/knowledge/library/history?document=${documentId}&offset=${offset}`,{signal:controller.signal,cache:"no-store"}).then(async response=>{if(!response.ok)throw new Error();return response.json();}).then(data=>{if(!controller.signal.aborted){setItems(data.items);setMore(data.hasMore);}}).catch(()=>{if(!controller.signal.aborted)setError("版本读取失败");});return()=>controller.abort();},[open,offset,documentId]);
+  return <details onToggle={event=>setOpen(event.currentTarget.open)}><summary>历史内容版本</summary><p>从版本保留功能启用后开始记录；删除文档会一并删除这些版本。</p>{error&&<p role="alert">{error}</p>}{items.map(item=><details key={item.id}><summary>{item.title} · {item.time}</summary>{item.reconstructed&&<p>旧版本由历史检索片段重建，可能存在重叠；不代表原文件逐字副本。</p>}<pre style={{whiteSpace:"pre-wrap"}}>{item.content}</pre>{item.truncated&&<p>此处仅预览前5000字；完整历史内容保存在数据库。</p>}</details>)}{!items.length&&!error&&<p>没有历史版本</p>}<button disabled={!offset} onClick={()=>setOffset(value=>Math.max(0,value-10))}>上一页版本</button><button disabled={!more} onClick={()=>setOffset(value=>value+10)}>下一页版本</button></details>;
+}

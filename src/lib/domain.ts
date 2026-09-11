@@ -69,6 +69,8 @@ export interface CompanyRecord {
     candidateRole: ChannelRole;
     fitScore: number;
     rank: number;
+    reason?:string;
+    prerequisites?:string[];
   }>;
   selectedPathId?: string;
   selectedCooperationPath?: CooperationPathType;

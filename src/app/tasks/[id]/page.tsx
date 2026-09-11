@@ -7,6 +7,6 @@ export const dynamic="force-dynamic";
 export default async function TaskPage({params,searchParams}:{params:Promise<{id:string}>;searchParams:Promise<{kind?:string}>}) {
   const session=await getSession();if(!session)redirect("/");
   const {id}=await params;if(!z.uuid().safeParse(id).success)notFound();
-  const kind=(await searchParams).kind??"search";if(!["search","contacts","draft","send"].includes(kind))notFound();
+  const kind=(await searchParams).kind??"search";if(!["search","contacts","draft","send","relationship"].includes(kind))notFound();
   return <main><Link href="/">返回产品</Link><TaskDetailView id={id} kind={kind}/></main>;
 }

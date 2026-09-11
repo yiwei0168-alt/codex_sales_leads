@@ -3,6 +3,7 @@ import { decryptMailboxContent, decryptMailboxCredential, encryptMailboxContent,
 import { ALIMAIL_IMAP_HOST, ALIMAIL_IMAP_PORT, type ImportedMailboxMessage, type MailboxCursor } from "./alimail-imap";
 import type { KimiMailboxLearningResult } from "./kimi";
 import { screenMailboxMessage, type MailboxScreeningBucket } from "./screening";
+import { matchImportedCompany } from "./company-links";
 
 export interface MailboxConnectionRecord {
   id: string;
@@ -171,6 +172,7 @@ export async function persistMailboxImport(input: {
           screening.threadKey, screening.score, screening.bucket, JSON.stringify(screening.reasons)],
       );
       const stored = result.rows[0];
+      await matchImportedCompany(client,input.userId,stored.id,[...message.sender,...message.recipients].map(item=>item.address),connection.rows[0].email);
       if (stored.inserted) imported += 1;
       storedMessages.push({ id: stored.id, inserted: stored.inserted, learningStatus: stored.learning_status, message });
     }

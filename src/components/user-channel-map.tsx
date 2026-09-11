@@ -11,11 +11,13 @@ export function UserChannelMap({country, companies,onSelect,onAdded}: {country:s
   const [zoom,setZoom]=useState(1);
   const [now]=useState(()=>Date.now());
   const [role,setRole]=useState("all");
+  const [focus,setFocus]=useState("");
   const [collapsed,setCollapsed]=useState<string[]>([]);
   const [selectedRelation,setSelectedRelation]=useState<RelationshipRecord|null>(null);
   const [error,setError] = useState("");
   const [loading,setLoading] = useState(true);
   const [saving,setSaving] = useState(false);
+  const [analyzing,setAnalyzing]=useState(false);const [analysis,setAnalysis]=useState<{from:string;to:string;reason:string;suggestions:Array<{type:string;basis:string;quote:string;sourceUrl:string}>}|null>(null);
   const [newName,setNewName]=useState("");
   const [newWebsite,setNewWebsite]=useState("");
   const [adding,setAdding]=useState(false);
@@ -50,7 +52,9 @@ export function UserChannelMap({country, companies,onSelect,onAdded}: {country:s
       setVersion(value=>value+1);setForm({...form,basis:""});
     }catch(reason){setError(reason instanceof Error?reason.message:"保存失败");}finally{setSaving(false);}
   }
-  const visible=companies.filter(company=>(role==="all"||primaryRole(company)===role)&&!collapsed.includes(primaryRole(company))&&`${company.displayName} ${company.domain} ${primaryRole(company)}`.toLowerCase().includes(query.toLowerCase())).sort((a,b)=>primaryRole(a).localeCompare(primaryRole(b))||a.displayName.localeCompare(b.displayName));
+  async function analyze(){if(!window.confirm("只用已保存证据分析所选两家公司的关系，可能消耗模型额度；不会新增搜索，也不会自动保存关系。确认？"))return;setAnalyzing(true);setError("");try{const response=await fetch("/api/channel-relationships/analyze",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({country,from:form.from,to:form.to,confirmed:true})});const data=await response.json();if(!response.ok)throw new Error(data.error);setAnalysis({...data,from:form.from,to:form.to});}catch(error){setError(String(error));}finally{setAnalyzing(false);}}
+  const neighbors=new Set([focus,...relationships.filter(item=>item.status!=="user-rejected"&&(item.from===focus||item.to===focus)).flatMap(item=>[item.from,item.to])]);
+  const visible=companies.filter(company=>(!focus||neighbors.has(company.id))&&(role==="all"||primaryRole(company)===role)&&!collapsed.includes(primaryRole(company))&&`${company.displayName} ${company.domain} ${primaryRole(company)}`.toLowerCase().includes(query.toLowerCase())).sort((a,b)=>primaryRole(a).localeCompare(primaryRole(b))||a.displayName.localeCompare(b.displayName));
   const positions=new Map(visible.map((company,index)=>[company.id,{x:160+(index%3)*310,y:55+Math.floor(index/3)*100}]));
   const height=Math.max(220,Math.ceil(visible.length/3)*100+40);
   return <div>
@@ -64,7 +68,8 @@ export function UserChannelMap({country, companies,onSelect,onAdded}: {country:s
       <input aria-label="搜索关系图公司" placeholder="搜索公司或角色" value={query} onChange={event=>setQuery(event.target.value)}/>
       <label>角色<select value={role} onChange={event=>setRole(event.target.value)}><option value="all">全部角色</option>{[...new Set(companies.map(primaryRole))].map(value=><option key={value}>{value}</option>)}</select></label>
       <label>缩放<input type="range" min="0.5" max="2" step="0.1" value={zoom} onChange={event=>setZoom(Number(event.target.value))}/>{Math.round(zoom*100)}%</label>
-      <button onClick={()=>{setQuery("");setRole("all");setCollapsed([]);setZoom(1);}}>显示全部 / 重置视图</button>
+      <label>聚焦公司及关联节点<select value={focus} onChange={event=>setFocus(event.target.value)}><option value="">全部节点</option>{companies.map(company=><option key={company.id} value={company.id}>{company.displayName}</option>)}</select></label>
+      <button onClick={()=>{setQuery("");setRole("all");setCollapsed([]);setZoom(1);setFocus("");}}>显示全部 / 重置视图</button>
       <details><summary>角色分组展开 / 折叠</summary>{[...new Set(companies.map(primaryRole))].map(value=><label key={value}><input type="checkbox" checked={!collapsed.includes(value)} onChange={()=>setCollapsed(items=>items.includes(value)?items.filter(item=>item!==value):[...items,value])}/>{value} · {companies.filter(company=>primaryRole(company)===value).length}</label>)}</details>
       {loading&&<p role="status">正在读取关系…</p>}
       {error&&<p role="alert">{error}<button onClick={()=>setVersion(value=>value+1)}>重试读取</button></p>}
@@ -98,6 +103,8 @@ export function UserChannelMap({country, companies,onSelect,onAdded}: {country:s
       </article>)}
     </details>
     <form className="panel" onSubmit={save}><h3>添加或更新关系</h3>
+      <button type="button" disabled={analyzing||!form.from||!form.to||form.from===form.to} onClick={()=>void analyze()}>{analyzing?"分析中…":"分析所选公司关系（存量证据）"}</button>
+      {analysis&&analysis.from===form.from&&analysis.to===form.to&&<div><p>{analysis.reason}</p>{analysis.suggestions.map((item,index)=><article key={index}><p>{item.type} · {item.basis}</p><blockquote>{item.quote}</blockquote><button type="button" onClick={()=>setForm({...form,type:item.type,basis:`${item.basis}\n引用：${item.quote}`,sourceUrl:item.sourceUrl,status:"pending"})}>载入待核实建议（仍需保存）</button></article>)}</div>}
       <div className="edit-grid">{(["from","to"] as const).map(key=><label key={key}>{key==="from"?"起点公司":"目标公司"}<select required value={form[key]} onChange={event=>setForm({...form,[key]:event.target.value})}><option value="">请选择公司</option>{companies.map(company=><option key={company.id} value={company.id}>{company.displayName}</option>)}</select></label>)}
         <label>关系类型<select value={form.type} onChange={event=>setForm({...form,type:event.target.value})}>{["供货","转售","项目合作","技术合作","其他"].map(type=><option key={type}>{type}</option>)}</select></label>
         <label>状态<select value={form.status} onChange={event=>setForm({...form,status:event.target.value})}>{Object.entries(statusLabels).filter(([key])=>key!=="evidence-supported").map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label>
