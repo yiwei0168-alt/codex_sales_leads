@@ -3,6 +3,7 @@
 import { Fragment, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CompanyClassificationEditor } from "@/components/company-classification-editor";
+import { evidenceFreshness } from "@/lib/sales/evidence-freshness";
 import { marketCode, marketHref, marketLabel } from "@/lib/sales/market-navigation";
 import { AssistantHome } from "@/components/assistant-home";
 import { KnowledgeBase } from "@/components/knowledge-base";
@@ -437,25 +438,24 @@ function Results({ companies, query, setQuery, roleFilter, setRoleFilter, tierFi
       </div>
       <div className="table-scroll">
         <table className="data-table">
-          <thead><tr><th aria-label="选择"/><th>公司 / 地域</th><th>渠道身份</th><th>等级</th><th>适配分</th><th>证据置信</th><th>供货建议</th><th>状态</th><th aria-label="操作"/></tr></thead>
+          <thead><tr><th aria-label="加入开发名单"/><th>公司</th><th>主角色</th><th>账户等级</th><th>综合评分</th><th>合作路径</th><th>开发阶段</th><th aria-label="操作"/></tr></thead>
           <tbody>{countryGroups.map(([country, countryCompanies]) => <Fragment key={country}>
-            <tr className="country-group-row"><td colSpan={9}><strong>{country}</strong><span>{countryCompanies.length} 家公司</span></td></tr>
+            <tr className="country-group-row"><td colSpan={8}><strong>{country}</strong><span>{countryCompanies.length} 家公司</span></td></tr>
             {countryCompanies.map((company) => (
             <tr key={company.id} className={company.manuallyEdited ? "manual-row" : ""}>
               <td><input type="checkbox" checked={company.opportunityStage !== "Discovered" && company.opportunityStage !== "Excluded"} onChange={() => onToggle(company)} aria-label={`切换 ${company.displayName} 的 shortlist 状态`}/></td>
               <td><button className="company-cell" onClick={() => onSelect(company.id)}><span className="company-avatar">{company.displayName.slice(0, 2).toUpperCase()}</span><span><strong>{company.displayName}</strong><small>{company.city} · {company.domain}</small></span></button></td>
-              <td><span className="layer-label">{company.layer === "Tier-1 Distributor" ? "TIER-1" : "DOWNSTREAM"}</span><div className="role-tags">{company.roles.slice(0, 3).map((role) => <StatusTag key={role} tone={role === "ISP" ? "violet" : "neutral"}>{role}</StatusTag>)}</div></td>
+              <td><StatusTag>{primaryRole(company)}</StatusTag>{evidenceFreshness(company.evidence) === "older-than-year" && <small>超过一年未核实</small>}</td>
               <td><StatusTag tone={company.accountTier === "KA" ? "amber" : company.accountTier === "Priority" ? "blue" : "neutral"}>{company.accountTier}</StatusTag></td>
               <td>{company.assessmentNeedsRefresh ? <span title={`历史评分：${company.fitScore}`}>评分待更新</span> : <ScoreRing value={company.fitScore} compact/>}</td>
-              <td><div className="confidence-cell"><strong>{company.evidenceConfidence}%</strong><MiniBar value={company.evidenceConfidence}/><small>{company.evidence.length} source{company.evidence.length > 1 ? "s" : ""}</small></div></td>
-              <td><span className="supply-copy">{company.supplyModel}</span>{company.manuallyEdited && <small className="manual-badge">Manual</small>}</td>
+              <td><span className="supply-copy">{company.selectedCooperationPath ?? "未分析"}</span>{company.manuallyEdited && <small className="manual-badge">用户修改</small>}</td>
               <td><span className={`stage-dot ${company.opportunityStage.toLowerCase().replace(" ", "-")}`}/>{company.opportunityStage}</td>
               <td><button className="row-action" onClick={() => onSelect(company.id)} aria-label={`打开 ${company.displayName} 详情`}><Icon name="chevron" size={16}/></button></td>
             </tr>
-          ))}</Fragment>)}</tbody>
+          ))}</Fragment>)}{companies.length === 0 && <tr><td colSpan={8}>当前国家或筛选条件下暂无候选公司。</td></tr>}</tbody>
         </table>
       </div>
-      <div className="table-footer"><span>Tavily live search · 按国家分区</span><span>事实与推断分开展示；请在外联前人工复核。</span></div>
+      <div className="table-footer"><span>已保存的候选公司</span><span>评分依据、来源与修改记录请查看公司详情。</span></div>
     </section>
   );
 }

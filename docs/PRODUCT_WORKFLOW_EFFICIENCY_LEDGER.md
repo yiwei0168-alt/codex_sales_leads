@@ -1,5 +1,9 @@
 # 产品工作流效率台账
 
+## PRD v1.1 / UI stage 1c — compact leads and freshness
+
+Uses saved companies/evidence only; zero model calls, tokens, paid credits or automatic retries. Primary-role filtering and six business columns consume existing fields; missing cooperation paths do not trigger generation. Freshness excludes unverified inference and future/invalid dates; no verification date is manufactured. Input/output counts remain visible via the country/list counters, while per-render utilization and latency are not yet instrumented. Opportunity: store per-field verification timestamps so one recent evidence source cannot imply all company facts are fresh. Freshness boundary regression, typecheck and targeted lint passed.
+
 ## PRD v1.1 / UI stage 1b — company edits
 
 Successful company edits now persist one audit event with input/valid/downstream-used counts 1/1/1, zero model tokens/search credits, transaction-to-audit latency, zero automatic retries, discard reasons, utilization and a concrete reuse opportunity. The record uses scoped before/patch/applied values, not an entire duplicate evidence packet. Failed transactions create no success audit and retain unchanged UI values; aggregate failure telemetry remains pending. User classification is applied directly to its company and excluded from broad preference retrieval. Company overrides prevent repurchasing semantic role/path decisions and protect them from shared-company refresh. Migration 036 applied; five unit tests and typecheck passed; no model or paid search executed in this stage.
