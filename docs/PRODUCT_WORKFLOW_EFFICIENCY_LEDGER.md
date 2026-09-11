@@ -1,5 +1,9 @@
 # 产品工作流效率台账
 
+## Compatible dependency hardening — 2026-09-12
+
+Updated vulnerable runtime/test dependency patches and verified the existing behavior, with no new model/search/SMTP operation or pricing assumption. Registry/build/test traffic is development tooling, not candidate acquisition cost. Avoided an unconditional broad dependency upgrade; no claim of measured token savings. Point-in-time install audit: zero known vulnerabilities. Production acceptance still requires the separate workflow gates and authenticated/live-delivery checks.
+
 ## Relationship proposal downstream use — 2026-09-11
 
 Stable source indices connect cached outputs to explicit user saves. Same-transaction owner/pair validation and index deduplication prevent repeated-save inflation. `downstreamUsedItems` and downstream utilization are distinct from validity efficiency and from confirmed cooperation; rejection is also a user decision. No new model, search, embedding or evidence acquisition. Optimization opportunity: compare generated versus used suggestions over time before changing analysis budgets; historical missing links remain unknown.

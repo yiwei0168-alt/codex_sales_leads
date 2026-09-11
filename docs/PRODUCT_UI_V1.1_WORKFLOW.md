@@ -1,5 +1,9 @@
 # Product UI v1.1 implementation workflow
 
+## 2026-09-12 compatible security patch verification
+
+Next.js and its lint config upgraded to 16.3.4, mailparser to 3.9.24, Vitest to 4.1.11 and compatible transitive js-yaml to 4.3.2. This addresses the preceding audit alerts without forced major upgrades or dependency overrides. Official Windows advisory: https://github.com/vercel/next.js/security/advisories/GHSA-p293-qw3h-jr36 . Final install audit reports zero known vulnerabilities; this is a point-in-time dependency check, not a full security certification. Running processes must restart to load new dependencies; an older loaded native binary was left untouched rather than killing an unidentified user process. Existing experiment artifacts and databases were not altered.
+
 ## 2026-09-11 relationship adoption linkage
 
 Analysis responses include the cache record ID and original (pre-filter) suggestion index. Loading a suggestion alone is not adoption; saving carries this reference and validates owner, workspace, country, directed company pair and completed analysis in the same transaction. Saved indices are deduplicated under a row lock, so retries do not increase downstream-used counts. The user may edit the proposal; the metric means used as a source for a saved relationship, not unchanged acceptance or verified cooperation. Manual relationships require no analysis and consume no tokens. Historical saves are not backfilled speculatively.
