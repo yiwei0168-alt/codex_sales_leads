@@ -69,4 +69,5 @@ export interface MarketWorkspaceDto {
 export type CompanyEditablePatch = Partial<Pick<CompanyRecord,
   "accountTier" | "supplyModel" | "brandInvolvement" | "opportunityStage" | "priority" | "owner" | "nextAction"
   | "selectedPathId"
+  | "primaryBusinessRole" | "selectedCooperationPath"
 >>;

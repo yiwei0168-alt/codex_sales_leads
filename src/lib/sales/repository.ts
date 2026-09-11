@@ -1,4 +1,5 @@
 import type { CompanyRecord } from "@/lib/domain";
+import { companyOverride } from "./company-overrides";
 import { query, tenantQuery, tenantTransaction, transaction } from "@/lib/rag/db";
 import type {
   CompanyContactDetailsDto,
@@ -30,7 +31,7 @@ export async function getCurrentWorkspace(userId: string): Promise<MarketWorkspa
       priority: CompanyRecord["priority"]; owner_name: string | null; next_action: string | null; manually_edited: boolean;
       selected_path_id: string | null; selected_path_type: CompanyRecord["selectedCooperationPath"] | null;
     }>(
-      `select c.record, wc.account_tier, wc.supply_model, wc.brand_involvement, wc.opportunity_stage,
+      `select c.record || wc.user_overrides as record, wc.account_tier, wc.supply_model, wc.brand_involvement, wc.opportunity_stage,
               wc.priority, wc.owner_name, wc.next_action, wc.manually_edited,
               wc.selected_path_id, wc.selected_path_type
        from workspace_company wc join sales_company c on c.id = wc.company_id
@@ -194,8 +195,9 @@ export async function updateWorkspaceMode(mode: "new-market" | "growth", userId:
   });
 }
 
-export async function updateCompanyState(externalId: string, patch: CompanyEditablePatch, userId: string): Promise<void> {
-  await tenantTransaction(userId, async (client) => {
+export async function updateCompanyState(externalId: string, patch: CompanyEditablePatch, userId: string): Promise<CompanyRecord> {
+  const startedAt = Date.now();
+  return tenantTransaction(userId, async (client) => {
     const current = await client.query<{
       workspace_id: string; company_id: string; account_tier: string; supply_model: string; brand_involvement: string;
       opportunity_stage: string; priority: string; owner_name: string | null; next_action: string | null;
@@ -204,45 +206,40 @@ export async function updateCompanyState(externalId: string, patch: CompanyEdita
     }>(
       `select wc.workspace_id, wc.company_id, wc.account_tier, wc.supply_model, wc.brand_involvement,
               wc.opportunity_stage, wc.priority, wc.owner_name, wc.next_action,
-              wc.selected_path_id, wc.selected_path_type, c.record, w.country_code, w.mode, w.objective
+              wc.selected_path_id, wc.selected_path_type, c.record || wc.user_overrides as record, c.country_code, w.mode, w.objective
        from workspace_company wc join market_workspace w on w.id = wc.workspace_id
        join sales_company c on c.id = wc.company_id
-       where w.owner_id = $1 and w.slug = $2 and c.external_id = $3`,
+       where w.owner_id = $1 and w.slug = $2 and c.external_id = $3 for update of wc`,
       [userId, WORKSPACE_SLUG, externalId],
     );
     const row = current.rows[0];
     if (!row) throw new Error("Company not found in current workspace");
-    if (patch.accountTier !== undefined) {
-      const distributorTier = patch.accountTier.endsWith("Distributor");
-      if (row.record.layer === "Tier-1 Distributor" ? !distributorTier : distributorTier) {
-        throw new Error("Account tier is incompatible with the candidate's cooperation-path layer");
-      }
-    }
+    const overrides = companyOverride({ ...row.record, accountTier: row.account_tier as CompanyRecord["accountTier"] }, patch);
     const selectedPath = patch.selectedPathId === undefined ? undefined
       : row.record.cooperationPaths?.find((path) => path.pathId === patch.selectedPathId);
     if (patch.selectedPathId !== undefined && !selectedPath) {
       throw new Error("Selected cooperation path is not available for this company");
     }
     const next = {
-      accountTier: patch.accountTier ?? row.account_tier,
+      accountTier: patch.accountTier ?? overrides.accountTier ?? row.account_tier,
       supplyModel: patch.supplyModel ?? row.supply_model,
       brandInvolvement: patch.brandInvolvement ?? row.brand_involvement,
       opportunityStage: patch.opportunityStage ?? row.opportunity_stage,
       priority: patch.priority ?? row.priority,
       owner: patch.owner === undefined ? row.owner_name : patch.owner,
       nextAction: patch.nextAction === undefined ? row.next_action : patch.nextAction,
-      selectedPathId: patch.selectedPathId ?? row.selected_path_id,
-      selectedPathType: selectedPath?.pathType ?? row.selected_path_type,
+      selectedPathId: overrides.selectedPathId ?? patch.selectedPathId ?? row.selected_path_id,
+      selectedPathType: patch.selectedCooperationPath ?? selectedPath?.pathType ?? row.selected_path_type,
     };
     await client.query(
       `update workspace_company set account_tier = $1, supply_model = $2, brand_involvement = $3,
               opportunity_stage = $4, priority = $5, owner_name = $6, next_action = $7,
               selected_path_id = $8, selected_path_type = $9,
-              manually_edited = true, updated_at = now()
+              user_overrides = user_overrides || $12::jsonb, manually_edited = true, updated_at = now()
        where workspace_id = $10 and company_id = $11`,
       [next.accountTier, next.supplyModel, next.brandInvolvement, next.opportunityStage, next.priority,
         next.owner || null, next.nextAction || null, next.selectedPathId, next.selectedPathType,
-        row.workspace_id, row.company_id],
+        row.workspace_id, row.company_id, JSON.stringify(overrides)],
     );
     if (selectedPath && selectedPath.pathId !== row.selected_path_id) {
       const edit = await client.query<{ id: string }>(
@@ -270,10 +267,31 @@ export async function updateCompanyState(externalId: string, patch: CompanyEdita
             previousPathType: row.selected_path_type, developmentStage: `${row.mode}:${row.objective}` })],
       );
     }
+    if (Object.keys(overrides).length) await client.query(
+      `insert into user_outreach_memory (user_id, workspace_id, kind, external_id, title, content,
+         market_codes, channel_roles, context) values ($1,$2,'company-classification',$3,$4,$5,$6,$7,$8)
+       on conflict (user_id, external_id) do update set content=excluded.content, context=excluded.context,
+         channel_roles=excluded.channel_roles, status='active', updated_at=now()`,
+      [userId, row.workspace_id, `company-override:${externalId}`, `${row.record.displayName} 人工确认`,
+        JSON.stringify({ primaryBusinessRole: overrides.primaryBusinessRole ?? row.record.primaryBusinessRole,
+          accountTier: next.accountTier, selectedCooperationPath: next.selectedPathType }),
+        [row.country_code], [overrides.primaryBusinessRole ?? row.record.primaryBusinessRole ?? "Unresolved"],
+        JSON.stringify({ companyExternalId: externalId, scope: "company-only", overrides })]);
     await client.query(
       `insert into workspace_audit_event (workspace_id, actor_user_id, entity_type, entity_id, action, changes)
        values ($1, $2, 'company', $3, 'company.updated', $4)`,
-      [row.workspace_id, userId, externalId, JSON.stringify(patch)],
+      [row.workspace_id, userId, externalId, JSON.stringify({
+        before: { primaryBusinessRole: row.record.primaryBusinessRole, accountTier: row.account_tier,
+          selectedPathId: row.selected_path_id, selectedCooperationPath: row.selected_path_type },
+        patch, applied: overrides,
+        efficiency: { stage: "company-user-edit", version: "ui-v1.1", inputItems: 1,
+          validOutputItems: 1, downstreamUsedItems: 1, inputTokens: 0, outputTokens: 0,
+          paidSearchCredits: 0, costUsd: 0, latencyMs: Date.now() - startedAt,
+          retries: 0, discardedReasonCounts: {}, utilizationEfficiency: 1,
+          optimizationOpportunity: "Reuse confirmed company overrides without a model call" } })],
     );
+    return { ...row.record, ...patch, ...overrides, accountTier: next.accountTier as CompanyRecord["accountTier"],
+      selectedPathId: next.selectedPathId ?? undefined,
+      selectedCooperationPath: next.selectedPathType as CompanyRecord["selectedCooperationPath"], manuallyEdited: true };
   });
 }

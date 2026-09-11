@@ -2,6 +2,7 @@
 
 import { Fragment, useState } from "react";
 import { useRouter } from "next/navigation";
+import { CompanyClassificationEditor } from "@/components/company-classification-editor";
 import { marketCode, marketHref, marketLabel } from "@/lib/sales/market-navigation";
 import { AssistantHome } from "@/components/assistant-home";
 import { KnowledgeBase } from "@/components/knowledge-base";
@@ -133,34 +134,39 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const [allowFeedbackMemory, setAllowFeedbackMemory] = useState(false);
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [failedEdit, setFailedEdit] = useState<{ id: string; patch: CompanyEditablePatch } | null>(null);
   const sourceCount = companies.reduce((total, company) => total + company.evidence.length, 0);
   const searchDate = initialWorkspace?.latestSearch?.finishedAt?.slice(0, 10) ?? "Not searched";
 
-  const selectedCompany = companies.find((item) => item.id === selectedId) ?? companies[0];
-  const shortlist = companies.filter((company) => !["Discovered", "Excluded"].includes(company.opportunityStage));
+  const selectedCompany = countryCompanies.find((item) => item.id === selectedId) ?? countryCompanies[0];
+  const shortlist = countryCompanies.filter((company) => !["Discovered", "Excluded"].includes(company.opportunityStage));
 
   const filteredCompanies = (() => {
     const term = query.trim().toLowerCase();
     return companies
       .filter((company) => country === "all" || marketCode(company.country) === country)
-      .filter((company) => roleFilter === "All" || company.roles.includes(roleFilter))
+      .filter((company) => roleFilter === "All" || primaryRole(company) === roleFilter)
       .filter((company) => tierFilter === "All" || company.accountTier === tierFilter)
       .filter((company) => !term || [company.displayName, company.city, company.domain, company.roles.join(" ")].join(" ").toLowerCase().includes(term))
       .sort((a, b) => priorityIndex(b) - priorityIndex(a));
   })();
 
   async function updateCompany(id: string, patch: CompanyEditablePatch) {
-    setCompanies((items) => items.map((item) => item.id === id ? { ...item, ...patch, manuallyEdited: true } : item));
+    if (saveState === "saving") return;
     setSaveState("saving");
     try {
       const response = await fetch(`/api/workspaces/current/companies/${encodeURIComponent(id)}`, {
         method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify(patch),
       });
       if (!response.ok) throw new Error("保存失败");
+      const result = await response.json() as { company: CompanyRecord };
+      setCompanies((items) => items.map((item) => item.id === id ? result.company : item));
+      setFailedEdit(null);
       setSaveState("saved");
       window.setTimeout(() => setSaveState("idle"), 1600);
     } catch {
       setSaveState("error");
+      setFailedEdit({ id, patch });
     }
   }
 
@@ -306,6 +312,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
         </header>
 
         <div className="workspace-content">
+          {failedEdit && <div role="alert">修改尚未保存，原值已保留。<button onClick={() => void updateCompany(failedEdit.id, failedEdit.patch)}>重试保存</button></div>}
           {view !== "home" && <section className="workspace-heading">
             <div>
               <div className="eyebrow">GLOBAL MARKET / ALL CUDY SALES SEGMENTS</div>
@@ -439,7 +446,7 @@ function Results({ companies, query, setQuery, roleFilter, setRoleFilter, tierFi
               <td><button className="company-cell" onClick={() => onSelect(company.id)}><span className="company-avatar">{company.displayName.slice(0, 2).toUpperCase()}</span><span><strong>{company.displayName}</strong><small>{company.city} · {company.domain}</small></span></button></td>
               <td><span className="layer-label">{company.layer === "Tier-1 Distributor" ? "TIER-1" : "DOWNSTREAM"}</span><div className="role-tags">{company.roles.slice(0, 3).map((role) => <StatusTag key={role} tone={role === "ISP" ? "violet" : "neutral"}>{role}</StatusTag>)}</div></td>
               <td><StatusTag tone={company.accountTier === "KA" ? "amber" : company.accountTier === "Priority" ? "blue" : "neutral"}>{company.accountTier}</StatusTag></td>
-              <td><ScoreRing value={company.fitScore} compact/></td>
+              <td>{company.assessmentNeedsRefresh ? <span title={`历史评分：${company.fitScore}`}>评分待更新</span> : <ScoreRing value={company.fitScore} compact/>}</td>
               <td><div className="confidence-cell"><strong>{company.evidenceConfidence}%</strong><MiniBar value={company.evidenceConfidence}/><small>{company.evidence.length} source{company.evidence.length > 1 ? "s" : ""}</small></div></td>
               <td><span className="supply-copy">{company.supplyModel}</span>{company.manuallyEdited && <small className="manual-badge">Manual</small>}</td>
               <td><span className={`stage-dot ${company.opportunityStage.toLowerCase().replace(" ", "-")}`}/>{company.opportunityStage}</td>
@@ -461,7 +468,6 @@ function ChannelMap({ companies, onSelect }: { companies: CompanyRecord[]; onSel
   distributors.forEach((item, index) => positions.set(item.id, { x: 165, y: 92 + index * 88 }));
   downstream.forEach((item, index) => positions.set(item.id, { x: 725, y: 54 + index * 54 }));
   const lines = liveRelationships.filter((rel) => positions.has(rel.fromNode) && positions.has(rel.toNode));
-  const extraLines = distributors.length ? downstream.slice(0, 5).map((item, index) => ({ id: `suggested-${item.id}`, fromNode: distributors[index % distributors.length].id, toNode: item.id, status: "Hypothesis" as const })) : [];
   return (
     <div className="map-layout">
       <section className="panel map-panel">
@@ -471,7 +477,7 @@ function ChannelMap({ companies, onSelect }: { companies: CompanyRecord[]; onSel
           <rect x="600" y="18" width="270" height="476" rx="18" className="map-zone downstream-zone"/>
           <text x="52" y="48" className="zone-title">SUPPLY NODES · TIER-1</text>
           <text x="622" y="48" className="zone-title">DEMAND NODES · DOWNSTREAM</text>
-          {[...lines, ...extraLines].map((rel) => {
+          {lines.map((rel) => {
             const from = positions.get(rel.fromNode)!; const to = positions.get(rel.toNode)!;
             return <path key={rel.id} d={`M ${from.x + 94} ${from.y} C 390 ${from.y}, 510 ${to.y}, ${to.x - 94} ${to.y}`} className={`map-link ${rel.status === "Hypothesis" ? "hypothesis" : "verified"}`} />;
           })}
@@ -550,6 +556,7 @@ function CompanyDrawer({ company, contactDetails, onClose, onUpdate, onEvidence,
     <div className="drawer-body"><div className="drawer-score-row"><ScoreRing value={company.fitScore}/><div><span>Opportunity Fit</span><strong>{company.fitScore} / 100</strong><small>Evidence confidence {company.evidenceConfidence}%</small></div><StatusTag tone={company.accountTier === "KA" ? "amber" : "blue"}>{company.accountTier}</StatusTag></div><p className="company-summary">{company.summary}</p>
       <section className="drawer-section"><div className="section-line"><span className="section-kicker">CHANNEL CLASSIFICATION</span>{company.manuallyEdited && <StatusTag tone="blue">Manual override</StatusTag>}</div><div className="role-tags large-tags">{company.roles.map((role) => <StatusTag key={role} tone={role === "ISP" ? "violet" : "neutral"}>{role}</StatusTag>)}</div><div className="edit-grid"><label>Account Tier<select value={company.accountTier} onChange={(event) => onUpdate({ accountTier: event.target.value as AccountTier })}>{(company.layer === "Tier-1 Distributor" ? distributorTierOptions : downstreamTierOptions).map((tier) => <option key={tier}>{tier}</option>)}</select></label>{company.cooperationPaths?.length ? <label>Cooperation Path<select value={company.selectedPathId ?? company.cooperationPaths[0].pathId} onChange={(event) => onUpdate({ selectedPathId: event.target.value })}>{[...company.cooperationPaths].sort((left, right) => left.rank - right.rank).map((path) => <option key={path.pathId} value={path.pathId}>{path.pathType} · {path.candidateRole}</option>)}</select></label> : null}<label>Supply Model<select value={company.supplyModel} onChange={(event) => onUpdate({ supplyModel: event.target.value as SupplyModel })}>{supplyOptions.map((supply) => <option key={supply}>{supply}</option>)}</select></label><label>Opportunity Stage<select value={company.opportunityStage} onChange={(event) => onUpdate({ opportunityStage: event.target.value as OpportunityStage })}>{stageOptions.map((stage) => <option key={stage}>{stage}</option>)}</select></label><label>Brand Involvement<select value={company.brandInvolvement} onChange={(event) => onUpdate({ brandInvolvement: event.target.value as CompanyRecord["brandInvolvement"] })}>{["Light", "Standard", "Deep"].map((value) => <option key={value}>{value}</option>)}</select></label></div></section>
       <section className="drawer-section"><span className="section-kicker">ROLE-SPECIFIC ASSESSMENT</span><div className="assessment-grid"><div><span>Fit score</span><MiniBar value={company.fitScore}/><b>{company.fitScore}</b></div><div><span>Account value</span><MiniBar value={company.accountValue} tone="blue"/><b>{company.accountValue}</b></div><div><span>Reachability</span><MiniBar value={company.reachability} tone="amber"/><b>{company.reachability}</b></div><div><span>Evidence</span><MiniBar value={company.evidenceConfidence}/><b>{company.evidenceConfidence}</b></div></div></section>
+      <CompanyClassificationEditor company={company} onUpdate={onUpdate}/>
       <ContactPanel details={contactDetails}/>
       <section className="drawer-section"><span className="section-kicker">EVIDENCE · FACTS</span><div className="evidence-stack">{company.evidence.map((item) => <button key={item.id} className="evidence-card" onClick={() => onEvidence(item)}><div><StatusTag tone={item.status === "Verified" || item.status === "Corroborated" ? "green" : "amber"}>{item.status}</StatusTag><span>{item.id}</span></div><strong>{item.claim}</strong><small>{item.title} · captured {item.capturedAt}</small></button>)}</div></section>
       <section className="drawer-section"><span className="section-kicker">RISKS & UNKNOWNS</span><ul className="risk-list">{company.risks.map((risk) => <li key={risk}><span>Risk</span>{risk}</li>)}{company.unknowns.map((unknown) => <li key={unknown}><span className="unknown">Unknown</span>{unknown}</li>)}</ul></section>

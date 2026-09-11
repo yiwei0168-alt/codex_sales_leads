@@ -88,7 +88,11 @@ async function loadRecipient(userId: string, workspaceId: string, companyId: str
 
 export async function loadDevelopmentContext(userId: string, options: DevelopmentGenerationOptions): Promise<DevelopmentContext> {
   const rows = await tenantQuery<CompanyContextRow>(userId,
-    `select w.id as workspace_id, c.id as company_id, c.external_id, c.country_code, c.record, wc.search_run_id,
+    `select w.id as workspace_id, c.id as company_id, c.external_id, c.country_code,
+            c.record || wc.user_overrides || jsonb_build_object('accountTier', wc.account_tier,
+              'selectedPathId', wc.selected_path_id, 'selectedCooperationPath', wc.selected_path_type,
+              'supplyModel', wc.supply_model, 'opportunityStage', wc.opportunity_stage,
+              'manuallyEdited', wc.manually_edited) as record, wc.search_run_id,
             a.dimensions, a.reasons, a.risks, a.unknowns, a.evidence_ids, a.handoff_report,
             r.metadata->'playbook' as playbook
        from market_workspace w
@@ -116,12 +120,12 @@ export async function loadDevelopmentContext(userId: string, options: Developmen
   return {
     userId, workspaceId: row.workspace_id, companyId: row.company_id,
     searchRunId: row.search_run_id ?? undefined, company: row.record,
-    assessment: row.dimensions ? {
+    assessment: row.dimensions && !row.record.assessmentNeedsRefresh ? {
       dimensions: row.dimensions, reasons: row.reasons ?? [], risks: row.risks ?? [],
       unknowns: row.unknowns ?? [], evidenceIds: row.evidence_ids ?? [],
     } : undefined,
     playbook: row.playbook ?? undefined,
-    handoff: row.handoff_report?.version === "lead-handoff-v2" ? row.handoff_report : undefined,
+    handoff: !row.record.manuallyEdited && !row.record.assessmentNeedsRefresh && row.handoff_report?.version === "lead-handoff-v2" ? row.handoff_report : undefined,
     recipient, knowledge, templates,
   };
 }

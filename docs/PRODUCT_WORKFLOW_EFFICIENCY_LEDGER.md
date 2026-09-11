@@ -1,5 +1,9 @@
 # 产品工作流效率台账
 
+## PRD v1.1 / UI stage 1b — company edits
+
+Successful company edits now persist one audit event with input/valid/downstream-used counts 1/1/1, zero model tokens/search credits, transaction-to-audit latency, zero automatic retries, discard reasons, utilization and a concrete reuse opportunity. The record uses scoped before/patch/applied values, not an entire duplicate evidence packet. Failed transactions create no success audit and retain unchanged UI values; aggregate failure telemetry remains pending. User classification is applied directly to its company and excluded from broad preference retrieval. Company overrides prevent repurchasing semantic role/path decisions and protect them from shared-company refresh. Migration 036 applied; five unit tests and typecheck passed; no model or paid search executed in this stage.
+
 ## PRD v1.1 / UI stage 1a — country navigation
 
 Input: authenticated owner's saved companies and distinct search-task country codes. Valid output: normalized country options and selected-country company records. Downstream use: leads list, map and conversation result navigation share the country URL. No model tokens, paid search credits or retries are introduced. Missing countries remain an explicit unknown partition; all-country maps request selection rather than mixing nodes. Runtime input/output counts and latency are not yet instrumented for this read-only UI stage and must not be reported as measured. Optimization opportunity: move large-workspace country filtering into paginated repository reads instead of loading the full workspace on each navigation. Verification: two country normalization/navigation tests and TypeScript passed. Full runtime telemetry and remaining PRD features are pending; see `docs/PRODUCT_UI_V1.1_WORKFLOW.md`.

@@ -89,6 +89,7 @@ export interface CompanyRecord {
   leadType?: "Channel" | "Strategic Customer";
   searchRunId?: string;
   manuallyEdited?: boolean;
+  assessmentNeedsRefresh?: boolean;
 }
 
 export interface ChannelRelationship {

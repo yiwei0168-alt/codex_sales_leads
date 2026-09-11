@@ -5,8 +5,10 @@ import type { CompanyEditablePatch } from "@/lib/sales/types";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const allowedKeys = new Set(["accountTier", "supplyModel", "brandInvolvement", "opportunityStage", "priority", "owner", "nextAction", "selectedPathId"]);
+const allowedKeys = new Set(["accountTier", "supplyModel", "brandInvolvement", "opportunityStage", "priority", "owner", "nextAction", "selectedPathId", "primaryBusinessRole", "selectedCooperationPath"]);
 const allowedValues = {
+  primaryBusinessRole: new Set(["Distributor", "VAD", "VAR", "Dealer", "Reseller", "Retailer", "E-tailer", "SI", "Installer", "MSP", "ISP", "Agent", "Brand Owner"]),
+  selectedCooperationPath: new Set(["Direct Tier-1 Supply", "Distributor-Mediated Supply", "Direct Downstream Channel Supply", "OEM/ODM", "Other"]),
   accountTier: new Set(["Strategic Distributor", "Priority Distributor", "Standard Distributor", "Long-tail Distributor",
     "KA", "Priority", "Standard", "Long-tail"]),
   supplyModel: new Set(["Distributor Supply", "Brand Direct", "Co-sell/Co-supply", "TBD"]),
@@ -34,8 +36,8 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ ex
   }
   const { externalId } = await params;
   try {
-    await updateCompanyState(externalId, body, session.userId);
-    return Response.json({ updated: true });
+    const company = await updateCompanyState(externalId, body, session.userId);
+    return Response.json({ updated: true, company });
   } catch (error) {
     return Response.json({ error: error instanceof Error ? error.message : "Update failed" }, { status: 404 });
   }
