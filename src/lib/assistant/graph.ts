@@ -1,3 +1,4 @@
+import {withProductSpend} from "@/lib/billing/context";
 import { Annotation, END, START, StateGraph } from "@langchain/langgraph";
 
 import { getMissingRagConfig } from "@/lib/rag/config";
@@ -138,5 +139,5 @@ export function buildAssistantWorkflowGraph(dependencies: AssistantGraphDependen
 const productionGraph = buildAssistantWorkflowGraph();
 
 export async function runAssistantWorkflow(userId: string, content: string, history: AssistantConversationTurn[] = []) {
-  return productionGraph.invoke({ userId, content, history, intent: "general", reply: "", warnings: [] });
+  return withProductSpend(userId,"assistant",()=>productionGraph.invoke({ userId, content, history, intent: "general", reply: "", warnings: [] }));
 }

@@ -1,5 +1,11 @@
 # 产品工作流效率台账
 
+## 2026-09-12 助手与开发生成预算边界
+
+助手主图、开发策略/修订及跟进生成建立用户费用作用域；Kimi、Claude、Gemini聊天搜索及综合回答HTTP传输接入预留检查。并发子作用域独立，禁止跨用户嵌套；开发生成沿用已持久化操作ID。Kimi/Claude捕获预算拒绝后直接退出，不重试、不生成模板冒充成功、不切换供应商。跟进入口返回明确402，不改变原邮件。既有输出token上限不降低，未设上限请求继续保守阻止。
+
+验证：541项测试、类型检查通过，lint 0错误/11项已有警告；新增无费率零网络调用及并发归属测试。无付费调用、真实邮件发送或数据库迁移。联系人、独立知识处理/邮箱学习、完整阶段细分与拒绝遥测、费用上界配置及登录端到端验收仍未完成；未验证费率保持空，不能将预留占用当实际成本或声称全产品已封顶。
+
 ## Completed-run continuation proposal — 2026-09-12
 
 The existing task produces a deterministic, local-only gap proposal; no intent/model/search stage is introduced for this explicit button action. Natural-language revisions still use the existing Kimi interaction flow. Parent/child/root linkage and cumulative assessed-domain exclusions avoid replaying completed work; duplicate clicks reuse the child. Creation/reuse audit input/valid/used counts, cache hits, zero paid-token/credit/cash cost, latency and discard reasons. Exclusions remain outside model planning prompts; existing provider exclusion caps and registry filtering remain unchanged. Each executed child has its own normal runtime stage/cost records, not a reset of the parent's bill. No measured cost-saving percentage claimed. Opportunity: evaluate whether large exclusion sets reduce fresh yield enough to justify a user-approved change in geographic coverage, using real downstream quality rather than automatic endless search.

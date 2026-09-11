@@ -1,3 +1,4 @@
+import {budgetedFetch} from "@/lib/billing/paid-fetch";
 import type { ExternalSearchAnswer, WebCitation } from "./types";
 
 interface GeminiContentBlock {
@@ -84,7 +85,7 @@ export async function searchExternalWithGemini(
   let body: GeminiInteractionResponse = {};
   let status = 500;
   for (let attempt = 0; attempt < 3; attempt += 1) {
-    const response = await fetchImplementation(geminiInteractionsUrl(), {
+    const response = await budgetedFetch(fetchImplementation)(geminiInteractionsUrl(), {
       method: "POST",
       headers: { "x-goog-api-key": apiKey, "content-type": "application/json" },
       signal: AbortSignal.timeout(Number(process.env.GEMINI_SEARCH_TIMEOUT_MS ?? 90_000)),

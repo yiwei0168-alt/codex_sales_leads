@@ -1,3 +1,5 @@
+import {BudgetDeniedError} from "@/lib/billing/policy";
+import {budgetedFetch} from "@/lib/billing/paid-fetch";
 import { z } from "zod";
 
 import { cleanCitations, cleanHandoffCitations, evidencePayload, knowledgePayload, parseOutreachJson } from "./feedback-model-shared";
@@ -87,11 +89,12 @@ async function invokeKimiJson(
   for (let attempt = 0; attempt < 2; attempt += 1) {
     let response: Response;
     try {
-      response = await fetchImplementation(`${baseUrl()}/chat/completions`, {
+      response = await budgetedFetch(fetchImplementation)(`${baseUrl()}/chat/completions`, {
         method: "POST", headers: { authorization: `Bearer ${apiKey}`, "content-type": "application/json" },
         signal: AbortSignal.timeout(Number(process.env.KIMI_OUTREACH_TIMEOUT_MS ?? 180_000)), body: requestBody,
       });
     } catch (error) {
+      if (error instanceof BudgetDeniedError) throw error;
       if (error instanceof Error && /timeout|aborted/i.test(`${error.name} ${error.message}`)) throw error;
       if (attempt === 1) throw error;
       await new Promise((resolve) => setTimeout(resolve, 500 * (attempt + 1)));
@@ -216,6 +219,7 @@ export async function generateDevelopmentStrategyWithKimi(
       templateIds: context.templates.map((item) => item.id), warnings: [], model: response.model,
       promptVersion: PROMPT_VERSION, generationMetrics: response.metrics };
   } catch (error) {
+    if (error instanceof BudgetDeniedError) throw error;
     if (retryInvalidResponse && (error instanceof SyntaxError || error instanceof z.ZodError)) {
       return generateDevelopmentStrategyWithKimi(context, options, fetchImplementation, false);
     }
@@ -265,6 +269,7 @@ export async function generateDevelopmentStrategyPlanWithKimi(
       warnings: [], model: response.model, promptVersion: "development-strategy-kimi-v3-handoff",
       generationMetrics: response.metrics };
   } catch (error) {
+    if (error instanceof BudgetDeniedError) throw error;
     const fallback = fallbackResult(context,
       `Kimi strategy planning degraded safely: ${error instanceof Error ? error.message : String(error)}`);
     return { strategy: fallback.strategy, evidenceIds: [], knowledgeIds: [], warnings: fallback.warnings,
@@ -341,6 +346,7 @@ export async function generateDevelopmentEmailWithKimi(
         totalTokens: (plan.generationMetrics.totalTokens ?? 0) + (response.metrics.totalTokens ?? 0) },
     };
   } catch (error) {
+    if (error instanceof BudgetDeniedError) throw error;
     const fallback = fallbackResult(context,
       `Kimi email drafting degraded safely: ${error instanceof Error ? error.message : String(error)}`);
     return { ...fallback, strategy: plan.strategy, evidenceIds: [], knowledgeIds: [],

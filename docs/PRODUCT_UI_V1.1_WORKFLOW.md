@@ -1,5 +1,11 @@
 # Product UI v1.1 implementation workflow
 
+## 2026-09-12 助手与开发生成预算边界
+
+助手主图、开发策略/修订及跟进生成建立用户费用作用域；Kimi、Claude、Gemini聊天搜索及综合回答HTTP传输接入预留检查。并发子作用域独立，禁止跨用户嵌套；开发生成沿用已持久化操作ID。Kimi/Claude捕获预算拒绝后直接退出，不重试、不生成模板冒充成功、不切换供应商。跟进入口返回明确402，不改变原邮件。既有输出token上限不降低，未设上限请求继续保守阻止。
+
+验证：541项测试、类型检查通过，lint 0错误/11项已有警告；新增无费率零网络调用及并发归属测试。无付费调用、真实邮件发送或数据库迁移。联系人、独立知识处理/邮箱学习、完整阶段细分与拒绝遥测、费用上界配置及登录端到端验收仍未完成；未验证费率保持空，不能将预留占用当实际成本或声称全产品已封顶。
+
 ## 2026-09-12 completed-underfilled continuation
 
 049 adds owner-private parent/child/root lineage and exclusion snapshots. A completed task with a known gap can create one idempotent **proposed** child, never queue or execute it. The original result, checkpoint and cost remain unchanged. The child uses the remaining target, original market/roles and current product scoring policy; historical scores are not retroactively recomputed. Prior assessed domains across the lineage seed the existing discovery exclusion mechanism; they are not added to playbook prompts. The new task page exposes a separate plan/fee confirmation before execution through the existing budget-controlled workflow. Repeated clicks return the same child and record cache reuse. Maximum three continuations, confirmed exhaustion or consecutive zero-yield tasks require replanning; missing run provenance/counts or oversized exclusions are not silently inferred/truncated. Conversation deletion cascades lineage. 536 tests, 14 isolated browser checks and real rollback proposal/idempotency/RLS/deletion checks passed; migration 049 applied without running a paid search.

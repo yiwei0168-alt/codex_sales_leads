@@ -1,3 +1,4 @@
+import {budgetedFetch} from "@/lib/billing/paid-fetch";
 import { ChatOpenAI } from "@langchain/openai";
 
 import { getRagConfig } from "@/lib/rag/config";
@@ -37,7 +38,7 @@ export async function synthesizeHybridAnswer(
     timeout: 90_000,
     streamUsage: false,
     modelKwargs: { provider: config.openaiProviderPreferences },
-    configuration: { baseURL: config.openaiBaseUrl, defaultHeaders: config.openaiDefaultHeaders },
+    configuration: { fetch: budgetedFetch(), baseURL: config.openaiBaseUrl, defaultHeaders: config.openaiDefaultHeaders },
   });
   const internalIds = internal.citations.map((citation) => citation.chunkId);
   const externalSources = external.citations.map((citation, index) => ({ marker: `WEB:${index + 1}`, ...citation }));

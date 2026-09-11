@@ -1,3 +1,5 @@
+import {BudgetDeniedError} from "@/lib/billing/policy";
+import {budgetedFetch} from "@/lib/billing/paid-fetch";
 import { z } from "zod";
 
 import { getOpenRouterConfig, openRouterChatCompletionsUrl, openRouterRequestHeaders,
@@ -44,13 +46,14 @@ async function invokeClaudeJson(
   for (let attempt = 0; attempt < 2; attempt += 1) {
     let response: Response;
     try {
-      response = await fetchImplementation(openRouterChatCompletionsUrl(config), {
+      response = await budgetedFetch(fetchImplementation)(openRouterChatCompletionsUrl(config), {
         method: "POST",
         headers: openRouterRequestHeaders(config),
         signal: AbortSignal.timeout(Number(process.env.CLAUDE_OUTREACH_TIMEOUT_MS ?? 240_000)),
         body: requestBody,
       });
     } catch (error) {
+      if (error instanceof BudgetDeniedError) throw error;
       if (error instanceof Error && /timeout|aborted/i.test(`${error.name} ${error.message}`)) throw error;
       if (attempt === 1) throw error;
       await new Promise((resolve) => setTimeout(resolve, 500 * (attempt + 1)));
@@ -159,6 +162,7 @@ export async function reviseDevelopmentDraftWithClaude(
       generationMetrics: response.metrics,
     };
   } catch (error) {
+    if (error instanceof BudgetDeniedError) throw error;
     const message = error instanceof Error ? error.message : String(error);
     if (retryInvalidResponse && (error instanceof SyntaxError || error instanceof z.ZodError
       || /empty outreach JSON|omitted .* markers|invented .* IDs/i.test(message))) {

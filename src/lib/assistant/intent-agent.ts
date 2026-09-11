@@ -1,3 +1,5 @@
+import {BudgetDeniedError} from "@/lib/billing/policy";
+import {budgetedFetch} from "@/lib/billing/paid-fetch";
 import { z } from "zod";
 
 import type { ChannelRole } from "@/lib/domain";
@@ -271,7 +273,7 @@ async function invokeKimiIntent(options: {
   try {
     for (let attempt = 0; attempt < 3; attempt += 1) {
       attempts = attempt + 1;
-      const response = await options.fetchImplementation(`${kimiBaseUrl()}/chat/completions`, {
+      const response = await budgetedFetch(options.fetchImplementation)(`${kimiBaseUrl()}/chat/completions`, {
         method: "POST",
         headers: { authorization: `Bearer ${options.apiKey}`, "content-type": "application/json" },
         signal: AbortSignal.timeout(Number(process.env.KIMI_INTENT_TIMEOUT_MS ?? 120_000)),
@@ -301,6 +303,7 @@ async function invokeKimiIntent(options: {
           }
           return { raw: validated.data, body, call: buildCall(true) };
         } catch (error) {
+          if (error instanceof BudgetDeniedError) throw error;
           if (attempt < 1) {
             await new Promise((resolve) => setTimeout(resolve, 500));
             continue;
@@ -315,6 +318,7 @@ async function invokeKimiIntent(options: {
     if (status < 200 || status >= 300) throw new Error(body.error?.message ?? `Kimi HTTP ${status}`);
     throw new Error("Kimi exhausted bounded structured-output retries");
   } catch (error) {
+    if (error instanceof BudgetDeniedError) throw error;
     const detail = error instanceof Error ? error.message : "unknown Kimi invocation error";
     throw new KimiIntentInvocationError(detail, buildCall(false, detail));
   }
@@ -383,6 +387,7 @@ export async function planAssistantRequest(
       model = selected.body.model ?? (selected === light ? lightModel : complexModel);
       plannerSource = selected === light ? "kimi-light" : "kimi-k3";
     } catch (error) {
+      if (error instanceof BudgetDeniedError) throw error;
       if (error instanceof KimiIntentInvocationError) completedCalls.push(error.call);
       const fallback = await invokeEquivalentIntentFallback({ content, history, fetchImplementation });
       completedCalls.push(fallback.call);
@@ -425,6 +430,7 @@ export async function planAssistantRequest(
       plannerModel: model, plannerSource, plannerCalls, warnings: plannerWarnings,
     };
   } catch (error) {
+    if (error instanceof BudgetDeniedError) throw error;
     const fallback = fallbackPlan(content);
     if (error instanceof KimiIntentInvocationError) completedCalls.push(error.call);
     if (completedCalls.length > 0) fallback.plannerCalls = completedCalls;

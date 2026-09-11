@@ -6,7 +6,9 @@ User approved conservative reservation and fail-closed behavior for missing rate
 
 The production `runLeadWorkflow` sets an owner/action scope. Its embedding, playbook SDK, discovery (Gemini/Places/Exa/Brave/SearchAPI), Tavily evidence, DeepSeek and compatible fallback transports reserve before **each HTTP attempt**, including SDK retries. The scope follows asynchronous work; independent users/actions do not share in-flight model billing. Deterministic stages and cache reuse do not reserve. Official-website crawler reads are not paid provider transports. Experiments outside the product scope retain their previously approved separate budgeting; this is not authorization to run experiments.
 
-**Not complete:** independent assistant intent/chat, generation/revision/follow-up, contact lookup, knowledge embedding/ingestion and mailbox learning entry points still need owner scopes and transport coverage. The UI explicitly discloses this. Per-task sub-limits, invoice reconciliation/release and denied-call aggregate telemetry remain open. No broad “all product costs capped” claim is valid yet.
+Assistant intent/chat, development generation/revision and follow-up now establish owner scopes. Their Kimi/Claude HTTP, Gemini external search and synthesis SDK transports are gated; generation uses the persisted operation ID. Child scopes isolate parallel attribution and reject cross-owner nesting. Direct Kimi/Claude budget denials bypass retries and template/provider fallback; follow-up returns 402. Existing token caps are unchanged; uncapped requests remain blocked.
+
+**Not complete:** contact lookup, independent knowledge embedding/ingestion and mailbox learning entry points still need owner scopes and transport coverage. The UI explicitly discloses this. Per-task sub-limits, finer stage attribution, invoice reconciliation/release and denied-call aggregate telemetry remain open. SDK-wrapped errors may still cause harmless local retries before being surfaced, but each transport attempt remains gated. No broad “all product costs capped” claim is valid yet.
 
 ## Storage and concurrency
 
