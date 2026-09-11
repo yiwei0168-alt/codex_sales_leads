@@ -10,6 +10,12 @@ Verification: country normalization unit tests and TypeScript. This stage does n
 
 ## Remaining stages
 
+### Stage 4c: manual style/claim authoring
+
+Private memory editor -> explicit scope/content confirmation -> owner-locked, version-checked save -> existing Embedding provider for changed content only -> atomic content/vector write. Stable create IDs block duplicate records/calls on retry; conflicts are surfaced, not overwritten. Title/scope-only edits reuse vectors. Archived records stay archived when edited. Marketing claims require explicit external-use approval and remain excluded from objective scoring. Company-specific facts and structured path choices continue through their authoritative editors; arbitrary text cannot rewrite structured path history.
+
+Private outreach RAG now filters country and role scope before ranking, rather than merely rewarding matches. Manual content caps at 1,200 characters to avoid truncating new preferences in downstream packets. No embedding failover is introduced. Eleven mocked memory tests, TypeScript and targeted lint pass; no paid embedding call or live-browser save was performed. Remaining: complete revision/provenance audit, company-specific memory authoring, price normalization and durable failure telemetry; manual scope fields currently require canonical role names and two-letter country codes.
+
 ### Stage 4b: private-memory lifecycle
 
 Knowledge page -> session-owner memory list (50 per page) -> explicit confirmation -> archive/activate/delete transaction. Only reusable preferences/approved claims have lifecycle controls; company-classification mirrors are maintained through company/relationship source editors. Existing mail, current classifications, relationship facts and audit history are not deleted. Private RAG already requires active status. Path learning now also requires a matching active `path-edit:{id}` memory instead of unconditionally replaying modification history. Deleted or archived path preferences cannot re-enter through that history reader. Legacy edits without a matching memory are conservatively excluded. In-flight contexts and already generated drafts are not retroactively rewritten.

@@ -1,5 +1,11 @@
 # 产品工作流效率台账
 
+## PRD v1.1 / UI stage 4c — manual style/claim edits
+
+Only changed/new content is embedded; title and scope changes reuse vectors, and stale revisions or duplicate create IDs are rejected before paid calls. No generation/search calls. Success logs include input characters, one valid/persisted output, returned embedding model/input tokens/latency, zero output tokens/search credits, utilization and reuse opportunity. Embedding dollar price and SDK-internal retries are explicitly unknown, not reported as zero; provider receipt is retained in aggregate service logs. All validation used mocked embeddings.
+
+Strict market/role eligibility prevents irrelevant private memories consuming downstream context. New user-authored content is capped at 1,200 characters, matching the current packet cap. Remaining optimization/measurement work: failure-cost receipts, durable committed-event sink, embedding provenance/version tracking, lock-held network latency and revision audit. Holding an owner-memory advisory lock currently favors consistency and duplicate-call prevention over concurrent edits to that one record. Eleven focused memory tests pass; no measured cash savings claimed.
+
 ## PRD v1.1 / UI stage 4b — private memory lifecycle
 
 Archive/activate/delete reuse existing records/vectors with zero model tokens, API credits or paid inference. Successful mutation emits anonymous versioned service-log aggregates: one input/valid/used mutation, latency, zero retries, empty discard reasons, utilization one and vector reuse opportunity. Workspace-bound mutations retain an owner audit event without duplicating the memory body. Read list is bounded to 51 fetched/50 returned entries and refreshes only on opening/user action, not polling.

@@ -105,6 +105,8 @@ export async function searchOutreachKnowledge(
        select * from user_outreach_memory
         where user_id=$6 and status='active' and embedding is not null
           and kind <> 'company-classification'
+          and (cardinality(market_codes)=0 or market_codes && $3::text[])
+          and (cardinality(channel_roles)=0 or channel_roles && $4::text[])
           and (kind <> 'user-approved-marketing-claim' or usage_scope='external-use-approved')
      ), vectors as (
        select id, greatest(1-(embedding <=> $1::vector), 0)::float8 as similarity

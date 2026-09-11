@@ -1,5 +1,16 @@
 import { requireApiSession } from "@/lib/auth/session";
 import { listMemories,changeMemory,memoryChangeSchema } from "@/lib/outreach/memory-management";
+import { memoryEditorSchema } from "@/lib/outreach/memory-editor";
+import { saveManualMemory } from "@/lib/outreach/memory-save";
+export async function POST(request:Request){
+  const session=await requireApiSession();if(session instanceof Response)return session;
+  const input=memoryEditorSchema.safeParse(await request.json().catch(()=>null));
+  if(!input.success)return Response.json({error:"请检查内容、范围和确认选项"},{status:400});
+  try{const status=await saveManualMemory(session.userId,input.data);
+    if(status!=="ok")return Response.json({error:status==="not-found"?"记忆不存在":"版本已变化、记录已存在或需在源页面编辑，请刷新核实"},{status:status==="not-found"?404:409});
+    return Response.json({ok:true});
+  }catch{return Response.json({error:"保存未确认，请刷新核实；不会使用新正文配旧向量"},{status:503});}
+}
 export async function GET(request:Request){
   const session=await requireApiSession();if(session instanceof Response)return session;
   const offset=Number(new URL(request.url).searchParams.get("offset")??0);
