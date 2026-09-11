@@ -1,5 +1,11 @@
 # 产品工作流效率台账
 
+## PRD v1.1 / UI stage 4d — memory audit coverage
+
+One database trigger covers all memory writers instead of duplicating audit construction in every Agent. No-op timestamp updates produce no audit output. Snapshots omit full text/vectors and use field-level change metadata, preventing repeated storage of deleted private content. Audit reads are lazy and bounded to 51 input/50 API-used rows, with anonymous count, latency, zero token/API-credit cost, discard/utilization and optimization service-log events. Database storage/compute cost remains unallocated; failed-read and durable utilization metering remain pending. No model/search/embedding calls introduced.
+
+Verification: actual DB transactional smoke covers three audit events from four mutations (timestamp-only update suppressed), deletion-surviving history and cross-user invisibility; every temporary write rolled back. Three mocked route tests cover pagination/auth/cache. Future optimization: incremental audit cursors and aggregate storage retention metrics; do not infer history text recovery from metadata-only audit.
+
 ## PRD v1.1 / UI stage 4c — manual style/claim edits
 
 Only changed/new content is embedded; title and scope changes reuse vectors, and stale revisions or duplicate create IDs are rejected before paid calls. No generation/search calls. Success logs include input characters, one valid/persisted output, returned embedding model/input tokens/latency, zero output tokens/search credits, utilization and reuse opportunity. Embedding dollar price and SDK-internal retries are explicitly unknown, not reported as zero; provider receipt is retained in aggregate service logs. All validation used mocked embeddings.

@@ -10,6 +10,12 @@ Verification: country normalization unit tests and TypeScript. This stage does n
 
 ## Remaining stages
 
+### Stage 4d: transactional memory change audit
+
+Migration 039 adds owner-RLS `user_memory_audit` and an AFTER INSERT/UPDATE/DELETE trigger on private memories. Every source writer, including Agent upserts and workspace-less manual saves, now produces audit in the same transaction; timestamp-only changes are suppressed. Owner UI lazily opens paginated history, including deleted memory IDs. Snapshots contain status, kind, scope and content length, plus changed field names, but no title, body, embedding or arbitrary context. This is change auditing, not full-text version recovery; historical text rollback remains unsupported and pre-migration changes are not reconstructed.
+
+Migration applied. Real-database rollback smoke passed for create/archive/delete, no-op suppression, no private text duplication and other-user RLS invisibility. API tests cover auth, pagination and private caching; TypeScript and targeted lint pass. No paid API call or real user deletion occurred. Browser interaction QA remains outstanding.
+
 ### Stage 4c: manual style/claim authoring
 
 Private memory editor -> explicit scope/content confirmation -> owner-locked, version-checked save -> existing Embedding provider for changed content only -> atomic content/vector write. Stable create IDs block duplicate records/calls on retry; conflicts are surfaced, not overwritten. Title/scope-only edits reuse vectors. Archived records stay archived when edited. Marketing claims require explicit external-use approval and remain excluded from objective scoring. Company-specific facts and structured path choices continue through their authoritative editors; arbitrary text cannot rewrite structured path history.

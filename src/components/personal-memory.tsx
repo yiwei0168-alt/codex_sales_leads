@@ -2,8 +2,10 @@
 import { useEffect,useState } from "react";
 import type { MemoryItem } from "@/lib/outreach/memory-management";
 import { MemoryEditor } from "./memory-editor";
+import { MemoryHistory } from "./memory-history";
 const kinds:Record<string,string>={"email-style":"邮件风格","cooperation-path-preference":"合作路径偏好","user-approved-marketing-claim":"用户确认业务信息","company-classification":"公司事实/关系记录"};
 export function PersonalMemory(){
+  const [historyOpen,setHistoryOpen]=useState(false);
   const [editing,setEditing]=useState<MemoryItem|"new"|null>(null);
   const [items,setItems]=useState<MemoryItem[]>([]);const [offset,setOffset]=useState(0);const [hasMore,setHasMore]=useState(false);
   const [revision,setRevision]=useState(0);const [error,setError]=useState("");const [busy,setBusy]=useState(false);const [loading,setLoading]=useState(true);
@@ -22,6 +24,7 @@ export function PersonalMemory(){
   }catch(error){setError(error instanceof Error?error.message:"操作失败");}finally{setBusy(false);}}
   function page(next:number){setLoading(true);setItems([]);setPending(null);setOffset(next);}
   return <section className="panel"><h2>个人长期记忆</h2><p>仅本人可见，与通用知识库隔离。停用/删除影响后续学习检索，不撤销公司当前分类、关系或已生成邮件。已开始的任务可能仍持有旧上下文。</p>
+    <details onToggle={event=>setHistoryOpen(event.currentTarget.open)}><summary>记忆变更审计</summary>{historyOpen&&<MemoryHistory/>}</details>
     <button disabled={busy} onClick={()=>{setEditing("new");setPending(null);}}>新增个人记忆</button>
     {editing&&<MemoryEditor key={editing==="new"?"new":editing.id} item={editing==="new"?undefined:editing} onCancel={()=>setEditing(null)} onSaved={()=>{setEditing(null);setRevision(value=>value+1);}}/>}
     <button disabled={busy} onClick={()=>setRevision(value=>value+1)}>刷新记忆</button>{error&&<p role="alert">{error}</p>}{loading&&<p>正在读取…</p>}
