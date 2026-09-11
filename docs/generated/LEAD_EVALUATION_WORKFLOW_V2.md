@@ -757,8 +757,8 @@ flowchart TD
 | `src/lib/rag/openai-provider.ts` | `8d3151fd671b7a791ac81885a91a09a9281be5b3ebd04edcd188f517da3e088d` |
 | `src/lib/assistant/service.ts` | `1e2d9719d2937cc3081c3dbddf016d7cd665de1c1e9a88c775d10e3863ec00df` |
 | `src/lib/assistant/repository.ts` | `4243485613740437216b7867c0b8b420ea16d555f852397b436fd8a5f5414e67` |
-| `src/lib/leads/workflow/graph.ts` | `7fad98072163660aaa589a095360d49c63a71ea78adc86ee8a6821fa815edf30` |
-| `src/lib/leads/workflow/jobs.ts` | `138299e1dac31066c136382219f6177126ec3a0efe0de67c837f30b0132f4ce1` |
+| `src/lib/leads/workflow/graph.ts` | `6985e6cd75dd47485f5df202a94e16afc22e4cdd27a2ad4cf46a3c26e240071c` |
+| `src/lib/leads/workflow/jobs.ts` | `1adcc7ab1b600f1c773e6a804cbbaaa16c5fed89f2929434513b4fc8e8e3ae10` |
 | `src/lib/leads/workflow/rag-context.ts` | `1e1ee21e77b90731e849426cd7130de7d1e50ee6aec9f196e44cb642bf81387b` |
 | `src/lib/leads/workflow/playbook.ts` | `92ee9d6f02304824bd3761600637d170c494e357accba24fd662d21ee6140cf3` |
 | `src/lib/leads/workflow/playbook-cache.ts` | `945d3fc727312208650ee7b4e55e33860e7c54f7e3daa939f768952409a1803f` |
@@ -781,7 +781,7 @@ flowchart TD
 | `db/migrations/034_model_account_cash_cost.sql` | `4790c7ad12eda543e197c84ddd77c4a5ce296b7871ccee799f3aa2262684bdbb` |
 | `src/providers/tavily.ts` | `843b5ce4be45c7163249c7533d5116a129f8b5009b5ae800d97728639805ea5f` |
 | `src/lib/leads/workflow/handoff-assembler.ts` | `58b92f337c05b7e1b62b28db27eb7d6ed1b5bcd95272926868f3c4a1df3a680c` |
-| `src/lib/leads/workflow/persistence.ts` | `6ad64ddf71aee9d59332ca396822b87504f7ee0686d68184b4bd4a8069464f1d` |
+| `src/lib/leads/workflow/persistence.ts` | `f74ed0956960822d0ff8b7e40946cb911d1da47993c58581d16b0e013c95c319` |
 | `src/lib/sales/repository.ts` | `41ddcec80e8a9f85d4b053b3df3be51d47954b15e20225473c59f847bae1f29e` |
 | `src/lib/outreach/graph.ts` | `97c7377dbc5eaaabe150f42e10811e599fdd65f028424f4c415927b5045b2590` |
 | `src/lib/outreach/kimi-agent.ts` | `75e6ed9ab23c1cf506c425b3551e97c0129ff0fdb799f6b8d6f06037a3f02950` |
