@@ -1,3 +1,4 @@
+import {withProductSpend} from "@/lib/billing/context";
 import type { PoolClient } from "pg";
 import { tenantQuery, tenantTransaction, type AppDatabaseRole } from "./db";
 import { sha256, chunkDocument } from "./chunker";
@@ -25,7 +26,7 @@ export async function upsertKnowledgeDocument(userId: string, input: KnowledgeDo
 
   const chunks = chunkDocument(input.content);
   if (chunks.length === 0) throw new Error(`Document ${input.externalId} has no ingestible content`);
-  const embeddings = await embedTexts(chunks.map((chunk) => chunk.content));
+  const embeddings = await withProductSpend(userId,"knowledge-ingestion",()=>embedTexts(chunks.map((chunk) => chunk.content)));
 
   return tenantTransaction(userId, async (client: PoolClient) => {
     await client.query("select pg_advisory_xact_lock(hashtextextended($1,0))",[`${userId}:${input.collection}:${input.externalId}`]);

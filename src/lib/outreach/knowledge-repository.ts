@@ -1,3 +1,4 @@
+import {withProductSpend} from "@/lib/billing/context";
 import { chunkDocument } from "@/lib/rag/chunker";
 import { tenantQuery, tenantTransaction } from "@/lib/rag/db";
 import { embedTexts } from "@/lib/rag/openai-provider";
@@ -17,7 +18,7 @@ export async function upsertOutreachSource(userId: string, input: {
   sourceRefs: Record<string, unknown>;
 }): Promise<number> {
   const chunks = chunkDocument(input.content);
-  const embeddings = await embedTexts(chunks.map((chunk) => chunk.content));
+  const embeddings = await withProductSpend(userId,"outreach-knowledge-ingestion",()=>embedTexts(chunks.map((chunk) => chunk.content)));
   await tenantTransaction(userId, async (client) => {
     await client.query(
       `delete from outreach_knowledge_item
@@ -47,7 +48,7 @@ export async function embedPendingOutreachKnowledge(userId: string): Promise<num
         and (visibility='shared' or owner_id=$1)
       order by priority_weight desc, created_at`, [userId], "admin");
   if (!rows.length) return 0;
-  const embeddings = await embedTexts(rows.map((row) => row.content));
+  const embeddings = await withProductSpend(userId,"outreach-pending-embedding",()=>embedTexts(rows.map((row) => row.content)));
   await tenantTransaction(userId, async (client) => {
     for (const [index, row] of rows.entries()) {
       await client.query(`update outreach_knowledge_item set embedding=$2::vector, updated_at=now() where id=$1`,
@@ -159,7 +160,7 @@ export async function storeFeedbackMemory(userId: string, input: {
   channelRoles: string[];
   reason: string;
 }): Promise<string> {
-  const embedding = await prepareFeedbackMemory(input.summary);
+  const embedding = await withProductSpend(userId,"feedback-memory-embedding",()=>prepareFeedbackMemory(input.summary));
   return tenantTransaction(userId, (client) => insertFeedbackMemory(client, userId, input, embedding));
 }
 
@@ -203,7 +204,7 @@ export async function storeUserApprovedMarketingClaim(userId: string, input: {
   externalUseApproved: boolean;
   confirmationContext: string;
 }): Promise<string> {
-  const [embedding] = await embedTexts([input.claim]);
+  const [embedding] = await withProductSpend(userId,"marketing-memory-embedding",()=>embedTexts([input.claim]));
   const rows = await tenantQuery<{ id: string }>(userId,
     `insert into user_outreach_memory (
        user_id, workspace_id, kind, external_id, title, content, market_codes, channel_roles,

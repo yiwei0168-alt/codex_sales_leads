@@ -1,3 +1,4 @@
+import {BudgetDeniedError} from "@/lib/billing/policy";
 import { budgetedFetch } from "@/lib/billing/paid-fetch";
 import { ProviderUnavailableError } from "./contracts";
 
@@ -51,6 +52,7 @@ async function fetchWithRetry(
       await new Promise((resolve) => setTimeout(resolve, retryDelay));
       continue;
     } catch (error) {
+      if(error instanceof BudgetDeniedError)throw error;
       lastError = error;
       if (attempt < maxAttempts - 1) await new Promise((resolve) => setTimeout(resolve, 500 * (2 ** attempt)));
     }
@@ -151,6 +153,7 @@ export class TavilySearchProvider {
         signal,
       }, this.maxAttempts, this.fetchImplementation);
     } catch (error) {
+      if(error instanceof BudgetDeniedError)throw error;
       const attempts = typeof error === "object" && error !== null && "attempts" in error
         ? Number((error as { attempts?: unknown }).attempts) || 0 : 0;
       throw new TavilyProviderUnavailableError(error, attempts, Date.now() - startedAt);
@@ -160,6 +163,7 @@ export class TavilySearchProvider {
     try {
       body = await response.json() as TavilyWireResponse & { detail?: unknown };
     } catch (error) {
+      if(error instanceof BudgetDeniedError)throw error;
       throw new TavilyProviderUnavailableError(error, attempts, Date.now() - startedAt);
     }
     if (!response.ok) throw new TavilyProviderUnavailableError(
@@ -204,6 +208,7 @@ export class TavilySearchProvider {
         signal,
       }, this.maxAttempts, this.fetchImplementation);
     } catch (error) {
+      if(error instanceof BudgetDeniedError)throw error;
       const attempts = typeof error === "object" && error !== null && "attempts" in error
         ? Number((error as { attempts?: unknown }).attempts) || 0 : 0;
       throw new TavilyProviderUnavailableError(error, attempts, Date.now() - startedAt);
@@ -219,6 +224,7 @@ export class TavilySearchProvider {
     try {
       body = await response.json() as typeof body;
     } catch (error) {
+      if(error instanceof BudgetDeniedError)throw error;
       throw new TavilyProviderUnavailableError(error, attempts, Date.now() - startedAt);
     }
     if (!response.ok) throw new TavilyProviderUnavailableError(

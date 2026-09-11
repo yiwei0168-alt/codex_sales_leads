@@ -1,3 +1,4 @@
+import {BudgetDeniedError} from "@/lib/billing/policy";
 import type { AiProvider, StructuredAiResponse } from "@/providers/contracts";
 import { createLeadAiProvider } from "@/providers/resilient-ai";
 import { z } from "zod";
@@ -528,6 +529,7 @@ export class LeadQualificationAgent {
         return normalized;
       }));
     } catch (error) {
+      if(error instanceof BudgetDeniedError)throw error;
       const reason = `Routine batch failed: ${error instanceof Error ? error.message : String(error)}`;
       if (error instanceof z.ZodError) {
         return Promise.all(candidates.map((candidate) => this.evaluateOneRoutineRepair(
@@ -562,6 +564,7 @@ export class LeadQualificationAgent {
         ...normalized.warnings,
       ] };
     } catch (error) {
+      if(error instanceof BudgetDeniedError)throw error;
       return failedAssessment(candidate,
         `${reason} Same-tier schema repair failed without Pro escalation: ${error instanceof Error ? error.message : String(error)}`,
         this.promptVersion);
@@ -594,6 +597,7 @@ export class LeadQualificationAgent {
         this.includeCooperationPaths);
       return { ...normalized, warnings: [reason, ...normalized.warnings] };
     } catch (error) {
+      if(error instanceof BudgetDeniedError)throw error;
       return failedAssessment(candidate,
         `${reason} Escalation failed: ${error instanceof Error ? error.message : String(error)}`,
         this.promptVersion);

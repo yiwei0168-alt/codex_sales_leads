@@ -1,3 +1,4 @@
+import {withProductSpend} from "@/lib/billing/context";
 import { tenantTransaction } from "@/lib/rag/db";
 import { embedTextsWithUsage } from "@/lib/rag/openai-provider";
 import type { MemoryEditorInput } from "./memory-editor";
@@ -15,7 +16,7 @@ export async function saveManualMemory(userId:string,input:MemoryEditorInput){
     if(row&&(!["email-style","user-approved-marketing-claim"].includes(row.kind)||row.kind!==input.kind))return "source-managed";
     if(row&&row.updated_at!==input.expectedUpdatedAt)return "conflict";
     const changed=!row||row.content!==input.content;
-    const embedded=changed?await embedTextsWithUsage([input.content]):{embeddings:[],usage:[]};
+    const embedded=changed?await withProductSpend(userId,"manual-memory-embedding",()=>embedTextsWithUsage([input.content])):{embeddings:[],usage:[]};
     const scope=input.kind==="user-approved-marketing-claim"&&input.externalUseApproved?"external-use-approved":"internal-learning";
     const context=JSON.stringify({provenance:"user-confirmed-manual",objectiveFact:false,scoringEvidence:false});
     if(row)await client.query(`update user_outreach_memory set title=$3,content=$4,market_codes=$5,channel_roles=$6,

@@ -1,3 +1,4 @@
+import {BudgetDeniedError} from "@/lib/billing/policy";
 import { budgetedFetch } from "@/lib/billing/paid-fetch";
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "./contracts";
 import { ProviderUnavailableError } from "./contracts";
@@ -97,6 +98,7 @@ export class OpenAiCompatibleProvider implements AiProvider {
             accountCashCostUsd: body.usage.cost } : undefined,
         } satisfies StructuredAiResponse<TOutput>;
       } catch (error) {
+        if(error instanceof BudgetDeniedError)throw error;
         lastError = error;
         if (signal?.aborted) throw error;
         if (attempt < this.maxAttempts - 1) await delay(300 * (attempt + 1));

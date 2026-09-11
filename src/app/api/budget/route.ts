@@ -6,7 +6,7 @@ export const runtime="nodejs";
 export async function GET(){
   const session=await requireApiSession();if(session instanceof Response)return session;
   try{return Response.json({...await readSpendBudget(session.userId),tariffVersion:billingPolicy.version,configuredRules:billingPolicy.rules.length,
-    notice:"当前接入后台线索工作流、助手聊天、开发策略/修订及跟进生成；联系人、独立知识处理及邮箱学习入口尚未全量接入。累计预算不自动按月重置。预留占用不等于实际账单；未知费用保留占用，缺价或费用上界不明时阻止已接入的付费请求。"},{headers:{"Cache-Control":"private, no-store"}});}catch{return Response.json({error:"预算读取失败；不能推断可用金额"},{status:503});}
+    notice:"已接入当前产品的线索工作流、聊天、开发生成、联系人、关系分析、知识和邮箱学习付费入口；费率上界仍需逐项审核配置，不能据此认定已具备真实付费验收条件。累计预算不自动按月重置。预留占用不等于实际账单；未知费用保留占用，缺价或费用上界不明时阻止已接入的付费请求。"},{headers:{"Cache-Control":"private, no-store"}});}catch{return Response.json({error:"预算读取失败；不能推断可用金额"},{status:503});}
 }
 export async function PUT(request:Request){
   const session=await requireApiSession();if(session instanceof Response)return session;

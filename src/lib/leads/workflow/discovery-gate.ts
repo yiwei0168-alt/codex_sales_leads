@@ -1,3 +1,4 @@
+import {BudgetDeniedError} from "@/lib/billing/policy";
 import { isIP } from "node:net";
 import { lookup } from "node:dns/promises";
 
@@ -197,6 +198,7 @@ export async function fetchLightweightHomepage(candidate: LeadWorkflowCandidate,
       capturedAt, evidenceRunId: candidate.evidenceSnapshotRunId, contentHash: leadEvidenceContentHash(compact.text),
       freshnessStatus: "fresh" } };
   } catch (error) {
+    if(error instanceof BudgetDeniedError)throw error;
     return { warning: `homepage-fetch-failed:${error instanceof Error ? error.name : "unknown"}` };
   }
 }
@@ -279,6 +281,7 @@ export class LeadDiscoveryGate {
           attempts: response.attempts, retries: response.retries,
           accountCashCostUsd: response.usage?.accountCashCostUsd });
       } catch (error) {
+        if(error instanceof BudgetDeniedError)throw error;
         warnings.push(`Discovery gate batch held after routine model failure: ${error instanceof Error ? error.message : String(error)}`);
       }
     }

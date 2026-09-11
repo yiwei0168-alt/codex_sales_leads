@@ -1,4 +1,5 @@
 import {beforeEach,expect,it,vi} from "vitest";
+vi.mock("@/lib/billing/denial-metrics",()=>({recordBudgetDenial:vi.fn().mockResolvedValue(undefined)}));
 const mocks=vi.hoisted(()=>({reserve:vi.fn(),settle:vi.fn(),quote:vi.fn()}));
 vi.mock("./repository",()=>({reservePaidCall:mocks.reserve,settlePaidCall:mocks.settle}));
 vi.mock("./policy",async original=>({...await original<typeof import("./policy")>(),quoteRequest:mocks.quote}));
@@ -8,6 +9,12 @@ import {BudgetDeniedError} from "./policy";
 const scope={userId:"user",operationId:"action",stage:"score"};
 const init={method:"POST",headers:{authorization:"Bearer fixture-secret"},body:JSON.stringify({model:"test",max_tokens:100,messages:[{content:"private company input"}]})};
 beforeEach(()=>{vi.resetAllMocks();mocks.quote.mockReturnValue({key:"fixture",maximumChargeMicros:100});mocks.reserve.mockResolvedValue("reservation");mocks.settle.mockResolvedValue(undefined);});
+it("bounds form requests without recording their fields",async()=>{
+  const transport=vi.fn().mockResolvedValue(Response.json({}));
+  await withSpendContext(scope,()=>budgetedFetch(transport)("https://example.test/start",{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded"},body:new URLSearchParams({domain:"private-company.test"})}));
+  expect(mocks.quote).toHaveBeenCalledWith(expect.objectContaining({model:"",requestBytes:expect.any(Number)}));
+  expect(JSON.stringify(mocks.reserve.mock.calls)).not.toContain("private-company");
+});
 it("missing prices or budget block the transport entirely",async()=>{
   const transport=vi.fn();mocks.quote.mockImplementation(()=>{throw new BudgetDeniedError("missing-tariff");});
   await expect(withSpendContext(scope,()=>budgetedFetch(transport)("https://example.test/chat",init))).rejects.toThrow("missing-tariff");expect(transport).not.toHaveBeenCalled();

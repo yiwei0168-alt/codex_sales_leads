@@ -1,4 +1,5 @@
 import {afterEach,expect,it,vi} from "vitest";
+vi.mock("@/lib/billing/denial-metrics",()=>({recordBudgetDenial:vi.fn().mockResolvedValue(undefined)}));
 import {withProductSpend} from "./context";
 import {planAssistantRequest} from "@/lib/assistant/intent-agent";
 import {generateFollowUp} from "@/lib/outreach/kimi-agent";

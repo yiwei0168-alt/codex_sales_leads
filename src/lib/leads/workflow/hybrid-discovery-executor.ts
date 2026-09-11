@@ -1,3 +1,4 @@
+import {BudgetDeniedError} from "@/lib/billing/policy";
 import { createHash } from "node:crypto";
 
 import type { LeadSearchPlan } from "@/lib/assistant/types";
@@ -404,6 +405,7 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
           cacheStatus: cached ? "hit" : "miss", discardedReasonCounts: discarded, items };
         calls.push(completed); await options.onCall?.(completed);
       } catch (error) {
+        if(error instanceof BudgetDeniedError)throw error;
         failedByTrack.add(trackKey);
         const details = failureDetails(error);
         session.failedCalls.set(fingerprint, { kind: details.kind,

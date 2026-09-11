@@ -1,3 +1,4 @@
+import {withProductSpend} from "@/lib/billing/context";
 import { readAliMailMessages, verifyAliMailCredentials } from "./alimail-imap";
 import { kimiMailboxModel, learnMailboxMessageWithKimi } from "./kimi";
 import { prepareMailboxDisclosure } from "./privacy";
@@ -97,7 +98,7 @@ export async function reviewMailboxMessageForLearning(userId: string, messageId:
   });
   await markMailboxMessageAnalyzing(userId, messageId);
   try {
-    const learning = await learnMailboxMessageWithKimi(disclosure.message);
+    const learning = await withProductSpend(userId,"mailbox-learning",()=>learnMailboxMessageWithKimi(disclosure.message),auditId);
     const candidates = await persistMailboxLearning({ userId, messageId, message: disclosure.message, learning });
     await finishMailboxOutboundAudit(auditId, userId, { status: "completed" });
     return { status: "completed" as const, candidates, redactions: disclosure.redactionCounts };

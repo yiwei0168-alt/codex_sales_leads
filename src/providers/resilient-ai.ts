@@ -1,3 +1,4 @@
+import {BudgetDeniedError} from "@/lib/billing/policy";
 import { createHash } from "node:crypto";
 import { currentSpendContext } from "@/lib/billing/context";
 
@@ -121,6 +122,7 @@ export class ResilientAiProvider implements AiProvider {
         this.circuits.delete(this.primary.id);
         return { ...response, requestedModelVersion: requestedModel, actualProviderId: this.primary.id };
       } catch (error) {
+        if(error instanceof BudgetDeniedError)throw error;
         primaryError = error;
         if (shouldTripCircuit(error)) this.recordFailure(this.primary.id);
       }
@@ -149,6 +151,7 @@ export class ResilientAiProvider implements AiProvider {
             warnings: [`Model fallback used after ${failures.length} route failure(s) (${failures.map(failureMessage).join(" | ")}): requested=${requestedModel}; actual=${response.modelVersion}; provider=${route.provider.id}.`,
               ...response.warnings] };
         } catch (error) {
+          if(error instanceof BudgetDeniedError)throw error;
           failures.push(error);
           if (shouldTripCircuit(error)) this.recordFailure(route.provider.id);
         }

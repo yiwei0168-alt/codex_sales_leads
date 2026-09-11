@@ -1,3 +1,4 @@
+import {BudgetDeniedError} from "@/lib/billing/policy";
 import { budgetedFetch } from "@/lib/billing/paid-fetch";
 import type { DiscoveryProviderId } from "@/lib/leads/workflow/hybrid-search-policy";
 
@@ -97,6 +98,7 @@ async function requestJson<T>(provider: string, url: string, init: RequestInit, 
         }); }
       }
     } catch (error) {
+      if(error instanceof BudgetDeniedError)throw error;
       if (error instanceof DiscoveryProviderError && !error.details.retryable) throw error;
       lastError = error;
       if (attempt === options.maxAttempts || signal?.aborted) {

@@ -1,3 +1,4 @@
+import {BudgetDeniedError} from "@/lib/billing/policy";
 import { budgetedFetch } from "@/lib/billing/paid-fetch";
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "./contracts";
 import { ProviderUnavailableError } from "./contracts";
@@ -149,6 +150,7 @@ export class DeepSeekProvider implements AiProvider {
         try {
           output = JSON.parse(content) as TOutput;
         } catch (error) {
+          if(error instanceof BudgetDeniedError)throw error;
           throw new Error("DeepSeek returned invalid JSON", { cause: error });
         }
         const warnings = finishReason && !["stop", "end_turn"].includes(finishReason) ? [`finish_reason:${finishReason}`] : [];
@@ -170,6 +172,7 @@ export class DeepSeekProvider implements AiProvider {
           } : undefined,
         };
       } catch (error) {
+        if(error instanceof BudgetDeniedError)throw error;
         lastError = error;
         if (signal?.aborted || (error instanceof DOMException && error.name === "AbortError")) throw error;
         if (error instanceof DeepSeekRequestError && !error.retryable) break;

@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "./contracts";
 import { createLeadAiProvider, ResilientAiProvider } from "./resilient-ai";
+import {BudgetDeniedError} from "@/lib/billing/policy";
 
 class FakeAiProvider implements AiProvider {
   calls: StructuredAiRequest<unknown>[] = [];
@@ -27,6 +28,13 @@ const request: StructuredAiRequest<{ company: string }> = {
 };
 
 describe("ResilientAiProvider", () => {
+  it("never trips the circuit or falls back on a budget denial",async()=>{
+    const primary=new FakeAiProvider("primary");const fallback=new FakeAiProvider("fallback");
+    const execute=vi.spyOn(primary,"execute").mockRejectedValue(new BudgetDeniedError("budget-exhausted"));
+    const provider=new ResilientAiProvider(primary,{fallbacks:[{provider:fallback,routineModel:"peer",approvedDataClassifications:["public"]}]});
+    for(let i=0;i<4;i++)await expect(provider.execute(request)).rejects.toBeInstanceOf(BudgetDeniedError);
+    expect(execute).toHaveBeenCalledTimes(4);expect(fallback.calls).toHaveLength(0);
+  });
   afterEach(() => {
     vi.unstubAllEnvs();
     vi.unstubAllGlobals();

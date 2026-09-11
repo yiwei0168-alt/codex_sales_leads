@@ -1,3 +1,4 @@
+import {BudgetDeniedError} from "@/lib/billing/policy";
 import { createHash } from "node:crypto";
 
 import { z } from "zod";
@@ -374,6 +375,7 @@ export class LeadAssessmentReviewAgent {
       };
       return { assessment: judged, review };
     } catch (error) {
+      if(error instanceof BudgetDeniedError)throw error;
       const severe = triggers.some((trigger) => ["deterministic-conflict", "identity-changed", "conflicting-facts",
         "primary-role-unresolved"].includes(trigger));
       const message = `Independent review failed: ${error instanceof Error ? error.message : String(error)}`;

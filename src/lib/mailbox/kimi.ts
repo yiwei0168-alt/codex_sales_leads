@@ -1,3 +1,4 @@
+import {budgetedFetch} from "@/lib/billing/paid-fetch";
 import type { ImportedMailboxMessage } from "./alimail-imap";
 
 export type MailboxArtifactKind = "company-policy" | "customer-signal" | "email-template";
@@ -66,7 +67,7 @@ export async function learnMailboxMessagesWithKimi(
   if (!apiKey) throw new Error("KIMI_API_KEY is not configured");
   const baseUrl = kimiApiBaseUrl();
   const model = kimiMailboxModel();
-  const response = await fetchImplementation(`${baseUrl}/chat/completions`, {
+  const response = await budgetedFetch(fetchImplementation)(`${baseUrl}/chat/completions`, {
     method: "POST",
     headers: { authorization: `Bearer ${apiKey}`, "content-type": "application/json" },
     body: JSON.stringify({

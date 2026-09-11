@@ -8,7 +8,9 @@ The production `runLeadWorkflow` sets an owner/action scope. Its embedding, play
 
 Assistant intent/chat, development generation/revision and follow-up now establish owner scopes. Their Kimi/Claude HTTP, Gemini external search and synthesis SDK transports are gated; generation uses the persisted operation ID. Child scopes isolate parallel attribution and reject cross-owner nesting. Direct Kimi/Claude budget denials bypass retries and template/provider fallback; follow-up returns 402. Existing token caps are unchanged; uncapped requests remain blocked.
 
-**Not complete:** contact lookup, independent knowledge embedding/ingestion and mailbox learning entry points still need owner scopes and transport coverage. The UI explicitly discloses this. Per-task sub-limits, finer stage attribution, invoice reconciliation/release and denied-call aggregate telemetry remain open. SDK-wrapped errors may still cause harmless local retries before being surfaced, but each transport attempt remains gated. No broad “all product costs capped” claim is valid yet.
+Contact lookup, stored relationship analysis, independent RAG/knowledge ingestion, private memory embedding and mailbox learning now establish owner scopes too. Snov forms remain endpoint/size bounded and OAuth is not assumed free. Budget denials propagate through provider fallback and lead assessment layers and receive aggregate-only zero-cost **denied-attempt** telemetry; earlier attempts are not declared free. `/api/tasks/usage` exposes operation and HTTP ledgers separately; never add their overlapping costs.
+
+**Not complete:** audited provider/account request bounds, per-task sub-limits, finer semantic stage utilization and invoice reconciliation/release remain open. SDK-wrapped errors may still cause harmless local retries before being surfaced, but each transport attempt remains gated. No broad “all product costs capped and live-verified” claim is valid yet.
 
 ## Storage and concurrency
 

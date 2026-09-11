@@ -1,3 +1,4 @@
+import {BudgetDeniedError} from "@/lib/billing/policy";
 import { createHash } from "node:crypto";
 
 import type { AiProvider, StructuredAiResponse } from "@/providers/contracts";
@@ -278,6 +279,7 @@ export class LeadEvidenceCorrectionAgent {
               : persistenceWarning,
           };
         } catch (error) {
+          if(error instanceof BudgetDeniedError)throw error;
           const failed = tavilyFailureMetrics(error);
           const warning = `Correction search failed for ${candidate.domain}: ${error instanceof Error ? error.message : String(error)}`;
           output[index] = { candidate: { ...candidate, evidenceWarnings: [...candidate.evidenceWarnings, warning] },
@@ -497,6 +499,7 @@ export class LeadEvidenceCorrectionAgent {
       const repaired = sanitizeLeadCorrectionOutput({ corrections: [raw] }) as { corrections?: unknown[] };
       return this.normalize(leadCorrectionModelSchema.parse(repaired.corrections?.[0]), candidate, response, true);
     } catch (error) {
+      if(error instanceof BudgetDeniedError)throw error;
       return this.fallback(candidate, `${reason} Escalation failed: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
@@ -521,6 +524,7 @@ export class LeadEvidenceCorrectionAgent {
       return { ...normalized, correction: { ...normalized.correction,
         warnings: [`${reason} Same-tier single-candidate schema repair succeeded.`, ...normalized.correction.warnings] } };
     } catch (error) {
+      if(error instanceof BudgetDeniedError)throw error;
       return this.fallback(candidate,
         `${reason} Same-tier schema repair failed without Pro escalation: ${error instanceof Error ? error.message : String(error)}`);
     }
@@ -551,6 +555,7 @@ export class LeadEvidenceCorrectionAgent {
           : normalized;
       }));
     } catch (error) {
+      if(error instanceof BudgetDeniedError)throw error;
       const reason = `Routine correction failed: ${error instanceof Error ? error.message : String(error)}`;
       if (error instanceof z.ZodError) {
         return Promise.all(candidates.map((candidate) => this.evaluateOneRoutineRepair(
@@ -608,6 +613,7 @@ export class LeadEvidenceCorrectionAgent {
           const hit = await loadPublicRoleCorrection(candidate, plan, LEAD_EVIDENCE_CORRECTION_PROMPT_VERSION);
           if (hit) cached.set(candidate.candidateId, hit);
         } catch (error) {
+          if(error instanceof BudgetDeniedError)throw error;
           cacheWarnings.push(`Role-correction cache read failed for ${candidate.domain}: ${
             error instanceof Error ? error.message : String(error)}`);
         }
@@ -645,6 +651,7 @@ export class LeadEvidenceCorrectionAgent {
         try {
           await savePublicRoleCorrection(candidate, plan, LEAD_EVIDENCE_CORRECTION_PROMPT_VERSION);
         } catch (error) {
+          if(error instanceof BudgetDeniedError)throw error;
           cacheWarnings.push(`Role-correction cache write failed for ${candidate.domain}: ${
             error instanceof Error ? error.message : String(error)}`);
         }

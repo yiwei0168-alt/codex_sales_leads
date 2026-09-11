@@ -1,6 +1,7 @@
 import {currentSpendContext} from "./context";
 import {billingPolicy,BudgetDeniedError,quoteRequest} from "./policy";
 import {reservePaidCall,settlePaidCall} from "./repository";
+import {recordBudgetDenial} from "./denial-metrics";
 
 function object(value:unknown):Record<string,unknown>{return value!==null&&typeof value==="object"&&!Array.isArray(value)?value as Record<string,unknown>:{};}
 function count(value:unknown):number|null{return typeof value==="number"&&Number.isSafeInteger(value)&&value>=0?value:null;}
@@ -10,10 +11,18 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
     const scope=currentSpendContext();
     // CLI experiments retain their separately approved accounting. Product entry points establish a scope.
     if(!scope)return transport(input,init);
+    const checkedAt=Date.now();
+    try {
     const request=new Request(input,init);const url=new URL(request.url);
     request.signal.throwIfAborted();
     const body=await request.clone().text();let parsed:Record<string,unknown>={};
-    if(body){try{parsed=object(JSON.parse(body));}catch{throw new BudgetDeniedError("request-out-of-bounds");}}
+    if(body){
+      if(request.headers.get("content-type")?.split(";")[0].trim()==="application/x-www-form-urlencoded"){
+        // Form providers are still endpoint/size bounded; never log form values.
+        const form=new URLSearchParams(body);
+        if(["model","stream","max_tokens","max_completion_tokens"].some(key=>form.has(key)))throw new BudgetDeniedError("request-out-of-bounds");
+      }else{try{parsed=object(JSON.parse(body));}catch{throw new BudgetDeniedError("request-out-of-bounds");}}
+    }
     if(parsed.stream===true)throw new BudgetDeniedError("request-out-of-bounds");
     const outputTokens=count(parsed.max_completion_tokens??parsed.max_tokens??object(parsed.generation_config).max_output_tokens);
     const bytes=Buffer.byteLength(body,"utf8")+Buffer.byteLength(url.search,"utf8");
@@ -31,5 +40,9 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
       await settlePaidCall(scope.userId,id,{reportedMicros:reported,latencyMs:Date.now()-started,responseBytes:Buffer.byteLength(text,"utf8"),inputTokens:count(usage.prompt_tokens??usage.input_tokens),outputTokens:count(usage.completion_tokens??usage.output_tokens),succeeded:response.ok});
     }catch{console.warn(JSON.stringify({event:"budget-settlement-unavailable",reservationRetained:true,retry:false}));}
     return response;
+    }catch(error){
+      if(error instanceof BudgetDeniedError)await recordBudgetDenial(scope,error,Date.now()-checkedAt);
+      throw error;
+    }
   };
 }

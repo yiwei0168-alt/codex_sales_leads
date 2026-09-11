@@ -1,3 +1,4 @@
+import {withProductSpend} from "@/lib/billing/context";
 import { tenantQuery, tenantTransaction } from "@/lib/rag/db";
 import { embedTexts } from "@/lib/rag/openai-provider";
 import type { CompanyRecord } from "@/lib/domain";
@@ -111,7 +112,7 @@ export async function loadDevelopmentContext(userId: string, options: Developmen
   const language = options.language?.trim() || "en";
   const query = [`Cudy company strengths, distribution partnership policy and market proof`,
     `${row.record.roles.join(" ")} partner in ${row.record.country}`, row.record.summary].join(". ");
-  const [embedding] = await embedTexts([query]);
+  const [embedding] = await withProductSpend(userId,"development-context-embedding",()=>embedTexts([query]));
   const countryCode = row.country_code.toUpperCase();
   const marketCodes = [countryCode, row.record.country.toUpperCase()];
   if (["NL", "BE", "LU"].includes(countryCode)) marketCodes.push("BENELUX");
@@ -249,7 +250,7 @@ export async function applyFeedbackRevision(userId: string, input: {
   memory: { valuable: boolean; summary?: string; reason: string; marketCodes: string[]; channelRoles: string[] };
 }): Promise<OutreachFeedbackResult> {
   const shouldStoreMemory = input.allowMemory && input.memory.valuable && Boolean(input.memory.summary);
-  const memoryEmbedding = shouldStoreMemory ? await prepareFeedbackMemory(input.memory.summary!) : undefined;
+  const memoryEmbedding = shouldStoreMemory ? await withProductSpend(userId,"feedback-memory-embedding",()=>prepareFeedbackMemory(input.memory.summary!)) : undefined;
   const memoryReason = input.allowMemory ? input.memory.reason : "用户未授权将本次反馈写入长期记忆";
   const applied = await tenantTransaction(userId, async (client) => {
     let memoryId: string | undefined;

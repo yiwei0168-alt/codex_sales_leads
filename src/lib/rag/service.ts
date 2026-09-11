@@ -1,3 +1,4 @@
+import {withProductSpend} from "@/lib/billing/context";
 import { getRagConfig } from "./config";
 import { embedTexts, generateGroundedAnswer } from "./openai-provider";
 import { hybridSearch, logRagQuery } from "./repository";
@@ -11,7 +12,7 @@ export async function answerWithRag(userId: string, input: RagQuery): Promise<Ra
   const startedAt = Date.now();
   const config = getRagConfig();
   const maxChunks = Math.min(Math.max(input.maxChunks ?? config.maxContextChunks, 1), 12);
-  const [embedding] = await embedTexts([input.question]);
+  const [embedding] = await withProductSpend(userId,"rag-query-embedding",()=>embedTexts([input.question]));
   const retrieved = await hybridSearch(userId, input.question, embedding, input.filters, maxChunks);
   const chunks = retrieved.filter((chunk) => chunk.score >= config.minScore);
   const warnings: string[] = [];
@@ -25,7 +26,7 @@ export async function answerWithRag(userId: string, input: RagQuery): Promise<Ra
     };
   }
 
-  const answer = await generateGroundedAnswer(input.question, chunks);
+  const answer = await withProductSpend(userId,"rag-grounded-answer",()=>generateGroundedAnswer(input.question, chunks));
   const citedIds = extractCitedChunkIds(answer);
   if (citedIds.size === 0) {
     warnings.push("模型答案缺少有效 chunk 引用，请人工复核。");

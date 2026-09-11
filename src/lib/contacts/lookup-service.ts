@@ -1,3 +1,4 @@
+import {withProductSpend} from "@/lib/billing/context";
 import { tenantTransaction } from "@/lib/rag/db";
 import type { ContactLookupProvider,ContactLookupRequest,ContactLookupResult } from "@/providers/contact-lookup";
 
@@ -21,7 +22,7 @@ export async function lookupAndStoreContacts(userId:string,workspaceId:string,in
   });
   if(reservation.cached)return {result:reservation.cached,cached:true,capturedAt:reservation.capturedAt};
   try{
-    const result=await provider.lookupCompany(input,AbortSignal.timeout(90_000));
+    const result=await withProductSpend(userId,"contact-lookup",()=>provider.lookupCompany(input,AbortSignal.timeout(90_000)),reservation.runId);
     const persisted=await tenantTransaction(userId,async client=>{
       const fence=await client.query<{run_id:string;status:string}>("select run_id,status from user_contact_lookup_cache where user_id=$1 and company_id=$2 and provider=$3 for update",[userId,input.companyId,provider.id]);
       if(fence.rows[0]?.run_id!==reservation.runId||fence.rows[0]?.status!=='running'){
