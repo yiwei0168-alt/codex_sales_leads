@@ -1,5 +1,9 @@
 # 产品工作流效率台账
 
+## Relationship proposal downstream use — 2026-09-11
+
+Stable source indices connect cached outputs to explicit user saves. Same-transaction owner/pair validation and index deduplication prevent repeated-save inflation. `downstreamUsedItems` and downstream utilization are distinct from validity efficiency and from confirmed cooperation; rejection is also a user decision. No new model, search, embedding or evidence acquisition. Optimization opportunity: compare generated versus used suggestions over time before changing analysis budgets; historical missing links remain unknown.
+
 ## Isolated browser interaction regression — 2026-09-11
 
 Six desktop/mobile cases exercise actual detail components and existing CSS with synthetic records. Browser requests are intercepted; external search/model/SMTP calls are zero by construction. DOM rendering, focus movement and retry presentation add no workflow/model stage. A successful explicit assessment retry removes stale failure UI, avoiding unnecessary further retries. This is a correctness improvement, not a measured token saving. Authentication/navigation/live delivery remain outside this isolated check. Dependency audit alerts are recorded as a deployment hardening opportunity; do not conflate a passing build with security clearance.

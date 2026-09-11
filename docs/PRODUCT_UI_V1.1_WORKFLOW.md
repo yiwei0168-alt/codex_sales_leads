@@ -1,5 +1,9 @@
 # Product UI v1.1 implementation workflow
 
+## 2026-09-11 relationship adoption linkage
+
+Analysis responses include the cache record ID and original (pre-filter) suggestion index. Loading a suggestion alone is not adoption; saving carries this reference and validates owner, workspace, country, directed company pair and completed analysis in the same transaction. Saved indices are deduplicated under a row lock, so retries do not increase downstream-used counts. The user may edit the proposal; the metric means used as a source for a saved relationship, not unchanged acceptance or verified cooperation. Manual relationships require no analysis and consume no tokens. Historical saves are not backfilled speculatively.
+
 ## 2026-09-11 isolated browser acceptance
 
 Company/task/evidence dialogs share topmost-only Escape handling, Tab containment, opener focus restoration and background scroll locking. Assessment retry clears the previous failure only after a successful read. Six Chrome checks pass at 1366px/390px using actual React components and production CSS, with synthetic fixtures and every network request intercepted. This verifies interaction, not authenticated Next.js navigation, real provider calls or live SMTP. Run `npm run test:browser` with installed Chrome; output stays in ignored `tmp/`. Test fixtures do not expose a product route or authentication bypass.

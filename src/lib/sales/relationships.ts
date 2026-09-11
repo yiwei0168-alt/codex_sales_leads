@@ -2,6 +2,7 @@ import { z } from "zod";
 import { tenantQuery, tenantTransaction } from "@/lib/rag/db";
 import type { CompanyRecord } from "@/lib/domain";
 import { relationshipEvidenceFingerprint } from "./relationship-evidence";
+import { recordRelationshipAdoption } from "./relationship-adoption";
 
 export const relationshipSchema = z.object({
   country: z.string().regex(/^[A-Z]{2}$/),
@@ -10,6 +11,7 @@ export const relationshipSchema = z.object({
   status: z.enum(["pending", "user-confirmed", "user-rejected"]),
   basis: z.string().trim().min(1).max(2000),
   sourceUrl: z.union([z.literal(""), z.url().refine((url) => /^https?:\/\//i.test(url))]).default(""),
+  selection: z.object({analysisId:z.uuid(),suggestionIndex:z.number().int().min(0).max(1)}).strict().optional(),
 }).strict().refine((value) => value.from !== value.to, { message: "不能建立公司与自身的关系" });
 
 export interface RelationshipRecord {
@@ -39,6 +41,7 @@ export async function saveRelationship(userId: string, input: z.infer<typeof rel
     if (nodes.rows.length !== 2) throw new Error("请选择当前国家、当前工作区内的两家公司");
     const from = nodes.rows.find((node) => node.external_id === input.from)!;
     const to = nodes.rows.find((node) => node.external_id === input.to)!;
+    if(input.selection)await recordRelationshipAdoption(client,userId,from.workspace_id,input.country,from.id,to.id,input.selection,input.status);
     const previous = await client.query(`select status,basis,source_url from user_channel_relationship
       where workspace_id=$1 and country_code=$2 and from_company_id=$3 and to_company_id=$4 and relationship_type=$5`,
       [from.workspace_id,input.country,from.id,to.id,input.type]);

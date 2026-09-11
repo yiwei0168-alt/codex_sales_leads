@@ -17,7 +17,8 @@ export function UserChannelMap({country, companies,onSelect,onAdded}: {country:s
   const [error,setError] = useState("");
   const [loading,setLoading] = useState(true);
   const [saving,setSaving] = useState(false);
-  const [analyzing,setAnalyzing]=useState(false);const [analysis,setAnalysis]=useState<{from:string;to:string;reason:string;suggestions:Array<{type:string;basis:string;quote:string;sourceUrl:string}>}|null>(null);
+  const [analyzing,setAnalyzing]=useState(false);const [analysis,setAnalysis]=useState<{analysisId?:string;from:string;to:string;reason:string;suggestions:Array<{suggestionIndex:number;type:string;basis:string;quote:string;sourceUrl:string}>}|null>(null);
+  const [selection,setSelection]=useState<{analysisId:string;suggestionIndex:number;country:string;from:string;to:string}|null>(null);
   const [newName,setNewName]=useState("");
   const [newWebsite,setNewWebsite]=useState("");
   const [newRole,setNewRole]=useState<ChannelRole|"">("");
@@ -34,6 +35,7 @@ export function UserChannelMap({country, companies,onSelect,onAdded}: {country:s
   const [version,setVersion] = useState(0);
   const [form,setForm] = useState({from:"",to:"",type:"供货",status:"pending",basis:"",sourceUrl:""});
   function editRelationship(item:RelationshipRecord) {
+    setSelection(null);
     setSelectedRelation(item);
     setForm({from:item.from,to:item.to,type:item.type,status:item.status==="evidence-supported"?"pending":item.status,basis:item.basis,sourceUrl:item.sourceUrl});
   }
@@ -48,9 +50,10 @@ export function UserChannelMap({country, companies,onSelect,onAdded}: {country:s
   async function save(event: React.FormEvent) {
     event.preventDefault();setSaving(true);setError("");
     try {
-      const response=await fetch("/api/channel-relationships",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({...form,country})});
+      const selected=selection&&selection.country===country&&selection.from===form.from&&selection.to===form.to?{analysisId:selection.analysisId,suggestionIndex:selection.suggestionIndex}:undefined;
+      const response=await fetch("/api/channel-relationships",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({...form,country,selection:selected})});
       const data=await response.json();if(!response.ok)throw new Error(data.error);
-      setVersion(value=>value+1);setForm({...form,basis:""});
+      setVersion(value=>value+1);setForm({...form,basis:""});setSelection(null);
     }catch(reason){setError(reason instanceof Error?reason.message:"保存失败");}finally{setSaving(false);}
   }
   async function analyze(){if(!window.confirm("只用已保存证据分析所选两家公司的关系，可能消耗模型额度；不会新增搜索，也不会自动保存关系。确认？"))return;setAnalyzing(true);setError("");try{const response=await fetch("/api/channel-relationships/analyze",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({country,from:form.from,to:form.to,confirmed:true})});const data=await response.json();if(!response.ok)throw new Error(data.error);setAnalysis({...data,from:form.from,to:form.to});}catch(error){setError(String(error));}finally{setAnalyzing(false);}}
@@ -106,7 +109,7 @@ export function UserChannelMap({country, companies,onSelect,onAdded}: {country:s
     </details>
     <form className="panel" onSubmit={save}><h3>添加或更新关系</h3>
       <button type="button" disabled={analyzing||!form.from||!form.to||form.from===form.to} onClick={()=>void analyze()}>{analyzing?"分析中…":"分析所选公司关系（存量证据）"}</button>
-      {analysis&&analysis.from===form.from&&analysis.to===form.to&&<div><p>{analysis.reason}</p>{analysis.suggestions.map((item,index)=><article key={index}><p>{item.type} · {item.basis}</p><blockquote>{item.quote}</blockquote><button type="button" onClick={()=>setForm({...form,type:item.type,basis:`${item.basis}\n引用：${item.quote}`,sourceUrl:item.sourceUrl,status:"pending"})}>载入待核实建议（仍需保存）</button></article>)}</div>}
+      {analysis&&analysis.from===form.from&&analysis.to===form.to&&<div><p>{analysis.reason}</p>{analysis.suggestions.map((item,index)=><article key={index}><p>{item.type} · {item.basis}</p><blockquote>{item.quote}</blockquote><button type="button" onClick={()=>{setForm({...form,type:item.type,basis:`${item.basis}\n引用：${item.quote}`,sourceUrl:item.sourceUrl,status:"pending"});setSelection(analysis.analysisId?{analysisId:analysis.analysisId,suggestionIndex:item.suggestionIndex,country,from:form.from,to:form.to}:null);}}>载入待核实建议（仍需保存）</button></article>)}</div>}
       <div className="edit-grid">{(["from","to"] as const).map(key=><label key={key}>{key==="from"?"起点公司":"目标公司"}<select required value={form[key]} onChange={event=>setForm({...form,[key]:event.target.value})}><option value="">请选择公司</option>{companies.map(company=><option key={company.id} value={company.id}>{company.displayName}</option>)}</select></label>)}
         <label>关系类型<select value={form.type} onChange={event=>setForm({...form,type:event.target.value})}>{["供货","转售","项目合作","技术合作","其他"].map(type=><option key={type}>{type}</option>)}</select></label>
         <label>状态<select value={form.status} onChange={event=>setForm({...form,status:event.target.value})}>{Object.entries(statusLabels).filter(([key])=>key!=="evidence-supported").map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label>
