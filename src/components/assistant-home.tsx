@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { TaskDetailView } from "./task-detail-view";
+import {BudgetProposalCard} from "./budget-proposal";
 import type {
   AssistantActionDto, AssistantConversationDto, AssistantConversationSummary, AssistantMessageDto,
 } from "@/lib/assistant/types";
@@ -181,6 +182,7 @@ export function AssistantHome({ userName, onOpenResults,onOpenCompany }: { userN
             <div className="ai-message-avatar">{message.role === "user" ? userName.slice(0, 1).toUpperCase() : "✦"}</div>
             <div className="ai-message-body"><div className="ai-message-meta"><strong>{message.role === "user" ? userName : "Network Copilot"}</strong><span>{new Date(message.createdAt).toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" })}</span></div>
               <div className="ai-message-copy">{message.content}</div>
+              {message.metadata.budgetProposal&&<BudgetProposalCard proposal={message.metadata.budgetProposal} actions={actions}/>}
               {message.metadata.productAction&&<div className="ai-action-card">{message.metadata.productAction.companies.map(company=><button key={company.id} onClick={()=>onOpenCompany(company.id,message.metadata.productAction!.kind)}>{company.name} · {company.countryCode} · {message.metadata.productAction!.kind==="library"?"公司详情":message.metadata.productAction!.kind==="strategy"?"开发策略":"邮件与跟进"}</button>)}{message.metadata.productAction.hasMore&&<p>仅列出最近 20 家，请补充公司名称或市场缩小范围。</p>}</div>}
               {action && <div className={`ai-action-card ${action.status}`}>
                 <div className="ai-action-head"><div><span>{action.payload.countryCode}</span><strong>{action.payload.countryName} 销售线索计划</strong></div><em>{action.status === "proposed" ? "等待确认" : action.status === "completed" ? "已完成" : action.status === "failed" ? "失败" : "执行中"}</em></div>

@@ -1,7 +1,8 @@
 import type { RagCitation } from "@/lib/rag/types";
 import type { ChannelRole } from "@/lib/domain";
 
-export type AssistantIntent = "knowledge-question" | "hybrid-research" | "lead-search" | "clarification" | "general" | "product-action";
+export type AssistantIntent = "knowledge-question" | "hybrid-research" | "lead-search" | "clarification" | "general" | "product-action" | "budget-change";
+export interface BudgetProposal {scope:"user"|"task";limitUsd:string}
 export interface ProductActionPlan {kind:"library"|"strategy"|"follow-up";companyQuery:string;countryCode?:string;roles?:ChannelRole[]}
 export type AssistantActionStatus = "proposed" | "confirmed" | "running" | "completed" | "failed" | "cancelled";
 export type LeadSearchOpportunityTarget = "OEM/ODM";
@@ -27,6 +28,7 @@ export interface AssistantConversationTurn {
 }
 
 export interface IntentPlan {
+  budgetProposal?: BudgetProposal;
   productAction?: ProductActionPlan;
   intent: AssistantIntent;
   confidence: number;
@@ -82,6 +84,7 @@ export interface AssistantMessageDto {
   intent: AssistantIntent;
   content: string;
   metadata: {
+    budgetProposal?: BudgetProposal;
     productAction?: ProductActionPlan & {companies:Array<{id:string;name:string;countryCode:string}>;hasMore:boolean};
     citations?: RagCitation[];
     grounded?: boolean;

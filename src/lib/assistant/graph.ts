@@ -75,6 +75,7 @@ export function buildAssistantWorkflowGraph(dependencies: AssistantGraphDependen
       return { intent: intentPlan.intent, intentPlan, plan: intentPlan.leadPlan, reply: intentPlan.reply ?? "", warnings: intentPlan.warnings };
     })
     .addNode("resolve_request", async (state) => {
+      if(state.intent==="budget-change")return {reply:"已解析预算修改提案，请核对范围和累计美元上限后在下方确认；没有修改预算或启动任务。"};
       if(state.intent==="product-action")return {reply:"正在查询当前账号已保存的候选公司；没有添加搜索或生成邮件。"};
       if (state.intent === "lead-search" && state.plan) {
         const objective = state.plan.objective === "new-market" ? "新市场并行开发" : "已有分销体系增长";

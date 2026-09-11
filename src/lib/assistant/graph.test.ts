@@ -21,6 +21,12 @@ function dependencies(intentPlan: IntentPlan): AssistantGraphDependencies {
 }
 
 describe("assistant workflow graph", () => {
+  it("returns a budget proposal without retrieval, search or synthesis",async()=>{
+    const deps=dependencies(plan({intent:"budget-change",budgetProposal:{scope:"user",limitUsd:"20"}}));
+    const state=await buildAssistantWorkflowGraph(deps).invoke({userId:"user",content:"总预算20美元",history:[],intent:"general",reply:"",warnings:[]});
+    expect(state.reply).toContain("没有修改预算");
+    expect(deps.answerKnowledge).not.toHaveBeenCalled();expect(deps.searchExternal).not.toHaveBeenCalled();expect(deps.synthesizeHybrid).not.toHaveBeenCalled();
+  });
   it("opens saved-company actions without RAG or external search",async()=>{
     const deps=dependencies(plan({intent:"product-action",productAction:{kind:"follow-up",companyQuery:"Example"}}));
     const state=await buildAssistantWorkflowGraph(deps).invoke({userId:"user",content:"跟进 Example",history:[],intent:"general",reply:"",warnings:[]});

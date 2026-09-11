@@ -8,7 +8,7 @@ test.beforeAll(async()=>{
   const bundle=await build({entryPoints:["tests/browser/dialog-fixture.tsx"],bundle:true,write:false,
     platform:"browser",format:"iife",jsx:"automatic",define:{"process.env.NODE_ENV":'"production"',"process.env":"{}"}});
   script=bundle.outputFiles[0].text;
-  css=await readFile("src/app/globals.css","utf8");
+  css=(await Promise.all(["src/app/globals.css","src/app/ipados.css"].map(path=>readFile(path,"utf8")))).join("\n");
 });
 test.beforeEach(async({page})=>{
   page.on("pageerror",error=>{throw error;});
@@ -78,6 +78,17 @@ test("task budget loads only when expanded and changes neither the global limit 
   await page.getByLabel('任务累计上限（美元）').fill('3');
   page.once('dialog',dialog=>dialog.dismiss());await page.getByRole('button',{name:'确认任务预算',exact:true}).click();expect(writes).toBe(0);
   page.once('dialog',dialog=>dialog.accept());await page.getByRole('button',{name:'确认任务预算',exact:true}).click();await expect.poll(()=>writes).toBe(1);
+});
+test("natural-language budget requires task selection and explicit confirmation without search execution",async({page})=>{
+  const writes:string[]=[];
+  await page.route('**/api/**',route=>{writes.push(new URL(route.request().url()).pathname);expect(route.request().method()).toBe('PUT');expect(route.request().postDataJSON()).toEqual({limitUsd:'20',confirmed:true,actionId:'fixture-budget-task'});return route.fulfill({json:{saved:true}});});
+  await page.getByRole('button',{name:'打开预算提案'}).click();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+  await expect(page.getByRole('button',{name:'确认预算提案'})).toBeDisabled();expect(writes).toEqual([]);
+  await page.getByLabel('选择本对话的搜索任务').selectOption('fixture-budget-task');
+  page.once('dialog',dialog=>dialog.dismiss());await page.getByRole('button',{name:'确认预算提案'}).click();expect(writes).toEqual([]);
+  page.once('dialog',dialog=>dialog.accept());await page.getByRole('button',{name:'确认预算提案'}).click();
+  await expect(page.getByRole('status')).toContainText('没有启动任务');expect(writes).toEqual(['/api/budget']);
 });
 
 test("legacy mail requires country confirmation before follow-up and never auto-sends",async({page})=>{

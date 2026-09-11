@@ -1,4 +1,4 @@
-import {BudgetDeniedError} from "@/lib/billing/policy";
+import {BudgetDeniedError,dollarsToMicros} from "@/lib/billing/policy";
 import {budgetedFetch} from "@/lib/billing/paid-fetch";
 import { z } from "zod";
 
@@ -7,7 +7,7 @@ import { DeepSeekProvider } from "@/providers/deepseek";
 import { interpretAssistantRequest, resolveCountry } from "./intent";
 import type { AssistantConversationTurn, IntentPlan, LeadSearchPlan } from "./types";
 
-const PROMPT_VERSION = "assistant-intent-plan-v1.2";
+const PROMPT_VERSION = "assistant-intent-plan-v1.3";
 const CHANNEL_ROLES = [
   "Distributor", "VAD", "VAR", "Dealer", "Reseller", "Retailer", "E-tailer", "SI", "Installer", "MSP", "ISP",
   "Agent", "Brand Owner",
@@ -48,12 +48,13 @@ function normalizeOptionalCount(value: unknown): number | undefined {
 const rawPlanSchema = z.object({
   intent: z.preprocess(
     (value) => typeof value === "string" ? value.trim().toLowerCase().replace(/-/g, "_") : value,
-    z.enum(["internal_knowledge", "hybrid_research", "lead_search", "clarification", "general", "product_action"]),
+    z.enum(["internal_knowledge", "hybrid_research", "lead_search", "clarification", "general", "product_action", "budget_change"]),
   ),
   confidence: z.preprocess(normalizeConfidence, z.number().min(0).max(1)),
   internal_question: z.string().max(4_000).nullish().transform((value) => value ?? ""),
   external_questions: z.array(z.string().max(2_000)).max(5).nullish().transform((value) => value ?? []),
   reply: z.string().max(4_000).nullish().transform((value) => value ?? ""),
+  budget_change:z.object({scope:z.enum(["user","task"]).optional(),limit_usd:z.string().max(30).optional(),currency:z.string().max(20).optional()}).nullish(),
   product_action:z.object({kind:z.enum(["library","strategy","follow-up"]),company_query:z.string().max(180).default(""),country_code:z.string().regex(/^[A-Za-z]{2}$/).optional(),roles:z.array(z.enum(CHANNEL_ROLES)).optional()}).nullish(),
   lead_plan: z.object({
     country: z.string().max(120).nullish().transform((value) => value ?? ""),
@@ -221,6 +222,7 @@ async function invokeKimiIntent(options: {
           "Choose internal_knowledge for questions answerable only from private Cudy product specs, technical parameters, company material, email-learned knowledge, or internal policy.",
           "Choose hybrid_research when a reliable answer needs both private Cudy knowledge and current/public web information. Split it into one self-contained internal_question and up to five self-contained external_questions.",
           "Choose lead_search only when the user wants companies or sales leads discovered/qualified. Produce the country, objective, channel roles and target count; execution still requires user confirmation.",
+          "Choose budget_change for an explicit budget modification: budget_change={scope:user|task,limit_usd:decimal string,currency:USD}. Resolve an absolute cumulative ceiling using recent user turns; never guess currency, scope, relative amount, monthly reset or an unlimited budget. Ambiguous values require clarification. This is only a proposal: it never writes limits or starts work. Do not invent task IDs; the user selects an owned task in the UI. For a combined new-search-and-budget request, clarify the two-step flow: first create an unexecuted search plan, then set its budget before execution; never silently omit the budget. Budget modifications do not need RAG, external search or K3 escalation.",
           "Choose product_action when the user wants to find existing saved companies (kind=library), open a company development strategy (kind=strategy), or write a follow-up to an existing sent email (kind=follow-up). Return product_action={kind,company_query,country_code?,roles?}. Extract the company name/domain, not the whole request, into company_query. An empty query lists matching saved companies. Never turn local-library queries into new web searches. Use conversation history to resolve the named company. This only opens owned records for review; it never sends email or generates strategy automatically.",
           "When the current message explicitly states a country, numeric target count, or named role/category, copy those constraints exactly. Never replace an explicit count with a default and never broaden explicitly named roles into all channel roles.",
           "Agent and Brand Owner are explicit-only roles. Never add either unless the user explicitly asks for sales agents/manufacturer representatives, brand/product companies, or an OEM/ODM customer-lead task.",
@@ -233,7 +235,7 @@ async function invokeKimiIntent(options: {
           options.complexityCheck
             ? "Perform lightweight intent and template-fit recognition. Keep reply and planning_reason concise."
             : "Produce the complete plan for the complex request, resolving the supplied multi-turn constraints.",
-          "The top-level JSON keys must be intent, confidence, internal_question, external_questions, reply, lead_plan, product_action, requires_k3_planning, and planning_reason. lead_plan also contains opportunity_targets, coverage_mode and verified_only.",
+          "The top-level JSON keys must be intent, confidence, internal_question, external_questions, reply, lead_plan, product_action, budget_change, requires_k3_planning, and planning_reason. lead_plan also contains opportunity_targets, coverage_mode and verified_only.",
           `Allowed channel roles: ${CHANNEL_ROLES.join(", ")}. Prompt version: ${PROMPT_VERSION}.`,
         ].join("\n"),
       },
@@ -379,7 +381,7 @@ export async function planAssistantRequest(
       const light = await invokeKimiIntent({ content, history, model: lightModel, apiKey, fetchImplementation,
         complexityCheck: true });
       completedCalls.push(light.call);
-      const selected = light.raw.requires_k3_planning && lightModel !== complexModel
+      const selected = light.raw.requires_k3_planning && light.raw.intent!=="budget_change" && lightModel !== complexModel
         ? await invokeKimiIntent({ content, history, model: complexModel, apiKey, fetchImplementation,
           complexityCheck: false }) : light;
       if (selected !== light) completedCalls.push(selected.call);
@@ -407,6 +409,14 @@ export async function planAssistantRequest(
       };
     }
     const leadPlan = safeLeadPlan(raw, content);
+    if(raw.intent==="budget_change"||raw.budget_change){
+      const proposal=raw.budget_change;
+      let valid=false;
+      try{if(proposal?.limit_usd!==undefined){dollarsToMicros(proposal.limit_usd);valid=true;}}catch{/* Numeric validation does not need a second model. */}
+      if(!valid||!proposal?.scope||proposal.currency?.toUpperCase()!=="USD"||raw.intent!=="budget_change")return {
+        intent:"clarification",confidence:raw.confidence,externalQuestions:[],reply:"请明确是用户总预算还是某个已有搜索任务，以及新的累计美元上限（不是追加金额）。新搜索请先建立待执行计划，再设置任务预算；本次没有修改额度或启动搜索。",plannerModel:model,plannerSource,plannerCalls,warnings:plannerWarnings};
+      return {intent:"budget-change",budgetProposal:{scope:proposal.scope,limitUsd:proposal.limit_usd!},confidence:raw.confidence,externalQuestions:[],plannerModel:model,plannerSource,plannerCalls,warnings:plannerWarnings};
+    }
     if(raw.intent==="product_action"){
       if(!raw.product_action)return {intent:"clarification",confidence:raw.confidence,externalQuestions:[],reply:"你希望查看候选库、公司开发策略，还是已发送邮件的跟进？请补充公司或市场。",plannerModel:model,plannerSource,plannerCalls,warnings:plannerWarnings};
       return {intent:"product-action",confidence:raw.confidence,externalQuestions:[],productAction:{kind:raw.product_action.kind,companyQuery:raw.product_action.company_query.trim(),countryCode:raw.product_action.country_code?.toUpperCase(),roles:raw.product_action.roles},plannerModel:model,plannerSource,plannerCalls,warnings:plannerWarnings};

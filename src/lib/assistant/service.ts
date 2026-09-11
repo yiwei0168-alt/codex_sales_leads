@@ -28,7 +28,10 @@ export async function processAssistantMessage(userId: string, input: {
     plannerModel: interpreted.intentPlan.plannerModel,
     plannerSource: interpreted.intentPlan.plannerSource,
   } : undefined;
-  if(interpreted.intent==="product-action"&&interpreted.intentPlan?.productAction){
+  if(interpreted.intent==="budget-change"&&interpreted.intentPlan?.budgetProposal){
+    await appendMessage(userId,conversationId,{role:"assistant",intent:"budget-change",content:interpreted.reply,
+      metadata:{planner,budgetProposal:interpreted.intentPlan.budgetProposal,warnings:interpreted.warnings}});
+  } else if(interpreted.intent==="product-action"&&interpreted.intentPlan?.productAction){
     const productAction=await measuredProductActionCompanies(userId,interpreted.intentPlan.productAction);
     await appendMessage(userId,conversationId,{role:"assistant",intent:"product-action",content:productAction.companies.length?`在你的候选库中找到${productAction.hasMore?"超过 20":productAction.companies.length}家公司。请选择要打开的公司。只读取本地记录，尚未生成策略或发送邮件。`:"当前候选库没有匹配记录。请调整公司名称或市场；如需新搜索，请明确提出。",metadata:{planner,productAction,warnings:interpreted.warnings}});
   } else if (interpreted.intent === "general" || interpreted.intent === "clarification") {

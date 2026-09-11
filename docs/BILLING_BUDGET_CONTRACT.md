@@ -12,7 +12,9 @@ Contact lookup, stored relationship analysis, independent RAG/knowledge ingestio
 
 Migration 050 adds optional per-search-action sub-limits and append-only budget-change audit. Owner budget locking serializes ceiling edits and each reservation; both global and task limits must permit the request. Nested aggregate operations retain the parent task billing ID. A continuation has its own task identity and never erases earlier charges. Task details load this data on expansion and require explicit confirmation to change the ceiling, without starting work.
 
-**Not complete:** audited provider/account request bounds, natural-language budget editing, finer semantic adoption events and invoice reconciliation/release remain open. SDK-wrapped errors may still cause harmless local retries before being surfaced, but each transport attempt remains gated. No broad “all product costs capped and live-verified” claim is valid yet.
+Natural-language budget changes use the existing Kimi light planner to propose an absolute USD ceiling, not to mutate it. Unclear currency/scope/amount requires clarification, and task selection comes from owned conversation actions rather than model IDs. The user reviews and explicitly confirms through the existing budget API. No K3 escalation, RAG, search, task start or automatic ceiling increase occurs. The initial direct form remains available when paid intent recognition is blocked.
+
+**Not complete:** audited provider/account request bounds, finer semantic adoption events and invoice reconciliation/release remain open. SDK-wrapped errors may still cause harmless local retries before being surfaced, but each transport attempt remains gated. No broad “all product costs capped and live-verified” claim is valid yet.
 
 ## Storage and concurrency
 

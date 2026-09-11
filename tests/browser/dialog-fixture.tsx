@@ -4,6 +4,7 @@ import { CompanyDetail } from "../../src/components/company-detail";
 import { TaskDetailView } from "../../src/components/task-detail-view";
 import { SpendBudget } from "../../src/components/spend-budget";
 import {TaskSpendBudget} from "../../src/components/task-spend-budget";
+import {BudgetProposalCard} from "../../src/components/budget-proposal";
 import { OutboundComposer } from "../../src/components/outbound-composer";
 import { SearchContinuation } from "../../src/components/search-continuation";
 import { useDialogFocus } from "../../src/components/use-dialog-focus";
@@ -27,6 +28,7 @@ function Fixture() {
     {open==="task"&&<TaskDetailView id="fixture-task" kind="generation" onClose={()=>setOpen("")}/>}
     <button onClick={()=>setOpen('contact-task')}>打开异常联系人任务</button>{open==='contact-task'&&<TaskDetailView id="fixture-contact-task" kind="contacts" onClose={()=>setOpen('')}/>}
     {nested&&<Nested close={()=>setNested(false)}/>}<button onClick={()=>setBudget(true)}>打开预算</button>{budget&&<SpendBudget/>}
+    <button onClick={()=>setOpen('budget-proposal')}>打开预算提案</button>{open==='budget-proposal'&&<BudgetProposalCard proposal={{scope:"task",limitUsd:"20"}} actions={[{id:"fixture-budget-task",actionType:"lead-search",status:"proposed",payload:{countryCode:"GB",countryName:"英国",roles:["SI"],targetCount:30,objective:"new-market",queryLanguage:"en",userRequest:"fixture"},result:{},createdAt:"",updatedAt:""}]}/>}
     <button onClick={()=>setOpen('mail')}>打开邮件</button>{open==='mail'&&<OutboundComposer companyId="fixture-country-company" draft="" onSent={()=>{}}/>}
     <button onClick={()=>setOpen('continuation')}>打开续搜</button>{open==='continuation'&&<SearchContinuation actionId="fixture-parent"/>}</>;
 }

@@ -5,6 +5,19 @@ import { planAssistantRequest } from "./intent-agent";
 afterEach(() => vi.unstubAllEnvs());
 
 describe("Kimi intent and planning agent", () => {
+  it("uses Kimi multi-turn budget proposals without choosing a task or invoking another model",async()=>{
+    vi.stubEnv("KIMI_API_KEY","test-key");
+    const fetchMock=vi.fn().mockResolvedValue(new Response(JSON.stringify({choices:[{message:{content:JSON.stringify({intent:"budget_change",confidence:0.95,budget_change:{scope:"task",limit_usd:"20.50",currency:"USD",actionId:"untrusted"},requires_k3_planning:true,external_questions:["unneeded"]})}}]})));
+    const result=await planAssistantRequest("把它改成20.50美元",[{role:"user",content:"修改任务的累计预算"}],fetchMock);
+    expect(result).toMatchObject({intent:"budget-change",budgetProposal:{scope:"task",limitUsd:"20.50"},externalQuestions:[]});
+    expect(result.budgetProposal).not.toHaveProperty("actionId");expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+  it.each([{scope:"user",limit_usd:"20",currency:"MXN"},{scope:"task",limit_usd:"-1",currency:"USD"},{limit_usd:"20",currency:"USD"}])("clarifies incomplete or invalid budget without search: %j",async proposal=>{
+    vi.stubEnv("KIMI_API_KEY","test-key");
+    const fetchMock=vi.fn().mockResolvedValue(new Response(JSON.stringify({choices:[{message:{content:JSON.stringify({intent:"budget_change",confidence:0.95,budget_change:proposal})}}]})));
+    const result=await planAssistantRequest("修改预算",[],fetchMock);
+    expect(result.intent).toBe("clarification");expect(result.budgetProposal).toBeUndefined();expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
   it("uses Kimi multi-turn routing for saved-library actions",async()=>{
     vi.stubEnv("KIMI_API_KEY","test-key");
     const fetchMock=vi.fn().mockResolvedValue(new Response(JSON.stringify({choices:[{message:{content:JSON.stringify({intent:"product_action",confidence:0.95,product_action:{kind:"follow-up",company_query:"Example",country_code:"GB"}})}}]})));

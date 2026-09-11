@@ -37,6 +37,7 @@ try{
     await client.query("insert into app_user(id,email,display_name,password_hash,role,status) values($1,$2,'UI acceptance fixture',$3,'member','active')",[userId,email,hashPassword(password)]);
     await client.query("insert into market_workspace(id,owner_id,slug,name,market,country_code,objective) values($1,$2,'global-sales','UI acceptance fixture','Global','WW','Isolated local UI verification')",[workspaceId,userId]);
     await client.query("insert into assistant_conversation(id,user_id,title) values($1,$2,'UI task fixture')",[conversationId,userId]);
+    await client.query("insert into assistant_message(user_id,conversation_id,role,intent,content,metadata) values($1,$2,'assistant','budget-change','Synthetic budget proposal',$3)",[userId,conversationId,JSON.stringify({budgetProposal:{scope:"task",limitUsd:"0"}})]);
     await client.query("insert into assistant_action(id,user_id,conversation_id,action_type,status,payload) values($1,$2,$3,'lead-search','proposed',$4)",[actionId,userId,conversationId,JSON.stringify({countryCode:"GB",countryName:"United Kingdom",roles:["SI"],targetCount:1,userRequest:"Local UI fixture"})]);
     await client.query("commit");created=true;
   }catch(error){await client.query("rollback");throw error;}finally{client.release();}
@@ -61,6 +62,14 @@ try{
     await page.getByRole("button",{name:"登录",exact:true}).click();
     await expect(page.locator(".nav-item").filter({hasText:"销售线索"})).toBeVisible({timeout:30_000});
     checks.push(`${viewport.width}:real-login`);
+    await page.getByRole("button",{name:"AI 销售助理",exact:true}).click();
+    await expect(page.getByLabel("提案累计上限（美元）")).toHaveValue("0");
+    await expect(page.getByRole("button",{name:"确认预算提案"})).toBeDisabled();
+    await page.getByLabel("选择本对话的搜索任务").selectOption(actionId);
+    page.once("dialog",dialog=>dialog.dismiss());await page.getByRole("button",{name:"确认预算提案"}).click();
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+    await page.screenshot({path:`tmp/auth-ui-${viewport.width}-budget-proposal.png`,fullPage:true});
+    checks.push(`${viewport.width}:saved-budget-proposal-no-mutation`);
     const workspaceResponse=await context.request.get(new URL("/api/workspaces/current",base).href);
     expect(workspaceResponse.status()).toBe(200);
     const workspace=await workspaceResponse.json();
