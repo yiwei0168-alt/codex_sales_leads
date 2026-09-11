@@ -91,6 +91,9 @@ export interface CompanyRecord {
   searchRunId?: string;
   manuallyEdited?: boolean;
   assessmentNeedsRefresh?: boolean;
+  assessmentEligible?:boolean|null;
+  recordCreatedAt?:string;
+  updatedAt?:string;
   userAdded?: boolean;
   nextActionDueAt?: string;
   outreachSummary?: { firstSentAt: string | null; lastSentAt: string | null; sentCount: number; followUpCount: number };

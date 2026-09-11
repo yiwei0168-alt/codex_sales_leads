@@ -1,9 +1,15 @@
 import { requireApiSession } from "@/lib/auth/session";
-import { listOutbound,sendMailSchema,sendOutbound,verifyOutbound } from "@/lib/mailbox/outbound";
+import { listOutbound,sendMailSchema,sendOutbound,verifyOutbound,reconcileMailSchema,reconcileOutbound } from "@/lib/mailbox/outbound";
 export const runtime="nodejs";
+export async function PATCH(request:Request){const session=await requireApiSession();if(session instanceof Response)return session;
+  const parsed=reconcileMailSchema.safeParse(await request.json().catch(()=>null));if(!parsed.success)return Response.json({error:"请确认外部邮箱记录和实际发送时间"},{status:400});
+  try{return Response.json(await reconcileOutbound(session.userId,parsed.data));}catch{return Response.json({error:"此记录不可核实，可能已被其他操作更新；请刷新后检查"},{status:409});}
+}
 export async function GET(request:Request){const session=await requireApiSession();if(session instanceof Response)return session;
-  const company=new URL(request.url).searchParams.get("company")??"";
-  return Response.json({messages:await listOutbound(session.userId,company)});
+  const params=new URL(request.url).searchParams;const company=params.get("company")??"";const offset=Number(params.get("offset")??0);
+  if(!company||company.length>180||!Number.isSafeInteger(offset)||offset<0||offset>1000000)return Response.json({error:"邮件历史参数无效"},{status:400});
+  const rows=await listOutbound(session.userId,company,offset,51);
+  return Response.json({messages:rows.slice(0,50),hasMore:rows.length>50},{headers:{"Cache-Control":"private, no-store"}});
 }
 export async function POST(request:Request){const session=await requireApiSession();if(session instanceof Response)return session;
   const body=await request.json().catch(()=>null);

@@ -472,9 +472,13 @@ export async function screenStoredMailboxMessages(userId: string): Promise<{
   });
 }
 
-export async function deleteMailboxConnectionData(userId: string, connectionId: string): Promise<boolean> {
+export async function deleteMailboxConnectionData(userId: string, connectionId: string,deleteKnowledge=false): Promise<boolean> {
   return tenantTransaction(userId, async (client) => {
-    await client.query(
+    const connection=await client.query("select id from mailbox_connection where user_id=$1 and id=$2 for update",[userId,connectionId]);
+    if(!connection.rowCount)return false;
+    const running=await client.query("select id from mailbox_sync_run where user_id=$1 and connection_id=$2 and status='running'",[userId,connectionId]);
+    if(running.rowCount)throw new Error("请等待邮箱同步结束后再删除本地数据");
+    if(deleteKnowledge)await client.query(
       `delete from knowledge_document where owner_id = $1 and external_id in (
          select 'mailbox-artifact:' || c.id::text from mailbox_artifact_candidate c
          join mailbox_message m on m.id = c.message_id and m.user_id = c.user_id
@@ -482,11 +486,23 @@ export async function deleteMailboxConnectionData(userId: string, connectionId: 
        )`,
       [userId, connectionId],
     );
-    const result = await client.query(
-      `delete from mailbox_connection where id = $1 and user_id = $2`,
-      [connectionId, userId],
-    );
-    return (result.rowCount ?? 0) > 0;
+    await client.query("delete from mailbox_message where user_id=$1 and connection_id=$2",[userId,connectionId]);
+    await client.query("delete from mailbox_sync_cursor where user_id=$1 and connection_id=$2",[userId,connectionId]);
+    await client.query("delete from mailbox_sync_run where user_id=$1 and connection_id=$2",[userId,connectionId]);
+    // Retain the disabled identity for immutable outbound receipts and their parent links.
+    await client.query("update mailbox_connection set status='disabled',credential_ciphertext='',smtp_verified_at=null,updated_at=now() where user_id=$1 and id=$2",[userId,connectionId]);
+    return true;
+  });
+}
+
+export async function disconnectMailbox(userId:string,connectionId:string){
+  return tenantTransaction(userId,async client=>{
+    const connection=await client.query("select id from mailbox_connection where user_id=$1 and id=$2 for update",[userId,connectionId]);
+    if(!connection.rowCount)return false;
+    const running=await client.query("select id from mailbox_sync_run where user_id=$1 and connection_id=$2 and status='running'",[userId,connectionId]);
+    if(running.rowCount)throw new Error("同步进行中，请在结束后断开");
+    await client.query("update mailbox_connection set status='disabled',credential_ciphertext='',smtp_verified_at=null,updated_at=now() where user_id=$1 and id=$2",[userId,connectionId]);
+    return true;
   });
 }
 

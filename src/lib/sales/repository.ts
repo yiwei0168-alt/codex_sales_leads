@@ -30,18 +30,19 @@ export async function getCurrentWorkspace(userId: string): Promise<MarketWorkspa
     `select distinct payload->>'countryCode' as code from assistant_action
      where user_id = $1 and action_type = 'lead-search' and payload->>'countryCode' is not null`, [userId]);
   const [rows, searches, contacts, emails, enrichmentSummaries] = await Promise.all([
-    query<{
+    tenantQuery<{
       record: CompanyRecord; account_tier: CompanyRecord["accountTier"]; supply_model: CompanyRecord["supplyModel"];
       brand_involvement: CompanyRecord["brandInvolvement"]; opportunity_stage: CompanyRecord["opportunityStage"];
       priority: CompanyRecord["priority"]; owner_name: string | null; next_action: string | null; manually_edited: boolean;
       selected_path_id: string | null; selected_path_type: CompanyRecord["selectedCooperationPath"] | null;
-    }>(
-      `select c.record || wc.user_overrides as record, wc.account_tier, wc.supply_model, wc.brand_involvement, wc.opportunity_stage,
+    }>(userId,
+      `select c.record || wc.user_overrides || jsonb_build_object('recordCreatedAt',c.created_at,'updatedAt',wc.updated_at,'assessmentEligible',a.eligible) as record, wc.account_tier, wc.supply_model, wc.brand_involvement, wc.opportunity_stage,
               wc.priority, wc.owner_name, wc.next_action, wc.manually_edited,
               wc.selected_path_id, wc.selected_path_type
        from workspace_company wc join sales_company c on c.id = wc.company_id
+       left join lateral(select a.eligible from lead_candidate_assessment a where a.run_id=wc.search_run_id and a.user_id=$2 and lower(a.domain)=lower(c.domain) order by a.updated_at desc limit 1) a on true
        where wc.workspace_id = $1 order by c.canonical_name`,
-      [workspace.id],
+      [workspace.id,userId],
     ),
     query<{ provider: string; accepted_count: number; credits_used: number; finished_at: string }>(
       `select provider, accepted_count, credits_used, finished_at::text from lead_search_run

@@ -1,5 +1,6 @@
 import { requireApiSession } from "@/lib/auth/session";
 import { syncAliMail } from "@/lib/mailbox/service";
+import { mailboxSyncSchema } from "@/lib/mailbox/sync-options";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -7,15 +8,13 @@ export const dynamic = "force-dynamic";
 export async function POST(request: Request) {
   const session = await requireApiSession();
   if (session instanceof Response) return session;
-  let body: { connectionId?: string; lookbackDays?: number; maxMessages?: number };
-  try { body = await request.json() as typeof body; } catch { return Response.json({ error: "请求体必须是 JSON" }, { status: 400 }); }
-  if (!body.connectionId || !/^[0-9a-f-]{36}$/i.test(body.connectionId)) {
-    return Response.json({ error: "connectionId 无效" }, { status: 400 });
-  }
+  const parsed=mailboxSyncSchema.safeParse(await request.json().catch(()=>null));
+  if(!parsed.success)return Response.json({error:"邮箱、日期范围或同步数量无效"},{status:400});const body=parsed.data;
   try {
     const result = await syncAliMail(session.userId, body.connectionId, {
       lookbackDays: body.lookbackDays,
       maxMessages: body.maxMessages,
+      folderScope:body.folderScope,from:body.from,through:body.through,
     });
     return Response.json(result);
   } catch (error) {

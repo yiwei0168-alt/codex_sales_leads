@@ -4,7 +4,7 @@ vi.mock("@/lib/rag/db",()=>({tenantQuery:mocks.outside,tenantTransaction:async(_
 vi.mock("./repository",()=>({getMailboxConnection:async()=>({email:"sender@example.com",status:"active"}),connectionPassword:()=>"test-only"}));
 vi.mock("./crypto",()=>({encryptMailboxContent:()=>"encrypted-test-content",decryptMailboxContent:()=>({recipients:["recipient@example.com"]})}));
 vi.mock("nodemailer",()=>({default:{createTransport:()=>({sendMail:mocks.send,close:mocks.close})}}));
-import { sendOutbound,sendMailSchema } from "./outbound";
+import { sendOutbound,sendMailSchema,reconcileMailSchema,reconcileOutbound } from "./outbound";
 import { afterSuccessfulSend } from "@/lib/sales/opportunity-stages";
 const input={connectionId:"11111111-1111-4111-8111-111111111111",companyExternalId:"test-company",to:"recipient@example.com",
   subject:"Test",body:"Test body",idempotencyKey:"22222222-2222-4222-8222-222222222222",confirmed:true as const};
@@ -19,6 +19,15 @@ it("requires explicit confirmation and a single recipient without header injecti
   expect(sendMailSchema.safeParse({...input,confirmed:false}).success).toBe(false);
   expect(sendMailSchema.safeParse({...input,to:"a@example.com,b@example.com"}).success).toBe(false);
   expect(sendMailSchema.safeParse({...input,subject:"Subject\r\nBcc: x@example.com"}).success).toBe(false);
+});
+it("requires explicit evidence-based reconciliation with a non-future timestamp",()=>{
+  const value={id:input.connectionId,outcome:"sent",confirmed:true};
+  expect(reconcileMailSchema.safeParse(value).success).toBe(false);
+  expect(reconcileMailSchema.safeParse({...value,sentAt:"2025-01-01T00:00:00Z"}).success).toBe(true);
+  expect(reconcileMailSchema.safeParse({...value,sentAt:"2099-01-01T00:00:00Z"}).success).toBe(false);
+});
+it("does not allow reconciliation of an owned but already settled receipt",async()=>{
+  mocks.query.mockResolvedValue({rows:[{id:"mail",eligible:false}]});await expect(reconcileOutbound("user",{id:input.connectionId,outcome:"not-sent",confirmed:true})).rejects.toThrow("仅可核实");expect(mocks.send).not.toHaveBeenCalled();
 });
 it("sends once and marks sent only after provider acceptance",async()=>{
   expect(await sendOutbound("user",input)).toMatchObject({status:"sent"});

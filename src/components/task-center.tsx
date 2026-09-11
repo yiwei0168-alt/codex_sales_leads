@@ -2,11 +2,13 @@
 import { useEffect,useState } from "react";
 import { feedStatus,taskKindLabels,type TaskFeedItem } from "@/lib/assistant/task-feed";
 import { ContactEnrichmentProgress } from "./contact-enrichment-progress";
+import { TaskDetailView } from "./task-detail-view";
 const metricLabels:Record<string,string>={target:"目标公司数",saved:"保存公司数",processed:"已处理公司数",credits:"搜索/补证额度",revision:"草稿版本",model:"生成模型",promptTokens:"输入 tokens",completionTokens:"输出 tokens",sentAt:"服务器接受时间",followUp:"是否跟进邮件"};
 export function TaskCenter(){
   const [items,setItems]=useState<TaskFeedItem[]>([]);const [offset,setOffset]=useState(0);const [more,setMore]=useState(false);
   const [kind,setKind]=useState("all");const [country,setCountry]=useState("all");const [countryInput,setCountryInput]=useState("");const [status,setStatus]=useState("all");
   const [revision,setRevision]=useState(0);const [error,setError]=useState("");const [loading,setLoading]=useState(true);const [contacts,setContacts]=useState(false);
+  const [detail,setDetail]=useState<{id:string;kind:string}|null>(null);
   useEffect(()=>{
     const controller=new AbortController();let timer:ReturnType<typeof setTimeout>|undefined;let inFlight=false;
     async function load(){if(inFlight)return;inFlight=true;
@@ -28,10 +30,11 @@ export function TaskCenter(){
     {error&&<p role="alert">{error}</p>}{loading&&<p>正在读取…</p>}{!loading&&!error&&!items.length&&<p>暂无匹配记录。</p>}
     {items.map(item=><article className="opportunity-card" key={`${item.kind}:${item.id}`}><strong>{item.title}</strong><p>{taskKindLabels[item.kind]} · {feedStatus(item)} · {item.country??"未标注 / 混合国家"}</p><small>创建 {item.createdAt} · 更新 {item.updatedAt}</small>
       <details><summary>任务指标</summary><dl>{Object.entries(item.metrics).map(([key,value])=><div key={key}><dt>{metricLabels[key]??key}</dt><dd>{value===null||value===undefined?"尚无记录":typeof value==="boolean"?value?"是":"否":String(value)}</dd></div>)}</dl></details>
-      {item.kind==="search"&&<a href={`/tasks/${item.id}`}>查看搜索详情</a>}
+      <button onClick={()=>setDetail({id:item.id,kind:item.kind})}>查看任务详情</button>
     </article>)}
     <p>草稿记录不证明实际发信；服务器接受不代表送达或已读。搜索额度不等于美元总成本。联系人旧批次没有可靠国家快照，暂列为未标注 / 混合。</p>
     <button disabled={loading||offset===0} onClick={()=>page(Math.max(0,offset-50))}>上一页</button><span>第 {offset/50+1} 页</span><button disabled={loading||!more} onClick={()=>page(offset+50)}>下一页</button>
     <details onToggle={event=>setContacts(event.currentTarget.open)}><summary>最近联系人批次实时明细（独立于上述筛选）</summary>{contacts&&<ContactEnrichmentProgress/>}</details>
+    {detail&&<TaskDetailView key={`${detail.kind}:${detail.id}`} id={detail.id} kind={detail.kind} onClose={()=>setDetail(null)}/>}
   </section>;
 }

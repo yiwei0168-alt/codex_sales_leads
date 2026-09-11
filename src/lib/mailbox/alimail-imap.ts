@@ -127,6 +127,9 @@ export async function readAliMailMessages(input: {
   password: string;
   cursors: Map<string, MailboxCursor>;
   since: Date;
+  before?:Date;
+  folderScope?:"both"|"inbox"|"sent";
+  knownMessages?:Set<string>;
   maxMessages: number;
   onProgress?: (progress: MailboxReadProgress) => void | Promise<void>;
 }): Promise<{ messages: ImportedMailboxMessage[]; cursors: MailboxCursor[]; folders: number; discovered: number }> {
@@ -138,7 +141,7 @@ export async function readAliMailMessages(input: {
   try {
     await input.onProgress?.({ phase: "connecting", folders: 0, discovered: 0, processed: 0 });
     await client.connect();
-    const folders = selectedFolders(await client.list());
+    const folders = selectedFolders(await client.list()).filter(folder=>!input.folderScope||input.folderScope==="both"||(input.folderScope==="sent"?isSentFolder(folder):folder.path.toUpperCase()==="INBOX"));
     await input.onProgress?.({ phase: "discovering", folders: folders.length, discovered: 0, processed: 0 });
     for (const folder of folders) {
       if (messages.length >= input.maxMessages) break;
@@ -148,8 +151,8 @@ export async function readAliMailMessages(input: {
         const uidValidity = client.mailbox.uidValidity.toString();
         const previous = input.cursors.get(folder.path);
         const lastUid = previous?.uidValidity === uidValidity ? previous.lastUid : 0;
-        const found = await client.search({ since: input.since, ...(lastUid > 0 ? { uid: `${lastUid + 1}:*` } : {}) }, { uid: true });
-        const allUids = Array.isArray(found) ? found.filter((uid) => uid > lastUid).sort((a, b) => a - b) : [];
+        const found = await client.search({ since: input.since,...(input.before?{before:input.before}:{}), ...(lastUid > 0 ? { uid: `${lastUid + 1}:*` } : {}) }, { uid: true });
+        const allUids = Array.isArray(found) ? found.filter((uid) => uid > lastUid&&!input.knownMessages?.has(`${folder.path}:${uidValidity}:${uid}`)).sort((a, b) => a - b) : [];
         discovered += allUids.length;
         await input.onProgress?.({ phase: "fetching", folders: folders.length, discovered, processed: messages.length });
         const remaining = input.maxMessages - messages.length;

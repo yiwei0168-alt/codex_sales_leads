@@ -1,6 +1,8 @@
 import { readAliMailMessages, verifyAliMailCredentials } from "./alimail-imap";
 import { kimiMailboxModel, learnMailboxMessageWithKimi } from "./kimi";
 import { prepareMailboxDisclosure } from "./privacy";
+import { tenantQuery } from "@/lib/rag/db";
+import { mailboxRange } from "./sync-options";
 import {
   blockMailboxMessageLearning, completeMailboxImport, connectionPassword, failMailboxMessageLearning,
   failMailboxSyncRun, finishMailboxOutboundAudit, getMailboxConnection, getMailboxCursors,
@@ -17,6 +19,9 @@ export async function connectAliMail(userId: string, email: string, password: st
 export async function syncAliMail(userId: string, connectionId: string, options: {
   lookbackDays?: number;
   maxMessages?: number;
+  folderScope?:"both"|"inbox"|"sent";
+  from?:string;
+  through?:string;
 } = {}): Promise<{ runId: string; imported: number; skipped: number; discovered: number; awaitingReview: number }> {
   const connection = await getMailboxConnection(userId, connectionId);
   if (!connection || connection.status === "disabled") throw new Error("Mailbox connection not found");
@@ -26,11 +31,15 @@ export async function syncAliMail(userId: string, connectionId: string, options:
     await purgeExpiredMailboxContent(userId, connectionId, retentionDays);
     const lookbackDays = Math.min(Math.max(options.lookbackDays ?? 365, 1), 3650);
     const maxMessages = Math.min(Math.max(options.maxMessages ?? 200, 1), 1000);
+    const range=mailboxRange({...options,lookbackDays});
+    const existing=options.from?await tenantQuery<{folder_path:string;uid_validity:string;message_uid:string}>(userId,
+      "select folder_path,uid_validity,message_uid::text from mailbox_message where user_id=$1 and connection_id=$2",[userId,connectionId]):[];
     const result = await readAliMailMessages({
       email: connection.email,
       password: connectionPassword(connection),
-      cursors: await getMailboxCursors(userId, connectionId),
-      since: new Date(Date.now() - lookbackDays * 86_400_000),
+      cursors: options.from?new Map():await getMailboxCursors(userId, connectionId),
+      ...range,folderScope:options.folderScope,
+      knownMessages:new Set(existing.map(item=>`${item.folder_path}:${item.uid_validity}:${item.message_uid}`)),
       maxMessages,
       onProgress: (progress) => updateMailboxSyncProgress({
         runId, userId, phase: progress.phase, folders: progress.folders,
@@ -40,7 +49,7 @@ export async function syncAliMail(userId: string, connectionId: string, options:
     });
     const persisted = await persistMailboxImport({
       runId, userId, connectionId,
-      messages: result.messages, cursors: result.cursors,
+      messages: result.messages, cursors: options.from?[]:result.cursors,
       folders: result.folders, discovered: result.discovered,
     });
     const awaitingReview = persisted.storedMessages.filter((item) => item.learningStatus === "pending").length;

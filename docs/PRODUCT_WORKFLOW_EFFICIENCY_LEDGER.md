@@ -1,5 +1,11 @@
 # 产品工作流效率台账
 
+## Mail/task completion continuation — 2026-09-11
+
+History uses 51 fetched/50 projected rows rather than a fixed inaccessible last-100 window. Follow-up uses deterministic scoped memory retrieval (no embedding query), bounded sent-mail ancestors, and the existing Kimi call; no search/strategy generation. Reconciliation has zero SMTP/model calls and preserves immutable receipt ownership. Historical IMAP imports filter locally known UIDs before body fetching and keep incremental cursors unchanged. Completed task progress stops polling; workspace refresh is visible-only, non-overlapping and protected from stale edit races.
+
+Further measured opportunities: avoid transmitting the parent email twice in follow-up packets, move large-workspace UID sets to bounded range lookups, replace full workspace polling with revision/delta queries, and record actual downstream draft adoption rather than equating generation with use. Provider/DB costs not yet allocated remain unknown; these code improvements are not a measured savings percentage.
+
 ## PRD v1.1 / persisted UI and checkpoint recovery — 2026-09-11
 
 Saved strategy reading replaces automatic regeneration on entering the assistant. Bulk changes reuse existing zero-model owner-scoped mutation/audit telemetry. Search retry now passes null into pending checkpoints, avoiding reset of prior paid artifacts and accumulated usage. Pause checks use the already-required phase update, with no extra model/search call. Progress is read-only, visible-tab-only at ten seconds, and exposes saved metrics rather than claiming real-time provider billing.

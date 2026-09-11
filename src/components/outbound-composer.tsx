@@ -1,6 +1,6 @@
 "use client";
 import { useEffect,useState } from "react";
-type Mail={id:string;status:string;subject:string;bodyText:string;sender:string[];recipients:string[];sentAt:string|null;createdAt:string};
+type Mail={id:string;status:string;subject:string;bodyText:string;sender:string[];recipients:string[];sentAt:string|null;createdAt:string;reconciledByUser?:boolean};
 export function OutboundComposer({companyId,draft,onSent}:{companyId:string;draft:string;onSent:()=>void}) {
   const [connections,setConnections]=useState<Array<{id:string;email:string;status:string}>>([]);
   const [connectionId,setConnectionId]=useState("");const [verified,setVerified]=useState(false);
@@ -9,14 +9,15 @@ export function OutboundComposer({companyId,draft,onSent}:{companyId:string;draf
   const [instructions,setInstructions]=useState("");const [notice,setNotice]=useState("");
   const [busy,setBusy]=useState(false);const [locked,setLocked]=useState(false);const [confirmed,setConfirmed]=useState(false);
   const [key,setKey]=useState(()=>crypto.randomUUID());const [revision,setRevision]=useState(0);
+  const [offset,setOffset]=useState(0);const [hasMore,setHasMore]=useState(false);
   useEffect(()=>{
     const controller=new AbortController();
-    Promise.all([fetch("/api/mailbox/connections",{signal:controller.signal}),fetch(`/api/mailbox/outbound?company=${encodeURIComponent(companyId)}`,{signal:controller.signal,cache:"no-store"})])
+    Promise.all([fetch("/api/mailbox/connections",{signal:controller.signal}),fetch(`/api/mailbox/outbound?company=${encodeURIComponent(companyId)}&offset=${offset}`,{signal:controller.signal,cache:"no-store"})])
       .then(async responses=>{if(responses.some(response=>!response.ok))throw new Error();return Promise.all(responses.map(response=>response.json()));})
-      .then(([mailboxes,history])=>{setConnections(mailboxes.connections.filter((item:{status:string})=>item.status==="active"));setMessages(history.messages);})
+      .then(([mailboxes,history])=>{if(controller.signal.aborted)return;setConnections(mailboxes.connections.filter((item:{status:string})=>item.status==="active"));setMessages(history.messages);setHasMore(history.hasMore);})
       .catch(()=>{if(!controller.signal.aborted)setNotice("邮件连接或发送历史读取失败，请刷新重试");});
     return()=>controller.abort();
-  },[companyId,revision]);
+  },[companyId,revision,offset]);
   async function post(url:string,payload:unknown){const response=await fetch(url,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(payload)});const data=await response.json();if(!response.ok)throw new Error(data.error);return data;}
   async function verify(){setBusy(true);try{await post("/api/mailbox/outbound",{action:"verify",connectionId});setVerified(true);setNotice("发信连接验证成功");}catch(error){setNotice(String(error));}finally{setBusy(false);}}
   async function send(){if(!confirmed||locked)return;setBusy(true);setLocked(true);
@@ -32,15 +33,22 @@ export function OutboundComposer({companyId,draft,onSent}:{companyId:string;draf
     setSubject(followUp&&!/^re:/i.test(mail.subject)?`Re: ${mail.subject}`:mail.subject);
     setBody(followUp?"":mail.bodyText);setConfirmed(false);setLocked(false);setKey(crypto.randomUUID());
   }
+  async function reconcile(mail:Mail,outcome:"sent"|"not-sent"){
+    let sentAt:string|undefined;
+    if(outcome==="sent"){const date=window.prompt("请先核对外部邮箱已发送记录，填写实际发送时间（ISO 格式，例如 2026-09-11T10:00:00+08:00）");if(!date)return;sentAt=date.trim();}
+    if(!window.confirm(outcome==="sent"?"确认已从外部邮箱核实发送成功？记录将标注为用户核实，不代表收件人已读。":"确认已从外部邮箱核实没有发送？本操作只更改记录，不会重新发送。"))return;
+    setBusy(true);try{const response=await fetch("/api/mailbox/outbound",{method:"PATCH",headers:{"content-type":"application/json"},body:JSON.stringify({id:mail.id,outcome,sentAt,confirmed:true})});const data=await response.json();if(!response.ok)throw new Error(data.error);setRevision(value=>value+1);if(outcome==="sent")onSent();setNotice("已保存用户核实结果，没有重发邮件。");}catch(error){setNotice(String(error));}finally{setBusy(false);}
+  }
   return <section className="panel"><h2>邮件发送与跟进</h2>{notice&&<p role="status">{notice}</p>}
     <label>发件邮箱<select disabled={busy||locked} value={connectionId} onChange={event=>{setConnectionId(event.target.value);setVerified(false);setConfirmed(false);}}><option value="">选择已连接邮箱</option>{connections.map(item=><option key={item.id} value={item.id}>{item.email}</option>)}</select></label>
     <button disabled={!connectionId||busy||locked} onClick={verify}>{verified?"发信连接已验证":"验证发信连接"}</button>
-    <details><summary>发送历史 · {messages.filter(mail=>mail.status==="sent").length} 封</summary>{messages.map(mail=><article key={mail.id}>
-      <strong>{mail.subject}</strong><p>{mail.recipients.join(", ")} · {mail.sentAt??mail.createdAt} · {mail.status}</p>
+    <details><summary>发送历史 · 第 {offset/50+1} 页 · 本页已发送 {messages.filter(mail=>mail.status==="sent").length} 封</summary>{messages.map(mail=><article key={mail.id}>
+      <strong>{mail.subject}</strong><p>{mail.recipients.join(", ")} · {mail.sentAt??mail.createdAt} · {mail.status}{mail.reconciledByUser?"（用户核实）":""}</p>
+      {["unknown","sending"].includes(mail.status)&&<details><summary>核实发送结果（不重发）</summary><p>请先在外部邮箱检查；发送中记录至少等待十分钟。</p><button disabled={busy} onClick={()=>void reconcile(mail,"sent")}>已核实发送成功</button><button disabled={busy} onClick={()=>void reconcile(mail,"not-sent")}>已核实未发送</button></details>}
       <details><summary>查看邮件详情</summary><pre style={{whiteSpace:"pre-wrap"}}>{mail.bodyText}</pre></details>
       {mail.status==="sent"&&<button disabled={busy} onClick={()=>choose(mail)}>写跟进邮件</button>}
       {mail.status==="sent"&&<button disabled={busy} onClick={()=>choose(mail,false)}>复用于本公司其他联系人</button>}
-    </article>)}</details>
+    </article>)}<button disabled={busy||offset===0} onClick={()=>{setMessages([]);setOffset(value=>Math.max(0,value-50));}}>上一页</button><button disabled={busy||!hasMore} onClick={()=>{setMessages([]);setOffset(value=>value+50);}}>下一页</button></details>
     {parent&&<div><details><summary>展开原开发邮件</summary><pre style={{whiteSpace:"pre-wrap"}}>{parent.bodyText}</pre></details>
       <label>希望跟进什么？<textarea disabled={busy||locked} value={instructions} onChange={event=>setInstructions(event.target.value)} placeholder="例如：询问是否看过资料，建议下周安排简短会议"/></label>
       <button disabled={busy||locked||instructions.trim().length<2} onClick={generate}>生成跟进草稿</button></div>}

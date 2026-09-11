@@ -87,6 +87,9 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
   }
   const [mode, setMode] = useState<Mode>(initialWorkspace?.mode ?? "new-market");
   const [companies, setCompanies] = useState<CompanyRecord[]>(initialWorkspace?.companies ?? []);
+  const [contactsByCompanyId,setContactsByCompanyId]=useState(initialWorkspace?.contactsByCompanyId??{});
+  const workspaceRevision=useRef(0);
+  const [refreshVersion,setRefreshVersion]=useState(0);
   const countries = [...new Set([...companies.map((company) => marketCode(company.country)), ...(initialWorkspace?.taskCountries ?? [])])];
   if (country !== "all" && !countries.includes(country)) countries.push(country);
   const countryCompanies = companies.filter((company) => country === "all" || marketCode(company.country) === country);
@@ -107,6 +110,16 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [failedEdit, setFailedEdit] = useState<{ id: string; patch: CompanyEditablePatch } | null>(null);
   const saveQueue = useRef<Promise<unknown>>(Promise.resolve());
+  const pendingSaves=useRef(0);
+  useEffect(()=>{
+    if(!["results","map","opportunities","overview"].includes(view))return;
+    const controller=new AbortController();let pending=false;
+    async function refresh(){if(pending||document.hidden||pendingSaves.current)return;pending=true;const version=workspaceRevision.current;
+      try{const response=await fetch("/api/workspaces/current",{signal:controller.signal,cache:"no-store"});if(!response.ok)throw new Error();const workspace=await response.json() as MarketWorkspaceDto;
+        if(!controller.signal.aborted&&version===workspaceRevision.current&&!pendingSaves.current){setCompanies(workspace.companies);setContactsByCompanyId(workspace.contactsByCompanyId);}
+      }catch{if(!controller.signal.aborted)setSaveState("error");}finally{pending=false;}}
+    void refresh();const timer=window.setInterval(()=>void refresh(),30000);return()=>{controller.abort();window.clearInterval(timer);};
+  },[view,refreshVersion]);
   const sourceCount = companies.reduce((total, company) => total + company.evidence.length, 0);
   const searchDate = initialWorkspace?.latestSearch?.finishedAt?.slice(0, 10) ?? "Not searched";
 
@@ -136,7 +149,8 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
   })();
 
   function updateCompany(id: string, patch: CompanyEditablePatch): Promise<boolean> {
-    const pending=saveQueue.current.then(()=>persistCompany(id,patch));
+    workspaceRevision.current++;pendingSaves.current++;
+    const pending=saveQueue.current.then(()=>persistCompany(id,patch)).finally(()=>{pendingSaves.current--;});
     saveQueue.current=pending;
     return pending;
   }
@@ -151,7 +165,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
       setCompanies((items) => items.map((item) => item.id === id ? result.company : item));
       setFailedEdit(null);
       setSaveState("saved");
-      window.setTimeout(() => setSaveState("idle"), 1600);
+      window.setTimeout(() => {if(!pendingSaves.current)setSaveState("idle");}, 1600);
       return true;
     } catch {
       setSaveState("error");
@@ -308,7 +322,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
       <main className="main-shell">
         <header className="topbar">
           <div className="breadcrumbs"><span>Workspace</span><Icon name="chevron" size={13}/><strong>Global</strong><Icon name="chevron" size={13}/><span>{navItems.find((item) => item.id === view)?.label}</span></div>
-          <div className="top-actions"><span className={`snapshot-badge ${saveState === "error" ? "save-error" : ""}`}><span className="live-dot"/>{saveState === "saving" ? "正在保存…" : saveState === "saved" ? "已保存到 RDS" : saveState === "error" ? "保存失败，请重试" : `Global workspace · ${searchDate}`}</span><button className="avatar small">{userName.slice(0, 2).toUpperCase()}</button></div>
+          <div className="top-actions"><button onClick={()=>setRefreshVersion(value=>value+1)}>刷新已保存数据</button><span className={`snapshot-badge ${saveState === "error" ? "save-error" : ""}`}><span className="live-dot"/>{saveState === "saving" ? "正在保存…" : saveState === "saved" ? "已保存到 RDS" : saveState === "error" ? "保存失败，请重试" : `Global workspace · ${searchDate}`}</span><button className="avatar small">{userName.slice(0, 2).toUpperCase()}</button></div>
         </header>
 
         <div className="workspace-content">
@@ -345,7 +359,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
         </div>
       </main>
 
-      {detailOpen && selectedCompany && <CompanyDetail key={selectedCompany.id} company={selectedCompany} contactDetails={initialWorkspace?.contactsByCompanyId[selectedCompany.id]} onClose={() => setDetailOpen(false)} onUpdate={(patch) => updateCompany(selectedCompany.id, patch)} onEvidence={setEvidenceOpen} onOpenAssistant={() => { setDetailOpen(false); setView("assistant"); }} />}
+      {detailOpen && selectedCompany && <CompanyDetail key={selectedCompany.id} company={selectedCompany} contactDetails={contactsByCompanyId[selectedCompany.id]} onClose={() => setDetailOpen(false)} onUpdate={(patch) => updateCompany(selectedCompany.id, patch)} onEvidence={setEvidenceOpen} onOpenAssistant={() => { setDetailOpen(false); setView("assistant"); }} />}
       {evidenceOpen && <EvidenceModal evidence={evidenceOpen} onClose={() => setEvidenceOpen(null)} />}
     </div>
   );

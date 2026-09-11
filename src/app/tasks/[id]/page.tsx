@@ -2,12 +2,11 @@ import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { z } from "zod";
 import { getSession } from "@/lib/auth/session";
-import { getAssistantAction } from "@/lib/assistant/repository";
-import { SearchTaskDetail } from "@/components/search-task-detail";
+import { TaskDetailView } from "@/components/task-detail-view";
 export const dynamic="force-dynamic";
-export default async function TaskPage({params}:{params:Promise<{id:string}>}) {
+export default async function TaskPage({params,searchParams}:{params:Promise<{id:string}>;searchParams:Promise<{kind?:string}>}) {
   const session=await getSession();if(!session)redirect("/");
   const {id}=await params;if(!z.uuid().safeParse(id).success)notFound();
-  const action=await getAssistantAction(session.userId,id);if(!action)notFound();
-  return <main><Link href="/">返回产品</Link><SearchTaskDetail action={action}/><p>详情为打开时快照；刷新页面查看最新状态。</p></main>;
+  const kind=(await searchParams).kind??"search";if(!["search","contacts","draft","send"].includes(kind))notFound();
+  return <main><Link href="/">返回产品</Link><TaskDetailView id={id} kind={kind}/></main>;
 }
