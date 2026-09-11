@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { PersonalMemory } from "./personal-memory";
 import type { KnowledgeBaseType, KnowledgeStats, RagAnswer } from "@/lib/rag/types";
 
 const labels: Record<KnowledgeBaseType, { title: string; eyebrow: string; description: string }> = {
@@ -143,6 +144,7 @@ export function KnowledgeBase() {
   }
 
   return <div className="knowledge-layout">
+    <PersonalMemory />
     {!loading && !stats.configured && <div className="kb-config-banner"><span>!</span><div><strong>RAG 尚未完成运行配置</strong><p>{stats.error ?? "请配置 PostgreSQL、pgvector 与 OpenAI API Key。"}</p></div><code>docker compose up -d → npm run db:migrate → npm run kb:seed</code></div>}
 
     <section className="kb-stats-grid">

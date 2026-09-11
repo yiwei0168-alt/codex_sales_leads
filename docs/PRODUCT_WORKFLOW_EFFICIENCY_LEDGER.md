@@ -1,5 +1,11 @@
 # 产品工作流效率台账
 
+## PRD v1.1 / UI stage 4b — private memory lifecycle
+
+Archive/activate/delete reuse existing records/vectors with zero model tokens, API credits or paid inference. Successful mutation emits anonymous versioned service-log aggregates: one input/valid/used mutation, latency, zero retries, empty discard reasons, utilization one and vector reuse opportunity. Workspace-bound mutations retain an owner audit event without duplicating the memory body. Read list is bounded to 51 fetched/50 returned entries and refreshes only on opening/user action, not polling.
+
+Lifecycle safety saves future irrelevant context: path-memory retrieval now joins the active private memory instead of replaying all historical edits. Remaining measurement work: failed/denied/read events, transaction-commit confirmation in telemetry, workspace-less durable audit, bytes and true later Agent usage. Database cost remains unallocated. New opportunity: unify memory provenance and explicit forget tombstones before automatic source reprocessing, so deleted preferences are not recreated inadvertently. Five mocked tests; no paid calls or real user deletions executed during verification.
+
 ## PRD v1.1 / UI stage 4a — search task read surfaces
 
 No model tokens, search credits or paid API requests are introduced. Each list request retrieves at most 51 owner-scoped rows, returns 50 summaries and uses the extra row only for pagination. Full result objects are excluded from list transport. Active visible pages poll at five-second intervals; terminal lists stop, hidden tabs pause, and collapsed contact history does not mount its polling component. These reduce unnecessary DB/API work without regenerating results. Task details reuse existing persisted actions rather than a duplicate task table.

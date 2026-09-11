@@ -10,6 +10,12 @@ Verification: country normalization unit tests and TypeScript. This stage does n
 
 ## Remaining stages
 
+### Stage 4b: private-memory lifecycle
+
+Knowledge page -> session-owner memory list (50 per page) -> explicit confirmation -> archive/activate/delete transaction. Only reusable preferences/approved claims have lifecycle controls; company-classification mirrors are maintained through company/relationship source editors. Existing mail, current classifications, relationship facts and audit history are not deleted. Private RAG already requires active status. Path learning now also requires a matching active `path-edit:{id}` memory instead of unconditionally replaying modification history. Deleted or archived path preferences cannot re-enter through that history reader. Legacy edits without a matching memory are conservatively excluded. In-flight contexts and already generated drafts are not retroactively rewritten.
+
+No new schema, embedding or generation calls. Deletion removes the memory record, not source material, after an explicit irreversible-action warning. Source reprocessing may create new memory and is not a permanent forget/blocklist. Create/edit, provenance links, full lifecycle auditing for workspace-less records and downstream consumption telemetry remain pending. Five focused tests, TypeScript and targeted lint validate this stage; authenticated UI/real-database interaction QA remains outstanding.
+
 ### Stage 4a: search task visibility
 
 Task center -> owner-scoped assistant actions (50 per page) -> page-local country/status filters -> `/tasks/{id}` -> owner-checked search detail. Conversation cards link to the same detail component. Counts distinguish missing from measured zero, qualified from persisted and completed-shortfall from target met. Country-library links explicitly include other tasks' results. List projects only result counters; original request appears on detail. No search/retry/model action is triggered. Active pages poll every five seconds, pause when hidden and refresh on visibility return; terminal lists use manual refresh. Contact enrichment mounts only when expanded.

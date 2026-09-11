@@ -24,6 +24,9 @@ export async function retrieveCooperationPathMemory(userId: string, workspaceId:
             market_code, development_stage, created_at::text
        from user_cooperation_path_edit
       where user_id=$1 and workspace_id=$2 and (market_code=$3 or market_code is null)
+        and exists (select 1 from user_outreach_memory m
+          where m.user_id=$1 and m.external_id='path-edit:' || user_cooperation_path_edit.id::text
+            and m.kind='cooperation-path-preference' and m.status='active')
       order by created_at desc limit $4`,
     [userId, workspaceId, marketCode, limit]);
   return rows.map((row) => ({
