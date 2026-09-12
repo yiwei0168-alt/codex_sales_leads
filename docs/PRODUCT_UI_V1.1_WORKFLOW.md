@@ -1,5 +1,9 @@
 # Product UI v1.1 implementation workflow
 
+## 2026-09-13 P01 approved, implementation deferred
+
+Rule B20 approves fixed-prefix field ordering with unchanged message authority, content, array ordering, privacy boundaries and concurrency. No paid warmup. Implementation waits for P02–P06 confirmation; no runtime change in this stage. Next discussion covers per-attempt cache observation, keeping application cache avoidance, provider cache discounts and actual settled cost distinct.
+
 ## 2026-09-13 fixed prompt/cache review only
 
 [Review P01–P06](FIXED_PROMPT_CACHE_REVIEW_2026-09-13.md) follows approved B19 analysis. Dynamic evidence IDs precede task instructions and candidates precede rubric; proposed stable-prefix ordering is not implemented. Existing public correction cache remains, exact qualification reuse needs dependency review, and provider usage currently drops cache detail. Application result reuse, provider cache discounts and prompt token reduction are separate metrics. No inference, product change or cache-hit guarantee from this review.
