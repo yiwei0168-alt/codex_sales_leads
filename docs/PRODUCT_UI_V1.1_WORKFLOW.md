@@ -1,5 +1,9 @@
 # Product UI v1.1 implementation workflow
 
+## 2026-09-13 fixed prompt/cache review only
+
+[Review P01–P06](FIXED_PROMPT_CACHE_REVIEW_2026-09-13.md) follows approved B19 analysis. Dynamic evidence IDs precede task instructions and candidates precede rubric; proposed stable-prefix ordering is not implemented. Existing public correction cache remains, exact qualification reuse needs dependency review, and provider usage currently drops cache detail. Application result reuse, provider cache discounts and prompt token reduction are separate metrics. No inference, product change or cache-hit guarantee from this review.
+
 ## 2026-09-13 frozen request counting
 
 Approved B18 diagnostic: frozen snapshots -> current request builders (standard playbook; no original RAG/private memory) -> mocked provider body -> in-memory stdin -> disconnected read-only Docker -> aggregate counts. All 1,053 Pro Messages/disabled requests passed repeated encoding; no agent evaluation, search, scoring, persistence or real model call. Existing batch input maxima are 9,492 / 13,513 / 13,017 tokens; all within approved byte caps. These are observations, not proven billing bounds. The diagnostic does not implement new byte-based batching. Full aggregate and limitations are linked in rule register v1.4.0.
