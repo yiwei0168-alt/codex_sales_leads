@@ -1,5 +1,9 @@
 # Product UI v1.1 implementation workflow
 
+## 2026-09-13 P05 approved, final P06 discussion
+
+B25 confirms exact cache reuse with tenant/country/input/version/batch dependencies, citation rebinding and manual overrides. Valid results may be reused while unknown charges remain reserved. No runtime implementation yet. Final P06 proposal retains at most five companies, checks final full-body limits/output completeness, preserves task modes and prevents replay; after confirmation implementation returns to acceptance closure.
+
 ## 2026-09-13 P04 approved
 
 B24 approves complete output Schema and validation safeguards; no runtime edit. Next P05 discussion separates shared public correction reuse from tenant/workspace/country-scoped scoring, with full input/version/batch dependencies, evidence-ID rebinding and no replay of unknown-cost attempts. P05/P06 remain unapproved; implementation follows complete confirmation.
