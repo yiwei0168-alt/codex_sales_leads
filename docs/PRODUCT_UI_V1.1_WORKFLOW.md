@@ -1,5 +1,9 @@
 # Product UI v1.1 implementation workflow
 
+## 2026-09-13 local token accounting prerequisite
+
+B16 in the [rule register](CONFIRMED_PRODUCT_RULES.md) is now approved. Official source and V4 tokenizer are pinned and integrity-checked in ignored local storage; no tokenizer runtime or provider call has run. Official PyPI lookup yielded no installable distribution and the local native toolchain is absent from PATH. Isolated build environment selection remains pending; this is not a billing upper-bound acceptance. No runtime workflow or dependency changed.
+
 ## 2026-09-12 confirmed-rule checkpoint (documentation only)
 
 Register v1.1.0 adds approved B11–B15: model-matched local token accounting or verified upper bounds -> input/output/other-charge quote -> per-attempt reservation, retaining unknown prior costs. Changed model/endpoint/contracts require revalidation. Official recipe discovery is documented; its concrete integration is still a proposal, not a tested billing guarantee.
