@@ -1,5 +1,9 @@
 # Product UI v1.1 implementation workflow
 
+## DeepSeek recharge recheck — latest 2026-09-12 update
+
+User-authorized single-stage retry selects only DeepSeek with a fixed new audit stage, under the existing advisory lock and cumulative $30 budget. The original 402 and its reservation remain immutable; repeat invocations skip the new receipt too. HTTP 200 / valid JSON, 1719 ms, 102 input and 27 output tokens. Reservation now $12, not actual spending. No production routing or mailbox settings changed; five provider contracts now pass but full business acceptance remains incomplete. See `LOCAL_PRODUCTION_ACCEPTANCE_2026-09-12.md`.
+
 ## 2026-09-12 local production and bounded provider acceptance
 
 Latest authority: `LOCAL_PRODUCTION_ACCEPTANCE_2026-09-12.md`. Local production only. Login body validation precedes account lookup; each session requires an active user. Kimi K3 requests use the provider-supported completion cap; the billing boundary rejects obsolete-only caps. Server-side acceptance scopes inherit isolated reviewed tariffs without modifying the fail-closed global product policy or normal user budget.

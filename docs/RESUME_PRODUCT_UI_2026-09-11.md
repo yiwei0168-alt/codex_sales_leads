@@ -2,6 +2,8 @@
 
 ## 2026-09-12 latest local production checkpoint
 
+Latest post-recharge update: DeepSeek-only recheck passed HTTP 200 / valid JSON, 102 input + 27 output tokens, 1719 ms. Five provider contracts now have passing probes. Reserved budget is $12/$30; original 402 retained. Repeat `--deepseek-recharge-recheck --run` skips the saved stage. User requests item-by-item confirmation: discuss SMTP next, do not silently change mailbox settings or undertake other fixes.
+
 Read `LOCAL_PRODUCTION_ACCEPTANCE_2026-09-12.md` first; it supersedes historical verification counts below. 586 tests / 139 files, 18 isolated browser tests, 14 authenticated desktop/mobile groups, build/typecheck pass. Auth and Kimi K3 request-cap fixes verified. Real provider probes: OpenRouter/Kimi light/K3/embedding pass, DeepSeek HTTP 402. $10 of isolated $30 remains reserved; invoice total unknown. Do not reset audit identity/budget or retry prior paid stages. SMTP verification failed, no outbound receipt; designated synthetic node retained. No cloud deployment. Global product tariffs remain empty/fail-closed. Remaining provider, SMTP, full workflow/adoption and external audit gates are explicit in the report. Preserve unrelated experiment artifacts.
 
 ## 2026-09-12 自然语言预算提案（最新补充）

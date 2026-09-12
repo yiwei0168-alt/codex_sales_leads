@@ -1,5 +1,7 @@
 # PRD v1.1 completion checkpoint
 
+Post-recharge correction: DeepSeek single-stage recheck passed, so all five provider contracts now have successful probes. Cumulative reserved budget $12/$30; no old receipt erased. SMTP and full workflow gates remain open. See the latest update in the acceptance report; older 402 results below remain historical.
+
 Latest 2026-09-12 local production result: see `LOCAL_PRODUCTION_ACCEPTANCE_2026-09-12.md`. 586 tests / 139 files, 18 browser checks, 14 authenticated groups, build/typecheck pass. Four provider probes pass; DeepSeek HTTP 402 and SMTP verification failures remain. Recipient and $30 budget are now authorized (not missing choices). $10 reserved, invoice total unknown. Global production tariff rules and complete business/adoption acceptance remain incomplete; probe success does not certify them. Historical counts below are preserved as stage history.
 
 User has resumed and requested continuation until completion. Checked means implemented with code-level verification, not authenticated UI/live-provider acceptance. See `RESUME_PRODUCT_UI_2026-09-11.md`. Experimental scoring/search changes remain separately gated.

@@ -1,5 +1,9 @@
 # 产品工作流效率台账
 
+## 2026-09-12 DeepSeek recharge recheck v1
+
+One user-authorized synthetic input -> one valid JSON output -> one validator-consumed output (probe utilization 100%, not user business adoption). 102 input / 27 output tokens, 1719 ms, zero automatic retries and search credits; no discarded output. New $2 reservation brings cumulative occupancy to $12/$30. Peak/cache-miss conservative estimate $0.00024156; actual reported cost unknown. Rechecked official off-peak rates imply cache-miss estimate $0.00012078 for this Saturday, not an invoice. Metrics persist on a distinct stage without rewriting the failed receipt. Optimization: target only the repaired provider; durable stage reuse prevents repeated charges. No other successful provider or evidence search rerun. Report: `LOCAL_PRODUCTION_ACCEPTANCE_2026-09-12.md`.
+
 ## 2026-09-12 bounded local acceptance v1
 
 Five synthetic provider inputs produced four valid validator-consumed outputs (80% probe utilization, not business/user adoption), one HTTP 402 rejection, zero automatic retries/search credits. Per-attempt request/response bytes, input/output tokens, latency, reserved/reported cost and validation use are persisted in `paid_call_reservation.metrics`; unknown values remain null. Fixed audit identity and stage lookup avoid re-buying successful or failed probes; database lock prevents concurrent duplicate runners. Isolated budget is $30, occupied reservation $10, reported cost $0.00015, invoice total unknown. Kimi reference estimates total $0.01115; embedding CNY 0.0000025 stays separate. No broad product tariff was enabled.

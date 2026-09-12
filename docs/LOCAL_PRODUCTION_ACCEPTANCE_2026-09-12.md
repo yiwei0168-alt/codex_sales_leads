@@ -1,5 +1,11 @@
 # Local production acceptance — 2026-09-12
 
+## Update: DeepSeek post-recharge recheck passed
+
+After the user confirmed recharge, one explicitly selected DeepSeek-only probe returned HTTP 200 and valid JSON in 1719 ms: 102 input / 27 output tokens. The conservative peak/cache-miss estimate is USD 0.00024156; provider-reported invoice cost remains unknown. Official rates were rechecked at https://api-docs.deepseek.com/quick_start/pricing/. This Saturday is off-peak (half peak rates); without cache detail the off-peak cache-miss estimate is USD 0.00012078, not an invoice.
+
+Five of five provider contracts now have a successful probe, while the original HTTP 402 receipt remains retained. Cumulative reservation is USD 12 / 30, USD 18 remaining. No other provider was called. `--deepseek-recharge-recheck --run` uses the fixed stage `deepseek-text-recharge-recheck-1`; repeat execution reuses the recorded result and sends nothing. Original default run still reports its historical failed stage; use this update for the latest acceptance verdict. SMTP, broad production tariff coverage and business E2E gates below are unchanged and await item-by-item user discussion.
+
 ## Scope and verdict
 
 Local production build only; no cloud deployment. Code/build and bounded authenticated UI checks pass. **Overall live-service acceptance is partial, not a release certification.** DeepSeek returned HTTP 402; SMTP connection verification failed. Existing broad product tariff policy remains fail-closed with no approved rules. Synthetic provider probes do not certify complete RAG, scoring, search or email-generation business workflows.

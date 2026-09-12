@@ -21,9 +21,14 @@ const probes=[
   ...[process.env.KIMI_INTENT_LIGHT_MODEL||"kimi-k2.6",process.env.KIMI_INTENT_MODEL||process.env.KIMI_MODEL||"kimi-k3"].map((model,index)=>({stage:`kimi-${index?"planning":"intent"}`,base:process.env.KIMI_BASE_URL||"https://api.moonshot.cn/v1",key:process.env.KIMI_API_KEY,model,allowed:index?"kimi-k3":"kimi-k2.6",reference:"https://developers.openai.com/api/docs/pricing",inputRate:10,outputRate:50,currency:"USD",basis:"user-approved-openai-reference-not-kimi-invoice"})),
   {stage:"embedding",base:config.embeddingBaseUrl,key:config.embeddingApiKey,model:config.embeddingModel,allowed:"text-embedding-v4",reference:"https://help.aliyun.com/zh/model-studio/text-embedding-v4",inputRate:0.5,outputRate:0,currency:"CNY",basis:"official-beijing-no-usd-fx-claim"},
 ];
+// One user-authorized post-recharge attempt, with a durable distinct key. Never erase the 402 receipt.
+const rechargeRecheck=process.argv.includes("--deepseek-recharge-recheck");
+const selectedProbes=rechargeRecheck
+  ?probes.filter(p=>p.stage==="deepseek-text").map(p=>({...p,stage:"deepseek-text-recharge-recheck-1"}))
+  :probes;
 try{
   if(!process.argv.includes("--run")){
-    console.log(JSON.stringify({mode:"preview",budgetUsd:30,reservationPerAttemptUsd:2,maximumFirstPassReservedUsd:10,automaticRetries:0,stages:probes.map(p=>({stage:p.stage,model:p.model,configured:Boolean(p.key),reviewedModel:p.model===p.allowed,rateBasis:p.basis}))}));
+    console.log(JSON.stringify({mode:"preview",budgetUsd:30,reservationPerAttemptUsd:2,maximumThisPassReservedUsd:selectedProbes.length*2,automaticRetries:0,stages:selectedProbes.map(p=>({stage:p.stage,model:p.model,configured:Boolean(p.key),reviewedModel:p.model===p.allowed,rateBasis:p.basis}))}));
   }else{
     lockClient=await getPool().connect();
     const lock=await lockClient.query<{locked:boolean}>("select pg_try_advisory_lock(hashtextextended($1,0)) as locked",[operationId]);
@@ -36,7 +41,7 @@ try{
     // Never raise an existing budget on resume.
     const limits=await tenantQuery<{limit_micros:string}>(userId,"select limit_micros::text from user_spend_budget where user_id=$1",[userId]);
     if(BigInt(limits[0].limit_micros)>BigInt(30_000_000))throw new Error("acceptance-budget-conflict");
-    for(const probe of probes){
+    for(const probe of selectedProbes){
       const prior=await tenantQuery<{passed:boolean|null}>(userId,"select (metrics->>'acceptancePassed')::boolean as passed from paid_call_reservation where user_id=$1 and operation_id=$2 and stage=$3",[userId,operationId,probe.stage]);
       if(prior.length){console.log(JSON.stringify({stage:probe.stage,status:"previous-attempt-retained-no-auto-retry",passed:prior.every(row=>row.passed===true)}));if(prior.some(row=>row.passed!==true))process.exitCode=1;continue;}
       if(!probe.key||probe.model!==probe.allowed){console.log(JSON.stringify({stage:probe.stage,status:"blocked-unreviewed-model-or-missing-key"}));process.exitCode=1;continue;}
