@@ -49,3 +49,17 @@ it("separately scoped concurrent users cannot mix reservations",async()=>{
   await Promise.all(["a","b"].map(userId=>withSpendContext({...scope,userId},()=>budgetedFetch(vi.fn().mockResolvedValue(Response.json({})))("https://example.test/chat",init))));
   expect(mocks.reserve.mock.calls.map(call=>call[0]).sort()).toEqual(["a","b"]);
 });
+it("records each failed and successful HTTP attempt separately including cache source fields",async()=>{
+  const transport=vi.fn()
+    .mockResolvedValueOnce(Response.json({usage:{prompt_cache_miss_tokens:9}},{status:503}))
+    .mockResolvedValueOnce(Response.json({usage:{prompt_tokens:12,prompt_cache_hit_tokens:10,prompt_cache_miss_tokens:2}}));
+  const send=budgetedFetch(transport);
+  await withSpendContext(scope,async()=>{
+    await send("https://example.test/chat",init);
+    await send("https://example.test/chat",init);
+  });
+  expect(mocks.reserve).toHaveBeenCalledTimes(2);
+  expect(mocks.settle).toHaveBeenCalledTimes(2);
+  expect(mocks.settle.mock.calls[0][2]).toMatchObject({succeeded:false,providerUsage:{fields:{prompt_cache_miss_tokens:9,prompt_cache_hit_tokens:null}}});
+  expect(mocks.settle.mock.calls[1][2]).toMatchObject({succeeded:true,providerUsage:{fields:{prompt_cache_hit_tokens:10,prompt_cache_miss_tokens:2}}});
+});

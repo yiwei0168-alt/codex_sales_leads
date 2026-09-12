@@ -3,6 +3,7 @@ import {billingPolicy,BudgetDeniedError,quoteRequest} from "./policy";
 import {reservePaidCall,settlePaidCall} from "./repository";
 import {recordBudgetDenial} from "./denial-metrics";
 import {isKimiK3} from "@/providers/kimi-contract";
+import {providerUsageObservation} from "./provider-usage";
 
 function object(value:unknown):Record<string,unknown>{return value!==null&&typeof value==="object"&&!Array.isArray(value)?value as Record<string,unknown>:{};}
 function count(value:unknown):number|null{return typeof value==="number"&&Number.isSafeInteger(value)&&value>=0?value:null;}
@@ -41,7 +42,7 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
     try{
       const text=await response.clone().text();let result:Record<string,unknown>={};try{result=object(JSON.parse(text));}catch{}
       const usage=object(result.usage);const reported=typeof usage.cost==="number"&&Number.isFinite(usage.cost)&&usage.cost>=0?Math.ceil(usage.cost*1000000):null;
-      await settlePaidCall(scope.userId,id,{reportedMicros:reported,latencyMs:Date.now()-started,responseBytes:Buffer.byteLength(text,"utf8"),inputTokens:count(usage.prompt_tokens??usage.input_tokens),outputTokens:count(usage.completion_tokens??usage.output_tokens),succeeded:response.ok});
+      await settlePaidCall(scope.userId,id,{reportedMicros:reported,latencyMs:Date.now()-started,responseBytes:Buffer.byteLength(text,"utf8"),inputTokens:count(usage.prompt_tokens??usage.input_tokens),outputTokens:count(usage.completion_tokens??usage.output_tokens),succeeded:response.ok,providerUsage:providerUsageObservation(result)});
     }catch{console.warn(JSON.stringify({event:"budget-settlement-unavailable",reservationRetained:true,retry:false}));}
     return response;
     }catch(error){

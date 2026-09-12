@@ -1,5 +1,9 @@
 # Product UI v1.1 implementation workflow
 
+## 2026-09-13 stage 2a: attempt-level usage persistence
+
+Paid transport -> existing per-attempt reservation -> response usage numeric allowlist -> reservation metrics.providerUsage. Explicit source paths preserve protocol differences; missing counts remain null. No response content, credentials or arbitrary metadata are retained. Failed HTTP responses are observed independently; accounting failure never replays successful work. P02 remains partial: routing/version attribution, retry linkage and compact UI aggregation are pending. No billing reconciliation behavior or paid-call authorization changed.
+
 ## 2026-09-13 implementation stage 1
 
 All P01–P06 approved. Full policy -> deterministic model projection -> structured request -> fixed-prefix user JSON -> existing provider transport -> unchanged output Schema/parser. DeepSeek and compatible fallback share the ordering helper. Arrays, values, message authority and privacy remain unchanged; source policy/checksum persistence is not replaced. Prompt versions invalidate old semantic identities. 596 tests / 142 files and typecheck pass. This stage does not implement cache telemetry, exact persisted score reuse, full-body batching or new billing rules; hosted quality/cost gates remain open.

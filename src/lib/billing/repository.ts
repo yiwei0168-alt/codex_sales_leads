@@ -1,5 +1,6 @@
 import { tenantQuery,tenantTransaction } from "@/lib/rag/db";
 import { BudgetDeniedError } from "./policy";
+import type { ProviderUsageObservation } from "./provider-usage";
 
 type ReservationInput={operationId:string;stage:string;tariffKey:string;tariffVersion:string;maximumChargeMicros:number;requestBytes:number};
 export async function reservePaidCall(userId:string,input:ReservationInput){
@@ -21,14 +22,14 @@ export async function reservePaidCallInTransaction(client:import("pg").PoolClien
     await client.query("update user_spend_budget set occupied_micros=occupied_micros+$2,updated_at=now() where user_id=$1",[userId,input.maximumChargeMicros]);
     return result.rows[0].id;
 }
-export async function settlePaidCall(userId:string,id:string,input:{reportedMicros:number|null;latencyMs:number;responseBytes:number|null;inputTokens:number|null;outputTokens:number|null;succeeded:boolean}){
+export async function settlePaidCall(userId:string,id:string,input:{reportedMicros:number|null;latencyMs:number;responseBytes:number|null;inputTokens:number|null;outputTokens:number|null;succeeded:boolean;providerUsage?:ProviderUsageObservation}){
   // Reported provider cost is not an audited invoice. Never automatically release a reservation.
   const cost=input.reportedMicros!==null&&Number.isSafeInteger(input.reportedMicros)&&input.reportedMicros>=0?input.reportedMicros:null;
   await tenantTransaction(userId,async client=>{
     const result=await client.query<{reserved_micros:string}>(`update paid_call_reservation set reported_micros=$3,
       status=case when $3::bigint>reserved_micros then 'bound-exceeded' when $3::bigint is null then 'unknown' else 'reported' end,
       metrics=metrics || $4::jsonb,updated_at=now() where user_id=$1 and id=$2 and status='reserved' returning reserved_micros`,
-      [userId,id,cost,JSON.stringify({latencyMs:input.latencyMs,outputBytes:input.responseBytes,inputTokens:input.inputTokens,outputTokens:input.outputTokens,validOutputItems:input.succeeded?1:0,discardedReasonCounts:input.succeeded?{}:{requestFailed:1},usageBoundary:"response-returned-not-downstream-adopted",optimizationOpportunity:"Reconcile invoices before releasing conservative reservations"})]);
+      [userId,id,cost,JSON.stringify({latencyMs:input.latencyMs,outputBytes:input.responseBytes,inputTokens:input.inputTokens,outputTokens:input.outputTokens,providerUsage:input.providerUsage??null,validOutputItems:input.succeeded?1:0,discardedReasonCounts:input.succeeded?{}:{requestFailed:1},usageBoundary:"response-returned-not-downstream-adopted",optimizationOpportunity:"Reconcile invoices before releasing conservative reservations"})]);
     if(cost!==null&&result.rows[0]&&BigInt(cost)>BigInt(result.rows[0].reserved_micros))await client.query("update user_spend_budget set frozen=true,updated_at=now() where user_id=$1",[userId]);
   });
 }

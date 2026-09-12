@@ -1,5 +1,9 @@
 # 产品开发恢复节点 — 2026-09-11
 
+## 2026-09-13 最新：实施阶段 2a
+
+P02 的逐次 HTTP 缓存/reasoning 数值白名单已接入现有账本 metrics，12 项针对性测试与 typecheck 通过；无付费调用。仍需模型/提示版本与重试关联、汇总展示，P02 未全部完成。下一步继续 P02/P05/P06 和账本验收；保持现有预算、空费率规则、未跟踪实验文件，不重复 SMTP。阶段 1 已推送 cc1e0af。
+
 ## 2026-09-13 最新：P06 确认，实施阶段 1
 
 全部 P01–P06 已批准。P01 `src/providers/structured-user-prompt.ts`（DeepSeek/compatible 两处），P03 `src/lib/leads/model-scoring-policy.ts` 已实现并更新提示版本；P04 Schema 未改。596 tests/142 files 和 typecheck 通过，未调用真实模型。剩余：P02 逐尝试缓存字段、P05 精确持久缓存依赖/隔离、P06 最终完整请求边界/超限保护、已确认账本及验收报告各门禁。不得把阶段 1 当整个产品验收通过；费率 rules 仍为空，预算未重置。

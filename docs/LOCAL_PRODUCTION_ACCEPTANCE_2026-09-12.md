@@ -1,5 +1,9 @@
 # Local production acceptance — 2026-09-12
 
+## 2026-09-13 stage 2a: partial P02, not final acceptance
+
+Per-attempt cache/reasoning numeric source fields now persist in existing reservation JSON metrics. Twelve targeted tests and typecheck pass, including failed/successful attempts, null versus zero, malformed fields and no raw private payload retention. No real provider/search/SMTP calls or tariff changes. Pending P02 attribution/aggregation/UI, P05, P06 and all unresolved billing/production gates remain open; cumulative acceptance budget is not reset.
+
 ## 2026-09-13 implementation stage 1, local checks only
 
 Production build also passed (16 static pages generated); no new authenticated browser run or real model quality check is claimed. This preserves the local-only deployment scope.
