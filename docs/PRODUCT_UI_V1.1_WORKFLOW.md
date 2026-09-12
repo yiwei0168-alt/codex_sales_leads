@@ -2,6 +2,8 @@
 
 ## 2026-09-12 confirmed-rule checkpoint (documentation only)
 
+Register v1.1.0 adds approved B11–B15: model-matched local token accounting or verified upper bounds -> input/output/other-charge quote -> per-attempt reservation, retaining unknown prior costs. Changed model/endpoint/contracts require revalidation. Official recipe discovery is documented; its concrete integration is still a proposal, not a tested billing guarantee.
+
 The [confirmed rule register](CONFIRMED_PRODUCT_RULES.md) is the review index for exact user decisions and their implementation status. Approved next flow: frozen/reusable evidence -> current semantic request -> full serialized UTF-8 body measurement -> split oversized batches or handle oversized single-company evidence without silent loss -> independently verified tariff/token bounds -> reservation -> provider attempt -> separate reported/estimated/invoice amounts -> downstream adoption metrics. Body limits: correction 36,864 bytes; score-only 57,344; score-and-paths 61,440; output default remains 8,192. These new limits and full reconciliation rules are **not implemented by this documentation stage**. Global tariffs remain empty/fail-closed. Rules A01–B10 govern the next stage; historical workflow results below retain their original scope.
 
 ## SMTP send acceptance — latest 2026-09-12 update
