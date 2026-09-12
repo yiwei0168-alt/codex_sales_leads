@@ -8,7 +8,18 @@ import {withSpendContext} from "./context";
 import {BudgetDeniedError} from "./policy";
 const scope={userId:"user",operationId:"action",stage:"score"};
 const init={method:"POST",headers:{authorization:"Bearer fixture-secret"},body:JSON.stringify({model:"test",max_tokens:100,messages:[{content:"private company input"}]})};
+it("rejects obsolete K3 output caps before reserving or sending",async()=>{
+  const transport=vi.fn();
+  await expect(withSpendContext(scope,()=>budgetedFetch(transport)("https://api.moonshot.cn/v1/chat/completions",{...init,body:JSON.stringify({model:"kimi-k3",max_tokens:100})}))).rejects.toThrow("request-out-of-bounds");
+  expect(transport).not.toHaveBeenCalled();expect(mocks.reserve).not.toHaveBeenCalled();
+});
 beforeEach(()=>{vi.resetAllMocks();mocks.quote.mockReturnValue({key:"fixture",maximumChargeMicros:100});mocks.reserve.mockResolvedValue("reservation");mocks.settle.mockResolvedValue(undefined);});
+it("attributes isolated reviewed tariffs to the reservation",async()=>{
+  const tariffPolicy={version:"acceptance-only",rules:[]};
+  await withSpendContext({...scope,tariffPolicy},()=>budgetedFetch(vi.fn().mockResolvedValue(Response.json({})))("https://example.test/chat",init));
+  expect(mocks.quote).toHaveBeenCalledWith(expect.any(Object),tariffPolicy.rules);
+  expect(mocks.reserve.mock.calls[0][1].tariffVersion).toBe("acceptance-only");
+});
 it("bounds form requests without recording their fields",async()=>{
   const transport=vi.fn().mockResolvedValue(Response.json({}));
   await withSpendContext(scope,()=>budgetedFetch(transport)("https://example.test/start",{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded"},body:new URLSearchParams({domain:"private-company.test"})}));

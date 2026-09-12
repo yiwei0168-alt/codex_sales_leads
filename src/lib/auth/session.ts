@@ -44,7 +44,7 @@ export async function getSession(): Promise<AppSession | null> {
   const sessions = await query<{ user_id: string; display_name: string; role: "admin" | "member" }>(
     `update app_session s set last_seen_at = now()
      from app_user u
-     where s.user_id = u.id and s.token_sha256 = $1 and s.expires_at > now()
+     where s.user_id = u.id and u.status = 'active' and s.token_sha256 = $1 and s.expires_at > now()
      returning s.user_id, u.display_name, u.role`,
     [tokenHash(token)],
   );

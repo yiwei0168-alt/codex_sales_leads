@@ -48,7 +48,9 @@ describe("Kimi development strategy agent", () => {
     expect(result.draft.body).not.toContain("[EVIDENCE:");
     expect(result.evidenceIds).toEqual(["ev-1"]);
     const request = JSON.parse(fetchMock.mock.calls[0][1].body as string);
-    expect(request.temperature).toBe(1);
+    expect(request.temperature).toBeUndefined();
+    expect(request.max_completion_tokens).toBeGreaterThan(0);
+    expect(request.max_tokens).toBeUndefined();
   });
 
   it("falls back safely when the draft invents an evidence ID", async () => {

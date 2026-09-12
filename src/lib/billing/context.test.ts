@@ -1,5 +1,13 @@
 import {expect,it} from "vitest";
-import {currentSpendContext,setSpendStage,withProductSpend} from "./context";
+import {currentSpendContext,setSpendStage,withProductSpend,withSpendContext} from "./context";
+
+it("inherits isolated server tariff policies without changing unrelated scopes",()=>{
+  const tariffPolicy={version:"acceptance",rules:[]};
+  withSpendContext({userId:"a",operationId:"test",stage:"root",tariffPolicy},()=>{
+    withProductSpend("a","child",()=>expect(currentSpendContext()?.tariffPolicy).toBe(tariffPolicy));
+  });
+  withProductSpend("a","normal",()=>expect(currentSpendContext()?.tariffPolicy).toBeUndefined());
+});
 
 it("isolates parallel stages and restores the parent context",async()=>{
   await withProductSpend("owner","root",async()=>{

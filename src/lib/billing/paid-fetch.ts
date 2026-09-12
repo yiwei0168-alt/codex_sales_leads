@@ -2,6 +2,7 @@ import {currentSpendContext} from "./context";
 import {billingPolicy,BudgetDeniedError,quoteRequest} from "./policy";
 import {reservePaidCall,settlePaidCall} from "./repository";
 import {recordBudgetDenial} from "./denial-metrics";
+import {isKimiK3} from "@/providers/kimi-contract";
 
 function object(value:unknown):Record<string,unknown>{return value!==null&&typeof value==="object"&&!Array.isArray(value)?value as Record<string,unknown>:{};}
 function count(value:unknown):number|null{return typeof value==="number"&&Number.isSafeInteger(value)&&value>=0?value:null;}
@@ -24,10 +25,13 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
       }else{try{parsed=object(JSON.parse(body));}catch{throw new BudgetDeniedError("request-out-of-bounds");}}
     }
     if(parsed.stream===true)throw new BudgetDeniedError("request-out-of-bounds");
+    if(typeof parsed.model==="string"&&isKimiK3(parsed.model)&&!count(parsed.max_completion_tokens))throw new BudgetDeniedError("request-out-of-bounds");
     const outputTokens=count(parsed.max_completion_tokens??parsed.max_tokens??object(parsed.generation_config).max_output_tokens);
     const bytes=Buffer.byteLength(body,"utf8")+Buffer.byteLength(url.search,"utf8");
-    const rule=quoteRequest({origin:url.origin,pathname:url.pathname,model:typeof parsed.model==="string"?parsed.model:"",requestBytes:bytes,outputTokens});
-    const id=await reservePaidCall(scope.userId,{operationId:scope.operationId,stage:scope.stage,tariffKey:rule.key,tariffVersion:billingPolicy.version,maximumChargeMicros:rule.maximumChargeMicros,requestBytes:bytes});
+    const policy=scope.tariffPolicy??billingPolicy;
+    const quote={origin:url.origin,pathname:url.pathname,model:typeof parsed.model==="string"?parsed.model:"",requestBytes:bytes,outputTokens};
+    const rule=scope.tariffPolicy?quoteRequest(quote,policy.rules):quoteRequest(quote);
+    const id=await reservePaidCall(scope.userId,{operationId:scope.operationId,stage:scope.stage,tariffKey:rule.key,tariffVersion:policy.version,maximumChargeMicros:rule.maximumChargeMicros,requestBytes:bytes});
     const started=Date.now();let response:Response;
     try{response=await transport(input,{...init,redirect:"error"});}catch(error){
       await settlePaidCall(scope.userId,id,{reportedMicros:null,latencyMs:Date.now()-started,responseBytes:null,inputTokens:null,outputTokens:null,succeeded:false}).catch(()=>undefined);

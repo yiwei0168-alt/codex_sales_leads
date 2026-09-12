@@ -1,5 +1,9 @@
 # 产品开发恢复节点 — 2026-09-11
 
+## 2026-09-12 latest local production checkpoint
+
+Read `LOCAL_PRODUCTION_ACCEPTANCE_2026-09-12.md` first; it supersedes historical verification counts below. 586 tests / 139 files, 18 isolated browser tests, 14 authenticated desktop/mobile groups, build/typecheck pass. Auth and Kimi K3 request-cap fixes verified. Real provider probes: OpenRouter/Kimi light/K3/embedding pass, DeepSeek HTTP 402. $10 of isolated $30 remains reserved; invoice total unknown. Do not reset audit identity/budget or retry prior paid stages. SMTP verification failed, no outbound receipt; designated synthetic node retained. No cloud deployment. Global product tariffs remain empty/fail-closed. Remaining provider, SMTP, full workflow/adoption and external audit gates are explicit in the report. Preserve unrelated experiment artifacts.
+
 ## 2026-09-12 自然语言预算提案（最新补充）
 
 assistant-intent-plan-v1.3继续使用现有Kimi轻量模型和多轮历史，新增budget_change结构：user/task范围、绝对累计美元上限。币种、范围或金额不明确时澄清；数字校验由程序完成，预算提案不升级K3、不调用RAG/网页搜索。联合“新搜索+预算”先澄清两步建立计划/设置预算，不默默丢掉预算或自动执行。模型不能返回可信任务ID。

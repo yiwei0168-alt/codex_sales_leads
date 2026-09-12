@@ -2,6 +2,7 @@ import { verifyPassword } from "@/lib/auth/password";
 import { createSession, hashClientAddress } from "@/lib/auth/session";
 import { query } from "@/lib/rag/db";
 import { findLoginUser, isValidEmail, normalizeEmail } from "@/lib/auth/users";
+import {z} from "zod";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -14,11 +15,11 @@ export async function POST(request: Request) {
     [ipHash],
   );
   if (Number(failures[0]?.count ?? 0) >= 5) return Response.json({ error: "登录尝试过多，请 15 分钟后重试" }, { status: 429 });
-  let body: { email?: string; password?: string };
-  try { body = await request.json() as { email?: string; password?: string }; } catch { return Response.json({ error: "请求体必须是 JSON" }, { status: 400 }); }
-  const email = normalizeEmail(body.email ?? "");
+  const parsed=z.object({email:z.string().max(320),password:z.string().max(1024)}).strict().safeParse(await request.json().catch(()=>null));
+  if(!parsed.success)return Response.json({error:"请提供有效的邮箱和密码"},{status:400});
+  const email = normalizeEmail(parsed.data.email);
   if (!isValidEmail(email)) return Response.json({ error: "请输入有效的登录邮箱" }, { status: 400 });
-  const password = body.password ?? "";
+  const password = parsed.data.password;
   const user = await findLoginUser(email);
   const succeeded = Boolean(user) && password.length <= 1024 && verifyPassword(password, user!.passwordHash);
   await query("insert into auth_login_attempt (ip_sha256, succeeded) values ($1, $2)", [ipHash, succeeded]);

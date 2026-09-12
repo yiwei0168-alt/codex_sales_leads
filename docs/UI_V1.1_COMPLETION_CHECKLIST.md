@@ -1,5 +1,7 @@
 # PRD v1.1 completion checkpoint
 
+Latest 2026-09-12 local production result: see `LOCAL_PRODUCTION_ACCEPTANCE_2026-09-12.md`. 586 tests / 139 files, 18 browser checks, 14 authenticated groups, build/typecheck pass. Four provider probes pass; DeepSeek HTTP 402 and SMTP verification failures remain. Recipient and $30 budget are now authorized (not missing choices). $10 reserved, invoice total unknown. Global production tariff rules and complete business/adoption acceptance remain incomplete; probe success does not certify them. Historical counts below are preserved as stage history.
+
 User has resumed and requested continuation until completion. Checked means implemented with code-level verification, not authenticated UI/live-provider acceptance. See `RESUME_PRODUCT_UI_2026-09-11.md`. Experimental scoring/search changes remain separately gated.
 
 - [x] Lead partitions, advanced filters/sorting, bulk actions and saved-result refresh.

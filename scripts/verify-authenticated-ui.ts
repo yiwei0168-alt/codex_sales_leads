@@ -111,6 +111,12 @@ try{
     checks.push(`${viewport.width}:task-budget-real-api`);
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
     expect(errors).toEqual([]);checks.push(`${viewport.width}:navigation-apis-no-runtime-error`);
+    // Revoke access on the next request, even when the browser retains a valid cookie.
+    const identity=await pool.query("update app_user set status='disabled' where id=$1 and email=$2 returning id",[userId,email]);
+    expect(identity.rowCount).toBe(1);
+    try{const denied=await context.request.get(new URL("/api/budget",base).href);expect(denied.status()).toBe(401);}
+    finally{await pool.query("update app_user set status='active' where id=$1 and email=$2",[userId,email]);}
+    checks.push(`${viewport.width}:disabled-user-session-denied`);
     await context.close();
   }
   const calls=await pool.query("select count(*)::int as n from paid_call_reservation where user_id=$1",[userId]);

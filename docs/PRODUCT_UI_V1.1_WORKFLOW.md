@@ -1,5 +1,11 @@
 # Product UI v1.1 implementation workflow
 
+## 2026-09-12 local production and bounded provider acceptance
+
+Latest authority: `LOCAL_PRODUCTION_ACCEPTANCE_2026-09-12.md`. Local production only. Login body validation precedes account lookup; each session requires an active user. Kimi K3 requests use the provider-supported completion cap; the billing boundary rejects obsolete-only caps. Server-side acceptance scopes inherit isolated reviewed tariffs without modifying the fail-closed global product policy or normal user budget.
+
+Flow: fixed synthetic input -> exact provider/model request -> durable $2 reservation under isolated $30 cap -> one HTTP attempt -> JSON/vector validation -> aggregate receipt and estimate -> report. No tools, search, business data or automatic retries. Five attempts, four valid validator-consumed outputs, $10 reserved; OpenRouter reports $0.00015, other invoices unknown. Failed requests and resumed runs retain costs and never replay automatically. This is not full business-agent acceptance. SMTP verification failed before send and no outbound receipt exists. 586 tests, 18 browser checks, 14 authenticated groups and build/typecheck pass. Remaining gates and official price sources are in the linked report.
+
 ## 2026-09-12 自然语言预算提案（最新补充）
 
 assistant-intent-plan-v1.3继续使用现有Kimi轻量模型和多轮历史，新增budget_change结构：user/task范围、绝对累计美元上限。币种、范围或金额不明确时澄清；数字校验由程序完成，预算提案不升级K3、不调用RAG/网页搜索。联合“新搜索+预算”先澄清两步建立计划/设置预算，不默默丢掉预算或自动执行。模型不能返回可信任务ID。

@@ -1,4 +1,5 @@
 import {budgetedFetch} from "@/lib/billing/paid-fetch";
+import {kimiOutputLimit} from "@/providers/kimi-contract";
 import type { ImportedMailboxMessage } from "./alimail-imap";
 
 export type MailboxArtifactKind = "company-policy" | "customer-signal" | "email-template";
@@ -73,7 +74,7 @@ export async function learnMailboxMessagesWithKimi(
     body: JSON.stringify({
       model,
       response_format: { type: "json_object" },
-      max_tokens: 8_000,
+      ...kimiOutputLimit(model,8_000),
       messages: [
         {
           role: "system",

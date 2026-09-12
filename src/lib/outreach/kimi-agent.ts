@@ -1,6 +1,7 @@
 import {BudgetDeniedError} from "@/lib/billing/policy";
 import {budgetedFetch} from "@/lib/billing/paid-fetch";
 import { z } from "zod";
+import {kimiOutputLimit,isKimiK3} from "@/providers/kimi-contract";
 
 import { cleanCitations, cleanHandoffCitations, evidencePayload, knowledgePayload, parseOutreachJson } from "./feedback-model-shared";
 import type {
@@ -80,9 +81,9 @@ async function invokeKimiJson(
   if (!apiKey) throw new Error("KIMI_API_KEY is not configured");
   const model = process.env.KIMI_OUTREACH_MODEL?.trim() || process.env.KIMI_MODEL?.trim() || "kimi-k3";
   const requestBody = JSON.stringify({
-    model, temperature: Number(process.env.KIMI_OUTREACH_TEMPERATURE ?? 1),
+    model, ...(isKimiK3(model)?{}:{temperature:Number(process.env.KIMI_OUTREACH_TEMPERATURE ?? 1)}),
     response_format: { type: "json_object" },
-    max_tokens: maxTokens ?? Number(process.env.KIMI_OUTREACH_MAX_TOKENS ?? 12_000), messages,
+    ...kimiOutputLimit(model,maxTokens ?? Number(process.env.KIMI_OUTREACH_MAX_TOKENS ?? 12_000)), messages,
   });
   let body: KimiResponse = {};
   let status = 500;

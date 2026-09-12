@@ -1,5 +1,11 @@
 # 产品工作流效率台账
 
+## 2026-09-12 bounded local acceptance v1
+
+Five synthetic provider inputs produced four valid validator-consumed outputs (80% probe utilization, not business/user adoption), one HTTP 402 rejection, zero automatic retries/search credits. Per-attempt request/response bytes, input/output tokens, latency, reserved/reported cost and validation use are persisted in `paid_call_reservation.metrics`; unknown values remain null. Fixed audit identity and stage lookup avoid re-buying successful or failed probes; database lock prevents concurrent duplicate runners. Isolated budget is $30, occupied reservation $10, reported cost $0.00015, invoice total unknown. Kimi reference estimates total $0.01115; embedding CNY 0.0000025 stays separate. No broad product tariff was enabled.
+
+Kimi K3 cap compatibility is now enforced at request creation and budget boundary, avoiding ineffective output caps. Optimization opportunities: reconcile invoices before releasing reservations; validate provider billing health without repeated paid retries; finish exact stage-to-final-user-adoption instrumentation; audit full search/tool bounds before enabling production tariffs. SMTP failed before sending (two transport verifications, no model/search calls and no outbound receipt); retained synthetic node prevents customer progress pollution. Full methodology, rates and outcomes: `LOCAL_PRODUCTION_ACCEPTANCE_2026-09-12.md`.
+
 ## 2026-09-12 自然语言预算提案（最新补充）
 
 assistant-intent-plan-v1.3继续使用现有Kimi轻量模型和多轮历史，新增budget_change结构：user/task范围、绝对累计美元上限。币种、范围或金额不明确时澄清；数字校验由程序完成，预算提案不升级K3、不调用RAG/网页搜索。联合“新搜索+预算”先澄清两步建立计划/设置预算，不默默丢掉预算或自动执行。模型不能返回可信任务ID。

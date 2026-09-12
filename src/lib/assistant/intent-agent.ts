@@ -1,6 +1,7 @@
 import {BudgetDeniedError,dollarsToMicros} from "@/lib/billing/policy";
 import {budgetedFetch} from "@/lib/billing/paid-fetch";
 import { z } from "zod";
+import {kimiOutputLimit} from "@/providers/kimi-contract";
 
 import type { ChannelRole } from "@/lib/domain";
 import { DeepSeekProvider } from "@/providers/deepseek";
@@ -211,7 +212,7 @@ async function invokeKimiIntent(options: {
   const requestBody = JSON.stringify({
     model: options.model,
     response_format: { type: "json_object" },
-    max_tokens: 4_000,
+    ...kimiOutputLimit(options.model,4_000),
     messages: [
       {
         role: "system",
