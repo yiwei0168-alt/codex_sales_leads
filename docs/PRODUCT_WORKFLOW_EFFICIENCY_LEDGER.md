@@ -1,5 +1,9 @@
 # 产品工作流效率台账
 
+## 2026-09-12 single live SMTP send acceptance
+
+One explicitly confirmed test input -> one SMTP-accepted send -> one persisted encrypted receipt consumed by validation (1/1 at the receipt boundary; recipient reading/delivery unknown). `reused:false`, sent timestamp and encrypted readback passed; model calls/tokens/search credits zero, no automatic resend. Product send latency/retry metrics use the existing outbound workflow; no invented per-message SMTP dollar charge. Optimization: reuse the deterministic receipt for status checks and never send a second email to prove persistence. Dedicated synthetic node retained; report contains aggregates only.
+
 ## 2026-09-12 SMTP pre-authentication DNS correction
 
 Diagnosis identified a resolver-path mismatch, not a proven password error. Product connector now uses bounded system DNS/TLS before handing a socket to Nodemailer. At most four distinct endpoints, no retry after handoff, no certificate bypass. The one live credential verification produced one valid validator-consumed result in 504 ms: zero emails, model tokens and API credits; no automatic authentication retries or database writes. This is diagnostic consumption, not recipient delivery. Existing outbound receipt/idempotency telemetry remains unchanged; detailed per-address production utilization remains uninstrumented rather than invented. Optimization opportunity: record bounded pre-auth connection phase metrics separately from send retries without storing IPs/credentials. Avoid retrying credentials when connection fails; do not add model/search work to mail transport diagnosis.

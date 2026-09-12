@@ -1,5 +1,9 @@
 # Product UI v1.1 implementation workflow
 
+## SMTP send acceptance — latest 2026-09-12 update
+
+Following separate user confirmation, one synthetic test email passed the real product send path: SMTP accepted, encrypted receipt and sent timestamp persisted, encrypted readback validated. No retry, no model call. The test node remains distinct from customer records. Await recipient confirmation before marking inbox delivery accepted; server `sent` status alone does not prove it.
+
 ## SMTP system-DNS connector — 2026-09-12
 
 Confirmed product change: saved mailbox -> system DNS (5-second bound) -> up to four distinct TLS endpoints (5 seconds each, transport failures only) -> secured socket handed to Nodemailer -> authentication -> existing explicitly confirmed send/idempotency flow. Preserve hostname/certificate verification; no hardcoded IP, TLS bypass, or post-handoff retry. System resolution avoids the observed mismatch with Nodemailer's DNS resolver. Authentication-only live check passed in 504 ms, no mail or database mutation. Actual delivery remains pending. See the acceptance report for diagnostics and limits.

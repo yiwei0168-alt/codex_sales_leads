@@ -1,5 +1,9 @@
 # Local production acceptance — 2026-09-12
 
+## Update: user-confirmed single SMTP send passed; inbox pending
+
+The user explicitly confirmed one marked test email to the designated recipient. The product's real `sendOutbound` workflow returned `sent`, `reused:false`; receipt persistence, sent timestamp and encrypted-payload readback checks all passed. No model calls or automatic resend. The dedicated synthetic company and receipt remain for audit; no real customer was marked contacted. Recipient inbox delivery is **not yet confirmed** and must not be inferred from SMTP acceptance. No recipient address, sender identity or message content is committed here. Earlier send-pending statements below are historical.
+
 ## Update: SMTP connection fix and authentication passed
 
 System `dns.lookup` returned four working server addresses; `dns.resolve4` returned a different unreachable address. Nodemailer preferred the latter and timed out at CONN. All four system-resolved addresses passed unauthenticated TCP/TLS/SMTP checks; no mailbox credential was used during that diagnosis.
