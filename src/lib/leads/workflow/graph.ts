@@ -162,8 +162,8 @@ export function buildLeadWorkflowGraph(
       const output = { ...playbook, cooperationPathMemory };
       const metric = { ...completedStageMetric({ stage: "build_playbook", startedAt, input: state.ragContext,
         output, inputItems: state.ragContext.length, outputItems: 1,
-        generatedArtifacts: cachedPlaybook ? 0 : 1, validArtifacts: 1, downstreamUsedArtifacts: 1,
-        metadata: { cacheHit: Boolean(cachedPlaybook) } }),
+        generatedArtifacts: cachedPlaybook ? 0 : 1, validArtifacts: cachedPlaybook?0:1, downstreamUsedArtifacts: cachedPlaybook?0:1,
+        metadata: { cacheHit: Boolean(cachedPlaybook),reusedArtifacts:cachedPlaybook?1:0 } }),
       status: cachedPlaybook ? "cache-hit" as const : "completed" as const };
       return { phase: "planning" as const, playbook: output,
         warnings: [...state.warnings, ...playbook.warnings], stageMetrics: [...(state.stageMetrics ?? []), metric] };
@@ -281,7 +281,20 @@ export function buildLeadWorkflowGraph(
         countryCode:state.plan.countryCode,countryName:state.plan.countryName,
         contracts:dependencies.qualificationAgent.cacheContracts?.(inScopeCandidates,state.playbook,state.plan.countryCode,state.plan.countryName,state.plan.objective),
       }) : new Map<string, LeadCandidateAssessment>();
-      const alreadyAssessed = new Map((state.assessments ?? []).map((item) => [item.candidateId, item]));
+        const alreadyAssessed = new Map((state.assessments ?? []).map((item) => [item.candidateId, item]));
+        // A complete peer may have been checkpointed before a single-candidate repair.
+        // Recompute the remaining request contracts after a hit; never reuse a changed batch contract.
+        if(cached.size&&dependencies.loadAssessmentCache&&dependencies.qualificationAgent.cacheContracts){
+          for(let pass=0;pass<inScopeCandidates.length;pass++){
+            const remaining=inScopeCandidates.filter(candidate=>!alreadyAssessed.has(candidate.candidateId)&&!cached.has(candidate.candidateId));
+            if(!remaining.length)break;
+            const hits=await dependencies.loadAssessmentCache({userId:state.userId,workspaceId:state.workspaceId,candidates:remaining,
+              playbook:state.playbook,objective:state.plan.objective,countryCode:state.plan.countryCode,countryName:state.plan.countryName,
+              contracts:dependencies.qualificationAgent.cacheContracts(remaining,state.playbook,state.plan.countryCode,state.plan.countryName,state.plan.objective)});
+            let added=0;for(const candidate of remaining){const hit=hits.get(candidate.candidateId);if(hit){cached.set(candidate.candidateId,hit);added++;}}
+            if(!added)break;
+          }
+        }
       const missing = inScopeCandidates.filter((candidate) =>
         !alreadyAssessed.has(candidate.candidateId) && !cached.has(candidate.candidateId));
       let cachePersistenceFailed=false;
@@ -316,6 +329,7 @@ export function buildLeadWorkflowGraph(
         return assessment ? [assessment] : [];
       });
       const completed = assessments.filter((assessment) => assessment.scoringStatus === "completed").length;
+      const newlyCompleted=evaluated.assessments.filter(assessment=>assessment.scoringStatus==="completed").length;
       const acceptedCount = assessments.filter((item) => item.eligible && item.eligibilityStatus === "eligible"
         && item.scoringStatus === "completed").length;
       const finalEligibleAdded = Math.max(0, acceptedCount - (state.acceptedCandidateCount ?? 0));
@@ -335,8 +349,8 @@ export function buildLeadWorkflowGraph(
       const metric = { ...completedStageMetric({ stage: "score_candidates", startedAt,
         input: inScopeCandidates, output: assessments, inputItems: inScopeCandidates.length,
         outputItems: assessments.length, generatedArtifacts: evaluated.assessments.length,
-        validArtifacts: completed, downstreamUsedArtifacts: completed,
-        metadata: { cacheHits: cached.size, cacheMisses: missing.length,cachePersistenceFailed,batchCacheSaveAttempts,
+        validArtifacts: newlyCompleted, downstreamUsedArtifacts: newlyCompleted,
+        metadata: { cacheHits: cached.size, cacheMisses: missing.length,cachePersistenceFailed,batchCacheSaveAttempts,reusedCompletedArtifacts:completed-newlyCompleted,
           outOfRoleNotScored: state.correctedCandidates.length - inScopeCandidates.length,
           acceptedCount, finalEligibleAdded, consecutiveNoFinalRounds,
           targetShouldContinue: !targetDecision.complete, targetCompletionReason: targetDecision.reason } }),
@@ -361,11 +375,12 @@ export function buildLeadWorkflowGraph(
         reasoningTokens: usage.usage.reasoningTokens, totalTokens: usage.usage.totalTokens,
         latencyMs: 0, fallbackUsed: false, accountCashCostUsd: usage.usage.accountCashCostUsd,
       }));
-      const valid = reviewed.reviews.filter((review) => review.status !== "review-failed").length;
+      const valid = reviewed.reviews.filter((review) => review.required&&review.status !== "review-failed").length;
       const metric = completedStageMetric({ stage: "review_assessment_anomalies", startedAt,
         input: state.assessments, output: reviewed.reviews, inputItems: state.assessments.length,
         outputItems: reviewed.reviews.length, generatedArtifacts: reviewed.reviews.filter((review) => review.required).length,
-        validArtifacts: valid, downstreamUsedArtifacts: reviewed.reviews.filter((review) => review.required).length });
+        validArtifacts: valid, downstreamUsedArtifacts: valid,
+        metadata:{skippedNotRequired:reviewed.reviews.filter(review=>!review.required).length,usageBoundary:"validated-review-forwarded-not-user-adoption"} });
       return { phase: "reviewing-scores" as const, assessments: reviewed.assessments,
         assessmentReviews: reviewed.reviews, modelUsage: [...(state.modelUsage ?? []), ...reviewUsage],
         stageMetrics: [...(state.stageMetrics ?? []), metric], warnings: [...state.warnings, ...reviewed.warnings] };

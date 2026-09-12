@@ -26,6 +26,10 @@ import type {
 export const LEAD_QUALIFICATION_PROMPT_VERSION = "lead-value-v6-projection1-stable-prefix-five-paths";
 export const LEAD_SCORE_ONLY_PROMPT_VERSION = "lead-value-v9-projection1-stable-prefix-score-only";
 type QualificationModelOutput = LeadAssessmentModelOutput | LeadAssessmentScoreOnlyModelOutput;
+function validatedAssessmentSchema(includePaths:boolean):z.ZodType<QualificationModelOutput>{
+  return (includePaths?leadAssessmentModelSchema:leadAssessmentScoreOnlyModelSchema)
+    .refine(value=>new Set(value.dimensionRationales.map(item=>item.dimension)).size===7,"Each score dimension must have exactly one rationale");
+}
 
 interface LeadAssessmentRequest {
   instructions: string[];
@@ -517,7 +521,7 @@ export class LeadQualificationAgent {
       attempts: response.attempts, retries: response.retries,
       accountCashCostUsd: response.usage?.accountCashCostUsd });
     const validated=validateBatchItems<QualificationModelOutput>(response.output,"assessments",
-      this.includeCooperationPaths?leadAssessmentModelSchema:leadAssessmentScoreOnlyModelSchema,
+      validatedAssessmentSchema(this.includeCooperationPaths),
       candidates.map(candidate=>candidate.candidateId));
     const parsed={assessments:validated.items,complete:validated.complete};
     usageRecords[usageRecords.length-1].batchValidation={inputItems:candidates.length,validOutputItems:validated.items.length,rejectedOutputItems:validated.rejectedItems,missingOutputItems:validated.missingItems,complete:validated.complete};
@@ -525,35 +529,40 @@ export class LeadQualificationAgent {
   }
 
   private async evaluateBatch(candidates: CorrectedLeadWorkflowCandidate[], playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string,
-    usageRecords: WorkflowModelUsage[]): Promise<LeadCandidateAssessment[]> {
+    usageRecords: WorkflowModelUsage[],publish?:(candidates:CorrectedLeadWorkflowCandidate[],assessments:LeadCandidateAssessment[])=>Promise<void>): Promise<LeadCandidateAssessment[]> {
     try {
       const routine = await this.invokeBatch(candidates, playbook, countryCode, countryName, objective, this.routineModel, usageRecords);
-      const expectedIds=new Set(candidates.map(candidate=>candidate.candidateId));
-      const returnedIds=new Set(routine.parsed.assessments.map(item=>item.candidateId));
-      const complete=routine.parsed.complete&&expectedIds.size===candidates.length&&routine.parsed.assessments.length===candidates.length
-        &&returnedIds.size===candidates.length&&[...returnedIds].every(id=>expectedIds.has(id));
-      const exactContract=complete&&routine.response.modelVersion===this.routineModel
+      // This is a per-candidate checkpoint, not a claim that the entire batch completed.
+      // Each complete candidate retains the ORIGINAL whole-batch request dependency.
+      const exactContract=routine.response.modelVersion===this.routineModel
         &&(!routine.response.actualProviderId||routine.response.actualProviderId===this.provider.id.replace(/^resilient:/,""))
         ?this.provider.cacheIdentity?.(this.request(candidates,playbook,countryCode,countryName,objective,this.routineModel)):undefined;
       const values = new Map(routine.parsed.assessments.map((item) => [item.candidateId, item]));
-      return await Promise.all(candidates.map(async (candidate) => {
+      const stable=new Map<string,LeadCandidateAssessment>();
+      for(const candidate of candidates){
         const value = values.get(candidate.candidateId);
-        if (!value) return this.evaluateOneRoutineRepair(candidate, playbook, countryCode, countryName,
-          objective, "Routine batch omitted the candidate.", usageRecords);
+        if(!value)continue;
         const allowOemOdm = /\b(?:oem|odm|private[ -]?label|manufactur(?:e|ing))\b/i.test(objective);
         const normalized = normalizeAssessment(value, candidate, routine.response, false, allowOemOdm,
           this.includeCooperationPaths);
         if (requiresEscalation(candidate, normalized, value)) {
           if (this.routineModel === this.escalationModel) {
-            return { ...normalized, warnings: [
+            stable.set(candidate.candidateId,{ ...normalized, warnings: [
               "Escalation was skipped because the configured routine and escalation models are identical.",
               ...normalized.warnings,
-            ] };
+            ] });continue;
           }
-          return this.evaluateOneEscalated(candidate, playbook, countryCode, countryName, objective, "Routine assessment requested evidence-conflict escalation.", usageRecords);
+          continue;
         }
         if(exactContract&&normalized.scoringStatus==="completed")this.exactAssessmentContracts.set(normalized,exactContract);
-        return normalized;
+        stable.set(candidate.candidateId,normalized);
+      }
+      // Save independently complete peers BEFORE any repair can pause on budget/unknown outcome.
+      if(publish&&stable.size>0&&stable.size<candidates.length)await publish(candidates.filter(candidate=>stable.has(candidate.candidateId)),[...stable.values()]);
+      return await Promise.all(candidates.map(async candidate=>{
+        const completed=stable.get(candidate.candidateId);if(completed)return completed;
+        if(!values.has(candidate.candidateId))return this.evaluateOneRoutineRepair(candidate,playbook,countryCode,countryName,objective,"Routine batch omitted or invalidated the candidate.",usageRecords);
+        return this.evaluateOneEscalated(candidate,playbook,countryCode,countryName,objective,"Routine assessment requested evidence-conflict escalation.",usageRecords);
       }));
     } catch (error) {
       if(error instanceof BudgetDeniedError)throw error;
@@ -586,10 +595,15 @@ export class LeadQualificationAgent {
         return this.evaluateOneEscalated(candidate, playbook, countryCode, countryName, objective,
           `${reason} Same-tier schema repair requested material semantic escalation.`, usageRecords);
       }
-      return { ...normalized, warnings: [
+      const completed={ ...normalized, warnings: [
         `${reason} Same-tier single-candidate schema repair succeeded.`,
         ...normalized.warnings,
       ] };
+      if(routine.response.modelVersion===this.routineModel&&(!routine.response.actualProviderId||routine.response.actualProviderId===this.provider.id.replace(/^resilient:/,""))){
+        const contract=this.provider.cacheIdentity?.(this.request([candidate],playbook,countryCode,countryName,objective,this.routineModel));
+        if(contract)this.exactAssessmentContracts.set(completed,contract);
+      }
+      return completed;
     } catch (error) {
       if(error instanceof BudgetDeniedError)throw error;
       return failedAssessment(candidate,
@@ -616,7 +630,7 @@ export class LeadQualificationAgent {
       const envelope=typeof escalation.output==="object"&&escalation.output!==null&&"assessments" in escalation.output
         ?escalation.output:{assessments:[escalation.output]};
       const validated=validateBatchItems<QualificationModelOutput>(envelope,"assessments",
-        this.includeCooperationPaths?leadAssessmentModelSchema:leadAssessmentScoreOnlyModelSchema,[candidate.candidateId]);
+        validatedAssessmentSchema(this.includeCooperationPaths),[candidate.candidateId]);
       if(!validated.complete)throw new Error("Escalation did not return exactly the requested candidate");
       const parsed=validated.items[0];
       const allowOemOdm = /\b(?:oem|odm|private[ -]?label|manufactur(?:e|ing))\b/i.test(objective);
@@ -637,14 +651,22 @@ export class LeadQualificationAgent {
       items,playbook,countryCode,countryName,objective,this.routineModel,
     ),this.batchSize,this.maxBatchInputCharacters);
     const results = new Array<LeadCandidateAssessment[]>(batches.length);
+    const published=new Set<LeadCandidateAssessment>();
+    const publish=async(items:CorrectedLeadWorkflowCandidate[],assessments:LeadCandidateAssessment[])=>{
+      if(!onBatchCompleted)return;
+      const fresh=assessments.filter(item=>!published.has(item));if(!fresh.length)return;
+      for(const item of fresh)published.add(item);
+      const ids=new Set(fresh.map(item=>item.candidateId));
+      try{await onBatchCompleted(items.filter(item=>ids.has(item.candidateId)),fresh);}
+      catch{console.warn(JSON.stringify({event:"assessment-batch-cache-write-unavailable",replay:false}));}
+    };
     let cursor = 0;
     async function worker(agent: LeadQualificationAgent): Promise<void> {
       while (true) {
         const index = cursor++;
         if (index >= batches.length) return;
-        results[index] = await agent.evaluateBatch(batches[index], playbook, countryCode, countryName, objective, usageRecords);
-        if(onBatchCompleted)try{await onBatchCompleted(batches[index],results[index]);}
-        catch{console.warn(JSON.stringify({event:"assessment-batch-cache-write-unavailable",replay:false}));}
+        results[index] = await agent.evaluateBatch(batches[index], playbook, countryCode, countryName, objective, usageRecords,publish);
+        await publish(batches[index],results[index]);
       }
     }
     await Promise.all(Array.from({ length: Math.min(this.concurrency, batches.length) }, () => worker(this)));

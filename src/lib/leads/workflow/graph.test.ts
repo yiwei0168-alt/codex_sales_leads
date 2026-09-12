@@ -204,6 +204,8 @@ describe("LangGraph lead workflow", () => {
     expect(deps.qualificationAgent.evaluate).not.toHaveBeenCalled();
     expect(state.stageMetrics.filter((metric) => metric.status === "cache-hit").map((metric) => metric.stage))
       .toEqual(["build_playbook", "score_candidates"]);
+    for(const metric of state.stageMetrics){expect(metric.validArtifacts).toBeLessThanOrEqual(metric.generatedArtifacts);expect(metric.downstreamUsedArtifacts).toBeLessThanOrEqual(metric.generatedArtifacts);}
+    expect(state.stageMetrics.find(metric=>metric.stage==="score_candidates")?.metadata.reusedCompletedArtifacts).toBe(1);
   });
 
   it("repeats the production search loop until the requested valid count is reached", async () => {
@@ -237,5 +239,19 @@ describe("LangGraph lead workflow", () => {
     expect(deps.discover).toHaveBeenCalledTimes(2);
     expect(state.acceptedCandidateCount).toBe(2);
     expect(state.targetCompletionReason).toBe("target-met");
+  });
+  it("rechecks the remaining exact contract after a partial checkpoint hit without scoring again",async()=>{
+    const deps=dependencies([]);
+    const second={...candidate,candidateId:"lead-example-2",domain:"example-two.de"};
+    const corrected2={...correctedCandidate,...second};const assessment2={...assessment,candidateId:second.candidateId};
+    deps.discover=vi.fn(async()=>({runId:"run-1",candidates:[candidate,second],creditsUsed:0,warnings:[],callMetrics:[discoveryMetric(2)]}));
+    deps.collectEvidence=vi.fn(async(items)=>({candidates:items,creditsUsed:0,warnings:[]}));
+    deps.correctionAgent.correct=vi.fn(async()=>({candidates:[correctedCandidate,corrected2],creditsUsed:0,warnings:[]}));
+    deps.qualificationAgent.cacheContracts=vi.fn((items:CorrectedLeadWorkflowCandidate[])=>new Map(items.map(item=>[item.candidateId,items.length===1?"single":"batch"])));
+    deps.loadAssessmentCache=vi.fn(async options=>options.candidates.length===2?new Map([[assessment.candidateId,assessment]]):new Map([[assessment2.candidateId,assessment2]]));
+    await buildLeadWorkflowGraph(deps).invoke({userId:"user-1",actionId:"action-1",graphThreadId:"thread-1",workspaceId:"workspace-1",plan:{...plan,targetCount:2},phase:"queued",ragContext:[],candidates:[],assessments:[],assessmentReviews:[],handoffs:[],creditsUsed:0,warnings:[]});
+    expect(deps.loadAssessmentCache).toHaveBeenCalledTimes(2);
+    expect(deps.loadAssessmentCache).toHaveBeenLastCalledWith(expect.objectContaining({candidates:[corrected2],contracts:new Map([[second.candidateId,"single"]])}));
+    expect(deps.qualificationAgent.evaluate).not.toHaveBeenCalled();
   });
 });

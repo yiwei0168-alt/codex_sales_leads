@@ -525,8 +525,13 @@ export class LeadEvidenceCorrectionAgent {
           `${reason} Same-tier schema repair requested material semantic escalation.`, usageRecords);
       }
       const normalized = this.normalize(value, candidate, response, false);
-      return { ...normalized, correction: { ...normalized.correction,
+      const completed={ ...normalized, correction: { ...normalized.correction,
         warnings: [`${reason} Same-tier single-candidate schema repair succeeded.`, ...normalized.correction.warnings] } };
+      if(response.modelVersion===this.routineModel&&(!response.actualProviderId||response.actualProviderId===this.provider.id.replace(/^resilient:/,""))){
+        const contract=this.provider.cacheIdentity?.(this.request([candidate],plan,this.routineModel));
+        if(contract)this.exactCorrectionContracts.set(completed,contract);
+      }
+      return completed;
     } catch (error) {
       if(error instanceof BudgetDeniedError)throw error;
       return this.fallback(candidate,
@@ -535,7 +540,7 @@ export class LeadEvidenceCorrectionAgent {
   }
 
   private async evaluateBatch(candidates: LeadWorkflowCandidate[], plan: LeadSearchPlan,
-    usageRecords: WorkflowModelUsage[]) {
+    usageRecords: WorkflowModelUsage[],publish?:(items:CorrectedLeadWorkflowCandidate[])=>Promise<void>) {
     try {
       const request=this.request(candidates,plan,this.routineModel);
       const response = await this.provider.execute<CorrectionRequest, unknown>(
@@ -545,30 +550,34 @@ export class LeadEvidenceCorrectionAgent {
       const parsed={corrections:validated.items};
       usageRecords[usageRecords.length-1].batchValidation={inputItems:candidates.length,validOutputItems:validated.items.length,rejectedOutputItems:validated.rejectedItems,missingOutputItems:validated.missingItems,complete:validated.complete};
       const primaryId=this.provider.id.replace(/^resilient:/,"");
-      const expectedIds=new Set(candidates.map(candidate=>candidate.candidateId));
-      const returnedIds=new Set(parsed.corrections.map(item=>item.candidateId));
-      const complete=validated.complete&&expectedIds.size===candidates.length&&parsed.corrections.length===candidates.length
-        &&returnedIds.size===parsed.corrections.length&&[...returnedIds].every(id=>expectedIds.has(id));
-      const exactContract=complete&&response.modelVersion===this.routineModel
+      // Complete per-company snapshots retain the original whole-batch contract.
+      const exactContract=response.modelVersion===this.routineModel
         &&(!response.actualProviderId||response.actualProviderId===primaryId)
         ?this.provider.cacheIdentity?.(request):undefined;
       const byId = new Map(parsed.corrections.map((item) => [item.candidateId, item]));
-      return Promise.all(candidates.map((candidate) => {
+      const stable=new Map<string,CorrectedLeadWorkflowCandidate>();
+      for(const candidate of candidates){
         const value = byId.get(candidate.candidateId);
-        if (!value) return this.evaluateOneRoutineRepair(candidate, plan, "Routine correction omitted or invalidated the candidate.", usageRecords);
+        if(!value)continue;
         const materialEscalation = value.escalation.required && value.escalation.higherCapabilityCanResolve
           && (value.escalation.expectedTotalScoreChange >= 8 || value.escalation.criticalStateChanges.length > 0);
         if (materialEscalation && this.routineModel !== this.escalationModel) {
-          return this.evaluateOneEscalated(candidate, plan, "Routine correction requested ambiguity escalation.", usageRecords);
+          continue;
         }
         const normalized = this.normalize(value, candidate, response, false);
         if(exactContract)this.exactCorrectionContracts.set(normalized,exactContract);
-        return materialEscalation && this.routineModel === this.escalationModel
+        stable.set(candidate.candidateId,materialEscalation && this.routineModel === this.escalationModel
           ? { ...normalized, correction: { ...normalized.correction, warnings: [
             "Escalation was skipped because the configured routine and escalation models are identical.",
             ...normalized.correction.warnings,
           ] } }
-          : normalized;
+          : normalized);
+      }
+      if(publish&&stable.size>0&&stable.size<candidates.length)await publish([...stable.values()]);
+      return Promise.all(candidates.map(candidate=>{
+        const completed=stable.get(candidate.candidateId);if(completed)return completed;
+        if(!byId.has(candidate.candidateId))return this.evaluateOneRoutineRepair(candidate,plan,"Routine correction omitted or invalidated the candidate.",usageRecords);
+        return this.evaluateOneEscalated(candidate,plan,"Routine correction requested ambiguity escalation.",usageRecords);
       }));
     } catch (error) {
       if(error instanceof BudgetDeniedError)throw error;
@@ -649,27 +658,27 @@ export class LeadEvidenceCorrectionAgent {
       items,plan,this.routineModel,
     ),this.batchSize,this.maxBatchInputCharacters);
     const results = new Array<CorrectedLeadWorkflowCandidate[]>(batches.length);
+    const published=new Set<CorrectedLeadWorkflowCandidate>();
+    const publish=async(items:CorrectedLeadWorkflowCandidate[])=>{
+      if(!this.persistCorrections)return;
+      await Promise.all(items.filter(candidate=>!published.has(candidate)).map(async candidate=>{
+        published.add(candidate);
+        try{await savePublicRoleCorrection(candidate,plan,LEAD_EVIDENCE_CORRECTION_PROMPT_VERSION,undefined,this.exactCorrectionContracts.get(candidate));}
+        catch{cacheWarnings.push("主角色检查点保存失败；本次已完成结果不因缓存写入失败重放。");}
+      }));
+    };
     let cursor = 0;
     const worker = async () => {
       while (true) {
         const index = cursor++;
         if (index >= batches.length) return;
-        results[index] = await this.evaluateBatch(batches[index], plan, usageRecords);
+        results[index] = await this.evaluateBatch(batches[index], plan, usageRecords,publish);
+        await publish(results[index]);
       }
     };
     await Promise.all(Array.from({ length: Math.min(this.concurrency, batches.length) }, worker));
     const generated = this.deduplicate(results.flat());
-    if (this.persistCorrections) {
-      await Promise.all(generated.map(async (candidate) => {
-        try {
-          await savePublicRoleCorrection(candidate, plan, LEAD_EVIDENCE_CORRECTION_PROMPT_VERSION,undefined,this.exactCorrectionContracts.get(candidate));
-        } catch (error) {
-          if(error instanceof BudgetDeniedError)throw error;
-          cacheWarnings.push(`Role-correction cache write failed for ${candidate.domain}: ${
-            error instanceof Error ? error.message : String(error)}`);
-        }
-      }));
-    }
+    await publish(generated);
     const corrected = this.deduplicate(candidates.flatMap((candidate) => {
       const hit = cached.get(candidate.candidateId);
       if (hit) return [hit];

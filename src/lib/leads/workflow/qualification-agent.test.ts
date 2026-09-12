@@ -6,6 +6,7 @@ import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "@/pr
 import { leadEvidenceContentHash } from "@/lib/leads/evidence-snapshot";
 
 import { enforceAssessmentEvidenceCaps, LeadQualificationAgent } from "./qualification-agent";
+import {validCachedAssessment} from "./assessment-cache";
 import type { CorrectedLeadWorkflowCandidate, LeadMarketPlaybook } from "./types";
 
 class FakeProvider implements AiProvider {
@@ -103,6 +104,32 @@ const playbook: LeadMarketPlaybook = {
 };
 
 describe("LeadQualificationAgent", () => {
+  it("checkpoints a complete peer before a missing member's repair is blocked",async()=>{
+    class PartialPauseProvider extends CacheableFakeProvider {
+      override async execute<I,O>(request:StructuredAiRequest<I>):Promise<StructuredAiResponse<O>>{
+        if(this.calls.length)throw new BudgetDeniedError("budget-exhausted");
+        return super.execute<I,O>(request);
+      }
+    }
+    const provider=new PartialPauseProvider();const agent=new LeadQualificationAgent(provider,{batchSize:5,concurrency:1});
+    const inputs=[candidate,{...candidate,candidateId:"lead-second"}];
+    const expected=agent.cacheContracts(inputs,playbook,"DE","Germany","new-market");
+    const saved:string[]=[];
+    await expect(agent.evaluateWithUsage(inputs,playbook,"DE","Germany","new-market",async(items,assessments)=>{
+      saved.push(...items.map(item=>item.candidateId));
+      expect(agent.completedCacheContracts(assessments).get(candidate.candidateId)).toBe(expected.get(candidate.candidateId));
+      expect(validCachedAssessment(assessments[0],candidate)).toBe(true);
+    })).rejects.toThrow(BudgetDeniedError);
+    expect(saved).toEqual([candidate.candidateId]);expect(provider.calls).toHaveLength(1);
+  });
+  it("reuses only complete consistent cached shapes with current citation bindings",async()=>{
+    const [value]=await new LeadQualificationAgent(new FakeProvider()).evaluate([candidate],playbook,"DE","Germany","new-market");
+    expect(validCachedAssessment(value,candidate)).toBe(true);
+    for(const changed of [null,{candidateId:candidate.candidateId,scoringStatus:"completed"},
+      {...value,totalScore:value.totalScore+1},{...value,evidenceIds:["foreign"]},
+      {...value,selectedPathId:"missing-path"},{...value,dimensionRationales:Array(7).fill(value.dimensionRationales[0])},
+      {...value,primaryRole:"Distributor"}])expect(validCachedAssessment(changed,candidate)).toBe(false);
+  });
   it("repairs only the malformed member of a JSON-valid batch, without replaying its valid peer",async()=>{
     class PartialProvider extends FakeProvider {
       override async execute<I,O>(request:StructuredAiRequest<I>):Promise<StructuredAiResponse<O>>{

@@ -7,6 +7,29 @@ import { LEAD_QUALIFICATION_PROMPT_VERSION } from "./qualification-agent";
 import type { CorrectedLeadWorkflowCandidate, LeadCandidateAssessment, LeadMarketPlaybook } from "./types";
 import { LEAD_WORKFLOW_RUNTIME_VERSION } from "./workflow-telemetry";
 import {isCurrentLeadScoringEvidence} from "@/lib/leads/evidence-snapshot";
+import {cachedLeadAssessmentSchema} from "./schemas";
+import {candidateValueScore} from "../candidate-value";
+
+export function validCachedAssessment(value:unknown,candidate:CorrectedLeadWorkflowCandidate):value is LeadCandidateAssessment{
+  const parsed=cachedLeadAssessmentSchema.safeParse(value);if(!parsed.success)return false;
+  const assessment=parsed.data;
+  if(assessment.candidateId!==candidate.candidateId||assessment.primaryRole!==candidate.correction.primaryRole
+    ||assessment.totalScore!==candidateValueScore(assessment.dimensions)
+    ||assessment.eligible!==(assessment.eligibilityStatus==="eligible")
+    ||assessment.scoreRange.lower>assessment.totalScore||assessment.scoreRange.upper<assessment.totalScore
+    ||new Set(assessment.dimensionRationales.map(item=>item.dimension)).size!==7)return false;
+  if(assessment.roles.length!==candidate.correction.resolvedRoles.length
+    ||new Set(assessment.roles).size!==assessment.roles.length
+    ||assessment.roles.some(role=>!candidate.correction.resolvedRoles.includes(role)))return false;
+  const evidence=new Set(candidate.evidence.filter(item=>isCurrentLeadScoringEvidence(item,candidate.evidenceSnapshotRunId)).map(item=>item.id));
+  const findings=new Set(candidate.correction.findings.map(item=>item.findingId));
+  const references=[...assessment.dimensionRationales,...assessment.cooperationPaths];
+  if(assessment.evidenceIds.some(id=>!evidence.has(id))||references.some(item=>item.evidenceIds.some(id=>!evidence.has(id))||item.findingIds.some(id=>!findings.has(id))))return false;
+  if(assessment.dimensionRationales.some(item=>item.score!==assessment.dimensions[item.dimension]))return false;
+  if(assessment.selectedPathId!==null&&!assessment.cooperationPaths.some(path=>path.pathId===assessment.selectedPathId))return false;
+  if(assessment.accountTier==="KA"&&["Distributor","VAD"].includes(assessment.primaryRole))return false;
+  return new Set(assessment.cooperationPaths.map(path=>path.pathId)).size===assessment.cooperationPaths.length;
+}
 
 interface AssessmentCacheContext {countryCode:string;countryName:string;executionContract:string}
 
@@ -50,15 +73,18 @@ export async function loadCachedLeadAssessments(options: { userId: string; works
   const fingerprints = new Map(options.candidates.map((candidate) => [candidate.candidateId,
     assessmentDependencyFingerprint(candidate, options.playbook, options.objective,{countryCode:options.countryCode!,countryName:options.countryName!,executionContract:options.contracts!.get(candidate.candidateId)??""})]));
   const rows = await tenantQuery<{ candidate_id: string; dependency_fingerprint: string;
-    assessment: LeadCandidateAssessment }>(options.userId,
+    assessment: unknown }>(options.userId,
     `select candidate_id, dependency_fingerprint, assessment
        from lead_assessment_cache
       where workspace_id=$1 and candidate_id = any($2::text[])`,
     [options.workspaceId, options.candidates.map((candidate) => candidate.candidateId)]);
-  const hits = new Map(rows.filter((row) => /^[a-f0-9]{64}$/.test(options.contracts!.get(row.candidate_id)??"")
-    &&row.assessment.candidateId===row.candidate_id&&row.assessment.scoringStatus==="completed"
-    &&fingerprints.get(row.candidate_id) === row.dependency_fingerprint)
-    .map((row) => [row.candidate_id, row.assessment]));
+  const candidates=new Map(options.candidates.map(candidate=>[candidate.candidateId,candidate]));
+  const hits=new Map<string,LeadCandidateAssessment>();
+  for(const row of rows){
+    const candidate=candidates.get(row.candidate_id);
+    if(candidate&&/^[a-f0-9]{64}$/.test(options.contracts!.get(row.candidate_id)??"")
+      &&fingerprints.get(row.candidate_id)===row.dependency_fingerprint&&validCachedAssessment(row.assessment,candidate))hits.set(row.candidate_id,row.assessment);
+  }
   if (hits.size > 0) await tenantQuery(options.userId,
     `with hits(candidate_id, dependency_fingerprint) as (
        select * from unnest($2::text[], $3::text[])
@@ -80,7 +106,7 @@ export async function saveCachedLeadAssessments(options: { userId: string; works
     for (const assessment of options.assessments) {
       if (assessment.scoringStatus !== "completed") continue;
       const candidate = candidateById.get(assessment.candidateId);
-      if (!candidate) continue;
+      if (!candidate||!validCachedAssessment(assessment,candidate)) continue;
       const executionContract=options.contracts!.get(candidate.candidateId);
       if(!executionContract||!/^[a-f0-9]{64}$/.test(executionContract))continue;
       const fingerprint = assessmentDependencyFingerprint(candidate, options.playbook, options.objective,{countryCode:options.countryCode!,countryName:options.countryName!,executionContract});

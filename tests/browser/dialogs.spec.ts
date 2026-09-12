@@ -60,10 +60,13 @@ test("budget shows unknown bills separately and editing needs explicit confirmat
   let writes=0;
   await page.route("**/api/budget",async route=>{
     if(route.request().method()==="PUT"){writes++;expect(route.request().postDataJSON()).toEqual({limitUsd:"60",confirmed:true});return route.fulfill({json:{saved:true}});}
-    return route.fulfill({json:{budget:{limit_micros:"50000000",occupied_micros:"10000000",remaining_micros:"40000000",frozen:false},configuredRules:0,notice:"Fixture scope",stages:[{stage:"score",calls:1,reserved_micros:"10000000",reported_micros:null,unknown_bills:1}]}});
+    return route.fulfill({json:{budget:{limit_micros:"50000000",occupied_micros:"10000000",remaining_micros:"40000000",frozen:false},configuredRules:0,notice:"Fixture scope",stages:[{stage:"score",calls:1,reserved_micros:"10000000",occupied_micros:"10000000",estimated_micros:null,reported_micros:null,invoice_micros:null,estimated_calls:0,reported_calls:0,invoice_calls:0,unreconciled_calls:1,unknown_bills:1}]}});
   });
   await page.getByRole("button",{name:"打开预算",exact:true}).click();
-  await expect(page.getByText(/服务商报告 未报告/)).toBeVisible();expect(writes).toBe(0);
+  await page.getByText("分阶段费用明细",{exact:true}).click();
+  await expect(page.locator('dt:has-text("服务商报告（已报告部分）") + dd')).toHaveText("未知 · 0/1 次有记录");
+  await expect(page.locator('dt:has-text("发票核验（已核验部分）") + dd')).toHaveText("未知 · 0/1 次有记录");
+  expect(writes).toBe(0);
   await page.getByLabel("新的累计上限（美元）").fill("60");
   page.once("dialog",dialog=>dialog.dismiss());await page.getByRole("button",{name:"确认修改预算"}).click();expect(writes).toBe(0);
   page.once("dialog",dialog=>dialog.accept());await page.getByRole("button",{name:"确认修改预算"}).click();await expect.poll(()=>writes).toBe(1);

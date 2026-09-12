@@ -218,6 +218,22 @@ export const leadAssessmentModelSchema = leadAssessmentCommonSchema.extend({
   selectedPathId: z.string().max(80).nullable(),
 });
 
+/** Stored normalized results have deterministic fields and expanded system warnings, not a model escalation request. */
+export const cachedLeadAssessmentSchema=leadAssessmentModelSchema.omit({escalation:true}).extend({
+  eligible:z.boolean(),roles:z.array(channelRoleSchema),primaryRole:primaryBusinessRoleSchema,
+  recommendationPriority:z.enum(["High","Medium","Low","Hold/Research Required"]),
+  accountTier:z.enum(["Strategic Distributor","Priority Distributor","Standard Distributor","Long-tail Distributor","KA","Priority","Standard","Long-tail"]),
+  supplyModel:z.enum(["Distributor Supply","Brand Direct","Co-sell/Co-supply","TBD"]),brandInvolvement:z.enum(["Light","Standard","Deep"]),
+  totalScore:z.number().int().min(0).max(100),scoreRange:z.object({lower:z.number().min(0).max(100),upper:z.number().min(0).max(100)}),
+  cooperationPaths:z.array(cooperationPathSchema.extend({fitScore:z.number().min(0).max(100),rank:z.number().int().min(1).max(2)})).max(2),
+  model:z.string().min(1),promptVersion:z.string().min(1),escalated:z.boolean(),scoringStatus:z.literal("completed"),warnings:z.array(z.string()),
+  evidenceProfileAssessment:z.object({profile:z.enum(["standard","confirmed-small-long-tail","probable-small-long-tail"]),confidence:z.enum(["high","medium","none"]),exceptionEligible:z.boolean(),
+    directSizeSignals:z.array(z.object({kind:z.string(),sourceUrl:z.string(),detail:z.string()})),
+    structuralSignals:z.array(z.object({kind:z.string(),sourceUrl:z.string(),detail:z.string()})),
+    longTailSignals:z.array(z.object({kind:z.string(),sourceUrl:z.string(),detail:z.string()})),
+    largeCompanyOverrides:z.array(z.object({kind:z.string(),sourceUrl:z.string(),detail:z.string()})),reason:z.string()}).optional(),
+});
+
 export const leadAssessmentBatchSchema = z.object({
   assessments: z.array(leadAssessmentModelSchema).min(1).max(5),
 });

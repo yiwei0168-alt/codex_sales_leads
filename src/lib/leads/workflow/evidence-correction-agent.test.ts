@@ -1,4 +1,9 @@
-import { describe, expect, it } from "vitest";
+import {afterEach, describe, expect, it,vi } from "vitest";
+import {createHash} from "node:crypto";
+import {BudgetDeniedError} from "@/lib/billing/policy";
+import * as roleCache from "./role-correction-cache";
+import * as publicEvidence from "./public-evidence-repository";
+afterEach(()=>vi.restoreAllMocks());
 
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "@/providers/contracts";
 import type { TavilySearchResponse } from "@/providers/tavily";
@@ -75,6 +80,22 @@ const candidate: LeadWorkflowCandidate = {
 };
 
 describe("LeadEvidenceCorrectionAgent", () => {
+  it("persists a complete correction peer before a repair budget pause",async()=>{
+    const save=vi.spyOn(roleCache,"savePublicRoleCorrection").mockResolvedValue(undefined);
+    vi.spyOn(publicEvidence,"persistPublicEvidence").mockResolvedValue(undefined);
+    class PartialPauseProvider extends FakeCorrectionProvider{
+      cacheIdentity(request:StructuredAiRequest<unknown>){return createHash("sha256").update(JSON.stringify(request)).digest("hex");}
+      override async execute<I,O>(request:StructuredAiRequest<I>):Promise<StructuredAiResponse<O>>{
+        if(this.calls.length){expect(save).toHaveBeenCalledOnce();throw new BudgetDeniedError("budget-exhausted");}
+        return super.execute<I,O>(request);
+      }
+    }
+    const provider=new PartialPauseProvider();
+    await expect(new LeadEvidenceCorrectionAgent(provider,searchProvider,{batchSize:5,concurrency:1,searchConcurrency:1,allowReusableCorrections:false})
+      .correct([candidate,{...candidate,candidateId:"lead-second-correction",domain:"second-example.de"}],{countryCode:"DE",countryName:"Germany",objective:"new-market",roles:["Distributor"],targetCount:10,queryLanguage:"en",userRequest:"Find prospects"})).rejects.toThrow(BudgetDeniedError);
+    expect(save.mock.calls[0][0].candidateId).toBe(candidate.candidateId);
+    expect(save.mock.calls[0][4]).toMatch(/^[a-f0-9]{64}$/);
+  });
   it("removes retail roles when supported findings explicitly describe a third-party marketplace", () => {
     const corrected = enforceCorrectedRoleBusinessModel({ ...candidate, correction: {
       originalCompanyName: candidate.companyName, originalDomain: candidate.domain,
