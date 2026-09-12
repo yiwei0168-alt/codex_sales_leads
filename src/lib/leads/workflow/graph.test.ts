@@ -140,6 +140,15 @@ function dependencies(events: string[], context = ragContext): LeadWorkflowDepen
 }
 
 describe("LangGraph lead workflow", () => {
+  it("preserves completed scores and the stage checkpoint when optional cache persistence fails",async()=>{
+    const events:string[]=[];const deps=dependencies(events);
+    deps.saveAssessmentCache=vi.fn().mockRejectedValue(new Error("fixture cache unavailable"));
+    const state=await buildLeadWorkflowGraph(deps).invoke({userId:"user-1",actionId:"action-1",graphThreadId:"cache-failure",workspaceId:"workspace-1",plan,phase:"queued",ragContext:[],candidates:[],assessments:[],assessmentReviews:[],handoffs:[],creditsUsed:0,warnings:[]});
+    expect(deps.qualificationAgent.evaluate).toHaveBeenCalledTimes(1);
+    expect(state.assessments).toEqual([assessment]);
+    expect(state.warnings.some(warning=>warning.includes("评分缓存写入失败"))).toBe(true);
+    expect(state.result).toBeDefined();
+  });
   it("resumes after a phase pause without repeating completed discovery or resetting credits",async()=>{
     const events:string[]=[];const deps=dependencies(events);let paused=true;
     deps.updatePhase=vi.fn(async(_u,_a,phase)=>{if(paused&&phase==='collecting-evidence')throw new WorkflowPausedError();});

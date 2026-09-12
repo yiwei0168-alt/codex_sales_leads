@@ -78,7 +78,7 @@ export interface LeadWorkflowDependencies {
     cacheMisses?: number;
     providerMetrics?: { provider: "tavily"; attempts: number; retries: number; latencyMs: number };
   }> };
-  qualificationAgent: Pick<LeadQualificationAgent, "evaluate"> & Partial<Pick<LeadQualificationAgent, "evaluateWithUsage">>;
+  qualificationAgent: Pick<LeadQualificationAgent, "evaluate"> & Partial<Pick<LeadQualificationAgent, "evaluateWithUsage"|"cacheContracts"|"completedCacheContracts">>;
   assessmentReviewAgent: Pick<LeadAssessmentReviewAgent, "review">;
   handoffAssembler: Pick<LeadHandoffAssembler, "assemble">;
   persist: typeof persistLeadWorkflowResult;
@@ -278,22 +278,37 @@ export function buildLeadWorkflowGraph(
       const cached = dependencies.loadAssessmentCache ? await dependencies.loadAssessmentCache({
         userId: state.userId, workspaceId: state.workspaceId, candidates: inScopeCandidates,
         playbook: state.playbook, objective: state.plan.objective,
+        countryCode:state.plan.countryCode,countryName:state.plan.countryName,
+        contracts:dependencies.qualificationAgent.cacheContracts?.(inScopeCandidates,state.playbook,state.plan.countryCode,state.plan.countryName,state.plan.objective),
       }) : new Map<string, LeadCandidateAssessment>();
       const alreadyAssessed = new Map((state.assessments ?? []).map((item) => [item.candidateId, item]));
       const missing = inScopeCandidates.filter((candidate) =>
         !alreadyAssessed.has(candidate.candidateId) && !cached.has(candidate.candidateId));
+      let cachePersistenceFailed=false;
+      let batchCacheSaveAttempts=0;
+      const saveCompletedBatch=async(candidates:CorrectedLeadWorkflowCandidate[],assessments:LeadCandidateAssessment[])=>{
+        if(!dependencies.saveAssessmentCache)return;
+        batchCacheSaveAttempts+=1;
+        try{await dependencies.saveAssessmentCache({userId:state.userId,workspaceId:state.workspaceId,runId:state.runId,
+          candidates,assessments,playbook:state.playbook!,objective:state.plan.objective,
+          countryCode:state.plan.countryCode,countryName:state.plan.countryName,
+          contracts:dependencies.qualificationAgent.completedCacheContracts?.(assessments)});}
+        catch{cachePersistenceFailed=true;}
+      };
       const evaluated = missing.length === 0 ? { assessments: [], usage: [] as WorkflowModelUsage[] }
         : dependencies.qualificationAgent.evaluateWithUsage
           ? await dependencies.qualificationAgent.evaluateWithUsage(
-            missing, state.playbook, state.plan.countryCode, state.plan.countryName, state.plan.objective)
+            missing, state.playbook, state.plan.countryCode, state.plan.countryName, state.plan.objective,saveCompletedBatch)
           : { assessments: await dependencies.qualificationAgent.evaluate(
             missing, state.playbook, state.plan.countryCode, state.plan.countryName, state.plan.objective),
           usage: [] };
-      if (dependencies.saveAssessmentCache && evaluated.assessments.length > 0) await dependencies.saveAssessmentCache({
+      if (batchCacheSaveAttempts===0&&dependencies.saveAssessmentCache && evaluated.assessments.length > 0) try{await dependencies.saveAssessmentCache({
         userId: state.userId, workspaceId: state.workspaceId, runId: state.runId,
         candidates: missing, playbook: state.playbook, objective: state.plan.objective,
         assessments: evaluated.assessments,
-      });
+        countryCode:state.plan.countryCode,countryName:state.plan.countryName,
+        contracts:dependencies.qualificationAgent.completedCacheContracts?.(evaluated.assessments),
+      });}catch{cachePersistenceFailed=true;}
       const evaluatedById = new Map(evaluated.assessments.map((assessment) => [assessment.candidateId, assessment]));
       const assessments = inScopeCandidates.flatMap((candidate) => {
         const assessment = alreadyAssessed.get(candidate.candidateId)
@@ -321,12 +336,13 @@ export function buildLeadWorkflowGraph(
         input: inScopeCandidates, output: assessments, inputItems: inScopeCandidates.length,
         outputItems: assessments.length, generatedArtifacts: evaluated.assessments.length,
         validArtifacts: completed, downstreamUsedArtifacts: completed,
-        metadata: { cacheHits: cached.size, cacheMisses: missing.length,
+        metadata: { cacheHits: cached.size, cacheMisses: missing.length,cachePersistenceFailed,batchCacheSaveAttempts,
           outOfRoleNotScored: state.correctedCandidates.length - inScopeCandidates.length,
           acceptedCount, finalEligibleAdded, consecutiveNoFinalRounds,
           targetShouldContinue: !targetDecision.complete, targetCompletionReason: targetDecision.reason } }),
       status: missing.length === 0 ? "cache-hit" as const : "completed" as const };
       return { phase: "scoring" as const, assessments,
+        warnings:[...state.warnings,...(cachePersistenceFailed?["评分缓存写入失败；本次已完成评分保留，不因缓存故障重放模型调用。"]:[])],
         acceptedCandidateCount: acceptedCount, consecutiveNoFinalRounds,
         targetShouldContinue: !targetDecision.complete, targetCompletionReason: targetDecision.reason,
         modelUsage: [...(state.modelUsage ?? []), ...evaluated.usage], stageMetrics: [...(state.stageMetrics ?? []), metric] };

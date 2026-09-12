@@ -369,6 +369,7 @@ export class LeadQualificationAgent {
   private readonly escalationModel: string;
   private readonly batchSize: number;
   private readonly maxBatchInputCharacters: number;
+  private readonly exactAssessmentContracts=new WeakMap<LeadCandidateAssessment,string>();
   private readonly concurrency: number;
   private readonly includeCooperationPaths: boolean;
 
@@ -384,6 +385,24 @@ export class LeadQualificationAgent {
 
   private get promptVersion(): string {
     return this.includeCooperationPaths ? LEAD_QUALIFICATION_PROMPT_VERSION : LEAD_SCORE_ONLY_PROMPT_VERSION;
+  }
+
+  cacheContracts(candidates:CorrectedLeadWorkflowCandidate[],playbook:LeadMarketPlaybook,countryCode:string,countryName:string,objective:string):Map<string,string>{
+    const result=new Map<string,string>();
+    if(!this.provider.cacheIdentity)return result;
+    const batches=leadRequestBatches(candidates,items=>this.request(items,playbook,countryCode,countryName,objective,this.routineModel),this.batchSize,this.maxBatchInputCharacters);
+    for(const batch of batches){
+      const contract=this.provider.cacheIdentity(this.request(batch,playbook,countryCode,countryName,objective,this.routineModel));
+      if(contract)for(const candidate of batch)result.set(candidate.candidateId,contract);
+    }
+    return result;
+  }
+
+  completedCacheContracts(assessments:LeadCandidateAssessment[]):Map<string,string>{
+    return new Map(assessments.flatMap(assessment=>{
+      const contract=this.exactAssessmentContracts.get(assessment);
+      return contract?[[assessment.candidateId,contract] as const]:[];
+    }));
   }
 
   private request(candidates: CorrectedLeadWorkflowCandidate[], playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string, modelVersion: string) {
@@ -507,6 +526,13 @@ export class LeadQualificationAgent {
     usageRecords: WorkflowModelUsage[]): Promise<LeadCandidateAssessment[]> {
     try {
       const routine = await this.invokeBatch(candidates, playbook, countryCode, countryName, objective, this.routineModel, usageRecords);
+      const expectedIds=new Set(candidates.map(candidate=>candidate.candidateId));
+      const returnedIds=new Set(routine.parsed.assessments.map(item=>item.candidateId));
+      const complete=expectedIds.size===candidates.length&&routine.parsed.assessments.length===candidates.length
+        &&returnedIds.size===candidates.length&&[...returnedIds].every(id=>expectedIds.has(id));
+      const exactContract=complete&&routine.response.modelVersion===this.routineModel
+        &&(!routine.response.actualProviderId||routine.response.actualProviderId===this.provider.id.replace(/^resilient:/,""))
+        ?this.provider.cacheIdentity?.(this.request(candidates,playbook,countryCode,countryName,objective,this.routineModel)):undefined;
       const values = new Map(routine.parsed.assessments.map((item) => [item.candidateId, item]));
       return await Promise.all(candidates.map(async (candidate) => {
         const value = values.get(candidate.candidateId);
@@ -524,6 +550,7 @@ export class LeadQualificationAgent {
           }
           return this.evaluateOneEscalated(candidate, playbook, countryCode, countryName, objective, "Routine assessment requested evidence-conflict escalation.", usageRecords);
         }
+        if(exactContract&&normalized.scoringStatus==="completed")this.exactAssessmentContracts.set(normalized,exactContract);
         return normalized;
       }));
     } catch (error) {
@@ -603,7 +630,7 @@ export class LeadQualificationAgent {
   }
 
   private async evaluateWithCollector(candidates: CorrectedLeadWorkflowCandidate[], playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string,
-    usageRecords: WorkflowModelUsage[]): Promise<LeadCandidateAssessment[]> {
+    usageRecords: WorkflowModelUsage[],onBatchCompleted?:(candidates:CorrectedLeadWorkflowCandidate[],assessments:LeadCandidateAssessment[])=>Promise<void>): Promise<LeadCandidateAssessment[]> {
     const batches=leadRequestBatches(candidates,items=>this.request(
       items,playbook,countryCode,countryName,objective,this.routineModel,
     ),this.batchSize,this.maxBatchInputCharacters);
@@ -614,6 +641,8 @@ export class LeadQualificationAgent {
         const index = cursor++;
         if (index >= batches.length) return;
         results[index] = await agent.evaluateBatch(batches[index], playbook, countryCode, countryName, objective, usageRecords);
+        if(onBatchCompleted)try{await onBatchCompleted(batches[index],results[index]);}
+        catch{console.warn(JSON.stringify({event:"assessment-batch-cache-write-unavailable",replay:false}));}
       }
     }
     await Promise.all(Array.from({ length: Math.min(this.concurrency, batches.length) }, () => worker(this)));
@@ -625,9 +654,10 @@ export class LeadQualificationAgent {
   }
 
   async evaluateWithUsage(candidates: CorrectedLeadWorkflowCandidate[], playbook: LeadMarketPlaybook,
-    countryCode: string, countryName: string, objective: string) {
+    countryCode: string, countryName: string, objective: string,
+    onBatchCompleted?:(candidates:CorrectedLeadWorkflowCandidate[],assessments:LeadCandidateAssessment[])=>Promise<void>) {
     const usage: WorkflowModelUsage[] = [];
-    const assessments = await this.evaluateWithCollector(candidates, playbook, countryCode, countryName, objective, usage);
+    const assessments = await this.evaluateWithCollector(candidates, playbook, countryCode, countryName, objective, usage,onBatchCompleted);
     return { assessments, usage };
   }
 }

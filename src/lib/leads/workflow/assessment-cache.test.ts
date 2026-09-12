@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import type { CorrectedLeadWorkflowCandidate, LeadMarketPlaybook } from "./types";
-import { assessmentDependencyFingerprint } from "./assessment-cache";
+import { assessmentDependencyFingerprint,loadCachedLeadAssessments,saveCachedLeadAssessments } from "./assessment-cache";
+import {leadEvidenceContentHash} from "@/lib/leads/evidence-snapshot";
 
 const candidate: CorrectedLeadWorkflowCandidate = {
   candidateId: "candidate-1", evidenceSnapshotRunId: "snapshot-a", companyName: "Example GmbH",
@@ -29,6 +30,26 @@ const playbook: LeadMarketPlaybook = {
 };
 
 describe("assessment dependency cache", () => {
+  it("includes country, full request contract and evidence source even with a valid content hash",()=>{
+    const original=structuredClone(candidate);
+    original.evidence[0].contentHash=leadEvidenceContentHash(original.evidence[0].excerpt);
+    const context={countryCode:"DE",countryName:"Germany",executionContract:"a".repeat(64)};
+    const fingerprint=assessmentDependencyFingerprint(original,playbook,"new-market",context);
+    expect(assessmentDependencyFingerprint(original,playbook,"new-market",{...context,countryCode:"MX"})).not.toBe(fingerprint);
+    expect(assessmentDependencyFingerprint(original,playbook,"new-market",{...context,executionContract:"b".repeat(64)})).not.toBe(fingerprint);
+    for(const field of ["url","title","excerpt"] as const){
+      const changed=structuredClone(original);changed.evidence[0][field]+=" changed";
+      expect(assessmentDependencyFingerprint(changed,playbook,"new-market",context)).not.toBe(fingerprint);
+    }
+    original.evidence[0].freshnessStatus="fresh";
+    original.evidence[0].evidenceRunId=original.evidenceSnapshotRunId;
+    expect(assessmentDependencyFingerprint(original,playbook,"new-market",context)).not.toBe(fingerprint);
+  });
+  it("does not access historical entries without country and request contracts",async()=>{
+    const options={userId:"fixture",workspaceId:"fixture",candidates:[candidate],playbook,objective:"new-market"};
+    expect((await loadCachedLeadAssessments(options)).size).toBe(0);
+    await expect(saveCachedLeadAssessments({...options,assessments:[]})).resolves.toBeUndefined();
+  });
   it("ignores run bookkeeping while invalidating semantic evidence changes", () => {
     const original = assessmentDependencyFingerprint(candidate, playbook, "new-market");
     const replay = structuredClone(candidate);

@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import {createHash} from "node:crypto";
+import {BudgetDeniedError} from "@/lib/billing/policy";
 
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "@/providers/contracts";
 import { leadEvidenceContentHash } from "@/lib/leads/evidence-snapshot";
@@ -65,6 +67,10 @@ class FakeProvider implements AiProvider {
   }
 }
 
+class CacheableFakeProvider extends FakeProvider {
+  cacheIdentity(request:StructuredAiRequest<unknown>){return createHash("sha256").update(JSON.stringify(request)).digest("hex");}
+}
+
 const candidate: CorrectedLeadWorkflowCandidate = {
   candidateId: "lead-example", evidenceSnapshotRunId: "run-example",
   companyName: "Example", domain: "example.de", officialWebsiteUrl: "https://example.de/",
@@ -97,6 +103,35 @@ const playbook: LeadMarketPlaybook = {
 };
 
 describe("LeadQualificationAgent", () => {
+  it("links completed output to its full request even when provider cost was not reported",async()=>{
+    const provider=new CacheableFakeProvider();
+    const agent=new LeadQualificationAgent(provider,{routineModel:"model-a",escalationModel:"model-b"});
+    const expected=agent.cacheContracts([candidate],playbook,"DE","Germany","new-market");
+    let written=0;
+    const result=await agent.evaluateWithUsage([candidate],playbook,"DE","Germany","new-market",async(items,assessments)=>{
+      expect(items).toEqual([candidate]);
+      expect(agent.completedCacheContracts(assessments)).toEqual(expected);written+=1;
+    });
+    expect(result.assessments[0].scoringStatus).toBe("completed");
+    expect(written).toBe(1);expect(provider.calls).toHaveLength(1);
+  });
+  it("does not replay valid output if the batch persistence callback fails",async()=>{
+    const provider=new CacheableFakeProvider();const agent=new LeadQualificationAgent(provider);
+    const result=await agent.evaluateWithUsage([candidate],playbook,"DE","Germany","new-market",async()=>{throw new Error("fixture storage failure");});
+    expect(result.assessments[0].scoringStatus).toBe("completed");expect(provider.calls).toHaveLength(1);
+  });
+  it("publishes the first successful batch before a later budget pause",async()=>{
+    class PausingProvider extends CacheableFakeProvider {
+      override async execute<TInput,TOutput>(request:StructuredAiRequest<TInput>):Promise<StructuredAiResponse<TOutput>>{
+        if(this.calls.length)throw new BudgetDeniedError("budget-exhausted");
+        return super.execute<TInput,TOutput>(request);
+      }
+    }
+    const provider=new PausingProvider();const agent=new LeadQualificationAgent(provider,{batchSize:1,concurrency:1});
+    const saved:string[]=[];
+    await expect(agent.evaluateWithUsage([candidate,{...candidate,candidateId:"second"}],playbook,"DE","Germany","new-market",async(_items,assessments)=>{saved.push(...assessments.map(item=>item.candidateId));})).rejects.toThrow(BudgetDeniedError);
+    expect(saved).toEqual([candidate.candidateId]);expect(provider.calls).toHaveLength(1);
+  });
   it("recomputes the score deterministically and removes invented evidence IDs", async () => {
     const provider = new FakeProvider();
     const agent = new LeadQualificationAgent(provider, { batchSize: 5, concurrency: 1 });
