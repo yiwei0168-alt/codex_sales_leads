@@ -5,7 +5,10 @@ vi.mock("./repository",()=>({reservePaidCall:mocks.reserve,settlePaidCall:mocks.
 vi.mock("./policy",async original=>({...await original<typeof import("./policy")>(),quoteRequest:mocks.quote}));
 import {budgetedFetch} from "./paid-fetch";
 import {withSpendContext} from "./context";
-import {BudgetDeniedError} from "./policy";
+import {BudgetDeniedError,PaidCallOutcomeUnknownError} from "./policy";
+import {DeepSeekProvider} from "@/providers/deepseek";
+import {ResilientAiProvider} from "@/providers/resilient-ai";
+import {recordBudgetDenial} from "./denial-metrics";
 import {withModelAttempt} from "./model-attempt-context";
 const scope={userId:"user",operationId:"action",stage:"score"};
 const init={method:"POST",headers:{authorization:"Bearer fixture-secret"},body:JSON.stringify({model:"test",max_tokens:100,messages:[{content:"private company input"}]})};
@@ -44,12 +47,28 @@ it("reserves before sending and persists no credentials or raw content",async()=
 });
 it("unknown transport outcome retains reservation, never releases or automatically repeats",async()=>{
   const transport=vi.fn().mockRejectedValue(new Error("timeout"));
-  await expect(withSpendContext(scope,()=>budgetedFetch(transport)("https://example.test/chat",init))).rejects.toThrow("timeout");
+  await expect(withSpendContext(scope,()=>budgetedFetch(transport)("https://example.test/chat",init))).rejects.toBeInstanceOf(PaidCallOutcomeUnknownError);
   expect(transport).toHaveBeenCalledOnce();expect(mocks.settle.mock.calls[0][2]).toMatchObject({reportedMicros:null,succeeded:false});
+});
+it("unknown paid transport outcome prevents actual provider retries and fallback and is not recorded as a free denial",async()=>{
+  const transport=vi.fn().mockRejectedValue(new Error("timeout"));
+  const fallback={id:"fallback",execute:vi.fn()};
+  const provider=new ResilientAiProvider(new DeepSeekProvider({apiKey:"fixture",fetchImplementation:transport,maxAttempts:3}),{fallbacks:[{provider:fallback,routineModel:"peer",approvedDataClassifications:["public"]}]});
+  await expect(withSpendContext(scope,()=>provider.execute({task:"lead-qualification",modelVersion:"deepseek-v4-flash",promptVersion:"fixture",input:{},evidenceIds:[]}))).rejects.toBeInstanceOf(PaidCallOutcomeUnknownError);
+  expect(transport).toHaveBeenCalledTimes(1);expect(mocks.reserve).toHaveBeenCalledTimes(1);
+  expect(fallback.execute).not.toHaveBeenCalled();expect(recordBudgetDenial).not.toHaveBeenCalled();
+  expect(mocks.settle.mock.calls[0][2]).toMatchObject({reportedMicros:null,inputTokens:null,outputTokens:null});
 });
 it("settlement failure does not turn a successful paid response into a retry",async()=>{
   mocks.settle.mockRejectedValue(new Error("database unavailable"));const transport=vi.fn().mockResolvedValue(Response.json({ok:true}));
   expect((await withSpendContext(scope,()=>budgetedFetch(transport)("https://example.test/chat",init))).ok).toBe(true);expect(transport).toHaveBeenCalledOnce();
+});
+it("a broken response stream is unknown paid work, not a settlement-only failure or a free denial",async()=>{
+  const transport=vi.fn().mockResolvedValue(new Response(new ReadableStream({start(controller){controller.error(new Error("connection lost"));}})));
+  await expect(withSpendContext(scope,()=>budgetedFetch(transport)("https://example.test/chat",init))).rejects.toBeInstanceOf(PaidCallOutcomeUnknownError);
+  expect(transport).toHaveBeenCalledTimes(1);
+  expect(mocks.settle.mock.calls[0][2]).toMatchObject({reportedMicros:null,responseBytes:null,succeeded:false});
+  expect(recordBudgetDenial).not.toHaveBeenCalled();
 });
 it("separately scoped concurrent users cannot mix reservations",async()=>{
   await Promise.all(["a","b"].map(userId=>withSpendContext({...scope,userId},()=>budgetedFetch(vi.fn().mockResolvedValue(Response.json({})))("https://example.test/chat",init))));

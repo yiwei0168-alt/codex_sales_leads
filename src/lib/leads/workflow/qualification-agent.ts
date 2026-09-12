@@ -9,7 +9,6 @@ import { isCurrentLeadScoringEvidence } from "../evidence-snapshot";
 import { COOPERATION_PATH_POLICY, assessCooperationPathEvidence, type CooperationLane } from "../cooperation-path";
 import { LEAD_EVIDENCE_SOURCE_POLICY, assessLeadEvidenceQuality } from "../evidence-quality";
 import { assessNetworkingRelevanceEvidence } from "../networking-relevance";
-import { ACTIVE_LEAD_SCORING_POLICY } from "../scoring-policy";
 import { MODEL_SCORING_POLICY } from '../model-scoring-policy';
 import { ACTIVE_LEAD_COST_QUALITY_POLICY } from "./cost-quality-policy";
 import { buildModelEvidencePacket } from "./evidence-packet";

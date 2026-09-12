@@ -1,5 +1,5 @@
 import {currentSpendContext} from "./context";
-import {billingPolicy,BudgetDeniedError,quoteRequest} from "./policy";
+import {billingPolicy,BudgetDeniedError,PaidCallOutcomeUnknownError,quoteRequest} from "./policy";
 import {reservePaidCall,settlePaidCall} from "./repository";
 import {recordBudgetDenial} from "./denial-metrics";
 import {isKimiK3} from "@/providers/kimi-contract";
@@ -43,19 +43,24 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
     }:null;
     const id=await reservePaidCall(scope.userId,{operationId:scope.operationId,stage:scope.stage,tariffKey:rule.key,tariffVersion:policy.version,maximumChargeMicros:rule.maximumChargeMicros,requestBytes:bytes,modelAttempt});
     const started=Date.now();let response:Response;
-    try{response=await transport(input,{...init,redirect:"error"});}catch(error){
+    try{response=await transport(input,{...init,redirect:"error"});}catch{
       await settlePaidCall(scope.userId,id,{reportedMicros:null,latencyMs:Date.now()-started,responseBytes:null,inputTokens:null,outputTokens:null,succeeded:false}).catch(()=>undefined);
-      throw error;
+      throw new PaidCallOutcomeUnknownError();
+    }
+    let responseText:string;
+    try{responseText=await response.clone().text();}catch{
+      await settlePaidCall(scope.userId,id,{reportedMicros:null,latencyMs:Date.now()-started,responseBytes:null,inputTokens:null,outputTokens:null,succeeded:false}).catch(()=>undefined);
+      throw new PaidCallOutcomeUnknownError();
     }
     // Accounting failure cannot turn successful paid work into a retry. Reservation remains occupied.
     try{
-      const text=await response.clone().text();let result:Record<string,unknown>={};try{result=object(JSON.parse(text));}catch{}
+      const text=responseText;let result:Record<string,unknown>={};try{result=object(JSON.parse(text));}catch{}
       const usage=object(result.usage);const reported=typeof usage.cost==="number"&&Number.isFinite(usage.cost)&&usage.cost>=0?Math.ceil(usage.cost*1000000):null;
       await settlePaidCall(scope.userId,id,{reportedMicros:reported,latencyMs:Date.now()-started,responseBytes:Buffer.byteLength(text,"utf8"),inputTokens:count(usage.prompt_tokens??usage.input_tokens),outputTokens:count(usage.completion_tokens??usage.output_tokens),succeeded:response.ok,providerUsage:providerUsageObservation(result)});
     }catch{console.warn(JSON.stringify({event:"budget-settlement-unavailable",reservationRetained:true,retry:false}));}
     return response;
     }catch(error){
-      if(error instanceof BudgetDeniedError)await recordBudgetDenial(scope,error,Date.now()-checkedAt);
+      if(error instanceof BudgetDeniedError&&!(error instanceof PaidCallOutcomeUnknownError))await recordBudgetDenial(scope,error,Date.now()-checkedAt);
       throw error;
     }
   };
