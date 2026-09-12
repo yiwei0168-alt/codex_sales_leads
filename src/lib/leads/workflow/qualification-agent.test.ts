@@ -103,6 +103,22 @@ const playbook: LeadMarketPlaybook = {
 };
 
 describe("LeadQualificationAgent", () => {
+  it("repairs only the malformed member of a JSON-valid batch, without replaying its valid peer",async()=>{
+    class PartialProvider extends FakeProvider {
+      override async execute<I,O>(request:StructuredAiRequest<I>):Promise<StructuredAiResponse<O>>{
+        const response=await super.execute<I,{assessments:Array<Record<string,unknown>>}>(request);
+        const ids=(request.input as {candidates:Array<{candidateId:string}>}).candidates.map(item=>item.candidateId);
+        const valid=response.output.assessments[0];
+        return {...response,output:{assessments:ids.map(id=>this.calls.length===1&&id==="lead-second"?{candidateId:id}:{...valid,candidateId:id})} as O};
+      }
+    }
+    const provider=new PartialProvider();
+    const result=await new LeadQualificationAgent(provider,{batchSize:5,concurrency:1})
+      .evaluate([candidate,{...candidate,candidateId:"lead-second"}],playbook,"DE","Germany","new-market");
+    expect(result.map(item=>item.scoringStatus)).toEqual(["completed","completed"]);
+    expect(provider.calls).toHaveLength(2);
+    expect((provider.calls[1].input as {candidates:Array<{candidateId:string}>}).candidates.map(item=>item.candidateId)).toEqual(["lead-second"]);
+  });
   it("links completed output to its full request even when provider cost was not reported",async()=>{
     const provider=new CacheableFakeProvider();
     const agent=new LeadQualificationAgent(provider,{routineModel:"model-a",escalationModel:"model-b"});

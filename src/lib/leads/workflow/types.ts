@@ -395,6 +395,7 @@ export interface WorkflowModelUsage {
   attempts?: number;
   retries?: number;
   accountCashCostUsd?: number;
+  batchValidation?: {inputItems:number;validOutputItems:number;rejectedOutputItems:number;missingOutputItems:number;complete:boolean};
 }
 
 export interface WorkflowStageMetric {

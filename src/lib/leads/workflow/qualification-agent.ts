@@ -1,5 +1,6 @@
 import {BudgetDeniedError} from "@/lib/billing/policy";
 import {leadRequestBatches} from "@/providers/lead-request-batches";
+import {validateBatchItems} from "./batch-output";
 import type { AiProvider, StructuredAiResponse } from "@/providers/contracts";
 import { createLeadAiProvider } from "@/providers/resilient-ai";
 import { z } from "zod";
@@ -515,9 +516,11 @@ export class LeadQualificationAgent {
         && (response.requestedModelVersion !== response.modelVersion || response.actualProviderId !== "deepseek")),
       attempts: response.attempts, retries: response.retries,
       accountCashCostUsd: response.usage?.accountCashCostUsd });
-    const parsed = this.includeCooperationPaths
-      ? leadAssessmentBatchSchema.parse(response.output)
-      : leadAssessmentScoreOnlyBatchSchema.parse(response.output);
+    const validated=validateBatchItems<QualificationModelOutput>(response.output,"assessments",
+      this.includeCooperationPaths?leadAssessmentModelSchema:leadAssessmentScoreOnlyModelSchema,
+      candidates.map(candidate=>candidate.candidateId));
+    const parsed={assessments:validated.items,complete:validated.complete};
+    usageRecords[usageRecords.length-1].batchValidation={inputItems:candidates.length,validOutputItems:validated.items.length,rejectedOutputItems:validated.rejectedItems,missingOutputItems:validated.missingItems,complete:validated.complete};
     return { response, parsed };
   }
 
@@ -527,7 +530,7 @@ export class LeadQualificationAgent {
       const routine = await this.invokeBatch(candidates, playbook, countryCode, countryName, objective, this.routineModel, usageRecords);
       const expectedIds=new Set(candidates.map(candidate=>candidate.candidateId));
       const returnedIds=new Set(routine.parsed.assessments.map(item=>item.candidateId));
-      const complete=expectedIds.size===candidates.length&&routine.parsed.assessments.length===candidates.length
+      const complete=routine.parsed.complete&&expectedIds.size===candidates.length&&routine.parsed.assessments.length===candidates.length
         &&returnedIds.size===candidates.length&&[...returnedIds].every(id=>expectedIds.has(id));
       const exactContract=complete&&routine.response.modelVersion===this.routineModel
         &&(!routine.response.actualProviderId||routine.response.actualProviderId===this.provider.id.replace(/^resilient:/,""))
@@ -571,7 +574,7 @@ export class LeadQualificationAgent {
       const routine = await this.invokeBatch([candidate], playbook, countryCode, countryName,
         objective, this.routineModel, usageRecords);
       const value = routine.parsed.assessments.find((item) => item.candidateId === candidate.candidateId);
-      if (!value) {
+      if (!value||!routine.parsed.complete) {
         return failedAssessment(candidate,
           `${reason} Same-tier single-candidate schema repair omitted the candidate; Pro escalation was not used.`,
           this.promptVersion);
@@ -610,12 +613,12 @@ export class LeadQualificationAgent {
           && (escalation.requestedModelVersion !== escalation.modelVersion || escalation.actualProviderId !== "deepseek")),
         attempts: escalation.attempts, retries: escalation.retries,
         accountCashCostUsd: escalation.usage?.accountCashCostUsd });
-      const raw = typeof escalation.output === "object" && escalation.output !== null && "assessments" in escalation.output
-        ? (escalation.output as { assessments?: unknown[] }).assessments?.[0]
-        : escalation.output;
-      const parsed = this.includeCooperationPaths
-        ? leadAssessmentModelSchema.parse(raw)
-        : leadAssessmentScoreOnlyModelSchema.parse(raw);
+      const envelope=typeof escalation.output==="object"&&escalation.output!==null&&"assessments" in escalation.output
+        ?escalation.output:{assessments:[escalation.output]};
+      const validated=validateBatchItems<QualificationModelOutput>(envelope,"assessments",
+        this.includeCooperationPaths?leadAssessmentModelSchema:leadAssessmentScoreOnlyModelSchema,[candidate.candidateId]);
+      if(!validated.complete)throw new Error("Escalation did not return exactly the requested candidate");
+      const parsed=validated.items[0];
       const allowOemOdm = /\b(?:oem|odm|private[ -]?label|manufactur(?:e|ing))\b/i.test(objective);
       const normalized = normalizeAssessment(parsed, candidate, escalation, true, allowOemOdm,
         this.includeCooperationPaths);

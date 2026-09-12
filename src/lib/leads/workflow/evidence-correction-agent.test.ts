@@ -202,4 +202,12 @@ describe("LeadEvidenceCorrectionAgent", () => {
     expect(result.candidates[0].correction.model).toBe("routine-model");
     expect(result.candidates[0].correction.warnings.join(" ")).toContain("Same-tier single-candidate schema repair succeeded");
   });
+  it("repairs only an omitted correction with the routine model, without escalating its valid peer",async()=>{
+    const provider=new FakeCorrectionProvider();
+    await new LeadEvidenceCorrectionAgent(provider,searchProvider,{batchSize:5,concurrency:1,searchConcurrency:1,
+      routineModel:"routine-model",escalationModel:"pro-model"})
+      .correct([candidate,{...candidate,candidateId:"lead-second-correction",domain:"second-example.de"}],{countryCode:"DE",countryName:"Germany",objective:"new-market",roles:["Distributor"],targetCount:10,queryLanguage:"en",userRequest:"Find prospects"});
+    expect(provider.calls.map(call=>call.modelVersion)).toEqual(["routine-model","routine-model"]);
+    expect((provider.calls[1].input as {candidates:Array<{candidateId:string}>}).candidates.map(item=>item.candidateId)).toEqual(["lead-second-correction"]);
+  });
 });
