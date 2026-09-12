@@ -1,5 +1,11 @@
 # Local production acceptance — 2026-09-12
 
+## 2026-09-13 implementation stage 1, local checks only
+
+Production build also passed (16 static pages generated); no new authenticated browser run or real model quality check is claimed. This preserves the local-only deployment scope.
+
+P06 now confirmed; all six proposals are authorized for implementation. P01 stable-prefix ordering and P03 deterministic model-policy projection implemented; P04 output Schema retained. 596 tests / 142 files and typecheck pass, no paid model/search/SMTP calls. This is not a new provider tariff, cache-hit proof or business quality pass. P02/P05/P06, ledger reconciliation and the remaining acceptance gate table below still require completion; its earlier pending-confirmation statements are historical.
+
 ## 2026-09-13 acceptance-led completion plan
 
 User directs completion of P03–P06 alongside remaining acceptance work, then acceptance as the primary workstream. Existing item-by-item confirmation remains: P01/P02 approved but not implemented; P03–P06 must be confirmed before unified product edits. Do not extend scope to new optional optimizations. The table is a current gap index, not fresh execution evidence; historical failures below are retained.

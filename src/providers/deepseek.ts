@@ -1,5 +1,6 @@
 import {BudgetDeniedError} from "@/lib/billing/policy";
 import { budgetedFetch } from "@/lib/billing/paid-fetch";
+import { structuredUserPrompt } from './structured-user-prompt';
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "./contracts";
 import { ProviderUnavailableError } from "./contracts";
 
@@ -85,12 +86,7 @@ export class DeepSeekProvider implements AiProvider {
       "Follow the task instructions and never invent evidence IDs or facts not present in the input JSON.",
       request.outputSchema ? `Your entire response MUST validate against this JSON Schema: ${JSON.stringify(request.outputSchema)}` : "",
     ].filter(Boolean).join("\n");
-    const userPrompt = JSON.stringify({
-      task: request.task,
-      promptVersion: request.promptVersion,
-      evidenceIds: request.evidenceIds,
-      input: request.input,
-    });
+    const userPrompt = structuredUserPrompt(request);
     const maxTokens = Math.max(1_024, Math.min(16_384,
       Number(process.env.DEEPSEEK_MAX_OUTPUT_TOKENS ?? 8_192) || 8_192));
     const temperature = Math.max(0, Math.min(2, Number(process.env.DEEPSEEK_TEMPERATURE ?? 0) || 0));

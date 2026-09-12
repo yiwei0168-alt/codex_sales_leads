@@ -1,5 +1,9 @@
 # Product UI v1.1 implementation workflow
 
+## 2026-09-13 implementation stage 1
+
+All P01–P06 approved. Full policy -> deterministic model projection -> structured request -> fixed-prefix user JSON -> existing provider transport -> unchanged output Schema/parser. DeepSeek and compatible fallback share the ordering helper. Arrays, values, message authority and privacy remain unchanged; source policy/checksum persistence is not replaced. Prompt versions invalidate old semantic identities. 596 tests / 142 files and typecheck pass. This stage does not implement cache telemetry, exact persisted score reuse, full-body batching or new billing rules; hosted quality/cost gates remain open.
+
 ## 2026-09-13 P05 approved, final P06 discussion
 
 B25 confirms exact cache reuse with tenant/country/input/version/batch dependencies, citation rebinding and manual overrides. Valid results may be reused while unknown charges remain reserved. No runtime implementation yet. Final P06 proposal retains at most five companies, checks final full-body limits/output completeness, preserves task modes and prevents replay; after confirmation implementation returns to acceptance closure.

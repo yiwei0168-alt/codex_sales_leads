@@ -2,6 +2,7 @@ import {BudgetDeniedError} from "@/lib/billing/policy";
 import { budgetedFetch } from "@/lib/billing/paid-fetch";
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "./contracts";
 import { ProviderUnavailableError } from "./contracts";
+import { structuredUserPrompt } from './structured-user-prompt';
 
 interface OpenAiCompatibleProviderOptions {
   id: string;
@@ -71,8 +72,7 @@ export class OpenAiCompatibleProvider implements AiProvider {
                 "Use only supplied facts and evidence IDs.",
                 request.outputSchema ? `Validate against this JSON Schema: ${JSON.stringify(request.outputSchema)}` : "",
               ].filter(Boolean).join("\n") },
-              { role: "user", content: JSON.stringify({ task: request.task, promptVersion: request.promptVersion,
-                evidenceIds: request.evidenceIds, input: request.input }) },
+              { role: "user", content: structuredUserPrompt(request) },
             ],
             ...this.options.extraBody,
           }),

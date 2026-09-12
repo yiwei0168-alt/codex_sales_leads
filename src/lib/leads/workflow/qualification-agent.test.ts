@@ -210,7 +210,7 @@ describe("LeadQualificationAgent", () => {
     expect(result.eligible).toBe(true);
     expect(result.cooperationPaths).toEqual([]);
     expect(result.selectedPathId).toBeNull();
-    expect(result.promptVersion).toBe("lead-value-v8-evidence-capped-score-only");
+    expect(result.promptVersion).toBe("lead-value-v9-projection1-stable-prefix-score-only");
     expect(JSON.stringify(provider.calls[0].outputSchema)).not.toContain("cooperationPaths");
     expect(JSON.stringify(provider.calls[0].input)).toContain("scoring-only task");
     expect(provider.calls[0].dataClassification).toBe("public");

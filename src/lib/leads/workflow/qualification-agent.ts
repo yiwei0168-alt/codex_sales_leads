@@ -8,7 +8,8 @@ import { isCurrentLeadScoringEvidence } from "../evidence-snapshot";
 import { COOPERATION_PATH_POLICY, assessCooperationPathEvidence, type CooperationLane } from "../cooperation-path";
 import { LEAD_EVIDENCE_SOURCE_POLICY, assessLeadEvidenceQuality } from "../evidence-quality";
 import { assessNetworkingRelevanceEvidence } from "../networking-relevance";
-import { ACTIVE_LEAD_SCORING_POLICY, scoringPolicyChecksum } from "../scoring-policy";
+import { ACTIVE_LEAD_SCORING_POLICY } from "../scoring-policy";
+import { MODEL_SCORING_POLICY } from '../model-scoring-policy';
 import { ACTIVE_LEAD_COST_QUALITY_POLICY } from "./cost-quality-policy";
 import { buildModelEvidencePacket } from "./evidence-packet";
 import { leadAssessmentBatchSchema, leadAssessmentModelSchema, leadAssessmentScoreOnlyBatchSchema,
@@ -21,8 +22,8 @@ import type {
   WorkflowModelUsage,
 } from "./types";
 
-export const LEAD_QUALIFICATION_PROMPT_VERSION = "lead-value-v5-role-aware-five-paths";
-export const LEAD_SCORE_ONLY_PROMPT_VERSION = "lead-value-v8-evidence-capped-score-only";
+export const LEAD_QUALIFICATION_PROMPT_VERSION = "lead-value-v6-projection1-stable-prefix-five-paths";
+export const LEAD_SCORE_ONLY_PROMPT_VERSION = "lead-value-v9-projection1-stable-prefix-score-only";
 type QualificationModelOutput = LeadAssessmentModelOutput | LeadAssessmentScoreOnlyModelOutput;
 
 interface LeadAssessmentRequest {
@@ -459,15 +460,11 @@ export class LeadQualificationAgent {
         };
       }),
       scoringRubric: {
-        policyKey: ACTIVE_LEAD_SCORING_POLICY.policyKey,
-        policyVersion: ACTIVE_LEAD_SCORING_POLICY.version,
-        policyChecksum: scoringPolicyChecksum(),
-        policy: ACTIVE_LEAD_SCORING_POLICY,
+        policy: MODEL_SCORING_POLICY,
         evidenceSourcePolicy: LEAD_EVIDENCE_SOURCE_POLICY,
         ...(this.includeCooperationPaths ? { cooperationPathPolicy: COOPERATION_PATH_POLICY } : {}),
         outputMode: this.includeCooperationPaths ? "score-and-paths" : "score-only",
         eligibilityGates: ["correctedIdentityUsable", "companyExists", "targetCountryPresence", "networkingRelevant", "independentProspect"],
-        dimensions: ACTIVE_LEAD_SCORING_POLICY.weights,
       },
     };
     return {

@@ -27,7 +27,7 @@ import {
   type WorkflowModelUsage,
 } from "./types";
 
-export const LEAD_EVIDENCE_CORRECTION_PROMPT_VERSION = "lead-evidence-correction-v10-business-model-consistency";
+export const LEAD_EVIDENCE_CORRECTION_PROMPT_VERSION = "lead-evidence-correction-v11-stable-prefix";
 
 interface CorrectionRequest {
   instructions: string[];
