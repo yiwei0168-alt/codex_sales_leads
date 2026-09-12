@@ -1,4 +1,5 @@
 import {metricIdentifier} from "./model-attempt-context";
+import {createHash} from "node:crypto";
 
 /** Numeric allowlist only: never persist provider response bodies or arbitrary metadata. */
 export const PROVIDER_USAGE_FIELDS = [
@@ -25,6 +26,8 @@ export function providerUsageObservation(result: unknown) {
     version: "provider-usage-observation-v1",
     source: "http-response-usage",
     reportedModel: metricIdentifier(object(result).model),
+    providerRequestHash: typeof object(result).id==="string"&&String(object(result).id).length>0&&String(object(result).id).length<=512
+      ?createHash("sha256").update(String(object(result).id)).digest("hex"):null,
     fields,
     observedFieldCount: Object.values(fields).filter(value => value !== null).length,
     // Input/cache semantics vary by gateway and protocol. No cross-protocol summation or inferred discounts.

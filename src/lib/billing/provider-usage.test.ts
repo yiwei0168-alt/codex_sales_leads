@@ -1,5 +1,11 @@
 import {expect,it} from "vitest";
 import {providerUsageObservation} from "./provider-usage";
+it("hashes provider request IDs without retaining the original identifier",()=>{
+  const value=providerUsageObservation({id:"private-request-identifier"});
+  expect(value.providerRequestHash).toMatch(/^[a-f0-9]{64}$/);
+  expect(JSON.stringify(value)).not.toContain("private-request-identifier");
+  expect(providerUsageObservation({}).providerRequestHash).toBeNull();
+});
 
 it("preserves distinct cache semantics and explicit zero without inventing missing values",()=>{
   const observed=providerUsageObservation({usage:{input_tokens:12,cache_read_input_tokens:90,cache_creation_input_tokens:0}});

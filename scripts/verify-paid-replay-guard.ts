@@ -59,6 +59,8 @@ try{
       for(const id of created){
         const owner=await client.query("select id from app_user where id=$1 and email=$2 for update",[id,`billing-replay-${id}@example.invalid`]);
         if(owner.rowCount!==1)throw new Error("Fixture identity mismatch; cleanup refused");
+        if((await client.query("select to_regclass('paid_cost_observation') as relation")).rows[0].relation)await client.query("delete from paid_cost_observation where user_id=$1",[id]);
+        if((await client.query("select to_regclass('paid_rule_hold') as relation")).rows[0].relation)await client.query("delete from paid_rule_hold where user_id=$1",[id]);
         await client.query("delete from paid_call_reservation where user_id=$1",[id]);
         await client.query("delete from spend_budget_change where user_id=$1",[id]);
         await client.query("delete from user_spend_budget where user_id=$1",[id]);

@@ -2,6 +2,9 @@ import { tenantQuery,tenantTransaction } from "@/lib/rag/db";
 import { BudgetDeniedError } from "./policy";
 import type { ProviderUsageObservation } from "./provider-usage";
 import {readProviderUsageSummary} from "./usage-summary";
+import {createHash} from "node:crypto";
+import {planCostReconciliation,type CostObservationKind} from "./reconciliation-policy";
+import {COST_SUMMARY_SQL} from "./cost-summary";
 
 type ReservationInput={operationId:string;stage:string;tariffKey:string;tariffVersion:string;maximumChargeMicros:number;requestBytes:number;requestFingerprint?:string;modelAttempt?:{invocationId:string|null;provider:string|null;task:string|null;promptVersion:string|null;attempt:number|null;requestedModel:string|null;gatewayHost:string|null;endpointKind:string}|null};
 export async function reservePaidCall(userId:string,input:ReservationInput){
@@ -9,9 +12,12 @@ export async function reservePaidCall(userId:string,input:ReservationInput){
 }
 export async function reservePaidCallInTransaction(client:import("pg").PoolClient,userId:string,input:ReservationInput){
   if(!Number.isSafeInteger(input.maximumChargeMicros)||input.maximumChargeMicros<=0)throw new BudgetDeniedError("missing-tariff");
-    const budget=await client.query<{limit_micros:string;occupied_micros:string;frozen:boolean}>("select limit_micros,occupied_micros,frozen from user_spend_budget where user_id=$1 for update",[userId]);
+    const budget=await client.query<{limit_micros:string;occupied_micros:string;frozen:boolean;rule_held?:boolean}>(`select limit_micros,occupied_micros,frozen,
+      exists(select 1 from paid_rule_hold where user_id=$1 and tariff_key=$2 and tariff_version=$3) as rule_held
+      from user_spend_budget where user_id=$1 for update`,[userId,input.tariffKey,input.tariffVersion]);
     const row=budget.rows[0];if(!row)throw new BudgetDeniedError("missing-budget");
     if(row.frozen)throw new BudgetDeniedError("budget-frozen");
+    if(row.rule_held)throw new BudgetDeniedError("tariff-suspended");
     if(input.requestFingerprint){
       if(!/^[a-f0-9]{64}$/.test(input.requestFingerprint))throw new BudgetDeniedError("request-out-of-bounds");
       // Same owner lock serializes different workers before either reserves or sends.
@@ -24,7 +30,7 @@ export async function reservePaidCallInTransaction(client:import("pg").PoolClien
     if(BigInt(row.occupied_micros)+BigInt(input.maximumChargeMicros)>BigInt(row.limit_micros))throw new BudgetDeniedError("budget-exhausted");
     // The owner lock also serializes task edits and all reservations for this action.
     const task=await client.query<{limit_micros:string;occupied_micros:string}>(`select t.limit_micros,
-      coalesce((select sum(r.reserved_micros) from paid_call_reservation r where r.user_id=$1 and r.operation_id=$2),0)::text as occupied_micros
+      coalesce((select sum(coalesce(r.occupied_micros,r.reserved_micros)) from paid_call_reservation r where r.user_id=$1 and r.operation_id=$2),0)::text as occupied_micros
       from task_spend_limit t where t.user_id=$1 and t.action_id::text=$2`,[userId,input.operationId]);
     if(task.rows[0]&&BigInt(task.rows[0].occupied_micros)+BigInt(input.maximumChargeMicros)>BigInt(task.rows[0].limit_micros))throw new BudgetDeniedError("task-budget-exhausted");
     const result=await client.query<{id:string}>(`insert into paid_call_reservation(user_id,operation_id,stage,tariff_key,tariff_version,reserved_micros,status,metrics,request_fingerprint)
@@ -33,20 +39,33 @@ export async function reservePaidCallInTransaction(client:import("pg").PoolClien
     return result.rows[0].id;
 }
 export async function settlePaidCall(userId:string,id:string,input:{reportedMicros:number|null;latencyMs:number;responseBytes:number|null;inputTokens:number|null;outputTokens:number|null;succeeded:boolean;providerUsage?:ProviderUsageObservation}){
-  // Reported provider cost is not an audited invoice. Never automatically release a reservation.
+  // Raw HTTP usage is not a uniquely matched all-inclusive bill. No automatic release here.
   const cost=input.reportedMicros!==null&&Number.isSafeInteger(input.reportedMicros)&&input.reportedMicros>=0?input.reportedMicros:null;
   await tenantTransaction(userId,async client=>{
-    const result=await client.query<{reserved_micros:string}>(`update paid_call_reservation set reported_micros=$3,
+    await client.query("select user_id from user_spend_budget where user_id=$1 for update",[userId]);
+    const result=await client.query<{reserved_micros:string;occupied_micros:string|null;settled_micros:string|null;settled_source:CostObservationKind|null;tariff_key:string;tariff_version:string}>(`update paid_call_reservation set reported_micros=$3,
       status=case when $3::bigint>reserved_micros then 'bound-exceeded' when $3::bigint is null then 'unknown' else 'reported' end,
-      metrics=metrics || $4::jsonb,updated_at=now() where user_id=$1 and id=$2 and status='reserved' returning reserved_micros`,
-      [userId,id,cost,JSON.stringify({latencyMs:input.latencyMs,outputBytes:input.responseBytes,inputTokens:input.inputTokens,outputTokens:input.outputTokens,providerUsage:input.providerUsage??null,validOutputItems:input.succeeded?1:0,discardedReasonCounts:input.succeeded?{}:{requestFailed:1},usageBoundary:"response-returned-not-downstream-adopted",optimizationOpportunity:"Reconcile invoices before releasing conservative reservations"})]);
-    if(cost!==null&&result.rows[0]&&BigInt(cost)>BigInt(result.rows[0].reserved_micros))await client.query("update user_spend_budget set frozen=true,updated_at=now() where user_id=$1",[userId]);
+      provider_request_hash=coalesce($5,provider_request_hash),metrics=metrics || $4::jsonb,updated_at=now()
+      where user_id=$1 and id=$2 and status='reserved' returning reserved_micros,occupied_micros,settled_micros,settled_source,tariff_key,tariff_version`,
+      [userId,id,cost,JSON.stringify({latencyMs:input.latencyMs,outputBytes:input.responseBytes,inputTokens:input.inputTokens,outputTokens:input.outputTokens,providerUsage:input.providerUsage??null,validOutputItems:input.succeeded?1:0,discardedReasonCounts:input.succeeded?{}:{requestFailed:1},usageBoundary:"response-returned-not-downstream-adopted",optimizationOpportunity:"Reconcile invoices before releasing conservative reservations"}),input.providerUsage?.providerRequestHash??null]);
+    const row=result.rows[0];if(!row)return;
+    const plan=planCostReconciliation({reservedMicros:Number(row.reserved_micros),occupiedMicros:row.occupied_micros==null?undefined:Number(row.occupied_micros),settledMicros:row.settled_micros==null?null:Number(row.settled_micros),settledSource:row.settled_source??null},{kind:"provider-report",amountMicros:cost,complete:false,uniquelyMatched:false});
+    await client.query(`insert into paid_cost_observation(user_id,reservation_id,kind,amount_micros,source_reference_hash,source_version,complete,uniquely_matched,provider_request_hash,occupied_before,occupied_after,metrics)
+      values($1,$2,'provider-report',$3,$4,'http-response-usage-v1',false,false,$5,$6,$7,$8) on conflict do nothing`,
+      [userId,id,cost,createHash("sha256").update(`${id}:http-response-v1`).digest("hex"),input.providerUsage?.providerRequestHash??null,plan.occupiedBefore,plan.occupiedAfter,JSON.stringify({inputItems:1,validOutputItems:1,downstreamUsedItems:plan.suspendRule?1:0,inputTokens:0,outputTokens:0,apiCredits:0,retries:0,usageBoundary:"cost-observation-not-additional-spend",optimizationOpportunity:"Verify completeness and unique matching before release"})]);
+    if(plan.occupiedDelta!==0){
+      await client.query("update paid_call_reservation set occupied_micros=$3 where user_id=$1 and id=$2",[userId,id,plan.occupiedAfter]);
+      await client.query("update user_spend_budget set occupied_micros=occupied_micros+$2,updated_at=now() where user_id=$1",[userId,plan.occupiedDelta]);
+    }
+    if(plan.suspendRule)await client.query("insert into paid_rule_hold(user_id,tariff_key,tariff_version,reason) values($1,$2,$3,'reported-charge-above-bound') on conflict do nothing",[userId,row.tariff_key,row.tariff_version]);
   });
 }
 export async function readSpendBudget(userId:string){
-  const rows=await tenantQuery(userId,`select limit_micros::text,occupied_micros::text,greatest(0,limit_micros-occupied_micros)::text as remaining_micros,frozen,updated_at
+  const rows=await tenantQuery(userId,`select limit_micros::text,occupied_micros::text,greatest(0,limit_micros-occupied_micros)::text as remaining_micros,frozen,updated_at,
+    (select count(*)::int from paid_rule_hold where user_id=$1) as suspended_rules
     from user_spend_budget where user_id=$1`,[userId]);
   const usage=await tenantQuery(userId,`select stage,count(*)::int as calls,sum(reserved_micros)::text as reserved_micros,
+    ${COST_SUMMARY_SQL},
     sum(reported_micros)::text as reported_micros,count(*) filter(where reported_micros is null)::int as unknown_bills,
     count(*) filter(where status='reserved')::int as unsettled_calls from paid_call_reservation where user_id=$1 group by stage order by stage`,[userId]);
   return {budget:rows[0]??null,stages:usage,modelUsage:await readProviderUsageSummary(userId)};
@@ -73,9 +92,10 @@ export async function readTaskSpendBudget(userId:string,actionId:string){
   const owner=await tenantQuery(userId,"select id from assistant_action where user_id=$1 and id=$2 and action_type='lead-search'",[userId,actionId]);
   if(!owner.length)throw new Error("任务不存在或不属于当前用户");
   const rows=await tenantQuery(userId,`select t.limit_micros::text,
-    (select coalesce(sum(reserved_micros),0)::text from paid_call_reservation where user_id=$1 and operation_id=$2::text) as occupied_micros
+    (select coalesce(sum(coalesce(occupied_micros,reserved_micros)),0)::text from paid_call_reservation where user_id=$1 and operation_id=$2::text) as occupied_micros
     from task_spend_limit t where t.user_id=$1 and t.action_id=$2::uuid`,[userId,actionId]);
   const stages=await tenantQuery(userId,`select stage,count(*)::int as calls,sum(reserved_micros)::text as reserved_micros,
+    ${COST_SUMMARY_SQL},
     sum(reported_micros)::text as reported_micros,count(*) filter(where reported_micros is null)::int as unknown_bills,
     sum((metrics->>'latencyMs')::bigint)::text as summed_latency_ms
     from paid_call_reservation where user_id=$1 and operation_id=$2 group by stage order by stage`,[userId,actionId]);
@@ -90,7 +110,7 @@ export async function setTaskSpendBudget(userId:string,actionId:string,limitMicr
     if(!owner.rowCount)throw new Error("任务不存在或不属于当前用户");
     const budget=await client.query("select user_id from user_spend_budget where user_id=$1 for update",[userId]);
     if(!budget.rowCount)throw new Error("请先在任务中心设置用户累计预算");
-    const used=await client.query<{occupied:string}>("select coalesce(sum(reserved_micros),0)::text as occupied from paid_call_reservation where user_id=$1 and operation_id=$2",[userId,actionId]);
+    const used=await client.query<{occupied:string}>("select coalesce(sum(coalesce(occupied_micros,reserved_micros)),0)::text as occupied from paid_call_reservation where user_id=$1 and operation_id=$2",[userId,actionId]);
     if(BigInt(used.rows[0].occupied)>BigInt(limitMicros))throw new Error("任务预算不能低于已占用预留");
     const old=await client.query<{limit_micros:string}>("select limit_micros from task_spend_limit where user_id=$1 and action_id=$2",[userId,actionId]);
     await client.query("insert into task_spend_limit(user_id,action_id,limit_micros) values($1,$2,$3) on conflict(user_id,action_id) do update set limit_micros=excluded.limit_micros,updated_at=now()",[userId,actionId,limitMicros]);

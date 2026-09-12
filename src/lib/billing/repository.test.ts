@@ -29,11 +29,19 @@ it("enforces the task cap even when the owner has spare budget",async()=>{
   query.mockResolvedValueOnce({rows:[{limit_micros:"1000",occupied_micros:"20",frozen:false}]}).mockResolvedValueOnce({rows:[{limit_micros:"25",occupied_micros:"20"}]});
   await expect(reservePaidCall("owner",input)).rejects.toThrow("task-budget-exhausted");expect(query).toHaveBeenCalledTimes(2);
 });
-it("retains unknown charges and freezes future calls if reported charge violates bound",async()=>{
-  query.mockResolvedValue({rows:[{reserved_micros:"10"}]});
+it("retains unknown charges and suspends only the affected tariff if reported charge violates bound",async()=>{
+  query.mockResolvedValue({rows:[{reserved_micros:"10",tariff_key:"rule",tariff_version:"v1"}]});
   await settlePaidCall("owner","id",{reportedMicros:null,latencyMs:1,responseBytes:null,inputTokens:null,outputTokens:null,succeeded:false});
-  expect(query).toHaveBeenCalledTimes(1);
+  expect(query).toHaveBeenCalledTimes(3);
   await settlePaidCall("owner","id",{reportedMicros:11,latencyMs:1,responseBytes:5,inputTokens:1,outputTokens:1,succeeded:true});
-  expect(query.mock.calls.at(-1)?.[0]).toContain("frozen=true");
+  expect(query.mock.calls.at(-1)?.[0]).toContain("insert into paid_rule_hold");
+  expect(query.mock.calls.at(-1)?.[1]).toEqual(["owner","rule","v1"]);
+  expect(query.mock.calls.some(([sql])=>String(sql).includes("frozen=true"))).toBe(false);
+  expect(query.mock.calls.some(([sql,values])=>String(sql).includes("occupied_micros=occupied_micros+$2")&&values[1]===1)).toBe(true);
   expect(query.mock.calls.some(([sql])=>String(sql).includes("occupied_micros-"))).toBe(false);
+});
+it("refuses only the tariff held by a prior overrun",async()=>{
+  query.mockResolvedValueOnce({rows:[{limit_micros:"100",occupied_micros:"10",frozen:false,rule_held:true}]});
+  await expect(reservePaidCall("owner",input)).rejects.toThrow("tariff-suspended");
+  expect(query).toHaveBeenCalledTimes(1);
 });
