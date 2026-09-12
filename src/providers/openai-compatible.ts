@@ -5,6 +5,7 @@ import { ProviderUnavailableError } from "./contracts";
 import { structuredUserPrompt } from './structured-user-prompt';
 import {randomUUID} from "node:crypto";
 import {withModelAttempt} from "@/lib/billing/model-attempt-context";
+import {assertLeadRequestBytes} from "./lead-request-bounds";
 
 interface OpenAiCompatibleProviderOptions {
   id: string;
@@ -56,7 +57,8 @@ export class OpenAiCompatibleProvider implements AiProvider {
     for (let attempt = 0; attempt < this.maxAttempts; attempt += 1) {
       attemptsMade = attempt + 1;
       try {
-        const response = await withModelAttempt({invocationId,provider:this.id,task:request.task,promptVersion:request.promptVersion,attempt:attempt+1},()=>this.fetchImplementation(`${this.baseUrl}/chat/completions`, {
+        const response = await withModelAttempt({invocationId,provider:this.id,task:request.task,promptVersion:request.promptVersion,attempt:attempt+1},()=>{
+          const init:RequestInit={
           method: "POST",
           headers: { authorization: `Bearer ${this.options.apiKey}`, "content-type": "application/json",
             ...this.options.defaultHeaders },
@@ -79,7 +81,10 @@ export class OpenAiCompatibleProvider implements AiProvider {
             ],
             ...this.options.extraBody,
           }),
-        }));
+          };
+          assertLeadRequestBytes(request,String(init.body));
+          return this.fetchImplementation(`${this.baseUrl}/chat/completions`,init);
+        });
         const body = await response.json() as WireResponse;
         if (!response.ok) throw new Error(body.error?.message ?? `${this.id} HTTP ${response.status}`);
         const content = body.choices?.[0]?.message?.content?.trim();

@@ -1,4 +1,5 @@
 import {BudgetDeniedError} from "@/lib/billing/policy";
+import {leadRequestBatches} from "@/providers/lead-request-batches";
 import { createHash } from "node:crypto";
 
 import type { AiProvider, StructuredAiResponse } from "@/providers/contracts";
@@ -621,20 +622,9 @@ export class LeadEvidenceCorrectionAgent {
     }
     const missing = candidates.filter((candidate) => !cached.has(candidate.candidateId));
     const supplemented = await this.supplement(missing, plan);
-    const batches: LeadWorkflowCandidate[][] = [];
-    let pending: LeadWorkflowCandidate[] = [];
-    for (const candidate of supplemented.candidates) {
-      const proposed = [...pending, candidate];
-      const inputCharacters = JSON.stringify(this.request(proposed, plan, this.routineModel).input).length;
-      if (pending.length > 0 && (proposed.length > this.batchSize
-        || inputCharacters > this.maxBatchInputCharacters)) {
-        batches.push(pending);
-        pending = [candidate];
-      } else {
-        pending = proposed;
-      }
-    }
-    if (pending.length > 0) batches.push(pending);
+    const batches=leadRequestBatches(supplemented.candidates,items=>this.request(
+      items,plan,this.routineModel,
+    ),this.batchSize,this.maxBatchInputCharacters);
     const results = new Array<CorrectedLeadWorkflowCandidate[]>(batches.length);
     let cursor = 0;
     const worker = async () => {

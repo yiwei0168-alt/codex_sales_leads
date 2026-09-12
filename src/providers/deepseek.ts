@@ -1,6 +1,7 @@
 import {BudgetDeniedError} from "@/lib/billing/policy";
 import { budgetedFetch } from "@/lib/billing/paid-fetch";
-import { structuredUserPrompt } from './structured-user-prompt';
+import {deepSeekRequestBody} from "./deepseek-request";
+import {assertLeadRequestBytes} from "./lead-request-bounds";
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "./contracts";
 import { ProviderUnavailableError } from "./contracts";
 import {randomUUID} from "node:crypto";
@@ -84,17 +85,8 @@ export class DeepSeekProvider implements AiProvider {
     let lastError: unknown;
     let attemptsMade = 0;
     const invocationId = randomUUID();
-    const systemPrompt = [
-      "Return one valid JSON object only, with no Markdown or commentary.",
-      "Follow the task instructions and never invent evidence IDs or facts not present in the input JSON.",
-      request.outputSchema ? `Your entire response MUST validate against this JSON Schema: ${JSON.stringify(request.outputSchema)}` : "",
-    ].filter(Boolean).join("\n");
-    const userPrompt = structuredUserPrompt(request);
-    const maxTokens = Math.max(1_024, Math.min(16_384,
-      Number(process.env.DEEPSEEK_MAX_OUTPUT_TOKENS ?? 8_192) || 8_192));
-    const temperature = Math.max(0, Math.min(2, Number(process.env.DEEPSEEK_TEMPERATURE ?? 0) || 0));
-    const useAnthropicTransport = process.env.DEEPSEEK_TRANSPORT?.trim().toLowerCase() === "anthropic"
-      || (!process.env.DEEPSEEK_TRANSPORT && model.includes("pro"));
+    const {body:wireBody,useAnthropicTransport}=deepSeekRequestBody(request,model);
+    assertLeadRequestBytes(request,wireBody);
 
     for (let attempt = 0; attempt < this.maxAttempts; attempt += 1) {
       attemptsMade = attempt + 1;
@@ -107,24 +99,7 @@ export class DeepSeekProvider implements AiProvider {
             "anthropic-version": "2023-06-01",
             "content-type": "application/json",
           } : { authorization: `Bearer ${this.apiKey}`, "content-type": "application/json" },
-          body: JSON.stringify(useAnthropicTransport ? {
-            model,
-            max_tokens: maxTokens,
-            temperature,
-            system: systemPrompt,
-            messages: [{ role: "user", content: userPrompt }],
-            thinking: { type: "disabled" },
-          } : {
-            model,
-            messages: [
-              { role: "system", content: systemPrompt },
-              { role: "user", content: userPrompt },
-            ],
-            response_format: { type: "json_object" },
-            thinking: { type: model.includes("pro") ? "enabled" : "disabled" },
-            temperature,
-            max_tokens: maxTokens,
-          }),
+          body: wireBody,
           signal,
         }));
         const body = await response.json() as DeepSeekWireResponse & DeepSeekAnthropicResponse;

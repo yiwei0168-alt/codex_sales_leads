@@ -1,5 +1,14 @@
 # Local production acceptance — 2026-09-12
 
+
+## 2026-09-13 P06 实施阶段 3：完整请求字节预检
+
+验证：全量 611 tests / 146 files、typecheck、生产构建通过。新增 5 项边界测试覆盖 UTF-8、完整 Schema、输入转义、两种 DeepSeek 实际载荷一致性、两类 provider 超限零传输。真实业务/数据库恢复与浏览器仍不包含在此结论内。
+
+补证/评分拆批现使用与 DeepSeek 实际发送相同的序列化器，包含 system、完整 Schema、evidenceIds、转义及 UTF-8 字节。上限补证 36,864、仅评分 57,344、评分含路径 61,440；保留最多 5 家及更小调用者限制、既有字符软限制、原顺序和并发。所有常规批次先完成本地预检；超大单家公司明确抛出不可重试暂停错误，不截断或生成低分。DeepSeek 和 compatible 最终发送前再次校验，备用请求独立检查实际序列化体积。没有改输出 token/thinking，没有自动搜索或模型压缩。
+
+本阶段是 P06 部分实现：单家公司压缩/分阶段恢复、批内成功结果持久恢复及备用模型自动重新拆批尚未完成。常规批次预检避免本阶段先付费后发现超限，但既有补证搜索及之前阶段的 checkpoint 不等于批内完整幂等。新流程字节统计不等于可信 token/美元计费上界，空费率门禁不变。遥测沿用逐尝试输入/输出字节、用量、耗时、重试及未知下游采用；新增步骤仅本地序列化，无模型/API 费用。后续优化记录：备用载荷与批次持久恢复仍需完善，不能声称成本节省率或完整验收通过。
+
 ## 2026-09-13 stage 2b: attribution, local-only
 
 Verification: 606 tests / 145 files passed; after correcting a test-only task literal, typecheck and both attribution tests passed again. Production build/browser and real paid acceptance have not been rerun in this stage.

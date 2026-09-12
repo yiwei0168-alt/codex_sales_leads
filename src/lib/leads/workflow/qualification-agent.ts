@@ -1,4 +1,5 @@
 import {BudgetDeniedError} from "@/lib/billing/policy";
+import {leadRequestBatches} from "@/providers/lead-request-batches";
 import type { AiProvider, StructuredAiResponse } from "@/providers/contracts";
 import { createLeadAiProvider } from "@/providers/resilient-ai";
 import { z } from "zod";
@@ -603,22 +604,9 @@ export class LeadQualificationAgent {
 
   private async evaluateWithCollector(candidates: CorrectedLeadWorkflowCandidate[], playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string,
     usageRecords: WorkflowModelUsage[]): Promise<LeadCandidateAssessment[]> {
-    const batches: CorrectedLeadWorkflowCandidate[][] = [];
-    let pending: CorrectedLeadWorkflowCandidate[] = [];
-    for (const candidate of candidates) {
-      const proposed = [...pending, candidate];
-      const inputCharacters = JSON.stringify(this.request(
-        proposed, playbook, countryCode, countryName, objective, this.routineModel,
-      ).input).length;
-      if (pending.length > 0 && (proposed.length > this.batchSize
-        || inputCharacters > this.maxBatchInputCharacters)) {
-        batches.push(pending);
-        pending = [candidate];
-      } else {
-        pending = proposed;
-      }
-    }
-    if (pending.length > 0) batches.push(pending);
+    const batches=leadRequestBatches(candidates,items=>this.request(
+      items,playbook,countryCode,countryName,objective,this.routineModel,
+    ),this.batchSize,this.maxBatchInputCharacters);
     const results = new Array<LeadCandidateAssessment[]>(batches.length);
     let cursor = 0;
     async function worker(agent: LeadQualificationAgent): Promise<void> {
