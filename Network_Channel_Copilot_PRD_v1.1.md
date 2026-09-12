@@ -1,5 +1,9 @@
 # Network Channel Copilot PRD v1.1
 
+## 2026-09-13 Docker 离线验证
+
+用户批准 B17 隔离构建方案。新增独立诊断器 `scripts/offline-tokenizer/`，合成文本两端点格式的本地编码验证通过，不依赖 Windows 全局编译器或图像组件。准确数字及验证范围见规则表 v1.3.0；未接入产品、未核验线上 token 账单、未解锁付费请求。
+
 ## 2026-09-13 本地计数选型确认
 
 用户确认规则 B16：固定官方 recipe＋匹配 V4 tokenizer，先隔离离线验证，不改变模型/thinking/付费放行。源码与文件完整性检查已完成；两种请求格式计数尚受本机构建环境限制未执行。准确版本、校验值与限制见 [规则表 v1.2.0](docs/CONFIRMED_PRODUCT_RULES.md)，不能把选型或文件校验当作生产验收。

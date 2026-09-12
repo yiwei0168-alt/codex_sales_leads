@@ -1,5 +1,9 @@
 # Product UI v1.1 implementation workflow
 
+## 2026-09-13 isolated text encoding verification
+
+B17 is approved. `scripts/offline-tokenizer/` builds only official text/protocol Rust components in Docker, overcoming the previous local Python/native prerequisite issue without OpenCV. The no-network, read-only, unprivileged synthetic audit passes 16 input variants and 32 repeated encodes. It is not imported by product code. Exact counts and scope are in rule register v1.3.0; full business-request replay and hosted billing equivalence remain unverified, with paid gates unchanged.
+
 ## 2026-09-13 local token accounting prerequisite
 
 B16 in the [rule register](CONFIRMED_PRODUCT_RULES.md) is now approved. Official source and V4 tokenizer are pinned and integrity-checked in ignored local storage; no tokenizer runtime or provider call has run. Official PyPI lookup yielded no installable distribution and the local native toolchain is absent from PATH. Isolated build environment selection remains pending; this is not a billing upper-bound acceptance. No runtime workflow or dependency changed.
