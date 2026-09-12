@@ -6,8 +6,14 @@ vi.mock("./policy",async original=>({...await original<typeof import("./policy")
 import {budgetedFetch} from "./paid-fetch";
 import {withSpendContext} from "./context";
 import {BudgetDeniedError} from "./policy";
+import {withModelAttempt} from "./model-attempt-context";
 const scope={userId:"user",operationId:"action",stage:"score"};
 const init={method:"POST",headers:{authorization:"Bearer fixture-secret"},body:JSON.stringify({model:"test",max_tokens:100,messages:[{content:"private company input"}]})};
+it("attributes model attempts before network without persisting the raw endpoint or query",async()=>{
+  await withSpendContext(scope,()=>withModelAttempt({invocationId:"call-1",provider:"test-provider",task:"score",promptVersion:"v2",attempt:2},()=>budgetedFetch(vi.fn().mockResolvedValue(Response.json({})))("https://example.test/private-path?key=hidden",init)));
+  expect(mocks.reserve.mock.calls[0][1].modelAttempt).toEqual({invocationId:"call-1",provider:"test-provider",task:"score",promptVersion:"v2",attempt:2,requestedModel:"test",gatewayHost:"example.test",endpointKind:"other"});
+  expect(JSON.stringify(mocks.reserve.mock.calls)).not.toMatch(/private-path|hidden|fixture-secret/);
+});
 it("rejects obsolete K3 output caps before reserving or sending",async()=>{
   const transport=vi.fn();
   await expect(withSpendContext(scope,()=>budgetedFetch(transport)("https://api.moonshot.cn/v1/chat/completions",{...init,body:JSON.stringify({model:"kimi-k3",max_tokens:100})}))).rejects.toThrow("request-out-of-bounds");

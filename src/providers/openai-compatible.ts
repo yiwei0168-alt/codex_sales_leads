@@ -3,6 +3,8 @@ import { budgetedFetch } from "@/lib/billing/paid-fetch";
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "./contracts";
 import { ProviderUnavailableError } from "./contracts";
 import { structuredUserPrompt } from './structured-user-prompt';
+import {randomUUID} from "node:crypto";
+import {withModelAttempt} from "@/lib/billing/model-attempt-context";
 
 interface OpenAiCompatibleProviderOptions {
   id: string;
@@ -50,10 +52,11 @@ export class OpenAiCompatibleProvider implements AiProvider {
     const startedAt = performance.now();
     let lastError: unknown;
     let attemptsMade = 0;
+    const invocationId = randomUUID();
     for (let attempt = 0; attempt < this.maxAttempts; attempt += 1) {
       attemptsMade = attempt + 1;
       try {
-        const response = await this.fetchImplementation(`${this.baseUrl}/chat/completions`, {
+        const response = await withModelAttempt({invocationId,provider:this.id,task:request.task,promptVersion:request.promptVersion,attempt:attempt+1},()=>this.fetchImplementation(`${this.baseUrl}/chat/completions`, {
           method: "POST",
           headers: { authorization: `Bearer ${this.options.apiKey}`, "content-type": "application/json",
             ...this.options.defaultHeaders },
@@ -76,7 +79,7 @@ export class OpenAiCompatibleProvider implements AiProvider {
             ],
             ...this.options.extraBody,
           }),
-        });
+        }));
         const body = await response.json() as WireResponse;
         if (!response.ok) throw new Error(body.error?.message ?? `${this.id} HTTP ${response.status}`);
         const content = body.choices?.[0]?.message?.content?.trim();

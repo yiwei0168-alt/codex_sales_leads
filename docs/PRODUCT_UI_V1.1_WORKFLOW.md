@@ -1,5 +1,9 @@
 # Product UI v1.1 implementation workflow
 
+## 2026-09-13 stage 2b: model attempt attribution
+
+DeepSeek/compatible execute -> isolated invocation/attempt context -> paid reservation metadata (task, prompt version, requested model, gateway host, endpoint kind) -> separate response-reported model. No telemetry is sent to providers. Retry policy and budget occupancy are unchanged; other provider attribution, scoring-policy version, aggregate denominators and UI remain pending. Async context isolation and real wrapper retry linkage are tested using synthetic transports.
+
 ## 2026-09-13 stage 2a: attempt-level usage persistence
 
 Paid transport -> existing per-attempt reservation -> response usage numeric allowlist -> reservation metrics.providerUsage. Explicit source paths preserve protocol differences; missing counts remain null. No response content, credentials or arbitrary metadata are retained. Failed HTTP responses are observed independently; accounting failure never replays successful work. P02 remains partial: routing/version attribution, retry linkage and compact UI aggregation are pending. No billing reconciliation behavior or paid-call authorization changed.

@@ -23,3 +23,7 @@ it("missing and non-JSON-shaped usage is unknown, never free",()=>{
     expect(providerUsageObservation(value).invoiceVerified).toBe(false);
   }
 });
+it("distinguishes reported model from the requested model without accepting arbitrary response text",()=>{
+  expect(providerUsageObservation({model:"model-revision-2"}).reportedModel).toBe("model-revision-2");
+  expect(providerUsageObservation({model:"private response content"}).reportedModel).toBeNull();
+});

@@ -3,6 +3,8 @@ import { budgetedFetch } from "@/lib/billing/paid-fetch";
 import { structuredUserPrompt } from './structured-user-prompt';
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "./contracts";
 import { ProviderUnavailableError } from "./contracts";
+import {randomUUID} from "node:crypto";
+import {withModelAttempt} from "@/lib/billing/model-attempt-context";
 
 interface DeepSeekProviderOptions {
   apiKey?: string;
@@ -81,6 +83,7 @@ export class DeepSeekProvider implements AiProvider {
     const startedAt = performance.now();
     let lastError: unknown;
     let attemptsMade = 0;
+    const invocationId = randomUUID();
     const systemPrompt = [
       "Return one valid JSON object only, with no Markdown or commentary.",
       "Follow the task instructions and never invent evidence IDs or facts not present in the input JSON.",
@@ -96,7 +99,7 @@ export class DeepSeekProvider implements AiProvider {
     for (let attempt = 0; attempt < this.maxAttempts; attempt += 1) {
       attemptsMade = attempt + 1;
       try {
-        const response = await this.fetchImplementation(useAnthropicTransport
+        const response = await withModelAttempt({invocationId,provider:this.id,task:request.task,promptVersion:request.promptVersion,attempt:attempt+1},()=>this.fetchImplementation(useAnthropicTransport
           ? `${this.baseUrl}/anthropic/v1/messages` : `${this.baseUrl}/chat/completions`, {
           method: "POST",
           headers: useAnthropicTransport ? {
@@ -123,7 +126,7 @@ export class DeepSeekProvider implements AiProvider {
             max_tokens: maxTokens,
           }),
           signal,
-        });
+        }));
         const body = await response.json() as DeepSeekWireResponse & DeepSeekAnthropicResponse;
         if (!response.ok) {
           const error = new DeepSeekRequestError(body.error?.message ?? `DeepSeek HTTP ${response.status}`, retryableStatus(response.status));

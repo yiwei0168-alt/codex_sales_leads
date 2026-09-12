@@ -1,3 +1,5 @@
+import {metricIdentifier} from "./model-attempt-context";
+
 /** Numeric allowlist only: never persist provider response bodies or arbitrary metadata. */
 const paths = [
   "prompt_tokens", "input_tokens", "completion_tokens", "output_tokens", "total_tokens",
@@ -22,6 +24,7 @@ export function providerUsageObservation(result: unknown) {
   return {
     version: "provider-usage-observation-v1",
     source: "http-response-usage",
+    reportedModel: metricIdentifier(object(result).model),
     fields,
     observedFieldCount: Object.values(fields).filter(value => value !== null).length,
     // Input/cache semantics vary by gateway and protocol. No cross-protocol summation or inferred discounts.

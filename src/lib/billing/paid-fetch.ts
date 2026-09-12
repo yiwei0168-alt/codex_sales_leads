@@ -4,6 +4,7 @@ import {reservePaidCall,settlePaidCall} from "./repository";
 import {recordBudgetDenial} from "./denial-metrics";
 import {isKimiK3} from "@/providers/kimi-contract";
 import {providerUsageObservation} from "./provider-usage";
+import {currentModelAttempt,metricIdentifier} from "./model-attempt-context";
 
 function object(value:unknown):Record<string,unknown>{return value!==null&&typeof value==="object"&&!Array.isArray(value)?value as Record<string,unknown>:{};}
 function count(value:unknown):number|null{return typeof value==="number"&&Number.isSafeInteger(value)&&value>=0?value:null;}
@@ -32,7 +33,15 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
     const policy=scope.tariffPolicy??billingPolicy;
     const quote={origin:url.origin,pathname:url.pathname,model:typeof parsed.model==="string"?parsed.model:"",requestBytes:bytes,outputTokens};
     const rule=scope.tariffPolicy?quoteRequest(quote,policy.rules):quoteRequest(quote);
-    const id=await reservePaidCall(scope.userId,{operationId:scope.operationId,stage:scope.stage,tariffKey:rule.key,tariffVersion:policy.version,maximumChargeMicros:rule.maximumChargeMicros,requestBytes:bytes});
+    const attempt=currentModelAttempt();
+    const modelAttempt=attempt?{
+      invocationId:metricIdentifier(attempt.invocationId),provider:metricIdentifier(attempt.provider),
+      task:metricIdentifier(attempt.task),promptVersion:metricIdentifier(attempt.promptVersion),
+      attempt:Number.isSafeInteger(attempt.attempt)&&attempt.attempt>0?attempt.attempt:null,
+      requestedModel:metricIdentifier(parsed.model),gatewayHost:metricIdentifier(url.hostname),
+      endpointKind:url.pathname.endsWith("/chat/completions")?"chat-completions":url.pathname.endsWith("/messages")?"messages":"other",
+    }:null;
+    const id=await reservePaidCall(scope.userId,{operationId:scope.operationId,stage:scope.stage,tariffKey:rule.key,tariffVersion:policy.version,maximumChargeMicros:rule.maximumChargeMicros,requestBytes:bytes,modelAttempt});
     const started=Date.now();let response:Response;
     try{response=await transport(input,{...init,redirect:"error"});}catch(error){
       await settlePaidCall(scope.userId,id,{reportedMicros:null,latencyMs:Date.now()-started,responseBytes:null,inputTokens:null,outputTokens:null,succeeded:false}).catch(()=>undefined);

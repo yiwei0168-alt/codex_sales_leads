@@ -1,5 +1,11 @@
 # Local production acceptance — 2026-09-12
 
+## 2026-09-13 stage 2b: attribution, local-only
+
+Verification: 606 tests / 145 files passed; after correcting a test-only task literal, typecheck and both attribution tests passed again. Production build/browser and real paid acceptance have not been rerun in this stage.
+
+DeepSeek/compatible transports now attach isolated invocation/attempt and prompt/model routing metadata to reservations. Requested and response-reported models remain distinct; no arbitrary response metadata or URL parameters are retained. Synthetic tests cover context isolation and actual retry wrapper linkage. No live calls or budget reset. Score-version attribution, other providers, aggregation/UI, P05/P06 and billing gates remain outstanding.
+
 ## 2026-09-13 stage 2a: partial P02, not final acceptance
 
 Per-attempt cache/reasoning numeric source fields now persist in existing reservation JSON metrics. Twelve targeted tests and typecheck pass, including failed/successful attempts, null versus zero, malformed fields and no raw private payload retention. No real provider/search/SMTP calls or tariff changes. Pending P02 attribution/aggregation/UI, P05, P06 and all unresolved billing/production gates remain open; cumulative acceptance budget is not reset.
