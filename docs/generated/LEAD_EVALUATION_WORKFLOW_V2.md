@@ -773,7 +773,7 @@ flowchart TD
 | `src/lib/leads/workflow/qualification-agent.ts` | `addfd0e5e1b786d940715371274e006a46208b9ddc53acb9f51df3fef0254c10` |
 | `src/lib/leads/workflow/assessment-cache.ts` | `1ee8b054a6c13b07e6d04a739f85d72108af41c798ea5b2871f3b73d4716cea3` |
 | `src/lib/leads/workflow/assessment-review-agent.ts` | `83f946ec5b62762cd0a1a614468242a1cedc213f0d7b7c93103fcbe671b07739` |
-| `src/providers/deepseek.ts` | `1fa6ca3924bb8136bd14ef5c7ac6b59ef6bd093c05f48f094f706a1eecdd2a59` |
+| `src/providers/deepseek.ts` | `430e627af27febcad7ab69e84c4c7b7223b1906eaca9cadb75328d70576c681e` |
 | `src/providers/discovery-contracts.ts` | `063e409c3545060f1a7be3222cbaa9c9a118b513cf7f12f3d839a9dce7f491c9` |
 | `src/providers/discovery.ts` | `d6e43ae359dda1b14f45397211bd2bb28e300f1380c3251ee31158bb7dc030c4` |
 | `src/providers/resilient-ai.ts` | `8efa4b29ae48059d96fdde94c5c04b036ba627847ef34292301f300ea27c930e` |
