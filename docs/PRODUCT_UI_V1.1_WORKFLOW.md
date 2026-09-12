@@ -1,5 +1,13 @@
 # Product UI v1.1 implementation workflow
 
+## 2026-09-13 acceptance-led scope
+
+B22 restores the agreed P03–P06 discussion alongside remaining acceptance, then prioritizes closure of acceptance gates over new optimizations. P01/P02 are confirmed; P03–P06 still require detailed confirmation before unified edits. The acceptance report's latest gate table is authoritative for gaps and required proof, not a new pass claim. Existing cost/privacy/no-cloud boundaries remain unchanged.
+
+## 2026-09-13 P02 approved, P03 pending
+
+B21 approves the seven per-attempt cache telemetry rules in the review: preserve unknown/protocol semantics, separate avoided calls and provider discounts, show coverage, retain miss-rate reservations, no raw sensitive content or replay on metric failure. No implementation yet; discuss P03's deterministic model-policy projection next and wait for all remaining confirmations.
+
 ## 2026-09-13 P01 approved, implementation deferred
 
 Rule B20 approves fixed-prefix field ordering with unchanged message authority, content, array ordering, privacy boundaries and concurrency. No paid warmup. Implementation waits for P02–P06 confirmation; no runtime change in this stage. Next discussion covers per-attempt cache observation, keeping application cache avoidance, provider cache discounts and actual settled cost distinct.

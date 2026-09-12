@@ -1,5 +1,21 @@
 # Local production acceptance — 2026-09-12
 
+## 2026-09-13 acceptance-led completion plan
+
+User directs completion of P03–P06 alongside remaining acceptance work, then acceptance as the primary workstream. Existing item-by-item confirmation remains: P01/P02 approved but not implemented; P03–P06 must be confirmed before unified product edits. Do not extend scope to new optional optimizations. The table is a current gap index, not fresh execution evidence; historical failures below are retained.
+
+| Gate | Current state | Completion evidence required |
+|---|---|---|
+| Provider connectivity / SMTP | All five provider probes have passed at least once; SMTP send and user-reported inbox receipt passed. | Keep original failure/probe receipts; no repeat merely to recreate passing evidence. This does not certify business-agent quality. |
+| Paid request bounds | Not passed: global policy remains empty; frozen local token counts are observations, not universal hosted billing bounds. | Approved versioned endpoint/model/rate bounds, full-body enforcement including single-company overflow, allowed/denied boundary tests and scoped real validation; no missing-rate bypass. |
+| Ledger / reconciliation | Partial infrastructure; newly approved accounting rules not fully implemented/verified. | Separate reservation/estimate/provider report/invoice; per-attempt ownership, unknown-cost retention, correct release/append-only corrections, FX freshness and budget concurrency tests. No double counting. |
+| Real product workflow | Not fully accepted; transport probes and synthetic UI tests do not cover it. | Minimal bounded user-input-to-persisted-result run using real agents after tariff approval, verify country/role/evidence/score and failure/resume reuse. Keep cumulative USD 30 cap and old reservations; no expanded search experiment. |
+| Final downstream adoption telemetry | Incomplete; some values remain unknown. | Define generated/valid/saved/downstream-used boundaries, owner/country attribution, retry/discard/latency/cost fields; exercise relevant UI actions and prove no duplicate or invented adoption. |
+| Dependency audit / GitHub CI | Latest retrieval previously blocked by external TLS/EOF; not a current pass. | Fresh successful audit and applicable CI evidence, or explicit separately reviewed unresolved findings. |
+| Local production final regression | Prior checks passed, but future implementation changes require rerun. | Relevant unit/type/build checks and local authenticated UI/business acceptance; update this report with exact versions, results, costs, remaining exceptions. Cloud deployment remains out of scope. |
+
+Scope and proposals: [P03–P06 review](FIXED_PROMPT_CACHE_REVIEW_2026-09-13.md), [confirmed rules](CONFIRMED_PRODUCT_RULES.md). Confirmed optimizations must be mapped to the gates they support; no optimization percentage substitutes for an acceptance pass.
+
 ## Latest user-confirmed policy checkpoint
 
 User confirmed receipt of the previously authorized SMTP test; inbox receipt is now user-confirmed, not independently inspected. Preserve the earlier SMTP failures and send record as historical evidence; no additional send was made.
