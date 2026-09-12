@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import type { LeadSearchPlan } from "@/lib/assistant/types";
 import { leadEvidenceContentHash } from "@/lib/leads/evidence-snapshot";
 
-import { rebindCachedCorrection, roleCorrectionDependency } from "./role-correction-cache";
+import { loadPublicRoleCorrection, rebindCachedCorrection, roleCorrectionDependency } from "./role-correction-cache";
 import type { LeadCandidateCorrection, LeadWorkflowCandidate } from "./types";
 
 const plan: LeadSearchPlan = { countryCode: "MX", countryName: "Mexico", objective: "new-market",
@@ -22,6 +22,24 @@ function candidate(excerpt: string, evidenceRunId = "run-1", evidenceId = "evide
 }
 
 describe("public role-correction cache fingerprint", () => {
+  it("invalidates every supplied context change and complete request contract change",()=>{
+    const original=candidate("Router retail");
+    const fingerprint=(value=original,market=plan,contract="a".repeat(64))=>roleCorrectionDependency(value,market,"v1",contract).fingerprint;
+    const first=fingerprint();
+    for(const changed of [
+      {...original,companyName:"New identity"},
+      {...original,officialWebsiteUrl:"https://example.mx/new"},
+      {...original,queryRoles:["VAR"] as LeadWorkflowCandidate["queryRoles"]},
+      {...original,discoveryGate:{...original.discoveryGate!,missingEvidence:["other requirement"]}},
+      {...original,evidence:original.evidence.map(item=>({...item,title:"Changed heading"}))},
+    ])expect(fingerprint(changed)).not.toBe(first);
+    expect(fingerprint(original,{...plan,countryCode:"CO"})).not.toBe(first);
+    expect(fingerprint(original,plan,"b".repeat(64))).not.toBe(first);
+  });
+  it("does not read legacy snapshots without a verified full request contract",async()=>{
+    expect(await loadPublicRoleCorrection(candidate("Retail"),plan,"v1")).toBeNull();
+    expect(await loadPublicRoleCorrection(candidate("Retail"),plan,"v1","incomplete")).toBeNull();
+  });
   it("reuses identical public evidence across runs but invalidates changed evidence", () => {
     const first = roleCorrectionDependency(candidate("Tienda de routers con precio y entrega."), plan, "prompt-v1");
     const sameEvidenceNewRun = roleCorrectionDependency(

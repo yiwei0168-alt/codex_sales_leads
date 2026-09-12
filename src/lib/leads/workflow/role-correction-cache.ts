@@ -24,14 +24,15 @@ function stable(value: unknown): string {
 }
 
 export function roleCorrectionDependency(candidate: LeadWorkflowCandidate, plan: LeadSearchPlan,
-  promptVersion: string): { fingerprint: string; evidenceSnapshotHash: string } {
+  promptVersion: string,executionContract?:string): { fingerprint: string; evidenceSnapshotHash: string } {
   const evidence = candidate.evidence.filter((item) =>
     isCurrentLeadScoringEvidence(item, candidate.evidenceSnapshotRunId))
-    .map((item) => ({ url: item.url, contentHash: item.contentHash, sourceType: item.sourceType }))
-    .sort((left, right) => `${left.url}|${left.contentHash}`.localeCompare(`${right.url}|${right.contentHash}`));
+    .map((item) => ({ url: item.url, contentHash: item.contentHash, sourceType: item.sourceType,title:item.title }));
   const evidenceSnapshotHash = createHash("sha256").update(stable(evidence)).digest("hex");
-  const fingerprint = createHash("sha256").update(stable({ domain: candidate.domain,
-    marketCountryCode: plan.countryCode, evidenceSnapshotHash, promptVersion,
+  const fingerprint = createHash("sha256").update(stable({version:"role-cache-dependencies-v2",executionContract:executionContract??null,
+    domain: candidate.domain,companyName:candidate.companyName,officialWebsiteUrl:candidate.officialWebsiteUrl,
+    queryRoles:candidate.queryRoles,queryFamily:candidate.queryFamily,missingEvidence:candidate.discoveryGate?.missingEvidence??[],
+    marketCountryCode: plan.countryCode,countryName:plan.countryName,objective:plan.objective,evidenceSnapshotHash, promptVersion,
     roleTaxonomyVersion: PRIMARY_CHANNEL_POLICY.version })).digest("hex");
   return { fingerprint, evidenceSnapshotHash };
 }
@@ -64,8 +65,9 @@ export function rebindCachedCorrection(candidate: LeadWorkflowCandidate, correct
 }
 
 export async function loadPublicRoleCorrection(candidate: LeadWorkflowCandidate, plan: LeadSearchPlan,
-  promptVersion: string): Promise<CorrectedLeadWorkflowCandidate | null> {
-  const dependency = roleCorrectionDependency(candidate, plan, promptVersion);
+  promptVersion: string,executionContract?:string): Promise<CorrectedLeadWorkflowCandidate | null> {
+  if(!executionContract||!/^[a-f0-9]{64}$/.test(executionContract))return null;
+  const dependency = roleCorrectionDependency(candidate, plan, promptVersion,executionContract);
   const rows = await query<CorrectionCacheRow>(
     `select snapshot.dependency_fingerprint, snapshot.correction, snapshot.evidence_bindings,
             snapshot.missing_evidence
@@ -97,12 +99,13 @@ export async function loadPublicRoleCorrection(candidate: LeadWorkflowCandidate,
 }
 
 export async function savePublicRoleCorrection(candidate: CorrectedLeadWorkflowCandidate,
-  plan: LeadSearchPlan, promptVersion: string, sourceRunId?: string): Promise<void> {
+  plan: LeadSearchPlan, promptVersion: string, sourceRunId?: string,executionContract?:string): Promise<void> {
+  if(!executionContract||!/^[a-f0-9]{64}$/.test(executionContract))return;
   const relied = new Set(candidate.correction.reliedEvidenceIds);
   const cited = candidate.evidence.filter((item) => relied.has(item.id));
   if (cited.length === 0 || cited.some((item) => item.sourceType !== "official-website"
     && item.sourceType !== "independent-public")) return;
-  const dependency = roleCorrectionDependency(candidate, plan, promptVersion);
+  const dependency = roleCorrectionDependency(candidate, plan, promptVersion,executionContract);
   const missingEvidence = [...new Set([
     ...(candidate.discoveryGate?.missingEvidence ?? []),
     ...candidate.correction.findings.filter((finding) => finding.status === "unknown")

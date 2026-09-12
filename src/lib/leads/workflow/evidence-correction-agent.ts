@@ -215,6 +215,7 @@ export class LeadEvidenceCorrectionAgent {
   private readonly searchConcurrency: number;
   private readonly allowReusableCorrections: boolean;
   private readonly persistCorrections: boolean;
+  private readonly exactCorrectionContracts=new WeakMap<CorrectedLeadWorkflowCandidate,string>();
 
   constructor(
     private readonly provider: AiProvider = createLeadAiProvider(),
@@ -534,10 +535,19 @@ export class LeadEvidenceCorrectionAgent {
   private async evaluateBatch(candidates: LeadWorkflowCandidate[], plan: LeadSearchPlan,
     usageRecords: WorkflowModelUsage[]) {
     try {
+      const request=this.request(candidates,plan,this.routineModel);
       const response = await this.provider.execute<CorrectionRequest, unknown>(
-        this.request(candidates, plan, this.routineModel), AbortSignal.timeout(75_000));
+        request, AbortSignal.timeout(75_000));
       this.captureUsage(usageRecords, response, this.routineModel);
       const parsed = leadCorrectionBatchSchema.parse(sanitizeLeadCorrectionOutput(response.output));
+      const primaryId=this.provider.id.replace(/^resilient:/,"");
+      const expectedIds=new Set(candidates.map(candidate=>candidate.candidateId));
+      const returnedIds=new Set(parsed.corrections.map(item=>item.candidateId));
+      const complete=expectedIds.size===candidates.length&&parsed.corrections.length===candidates.length
+        &&returnedIds.size===parsed.corrections.length&&[...returnedIds].every(id=>expectedIds.has(id));
+      const exactContract=complete&&response.modelVersion===this.routineModel
+        &&(!response.actualProviderId||response.actualProviderId===primaryId)
+        ?this.provider.cacheIdentity?.(request):undefined;
       const byId = new Map(parsed.corrections.map((item) => [item.candidateId, item]));
       return Promise.all(candidates.map((candidate) => {
         const value = byId.get(candidate.candidateId);
@@ -548,6 +558,7 @@ export class LeadEvidenceCorrectionAgent {
           return this.evaluateOneEscalated(candidate, plan, "Routine correction requested ambiguity escalation.", usageRecords);
         }
         const normalized = this.normalize(value, candidate, response, false);
+        if(exactContract)this.exactCorrectionContracts.set(normalized,exactContract);
         return materialEscalation && this.routineModel === this.escalationModel
           ? { ...normalized, correction: { ...normalized.correction, warnings: [
             "Escalation was skipped because the configured routine and escalation models are identical.",
@@ -609,9 +620,17 @@ export class LeadEvidenceCorrectionAgent {
     const cacheWarnings: string[] = [];
     const cached = new Map<string, CorrectedLeadWorkflowCandidate>();
     if (this.allowReusableCorrections) {
+      const contracts=new Map<string,string>();
+      if(this.provider.cacheIdentity){
+        const lookupBatches=leadRequestBatches(candidates,items=>this.request(items,plan,this.routineModel),this.batchSize,this.maxBatchInputCharacters);
+        for(const batch of lookupBatches){
+          const contract=this.provider.cacheIdentity(this.request(batch,plan,this.routineModel));
+          for(const candidate of batch)contracts.set(candidate.candidateId,contract);
+        }
+      }
       await Promise.all(candidates.map(async (candidate) => {
         try {
-          const hit = await loadPublicRoleCorrection(candidate, plan, LEAD_EVIDENCE_CORRECTION_PROMPT_VERSION);
+          const hit = await loadPublicRoleCorrection(candidate, plan, LEAD_EVIDENCE_CORRECTION_PROMPT_VERSION,contracts.get(candidate.candidateId));
           if (hit) cached.set(candidate.candidateId, hit);
         } catch (error) {
           if(error instanceof BudgetDeniedError)throw error;
@@ -639,7 +658,7 @@ export class LeadEvidenceCorrectionAgent {
     if (this.persistCorrections) {
       await Promise.all(generated.map(async (candidate) => {
         try {
-          await savePublicRoleCorrection(candidate, plan, LEAD_EVIDENCE_CORRECTION_PROMPT_VERSION);
+          await savePublicRoleCorrection(candidate, plan, LEAD_EVIDENCE_CORRECTION_PROMPT_VERSION,undefined,this.exactCorrectionContracts.get(candidate));
         } catch (error) {
           if(error instanceof BudgetDeniedError)throw error;
           cacheWarnings.push(`Role-correction cache write failed for ${candidate.domain}: ${

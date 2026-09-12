@@ -100,6 +100,11 @@ export class ResilientAiProvider implements AiProvider {
     return false;
   }
 
+  cacheIdentity(request:StructuredAiRequest<unknown>):string {
+    // Describes only the primary route. Callers must not save fallback responses under this contract.
+    return this.primary.cacheIdentity?.(request)??"";
+  }
+
   private recordFailure(providerId: string): void {
     const state = this.circuits.get(providerId) ?? { failures: 0 };
     state.failures += 1;

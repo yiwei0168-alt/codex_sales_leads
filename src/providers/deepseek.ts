@@ -4,7 +4,7 @@ import {deepSeekRequestBody} from "./deepseek-request";
 import {assertLeadRequestBytes} from "./lead-request-bounds";
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "./contracts";
 import { ProviderUnavailableError } from "./contracts";
-import {randomUUID} from "node:crypto";
+import {randomUUID,createHash} from "node:crypto";
 import {withModelAttempt} from "@/lib/billing/model-attempt-context";
 
 interface DeepSeekProviderOptions {
@@ -73,6 +73,12 @@ export class DeepSeekProvider implements AiProvider {
 
   isConfigured(): boolean {
     return Boolean(this.apiKey);
+  }
+
+  cacheIdentity(request:StructuredAiRequest<unknown>):string {
+    const model=request.modelVersion.trim()||this.defaultModel;
+    return createHash("sha256").update(JSON.stringify({version:"deepseek-wire-cache-v1",provider:this.id,
+      endpoint:this.baseUrl,...deepSeekRequestBody(request,model)})).digest("hex");
   }
 
   async execute<TInput, TOutput>(
