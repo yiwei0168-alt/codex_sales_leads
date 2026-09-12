@@ -25,6 +25,12 @@ it("atomically records the reservation before increasing occupied amount",async(
   query.mockResolvedValueOnce({rows:[{limit_micros:"100",occupied_micros:"90",frozen:false}]}).mockResolvedValueOnce({rows:[]}).mockResolvedValueOnce({rows:[{id:"reserve"}]}).mockResolvedValue({rows:[]});
   expect(await reservePaidCall("owner",input)).toBe("reserve");expect(query.mock.calls[3][1]).toEqual(["owner",10]);
 });
+it("preserves native reservation and the versioned FX source in the same reservation record",async()=>{
+  query.mockResolvedValueOnce({rows:[{limit_micros:"100",occupied_micros:"0",frozen:false}]}).mockResolvedValueOnce({rows:[]}).mockResolvedValueOnce({rows:[{id:"reserve"}]}).mockResolvedValue({rows:[]});
+  const foreignCostBound={currency:"CNY",maximumNativeMicros:50,fx:{usdNumerator:"1",nativeDenominator:"7",asOf:"2026-09-13T00:00:00Z",retrievedAt:"2026-09-13T00:00:00Z",reference:"https://example.test/fx",version:"synthetic"}};
+  await reservePaidCall("owner",{...input,foreignCostBound});
+  expect(JSON.parse(query.mock.calls[2][1][6])).toMatchObject({foreignCostBound,fxReservationBufferPercent:5});
+});
 it("enforces the task cap even when the owner has spare budget",async()=>{
   query.mockResolvedValueOnce({rows:[{limit_micros:"1000",occupied_micros:"20",frozen:false}]}).mockResolvedValueOnce({rows:[{limit_micros:"25",occupied_micros:"20"}]});
   await expect(reservePaidCall("owner",input)).rejects.toThrow("task-budget-exhausted");expect(query).toHaveBeenCalledTimes(2);

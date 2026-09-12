@@ -1,5 +1,6 @@
 import { z } from "zod";
 import configuration from "../../../config/billing/request-bounds-v1.0.0.json";
+import {foreignCostBoundSchema,foreignReservationMicros} from "./fx-policy";
 
 export class BudgetDeniedError extends Error {
   constructor(readonly code:"missing-tariff"|"expired-tariff"|"request-out-of-bounds"|"missing-budget"|"budget-exhausted"|"budget-frozen"|"task-budget-exhausted"|"paid-outcome-unknown"|"paid-request-already-recorded"|"tariff-suspended") {
@@ -22,6 +23,7 @@ export const tariffSchema=z.object({
   maximumOutputTokens:z.number().int().nonnegative().max(1000000),
   // Verified bound must include grounding/tools/reasoning and all automatic server-side work.
   boundDescription:z.string().min(30),reference:z.url(),verifiedAt:z.iso.datetime(),expiresAt:z.iso.datetime(),
+  promotionEndsAt:z.iso.datetime().optional(),foreignCostBound:foreignCostBoundSchema.optional(),
 }).strict();
 export const billingPolicy=z.object({version:z.string().min(1),rules:z.array(tariffSchema)}).parse(configuration);
 export type RequestBound=z.infer<typeof tariffSchema>;
@@ -34,7 +36,14 @@ export function quoteRequest(input:{origin:string;pathname:string;model:string;r
   const matches=rules.filter(rule=>rule.origin===input.origin&&rule.pathname===input.pathname&&rule.model===input.model);
   if(matches.length!==1)throw new BudgetDeniedError("missing-tariff");
   const rule=matches[0];
-  if(Date.parse(rule.expiresAt)<=now||Date.parse(rule.verifiedAt)>now)throw new BudgetDeniedError("expired-tariff");
+  if(!Number.isFinite(now)||!Number.isFinite(Date.parse(rule.expiresAt))||!Number.isFinite(Date.parse(rule.verifiedAt))
+    ||Date.parse(rule.expiresAt)<=now||Date.parse(rule.verifiedAt)>now||now-Date.parse(rule.verifiedAt)>=7*24*60*60*1000
+    ||(rule.promotionEndsAt!==undefined&&(!Number.isFinite(Date.parse(rule.promotionEndsAt))||Date.parse(rule.promotionEndsAt)<=now)))throw new BudgetDeniedError("expired-tariff");
+  if(rule.foreignCostBound){
+    let required:number;
+    try{required=foreignReservationMicros(rule.foreignCostBound,now);}catch{throw new BudgetDeniedError("expired-tariff");}
+    if(rule.maximumChargeMicros<required)throw new BudgetDeniedError("missing-tariff");
+  }
   if(input.requestBytes>rule.maximumRequestBytes||!Number.isSafeInteger(input.requestBytes)||input.requestBytes<0
     ||(rule.model!==""&&!rule.pathname.endsWith("/embeddings")&&rule.maximumOutputTokens===0)
     ||(rule.maximumOutputTokens>0&&(input.outputTokens===null||!Number.isSafeInteger(input.outputTokens)||input.outputTokens>rule.maximumOutputTokens||input.outputTokens<=0)))throw new BudgetDeniedError("request-out-of-bounds");
