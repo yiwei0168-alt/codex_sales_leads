@@ -1,5 +1,11 @@
 import {expect,it} from "vitest";
 import {providerUsageObservation} from "./provider-usage";
+it("records only known finish reasons and leaves missing or ambiguous choices unknown",()=>{
+  expect(providerUsageObservation({choices:[{finish_reason:"length"}]}).finishReason).toBe("length");
+  expect(providerUsageObservation({stop_reason:"end_turn"}).finishReason).toBe("end_turn");
+  expect(providerUsageObservation({choices:[{finish_reason:"stop"},{finish_reason:"length"}]}).finishReason).toBeNull();
+  expect(providerUsageObservation({stop_reason:"private text"}).finishReason).toBeNull();
+});
 it("hashes provider request IDs without retaining the original identifier",()=>{
   const value=providerUsageObservation({id:"private-request-identifier"});
   expect(value.providerRequestHash).toMatch(/^[a-f0-9]{64}$/);

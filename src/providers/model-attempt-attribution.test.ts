@@ -17,9 +17,9 @@ it("links actual DeepSeek retries without serializing telemetry into provider in
 });
 it("captures compatible-provider attribution within the transport only",async()=>{
   const transport=vi.fn<typeof fetch>(async()=>{
-    expect(currentModelAttempt()).toMatchObject({provider:"fallback",task:"lead-qualification",promptVersion:"v3",attempt:1});
+    expect(currentModelAttempt()).toMatchObject({provider:"fallback",task:"lead-qualification",promptVersion:"v3",attempt:1,scoringVersion:"2.1.0"});
     return Response.json({choices:[{finish_reason:"stop",message:{content:"{}"}}]});
   });
-  await new OpenAiCompatibleProvider({id:"fallback",apiKey:"fixture",baseUrl:"https://example.test",fetchImplementation:transport,maxAttempts:1}).execute({task:"lead-qualification",promptVersion:"v3",modelVersion:"model",input:{},evidenceIds:[]});
+  await new OpenAiCompatibleProvider({id:"fallback",apiKey:"fixture",baseUrl:"https://example.test",fetchImplementation:transport,maxAttempts:1}).execute({task:"lead-qualification",promptVersion:"v3",modelVersion:"model",input:{scoringRubric:{policy:{version:"2.1.0"}}},evidenceIds:[]});
   expect(currentModelAttempt()).toBeUndefined();
 });

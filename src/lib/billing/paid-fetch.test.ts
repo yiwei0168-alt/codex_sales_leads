@@ -29,6 +29,7 @@ it("attributes isolated reviewed tariffs to the reservation",async()=>{
   await withSpendContext({...scope,tariffPolicy},()=>budgetedFetch(vi.fn().mockResolvedValue(Response.json({})))("https://example.test/chat",init));
   expect(mocks.quote).toHaveBeenCalledWith(expect.any(Object),tariffPolicy.rules);
   expect(mocks.reserve.mock.calls[0][1].tariffVersion).toBe("acceptance-only");
+  expect(mocks.reserve.mock.calls[0][1].modelAttempt).toMatchObject({requestedModel:"test",gatewayHost:"example.test",attempt:null,promptVersion:null,provider:null});
 });
 it("bounds form requests without recording their fields",async()=>{
   const transport=vi.fn().mockResolvedValue(Response.json({}));

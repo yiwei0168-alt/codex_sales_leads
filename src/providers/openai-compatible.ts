@@ -4,7 +4,7 @@ import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "./co
 import { ProviderUnavailableError } from "./contracts";
 import { structuredUserPrompt } from './structured-user-prompt';
 import {randomUUID} from "node:crypto";
-import {withModelAttempt} from "@/lib/billing/model-attempt-context";
+import {withModelAttempt,requestScoringVersion} from "@/lib/billing/model-attempt-context";
 import {assertLeadRequestBytes} from "./lead-request-bounds";
 
 interface OpenAiCompatibleProviderOptions {
@@ -57,7 +57,7 @@ export class OpenAiCompatibleProvider implements AiProvider {
     for (let attempt = 0; attempt < this.maxAttempts; attempt += 1) {
       attemptsMade = attempt + 1;
       try {
-        const response = await withModelAttempt({invocationId,provider:this.id,task:request.task,promptVersion:request.promptVersion,attempt:attempt+1},()=>{
+        const response = await withModelAttempt({invocationId,provider:this.id,task:request.task,promptVersion:request.promptVersion,attempt:attempt+1,scoringVersion:requestScoringVersion(request.input)},()=>{
           const init:RequestInit={
           method: "POST",
           headers: { authorization: `Bearer ${this.options.apiKey}`, "content-type": "application/json",

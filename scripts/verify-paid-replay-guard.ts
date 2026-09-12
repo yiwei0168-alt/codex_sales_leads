@@ -28,14 +28,15 @@ try{
     await admin.query("insert into app_user(id,email,display_name,password_hash,role,status) values($1,$2,'Billing replay fixture',$3,'member','active')",[id,`billing-replay-${id}@example.invalid`,hashPassword(randomBytes(24).toString("hex"))]);
     created.push(id);await setSpendBudget(id,100);
   }
-  const input={operationId:randomUUID(),stage:"synthetic-replay-verification",tariffKey:"synthetic-no-provider",tariffVersion:"fixture-v1",maximumChargeMicros:10,requestBytes:10,requestFingerprint:"a".repeat(64)};
+  const input={operationId:randomUUID(),stage:"synthetic-replay-verification",tariffKey:"synthetic-no-provider",tariffVersion:"fixture-v1",maximumChargeMicros:10,requestBytes:10,requestFingerprint:"a".repeat(64),
+    modelAttempt:{invocationId:"synthetic-invocation",provider:"synthetic",task:"synthetic-score",promptVersion:"synthetic-v1",scoringVersion:"synthetic-policy-v1",attempt:1,requestedModel:"synthetic-model",gatewayHost:"api.deepseek.com",endpointKind:"chat-completions"}};
   const results=await Promise.allSettled([reservePaidCall(created[0],input),reservePaidCall(created[0],input)]);
   const successes=results.filter((result):result is PromiseFulfilledResult<string>=>result.status==="fulfilled");
   assert.equal(successes.length,1);
   assert.equal(results.filter(result=>result.status==="rejected"&&String(result.reason).includes("paid-request-already-recorded")).length,1);
   const id=successes[0].value;
   await settlePaidCall(created[0],id,{reportedMicros:null,latencyMs:1,responseBytes:10,inputTokens:9,outputTokens:0,succeeded:true,
-    providerUsage:providerUsageObservation({usage:{prompt_tokens:9,prompt_cache_hit_tokens:0,prompt_cache_miss_tokens:9}})});
+    providerUsage:providerUsageObservation({choices:[{finish_reason:"stop"}],usage:{prompt_tokens:9,prompt_cache_hit_tokens:0,prompt_cache_miss_tokens:9}})});
   await assert.rejects(reservePaidCall(created[0],input),/paid-request-already-recorded/);
   const budget=await tenantQuery<{occupied_micros:string}>(created[0],"select occupied_micros::text from user_spend_budget where user_id=$1",[created[0]]);
   assert.equal(budget[0].occupied_micros,"10");
@@ -43,6 +44,9 @@ try{
   assert.equal(summary.length,1);assert.equal(summary[0].attempts,1);
   assert.deepEqual(summary[0].fields.find(field=>field.field==="prompt_cache_hit_tokens"),{field:"prompt_cache_hit_tokens",reportedAttempts:1,total:"0"});
   assert.equal(summary[0].fields.find(field=>field.field==="output_tokens")?.total,null);
+  assert.equal(summary[0].cacheInputHitRate,0);
+  assert.equal(summary[0].finishReason,"stop");
+  assert.equal(summary[0].scoringVersion,"synthetic-policy-v1");
   assert.equal((await tenantQuery(created[1],"select id from paid_call_reservation where user_id=$1",[created[0]])).length,0);
   await reservePaidCall(created[1],input);
   // A complete reported charge for a failed HTTP attempt permits the existing retry policy.

@@ -5,7 +5,7 @@ import {assertLeadRequestBytes} from "./lead-request-bounds";
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "./contracts";
 import { ProviderUnavailableError } from "./contracts";
 import {randomUUID,createHash} from "node:crypto";
-import {withModelAttempt} from "@/lib/billing/model-attempt-context";
+import {withModelAttempt,requestScoringVersion} from "@/lib/billing/model-attempt-context";
 
 interface DeepSeekProviderOptions {
   apiKey?: string;
@@ -97,7 +97,7 @@ export class DeepSeekProvider implements AiProvider {
     for (let attempt = 0; attempt < this.maxAttempts; attempt += 1) {
       attemptsMade = attempt + 1;
       try {
-        const response = await withModelAttempt({invocationId,provider:this.id,task:request.task,promptVersion:request.promptVersion,attempt:attempt+1},()=>this.fetchImplementation(useAnthropicTransport
+        const response = await withModelAttempt({invocationId,provider:this.id,task:request.task,promptVersion:request.promptVersion,attempt:attempt+1,scoringVersion:requestScoringVersion(request.input)},()=>this.fetchImplementation(useAnthropicTransport
           ? `${this.baseUrl}/anthropic/v1/messages` : `${this.baseUrl}/chat/completions`, {
           method: "POST",
           headers: useAnthropicTransport ? {

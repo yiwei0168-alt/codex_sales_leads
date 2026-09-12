@@ -4,6 +4,9 @@ export interface ProviderUsageSummary {
   requestedModel:string|null;
   reportedModel:string|null;
   promptVersion:string|null;
+  scoringVersion?:string|null;
+  finishReason?:string|null;
+  cacheInputHitRate?:number|null;
   gatewayHost:string|null;
   endpointKind:string|null;
   attempts:number;
