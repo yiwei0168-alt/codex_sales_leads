@@ -1,7 +1,7 @@
 import {metricIdentifier} from "./model-attempt-context";
 
 /** Numeric allowlist only: never persist provider response bodies or arbitrary metadata. */
-const paths = [
+export const PROVIDER_USAGE_FIELDS = [
   "prompt_tokens", "input_tokens", "completion_tokens", "output_tokens", "total_tokens",
   "prompt_cache_hit_tokens", "prompt_cache_miss_tokens",
   "cache_read_input_tokens", "cache_creation_input_tokens",
@@ -17,7 +17,7 @@ function object(value: unknown): Record<string, unknown> {
 
 export function providerUsageObservation(result: unknown) {
   const usage = object(object(result).usage);
-  const fields = Object.fromEntries(paths.map(path => {
+  const fields = Object.fromEntries(PROVIDER_USAGE_FIELDS.map(path => {
     const value = path.split(".").reduce<unknown>((part, key) => object(part)[key], usage);
     return [path, typeof value === "number" && Number.isSafeInteger(value) && value >= 0 ? value : null];
   }));

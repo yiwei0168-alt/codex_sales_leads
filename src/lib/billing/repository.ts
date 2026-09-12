@@ -1,6 +1,7 @@
 import { tenantQuery,tenantTransaction } from "@/lib/rag/db";
 import { BudgetDeniedError } from "./policy";
 import type { ProviderUsageObservation } from "./provider-usage";
+import {readProviderUsageSummary} from "./usage-summary";
 
 type ReservationInput={operationId:string;stage:string;tariffKey:string;tariffVersion:string;maximumChargeMicros:number;requestBytes:number;modelAttempt?:{invocationId:string|null;provider:string|null;task:string|null;promptVersion:string|null;attempt:number|null;requestedModel:string|null;gatewayHost:string|null;endpointKind:string}|null};
 export async function reservePaidCall(userId:string,input:ReservationInput){
@@ -39,7 +40,7 @@ export async function readSpendBudget(userId:string){
   const usage=await tenantQuery(userId,`select stage,count(*)::int as calls,sum(reserved_micros)::text as reserved_micros,
     sum(reported_micros)::text as reported_micros,count(*) filter(where reported_micros is null)::int as unknown_bills,
     count(*) filter(where status='reserved')::int as unsettled_calls from paid_call_reservation where user_id=$1 group by stage order by stage`,[userId]);
-  return {budget:rows[0]??null,stages:usage};
+  return {budget:rows[0]??null,stages:usage,modelUsage:await readProviderUsageSummary(userId)};
 }
 export async function setSpendBudget(userId:string,limitMicros:number){
   if(!Number.isSafeInteger(limitMicros)||limitMicros<0||limitMicros>1000000000000)throw new Error("预算金额无效");
@@ -69,7 +70,7 @@ export async function readTaskSpendBudget(userId:string,actionId:string){
     sum(reported_micros)::text as reported_micros,count(*) filter(where reported_micros is null)::int as unknown_bills,
     sum((metrics->>'latencyMs')::bigint)::text as summed_latency_ms
     from paid_call_reservation where user_id=$1 and operation_id=$2 group by stage order by stage`,[userId,actionId]);
-  return {taskLimit:rows[0]??null,stages};
+  return {taskLimit:rows[0]??null,stages,modelUsage:await readProviderUsageSummary(userId,actionId)};
 }
 
 export async function setTaskSpendBudget(userId:string,actionId:string,limitMicros:number){

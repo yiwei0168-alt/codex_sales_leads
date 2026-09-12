@@ -49,6 +49,16 @@ try{
   for(const viewport of [{width:1366,height:900},{width:390,height:844}]){
     const context=await browser.newContext({viewport});
     const page=await context.newPage();const errors:string[]=[];
+    // Exercise the real browser cookie policy. The standalone HTTP client does not share
+    // Chromium's localhost Secure-cookie behavior when verifying an HTTP production build.
+    const readLocal=async(url:string)=>{
+      if(new URL(url).origin!==base.origin)throw new Error("Read probe must remain local");
+      const result=await page.evaluate(async target=>{
+        const response=await fetch(target,{credentials:"same-origin",cache:"no-store"});
+        return {status:response.status,body:await response.json()};
+      },url);
+      return {status:()=>result.status,json:async()=>result.body};
+    };
     page.on("pageerror",()=>errors.push("client-runtime-error"));
     // No response mocking: real local UI/API/database. Block browser egress and unsafe writes.
     await context.route("**/*",route=>{
@@ -70,7 +80,7 @@ try{
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
     await page.screenshot({path:`tmp/auth-ui-${viewport.width}-budget-proposal.png`,fullPage:true});
     checks.push(`${viewport.width}:saved-budget-proposal-no-mutation`);
-    const workspaceResponse=await context.request.get(new URL("/api/workspaces/current",base).href);
+    const workspaceResponse=await readLocal(new URL("/api/workspaces/current",base).href);
     expect(workspaceResponse.status()).toBe(200);
     const workspace=await workspaceResponse.json();
     expect(workspace.id).toBe(workspaceId);expect(workspace.companies).toHaveLength(2);
@@ -101,20 +111,26 @@ try{
       await expect(page.locator(".nav-item.active")).toContainText(label);
     }
     for(const path of ["/api/tasks","/api/tasks/markets","/api/tasks/usage","/api/budget"]){
-      const read=await context.request.get(new URL(path,base).href);expect(read.status(),path).toBe(200);
+      const read=await readLocal(new URL(path,base).href);expect(read.status(),path).toBe(200);
     }
     await page.goto(new URL(`/tasks/${actionId}?kind=search`,base).href);
     await page.getByText("任务预算与成本",{exact:true}).click();
     await expect(page.getByText(/任务上限 \$0.000000/)).toBeVisible();
-    const taskBudget=await context.request.get(new URL(`/api/budget?actionId=${actionId}`,base).href);
-    expect((await taskBudget.json()).taskLimit.limit_micros).toBe("0");
+    const taskBudget=await readLocal(new URL(`/api/budget?actionId=${actionId}`,base).href);
+    const taskBudgetData=await taskBudget.json();
+    expect(taskBudgetData.taskLimit.limit_micros).toBe("0");
+    expect(taskBudgetData.modelUsage).toEqual([]);
+    await page.getByText("模型用量与缓存观测",{exact:true}).click();
+    await expect(page.getByText("暂无可用观测记录，不能推断用量或费用为零。",{exact:true})).toBeVisible();
+    await page.screenshot({path:`tmp/auth-ui-${viewport.width}-model-usage.png`,fullPage:true});
+    checks.push(`${viewport.width}:usage-observations-real-sql-empty-not-zero`);
     checks.push(`${viewport.width}:task-budget-real-api`);
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
     expect(errors).toEqual([]);checks.push(`${viewport.width}:navigation-apis-no-runtime-error`);
     // Revoke access on the next request, even when the browser retains a valid cookie.
     const identity=await pool.query("update app_user set status='disabled' where id=$1 and email=$2 returning id",[userId,email]);
     expect(identity.rowCount).toBe(1);
-    try{const denied=await context.request.get(new URL("/api/budget",base).href);expect(denied.status()).toBe(401);}
+    try{const denied=await readLocal(new URL("/api/budget",base).href);expect(denied.status()).toBe(401);}
     finally{await pool.query("update app_user set status='active' where id=$1 and email=$2",[userId,email]);}
     checks.push(`${viewport.width}:disabled-user-session-denied`);
     await context.close();
