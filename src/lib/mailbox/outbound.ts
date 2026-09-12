@@ -1,5 +1,5 @@
 import { createHash, randomUUID } from "node:crypto";
-import nodemailer from "nodemailer";
+import {createSmtpTransport} from "./smtp-transport";
 import { z } from "zod";
 import type { PoolClient } from "pg";
 import { tenantQuery,tenantTransaction } from "@/lib/rag/db";
@@ -38,9 +38,7 @@ export async function assignMailMarket(userId:string,input:z.infer<typeof assign
 async function transport(userId:string,connectionId:string) {
   const connection=await getMailboxConnection(userId,connectionId);
   if(!connection||connection.status!=="active")throw new Error("请选择有效的已连接邮箱");
-  return {connection,mailer:nodemailer.createTransport({host:process.env.ALIMAIL_SMTP_HOST||"smtp.qiye.aliyun.com",port:465,secure:true,
-    auth:{user:connection.email,pass:connectionPassword(connection)},connectionTimeout:15000,greetingTimeout:15000,socketTimeout:30000,
-    disableFileAccess:true,disableUrlAccess:true})};
+  return {connection,mailer:createSmtpTransport({user:connection.email,pass:connectionPassword(connection)})};
 }
 
 export async function verifyOutbound(userId:string,connectionId:string) {

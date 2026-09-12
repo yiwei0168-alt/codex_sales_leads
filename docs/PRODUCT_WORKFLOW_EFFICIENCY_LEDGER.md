@@ -1,5 +1,9 @@
 # 产品工作流效率台账
 
+## 2026-09-12 SMTP pre-authentication DNS correction
+
+Diagnosis identified a resolver-path mismatch, not a proven password error. Product connector now uses bounded system DNS/TLS before handing a socket to Nodemailer. At most four distinct endpoints, no retry after handoff, no certificate bypass. The one live credential verification produced one valid validator-consumed result in 504 ms: zero emails, model tokens and API credits; no automatic authentication retries or database writes. This is diagnostic consumption, not recipient delivery. Existing outbound receipt/idempotency telemetry remains unchanged; detailed per-address production utilization remains uninstrumented rather than invented. Optimization opportunity: record bounded pre-auth connection phase metrics separately from send retries without storing IPs/credentials. Avoid retrying credentials when connection fails; do not add model/search work to mail transport diagnosis.
+
 ## 2026-09-12 DeepSeek recharge recheck v1
 
 One user-authorized synthetic input -> one valid JSON output -> one validator-consumed output (probe utilization 100%, not user business adoption). 102 input / 27 output tokens, 1719 ms, zero automatic retries and search credits; no discarded output. New $2 reservation brings cumulative occupancy to $12/$30. Peak/cache-miss conservative estimate $0.00024156; actual reported cost unknown. Rechecked official off-peak rates imply cache-miss estimate $0.00012078 for this Saturday, not an invoice. Metrics persist on a distinct stage without rewriting the failed receipt. Optimization: target only the repaired provider; durable stage reuse prevents repeated charges. No other successful provider or evidence search rerun. Report: `LOCAL_PRODUCTION_ACCEPTANCE_2026-09-12.md`.

@@ -1,5 +1,13 @@
 # Local production acceptance — 2026-09-12
 
+## Update: SMTP connection fix and authentication passed
+
+System `dns.lookup` returned four working server addresses; `dns.resolve4` returned a different unreachable address. Nodemailer preferred the latter and timed out at CONN. All four system-resolved addresses passed unauthenticated TCP/TLS/SMTP checks; no mailbox credential was used during that diagnosis.
+
+After user approval, the product now establishes TLS using system resolution and passes the secured socket to Nodemailer. DNS is bounded to 5 seconds; at most four distinct addresses, 5 seconds each. Only transient transport errors allow address switching before handoff. Original SMTP hostname remains the TLS servername and certificate verification stays mandatory; no IP is hardcoded. No address switch/replay occurs after handoff, authentication or uncertain delivery.
+
+Real authentication using saved credentials and the new product connector **passed in 504 ms**. No mail sent, no database writes, no model calls. Typecheck, production build, 16 targeted mail tests and the full 591-test / 140-file regression passed. Real email send/receipt/delivery acceptance is still pending user confirmation; successful authentication is not delivery. Prior SMTP failures below are historical.
+
 ## Update: DeepSeek post-recharge recheck passed
 
 After the user confirmed recharge, one explicitly selected DeepSeek-only probe returned HTTP 200 and valid JSON in 1719 ms: 102 input / 27 output tokens. The conservative peak/cache-miss estimate is USD 0.00024156; provider-reported invoice cost remains unknown. Official rates were rechecked at https://api-docs.deepseek.com/quick_start/pricing/. This Saturday is off-peak (half peak rates); without cache detail the off-peak cache-miss estimate is USD 0.00012078, not an invoice.

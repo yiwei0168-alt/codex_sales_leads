@@ -1,5 +1,9 @@
 # Product UI v1.1 implementation workflow
 
+## SMTP system-DNS connector — 2026-09-12
+
+Confirmed product change: saved mailbox -> system DNS (5-second bound) -> up to four distinct TLS endpoints (5 seconds each, transport failures only) -> secured socket handed to Nodemailer -> authentication -> existing explicitly confirmed send/idempotency flow. Preserve hostname/certificate verification; no hardcoded IP, TLS bypass, or post-handoff retry. System resolution avoids the observed mismatch with Nodemailer's DNS resolver. Authentication-only live check passed in 504 ms, no mail or database mutation. Actual delivery remains pending. See the acceptance report for diagnostics and limits.
+
 ## DeepSeek recharge recheck — latest 2026-09-12 update
 
 User-authorized single-stage retry selects only DeepSeek with a fixed new audit stage, under the existing advisory lock and cumulative $30 budget. The original 402 and its reservation remain immutable; repeat invocations skip the new receipt too. HTTP 200 / valid JSON, 1719 ms, 102 input and 27 output tokens. Reservation now $12, not actual spending. No production routing or mailbox settings changed; five provider contracts now pass but full business acceptance remains incomplete. See `LOCAL_PRODUCTION_ACCEPTANCE_2026-09-12.md`.
