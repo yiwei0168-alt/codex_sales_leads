@@ -15,6 +15,7 @@ const init={method:"POST",headers:{authorization:"Bearer fixture-secret"},body:J
 it("attributes model attempts before network without persisting the raw endpoint or query",async()=>{
   await withSpendContext(scope,()=>withModelAttempt({invocationId:"call-1",provider:"test-provider",task:"score",promptVersion:"v2",attempt:2},()=>budgetedFetch(vi.fn().mockResolvedValue(Response.json({})))("https://example.test/private-path?key=hidden",init)));
   expect(mocks.reserve.mock.calls[0][1].modelAttempt).toEqual({invocationId:"call-1",provider:"test-provider",task:"score",promptVersion:"v2",attempt:2,requestedModel:"test",gatewayHost:"example.test",endpointKind:"other"});
+  expect(mocks.reserve.mock.calls[0][1].requestFingerprint).toMatch(/^[a-f0-9]{64}$/);
   expect(JSON.stringify(mocks.reserve.mock.calls)).not.toMatch(/private-path|hidden|fixture-secret/);
 });
 it("rejects obsolete K3 output caps before reserving or sending",async()=>{
@@ -34,6 +35,7 @@ it("bounds form requests without recording their fields",async()=>{
   await withSpendContext(scope,()=>budgetedFetch(transport)("https://example.test/start",{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded"},body:new URLSearchParams({domain:"private-company.test"})}));
   expect(mocks.quote).toHaveBeenCalledWith(expect.objectContaining({model:"",requestBytes:expect.any(Number)}));
   expect(JSON.stringify(mocks.reserve.mock.calls)).not.toContain("private-company");
+  expect(mocks.reserve.mock.calls[0][1].requestFingerprint).toBeUndefined();
 });
 it("missing prices or budget block the transport entirely",async()=>{
   const transport=vi.fn();mocks.quote.mockImplementation(()=>{throw new BudgetDeniedError("missing-tariff");});

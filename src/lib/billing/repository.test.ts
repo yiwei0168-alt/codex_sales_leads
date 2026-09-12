@@ -9,6 +9,18 @@ it("locks budget before reserving and refuses a concurrent caller's reduced rema
   await expect(reservePaidCall("owner",input)).rejects.toThrow("budget-exhausted");expect(query).toHaveBeenCalledTimes(1);
   expect(query.mock.calls[0][0]).toContain("for update");
 });
+it("blocks a duplicate guarded request under the owner lock before creating a second reservation",async()=>{
+  query.mockResolvedValueOnce({rows:[{limit_micros:"100",occupied_micros:"10",frozen:false}]}).mockResolvedValueOnce({rows:[{id:"existing"}]});
+  await expect(reservePaidCall("owner",{...input,requestFingerprint:"a".repeat(64)})).rejects.toThrow("paid-request-already-recorded");
+  expect(query).toHaveBeenCalledTimes(2);
+  expect(query.mock.calls[1][1]).toEqual(["owner","operation","score","a".repeat(64)]);
+  expect(query.mock.calls.some(([sql])=>String(sql).includes("insert into"))).toBe(false);
+});
+it("rejects malformed request fingerprints without writing",async()=>{
+  query.mockResolvedValueOnce({rows:[{limit_micros:"100",occupied_micros:"10",frozen:false}]});
+  await expect(reservePaidCall("owner",{...input,requestFingerprint:"raw private request"})).rejects.toThrow("request-out-of-bounds");
+  expect(query).toHaveBeenCalledTimes(1);
+});
 it("atomically records the reservation before increasing occupied amount",async()=>{
   query.mockResolvedValueOnce({rows:[{limit_micros:"100",occupied_micros:"90",frozen:false}]}).mockResolvedValueOnce({rows:[]}).mockResolvedValueOnce({rows:[{id:"reserve"}]}).mockResolvedValue({rows:[]});
   expect(await reservePaidCall("owner",input)).toBe("reserve");expect(query.mock.calls[3][1]).toEqual(["owner",10]);

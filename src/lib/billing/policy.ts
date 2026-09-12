@@ -2,9 +2,10 @@ import { z } from "zod";
 import configuration from "../../../config/billing/request-bounds-v1.0.0.json";
 
 export class BudgetDeniedError extends Error {
-  constructor(readonly code:"missing-tariff"|"expired-tariff"|"request-out-of-bounds"|"missing-budget"|"budget-exhausted"|"budget-frozen"|"task-budget-exhausted"|"paid-outcome-unknown") {
+  constructor(readonly code:"missing-tariff"|"expired-tariff"|"request-out-of-bounds"|"missing-budget"|"budget-exhausted"|"budget-frozen"|"task-budget-exhausted"|"paid-outcome-unknown"|"paid-request-already-recorded") {
     super(`付费调用已阻止：${code}。请检查预算与已审核费率，未自动放行。`);
     this.name="BudgetDeniedError";
+    if(code==="paid-request-already-recorded")this.message="重复付费已阻止：paid-request-already-recorded。当前任务环节已有相同模型请求记录，请复用已保存结果或先核实前次状态。";
   }
 }
 export class PaidCallOutcomeUnknownError extends BudgetDeniedError {

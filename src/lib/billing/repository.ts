@@ -3,7 +3,7 @@ import { BudgetDeniedError } from "./policy";
 import type { ProviderUsageObservation } from "./provider-usage";
 import {readProviderUsageSummary} from "./usage-summary";
 
-type ReservationInput={operationId:string;stage:string;tariffKey:string;tariffVersion:string;maximumChargeMicros:number;requestBytes:number;modelAttempt?:{invocationId:string|null;provider:string|null;task:string|null;promptVersion:string|null;attempt:number|null;requestedModel:string|null;gatewayHost:string|null;endpointKind:string}|null};
+type ReservationInput={operationId:string;stage:string;tariffKey:string;tariffVersion:string;maximumChargeMicros:number;requestBytes:number;requestFingerprint?:string;modelAttempt?:{invocationId:string|null;provider:string|null;task:string|null;promptVersion:string|null;attempt:number|null;requestedModel:string|null;gatewayHost:string|null;endpointKind:string}|null};
 export async function reservePaidCall(userId:string,input:ReservationInput){
   return tenantTransaction(userId,client=>reservePaidCallInTransaction(client,userId,input));
 }
@@ -12,14 +12,23 @@ export async function reservePaidCallInTransaction(client:import("pg").PoolClien
     const budget=await client.query<{limit_micros:string;occupied_micros:string;frozen:boolean}>("select limit_micros,occupied_micros,frozen from user_spend_budget where user_id=$1 for update",[userId]);
     const row=budget.rows[0];if(!row)throw new BudgetDeniedError("missing-budget");
     if(row.frozen)throw new BudgetDeniedError("budget-frozen");
+    if(input.requestFingerprint){
+      if(!/^[a-f0-9]{64}$/.test(input.requestFingerprint))throw new BudgetDeniedError("request-out-of-bounds");
+      // Same owner lock serializes different workers before either reserves or sends.
+      // Known charged failures may use existing bounded retry; unknown work and HTTP success must not replay.
+      const previous=await client.query(`select id from paid_call_reservation where user_id=$1 and operation_id=$2
+        and stage=$3 and request_fingerprint=$4 and (status in ('reserved','unknown','bound-exceeded')
+          or metrics->>'validOutputItems'='1') limit 1`,[userId,input.operationId,input.stage,input.requestFingerprint]);
+      if(previous.rows.length)throw new BudgetDeniedError("paid-request-already-recorded");
+    }
     if(BigInt(row.occupied_micros)+BigInt(input.maximumChargeMicros)>BigInt(row.limit_micros))throw new BudgetDeniedError("budget-exhausted");
     // The owner lock also serializes task edits and all reservations for this action.
     const task=await client.query<{limit_micros:string;occupied_micros:string}>(`select t.limit_micros,
       coalesce((select sum(r.reserved_micros) from paid_call_reservation r where r.user_id=$1 and r.operation_id=$2),0)::text as occupied_micros
       from task_spend_limit t where t.user_id=$1 and t.action_id::text=$2`,[userId,input.operationId]);
     if(task.rows[0]&&BigInt(task.rows[0].occupied_micros)+BigInt(input.maximumChargeMicros)>BigInt(task.rows[0].limit_micros))throw new BudgetDeniedError("task-budget-exhausted");
-    const result=await client.query<{id:string}>(`insert into paid_call_reservation(user_id,operation_id,stage,tariff_key,tariff_version,reserved_micros,status,metrics)
-      values($1,$2,$3,$4,$5,$6,'reserved',$7) returning id`,[userId,input.operationId,input.stage,input.tariffKey,input.tariffVersion,input.maximumChargeMicros,JSON.stringify({inputItems:1,inputBytes:input.requestBytes,modelAttempt:input.modelAttempt??null,outputBytes:null,validOutputItems:null,downstreamUsedItems:null,inputTokens:null,outputTokens:null,apiCredits:null,retries:0,utilizationEfficiency:null,discardedReasonCounts:{},usageBoundary:"single-http-attempt-reserved-before-network",optimizationOpportunity:"Reuse cached output before reserving another paid attempt"})]);
+    const result=await client.query<{id:string}>(`insert into paid_call_reservation(user_id,operation_id,stage,tariff_key,tariff_version,reserved_micros,status,metrics,request_fingerprint)
+      values($1,$2,$3,$4,$5,$6,'reserved',$7,$8) returning id`,[userId,input.operationId,input.stage,input.tariffKey,input.tariffVersion,input.maximumChargeMicros,JSON.stringify({inputItems:1,inputBytes:input.requestBytes,modelAttempt:input.modelAttempt??null,outputBytes:null,validOutputItems:null,downstreamUsedItems:null,inputTokens:null,outputTokens:null,apiCredits:null,retries:0,utilizationEfficiency:null,discardedReasonCounts:{},usageBoundary:"single-http-attempt-reserved-before-network",optimizationOpportunity:"Reuse cached output before reserving another paid attempt"}),input.requestFingerprint??null]);
     await client.query("update user_spend_budget set occupied_micros=occupied_micros+$2,updated_at=now() where user_id=$1",[userId,input.maximumChargeMicros]);
     return result.rows[0].id;
 }
