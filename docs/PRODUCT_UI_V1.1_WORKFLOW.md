@@ -1,5 +1,9 @@
 # Product UI v1.1 implementation workflow
 
+## 2026-09-13 P04 approved
+
+B24 approves complete output Schema and validation safeguards; no runtime edit. Next P05 discussion separates shared public correction reuse from tenant/workspace/country-scoped scoring, with full input/version/batch dependencies, evidence-ID rebinding and no replay of unknown-cost attempts. P05/P06 remain unapproved; implementation follows complete confirmation.
+
 ## 2026-09-13 P03 approved
 
 B23 approves deterministic model-policy projection with full semantic constraints and audit snapshots retained. No runtime change yet. P04 proposes preserving the complete output contract while reviewing redundant surrounding format guidance, not automatically rewriting Schema. P04–P06 require confirmation before unified implementation and acceptance.
