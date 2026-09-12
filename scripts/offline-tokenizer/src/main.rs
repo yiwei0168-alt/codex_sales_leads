@@ -3,9 +3,37 @@ use deepseek_recipe::request::{ConversionOptions, ProtocolRequest};
 use deepseek_recipe_encoding::{PromptEncoding, v4::dsv4::DeepseekV4Encoding};
 use serde_json::json;
 use tokenizers::Tokenizer;
+use std::io::{self, BufRead};
 
-fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+fn count_body(encoding: &DeepseekV4Encoding, body: serde_json::Value) -> Result<usize, Box<dyn std::error::Error + Send + Sync>> {
+    let converted = if body.get("system").is_some() {
+        let r: MessagesRequest = serde_json::from_value(body)?;
+        r.convert(ConversionOptions::default())?
+    } else {
+        let r: ChatCompletionRequest = serde_json::from_value(body)?;
+        r.convert(ConversionOptions::default())?
+    };
+    let ids = encoding.encode(&converted.conversation)?;
+    assert!(!ids.is_empty());
+    assert_eq!(ids, encoding.encode(&converted.conversation)?);
+    Ok(ids.len())
+}
+
+fn run() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     let tokenizer = Tokenizer::from_file("/recipe/static/tokenizers/v4/tokenizer.json")?;
+    if std::env::args().any(|arg| arg == "--stdin") {
+        let encoding = DeepseekV4Encoding::new().with_tokenizer(tokenizer.clone());
+        for line in io::stdin().lock().lines() {
+            let value: serde_json::Value = serde_json::from_str(&line?)?;
+            let total = count_body(&encoding, value["body"].clone())?;
+            let parts = value["parts"].as_array().ok_or("parts missing")?.iter()
+                .map(|part| tokenizer.encode(part.as_str().ok_or("non-text part")?, false).map(|ids| ids.len()))
+                .collect::<Result<Vec<_>, _>>()?;
+            // Output counts only: no prompt, company identity, evidence, token IDs, or request headers.
+            println!("{}", json!({"total":total,"parts":parts,"repeat_stable":true}));
+        }
+        return Ok(());
+    }
     let encoding = DeepseekV4Encoding::new().with_tokenizer(tokenizer);
     let started = std::time::Instant::now();
     let texts = ["Hello world".to_owned(), "墨西哥网络设备渠道，Wi-Fi 7，客户场景。".to_owned(),
@@ -34,4 +62,11 @@ fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     }
     println!("{}",json!({"scope":"synthetic-text-only-not-hosted-billing-proof","cases":results,"elapsed_ms":started.elapsed().as_millis(),"model_calls":0}));
     Ok(())
+}
+
+fn main() {
+    if run().is_err() {
+        eprintln!("Offline tokenizer audit failed; payload suppressed");
+        std::process::exit(1);
+    }
 }

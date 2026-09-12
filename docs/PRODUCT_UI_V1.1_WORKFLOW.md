@@ -1,5 +1,9 @@
 # Product UI v1.1 implementation workflow
 
+## 2026-09-13 frozen request counting
+
+Approved B18 diagnostic: frozen snapshots -> current request builders (standard playbook; no original RAG/private memory) -> mocked provider body -> in-memory stdin -> disconnected read-only Docker -> aggregate counts. All 1,053 Pro Messages/disabled requests passed repeated encoding; no agent evaluation, search, scoring, persistence or real model call. Existing batch input maxima are 9,492 / 13,513 / 13,017 tokens; all within approved byte caps. These are observations, not proven billing bounds. The diagnostic does not implement new byte-based batching. Full aggregate and limitations are linked in rule register v1.4.0.
+
 ## 2026-09-13 isolated text encoding verification
 
 B17 is approved. `scripts/offline-tokenizer/` builds only official text/protocol Rust components in Docker, overcoming the previous local Python/native prerequisite issue without OpenCV. The no-network, read-only, unprivileged synthetic audit passes 16 input variants and 32 repeated encodes. It is not imported by product code. Exact counts and scope are in rule register v1.3.0; full business-request replay and hosted billing equivalence remain unverified, with paid gates unchanged.

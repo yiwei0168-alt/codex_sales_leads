@@ -1,0 +1,521 @@
+{
+  "scope": "current-request-reconstruction-standard-playbook-no-original-rag-or-private-memory-not-historical-billing",
+  "sourceSha256": [
+    "16746392783566c17f1d75d10998255086c7bd2fbdbaabbaec7a3953da4336fd",
+    "d025ef0f445ca85f5a7697ca4842c5165881d9eb7daa7209226c21820939b1d6"
+  ],
+  "configurations": [
+    {
+      "protocol": "messages",
+      "model": "deepseek-v4-pro",
+      "thinking": {
+        "type": "disabled"
+      },
+      "outputCap": 8192
+    }
+  ],
+  "requests": 1053,
+  "partNames": [
+    "system",
+    "user",
+    "input",
+    "outerEvidenceIds",
+    "instructions",
+    "scoringRubric",
+    "candidateEvidence",
+    "findings"
+  ],
+  "partAccounting": "isolated encodings overlap/nest and are NOT additive; null/empty placeholders have tokens",
+  "dockerWallMs": 68289,
+  "totalWallMs": 78824,
+  "modelCalls": 0,
+  "modelCostUsd": 0,
+  "output": [
+    {
+      "stage": "correction",
+      "configuredBodyBound": 36864,
+      "groups": [
+        {
+          "kind": "single",
+          "requests": 207,
+          "companies": 207,
+          "bodyBytes": {
+            "min": 9309,
+            "p50": 19264,
+            "p95": 22533,
+            "max": 23362,
+            "sum": 3827516
+          },
+          "overBodyBound": 0,
+          "totalTokens": {
+            "min": 1841,
+            "p50": 4651,
+            "p95": 5668,
+            "max": 6462,
+            "sum": 917784
+          },
+          "isolatedPartTokens": {
+            "system": {
+              "min": 848,
+              "p50": 848,
+              "p95": 848,
+              "max": 848,
+              "sum": 175536
+            },
+            "user": {
+              "min": 989,
+              "p50": 3799,
+              "p95": 4816,
+              "max": 5610,
+              "sum": 741420
+            },
+            "input": {
+              "min": 957,
+              "p50": 3613,
+              "p95": 4634,
+              "max": 5433,
+              "sum": 709820
+            },
+            "outerEvidenceIds": {
+              "min": 1,
+              "p50": 138,
+              "p95": 157,
+              "max": 278,
+              "sum": 25183
+            },
+            "instructions": {
+              "min": 851,
+              "p50": 851,
+              "p95": 851,
+              "max": 851,
+              "sum": 176157
+            },
+            "scoringRubric": {
+              "min": 1,
+              "p50": 1,
+              "p95": 1,
+              "max": 1,
+              "sum": 207
+            },
+            "candidateEvidence": {
+              "min": 3,
+              "p50": 2658,
+              "p95": 3675,
+              "max": 4466,
+              "sum": 511309
+            },
+            "findings": {
+              "min": 3,
+              "p50": 3,
+              "p95": 3,
+              "max": 3,
+              "sum": 621
+            }
+          }
+        },
+        {
+          "kind": "batch",
+          "requests": 103,
+          "companies": 207,
+          "bodyBytes": {
+            "min": 17998,
+            "p50": 29308,
+            "p95": 33075,
+            "max": 33496,
+            "sum": 2889325
+          },
+          "overBodyBound": 0,
+          "totalTokens": {
+            "min": 4370,
+            "p50": 7450,
+            "p95": 8931,
+            "max": 9492,
+            "sum": 734328
+          },
+          "isolatedPartTokens": {
+            "system": {
+              "min": 848,
+              "p50": 848,
+              "p95": 848,
+              "max": 848,
+              "sum": 87344
+            },
+            "user": {
+              "min": 3518,
+              "p50": 6598,
+              "p95": 8079,
+              "max": 8640,
+              "sum": 646572
+            },
+            "input": {
+              "min": 3384,
+              "p50": 6286,
+              "p95": 7781,
+              "max": 8264,
+              "sum": 618300
+            },
+            "outerEvidenceIds": {
+              "min": 103,
+              "p50": 256,
+              "p95": 323,
+              "max": 478,
+              "sum": 25079
+            },
+            "instructions": {
+              "min": 851,
+              "p50": 851,
+              "p95": 851,
+              "max": 851,
+              "sum": 87653
+            },
+            "scoringRubric": {
+              "min": 1,
+              "p50": 1,
+              "p95": 1,
+              "max": 1,
+              "sum": 103
+            },
+            "candidateEvidence": {
+              "min": 2089,
+              "p50": 5212,
+              "p95": 6729,
+              "max": 7138,
+              "sum": 511200
+            },
+            "findings": {
+              "min": 3,
+              "p50": 4,
+              "p95": 5,
+              "max": 7,
+              "sum": 413
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage": "score-only",
+      "configuredBodyBound": 57344,
+      "groups": [
+        {
+          "kind": "single",
+          "requests": 207,
+          "companies": 207,
+          "bodyBytes": {
+            "min": 22500,
+            "p50": 35499,
+            "p95": 43646,
+            "max": 50146,
+            "sum": 7393422
+          },
+          "overBodyBound": 0,
+          "totalTokens": {
+            "min": 4859,
+            "p50": 8437,
+            "p95": 10684,
+            "max": 12078,
+            "sum": 1757158
+          },
+          "isolatedPartTokens": {
+            "system": {
+              "min": 1162,
+              "p50": 1162,
+              "p95": 1162,
+              "max": 1162,
+              "sum": 240534
+            },
+            "user": {
+              "min": 3693,
+              "p50": 7271,
+              "p95": 9518,
+              "max": 10912,
+              "sum": 1515796
+            },
+            "input": {
+              "min": 3528,
+              "p50": 7066,
+              "p95": 9249,
+              "max": 10508,
+              "sum": 1475952
+            },
+            "outerEvidenceIds": {
+              "min": 74,
+              "p50": 153,
+              "p95": 238,
+              "max": 376,
+              "sum": 34048
+            },
+            "instructions": {
+              "min": 662,
+              "p50": 662,
+              "p95": 662,
+              "max": 662,
+              "sum": 137034
+            },
+            "scoringRubric": {
+              "min": 2041,
+              "p50": 2041,
+              "p95": 2041,
+              "max": 2041,
+              "sum": 422487
+            },
+            "candidateEvidence": {
+              "min": 557,
+              "p50": 2783,
+              "p95": 4573,
+              "max": 5527,
+              "sum": 582506
+            },
+            "findings": {
+              "min": 3,
+              "p50": 1299,
+              "p95": 1944,
+              "max": 2312,
+              "sum": 271773
+            }
+          }
+        },
+        {
+          "kind": "batch",
+          "requests": 158,
+          "companies": 207,
+          "bodyBytes": {
+            "min": 29452,
+            "p50": 40150,
+            "p95": 49707,
+            "max": 50567,
+            "sum": 6451691
+          },
+          "overBodyBound": 0,
+          "totalTokens": {
+            "min": 6860,
+            "p50": 9742,
+            "p95": 12117,
+            "max": 13513,
+            "sum": 1559247
+          },
+          "isolatedPartTokens": {
+            "system": {
+              "min": 1162,
+              "p50": 1162,
+              "p95": 1162,
+              "max": 1162,
+              "sum": 183596
+            },
+            "user": {
+              "min": 5694,
+              "p50": 8576,
+              "p95": 10951,
+              "max": 12347,
+              "sum": 1375019
+            },
+            "input": {
+              "min": 5534,
+              "p50": 8355,
+              "p95": 10654,
+              "max": 11934,
+              "sum": 1336596
+            },
+            "outerEvidenceIds": {
+              "min": 88,
+              "p50": 188,
+              "p95": 382,
+              "max": 475,
+              "sum": 33999
+            },
+            "instructions": {
+              "min": 662,
+              "p50": 662,
+              "p95": 662,
+              "max": 662,
+              "sum": 104596
+            },
+            "scoringRubric": {
+              "min": 2041,
+              "p50": 2041,
+              "p95": 2041,
+              "max": 2041,
+              "sum": 322478
+            },
+            "candidateEvidence": {
+              "min": 1383,
+              "p50": 3648,
+              "p95": 5323,
+              "max": 6647,
+              "sum": 582457
+            },
+            "findings": {
+              "min": 869,
+              "p50": 1547,
+              "p95": 2738,
+              "max": 3434,
+              "sum": 271723
+            }
+          }
+        }
+      ]
+    },
+    {
+      "stage": "score-and-paths",
+      "configuredBodyBound": 61440,
+      "groups": [
+        {
+          "kind": "single",
+          "requests": 207,
+          "companies": 207,
+          "bodyBytes": {
+            "min": 26737,
+            "p50": 39736,
+            "p95": 47883,
+            "max": 54383,
+            "sum": 8270481
+          },
+          "overBodyBound": 0,
+          "totalTokens": {
+            "min": 5798,
+            "p50": 9376,
+            "p95": 11623,
+            "max": 13017,
+            "sum": 1951531
+          },
+          "isolatedPartTokens": {
+            "system": {
+              "min": 1661,
+              "p50": 1661,
+              "p95": 1661,
+              "max": 1661,
+              "sum": 343827
+            },
+            "user": {
+              "min": 4133,
+              "p50": 7711,
+              "p95": 9958,
+              "max": 11352,
+              "sum": 1606876
+            },
+            "input": {
+              "min": 3968,
+              "p50": 7506,
+              "p95": 9689,
+              "max": 10948,
+              "sum": 1567032
+            },
+            "outerEvidenceIds": {
+              "min": 74,
+              "p50": 153,
+              "p95": 238,
+              "max": 376,
+              "sum": 34048
+            },
+            "instructions": {
+              "min": 844,
+              "p50": 844,
+              "p95": 844,
+              "max": 844,
+              "sum": 174708
+            },
+            "scoringRubric": {
+              "min": 2299,
+              "p50": 2299,
+              "p95": 2299,
+              "max": 2299,
+              "sum": 475893
+            },
+            "candidateEvidence": {
+              "min": 557,
+              "p50": 2783,
+              "p95": 4573,
+              "max": 5527,
+              "sum": 582506
+            },
+            "findings": {
+              "min": 3,
+              "p50": 1299,
+              "p95": 1944,
+              "max": 2312,
+              "sum": 271773
+            }
+          }
+        },
+        {
+          "kind": "batch",
+          "requests": 171,
+          "companies": 207,
+          "bodyBytes": {
+            "min": 32234,
+            "p50": 42770,
+            "p95": 51887,
+            "max": 54383,
+            "sum": 7426065
+          },
+          "overBodyBound": 0,
+          "totalTokens": {
+            "min": 7247,
+            "p50": 10117,
+            "p95": 12785,
+            "max": 13017,
+            "sum": 1772323
+          },
+          "isolatedPartTokens": {
+            "system": {
+              "min": 1661,
+              "p50": 1661,
+              "p95": 1661,
+              "max": 1661,
+              "sum": 284031
+            },
+            "user": {
+              "min": 5582,
+              "p50": 8452,
+              "p95": 11120,
+              "max": 11352,
+              "sum": 1487608
+            },
+            "input": {
+              "min": 5457,
+              "p50": 8304,
+              "p95": 10757,
+              "max": 11054,
+              "sum": 1448808
+            },
+            "outerEvidenceIds": {
+              "min": 74,
+              "p50": 176,
+              "p95": 363,
+              "max": 527,
+              "sum": 34012
+            },
+            "instructions": {
+              "min": 844,
+              "p50": 844,
+              "p95": 844,
+              "max": 844,
+              "sum": 144324
+            },
+            "scoringRubric": {
+              "min": 2299,
+              "p50": 2299,
+              "p95": 2299,
+              "max": 2299,
+              "sum": 393129
+            },
+            "candidateEvidence": {
+              "min": 1177,
+              "p50": 3329,
+              "p95": 4913,
+              "max": 5569,
+              "sum": 582470
+            },
+            "findings": {
+              "min": 536,
+              "p50": 1495,
+              "p95": 2452,
+              "max": 3060,
+              "sum": 271736
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
