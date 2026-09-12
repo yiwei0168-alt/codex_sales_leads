@@ -1,5 +1,9 @@
 # Product UI v1.1 implementation workflow
 
+## 2026-09-13 P03 approved
+
+B23 approves deterministic model-policy projection with full semantic constraints and audit snapshots retained. No runtime change yet. P04 proposes preserving the complete output contract while reviewing redundant surrounding format guidance, not automatically rewriting Schema. P04–P06 require confirmation before unified implementation and acceptance.
+
 ## 2026-09-13 acceptance-led scope
 
 B22 restores the agreed P03–P06 discussion alongside remaining acceptance, then prioritizes closure of acceptance gates over new optimizations. P01/P02 are confirmed; P03–P06 still require detailed confirmation before unified edits. The acceptance report's latest gate table is authoritative for gaps and required proof, not a new pass claim. Existing cost/privacy/no-cloud boundaries remain unchanged.
