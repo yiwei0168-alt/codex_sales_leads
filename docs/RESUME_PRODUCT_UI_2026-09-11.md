@@ -1,5 +1,9 @@
 # 产品开发恢复节点 — 2026-09-11
 
+## 最新恢复入口：2026-09-12 规则归档
+
+先读 [CONFIRMED_PRODUCT_RULES.md](CONFIRMED_PRODUCT_RULES.md)。用户已确认费用账本规则及 DeepSeek 完整请求体 36/56/60 KiB 上限，并要求所有具体规则在 GitHub 留档。当前仅文档归档，尚未修改运行配置/拆批逻辑；下一步按 A/B 规则实施并验证，保持输出默认 8,192 和 thinking 行为，不直接放行付费调用。207 家冻结样本离线测量发现评分＋路径 1 家单公司超出现有 input 字符上限仍放行；详细聚合值在登记表。零外部调用。SMTP 用户已确认收到。累计验收预留仍 USD 12/30，账单未知。保留实验未跟踪文件及本地诊断脚本，不提交敏感数据。历史仅“确认”而无提案的细节不得自行补写。
+
 ## 2026-09-12 latest local production checkpoint
 
 Latest post-recharge update: DeepSeek-only recheck passed HTTP 200 / valid JSON, 102 input + 27 output tokens, 1719 ms. Five provider contracts now have passing probes. Reserved budget is $12/$30; original 402 retained. Repeat `--deepseek-recharge-recheck --run` skips the saved stage. User requests item-by-item confirmation: discuss SMTP next, do not silently change mailbox settings or undertake other fixes.

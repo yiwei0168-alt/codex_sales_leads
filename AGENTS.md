@@ -1,5 +1,7 @@
 # Project Working Agreement
 
+- Record every explicit user-confirmed product rule in `docs/CONFIRMED_PRODUCT_RULES.md` with a stable ID, exact values, scope, and implementation/acceptance status. Update linked PRD/workflow documentation in the same stage; never treat confirmation as implementation or test evidence. Preserve superseded decisions in version history and do not invent details for historical confirmations whose proposals are unavailable.
+
 - Preserve project progress with focused Git commits after each meaningful, verified development stage.
 - Push completed commits to `origin/main` so files, code, and progress remain synchronized with GitHub.
 - Never commit secrets, credentials, local environment files, or generated dependency directories.

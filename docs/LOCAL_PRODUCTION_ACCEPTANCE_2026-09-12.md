@@ -1,5 +1,11 @@
 # Local production acceptance — 2026-09-12
 
+## Latest user-confirmed policy checkpoint
+
+User confirmed receipt of the previously authorized SMTP test; inbox receipt is now user-confirmed, not independently inspected. Preserve the earlier SMTP failures and send record as historical evidence; no additional send was made.
+
+See [confirmed rules A01–B10](CONFIRMED_PRODUCT_RULES.md) for the complete newly approved ledger, FX, release, retry, and request-bound policies. Offline reconstruction of 207 frozen German candidates measured maximum request bodies of 33,496 / 50,567 / 54,383 bytes for correction / score-only / score-and-paths. The user approved initial bounds of 36 / 56 / 60 KiB. Qualification used a standard playbook without original RAG/private memory; this is not historical token replay or a production maximum proof. Zero provider calls or fees. The existing oversized-singleton guard gap remains unimplemented; policy confirmation is not an acceptance pass. Global product tariffs are still empty; USD 12 historical probe reservations under the USD 30 ceiling are unchanged, invoice total remains unknown.
+
 ## Update: user-confirmed single SMTP send passed; inbox pending
 
 The user explicitly confirmed one marked test email to the designated recipient. The product's real `sendOutbound` workflow returned `sent`, `reused:false`; receipt persistence, sent timestamp and encrypted-payload readback checks all passed. No model calls or automatic resend. The dedicated synthetic company and receipt remain for audit; no real customer was marked contacted. Recipient inbox delivery is **not yet confirmed** and must not be inferred from SMTP acceptance. No recipient address, sender identity or message content is committed here. Earlier send-pending statements below are historical.

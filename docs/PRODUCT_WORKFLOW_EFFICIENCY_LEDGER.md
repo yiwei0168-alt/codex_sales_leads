@@ -1,5 +1,13 @@
 # 产品工作流效率台账
 
+## 2026-09-12 已确认规则归档与离线请求体分析
+
+规则入口：[CONFIRMED_PRODUCT_RULES.md](CONFIRMED_PRODUCT_RULES.md)，A01–B10 保存新账本及请求上限决定，C/D 保存历史明确业务规则索引。确认、实现和验收状态分别记录；未完整映射的历史功能不冒充已验收。
+
+离线输入：207 家冻结德国候选，三个请求模式；有效输出：1,053 个本地模拟传输请求体大小记录，三个聚合结果用于确认 36/56/60 KiB 初始工程边界。下游使用：三个边界获用户确认，生产配置尚未采用；这不是候选推荐采用率。网络/API/token 消耗为 0（未调用模型），服务商费用 0，重试 0，无模拟请求构建失败；诊断精确总耗时未埋点，未知。运行时优化节省率未知，不把小样本结构测量当成费用下降证明。
+
+优化机会：拆批目前漏算约 4.6–10.9 KB 封装/Schema/证据 ID；评分＋路径有 1 家单公司超 input 字符限仍放行。下一阶段对完整 UTF-8 请求体设边界、保留关键证据处理单公司超限，并补齐逐尝试用量；不得为压缩费用改变评分语义。仅评分 158 批、评分＋路径 171 批是现有规则重建结果，不是优化后的比较。评分使用无 RAG/个人记忆的标准 playbook，样本不覆盖所有生产载荷。无新证据、数据库修改或真实账本操作。
+
 ## 2026-09-12 single live SMTP send acceptance
 
 One explicitly confirmed test input -> one SMTP-accepted send -> one persisted encrypted receipt consumed by validation (1/1 at the receipt boundary; recipient reading/delivery unknown). `reused:false`, sent timestamp and encrypted readback passed; model calls/tokens/search credits zero, no automatic resend. Product send latency/retry metrics use the existing outbound workflow; no invented per-message SMTP dollar charge. Optimization: reuse the deterministic receipt for status checks and never send a second email to prove persistence. Dedicated synthetic node retained; report contains aggregates only.
