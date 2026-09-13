@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-09-14阶段105：评分缓存读故障先停评分、可选写故障保留完整评分节点检查点，真实PostgreSQL四进程合成任务恢复不重评、原13合成额度保留。911测试/198文件、typecheck、生产构建和lint通过，0真实付费/发信。[证据](ASSESSMENT_CACHE_FAULT_RECOVERY_2026-09-14.md)。批内中断、真实供应商核销及A11闭环仍缺。
+
 2026-09-14阶段104：现行 OpenRouter Sol 合同的七天公开只读复核、漂移暂停预留、追加快照及预算状态展示通过真实SQL、911测试/198文件、build和桌面/手机60组生产Chrome回归；0真实付费/发信。[报告](OPENROUTER_SOL_RATE_REFRESH_ACCEPTANCE_2026-09-14.md)。其他模型/搜索费率刷新、变更确认、S01和A11真实闭环仍缺。
 
 阶段103费用验收状态：四个默认OpenRouter备用模型按当前8,192输出请求只读核查，公开可兼容端点数为2/1/12/9，DeepSeek价格已漂移，缓存价格字段不完整，仍由 `missing-tariff` 阻止；没有新费率准入、路由变更或付费调用。[端点缺口](OPENROUTER_DEFAULT_FALLBACK_GAP_AUDIT_2026-09-14.md)。阶段5完整费用合同、费率刷新及阶段8真实业务闭环仍未验收。
