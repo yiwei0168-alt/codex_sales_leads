@@ -25,10 +25,12 @@ const {setSpendBudget,setTaskSpendBudget,reservePaidCall,settlePaidCall}=await i
 const {completeTaskCostAllocation}=await import("../src/lib/billing/task-cost-completion");
 const {companyCostKey,costRoundKey}=await import("../src/lib/billing/company-cost-context");
 const {buildLeadWorkflowGraph}=await import("../src/lib/leads/workflow/graph");
+const {persistLeadWorkflowResult}=await import("../src/lib/leads/workflow/persistence");
 const {executeClaimedLeadWorkflow}=await import("../src/lib/leads/workflow/jobs");
-const {candidate:progressCandidate,correctedCandidate:progressCorrected,assessment:progressAssessment,plan:progressPlan}=await import("./workflow-recovery-fixtures");
+const {candidate:progressCandidate,correctedCandidate:progressCorrected,assessment:progressAssessment,plan:progressPlan,playbook:recoveryPlaybook}=await import("./workflow-recovery-fixtures");
 const userId=randomUUID(),workspaceId=randomUUID();
 const progressActionId=randomUUID(),progressThread=`ui-progress:${userId}`;
+const recoveryParent=randomUUID(),recoveryRun=randomUUID(),recoveryThread=`ui-recovery:${userId}`;
 const progressSaver=new PostgresSaver(getPool(),undefined,{schema:"langgraph"});
 // Seed only a checkpoint. No graph node or business dependency is ever executed.
 const seedGraph=buildLeadWorkflowGraph({} as import("../src/lib/leads/workflow/graph").LeadWorkflowDependencies,progressSaver);
@@ -108,6 +110,18 @@ try{
     costAttribution:{version:"company-cost-attribution-v1",kind:"task-shared",roundKey:costRoundKey(costActionId),companyKeys:[]}});
   await settlePaidCall(userId,costReservation,{reportedMicros:0,latencyMs:0,responseBytes:0,inputTokens:0,outputTokens:0,succeeded:true});
   await tenantTransaction(userId,client=>completeTaskCostAllocation(client,userId,costActionId,costRoundKey(costActionId),costDomains.map(value=>companyCostKey(value,"GB"))));
+  const recoveryPlan={...progressPlan,countryCode:"GB",countryName:"United Kingdom",targetCount:5};
+  const recoveryCandidate={...progressCorrected,domain:`recovery-${userId}.invalid`,evidence:[]};
+  await pool.query("insert into assistant_action(id,user_id,conversation_id,action_type,status,payload) values($1,$2,$3,'lead-search','running',$4)",[recoveryParent,userId,conversationId,JSON.stringify(recoveryPlan)]);
+  await setTaskSpendBudget(userId,recoveryParent,0);
+  await pool.query("insert into lead_workflow_job(user_id,action_id,graph_thread_id,status,phase,execution_mode) values($1,$2,$3,'completed','completed','inline')",[userId,recoveryParent,recoveryThread]);
+  await pool.query("insert into lead_search_run(id,workspace_id,provider,target_count,country_code,graph_thread_id,status,metadata) values($1,$2,'synthetic-ui-recovery',5,'GB',$3,'running',$4)",[recoveryRun,workspaceId,recoveryThread,JSON.stringify({assistantActionId:recoveryParent,graphThreadId:recoveryThread})]);
+  const recoveryInput={userId,workspaceId,actionId:recoveryParent,runId:recoveryRun,graphThreadId:recoveryThread,countryCode:"GB",countryName:"United Kingdom",
+    requested:5,creditsUsed:0,ragContext:[],playbook:recoveryPlaybook,candidates:[recoveryCandidate],assessments:[],assessmentReviews:[],handoffs:[],modelUsage:[],stageMetrics:[],warnings:[]};
+  const recoveryResult={...await persistLeadWorkflowResult(recoveryInput),targetCompletionReason:"processing-incomplete" as const};
+  await seedGraph.updateState({configurable:{thread_id:recoveryThread}},{...recoveryInput,plan:recoveryPlan,phase:"completed",correctedCandidates:[recoveryCandidate],result:recoveryResult},"persist_results");
+  await pool.query("update assistant_action set status='completed',result=$2 where id=$1",[recoveryParent,JSON.stringify(recoveryResult)]);
+  await pool.query("update lead_workflow_job set result=$2 where action_id=$1",[recoveryParent,JSON.stringify(recoveryResult)]);
   browser=await chromium.launch({channel:"chrome",headless:true});
   for(const viewport of [{width:1366,height:900},{width:390,height:844}]){
     const context=await browser.newContext({viewport});
@@ -129,6 +143,8 @@ try{
     await context.route("**/*",route=>{
       const request=route.request(),url=new URL(request.url());
       if(url.origin!==base.origin)return route.abort();
+      if(request.method()==="POST"&&url.pathname===`/api/assistant/actions/${recoveryParent}/recover`
+        &&request.postDataJSON()?.propose===true)return route.continue();
       if(request.method()==="PATCH"&&editableCompanyPaths.has(url.pathname))return route.continue();
       if(request.method()==='POST'&&url.pathname===`/api/assistant/actions/${progressActionId}/progress`
         &&request.postDataJSON()?.action==='pause')return route.continue();
@@ -288,6 +304,26 @@ try{
     await page.screenshot({path:`tmp/auth-ui-${viewport.width}-model-usage.png`,fullPage:true});
     checks.push(`${viewport.width}:usage-observations-real-sql-empty-not-zero`);
     checks.push(`${viewport.width}:task-budget-real-api`);
+    await page.goto(new URL(`/tasks/${recoveryParent}?kind=search`,base).toString());
+    const recoveryPanel=page.getByRole("region",{name:"原范围处理恢复"});
+    await expect(recoveryPanel).toBeVisible();
+    if(await recoveryPanel.getByRole("button",{name:"准备缺项恢复计划（不执行）"}).count())await recoveryPanel.getByRole("button",{name:"准备缺项恢复计划（不执行）"}).click();
+    const recoveryLink=page.getByRole("link",{name:"审阅恢复计划、共享预算并确认执行"});await expect(recoveryLink).toBeVisible();
+    const recoveryHref=await recoveryLink.getAttribute("href");
+    await page.reload();await expect(page.getByRole("link",{name:"审阅恢复计划、共享预算并确认执行"})).toHaveAttribute("href",recoveryHref!);
+    await page.getByRole("link",{name:"审阅恢复计划、共享预算并确认执行"}).click();
+    await expect(page.getByText(/原范围处理恢复 · 待处理公司 1 家/)).toBeVisible();
+    await expect(page.getByRole("link",{name:"查看原任务、结果及费用"})).toHaveAttribute("href",`/tasks/${recoveryParent}?kind=search`);
+    await page.getByText("任务预算与成本",{exact:true}).click();
+    await expect(page.getByText(/继承任务上限 \$0\.000000/)).toBeVisible();
+    let recoveryDialogSeen=false;
+    page.once("dialog",async dialog=>{recoveryDialogSeen=dialog.message().includes("原任务与各级恢复预算同时生效");await dialog.dismiss();});
+    await page.getByRole("button",{name:"确认计划及费用并开始",exact:true}).click();
+    if(!recoveryDialogSeen)throw new Error("Recovery confirmation scope missing");
+    const linked=(await pool.query("select child_action_id from lead_processing_recovery where parent_action_id=$1 and user_id=$2",[recoveryParent,userId])).rows;
+    if(linked.length!==1)throw new Error("Recovery UI duplicated proposal");
+    if((await pool.query("select id from lead_workflow_job where action_id=$1",[linked[0].child_action_id])).rowCount)throw new Error("Dismissed recovery confirmation started a job");
+    checks.push(`${viewport.width}:recovery-proposal-refresh-lineage-shared-budget-confirmation-dismissed`);
     await page.goto(new URL(`/tasks/${costActionId}?kind=search`,base).href);
     await page.getByText("任务预算与成本",{exact:true}).click();
     await page.getByText("按公司分摊费用",{exact:true}).click();
@@ -443,12 +479,15 @@ try{
   expect(calls.rows[0].n).toBe(1);
   const unexpected=await pool.query("select id from paid_call_reservation where user_id=$1 and tariff_key<>'synthetic-ui-cost'",[userId]);
   expect(unexpected.rows).toHaveLength(0);
-  expect((await pool.query('select action_id,status from lead_workflow_job where user_id=$1',[userId])).rows).toEqual([{action_id:progressActionId,status:'cancelled'}]);
-  expect((await pool.query('select id from workflow_artifact_event where user_id=$1',[userId])).rows).toHaveLength(0);
+  expect((await pool.query('select action_id,status from lead_workflow_job where user_id=$1 order by action_id',[userId])).rows)
+    .toEqual([{action_id:progressActionId,status:'cancelled'},{action_id:recoveryParent,status:'completed'}].sort((a,b)=>a.action_id.localeCompare(b.action_id)));
+  const artifacts=(await pool.query('select lead_run_id from workflow_artifact_event where user_id=$1',[userId])).rows;
+  expect(artifacts).toHaveLength(7);expect(artifacts.every(row=>row.lead_run_id===recoveryRun)).toBe(true);
   console.log(JSON.stringify({authenticatedUi:"passed",checks,paidCalls:0,syntheticReservations:1,realMailSent:0,fixtureOnly:true}));
 }finally{
   await browser?.close();
   await progressSaver.deleteThread(progressThread);
+  await progressSaver.deleteThread(recoveryThread);
   if(created){
     const client=await pool.connect();
     try{

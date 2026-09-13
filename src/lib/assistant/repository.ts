@@ -98,7 +98,12 @@ export async function getAssistantAction(userId: string, actionId: string): Prom
   }>(userId,
     `select id, action_type, status, payload, result || coalesce((select jsonb_build_object('continuation',jsonb_build_object(
       'parentActionId',l.parent_action_id,'rootActionId',l.root_action_id,'depth',l.depth,'excludedCount',cardinality(l.excluded_domains)))
-      from lead_search_continuation l where l.child_action_id=assistant_action.id and l.user_id=$2),'{}'::jsonb) as result,
+      from lead_search_continuation l where l.child_action_id=assistant_action.id and l.user_id=$2),'{}'::jsonb)
+      || coalesce((select jsonb_build_object('processingRecovery',jsonb_build_object('parentActionId',r.parent_action_id,
+        'pendingCompanies',jsonb_array_length(r.metadata->'scope'->'companies'),'originalAcceptedCount',r.metadata->'scope'->'originalAcceptedCount'))
+        from lead_processing_recovery r where r.child_action_id=assistant_action.id and r.user_id=$2),'{}'::jsonb)
+      || coalesce((select jsonb_build_object('processingRecoveryChild',r.child_action_id)
+        from lead_processing_recovery r where r.parent_action_id=assistant_action.id and r.user_id=$2),'{}'::jsonb) as result,
       error_message, created_at::text, updated_at::text
      from assistant_action where id = $1 and user_id = $2 limit 1`,
     [actionId, userId],
