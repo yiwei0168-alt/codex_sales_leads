@@ -1,5 +1,7 @@
 # OpenRouter Sol 费用上界证据核验
 
+阶段58当前状态：A20早已记录当前账号仅充值余额、无BYOK；用户现再次明确“未配置 BYOK，仅使用 OpenRouter credits”，适用当前账号/工作区全部供应商。阶段56把该项重新列为待确认属于恢复核对遗漏，撤销该阻塞；下面保留历史核查过程。后续按credits-only继续，不再等待账号确认。仍需收敛缓存/长上下文/折扣价格和完整请求门禁，不以确认代替实际费用证据。
+
 阶段56最终回归826测试/181文件通过。首次全量运行新测试触及默认5秒超时，实际SDK内部等待造成；单独验证已通过后将仅该测试超时设15秒，重跑全量通过。仍只捕获1次传输，产品重试行为未改；生产build沿用阶段52（本阶段只增测试/文档）。
 
 阶段56补证：`playbook-wire.test.ts`使用实际LangChain ChatOpenAI与实际buildLeadMarketPlaybook，固定合成输入，在fetch边界抛BudgetDeniedError，不接触网络。精确顶层字段为max_completion_tokens/messages/model/provider/response_format/stream/temperature；模型openai/gpt-5.6-sol、输出4096、2个纯文本消息、strict JSON Schema、provider仅require_parameters/data_collection。无工具/插件/多结果/特殊服务层/显式缓存配置，单次捕获后预算错误透出。仅此构建入口的合成请求获得证明，不代表所有SDK入口或真实大请求均满足上界。
