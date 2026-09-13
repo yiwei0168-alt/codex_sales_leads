@@ -11,8 +11,8 @@ export async function followUpContext(userId:string,parentId:string){
     tenantQuery<{id:string;content_ciphertext:string;sent_at:string}>(userId,`with recursive chain as (
       select id,parent_id,user_id,company_id,content_ciphertext,sent_at,1 as depth from outbound_mail where user_id=$1 and id=$2
       union all select p.id,p.parent_id,p.user_id,p.company_id,p.content_ciphertext,p.sent_at,c.depth+1 from outbound_mail p join chain c on p.id=c.parent_id
-      where p.user_id=$1 and p.company_id=$3 and p.market_country_code=$4 and c.depth<8 and p.status='sent'
-    ) select id,content_ciphertext,sent_at::text from chain order by depth desc`,[userId,parentId,root.company_id,root.country_code]),
+      where p.user_id=$1 and p.company_id=$3 and p.market_country_code=$4 and p.workspace_id=$5 and c.depth<8 and p.status='sent'
+    ) select id,content_ciphertext,sent_at::text from chain order by depth desc`,[userId,parentId,root.company_id,root.country_code,root.workspace_id]),
     tenantQuery<{id:string;content:string}>(userId,`select id,content from user_outreach_memory where user_id=$1 and status='active' and kind='email-style'
       and (workspace_id is null or workspace_id=$2) and (cardinality(market_codes)=0 or $3=any(market_codes))
       and (cardinality(channel_roles)=0 or $4=any(channel_roles)) order by updated_at desc,id desc limit 4`,[userId,root.workspace_id,root.country_code,root.role]),
@@ -22,7 +22,8 @@ export async function followUpContext(userId:string,parentId:string){
       order by m.sent_at desc nulls last,m.id desc limit 50`,[userId,root.company_id])
   ]);
   const chain=ancestors.map(item=>({id:item.id,sentAt:item.sent_at,...decryptMailboxContent(userId,item.content_ciphertext)}))
-    .filter(item=>item.recipients.join(',')===original.recipients.join(',')&&item.sender.join(',')===original.sender.join(','));
+    .filter(item=>mailAddresses(item.recipients).join(',')===mailAddresses(original.recipients).join(',')
+      &&mailAddresses(item.sender).join(',')===mailAddresses(original.sender).join(','));
   const sender=mailAddresses(original.sender),recipients=mailAddresses(original.recipients);
   const replies=imported.map(item=>({...item,...decryptMailboxContent(userId,item.content_ciphertext)})).filter(item=>
     mailAddresses(item.sender).join(',')===recipients.join(',')&&mailAddresses(item.recipients).includes(sender[0]??""));

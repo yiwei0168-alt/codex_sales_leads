@@ -13,6 +13,17 @@ it("normalizes actual imported address objects and rejects unrelated inbound sen
   const result=await followUpContext("u","p");expect(result?.inbound).toHaveLength(1);expect(result?.inbound[0].subject).toBe("Pricing");
 });
 it("does not read memory or thread when the parent is not owned",async()=>{m.query.mockResolvedValue([]);expect(await followUpContext("u","p")).toBeNull();expect(m.query).toHaveBeenCalledTimes(1);});
+it("compares actual ancestor addresses instead of object string representations",async()=>{
+  const mail=(address:string)=>JSON.stringify({subject:address,bodyText:"Fixture",sender:[{address:"sender@example.com"}],recipients:[{address}]});
+  m.query.mockResolvedValueOnce([{id:"p",workspace_id:"w",company_id:"c",content_ciphertext:mail("alex@example.com"),country_code:"GB",role:"SI"}])
+    .mockResolvedValueOnce([{id:"same",sent_at:"2026-01-01",content_ciphertext:mail("Alex@Example.com")},
+      {id:"other",sent_at:"2026-01-01",content_ciphertext:mail("other@example.com")}])
+    .mockResolvedValueOnce([]).mockResolvedValueOnce([]);
+  const result=await followUpContext("u","p");
+  expect(result?.thread.map(item=>item.subject)).toEqual(["Alex@Example.com"]);
+  expect(m.query.mock.calls[1][1]).toContain("p.workspace_id=$5");
+  expect(m.query.mock.calls[1][2]).toEqual(["u","p","c","GB","w"]);
+});
 it("restricts style to active tenant/workspace/market/role and thread to the same recipient",async()=>{
   m.query.mockResolvedValueOnce([{id:"p",workspace_id:"w",company_id:"c",content_ciphertext:content,country_code:"CO",role:"SI"}])
     .mockResolvedValueOnce([{id:"p",sent_at:"2026-01-01",content_ciphertext:content},{id:"wrong",sent_at:"2026-01-01",content_ciphertext:content.replace("alex@example.com","other@example.com")}])

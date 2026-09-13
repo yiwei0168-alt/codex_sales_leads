@@ -1,5 +1,7 @@
 # 产品开发恢复节点 — 2026-09-11
 
+2026-09-13阶段67 / A21跟进上下文验收：修复对象地址字符串误匹配，递归祖先增加工作区边界。实际加密正文→应用SQL验证收件人、用户/国家/工作区隔离、风格作用域与往来筛选、重复读不变；835测试/build/局部lint通过。7合成发送记录/2导入/4记忆，首个上下文使用各1条祖先/来信/记忆；0真实API/token/费用/发信，用户采用和模型延迟未知。fixture清理失败修正后已全部清理，详见[FOLLOW_UP_CONTEXT_ACCEPTANCE](FOLLOW_UP_CONTEXT_ACCEPTANCE_2026-09-13.md)。无新规则，策略UI复用及真实跟进生成仍待，goal active。
+
 2026-09-13阶段66：结果存储增加完整JSON输入指纹，在run行锁内拒绝变化或无身份旧记录；不再返回未写入的新结果数量。verify-result-persistence实际SQL两国6冲突/2旧记录拒绝、同输入幂等通过并清理；834测试/build/局部lint通过，0付费。无schema迁移，旧记录不回填。3017仍为阶段65启动服务，最新磁盘build阶段66，若需页面验收先核验身份再重启。继续A13与费用/真实业务缺口，goal active。
 
 2026-09-13阶段65：TaskRunControls已有progress接口（更正阶段64恢复记录对接口复用的遗漏），公开pendingCorrection/pendingScoring，主页面刷新用key重建控制。44组实际Chrome/SQL检查通过，含1/1→0/0、未知、错误owner拒绝及恢复；832测试/build/生成check/局部lint通过。3017当前服务session51396，重启前核对CIM身份；独立ui-progress checkpoint和fixture已删除，0真实付费。A09合成生产UI行为补齐，下一A13策略/跟进及实际模型业务仍缺；goal active。

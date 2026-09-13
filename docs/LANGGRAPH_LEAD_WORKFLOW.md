@@ -1,5 +1,7 @@
 # LangChain / LangGraph 销售线索工作流
 
+2026-09-13阶段67 / A21跟进上下文验收：修复对象地址字符串误匹配，递归祖先增加工作区边界。实际加密正文→应用SQL验证收件人、用户/国家/工作区隔离、风格作用域与往来筛选、重复读不变；835测试/build/局部lint通过。7合成发送记录/2导入/4记忆，首个上下文使用各1条祖先/来信/记忆；0真实API/token/费用/发信，用户采用和模型延迟未知。fixture清理失败修正后已全部清理，详见[FOLLOW_UP_CONTEXT_ACCEPTANCE](FOLLOW_UP_CONTEXT_ACCEPTANCE_2026-09-13.md)。无新规则，策略UI复用及真实跟进生成仍待，goal active。
+
 2026-09-13阶段66：persist_results在原run行锁内比对完整JSON输入SHA256身份，首次事务保存身份；同输入返回原计数，冲突或历史无身份在任何写入前拒绝。对象键序规范化，数组顺序保留；不重新调用上游或改写历史。实际SQL两国并发及冲突/旧记录验证通过；历史缺项恢复仍待。
 
 2026-09-13阶段65：TaskRunControls将既有readWorkflowCheckpointProgress的pendingCorrection/pendingScoring公开为候选项计数；按阶段展示，不推导唯一公司总量。任务刷新重新挂载读取控制，失败清除旧数、成功撤销错误，缺失unknown。真实Postgres检查点与Chrome两视口44组验证通过，无图节点运行；真实业务生成链路仍待。
