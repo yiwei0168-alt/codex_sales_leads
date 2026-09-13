@@ -16,7 +16,7 @@ const {buildLeadWorkflowGraph,readSavedWorkflowRecoveryCheckpoint,runLeadWorkflo
 const {persistLeadWorkflowResult}=await import("../src/lib/leads/workflow/persistence");
 const {readSavedProcessingRecovery,proposeProcessingRecovery,proposeProcessingRecoveryInTransaction,prepareProcessingRecoveryExecution}=await import("../src/lib/assistant/processing-recovery");
 const {confirmAndQueueLeadWorkflow,claimLeadWorkflowByAction}=await import("../src/lib/leads/workflow/jobs");
-const {setSpendBudget,reservePaidCall}=await import("../src/lib/billing/repository");
+const {setSpendBudget,setTaskSpendBudget,reservePaidCall}=await import("../src/lib/billing/repository");
 const user=randomUUID(),workspace=randomUUID(),conversation=randomUUID(),action=randomUUID(),run=randomUUID();
 const thread=`saved-recovery-source:${user}`,email=`saved-recovery-${user}@example.invalid`;
 const domain=`saved-recovery-${user}.fixture.invalid`;
@@ -25,6 +25,7 @@ const saver=new PostgresSaver(getPool(),undefined,{schema:"langgraph"});
 const graph=buildLeadWorkflowGraph({} as import("../src/lib/leads/workflow/graph").LeadWorkflowDependencies,saver);
 const config={configurable:{thread_id:thread}};
 let created=false;
+let recoveryThread:string|null=null;
 try{
   const client=await admin.connect();
   try{
@@ -65,17 +66,26 @@ try{
   const observations=(await admin.query("select changes->'efficiency' as e from workspace_audit_event where actor_user_id=$1 and entity_type='processing-recovery'",[user])).rows;
   assert.equal(observations.reduce((sum,row)=>sum+row.e.savedOutputItems,0),1);
   assert.ok(observations.every(row=>row.e.userAdoptedItems===null&&row.e.downstreamUsedItems===0));
-  await assert.rejects(runLeadWorkflow({userId:user,actionId:childId,graphThreadId:`forbidden:${childId}`,plan:proposals[0].gap===plan.targetCount?plan:{...plan,targetCount:proposals[0].gap}}),/ordinary search is forbidden/);
+  await assert.rejects(runLeadWorkflow({userId:user,actionId:childId,graphThreadId:`forbidden:${childId}`,plan:proposals[0].gap===plan.targetCount?plan:{...plan,targetCount:proposals[0].gap}}),/confirmed task/);
   const recoveryPlan={...plan,targetCount:proposals[0].gap};
   await assert.rejects(prepareProcessingRecoveryExecution(user,childId,"unconfirmed",recoveryPlan),/confirmed task/);
   await confirmAndQueueLeadWorkflow(user,childId,"inline");
   const recoveryClaim=await claimLeadWorkflowByAction(user,childId,"synthetic-saved-source");assert.ok(recoveryClaim);
+  recoveryThread=recoveryClaim.graphThreadId;
   await assert.rejects(prepareProcessingRecoveryExecution(user,childId,"wrong-thread",recoveryPlan),/confirmed task/);
   await assert.rejects(prepareProcessingRecoveryExecution(user,childId,recoveryClaim.graphThreadId,{...recoveryPlan,countryCode:"MX"}),/plan mismatch/);
   const initialized=await Promise.all([prepareProcessingRecoveryExecution(user,childId,recoveryClaim.graphThreadId,recoveryPlan),prepareProcessingRecoveryExecution(user,childId,recoveryClaim.graphThreadId,recoveryPlan)]);
   assert.ok(initialized[0]);assert.ok(initialized[1]);assert.equal(initialized[0].runId,initialized[1].runId);assert.notEqual(initialized[0].runId,run);
   assert.equal((await admin.query("select count(*)::int as n from lead_search_run where workspace_id=$1",[workspace])).rows[0].n,2);
   assert.equal((await admin.query("select status from lead_search_run where id=$1",[run])).rows[0].status,"completed");
+  await setTaskSpendBudget(user,childId,0);
+  // Missing fixture knowledge or zero budget must stop actual wiring before any paid operation.
+  await assert.rejects(runLeadWorkflow({userId:user,actionId:childId,graphThreadId:recoveryClaim.graphThreadId,plan:recoveryPlan}));
+  const seeded=await graph.getState({configurable:{thread_id:recoveryClaim.graphThreadId}});
+  assert.equal(seeded.values.runId,initialized[0].runId);
+  assert.equal(seeded.values.savedProcessingRecovery?.sourceActionId,action);
+  assert.equal(seeded.values.terminalRecoveryOnly,true);
+  assert.equal((await admin.query("select count(*)::int as n from paid_call_reservation where user_id=$1 and operation_id=$2",[user,childId])).rows[0].n,0);
   await assert.rejects(readSavedProcessingRecovery(randomUUID(),action));
   await admin.query("update assistant_action set result=jsonb_set(result,'{creditsUsed}','1') where id=$1",[action]);
   await assert.rejects(readSavedProcessingRecovery(user,action),/mismatch/);
@@ -99,6 +109,7 @@ try{
       assert.equal((await client.query("select id from app_user where id=$1 and email=$2 for update",[user,email])).rowCount,1);
       assert.equal((await client.query("select id from paid_call_reservation where user_id=$1 and tariff_key<>'synthetic-saved-source'",[user])).rowCount,0,"Unexpected paid request: preserve fixture");
       await saver.deleteThread(thread);
+      if(recoveryThread)await saver.deleteThread(recoveryThread);
       for(const table of ["paid_cost_observation","paid_call_reservation","task_spend_limit","assistant_conversation","spend_budget_change","user_spend_budget"])await client.query(`delete from ${table} where user_id=$1`,[user]);
       await client.query("delete from market_workspace where id=$1 and owner_id=$2",[workspace,user]);
       await client.query("delete from app_user where id=$1 and email=$2",[user,email]);

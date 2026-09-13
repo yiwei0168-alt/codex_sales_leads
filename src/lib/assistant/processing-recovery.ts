@@ -1,5 +1,5 @@
 import type {PoolClient} from "pg";
-import {tenantQuery,tenantTransaction} from "@/lib/rag/db";
+import {tenantTransaction} from "@/lib/rag/db";
 import {readRecoveryTaskLimits} from "@/lib/billing/recovery-task-budget";
 import {BudgetDeniedError} from "@/lib/billing/policy";
 import type {LeadSearchPlan} from "./types";
@@ -18,12 +18,6 @@ const productionCheckpoint:ReadCheckpoint=async(...args)=>{
 /** Read-only preparation. Does not create an executable action or call a provider. */
 export async function readSavedProcessingRecovery(userId:string,parentId:string){
   return tenantTransaction(userId,client=>readSavedProcessingRecoveryInTransaction(client,userId,parentId,productionCheckpoint));
-}
-
-/** Execution wiring must explicitly consume this lineage before any ordinary discovery. */
-export async function assertNoUnpreparedProcessingRecovery(userId:string,actionId:string){
-  const rows=await tenantQuery(userId,"select child_action_id from lead_processing_recovery where user_id=$1 and child_action_id=$2",[userId,actionId]);
-  if(rows.length)throw new Error("Processing recovery requires its verified saved-source execution path; ordinary search is forbidden");
 }
 
 export async function proposeProcessingRecovery(userId:string,parentId:string){

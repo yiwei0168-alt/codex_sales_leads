@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { MemorySaver } from "@langchain/langgraph";
 import { WorkflowPausedError } from "./pause";
+import {leadEvidenceContentHash} from "@/lib/leads/evidence-snapshot";
 import { resultPersistenceFingerprint } from "./persistence-identity";
 import {completedStageMetric} from "./workflow-telemetry";
 import { processingRecoveryWork } from "./processing-recovery";
@@ -148,6 +149,43 @@ function dependencies(events: string[], context = ragContext): LeadWorkflowDepen
 }
 
 describe("LangGraph lead workflow", () => {
+  it("runs saved recovery through correction and scoring without discovery or repeated evidence",async()=>{
+    const deps=dependencies([]),graph=buildLeadWorkflowGraph(deps,new MemorySaver());
+    const config={configurable:{thread_id:"saved-fresh"}};
+    await graph.updateState(config,{userId:"u",actionId:"child",workspaceId:"w",graphThreadId:"saved-fresh",runId:"run-1",plan,playbook,
+      phase:"planning",candidates:[candidate],correctedCandidates:[],assessments:[],creditsUsed:0,ragContext:[],
+      assessmentReviews:[],handoffs:[],modelUsage:[],stageMetrics:[],warnings:[],terminalRecoveryOnly:true,
+      savedProcessingRecovery:{sourceActionId:"parent",sourceRunId:"old",sourceFingerprint:"proof",refreshCandidateIds:[]}},"build_playbook");
+    const completed=await graph.invoke(null,config);
+    expect(deps.discover).not.toHaveBeenCalled();expect(deps.collectEvidence).not.toHaveBeenCalled();
+    expect(deps.correctionAgent.correct).toHaveBeenCalledOnce();expect(deps.qualificationAgent.evaluate).toHaveBeenCalledOnce();
+    expect(completed.targetCompletionReason).toBe("qualified-shortfall");
+  });
+  it("checkpoints each recovery evidence success and pauses invalid paid output without automatic retry",async()=>{
+    const deps=dependencies([]),graph=buildLeadWorkflowGraph(deps,new MemorySaver());
+    const config={configurable:{thread_id:"saved-partial"}};
+    const second={...candidate,candidateId:"second",domain:"second.de"};let failed=true;
+    deps.correctionAgent.correct=vi.fn(async (items:LeadWorkflowCandidate[])=>({candidates:items.map(item=>({...item,correction:correctedCandidate.correction})),creditsUsed:0,warnings:[]}));
+    deps.qualificationAgent.evaluate=vi.fn(async (items:CorrectedLeadWorkflowCandidate[])=>items.map(item=>({...assessment,candidateId:item.candidateId})));
+    deps.collectEvidence=vi.fn(async(items:LeadWorkflowCandidate[])=>({candidates:items.map(item=>({...item,evidence:item.candidateId==="second"&&failed?[]:
+      [{...candidate.evidence[0],evidenceRunId:"run-1",freshnessStatus:"fresh" as const,contentHash:leadEvidenceContentHash(candidate.evidence[0].excerpt)}]})),creditsUsed:2,warnings:[]}));
+    await graph.updateState(config,{userId:"u",actionId:"child",workspaceId:"w",graphThreadId:"saved-partial",runId:"run-1",plan,playbook,
+      phase:"planning",candidates:[candidate,second],correctedCandidates:[],assessments:[],creditsUsed:0,ragContext:[],
+      assessmentReviews:[],handoffs:[],modelUsage:[],stageMetrics:[],warnings:[],terminalRecoveryOnly:true,
+      savedProcessingRecovery:{sourceActionId:"parent",sourceRunId:"old",sourceFingerprint:"proof",refreshCandidateIds:[candidate.candidateId,"second"]}},"build_playbook");
+    await expect(graph.invoke(null,config)).rejects.toThrow("校正或评分未完成");
+    const paused=await graph.getState(config);
+    expect(paused.next).toEqual(["recover_saved_evidence"]);expect(paused.values.creditsUsed).toBe(4);
+    expect(paused.values.savedProcessingRecovery?.refreshCandidateIds).toEqual(["second"]);
+    expect(deps.collectEvidence).toHaveBeenCalledTimes(2);
+    await expect(graph.invoke(null,config)).rejects.toThrow("校正或评分未完成");
+    expect(deps.collectEvidence).toHaveBeenCalledTimes(2);
+    failed=false;
+    await graph.updateState(config,{savedProcessingRecovery:{...paused.values.savedProcessingRecovery!,evidenceBlocked:false}},"build_playbook");
+    await graph.invoke(null,config);
+    expect(deps.collectEvidence).toHaveBeenCalledTimes(3);expect(deps.discover).not.toHaveBeenCalled();
+    expect(vi.mocked(deps.collectEvidence).mock.calls[2][0].map(item=>item.candidateId)).toEqual(["second"]);
+  });
   it("repairs a retained terminal score without restarting discovery to fill the remaining target",async()=>{
     const deps=dependencies([]),saver=new MemorySaver(),graph=buildLeadWorkflowGraph(deps,saver);
     const config={configurable:{thread_id:"terminal-score"}};

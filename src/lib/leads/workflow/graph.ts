@@ -24,6 +24,8 @@ import { LeadQualificationAgent } from "./qualification-agent";
 import { retrieveLeadRagContext } from "./rag-context";
 import { retrieveCooperationPathMemory } from "../path-memory";
 import { completedStageMetric } from "./workflow-telemetry";
+import {savedRecoverySeed} from "./saved-recovery-seed";
+import {isCurrentLeadScoringEvidence} from "@/lib/leads/evidence-snapshot";
 import { loadCachedLeadAssessments, saveCachedLeadAssessments } from "./assessment-cache";
 import { loadCachedLeadPlaybook, saveCachedLeadPlaybook } from "./playbook-cache";
 import { nextNoFinalRoundCount, plannedCandidatePool, targetCompletionDecision,
@@ -65,6 +67,7 @@ const WorkflowAnnotation = Annotation.Root({
   targetShouldContinue: Annotation<boolean | undefined>(),
   processingRecoveryAuthorized: Annotation<boolean | undefined>(),
   terminalRecoveryOnly: Annotation<boolean | undefined>(),
+  savedProcessingRecovery: Annotation<LeadWorkflowState["savedProcessingRecovery"]>(),
   targetCompletionReason: Annotation<TargetCompletionReason | undefined>(),
   assessmentReviews: Annotation<LeadAssessmentReview[]>(),
   handoffs: Annotation<LeadDevelopmentHandoff[]>(),
@@ -182,7 +185,32 @@ export function buildLeadWorkflowGraph(
       return { phase: "planning" as const, playbook: output,
         warnings: [...state.warnings, ...playbook.warnings], stageMetrics: [...(state.stageMetrics ?? []), metric] };
     })
+    .addNode("prepare_recovery_evidence", async(state)=>{
+      const startedAt=Date.now();
+      await phase(dependencies,state,"collecting-evidence");
+      const recovery=state.savedProcessingRecovery;
+      if(!recovery||!state.runId||!state.terminalRecoveryOnly)throw new Error("Missing saved recovery scope");
+      const id=recovery.refreshCandidateIds[0];
+      if(!id)return {};
+      const source=state.candidates.find(candidate=>candidate.candidateId===id);
+      if(!source)throw new Error("Recovery evidence candidate missing");
+      // Explicit recovery reverification cannot accept the ordinary stale-library shortcut.
+      const output=await dependencies.collectEvidence([source],state.plan,{allowReusableEvidence:false});
+      const candidate=output.candidates[0];
+      const valid=output.candidates.length===1&&candidate?.candidateId===id&&candidate.domain===source.domain
+        &&candidate.evidence.some(item=>isCurrentLeadScoringEvidence(item,state.runId!));
+      return {candidates:valid?state.candidates.map(item=>item.candidateId===id?candidate:item):state.candidates,
+        savedProcessingRecovery:{...recovery,refreshCandidateIds:valid?recovery.refreshCandidateIds.slice(1):recovery.refreshCandidateIds,evidenceBlocked:!valid},
+        creditsUsed:state.creditsUsed+output.creditsUsed,warnings:[...state.warnings,...output.warnings],
+        stageMetrics:[...state.stageMetrics,completedStageMetric({stage:"collect_evidence",startedAt,input:[source],output:[candidate],
+          inputItems:1,outputItems:candidate?.evidence.length??0,paidSearchCredits:output.creditsUsed,
+          validArtifacts:valid?1:0,downstreamUsedArtifacts:valid?1:0,
+          metadata:{processingRecovery:true,providerAttempts:output.providerMetrics?.attempts??null,
+            retries:output.providerMetrics?.retries??null,providerLatencyMs:output.providerMetrics?.latencyMs??null}})]};
+    })
+    .addNode("recover_saved_evidence",async()=>{throw new WorkflowProcessingIncompleteError();})
     .addNode("discover_candidates", async (state) => {
+      if(state.savedProcessingRecovery)throw new Error("Company discovery is forbidden for processing recovery");
       const startedAt = Date.now();
       await phase(dependencies, state, "discovering");
       if (!state.playbook) throw new Error("Market Playbook is missing before discovery");
@@ -498,7 +526,11 @@ export function buildLeadWorkflowGraph(
     })
     .addEdge(START, "retrieve_knowledge")
     .addEdge("retrieve_knowledge", "build_playbook")
-    .addEdge("build_playbook", "discover_candidates")
+    .addConditionalEdges("build_playbook",state=>state.savedProcessingRecovery?"prepare_recovery_evidence":"discover_candidates",{
+      prepare_recovery_evidence:"prepare_recovery_evidence",discover_candidates:"discover_candidates"})
+    .addConditionalEdges("prepare_recovery_evidence",state=>state.savedProcessingRecovery?.evidenceBlocked?"recover_saved_evidence":state.savedProcessingRecovery?.refreshCandidateIds.length?"prepare_recovery_evidence":"correct_candidates",{
+      prepare_recovery_evidence:"prepare_recovery_evidence",correct_candidates:"correct_candidates",recover_saved_evidence:"recover_saved_evidence"})
+    .addEdge("recover_saved_evidence","prepare_recovery_evidence")
     .addEdge("discover_candidates", "collect_evidence")
     .addEdge("collect_evidence", "correct_candidates")
     .addEdge("correct_candidates", "route_candidates")
@@ -534,8 +566,6 @@ export async function runLeadWorkflow(input: {
   graphThreadId: string;
   plan: LeadSearchPlan;
 }): Promise<LeadWorkflowResult> {
-  const {assertNoUnpreparedProcessingRecovery}=await import("@/lib/assistant/processing-recovery");
-  await assertNoUnpreparedProcessingRecovery(input.userId,input.actionId);
   const initial: LeadWorkflowState = {
     ...input,
     workspaceId: await getGlobalWorkspaceId(input.userId),
@@ -563,6 +593,17 @@ export async function runLeadWorkflow(input: {
   const snapshot=await graph.getState(config);
   let mode=checkpointInvocation(snapshot,input.userId,input.actionId,input.plan);
   if(mode==='complete')return snapshot.values.result as LeadWorkflowResult;
+  const {prepareProcessingRecoveryExecution}=await import("@/lib/assistant/processing-recovery");
+  const recovery=await prepareProcessingRecoveryExecution(input.userId,input.actionId,input.graphThreadId,input.plan);
+  if(recovery){
+    config.recursionLimit=50+recovery.scope.companies.reduce((count,company)=>count+company.candidates.length,0);
+    if(mode==="fresh")Object.assign(initial,savedRecoverySeed(recovery));
+    else if(snapshot.values.runId!==recovery.runId||snapshot.values.savedProcessingRecovery?.sourceFingerprint!==recovery.proof.checkpointFingerprint)
+      throw new Error("Recovery checkpoint source mismatch");
+    if(mode==="resume"&&snapshot.next.includes("recover_saved_evidence")){
+      await graph.updateState(config,{savedProcessingRecovery:{...snapshot.values.savedProcessingRecovery!,evidenceBlocked:false}},"build_playbook");
+    }
+  }
   if(mode==='recover-terminal'){
     await assertProcessingRecoveryCostsKnown(input.userId,input.actionId);
     await assertTerminalRunUnpersisted(input.userId,input.actionId,input.graphThreadId,snapshot.values as LeadWorkflowState);

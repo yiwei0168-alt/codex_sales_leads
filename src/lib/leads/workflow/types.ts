@@ -443,6 +443,7 @@ export interface LeadWorkflowState {
   targetShouldContinue?: boolean;
   processingRecoveryAuthorized?: boolean;
   terminalRecoveryOnly?: boolean;
+  savedProcessingRecovery?: {sourceActionId:string;sourceRunId:string;sourceFingerprint:string;refreshCandidateIds:string[];evidenceBlocked?:boolean};
   targetCompletionReason?: "target-met" | "confirmed-exhaustion" | "provider-unavailable" | "maximum-rounds" | "processing-incomplete" | "role-unresolved" | "qualified-shortfall";
   assessmentReviews: LeadAssessmentReview[];
   handoffs: LeadDevelopmentHandoff[];
