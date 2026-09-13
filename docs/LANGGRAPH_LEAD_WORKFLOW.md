@@ -1,5 +1,7 @@
 # LangChain / LangGraph 销售线索工作流
 
+2026-09-14 / 阶段121：搜索运行、查询、结果、提供方调用和出现记录按工作区所有者执行数据库 RLS；发现阶段必须携带用户费用/任务上下文，缺失时在写入或外发前失败。隔离 SQL 的目标1、合格0、提供方不可用案例经图、保存和任务回执完整接线，回执仅1条，5 micro-USD 合成预留保持未核销/未分配；不是新市场测评或真实付费闭环。[验收](ZERO_RESULT_GRAPH_TENANT_ACCEPTANCE_2026-09-14.md)。
+
 2026-09-14 阶段120：图的 `targetCompletionReason` 与结果 `accepted/requested` 继续分别保留；对话卡及任务详情的完成标签只在最终保存数已知时判断是否填满，历史缺数显示未知。零结果或部分结果不再仅因后台 `completed` 被标为达标。停止原因仍来自图结果并在任务详情独立显示；真实搜索和模型接线尚待 A11。[生产 UI 验收](SEARCH_TASK_STATUS_LABEL_PRODUCTION_UI_2026-09-14.md)。
 
 2026-09-14 阶段119：结果保存节点允许零合格公司仍持久化运行和空交付计数；并发重试按输入指纹复用同一结果。任务共享费用在明确处理公司集合为空时保存 `zero-company-task`，不生成公司份额，原预留仍占用且核销未知。`workflow_phase=completed` 只表示结果存储已提交；图层停止原因和目标缺口仍须在真实任务中核对。[SQL 回归](ZERO_QUALIFIED_RESULT_PERSISTENCE_2026-09-14.md)。

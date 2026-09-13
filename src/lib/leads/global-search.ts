@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
+import type { QueryResultRow } from "pg";
 import type { ChannelRole, CompanyRecord } from "@/lib/domain";
-import { query, transaction } from "@/lib/rag/db";
+import { tenantQuery, tenantTransaction } from "@/lib/rag/db";
 import { TavilySearchProvider, type TavilySearchResult } from "@/providers/tavily";
 import { ProviderUnavailableError } from "@/providers/contracts";
 import type { LeadSearchPlan } from "@/lib/assistant/types";
@@ -113,6 +114,7 @@ function toRecord(candidate: GlobalLeadSearchCandidate, plan: LeadSearchPlan, ru
 export async function executeGlobalLeadSearch(userId: string, actionId: string, plan: LeadSearchPlan): Promise<{
   runId: string; countryCode: string; countryName: string; accepted: number; requested: number; creditsUsed: number;
 }> {
+  const query = <T extends QueryResultRow>(sql: string, values: unknown[]) => tenantQuery<T>(userId, sql, values);
   const workspaces = await query<{ id: string }>(
     `select id from market_workspace where owner_id = $1 and slug = 'global-sales' and status = 'active' limit 1`, [userId],
   );
@@ -162,7 +164,7 @@ export async function executeGlobalLeadSearch(userId: string, actionId: string, 
       }
     }
     const selected = selectGlobalLeadSearchCandidates(candidates, plan.targetCount);
-    await transaction(async (client) => {
+    await tenantTransaction(userId, async (client) => {
       for (const candidate of selected) {
         const record = toRecord(candidate, plan, run.id);
         const company = await client.query<{ id: string }>(

@@ -209,6 +209,10 @@
 | AC-V01 production contact scoring | DeepSeek evidence assessment plus deterministic hard gates publish auditable current decisions; accepted, review and invalid outcomes remain separate. |
 | AC-V02 safe automation | Automatic mode verifies only Official/HighConfidence, retains crawler source status, supersedes older decisions, and keeps outbound verification disabled. |
 
+## Current local acceptance supplement (2026-09-14)
+
+Stage 121 verifies that zero-result search completion persists a partial outcome and one receipt while retaining a synthetic unallocated cost reservation. Search runs and provider evidence are now restricted by workspace owner at the database layer. This is synthetic local SQL evidence; the paid natural-language-to-qualified-company minimum run remains A11 unverified. See [stage 121](ZERO_RESULT_GRAPH_TENANT_ACCEPTANCE_2026-09-14.md) and the [current acceptance matrix](CURRENT_ACCEPTANCE_MATRIX_2026-09-13.md). The older Demo scope notes below remain historical.
+
 ## Simplified for Demo
 
 - The pages in PRD section 9 are presented as one persistent desktop workspace with navigable views rather than separate URLs.

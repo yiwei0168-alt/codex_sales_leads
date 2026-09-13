@@ -1,5 +1,7 @@
 # Hybrid Lead Search Workflow
 
+2026-09-14 stage 121: Search runs, queries, results, provider calls and occurrences now use workspace-owner RLS. The discovery writer requires an owned workflow context before any search-artifact write. A local synthetic failed-provider observation was persisted through the real writer; another application user could not read or update the resulting artifacts. Zero candidates remains an explicit partial outcome and does not imply search exhaustion. [SQL acceptance](ZERO_RESULT_GRAPH_TENANT_ACCEPTANCE_2026-09-14.md).
+
 2026-09-14 阶段120：搜索后台完成状态与最终目标数量分别展示；对话卡和详情用实际保存数判断达标/缺口，缺历史数量不补零。图的停止原因仍单独保留，供应商不可用、已证实搜索耗尽等原因不由 UI 标签改写。[生产 UI 回归](SEARCH_TASK_STATUS_LABEL_PRODUCTION_UI_2026-09-14.md)。
 
 2026-09-14 阶段117：SearchAPI官方账号接口只读观测无可核定单价的套餐/速度档信息；不因零额度或公开参考价解除费用门禁，不把账号额度当作公司搜索贡献或市场耗尽。[证据](SEARCHAPI_ACCOUNT_READONLY_CHECK_2026-09-14.md)。

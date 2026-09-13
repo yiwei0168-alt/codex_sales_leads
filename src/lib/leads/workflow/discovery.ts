@@ -3,7 +3,7 @@ import {BudgetDeniedError} from "@/lib/billing/policy";
 import { currentSpendContext } from "@/lib/billing/context";
 import {withCompanyCostAttribution,companyCostKey} from "@/lib/billing/company-cost-context";
 
-import { query, transaction, tenantTransaction, tenantQuery } from "@/lib/rag/db";
+import { tenantTransaction, tenantQuery } from "@/lib/rag/db";
 import type { LeadSearchPlan } from "@/lib/assistant/types";
 import { TavilySearchProvider, tavilyFailureMetrics } from "@/providers/tavily";
 import { ACTIVE_LEAD_SCORING_POLICY, scoringPolicyChecksum } from "@/lib/leads/scoring-policy";
@@ -51,11 +51,16 @@ function occurrenceKey(call: HybridSearchCallTelemetry, item: HybridSearchCallTe
     item.item.externalId ?? "", item.item.rank].join("|"));
 }
 
+function searchArtifactUserId(): string {
+  const userId = currentSpendContext()?.userId;
+  if (!userId) throw new Error("Search artifact writes require an owned workflow context");
+  return userId;
+}
+
 export async function persistHybridSearchCall(runId: string, plan: LeadSearchPlan,
   call: HybridSearchCallTelemetry): Promise<void> {
-  const userId = currentSpendContext()?.userId;
-  const runTransaction: typeof transaction = userId ? run => tenantTransaction(userId, run) : transaction;
-  await runTransaction(async client => {
+  const userId = searchArtifactUserId();
+  await tenantTransaction(userId, async client => {
     const query = async <T extends import("pg").QueryResultRow = import("pg").QueryResultRow>(sql: string, values?: unknown[]): Promise<T[]> =>
       (await client.query<T>(sql, values)).rows;
     const locked = await query("select id from lead_search_run where id=$1 for update", [runId]);
@@ -109,26 +114,19 @@ export async function persistHybridSearchCall(runId: string, plan: LeadSearchPla
   });
 }
 
-async function writeDiscoveryGateOutcomes(candidates: LeadWorkflowCandidate[]): Promise<void> {
+async function writeDiscoveryGateOutcomes(candidates: LeadWorkflowCandidate[], userId: string): Promise<void> {
   for (const candidate of candidates) {
     for (const occurrence of candidate.discoveryOccurrences ?? []) {
-      await query(
+      await tenantQuery(userId,
         `update lead_search_provider_occurrence set gate_status=$2 where occurrence_key=$1`,
-        [occurrence.occurrenceId, candidate.discoveryGate?.status ?? null],
-      );
+        [occurrence.occurrenceId, candidate.discoveryGate?.status ?? null]);
     }
   }
 }
 
 export async function persistDiscoveryRoundSummary(values: unknown[]): Promise<void> {
-  const userId = currentSpendContext()?.userId;
-  if (userId) await tenantQuery(userId, `update lead_search_run set query_count = query_count + $2,
-       raw_result_count = raw_result_count + $3,
-       unique_candidate_count = unique_candidate_count + $4,
-       credits_used = credits_used + $5, metadata = metadata || $6::jsonb
-         || jsonb_build_object('completedDiscoveryRounds', coalesce(metadata->'completedDiscoveryRounds','[]'::jsonb) || to_jsonb($7::text))
-       where id = $1 and not (coalesce(metadata->'completedDiscoveryRounds','[]'::jsonb) ? $7::text)`, values);
-  else await query(`update lead_search_run set query_count = query_count + $2,
+  const userId = searchArtifactUserId();
+  await tenantQuery(userId, `update lead_search_run set query_count = query_count + $2,
        raw_result_count = raw_result_count + $3,
        unique_candidate_count = unique_candidate_count + $4,
        credits_used = credits_used + $5, metadata = metadata || $6::jsonb
@@ -144,13 +142,14 @@ export async function discoverLeadCandidates(
   graphThreadId: string,
   invocation: LeadDiscoveryInvocation = {},
 ): Promise<DiscoveryResult> {
-  const priorRuns = invocation.existingRunId ? [] : await query<{ id: string }>(
+  const userId = searchArtifactUserId();
+  const priorRuns = invocation.existingRunId ? [] : await tenantQuery<{ id: string }>(userId,
     `select id from lead_search_run where workspace_id=$1 and country_code=$2
       and metadata->>'assistantActionId'=$3 and metadata->>'graphThreadId'=$4`,
     [workspaceId, plan.countryCode, actionId, graphThreadId]);
   if (priorRuns.length > 1) throw new Error("Multiple discovery runs match this checkpoint; refusing paid replay");
   const existingRunId = invocation.existingRunId ?? priorRuns[0]?.id;
-  const [createdRun] = existingRunId ? [] : await query<{ id: string }>(
+  const [createdRun] = existingRunId ? [] : await tenantQuery<{ id: string }>(userId,
     `insert into lead_search_run (workspace_id, provider, target_count, country_code, market_name, objective,
        scoring_policy_id, scoring_policy_version, scoring_policy_checksum, scoring_policy_snapshot, metadata)
      values ($1, 'langgraph+hybrid-search', $2, $3, $4, $5,
@@ -165,30 +164,28 @@ export async function discoverLeadCandidates(
         evidencePolicy: "current-run-fresh-or-revalidated-only",
         discoveryEvidencePolicy: "search-snippets-for-light-gate-only-not-final-scoring" }),
       ACTIVE_LEAD_SCORING_POLICY.policyKey, ACTIVE_LEAD_SCORING_POLICY.version,
-      scoringPolicyChecksum(), JSON.stringify(ACTIVE_LEAD_SCORING_POLICY)],
-  );
+      scoringPolicyChecksum(), JSON.stringify(ACTIVE_LEAD_SCORING_POLICY)]);
   const run = { id: existingRunId ?? createdRun?.id };
   if (!run.id) throw new Error("Lead search run could not be created or resumed.");
   try {
     const dependency = discoverySessionDependency(plan, graphThreadId);
-    const userId = currentSpendContext()?.userId;
-    const owner = userId ? { userId, workspaceId, runId: run.id, countryCode: plan.countryCode, actionId, graphThreadId } : undefined;
+    const owner = { userId, workspaceId, runId: run.id, countryCode: plan.countryCode, actionId, graphThreadId };
     const contract = discoveryRoundContract(dependency, playbook, invocation.queryRound ?? 0, invocation.targetPoolOverride);
-    const saved = owner ? await loadDiscoveryCheckpoint(owner, contract, invocation.queryRound ?? 0) : undefined;
+    const saved = await loadDiscoveryCheckpoint(owner, contract, invocation.queryRound ?? 0);
     const session = restoreDiscoverySession(saved?.session ?? invocation.sessionSnapshot, dependency);
     // Calls may have been checkpointed just before their telemetry transaction failed.
     for (const call of saved?.round.calls ?? []) await persistHybridSearchCall(run.id, plan, call);
     const execution = await executeHybridDiscovery(run.id, plan, playbook, {
       session,
       checkpoint: saved?.round,
-      onCheckpoint: owner ? async round => saveDiscoveryCheckpoint(owner, { version: "discovery-call-checkpoint-v1",
-        contract, session: snapshotDiscoverySession(session, dependency), round }) : undefined,
+      onCheckpoint: async round => saveDiscoveryCheckpoint(owner, { version: "discovery-call-checkpoint-v1",
+        contract, session: snapshotDiscoverySession(session, dependency), round }),
       queryRound: invocation.queryRound,
       targetPoolOverride: invocation.targetPoolOverride,
       initialExcludeDomains: invocation.excludeDomains,
       onCall: (call) => persistHybridSearchCall(run.id, plan, call),
     });
-    await writeDiscoveryGateOutcomes([...execution.candidates, ...execution.rejectedCandidates]);
+    await writeDiscoveryGateOutcomes([...execution.candidates, ...execution.rejectedCandidates], userId);
     for (const candidate of execution.candidates) {
       const officialEvidence = candidate.evidence.filter((item) => item.sourceType === "official-website");
       if (officialEvidence.length > 0) await persistPublicEvidence({ companyName: candidate.companyName,
@@ -221,7 +218,7 @@ export async function discoverLeadCandidates(
       warnings: execution.warnings, modelUsage: execution.modelUsage, callMetrics: execution.calls };
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    await query(`update lead_search_run set status='failed', error_message=$2, finished_at=now() where id=$1`,
+    await tenantQuery(userId, `update lead_search_run set status='failed', error_message=$2, finished_at=now() where id=$1`,
       [run.id, message.slice(0, 4_000)]).catch(() => undefined);
     throw error;
   }
