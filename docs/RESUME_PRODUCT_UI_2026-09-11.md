@@ -1,5 +1,7 @@
 # 产品开发恢复节点 — 2026-09-11
 
+2026-09-13阶段53：verify-cost-reconciliation.ts --skip-migration新增实际搜索契约→SQL防重放通过；未知后两并发重试不出网、参数换序、任务隔离、成功禁止重放和原核销/分摊均通过，typecheck通过，fixture清理、0真实付费。产品990c667未改，825全量/build沿用阶段52。下一继续最小业务闭环准备及全图跨进程恢复，goal active。
+
 2026-09-13阶段52：最小真实闭环预检预算仍占12.324404/30、余17.675596、6未知0在途；实际DEEPSEEK_MODEL为deepseek-v4-pro，不擅自改模型。发现同步搜索无持久请求指纹，新增五契约paid-search-replay-v1接入既有账本；825测试/180文件、build和生成check通过，0付费。下一补实际SQL搜索防重放，并继续真实闭环准备；已有claimLeadWorkflowByAction可精确认领隔离任务，禁止调用通用worker处理原队列。goal active。
 
 2026-09-13阶段51：产品14dfd6f未改，私有知识脚本新增真实SQL邮件候选并发/幂等/恢复/遥测断言通过，2候选7本人调用仅2新决定，预存知识复用无嵌入/付费，fixture清理、typecheck通过。继续新邮件模型/页面链路、策略跟进、费用恢复遥测其余项和真实最小业务闭环；goal active。

@@ -169,6 +169,32 @@ try{
   console.log(JSON.stringify({sharedCompletionConserved:true,sharedPopulationImmutable:true,lateInvoiceUsesCompletedPopulation:true,sharedUnknownRetained:true,realProviderCalls:0}));
   console.log(JSON.stringify({unknownRecoveryBlocked:true,verifiedFailedRequestRecoveryAllowed:true,
     completedRequestReplayBlocked:true,recoveryCostHistoryPreserved:true,realProviderCalls:0}));
+  // Actual search adapter boundary and SQL reservation guard; transport is in-memory only.
+  const searchBound={...bound,key:"synthetic-brave-replay",origin:"https://api.search.brave.com",pathname:"/res/v1/web/search",model:"",
+    maximumChargeMicros:10,maximumOutputTokens:0,requestContract:"brave-web-search-v1" as const};
+  const searchOperation=randomUUID();let searchCalls=0;
+  const searchUrl=`${searchBound.origin}${searchBound.pathname}?q=synthetic&country=CO&search_lang=es&count=1`;
+  const lostTransport:typeof fetch=async()=>{searchCalls++;throw new Error("Synthetic response lost");};
+  const successfulTransport:typeof fetch=async()=>{searchCalls++;return Response.json({web:{results:[]}});};
+  const sendSearch=(operationId:string,transport:typeof fetch,url=searchUrl)=>withSpendContext({userId,operationId,stage:"synthetic-search-replay",
+    tariffPolicy:{version:"synthetic-search-v1",rules:[searchBound]}},()=>budgetedFetch(transport)(url));
+  await assert.rejects(sendSearch(searchOperation,lostTransport),{code:"paid-outcome-unknown"});
+  assert.equal(searchCalls,1);
+  const attempts=await Promise.allSettled([sendSearch(searchOperation,successfulTransport),sendSearch(searchOperation,successfulTransport,
+    `${searchBound.origin}${searchBound.pathname}?count=1&search_lang=es&country=CO&q=synthetic`)]);
+  assert(attempts.every(result=>result.status==="rejected"&&result.reason?.code==="paid-request-already-recorded"));
+  assert.equal(searchCalls,1);
+  const searchRows=await tenantQuery<{reserved_micros:string;settled_micros:string|null;request_fingerprint:string}>(userId,
+    "select reserved_micros::text,settled_micros::text,request_fingerprint from paid_call_reservation where user_id=$1 and operation_id=$2",[userId,searchOperation]);
+  assert.equal(searchRows.length,1);assert.equal(searchRows[0].reserved_micros,"10");assert.equal(searchRows[0].settled_micros,null);
+  assert.match(searchRows[0].request_fingerprint,/^[a-f0-9]{64}$/);
+  const otherSearchOperation=randomUUID();
+  await sendSearch(otherSearchOperation,successfulTransport);assert.equal(searchCalls,2);
+  await assert.rejects(sendSearch(otherSearchOperation,successfulTransport),/paid-request-already-recorded/);
+  assert.equal(searchCalls,2);
+  console.log(JSON.stringify({searchUnknownReplayBlockedBeforeTransport:true,searchConcurrentReplayBlocked:true,
+    searchQueryOrderCanonical:true,searchUnknownReservationRetained:true,searchOperationIsolated:true,searchSuccessfulReplayBlocked:true,
+    syntheticSearchTransportCalls:searchCalls,realProviderCalls:0}));
   console.log(JSON.stringify({migration:"052",estimateRetained:true,ambiguousMatchRetained:true,concurrentReleaseOnce:true,invoicePriority:true,appendOnlyHistory:true,overrunRuleOnly:true,originalReservationPreserved:true,separateCostBasisAllocationConserved:true,storedCompanyAttributionPreserved:true,realProviderCalls:0,actualModelCostUsd:0,fixturesOnly:true}));
 }finally{
   if(created){
