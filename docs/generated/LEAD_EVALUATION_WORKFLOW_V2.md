@@ -757,8 +757,8 @@ flowchart TD
 | `src/lib/rag/openai-provider.ts` | `d8d105c5650d1bacdbb48ce652143900afa7d62d505dfd502159f7b09fee1ff2` |
 | `src/lib/assistant/service.ts` | `191d407fc558253b10df7b57564bb73094808cddaf5f2f8883c57742561eff7e` |
 | `src/lib/assistant/repository.ts` | `7d480b70ed29de1795c4c6c1a5c49d471cd700272616bfa3c66dbab4e6d6bfb3` |
-| `src/lib/leads/workflow/graph.ts` | `67048cfde5b30b99c6de3885a788090e265b83b6d9eba11f8a3598bf411d3fa7` |
-| `src/lib/leads/workflow/jobs.ts` | `1adcc7ab1b600f1c773e6a804cbbaaa16c5fed89f2929434513b4fc8e8e3ae10` |
+| `src/lib/leads/workflow/graph.ts` | `c4ce47f8acb87ad9127e9043c54c9ef53a446f94712e6527de0382f6dce2f2e2` |
+| `src/lib/leads/workflow/jobs.ts` | `21e617c68ca5cdf1ce5b8235ed22c4b98488d654cc731243eba0049229a0c73b` |
 | `src/lib/leads/workflow/rag-context.ts` | `1e1ee21e77b90731e849426cd7130de7d1e50ee6aec9f196e44cb642bf81387b` |
 | `src/lib/leads/workflow/playbook.ts` | `2e3ca2dc9562f742383f3bf87ef7efd50c9d8ea5b32a050de05556feda58e0a9` |
 | `src/lib/leads/workflow/playbook-cache.ts` | `84e1d965bd76e7e0326d25889e157fe54315c320816fc7adef0a4ec23c7ca0be` |
@@ -766,7 +766,7 @@ flowchart TD
 | `src/lib/leads/workflow/candidate-registry.ts` | `1666f5010362467f9fcd453115e6961cfeaa4ff2f6a3becf96f5aec168fce5cc` |
 | `src/lib/leads/workflow/discovery-gate.ts` | `8f58856e95fef505866759afe9d9b5e296702ed47ece79893652e3859cb49c19` |
 | `src/lib/leads/workflow/hybrid-discovery-executor.ts` | `da40c8aafdc32ff5f03570871d5355f7ce7175d7b53787b96c28848d44fd56c1` |
-| `src/lib/leads/workflow/discovery.ts` | `79d79fb624b270d27bc84616d37a02362d3d65a9aa3d9a097051bacbf3fb4dc5` |
+| `src/lib/leads/workflow/discovery.ts` | `782772e1034512de2b42e000fd6f50a74cbb342e36b6583bf335b72ed0e87d01` |
 | `src/lib/leads/global-search.ts` | `3e808deea189a90ca6686ec8348648e9f98d97080c9cb78aa9226f6384a4db30` |
 | `src/lib/leads/workflow/evidence-correction-agent.ts` | `c09c8dda2d1d60261c12d7ec8fadcbd3fb01dd344c5799d85fdb5eb874ba3013` |
 | `src/lib/leads/workflow/evidence-packet.ts` | `b832b0ed99a9759c2656da65d65a004445ff63e1441b6cae5d5618b5fa889ba1` |
@@ -805,7 +805,7 @@ flowchart TD
 | `src/lib/leads/workflow/public-evidence-repository.ts` | `5dcbfe60487eeb5d2ccab4b6e3eac9529705b21005abaa599359c992e51c4b03` |
 | `src/lib/leads/workflow/workflow-telemetry.ts` | `47c86d6b05cd87f088eb110cae2603989aebc920b4203688fb899c4d48cbde95` |
 | `src/lib/leads/workflow/role-correction-cache.ts` | `d9561b4c7095ebb0f88b1eb5bb349006e5271502e9400956b6720adaaaac709d` |
-| `src/lib/leads/workflow/target-completion-policy.ts` | `f50e8a24024916624a50d11f15ce270f72decae71093aa3003655231e6a87b4d` |
+| `src/lib/leads/workflow/target-completion-policy.ts` | `c8e21d04e360ccb82f1c46ecceeeac80bcf4c5555df214287d424163e0b2148c` |
 | `experiments/multi-source-lead-discovery/scripts/score-v3-tool-lead-value.ts` | `0417c889812d19ff5b8f28a76102eb80bc827b1356fc26cb5a33a22240ee811d` |
 | `experiments/multi-source-lead-discovery/scripts/render-v3-tool-evaluation.ts` | `1fdb0d23c3465159403b54f4a42a19e28556ce31de320c118ada5d8fd2615a7c` |
 | `experiments/multi-source-lead-discovery/scripts/verify-v3-tool-evaluation.ts` | `447ed84f220192fbab192033ebde7d8b0b2f7d86552a0769cbe0f341d33797fd` |
