@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 
 import type { LeadSearchPlan } from "@/lib/assistant/types";
 import { tenantQuery } from "@/lib/rag/db";
+import { textOutputLimit } from "@/lib/billing/text-output-policy";
 
 import type { LeadMarketPlaybook, LeadRagCitation } from "./types";
 import { LEAD_PLAYBOOK_PROMPT_VERSION } from "./playbook";
@@ -18,6 +19,7 @@ function stable(value: unknown): string {
 export function playbookDependencyFingerprint(plan: LeadSearchPlan, citations: LeadRagCitation[]): string {
   return createHash("sha256").update(stable({ runtime: LEAD_WORKFLOW_RUNTIME_VERSION,
     promptVersion: LEAD_PLAYBOOK_PROMPT_VERSION,
+    outputContract: { version: "text-completion-v1", maxCompletionTokens: textOutputLimit("lead-playbook") },
     plan: { countryCode: plan.countryCode, objective: plan.objective, roles: [...plan.roles].sort(),
       queryLanguage: plan.queryLanguage, userRequest: plan.userRequest.trim() },
     citations: [...citations].sort((left, right) => left.chunkId.localeCompare(right.chunkId))

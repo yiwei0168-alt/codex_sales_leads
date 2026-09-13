@@ -1,0 +1,18 @@
+{
+  "version": "kimi-text-bounds-v1.0.0",
+  "origin": "https://api.moonshot.cn",
+  "pathname": "/v1/chat/completions",
+  "currency": "CNY",
+  "unitTokens": 1000000,
+  "maximumRequestBytes": 262144,
+  "maximumOutputTokens": 12000,
+  "reference": "https://platform.kimi.com/docs/pricing/chat.md",
+  "contractReferences": ["https://platform.kimi.com/docs/api/chat.md", "https://platform.kimi.com/docs/guide/use-thinking-models.md"],
+  "verifiedAt": "2026-09-13T00:00:00Z",
+  "expiresAt": "2026-09-20T00:00:00Z",
+  "models": [
+    {"model": "kimi-k2.6", "contextTokens": 262144, "inputMissMicrosPerMillion": 6500000, "outputMicrosPerMillion": 27000000},
+    {"model": "kimi-k3", "contextTokens": 1048576, "inputMissMicrosPerMillion": 20000000, "outputMicrosPerMillion": 100000000}
+  ],
+  "scope": "Official mainland endpoint only, text JSON, one completion, no tools/media/streaming. Context input ceiling plus explicitly bounded reasoning-and-final output. Preserve existing model, thinking and per-task output limits. Fresh stored FX plus 5 percent reservation buffer required. Not an invoice."
+}

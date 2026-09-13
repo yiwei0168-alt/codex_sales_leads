@@ -1,4 +1,5 @@
 import { ChatOpenAI } from "@langchain/openai";
+import {textOutputLimit} from "@/lib/billing/text-output-policy";
 import {sdkModelFetch,withSdkModelCall} from "@/lib/billing/sdk-model-call";
 import {BudgetDeniedError} from "@/lib/billing/policy";
 
@@ -132,7 +133,7 @@ export async function buildLeadMarketPlaybook(plan: LeadSearchPlan, citations: L
     maxRetries: 2,
     timeout: 90_000,
     streamUsage: false,
-    modelKwargs: { provider: config.providerPreferences },
+    modelKwargs: { provider: config.providerPreferences,max_completion_tokens:textOutputLimit("lead-playbook") },
     configuration: { baseURL: config.baseUrl, defaultHeaders: config.defaultHeaders,fetch:sdkModelFetch() },
   }).withStructuredOutput(leadMarketPlaybookModelSchema, {
     name: "lead_market_playbook",

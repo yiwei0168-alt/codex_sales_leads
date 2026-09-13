@@ -3,7 +3,7 @@ import configuration from "../../../config/billing/request-bounds-v1.1.0.json";
 import {foreignCostBoundSchema,foreignReservationMicros} from "./fx-policy";
 
 export class BudgetDeniedError extends Error {
-  constructor(readonly code:"missing-tariff"|"expired-tariff"|"request-out-of-bounds"|"missing-budget"|"budget-exhausted"|"budget-frozen"|"task-budget-exhausted"|"paid-outcome-unknown"|"paid-request-already-recorded"|"tariff-suspended") {
+  constructor(readonly code:"missing-tariff"|"expired-tariff"|"request-out-of-bounds"|"missing-budget"|"budget-exhausted"|"budget-frozen"|"task-budget-exhausted"|"paid-outcome-unknown"|"paid-request-already-recorded"|"tariff-suspended"|"model-output-incomplete") {
     super(`付费调用已阻止：${code}。请检查预算与已审核费率，未自动放行。`);
     this.name="BudgetDeniedError";
     if(code==="paid-request-already-recorded")this.message="重复付费已阻止：paid-request-already-recorded。当前任务环节已有相同模型请求记录，请复用已保存结果或先核实前次状态。";
@@ -16,6 +16,10 @@ export class PaidCallOutcomeUnknownError extends BudgetDeniedError {
     this.message="付费请求结果或费用尚未明确，已保留本次预留并阻止自动重试；请先核实服务商记录，再决定恢复。";
   }
 }
+export class IncompleteModelOutputError extends BudgetDeniedError {
+  constructor(){super("model-output-incomplete");this.name="IncompleteModelOutputError";
+    this.message="模型输出未完整结束，未记为成功；已保留本次费用记录并停止自动重试，请检查输出上限或服务商响应后恢复。";}
+}
 export const tariffSchema=z.object({
   key:z.string().min(1),origin:z.url(),pathname:z.string().startsWith("/"),model:z.string(),
   maximumChargeMicros:z.number().int().positive().max(1000000000000),
@@ -24,7 +28,7 @@ export const tariffSchema=z.object({
   // Verified bound must include grounding/tools/reasoning and all automatic server-side work.
   boundDescription:z.string().min(30),reference:z.url(),verifiedAt:z.iso.datetime(),expiresAt:z.iso.datetime(),
   promotionEndsAt:z.iso.datetime().optional(),foreignCostBound:foreignCostBoundSchema.optional(),
-  requestContract:z.enum(["deepseek-nonthinking-text-v1"]).optional(),
+  requestContract:z.enum(["deepseek-nonthinking-text-v1","kimi-cn-text-json-v1"]).optional(),
 }).strict();
 export const billingPolicy=z.object({version:z.string().min(1),rules:z.array(tariffSchema)}).parse(configuration);
 export type RequestBound=z.infer<typeof tariffSchema>;

@@ -8,6 +8,8 @@ vi.mock("./policy",async original=>({...await original<typeof import("./policy")
 import {withSdkModelCall,sdkModelFetch} from "./sdk-model-call";
 import {withSpendContext} from "./context";
 import {BudgetDeniedError,PaidCallOutcomeUnknownError} from "./policy";
+import {IncompleteModelOutputError} from "./policy";
+import {textOutputLimit} from "./text-output-policy";
 
 const metadata={provider:"fixture-provider",task:"fixture-task",promptVersion:"fixture-prompt-v1"};
 const scope={userId:"owner-a",operationId:"operation-a",stage:"fixture"};
@@ -59,4 +61,17 @@ it("isolates a stopped invocation from other users and later invocations on a sh
   expect((await invoke("owner-b")).ok).toBe(true);
   expect(mocks.reserve.mock.calls.map(call=>call[0])).toEqual(["owner-a","owner-b"]);
   expect(mocks.reserve.mock.calls[0][1].modelAttempt.invocationId).not.toBe(mocks.reserve.mock.calls[1][1].modelAttempt.invocationId);
+});
+it("sends the approved completion cap for prefixed OpenRouter models and does not retry truncated valid JSON",async()=>{
+  const transport=vi.fn<typeof fetch>().mockResolvedValue(Response.json({id:"fixture",model:"openai/gpt-5.6-sol",choices:[{
+    index:0,finish_reason:"length",message:{role:"assistant",content:'{"completeLooking":true}'},
+  }],usage:{prompt_tokens:10,completion_tokens:4096}}));
+  const model=new ChatOpenAI({apiKey:"fixture",model:"openai/gpt-5.6-sol",maxRetries:1,
+    modelKwargs:{max_completion_tokens:textOutputLimit("lead-playbook")},
+    configuration:{baseURL:"https://example.test",fetch:sdkModelFetch(transport)}});
+  await expect(withSpendContext(scope,()=>withSdkModelCall({...metadata,task:"lead-playbook"},()=>model.invoke("synthetic")))).rejects.toBeInstanceOf(IncompleteModelOutputError);
+  expect(transport).toHaveBeenCalledOnce();expect(mocks.reserve).toHaveBeenCalledOnce();expect(mocks.denial).not.toHaveBeenCalled();
+  expect(mocks.settle.mock.calls[0][2]).toMatchObject({succeeded:false,outputIncomplete:true,outputTokens:4096,reportedMicros:null});
+  const wire=JSON.parse(String(transport.mock.calls[0][1]?.body));
+  expect(wire.max_completion_tokens).toBe(4096);expect(wire.max_tokens).toBeUndefined();
 });

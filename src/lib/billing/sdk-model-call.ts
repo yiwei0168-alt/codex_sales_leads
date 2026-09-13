@@ -1,7 +1,8 @@
 import {AsyncLocalStorage} from "node:async_hooks";
 import {randomUUID} from "node:crypto";
 import {budgetedFetch} from "./paid-fetch";
-import {BudgetDeniedError} from "./policy";
+import {BudgetDeniedError,IncompleteModelOutputError} from "./policy";
+import {textOutputCompletion} from "./text-output-policy";
 import {withModelAttempt, type ModelAttemptContext} from "./model-attempt-context";
 
 type Invocation = {
@@ -35,7 +36,16 @@ export function sdkModelFetch(transport:typeof fetch=fetch):typeof fetch{
     if(state.terminal)throw state.terminal;
     const attempt=++state.attempts;
     try{
-      return await withModelAttempt({...state.metadata,attempt},()=>paid(input,init));
+      const response=await withModelAttempt({...state.metadata,attempt},()=>paid(input,init));
+      if(response.ok){
+        // Retain raw finish reason before structured-output parsers discard response metadata.
+        let value:unknown=null;
+        if(textOutputCompletion(state.metadata.task,{})!==undefined){
+          try{value=await response.clone().json();}catch{/* Incomplete/unreadable output is not accepted. */}
+          if(textOutputCompletion(state.metadata.task,value)==="incomplete")throw new IncompleteModelOutputError();
+        }
+      }
+      return response;
     }catch(error){
       if(error instanceof BudgetDeniedError)state.terminal??=error;
       throw error;

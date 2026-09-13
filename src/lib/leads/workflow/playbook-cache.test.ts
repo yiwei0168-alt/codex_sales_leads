@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type { LeadSearchPlan } from "@/lib/assistant/types";
 import type { LeadRagCitation } from "./types";
@@ -13,6 +13,13 @@ const citations: LeadRagCitation[] = ["product", "company", "industry"].map((col
 }));
 
 describe("playbook dependency cache", () => {
+  afterEach(() => vi.unstubAllEnvs());
+  it("invalidates when the approved output limit changes", () => {
+    vi.stubEnv("LEAD_PLAYBOOK_MAX_OUTPUT_TOKENS", "4096");
+    const original = playbookDependencyFingerprint(plan, citations);
+    vi.stubEnv("LEAD_PLAYBOOK_MAX_OUTPUT_TOKENS", "2048");
+    expect(playbookDependencyFingerprint(plan, citations)).not.toBe(original);
+  });
   it("is stable across citation order and invalidates content changes", () => {
     const original = playbookDependencyFingerprint(plan, citations);
     expect(playbookDependencyFingerprint(plan, [...citations].reverse())).toBe(original);

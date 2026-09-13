@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import {textOutputLimit} from "@/lib/billing/text-output-policy";
 import {sdkModelFetch,withSdkModelCall} from "@/lib/billing/sdk-model-call";
 import { ChatOpenAI } from "@langchain/openai";
 import { getRagConfig } from "./config";
@@ -74,7 +75,7 @@ export async function generateGroundedAnswer(question: string, chunks: Retrieved
     maxRetries: 2,
     timeout: 90_000,
     streamUsage: false,
-    modelKwargs: { provider: config.openaiProviderPreferences },
+    modelKwargs: { provider: config.openaiProviderPreferences,max_completion_tokens:textOutputLimit("rag-answer") },
     configuration: { baseURL: config.openaiBaseUrl, defaultHeaders: config.openaiDefaultHeaders,fetch:sdkModelFetch() },
   });
   const response = await withSdkModelCall({provider:"openrouter",task:"rag-answer",promptVersion:"rag-grounded-answer-v1"},()=>model.invoke([

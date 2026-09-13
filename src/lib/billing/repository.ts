@@ -43,7 +43,7 @@ export async function reservePaidCallInTransaction(client:import("pg").PoolClien
     await client.query("update user_spend_budget set occupied_micros=occupied_micros+$2,updated_at=now() where user_id=$1",[userId,input.maximumChargeMicros]);
     return result.rows[0].id;
 }
-export async function settlePaidCall(userId:string,id:string,input:{reportedMicros:number|null;latencyMs:number;responseBytes:number|null;inputTokens:number|null;outputTokens:number|null;succeeded:boolean;providerUsage?:ProviderUsageObservation}){
+export async function settlePaidCall(userId:string,id:string,input:{reportedMicros:number|null;latencyMs:number;responseBytes:number|null;inputTokens:number|null;outputTokens:number|null;succeeded:boolean;outputIncomplete?:boolean;providerUsage?:ProviderUsageObservation}){
   // Raw HTTP usage is not a uniquely matched all-inclusive bill. No automatic release here.
   const cost=input.reportedMicros!==null&&Number.isSafeInteger(input.reportedMicros)&&input.reportedMicros>=0?input.reportedMicros:null;
   await tenantTransaction(userId,async client=>{
@@ -52,7 +52,7 @@ export async function settlePaidCall(userId:string,id:string,input:{reportedMicr
       status=case when $3::bigint>reserved_micros then 'bound-exceeded' when $3::bigint is null then 'unknown' else 'reported' end,
       provider_request_hash=coalesce($5,provider_request_hash),metrics=metrics || $4::jsonb,updated_at=now()
       where user_id=$1 and id=$2 and status='reserved' returning reserved_micros,occupied_micros,settled_micros,settled_source,tariff_key,tariff_version,metrics`,
-      [userId,id,cost,JSON.stringify({latencyMs:input.latencyMs,outputBytes:input.responseBytes,inputTokens:input.inputTokens,outputTokens:input.outputTokens,providerUsage:input.providerUsage??null,validOutputItems:input.succeeded?1:0,discardedReasonCounts:input.succeeded?{}:{requestFailed:1},usageBoundary:"response-returned-not-downstream-adopted",optimizationOpportunity:"Reconcile invoices before releasing conservative reservations"}),input.providerUsage?.providerRequestHash??null]);
+      [userId,id,cost,JSON.stringify({latencyMs:input.latencyMs,outputBytes:input.responseBytes,inputTokens:input.inputTokens,outputTokens:input.outputTokens,providerUsage:input.providerUsage??null,validOutputItems:input.succeeded?1:0,outputIncomplete:input.outputIncomplete??false,discardedReasonCounts:input.succeeded?{}:input.outputIncomplete?{incompleteModelOutput:1}:{requestFailed:1},usageBoundary:"response-returned-not-downstream-adopted",optimizationOpportunity:"Reconcile invoices before releasing conservative reservations"}),input.providerUsage?.providerRequestHash??null]);
     const row=result.rows[0];if(!row)return;
     const plan=planCostReconciliation({reservedMicros:Number(row.reserved_micros),occupiedMicros:row.occupied_micros==null?undefined:Number(row.occupied_micros),settledMicros:row.settled_micros==null?null:Number(row.settled_micros),settledSource:row.settled_source??null},{kind:"provider-report",amountMicros:cost,complete:false,uniquelyMatched:false});
     await client.query(`insert into paid_cost_observation(user_id,reservation_id,kind,amount_micros,source_reference_hash,source_version,complete,uniquely_matched,provider_request_hash,occupied_before,occupied_after,metrics)

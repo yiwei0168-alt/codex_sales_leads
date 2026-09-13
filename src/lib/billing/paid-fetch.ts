@@ -7,6 +7,8 @@ import {isKimiK3} from "@/providers/kimi-contract";
 import {providerUsageObservation} from "./provider-usage";
 import {currentModelAttempt,metricIdentifier} from "./model-attempt-context";
 import {assertRequestContract} from "./request-contract";
+import {nativeModelBound} from "./native-model-bound";
+import {textOutputCompletion} from "./text-output-policy";
 
 function object(value:unknown):Record<string,unknown>{return value!==null&&typeof value==="object"&&!Array.isArray(value)?value as Record<string,unknown>:{};}
 function count(value:unknown):number|null{return typeof value==="number"&&Number.isSafeInteger(value)&&value>=0?value:null;}
@@ -34,7 +36,8 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
     const bytes=Buffer.byteLength(body,"utf8")+Buffer.byteLength(url.search,"utf8");
     const policy=scope.tariffPolicy??billingPolicy;
     const quote={origin:url.origin,pathname:url.pathname,model:typeof parsed.model==="string"?parsed.model:"",requestBytes:bytes,outputTokens};
-    const rule=scope.tariffPolicy?quoteRequest(quote,policy.rules):quoteRequest(quote);
+    const native=!scope.tariffPolicy?await nativeModelBound(quote):null;
+    const rule=native?.rule??(scope.tariffPolicy?quoteRequest(quote,policy.rules):quoteRequest(quote));
     assertRequestContract(rule,parsed,url.search);
     const attempt=currentModelAttempt();
     const modelAttempt=attempt?{
@@ -53,7 +56,7 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
     // Non-model polling/form operations remain outside this model replay rule.
     const requestFingerprint=attempt||typeof parsed.model==="string"?createHash("sha256").update(JSON.stringify({version:"paid-request-replay-v1",
       method:request.method,origin:url.origin,pathname:url.pathname,query:url.search,body})).digest("hex"):undefined;
-    const id=await reservePaidCall(scope.userId,{operationId:scope.operationId,stage:scope.stage,tariffKey:rule.key,tariffVersion:policy.version,maximumChargeMicros:rule.maximumChargeMicros,requestBytes:bytes,modelAttempt,requestFingerprint,foreignCostBound:rule.foreignCostBound,costAttribution:scope.costAttribution});
+    const id=await reservePaidCall(scope.userId,{operationId:scope.operationId,stage:scope.stage,tariffKey:rule.key,tariffVersion:native?.version??policy.version,maximumChargeMicros:rule.maximumChargeMicros,requestBytes:bytes,modelAttempt,requestFingerprint,foreignCostBound:rule.foreignCostBound,costAttribution:scope.costAttribution});
     const started=Date.now();let response:Response;
     try{response=await transport(input,{...init,redirect:"error"});}catch{
       await settlePaidCall(scope.userId,id,{reportedMicros:null,latencyMs:Date.now()-started,responseBytes:null,inputTokens:null,outputTokens:null,succeeded:false}).catch(()=>undefined);
@@ -68,7 +71,8 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
     try{
       const text=responseText;let result:Record<string,unknown>={};try{result=object(JSON.parse(text));}catch{}
       const usage=object(result.usage);const reported=typeof usage.cost==="number"&&Number.isFinite(usage.cost)&&usage.cost>=0?Math.ceil(usage.cost*1000000):null;
-      await settlePaidCall(scope.userId,id,{reportedMicros:reported,latencyMs:Date.now()-started,responseBytes:Buffer.byteLength(text,"utf8"),inputTokens:count(usage.prompt_tokens??usage.input_tokens),outputTokens:count(usage.completion_tokens??usage.output_tokens),succeeded:response.ok,providerUsage:providerUsageObservation(result)});
+      const outputIncomplete=response.ok&&textOutputCompletion(attempt?.task,result)==="incomplete";
+      await settlePaidCall(scope.userId,id,{reportedMicros:reported,latencyMs:Date.now()-started,responseBytes:Buffer.byteLength(text,"utf8"),inputTokens:count(usage.prompt_tokens??usage.input_tokens),outputTokens:count(usage.completion_tokens??usage.output_tokens),succeeded:response.ok&&!outputIncomplete,outputIncomplete,providerUsage:providerUsageObservation(result)});
     }catch{console.warn(JSON.stringify({event:"budget-settlement-unavailable",reservationRetained:true,retry:false}));}
     return response;
     }catch(error){

@@ -1,4 +1,5 @@
 import {sdkModelFetch,withSdkModelCall} from "@/lib/billing/sdk-model-call";
+import {textOutputLimit} from "@/lib/billing/text-output-policy";
 import { ChatOpenAI } from "@langchain/openai";
 
 import { getRagConfig } from "@/lib/rag/config";
@@ -37,7 +38,7 @@ export async function synthesizeHybridAnswer(
     maxRetries: 2,
     timeout: 90_000,
     streamUsage: false,
-    modelKwargs: { provider: config.openaiProviderPreferences },
+    modelKwargs: { provider: config.openaiProviderPreferences,max_completion_tokens:textOutputLimit("hybrid-synthesis") },
     configuration: { fetch: sdkModelFetch(), baseURL: config.openaiBaseUrl, defaultHeaders: config.openaiDefaultHeaders },
   });
   const internalIds = internal.citations.map((citation) => citation.chunkId);
