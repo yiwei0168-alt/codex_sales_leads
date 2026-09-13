@@ -24,6 +24,17 @@ const {companyCostKey,costRoundKey}=await import("../src/lib/billing/company-cos
 const userId=randomUUID(),workspaceId=randomUUID();
 const conversationId=randomUUID(),actionId=randomUUID();
 const costActionId=randomUUID(),costRunId=randomUUID();
+const completionScenarios=[
+  {reason:"target-met",label:"目标已满足",accepted:5},
+  {reason:"provider-unavailable",label:"搜索服务不可用",accepted:2},
+  {reason:"maximum-rounds",label:"达到搜索轮次安全上限",accepted:2},
+  {reason:"confirmed-exhaustion",label:"已达到有记录的搜索耗尽条件",accepted:2},
+  {reason:"processing-incomplete",label:"校正或评分未完成，已有结果和费用保留",accepted:2},
+  {reason:"role-unresolved",label:"仍有公司角色待判，未认定市场耗尽",accepted:2},
+  {reason:"qualified-shortfall",label:"最终审核或保存后合格数量不足",accepted:2},
+  {reason:"budget-blocked",label:"付费调用被费用门禁阻止：budget-exceeded",accepted:2},
+  {reason:"legacy-unknown",label:"",accepted:null},
+].map(item=>({...item,id:randomUUID()}));
 const email=`ui-verification-${userId}@example.invalid`,password=randomBytes(32).toString("base64url");
 const domain=`ui-verification-${userId}.invalid`;
 const manuallyAddedDomains:string[]=[];
@@ -44,6 +55,14 @@ try{
     await client.query("insert into assistant_message(user_id,conversation_id,role,intent,content,metadata) values($1,$2,'assistant','budget-change','Synthetic budget proposal',$3)",[userId,conversationId,JSON.stringify({budgetProposal:{scope:"task",limitUsd:"0"}})]);
     await client.query("insert into assistant_action(id,user_id,conversation_id,action_type,status,payload) values($1,$2,$3,'lead-search','proposed',$4)",[actionId,userId,conversationId,JSON.stringify({countryCode:"GB",countryName:"United Kingdom",roles:["SI"],targetCount:1,userRequest:"Local UI fixture"})]);
     await client.query("insert into assistant_action(id,user_id,conversation_id,action_type,status,payload) values($1,$2,$3,'lead-search','proposed',$4)",[costActionId,userId,conversationId,JSON.stringify({countryCode:"GB",countryName:"United Kingdom",roles:["SI"],targetCount:2,userRequest:"Synthetic cost UI fixture"})]);
+    for(const scenario of completionScenarios){
+      const result=scenario.accepted===null?{}:{discovered:9,assessed:7,qualified:scenario.accepted,accepted:scenario.accepted,creditsUsed:7,
+        ...(scenario.reason==='budget-blocked'?{}:{targetCompletionReason:scenario.reason}),pendingRoleCount:scenario.reason==='role-unresolved'?1:0};
+      await client.query("insert into assistant_action(id,user_id,conversation_id,action_type,status,payload,result,error_message) values($1,$2,$3,'lead-search',$4,$5,$6,$7)",
+        [scenario.id,userId,conversationId,scenario.reason==='budget-blocked'?'failed':'completed',
+          JSON.stringify({countryCode:"GB",countryName:"United Kingdom",roles:["SI"],targetCount:5,userRequest:"Synthetic completion UI fixture"}),
+          JSON.stringify(result),scenario.reason==='budget-blocked'?scenario.label:null]);
+    }
     await client.query("commit");created=true;
   }catch(error){await client.query("rollback");throw error;}finally{client.release();}
   await setSpendBudget(userId,1_000_000);await setTaskSpendBudget(userId,actionId,0);
@@ -232,6 +251,36 @@ try{
     const secondCosts=await (await readLocal(new URL(`/api/budget?actionId=${costActionId}`,base).href)).json();
     expect(secondCosts.companyCosts).toEqual(firstCosts.companyCosts);
     checks.push(`${viewport.width}:company-cost-domain-country-coverage-real-api`);
+    for(const scenario of completionScenarios){
+      await page.goto(new URL(`/tasks/${scenario.id}?kind=search`,base).href);
+      const panel=page.locator('section.panel').filter({has:page.getByRole('heading',{name:'United Kingdom · 销售线索搜索',exact:true})}).last();
+      await expect(panel.getByText(/目标 5 家/)).toBeVisible();
+      const value=(label:string)=>panel.locator('dl > div').filter({has:page.locator('dt').filter({hasText:new RegExp(`^${label}$`)})}).locator('dd');
+      await expect(value('发现')).toHaveText(scenario.accepted===null?'尚无记录':'9');
+      await expect(value('已评估')).toHaveText(scenario.accepted===null?'尚无记录':'7');
+      await expect(value('合格')).toHaveText(scenario.accepted===null?'尚无记录':String(scenario.accepted));
+      await expect(value('最终保存')).toHaveText(scenario.accepted===null?'尚无记录':String(scenario.accepted));
+      if(scenario.accepted===null){
+        await expect(panel.getByText(/^缺口 /)).toHaveCount(0);
+      }else if(scenario.reason==='target-met'){
+        await expect(panel.getByText('停止原因：目标已满足',{exact:true})).toBeVisible();
+        await expect(panel.getByText(/^缺口 /)).toHaveCount(0);
+      }else{
+        await expect(panel.getByText(`缺口 3 家；${scenario.label}`,{exact:true})).toBeVisible();
+        if(scenario.reason==='budget-blocked')await expect(panel.getByRole('alert')).toHaveText(scenario.label);
+        else await expect(panel.getByText('运行结束，目标未填满 · 目标 5 家',{exact:true})).toBeVisible();
+        if(scenario.reason==='role-unresolved')await expect(panel.getByText('角色待判 1 家（未计入最终合格）',{exact:true})).toBeVisible();
+      }
+      if(['confirmed-exhaustion','processing-incomplete','budget-blocked'].includes(scenario.reason))
+        await expect(panel.getByRole('button',{name:'建立缺口续搜计划（不执行）',exact:true})).toHaveCount(0);
+      const before=await (await readLocal(new URL(`/api/tasks/${scenario.id}?kind=search`,base).href)).json();
+      await page.getByRole('button',{name:'刷新',exact:true}).click();
+      await expect(value('最终保存')).toHaveText(scenario.accepted===null?'尚无记录':String(scenario.accepted));
+      const after=await (await readLocal(new URL(`/api/tasks/${scenario.id}?kind=search`,base).href)).json();
+      expect(after.action.result).toEqual(before.action.result);
+      expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+      checks.push(`${viewport.width}:completion-${scenario.reason}-counts-refresh`);
+    }
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
     expect(errors).toEqual([]);checks.push(`${viewport.width}:navigation-apis-no-runtime-error`);
     // Revoke access on the next request, even when the browser retains a valid cookie.
@@ -246,6 +295,8 @@ try{
   expect(calls.rows[0].n).toBe(1);
   const unexpected=await pool.query("select id from paid_call_reservation where user_id=$1 and tariff_key<>'synthetic-ui-cost'",[userId]);
   expect(unexpected.rows).toHaveLength(0);
+  expect((await pool.query('select id from lead_workflow_job where user_id=$1',[userId])).rows).toHaveLength(0);
+  expect((await pool.query('select id from workflow_artifact_event where user_id=$1',[userId])).rows).toHaveLength(0);
   console.log(JSON.stringify({authenticatedUi:"passed",checks,paidCalls:0,syntheticReservations:1,realMailSent:0,fixtureOnly:true}));
 }finally{
   await browser?.close();

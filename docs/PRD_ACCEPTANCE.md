@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-09-13阶段64：生产Chrome桌面/手机42组检查通过，九类任务数量/停止/刷新核对；修复failed等状态有已知保存数却不显示缺口。原国家/角色等级路径记忆/手工图/成本/鉴权回归通过，832测试/build/生成check通过。无新业务调用、任务或采用事件，fixture清理。待校正/待评分数投影及真实生成闭环仍待，[页面证据](LOCAL_PRODUCTION_UI_ACCEPTANCE_2026-09-13.md)。
+
 2026-09-13阶段63：实际产品结果保存通过隔离SQL验收，修复带有效证据入库的PostgreSQL参数类型冲突。两国4并发、共享身份/国家隔离、快照有效期、事件幂等、合成分摊守恒和RLS通过；fixture清理，0真实付费。此证据覆盖真实存储函数，仍非真实模型/搜索/UI完整闭环，[范围](RESULT_PERSISTENCE_ACCEPTANCE_2026-09-13.md)。
 
 2026-09-13阶段62：服务端交付与用户采用事件分开，新事件采用/查看unknown；校正有效量不再包含未完成。4针对性、832全量测试及实际SQL幂等/冲突/RLS/国家验证通过，迁移054应用且fixture回滚。新来源行displayed保持null，selected标明系统语义。真实UI采用及全业务链路仍未验收，[报告](ARTIFACT_OBSERVATION_BOUNDARY_2026-09-13.md)。
