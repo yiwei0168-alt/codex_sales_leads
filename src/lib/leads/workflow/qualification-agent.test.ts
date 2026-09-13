@@ -9,6 +9,8 @@ import { leadEvidenceContentHash } from "@/lib/leads/evidence-snapshot";
 
 import { enforceAssessmentEvidenceCaps, LeadQualificationAgent } from "./qualification-agent";
 import {validCachedAssessment} from "./assessment-cache";
+import { roleScoringAnchors } from "./role-scoring-anchors";
+import { CHANNEL_ROLE_FAMILIES } from "./types";
 import type { CorrectedLeadWorkflowCandidate, LeadMarketPlaybook } from "./types";
 
 class FakeProvider implements AiProvider {
@@ -208,6 +210,49 @@ describe("LeadQualificationAgent", () => {
     expect(JSON.stringify(provider.calls[0].input)).not.toContain("providerScore");
   });
 
+  it("covers every concrete subtype with its own observable evidence and correct family", () => {
+    const anchors = Object.entries(CHANNEL_ROLE_FAMILIES).flatMap(([family, roles]) => roles.map(role => {
+      const anchor = roleScoringAnchors({ ...candidate.correction, resolvedRoles: [role],
+        resolvedFamilies: [family as keyof typeof CHANNEL_ROLE_FAMILIES], primaryRole: role,
+        primaryFamily: family as keyof typeof CHANNEL_ROLE_FAMILIES });
+      expect(anchor).toMatchObject({ primarySubtype: role, primaryFamily: family });
+      expect(anchor?.observableSubtypeEvidence.length).toBeGreaterThan(40);
+      return anchor?.observableSubtypeEvidence;
+    }));
+    expect(new Set(anchors).size).toBe(13);
+  });
+
+  it("uses the corrected subtype's anchor independently of the discovery lane", async () => {
+    const provider = new FakeProvider();
+    await new LeadQualificationAgent(provider).evaluate([{ ...candidate, queryRoles: ["Distributor"] }],
+      playbook, "DE", "Germany", "new-market");
+    const input = provider.calls[0].input as { candidates: Array<{ roleScoringAnchors: unknown }> };
+    expect(input.candidates[0].roleScoringAnchors).toMatchObject({
+      primaryFamily: "resale", primarySubtype: "VAR", scorecardKey: "resale-services",
+    });
+  });
+
+  it("keeps invalid or unresolved roles unscored without contaminating valid batch contracts", async () => {
+    const provider = new CacheableFakeProvider();
+    const agent = new LeadQualificationAgent(provider);
+    const pending = [
+      { ...candidate, candidateId: "wrong-family", correction: { ...candidate.correction, primaryFamily: "services" as const } },
+      { ...candidate, candidateId: "unresolved", correction: { ...candidate.correction, primaryRole: "Unresolved" as const } },
+      { ...candidate, candidateId: "hybrid", correction: { ...candidate.correction, primaryRole: "Hybrid" as const,
+        primaryFamily: null, resolvedRoles: ["VAR", "SI"] as Array<"VAR" | "SI">,
+        resolvedFamilies: ["resale", "services"] as Array<"resale" | "services"> } },
+    ];
+    const expected = agent.cacheContracts([candidate], playbook, "DE", "Germany", "new-market");
+    expect(agent.cacheContracts([...pending, candidate], playbook, "DE", "Germany", "new-market")).toEqual(expected);
+    const result = await agent.evaluateWithUsage([...pending, candidate], playbook, "DE", "Germany", "new-market");
+    expect(provider.calls).toHaveLength(1);
+    expect(result.assessments.map(item=>item.scoringStatus)).toEqual([
+      "retry-required", "retry-required", "retry-required", "completed",
+    ]);
+    expect(result.assessments.slice(0, 3).every(item=>item.eligibilityStatus === "research-required")).toBe(true);
+    expect(agent.completedCacheContracts(result.assessments)).toEqual(expected);
+  });
+
   it("fails the networking gate when the model relies only on generic IT wording", async () => {
     const provider = new FakeProvider();
     const agent = new LeadQualificationAgent(provider, { batchSize: 5, concurrency: 1 });
@@ -308,7 +353,7 @@ describe("LeadQualificationAgent", () => {
     expect(result.eligible).toBe(true);
     expect(result.cooperationPaths).toEqual([]);
     expect(result.selectedPathId).toBeNull();
-    expect(result.promptVersion).toBe("lead-value-v9-projection1-stable-prefix-score-only");
+    expect(result.promptVersion).toBe("lead-value-v10-role-anchors-score-only");
     expect(JSON.stringify(provider.calls[0].outputSchema)).not.toContain("cooperationPaths");
     expect(JSON.stringify(provider.calls[0].input)).toContain("scoring-only task");
     expect(provider.calls[0].dataClassification).toBe("public");

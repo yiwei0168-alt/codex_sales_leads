@@ -14,6 +14,7 @@ import { assessNetworkingRelevanceEvidence } from "../networking-relevance";
 import { MODEL_SCORING_POLICY } from '../model-scoring-policy';
 import { ACTIVE_LEAD_COST_QUALITY_POLICY } from "./cost-quality-policy";
 import { buildModelEvidencePacket } from "./evidence-packet";
+import { roleScoringAnchors } from "./role-scoring-anchors";
 import { leadAssessmentBatchSchema, leadAssessmentModelSchema, leadAssessmentScoreOnlyBatchSchema,
   leadAssessmentScoreOnlyModelSchema, type LeadAssessmentModelOutput,
   type LeadAssessmentScoreOnlyModelOutput } from "./schemas";
@@ -24,8 +25,8 @@ import type {
   WorkflowModelUsage,
 } from "./types";
 
-export const LEAD_QUALIFICATION_PROMPT_VERSION = "lead-value-v6-projection1-stable-prefix-five-paths";
-export const LEAD_SCORE_ONLY_PROMPT_VERSION = "lead-value-v9-projection1-stable-prefix-score-only";
+export const LEAD_QUALIFICATION_PROMPT_VERSION = "lead-value-v7-role-anchors-five-paths";
+export const LEAD_SCORE_ONLY_PROMPT_VERSION = "lead-value-v10-role-anchors-score-only";
 type QualificationModelOutput = LeadAssessmentModelOutput | LeadAssessmentScoreOnlyModelOutput;
 function validatedAssessmentSchema(includePaths:boolean):z.ZodType<QualificationModelOutput>{
   return (includePaths?leadAssessmentModelSchema:leadAssessmentScoreOnlyModelSchema)
@@ -49,6 +50,7 @@ interface LeadAssessmentRequest {
     resolvedRoles: string[];
     resolvedRoleFamilies: string[];
     primaryBusinessRole: string;
+    roleScoringAnchors: ReturnType<typeof roleScoringAnchors>;
     correctionReasons: string[];
     correctionConfidence: number;
     findings: CorrectedLeadWorkflowCandidate["correction"]["findings"];
@@ -395,7 +397,7 @@ export class LeadQualificationAgent {
   cacheContracts(candidates:CorrectedLeadWorkflowCandidate[],playbook:LeadMarketPlaybook,countryCode:string,countryName:string,objective:string):Map<string,string>{
     const result=new Map<string,string>();
     if(!this.provider.cacheIdentity)return result;
-    const batches=leadRequestBatches(candidates,items=>this.request(items,playbook,countryCode,countryName,objective,this.routineModel),this.batchSize,this.maxBatchInputCharacters);
+    const batches=leadRequestBatches(candidates.filter(candidate=>roleScoringAnchors(candidate.correction)),items=>this.request(items,playbook,countryCode,countryName,objective,this.routineModel),this.batchSize,this.maxBatchInputCharacters);
     for(const batch of batches){
       const contract=this.provider.cacheIdentity(this.request(batch,playbook,countryCode,countryName,objective,this.routineModel));
       if(contract)for(const candidate of batch)result.set(candidate.candidateId,contract);
@@ -430,6 +432,7 @@ export class LeadQualificationAgent {
         "Every gate is supported, not-supported, unknown or conflicting. Failed acquisition and missing evidence are unknown, never a negative fact.",
         "The targetCountryPresence gate must follow the supplied correction-stage country-presence finding for this exact candidate and target market; never infer it from an unrelated page or from operations in a different country.",
         "Use the candidate's primary business role for scale peer comparison and for role-specific customer, scenario, positioning and execution criteria.",
+        "Use roleScoringAnchors to select the policy scorecard and observable subtype evidence. Families are taxonomy groups, not business subtypes. These examples neither award points automatically nor add eligibility requirements. Link each claimed capability to supplied current evidence; missing examples remain unknown. Never borrow another subtype's purchasing authority or demand another role's operating model.",
         "Product family fit uses the best enabled product track, not average coverage of every Cudy family. Full-portfolio breadth applies only when the task explicitly requests a full-line master distributor.",
         "A broadline distributor is not diluted by unrelated categories. A focused SMB specialist is not penalized for lacking home, ISP or industrial families.",
         "Selling competitor brands is normally positive category evidence. Penalize only evidenced exclusivity, hard vendor lock-in, direct own-brand conflict, refusal or lack of entry space.",
@@ -472,6 +475,7 @@ export class LeadQualificationAgent {
           resolvedRoles: candidate.correction.resolvedRoles,
           resolvedRoleFamilies: candidate.correction.resolvedFamilies,
           primaryBusinessRole: candidate.correction.primaryRole,
+          roleScoringAnchors: roleScoringAnchors(candidate.correction),
           correctionReasons: candidate.correction.reasons,
           correctionConfidence: candidate.correction.confidence,
           findings: currentFindings,
@@ -648,7 +652,10 @@ export class LeadQualificationAgent {
 
   private async evaluateWithCollector(candidates: CorrectedLeadWorkflowCandidate[], playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string,
     usageRecords: WorkflowModelUsage[],onBatchCompleted?:(candidates:CorrectedLeadWorkflowCandidate[],assessments:LeadCandidateAssessment[])=>Promise<void>): Promise<LeadCandidateAssessment[]> {
-    const batches=leadRequestBatches(candidates,items=>this.request(
+    const ready = candidates.filter(candidate=>roleScoringAnchors(candidate.correction));
+    const deferred = candidates.filter(candidate=>!roleScoringAnchors(candidate.correction)).map(candidate=>
+      failedAssessment(candidate, "Primary role family/subtype is incomplete or inconsistent; resolve correction before scoring. No scoring request was sent.", this.promptVersion));
+    const batches=leadRequestBatches(ready,items=>this.request(
       items,playbook,countryCode,countryName,objective,this.routineModel,
     ),this.batchSize,this.maxBatchInputCharacters);
     const results = new Array<LeadCandidateAssessment[]>(batches.length);
@@ -671,7 +678,8 @@ export class LeadQualificationAgent {
       }
     }
     await Promise.all(Array.from({ length: Math.min(this.concurrency, batches.length) }, () => worker(this)));
-    return results.flat();
+    const byId = new Map([...deferred, ...results.flat()].map(item=>[item.candidateId,item]));
+    return candidates.map(candidate=>byId.get(candidate.candidateId)!);
   }
 
   async evaluate(candidates: CorrectedLeadWorkflowCandidate[], playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string): Promise<LeadCandidateAssessment[]> {

@@ -1,0 +1,3032 @@
+{
+  "version": "colombia-role-contract-coverage-v1",
+  "boundary": "Stored correction records, not unique companies or recovered qualified leads. No semantic rejudging; original scores and blind-review outcomes unchanged.",
+  "paidCalls": 0,
+  "counts": {
+    "concrete-role-covered": 112,
+    "primary-role-pending": 208,
+    "correction-retry-required": 54
+  },
+  "sources": [
+    {
+      "path": "experiments/search-e2e-evaluation/co-v2/runs/raw/2026-09-08-co-search-e2e-v2/cells/CO-distribution/product-e2e.json",
+      "sha256": "08ea12ee9db67355d142bdb97dd189910a7dacd8febd98e216ad0a4019f430e6",
+      "category": "distribution",
+      "rows": [
+        {
+          "pointer": "/raw/corrected/0/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "distribution",
+          "primarySubtype": "Distributor",
+          "scorecardKey": "distribution"
+        },
+        {
+          "pointer": "/raw/corrected/1/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/2/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/3/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "distribution",
+          "primarySubtype": "Distributor",
+          "scorecardKey": "distribution"
+        },
+        {
+          "pointer": "/raw/corrected/4/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "distribution",
+          "primarySubtype": "Distributor",
+          "scorecardKey": "distribution"
+        },
+        {
+          "pointer": "/raw/corrected/5/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "distribution",
+          "primarySubtype": "Distributor",
+          "scorecardKey": "distribution"
+        },
+        {
+          "pointer": "/raw/corrected/6/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/7/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/8/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/9/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/10/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/11/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/12/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/13/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/14/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "retail",
+          "primarySubtype": "E-tailer",
+          "scorecardKey": "retail"
+        },
+        {
+          "pointer": "/raw/corrected/15/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "distribution",
+          "primarySubtype": "Distributor",
+          "scorecardKey": "distribution"
+        },
+        {
+          "pointer": "/raw/corrected/16/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/17/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "services",
+          "primarySubtype": "SI",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/18/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "distribution",
+          "primarySubtype": "Distributor",
+          "scorecardKey": "distribution"
+        },
+        {
+          "pointer": "/raw/corrected/19/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/20/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "distribution",
+          "primarySubtype": "VAD",
+          "scorecardKey": "distribution"
+        },
+        {
+          "pointer": "/raw/corrected/21/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/22/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "distribution",
+          "primarySubtype": "Distributor",
+          "scorecardKey": "distribution"
+        },
+        {
+          "pointer": "/raw/corrected/23/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/24/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "distribution",
+          "primarySubtype": "Distributor",
+          "scorecardKey": "distribution"
+        },
+        {
+          "pointer": "/raw/corrected/25/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "distribution",
+          "primarySubtype": "Distributor",
+          "scorecardKey": "distribution"
+        },
+        {
+          "pointer": "/raw/corrected/26/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/27/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/28/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "distribution",
+          "primarySubtype": "Distributor",
+          "scorecardKey": "distribution"
+        },
+        {
+          "pointer": "/raw/corrected/29/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/30/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/31/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/32/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "distribution",
+          "primarySubtype": "Distributor",
+          "scorecardKey": "distribution"
+        },
+        {
+          "pointer": "/raw/corrected/33/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "retail",
+          "primarySubtype": "Retailer",
+          "scorecardKey": "retail"
+        },
+        {
+          "pointer": "/raw/corrected/34/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "distribution",
+          "primarySubtype": "Distributor",
+          "scorecardKey": "distribution"
+        },
+        {
+          "pointer": "/raw/corrected/35/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "distribution",
+          "primarySubtype": "Distributor",
+          "scorecardKey": "distribution"
+        },
+        {
+          "pointer": "/raw/corrected/36/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "distribution",
+          "primarySubtype": "Distributor",
+          "scorecardKey": "distribution"
+        },
+        {
+          "pointer": "/raw/corrected/37/correction",
+          "completion": "completed",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/38/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/39/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "retail",
+          "primarySubtype": "E-tailer",
+          "scorecardKey": "retail"
+        },
+        {
+          "pointer": "/raw/corrected/40/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "distribution",
+          "primarySubtype": "Distributor",
+          "scorecardKey": "distribution"
+        },
+        {
+          "pointer": "/raw/corrected/41/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "distribution",
+          "primarySubtype": "Distributor",
+          "scorecardKey": "distribution"
+        },
+        {
+          "pointer": "/raw/corrected/42/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "distribution",
+          "primarySubtype": "Distributor",
+          "scorecardKey": "distribution"
+        },
+        {
+          "pointer": "/raw/corrected/43/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "resale",
+          "primarySubtype": "VAR",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/44/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "distribution",
+          "primarySubtype": "Distributor",
+          "scorecardKey": "distribution"
+        },
+        {
+          "pointer": "/raw/corrected/45/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/46/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/47/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/48/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/49/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/50/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "distribution",
+          "primarySubtype": "Distributor",
+          "scorecardKey": "distribution"
+        }
+      ]
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/co-v2/runs/raw/2026-09-08-co-search-e2e-v2/cells/CO-resale/product-e2e.json",
+      "sha256": "ef700c98feaccd340d96a90527dd65d7966b3f279618daac4b47fd2c40f39cb4",
+      "category": "resale",
+      "rows": [
+        {
+          "pointer": "/raw/corrected/0/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/1/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "distribution",
+          "primarySubtype": "Distributor",
+          "scorecardKey": "distribution"
+        },
+        {
+          "pointer": "/raw/corrected/2/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/3/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/4/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/5/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/6/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/7/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/8/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "distribution",
+          "primarySubtype": "Distributor",
+          "scorecardKey": "distribution"
+        },
+        {
+          "pointer": "/raw/corrected/9/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/10/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/11/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "resale",
+          "primarySubtype": "Reseller",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/12/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/13/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/14/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/15/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/16/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/17/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/18/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/19/correction",
+          "completion": "completed",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/20/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/21/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "resale",
+          "primarySubtype": "VAR",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/22/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/23/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/24/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/25/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "distribution",
+          "primarySubtype": "Distributor",
+          "scorecardKey": "distribution"
+        },
+        {
+          "pointer": "/raw/corrected/26/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "retail",
+          "primarySubtype": "Retailer",
+          "scorecardKey": "retail"
+        },
+        {
+          "pointer": "/raw/corrected/27/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/28/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/29/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/30/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/31/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/32/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "distribution",
+          "primarySubtype": "Distributor",
+          "scorecardKey": "distribution"
+        },
+        {
+          "pointer": "/raw/corrected/33/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/34/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "distribution",
+          "primarySubtype": "Distributor",
+          "scorecardKey": "distribution"
+        },
+        {
+          "pointer": "/raw/corrected/35/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/36/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/37/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/38/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/39/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "distribution",
+          "primarySubtype": "Distributor",
+          "scorecardKey": "distribution"
+        },
+        {
+          "pointer": "/raw/corrected/40/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "retail",
+          "primarySubtype": "Retailer",
+          "scorecardKey": "retail"
+        },
+        {
+          "pointer": "/raw/corrected/41/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "distribution",
+          "primarySubtype": "Distributor",
+          "scorecardKey": "distribution"
+        },
+        {
+          "pointer": "/raw/corrected/42/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/43/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "distribution",
+          "primarySubtype": "Distributor",
+          "scorecardKey": "distribution"
+        },
+        {
+          "pointer": "/raw/corrected/44/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/45/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "services",
+          "primarySubtype": "SI",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/46/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/47/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/48/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/49/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/50/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "services",
+          "primarySubtype": "SI",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/51/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "resale",
+          "primarySubtype": "VAR",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/52/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/53/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "services",
+          "primarySubtype": "SI",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/54/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "services",
+          "primarySubtype": "SI",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/55/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/56/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/57/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/58/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/59/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/60/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/61/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/62/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/63/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/64/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/65/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/66/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/67/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/68/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "resale",
+          "primarySubtype": "VAR",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/69/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/70/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "services",
+          "primarySubtype": "SI",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/71/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/72/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "resale",
+          "primarySubtype": "Reseller",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/73/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/74/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/75/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/76/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/77/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "resale",
+          "primarySubtype": "VAR",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/78/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "resale",
+          "primarySubtype": "VAR",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/79/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/80/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/81/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/82/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/83/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/84/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/85/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/86/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/87/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/88/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/89/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "resale",
+          "primarySubtype": "VAR",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/90/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "resale",
+          "primarySubtype": "VAR",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/91/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "resale",
+          "primarySubtype": "VAR",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/92/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/93/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/94/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/95/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/96/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        }
+      ]
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/co-v2/runs/raw/2026-09-08-co-search-e2e-v2/cells/CO-retail/product-e2e.json",
+      "sha256": "138bbb5b6f56dd6e1205e1a1e174883b4d1be3fd379b110a997475b1fc9f4a8d",
+      "category": "retail",
+      "rows": [
+        {
+          "pointer": "/raw/corrected/0/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/1/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "retail",
+          "primarySubtype": "Retailer",
+          "scorecardKey": "retail"
+        },
+        {
+          "pointer": "/raw/corrected/2/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/3/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/4/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "distribution",
+          "primarySubtype": "Distributor",
+          "scorecardKey": "distribution"
+        },
+        {
+          "pointer": "/raw/corrected/5/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/6/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/7/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "retail",
+          "primarySubtype": "E-tailer",
+          "scorecardKey": "retail"
+        },
+        {
+          "pointer": "/raw/corrected/8/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "services",
+          "primarySubtype": "Installer",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/9/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "services",
+          "primarySubtype": "SI",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/10/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "retail",
+          "primarySubtype": "Retailer",
+          "scorecardKey": "retail"
+        },
+        {
+          "pointer": "/raw/corrected/11/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/12/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/13/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/14/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/15/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "retail",
+          "primarySubtype": "E-tailer",
+          "scorecardKey": "retail"
+        },
+        {
+          "pointer": "/raw/corrected/16/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "distribution",
+          "primarySubtype": "Distributor",
+          "scorecardKey": "distribution"
+        },
+        {
+          "pointer": "/raw/corrected/17/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "resale",
+          "primarySubtype": "VAR",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/18/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "resale",
+          "primarySubtype": "VAR",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/19/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "distribution",
+          "primarySubtype": "Distributor",
+          "scorecardKey": "distribution"
+        },
+        {
+          "pointer": "/raw/corrected/20/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "retail",
+          "primarySubtype": "Retailer",
+          "scorecardKey": "retail"
+        },
+        {
+          "pointer": "/raw/corrected/21/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "retail",
+          "primarySubtype": "Retailer",
+          "scorecardKey": "retail"
+        },
+        {
+          "pointer": "/raw/corrected/22/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/23/correction",
+          "completion": "completed",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/24/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/25/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/26/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/27/correction",
+          "completion": "completed",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/28/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "distribution",
+          "primarySubtype": "Distributor",
+          "scorecardKey": "distribution"
+        },
+        {
+          "pointer": "/raw/corrected/29/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "retail",
+          "primarySubtype": "Retailer",
+          "scorecardKey": "retail"
+        },
+        {
+          "pointer": "/raw/corrected/30/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "retail",
+          "primarySubtype": "E-tailer",
+          "scorecardKey": "retail"
+        },
+        {
+          "pointer": "/raw/corrected/31/correction",
+          "completion": "completed",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/32/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "retail",
+          "primarySubtype": "E-tailer",
+          "scorecardKey": "retail"
+        },
+        {
+          "pointer": "/raw/corrected/33/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "retail",
+          "primarySubtype": "E-tailer",
+          "scorecardKey": "retail"
+        },
+        {
+          "pointer": "/raw/corrected/34/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "distribution",
+          "primarySubtype": "Distributor",
+          "scorecardKey": "distribution"
+        },
+        {
+          "pointer": "/raw/corrected/35/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "retail",
+          "primarySubtype": "E-tailer",
+          "scorecardKey": "retail"
+        },
+        {
+          "pointer": "/raw/corrected/36/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "retail",
+          "primarySubtype": "Retailer",
+          "scorecardKey": "retail"
+        },
+        {
+          "pointer": "/raw/corrected/37/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "retail",
+          "primarySubtype": "Retailer",
+          "scorecardKey": "retail"
+        },
+        {
+          "pointer": "/raw/corrected/38/correction",
+          "completion": "completed",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/39/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "retail",
+          "primarySubtype": "Retailer",
+          "scorecardKey": "retail"
+        },
+        {
+          "pointer": "/raw/corrected/40/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/41/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "retail",
+          "primarySubtype": "Retailer",
+          "scorecardKey": "retail"
+        },
+        {
+          "pointer": "/raw/corrected/42/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "retail",
+          "primarySubtype": "E-tailer",
+          "scorecardKey": "retail"
+        },
+        {
+          "pointer": "/raw/corrected/43/correction",
+          "completion": "completed",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/44/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/45/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/46/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/47/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "retail",
+          "primarySubtype": "Retailer",
+          "scorecardKey": "retail"
+        },
+        {
+          "pointer": "/raw/corrected/48/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/49/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/50/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/51/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/52/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/53/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/54/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/55/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/56/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/57/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/58/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/59/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/60/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/61/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/62/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/63/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/64/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/65/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/66/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "distribution",
+          "primarySubtype": "Distributor",
+          "scorecardKey": "distribution"
+        },
+        {
+          "pointer": "/raw/corrected/67/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "retail",
+          "primarySubtype": "E-tailer",
+          "scorecardKey": "retail"
+        },
+        {
+          "pointer": "/raw/corrected/68/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/69/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/70/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/71/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "retail",
+          "primarySubtype": "Retailer",
+          "scorecardKey": "retail"
+        },
+        {
+          "pointer": "/raw/corrected/72/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/73/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/74/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/75/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "retail",
+          "primarySubtype": "Retailer",
+          "scorecardKey": "retail"
+        },
+        {
+          "pointer": "/raw/corrected/76/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/77/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/78/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/79/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/80/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/81/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/82/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/83/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/84/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/85/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/86/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/87/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/88/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/89/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/90/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/91/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/92/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/93/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/94/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/95/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/96/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/97/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/98/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/99/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/100/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/101/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/102/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/103/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/104/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        }
+      ]
+    },
+    {
+      "path": "experiments/search-e2e-evaluation/co-v2/runs/raw/2026-09-08-co-search-e2e-v2/cells/CO-si-msp/product-e2e.json",
+      "sha256": "f1ac266dd61f0aff72a6617b63fc5773f2498fc7449ab0da425cc29681059200",
+      "category": "si-msp",
+      "rows": [
+        {
+          "pointer": "/raw/corrected/0/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/1/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "brand",
+          "primarySubtype": "Brand Owner",
+          "scorecardKey": "brand-owner"
+        },
+        {
+          "pointer": "/raw/corrected/2/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/3/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/4/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/5/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "brand",
+          "primarySubtype": "Brand Owner",
+          "scorecardKey": "brand-owner"
+        },
+        {
+          "pointer": "/raw/corrected/6/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/7/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/8/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/9/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/10/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/11/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/12/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/13/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/14/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/15/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/16/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "services",
+          "primarySubtype": "SI",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/17/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/18/correction",
+          "completion": "completed",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/19/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/20/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "services",
+          "primarySubtype": "SI",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/21/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "agent",
+          "primarySubtype": "Agent",
+          "scorecardKey": "sales-agent"
+        },
+        {
+          "pointer": "/raw/corrected/22/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "services",
+          "primarySubtype": "SI",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/23/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/24/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "services",
+          "primarySubtype": "SI",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/25/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "distribution",
+          "primarySubtype": "Distributor",
+          "scorecardKey": "distribution"
+        },
+        {
+          "pointer": "/raw/corrected/26/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "services",
+          "primarySubtype": "SI",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/27/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "isp",
+          "primarySubtype": "ISP",
+          "scorecardKey": "operator"
+        },
+        {
+          "pointer": "/raw/corrected/28/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "services",
+          "primarySubtype": "Installer",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/29/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/30/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "distribution",
+          "primarySubtype": "Distributor",
+          "scorecardKey": "distribution"
+        },
+        {
+          "pointer": "/raw/corrected/31/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/32/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/33/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "services",
+          "primarySubtype": "SI",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/34/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/35/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/36/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/37/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/38/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/39/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "brand",
+          "primarySubtype": "Brand Owner",
+          "scorecardKey": "brand-owner"
+        },
+        {
+          "pointer": "/raw/corrected/40/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/41/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "brand",
+          "primarySubtype": "Brand Owner",
+          "scorecardKey": "brand-owner"
+        },
+        {
+          "pointer": "/raw/corrected/42/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/43/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/44/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/45/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "brand",
+          "primarySubtype": "Brand Owner",
+          "scorecardKey": "brand-owner"
+        },
+        {
+          "pointer": "/raw/corrected/46/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/47/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "services",
+          "primarySubtype": "Installer",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/48/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "resale",
+          "primarySubtype": "Reseller",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/49/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/50/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "services",
+          "primarySubtype": "Installer",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/51/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "resale",
+          "primarySubtype": "VAR",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/52/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/53/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "services",
+          "primarySubtype": "Installer",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/54/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/55/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/56/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/57/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/58/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "services",
+          "primarySubtype": "MSP",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/59/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/60/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/61/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/62/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/63/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/64/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/65/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/66/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/67/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/68/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/69/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/70/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/71/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "services",
+          "primarySubtype": "SI",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/72/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "services",
+          "primarySubtype": "SI",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/73/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "services",
+          "primarySubtype": "SI",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/74/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "services",
+          "primarySubtype": "SI",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/75/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/76/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/77/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/78/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/79/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/80/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/81/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/82/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/83/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/84/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/85/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/86/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/87/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/88/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/89/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/90/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/91/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/92/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/93/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "services",
+          "primarySubtype": "Installer",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/94/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/95/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/96/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "services",
+          "primarySubtype": "SI",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/97/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/98/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/99/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/100/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/101/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/102/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/103/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/104/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/105/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/106/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "services",
+          "primarySubtype": "SI",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/107/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/108/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/109/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/110/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/111/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/112/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/113/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/114/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/115/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/116/correction",
+          "completion": "unresolved",
+          "status": "primary-role-pending",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/117/correction",
+          "completion": "retry-required",
+          "status": "correction-retry-required",
+          "primaryFamily": null,
+          "primarySubtype": null,
+          "scorecardKey": null
+        },
+        {
+          "pointer": "/raw/corrected/118/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "services",
+          "primarySubtype": "SI",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/119/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "services",
+          "primarySubtype": "SI",
+          "scorecardKey": "resale-services"
+        },
+        {
+          "pointer": "/raw/corrected/120/correction",
+          "completion": "completed",
+          "status": "concrete-role-covered",
+          "primaryFamily": "services",
+          "primarySubtype": "SI",
+          "scorecardKey": "resale-services"
+        }
+      ]
+    }
+  ]
+}

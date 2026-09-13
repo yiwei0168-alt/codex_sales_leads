@@ -1,5 +1,7 @@
 # 产品开发恢复节点 — 2026-09-11
 
+2026-09-13阶段34：O05实现及离线规则覆盖完成。新role-scoring-anchors模块覆盖13具体角色；评分/缓存入口排除主角色不明或契约异常，保留未完成。全量791测试、typecheck/build通过。`node scripts/run-tsx.cjs scripts/replay-colombia-role-contracts.ts --check`核对374条冻结记录（112可用、208待定、54需恢复），无新搜索/模型/费用。下一步继续费用完整上界、P05/P06、历史终态恢复兼容、聚合遥测/UI和最小真实本地生产闭环；预算不重置，付费前重新核对累计USD30。不得将本阶段规则覆盖写成真实填充率提升或盲审通过。
+
 最新恢复增量（2026-09-13 阶段33）：hybrid策略1.7.0，四类各轨Brave核心；Places/分销SI Exa/分销Resale Gemini用marginal-gap，任务类别providerNoValueCounts仅成功新请求累计两次零新增后跳过（已有阈值2），缓存和故障不增；新任务不禁工具。discoveryCallFingerprint v2忽略内部类别/轨道/机制而保留精确请求输入，会话依赖包含新契约。788测试/typecheck/build通过，无付费。下一步O05角色评分可观察锚点及family/subtype覆盖、费用上界/历史终态恢复/实际UI业务闭环；O04仍需最终真实接线验收，不重跑实验。
 
 最新恢复增量（2026-09-13 阶段32）：discovery-checkpoint.ts 存用户/工作区/国家/action/thread/契约约束轮内检查点；执行器保存calls/gated/rejected/usage/noValue，恢复重建registry并跳过完整调用及门禁。discovery.ts先找同任务原run，事务幂等persistHybridSearchCall，persistDiscoveryRoundSummary按completedDiscoveryRounds只累计一次。保存故障DiscoveryCheckpointError独立于provider failures，等待在途worker收尾。786测试/typecheck/build与真实SQL并发幂等/边界验证通过，无付费。下一步跨轨实际请求去重、类别工具边际条件（配置尚未改）、O05、费用上界/历史终态恢复/真实UI业务闭环。勿提前标O04或整体验收完成。
