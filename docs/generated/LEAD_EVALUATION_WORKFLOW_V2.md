@@ -757,7 +757,7 @@ flowchart TD
 | `src/lib/rag/openai-provider.ts` | `d8d105c5650d1bacdbb48ce652143900afa7d62d505dfd502159f7b09fee1ff2` |
 | `src/lib/assistant/service.ts` | `191d407fc558253b10df7b57564bb73094808cddaf5f2f8883c57742561eff7e` |
 | `src/lib/assistant/repository.ts` | `7d480b70ed29de1795c4c6c1a5c49d471cd700272616bfa3c66dbab4e6d6bfb3` |
-| `src/lib/leads/workflow/graph.ts` | `b7b630d200db5ecf4bee61397e2b6617edbaeddafdcc6b2792a71ca8b42634c8` |
+| `src/lib/leads/workflow/graph.ts` | `6095ff4c517bdfa6005d5810cad4be79492dfc3e0645a70e9295fec08777065f` |
 | `src/lib/leads/workflow/jobs.ts` | `aaa6747c17996197d428d111039ac02345681b13bf812e033a0425d8a55eebea` |
 | `src/lib/leads/workflow/rag-context.ts` | `1e1ee21e77b90731e849426cd7130de7d1e50ee6aec9f196e44cb642bf81387b` |
 | `src/lib/leads/workflow/playbook.ts` | `2e3ca2dc9562f742383f3bf87ef7efd50c9d8ea5b32a050de05556feda58e0a9` |
