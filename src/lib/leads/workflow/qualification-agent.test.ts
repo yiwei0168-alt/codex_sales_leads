@@ -232,6 +232,29 @@ describe("LeadQualificationAgent", () => {
     });
   });
 
+  it("scores an oversized singleton after lossless duplicate evidence compression", async () => {
+    const provider = new CacheableFakeProvider();
+    const repeated = Array.from({ length: 60 }, (_, index) => ({ ...candidate.evidence[0],
+      id: `repeat-${index}`, url: `https://example.de/evidence/${index}` }));
+    const large = { ...candidate, evidence: [...candidate.evidence, ...repeated], correction: {
+      ...candidate.correction, findings: candidate.correction.findings.map(finding => ({ ...finding,
+        evidenceIds: [...finding.evidenceIds, ...repeated.map(item => item.id)] })) } };
+    // Increase each repeated source excerpt without changing its stored identity or source ownership.
+    large.evidence = large.evidence.map(item => {
+      const excerpt = `${item.excerpt} ${"network routers and business customers. ".repeat(90)}`;
+      return { ...item, excerpt, contentHash: leadEvidenceContentHash(excerpt) };
+    });
+    const before = JSON.stringify(large);
+    const agent = new LeadQualificationAgent(provider);
+    const expected = agent.cacheContracts([large], playbook, "DE", "Germany", "new-market");
+    const result = await agent.evaluate([large], playbook, "DE", "Germany", "new-market");
+    expect(provider.calls).toHaveLength(1);
+    expect(provider.calls[0].input).toHaveProperty("evidenceTextEncoding", "exact-duplicate-text-v1");
+    expect(result[0].scoringStatus).toBe("completed");
+    expect(agent.completedCacheContracts(result)).toEqual(expected);
+    expect(JSON.stringify(large)).toBe(before);
+  });
+
   it("keeps invalid or unresolved roles unscored without contaminating valid batch contracts", async () => {
     const provider = new CacheableFakeProvider();
     const agent = new LeadQualificationAgent(provider);

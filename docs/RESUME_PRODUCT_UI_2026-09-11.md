@@ -1,5 +1,7 @@
 # 产品开发恢复节点 — 2026-09-11
 
+2026-09-13阶段36：compact-lead-request.ts接入评分/校正request构造；仅超限singleton对完全重复的长标题/摘录做无损字典引用。保留原证据、事实、ID/URL/来源，缓存按实际压缩请求；仍超限则暂停。795测试/174文件、typecheck/build通过，无付费。P06独有事实过大分阶段处理尚未完成，其余费用/恢复/遥测/UI与真实闭环继续；goal active。
+
 2026-09-13阶段35：备用模型实际请求大小接入校正/评分/缓存拆批。AiProvider新增可选requestBytes，DeepSeek和OpenAiCompatible复用实际序列化；Resilient按获准数据分类和实际模型取最大字节数。受控主路由故障及备用发送验证通过；全量792测试/173文件、typecheck/build通过，无付费。P06单项超限压缩/分阶段仍待实现；余下费用上界、恢复/遥测/UI及真实生产闭环继续，goal active。
 
 2026-09-13阶段34：O05实现及离线规则覆盖完成。新role-scoring-anchors模块覆盖13具体角色；评分/缓存入口排除主角色不明或契约异常，保留未完成。全量791测试、typecheck/build通过。`node scripts/run-tsx.cjs scripts/replay-colombia-role-contracts.ts --check`核对374条冻结记录（112可用、208待定、54需恢复），无新搜索/模型/费用。下一步继续费用完整上界、P05/P06、历史终态恢复兼容、聚合遥测/UI和最小真实本地生产闭环；预算不重置，付费前重新核对累计USD30。不得将本阶段规则覆盖写成真实填充率提升或盲审通过。

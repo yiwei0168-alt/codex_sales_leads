@@ -1,3 +1,4 @@
+import { compactLeadSingleton } from "@/providers/compact-lead-request";
 import {BudgetDeniedError} from "@/lib/billing/policy";
 import {withCompanyCostAttribution} from "@/lib/billing/company-cost-context";
 import {leadRequestBatches} from "@/providers/lead-request-batches";
@@ -351,7 +352,7 @@ export class LeadEvidenceCorrectionAgent {
         };
       }),
     };
-    return {
+    return compactLeadSingleton({
       task: "lead-evidence-correction" as const,
       modelVersion,
       promptVersion: LEAD_EVIDENCE_CORRECTION_PROMPT_VERSION,
@@ -361,7 +362,7 @@ export class LeadEvidenceCorrectionAgent {
         .map((item) => item.id)),
       outputSchema: z.toJSONSchema(leadCorrectionBatchSchema) as Record<string, unknown>,
       dataClassification: "public" as const,
-    };
+    }, this.provider.requestBytes?.bind(this.provider));
   }
 
   private normalize(value: LeadCorrectionModelOutput, candidate: LeadWorkflowCandidate,

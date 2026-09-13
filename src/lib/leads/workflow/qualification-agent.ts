@@ -1,3 +1,4 @@
+import { compactLeadSingleton } from "@/providers/compact-lead-request";
 import {BudgetDeniedError} from "@/lib/billing/policy";
 import {withCompanyCostAttribution} from "@/lib/billing/company-cost-context";
 import {leadRequestBatches} from "@/providers/lead-request-batches";
@@ -496,7 +497,7 @@ export class LeadQualificationAgent {
         eligibilityGates: ["correctedIdentityUsable", "companyExists", "targetCountryPresence", "networkingRelevant", "independentProspect"],
       },
     };
-    return {
+    return compactLeadSingleton({
       task: "lead-qualification" as const,
       modelVersion,
       promptVersion: this.promptVersion,
@@ -508,7 +509,7 @@ export class LeadQualificationAgent {
         ? leadAssessmentBatchSchema : leadAssessmentScoreOnlyBatchSchema) as Record<string, unknown>,
       dataClassification: (playbook.cooperationPathMemory?.length
         ? "private-workspace" : "public") as "private-workspace" | "public",
-    };
+    }, this.provider.requestBytes?.bind(this.provider));
   }
 
   private async invokeBatch(candidates: CorrectedLeadWorkflowCandidate[], playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string, modelVersion: string,
