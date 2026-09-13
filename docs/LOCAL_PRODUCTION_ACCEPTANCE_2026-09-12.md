@@ -1,5 +1,14 @@
 # Local production acceptance — 2026-09-12
 
+## 2026-09-13 实施阶段 22：兼容评分入口独立输出上限
+
+A19 用户已确认复核 8,192、裁决 12,000、备用评分 8,192，覆盖阶段 21 的待确认状态。分别以 LEAD_REVIEW_MAX_OUTPUT_TOKENS、LEAD_JUDGE_MAX_OUTPUT_TOKENS、LEAD_FALLBACK_SCORING_MAX_OUTPUT_TOKENS 配置。仅接入 OpenAI-compatible 适配器对应任务；不修改原生 DeepSeek 主评分、原模型、推理强度、升级条件或其他任务。OpenAI 模型使用 max_completion_tokens，其他兼容模型使用 max_tokens；显式上限不能被 extraBody 覆盖，完整请求预检包含该字段。
+
+HTTP 正常但缺少完整停止标记、空内容、拒答或响应 JSON 无法读取均终止为未完成；长度截断即使 JSON 合法也不成功，不重试或切换备用模型。账本沿用原任务归因，显式完成契约只作用于兼容入口，不误判原生 Anthropic 响应。用量、延迟和未知预留保留，截断有效输出为 0、丢弃原因 incompleteModelOutput；未新增 token/API 请求来判定完整性，后续采用仍单独计数。
+
+验证：全量 713 tests /166 files、typecheck、生产 build 通过；随后补充不可读取响应保护并重跑相关回归。无新增真实付费调用，累计占用 USD12.324404/30 不变。费用上界适配及整体验收仍待完成，设置输出限制本身不开放缺费率调用。优化机会：完成标记直接取已有响应，避免对不完整评分进行重复付费修复。
+
+
 ## 2026-09-13 实施阶段 21：文本输出上限及 Kimi 原币预留
 
 用户确认 A18：RAG 回答 / 混合整合默认各 8,192 输出 token，搜索 playbook 默认 4,096；分别通过 RAG_ANSWER_MAX_OUTPUT_TOKENS、HYBRID_SYNTHESIS_MAX_OUTPUT_TOKENS、LEAD_PLAYBOOK_MAX_OUTPUT_TOKENS 配置。保持模型与 thinking 配置。请求使用 max_completion_tokens；HTTP 200 或有效 JSON 不等于完整输出，长度截断、拒答、空内容或缺失正常停止标记均不记成功，不自动重试。账本保留用量/费用并记录 incompleteModelOutput，不能释放未知费用。playbook 缓存纳入输出上限及完成契约版本，旧缓存不绕过新契约。

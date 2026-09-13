@@ -1,4 +1,5 @@
-import {BudgetDeniedError} from "@/lib/billing/policy";
+import {BudgetDeniedError,IncompleteModelOutputError} from "@/lib/billing/policy";
+import {compatibleOutputTask,textOutputLimit,textOutputCompletion} from "@/lib/billing/text-output-policy";
 import { budgetedFetch } from "@/lib/billing/paid-fetch";
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "./contracts";
 import { ProviderUnavailableError } from "./contracts";
@@ -54,10 +55,13 @@ export class OpenAiCompatibleProvider implements AiProvider {
     let lastError: unknown;
     let attemptsMade = 0;
     const invocationId = randomUUID();
+    const outputCompletionTask=compatibleOutputTask(request.task);
+    const outputLimit=outputCompletionTask?textOutputLimit(outputCompletionTask):undefined;
+    const openAiModel=/^(openai\/)?(?:gpt-|o[1-9])/.test(request.modelVersion);
     for (let attempt = 0; attempt < this.maxAttempts; attempt += 1) {
       attemptsMade = attempt + 1;
       try {
-        const response = await withModelAttempt({invocationId,provider:this.id,task:request.task,promptVersion:request.promptVersion,attempt:attempt+1,scoringVersion:requestScoringVersion(request.input)},()=>{
+        const response = await withModelAttempt({invocationId,provider:this.id,task:request.task,promptVersion:request.promptVersion,attempt:attempt+1,scoringVersion:requestScoringVersion(request.input),outputCompletionTask},()=>{
           const init:RequestInit={
           method: "POST",
           headers: { authorization: `Bearer ${this.options.apiKey}`, "content-type": "application/json",
@@ -80,13 +84,19 @@ export class OpenAiCompatibleProvider implements AiProvider {
               { role: "user", content: structuredUserPrompt(request) },
             ],
             ...this.options.extraBody,
+            ...(outputLimit===undefined?{}:openAiModel
+              ?{max_tokens:undefined,max_completion_tokens:outputLimit}
+              :{max_completion_tokens:undefined,max_tokens:outputLimit}),
           }),
           };
           assertLeadRequestBytes(request,String(init.body));
           return this.fetchImplementation(`${this.baseUrl}/chat/completions`,init);
         });
-        const body = await response.json() as WireResponse;
+        let body:WireResponse;
+        try{body=await response.json() as WireResponse;}
+        catch(error){if(response.ok&&outputCompletionTask)throw new IncompleteModelOutputError();throw error;}
         if (!response.ok) throw new Error(body.error?.message ?? `${this.id} HTTP ${response.status}`);
+        if(textOutputCompletion(outputCompletionTask,body)==="incomplete")throw new IncompleteModelOutputError();
         const content = body.choices?.[0]?.message?.content?.trim();
         if (!content) throw new Error(`${this.id} returned empty JSON content`);
         if (body.choices?.[0]?.finish_reason === "length") throw new Error(`${this.id} JSON output was truncated`);

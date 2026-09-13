@@ -71,7 +71,7 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
     try{
       const text=responseText;let result:Record<string,unknown>={};try{result=object(JSON.parse(text));}catch{}
       const usage=object(result.usage);const reported=typeof usage.cost==="number"&&Number.isFinite(usage.cost)&&usage.cost>=0?Math.ceil(usage.cost*1000000):null;
-      const outputIncomplete=response.ok&&textOutputCompletion(attempt?.task,result)==="incomplete";
+      const outputIncomplete=response.ok&&textOutputCompletion(attempt?.outputCompletionTask??attempt?.task,result)==="incomplete";
       await settlePaidCall(scope.userId,id,{reportedMicros:reported,latencyMs:Date.now()-started,responseBytes:Buffer.byteLength(text,"utf8"),inputTokens:count(usage.prompt_tokens??usage.input_tokens),outputTokens:count(usage.completion_tokens??usage.output_tokens),succeeded:response.ok&&!outputIncomplete,outputIncomplete,providerUsage:providerUsageObservation(result)});
     }catch{console.warn(JSON.stringify({event:"budget-settlement-unavailable",reservationRetained:true,retry:false}));}
     return response;

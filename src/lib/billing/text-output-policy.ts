@@ -1,6 +1,12 @@
-export const TEXT_OUTPUT_LIMITS={"rag-answer":8192,"hybrid-synthesis":8192,"lead-playbook":4096} as const;
+export const TEXT_OUTPUT_LIMITS={"rag-answer":8192,"hybrid-synthesis":8192,"lead-playbook":4096,"compatible-review":8192,"compatible-judge":12000,"compatible-scoring":8192} as const;
 type TextTask=keyof typeof TEXT_OUTPUT_LIMITS;
-const environmentKeys:Record<TextTask,string>={"rag-answer":"RAG_ANSWER_MAX_OUTPUT_TOKENS","hybrid-synthesis":"HYBRID_SYNTHESIS_MAX_OUTPUT_TOKENS","lead-playbook":"LEAD_PLAYBOOK_MAX_OUTPUT_TOKENS"};
+const environmentKeys:Record<TextTask,string>={"rag-answer":"RAG_ANSWER_MAX_OUTPUT_TOKENS","hybrid-synthesis":"HYBRID_SYNTHESIS_MAX_OUTPUT_TOKENS","lead-playbook":"LEAD_PLAYBOOK_MAX_OUTPUT_TOKENS","compatible-review":"LEAD_REVIEW_MAX_OUTPUT_TOKENS","compatible-judge":"LEAD_JUDGE_MAX_OUTPUT_TOKENS","compatible-scoring":"LEAD_FALLBACK_SCORING_MAX_OUTPUT_TOKENS"};
+export function compatibleOutputTask(task:string):TextTask|undefined{
+  if(task==="lead-review-secondary")return "compatible-review";
+  if(task==="lead-review-judge")return "compatible-judge";
+  if(task==="lead-qualification")return "compatible-scoring";
+  return undefined;
+}
 export function textOutputLimit(task:TextTask):number{
   const raw=process.env[environmentKeys[task]]?.trim();
   if(!raw)return TEXT_OUTPUT_LIMITS[task];

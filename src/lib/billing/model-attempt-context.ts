@@ -8,6 +8,7 @@ export interface ModelAttemptContext {
   promptVersion:string;
   attempt:number;
   scoringVersion?:string;
+  outputCompletionTask?:string;
 }
 const storage=new AsyncLocalStorage<ModelAttemptContext>();
 export function withModelAttempt<T>(context:ModelAttemptContext,run:()=>T):T {
