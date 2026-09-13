@@ -15,7 +15,7 @@ export async function nativeModelBound(input:Quote,now=Date.now(),readFx?:()=>Pr
   const unit=BigInt(configuration.unitTokens);
   const maximumNativeMicros=Number((numerator+unit-BigInt(1))/unit);
   let fx:ForeignCostBound["fx"]|null;
-  try{fx=await (readFx??(await import("./fx-reference-repository")).readCurrentCnyFxReference)();}
+  try{fx=await (readFx??(()=>import("./fresh-fx-reference").then(module=>module.readFreshCnyFxReference(now))))();}
   catch{throw new BudgetDeniedError("missing-tariff");}
   if(!fx)throw new BudgetDeniedError("expired-tariff");
   const foreignCostBound:ForeignCostBound={currency:"CNY",maximumNativeMicros,fx};

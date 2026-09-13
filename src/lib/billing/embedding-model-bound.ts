@@ -10,7 +10,7 @@ export async function embeddingModelBound(input:Parameters<typeof quoteRequest>[
   if(!Number.isFinite(now)||now<Date.parse(configuration.verifiedAt)||now>=Date.parse(configuration.expiresAt))throw new BudgetDeniedError("expired-tariff");
   if(input.outputTokens!==null)throw new BudgetDeniedError("request-out-of-bounds");
   let fx:ForeignCostBound["fx"]|null;
-  try{fx=await (readFx??(await import("./fx-reference-repository")).readCurrentCnyFxReference)();}
+  try{fx=await (readFx??(()=>import("./fresh-fx-reference").then(module=>module.readFreshCnyFxReference(now))))();}
   catch{throw new BudgetDeniedError("missing-tariff");}
   if(!fx)throw new BudgetDeniedError("expired-tariff");
   const maximumNativeMicros=Math.ceil(configuration.maximumInputItems*configuration.maximumTokensPerItem*configuration.inputMicrosPerMillion/1000000);
