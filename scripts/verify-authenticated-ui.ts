@@ -25,6 +25,7 @@ const {setSpendBudget,setTaskSpendBudget,reservePaidCall,settlePaidCall}=await i
 const {completeTaskCostAllocation}=await import("../src/lib/billing/task-cost-completion");
 const {companyCostKey,costRoundKey}=await import("../src/lib/billing/company-cost-context");
 const {buildLeadWorkflowGraph}=await import("../src/lib/leads/workflow/graph");
+const {executeClaimedLeadWorkflow}=await import("../src/lib/leads/workflow/jobs");
 const {candidate:progressCandidate,correctedCandidate:progressCorrected,assessment:progressAssessment,plan:progressPlan}=await import("./workflow-recovery-fixtures");
 const userId=randomUUID(),workspaceId=randomUUID();
 const progressActionId=randomUUID(),progressThread=`ui-progress:${userId}`;
@@ -129,6 +130,8 @@ try{
       const request=route.request(),url=new URL(request.url());
       if(url.origin!==base.origin)return route.abort();
       if(request.method()==="PATCH"&&editableCompanyPaths.has(url.pathname))return route.continue();
+      if(request.method()==='POST'&&url.pathname===`/api/assistant/actions/${progressActionId}/progress`
+        &&request.postDataJSON()?.action==='pause')return route.continue();
       if(request.method()==="PATCH"&&approvableDraftPaths.has(url.pathname)){
         const input=request.postDataJSON();
         if(input.approve===true&&typeof input.body==='string'&&input.body.startsWith('Reviewed synthetic saved draft for production UI acceptance'))return route.continue();
@@ -377,9 +380,28 @@ try{
     checks.push(`${viewport.width}:ui-approval-concurrent-replay-single-country-event`);
     checks.push(`${viewport.width}:saved-strategy-manual-body-approval-refresh-dependency-country-legacy`);
     await seedProgress();
+    await setTaskSpendBudget(userId,progressActionId,0);
+    const pauseJob=await pool.query<{id:string}>("update lead_workflow_job set status='running',execution_mode='inline',stop_requested=false,paused_at=null,worker_id='synthetic-ui-pause',lease_until=now()+interval '1 day' where action_id=$1 and user_id=$2 returning id",[progressActionId,userId]);
+    await pool.query("update assistant_action set status='running',error_message=null where id=$1 and user_id=$2",[progressActionId,userId]);
     await page.goto(new URL(`/tasks/${progressActionId}?kind=search`,base).href);
     const pending=page.locator('dl[aria-label="已保存待处理数量"]');
     await expect(pending.locator('dd')).toHaveText(['1','1']);
+    await page.getByRole('button',{name:'在下一安全节点暂停',exact:true}).click();
+    await expect(page.getByText('已请求暂停：当前阶段会完成并保存，随后不再启动下一阶段。',{exact:true})).toBeVisible();
+    const requestedPause=await (await readLocal(new URL(`/api/assistant/actions/${progressActionId}/progress`,base).href)).json();
+    expect(requestedPause.job).toMatchObject({status:'running',stop_requested:true,paused_at:null});
+    // Actual production runner reaches its saved next-node phase guard, then failJob records pause.
+    // The fixture task has a zero spend limit as an additional pre-network safeguard.
+    await expect(executeClaimedLeadWorkflow({jobId:pauseJob.rows[0].id,userId,actionId:progressActionId,
+      graphThreadId:progressThread,conversationId,plan:{...progressPlan,countryCode:'GB',countryName:'United Kingdom'}})).rejects.toThrow('工作流已在阶段边界暂停');
+    await page.getByRole('button',{name:'刷新',exact:true}).click();
+    await expect(page.getByRole('button',{name:'确认费用并从检查点恢复',exact:true})).toBeVisible();
+    const stopped=await (await readLocal(new URL(`/api/assistant/actions/${progressActionId}/progress`,base).href)).json();
+    expect(stopped.job.status).toBe('cancelled');expect(stopped.job.paused_at).toBeTruthy();
+    expect(stopped.progress.creditsUsed).toBe(13);
+    await expect(pending.locator('dd')).toHaveText(['1','1']);
+    expect((await pool.query('select status from assistant_action where id=$1',[progressActionId])).rows[0].status).toBe('cancelled');
+    checks.push(`${viewport.width}:ui-pause-production-runner-boundary-checkpoint-cost-retained`);
     await seedProgress(true);
     await page.getByRole('button',{name:'刷新',exact:true}).click();
     await expect(pending.locator('dd')).toHaveText(['0','0']);
