@@ -41,13 +41,15 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
       ...(attempt.scoringVersion?{scoringVersion:metricIdentifier(attempt.scoringVersion)}:{}),
       attempt:Number.isSafeInteger(attempt.attempt)&&attempt.attempt>0?attempt.attempt:null,
       requestedModel:metricIdentifier(parsed.model),gatewayHost:metricIdentifier(url.hostname),
-      endpointKind:url.pathname.endsWith("/chat/completions")?"chat-completions":url.pathname.endsWith("/messages")?"messages":"other",
+      endpointKind:url.pathname.endsWith("/chat/completions")?"chat-completions":url.pathname.endsWith("/messages")?"messages":url.pathname.endsWith("/embeddings")?"embeddings":"other",
     }:typeof parsed.model==="string"?{
       invocationId:null,provider:null,task:metricIdentifier(scope.stage),promptVersion:null,attempt:null,
       requestedModel:metricIdentifier(parsed.model),gatewayHost:metricIdentifier(url.hostname),
       endpointKind:url.pathname.endsWith("/chat/completions")?"chat-completions":url.pathname.endsWith("/messages")?"messages":url.pathname.endsWith("/embeddings")?"embeddings":"other",
     }:null;
-    const requestFingerprint=attempt?createHash("sha256").update(JSON.stringify({version:"paid-request-replay-v1",
+    // Native model adapters without full invocation attribution need the same persistent guard.
+    // Non-model polling/form operations remain outside this model replay rule.
+    const requestFingerprint=attempt||typeof parsed.model==="string"?createHash("sha256").update(JSON.stringify({version:"paid-request-replay-v1",
       method:request.method,origin:url.origin,pathname:url.pathname,query:url.search,body})).digest("hex"):undefined;
     const id=await reservePaidCall(scope.userId,{operationId:scope.operationId,stage:scope.stage,tariffKey:rule.key,tariffVersion:policy.version,maximumChargeMicros:rule.maximumChargeMicros,requestBytes:bytes,modelAttempt,requestFingerprint,foreignCostBound:rule.foreignCostBound});
     const started=Date.now();let response:Response;

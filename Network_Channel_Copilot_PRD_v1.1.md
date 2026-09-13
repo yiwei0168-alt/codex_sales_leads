@@ -1,6 +1,18 @@
 # Network Channel Copilot PRD v1.1
 
 
+## 2026-09-13 实施阶段 15：SDK 预算停止与尝试归因
+
+按 A06/B21 补齐一个实际漏洞：本地 OpenAI SDK 会将 transport 异常包装为连接错误并重试，LangChain 外层也可能重试；旧 playbook catch 会吞掉预算停止。新增调用级上下文，在首次 BudgetDeniedError 后锁住该次调用，SDK 后续重试不再进入预算/网络，并在调用出口恢复原错误。playbook 预算/未知付费异常向上抛出，普通非预算故障沿用既有降级。没有调低正常重试配置，没有改变模型、输入、thinking、输出预算或新增 Embedding 备用模型。
+
+已接入 RAG Embedding（每个实际批次独立调用）、RAG 回答、混合答案整合、现有 LangChain playbook 四个入口。逐真实 HTTP attempt 记录 invocation/序号/任务/提示版本及原模型/网关/用量，非 HTTP 的 SDK 重试不冒充付费尝试；Embedding provider 标为 embedding-configured，不猜测实际厂商，实际网关另记。原生含 model 请求即使尚无完整 invocation 也加入既有 owner/任务/阶段请求指纹防重放，不把非模型轮询/表单套入。原始输入、邮件和凭证不落遥测；保存/下游采用仍维持已定义边界，不把 HTTP 成功当业务通过。
+
+验证：665 tests /156 files、typecheck、生产 build 通过；lint 0 错误/11 既有警告。真实 OpenAI SDK 与 LangChain + 模拟 transport 验证未知只发送一次、预算拒绝零网络、正常可重试失败逐次归因、共享客户端跨用户隔离；playbook 预算错误不降级。真实 SQL 051 回归验证并发单次预留、未知锁、owner 隔离、非空用量与已报告失败的既有限制重试；合成记录清理。本轮真实模型/搜索/SMTP 新增 0，历史 USD 12/30 不变，实际账单未知。
+
+本阶段未完成所有 P02 原生入口归因，未建立完整费率/账单适配，P06 超大单家公司恢复、费用分摊、真实业务 E2E 及最终采用链路仍待完成。优化机会：避免 SDK 在已停止调用上的无效本地等待；当前只阻止再次预留/外发，未静默更改 SDK 正常重试策略。实现依据本地 node_modules/openai/src/client.ts 和 @langchain/core/dist/utils/async_caller.js 的实际错误处理；官方 SDK 入口 https://developers.openai.com/api/docs/libraries 不替代本地行为测试。
+
+
+
 ## 2026-09-13 实施阶段 14：已批准 V4.1-Flash 门禁与计数方法纠正
 
 阶段验证完成：657 tests /154 files、typecheck、生产 build 通过。Docker 固定源码/两套词表哈希检查及 16 组（两模型×两协议×四文本）断网合成测试通过，完整 Schema 均增加 token，重复编码一致，编码耗时 138 ms；不是托管账单对齐验收。模型/搜索/SMTP 新增调用仍为 0。

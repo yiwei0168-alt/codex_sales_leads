@@ -38,6 +38,11 @@ it("bounds form requests without recording their fields",async()=>{
   expect(JSON.stringify(mocks.reserve.mock.calls)).not.toContain("private-company");
   expect(mocks.reserve.mock.calls[0][1].requestFingerprint).toBeUndefined();
 });
+it("fingerprints native model calls even before full invocation attribution is available",async()=>{
+  await withSpendContext(scope,()=>budgetedFetch(vi.fn().mockResolvedValue(Response.json({})))("https://example.test/chat",init));
+  expect(mocks.reserve.mock.calls[0][1]).toMatchObject({requestFingerprint:expect.stringMatching(/^[a-f0-9]{64}$/),
+    modelAttempt:{invocationId:null,attempt:null,requestedModel:"test"}});
+});
 it("missing prices or budget block the transport entirely",async()=>{
   const transport=vi.fn();mocks.quote.mockImplementation(()=>{throw new BudgetDeniedError("missing-tariff");});
   await expect(withSpendContext(scope,()=>budgetedFetch(transport)("https://example.test/chat",init))).rejects.toThrow("missing-tariff");expect(transport).not.toHaveBeenCalled();

@@ -1,5 +1,6 @@
 import { ChatOpenAI } from "@langchain/openai";
-import { budgetedFetch } from "@/lib/billing/paid-fetch";
+import {sdkModelFetch,withSdkModelCall} from "@/lib/billing/sdk-model-call";
+import {BudgetDeniedError} from "@/lib/billing/policy";
 
 import type { ChannelRole } from "@/lib/domain";
 import type { LeadSearchPlan } from "@/lib/assistant/types";
@@ -132,7 +133,7 @@ export async function buildLeadMarketPlaybook(plan: LeadSearchPlan, citations: L
     timeout: 90_000,
     streamUsage: false,
     modelKwargs: { provider: config.providerPreferences },
-    configuration: { baseURL: config.baseUrl, defaultHeaders: config.defaultHeaders,fetch:budgetedFetch() },
+    configuration: { baseURL: config.baseUrl, defaultHeaders: config.defaultHeaders,fetch:sdkModelFetch() },
   }).withStructuredOutput(leadMarketPlaybookModelSchema, {
     name: "lead_market_playbook",
     method: "jsonSchema",
@@ -145,7 +146,7 @@ export async function buildLeadMarketPlaybook(plan: LeadSearchPlan, citations: L
     item.content,
   ].join("\n")).join("\n\n");
   try {
-    const output = await model.invoke([
+    const output = await withSdkModelCall({provider:"openrouter",task:"lead-playbook",promptVersion:LEAD_PLAYBOOK_PROMPT_VERSION},()=>model.invoke([
       {
         role: "system",
         content: [
@@ -162,9 +163,10 @@ export async function buildLeadMarketPlaybook(plan: LeadSearchPlan, citations: L
         role: "user",
         content: JSON.stringify({ plan, allowedRoles: selectedRoles(plan), ragContext: context }),
       },
-    ]);
+    ]));
     return sanitizeModelPlaybook(output, plan, citations, config.model);
   } catch (error) {
+    if(error instanceof BudgetDeniedError)throw error;
     return buildStandardLeadMarketPlaybook(plan, citations, `LangChain playbook generation degraded safely: ${error instanceof Error ? error.message : String(error)}`);
   }
 }

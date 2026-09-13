@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import { budgetedFetch } from "@/lib/billing/paid-fetch";
+import {sdkModelFetch,withSdkModelCall} from "@/lib/billing/sdk-model-call";
 import { ChatOpenAI } from "@langchain/openai";
 import { getRagConfig } from "./config";
 import type { RetrievedChunk } from "./types";
@@ -10,7 +10,7 @@ function getEmbeddingClient(): OpenAI {
   const config = getRagConfig();
   if (!config.embeddingApiKey) throw new Error("EMBEDDING_API_KEY is not configured");
   if (!config.embeddingBaseUrl) throw new Error("EMBEDDING_BASE_URL is not configured");
-  embeddingClient ??= new OpenAI({ apiKey: config.embeddingApiKey, baseURL: config.embeddingBaseUrl,fetch:budgetedFetch() });
+  embeddingClient ??= new OpenAI({ apiKey: config.embeddingApiKey, baseURL: config.embeddingBaseUrl,fetch:sdkModelFetch() });
   return embeddingClient;
 }
 
@@ -38,12 +38,12 @@ export async function embedTextsWithUsage(inputs: string[]): Promise<{
   for (let offset = 0; offset < inputs.length; offset += 10) {
     const startedAt = Date.now();
     const batch = inputs.slice(offset, offset + 10);
-    const response = await getEmbeddingClient().embeddings.create({
+    const response = await withSdkModelCall({provider:"embedding-configured",task:"rag-embedding",promptVersion:"rag-embedding-input-v1"},()=>getEmbeddingClient().embeddings.create({
       model: config.embeddingModel,
       input: batch,
       dimensions: config.embeddingDimensions,
       encoding_format: "float",
-    });
+    }));
     embeddings.push(...response.data.sort((a, b) => a.index - b.index).map((item) => item.embedding));
     usage.push({ model: response.model || config.embeddingModel, inputItems: batch.length,
       inputTokens: response.usage?.prompt_tokens ?? response.usage?.total_tokens ?? 0,
@@ -75,9 +75,9 @@ export async function generateGroundedAnswer(question: string, chunks: Retrieved
     timeout: 90_000,
     streamUsage: false,
     modelKwargs: { provider: config.openaiProviderPreferences },
-    configuration: { baseURL: config.openaiBaseUrl, defaultHeaders: config.openaiDefaultHeaders,fetch:budgetedFetch() },
+    configuration: { baseURL: config.openaiBaseUrl, defaultHeaders: config.openaiDefaultHeaders,fetch:sdkModelFetch() },
   });
-  const response = await model.invoke([
+  const response = await withSdkModelCall({provider:"openrouter",task:"rag-answer",promptVersion:"rag-grounded-answer-v1"},()=>model.invoke([
       {
         role: "system",
         content: [
@@ -93,7 +93,7 @@ export async function generateGroundedAnswer(question: string, chunks: Retrieved
         ].join("\n"),
       },
       { role: "user", content: `Question:\n${question}\n\nKnowledge-base context:\n${buildContext(chunks)}` },
-    ]);
+    ]));
   if (typeof response.content === "string") return response.content.trim() || "未能生成回答。";
   const text = response.content.flatMap((item) => typeof item === "string" ? [item]
     : item.type === "text" && "text" in item ? [String(item.text)] : []).join("").trim();

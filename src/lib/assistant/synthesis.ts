@@ -1,4 +1,4 @@
-import {budgetedFetch} from "@/lib/billing/paid-fetch";
+import {sdkModelFetch,withSdkModelCall} from "@/lib/billing/sdk-model-call";
 import { ChatOpenAI } from "@langchain/openai";
 
 import { getRagConfig } from "@/lib/rag/config";
@@ -38,11 +38,11 @@ export async function synthesizeHybridAnswer(
     timeout: 90_000,
     streamUsage: false,
     modelKwargs: { provider: config.openaiProviderPreferences },
-    configuration: { fetch: budgetedFetch(), baseURL: config.openaiBaseUrl, defaultHeaders: config.openaiDefaultHeaders },
+    configuration: { fetch: sdkModelFetch(), baseURL: config.openaiBaseUrl, defaultHeaders: config.openaiDefaultHeaders },
   });
   const internalIds = internal.citations.map((citation) => citation.chunkId);
   const externalSources = external.citations.map((citation, index) => ({ marker: `WEB:${index + 1}`, ...citation }));
-  const response = await model.invoke([
+  const response = await withSdkModelCall({provider:"openrouter",task:"hybrid-synthesis",promptVersion:"hybrid-synthesis-v1"},()=>model.invoke([
     {
       role: "system",
       content: [
@@ -65,7 +65,7 @@ export async function synthesizeHybridAnswer(
         externalSources,
       }),
     },
-  ]);
+  ]));
   const answer = messageText(response.content);
   if (!answer) return "内外部证据已检索，但整合模型未返回可用答案。";
   validateSynthesizedCitations(answer, internalIds, externalSources.length);
