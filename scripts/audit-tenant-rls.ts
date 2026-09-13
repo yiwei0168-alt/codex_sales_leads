@@ -10,6 +10,9 @@ if(!/^[a-z_][a-z0-9_]{0,62}$/i.test(role))throw new Error("Invalid application r
 const startedAt=Date.now();
 const pool=new Pool({connectionString:databaseConnectionString(databaseUrl),ssl:databaseSslConfiguration(databaseUrl)});
 try{
+  const migrationRole=await pool.query<{name:string;superuser:boolean;bypassRls:boolean}>(
+    `select current_user as name,r.rolsuper as superuser,r.rolbypassrls as "bypassRls"
+     from pg_roles r where r.rolname=current_user`);
   const rows=await pool.query<{table_name:string;rls_enabled:boolean;rls_forced:boolean;select_granted:boolean;
     insert_granted:boolean;update_granted:boolean;delete_granted:boolean;identity_columns:string[]}>(`
     select c.relname as table_name,c.relrowsecurity as rls_enabled,c.relforcerowsecurity as rls_forced,
@@ -38,7 +41,7 @@ try{
       where em.workspace_id is distinct from r.workspace_id or em.company_id<>d.company_id
         or (d.contact_id is not null and (ct.workspace_id is distinct from r.workspace_id or ct.company_id<>d.company_id))) as decision_mismatch,
     (select count(*)::text from company_email_candidate where workspace_id is null) as quarantined_emails`);
-  console.log(JSON.stringify({appRole:role,publicTables:rows.rowCount,unprotectedOwnerKeyedTables:exposed.length,
+  console.log(JSON.stringify({appRole:role,migrationRole:migrationRole.rows[0],publicTables:rows.rowCount,unprotectedOwnerKeyedTables:exposed.length,
     contactLinkMismatches:links.rows[0],latencyMs:Date.now()-startedAt,ownerKeyedReadableWithoutRls:exposed.map(row=>({
     table:row.table_name,keys:row.identity_columns,writes:[row.insert_granted,row.update_granted,row.delete_granted]}))},null,2));
 }finally{await pool.end();}
