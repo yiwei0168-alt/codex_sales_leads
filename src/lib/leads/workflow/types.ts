@@ -437,6 +437,7 @@ export interface LeadWorkflowState {
   consecutiveNoFinalRounds?: number;
   acceptedCandidateCount?: number;
   targetShouldContinue?: boolean;
+  processingRecoveryAuthorized?: boolean;
   targetCompletionReason?: "target-met" | "confirmed-exhaustion" | "provider-unavailable" | "maximum-rounds" | "processing-incomplete";
   assessmentReviews: LeadAssessmentReview[];
   handoffs: LeadDevelopmentHandoff[];

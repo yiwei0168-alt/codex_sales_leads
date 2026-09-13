@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { MemorySaver } from "@langchain/langgraph";
 import { WorkflowPausedError } from "./pause";
+import { processingRecoveryWork } from "./processing-recovery";
 
 import type { LeadSearchPlan } from "@/lib/assistant/types";
 
@@ -140,6 +141,16 @@ function dependencies(events: string[], context = ragContext): LeadWorkflowDepen
 }
 
 describe("LangGraph lead workflow", () => {
+  it("retains complete peers and original evidence while reopening only missing correction and retry scores", () => {
+    const retry = { ...correctedCandidate, candidateId: "retry", correction: {
+      ...correctedCandidate.correction, completionStatus: "retry-required" as const } };
+    const missing = { ...candidate, candidateId: "missing", domain: "missing.test" };
+    const work = processingRecoveryWork({ candidates: [candidate, missing], correctedCandidates: [correctedCandidate, retry],
+      assessments: [assessment, { ...assessment, candidateId: "retry", scoringStatus: "retry-required" }] });
+    expect(work.candidates).toEqual([retry, missing]);
+    expect(work.candidates[0].evidence).toBe(retry.evidence);
+    expect(work.assessments).toEqual([assessment]);
+  });
   it.each(["fallback", "missing-correction", "missing-score"])("retains incomplete %s without refilling or declaring market exhaustion", async failure => {
     const deps = dependencies([]);
     deps.discover = vi.fn(async () => ({ runId: "run-1", candidates: [candidate], creditsUsed: 1,
@@ -148,15 +159,32 @@ describe("LangGraph lead workflow", () => {
       ...correctedCandidate, correction: { ...correctedCandidate.correction,
         model: failure === "fallback" ? "deterministic-fallback" : "fixture" } }], creditsUsed: 2, warnings: [] }));
     deps.qualificationAgent.evaluate = vi.fn(async () => []);
-    const state = await buildLeadWorkflowGraph(deps).invoke({ userId: "u", actionId: "a", graphThreadId: "incomplete",
-      workspaceId: "w", plan, phase: "queued", ragContext: [], candidates: [], assessments: [],
-      assessmentReviews: [], handoffs: [], creditsUsed: 0, warnings: [] });
+    const saver = new MemorySaver();
+    const graph = buildLeadWorkflowGraph(deps, saver);
+    const config = { configurable: { thread_id: "incomplete" } };
+    await expect(graph.invoke({ userId: "u", actionId: "a", graphThreadId: "incomplete",
+      workspaceId: "w", plan: { ...plan, targetCount: 1 }, phase: "queued", ragContext: [], candidates: [], assessments: [],
+      assessmentReviews: [], handoffs: [], creditsUsed: 0, warnings: [] }, config)).rejects.toThrow("校正或评分未完成");
+    const snapshot = await graph.getState(config);
+    const state = snapshot.values;
     expect(state.targetCompletionReason).toBe("processing-incomplete");
-    expect(state.result?.targetCompletionReason).toBe("processing-incomplete");
+    expect(snapshot.next).toEqual(["recover_incomplete_processing"]);
     expect(state.consecutiveNoFinalRounds).toBe(0);
     expect(deps.discover).toHaveBeenCalledTimes(1);
     expect(state.creditsUsed).toBeGreaterThanOrEqual(3);
     if (failure !== "missing-score") expect(deps.qualificationAgent.evaluate).not.toHaveBeenCalled();
+    deps.correctionAgent.correct = vi.fn(async () => ({ candidates: [correctedCandidate], creditsUsed: 0, warnings: [] }));
+    deps.qualificationAgent.evaluate = vi.fn(async () => [assessment]);
+    const resumed = buildLeadWorkflowGraph(deps, saver);
+    await expect(resumed.invoke(null, config)).rejects.toThrow("校正或评分未完成");
+    await resumed.updateState(config, { processingRecoveryAuthorized: true }, "score_candidates");
+    const completed = await resumed.invoke(null, config);
+    expect(completed.targetCompletionReason).toBe("target-met");
+    expect(completed.creditsUsed).toBe(state.creditsUsed);
+    expect(deps.discover).toHaveBeenCalledTimes(1);
+    expect(deps.collectEvidence).toHaveBeenCalledTimes(1);
+    expect(deps.correctionAgent.correct).toHaveBeenCalledTimes(failure === "missing-score" ? 0 : 1);
+    expect(deps.qualificationAgent.evaluate).toHaveBeenCalledTimes(1);
   });
   it("preserves completed scores and the stage checkpoint when optional cache persistence fails",async()=>{
     const events:string[]=[];const deps=dependencies(events);

@@ -1,5 +1,11 @@
 # 产品工作流效率台账
 
+## 2026-09-13 阶段27：缺项检查点恢复接线
+
+缺项不再进入图终点；recover_incomplete_processing 节点保留校正/评分输入输出、证据、usage、credits及阶段遥测，外层已有失败任务控件可恢复。确认恢复后直接进入必要校正或评分，跳过搜索、补证与完整单项；每次仍失败会再次停住，不在同次执行自动循环。进度投影新增 accepted、pendingCorrection、pendingScoring、targetCompletionReason；它们不等于用户采用量。沿用每阶段输入/有效/下游使用、token/API额度、延迟/重试及缺项原因指标。恢复不清零费用，任务级费用未知门禁防止改变批次重付。
+
+证据：完整768测试通过，随后新增完整同批公司复用场景在22项定向回归通过；生产build/typecheck通过。三种缺项均在重建图实例后恢复，搜索/补证各一次；未授权进入恢复节点仍停住。无付费调用。尚需真实数据库跨进程和费用核销后的恢复验证，不能据此声称恢复整体验收完成。
+
 ## 2026-09-13 阶段26：O01 校正完成状态与停止门禁
 
 校正阶段将 completed、unresolved、retry-required 分开；有效输出与下游使用不再包含确定性兜底或非法角色契约。追加 retryRequired/unresolved 聚合指标；评分阶段追加 correctionIncomplete/scoringIncomplete。已有输入量、token/API额度、延迟、重试继续沿用，不将缺失费用设为零。缺项触发 processing-incomplete，保留结果/费用，避免继续搜索掩盖模型缺项。未完成角色不得读写公共复用缓存；语义未确定结果仍按完整依赖复用，依赖变化才失效。

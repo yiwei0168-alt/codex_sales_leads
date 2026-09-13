@@ -1,5 +1,7 @@
 # 产品开发恢复节点 — 2026-09-11
 
+最新恢复增量（2026-09-13 阶段27）：processing-recovery.ts 与 recover_incomplete_processing 图节点已接入；缺项时抛出可恢复错误而非终态，runLeadWorkflow 在已有失败任务再次执行时先核验任务未知费用、授权节点，直接处理缺失项。完整评分不再永久挡住 retry-required 重开。完整768测试+随后22项定向回归、生产build通过，无付费。下一步：真实 PostgreSQL 跨进程/租户隔离与核销后恢复验证，历史终态 processing-incomplete 兼容；续搜 SQL 仍错误排除所有 assessment，应只排完整结果；O02–O05及费用上界/整体验收继续。禁止把当前内存恢复验证当作整体验收。
+
 最新恢复增量（2026-09-13 阶段26）：已接入 O01 校正完成契约（correction-completion.ts）、空角色 Hybrid 归 Unresolved 并标记 retry-required、缓存门禁、processing-incomplete 图停止/页面文案。不要将本阶段当作 O01 全部完成。下一步完成候选处理中间结果持久化与已知费用后的恢复接线，修复评分 retry-required 被已评估集合永久排除；随后 O02–O05、费用上界及整体验收继续。禁止自动重放未知付费请求。用户已采纳 O01–O05，无需再次确认。
 
 ## 2026-09-13 当前恢复点：已授权执行完整plan，goal active

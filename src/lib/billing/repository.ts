@@ -9,6 +9,14 @@ import type {ForeignCostBound} from "./fx-policy";
 import {allocateCompanyCost,costAttributionSchema,type CostAttribution} from "./cost-allocation";
 import {observationCostAllocation} from "./observation-allocation";
 
+/** Check the whole operation so changing a repair batch cannot bypass an unknown request fingerprint. */
+export async function assertProcessingRecoveryCostsKnown(userId: string, operationId: string): Promise<void> {
+  const rows = await tenantQuery<{ id: string }>(userId,
+    `select id from paid_call_reservation where user_id=$1 and operation_id=$2
+      and (status in ('reserved','bound-exceeded') or (status='unknown' and settled_micros is null)) limit 1`, [userId, operationId]);
+  if (rows.length) throw new BudgetDeniedError("paid-request-already-recorded");
+}
+
 type ReservationInput={operationId:string;stage:string;tariffKey:string;tariffVersion:string;maximumChargeMicros:number;requestBytes:number;requestFingerprint?:string;foreignCostBound?:ForeignCostBound;costAttribution?:CostAttribution;modelAttempt?:{invocationId:string|null;provider:string|null;task:string|null;promptVersion:string|null;attempt:number|null;requestedModel:string|null;gatewayHost:string|null;endpointKind:string}|null};
 export async function reservePaidCall(userId:string,input:ReservationInput){
   return tenantTransaction(userId,client=>reservePaidCallInTransaction(client,userId,input));
@@ -28,7 +36,8 @@ export async function reservePaidCallInTransaction(client:import("pg").PoolClien
       // Same owner lock serializes different workers before either reserves or sends.
       // Known charged failures may use existing bounded retry; unknown work and HTTP success must not replay.
       const previous=await client.query(`select id from paid_call_reservation where user_id=$1 and operation_id=$2
-        and stage=$3 and request_fingerprint=$4 and (status in ('reserved','unknown','bound-exceeded')
+        and stage=$3 and request_fingerprint=$4 and (status in ('reserved','bound-exceeded')
+          or (status='unknown' and settled_micros is null)
           or metrics->>'validOutputItems'='1') limit 1`,[userId,input.operationId,input.stage,input.requestFingerprint]);
       if(previous.rows.length)throw new BudgetDeniedError("paid-request-already-recorded");
     }

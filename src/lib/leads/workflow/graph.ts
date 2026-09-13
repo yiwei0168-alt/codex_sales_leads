@@ -12,6 +12,8 @@ import { LeadEvidenceCorrectionAgent } from "./evidence-correction-agent";
 import { getGlobalWorkspaceId, persistLeadWorkflowResult, updateWorkflowPhase } from "./persistence";
 import { checkpointInvocation } from "./pause";
 import { correctionCompletion } from "./correction-completion";
+import { processingRecoveryWork, WorkflowProcessingIncompleteError } from "./processing-recovery";
+import { assertProcessingRecoveryCostsKnown } from "@/lib/billing/repository";
 import { continuationExclusions } from "@/lib/assistant/search-continuation";
 import { LeadHandoffAssembler } from "./handoff-assembler";
 import { buildLeadMarketPlaybook } from "./playbook";
@@ -56,6 +58,7 @@ const WorkflowAnnotation = Annotation.Root({
   consecutiveNoFinalRounds: Annotation<number | undefined>(),
   acceptedCandidateCount: Annotation<number | undefined>(),
   targetShouldContinue: Annotation<boolean | undefined>(),
+  processingRecoveryAuthorized: Annotation<boolean | undefined>(),
   targetCompletionReason: Annotation<TargetCompletionReason | undefined>(),
   assessmentReviews: Annotation<LeadAssessmentReview[]>(),
   handoffs: Annotation<LeadDevelopmentHandoff[]>(),
@@ -370,11 +373,15 @@ export function buildLeadWorkflowGraph(
           acceptedCount, finalEligibleAdded, consecutiveNoFinalRounds,
           targetShouldContinue: !targetDecision.complete, targetCompletionReason: targetDecision.reason } }),
       status: missing.length === 0 ? "cache-hit" as const : "completed" as const };
-      return { phase: "scoring" as const, assessments,
+      return { phase: "scoring" as const, assessments, processingRecoveryAuthorized: false,
         warnings:[...state.warnings,...(cachePersistenceFailed?["评分缓存写入失败；本次已完成评分保留，不因缓存故障重放模型调用。"]:[])],
         acceptedCandidateCount: acceptedCount, consecutiveNoFinalRounds,
         targetShouldContinue: !targetDecision.complete, targetCompletionReason: targetDecision.reason,
         modelUsage: [...(state.modelUsage ?? []), ...evaluated.usage], stageMetrics: [...(state.stageMetrics ?? []), metric] };
+    })
+    .addNode("recover_incomplete_processing", async (state) => {
+      if (!state.processingRecoveryAuthorized) throw new WorkflowProcessingIncompleteError();
+      return { ...processingRecoveryWork(state), processingRecoveryAuthorized: false };
     })
     .addNode("review_assessment_anomalies", async (state) => {
       const startedAt = Date.now();
@@ -451,10 +458,14 @@ export function buildLeadWorkflowGraph(
     .addEdge("discover_candidates", "collect_evidence")
     .addEdge("collect_evidence", "correct_candidates")
     .addEdge("correct_candidates", "score_candidates")
-    .addConditionalEdges("score_candidates", (state) => state.targetShouldContinue
-      ? "discover_candidates" : "review_assessment_anomalies", {
+    .addConditionalEdges("score_candidates", (state) => state.targetCompletionReason === "processing-incomplete"
+      ? "recover_incomplete_processing" : state.targetShouldContinue ? "discover_candidates" : "review_assessment_anomalies", {
+      recover_incomplete_processing: "recover_incomplete_processing",
       discover_candidates: "discover_candidates",
       review_assessment_anomalies: "review_assessment_anomalies",
+    })
+    .addConditionalEdges("recover_incomplete_processing", state => state.candidates.length ? "correct_candidates" : "score_candidates", {
+      correct_candidates: "correct_candidates", score_candidates: "score_candidates",
     })
     .addEdge("review_assessment_anomalies", "assemble_handoff_briefs")
     .addEdge("assemble_handoff_briefs", "persist_results")
@@ -504,6 +515,10 @@ export async function runLeadWorkflow(input: {
   const snapshot=await graph.getState(config);
   const mode=checkpointInvocation(snapshot,input.userId,input.actionId);
   if(mode==='complete')return snapshot.values.result as LeadWorkflowResult;
+  if (mode === "resume" && snapshot.next.includes("recover_incomplete_processing")) {
+    await assertProcessingRecoveryCostsKnown(input.userId, input.actionId);
+    await graph.updateState(config, { processingRecoveryAuthorized: true }, "score_candidates");
+  }
   if(mode!=='resume')initial.searchExcludeDomains=await continuationExclusions(input.userId,input.actionId);
   const state = await withSpendContext({userId:input.userId,operationId:input.actionId,stage:"lead-workflow",
     costAttribution:{version:"company-cost-attribution-v1",kind:"unclassified",companyKeys:[],roundKey:costRoundKey(input.graphThreadId)}},()=>graph.invoke(mode==='resume'?null:initial,config));
@@ -517,5 +532,10 @@ export async function readWorkflowCheckpointProgress(userId:string,actionId:stri
   checkpointInvocation(snapshot,userId,actionId);
   const state=snapshot.values as LeadWorkflowState;
   return {phase:state.phase,creditsUsed:state.creditsUsed,stageMetrics:state.stageMetrics,modelUsage:state.modelUsage,
-    discovered:state.discoveredUniqueCount,assessed:state.assessments?.length??0,warnings:state.warnings,next:snapshot.next};
+    discovered:state.discoveredUniqueCount,assessed:state.assessments?.length??0,
+    accepted:state.acceptedCandidateCount,targetCompletionReason:state.targetCompletionReason,
+    pendingCorrection:processingRecoveryWork(state).candidates.length,
+    pendingScoring:state.correctedCandidates.filter(candidate=>candidateMatchesRequestedRole(candidate,state.plan)
+      &&!state.assessments.some(item=>item.candidateId===candidate.candidateId&&item.scoringStatus==="completed")).length,
+    warnings:state.warnings,next:snapshot.next};
 }
