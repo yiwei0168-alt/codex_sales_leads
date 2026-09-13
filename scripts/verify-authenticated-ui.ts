@@ -19,6 +19,8 @@ try{
 const {getPool,tenantTransaction}=await import("../src/lib/rag/db");
 const {hashPassword}=await import("../src/lib/auth/password");
 const {addManualCompany}=await import("../src/lib/sales/manual-company");
+const {persistDevelopmentDraft,updateDevelopmentDraft}=await import("../src/lib/outreach/repository");
+const {developmentDependencyVersion}=await import("../src/lib/outreach/dependency-version");
 const {setSpendBudget,setTaskSpendBudget,reservePaidCall,settlePaidCall}=await import("../src/lib/billing/repository");
 const {completeTaskCostAllocation}=await import("../src/lib/billing/task-cost-completion");
 const {companyCostKey,costRoundKey}=await import("../src/lib/billing/company-cost-context");
@@ -299,6 +301,41 @@ try{
       expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
       checks.push(`${viewport.width}:completion-${scenario.reason}-counts-refresh`);
     }
+    const draftCompanies=(await (await readLocal(new URL('/api/workspaces/current',base).href)).json()).companies as import('../src/lib/domain').CompanyRecord[];
+    const draftCompany=draftCompanies.find(item=>item.country==='GB'&&item.domain===domain)!;
+    const draftIdentity=await pool.query<{company_id:string}>('select company_id from workspace_company_market where workspace_id=$1 and candidate_id=$2',[workspaceId,draftCompany.id]);
+    const savedDraft=await persistDevelopmentDraft({userId,workspaceId,companyId:draftIdentity.rows[0].company_id,company:draftCompany,
+      dependencyVersion:await developmentDependencyVersion(userId),knowledge:[],templates:[]},
+      {strategy:{objective:'Synthetic partnership',personalizationAngle:'Fixture context',valuePropositions:['Fixture value'],recommendedProducts:[],targetTitles:[],likelyObjections:[],callToAction:'Fixture CTA',followUpPlan:['Fixture follow-up'],evidenceIds:[],knowledgeIds:[]},
+        draft:{language:'en',subjectOptions:['Saved fixture subject'],body:'Original fixture draft',wordCount:3,placeholders:[]},
+        evidenceIds:[],knowledgeIds:[],templateIds:[],warnings:[],model:'synthetic',promptVersion:'ui-fixture',generationMetrics:{modelCalls:0,latencyMs:0}},{});
+    const manualBody=`Reviewed saved draft ${viewport.width}`;
+    expect(await updateDevelopmentDraft(userId,savedDraft.id,{body:manualBody,approve:true})).toBe(true);
+    const draftUrl=new URL(`/api/development-strategies?company=${encodeURIComponent(draftCompany.id)}`,base).href;
+    const readDraft=async()=>(await (await readLocal(draftUrl)).json()).result;
+    expect(await readDraft()).toMatchObject({id:savedDraft.id,status:'approved',contextReview:'current',draft:{body:manualBody}});
+    const openSavedDraft=async()=>{
+      await page.goto(new URL('/markets/GB/leads',base).href);
+      await page.getByRole('button',{name:'打开 UI Fixture GB 详情',exact:true}).click();
+      await page.getByRole('button',{name:'打开开发助手（不自动生成）',exact:true}).click();
+      await expect(page.getByLabel('开发信草稿',{exact:true})).toHaveValue(manualBody);
+    };
+    await openSavedDraft();
+    await expect(page.getByRole('button',{name:'已批准',exact:true})).toBeDisabled();
+    await openSavedDraft();
+    await pool.query("insert into user_outreach_memory(user_id,workspace_id,kind,external_id,title,content,market_codes) values($1,$2,'email-style',$3,'Fixture style','Synthetic style update',ARRAY['GB'])",[userId,workspaceId,`ui-draft-${viewport.width}`]);
+    expect((await readDraft()).contextReview).toBe('changed');
+    await openSavedDraft();
+    await expect(page.getByText('公司角色、路径、证据或可用知识/关系记录已变化：请复核历史策略。不会自动重生成或产生费用。',{exact:true})).toBeVisible();
+    const mxCompany=draftCompanies.find(item=>item.country==='MX'&&item.domain===domain)!;
+    const mxDraft=await (await readLocal(new URL(`/api/development-strategies?company=${encodeURIComponent(mxCompany.id)}`,base).href)).json();
+    expect(mxDraft.result).toBeNull();
+    await pool.query("update outreach_draft set input_snapshot='{}'::jsonb where id=$1 and user_id=$2",[savedDraft.id,userId]);
+    expect((await readDraft()).contextReview).toBe('legacy-unknown');
+    await openSavedDraft();
+    await expect(page.getByText('此历史策略没有完整上下文版本记录，请核对当前角色、路径、证据与知识后使用。',{exact:true})).toBeVisible();
+    expect((await pool.query('select revision,manual_body,status from outreach_draft where id=$1',[savedDraft.id])).rows[0]).toMatchObject({revision:2,manual_body:manualBody,status:'approved'});
+    checks.push(`${viewport.width}:saved-strategy-manual-body-approval-refresh-dependency-country-legacy`);
     await seedProgress();
     await page.goto(new URL(`/tasks/${progressActionId}?kind=search`,base).href);
     const pending=page.locator('dl[aria-label="已保存待处理数量"]');
@@ -347,6 +384,7 @@ try{
       const realAccounting=await client.query("select id from paid_call_reservation where user_id=$1 and tariff_key<>'synthetic-ui-cost' limit 1",[userId]);
       if(realAccounting.rowCount)throw new Error("Unexpected paid accounting; preserve fixture for reconciliation");
       await client.query("delete from user_outreach_memory where user_id=$1",[userId]);
+      await client.query("delete from outreach_draft where user_id=$1",[userId]);
       await client.query("delete from paid_cost_observation where user_id=$1",[userId]);
       await client.query("delete from paid_call_reservation where user_id=$1",[userId]);
       await client.query("delete from lead_search_run where id=$1 and workspace_id=$2",[costRunId,workspaceId]);
