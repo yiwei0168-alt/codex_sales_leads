@@ -1,5 +1,7 @@
 # Product UI v1.1 implementation workflow
 
+2026-09-14 阶段123：联系人补全/核验运行由拥有者上下文读写，9张私有产物表以RLS隔离；历史缺工作区的邮件保留但对应用角色不可见。`/api/contact-enrichment/runs/latest`按会话用户查询。隔离SQL和本地生产Chrome桌面/手机66组回归通过，联系人运行HTTP专项仍待执行；其余4张拥有者字段表另迁移。缓存复用避免重复调用，0实际供应商调用/发信。[验收](CONTACT_ARTIFACT_TENANT_RLS_ACCEPTANCE_2026-09-14.md)。
+
 2026-09-14 阶段120：搜索任务在对话卡和任务详情共用完成标签；`completed` 且最终保存数达到目标才显示“目标已满足”，不足显示“运行结束，目标未填满”，旧结果缺数显示“运行结束，最终数量未记录”。任务详情仍分别展示缺口与图停止原因。桌面/手机本地生产66组合成页面检查通过，真实业务未验收。[证据](SEARCH_TASK_STATUS_LABEL_PRODUCTION_UI_2026-09-14.md)。
 
 2026-09-14阶段108：预算页面新增Brave/Tavily Search独立公开费率状态、上次检查/下次尝试和待审暂停提示，页面刷新只读数据库；隔离账号本地生产桌面/手机64组含API到页面对账通过。[证据](SEARCH_PUBLIC_RATE_REFRESH_ACCEPTANCE_2026-09-14.md)。

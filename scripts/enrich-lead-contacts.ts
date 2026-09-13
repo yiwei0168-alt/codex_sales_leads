@@ -1,13 +1,17 @@
 import nextEnv from "@next/env";
+import type {PoolClient,QueryResultRow} from "pg";
 import { extractDomainEmails, guessPersonalEmail, personNameFromPersonalEmail, personalizedEmailPattern } from "../src/lib/leads/contact-extraction";
-import { getPool, query, transaction } from "../src/lib/rag/db";
+import { getPool, tenantQuery, tenantTransaction } from "../src/lib/rag/db";
 import { TavilySearchProvider, type TavilySearchResult } from "../src/providers/tavily";
 import { resolveTargetWorkspace } from "./resolve-target-workspace";
 
 const { loadEnvConfig } = nextEnv;
 loadEnvConfig(process.cwd());
 
-const workspaceId = (await resolveTargetWorkspace()).id;
+const targetWorkspace = await resolveTargetWorkspace();
+const workspaceId = targetWorkspace.id;
+const query = <T extends QueryResultRow>(sql:string,values:unknown[]=[])=>tenantQuery<T>(targetWorkspace.ownerId,sql,values);
+const transaction = <T>(run:(client:PoolClient)=>Promise<T>)=>tenantTransaction(targetWorkspace.ownerId,run);
 const requestedDomains = process.argv.find((value) => value.startsWith("--domains="))?.slice("--domains=".length).split(",").map((value) => value.trim().toLowerCase()).filter(Boolean);
 const requestedLimit = Number(process.argv.find((value) => value.startsWith("--limit="))?.slice("--limit=".length) ?? 100);
 const limit = Math.max(1, Math.min(Number.isFinite(requestedLimit) ? Math.floor(requestedLimit) : 100, 100));

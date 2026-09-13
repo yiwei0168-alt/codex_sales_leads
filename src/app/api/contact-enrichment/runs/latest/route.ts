@@ -1,5 +1,5 @@
 import { requireApiSession } from "@/lib/auth/session";
-import { query } from "@/lib/rag/db";
+import { tenantQuery } from "@/lib/rag/db";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -48,7 +48,7 @@ export async function GET() {
   if (session instanceof Response) return session;
 
   try {
-    const [run] = await query<RunRow>(
+    const [run] = await tenantQuery<RunRow>(session.userId,
       `select r.id, r.workspace_id, r.status, r.target_count, r.processed_count, r.search_credits_used,
        extract_credits_used, error_message, started_at, finished_at
        from company_enrichment_run r join market_workspace w on w.id = r.workspace_id
@@ -58,7 +58,7 @@ export async function GET() {
     );
     if (!run) return Response.json({ run: null, items: [], counts: { pending: 0, running: 0, completed: 0, failed: 0 }, workspaceCoverage: null });
 
-    const [items, coverageRows] = await Promise.all([query<ItemRow>(
+    const [items, coverageRows] = await Promise.all([tenantQuery<ItemRow>(session.userId,
       `select i.id, i.company_id, c.canonical_name, c.domain, i.status, i.phase,
        i.worker_id, i.attempts, i.named_contact_count, i.email_count,
        i.search_credits_used, i.extract_credits_used, i.error_message,
@@ -68,7 +68,7 @@ export async function GET() {
        order by case i.status when 'running' then 0 when 'failed' then 1 when 'completed' then 2 else 3 end,
          i.updated_at desc`,
       [run.id],
-    ), query<CoverageRow>(
+    ), tenantQuery<CoverageRow>(session.userId,
       `with targets as (
          select c.id from workspace_company wc join sales_company c on c.id = wc.company_id
          where wc.workspace_id = $1 and c.source_kind = 'tavily-live'

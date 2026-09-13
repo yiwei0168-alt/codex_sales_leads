@@ -1,5 +1,6 @@
 import nextEnv from "@next/env";
-import { getPool, query } from "../src/lib/rag/db";
+import type {QueryResultRow} from "pg";
+import { getPool, tenantQuery } from "../src/lib/rag/db";
 import { resolveTargetWorkspace } from "./resolve-target-workspace";
 
 const { loadEnvConfig } = nextEnv;
@@ -7,6 +8,7 @@ loadEnvConfig(process.cwd());
 
 try {
   const workspace = await resolveTargetWorkspace();
+  const query = <T extends QueryResultRow>(sql:string,values:unknown[]=[])=>tenantQuery<T>(workspace.ownerId,sql,values);
   const [run] = await query<{
     id: string; mode: string; status: string; target_count: number; processed_count: number; escalated_count: number;
     model_call_count: number; total_tokens: number; published_count: number; accepted_count: number;

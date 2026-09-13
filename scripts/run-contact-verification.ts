@@ -1,9 +1,10 @@
 import { resolveMx } from "node:dns/promises";
 import nextEnv from "@next/env";
+import type {PoolClient,QueryResultRow} from "pg";
 import { ContactVerificationAgent, type ContactEvidenceDocument } from "../src/lib/contacts/verification/agent";
 import { planContactPublication, type ContactSourceStatus } from "../src/lib/contacts/verification/publication";
 import type { ContactVerificationInput } from "../src/lib/contacts/verification/types";
-import { getPool, query, transaction } from "../src/lib/rag/db";
+import { getPool, tenantQuery, tenantTransaction } from "../src/lib/rag/db";
 import { DeepSeekProvider } from "../src/providers/deepseek";
 import { resolveTargetWorkspace } from "./resolve-target-workspace";
 
@@ -12,6 +13,8 @@ loadEnvConfig(process.cwd());
 
 const targetWorkspace = await resolveTargetWorkspace();
 const workspaceId = targetWorkspace.id;
+const query = <T extends QueryResultRow>(sql:string,values:unknown[]=[])=>tenantQuery<T>(targetWorkspace.ownerId,sql,values);
+const transaction = <T>(run:(client:PoolClient)=>Promise<T>)=>tenantTransaction(targetWorkspace.ownerId,run);
 const requestedMode = process.argv.find((value) => value.startsWith("--mode="))?.slice("--mode=".length)
   ?? process.env.CONTACT_VERIFICATION_MODE?.trim()
   ?? "automatic";
