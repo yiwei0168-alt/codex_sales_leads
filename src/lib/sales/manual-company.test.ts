@@ -10,6 +10,7 @@ beforeEach(()=>{query.mockReset().mockImplementation(async(sql:string)=>{
 it('allows another country membership for the same global identity',async()=>{
   const result=await addManualCompany('owner',{name:'Fixture',country:'CO',website:'example.test',role:'SI'});
   expect(result.duplicate).toBe(false);expect(result.externalId).toMatch(/^market-co-/);
+  expect(result.company?.country).toBe("CO");
   expect(query.mock.calls[1][0]).toContain('wc.market_country_code=$2');
   const insert=query.mock.calls.find(([sql])=>sql.includes('insert into workspace_company_market'))!;
   expect(insert[1].slice(0,3)).toEqual(['workspace','global-identity','CO']);

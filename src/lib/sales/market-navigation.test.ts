@@ -5,6 +5,7 @@ describe("country navigation", () => {
   it("puts multilingual names for the same market into one partition", () => {
     for (const name of ["CO", "co", "Colombia", "哥伦比亚", "Colombie"]) expect(marketCode(name)).toBe("CO");
     expect(marketCode("UK")).toBe("GB");
+    for(const name of ["GB","United Kingdom","英国",marketLabel("GB")])expect(marketCode(name)).toBe("GB");
     expect(marketCode("Mexico")).toBe("MX");
   });
   it("keeps unknown and all-country partitions distinct", () => {

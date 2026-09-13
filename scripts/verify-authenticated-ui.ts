@@ -26,6 +26,7 @@ const conversationId=randomUUID(),actionId=randomUUID();
 const costActionId=randomUUID(),costRunId=randomUUID();
 const email=`ui-verification-${userId}@example.invalid`,password=randomBytes(32).toString("base64url");
 const domain=`ui-verification-${userId}.invalid`;
+const manuallyAddedDomains:string[]=[];
 const application=process.env.DATABASE_URL,migration=process.env.DATABASE_MIGRATION_URL;
 if(!application||!migration)throw new Error("Application and migration connections are required for isolated fixture setup");
 const a=new URL(application),m=new URL(migration);
@@ -83,6 +84,10 @@ try{
       const request=route.request(),url=new URL(request.url());
       if(url.origin!==base.origin)return route.abort();
       if(request.method()==="PATCH"&&editableCompanyPaths.has(url.pathname))return route.continue();
+      if(request.method()==="POST"&&url.pathname==="/api/workspaces/current/companies"){
+        const input=request.postDataJSON();
+        if(input.country==="GB"&&input.website===`https://ui-map-${viewport.width}-${userId}.invalid`)return route.continue();
+      }
       if(!["GET","HEAD"].includes(request.method())&&!['/api/auth/login','/api/auth/logout'].includes(url.pathname))return route.abort();
       return route.continue();
     });
@@ -102,11 +107,11 @@ try{
     const workspaceResponse=await readLocal(new URL("/api/workspaces/current",base).href);
     expect(workspaceResponse.status()).toBe(200);
     const workspace=await workspaceResponse.json();
-    const gbCompany=workspace.companies.find((company:{country:string})=>company.country==="GB");
+    const gbCompany=workspace.companies.find((company:{displayName:string})=>company.displayName==="UI Fixture GB");
     if(!gbCompany)throw new Error("GB fixture identity missing");
     editableCompanyPaths.add(`/api/workspaces/current/companies/${encodeURIComponent(gbCompany.id)}`);
-    expect(workspace.id).toBe(workspaceId);expect(workspace.companies).toHaveLength(2);
-    expect(new Set(workspace.companies.map((company:{id:string})=>company.id)).size).toBe(2);
+    expect(workspace.id).toBe(workspaceId);expect(workspace.companies).toHaveLength(2+manuallyAddedDomains.length);
+    expect(new Set(workspace.companies.map((company:{id:string})=>company.id)).size).toBe(2+manuallyAddedDomains.length);
     for(const country of ["GB","MX"]){
       await page.goto(new URL(`/markets/${country}/leads`,base).href);
       await expect(page.getByLabel("选择国家")).toHaveValue(country);
@@ -150,6 +155,30 @@ try{
       await expect(page.getByRole("img",{name:"当前国家渠道关系图"})).toBeVisible();
       await expect(page.getByLabel("选择国家")).toHaveValue(country);
       await page.screenshot({path:`tmp/auth-ui-${viewport.width}-${country}-map.png`,fullPage:true});
+      if(country==="GB"){
+        const manualDomain=`ui-map-${viewport.width}-${userId}.invalid`,manualName=`UI Map ${viewport.width}`;
+        manuallyAddedDomains.push(manualDomain);
+        await page.getByText("添加公司",{exact:true}).click();
+        const add=async()=>{
+          await page.getByLabel("公司名称",{exact:true}).fill(manualName);
+          await page.getByLabel("官网（可选）",{exact:true}).fill(`https://${manualDomain}`);
+          await page.getByRole("combobox",{name:/^主角色（可选，人工指定不代表已核实）/}).selectOption("SI");
+          const response=page.waitForResponse(value=>value.request().method()==="POST"&&new URL(value.url()).pathname==="/api/workspaces/current/companies");
+          await page.getByRole("button",{name:"加入当前国家",exact:true}).click();
+          const saved=await response;expect(saved.status()).toBe(200);return saved.json();
+        };
+        const added=await add();expect(added.duplicate).toBe(false);
+        const current=await (await readLocal(new URL("/api/workspaces/current",base).href)).json();
+        expect(current.companies.filter((company:{domain:string})=>company.domain===manualDomain))
+          .toEqual([expect.objectContaining({country:"GB",primaryBusinessRole:"SI",userAdded:true,assessmentNeedsRefresh:true})]);
+        await expect(page.getByRole("img",{name:"当前国家渠道关系图"}).getByText(manualName,{exact:true})).toBeVisible();
+        expect((await add()).duplicate).toBe(true);
+        await expect(page.getByRole("dialog")).toBeVisible();await page.keyboard.press("Escape");
+        const after=await (await readLocal(new URL("/api/workspaces/current",base).href)).json();
+        expect(after.companies.filter((company:{domain:string})=>company.domain===manualDomain)).toHaveLength(1);
+        await page.screenshot({path:`tmp/auth-ui-${viewport.width}-manual-map.png`,fullPage:true});
+        checks.push(`${viewport.width}:manual-map-add-persist-duplicate-no-model`);
+      }
       expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
       checks.push(`${viewport.width}:${country}:country-detail-map`);
     }
@@ -221,7 +250,7 @@ try{
       await client.query("delete from task_spend_limit where user_id=$1",[userId]);
       await client.query("delete from assistant_conversation where user_id=$1",[userId]);
       await client.query("delete from market_workspace where id=$1 and owner_id=$2",[workspaceId,userId]);
-      await client.query("delete from sales_company where domain=$1 and not exists(select 1 from workspace_company where company_id=sales_company.id)",[domain]);
+      await client.query("delete from sales_company where domain=any($1::text[]) and not exists(select 1 from workspace_company where company_id=sales_company.id)",[[domain,...manuallyAddedDomains]]);
       await client.query("delete from spend_budget_change where user_id=$1",[userId]);
       await client.query("delete from user_spend_budget where user_id=$1",[userId]);
       await client.query("delete from app_user where id=$1 and email=$2",[userId,email]);

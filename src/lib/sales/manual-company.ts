@@ -2,7 +2,6 @@ import { randomUUID } from "node:crypto";
 import { z } from "zod";
 import type { CompanyRecord } from "@/lib/domain";
 import { tenantTransaction } from "@/lib/rag/db";
-import { marketLabel } from "./market-navigation";
 import { companyMarketCandidateId, companyMarketCountry } from "./company-market-state";
 
 export const manualCompanySchema=z.object({
@@ -31,7 +30,7 @@ export async function addManualCompany(userId:string,input:z.infer<typeof manual
     if(duplicates.rows[0])return {duplicate:true,externalId:duplicates.rows[0].external_id};
     const id=`manual-${randomUUID()}`;
     const distributor=input.role==="Distributor"||input.role==="VAD";
-    const record:CompanyRecord={id,legalName:input.name,displayName:input.name,domain,city:"",country:marketLabel(country),
+    const record:CompanyRecord={id,legalName:input.name,displayName:input.name,domain,city:"",country,
       layer:distributor?"Tier-1 Distributor":input.role==='Agent'||input.role==='Brand Owner'?"Strategic Partner":"Downstream Channel",roles:input.role?[input.role]:[],primaryBusinessRole:input.role??"Unresolved",
       accountTier:distributor?"Standard Distributor":"Standard",supplyModel:"TBD",brandInvolvement:"Standard",fitScore:0,accountValue:0,
       reachability:0,evidenceConfidence:0,summary:"用户添加，尚未核实与评分",opportunityStage:"Discovered",priority:"Low",owner:"Unassigned",

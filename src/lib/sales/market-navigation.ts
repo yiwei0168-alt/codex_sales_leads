@@ -11,7 +11,8 @@ for (const locale of ["en", "zh-CN", "es", "fr", "de"]) {
 export function marketCode(country: string): string {
   const value = country.trim();
   if (value.toLowerCase() === "uk") return "GB";
-  return names.get(value.toLowerCase()) ?? (/^[a-z]{2}$/i.test(value) ? value.toUpperCase() : value || "unknown");
+  const code=names.get(value.toLowerCase()) ?? (/^[a-z]{2}$/i.test(value) ? value.toUpperCase() : value || "unknown");
+  return code==="UK"?"GB":code;
 }
 
 export function marketLabel(code: string): string {

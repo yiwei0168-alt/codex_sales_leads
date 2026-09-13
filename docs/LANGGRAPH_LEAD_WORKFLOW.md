@@ -1,5 +1,7 @@
 # LangChain / LangGraph 销售线索工作流
 
+2026-09-13阶段47：手工添加不进入付费发现/评分；响应record.country使用规范country code，与重新读取国家记录一致，marketCode把名称映射产生的UK也归一GB。真实表单保存后图立即更新，重复输入复用已有国家候选，仍待核实。22组浏览器与812测试/build通过；无schema迁移，回滚代码不改变已存记录。
+
 2026-09-13阶段46：公司详情账户等级选择接入已有updateCompanyState→国家user_overrides→company-classification个人记忆，不增加模型路径。Distributor/VAD层展示分销商等级，其他层展示KA/Priority/Standard/Long-tail，与后端兼容校验一致。真实UI/API/SQL验证角色/等级/路径和国家隔离，812测试及生产build通过。无schema变化，回滚仅移除新增选择器；用户已保存修改继续保留。
 
 2026-09-13阶段45：任务预算公司费用已通过真实Chrome桌面/手机、API与SQL接线检查，五口径及覆盖率、当前任务域名/国家关联、刷新不重复显示通过。只使用合成预留，不执行图或供应商调用；真实图结果保存仍需验收。[范围和复现](LOCAL_PRODUCTION_UI_ACCEPTANCE_2026-09-13.md)。
