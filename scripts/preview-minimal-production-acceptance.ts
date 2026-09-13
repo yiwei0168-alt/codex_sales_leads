@@ -52,6 +52,47 @@ async function captureMinimalPlaybookWire(){
     else process.env.OPENROUTER_API_KEY=originalKey;
   }
 }
+async function captureMinimalBraveWire(){
+  const originalKey=process.env.BRAVE_SEARCH_API_KEY;
+  const captured:Request[]=[];
+  process.env.BRAVE_SEARCH_API_KEY="synthetic-never-sent";
+  try{
+    const {createDiscoveryProvider}=await import("../src/providers/discovery");
+    const {buildStandardLeadMarketPlaybook}=await import("../src/lib/leads/workflow/playbook");
+    const {ragContext}=await import("./workflow-recovery-fixtures");
+    const route=buildHybridSearchRoute(minimalPlan).find(step=>step.provider==="brave"&&step.trigger==="core");
+    if(!route)throw new Error("Minimal plan has no Brave core route");
+    const playbook=buildStandardLeadMarketPlaybook(minimalPlan,ragContext);
+    const provider=createDiscoveryProvider("brave",{maxAttempts:1,fetchImplementation:async(input,init)=>{
+      captured.push(new Request(input,init));
+      throw new BudgetDeniedError("missing-tariff");
+    }});
+    try{await provider.search({query:playbook.searchQueries[0].query,countryCode:minimalPlan.countryCode,
+      countryName:minimalPlan.countryName,languageCode:minimalPlan.queryLanguage,maxResults:2,
+      category:route.category,track:route.track,engine:route.engine,mechanism:route.mechanism});}
+    catch(error){if(!(error instanceof BudgetDeniedError)||error.code!=="missing-tariff")throw error;}
+    if(captured.length!==1)throw new Error("Unexpected Brave core transport count");
+    const request=captured[0],url=new URL(request.url);
+    const quote={origin:url.origin,pathname:url.pathname,model:"",requestBytes:Buffer.byteLength(url.search,"utf8"),
+      outputTokens:null};
+    try{
+      const rule=quoteRequest(quote);
+      assertRequestContract(rule,{},url.search,request.method,request.headers);
+      return {status:"contract-valid-synthetic-wire",provider:"brave",category:route.category,
+        track:route.track,requestMethod:request.method,queryBytes:quote.requestBytes,
+        countryParameter:url.searchParams.get("country"),resultLimit:url.searchParams.get("count"),
+        tariffKey:rule.key,maximumPerCallUsd:rule.maximumChargeMicros/1e6,
+        actualMarketQueryChecked:false,providerCalls:0};
+    }catch(error){
+      if(!(error instanceof BudgetDeniedError))throw error;
+      return {status:error.code,provider:"brave",category:route.category,track:route.track,
+        queryBytes:quote.requestBytes,actualMarketQueryChecked:false,providerCalls:0};
+    }
+  }finally{
+    if(originalKey===undefined)delete process.env.BRAVE_SEARCH_API_KEY;
+    else process.env.BRAVE_SEARCH_API_KEY=originalKey;
+  }
+}
 try{
   const identity=await query<{safe:boolean}>("select (email='model-acceptance-20260912@fixture.invalid' and status='disabled' and password_hash is null) as safe from app_user where id=$1",[userId]);
   if(identity[0]?.safe!==true)throw new Error("Acceptance identity differs; no execution allowed");
@@ -128,13 +169,14 @@ try{
     maximumPerCallUsd:tavilyRule?tavilyRule.maximumChargeMicros/1e6:null,
     actualRequestContractChecked:false};
   const marketPlaybookWire=await captureMinimalPlaybookWire();
+  const braveCoreWire=await captureMinimalBraveWire();
   const after=await readSpendBudget(userId);
   if(Number(after.budget?.occupied_micros)!==Number(budget.budget.occupied_micros))
     throw new Error("Read-only wire preview changed budget occupancy");
   console.log(JSON.stringify({mode:"read-only-prerequisite-preview",limitUsd:30,occupiedUsd:Number(budget.budget.occupied_micros)/1e6,
     remainingUsd:Number(budget.budget.remaining_micros)/1e6,frozen:budget.budget.frozen,
     firstRoundPoolForOneTarget:plannedCandidatePool({targetCount:1,acceptedCount:0,discoveredUniqueCount:0,round:0}),
-    stages,searchRoute,supplementalEvidence,marketPlaybookWire,
+    stages,searchRoute,supplementalEvidence,marketPlaybookWire,braveCoreWire,
     checkedTariffsAvailable:stages.every(stage=>stage.tariff==="available")
       &&searchRoute.every(route=>route.tariffStatus==="static-bound-present")
       &&supplementalEvidence.tariffStatus==="static-bound-present",
@@ -143,6 +185,6 @@ try{
     allSearchRouteBoundsPresent:searchRoute.every(route=>route.tariffStatus==="static-bound-present"),
     actualRequestContractsChecked:false,
     checkedSingleCallBoundsFit:stages.every(stage=>stage.tariff==="available"&&stage.fitsCurrentRemainingBudget),
-    totalRunBoundUsd:null,limitations:"Lists configured minimal-plan discovery and conditional review routes, but checks only static tariff availability, individual dummy bounds, and one synthetic playbook SDK wire; real market requests, provider response, fallback tariffs, conditional execution and total-run bound remain unverified",
+    totalRunBoundUsd:null,limitations:"Lists configured minimal-plan discovery and conditional review routes; captures synthetic playbook and Brave core provider wires. Real market requests, provider responses, remaining fallback/search/model contracts, conditional execution and total-run bound remain unverified",
     providerCalls:0,accountsModified:0,jobsClaimed:0},null,2));
 }finally{await getPool().end();}

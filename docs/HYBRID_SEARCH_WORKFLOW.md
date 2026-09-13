@@ -1,5 +1,7 @@
 # Hybrid Lead Search Workflow
 
+2026-09-14阶段113：核心Brave合成提供方请求已通过现行合同；CO因Brave国家参数列表不含哥伦比亚而按既有逻辑使用ALL，上游过滤变宽，查询与后续国家门禁仍须实际核验，不能视为扩展用户目标市场。[请求证据](MINIMAL_ACCEPTANCE_BRAVE_WIRE_2026-09-14.md)。
+
 2026-09-14阶段112：只读最小验收计划由现行混合搜索策略算出 Distributor/strategic 四条路径：核心Brave、缺口触发Exa、SearchAPI、Gemini；仅前两者有严格静态上界，不能把未执行的条件路由当作已搜索或市场耗尽。补证Tavily另列。[完整路径预检](MINIMAL_ACCEPTANCE_ROUTE_COVERAGE_2026-09-14.md)。
 
 2026-09-14阶段111：四个同步搜索入口的公开费率刷新，只有价证有效且无旧暂停才记录下游使用；待审、缺证、旧暂停分别保留原因，不改变新预留门禁。三组来源共15项合成定向测试，0付费搜索。[报告](PUBLIC_RATE_HOLD_USAGE_ACCOUNTING_2026-09-14.md)。

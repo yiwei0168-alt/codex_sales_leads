@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-09-14阶段113：最小路径核心Brave请求通过生产提供方合成传输与严格费用合同预检：GET查询127字节、count2、CO回退country=ALL、USD0.005/次，0真实外发/费用；实际市场查询、候选国家证据及完整路径未验收。[报告](MINIMAL_ACCEPTANCE_BRAVE_WIRE_2026-09-14.md)。
+
 2026-09-14阶段112：最小真实闭环只读预检扩大为当前策略的8项模型阶段、4条发现路由及Tavily补证；当前核心Brave有静态上界，但SearchAPI/Gemini、条件Terra与Sol裁决仍缺可执行完整合同，现行Sol市场计划上界超余额。脚本运行、预算不变、typecheck/脚本lint通过，0付费/认领。[路径覆盖](MINIMAL_ACCEPTANCE_ROUTE_COVERAGE_2026-09-14.md)。S01待确认，`actualRequestContractsChecked=false`、整次上界未知，A11未验收。
 
 2026-09-14阶段111：修正 Sol、DeepSeek 与四个同步搜索来源的公开费率刷新观测：待审页不计有效，旧暂停未人工解除时，即使新页价格一致也不计下游使用；保留 hold、历史数据和费用。962测试/202文件、typecheck、build、lint0错误通过，0真实供应商调用。[报告](PUBLIC_RATE_HOLD_USAGE_ACCOUNTING_2026-09-14.md)。Places 人工复核、其他费率合同及 A11 闭环仍缺。

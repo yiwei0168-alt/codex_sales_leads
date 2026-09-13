@@ -1,5 +1,7 @@
 # LangChain / LangGraph 销售线索工作流
 
+阶段113核心发现预检：Colombia/Distributor合成计划经生产Brave提供方形成GET请求，当前费用合同按127字节查询、2结果及USD0.005/次通过；传输被拦截，真实HTTP与预算写入0。实际执行器查询及下游公司证据仍未验证，[边界](MINIMAL_ACCEPTANCE_BRAVE_WIRE_2026-09-14.md)。
+
 阶段112最小闭环路径预检：只读脚本从当前 Colombia/Distributor/目标1家计划与现行路由列出核心Brave、条件Exa/SearchAPI/Gemini、Tavily补证、DeepSeek校正/评分、Terra复核与Sol裁决。市场计划现行Sol单次预留超USD17.675596余额；脚本标明实际请求未全验及整次上界未知，不认领任务。[逐入口状态](MINIMAL_ACCEPTANCE_ROUTE_COVERAGE_2026-09-14.md)。
 
 阶段111费用遥测：Sol、DeepSeek和四个同步搜索来源的公开价证分别记录生成、与静态基线一致、实际可供下游使用。待审页无效，旧暂停即使遇到一致新页仍记下游使用0及待人工复核原因；不改预算门禁或旧费用。[定向回归](PUBLIC_RATE_HOLD_USAGE_ACCOUNTING_2026-09-14.md)。
