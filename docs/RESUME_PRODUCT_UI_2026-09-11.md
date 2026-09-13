@@ -1,5 +1,7 @@
 # 产品开发恢复节点 — 2026-09-11
 
+2026-09-13阶段63：新增verify-result-persistence.ts实际调用产品存储函数；发现并修复saveEvidenceSnapshots $10整数/文本interval冲突。最终两次成功，两国4并发仅2国家记录/2快照/14事件、共享身份1、23微美元合成分摊守恒且未知费用不释放、RLS通过。fixture状态/清理错误已修正、四个遗留合成用户核验后清理，最终fixture清理成功。0真实付费，下一继续A09/A13页面与真实链路；goal active，详见RESULT_PERSISTENCE_ACCEPTANCE报告。
+
 2026-09-13阶段62：结果保存事件区分saved/delivery-selected与未知UI查看/用户采用；有效校正按完成契约。迁移054扩枚举/v2唯一索引已用verify-artifact-observations.ts --apply验证应用，fixture回滚。832全量测试通过，来源贡献displayed=null/selected系统语义随后补齐并重build。下一应补实际persistLeadWorkflowResult隔离SQL/页面业务证据，当前事件验证仍直接调用观测持久函数；完整UI采用及其他验收未完成。0付费，goal active。
 
 2026-09-13阶段61：verify-compact-processing-recovery.ts已通过真实PostgreSQL两进程：100证据/准备metadata/13合成额度保留，校正重放0、评分1，owner/action隔离和国家/证据契约变化通过，thread清理、typecheck通过、0付费。产品仍c56be92（831全量/build阶段60）；新脚本为合成业务适配器，不等于实际Agent或公司入库验收。继续A08遥测、A09/A13真实页面及剩余费用/恢复项，goal active。

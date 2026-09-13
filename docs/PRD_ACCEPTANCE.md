@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-09-13阶段63：实际产品结果保存通过隔离SQL验收，修复带有效证据入库的PostgreSQL参数类型冲突。两国4并发、共享身份/国家隔离、快照有效期、事件幂等、合成分摊守恒和RLS通过；fixture清理，0真实付费。此证据覆盖真实存储函数，仍非真实模型/搜索/UI完整闭环，[范围](RESULT_PERSISTENCE_ACCEPTANCE_2026-09-13.md)。
+
 2026-09-13阶段62：服务端交付与用户采用事件分开，新事件采用/查看unknown；校正有效量不再包含未完成。4针对性、832全量测试及实际SQL幂等/冲突/RLS/国家验证通过，迁移054应用且fixture回滚。新来源行displayed保持null，selected标明系统语义。真实UI采用及全业务链路仍未验收，[报告](ARTIFACT_OBSERVATION_BOUNDARY_2026-09-13.md)。
 
 2026-09-13阶段61：P06增加真实PostgreSQL两进程恢复证据，100条独有原文、准备遥测和先前合成额度均保留；已完成校正不重做，身份隔离及请求依赖变化通过。typecheck通过，0付费，隔离thread已清理。模型/业务保存使用合成适配器，整体仍未验收。[详细范围](P06_STRUCTURED_SINGLETON_2026-09-13.md)。

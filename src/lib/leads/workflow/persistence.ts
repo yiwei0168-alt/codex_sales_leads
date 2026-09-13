@@ -165,7 +165,7 @@ async function saveEvidenceSnapshots(client: PoolClient, userId: string, runId: 
          user_id, run_id, candidate_id, source_url, canonical_url, source_type, evidence_kinds,
          acquisition_status, retrieved_at, freshness_days, expires_at, content_hash, content, prior_run_id, metadata,
          public_document_version_id, public_chunk_ids
-       ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$9::timestamptz + ($10 || ' days')::interval,$11,$12,$13,$14,$15,$16)
+       ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10::integer,$9::timestamptz + $10::integer * interval '1 day',$11,$12,$13,$14,$15,$16)
        on conflict (run_id, candidate_id, canonical_url) do update set
          source_url=excluded.source_url, source_type=excluded.source_type, evidence_kinds=excluded.evidence_kinds,
          acquisition_status=excluded.acquisition_status, retrieved_at=excluded.retrieved_at,
