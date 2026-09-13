@@ -1,6 +1,6 @@
 import type { CompanyRecord } from "@/lib/domain";
 import { companyOverride } from "./company-overrides";
-import { query, tenantQuery, tenantTransaction } from "@/lib/rag/db";
+import { tenantQuery, tenantTransaction } from "@/lib/rag/db";
 import type {
   CompanyContactDetailsDto,
   CompanyEditablePatch,
@@ -12,9 +12,9 @@ import type {
 const WORKSPACE_SLUG = "global-sales";
 
 export async function getCurrentWorkspace(userId: string): Promise<MarketWorkspaceDto | null> {
-  const workspaces = await query<{
+  const workspaces = await tenantQuery<{
     id: string; slug: string; name: string; market: string; country_code: string; mode: "new-market" | "growth"; objective: string;
-  }>(
+  }>(userId,
     `select id, slug, name, market, country_code, mode, objective from market_workspace
      where owner_id = $1 and slug = $2 and status = 'active'`,
     [userId, WORKSPACE_SLUG],

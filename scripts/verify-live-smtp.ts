@@ -2,14 +2,14 @@ import nextEnv from "@next/env";
 import {createHash} from "node:crypto";
 import {z} from "zod";
 nextEnv.loadEnvConfig(process.cwd());
-const {query,tenantQuery,getPool}=await import("../src/lib/rag/db");
+const {tenantQuery,getPool}=await import("../src/lib/rag/db");
+const {resolveTargetWorkspace}=await import("./resolve-target-workspace");
 const {verifyOutbound,sendOutbound,listOutbound}=await import("../src/lib/mailbox/outbound");
 const {addManualCompany}=await import("../src/lib/sales/manual-company");
 const runId="local-production-acceptance-2026-09-12";
 let phase="configuration";
 try{
-  const owners=await query<{owner_id:string}>("select distinct w.owner_id from market_workspace w join app_user u on u.id=w.owner_id where w.slug='global-sales' and w.status='active' and u.status='active'");
-  if(owners.length!==1)throw new Error("ambiguous-owner");const userId=owners[0].owner_id;
+  const userId=(await resolveTargetWorkspace()).ownerId;
   const connections=await tenantQuery<{id:string}>(userId,"select id from mailbox_connection where user_id=$1 and status='active'",[userId]);
   if(connections.length!==1)throw new Error("ambiguous-mailbox");
   if(process.argv.includes("--status")){

@@ -1,24 +1,24 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const { queryMock, transactionMock,tenantMock } = vi.hoisted(() => ({ queryMock: vi.fn(), transactionMock: vi.fn(),tenantMock:vi.fn() }));
+const { transactionMock,tenantMock } = vi.hoisted(() => ({ transactionMock: vi.fn(),tenantMock:vi.fn() }));
 
-vi.mock("@/lib/rag/db", () => ({ query: queryMock, tenantTransaction: transactionMock,tenantQuery:tenantMock }));
+vi.mock("@/lib/rag/db", () => ({ tenantTransaction: transactionMock,tenantQuery:tenantMock }));
 
 import { getCurrentWorkspace, updateWorkspaceMode } from "./repository";
 
 describe("sales workspace tenant isolation", () => {
-  beforeEach(() => { queryMock.mockReset(); transactionMock.mockReset();tenantMock.mockReset().mockResolvedValue([]); });
+  beforeEach(() => { transactionMock.mockReset();tenantMock.mockReset().mockResolvedValue([]); });
 
   it("selects the active workspace by authenticated owner", async () => {
-    queryMock.mockResolvedValue([]);
     await expect(getCurrentWorkspace("user-a")).resolves.toBeNull();
-    const [sql, parameters] = queryMock.mock.calls[0] as [string, unknown[]];
+    const [owner,sql, parameters] = tenantMock.mock.calls[0] as [string,string, unknown[]];
+    expect(owner).toBe("user-a");
     expect(sql).toContain("owner_id = $1");
     expect(parameters).toEqual(["user-a", "global-sales"]);
   });
 
   it("scopes contacts and email candidates to the selected workspace", async () => {
-    queryMock.mockImplementation((sql?: string) => {
+    tenantMock.mockImplementation((_owner:string,sql?: string) => {
       if (String(sql).includes("from market_workspace")) {
         return Promise.resolve([{
           id: "workspace-a", slug: "global-sales", name: "A", market: "Global",

@@ -27,6 +27,7 @@ try {
       [email, displayName, passwordHash, role],
     );
     const id = result.rows[0].id;
+    await client.query("select set_config('app.current_user_id',$1,true)",[id]);
     await client.query(
       `insert into market_workspace (owner_id, slug, name, market, country_code, objective)
        values ($1, 'global-sales', 'Global Sales Workspace', 'Global', 'WW',
