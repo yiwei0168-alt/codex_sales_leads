@@ -1,5 +1,7 @@
 # 产品开发恢复节点 — 2026-09-11
 
+2026-09-13阶段41：唯一矩阵完成逐行合并，原阶段25–40矩阵完整归档；从[当前矩阵](CURRENT_ACCEPTANCE_MATRIX_2026-09-13.md)恢复，不将下方旧阶段待办作为当前结论。Gemini官方按搜索查询次数计费，当前Interactions契约未找到查询次数硬限制，不能只用token价格开放费用门禁；已登记依据，无产品代码或付费变化。继续OpenRouter完整上界及独立恢复/成本/遥测、最终真实业务/UI，goal active。最新全量检查沿用阶段40，阶段41仅文档核验。
+
 2026-09-13阶段40：request-bounds-v1.5.0新增SearchAPI Google/Bing第一页USD0.008上界，涵盖公开enhanced速度档；Google固定num10、Bing最多20、无自动分页。发现契约v4-searchapi-google-limit，旧会话不静默复用。802测试/174文件、typecheck/build通过，无付费。剩余Gemini/OpenRouter上界、可信报告/核销、真实业务/UI、历史终态恢复和P06分阶段继续；goal active。
 
 2026-09-13阶段39：request-bounds-v1.4.0新增Places Text Search Enterprise USD0.035上界，实际FieldMask与body一起严格检查；800测试/174文件、typecheck/build通过，无付费。剩余入口SearchAPI/Gemini/OpenRouter；真实核销/业务/UI、历史终态恢复和P06独有大事实分阶段继续，goal active。

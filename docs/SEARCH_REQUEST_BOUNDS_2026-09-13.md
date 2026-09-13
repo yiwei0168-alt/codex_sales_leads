@@ -1,5 +1,7 @@
 # 普通搜索费用上界核验
 
+阶段41只读核验：Gemini当前生产请求为POST `/v1beta/interactions`，默认gemini-3.6-flash，内置google_search，thinking_level=low；未设置max_output_tokens。官方[搜索计费说明](https://ai.google.dev/gemini-api/docs/google-search)明确Gemini 3按模型执行的搜索查询计费，同一次API可产生多笔工具使用。官方[Interactions契约](https://ai.google.dev/api/interactions-api)虽有generation_config.max_output_tokens，但本次检查未找到可强制限制内置搜索查询次数的参数；这是当前证据缺口，不宣称供应商永远不支持上限。输出token、提示词要求、最终公司条数均不能据此推导搜索次数硬上界。Gemini继续缺完整费率门禁，不增加静态规则、不执行付费试探，也不通过更换模型或搜索语义绕过。后续须取得完整请求费用约束的官方依据；其他已授权开发继续。当前入口状态统一见[验收矩阵](CURRENT_ACCEPTANCE_MATRIX_2026-09-13.md)，下列阶段记录保留历史语境。
+
 阶段40增量：request-bounds-v1.5.0新增SearchAPI GET https://www.searchapi.io/api/v1/search，限定google/bing普通第一页，上界USD0.008/次，包络16384字节，有效至2026-09-20T00:00:00Z。[官方定价](https://www.searchapi.io/pricing)的HTML属性data-plan-speed-plans-value包含regular/enhanced两档；2026-09-13只读解析8组公开套餐，最高为Developer enhanced USD80/10000次（USD8/1000），覆盖普通档USD4/1000，不采用低档或失败免费假设。该价是公开套餐单次额度的保守预留，不是本次请求现金账单或另行购买套餐授权。
 
 [Google文档](https://www.searchapi.io/docs/google)说明num已固定10，[Bing文档](https://www.searchapi.io/docs/bing)仍支持num（官方最多50，本产品最多20）。生产Google发送num=10，Bing保留1–20；不增加自动分页。仅允许engine/q/location/gl/hl/num，重复参数、其他引擎和分页拒绝。发现契约升级discovery-request-v4-searchapi-google-limit，旧会话不静默恢复。802测试/174文件、typecheck/build通过，新真实调用0。剩余Gemini/OpenRouter完整上界、真实核销和整体验收未完成。

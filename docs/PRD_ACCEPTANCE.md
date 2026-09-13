@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-09-13阶段41：已统一[当前验收矩阵](CURRENT_ACCEPTANCE_MATRIX_2026-09-13.md)，O01–O05逐项区分实现与真实验收；费用入口更新至阶段40，旧阶段矩阵原样归档。以下阶段描述仅为历史，不再表示当前待办。阶段41只验证文档/提交引用，最新产品回归仍为阶段40的802测试与typecheck/build；整体验收未完成。
+
 2026-09-13阶段40：SearchAPI公开增强/普通速度费用包络及引擎参数校验实现，802测试/typecheck/build通过，无付费。Google仅请求固定10条第一页，不为中间数量增加隐式调用；当前整体验收仍未完成。[官方核验记录](SEARCH_REQUEST_BOUNDS_2026-09-13.md)。
 
 2026-09-13阶段39：Places Text Search费用上界及实际FieldMask校验完成，800测试/typecheck/build通过；非法头不预留不发送，密钥不入费用记录。无付费、无真实业务验收结论，完整goal继续。[来源与范围](SEARCH_REQUEST_BOUNDS_2026-09-13.md)。
