@@ -1,0 +1,19 @@
+{
+  "reviewOnly": true,
+  "brave": {
+    "sourceUrl": "https://brave.com/search/api/",
+    "canonicalReference": "https://brave.com/search/api/",
+    "plan": "Search Plan",
+    "currency": "USD",
+    "usdPer1000Requests": 5,
+    "maximumChargeMicros": 5000
+  },
+  "tavily": {
+    "sourceUrl": "https://docs.tavily.com/documentation/api-credits.md",
+    "canonicalReference": "https://docs.tavily.com/documentation/api-credits",
+    "usdPerCredit": 0.008,
+    "basicCredits": 1,
+    "advancedCredits": 2,
+    "maximumChargeMicros": 16000
+  }
+}

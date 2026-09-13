@@ -7,6 +7,8 @@ import {readBillingReferenceStatus} from "@/lib/billing/fx-reference-repository"
 import {readOpenRouterSolRateStatus} from "@/lib/billing/openrouter-rate-repository";
 import {readDeepSeekRateStatuses} from "@/lib/billing/deepseek-rate-repository";
 import {DEEPSEEK_RATE_SOURCES} from "@/lib/billing/deepseek-rate-reference";
+import {readSearchRateStatuses} from "@/lib/billing/search-rate-repository";
+import {SEARCH_RATE_SOURCES} from "@/lib/billing/search-rate-reference";
 export const runtime="nodejs";
 export async function GET(request:Request){
   const session=await requireApiSession();if(session instanceof Response)return session;
@@ -18,6 +20,8 @@ export async function GET(request:Request){
     referenceVerification:await readBillingReferenceStatus(observedAt),
     openRouterRateReference:await readOpenRouterSolRateStatus().catch(()=>({checkedAt:null,nextAttemptAt:null,status:"unavailable",hold:null})),
     deepSeekRateReferences:await readDeepSeekRateStatuses().catch(()=>DEEPSEEK_RATE_SOURCES.map(source=>({
+      sourceKey:source.sourceKey,tariffKey:source.tariffKey,checkedAt:null,nextAttemptAt:null,status:"unavailable",hold:null}))),
+    searchRateReferences:await readSearchRateStatuses().catch(()=>SEARCH_RATE_SOURCES.map(source=>({
       sourceKey:source.sourceKey,tariffKey:source.tariffKey,checkedAt:null,nextAttemptAt:null,status:"unavailable",hold:null}))),
     tariffVerification:{checkedAt:new Date(observedAt).toISOString(),scope:'static-request-bounds-only',rules:billingPolicy.rules.map(rule=>({key:rule.key,reference:rule.reference,verifiedAt:rule.verifiedAt,...tariffValidity(rule,observedAt)}))},
     notice:"已接入当前产品的线索工作流、聊天、开发生成、联系人、关系分析、知识和邮箱学习付费入口；费率上界仍需逐项审核配置，不能据此认定已具备真实付费验收条件。累计预算不自动按月重置。预留占用不等于实际账单；未知费用保留占用，缺价或费用上界不明时阻止已接入的付费请求。"},{headers:{"Cache-Control":"private, no-store"}});}catch{return Response.json({error:"预算读取失败；不能推断可用金额"},{status:503});}

@@ -6,6 +6,7 @@ import { claimNextLeadWorkflow, executeClaimedLeadWorkflow } from "../src/lib/le
 import {refreshBillingFxReference} from "../src/lib/billing/fx-reference-repository";
 import {refreshOpenRouterSolRateEvidence} from "../src/lib/billing/openrouter-rate-repository";
 import {refreshDeepSeekRateEvidence} from "../src/lib/billing/deepseek-rate-repository";
+import {refreshSearchRateEvidence} from "../src/lib/billing/search-rate-repository";
 
 nextEnv.loadEnvConfig(process.cwd());
 
@@ -23,6 +24,8 @@ async function runOnce(): Promise<boolean> {
     catch{console.warn(JSON.stringify({event:"openrouter-rate-maintenance-unavailable",paidRulesUnchanged:true}));}
     try{await refreshDeepSeekRateEvidence();}
     catch{console.warn(JSON.stringify({event:"deepseek-rate-maintenance-unavailable",paidRulesUnchanged:true}));}
+    try{await refreshSearchRateEvidence();}
+    catch{console.warn(JSON.stringify({event:"search-rate-maintenance-unavailable",paidRulesUnchanged:true}));}
   }
   const claim = await claimNextLeadWorkflow(workerId);
   if (!claim) return false;

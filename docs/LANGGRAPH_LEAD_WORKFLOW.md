@@ -1,5 +1,7 @@
 # LangChain / LangGraph 销售线索工作流
 
+阶段108搜索费用边界：worker到期后独立只读抓取Brave Search Plan与Tavily Search credit官方价格，按现行USD0.005/0.016静态上界复核；跨进程去重，漂移只暂停受影响规则的新预留。预算API与页面只读，真实搜索0，[SQL及UI证据](SEARCH_PUBLIC_RATE_REFRESH_ACCEPTANCE_2026-09-14.md)。
+
 阶段107费用边界：worker 每五分钟检查 DeepSeek 官方公开价格复核是否到期；Flash/Pro 共享一次每日 GET 和跨进程锁，漂移/不完整页使对应现行静态规则的预留粘性暂停。预算 API/页面只读两条状态，不刷新外部源或延长期限。[真实SQL与生产UI证据](DEEPSEEK_PUBLIC_RATE_REFRESH_ACCEPTANCE_2026-09-14.md)。其他来源刷新及 A11 实际模型业务仍缺。
 
 阶段107边界修正：HTTP成功但返回非HTML、206部分页、转移页、404或超大页面按无法核验公开合同处理并暂停新预留；429、5xx和传输故障保留原hold及快照，按一小时退避。仅增加合成响应测试，不发起业务调用。

@@ -6,7 +6,7 @@ import type {CostStageSummary as CostStage} from "@/lib/billing/cost-summary";
 import type {ProviderUsageSummary as UsageSummary} from "@/lib/billing/usage-summary-types";
 import type {BillingReferenceStatus} from "@/lib/billing/reference-status";
 type RateReference={checkedAt:string|null;nextAttemptAt:string|null;status:string;hold:boolean|null};
-type BudgetSnapshot={referenceVerification?:BillingReferenceStatus;openRouterRateReference?:RateReference;deepSeekRateReferences?:Array<RateReference&{sourceKey:string;tariffKey:string}>;tariffVerification?:{checkedAt:string;rules:Array<{key:string;reference:string;verifiedAt:string;withinVerificationWindow:boolean;effectiveExpiresAt:string|null}>};modelUsage?:UsageSummary[];budget:{limit_micros:string;occupied_micros:string;remaining_micros:string;frozen:boolean;suspended_rules?:number}|null;configuredRules:number;notice:string;stages:CostStage[]};
+type BudgetSnapshot={referenceVerification?:BillingReferenceStatus;openRouterRateReference?:RateReference;deepSeekRateReferences?:Array<RateReference&{sourceKey:string;tariffKey:string}>;searchRateReferences?:Array<RateReference&{sourceKey:string;tariffKey:string}>;tariffVerification?:{checkedAt:string;rules:Array<{key:string;reference:string;verifiedAt:string;withinVerificationWindow:boolean;effectiveExpiresAt:string|null}>};modelUsage?:UsageSummary[];budget:{limit_micros:string;occupied_micros:string;remaining_micros:string;frozen:boolean;suspended_rules?:number}|null;configuredRules:number;notice:string;stages:CostStage[]};
 function dollars(micros:string|null){return micros===null?"未报告":`$${(Number(micros)/1000000).toFixed(6)}`;}
 export function SpendBudget(){
   const [snapshot,setSnapshot]=useState<BudgetSnapshot|null>(null);const [amount,setAmount]=useState("");const [revision,setRevision]=useState(0);const [saving,setSaving]=useState(false);const [error,setError]=useState("");
@@ -30,6 +30,12 @@ export function SpendBudget(){
       </li>)}</ul>}
     </details>
     {snapshot.deepSeekRateReferences?.some(item=>item.hold===true)&&<p role="alert">DeepSeek 公开费用合同待审，受影响规则的新预留已暂停；提高预算不会解除暂停。</p>}
+    <details><summary>搜索入口公开费率复核</summary><p>Brave 与 Tavily 只读复核现行 Search 单价和用量单位；页面刷新不访问服务商，也不延长静态期限或自动采用新价格。</p>
+      {!snapshot.searchRateReferences?.length?<p>暂无复核观测，不能推断搜索费率可用。</p>:<ul>{snapshot.searchRateReferences.map(item=><li key={item.sourceKey} data-testid={`search-rate-${item.sourceKey}`}>
+        {item.tariffKey}：{item.status==='validated'?'公开证据与基线一致':item.status==='review-required'?'公开证据变化，待确认并暂停新预留':item.status==='unavailable'?'公开复核暂不可用，静态期限独立生效':'尚无公开复核记录'}；上次检查 {item.checkedAt??'未知'}；下次尝试 {item.nextAttemptAt??'未知'}（UTC）
+      </li>)}</ul>}
+    </details>
+    {snapshot.searchRateReferences?.some(item=>item.hold===true)&&<p role="alert">搜索入口公开费用合同待审，受影响规则的新预留已暂停；提高预算不会解除暂停。</p>}
     <details><summary>人民币模型费率与汇率期限</summary><p>当前记录仅说明核验期限。人民币费用按有效汇率并加5%保守预留缓冲换算；仍需检查实际请求契约、预算及规则暂停。刷新本页面只读数据库，不刷新外部费率或延长核验期限。</p>
       {!snapshot.referenceVerification?<p>暂无参考值观测，不能推断可用。</p>:<>
         <ul>{snapshot.referenceVerification.rules.map(rule=><li key={rule.key} style={{overflowWrap:'anywhere'}}><a href={rule.reference} target="_blank" rel="noreferrer">{rule.key}</a>：{rule.withinVerificationWindow?'核验期限内':'核验期限失效，阻止调用'}；有效截止 {rule.effectiveExpiresAt??'未知'}（UTC）</li>)}</ul>
