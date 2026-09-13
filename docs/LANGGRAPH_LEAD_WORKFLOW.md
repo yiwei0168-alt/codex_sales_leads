@@ -1,5 +1,7 @@
 # LangChain / LangGraph 销售线索工作流
 
+2026-09-14阶段97：结果持久化后的 `workflow_stage_metric` 与 `workflow_model_usage` 现在由 `/api/tasks/usage` 作为两份独立只读聚合暴露；阶段输入、生成、有效、下游使用与 token/耗时分开对账，异常计数留空利用率，用户采用仍未知。[SQL与API验证](WORKFLOW_USAGE_AGGREGATE_ACCEPTANCE_2026-09-14.md)。不改图执行、事件写入、预算或计费。
+
 2026-09-14阶段96：公开角色校正缓存的同页证据重绑由 URL/哈希/来源扩为 URL/哈希/来源/标题/摘录，依赖指纹升 v3，缺新字段的旧快照 miss 后走正常缺项流程；[边界与回归](ROLE_CORRECTION_CACHE_BINDING_V3_2026-09-14.md)。评分证据本来就要求摘录哈希有效；跨进程检查点仍只重做缺失阶段，不把引用碰撞或缓存 miss 判为业务拒绝。
 
 2026-09-14阶段95：条件二次复核的 Terra OpenRouter 路径只核对现有文本/结构化响应请求与公开端点能力及最坏价格，得到单次候选上界 USD11.019202。[只读审计](OPENROUTER_TERRA_REVIEW_PROPOSAL_2026-09-14.md)。图节点、实际模型路由、费用门禁和评分规则均未改；当次预算仍按全部可能后续调用预检，不能因单次可容纳启动整次业务。
