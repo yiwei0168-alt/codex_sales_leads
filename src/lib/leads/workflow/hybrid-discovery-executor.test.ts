@@ -4,7 +4,7 @@ import type { LeadSearchPlan } from "@/lib/assistant/types";
 import type { DiscoveryProvider, DiscoveryProviderResult, DiscoveryQuery } from "@/providers/discovery-contracts";
 import { DiscoveryProviderError } from "@/providers/discovery";
 import type { DiscoveryGateResult } from "./discovery-gate";
-import { createHybridDiscoverySession, executeHybridDiscovery, hardPrefilter, type HybridDiscoveryRoundCheckpoint } from "./hybrid-discovery-executor";
+import { createHybridDiscoverySession, discoveryCallFingerprint, executeHybridDiscovery, hardPrefilter, type HybridDiscoveryRoundCheckpoint } from "./hybrid-discovery-executor";
 import { snapshotDiscoverySession, restoreDiscoverySession, type DiscoverySessionSnapshot } from "./discovery-session";
 import type { HybridSearchRouteStep } from "./hybrid-search-policy";
 import type { LeadMarketPlaybook, LeadWorkflowCandidate } from "./types";
@@ -33,6 +33,21 @@ const passGate = { evaluate: async (candidates: LeadWorkflowCandidate[]): Promis
 }) };
 
 describe("hybrid discovery executor", () => {
+  it("deduplicates identical provider requests across lanes without conflating actual request differences", () => {
+    const step: HybridSearchRouteStep = { category: "distribution", track: "strategic", sequence: 0,
+      provider: "brave", engine: "brave", mechanism: "web-index", trigger: "core", invocationReason: "fixture" };
+    const key = discoveryCallFingerprint(plan, step, "red Wi-Fi", 10, ["one.de", "two.de"]);
+    expect(discoveryCallFingerprint(plan, { ...step, category: "resale", track: "local-b2b", mechanism: "local-web-index" },
+      "red Wi-Fi", 10, ["one.de", "two.de"])).toBe(key);
+    for (const changed of [
+      discoveryCallFingerprint(plan, step, "red WiFi", 10, ["one.de", "two.de"]),
+      discoveryCallFingerprint(plan, step, "red Wi-Fi", 11, ["one.de", "two.de"]),
+      discoveryCallFingerprint(plan, step, "red Wi-Fi", 10, ["two.de", "one.de"]),
+      discoveryCallFingerprint({ ...plan, countryCode: "CO" }, step, "red Wi-Fi", 10, ["one.de", "two.de"]),
+      discoveryCallFingerprint({ ...plan, queryLanguage: "es" }, step, "red Wi-Fi", 10, ["one.de", "two.de"]),
+      discoveryCallFingerprint(plan, { ...step, provider: "searchapi", engine: "bing" }, "red Wi-Fi", 10, ["one.de", "two.de"]),
+    ]) expect(changed).not.toBe(key);
+  });
   it("recovers purchased calls and completed gates after a durable mid-round interruption without double cost", async () => {
     let checkpoint: HybridDiscoveryRoundCheckpoint | undefined;
     let sessionSnapshot: DiscoverySessionSnapshot | undefined;
@@ -64,7 +79,7 @@ describe("hybrid discovery executor", () => {
       onCall: async () => { throw new Error("Synthetic database outage"); } })).rejects.toThrow("checkpoint persistence failed");
     expect(session.completedCalls.size).toBe(1);
     expect(session.failedCalls.size).toBe(0);
-    expect(session.providerFailureCounts.get("gemini-full")).toBe(0);
+    expect(session.providerFailureCounts.get("brave")).toBe(0);
   });
   it("runs the category core, shares the registry and records conditional calls", async () => {
     const output = await executeHybridDiscovery("run-1", plan, playbook, { gate: passGate,
@@ -229,7 +244,10 @@ describe("hybrid discovery executor", () => {
     const second = await executeHybridDiscovery("cache-2", plan, playbook,
       { gate: passGate, providerFactory: factory, concurrency: 2, session });
     expect(callsAfterFirst).toBeGreaterThan(0);
-    expect(providerCalls).toBe(callsAfterFirst);
+    expect(providerCalls - callsAfterFirst).toBe(second.calls.filter(call => call.status === "completed" && call.cacheStatus === "miss").length);
+    for (const bought of first.calls.filter(call => call.status === "completed")) {
+      expect(second.calls.find(call => call.callFingerprint === bought.callFingerprint)?.cacheStatus).toBe("hit");
+    }
     expect(second.calls.filter((call) => call.cacheStatus === "hit")).not.toHaveLength(0);
     expect(second.calls.filter((call) => call.cacheStatus === "hit")
       .every((call) => call.paidSearchCredits === 0 && call.inputTokens === 0 && call.outputTokens === 0)).toBe(true);
@@ -250,6 +268,23 @@ describe("hybrid discovery executor", () => {
     await executeHybridDiscovery("cache-context-2", plan, playbook,
       { gate: passGate, providerFactory: factory, session });
     expect(providerCalls).toBeGreaterThan(firstCount);
+  });
+  it("limits optional tools by current-task category contribution without globally disabling them", async () => {
+    const session = createHybridDiscoverySession();
+    const marketPlan = { ...plan, countryCode: "CO", countryName: "Colombia" };
+    const factory = (step: HybridSearchRouteStep) => new FakeProvider(step.provider, null);
+    for (const queryRound of [0, 1]) {
+      const result = await executeHybridDiscovery(`marginal-${queryRound}`, marketPlan, playbook,
+        { gate: passGate, providerFactory: factory, session, queryRound });
+      expect(result.calls.some(call => call.route.provider === "exa" && call.status === "completed")).toBe(true);
+    }
+    const third = await executeHybridDiscovery("marginal-2", marketPlan, playbook,
+      { gate: passGate, providerFactory: factory, session, queryRound: 2 });
+    expect(third.calls.find(call => call.route.provider === "exa")?.discardedReasonCounts)
+      .toEqual({ "task-provider-no-marginal-value": 1 });
+    const freshTask = await executeHybridDiscovery("fresh-task", marketPlan, playbook,
+      { gate: passGate, providerFactory: factory, session: createHybridDiscoverySession(), queryRound: 2 });
+    expect(freshTask.calls.some(call => call.route.provider === "exa" && call.status === "completed")).toBe(true);
   });
 
   it("does not count provider profiles or domainless external IDs as normalized companies", async () => {

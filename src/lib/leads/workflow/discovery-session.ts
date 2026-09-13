@@ -14,6 +14,7 @@ export interface DiscoverySessionSnapshot {
   routeCircuits: Array<[string, string]>;
   providerFailureCounts: Array<[string, number]>;
   providerCooldownUntilRound: Array<[string, number]>;
+  providerNoValueCounts?: Array<[string, number]>;
 }
 
 export function discoverySessionDependency(plan: LeadSearchPlan, graphThreadId: string): string {
@@ -22,7 +23,7 @@ export function discoverySessionDependency(plan: LeadSearchPlan, graphThreadId: 
     process.env[config.apiKeyEnv] ?? (config.id === "searchapi" ? process.env["SearchApi.io_API_KEY"] : undefined),
     process.env[config.baseUrlEnv] ?? config.defaultBaseUrl]);
   return createHash("sha256").update(JSON.stringify({ graphThreadId, plan,
-    policy: ACTIVE_HYBRID_SEARCH_POLICY, providers,
+    policy: ACTIVE_HYBRID_SEARCH_POLICY, requestContract: "discovery-request-v2", providers,
     model: process.env.GEMINI_DISCOVERY_MODEL ?? process.env.GEMINI_SEARCH_MODEL ?? "gemini-3.6-flash" })).digest("hex");
 }
 
@@ -34,7 +35,7 @@ export function snapshotDiscoverySession(session: HybridDiscoverySession, depend
       return [key, publicResult];
     }), failedCalls: [...session.failedCalls], providerCircuits: [...session.providerCircuits],
     routeCircuits: [...session.routeCircuits], providerFailureCounts: [...session.providerFailureCounts],
-    providerCooldownUntilRound: [...session.providerCooldownUntilRound] };
+    providerCooldownUntilRound: [...session.providerCooldownUntilRound], providerNoValueCounts: [...session.providerNoValueCounts] };
 }
 
 export function restoreDiscoverySession(snapshot: DiscoverySessionSnapshot | undefined, dependency: string): HybridDiscoverySession {
@@ -44,12 +45,12 @@ export function restoreDiscoverySession(snapshot: DiscoverySessionSnapshot | und
   }
   if (!Array.isArray(snapshot.excludedDomains) || !snapshot.excludedDomains.every(domain => typeof domain === "string")
     || ![snapshot.completedCalls, snapshot.failedCalls, snapshot.providerCircuits, snapshot.routeCircuits,
-      snapshot.providerFailureCounts, snapshot.providerCooldownUntilRound]
+      snapshot.providerFailureCounts, snapshot.providerCooldownUntilRound, snapshot.providerNoValueCounts ?? []]
       .every(entries => Array.isArray(entries) && entries.every(entry => Array.isArray(entry) && entry.length === 2 && typeof entry[0] === "string"))) {
     throw new Error("Discovery session checkpoint is incomplete; automatic paid replay is prohibited");
   }
   return { excludedDomains: new Set(snapshot.excludedDomains), completedCalls: new Map(snapshot.completedCalls),
     failedCalls: new Map(snapshot.failedCalls), providerCircuits: new Map(snapshot.providerCircuits),
     routeCircuits: new Map(snapshot.routeCircuits), providerFailureCounts: new Map(snapshot.providerFailureCounts),
-    providerCooldownUntilRound: new Map(snapshot.providerCooldownUntilRound) };
+    providerCooldownUntilRound: new Map(snapshot.providerCooldownUntilRound), providerNoValueCounts: new Map(snapshot.providerNoValueCounts ?? []) };
 }

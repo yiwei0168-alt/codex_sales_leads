@@ -91,12 +91,13 @@ export interface HybridDiscoverySession {
   routeCircuits: Map<string, string>;
   providerFailureCounts: Map<string, number>;
   providerCooldownUntilRound: Map<string, number>;
+  providerNoValueCounts: Map<string, number>;
 }
 
 export function createHybridDiscoverySession(): HybridDiscoverySession {
   return { excludedDomains: new Set(), completedCalls: new Map(), failedCalls: new Map(),
     providerCircuits: new Map(), routeCircuits: new Map(), providerFailureCounts: new Map(),
-    providerCooldownUntilRound: new Map() };
+    providerCooldownUntilRound: new Map(), providerNoValueCounts: new Map() };
 }
 
 const rolesByCategory: Record<LeadSearchCategory, ChannelRole[]> = {
@@ -210,11 +211,13 @@ function queryClusterKey(plan: ReturnType<typeof normalizeLeadSearchPlan>, step:
   return hash([plan.countryCode, step.category, step.track, normalizedQuery(query)].join("|"));
 }
 
-function callFingerprint(plan: ReturnType<typeof normalizeLeadSearchPlan>, step: HybridSearchRouteStep,
+export function discoveryCallFingerprint(plan: LeadSearchPlan, step: HybridSearchRouteStep,
   query: string, requestedResults: number, excludeDomains: string[]): string {
-  return hash([ACTIVE_HYBRID_SEARCH_POLICY.version, plan.countryCode, plan.queryLanguage, step.category,
-    step.track, step.provider, step.engine, step.mechanism, normalizedQuery(query), requestedResults,
-    hash([...excludeDomains].sort().join("|"))].join("|"));
+  // These are a conservative superset of the provider wire inputs. Category/track/mechanism
+  // are attribution labels, not request fields; exact text and exclusion order remain significant.
+  return hash(JSON.stringify({ version: "discovery-request-v2", policy: ACTIVE_HYBRID_SEARCH_POLICY.version,
+    countryCode: plan.countryCode, countryName: plan.countryName, language: plan.queryLanguage,
+    provider: step.provider, engine: step.engine, query, requestedResults, excludeDomains }));
 }
 
 function failureDetails(error: unknown): { kind: DiscoveryFailureKind; attempts: number;
@@ -240,9 +243,11 @@ export function hardPrefilter(item: DiscoveryItem): string | undefined {
 
 function shouldRun(step: HybridSearchRouteStep, plan: ReturnType<typeof normalizeLeadSearchPlan>,
   qualityCount: number, targetPool: number, noValueCount: number,
-  providerFallbackRequired = false): { run: boolean; reason?: string } {
+  providerFallbackRequired = false, providerNoValueCount = 0): { run: boolean; reason?: string } {
   if (step.trigger === "core") return { run: true };
   if (qualityCount >= targetPool) return { run: false, reason: "quality-pool-target-met" };
+  if (step.trigger === "marginal-gap") return providerNoValueCount >= ACTIVE_HYBRID_SEARCH_POLICY.maxConsecutiveNoValueBatches
+    ? { run: false, reason: "task-provider-no-marginal-value" } : { run: true };
   if (noValueCount >= ACTIVE_HYBRID_SEARCH_POLICY.maxConsecutiveNoValueBatches) {
     return { run: false, reason: "two-consecutive-no-value-batches" };
   }
@@ -360,11 +365,11 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
         || invocationProviderCircuits.has(fallbackProvider)
         || queryRound < (session.providerCooldownUntilRound.get(fallbackProvider) ?? 0)));
       const decision = shouldRun(step, plan, qualityCount(), targetPool, noValueByTrack.get(trackKey) ?? 0,
-        providerFallbackRequired);
+        providerFallbackRequired, session.providerNoValueCounts.get(`${step.category}/${step.provider}`) ?? 0);
       const searchQuery = queryForStep(plan, playbook, step, queryRound);
       const callKey = `${trackKey}/${sequence}/${step.provider}/${step.engine}`;
       const excludeDomains = [...new Set([...session.excludedDomains, ...registry.domains()])];
-      const fingerprint = callFingerprint(plan, step, searchQuery, requestedResults, excludeDomains);
+      const fingerprint = discoveryCallFingerprint(plan, step, searchQuery, requestedResults, excludeDomains);
       const clusterKey = queryClusterKey(plan, step, searchQuery);
       const routeCircuitKey = `${step.provider}/${step.engine}`;
       const cached = session.completedCalls.get(fingerprint);
@@ -373,7 +378,7 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
       const circuitReason = session.providerCircuits.get(step.provider)
         ?? invocationProviderCircuits.get(step.provider) ?? session.routeCircuits.get(routeCircuitKey);
       const failedCache = session.failedCalls.get(fingerprint);
-      if (recoveryCooldown || circuitReason || failedCache) {
+      if (!cached && (recoveryCooldown || circuitReason || failedCache)) {
         const skipped: HybridSearchCallTelemetry = { callKey, callFingerprint: fingerprint,
           queryClusterKey: clusterKey, route: step, query: searchQuery, status: "skipped",
           requestedResults, rawResults: 0, normalizedCompanies: 0, newUniqueCompanies: 0, existingCompanyHits: 0, rejectedResults: 0,
@@ -436,7 +441,12 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
           return { item, candidateKey: added.candidateKey, domain: added.domain,
             firstDiscovery: added.firstDiscovery, rejectionReason: added.rejectionReason };
         });
-        noValueByTrack.set(trackKey, newUniqueCompanies === 0 ? (noValueByTrack.get(trackKey) ?? 0) + 1 : 0);
+        if (!cached) {
+          noValueByTrack.set(trackKey, newUniqueCompanies === 0 ? (noValueByTrack.get(trackKey) ?? 0) + 1 : 0);
+          const contributionKey = `${step.category}/${step.provider}`;
+          session.providerNoValueCounts.set(contributionKey, newUniqueCompanies === 0
+            ? (session.providerNoValueCounts.get(contributionKey) ?? 0) + 1 : 0);
+        }
         const completed: HybridSearchCallTelemetry = { callKey, callFingerprint: fingerprint,
           queryClusterKey: clusterKey, route: step, query: searchQuery, status: "completed",
           requestedResults, rawResults: response.items.length, normalizedCompanies, newUniqueCompanies, existingCompanyHits,

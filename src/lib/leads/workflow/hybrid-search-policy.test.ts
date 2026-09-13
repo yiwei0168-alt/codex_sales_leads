@@ -17,7 +17,7 @@ function plan(overrides: Partial<LeadSearchPlan> = {}): LeadSearchPlan {
 
 describe("hybrid search policy", () => {
   it("keeps Tavily out of discovery and versions the confirmed strategy", () => {
-    expect(ACTIVE_HYBRID_SEARCH_POLICY.strategyDocumentVersion).toBe("1.6.0-provider-gap-conditional-backup");
+    expect(ACTIVE_HYBRID_SEARCH_POLICY.strategyDocumentVersion).toBe("1.7.0-task-marginal-conditional-routing");
     expect(JSON.stringify(ACTIVE_HYBRID_SEARCH_POLICY.categories)).not.toContain("tavily");
     expect(hybridSearchPolicyChecksum()).toMatch(/^[a-f0-9]{64}$/);
   });
@@ -36,14 +36,16 @@ describe("hybrid search policy", () => {
   it("uses complementary reseller mechanisms without Product Gemini", () => {
     const route = buildHybridSearchRoute(plan({ roles: ["Reseller", "VAR"] }));
     expect(route.some((step) => step.provider === "gemini-product")).toBe(false);
-    expect(route[0]).toMatchObject({ provider: "searchapi", engine: "google" });
+    expect(route[0]).toMatchObject({ provider: "brave", engine: "brave" });
     expect(route.filter((step) => step.provider === "gemini-full")
-      .every((step) => step.trigger === "provider-gap" && step.fallbackForProvider === "searchapi")).toBe(true);
+      .every((step) => step.trigger === "marginal-gap")).toBe(true);
   });
 
-  it("routes distribution through Gemini Full without Product Gemini or Google SERP", () => {
+  it("starts distribution with Brave and conditionally uses Exa and Gemini", () => {
     const route = buildHybridSearchRoute(plan());
-    expect(route[0]).toMatchObject({ category: "distribution", provider: "gemini-full", trigger: "core" });
+    expect(route[0]).toMatchObject({ category: "distribution", provider: "brave", trigger: "core" });
+    expect(route.filter(step => step.provider === "exa" || step.provider === "gemini-full")
+      .every(step => step.trigger === "marginal-gap")).toBe(true);
     expect(route.some((step) => step.provider === "gemini-product")).toBe(false);
     expect(route.some((step) => step.provider === "searchapi" && step.engine === "google")).toBe(false);
   });
@@ -75,7 +77,7 @@ describe("hybrid search policy", () => {
 
   it("splits SI MSP and Installer into different tool tracks", () => {
     const route = buildHybridSearchRoute(plan({ roles: ["SI", "Installer"], coverageMode: "national" }));
-    expect(route.find((step) => step.category === "si-msp" && step.sequence === 0)?.provider).toBe("gemini-full");
+    expect(route.find((step) => step.category === "si-msp" && step.sequence === 0)?.provider).toBe("brave");
     expect(route.find((step) => step.category === "installer" && step.sequence === 0)?.provider).toBe("searchapi");
   });
 });

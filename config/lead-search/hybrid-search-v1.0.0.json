@@ -1,7 +1,7 @@
 {
   "policyKey": "cudy-hybrid-lead-search",
-  "version": "1.6.0",
-  "strategyDocumentVersion": "1.6.0-provider-gap-conditional-backup",
+  "version": "1.7.0",
+  "strategyDocumentVersion": "1.7.0-task-marginal-conditional-routing",
   "status": "active",
   "maxConsecutiveNoValueBatches": 2,
   "defaultBatchSize": 12,
@@ -15,68 +15,68 @@
     "distribution": {
       "tracks": {
         "strategic": [
-          { "provider": "gemini-full", "engine": "google-grounded", "mechanism": "planning", "trigger": "core" },
-          { "provider": "brave", "engine": "brave", "mechanism": "web-index", "trigger": "index-gap" },
-          { "provider": "searchapi", "engine": "bing", "mechanism": "web-serp", "trigger": "second-index-gap" },
-          { "provider": "exa", "engine": "exa", "mechanism": "semantic-pages", "trigger": "semantic-gap" }
+          {"provider": "brave", "engine": "brave", "mechanism": "web-index", "trigger": "core"},
+          {"provider": "exa", "engine": "exa", "mechanism": "semantic-pages", "trigger": "marginal-gap"},
+          {"provider": "searchapi", "engine": "bing", "mechanism": "web-serp", "trigger": "second-index-gap"},
+          {"provider": "gemini-full", "engine": "google-grounded", "mechanism": "planning", "trigger": "marginal-gap"}
         ]
       }
     },
     "resale": {
       "tracks": {
         "national-b2b": [
-          { "provider": "searchapi", "engine": "google", "mechanism": "b2b-web-serp", "trigger": "core" },
-          { "provider": "gemini-full", "engine": "google-grounded", "mechanism": "conditional-b2b-planning", "trigger": "provider-gap", "fallbackForProvider": "searchapi" },
-          { "provider": "brave", "engine": "brave", "mechanism": "web-index", "trigger": "index-gap" },
-          { "provider": "searchapi", "engine": "bing", "mechanism": "web-serp", "trigger": "second-index-gap" },
-          { "provider": "exa", "engine": "exa", "mechanism": "semantic-pages", "trigger": "semantic-gap" }
+          {"provider": "brave", "engine": "brave", "mechanism": "web-index", "trigger": "core"},
+          {"provider": "searchapi", "engine": "google", "mechanism": "b2b-web-serp", "trigger": "index-gap"},
+          {"provider": "gemini-full", "engine": "google-grounded", "mechanism": "conditional-b2b-planning", "trigger": "marginal-gap"},
+          {"provider": "searchapi", "engine": "bing", "mechanism": "web-serp", "trigger": "second-index-gap"},
+          {"provider": "exa", "engine": "exa", "mechanism": "semantic-pages", "trigger": "semantic-gap"}
         ],
         "local-b2b": [
-          { "provider": "google-places", "engine": "google-places", "mechanism": "local-text-search", "trigger": "core" },
-          { "provider": "searchapi", "engine": "google", "mechanism": "web-serp", "trigger": "web-gap" },
-          { "provider": "gemini-full", "engine": "google-grounded", "mechanism": "conditional-local-b2b-planning", "trigger": "provider-gap", "fallbackForProvider": "searchapi" },
-          { "provider": "brave", "engine": "brave", "mechanism": "web-index", "trigger": "index-gap" },
-          { "provider": "searchapi", "engine": "bing", "mechanism": "web-serp", "trigger": "second-index-gap" }
+          {"provider": "brave", "engine": "brave", "mechanism": "web-index", "trigger": "core"},
+          {"provider": "google-places", "engine": "google-places", "mechanism": "local-text-search", "trigger": "marginal-gap"},
+          {"provider": "searchapi", "engine": "google", "mechanism": "web-serp", "trigger": "web-gap"},
+          {"provider": "gemini-full", "engine": "google-grounded", "mechanism": "conditional-local-b2b-planning", "trigger": "marginal-gap"},
+          {"provider": "searchapi", "engine": "bing", "mechanism": "web-serp", "trigger": "second-index-gap"}
         ]
       }
     },
     "retail": {
       "tracks": {
         "etail": [
-          { "provider": "searchapi", "engine": "google", "mechanism": "shopping-web-serp", "trigger": "core" },
-          { "provider": "gemini-full", "engine": "google-grounded", "mechanism": "conditional-merchant-planning", "trigger": "provider-gap", "fallbackForProvider": "searchapi" },
-          { "provider": "brave", "engine": "brave", "mechanism": "web-index", "trigger": "index-gap" },
-          { "provider": "searchapi", "engine": "bing", "mechanism": "web-serp", "trigger": "second-index-gap" },
-          { "provider": "exa", "engine": "exa", "mechanism": "semantic-merchant-pages", "trigger": "semantic-gap" }
+          {"provider": "brave", "engine": "brave", "mechanism": "web-index", "trigger": "core"},
+          {"provider": "searchapi", "engine": "google", "mechanism": "shopping-web-serp", "trigger": "index-gap"},
+          {"provider": "gemini-full", "engine": "google-grounded", "mechanism": "conditional-merchant-planning", "trigger": "provider-gap", "fallbackForProvider": "searchapi"},
+          {"provider": "searchapi", "engine": "bing", "mechanism": "web-serp", "trigger": "second-index-gap"},
+          {"provider": "exa", "engine": "exa", "mechanism": "semantic-merchant-pages", "trigger": "semantic-gap"}
         ],
         "retail-local": [
-          { "provider": "google-places", "engine": "google-places", "mechanism": "local-text-search", "trigger": "core" },
-          { "provider": "searchapi", "engine": "google", "mechanism": "local-web-serp", "trigger": "web-gap" },
-          { "provider": "gemini-full", "engine": "google-grounded", "mechanism": "conditional-local-retail-planning", "trigger": "provider-gap", "fallbackForProvider": "searchapi" },
-          { "provider": "brave", "engine": "brave", "mechanism": "local-web-index", "trigger": "index-gap" }
+          {"provider": "brave", "engine": "brave", "mechanism": "local-web-index", "trigger": "core"},
+          {"provider": "google-places", "engine": "google-places", "mechanism": "local-text-search", "trigger": "marginal-gap"},
+          {"provider": "searchapi", "engine": "google", "mechanism": "local-web-serp", "trigger": "web-gap"},
+          {"provider": "gemini-full", "engine": "google-grounded", "mechanism": "conditional-local-retail-planning", "trigger": "provider-gap", "fallbackForProvider": "searchapi"}
         ],
         "retail-national": [
-          { "provider": "searchapi", "engine": "google", "mechanism": "web-serp", "trigger": "core" },
-          { "provider": "gemini-full", "engine": "google-grounded", "mechanism": "conditional-national-retail-planning", "trigger": "provider-gap", "fallbackForProvider": "searchapi" },
-          { "provider": "brave", "engine": "brave", "mechanism": "web-index", "trigger": "index-gap" },
-          { "provider": "searchapi", "engine": "bing", "mechanism": "web-serp", "trigger": "second-index-gap" },
-          { "provider": "exa", "engine": "exa", "mechanism": "semantic-retailer-pages", "trigger": "semantic-gap" }
+          {"provider": "brave", "engine": "brave", "mechanism": "web-index", "trigger": "core"},
+          {"provider": "searchapi", "engine": "google", "mechanism": "web-serp", "trigger": "index-gap"},
+          {"provider": "gemini-full", "engine": "google-grounded", "mechanism": "conditional-national-retail-planning", "trigger": "provider-gap", "fallbackForProvider": "searchapi"},
+          {"provider": "searchapi", "engine": "bing", "mechanism": "web-serp", "trigger": "second-index-gap"},
+          {"provider": "exa", "engine": "exa", "mechanism": "semantic-retailer-pages", "trigger": "semantic-gap"}
         ]
       }
     },
     "si-msp": {
       "tracks": {
         "national-complex": [
-          { "provider": "gemini-full", "engine": "google-grounded", "mechanism": "planning", "trigger": "core" },
-          { "provider": "brave", "engine": "brave", "mechanism": "web-index", "trigger": "index-gap" },
-          { "provider": "searchapi", "engine": "bing", "mechanism": "web-serp", "trigger": "second-index-gap" },
-          { "provider": "exa", "engine": "exa", "mechanism": "case-solution-pages", "trigger": "semantic-gap" }
+          {"provider": "brave", "engine": "brave", "mechanism": "web-index", "trigger": "core"},
+          {"provider": "exa", "engine": "exa", "mechanism": "case-solution-pages", "trigger": "marginal-gap"},
+          {"provider": "searchapi", "engine": "bing", "mechanism": "web-serp", "trigger": "second-index-gap"},
+          {"provider": "gemini-full", "engine": "google-grounded", "mechanism": "planning", "trigger": "marginal-gap"}
         ],
         "local-smb": [
-          { "provider": "google-places", "engine": "google-places", "mechanism": "local-text-search", "trigger": "core" },
-          { "provider": "searchapi", "engine": "google", "mechanism": "web-serp", "trigger": "web-gap" },
-          { "provider": "brave", "engine": "brave", "mechanism": "web-index", "trigger": "index-gap" },
-          { "provider": "searchapi", "engine": "bing", "mechanism": "web-serp", "trigger": "second-index-gap" }
+          {"provider": "brave", "engine": "brave", "mechanism": "web-index", "trigger": "core"},
+          {"provider": "google-places", "engine": "google-places", "mechanism": "local-text-search", "trigger": "marginal-gap"},
+          {"provider": "searchapi", "engine": "google", "mechanism": "web-serp", "trigger": "web-gap"},
+          {"provider": "searchapi", "engine": "bing", "mechanism": "web-serp", "trigger": "second-index-gap"}
         ]
       }
     },

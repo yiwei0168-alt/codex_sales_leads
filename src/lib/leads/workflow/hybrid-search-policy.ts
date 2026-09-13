@@ -22,7 +22,7 @@ const stepSchema = z.object({
   mechanism: z.string().min(2).max(80),
   trigger: z.enum([
     "core", "index-gap", "second-index-gap", "semantic-gap", "complex-semantic-gap", "web-gap",
-    "local-gap", "explicit-local-gap", "technical-gap", "provider-gap",
+    "local-gap", "explicit-local-gap", "technical-gap", "provider-gap", "marginal-gap",
   ]),
   fallbackForProvider: providerSchema.optional(),
 });
