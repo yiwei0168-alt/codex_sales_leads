@@ -5,6 +5,7 @@ import {leadEvidenceContentHash} from "@/lib/leads/evidence-snapshot";
 import { resultPersistenceFingerprint } from "./persistence-identity";
 import {completedStageMetric} from "./workflow-telemetry";
 import { processingRecoveryWork } from "./processing-recovery";
+import {revalidateSavedRecoveryResume} from "./recovery-resume-revalidation";
 import { snapshotDiscoverySession } from "./discovery-session";
 import { createHybridDiscoverySession } from "./hybrid-discovery-executor";
 import { compactLeadSingleton } from "@/providers/compact-lead-request";
@@ -22,6 +23,7 @@ import type {
   LeadRagCitation,
   LeadWorkflowCandidate,
   LeadWorkflowResult,
+  LeadWorkflowState,
 } from "./types";
 
 const plan: LeadSearchPlan = {
@@ -149,6 +151,23 @@ function dependencies(events: string[], context = ragContext): LeadWorkflowDepen
 }
 
 describe("LangGraph lead workflow", () => {
+  it("routes a resumed recovery checkpoint with newly expired evidence back to evidence collection",async()=>{
+    const deps=dependencies([]),graph=buildLeadWorkflowGraph(deps,new MemorySaver());
+    const config={configurable:{thread_id:"saved-expired-resume"}};
+    const old={...candidate.evidence[0],evidenceRunId:"run-1",freshnessStatus:"revalidated" as const,
+      priorRunId:"parent-run",contentHash:leadEvidenceContentHash(candidate.evidence[0].excerpt)};
+    await graph.updateState(config,{userId:"u",actionId:"child",workspaceId:"w",graphThreadId:"saved-expired-resume",
+      runId:"run-1",plan,playbook,phase:"scoring",candidates:[{...candidate,evidence:[old]}],
+      correctedCandidates:[{...correctedCandidate,evidence:[old]}],assessments:[assessment],creditsUsed:7,
+      ragContext:[],assessmentReviews:[],handoffs:[],modelUsage:[],stageMetrics:[],warnings:[],terminalRecoveryOnly:true,
+      savedProcessingRecovery:{sourceActionId:"parent",sourceRunId:"parent-run",sourceFingerprint:"proof",refreshCandidateIds:[]}},"route_candidates");
+    const snapshot=await graph.getState(config);
+    const patch=revalidateSavedRecoveryResume(snapshot.values as LeadWorkflowState,[{candidateId:candidate.candidateId,
+      reusableEvidence:0,needsEvidenceRefresh:true,reasons:{"expired-evidence":1}}]);
+    expect(patch?.savedProcessingRecovery?.refreshCandidateIds).toEqual([candidate.candidateId]);
+    await graph.updateState(config,patch!,"build_playbook");
+    expect((await graph.getState(config)).next).toEqual(["prepare_recovery_evidence"]);
+  });
   it("runs saved recovery through correction and scoring without discovery or repeated evidence",async()=>{
     const deps=dependencies([]),graph=buildLeadWorkflowGraph(deps,new MemorySaver());
     const config={configurable:{thread_id:"saved-fresh"}};

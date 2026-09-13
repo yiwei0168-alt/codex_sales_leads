@@ -16,6 +16,7 @@ const {buildLeadWorkflowGraph,readSavedWorkflowRecoveryCheckpoint,runLeadWorkflo
 const {persistLeadWorkflowResult}=await import("../src/lib/leads/workflow/persistence");
 const {readSavedProcessingRecovery,proposeProcessingRecovery,proposeProcessingRecoveryInTransaction,prepareProcessingRecoveryExecution}=await import("../src/lib/assistant/processing-recovery");
 const {readRecoveryFamilySummary}=await import("../src/lib/assistant/recovery-family-summary");
+const {readCurrentRecoveryPublicVersions}=await import("../src/lib/leads/workflow/recovery-resume-revalidation");
 const {confirmAndQueueLeadWorkflow,claimLeadWorkflowByAction}=await import("../src/lib/leads/workflow/jobs");
 const {setSpendBudget,setTaskSpendBudget,reservePaidCall}=await import("../src/lib/billing/repository");
 const user=randomUUID(),workspace=randomUUID(),conversation=randomUUID(),action=randomUUID(),run=randomUUID();
@@ -48,6 +49,9 @@ try{
   await admin.query("update assistant_action set status='completed',result=$2 where id=$1",[action,JSON.stringify(result)]);
   await admin.query("update lead_workflow_job set status='completed',result=$2 where action_id=$1",[action,JSON.stringify(result)]);
   const before=(await graph.getState(config));
+  const absentPublicVersion=await readCurrentRecoveryPublicVersions(user,{candidates:[{evidence:[{
+    publicDocumentVersionId:randomUUID()}]}]} as unknown as import("../src/lib/leads/workflow/types").LeadWorkflowState);
+  assert.equal(absentPublicVersion.size,0,"An absent public version must not validate retained evidence");
   const first=await readSavedProcessingRecovery(user,action),repeat=await readSavedProcessingRecovery(user,action);
   assert.deepEqual(first,repeat);assert.equal(first.scope.companies.length,1);assert.equal(first.scope.discoveryAllowed,false);
   assert.deepEqual(first.evidenceReadiness,[{candidateId:candidate.candidateId,reusableEvidence:0,needsEvidenceRefresh:true,reasons:{"missing-scoring-evidence":1}}]);
@@ -135,6 +139,7 @@ try{
   assert.equal((await admin.query("select count(*)::int as n from assistant_action where user_id=$1",[user])).rows[0].n,2);
   console.log(JSON.stringify({actualPersistenceAndCheckpoint:true,repeatedReadStable:true,sourceResultMismatchRejected:true,countryMismatchRejected:true,ownerIsolation:true,unknownCostBlocked:true,newActions:1,proposalRollback:true,concurrentProposalReuse:true,savedObservation:1,ordinaryDiscoveryBlocked:true,providerCalls:0,syntheticMicros:1}));
   console.log(JSON.stringify({confirmedClaimRequired:true,threadAndPlanVerified:true,concurrentInitializationOneNewRun:true,originalRunPreserved:true,changedSourceExecutionBlocked:true}));
+  console.log(JSON.stringify({resumePublicVersionSql:true,absentVersionNotRevalidated:true}));
   console.log(JSON.stringify({recoveryFamilySql:true,verifiedUniqueAfterDuplicate:1,savedSlotsAfterDuplicate:2,
     mismatchedCompletedRunUnknown:true,tenantIsolation:true,telemetrySnapshotIdempotent:true,
     telemetryUnknownNotAdopted:true,syntheticSelectionsRemoved:true}));

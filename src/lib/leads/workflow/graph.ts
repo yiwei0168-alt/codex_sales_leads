@@ -25,6 +25,7 @@ import { retrieveLeadRagContext } from "./rag-context";
 import { retrieveCooperationPathMemory } from "../path-memory";
 import { completedStageMetric } from "./workflow-telemetry";
 import {savedRecoverySeed} from "./saved-recovery-seed";
+import {readCurrentRecoveryPublicVersions,revalidateSavedRecoveryResume} from "./recovery-resume-revalidation";
 import {isCurrentLeadScoringEvidence} from "@/lib/leads/evidence-snapshot";
 import { loadCachedLeadAssessments, saveCachedLeadAssessments } from "./assessment-cache";
 import { loadCachedLeadPlaybook, saveCachedLeadPlaybook } from "./playbook-cache";
@@ -600,7 +601,12 @@ export async function runLeadWorkflow(input: {
     if(mode==="fresh")Object.assign(initial,savedRecoverySeed(recovery));
     else if(snapshot.values.runId!==recovery.runId||snapshot.values.savedProcessingRecovery?.sourceFingerprint!==recovery.proof.checkpointFingerprint)
       throw new Error("Recovery checkpoint source mismatch");
-    if(mode==="resume"&&snapshot.next.includes("recover_saved_evidence")){
+    const publicVersions=mode==="resume"?await readCurrentRecoveryPublicVersions(input.userId,snapshot.values as LeadWorkflowState):null;
+    const revalidated=mode==="resume"?revalidateSavedRecoveryResume(snapshot.values as LeadWorkflowState,
+      recovery.evidenceReadiness,new Date(),publicVersions!):null;
+    if(revalidated){
+      await graph.updateState(config,revalidated,"build_playbook");
+    }else if(mode==="resume"&&snapshot.next.includes("recover_saved_evidence")){
       await graph.updateState(config,{savedProcessingRecovery:{...snapshot.values.savedProcessingRecovery!,evidenceBlocked:false}},"build_playbook");
     }
   }
