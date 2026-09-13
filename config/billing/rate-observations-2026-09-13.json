@@ -1,0 +1,56 @@
+{
+  "version": "rate-observations-v1.0.0",
+  "observedOn": "2026-09-13",
+  "status": "reference-only-not-authorized-request-bounds",
+  "activatesPaidCalls": false,
+  "notes": [
+    "No reservation release or invoice reconciliation may use this observation alone.",
+    "Native CNY rates still require a fresh verified FX snapshot and the approved reservation-only buffer.",
+    "Model/endpoint, all-inclusive token/output limits and complete request bounds must be verified separately.",
+    "DeepSeek values below use peak rates and cache-miss for conservative planning; real cache hits are not assumed."
+  ],
+  "observations": [
+    {
+      "source": "https://api-docs.deepseek.com/quick_start/pricing/",
+      "model": "deepseek-flash",
+      "documentedServingModel": "DeepSeek-V4.1-Flash",
+      "currency": "USD",
+      "unitTokens": 1000000,
+      "inputCacheHit": "0.006",
+      "inputCacheMiss": "0.30",
+      "output": "1.20",
+      "rateWindow": "peak"
+    },
+    {
+      "source": "https://api-docs.deepseek.com/quick_start/pricing/",
+      "model": "deepseek-v4-pro",
+      "documentedServingModel": "DeepSeek-V4-Pro-0813",
+      "currency": "USD",
+      "unitTokens": 1000000,
+      "inputCacheHit": "0.044",
+      "inputCacheMiss": "1.32",
+      "output": "3.96",
+      "rateWindow": "peak"
+    },
+    {
+      "source": "https://platform.kimi.com/docs/pricing/chat.md",
+      "model": "kimi-k3",
+      "currency": "CNY",
+      "unitTokens": 1000000,
+      "inputCacheHit": "2.00",
+      "inputCacheMiss": "20.00",
+      "output": "100.00",
+      "contextTokens": 1048576
+    },
+    {
+      "source": "https://platform.kimi.com/docs/pricing/chat.md",
+      "model": "kimi-k2.6",
+      "currency": "CNY",
+      "unitTokens": 1000000,
+      "inputCacheHit": "1.10",
+      "inputCacheMiss": "6.50",
+      "output": "27.00",
+      "contextTokens": 262144
+    }
+  ]
+}

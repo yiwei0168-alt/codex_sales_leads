@@ -1,4 +1,5 @@
 import {budgetedFetch} from "@/lib/billing/paid-fetch";
+import {modelAttemptSequence} from "@/lib/billing/model-attempt-context";
 import {kimiOutputLimit} from "@/providers/kimi-contract";
 import type { ImportedMailboxMessage } from "./alimail-imap";
 
@@ -68,7 +69,8 @@ export async function learnMailboxMessagesWithKimi(
   if (!apiKey) throw new Error("KIMI_API_KEY is not configured");
   const baseUrl = kimiApiBaseUrl();
   const model = kimiMailboxModel();
-  const response = await budgetedFetch(fetchImplementation)(`${baseUrl}/chat/completions`, {
+  const recordAttempt=modelAttemptSequence({provider:"kimi",task:"mailbox-learning",promptVersion:PROMPT_VERSION});
+  const response = await recordAttempt(()=>budgetedFetch(fetchImplementation)(`${baseUrl}/chat/completions`, {
     method: "POST",
     headers: { authorization: `Bearer ${apiKey}`, "content-type": "application/json" },
     body: JSON.stringify({
@@ -107,7 +109,7 @@ export async function learnMailboxMessagesWithKimi(
         },
       ],
     }),
-  });
+  }));
   const body = await response.json() as KimiResponse;
   if (!response.ok) throw new Error(body.error?.message ?? `Kimi HTTP ${response.status}`);
   const content = body.choices?.[0]?.message?.content;

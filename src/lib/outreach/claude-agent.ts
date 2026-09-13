@@ -1,5 +1,6 @@
 import {BudgetDeniedError} from "@/lib/billing/policy";
 import {budgetedFetch} from "@/lib/billing/paid-fetch";
+import {modelAttemptSequence} from "@/lib/billing/model-attempt-context";
 import { z } from "zod";
 
 import { getOpenRouterConfig, openRouterChatCompletionsUrl, openRouterRequestHeaders,
@@ -28,6 +29,7 @@ async function invokeClaudeJson(
   user: string,
   fetchImplementation: typeof fetch,
 ): Promise<{ value: unknown; model: string; metrics: DevelopmentStrategyDto["generationMetrics"] }> {
+  const recordAttempt=modelAttemptSequence({provider:"openrouter",task:"outreach-feedback",promptVersion:"claude-outreach-feedback-v1"});
   const startedAt = Date.now();
   const config = getOpenRouterConfig();
   const model = resolveOpenRouterModel(process.env.CLAUDE_OUTREACH_MODEL?.trim()
@@ -46,12 +48,12 @@ async function invokeClaudeJson(
   for (let attempt = 0; attempt < 2; attempt += 1) {
     let response: Response;
     try {
-      response = await budgetedFetch(fetchImplementation)(openRouterChatCompletionsUrl(config), {
+      response = await recordAttempt(()=>budgetedFetch(fetchImplementation)(openRouterChatCompletionsUrl(config), {
         method: "POST",
         headers: openRouterRequestHeaders(config),
         signal: AbortSignal.timeout(Number(process.env.CLAUDE_OUTREACH_TIMEOUT_MS ?? 240_000)),
         body: requestBody,
-      });
+      }));
     } catch (error) {
       if (error instanceof BudgetDeniedError) throw error;
       if (error instanceof Error && /timeout|aborted/i.test(`${error.name} ${error.message}`)) throw error;

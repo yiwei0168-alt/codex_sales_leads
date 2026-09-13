@@ -1,5 +1,6 @@
 import {BudgetDeniedError,dollarsToMicros} from "@/lib/billing/policy";
 import {budgetedFetch} from "@/lib/billing/paid-fetch";
+import {modelAttemptSequence} from "@/lib/billing/model-attempt-context";
 import { z } from "zod";
 import {kimiOutputLimit} from "@/providers/kimi-contract";
 
@@ -208,6 +209,7 @@ async function invokeKimiIntent(options: {
   fetchImplementation: typeof fetch;
   complexityCheck: boolean;
 }): Promise<{ raw: z.infer<typeof rawPlanSchema>; body: KimiResponse; call: NonNullable<IntentPlan["plannerCalls"]>[number] }> {
+  const recordAttempt=modelAttemptSequence({provider:"kimi",task:options.complexityCheck?"intent-complexity-check":"intent-plan",promptVersion:PROMPT_VERSION});
   const startedAt = Date.now();
   const requestBody = JSON.stringify({
     model: options.model,
@@ -276,12 +278,12 @@ async function invokeKimiIntent(options: {
   try {
     for (let attempt = 0; attempt < 3; attempt += 1) {
       attempts = attempt + 1;
-      const response = await budgetedFetch(options.fetchImplementation)(`${kimiBaseUrl()}/chat/completions`, {
+      const response = await recordAttempt(()=>budgetedFetch(options.fetchImplementation)(`${kimiBaseUrl()}/chat/completions`, {
         method: "POST",
         headers: { authorization: `Bearer ${options.apiKey}`, "content-type": "application/json" },
         signal: AbortSignal.timeout(Number(process.env.KIMI_INTENT_TIMEOUT_MS ?? 120_000)),
         body: requestBody,
-      });
+      }));
       status = response.status;
       body = await response.json() as KimiResponse;
       if (body.usage) {

@@ -2,6 +2,8 @@
 
 版本：1.13.0。整理日期：2026-09-13。来源：本项目用户确认记录及仓库文档。
 
+阶段 16 / B21：Kimi 意图、开发策略/邮件/跟进、邮箱学习及 Claude 修改邮件原生入口已关联真实尝试序号与提示版本。667 tests /157 files、typecheck/build 通过。官方 Kimi 原币价格表读取成功，和 DeepSeek 来源观察存入独立 reference-only JSON，未导入付费规则；不等于费用上界/汇率/账单核销通过，无新增付费。
+
 阶段 15 / A06、B21：SDK 调用级预算停止、逐实际 HTTP 尝试归因接入 RAG Embedding/回答、答案整合、LangChain playbook；预算错误不被 playbook 降级吞掉。原生 model 请求在缺少 invocation 时也持久防重放，非模型轮询保持原行为。665 tests /156 files、typecheck/build、真实 SQL 051 合成回归通过；不是所有模型入口或真实业务验收通过。无新增付费，规则内容未改。
 
 ### A12 — V4.1-Flash 门禁批准（2026-09-13）

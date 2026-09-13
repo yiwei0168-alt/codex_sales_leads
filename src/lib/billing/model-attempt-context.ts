@@ -1,4 +1,5 @@
 import {AsyncLocalStorage} from "node:async_hooks";
+import {randomUUID} from "node:crypto";
 
 export interface ModelAttemptContext {
   invocationId:string;
@@ -13,6 +14,11 @@ export function withModelAttempt<T>(context:ModelAttemptContext,run:()=>T):T {
   return storage.run(context,run);
 }
 export function currentModelAttempt(){return storage.getStore();}
+/** Create inside one logical native-provider invocation, not once per shared client. */
+export function modelAttemptSequence(metadata:Omit<ModelAttemptContext,"invocationId"|"attempt">){
+  const invocationId=randomUUID();let attempt=0;
+  return <T>(run:()=>T):T=>withModelAttempt({...metadata,invocationId,attempt:++attempt},run);
+}
 export function requestScoringVersion(input:unknown):string|undefined{
   if(!input||typeof input!=="object"||!("scoringRubric" in input))return undefined;
   const rubric=input.scoringRubric;
