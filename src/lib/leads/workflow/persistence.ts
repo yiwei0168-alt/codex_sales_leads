@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { artifactObservations, saveArtifactObservations } from "./artifact-observations";
 import {completeTaskCostAllocation} from "@/lib/billing/task-cost-completion";
 import {costRoundKey} from "@/lib/billing/company-cost-context";
 import { WorkflowPausedError } from "./pause";
@@ -292,11 +293,14 @@ export async function persistLeadWorkflowResult(input: {
          )
          update lead_search_provider_occurrence occurrence set
            final_primary_role=$3, final_eligibility=$4, final_score=$5,
-           displayed=$6, selected=$6, downstream_used=$7,
+           displayed=null, selected=$6, downstream_used=$7,
+           metadata=occurrence.metadata || $8::jsonb,
            discovery_credit=case when $7 then 1.0 / greatest(matched.occurrence_count, 1) else 0 end
          from matched where occurrence.id=matched.id`,
         [input.runId, discoveryCandidateKeys, assessment.primaryRole, assessment.eligibilityStatus,
-          assessment.totalScore, Boolean(rank), assessment.scoringStatus === "completed"],
+          assessment.totalScore, Boolean(rank), assessment.scoringStatus === "completed",
+          JSON.stringify({observationVersion:"workflow-artifact-v2",selectionActor:"system",savedToResults:Boolean(rank),
+            userAdoptedItems:null,uiViewedItems:null,countryCode:input.countryCode})],
       );
       if (rank) {const change=await saveCompany(client, input.workspaceId,
         companyRecord(candidate, assessment, input.countryCode, input.countryName, input.runId), input.countryCode, input.runId);
@@ -354,29 +358,8 @@ export async function persistLeadWorkflowResult(input: {
           usage.accountCashCostUsd ?? null],
       );
     }
-    const citedEvidence = new Set(input.assessments.flatMap((assessment) => assessment.evidenceIds)).size;
-    const artifactEvents = [
-      { stage: "discover_candidates", artifactType: "candidate", eventType: "generated", count: input.candidates.length },
-      { stage: "correct_candidates", artifactType: "candidate", eventType: "valid", count: input.candidates
-        .filter((candidate) => candidate.correction.resolvedRoles.length > 0).length },
-      { stage: "collect_evidence", artifactType: "public-evidence", eventType: "retrieved", count: input.candidates
-        .flatMap((candidate) => candidate.evidence).filter((item) => item.sourceType !== "discovery").length },
-      { stage: "score_candidates", artifactType: "public-evidence", eventType: "cited", count: citedEvidence },
-      { stage: "score_candidates", artifactType: "assessment", eventType: "decision-used", count: input.assessments
-        .filter((assessment) => assessment.scoringStatus === "completed").length },
-      { stage: "persist_results", artifactType: "candidate", eventType: "displayed", count: selected.length },
-      { stage: "persist_results", artifactType: "candidate", eventType: "selected", count: selected.length },
-    ] as const;
-    for (const event of artifactEvents) {
-      await client.query(
-        `insert into workflow_artifact_event (
-           user_id, workspace_id, lead_run_id, action_id, graph_thread_id, stage, artifact_type, event_type,
-           artifact_count, metadata
-         ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,'{}'::jsonb)`,
-        [input.userId, input.workspaceId, input.runId, input.actionId, input.graphThreadId,
-          event.stage, event.artifactType, event.eventType, event.count],
-      );
-    }
+    await saveArtifactObservations(client,input,artifactObservations({candidates:input.candidates,
+      assessments:input.assessments,savedCount:selected.length,countryCode:input.countryCode}));
     for (const opportunity of detectWorkflowOptimizationOpportunities(input.stageMetrics, input.modelUsage)) {
       await client.query(
         `insert into workflow_optimization_opportunity (

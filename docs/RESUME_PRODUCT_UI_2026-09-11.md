@@ -1,5 +1,7 @@
 # 产品开发恢复节点 — 2026-09-11
 
+2026-09-13阶段62：结果保存事件区分saved/delivery-selected与未知UI查看/用户采用；有效校正按完成契约。迁移054扩枚举/v2唯一索引已用verify-artifact-observations.ts --apply验证应用，fixture回滚。832全量测试通过，来源贡献displayed=null/selected系统语义随后补齐并重build。下一应补实际persistLeadWorkflowResult隔离SQL/页面业务证据，当前事件验证仍直接调用观测持久函数；完整UI采用及其他验收未完成。0付费，goal active。
+
 2026-09-13阶段61：verify-compact-processing-recovery.ts已通过真实PostgreSQL两进程：100证据/准备metadata/13合成额度保留，校正重放0、评分1，owner/action隔离和国家/证据契约变化通过，thread清理、typecheck通过、0付费。产品仍c56be92（831全量/build阶段60）；新脚本为合成业务适配器，不等于实际Agent或公司入库验收。继续A08遥测、A09/A13真实页面及剩余费用/恢复项，goal active。
 
 2026-09-13阶段60：P06新增exact-field-table-v1独有证据/事实无损结构化压缩，完整主/备用请求比大小，聚合准备metadata接入校正/评分，仍超限不业务拒绝。63针对性、831全量测试/build/刷新后生成check通过，图内存恢复不重搜补证；没有新付费。下一补当前压缩契约跨进程/实际业务验证及A09/A13页面缺口，预算仍按阶段59门禁，不换模型/路由、不重复BYOK询问。goal active，见P06结构化单公司报告。
