@@ -1,5 +1,7 @@
 # LangChain / LangGraph 销售线索工作流
 
+2026-09-14 / 阶段133：`review_assessment_anomalies` 调用当前复核 Agent 时使用用户/工作区/国家隔离的追加式子调用检查点；Terra 结果校验并保存后才进入 Sol 裁决或下一公司，恢复按完整实际请求键复用并单列复用量。保存故障走非重放暂停，旧费用保留。SQL 跨进程读取与 Agent 合成中断恢复分别验收，真实付费全图仍缺。[验收](REVIEW_SUBCALL_CHECKPOINT_ACCEPTANCE_2026-09-14.md)。
+
 2026-09-14 / 阶段132：当前条件复核 Agent 在合成分歧案例中按序生成 Terra 二次复核及 Sol 匿名 A/B 裁决的完整兼容请求；传输拦截确认无工具、严格 JSON、输出上限与 provider 约束，现行费率报价分别缺失和超界。未更改评分、路由或预算，真实模型/账单和A11闭环仍缺。[请求预检](OPENROUTER_REVIEW_ACTUAL_WIRE_PREFLIGHT_2026-09-14.md)。
 
 2026-09-14 / 阶段131：同一图任务的评分前检查点由第二进程恢复，当前Agent以无损共享短语请求执行1次模拟评分，并经产品 `persistLeadWorkflowResult` 写入评估/证据快照/阶段遥测。101证据、105事实和缓存契约跨进程一致；合格0、公司交付0，用户/动作不匹配拒绝。预置已校正候选和模拟模型不证明自然语言到真实合格线索、供应商账单或仍不可压缩单项的分阶段处理。[联通验收](P06_SHARED_PHRASE_CROSS_PROCESS_PRODUCT_SQL_2026-09-14.md)。

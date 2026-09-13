@@ -9,6 +9,7 @@ import { getPool } from "@/lib/rag/db";
 import { collectLeadEvidence, discoverLeadCandidates } from "./discovery";
 import type { DiscoverySessionSnapshot } from "./discovery-session";
 import { LeadAssessmentReviewAgent } from "./assessment-review-agent";
+import { productReviewCheckpoint } from "./review-checkpoint";
 import { LeadEvidenceCorrectionAgent } from "./evidence-correction-agent";
 import { getGlobalWorkspaceId, persistLeadWorkflowResult, updateWorkflowPhase } from "./persistence";
 import { checkpointInvocation } from "./pause";
@@ -486,6 +487,8 @@ export function buildLeadWorkflowGraph(
       if (!state.playbook) throw new Error("Market Playbook is missing before assessment review");
       const reviewed = await dependencies.assessmentReviewAgent.review(
         state.correctedCandidates, state.assessments, state.playbook, state.plan,
+        productReviewCheckpoint({userId:state.userId,workspaceId:state.workspaceId,
+          countryCode:state.plan.countryCode}),
       );
       const reviewUsage: WorkflowModelUsage[] = (reviewed.usage ?? []).map((usage) => ({
         stage: usage.phase === "judge" ? "judge" : "secondary-review",
@@ -499,7 +502,9 @@ export function buildLeadWorkflowGraph(
         input: state.assessments, output: reviewed.reviews, inputItems: state.assessments.length,
         outputItems: reviewed.reviews.length, generatedArtifacts: reviewed.reviews.filter((review) => review.required).length,
         validArtifacts: valid, downstreamUsedArtifacts: valid,
-        metadata:{skippedNotRequired:reviewed.reviews.filter(review=>!review.required).length,usageBoundary:"validated-review-forwarded-not-user-adoption"} });
+        metadata:{skippedNotRequired:reviewed.reviews.filter(review=>!review.required).length,
+          reusedSecondaryResponses:reviewed.cacheHits?.secondary??0,reusedJudgeResponses:reviewed.cacheHits?.judge??0,
+          usageBoundary:"validated-review-forwarded-not-user-adoption"} });
       return { phase: "reviewing-scores" as const, assessments: reviewed.assessments,
         assessmentReviews: reviewed.reviews, modelUsage: [...(state.modelUsage ?? []), ...reviewUsage],
         stageMetrics: [...(state.stageMetrics ?? []), metric], warnings: [...state.warnings, ...reviewed.warnings] };

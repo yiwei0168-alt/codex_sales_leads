@@ -5,7 +5,7 @@ import { createHash } from "node:crypto";
 import { z } from "zod";
 
 import type { LeadSearchPlan } from "@/lib/assistant/types";
-import type { AiProvider, StructuredAiResponse } from "@/providers/contracts";
+import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "@/providers/contracts";
 import { OpenAiCompatibleProvider } from "@/providers/openai-compatible";
 import { getOpenRouterConfig, resolveOpenRouterModel } from "@/providers/openrouter";
 import { createLeadAiProvider } from "@/providers/resilient-ai";
@@ -33,6 +33,8 @@ const JUDGE_PROMPT_VERSION = "lead-disagreement-judge-v2-role-aware";
 type JudgeOutput = typeof leadAssessmentJudgeSchema._output;
 
 export interface LeadReviewInvoker {
+  /** Exact request contract for durable reuse; absent means no persisted review cache. */
+  cacheIdentity?(phase: "secondary" | "judge", input: Record<string, unknown>): string;
   assess(input: Record<string, unknown>): Promise<{ output: LeadAssessmentModelOutput; model: string;
     usage?: LeadReviewUsage["usage"] }>;
   judge(input: Record<string, unknown>): Promise<{ output: JudgeOutput; model: string;
@@ -45,6 +47,16 @@ export interface LeadReviewUsage {
   usage: { inputTokens: number; outputTokens: number; reasoningTokens: number; totalTokens: number;
     accountCashCostUsd?: number };
 }
+
+export interface LeadReviewCheckpoint {
+  load(phase: "secondary" | "judge", candidateId: string, contract: string): Promise<unknown | null>;
+  save(phase: "secondary" | "judge", candidateId: string, contract: string,
+    response: { output: unknown; model: string; usage?: LeadReviewUsage["usage"] }): Promise<void>;
+}
+
+const reviewUsageSchema = z.object({ inputTokens: z.number().int().nonnegative(),
+  outputTokens: z.number().int().nonnegative(), reasoningTokens: z.number().int().nonnegative(),
+  totalTokens: z.number().int().nonnegative(), accountCashCostUsd: z.number().nonnegative().optional() });
 
 interface AssessmentReviewAgentOptions {
   secondaryModel?: string;
@@ -70,8 +82,8 @@ class OpenAiLeadReviewInvoker implements LeadReviewInvoker {
     return this.provider;
   }
 
-  async assess(input: Record<string, unknown>) {
-    const response = await this.getProvider().execute<Record<string, unknown>, unknown>({
+  private secondaryRequest(input: Record<string, unknown>): StructuredAiRequest<Record<string, unknown>> {
+    return {
       task: "lead-review-secondary",
       modelVersion: resolveOpenRouterModel(this.secondaryModel, "openai"),
       promptVersion: REVIEW_PROMPT_VERSION,
@@ -86,17 +98,11 @@ class OpenAiLeadReviewInvoker implements LeadReviewInvoker {
         "Return exactly seven evidence-linked dimension rationales and use only supplied current-run finding/evidence IDs.",
       ], payload: input },
       outputSchema: z.toJSONSchema(leadAssessmentModelSchema) as Record<string, unknown>,
-    }, AbortSignal.timeout(120_000));
-    return { output: leadAssessmentModelSchema.parse(response.output), model: response.modelVersion,
-      usage: response.usage ? {
-      inputTokens: response.usage.promptTokens, outputTokens: response.usage.completionTokens,
-      reasoningTokens: response.usage.reasoningTokens, totalTokens: response.usage.totalTokens,
-      accountCashCostUsd: response.usage.accountCashCostUsd,
-    } : undefined };
+    };
   }
 
-  async judge(input: Record<string, unknown>) {
-    const response = await this.getProvider().execute<Record<string, unknown>, unknown>({
+  private judgeRequest(input: Record<string, unknown>): StructuredAiRequest<Record<string, unknown>> {
+    return {
       task: "lead-review-judge",
       modelVersion: resolveOpenRouterModel(this.judgeModel, "openai"),
       promptVersion: JUDGE_PROMPT_VERSION,
@@ -109,7 +115,28 @@ class OpenAiLeadReviewInvoker implements LeadReviewInvoker {
         "Never create a fact or evidence ID. Missing evidence remains unknown.",
       ], payload: input },
       outputSchema: z.toJSONSchema(leadAssessmentJudgeSchema) as Record<string, unknown>,
-    }, AbortSignal.timeout(120_000));
+    };
+  }
+
+  cacheIdentity(phase: "secondary" | "judge", input: Record<string, unknown>): string {
+    return this.getProvider().cacheIdentity?.(phase === "secondary"
+      ? this.secondaryRequest(input) : this.judgeRequest(input)) ?? "";
+  }
+
+  async assess(input: Record<string, unknown>) {
+    const response = await this.getProvider().execute<Record<string, unknown>, unknown>(
+      this.secondaryRequest(input), AbortSignal.timeout(120_000));
+    return { output: leadAssessmentModelSchema.parse(response.output), model: response.modelVersion,
+      usage: response.usage ? {
+      inputTokens: response.usage.promptTokens, outputTokens: response.usage.completionTokens,
+      reasoningTokens: response.usage.reasoningTokens, totalTokens: response.usage.totalTokens,
+      accountCashCostUsd: response.usage.accountCashCostUsd,
+    } : undefined };
+  }
+
+  async judge(input: Record<string, unknown>) {
+    const response = await this.getProvider().execute<Record<string, unknown>, unknown>(
+      this.judgeRequest(input), AbortSignal.timeout(120_000));
     return { output: leadAssessmentJudgeSchema.parse(response.output), model: response.modelVersion,
       usage: response.usage ? {
       inputTokens: response.usage.promptTokens, outputTokens: response.usage.completionTokens,
@@ -297,7 +324,6 @@ export class LeadAssessmentReviewAgent {
   private readonly invoker: LeadReviewInvoker;
   private readonly randomAuditPercent: number;
   private readonly concurrency: number;
-  private usageRecords: LeadReviewUsage[] = [];
 
   constructor(invoker?: LeadReviewInvoker, options: AssessmentReviewAgentOptions = {}) {
     const secondaryModel = options.secondaryModel ?? process.env.LEAD_REVIEW_MODEL?.trim() ?? "gpt-5.6-terra";
@@ -308,10 +334,52 @@ export class LeadAssessmentReviewAgent {
     this.concurrency = Math.max(1, Math.min(8, options.concurrency ?? 2));
   }
 
-  private async reviewOne(candidate: CorrectedLeadWorkflowCandidate, primary: LeadCandidateAssessment,
-    playbook: LeadMarketPlaybook, plan: LeadSearchPlan, triggers: string[]) {
+  private async checkpointedCall<T>(phase: "secondary" | "judge", candidateId: string,
+    input: Record<string, unknown>, schema: z.ZodType<T>, invoke: () => Promise<{
+      output: T; model: string; usage?: LeadReviewUsage["usage"] }>,
+    checkpoint?: LeadReviewCheckpoint, priorContract?: string) {
+    const wireContract = checkpoint ? this.invoker.cacheIdentity?.(phase, input) : undefined;
+    const contract = wireContract && priorContract
+      ? createHash("sha256").update(JSON.stringify({ version: "lead-review-judge-dependency-v1",
+        secondary: priorContract, judge: wireContract })).digest("hex") : wireContract;
+    if (checkpoint && !/^[a-f0-9]{64}$/.test(contract ?? ""))
+      throw new BudgetDeniedError("request-out-of-bounds");
+    if (checkpoint) {
+      let cached: unknown;
+      try { cached = await checkpoint.load(phase, candidateId, contract!); }
+      catch { throw new BudgetDeniedError("paid-request-already-recorded"); }
+      if (cached !== null) {
+        const parsed = z.object({ output: schema, model: z.string().min(1),
+          usage: reviewUsageSchema.optional() }).safeParse(cached);
+        if (!parsed.success || (parsed.data.output as { candidateId?: unknown }).candidateId !== candidateId)
+          throw new BudgetDeniedError("paid-request-already-recorded");
+        return { ...parsed.data, contract: contract!, reused: true };
+      }
+    }
+    let response: Awaited<ReturnType<typeof invoke>>;
+    let output: T;
     try {
-      const secondaryResult = await this.invoker.assess({
+      response = await invoke();
+      output = schema.parse(response.output);
+    } catch (error) {
+      if (error instanceof z.ZodError) throw new BudgetDeniedError("model-output-incomplete");
+      throw error;
+    }
+    if ((output as { candidateId?: unknown }).candidateId !== candidateId)
+      throw new BudgetDeniedError("model-output-incomplete");
+    if (checkpoint) {
+      try { await checkpoint.save(phase, candidateId, contract!, { ...response, output }); }
+      catch { throw new BudgetDeniedError("paid-request-already-recorded"); }
+    }
+    return { ...response, output, contract: contract ?? "", reused: false };
+  }
+
+  private async reviewOne(candidate: CorrectedLeadWorkflowCandidate, primary: LeadCandidateAssessment,
+    playbook: LeadMarketPlaybook, plan: LeadSearchPlan, triggers: string[],
+    usageRecords: LeadReviewUsage[], cacheHits: { secondary: number; judge: number },
+    checkpoint?: LeadReviewCheckpoint) {
+    try {
+      const secondaryInput = {
         market: { countryCode: plan.countryCode, countryName: plan.countryName, objective: plan.objective },
         cudyFitBrief: { marketHypothesis: playbook.marketHypothesis, productAngles: playbook.productAngles,
           preferredCompanyTraits: playbook.preferredCompanyTraits },
@@ -319,8 +387,11 @@ export class LeadAssessmentReviewAgent {
           version: ACTIVE_LEAD_SCORING_POLICY.version, checksum: scoringPolicyChecksum(),
           weights: ACTIVE_LEAD_SCORING_POLICY.weights, roleScorecards: ACTIVE_LEAD_SCORING_POLICY.roleScorecards },
         candidate: evidencePayload(candidate),
-      });
-      if (secondaryResult.usage) this.usageRecords.push({ phase: "secondary",
+      };
+      const secondaryResult = await this.checkpointedCall("secondary", candidate.candidateId,
+        secondaryInput, leadAssessmentModelSchema, () => this.invoker.assess(secondaryInput), checkpoint);
+      if (secondaryResult.reused) cacheHits.secondary += 1;
+      if (secondaryResult.usage && !secondaryResult.reused) usageRecords.push({ phase: "secondary",
         model: secondaryResult.model, usage: secondaryResult.usage });
       if (secondaryResult.output.candidateId !== candidate.candidateId) {
         throw new Error("Secondary reviewer returned a different candidateId");
@@ -341,13 +412,17 @@ export class LeadAssessmentReviewAgent {
       const swap = stableAuditBucket(candidate.candidateId) % 2 === 1;
       const a = swap ? publicAssessment(secondary) : publicAssessment(primary);
       const b = swap ? publicAssessment(primary) : publicAssessment(secondary);
-      const judgeResult = await this.invoker.judge({
+      const judgeInput = {
         candidate: evidencePayload(candidate),
         materialDisagreements: disagreements,
         assessmentA: a,
         assessmentB: b,
-      });
-      if (judgeResult.usage) this.usageRecords.push({ phase: "judge",
+      };
+      const judgeResult = await this.checkpointedCall("judge", candidate.candidateId,
+        judgeInput, leadAssessmentJudgeSchema, () => this.invoker.judge(judgeInput), checkpoint,
+        secondaryResult.contract);
+      if (judgeResult.reused) cacheHits.judge += 1;
+      if (judgeResult.usage && !judgeResult.reused) usageRecords.push({ phase: "judge",
         model: judgeResult.model, usage: judgeResult.usage });
       if (judgeResult.output.candidateId !== candidate.candidateId
         || judgeResult.output.assessment.candidateId !== candidate.candidateId) {
@@ -393,13 +468,15 @@ export class LeadAssessmentReviewAgent {
   }
 
   async review(candidates: CorrectedLeadWorkflowCandidate[], assessments: LeadCandidateAssessment[],
-    playbook: LeadMarketPlaybook, plan: LeadSearchPlan): Promise<{
+    playbook: LeadMarketPlaybook, plan: LeadSearchPlan, checkpoint?: LeadReviewCheckpoint): Promise<{
       assessments: LeadCandidateAssessment[];
       reviews: LeadAssessmentReview[];
       usage?: LeadReviewUsage[];
+      cacheHits?: { secondary: number; judge: number };
       warnings: string[];
     }> {
-    this.usageRecords = [];
+    const usageRecords: LeadReviewUsage[] = [];
+    const cacheHits = { secondary: 0, judge: 0 };
     const candidateById = new Map(candidates.map((candidate) => [candidate.candidateId, candidate]));
     const output = new Array<{ assessment: LeadCandidateAssessment; review: LeadAssessmentReview }>(assessments.length);
     let cursor = 0;
@@ -420,14 +497,19 @@ export class LeadAssessmentReviewAgent {
           } };
           continue;
         }
-        output[index] = await withCompanyCostAttribution([candidate],plan.countryCode,()=>this.reviewOne(candidate, primary, playbook, plan, triggers));
+        output[index] = await withCompanyCostAttribution([candidate],plan.countryCode,()=>this.reviewOne(candidate,
+          primary, playbook, plan, triggers, usageRecords, cacheHits, checkpoint));
       }
     };
-    await Promise.all(Array.from({ length: Math.min(this.concurrency, assessments.length) }, worker));
+    // A durable checkpoint must finish before another paid review can start.
+    // Keep configurable parallelism for callers without persisted review work.
+    await Promise.all(Array.from({ length: Math.min(checkpoint ? 1 : this.concurrency,
+      assessments.length) }, worker));
     return {
       assessments: output.map((item) => item.assessment),
       reviews: output.map((item) => item.review),
-      usage: [...this.usageRecords],
+      usage: usageRecords,
+      cacheHits,
       warnings: output.flatMap((item) => item.review.warnings.map((warning) => `${item.review.candidateId}: ${warning}`)),
     };
   }

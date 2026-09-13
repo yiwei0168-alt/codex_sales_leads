@@ -2,9 +2,11 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type { LeadSearchPlan } from "@/lib/assistant/types";
 import { BudgetDeniedError, quoteRequest } from "@/lib/billing/policy";
+import { createHash } from "node:crypto";
 import { leadEvidenceContentHash } from "@/lib/leads/evidence-snapshot";
 
-import { LeadAssessmentReviewAgent, assessmentReviewTriggers, type LeadReviewInvoker } from "./assessment-review-agent";
+import { LeadAssessmentReviewAgent, assessmentReviewTriggers,
+  type LeadReviewCheckpoint, type LeadReviewInvoker } from "./assessment-review-agent";
 import { enforceAssessmentEvidenceCaps } from "./qualification-agent";
 import type { LeadAssessmentModelOutput } from "./schemas";
 import type { CorrectedLeadWorkflowCandidate, LeadCandidateAssessment, LeadMarketPlaybook } from "./types";
@@ -95,6 +97,18 @@ const plan: LeadSearchPlan = { countryCode: "DE", countryName: "Germany", object
   targetCount: 1, queryLanguage: "en", userRequest: "Find networking VARs" };
 
 afterEach(() => { vi.unstubAllGlobals(); vi.unstubAllEnvs(); });
+
+function memoryReviewCheckpoint() {
+  const values = new Map<string, unknown>();
+  const key = (phase: string, candidateId: string, contract: string) => `${phase}:${candidateId}:${contract}`;
+  const checkpoint: LeadReviewCheckpoint = {
+    load: vi.fn(async (phase, candidateId, contract) => values.get(key(phase, candidateId, contract)) ?? null),
+    save: vi.fn(async (phase, candidateId, contract, response) => {
+      values.set(key(phase, candidateId, contract), response);
+    }),
+  };
+  return checkpoint;
+}
 
 describe("LeadAssessmentReviewAgent", () => {
   it("routes deterministic gate conflicts and sparse high scores to independent review", () => {
@@ -213,5 +227,95 @@ describe("LeadAssessmentReviewAgent", () => {
     const judgeInput = JSON.parse((bodies[1].messages as { content: string }[])[1].content);
     expect(JSON.stringify(judgeInput)).toContain('"assessmentA"');
     expect(JSON.stringify(judgeInput)).toContain('"assessmentB"');
+  });
+
+  it("reuses the completed first company after a later company pauses before its call", async () => {
+    const second = { ...candidate, candidateId: "lead-review-second", domain: "second.example" };
+    const primarySecond = { ...assessment(), candidateId: second.candidateId };
+    const checkpoint = memoryReviewCheckpoint();
+    let pauseSecond = true;
+    const assess = vi.fn(async (input: Record<string, unknown>) => {
+      const id = (input.candidate as { candidateId: string }).candidateId;
+      if (id === second.candidateId && pauseSecond) throw new BudgetDeniedError("budget-exhausted");
+      return { output: { ...modelOutput(), candidateId: id }, model: "gpt-5.6-terra",
+        usage: { inputTokens: 11, outputTokens: 7, reasoningTokens: 2, totalTokens: 18 } };
+    });
+    const invoker: LeadReviewInvoker = { assess, judge: vi.fn(), cacheIdentity: (phase, input) =>
+      createHash("sha256").update(JSON.stringify({ phase, input })).digest("hex") };
+    await expect(new LeadAssessmentReviewAgent(invoker, { randomAuditPercent: 100, concurrency: 1 })
+      .review([candidate, second], [assessment(), primarySecond], playbook, plan, checkpoint))
+      .rejects.toMatchObject({ code: "budget-exhausted" });
+    expect(checkpoint.save).toHaveBeenCalledTimes(1);
+    pauseSecond = false;
+    const resumed = await new LeadAssessmentReviewAgent(invoker, { randomAuditPercent: 100, concurrency: 1 })
+      .review([candidate, second], [assessment(), primarySecond], playbook, plan, checkpoint);
+    expect(resumed.reviews.map(item => item.status)).toEqual(["secondary-confirmed", "secondary-confirmed"]);
+    expect(resumed.cacheHits).toEqual({ secondary: 1, judge: 0 });
+    expect(resumed.usage).toHaveLength(1);
+    expect(assess).toHaveBeenCalledTimes(3);
+    expect(checkpoint.save).toHaveBeenCalledTimes(2);
+    const changedEvidence = { ...candidate, evidence: candidate.evidence.map((item, index) =>
+      index === 0 ? { ...item, title: "Updated current evidence title" } : item) };
+    await new LeadAssessmentReviewAgent(invoker, { randomAuditPercent: 100, concurrency: 1 })
+      .review([changedEvidence], [assessment()], playbook, plan, checkpoint);
+    expect(assess).toHaveBeenCalledTimes(4);
+    expect(checkpoint.save).toHaveBeenCalledTimes(3);
+  });
+
+  it("reuses a completed secondary response when the judge pauses", async () => {
+    const checkpoint = memoryReviewCheckpoint();
+    const assess = vi.fn(async () => ({ output: modelOutput(8), model: "gpt-5.6-terra",
+      usage: { inputTokens: 11, outputTokens: 7, reasoningTokens: 2, totalTokens: 18 } }));
+    let pauseJudge = true;
+    const judge = vi.fn(async () => {
+      if (pauseJudge) throw new BudgetDeniedError("request-out-of-bounds");
+      return { output: { candidateId: candidate.candidateId, decision: "merge" as const,
+        assessment: modelOutput(20), rationale: "Evidence supports the merged assessment.",
+        researchQuestion: "", warnings: [] }, model: "gpt-5.6-sol" };
+    });
+    const invoker: LeadReviewInvoker = { assess, judge, cacheIdentity: (phase, input) =>
+      createHash("sha256").update(JSON.stringify({ phase, input })).digest("hex") };
+    await expect(new LeadAssessmentReviewAgent(invoker, { randomAuditPercent: 100, concurrency: 1 })
+      .review([candidate], [assessment()], playbook, plan, checkpoint))
+      .rejects.toMatchObject({ code: "request-out-of-bounds" });
+    expect(checkpoint.save).toHaveBeenCalledTimes(1);
+    pauseJudge = false;
+    const resumed = await new LeadAssessmentReviewAgent(invoker, { randomAuditPercent: 100, concurrency: 1 })
+      .review([candidate], [assessment()], playbook, plan, checkpoint);
+    expect(resumed.reviews[0].status).toBe("judge-resolved");
+    expect(resumed.cacheHits).toEqual({ secondary: 1, judge: 0 });
+    expect(resumed.usage).toHaveLength(0);
+    expect(assess).toHaveBeenCalledOnce();
+    expect(judge).toHaveBeenCalledTimes(2);
+    expect(checkpoint.save).toHaveBeenCalledTimes(2);
+  });
+
+  it("pauses before the next peer if a paid review response cannot be checkpointed", async () => {
+    const second = { ...candidate, candidateId: "lead-review-later", domain: "later.example" };
+    const checkpoint = memoryReviewCheckpoint();
+    checkpoint.save = vi.fn().mockRejectedValue(new Error("Synthetic checkpoint outage"));
+    const assess = vi.fn(async (input: Record<string, unknown>) => ({
+      output: { ...modelOutput(), candidateId: (input.candidate as { candidateId: string }).candidateId },
+      model: "gpt-5.6-terra" }));
+    const invoker: LeadReviewInvoker = { assess, judge: vi.fn(), cacheIdentity: (phase, input) =>
+      createHash("sha256").update(JSON.stringify({ phase, input })).digest("hex") };
+    await expect(new LeadAssessmentReviewAgent(invoker, { randomAuditPercent: 100, concurrency: 2 })
+      .review([candidate, second], [assessment(), { ...assessment(), candidateId: second.candidateId }],
+        playbook, plan, checkpoint)).rejects.toMatchObject({ code: "paid-request-already-recorded" });
+    expect(assess).toHaveBeenCalledOnce();
+  });
+
+  it("keeps a schema-incomplete paid review unfinished instead of retaining the primary as reviewed", async () => {
+    const second = { ...candidate, candidateId: "lead-review-later", domain: "later.example" };
+    const assess = vi.fn(async () => ({ output: { candidateId: candidate.candidateId } as LeadAssessmentModelOutput,
+      model: "gpt-5.6-terra" }));
+    const invoker: LeadReviewInvoker = { assess, judge: vi.fn(), cacheIdentity: (phase, input) =>
+      createHash("sha256").update(JSON.stringify({ phase, input })).digest("hex") };
+    const checkpoint = memoryReviewCheckpoint();
+    await expect(new LeadAssessmentReviewAgent(invoker, { randomAuditPercent: 100, concurrency: 2 })
+      .review([candidate, second], [assessment(), { ...assessment(), candidateId: second.candidateId }],
+        playbook, plan, checkpoint)).rejects.toMatchObject({ code: "model-output-incomplete" });
+    expect(assess).toHaveBeenCalledOnce();
+    expect(checkpoint.save).not.toHaveBeenCalled();
   });
 });

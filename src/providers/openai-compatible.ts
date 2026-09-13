@@ -4,7 +4,7 @@ import { budgetedFetch } from "@/lib/billing/paid-fetch";
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "./contracts";
 import { ProviderUnavailableError } from "./contracts";
 import { structuredUserPrompt } from './structured-user-prompt';
-import {randomUUID} from "node:crypto";
+import {createHash,randomUUID} from "node:crypto";
 import {withModelAttempt,requestScoringVersion} from "@/lib/billing/model-attempt-context";
 import {assertLeadRequestBytes} from "./lead-request-bounds";
 
@@ -79,6 +79,17 @@ export class OpenAiCompatibleProvider implements AiProvider {
 
   requestBytes(request: StructuredAiRequest<unknown>): number {
     return Buffer.byteLength(this.requestBody(request), "utf8");
+  }
+
+  cacheIdentity(request: StructuredAiRequest<unknown>): string {
+    return createHash("sha256").update(JSON.stringify({
+      version: "openai-compatible-wire-cache-v1", provider: this.id,
+      endpoint: `${this.baseUrl}/chat/completions`, method: "POST",
+      headers: Object.fromEntries(Object.entries(this.options.defaultHeaders ?? {})
+        .map(([key, value]) => [key.toLowerCase(), value] as const)
+        .sort(([left], [right]) => left.localeCompare(right))),
+      body: this.requestBody(request),
+    })).digest("hex");
   }
 
   async execute<TInput, TOutput>(request: StructuredAiRequest<TInput>, signal?: AbortSignal) {

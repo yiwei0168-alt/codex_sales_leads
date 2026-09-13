@@ -27,3 +27,22 @@ it.each([["lead-evidence-correction","LEAD_FALLBACK_CORRECTION_MAX_OUTPUT_TOKENS
   await expect(provider.execute(request)).rejects.toBeInstanceOf(IncompleteModelOutputError);
   expect(transport).toHaveBeenCalledTimes(1);
 });
+
+it("keys compatible result reuse to the exact route, headers, schema and output limit without the API key",()=>{
+  const request:StructuredAiRequest<unknown>={task:"lead-review-secondary",modelVersion:"openai/gpt-5.6-terra",
+    promptVersion:"review-v1",input:{candidateId:"one"},evidenceIds:[],reasoningEffort:"medium",
+    outputSchema:{type:"object",properties:{ok:{type:"boolean"}}}};
+  const provider=(apiKey:string,baseUrl="https://openrouter.ai/api/v1",title="Fixture")=>
+    new OpenAiCompatibleProvider({id:"openrouter-review",apiKey,baseUrl,
+      defaultHeaders:{"X-OpenRouter-Title":title},extraBody:{provider:{require_parameters:true,data_collection:"deny"}}});
+  const baseline=provider("first-test-key").cacheIdentity(request);
+  expect(baseline).toMatch(/^[a-f0-9]{64}$/);
+  expect(provider("second-test-key").cacheIdentity(request)).toBe(baseline);
+  expect(provider("first-test-key","https://example.test/api/v1").cacheIdentity(request)).not.toBe(baseline);
+  expect(provider("first-test-key",undefined,"Other title").cacheIdentity(request)).not.toBe(baseline);
+  expect(provider("first-test-key").cacheIdentity({...request,input:{candidateId:"two"}})).not.toBe(baseline);
+  expect(provider("first-test-key").cacheIdentity({...request,modelVersion:"openai/gpt-5.6-sol"})).not.toBe(baseline);
+  expect(provider("first-test-key").cacheIdentity({...request,outputSchema:{type:"object"}})).not.toBe(baseline);
+  vi.stubEnv("LEAD_REVIEW_MAX_OUTPUT_TOKENS","4096");
+  expect(provider("first-test-key").cacheIdentity(request)).not.toBe(baseline);
+});
