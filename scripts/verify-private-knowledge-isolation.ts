@@ -1,5 +1,5 @@
 import nextEnv from "@next/env";
-import {randomUUID,randomBytes} from "node:crypto";
+import {randomUUID,randomBytes,createHash} from "node:crypto";
 import assert from "node:assert/strict";
 import {Pool} from "pg";
 import {databaseConnectionString,databaseSslConfiguration} from "../src/lib/rag/database-ssl";
@@ -9,10 +9,12 @@ if(!app||!adminUrl)throw new Error("Both database connections required");
 const a=new URL(app),b=new URL(adminUrl);
 if(a.hostname!==b.hostname||(a.port||"5432")!==(b.port||"5432")||a.pathname!==b.pathname)throw new Error("Database target mismatch");
 const admin=new Pool({connectionString:databaseConnectionString(adminUrl),ssl:databaseSslConfiguration(adminUrl)});
-const {getPool,tenantQuery}=await import("../src/lib/rag/db");
+const {getPool,tenantQuery,tenantTransaction}=await import("../src/lib/rag/db");
 const {hashPassword}=await import("../src/lib/auth/password");
 const {searchOutreachKnowledge}=await import("../src/lib/outreach/knowledge-repository");
 const {hybridSearch}=await import("../src/lib/rag/repository");
+const {reviewMailboxCandidate}=await import("../src/lib/mailbox/candidate-review");
+const {encryptMailboxContent}=await import("../src/lib/mailbox/crypto");
 const users=[randomUUID(),randomUUID()],workspaces=[randomUUID(),randomUUID()];
 const emails=users.map(id=>`knowledge-isolation-${id}@example.invalid`);
 let created=false;
@@ -34,6 +36,7 @@ try{
   const documentIds=Array.from({length:5},()=>randomUUID());
   const chunkIds=documentIds.map(()=>randomUUID());
   const companyScope=`isolation:${randomUUID()}`;
+  const connectionId=randomUUID(),messageId=randomUUID(),candidateId=randomUUID(),rejectedId=randomUUID();
   const chunkColumn=await admin.query<{type:string}>(`select format_type(atttypid,atttypmod) as type from pg_attribute
     where attrelid='knowledge_chunk'::regclass and attname='embedding'`);
   const chunkDimensions=Number(/^vector\((\d+)\)$/.exec(chunkColumn.rows[0]?.type??"")?.[1]);
@@ -59,6 +62,16 @@ try{
       await client.query(`insert into knowledge_chunk(id,document_id,chunk_index,content,token_estimate,content_sha256,embedding)
         values($1::uuid,$2,0,'Synthetic isolation token',4,($1::uuid)::text,$3::vector)`,[chunkIds[index],documentIds[index],JSON.stringify(chunkVector)]);
     }
+    await client.query(`insert into mailbox_connection(id,user_id,provider,email,credential_ciphertext,status)
+      values($1,$2,'alimail-imap',$3,'','disabled')`,[connectionId,users[0],emails[0]]);
+    await client.query(`insert into mailbox_message(id,user_id,connection_id,folder_path,uid_validity,message_uid,direction,content_sha256,content_ciphertext)
+      values($1,$2,$3,'fixture','1',1,'inbound','synthetic',$4)`,[messageId,users[0],connectionId,
+      encryptMailboxContent(users[0],{subject:"Synthetic fixture",bodyText:"Synthetic isolation token",sender:[],recipients:[]})]);
+    for(const [index,id] of [candidateId,rejectedId].entries())await client.query(`insert into mailbox_artifact_candidate(id,user_id,message_id,kind,title,content)
+      values($1,$2,$3,$4,'Synthetic RAG isolation','Synthetic isolation token')`,[id,users[0],messageId,index===0?'company-policy':'customer-signal']);
+    // Represents a previously saved approval whose candidate status did not commit.
+    await client.query("update knowledge_document set external_id=$2,content_sha256=$3 where id=$1",
+      [documentIds[0],`mailbox-artifact:${candidateId}`,createHash('sha256').update('Synthetic isolation token').digest('hex')]);
     await client.query("commit");created=true;
   }catch(error){await client.query("rollback");throw error;}finally{client.release();}
   const privateIds=async(owner:number,country:string,role="SI")=>(await searchOutreachKnowledge(users[owner],"Synthetic isolation token",vector,[country],[role],5))
@@ -77,11 +90,35 @@ try{
   assert.deepEqual(await ragIds(0),[chunkIds[0],chunkIds[1],chunkIds[3]].sort());
   const visibleChunks=await tenantQuery<{id:string}>(users[0],"select id from knowledge_chunk where id=any($1::uuid[])",[chunkIds]);
   assert.equal(visibleChunks.length,4);assert(!visibleChunks.some(row=>row.id===chunkIds[2]));
+  assert.deepEqual(await reviewMailboxCandidate(users[1],candidateId,"approved"),{kind:"missing"});
+  assert.deepEqual(await reviewMailboxCandidate(users[0],candidateId,"rejected"),{kind:"approval-incomplete"});
+  await tenantTransaction(users[0],async lockClient=>{
+    await lockClient.query("select pg_advisory_xact_lock(hashtextextended($1,0))",[`mailbox-review:${users[0]}:${candidateId}`]);
+    assert.deepEqual(await reviewMailboxCandidate(users[0],candidateId,"approved"),{kind:"busy"});
+  });
+  assert.deepEqual(await reviewMailboxCandidate(users[0],candidateId,"approved"),{kind:"saved",status:"approved",reused:false});
+  const reviewState=()=>tenantQuery<{review_status:string;reviewed_at:string}>(users[0],
+    "select review_status,reviewed_at::text from mailbox_artifact_candidate where id=$1",[candidateId]);
+  const savedState=await reviewState();assert.equal(savedState[0].review_status,"approved");
+  assert.deepEqual(await reviewMailboxCandidate(users[0],candidateId,"approved"),{kind:"saved",status:"approved",reused:true});
+  assert.deepEqual(await reviewState(),savedState);
+  assert.deepEqual(await reviewMailboxCandidate(users[0],candidateId,"rejected"),{kind:"conflict"});
+  const racing=await Promise.all([reviewMailboxCandidate(users[0],rejectedId,"rejected"),reviewMailboxCandidate(users[0],rejectedId,"rejected")]);
+  assert.equal(racing.filter(result=>result.kind==="saved"&&!result.reused).length,1);
+  assert(racing.every(result=>result.kind==="saved"||result.kind==="busy"));
+  assert.deepEqual(await ragIds(0,"GB"),[chunkIds[0],chunkIds[3]].sort());
+  const metrics=await tenantQuery<{metrics:{outputItems:number;validOutputItems:number;downstreamUsedItems:number|null};status:string}>(users[0],
+    "select metrics,status from product_operation_metric where stage='mailbox-candidate-review' and user_id=$1",[users[0]]);
+  assert.equal(metrics.length,7);assert(metrics.every(row=>row.status==="completed"&&row.metrics.downstreamUsedItems===null));
+  assert.equal(metrics.reduce((sum,row)=>sum+row.metrics.outputItems,0),2);
+  assert.equal(metrics.reduce((sum,row)=>sum+row.metrics.validOutputItems,0),2);
+  assert(!JSON.stringify(metrics).includes("Synthetic isolation token"));
   const calls=await admin.query("select id from paid_call_reservation where user_id=any($1::uuid[])",[users]);
   assert.equal(calls.rows.length,0);
   console.log(JSON.stringify({privateKnowledgeIsolation:"passed",owners:2,fixtureMemories:6,
     userCountryRoleStatusAndUsageScope:true,classificationExcluded:true,rlsEnforced:true,genericRagIsolation:true,
-    sharedKnowledgeVisible:true,optionalCountryFilterVerified:true,fixtureDocuments:5,realEmbeddingCalls:0,paidCalls:0}));
+    sharedKnowledgeVisible:true,optionalCountryFilterVerified:true,fixtureDocuments:5,mailboxCandidates:2,
+    reviewLockAndConcurrentIdempotency:true,interruptedApprovalRecovered:true,realEmbeddingCalls:0,paidCalls:0}));
 }finally{
   if(created){
     const client=await admin.connect();
