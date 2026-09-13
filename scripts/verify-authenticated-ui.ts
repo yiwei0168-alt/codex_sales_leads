@@ -66,6 +66,7 @@ try{
   for(const viewport of [{width:1366,height:900},{width:390,height:844}]){
     const context=await browser.newContext({viewport});
     const page=await context.newPage();const errors:string[]=[];
+    const editableCompanyPaths=new Set<string>();
     // Exercise the real browser cookie policy. The standalone HTTP client does not share
     // Chromium's localhost Secure-cookie behavior when verifying an HTTP production build.
     const readLocal=async(url:string)=>{
@@ -81,6 +82,7 @@ try{
     await context.route("**/*",route=>{
       const request=route.request(),url=new URL(request.url());
       if(url.origin!==base.origin)return route.abort();
+      if(request.method()==="PATCH"&&editableCompanyPaths.has(url.pathname))return route.continue();
       if(!["GET","HEAD"].includes(request.method())&&!['/api/auth/login','/api/auth/logout'].includes(url.pathname))return route.abort();
       return route.continue();
     });
@@ -100,6 +102,9 @@ try{
     const workspaceResponse=await readLocal(new URL("/api/workspaces/current",base).href);
     expect(workspaceResponse.status()).toBe(200);
     const workspace=await workspaceResponse.json();
+    const gbCompany=workspace.companies.find((company:{country:string})=>company.country==="GB");
+    if(!gbCompany)throw new Error("GB fixture identity missing");
+    editableCompanyPaths.add(`/api/workspaces/current/companies/${encodeURIComponent(gbCompany.id)}`);
     expect(workspace.id).toBe(workspaceId);expect(workspace.companies).toHaveLength(2);
     expect(new Set(workspace.companies.map((company:{id:string})=>company.id)).size).toBe(2);
     for(const country of ["GB","MX"]){
@@ -114,6 +119,31 @@ try{
       expect(overflow.scroll,JSON.stringify(overflow)).toBeLessThanOrEqual(overflow.width+1);
       await detail.click();
       await expect(page.getByRole("dialog")).toBeVisible();
+      if(country==="GB"){
+        const role=viewport.width===1366?"Distributor":"MSP";
+        const tier=viewport.width===1366?"Priority Distributor":"KA";
+        const selectedPath=viewport.width===1366?"OEM/ODM":"Other";
+        for(const [label,value] of [["修改主角色",role],["修改账户等级",tier],["修改合作路径",selectedPath]]){
+          const saved=page.waitForResponse(response=>response.request().method()==="PATCH"
+            &&editableCompanyPaths.has(new URL(response.url()).pathname));
+          await page.getByLabel(label,{exact:true}).selectOption(value);
+          expect((await saved).status()).toBe(200);
+          await expect(page.getByLabel(label,{exact:true})).toHaveValue(value);
+        }
+        await expect(page.getByText("主角色已修改，当前评分待更新。旧分数仅供历史参考。",{exact:true})).toBeVisible();
+        const changed=await (await readLocal(new URL("/api/workspaces/current",base).href)).json();
+        expect(changed.companies.find((company:{id:string})=>company.id===gbCompany.id))
+          .toMatchObject({primaryBusinessRole:role,accountTier:tier,selectedCooperationPath:selectedPath,assessmentNeedsRefresh:true});
+        expect(changed.companies.find((company:{country:string})=>company.country==="MX"))
+          .toMatchObject({primaryBusinessRole:"Retailer",accountTier:"Standard"});
+        const memory=await pool.query("select content,market_codes,context from user_outreach_memory where user_id=$1 and external_id=$2",[userId,`company-override:${gbCompany.id}`]);
+        expect(memory.rows).toHaveLength(1);
+        expect(JSON.parse(memory.rows[0].content)).toMatchObject({primaryBusinessRole:role,accountTier:tier,selectedCooperationPath:selectedPath});
+        expect(memory.rows[0].market_codes).toEqual(["GB"]);
+        expect(memory.rows[0].context.companyExternalId).toBe(gbCompany.id);
+        await page.screenshot({path:`tmp/auth-ui-${viewport.width}-company-edit.png`,fullPage:true});
+        checks.push(`${viewport.width}:role-tier-path-user-memory-country-isolation`);
+      }
       await page.keyboard.press("Escape");await expect(page.getByRole("dialog")).toHaveCount(0);
       await page.goto(new URL(`/markets/${country}/channel-map`,base).href);
       await expect(page.getByRole("heading",{name:"渠道节点与关系"})).toBeVisible();
@@ -184,6 +214,7 @@ try{
       if(owner.rowCount!==1)throw new Error("Fixture identity mismatch; refusing cleanup");
       const realAccounting=await client.query("select id from paid_call_reservation where user_id=$1 and tariff_key<>'synthetic-ui-cost' limit 1",[userId]);
       if(realAccounting.rowCount)throw new Error("Unexpected paid accounting; preserve fixture for reconciliation");
+      await client.query("delete from user_outreach_memory where user_id=$1",[userId]);
       await client.query("delete from paid_cost_observation where user_id=$1",[userId]);
       await client.query("delete from paid_call_reservation where user_id=$1",[userId]);
       await client.query("delete from lead_search_run where id=$1 and workspace_id=$2",[costRunId,workspaceId]);

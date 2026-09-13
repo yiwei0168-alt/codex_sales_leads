@@ -14,6 +14,9 @@ const paths: Array<[CooperationPathType, string]> = [
 export function CompanyClassificationEditor({ company, onUpdate }: {
   company: CompanyRecord; onUpdate: (patch: CompanyEditablePatch) => void;
 }) {
+  const tiers:CompanyRecord["accountTier"][]=company.layer==="Tier-1 Distributor"
+    ? ["Strategic Distributor","Priority Distributor","Standard Distributor","Long-tail Distributor"]
+    : ["KA","Priority","Standard","Long-tail"];
   return <section className="drawer-section">
     <h3>角色与合作路径</h3>
     <div className="edit-grid">
@@ -22,6 +25,10 @@ export function CompanyClassificationEditor({ company, onUpdate }: {
         <option value="" disabled>请选择</option>
         {company.primaryBusinessRole === "Hybrid" || company.primaryBusinessRole === "Unresolved" ? <option disabled value={company.primaryBusinessRole}>待明确</option> : null}
         {roles.map((role) => <option key={role}>{role}</option>)}
+      </select></label>
+      <label>账户等级<select aria-label="修改账户等级" value={company.accountTier}
+        onChange={event=>onUpdate({accountTier:event.target.value as CompanyRecord["accountTier"]})}>
+        {tiers.map(tier=><option key={tier} value={tier}>{tier}</option>)}
       </select></label>
       <label>合作路径<select aria-label="修改合作路径" value={company.selectedCooperationPath ?? ""}
         onChange={(event) => onUpdate({ selectedCooperationPath: event.target.value as CooperationPathType })}>
