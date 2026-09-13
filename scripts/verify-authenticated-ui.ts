@@ -50,6 +50,12 @@ try{
   for(const [country,role] of [["GB","SI"],["MX","Retailer"]] as const){
     await addManualCompany(userId,{name:`UI Fixture ${country}`,country,website:`https://${domain}`,role});
   }
+  const evidenceDate=new Date();evidenceDate.setUTCFullYear(evidenceDate.getUTCFullYear()-2);
+  await pool.query(`update workspace_company_market set record=jsonb_set(record,'{evidence}',$3::jsonb)
+    where workspace_id=$1 and country_code=$2`,[workspaceId,"GB",JSON.stringify([{id:"ui-old-evidence",
+    title:"Synthetic historical evidence",sourceUrl:`https://${domain}/historical`,sourceType:"Company website",
+    capturedAt:evidenceDate.toISOString().slice(0,10),claim:"Historical fixture evidence",summary:"Synthetic saved facts only",
+    status:"Corroborated",confidence:80}])]);
   const costDomains=[domain,`rejected-${userId}.invalid`];
   await pool.query(`insert into lead_search_run(id,workspace_id,provider,target_count,country_code,market_name,objective,metadata)
     values($1,$2,'synthetic-ui-fixture',2,'GB','United Kingdom','new-market',$3)`,
@@ -125,6 +131,14 @@ try{
       await detail.click();
       await expect(page.getByRole("dialog")).toBeVisible();
       if(country==="GB"){
+        await expect(page.getByText("超过一年未核实",{exact:true})).toBeVisible();
+        await page.getByRole("button",{name:"评分与证据",exact:true}).click();
+        await page.getByRole("button",{name:/^Historical fixture evidence/}).click();
+        await expect(page.getByRole("dialog",{name:"证据详情",exact:true})).toBeVisible();
+        await expect(page.getByText(/超过一年仅提醒，不自动判无效/)).toBeVisible();
+        await page.getByRole("button",{name:"关闭证据",exact:true}).click();
+        await page.getByRole("button",{name:"概览",exact:true}).click();
+        checks.push(`${viewport.width}:old-evidence-reminder-retained-no-research`);
         const role=viewport.width===1366?"Distributor":"MSP";
         const tier=viewport.width===1366?"Priority Distributor":"KA";
         const selectedPath=viewport.width===1366?"OEM/ODM":"Other";
