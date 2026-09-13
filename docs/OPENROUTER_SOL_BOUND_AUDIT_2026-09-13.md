@@ -1,5 +1,11 @@
 # OpenRouter Sol 费用上界证据核验
 
+阶段56最终回归826测试/181文件通过。首次全量运行新测试触及默认5秒超时，实际SDK内部等待造成；单独验证已通过后将仅该测试超时设15秒，重跑全量通过。仍只捕获1次传输，产品重试行为未改；生产build沿用阶段52（本阶段只增测试/文档）。
+
+阶段56补证：`playbook-wire.test.ts`使用实际LangChain ChatOpenAI与实际buildLeadMarketPlaybook，固定合成输入，在fetch边界抛BudgetDeniedError，不接触网络。精确顶层字段为max_completion_tokens/messages/model/provider/response_format/stream/temperature；模型openai/gpt-5.6-sol、输出4096、2个纯文本消息、strict JSON Schema、provider仅require_parameters/data_collection。无工具/插件/多结果/特殊服务层/显式缓存配置，单次捕获后预算错误透出。仅此构建入口的合成请求获得证明，不代表所有SDK入口或真实大请求均满足上界。
+
+只读GET /api/v1/key返回200及is_management_key=false；未输出key标签、账户标识或用量。官方OpenAPI中GET /byok要求管理key并按工作区列配置，当前普通key信息无法证明未配置BYOK。已向用户询问当前工作区BYOK状态，无需提供密钥；等待确认期间继续独立验证，未修改账号/费率。初次内联诊断因require与top-level await混用在本地失败，改为ES module后只读成功。
+
 阶段55，只读公开元数据，无密钥、账号读取或推理调用。脚本 `capture-openrouter-sol-pricing.ts --write` 保存[端点快照](OPENROUTER_SOL_ENDPOINT_EVIDENCE_2026-09-13.json)，包括抓取时间、官方响应SHA256、精确模型与7个端点的价格/上下文/参数。typecheck通过。本产物不是启用费率。
 
 当前模型openai/gpt-5.6-sol、canonical openai/gpt-5.6-sol-20260709。目录给出的最低价不能代表所有路由，实际有OpenAI三层、Bedrock、Azure三个端点。[官方端点API](https://openrouter.ai/api/v1/models/openai/gpt-5.6-sol-20260709/endpoints)。
