@@ -1,5 +1,11 @@
 # 产品工作流效率台账
 
+## 2026-09-13 阶段31：O04 跨轮次任务会话
+
+修复产品每轮重建发现会话：现在沿图检查点保存/传递 excludedDomains、completedCalls、failedCalls、providerCircuits、routeCircuits、失败计数及冷却轮次。原请求/国家/任务/策略/服务商配置摘要变化时阻止旧会话恢复。只保存搜索业务结果，删除rawResponse；无明文凭据。发现遥测新增reusedTaskSession、retainedCompletedCalls、retainedProviderCircuits，沿用输入/有效/下游量、API额度/token、延迟、重试与丢弃原因；缓存复用不是用户采用。
+
+784测试、typecheck/build通过，含JSON往返与跨轮次图接线。无付费或新实验，无实际节省率结论。下一步：单轮内部中断时立即保存已购输出、跨轨相同实际请求去重、按类别与边际贡献条件安排工具；当前完整轮次检查点不等于单次调用检查点。
+
 ## 2026-09-13 阶段30：路由SQL与最终数量口径
 
 verify-candidate-routing.ts 通过真实应用数据库角色验证重复写幂等、其他metadata守恒、错误用户/工作区/国家拒绝、范围外未评分记录保存。隔离fixture已清理，外部调用0、实际费用0。角色待判按唯一companyKey统计，score_candidates新增pendingRoleCount，不推进无新增计数；故障不借旧停滞数认定耗尽。最终输出用实际保存数复核target-met，发现数用累计唯一发现记录，状态消息不再把部分完成写成达标。沿用原阶段输入/有效/下游量及token/API/延迟/重试，角色待判不是用户采用。

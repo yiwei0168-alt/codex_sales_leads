@@ -7,6 +7,7 @@ import type { LeadSearchPlan } from "@/lib/assistant/types";
 import { getPool } from "@/lib/rag/db";
 
 import { collectLeadEvidence, discoverLeadCandidates } from "./discovery";
+import type { DiscoverySessionSnapshot } from "./discovery-session";
 import { LeadAssessmentReviewAgent } from "./assessment-review-agent";
 import { LeadEvidenceCorrectionAgent } from "./evidence-correction-agent";
 import { getGlobalWorkspaceId, persistLeadWorkflowResult, updateWorkflowPhase } from "./persistence";
@@ -55,6 +56,7 @@ const WorkflowAnnotation = Annotation.Root({
   assessments: Annotation<LeadCandidateAssessment[]>(),
   discoveryRound: Annotation<number | undefined>(),
   discoveredUniqueCount: Annotation<number | undefined>(),
+  discoverySession: Annotation<DiscoverySessionSnapshot | undefined>(),
   searchExcludeDomains: Annotation<string[] | undefined>(),
   consecutiveNoFinalRounds: Annotation<number | undefined>(),
   acceptedCandidateCount: Annotation<number | undefined>(),
@@ -187,7 +189,8 @@ export function buildLeadWorkflowGraph(
         discoveredUniqueCount: state.discoveredUniqueCount ?? 0, round });
       const discovered = await dependencies.discover(state.actionId, state.workspaceId, state.plan,
         state.playbook, state.graphThreadId, { queryRound: round, targetPoolOverride: targetPool,
-          excludeDomains: state.searchExcludeDomains ?? [], existingRunId: state.runId });
+          excludeDomains: state.searchExcludeDomains ?? [], existingRunId: state.runId,
+          sessionSnapshot: state.discoverySession });
       const calls = discovered.callMetrics ?? [];
       const rawResults = calls.reduce((sum, call) => sum + call.rawResults, 0);
       const newUniqueCompanies = calls.reduce((sum, call) => sum + call.newUniqueCompanies, 0);
@@ -213,10 +216,14 @@ export function buildLeadWorkflowGraph(
           duplicateOutputs: calls.reduce((sum, call) => sum + call.existingCompanyHits, 0),
           totalProviderLatencyMs: calls.reduce((sum, call) => sum + call.latencyMs, 0),
           round, targetPool,
+          reusedTaskSession: Boolean(state.discoverySession),
+          retainedCompletedCalls: discovered.sessionSnapshot?.completedCalls.length ?? null,
+          retainedProviderCircuits: discovered.sessionSnapshot?.providerCircuits.length ?? null,
         } : {} });
       return {
         phase: "discovering" as const,
         runId: discovered.runId,
+        discoverySession: discovered.sessionSnapshot,
         candidates: discovered.candidates,
         discoveryRound: round + 1,
         discoveredUniqueCount: (state.discoveredUniqueCount ?? 0) + newUniqueCompanies,

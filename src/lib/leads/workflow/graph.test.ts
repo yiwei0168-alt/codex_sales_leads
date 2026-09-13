@@ -2,6 +2,8 @@ import { describe, expect, it, vi } from "vitest";
 import { MemorySaver } from "@langchain/langgraph";
 import { WorkflowPausedError } from "./pause";
 import { processingRecoveryWork } from "./processing-recovery";
+import { snapshotDiscoverySession } from "./discovery-session";
+import { createHybridDiscoverySession } from "./hybrid-discovery-executor";
 
 import type { LeadSearchPlan } from "@/lib/assistant/types";
 
@@ -308,9 +310,12 @@ describe("LangGraph lead workflow", () => {
       correction: { ...correctedCandidate.correction, originalCompanyName: candidate2.companyName,
         originalDomain: candidate2.domain, originalOfficialWebsiteUrl: candidate2.officialWebsiteUrl } };
     const assessment2 = { ...assessment, candidateId: candidate2.candidateId };
+    const session = createHybridDiscoverySession();
+    session.providerCircuits.set("brave", "fixture configuration failure");
+    const sessionSnapshot = snapshotDiscoverySession(session, "fixture-dependency");
     deps.discover = vi.fn()
       .mockResolvedValueOnce({ runId: "run-1", candidates: [candidate], creditsUsed: 1,
-        warnings: [], callMetrics: [discoveryMetric(1)] })
+        warnings: [], callMetrics: [discoveryMetric(1)], sessionSnapshot })
       .mockResolvedValueOnce({ runId: "run-1", candidates: [candidate2], creditsUsed: 1,
         warnings: [], callMetrics: [discoveryMetric(1)] });
     deps.collectEvidence = vi.fn(async (items: LeadWorkflowCandidate[]) =>
@@ -327,6 +332,8 @@ describe("LangGraph lead workflow", () => {
       correctedCandidates: [], assessments: [], assessmentReviews: [], handoffs: [], creditsUsed: 0,
       modelUsage: [], stageMetrics: [], warnings: [] }, { recursionLimit: 50 });
     expect(deps.discover).toHaveBeenCalledTimes(2);
+    expect(deps.discover).toHaveBeenLastCalledWith(expect.anything(), expect.anything(), expect.anything(),
+      expect.anything(), expect.anything(), expect.objectContaining({ sessionSnapshot }));
     expect(state.acceptedCandidateCount).toBe(2);
     expect(state.targetCompletionReason).toBe("target-met");
   });

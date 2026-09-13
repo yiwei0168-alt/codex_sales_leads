@@ -18,8 +18,11 @@ import { findReusablePublicEvidence, persistPublicEvidence } from "./public-evid
 import { executeHybridDiscovery, type HybridSearchCallTelemetry } from "./hybrid-discovery-executor";
 import { ACTIVE_HYBRID_SEARCH_POLICY, hybridSearchPolicyChecksum } from "./hybrid-search-policy";
 import { validCompanyDomainIdentity } from "./candidate-registry";
+import { discoverySessionDependency, restoreDiscoverySession, snapshotDiscoverySession,
+  type DiscoverySessionSnapshot } from "./discovery-session";
 
 export interface DiscoveryResult {
+  sessionSnapshot?: DiscoverySessionSnapshot;
   runId: string;
   candidates: LeadWorkflowCandidate[];
   creditsUsed: number;
@@ -29,6 +32,7 @@ export interface DiscoveryResult {
 }
 
 export interface LeadDiscoveryInvocation {
+  sessionSnapshot?: DiscoverySessionSnapshot;
   queryRound?: number;
   targetPoolOverride?: number;
   excludeDomains?: string[];
@@ -131,7 +135,10 @@ export async function discoverLeadCandidates(
   const run = { id: invocation.existingRunId ?? createdRun?.id };
   if (!run.id) throw new Error("Lead search run could not be created or resumed.");
   try {
+    const dependency = discoverySessionDependency(plan, graphThreadId);
+    const session = restoreDiscoverySession(invocation.sessionSnapshot, dependency);
     const execution = await executeHybridDiscovery(run.id, plan, playbook, {
+      session,
       queryRound: invocation.queryRound,
       targetPoolOverride: invocation.targetPoolOverride,
       initialExcludeDomains: invocation.excludeDomains,
@@ -170,6 +177,7 @@ export async function discoverLeadCandidates(
     if (execution.candidates.length === 0 && !invocation.existingRunId) throw new Error(
       `No usable public-company candidates were discovered. ${execution.warnings.join(" ")}`.trim());
     return { runId: run.id, candidates: execution.candidates, creditsUsed,
+      sessionSnapshot: snapshotDiscoverySession(session, dependency),
       warnings: execution.warnings, modelUsage: execution.modelUsage, callMetrics: execution.calls };
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
