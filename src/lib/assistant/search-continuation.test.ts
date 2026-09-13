@@ -27,12 +27,16 @@ it('creates a proposal, retains parent results and keeps exclusions out of model
   const payload=JSON.parse(query.mock.calls.find(([sql])=>sql.includes('insert into assistant_action'))![1][2]);
   expect(payload.targetCount).toBe(15);expect(payload).not.toHaveProperty('excluded_domains');
   expect(query.mock.calls.some(([sql])=>sql.includes('update assistant_action')||sql.includes('insert into lead_workflow_job'))).toBe(false);
+  const audit=JSON.parse(query.mock.calls.find(([sql])=>sql.startsWith('insert into workspace_audit_event'))![1][3]);
+  expect(audit.efficiency).toMatchObject({inputItems:1,outputItems:1,validOutputItems:1,downstreamUsedItems:0,userAdoptedItems:null});
 });
 it('returns an existing child on repeated clicks without another proposal or lookup',async()=>{
   const original=query.getMockImplementation()!;
   query.mockImplementation(async(sql:string,...rest:unknown[])=>sql.startsWith('select child_action_id')?{rows:[{child_action_id:'existing'}]}:original(sql,...rest));
   expect(await proposeSearchContinuationInTransaction({query} as unknown as PoolClient,'owner','parent')).toEqual({actionId:'existing',reused:true});
   expect(query).toHaveBeenCalledTimes(3);expect(query.mock.calls[2][0]).toContain('search.continuation-reused');
+  expect(JSON.parse(query.mock.calls[2][1][2]).efficiency).toMatchObject({inputItems:1,outputItems:0,
+    validOutputItems:0,downstreamUsedItems:0,userAdoptedItems:null,utilizationEfficiency:null,discardedReasonCounts:{duplicateProposalAvoided:1}});
 });
 it('does not infer missing evidence lineage or create an unscoped child',async()=>{
   query.mockResolvedValue({rows:[]});await expect(proposeSearchContinuationInTransaction({query} as unknown as PoolClient,'other','parent')).rejects.toThrow('当前用户');

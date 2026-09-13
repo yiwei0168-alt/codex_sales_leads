@@ -13,9 +13,12 @@ const pool=new Pool({connectionString:databaseConnectionString(migration),ssl:da
 try{
   await client.query('begin');await client.query('select pg_advisory_xact_lock(490049)');
   await client.query(await readFile('db/migrations/049_search_continuation.sql','utf8'));
-  const workspaces=await client.query<{id:string;owner_id:string}>("select id,owner_id from market_workspace where slug='global-sales' and status='active' limit 1");
-  const workspace=workspaces.rows[0];if(!workspace)throw new Error('An active workspace is required for rollback verification');
-  await client.query('savepoint fixtures');await client.query('set local role network_copilot_app');
+  await client.query('savepoint fixtures');
+  const ownerId=randomUUID(),workspaceId=randomUUID();
+  await client.query("insert into app_user(id,email,display_name,role,status) values($1,$2,'Continuation fixture','member','disabled')",[ownerId,`continuation-${ownerId}@example.invalid`]);
+  await client.query("insert into market_workspace(id,owner_id,slug,name,market,country_code,objective) values($1,$2,'global-sales','Continuation fixture','Global','WW','Synthetic verification')",[workspaceId,ownerId]);
+  const workspace={id:workspaceId,owner_id:ownerId};
+  await client.query('set local role network_copilot_app');
   await client.query("select set_config('app.current_user_id',$1,true)",[workspace.owner_id]);
   const conversation=await client.query<{id:string}>("insert into assistant_conversation(user_id,title) values($1,'rollback verification') returning id",[workspace.owner_id]);
   const parent=await client.query<{id:string}>(`insert into assistant_action(user_id,conversation_id,action_type,status,payload)
@@ -29,6 +32,11 @@ try{
   const result=await proposeSearchContinuationInTransaction(client,workspace.owner_id,parent.rows[0].id);
   const again=await proposeSearchContinuationInTransaction(client,workspace.owner_id,parent.rows[0].id);
   if(!again.reused||result.actionId!==again.actionId)throw new Error('Repeated proposal was not idempotent');
+  const metrics=await client.query<{changes:{efficiency:{outputItems:number;validOutputItems:number;downstreamUsedItems:number;userAdoptedItems:number|null}}}>(
+    "select changes from workspace_audit_event where workspace_id=$1 and entity_id=$2",[workspaceId,result.actionId]);
+  if(metrics.rows.length!==2||metrics.rows.reduce((sum,row)=>sum+row.changes.efficiency.outputItems,0)!==1
+    ||metrics.rows.reduce((sum,row)=>sum+row.changes.efficiency.validOutputItems,0)!==1
+    ||metrics.rows.some(row=>row.changes.efficiency.downstreamUsedItems!==0||row.changes.efficiency.userAdoptedItems!==null))throw new Error('Repeated proposal inflated adoption metrics');
   const child=await client.query("select status,payload,result from assistant_action where id=$1",[result.actionId]);
   if(child.rows[0]?.status!=='proposed'||child.rows[0].payload.targetCount!==1)throw new Error('Proposal executed or wrong remaining target');
   const jobs=await client.query('select id from lead_workflow_job where action_id=$1',[result.actionId]);if(jobs.rowCount)throw new Error('Proposal created an executable job');

@@ -24,7 +24,7 @@ export async function proposeSearchContinuationInTransaction(client:PoolClient,u
   if(existing.rows[0]){
     await client.query(`insert into workspace_audit_event(workspace_id,actor_user_id,entity_type,entity_id,action,changes)
       select id,$1,'search-continuation',$2,'search.continuation-reused',$3::jsonb from market_workspace where owner_id=$1 and slug='global-sales'`,[userId,existing.rows[0].child_action_id,
-      JSON.stringify({efficiency:{inputItems:1,validOutputItems:1,downstreamUsedItems:1,inputTokens:0,outputTokens:0,costUsd:0,apiCredits:0,retries:0,latencyMs:Date.now()-started,cacheHit:true,discardedReasonCounts:{duplicateProposalAvoided:1},utilizationEfficiency:1,usageBoundary:'existing-proposal-returned-not-executed',optimizationOpportunity:'Reuse the same child across repeated clicks'}})]);
+      JSON.stringify({efficiency:{inputItems:1,outputItems:0,validOutputItems:0,downstreamUsedItems:0,userAdoptedItems:null,inputTokens:0,outputTokens:0,costUsd:0,apiCredits:0,retries:0,latencyMs:Date.now()-started,cacheHit:true,discardedReasonCounts:{duplicateProposalAvoided:1},utilizationEfficiency:null,usageBoundary:'existing-proposal-returned-not-executed',optimizationOpportunity:'Reuse the same child across repeated clicks'}})]);
     return {actionId:existing.rows[0].child_action_id,reused:true};
   }
   const lineage=await client.query<{root_action_id:string;depth:number;excluded_domains:string[];previous_result:Record<string,unknown>}>(`select l.root_action_id,l.depth,l.excluded_domains,a.result as previous_result
@@ -51,7 +51,7 @@ export async function proposeSearchContinuationInTransaction(client:PoolClient,u
   await client.query('update assistant_conversation set updated_at=now() where id=$1 and user_id=$2',[parent.conversation_id,userId]);
   await client.query(`insert into workspace_audit_event(workspace_id,actor_user_id,entity_type,entity_id,action,changes)
     values($1,$2,'search-continuation',$3,'search.continuation-proposed',$4)`,[run.workspace_id,userId,childId,JSON.stringify({parentActionId:parentId,gap,excludedCount:excluded.length,
-      efficiency:{inputItems:1,validOutputItems:1,downstreamUsedItems:1,inputTokens:0,outputTokens:0,costUsd:0,apiCredits:0,retries:0,latencyMs:Date.now()-started,discardedReasonCounts:{},utilizationEfficiency:1,usageBoundary:'proposal-created-not-executed',optimizationOpportunity:'Reuse prior processing exclusions; do not replay completed checkpoints'}})]);
+      efficiency:{inputItems:1,outputItems:1,validOutputItems:1,downstreamUsedItems:0,userAdoptedItems:null,inputTokens:0,outputTokens:0,costUsd:0,apiCredits:0,retries:0,latencyMs:Date.now()-started,discardedReasonCounts:{},utilizationEfficiency:1,usageBoundary:'proposal-created-not-executed',optimizationOpportunity:'Reuse prior processing exclusions; do not replay completed checkpoints'}})]);
   return {actionId:childId,reused:false,gap,excludedCount:excluded.length};
 }
 
