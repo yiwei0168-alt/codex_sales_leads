@@ -758,7 +758,7 @@ flowchart TD
 | `src/lib/assistant/service.ts` | `191d407fc558253b10df7b57564bb73094808cddaf5f2f8883c57742561eff7e` |
 | `src/lib/assistant/repository.ts` | `7d480b70ed29de1795c4c6c1a5c49d471cd700272616bfa3c66dbab4e6d6bfb3` |
 | `src/lib/leads/workflow/graph.ts` | `1a40049c42ebafa039f23647c299721c9cd50cada9ec3fd1b9a50a4716d67d88` |
-| `src/lib/leads/workflow/jobs.ts` | `828450a7ddd3d37a26d05f97ac50a231e77c704876b9af2232e61dfd51904d48` |
+| `src/lib/leads/workflow/jobs.ts` | `997af873d880004429b35df27bb1e138e544cb39e70c7d9693929969f91b8db0` |
 | `src/lib/leads/workflow/rag-context.ts` | `1e1ee21e77b90731e849426cd7130de7d1e50ee6aec9f196e44cb642bf81387b` |
 | `src/lib/leads/workflow/playbook.ts` | `a353d9cd427d394e6e2ead9752b8f28f739f8c2b3885db3fdbeb84d39f2fa34f` |
 | `src/lib/leads/workflow/playbook-cache.ts` | `84e1d965bd76e7e0326d25889e157fe54315c320816fc7adef0a4ec23c7ca0be` |

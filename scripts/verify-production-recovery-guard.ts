@@ -7,7 +7,8 @@ import { databaseConnectionString, databaseSslConfiguration } from "../src/lib/r
 import { plan, candidate, correctedCandidate } from "./workflow-recovery-fixtures";
 
 nextEnv.loadEnvConfig(process.cwd());
-const { getPool } = await import("../src/lib/rag/db");
+const { getPool,tenantTransaction } = await import("../src/lib/rag/db");
+const {recordWorkflowCompletion,completeWorkflowJob,failWorkflowJob}=await import("../src/lib/leads/workflow/job-completion");
 const { buildLeadWorkflowGraph } = await import("../src/lib/leads/workflow/graph");
 const { confirmAndQueueLeadWorkflow, claimLeadWorkflowByAction, executeClaimedLeadWorkflow } = await import("../src/lib/leads/workflow/jobs");
 const { setSpendBudget, setTaskSpendBudget, reservePaidCall, settlePaidCall } = await import("../src/lib/billing/repository");
@@ -63,7 +64,31 @@ try {
   assert.equal((await pool.query("select count(*)::int as n from paid_call_reservation where user_id=$1",[userId])).rows[0].n,1);
   assert.equal(Number((await pool.query("select occupied_micros from user_spend_budget where user_id=$1",[userId])).rows[0].occupied_micros),7);
   assert.equal((await pool.query("select count(*)::int as n from workflow_artifact_event where user_id=$1",[userId])).rows[0].n,0);
+  const jobId=(await pool.query("select id from lead_workflow_job where action_id=$1",[actionId])).rows[0].id;
+  const claim={jobId,userId,actionId,graphThreadId:threadId,conversationId,plan};
+  const result={runId:randomUUID(),countryCode:plan.countryCode,countryName:plan.countryName,requested:plan.targetCount,
+    discovered:1,assessed:0,qualified:0,accepted:0,creditsUsed:13,ragCitationCount:0,graphThreadId:threadId,warnings:[]};
+  const receipts=async()=> (await pool.query("select id from assistant_message where user_id=$1 and metadata->'searchResult'->>'graphThreadId'=$2",[userId,threadId])).rows;
+  await assert.rejects(tenantTransaction(userId,async client=>{await recordWorkflowCompletion(client,claim,result);throw new Error("Synthetic completion commit interruption");}),/Synthetic completion commit interruption/);
+  assert.equal((await receipts()).length,0);
+  assert.equal((await pool.query("select status from assistant_action where id=$1",[actionId])).rows[0].status,"failed");
+  assert.equal((await pool.query("select status from lead_workflow_job where id=$1",[jobId])).rows[0].status,"failed");
+  const completions=await Promise.allSettled([completeWorkflowJob(claim,result),completeWorkflowJob(claim,result)]);
+  for(const item of completions)if(item.status==="rejected")throw item.reason;
+  assert.equal((await receipts()).length,1);
+  const receipt=(await pool.query("select metadata from assistant_message where user_id=$1 and metadata->>'completionJobId'=$2",[userId,jobId])).rows[0];
+  assert.equal(receipt.metadata.completionObservation.savedOutputItems,1);
+  assert.equal(receipt.metadata.completionObservation.downstreamUsedItems,null);
+  assert.equal(receipt.metadata.completionObservation.costUsd,0);
+  const completed=await pool.query("select status,result,updated_at from lead_workflow_job where id=$1",[jobId]);
+  await failWorkflowJob(claim,new Error("Synthetic late failure after committed completion"));
+  assert.deepEqual((await pool.query("select status,result,updated_at from lead_workflow_job where id=$1",[jobId])).rows,completed.rows);
+  await assert.rejects(completeWorkflowJob(claim,{...result,accepted:1}),/result conflict/);
+  for(const invalid of [{...claim,userId:randomUUID()},{...claim,graphThreadId:"wrong-thread"},{...claim,conversationId:randomUUID()}])await assert.rejects(completeWorkflowJob(invalid,result),/mismatch/);
+  assert.equal((await receipts()).length,1);
+  assert.deepEqual((await pool.query("select status,result from assistant_action where id=$1",[actionId])).rows[0],{status:"completed",result});
   console.log(JSON.stringify({ productionRecoveryGuard:"passed",actualQueueClaimRunnerAttempts:3,checkpointUnchanged:true,syntheticOccupiedMicros:7,providerCalls:0,realMailSent:0 }));
+  console.log(JSON.stringify({atomicCompletionRollback:true,concurrentCompletions:2,completionReceipts:1,lateFailurePreservedCompletion:true,conflictingResultRejected:true,ownerThreadConversationIsolation:true,businessResult:"synthetic-only"}));
 } finally {
   if (created) {
     const client = await pool.connect();

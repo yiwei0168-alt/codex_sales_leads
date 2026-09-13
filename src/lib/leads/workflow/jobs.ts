@@ -1,9 +1,8 @@
 import { randomUUID } from "node:crypto";
-import { WorkflowPausedError } from "./pause";
 
-import { appendMessage, getAssistantAction, setAssistantActionStatus } from "@/lib/assistant/repository";
+import { getAssistantAction, setAssistantActionStatus } from "@/lib/assistant/repository";
 import type { LeadSearchPlan } from "@/lib/assistant/types";
-import { searchStopReasonLabels } from "@/lib/assistant/task-summary";
+import {completeWorkflowJob,failWorkflowJob} from "./job-completion";
 import { query, tenantQuery, tenantTransaction } from "@/lib/rag/db";
 
 import { runLeadWorkflow } from "./graph";
@@ -102,35 +101,11 @@ export async function claimNextLeadWorkflow(workerId: string): Promise<LeadWorkf
 }
 
 async function finishJob(claim: LeadWorkflowJobClaim, result: LeadWorkflowResult): Promise<void> {
-  await tenantQuery(claim.userId,
-    `update lead_workflow_job set status='completed', phase='completed', result=$3,
-       lease_until=null, finished_at=now(), updated_at=now() where id=$1 and user_id=$2`,
-    [claim.jobId, claim.userId, JSON.stringify(result)]);
-  await setAssistantActionStatus(claim.userId, claim.actionId, "completed", { result: result as unknown as Record<string, unknown> });
-  await appendMessage(claim.userId, claim.conversationId, {
-    role: "assistant",
-    intent: "lead-search",
-    content: `${result.countryName} 搜索${result.accepted >= result.requested ? "达到目标" : "部分完成"}：发现 ${result.discovered} 家、评估 ${result.assessed} 家、合格 ${result.qualified} 家，最终保存 ${result.accepted}/${result.requested} 家，缺口 ${Math.max(0,result.requested-result.accepted)} 家。${searchStopReasonLabels[result.targetCompletionReason ?? ""] ?? "停止原因未记录"}。共使用 ${result.creditsUsed} 个付费搜索/证据 credits。`,
-    metadata: { searchResult: result as unknown as Record<string, unknown> },
-  });
+  await completeWorkflowJob(claim,result);
 }
 
 async function failJob(claim: LeadWorkflowJobClaim, error: unknown): Promise<void> {
-  if(error instanceof WorkflowPausedError){
-    await tenantQuery(claim.userId,"update lead_workflow_job set status='cancelled',paused_at=now(),lease_until=null,updated_at=now() where id=$1 and user_id=$2",[claim.jobId,claim.userId]);
-    await setAssistantActionStatus(claim.userId,claim.actionId,"cancelled",{error:error.message});
-    return;
-  }
-  const message = error instanceof Error ? error.message : String(error);
-  await tenantQuery(claim.userId,
-    `update lead_workflow_job set status='failed', phase='failed', error_message=$3,
-       lease_until=null, finished_at=now(), updated_at=now() where id=$1 and user_id=$2`,
-    [claim.jobId, claim.userId, message.slice(0, 2_000)]);
-  await setAssistantActionStatus(claim.userId, claim.actionId, "failed", { error: message });
-  await appendMessage(claim.userId, claim.conversationId, {
-    role: "assistant", intent: "lead-search",
-    content: `LangGraph 搜索未完成：${message}。工作流 checkpoint 已保留；没有使用模拟公司替代真实结果。`,
-  });
+  await failWorkflowJob(claim,error);
 }
 
 export async function requestWorkflowPause(userId:string,actionId:string){
