@@ -1,8 +1,9 @@
 import {afterEach,expect,it,vi} from "vitest";
 import {TEXT_OUTPUT_LIMITS,textOutputLimit,textOutputCompletion} from "./text-output-policy";
 afterEach(()=>vi.unstubAllEnvs());
-it("uses separately approved limits and rejects invalid overrides",()=>{
-  expect(TEXT_OUTPUT_LIMITS).toEqual({"rag-answer":8192,"hybrid-synthesis":8192,"lead-playbook":4096,"compatible-review":8192,"compatible-judge":12000,"compatible-scoring":8192});
+it("uses stage-specific limits and rejects invalid overrides",()=>{
+  expect(TEXT_OUTPUT_LIMITS).toEqual({"rag-answer":8192,"hybrid-synthesis":8192,"lead-playbook":4096,
+    "compatible-correction":8192,"compatible-review":8192,"compatible-judge":12000,"compatible-scoring":8192});
   vi.stubEnv("LEAD_PLAYBOOK_MAX_OUTPUT_TOKENS","6000");expect(textOutputLimit("lead-playbook")).toBe(6000);
   for(const value of ["0","-1","1.5","Infinity","1000001"]){vi.stubEnv("LEAD_PLAYBOOK_MAX_OUTPUT_TOKENS",value);expect(()=>textOutputLimit("lead-playbook")).toThrow();}
 });

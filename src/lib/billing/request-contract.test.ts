@@ -73,6 +73,17 @@ it("preserves reviewed native contracts while adding narrow search and Sol contr
   expect(()=>quoteRequest({origin:"https://api.moonshot.cn",pathname:"/v1/chat/completions",model:"kimi-k3",requestBytes:100,outputTokens:100},billingPolicy.rules,Date.parse("2026-09-13T12:00:00Z"))).toThrow("missing-tariff");
 });
 
+it("keeps uncapped OpenRouter correction and review routes blocked despite public price metadata",()=>{
+  const now=Date.parse("2026-09-14T00:00:00Z");
+  for(const model of ["openai/gpt-5.6-terra","openai/gpt-4o-mini","openai/gpt-4o",
+    "deepseek/deepseek-v4-flash","deepseek/deepseek-v4-pro"]){
+    expect(()=>quoteRequest({origin:"https://openrouter.ai",pathname:"/api/v1/chat/completions",
+      model,requestBytes:100,outputTokens:8192},undefined,now)).toThrow("missing-tariff");
+  }
+  expect(()=>quoteRequest({origin:"https://openrouter.ai",pathname:"/api/v1/chat/completions",
+    model:"openai/gpt-5.6-sol",requestBytes:100,outputTokens:12000},undefined,now)).toThrow("request-out-of-bounds");
+});
+
 it("admits only the credits-only Sol standard text schema contract and enforces its envelope",()=>{
   const now=Date.parse("2026-09-13T13:00:00Z");
   const input={origin:"https://openrouter.ai",pathname:"/api/v1/chat/completions",model:"openai/gpt-5.6-sol",requestBytes:61440,outputTokens:4096};

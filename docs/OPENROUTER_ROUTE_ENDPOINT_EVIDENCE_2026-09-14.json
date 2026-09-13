@@ -1,0 +1,1726 @@
+{
+  "capturedAt": "2026-09-13T16:44:07.707Z",
+  "status": "public-evidence-only-no-tariff-admission",
+  "catalog": {
+    "url": "https://openrouter.ai/api/v1/models",
+    "sha256": "7f38b394bca3af9166e20aa9b56775c27510a1d0a8ec367637718cfb670ec8fd"
+  },
+  "models": [
+    {
+      "id": "openai/gpt-5.6-terra",
+      "canonicalSlug": "openai/gpt-5.6-terra-20260709",
+      "contextLength": 1050000,
+      "catalogPricing": {
+        "prompt": "0.000002",
+        "completion": "0.000012",
+        "web_search": "0.01",
+        "input_cache_read": "0.0000002",
+        "input_cache_write": "0.0000025",
+        "overrides": [
+          {
+            "min_prompt_tokens": 272000,
+            "prompt": "0.000004",
+            "completion": "0.000018",
+            "input_cache_read": "0.0000004",
+            "input_cache_write": "0.000005"
+          }
+        ]
+      },
+      "endpointUrl": "https://openrouter.ai/api/v1/models/openai/gpt-5.6-terra-20260709/endpoints",
+      "endpointSha256": "b42bd259b357ad05e3595301d22e46514687c5e9d77d6c46b81206df8e0a8b18",
+      "endpoints": [
+        {
+          "tag": "openai/flex",
+          "contextLength": 1050000,
+          "maxPromptTokens": 922000,
+          "maxCompletionTokens": 128000,
+          "pricing": {
+            "prompt": "0.000001",
+            "completion": "0.000006",
+            "web_search": "0.01",
+            "input_cache_read": "0.0000001",
+            "input_cache_write": "0.00000125",
+            "discount": 0,
+            "overrides": [
+              {
+                "min_prompt_tokens": 272000,
+                "prompt": "0.000002",
+                "completion": "0.000009",
+                "input_cache_read": "0.0000002",
+                "input_cache_write": "0.0000025"
+              }
+            ]
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "seed",
+            "max_tokens",
+            "response_format",
+            "structured_outputs",
+            "tools",
+            "tool_choice",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "azure",
+          "contextLength": 1050000,
+          "maxPromptTokens": 922000,
+          "maxCompletionTokens": 128000,
+          "pricing": {
+            "prompt": "0.000002",
+            "completion": "0.000012",
+            "web_search": "0.01",
+            "input_cache_read": "0.0000002",
+            "input_cache_write": "0.0000025",
+            "discount": 0,
+            "overrides": [
+              {
+                "min_prompt_tokens": 272000,
+                "prompt": "0.000004",
+                "completion": "0.000018",
+                "input_cache_read": "0.0000004",
+                "input_cache_write": "0.000005"
+              }
+            ]
+          },
+          "supportedParameters": [
+            "max_completion_tokens",
+            "reasoning",
+            "include_reasoning",
+            "seed",
+            "response_format",
+            "structured_outputs",
+            "tools",
+            "tool_choice",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "openai",
+          "contextLength": 1050000,
+          "maxPromptTokens": 922000,
+          "maxCompletionTokens": 128000,
+          "pricing": {
+            "prompt": "0.000002",
+            "completion": "0.000012",
+            "web_search": "0.01",
+            "input_cache_read": "0.0000002",
+            "input_cache_write": "0.0000025",
+            "discount": 0,
+            "overrides": [
+              {
+                "min_prompt_tokens": 272000,
+                "prompt": "0.000004",
+                "completion": "0.000018",
+                "input_cache_read": "0.0000004",
+                "input_cache_write": "0.000005"
+              }
+            ]
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "seed",
+            "max_tokens",
+            "response_format",
+            "structured_outputs",
+            "tools",
+            "tool_choice",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "azure/us",
+          "contextLength": 1050000,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 128000,
+          "pricing": {
+            "prompt": "0.0000022",
+            "completion": "0.0000132",
+            "web_search": "0.01",
+            "input_cache_read": "0.00000022",
+            "input_cache_write": "0.00000275",
+            "discount": 0,
+            "overrides": [
+              {
+                "min_prompt_tokens": 272000,
+                "prompt": "0.0000044",
+                "completion": "0.0000198",
+                "input_cache_read": "0.00000044",
+                "input_cache_write": "0.0000055"
+              }
+            ]
+          },
+          "supportedParameters": [
+            "max_completion_tokens",
+            "reasoning",
+            "include_reasoning",
+            "seed",
+            "response_format",
+            "structured_outputs",
+            "tools",
+            "tool_choice",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "amazon-bedrock/us-east-1",
+          "contextLength": 1050000,
+          "maxPromptTokens": 922000,
+          "maxCompletionTokens": 128000,
+          "pricing": {
+            "prompt": "0.0000022",
+            "completion": "0.0000132",
+            "web_search": "0.01",
+            "input_cache_read": "0.00000022",
+            "input_cache_write": "0.00000275",
+            "discount": 0,
+            "overrides": [
+              {
+                "min_prompt_tokens": 272000,
+                "prompt": "0.0000044",
+                "completion": "0.0000198",
+                "input_cache_read": "0.00000044",
+                "input_cache_write": "0.0000055"
+              }
+            ]
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "max_tokens",
+            "tools",
+            "tool_choice",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": true
+        },
+        {
+          "tag": "azure/eu",
+          "contextLength": 1050000,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 128000,
+          "pricing": {
+            "prompt": "0.0000022",
+            "completion": "0.0000132",
+            "web_search": "0.01",
+            "input_cache_read": "0.00000022",
+            "input_cache_write": "0.00000275",
+            "discount": 0,
+            "overrides": [
+              {
+                "min_prompt_tokens": 272000,
+                "prompt": "0.0000044",
+                "completion": "0.0000198",
+                "input_cache_read": "0.00000044",
+                "input_cache_write": "0.0000055"
+              }
+            ]
+          },
+          "supportedParameters": [
+            "max_completion_tokens",
+            "reasoning",
+            "include_reasoning",
+            "seed",
+            "response_format",
+            "structured_outputs",
+            "tools",
+            "tool_choice",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "openai/fast",
+          "contextLength": 1050000,
+          "maxPromptTokens": 922000,
+          "maxCompletionTokens": 128000,
+          "pricing": {
+            "prompt": "0.000004",
+            "completion": "0.000024",
+            "web_search": "0.01",
+            "input_cache_read": "0.0000004",
+            "input_cache_write": "0.000005",
+            "discount": 0,
+            "overrides": [
+              {
+                "min_prompt_tokens": 272000,
+                "prompt": "0.000008",
+                "completion": "0.000036",
+                "input_cache_read": "0.0000008",
+                "input_cache_write": "0.00001"
+              }
+            ]
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "seed",
+            "max_tokens",
+            "response_format",
+            "structured_outputs",
+            "tools",
+            "tool_choice",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        }
+      ]
+    },
+    {
+      "id": "openai/gpt-5.6-sol",
+      "canonicalSlug": "openai/gpt-5.6-sol-20260709",
+      "contextLength": 1050000,
+      "catalogPricing": {
+        "prompt": "0.000002",
+        "completion": "0.00001",
+        "web_search": "0.01",
+        "input_cache_read": "0.0000002",
+        "input_cache_write": "0.0000025",
+        "overrides": [
+          {
+            "min_prompt_tokens": 272000,
+            "prompt": "0.000004",
+            "completion": "0.000015",
+            "input_cache_read": "0.0000004",
+            "input_cache_write": "0.000005"
+          }
+        ]
+      },
+      "endpointUrl": "https://openrouter.ai/api/v1/models/openai/gpt-5.6-sol-20260709/endpoints",
+      "endpointSha256": "99e5142620c066b207a66e8140e638a846c2ad8ad18353d448303ab9993c346e",
+      "endpoints": [
+        {
+          "tag": "openai/flex",
+          "contextLength": 1050000,
+          "maxPromptTokens": 922000,
+          "maxCompletionTokens": 128000,
+          "pricing": {
+            "prompt": "0.000001",
+            "completion": "0.000005",
+            "web_search": "0.01",
+            "input_cache_read": "0.0000001",
+            "input_cache_write": "0.00000125",
+            "discount": 0.5,
+            "overrides": [
+              {
+                "min_prompt_tokens": 272000,
+                "prompt": "0.000002",
+                "completion": "0.0000075",
+                "input_cache_read": "0.0000002",
+                "input_cache_write": "0.0000025"
+              }
+            ]
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "seed",
+            "max_tokens",
+            "response_format",
+            "structured_outputs",
+            "tools",
+            "tool_choice",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "openai",
+          "contextLength": 1050000,
+          "maxPromptTokens": 922000,
+          "maxCompletionTokens": 128000,
+          "pricing": {
+            "prompt": "0.000002",
+            "completion": "0.00001",
+            "web_search": "0.01",
+            "input_cache_read": "0.0000002",
+            "input_cache_write": "0.0000025",
+            "discount": 0.5,
+            "overrides": [
+              {
+                "min_prompt_tokens": 272000,
+                "prompt": "0.000004",
+                "completion": "0.000015",
+                "input_cache_read": "0.0000004",
+                "input_cache_write": "0.000005"
+              }
+            ]
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "seed",
+            "max_tokens",
+            "response_format",
+            "structured_outputs",
+            "tools",
+            "tool_choice",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "openai/fast",
+          "contextLength": 1050000,
+          "maxPromptTokens": 922000,
+          "maxCompletionTokens": 128000,
+          "pricing": {
+            "prompt": "0.000004",
+            "completion": "0.00002",
+            "web_search": "0.01",
+            "input_cache_read": "0.0000004",
+            "input_cache_write": "0.000005",
+            "discount": 0.5,
+            "overrides": [
+              {
+                "min_prompt_tokens": 272000,
+                "prompt": "0.000008",
+                "completion": "0.00003",
+                "input_cache_read": "0.0000008",
+                "input_cache_write": "0.00001"
+              }
+            ]
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "seed",
+            "max_tokens",
+            "response_format",
+            "structured_outputs",
+            "tools",
+            "tool_choice",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "amazon-bedrock/us-east-1",
+          "contextLength": 1050000,
+          "maxPromptTokens": 922000,
+          "maxCompletionTokens": 128000,
+          "pricing": {
+            "prompt": "0.0000044",
+            "completion": "0.000022",
+            "web_search": "0.01",
+            "input_cache_read": "0.00000044",
+            "input_cache_write": "0.0000055",
+            "discount": 0,
+            "overrides": [
+              {
+                "min_prompt_tokens": 272000,
+                "prompt": "0.0000088",
+                "completion": "0.000033",
+                "input_cache_read": "0.00000088",
+                "input_cache_write": "0.000011"
+              }
+            ]
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "max_tokens",
+            "tools",
+            "tool_choice",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": true
+        },
+        {
+          "tag": "azure",
+          "contextLength": 1050000,
+          "maxPromptTokens": 922000,
+          "maxCompletionTokens": 128000,
+          "pricing": {
+            "prompt": "0.000005",
+            "completion": "0.00003",
+            "web_search": "0.01",
+            "input_cache_read": "0.0000005",
+            "input_cache_write": "0.00000625",
+            "discount": 0,
+            "overrides": [
+              {
+                "min_prompt_tokens": 272000,
+                "prompt": "0.00001",
+                "completion": "0.000045",
+                "input_cache_read": "0.000001",
+                "input_cache_write": "0.0000125"
+              }
+            ]
+          },
+          "supportedParameters": [
+            "max_completion_tokens",
+            "reasoning",
+            "include_reasoning",
+            "seed",
+            "response_format",
+            "structured_outputs",
+            "tools",
+            "tool_choice",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "azure/us",
+          "contextLength": 1050000,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 128000,
+          "pricing": {
+            "prompt": "0.0000055",
+            "completion": "0.000033",
+            "web_search": "0.01",
+            "input_cache_read": "0.00000055",
+            "input_cache_write": "0.000006875",
+            "discount": 0,
+            "overrides": [
+              {
+                "min_prompt_tokens": 272000,
+                "prompt": "0.000011",
+                "completion": "0.0000495",
+                "input_cache_read": "0.0000011",
+                "input_cache_write": "0.00001375"
+              }
+            ]
+          },
+          "supportedParameters": [
+            "max_completion_tokens",
+            "reasoning",
+            "include_reasoning",
+            "seed",
+            "response_format",
+            "structured_outputs",
+            "tools",
+            "tool_choice",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "azure/eu",
+          "contextLength": 1050000,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 128000,
+          "pricing": {
+            "prompt": "0.0000055",
+            "completion": "0.000033",
+            "web_search": "0.01",
+            "input_cache_read": "0.00000055",
+            "input_cache_write": "0.000006875",
+            "discount": 0,
+            "overrides": [
+              {
+                "min_prompt_tokens": 272000,
+                "prompt": "0.000011",
+                "completion": "0.0000495",
+                "input_cache_read": "0.0000011",
+                "input_cache_write": "0.00001375"
+              }
+            ]
+          },
+          "supportedParameters": [
+            "max_completion_tokens",
+            "reasoning",
+            "include_reasoning",
+            "seed",
+            "response_format",
+            "structured_outputs",
+            "tools",
+            "tool_choice",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        }
+      ]
+    },
+    {
+      "id": "openai/gpt-4o-mini",
+      "canonicalSlug": "openai/gpt-4o-mini",
+      "contextLength": 128000,
+      "catalogPricing": {
+        "prompt": "0.00000015",
+        "completion": "0.0000006",
+        "input_cache_read": "0.000000075"
+      },
+      "endpointUrl": "https://openrouter.ai/api/v1/models/openai/gpt-4o-mini/endpoints",
+      "endpointSha256": "e864f9f1bb660f764612abdb36096171e3396d331cc14ba681a415928ebef195",
+      "endpoints": [
+        {
+          "tag": "azure",
+          "contextLength": 128000,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 16384,
+          "pricing": {
+            "prompt": "0.00000015",
+            "completion": "0.0000006",
+            "input_cache_read": "0.000000075",
+            "discount": 0
+          },
+          "supportedParameters": [
+            "max_completion_tokens",
+            "temperature",
+            "top_p",
+            "stop",
+            "frequency_penalty",
+            "presence_penalty",
+            "web_search_options",
+            "seed",
+            "logit_bias",
+            "logprobs",
+            "top_logprobs",
+            "response_format",
+            "structured_outputs"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "openai",
+          "contextLength": 128000,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 16384,
+          "pricing": {
+            "prompt": "0.00000015",
+            "completion": "0.0000006",
+            "input_cache_read": "0.000000075",
+            "discount": 0
+          },
+          "supportedParameters": [
+            "seed",
+            "max_tokens",
+            "response_format",
+            "structured_outputs",
+            "temperature",
+            "top_p",
+            "stop",
+            "frequency_penalty",
+            "presence_penalty",
+            "web_search_options",
+            "logit_bias",
+            "logprobs",
+            "top_logprobs",
+            "prediction",
+            "tools",
+            "tool_choice"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "azure/swedencentral",
+          "contextLength": 128000,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 16384,
+          "pricing": {
+            "prompt": "0.000000165",
+            "completion": "0.00000066",
+            "input_cache_read": "0.0000000825",
+            "discount": 0
+          },
+          "supportedParameters": [
+            "max_completion_tokens",
+            "temperature",
+            "top_p",
+            "stop",
+            "frequency_penalty",
+            "presence_penalty",
+            "web_search_options",
+            "seed",
+            "logit_bias",
+            "logprobs",
+            "top_logprobs",
+            "response_format",
+            "structured_outputs"
+          ],
+          "supportsImplicitCaching": false
+        }
+      ]
+    },
+    {
+      "id": "openai/gpt-4o",
+      "canonicalSlug": "openai/gpt-4o",
+      "contextLength": 128000,
+      "catalogPricing": {
+        "prompt": "0.0000025",
+        "completion": "0.00001",
+        "input_cache_read": "0.00000125"
+      },
+      "endpointUrl": "https://openrouter.ai/api/v1/models/openai/gpt-4o/endpoints",
+      "endpointSha256": "b067a7c0df3869925dc66c913e079b8fc16169527cae97cba5cb0747f91e2e73",
+      "endpoints": [
+        {
+          "tag": "azure",
+          "contextLength": 128000,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 16384,
+          "pricing": {
+            "prompt": "0.0000025",
+            "completion": "0.00001",
+            "discount": 0
+          },
+          "supportedParameters": [
+            "max_completion_tokens",
+            "temperature",
+            "top_p",
+            "stop",
+            "frequency_penalty",
+            "presence_penalty",
+            "web_search_options",
+            "seed",
+            "logit_bias",
+            "logprobs",
+            "top_logprobs",
+            "response_format",
+            "structured_outputs",
+            "tools",
+            "tool_choice"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "openai",
+          "contextLength": 128000,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 16384,
+          "pricing": {
+            "prompt": "0.0000025",
+            "completion": "0.00001",
+            "input_cache_read": "0.00000125",
+            "discount": 0
+          },
+          "supportedParameters": [
+            "seed",
+            "max_tokens",
+            "response_format",
+            "structured_outputs",
+            "temperature",
+            "top_p",
+            "stop",
+            "frequency_penalty",
+            "presence_penalty",
+            "web_search_options",
+            "logit_bias",
+            "logprobs",
+            "top_logprobs",
+            "prediction",
+            "tools",
+            "tool_choice"
+          ],
+          "supportsImplicitCaching": false
+        }
+      ]
+    },
+    {
+      "id": "deepseek/deepseek-v4-flash",
+      "canonicalSlug": "deepseek/deepseek-v4-flash-20260423",
+      "contextLength": 1048576,
+      "catalogPricing": {
+        "prompt": "0.00000004788",
+        "completion": "0.00000009576",
+        "input_cache_read": "0.000000009576"
+      },
+      "endpointUrl": "https://openrouter.ai/api/v1/models/deepseek/deepseek-v4-flash-20260423/endpoints",
+      "endpointSha256": "88b0823d795cd6c572d552612d4c0497d5c3bb12a32d057bc3b713dbb1122dff",
+      "endpoints": [
+        {
+          "tag": "streamlake/fp8",
+          "contextLength": 1024000,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 384000,
+          "pricing": {
+            "prompt": "0.00000004788",
+            "completion": "0.00000009576",
+            "input_cache_read": "0.000000009576",
+            "discount": 0.658
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "response_format",
+            "tools",
+            "tool_choice",
+            "logprobs",
+            "top_logprobs",
+            "structured_outputs",
+            "max_tokens",
+            "temperature",
+            "top_p",
+            "stop",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "baidu/fp8",
+          "contextLength": 1048576,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 131072,
+          "pricing": {
+            "prompt": "0.00000004802",
+            "completion": "0.00000009604",
+            "input_cache_read": "0.000000009604",
+            "discount": 0.657
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "temperature",
+            "top_p",
+            "max_tokens",
+            "stop",
+            "response_format",
+            "structured_outputs",
+            "tools",
+            "tool_choice",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "open-inference/fp8",
+          "contextLength": 1048576,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 943718,
+          "pricing": {
+            "prompt": "0.00000005",
+            "completion": "0.00000012",
+            "input_cache_read": "0.0000000012",
+            "discount": 0
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "temperature",
+            "max_tokens",
+            "stop",
+            "seed",
+            "tools",
+            "tool_choice",
+            "response_format",
+            "top_p",
+            "frequency_penalty",
+            "presence_penalty",
+            "top_k",
+            "min_p",
+            "logit_bias",
+            "repetition_penalty",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "digitalocean",
+          "contextLength": 1048576,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 943718,
+          "pricing": {
+            "prompt": "0.0000000679",
+            "completion": "0.000000168",
+            "input_cache_read": "0.0000000168",
+            "discount": 0
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "temperature",
+            "top_p",
+            "max_tokens",
+            "tool_choice",
+            "tools",
+            "structured_outputs",
+            "response_format",
+            "logprobs",
+            "top_logprobs",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "deepinfra/fp8",
+          "contextLength": 1048576,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 65536,
+          "pricing": {
+            "prompt": "0.00000009",
+            "completion": "0.00000018",
+            "input_cache_read": "0.000000018",
+            "discount": 0
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "max_tokens",
+            "temperature",
+            "top_p",
+            "stop",
+            "frequency_penalty",
+            "presence_penalty",
+            "repetition_penalty",
+            "top_k",
+            "seed",
+            "min_p",
+            "response_format",
+            "tools",
+            "tool_choice",
+            "structured_outputs",
+            "logit_bias",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "gmicloud/fp8",
+          "contextLength": 1048575,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 943717,
+          "pricing": {
+            "prompt": "0.000000091",
+            "completion": "0.000000182",
+            "input_cache_read": "0.0000000182",
+            "discount": 0.35
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "max_tokens",
+            "temperature",
+            "top_p",
+            "seed",
+            "tools",
+            "tool_choice",
+            "response_format",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "venice",
+          "contextLength": 1000000,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 32768,
+          "pricing": {
+            "prompt": "0.0000000966",
+            "completion": "0.0000001925",
+            "input_cache_read": "0.0000000196",
+            "discount": 0.3
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "max_tokens",
+            "temperature",
+            "top_p",
+            "stop",
+            "frequency_penalty",
+            "presence_penalty",
+            "top_k",
+            "response_format",
+            "structured_outputs",
+            "tools",
+            "tool_choice",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "wafer",
+          "contextLength": 1048576,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 943718,
+          "pricing": {
+            "prompt": "0.0000001",
+            "completion": "0.00000025",
+            "input_cache_read": "0.00000005",
+            "discount": 0
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "temperature",
+            "top_p",
+            "top_k",
+            "min_p",
+            "frequency_penalty",
+            "presence_penalty",
+            "repetition_penalty",
+            "stop",
+            "seed",
+            "max_tokens",
+            "logit_bias",
+            "response_format",
+            "structured_outputs",
+            "tools",
+            "tool_choice",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "siliconflow/fp8",
+          "contextLength": 1048576,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 393216,
+          "pricing": {
+            "prompt": "0.00000013",
+            "completion": "0.00000028",
+            "input_cache_read": "0.000000028",
+            "discount": 0
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "temperature",
+            "top_p",
+            "top_k",
+            "frequency_penalty",
+            "max_tokens",
+            "tools",
+            "tool_choice",
+            "response_format",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "alibaba/fp8",
+          "contextLength": 1000000,
+          "maxPromptTokens": 1000000,
+          "maxCompletionTokens": 393216,
+          "pricing": {
+            "prompt": "0.000000134",
+            "completion": "0.000000268",
+            "input_cache_read": "0.0000000268",
+            "discount": 0
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "max_tokens",
+            "temperature",
+            "top_p",
+            "seed",
+            "presence_penalty",
+            "response_format",
+            "tool_choice",
+            "tools",
+            "structured_outputs",
+            "top_k",
+            "frequency_penalty",
+            "stop",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "novita/fp8",
+          "contextLength": 1048576,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 393216,
+          "pricing": {
+            "prompt": "0.00000014",
+            "completion": "0.00000028",
+            "input_cache_read": "0.000000028",
+            "discount": 0
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "max_tokens",
+            "temperature",
+            "top_p",
+            "stop",
+            "frequency_penalty",
+            "presence_penalty",
+            "seed",
+            "top_k",
+            "repetition_penalty",
+            "tool_choice",
+            "tools",
+            "response_format",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "atlas-cloud/fp4",
+          "contextLength": 1048576,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 393216,
+          "pricing": {
+            "prompt": "0.00000014",
+            "completion": "0.00000028",
+            "input_cache_read": "0.000000028",
+            "discount": 0
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "max_tokens",
+            "temperature",
+            "top_p",
+            "top_k",
+            "min_p",
+            "frequency_penalty",
+            "presence_penalty",
+            "repetition_penalty",
+            "stop",
+            "seed",
+            "logit_bias",
+            "response_format",
+            "structured_outputs",
+            "tools",
+            "tool_choice",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "parasail/fp8",
+          "contextLength": 1048576,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 943718,
+          "pricing": {
+            "prompt": "0.00000014",
+            "completion": "0.00000028",
+            "input_cache_read": "0.00000007",
+            "discount": 0
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "max_tokens",
+            "temperature",
+            "top_p",
+            "frequency_penalty",
+            "presence_penalty",
+            "repetition_penalty",
+            "seed",
+            "stop",
+            "top_k",
+            "logit_bias",
+            "tools",
+            "tool_choice",
+            "structured_outputs",
+            "response_format",
+            "logprobs",
+            "top_logprobs",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "nextbit/fp8",
+          "contextLength": 1048576,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 943718,
+          "pricing": {
+            "prompt": "0.00000015",
+            "completion": "0.00000035",
+            "input_cache_read": "0.000000035",
+            "discount": 0
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "max_tokens",
+            "temperature",
+            "top_p",
+            "stop",
+            "frequency_penalty",
+            "presence_penalty",
+            "response_format",
+            "structured_outputs",
+            "repetition_penalty",
+            "seed",
+            "tools",
+            "tool_choice",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "mancer/fp8",
+          "contextLength": 1048576,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 943718,
+          "pricing": {
+            "prompt": "0.00000019",
+            "completion": "0.0000005",
+            "discount": 0
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "max_tokens",
+            "temperature",
+            "top_p",
+            "stop",
+            "frequency_penalty",
+            "presence_penalty",
+            "repetition_penalty",
+            "logit_bias",
+            "top_k",
+            "min_p",
+            "seed",
+            "top_a",
+            "response_format",
+            "logprobs",
+            "top_logprobs",
+            "tools",
+            "structured_outputs",
+            "tool_choice",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "phala",
+          "contextLength": 1048576,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 393216,
+          "pricing": {
+            "prompt": "0.0000002",
+            "completion": "0.0000004",
+            "input_cache_read": "0.00000007",
+            "discount": 0
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "max_tokens",
+            "temperature",
+            "top_p",
+            "stop",
+            "frequency_penalty",
+            "presence_penalty",
+            "seed",
+            "top_k",
+            "min_p",
+            "repetition_penalty",
+            "response_format",
+            "structured_outputs",
+            "tools",
+            "tool_choice",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "azure/us",
+          "contextLength": 1048576,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 384000,
+          "pricing": {
+            "prompt": "0.00000021",
+            "completion": "0.00000056",
+            "input_cache_read": "0.000000031",
+            "discount": 0
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "max_tokens",
+            "temperature",
+            "top_p",
+            "max_completion_tokens",
+            "tools",
+            "tool_choice",
+            "response_format",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": true
+        }
+      ]
+    },
+    {
+      "id": "deepseek/deepseek-v4-pro",
+      "canonicalSlug": "deepseek/deepseek-v4-pro-20260423",
+      "contextLength": 1048576,
+      "catalogPricing": {
+        "prompt": "0.0000016",
+        "completion": "0.0000032",
+        "input_cache_read": "0.000000135"
+      },
+      "endpointUrl": "https://openrouter.ai/api/v1/models/deepseek/deepseek-v4-pro-20260423/endpoints",
+      "endpointSha256": "ae678b20714b98031445008725361f1c221fa830602e330ad5ed09ac31b6e5d8",
+      "endpoints": [
+        {
+          "tag": "baidu/fp8",
+          "contextLength": 1048576,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 393216,
+          "pricing": {
+            "prompt": "0.0000005239",
+            "completion": "0.0000010478",
+            "input_cache_read": "0.0000000434",
+            "discount": 0.69
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "temperature",
+            "top_p",
+            "max_tokens",
+            "stop",
+            "response_format",
+            "structured_outputs",
+            "tools",
+            "tool_choice",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "streamlake/fp8",
+          "contextLength": 1024000,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 384000,
+          "pricing": {
+            "prompt": "0.000000525306",
+            "completion": "0.000001050612",
+            "input_cache_read": "0.0000000437755",
+            "discount": 0.6981
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "tools",
+            "tool_choice",
+            "response_format",
+            "logprobs",
+            "top_logprobs",
+            "structured_outputs",
+            "max_tokens",
+            "temperature",
+            "top_p",
+            "stop",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "digitalocean",
+          "contextLength": 1048576,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 943718,
+          "pricing": {
+            "prompt": "0.00000087",
+            "completion": "0.00000174",
+            "input_cache_read": "0.000000174",
+            "discount": 0
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "temperature",
+            "top_p",
+            "max_tokens",
+            "response_format",
+            "tool_choice",
+            "tools",
+            "logprobs",
+            "top_logprobs",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "gmicloud/fp8",
+          "contextLength": 1048576,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 943718,
+          "pricing": {
+            "prompt": "0.000000957",
+            "completion": "0.000001914",
+            "input_cache_read": "0.00000007975",
+            "discount": 0.45
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "max_tokens",
+            "temperature",
+            "top_p",
+            "seed",
+            "tools",
+            "tool_choice",
+            "response_format",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "cloudflare",
+          "contextLength": 1048576,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 943718,
+          "pricing": {
+            "prompt": "0.00000115",
+            "completion": "0.00000255",
+            "input_cache_read": "0.0000002",
+            "discount": 0
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "max_tokens",
+            "temperature",
+            "top_p",
+            "top_k",
+            "seed",
+            "repetition_penalty",
+            "frequency_penalty",
+            "presence_penalty",
+            "min_p",
+            "stop",
+            "logit_bias",
+            "response_format",
+            "structured_outputs",
+            "tools",
+            "tool_choice",
+            "logprobs",
+            "top_logprobs",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "deepinfra/fp8",
+          "contextLength": 1048576,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 16384,
+          "pricing": {
+            "prompt": "0.0000013",
+            "completion": "0.0000026",
+            "input_cache_read": "0.0000001",
+            "discount": 0
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "max_tokens",
+            "temperature",
+            "top_p",
+            "stop",
+            "frequency_penalty",
+            "presence_penalty",
+            "repetition_penalty",
+            "top_k",
+            "seed",
+            "min_p",
+            "response_format",
+            "logit_bias",
+            "tools",
+            "tool_choice",
+            "structured_outputs",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "alibaba/fp8",
+          "contextLength": 1000000,
+          "maxPromptTokens": 1000000,
+          "maxCompletionTokens": 393216,
+          "pricing": {
+            "prompt": "0.000001416",
+            "completion": "0.000002832",
+            "input_cache_read": "0.000000118",
+            "discount": 0
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "max_tokens",
+            "temperature",
+            "top_p",
+            "seed",
+            "presence_penalty",
+            "response_format",
+            "tool_choice",
+            "tools",
+            "structured_outputs",
+            "top_k",
+            "frequency_penalty",
+            "stop",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "siliconflow/fp8",
+          "contextLength": 1048576,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 393216,
+          "pricing": {
+            "prompt": "0.00000150162",
+            "completion": "0.000003135",
+            "input_cache_read": "0.000000135",
+            "discount": 0
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "temperature",
+            "top_p",
+            "top_k",
+            "frequency_penalty",
+            "max_tokens",
+            "tools",
+            "tool_choice",
+            "response_format",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "novita/fp8",
+          "contextLength": 1048576,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 393216,
+          "pricing": {
+            "prompt": "0.0000016",
+            "completion": "0.0000032",
+            "input_cache_read": "0.000000135",
+            "discount": 0
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "max_tokens",
+            "temperature",
+            "top_p",
+            "stop",
+            "frequency_penalty",
+            "presence_penalty",
+            "seed",
+            "top_k",
+            "repetition_penalty",
+            "tools",
+            "tool_choice",
+            "response_format",
+            "logprobs",
+            "top_logprobs",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "venice",
+          "contextLength": 1000000,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 32768,
+          "pricing": {
+            "prompt": "0.00000165",
+            "completion": "0.000003301",
+            "input_cache_read": "0.00000033",
+            "discount": 0
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "max_tokens",
+            "temperature",
+            "top_p",
+            "stop",
+            "frequency_penalty",
+            "presence_penalty",
+            "top_k",
+            "response_format",
+            "structured_outputs",
+            "tools",
+            "tool_choice",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "atlas-cloud/fp4",
+          "contextLength": 1048576,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 393216,
+          "pricing": {
+            "prompt": "0.00000168",
+            "completion": "0.00000338",
+            "input_cache_read": "0.00000013",
+            "discount": 0
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "max_tokens",
+            "temperature",
+            "top_p",
+            "top_k",
+            "min_p",
+            "frequency_penalty",
+            "presence_penalty",
+            "repetition_penalty",
+            "stop",
+            "seed",
+            "logit_bias",
+            "tools",
+            "structured_outputs",
+            "response_format",
+            "tool_choice",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "baseten/fp4",
+          "contextLength": 1048576,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 262144,
+          "pricing": {
+            "prompt": "0.00000174",
+            "completion": "0.00000348",
+            "input_cache_read": "0.000000145",
+            "discount": 0
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "max_tokens",
+            "temperature",
+            "top_p",
+            "stop",
+            "frequency_penalty",
+            "presence_penalty",
+            "tools",
+            "tool_choice",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "baseten/fp4",
+          "contextLength": 1048576,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 262144,
+          "pricing": {
+            "prompt": "0.00000174",
+            "completion": "0.00000348",
+            "input_cache_read": "0.000000145",
+            "discount": 0
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "max_tokens",
+            "temperature",
+            "top_p",
+            "stop",
+            "frequency_penalty",
+            "presence_penalty",
+            "tools",
+            "tool_choice",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "parasail/fp8",
+          "contextLength": 1048576,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 943718,
+          "pricing": {
+            "prompt": "0.00000174",
+            "completion": "0.00000348",
+            "input_cache_read": "0.0000001",
+            "discount": 0
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "max_tokens",
+            "temperature",
+            "top_p",
+            "frequency_penalty",
+            "presence_penalty",
+            "repetition_penalty",
+            "seed",
+            "stop",
+            "top_k",
+            "logit_bias",
+            "response_format",
+            "structured_outputs",
+            "tools",
+            "tool_choice",
+            "logprobs",
+            "top_logprobs",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        },
+        {
+          "tag": "azure/us",
+          "contextLength": 1048576,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 384000,
+          "pricing": {
+            "prompt": "0.00000191",
+            "completion": "0.00000383",
+            "input_cache_read": "0.00000016",
+            "discount": 0
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "max_tokens",
+            "temperature",
+            "top_p",
+            "max_completion_tokens",
+            "tools",
+            "tool_choice",
+            "response_format",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": true
+        },
+        {
+          "tag": "nextbit/fp8",
+          "contextLength": 1048576,
+          "maxPromptTokens": null,
+          "maxCompletionTokens": 943718,
+          "pricing": {
+            "prompt": "0.000002",
+            "completion": "0.000004",
+            "input_cache_read": "0.00000017",
+            "discount": 0
+          },
+          "supportedParameters": [
+            "reasoning",
+            "include_reasoning",
+            "max_tokens",
+            "temperature",
+            "top_p",
+            "stop",
+            "frequency_penalty",
+            "presence_penalty",
+            "response_format",
+            "structured_outputs",
+            "repetition_penalty",
+            "seed",
+            "tools",
+            "tool_choice",
+            "reasoning_effort"
+          ],
+          "supportsImplicitCaching": false
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "No account or BYOK read",
+    "No inference or charge",
+    "No route/request contract proven",
+    "Catalog price is not a maximum across endpoints",
+    "Provider availability and prices can change"
+  ]
+}
