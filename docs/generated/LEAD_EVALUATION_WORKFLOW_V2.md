@@ -747,7 +747,7 @@ flowchart TD
 | 文件 | SHA-256 |
 |---|---|
 | `config/lead-scoring/policy-v2.0.0.json` | `3e0e88b26ad3e7923b2f21d6c0d9595983599832f59174a63f4d51eaf058307c` |
-| `config/lead-search/hybrid-search-v1.0.0.json` | `cad7e3967c9cf701bd59743025bfbd43d294a683a2797202f0689bdf7c8db771` |
+| `config/lead-search/hybrid-search-v1.0.0.json` | `0ae76780ca18ef85c2538250f76ed5213d06f61ff777c791336182e3f74096bd` |
 | `config/lead-workflow/cost-quality-policy-v3.0.0.json` | `24bf881bff19bfd053d1c58ab127b62aeee17785b1fe7cdf86b478ed59516c59` |
 | `config/lead-workflow/runtime-policy-v3.0.0.json` | `38a184c9c01db605402b3d279c1e50f72b1cf61953f0fd71aae191dd0bcb154d` |
 | `src/app/api/assistant/messages/route.ts` | `04bec90cc3d3f336195e8ab97a5ad4b1ec1e05b95606064225e098e94ed7a5cd` |
@@ -762,10 +762,10 @@ flowchart TD
 | `src/lib/leads/workflow/rag-context.ts` | `1e1ee21e77b90731e849426cd7130de7d1e50ee6aec9f196e44cb642bf81387b` |
 | `src/lib/leads/workflow/playbook.ts` | `2e3ca2dc9562f742383f3bf87ef7efd50c9d8ea5b32a050de05556feda58e0a9` |
 | `src/lib/leads/workflow/playbook-cache.ts` | `84e1d965bd76e7e0326d25889e157fe54315c320816fc7adef0a4ec23c7ca0be` |
-| `src/lib/leads/workflow/hybrid-search-policy.ts` | `452c8d2d945b76773733e457f274c40ad0b771e72a18b6fc6a5781c4ada5a6e2` |
+| `src/lib/leads/workflow/hybrid-search-policy.ts` | `a96f05c7fdbaf8f0ee83707e6ece8459ad56c80beb29613ece38eb038e355f88` |
 | `src/lib/leads/workflow/candidate-registry.ts` | `1666f5010362467f9fcd453115e6961cfeaa4ff2f6a3becf96f5aec168fce5cc` |
 | `src/lib/leads/workflow/discovery-gate.ts` | `8f58856e95fef505866759afe9d9b5e296702ed47ece79893652e3859cb49c19` |
-| `src/lib/leads/workflow/hybrid-discovery-executor.ts` | `32651983050f347ad80cbcb0ce5ccacce621122d6e2acdcf06e4d07dfabda676` |
+| `src/lib/leads/workflow/hybrid-discovery-executor.ts` | `20a46e5720ad04b3ee2fca6c704bf443862fa6226ccf2242654d751f73f5d2b9` |
 | `src/lib/leads/workflow/discovery.ts` | `62fdaa4a30b2b586d0d41a7d59edd6b6190dac8f59a79189b0223176b26f7ebe` |
 | `src/lib/leads/global-search.ts` | `3e808deea189a90ca6686ec8348648e9f98d97080c9cb78aa9226f6384a4db30` |
 | `src/lib/leads/workflow/evidence-correction-agent.ts` | `c09c8dda2d1d60261c12d7ec8fadcbd3fb01dd344c5799d85fdb5eb874ba3013` |
