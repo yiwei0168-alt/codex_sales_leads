@@ -2,8 +2,11 @@ import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { spawnSync } from "node:child_process";
 import { PostgresSaver } from "@langchain/langgraph-checkpoint-postgres";
+import nextEnv from "@next/env";
+import { Pool } from "pg";
 
 import { getPool } from "../src/lib/rag/db";
+import { databaseConnectionString, databaseSslConfiguration } from "../src/lib/rag/database-ssl";
 import { leadEvidenceContentHash } from "../src/lib/leads/evidence-snapshot";
 import { buildLeadWorkflowGraph, type LeadWorkflowDependencies } from "../src/lib/leads/workflow/graph";
 import { LeadQualificationAgent } from "../src/lib/leads/workflow/qualification-agent";
@@ -16,7 +19,7 @@ import { assessment, candidate, correctedCandidate, plan, playbook } from "./wor
 const mode = process.argv[2];
 const threadId = process.argv[3] ?? `verify-phrase-score:${randomUUID()}`;
 if (!/^verify-phrase-score:[a-f0-9-]{36}$/.test(threadId)) throw new Error("Invalid isolated verification thread");
-if (mode && !["seed", "resume"].includes(mode)) throw new Error("Invalid verification phase");
+if (mode && !["seed", "resume", "sql"].includes(mode)) throw new Error("Invalid verification phase");
 const saver = new PostgresSaver(getPool(), undefined, { schema: "langgraph" });
 const config = { configurable: { thread_id: threadId } };
 const runId = "synthetic-phrase-score-run";
@@ -45,7 +48,7 @@ const provider: AiProvider = {
   cacheIdentity: request => wire.cacheIdentity(request),
   execute: async <I, O>(request: StructuredAiRequest<I>): Promise<StructuredAiResponse<O>> => {
     calls.push(request as StructuredAiRequest<unknown>);
-    assert.equal(mode, "resume");
+    assert.ok(mode === "resume" || mode === "sql");
     assert.match(request.preparation?.encoding ?? "", /exact-shared-phrase-v1/);
     assert.ok(wire.requestBytes(request) <= 61_440);
     assert.equal(request.preparation?.preparedMaximumWireBytes, wire.requestBytes(request));
@@ -104,6 +107,130 @@ const deps: LeadWorkflowDependencies = {
       creditsUsed: 13, ragCitationCount: 0, graphThreadId: threadId, warnings: [] };
   },
 };
+
+async function verifyProductSql(): Promise<void> {
+  nextEnv.loadEnvConfig(process.cwd());
+  const appUrl = process.env.DATABASE_URL;
+  const migrationUrl = process.env.DATABASE_MIGRATION_URL;
+  if (!appUrl || !migrationUrl) throw new Error("Both database connections are required");
+  const app = new URL(appUrl);
+  const migration = new URL(migrationUrl);
+  if (app.hostname !== migration.hostname || (app.port || "5432") !== (migration.port || "5432")
+    || app.pathname !== migration.pathname) throw new Error("Database target mismatch");
+  const admin = new Pool({ connectionString: databaseConnectionString(migrationUrl),
+    ssl: databaseSslConfiguration(migrationUrl) });
+  const { tenantQuery } = await import("../src/lib/rag/db");
+  const { persistLeadWorkflowResult, updateWorkflowPhase } = await import("../src/lib/leads/workflow/persistence");
+  const userId = randomUUID(), otherUserId = randomUUID(), workspaceId = randomUUID();
+  const actionId = randomUUID(), runId = randomUUID(), conversationId = randomUUID();
+  const domain = `phrase-score-${randomUUID()}.fixture.invalid`;
+  const sqlCorrected = { ...corrected, companyName: "Phrase SQL Fixture", domain,
+    officialWebsiteUrl: `https://${domain}/`, evidenceSnapshotRunId: runId,
+    evidence: corrected.evidence.map(item => ({ ...item, evidenceRunId: runId })),
+    correction: { ...corrected.correction, originalCompanyName: "Phrase SQL Fixture",
+      originalDomain: domain, originalOfficialWebsiteUrl: `https://${domain}/` } };
+  let created = false;
+  try {
+    const client = await admin.connect();
+    try {
+      await client.query("begin");
+      for (const id of [userId, otherUserId]) await client.query(
+        "insert into app_user(id,email,display_name,role,status) values($1,$2,'Phrase SQL fixture','member','disabled')",
+        [id, `phrase-sql-${id}@fixture.invalid`]);
+      await client.query("insert into market_workspace(id,owner_id,slug,name,market,country_code,objective) values($1,$2,'global-sales','Phrase SQL fixture','Global','WW','Synthetic')",
+        [workspaceId, userId]);
+      await client.query("insert into assistant_conversation(id,user_id,title) values($1,$2,'Phrase SQL fixture')",
+        [conversationId, userId]);
+      await client.query("insert into assistant_action(id,user_id,conversation_id,action_type,status,payload) values($1,$2,$3,'lead-search','running',$4)",
+        [actionId, userId, conversationId, JSON.stringify(fullPlan)]);
+      await client.query("insert into lead_search_run(id,workspace_id,provider,target_count,country_code,graph_thread_id,status) values($1,$2,'phrase-sql-fixture',1,'DE',$3,'running')",
+        [runId, workspaceId, threadId]);
+      await client.query("commit");
+      created = true;
+    } catch (error) {
+      await client.query("rollback");
+      throw error;
+    } finally { client.release(); }
+    const graph = buildLeadWorkflowGraph({ ...deps, persist: persistLeadWorkflowResult,
+      updatePhase: updateWorkflowPhase }, saver);
+    await graph.updateState(config, { userId, actionId, graphThreadId: threadId,
+      workspaceId, plan: fullPlan, phase: "routing", runId, playbook, ragContext: [],
+      candidates: [sqlCorrected], correctedCandidates: [sqlCorrected], assessments: [],
+      assessmentReviews: [], handoffs: [], creditsUsed: 0, modelUsage: [], stageMetrics: [],
+      warnings: [] }, "route_candidates");
+    const result = await graph.invoke(null, config);
+    assert.equal(result.result?.accepted, 0);
+    assert.equal(result.assessments.length, 1);
+    assert.equal(result.assessments[0].scoringStatus, "completed");
+    assert.equal(calls.length, 1);
+    const assessments = await tenantQuery<{scoring_status:string;selected:boolean;eligible:boolean;
+      evidence:unknown[];fact_ledger:unknown[]}>(userId,
+      "select scoring_status,selected,eligible,evidence,fact_ledger from lead_candidate_assessment where run_id=$1",
+      [runId]);
+    assert.equal(assessments.length, 1);
+    assert.equal(assessments[0].scoring_status, "completed");
+    assert.equal(assessments[0].selected, false);
+    assert.equal(assessments[0].eligible, false);
+    assert.equal(assessments[0].evidence.length, 101);
+    assert.equal(assessments[0].fact_ledger.length, 105);
+    assert.deepEqual(assessments[0].evidence, JSON.parse(JSON.stringify(sqlCorrected.evidence)));
+    assert.deepEqual(assessments[0].fact_ledger, JSON.parse(JSON.stringify(sqlCorrected.correction.findings)));
+    const snapshots = await tenantQuery<{count:string}>(userId,
+      "select count(*)::text as count from lead_evidence_snapshot where run_id=$1", [runId]);
+    assert.equal(snapshots[0].count, "101");
+    const run = await tenantQuery<{accepted_count:number;status:string;metadata:Record<string,unknown>}>(userId,
+      "select accepted_count,status,metadata from lead_search_run where id=$1", [runId]);
+    assert.equal(run[0].accepted_count, 0);
+    assert.equal(run[0].status, "completed");
+    assert.equal(run[0].metadata.assessmentCount, 1);
+    const scoreMetrics = await tenantQuery<{input_items:number;valid_artifacts:number;
+      downstream_used_artifacts:number;metadata:Record<string,unknown>}>(userId,
+      "select input_items,valid_artifacts,downstream_used_artifacts,metadata from workflow_stage_metric where lead_run_id=$1 and stage='score_candidates'",
+      [runId]);
+    assert.equal(scoreMetrics.length, 1);
+    assert.deepEqual([scoreMetrics[0].input_items, scoreMetrics[0].valid_artifacts,
+      scoreMetrics[0].downstream_used_artifacts], [1, 1, 1]);
+    const preparations = scoreMetrics[0].metadata.requestPreparations as Array<{encoding:string}>;
+    assert.equal(preparations.length, 1);
+    assert.match(preparations[0].encoding, /exact-shared-phrase-v1/);
+    const usageRows = await tenantQuery<{stage:string;account_cash_cost_usd:string|null}>(userId,
+      "select stage,account_cash_cost_usd::text from workflow_model_usage where lead_run_id=$1", [runId]);
+    assert.equal(usageRows.length, 1);
+    assert.equal(usageRows[0].stage, "qualification");
+    assert.equal(usageRows[0].account_cash_cost_usd, null);
+    assert.equal((await tenantQuery(userId,
+      "select company_id from workspace_company_market where workspace_id=$1", [workspaceId])).length, 0);
+    assert.equal((await tenantQuery(otherUserId,
+      "select id from lead_candidate_assessment where run_id=$1", [runId])).length, 0);
+    assert.equal((await tenantQuery(userId,
+      "select id from paid_call_reservation where operation_id=$1", [actionId])).length, 0);
+    console.log(JSON.stringify({ actualProductSql: true, scored: 1, accepted: 0,
+      evidenceSnapshots: 101, savedFacts: 105, scoreMetric: 1, modelUsage: 1,
+      otherUserVisibleAssessments: 0,
+      fakeModelCalls: calls.length, paidProviderCalls: 0 }));
+  } finally {
+    if (created) {
+      const client = await admin.connect();
+      try {
+        await client.query("begin");
+        const owners = await client.query("select id from app_user where id=any($1::uuid[]) and display_name='Phrase SQL fixture' and email='phrase-sql-'||id::text||'@fixture.invalid' for update",
+          [[userId, otherUserId]]);
+        if (owners.rowCount !== 2) throw new Error("Fixture identity mismatch");
+        const paid = await client.query("select id from paid_call_reservation where user_id=$1", [userId]);
+        if (paid.rowCount) throw new Error("Unexpected paid activity; preserve fixture");
+        await client.query("delete from market_workspace where id=$1 and owner_id=$2", [workspaceId, userId]);
+        await client.query("delete from app_user where id=any($1::uuid[])", [[userId, otherUserId]]);
+        await client.query("delete from sales_company where domain=$1", [domain]);
+        await client.query("commit");
+        console.log("Synthetic phrase SQL fixture removed.");
+      } catch (error) {
+        await client.query("rollback");
+        throw error;
+      } finally { client.release(); }
+    }
+    await admin.end();
+  }
+}
 try {
   if (!mode) {
     for (const phase of ["seed", "resume"]) {
@@ -117,6 +244,8 @@ try {
       exactSharedPhraseEncoding: true, savedEvidence: 101, savedFindings: 105,
       priorCreditsPreserved: 13, finalQualified: 0, paidProviderCalls: 0,
       businessPersistence: "synthetic-adapter-only" }));
+  } else if (mode === "sql") {
+    await verifyProductSql();
   } else {
     const graph = buildLeadWorkflowGraph(deps, saver);
     if (mode === "seed") {
@@ -152,6 +281,6 @@ try {
     console.log(JSON.stringify({ phase: mode, ...counters, fakeModelCalls: calls.length, finalQualified }));
   }
 } finally {
-  if (!mode) await saver.deleteThread(threadId);
+  if (!mode || mode === "sql") await saver.deleteThread(threadId);
   await saver.end();
 }
