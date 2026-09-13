@@ -3,6 +3,7 @@ nextEnv.loadEnvConfig(process.cwd());
 const {query,getPool}=await import("../src/lib/rag/db");
 const {readSpendBudget}=await import("../src/lib/billing/repository");
 const {quoteRequest,BudgetDeniedError}=await import("../src/lib/billing/policy");
+const {assertRequestContract}=await import("../src/lib/billing/request-contract");
 const {nativeModelBound}=await import("../src/lib/billing/native-model-bound");
 const {embeddingModelBound}=await import("../src/lib/billing/embedding-model-bound");
 const {getRagConfig}=await import("../src/lib/rag/config");
@@ -11,6 +12,43 @@ const {deepSeekRequestBody}=await import("../src/providers/deepseek-request");
 const {textOutputLimit}=await import("../src/lib/billing/text-output-policy");
 const {plannedCandidatePool}=await import("../src/lib/leads/workflow/target-completion-policy");
 const userId="cbee9803-3c43-4609-9228-66086b207012";
+async function captureMinimalPlaybookWire(){
+  const originalFetch=globalThis.fetch;
+  const originalKey=process.env.OPENROUTER_API_KEY;
+  const captured:Request[]=[];
+  globalThis.fetch=async(input,init)=>{
+    captured.push(new Request(input,init));
+    throw new BudgetDeniedError("missing-tariff");
+  };
+  process.env.OPENROUTER_API_KEY="synthetic-never-sent";
+  try{
+    const {buildLeadMarketPlaybook}=await import("../src/lib/leads/workflow/playbook");
+    const {ragContext}=await import("./workflow-recovery-fixtures");
+    try{await buildLeadMarketPlaybook({countryCode:"CO",countryName:"Colombia",objective:"new-market",
+      roles:["Distributor"],targetCount:1,queryLanguage:"es",userRequest:"Synthetic acceptance wire only"},ragContext);}
+    catch(error){if(!(error instanceof BudgetDeniedError)||error.code!=="missing-tariff")throw error;}
+    if(captured.length!==1)throw new Error("Unexpected market-playbook transport count");
+    const request=captured[0],url=new URL(request.url),wire=await request.text(),body=JSON.parse(wire);
+    const bytes=Buffer.byteLength(wire,"utf8");
+    const quote={origin:url.origin,pathname:url.pathname,model:body.model,
+      requestBytes:bytes,outputTokens:body.max_completion_tokens};
+    try{
+      const rule=quoteRequest(quote);
+      assertRequestContract(rule,body,url.search,request.method,request.headers);
+      return {status:"contract-valid-synthetic-wire",model:body.model,requestBytes:bytes,
+        outputTokens:body.max_completion_tokens,tariffKey:rule.key,maximumPerCallUsd:rule.maximumChargeMicros/1e6,
+        actualMarketContextChecked:false,providerCalls:0};
+    }catch(error){
+      if(!(error instanceof BudgetDeniedError))throw error;
+      return {status:error.code,model:body.model,requestBytes:bytes,
+        outputTokens:body.max_completion_tokens,actualMarketContextChecked:false,providerCalls:0};
+    }
+  }finally{
+    globalThis.fetch=originalFetch;
+    if(originalKey===undefined)delete process.env.OPENROUTER_API_KEY;
+    else process.env.OPENROUTER_API_KEY=originalKey;
+  }
+}
 try{
   const identity=await query<{safe:boolean}>("select (email='model-acceptance-20260912@fixture.invalid' and status='disabled' and password_hash is null) as safe from app_user where id=$1",[userId]);
   if(identity[0]?.safe!==true)throw new Error("Acceptance identity differs; no execution allowed");
@@ -45,11 +83,15 @@ try{
       stages.push({stage:probe.stage,model:probe.model,tariff:error.code});
     }
   }
+  const marketPlaybookWire=await captureMinimalPlaybookWire();
+  const after=await readSpendBudget(userId);
+  if(Number(after.budget?.occupied_micros)!==Number(budget.budget.occupied_micros))
+    throw new Error("Read-only wire preview changed budget occupancy");
   console.log(JSON.stringify({mode:"read-only-prerequisite-preview",limitUsd:30,occupiedUsd:Number(budget.budget.occupied_micros)/1e6,
     remainingUsd:Number(budget.budget.remaining_micros)/1e6,frozen:budget.budget.frozen,
-    firstRoundPoolForOneTarget:plannedCandidatePool({targetCount:1,acceptedCount:0,discoveredUniqueCount:0,round:0}),stages,
+    firstRoundPoolForOneTarget:plannedCandidatePool({targetCount:1,acceptedCount:0,discoveredUniqueCount:0,round:0}),stages,marketPlaybookWire,
     checkedTariffsAvailable:stages.every(stage=>stage.tariff==="available"),actualRequestContractsChecked:false,
     checkedSingleCallBoundsFit:stages.every(stage=>stage.tariff==="available"&&stage.fitsCurrentRemainingBudget),
-    totalRunBoundUsd:null,limitations:"Checks tariff availability and individual bounds against remaining budget only; no actual prompts, search/review/fallback routes, API credentials, or total-run bound validated",
+    totalRunBoundUsd:null,limitations:"Checks tariff availability, individual bounds, and one synthetic market-playbook SDK wire; no real market context, search/review/fallback routes, API credentials, or total-run bound validated",
     providerCalls:0,accountsModified:0,jobsClaimed:0},null,2));
 }finally{await getPool().end();}
