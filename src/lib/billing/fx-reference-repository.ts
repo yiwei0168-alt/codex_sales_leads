@@ -1,6 +1,7 @@
 import {transaction,query} from "@/lib/rag/db";
 import {fetchEcbCnyReference,ECB_SOURCE_KEY,ECB_REFERENCE_URL} from "./ecb-reference";
 import {foreignCostBoundSchema,foreignReservationMicros,type ForeignCostBound} from "./fx-policy";
+import {fxReferenceStatus,dynamicTariffStatus,type BillingReferenceStatus} from "./reference-status";
 
 /** Cross-process single refresh. No provider key, paid API, private knowledge or invoice access. */
 export async function refreshBillingFxReference(transport:typeof fetch=fetch,now=Date.now()){
@@ -37,4 +38,13 @@ export async function readCurrentCnyFxReference(now=Date.now()):Promise<ForeignC
     if(bound.fx.reference!==ECB_REFERENCE_URL)return null;
     foreignReservationMicros(bound,now);return bound.fx;
   }catch{return null;}
+}
+
+/** Read-only UI observation; no refresh or inference that a payable request is allowed. */
+export async function readBillingReferenceStatus(now=Date.now()):Promise<BillingReferenceStatus>{
+  const base={checkedAt:new Date(now).toISOString(),rules:dynamicTariffStatus(now)};
+  try {
+    const rows=await query<{fx:unknown}>("select fx from billing_fx_reference_snapshot where source_key=$1 order by reference_date desc,retrieved_at desc limit 1",[ECB_SOURCE_KEY]);
+    return {...base,fx:fxReferenceStatus(rows[0]?.fx,now)};
+  } catch {return {...base,fx:{status:"unavailable",asOf:null,retrievedAt:null,effectiveExpiresAt:null}};}
 }

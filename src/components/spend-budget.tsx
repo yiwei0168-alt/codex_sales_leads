@@ -4,7 +4,8 @@ import {ProviderUsageSummary} from "./provider-usage-summary";
 import {CostStageSummary} from "./cost-stage-summary";
 import type {CostStageSummary as CostStage} from "@/lib/billing/cost-summary";
 import type {ProviderUsageSummary as UsageSummary} from "@/lib/billing/usage-summary-types";
-type BudgetSnapshot={tariffVerification?:{checkedAt:string;rules:Array<{key:string;reference:string;verifiedAt:string;withinVerificationWindow:boolean;effectiveExpiresAt:string|null}>};modelUsage?:UsageSummary[];budget:{limit_micros:string;occupied_micros:string;remaining_micros:string;frozen:boolean;suspended_rules?:number}|null;configuredRules:number;notice:string;stages:CostStage[]};
+import type {BillingReferenceStatus} from "@/lib/billing/reference-status";
+type BudgetSnapshot={referenceVerification?:BillingReferenceStatus;tariffVerification?:{checkedAt:string;rules:Array<{key:string;reference:string;verifiedAt:string;withinVerificationWindow:boolean;effectiveExpiresAt:string|null}>};modelUsage?:UsageSummary[];budget:{limit_micros:string;occupied_micros:string;remaining_micros:string;frozen:boolean;suspended_rules?:number}|null;configuredRules:number;notice:string;stages:CostStage[]};
 function dollars(micros:string|null){return micros===null?"未报告":`$${(Number(micros)/1000000).toFixed(6)}`;}
 export function SpendBudget(){
   const [snapshot,setSnapshot]=useState<BudgetSnapshot|null>(null);const [amount,setAmount]=useState("");const [revision,setRevision]=useState(0);const [saving,setSaving]=useState(false);const [error,setError]=useState("");
@@ -17,6 +18,12 @@ export function SpendBudget(){
     <details><summary>费用上界核验期限</summary><p>仅列静态请求上界；动态模型费率和汇率另行检查。期限内仍需满足请求契约、预算及暂停规则，不代表可发起付费调用。缺失或过期继续阻止请求，提高预算不会延长期限。</p>
       {!snapshot.tariffVerification?<p>暂无期限观测，不能推断费率可用。</p>:<><p>观测时间：{snapshot.tariffVerification.checkedAt}；刷新预算可重新核对。</p>
         <ul>{snapshot.tariffVerification.rules.map(rule=><li key={rule.key} style={{overflowWrap:'anywhere'}}><a href={rule.reference} target="_blank" rel="noreferrer">{rule.key}</a>：{rule.withinVerificationWindow?'核验期限内':'核验期限失效，阻止调用'}；有效截止 {rule.effectiveExpiresAt??'未知'}（UTC）</li>)}</ul></>}
+    </details>
+    <details><summary>人民币模型费率与汇率期限</summary><p>当前记录仅说明核验期限。人民币费用按有效汇率并加5%保守预留缓冲换算；仍需检查实际请求契约、预算及规则暂停。刷新本页面只读数据库，不刷新外部费率或延长核验期限。</p>
+      {!snapshot.referenceVerification?<p>暂无参考值观测，不能推断可用。</p>:<>
+        <ul>{snapshot.referenceVerification.rules.map(rule=><li key={rule.key} style={{overflowWrap:'anywhere'}}><a href={rule.reference} target="_blank" rel="noreferrer">{rule.key}</a>：{rule.withinVerificationWindow?'核验期限内':'核验期限失效，阻止调用'}；有效截止 {rule.effectiveExpiresAt??'未知'}（UTC）</li>)}</ul>
+        <p data-testid="fx-reference-status">汇率参考：{snapshot.referenceVerification.fx.status==='valid'?'核验期限内':snapshot.referenceVerification.fx.status==='expired-or-invalid'?'已过期或时间无效，阻止调用':'尚无有效观测，阻止调用'}；参考日期 {snapshot.referenceVerification.fx.asOf??'未知'}；取得时间 {snapshot.referenceVerification.fx.retrievedAt??'未知'}；72小时有效截止 {snapshot.referenceVerification.fx.effectiveExpiresAt??'未知'}（UTC）</p>
+      </>}
     </details>
     {!!snapshot.budget?.suspended_rules&&<p role="alert">{snapshot.budget.suspended_rules} 项费率版本因费用超界暂停；其他规则仍按预算审核，提高预算不会解除规则暂停。</p>}
     <CostStageSummary stages={snapshot.stages}/></>}

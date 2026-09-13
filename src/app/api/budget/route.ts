@@ -3,6 +3,7 @@ import {requireApiSession} from "@/lib/auth/session";
 import {readSpendBudget,setSpendBudget,readTaskSpendBudget,setTaskSpendBudget} from "@/lib/billing/repository";
 import {billingPolicy,dollarsToMicros} from "@/lib/billing/policy";
 import {tariffValidity} from "@/lib/billing/tariff-validity";
+import {readBillingReferenceStatus} from "@/lib/billing/fx-reference-repository";
 export const runtime="nodejs";
 export async function GET(request:Request){
   const session=await requireApiSession();if(session instanceof Response)return session;
@@ -11,6 +12,7 @@ export async function GET(request:Request){
   if(actionId){try{return Response.json(await readTaskSpendBudget(session.userId,actionId),{headers:{"Cache-Control":"private, no-store"}});}catch{return Response.json({error:"任务预算不可读取"},{status:404});}}
   const observedAt=Date.now();
   try{return Response.json({...await readSpendBudget(session.userId),tariffVersion:billingPolicy.version,configuredRules:billingPolicy.rules.length,
+    referenceVerification:await readBillingReferenceStatus(observedAt),
     tariffVerification:{checkedAt:new Date(observedAt).toISOString(),scope:'static-request-bounds-only',rules:billingPolicy.rules.map(rule=>({key:rule.key,reference:rule.reference,verifiedAt:rule.verifiedAt,...tariffValidity(rule,observedAt)}))},
     notice:"已接入当前产品的线索工作流、聊天、开发生成、联系人、关系分析、知识和邮箱学习付费入口；费率上界仍需逐项审核配置，不能据此认定已具备真实付费验收条件。累计预算不自动按月重置。预留占用不等于实际账单；未知费用保留占用，缺价或费用上界不明时阻止已接入的付费请求。"},{headers:{"Cache-Control":"private, no-store"}});}catch{return Response.json({error:"预算读取失败；不能推断可用金额"},{status:503});}
 }

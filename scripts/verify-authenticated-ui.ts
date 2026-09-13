@@ -264,6 +264,18 @@ try{
     await expect(page.getByText('费用上界核验期限',{exact:true})).toBeVisible();
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
     checks.push(`${viewport.width}:tariff-verification-deadlines-real-api-refresh`);
+    await page.getByText('人民币模型费率与汇率期限',{exact:true}).click();
+    expect(tariffSnapshot.referenceVerification.rules).toHaveLength(3);
+    for(const rule of tariffSnapshot.referenceVerification.rules){
+      const row=page.locator('li').filter({has:page.getByRole('link',{name:rule.key,exact:true})});
+      await expect(row).toContainText(rule.effectiveExpiresAt??'未知');
+      await expect(row).toContainText(rule.withinVerificationWindow?'核验期限内':'核验期限失效，阻止调用');
+    }
+    const fx=tariffSnapshot.referenceVerification.fx;
+    await expect(page.getByTestId('fx-reference-status')).toContainText(fx.effectiveExpiresAt??'未知');
+    await expect(page.getByTestId('fx-reference-status')).toContainText(fx.status==='valid'?'核验期限内':fx.status==='expired-or-invalid'?'已过期或时间无效，阻止调用':'尚无有效观测，阻止调用');
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+    checks.push(`${viewport.width}:dynamic-model-fx-status-real-api`);
     await page.goto(new URL(`/tasks/${actionId}?kind=search`,base).href);
     await page.getByText("任务预算与成本",{exact:true}).click();
     await expect(page.getByText(/任务上限 \$0.000000/)).toBeVisible();

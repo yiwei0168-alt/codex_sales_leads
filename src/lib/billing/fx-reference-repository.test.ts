@@ -1,11 +1,18 @@
 import {beforeEach,expect,it,vi} from "vitest";
 const mocks=vi.hoisted(()=>({sql:vi.fn(),read:vi.fn()}));
 vi.mock("@/lib/rag/db",()=>({transaction:async(run:(client:{query:typeof mocks.sql})=>unknown)=>run({query:mocks.sql}),query:mocks.read}));
-import {refreshBillingFxReference,readCurrentCnyFxReference} from "./fx-reference-repository";
+import {refreshBillingFxReference,readCurrentCnyFxReference,readBillingReferenceStatus} from "./fx-reference-repository";
 import {parseEcbCnyReference} from "./ecb-reference";
 const time=Date.parse("2026-09-13T05:00:00Z");
 const xml="<Cube><Cube time='2026-09-11'><Cube currency='USD' rate='1.1592'/><Cube currency='CNY' rate='7.7762'/></Cube></Cube>";
 beforeEach(()=>{mocks.sql.mockReset().mockImplementation(async(text:string)=>({rows:text.includes("pg_try_advisory")?[{locked:true}]:[]}));mocks.read.mockReset();});
+it("observes reference failures as unknown without a refresh or snapshot mutation",async()=>{
+  mocks.read.mockRejectedValue(new Error("database unavailable"));
+  expect((await readBillingReferenceStatus(time)).fx).toMatchObject({status:"unavailable",effectiveExpiresAt:null});
+  mocks.read.mockResolvedValue([]);
+  expect((await readBillingReferenceStatus(time)).fx.status).toBe("missing");
+  expect(mocks.sql).not.toHaveBeenCalled();
+});
 it("stores a valid public reference with zero paid cost and defers the next successful refresh by one day",async()=>{
   const result=await refreshBillingFxReference(vi.fn().mockResolvedValue(new Response(xml)),time);
   expect(result).toMatchObject({status:"validated",httpCalls:1,nextAttemptAt:"2026-09-14T05:00:00.000Z"});
