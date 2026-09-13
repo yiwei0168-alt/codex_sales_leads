@@ -765,8 +765,8 @@ flowchart TD
 | `src/lib/leads/workflow/hybrid-search-policy.ts` | `452c8d2d945b76773733e457f274c40ad0b771e72a18b6fc6a5781c4ada5a6e2` |
 | `src/lib/leads/workflow/candidate-registry.ts` | `1666f5010362467f9fcd453115e6961cfeaa4ff2f6a3becf96f5aec168fce5cc` |
 | `src/lib/leads/workflow/discovery-gate.ts` | `8f58856e95fef505866759afe9d9b5e296702ed47ece79893652e3859cb49c19` |
-| `src/lib/leads/workflow/hybrid-discovery-executor.ts` | `da40c8aafdc32ff5f03570871d5355f7ce7175d7b53787b96c28848d44fd56c1` |
-| `src/lib/leads/workflow/discovery.ts` | `782772e1034512de2b42e000fd6f50a74cbb342e36b6583bf335b72ed0e87d01` |
+| `src/lib/leads/workflow/hybrid-discovery-executor.ts` | `32651983050f347ad80cbcb0ce5ccacce621122d6e2acdcf06e4d07dfabda676` |
+| `src/lib/leads/workflow/discovery.ts` | `62fdaa4a30b2b586d0d41a7d59edd6b6190dac8f59a79189b0223176b26f7ebe` |
 | `src/lib/leads/global-search.ts` | `3e808deea189a90ca6686ec8348648e9f98d97080c9cb78aa9226f6384a4db30` |
 | `src/lib/leads/workflow/evidence-correction-agent.ts` | `c09c8dda2d1d60261c12d7ec8fadcbd3fb01dd344c5799d85fdb5eb874ba3013` |
 | `src/lib/leads/workflow/evidence-packet.ts` | `b832b0ed99a9759c2656da65d65a004445ff63e1441b6cae5d5618b5fa889ba1` |
