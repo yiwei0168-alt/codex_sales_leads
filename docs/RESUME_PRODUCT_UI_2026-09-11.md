@@ -1,5 +1,7 @@
 # 产品开发恢复节点 — 2026-09-11
 
+2026-09-13阶段35：备用模型实际请求大小接入校正/评分/缓存拆批。AiProvider新增可选requestBytes，DeepSeek和OpenAiCompatible复用实际序列化；Resilient按获准数据分类和实际模型取最大字节数。受控主路由故障及备用发送验证通过；全量792测试/173文件、typecheck/build通过，无付费。P06单项超限压缩/分阶段仍待实现；余下费用上界、恢复/遥测/UI及真实生产闭环继续，goal active。
+
 2026-09-13阶段34：O05实现及离线规则覆盖完成。新role-scoring-anchors模块覆盖13具体角色；评分/缓存入口排除主角色不明或契约异常，保留未完成。全量791测试、typecheck/build通过。`node scripts/run-tsx.cjs scripts/replay-colombia-role-contracts.ts --check`核对374条冻结记录（112可用、208待定、54需恢复），无新搜索/模型/费用。下一步继续费用完整上界、P05/P06、历史终态恢复兼容、聚合遥测/UI和最小真实本地生产闭环；预算不重置，付费前重新核对累计USD30。不得将本阶段规则覆盖写成真实填充率提升或盲审通过。
 
 最新恢复增量（2026-09-13 阶段33）：hybrid策略1.7.0，四类各轨Brave核心；Places/分销SI Exa/分销Resale Gemini用marginal-gap，任务类别providerNoValueCounts仅成功新请求累计两次零新增后跳过（已有阈值2），缓存和故障不增；新任务不禁工具。discoveryCallFingerprint v2忽略内部类别/轨道/机制而保留精确请求输入，会话依赖包含新契约。788测试/typecheck/build通过，无付费。下一步O05角色评分可观察锚点及family/subtype覆盖、费用上界/历史终态恢复/实际UI业务闭环；O04仍需最终真实接线验收，不重跑实验。

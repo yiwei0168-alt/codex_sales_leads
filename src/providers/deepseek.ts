@@ -85,6 +85,10 @@ export class DeepSeekProvider implements AiProvider {
       endpoint:this.baseUrl,...flashApprovalEpoch,...deepSeekRequestBody(request,model)})).digest("hex");
   }
 
+  requestBytes(request: StructuredAiRequest<unknown>): number {
+    return Buffer.byteLength(deepSeekRequestBody(request, request.modelVersion.trim() || this.defaultModel).body, "utf8");
+  }
+
   async execute<TInput, TOutput>(
     request: StructuredAiRequest<TInput>,
     signal?: AbortSignal,

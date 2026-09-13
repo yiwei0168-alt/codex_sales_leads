@@ -7,6 +7,7 @@ import { ProviderUnavailableError } from "./contracts";
 import { DeepSeekProvider } from "./deepseek";
 import { OpenAiCompatibleProvider } from "./openai-compatible";
 import { getOpenRouterConfig } from "./openrouter";
+import { deepSeekRequestBody } from "./deepseek-request";
 
 export type AiDataClassification = "public" | "private-workspace";
 
@@ -103,6 +104,19 @@ export class ResilientAiProvider implements AiProvider {
   cacheIdentity(request:StructuredAiRequest<unknown>):string {
     // Describes only the primary route. Callers must not save fallback responses under this contract.
     return this.primary.cacheIdentity?.(request)??"";
+  }
+
+  requestBytes(request: StructuredAiRequest<unknown>): number {
+    const bytes = (provider: AiProvider, input: StructuredAiRequest<unknown>) =>
+      provider.requestBytes?.(input) ?? Buffer.byteLength(deepSeekRequestBody(input).body, "utf8");
+    const sizes = [bytes(this.primary, request)];
+    for (const route of this.fallbacks) {
+      if (!route.approvedDataClassifications.includes(request.dataClassification ?? "public")) continue;
+      const modelVersion = this.modelFor(route, request.modelVersion);
+      if (modelVersion) sizes.push(bytes(route.provider, { ...request, modelVersion }));
+    }
+    // Do not let transient circuit state alter batch identities or persisted cache dependencies.
+    return Math.max(...sizes);
   }
 
   private recordFailure(providerId: string): void {

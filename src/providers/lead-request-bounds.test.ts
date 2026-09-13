@@ -4,6 +4,7 @@ import {leadRequestBatches} from "./lead-request-batches";
 import {deepSeekRequestBody} from "./deepseek-request";
 import {DeepSeekProvider} from "./deepseek";
 import {OpenAiCompatibleProvider} from "./openai-compatible";
+import {ResilientAiProvider} from "./resilient-ai";
 import type {StructuredAiRequest} from "./contracts";
 
 afterEach(()=>vi.unstubAllEnvs());
@@ -51,4 +52,40 @@ it("both real wrappers block oversize before any transport or retry",async()=>{
     await expect(provider.execute(request)).rejects.toBeInstanceOf(LeadRequestTooLargeError);
   }
   expect(transport).not.toHaveBeenCalled();
+});
+
+it("pre-splits a DeepSeek-sized batch using the fallback's actual schema and model contract",async()=>{
+  const fallbackBodies:string[]=[];
+  const fallback=new OpenAiCompatibleProvider({id:"fixture-fallback",apiKey:"fixture",baseUrl:"https://example.test",
+    maxAttempts:1,extraBody:{provider:{require_parameters:true}},fetchImplementation:async(_url,init)=>{
+      fallbackBodies.push(String(init?.body));
+      return Response.json({choices:[{finish_reason:"stop",message:{content:"{}"}}]});
+    }});
+  const primary=new DeepSeekProvider({apiKey:"fixture",maxAttempts:1,fetchImplementation:async()=>{
+    throw new Error("controlled primary failure");
+  }});
+  const provider=new ResilientAiProvider(primary,{fallbacks:[{provider:fallback,routineModel:"openai/gpt-4o-mini",
+    escalationModel:"openai/gpt-4o",approvedDataClassifications:["public"]}]});
+  const build=(items:string[])=>({...requestFor(items),outputSchema:{type:"object",description:"s".repeat(7000)}});
+  const candidates=["a".repeat(12000),"b".repeat(12000)];
+  expect(leadRequestBatches(candidates,build,5,100000)).toHaveLength(1);
+  const batches=leadRequestBatches(candidates,build,5,100000,provider.requestBytes.bind(provider));
+  expect(batches.map(batch=>batch.length)).toEqual([1,1]);
+  expect(batches.flat()).toEqual(candidates);
+  for(const batch of batches){
+    const response=await provider.execute(build(batch));
+    expect(response.actualProviderId).toBe("fixture-fallback");
+  }
+  expect(fallbackBodies).toHaveLength(2);
+  for(let index=0;index<batches.length;index++){
+    const fallbackRequest={...build(batches[index]),modelVersion:"openai/gpt-4o-mini"};
+    expect(Buffer.byteLength(fallbackBodies[index],"utf8")).toBe(fallback.requestBytes(fallbackRequest));
+    expect(()=>assertLeadRequestBytes(fallbackRequest,fallbackBodies[index])).not.toThrow();
+    expect(JSON.parse(fallbackBodies[index]).model).toBe("openai/gpt-4o-mini");
+  }
+  // A public-only route must not enlarge or split private-workspace requests.
+  const privateRequest={...build(candidates),dataClassification:"private-workspace" as const};
+  expect(provider.requestBytes(privateRequest)).toBe(primary.requestBytes(privateRequest));
+  // Circuit changes from the failures above must not change batch/cache identity.
+  expect(leadRequestBatches(candidates,build,5,100000,provider.requestBytes.bind(provider))).toEqual(batches);
 });

@@ -50,24 +50,11 @@ export class OpenAiCompatibleProvider implements AiProvider {
     }
   }
 
-  async execute<TInput, TOutput>(request: StructuredAiRequest<TInput>, signal?: AbortSignal) {
-    const startedAt = performance.now();
-    let lastError: unknown;
-    let attemptsMade = 0;
-    const invocationId = randomUUID();
+  private requestBody(request: StructuredAiRequest<unknown>): string {
     const outputCompletionTask=compatibleOutputTask(request.task);
     const outputLimit=outputCompletionTask?textOutputLimit(outputCompletionTask):undefined;
     const openAiModel=/^(openai\/)?(?:gpt-|o[1-9])/.test(request.modelVersion);
-    for (let attempt = 0; attempt < this.maxAttempts; attempt += 1) {
-      attemptsMade = attempt + 1;
-      try {
-        const response = await withModelAttempt({invocationId,provider:this.id,task:request.task,promptVersion:request.promptVersion,attempt:attempt+1,scoringVersion:requestScoringVersion(request.input),outputCompletionTask},()=>{
-          const init:RequestInit={
-          method: "POST",
-          headers: { authorization: `Bearer ${this.options.apiKey}`, "content-type": "application/json",
-            ...this.options.defaultHeaders },
-          signal,
-          body: JSON.stringify({
+    return JSON.stringify({
             model: request.modelVersion,
             temperature: 0,
             ...(request.reasoningEffort ? { reasoning: { effort: request.reasoningEffort } } : {}),
@@ -87,7 +74,29 @@ export class OpenAiCompatibleProvider implements AiProvider {
             ...(outputLimit===undefined?{}:openAiModel
               ?{max_tokens:undefined,max_completion_tokens:outputLimit}
               :{max_completion_tokens:undefined,max_tokens:outputLimit}),
-          }),
+          });
+  }
+
+  requestBytes(request: StructuredAiRequest<unknown>): number {
+    return Buffer.byteLength(this.requestBody(request), "utf8");
+  }
+
+  async execute<TInput, TOutput>(request: StructuredAiRequest<TInput>, signal?: AbortSignal) {
+    const startedAt = performance.now();
+    let lastError: unknown;
+    let attemptsMade = 0;
+    const invocationId = randomUUID();
+    const outputCompletionTask=compatibleOutputTask(request.task);
+    for (let attempt = 0; attempt < this.maxAttempts; attempt += 1) {
+      attemptsMade = attempt + 1;
+      try {
+        const response = await withModelAttempt({invocationId,provider:this.id,task:request.task,promptVersion:request.promptVersion,attempt:attempt+1,scoringVersion:requestScoringVersion(request.input),outputCompletionTask},()=>{
+          const init:RequestInit={
+          method: "POST",
+          headers: { authorization: `Bearer ${this.options.apiKey}`, "content-type": "application/json",
+            ...this.options.defaultHeaders },
+          signal,
+          body: this.requestBody(request),
           };
           assertLeadRequestBytes(request,String(init.body));
           return this.fetchImplementation(`${this.baseUrl}/chat/completions`,init);

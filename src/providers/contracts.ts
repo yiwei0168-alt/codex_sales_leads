@@ -67,6 +67,8 @@ export interface StructuredAiResponse<TOutput> {
 
 export interface AiProvider {
   readonly id: string;
+  /** Exact wire bytes (or maximum across approved routes); pure preflight, no transport or credentials. */
+  requestBytes?(request: StructuredAiRequest<unknown>): number;
   /** Exact primary-route wire contract; absence disables persisted result reuse. Never returns secrets. */
   cacheIdentity?(request:StructuredAiRequest<unknown>):string;
   execute<TInput, TOutput>(request: StructuredAiRequest<TInput>, signal?: AbortSignal): Promise<StructuredAiResponse<TOutput>>;

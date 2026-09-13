@@ -397,7 +397,7 @@ export class LeadQualificationAgent {
   cacheContracts(candidates:CorrectedLeadWorkflowCandidate[],playbook:LeadMarketPlaybook,countryCode:string,countryName:string,objective:string):Map<string,string>{
     const result=new Map<string,string>();
     if(!this.provider.cacheIdentity)return result;
-    const batches=leadRequestBatches(candidates.filter(candidate=>roleScoringAnchors(candidate.correction)),items=>this.request(items,playbook,countryCode,countryName,objective,this.routineModel),this.batchSize,this.maxBatchInputCharacters);
+    const batches=leadRequestBatches(candidates.filter(candidate=>roleScoringAnchors(candidate.correction)),items=>this.request(items,playbook,countryCode,countryName,objective,this.routineModel),this.batchSize,this.maxBatchInputCharacters,this.provider.requestBytes?.bind(this.provider));
     for(const batch of batches){
       const contract=this.provider.cacheIdentity(this.request(batch,playbook,countryCode,countryName,objective,this.routineModel));
       if(contract)for(const candidate of batch)result.set(candidate.candidateId,contract);
@@ -657,7 +657,7 @@ export class LeadQualificationAgent {
       failedAssessment(candidate, "Primary role family/subtype is incomplete or inconsistent; resolve correction before scoring. No scoring request was sent.", this.promptVersion));
     const batches=leadRequestBatches(ready,items=>this.request(
       items,playbook,countryCode,countryName,objective,this.routineModel,
-    ),this.batchSize,this.maxBatchInputCharacters);
+    ),this.batchSize,this.maxBatchInputCharacters,this.provider.requestBytes?.bind(this.provider));
     const results = new Array<LeadCandidateAssessment[]>(batches.length);
     const published=new Set<LeadCandidateAssessment>();
     const publish=async(items:CorrectedLeadWorkflowCandidate[],assessments:LeadCandidateAssessment[])=>{

@@ -644,7 +644,7 @@ export class LeadEvidenceCorrectionAgent {
     if (this.allowReusableCorrections) {
       const contracts=new Map<string,string>();
       if(this.provider.cacheIdentity){
-        const lookupBatches=leadRequestBatches(candidates,items=>this.request(items,plan,this.routineModel),this.batchSize,this.maxBatchInputCharacters);
+        const lookupBatches=leadRequestBatches(candidates,items=>this.request(items,plan,this.routineModel),this.batchSize,this.maxBatchInputCharacters,this.provider.requestBytes?.bind(this.provider));
         for(const batch of lookupBatches){
           const contract=this.provider.cacheIdentity(this.request(batch,plan,this.routineModel));
           for(const candidate of batch)contracts.set(candidate.candidateId,contract);
@@ -665,7 +665,7 @@ export class LeadEvidenceCorrectionAgent {
     const supplemented = await this.supplement(missing, plan);
     const batches=leadRequestBatches(supplemented.candidates,items=>this.request(
       items,plan,this.routineModel,
-    ),this.batchSize,this.maxBatchInputCharacters);
+    ),this.batchSize,this.maxBatchInputCharacters,this.provider.requestBytes?.bind(this.provider));
     const results = new Array<CorrectedLeadWorkflowCandidate[]>(batches.length);
     const published=new Set<CorrectedLeadWorkflowCandidate>();
     const publish=async(items:CorrectedLeadWorkflowCandidate[])=>{
