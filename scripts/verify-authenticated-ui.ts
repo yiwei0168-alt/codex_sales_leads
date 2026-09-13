@@ -4,6 +4,7 @@ import {chromium,expect} from "@playwright/test";
 import {Agent,fetch as localFetch} from "undici";
 import {Pool} from "pg";
 import {databaseConnectionString,databaseSslConfiguration} from "../src/lib/rag/database-ssl";
+import {PostgresSaver} from "@langchain/langgraph-checkpoint-postgres";
 
 nextEnv.loadEnvConfig(process.cwd());
 const base=new URL(process.env.UI_VERIFY_BASE_URL||"http://localhost:3000");
@@ -21,7 +22,21 @@ const {addManualCompany}=await import("../src/lib/sales/manual-company");
 const {setSpendBudget,setTaskSpendBudget,reservePaidCall,settlePaidCall}=await import("../src/lib/billing/repository");
 const {completeTaskCostAllocation}=await import("../src/lib/billing/task-cost-completion");
 const {companyCostKey,costRoundKey}=await import("../src/lib/billing/company-cost-context");
+const {buildLeadWorkflowGraph}=await import("../src/lib/leads/workflow/graph");
+const {candidate:progressCandidate,correctedCandidate:progressCorrected,assessment:progressAssessment,plan:progressPlan}=await import("./workflow-recovery-fixtures");
 const userId=randomUUID(),workspaceId=randomUUID();
+const progressActionId=randomUUID(),progressThread=`ui-progress:${userId}`;
+const progressSaver=new PostgresSaver(getPool(),undefined,{schema:"langgraph"});
+// Seed only a checkpoint. No graph node or business dependency is ever executed.
+const seedGraph=buildLeadWorkflowGraph({} as import("../src/lib/leads/workflow/graph").LeadWorkflowDependencies,progressSaver);
+const seedProgress=async(completed=false,owner=userId)=>{
+  const candidates=['a','b'].map(suffix=>({...progressCandidate,candidateId:`progress-${suffix}`,domain:`progress-${suffix}-${userId}.invalid`}));
+  const corrected=candidates.map(candidate=>({...progressCorrected,...candidate,correction:{...progressCorrected.correction,originalDomain:candidate.domain}}));
+  await seedGraph.updateState({configurable:{thread_id:progressThread}}, {userId:owner,actionId:progressActionId,workspaceId,graphThreadId:progressThread,
+    phase:"correcting-evidence",plan:{...progressPlan,countryCode:"GB",countryName:"United Kingdom"},candidates,
+    correctedCandidates:completed?corrected:[corrected[1]],assessments:completed?candidates.map(candidate=>({...progressAssessment,candidateId:candidate.candidateId})):[],
+    creditsUsed:13,modelUsage:[],stageMetrics:[],warnings:[]},"collect_evidence");
+};
 const conversationId=randomUUID(),actionId=randomUUID();
 const costActionId=randomUUID(),costRunId=randomUUID();
 const completionScenarios=[
@@ -54,6 +69,8 @@ try{
     await client.query("insert into assistant_conversation(id,user_id,title) values($1,$2,'UI task fixture')",[conversationId,userId]);
     await client.query("insert into assistant_message(user_id,conversation_id,role,intent,content,metadata) values($1,$2,'assistant','budget-change','Synthetic budget proposal',$3)",[userId,conversationId,JSON.stringify({budgetProposal:{scope:"task",limitUsd:"0"}})]);
     await client.query("insert into assistant_action(id,user_id,conversation_id,action_type,status,payload) values($1,$2,$3,'lead-search','proposed',$4)",[actionId,userId,conversationId,JSON.stringify({countryCode:"GB",countryName:"United Kingdom",roles:["SI"],targetCount:1,userRequest:"Local UI fixture"})]);
+    await client.query("insert into assistant_action(id,user_id,conversation_id,action_type,status,payload) values($1,$2,$3,'lead-search','cancelled',$4)",[progressActionId,userId,conversationId,JSON.stringify({countryCode:"GB",countryName:"United Kingdom",roles:["Distributor"],targetCount:2,userRequest:"Synthetic checkpoint UI fixture"})]);
+    await client.query("insert into lead_workflow_job(user_id,action_id,graph_thread_id,status,phase,stop_requested,paused_at) values($1,$2,$3,'cancelled','correcting-evidence',true,now())",[userId,progressActionId,progressThread]);
     await client.query("insert into assistant_action(id,user_id,conversation_id,action_type,status,payload) values($1,$2,$3,'lead-search','proposed',$4)",[costActionId,userId,conversationId,JSON.stringify({countryCode:"GB",countryName:"United Kingdom",roles:["SI"],targetCount:2,userRequest:"Synthetic cost UI fixture"})]);
     for(const scenario of completionScenarios){
       const result=scenario.accepted===null?{}:{discovered:9,assessed:7,qualified:scenario.accepted,accepted:scenario.accepted,creditsUsed:7,
@@ -262,6 +279,7 @@ try{
       await expect(value('最终保存')).toHaveText(scenario.accepted===null?'尚无记录':String(scenario.accepted));
       if(scenario.accepted===null){
         await expect(panel.getByText(/^缺口 /)).toHaveCount(0);
+        await expect(panel.locator('dl[aria-label="已保存待处理数量"] dd')).toHaveText(['尚无记录','尚无记录']);
       }else if(scenario.reason==='target-met'){
         await expect(panel.getByText('停止原因：目标已满足',{exact:true})).toBeVisible();
         await expect(panel.getByText(/^缺口 /)).toHaveCount(0);
@@ -281,6 +299,25 @@ try{
       expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
       checks.push(`${viewport.width}:completion-${scenario.reason}-counts-refresh`);
     }
+    await seedProgress();
+    await page.goto(new URL(`/tasks/${progressActionId}?kind=search`,base).href);
+    const pending=page.locator('dl[aria-label="已保存待处理数量"]');
+    await expect(pending.locator('dd')).toHaveText(['1','1']);
+    await seedProgress(true);
+    await page.getByRole('button',{name:'刷新',exact:true}).click();
+    await expect(pending.locator('dd')).toHaveText(['0','0']);
+    const progress=await (await readLocal(new URL(`/api/assistant/actions/${progressActionId}/progress`,base).href)).json();
+    expect(progress.progress.creditsUsed).toBe(13);
+    await seedProgress(false,randomUUID());
+    await page.getByRole('button',{name:'刷新',exact:true}).click();
+    await expect(page.getByText('进度读取失败，可刷新重试',{exact:true})).toBeVisible();
+    await expect(pending.locator('dd')).toHaveText(['尚无记录','尚无记录']);
+    await seedProgress(true);
+    await page.getByRole('button',{name:'刷新',exact:true}).click();
+    await expect(pending.locator('dd')).toHaveText(['0','0']);
+    await expect(page.getByText('进度读取失败，可刷新重试',{exact:true})).toHaveCount(0);
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+    checks.push(`${viewport.width}:saved-pending-counts-refresh-zero-owner-failure-recovery`);
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
     expect(errors).toEqual([]);checks.push(`${viewport.width}:navigation-apis-no-runtime-error`);
     // Revoke access on the next request, even when the browser retains a valid cookie.
@@ -295,11 +332,12 @@ try{
   expect(calls.rows[0].n).toBe(1);
   const unexpected=await pool.query("select id from paid_call_reservation where user_id=$1 and tariff_key<>'synthetic-ui-cost'",[userId]);
   expect(unexpected.rows).toHaveLength(0);
-  expect((await pool.query('select id from lead_workflow_job where user_id=$1',[userId])).rows).toHaveLength(0);
+  expect((await pool.query('select action_id,status from lead_workflow_job where user_id=$1',[userId])).rows).toEqual([{action_id:progressActionId,status:'cancelled'}]);
   expect((await pool.query('select id from workflow_artifact_event where user_id=$1',[userId])).rows).toHaveLength(0);
   console.log(JSON.stringify({authenticatedUi:"passed",checks,paidCalls:0,syntheticReservations:1,realMailSent:0,fixtureOnly:true}));
 }finally{
   await browser?.close();
+  await progressSaver.deleteThread(progressThread);
   if(created){
     const client=await pool.connect();
     try{

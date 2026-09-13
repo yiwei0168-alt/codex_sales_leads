@@ -1,5 +1,7 @@
 # 产品开发恢复节点 — 2026-09-11
 
+2026-09-13阶段65：TaskRunControls已有progress接口（更正阶段64恢复记录对接口复用的遗漏），公开pendingCorrection/pendingScoring，主页面刷新用key重建控制。44组实际Chrome/SQL检查通过，含1/1→0/0、未知、错误owner拒绝及恢复；832测试/build/生成check/局部lint通过。3017当前服务session51396，重启前核对CIM身份；独立ui-progress checkpoint和fixture已删除，0真实付费。A09合成生产UI行为补齐，下一A13策略/跟进及实际模型业务仍缺；goal active。
+
 2026-09-13阶段64：本地3017最新build，Chrome两视口42组通过（九类任务状态新增18组），failed等已知数量状态缺口展示修复；832测试/build/生成check通过，fixture清理、0真实付费。3017由本任务启动，exec服务session88386；后续先核验端口/CIM身份再重启。下一A09仍缺检查点pendingCorrection/pendingScoring公开投影，当前task-detail API未读取检查点，不能猜discovered-assessed；A13策略/跟进等继续。goal active，完整真实业务未运行。
 
 2026-09-13阶段63：新增verify-result-persistence.ts实际调用产品存储函数；发现并修复saveEvidenceSnapshots $10整数/文本interval冲突。最终两次成功，两国4并发仅2国家记录/2快照/14事件、共享身份1、23微美元合成分摊守恒且未知费用不释放、RLS通过。fixture状态/清理错误已修正、四个遗留合成用户核验后清理，最终fixture清理成功。0真实付费，下一继续A09/A13页面与真实链路；goal active，详见RESULT_PERSISTENCE_ACCEPTANCE报告。

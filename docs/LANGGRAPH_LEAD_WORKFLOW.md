@@ -1,5 +1,7 @@
 # LangChain / LangGraph 销售线索工作流
 
+2026-09-13阶段65：TaskRunControls将既有readWorkflowCheckpointProgress的pendingCorrection/pendingScoring公开为候选项计数；按阶段展示，不推导唯一公司总量。任务刷新重新挂载读取控制，失败清除旧数、成功撤销错误，缺失unknown。真实Postgres检查点与Chrome两视口44组验证通过，无图节点运行；真实业务生成链路仍待。
+
 2026-09-13阶段64：任务页缺口按已记录保存数计算，不再仅completed可见；未知不推断0，失败/处理未完成不因此开启续搜。九类合成持久结果经实际生产Chrome两视口验证目标、阶段数量、停止原因与刷新，原页面回归共42组通过；832测试/build通过。当前页面仍未投影检查点待校正/待评分数量，真实业务生成到页面另验。
 
 2026-09-13阶段63：persist_results实际应用SQL链路首次以完整合成评估/当前证据验证，修复freshness_days参数在整数列/文本interval间类型冲突。现显式integer乘day interval；两国并发幂等、公司国家记录、证据、成本分摊和事件完成验证。未调用模型或搜索，原文来源及费用未知状态保留，整条真实业务仍待验收。
