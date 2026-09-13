@@ -1,4 +1,5 @@
 import {withProductSpend} from "@/lib/billing/context";
+import {createHash} from "node:crypto";
 import { tenantQuery, tenantTransaction } from "@/lib/rag/db";
 import { embedTexts } from "@/lib/rag/openai-provider";
 import type { CompanyRecord } from "@/lib/domain";
@@ -157,20 +158,24 @@ export async function persistDevelopmentDraft(
 }
 
 export async function updateDevelopmentDraft(userId: string, draftId: string, input: { body?: string; approve?: boolean }): Promise<boolean> {
+  const startedAt=Date.now();
   return tenantTransaction(userId, async (client) => {
-    const current = await client.query<{ workspace_id: string; revision: number; effective_body: string }>(
-      `select workspace_id, revision, coalesce(manual_body, body) as effective_body
+    const current = await client.query<{ workspace_id: string; revision: number; effective_body: string; status:string;market_country_code:string }>(
+      `select workspace_id, revision, status, market_country_code, coalesce(manual_body, body) as effective_body
          from outreach_draft where id=$1 and user_id=$2 and status in ('generated','approved') for update`,
       [draftId, userId]);
     if (!current.rows[0]) return false;
     const revisedBody = input.body?.slice(0, 30_000);
+    const bodyChanged=revisedBody!==undefined&&revisedBody!==current.rows[0].effective_body;
+    const newApproval=input.approve===true&&(current.rows[0].status!=='approved'||bodyChanged);
+    if(!bodyChanged&&!newApproval)return true;
     const rows = await client.query<{ id: string }>(
       `update outreach_draft set manual_body=coalesce($3, manual_body),
-         status=case when $4 then 'approved' else status end,
-         approved_at=case when $4 then now() else approved_at end,
+         status=case when $4 then 'approved' when $3::text is not null then 'generated' else status end,
+         approved_at=case when $4 then now() when $3::text is not null then null else approved_at end,
          revision=case when $3::text is null then revision else revision+1 end, updated_at=now()
        where id=$1 and user_id=$2 and status in ('generated','approved') returning id`,
-      [draftId, userId, revisedBody ?? null, input.approve ?? false]);
+      [draftId, userId, bodyChanged?revisedBody:null, input.approve ?? false]);
     if (rows.rows[0] && revisedBody !== undefined && revisedBody !== current.rows[0].effective_body) {
       await client.query(
         `insert into user_outreach_edit_event (
@@ -179,6 +184,17 @@ export async function updateDevelopmentDraft(userId: string, draftId: string, in
         [userId, current.rows[0].workspace_id, draftId, current.rows[0].revision,
           current.rows[0].effective_body, revisedBody],
       );
+    }
+    if(rows.rows[0]&&newApproval){
+      await client.query(`insert into workspace_audit_event(workspace_id,actor_user_id,entity_type,entity_id,action,changes)
+        values($1,$2,'outreach-draft',$3,'outreach-draft.approved',$4::jsonb)`,
+      [current.rows[0].workspace_id,userId,draftId,JSON.stringify({observationVersion:'draft-approval-v1',actor:'user',
+        countryCode:current.rows[0].market_country_code,revision:current.rows[0].revision+(bodyChanged?1:0),
+        bodyHash:createHash('sha256').update(revisedBody??current.rows[0].effective_body).digest('hex'),
+        approvedDrafts:1,generatedArtifacts:0,mailSent:null,usageBoundary:'explicit-draft-approval-not-sending',
+        inputItems:1,validOutputItems:1,downstreamUsedItems:1,inputTokens:0,outputTokens:0,apiCredits:0,paidApiCostUsd:0,
+        retries:0,latencyMs:Date.now()-startedAt,discardedReasonCounts:{},utilizationEfficiency:1,
+        optimizationOpportunity:'Reuse approved draft; repeated identical approval is a no-op'})]);
     }
     return Boolean(rows.rows[0]);
   });

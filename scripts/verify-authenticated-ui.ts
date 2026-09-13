@@ -112,6 +112,7 @@ try{
     const context=await browser.newContext({viewport});
     const page=await context.newPage();const errors:string[]=[];
     const editableCompanyPaths=new Set<string>();
+    const approvableDraftPaths=new Set<string>();
     // Exercise the real browser cookie policy. The standalone HTTP client does not share
     // Chromium's localhost Secure-cookie behavior when verifying an HTTP production build.
     const readLocal=async(url:string)=>{
@@ -128,6 +129,10 @@ try{
       const request=route.request(),url=new URL(request.url());
       if(url.origin!==base.origin)return route.abort();
       if(request.method()==="PATCH"&&editableCompanyPaths.has(url.pathname))return route.continue();
+      if(request.method()==="PATCH"&&approvableDraftPaths.has(url.pathname)){
+        const input=request.postDataJSON();
+        if(input.approve===true&&typeof input.body==='string'&&input.body.startsWith('Reviewed synthetic saved draft for production UI acceptance'))return route.continue();
+      }
       if(request.method()==="POST"&&url.pathname==="/api/workspaces/current/companies"){
         const input=request.postDataJSON();
         if(input.country==="GB"&&input.website===`https://ui-map-${viewport.width}-${userId}.invalid`)return route.continue();
@@ -309,11 +314,13 @@ try{
       {strategy:{objective:'Synthetic partnership',personalizationAngle:'Fixture context',valuePropositions:['Fixture value'],recommendedProducts:[],targetTitles:[],likelyObjections:[],callToAction:'Fixture CTA',followUpPlan:['Fixture follow-up'],evidenceIds:[],knowledgeIds:[]},
         draft:{language:'en',subjectOptions:['Saved fixture subject'],body:'Original fixture draft',wordCount:3,placeholders:[]},
         evidenceIds:[],knowledgeIds:[],templateIds:[],warnings:[],model:'synthetic',promptVersion:'ui-fixture',generationMetrics:{modelCalls:0,latencyMs:0}},{});
-    const manualBody=`Reviewed saved draft ${viewport.width}`;
-    expect(await updateDevelopmentDraft(userId,savedDraft.id,{body:manualBody,approve:true})).toBe(true);
+    const manualBody=`Reviewed synthetic saved draft for production UI acceptance ${viewport.width}`;
+    expect(await updateDevelopmentDraft(userId,savedDraft.id,{body:manualBody})).toBe(true);
+    const approvePath=`/api/development-strategies/${savedDraft.id}`;
+    approvableDraftPaths.add(approvePath);
     const draftUrl=new URL(`/api/development-strategies?company=${encodeURIComponent(draftCompany.id)}`,base).href;
     const readDraft=async()=>(await (await readLocal(draftUrl)).json()).result;
-    expect(await readDraft()).toMatchObject({id:savedDraft.id,status:'approved',contextReview:'current',draft:{body:manualBody}});
+    expect(await readDraft()).toMatchObject({id:savedDraft.id,status:'generated',contextReview:'current',draft:{body:manualBody}});
     const openSavedDraft=async()=>{
       await page.goto(new URL('/markets/GB/leads',base).href);
       await page.getByRole('button',{name:'打开 UI Fixture GB 详情',exact:true}).click();
@@ -321,7 +328,13 @@ try{
       await expect(page.getByLabel('开发信草稿',{exact:true})).toHaveValue(manualBody);
     };
     await openSavedDraft();
+    await page.getByRole('button',{name:'确认并批准',exact:true}).click();
     await expect(page.getByRole('button',{name:'已批准',exact:true})).toBeDisabled();
+    const repeatStatuses=await page.evaluate(async({path,body})=>Promise.all([1,2].map(async()=>{
+      const response=await fetch(path,{method:'PATCH',headers:{'content-type':'application/json'},body:JSON.stringify({body,approve:true})});
+      return response.status;
+    })),{path:approvePath,body:manualBody});
+    expect(repeatStatuses).toEqual([200,200]);
     await openSavedDraft();
     await pool.query("insert into user_outreach_memory(user_id,workspace_id,kind,external_id,title,content,market_codes) values($1,$2,'email-style',$3,'Fixture style','Synthetic style update',ARRAY['GB'])",[userId,workspaceId,`ui-draft-${viewport.width}`]);
     expect((await readDraft()).contextReview).toBe('changed');
@@ -335,6 +348,18 @@ try{
     await openSavedDraft();
     await expect(page.getByText('此历史策略没有完整上下文版本记录，请核对当前角色、路径、证据与知识后使用。',{exact:true})).toBeVisible();
     expect((await pool.query('select revision,manual_body,status from outreach_draft where id=$1',[savedDraft.id])).rows[0]).toMatchObject({revision:2,manual_body:manualBody,status:'approved'});
+    const approvals=await pool.query("select changes from workspace_audit_event where actor_user_id=$1 and entity_id=$2 and action='outreach-draft.approved'",[userId,savedDraft.id]);
+    expect(approvals.rows).toHaveLength(1);
+    expect(approvals.rows[0].changes).toMatchObject({actor:'user',countryCode:'GB',revision:2,approvedDrafts:1,generatedArtifacts:0,mailSent:null,usageBoundary:'explicit-draft-approval-not-sending'});
+    expect(JSON.stringify(approvals.rows[0].changes)).not.toContain(manualBody);
+    await page.getByLabel('开发信草稿',{exact:true}).fill(`${manualBody} Edited after approval.`);
+    await page.getByRole('button',{name:'确认并批准',exact:true}).click();
+    await expect(page.getByRole('button',{name:'已批准',exact:true})).toBeDisabled();
+    const revisedApprovals=await pool.query("select changes->>'revision' as revision from workspace_audit_event where actor_user_id=$1 and entity_id=$2 and action='outreach-draft.approved' order by created_at,id",[userId,savedDraft.id]);
+    expect(revisedApprovals.rows.map(row=>row.revision)).toEqual(['2','3']);
+    expect(await updateDevelopmentDraft(userId,savedDraft.id,{body:`${manualBody} Saved without approval.`})).toBe(true);
+    expect((await readDraft()).status).toBe('generated');
+    checks.push(`${viewport.width}:ui-approval-concurrent-replay-single-country-event`);
     checks.push(`${viewport.width}:saved-strategy-manual-body-approval-refresh-dependency-country-legacy`);
     await seedProgress();
     await page.goto(new URL(`/tasks/${progressActionId}?kind=search`,base).href);
