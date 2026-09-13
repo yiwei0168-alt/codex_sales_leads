@@ -1,6 +1,7 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type { LeadSearchPlan } from "@/lib/assistant/types";
+import { BudgetDeniedError, quoteRequest } from "@/lib/billing/policy";
 import { leadEvidenceContentHash } from "@/lib/leads/evidence-snapshot";
 
 import { LeadAssessmentReviewAgent, assessmentReviewTriggers, type LeadReviewInvoker } from "./assessment-review-agent";
@@ -93,6 +94,8 @@ const playbook: LeadMarketPlaybook = {
 const plan: LeadSearchPlan = { countryCode: "DE", countryName: "Germany", objective: "new-market", roles: ["VAR"],
   targetCount: 1, queryLanguage: "en", userRequest: "Find networking VARs" };
 
+afterEach(() => { vi.unstubAllGlobals(); vi.unstubAllEnvs(); });
+
 describe("LeadAssessmentReviewAgent", () => {
   it("routes deterministic gate conflicts and sparse high scores to independent review", () => {
     const primary = assessment();
@@ -163,5 +166,52 @@ describe("LeadAssessmentReviewAgent", () => {
     expect(result.reviews[0].materialDisagreements).toContain("total-score");
     expect(result.assessments[0].model).toBe("gpt-5.6-sol");
     expect(invoker.judge).toHaveBeenCalledOnce();
+  });
+
+  it("captures the actual credits-only review requests and keeps unapproved tariffs blocked", async () => {
+    vi.stubEnv("OPENROUTER_API_KEY", "synthetic-test-only");
+    const bodies: Record<string, unknown>[] = [];
+    vi.stubGlobal("fetch", vi.fn<typeof fetch>(async (_url, init) => {
+      const body = JSON.parse(String(init?.body)) as Record<string, unknown>;
+      bodies.push(body);
+      const output = bodies.length === 1 ? modelOutput(8) : {
+        candidateId: candidate.candidateId, decision: "merge", assessment: modelOutput(20),
+        rationale: "The supplied evidence supports the merged result.", researchQuestion: "", warnings: [],
+      };
+      return Response.json({ model: body.model, choices: [{ finish_reason: "stop",
+        message: { content: JSON.stringify(output) } }] });
+    }));
+
+    const result = await new LeadAssessmentReviewAgent(undefined,
+      { randomAuditPercent: 100, concurrency: 1 }).review([candidate], [assessment()], playbook, plan);
+    expect(result.reviews[0].status).toBe("judge-resolved");
+    expect(bodies).toHaveLength(2);
+    expect(bodies[0]).toMatchObject({ model: "openai/gpt-5.6-terra", temperature: 0,
+      reasoning: { effort: "medium" }, max_completion_tokens: 8192,
+      provider: { require_parameters: true, data_collection: "deny" } });
+    expect(bodies[1]).toMatchObject({ model: "openai/gpt-5.6-sol", temperature: 0,
+      reasoning: { effort: "high" }, max_completion_tokens: 12000,
+      provider: { require_parameters: true, data_collection: "deny" } });
+    for (const body of bodies) {
+      expect(body).not.toHaveProperty("tools");
+      expect(body).not.toHaveProperty("plugins");
+      expect(body).not.toHaveProperty("max_tokens");
+      expect(body.response_format).toMatchObject({ type: "json_schema",
+        json_schema: { strict: true } });
+      const quote = { origin: "https://openrouter.ai", pathname: "/api/v1/chat/completions",
+        model: String(body.model), requestBytes: Buffer.byteLength(JSON.stringify(body), "utf8"),
+        outputTokens: Number(body.max_completion_tokens) };
+      expect(quote.requestBytes).toBeLessThanOrEqual(61_440);
+      expect(() => quoteRequest(quote, undefined, Date.parse("2026-09-14T00:00:00Z")))
+        .toThrow(BudgetDeniedError);
+      try { quoteRequest(quote, undefined, Date.parse("2026-09-14T00:00:00Z")); }
+      catch (error) { expect((error as BudgetDeniedError).code)
+        .toBe(body.model === "openai/gpt-5.6-terra" ? "missing-tariff" : "request-out-of-bounds"); }
+    }
+    const secondaryInput = JSON.parse((bodies[0].messages as { content: string }[])[1].content);
+    expect(JSON.stringify(secondaryInput)).not.toContain('"primaryScore"');
+    const judgeInput = JSON.parse((bodies[1].messages as { content: string }[])[1].content);
+    expect(JSON.stringify(judgeInput)).toContain('"assessmentA"');
+    expect(JSON.stringify(judgeInput)).toContain('"assessmentB"');
   });
 });

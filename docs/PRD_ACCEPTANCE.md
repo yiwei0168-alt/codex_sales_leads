@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+阶段132：条件复核当前 Agent 经合成传输捕获 Terra 8192、Sol 裁决12000输出 token 的实际严格 JSON 请求，现行费用门禁分别为 `missing-tariff`、`request-out-of-bounds`；8项定向测试通过，0真实调用/预留。公开候选上界未准入，真实端点与A11仍待验收。[报告](OPENROUTER_REVIEW_ACTUAL_WIRE_PREFLIGHT_2026-09-14.md)。
+
 阶段131：同一隔离任务跨进程检查点恢复后，由当前评分Agent把共享短语请求的模拟输出写进产品SQL；101原证据/105事实、缓存契约及评分遥测核对通过，最终合格和交付0，0真实付费。起点为已校正合成候选，真实模型/搜索/账单与A11完整闭环未验收。[报告](P06_SHARED_PHRASE_CROSS_PROCESS_PRODUCT_SQL_2026-09-14.md)。
 
 阶段130：P06共享短语评分经真实图与产品结果 SQL 保存1条完成评估、101证据快照、105事实和评分遥测/用量各1；夹具资格不满足，最终合格与公司交付0，另一账号不可读，0真实付费。阶段129的两进程恢复与本阶段实际SQL为独立验收，尚非同一条自然语言业务闭环；真实模型、账单及A11仍缺。[报告](P06_SHARED_PHRASE_PRODUCT_SQL_ACCEPTANCE_2026-09-14.md)。
