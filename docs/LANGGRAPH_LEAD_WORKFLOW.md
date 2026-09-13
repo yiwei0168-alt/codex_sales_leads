@@ -1,5 +1,7 @@
 # LangChain / LangGraph 销售线索工作流
 
+2026-09-13阶段45：任务预算公司费用已通过真实Chrome桌面/手机、API与SQL接线检查，五口径及覆盖率、当前任务域名/国家关联、刷新不重复显示通过。只使用合成预留，不执行图或供应商调用；真实图结果保存仍需验收。[范围和复现](LOCAL_PRODUCTION_UI_ACCEPTANCE_2026-09-13.md)。
+
 2026-09-13阶段44：discoverLeadCandidates首轮空输出与后续轮一致返回DiscoveryResult（run、credits、callMetrics、session和processedCompanyKeys），不再在轮汇总后抛“无可用候选”通用异常。graph继续用新鲜成功调用/故障和连续无新增计数判断停止，空集合走正常结果持久化及任务费用完成。BudgetDeniedError等真实异常继续抛出并保留失败run。812测试/build/生成check通过；无schema、阈值或搜索范围变化，无付费。
 
 2026-09-13阶段43：任务预算读取公司当前成本投影；每条paid_call_reservation只参与一次，reservation/occupied/estimate/provider-report/invoice分别累计已知值及覆盖率。共享分摊读取完成集合，未完成/旧归属缺失独立保留；因此完成前已有观测可当前展示，不改历史。域名/国家只关联当前用户任务搜索结果。GET无写入，无schema迁移；新增兼容字段companyCosts，回滚可忽略。808测试、真实SQL守恒/重复读取/隔离验证及生产构建通过，真实浏览器/业务仍未验收。

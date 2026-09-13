@@ -15,12 +15,15 @@ try{
   await response.body?.cancel();
   if(response.status>=500)throw new Error("Local server is not ready");
 }finally{await localTransport.close();}
-const {getPool}=await import("../src/lib/rag/db");
+const {getPool,tenantTransaction}=await import("../src/lib/rag/db");
 const {hashPassword}=await import("../src/lib/auth/password");
 const {addManualCompany}=await import("../src/lib/sales/manual-company");
-const {setSpendBudget,setTaskSpendBudget}=await import("../src/lib/billing/repository");
+const {setSpendBudget,setTaskSpendBudget,reservePaidCall,settlePaidCall}=await import("../src/lib/billing/repository");
+const {completeTaskCostAllocation}=await import("../src/lib/billing/task-cost-completion");
+const {companyCostKey,costRoundKey}=await import("../src/lib/billing/company-cost-context");
 const userId=randomUUID(),workspaceId=randomUUID();
 const conversationId=randomUUID(),actionId=randomUUID();
+const costActionId=randomUUID(),costRunId=randomUUID();
 const email=`ui-verification-${userId}@example.invalid`,password=randomBytes(32).toString("base64url");
 const domain=`ui-verification-${userId}.invalid`;
 const application=process.env.DATABASE_URL,migration=process.env.DATABASE_MIGRATION_URL;
@@ -39,12 +42,26 @@ try{
     await client.query("insert into assistant_conversation(id,user_id,title) values($1,$2,'UI task fixture')",[conversationId,userId]);
     await client.query("insert into assistant_message(user_id,conversation_id,role,intent,content,metadata) values($1,$2,'assistant','budget-change','Synthetic budget proposal',$3)",[userId,conversationId,JSON.stringify({budgetProposal:{scope:"task",limitUsd:"0"}})]);
     await client.query("insert into assistant_action(id,user_id,conversation_id,action_type,status,payload) values($1,$2,$3,'lead-search','proposed',$4)",[actionId,userId,conversationId,JSON.stringify({countryCode:"GB",countryName:"United Kingdom",roles:["SI"],targetCount:1,userRequest:"Local UI fixture"})]);
+    await client.query("insert into assistant_action(id,user_id,conversation_id,action_type,status,payload) values($1,$2,$3,'lead-search','proposed',$4)",[costActionId,userId,conversationId,JSON.stringify({countryCode:"GB",countryName:"United Kingdom",roles:["SI"],targetCount:2,userRequest:"Synthetic cost UI fixture"})]);
     await client.query("commit");created=true;
   }catch(error){await client.query("rollback");throw error;}finally{client.release();}
   await setSpendBudget(userId,1_000_000);await setTaskSpendBudget(userId,actionId,0);
   for(const [country,role] of [["GB","SI"],["MX","Retailer"]] as const){
     await addManualCompany(userId,{name:`UI Fixture ${country}`,country,website:`https://${domain}`,role});
   }
+  const costDomains=[domain,`rejected-${userId}.invalid`];
+  await pool.query(`insert into lead_search_run(id,workspace_id,provider,target_count,country_code,market_name,objective,metadata)
+    values($1,$2,'synthetic-ui-fixture',2,'GB','United Kingdom','new-market',$3)`,
+    [costRunId,workspaceId,JSON.stringify({assistantActionId:costActionId,graphThreadId:costActionId})]);
+  const costQuery=await pool.query<{id:string}>(`insert into lead_search_query(run_id,query_text,role_hint,lead_type,language,region,result_count,credits_used)
+    values($1,'Synthetic fixture only','SI','channel','en','United Kingdom',2,0) returning id`,[costRunId]);
+  for(const value of costDomains)await pool.query(`insert into lead_search_result(run_id,query_id,url,domain,title,snippet)
+    values($1,$2,$3,$4,'Synthetic cost identity','Fixture only')`,[costRunId,costQuery.rows[0].id,`https://${value}`,value]);
+  const costReservation=await reservePaidCall(userId,{operationId:costActionId,stage:"synthetic-ui-cost",
+    tariffKey:"synthetic-ui-cost",tariffVersion:"fixture-v1",maximumChargeMicros:11,requestBytes:0,
+    costAttribution:{version:"company-cost-attribution-v1",kind:"task-shared",roundKey:costRoundKey(costActionId),companyKeys:[]}});
+  await settlePaidCall(userId,costReservation,{reportedMicros:0,latencyMs:0,responseBytes:0,inputTokens:0,outputTokens:0,succeeded:true});
+  await tenantTransaction(userId,client=>completeTaskCostAllocation(client,userId,costActionId,costRoundKey(costActionId),costDomains.map(value=>companyCostKey(value,"GB"))));
   browser=await chromium.launch({channel:"chrome",headless:true});
   for(const viewport of [{width:1366,height:900},{width:390,height:844}]){
     const context=await browser.newContext({viewport});
@@ -125,6 +142,23 @@ try{
     await page.screenshot({path:`tmp/auth-ui-${viewport.width}-model-usage.png`,fullPage:true});
     checks.push(`${viewport.width}:usage-observations-real-sql-empty-not-zero`);
     checks.push(`${viewport.width}:task-budget-real-api`);
+    await page.goto(new URL(`/tasks/${costActionId}?kind=search`,base).href);
+    await page.getByText("任务预算与成本",{exact:true}).click();
+    await page.getByText("按公司分摊费用",{exact:true}).click();
+    const companyCosts=page.locator("details").filter({has:page.locator("summary",{hasText:"按公司分摊费用"})}).last();
+    await expect(companyCosts.getByRole("heading",{name:`${costDomains[0]} · GB`,exact:true})).toBeVisible();
+    await expect(companyCosts.getByRole("heading",{name:`${costDomains[1]} · GB`,exact:true})).toBeVisible();
+    await expect(companyCosts.getByText("$0.000006 · 1/1 次有记录",{exact:true})).toHaveCount(2);
+    await expect(companyCosts.getByText("$0.000005 · 1/1 次有记录",{exact:true})).toHaveCount(2);
+    await expect(companyCosts.getByText("$0.000000 · 1/1 次有记录",{exact:true})).toHaveCount(2);
+    await expect(companyCosts.getByText("未知 · 0/1 次有记录",{exact:true})).toHaveCount(4);
+    await page.screenshot({path:`tmp/auth-ui-${viewport.width}-company-cost.png`,fullPage:true});
+    const firstCosts=await (await readLocal(new URL(`/api/budget?actionId=${costActionId}`,base).href)).json();
+    await page.getByRole("button",{name:"刷新任务预算",exact:true}).click();
+    await expect(companyCosts.getByRole("heading")).toHaveCount(2);
+    const secondCosts=await (await readLocal(new URL(`/api/budget?actionId=${costActionId}`,base).href)).json();
+    expect(secondCosts.companyCosts).toEqual(firstCosts.companyCosts);
+    checks.push(`${viewport.width}:company-cost-domain-country-coverage-real-api`);
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
     expect(errors).toEqual([]);checks.push(`${viewport.width}:navigation-apis-no-runtime-error`);
     // Revoke access on the next request, even when the browser retains a valid cookie.
@@ -136,8 +170,10 @@ try{
     await context.close();
   }
   const calls=await pool.query("select count(*)::int as n from paid_call_reservation where user_id=$1",[userId]);
-  expect(calls.rows[0].n).toBe(0);
-  console.log(JSON.stringify({authenticatedUi:"passed",checks,paidCalls:0,realMailSent:0,fixtureOnly:true}));
+  expect(calls.rows[0].n).toBe(1);
+  const unexpected=await pool.query("select id from paid_call_reservation where user_id=$1 and tariff_key<>'synthetic-ui-cost'",[userId]);
+  expect(unexpected.rows).toHaveLength(0);
+  console.log(JSON.stringify({authenticatedUi:"passed",checks,paidCalls:0,syntheticReservations:1,realMailSent:0,fixtureOnly:true}));
 }finally{
   await browser?.close();
   if(created){
@@ -146,6 +182,11 @@ try{
       await client.query("begin");
       const owner=await client.query("select id from app_user where id=$1 and email=$2 for update",[userId,email]);
       if(owner.rowCount!==1)throw new Error("Fixture identity mismatch; refusing cleanup");
+      const realAccounting=await client.query("select id from paid_call_reservation where user_id=$1 and tariff_key<>'synthetic-ui-cost' limit 1",[userId]);
+      if(realAccounting.rowCount)throw new Error("Unexpected paid accounting; preserve fixture for reconciliation");
+      await client.query("delete from paid_cost_observation where user_id=$1",[userId]);
+      await client.query("delete from paid_call_reservation where user_id=$1",[userId]);
+      await client.query("delete from lead_search_run where id=$1 and workspace_id=$2",[costRunId,workspaceId]);
       await client.query("delete from task_spend_limit where user_id=$1",[userId]);
       await client.query("delete from assistant_conversation where user_id=$1",[userId]);
       await client.query("delete from market_workspace where id=$1 and owner_id=$2",[workspaceId,userId]);
