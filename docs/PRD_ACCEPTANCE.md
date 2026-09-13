@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+阶段117：SearchAPI当前账号只读用量接口未给出可唯一核定价格/速度档的合同信息；SearchAPI保持费用阻止，真实业务与账单验收未完成。[证据](SEARCHAPI_ACCOUNT_READONLY_CHECK_2026-09-14.md)。
+
 阶段116：SearchAPI 公开参考费率不再让未核实账号合同的产品请求获准；合成产品传输在预留/外发前拒绝，965项测试/203文件及生产构建通过。账号条款证据和真实业务仍缺。[报告](SEARCHAPI_ACCOUNT_BOUND_HOLD_2026-09-14.md)。
 
 阶段115：发现阶段对费率缺失和预算耗尽的合成拒绝回归通过，不将阻止误记为搜索耗尽或供应商故障；真实任务页面与账本完整链仍待验收。[证据](DISCOVERY_BUDGET_DENIAL_STATUS_ACCEPTANCE_2026-09-14.md)。

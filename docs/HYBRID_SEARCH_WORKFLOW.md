@@ -1,5 +1,7 @@
 # Hybrid Lead Search Workflow
 
+2026-09-14 阶段117：SearchAPI官方账号接口只读观测无可核定单价的套餐/速度档信息；不因零额度或公开参考价解除费用门禁，不把账号额度当作公司搜索贡献或市场耗尽。[证据](SEARCHAPI_ACCOUNT_READONLY_CHECK_2026-09-14.md)。
+
 2026-09-14 阶段116：SearchAPI 条件路线仍在既有策略中，但当前账号计费合同未核实，产品费用门禁先于预留/传输返回 `missing-tariff`；此为费用保护，不是按哥伦比亚低产出停用搜索工具。公开规则仅供审计请求形态，后续有效账号合同和新版规则才能准入。[验收](SEARCHAPI_ACCOUNT_BOUND_HOLD_2026-09-14.md)。
 
 2026-09-14 阶段115：`BudgetDeniedError` 在发现执行器中直接上抛；合成费率缺失/预算耗尽均不产生失败搜索调用、无价值轮次或候选门禁。恢复仍须先核对账本与检查点，不能把预算拒绝当作市场耗尽。[验收](DISCOVERY_BUDGET_DENIAL_STATUS_ACCEPTANCE_2026-09-14.md)。
