@@ -782,7 +782,7 @@ flowchart TD
 | `src/providers/tavily.ts` | `e981be543a25b56b456654fdc55c8dd67303ac42cb14b82c8c4b4d35d9c78d20` |
 | `src/lib/leads/workflow/handoff-assembler.ts` | `58b92f337c05b7e1b62b28db27eb7d6ed1b5bcd95272926868f3c4a1df3a680c` |
 | `src/lib/leads/workflow/persistence.ts` | `8771d20d1d3a214d0e41d90a0fcb746a02185916f7cd28b451615866670fbedb` |
-| `src/lib/sales/repository.ts` | `0f5155e54225a30c0ef97f4252c5f8b2ec051c2ac820bf073cd79a267f24dd8e` |
+| `src/lib/sales/repository.ts` | `b1679b050e532cd9ceaf2d4e1993fb64cb9193617559ba4bfbf21cbe37d55906` |
 | `src/lib/outreach/graph.ts` | `7ea69592ef40da9efa91fc06e90fd194017ad9f6af2c6361afaedf4f78772af6` |
 | `src/lib/outreach/kimi-agent.ts` | `7e4b1dabd294294702bdb0c20c653b60741462527aa941db3299b7df4c3b7540` |
 | `src/lib/outreach/claude-agent.ts` | `4866ce8accb25a24540fb927e617808c4508eaf469ce7936990ac51497955a20` |
