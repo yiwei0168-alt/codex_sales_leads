@@ -12,6 +12,7 @@ if(a.hostname!==m.hostname||(a.port||"5432")!==(m.port||"5432")||a.pathname!==m.
 const admin=new Pool({connectionString:databaseConnectionString(migration),ssl:databaseSslConfiguration(migration)});
 const {getPool,tenantQuery,tenantTransaction}=await import("../src/lib/rag/db");
 const {completeTaskCostAllocation}=await import("../src/lib/billing/task-cost-completion");
+const {readCompanyCosts}=await import("../src/lib/billing/company-cost-repository");
 const {hashPassword}=await import("../src/lib/auth/password");
 const {reservePaidCall,settlePaidCall,setSpendBudget,readSpendBudget,assertProcessingRecoveryCostsKnown}=await import("../src/lib/billing/repository");
 const {recordVerifiedCostObservation}=await import("../src/lib/billing/reconciliation");
@@ -155,6 +156,16 @@ try{
     "select metrics from paid_cost_observation where user_id=$1 and reservation_id=$2 and kind='invoice'",[userId,sharedId]);
   assert.deepEqual(late[0].metrics.costAllocation.observation.shares,
     [{companyKey:population[0],amountMicros:4},{companyKey:population[1],amountMicros:3}]);
+  const companyCosts=await readCompanyCosts(userId,sharedOperation);
+  assert.equal(companyCosts.length,2);
+  assert.equal(companyCosts.reduce((sum,row)=>sum+(row.costs.reservation.amountMicros??0),0),11);
+  assert.equal(companyCosts.reduce((sum,row)=>sum+(row.costs.invoice.amountMicros??0),0),7);
+  assert.equal(companyCosts.reduce((sum,row)=>sum+(row.costs.occupied.amountMicros??0),0),7);
+  assert(companyCosts.every(row=>row.costs.estimate.amountMicros===null));
+  assert.deepEqual(await readCompanyCosts(userId,sharedOperation),companyCosts);
+  assert.deepEqual(await readCompanyCosts(userId,randomUUID()),[]);
+  assert.deepEqual(await readCompanyCosts(randomUUID(),sharedOperation),[]);
+  console.log(JSON.stringify({companyCostProjectionConserved:true,companyCostRefreshReadOnly:true,companyCostOwnerAndOperationIsolated:true}));
   console.log(JSON.stringify({sharedCompletionConserved:true,sharedPopulationImmutable:true,lateInvoiceUsesCompletedPopulation:true,sharedUnknownRetained:true,realProviderCalls:0}));
   console.log(JSON.stringify({unknownRecoveryBlocked:true,verifiedFailedRequestRecoveryAllowed:true,
     completedRequestReplayBlocked:true,recoveryCostHistoryPreserved:true,realProviderCalls:0}));

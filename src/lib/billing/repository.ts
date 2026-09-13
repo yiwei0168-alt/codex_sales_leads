@@ -8,6 +8,7 @@ import {COST_SUMMARY_SQL} from "./cost-summary";
 import type {ForeignCostBound} from "./fx-policy";
 import {allocateCompanyCost,costAttributionSchema,type CostAttribution} from "./cost-allocation";
 import {observationCostAllocation} from "./observation-allocation";
+import {readCompanyCosts} from "./company-cost-repository";
 
 /** Check the whole operation so changing a repair batch cannot bypass an unknown request fingerprint. */
 export async function assertProcessingRecoveryCostsKnown(userId: string, operationId: string): Promise<void> {
@@ -113,7 +114,7 @@ export async function readTaskSpendBudget(userId:string,actionId:string){
     sum(reported_micros)::text as reported_micros,count(*) filter(where reported_micros is null)::int as unknown_bills,
     sum((metrics->>'latencyMs')::bigint)::text as summed_latency_ms
     from paid_call_reservation where user_id=$1 and operation_id=$2 group by stage order by stage`,[userId,actionId]);
-  return {taskLimit:rows[0]??null,stages,modelUsage:await readProviderUsageSummary(userId,actionId)};
+  return {taskLimit:rows[0]??null,stages,companyCosts:await readCompanyCosts(userId,actionId),modelUsage:await readProviderUsageSummary(userId,actionId)};
 }
 
 export async function setTaskSpendBudget(userId:string,actionId:string,limitMicros:number){
