@@ -6,6 +6,7 @@ import {companyCostKey} from "@/lib/billing/company-cost-context";
 
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "@/providers/contracts";
 import { leadEvidenceContentHash } from "@/lib/leads/evidence-snapshot";
+import { LeadRequestTooLargeError } from "@/providers/lead-request-bounds";
 
 import { enforceAssessmentEvidenceCaps, LeadQualificationAgent } from "./qualification-agent";
 import {validCachedAssessment} from "./assessment-cache";
@@ -106,6 +107,20 @@ const playbook: LeadMarketPlaybook = {
   marketHypothesis: "test", productAngles: ["SMB"], preferredCompanyTraits: ["VAR"], exclusions: [],
   rolePriorities: [], searchQueries: [], ragCitationIds: ["kb-1"], generatedBy: "langchain-model", warnings: [],
 };
+
+function uniqueFactCandidate(count: number): CorrectedLeadWorkflowCandidate {
+  const extras = Array.from({ length: count }, (_, index) => {
+    const excerpt = `Evidence ${index}: ${`independent networking fact ${index} `.repeat(7).trim()}`;
+    return { ...candidate.evidence[0], id: `unique-${index}`,
+      url: `https://example.de/evidence/${index}`, title: `Unique source ${index}`,
+      excerpt, contentHash: leadEvidenceContentHash(excerpt) };
+  });
+  return { ...candidate, evidence: [...candidate.evidence, ...extras], correction: {
+    ...candidate.correction, findings: [...candidate.correction.findings,
+      ...extras.map((item, index) => ({ ...candidate.correction.findings[2],
+        findingId: `unique-finding-${index}`, statement: `Distinct product and customer fact ${index}: ${item.excerpt.slice(0, 90)}`,
+        evidenceIds: [item.id] }))] } };
+}
 
 describe("LeadQualificationAgent", () => {
   it("checkpoints a complete peer before a missing member's repair is blocked",async()=>{
@@ -299,6 +314,41 @@ describe("LeadQualificationAgent", () => {
     expect(result[0].scoringStatus).toBe("completed");
     expect(agent.completedCacheContracts(result)).toEqual(expected);
     expect(JSON.stringify(large)).toBe(before);
+  });
+
+  it("keeps unique finding-linked evidence through the actual scoring agent's singleton preparation", async () => {
+    const provider = new CacheableFakeProvider();
+    const large = uniqueFactCandidate(60);
+    const original = JSON.stringify(large);
+    const agent = new LeadQualificationAgent(provider);
+    const result = await agent.evaluate([large], playbook, "DE", "Germany", "new-market");
+    expect(result[0].scoringStatus).toBe("completed");
+    expect(provider.calls).toHaveLength(1);
+    const prepared = provider.calls[0];
+    const input = prepared.input as { candidateTableEncoding?: string;
+      candidates: Array<{ evidenceTable?: { columns: string[]; rows: unknown[][] };
+        findingsTable?: { columns: string[]; rows: unknown[][] } }> };
+    expect(input.candidateTableEncoding).toBe("exact-field-table-v1");
+    expect(prepared.preparation?.originalMaximumWireBytes).toBeGreaterThan(61_440);
+    expect(prepared.preparation?.preparedMaximumWireBytes).toBeLessThanOrEqual(61_440);
+    expect(prepared.evidenceIds).toEqual(large.evidence.map(item => item.id));
+    const decode = (table: { columns: string[]; rows: unknown[][] }) => table.rows.map(row =>
+      Object.fromEntries(table.columns.map((column, index) => [column, row[index]])));
+    expect(decode(input.candidates[0].evidenceTable!)).toEqual(large.evidence.map(item => ({
+      evidenceId: item.id, sourceType: item.sourceType, url: item.url, title: item.title, excerpt: item.excerpt,
+    })));
+    expect(decode(input.candidates[0].findingsTable!)).toEqual(large.correction.findings);
+    expect(JSON.stringify(large)).toBe(original);
+  });
+
+  it("retains an uncompressible full-agent singleton as incomplete before any model request", async () => {
+    const provider = new CacheableFakeProvider();
+    const large = uniqueFactCandidate(100);
+    const original = JSON.stringify(large);
+    await expect(new LeadQualificationAgent(provider).evaluate([large], playbook, "DE", "Germany", "new-market"))
+      .rejects.toBeInstanceOf(LeadRequestTooLargeError);
+    expect(provider.calls).toHaveLength(0);
+    expect(JSON.stringify(large)).toBe(original);
   });
 
   it("keeps invalid or unresolved roles unscored without contaminating valid batch contracts", async () => {
