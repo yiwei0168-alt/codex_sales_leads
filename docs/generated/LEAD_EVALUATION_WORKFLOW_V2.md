@@ -753,7 +753,7 @@ flowchart TD
 | `src/app/api/assistant/messages/route.ts` | `04bec90cc3d3f336195e8ab97a5ad4b1ec1e05b95606064225e098e94ed7a5cd` |
 | `src/lib/assistant/types.ts` | `672da3aa8f33d96129dfd0a9b3020a38d3d6e3d14d0129b7f40a599479fa7ab8` |
 | `src/lib/assistant/intent.ts` | `5501e1e0a9617b34f40d14af6bf65fdae8250f9f9ed714647ec6878eb1179ab3` |
-| `src/lib/assistant/intent-agent.ts` | `2ab2412e2693910e6e6a3421919c4b034798daede1a2ce1bb2e8cb02e9e10bd8` |
+| `src/lib/assistant/intent-agent.ts` | `cc14a3432d6fbd0cf50a653892dc20982f2d8652f782055ebdc94163eda65027` |
 | `src/lib/rag/openai-provider.ts` | `c277b98dbdcab98a32508a3065cebc4e374d6f30746626de08712fac389ac618` |
 | `src/lib/assistant/service.ts` | `191d407fc558253b10df7b57564bb73094808cddaf5f2f8883c57742561eff7e` |
 | `src/lib/assistant/repository.ts` | `7d480b70ed29de1795c4c6c1a5c49d471cd700272616bfa3c66dbab4e6d6bfb3` |
@@ -784,8 +784,8 @@ flowchart TD
 | `src/lib/leads/workflow/persistence.ts` | `e0f53dc19463396146d834e7357a50acdf15d4e6638dbe976370f6a1320af61f` |
 | `src/lib/sales/repository.ts` | `c00f0b024673b8eb3057353a933480945fe1bcc23c573a1221f4dd78986e4c28` |
 | `src/lib/outreach/graph.ts` | `7ea69592ef40da9efa91fc06e90fd194017ad9f6af2c6361afaedf4f78772af6` |
-| `src/lib/outreach/kimi-agent.ts` | `ad0af1054a6f5e97657fca1c8d1078d3a0befbee5a811f02ca3b082e9815d009` |
-| `src/lib/outreach/claude-agent.ts` | `f3268f6d266646593eeaf23f9eb970779c6a6928ecc2a850c2b23c22e2a64359` |
+| `src/lib/outreach/kimi-agent.ts` | `7e4b1dabd294294702bdb0c20c653b60741462527aa941db3299b7df4c3b7540` |
+| `src/lib/outreach/claude-agent.ts` | `4866ce8accb25a24540fb927e617808c4508eaf469ce7936990ac51497955a20` |
 | `src/lib/outreach/repository.ts` | `22da74648bcfac6631af0ba72aaf59ffa79d0835e55055a78fe3111191db5d1f` |
 | `src/lib/outreach/knowledge-repository.ts` | `68aee4460bcfc5f42b90abea7560483b2b0b87a2dbf6c728629ef926d91c171c` |
 | `db/migrations/033_hybrid_search_contribution.sql` | `4088eb1ae2f9dbf58c2150a5c7ce3b4f5a49e1e75e2fb372887aed9d153ffb05` |
