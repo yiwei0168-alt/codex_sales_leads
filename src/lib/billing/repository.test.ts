@@ -1,7 +1,7 @@
 import {beforeEach,expect,it,vi} from "vitest";
 const query=vi.hoisted(()=>vi.fn());
 vi.mock("@/lib/rag/db",()=>({tenantQuery:vi.fn(),tenantTransaction:async(_u:string,run:(c:unknown)=>unknown)=>run({query})}));
-import {reservePaidCall,settlePaidCall,assertProcessingRecoveryCostsKnown} from "./repository";
+import {reservePaidCall,settlePaidCall,assertProcessingRecoveryCostsKnown,setTaskSpendBudget} from "./repository";
 import {tenantQuery} from "@/lib/rag/db";
 const input={operationId:"operation",stage:"score",tariffKey:"rule",tariffVersion:"v1",maximumChargeMicros:10,requestBytes:100};
 beforeEach(()=>query.mockReset());
@@ -49,6 +49,26 @@ it("preserves native reservation and the versioned FX source in the same reserva
 it("enforces the task cap even when the owner has spare budget",async()=>{
   query.mockResolvedValueOnce({rows:[{limit_micros:"1000",occupied_micros:"20",frozen:false}]}).mockResolvedValueOnce({rows:[{limit_micros:"25",occupied_micros:"20"}]});
   await expect(reservePaidCall("owner",input)).rejects.toThrow("task-budget-exhausted");expect(query).toHaveBeenCalledTimes(2);
+});
+it.each(["parent","child"])("enforces the %s cap for linked recovery",async limiting=>{
+  query.mockResolvedValueOnce({rows:[{limit_micros:"1000",occupied_micros:"20",frozen:false}]})
+    .mockResolvedValueOnce({rows:["parent","child"].map(action_id=>({action_id,limit_micros:action_id===limiting?"25":"100",occupied_micros:"20",blocking_prior_request:false}))});
+  await expect(reservePaidCall("owner",input)).rejects.toThrow("task-budget-exhausted");
+  expect(query).toHaveBeenCalledTimes(2);
+});
+it("blocks unknown ancestor fees even without a task cap",async()=>{
+  query.mockResolvedValueOnce({rows:[{limit_micros:"1000",occupied_micros:"20",frozen:false}]})
+    .mockResolvedValueOnce({rows:[{action_id:"parent",limit_micros:null,occupied_micros:"20",blocking_prior_request:true}]});
+  await expect(reservePaidCall("owner",input)).rejects.toThrow("paid-request-already-recorded");
+  expect(query).toHaveBeenCalledTimes(2);
+});
+it("refuses lowering a parent cap below its recovery family occupancy",async()=>{
+  query.mockResolvedValueOnce({rowCount:1,rows:[{id:"parent"}]})
+    .mockResolvedValueOnce({rowCount:1,rows:[{user_id:"owner"}]})
+    .mockResolvedValueOnce({rows:[{action_id:"parent",limit_micros:"100",occupied_micros:"30",blocking_prior_request:false}]});
+  await expect(setTaskSpendBudget("owner","parent",25)).rejects.toThrow("任务预算不能低于已占用预留");
+  expect(query).toHaveBeenCalledTimes(3);
+  expect(query.mock.calls[1][0]).toContain("for update");
 });
 it("retains unknown charges and suspends only the affected tariff if reported charge violates bound",async()=>{
   query.mockResolvedValue({rows:[{reserved_micros:"10",tariff_key:"rule",tariff_version:"v1"}]});

@@ -9,6 +9,7 @@ import type {ForeignCostBound} from "./fx-policy";
 import {allocateCompanyCost,costAttributionSchema,type CostAttribution} from "./cost-allocation";
 import {observationCostAllocation} from "./observation-allocation";
 import {readCompanyCosts} from "./company-cost-repository";
+import {readRecoveryTaskLimits} from "./recovery-task-budget";
 
 /** Check the whole operation so changing a repair batch cannot bypass an unknown request fingerprint. */
 export async function assertProcessingRecoveryCostsKnown(userId: string, operationId: string): Promise<void> {
@@ -44,10 +45,9 @@ export async function reservePaidCallInTransaction(client:import("pg").PoolClien
     }
     if(BigInt(row.occupied_micros)+BigInt(input.maximumChargeMicros)>BigInt(row.limit_micros))throw new BudgetDeniedError("budget-exhausted");
     // The owner lock also serializes task edits and all reservations for this action.
-    const task=await client.query<{limit_micros:string;occupied_micros:string}>(`select t.limit_micros,
-      coalesce((select sum(coalesce(r.occupied_micros,r.reserved_micros)) from paid_call_reservation r where r.user_id=$1 and r.operation_id=$2),0)::text as occupied_micros
-      from task_spend_limit t where t.user_id=$1 and t.action_id::text=$2`,[userId,input.operationId]);
-    if(task.rows[0]&&BigInt(task.rows[0].occupied_micros)+BigInt(input.maximumChargeMicros)>BigInt(task.rows[0].limit_micros))throw new BudgetDeniedError("task-budget-exhausted");
+    const taskLimits=await readRecoveryTaskLimits(client,userId,input.operationId);
+    if(taskLimits.some(task=>task.blocking_prior_request))throw new BudgetDeniedError("paid-request-already-recorded");
+    if(taskLimits.some(task=>task.limit_micros!==null&&BigInt(task.occupied_micros)+BigInt(input.maximumChargeMicros)>BigInt(task.limit_micros)))throw new BudgetDeniedError("task-budget-exhausted");
     const result=await client.query<{id:string}>(`insert into paid_call_reservation(user_id,operation_id,stage,tariff_key,tariff_version,reserved_micros,status,metrics,request_fingerprint)
       values($1,$2,$3,$4,$5,$6,'reserved',$7,$8) returning id`,[userId,input.operationId,input.stage,input.tariffKey,input.tariffVersion,input.maximumChargeMicros,JSON.stringify({inputItems:1,inputBytes:input.requestBytes,modelAttempt:input.modelAttempt??null,foreignCostBound:input.foreignCostBound??null,fxReservationBufferPercent:input.foreignCostBound?5:0,costAttribution,reservationAllocation,outputBytes:null,validOutputItems:null,downstreamUsedItems:null,inputTokens:null,outputTokens:null,apiCredits:null,retries:0,utilizationEfficiency:null,discardedReasonCounts:{},usageBoundary:"single-http-attempt-reserved-before-network",optimizationOpportunity:"Reuse cached output before reserving another paid attempt"}),input.requestFingerprint??null]);
     await client.query("update user_spend_budget set occupied_micros=occupied_micros+$2,updated_at=now() where user_id=$1",[userId,input.maximumChargeMicros]);
@@ -106,15 +106,15 @@ async function auditBudgetChange(client:import("pg").PoolClient,userId:string,op
 export async function readTaskSpendBudget(userId:string,actionId:string){
   const owner=await tenantQuery(userId,"select id from assistant_action where user_id=$1 and id=$2 and action_type='lead-search'",[userId,actionId]);
   if(!owner.length)throw new Error("任务不存在或不属于当前用户");
-  const rows=await tenantQuery(userId,`select t.limit_micros::text,
-    (select coalesce(sum(coalesce(occupied_micros,reserved_micros)),0)::text from paid_call_reservation where user_id=$1 and operation_id=$2::text) as occupied_micros
-    from task_spend_limit t where t.user_id=$1 and t.action_id=$2::uuid`,[userId,actionId]);
+  const rows=await tenantTransaction(userId,client=>readRecoveryTaskLimits(client,userId,actionId));
+  const ownLimit=rows.find(row=>row.action_id===actionId&&row.limit_micros!==null);
+  const inheritedTaskLimits=rows.filter(row=>row.action_id!==actionId&&row.limit_micros!==null);
   const stages=await tenantQuery(userId,`select stage,count(*)::int as calls,sum(reserved_micros)::text as reserved_micros,
     ${COST_SUMMARY_SQL},
     sum(reported_micros)::text as reported_micros,count(*) filter(where reported_micros is null)::int as unknown_bills,
     sum((metrics->>'latencyMs')::bigint)::text as summed_latency_ms
     from paid_call_reservation where user_id=$1 and operation_id=$2 group by stage order by stage`,[userId,actionId]);
-  return {taskLimit:rows[0]??null,stages,companyCosts:await readCompanyCosts(userId,actionId),modelUsage:await readProviderUsageSummary(userId,actionId)};
+  return {taskLimit:ownLimit??null,inheritedTaskLimits,stages,companyCosts:await readCompanyCosts(userId,actionId),modelUsage:await readProviderUsageSummary(userId,actionId)};
 }
 
 export async function setTaskSpendBudget(userId:string,actionId:string,limitMicros:number){
@@ -125,8 +125,10 @@ export async function setTaskSpendBudget(userId:string,actionId:string,limitMicr
     if(!owner.rowCount)throw new Error("任务不存在或不属于当前用户");
     const budget=await client.query("select user_id from user_spend_budget where user_id=$1 for update",[userId]);
     if(!budget.rowCount)throw new Error("请先在任务中心设置用户累计预算");
-    const used=await client.query<{occupied:string}>("select coalesce(sum(coalesce(occupied_micros,reserved_micros)),0)::text as occupied from paid_call_reservation where user_id=$1 and operation_id=$2",[userId,actionId]);
-    if(BigInt(used.rows[0].occupied)>BigInt(limitMicros))throw new Error("任务预算不能低于已占用预留");
+    const family=await readRecoveryTaskLimits(client,userId,actionId);
+    const own=family.find(row=>row.action_id===actionId);
+    if(!own)throw new Error("任务不存在或不属于当前用户");
+    if(BigInt(own.occupied_micros)>BigInt(limitMicros))throw new Error("任务预算不能低于已占用预留");
     const old=await client.query<{limit_micros:string}>("select limit_micros from task_spend_limit where user_id=$1 and action_id=$2",[userId,actionId]);
     await client.query("insert into task_spend_limit(user_id,action_id,limit_micros) values($1,$2,$3) on conflict(user_id,action_id) do update set limit_micros=excluded.limit_micros,updated_at=now()",[userId,actionId,limitMicros]);
     await auditBudgetChange(client,userId,actionId,old.rows[0]?.limit_micros??null,limitMicros,Date.now()-started);
