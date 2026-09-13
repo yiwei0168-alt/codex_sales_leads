@@ -14,7 +14,7 @@ export interface PrimaryChannelSelection {
 }
 
 export const PRIMARY_CHANNEL_POLICY = {
-  version: "primary-business-role-v3",
+  version: "primary-business-role-v4",
   allRolesRetained: "Retain every evidence-supported role; the evidence-correction agent independently determines the main business role.",
   noUpwardDefault: "The original search lane and any upward channel hierarchy are prohibited as primary-role inputs.",
   hybridAllowed: "Use Hybrid only when multiple business-role families are materially co-primary; multiple roles inside one family still require a concrete primary role. Use Unresolved when evidence is insufficient or conflicting.",
@@ -39,6 +39,11 @@ export function selectPrimaryChannel(options: {
   const roles = [...new Set(options.roles)];
   const supportedFamilies = familiesForRoles(roles);
   const primaryRole = options.agentPrimaryRole;
+  if (primaryRole === "Hybrid" && supportedFamilies.length === 0) {
+    return { primaryRole: "Unresolved", primaryFamily: null, primaryChannel: null, supportedFamilies,
+      usedSmallLongTailException: false,
+      reason: "Hybrid had no evidence-supported roles; role correction remains incomplete." };
+  }
   if (primaryRole === "Hybrid" && supportedFamilies.length === 1 && roles.length > 0) {
     const normalizedRole = roles[0];
     return {

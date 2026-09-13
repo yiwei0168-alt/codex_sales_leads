@@ -66,6 +66,12 @@ describe("public role-correction cache fingerprint", () => {
     const rebound = rebindCachedCorrection(current, correction, { "evidence-home": {
       url: "https://example.mx/", contentHash, sourceType: "official-website" } });
     expect(rebound?.reliedEvidenceIds).toEqual(["public-chunk-new-id"]);
+    for (const incomplete of [
+      { ...correction, model: "deterministic-fallback" },
+      { ...correction, completionStatus: "retry-required" as const },
+      { ...correction, primaryRole: "Hybrid" as const, resolvedRoles: [], resolvedFamilies: [], primaryFamily: null },
+    ]) expect(rebindCachedCorrection(current, incomplete, { "evidence-home": {
+      url: "https://example.mx/", contentHash, sourceType: "official-website" } })).toBeNull();
     expect(rebound?.findings[0].evidenceIds).toEqual(["public-chunk-new-id"]);
     expect(rebindCachedCorrection(current, correction, { "evidence-home": {
       url: "https://example.mx/", contentHash: "changed", sourceType: "official-website" } })).toBeNull();

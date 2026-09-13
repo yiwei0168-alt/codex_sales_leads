@@ -9,7 +9,7 @@ export function SearchTaskDetail({ action }: { action: AssistantActionDto }) {
   const counts = taskCounts(action.result);
   const partial = action.status === "completed" && counts.accepted !== null && counts.accepted < action.payload.targetCount;
   const continuation=action.result.continuation&&typeof action.result.continuation==='object'?action.result.continuation as Record<string,unknown>:null;
-  const stopReason=({"target-met":"目标已满足","confirmed-exhaustion":"新增有效候选持续不足，已达到停滞结束条件","provider-unavailable":"搜索服务不可用","maximum-rounds":"达到搜索轮次上限"} as Record<string,string>)[String(action.result.targetCompletionReason)];
+  const stopReason=({"target-met":"目标已满足","confirmed-exhaustion":"新增有效候选持续不足，已达到停滞结束条件","provider-unavailable":"搜索服务不可用","maximum-rounds":"达到搜索轮次上限","processing-incomplete":"校正或评分未完成，已有结果和费用保留"} as Record<string,string>)[String(action.result.targetCompletionReason)];
   return <section className="panel">
     <h2>{action.payload.countryName} · 销售线索搜索</h2>
     <p>{partial ? "运行结束，目标未填满" : taskStatusLabels[action.status]} · 目标 {action.payload.targetCount} 家</p>

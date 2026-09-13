@@ -11,6 +11,7 @@ import { LeadAssessmentReviewAgent } from "./assessment-review-agent";
 import { LeadEvidenceCorrectionAgent } from "./evidence-correction-agent";
 import { getGlobalWorkspaceId, persistLeadWorkflowResult, updateWorkflowPhase } from "./persistence";
 import { checkpointInvocation } from "./pause";
+import { correctionCompletion } from "./correction-completion";
 import { continuationExclusions } from "@/lib/assistant/search-continuation";
 import { LeadHandoffAssembler } from "./handoff-assembler";
 import { buildLeadMarketPlaybook } from "./playbook";
@@ -121,7 +122,8 @@ function mergeByCandidateId<T extends { candidateId: string }>(previous: T[], cu
 }
 
 function candidateMatchesRequestedRole(candidate: CorrectedLeadWorkflowCandidate, plan: LeadSearchPlan): boolean {
-  return candidate.correction.primaryRole !== "Hybrid" && candidate.correction.primaryRole !== "Unresolved"
+  return correctionCompletion(candidate.correction) === "completed"
+    && candidate.correction.primaryRole !== "Hybrid" && candidate.correction.primaryRole !== "Unresolved"
     && plan.roles.includes(candidate.correction.primaryRole);
 }
 
@@ -247,7 +249,9 @@ export function buildLeadWorkflowGraph(
       const startedAt = Date.now();
       await phase(dependencies, state, "correcting-evidence");
       const corrected = await dependencies.correctionAgent.correct(state.candidates, state.plan);
-      const valid = corrected.candidates.filter((candidate) => candidate.correction.resolvedRoles.length > 0).length;
+      const valid = corrected.candidates.filter((candidate) => correctionCompletion(candidate.correction) === "completed").length;
+      const retryRequired = corrected.candidates.filter(candidate => correctionCompletion(candidate.correction) === "retry-required").length;
+      const unresolved = corrected.candidates.filter(candidate => correctionCompletion(candidate.correction) === "unresolved").length;
       const inScope = corrected.candidates.filter((candidate) => candidateMatchesRequestedRole(candidate, state.plan)).length;
       const correctedCandidates = mergeByCandidateId(state.correctedCandidates ?? [], corrected.candidates);
       const metric = completedStageMetric({ stage: "correct_candidates", startedAt,
@@ -258,7 +262,8 @@ export function buildLeadWorkflowGraph(
           providerAttempts: corrected.providerMetrics?.attempts ?? 0,
           retries: corrected.providerMetrics?.retries ?? 0,
           providerLatencyMs: corrected.providerMetrics?.latencyMs ?? 0,
-          correctedOutOfRole: corrected.candidates.length - inScope } });
+          retryRequired, unresolved,
+          correctedOutOfRole: valid - inScope } });
       return {
         phase: "correcting-evidence" as const,
         correctedCandidates,
@@ -340,19 +345,28 @@ export function buildLeadWorkflowGraph(
       const completedFreshCalls = metricsAvailable
         ? Number(discoveryMetric?.metadata.completedFreshCalls ?? 0) : 0;
       const unavailableCalls = metricsAvailable ? Number(discoveryMetric?.metadata.unavailableCalls ?? 0) : 0;
+      const correctionIncomplete = state.correctedCandidates.filter(candidate =>
+        correctionCompletion(candidate.correction) === "retry-required").length
+        + state.candidates.filter(candidate => !state.correctedCandidates.some(corrected =>
+          corrected.candidateId === candidate.candidateId || corrected.domain === candidate.domain
+          || corrected.correction.originalDomain === candidate.domain)).length;
+      const scoringIncomplete = inScopeCandidates.length - completed;
+      const hasIncompleteProcessing = correctionIncomplete + scoringIncomplete > 0;
       const consecutiveNoFinalRounds = nextNoFinalRoundCount(state.consecutiveNoFinalRounds ?? 0,
-        { finalEligibleAdded, completedFreshCalls, hadProviderFailureOrCircuit: unavailableCalls > 0 });
+        { finalEligibleAdded, completedFreshCalls, hadProviderFailureOrCircuit: unavailableCalls > 0 || hasIncompleteProcessing });
       const targetDecision = metricsAvailable ? targetCompletionDecision({ acceptedCount,
         targetCount: state.plan.targetCount, completedFreshCalls,
+        hasIncompleteProcessing,
         hadProviderFailureOrCircuit: unavailableCalls > 0,
         consecutiveNoFinalRounds, round: Math.max(0, (state.discoveryRound ?? 1) - 1), maximumRounds: 5 })
-        : { complete: true as const, reason: undefined };
+        : { complete: true as const, reason: hasIncompleteProcessing ? "processing-incomplete" as const : undefined };
       const metric = { ...completedStageMetric({ stage: "score_candidates", startedAt,
         input: inScopeCandidates, output: assessments, inputItems: inScopeCandidates.length,
         outputItems: assessments.length, generatedArtifacts: evaluated.assessments.length,
         validArtifacts: newlyCompleted, downstreamUsedArtifacts: newlyCompleted,
         metadata: { cacheHits: cached.size, cacheMisses: missing.length,cachePersistenceFailed,batchCacheSaveAttempts,reusedCompletedArtifacts:completed-newlyCompleted,
           outOfRoleNotScored: state.correctedCandidates.length - inScopeCandidates.length,
+          correctionIncomplete, scoringIncomplete,
           acceptedCount, finalEligibleAdded, consecutiveNoFinalRounds,
           targetShouldContinue: !targetDecision.complete, targetCompletionReason: targetDecision.reason } }),
       status: missing.length === 0 ? "cache-hit" as const : "completed" as const };

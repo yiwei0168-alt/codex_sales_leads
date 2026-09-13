@@ -3,6 +3,12 @@ import { describe, expect, it } from "vitest";
 import { nextNoFinalRoundCount, plannedCandidatePool, targetCompletionDecision } from "./target-completion-policy";
 
 describe("target completion policy", () => {
+  it("preserves incomplete processing even after successful discovery and apparent exhaustion", () => {
+    expect(targetCompletionDecision({ acceptedCount: 0, targetCount: 30, completedFreshCalls: 3,
+      hadProviderFailureOrCircuit: false, hasIncompleteProcessing: true,
+      consecutiveNoFinalRounds: 5, round: 4, maximumRounds: 5 }))
+      .toEqual({ complete: true, reason: "processing-incomplete" });
+  });
   it("starts at 1.5x and expands from the observed MX Retail end-to-end yield", () => {
     expect(plannedCandidatePool({ targetCount: 30, acceptedCount: 0, discoveredUniqueCount: 0, round: 0 })).toBe(45);
     expect(plannedCandidatePool({ targetCount: 30, acceptedCount: 6, discoveredUniqueCount: 23, round: 1 })).toBe(96);

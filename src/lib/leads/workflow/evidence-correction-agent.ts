@@ -402,6 +402,8 @@ export class LeadEvidenceCorrectionAgent {
         originalOfficialWebsiteUrl: candidate.officialWebsiteUrl,
         resolvedRoles: roles,
         resolvedFamilies: families,
+        completionStatus: value.primaryBusinessRole === "Hybrid" && roles.length === 0
+          ? "retry-required" : primary.primaryRole === "Unresolved" ? "unresolved" : "completed",
         primaryRole: primary.primaryRole,
         primaryFamily: primary.primaryFamily,
         primaryChannelReason: primary.reason,
@@ -485,6 +487,7 @@ export class LeadEvidenceCorrectionAgent {
         reasons: ["Deterministic evidence fallback was used because model correction did not complete."],
         confidence: roles.length > 0 ? 50 : 20,
         model: "deterministic-fallback",
+        completionStatus: "retry-required",
         promptVersion: LEAD_EVIDENCE_CORRECTION_PROMPT_VERSION,
         escalated: false,
         warnings: [warning],
@@ -610,6 +613,11 @@ export class LeadEvidenceCorrectionAgent {
         evidence,
         correction: {
           ...existing.correction,
+          completionStatus: existing.correction.completionStatus === "retry-required"
+            || candidate.correction.completionStatus === "retry-required"
+            || existing.correction.model === "deterministic-fallback"
+            || candidate.correction.model === "deterministic-fallback"
+            ? "retry-required" : primary.primaryRole === "Unresolved" ? "unresolved" : "completed",
           resolvedRoles: roles,
           resolvedFamilies: roleFamilies(roles),
           primaryRole: primary.primaryRole,

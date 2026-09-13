@@ -163,6 +163,8 @@ export interface LeadDiscoveryOccurrence {
 }
 
 export interface LeadCandidateCorrection {
+  /** Processing completion is independent of business qualification. Legacy rows are validated on read. */
+  completionStatus?: "completed" | "unresolved" | "retry-required";
   originalCompanyName: string;
   originalDomain: string;
   originalOfficialWebsiteUrl: string;
@@ -365,6 +367,7 @@ export interface LeadDevelopmentHandoff {
 }
 
 export interface LeadWorkflowResult {
+  targetCompletionReason?: "target-met" | "confirmed-exhaustion" | "provider-unavailable" | "maximum-rounds" | "processing-incomplete";
   deliveryCounts?:{added:number;updated:number;roleChanged:number};
   runId: string;
   countryCode: string;
@@ -434,7 +437,7 @@ export interface LeadWorkflowState {
   consecutiveNoFinalRounds?: number;
   acceptedCandidateCount?: number;
   targetShouldContinue?: boolean;
-  targetCompletionReason?: "target-met" | "confirmed-exhaustion" | "provider-unavailable" | "maximum-rounds";
+  targetCompletionReason?: "target-met" | "confirmed-exhaustion" | "provider-unavailable" | "maximum-rounds" | "processing-incomplete";
   assessmentReviews: LeadAssessmentReview[];
   handoffs: LeadDevelopmentHandoff[];
   creditsUsed: number;

@@ -4,6 +4,7 @@ import type { LeadSearchPlan } from "@/lib/assistant/types";
 import { query, transaction } from "@/lib/rag/db";
 import { isCurrentLeadScoringEvidence } from "@/lib/leads/evidence-snapshot";
 import { PRIMARY_CHANNEL_POLICY } from "@/lib/leads/primary-channel";
+import { correctionCompletion } from "./correction-completion";
 
 import type { CorrectedLeadWorkflowCandidate, LeadCandidateCorrection,
   LeadWorkflowCandidate } from "./types";
@@ -43,6 +44,7 @@ function evidenceKey(item: { url: string; contentHash?: string; sourceType: stri
 
 export function rebindCachedCorrection(candidate: LeadWorkflowCandidate, correction: LeadCandidateCorrection,
   bindings: CorrectionCacheRow["evidence_bindings"]): LeadCandidateCorrection | null {
+  if (correctionCompletion(correction) === "retry-required") return null;
   const currentByKey = new Map(candidate.evidence.filter((item) =>
     isCurrentLeadScoringEvidence(item, candidate.evidenceSnapshotRunId))
     .map((item) => [evidenceKey(item), item.id]));
@@ -100,6 +102,7 @@ export async function loadPublicRoleCorrection(candidate: LeadWorkflowCandidate,
 
 export async function savePublicRoleCorrection(candidate: CorrectedLeadWorkflowCandidate,
   plan: LeadSearchPlan, promptVersion: string, sourceRunId?: string,executionContract?:string): Promise<void> {
+  if (correctionCompletion(candidate.correction) === "retry-required") return;
   if(!executionContract||!/^[a-f0-9]{64}$/.test(executionContract))return;
   const relied = new Set(candidate.correction.reliedEvidenceIds);
   const cited = candidate.evidence.filter((item) => relied.has(item.id));

@@ -1,7 +1,7 @@
 import { ACTIVE_HYBRID_SEARCH_POLICY } from "./hybrid-search-policy";
 
 export type TargetCompletionReason = "target-met" | "confirmed-exhaustion"
-  | "provider-unavailable" | "maximum-rounds";
+  | "provider-unavailable" | "maximum-rounds" | "processing-incomplete";
 
 export function plannedCandidatePool(input: { targetCount: number; acceptedCount: number;
   discoveredUniqueCount: number; round: number }): number {
@@ -23,8 +23,9 @@ export function nextNoFinalRoundCount(previous: number, input: {
 
 export function targetCompletionDecision(input: { acceptedCount: number; targetCount: number;
   completedFreshCalls: number; hadProviderFailureOrCircuit: boolean; consecutiveNoFinalRounds: number;
-  round: number; maximumRounds: number }): { complete: boolean; reason?: TargetCompletionReason } {
+  round: number; maximumRounds: number; hasIncompleteProcessing?: boolean }): { complete: boolean; reason?: TargetCompletionReason } {
   if (input.acceptedCount >= input.targetCount) return { complete: true, reason: "target-met" };
+  if (input.hasIncompleteProcessing) return { complete: true, reason: "processing-incomplete" };
   if (input.completedFreshCalls === 0 && input.hadProviderFailureOrCircuit) {
     return { complete: true, reason: "provider-unavailable" };
   }

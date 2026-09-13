@@ -1,5 +1,7 @@
 # Product UI v1.1 implementation workflow
 
+2026-09-13 阶段26：搜索详情支持 processing-incomplete，显示“校正或评分未完成，已有结果和费用保留”。该状态描述处理缺项，不代表公司不合格或市场耗尽。O01 恢复入口及任务整体业务状态仍未验收完成，见当前验收矩阵。
+
 ## 2026-09-13 实施阶段25：OpenRouter完整报告核销
 
 实现A05/A20：仅固定OpenRouter HTTPS chat/completions即时响应、请求与响应模型一致、唯一gen请求ID、完整token合计、终止标记和明确`is_byok=false`的`usage.cost`进入可信追加报告；数据库再核验请求哈希唯一匹配后才能核销。缺字段、BYOK、非固定端点、额外工具/多模态或来源过期保留原预留。来源核验2026-09-13，最迟2026-09-20T00:00Z失效。`cost_details`不重复相加；十进制美元一次向上到微美元，避免0.07浮点乘法多计1微美元。截断输出可有完整财务报告，但仍不是有效业务结果。核销写失败不重放已购输出，历史未知费用不追溯释放。另补OpenRouter cache_write_tokens数值观测。
