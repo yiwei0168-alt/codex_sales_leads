@@ -1,5 +1,7 @@
 # Network Channel Copilot PRD v1.1
 
+阶段25更新：用户明确采纳O01–O05（D13），覆盖下文旧待采纳状态，五项仍待实现/验收。A05/A20已接入OpenRouter完整非BYOK即时报告追加核销，真实数据库合成入口验证通过；不据此开放未核验费用上界。761 tests/170 files、typecheck及生产build通过，无新增真实付费，原验收占用只读核验USD12.324404/30。完整范围及剩余证据见[当前矩阵](docs/CURRENT_ACCEPTANCE_MATRIX_2026-09-13.md)。
+
 ## 2026-09-13 本轮执行边界
 
 按确认规则A21/D12完成候选不足离线调查及已授权本地生产验收，见[规则登记](docs/CONFIRMED_PRODUCT_RULES.md)、[当前验收矩阵](docs/CURRENT_ACCEPTANCE_MATRIX_2026-09-13.md)及[流失报告](docs/COLOMBIA_CANDIDATE_ATTRITION_2026-09-13.md)。不新增实验/搜索/模型盲审用于调查；O01–O05待采纳，不进入产品。最终合格数为目标，缺口及停止原因明确展示，不以重复或降标准填量。真实验收累计USD30不重置，付费前核验原占用；新市场及云部署不在范围。确认不等于实现或验收通过，当前整体尚未完成。

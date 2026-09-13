@@ -1,5 +1,11 @@
 # Budget contract v1.0.0 — 2026-09-12
 
+## 2026-09-13 OpenRouter inline report admission
+
+The trusted transport can append a complete provider report for the fixed HTTPS chat-completions endpoint only. Request and reported model must match; a unique generation ID, consistent token totals, terminal finish reason and explicit `usage.is_byok=false` are required. The SQL reconciler independently verifies unique ownership/request matching before releasing occupancy. `usage.cost` is the credits charge; cost-details components are not additive. Missing/BYOK/expired-source reports retain reservations. Source verification expires 2026-09-20T00:00Z. Financial completion does not validate truncated model output. History is append-only; report-write failure never replays a paid response. No historical charge was released.
+
+Official sources: [usage accounting](https://openrouter.ai/docs/cookbook/administration/usage-accounting), [ChatUsage schema](https://openrouter.ai/openapi.json), [USD credits](https://openrouter.ai/docs/faq). Real SQL integration used in-memory synthetic transport and cleaned up isolated fixtures, with no provider call. 761 tests/170 files and typecheck passed. The real acceptance ledger remains USD12.324404/30; tariffs for OpenRouter and other pending endpoints still fail closed until complete upper bounds are verified. See the [current matrix](CURRENT_ACCEPTANCE_MATRIX_2026-09-13.md).
+
 User approved conservative reservation and fail-closed behavior for missing rates/bounds. This document describes implementation coverage, not a provider billing guarantee.
 
 ## Current coverage

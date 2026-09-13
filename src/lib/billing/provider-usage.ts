@@ -7,6 +7,7 @@ export const PROVIDER_USAGE_FIELDS = [
   "prompt_cache_hit_tokens", "prompt_cache_miss_tokens",
   "cache_read_input_tokens", "cache_creation_input_tokens",
   "prompt_tokens_details.cached_tokens", "completion_tokens_details.reasoning_tokens",
+  "prompt_tokens_details.cache_write_tokens",
   "input_tokens_details.cached_tokens", "output_tokens_details.reasoning_tokens",
   "cache_creation.ephemeral_5m_input_tokens", "cache_creation.ephemeral_1h_input_tokens",
   "output_tokens_details.thinking_tokens",

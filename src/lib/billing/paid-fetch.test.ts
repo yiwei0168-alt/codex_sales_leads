@@ -1,7 +1,8 @@
 import {beforeEach,expect,it,vi} from "vitest";
 vi.mock("@/lib/billing/denial-metrics",()=>({recordBudgetDenial:vi.fn().mockResolvedValue(undefined)}));
-const mocks=vi.hoisted(()=>({reserve:vi.fn(),settle:vi.fn(),quote:vi.fn()}));
+const mocks=vi.hoisted(()=>({reserve:vi.fn(),settle:vi.fn(),quote:vi.fn(),reconcile:vi.fn()}));
 vi.mock("./repository",()=>({reservePaidCall:mocks.reserve,settlePaidCall:mocks.settle}));
+vi.mock("./reconciliation",()=>({recordVerifiedCostObservation:mocks.reconcile}));
 vi.mock("./policy",async original=>({...await original<typeof import("./policy")>(),quoteRequest:mocks.quote}));
 import {budgetedFetch} from "./paid-fetch";
 import {withSpendContext} from "./context";
@@ -11,8 +12,35 @@ import {ResilientAiProvider} from "@/providers/resilient-ai";
 import {recordBudgetDenial} from "./denial-metrics";
 import {withModelAttempt} from "./model-attempt-context";
 import {withCompanyCostAttribution,companyCostKey} from "./company-cost-context";
+import {OPENROUTER_COST_REPORT_SOURCE} from "./openrouter-cost-report";
 const scope={userId:"user",operationId:"action",stage:"score"};
 const init={method:"POST",headers:{authorization:"Bearer fixture-secret"},body:JSON.stringify({model:"test",max_tokens:100,messages:[{content:"private company input"}]})};
+it("appends a trusted OpenRouter report only after storing the response request hash",async()=>{
+  vi.spyOn(Date,"now").mockReturnValue(Date.parse(OPENROUTER_COST_REPORT_SOURCE.verifiedAt)+1000);
+  try{
+    const result={id:"gen-trusted-fixture",model:"openai/test",object:"chat.completion",choices:[{finish_reason:"stop"}],
+      usage:{cost:0.07,is_byok:false,prompt_tokens:1,completion_tokens:2,total_tokens:3}};
+    const transport=vi.fn().mockResolvedValue(Response.json(result));
+    mocks.reconcile.mockImplementation(async()=>{expect(mocks.settle).toHaveBeenCalledOnce();});
+    await withSpendContext(scope,()=>budgetedFetch(transport)("https://openrouter.ai/api/v1/chat/completions",{
+      ...init,body:JSON.stringify({model:"openai/test",max_tokens:100,messages:[{role:"user",content:"private company input"}]})}));
+    expect(mocks.reconcile).toHaveBeenCalledWith("user","reservation",expect.objectContaining({amountMicros:70000,complete:true,
+      providerRequestHash:mocks.settle.mock.calls[0][2].providerUsage.providerRequestHash}));
+    expect(transport).toHaveBeenCalledOnce();
+    expect(JSON.stringify(mocks.reconcile.mock.calls)).not.toMatch(/private|fixture-secret|gen-trusted/);
+  }finally{vi.restoreAllMocks();}
+});
+it("a trusted-report persistence failure returns the purchased response without another HTTP request",async()=>{
+  vi.spyOn(Date,"now").mockReturnValue(Date.parse(OPENROUTER_COST_REPORT_SOURCE.verifiedAt)+1000);
+  try{
+    mocks.reconcile.mockRejectedValue(new Error("offline database"));
+    const transport=vi.fn().mockResolvedValue(Response.json({id:"gen-trusted-fixture",model:"openai/test",object:"chat.completion",
+      choices:[{finish_reason:"stop"}],usage:{cost:0.001,is_byok:false,prompt_tokens:1,completion_tokens:2,total_tokens:3}}));
+    const response=await withSpendContext(scope,()=>budgetedFetch(transport)("https://openrouter.ai/api/v1/chat/completions",{
+      ...init,body:JSON.stringify({model:"openai/test",max_tokens:100,messages:[{role:"user",content:"private"}]})}));
+    expect(response.ok).toBe(true);expect(mocks.reconcile).toHaveBeenCalledOnce();expect(transport).toHaveBeenCalledOnce();
+  }finally{vi.restoreAllMocks();}
+});
 it("persists actual company attribution before a failed HTTP attempt without changing model input",async()=>{
   const transport=vi.fn().mockRejectedValue(new Error("network unknown"));
   await expect(withSpendContext(scope,()=>withCompanyCostAttribution([{domain:"example.test"}],"MX",()=>budgetedFetch(transport)("https://example.test/chat",init)))).rejects.toBeInstanceOf(PaidCallOutcomeUnknownError);

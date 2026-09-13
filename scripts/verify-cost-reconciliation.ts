@@ -15,15 +15,20 @@ const {hashPassword}=await import("../src/lib/auth/password");
 const {reservePaidCall,settlePaidCall,setSpendBudget,readSpendBudget}=await import("../src/lib/billing/repository");
 const {recordVerifiedCostObservation}=await import("../src/lib/billing/reconciliation");
 const {providerUsageObservation}=await import("../src/lib/billing/provider-usage");
+const {budgetedFetch}=await import("../src/lib/billing/paid-fetch");
+const {withSpendContext}=await import("../src/lib/billing/context");
+const {openRouterInlineCostReport}=await import("../src/lib/billing/openrouter-cost-report");
 const userId=randomUUID(),email=`billing-cost-${userId}@example.invalid`;let created=false;
 const hash=(text:string)=>createHash("sha256").update(text).digest("hex");
 try{
+  if(!process.argv.includes("--skip-migration")){
   const client=await admin.connect();
   try{
     await client.query("begin");
     await client.query(await readFile(new URL("../db/migrations/052_paid_cost_reconciliation.sql",import.meta.url),"utf8"));
     await client.query("commit");
   }catch(error){await client.query("rollback");throw error;}finally{client.release();}
+  }
   await admin.query("insert into app_user(id,email,display_name,password_hash,role,status) values($1,$2,'Cost reconciliation fixture',$3,'member','active')",[userId,email,hashPassword(randomBytes(24).toString("hex"))]);created=true;
   await setSpendBudget(userId,1000);
   const request={operationId:randomUUID(),stage:"synthetic-cost",tariffKey:"synthetic-rule",tariffVersion:"fixture-v1",maximumChargeMicros:100,requestBytes:10,
@@ -76,6 +81,42 @@ try{
   assert.equal((await read()).occupied,"190");
   await assert.rejects(reservePaidCall(userId,{...request,tariffKey:"overrun-rule"}),/tariff-suspended/);
   await reservePaidCall(userId,{...request,tariffKey:"unaffected-rule"});
+  // Actual production fetch -> settlement -> trusted adapter -> SQL, with an
+  // injected in-memory response. This transport cannot make a provider request.
+  const operationId=randomUUID();
+  const wire={model:"openai/synthetic",max_completion_tokens:10,messages:[{role:"user",content:"synthetic"}]};
+  const body={id:`gen-${randomUUID()}`,model:wire.model,object:"chat.completion",choices:[{finish_reason:"stop"}],
+    usage:{cost:0.000007,is_byok:false,prompt_tokens:2,completion_tokens:1,total_tokens:3}};
+  let syntheticTransportCalls=0;
+  const transport:typeof fetch=async()=>{syntheticTransportCalls++;return Response.json(body);};
+  const bound={key:"synthetic-openrouter-report",origin:"https://openrouter.ai",pathname:"/api/v1/chat/completions",model:wire.model,
+    maximumChargeMicros:100,maximumRequestBytes:4096,maximumOutputTokens:10,
+    boundDescription:"Synthetic transport only, never a real provider tariff or authorization.",reference:"https://openrouter.ai/docs/cookbook/administration/usage-accounting",
+    verifiedAt:new Date(Date.now()-1000).toISOString(),expiresAt:new Date(Date.now()+60000).toISOString()};
+  const scope={userId,operationId,stage:"synthetic-openrouter-inline-report",tariffPolicy:{version:"synthetic-inline-v1",rules:[bound]},costAttribution:request.costAttribution};
+  await withSpendContext(scope,()=>budgetedFetch(transport)(`${bound.origin}${bound.pathname}`,{method:"POST",body:JSON.stringify(wire)}));
+  assert.equal(syntheticTransportCalls,1);
+  const inline=await tenantQuery<{id:string;occupied:string;settled_source:string}>(userId,
+    "select id,occupied_micros::text as occupied,settled_source from paid_call_reservation where user_id=$1 and operation_id=$2",[userId,operationId]);
+  assert.equal(inline.length,1);assert.equal(inline[0].occupied,"7");assert.equal(inline[0].settled_source,"provider-report");
+  const trusted=openRouterInlineCostReport({url:new URL(`${bound.origin}${bound.pathname}`),method:"POST",httpStatus:200,request:wire,response:body});
+  assert.ok(trusted);
+  assert.equal((await recordVerifiedCostObservation(userId,inline[0].id,trusted)).duplicate,true);
+  const inlineObservations=await tenantQuery<{complete:boolean;uniquely_matched:boolean;amount:string}>(userId,
+    "select complete,uniquely_matched,amount_micros::text as amount from paid_cost_observation where user_id=$1 and reservation_id=$2 order by complete",[userId,inline[0].id]);
+  assert.deepEqual(inlineObservations,[{complete:false,uniquely_matched:false,amount:"7"},{complete:true,uniquely_matched:true,amount:"7"}]);
+  const duplicateId=await reservePaidCall(userId,{...request,operationId:randomUUID(),tariffKey:bound.key});
+  await settlePaidCall(userId,duplicateId,{reportedMicros:7,latencyMs:0,responseBytes:1,inputTokens:2,outputTokens:1,succeeded:true,providerUsage:providerUsageObservation(body)});
+  const unmatched=await recordVerifiedCostObservation(userId,duplicateId,trusted);
+  assert.equal(unmatched.releasedMicros,0);
+  await assert.rejects(recordVerifiedCostObservation(randomUUID(),inline[0].id,trusted),/Budget owner missing/);
+  const unknownOperation=randomUUID();
+  await withSpendContext({...scope,operationId:unknownOperation},()=>budgetedFetch(async()=>Response.json({...body,id:`gen-${randomUUID()}`,
+    usage:{...body.usage,is_byok:true}}))(`${bound.origin}${bound.pathname}`,{method:"POST",body:JSON.stringify(wire)}));
+  const retained=await tenantQuery<{occupied:string}>(userId,"select occupied_micros::text as occupied from paid_call_reservation where user_id=$1 and operation_id=$2",[userId,unknownOperation]);
+  assert.equal(retained[0].occupied,null); // null => full original reservation, not zero
+  console.log(JSON.stringify({inlineReportAdapterToSql:true,perRequestByokRequired:true,duplicateGenerationRetained:true,
+    duplicateReportIdempotent:true,unmatchedOwnerRejected:true,realProviderCalls:0}));
   console.log(JSON.stringify({migration:"052",estimateRetained:true,ambiguousMatchRetained:true,concurrentReleaseOnce:true,invoicePriority:true,appendOnlyHistory:true,overrunRuleOnly:true,originalReservationPreserved:true,separateCostBasisAllocationConserved:true,storedCompanyAttributionPreserved:true,realProviderCalls:0,actualModelCostUsd:0,fixturesOnly:true}));
 }finally{
   if(created){

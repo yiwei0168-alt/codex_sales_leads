@@ -1,5 +1,17 @@
 # Local production acceptance — 2026-09-12
 
+## 2026-09-13 实施阶段25：OpenRouter完整报告核销
+
+实现A05/A20：仅固定OpenRouter HTTPS chat/completions即时响应、请求与响应模型一致、唯一gen请求ID、完整token合计、终止标记和明确`is_byok=false`的`usage.cost`进入可信追加报告；数据库再核验请求哈希唯一匹配后才能核销。缺字段、BYOK、非固定端点、额外工具/多模态或来源过期保留原预留。来源核验2026-09-13，最迟2026-09-20T00:00Z失效。`cost_details`不重复相加；十进制美元一次向上到微美元，避免0.07浮点乘法多计1微美元。截断输出可有完整财务报告，但仍不是有效业务结果。核销写失败不重放已购输出，历史未知费用不追溯释放。另补OpenRouter cache_write_tokens数值观测。
+
+依据：[官方Usage Accounting](https://openrouter.ai/docs/cookbook/administration/usage-accounting)、[OpenAPI ChatUsage](https://openrouter.ai/openapi.json)、[美元credits说明](https://openrouter.ai/docs/faq)。实际接入响应来源与仅凭用户填写金额严格区分；不是发票核验或全服务商报告支持。
+
+验证：761 tests/170 files、typecheck通过；`verify-cost-reconciliation.ts --skip-migration`以真实数据库和内存合成响应验证入口到SQL、并发仅释放一次、重复报告幂等、重复genID不释放、BYOK保留、跨用户拒绝、追加历史/发票优先/原公司分摊守恒；合成账户数据已清理，没有改数据库结构或客户数据。只读预算状态为USD12.324404/30，剩余USD17.675596，6笔费用仍未知。模型/搜索/SMTP新增调用和实际付费均0。生产完整业务、网关费用上界、共享成本/P06/采用遥测等仍待完成。
+
+效率：每次仅复用已有响应，报告输入1、可验证输出1、唯一核销消费至多1；记录核销延迟、重试0、未匹配原因、利用率，原token/API额度/请求费用独立保留。未匹配及缺失报告不伪造0费用；新增报告解析token/API成本0，无额外服务商查询。具体机会：完整报告可释放过度预留，减少保守预算阻挡，但本阶段无真实报告释放或已实现节省率。
+
+用户本阶段明确采纳O01–O05（D13），覆盖下文旧待确认状态；只是批准，五项实现/验收尚未完成，见当前矩阵。
+
 ## 2026-09-13 当前调查与验收入口
 
 本轮范围按确认规则 A21/D12 执行。[当前唯一验收矩阵](CURRENT_ACCEPTANCE_MATRIX_2026-09-13.md) 覆盖下文历史的当前状态描述；旧失败与旧测试数量仅作阶段历史。模型连通性和 SMTP 发送/用户确认收件已通过，不因恢复而重测。整体仍未通过。
