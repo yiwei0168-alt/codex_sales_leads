@@ -9,8 +9,10 @@ if(!app||!adminUrl)throw new Error("Both database connections required");
 const a=new URL(app),b=new URL(adminUrl);
 if(a.hostname!==b.hostname||(a.port||'5432')!==(b.port||'5432')||a.pathname!==b.pathname)throw new Error("Database target mismatch");
 const admin=new Pool({connectionString:databaseConnectionString(adminUrl),ssl:databaseSslConfiguration(adminUrl)});
-const {getPool,tenantQuery}=await import("../src/lib/rag/db");
-const {persistLeadWorkflowResult}=await import("../src/lib/leads/workflow/persistence");
+const {getPool,tenantQuery,tenantTransaction}=await import("../src/lib/rag/db");
+const {persistLeadWorkflowResult,saveCompany}=await import("../src/lib/leads/workflow/persistence");
+const {updateCompanyState}=await import("../src/lib/sales/repository");
+const {materializeCompanyMarket}=await import("../src/lib/sales/company-market-state");
 const {persistenceInputFingerprint,RESULT_PERSISTENCE_IDENTITY_VERSION}=await import("../src/lib/leads/workflow/persistence-identity");
 const {completedStageMetric}=await import("../src/lib/leads/workflow/workflow-telemetry");
 const {setSpendBudget,reservePaidCall}=await import("../src/lib/billing/repository");
@@ -94,11 +96,44 @@ try{
   assert.deepEqual(rows.map(row=>row.country_code),countries);
   assert.equal(new Set(rows.map(row=>row.company_id)).size,1);
   for(const row of rows){assert.equal(row.record.country,row.country_code);assert.equal(row.record.opportunityStage,'Discovered');assert.equal(row.revision,'1');}
+  const countryBefore=await tenantQuery<{candidate_id:string;record:import("../src/lib/domain").CompanyRecord}>(userId,
+    "select candidate_id,record from workspace_company_market where workspace_id=$1 and country_code='CO'",[workspaceId]);
+  assert.equal(countryBefore.length,1);
+  const edited=await updateCompanyState(countryBefore[0].candidate_id,{primaryBusinessRole:"SI",accountTier:"KA",
+    opportunityStage:"Contacted",nextAction:"Synthetic user follow-up"},userId);
+  assert.equal(edited.primaryBusinessRole,"SI");assert.equal(edited.accountTier,"KA");
+  const reassessmentRunId=randomUUID();
+  await admin.query("insert into lead_search_run(id,workspace_id,provider,target_count,country_code,graph_thread_id,status) values($1,$2,'fixture',1,'CO',$3,'running')",
+    [reassessmentRunId,workspaceId,`reassessment:${randomUUID()}`]);
+  const reassessment={...countryBefore[0].record,fitScore:84,primaryBusinessRole:"Distributor" as const,
+    accountTier:"Priority Distributor" as const,opportunityStage:"Discovered" as const,
+    nextAction:"Synthetic new agent action",searchRunId:reassessmentRunId};
+  const merge=await tenantTransaction(userId,client=>saveCompany(client,workspaceId,reassessment,"CO",reassessmentRunId));
+  assert.deepEqual(merge,{added:0,updated:1,roleChanged:0});
+  const after=await tenantQuery<import("../src/lib/sales/company-market-state").CompanyMarketRow>(userId,
+    "select * from workspace_company_market where workspace_id=$1 order by country_code",[workspaceId]);
+  const co=after.find(row=>row.country_code==="CO")!,mx=after.find(row=>row.country_code==="MX")!;
+  assert.equal(co.record.fitScore,84);assert.equal(co.search_run_id,reassessmentRunId);
+  assert.equal(co.record.assessmentNeedsRefresh,true);
+  assert.equal(co.user_overrides.primaryBusinessRole,"SI");assert.equal(co.user_overrides.accountTier,"KA");
+  assert.equal(co.user_overrides.opportunityStage,"Contacted");
+  const visible=materializeCompanyMarket(co);
+  assert.equal(visible.primaryBusinessRole,"SI");assert.equal(visible.accountTier,"KA");
+  assert.equal(visible.opportunityStage,"Contacted");assert.equal(visible.nextAction,"Synthetic user follow-up");
+  assert.equal(visible.fitScore,84);assert.equal(visible.assessmentNeedsRefresh,true);
+  assert.equal(mx.record.fitScore,79);assert.equal(materializeCompanyMarket(mx).primaryBusinessRole,"Distributor");
+  assert.equal(mx.revision,"1");
+  assert.equal((await tenantQuery(otherUserId,"select candidate_id from workspace_company_market where workspace_id=$1",[workspaceId])).length,0);
+  const memory=await tenantQuery<{id:string}>(userId,"select id from user_outreach_memory where workspace_id=$1 and external_id=$2",
+    [workspaceId,`company-override:${co.candidate_id}`]);
+  assert.equal(memory.length,1);
   const budget=await admin.query('select occupied_micros::text from user_spend_budget where user_id=$1',[userId]);
   assert.equal(budget.rows[0].occupied_micros,'23');
   assert.equal((await tenantQuery(otherUserId,'select company_id from workspace_company_market where workspace_id=$1',[workspaceId])).length,0);
   console.log(JSON.stringify({actualProductPersistence:true,countries:2,sharedCompanyIdentities:1,concurrentCalls:4,artifactEvents:14,
-    evidenceSnapshots:2,countryRecords:2,conflictingReplaysRejected:6,persistenceTimingReplays:2,legacyExactReplays:2,legacyTimingConflictsPreserved:2,legacyReplaysPreserved:2,unknownAdoption:true,syntheticReservedMicros:23,realProviderCalls:0,scope:"synthetic-input-to-real-product-SQL"}));
+    evidenceSnapshots:2,countryRecords:2,conflictingReplaysRejected:6,persistenceTimingReplays:2,legacyExactReplays:2,legacyTimingConflictsPreserved:2,legacyReplaysPreserved:2,
+    userEditReassessment:{roleAndTierPreserved:true,agentScoreUpdated:true,refreshRequired:true,otherCountryUnchanged:true,privateMemory:1},
+    unknownAdoption:true,syntheticReservedMicros:23,realProviderCalls:0,scope:"synthetic-input-to-real-product-SQL"}));
 }finally{
   if(created){
     const client=await admin.connect();
