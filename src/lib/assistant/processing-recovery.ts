@@ -7,6 +7,7 @@ import type {LeadWorkflowResult} from "@/lib/leads/workflow/types";
 import {validateSavedRecoverySource,type SavedRecoverySnapshot} from "@/lib/leads/workflow/saved-recovery-source";
 import {persistenceInputFingerprint} from "@/lib/leads/workflow/persistence-identity";
 import {readRecoveryEvidenceReadiness} from "@/lib/leads/workflow/recovery-evidence-readiness";
+import {ACTIVE_LEAD_SCORING_POLICY,scoringPolicyChecksum} from "@/lib/leads/scoring-policy";
 
 type ReadCheckpoint=(userId:string,actionId:string,threadId:string,plan:LeadSearchPlan)=>Promise<SavedRecoverySnapshot>;
 const productionCheckpoint:ReadCheckpoint=async(...args)=>{
@@ -27,6 +28,54 @@ export async function assertNoUnpreparedProcessingRecovery(userId:string,actionI
 
 export async function proposeProcessingRecovery(userId:string,parentId:string){
   return tenantTransaction(userId,client=>proposeProcessingRecoveryInTransaction(client,userId,parentId,productionCheckpoint));
+}
+
+/** Initialize an owned, confirmed recovery run without discovery or provider calls. */
+export async function prepareProcessingRecoveryExecution(userId:string,childId:string,threadId:string,plan:LeadSearchPlan){
+  return tenantTransaction(userId,async client=>{
+    const started=Date.now();
+    const links=await client.query<{parent_action_id:string;metadata:{sourceProof:unknown}}>(
+      "select parent_action_id,metadata from lead_processing_recovery where user_id=$1 and child_action_id=$2",[userId,childId]);
+    const link=links.rows[0];if(!link)return null;
+    const prepared=await readSavedProcessingRecoveryInTransaction(client,userId,link.parent_action_id,productionCheckpoint);
+    if(persistenceInputFingerprint(link.metadata.sourceProof)!==persistenceInputFingerprint(prepared.proof))throw new Error("Recovery source changed before execution");
+    if(persistenceInputFingerprint(plan)!==persistenceInputFingerprint(prepared.scope.plan))throw new Error("Recovery execution plan mismatch");
+    const child=await client.query(`select a.id from assistant_action a join lead_workflow_job j on j.action_id=a.id and j.user_id=a.user_id
+      where a.user_id=$1 and a.id=$2 and a.conversation_id=$3 and a.action_type='lead-search'
+        and a.status in ('confirmed','running') and a.confirmed_at is not null and a.payload=$4::jsonb
+        and j.graph_thread_id=$5 and j.status='running' for update of a`,[userId,childId,prepared.conversationId,JSON.stringify(plan),threadId]);
+    if(child.rowCount!==1)throw new Error("Recovery execution requires an owned confirmed task and claimed job");
+    const unknown=await client.query(`select id from paid_call_reservation where user_id=$1 and operation_id=$2
+      and (status in ('reserved','bound-exceeded') or (status='unknown' and settled_micros is null)) limit 1`,[userId,childId]);
+    if(unknown.rows.length)throw new BudgetDeniedError("paid-request-already-recorded");
+    const runs=await client.query<{id:string;workspace_id:string;country_code:string;metadata:{processingRecoverySource?:unknown}}>(`select id,workspace_id,country_code,metadata
+      from lead_search_run where metadata->>'assistantActionId'=$1 and metadata->>'graphThreadId'=$2 for update`,[childId,threadId]);
+    if(runs.rows.length>1)throw new Error("Recovery has multiple source runs; preserve history");
+    let runId=runs.rows[0]?.id;
+    const reused=Boolean(runId);
+    if(runId){
+      const existing=runs.rows[0];
+      if(existing.workspace_id!==prepared.state.workspaceId||existing.country_code.trim()!==plan.countryCode
+        ||persistenceInputFingerprint(existing.metadata.processingRecoverySource??null)!==persistenceInputFingerprint(prepared.proof))throw new Error("Recovery run identity mismatch");
+    }else{
+      const created=await client.query<{id:string}>(`insert into lead_search_run(workspace_id,provider,target_count,country_code,market_name,objective,
+        graph_thread_id,status,scoring_policy_id,scoring_policy_version,scoring_policy_checksum,scoring_policy_snapshot,metadata)
+        values($1,'langgraph-processing-recovery',$2,$3,$4,$5,$6,'running',
+          (select id from lead_scoring_policy where policy_key=$7 and version=$8 limit 1),$8,$9,$10,$11) returning id`,
+        [prepared.state.workspaceId,plan.targetCount,plan.countryCode,plan.countryName,plan.objective,threadId,
+          ACTIVE_LEAD_SCORING_POLICY.policyKey,ACTIVE_LEAD_SCORING_POLICY.version,scoringPolicyChecksum(),JSON.stringify(ACTIVE_LEAD_SCORING_POLICY),
+          JSON.stringify({assistantActionId:childId,graphThreadId:threadId,processingRecoverySource:prepared.proof,
+            processingRecoveryParentActionId:link.parent_action_id,discoveryAllowed:false})]);
+      runId=created.rows[0].id;
+    }
+    await client.query(`insert into workspace_audit_event(workspace_id,actor_user_id,entity_type,entity_id,action,changes)
+      values($1,$2,'processing-recovery',$3,'processing.recovery-run-prepared',$4)`,[prepared.state.workspaceId,userId,childId,
+      JSON.stringify({runId,efficiency:{inputItems:1,outputItems:reused?0:1,validOutputItems:reused?0:1,savedOutputItems:reused?0:1,
+        downstreamUsedItems:0,userAdoptedItems:null,inputTokens:0,outputTokens:0,costUsd:0,apiCredits:0,retries:0,
+        latencyMs:Date.now()-started,cacheHit:reused,discardedReasonCounts:reused?{duplicateRunAvoided:1}:{},utilizationEfficiency:reused?null:1,
+        usageBoundary:"recovery-run-initialized-before-processing",optimizationOpportunity:"Reuse one run after restart and preserve original invoices"}})]);
+    return {...prepared,runId,childActionId:childId,graphThreadId:threadId};
+  });
 }
 
 export async function proposeProcessingRecoveryInTransaction(client:PoolClient,userId:string,parentId:string,readCheckpoint:ReadCheckpoint){
