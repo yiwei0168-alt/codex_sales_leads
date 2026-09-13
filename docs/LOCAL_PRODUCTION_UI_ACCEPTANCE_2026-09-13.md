@@ -1,5 +1,7 @@
 # 本地生产页面验收（阶段45）
 
+阶段49增量（产品fd9682f未改）：扩展同一私有知识验证脚本，新增5文档/5切片，调用实际hybridSearch和应用角色SQL。两用户GB私有、MX私有、另一用户GB私有、共享GB、归档GB使用同一固定向量；通过四组精确ID集合检查及切片RLS检查。传GB仅返回本人GB和共享GB，传MX仅本人MX，另一用户仅本人GB和共享GB；不传market则本人跨国家知识可见，这是接口可选过滤契约，不代表自动国家隔离。独立读取knowledge_chunk实际向量维度，无模型或嵌入调用。首次fixture UUID/text参数推断冲突，setup事务回滚；显式转换后全部通过、fixture清理。typecheck通过。未调用answerWithRag生成答案，也未验证邮件导入/审核路径，不能将本结果扩展为全链路通过。
+
 阶段48增量（产品fd9682f，脚本扩展）：真实Chrome桌面/手机24组检查通过，新增两年前合成已核实证据的列表提醒、证据弹窗与“超过一年仅提醒，不自动判无效”说明；证据仍保留，未重新搜索/评分。原22组继续通过，临时数据清理，无发信/付费。
 
 另运行`node scripts/run-tsx.cjs scripts/verify-private-knowledge-isolation.ts`，真实应用数据库角色及searchOutreachKnowledge查询，两个隔离用户/工作区、六条合成记忆，使用从实际字段契约读取维度的固定非零向量，无嵌入API。验证用户/国家/角色隔离、archived排除、内部用途营销主张排除、company-classification不进入开发文本检索；应用角色直接查询也看不到另一用户记录。仅输出计数和通过状态，所有fixture清理。首次构造使用disabled记忆状态违反表约束，整个setup事务回滚；按实际archived状态修正后通过。typecheck通过，产品代码本阶段未改；812测试/build沿用阶段47，不冒充本阶段重跑。此处证明私有开发知识的SQL过滤，不证明通用RAG/邮件知识全链路或模型语义质量。

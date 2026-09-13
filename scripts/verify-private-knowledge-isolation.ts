@@ -12,6 +12,7 @@ const admin=new Pool({connectionString:databaseConnectionString(adminUrl),ssl:da
 const {getPool,tenantQuery}=await import("../src/lib/rag/db");
 const {hashPassword}=await import("../src/lib/auth/password");
 const {searchOutreachKnowledge}=await import("../src/lib/outreach/knowledge-repository");
+const {hybridSearch}=await import("../src/lib/rag/repository");
 const users=[randomUUID(),randomUUID()],workspaces=[randomUUID(),randomUUID()];
 const emails=users.map(id=>`knowledge-isolation-${id}@example.invalid`);
 let created=false;
@@ -30,6 +31,14 @@ try{
     {owner:1,country:"GB",kind:"email-style",status:"active",role:"SI"},
   ];
   const ids=definitions.map(()=>randomUUID());
+  const documentIds=Array.from({length:5},()=>randomUUID());
+  const chunkIds=documentIds.map(()=>randomUUID());
+  const companyScope=`isolation:${randomUUID()}`;
+  const chunkColumn=await admin.query<{type:string}>(`select format_type(atttypid,atttypmod) as type from pg_attribute
+    where attrelid='knowledge_chunk'::regclass and attname='embedding'`);
+  const chunkDimensions=Number(/^vector\((\d+)\)$/.exec(chunkColumn.rows[0]?.type??"")?.[1]);
+  if(!Number.isSafeInteger(chunkDimensions)||chunkDimensions<1||chunkDimensions>10000)throw new Error("Unknown chunk embedding contract");
+  const chunkVector=Array<number>(chunkDimensions).fill(0);chunkVector[0]=1;
   const client=await admin.connect();
   try{
     await client.query("begin");
@@ -42,6 +51,14 @@ try{
       (id,user_id,workspace_id,kind,external_id,title,content,market_codes,channel_roles,status,usage_scope,embedding)
       values($1,$2,$3,$4,$5,'Synthetic isolation fixture','Synthetic isolation token',$6,$7,$8,'internal-learning',$9::vector)`,
       [ids[index],users[item.owner],workspaces[item.owner],item.kind,`fixture:${ids[index]}`,[item.country],[item.role],item.status,JSON.stringify(vector)]);
+    for(let index=0;index<documentIds.length;index++){
+      await client.query(`insert into knowledge_document
+        (id,collection_id,external_id,title,source_type,content_sha256,owner_id,visibility,market,company_id,status)
+        values($1::uuid,(select id from knowledge_collection where slug='company'),($1::uuid)::text,'Synthetic RAG isolation','fixture',($1::uuid)::text,$2,$3,$4,$5,$6)`,
+        [documentIds[index],users[index===2||index===3?1:0],index===3?"shared":"private",index===1?"MX":"GB",companyScope,index===4?"archived":"active"]);
+      await client.query(`insert into knowledge_chunk(id,document_id,chunk_index,content,token_estimate,content_sha256,embedding)
+        values($1::uuid,$2,0,'Synthetic isolation token',4,($1::uuid)::text,$3::vector)`,[chunkIds[index],documentIds[index],JSON.stringify(chunkVector)]);
+    }
     await client.query("commit");created=true;
   }catch(error){await client.query("rollback");throw error;}finally{client.release();}
   const privateIds=async(owner:number,country:string,role="SI")=>(await searchOutreachKnowledge(users[owner],"Synthetic isolation token",vector,[country],[role],5))
@@ -52,10 +69,19 @@ try{
   assert.deepEqual(await privateIds(0,"GB","Retailer"),[]);
   const raw=await tenantQuery<{id:string}>(users[0],"select id from user_outreach_memory where id=any($1::uuid[])",[ids]);
   assert.equal(raw.length,5);assert(!raw.some(row=>row.id===ids[5]));
+  const ragIds=async(owner:number,market?:string)=>(await hybridSearch(users[owner],"Synthetic isolation token",chunkVector,
+    {collections:["company"],companyId:companyScope,market},20)).map(item=>item.id).sort();
+  assert.deepEqual(await ragIds(0,"GB"),[chunkIds[0],chunkIds[3]].sort());
+  assert.deepEqual(await ragIds(0,"MX"),[chunkIds[1]]);
+  assert.deepEqual(await ragIds(1,"GB"),[chunkIds[2],chunkIds[3]].sort());
+  assert.deepEqual(await ragIds(0),[chunkIds[0],chunkIds[1],chunkIds[3]].sort());
+  const visibleChunks=await tenantQuery<{id:string}>(users[0],"select id from knowledge_chunk where id=any($1::uuid[])",[chunkIds]);
+  assert.equal(visibleChunks.length,4);assert(!visibleChunks.some(row=>row.id===chunkIds[2]));
   const calls=await admin.query("select id from paid_call_reservation where user_id=any($1::uuid[])",[users]);
   assert.equal(calls.rows.length,0);
   console.log(JSON.stringify({privateKnowledgeIsolation:"passed",owners:2,fixtureMemories:6,
-    userCountryRoleStatusAndUsageScope:true,classificationExcluded:true,rlsEnforced:true,realEmbeddingCalls:0,paidCalls:0}));
+    userCountryRoleStatusAndUsageScope:true,classificationExcluded:true,rlsEnforced:true,genericRagIsolation:true,
+    sharedKnowledgeVisible:true,optionalCountryFilterVerified:true,fixtureDocuments:5,realEmbeddingCalls:0,paidCalls:0}));
 }finally{
   if(created){
     const client=await admin.connect();
@@ -68,6 +94,7 @@ try{
       const paid=await client.query("select id from paid_call_reservation where user_id=any($1::uuid[]) limit 1",[users]);
       if(paid.rowCount)throw new Error("Unexpected paid work; preserve fixture");
       await client.query("delete from user_outreach_memory where user_id=any($1::uuid[])",[users]);
+      await client.query("delete from knowledge_document where owner_id=any($1::uuid[])",[users]);
       await client.query("delete from market_workspace where id=any($1::uuid[]) and owner_id=any($2::uuid[])",[workspaces,users]);
       await client.query("delete from app_user where id=any($1::uuid[])",[users]);
       await client.query("commit");console.log("Synthetic knowledge fixtures removed; no customer data changed.");

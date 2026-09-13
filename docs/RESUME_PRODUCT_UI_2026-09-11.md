@@ -1,5 +1,7 @@
 # 产品开发恢复节点 — 2026-09-11
 
+2026-09-13阶段49：verify-private-knowledge-isolation.ts扩展通用RAG真实SQL，5文档/切片及4次检索集合/RLS验证通过，typecheck通过，0付费，数据清理。产品fd9682f未改；传market隔离国家，不传允许本人跨国家，不能推断所有入口自动国家隔离。继续邮件知识/策略跟进和其他矩阵剩余项，goal active。
+
 2026-09-13阶段48：产品fd9682f未改，验收脚本扩展后两视口24组通过（含一年以上证据提醒）；新增verify-private-knowledge-isolation.ts真实SQL两用户六记忆过滤/RLS通过，固定合成向量0付费，fixture清理，typecheck通过。812产品测试/build仍为阶段47。继续策略邮件复用/跟进、通用RAG/邮件知识全链路、费用/恢复/遥测与真实最小闭环，goal active。
 
 2026-09-13阶段47：渠道图手工新增/重复已真实浏览器验收；修复手工响应country code及UK名称映射。22组桌面/手机检查、812测试/build/生成check通过，0付费/发信，fixture清理。3017新服务exec会话1855，后续先核对存活/版本；不用3000旧服务。继续策略邮件/跟进、知识隔离/提醒、完整费用恢复遥测和真实闭环，goal active。
