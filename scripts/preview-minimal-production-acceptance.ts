@@ -93,6 +93,86 @@ async function captureMinimalBraveWire(){
     else process.env.BRAVE_SEARCH_API_KEY=originalKey;
   }
 }
+async function captureMinimalExaWire(){
+  const originalKey=process.env.EXA_API_KEY;
+  const captured:Request[]=[];
+  process.env.EXA_API_KEY="synthetic-never-sent";
+  try{
+    const {createDiscoveryProvider}=await import("../src/providers/discovery");
+    const route=buildHybridSearchRoute(minimalPlan).find(step=>step.provider==="exa");
+    if(!route)throw new Error("Minimal plan has no Exa route");
+    const provider=createDiscoveryProvider("exa",{maxAttempts:1,fetchImplementation:async(input,init)=>{
+      captured.push(new Request(input,init));
+      throw new BudgetDeniedError("missing-tariff");
+    }});
+    try{await provider.search({query:"Synthetic networking distributor Colombia",countryCode:minimalPlan.countryCode,
+      countryName:minimalPlan.countryName,languageCode:minimalPlan.queryLanguage,maxResults:2,
+      category:route.category,track:route.track,engine:route.engine,mechanism:route.mechanism});}
+    catch(error){if(!(error instanceof BudgetDeniedError)||error.code!=="missing-tariff")throw error;}
+    if(captured.length!==1)throw new Error("Unexpected Exa transport count");
+    const request=captured[0],url=new URL(request.url),wire=await request.text(),body=JSON.parse(wire);
+    const quote={origin:url.origin,pathname:url.pathname,model:"",requestBytes:Buffer.byteLength(wire,"utf8"),
+      outputTokens:null};
+    try{
+      const rule=quoteRequest(quote);
+      assertRequestContract(rule,body,url.search,request.method,request.headers);
+      return {status:"contract-valid-synthetic-wire",provider:"exa",trigger:route.trigger,
+        requestBytes:quote.requestBytes,resultLimit:body.numResults,searchType:body.type,
+        category:body.category,contentsText:body.contents?.text,
+        tariffKey:rule.key,maximumPerCallUsd:rule.maximumChargeMicros/1e6,
+        actualMarketQueryChecked:false,providerCalls:0};
+    }catch(error){
+      if(!(error instanceof BudgetDeniedError))throw error;
+      return {status:error.code,provider:"exa",requestBytes:quote.requestBytes,
+        actualMarketQueryChecked:false,providerCalls:0};
+    }
+  }finally{
+    if(originalKey===undefined)delete process.env.EXA_API_KEY;
+    else process.env.EXA_API_KEY=originalKey;
+  }
+}
+async function captureMinimalTavilyEvidenceWire(stage:"official-evidence"|"correction-supplement"){
+  const originalKey=process.env.TAVILY_API_KEY;
+  const captured:Request[]=[];
+  process.env.TAVILY_API_KEY="synthetic-never-sent";
+  try{
+    const {TavilySearchProvider}=await import("../src/providers/tavily");
+    const provider=new TavilySearchProvider({maxAttempts:1,fetchImplementation:async(input,init)=>{
+      captured.push(new Request(input,init));
+      throw new BudgetDeniedError("missing-tariff");
+    }});
+    const domain="synthetic-company.invalid";
+    const input=stage==="official-evidence"
+      ?{query:`site:${domain} company products solutions customers locations networking ${minimalPlan.countryName}`,
+        country:new Intl.DisplayNames(["en"],{type:"region"}).of(minimalPlan.countryCode)?.toLowerCase(),
+        searchDepth:"basic" as const,maxResults:6,includeRawContent:false,includeDomains:[domain]}
+      :{query:`"Synthetic Company" ${minimalPlan.countryName} official website router Wi-Fi access point switch distributor reseller installer system integrator ISP`,
+        searchDepth:"basic" as const,maxResults:5,includeRawContent:false};
+    try{await provider.search(input);}
+    catch(error){if(!(error instanceof BudgetDeniedError)||error.code!=="missing-tariff")throw error;}
+    if(captured.length!==1)throw new Error("Unexpected Tavily evidence transport count");
+    const request=captured[0],url=new URL(request.url),wire=await request.text(),body=JSON.parse(wire);
+    const quote={origin:url.origin,pathname:url.pathname,model:"",requestBytes:Buffer.byteLength(wire,"utf8"),
+      outputTokens:null};
+    try{
+      const rule=quoteRequest(quote);
+      assertRequestContract(rule,body,url.search,request.method,request.headers);
+      return {status:"contract-valid-synthetic-wire",provider:"tavily",stage,
+        requestBytes:quote.requestBytes,resultLimit:body.max_results,searchDepth:body.search_depth,
+        includeRawContent:body.include_raw_content,includeAnswer:body.include_answer,
+        autoParameters:body.auto_parameters,tariffKey:rule.key,
+        maximumPerCallUsd:rule.maximumChargeMicros/1e6,
+        actualCompanyEvidenceChecked:false,providerCalls:0};
+    }catch(error){
+      if(!(error instanceof BudgetDeniedError))throw error;
+      return {status:error.code,provider:"tavily",stage,requestBytes:quote.requestBytes,
+        actualCompanyEvidenceChecked:false,providerCalls:0};
+    }
+  }finally{
+    if(originalKey===undefined)delete process.env.TAVILY_API_KEY;
+    else process.env.TAVILY_API_KEY=originalKey;
+  }
+}
 try{
   const identity=await query<{safe:boolean}>("select (email='model-acceptance-20260912@fixture.invalid' and status='disabled' and password_hash is null) as safe from app_user where id=$1",[userId]);
   if(identity[0]?.safe!==true)throw new Error("Acceptance identity differs; no execution allowed");
@@ -170,6 +250,9 @@ try{
     actualRequestContractChecked:false};
   const marketPlaybookWire=await captureMinimalPlaybookWire();
   const braveCoreWire=await captureMinimalBraveWire();
+  const exaConditionalWire=await captureMinimalExaWire();
+  const tavilyEvidenceWires=[await captureMinimalTavilyEvidenceWire("official-evidence"),
+    await captureMinimalTavilyEvidenceWire("correction-supplement")];
   const after=await readSpendBudget(userId);
   if(Number(after.budget?.occupied_micros)!==Number(budget.budget.occupied_micros))
     throw new Error("Read-only wire preview changed budget occupancy");
@@ -177,6 +260,7 @@ try{
     remainingUsd:Number(budget.budget.remaining_micros)/1e6,frozen:budget.budget.frozen,
     firstRoundPoolForOneTarget:plannedCandidatePool({targetCount:1,acceptedCount:0,discoveredUniqueCount:0,round:0}),
     stages,searchRoute,supplementalEvidence,marketPlaybookWire,braveCoreWire,
+    exaConditionalWire,tavilyEvidenceWires,
     checkedTariffsAvailable:stages.every(stage=>stage.tariff==="available")
       &&searchRoute.every(route=>route.tariffStatus==="static-bound-present")
       &&supplementalEvidence.tariffStatus==="static-bound-present",
@@ -185,6 +269,6 @@ try{
     allSearchRouteBoundsPresent:searchRoute.every(route=>route.tariffStatus==="static-bound-present"),
     actualRequestContractsChecked:false,
     checkedSingleCallBoundsFit:stages.every(stage=>stage.tariff==="available"&&stage.fitsCurrentRemainingBudget),
-    totalRunBoundUsd:null,limitations:"Lists configured minimal-plan discovery and conditional review routes; captures synthetic playbook and Brave core provider wires. Real market requests, provider responses, remaining fallback/search/model contracts, conditional execution and total-run bound remain unverified",
+    totalRunBoundUsd:null,limitations:"Lists configured minimal-plan discovery and conditional review routes; captures synthetic playbook, Brave, Exa and Tavily provider wires. Real market requests, provider responses, remaining fallback/search/model contracts, conditional execution and total-run bound remain unverified",
     providerCalls:0,accountsModified:0,jobsClaimed:0},null,2));
 }finally{await getPool().end();}

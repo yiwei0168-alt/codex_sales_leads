@@ -1,5 +1,7 @@
 # LangChain / LangGraph 销售线索工作流
 
+阶段114条件发现/补证预检：生产Exa公司搜索、Tavily官方站补证及校正缺口补证的合成传输均通过现行请求合同；保留缓存/检查点与真实费用门禁，0外部调用。[请求边界](MINIMAL_ACCEPTANCE_EXA_TAVILY_WIRES_2026-09-14.md)。
+
 阶段113核心发现预检：Colombia/Distributor合成计划经生产Brave提供方形成GET请求，当前费用合同按127字节查询、2结果及USD0.005/次通过；传输被拦截，真实HTTP与预算写入0。实际执行器查询及下游公司证据仍未验证，[边界](MINIMAL_ACCEPTANCE_BRAVE_WIRE_2026-09-14.md)。
 
 阶段112最小闭环路径预检：只读脚本从当前 Colombia/Distributor/目标1家计划与现行路由列出核心Brave、条件Exa/SearchAPI/Gemini、Tavily补证、DeepSeek校正/评分、Terra复核与Sol裁决。市场计划现行Sol单次预留超USD17.675596余额；脚本标明实际请求未全验及整次上界未知，不认领任务。[逐入口状态](MINIMAL_ACCEPTANCE_ROUTE_COVERAGE_2026-09-14.md)。

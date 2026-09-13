@@ -1,5 +1,7 @@
 # Hybrid Lead Search Workflow
 
+2026-09-14阶段114：当前Distributor/strategic路由中，条件Exa合成请求为auto/company、正文开启且最多2结果；Tavily仅在发现/校正补证中分别请求basic最多6/5结果。三条传输合同验证不代表条件触发、真实结果或填充率改善。[预检](MINIMAL_ACCEPTANCE_EXA_TAVILY_WIRES_2026-09-14.md)。
+
 2026-09-14阶段113：核心Brave合成提供方请求已通过现行合同；CO因Brave国家参数列表不含哥伦比亚而按既有逻辑使用ALL，上游过滤变宽，查询与后续国家门禁仍须实际核验，不能视为扩展用户目标市场。[请求证据](MINIMAL_ACCEPTANCE_BRAVE_WIRE_2026-09-14.md)。
 
 2026-09-14阶段112：只读最小验收计划由现行混合搜索策略算出 Distributor/strategic 四条路径：核心Brave、缺口触发Exa、SearchAPI、Gemini；仅前两者有严格静态上界，不能把未执行的条件路由当作已搜索或市场耗尽。补证Tavily另列。[完整路径预检](MINIMAL_ACCEPTANCE_ROUTE_COVERAGE_2026-09-14.md)。
