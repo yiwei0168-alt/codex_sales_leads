@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+阶段115：发现阶段对费率缺失和预算耗尽的合成拒绝回归通过，不将阻止误记为搜索耗尽或供应商故障；真实任务页面与账本完整链仍待验收。[证据](DISCOVERY_BUDGET_DENIAL_STATUS_ACCEPTANCE_2026-09-14.md)。
+
 2026-09-14阶段114：Exa条件发现与Tavily官方/校正补证共3条生产提供方合成请求通过严格费用合同，160/292/259字节、静态USD0.027/0.016/0.016上界，0真实调用及预算变更。[报告](MINIMAL_ACCEPTANCE_EXA_TAVILY_WIRES_2026-09-14.md)。实际请求/返回与完整运行上界仍未知，A11未验收。
 
 2026-09-14阶段113：最小路径核心Brave请求通过生产提供方合成传输与严格费用合同预检：GET查询127字节、count2、CO回退country=ALL、USD0.005/次，0真实外发/费用；实际市场查询、候选国家证据及完整路径未验收。[报告](MINIMAL_ACCEPTANCE_BRAVE_WIRE_2026-09-14.md)。

@@ -1,5 +1,7 @@
 # Hybrid Lead Search Workflow
 
+2026-09-14 阶段115：`BudgetDeniedError` 在发现执行器中直接上抛；合成费率缺失/预算耗尽均不产生失败搜索调用、无价值轮次或候选门禁。恢复仍须先核对账本与检查点，不能把预算拒绝当作市场耗尽。[验收](DISCOVERY_BUDGET_DENIAL_STATUS_ACCEPTANCE_2026-09-14.md)。
+
 2026-09-14阶段114：当前Distributor/strategic路由中，条件Exa合成请求为auto/company、正文开启且最多2结果；Tavily仅在发现/校正补证中分别请求basic最多6/5结果。三条传输合同验证不代表条件触发、真实结果或填充率改善。[预检](MINIMAL_ACCEPTANCE_EXA_TAVILY_WIRES_2026-09-14.md)。
 
 2026-09-14阶段113：核心Brave合成提供方请求已通过现行合同；CO因Brave国家参数列表不含哥伦比亚而按既有逻辑使用ALL，上游过滤变宽，查询与后续国家门禁仍须实际核验，不能视为扩展用户目标市场。[请求证据](MINIMAL_ACCEPTANCE_BRAVE_WIRE_2026-09-14.md)。

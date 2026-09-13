@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import type { LeadSearchPlan } from "@/lib/assistant/types";
 import type { DiscoveryProvider, DiscoveryProviderResult, DiscoveryQuery } from "@/providers/discovery-contracts";
 import { DiscoveryProviderError } from "@/providers/discovery";
+import { BudgetDeniedError } from "@/lib/billing/policy";
 import type { DiscoveryGateResult } from "./discovery-gate";
 import { createHybridDiscoverySession, discoveryCallFingerprint, executeHybridDiscovery, hardPrefilter, type HybridDiscoveryRoundCheckpoint } from "./hybrid-discovery-executor";
 import { snapshotDiscoverySession, restoreDiscoverySession, type DiscoverySessionSnapshot } from "./discovery-session";
@@ -81,6 +82,30 @@ describe("hybrid discovery executor", () => {
     expect(session.failedCalls.size).toBe(0);
     expect(session.providerFailureCounts.get("brave")).toBe(0);
   });
+  it.each(["missing-tariff", "budget-exhausted"] as const)(
+    "keeps %s distinct from provider failure and search exhaustion", async (code) => {
+      const session = createHybridDiscoverySession();
+      const calls: string[] = [];
+      let gateCalls = 0;
+      await expect(executeHybridDiscovery(`budget-denied-${code}`, plan, playbook, {
+        session, concurrency: 1,
+        gate: { evaluate: async (candidates) => {
+          gateCalls += 1;
+          return passGate.evaluate(candidates);
+        } },
+        providerFactory: (step) => ({ id: step.provider, search: async () => {
+          throw new BudgetDeniedError(code);
+        } }),
+        onCall: async (call) => { calls.push(call.status); },
+      })).rejects.toMatchObject({ code });
+      expect(session.completedCalls.size).toBe(0);
+      expect(session.failedCalls.size).toBe(0);
+      expect(session.providerFailureCounts.get("brave") ?? 0).toBe(0);
+      expect(session.providerNoValueCounts.get("distribution/brave") ?? 0).toBe(0);
+      expect(calls).toEqual([]);
+      expect(gateCalls).toBe(0);
+    },
+  );
   it("runs the category core, shares the registry and records conditional calls", async () => {
     const output = await executeHybridDiscovery("run-1", plan, playbook, { gate: passGate,
       providerFactory: (step) => new FakeProvider(step.provider, step.sequence === 0 ? "example.de" : "example.de"),
