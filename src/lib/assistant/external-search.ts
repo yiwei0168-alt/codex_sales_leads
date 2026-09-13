@@ -15,6 +15,7 @@ interface GeminiStep {
 
 interface GeminiInteractionResponse {
   model?: string;
+  status?: string;
   steps?: GeminiStep[];
   error?: { message?: string };
 }
@@ -44,6 +45,7 @@ function safeWebCitation(annotation: GeminiContentBlock["annotations"] extends A
 }
 
 export function parseGeminiInteraction(body: GeminiInteractionResponse, fallbackModel: string, startedAt: number): ExternalSearchAnswer {
+  if (body.status && body.status !== "completed") throw new Error("Gemini 外部搜索结果未完成，保留已发生费用且不采用部分答案");
   const outputBlocks = (body.steps ?? []).filter((step) => step.type === "model_output").flatMap((step) => step.content ?? [])
     .filter((block) => block.type === "text");
   const answer = outputBlocks.map((block) => block.text ?? "").join("").trim();

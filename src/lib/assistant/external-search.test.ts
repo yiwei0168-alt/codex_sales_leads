@@ -28,4 +28,16 @@ describe("Gemini grounded web search", () => {
     }), { status: 200 }));
     await expect(searchExternalWithGemini(["current market"], fetchMock)).rejects.toThrow("未实际调用 Google Search");
   });
+
+  it("rejects a cited but explicitly incomplete paid response without retrying", async () => {
+    vi.stubEnv("GEMINI_API_KEY", "test-key");
+    const fetchMock = vi.fn().mockResolvedValue(Response.json({ status: "incomplete", steps: [
+      { type: "google_search_call", arguments: { queries: ["synthetic query"] } },
+      { type: "model_output", content: [{ type: "text", text: "Partial answer", annotations: [
+        { type: "url_citation", url: "https://example.test/" },
+      ] }] },
+    ] }));
+    await expect(searchExternalWithGemini(["synthetic question"], fetchMock)).rejects.toThrow("结果未完成");
+    expect(fetchMock).toHaveBeenCalledOnce();
+  });
 });
