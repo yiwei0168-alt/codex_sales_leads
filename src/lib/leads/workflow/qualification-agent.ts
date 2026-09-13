@@ -1,4 +1,5 @@
 import {BudgetDeniedError} from "@/lib/billing/policy";
+import {withCompanyCostAttribution} from "@/lib/billing/company-cost-context";
 import {leadRequestBatches} from "@/providers/lead-request-batches";
 import {validateBatchItems} from "./batch-output";
 import type { AiProvider, StructuredAiResponse } from "@/providers/contracts";
@@ -508,10 +509,10 @@ export class LeadQualificationAgent {
 
   private async invokeBatch(candidates: CorrectedLeadWorkflowCandidate[], playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string, modelVersion: string,
     usageRecords: WorkflowModelUsage[]) {
-    const response = await this.provider.execute<LeadAssessmentRequest, unknown>(
+    const response = await withCompanyCostAttribution(candidates,countryCode,()=>this.provider.execute<LeadAssessmentRequest, unknown>(
       this.request(candidates, playbook, countryCode, countryName, objective, modelVersion),
       AbortSignal.timeout(modelVersion === this.escalationModel ? 120_000 : 75_000),
-    );
+    ));
     usageRecords.push({ stage: "qualification", requestedModel: response.requestedModelVersion ?? modelVersion,
       actualModel: response.modelVersion, providerId: response.actualProviderId,
       promptTokens: response.usage?.promptTokens ?? 0, completionTokens: response.usage?.completionTokens ?? 0,
@@ -615,10 +616,10 @@ export class LeadQualificationAgent {
   private async evaluateOneEscalated(candidate: CorrectedLeadWorkflowCandidate, playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string, reason: string,
     usageRecords: WorkflowModelUsage[]): Promise<LeadCandidateAssessment> {
     try {
-      const escalation = await this.provider.execute<LeadAssessmentRequest, unknown>(
+      const escalation = await withCompanyCostAttribution([candidate],countryCode,()=>this.provider.execute<LeadAssessmentRequest, unknown>(
         this.request([candidate], playbook, countryCode, countryName, objective, this.escalationModel),
         AbortSignal.timeout(120_000),
-      );
+      ));
       usageRecords.push({ stage: "qualification", requestedModel: escalation.requestedModelVersion ?? this.escalationModel,
         actualModel: escalation.modelVersion, providerId: escalation.actualProviderId,
         promptTokens: escalation.usage?.promptTokens ?? 0, completionTokens: escalation.usage?.completionTokens ?? 0,

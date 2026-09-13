@@ -1,9 +1,10 @@
 import { AsyncLocalStorage } from "node:async_hooks";
 import { randomUUID } from "node:crypto";
 import type { RequestBound } from "./policy";
+import type { CostAttribution } from "./cost-allocation";
 
 // Server-side acceptance scopes only; never populated from an API request body.
-export interface SpendContext {userId:string;operationId:string;stage:string;tariffPolicy?:{version:string;rules:RequestBound[]}}
+export interface SpendContext {userId:string;operationId:string;stage:string;costAttribution?:CostAttribution;tariffPolicy?:{version:string;rules:RequestBound[]}}
 const storage=new AsyncLocalStorage<SpendContext>();
 export function currentSpendContext(){return storage.getStore();}
 export function setSpendStage(stage:string){const context=storage.getStore();if(context)context.stage=stage;}
@@ -12,5 +13,7 @@ export function withSpendContext<T>(context:SpendContext,run:()=>T):T{return sto
 export function withProductSpend<T>(userId:string,stage:string,run:()=>T,operationId?:string):T{
   const parent=currentSpendContext();
   if(parent&&parent.userId!==userId)throw new Error("Budget scope owner mismatch");
-  return withSpendContext({userId,stage,operationId:operationId??parent?.operationId??randomUUID(),...(parent?.tariffPolicy?{tariffPolicy:parent.tariffPolicy}:{})},run);
+  return withSpendContext({userId,stage,operationId:operationId??parent?.operationId??randomUUID(),
+    ...((!operationId||operationId===parent?.operationId)&&parent?.costAttribution?{costAttribution:parent.costAttribution}:{}),
+    ...(parent?.tariffPolicy?{tariffPolicy:parent.tariffPolicy}:{})},run);
 }

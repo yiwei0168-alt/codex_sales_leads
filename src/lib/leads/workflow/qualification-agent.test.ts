@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {createHash} from "node:crypto";
 import {BudgetDeniedError} from "@/lib/billing/policy";
+import {currentSpendContext,withProductSpend} from "@/lib/billing/context";
+import {companyCostKey} from "@/lib/billing/company-cost-context";
 
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "@/providers/contracts";
 import { leadEvidenceContentHash } from "@/lib/leads/evidence-snapshot";
@@ -157,6 +159,24 @@ describe("LeadQualificationAgent", () => {
     });
     expect(result.assessments[0].scoringStatus).toBe("completed");
     expect(written).toBe(1);expect(provider.calls).toHaveLength(1);
+  });
+  it("captures batch company inputs and narrows only a missing item repair without changing payloads",async()=>{
+    const seen:string[][]=[];
+    class AttributedProvider extends FakeProvider {
+      override async execute<I,O>(request:StructuredAiRequest<I>):Promise<StructuredAiResponse<O>>{
+        seen.push([...(currentSpendContext()?.costAttribution?.companyKeys??[])]);
+        const response=await super.execute<I,{assessments:Array<Record<string,unknown>>}>(request);
+        const ids=(request.input as {candidates:Array<{candidateId:string}>}).candidates.map(item=>item.candidateId);
+        const valid=response.output.assessments[0];
+        return {...response,output:{assessments:ids.map(id=>this.calls.length===1&&id==="lead-second"?{candidateId:id}:{...valid,candidateId:id})} as O};
+      }
+    }
+    const provider=new AttributedProvider();
+    const result=await withProductSpend("fixture-owner","score",()=>new LeadQualificationAgent(provider,{batchSize:5,concurrency:1})
+      .evaluate([candidate,{...candidate,candidateId:"lead-second",domain:"second.example"}],playbook,"DE","Germany","new-market"));
+    expect(result.map(item=>item.scoringStatus)).toEqual(["completed","completed"]);
+    expect(seen).toEqual([[companyCostKey(candidate.domain,"DE"),companyCostKey("second.example","DE")].sort(),[companyCostKey("second.example","DE")]]);
+    expect(JSON.stringify(provider.calls)).not.toContain("company-cost-attribution");
   });
   it("does not replay valid output if the batch persistence callback fails",async()=>{
     const provider=new CacheableFakeProvider();const agent=new LeadQualificationAgent(provider);

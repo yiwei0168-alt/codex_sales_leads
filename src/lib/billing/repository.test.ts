@@ -25,6 +25,14 @@ it("atomically records the reservation before increasing occupied amount",async(
   query.mockResolvedValueOnce({rows:[{limit_micros:"100",occupied_micros:"90",frozen:false}]}).mockResolvedValueOnce({rows:[]}).mockResolvedValueOnce({rows:[{id:"reserve"}]}).mockResolvedValue({rows:[]});
   expect(await reservePaidCall("owner",input)).toBe("reserve");expect(query.mock.calls[3][1]).toEqual(["owner",10]);
 });
+it("stores separate reservation allocation with attribution and increases spend only once",async()=>{
+  query.mockResolvedValueOnce({rows:[{limit_micros:"100",occupied_micros:"0",frozen:false}]}).mockResolvedValueOnce({rows:[]}).mockResolvedValueOnce({rows:[{id:"reserve"}]}).mockResolvedValue({rows:[]});
+  await reservePaidCall("owner",{...input,costAttribution:{version:"company-cost-attribution-v1",kind:"company-inputs",roundKey:null,companyKeys:["a".repeat(64),"b".repeat(64)]}});
+  const metrics=JSON.parse(query.mock.calls[2][1][6]);
+  expect(metrics.reservationAllocation).toMatchObject({basis:"reservation",sourceAmountMicros:10,additionalSpendMicros:0});
+  expect(metrics.reservationAllocation.shares.map((row:{amountMicros:number})=>row.amountMicros)).toEqual([5,5]);
+  expect(query.mock.calls.filter(([sql])=>sql.includes("update user_spend_budget"))).toHaveLength(1);
+});
 it("preserves native reservation and the versioned FX source in the same reservation record",async()=>{
   query.mockResolvedValueOnce({rows:[{limit_micros:"100",occupied_micros:"0",frozen:false}]}).mockResolvedValueOnce({rows:[]}).mockResolvedValueOnce({rows:[{id:"reserve"}]}).mockResolvedValue({rows:[]});
   const foreignCostBound={currency:"CNY",maximumNativeMicros:50,fx:{usdNumerator:"1",nativeDenominator:"7",asOf:"2026-09-13T00:00:00Z",retrievedAt:"2026-09-13T00:00:00Z",reference:"https://example.test/fx",version:"synthetic"}};

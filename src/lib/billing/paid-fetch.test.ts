@@ -10,8 +10,15 @@ import {DeepSeekProvider} from "@/providers/deepseek";
 import {ResilientAiProvider} from "@/providers/resilient-ai";
 import {recordBudgetDenial} from "./denial-metrics";
 import {withModelAttempt} from "./model-attempt-context";
+import {withCompanyCostAttribution,companyCostKey} from "./company-cost-context";
 const scope={userId:"user",operationId:"action",stage:"score"};
 const init={method:"POST",headers:{authorization:"Bearer fixture-secret"},body:JSON.stringify({model:"test",max_tokens:100,messages:[{content:"private company input"}]})};
+it("persists actual company attribution before a failed HTTP attempt without changing model input",async()=>{
+  const transport=vi.fn().mockRejectedValue(new Error("network unknown"));
+  await expect(withSpendContext(scope,()=>withCompanyCostAttribution([{domain:"example.test"}],"MX",()=>budgetedFetch(transport)("https://example.test/chat",init)))).rejects.toBeInstanceOf(PaidCallOutcomeUnknownError);
+  expect(mocks.reserve.mock.calls[0][1].costAttribution).toMatchObject({kind:"company-inputs",companyKeys:[companyCostKey("example.test","MX")]});
+  expect(transport.mock.calls[0][1].body).toBe(init.body);expect(transport).toHaveBeenCalledOnce();
+});
 it("attributes model attempts before network without persisting the raw endpoint or query",async()=>{
   await withSpendContext(scope,()=>withModelAttempt({invocationId:"call-1",provider:"test-provider",task:"score",promptVersion:"v2",attempt:2},()=>budgetedFetch(vi.fn().mockResolvedValue(Response.json({})))("https://example.test/private-path?key=hidden",init)));
   expect(mocks.reserve.mock.calls[0][1].modelAttempt).toEqual({invocationId:"call-1",provider:"test-provider",task:"score",promptVersion:"v2",attempt:2,requestedModel:"test",gatewayHost:"example.test",endpointKind:"other"});

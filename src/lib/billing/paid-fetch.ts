@@ -53,7 +53,7 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
     // Non-model polling/form operations remain outside this model replay rule.
     const requestFingerprint=attempt||typeof parsed.model==="string"?createHash("sha256").update(JSON.stringify({version:"paid-request-replay-v1",
       method:request.method,origin:url.origin,pathname:url.pathname,query:url.search,body})).digest("hex"):undefined;
-    const id=await reservePaidCall(scope.userId,{operationId:scope.operationId,stage:scope.stage,tariffKey:rule.key,tariffVersion:policy.version,maximumChargeMicros:rule.maximumChargeMicros,requestBytes:bytes,modelAttempt,requestFingerprint,foreignCostBound:rule.foreignCostBound});
+    const id=await reservePaidCall(scope.userId,{operationId:scope.operationId,stage:scope.stage,tariffKey:rule.key,tariffVersion:policy.version,maximumChargeMicros:rule.maximumChargeMicros,requestBytes:bytes,modelAttempt,requestFingerprint,foreignCostBound:rule.foreignCostBound,costAttribution:scope.costAttribution});
     const started=Date.now();let response:Response;
     try{response=await transport(input,{...init,redirect:"error"});}catch{
       await settlePaidCall(scope.userId,id,{reportedMicros:null,latencyMs:Date.now()-started,responseBytes:null,inputTokens:null,outputTokens:null,succeeded:false}).catch(()=>undefined);

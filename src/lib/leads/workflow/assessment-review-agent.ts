@@ -1,4 +1,5 @@
 import {BudgetDeniedError} from "@/lib/billing/policy";
+import {withCompanyCostAttribution} from "@/lib/billing/company-cost-context";
 import { createHash } from "node:crypto";
 
 import { z } from "zod";
@@ -419,7 +420,7 @@ export class LeadAssessmentReviewAgent {
           } };
           continue;
         }
-        output[index] = await this.reviewOne(candidate, primary, playbook, plan, triggers);
+        output[index] = await withCompanyCostAttribution([candidate],plan.countryCode,()=>this.reviewOne(candidate, primary, playbook, plan, triggers));
       }
     };
     await Promise.all(Array.from({ length: Math.min(this.concurrency, assessments.length) }, worker));

@@ -29,7 +29,8 @@ try{
     created.push(id);await setSpendBudget(id,100);
   }
   const input={operationId:randomUUID(),stage:"synthetic-replay-verification",tariffKey:"synthetic-no-provider",tariffVersion:"fixture-v1",maximumChargeMicros:10,requestBytes:10,requestFingerprint:"a".repeat(64),
-    modelAttempt:{invocationId:"synthetic-invocation",provider:"synthetic",task:"synthetic-score",promptVersion:"synthetic-v1",scoringVersion:"synthetic-policy-v1",attempt:1,requestedModel:"synthetic-model",gatewayHost:"api.deepseek.com",endpointKind:"chat-completions"}};
+    modelAttempt:{invocationId:"synthetic-invocation",provider:"synthetic",task:"synthetic-score",promptVersion:"synthetic-v1",scoringVersion:"synthetic-policy-v1",attempt:1,requestedModel:"synthetic-model",gatewayHost:"api.deepseek.com",endpointKind:"chat-completions"},
+    costAttribution:{version:"company-cost-attribution-v1" as const,kind:"company-inputs" as const,companyKeys:["a".repeat(64),"b".repeat(64)],roundKey:"c".repeat(64)}};
   const results=await Promise.allSettled([reservePaidCall(created[0],input),reservePaidCall(created[0],input)]);
   const successes=results.filter((result):result is PromiseFulfilledResult<string>=>result.status==="fulfilled");
   assert.equal(successes.length,1);
@@ -40,6 +41,11 @@ try{
   await assert.rejects(reservePaidCall(created[0],input),/paid-request-already-recorded/);
   const budget=await tenantQuery<{occupied_micros:string}>(created[0],"select occupied_micros::text from user_spend_budget where user_id=$1",[created[0]]);
   assert.equal(budget[0].occupied_micros,"10");
+  const attributed=await tenantQuery<{metrics:{reservationAllocation:{basis:string;shares:Array<{amountMicros:number}>;additionalSpendMicros:number};costAttribution:unknown}}>(created[0],"select metrics from paid_call_reservation where user_id=$1 and id=$2",[created[0],id]);
+  assert.deepEqual(attributed[0].metrics.costAttribution,input.costAttribution);
+  assert.equal(attributed[0].metrics.reservationAllocation.basis,"reservation");
+  assert.deepEqual(attributed[0].metrics.reservationAllocation.shares.map(row=>row.amountMicros),[5,5]);
+  assert.equal(attributed[0].metrics.reservationAllocation.additionalSpendMicros,0);
   const summary=await readProviderUsageSummary(created[0],input.operationId);
   assert.equal(summary.length,1);assert.equal(summary[0].attempts,1);
   assert.deepEqual(summary[0].fields.find(field=>field.field==="prompt_cache_hit_tokens"),{field:"prompt_cache_hit_tokens",reportedAttempts:1,total:"0"});
@@ -54,7 +60,7 @@ try{
   const known=await reservePaidCall(created[0],knownInput);
   await settlePaidCall(created[0],known,{reportedMicros:1,latencyMs:1,responseBytes:1,inputTokens:null,outputTokens:null,succeeded:false});
   await reservePaidCall(created[0],knownInput);
-  console.log(JSON.stringify({migration:"051",concurrentSingleReservation:true,unknownReplayBlocked:true,ownerIsolation:true,nonemptyUsageAggregate:true,knownFailureRetryReservation:true,realProviderCalls:0,actualModelCostUsd:0,fixturesOnly:true}));
+  console.log(JSON.stringify({migration:"051",concurrentSingleReservation:true,unknownReplayBlocked:true,ownerIsolation:true,nonemptyUsageAggregate:true,knownFailureRetryReservation:true,reservationAllocationConserved:true,attributionStoredBeforeNetwork:true,realProviderCalls:0,actualModelCostUsd:0,fixturesOnly:true}));
 }finally{
   if(created.length){
     const client=await admin.connect();
