@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+阶段119：实际产品 SQL 接收零候选/零合格的隔离合成运行，两次并发保存返回相同的0交付，目标缺口1由上游任务状态负责解释；5 micro-USD 合成共享预留无公司可分摊、继续占用且未核销。此为 A04/O03 的存储边界验证，不代表真实市场已耗尽或 A11 已通过。[证据](ZERO_QUALIFIED_RESULT_PERSISTENCE_2026-09-14.md)。
+
 阶段118：P06完整评分 Agent 合成边界新增60条独有证据/事实可无损表化、100条仍超界停在模型前两例；967项测试/203文件通过。真实模型输出遵从和超大单公司分阶段方案仍未验收。[证据](P06_FULL_SCORING_AGENT_SINGLETON_BOUNDARY_2026-09-14.md)。
 
 阶段117：SearchAPI当前账号只读用量接口未给出可唯一核定价格/速度档的合同信息；SearchAPI保持费用阻止，真实业务与账单验收未完成。[证据](SEARCHAPI_ACCOUNT_READONLY_CHECK_2026-09-14.md)。

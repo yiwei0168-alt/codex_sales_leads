@@ -22,6 +22,7 @@ const userId=randomUUID(),otherUserId=randomUUID(),workspaceId=randomUUID();
 const domain=`persistence-${randomUUID()}.fixture.invalid`;
 const countries=["CO","MX"];
 const runs=countries.map(()=>randomUUID()),actions=countries.map(()=>randomUUID()),threads=countries.map(()=>`persistence:${randomUUID()}`);
+const emptyRunId=randomUUID(),emptyActionId=randomUUID(),emptyThreadId=`persistence:${randomUUID()}`;
 let created=false;
 try{
   const client=await admin.connect();
@@ -39,6 +40,10 @@ try{
       await client.query(`insert into lead_search_provider_occurrence(occurrence_key,run_id,provider_call_id,candidate_key,domain,rank,source_kind,normalized)
         values($1,$2,$3,$4,$5,1,'fixture',true)`,[randomUUID(),runs[i],call.rows[0].id,`domain:${domain}`,domain]);
     }
+    await client.query("insert into assistant_action(id,user_id,conversation_id,action_type,status,payload) values($1,$2,$3,'lead-search','running',$4)",
+      [emptyActionId,userId,conversation.rows[0].id,JSON.stringify({countryCode:"CL",targetCount:1})]);
+    await client.query("insert into lead_search_run(id,workspace_id,provider,target_count,country_code,graph_thread_id,status) values($1,$2,'fixture',1,'CL',$3,'running')",
+      [emptyRunId,workspaceId,emptyThreadId]);
     await client.query('commit');created=true;
   }catch(error){await client.query('rollback');throw error;}finally{client.release();}
   await setSpendBudget(userId,1000);
@@ -91,6 +96,30 @@ try{
     assert.equal(allocation.unallocatedMicros,0);assert.equal(allocation.sourceAmountMicros,11+i);
     assert.equal((await tenantQuery(otherUserId,'select id from workflow_artifact_event where lead_run_id=$1',[runId])).length,0);
   }
+  const emptyReservationId=await reservePaidCall(userId,{operationId:emptyActionId,stage:"fixture",tariffKey:"synthetic",tariffVersion:"fixture",
+    maximumChargeMicros:5,requestBytes:0,costAttribution:{version:"company-cost-attribution-v1",kind:"task-shared",companyKeys:[],roundKey:costRoundKey(emptyThreadId)}});
+  const emptyInput={userId,workspaceId,actionId:emptyActionId,graphThreadId:emptyThreadId,runId:emptyRunId,countryCode:"CL",countryName:"CL",
+    requested:1,creditsUsed:0,ragContext:[],playbook,candidates:[],assessments:[],assessmentReviews:[],handoffs:[],modelUsage:[],
+    stageMetrics:[completedStageMetric({stage:"persist_results",startedAt:Date.now(),input:[],output:{expectedResult:false}})],
+    warnings:[],processedCompanyKeys:[]};
+  const emptyOutcomes=await Promise.allSettled([persistLeadWorkflowResult(emptyInput),persistLeadWorkflowResult(emptyInput)]);
+  const emptyResults=emptyOutcomes.map(outcome=>{if(outcome.status==="rejected")throw outcome.reason;return outcome.value;});
+  assert.deepEqual(emptyResults[0],emptyResults[1]);
+  assert.equal(emptyResults[0].accepted,0);assert.equal(emptyResults[0].qualified,0);
+  assert.deepEqual(emptyResults[0].deliveryCounts,{added:0,updated:0,roleChanged:0});
+  const emptyRun=await tenantQuery<{status:string;accepted_count:number;metadata:Record<string,unknown>}>(userId,
+    "select status,accepted_count,metadata from lead_search_run where id=$1",[emptyRunId]);
+  assert.equal(emptyRun[0].status,"completed");assert.equal(emptyRun[0].accepted_count,0);
+  assert.deepEqual((emptyRun[0].metadata.costAllocationCompletion as {processedCompanyKeys:string[]}).processedCompanyKeys,[]);
+  assert.equal((await tenantQuery(userId,"select id from lead_candidate_assessment where run_id=$1",[emptyRunId])).length,0);
+  assert.equal((await tenantQuery(userId,"select id from lead_search_result where run_id=$1",[emptyRunId])).length,0);
+  const emptyCost=await tenantQuery<{reserved_micros:string;settled_micros:string|null;metrics:Record<string,unknown>}>(userId,
+    "select reserved_micros::text,settled_micros::text,metrics from paid_call_reservation where id=$1",[emptyReservationId]);
+  assert.equal(emptyCost[0].reserved_micros,"5");assert.equal(emptyCost[0].settled_micros,null);
+  assert.deepEqual(emptyCost[0].metrics.completedReservationAllocation,{version:"company-cost-allocation-v1",basis:"reservation",
+    sourceAmountMicros:5,roundKey:costRoundKey(emptyThreadId),method:"zero-company-task",shares:[],unallocatedMicros:5,
+    amountKnown:true,additionalSpendMicros:0});
+  assert.equal((await tenantQuery(otherUserId,"select id from workflow_artifact_event where lead_run_id=$1",[emptyRunId])).length,0);
   const rows=await tenantQuery<{country_code:string;company_id:string;record:Record<string,unknown>;revision:string}>(userId,
     'select country_code,company_id,record,revision::text from workspace_company_market where workspace_id=$1 order by country_code',[workspaceId]);
   assert.deepEqual(rows.map(row=>row.country_code),countries);
@@ -128,12 +157,13 @@ try{
     [workspaceId,`company-override:${co.candidate_id}`]);
   assert.equal(memory.length,1);
   const budget=await admin.query('select occupied_micros::text from user_spend_budget where user_id=$1',[userId]);
-  assert.equal(budget.rows[0].occupied_micros,'23');
+  assert.equal(budget.rows[0].occupied_micros,'28');
   assert.equal((await tenantQuery(otherUserId,'select company_id from workspace_company_market where workspace_id=$1',[workspaceId])).length,0);
   console.log(JSON.stringify({actualProductPersistence:true,countries:2,sharedCompanyIdentities:1,concurrentCalls:4,artifactEvents:14,
     evidenceSnapshots:2,countryRecords:2,conflictingReplaysRejected:6,persistenceTimingReplays:2,legacyExactReplays:2,legacyTimingConflictsPreserved:2,legacyReplaysPreserved:2,
     userEditReassessment:{roleAndTierPreserved:true,agentScoreUpdated:true,refreshRequired:true,otherCountryUnchanged:true,privateMemory:1},
-    unknownAdoption:true,syntheticReservedMicros:23,realProviderCalls:0,scope:"synthetic-input-to-real-product-SQL"}));
+    zeroQualifiedRun:{accepted:0,companyRowsAdded:0,unallocatedMicros:5,concurrentReplays:2},
+    unknownAdoption:true,syntheticReservedMicros:28,realProviderCalls:0,scope:"synthetic-input-to-real-product-SQL"}));
 }finally{
   if(created){
     const client=await admin.connect();
