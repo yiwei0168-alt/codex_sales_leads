@@ -21,3 +21,4 @@
 下一必要工作是补齐当前OpenRouter模型和实际请求的完整费用上界。官方[Provider Routing](https://openrouter.ai/docs/guides/routing/provider-selection)支持provider.max_price限制输入/输出单价；[缓存说明](https://openrouter.ai/docs/guides/best-practices/prompt-caching)表明缓存收费具有供应商差异。仅凭max_price示例仍不足以认定已覆盖缓存、长上下文及当前路由的所有费用。此处只是后续核验线索，未改路由、费率或模型。
 
 用户已授权的独立恢复、遥测和UI工作可继续；本项阻止当前真实闭环，不代表整个goal已无可推进工作。
+阶段72重新执行只读预检：占用12.324404、余17.675596，现行Sol27.345252仍不容纳。形成[S01路由候选](SOL_ROUTING_PROPOSAL_2026-09-13.md)，候选10.622880尚未准入；单次候选预算不能代替整次运行预检。0付费/账号修改/job认领。

@@ -1,0 +1,32 @@
+{
+  "status": "proposal-only-user-routing-confirmation-required",
+  "capturedAt": "2026-09-13T14:09:56.144Z",
+  "source": {
+    "url": "https://openrouter.ai/api/v1/models/openai/gpt-5.6-sol-20260709/endpoints",
+    "sha256": "bc1c8496402ab7f8c3ff252895c6606e3bacd91bd46c0be17a741c3bb89d95a1"
+  },
+  "model": "openai/gpt-5.6-sol",
+  "provider": "openai",
+  "proposedProvider": {
+    "only": [
+      "openai"
+    ],
+    "allow_fallbacks": false,
+    "require_parameters": true,
+    "data_collection": "deny"
+  },
+  "inputAccounting": "disjoint-uncached-read-write; max category for full context",
+  "contextTokens": 1050000,
+  "outputTokens": 4096,
+  "undiscountedPerTokenMaxima": {
+    "prompt": 0.000008,
+    "input_cache_read": 8e-7,
+    "input_cache_write": 0.00001,
+    "completion": 0.00003
+  },
+  "maximumChargeMicros": 10622880,
+  "maximumChargeUsd": 10.62288,
+  "scope": "market-playbook only; existing text JSON contract and no service tier opt-in",
+  "cost": "no inference, no account read, no tariff/routing/budget mutation",
+  "fullRunBoundUsd": null
+}
