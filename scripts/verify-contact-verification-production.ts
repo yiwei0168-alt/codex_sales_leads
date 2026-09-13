@@ -1,17 +1,20 @@
 import { randomUUID } from "node:crypto";
 import nextEnv from "@next/env";
-import { getPool, transaction } from "../src/lib/rag/db";
+import { getPool, tenantTransaction } from "../src/lib/rag/db";
+import { resolveTargetWorkspace } from "./resolve-target-workspace";
 
 const { loadEnvConfig } = nextEnv;
 loadEnvConfig(process.cwd());
 
 class VerificationRollback extends Error {}
 let verified: { category: string; status: string; current: boolean; shadow: boolean } | undefined;
+const targetWorkspace = await resolveTargetWorkspace();
 
 try {
-  await transaction(async (client) => {
+  await tenantTransaction(targetWorkspace.ownerId, async (client) => {
     const workspace = await client.query<{ id: string }>(
-      `select id from market_workspace where slug = 'global-sales' and status = 'active' order by created_at limit 1`,
+      `select id from market_workspace where id=$1 and owner_id=$2 and slug = 'global-sales' and status = 'active'`,
+      [targetWorkspace.id,targetWorkspace.ownerId],
     );
     if (!workspace.rows[0]) throw new Error("Production verification requires a global workspace");
     const suffix = randomUUID();

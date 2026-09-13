@@ -1,8 +1,9 @@
 import { createHash } from "node:crypto";
 import nextEnv from "@next/env";
+import type {PoolClient,QueryResultRow} from "pg";
 import type { ChannelRole, CompanyRecord } from "../src/lib/domain";
 import { mexicoSearchPlan, type MexicoSearchQuery } from "../src/lib/leads/mexico-search-plan";
-import { getPool, query, transaction } from "../src/lib/rag/db";
+import { getPool, tenantQuery, tenantTransaction } from "../src/lib/rag/db";
 import { TavilySearchProvider, type TavilySearchResult } from "../src/providers/tavily";
 import { resolveTargetWorkspace } from "./resolve-target-workspace";
 
@@ -14,6 +15,8 @@ const reuseRecentOnly = process.argv.includes("--reuse-recent-only");
 const provider = new TavilySearchProvider();
 const targetWorkspace = await resolveTargetWorkspace();
 const workspaceId = targetWorkspace.id;
+const query = <T extends QueryResultRow>(sql:string,values:unknown[]=[])=>tenantQuery<T>(targetWorkspace.ownerId,sql,values);
+const transaction = <T>(run:(client:PoolClient)=>Promise<T>)=>tenantTransaction(targetWorkspace.ownerId,run);
 process.stdout.write(`Target workspace: ${targetWorkspace.email} (${workspaceId})\n`);
 
 const blockedDomains = [

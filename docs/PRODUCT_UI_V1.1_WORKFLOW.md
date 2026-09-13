@@ -1,5 +1,7 @@
 # Product UI v1.1 implementation workflow
 
+2026-09-14 阶段125：全局公司仍可复用，工作区公司成员关系与账户等级/优先级由拥有者RLS隔离；手动添加两账号各自保存，任务列表、联系人统计与国家视图的本地生产桌面/手机回归66组通过。旧CLI发现/报告及联系人发布回滚核对明确工作区主人，避免取错第一个工作区。会话和工作区基础表另行迁移，0实际供应商/邮件外发。[验收](WORKSPACE_COMPANY_TENANT_RLS_ACCEPTANCE_2026-09-14.md)。
+
 2026-09-14 阶段124：工作区模式保存经租户事务写入审计事件；审计内容按工作区拥有者读写，并拒绝跨户插入和冒用操作者。真实SQL与本地生产Chrome桌面/手机66组通过，0实际付费/发信；`app_session`、`market_workspace`、`workspace_company`的独立隔离迁移仍待处理。[验收](WORKSPACE_AUDIT_TENANT_RLS_ACCEPTANCE_2026-09-14.md)。
 
 2026-09-14 阶段123：联系人补全/核验运行由拥有者上下文读写，9张私有产物表以RLS隔离；历史缺工作区的邮件保留但对应用角色不可见。`/api/contact-enrichment/runs/latest`按会话用户查询，匿名401、两隔离账号各自HTTP200/预期条目通过；隔离SQL和本地生产Chrome桌面/手机66组回归通过。其余4张拥有者字段表另迁移。缓存复用避免重复调用，0实际供应商调用/发信。[验收](CONTACT_ARTIFACT_TENANT_RLS_ACCEPTANCE_2026-09-14.md)。
