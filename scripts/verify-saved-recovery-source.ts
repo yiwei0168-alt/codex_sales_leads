@@ -47,6 +47,7 @@ try{
   const before=(await graph.getState(config));
   const first=await readSavedProcessingRecovery(user,action),repeat=await readSavedProcessingRecovery(user,action);
   assert.deepEqual(first,repeat);assert.equal(first.scope.companies.length,1);assert.equal(first.scope.discoveryAllowed,false);
+  assert.deepEqual(first.evidenceReadiness,[{candidateId:candidate.candidateId,reusableEvidence:0,needsEvidenceRefresh:true,reasons:{"missing-scoring-evidence":1}}]);
   assert.equal(first.proof.checkpointId,before.config.configurable?.checkpoint_id);
   assert.deepEqual((await graph.getState(config)).values,before.values);
   await assert.rejects(tenantTransaction(user,async client=>{

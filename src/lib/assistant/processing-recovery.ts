@@ -6,6 +6,7 @@ import type {LeadSearchPlan} from "./types";
 import type {LeadWorkflowResult} from "@/lib/leads/workflow/types";
 import {validateSavedRecoverySource,type SavedRecoverySnapshot} from "@/lib/leads/workflow/saved-recovery-source";
 import {persistenceInputFingerprint} from "@/lib/leads/workflow/persistence-identity";
+import {readRecoveryEvidenceReadiness} from "@/lib/leads/workflow/recovery-evidence-readiness";
 
 type ReadCheckpoint=(userId:string,actionId:string,threadId:string,plan:LeadSearchPlan)=>Promise<SavedRecoverySnapshot>;
 const productionCheckpoint:ReadCheckpoint=async(...args)=>{
@@ -91,5 +92,7 @@ export async function readSavedProcessingRecoveryInTransaction(client:PoolClient
   const prepared=validateSavedRecoverySource({userId,actionId:parentId,workspaceId:run.workspace_id,threadId:run.graph_thread_id,
     runId:run.id,plan:parent.payload,result:parent.result,snapshot,selectedDomains:selected.rows.map(row=>row.domain),
     taskBudget:own&&own.limit_micros!==null?{limitMicros:own.limit_micros,occupiedMicros:own.occupied_micros}:null});
-  return {...prepared,conversationId:parent.conversation_id};
+  const evidenceReadiness=await readRecoveryEvidenceReadiness(client,userId,run.id,
+    prepared.scope.companies.flatMap(company=>company.candidates));
+  return {...prepared,evidenceReadiness,conversationId:parent.conversation_id};
 }

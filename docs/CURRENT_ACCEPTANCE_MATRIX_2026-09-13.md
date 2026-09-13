@@ -1,6 +1,6 @@
 # 当前唯一验收矩阵（2026-09-13）
 
-阶段83：[已保存历史恢复范围准备](SAVED_PROCESSING_RECOVERY_SCOPE_2026-09-13.md)及[共享预算基础](PROCESSING_RECOVERY_SHARED_BUDGET_2026-09-13.md)已实现，并增加[实际来源核验](SAVED_RECOVERY_SOURCE_VERIFICATION_2026-09-13.md)；全量867测试/190文件、生产build、真实SQL与检查点核验通过，Chrome54组沿用阶段81。[恢复提案原子保存](PROCESSING_RECOVERY_PROPOSAL_2026-09-13.md)及重复复用已通过真实SQL；专用确认/执行、页面入口与证据/结果关联尚未接通，临时禁止普通搜索。现行Sol单次预留仍超余额，S01路由候选待确认。**整体验收未完成，goal active。** 本表是当前状态入口；[阶段25–40原始记录](ACCEPTANCE_HISTORY_STAGES_25_40_2026-09-13.md)保留历史，不能作为当前待办使用。页面及知识SQL证据见[最新页面报告](LOCAL_PRODUCTION_UI_ACCEPTANCE_2026-09-13.md)，更早证据见[生产验收记录](LOCAL_PRODUCTION_ACCEPTANCE_2026-09-12.md)。
+阶段84：[已保存历史恢复范围准备](SAVED_PROCESSING_RECOVERY_SCOPE_2026-09-13.md)及[共享预算基础](PROCESSING_RECOVERY_SHARED_BUDGET_2026-09-13.md)已实现，并增加[实际来源核验](SAVED_RECOVERY_SOURCE_VERIFICATION_2026-09-13.md)；[恢复证据有效期检查](RECOVERY_EVIDENCE_READINESS_2026-09-13.md)已接读取层，全量871测试/191文件、生产build、真实SQL与检查点核验通过，Chrome54组沿用阶段81。[恢复提案原子保存](PROCESSING_RECOVERY_PROPOSAL_2026-09-13.md)及重复复用已通过真实SQL；专用确认/执行、页面入口与证据/结果关联尚未接通，临时禁止普通搜索。现行Sol单次预留仍超余额，S01路由候选待确认。**整体验收未完成，goal active。** 本表是当前状态入口；[阶段25–40原始记录](ACCEPTANCE_HISTORY_STAGES_25_40_2026-09-13.md)保留历史，不能作为当前待办使用。页面及知识SQL证据见[最新页面报告](LOCAL_PRODUCTION_UI_ACCEPTANCE_2026-09-13.md)，更早证据见[生产验收记录](LOCAL_PRODUCTION_ACCEPTANCE_2026-09-12.md)。
 
 用户确认 A21/D12 执行完整 plan，D13 已采纳 O01–O05，不再等待采纳。批准、实现、合成测试、真实数据库和真实业务/UI验收分别记录，不互相替代。没有新市场实验、冻结盲审重跑或填满50家的结论。
 
