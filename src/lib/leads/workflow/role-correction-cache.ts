@@ -12,7 +12,8 @@ import type { CorrectedLeadWorkflowCandidate, LeadCandidateCorrection,
 interface CorrectionCacheRow {
   dependency_fingerprint: string;
   correction: LeadCandidateCorrection;
-  evidence_bindings: Record<string, { url: string; contentHash: string; sourceType: string }>;
+  evidence_bindings: Record<string, { url: string; contentHash: string; sourceType: string;
+    title?:string;excerpt?:string }>;
   missing_evidence: string[];
 }
 
@@ -28,9 +29,10 @@ export function roleCorrectionDependency(candidate: LeadWorkflowCandidate, plan:
   promptVersion: string,executionContract?:string): { fingerprint: string; evidenceSnapshotHash: string } {
   const evidence = candidate.evidence.filter((item) =>
     isCurrentLeadScoringEvidence(item, candidate.evidenceSnapshotRunId))
-    .map((item) => ({ url: item.url, contentHash: item.contentHash, sourceType: item.sourceType,title:item.title }));
+    .map((item) => ({ url: item.url, contentHash: item.contentHash, sourceType: item.sourceType,
+      title:item.title,excerpt:item.excerpt }));
   const evidenceSnapshotHash = createHash("sha256").update(stable(evidence)).digest("hex");
-  const fingerprint = createHash("sha256").update(stable({version:"role-cache-dependencies-v2",executionContract:executionContract??null,
+  const fingerprint = createHash("sha256").update(stable({version:"role-cache-dependencies-v3",executionContract:executionContract??null,
     domain: candidate.domain,companyName:candidate.companyName,officialWebsiteUrl:candidate.officialWebsiteUrl,
     queryRoles:candidate.queryRoles,queryFamily:candidate.queryFamily,missingEvidence:candidate.discoveryGate?.missingEvidence??[],
     marketCountryCode: plan.countryCode,countryName:plan.countryName,objective:plan.objective,evidenceSnapshotHash, promptVersion,
@@ -38,8 +40,9 @@ export function roleCorrectionDependency(candidate: LeadWorkflowCandidate, plan:
   return { fingerprint, evidenceSnapshotHash };
 }
 
-function evidenceKey(item: { url: string; contentHash?: string; sourceType: string }): string {
-  return `${item.url}|${item.contentHash ?? ""}|${item.sourceType}`;
+function evidenceKey(item: { url: string; contentHash?: string; sourceType: string;
+  title:string;excerpt:string }): string {
+  return stable([item.url,item.contentHash??"",item.sourceType,item.title,item.excerpt]);
 }
 
 export function rebindCachedCorrection(candidate: LeadWorkflowCandidate, correction: LeadCandidateCorrection,
@@ -50,7 +53,8 @@ export function rebindCachedCorrection(candidate: LeadWorkflowCandidate, correct
     .map((item) => [evidenceKey(item), item.id]));
   const remap = new Map<string, string>();
   for (const [oldId, binding] of Object.entries(bindings)) {
-    const currentId = currentByKey.get(evidenceKey(binding));
+    if(typeof binding.title!=="string"||typeof binding.excerpt!=="string")return null;
+    const currentId = currentByKey.get(evidenceKey({...binding,title:binding.title,excerpt:binding.excerpt}));
     if (currentId) remap.set(oldId, currentId);
   }
   const citedIds = new Set([...correction.reliedEvidenceIds,
@@ -118,7 +122,8 @@ export async function savePublicRoleCorrection(candidate: CorrectedLeadWorkflowC
     ...candidate.correction.findings.flatMap((finding) => finding.evidenceIds),
     ...candidate.correction.supplementalEvidenceIds]);
   const evidenceBindings = Object.fromEntries(candidate.evidence.filter((item) => citedIds.has(item.id))
-    .map((item) => [item.id, { url: item.url, contentHash: item.contentHash ?? "", sourceType: item.sourceType }]));
+    .map((item) => [item.id, { url: item.url, contentHash: item.contentHash ?? "",
+      sourceType: item.sourceType,title:item.title,excerpt:item.excerpt }]));
   await transaction(async (client) => {
     const entity = await client.query<{ id: string }>(
       `insert into public_evidence.company_entity (canonical_name, canonical_domain, headquarters_country_code)

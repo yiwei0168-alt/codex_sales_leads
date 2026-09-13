@@ -804,7 +804,7 @@ flowchart TD
 | `src/lib/leads/workflow/pdf-extraction-policy.ts` | `6d8847827f1e96eab570114bca33cd447eaa3e64d7246ee09a748f8e6d6ade03` |
 | `src/lib/leads/workflow/public-evidence-repository.ts` | `5dcbfe60487eeb5d2ccab4b6e3eac9529705b21005abaa599359c992e51c4b03` |
 | `src/lib/leads/workflow/workflow-telemetry.ts` | `47c86d6b05cd87f088eb110cae2603989aebc920b4203688fb899c4d48cbde95` |
-| `src/lib/leads/workflow/role-correction-cache.ts` | `d9561b4c7095ebb0f88b1eb5bb349006e5271502e9400956b6720adaaaac709d` |
+| `src/lib/leads/workflow/role-correction-cache.ts` | `d7923ad4a5f97f85ff79dd0cf79ab3b82642bf5be477157486a3be7ea0ec769f` |
 | `src/lib/leads/workflow/target-completion-policy.ts` | `c8e21d04e360ccb82f1c46ecceeeac80bcf4c5555df214287d424163e0b2148c` |
 | `experiments/multi-source-lead-discovery/scripts/score-v3-tool-lead-value.ts` | `633e541c552fd9d979a60211fc4adf981327966a197d8439f41c3a88392bd6b8` |
 | `experiments/multi-source-lead-discovery/scripts/render-v3-tool-evaluation.ts` | `1fdb0d23c3465159403b54f4a42a19e28556ce31de320c118ada5d8fd2615a7c` |

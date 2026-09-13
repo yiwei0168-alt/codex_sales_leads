@@ -63,17 +63,30 @@ describe("public role-correction cache fingerprint", () => {
       reasons: [], confidence: 90, model: "test", promptVersion: "prompt-v1", escalated: false, warnings: [],
     };
     const contentHash = current.evidence[0].contentHash!;
+    const binding={url:"https://example.mx/",contentHash,sourceType:"official-website",
+      title:"Example",excerpt:current.evidence[0].excerpt};
     const rebound = rebindCachedCorrection(current, correction, { "evidence-home": {
-      url: "https://example.mx/", contentHash, sourceType: "official-website" } });
+      ...binding } });
     expect(rebound?.reliedEvidenceIds).toEqual(["public-chunk-new-id"]);
     for (const incomplete of [
       { ...correction, model: "deterministic-fallback" },
       { ...correction, completionStatus: "retry-required" as const },
       { ...correction, primaryRole: "Hybrid" as const, resolvedRoles: [], resolvedFamilies: [], primaryFamily: null },
     ]) expect(rebindCachedCorrection(current, incomplete, { "evidence-home": {
-      url: "https://example.mx/", contentHash, sourceType: "official-website" } })).toBeNull();
+      ...binding } })).toBeNull();
     expect(rebound?.findings[0].evidenceIds).toEqual(["public-chunk-new-id"]);
     expect(rebindCachedCorrection(current, correction, { "evidence-home": {
-      url: "https://example.mx/", contentHash: "changed", sourceType: "official-website" } })).toBeNull();
+      ...binding,contentHash:"changed" } })).toBeNull();
+    expect(rebindCachedCorrection(current, correction, {"evidence-home":{
+      ...binding,excerpt:"Changed excerpt"}})).toBeNull();
+    expect(rebindCachedCorrection(current, correction, {"evidence-home":{
+      ...binding,title:"Changed title"}})).toBeNull();
+    expect(rebindCachedCorrection(current, correction, {"evidence-home":{
+      url:binding.url,contentHash:binding.contentHash,sourceType:binding.sourceType,
+    }})).toBeNull();
+    const duplicatePage={...current,evidence:[current.evidence[0],
+      {...current.evidence[0],id:"different-heading",title:"Other heading"}]};
+    expect(rebindCachedCorrection(duplicatePage,correction,{"evidence-home":binding})?.reliedEvidenceIds)
+      .toEqual(["public-chunk-new-id"]);
   });
 });
