@@ -5,8 +5,9 @@ import { TaskRunControls } from "./task-run-controls";
 import { SearchContinuation } from "./search-continuation";
 import {TaskSpendBudget} from "./task-spend-budget";
 import {ProcessingRecovery} from "./processing-recovery";
+import type {RecoveryFamilySummary} from "@/lib/assistant/recovery-family-summary";
 
-export function SearchTaskDetail({ action,refreshKey=0 }: { action: AssistantActionDto;refreshKey?:number }) {
+export function SearchTaskDetail({ action,refreshKey=0,recoveryFamily }: { action: AssistantActionDto;refreshKey?:number;recoveryFamily?:RecoveryFamilySummary|null }) {
   const counts = taskCounts(action.result);
   const partial = action.status === "completed" && counts.accepted !== null && counts.accepted < action.payload.targetCount;
   const shortfall = counts.accepted === null ? null : Math.max(0,action.payload.targetCount-counts.accepted);
@@ -19,6 +20,7 @@ export function SearchTaskDetail({ action,refreshKey=0 }: { action: AssistantAct
     <p>{action.payload.roles.join(" · ")}</p>
     {continuation&&<p>第 {String(continuation.depth)} 次缺口续搜 · 排除前序已评估 {String(continuation.excludedCount)} 家 · <a href={`/tasks/${encodeURIComponent(String(continuation.parentActionId))}?kind=search`}>查看原任务（原费用保留）</a></p>}
     {recovery&&<p>原范围处理恢复 · 待处理公司 {String(recovery.pendingCompanies??"未知")} 家 · 原任务已保存 {String(recovery.originalAcceptedCount??"未知")} 家。下方数量仅统计本次恢复，不代表与原结果合并后的唯一公司数。<a href={`/tasks/${encodeURIComponent(String(recovery.parentActionId))}?kind=search`}>查看原任务、结果及费用</a></p>}
+    {recoveryFamily&&<p>恢复链已核实唯一保存 {recoveryFamily.verifiedUniqueSaved??"无法核对"} 家 / 原目标 {recoveryFamily.target??"未知"} 家 · 当前缺口 {recoveryFamily.remaining??"无法核对"} 家 · 重复保存槽位 {recoveryFamily.duplicateSavedSlots??"无法核对"} 条{recoveryFamily.pendingTasks?` · ${recoveryFamily.pendingTasks} 个任务尚未完成，数量会更新`:""}。仅统计已完成运行的真实入库选择；未核实记录不计为零。</p>}
     <TaskRunControls key={`${action.id}:${refreshKey}`} actionId={action.id} status={action.status} processingRecovery={Boolean(recovery)}/>
     <TaskSpendBudget key={action.id} actionId={action.id}/>
     <p>创建：{action.createdAt} · 最近更新：{action.updatedAt}</p>

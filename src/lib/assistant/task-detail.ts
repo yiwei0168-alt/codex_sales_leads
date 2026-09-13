@@ -1,6 +1,7 @@
 import { tenantQuery } from "@/lib/rag/db";
 import { getAssistantAction } from "./repository";
 import { decryptMailboxContent } from "@/lib/mailbox/crypto";
+import {readRecoveryFamilySummary} from "./recovery-family-summary";
 export async function readTaskDetail(userId:string,id:string,kind:string,offset=0){
   if(kind==="generation"){
     const rows=await tenantQuery(userId,"select id,stage,status,metrics,created_at,updated_at from product_operation_metric where user_id=$1 and id=$2 and stage in ('development-generation','development-revision')",[userId,id]);return rows[0]?{kind,details:rows[0]}:null;
@@ -16,7 +17,8 @@ export async function readTaskDetail(userId:string,id:string,kind:string,offset=
       from lead_workflow_job j join lead_search_run r on r.graph_thread_id=j.graph_thread_id
       join lead_candidate_assessment a on a.run_id=r.id and a.user_id=$1 where j.user_id=$1 and j.action_id=$2
       order by a.selected desc,a.total_score desc,a.id limit 51 offset $3`,[userId,id,offset]);
-    return {kind,action,details:{candidates:candidates.slice(0,50),hasMore:candidates.length>50,offset}};
+    return {kind,action,details:{candidates:candidates.slice(0,50),hasMore:candidates.length>50,offset,
+      recoveryFamily:await readRecoveryFamilySummary(userId,id)}};
   }
   if(kind==="contacts"){
     const rows=await tenantQuery(userId,`select r.id,r.status,r.provider_mix,r.target_count,r.processed_count,r.search_credits_used,r.extract_credits_used,r.started_at,r.finished_at,r.metadata,

@@ -311,8 +311,10 @@ try{
     const recoveryLink=page.getByRole("link",{name:"审阅恢复计划、共享预算并确认执行"});await expect(recoveryLink).toBeVisible();
     const recoveryHref=await recoveryLink.getAttribute("href");
     await page.reload();await expect(page.getByRole("link",{name:"审阅恢复计划、共享预算并确认执行"})).toHaveAttribute("href",recoveryHref!);
+    await expect(page.getByText(/恢复链已核实唯一保存 0 家 \/ 原目标 5 家/)).toBeVisible();
     await page.getByRole("link",{name:"审阅恢复计划、共享预算并确认执行"}).click();
     await expect(page.getByText(/原范围处理恢复 · 待处理公司 1 家/)).toBeVisible();
+    await expect(page.getByText(/恢复链已核实唯一保存 0 家 \/ 原目标 5 家/)).toBeVisible();
     await expect(page.getByRole("link",{name:"查看原任务、结果及费用"})).toHaveAttribute("href",`/tasks/${recoveryParent}?kind=search`);
     await page.getByText("任务预算与成本",{exact:true}).click();
     await expect(page.getByText(/继承任务上限 \$0\.000000/)).toBeVisible();

@@ -15,6 +15,7 @@ const {getPool,tenantTransaction}=await import("../src/lib/rag/db");
 const {buildLeadWorkflowGraph,readSavedWorkflowRecoveryCheckpoint,runLeadWorkflow}=await import("../src/lib/leads/workflow/graph");
 const {persistLeadWorkflowResult}=await import("../src/lib/leads/workflow/persistence");
 const {readSavedProcessingRecovery,proposeProcessingRecovery,proposeProcessingRecoveryInTransaction,prepareProcessingRecoveryExecution}=await import("../src/lib/assistant/processing-recovery");
+const {readRecoveryFamilySummary}=await import("../src/lib/assistant/recovery-family-summary");
 const {confirmAndQueueLeadWorkflow,claimLeadWorkflowByAction}=await import("../src/lib/leads/workflow/jobs");
 const {setSpendBudget,setTaskSpendBudget,reservePaidCall}=await import("../src/lib/billing/repository");
 const user=randomUUID(),workspace=randomUUID(),conversation=randomUUID(),action=randomUUID(),run=randomUUID();
@@ -62,6 +63,14 @@ try{
   assert.equal(proposals[0].actionId,proposals[1].actionId);
   assert.deepEqual(proposals.map(p=>p.reused).sort(),[false,true]);
   const childId=proposals[0].actionId;
+  const family=await readRecoveryFamilySummary(user,childId);
+  assert.deepEqual(family,{rootActionId:action,target:plan.targetCount,verifiedUniqueSaved:0,savedSlots:0,
+    duplicateSavedSlots:0,remaining:plan.targetCount,pendingTasks:1,status:"in-progress"});
+  assert.deepEqual(await readRecoveryFamilySummary(user,action),family);
+  const familyMetrics=async()=> (await admin.query("select status,metrics from product_operation_metric where user_id=$1 and stage='processing-recovery-family-reconciliation' order by created_at,id",[user])).rows;
+  assert.equal((await familyMetrics()).length,1,"Parent and child refreshes must share one snapshot metric");
+  assert.equal((await familyMetrics())[0].metrics.userAdoptedItems,null);
+  assert.equal(await readRecoveryFamilySummary(randomUUID(),childId),null);
   assert.equal((await admin.query("select count(*)::int as n from assistant_message where user_id=$1 and metadata->>'processingRecoveryActionId'=$2",[user,childId])).rows[0].n,1);
   const observations=(await admin.query("select changes->'efficiency' as e from workspace_audit_event where actor_user_id=$1 and entity_type='processing-recovery'",[user])).rows;
   assert.equal(observations.reduce((sum,row)=>sum+row.e.savedOutputItems,0),1);
@@ -76,8 +85,33 @@ try{
   await assert.rejects(prepareProcessingRecoveryExecution(user,childId,recoveryClaim.graphThreadId,{...recoveryPlan,countryCode:"MX"}),/plan mismatch/);
   const initialized=await Promise.all([prepareProcessingRecoveryExecution(user,childId,recoveryClaim.graphThreadId,recoveryPlan),prepareProcessingRecoveryExecution(user,childId,recoveryClaim.graphThreadId,recoveryPlan)]);
   assert.ok(initialized[0]);assert.ok(initialized[1]);assert.equal(initialized[0].runId,initialized[1].runId);assert.notEqual(initialized[0].runId,run);
+  const recoveryRunId=initialized[0].runId;
   assert.equal((await admin.query("select count(*)::int as n from lead_search_run where workspace_id=$1",[workspace])).rows[0].n,2);
   assert.equal((await admin.query("select status from lead_search_run where id=$1",[run])).rows[0].status,"completed");
+  await admin.query("update assistant_action set status='completed',result=$2 where id=$1",[childId,JSON.stringify({runId:recoveryRunId,graphThreadId:recoveryClaim.graphThreadId,accepted:1})]);
+  assert.equal((await readRecoveryFamilySummary(user,childId))?.status,"unverifiable");
+  assert.equal((await familyMetrics()).filter(row=>row.status==="failed").length,1);
+  await admin.query("update lead_search_run set status='completed' where id=$1",[recoveryRunId]);
+  const insertSelection=async(candidateId:string,rank:number)=>admin.query(`insert into lead_candidate_assessment
+    (user_id,run_id,candidate_id,company_name,domain,official_website_url,eligible,total_score,confidence,
+     gates,dimensions,account_tier,supply_model,brand_involvement,summary,model,prompt_version,selected,selected_rank)
+    values($1,$2,$3,'Synthetic recovery selection',$4,$5,true,80,80,'{}','{}','fixture','fixture','fixture',
+      'Synthetic selection for identity conservation only','synthetic','fixture',true,$6)`,
+    [user,recoveryRunId,candidateId,candidate.domain,`https://${candidate.domain}/`,rank]);
+  await insertSelection("selected-one",1);
+  assert.deepEqual(await readRecoveryFamilySummary(user,childId),{rootActionId:action,target:plan.targetCount,
+    verifiedUniqueSaved:1,savedSlots:1,duplicateSavedSlots:0,remaining:plan.targetCount-1,pendingTasks:0,status:"verified"});
+  await insertSelection("selected-duplicate",2);
+  await admin.query("update assistant_action set result=$2 where id=$1",[childId,JSON.stringify({runId:recoveryRunId,graphThreadId:recoveryClaim.graphThreadId,accepted:2})]);
+  assert.deepEqual(await readRecoveryFamilySummary(user,childId),{rootActionId:action,target:plan.targetCount,
+    verifiedUniqueSaved:1,savedSlots:2,duplicateSavedSlots:1,remaining:plan.targetCount-1,pendingTasks:0,status:"verified"});
+  const metricCount=(await familyMetrics()).length;
+  assert.ok(metricCount>=4);
+  await readRecoveryFamilySummary(user,action);
+  assert.equal((await familyMetrics()).length,metricCount,"Refresh of identical saved snapshot must not count again");
+  await admin.query("delete from lead_candidate_assessment where run_id=$1 and user_id=$2",[recoveryRunId,user]);
+  await admin.query("update lead_search_run set status='running' where id=$1",[recoveryRunId]);
+  await admin.query("update assistant_action set status='confirmed',result='{}'::jsonb where id=$1",[childId]);
   await setTaskSpendBudget(user,childId,0);
   // Missing fixture knowledge or zero budget must stop actual wiring before any paid operation.
   await assert.rejects(runLeadWorkflow({userId:user,actionId:childId,graphThreadId:recoveryClaim.graphThreadId,plan:recoveryPlan}));
@@ -101,6 +135,9 @@ try{
   assert.equal((await admin.query("select count(*)::int as n from assistant_action where user_id=$1",[user])).rows[0].n,2);
   console.log(JSON.stringify({actualPersistenceAndCheckpoint:true,repeatedReadStable:true,sourceResultMismatchRejected:true,countryMismatchRejected:true,ownerIsolation:true,unknownCostBlocked:true,newActions:1,proposalRollback:true,concurrentProposalReuse:true,savedObservation:1,ordinaryDiscoveryBlocked:true,providerCalls:0,syntheticMicros:1}));
   console.log(JSON.stringify({confirmedClaimRequired:true,threadAndPlanVerified:true,concurrentInitializationOneNewRun:true,originalRunPreserved:true,changedSourceExecutionBlocked:true}));
+  console.log(JSON.stringify({recoveryFamilySql:true,verifiedUniqueAfterDuplicate:1,savedSlotsAfterDuplicate:2,
+    mismatchedCompletedRunUnknown:true,tenantIsolation:true,telemetrySnapshotIdempotent:true,
+    telemetryUnknownNotAdopted:true,syntheticSelectionsRemoved:true}));
 }finally{
   if(created){
     const client=await admin.connect();
