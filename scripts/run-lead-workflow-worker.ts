@@ -3,14 +3,21 @@ import { hostname } from "node:os";
 import nextEnv from "@next/env";
 
 import { claimNextLeadWorkflow, executeClaimedLeadWorkflow } from "../src/lib/leads/workflow/jobs";
+import {refreshBillingFxReference} from "../src/lib/billing/fx-reference-repository";
 
 nextEnv.loadEnvConfig(process.cwd());
 
 const once = process.argv.includes("--once");
 const workerId = `${hostname()}:${process.pid}`;
 const idleDelayMs = Math.max(1_000, Math.min(Number(process.env.LEAD_WORKFLOW_WORKER_POLL_MS ?? 3_000), 30_000));
+let nextReferenceCheck=0;
 
 async function runOnce(): Promise<boolean> {
+  if(Date.now()>=nextReferenceCheck){
+    nextReferenceCheck=Date.now()+5*60*1000;
+    try{await refreshBillingFxReference();}
+    catch{console.warn(JSON.stringify({event:"billing-reference-maintenance-unavailable",paidRulesUnchanged:true}));}
+  }
   const claim = await claimNextLeadWorkflow(workerId);
   if (!claim) return false;
   try {
