@@ -12,7 +12,7 @@ if(a.hostname!==m.hostname||(a.port||"5432")!==(m.port||"5432")||a.pathname!==m.
 const admin=new Pool({connectionString:databaseConnectionString(migration),ssl:databaseSslConfiguration(migration)});
 const {getPool,tenantQuery}=await import("../src/lib/rag/db");
 const {hashPassword}=await import("../src/lib/auth/password");
-const {reservePaidCall,settlePaidCall,setSpendBudget,readSpendBudget}=await import("../src/lib/billing/repository");
+const {reservePaidCall,settlePaidCall,setSpendBudget,readSpendBudget,assertProcessingRecoveryCostsKnown}=await import("../src/lib/billing/repository");
 const {recordVerifiedCostObservation}=await import("../src/lib/billing/reconciliation");
 const {providerUsageObservation}=await import("../src/lib/billing/provider-usage");
 const {budgetedFetch}=await import("../src/lib/billing/paid-fetch");
@@ -117,6 +117,24 @@ try{
   assert.equal(retained[0].occupied,null); // null => full original reservation, not zero
   console.log(JSON.stringify({inlineReportAdapterToSql:true,perRequestByokRequired:true,duplicateGenerationRetained:true,
     duplicateReportIdempotent:true,unmatchedOwnerRejected:true,realProviderCalls:0}));
+  const recoveryOperation=randomUUID();
+  const recoveryRequest={...request,operationId:recoveryOperation,stage:"synthetic-recovery",requestFingerprint:hash("recovery-request")};
+  const recoveryId=await reservePaidCall(userId,recoveryRequest);
+  await assert.rejects(assertProcessingRecoveryCostsKnown(userId,recoveryOperation),/paid-request-already-recorded/);
+  const recoveryProviderId=`synthetic-recovery-${randomUUID()}`;
+  await settlePaidCall(userId,recoveryId,{reportedMicros:null,latencyMs:0,responseBytes:1,inputTokens:1,outputTokens:0,
+    succeeded:false,providerUsage:providerUsageObservation({id:recoveryProviderId})});
+  await assert.rejects(assertProcessingRecoveryCostsKnown(userId,recoveryOperation),/paid-request-already-recorded/);
+  await assert.rejects(reservePaidCall(userId,recoveryRequest),/paid-request-already-recorded/);
+  await recordVerifiedCostObservation(userId,recoveryId,{kind:"provider-report",amountMicros:3,complete:true,
+    sourceVersion:"synthetic-recovery-v1",sourceReferenceHash:hash(recoveryProviderId),providerRequestHash:hash(recoveryProviderId)});
+  await assertProcessingRecoveryCostsKnown(userId,recoveryOperation);
+  const retryId=await reservePaidCall(userId,recoveryRequest);
+  assert.notEqual(retryId,recoveryId);
+  await settlePaidCall(userId,retryId,{reportedMicros:3,latencyMs:0,responseBytes:1,inputTokens:1,outputTokens:1,succeeded:true});
+  await assert.rejects(reservePaidCall(userId,recoveryRequest),/paid-request-already-recorded/);
+  console.log(JSON.stringify({unknownRecoveryBlocked:true,verifiedFailedRequestRecoveryAllowed:true,
+    completedRequestReplayBlocked:true,recoveryCostHistoryPreserved:true,realProviderCalls:0}));
   console.log(JSON.stringify({migration:"052",estimateRetained:true,ambiguousMatchRetained:true,concurrentReleaseOnce:true,invoicePriority:true,appendOnlyHistory:true,overrunRuleOnly:true,originalReservationPreserved:true,separateCostBasisAllocationConserved:true,storedCompanyAttributionPreserved:true,realProviderCalls:0,actualModelCostUsd:0,fixturesOnly:true}));
 }finally{
   if(created){

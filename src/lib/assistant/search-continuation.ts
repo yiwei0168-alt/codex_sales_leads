@@ -5,7 +5,9 @@ import { tenantQuery,tenantTransaction } from '@/lib/rag/db';
 export function continuationGap(target:number,accepted:unknown,depth:number,previousAccepted:unknown,reason:unknown){
   if(!Number.isSafeInteger(target)||target<1||target>500||typeof accepted!=='number'||!Number.isSafeInteger(accepted)||accepted<0||accepted>=target)throw new Error('没有可确认的续搜缺口；目标已满足或历史计数不完整。');
   if(depth>=3)throw new Error('已达到三次续搜上限，请在助手中调整搜索目标，避免重复搜索。');
-  if(reason==='confirmed-exhaustion'||(depth>0&&accepted===0&&previousAccepted===0))throw new Error('已达到停滞结束条件，请修改地区、类别或要求后重新规划。');
+  if(reason==='processing-incomplete')throw new Error('原任务仍有未完成处理，请从原检查点恢复，不能用续搜绕过费用核验。');
+  if(reason==='confirmed-exhaustion')throw new Error('已达到停滞结束条件，请修改地区、类别或要求后重新规划。');
+  void previousAccepted; // Historical zero counts alone do not prove market exhaustion.
   return target-accepted;
 }
 
@@ -34,9 +36,9 @@ export async function proposeSearchContinuationInTransaction(client:PoolClient,u
     join market_workspace w on w.id=r.workspace_id where j.action_id=$1 and j.user_id=$2 and w.owner_id=$2
       and r.status='completed' and r.id::text=$3 and r.country_code=$4`,[parentId,userId,String(parent.result.runId??''),parent.payload.countryCode]);
   const run=runs.rows[0];if(!run||runs.rows.length!==1)throw new Error('缺少唯一的原搜索证据关联，不能安全生成续搜排除列表。');
-  const domains=await client.query<{domain:string}>('select distinct lower(domain) as domain from lead_candidate_assessment where run_id=$1 and user_id=$2',[run.id,userId]);
+  const domains=await client.query<{domain:string}>("select distinct lower(domain) as domain from lead_candidate_assessment where run_id=$1 and user_id=$2 and scoring_status='completed'",[run.id,userId]);
   const excluded=[...new Set([...(prior?.excluded_domains??[]),...domains.rows.map(row=>row.domain.trim().replace(/^www\./,''))].filter(Boolean))].sort();
-  if(!excluded.length||excluded.length>5000)throw new Error('历史处理公司列表为空或过大，请通过助手重新规划，不能静默丢弃去重信息。');
+  if(excluded.length>5000)throw new Error('历史处理公司列表过大，请通过助手重新规划，不能静默丢弃去重信息。');
   const payload={...parent.payload,targetCount:gap};
   const child=await client.query<{id:string}>(`insert into assistant_action(user_id,conversation_id,action_type,payload)
     values($1,$2,'lead-search',$3) returning id`,[userId,parent.conversation_id,JSON.stringify(payload)]);
