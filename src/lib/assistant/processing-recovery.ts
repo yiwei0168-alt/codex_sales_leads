@@ -1,10 +1,11 @@
 import type {PoolClient} from "pg";
-import {tenantTransaction} from "@/lib/rag/db";
+import {tenantQuery,tenantTransaction} from "@/lib/rag/db";
 import {readRecoveryTaskLimits} from "@/lib/billing/recovery-task-budget";
 import {BudgetDeniedError} from "@/lib/billing/policy";
 import type {LeadSearchPlan} from "./types";
 import type {LeadWorkflowResult} from "@/lib/leads/workflow/types";
 import {validateSavedRecoverySource,type SavedRecoverySnapshot} from "@/lib/leads/workflow/saved-recovery-source";
+import {persistenceInputFingerprint} from "@/lib/leads/workflow/persistence-identity";
 
 type ReadCheckpoint=(userId:string,actionId:string,threadId:string,plan:LeadSearchPlan)=>Promise<SavedRecoverySnapshot>;
 const productionCheckpoint:ReadCheckpoint=async(...args)=>{
@@ -15,6 +16,51 @@ const productionCheckpoint:ReadCheckpoint=async(...args)=>{
 /** Read-only preparation. Does not create an executable action or call a provider. */
 export async function readSavedProcessingRecovery(userId:string,parentId:string){
   return tenantTransaction(userId,client=>readSavedProcessingRecoveryInTransaction(client,userId,parentId,productionCheckpoint));
+}
+
+/** Execution wiring must explicitly consume this lineage before any ordinary discovery. */
+export async function assertNoUnpreparedProcessingRecovery(userId:string,actionId:string){
+  const rows=await tenantQuery(userId,"select child_action_id from lead_processing_recovery where user_id=$1 and child_action_id=$2",[userId,actionId]);
+  if(rows.length)throw new Error("Processing recovery requires its verified saved-source execution path; ordinary search is forbidden");
+}
+
+export async function proposeProcessingRecovery(userId:string,parentId:string){
+  return tenantTransaction(userId,client=>proposeProcessingRecoveryInTransaction(client,userId,parentId,productionCheckpoint));
+}
+
+export async function proposeProcessingRecoveryInTransaction(client:PoolClient,userId:string,parentId:string,readCheckpoint:ReadCheckpoint){
+  const started=Date.now();
+  const prepared=await readSavedProcessingRecoveryInTransaction(client,userId,parentId,readCheckpoint);
+  const existing=await client.query<{child_action_id:string;metadata:{sourceProof?:unknown}}>("select child_action_id,metadata from lead_processing_recovery where user_id=$1 and parent_action_id=$2",[userId,parentId]);
+  if(existing.rows[0]&&persistenceInputFingerprint(existing.rows[0].metadata.sourceProof??null)!==persistenceInputFingerprint(prepared.proof)){
+    throw new Error("Saved recovery source changed after proposal; preserve the existing proposal for reconciliation");
+  }
+  let childId=existing.rows[0]?.child_action_id;
+  const reused=Boolean(childId);
+  if(!childId){
+    const child=await client.query<{id:string}>(`insert into assistant_action(user_id,conversation_id,action_type,payload)
+      values($1,$2,'lead-search',$3) returning id`,[userId,prepared.conversationId,JSON.stringify(prepared.scope.plan)]);
+    childId=child.rows[0].id;
+    await client.query(`insert into lead_processing_recovery(user_id,parent_action_id,child_action_id,metadata) values($1,$2,$3,$4)`,
+      [userId,parentId,childId,JSON.stringify({sourceProof:prepared.proof,scope:{
+        companies:prepared.scope.companies.map(company=>({domain:company.domain,stage:company.stage,sourceCandidateIds:company.sourceCandidateIds})),
+        selectedDomains:prepared.scope.selectedDomains,originalAcceptedCount:prepared.scope.originalAcceptedCount,
+        targetCount:prepared.scope.plan.targetCount,discoveryAllowed:false}})]);
+    await client.query(`insert into assistant_message(user_id,conversation_id,role,intent,content,metadata)
+      values($1,$2,'assistant','lead-search',$3,$4)`,[userId,prepared.conversationId,
+      `已保存处理恢复提案：仅处理原任务中 ${prepared.scope.companies.length} 家未完成公司，最多补足 ${prepared.scope.plan.targetCount} 家缺口。原结果与费用保留，恢复仍受原任务预算约束。提案尚未执行，须经专用恢复入口确认。`,
+      JSON.stringify({processingRecoveryActionId:childId,parentActionId:parentId})]);
+    await client.query("update assistant_conversation set updated_at=now() where user_id=$1 and id=$2",[userId,prepared.conversationId]);
+  }
+  await client.query(`insert into workspace_audit_event(workspace_id,actor_user_id,entity_type,entity_id,action,changes)
+    values($1,$2,'processing-recovery',$3,$4,$5)`,[prepared.state.workspaceId,userId,childId,
+    reused?"processing.recovery-reused":"processing.recovery-proposed",JSON.stringify({parentActionId:parentId,
+      efficiency:{inputItems:1,outputItems:reused?0:1,validOutputItems:reused?0:1,savedOutputItems:reused?0:1,
+        downstreamUsedItems:0,userAdoptedItems:null,inputTokens:0,outputTokens:0,costUsd:0,apiCredits:0,retries:0,
+        latencyMs:Date.now()-started,cacheHit:reused,discardedReasonCounts:reused?{duplicateProposalAvoided:1}:{},
+        utilizationEfficiency:reused?null:1,usageBoundary:"recovery-proposal-saved-not-executed",
+        optimizationOpportunity:"Reuse one linked proposal and original completed work without duplicate paid requests"}})]);
+  return {actionId:childId,reused,gap:prepared.scope.plan.targetCount,pendingCompanies:prepared.scope.companies.length};
 }
 
 export async function readSavedProcessingRecoveryInTransaction(client:PoolClient,userId:string,parentId:string,readCheckpoint:ReadCheckpoint){

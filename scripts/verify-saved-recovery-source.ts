@@ -11,10 +11,10 @@ if(!app||!migration)throw new Error("Both database connections required");
 const a=new URL(app),m=new URL(migration);
 if(a.hostname!==m.hostname||(a.port||"5432")!==(m.port||"5432")||a.pathname!==m.pathname)throw new Error("Database target mismatch");
 const admin=new Pool({connectionString:databaseConnectionString(migration),ssl:databaseSslConfiguration(migration)});
-const {getPool}=await import("../src/lib/rag/db");
-const {buildLeadWorkflowGraph}=await import("../src/lib/leads/workflow/graph");
+const {getPool,tenantTransaction}=await import("../src/lib/rag/db");
+const {buildLeadWorkflowGraph,readSavedWorkflowRecoveryCheckpoint,runLeadWorkflow}=await import("../src/lib/leads/workflow/graph");
 const {persistLeadWorkflowResult}=await import("../src/lib/leads/workflow/persistence");
-const {readSavedProcessingRecovery}=await import("../src/lib/assistant/processing-recovery");
+const {readSavedProcessingRecovery,proposeProcessingRecovery,proposeProcessingRecoveryInTransaction}=await import("../src/lib/assistant/processing-recovery");
 const {setSpendBudget,reservePaidCall}=await import("../src/lib/billing/repository");
 const user=randomUUID(),workspace=randomUUID(),conversation=randomUUID(),action=randomUUID(),run=randomUUID();
 const thread=`saved-recovery-source:${user}`,email=`saved-recovery-${user}@example.invalid`;
@@ -49,6 +49,21 @@ try{
   assert.deepEqual(first,repeat);assert.equal(first.scope.companies.length,1);assert.equal(first.scope.discoveryAllowed,false);
   assert.equal(first.proof.checkpointId,before.config.configurable?.checkpoint_id);
   assert.deepEqual((await graph.getState(config)).values,before.values);
+  await assert.rejects(tenantTransaction(user,async client=>{
+    await proposeProcessingRecoveryInTransaction(client,user,action,readSavedWorkflowRecoveryCheckpoint);
+    throw new Error("Synthetic proposal transaction interruption");
+  }),/Synthetic proposal transaction interruption/);
+  assert.equal((await admin.query("select count(*)::int as n from assistant_action where user_id=$1",[user])).rows[0].n,1);
+  assert.equal((await admin.query("select count(*)::int as n from lead_processing_recovery where user_id=$1",[user])).rows[0].n,0);
+  const proposals=await Promise.all([proposeProcessingRecovery(user,action),proposeProcessingRecovery(user,action)]);
+  assert.equal(proposals[0].actionId,proposals[1].actionId);
+  assert.deepEqual(proposals.map(p=>p.reused).sort(),[false,true]);
+  const childId=proposals[0].actionId;
+  assert.equal((await admin.query("select count(*)::int as n from assistant_message where user_id=$1 and metadata->>'processingRecoveryActionId'=$2",[user,childId])).rows[0].n,1);
+  const observations=(await admin.query("select changes->'efficiency' as e from workspace_audit_event where actor_user_id=$1 and entity_type='processing-recovery'",[user])).rows;
+  assert.equal(observations.reduce((sum,row)=>sum+row.e.savedOutputItems,0),1);
+  assert.ok(observations.every(row=>row.e.userAdoptedItems===null&&row.e.downstreamUsedItems===0));
+  await assert.rejects(runLeadWorkflow({userId:user,actionId:childId,graphThreadId:`forbidden:${childId}`,plan:proposals[0].gap===plan.targetCount?plan:{...plan,targetCount:proposals[0].gap}}),/ordinary search is forbidden/);
   await assert.rejects(readSavedProcessingRecovery(randomUUID(),action));
   await admin.query("update assistant_action set result=jsonb_set(result,'{creditsUsed}','1') where id=$1",[action]);
   await assert.rejects(readSavedProcessingRecovery(user,action),/mismatch/);
@@ -56,10 +71,12 @@ try{
   await admin.query("update lead_search_run set country_code='MX' where id=$1",[run]);
   await assert.rejects(readSavedProcessingRecovery(user,action),/verified persisted source/);
   await admin.query("update lead_search_run set country_code=$2 where id=$1",[run,plan.countryCode]);
+  await graph.updateState(config,{warnings:["Synthetic source revision"]},"persist_results");
+  await assert.rejects(proposeProcessingRecovery(user,action),/source changed after proposal/);
   await reservePaidCall(user,{operationId:action,maximumChargeMicros:1,stage:"synthetic-saved-source",tariffKey:"synthetic-saved-source",tariffVersion:"fixture",requestBytes:0});
   await assert.rejects(readSavedProcessingRecovery(user,action),/paid-request-already-recorded/);
-  assert.equal((await admin.query("select count(*)::int as n from assistant_action where user_id=$1",[user])).rows[0].n,1);
-  console.log(JSON.stringify({actualPersistenceAndCheckpoint:true,repeatedReadStable:true,sourceResultMismatchRejected:true,countryMismatchRejected:true,ownerIsolation:true,unknownCostBlocked:true,newActions:0,providerCalls:0,syntheticMicros:1}));
+  assert.equal((await admin.query("select count(*)::int as n from assistant_action where user_id=$1",[user])).rows[0].n,2);
+  console.log(JSON.stringify({actualPersistenceAndCheckpoint:true,repeatedReadStable:true,sourceResultMismatchRejected:true,countryMismatchRejected:true,ownerIsolation:true,unknownCostBlocked:true,newActions:1,proposalRollback:true,concurrentProposalReuse:true,savedObservation:1,ordinaryDiscoveryBlocked:true,providerCalls:0,syntheticMicros:1}));
 }finally{
   if(created){
     const client=await admin.connect();

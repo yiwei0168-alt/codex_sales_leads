@@ -534,6 +534,8 @@ export async function runLeadWorkflow(input: {
   graphThreadId: string;
   plan: LeadSearchPlan;
 }): Promise<LeadWorkflowResult> {
+  const {assertNoUnpreparedProcessingRecovery}=await import("@/lib/assistant/processing-recovery");
+  await assertNoUnpreparedProcessingRecovery(input.userId,input.actionId);
   const initial: LeadWorkflowState = {
     ...input,
     workspaceId: await getGlobalWorkspaceId(input.userId),
