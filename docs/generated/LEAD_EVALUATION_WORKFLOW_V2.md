@@ -765,7 +765,7 @@ flowchart TD
 | `src/lib/leads/workflow/hybrid-search-policy.ts` | `a96f05c7fdbaf8f0ee83707e6ece8459ad56c80beb29613ece38eb038e355f88` |
 | `src/lib/leads/workflow/candidate-registry.ts` | `1666f5010362467f9fcd453115e6961cfeaa4ff2f6a3becf96f5aec168fce5cc` |
 | `src/lib/leads/workflow/discovery-gate.ts` | `8f58856e95fef505866759afe9d9b5e296702ed47ece79893652e3859cb49c19` |
-| `src/lib/leads/workflow/hybrid-discovery-executor.ts` | `8f7329221949474f634fa45ef5e218829b01c2bef0d900dc1f8cc92a9c870376` |
+| `src/lib/leads/workflow/hybrid-discovery-executor.ts` | `c2a3a7dcc6c61b8ebf63e1178cc79b563434ae44978c1bad0dc560073f28f40d` |
 | `src/lib/leads/workflow/discovery.ts` | `62fdaa4a30b2b586d0d41a7d59edd6b6190dac8f59a79189b0223176b26f7ebe` |
 | `src/lib/leads/global-search.ts` | `3e808deea189a90ca6686ec8348648e9f98d97080c9cb78aa9226f6384a4db30` |
 | `src/lib/leads/workflow/evidence-correction-agent.ts` | `bc751d69312c0ebc5dc5c03df11a0d15d5c28a1144ad5f0ea307e16369478746` |
@@ -775,7 +775,7 @@ flowchart TD
 | `src/lib/leads/workflow/assessment-review-agent.ts` | `a58dc0cbd6939306a55649753b2435e656265e181dd471567a40254d279a5ac6` |
 | `src/providers/deepseek.ts` | `a6339cca9173581a86e81e220784cfc97dc142b5bb7653f795aa018a976e0a8c` |
 | `src/providers/discovery-contracts.ts` | `063e409c3545060f1a7be3222cbaa9c9a118b513cf7f12f3d839a9dce7f491c9` |
-| `src/providers/discovery.ts` | `49fafab1fb867dd464bd6468159e7f9dcac014bcb908a4c0982ac0e06afa6a00` |
+| `src/providers/discovery.ts` | `06e3e50dab881a5af927733629f6de0021f6d7a00ec04ea703740940896f5703` |
 | `src/providers/resilient-ai.ts` | `9bf63f3bbfc9426fd40783ae60a04fcb4fa1832ee0b04597f41e82c7a3451651` |
 | `src/providers/openrouter.ts` | `b43ba8fdf08602cb7d3567ea88bdc2cfee704de0c1b197cc574abe5e9b89143d` |
 | `db/migrations/034_model_account_cash_cost.sql` | `4790c7ad12eda543e197c84ddd77c4a5ce296b7871ccee799f3aa2262684bdbb` |
