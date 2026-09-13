@@ -28,6 +28,14 @@ export interface SearchProvider {
   search(brief: SearchBrief, signal?: AbortSignal): Promise<SearchHit[]>;
 }
 
+export interface LeadRequestPreparation {
+  encoding: string;
+  originalMaximumWireBytes: number;
+  preparedMaximumWireBytes: number;
+  evidenceItems: number;
+  findingItems: number;
+}
+
 export interface StructuredAiRequest<TInput> {
   task: "market-playbook" | "evidence-extraction" | "classification" | "assistant-intent" | "relationship" | "development-plan" | "contact-verification" | "lead-discovery-gate" | "lead-evidence-correction" | "lead-qualification" | "lead-review-secondary" | "lead-review-judge";
   modelVersion: string;
@@ -42,6 +50,8 @@ export interface StructuredAiRequest<TInput> {
   tenantScope?: string;
   /** Optional cross-provider reasoning budget for compatible gateways. */
   reasoningEffort?: "low" | "medium" | "high";
+  /** Aggregate local preparation only; excluded from the provider prompt and cache contract. */
+  preparation?: LeadRequestPreparation;
 }
 
 export interface StructuredAiResponse<TOutput> {

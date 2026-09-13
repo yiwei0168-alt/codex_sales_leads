@@ -514,11 +514,12 @@ export class LeadQualificationAgent {
 
   private async invokeBatch(candidates: CorrectedLeadWorkflowCandidate[], playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string, modelVersion: string,
     usageRecords: WorkflowModelUsage[]) {
+    const request=this.request(candidates,playbook,countryCode,countryName,objective,modelVersion);
     const response = await withCompanyCostAttribution(candidates,countryCode,()=>this.provider.execute<LeadAssessmentRequest, unknown>(
-      this.request(candidates, playbook, countryCode, countryName, objective, modelVersion),
+      request,
       AbortSignal.timeout(modelVersion === this.escalationModel ? 120_000 : 75_000),
     ));
-    usageRecords.push({ stage: "qualification", requestedModel: response.requestedModelVersion ?? modelVersion,
+    usageRecords.push({ stage: "qualification", requestPreparation:request.preparation, requestedModel: response.requestedModelVersion ?? modelVersion,
       actualModel: response.modelVersion, providerId: response.actualProviderId,
       promptTokens: response.usage?.promptTokens ?? 0, completionTokens: response.usage?.completionTokens ?? 0,
       reasoningTokens: response.usage?.reasoningTokens ?? 0, totalTokens: response.usage?.totalTokens ?? 0,

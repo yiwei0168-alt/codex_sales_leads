@@ -385,6 +385,7 @@ export interface LeadWorkflowResult {
 }
 
 export interface WorkflowModelUsage {
+  requestPreparation?: import("@/providers/contracts").LeadRequestPreparation;
   stage: "intent" | "playbook" | "discovery-gate" | "evidence-correction" | "qualification" | "secondary-review" | "judge"
     | "strategy" | "email" | "memory-distillation";
   requestedModel: string;

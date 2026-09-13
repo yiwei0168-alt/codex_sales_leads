@@ -4,6 +4,9 @@ import { WorkflowPausedError } from "./pause";
 import { processingRecoveryWork } from "./processing-recovery";
 import { snapshotDiscoverySession } from "./discovery-session";
 import { createHybridDiscoverySession } from "./hybrid-discovery-executor";
+import { compactLeadSingleton } from "@/providers/compact-lead-request";
+import { leadRequestBatches } from "@/providers/lead-request-batches";
+import { LeadRequestTooLargeError } from "@/providers/lead-request-bounds";
 
 import type { LeadSearchPlan } from "@/lib/assistant/types";
 
@@ -267,6 +270,39 @@ describe("LangGraph lead workflow", () => {
     await expect(graph.invoke({userId:'u',actionId:'a',graphThreadId:'resume-test',workspaceId:'w',plan,phase:'queued',ragContext:[],candidates:[],assessments:[],assessmentReviews:[],handoffs:[],creditsUsed:0,warnings:[]},config)).rejects.toThrow('阶段边界暂停');
     expect(deps.discover).toHaveBeenCalledTimes(1);expect(deps.collectEvidence).not.toHaveBeenCalled();paused=false;
     const state=await graph.invoke(null,config);expect(state.result).toBeDefined();expect(deps.discover).toHaveBeenCalledTimes(1);expect(deps.buildPlaybook).toHaveBeenCalledTimes(1);expect(state.creditsUsed).toBe(4);
+  });
+  it("retains an incompressible candidate and prior credits at the actual request preflight boundary",async()=>{
+    const deps=dependencies([]);
+    const largeCandidate={...candidate,evidence:candidate.evidence.map(item=>({...item,excerpt:"界".repeat(20000)}))};
+    deps.collectEvidence=vi.fn(async()=>({candidates:[largeCandidate],creditsUsed:2,warnings:[]}));
+    const saver=new MemorySaver();
+    const config={configurable:{thread_id:"oversized-singleton"}};
+    deps.correctionAgent.correct=vi.fn(async (items:LeadWorkflowCandidate[])=>{
+      leadRequestBatches(items,batch=>compactLeadSingleton({task:"lead-evidence-correction",modelVersion:"deepseek-v4-flash",
+        promptVersion:"oversized-fixture",evidenceIds:batch.flatMap(item=>item.evidence.map(source=>source.id)),input:{instructions:[],candidates:batch.map(item=>({
+          candidateId:item.candidateId,evidence:item.evidence.map(source=>({evidenceId:source.id,url:source.url,excerpt:source.excerpt}))}))}}),5,100000);
+      throw new Error("Oversized input must never reach a model");
+    });
+    const graph=buildLeadWorkflowGraph(deps,saver);
+    await expect(graph.invoke({userId:"u",actionId:"a",graphThreadId:"oversized-singleton",workspaceId:"w",plan,
+      phase:"queued",ragContext:[],candidates:[],assessments:[],assessmentReviews:[],handoffs:[],creditsUsed:0,warnings:[]},config))
+      .rejects.toBeInstanceOf(LeadRequestTooLargeError);
+    const snapshot=await graph.getState(config);
+    expect(snapshot.next).toEqual(["correct_candidates"]);
+    expect(snapshot.values.candidates).toHaveLength(1);
+    expect(snapshot.values.candidates[0].evidence).toEqual(largeCandidate.evidence);
+    expect(snapshot.values.assessments).toEqual([]);
+    expect(snapshot.values.creditsUsed).toBeGreaterThan(0);
+    expect(deps.qualificationAgent.evaluate).not.toHaveBeenCalled();
+    expect(deps.persist).not.toHaveBeenCalled();
+    deps.correctionAgent.correct=vi.fn(async()=>({candidates:[{...correctedCandidate,evidence:largeCandidate.evidence}],creditsUsed:0,warnings:[]}));
+    // A rebuilt graph resumes the saved boundary once the request can be processed.
+    const resumed=await buildLeadWorkflowGraph(deps,saver).invoke(null,config);
+    expect(resumed.result).toBeDefined();
+    expect(resumed.creditsUsed).toBe(snapshot.values.creditsUsed);
+    expect(deps.discover).toHaveBeenCalledTimes(1);
+    expect(deps.collectEvidence).toHaveBeenCalledTimes(1);
+    expect(deps.qualificationAgent.evaluate).toHaveBeenCalledTimes(1);
   });
   it("retrieves all three RAG domains before search and scores before persistence", async () => {
     const events: string[] = [];

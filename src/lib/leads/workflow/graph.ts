@@ -278,6 +278,7 @@ export function buildLeadWorkflowGraph(
           providerAttempts: corrected.providerMetrics?.attempts ?? 0,
           retries: corrected.providerMetrics?.retries ?? 0,
           providerLatencyMs: corrected.providerMetrics?.latencyMs ?? 0,
+          requestPreparations:(corrected.usage??[]).flatMap(usage=>usage.requestPreparation?[usage.requestPreparation]:[]),
           retryRequired, unresolved,
           correctedOutOfRole: valid - inScope } });
       return {
@@ -402,6 +403,7 @@ export function buildLeadWorkflowGraph(
         metadata: { cacheHits: cached.size, cacheMisses: missing.length,cachePersistenceFailed,batchCacheSaveAttempts,reusedCompletedArtifacts:completed-newlyCompleted,
           outOfRoleNotScored: state.correctedCandidates.length - inScopeCandidates.length,
           correctionIncomplete, scoringIncomplete, pendingRoleCount,
+          requestPreparations:evaluated.usage.flatMap(usage=>usage.requestPreparation?[usage.requestPreparation]:[]),
           acceptedCount, finalEligibleAdded, consecutiveNoFinalRounds,
           targetShouldContinue: !targetDecision.complete, targetCompletionReason: targetDecision.reason } }),
       status: missing.length === 0 ? "cache-hit" as const : "completed" as const };

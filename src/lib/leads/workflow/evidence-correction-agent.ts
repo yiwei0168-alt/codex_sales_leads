@@ -499,9 +499,11 @@ export class LeadEvidenceCorrectionAgent {
   private async evaluateOneEscalated(candidate: LeadWorkflowCandidate, plan: LeadSearchPlan, reason: string,
     usageRecords: WorkflowModelUsage[]) {
     try {
+      const request=this.request([candidate],plan,this.escalationModel);
       const response = await withCompanyCostAttribution([candidate],plan.countryCode,()=>this.provider.execute<CorrectionRequest, unknown>(
-        this.request([candidate], plan, this.escalationModel), AbortSignal.timeout(120_000)));
+        request, AbortSignal.timeout(120_000)));
       this.captureUsage(usageRecords, response, this.escalationModel);
+      usageRecords[usageRecords.length-1].requestPreparation=request.preparation;
       const envelope=typeof response.output==="object"&&response.output!==null&&"corrections" in response.output?response.output:{corrections:[response.output]};
       const validated=validateBatchItems(sanitizeLeadCorrectionOutput(envelope),"corrections",leadCorrectionModelSchema,[candidate.candidateId]);
       if(!validated.complete)throw new Error("Escalation candidate ID mismatch or incomplete output");
@@ -516,9 +518,11 @@ export class LeadEvidenceCorrectionAgent {
   private async evaluateOneRoutineRepair(candidate: LeadWorkflowCandidate, plan: LeadSearchPlan, reason: string,
     usageRecords: WorkflowModelUsage[]) {
     try {
+      const request=this.request([candidate],plan,this.routineModel);
       const response = await withCompanyCostAttribution([candidate],plan.countryCode,()=>this.provider.execute<CorrectionRequest, unknown>(
-        this.request([candidate], plan, this.routineModel), AbortSignal.timeout(75_000)));
+        request, AbortSignal.timeout(75_000)));
       this.captureUsage(usageRecords, response, this.routineModel);
+      usageRecords[usageRecords.length-1].requestPreparation=request.preparation;
       const envelope=typeof response.output==="object"&&response.output!==null&&"corrections" in response.output?response.output:{corrections:[response.output]};
       const validated=validateBatchItems(sanitizeLeadCorrectionOutput(envelope),"corrections",leadCorrectionModelSchema,[candidate.candidateId]);
       if(!validated.complete)throw new Error("Repair candidate ID mismatch or incomplete output");
@@ -552,6 +556,7 @@ export class LeadEvidenceCorrectionAgent {
         request, AbortSignal.timeout(75_000)));
       this.captureUsage(usageRecords, response, this.routineModel);
       const validated=validateBatchItems(sanitizeLeadCorrectionOutput(response.output),"corrections",leadCorrectionModelSchema,candidates.map(candidate=>candidate.candidateId));
+      usageRecords[usageRecords.length-1].requestPreparation=request.preparation;
       const parsed={corrections:validated.items};
       usageRecords[usageRecords.length-1].batchValidation={inputItems:candidates.length,validOutputItems:validated.items.length,rejectedOutputItems:validated.rejectedItems,missingOutputItems:validated.missingItems,complete:validated.complete};
       const primaryId=this.provider.id.replace(/^resilient:/,"");
