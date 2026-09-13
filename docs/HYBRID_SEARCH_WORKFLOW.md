@@ -1,5 +1,7 @@
 # Hybrid Lead Search Workflow
 
+2026-09-14阶段112：只读最小验收计划由现行混合搜索策略算出 Distributor/strategic 四条路径：核心Brave、缺口触发Exa、SearchAPI、Gemini；仅前两者有严格静态上界，不能把未执行的条件路由当作已搜索或市场耗尽。补证Tavily另列。[完整路径预检](MINIMAL_ACCEPTANCE_ROUTE_COVERAGE_2026-09-14.md)。
+
 2026-09-14阶段111：四个同步搜索入口的公开费率刷新，只有价证有效且无旧暂停才记录下游使用；待审、缺证、旧暂停分别保留原因，不改变新预留门禁。三组来源共15项合成定向测试，0付费搜索。[报告](PUBLIC_RATE_HOLD_USAGE_ACCOUNTING_2026-09-14.md)。
 
 2026-09-14阶段110费用边界：Exa Search 与 Google Places Text Search Enterprise 的官方公开费率新增每日只读复核，不改变类别路由、查询、请求结果上限或静态保守预留。Exa 价证一致；Places 因官方短页暂停新预留，后续完整页面不自动解除。SearchAPI 仍缺账号套餐对应的完整上界而阻止付费调用。[证据](EXA_PLACES_PUBLIC_RATE_REFRESH_ACCEPTANCE_2026-09-14.md)。

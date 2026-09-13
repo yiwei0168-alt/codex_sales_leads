@@ -1,5 +1,7 @@
 # LangChain / LangGraph 销售线索工作流
 
+阶段112最小闭环路径预检：只读脚本从当前 Colombia/Distributor/目标1家计划与现行路由列出核心Brave、条件Exa/SearchAPI/Gemini、Tavily补证、DeepSeek校正/评分、Terra复核与Sol裁决。市场计划现行Sol单次预留超USD17.675596余额；脚本标明实际请求未全验及整次上界未知，不认领任务。[逐入口状态](MINIMAL_ACCEPTANCE_ROUTE_COVERAGE_2026-09-14.md)。
+
 阶段111费用遥测：Sol、DeepSeek和四个同步搜索来源的公开价证分别记录生成、与静态基线一致、实际可供下游使用。待审页无效，旧暂停即使遇到一致新页仍记下游使用0及待人工复核原因；不改预算门禁或旧费用。[定向回归](PUBLIC_RATE_HOLD_USAGE_ACCOUNTING_2026-09-14.md)。
 
 阶段110搜索费用边界：Exa `/search` 与 Google Places Text Search Enterprise 的原静态合同加入每日官方公开价只读复核，不改请求/金额；缺价或短页只暂停受影响新预留。当前 Exa validated、Places 因短页 hold=true，SearchAPI 无完整合同继续拒绝。[SQL、官方来源和页面验收](EXA_PLACES_PUBLIC_RATE_REFRESH_ACCEPTANCE_2026-09-14.md)。
