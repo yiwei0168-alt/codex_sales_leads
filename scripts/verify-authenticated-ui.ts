@@ -84,6 +84,9 @@ try{
         [scenario.id,userId,conversationId,scenario.reason==='budget-blocked'?'failed':'completed',
           JSON.stringify({countryCode:"GB",countryName:"United Kingdom",roles:["SI"],targetCount:5,userRequest:"Synthetic completion UI fixture"}),
           JSON.stringify(result),scenario.reason==='budget-blocked'?scenario.label:null]);
+      if(["target-met","provider-unavailable","legacy-unknown"].includes(scenario.reason))
+        await client.query("insert into assistant_message(user_id,conversation_id,role,intent,content,metadata) values($1,$2,'assistant','lead-search',$3,$4)",
+          [userId,conversationId,`Synthetic search status ${scenario.reason}`,JSON.stringify({actionId:scenario.id})]);
     }
     await client.query("commit");created=true;
   }catch(error){await client.query("rollback");throw error;}finally{client.release();}
@@ -170,10 +173,24 @@ try{
     });
     await page.goto(base.href);await page.getByLabel("登录邮箱").fill(email);
     await page.getByLabel("密码",{exact:true}).fill(password);
+    const loginResponsePromise=page.waitForResponse(response=>new URL(response.url()).pathname==="/api/auth/login"&&response.request().method()==="POST");
     await page.getByRole("button",{name:"登录",exact:true}).click();
+    const loginResponse=await loginResponsePromise;
+    if(!loginResponse.ok()){
+      const body=await loginResponse.json().catch(()=>({error:"response-unreadable"})) as {error?:string};
+      throw new Error(`Synthetic UI login HTTP ${loginResponse.status()}: ${body.error??"unknown"}`);
+    }
+    const signedIn=await (await readLocal(new URL("/api/auth/session",base).href)).json() as {authenticated?:boolean};
+    if(!signedIn.authenticated)throw new Error(`Synthetic UI login did not retain its session for ${base.hostname}`);
     await expect(page.locator(".nav-item").filter({hasText:"销售线索"})).toBeVisible({timeout:30_000});
     checks.push(`${viewport.width}:real-login`);
     await page.getByRole("button",{name:"AI 销售助理",exact:true}).click();
+    for(const [reason,label] of [["target-met","目标已满足"],["provider-unavailable","运行结束，目标未填满"],
+      ["legacy-unknown","运行结束，最终数量未记录"]]){
+      const card=page.locator(".ai-message").filter({hasText:`Synthetic search status ${reason}`}).locator(".ai-action-card");
+      await expect(card.locator(".ai-action-head em")).toHaveText(label);
+    }
+    checks.push(`${viewport.width}:conversation-search-status-measured-shortfall-unknown`);
     await expect(page.getByLabel("提案累计上限（美元）")).toHaveValue("0");
     await expect(page.getByRole("button",{name:"确认预算提案"})).toBeDisabled();
     await page.getByLabel("选择本对话的搜索任务").selectOption(actionId);
@@ -402,9 +419,11 @@ try{
       await expect(value('合格')).toHaveText(scenario.accepted===null?'尚无记录':String(scenario.accepted));
       await expect(value('最终保存')).toHaveText(scenario.accepted===null?'尚无记录':String(scenario.accepted));
       if(scenario.accepted===null){
+        await expect(panel.getByText('运行结束，最终数量未记录 · 目标 5 家',{exact:true})).toBeVisible();
         await expect(panel.getByText(/^缺口 /)).toHaveCount(0);
         await expect(panel.locator('dl[aria-label="已保存待处理数量"] dd')).toHaveText(['尚无记录','尚无记录']);
       }else if(scenario.reason==='target-met'){
+        await expect(panel.getByText('目标已满足 · 目标 5 家',{exact:true})).toBeVisible();
         await expect(panel.getByText('停止原因：目标已满足',{exact:true})).toBeVisible();
         await expect(panel.getByText(/^缺口 /)).toHaveCount(0);
       }else{

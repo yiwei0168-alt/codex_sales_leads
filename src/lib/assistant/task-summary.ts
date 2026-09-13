@@ -15,3 +15,9 @@ export function taskCounts(result: Record<string, unknown>) {
   return { discovered: count("discovered"), assessed: count("assessed"), qualified: count("qualified"),
     accepted: count("accepted"), creditsUsed: count("creditsUsed") };
 }
+
+export function searchTaskStatusLabel(status:AssistantActionDto["status"],accepted:number|null,targetCount:number){
+  if(status!=="completed")return taskStatusLabels[status];
+  if(accepted===null)return "运行结束，最终数量未记录";
+  return accepted<targetCount?"运行结束，目标未填满":"目标已满足";
+}

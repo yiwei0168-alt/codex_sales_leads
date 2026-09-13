@@ -1,5 +1,5 @@
 import type { AssistantActionDto } from "@/lib/assistant/types";
-import { taskCounts, taskStatusLabels, searchStopReasonLabels } from "@/lib/assistant/task-summary";
+import { taskCounts, searchTaskStatusLabel, searchStopReasonLabels } from "@/lib/assistant/task-summary";
 import { marketHref } from "@/lib/sales/market-navigation";
 import { TaskRunControls } from "./task-run-controls";
 import { SearchContinuation } from "./search-continuation";
@@ -16,7 +16,7 @@ export function SearchTaskDetail({ action,refreshKey=0,recoveryFamily }: { actio
   const recovery=action.result.processingRecovery&&typeof action.result.processingRecovery==='object'?action.result.processingRecovery as Record<string,unknown>:null;
   return <section className="panel">
     <h2>{action.payload.countryName} · 销售线索搜索</h2>
-    <p>{partial ? "运行结束，目标未填满" : taskStatusLabels[action.status]} · 目标 {action.payload.targetCount} 家</p>
+    <p>{searchTaskStatusLabel(action.status,counts.accepted,action.payload.targetCount)} · 目标 {action.payload.targetCount} 家</p>
     <p>{action.payload.roles.join(" · ")}</p>
     {continuation&&<p>第 {String(continuation.depth)} 次缺口续搜 · 排除前序已评估 {String(continuation.excludedCount)} 家 · <a href={`/tasks/${encodeURIComponent(String(continuation.parentActionId))}?kind=search`}>查看原任务（原费用保留）</a></p>}
     {recovery&&<p>原范围处理恢复 · 待处理公司 {String(recovery.pendingCompanies??"未知")} 家 · 原任务已保存 {String(recovery.originalAcceptedCount??"未知")} 家。下方数量仅统计本次恢复，不代表与原结果合并后的唯一公司数。<a href={`/tasks/${encodeURIComponent(String(recovery.parentActionId))}?kind=search`}>查看原任务、结果及费用</a></p>}

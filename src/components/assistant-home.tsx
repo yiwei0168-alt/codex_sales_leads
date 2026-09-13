@@ -6,6 +6,7 @@ import {BudgetProposalCard} from "./budget-proposal";
 import type {
   AssistantActionDto, AssistantConversationDto, AssistantConversationSummary, AssistantMessageDto,
 } from "@/lib/assistant/types";
+import {searchTaskStatusLabel,taskCounts} from "@/lib/assistant/task-summary";
 
 const suggestions = [
   "帮我制定进入德国网络设备市场的渠道开发计划",
@@ -185,7 +186,7 @@ export function AssistantHome({ userName, onOpenResults,onOpenCompany }: { userN
               {message.metadata.budgetProposal&&<BudgetProposalCard proposal={message.metadata.budgetProposal} actions={actions}/>}
               {message.metadata.productAction&&<div className="ai-action-card">{message.metadata.productAction.companies.map(company=><button key={company.id} onClick={()=>onOpenCompany(company.id,message.metadata.productAction!.kind)}>{company.name} · {company.countryCode} · {message.metadata.productAction!.kind==="library"?"公司详情":message.metadata.productAction!.kind==="strategy"?"开发策略":"邮件与跟进"}</button>)}{message.metadata.productAction.hasMore&&<p>仅列出最近 20 家，请补充公司名称或市场缩小范围。</p>}</div>}
               {action && <div className={`ai-action-card ${action.status}`}>
-                <div className="ai-action-head"><div><span>{action.payload.countryCode}</span><strong>{action.payload.countryName} 销售线索计划</strong></div><em>{action.status === "proposed" ? "等待确认" : action.status === "completed" ? "已完成" : action.status === "failed" ? "失败" : "执行中"}</em></div>
+                <div className="ai-action-head"><div><span>{action.payload.countryCode}</span><strong>{action.payload.countryName} 销售线索计划</strong></div><em>{searchTaskStatusLabel(action.status,taskCounts(action.result).accepted,action.payload.targetCount)}</em></div>
                 <dl><div><dt>开发模式</dt><dd>{action.payload.objective === "new-market" ? "新市场并行开发" : "已有分销体系增长"}</dd></div><div><dt>目标数量</dt><dd>{action.payload.targetCount} 家</dd></div><div><dt>渠道角色</dt><dd>{action.payload.roles.join(" · ")}</dd></div></dl>
                 {action.status === "proposed" && <button disabled={confirmingId === action.id} onClick={() => void confirmSearch(action.id)}>{confirmingId === action.id ? "正在启动工作流…" : "确认并开始搜索"}</button>}
                 {action.status === "failed" && <button disabled={confirmingId === action.id} onClick={() => void confirmSearch(action.id)}>{confirmingId === action.id ? "正在恢复工作流…" : "从 checkpoint 重试"}</button>}

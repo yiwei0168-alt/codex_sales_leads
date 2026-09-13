@@ -1,5 +1,7 @@
 # Product UI v1.1 implementation workflow
 
+2026-09-14 阶段120：搜索任务在对话卡和任务详情共用完成标签；`completed` 且最终保存数达到目标才显示“目标已满足”，不足显示“运行结束，目标未填满”，旧结果缺数显示“运行结束，最终数量未记录”。任务详情仍分别展示缺口与图停止原因。桌面/手机本地生产66组合成页面检查通过，真实业务未验收。[证据](SEARCH_TASK_STATUS_LABEL_PRODUCTION_UI_2026-09-14.md)。
+
 2026-09-14阶段108：预算页面新增Brave/Tavily Search独立公开费率状态、上次检查/下次尝试和待审暂停提示，页面刷新只读数据库；隔离账号本地生产桌面/手机64组含API到页面对账通过。[证据](SEARCH_PUBLIC_RATE_REFRESH_ACCEPTANCE_2026-09-14.md)。
 
 2026-09-14阶段107：预算页面新增 DeepSeek Flash/Pro 官方公开费率复核的独立只读状态、检查时间、下次尝试和漂移暂停提示；本地生产桌面/手机62组 HTTP/Chrome 回归与真实SQL状态一致，页面刷新不调用外部价格页。[报告](DEEPSEEK_PUBLIC_RATE_REFRESH_ACCEPTANCE_2026-09-14.md)。
