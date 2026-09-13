@@ -211,6 +211,8 @@
 
 ## Current local acceptance supplement (2026-09-14)
 
+Stage 122 confirms that a graph-produced zero-company partial result is read through authenticated production HTTP and shown consistently on desktop and mobile task pages after refresh. The result remains a synthetic provider-unavailable case, not A11's real business run. See [stage 122](ZERO_RESULT_PRODUCTION_HTTP_UI_2026-09-14.md).
+
 Stage 121 verifies that zero-result search completion persists a partial outcome and one receipt while retaining a synthetic unallocated cost reservation. Search runs and provider evidence are now restricted by workspace owner at the database layer. This is synthetic local SQL evidence; the paid natural-language-to-qualified-company minimum run remains A11 unverified. See [stage 121](ZERO_RESULT_GRAPH_TENANT_ACCEPTANCE_2026-09-14.md) and the [current acceptance matrix](CURRENT_ACCEPTANCE_MATRIX_2026-09-13.md). The older Demo scope notes below remain historical.
 
 ## Simplified for Demo
