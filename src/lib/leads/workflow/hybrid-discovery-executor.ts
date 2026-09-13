@@ -438,7 +438,7 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
       .filter((candidate) => !initiallyExcludedDomains.has(candidate.domain));
     const ungated = current.filter((candidate) => !gated.has(candidate.candidateId) && !rejected.has(candidate.candidateId));
     if (ungated.length > 0) {
-      const gateResult: DiscoveryGateResult = await gate.evaluate(ungated);
+      const gateResult: DiscoveryGateResult = await gate.evaluate(ungated,plan.countryCode);
       gateResult.candidates.forEach((candidate) => gated.set(candidate.candidateId, candidate));
       gateResult.rejected.forEach((candidate) => rejected.set(candidate.candidateId, candidate));
       modelUsage.push(...gateResult.usage);

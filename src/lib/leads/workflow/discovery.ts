@@ -1,4 +1,6 @@
 import { createHash } from "node:crypto";
+import {BudgetDeniedError} from "@/lib/billing/policy";
+import {withCompanyCostAttribution} from "@/lib/billing/company-cost-context";
 
 import { query } from "@/lib/rag/db";
 import type { LeadSearchPlan } from "@/lib/assistant/types";
@@ -277,6 +279,7 @@ async function enrichOne(
       warning: added.length === 0 ? `No official-domain evidence was extracted for ${candidate.domain}.` : undefined,
     };
   } catch (error) {
+    if(error instanceof BudgetDeniedError)throw error;
     const failed = tavilyFailureMetrics(error);
     requests += failed.attempts;
     retries += failed.retries;
@@ -313,7 +316,9 @@ export async function collectLeadEvidence(
     while (true) {
       const index = cursor++;
       if (index >= candidates.length) return;
-      results[index] = await enrichOne(candidates[index], plan, tavily, options);
+      const run=()=>enrichOne(candidates[index], plan, tavily, options);
+      results[index] = await (validCompanyDomainIdentity(candidates[index].domain)
+        ?withCompanyCostAttribution([candidates[index]],plan.countryCode,run):run());
     }
   }
   const configuredConcurrency = options.concurrency

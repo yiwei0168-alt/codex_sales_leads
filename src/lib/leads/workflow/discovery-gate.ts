@@ -1,4 +1,6 @@
 import {BudgetDeniedError} from "@/lib/billing/policy";
+import {withCompanyCostAttribution} from "@/lib/billing/company-cost-context";
+import {currentSpendContext} from "@/lib/billing/context";
 import { isIP } from "node:net";
 import { lookup } from "node:dns/promises";
 
@@ -232,7 +234,8 @@ export class LeadDiscoveryGate {
     this.concurrency = Math.max(1, Math.min(8, options.concurrency ?? 4));
   }
 
-  async evaluate(candidates: LeadWorkflowCandidate[]): Promise<DiscoveryGateResult> {
+  async evaluate(candidates: LeadWorkflowCandidate[], countryCode?:string): Promise<DiscoveryGateResult> {
+    if(currentSpendContext()&&!countryCode)throw new Error("Discovery gate cost attribution requires market");
     const homepageResults = new Array<Awaited<ReturnType<typeof fetchLightweightHomepage>>>(candidates.length);
     let cursor = 0;
     const worker = async () => {
@@ -253,7 +256,7 @@ export class LeadDiscoveryGate {
     for (let start = 0; start < enriched.length; start += this.batchSize) {
       const batch = enriched.slice(start, start + this.batchSize);
       try {
-        const response = await this.provider.execute({ task: "lead-discovery-gate", modelVersion: this.model,
+        const invoke = () => this.provider.execute({ task: "lead-discovery-gate", modelVersion: this.model,
           promptVersion: PROMPT_VERSION, dataClassification: "public", evidenceIds: batch.flatMap((candidate) => candidate.evidence.map((item) => item.id)),
           outputSchema: z.toJSONSchema(batchSchema) as Record<string, unknown>, input: {
             instructions: [
@@ -274,6 +277,7 @@ export class LeadDiscoveryGate {
               sources: candidate.evidence.slice(0, 6).map((item) => ({ evidenceId: item.id, url: item.url,
                 sourceType: item.sourceType, excerpt: item.excerpt.slice(0, 4_000) })) })),
           } }, AbortSignal.timeout(60_000));
+        const response = await (countryCode?withCompanyCostAttribution(batch,countryCode,invoke):invoke());
         const parsed = batchSchema.parse(sanitizeDiscoveryGateOutput(response.output));
         parsed.candidates.forEach((item) => outputs.set(item.candidateId, item));
         usage.push({ stage: "discovery-gate", requestedModel: response.requestedModelVersion ?? this.model,

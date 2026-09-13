@@ -3,6 +3,8 @@ import { describe, expect, it, vi } from "vitest";
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "@/providers/contracts";
 import { configuredDiscoveryGateModel, LeadDiscoveryGate, sanitizeDiscoveryGateOutput } from "./discovery-gate";
 import type { LeadWorkflowCandidate } from "./types";
+import {withSpendContext,currentSpendContext} from "@/lib/billing/context";
+import {companyCostKey} from "@/lib/billing/company-cost-context";
 
 function candidate(category = "si-msp"): LeadWorkflowCandidate {
   return { candidateId: "lead-example123", evidenceSnapshotRunId: "run-1", companyName: "Example GmbH",
@@ -35,6 +37,24 @@ const fetchMock = vi.fn().mockImplementation(async () => new Response(homepage, 
   headers: { "content-type": "text/html" } }));
 
 describe("lightweight discovery gate", () => {
+  it("attributes only actual inputs per gate batch and requires a market in product scope",async()=>{
+    const provider=new FakeProvider();
+    const original=provider.execute.bind(provider);
+    const observed:string[][]=[];
+    vi.spyOn(provider,"execute").mockImplementation(async request=>{
+      observed.push(currentSpendContext()!.costAttribution!.companyKeys);
+      return original(request);
+    });
+    const gate=new LeadDiscoveryGate(provider,fetchMock,{batchSize:1});
+    const inputs=[candidate(),{...candidate(),candidateId:"lead-second123",domain:"second.de",officialWebsiteUrl:"https://second.de"}];
+    await withSpendContext({userId:"test-user",operationId:"test-op",stage:"discovery"},async()=>{
+      await expect(gate.evaluate(inputs)).rejects.toThrow("requires market");
+      await gate.evaluate(inputs,"DE");
+      expect(currentSpendContext()?.costAttribution).toBeUndefined();
+    });
+    expect(observed).toEqual([[companyCostKey("example.de","DE")],[companyCostKey("second.de","DE")]]);
+    expect(JSON.stringify(provider.calls)).not.toContain("company-cost-attribution");
+  });
   it("bounds overlong routine output without holding the whole batch", () => {
     const parsed = sanitizeDiscoveryGateOutput({ candidates: [{ candidateId: "lead-example123",
       companyExistsSignal: "supported", networkProductRelevance: "supported", targetCategorySignal: "supported",

@@ -250,12 +250,12 @@ export class LeadEvidenceCorrectionAgent {
         }
         try {
           const gaps = candidate.discoveryGate?.missingEvidence ?? [];
-          const response = await this.searchProvider.search({
+          const response = await withCompanyCostAttribution([candidate],plan.countryCode,()=>this.searchProvider.search({
             query: `\"${candidate.companyName}\" ${plan.countryName} ${gaps.join(" ")} official website router Wi-Fi access point switch distributor reseller installer system integrator ISP`,
             searchDepth: "basic",
             maxResults: 5,
             includeRawContent: false,
-          }, AbortSignal.timeout(45_000));
+          }, AbortSignal.timeout(45_000)));
           const added = response.results.flatMap((item) => {
             const evidence = supplementalEvidence(item, candidate.companyName, candidate.domain,
               candidate.evidenceSnapshotRunId);
