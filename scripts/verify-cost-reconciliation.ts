@@ -10,7 +10,8 @@ if(!application||!migration)throw new Error("Both database connections required"
 const a=new URL(application),m=new URL(migration);
 if(a.hostname!==m.hostname||(a.port||"5432")!==(m.port||"5432")||a.pathname!==m.pathname)throw new Error("Database target mismatch");
 const admin=new Pool({connectionString:databaseConnectionString(migration),ssl:databaseSslConfiguration(migration)});
-const {getPool,tenantQuery}=await import("../src/lib/rag/db");
+const {getPool,tenantQuery,tenantTransaction}=await import("../src/lib/rag/db");
+const {completeTaskCostAllocation}=await import("../src/lib/billing/task-cost-completion");
 const {hashPassword}=await import("../src/lib/auth/password");
 const {reservePaidCall,settlePaidCall,setSpendBudget,readSpendBudget,assertProcessingRecoveryCostsKnown}=await import("../src/lib/billing/repository");
 const {recordVerifiedCostObservation}=await import("../src/lib/billing/reconciliation");
@@ -133,6 +134,28 @@ try{
   assert.notEqual(retryId,recoveryId);
   await settlePaidCall(userId,retryId,{reportedMicros:3,latencyMs:0,responseBytes:1,inputTokens:1,outputTokens:1,succeeded:true});
   await assert.rejects(reservePaidCall(userId,recoveryRequest),/paid-request-already-recorded/);
+  const sharedOperation=randomUUID(),sharedRound=hash("shared-round"),sharedProvider=randomUUID();
+  const sharedId=await reservePaidCall(userId,{...request,operationId:sharedOperation,tariffKey:"shared-fixture",
+    maximumChargeMicros:11,costAttribution:{version:"company-cost-attribution-v1",kind:"task-shared",
+      roundKey:sharedRound,companyKeys:[]}});
+  await settlePaidCall(userId,sharedId,{reportedMicros:null,latencyMs:0,responseBytes:1,inputTokens:0,outputTokens:0,
+    succeeded:true,providerUsage:providerUsageObservation({id:sharedProvider})});
+  const population=[hash("rejected-company"),hash("qualified-company")].sort();
+  await tenantTransaction(userId,client=>completeTaskCostAllocation(client,userId,sharedOperation,sharedRound,population));
+  await tenantTransaction(userId,client=>completeTaskCostAllocation(client,userId,sharedOperation,sharedRound,[...population].reverse()));
+  await assert.rejects(tenantTransaction(userId,client=>completeTaskCostAllocation(client,userId,sharedOperation,sharedRound,[population[0]])),/population changed/);
+  const sharedRows=await tenantQuery<{reserved_micros:string;settled_micros:string|null;metrics:Record<string,unknown>}>(userId,
+    "select reserved_micros::text,settled_micros::text,metrics from paid_call_reservation where user_id=$1 and id=$2",[userId,sharedId]);
+  assert.equal(sharedRows[0].reserved_micros,"11");assert.equal(sharedRows[0].settled_micros,null);
+  assert.deepEqual((sharedRows[0].metrics.completedReservationAllocation as {shares:unknown}).shares,
+    [{companyKey:population[0],amountMicros:6},{companyKey:population[1],amountMicros:5}]);
+  await recordVerifiedCostObservation(userId,sharedId,{kind:"invoice",amountMicros:7,complete:true,
+    sourceVersion:"synthetic-shared-v1",sourceReferenceHash:hash("shared-invoice"),providerRequestHash:hash(sharedProvider)});
+  const late=await tenantQuery<{metrics:{costAllocation:{observation:{shares:unknown}}}}>(userId,
+    "select metrics from paid_cost_observation where user_id=$1 and reservation_id=$2 and kind='invoice'",[userId,sharedId]);
+  assert.deepEqual(late[0].metrics.costAllocation.observation.shares,
+    [{companyKey:population[0],amountMicros:4},{companyKey:population[1],amountMicros:3}]);
+  console.log(JSON.stringify({sharedCompletionConserved:true,sharedPopulationImmutable:true,lateInvoiceUsesCompletedPopulation:true,sharedUnknownRetained:true,realProviderCalls:0}));
   console.log(JSON.stringify({unknownRecoveryBlocked:true,verifiedFailedRequestRecoveryAllowed:true,
     completedRequestReplayBlocked:true,recoveryCostHistoryPreserved:true,realProviderCalls:0}));
   console.log(JSON.stringify({migration:"052",estimateRetained:true,ambiguousMatchRetained:true,concurrentReleaseOnce:true,invoicePriority:true,appendOnlyHistory:true,overrunRuleOnly:true,originalReservationPreserved:true,separateCostBasisAllocationConserved:true,storedCompanyAttributionPreserved:true,realProviderCalls:0,actualModelCostUsd:0,fixturesOnly:true}));

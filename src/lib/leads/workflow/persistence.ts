@@ -1,4 +1,6 @@
 import { createHash } from "node:crypto";
+import {completeTaskCostAllocation} from "@/lib/billing/task-cost-completion";
+import {costRoundKey} from "@/lib/billing/company-cost-context";
 import { WorkflowPausedError } from "./pause";
 import { saveCompanyMarketAssessment } from "@/lib/sales/company-market-state";
 import type { PoolClient } from "pg";
@@ -197,6 +199,7 @@ export async function saveCompany(client: PoolClient, workspaceId: string, recor
 }
 
 export async function persistLeadWorkflowResult(input: {
+  processedCompanyKeys?: string[];
   userId: string;
   actionId: string;
   workspaceId: string;
@@ -229,6 +232,8 @@ export async function persistLeadWorkflowResult(input: {
     const saved=await client.query<{counts:{added:number;updated:number;roleChanged:number}|null}>("select metadata->'deliveryCounts' as counts from lead_search_run where id=$1 and workspace_id=$2 for update",[input.runId,input.workspaceId]);
     if(!saved.rows[0])throw new Error("Search run is missing or outside this workspace");
     if(saved.rows[0]?.counts)return saved.rows[0].counts;
+    const costAllocationCompletion=await completeTaskCostAllocation(client,input.userId,input.actionId,
+      costRoundKey(input.graphThreadId),input.processedCompanyKeys);
     const counts={added:0,updated:0,roleChanged:0};
     for (const assessment of input.assessments) {
       const candidate = candidateById.get(assessment.candidateId);
@@ -304,7 +309,7 @@ export async function persistLeadWorkflowResult(input: {
          graph_thread_id=$4, workflow_phase='completed', rag_chunk_ids=$5::uuid[],
          metadata=metadata || $6::jsonb, finished_at=now() where id=$1`,
       [input.runId, selected.length, input.creditsUsed, input.graphThreadId, input.ragContext.map((item) => item.chunkId),
-        JSON.stringify({ deliveryCounts:counts,playbook: input.playbook, assessmentCount: input.assessments.length,
+        JSON.stringify({ deliveryCounts:counts,costAllocationCompletion,playbook: input.playbook, assessmentCount: input.assessments.length,
           workflowWarnings: input.warnings, scoringPolicy: { key: ACTIVE_LEAD_SCORING_POLICY.policyKey,
             version: ACTIVE_LEAD_SCORING_POLICY.version, checksum: scoringPolicyChecksum() },
           evidenceFreshnessReport: {

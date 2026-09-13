@@ -315,9 +315,10 @@ describe("LangGraph lead workflow", () => {
     const sessionSnapshot = snapshotDiscoverySession(session, "fixture-dependency");
     deps.discover = vi.fn()
       .mockResolvedValueOnce({ runId: "run-1", candidates: [candidate], creditsUsed: 1,
-        warnings: [], callMetrics: [discoveryMetric(1)], sessionSnapshot })
+        warnings: [], callMetrics: [discoveryMetric(1)], sessionSnapshot,
+        processedCompanyKeys: ["a".repeat(64),"c".repeat(64)] })
       .mockResolvedValueOnce({ runId: "run-1", candidates: [candidate2], creditsUsed: 1,
-        warnings: [], callMetrics: [discoveryMetric(1)] });
+        warnings: [], callMetrics: [discoveryMetric(1)], processedCompanyKeys:["b".repeat(64),"c".repeat(64)] });
     deps.collectEvidence = vi.fn(async (items: LeadWorkflowCandidate[]) =>
       ({ candidates: items, creditsUsed: 0, warnings: [] }));
     deps.correctionAgent.correct = vi.fn(async (items: LeadWorkflowCandidate[]) => ({
@@ -329,12 +330,16 @@ describe("LangGraph lead workflow", () => {
     const graph = buildLeadWorkflowGraph(deps);
     const state = await graph.invoke({ userId: "user-1", actionId: "action-1", graphThreadId: "thread-1",
       workspaceId: "workspace-1", plan: twoTargetPlan, phase: "queued", ragContext: [], candidates: [],
+      processedCompanyKeys: [],
       correctedCandidates: [], assessments: [], assessmentReviews: [], handoffs: [], creditsUsed: 0,
       modelUsage: [], stageMetrics: [], warnings: [] }, { recursionLimit: 50 });
     expect(deps.discover).toHaveBeenCalledTimes(2);
     expect(deps.discover).toHaveBeenLastCalledWith(expect.anything(), expect.anything(), expect.anything(),
       expect.anything(), expect.anything(), expect.objectContaining({ sessionSnapshot }));
     expect(state.acceptedCandidateCount).toBe(2);
+    // The rejected company c is part of actual work although only a/b qualified.
+    expect(deps.persist).toHaveBeenCalledWith(expect.objectContaining({
+      processedCompanyKeys:["a".repeat(64),"b".repeat(64),"c".repeat(64)] }));
     expect(state.targetCompletionReason).toBe("target-met");
   });
   it("rechecks the remaining exact contract after a partial checkpoint hit without scoring again",async()=>{

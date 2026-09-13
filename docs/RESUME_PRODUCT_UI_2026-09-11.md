@@ -1,5 +1,7 @@
 # 产品开发恢复节点 — 2026-09-11
 
+2026-09-13阶段42：已实现工作流task-shared、跨轮processedCompanyKeys（门禁通过+拒绝）、persist结果事务内完成分摊及后到观测复用集合。旧集合缺失保持unknown，原金额/观测不改。805测试/175文件、typecheck/build/生成check、verify-cost-reconciliation.ts --skip-migration真实SQL合成验证通过，fixture清理，无付费。下一继续A04完成前观测当前投影/公司成本UI、其余费用与恢复、遥测和真实业务验收，goal active；以唯一矩阵为准。
+
 2026-09-13阶段41：唯一矩阵完成逐行合并，原阶段25–40矩阵完整归档；从[当前矩阵](CURRENT_ACCEPTANCE_MATRIX_2026-09-13.md)恢复，不将下方旧阶段待办作为当前结论。Gemini官方按搜索查询次数计费，当前Interactions契约未找到查询次数硬限制，不能只用token价格开放费用门禁；已登记依据，无产品代码或付费变化。继续OpenRouter完整上界及独立恢复/成本/遥测、最终真实业务/UI，goal active。最新全量检查沿用阶段40，阶段41仅文档核验。
 
 2026-09-13阶段40：request-bounds-v1.5.0新增SearchAPI Google/Bing第一页USD0.008上界，涵盖公开enhanced速度档；Google固定num10、Bing最多20、无自动分页。发现契约v4-searchapi-google-limit，旧会话不静默复用。802测试/174文件、typecheck/build通过，无付费。剩余Gemini/OpenRouter上界、可信报告/核销、真实业务/UI、历史终态恢复和P06分阶段继续；goal active。

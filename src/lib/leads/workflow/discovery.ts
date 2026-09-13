@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import {BudgetDeniedError} from "@/lib/billing/policy";
 import { currentSpendContext } from "@/lib/billing/context";
-import {withCompanyCostAttribution} from "@/lib/billing/company-cost-context";
+import {withCompanyCostAttribution,companyCostKey} from "@/lib/billing/company-cost-context";
 
 import { query, transaction, tenantTransaction, tenantQuery } from "@/lib/rag/db";
 import type { LeadSearchPlan } from "@/lib/assistant/types";
@@ -24,6 +24,7 @@ import { discoverySessionDependency, restoreDiscoverySession, snapshotDiscoveryS
 import { discoveryRoundContract, loadDiscoveryCheckpoint, saveDiscoveryCheckpoint } from "./discovery-checkpoint";
 
 export interface DiscoveryResult {
+  processedCompanyKeys?: string[];
   sessionSnapshot?: DiscoverySessionSnapshot;
   runId: string;
   candidates: LeadWorkflowCandidate[];
@@ -214,6 +215,8 @@ export async function discoverLeadCandidates(
     if (execution.candidates.length === 0 && !invocation.existingRunId) throw new Error(
       `No usable public-company candidates were discovered. ${execution.warnings.join(" ")}`.trim());
     return { runId: run.id, candidates: execution.candidates, creditsUsed,
+      processedCompanyKeys: [...new Set([...execution.candidates,...execution.rejectedCandidates]
+        .map(candidate=>companyCostKey(candidate.domain,plan.countryCode)))].sort(),
       sessionSnapshot: snapshotDiscoverySession(session, dependency),
       warnings: execution.warnings, modelUsage: execution.modelUsage, callMetrics: execution.calls };
   } catch (error) {

@@ -757,7 +757,7 @@ flowchart TD
 | `src/lib/rag/openai-provider.ts` | `d8d105c5650d1bacdbb48ce652143900afa7d62d505dfd502159f7b09fee1ff2` |
 | `src/lib/assistant/service.ts` | `191d407fc558253b10df7b57564bb73094808cddaf5f2f8883c57742561eff7e` |
 | `src/lib/assistant/repository.ts` | `7d480b70ed29de1795c4c6c1a5c49d471cd700272616bfa3c66dbab4e6d6bfb3` |
-| `src/lib/leads/workflow/graph.ts` | `23b03d67037861a4da7e6bf8cc4f46742255960428e5e5d6bc28d72b1aac30be` |
+| `src/lib/leads/workflow/graph.ts` | `8293e3fbb3f46efe49024d434523d548063df56a73604fa6bb15e59fa6e06e90` |
 | `src/lib/leads/workflow/jobs.ts` | `828450a7ddd3d37a26d05f97ac50a231e77c704876b9af2232e61dfd51904d48` |
 | `src/lib/leads/workflow/rag-context.ts` | `1e1ee21e77b90731e849426cd7130de7d1e50ee6aec9f196e44cb642bf81387b` |
 | `src/lib/leads/workflow/playbook.ts` | `a353d9cd427d394e6e2ead9752b8f28f739f8c2b3885db3fdbeb84d39f2fa34f` |
@@ -766,7 +766,7 @@ flowchart TD
 | `src/lib/leads/workflow/candidate-registry.ts` | `f2d98cbce22ad02207047d782a12fe1fac98f5c1852e9f09df6525f4a71692e0` |
 | `src/lib/leads/workflow/discovery-gate.ts` | `8f58856e95fef505866759afe9d9b5e296702ed47ece79893652e3859cb49c19` |
 | `src/lib/leads/workflow/hybrid-discovery-executor.ts` | `5a4e7e7817a7361467ee773d857eafe82fe0c5e7f2af4c30763dd18264f1c1a5` |
-| `src/lib/leads/workflow/discovery.ts` | `4927068980fb78cb80629d234f95dc11013b23b08144d6d8bacc01bc47e86c47` |
+| `src/lib/leads/workflow/discovery.ts` | `3090190dd9fb88f5ad2f3c8ca0d6249f257f86a4ca145296d6b4b67b792a6edd` |
 | `src/lib/leads/global-search.ts` | `963d07622725531e72d7f1807d4228a23d59d6a320b5d1e508b602bcc05c65db` |
 | `src/lib/leads/workflow/evidence-correction-agent.ts` | `3343dbe0352c3082f2a624edca31ad0c0cf9b4aa679219340e557758079bfc50` |
 | `src/lib/leads/workflow/evidence-packet.ts` | `8192c83a87eada51e9be0e5f4af3888d2c520d9a977552e5a8b01f37aa037604` |
@@ -781,7 +781,7 @@ flowchart TD
 | `db/migrations/034_model_account_cash_cost.sql` | `4790c7ad12eda543e197c84ddd77c4a5ce296b7871ccee799f3aa2262684bdbb` |
 | `src/providers/tavily.ts` | `e981be543a25b56b456654fdc55c8dd67303ac42cb14b82c8c4b4d35d9c78d20` |
 | `src/lib/leads/workflow/handoff-assembler.ts` | `606736bdfcced8f3a476a58808b07c65867b75f948c46b66b21354e5102f3827` |
-| `src/lib/leads/workflow/persistence.ts` | `daae1096ebddcc43d9dcbaecd98ce12866bfa4280e2c19afabfcb6ad3801e268` |
+| `src/lib/leads/workflow/persistence.ts` | `15e943a85eaac495d15e77616f8de94c7506ca069578ffb4e9c29f7cc2b8f017` |
 | `src/lib/sales/repository.ts` | `878fff7d578b3631ca320ae84f03b0a80f15feb6ce569954f8a9c314fa5599d7` |
 | `src/lib/outreach/graph.ts` | `47a6fc1d1d634c603f5a429a810f9cd97ff14483694dad76e0b368bf849cb4d2` |
 | `src/lib/outreach/kimi-agent.ts` | `7e4b1dabd294294702bdb0c20c653b60741462527aa941db3299b7df4c3b7540` |

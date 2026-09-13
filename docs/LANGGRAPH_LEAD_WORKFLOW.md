@@ -1,5 +1,7 @@
 # LangChain / LangGraph 销售线索工作流
 
+2026-09-13阶段42：新工作流初始化processedCompanyKeys=[]；发现返回门禁通过与拒绝公司按国家生成的键，图跨轮去重累计，缓存结果也计入实际处理。旧检查点或适配器缺失集合时沿途保持undefined，不能以零或最后一批替代。公共调用默认task-shared，直接公司调用覆盖归属；persist_results在同一结果事务调用completeTaskCostAllocation，保存task-cost-completion-v1与独立预留分摊，失败随事务回滚，重试幂等。后到费用观测读取存储集合；原观测不重写、金额不变。无schema迁移，回滚代码可忽略新增metadata/可选字段，不删除历史记录。805测试、生产build及真实SQL合成验证通过；当前成本投影/UI与真实闭环继续验收。
+
 2026-09-13阶段41状态整理：流程实现与验收出口统一由[当前矩阵](CURRENT_ACCEPTANCE_MATRIX_2026-09-13.md)逐项维护；阶段25–40原始状态另存历史。本文下方历史待办不覆盖当前O01–O05实现证据。本阶段没有流程代码变更，真实业务闭环、完整恢复及遥测仍按矩阵继续；Gemini缺完整费用上界保持发送前拒绝。
 
 2026-09-13阶段40：SearchAPI仅Google/Bing第一页GET按USD0.008保守预留；Google固定num=10、Bing最多20，禁止隐式付费分页与其他引擎。输入范围不扩大，发现会话契约v4-searchapi-google-limit使旧任务停止静默恢复。802测试/build通过，无真实调用；预留不等于账单，Gemini/OpenRouter等仍需独立完整上界。

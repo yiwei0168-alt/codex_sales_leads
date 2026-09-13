@@ -57,6 +57,7 @@ const WorkflowAnnotation = Annotation.Root({
   discoveryRound: Annotation<number | undefined>(),
   discoveredUniqueCount: Annotation<number | undefined>(),
   discoverySession: Annotation<DiscoverySessionSnapshot | undefined>(),
+  processedCompanyKeys: Annotation<string[] | undefined>(),
   searchExcludeDomains: Annotation<string[] | undefined>(),
   consecutiveNoFinalRounds: Annotation<number | undefined>(),
   acceptedCandidateCount: Annotation<number | undefined>(),
@@ -224,6 +225,8 @@ export function buildLeadWorkflowGraph(
         phase: "discovering" as const,
         runId: discovered.runId,
         discoverySession: discovered.sessionSnapshot,
+        processedCompanyKeys: state.processedCompanyKeys!==undefined&&discovered.processedCompanyKeys!==undefined
+          ? [...new Set([...state.processedCompanyKeys,...discovered.processedCompanyKeys])].sort() : undefined,
         candidates: discovered.candidates,
         discoveryRound: round + 1,
         discoveredUniqueCount: (state.discoveredUniqueCount ?? 0) + newUniqueCompanies,
@@ -467,6 +470,7 @@ export function buildLeadWorkflowGraph(
         countryCode: state.plan.countryCode,
         countryName: state.plan.countryName,
         requested: state.plan.targetCount,
+        processedCompanyKeys: state.processedCompanyKeys,
         creditsUsed: state.creditsUsed,
         ragContext: state.ragContext,
         playbook: state.playbook,
@@ -534,6 +538,7 @@ export async function runLeadWorkflow(input: {
     assessments: [],
     discoveryRound: 0,
     discoveredUniqueCount: 0,
+    processedCompanyKeys: [],
     searchExcludeDomains: [],
     consecutiveNoFinalRounds: 0,
     acceptedCandidateCount: 0,
@@ -556,7 +561,7 @@ export async function runLeadWorkflow(input: {
   }
   if(mode!=='resume')initial.searchExcludeDomains=await continuationExclusions(input.userId,input.actionId);
   const state = await withSpendContext({userId:input.userId,operationId:input.actionId,stage:"lead-workflow",
-    costAttribution:{version:"company-cost-attribution-v1",kind:"unclassified",companyKeys:[],roundKey:costRoundKey(input.graphThreadId)}},()=>graph.invoke(mode==='resume'?null:initial,config));
+    costAttribution:{version:"company-cost-attribution-v1",kind:"task-shared",companyKeys:[],roundKey:costRoundKey(input.graphThreadId)}},()=>graph.invoke(mode==='resume'?null:initial,config));
   if (!state.result) throw new Error("LangGraph workflow completed without a result");
   return state.result;
 }

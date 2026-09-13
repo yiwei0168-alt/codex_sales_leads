@@ -435,6 +435,7 @@ export interface LeadWorkflowState {
   discoveryRound?: number;
   discoveredUniqueCount?: number;
   discoverySession?: import("./discovery-session").DiscoverySessionSnapshot;
+  processedCompanyKeys?: string[];
   searchExcludeDomains?: string[];
   consecutiveNoFinalRounds?: number;
   acceptedCandidateCount?: number;
