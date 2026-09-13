@@ -1,5 +1,6 @@
 import {tenantTransaction} from "@/lib/rag/db";
 import {planCostReconciliation,type CostObservationKind} from "./reconciliation-policy";
+import {observationCostAllocation} from "./observation-allocation";
 
 interface VerifiedObservationInput {
   kind:CostObservationKind;
@@ -21,8 +22,8 @@ export async function recordVerifiedCostObservation(userId:string,reservationId:
   return tenantTransaction(userId,async client=>{
     const budget=await client.query("select user_id from user_spend_budget where user_id=$1 for update",[userId]);
     if(!budget.rows.length)throw new Error("Budget owner missing");
-    const rows=await client.query<{reserved_micros:string;occupied_micros:string|null;settled_micros:string|null;settled_source:CostObservationKind|null;provider_request_hash:string|null;tariff_key:string;tariff_version:string}>(
-      "select reserved_micros::text,occupied_micros::text,settled_micros::text,settled_source,provider_request_hash,tariff_key,tariff_version from paid_call_reservation where user_id=$1 and id=$2 for update",[userId,reservationId]);
+    const rows=await client.query<{reserved_micros:string;occupied_micros:string|null;settled_micros:string|null;settled_source:CostObservationKind|null;provider_request_hash:string|null;tariff_key:string;tariff_version:string;metrics:unknown}>(
+      "select reserved_micros::text,occupied_micros::text,settled_micros::text,settled_source,provider_request_hash,tariff_key,tariff_version,metrics from paid_call_reservation where user_id=$1 and id=$2 for update",[userId,reservationId]);
     const row=rows.rows[0];if(!row)throw new Error("Reservation not owned or missing");
     const previous=await client.query<{amount_micros:string|null;source_version:string;complete:boolean;provider_request_hash:string|null}>("select amount_micros::text,source_version,complete,provider_request_hash from paid_cost_observation where user_id=$1 and reservation_id=$2 and kind=$3 and source_reference_hash=$4",[userId,reservationId,input.kind,input.sourceReferenceHash]);
     if(previous.rows.length){
@@ -37,7 +38,7 @@ export async function recordVerifiedCostObservation(userId:string,reservationId:
     }
     const plan=planCostReconciliation({reservedMicros:Number(row.reserved_micros),occupiedMicros:row.occupied_micros===null?undefined:Number(row.occupied_micros),settledMicros:row.settled_micros===null?null:Number(row.settled_micros),settledSource:row.settled_source},{kind:input.kind,amountMicros:input.amountMicros,complete:input.complete,uniquelyMatched});
     await client.query(`insert into paid_cost_observation(user_id,reservation_id,kind,amount_micros,source_reference_hash,source_version,complete,uniquely_matched,provider_request_hash,occupied_before,occupied_after,metrics)
-      values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`,[userId,reservationId,input.kind,input.amountMicros,input.sourceReferenceHash,input.sourceVersion,input.complete,uniquelyMatched,input.providerRequestHash??null,plan.occupiedBefore,plan.occupiedAfter,JSON.stringify({inputItems:1,validOutputItems:1,downstreamUsedItems:plan.canSettle?1:0,inputTokens:0,outputTokens:0,apiCredits:0,costUsd:0,latencyMs:Date.now()-started,retries:0,utilizationEfficiency:plan.canSettle?1:0,discardedReasonCounts:plan.canSettle?{}:{retainedWithoutSettlement:1},usageBoundary:"verified-cost-observation-not-new-spend",optimizationOpportunity:"Match complete provider statements before releasing unused reservations"})]);
+      values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`,[userId,reservationId,input.kind,input.amountMicros,input.sourceReferenceHash,input.sourceVersion,input.complete,uniquelyMatched,input.providerRequestHash??null,plan.occupiedBefore,plan.occupiedAfter,JSON.stringify({inputItems:1,validOutputItems:1,downstreamUsedItems:plan.canSettle?1:0,inputTokens:0,outputTokens:0,apiCredits:0,costUsd:0,latencyMs:Date.now()-started,retries:0,utilizationEfficiency:plan.canSettle?1:0,discardedReasonCounts:plan.canSettle?{}:{retainedWithoutSettlement:1},costAllocation:observationCostAllocation({kind:input.kind,amountMicros:input.amountMicros,reservationMetrics:row.metrics,occupiedBefore:plan.occupiedBefore,occupiedAfter:plan.occupiedAfter}),usageBoundary:"verified-cost-observation-not-new-spend",optimizationOpportunity:"Match complete provider statements before releasing unused reservations"})]);
     await client.query(`update paid_call_reservation set
       estimated_micros=case when $3='usage-estimate' then $4::bigint else estimated_micros end,
       reported_micros=case when $3='provider-report' then $4::bigint else reported_micros end,

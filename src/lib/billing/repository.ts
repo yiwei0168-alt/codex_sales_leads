@@ -7,6 +7,7 @@ import {planCostReconciliation,type CostObservationKind} from "./reconciliation-
 import {COST_SUMMARY_SQL} from "./cost-summary";
 import type {ForeignCostBound} from "./fx-policy";
 import {allocateCompanyCost,costAttributionSchema,type CostAttribution} from "./cost-allocation";
+import {observationCostAllocation} from "./observation-allocation";
 
 type ReservationInput={operationId:string;stage:string;tariffKey:string;tariffVersion:string;maximumChargeMicros:number;requestBytes:number;requestFingerprint?:string;foreignCostBound?:ForeignCostBound;costAttribution?:CostAttribution;modelAttempt?:{invocationId:string|null;provider:string|null;task:string|null;promptVersion:string|null;attempt:number|null;requestedModel:string|null;gatewayHost:string|null;endpointKind:string}|null};
 export async function reservePaidCall(userId:string,input:ReservationInput){
@@ -47,16 +48,16 @@ export async function settlePaidCall(userId:string,id:string,input:{reportedMicr
   const cost=input.reportedMicros!==null&&Number.isSafeInteger(input.reportedMicros)&&input.reportedMicros>=0?input.reportedMicros:null;
   await tenantTransaction(userId,async client=>{
     await client.query("select user_id from user_spend_budget where user_id=$1 for update",[userId]);
-    const result=await client.query<{reserved_micros:string;occupied_micros:string|null;settled_micros:string|null;settled_source:CostObservationKind|null;tariff_key:string;tariff_version:string}>(`update paid_call_reservation set reported_micros=$3,
+    const result=await client.query<{reserved_micros:string;occupied_micros:string|null;settled_micros:string|null;settled_source:CostObservationKind|null;tariff_key:string;tariff_version:string;metrics:unknown}>(`update paid_call_reservation set reported_micros=$3,
       status=case when $3::bigint>reserved_micros then 'bound-exceeded' when $3::bigint is null then 'unknown' else 'reported' end,
       provider_request_hash=coalesce($5,provider_request_hash),metrics=metrics || $4::jsonb,updated_at=now()
-      where user_id=$1 and id=$2 and status='reserved' returning reserved_micros,occupied_micros,settled_micros,settled_source,tariff_key,tariff_version`,
+      where user_id=$1 and id=$2 and status='reserved' returning reserved_micros,occupied_micros,settled_micros,settled_source,tariff_key,tariff_version,metrics`,
       [userId,id,cost,JSON.stringify({latencyMs:input.latencyMs,outputBytes:input.responseBytes,inputTokens:input.inputTokens,outputTokens:input.outputTokens,providerUsage:input.providerUsage??null,validOutputItems:input.succeeded?1:0,discardedReasonCounts:input.succeeded?{}:{requestFailed:1},usageBoundary:"response-returned-not-downstream-adopted",optimizationOpportunity:"Reconcile invoices before releasing conservative reservations"}),input.providerUsage?.providerRequestHash??null]);
     const row=result.rows[0];if(!row)return;
     const plan=planCostReconciliation({reservedMicros:Number(row.reserved_micros),occupiedMicros:row.occupied_micros==null?undefined:Number(row.occupied_micros),settledMicros:row.settled_micros==null?null:Number(row.settled_micros),settledSource:row.settled_source??null},{kind:"provider-report",amountMicros:cost,complete:false,uniquelyMatched:false});
     await client.query(`insert into paid_cost_observation(user_id,reservation_id,kind,amount_micros,source_reference_hash,source_version,complete,uniquely_matched,provider_request_hash,occupied_before,occupied_after,metrics)
       values($1,$2,'provider-report',$3,$4,'http-response-usage-v1',false,false,$5,$6,$7,$8) on conflict do nothing`,
-      [userId,id,cost,createHash("sha256").update(`${id}:http-response-v1`).digest("hex"),input.providerUsage?.providerRequestHash??null,plan.occupiedBefore,plan.occupiedAfter,JSON.stringify({inputItems:1,validOutputItems:1,downstreamUsedItems:plan.suspendRule?1:0,inputTokens:0,outputTokens:0,apiCredits:0,retries:0,usageBoundary:"cost-observation-not-additional-spend",optimizationOpportunity:"Verify completeness and unique matching before release"})]);
+      [userId,id,cost,createHash("sha256").update(`${id}:http-response-v1`).digest("hex"),input.providerUsage?.providerRequestHash??null,plan.occupiedBefore,plan.occupiedAfter,JSON.stringify({inputItems:1,validOutputItems:1,downstreamUsedItems:plan.suspendRule?1:0,inputTokens:0,outputTokens:0,apiCredits:0,retries:0,costAllocation:observationCostAllocation({kind:"provider-report",amountMicros:cost,reservationMetrics:row.metrics,occupiedBefore:plan.occupiedBefore,occupiedAfter:plan.occupiedAfter}),usageBoundary:"cost-observation-not-additional-spend",optimizationOpportunity:"Verify completeness and unique matching before release"})]);
     if(plan.occupiedDelta!==0){
       await client.query("update paid_call_reservation set occupied_micros=$3 where user_id=$1 and id=$2",[userId,id,plan.occupiedAfter]);
       await client.query("update user_spend_budget set occupied_micros=occupied_micros+$2,updated_at=now() where user_id=$1",[userId,plan.occupiedDelta]);

@@ -26,7 +26,8 @@ try{
   }catch(error){await client.query("rollback");throw error;}finally{client.release();}
   await admin.query("insert into app_user(id,email,display_name,password_hash,role,status) values($1,$2,'Cost reconciliation fixture',$3,'member','active')",[userId,email,hashPassword(randomBytes(24).toString("hex"))]);created=true;
   await setSpendBudget(userId,1000);
-  const request={operationId:randomUUID(),stage:"synthetic-cost",tariffKey:"synthetic-rule",tariffVersion:"fixture-v1",maximumChargeMicros:100,requestBytes:10};
+  const request={operationId:randomUUID(),stage:"synthetic-cost",tariffKey:"synthetic-rule",tariffVersion:"fixture-v1",maximumChargeMicros:100,requestBytes:10,
+    costAttribution:{version:"company-cost-attribution-v1" as const,kind:"company-inputs" as const,companyKeys:[hash("company-one"),hash("company-two")].sort(),roundKey:hash("round-one")}};
   const id=await reservePaidCall(userId,request);
   const providerId=`synthetic-provider-${randomUUID()}`;
   await settlePaidCall(userId,id,{reportedMicros:30,latencyMs:1,responseBytes:10,inputTokens:9,outputTokens:1,succeeded:true,providerUsage:providerUsageObservation({id:providerId,usage:{prompt_tokens:9,completion_tokens:1}})});
@@ -57,13 +58,25 @@ try{
   assert.equal(summary.stages[0].unreconciled_calls,0);
   const observations=await tenantQuery<{n:number}>(userId,"select count(*)::int as n from paid_cost_observation where user_id=$1 and reservation_id=$2",[userId,id]);
   assert.equal(observations[0].n,6);
+  const allocations=await tenantQuery<{kind:string;amount_micros:string;occupied_before:string;occupied_after:string;metrics:{costAllocation:{observation:{basis:string;sourceAmountMicros:number;shares:Array<{companyKey:string;amountMicros:number}>;additionalSpendMicros:number};occupiedBefore:{sourceAmountMicros:number};occupiedAfter:{sourceAmountMicros:number}}}}>(userId,"select kind,amount_micros::text,occupied_before::text,occupied_after::text,metrics from paid_cost_observation where user_id=$1 and reservation_id=$2",[userId,id]);
+  assert.equal(allocations.length,6);
+  for(const record of allocations){
+    const allocation=record.metrics.costAllocation;
+    assert.equal(allocation.observation.basis,record.kind==="usage-estimate"?"estimate":record.kind);
+    assert.equal(allocation.observation.sourceAmountMicros,Number(record.amount_micros));
+    assert.equal(allocation.observation.shares.reduce((sum,row)=>sum+row.amountMicros,0),Number(record.amount_micros));
+    assert.deepEqual(allocation.observation.shares.map(row=>row.companyKey),request.costAttribution.companyKeys);
+    assert.equal(allocation.observation.additionalSpendMicros,0);
+    assert.equal(allocation.occupiedBefore.sourceAmountMicros,Number(record.occupied_before));
+    assert.equal(allocation.occupiedAfter.sourceAmountMicros,Number(record.occupied_after));
+  }
   await assert.rejects(tenantQuery(userId,"update paid_cost_observation set amount_micros=0 where user_id=$1",[userId]),/permission denied/i);
   const overrun=await reservePaidCall(userId,{...request,tariffKey:"overrun-rule"});
   await settlePaidCall(userId,overrun,{reportedMicros:150,latencyMs:1,responseBytes:1,inputTokens:null,outputTokens:null,succeeded:false});
   assert.equal((await read()).occupied,"190");
   await assert.rejects(reservePaidCall(userId,{...request,tariffKey:"overrun-rule"}),/tariff-suspended/);
   await reservePaidCall(userId,{...request,tariffKey:"unaffected-rule"});
-  console.log(JSON.stringify({migration:"052",estimateRetained:true,ambiguousMatchRetained:true,concurrentReleaseOnce:true,invoicePriority:true,appendOnlyHistory:true,overrunRuleOnly:true,originalReservationPreserved:true,realProviderCalls:0,actualModelCostUsd:0,fixturesOnly:true}));
+  console.log(JSON.stringify({migration:"052",estimateRetained:true,ambiguousMatchRetained:true,concurrentReleaseOnce:true,invoicePriority:true,appendOnlyHistory:true,overrunRuleOnly:true,originalReservationPreserved:true,separateCostBasisAllocationConserved:true,storedCompanyAttributionPreserved:true,realProviderCalls:0,actualModelCostUsd:0,fixturesOnly:true}));
 }finally{
   if(created){
     const client=await admin.connect();
