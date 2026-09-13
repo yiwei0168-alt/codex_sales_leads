@@ -1,5 +1,7 @@
 # 产品开发恢复节点 — 2026-09-11
 
+2026-09-13阶段66：结果存储增加完整JSON输入指纹，在run行锁内拒绝变化或无身份旧记录；不再返回未写入的新结果数量。verify-result-persistence实际SQL两国6冲突/2旧记录拒绝、同输入幂等通过并清理；834测试/build/局部lint通过，0付费。无schema迁移，旧记录不回填。3017仍为阶段65启动服务，最新磁盘build阶段66，若需页面验收先核验身份再重启。继续A13与费用/真实业务缺口，goal active。
+
 2026-09-13阶段65：TaskRunControls已有progress接口（更正阶段64恢复记录对接口复用的遗漏），公开pendingCorrection/pendingScoring，主页面刷新用key重建控制。44组实际Chrome/SQL检查通过，含1/1→0/0、未知、错误owner拒绝及恢复；832测试/build/生成check/局部lint通过。3017当前服务session51396，重启前核对CIM身份；独立ui-progress checkpoint和fixture已删除，0真实付费。A09合成生产UI行为补齐，下一A13策略/跟进及实际模型业务仍缺；goal active。
 
 2026-09-13阶段64：本地3017最新build，Chrome两视口42组通过（九类任务状态新增18组），failed等已知数量状态缺口展示修复；832测试/build/生成check通过，fixture清理、0真实付费。3017由本任务启动，exec服务session88386；后续先核验端口/CIM身份再重启。下一A09仍缺检查点pendingCorrection/pendingScoring公开投影，当前task-detail API未读取检查点，不能猜discovered-assessed；A13策略/跟进等继续。goal active，完整真实业务未运行。

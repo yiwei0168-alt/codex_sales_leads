@@ -51,6 +51,14 @@ try{
     const outcomes=await Promise.allSettled([persistLeadWorkflowResult(input),persistLeadWorkflowResult(input)]);
     const results=outcomes.map(outcome=>{if(outcome.status==='rejected')throw outcome.reason;return outcome.value;});
     for(const result of results){assert.equal(result.accepted,1);assert.deepEqual(result.deliveryCounts,{added:1,updated:0,roleChanged:0});}
+    await assert.rejects(persistLeadWorkflowResult({...input,requested:0}),/conflicts with this persistence input/);
+    await assert.rejects(persistLeadWorkflowResult({...input,countryCode:"GB"}),/conflicts with this persistence input/);
+    await assert.rejects(persistLeadWorkflowResult({...input,assessments:[{...input.assessments[0],totalScore:1}]}),/conflicts with this persistence input/);
+    const fingerprint=await admin.query("select metadata->>'persistenceInputFingerprint' as value from lead_search_run where id=$1",[runId]);
+    await admin.query("update lead_search_run set metadata=metadata-'persistenceInputFingerprint' where id=$1",[runId]);
+    await assert.rejects(persistLeadWorkflowResult(input),/no replay identity/);
+    await admin.query("update lead_search_run set metadata=jsonb_set(metadata,'{persistenceInputFingerprint}',to_jsonb($2::text)) where id=$1",[runId,fingerprint.rows[0].value]);
+    assert.deepEqual(await persistLeadWorkflowResult(input),results[0]);
     const events=await tenantQuery<{event_type:string;artifact_count:number;metadata:Record<string,unknown>}>(userId,
       'select event_type,artifact_count,metadata from workflow_artifact_event where lead_run_id=$1',[runId]);
     assert.equal(events.length,7);
@@ -80,7 +88,7 @@ try{
   assert.equal(budget.rows[0].occupied_micros,'23');
   assert.equal((await tenantQuery(otherUserId,'select company_id from workspace_company_market where workspace_id=$1',[workspaceId])).length,0);
   console.log(JSON.stringify({actualProductPersistence:true,countries:2,sharedCompanyIdentities:1,concurrentCalls:4,artifactEvents:14,
-    evidenceSnapshots:2,countryRecords:2,unknownAdoption:true,syntheticReservedMicros:23,realProviderCalls:0,scope:"synthetic-input-to-real-product-SQL"}));
+    evidenceSnapshots:2,countryRecords:2,conflictingReplaysRejected:6,legacyReplaysPreserved:2,unknownAdoption:true,syntheticReservedMicros:23,realProviderCalls:0,scope:"synthetic-input-to-real-product-SQL"}));
 }finally{
   if(created){
     const client=await admin.connect();
