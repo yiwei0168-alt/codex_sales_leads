@@ -3,6 +3,7 @@ import {createHash} from "node:crypto";
 import {BudgetDeniedError} from "@/lib/billing/policy";
 import * as roleCache from "./role-correction-cache";
 import * as publicEvidence from "./public-evidence-repository";
+import {correctionCompletion} from "./correction-completion";
 afterEach(()=>vi.restoreAllMocks());
 
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "@/providers/contracts";
@@ -80,6 +81,32 @@ const candidate: LeadWorkflowCandidate = {
 };
 
 describe("LeadEvidenceCorrectionAgent", () => {
+  it("pauses before search or model work when a completed-correction cache read is unavailable",async()=>{
+    vi.spyOn(roleCache,"loadPublicRoleCorrection")
+      .mockRejectedValueOnce(new Error("Synthetic cache read outage"))
+      .mockResolvedValueOnce(null);
+    vi.spyOn(publicEvidence,"persistPublicEvidence").mockResolvedValue(undefined);
+    const search=vi.spyOn(searchProvider,"search");
+    class CacheAwareProvider extends FakeCorrectionProvider{
+      cacheIdentity(request:StructuredAiRequest<unknown>){
+        return createHash("sha256").update(JSON.stringify(request)).digest("hex");
+      }
+    }
+    const provider=new CacheAwareProvider();
+    const agent=new LeadEvidenceCorrectionAgent(provider,searchProvider,
+      {allowReusableCorrections:true,persistCorrections:false});
+    const plan={countryCode:"DE",countryName:"Germany",objective:"new-market" as const,
+      roles:["Distributor" as const],targetCount:10,queryLanguage:"en",userRequest:"Find prospects"};
+    await expect(agent.correct([candidate],plan))
+      .rejects.toThrow("主角色缓存读取失败；校正已暂停以避免重复付费。");
+    expect(search).not.toHaveBeenCalled();
+    expect(provider.calls).toHaveLength(0);
+    const resumed=await agent.correct([candidate],plan);
+    expect(resumed.candidates).toHaveLength(1);
+    expect(correctionCompletion(resumed.candidates[0].correction)).toBe("completed");
+    expect(search).toHaveBeenCalledOnce();
+    expect(provider.calls).toHaveLength(1);
+  });
   it("persists a complete correction peer before a repair budget pause",async()=>{
     const save=vi.spyOn(roleCache,"savePublicRoleCorrection").mockResolvedValue(undefined);
     vi.spyOn(publicEvidence,"persistPublicEvidence").mockResolvedValue(undefined);

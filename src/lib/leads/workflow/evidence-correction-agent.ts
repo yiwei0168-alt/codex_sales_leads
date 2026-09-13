@@ -662,8 +662,8 @@ export class LeadEvidenceCorrectionAgent {
           if (hit) cached.set(candidate.candidateId, hit);
         } catch (error) {
           if(error instanceof BudgetDeniedError)throw error;
-          cacheWarnings.push(`Role-correction cache read failed for ${candidate.domain}: ${
-            error instanceof Error ? error.message : String(error)}`);
+          // A read failure cannot prove a cache miss; retrying the model could pay twice.
+          throw new Error("主角色缓存读取失败；校正已暂停以避免重复付费。",{cause:error});
         }
       }));
     }
