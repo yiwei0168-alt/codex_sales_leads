@@ -42,6 +42,9 @@ export function quoteRequest(input:{origin:string;pathname:string;model:string;r
   const matches=rules.filter(rule=>rule.origin===input.origin&&rule.pathname===input.pathname&&rule.model===input.model);
   if(matches.length!==1)throw new BudgetDeniedError("missing-tariff");
   const rule=matches[0];
+  // Public SearchAPI plan prices do not establish this account's contracted plan or speed tier.
+  // Keep the request validator available, but do not reserve against an unverified account bound.
+  if(rule.requestContract==="searchapi-google-bing-v1")throw new BudgetDeniedError("missing-tariff");
   if(!tariffValidity(rule,now).withinVerificationWindow)throw new BudgetDeniedError("expired-tariff");
   if(rule.foreignCostBound){
     let required:number;

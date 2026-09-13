@@ -27,8 +27,12 @@ it("covers all captured standard Sol endpoint prices, long-context overrides and
   expect(billingPolicy.rules.find(rule=>rule.key==="openrouter-sol-credits-standard-text-json")?.maximumChargeMicros).toBe(Number(micros));
 });
 
-it("bounds only first-page SearchAPI Google/Bing requests at the higher public speed rate",()=>{
-  const rule=quoteRequest({origin:"https://www.searchapi.io",pathname:"/api/v1/search",model:"",requestBytes:100,outputTokens:null},undefined,Date.parse("2026-09-13T12:00:00Z"));
+it("retains the narrow SearchAPI request validator while its account price bound is held",()=>{
+  const rule=billingPolicy.rules.find(item=>item.requestContract==="searchapi-google-bing-v1");
+  expect(rule).toBeDefined();
+  const unverifiedAccount={origin:"https://www.searchapi.io",pathname:"/api/v1/search",model:"",requestBytes:100,outputTokens:null};
+  expect(()=>quoteRequest(unverifiedAccount,undefined,Date.parse("2026-09-13T12:00:00Z"))).toThrow("missing-tariff");
+  if(!rule)throw new Error("SearchAPI public request contract missing");
   const query="?engine=google&q=network&location=Colombia&gl=co&hl=es&num=10";
   expect(rule.maximumChargeMicros).toBe(8000);
   expect(()=>assertRequestContract(rule,{},query,"GET")).not.toThrow();

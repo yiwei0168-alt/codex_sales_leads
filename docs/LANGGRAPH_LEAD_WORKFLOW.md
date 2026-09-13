@@ -1,5 +1,7 @@
 # LangChain / LangGraph 销售线索工作流
 
+2026-09-14 阶段116：发现路由中的 SearchAPI 产品请求因当前账号费用上界未核实而在费用报价处停止；既有检查点恢复与任务状态机制仍需用完整实际接线另验。不得将阻止解释为市场搜索耗尽，也不得在恢复时用公开参考价放行。[费用门禁](SEARCHAPI_ACCOUNT_BOUND_HOLD_2026-09-14.md)。
+
 阶段114条件发现/补证预检：生产Exa公司搜索、Tavily官方站补证及校正缺口补证的合成传输均通过现行请求合同；保留缓存/检查点与真实费用门禁，0外部调用。[请求边界](MINIMAL_ACCEPTANCE_EXA_TAVILY_WIRES_2026-09-14.md)。
 
 阶段113核心发现预检：Colombia/Distributor合成计划经生产Brave提供方形成GET请求，当前费用合同按127字节查询、2结果及USD0.005/次通过；传输被拦截，真实HTTP与预算写入0。实际执行器查询及下游公司证据仍未验证，[边界](MINIMAL_ACCEPTANCE_BRAVE_WIRE_2026-09-14.md)。
