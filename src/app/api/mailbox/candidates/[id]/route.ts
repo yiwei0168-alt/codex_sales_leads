@@ -1,6 +1,5 @@
 import { requireApiSession } from "@/lib/auth/session";
-import { tenantQuery } from "@/lib/rag/db";
-import { upsertKnowledgeDocument } from "@/lib/rag/repository";
+import {reviewMailboxCandidate} from "@/lib/mailbox/candidate-review";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -13,33 +12,10 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   if (body.status !== "approved" && body.status !== "rejected") return Response.json({ error: "status 无效" }, { status: 400 });
   const { id } = await params;
   if (!/^[0-9a-f-]{36}$/i.test(id)) return Response.json({ error: "候选 ID 无效" }, { status: 400 });
-  const rows = await tenantQuery<{ id: string; kind: string; title: string; content: string; structured_data: Record<string, unknown> }>(session.userId,
-    `select id, kind, title, content, structured_data from mailbox_artifact_candidate
-     where id = $1 and user_id = $2 and review_status = 'pending' limit 1`,
-    [id, session.userId],
-  );
-  const candidate = rows[0];
-  if (!candidate) return Response.json({ error: "候选不存在" }, { status: 404 });
-
-  if (body.status === "approved") {
-    await upsertKnowledgeDocument(session.userId, {
-      collection: "company",
-      externalId: `mailbox-artifact:${candidate.id}`,
-      title: candidate.title,
-      content: candidate.content,
-      sourceType: "private-mailbox-approved",
-      authorityLevel: 4,
-      language: "auto",
-      companyId: "cudy-technology",
-      capturedAt: new Date().toISOString(),
-      metadata: { mailboxArtifactKind: candidate.kind, privateToUser: true },
-      visibility: "private",
-    });
-  }
-  await tenantQuery(session.userId,
-    `update mailbox_artifact_candidate set review_status = $3, reviewed_at = now()
-     where id = $1 and user_id = $2 and review_status = 'pending'`,
-    [id, session.userId, body.status],
-  );
-  return Response.json({ updated: true, status: body.status });
+  const result=await reviewMailboxCandidate(session.userId,id,body.status);
+  if(result.kind==="missing")return Response.json({error:"候选不存在"},{status:404});
+  if(result.kind==="busy")return Response.json({error:"该候选正在审核，请稍后刷新"},{status:409});
+  if(result.kind==="conflict")return Response.json({error:"该候选已有不同审核结果，请刷新"},{status:409});
+  if(result.kind==="approval-incomplete")return Response.json({error:"此前批准已保存知识，请再次批准以完成审核"},{status:409});
+  return Response.json({updated:true,status:result.status,reused:result.reused});
 }
