@@ -1,0 +1,14 @@
+{
+  "version": "aliyun-embedding-bounds-v1.0.0",
+  "model": "text-embedding-v4",
+  "pathname": "/compatible-mode/v1/embeddings",
+  "currency": "CNY",
+  "inputMicrosPerMillion": 500000,
+  "maximumInputItems": 10,
+  "maximumTokensPerItem": 8192,
+  "maximumRequestBytes": 1048576,
+  "verifiedAt": "2026-09-13T00:00:00Z",
+  "expiresAt": "2026-09-20T00:00:00Z",
+  "reference": "https://help.aliyun.com/zh/model-studio/text-embedding-synchronous-api",
+  "scope": "Official China Beijing workspace HTTPS endpoint only. Synchronous dense text-embedding-v4 with at most 10 plain-text items; each accepted item has at most 8192 input tokens. CNY 0.0005 per 1000 input tokens. No assumed free quota, batch discount, file input, sparse output, model fallback or international tariff substitution. Fresh stored FX plus approved 5 percent reservation buffer."
+}

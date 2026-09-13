@@ -13,6 +13,14 @@ import {textOutputLimit} from "./text-output-policy";
 
 const metadata={provider:"fixture-provider",task:"fixture-task",promptVersion:"fixture-prompt-v1"};
 const scope={userId:"owner-a",operationId:"operation-a",stage:"fixture"};
+it("marks incomplete embedding batches as unsuccessful and prevents SDK replay",async()=>{
+  const transport=vi.fn<typeof fetch>().mockResolvedValue(Response.json({data:[{index:0,embedding:[0.1]}],usage:{prompt_tokens:2,total_tokens:2}}));
+  const sdk=new OpenAI({apiKey:"fixture",baseURL:"https://example.test",maxRetries:1,fetch:sdkModelFetch(transport)});
+  await expect(withSpendContext(scope,()=>withSdkModelCall({...metadata,task:"rag-embedding"},()=>sdk.embeddings.create({model:"fixture-model",input:["a","b"],dimensions:2,encoding_format:"float"}))))
+    .rejects.toBeInstanceOf(IncompleteModelOutputError);
+  expect(transport).toHaveBeenCalledOnce();expect(mocks.reserve).toHaveBeenCalledOnce();expect(mocks.denial).not.toHaveBeenCalled();
+  expect(mocks.settle.mock.calls[0][2]).toMatchObject({succeeded:false,outputIncomplete:true,inputTokens:2,reportedMicros:null});
+});
 beforeEach(()=>{
   vi.clearAllMocks();mocks.reserve.mockReset().mockResolvedValue("reservation");
   mocks.settle.mockReset().mockResolvedValue(undefined);mocks.denial.mockReset().mockResolvedValue(undefined);

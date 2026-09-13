@@ -1,5 +1,16 @@
 # 产品工作流效率台账
 
+## 2026-09-13 实施阶段 23：北京 Embedding 预算边界与响应完整性
+
+继续 A02/A06/B21，不新增模型或冗余策略。官方北京区 text-embedding-v4 同步输入价为 CNY0.0005/千 token，最多 10 条、每条 8,192 token；参考 https://help.aliyun.com/zh/model-studio/text-embedding-synchronous-api 。版本 aliyun-embedding-bounds-v1.0.0 仅放行 HTTPS 北京 workspace maas 精确域名结构与 /compatible-mode/v1/embeddings，纯字符串输入、float 输出及受支持维度。国际区、其他模型、文件/稀疏/工具/额外字段、过期来源和超限请求均拒绝，不自动迁移端点。完整 10 条输入预算 CNY0.040960，以库内新鲜 ECB 汇率及 5% 缓冲预留 USD0.006412；不当作实际用量或账单，不假设免费额度。来源最迟 2026-09-20T00:00Z 失效。
+
+新增向量完整性门禁：每个真实输入恰好返回一个唯一合法索引的有限数值向量，长度必须符合请求维度。缺条、重复、维度错误、无效数字或无法读取的响应不记成功；SDK 不能自动重放，未知费用和原用量保留。沿用原账本 inputTokens/outputBytes/latency/retries，失败 validOutputItems=0，丢弃原因为 incompleteModelOutput；检查结果消费于阻止错误数据下传，不冒充用户采用。模型 token/API 额度额外开销为 0。优化机会：复用已有响应验证，避免坏向量进入 RAG 后触发无效回答及补检索。
+
+验证：719 tests /168 files 全部通过，typecheck、生产 build 通过。真实数据库只读验证当前配置匹配北京契约，Kimi/Embedding 共享有效 FX，累计验收占用仍 USD12.324404/30；新真实模型/付费搜索/SMTP=0，未写客户或预算记录。npm audit --omit=dev 与全量 npm audit 均 0 漏洞。GitHub 文档同步运行 34744359639 对 812c98e 成功，仅证明文档 CI，不等于业务 CI。
+
+下一主线：OpenRouter 网关上界/可信报告、共享费用完成分摊、P06 单公司恢复、完整业务 E2E/最新鉴权 UI 及最终采用遥测。已核查 OpenRouter 当前官方目录：长上下文档位、缓存写入、premium 路由价格不能用最低展示价替代；公开观察不是新生产费率放行。官方 https://openrouter.ai/docs/cookbook/administration/usage-accounting 与 https://openrouter.ai/docs/faq 说明 credits 以 USD 计价，但 BYOK 可能上游另计；已向用户询问当前账号是否仅充值余额、无 BYOK，尚未答复，不假定。完整关联报告可核销原则不变，原 USD12 历史预留不追溯释放。没有更改模型、thinking、账号路由或付费配置。
+
+
 ## 2026-09-13 实施阶段 22：兼容评分入口独立输出上限
 
 A19 用户已确认复核 8,192、裁决 12,000、备用评分 8,192，覆盖阶段 21 的待确认状态。分别以 LEAD_REVIEW_MAX_OUTPUT_TOKENS、LEAD_JUDGE_MAX_OUTPUT_TOKENS、LEAD_FALLBACK_SCORING_MAX_OUTPUT_TOKENS 配置。仅接入 OpenAI-compatible 适配器对应任务；不修改原生 DeepSeek 主评分、原模型、推理强度、升级条件或其他任务。OpenAI 模型使用 max_completion_tokens，其他兼容模型使用 max_tokens；显式上限不能被 extraBody 覆盖，完整请求预检包含该字段。

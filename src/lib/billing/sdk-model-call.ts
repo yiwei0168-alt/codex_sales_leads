@@ -3,6 +3,7 @@ import {randomUUID} from "node:crypto";
 import {budgetedFetch} from "./paid-fetch";
 import {BudgetDeniedError,IncompleteModelOutputError} from "./policy";
 import {textOutputCompletion} from "./text-output-policy";
+import {embeddingOutputCompletion} from "./embedding-output-policy";
 import {withModelAttempt, type ModelAttemptContext} from "./model-attempt-context";
 
 type Invocation = {
@@ -38,6 +39,11 @@ export function sdkModelFetch(transport:typeof fetch=fetch):typeof fetch{
     try{
       const response=await withModelAttempt({...state.metadata,attempt},()=>paid(input,init));
       if(response.ok){
+        if(state.metadata.task==="rag-embedding"){
+          let result:unknown=null;let request:unknown=null;
+          try{result=await response.clone().json();request=JSON.parse(await new Request(input,init).text());}catch{/* Fail closed on unreadable vectors. */}
+          if(embeddingOutputCompletion(state.metadata.task,result,request)==="incomplete")throw new IncompleteModelOutputError();
+        }
         // Retain raw finish reason before structured-output parsers discard response metadata.
         let value:unknown=null;
         if(textOutputCompletion(state.metadata.task,{})!==undefined){

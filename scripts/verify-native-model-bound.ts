@@ -2,6 +2,7 @@ import nextEnv from "@next/env";
 import assert from "node:assert/strict";
 nextEnv.loadEnvConfig(process.cwd());
 const {nativeModelBound}=await import("../src/lib/billing/native-model-bound");
+const {embeddingModelBound}=await import("../src/lib/billing/embedding-model-bound");
 const {getPool,tenantQuery}=await import("../src/lib/rag/db");
 try{
   const output=[];
@@ -14,6 +15,11 @@ try{
   const rows=await tenantQuery<{limit_micros:string;occupied_micros:string}>("cbee9803-3c43-4609-9228-66086b207012",
     "select limit_micros::text,occupied_micros::text from user_spend_budget where user_id=$1",["cbee9803-3c43-4609-9228-66086b207012"]);
   assert.equal(rows[0]?.limit_micros,"30000000");
+  const embeddingUrl=new URL(process.env.EMBEDDING_BASE_URL!);
+  const embedding=await embeddingModelBound({origin:embeddingUrl.origin,pathname:embeddingUrl.pathname+"/embeddings",model:process.env.EMBEDDING_MODEL!,requestBytes:1000,outputTokens:null});
+  assert.ok(embedding?.rule.foreignCostBound);
+  assert.equal(embedding.rule.foreignCostBound.maximumNativeMicros,40960);
+  output.push({model:process.env.EMBEDDING_MODEL!,maximumUsd:embedding.rule.maximumChargeMicros/1000000,maximumNativeMicros:40960,currency:"CNY",fxVersion:embedding.rule.foreignCostBound.fx.version,rateVersion:embedding.version});
   console.log(JSON.stringify({status:"native-bounds-with-real-fx-read-passed",bounds:output,acceptanceOccupiedUsd:Number(rows[0].occupied_micros)/1000000,modelCalls:0,paidCalls:0,databaseWrites:0}));
 }catch(error){console.error(JSON.stringify({status:"native-bound-verification-failed",errorClass:error instanceof Error?error.name:"UnknownError",paidCalls:0}));process.exitCode=1;}
 finally{await getPool().end();}

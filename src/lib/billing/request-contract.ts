@@ -1,4 +1,5 @@
 import {BudgetDeniedError,type RequestBound} from "./policy";
+import {isBeijingEmbeddingOrigin} from "./embedding-model-bound";
 
 function record(value:unknown):value is Record<string,unknown>{return value!==null&&typeof value==="object"&&!Array.isArray(value);}
 function keys(value:Record<string,unknown>,allowed:string[]){return Object.keys(value).every(key=>allowed.includes(key));}
@@ -8,6 +9,15 @@ function textMessage(value:unknown,role:string){return record(value)&&keys(value
 export function assertRequestContract(rule:RequestBound,body:Record<string,unknown>,query:string):void{
   if(!rule.requestContract)return; // Historical independently approved scopes retain their own constraints.
   let valid=false;
+  if(rule.requestContract==="aliyun-beijing-dense-text-v1"){
+    const inputs=typeof body.input==="string"?[body.input]:body.input;
+    valid=isBeijingEmbeddingOrigin(rule.origin)&&rule.pathname==="/compatible-mode/v1/embeddings"&&query===""
+      &&rule.model==="text-embedding-v4"&&body.model===rule.model
+      &&keys(body,["model","input","dimensions","encoding_format"])
+      &&Array.isArray(inputs)&&inputs.length>0&&inputs.length<=10&&inputs.every(item=>typeof item==="string"&&item.trim().length>0)
+      &&(body.dimensions===undefined||[2048,1536,1024,768,512,256,128,64].includes(body.dimensions as number))
+      &&body.encoding_format==="float";
+  }
   if(rule.requestContract==="kimi-cn-text-json-v1"){
     const isK3=rule.model==="kimi-k3";
     const limitKey=isK3?"max_completion_tokens":"max_tokens";
