@@ -1,4 +1,5 @@
 import { z } from "zod";
+import {tariffValidity} from "./tariff-validity";
 import configuration from "../../../config/billing/request-bounds-v1.6.0.json";
 import {foreignCostBoundSchema,foreignReservationMicros} from "./fx-policy";
 
@@ -41,9 +42,7 @@ export function quoteRequest(input:{origin:string;pathname:string;model:string;r
   const matches=rules.filter(rule=>rule.origin===input.origin&&rule.pathname===input.pathname&&rule.model===input.model);
   if(matches.length!==1)throw new BudgetDeniedError("missing-tariff");
   const rule=matches[0];
-  if(!Number.isFinite(now)||!Number.isFinite(Date.parse(rule.expiresAt))||!Number.isFinite(Date.parse(rule.verifiedAt))
-    ||Date.parse(rule.expiresAt)<=now||Date.parse(rule.verifiedAt)>now||now-Date.parse(rule.verifiedAt)>=7*24*60*60*1000
-    ||(rule.promotionEndsAt!==undefined&&(!Number.isFinite(Date.parse(rule.promotionEndsAt))||Date.parse(rule.promotionEndsAt)<=now)))throw new BudgetDeniedError("expired-tariff");
+  if(!tariffValidity(rule,now).withinVerificationWindow)throw new BudgetDeniedError("expired-tariff");
   if(rule.foreignCostBound){
     let required:number;
     try{required=foreignReservationMicros(rule.foreignCostBound,now);}catch{throw new BudgetDeniedError("expired-tariff");}

@@ -246,6 +246,21 @@ try{
     for(const path of ["/api/tasks","/api/tasks/markets","/api/tasks/usage","/api/budget"]){
       const read=await readLocal(new URL(path,base).href);expect(read.status(),path).toBe(200);
     }
+    const tariffSnapshot=await (await readLocal(new URL('/api/budget',base).href)).json();
+    expect(tariffSnapshot.tariffVerification.scope).toBe('static-request-bounds-only');
+    expect(tariffSnapshot.tariffVerification.rules).toHaveLength(tariffSnapshot.configuredRules);
+    await page.locator('.nav-item').filter({hasText:'任务进程'}).click();
+    await page.getByText('美元预算与预留（不启动任务）',{exact:true}).click();
+    await page.getByText('费用上界核验期限',{exact:true}).click();
+    for(const rule of tariffSnapshot.tariffVerification.rules){
+      const row=page.getByRole('link',{name:rule.key,exact:true}).locator('..');
+      await expect(row).toContainText(rule.withinVerificationWindow?'核验期限内':'核验期限失效，阻止调用');
+      await expect(row).toContainText(rule.effectiveExpiresAt??'未知');
+    }
+    await page.getByRole('button',{name:'刷新预算',exact:true}).click();
+    await expect(page.getByText('费用上界核验期限',{exact:true})).toBeVisible();
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+    checks.push(`${viewport.width}:tariff-verification-deadlines-real-api-refresh`);
     await page.goto(new URL(`/tasks/${actionId}?kind=search`,base).href);
     await page.getByText("任务预算与成本",{exact:true}).click();
     await expect(page.getByText(/任务上限 \$0.000000/)).toBeVisible();
