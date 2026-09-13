@@ -1,5 +1,7 @@
 # 产品开发恢复节点 — 2026-09-11
 
+最新恢复增量（2026-09-13 阶段30）：verify-candidate-routing.ts 实测O02路由真实SQL幂等/用户工作区国家隔离/范围外状态保存通过并清理。role-unresolved明确结束待判、不宣称耗尽；qualified-shortfall撤销最终不足时的中间target-met；故障不借旧停滞数宣称耗尽；任务消息/详情统一停止原因、缺口/待判数、累计唯一发现数。780全量测试+随后15图测试、typecheck/build通过，无付费。下一步O04/O05、费用上界、历史终态恢复兼容与真正业务/UI闭环，仍不标整体验收。
+
 最新恢复增量（2026-09-13 阶段29）：candidate-routing.ts 与独立 route_candidates 节点接入，原请求具体角色内转移/按公司去重/优先已有完成ID/范围外保存 metadata 状态；写路由失败不重做校正。相关18项测试、typecheck/build、PG跨进程恢复通过，无付费。下一步验证真实路由SQL与国家/用户隔离，处理冲突角色pending与停止/恢复一致性（当前冲突会退出评分但仍需完善停止语义），历史终态恢复兼容；O03–O05、费用上界、真实闭环继续。不要把阶段29称为O02整体验收。
 
 最新恢复增量（2026-09-13 阶段28）：verify-processing-recovery.ts 已验证生产图 PostgreSQL 两个独立进程缺项恢复/所有权检查/credits守恒/已完成阶段不重跑（公司入库为合成适配器）；verify-cost-reconciliation.ts --skip-migration 已验证未知费用阻止、完整核销后失败重预留、成功仍防重放。全部隔离数据已清理、无付费。续搜 SQL 改为仅排 scoring_status=completed，去掉连续零结果伪耗尽，processing-incomplete 禁止新续搜及UI入口。下一步历史终态缺项任务兼容、跨国家恢复、实际业务入库；O02–O05及费用上界/真实最小闭环继续，不标整体验收完成。

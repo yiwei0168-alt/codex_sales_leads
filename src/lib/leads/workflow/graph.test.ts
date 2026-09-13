@@ -141,6 +141,32 @@ function dependencies(events: string[], context = ragContext): LeadWorkflowDepen
 }
 
 describe("LangGraph lead workflow", () => {
+  it("persists a role-conflict shortfall without calling it exhaustion or redoing search", async () => {
+    const deps = dependencies([]);
+    const conflict = { ...correctedCandidate, candidateId: "conflict", correction: { ...correctedCandidate.correction,
+      resolvedRoles: ["SI" as const], resolvedFamilies: ["services" as const], primaryRole: "SI" as const, primaryFamily: "services" as const } };
+    deps.correctionAgent.correct = vi.fn(async () => ({ candidates: [correctedCandidate, conflict], creditsUsed: 0, warnings: [] }));
+    deps.assessmentReviewAgent.review = vi.fn(async (_candidates, assessments) => ({ assessments, reviews: [], warnings: [] }));
+    const state = await buildLeadWorkflowGraph(deps).invoke({ userId: "u", actionId: "a", graphThreadId: "conflict",
+      workspaceId: "w", plan, phase: "queued", ragContext: [], candidates: [], assessments: [],
+      assessmentReviews: [], handoffs: [], creditsUsed: 0, warnings: [] });
+    expect(state.targetCompletionReason).toBe("role-unresolved");
+    expect(state.result?.pendingRoleCount).toBe(1);
+    expect(state.consecutiveNoFinalRounds).toBe(0);
+    expect(deps.qualificationAgent.evaluate).not.toHaveBeenCalled();
+    expect(deps.discover).toHaveBeenCalledTimes(1);
+  });
+  it("does not report target met when final persistence returns a shortfall", async () => {
+    const deps = dependencies([]);
+    deps.discover = vi.fn(async () => ({ runId: "run-1", candidates: [candidate], creditsUsed: 0,
+      warnings: [], callMetrics: [discoveryMetric(1)] }));
+    const state = await buildLeadWorkflowGraph(deps).invoke({ userId: "u", actionId: "a", graphThreadId: "shortfall",
+      workspaceId: "w", plan: { ...plan, targetCount: 1 }, phase: "queued", ragContext: [], candidates: [], assessments: [],
+      assessmentReviews: [], handoffs: [], creditsUsed: 0, warnings: [] });
+    // The persistence fixture reports 1/20; the final outcome must not retain an earlier target-met claim.
+    expect(state.targetCompletionReason).toBe("target-met");
+    expect(state.result?.targetCompletionReason).toBe("qualified-shortfall");
+  });
   it("checkpoints correction before saving requested-scope transfers and resumes without another correction", async () => {
     const deps = dependencies([]);
     const shifted = { ...correctedCandidate, queryFamily: "services" as const, queryRoles: ["SI" as const] };

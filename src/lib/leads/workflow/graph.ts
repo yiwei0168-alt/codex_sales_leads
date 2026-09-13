@@ -301,7 +301,9 @@ export function buildLeadWorkflowGraph(
       const startedAt = Date.now();
       await phase(dependencies, state, "scoring");
       if (!state.playbook) throw new Error("Market Playbook is missing before qualification");
-      const inScopeCandidates = routeCorrectedCandidates(state.correctedCandidates, state.plan, state.assessments).queued;
+      const routing = routeCorrectedCandidates(state.correctedCandidates, state.plan, state.assessments);
+      const inScopeCandidates = routing.queued;
+      const pendingRoleCount = new Set(routing.routes.filter(route => route.status === "pending-role").map(route => route.companyKey)).size;
       const cached = dependencies.loadAssessmentCache ? await dependencies.loadAssessmentCache({
         userId: state.userId, workspaceId: state.workspaceId, candidates: inScopeCandidates,
         playbook: state.playbook, objective: state.plan.objective,
@@ -374,20 +376,22 @@ export function buildLeadWorkflowGraph(
       const scoringIncomplete = inScopeCandidates.length - completed;
       const hasIncompleteProcessing = correctionIncomplete + scoringIncomplete > 0;
       const consecutiveNoFinalRounds = nextNoFinalRoundCount(state.consecutiveNoFinalRounds ?? 0,
-        { finalEligibleAdded, completedFreshCalls, hadProviderFailureOrCircuit: unavailableCalls > 0 || hasIncompleteProcessing });
+        { finalEligibleAdded, completedFreshCalls, hadProviderFailureOrCircuit: unavailableCalls > 0 || hasIncompleteProcessing || pendingRoleCount > 0 });
       const targetDecision = metricsAvailable ? targetCompletionDecision({ acceptedCount,
         targetCount: state.plan.targetCount, completedFreshCalls,
         hasIncompleteProcessing,
+        hasPendingRoles: pendingRoleCount > 0,
         hadProviderFailureOrCircuit: unavailableCalls > 0,
         consecutiveNoFinalRounds, round: Math.max(0, (state.discoveryRound ?? 1) - 1), maximumRounds: 5 })
-        : { complete: true as const, reason: hasIncompleteProcessing ? "processing-incomplete" as const : undefined };
+        : { complete: true as const, reason: hasIncompleteProcessing ? "processing-incomplete" as const
+          : pendingRoleCount > 0 ? "role-unresolved" as const : undefined };
       const metric = { ...completedStageMetric({ stage: "score_candidates", startedAt,
         input: inScopeCandidates, output: assessments, inputItems: inScopeCandidates.length,
         outputItems: assessments.length, generatedArtifacts: evaluated.assessments.length,
         validArtifacts: newlyCompleted, downstreamUsedArtifacts: newlyCompleted,
         metadata: { cacheHits: cached.size, cacheMisses: missing.length,cachePersistenceFailed,batchCacheSaveAttempts,reusedCompletedArtifacts:completed-newlyCompleted,
           outOfRoleNotScored: state.correctedCandidates.length - inScopeCandidates.length,
-          correctionIncomplete, scoringIncomplete,
+          correctionIncomplete, scoringIncomplete, pendingRoleCount,
           acceptedCount, finalEligibleAdded, consecutiveNoFinalRounds,
           targetShouldContinue: !targetDecision.complete, targetCompletionReason: targetDecision.reason } }),
       status: missing.length === 0 ? "cache-hit" as const : "completed" as const };
@@ -468,7 +472,12 @@ export function buildLeadWorkflowGraph(
         warnings: state.warnings,
       });
       await phase(dependencies, state, "completed");
-      return { phase: "completed" as const, result:{...result,targetCompletionReason:state.targetCompletionReason}, stageMetrics };
+      const pendingRoleCount = new Set(routeCorrectedCandidates(state.correctedCandidates, state.plan, state.assessments)
+        .routes.filter(route => route.status === "pending-role").map(route => route.companyKey)).size;
+      const targetCompletionReason = result.accepted >= result.requested ? "target-met" as const
+        : state.targetCompletionReason === "target-met" ? "qualified-shortfall" as const : state.targetCompletionReason;
+      return { phase: "completed" as const, result:{...result,
+        discovered:state.discoveredUniqueCount??result.discovered,targetCompletionReason,pendingRoleCount}, stageMetrics };
     })
     .addEdge(START, "retrieve_knowledge")
     .addEdge("retrieve_knowledge", "build_playbook")

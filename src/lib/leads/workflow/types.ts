@@ -367,7 +367,8 @@ export interface LeadDevelopmentHandoff {
 }
 
 export interface LeadWorkflowResult {
-  targetCompletionReason?: "target-met" | "confirmed-exhaustion" | "provider-unavailable" | "maximum-rounds" | "processing-incomplete";
+  targetCompletionReason?: "target-met" | "confirmed-exhaustion" | "provider-unavailable" | "maximum-rounds" | "processing-incomplete" | "role-unresolved" | "qualified-shortfall";
+  pendingRoleCount?: number;
   deliveryCounts?:{added:number;updated:number;roleChanged:number};
   runId: string;
   countryCode: string;
@@ -438,7 +439,7 @@ export interface LeadWorkflowState {
   acceptedCandidateCount?: number;
   targetShouldContinue?: boolean;
   processingRecoveryAuthorized?: boolean;
-  targetCompletionReason?: "target-met" | "confirmed-exhaustion" | "provider-unavailable" | "maximum-rounds" | "processing-incomplete";
+  targetCompletionReason?: "target-met" | "confirmed-exhaustion" | "provider-unavailable" | "maximum-rounds" | "processing-incomplete" | "role-unresolved" | "qualified-shortfall";
   assessmentReviews: LeadAssessmentReview[];
   handoffs: LeadDevelopmentHandoff[];
   creditsUsed: number;

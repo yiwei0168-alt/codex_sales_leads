@@ -1,5 +1,7 @@
 # Hybrid Lead Search Workflow
 
+2026-09-13 阶段30：真实路由SQL的幂等与用户/工作区/国家隔离通过。角色待判以role-unresolved部分结束，不能认定市场耗尽或增加无新增轮次；故障期间旧停滞计数也不证明耗尽。最终持久化后重新核对合格保存数，低于目标不沿用中间target-met；最终发现量使用累计唯一发现数。冻结测评及其数量不变。
+
 2026-09-13 阶段29：correct_candidates → route_candidates → score_candidates。路由以本次原请求具体角色为准，错类可转入已请求类别，范围外仅保存关联；同一公司重复来源共用目标队列，证据/校正对象直接复用。路由按用户/工作区/运行/国家保存到 run metadata，失败时不重新调用校正。冲突主角色保持 pending-role，完整冲突恢复/停止验收尚待完成。
 
 2026-09-13 阶段28：续搜 SQL 只排除已完整评分公司；连续零结果仍需结构化 confirmed-exhaustion 才视为耗尽。processing-incomplete 不允许通过创建新续搜绕过原任务恢复与费用核验。真实 PostgreSQL 跨进程缺项恢复通过，业务入库使用合成适配器，完整真实闭环仍待验收。

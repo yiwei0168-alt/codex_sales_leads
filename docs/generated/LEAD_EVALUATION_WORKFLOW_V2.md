@@ -757,8 +757,8 @@ flowchart TD
 | `src/lib/rag/openai-provider.ts` | `d8d105c5650d1bacdbb48ce652143900afa7d62d505dfd502159f7b09fee1ff2` |
 | `src/lib/assistant/service.ts` | `191d407fc558253b10df7b57564bb73094808cddaf5f2f8883c57742561eff7e` |
 | `src/lib/assistant/repository.ts` | `7d480b70ed29de1795c4c6c1a5c49d471cd700272616bfa3c66dbab4e6d6bfb3` |
-| `src/lib/leads/workflow/graph.ts` | `9621f45840b8f0bcb64381d12ffc256bdfd19128756159cf5c53f2e1ccbd62db` |
-| `src/lib/leads/workflow/jobs.ts` | `a3b80afc2a9ecdaf8692f2ef33975e08e77c7e906eee47aaf02a4e51014e0165` |
+| `src/lib/leads/workflow/graph.ts` | `f107ba8a03fe666ce3b5440a508e0e663280e4d2bd133c489ff06b3f99ddcb47` |
+| `src/lib/leads/workflow/jobs.ts` | `828450a7ddd3d37a26d05f97ac50a231e77c704876b9af2232e61dfd51904d48` |
 | `src/lib/leads/workflow/rag-context.ts` | `1e1ee21e77b90731e849426cd7130de7d1e50ee6aec9f196e44cb642bf81387b` |
 | `src/lib/leads/workflow/playbook.ts` | `a353d9cd427d394e6e2ead9752b8f28f739f8c2b3885db3fdbeb84d39f2fa34f` |
 | `src/lib/leads/workflow/playbook-cache.ts` | `84e1d965bd76e7e0326d25889e157fe54315c320816fc7adef0a4ec23c7ca0be` |
@@ -805,7 +805,7 @@ flowchart TD
 | `src/lib/leads/workflow/public-evidence-repository.ts` | `5dcbfe60487eeb5d2ccab4b6e3eac9529705b21005abaa599359c992e51c4b03` |
 | `src/lib/leads/workflow/workflow-telemetry.ts` | `47c86d6b05cd87f088eb110cae2603989aebc920b4203688fb899c4d48cbde95` |
 | `src/lib/leads/workflow/role-correction-cache.ts` | `d9561b4c7095ebb0f88b1eb5bb349006e5271502e9400956b6720adaaaac709d` |
-| `src/lib/leads/workflow/target-completion-policy.ts` | `f50e8a24024916624a50d11f15ce270f72decae71093aa3003655231e6a87b4d` |
+| `src/lib/leads/workflow/target-completion-policy.ts` | `c8e21d04e360ccb82f1c46ecceeeac80bcf4c5555df214287d424163e0b2148c` |
 | `experiments/multi-source-lead-discovery/scripts/score-v3-tool-lead-value.ts` | `633e541c552fd9d979a60211fc4adf981327966a197d8439f41c3a88392bd6b8` |
 | `experiments/multi-source-lead-discovery/scripts/render-v3-tool-evaluation.ts` | `1fdb0d23c3465159403b54f4a42a19e28556ce31de320c118ada5d8fd2615a7c` |
 | `experiments/multi-source-lead-discovery/scripts/verify-v3-tool-evaluation.ts` | `447ed84f220192fbab192033ebde7d8b0b2f7d86552a0769cbe0f341d33797fd` |

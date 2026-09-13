@@ -3,6 +3,16 @@ import { describe, expect, it } from "vitest";
 import { nextNoFinalRoundCount, plannedCandidatePool, targetCompletionDecision } from "./target-completion-policy";
 
 describe("target completion policy", () => {
+  it("does not mistake unresolved roles for exhausted search even at the safety ceiling", () => {
+    expect(targetCompletionDecision({ acceptedCount: 0, targetCount: 30, completedFreshCalls: 3,
+      hadProviderFailureOrCircuit: false, hasPendingRoles: true,
+      consecutiveNoFinalRounds: 5, round: 4, maximumRounds: 5 }).reason).toBe("role-unresolved");
+  });
+  it("does not reuse an old stagnation count to declare exhaustion during provider failure", () => {
+    expect(targetCompletionDecision({ acceptedCount: 0, targetCount: 30, completedFreshCalls: 1,
+      hadProviderFailureOrCircuit: true, consecutiveNoFinalRounds: 5, round: 1, maximumRounds: 5 }).reason)
+      .not.toBe("confirmed-exhaustion");
+  });
   it("preserves incomplete processing even after successful discovery and apparent exhaustion", () => {
     expect(targetCompletionDecision({ acceptedCount: 0, targetCount: 30, completedFreshCalls: 3,
       hadProviderFailureOrCircuit: false, hasIncompleteProcessing: true,
