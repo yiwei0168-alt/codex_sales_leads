@@ -1,5 +1,7 @@
 # Product UI v1.1 implementation workflow
 
+2026-09-14阶段98：独立本地生产服务的隔离账号Chrome桌面/移动共58组回归，新增 `/api/tasks/usage` 同源HTTP→SQL聚合和重复读取不新增计数；预算/任务/国家/草稿/暂停等既有行为保留。[报告](WORKFLOW_USAGE_PRODUCTION_HTTP_2026-09-14.md)。fixture清理，0真实付费/发信。
+
 2026-09-14阶段97：鉴权 `/api/tasks/usage` 原操作/HTTP字段保持兼容，新增工作流阶段及模型用量的独立30天聚合；未知采用与费用不填零，四账本不能相加。真实SQL合成事务验证并回滚，[边界](WORKFLOW_USAGE_AGGREGATE_ACCEPTANCE_2026-09-14.md)。本阶段未新增页面组件，真实用户查看与采用仍待验收。
 
 2026-09-13阶段51：邮件审核服务真实SQL验证事务锁返回busy、重复同决定复用、相反决定冲突、部分批准恢复，恢复后知识仍可检索；未经过HTTP/浏览器审核入口。7本人调用仅2个有效新决定，下游使用仍unknown，未把检索测试计为用户实际采用。

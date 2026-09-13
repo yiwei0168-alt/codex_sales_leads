@@ -101,6 +101,15 @@ try{
   await pool.query(`insert into lead_search_run(id,workspace_id,provider,target_count,country_code,market_name,objective,metadata)
     values($1,$2,'synthetic-ui-fixture',2,'GB','United Kingdom','new-market',$3)`,
     [costRunId,workspaceId,JSON.stringify({assistantActionId:costActionId,graphThreadId:costActionId})]);
+  await pool.query(`insert into workflow_stage_metric(user_id,workspace_id,lead_run_id,graph_thread_id,
+    workflow_key,workflow_version,stage,status,started_at,completed_at,input_items,output_items,
+    generated_artifacts,valid_artifacts,downstream_used_artifacts,dependency_fingerprint)
+    values($1,$2,$3,'ui-usage-fixture','ui-usage-fixture','1','ui-usage-fixture','completed',
+      now(),now(),2,1,2,1,1,'fixture')`,[userId,workspaceId,costRunId]);
+  await pool.query(`insert into workflow_model_usage(user_id,workspace_id,lead_run_id,graph_thread_id,
+    stage,requested_model,actual_model,prompt_tokens,completion_tokens,total_tokens,latency_ms)
+    values($1,$2,$3,'ui-usage-fixture','ui-usage-fixture','fixture','fixture',10,5,15,20)`,
+    [userId,workspaceId,costRunId]);
   const costQuery=await pool.query<{id:string}>(`insert into lead_search_query(run_id,query_text,role_hint,lead_type,language,region,result_count,credits_used)
     values($1,'Synthetic fixture only','SI','channel','en','United Kingdom',2,0) returning id`,[costRunId]);
   for(const value of costDomains)await pool.query(`insert into lead_search_result(run_id,query_id,url,domain,title,snippet)
@@ -265,6 +274,19 @@ try{
     for(const path of ["/api/tasks","/api/tasks/markets","/api/tasks/usage","/api/budget"]){
       const read=await readLocal(new URL(path,base).href);expect(read.status(),path).toBe(200);
     }
+    const usageUrl=new URL('/api/tasks/usage',base).href;
+    const usage=(await (await readLocal(usageUrl)).json());
+    expect(usage.userAdoptionCoverage).toBe('unknown');expect(usage.totalCostComplete).toBe(false);
+    const stageUsage=usage.workflowStageMetrics.filter((item:{stage:string})=>item.stage==='ui-usage-fixture');
+    expect(stageUsage).toMatchObject([{stage_records:1,input_items:'2',generated_artifacts:'2',
+      valid_artifacts:'1',downstream_used_artifacts:'1'}]);
+    expect(Number(stageUsage[0].downstream_utilization)).toBeCloseTo(0.5);
+    expect(usage.workflowModelUsage.filter((item:{stage:string})=>item.stage==='ui-usage-fixture'))
+      .toMatchObject([{model_attempt_records:1,recorded_total_tokens:'15'}]);
+    const refreshed=(await (await readLocal(usageUrl)).json());
+    expect(refreshed.workflowStageMetrics).toEqual(usage.workflowStageMetrics);
+    expect(refreshed.workflowModelUsage).toEqual(usage.workflowModelUsage);
+    checks.push(`${viewport.width}:workflow-usage-http-owner-aggregate-refresh-idempotent`);
     const tariffSnapshot=await (await readLocal(new URL('/api/budget',base).href)).json();
     expect(tariffSnapshot.tariffVerification.scope).toBe('static-request-bounds-only');
     expect(tariffSnapshot.tariffVerification.rules).toHaveLength(tariffSnapshot.configuredRules);
@@ -485,6 +507,8 @@ try{
     .toEqual([{action_id:progressActionId,status:'cancelled'},{action_id:recoveryParent,status:'completed'}].sort((a,b)=>a.action_id.localeCompare(b.action_id)));
   const artifacts=(await pool.query('select lead_run_id from workflow_artifact_event where user_id=$1',[userId])).rows;
   expect(artifacts).toHaveLength(7);expect(artifacts.every(row=>row.lead_run_id===recoveryRun)).toBe(true);
+  expect((await pool.query("select count(*)::int as n from workflow_stage_metric where user_id=$1 and stage='ui-usage-fixture'",[userId])).rows[0].n).toBe(1);
+  expect((await pool.query("select count(*)::int as n from workflow_model_usage where user_id=$1 and stage='ui-usage-fixture'",[userId])).rows[0].n).toBe(1);
   console.log(JSON.stringify({authenticatedUi:"passed",checks,paidCalls:0,syntheticReservations:1,realMailSent:0,fixtureOnly:true}));
 }finally{
   await browser?.close();
