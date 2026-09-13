@@ -1,5 +1,7 @@
 # 用户确认规则登记表
 
+2026-09-13阶段39 / A21费用收尾：Google Places现有Text Search字段集合按Enterprise SKU保守预留USD0.035/次，至2026-09-20T00:00:00Z；实际FieldMask纳入发送前白名单校验，禁止字段扩张沿用旧预留。800测试、typecheck/build通过，无付费。公开标准价、字段和范围详见[核验来源](SEARCH_REQUEST_BOUNDS_2026-09-13.md)，不把预留当作已核销账单。
+
 2026-09-13阶段38 / A21费用收尾及D13-O04兼容性：Exa auto/company纯文本搜索最多20结果的保守预留USD0.027已按官方来源核验并接入，至2026-09-20T00:00:00Z过期。移除官方已不支持的company/excludeDomains组合；原查询及本地排除保留，不扩范围。请求契约版本升级，旧会话不能静默复用；costDollars只作估算，不核销。798测试、typecheck/build通过，无付费；来源与限制见[搜索上界核验](SEARCH_REQUEST_BOUNDS_2026-09-13.md)。
 
 2026-09-13阶段37 / A21费用收尾：按已授权边界核验并启用Brave普通Web Search上界USD0.005/次、Tavily basic/advanced Search统一保守上界USD0.016/次；仅公开标准计费，严格方法/端点/字段白名单，有效至2026-09-20T00:00:00Z。见[来源与请求边界](SEARCH_REQUEST_BOUNDS_2026-09-13.md)。796测试、typecheck/build通过，无新增付费；预算只读重核仍USD12.324404/30，6笔历史未知保留。此为请求上界，不是账单核销；其他未核验入口继续阻止。

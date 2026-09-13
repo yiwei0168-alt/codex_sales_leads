@@ -1,0 +1,89 @@
+{
+  "version": "request-bounds-v1.4.0",
+  "rules": [
+    {
+      "key": "deepseek-flash-v41-text-json",
+      "origin": "https://api.deepseek.com",
+      "pathname": "/chat/completions",
+      "model": "deepseek-flash",
+      "maximumChargeMicros": 324404,
+      "maximumRequestBytes": 61440,
+      "maximumOutputTokens": 8192,
+      "requestContract": "deepseek-nonthinking-text-v1",
+      "boundDescription": "Non-thinking text, no tools, no vision, no server features. Conservative input ceiling 1048576 tokens times USD 0.30/M plus 8192 output tokens times USD 1.20/M; peak/cache-miss rounded up to micro-USD. Context-limit bound, not local token-count equivalence.",
+      "reference": "https://api-docs.deepseek.com/quick_start/pricing/",
+      "verifiedAt": "2026-09-13T00:00:00Z",
+      "expiresAt": "2026-09-20T00:00:00Z"
+    },
+    {
+      "key": "deepseek-pro-0813-nonthinking-text",
+      "origin": "https://api.deepseek.com",
+      "pathname": "/anthropic/v1/messages",
+      "model": "deepseek-v4-pro",
+      "maximumChargeMicros": 1416561,
+      "maximumRequestBytes": 61440,
+      "maximumOutputTokens": 8192,
+      "requestContract": "deepseek-nonthinking-text-v1",
+      "boundDescription": "Non-thinking text, no tools, no vision, no server features. Conservative input ceiling 1048576 tokens times USD 1.32/M plus 8192 output tokens times USD 3.96/M; peak/cache-miss rounded up to micro-USD. Native max_tokens support documented in DeepSeek Anthropic guide.",
+      "reference": "https://api-docs.deepseek.com/quick_start/pricing/",
+      "verifiedAt": "2026-09-13T00:00:00Z",
+      "expiresAt": "2026-09-20T00:00:00Z"
+    },
+    {
+      "key": "brave-standard-web-search",
+      "origin": "https://api.search.brave.com",
+      "pathname": "/res/v1/web/search",
+      "model": "",
+      "maximumChargeMicros": 5000,
+      "maximumRequestBytes": 16384,
+      "maximumOutputTokens": 0,
+      "requestContract": "brave-web-search-v1",
+      "boundDescription": "Standard public Search pricing USD5 per 1000 requests. One GET web/search request only; no Answers, AI generation or other endpoints. No free-credit discount assumed; custom enterprise contracts are outside this published-price scope.",
+      "reference": "https://brave.com/search/api/",
+      "verifiedAt": "2026-09-13T00:00:00Z",
+      "expiresAt": "2026-09-20T00:00:00Z"
+    },
+    {
+      "key": "tavily-standard-search",
+      "origin": "https://api.tavily.com",
+      "pathname": "/search",
+      "model": "",
+      "maximumChargeMicros": 16000,
+      "maximumRequestBytes": 16384,
+      "maximumOutputTokens": 0,
+      "requestContract": "tavily-search-v1",
+      "boundDescription": "Published pay-as-you-go USD0.008 per credit, maximum two credits for advanced search; basic also reserves this conservative ceiling. Explicit depth only, no auto parameters, answer, research, crawl or extract endpoint. No free-credit or volume discount assumed; custom enterprise contracts excluded.",
+      "reference": "https://docs.tavily.com/documentation/api-credits",
+      "verifiedAt": "2026-09-13T00:00:00Z",
+      "expiresAt": "2026-09-20T00:00:00Z"
+    },
+    {
+      "key": "exa-company-auto-text-search",
+      "origin": "https://api.exa.ai",
+      "pathname": "/search",
+      "model": "",
+      "maximumChargeMicros": 27000,
+      "maximumRequestBytes": 16384,
+      "maximumOutputTokens": 0,
+      "requestContract": "exa-company-auto-text-v1",
+      "boundDescription": "Public Search base USD0.007 up to 10 results plus up to 10 additional results at USD0.001 each, and conservatively up to 10 additional text pages at USD0.001 each: USD0.027 for at most 20 results. Text only, auto company search; no summaries, subpages, deep search, structured synthesis or premium data providers. No free credits assumed.",
+      "reference": "https://exa.ai/pricing",
+      "verifiedAt": "2026-09-13T00:00:00Z",
+      "expiresAt": "2026-09-20T00:00:00Z"
+    },
+    {
+      "key": "google-places-text-search-enterprise",
+      "origin": "https://places.googleapis.com",
+      "pathname": "/v1/places:searchText",
+      "model": "",
+      "maximumChargeMicros": 35000,
+      "maximumRequestBytes": 16384,
+      "maximumOutputTokens": 0,
+      "requestContract": "google-places-text-enterprise-v1",
+      "boundDescription": "Global public Text Search Enterprise SKU E967-44BC-B44D: USD35 per 1000 requests at the highest volume-tier price. One POST page up to 20 results. Exact permitted FieldMask subset includes websiteUri; no Atmosphere, generative summaries, reviews, wildcard or pagination. Highest selected SKU only; no free allowance or volume discount assumed.",
+      "reference": "https://developers.google.com/maps/billing-and-pricing/pricing",
+      "verifiedAt": "2026-09-13T00:00:00Z",
+      "expiresAt": "2026-09-20T00:00:00Z"
+    }
+  ]
+}

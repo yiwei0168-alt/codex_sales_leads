@@ -6,7 +6,7 @@ vi.mock("./reconciliation",()=>({recordVerifiedCostObservation:mocks.reconcile})
 vi.mock("./policy",async original=>({...await original<typeof import("./policy")>(),quoteRequest:mocks.quote}));
 import {budgetedFetch} from "./paid-fetch";
 import {withSpendContext} from "./context";
-import {BudgetDeniedError,PaidCallOutcomeUnknownError} from "./policy";
+import {billingPolicy,BudgetDeniedError,PaidCallOutcomeUnknownError} from "./policy";
 import {DeepSeekProvider} from "@/providers/deepseek";
 import {ResilientAiProvider} from "@/providers/resilient-ai";
 import {recordBudgetDenial} from "./denial-metrics";
@@ -15,6 +15,22 @@ import {withCompanyCostAttribution,companyCostKey} from "./company-cost-context"
 import {OPENROUTER_COST_REPORT_SOURCE} from "./openrouter-cost-report";
 const scope={userId:"user",operationId:"action",stage:"score"};
 const init={method:"POST",headers:{authorization:"Bearer fixture-secret"},body:JSON.stringify({model:"test",max_tokens:100,messages:[{content:"private company input"}]})};
+
+it("passes the actual Places header into the contract guard before reserving or sending",async()=>{
+  const rule=billingPolicy.rules.find(item=>item.requestContract==="google-places-text-enterprise-v1")!;
+  mocks.quote.mockReturnValue(rule);
+  const transport=vi.fn<typeof fetch>().mockResolvedValue(Response.json({places:[]}));
+  const send=(mask:string)=>withSpendContext({...scope,tariffPolicy:billingPolicy},()=>budgetedFetch(transport)(`${rule.origin}${rule.pathname}`,{
+    method:"POST",headers:{"content-type":"application/json","x-goog-fieldmask":mask,"x-goog-api-key":"fixture-private"},
+    body:JSON.stringify({textQuery:"synthetic company",pageSize:2,languageCode:"es",regionCode:"CO"}),
+  }));
+  await expect(send("*")).rejects.toThrow("request-out-of-bounds");
+  expect(mocks.reserve).not.toHaveBeenCalled();expect(transport).not.toHaveBeenCalled();
+  await send("places.id,places.websiteUri");
+  expect(mocks.reserve.mock.calls[0][1].maximumChargeMicros).toBe(35000);
+  expect(transport).toHaveBeenCalledOnce();
+  expect(JSON.stringify(mocks.reserve.mock.calls)).not.toContain("fixture-private");
+});
 it("appends a trusted OpenRouter report only after storing the response request hash",async()=>{
   vi.spyOn(Date,"now").mockReturnValue(Date.parse(OPENROUTER_COST_REPORT_SOURCE.verifiedAt)+1000);
   try{

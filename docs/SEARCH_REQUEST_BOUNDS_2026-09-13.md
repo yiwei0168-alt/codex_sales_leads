@@ -1,5 +1,9 @@
 # 普通搜索费用上界核验
 
+阶段39增量：request-bounds-v1.4.0新增Google Places POST https://places.googleapis.com/v1/places:searchText，单页1–20结果、包络16384字节，上界USD0.035/次，有效至2026-09-20T00:00:00Z。[官方价格表](https://developers.google.com/maps/billing-and-pricing/pricing)列出Text Search Enterprise SKU E967-44BC-B44D为USD35/1000次；[字段说明](https://developers.google.com/maps/documentation/places/web-service/text-search)将websiteUri归入Enterprise；[计费说明](https://developers.google.com/maps/documentation/places/web-service/usage-and-billing)明确按选中字段最高SKU计费。不扣免费额度或批量折扣。
+
+发送前检查实际X-Goog-FieldMask，只允许当前7字段的非空无重复子集：id、displayName、formattedAddress、websiteUri、googleMapsUri、businessStatus、primaryTypeDisplayName（均places.前缀）。通配符、评论、生成摘要、其他字段/分页/路由参数均阻止。仅将Headers传入内存校验，不写密钥到费用记录。800测试/174文件、typecheck/build通过，包含非法头在预留/发送前拦截的传输测试；真实服务调用0。此为上界验证，SearchAPI/Gemini/OpenRouter及真实账单/业务验收仍待完成。
+
 阶段38增量：当前规则request-bounds-v1.3.0新增Exa POST https://api.exa.ai/search，固定auto/company、text=true、最多20结果；保守上界USD0.027：基础USD0.007，加最多10条额外结果USD0.010，再保守覆盖10个额外文本页USD0.010。依据[官方价格表](https://exa.ai/pricing)及[内容费用说明](https://exa.ai/docs/reference/contents-api-guide)。请求包络16384字节，有效期仍至2026-09-20T00:00:00Z，无免费额度或企业折扣假设。
 
 [官方Search契约](https://exa.ai/docs/reference/search)说明company类别不支持excludeDomains；生产适配器移除此字段，原查询不改，本地registry及initiallyExcludedDomains仍排除重复公司。拒绝deep、summary、subpages、outputSchema和其他额外能力。请求/会话契约升级discovery-request-v3-exa-company-contract，旧会话依赖不匹配时阻止静默恢复，既有费用不释放。官方costDollars明确为估算，不能用于可信账单核销。798测试/174文件、typecheck/build通过，无新产品调用；SearchAPI、Places、Gemini、OpenRouter上界继续待补齐。

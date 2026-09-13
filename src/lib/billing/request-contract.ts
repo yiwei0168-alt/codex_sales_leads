@@ -6,9 +6,20 @@ function keys(value:Record<string,unknown>,allowed:string[]){return Object.keys(
 function textMessage(value:unknown,role:string){return record(value)&&keys(value,["role","content"])&&value.role===role&&typeof value.content==="string";}
 
 /** Enforce the assumptions supporting a bound, not just its request-byte envelope. */
-export function assertRequestContract(rule:RequestBound,body:Record<string,unknown>,query:string,method="POST"):void{
+export function assertRequestContract(rule:RequestBound,body:Record<string,unknown>,query:string,method="POST",headers?:Headers):void{
   if(!rule.requestContract)return; // Historical independently approved scopes retain their own constraints.
   let valid=false;
+  if(rule.requestContract==="google-places-text-enterprise-v1"){
+    const fields=(headers?.get("x-goog-fieldmask")??"").split(",").map(field=>field.trim());
+    const allowed=["places.id","places.displayName","places.formattedAddress","places.websiteUri","places.googleMapsUri","places.businessStatus","places.primaryTypeDisplayName"];
+    valid=method==="POST"&&rule.origin==="https://places.googleapis.com"&&rule.pathname==="/v1/places:searchText"
+      &&query===""&&rule.model===""&&fields.length>0&&new Set(fields).size===fields.length&&fields.every(field=>allowed.includes(field))
+      &&keys(body,["textQuery","pageSize","languageCode","regionCode"])
+      &&typeof body.textQuery==="string"&&body.textQuery.trim().length>0
+      &&Number.isInteger(body.pageSize)&&(body.pageSize as number)>=1&&(body.pageSize as number)<=20
+      &&typeof body.languageCode==="string"&&/^[a-z]{2,3}(?:-[a-z]{2,4})?$/i.test(body.languageCode)
+      &&typeof body.regionCode==="string"&&/^[a-z]{2}$/i.test(body.regionCode);
+  }
   if(rule.requestContract==="exa-company-auto-text-v1"){
     valid=method==="POST"&&rule.origin==="https://api.exa.ai"&&rule.pathname==="/search"&&rule.model===""&&query===""
       &&keys(body,["query","type","category","userLocation","numResults","contents"])

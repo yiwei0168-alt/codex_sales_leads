@@ -1,5 +1,7 @@
 # 当前唯一验收矩阵（2026-09-13）
 
+阶段39：Google Places现有Text Search字段集合费用上界USD0.035接入，FieldMask在预留及发送前校验；800测试/174文件、typecheck/build通过，无新付费。未完成入口现在包括SearchAPI/Gemini/OpenRouter，真实账单/业务/UI、完整恢复和P06仍待完成。
+
 阶段38：Exa auto/company/text最多20结果请求上界USD0.027接入，修复不支持的excludeDomains字段；本地去重/排除不变，旧请求会话契约失效时停止而非重放。798测试/174文件、typecheck/build通过，无新付费。SearchAPI/Places/Gemini/OpenRouter完整上界及实际报告/真实业务/UI仍待完成。
 
 阶段37：Brave普通Web Search、Tavily显式basic/advanced Search费用上界接入，分别USD0.005/0.016，来源及严格端点范围见[核验记录](SEARCH_REQUEST_BOUNDS_2026-09-13.md)。796测试/174文件、typecheck/build通过，无新付费；预算重核占用USD12.324404/30、6笔历史未知保留。OpenRouter及其余搜索上界、真实报告/业务/UI和完整恢复验收仍未完成。

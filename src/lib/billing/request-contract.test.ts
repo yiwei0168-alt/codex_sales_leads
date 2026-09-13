@@ -5,6 +5,20 @@ import {assertRequestContract} from "./request-contract";
 import {deepSeekRequestBody} from "@/providers/deepseek-request";
 const rules=candidates.rules.map(rule=>tariffSchema.parse(rule));
 afterEach(()=>vi.unstubAllEnvs());
+
+it("checks Places FieldMask headers as part of the bound before accepting any request",()=>{
+  const rule=quoteRequest({origin:"https://places.googleapis.com",pathname:"/v1/places:searchText",model:"",requestBytes:100,outputTokens:null},undefined,Date.parse("2026-09-13T12:00:00Z"));
+  const body={textQuery:"network firms",pageSize:20,languageCode:"es",regionCode:"CO"};
+  const mask="places.id,places.displayName,places.formattedAddress,places.websiteUri,places.googleMapsUri,places.businessStatus,places.primaryTypeDisplayName";
+  const headers=new Headers({"X-Goog-FieldMask":mask});
+  expect(rule.maximumChargeMicros).toBe(35000);
+  expect(()=>assertRequestContract(rule,body,"","POST",headers)).not.toThrow();
+  for(const value of ["","*",`${mask},places.reviews`,`${mask},places.generativeSummary`,`${mask},places.id`])
+    expect(()=>assertRequestContract(rule,body,"","POST",new Headers({"x-goog-fieldmask":value}))).toThrow("request-out-of-bounds");
+  expect(()=>assertRequestContract(rule,body,"","POST")).toThrow("request-out-of-bounds");
+  for(const change of [{pageSize:21},{pageToken:"next"},{routingParameters:{}}])
+    expect(()=>assertRequestContract(rule,{...body,...change},"","POST",headers)).toThrow("request-out-of-bounds");
+});
 const bodies=()=>rules.map(rule=>JSON.parse(deepSeekRequestBody({task:"lead-qualification",modelVersion:rule.model,promptVersion:"fixture",input:{},evidenceIds:[],outputSchema:{type:"object"}}).body));
 
 it("permits only bounded Exa auto company text search and rejects unsupported or additional capabilities",()=>{
@@ -18,8 +32,8 @@ it("permits only bounded Exa auto company text search and rejects unsupported or
 });
 
 it("preserves reviewed native contracts while adding only narrow search endpoints",()=>{
-  expect(billingPolicy.version).toBe("request-bounds-v1.3.0");
-  expect(billingPolicy.rules).toHaveLength(5);
+  expect(billingPolicy.version).toBe("request-bounds-v1.4.0");
+  expect(billingPolicy.rules).toHaveLength(6);
   billingPolicy.rules.slice(0,2).forEach((rule,index)=>expect({...rule,boundDescription:rules[index].boundDescription}).toEqual(rules[index]));
   expect(()=>quoteRequest({origin:"https://api.moonshot.cn",pathname:"/v1/chat/completions",model:"kimi-k3",requestBytes:100,outputTokens:100},billingPolicy.rules,Date.parse("2026-09-13T12:00:00Z"))).toThrow("missing-tariff");
 });
