@@ -1,0 +1,22 @@
+{
+  "source": "https://api-docs.deepseek.com/quick_start/pricing/",
+  "observedDate": "2026-09-14",
+  "contextLength": "1M",
+  "maximumOutput": "MAXIMUM: 384K",
+  "models": [
+    {
+      "id": "deepseek-flash",
+      "version": "DeepSeek-V4.1-Flash",
+      "cacheHit": { "offPeak": 0.003, "peak": 0.006 },
+      "cacheMiss": { "offPeak": 0.15, "peak": 0.3 },
+      "output": { "offPeak": 0.6, "peak": 1.2 }
+    },
+    {
+      "id": "deepseek-v4-pro",
+      "version": "DeepSeek-V4-Pro-0813",
+      "cacheHit": { "offPeak": 0.022, "peak": 0.044 },
+      "cacheMiss": { "offPeak": 0.66, "peak": 1.32 },
+      "output": { "offPeak": 1.98, "peak": 3.96 }
+    }
+  ]
+}

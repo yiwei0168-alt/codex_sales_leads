@@ -1,14 +1,17 @@
 import {beforeEach,expect,it,vi} from "vitest";
-const m=vi.hoisted(()=>({session:vi.fn(),read:vi.fn(),set:vi.fn(),taskRead:vi.fn(),taskSet:vi.fn(),fxRead:vi.fn(),rateRead:vi.fn()}));
+const m=vi.hoisted(()=>({session:vi.fn(),read:vi.fn(),set:vi.fn(),taskRead:vi.fn(),taskSet:vi.fn(),fxRead:vi.fn(),rateRead:vi.fn(),deepRead:vi.fn()}));
 vi.mock("@/lib/auth/session",()=>({requireApiSession:m.session}));
 vi.mock("@/lib/billing/repository",()=>({readSpendBudget:m.read,setSpendBudget:m.set,readTaskSpendBudget:m.taskRead,setTaskSpendBudget:m.taskSet}));
 vi.mock("@/lib/billing/fx-reference-repository",()=>({readBillingReferenceStatus:m.fxRead}));
 vi.mock("@/lib/billing/openrouter-rate-repository",()=>({readOpenRouterSolRateStatus:m.rateRead}));
+vi.mock("@/lib/billing/deepseek-rate-repository",()=>({readDeepSeekRateStatuses:m.deepRead}));
 import {GET,PUT} from "./route";
 const actionId="00000000-0000-4000-8000-000000000002";
 beforeEach(()=>{vi.clearAllMocks();m.session.mockResolvedValue({userId:"owner"});m.taskRead.mockResolvedValue({taskLimit:null,stages:[]});
   m.read.mockResolvedValue({budget:null,stages:[]});m.fxRead.mockResolvedValue({fx:{status:"missing"},rules:[]});
-  m.rateRead.mockResolvedValue({checkedAt:null,nextAttemptAt:null,status:"missing",hold:false});});
+  m.rateRead.mockResolvedValue({checkedAt:null,nextAttemptAt:null,status:"missing",hold:false});
+  m.deepRead.mockResolvedValue([{sourceKey:"deepseek-flash-public-pricing-v1",tariffKey:"deepseek-flash-v41-text-json",
+    checkedAt:null,nextAttemptAt:null,status:"missing",hold:null}]);});
 it("does not expose budget data without a session",async()=>{
   m.session.mockResolvedValue(new Response(null,{status:401}));expect((await GET(new Request("http://localhost/api/budget"))).status).toBe(401);expect(m.read).not.toHaveBeenCalled();
 });
@@ -37,4 +40,24 @@ it("keeps an unavailable public-rate observation unknown while the budget remain
   const response=await GET(new Request("http://localhost/api/budget"));
   expect(response.status).toBe(200);
   expect((await response.json()).openRouterRateReference).toEqual({checkedAt:null,nextAttemptAt:null,status:"unavailable",hold:null});
+});
+it("shows both DeepSeek rate reviews without fetching a public page or changing budget",async()=>{
+  m.deepRead.mockResolvedValue([
+    {sourceKey:"deepseek-flash-public-pricing-v1",tariffKey:"deepseek-flash-v41-text-json",
+      checkedAt:"2026-09-14T00:00:00Z",nextAttemptAt:"2026-09-21T00:00:00Z",status:"validated",hold:false},
+    {sourceKey:"deepseek-pro-public-pricing-v1",tariffKey:"deepseek-pro-0813-nonthinking-text",
+      checkedAt:"2026-09-14T00:00:00Z",nextAttemptAt:"2026-09-21T00:00:00Z",status:"review-required",hold:true}]);
+  const response=await GET(new Request("http://localhost/api/budget"));
+  expect(response.status).toBe(200);
+  expect((await response.json()).deepSeekRateReferences.map((item:{status:string})=>item.status))
+    .toEqual(["validated","review-required"]);
+  expect(m.deepRead).toHaveBeenCalledOnce();expect(m.set).not.toHaveBeenCalled();
+});
+it("keeps missing DeepSeek review storage explicitly unavailable while the owner budget remains readable",async()=>{
+  m.deepRead.mockRejectedValue(new Error("public review storage unavailable"));
+  const response=await GET(new Request("http://localhost/api/budget"));
+  expect(response.status).toBe(200);
+  const items=(await response.json()).deepSeekRateReferences;
+  expect(items).toHaveLength(2);
+  expect(items.every((item:{status:string;hold:boolean|null})=>item.status==="unavailable"&&item.hold===null)).toBe(true);
 });

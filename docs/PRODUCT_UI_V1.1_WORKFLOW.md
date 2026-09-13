@@ -1,5 +1,7 @@
 # Product UI v1.1 implementation workflow
 
+2026-09-14阶段107：预算页面新增 DeepSeek Flash/Pro 官方公开费率复核的独立只读状态、检查时间、下次尝试和漂移暂停提示；本地生产桌面/手机62组 HTTP/Chrome 回归与真实SQL状态一致，页面刷新不调用外部价格页。[报告](DEEPSEEK_PUBLIC_RATE_REFRESH_ACCEPTANCE_2026-09-14.md)。
+
 2026-09-14阶段106补充：评分批次缓存保存失败或缺精确可复用请求契约时，停止领取后续批次、暂缓同批缺项修复；未请求公司保留待恢复，已完成评分进入图检查点。并发已在途请求可完成，未知费用不重放。[详细验收](ASSESSMENT_BATCH_PERSISTENCE_STOP_2026-09-14.md)。
 
 2026-09-14阶段98：独立本地生产服务的隔离账号Chrome桌面/移动共58组回归，新增 `/api/tasks/usage` 同源HTTP→SQL聚合和重复读取不新增计数；预算/任务/国家/草稿/暂停等既有行为保留。[报告](WORKFLOW_USAGE_PRODUCTION_HTTP_2026-09-14.md)。fixture清理，0真实付费/发信。

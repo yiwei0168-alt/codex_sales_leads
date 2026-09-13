@@ -308,6 +308,16 @@ try{
     await expect(page.getByTestId('openrouter-rate-status')).toContainText(tariffSnapshot.openRouterRateReference.nextAttemptAt??'未知');
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
     checks.push(`${viewport.width}:openrouter-public-rate-review-real-api`);
+    expect(tariffSnapshot.deepSeekRateReferences).toHaveLength(2);
+    await page.getByText('DeepSeek 公开费率复核',{exact:true}).click();
+    for(const reference of tariffSnapshot.deepSeekRateReferences){
+      expect(['validated','review-required','unavailable','missing']).toContain(reference.status);
+      const row=page.getByTestId(`deepseek-rate-${reference.sourceKey}`);
+      await expect(row).toContainText(reference.checkedAt??'未知');
+      await expect(row).toContainText(reference.nextAttemptAt??'未知');
+    }
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+    checks.push(`${viewport.width}:deepseek-public-rate-review-real-api`);
     await page.getByText('人民币模型费率与汇率期限',{exact:true}).click();
     expect(tariffSnapshot.referenceVerification.rules).toHaveLength(3);
     for(const rule of tariffSnapshot.referenceVerification.rules){
