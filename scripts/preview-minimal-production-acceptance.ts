@@ -38,7 +38,8 @@ try{
     try{
       const input={origin:url.origin,pathname:url.pathname,model:probe.model,requestBytes:probe.requestBytes,outputTokens:probe.outputTokens};
       const bound=(await nativeModelBound(input)??await embeddingModelBound(input))?.rule??quoteRequest(input);
-      stages.push({stage:probe.stage,model:probe.model,tariff:"available",maximumPerCallUsd:bound.maximumChargeMicros/1e6,expiresAt:bound.expiresAt});
+      stages.push({stage:probe.stage,model:probe.model,tariff:"available",maximumPerCallUsd:bound.maximumChargeMicros/1e6,
+        fitsCurrentRemainingBudget:bound.maximumChargeMicros<=Number(budget.budget.remaining_micros),expiresAt:bound.expiresAt});
     }catch(error){
       if(!(error instanceof BudgetDeniedError))throw error;
       stages.push({stage:probe.stage,model:probe.model,tariff:error.code});
@@ -48,6 +49,7 @@ try{
     remainingUsd:Number(budget.budget.remaining_micros)/1e6,frozen:budget.budget.frozen,
     firstRoundPoolForOneTarget:plannedCandidatePool({targetCount:1,acceptedCount:0,discoveredUniqueCount:0,round:0}),stages,
     checkedTariffsAvailable:stages.every(stage=>stage.tariff==="available"),actualRequestContractsChecked:false,
-    totalRunBoundUsd:null,limitations:"Checks tariff availability only; no actual prompts, search/review/fallback routes, API credentials, or total-run bound validated",
+    checkedSingleCallBoundsFit:stages.every(stage=>stage.tariff==="available"&&stage.fitsCurrentRemainingBudget),
+    totalRunBoundUsd:null,limitations:"Checks tariff availability and individual bounds against remaining budget only; no actual prompts, search/review/fallback routes, API credentials, or total-run bound validated",
     providerCalls:0,accountsModified:0,jobsClaimed:0},null,2));
 }finally{await getPool().end();}

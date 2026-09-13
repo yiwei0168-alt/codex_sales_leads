@@ -1,6 +1,7 @@
 import {afterEach,expect,it,vi} from "vitest";
 import {buildLeadMarketPlaybook} from "./playbook";
-import {BudgetDeniedError} from "@/lib/billing/policy";
+import {BudgetDeniedError,quoteRequest} from "@/lib/billing/policy";
+import {assertRequestContract} from "@/lib/billing/request-contract";
 
 afterEach(()=>{vi.unstubAllGlobals();vi.unstubAllEnvs();});
 it("captures the real LangChain playbook wire without sending a model request",async()=>{
@@ -20,6 +21,9 @@ it("captures the real LangChain playbook wire without sending a model request",a
   const request=captured[0];
   expect(request.url).toBe("https://openrouter.ai/api/v1/chat/completions");expect(request.method).toBe("POST");
   const body=await request.json();
+  const tariff=quoteRequest({origin:new URL(request.url).origin,pathname:new URL(request.url).pathname,model:body.model,
+    requestBytes:Buffer.byteLength(JSON.stringify(body)),outputTokens:body.max_completion_tokens},undefined,Date.parse("2026-09-13T13:00:00Z"));
+  expect(()=>assertRequestContract(tariff,body,"",request.method,request.headers)).not.toThrow();
   expect(Object.keys(body).sort()).toEqual(["max_completion_tokens","messages","model","provider","response_format","stream","temperature"].sort());
   expect(body.model).toBe("openai/gpt-5.6-sol");
   expect(body.max_completion_tokens).toBe(4096);

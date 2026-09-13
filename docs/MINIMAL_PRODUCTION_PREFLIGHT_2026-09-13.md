@@ -1,5 +1,7 @@
 # 最小真实闭环只读预检
 
+阶段59最新预检：静态v1.6.0已核验Sol标准文本JSON请求，单次保守预留USD27.345252，超过重新读取的剩余USD17.675596（累计占用仍12.324404/30）。脚本现分开展示费率存在和单次预留是否容纳：`checkedTariffsAvailable=true`、`checkedSingleCallBoundsFit=false`。这不是完整运行预算，真实闭环继续停止在付费前；无供应商调用、账号修改或任务认领。828测试和生产build通过，详细契约见[Sol费用审计](OPENROUTER_SOL_BOUND_AUDIT_2026-09-13.md)。以下保留阶段54历史预检。
+
 阶段54，产品990c667，执行 `node scripts/run-tsx.cjs scripts/preview-minimal-production-acceptance.ts`，类型检查通过。只读核验既有隔离验收账号和当前费率，无供应商调用、账号修改或任务认领。
 
 累计上限USD30，占用12.324404，剩余17.675596，未冻结。当前模型配置不变；目标1家公司首轮候选池2家。

@@ -9,6 +9,20 @@ function textMessage(value:unknown,role:string){return record(value)&&keys(value
 export function assertRequestContract(rule:RequestBound,body:Record<string,unknown>,query:string,method="POST",headers?:Headers):void{
   if(!rule.requestContract)return; // Historical independently approved scopes retain their own constraints.
   let valid=false;
+  if(rule.requestContract==="openrouter-sol-standard-json-v1"){
+    const format=body.response_format;
+    valid=method==="POST"&&rule.origin==="https://openrouter.ai"&&rule.pathname==="/api/v1/chat/completions"&&query===""
+      &&rule.model==="openai/gpt-5.6-sol"&&body.model===rule.model
+      &&keys(body,["model","messages","provider","response_format","stream","temperature","max_completion_tokens"])
+      &&body.stream===false&&body.temperature===0
+      &&Number.isSafeInteger(body.max_completion_tokens)&&(body.max_completion_tokens as number)>0&&(body.max_completion_tokens as number)<=4096
+      &&record(body.provider)&&keys(body.provider,["require_parameters","data_collection"])
+      &&body.provider.require_parameters===true&&body.provider.data_collection==="deny"
+      &&Array.isArray(body.messages)&&body.messages.length===2&&textMessage(body.messages[0],"system")&&textMessage(body.messages[1],"user")
+      &&record(format)&&keys(format,["type","json_schema"])&&format.type==="json_schema"
+      &&record(format.json_schema)&&keys(format.json_schema,["name","strict","schema","description"])
+      &&typeof format.json_schema.name==="string"&&format.json_schema.strict===true&&record(format.json_schema.schema);
+  }
   if(rule.requestContract==="searchapi-google-bing-v1"){
     const params=new URLSearchParams(query);
     const allowed=["engine","q","location","gl","hl","num"];

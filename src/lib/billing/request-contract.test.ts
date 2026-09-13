@@ -1,10 +1,31 @@
 import {afterEach,expect,it,vi} from "vitest";
 import candidates from "../../../config/billing/deepseek-text-bounds-candidate-2026-09-13.json";
+import solEvidence from "../../../docs/OPENROUTER_SOL_ENDPOINT_EVIDENCE_2026-09-13.json";
 import {billingPolicy,tariffSchema,quoteRequest} from "./policy";
 import {assertRequestContract} from "./request-contract";
 import {deepSeekRequestBody} from "@/providers/deepseek-request";
 const rules=candidates.rules.map(rule=>tariffSchema.parse(rule));
 afterEach(()=>vi.unstubAllEnvs());
+
+it("covers all captured standard Sol endpoint prices, long-context overrides and removed discounts",()=>{
+  const maxima={prompt:11,completion:49.5,input_cache_read:1.1,input_cache_write:13.75};
+  const endpoints=solEvidence.endpoints.filter(endpoint=>!["openai/flex","openai/fast"].includes(endpoint.tag));
+  expect(endpoints).toHaveLength(5);
+  for(const endpoint of endpoints){
+    expect(endpoint.contextLength).toBeLessThanOrEqual(1050000);
+    const discount=endpoint.pricing.discount;
+    for(const price of [endpoint.pricing,...endpoint.pricing.overrides]){
+      for(const [sku,ceiling] of Object.entries(maxima)){
+        const amount=Number(price[sku as keyof typeof price]);
+        expect(Number.isFinite(amount)).toBe(true);
+        expect(amount*1e6/(1-discount)).toBeLessThanOrEqual(ceiling+1e-9);
+      }
+    }
+  }
+  // Independently charge the entire context for each input SKU; no exclusivity assumption.
+  const micros=(BigInt(1050000)*(BigInt(1100)+BigInt(110)+BigInt(1375))+BigInt(4096)*BigInt(4950))/BigInt(100);
+  expect(billingPolicy.rules.find(rule=>rule.key==="openrouter-sol-credits-standard-text-json")?.maximumChargeMicros).toBe(Number(micros));
+});
 
 it("bounds only first-page SearchAPI Google/Bing requests at the higher public speed rate",()=>{
   const rule=quoteRequest({origin:"https://www.searchapi.io",pathname:"/api/v1/search",model:"",requestBytes:100,outputTokens:null},undefined,Date.parse("2026-09-13T12:00:00Z"));
@@ -42,11 +63,35 @@ it("permits only bounded Exa auto company text search and rejects unsupported or
   expect(()=>assertRequestContract(rule,body,"","GET")).toThrow("request-out-of-bounds");
 });
 
-it("preserves reviewed native contracts while adding only narrow search endpoints",()=>{
-  expect(billingPolicy.version).toBe("request-bounds-v1.5.0");
-  expect(billingPolicy.rules).toHaveLength(7);
-  billingPolicy.rules.slice(0,2).forEach((rule,index)=>expect({...rule,boundDescription:rules[index].boundDescription}).toEqual(rules[index]));
+it("preserves reviewed native contracts while adding narrow search and Sol contracts",()=>{
+  expect(billingPolicy.version).toBe("request-bounds-v1.6.0");
+  expect(billingPolicy.rules).toHaveLength(8);
+  rules.forEach(expected=>{
+    const rule=billingPolicy.rules.find(candidate=>candidate.key===expected.key);
+    expect({...rule,boundDescription:expected.boundDescription}).toEqual(expected);
+  });
   expect(()=>quoteRequest({origin:"https://api.moonshot.cn",pathname:"/v1/chat/completions",model:"kimi-k3",requestBytes:100,outputTokens:100},billingPolicy.rules,Date.parse("2026-09-13T12:00:00Z"))).toThrow("missing-tariff");
+});
+
+it("admits only the credits-only Sol standard text schema contract and enforces its envelope",()=>{
+  const now=Date.parse("2026-09-13T13:00:00Z");
+  const input={origin:"https://openrouter.ai",pathname:"/api/v1/chat/completions",model:"openai/gpt-5.6-sol",requestBytes:61440,outputTokens:4096};
+  const rule=quoteRequest(input,undefined,now);
+  const body={model:input.model,messages:[{role:"system",content:"instructions"},{role:"user",content:"facts"}],
+    provider:{require_parameters:true,data_collection:"deny"},response_format:{type:"json_schema",json_schema:{name:"result",strict:true,schema:{type:"object"}}},
+    stream:false,temperature:0,max_completion_tokens:4096};
+  expect(rule.maximumChargeMicros).toBe(27345252);
+  expect(()=>assertRequestContract(rule,body,"")).not.toThrow();
+  for(const change of [{tools:[]},{plugins:[]},{service_tier:"priority"},{n:2},{max_tokens:4096},{max_completion_tokens:4097},
+    {max_completion_tokens:0},{stream:true},{model:"openai/gpt-5.6-sol:fast"},{provider:{...body.provider,only:["openai/fast"]}},
+    {messages:[{role:"system",content:"instructions"},{role:"user",content:[{type:"text",text:"facts"}]}]},
+    {messages:[...body.messages,{role:"assistant",content:"extra"}]}])
+    expect(()=>assertRequestContract(rule,{...body,...change},"")).toThrow("request-out-of-bounds");
+  expect(()=>assertRequestContract(rule,body,"?service_tier=priority")).toThrow("request-out-of-bounds");
+  expect(()=>assertRequestContract(rule,body,"","GET")).toThrow("request-out-of-bounds");
+  expect(()=>quoteRequest({...input,requestBytes:61441},undefined,now)).toThrow("request-out-of-bounds");
+  expect(()=>quoteRequest({...input,outputTokens:4097},undefined,now)).toThrow("request-out-of-bounds");
+  expect(()=>quoteRequest(input,undefined,Date.parse(rule.expiresAt))).toThrow("expired-tariff");
 });
 
 it("bounds ordinary search requests and rejects other methods, features, duplicate params and expired rules",()=>{

@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-09-13阶段59：Sol市场计划精确请求具备USD27.345252完整保守上界与严格契约、到期拒绝；当前余额17.675596无法预留，最小真实闭环尚未运行。828 tests/181 files、生产build含类型检查通过，0付费。其他OpenRouter入口/Gemini、恢复及业务验收仍按[唯一矩阵](CURRENT_ACCEPTANCE_MATRIX_2026-09-13.md)继续，整体未完成。
+
 2026-09-13阶段58：产品124b0c2通过826测试/181文件、生产build（含类型检查）及生成check；npm audit生产/全依赖均0漏洞，lint0错误/11既有警告。A20已有credits-only确认被重新核实，用户再次明确当前账号/工作区无BYOK，撤销阶段56–57重复待确认状态；费用上界及真实业务仍未完成。新增付费0。
 
 2026-09-13阶段57 / A21采用遥测：续搜创建记录1个有效新提案，重复复用记录0新输出，不再每次点击累计下游使用；两者执行计数0、userAdoptedItems=null，保留输入/耗时/重复原因/费用0。5项相关测试、typecheck、生成check及真实SQL通过：两次调用仅1新提案，无执行job，父结果不变且RLS通过。verify-search-continuation.ts改为临时隔离账号，全部schema/fixture事务回滚，无付费。历史终态缺项恢复仍待完成，BYOK确认尚未收到，goal active。

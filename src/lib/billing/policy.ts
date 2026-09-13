@@ -1,5 +1,5 @@
 import { z } from "zod";
-import configuration from "../../../config/billing/request-bounds-v1.5.0.json";
+import configuration from "../../../config/billing/request-bounds-v1.6.0.json";
 import {foreignCostBoundSchema,foreignReservationMicros} from "./fx-policy";
 
 export class BudgetDeniedError extends Error {
@@ -28,7 +28,7 @@ export const tariffSchema=z.object({
   // Verified bound must include grounding/tools/reasoning and all automatic server-side work.
   boundDescription:z.string().min(30),reference:z.url(),verifiedAt:z.iso.datetime(),expiresAt:z.iso.datetime(),
   promotionEndsAt:z.iso.datetime().optional(),foreignCostBound:foreignCostBoundSchema.optional(),
-  requestContract:z.enum(["deepseek-nonthinking-text-v1","kimi-cn-text-json-v1","aliyun-beijing-dense-text-v1","brave-web-search-v1","tavily-search-v1","exa-company-auto-text-v1","google-places-text-enterprise-v1","searchapi-google-bing-v1"]).optional(),
+  requestContract:z.enum(["deepseek-nonthinking-text-v1","kimi-cn-text-json-v1","aliyun-beijing-dense-text-v1","brave-web-search-v1","tavily-search-v1","exa-company-auto-text-v1","google-places-text-enterprise-v1","searchapi-google-bing-v1","openrouter-sol-standard-json-v1"]).optional(),
 }).strict();
 export const billingPolicy=z.object({version:z.string().min(1),rules:z.array(tariffSchema)}).parse(configuration);
 export type RequestBound=z.infer<typeof tariffSchema>;
