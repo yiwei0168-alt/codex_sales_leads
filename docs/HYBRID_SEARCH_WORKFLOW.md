@@ -1,5 +1,9 @@
 # Hybrid Lead Search Workflow
 
+## 2026-09-13 冻结流失调查与验收范围
+
+[调查报告](COLOMBIA_CANDIDATE_ATTRITION_2026-09-13.md) 对账原始搜索、门禁、补证、角色、评分及39/38差异，保留缺失状态；未改搜索/角色/评分实现。O01–O05仍待采纳，不能把实验建议自动上线。最终合格数量是目标，预算/供应商/有依据的耗尽允许部分完成并明示缺口；不重复公司、不扩范围、不降标准。本次无新增搜索/模型/补证，原实验保持冻结；详见确认规则A21/D12及[当前验收矩阵](CURRENT_ACCEPTANCE_MATRIX_2026-09-13.md)。原逐阶段费用/使用率保留完整台账，实际用户采用未知，优化机会先处理技术状态与重复工作，不虚构节省。
+
 Status: active
 Current policy: `cudy-hybrid-lead-search` v1.6.0
 Scope: user request through final valid, primary-role-correct candidate set. Tavily evidence acquisition, scoring and downstream outreach are connected consumers, not additional discovery engines.
