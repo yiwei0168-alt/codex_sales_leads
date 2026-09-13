@@ -1,6 +1,7 @@
 import nextEnv from "@next/env";
 import assert from "node:assert/strict";
-import {randomUUID} from "node:crypto";
+import {randomBytes,randomUUID} from "node:crypto";
+import {request as playwrightRequest} from "@playwright/test";
 import {Pool} from "pg";
 import {databaseConnectionString,databaseSslConfiguration} from "../src/lib/rag/database-ssl";
 import type {ContactLookupProvider} from "../src/providers/contact-lookup";
@@ -14,7 +15,12 @@ if(a.hostname!==m.hostname||(a.port||"5432")!==(m.port||"5432")||a.pathname!==m.
 const admin=new Pool({connectionString:databaseConnectionString(migration),ssl:databaseSslConfiguration(migration)});
 const {getPool,tenantQuery}=await import("../src/lib/rag/db");
 const {lookupAndStoreContacts}=await import("../src/lib/contacts/lookup-service");
+const {hashPassword}=await import("../src/lib/auth/password");
 const userId=randomUUID(),otherUserId=randomUUID(),workspaceId=randomUUID(),otherWorkspaceId=randomUUID(),companyId=randomUUID();
+const password=randomBytes(32).toString("base64url");
+const httpBase=process.env.CONTACT_HTTP_BASE_URL;
+if(httpBase){const url=new URL(httpBase);if(url.protocol!=="http:"||!["localhost","127.0.0.1"].includes(url.hostname))
+  throw new Error("Contact HTTP probe requires a local server");}
 const startedAt=Date.now();
 let created=false,providerCalls=0;
 try{
@@ -22,8 +28,8 @@ try{
   try{
     await client.query("begin");
     for(const id of [userId,otherUserId]){
-      await client.query("insert into app_user(id,email,display_name,role,status) values($1,$2,'Contact RLS fixture','member','disabled')",
-        [id,`contact-rls-${id}@fixture.invalid`]);
+      await client.query("insert into app_user(id,email,display_name,password_hash,role,status) values($1,$2,'Contact RLS fixture',$3,'member',$4)",
+        [id,`contact-rls-${id}@fixture.invalid`,hashPassword(password),httpBase?"active":"disabled"]);
     }
     for(const [id,owner] of [[workspaceId,userId],[otherWorkspaceId,otherUserId]]){
       await client.query("insert into market_workspace(id,owner_id,slug,name,market,country_code,objective) values($1,$2,'global-sales','Contact RLS fixture','Global','WW','Synthetic isolation check')",
@@ -81,8 +87,28 @@ try{
   const otherRun=await tenantQuery(otherUserId,
     "insert into company_enrichment_run(workspace_id,target_count) values($1,1) returning id",[otherWorkspaceId]);
   assert.equal(otherRun.length,1);
+  let httpChecks=0;
+  if(httpBase){
+    const anonymous=await playwrightRequest.newContext({baseURL:httpBase});
+    try{assert.equal((await anonymous.get("/api/contact-enrichment/runs/latest")).status(),401);httpChecks++;}
+    finally{await anonymous.dispose();}
+    for(const [id,expectedRun,expectedItems] of [[userId,run.id,1],[otherUserId,otherRun[0].id,0]] as const){
+      const client=await playwrightRequest.newContext({baseURL:httpBase});
+      try{
+        const login=await client.post("/api/auth/login",{data:{email:`contact-rls-${id}@fixture.invalid`,password}});
+        assert.equal(login.status(),200);
+        const response=await client.get("/api/contact-enrichment/runs/latest");
+        assert.equal(response.status(),200);
+        const body=await response.json() as {run?:{id:string};items?:unknown[];workspaceCoverage?:{targetCount:number}};
+        assert.equal(body.run?.id,expectedRun);
+        assert.equal(body.items?.length,expectedItems);
+        if(id===userId)assert.equal(body.workspaceCoverage?.targetCount,0);
+        httpChecks++;
+      }finally{await client.dispose();}
+    }
+  }
   console.log(JSON.stringify({contactTenantRls:"passed",isolatedTables:ownTables.length,ownerContacts:1,ownerEmails:1,
-    providerCalls,providerCredits:0,cacheReused:true,actualPaidCalls:0,latencyMs:Date.now()-startedAt}));
+    providerCalls,providerCredits:0,cacheReused:true,actualPaidCalls:0,httpChecks,latencyMs:Date.now()-startedAt}));
 }finally{
   if(created){
     const client=await admin.connect();
