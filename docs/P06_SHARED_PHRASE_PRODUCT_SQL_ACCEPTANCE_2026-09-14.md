@@ -1,5 +1,7 @@
 # 阶段130：共享短语评分结果进入实际产品 SQL
 
+后续[阶段131](P06_SHARED_PHRASE_CROSS_PROCESS_PRODUCT_SQL_2026-09-14.md)已将同一 `sql` 命令升级为跨进程恢复后写入产品SQL；以下保留阶段130提交时的独立夹具验收边界。
+
 在阶段129两进程图检查点与模拟保存适配器通过后，新增 `node scripts/run-tsx.cjs scripts/verify-shared-phrase-score-checkpoint.ts sql`。该模式生成随机隔离的双账号、工作区、动作、运行和图 thread，使用真实图、当前 `LeadQualificationAgent`、DeepSeek 请求序列化及 `persistLeadWorkflowResult`；模型输出由内存夹具提供，传输被禁止。仅该夹具的 PostgreSQL 行被写入，结束时核对身份和无付费记录后删除。原两进程 `seed`/`resume` 模式回归仍通过。
 
 合成公司带 101 条当前证据和 105 条关联事实。评分请求采用 `exact-shared-phrase-v1`，模拟模型只收到一次。产品结果 SQL 保存一条 `scoring_status=completed` 的候选评估、101 条证据快照、105 条原始事实、1 条评分阶段指标及 1 条模型用量记录；从数据库读回的证据和事实逐项等于原输入，指标保留编码准备信息，现金费用字段保持未知。由于夹具缺资格证据，确定性门禁给出最终合格 0，因此评估未选中，工作区公司交付为 0；不能把处理完成误报为合格。第二账号读取该评估为 0，当前动作没有付费预留。隔离数据清理完成。

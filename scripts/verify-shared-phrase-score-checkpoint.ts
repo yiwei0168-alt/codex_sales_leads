@@ -19,7 +19,7 @@ import { assessment, candidate, correctedCandidate, plan, playbook } from "./wor
 const mode = process.argv[2];
 const threadId = process.argv[3] ?? `verify-phrase-score:${randomUUID()}`;
 if (!/^verify-phrase-score:[a-f0-9-]{36}$/.test(threadId)) throw new Error("Invalid isolated verification thread");
-if (mode && !["seed", "resume", "sql"].includes(mode)) throw new Error("Invalid verification phase");
+if (mode && !["seed", "resume", "sql", "sql-resume"].includes(mode)) throw new Error("Invalid verification phase");
 const saver = new PostgresSaver(getPool(), undefined, { schema: "langgraph" });
 const config = { configurable: { thread_id: threadId } };
 const runId = "synthetic-phrase-score-run";
@@ -48,7 +48,7 @@ const provider: AiProvider = {
   cacheIdentity: request => wire.cacheIdentity(request),
   execute: async <I, O>(request: StructuredAiRequest<I>): Promise<StructuredAiResponse<O>> => {
     calls.push(request as StructuredAiRequest<unknown>);
-    assert.ok(mode === "resume" || mode === "sql");
+    assert.ok(mode === "resume" || mode === "sql-resume");
     assert.match(request.preparation?.encoding ?? "", /exact-shared-phrase-v1/);
     assert.ok(wire.requestBytes(request) <= 61_440);
     assert.equal(request.preparation?.preparedMaximumWireBytes, wire.requestBytes(request));
@@ -152,17 +152,33 @@ async function verifyProductSql(): Promise<void> {
       throw error;
     } finally { client.release(); }
     const graph = buildLeadWorkflowGraph({ ...deps, persist: persistLeadWorkflowResult,
-      updatePhase: updateWorkflowPhase }, saver);
+      updatePhase: async (...args) => {
+        await updateWorkflowPhase(...args);
+        if (args[2] === "scoring") throw new WorkflowPausedError();
+      } }, saver);
     await graph.updateState(config, { userId, actionId, graphThreadId: threadId,
       workspaceId, plan: fullPlan, phase: "routing", runId, playbook, ragContext: [],
       candidates: [sqlCorrected], correctedCandidates: [sqlCorrected], assessments: [],
       assessmentReviews: [], handoffs: [], creditsUsed: 0, modelUsage: [], stageMetrics: [],
       warnings: [] }, "route_candidates");
-    const result = await graph.invoke(null, config);
-    assert.equal(result.result?.accepted, 0);
-    assert.equal(result.assessments.length, 1);
-    assert.equal(result.assessments[0].scoringStatus, "completed");
-    assert.equal(calls.length, 1);
+    await assert.rejects(graph.invoke(null, config), WorkflowPausedError);
+    const beforeResume = await graph.getState(config);
+    assert.deepEqual(beforeResume.next, ["score_candidates"]);
+    assert.deepEqual(beforeResume.values.correctedCandidates[0].evidence, sqlCorrected.evidence);
+    assert.deepEqual(beforeResume.values.correctedCandidates[0].correction.findings,
+      sqlCorrected.correction.findings);
+    assert.equal(beforeResume.values.creditsUsed, 0);
+    assert.equal(calls.length, 0);
+    const child = spawnSync(process.execPath,
+      ["scripts/run-tsx.cjs", "scripts/verify-shared-phrase-score-checkpoint.ts",
+        "sql-resume", threadId, userId, actionId],
+      { encoding: "utf8", windowsHide: true, timeout: 60000, env: process.env });
+    if (child.status !== 0) throw new Error(`Product SQL resume failed: ${child.stderr}`);
+    const resumed = JSON.parse(child.stdout.trim()) as { sqlResumed: boolean; fakeModelCalls: number; accepted: number };
+    assert.deepEqual(resumed, { sqlResumed: true, fakeModelCalls: 1, accepted: 0 });
+    const completed = await graph.getState(config);
+    assert.equal(completed.values.result?.accepted, 0);
+    assert.equal(completed.values.assessments[0].scoringStatus, "completed");
     const assessments = await tenantQuery<{scoring_status:string;selected:boolean;eligible:boolean;
       evidence:unknown[];fact_ledger:unknown[]}>(userId,
       "select scoring_status,selected,eligible,evidence,fact_ledger from lead_candidate_assessment where run_id=$1",
@@ -204,10 +220,10 @@ async function verifyProductSql(): Promise<void> {
       "select id from lead_candidate_assessment where run_id=$1", [runId])).length, 0);
     assert.equal((await tenantQuery(userId,
       "select id from paid_call_reservation where operation_id=$1", [actionId])).length, 0);
-    console.log(JSON.stringify({ actualProductSql: true, scored: 1, accepted: 0,
+    console.log(JSON.stringify({ crossProcessProductSql: true, scored: 1, accepted: 0,
       evidenceSnapshots: 101, savedFacts: 105, scoreMetric: 1, modelUsage: 1,
       otherUserVisibleAssessments: 0,
-      fakeModelCalls: calls.length, paidProviderCalls: 0 }));
+      fakeModelCalls: resumed.fakeModelCalls, paidProviderCalls: 0 }));
   } finally {
     if (created) {
       const client = await admin.connect();
@@ -246,6 +262,29 @@ try {
       businessPersistence: "synthetic-adapter-only" }));
   } else if (mode === "sql") {
     await verifyProductSql();
+  } else if (mode === "sql-resume") {
+    const userId = process.argv[4], actionId = process.argv[5];
+    if (!/^[a-f0-9-]{36}$/.test(userId ?? "") || !/^[a-f0-9-]{36}$/.test(actionId ?? ""))
+      throw new Error("SQL resume fixture identity is missing");
+    const { persistLeadWorkflowResult, updateWorkflowPhase } = await import("../src/lib/leads/workflow/persistence");
+    const graph = buildLeadWorkflowGraph({ ...deps, persist: persistLeadWorkflowResult,
+      updatePhase: updateWorkflowPhase }, saver);
+    const snapshot = await graph.getState(config);
+    assert.equal(checkpointInvocation(snapshot, userId, actionId, fullPlan), "resume");
+    assert.throws(() => checkpointInvocation(snapshot, randomUUID(), actionId), /ownership/);
+    assert.throws(() => checkpointInvocation(snapshot, userId, randomUUID()), /ownership/);
+    assert.deepEqual(snapshot.next, ["score_candidates"]);
+    assert.equal(snapshot.values.correctedCandidates[0].evidence.length, 101);
+    assert.equal(snapshot.values.correctedCandidates[0].correction.findings.length, 105);
+    assert.equal(snapshot.values.creditsUsed, 0);
+    const result = await graph.invoke(null, config);
+    assert.equal(result.result?.accepted, 0);
+    assert.equal(result.assessments[0].scoringStatus, "completed");
+    assert.deepEqual(agent.completedCacheContracts(result.assessments),
+      agent.cacheContracts(snapshot.values.correctedCandidates, playbook,
+        fullPlan.countryCode, fullPlan.countryName, fullPlan.objective));
+    assert.equal(calls.length, 1);
+    console.log(JSON.stringify({ sqlResumed: true, fakeModelCalls: calls.length, accepted: result.result.accepted }));
   } else {
     const graph = buildLeadWorkflowGraph(deps, saver);
     if (mode === "seed") {
