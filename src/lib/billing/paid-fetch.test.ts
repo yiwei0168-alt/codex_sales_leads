@@ -28,8 +28,19 @@ it("passes the actual Places header into the contract guard before reserving or 
   expect(mocks.reserve).not.toHaveBeenCalled();expect(transport).not.toHaveBeenCalled();
   await send("places.id,places.websiteUri");
   expect(mocks.reserve.mock.calls[0][1].maximumChargeMicros).toBe(35000);
+  expect(mocks.reserve.mock.calls[0][1].requestFingerprint).toMatch(/^[a-f0-9]{64}$/);
   expect(transport).toHaveBeenCalledOnce();
   expect(JSON.stringify(mocks.reserve.mock.calls)).not.toContain("fixture-private");
+});
+it("blocks a repeated admitted search before transport when persistent accounting refuses replay",async()=>{
+  const rule=billingPolicy.rules.find(item=>item.requestContract==="brave-web-search-v1")!;
+  mocks.quote.mockReturnValue(rule);
+  mocks.reserve.mockRejectedValue(new PaidCallOutcomeUnknownError());
+  const transport=vi.fn<typeof fetch>();
+  await expect(withSpendContext({...scope,tariffPolicy:billingPolicy},()=>budgetedFetch(transport)(
+    `${rule.origin}${rule.pathname}?q=synthetic&count=1&country=CO&search_lang=es`,{headers:{"x-subscription-token":"fixture"}}))).rejects.toBeInstanceOf(PaidCallOutcomeUnknownError);
+  expect(mocks.reserve.mock.calls[0][1].requestFingerprint).toMatch(/^[a-f0-9]{64}$/);
+  expect(transport).not.toHaveBeenCalled();
 });
 it("appends a trusted OpenRouter report only after storing the response request hash",async()=>{
   vi.spyOn(Date,"now").mockReturnValue(Date.parse(OPENROUTER_COST_REPORT_SOURCE.verifiedAt)+1000);

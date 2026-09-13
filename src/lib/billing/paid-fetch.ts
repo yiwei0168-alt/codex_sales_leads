@@ -13,6 +13,7 @@ import {embeddingOutputCompletion} from "./embedding-output-policy";
 import {textOutputCompletion} from "./text-output-policy";
 import {openRouterInlineCostReport,reportedDollarsToMicros} from "./openrouter-cost-report";
 import {recordVerifiedCostObservation} from "./reconciliation";
+import {searchRequestFingerprint} from "./search-request-fingerprint";
 
 function object(value:unknown):Record<string,unknown>{return value!==null&&typeof value==="object"&&!Array.isArray(value)?value as Record<string,unknown>:{};}
 function count(value:unknown):number|null{return typeof value==="number"&&Number.isSafeInteger(value)&&value>=0?value:null;}
@@ -57,9 +58,9 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
       endpointKind:url.pathname.endsWith("/chat/completions")?"chat-completions":url.pathname.endsWith("/messages")?"messages":url.pathname.endsWith("/embeddings")?"embeddings":"other",
     }:null;
     // Native model adapters without full invocation attribution need the same persistent guard.
-    // Non-model polling/form operations remain outside this model replay rule.
+    // Preserve existing model hashes; admitted synchronous searches also guard paid replay.
     const requestFingerprint=attempt||typeof parsed.model==="string"?createHash("sha256").update(JSON.stringify({version:"paid-request-replay-v1",
-      method:request.method,origin:url.origin,pathname:url.pathname,query:url.search,body})).digest("hex"):undefined;
+      method:request.method,origin:url.origin,pathname:url.pathname,query:url.search,body})).digest("hex"):searchRequestFingerprint(rule,request,parsed);
     const id=await reservePaidCall(scope.userId,{operationId:scope.operationId,stage:scope.stage,tariffKey:rule.key,tariffVersion:native?.version??policy.version,maximumChargeMicros:rule.maximumChargeMicros,requestBytes:bytes,modelAttempt,requestFingerprint,foreignCostBound:rule.foreignCostBound,costAttribution:scope.costAttribution});
     const started=Date.now();let response:Response;
     try{response=await transport(input,{...init,redirect:"error"});}catch{

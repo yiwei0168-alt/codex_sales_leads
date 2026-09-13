@@ -1,5 +1,7 @@
 # Hybrid Lead Search Workflow
 
+2026-09-13阶段52：Brave/Tavily/Exa/Places/SearchAPI五个已核验同步契约在budgetedFetch预留前生成paid-search-replay-v1指纹，含方法/端点/规范化查询与正文、Places字段范围；凭据轮换不绕过身份。复用当前user/operation/stage账本门禁，不扩大到轮询或缺费率入口。历史无指纹记录仍不反推等价；模型v1指纹未变。825测试/build通过，真实SQL搜索恢复及业务闭环待验。
+
 2026-09-13阶段40：SearchAPI Google/Bing普通搜索上界USD0.008纳入增强速度公开最高价；Google按官方固定10条发送，Bing保留请求数量上限20，不增加分页。请求/会话契约升级v4-searchapi-google-limit，仍保留原范围和本地去重。802测试/build通过，无新搜索实验或真实调用。
 
 2026-09-13阶段39：Places请求上界USD0.035按实际FieldMask核验；当前查询和字段不变，缺失/通配符/额外字段/分页在预留前拒绝。800测试及build通过，无真实调用。Brave/Tavily/Exa/Places四入口已有窄范围上界，SearchAPI/Gemini/OpenRouter仍待核验，不能宣称完整搜索验收通过。
