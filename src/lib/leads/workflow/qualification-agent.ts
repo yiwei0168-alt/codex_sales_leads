@@ -372,6 +372,14 @@ function failedAssessment(candidate: CorrectedLeadWorkflowCandidate, message: st
   };
 }
 
+function deferredAfterCacheFailure(candidate: CorrectedLeadWorkflowCandidate, promptVersion: string): LeadCandidateAssessment {
+  return { ...failedAssessment(candidate,
+    "Scoring was deferred after a completed batch could not be saved; no request was sent for this candidate.", promptVersion),
+  summary: "Scoring is pending because completed-batch persistence was unavailable.",
+  reasons: ["The scoring request for this candidate was not started."],
+  risks: ["Resume only after completed outputs and paid-request status have been checked."] };
+}
+
 export class LeadQualificationAgent {
   private readonly routineModel: string;
   private readonly escalationModel: string;
@@ -536,7 +544,8 @@ export class LeadQualificationAgent {
   }
 
   private async evaluateBatch(candidates: CorrectedLeadWorkflowCandidate[], playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string,
-    usageRecords: WorkflowModelUsage[],publish?:(candidates:CorrectedLeadWorkflowCandidate[],assessments:LeadCandidateAssessment[])=>Promise<void>): Promise<LeadCandidateAssessment[]> {
+    usageRecords: WorkflowModelUsage[],publish?:(candidates:CorrectedLeadWorkflowCandidate[],assessments:LeadCandidateAssessment[])=>Promise<boolean>,
+    shouldDefer?:()=>boolean): Promise<LeadCandidateAssessment[]> {
     try {
       const routine = await this.invokeBatch(candidates, playbook, countryCode, countryName, objective, this.routineModel, usageRecords);
       // This is a per-candidate checkpoint, not a claim that the entire batch completed.
@@ -566,6 +575,8 @@ export class LeadQualificationAgent {
       }
       // Save independently complete peers BEFORE any repair can pause on budget/unknown outcome.
       if(publish&&stable.size>0&&stable.size<candidates.length)await publish(candidates.filter(candidate=>stable.has(candidate.candidateId)),[...stable.values()]);
+      if(shouldDefer?.())return candidates.map(candidate=>stable.get(candidate.candidateId)
+        ??deferredAfterCacheFailure(candidate,this.promptVersion));
       return await Promise.all(candidates.map(async candidate=>{
         const completed=stable.get(candidate.candidateId);if(completed)return completed;
         if(!values.has(candidate.candidateId))return this.evaluateOneRoutineRepair(candidate,playbook,countryCode,countryName,objective,"Routine batch omitted or invalidated the candidate.",usageRecords);
@@ -662,26 +673,30 @@ export class LeadQualificationAgent {
     ),this.batchSize,this.maxBatchInputCharacters,this.provider.requestBytes?.bind(this.provider));
     const results = new Array<LeadCandidateAssessment[]>(batches.length);
     const published=new Set<LeadCandidateAssessment>();
+    let publicationFailed=false;
     const publish=async(items:CorrectedLeadWorkflowCandidate[],assessments:LeadCandidateAssessment[])=>{
-      if(!onBatchCompleted)return;
-      const fresh=assessments.filter(item=>!published.has(item));if(!fresh.length)return;
+      if(!onBatchCompleted)return true;
+      const fresh=assessments.filter(item=>item.scoringStatus==="completed"&&!published.has(item));if(!fresh.length)return true;
       for(const item of fresh)published.add(item);
       const ids=new Set(fresh.map(item=>item.candidateId));
-      try{await onBatchCompleted(items.filter(item=>ids.has(item.candidateId)),fresh);}
-      catch{console.warn(JSON.stringify({event:"assessment-batch-cache-write-unavailable",replay:false}));}
+      try{await onBatchCompleted(items.filter(item=>ids.has(item.candidateId)),fresh);return true;}
+      catch{publicationFailed=true;console.warn(JSON.stringify({event:"assessment-batch-cache-write-unavailable",replay:false}));return false;}
     };
     let cursor = 0;
     async function worker(agent: LeadQualificationAgent): Promise<void> {
       while (true) {
+        if(publicationFailed)return;
         const index = cursor++;
         if (index >= batches.length) return;
-        results[index] = await agent.evaluateBatch(batches[index], playbook, countryCode, countryName, objective, usageRecords,publish);
+        results[index] = await agent.evaluateBatch(batches[index], playbook, countryCode, countryName, objective, usageRecords,publish,()=>publicationFailed);
         await publish(batches[index],results[index]);
       }
     }
     await Promise.all(Array.from({ length: Math.min(this.concurrency, batches.length) }, () => worker(this)));
-    const byId = new Map([...deferred, ...results.flat()].map(item=>[item.candidateId,item]));
-    return candidates.map(candidate=>byId.get(candidate.candidateId)!);
+    const byId = new Map([...deferred, ...results.filter((result):result is LeadCandidateAssessment[]=>Boolean(result)).flat()]
+      .map(item=>[item.candidateId,item]));
+    return candidates.map(candidate=>byId.get(candidate.candidateId)
+      ??deferredAfterCacheFailure(candidate,this.promptVersion));
   }
 
   async evaluate(candidates: CorrectedLeadWorkflowCandidate[], playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string): Promise<LeadCandidateAssessment[]> {

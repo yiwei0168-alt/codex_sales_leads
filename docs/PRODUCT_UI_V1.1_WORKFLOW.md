@@ -1,5 +1,7 @@
 # Product UI v1.1 implementation workflow
 
+2026-09-14阶段106补充：评分批次缓存保存失败或缺精确可复用请求契约时，停止领取后续批次、暂缓同批缺项修复；未请求公司保留待恢复，已完成评分进入图检查点。并发已在途请求可完成，未知费用不重放。[详细验收](ASSESSMENT_BATCH_PERSISTENCE_STOP_2026-09-14.md)。
+
 2026-09-14阶段98：独立本地生产服务的隔离账号Chrome桌面/移动共58组回归，新增 `/api/tasks/usage` 同源HTTP→SQL聚合和重复读取不新增计数；预算/任务/国家/草稿/暂停等既有行为保留。[报告](WORKFLOW_USAGE_PRODUCTION_HTTP_2026-09-14.md)。fixture清理，0真实付费/发信。
 
 2026-09-14阶段97：鉴权 `/api/tasks/usage` 原操作/HTTP字段保持兼容，新增工作流阶段及模型用量的独立30天聚合；未知采用与费用不填零，四账本不能相加。真实SQL合成事务验证并回滚，[边界](WORKFLOW_USAGE_AGGREGATE_ACCEPTANCE_2026-09-14.md)。本阶段未新增页面组件，真实用户查看与采用仍待验收。

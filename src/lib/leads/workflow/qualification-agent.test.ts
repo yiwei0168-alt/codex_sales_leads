@@ -185,6 +185,52 @@ describe("LeadQualificationAgent", () => {
     const result=await agent.evaluateWithUsage([candidate],playbook,"DE","Germany","new-market",async()=>{throw new Error("fixture storage failure");});
     expect(result.assessments[0].scoringStatus).toBe("completed");expect(provider.calls).toHaveLength(1);
   });
+  it("checkpoints a completed batch before starting more paid scoring after persistence fails",async()=>{
+    const provider=new CacheableFakeProvider();const agent=new LeadQualificationAgent(provider,{batchSize:1,concurrency:1});
+    const second={...candidate,candidateId:"lead-second"};
+    const result=await agent.evaluateWithUsage([candidate,second],playbook,"DE","Germany","new-market",
+      async()=>{throw new Error("fixture storage failure");});
+    expect(result.assessments.map(item=>item.scoringStatus)).toEqual(["completed","retry-required"]);
+    expect(result.assessments[1].eligible).toBe(false);
+    expect(result.assessments[1].warnings).toContain(
+      "Scoring was deferred after a completed batch could not be saved; no request was sent for this candidate.");
+    expect(provider.calls).toHaveLength(1);
+  });
+  it("defers later batches when a completed fallback score has no reusable cache contract",async()=>{
+    const provider=new FakeProvider();const agent=new LeadQualificationAgent(provider,{batchSize:1,concurrency:1});
+    const result=await agent.evaluateWithUsage([candidate,{...candidate,candidateId:"lead-second"}],
+      playbook,"DE","Germany","new-market",async(_items,assessments)=>{
+        expect(agent.completedCacheContracts(assessments).size).toBe(0);
+        throw new Error("No safe reusable contract");
+      });
+    expect(result.assessments.map(item=>item.scoringStatus)).toEqual(["completed","retry-required"]);
+    expect(provider.calls).toHaveLength(1);
+  });
+  it("lets an already in-flight peer settle but starts no third batch after a cache failure",async()=>{
+    let releaseSecond:()=>void=()=>{};
+    const secondGate=new Promise<void>(resolve=>{releaseSecond=resolve;});
+    class InFlightProvider extends CacheableFakeProvider {
+      attempts=0;
+      override async execute<I,O>(request:StructuredAiRequest<I>):Promise<StructuredAiResponse<O>>{
+        if(++this.attempts===2)await secondGate;
+        return super.execute<I,O>(request);
+      }
+    }
+    const provider=new InFlightProvider();const agent=new LeadQualificationAgent(provider,{batchSize:1,concurrency:2});
+    const result=await agent.evaluateWithUsage([candidate,{...candidate,candidateId:"second"},
+      {...candidate,candidateId:"third"}],playbook,"DE","Germany","new-market",async()=>{
+        releaseSecond();throw new Error("fixture cache unavailable");
+      });
+    expect(provider.attempts).toBe(2);
+    expect(result.assessments.map(item=>item.scoringStatus)).toEqual(["completed","retry-required","retry-required"]);
+  });
+  it("defers a missing peer's repair when the complete peer cannot be persisted",async()=>{
+    const provider=new CacheableFakeProvider();const agent=new LeadQualificationAgent(provider,{batchSize:5,concurrency:1});
+    const result=await agent.evaluateWithUsage([candidate,{...candidate,candidateId:"lead-second"}],
+      playbook,"DE","Germany","new-market",async()=>{throw new Error("fixture storage failure");});
+    expect(result.assessments.map(item=>item.scoringStatus)).toEqual(["completed","retry-required"]);
+    expect(provider.calls).toHaveLength(1);
+  });
   it("publishes the first successful batch before a later budget pause",async()=>{
     class PausingProvider extends CacheableFakeProvider {
       override async execute<TInput,TOutput>(request:StructuredAiRequest<TInput>):Promise<StructuredAiResponse<TOutput>>{

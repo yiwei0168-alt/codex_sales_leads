@@ -27,7 +27,7 @@ import { completedStageMetric } from "./workflow-telemetry";
 import {savedRecoverySeed} from "./saved-recovery-seed";
 import {readCurrentRecoveryPublicVersions,revalidateSavedRecoveryResume} from "./recovery-resume-revalidation";
 import {isCurrentLeadScoringEvidence} from "@/lib/leads/evidence-snapshot";
-import { loadCachedLeadAssessments, saveCachedLeadAssessments } from "./assessment-cache";
+import { loadCachedLeadAssessments, saveCachedLeadAssessments, validCachedAssessment } from "./assessment-cache";
 import { loadCachedLeadPlaybook, saveCachedLeadPlaybook } from "./playbook-cache";
 import { nextNoFinalRoundCount, plannedCandidatePool, targetCompletionDecision,
   type TargetCompletionReason } from "./target-completion-policy";
@@ -378,15 +378,25 @@ export function buildLeadWorkflowGraph(
       const missing = inScopeCandidates.filter((candidate) =>
         !alreadyAssessed.has(candidate.candidateId) && !cached.has(candidate.candidateId));
       let cachePersistenceFailed=false;
+      let cacheContractUnavailable=false;
       let batchCacheSaveAttempts=0;
       const saveCompletedBatch=async(candidates:CorrectedLeadWorkflowCandidate[],assessments:LeadCandidateAssessment[])=>{
         if(!dependencies.saveAssessmentCache)return;
         batchCacheSaveAttempts+=1;
+        const contracts=dependencies.qualificationAgent.completedCacheContracts?.(assessments);
+        if(contracts&&assessments.some(assessment=>{
+          const candidate=candidates.find(item=>item.candidateId===assessment.candidateId);
+          return assessment.scoringStatus==="completed"&&(!candidate||!validCachedAssessment(assessment,candidate)
+            ||!/^[a-f0-9]{64}$/.test(contracts.get(assessment.candidateId)??""));
+        })){
+          cachePersistenceFailed=true;cacheContractUnavailable=true;
+          throw new Error("Completed assessment has no safe reusable request contract");
+        }
         try{await dependencies.saveAssessmentCache({userId:state.userId,workspaceId:state.workspaceId,runId:state.runId,
           candidates,assessments,playbook:state.playbook!,objective:state.plan.objective,
           countryCode:state.plan.countryCode,countryName:state.plan.countryName,
-          contracts:dependencies.qualificationAgent.completedCacheContracts?.(assessments)});}
-        catch{cachePersistenceFailed=true;}
+          contracts});}
+        catch(error){cachePersistenceFailed=true;throw error;}
       };
       const evaluated = missing.length === 0 ? { assessments: [], usage: [] as WorkflowModelUsage[] }
         : dependencies.qualificationAgent.evaluateWithUsage
@@ -442,7 +452,7 @@ export function buildLeadWorkflowGraph(
         input: inScopeCandidates, output: assessments, inputItems: inScopeCandidates.length,
         outputItems: assessments.length, generatedArtifacts: evaluated.assessments.length,
         validArtifacts: newlyCompleted, downstreamUsedArtifacts: newlyCompleted,
-        metadata: { cacheHits: cached.size, cacheMisses: missing.length,cachePersistenceFailed,batchCacheSaveAttempts,reusedCompletedArtifacts:completed-newlyCompleted,
+        metadata: { cacheHits: cached.size, cacheMisses: missing.length,cachePersistenceFailed,cacheContractUnavailable,batchCacheSaveAttempts,reusedCompletedArtifacts:completed-newlyCompleted,
           outOfRoleNotScored: state.correctedCandidates.length - inScopeCandidates.length,
           correctionIncomplete, scoringIncomplete, pendingRoleCount,
           requestPreparations:evaluated.usage.flatMap(usage=>usage.requestPreparation?[usage.requestPreparation]:[]),
@@ -450,7 +460,9 @@ export function buildLeadWorkflowGraph(
           targetShouldContinue: !targetDecision.complete, targetCompletionReason: targetDecision.reason } }),
       status: missing.length === 0 ? "cache-hit" as const : "completed" as const };
       return { phase: "scoring" as const, assessments, processingRecoveryAuthorized: false,
-        warnings:[...state.warnings,...(cachePersistenceFailed?["评分缓存写入失败；本次已完成评分保留，不因缓存故障重放模型调用。"]:[])],
+        warnings:[...state.warnings,...(cachePersistenceFailed?[cacheContractUnavailable
+          ?"评分结果缺少可复用请求契约；已完成评分保留，后续批次暂停并等待检查点恢复。"
+          :"评分缓存写入失败；本次已完成评分保留，不因缓存故障重放模型调用。"]:[])],
         acceptedCandidateCount: acceptedCount, consecutiveNoFinalRounds,
         targetShouldContinue: !targetDecision.complete, targetCompletionReason: targetDecision.reason,
         modelUsage: [...(state.modelUsage ?? []), ...evaluated.usage], stageMetrics: [...(state.stageMetrics ?? []), metric] };

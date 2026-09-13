@@ -364,6 +364,62 @@ describe("LangGraph lead workflow", () => {
     expect(state.warnings.some(warning=>warning.includes("评分缓存写入失败"))).toBe(true);
     expect(state.result).toBeDefined();
   });
+  it("checkpoints complete scores and defers unstarted peers after a batch cache failure",async()=>{
+    const events:string[]=[];const deps=dependencies(events),saver=new MemorySaver();
+    const second={...candidate,candidateId:"second",companyName:"Second GmbH",domain:"second.example",
+      officialWebsiteUrl:"https://second.example/"};
+    const correctedSecond={...correctedCandidate,...second,correction:{...correctedCandidate.correction,
+      originalCompanyName:second.companyName,originalDomain:second.domain,
+      originalOfficialWebsiteUrl:second.officialWebsiteUrl}};
+    const deferred={...assessment,candidateId:second.candidateId,eligible:false,
+      eligibilityStatus:"research-required" as const,scoringStatus:"retry-required" as const};
+    deps.saveAssessmentCache=vi.fn().mockRejectedValue(new Error("fixture cache unavailable"));
+    deps.qualificationAgent.evaluateWithUsage=vi.fn(async(items,_playbook,_code,_name,_objective,onBatchCompleted)=>{
+      expect(items.map((item:CorrectedLeadWorkflowCandidate)=>item.candidateId)).toEqual([candidate.candidateId,second.candidateId]);
+      await expect(onBatchCompleted!([correctedCandidate],[assessment])).rejects.toThrow("fixture cache unavailable");
+      return {assessments:[assessment,deferred],usage:[]};
+    });
+    const graph=buildLeadWorkflowGraph(deps,saver),config={configurable:{thread_id:"batch-cache-stop"}};
+    await graph.updateState(config,{userId:"u",actionId:"a",workspaceId:"w",graphThreadId:"batch-cache-stop",
+      runId:"run-1",plan,playbook,phase:"routing",candidates:[candidate,second],
+      correctedCandidates:[correctedCandidate,correctedSecond],assessments:[],creditsUsed:13,
+      ragContext:[],assessmentReviews:[],handoffs:[],modelUsage:[],stageMetrics:[],warnings:[]},"route_candidates");
+    await expect(graph.invoke(null,config)).rejects.toThrow("校正或评分未完成");
+    const stopped=await graph.getState(config);
+    expect(stopped.next).toEqual(["recover_incomplete_processing"]);
+    expect(stopped.values.assessments.map((item:LeadCandidateAssessment)=>item.scoringStatus)).toEqual(["completed","retry-required"]);
+    expect(stopped.values.stageMetrics.at(-1)?.metadata).toMatchObject({cachePersistenceFailed:true,
+      scoringIncomplete:1,batchCacheSaveAttempts:1});
+    expect(stopped.values.creditsUsed).toBe(13);
+    expect(deps.persist).not.toHaveBeenCalled();
+    deps.qualificationAgent.evaluateWithUsage=vi.fn(async(items)=>{
+      expect(items.map((item:CorrectedLeadWorkflowCandidate)=>item.candidateId)).toEqual([second.candidateId]);
+      return {assessments:[{...assessment,candidateId:second.candidateId}],usage:[]};
+    });
+    deps.saveAssessmentCache=vi.fn(async()=>undefined);
+    deps.assessmentReviewAgent.review=vi.fn(async(_items,assessments)=>({assessments,reviews:[],warnings:[]}));
+    await graph.updateState(config,{processingRecoveryAuthorized:true},"score_candidates");
+    const finished=await graph.invoke(null,config);
+    expect(finished.assessments.map(item=>item.scoringStatus)).toEqual(["completed","completed"]);
+    expect(finished.creditsUsed).toBe(13);
+    expect(deps.qualificationAgent.evaluateWithUsage).toHaveBeenCalledOnce();
+  });
+  it("does not call the cache writer when a completed score lacks a safe request contract",async()=>{
+    const deps=dependencies([]);
+    deps.saveAssessmentCache=vi.fn(async()=>undefined);
+    deps.qualificationAgent.completedCacheContracts=vi.fn(()=>new Map());
+    deps.qualificationAgent.evaluateWithUsage=vi.fn(async(_items,_playbook,_code,_name,_objective,onBatchCompleted)=>{
+      await expect(onBatchCompleted!([correctedCandidate],[assessment])).rejects.toThrow("safe reusable request contract");
+      return {assessments:[assessment],usage:[]};
+    });
+    const state=await buildLeadWorkflowGraph(deps).invoke({userId:"u",actionId:"a",graphThreadId:"missing-score-contract",
+      workspaceId:"w",plan,phase:"queued",ragContext:[],candidates:[],assessments:[],
+      assessmentReviews:[],handoffs:[],creditsUsed:0,warnings:[]});
+    expect(deps.saveAssessmentCache).not.toHaveBeenCalled();
+    expect(state.stageMetrics.find(item=>item.stage==="score_candidates")?.metadata).toMatchObject({
+      cachePersistenceFailed:true,cacheContractUnavailable:true,batchCacheSaveAttempts:1});
+    expect(state.assessments[0]?.scoringStatus).toBe("completed");
+  });
   it("checkpoints a generated playbook when its optional cache write fails",async()=>{
     const deps=dependencies([]),saver=new MemorySaver();
     deps.savePlaybookCache=vi.fn().mockRejectedValue(new Error("fixture cache unavailable"));
