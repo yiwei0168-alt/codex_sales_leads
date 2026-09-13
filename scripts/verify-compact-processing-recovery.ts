@@ -92,7 +92,12 @@ try{
       assert.deepEqual(counters,{correction:1,scoring:0,persisted:0});
     }else{
       const snapshot=await graph.getState(config);
-      assert.equal(checkpointInvocation(snapshot,"synthetic-owner","synthetic-action"),"resume");
+      assert.equal(checkpointInvocation(snapshot,"synthetic-owner","synthetic-action",{...plan,targetCount:1}),"resume");
+      for(const changed of [{...plan,targetCount:2},{...plan,targetCount:1,countryCode:'MX'}]) {
+        assert.throws(()=>checkpointInvocation(snapshot,"synthetic-owner","synthetic-action",changed),/plan mismatch/);
+      }
+      assert.deepEqual((await graph.getState(config)).values,snapshot.values);
+      assert.deepEqual(counters,{correction:0,scoring:0,persisted:0});
       assert.throws(()=>checkpointInvocation(snapshot,"other-owner","synthetic-action"),/ownership/);
       assert.throws(()=>checkpointInvocation(snapshot,"synthetic-owner","other-action"),/ownership/);
       assert.deepEqual(snapshot.next,["score_candidates"]);
@@ -102,7 +107,9 @@ try{
       const result=await graph.invoke(null,config);
       assert.equal(result.result?.accepted,1);
       assert.deepEqual(counters,{correction:0,scoring:1,persisted:1});
-      assert.equal(checkpointInvocation(await graph.getState(config),"synthetic-owner","synthetic-action"),"complete");
+      const completed=await graph.getState(config);
+      assert.equal(checkpointInvocation(completed,"synthetic-owner","synthetic-action",{...plan,targetCount:1}),"complete");
+      assert.throws(()=>checkpointInvocation(completed,"synthetic-owner","synthetic-action",{...plan,targetCount:2}),/plan mismatch/);
     }
     console.log(JSON.stringify({phase:mode,...counters}));
   }

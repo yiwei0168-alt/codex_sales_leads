@@ -555,7 +555,7 @@ export async function runLeadWorkflow(input: {
   const graph=getProductionGraph();
   const config={configurable:{thread_id:input.graphThreadId},recursionLimit:50};
   const snapshot=await graph.getState(config);
-  const mode=checkpointInvocation(snapshot,input.userId,input.actionId);
+  const mode=checkpointInvocation(snapshot,input.userId,input.actionId,input.plan);
   if(mode==='complete')return snapshot.values.result as LeadWorkflowResult;
   if (mode === "resume" && snapshot.next.includes("recover_incomplete_processing")) {
     await assertProcessingRecoveryCostsKnown(input.userId, input.actionId);
