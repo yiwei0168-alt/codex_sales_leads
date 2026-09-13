@@ -212,8 +212,8 @@ export async function discoverLeadCandidates(
           providerCallStatuses: execution.calls.reduce<Record<string, number>>((counts, call) => {
             counts[call.status] = (counts[call.status] ?? 0) + 1; return counts;
           }, {}) }), String(invocation.queryRound ?? 0)]);
-    if (execution.candidates.length === 0 && !invocation.existingRunId) throw new Error(
-      `No usable public-company candidates were discovered. ${execution.warnings.join(" ")}`.trim());
+    // Empty output is a completed discovery observation, not a transport exception.
+    // The graph decides continuation/exhaustion from fresh calls and provider failures.
     return { runId: run.id, candidates: execution.candidates, creditsUsed,
       processedCompanyKeys: [...new Set([...execution.candidates,...execution.rejectedCandidates]
         .map(candidate=>companyCostKey(candidate.domain,plan.countryCode)))].sort(),

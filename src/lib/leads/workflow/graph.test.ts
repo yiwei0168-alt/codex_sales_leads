@@ -143,6 +143,25 @@ function dependencies(events: string[], context = ragContext): LeadWorkflowDepen
 }
 
 describe("LangGraph lead workflow", () => {
+  it.each([false,true])("persists zero output with measured stop reason (provider failure=%s)",async failure=>{
+    const deps=dependencies([]);
+    const call=discoveryMetric(0);
+    deps.discover=vi.fn(async()=>({runId:"run-1",candidates:[],processedCompanyKeys:[],creditsUsed:1,warnings:[],
+      callMetrics:[failure?{...call,status:"failed" as const}:call]}));
+    deps.collectEvidence=vi.fn(async()=>({candidates:[],creditsUsed:0,warnings:[]}));
+    deps.correctionAgent.correct=vi.fn(async()=>({candidates:[],creditsUsed:0,warnings:[]}));
+    deps.assessmentReviewAgent.review=vi.fn(async()=>({assessments:[],reviews:[],warnings:[]}));
+    deps.persist=vi.fn(async()=>({runId:"run-1",countryCode:"DE",countryName:"Germany",requested:2,
+      discovered:0,assessed:0,qualified:0,accepted:0,creditsUsed:failure?1:2,ragCitationCount:0,graphThreadId:"zero",warnings:[]}));
+    const state=await buildLeadWorkflowGraph(deps).invoke({userId:"u",actionId:"a",graphThreadId:"zero",workspaceId:"w",
+      plan:{...plan,targetCount:2},phase:"queued",ragContext:[],candidates:[],correctedCandidates:[],assessments:[],
+      processedCompanyKeys:[],assessmentReviews:[],handoffs:[],creditsUsed:0,warnings:[]},{recursionLimit:50});
+    expect(state.targetCompletionReason).toBe(failure?"provider-unavailable":"confirmed-exhaustion");
+    expect(deps.discover).toHaveBeenCalledTimes(failure?1:2);
+    expect(deps.qualificationAgent.evaluate).not.toHaveBeenCalled();
+    expect(deps.persist).toHaveBeenCalledWith(expect.objectContaining({processedCompanyKeys:[],assessments:[],creditsUsed:failure?1:2}));
+    expect(state.result?.accepted).toBe(0);
+  });
   it("persists a role-conflict shortfall without calling it exhaustion or redoing search", async () => {
     const deps = dependencies([]);
     const conflict = { ...correctedCandidate, candidateId: "conflict", correction: { ...correctedCandidate.correction,
