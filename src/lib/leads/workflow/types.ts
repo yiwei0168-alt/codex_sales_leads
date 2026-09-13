@@ -442,6 +442,7 @@ export interface LeadWorkflowState {
   acceptedCandidateCount?: number;
   targetShouldContinue?: boolean;
   processingRecoveryAuthorized?: boolean;
+  scoreRecoveryCheckpointAt?: string;
   terminalRecoveryOnly?: boolean;
   savedProcessingRecovery?: {sourceActionId:string;sourceRunId:string;sourceFingerprint:string;refreshCandidateIds:string[];evidenceBlocked?:boolean};
   targetCompletionReason?: "target-met" | "confirmed-exhaustion" | "provider-unavailable" | "maximum-rounds" | "processing-incomplete" | "role-unresolved" | "qualified-shortfall";

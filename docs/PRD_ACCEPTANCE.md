@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-09-14阶段109：评分成功响应已记账而缓存/图节点均未保存输出时，恢复会按原检查点时间与公司归属拦截新的付费评分。真实PostgreSQL两进程合成回归两次恢复均拦截，合成预留7/报告5 micro-USD、占用7保持，新增预留0、真实模型/搜索/邮件0；已有有效缓存可直接复用。956测试/202文件、typecheck、build、lint0错误。[报告](UNCHECKPOINTED_SCORE_RECOVERY_GUARD_2026-09-14.md)。这只解决重复付费风险，不能重建丢失评分；A06完整真实业务与A11仍待验收。
+
 2026-09-14阶段108：Brave/Tavily现行Search上界接官方公开费率每日只读复核；迁移058在真实PostgreSQL重复应用、两个来源validated/hold=false、预算与付费历史不变。954测试/202文件、build、lint0错误/audit0高危、本地生产桌面/手机64组通过，fixture清理，0真实付费/发信。[报告](SEARCH_PUBLIC_RATE_REFRESH_ACCEPTANCE_2026-09-14.md)。其他费率/变更确认、S01及A11仍缺。
 
 2026-09-14阶段107：DeepSeek Flash/Pro共用官方价格页每日只读复核，迁移057追加快照及漂移粘性暂停经真实PostgreSQL验证；当前两条 `validated`，并发最多1 GET、缓存重复0，预算/付费历史不变。935测试/200文件、build、lint0错误/audit0高危和本地生产桌面/手机62组通过，fixture清理，0真实付费/发信。[报告](DEEPSEEK_PUBLIC_RATE_REFRESH_ACCEPTANCE_2026-09-14.md)。其余来源/变更确认、S01及A11真实闭环仍缺。

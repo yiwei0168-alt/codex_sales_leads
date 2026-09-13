@@ -1,5 +1,7 @@
 # LangChain / LangGraph 销售线索工作流
 
+阶段109评分恢复边界：生产重入评分前保留原检查点时间；先读取已完成评分与有效缓存，再对剩余公司按同用户/任务/公司国家哈希查询检查点后的已返回评分付费响应。命中则在新请求前暂停，重复恢复不刷新时间屏障，原预留/报告费用保留；其他公司可继续。[真实PostgreSQL跨进程合成验证](UNCHECKPOINTED_SCORE_RECOVERY_GUARD_2026-09-14.md)。丢失的语义输出无法由账本重建，真实模型闭环仍未验收。
+
 阶段108搜索费用边界：worker到期后独立只读抓取Brave Search Plan与Tavily Search credit官方价格，按现行USD0.005/0.016静态上界复核；跨进程去重，漂移只暂停受影响规则的新预留。预算API与页面只读，真实搜索0，[SQL及UI证据](SEARCH_PUBLIC_RATE_REFRESH_ACCEPTANCE_2026-09-14.md)。
 
 阶段107费用边界：worker 每五分钟检查 DeepSeek 官方公开价格复核是否到期；Flash/Pro 共享一次每日 GET 和跨进程锁，漂移/不完整页使对应现行静态规则的预留粘性暂停。预算 API/页面只读两条状态，不刷新外部源或延长期限。[真实SQL与生产UI证据](DEEPSEEK_PUBLIC_RATE_REFRESH_ACCEPTANCE_2026-09-14.md)。其他来源刷新及 A11 实际模型业务仍缺。

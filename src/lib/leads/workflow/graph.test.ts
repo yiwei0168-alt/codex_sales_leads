@@ -4,6 +4,7 @@ import { WorkflowPausedError } from "./pause";
 import {leadEvidenceContentHash} from "@/lib/leads/evidence-snapshot";
 import { resultPersistenceFingerprint } from "./persistence-identity";
 import {completedStageMetric} from "./workflow-telemetry";
+import {companyCostKey} from "@/lib/billing/company-cost-context";
 import { processingRecoveryWork } from "./processing-recovery";
 import {revalidateSavedRecoveryResume} from "./recovery-resume-revalidation";
 import { snapshotDiscoverySession } from "./discovery-session";
@@ -403,6 +404,26 @@ describe("LangGraph lead workflow", () => {
     expect(finished.assessments.map(item=>item.scoringStatus)).toEqual(["completed","completed"]);
     expect(finished.creditsUsed).toBe(13);
     expect(deps.qualificationAgent.evaluateWithUsage).toHaveBeenCalledOnce();
+  });
+  it("stops a lost paid score before a changed repair request, then uses a durable cache hit",async()=>{
+    const deps=dependencies([]),saver=new MemorySaver();
+    const guard=vi.fn().mockRejectedValueOnce(new Error("paid-request-already-recorded"));
+    deps.assertScoringRecoverySafe=guard;
+    deps.loadAssessmentCache=vi.fn(async()=>new Map());
+    const graph=buildLeadWorkflowGraph(deps,saver),config={configurable:{thread_id:"lost-paid-score"}};
+    await graph.updateState(config,{userId:"u",actionId:"a",workspaceId:"w",graphThreadId:"lost-paid-score",
+      runId:"run-1",plan,playbook,phase:"routing",candidates:[candidate],correctedCandidates:[correctedCandidate],
+      assessments:[],creditsUsed:13,ragContext:[],assessmentReviews:[],handoffs:[],modelUsage:[],stageMetrics:[],
+      warnings:[],scoreRecoveryCheckpointAt:"2026-09-14T00:00:00.000Z"},"route_candidates");
+    await expect(graph.invoke(null,config)).rejects.toThrow("paid-request-already-recorded");
+    expect(deps.qualificationAgent.evaluate).not.toHaveBeenCalled();
+    expect(guard).toHaveBeenCalledWith("u","a","2026-09-14T00:00:00.000Z",[companyCostKey(candidate.domain,plan.countryCode)]);
+    deps.loadAssessmentCache=vi.fn(async()=>new Map([[candidate.candidateId,assessment]]));
+    const state=await graph.invoke(null,config);
+    expect(state.assessments).toEqual([assessment]);
+    expect(state.scoreRecoveryCheckpointAt).toBeUndefined();
+    expect(guard).toHaveBeenCalledTimes(1);
+    expect(deps.qualificationAgent.evaluate).not.toHaveBeenCalled();
   });
   it("does not call the cache writer when a completed score lacks a safe request contract",async()=>{
     const deps=dependencies([]);

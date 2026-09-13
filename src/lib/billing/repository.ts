@@ -19,6 +19,25 @@ export async function assertProcessingRecoveryCostsKnown(userId: string, operati
   if (rows.length) throw new BudgetDeniedError("paid-request-already-recorded");
 }
 
+/** A paid score returned after the last durable graph checkpoint must not be silently bought again. */
+export async function assertUncheckpointedQualificationResponsesAbsent(
+  userId: string, operationId: string, checkpointAt: string, companyKeys: string[],
+): Promise<void> {
+  if (!companyKeys.length) return;
+  if (!Number.isFinite(Date.parse(checkpointAt)) || companyKeys.some(key => !/^[a-f0-9]{64}$/.test(key)))
+    throw new BudgetDeniedError("paid-request-already-recorded");
+  const rows = await tenantQuery<{ id: string }>(userId,
+    `select id from paid_call_reservation where user_id=$1 and operation_id=$2
+      and created_at >= $3::timestamptz
+      and (metrics->'modelAttempt'->>'task'='lead-qualification'
+        or (stage='scoring' and metrics->'modelAttempt'->>'task' is null))
+      and (metrics->>'validOutputItems'='1' or metrics->>'outputIncomplete'='true')
+      and (metrics->'costAttribution'->'companyKeys' ?| $4::text[]
+        or metrics->'costAttribution'->>'kind' is distinct from 'company-inputs') limit 1`,
+    [userId, operationId, checkpointAt, companyKeys]);
+  if (rows.length) throw new BudgetDeniedError("paid-request-already-recorded");
+}
+
 type ReservationInput={operationId:string;stage:string;tariffKey:string;tariffVersion:string;maximumChargeMicros:number;requestBytes:number;requestFingerprint?:string;foreignCostBound?:ForeignCostBound;costAttribution?:CostAttribution;modelAttempt?:{invocationId:string|null;provider:string|null;task:string|null;promptVersion:string|null;attempt:number|null;requestedModel:string|null;gatewayHost:string|null;endpointKind:string}|null};
 export async function reservePaidCall(userId:string,input:ReservationInput){
   return tenantTransaction(userId,client=>reservePaidCallInTransaction(client,userId,input));

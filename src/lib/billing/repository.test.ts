@@ -1,7 +1,7 @@
 import {beforeEach,expect,it,vi} from "vitest";
 const query=vi.hoisted(()=>vi.fn());
 vi.mock("@/lib/rag/db",()=>({tenantQuery:vi.fn(),tenantTransaction:async(_u:string,run:(c:unknown)=>unknown)=>run({query})}));
-import {reservePaidCall,settlePaidCall,assertProcessingRecoveryCostsKnown,setTaskSpendBudget} from "./repository";
+import {reservePaidCall,settlePaidCall,assertProcessingRecoveryCostsKnown,assertUncheckpointedQualificationResponsesAbsent,setTaskSpendBudget} from "./repository";
 import {tenantQuery} from "@/lib/rag/db";
 const input={operationId:"operation",stage:"score",tariffKey:"rule",tariffVersion:"v1",maximumChargeMicros:10,requestBytes:100};
 beforeEach(()=>query.mockReset());
@@ -10,6 +10,17 @@ it("blocks repair batch changes while any operation request is unknown and keeps
   await expect(assertProcessingRecoveryCostsKnown("owner", "operation")).rejects.toThrow("paid-request-already-recorded");
   await expect(assertProcessingRecoveryCostsKnown("other", "operation")).resolves.toBeUndefined();
   expect(tenantQuery).toHaveBeenLastCalledWith("other", expect.stringContaining("user_id=$1 and operation_id=$2"), ["other", "operation"]);
+});
+it("blocks only an uncheckpointed paid score for the missing company and keeps the tenant scope", async()=>{
+  const key="a".repeat(64),checkpoint="2026-09-14T00:00:00.000Z";
+  vi.mocked(tenantQuery).mockResolvedValueOnce([{id:"lost-output"}]).mockResolvedValueOnce([]);
+  await expect(assertUncheckpointedQualificationResponsesAbsent("owner","action",checkpoint,[key]))
+    .rejects.toThrow("paid-request-already-recorded");
+  await expect(assertUncheckpointedQualificationResponsesAbsent("other","action",checkpoint,[key]))
+    .resolves.toBeUndefined();
+  expect(tenantQuery).toHaveBeenLastCalledWith("other",expect.stringContaining("created_at >= $3::timestamptz"),
+    ["other","action",checkpoint,[key]]);
+  expect(vi.mocked(tenantQuery).mock.calls.at(-1)?.[1]).toContain("metrics->'costAttribution'->'companyKeys' ?|");
 });
 it("locks budget before reserving and refuses a concurrent caller's reduced remainder",async()=>{
   query.mockResolvedValueOnce({rows:[{limit_micros:"100",occupied_micros:"95",frozen:false}]});

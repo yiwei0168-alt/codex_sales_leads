@@ -1,7 +1,7 @@
 import { Annotation, END, START, StateGraph, type BaseCheckpointSaver } from "@langchain/langgraph";
 import { PostgresSaver } from "@langchain/langgraph-checkpoint-postgres";
 import { withSpendContext,setSpendStage } from "@/lib/billing/context";
-import {costRoundKey} from "@/lib/billing/company-cost-context";
+import {companyCostKey,costRoundKey} from "@/lib/billing/company-cost-context";
 
 import type { LeadSearchPlan } from "@/lib/assistant/types";
 import { getPool } from "@/lib/rag/db";
@@ -16,7 +16,7 @@ import {assertTerminalRunUnpersisted} from "./terminal-recovery";
 import { correctionCompletion } from "./correction-completion";
 import { routeCorrectedCandidates, persistCandidateRoutes } from "./candidate-routing";
 import { processingRecoveryWork, WorkflowProcessingIncompleteError } from "./processing-recovery";
-import { assertProcessingRecoveryCostsKnown } from "@/lib/billing/repository";
+import { assertProcessingRecoveryCostsKnown, assertUncheckpointedQualificationResponsesAbsent } from "@/lib/billing/repository";
 import { continuationExclusions } from "@/lib/assistant/search-continuation";
 import { LeadHandoffAssembler } from "./handoff-assembler";
 import { buildLeadMarketPlaybook } from "./playbook";
@@ -67,6 +67,7 @@ const WorkflowAnnotation = Annotation.Root({
   acceptedCandidateCount: Annotation<number | undefined>(),
   targetShouldContinue: Annotation<boolean | undefined>(),
   processingRecoveryAuthorized: Annotation<boolean | undefined>(),
+  scoreRecoveryCheckpointAt: Annotation<string | undefined>(),
   terminalRecoveryOnly: Annotation<boolean | undefined>(),
   savedProcessingRecovery: Annotation<LeadWorkflowState["savedProcessingRecovery"]>(),
   targetCompletionReason: Annotation<TargetCompletionReason | undefined>(),
@@ -104,6 +105,7 @@ export interface LeadWorkflowDependencies {
   loadAssessmentCache?: typeof loadCachedLeadAssessments;
   saveAssessmentCache?: typeof saveCachedLeadAssessments;
   persistCandidateRoutes?: typeof persistCandidateRoutes;
+  assertScoringRecoverySafe?: typeof assertUncheckpointedQualificationResponsesAbsent;
 }
 
 const productionDependencies: LeadWorkflowDependencies = {
@@ -377,6 +379,12 @@ export function buildLeadWorkflowGraph(
         }
       const missing = inScopeCandidates.filter((candidate) =>
         !alreadyAssessed.has(candidate.candidateId) && !cached.has(candidate.candidateId));
+      if (state.scoreRecoveryCheckpointAt && missing.length) {
+        await (dependencies.assertScoringRecoverySafe ?? assertUncheckpointedQualificationResponsesAbsent)(
+          state.userId, state.actionId, state.scoreRecoveryCheckpointAt,
+          [...new Set(missing.map(candidate => companyCostKey(candidate.domain, state.plan.countryCode)))],
+        );
+      }
       let cachePersistenceFailed=false;
       let cacheContractUnavailable=false;
       let batchCacheSaveAttempts=0;
@@ -460,6 +468,7 @@ export function buildLeadWorkflowGraph(
           targetShouldContinue: !targetDecision.complete, targetCompletionReason: targetDecision.reason } }),
       status: missing.length === 0 ? "cache-hit" as const : "completed" as const };
       return { phase: "scoring" as const, assessments, processingRecoveryAuthorized: false,
+        scoreRecoveryCheckpointAt: undefined,
         warnings:[...state.warnings,...(cachePersistenceFailed?[cacheContractUnavailable
           ?"评分结果缺少可复用请求契约；已完成评分保留，后续批次暂停并等待检查点恢复。"
           :"评分缓存写入失败；本次已完成评分保留，不因缓存故障重放模型调用。"]:[])],
@@ -615,6 +624,7 @@ export async function runLeadWorkflow(input: {
   const snapshot=await graph.getState(config);
   let mode=checkpointInvocation(snapshot,input.userId,input.actionId,input.plan);
   if(mode==='complete')return snapshot.values.result as LeadWorkflowResult;
+  const scoreRecoveryCheckpointAt = (snapshot.values as LeadWorkflowState).scoreRecoveryCheckpointAt ?? snapshot.createdAt;
   const {prepareProcessingRecoveryExecution}=await import("@/lib/assistant/processing-recovery");
   const recovery=await prepareProcessingRecoveryExecution(input.userId,input.actionId,input.graphThreadId,input.plan);
   if(recovery){
@@ -632,14 +642,20 @@ export async function runLeadWorkflow(input: {
     }
   }
   if(mode==='recover-terminal'){
+    if(!scoreRecoveryCheckpointAt)throw new Error("Recovery checkpoint timestamp missing");
     await assertProcessingRecoveryCostsKnown(input.userId,input.actionId);
     await assertTerminalRunUnpersisted(input.userId,input.actionId,input.graphThreadId,snapshot.values as LeadWorkflowState);
-    await graph.updateState(config,{processingRecoveryAuthorized:true,terminalRecoveryOnly:true},"score_candidates");
+    await graph.updateState(config,{processingRecoveryAuthorized:true,terminalRecoveryOnly:true,scoreRecoveryCheckpointAt},"score_candidates");
     mode="resume";
   }
   if (mode === "resume" && snapshot.next.includes("recover_incomplete_processing")) {
+    if(!scoreRecoveryCheckpointAt)throw new Error("Recovery checkpoint timestamp missing");
     await assertProcessingRecoveryCostsKnown(input.userId, input.actionId);
-    await graph.updateState(config, { processingRecoveryAuthorized: true }, "score_candidates");
+    await graph.updateState(config, { processingRecoveryAuthorized: true, scoreRecoveryCheckpointAt }, "score_candidates");
+  } else if (mode === "resume" && snapshot.next.includes("score_candidates")) {
+    if(!scoreRecoveryCheckpointAt)throw new Error("Recovery checkpoint timestamp missing");
+    await assertProcessingRecoveryCostsKnown(input.userId,input.actionId);
+    await graph.updateState(config,{scoreRecoveryCheckpointAt},"route_candidates");
   }
   if(mode!=='resume')initial.searchExcludeDomains=await continuationExclusions(input.userId,input.actionId);
   const state = await withSpendContext({userId:input.userId,operationId:input.actionId,stage:"lead-workflow",
