@@ -6,6 +6,7 @@ import {recordBudgetDenial} from "./denial-metrics";
 import {isKimiK3} from "@/providers/kimi-contract";
 import {providerUsageObservation} from "./provider-usage";
 import {currentModelAttempt,metricIdentifier} from "./model-attempt-context";
+import {assertRequestContract} from "./request-contract";
 
 function object(value:unknown):Record<string,unknown>{return value!==null&&typeof value==="object"&&!Array.isArray(value)?value as Record<string,unknown>:{};}
 function count(value:unknown):number|null{return typeof value==="number"&&Number.isSafeInteger(value)&&value>=0?value:null;}
@@ -34,6 +35,7 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
     const policy=scope.tariffPolicy??billingPolicy;
     const quote={origin:url.origin,pathname:url.pathname,model:typeof parsed.model==="string"?parsed.model:"",requestBytes:bytes,outputTokens};
     const rule=scope.tariffPolicy?quoteRequest(quote,policy.rules):quoteRequest(quote);
+    assertRequestContract(rule,parsed,url.search);
     const attempt=currentModelAttempt();
     const modelAttempt=attempt?{
       invocationId:metricIdentifier(attempt.invocationId),provider:metricIdentifier(attempt.provider),

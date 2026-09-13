@@ -1,6 +1,22 @@
 # Network Channel Copilot PRD v1.1
 
 
+## 2026-09-13 实施阶段 17：DeepSeek 完整请求上界与 V4.1 实际方法验收
+
+最终回归：672 tests /158 files 全部通过，typecheck/生产 build 通过；lint 0 错误/11 既有警告。当前参考规则不是全接口计费覆盖，下面尚未通过的项目继续保留。
+
+按已批准的保守上界原则实现 requestContract=deepseek-nonthinking-text-v1。仅 DeepSeek 官方 Flash Chat / Pro Anthropic 两种当前纯文本、非思考请求，严格白名单验证字段、消息结构、JSON 格式、8192 输出上限、61440 UTF-8 字节及无 query；工具、图片、额外字段、thinking enabled、其他网关/模型/协议拒绝后才可预留，未改变原模型生成配置。沿用各评分/补证更小的分阶段字节预检。
+
+新版本 config/billing/request-bounds-v1.1.0.json 已由产品 policy 导入，保留旧空配置及候选方案历史。上界独立于本地 tokenizer：用大于等于官网 1M 的 1,048,576 输入 token 上限、峰值 cache-miss 和 8192 输出保守计算，Flash 每次 USD 0.324404、Pro USD 1.416561。来源为 DeepSeek pricing、create-chat-completion（输入+输出受上下文限制）及 guides/anthropic_api（max_tokens 支持）官方页，均于本阶段直接 HTTP 读取。验证日期保守取当日 UTC 零点，最迟 2026-09-20T00:00Z 失效，未实现自动刷新前过期仍阻止；其他接口缺费率继续阻止。
+
+真实 V4.1 方法核验仅新增一次：输出 JSON 严格有效、reported model=deepseek-flash、官方 V41 本地编码与托管 prompt_tokens 均 155，输出 6，736 ms。只有一个合成样本，不宣称所有载荷的 tokenizer 等价或真实线索业务通过。scripts/verify-flash-v41-acceptance.ts 默认 preview；--run 以原验收 advisory lock/禁用无密码审计账户/原 USD30 上限/独立 stage 保存且跳过任何既有尝试，不重跑其他模型。最初非提升执行在实际模型前停止；后续获得系统权限完成隔离 Docker 后仅发送一次。
+
+费用：原 USD12 保留，累计占用 USD12.324404、剩余 USD17.675596。调用的峰值全未命中 token 估算向上到微美元为 USD0.000054，已通过 append-only usage-estimate 写入真实账本（complete=false），不是实际账单；--reconcile-estimate 两次运行均复用原结果，零新增模型，零预留释放。实际账单未知，未将此估算用于核销。输入=1 合成请求，格式有效输出=1，方法验收消费=1，非销售线索最终采用；原 token/延迟/重试及边界观测保留。HTTP 次数=1、自动重试=0，未搜索/发送邮件。
+
+本阶段代码 671 tests /158 files、typecheck/build 通过；新增 active-contract 限定测试另通过（最终全量结果见后补记录）。仍未整体验收：CNY 汇率生产刷新/其他完整费率及真实账单适配、费用分摊、P06 超大单家公司/备用重拆批、完整业务 E2E、最终采用链路。ECB 官方 XML 的 2026-09-11 观察已读到 USD/EUR=1.1592、CNY/EUR=7.7762，仅为预算参考来源，不是交易汇率或发票汇率，未据此放行 CNY 调用。优化机会：保守上下文预留明显大于实际 token 估算；完成可信核销/更紧且已核验的上界后减少占用，不能直接因单样本一致放宽。
+
+
+
 ## 2026-09-13 实施阶段 16：原生模型调用归因与官方费率证据
 
 Kimi 意图轻量/规划、开发策略/独立策略/独立邮件/跟进、邮箱学习，以及 OpenRouter Claude 邮件修改入口新增 invocation 与逐次序号。复用现有提示版本，跟进和 Claude 反馈补标当前模板版本；只在本地异步上下文传递，不修改模型输入/模型/输出上限/重试或发送邮件。HTTP 原始用量、输入输出量、耗时、重试、丢弃原因沿用既有账本；真实下游采用未知时仍不填造。新模型调用/搜索/SMTP 均为 0。

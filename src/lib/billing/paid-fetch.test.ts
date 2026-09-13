@@ -47,6 +47,14 @@ it("missing prices or budget block the transport entirely",async()=>{
   const transport=vi.fn();mocks.quote.mockImplementation(()=>{throw new BudgetDeniedError("missing-tariff");});
   await expect(withSpendContext(scope,()=>budgetedFetch(transport)("https://example.test/chat",init))).rejects.toThrow("missing-tariff");expect(transport).not.toHaveBeenCalled();
 });
+it("checks the all-inclusive bound's capability contract before reserving or sending",async()=>{
+  mocks.quote.mockReturnValue({key:"flash",origin:"https://api.deepseek.com",pathname:"/chat/completions",model:"deepseek-flash",
+    requestContract:"deepseek-nonthinking-text-v1",maximumChargeMicros:324404});
+  const transport=vi.fn();
+  const request={...init,body:JSON.stringify({model:"deepseek-flash",max_tokens:100,messages:[],tools:[{type:"web_search"}]})};
+  await expect(withSpendContext(scope,()=>budgetedFetch(transport)("https://api.deepseek.com/chat/completions",request))).rejects.toThrow("request-out-of-bounds");
+  expect(mocks.reserve).not.toHaveBeenCalled();expect(transport).not.toHaveBeenCalled();
+});
 it("reserves before sending and persists no credentials or raw content",async()=>{
   const transport=vi.fn(async()=>{expect(mocks.reserve).toHaveBeenCalledOnce();return Response.json({usage:{cost:0.00001,prompt_tokens:5,completion_tokens:2}});});
   await withSpendContext(scope,()=>budgetedFetch(transport)("https://example.test/chat",init));

@@ -1,0 +1,33 @@
+{
+  "version": "deepseek-text-bounds-candidate-v1.0.0",
+  "rules": [
+    {
+      "key": "deepseek-flash-v41-text-json",
+      "origin": "https://api.deepseek.com",
+      "pathname": "/chat/completions",
+      "model": "deepseek-flash",
+      "maximumChargeMicros": 324404,
+      "maximumRequestBytes": 61440,
+      "maximumOutputTokens": 8192,
+      "requestContract": "deepseek-nonthinking-text-v1",
+      "boundDescription": "Candidate only. Non-thinking text, no tools, no vision, no server features. Conservative input ceiling 1048576 tokens times USD 0.30/M plus 8192 output tokens times USD 1.20/M; peak/cache-miss rounded up to micro-USD. Context-limit bound, not local token-count equivalence.",
+      "reference": "https://api-docs.deepseek.com/quick_start/pricing/",
+      "verifiedAt": "2026-09-13T00:00:00Z",
+      "expiresAt": "2026-09-20T00:00:00Z"
+    },
+    {
+      "key": "deepseek-pro-0813-nonthinking-text",
+      "origin": "https://api.deepseek.com",
+      "pathname": "/anthropic/v1/messages",
+      "model": "deepseek-v4-pro",
+      "maximumChargeMicros": 1416561,
+      "maximumRequestBytes": 61440,
+      "maximumOutputTokens": 8192,
+      "requestContract": "deepseek-nonthinking-text-v1",
+      "boundDescription": "Candidate only. Non-thinking text, no tools, no vision, no server features. Conservative input ceiling 1048576 tokens times USD 1.32/M plus 8192 output tokens times USD 3.96/M; peak/cache-miss rounded up to micro-USD. Native max_tokens support documented in DeepSeek Anthropic guide.",
+      "reference": "https://api-docs.deepseek.com/quick_start/pricing/",
+      "verifiedAt": "2026-09-13T00:00:00Z",
+      "expiresAt": "2026-09-20T00:00:00Z"
+    }
+  ]
+}
