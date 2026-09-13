@@ -5,6 +5,7 @@ import {currentSpendContext,withProductSpend} from "@/lib/billing/context";
 import {companyCostKey} from "@/lib/billing/company-cost-context";
 
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "@/providers/contracts";
+import {DeepSeekProvider} from "@/providers/deepseek";
 import { leadEvidenceContentHash } from "@/lib/leads/evidence-snapshot";
 import { LeadRequestTooLargeError } from "@/providers/lead-request-bounds";
 
@@ -341,11 +342,50 @@ describe("LeadQualificationAgent", () => {
     expect(JSON.stringify(large)).toBe(original);
   });
 
-  it("retains an uncompressible full-agent singleton as incomplete before any model request", async () => {
+  it("sends 100 distinct finding-linked facts through an exact shared-phrase dictionary", async () => {
     const provider = new CacheableFakeProvider();
     const large = uniqueFactCandidate(100);
     const original = JSON.stringify(large);
-    await expect(new LeadQualificationAgent(provider).evaluate([large], playbook, "DE", "Germany", "new-market"))
+    const agent=new LeadQualificationAgent(provider);
+    const expected=agent.cacheContracts([large],playbook,"DE","Germany","new-market");
+    const result=await agent.evaluate([large],playbook,"DE","Germany","new-market");
+    expect(result[0].scoringStatus).toBe("completed");
+    expect(provider.calls).toHaveLength(1);
+    const prepared=provider.calls[0];
+    expect(prepared.preparation?.encoding).toContain("exact-shared-phrase-v1");
+    expect(prepared.preparation?.originalMaximumWireBytes).toBeGreaterThan(61_440);
+    expect(prepared.preparation?.preparedMaximumWireBytes).toBeLessThanOrEqual(61_440);
+    expect(prepared.preparation).toMatchObject({evidenceItems:101,findingItems:105});
+    const actualWire=new DeepSeekProvider({apiKey:"fixture",maxAttempts:1});
+    expect(actualWire.requestBytes(prepared)).toBe(prepared.preparation?.preparedMaximumWireBytes);
+    expect(prepared.evidenceIds).toEqual(large.evidence.map(item=>item.id));
+    const input=prepared.input as {sharedPhraseDictionary:Record<string,string>;candidates:Array<{
+      evidenceTable:{columns:string[];rows:unknown[][]};findingsTable:{columns:string[];rows:unknown[][]}}>} ;
+    const expand=(value:unknown):unknown=>typeof value==="string"
+      ?Object.entries(input.sharedPhraseDictionary).reduce((text,[marker,phrase])=>text.replaceAll(marker,phrase),value):value;
+    const decode=(table:{columns:string[];rows:unknown[][]})=>table.rows.map(row=>
+      Object.fromEntries(table.columns.map((column,index)=>[column,expand(row[index])])));
+    expect(decode(input.candidates[0].evidenceTable)).toEqual(large.evidence.map(item=>({
+      evidenceId:item.id,sourceType:item.sourceType,url:item.url,title:item.title,excerpt:item.excerpt,
+    })));
+    expect(decode(input.candidates[0].findingsTable)).toEqual(large.correction.findings);
+    expect(agent.completedCacheContracts(result)).toEqual(expected);
+    expect(JSON.stringify(large)).toBe(original);
+  });
+
+  it("keeps a truly incompressible full-agent singleton incomplete before any model request", async () => {
+    const provider=new CacheableFakeProvider();
+    const large=uniqueFactCandidate(150);
+    const extras=large.evidence.slice(1).map((item,index)=>{
+      const excerpt=Array.from({length:9},(_,part)=>createHash("sha256")
+        .update(`independent-${index}-${part}`).digest("hex")).join(" ");
+      return {...item,excerpt,contentHash:leadEvidenceContentHash(excerpt)};
+    });
+    large.evidence=[large.evidence[0],...extras];
+    large.correction.findings=large.correction.findings.map((item,index)=>index<5?item:{...item,
+      statement:`Fact ${index}: ${createHash("sha256").update(`finding-${index}`).digest("hex")}`});
+    const original=JSON.stringify(large);
+    await expect(new LeadQualificationAgent(provider).evaluate([large],playbook,"DE","Germany","new-market"))
       .rejects.toBeInstanceOf(LeadRequestTooLargeError);
     expect(provider.calls).toHaveLength(0);
     expect(JSON.stringify(large)).toBe(original);
