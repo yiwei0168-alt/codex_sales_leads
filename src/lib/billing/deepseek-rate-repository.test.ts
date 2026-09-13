@@ -27,17 +27,31 @@ it("uses one public read for two static rules and conserves shared metrics",asyn
     .map(call=>JSON.parse(call[1][3]));
   expect(observations.map(item=>item.freeHttpRequests)).toEqual([1,0]);
   expect(observations.map(item=>item.outputBytes)).toEqual([100,0]);
+  expect(observations.map(item=>[item.generatedOutputItems,item.validOutputItems,item.downstreamUsedItems]))
+    .toEqual([[1,1,1],[1,1,1]]);
   expect(mocks.sql.mock.calls.some(call=>/update paid_call|update user_spend_budget|insert into paid_rule_hold/.test(call[0]))).toBe(false);
 });
 it("keeps a drift hold sticky when the next public page is unchanged or unavailable",async()=>{
   mocks.evidence.mockResolvedValueOnce({...evidence,items:[{...evidence.items[0],status:"review-required"},evidence.items[1]]});
   expect((await refreshDeepSeekRateEvidence(vi.fn(),now)).states.map(item=>item.hold)).toEqual([true,false]);
+  let observations=mocks.sql.mock.calls.filter(call=>call[0].includes("insert into billing_tariff_refresh_observation"))
+    .map(call=>JSON.parse(call[1][3]));
+  expect(observations.map(item=>[item.validOutputItems,item.downstreamUsedItems])).toEqual([[0,0],[1,1]]);
   mocks.sql.mockClear().mockImplementation(async(text:string)=>({rows:text.includes("pg_try_advisory")?[{locked:true}]
     :text.includes("select source_key,next_attempt_at")?[{source_key:"deepseek-flash-public-pricing-v1",next_attempt_at:new Date(now-1),hold:true}]:[]}));
   expect((await refreshDeepSeekRateEvidence(vi.fn(),now)).states[0].hold).toBe(true);
+  observations=mocks.sql.mock.calls.filter(call=>call[0].includes("insert into billing_tariff_refresh_observation"))
+    .map(call=>JSON.parse(call[1][3]));
+  expect(observations[0]).toMatchObject({generatedOutputItems:1,validOutputItems:1,
+    downstreamUsedItems:0,utilizationEfficiency:0,discardedReasonCounts:{priorTariffHoldAwaitingReview:1}});
+  expect(observations[1]).toMatchObject({generatedOutputItems:1,validOutputItems:1,downstreamUsedItems:1});
   mocks.evidence.mockRejectedValueOnce(new Error("private transport detail"));
   mocks.sql.mockClear();
   expect((await refreshDeepSeekRateEvidence(vi.fn(),now)).states[0].hold).toBe(true);
+  observations=mocks.sql.mock.calls.filter(call=>call[0].includes("insert into billing_tariff_refresh_observation"))
+    .map(call=>JSON.parse(call[1][3]));
+  expect(observations[0]).toMatchObject({generatedOutputItems:0,validOutputItems:0,
+    downstreamUsedItems:0,discardedReasonCounts:{publicRateEvidenceUnavailable:1}});
   expect(JSON.stringify(mocks.sql.mock.calls)).not.toContain("private transport detail");
 });
 it.each(["lock","not-due"])("skips source GET when %s blocks refresh",async condition=>{

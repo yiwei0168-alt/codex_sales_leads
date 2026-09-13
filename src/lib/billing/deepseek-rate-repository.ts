@@ -28,6 +28,8 @@ export async function refreshDeepSeekRateEvidence(transport:typeof fetch=fetch,n
       const prior=previous.get(source.sourceKey);
       const hold=Boolean(prior?.hold||(fetched&&!evidence)||evidence?.status==="review-required");
       const status=!fetched?"unavailable" as const:hold?"review-required" as const:"validated" as const;
+      const validOutputItems=evidence?.status==="validated"?1:0;
+      const downstreamUsedItems=validOutputItems&&!hold?1:0;
       if(evidence)await client.query(`insert into billing_tariff_evidence_snapshot(source_key,source_hash,tariff_key,observed_at,evidence)
         values($1,$2,$3,$4,$5) on conflict do nothing`,[
         source.sourceKey,fetched!.sourceHash,source.tariffKey,new Date(now).toISOString(),JSON.stringify(evidence.evidence)]);
@@ -38,11 +40,14 @@ export async function refreshDeepSeekRateEvidence(transport:typeof fetch=fetch,n
         source.sourceKey,source.tariffKey,new Date(now).toISOString(),nextAttemptAt,status,hold]);
       await client.query(`insert into billing_tariff_refresh_observation(source_key,checked_at,status,metrics) values($1,$2,$3,$4)`,[
         source.sourceKey,new Date(now).toISOString(),status,JSON.stringify({inputItems:1,
-          generatedOutputItems:evidence?1:0,validOutputItems:evidence?1:0,downstreamUsedItems:evidence?1:0,
+          generatedOutputItems:evidence?1:0,validOutputItems,downstreamUsedItems,
           inputBytes:0,outputBytes:index===0?fetched?.bytes??null:0,inputTokens:0,outputTokens:0,apiCredits:0,costUsd:0,
           freeHttpRequests:index===0?httpCalls:0,sharedPageReuse:index>0,
           latencyMs:index===0?Date.now()-started:0,retries:0,
-          utilizationEfficiency:evidence?1:0,discardedReasonCounts:evidence?{}:{publicRateEvidenceUnavailable:1},
+          utilizationEfficiency:downstreamUsedItems,
+          discardedReasonCounts:!evidence?{publicRateEvidenceUnavailable:1}
+            :evidence.status==="review-required"?{publicRateEvidenceReviewRequired:1}
+            :hold?{priorTariffHoldAwaitingReview:1}:{},
           usageBoundary:"public-rate-review-only-not-tariff-admission-or-payment",
           optimizationOpportunity:"Share one DeepSeek pricing-page read across both models; hold contract drift before new reservation"})]);
       states.push({sourceKey:source.sourceKey,status,hold,nextAttemptAt});

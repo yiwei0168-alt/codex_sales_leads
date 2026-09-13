@@ -16,19 +16,29 @@ it("shares a seven-day public snapshot and never changes the static tariff",asyn
   expect(mocks.sql.mock.calls.some(call=>call[0].includes("insert into billing_tariff_evidence_snapshot"))).toBe(true);
   expect(mocks.sql.mock.calls.some(call=>/update paid_call|update user_spend_budget|insert into paid_rule_hold/.test(call[0]))).toBe(false);
   const observation=mocks.sql.mock.calls.find(call=>call[0].includes("insert into billing_tariff_refresh_observation"))!;
-  expect(JSON.parse(observation[1][3])).toMatchObject({costUsd:0,apiCredits:0,inputTokens:0,outputTokens:0,retries:0});
+  expect(JSON.parse(observation[1][3])).toMatchObject({costUsd:0,apiCredits:0,inputTokens:0,outputTokens:0,retries:0,
+    generatedOutputItems:1,validOutputItems:1,downstreamUsedItems:1,utilizationEfficiency:1});
 });
 it("makes review holds sticky across a later unchanged read and an outage",async()=>{
   mocks.evidence.mockResolvedValueOnce({...evidence,status:"review-required"});
   expect((await refreshOpenRouterSolRateEvidence(vi.fn(),now)).hold).toBe(true);
+  let observation=mocks.sql.mock.calls.find(call=>call[0].includes("insert into billing_tariff_refresh_observation"))!;
+  expect(JSON.parse(observation[1][3])).toMatchObject({generatedOutputItems:1,validOutputItems:0,
+    downstreamUsedItems:0,discardedReasonCounts:{publicRateEvidenceReviewRequired:1}});
   let state=mocks.sql.mock.calls.find(call=>call[0].includes("insert into billing_tariff_refresh_state"))!;
   expect(state[1].at(-1)).toBe(true);
   mocks.sql.mockClear().mockImplementation(async(text:string)=>({rows:text.includes("pg_try_advisory")?[{locked:true}]
     :text.includes("select next_attempt_at")?[{next_attempt_at:new Date(now-1),hold:true}]:[]}));
   expect((await refreshOpenRouterSolRateEvidence(vi.fn(),now)).status).toBe("review-required");
+  observation=mocks.sql.mock.calls.find(call=>call[0].includes("insert into billing_tariff_refresh_observation"))!;
+  expect(JSON.parse(observation[1][3])).toMatchObject({generatedOutputItems:1,validOutputItems:1,
+    downstreamUsedItems:0,utilizationEfficiency:0,discardedReasonCounts:{priorTariffHoldAwaitingReview:1}});
   mocks.evidence.mockRejectedValueOnce(new Error("raw private transport detail"));
   mocks.sql.mockClear();
   expect((await refreshOpenRouterSolRateEvidence(vi.fn(),now)).status).toBe("unavailable");
+  observation=mocks.sql.mock.calls.find(call=>call[0].includes("insert into billing_tariff_refresh_observation"))!;
+  expect(JSON.parse(observation[1][3])).toMatchObject({generatedOutputItems:0,validOutputItems:0,
+    downstreamUsedItems:0,discardedReasonCounts:{publicRateEvidenceUnavailable:1}});
   state=mocks.sql.mock.calls.find(call=>call[0].includes("insert into billing_tariff_refresh_state"))!;
   expect(state[1].at(-1)).toBe(true);
   expect(JSON.stringify(mocks.sql.mock.calls)).not.toContain("raw private transport detail");

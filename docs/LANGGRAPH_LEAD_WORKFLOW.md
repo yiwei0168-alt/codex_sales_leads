@@ -1,5 +1,7 @@
 # LangChain / LangGraph 销售线索工作流
 
+阶段111费用遥测：Sol、DeepSeek和四个同步搜索来源的公开价证分别记录生成、与静态基线一致、实际可供下游使用。待审页无效，旧暂停即使遇到一致新页仍记下游使用0及待人工复核原因；不改预算门禁或旧费用。[定向回归](PUBLIC_RATE_HOLD_USAGE_ACCOUNTING_2026-09-14.md)。
+
 阶段110搜索费用边界：Exa `/search` 与 Google Places Text Search Enterprise 的原静态合同加入每日官方公开价只读复核，不改请求/金额；缺价或短页只暂停受影响新预留。当前 Exa validated、Places 因短页 hold=true，SearchAPI 无完整合同继续拒绝。[SQL、官方来源和页面验收](EXA_PLACES_PUBLIC_RATE_REFRESH_ACCEPTANCE_2026-09-14.md)。
 
 阶段109评分恢复边界：生产重入评分前保留原检查点时间；先读取已完成评分与有效缓存，再对剩余公司按同用户/任务/公司国家哈希查询检查点后的已返回评分付费响应。命中则在新请求前暂停，重复恢复不刷新时间屏障，原预留/报告费用保留；其他公司可继续。[真实PostgreSQL跨进程合成验证](UNCHECKPOINTED_SCORE_RECOVERY_GUARD_2026-09-14.md)。丢失的语义输出无法由账本重建，真实模型闭环仍未验收。

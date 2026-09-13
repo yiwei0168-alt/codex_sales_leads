@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-09-14阶段111：修正 Sol、DeepSeek 与四个同步搜索来源的公开费率刷新观测：待审页不计有效，旧暂停未人工解除时，即使新页价格一致也不计下游使用；保留 hold、历史数据和费用。962测试/202文件、typecheck、build、lint0错误通过，0真实供应商调用。[报告](PUBLIC_RATE_HOLD_USAGE_ACCOUNTING_2026-09-14.md)。Places 人工复核、其他费率合同及 A11 闭环仍缺。
+
 2026-09-14阶段110：Exa/Google Places 两条公开价只读复核与迁移059接入，Exa validated、Places 因265字节官方短页保持 review-required/hold=true，其他费率及付费历史不变。962测试/202文件、build、lint0错误、真实SQL与本地生产桌面/手机64组通过，0真实付费/发信。[报告](EXA_PLACES_PUBLIC_RATE_REFRESH_ACCEPTANCE_2026-09-14.md)。SearchAPI 完整上界、Places 人工复核、其他模型、A11闭环仍缺。
 
 2026-09-14阶段109：评分成功响应已记账而缓存/图节点均未保存输出时，恢复会按原检查点时间与公司归属拦截新的付费评分。真实PostgreSQL两进程合成回归两次恢复均拦截，合成预留7/报告5 micro-USD、占用7保持，新增预留0、真实模型/搜索/邮件0；已有有效缓存可直接复用。956测试/202文件、typecheck、build、lint0错误。[报告](UNCHECKPOINTED_SCORE_RECOVERY_GUARD_2026-09-14.md)。这只解决重复付费风险，不能重建丢失评分；A06完整真实业务与A11仍待验收。

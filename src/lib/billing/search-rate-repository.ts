@@ -27,6 +27,8 @@ export async function refreshSearchRateEvidence(transport:typeof fetch=fetch,now
       const prior=previous.get(source.sourceKey);
       const hold=Boolean(prior?.hold||evidence?.status==="review-required");
       const status=!evidence?"unavailable" as const:hold?"review-required" as const:"validated" as const;
+      const validOutputItems=evidence?.status==="validated"?1:0;
+      const downstreamUsedItems=validOutputItems&&!hold?1:0;
       if(evidence)await client.query(`insert into billing_tariff_evidence_snapshot(source_key,source_hash,tariff_key,observed_at,evidence)
         values($1,$2,$3,$4,$5) on conflict do nothing`,[
         source.sourceKey,evidence.sourceHash,source.tariffKey,new Date(now).toISOString(),JSON.stringify(evidence.evidence)]);
@@ -37,13 +39,14 @@ export async function refreshSearchRateEvidence(transport:typeof fetch=fetch,now
         source.sourceKey,source.tariffKey,new Date(now).toISOString(),nextAttemptAt,status,hold]);
       await client.query(`insert into billing_tariff_refresh_observation(source_key,checked_at,status,metrics) values($1,$2,$3,$4)`,[
         source.sourceKey,new Date(now).toISOString(),status,JSON.stringify({inputItems:1,
-          generatedOutputItems:evidence?1:0,validOutputItems:evidence?.status==="validated"?1:0,
-          downstreamUsedItems:evidence?.status==="validated"?1:0,inputBytes:0,outputBytes:evidence?.bytes??null,
+          generatedOutputItems:evidence?1:0,validOutputItems,
+          downstreamUsedItems,inputBytes:0,outputBytes:evidence?.bytes??null,
           inputTokens:0,outputTokens:0,apiCredits:0,costUsd:0,freeHttpRequests:sourceCalls,
           latencyMs:Date.now()-started,retries:0,
-          utilizationEfficiency:evidence?.status==="validated"?1:0,
-          discardedReasonCounts:evidence?.status==="review-required"?{publicSearchTariffChangedOrUnverifiable:1}
-            :evidence?{}:{publicRateEvidenceUnavailable:1},
+          utilizationEfficiency:downstreamUsedItems,
+          discardedReasonCounts:!evidence?{publicRateEvidenceUnavailable:1}
+            :evidence.status==="review-required"?{publicSearchTariffChangedOrUnverifiable:1}
+            :hold?{priorTariffHoldAwaitingReview:1}:{},
           usageBoundary:"public-search-rate-review-only-not-tariff-admission-or-payment",
           optimizationOpportunity:"Refresh each public Search price once per day and hold drift before reservation"})]);
       states.push({sourceKey:source.sourceKey,status,hold,nextAttemptAt});

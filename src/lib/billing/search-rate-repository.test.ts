@@ -32,6 +32,7 @@ it("checks four independent official pages once and does not touch paid accounti
     .map(call=>JSON.parse(call[1][3]));
   expect(observations.map(item=>item.freeHttpRequests)).toEqual([1,1,1,1]);
   expect(observations.map(item=>item.validOutputItems)).toEqual([1,1,1,1]);
+  expect(observations.map(item=>item.downstreamUsedItems)).toEqual([1,1,1,1]);
   expect(mocks.sql.mock.calls.some(call=>/update paid_call|update user_spend_budget|insert into paid_rule_hold/.test(call[0]))).toBe(false);
 });
 it("holds only the changed source and keeps its hold on later outages",async()=>{
@@ -42,8 +43,20 @@ it("holds only the changed source and keeps its hold on later outages",async()=>
   });
   expect((await refreshSearchRateEvidence(vi.fn(async()=>new Response()) as typeof fetch,now)).states.map(item=>item.hold))
     .toEqual([true,false,false,false]);
+  let observations=mocks.sql.mock.calls.filter(call=>call[0].includes("insert into billing_tariff_refresh_observation"))
+    .map(call=>JSON.parse(call[1][3]));
+  expect(observations.map(item=>[item.validOutputItems,item.downstreamUsedItems])).toEqual([[0,0],[1,1],[1,1],[1,1]]);
   mocks.sql.mockClear().mockImplementation(async(text:string)=>({rows:text.includes("pg_try_advisory")?[{locked:true}]
     :text.includes("select source_key,next_attempt_at")?[{source_key:sourceKeys[0],next_attempt_at:new Date(now-1),hold:true}]:[]}));
+  mocks.evidence.mockReset().mockImplementation(async(source:{sourceKey:string;tariffKey:string})=>({
+    sourceKey:source.sourceKey,tariffKey:source.tariffKey,sourceHash:"b".repeat(64),bytes:100,
+    status:"validated",evidence:{observed:{price:5}}}));
+  expect((await refreshSearchRateEvidence(vi.fn(),now)).states[0]).toMatchObject({status:"review-required",hold:true});
+  observations=mocks.sql.mock.calls.filter(call=>call[0].includes("insert into billing_tariff_refresh_observation"))
+    .map(call=>JSON.parse(call[1][3]));
+  expect(observations[0]).toMatchObject({generatedOutputItems:1,validOutputItems:1,
+    downstreamUsedItems:0,utilizationEfficiency:0,discardedReasonCounts:{priorTariffHoldAwaitingReview:1}});
+  mocks.sql.mockClear();
   mocks.evidence.mockRejectedValue(new Error("private transport detail"));
   const result=await refreshSearchRateEvidence(vi.fn(),now);
   expect(result.states.map(item=>[item.status,item.hold])).toEqual([

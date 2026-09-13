@@ -17,6 +17,8 @@ export async function refreshOpenRouterSolRateEvidence(transport:typeof fetch=fe
     try{evidence=await fetchOpenRouterSolRateEvidence(countedFetch);}catch{/* No raw public response or transport error in logs. */}
     const hold=Boolean(previous?.hold||evidence?.status==="review-required");
     const status=!evidence?"unavailable" as const:hold?"review-required" as const:"validated" as const;
+    const validOutputItems=evidence?.status==="validated"?1:0;
+    const downstreamUsedItems=validOutputItems&&!hold?1:0;
     if(evidence)await client.query(`insert into billing_tariff_evidence_snapshot(source_key,source_hash,tariff_key,observed_at,evidence)
       values($1,$2,$3,$4,$5) on conflict do nothing`,[
       OPENROUTER_SOL_RATE_SOURCE,evidence.sourceHash,OPENROUTER_SOL_TARIFF_KEY,new Date(now).toISOString(),JSON.stringify(evidence.evidence)]);
@@ -27,10 +29,13 @@ export async function refreshOpenRouterSolRateEvidence(transport:typeof fetch=fe
       OPENROUTER_SOL_RATE_SOURCE,OPENROUTER_SOL_TARIFF_KEY,new Date(now).toISOString(),nextAttemptAt,status,hold]);
     await client.query(`insert into billing_tariff_refresh_observation(source_key,checked_at,status,metrics) values($1,$2,$3,$4)`,[
       OPENROUTER_SOL_RATE_SOURCE,new Date(now).toISOString(),status,JSON.stringify({inputItems:1,
-        generatedOutputItems:evidence?1:0,validOutputItems:evidence?1:0,downstreamUsedItems:evidence?1:0,
+        generatedOutputItems:evidence?1:0,validOutputItems,downstreamUsedItems,
         inputBytes:0,outputBytes:evidence?.bytes??null,inputTokens:0,outputTokens:0,apiCredits:0,costUsd:0,
         freeHttpRequests:httpCalls,latencyMs:Date.now()-started,retries:0,
-        utilizationEfficiency:evidence?1:0,discardedReasonCounts:evidence?{}:{publicRateEvidenceUnavailable:1},
+        utilizationEfficiency:downstreamUsedItems,
+        discardedReasonCounts:!evidence?{publicRateEvidenceUnavailable:1}
+          :evidence.status==="review-required"?{publicRateEvidenceReviewRequired:1}
+          :hold?{priorTariffHoldAwaitingReview:1}:{},
         usageBoundary:"public-rate-evidence-only-never-tariff-admission-or-payment",
         optimizationOpportunity:"Share one seven-day public snapshot; review contract drift before any new reservation"})]);
     return {status,httpCalls,nextAttemptAt,hold};

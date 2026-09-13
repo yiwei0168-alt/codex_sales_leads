@@ -1,5 +1,7 @@
 # Hybrid Lead Search Workflow
 
+2026-09-14阶段111：四个同步搜索入口的公开费率刷新，只有价证有效且无旧暂停才记录下游使用；待审、缺证、旧暂停分别保留原因，不改变新预留门禁。三组来源共15项合成定向测试，0付费搜索。[报告](PUBLIC_RATE_HOLD_USAGE_ACCOUNTING_2026-09-14.md)。
+
 2026-09-14阶段110费用边界：Exa Search 与 Google Places Text Search Enterprise 的官方公开费率新增每日只读复核，不改变类别路由、查询、请求结果上限或静态保守预留。Exa 价证一致；Places 因官方短页暂停新预留，后续完整页面不自动解除。SearchAPI 仍缺账号套餐对应的完整上界而阻止付费调用。[证据](EXA_PLACES_PUBLIC_RATE_REFRESH_ACCEPTANCE_2026-09-14.md)。
 
 2026-09-14阶段108：Brave/Tavily两个现行同步搜索入口每日只读复核官方Search价格/credit，不更改已确认请求契约或查询范围。Brave Search Plan与Answers分开，Tavily只核basic/advanced Search；异常证据仅暂停对应新预留。真实SQL、预算API及双视口生产UI通过，0付费搜索。[验收](SEARCH_PUBLIC_RATE_REFRESH_ACCEPTANCE_2026-09-14.md)。Exa/Places/SearchAPI自动复核及A11真实闭环仍缺。
