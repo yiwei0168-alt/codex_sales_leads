@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { MemorySaver } from "@langchain/langgraph";
 import { WorkflowPausedError } from "./pause";
 import { resultPersistenceFingerprint } from "./persistence-identity";
+import {completedStageMetric} from "./workflow-telemetry";
 import { processingRecoveryWork } from "./processing-recovery";
 import { snapshotDiscoverySession } from "./discovery-session";
 import { createHybridDiscoverySession } from "./hybrid-discovery-executor";
@@ -147,6 +148,22 @@ function dependencies(events: string[], context = ragContext): LeadWorkflowDepen
 }
 
 describe("LangGraph lead workflow", () => {
+  it("repairs a retained terminal score without restarting discovery to fill the remaining target",async()=>{
+    const deps=dependencies([]),saver=new MemorySaver(),graph=buildLeadWorkflowGraph(deps,saver);
+    const config={configurable:{thread_id:"terminal-score"}};
+    await graph.updateState(config,{userId:"u",actionId:"a",workspaceId:"w",graphThreadId:"terminal-score",runId:"run-1",plan,playbook,
+      phase:"completed",candidates:[candidate],correctedCandidates:[correctedCandidate],assessments:[],creditsUsed:13,ragContext:[],
+      assessmentReviews:[],handoffs:[],modelUsage:[],stageMetrics:[completedStageMetric({stage:"discover_candidates",startedAt:Date.now(),input:[],output:[],
+        metadata:{completedCalls:1,completedFreshCalls:1,unavailableCalls:0}})],warnings:[],targetCompletionReason:"processing-incomplete"},"persist_results");
+    expect((await graph.getState(config)).next).toEqual([]);
+    // Runtime does this only after the original-run and unknown-cost database gates pass.
+    await graph.updateState(config,{processingRecoveryAuthorized:true,terminalRecoveryOnly:true},"score_candidates");
+    const result=await buildLeadWorkflowGraph(deps,saver).invoke(null,config);
+    expect(result.targetCompletionReason).toBe("qualified-shortfall");expect(result.creditsUsed).toBe(13);
+    expect(deps.discover).not.toHaveBeenCalled();expect(deps.collectEvidence).not.toHaveBeenCalled();
+    expect(deps.correctionAgent.correct).not.toHaveBeenCalled();expect(deps.qualificationAgent.evaluate).toHaveBeenCalledTimes(1);
+    expect(result.result).toBeDefined();
+  });
   it("retries a saved result after completion-status failure with the same business identity",async()=>{
     const deps=dependencies([]),saver=new MemorySaver();
     const persist=deps.persist;

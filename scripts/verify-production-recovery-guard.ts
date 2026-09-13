@@ -4,11 +4,12 @@ import { randomUUID } from "node:crypto";
 import { Pool } from "pg";
 import { PostgresSaver } from "@langchain/langgraph-checkpoint-postgres";
 import { databaseConnectionString, databaseSslConfiguration } from "../src/lib/rag/database-ssl";
-import { plan, candidate, correctedCandidate } from "./workflow-recovery-fixtures";
+import { plan, playbook, candidate, correctedCandidate } from "./workflow-recovery-fixtures";
 
 nextEnv.loadEnvConfig(process.cwd());
 const { getPool,tenantTransaction } = await import("../src/lib/rag/db");
 const {recordWorkflowCompletion,completeWorkflowJob,failWorkflowJob}=await import("../src/lib/leads/workflow/job-completion");
+const {assertTerminalRunUnpersisted}=await import("../src/lib/leads/workflow/terminal-recovery");
 const { buildLeadWorkflowGraph } = await import("../src/lib/leads/workflow/graph");
 const { confirmAndQueueLeadWorkflow, claimLeadWorkflowByAction, executeClaimedLeadWorkflow } = await import("../src/lib/leads/workflow/jobs");
 const { setSpendBudget, setTaskSpendBudget, reservePaidCall, settlePaidCall } = await import("../src/lib/billing/repository");
@@ -46,6 +47,9 @@ try {
   assert.deepEqual(before.next,["recover_incomplete_processing"]);
   for (const phase of ["reserved","unknown","unknown-repeat"] as const) {
     if (phase === "unknown") await settlePaidCall(userId,reservationId,{ reportedMicros:null,latencyMs:0,responseBytes:null,inputTokens:null,outputTokens:null,succeeded:false,outputIncomplete:true });
+    if(phase==="unknown-repeat")await graph.updateState(config,{runId:randomUUID(),playbook,ragContext:[],assessmentReviews:[],handoffs:[]},"persist_results");
+    const guardBefore=await graph.getState(config);
+    if(phase==="unknown-repeat")assert.deepEqual(guardBefore.next,[]);
     const accountingBefore = (await pool.query("select * from paid_call_reservation where id=$1",[reservationId])).rows;
     const queued = await confirmAndQueueLeadWorkflow(userId,actionId,"inline");
     assert.ok(queued); assert.equal(queued.graphThreadId,threadId);
@@ -53,9 +57,9 @@ try {
     assert.ok(claim);
     await assert.rejects(executeClaimedLeadWorkflow(claim),/paid-request-already-recorded/);
     const after = await graph.getState(config);
-    assert.deepEqual(after.values,before.values);
-    assert.deepEqual(after.next,before.next);
-    assert.equal(after.config.configurable?.checkpoint_id,before.config.configurable?.checkpoint_id);
+    assert.deepEqual(after.values,guardBefore.values);
+    assert.deepEqual(after.next,guardBefore.next);
+    assert.equal(after.config.configurable?.checkpoint_id,guardBefore.config.configurable?.checkpoint_id);
     assert.deepEqual((await pool.query("select * from paid_call_reservation where id=$1",[reservationId])).rows,accountingBefore);
     const job = (await pool.query("select status,error_message,lease_until from lead_workflow_job where user_id=$1 and action_id=$2",[userId,actionId])).rows[0];
     assert.equal(job.status,"failed"); assert.match(job.error_message,/paid-request-already-recorded/); assert.equal(job.lease_until,null);
@@ -65,6 +69,14 @@ try {
   assert.equal(Number((await pool.query("select occupied_micros from user_spend_budget where user_id=$1",[userId])).rows[0].occupied_micros),7);
   assert.equal((await pool.query("select count(*)::int as n from workflow_artifact_event where user_id=$1",[userId])).rows[0].n,0);
   const jobId=(await pool.query("select id from lead_workflow_job where action_id=$1",[actionId])).rows[0].id;
+  const terminalRunId=randomUUID();
+  await pool.query("insert into lead_search_run(id,workspace_id,provider,target_count,country_code,status,metadata) values($1,$2,'synthetic-terminal',1,$3,'running',$4)",[terminalRunId,workspaceId,plan.countryCode,JSON.stringify({assistantActionId:actionId,graphThreadId:threadId})]);
+  const terminalState={...before.values,userId,actionId,workspaceId,runId:terminalRunId,plan,playbook} as import("../src/lib/leads/workflow/types").LeadWorkflowState;
+  await assertTerminalRunUnpersisted(userId,actionId,threadId,terminalState);
+  await assert.rejects(assertTerminalRunUnpersisted(userId,actionId,"wrong-thread",terminalState),/unpersisted original run/);
+  await pool.query("update lead_search_run set metadata=metadata||'{\"deliveryCounts\":{}}'::jsonb where id=$1",[terminalRunId]);
+  await assert.rejects(assertTerminalRunUnpersisted(userId,actionId,threadId,terminalState),/unpersisted original run/);
+  await pool.query("update lead_search_run set metadata=metadata-'deliveryCounts' where id=$1",[terminalRunId]);
   const claim={jobId,userId,actionId,graphThreadId:threadId,conversationId,plan};
   const result={runId:randomUUID(),countryCode:plan.countryCode,countryName:plan.countryName,requested:plan.targetCount,
     discovered:1,assessed:0,qualified:0,accepted:0,creditsUsed:13,ragCitationCount:0,graphThreadId:threadId,warnings:[]};
@@ -89,6 +101,7 @@ try {
   assert.deepEqual((await pool.query("select status,result from assistant_action where id=$1",[actionId])).rows[0],{status:"completed",result});
   console.log(JSON.stringify({ productionRecoveryGuard:"passed",actualQueueClaimRunnerAttempts:3,checkpointUnchanged:true,syntheticOccupiedMicros:7,providerCalls:0,realMailSent:0 }));
   console.log(JSON.stringify({atomicCompletionRollback:true,concurrentCompletions:2,completionReceipts:1,lateFailurePreservedCompletion:true,conflictingResultRejected:true,ownerThreadConversationIsolation:true,businessResult:"synthetic-only"}));
+  console.log(JSON.stringify({terminalRunGate:true,savedHistoryRejected:true,wrongThreadRejected:true}));
 } finally {
   if (created) {
     const client = await pool.connect();

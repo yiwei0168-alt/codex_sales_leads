@@ -12,6 +12,7 @@ import { LeadAssessmentReviewAgent } from "./assessment-review-agent";
 import { LeadEvidenceCorrectionAgent } from "./evidence-correction-agent";
 import { getGlobalWorkspaceId, persistLeadWorkflowResult, updateWorkflowPhase } from "./persistence";
 import { checkpointInvocation } from "./pause";
+import {assertTerminalRunUnpersisted} from "./terminal-recovery";
 import { correctionCompletion } from "./correction-completion";
 import { routeCorrectedCandidates, persistCandidateRoutes } from "./candidate-routing";
 import { processingRecoveryWork, WorkflowProcessingIncompleteError } from "./processing-recovery";
@@ -63,6 +64,7 @@ const WorkflowAnnotation = Annotation.Root({
   acceptedCandidateCount: Annotation<number | undefined>(),
   targetShouldContinue: Annotation<boolean | undefined>(),
   processingRecoveryAuthorized: Annotation<boolean | undefined>(),
+  terminalRecoveryOnly: Annotation<boolean | undefined>(),
   targetCompletionReason: Annotation<TargetCompletionReason | undefined>(),
   assessmentReviews: Annotation<LeadAssessmentReview[]>(),
   handoffs: Annotation<LeadDevelopmentHandoff[]>(),
@@ -388,7 +390,9 @@ export function buildLeadWorkflowGraph(
       const hasIncompleteProcessing = correctionIncomplete + scoringIncomplete > 0;
       const consecutiveNoFinalRounds = nextNoFinalRoundCount(state.consecutiveNoFinalRounds ?? 0,
         { finalEligibleAdded, completedFreshCalls, hadProviderFailureOrCircuit: unavailableCalls > 0 || hasIncompleteProcessing || pendingRoleCount > 0 });
-      const targetDecision = metricsAvailable ? targetCompletionDecision({ acceptedCount,
+      const targetDecision = state.terminalRecoveryOnly ? {complete:true,reason:hasIncompleteProcessing?"processing-incomplete" as const
+        :pendingRoleCount>0?"role-unresolved" as const:acceptedCount>=state.plan.targetCount?"target-met" as const:"qualified-shortfall" as const}
+        : metricsAvailable ? targetCompletionDecision({ acceptedCount,
         targetCount: state.plan.targetCount, completedFreshCalls,
         hasIncompleteProcessing,
         hasPendingRoles: pendingRoleCount > 0,
@@ -555,8 +559,14 @@ export async function runLeadWorkflow(input: {
   const graph=getProductionGraph();
   const config={configurable:{thread_id:input.graphThreadId},recursionLimit:50};
   const snapshot=await graph.getState(config);
-  const mode=checkpointInvocation(snapshot,input.userId,input.actionId,input.plan);
+  let mode=checkpointInvocation(snapshot,input.userId,input.actionId,input.plan);
   if(mode==='complete')return snapshot.values.result as LeadWorkflowResult;
+  if(mode==='recover-terminal'){
+    await assertProcessingRecoveryCostsKnown(input.userId,input.actionId);
+    await assertTerminalRunUnpersisted(input.userId,input.actionId,input.graphThreadId,snapshot.values as LeadWorkflowState);
+    await graph.updateState(config,{processingRecoveryAuthorized:true,terminalRecoveryOnly:true},"score_candidates");
+    mode="resume";
+  }
   if (mode === "resume" && snapshot.next.includes("recover_incomplete_processing")) {
     await assertProcessingRecoveryCostsKnown(input.userId, input.actionId);
     await graph.updateState(config, { processingRecoveryAuthorized: true }, "score_candidates");

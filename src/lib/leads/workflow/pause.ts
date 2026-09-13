@@ -1,5 +1,6 @@
 import { persistenceInputFingerprint } from "./persistence-identity";
 import type { LeadSearchPlan } from "@/lib/assistant/types";
+import {canRecoverUnpersistedTerminal} from "./terminal-recovery";
 
 export class WorkflowPausedError extends Error {
   constructor(){super("工作流已在阶段边界暂停，已完成的 checkpoint 保留；恢复前请确认后续可能产生的费用。");this.name="WorkflowPausedError";}
@@ -13,5 +14,6 @@ export function checkpointInvocation(snapshot:{values?:Record<string,unknown>;ne
   }
   if(snapshot.next?.length)return "resume" as const;
   if(values.result)return "complete" as const;
+  if(canRecoverUnpersistedTerminal(values))return "recover-terminal" as const;
   throw new Error("Checkpoint has no resumable stage or completed result");
 }
