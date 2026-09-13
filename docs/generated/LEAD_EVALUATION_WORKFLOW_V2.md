@@ -754,14 +754,14 @@ flowchart TD
 | `src/lib/assistant/types.ts` | `672da3aa8f33d96129dfd0a9b3020a38d3d6e3d14d0129b7f40a599479fa7ab8` |
 | `src/lib/assistant/intent.ts` | `5501e1e0a9617b34f40d14af6bf65fdae8250f9f9ed714647ec6878eb1179ab3` |
 | `src/lib/assistant/intent-agent.ts` | `cc14a3432d6fbd0cf50a653892dc20982f2d8652f782055ebdc94163eda65027` |
-| `src/lib/rag/openai-provider.ts` | `c277b98dbdcab98a32508a3065cebc4e374d6f30746626de08712fac389ac618` |
+| `src/lib/rag/openai-provider.ts` | `d8d105c5650d1bacdbb48ce652143900afa7d62d505dfd502159f7b09fee1ff2` |
 | `src/lib/assistant/service.ts` | `191d407fc558253b10df7b57564bb73094808cddaf5f2f8883c57742561eff7e` |
 | `src/lib/assistant/repository.ts` | `7d480b70ed29de1795c4c6c1a5c49d471cd700272616bfa3c66dbab4e6d6bfb3` |
 | `src/lib/leads/workflow/graph.ts` | `24c63d964533aa3f6ad98b7420d029201d1f7be9d86616fe80ddf5e328a4a997` |
 | `src/lib/leads/workflow/jobs.ts` | `1adcc7ab1b600f1c773e6a804cbbaaa16c5fed89f2929434513b4fc8e8e3ae10` |
 | `src/lib/leads/workflow/rag-context.ts` | `1e1ee21e77b90731e849426cd7130de7d1e50ee6aec9f196e44cb642bf81387b` |
-| `src/lib/leads/workflow/playbook.ts` | `c5c9d5649746eb3d3b050390ea45b214ad7f56262210b33ce05ff60f7b8df2aa` |
-| `src/lib/leads/workflow/playbook-cache.ts` | `945d3fc727312208650ee7b4e55e33860e7c54f7e3daa939f768952409a1803f` |
+| `src/lib/leads/workflow/playbook.ts` | `2e3ca2dc9562f742383f3bf87ef7efd50c9d8ea5b32a050de05556feda58e0a9` |
+| `src/lib/leads/workflow/playbook-cache.ts` | `84e1d965bd76e7e0326d25889e157fe54315c320816fc7adef0a4ec23c7ca0be` |
 | `src/lib/leads/workflow/hybrid-search-policy.ts` | `452c8d2d945b76773733e457f274c40ad0b771e72a18b6fc6a5781c4ada5a6e2` |
 | `src/lib/leads/workflow/candidate-registry.ts` | `1666f5010362467f9fcd453115e6961cfeaa4ff2f6a3becf96f5aec168fce5cc` |
 | `src/lib/leads/workflow/discovery-gate.ts` | `a48ec6dcd015ac09b06a82994340028a1e3852f29d542cdb1529892db868f723` |
