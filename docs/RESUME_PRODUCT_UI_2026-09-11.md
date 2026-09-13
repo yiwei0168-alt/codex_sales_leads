@@ -1,5 +1,7 @@
 # 产品开发恢复节点 — 2026-09-11
 
+2026-09-13阶段54：新增最小闭环只读预检脚本，当前目标1首池2，预算仍12.324404/30；市场计划实际openai/gpt-5.6-sol缺完整费率，未启动已知会中断的前置付费。仅验证5个入口费率可用性，不是整次费用上界；无调用/账号修改/任务认领，typecheck通过。详见[预检结果与下一必要工作](MINIMAL_PRODUCTION_PREFLIGHT_2026-09-13.md)。无新产品规则，goal active。
+
 2026-09-13阶段53：verify-cost-reconciliation.ts --skip-migration新增实际搜索契约→SQL防重放通过；未知后两并发重试不出网、参数换序、任务隔离、成功禁止重放和原核销/分摊均通过，typecheck通过，fixture清理、0真实付费。产品990c667未改，825全量/build沿用阶段52。下一继续最小业务闭环准备及全图跨进程恢复，goal active。
 
 2026-09-13阶段52：最小真实闭环预检预算仍占12.324404/30、余17.675596、6未知0在途；实际DEEPSEEK_MODEL为deepseek-v4-pro，不擅自改模型。发现同步搜索无持久请求指纹，新增五契约paid-search-replay-v1接入既有账本；825测试/180文件、build和生成check通过，0付费。下一补实际SQL搜索防重放，并继续真实闭环准备；已有claimLeadWorkflowByAction可精确认领隔离任务，禁止调用通用worker处理原队列。goal active。
