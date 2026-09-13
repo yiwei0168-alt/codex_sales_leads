@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-09-14阶段99：Sol 分歧裁决公开端点只读审计验证12,000输出token对应 USD27.736500/次候选上界；现行合同仍仅4,096输出、费用门禁继续拦截，0付费。新合同确认、实际请求联测及完整真实业务闭环尚缺。[报告](OPENROUTER_SOL_JUDGE_PROPOSAL_2026-09-14.md)。
+
 2026-09-14阶段98：隔离本地生产Chrome桌面/移动58组回归通过，新增用量API HTTP→数据库单条聚合与刷新幂等；0真实模型/搜索/发信，fixture清理。真实自然语言到结果入库闭环仍缺。[报告](WORKFLOW_USAGE_PRODUCTION_HTTP_2026-09-14.md)。
 
 2026-09-14阶段97：用量API兼容扩展工作流阶段输入/有效/下游使用和模型token独立汇总，异常记录利用率未知、用户采用未知；隔离SQL合成聚合/跨用户隔离通过，fixture回滚，0付费。真实UI与真实业务记录仍待。[报告](WORKFLOW_USAGE_AGGREGATE_ACCEPTANCE_2026-09-14.md)。

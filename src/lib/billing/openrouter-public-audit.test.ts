@@ -2,12 +2,20 @@ import {expect,it} from "vitest";
 import snapshot from "../../../docs/OPENROUTER_ROUTE_ENDPOINT_EVIDENCE_2026-09-14.json";
 import {auditPublicReviewBound,conservativeStandardBoundMicros,type PublicModel} from "./openrouter-public-audit";
 const base=snapshot.models.find(model=>model.id==="openai/gpt-5.6-terra") as PublicModel;
+const sol=snapshot.models.find(model=>model.id==="openai/gpt-5.6-sol") as PublicModel;
 const clone=()=>structuredClone(base);
 it("recomputes the review proposal from every standard endpoint and keeps it unadmitted",()=>{
   expect(conservativeStandardBoundMicros(base,8192)).toBe(11019202);
   expect(auditPublicReviewBound(base,clone(),8192,11019202)).toMatchObject({
     status:"unchanged-proposal-only",sourceUnchanged:true,currentMaximumMicros:11019202,
     tariffAdmitted:false,paidCalls:0});
+});
+it("recomputes the Sol judge ceiling for its 12000-token request without admitting a tariff",()=>{
+  expect(conservativeStandardBoundMicros(sol,12000)).toBe(27736500);
+  expect(auditPublicReviewBound(sol,structuredClone(sol),12000,27736500)).toMatchObject({
+    status:"unchanged-proposal-only",sourceUnchanged:true,currentMaximumMicros:27736500,
+    tariffAdmitted:false,paidCalls:0});
+  expect(auditPublicReviewBound(sol,structuredClone(sol),12000,27345252).status).toBe("bound-insufficient");
 });
 it("requires review for price, route or capability changes even when a ceiling remains sufficient",()=>{
   const cheaper=clone();cheaper.endpoints[1].pricing.prompt="0.000001";

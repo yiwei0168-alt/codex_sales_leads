@@ -1,5 +1,7 @@
 # LangChain / LangGraph 销售线索工作流
 
+2026-09-14阶段99：条件分歧裁决仍是 Sol `reasoning.effort=high`、严格JSON和12,000输出token；公开端点复核候选上界 USD27.736500，[只读审计](OPENROUTER_SOL_JUDGE_PROPOSAL_2026-09-14.md)。当前费用门禁的4,096输出合同继续拒绝该请求，图执行与模型路由未改；实际服务商契约、预算及A11真实闭环仍缺。
+
 2026-09-14阶段98：本地生产验收将合成 `workflow_stage_metric`/`workflow_model_usage` 各一条经同源登录 HTTP 两次读取，两视口均看到同一聚合而不新增事件；原图执行、费用、模型调用均未触发。[HTTP回归](WORKFLOW_USAGE_PRODUCTION_HTTP_2026-09-14.md)。这不替代真实模型业务闭环。
 
 2026-09-14阶段97：结果持久化后的 `workflow_stage_metric` 与 `workflow_model_usage` 现在由 `/api/tasks/usage` 作为两份独立只读聚合暴露；阶段输入、生成、有效、下游使用与 token/耗时分开对账，异常计数留空利用率，用户采用仍未知。[SQL与API验证](WORKFLOW_USAGE_AGGREGATE_ACCEPTANCE_2026-09-14.md)。不改图执行、事件写入、预算或计费。
