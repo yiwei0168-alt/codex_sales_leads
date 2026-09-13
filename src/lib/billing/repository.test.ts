@@ -86,3 +86,9 @@ it("refuses only the tariff held by a prior overrun",async()=>{
   await expect(reservePaidCall("owner",input)).rejects.toThrow("tariff-suspended");
   expect(query).toHaveBeenCalledTimes(1);
 });
+it("blocks a globally held public-rate contract before reserving any user's spend",async()=>{
+  query.mockResolvedValueOnce({rows:[{limit_micros:"100",occupied_micros:"10",frozen:false,rate_review_held:true}]});
+  await expect(reservePaidCall("owner",input)).rejects.toThrow("tariff-suspended");
+  expect(query).toHaveBeenCalledTimes(1);
+  expect(query.mock.calls[0][0]).toContain("billing_tariff_refresh_state where tariff_key=$2 and hold");
+});

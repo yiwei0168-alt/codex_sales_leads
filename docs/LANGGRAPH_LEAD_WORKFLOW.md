@@ -1,5 +1,7 @@
 # LangChain / LangGraph 销售线索工作流
 
+阶段104费用边界：worker 为现行 Sol 静态合同每五分钟检查七天只读公开费率复核是否到期，跨进程去重、失败一小时退避；漂移/不完整价证使新预留粘性暂停，已完成检查点及历史费用不变。预算页面只读状态，不刷新外部源。[SQL与生产UI证据](OPENROUTER_SOL_RATE_REFRESH_ACCEPTANCE_2026-09-14.md)。其他路由的费率刷新和真实模型业务仍待。
+
 阶段103费用边界：角色校正/评分的四条默认OpenRouter备用路由仅完成公开端点兼容性和缺价审计；动态DeepSeek价格漂移、缓存费用字段缺失，保持 `missing-tariff` 停止与原检查点恢复资格。没有调用模型或重算冻结哥伦比亚结果。[只读审计](OPENROUTER_DEFAULT_FALLBACK_GAP_AUDIT_2026-09-14.md)。
 
 2026-09-14阶段102：最小闭环预检现在从实际LangChain序列化捕获一条合成市场计划请求，按完整JSON/传输字节核验现行合同；[只读证据](MINIMAL_ACCEPTANCE_PLAYBOOK_WIRE_PREFLIGHT_2026-09-14.md)显示该形态有效但27.345252保守上界超余额。真实RAG、发现到评分及复核请求尚未逐入口覆盖，不启动图任务或付费调用。

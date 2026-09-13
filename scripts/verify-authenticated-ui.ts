@@ -302,6 +302,12 @@ try{
     await expect(page.getByText('费用上界核验期限',{exact:true})).toBeVisible();
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
     checks.push(`${viewport.width}:tariff-verification-deadlines-real-api-refresh`);
+    expect(['validated','review-required','unavailable','missing']).toContain(tariffSnapshot.openRouterRateReference.status);
+    await page.getByText('OpenRouter 公开费率复核',{exact:true}).click();
+    await expect(page.getByTestId('openrouter-rate-status')).toContainText(tariffSnapshot.openRouterRateReference.checkedAt??'未知');
+    await expect(page.getByTestId('openrouter-rate-status')).toContainText(tariffSnapshot.openRouterRateReference.nextAttemptAt??'未知');
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+    checks.push(`${viewport.width}:openrouter-public-rate-review-real-api`);
     await page.getByText('人民币模型费率与汇率期限',{exact:true}).click();
     expect(tariffSnapshot.referenceVerification.rules).toHaveLength(3);
     for(const rule of tariffSnapshot.referenceVerification.rules){

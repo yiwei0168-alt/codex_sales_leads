@@ -1,5 +1,7 @@
 # 产品开发恢复节点 — 2026-09-11
 
+2026-09-14阶段104 / A05：现行Sol公开元数据七天只读刷新与粘性漂移暂停已接worker/预留门禁/预算页面；迁移056在真实PostgreSQL验证，状态validated/hold=false、预算占用不变。911测试/198文件、生产build、lint0错误、audit0漏洞及本地生产Chrome桌面/手机60组通过，fixture清理，0真实付费/发信。[报告](OPENROUTER_SOL_RATE_REFRESH_ACCEPTANCE_2026-09-14.md)。其他费率与变更确认、S01、A11仍缺，整体验收未完成。
+
 2026-09-14阶段103 / A02：无凭据只读复核默认四条OpenRouter备用模型，公开兼容端点2/1/12/9；DeepSeek价格相对阶段90漂移，缓存价格字段仍缺，产品保持 `missing-tariff`。脚本有意以非零状态提示公开证据变化；没有推理、搜索、预算或账号写入。[报告](OPENROUTER_DEFAULT_FALLBACK_GAP_AUDIT_2026-09-14.md)。A11真实闭环和完整运行预留仍缺，整体验收未完成。
 
 2026-09-14阶段102 / 最小闭环预检：合成市场计划LangChain传输实际捕获4,171字节/4,096输出且现行合同有效；USD27.345252单次上界超最后余额17.675596，预算占用前后不变，0外部调用/认领。[报告](MINIMAL_ACCEPTANCE_PLAYBOOK_WIRE_PREFLIGHT_2026-09-14.md)。全入口/整次预算、S01确认与A11真实闭环仍缺，goal active。

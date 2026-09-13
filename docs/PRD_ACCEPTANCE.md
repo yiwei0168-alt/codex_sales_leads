@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-09-14阶段104：现行 OpenRouter Sol 合同的七天公开只读复核、漂移暂停预留、追加快照及预算状态展示通过真实SQL、911测试/198文件、build和桌面/手机60组生产Chrome回归；0真实付费/发信。[报告](OPENROUTER_SOL_RATE_REFRESH_ACCEPTANCE_2026-09-14.md)。其他模型/搜索费率刷新、变更确认、S01和A11真实闭环仍缺。
+
 阶段103费用验收状态：四个默认OpenRouter备用模型按当前8,192输出请求只读核查，公开可兼容端点数为2/1/12/9，DeepSeek价格已漂移，缓存价格字段不完整，仍由 `missing-tariff` 阻止；没有新费率准入、路由变更或付费调用。[端点缺口](OPENROUTER_DEFAULT_FALLBACK_GAP_AUDIT_2026-09-14.md)。阶段5完整费用合同、费率刷新及阶段8真实业务闭环仍未验收。
 
 2026-09-14阶段102：最小闭环只读预检捕获合成市场计划实际SDK传输并核验合同；4,171字节/4,096输出符合现行规则，但单次上界USD27.345252超过最后余额USD17.675596，未启动真实业务。[报告](MINIMAL_ACCEPTANCE_PLAYBOOK_WIRE_PREFLIGHT_2026-09-14.md)。其余入口与整次预算仍缺。

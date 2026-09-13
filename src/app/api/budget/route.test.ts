@@ -1,10 +1,14 @@
 import {beforeEach,expect,it,vi} from "vitest";
-const m=vi.hoisted(()=>({session:vi.fn(),read:vi.fn(),set:vi.fn(),taskRead:vi.fn(),taskSet:vi.fn()}));
+const m=vi.hoisted(()=>({session:vi.fn(),read:vi.fn(),set:vi.fn(),taskRead:vi.fn(),taskSet:vi.fn(),fxRead:vi.fn(),rateRead:vi.fn()}));
 vi.mock("@/lib/auth/session",()=>({requireApiSession:m.session}));
 vi.mock("@/lib/billing/repository",()=>({readSpendBudget:m.read,setSpendBudget:m.set,readTaskSpendBudget:m.taskRead,setTaskSpendBudget:m.taskSet}));
+vi.mock("@/lib/billing/fx-reference-repository",()=>({readBillingReferenceStatus:m.fxRead}));
+vi.mock("@/lib/billing/openrouter-rate-repository",()=>({readOpenRouterSolRateStatus:m.rateRead}));
 import {GET,PUT} from "./route";
 const actionId="00000000-0000-4000-8000-000000000002";
-beforeEach(()=>{vi.clearAllMocks();m.session.mockResolvedValue({userId:"owner"});m.taskRead.mockResolvedValue({taskLimit:null,stages:[]});});
+beforeEach(()=>{vi.clearAllMocks();m.session.mockResolvedValue({userId:"owner"});m.taskRead.mockResolvedValue({taskLimit:null,stages:[]});
+  m.read.mockResolvedValue({budget:null,stages:[]});m.fxRead.mockResolvedValue({fx:{status:"missing"},rules:[]});
+  m.rateRead.mockResolvedValue({checkedAt:null,nextAttemptAt:null,status:"missing",hold:false});});
 it("does not expose budget data without a session",async()=>{
   m.session.mockResolvedValue(new Response(null,{status:401}));expect((await GET(new Request("http://localhost/api/budget"))).status).toBe(401);expect(m.read).not.toHaveBeenCalled();
 });
@@ -19,4 +23,18 @@ it("rejects malformed task IDs and missing confirmation without writes",async()=
   expect((await GET(new Request("http://localhost/api/budget?actionId=bad"))).status).toBe(400);
   expect((await PUT(new Request("http://localhost/api/budget",{method:"PUT",body:JSON.stringify({actionId,limitUsd:"50"})}))).status).toBe(400);
   expect(m.taskSet).not.toHaveBeenCalled();
+});
+it("shows a public-rate review hold without refreshing or changing the owner's budget",async()=>{
+  m.rateRead.mockResolvedValue({checkedAt:"2026-09-14T00:00:00Z",nextAttemptAt:"2026-09-21T00:00:00Z",status:"review-required",hold:true});
+  const response=await GET(new Request("http://localhost/api/budget"));
+  expect(response.status).toBe(200);
+  expect((await response.json()).openRouterRateReference).toMatchObject({status:"review-required",hold:true});
+  expect(m.read).toHaveBeenCalledWith("owner");expect(m.rateRead).toHaveBeenCalledTimes(1);
+  expect(m.set).not.toHaveBeenCalled();
+});
+it("keeps an unavailable public-rate observation unknown while the budget remains readable",async()=>{
+  m.rateRead.mockRejectedValue(new Error("reference storage unavailable"));
+  const response=await GET(new Request("http://localhost/api/budget"));
+  expect(response.status).toBe(200);
+  expect((await response.json()).openRouterRateReference).toEqual({checkedAt:null,nextAttemptAt:null,status:"unavailable",hold:null});
 });
