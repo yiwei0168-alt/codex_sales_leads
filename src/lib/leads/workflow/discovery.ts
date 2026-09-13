@@ -1,8 +1,9 @@
 import { createHash } from "node:crypto";
 import {BudgetDeniedError} from "@/lib/billing/policy";
+import { currentSpendContext } from "@/lib/billing/context";
 import {withCompanyCostAttribution} from "@/lib/billing/company-cost-context";
 
-import { query } from "@/lib/rag/db";
+import { query, transaction, tenantTransaction, tenantQuery } from "@/lib/rag/db";
 import type { LeadSearchPlan } from "@/lib/assistant/types";
 import { TavilySearchProvider, tavilyFailureMetrics } from "@/providers/tavily";
 import { ACTIVE_LEAD_SCORING_POLICY, scoringPolicyChecksum } from "@/lib/leads/scoring-policy";
@@ -20,6 +21,7 @@ import { ACTIVE_HYBRID_SEARCH_POLICY, hybridSearchPolicyChecksum } from "./hybri
 import { validCompanyDomainIdentity } from "./candidate-registry";
 import { discoverySessionDependency, restoreDiscoverySession, snapshotDiscoverySession,
   type DiscoverySessionSnapshot } from "./discovery-session";
+import { discoveryRoundContract, loadDiscoveryCheckpoint, saveDiscoveryCheckpoint } from "./discovery-checkpoint";
 
 export interface DiscoveryResult {
   sessionSnapshot?: DiscoverySessionSnapshot;
@@ -48,8 +50,17 @@ function occurrenceKey(call: HybridSearchCallTelemetry, item: HybridSearchCallTe
     item.item.externalId ?? "", item.item.rank].join("|"));
 }
 
-async function persistHybridSearchCall(runId: string, plan: LeadSearchPlan,
+export async function persistHybridSearchCall(runId: string, plan: LeadSearchPlan,
   call: HybridSearchCallTelemetry): Promise<void> {
+  const userId = currentSpendContext()?.userId;
+  const runTransaction: typeof transaction = userId ? run => tenantTransaction(userId, run) : transaction;
+  await runTransaction(async client => {
+    const query = async <T extends import("pg").QueryResultRow = import("pg").QueryResultRow>(sql: string, values?: unknown[]): Promise<T[]> =>
+      (await client.query<T>(sql, values)).rows;
+    const locked = await query("select id from lead_search_run where id=$1 for update", [runId]);
+    if (locked.length !== 1) throw new Error("Search telemetry run is missing");
+    const existing = await query("select id from lead_search_provider_call where run_id=$1 and call_fingerprint=$2 limit 1", [runId, call.callFingerprint]);
+    if (existing.length) return;
   const leadType = call.route.category === "brand-owner" || call.route.category === "oem-odm-opportunity"
     ? "strategic-customer" : "channel";
   const [searchQuery] = await query<{ id: string }>(
@@ -94,6 +105,7 @@ async function persistHybridSearchCall(runId: string, plan: LeadSearchPlan,
         JSON.stringify({ title: result.item.title.slice(0, 300) })],
     );
   }
+  });
 }
 
 async function writeDiscoveryGateOutcomes(candidates: LeadWorkflowCandidate[]): Promise<void> {
@@ -107,6 +119,22 @@ async function writeDiscoveryGateOutcomes(candidates: LeadWorkflowCandidate[]): 
   }
 }
 
+export async function persistDiscoveryRoundSummary(values: unknown[]): Promise<void> {
+  const userId = currentSpendContext()?.userId;
+  if (userId) await tenantQuery(userId, `update lead_search_run set query_count = query_count + $2,
+       raw_result_count = raw_result_count + $3,
+       unique_candidate_count = unique_candidate_count + $4,
+       credits_used = credits_used + $5, metadata = metadata || $6::jsonb
+         || jsonb_build_object('completedDiscoveryRounds', coalesce(metadata->'completedDiscoveryRounds','[]'::jsonb) || to_jsonb($7::text))
+       where id = $1 and not (coalesce(metadata->'completedDiscoveryRounds','[]'::jsonb) ? $7::text)`, values);
+  else await query(`update lead_search_run set query_count = query_count + $2,
+       raw_result_count = raw_result_count + $3,
+       unique_candidate_count = unique_candidate_count + $4,
+       credits_used = credits_used + $5, metadata = metadata || $6::jsonb
+         || jsonb_build_object('completedDiscoveryRounds', coalesce(metadata->'completedDiscoveryRounds','[]'::jsonb) || to_jsonb($7::text))
+       where id = $1 and not (coalesce(metadata->'completedDiscoveryRounds','[]'::jsonb) ? $7::text)`, values);
+}
+
 export async function discoverLeadCandidates(
   actionId: string,
   workspaceId: string,
@@ -115,7 +143,13 @@ export async function discoverLeadCandidates(
   graphThreadId: string,
   invocation: LeadDiscoveryInvocation = {},
 ): Promise<DiscoveryResult> {
-  const [createdRun] = invocation.existingRunId ? [] : await query<{ id: string }>(
+  const priorRuns = invocation.existingRunId ? [] : await query<{ id: string }>(
+    `select id from lead_search_run where workspace_id=$1 and country_code=$2
+      and metadata->>'assistantActionId'=$3 and metadata->>'graphThreadId'=$4`,
+    [workspaceId, plan.countryCode, actionId, graphThreadId]);
+  if (priorRuns.length > 1) throw new Error("Multiple discovery runs match this checkpoint; refusing paid replay");
+  const existingRunId = invocation.existingRunId ?? priorRuns[0]?.id;
+  const [createdRun] = existingRunId ? [] : await query<{ id: string }>(
     `insert into lead_search_run (workspace_id, provider, target_count, country_code, market_name, objective,
        scoring_policy_id, scoring_policy_version, scoring_policy_checksum, scoring_policy_snapshot, metadata)
      values ($1, 'langgraph+hybrid-search', $2, $3, $4, $5,
@@ -132,13 +166,22 @@ export async function discoverLeadCandidates(
       ACTIVE_LEAD_SCORING_POLICY.policyKey, ACTIVE_LEAD_SCORING_POLICY.version,
       scoringPolicyChecksum(), JSON.stringify(ACTIVE_LEAD_SCORING_POLICY)],
   );
-  const run = { id: invocation.existingRunId ?? createdRun?.id };
+  const run = { id: existingRunId ?? createdRun?.id };
   if (!run.id) throw new Error("Lead search run could not be created or resumed.");
   try {
     const dependency = discoverySessionDependency(plan, graphThreadId);
-    const session = restoreDiscoverySession(invocation.sessionSnapshot, dependency);
+    const userId = currentSpendContext()?.userId;
+    const owner = userId ? { userId, workspaceId, runId: run.id, countryCode: plan.countryCode, actionId, graphThreadId } : undefined;
+    const contract = discoveryRoundContract(dependency, playbook, invocation.queryRound ?? 0, invocation.targetPoolOverride);
+    const saved = owner ? await loadDiscoveryCheckpoint(owner, contract, invocation.queryRound ?? 0) : undefined;
+    const session = restoreDiscoverySession(saved?.session ?? invocation.sessionSnapshot, dependency);
+    // Calls may have been checkpointed just before their telemetry transaction failed.
+    for (const call of saved?.round.calls ?? []) await persistHybridSearchCall(run.id, plan, call);
     const execution = await executeHybridDiscovery(run.id, plan, playbook, {
       session,
+      checkpoint: saved?.round,
+      onCheckpoint: owner ? async round => saveDiscoveryCheckpoint(owner, { version: "discovery-call-checkpoint-v1",
+        contract, session: snapshotDiscoverySession(session, dependency), round }) : undefined,
       queryRound: invocation.queryRound,
       targetPoolOverride: invocation.targetPoolOverride,
       initialExcludeDomains: invocation.excludeDomains,
@@ -159,12 +202,7 @@ export async function discoverLeadCandidates(
     const gateCounts = [...execution.candidates, ...execution.rejectedCandidates].reduce<Record<string, number>>(
       (counts, candidate) => { const status = candidate.discoveryGate?.status ?? "unknown";
         counts[status] = (counts[status] ?? 0) + 1; return counts; }, {});
-    await query(
-      `update lead_search_run set query_count = query_count + $2,
-       raw_result_count = raw_result_count + $3,
-       unique_candidate_count = unique_candidate_count + $4,
-       credits_used = credits_used + $5, metadata = metadata || $6::jsonb where id = $1`,
-      [run.id, execution.calls.filter((call) => call.status !== "skipped").length, rawResults, uniqueCandidates,
+    await persistDiscoveryRoundSummary([run.id, execution.calls.filter((call) => call.status !== "skipped").length, rawResults, uniqueCandidates,
         Math.ceil(creditsUsed), JSON.stringify({ discoveryWarnings: execution.warnings,
           candidatePoolSize: execution.candidates.length, rejectedCandidateCount: execution.rejectedCandidates.length,
           targetPool: execution.targetPool, stopReason: execution.stopReason, gateCounts,
@@ -172,8 +210,7 @@ export async function discoverLeadCandidates(
           providerCallCount: execution.calls.length,
           providerCallStatuses: execution.calls.reduce<Record<string, number>>((counts, call) => {
             counts[call.status] = (counts[call.status] ?? 0) + 1; return counts;
-          }, {}) })],
-    );
+          }, {}) }), String(invocation.queryRound ?? 0)]);
     if (execution.candidates.length === 0 && !invocation.existingRunId) throw new Error(
       `No usable public-company candidates were discovered. ${execution.warnings.join(" ")}`.trim());
     return { runId: run.id, candidates: execution.candidates, creditsUsed,

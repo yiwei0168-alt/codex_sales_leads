@@ -54,6 +54,8 @@ export interface HybridDiscoveryExecution {
 }
 
 interface ExecutorOptions {
+  checkpoint?: HybridDiscoveryRoundCheckpoint;
+  onCheckpoint?: (checkpoint: HybridDiscoveryRoundCheckpoint) => Promise<void>;
   providerFactory?: (step: HybridSearchRouteStep) => DiscoveryProvider;
   gate?: Pick<LeadDiscoveryGate, "evaluate">;
   concurrency?: number;
@@ -62,6 +64,23 @@ interface ExecutorOptions {
   initialExcludeDomains?: string[];
   session?: HybridDiscoverySession;
   onCall?: (call: HybridSearchCallTelemetry) => Promise<void>;
+}
+
+export interface HybridDiscoveryRoundCheckpoint {
+  round: number;
+  targetPool: number;
+  initiallyExcludedDomains: string[];
+  calls: HybridSearchCallTelemetry[];
+  gated: LeadWorkflowCandidate[];
+  rejected: LeadWorkflowCandidate[];
+  modelUsage: WorkflowModelUsage[];
+  warnings: string[];
+  noValueByTrack: Array<[string, number]>;
+  failedByTrack: string[];
+}
+
+export class DiscoveryCheckpointError extends Error {
+  constructor() { super("Discovery checkpoint persistence failed; purchased work must not be replayed as a provider failure"); }
 }
 
 export interface HybridDiscoverySession {
@@ -254,7 +273,9 @@ async function runLimited<T>(tasks: Array<() => Promise<T>>, concurrency: number
       results[index] = await tasks[index]();
     }
   };
-  await Promise.all(Array.from({ length: Math.min(concurrency, tasks.length) }, () => worker()));
+  const settled = await Promise.allSettled(Array.from({ length: Math.min(concurrency, tasks.length) }, () => worker()));
+  const failed = settled.find(result => result.status === "rejected");
+  if (failed?.status === "rejected") throw failed.reason;
   return results;
 }
 
@@ -289,14 +310,37 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
   for (const domain of options.initialExcludeDomains ?? []) {
     if (domain.trim()) session.excludedDomains.add(domain.trim().toLowerCase());
   }
-  const initiallyExcludedDomains = new Set(session.excludedDomains);
-  const calls: HybridSearchCallTelemetry[] = [];
-  const warnings: string[] = [];
-  const modelUsage: WorkflowModelUsage[] = [];
-  const gated = new Map<string, LeadWorkflowCandidate>();
-  const rejected = new Map<string, LeadWorkflowCandidate>();
-  const noValueByTrack = new Map<string, number>();
-  const failedByTrack = new Set<string>();
+  const saved = options.checkpoint;
+  if (saved && (saved.round !== queryRound || saved.targetPool !== targetPool)) throw new Error("Discovery round contract mismatch");
+  const initiallyExcludedDomains = new Set(saved?.initiallyExcludedDomains ?? session.excludedDomains);
+  const calls: HybridSearchCallTelemetry[] = [...(saved?.calls ?? [])];
+  const warnings: string[] = [...(saved?.warnings ?? [])];
+  const modelUsage: WorkflowModelUsage[] = [...(saved?.modelUsage ?? [])];
+  const gated = new Map((saved?.gated ?? []).map(candidate => [candidate.candidateId, candidate]));
+  const rejected = new Map((saved?.rejected ?? []).map(candidate => [candidate.candidateId, candidate]));
+  const noValueByTrack = new Map(saved?.noValueByTrack ?? []);
+  const failedByTrack = new Set(saved?.failedByTrack ?? []);
+  for (const call of calls) for (const result of call.items) {
+    if (hardPrefilter(result.item)) continue;
+    registry.add(result.item, { query: call.query, countryCode: plan.countryCode, countryName: plan.countryName,
+      languageCode: plan.queryLanguage, maxResults: call.requestedResults, category: call.route.category,
+      track: call.route.track, engine: call.route.engine, mechanism: call.route.mechanism }, call.route, rolesByCategory[call.route.category]);
+  }
+  let checkpointFailed = false;
+  let saving = Promise.resolve();
+  const saveCheckpoint = async () => {
+    if (!options.onCheckpoint) return;
+    saving = saving.then(async () => {
+      await options.onCheckpoint!({ round: queryRound, targetPool, initiallyExcludedDomains: [...initiallyExcludedDomains],
+        calls: [...calls], gated: [...gated.values()], rejected: [...rejected.values()], modelUsage: [...modelUsage],
+        warnings: [...warnings], noValueByTrack: [...noValueByTrack], failedByTrack: [...failedByTrack] });
+    });
+    try { await saving; } catch { checkpointFailed = true; throw new DiscoveryCheckpointError(); }
+  };
+  const publishCall = async (call: HybridSearchCallTelemetry) => {
+    await saveCheckpoint();
+    try { await options.onCall?.(call); } catch { checkpointFailed = true; throw new DiscoveryCheckpointError(); }
+  };
   const invocationProviderCircuits = new Map<string, string>();
   const maximumSequence = Math.max(...route.map((step) => step.sequence), 0);
 
@@ -306,7 +350,10 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
   for (let sequence = 0; sequence <= maximumSequence; sequence += 1) {
     const wave = route.filter((step) => step.sequence === sequence);
     const tasks = wave.map((step) => ({ provider: step.provider, run: async () => {
+      if (checkpointFailed) throw new DiscoveryCheckpointError();
       const trackKey = `${step.category}/${step.track}`;
+      const restoredCallKey = `${trackKey}/${sequence}/${step.provider}/${step.engine}`;
+      if (saved?.calls.some(call => call.callKey === restoredCallKey)) return;
       const fallbackProvider = step.fallbackForProvider;
       const providerFallbackRequired = Boolean(fallbackProvider && (failedByTrack.has(trackKey)
         || session.providerCircuits.has(fallbackProvider)
@@ -339,7 +386,7 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
           errorMessage: circuitReason ?? (recoveryCooldown
             ? `Recovery probe deferred until discovery round ${cooldownUntilRound}.` : failedCache?.message),
           failureClass: failedCache?.kind, items: [] };
-        calls.push(skipped); await options.onCall?.(skipped); return;
+        calls.push(skipped); await publishCall(skipped); return;
       }
       if (!decision.run) {
         const skipped: HybridSearchCallTelemetry = { callKey, callFingerprint: fingerprint,
@@ -349,7 +396,7 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
           inputTokens: 0, outputTokens: 0, latencyMs: 0, retryCount: 0,
           fallbackUsed: providerFallbackRequired, cacheStatus: "skipped",
           discardedReasonCounts: { [decision.reason ?? "not-required"]: 1 }, items: [] };
-        calls.push(skipped); await options.onCall?.(skipped); return;
+        calls.push(skipped); await publishCall(skipped); return;
       }
       const query: DiscoveryQuery = { query: searchQuery, countryCode: plan.countryCode, countryName: plan.countryName,
         languageCode: plan.queryLanguage, maxResults: requestedResults,
@@ -403,9 +450,9 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
           retryCount: cached ? 0 : response.retryCount,
           fallbackUsed: failedByTrack.has(trackKey) || providerFallbackRequired,
           cacheStatus: cached ? "hit" : "miss", discardedReasonCounts: discarded, items };
-        calls.push(completed); await options.onCall?.(completed);
+        calls.push(completed); await publishCall(completed);
       } catch (error) {
-        if(error instanceof BudgetDeniedError)throw error;
+        if(error instanceof BudgetDeniedError || error instanceof DiscoveryCheckpointError)throw error;
         failedByTrack.add(trackKey);
         const details = failureDetails(error);
         session.failedCalls.set(fingerprint, { kind: details.kind,
@@ -430,7 +477,7 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
           circuitScope: details.circuitScope, discardedReasonCounts: { [`provider-${details.kind}`]: 1 }, items: [],
           errorMessage: error instanceof Error ? error.message : String(error) };
         warnings.push(`Hybrid discovery failed (${trackKey}/${step.provider}): ${failed.errorMessage}`);
-        calls.push(failed); await options.onCall?.(failed);
+        calls.push(failed); await publishCall(failed);
       }
     }}));
     await runProviderAware(tasks, concurrency);
@@ -443,6 +490,7 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
       gateResult.rejected.forEach((candidate) => rejected.set(candidate.candidateId, candidate));
       modelUsage.push(...gateResult.usage);
       warnings.push(...gateResult.warnings);
+      await saveCheckpoint();
     }
     if (qualityCount() >= targetPool) break;
   }

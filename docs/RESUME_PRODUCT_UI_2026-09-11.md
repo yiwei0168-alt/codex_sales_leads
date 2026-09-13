@@ -1,5 +1,7 @@
 # 产品开发恢复节点 — 2026-09-11
 
+最新恢复增量（2026-09-13 阶段32）：discovery-checkpoint.ts 存用户/工作区/国家/action/thread/契约约束轮内检查点；执行器保存calls/gated/rejected/usage/noValue，恢复重建registry并跳过完整调用及门禁。discovery.ts先找同任务原run，事务幂等persistHybridSearchCall，persistDiscoveryRoundSummary按completedDiscoveryRounds只累计一次。保存故障DiscoveryCheckpointError独立于provider failures，等待在途worker收尾。786测试/typecheck/build与真实SQL并发幂等/边界验证通过，无付费。下一步跨轨实际请求去重、类别工具边际条件（配置尚未改）、O05、费用上界/历史终态恢复/真实UI业务闭环。勿提前标O04或整体验收完成。
+
 最新恢复增量（2026-09-13 阶段31）：discovery-session.ts 序列化Map/Set；discoverLeadCandidates返回sessionSnapshot，graph保存并传入下一轮。配置/原请求/国家/任务依赖摘要不符则阻止恢复；rawResponse不存、明文凭据不存。784测试/typecheck/build通过，无付费。下一步优先单轮中断即时保存已购输出（目前仅轮次结束保存）、跨轨请求指纹去重、Brave核心及类别边际贡献条件策略；O05、费用上界、历史终态恢复与真实闭环仍待完成。
 
 最新恢复增量（2026-09-13 阶段30）：verify-candidate-routing.ts 实测O02路由真实SQL幂等/用户工作区国家隔离/范围外状态保存通过并清理。role-unresolved明确结束待判、不宣称耗尽；qualified-shortfall撤销最终不足时的中间target-met；故障不借旧停滞数宣称耗尽；任务消息/详情统一停止原因、缺口/待判数、累计唯一发现数。780全量测试+随后15图测试、typecheck/build通过，无付费。下一步O04/O05、费用上界、历史终态恢复兼容与真正业务/UI闭环，仍不标整体验收。

@@ -1,5 +1,11 @@
 # 产品工作流效率台账
 
+## 2026-09-13 阶段32：轮内已购输出与门禁恢复
+
+每个搜索调用终态、每批门禁完成后写discoveryCheckpoint，包含会话、调用输入/输出及原token/API额度、延迟/重试/丢弃原因、门禁结果与usage。恢复保留原调用计费数据但不新增付费调用，不重做已完成门禁。任务/国家/工作区/请求契约严格核对；发现节点尚未完成时也可找到原run。遥测事务按运行+请求指纹幂等，整轮查询/唯一公司/credits按轮次只累计一次；并发失败等待在途worker收尾，保存异常不记供应商故障。
+
+证据：786测试与生产build/typecheck通过；合成门禁后中断恢复保持搜索/门禁一次及credits守恒；真实SQL验证检查点、错误任务/契约拒绝、并发补写只一份调用/一次credits，隔离数据清理。实际供应商调用0。下步跨轨请求契约去重及类别边际贡献条件路由；不把上述离线验证说成真实填充率或节省率。
+
 ## 2026-09-13 阶段31：O04 跨轮次任务会话
 
 修复产品每轮重建发现会话：现在沿图检查点保存/传递 excludedDomains、completedCalls、failedCalls、providerCircuits、routeCircuits、失败计数及冷却轮次。原请求/国家/任务/策略/服务商配置摘要变化时阻止旧会话恢复。只保存搜索业务结果，删除rawResponse；无明文凭据。发现遥测新增reusedTaskSession、retainedCompletedCalls、retainedProviderCircuits，沿用输入/有效/下游量、API额度/token、延迟、重试与丢弃原因；缓存复用不是用户采用。

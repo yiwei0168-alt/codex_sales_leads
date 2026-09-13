@@ -4,7 +4,8 @@ import type { LeadSearchPlan } from "@/lib/assistant/types";
 import type { DiscoveryProvider, DiscoveryProviderResult, DiscoveryQuery } from "@/providers/discovery-contracts";
 import { DiscoveryProviderError } from "@/providers/discovery";
 import type { DiscoveryGateResult } from "./discovery-gate";
-import { createHybridDiscoverySession, executeHybridDiscovery, hardPrefilter } from "./hybrid-discovery-executor";
+import { createHybridDiscoverySession, executeHybridDiscovery, hardPrefilter, type HybridDiscoveryRoundCheckpoint } from "./hybrid-discovery-executor";
+import { snapshotDiscoverySession, restoreDiscoverySession, type DiscoverySessionSnapshot } from "./discovery-session";
 import type { HybridSearchRouteStep } from "./hybrid-search-policy";
 import type { LeadMarketPlaybook, LeadWorkflowCandidate } from "./types";
 
@@ -32,6 +33,39 @@ const passGate = { evaluate: async (candidates: LeadWorkflowCandidate[]): Promis
 }) };
 
 describe("hybrid discovery executor", () => {
+  it("recovers purchased calls and completed gates after a durable mid-round interruption without double cost", async () => {
+    let checkpoint: HybridDiscoveryRoundCheckpoint | undefined;
+    let sessionSnapshot: DiscoverySessionSnapshot | undefined;
+    const session = createHybridDiscoverySession();
+    const requests: string[] = [];
+    let gates = 0;
+    const gate = { evaluate: async (items: LeadWorkflowCandidate[]) => { gates++; return passGate.evaluate(items); } };
+    const factory = (step: HybridSearchRouteStep): DiscoveryProvider => ({ id: step.provider,
+      search: async query => { requests.push(`${step.provider}:${query.query}`); return new FakeProvider(step.provider, "fixture.de").search(query); } });
+    await expect(executeHybridDiscovery("interrupted", plan, playbook, { session, gate, providerFactory: factory,
+      concurrency: 1, onCheckpoint: async saved => {
+        checkpoint = structuredClone(saved); sessionSnapshot = snapshotDiscoverySession(session, "fixture");
+        if (saved.gated.length) throw new Error("Synthetic crash after durable gate write");
+      } })).rejects.toThrow("checkpoint persistence failed");
+    const purchasedBefore = requests.length;
+    const resumed = await executeHybridDiscovery("interrupted", plan, playbook, { checkpoint,
+      session: restoreDiscoverySession(JSON.parse(JSON.stringify(sessionSnapshot)), "fixture"),
+      gate, providerFactory: factory, concurrency: 1 });
+    expect(purchasedBefore).toBeGreaterThan(0);
+    expect(new Set(requests).size).toBe(requests.length);
+    expect(gates).toBe(1);
+    expect(resumed.candidates).toHaveLength(1);
+    expect(resumed.calls.reduce((sum, call) => sum + call.paidSearchCredits, 0)).toBe(requests.length);
+  });
+  it("does not classify telemetry persistence failure as a provider failure", async () => {
+    const session = createHybridDiscoverySession();
+    await expect(executeHybridDiscovery("telemetry-failure", plan, playbook, { session, gate: passGate,
+      providerFactory: step => new FakeProvider(step.provider, "fixture.de"), concurrency: 1,
+      onCall: async () => { throw new Error("Synthetic database outage"); } })).rejects.toThrow("checkpoint persistence failed");
+    expect(session.completedCalls.size).toBe(1);
+    expect(session.failedCalls.size).toBe(0);
+    expect(session.providerFailureCounts.get("gemini-full")).toBe(0);
+  });
   it("runs the category core, shares the registry and records conditional calls", async () => {
     const output = await executeHybridDiscovery("run-1", plan, playbook, { gate: passGate,
       providerFactory: (step) => new FakeProvider(step.provider, step.sequence === 0 ? "example.de" : "example.de"),
