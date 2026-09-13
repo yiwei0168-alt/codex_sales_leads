@@ -11,6 +11,8 @@ if(a.hostname!==b.hostname||(a.port||'5432')!==(b.port||'5432')||a.pathname!==b.
 const admin=new Pool({connectionString:databaseConnectionString(adminUrl),ssl:databaseSslConfiguration(adminUrl)});
 const {getPool,tenantQuery}=await import("../src/lib/rag/db");
 const {persistLeadWorkflowResult}=await import("../src/lib/leads/workflow/persistence");
+const {persistenceInputFingerprint,RESULT_PERSISTENCE_IDENTITY_VERSION}=await import("../src/lib/leads/workflow/persistence-identity");
+const {completedStageMetric}=await import("../src/lib/leads/workflow/workflow-telemetry");
 const {setSpendBudget,reservePaidCall}=await import("../src/lib/billing/repository");
 const {companyCostKey,costRoundKey}=await import("../src/lib/billing/company-cost-context");
 const {correctedCandidate,assessment,playbook}=await import("./workflow-recovery-fixtures");
@@ -47,14 +49,22 @@ try{
       evidence:[{...correctedCandidate.evidence[0],url:`https://${domain}/`,capturedAt:"2026-09-13T00:00:00Z",freshnessStatus:"fresh" as const,evidenceRunId:runId,
         contentHash:createHash('sha256').update('Synthetic networking evidence').digest('hex'),excerpt:"Synthetic networking evidence"}]};
     const input={userId,workspaceId,actionId,graphThreadId,runId,countryCode,countryName:countryCode,requested:1,creditsUsed:0,ragContext:[],playbook,
-      candidates:[source],assessments:[{...assessment,candidateId:source.candidateId}],assessmentReviews:[],handoffs:[],modelUsage:[],stageMetrics:[],warnings:[],processedCompanyKeys:[companyKey]};
+      candidates:[source],assessments:[{...assessment,candidateId:source.candidateId}],assessmentReviews:[],handoffs:[],modelUsage:[],
+      stageMetrics:[completedStageMetric({stage:"persist_results",startedAt:Date.now(),input:[],output:{expectedResult:true}})],warnings:[],processedCompanyKeys:[companyKey]};
     const outcomes=await Promise.allSettled([persistLeadWorkflowResult(input),persistLeadWorkflowResult(input)]);
     const results=outcomes.map(outcome=>{if(outcome.status==='rejected')throw outcome.reason;return outcome.value;});
     for(const result of results){assert.equal(result.accepted,1);assert.deepEqual(result.deliveryCounts,{added:1,updated:0,roleChanged:0});}
+    const retried={...input,stageMetrics:input.stageMetrics.map(metric=>({...metric,startedAt:"2026-09-14T00:00:00Z",completedAt:"2026-09-14T00:00:01Z"}))};
+    assert.deepEqual(await persistLeadWorkflowResult(retried),results[0]);
     await assert.rejects(persistLeadWorkflowResult({...input,requested:0}),/conflicts with this persistence input/);
     await assert.rejects(persistLeadWorkflowResult({...input,countryCode:"GB"}),/conflicts with this persistence input/);
     await assert.rejects(persistLeadWorkflowResult({...input,assessments:[{...input.assessments[0],totalScore:1}]}),/conflicts with this persistence input/);
     const fingerprint=await admin.query("select metadata->>'persistenceInputFingerprint' as value from lead_search_run where id=$1",[runId]);
+    // Existing unversioned identities keep their exact original contract; never silently rewrite history.
+    await admin.query("update lead_search_run set metadata=(metadata-'persistenceInputIdentityVersion') || jsonb_build_object('persistenceInputFingerprint',$2::text) where id=$1",[runId,persistenceInputFingerprint(input)]);
+    assert.deepEqual(await persistLeadWorkflowResult(input),results[0]);
+    await assert.rejects(persistLeadWorkflowResult(retried),/conflicts with this persistence input/);
+    await admin.query("update lead_search_run set metadata=metadata || jsonb_build_object('persistenceInputFingerprint',$2::text,'persistenceInputIdentityVersion',$3::text) where id=$1",[runId,fingerprint.rows[0].value,RESULT_PERSISTENCE_IDENTITY_VERSION]);
     await admin.query("update lead_search_run set metadata=metadata-'persistenceInputFingerprint' where id=$1",[runId]);
     await assert.rejects(persistLeadWorkflowResult(input),/no replay identity/);
     await admin.query("update lead_search_run set metadata=jsonb_set(metadata,'{persistenceInputFingerprint}',to_jsonb($2::text)) where id=$1",[runId,fingerprint.rows[0].value]);
@@ -88,7 +98,7 @@ try{
   assert.equal(budget.rows[0].occupied_micros,'23');
   assert.equal((await tenantQuery(otherUserId,'select company_id from workspace_company_market where workspace_id=$1',[workspaceId])).length,0);
   console.log(JSON.stringify({actualProductPersistence:true,countries:2,sharedCompanyIdentities:1,concurrentCalls:4,artifactEvents:14,
-    evidenceSnapshots:2,countryRecords:2,conflictingReplaysRejected:6,legacyReplaysPreserved:2,unknownAdoption:true,syntheticReservedMicros:23,realProviderCalls:0,scope:"synthetic-input-to-real-product-SQL"}));
+    evidenceSnapshots:2,countryRecords:2,conflictingReplaysRejected:6,persistenceTimingReplays:2,legacyExactReplays:2,legacyTimingConflictsPreserved:2,legacyReplaysPreserved:2,unknownAdoption:true,syntheticReservedMicros:23,realProviderCalls:0,scope:"synthetic-input-to-real-product-SQL"}));
 }finally{
   if(created){
     const client=await admin.connect();

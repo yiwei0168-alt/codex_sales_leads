@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { persistenceInputFingerprint } from "./persistence-identity";
+import { persistenceInputFingerprint, resultPersistenceFingerprint, RESULT_PERSISTENCE_IDENTITY_VERSION } from "./persistence-identity";
 import { artifactObservations, saveArtifactObservations } from "./artifact-observations";
 import {completeTaskCostAllocation} from "@/lib/billing/task-cost-completion";
 import {costRoundKey} from "@/lib/billing/company-cost-context";
@@ -221,7 +221,7 @@ export async function persistLeadWorkflowResult(input: {
   stageMetrics: WorkflowStageMetric[];
   warnings: string[];
 }): Promise<LeadWorkflowResult> {
-  const persistenceFingerprint = persistenceInputFingerprint(input);
+  const persistenceFingerprint = resultPersistenceFingerprint(input);
   const candidateById = new Map(input.candidates.map((item) => [item.candidateId, item]));
   const reviewById = new Map(input.assessmentReviews.map((item) => [item.candidateId, item]));
   const handoffById = new Map(input.handoffs.map((item) => [item.provenance.candidateId, item]));
@@ -232,11 +232,13 @@ export async function persistLeadWorkflowResult(input: {
     .slice(0, input.requested);
   const selectedIds = new Map(selected.map((item, index) => [item.candidateId, index + 1]));
   const deliveryCounts=await tenantTransaction(input.userId, async (client) => {
-    const saved=await client.query<{counts:{added:number;updated:number;roleChanged:number}|null;fingerprint:string|null}>("select metadata->'deliveryCounts' as counts, metadata->>'persistenceInputFingerprint' as fingerprint from lead_search_run where id=$1 and workspace_id=$2 for update",[input.runId,input.workspaceId]);
+    const saved=await client.query<{counts:{added:number;updated:number;roleChanged:number}|null;fingerprint:string|null;identityVersion:string|null}>("select metadata->'deliveryCounts' as counts, metadata->>'persistenceInputFingerprint' as fingerprint, metadata->>'persistenceInputIdentityVersion' as \"identityVersion\" from lead_search_run where id=$1 and workspace_id=$2 for update",[input.runId,input.workspaceId]);
     if(!saved.rows[0])throw new Error("Search run is missing or outside this workspace");
     if(saved.rows[0]?.counts){
       if(!saved.rows[0].fingerprint)throw new Error("Saved search result has no replay identity; preserve it for reconciliation");
-      if(saved.rows[0].fingerprint!==persistenceFingerprint)throw new Error("Saved search result conflicts with this persistence input");
+      const expected = saved.rows[0].identityVersion === RESULT_PERSISTENCE_IDENTITY_VERSION ? persistenceFingerprint
+        : saved.rows[0].identityVersion === null ? persistenceInputFingerprint(input) : null;
+      if(saved.rows[0].fingerprint!==expected)throw new Error("Saved search result conflicts with this persistence input");
       return saved.rows[0].counts;
     }
     const costAllocationCompletion=await completeTaskCostAllocation(client,input.userId,input.actionId,
@@ -319,7 +321,7 @@ export async function persistLeadWorkflowResult(input: {
          graph_thread_id=$4, workflow_phase='completed', rag_chunk_ids=$5::uuid[],
          metadata=metadata || $6::jsonb, finished_at=now() where id=$1`,
       [input.runId, selected.length, input.creditsUsed, input.graphThreadId, input.ragContext.map((item) => item.chunkId),
-        JSON.stringify({ persistenceInputFingerprint:persistenceFingerprint,deliveryCounts:counts,costAllocationCompletion,playbook: input.playbook, assessmentCount: input.assessments.length,
+        JSON.stringify({ persistenceInputFingerprint:persistenceFingerprint,persistenceInputIdentityVersion:RESULT_PERSISTENCE_IDENTITY_VERSION,deliveryCounts:counts,costAllocationCompletion,playbook: input.playbook, assessmentCount: input.assessments.length,
           workflowWarnings: input.warnings, scoringPolicy: { key: ACTIVE_LEAD_SCORING_POLICY.policyKey,
             version: ACTIVE_LEAD_SCORING_POLICY.version, checksum: scoringPolicyChecksum() },
           evidenceFreshnessReport: {

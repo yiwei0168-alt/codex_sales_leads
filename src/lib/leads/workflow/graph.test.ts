@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { MemorySaver } from "@langchain/langgraph";
 import { WorkflowPausedError } from "./pause";
+import { resultPersistenceFingerprint } from "./persistence-identity";
 import { processingRecoveryWork } from "./processing-recovery";
 import { snapshotDiscoverySession } from "./discovery-session";
 import { createHybridDiscoverySession } from "./hybrid-discovery-executor";
@@ -146,6 +147,32 @@ function dependencies(events: string[], context = ragContext): LeadWorkflowDepen
 }
 
 describe("LangGraph lead workflow", () => {
+  it("retries a saved result after completion-status failure with the same business identity",async()=>{
+    const deps=dependencies([]),saver=new MemorySaver();
+    const persist=deps.persist;
+    let savedFingerprint:string|undefined;
+    deps.persist=vi.fn(async input=>{
+      const fingerprint=resultPersistenceFingerprint(input);
+      if(savedFingerprint)expect(fingerprint).toBe(savedFingerprint);
+      savedFingerprint=fingerprint;
+      return persist(input);
+    });
+    let failCompletion=true;
+    deps.updatePhase=vi.fn(async(_user,_action,phase)=>{
+      if(phase==="completed"&&failCompletion){failCompletion=false;throw new Error("Synthetic completion write interrupted");}
+    });
+    const graph=buildLeadWorkflowGraph(deps,saver),config={configurable:{thread_id:"persist-interrupted"}};
+    await expect(graph.invoke({userId:"u",actionId:"a",graphThreadId:"persist-interrupted",workspaceId:"w",plan,
+      phase:"queued",ragContext:[],candidates:[],assessments:[],assessmentReviews:[],handoffs:[],creditsUsed:0,warnings:[]},config))
+      .rejects.toThrow("Synthetic completion write interrupted");
+    const stopped=await graph.getState(config);
+    expect(stopped.next).toEqual(["persist_results"]);
+    const result=await buildLeadWorkflowGraph(deps,saver).invoke(null,config);
+    expect(result.result).toBeDefined();expect(result.creditsUsed).toBe(stopped.values.creditsUsed);
+    expect(deps.persist).toHaveBeenCalledTimes(2);
+    expect(deps.discover).toHaveBeenCalledTimes(1);expect(deps.correctionAgent.correct).toHaveBeenCalledTimes(1);
+    expect(deps.qualificationAgent.evaluate).toHaveBeenCalledTimes(1);
+  });
   it.each([false,true])("persists zero output with measured stop reason (provider failure=%s)",async failure=>{
     const deps=dependencies([]);
     const call=discoveryMetric(0);

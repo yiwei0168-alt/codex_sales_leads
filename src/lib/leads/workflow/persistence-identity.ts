@@ -1,4 +1,13 @@
 import { createHash } from "node:crypto";
+import type { WorkflowStageMetric } from "./types";
+
+export const RESULT_PERSISTENCE_IDENTITY_VERSION = "result-input-v2";
+
+/** Persistence retries regenerate their own timing; every business value and other metric stays significant. */
+export function resultPersistenceFingerprint(input: { stageMetrics: WorkflowStageMetric[] }): string {
+  return persistenceInputFingerprint({ ...input, stageMetrics: input.stageMetrics.map(metric =>
+    metric.stage === "persist_results" ? { ...metric, startedAt: null, completedAt: null } : metric) });
+}
 
 /** Object key order is irrelevant; array order and every JSON value remain significant. */
 export function persistenceInputFingerprint(input: unknown): string {
