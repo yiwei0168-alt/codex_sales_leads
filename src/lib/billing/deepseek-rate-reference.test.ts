@@ -41,8 +41,17 @@ it.each(["version","price","table"])("holds both rules for ambiguous %s evidence
   expect(result.items.some(item=>item.status==="review-required")).toBe(true);
   expect(result.tariffAdmitted).toBe(false);
 });
-it("rejects an unavailable or non-HTML source instead of treating it as an unchanged rate",async()=>{
+it("keeps transient server errors unavailable without accepting unchanged rates",async()=>{
   const get=vi.fn(async()=>new Response(table,{status:503,headers:{"content-type":"text/html"}}));
   await expect(fetchDeepSeekRateEvidence(get as typeof fetch)).rejects.toThrow("unavailable");
-  await expect(fetchDeepSeekRateEvidence(vi.fn(async()=>new Response(table)) as typeof fetch)).rejects.toThrow("unavailable");
+  await expect(fetchDeepSeekRateEvidence(vi.fn(async()=>new Response("rate limited",{status:429})) as typeof fetch)).rejects.toThrow("unavailable");
+});
+it.each(["non-HTML success","partial page","moved page","missing page","oversized page"])("marks %s public evidence review-required",async variant=>{
+  const status=variant==="partial page"?206:variant==="moved page"?302:variant==="missing page"?404:200;
+  const contentType=["partial page","oversized page"].includes(variant)?"text/html":"text/plain";
+  const get=vi.fn(async()=>new Response(variant==="oversized page"?table.padEnd(1_000_001,"x"):table,
+    {status,headers:{"content-type":contentType}}));
+  const result=await fetchDeepSeekRateEvidence(get as typeof fetch);
+  expect(result.items.map(item=>item.status)).toEqual(["review-required","review-required"]);
+  expect(result.tariffAdmitted).toBe(false);
 });

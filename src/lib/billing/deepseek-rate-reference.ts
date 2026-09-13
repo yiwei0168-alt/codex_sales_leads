@@ -71,15 +71,15 @@ export function parseDeepSeekPublicRates(html:string):ParsedRates{
 
 /** One public GET checks both static tariffs; no tariff, expiry or spending authorization is changed. */
 export async function fetchDeepSeekRateEvidence(transport:typeof fetch=fetch){
-  const response=await transport(sourceUrl,{method:"GET",redirect:"error",signal:AbortSignal.timeout(30000)});
-  if(!response.ok||!response.headers.get("content-type")?.toLowerCase().includes("text/html"))
+  const response=await transport(sourceUrl,{method:"GET",redirect:"manual",signal:AbortSignal.timeout(30000)});
+  if(response.status===0||response.status===429||response.status>=500)
     throw new Error("Official public pricing page unavailable");
   const html=await response.text();
   const bytes=Buffer.byteLength(html,"utf8");
-  if(bytes>1_000_000)throw new Error("Official public pricing page too large");
   const sourceHash=createHash("sha256").update(html).digest("hex");
   let current:ParsedRates|null=null;
-  try{current=parseDeepSeekPublicRates(html);}catch{/* Ambiguous page is review-required, not a cache miss. */}
+  try{if(bytes<=1_000_000&&response.status===200&&response.headers.get("content-type")?.toLowerCase().includes("text/html"))
+    current=parseDeepSeekPublicRates(html);}catch{/* Ambiguous page is review-required, not a cache miss. */}
   const items=checked.map(({source,rule,model})=>{
     const observed=current?.models.find(item=>item.id===source.model);
     const unchanged=Boolean(observed&&current?.contextLength===baseline.contextLength

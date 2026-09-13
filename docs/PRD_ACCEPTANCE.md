@@ -1,6 +1,6 @@
 # PRD v0.3 Acceptance Report
 
-2026-09-14阶段107：DeepSeek Flash/Pro共用官方价格页每日只读复核，迁移057追加快照及漂移粘性暂停经真实PostgreSQL验证；当前两条 `validated`，并发最多1 GET、缓存重复0，预算/付费历史不变。930测试/200文件、build、lint0错误/audit0高危和本地生产桌面/手机62组通过，fixture清理，0真实付费/发信。[报告](DEEPSEEK_PUBLIC_RATE_REFRESH_ACCEPTANCE_2026-09-14.md)。其余来源/变更确认、S01及A11真实闭环仍缺。
+2026-09-14阶段107：DeepSeek Flash/Pro共用官方价格页每日只读复核，迁移057追加快照及漂移粘性暂停经真实PostgreSQL验证；当前两条 `validated`，并发最多1 GET、缓存重复0，预算/付费历史不变。935测试/200文件、build、lint0错误/audit0高危和本地生产桌面/手机62组通过，fixture清理，0真实付费/发信。[报告](DEEPSEEK_PUBLIC_RATE_REFRESH_ACCEPTANCE_2026-09-14.md)。其余来源/变更确认、S01及A11真实闭环仍缺。
 
 2026-09-14阶段106：评分批次缓存保存失败或缺精确可复用合同后，后续未启动批次与同批缺项修复暂缓，已完成项/待恢复项进入图检查点；真实PostgreSQL三进程合成任务只补缺项、保留13合成额度。917测试/198文件、typecheck、build、lint0错误和生产依赖审计0高危通过，0真实付费/发信。[报告](ASSESSMENT_BATCH_PERSISTENCE_STOP_2026-09-14.md)。首批响应到持久检查点的窗口、供应商账单和A11真实闭环仍未完成。
 
