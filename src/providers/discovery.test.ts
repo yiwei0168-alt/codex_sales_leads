@@ -14,6 +14,16 @@ function configured(provider: DiscoveryProviderId) { vi.stubEnv(keyByProvider[pr
 
 afterEach(() => vi.unstubAllEnvs());
 
+it("omits Exa's unsupported company-category domain filter while preserving the requested search",async()=>{
+  configured("exa");
+  const transport=vi.fn<typeof fetch>(async()=>Response.json({results:[]}));
+  await createDiscoveryProvider("exa",{fetchImplementation:transport}).search({...baseQuery,engine:"exa",excludeDomains:["seen.example"]});
+  const body=JSON.parse(String(transport.mock.calls[0][1]?.body));
+  expect(body).toMatchObject({category:"company",type:"auto",numResults:3,contents:{text:true}});
+  expect(body).not.toHaveProperty("excludeDomains");
+  expect(body.query).toBe(`${baseQuery.query} in ${baseQuery.countryName}`);
+});
+
 describe("production discovery providers", () => {
   it("reports configuration without exposing credentials", () => {
     vi.stubEnv("BRAVE_SEARCH_API_KEY", "private-value");

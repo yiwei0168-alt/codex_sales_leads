@@ -1,5 +1,7 @@
 # 产品开发恢复节点 — 2026-09-11
 
+2026-09-13阶段38：request-bounds-v1.3.0新增Exa auto/company/text最多20结果USD0.027保守上界；修复company不支持excludeDomains，原查询/本地排除不变。discovery-request-v3-exa-company-contract使旧会话停止静默恢复。798测试/174文件、typecheck/build通过，无新付费；Exa costDollars官方定义为估算，不能核销。下一继续SearchAPI/Places/Gemini/OpenRouter完整费用上界及真实报告/业务/UI；完整P06、历史终态恢复仍待完成。goal active。
+
 2026-09-13阶段37：request-bounds-v1.2.0新增Brave普通GET搜索USD0.005和Tavily basic/advanced POST搜索USD0.016保守上界，严格白名单/方法/期限检查；Tavily显式auto_parameters=false。796测试/174文件、typecheck/build通过，无新付费。预算已重核USD12.324404/30、余额17.675596、未知6、在途0。下一步继续OpenRouter/Exa/SearchAPI/Places/Gemini等费用上界、真实报告和业务/UI闭环；P06独有大事实分阶段及历史终态恢复仍未完成。goal active。
 
 2026-09-13阶段36：compact-lead-request.ts接入评分/校正request构造；仅超限singleton对完全重复的长标题/摘录做无损字典引用。保留原证据、事实、ID/URL/来源，缓存按实际压缩请求；仍超限则暂停。795测试/174文件、typecheck/build通过，无付费。P06独有事实过大分阶段处理尚未完成，其余费用/恢复/遥测/UI与真实闭环继续；goal active。

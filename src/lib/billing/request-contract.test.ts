@@ -7,9 +7,19 @@ const rules=candidates.rules.map(rule=>tariffSchema.parse(rule));
 afterEach(()=>vi.unstubAllEnvs());
 const bodies=()=>rules.map(rule=>JSON.parse(deepSeekRequestBody({task:"lead-qualification",modelVersion:rule.model,promptVersion:"fixture",input:{},evidenceIds:[],outputSchema:{type:"object"}}).body));
 
+it("permits only bounded Exa auto company text search and rejects unsupported or additional capabilities",()=>{
+  const rule=quoteRequest({origin:"https://api.exa.ai",pathname:"/search",model:"",requestBytes:100,outputTokens:null},undefined,Date.parse("2026-09-13T12:00:00Z"));
+  const body={query:"network companies",type:"auto",category:"company",userLocation:"CO",numResults:20,contents:{text:true}};
+  expect(rule.maximumChargeMicros).toBe(27000);
+  expect(()=>assertRequestContract(rule,body,"","POST")).not.toThrow();
+  for(const change of [{type:"deep"},{numResults:21},{excludeDomains:[]},{outputSchema:{}},{contents:{text:true,summary:true}},{contents:{text:true,subpages:1}}])
+    expect(()=>assertRequestContract(rule,{...body,...change},"","POST")).toThrow("request-out-of-bounds");
+  expect(()=>assertRequestContract(rule,body,"","GET")).toThrow("request-out-of-bounds");
+});
+
 it("preserves reviewed native contracts while adding only narrow search endpoints",()=>{
-  expect(billingPolicy.version).toBe("request-bounds-v1.2.0");
-  expect(billingPolicy.rules).toHaveLength(4);
+  expect(billingPolicy.version).toBe("request-bounds-v1.3.0");
+  expect(billingPolicy.rules).toHaveLength(5);
   billingPolicy.rules.slice(0,2).forEach((rule,index)=>expect({...rule,boundDescription:rules[index].boundDescription}).toEqual(rules[index]));
   expect(()=>quoteRequest({origin:"https://api.moonshot.cn",pathname:"/v1/chat/completions",model:"kimi-k3",requestBytes:100,outputTokens:100},billingPolicy.rules,Date.parse("2026-09-13T12:00:00Z"))).toThrow("missing-tariff");
 });

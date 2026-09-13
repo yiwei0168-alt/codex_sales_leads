@@ -1,5 +1,9 @@
 # 普通搜索费用上界核验
 
+阶段38增量：当前规则request-bounds-v1.3.0新增Exa POST https://api.exa.ai/search，固定auto/company、text=true、最多20结果；保守上界USD0.027：基础USD0.007，加最多10条额外结果USD0.010，再保守覆盖10个额外文本页USD0.010。依据[官方价格表](https://exa.ai/pricing)及[内容费用说明](https://exa.ai/docs/reference/contents-api-guide)。请求包络16384字节，有效期仍至2026-09-20T00:00:00Z，无免费额度或企业折扣假设。
+
+[官方Search契约](https://exa.ai/docs/reference/search)说明company类别不支持excludeDomains；生产适配器移除此字段，原查询不改，本地registry及initiallyExcludedDomains仍排除重复公司。拒绝deep、summary、subpages、outputSchema和其他额外能力。请求/会话契约升级discovery-request-v3-exa-company-contract，旧会话依赖不匹配时阻止静默恢复，既有费用不释放。官方costDollars明确为估算，不能用于可信账单核销。798测试/174文件、typecheck/build通过，无新产品调用；SearchAPI、Places、Gemini、OpenRouter上界继续待补齐。
+
 阶段37，核验日期2026-09-13，规则版本request-bounds-v1.2.0；有效至2026-09-20T00:00:00Z。仅核验公开标准计费，企业自定义合同不在适用范围，不使用免费额度或套餐折扣降低预留。
 
 | 服务 | 官方依据 | 获准请求 | 保守预留 |

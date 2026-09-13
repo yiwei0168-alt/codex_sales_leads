@@ -1,5 +1,7 @@
 # Hybrid Lead Search Workflow
 
+2026-09-13阶段38：Exa company搜索移除官方不支持的excludeDomains字段，原query和本地registry/初始排除集仍生效；请求/会话契约升级以阻止旧契约静默恢复。auto/company/text最多20结果上界USD0.027，额外付费能力拒绝；不全局关闭Exa，不改合格标准。798测试及build通过，未执行新搜索或实验。见[官方核验](SEARCH_REQUEST_BOUNDS_2026-09-13.md)。
+
 2026-09-13阶段37：Brave普通Web Search请求上界USD0.005/次接入严格GET参数契约；Tavily Search保守USD0.016/次，显式深度且auto_parameters=false。均采用公开标准价、不扣免费额度，到期阻止；其他工具仍须独立完整上界，不因Brave可用而宣称全部搜索已验收。详见[费用核验记录](SEARCH_REQUEST_BOUNDS_2026-09-13.md)。796测试通过，无真实业务调用。
 
 2026-09-13阶段34：搜索后的评分采用校正主角色的专属证据锚点，忽略原发现轨道；请求家族范围仍由O02路由守卫决定。O05不新增搜索、不扩范围、不统一调分。冻结374条校正记录契约覆盖为112可用/208主角色待定/54需恢复；这些不是新增合格数量。详见[规则覆盖产物](reports/COLOMBIA_ROLE_CONTRACT_COVERAGE_2026-09-13.json)。

@@ -275,7 +275,8 @@ class ExaDiscoveryProvider extends BaseProvider implements DiscoveryProvider {
         headers: { "x-api-key": apiKey, "content-type": "application/json" },
         body: JSON.stringify({ query: `${query.query} in ${query.countryName}`, type: "auto", category: "company",
           userLocation: query.countryCode, numResults: boundedResults(query.maxResults),
-          excludeDomains: query.excludeDomains?.slice(0, 100), contents: { text: true } }) }, this.requestOptions(), signal);
+          // Company-category searches reject excludeDomains; the task registry still enforces exclusions locally.
+          contents: { text: true } }) }, this.requestOptions(), signal);
     const items = (response.body.results ?? []).flatMap((entry, index) => entry.url ? [item(this.id, {
       title: entry.title ?? new URL(entry.url).hostname, url: entry.url,
       snippet: entry.text?.slice(0, 2_000) ?? "", sourceKind: "web", externalId: entry.id,

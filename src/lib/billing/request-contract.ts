@@ -9,6 +9,14 @@ function textMessage(value:unknown,role:string){return record(value)&&keys(value
 export function assertRequestContract(rule:RequestBound,body:Record<string,unknown>,query:string,method="POST"):void{
   if(!rule.requestContract)return; // Historical independently approved scopes retain their own constraints.
   let valid=false;
+  if(rule.requestContract==="exa-company-auto-text-v1"){
+    valid=method==="POST"&&rule.origin==="https://api.exa.ai"&&rule.pathname==="/search"&&rule.model===""&&query===""
+      &&keys(body,["query","type","category","userLocation","numResults","contents"])
+      &&typeof body.query==="string"&&body.query.trim().length>0&&body.type==="auto"&&body.category==="company"
+      &&typeof body.userLocation==="string"&&/^[A-Z]{2}$/i.test(body.userLocation)
+      &&Number.isInteger(body.numResults)&&(body.numResults as number)>=1&&(body.numResults as number)<=20
+      &&record(body.contents)&&keys(body.contents,["text"])&&body.contents.text===true;
+  }
   if(rule.requestContract==="brave-web-search-v1"){
     const params=new URLSearchParams(query);
     const allowed=["q","country","search_lang","count"];
