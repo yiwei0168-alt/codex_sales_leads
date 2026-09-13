@@ -364,6 +364,30 @@ describe("LangGraph lead workflow", () => {
     expect(state.warnings.some(warning=>warning.includes("评分缓存写入失败"))).toBe(true);
     expect(state.result).toBeDefined();
   });
+  it("checkpoints a generated playbook when its optional cache write fails",async()=>{
+    const deps=dependencies([]),saver=new MemorySaver();
+    deps.savePlaybookCache=vi.fn().mockRejectedValue(new Error("fixture cache unavailable"));
+    let paused=true;
+    deps.updatePhase=vi.fn(async(_user,_action,next)=>{
+      if(paused&&next==="discovering")throw new WorkflowPausedError();
+    });
+    const config={configurable:{thread_id:"playbook-cache-write-failure"}};
+    const input={userId:"u",actionId:"a",graphThreadId:"playbook-cache-write-failure",workspaceId:"w",plan,
+      phase:"queued" as const,ragContext:[],candidates:[],assessments:[],assessmentReviews:[],handoffs:[],
+      creditsUsed:0,warnings:[]};
+    await expect(buildLeadWorkflowGraph(deps,saver).invoke(input,config)).rejects.toThrow("阶段边界暂停");
+    const checkpoint=await buildLeadWorkflowGraph(deps,saver).getState(config);
+    expect(checkpoint.next).toEqual(["discover_candidates"]);
+    expect(checkpoint.values.playbook).toEqual({...playbook,cooperationPathMemory:[]});
+    expect(checkpoint.values.warnings).toContain("市场计划缓存写入失败；已生成计划保留在任务检查点。");
+    expect(checkpoint.values.stageMetrics.at(-1)?.metadata?.cacheWriteFailed).toBe(true);
+    paused=false;
+    const finished=await buildLeadWorkflowGraph(deps,saver).invoke(null,config);
+    expect(finished.result).toBeDefined();
+    expect(deps.buildPlaybook).toHaveBeenCalledOnce();
+    expect(deps.savePlaybookCache).toHaveBeenCalledOnce();
+    expect(deps.discover).toHaveBeenCalledOnce();
+  });
   it("resumes after a phase pause without repeating completed discovery or resetting credits",async()=>{
     const events:string[]=[];const deps=dependencies(events);let paused=true;
     deps.updatePhase=vi.fn(async(_u,_a,phase)=>{if(paused&&phase==='collecting-evidence')throw new WorkflowPausedError();});

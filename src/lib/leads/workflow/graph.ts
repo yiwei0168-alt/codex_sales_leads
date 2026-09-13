@@ -172,8 +172,14 @@ export function buildLeadWorkflowGraph(
         ? await dependencies.loadPlaybookCache(state.userId, state.workspaceId, state.plan, state.ragContext)
         : null;
       const playbook = cachedPlaybook ?? await dependencies.buildPlaybook(state.plan, state.ragContext);
+      let cacheWriteFailed = false;
       if (!cachedPlaybook && dependencies.savePlaybookCache) {
-        await dependencies.savePlaybookCache(state.userId, state.workspaceId, state.plan, state.ragContext, playbook);
+        try {
+          await dependencies.savePlaybookCache(state.userId, state.workspaceId, state.plan, state.ragContext, playbook);
+        } catch {
+          // The graph checkpoint, not this optional cache, owns the completed playbook.
+          cacheWriteFailed = true;
+        }
       }
       const cooperationPathMemory = dependencies.retrievePathMemory
         ? await dependencies.retrievePathMemory(state.userId, state.workspaceId, state.plan.countryCode) : [];
@@ -181,10 +187,13 @@ export function buildLeadWorkflowGraph(
       const metric = { ...completedStageMetric({ stage: "build_playbook", startedAt, input: state.ragContext,
         output, inputItems: state.ragContext.length, outputItems: 1,
         generatedArtifacts: cachedPlaybook ? 0 : 1, validArtifacts: cachedPlaybook?0:1, downstreamUsedArtifacts: cachedPlaybook?0:1,
-        metadata: { cacheHit: Boolean(cachedPlaybook),reusedArtifacts:cachedPlaybook?1:0 } }),
+        metadata: { cacheHit: Boolean(cachedPlaybook),reusedArtifacts:cachedPlaybook?1:0,
+          cacheWriteFailed } }),
       status: cachedPlaybook ? "cache-hit" as const : "completed" as const };
       return { phase: "planning" as const, playbook: output,
-        warnings: [...state.warnings, ...playbook.warnings], stageMetrics: [...(state.stageMetrics ?? []), metric] };
+        warnings: [...state.warnings, ...playbook.warnings,
+          ...(cacheWriteFailed ? ["市场计划缓存写入失败；已生成计划保留在任务检查点。"] : [])],
+        stageMetrics: [...(state.stageMetrics ?? []), metric] };
     })
     .addNode("prepare_recovery_evidence", async(state)=>{
       const startedAt=Date.now();

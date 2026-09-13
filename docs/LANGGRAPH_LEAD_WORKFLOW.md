@@ -1,5 +1,7 @@
 # LangChain / LangGraph 销售线索工作流
 
+2026-09-14阶段100：`build_playbook` 已生成计划后，可选缓存写失败只进入告警/阶段元数据，计划仍写入图检查点。[跨进程验收](PLAYBOOK_CACHE_WRITE_RECOVERY_2026-09-14.md)证明恢复直接进入发现边界、生成器不重跑，原额度保留；缓存读取故障仍在生成前停止。该验证使用合成适配器，不代表A11真实业务完成。
+
 2026-09-14阶段99：条件分歧裁决仍是 Sol `reasoning.effort=high`、严格JSON和12,000输出token；公开端点复核候选上界 USD27.736500，[只读审计](OPENROUTER_SOL_JUDGE_PROPOSAL_2026-09-14.md)。当前费用门禁的4,096输出合同继续拒绝该请求，图执行与模型路由未改；实际服务商契约、预算及A11真实闭环仍缺。
 
 2026-09-14阶段98：本地生产验收将合成 `workflow_stage_metric`/`workflow_model_usage` 各一条经同源登录 HTTP 两次读取，两视口均看到同一聚合而不新增事件；原图执行、费用、模型调用均未触发。[HTTP回归](WORKFLOW_USAGE_PRODUCTION_HTTP_2026-09-14.md)。这不替代真实模型业务闭环。
