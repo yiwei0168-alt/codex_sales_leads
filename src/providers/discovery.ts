@@ -221,12 +221,14 @@ class GeminiDiscoveryProvider extends BaseProvider implements DiscoveryProvider 
       `Market: ${query.countryName} (${query.countryCode}). Use local terminology where useful.`,
       "Use Google Search. Return company names, official URLs and short matching signals only.",
     ].join("\n");
-    const response = await requestJson<{ steps?: Array<{ type?: string; content?: Array<{ type?: string; text?: string }> }>;
+    const response = await requestJson<{ status?: string; steps?: Array<{ type?: string; content?: Array<{ type?: string; text?: string }> }>;
       usage?: Record<string, unknown> }>(this.id, url, { method: "POST",
       headers: { "x-goog-api-key": apiKey, "content-type": "application/json" },
       body: JSON.stringify({ model: process.env.GEMINI_DISCOVERY_MODEL?.trim()
         || process.env.GEMINI_SEARCH_MODEL?.trim() || "gemini-3.6-flash", input,
-      tools: [{ type: "google_search" }], generation_config: { thinking_level: "low" } }) }, this.requestOptions(), signal);
+      tools: [{ type: "google_search" }], generation_config: { thinking_level: "low", max_output_tokens: 12_000 } }) }, this.requestOptions(), signal);
+    if (response.body.status && response.body.status !== "completed")
+      throw new Error(`Gemini discovery output ${response.body.status === "incomplete" ? "incomplete" : "not completed"}; paid result requires recovery`);
     const answerText = (response.body.steps ?? []).filter((step) => step.type === "model_output")
       .flatMap((step) => step.content ?? []).filter((content) => content.type === "text")
       .map((content) => content.text ?? "").join("").trim();

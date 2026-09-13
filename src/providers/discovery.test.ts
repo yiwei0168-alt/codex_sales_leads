@@ -52,6 +52,7 @@ describe("production discovery providers", () => {
       .search({ ...baseQuery, engine: "google-grounded", mechanism: providerId === "gemini-full" ? "planning" : "fixed-grounded-query" });
     const request = JSON.parse(fetchMock.mock.calls[0][1].body as string);
     expect(request.tools).toEqual([{ type: "google_search" }]);
+    expect(request.generation_config).toEqual({ thinking_level: "low", max_output_tokens: 12_000 });
     expect(output.items[0].url).toBe("https://example.de/");
     expect(output.usage.totalTokens).toBe(15);
   });
@@ -68,6 +69,18 @@ describe("production discovery providers", () => {
     expect(url.searchParams.get("q")).toContain("-site:seen.example");
     expect(url.searchParams.get("q")).toContain("-site:duplicate.example");
     expect(url.searchParams.has("api_key")).toBe(false);
+  });
+
+  it("does not treat a truncated paid Gemini discovery response as completed candidates", async () => {
+    configured("gemini-full");
+    const fetchMock = vi.fn().mockResolvedValue(Response.json({ status: "incomplete", steps: [
+      { type: "google_search_result", result: { url: "https://example.de/" } },
+      { type: "model_output", content: [{ type: "text", text: "Partial example" }] },
+    ] }));
+    await expect(createDiscoveryProvider("gemini-full", { fetchImplementation: fetchMock, maxAttempts: 1 })
+      .search({ ...baseQuery, engine: "google-grounded", mechanism: "planning" }))
+      .rejects.toThrow("output incomplete");
+    expect(fetchMock).toHaveBeenCalledOnce();
   });
 
   it("passes bounded safe domain exclusions to Brave without credentials in the URL", async () => {

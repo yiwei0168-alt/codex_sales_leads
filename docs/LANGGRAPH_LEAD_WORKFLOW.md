@@ -1,5 +1,7 @@
 # LangChain / LangGraph 销售线索工作流
 
+2026-09-14阶段92：Gemini Full/Product发现的实际 Interactions 请求显式限制生成输出12,000 token；明确非完成响应作为技术未完成保留，不从部分工具/模型步骤提取公司，也不自动重放已付费请求。搜索工具内部查询次数仍无法从输出上限推断，费用规则继续拦截。[边界与验证](GEMINI_DISCOVERY_OUTPUT_BOUND_2026-09-14.md)。
+
 2026-09-14阶段91：市场计划后若条件触发二次复核，预算需分别覆盖实际已核销费用和下一请求的完整保守预留。[离线情景](OPENROUTER_REVIEW_BUDGET_SCENARIO_2026-09-14.md)说明S01单次可容纳不等于整次图可完成；Sol裁决亦是独立费用门禁。没有改变复核触发、图节点、模型路由或评分标准。
 
 2026-09-14阶段90：`lead-evidence-correction` 的 OpenAI兼容备用路由现在显式限制总输出8192 token；不完整JSON/finish_reason不能作为校正完成，现行费用门禁对未核准网关模型仍先于传输拒绝。六模型公开端点证据与未完成合同见[费用审计](OPENROUTER_REMAINING_ROUTE_AUDIT_2026-09-14.md)。不改变原公司范围、角色标准、评分卡或S01供应商路由。
