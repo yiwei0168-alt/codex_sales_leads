@@ -88,4 +88,3 @@ export const assessment: LeadCandidateAssessment = {
   risks: [], unknowns: [], evidenceIds: ["evidence-example"], model: "test-scorer",
   promptVersion: "test", escalated: false, scoringStatus: "completed", warnings: [],
 };
-

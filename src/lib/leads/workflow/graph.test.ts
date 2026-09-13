@@ -141,6 +141,24 @@ function dependencies(events: string[], context = ragContext): LeadWorkflowDepen
 }
 
 describe("LangGraph lead workflow", () => {
+  it("checkpoints correction before saving requested-scope transfers and resumes without another correction", async () => {
+    const deps = dependencies([]);
+    const shifted = { ...correctedCandidate, queryFamily: "services" as const, queryRoles: ["SI" as const] };
+    deps.correctionAgent.correct = vi.fn(async () => ({ candidates: [shifted], creditsUsed: 1, warnings: [] }));
+    deps.persistCandidateRoutes = vi.fn().mockRejectedValueOnce(new Error("route storage unavailable")).mockResolvedValue(undefined);
+    const graph = buildLeadWorkflowGraph(deps, new MemorySaver());
+    const config = { configurable: { thread_id: "route-recovery" } };
+    await expect(graph.invoke({ userId: "u", actionId: "a", graphThreadId: "route-recovery", workspaceId: "w",
+      plan: { ...plan, roles: ["SI", "Distributor"] }, phase: "queued", ragContext: [], candidates: [], assessments: [],
+      assessmentReviews: [], handoffs: [], creditsUsed: 0, warnings: [] }, config)).rejects.toThrow("route storage unavailable");
+    expect((await graph.getState(config)).next).toEqual(["route_candidates"]);
+    await graph.invoke(null, config);
+    expect(deps.correctionAgent.correct).toHaveBeenCalledTimes(1);
+    expect(deps.qualificationAgent.evaluate).toHaveBeenCalledWith([shifted], expect.objectContaining(playbook), plan.countryCode, plan.countryName, plan.objective);
+    expect(deps.persistCandidateRoutes).toHaveBeenLastCalledWith(expect.objectContaining({
+      routes: [expect.objectContaining({ status: "transferred", sourceFamily: "services", targetFamily: "distribution" })],
+    }));
+  });
   it("retains complete peers and original evidence while reopening only missing correction and retry scores", () => {
     const retry = { ...correctedCandidate, candidateId: "retry", correction: {
       ...correctedCandidate.correction, completionStatus: "retry-required" as const } };

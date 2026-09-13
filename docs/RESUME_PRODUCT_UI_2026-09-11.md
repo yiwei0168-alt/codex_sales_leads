@@ -1,5 +1,7 @@
 # 产品开发恢复节点 — 2026-09-11
 
+最新恢复增量（2026-09-13 阶段29）：candidate-routing.ts 与独立 route_candidates 节点接入，原请求具体角色内转移/按公司去重/优先已有完成ID/范围外保存 metadata 状态；写路由失败不重做校正。相关18项测试、typecheck/build、PG跨进程恢复通过，无付费。下一步验证真实路由SQL与国家/用户隔离，处理冲突角色pending与停止/恢复一致性（当前冲突会退出评分但仍需完善停止语义），历史终态恢复兼容；O03–O05、费用上界、真实闭环继续。不要把阶段29称为O02整体验收。
+
 最新恢复增量（2026-09-13 阶段28）：verify-processing-recovery.ts 已验证生产图 PostgreSQL 两个独立进程缺项恢复/所有权检查/credits守恒/已完成阶段不重跑（公司入库为合成适配器）；verify-cost-reconciliation.ts --skip-migration 已验证未知费用阻止、完整核销后失败重预留、成功仍防重放。全部隔离数据已清理、无付费。续搜 SQL 改为仅排 scoring_status=completed，去掉连续零结果伪耗尽，processing-incomplete 禁止新续搜及UI入口。下一步历史终态缺项任务兼容、跨国家恢复、实际业务入库；O02–O05及费用上界/真实最小闭环继续，不标整体验收完成。
 
 最新恢复增量（2026-09-13 阶段27）：processing-recovery.ts 与 recover_incomplete_processing 图节点已接入；缺项时抛出可恢复错误而非终态，runLeadWorkflow 在已有失败任务再次执行时先核验任务未知费用、授权节点，直接处理缺失项。完整评分不再永久挡住 retry-required 重开。完整768测试+随后22项定向回归、生产build通过，无付费。下一步：真实 PostgreSQL 跨进程/租户隔离与核销后恢复验证，历史终态 processing-incomplete 兼容；续搜 SQL 仍错误排除所有 assessment，应只排完整结果；O02–O05及费用上界/整体验收继续。禁止把当前内存恢复验证当作整体验收。

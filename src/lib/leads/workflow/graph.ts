@@ -12,6 +12,7 @@ import { LeadEvidenceCorrectionAgent } from "./evidence-correction-agent";
 import { getGlobalWorkspaceId, persistLeadWorkflowResult, updateWorkflowPhase } from "./persistence";
 import { checkpointInvocation } from "./pause";
 import { correctionCompletion } from "./correction-completion";
+import { routeCorrectedCandidates, persistCandidateRoutes } from "./candidate-routing";
 import { processingRecoveryWork, WorkflowProcessingIncompleteError } from "./processing-recovery";
 import { assertProcessingRecoveryCostsKnown } from "@/lib/billing/repository";
 import { continuationExclusions } from "@/lib/assistant/search-continuation";
@@ -93,6 +94,7 @@ export interface LeadWorkflowDependencies {
   savePlaybookCache?: typeof saveCachedLeadPlaybook;
   loadAssessmentCache?: typeof loadCachedLeadAssessments;
   saveAssessmentCache?: typeof saveCachedLeadAssessments;
+  persistCandidateRoutes?: typeof persistCandidateRoutes;
 }
 
 const productionDependencies: LeadWorkflowDependencies = {
@@ -111,6 +113,7 @@ const productionDependencies: LeadWorkflowDependencies = {
   savePlaybookCache: saveCachedLeadPlaybook,
   loadAssessmentCache: loadCachedLeadAssessments,
   saveAssessmentCache: saveCachedLeadAssessments,
+  persistCandidateRoutes,
 };
 
 async function phase(dependencies: LeadWorkflowDependencies, state: typeof WorkflowAnnotation.State, next: LeadWorkflowPhase): Promise<void> {
@@ -278,12 +281,27 @@ export function buildLeadWorkflowGraph(
         warnings: [...state.warnings, ...corrected.warnings],
       };
     })
+    .addNode("route_candidates", async (state) => {
+      const startedAt = Date.now();
+      const routed = routeCorrectedCandidates(state.correctedCandidates, state.plan, state.assessments);
+      if (dependencies.persistCandidateRoutes) {
+        if (!state.runId) throw new Error("Run ID is missing before candidate routing");
+        await dependencies.persistCandidateRoutes({ userId: state.userId, workspaceId: state.workspaceId,
+          runId: state.runId, countryCode: state.plan.countryCode, routes: routed.routes });
+      }
+      const counts = Object.fromEntries(["transferred", "out-of-scope", "pending-role", "duplicate"].map(status =>
+        [status, routed.routes.filter(route => route.status === status).length]));
+      return { stageMetrics: [...state.stageMetrics, completedStageMetric({ stage: "route_candidates", startedAt,
+        input: state.correctedCandidates, output: routed.routes, inputItems: state.correctedCandidates.length,
+        outputItems: routed.routes.length, generatedArtifacts: routed.routes.length,
+        validArtifacts: routed.queued.length, downstreamUsedArtifacts: routed.queued.length,
+        metadata: { ...counts, usageBoundary: "routed-to-scoring-not-user-adoption" } })] };
+    })
     .addNode("score_candidates", async (state) => {
       const startedAt = Date.now();
       await phase(dependencies, state, "scoring");
       if (!state.playbook) throw new Error("Market Playbook is missing before qualification");
-      const inScopeCandidates = state.correctedCandidates.filter((candidate) =>
-        candidateMatchesRequestedRole(candidate, state.plan));
+      const inScopeCandidates = routeCorrectedCandidates(state.correctedCandidates, state.plan, state.assessments).queued;
       const cached = dependencies.loadAssessmentCache ? await dependencies.loadAssessmentCache({
         userId: state.userId, workspaceId: state.workspaceId, candidates: inScopeCandidates,
         playbook: state.playbook, objective: state.plan.objective,
@@ -457,7 +475,8 @@ export function buildLeadWorkflowGraph(
     .addEdge("build_playbook", "discover_candidates")
     .addEdge("discover_candidates", "collect_evidence")
     .addEdge("collect_evidence", "correct_candidates")
-    .addEdge("correct_candidates", "score_candidates")
+    .addEdge("correct_candidates", "route_candidates")
+    .addEdge("route_candidates", "score_candidates")
     .addConditionalEdges("score_candidates", (state) => state.targetCompletionReason === "processing-incomplete"
       ? "recover_incomplete_processing" : state.targetShouldContinue ? "discover_candidates" : "review_assessment_anomalies", {
       recover_incomplete_processing: "recover_incomplete_processing",

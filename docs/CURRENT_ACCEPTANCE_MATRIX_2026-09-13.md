@@ -1,5 +1,7 @@
 # 当前唯一验收矩阵（2026-09-13）
 
+阶段29：O02 原请求范围路由、去重、范围外状态和独立保存节点已实现；合成5项路由规则、图内转移/保存失败恢复通过。全量775通过/1测试断言失败，修正后相关18项通过；typecheck/build通过，PostgreSQL跨进程恢复再次通过。真实 candidateRouting SQL、冲突角色恢复与停止、UI展示尚未完成。无付费；O02未标全部验收。
+
 阶段28最终检查：生产build、typecheck、生成工作流一致性检查通过；lint为0错误/11项既有警告。未运行付费搜索或盲审。
 
 阶段28：`node scripts/run-tsx.cjs scripts/verify-processing-recovery.ts` 实测 PostgreSQL 两个独立进程保存/恢复生产图缺项检查点通过；身份校验拒绝其他用户/任务，保留13个合成credits，搜索/补证禁止重跑。公司持久化使用合成适配器，不支持A11真实业务闭环结论。`verify-cost-reconciliation.ts --skip-migration` 实测未知费用阻止恢复、完整核销后失败请求可重预留、成功请求防重放通过；隔离费用/检查点产物已清理。续搜只排完整评分，零结果不独立证明耗尽，缺项禁止用新任务绕过恢复。定向5测试与typecheck通过，无付费。
