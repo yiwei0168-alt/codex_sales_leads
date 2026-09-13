@@ -2,6 +2,8 @@ import {afterEach,expect,it,vi} from "vitest";
 import {DeepSeekProvider} from "./deepseek";
 import {ResilientAiProvider} from "./resilient-ai";
 import type {StructuredAiRequest} from "./contracts";
+import {createHash} from "node:crypto";
+import {deepSeekRequestBody} from "./deepseek-request";
 
 afterEach(()=>vi.unstubAllEnvs());
 const request:StructuredAiRequest<unknown>={task:"lead-evidence-correction",modelVersion:"deepseek-v4-flash",promptVersion:"v1",input:{candidates:["a","b"]},evidenceIds:["ev-a","ev-b"],outputSchema:{type:"object"}};
@@ -29,4 +31,15 @@ it("resilient identity describes primary only and unavailable contracts fail clo
   const provider=new DeepSeekProvider({baseUrl:"https://example.test"});
   expect(new ResilientAiProvider(provider).cacheIdentity(request)).toBe(provider.cacheIdentity(request));
   expect(new ResilientAiProvider({id:"unknown",execute:vi.fn()}).cacheIdentity(request)).toBe("");
+});
+it("invalidates pre-approval Flash cache contracts but leaves Pro contracts unchanged",()=>{
+  const endpoint="https://api.deepseek.com";
+  const provider=new DeepSeekProvider({baseUrl:endpoint});
+  for(const model of ["deepseek-v4-flash","deepseek-flash","deepseek-v4-pro"]){
+    const input={...request,modelVersion:model};
+    const before=createHash("sha256").update(JSON.stringify({version:"deepseek-wire-cache-v1",provider:"deepseek",
+      endpoint,...deepSeekRequestBody(input,model)})).digest("hex");
+    if(model.includes("pro"))expect(provider.cacheIdentity(input)).toBe(before);
+    else expect(provider.cacheIdentity(input)).not.toBe(before);
+  }
 });

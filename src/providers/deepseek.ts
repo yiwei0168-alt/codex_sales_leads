@@ -77,8 +77,12 @@ export class DeepSeekProvider implements AiProvider {
 
   cacheIdentity(request:StructuredAiRequest<unknown>):string {
     const model=request.modelVersion.trim()||this.defaultModel;
+    // An approval epoch, not a claim that a mutable hosted alias is revision-pinned.
+    // Invalidate old Flash snapshots even when an explicit caller retains the alias.
+    const flashApprovalEpoch = ["deepseek-flash", "deepseek-v4-flash"].includes(model)
+      ? {flashApprovalEpoch:"v4.1-flash-approved-2026-09-13"} : {};
     return createHash("sha256").update(JSON.stringify({version:"deepseek-wire-cache-v1",provider:this.id,
-      endpoint:this.baseUrl,...deepSeekRequestBody(request,model)})).digest("hex");
+      endpoint:this.baseUrl,...flashApprovalEpoch,...deepSeekRequestBody(request,model)})).digest("hex");
   }
 
   async execute<TInput, TOutput>(

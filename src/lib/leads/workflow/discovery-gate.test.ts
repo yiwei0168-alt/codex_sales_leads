@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "@/providers/contracts";
-import { LeadDiscoveryGate, sanitizeDiscoveryGateOutput } from "./discovery-gate";
+import { configuredDiscoveryGateModel, LeadDiscoveryGate, sanitizeDiscoveryGateOutput } from "./discovery-gate";
 import type { LeadWorkflowCandidate } from "./types";
 
 function candidate(category = "si-msp"): LeadWorkflowCandidate {
@@ -50,7 +50,13 @@ describe("lightweight discovery gate", () => {
     vi.stubEnv("DEEPSEEK_DISCOVERY_GATE_MODEL", "");
     const provider = new FakeProvider();
     await new LeadDiscoveryGate(provider, fetchMock).evaluate([candidate()]);
-    expect(provider.calls[0].modelVersion).toBe("deepseek-v4-flash");
+    expect(provider.calls[0].modelVersion).toBe("deepseek-flash");
+  });
+
+  it("migrates the approved retired gate alias without changing other explicit choices", () => {
+    expect(configuredDiscoveryGateModel({NODE_ENV:"test",DEEPSEEK_DISCOVERY_GATE_MODEL:" deepseek-v4-flash "})).toBe("deepseek-flash");
+    expect(configuredDiscoveryGateModel({NODE_ENV:"test",DEEPSEEK_DISCOVERY_GATE_MODEL:"deepseek-v4-pro"})).toBe("deepseek-v4-pro");
+    expect(configuredDiscoveryGateModel({NODE_ENV:"test",DEEPSEEK_MODEL:"deepseek-v4-pro"})).toBe("deepseek-flash");
   });
 
   it("uses the routine Flash model and lets code compute pass", async () => {

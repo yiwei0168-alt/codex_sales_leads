@@ -1,5 +1,7 @@
 # Isolated DeepSeek text tokenizer audit
 
+2026-09-13 / stage 14: V4.1-Flash approval requires **both** `DeepseekV41Encoding` and `static/tokenizers/v41/tokenizer.json`, not the old V4 pair. The fixed official checkout documents this in `docs/tokenizer.md`. V41 LF-normalized SHA-256: `81f64d1248a68ce3663e07ab3ee48b851e5df0e32d27cb98e4c9a268151e8d99`. Build verifies both hashes. Stdin maps only Pro to V4 and approved text Flash aliases to V41; unknown models fail closed. Synthetic cases cover both models/protocols with unchanged product thinking settings. This is not proof of hosted billing equivalence, an immutable serving revision, or a safe paid-call bound.
+
 This is a diagnostic, not a product dependency or a billing bound. Never supply product secrets, real provider URLs or private data to the build. No inference code is present.
 
 Source must be the official `deepseek-ai/deepseek-recipe` checkout at `8cadfede7063c896b944e7bae05daa3549ae97ea`. Verify `static/tokenizers/v4/tokenizer.json` after LF normalization against SHA-256 `97d2f31b020d18b5aee5c9b3d5b4efb10ea210f3fe3f7dffe3f1cd90542d6b19`. Windows CRLF checkout hash is separately recorded in `docs/CONFIRMED_PRODUCT_RULES.md`.

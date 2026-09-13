@@ -13,10 +13,13 @@ import { normalizedCompanyDomain } from "./candidate-registry";
 import { ALL_CHANNEL_ROLES, type LeadEvidenceItem, type LeadWorkflowCandidate, type WorkflowModelUsage } from "./types";
 
 const PROMPT_VERSION = "lead-discovery-light-gate-v1.2.0-bounded-output-and-identity";
-export const DEFAULT_DISCOVERY_GATE_MODEL = "deepseek-v4-flash";
+export const DEFAULT_DISCOVERY_GATE_MODEL = "deepseek-flash";
 
 export function configuredDiscoveryGateModel(environment: NodeJS.ProcessEnv = process.env): string {
-  return environment.DEEPSEEK_DISCOVERY_GATE_MODEL?.trim() || DEFAULT_DISCOVERY_GATE_MODEL;
+  const configured = environment.DEEPSEEK_DISCOVERY_GATE_MODEL?.trim();
+  // Approved 2026-09-13: the retired text Flash alias now serves V4.1-Flash.
+  // Normalize only this gate; leave primary scoring and explicit other models alone.
+  return !configured || configured === "deepseek-v4-flash" ? DEFAULT_DISCOVERY_GATE_MODEL : configured;
 }
 const signalSchema = z.enum(["supported", "not-supported", "unknown"]);
 const roleSchema = z.enum(ALL_CHANNEL_ROLES as [ChannelRole, ...ChannelRole[]]);

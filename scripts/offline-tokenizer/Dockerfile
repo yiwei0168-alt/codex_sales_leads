@@ -6,5 +6,6 @@ COPY Cargo.toml Cargo.lock ./
 COPY src ./src
 RUN test "$(git -C /recipe rev-parse HEAD)" = "8cadfede7063c896b944e7bae05daa3549ae97ea" && \
     test "$(tr -d '\r' < /recipe/static/tokenizers/v4/tokenizer.json | sha256sum | cut -d ' ' -f 1)" = "97d2f31b020d18b5aee5c9b3d5b4efb10ea210f3fe3f7dffe3f1cd90542d6b19" && \
+    test "$(tr -d '\r' < /recipe/static/tokenizers/v41/tokenizer.json | sha256sum | cut -d ' ' -f 1)" = "81f64d1248a68ce3663e07ab3ee48b851e5df0e32d27cb98e4c9a268151e8d99" && \
     cargo build --release --locked
 ENTRYPOINT ["/audit/target/release/offline-tokenizer-audit"]
