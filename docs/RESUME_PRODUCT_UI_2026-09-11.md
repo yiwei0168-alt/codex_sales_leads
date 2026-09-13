@@ -1,5 +1,7 @@
 # 产品开发恢复节点 — 2026-09-11
 
+2026-09-13阶段37：request-bounds-v1.2.0新增Brave普通GET搜索USD0.005和Tavily basic/advanced POST搜索USD0.016保守上界，严格白名单/方法/期限检查；Tavily显式auto_parameters=false。796测试/174文件、typecheck/build通过，无新付费。预算已重核USD12.324404/30、余额17.675596、未知6、在途0。下一步继续OpenRouter/Exa/SearchAPI/Places/Gemini等费用上界、真实报告和业务/UI闭环；P06独有大事实分阶段及历史终态恢复仍未完成。goal active。
+
 2026-09-13阶段36：compact-lead-request.ts接入评分/校正request构造；仅超限singleton对完全重复的长标题/摘录做无损字典引用。保留原证据、事实、ID/URL/来源，缓存按实际压缩请求；仍超限则暂停。795测试/174文件、typecheck/build通过，无付费。P06独有事实过大分阶段处理尚未完成，其余费用/恢复/遥测/UI与真实闭环继续；goal active。
 
 2026-09-13阶段35：备用模型实际请求大小接入校正/评分/缓存拆批。AiProvider新增可选requestBytes，DeepSeek和OpenAiCompatible复用实际序列化；Resilient按获准数据分类和实际模型取最大字节数。受控主路由故障及备用发送验证通过；全量792测试/173文件、typecheck/build通过，无付费。P06单项超限压缩/分阶段仍待实现；余下费用上界、恢复/遥测/UI及真实生产闭环继续，goal active。

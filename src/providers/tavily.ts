@@ -145,6 +145,7 @@ export class TavilySearchProvider {
           query: input.query,
           country: input.country,
           search_depth: depth,
+          auto_parameters: false,
           max_results: Math.max(1, Math.min(input.maxResults ?? 10, 20)),
           include_answer: false,
           include_raw_content: input.includeRawContent ? "markdown" : false,

@@ -6,9 +6,30 @@ function keys(value:Record<string,unknown>,allowed:string[]){return Object.keys(
 function textMessage(value:unknown,role:string){return record(value)&&keys(value,["role","content"])&&value.role===role&&typeof value.content==="string";}
 
 /** Enforce the assumptions supporting a bound, not just its request-byte envelope. */
-export function assertRequestContract(rule:RequestBound,body:Record<string,unknown>,query:string):void{
+export function assertRequestContract(rule:RequestBound,body:Record<string,unknown>,query:string,method="POST"):void{
   if(!rule.requestContract)return; // Historical independently approved scopes retain their own constraints.
   let valid=false;
+  if(rule.requestContract==="brave-web-search-v1"){
+    const params=new URLSearchParams(query);
+    const allowed=["q","country","search_lang","count"];
+    valid=method==="GET"&&rule.origin==="https://api.search.brave.com"&&rule.pathname==="/res/v1/web/search"
+      &&rule.model===""&&Object.keys(body).length===0
+      &&[...params.keys()].every(key=>allowed.includes(key)&&params.getAll(key).length===1)
+      &&Boolean(params.get("q")?.trim())&&/^(?:[1-9]|1[0-9]|20)$/.test(params.get("count")??"")
+      &&/^(?:[A-Z]{2}|ALL)$/i.test(params.get("country")??"")
+      &&/^[a-z]{2,3}(?:-[a-z]{2,4})?$/i.test(params.get("search_lang")??"");
+  }
+  if(rule.requestContract==="tavily-search-v1"){
+    valid=method==="POST"&&rule.origin==="https://api.tavily.com"&&rule.pathname==="/search"&&rule.model===""&&query===""
+      &&keys(body,["query","country","search_depth","max_results","include_answer","include_raw_content","include_domains","auto_parameters"])
+      &&typeof body.query==="string"&&body.query.trim().length>0
+      &&["basic","advanced"].includes(String(body.search_depth))&&body.include_answer===false
+      &&(body.include_raw_content===false||body.include_raw_content==="markdown")
+      &&(body.auto_parameters===undefined||body.auto_parameters===false)
+      &&Number.isInteger(body.max_results)&&(body.max_results as number)>=1&&(body.max_results as number)<=20
+      &&(body.country===undefined||typeof body.country==="string")
+      &&(body.include_domains===undefined||(Array.isArray(body.include_domains)&&body.include_domains.every(item=>typeof item==="string")));
+  }
   if(rule.requestContract==="aliyun-beijing-dense-text-v1"){
     const inputs=typeof body.input==="string"?[body.input]:body.input;
     valid=isBeijingEmbeddingOrigin(rule.origin)&&rule.pathname==="/compatible-mode/v1/embeddings"&&query===""

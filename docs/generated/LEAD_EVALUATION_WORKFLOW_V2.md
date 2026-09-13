@@ -779,7 +779,7 @@ flowchart TD
 | `src/providers/resilient-ai.ts` | `9bf63f3bbfc9426fd40783ae60a04fcb4fa1832ee0b04597f41e82c7a3451651` |
 | `src/providers/openrouter.ts` | `b43ba8fdf08602cb7d3567ea88bdc2cfee704de0c1b197cc574abe5e9b89143d` |
 | `db/migrations/034_model_account_cash_cost.sql` | `4790c7ad12eda543e197c84ddd77c4a5ce296b7871ccee799f3aa2262684bdbb` |
-| `src/providers/tavily.ts` | `bb3c4c3071bdb7263c9bb10797c657db9ba41465260aa99ca2caf5676010152e` |
+| `src/providers/tavily.ts` | `e981be543a25b56b456654fdc55c8dd67303ac42cb14b82c8c4b4d35d9c78d20` |
 | `src/lib/leads/workflow/handoff-assembler.ts` | `606736bdfcced8f3a476a58808b07c65867b75f948c46b66b21354e5102f3827` |
 | `src/lib/leads/workflow/persistence.ts` | `daae1096ebddcc43d9dcbaecd98ce12866bfa4280e2c19afabfcb6ad3801e268` |
 | `src/lib/sales/repository.ts` | `878fff7d578b3631ca320ae84f03b0a80f15feb6ce569954f8a9c314fa5599d7` |

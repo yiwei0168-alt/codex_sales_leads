@@ -7,11 +7,30 @@ const rules=candidates.rules.map(rule=>tariffSchema.parse(rule));
 afterEach(()=>vi.unstubAllEnvs());
 const bodies=()=>rules.map(rule=>JSON.parse(deepSeekRequestBody({task:"lead-qualification",modelVersion:rule.model,promptVersion:"fixture",input:{},evidenceIds:[],outputSchema:{type:"object"}}).body));
 
-it("activates only the two reviewed narrow contracts and does not permit other providers",()=>{
-  expect(billingPolicy.version).toBe("request-bounds-v1.1.0");
-  expect(billingPolicy.rules).toHaveLength(2);
-  billingPolicy.rules.forEach((rule,index)=>expect({...rule,boundDescription:rules[index].boundDescription}).toEqual(rules[index]));
+it("preserves reviewed native contracts while adding only narrow search endpoints",()=>{
+  expect(billingPolicy.version).toBe("request-bounds-v1.2.0");
+  expect(billingPolicy.rules).toHaveLength(4);
+  billingPolicy.rules.slice(0,2).forEach((rule,index)=>expect({...rule,boundDescription:rules[index].boundDescription}).toEqual(rules[index]));
   expect(()=>quoteRequest({origin:"https://api.moonshot.cn",pathname:"/v1/chat/completions",model:"kimi-k3",requestBytes:100,outputTokens:100},billingPolicy.rules,Date.parse("2026-09-13T12:00:00Z"))).toThrow("missing-tariff");
+});
+
+it("bounds ordinary search requests and rejects other methods, features, duplicate params and expired rules",()=>{
+  const now=Date.parse("2026-09-13T12:00:00Z");
+  const brave=quoteRequest({origin:"https://api.search.brave.com",pathname:"/res/v1/web/search",model:"",requestBytes:100,outputTokens:null},undefined,now);
+  const query="?q=networking&country=ALL&search_lang=es&count=20";
+  expect(brave.maximumChargeMicros).toBe(5000);
+  expect(()=>assertRequestContract(brave,{},query,"GET")).not.toThrow();
+  for(const bad of [query+"&q=second",query+"&summary=true",query.replace("count=20","count=100")])
+    expect(()=>assertRequestContract(brave,{},bad,"GET")).toThrow("request-out-of-bounds");
+  expect(()=>assertRequestContract(brave,{},query,"POST")).toThrow("request-out-of-bounds");
+  const tavily=quoteRequest({origin:"https://api.tavily.com",pathname:"/search",model:"",requestBytes:100,outputTokens:null},undefined,now);
+  const body={query:"networking",search_depth:"advanced",max_results:20,include_answer:false,include_raw_content:"markdown",auto_parameters:false};
+  expect(tavily.maximumChargeMicros).toBe(16000);
+  expect(()=>assertRequestContract(tavily,body,"","POST")).not.toThrow();
+  for(const change of [{auto_parameters:true},{include_answer:true},{search_depth:"research"},{max_results:21},{tools:[]}])
+    expect(()=>assertRequestContract(tavily,{...body,...change},"","POST")).toThrow("request-out-of-bounds");
+  expect(()=>quoteRequest({origin:tavily.origin,pathname:tavily.pathname,model:"",requestBytes:100,outputTokens:null},undefined,Date.parse(tavily.expiresAt))).toThrow("expired-tariff");
+  expect(()=>quoteRequest({origin:tavily.origin,pathname:"/research",model:"",requestBytes:100,outputTokens:null},undefined,now)).toThrow("missing-tariff");
 });
 
 it("accepts current exact Flash Chat and Pro Messages serializers with unchanged non-thinking settings",()=>{

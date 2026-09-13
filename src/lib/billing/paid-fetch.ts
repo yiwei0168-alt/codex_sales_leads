@@ -42,7 +42,7 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
     const quote={origin:url.origin,pathname:url.pathname,model:typeof parsed.model==="string"?parsed.model:"",requestBytes:bytes,outputTokens};
     const native=!scope.tariffPolicy?(await nativeModelBound(quote)??await embeddingModelBound(quote)):null;
     const rule=native?.rule??(scope.tariffPolicy?quoteRequest(quote,policy.rules):quoteRequest(quote));
-    assertRequestContract(rule,parsed,url.search);
+    assertRequestContract(rule,parsed,url.search,request.method);
     const attempt=currentModelAttempt();
     const modelAttempt=attempt?{
       invocationId:metricIdentifier(attempt.invocationId),provider:metricIdentifier(attempt.provider),
