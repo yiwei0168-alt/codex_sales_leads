@@ -1,5 +1,7 @@
 # Product UI v1.1 implementation workflow
 
+2026-09-14 阶段124：工作区模式保存经租户事务写入审计事件；审计内容按工作区拥有者读写，并拒绝跨户插入和冒用操作者。真实SQL与本地生产Chrome桌面/手机66组通过，0实际付费/发信；`app_session`、`market_workspace`、`workspace_company`的独立隔离迁移仍待处理。[验收](WORKSPACE_AUDIT_TENANT_RLS_ACCEPTANCE_2026-09-14.md)。
+
 2026-09-14 阶段123：联系人补全/核验运行由拥有者上下文读写，9张私有产物表以RLS隔离；历史缺工作区的邮件保留但对应用角色不可见。`/api/contact-enrichment/runs/latest`按会话用户查询，匿名401、两隔离账号各自HTTP200/预期条目通过；隔离SQL和本地生产Chrome桌面/手机66组回归通过。其余4张拥有者字段表另迁移。缓存复用避免重复调用，0实际供应商调用/发信。[验收](CONTACT_ARTIFACT_TENANT_RLS_ACCEPTANCE_2026-09-14.md)。
 
 2026-09-14 阶段120：搜索任务在对话卡和任务详情共用完成标签；`completed` 且最终保存数达到目标才显示“目标已满足”，不足显示“运行结束，目标未填满”，旧结果缺数显示“运行结束，最终数量未记录”。任务详情仍分别展示缺口与图停止原因。桌面/手机本地生产66组合成页面检查通过，真实业务未验收。[证据](SEARCH_TASK_STATUS_LABEL_PRODUCTION_UI_2026-09-14.md)。

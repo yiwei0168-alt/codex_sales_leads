@@ -1,6 +1,6 @@
 import type { CompanyRecord } from "@/lib/domain";
 import { companyOverride } from "./company-overrides";
-import { query, tenantQuery, tenantTransaction, transaction } from "@/lib/rag/db";
+import { query, tenantQuery, tenantTransaction } from "@/lib/rag/db";
 import type {
   CompanyContactDetailsDto,
   CompanyEditablePatch,
@@ -188,7 +188,7 @@ export async function getCurrentWorkspace(userId: string): Promise<MarketWorkspa
 }
 
 export async function updateWorkspaceMode(mode: "new-market" | "growth", userId: string): Promise<void> {
-  await transaction(async (client) => {
+  await tenantTransaction(userId, async (client) => {
     const result = await client.query<{ id: string }>(
       `update market_workspace set mode = $1, updated_at = now()
        where owner_id = $2 and slug = $3 returning id`,

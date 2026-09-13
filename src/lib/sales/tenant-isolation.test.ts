@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const { queryMock, transactionMock,tenantMock } = vi.hoisted(() => ({ queryMock: vi.fn(), transactionMock: vi.fn(),tenantMock:vi.fn() }));
 
-vi.mock("@/lib/rag/db", () => ({ query: queryMock, transaction: transactionMock,tenantQuery:tenantMock }));
+vi.mock("@/lib/rag/db", () => ({ query: queryMock, tenantTransaction: transactionMock,tenantQuery:tenantMock }));
 
 import { getCurrentWorkspace, updateWorkspaceMode } from "./repository";
 
@@ -39,9 +39,10 @@ describe("sales workspace tenant isolation", () => {
     const clientQuery = vi.fn()
       .mockResolvedValueOnce({ rows: [{ id: "workspace-a" }] })
       .mockResolvedValueOnce({ rows: [] });
-    transactionMock.mockImplementation(async (run: (client: { query: typeof clientQuery }) => Promise<unknown>) => run({ query: clientQuery }));
+    transactionMock.mockImplementation(async (_owner:string,run: (client: { query: typeof clientQuery }) => Promise<unknown>) => run({ query: clientQuery }));
 
     await updateWorkspaceMode("growth", "user-a");
+    expect(transactionMock).toHaveBeenCalledWith("user-a",expect.any(Function));
 
     const [auditSql, auditParameters] = clientQuery.mock.calls[1] as [string, unknown[]];
     expect(auditSql).toContain("values ($1, $2, 'workspace', $3");
