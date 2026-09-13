@@ -1,5 +1,9 @@
 # 普通搜索费用上界核验
 
+阶段40增量：request-bounds-v1.5.0新增SearchAPI GET https://www.searchapi.io/api/v1/search，限定google/bing普通第一页，上界USD0.008/次，包络16384字节，有效至2026-09-20T00:00:00Z。[官方定价](https://www.searchapi.io/pricing)的HTML属性data-plan-speed-plans-value包含regular/enhanced两档；2026-09-13只读解析8组公开套餐，最高为Developer enhanced USD80/10000次（USD8/1000），覆盖普通档USD4/1000，不采用低档或失败免费假设。该价是公开套餐单次额度的保守预留，不是本次请求现金账单或另行购买套餐授权。
+
+[Google文档](https://www.searchapi.io/docs/google)说明num已固定10，[Bing文档](https://www.searchapi.io/docs/bing)仍支持num（官方最多50，本产品最多20）。生产Google发送num=10，Bing保留1–20；不增加自动分页。仅允许engine/q/location/gl/hl/num，重复参数、其他引擎和分页拒绝。发现契约升级discovery-request-v4-searchapi-google-limit，旧会话不静默恢复。802测试/174文件、typecheck/build通过，新真实调用0。剩余Gemini/OpenRouter完整上界、真实核销和整体验收未完成。
+
 阶段39增量：request-bounds-v1.4.0新增Google Places POST https://places.googleapis.com/v1/places:searchText，单页1–20结果、包络16384字节，上界USD0.035/次，有效至2026-09-20T00:00:00Z。[官方价格表](https://developers.google.com/maps/billing-and-pricing/pricing)列出Text Search Enterprise SKU E967-44BC-B44D为USD35/1000次；[字段说明](https://developers.google.com/maps/documentation/places/web-service/text-search)将websiteUri归入Enterprise；[计费说明](https://developers.google.com/maps/documentation/places/web-service/usage-and-billing)明确按选中字段最高SKU计费。不扣免费额度或批量折扣。
 
 发送前检查实际X-Goog-FieldMask，只允许当前7字段的非空无重复子集：id、displayName、formattedAddress、websiteUri、googleMapsUri、businessStatus、primaryTypeDisplayName（均places.前缀）。通配符、评论、生成摘要、其他字段/分页/路由参数均阻止。仅将Headers传入内存校验，不写密钥到费用记录。800测试/174文件、typecheck/build通过，包含非法头在预留/发送前拦截的传输测试；真实服务调用0。此为上界验证，SearchAPI/Gemini/OpenRouter及真实账单/业务验收仍待完成。

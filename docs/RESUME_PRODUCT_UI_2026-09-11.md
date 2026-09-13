@@ -1,5 +1,7 @@
 # 产品开发恢复节点 — 2026-09-11
 
+2026-09-13阶段40：request-bounds-v1.5.0新增SearchAPI Google/Bing第一页USD0.008上界，涵盖公开enhanced速度档；Google固定num10、Bing最多20、无自动分页。发现契约v4-searchapi-google-limit，旧会话不静默复用。802测试/174文件、typecheck/build通过，无付费。剩余Gemini/OpenRouter上界、可信报告/核销、真实业务/UI、历史终态恢复和P06分阶段继续；goal active。
+
 2026-09-13阶段39：request-bounds-v1.4.0新增Places Text Search Enterprise USD0.035上界，实际FieldMask与body一起严格检查；800测试/174文件、typecheck/build通过，无付费。剩余入口SearchAPI/Gemini/OpenRouter；真实核销/业务/UI、历史终态恢复和P06独有大事实分阶段继续，goal active。
 
 2026-09-13阶段38：request-bounds-v1.3.0新增Exa auto/company/text最多20结果USD0.027保守上界；修复company不支持excludeDomains，原查询/本地排除不变。discovery-request-v3-exa-company-contract使旧会话停止静默恢复。798测试/174文件、typecheck/build通过，无新付费；Exa costDollars官方定义为估算，不能核销。下一继续SearchAPI/Places/Gemini/OpenRouter完整费用上界及真实报告/业务/UI；完整P06、历史终态恢复仍待完成。goal active。

@@ -9,6 +9,16 @@ function textMessage(value:unknown,role:string){return record(value)&&keys(value
 export function assertRequestContract(rule:RequestBound,body:Record<string,unknown>,query:string,method="POST",headers?:Headers):void{
   if(!rule.requestContract)return; // Historical independently approved scopes retain their own constraints.
   let valid=false;
+  if(rule.requestContract==="searchapi-google-bing-v1"){
+    const params=new URLSearchParams(query);
+    const allowed=["engine","q","location","gl","hl","num"];
+    valid=method==="GET"&&rule.origin==="https://www.searchapi.io"&&rule.pathname==="/api/v1/search"&&rule.model===""
+      &&Object.keys(body).length===0&&[...params.keys()].every(key=>allowed.includes(key)&&params.getAll(key).length===1)
+      &&Boolean(params.get("q")?.trim())&&Boolean(params.get("location")?.trim())
+      &&/^[a-z]{2}$/i.test(params.get("gl")??"")&&/^[a-z]{2,3}(?:-[a-z]{2,4})?$/i.test(params.get("hl")??"")
+      &&((params.get("engine")==="google"&&params.get("num")==="10")
+        ||(params.get("engine")==="bing"&&/^(?:[1-9]|1[0-9]|20)$/.test(params.get("num")??"")));
+  }
   if(rule.requestContract==="google-places-text-enterprise-v1"){
     const fields=(headers?.get("x-goog-fieldmask")??"").split(",").map(field=>field.trim());
     const allowed=["places.id","places.displayName","places.formattedAddress","places.websiteUri","places.googleMapsUri","places.businessStatus","places.primaryTypeDisplayName"];

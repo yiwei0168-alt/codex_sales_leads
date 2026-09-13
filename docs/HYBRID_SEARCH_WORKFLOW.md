@@ -1,5 +1,7 @@
 # Hybrid Lead Search Workflow
 
+2026-09-13阶段40：SearchAPI Google/Bing普通搜索上界USD0.008纳入增强速度公开最高价；Google按官方固定10条发送，Bing保留请求数量上限20，不增加分页。请求/会话契约升级v4-searchapi-google-limit，仍保留原范围和本地去重。802测试/build通过，无新搜索实验或真实调用。
+
 2026-09-13阶段39：Places请求上界USD0.035按实际FieldMask核验；当前查询和字段不变，缺失/通配符/额外字段/分页在预留前拒绝。800测试及build通过，无真实调用。Brave/Tavily/Exa/Places四入口已有窄范围上界，SearchAPI/Gemini/OpenRouter仍待核验，不能宣称完整搜索验收通过。
 
 2026-09-13阶段38：Exa company搜索移除官方不支持的excludeDomains字段，原query和本地registry/初始排除集仍生效；请求/会话契约升级以阻止旧契约静默恢复。auto/company/text最多20结果上界USD0.027，额外付费能力拒绝；不全局关闭Exa，不改合格标准。798测试及build通过，未执行新搜索或实验。见[官方核验](SEARCH_REQUEST_BOUNDS_2026-09-13.md)。

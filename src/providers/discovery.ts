@@ -316,7 +316,7 @@ class SearchApiDiscoveryProvider extends BaseProvider implements DiscoveryProvid
     const { apiKey, baseUrl } = credentials(this.id);
     const url = new URL(trustedDiscoveryEndpoint(baseUrl, ["www.searchapi.io"], "search"));
     url.search = new URLSearchParams({ engine: query.engine, q: webQueryWithDomainExclusions(query), location: query.countryName,
-      gl: query.countryCode.toLowerCase(), hl: language(query.languageCode), num: String(boundedResults(query.maxResults)) }).toString();
+      gl: query.countryCode.toLowerCase(), hl: language(query.languageCode), num: String(query.engine === "google" ? 10 : boundedResults(query.maxResults)) }).toString();
     const response = await requestJson<{ organic_results?: Array<{ title?: string; link?: string; snippet?: string; position?: number }> }>(
       this.id, url.toString(), { headers: { authorization: `Bearer ${apiKey}`, accept: "application/json" } },
       this.requestOptions(), signal);

@@ -23,7 +23,7 @@ export function discoverySessionDependency(plan: LeadSearchPlan, graphThreadId: 
     process.env[config.apiKeyEnv] ?? (config.id === "searchapi" ? process.env["SearchApi.io_API_KEY"] : undefined),
     process.env[config.baseUrlEnv] ?? config.defaultBaseUrl]);
   return createHash("sha256").update(JSON.stringify({ graphThreadId, plan,
-    policy: ACTIVE_HYBRID_SEARCH_POLICY, requestContract: "discovery-request-v3-exa-company-contract", providers,
+    policy: ACTIVE_HYBRID_SEARCH_POLICY, requestContract: "discovery-request-v4-searchapi-google-limit", providers,
     model: process.env.GEMINI_DISCOVERY_MODEL ?? process.env.GEMINI_SEARCH_MODEL ?? "gemini-3.6-flash" })).digest("hex");
 }
 

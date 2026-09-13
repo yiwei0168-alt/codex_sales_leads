@@ -215,7 +215,7 @@ export function discoveryCallFingerprint(plan: LeadSearchPlan, step: HybridSearc
   query: string, requestedResults: number, excludeDomains: string[]): string {
   // These are a conservative superset of the provider wire inputs. Category/track/mechanism
   // are attribution labels, not request fields; exact text and exclusion order remain significant.
-  return hash(JSON.stringify({ version: "discovery-request-v3-exa-company-contract", policy: ACTIVE_HYBRID_SEARCH_POLICY.version,
+  return hash(JSON.stringify({ version: "discovery-request-v4-searchapi-google-limit", policy: ACTIVE_HYBRID_SEARCH_POLICY.version,
     countryCode: plan.countryCode, countryName: plan.countryName, language: plan.queryLanguage,
     provider: step.provider, engine: step.engine, query, requestedResults, excludeDomains }));
 }

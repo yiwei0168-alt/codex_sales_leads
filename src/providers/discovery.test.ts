@@ -14,6 +14,16 @@ function configured(provider: DiscoveryProviderId) { vi.stubEnv(keyByProvider[pr
 
 afterEach(() => vi.unstubAllEnvs());
 
+it("uses Google's documented fixed ten-result page without issuing additional paid pages",async()=>{
+  configured("searchapi");
+  const transport=vi.fn<typeof fetch>(async()=>Response.json({organic_results:[]}));
+  await createDiscoveryProvider("searchapi",{fetchImplementation:transport}).search({...baseQuery,engine:"google",maxResults:20});
+  expect(transport).toHaveBeenCalledOnce();
+  const url=new URL(String(transport.mock.calls[0][0]));
+  expect(url.searchParams.get("num")).toBe("10");
+  expect(url.searchParams.has("page")).toBe(false);
+});
+
 it("omits Exa's unsupported company-category domain filter while preserving the requested search",async()=>{
   configured("exa");
   const transport=vi.fn<typeof fetch>(async()=>Response.json({results:[]}));

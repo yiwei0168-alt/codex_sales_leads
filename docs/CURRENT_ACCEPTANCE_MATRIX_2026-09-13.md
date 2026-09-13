@@ -1,5 +1,7 @@
 # 当前唯一验收矩阵（2026-09-13）
 
+阶段40：SearchAPI Google/Bing普通第一页费用上界USD0.008及Google固定10条请求契约接入，802测试/174文件、typecheck/build通过；无自动付费分页、无新增真实调用。Gemini/OpenRouter完整上界、可信核销、真实业务/UI和完整恢复/P06仍未完成。
+
 阶段39：Google Places现有Text Search字段集合费用上界USD0.035接入，FieldMask在预留及发送前校验；800测试/174文件、typecheck/build通过，无新付费。未完成入口现在包括SearchAPI/Gemini/OpenRouter，真实账单/业务/UI、完整恢复和P06仍待完成。
 
 阶段38：Exa auto/company/text最多20结果请求上界USD0.027接入，修复不支持的excludeDomains字段；本地去重/排除不变，旧请求会话契约失效时停止而非重放。798测试/174文件、typecheck/build通过，无新付费。SearchAPI/Places/Gemini/OpenRouter完整上界及实际报告/真实业务/UI仍待完成。

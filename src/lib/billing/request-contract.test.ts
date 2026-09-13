@@ -6,6 +6,17 @@ import {deepSeekRequestBody} from "@/providers/deepseek-request";
 const rules=candidates.rules.map(rule=>tariffSchema.parse(rule));
 afterEach(()=>vi.unstubAllEnvs());
 
+it("bounds only first-page SearchAPI Google/Bing requests at the higher public speed rate",()=>{
+  const rule=quoteRequest({origin:"https://www.searchapi.io",pathname:"/api/v1/search",model:"",requestBytes:100,outputTokens:null},undefined,Date.parse("2026-09-13T12:00:00Z"));
+  const query="?engine=google&q=network&location=Colombia&gl=co&hl=es&num=10";
+  expect(rule.maximumChargeMicros).toBe(8000);
+  expect(()=>assertRequestContract(rule,{},query,"GET")).not.toThrow();
+  expect(()=>assertRequestContract(rule,{},query.replace("google","bing").replace("num=10","num=20"),"GET")).not.toThrow();
+  for(const bad of [query+"&page=2",query+"&engine=bing",query.replace("google","google_rank_tracking"),query.replace("num=10","num=20"),query+"&async=true"])
+    expect(()=>assertRequestContract(rule,{},bad,"GET")).toThrow("request-out-of-bounds");
+  expect(()=>assertRequestContract(rule,{},query,"POST")).toThrow("request-out-of-bounds");
+});
+
 it("checks Places FieldMask headers as part of the bound before accepting any request",()=>{
   const rule=quoteRequest({origin:"https://places.googleapis.com",pathname:"/v1/places:searchText",model:"",requestBytes:100,outputTokens:null},undefined,Date.parse("2026-09-13T12:00:00Z"));
   const body={textQuery:"network firms",pageSize:20,languageCode:"es",regionCode:"CO"};
@@ -32,8 +43,8 @@ it("permits only bounded Exa auto company text search and rejects unsupported or
 });
 
 it("preserves reviewed native contracts while adding only narrow search endpoints",()=>{
-  expect(billingPolicy.version).toBe("request-bounds-v1.4.0");
-  expect(billingPolicy.rules).toHaveLength(6);
+  expect(billingPolicy.version).toBe("request-bounds-v1.5.0");
+  expect(billingPolicy.rules).toHaveLength(7);
   billingPolicy.rules.slice(0,2).forEach((rule,index)=>expect({...rule,boundDescription:rules[index].boundDescription}).toEqual(rules[index]));
   expect(()=>quoteRequest({origin:"https://api.moonshot.cn",pathname:"/v1/chat/completions",model:"kimi-k3",requestBytes:100,outputTokens:100},billingPolicy.rules,Date.parse("2026-09-13T12:00:00Z"))).toThrow("missing-tariff");
 });
