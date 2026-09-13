@@ -578,6 +578,13 @@ export async function runLeadWorkflow(input: {
   return state.result;
 }
 
+export async function readSavedWorkflowRecoveryCheckpoint(userId:string,actionId:string,graphThreadId:string,plan:LeadSearchPlan){
+  const snapshot=await getProductionGraph().getState({configurable:{thread_id:graphThreadId}});
+  if(checkpointInvocation(snapshot,userId,actionId,plan)!=="complete")throw new Error("Saved recovery requires a terminal completed checkpoint");
+  return {values:snapshot.values as Record<string,unknown>,next:snapshot.next,
+    checkpointId:typeof snapshot.config.configurable?.checkpoint_id==="string"?snapshot.config.configurable.checkpoint_id:null};
+}
+
 export async function readWorkflowCheckpointProgress(userId:string,actionId:string,graphThreadId:string){
   const snapshot=await getProductionGraph().getState({configurable:{thread_id:graphThreadId}});
   if(!Object.keys(snapshot.values).length)return null;
