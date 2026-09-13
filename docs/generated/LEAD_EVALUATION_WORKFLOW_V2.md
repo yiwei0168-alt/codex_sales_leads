@@ -764,7 +764,7 @@ flowchart TD
 | `src/lib/leads/workflow/playbook-cache.ts` | `945d3fc727312208650ee7b4e55e33860e7c54f7e3daa939f768952409a1803f` |
 | `src/lib/leads/workflow/hybrid-search-policy.ts` | `452c8d2d945b76773733e457f274c40ad0b771e72a18b6fc6a5781c4ada5a6e2` |
 | `src/lib/leads/workflow/candidate-registry.ts` | `1666f5010362467f9fcd453115e6961cfeaa4ff2f6a3becf96f5aec168fce5cc` |
-| `src/lib/leads/workflow/discovery-gate.ts` | `6ab617425a35582ae08fa75488d76e83cdb605bc448a566c75e1c35d0f996735` |
+| `src/lib/leads/workflow/discovery-gate.ts` | `a48ec6dcd015ac09b06a82994340028a1e3852f29d542cdb1529892db868f723` |
 | `src/lib/leads/workflow/hybrid-discovery-executor.ts` | `d5882ca852e8b64b7ecf7fffc15b25c71646e93986710f742cf1198ba0925c60` |
 | `src/lib/leads/workflow/discovery.ts` | `99d8971a75e2ff68a43204e4aca0dba8784a4852397a4c270e0dfd9452d067d8` |
 | `src/lib/leads/global-search.ts` | `3e808deea189a90ca6686ec8348648e9f98d97080c9cb78aa9226f6384a4db30` |
@@ -773,7 +773,7 @@ flowchart TD
 | `src/lib/leads/workflow/qualification-agent.ts` | `fb846c4391a745e04ae6075618dafb33a8d1592fb42b8f03d2ce1d55242ddb3e` |
 | `src/lib/leads/workflow/assessment-cache.ts` | `fd85ce372411429490cd1f272575f337a91a543bdd2b0c06cb04c362842c4df4` |
 | `src/lib/leads/workflow/assessment-review-agent.ts` | `83f946ec5b62762cd0a1a614468242a1cedc213f0d7b7c93103fcbe671b07739` |
-| `src/providers/deepseek.ts` | `430e627af27febcad7ab69e84c4c7b7223b1906eaca9cadb75328d70576c681e` |
+| `src/providers/deepseek.ts` | `fb4ee0d6dc9518548c96689d95ba2652186289914170b4d0506a0e4edc72bf2e` |
 | `src/providers/discovery-contracts.ts` | `063e409c3545060f1a7be3222cbaa9c9a118b513cf7f12f3d839a9dce7f491c9` |
 | `src/providers/discovery.ts` | `d6e43ae359dda1b14f45397211bd2bb28e300f1380c3251ee31158bb7dc030c4` |
 | `src/providers/resilient-ai.ts` | `8efa4b29ae48059d96fdde94c5c04b036ba627847ef34292301f300ea27c930e` |
