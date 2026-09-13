@@ -15,7 +15,7 @@ const {query,getPool}=await import("../src/lib/rag/db");
 const {refreshSearchRateEvidence,readSearchRateStatuses}=await import("../src/lib/billing/search-rate-repository");
 const {SEARCH_RATE_SOURCES}=await import("../src/lib/billing/search-rate-reference");
 try{
-  const ddl=await readFile(new URL("../db/migrations/058_search_public_tariff_reference.sql",import.meta.url),"utf8");
+  const ddl=await readFile(new URL("../db/migrations/059_exa_places_public_tariff_reference.sql",import.meta.url),"utf8");
   for(let attempt=0;attempt<2;attempt++){
     const client=await admin.connect();
     try{await client.query("begin");await client.query(ddl);await client.query("commit");}
@@ -31,11 +31,12 @@ try{
     [SEARCH_RATE_SOURCES.map(item=>item.sourceKey)])).rows[0].requests);
   const previousPublicGets=await readPublicGets();
   const results=await Promise.all([refreshSearchRateEvidence(),refreshSearchRateEvidence()]);
-  assert.ok(results.reduce((sum,item)=>sum+item.httpCalls,0)<=2);
+  assert.ok(results.reduce((sum,item)=>sum+item.httpCalls,0)<=4);
   const states=await readSearchRateStatuses();
-  assert.equal(states.length,2);
-  assert.ok(states.every(item=>item.status==="validated"&&item.hold===false),
-    `Public Search rates need review: ${states.map(item=>`${item.tariffKey}:${item.status}`).join(",")}`);
+  assert.equal(states.length,4);
+  assert.ok(states.every(item=>item.status==="validated"&&item.hold===false
+    ||item.status==="review-required"&&item.hold===true),
+    `Public Search rate state is unsafe: ${states.map(item=>`${item.tariffKey}:${item.status}`).join(",")}`);
   assert.ok(states.every(item=>item.nextAttemptAt!==null
     &&new Date(item.nextAttemptAt).getTime()-new Date(item.checkedAt!).getTime()===24*60*60*1000));
   const repeat=await refreshSearchRateEvidence();assert.equal(repeat.httpCalls,0);
@@ -48,10 +49,14 @@ try{
     "select metrics from billing_tariff_refresh_observation where source_key=any($1::text[])",
     [SEARCH_RATE_SOURCES.map(item=>item.sourceKey)]);
   assert.ok(observations.every(item=>item.metrics.costUsd===0&&item.metrics.apiCredits===0));
-  console.log(JSON.stringify({migration:"058",states,concurrentAtMostTwoPublicGets:true,
+  const latestObservations=await query<{source_key:string;status:string;metrics:{freeHttpRequests:number;inputItems:number;
+    validOutputItems:number;downstreamUsedItems:number;outputBytes:number|null;latencyMs:number;discardedReasonCounts:Record<string,number>}}>(
+    "select distinct on (source_key) source_key,status,metrics from billing_tariff_refresh_observation where source_key=any($1::text[]) order by source_key,checked_at desc",
+    [SEARCH_RATE_SOURCES.map(item=>item.sourceKey)]);
+  console.log(JSON.stringify({migration:"059",states,concurrentAtMostFourPublicGets:true,
     oneGetPerSource:true,repeatCached:true,immutableSnapshot:true,paidReservationCountUnchanged:true,
-    paidCostObservationCountUnchanged:true,budgetOccupancyUnchanged:true,modelCalls:0,
-    paidSearchCalls:0,tariffAdmitted:false}));
+    paidCostObservationCountUnchanged:true,budgetOccupancyUnchanged:true,allSourcesValidated:states.every(item=>item.status==="validated"),modelCalls:0,
+    paidSearchCalls:0,tariffAdmitted:false,latestObservations}));
 }catch(error){console.error(JSON.stringify({status:"search-rate-refresh-verification-failed",
   errorClass:error instanceof Error?error.name:"UnknownError",errorMessage:error instanceof Error?error.message:"unknown",
   paidCalls:0}));process.exitCode=1;}

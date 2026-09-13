@@ -83,6 +83,6 @@ it("marks search review storage unavailable without hiding the owner's budget",a
   const response=await GET(new Request("http://localhost/api/budget"));
   expect(response.status).toBe(200);
   const items=(await response.json()).searchRateReferences;
-  expect(items).toHaveLength(2);
+  expect(items).toHaveLength(4);
   expect(items.every((item:{status:string;hold:boolean|null})=>item.status==="unavailable"&&item.hold===null)).toBe(true);
 });

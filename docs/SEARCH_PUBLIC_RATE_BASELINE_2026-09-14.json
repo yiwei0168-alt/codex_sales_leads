@@ -15,5 +15,21 @@
     "basicCredits": 1,
     "advancedCredits": 2,
     "maximumChargeMicros": 16000
+  },
+  "exa": {
+    "sourceUrl": "https://exa.ai/pricing",
+    "canonicalReference": "https://exa.ai/pricing",
+    "searchUsdPer1000Requests": 7,
+    "additionalResultUsdPer1000": 1,
+    "summaryUsdPer1000Pages": 1,
+    "contentsUsdPer1000Pages": 1,
+    "maximumChargeMicros": 27000
+  },
+  "places": {
+    "sourceUrl": "https://developers.google.com/maps/billing-and-pricing/pricing",
+    "canonicalReference": "https://developers.google.com/maps/billing-and-pricing/pricing",
+    "sku": "E967-44BC-B44D",
+    "usdPer1000Events": 35,
+    "maximumChargeMicros": 35000
   }
 }

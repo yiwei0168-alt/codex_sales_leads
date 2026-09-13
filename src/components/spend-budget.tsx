@@ -30,7 +30,7 @@ export function SpendBudget(){
       </li>)}</ul>}
     </details>
     {snapshot.deepSeekRateReferences?.some(item=>item.hold===true)&&<p role="alert">DeepSeek 公开费用合同待审，受影响规则的新预留已暂停；提高预算不会解除暂停。</p>}
-    <details><summary>搜索入口公开费率复核</summary><p>Brave 与 Tavily 只读复核现行 Search 单价和用量单位；页面刷新不访问服务商，也不延长静态期限或自动采用新价格。</p>
+    <details><summary>搜索入口公开费率复核</summary><p>Brave、Tavily、Exa Search 与 Google Places Text Search Enterprise 只读复核现行单价和用量单位；页面刷新不访问服务商，也不延长静态期限或自动采用新价格。SearchAPI 尚无完整已核准费用合同，继续阻止付费调用。</p>
       {!snapshot.searchRateReferences?.length?<p>暂无复核观测，不能推断搜索费率可用。</p>:<ul>{snapshot.searchRateReferences.map(item=><li key={item.sourceKey} data-testid={`search-rate-${item.sourceKey}`}>
         {item.tariffKey}：{item.status==='validated'?'公开证据与基线一致':item.status==='review-required'?'公开证据变化，待确认并暂停新预留':item.status==='unavailable'?'公开复核暂不可用，静态期限独立生效':'尚无公开复核记录'}；上次检查 {item.checkedAt??'未知'}；下次尝试 {item.nextAttemptAt??'未知'}（UTC）
       </li>)}</ul>}

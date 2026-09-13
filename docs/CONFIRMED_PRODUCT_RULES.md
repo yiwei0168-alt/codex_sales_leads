@@ -1,5 +1,7 @@
 # 用户确认规则登记表
 
+2026-09-14阶段110 / A05实施进度：Exa Search 和 Google Places Text Search Enterprise 的现行静态上界新增官方公开单价只读刷新与预算页面展示。真实SQL中 Exa 一致；Places 一次265字节短页无法核实，现保持 review-required/hold=true，后续独立官方页面与基线一致也不自动解除。原金额、截止、路由均未改；SearchAPI 套餐归属/完整上界仍缺，继续阻止。此为已授权部分验收，不是新费率或新用户确认。[报告](EXA_PLACES_PUBLIC_RATE_REFRESH_ACCEPTANCE_2026-09-14.md)。
+
 2026-09-14阶段109 / B25、D13-O01实施进度：评分付费响应已返回但缓存与图检查点都未持久化时，恢复保留原检查点时间，按用户/任务/公司国家哈希查询已记账响应并阻止自动重放；有效缓存仍复用、费用占用不释放。真实PostgreSQL跨进程合成故障回归通过。这是已确认规则的部分实现，不是新产品确认、真实模型闭环或整体验收。[证据](UNCHECKPOINTED_SCORE_RECOVERY_GUARD_2026-09-14.md)。
 
 2026-09-14阶段108 / A05实施进度：现行 Brave/Tavily Search 静态上界新增每日官方公开单价与credit用量只读复核，漂移时按受影响规则粘性暂停新预留；真实SQL/生产UI通过。这是既有费用门禁的部分实现，不是新用户确认、新费率或新路由。原2026-09-20截止和A11/S01状态不变。[验收](SEARCH_PUBLIC_RATE_REFRESH_ACCEPTANCE_2026-09-14.md)。

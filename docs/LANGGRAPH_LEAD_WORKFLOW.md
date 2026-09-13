@@ -1,5 +1,7 @@
 # LangChain / LangGraph 销售线索工作流
 
+阶段110搜索费用边界：Exa `/search` 与 Google Places Text Search Enterprise 的原静态合同加入每日官方公开价只读复核，不改请求/金额；缺价或短页只暂停受影响新预留。当前 Exa validated、Places 因短页 hold=true，SearchAPI 无完整合同继续拒绝。[SQL、官方来源和页面验收](EXA_PLACES_PUBLIC_RATE_REFRESH_ACCEPTANCE_2026-09-14.md)。
+
 阶段109评分恢复边界：生产重入评分前保留原检查点时间；先读取已完成评分与有效缓存，再对剩余公司按同用户/任务/公司国家哈希查询检查点后的已返回评分付费响应。命中则在新请求前暂停，重复恢复不刷新时间屏障，原预留/报告费用保留；其他公司可继续。[真实PostgreSQL跨进程合成验证](UNCHECKPOINTED_SCORE_RECOVERY_GUARD_2026-09-14.md)。丢失的语义输出无法由账本重建，真实模型闭环仍未验收。
 
 阶段108搜索费用边界：worker到期后独立只读抓取Brave Search Plan与Tavily Search credit官方价格，按现行USD0.005/0.016静态上界复核；跨进程去重，漂移只暂停受影响规则的新预留。预算API与页面只读，真实搜索0，[SQL及UI证据](SEARCH_PUBLIC_RATE_REFRESH_ACCEPTANCE_2026-09-14.md)。

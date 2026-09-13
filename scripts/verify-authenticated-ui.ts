@@ -318,13 +318,14 @@ try{
     }
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
     checks.push(`${viewport.width}:deepseek-public-rate-review-real-api`);
-    expect(tariffSnapshot.searchRateReferences).toHaveLength(2);
+    expect(tariffSnapshot.searchRateReferences).toHaveLength(4);
     await page.getByText('搜索入口公开费率复核',{exact:true}).click();
     for(const reference of tariffSnapshot.searchRateReferences){
       expect(['validated','review-required','unavailable','missing']).toContain(reference.status);
       const row=page.getByTestId(`search-rate-${reference.sourceKey}`);
       await expect(row).toContainText(reference.checkedAt??'未知');
       await expect(row).toContainText(reference.nextAttemptAt??'未知');
+      if(reference.hold)await expect(row).toContainText('待确认并暂停新预留');
     }
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
     checks.push(`${viewport.width}:search-public-rate-review-real-api`);
