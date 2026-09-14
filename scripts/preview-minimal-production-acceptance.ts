@@ -260,6 +260,12 @@ try{
       maximumPerCallUsd:rule?rule.maximumChargeMicros/1e6:null,
       actualRequestContractChecked:false};
   });
+  const discoveryRouteActionCeilings=searchRoute.map(route=>({
+    category:route.category,track:route.track,provider:route.provider,trigger:route.trigger,
+    scheduledActionsAtMost:MAX_DISCOVERY_ROUNDS,
+    paidAttemptsAtMost:null as number|null,
+    serverSideToolCallsAtMost:null as number|null,
+  }));
   const tavilyRule=billingPolicy.rules.find(item=>item.key==="tavily-standard-search");
   const tavilyState=sourceStatus.get("tavily-standard-search");
   const supplementalEvidence={provider:"tavily",tariffKey:tavilyRule?.key??null,
@@ -298,6 +304,7 @@ try{
     firstRoundPoolForOneTarget:firstRoundPool,firstRoundRequestedResults,
     discoveryActionCeiling:{rounds:MAX_DISCOVERY_ROUNDS,routeStepsPerRound:firstRoundRoute.length,
       routeActionsAtMost:MAX_DISCOVERY_ROUNDS*firstRoundRoute.length,
+      byRoute:discoveryRouteActionCeilings,
       semantics:"one scheduled route step per round, including conditional/skipped steps; provider retries and server-side tools are additional"},
     stages,searchRoute,supplementalEvidence,officialEvidenceExtract,marketPlaybookWire,braveCoreWire,
     exaConditionalWire,tavilyEvidenceWires,
