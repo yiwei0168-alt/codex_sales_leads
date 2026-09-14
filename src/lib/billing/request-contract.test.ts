@@ -1,9 +1,11 @@
 import {afterEach,expect,it,vi} from "vitest";
 import candidates from "../../../config/billing/deepseek-text-bounds-candidate-2026-09-13.json";
 import solEvidence from "../../../docs/OPENROUTER_SOL_ENDPOINT_EVIDENCE_2026-09-13.json";
+import extractCandidate from "../../../config/billing/tavily-basic-extract-candidate-2026-09-14.json";
 import {billingPolicy,tariffSchema,quoteRequest} from "./policy";
 import {assertRequestContract} from "./request-contract";
 import {deepSeekRequestBody} from "@/providers/deepseek-request";
+import {TavilySearchProvider} from "@/providers/tavily";
 const rules=candidates.rules.map(rule=>tariffSchema.parse(rule));
 afterEach(()=>vi.unstubAllEnvs());
 
@@ -149,6 +151,42 @@ it("bounds ordinary search requests and rejects other methods, features, duplica
     expect(()=>assertRequestContract(tavily,{...body,...change},"","POST")).toThrow("request-out-of-bounds");
   expect(()=>quoteRequest({origin:tavily.origin,pathname:tavily.pathname,model:"",requestBytes:100,outputTokens:null},undefined,Date.parse(tavily.expiresAt))).toThrow("expired-tariff");
   expect(()=>quoteRequest({origin:tavily.origin,pathname:"/research",model:"",requestBytes:100,outputTokens:null},undefined,now)).toThrow("missing-tariff");
+});
+
+it("prepares and captures the exact Tavily basic Extract wire without activating an unconfirmed tariff",async()=>{
+  expect(billingPolicy.rules.some(rule=>rule.pathname==="/extract")).toBe(false);
+  const proposed=tariffSchema.parse(extractCandidate);
+  const body={urls:["https://example.com/a","https://example.com/b"],extract_depth:"basic",
+    format:"text",include_images:false,include_usage:true,timeout:20};
+  expect(()=>assertRequestContract(proposed,body,"")).not.toThrow();
+  expect(()=>quoteRequest({origin:proposed.origin,pathname:proposed.pathname,model:"",
+    requestBytes:JSON.stringify(body).length,outputTokens:null})).toThrow("missing-tariff");
+  expect(quoteRequest({origin:proposed.origin,pathname:proposed.pathname,model:"",
+    requestBytes:JSON.stringify(body).length,outputTokens:null},[proposed],Date.parse(proposed.verifiedAt))).toBe(proposed);
+  expect(()=>quoteRequest({origin:proposed.origin,pathname:proposed.pathname,model:"",
+    requestBytes:JSON.stringify(body).length,outputTokens:null},[proposed],Date.parse(proposed.expiresAt)))
+    .toThrow("expired-tariff");
+  for(const change of [{urls:[]},{urls:Array.from({length:21},(_,index)=>`https://example.com/${index}`)},
+    {urls:["http://example.com"]},{urls:["https://user:pass@example.com"]},
+    {extract_depth:"advanced"},{query:"network"},{include_images:true},{include_usage:false},
+    {format:"markdown"},{timeout:21},{tools:[]}])
+    expect(()=>assertRequestContract(proposed,{...body,...change},"")).toThrow("request-out-of-bounds");
+  expect(()=>assertRequestContract(proposed,body,"?page=2")).toThrow("request-out-of-bounds");
+  expect(()=>assertRequestContract(proposed,body,"","GET")).toThrow("request-out-of-bounds");
+  vi.stubEnv("TAVILY_API_KEY","synthetic-key");
+  let captured=0;
+  const provider=new TavilySearchProvider({maxAttempts:1,fetchImplementation:async(input,init)=>{
+    const request=new Request(input,init);
+    expect(new URL(request.url).pathname).toBe("/extract");
+    const actual=JSON.parse(await request.clone().text()) as Record<string,unknown>;
+    expect(()=>assertRequestContract(proposed,actual,"",request.method,request.headers)).not.toThrow();
+    expect(Buffer.byteLength(JSON.stringify(actual))).toBeLessThanOrEqual(proposed.maximumRequestBytes);
+    captured++;
+    return new Response(JSON.stringify({results:[],failed_results:[],usage:{credits:0}}),{status:200});
+  }});
+  await provider.extract(body.urls);
+  await provider.extract(Array.from({length:20},(_,index)=>`https://example.com/${index}`));
+  expect(captured).toBe(2);
 });
 
 it("accepts current exact Flash Chat and Pro Messages serializers with unchanged non-thinking settings",()=>{

@@ -1,4 +1,5 @@
 # 当前唯一验收矩阵（更新至 2026-09-14）
+Stage 177 A11 [Tavily Extract candidate](TAVILY_EXTRACT_TARIFF_PROPOSAL_2026-09-14.md): official pricing and exact synthetic 2/20-URL wires support a strict USD0.032000 candidate, but /extract remains missing-tariff in active policy pending contract confirmation. No real paid closure or overall acceptance is claimed.
 Stage 176 O03 [post-review target verification](O03_POST_REVIEW_TARGET_COMPLETION_2026-09-14.md): synthetic downgrade continues discovery, targeted research pauses, and primary score reuse remains intact. Full 1,017-test regression, typecheck, build and lint pass. A11 total conservative bound, live model semantics and real bill are still unverified; overall acceptance remains open.
 
 阶段175 [S01公开端点参数差异](S01_PUBLIC_ENDPOINT_PARAMETER_GAP_2026-09-14.md)：现行市场计划合成请求含 `max_completion_tokens`、`temperature`，OpenRouter OpenAI标准端点公开参数清单未列这两项；官方通用API支持前者，元数据差异不等于真实拒绝。只读预检显式保留 `providerAcceptanceChecked=false`、整次上界`null`，S01确认和付费门禁均不变。

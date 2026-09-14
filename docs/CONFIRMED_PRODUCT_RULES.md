@@ -1,4 +1,5 @@
 # 用户确认规则登记表
+2026-09-14 stage 177 / A11 pending decision: Tavily basic /extract USD0.032000 candidate and strict request validator are documented and tested, but no active tariff was added. This is a proposal under the existing rule that new billing contracts require confirmation; no product approval, paid call, or A11 completion is inferred. [Candidate](TAVILY_EXTRACT_TARIFF_PROPOSAL_2026-09-14.md).
 2026-09-14 stage 176 / D13-O03 implementation: final target and stop reason now use post-review eligible assessments; review-requested research pauses as processing-incomplete. Five existing search rounds are shared with read-only A11 preflight. Synthetic graph verification passed; this does not change the user's confirmed O01-O05 scope, prove real fill rate, or complete A11. [Evidence](O03_POST_REVIEW_TARGET_COMPLETION_2026-09-14.md).
 
 2026-09-14 阶段175 / A11、S01验收状态：已批准市场计划专用路由的合成请求与单次合同仍有效，但官方OpenAI端点参数清单未列实际请求中的 `max_completion_tokens` 和 `temperature`；这是未验证的兼容性缺口，不是用户撤销S01或供应商拒绝的证据。路由、费率、4096输出和USD30门禁均未更改；真实业务与整体验收仍未通过。[证据](S01_PUBLIC_ENDPOINT_PARAMETER_GAP_2026-09-14.md)。

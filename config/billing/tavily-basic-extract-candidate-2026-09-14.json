@@ -1,0 +1,14 @@
+{
+  "key": "tavily-basic-extract",
+  "origin": "https://api.tavily.com",
+  "pathname": "/extract",
+  "model": "",
+  "maximumChargeMicros": 32000,
+  "maximumRequestBytes": 32768,
+  "maximumOutputTokens": 0,
+  "requestContract": "tavily-basic-extract-v1",
+  "boundDescription": "Published pay-as-you-go USD0.008 per credit. At most 20 URLs in one basic Extract request, at most four credits if all succeed; no free-credit discount assumed. Text output only, images and query reranking disabled; advanced extract, crawl and other endpoints excluded. Custom enterprise contracts are outside this published-price scope.",
+  "reference": "https://docs.tavily.com/documentation/api-credits",
+  "verifiedAt": "2026-09-14T06:41:00Z",
+  "expiresAt": "2026-09-21T00:00:00Z"
+}

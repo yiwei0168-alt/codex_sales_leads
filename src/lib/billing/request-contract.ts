@@ -77,6 +77,18 @@ export function assertRequestContract(rule:RequestBound,body:Record<string,unkno
       &&(body.country===undefined||typeof body.country==="string")
       &&(body.include_domains===undefined||(Array.isArray(body.include_domains)&&body.include_domains.every(item=>typeof item==="string")));
   }
+  if(rule.requestContract==="tavily-basic-extract-v1"){
+    valid=method==="POST"&&rule.origin==="https://api.tavily.com"&&rule.pathname==="/extract"
+      &&rule.model===""&&query===""
+      &&keys(body,["urls","extract_depth","format","include_images","include_usage","timeout"])
+      &&Array.isArray(body.urls)&&body.urls.length>=1&&body.urls.length<=20
+      &&body.urls.every(item=>typeof item==="string"&&item.length<=2_048&&/^https:\/\//i.test(item)
+        &&(()=>{try{const url=new URL(item);return !url.username&&!url.password&&!url.hash;}catch{return false;}})())
+      &&body.extract_depth==="basic"&&body.format==="text"
+      &&body.include_images===false&&body.include_usage===true
+      &&typeof body.timeout==="number"&&Number.isFinite(body.timeout)
+      &&body.timeout>=1&&body.timeout<=20;
+  }
   if(rule.requestContract==="aliyun-beijing-dense-text-v1"){
     const inputs=typeof body.input==="string"?[body.input]:body.input;
     valid=isBeijingEmbeddingOrigin(rule.origin)&&rule.pathname==="/compatible-mode/v1/embeddings"&&query===""
