@@ -1,5 +1,7 @@
 import { ACTIVE_HYBRID_SEARCH_POLICY } from "./hybrid-search-policy";
 
+export const MAX_DISCOVERY_ROUNDS = 5;
+
 export type TargetCompletionReason = "target-met" | "confirmed-exhaustion"
   | "provider-unavailable" | "maximum-rounds" | "processing-incomplete" | "role-unresolved" | "qualified-shortfall";
 

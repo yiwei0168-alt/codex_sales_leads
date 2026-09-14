@@ -433,6 +433,8 @@ export interface LeadWorkflowState {
   candidates: LeadWorkflowCandidate[];
   correctedCandidates: CorrectedLeadWorkflowCandidate[];
   assessments: LeadCandidateAssessment[];
+  /** Original scoring results, kept separate from the review's final decisions across search rounds. */
+  primaryAssessments?: LeadCandidateAssessment[];
   discoveryRound?: number;
   discoveredUniqueCount?: number;
   discoverySession?: import("./discovery-session").DiscoverySessionSnapshot;

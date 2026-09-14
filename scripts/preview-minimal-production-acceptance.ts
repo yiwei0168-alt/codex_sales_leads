@@ -11,7 +11,7 @@ const {getRagConfig}=await import("../src/lib/rag/config");
 const {resolveOpenRouterModel}=await import("../src/providers/openrouter");
 const {deepSeekRequestBody}=await import("../src/providers/deepseek-request");
 const {textOutputLimit}=await import("../src/lib/billing/text-output-policy");
-const {plannedCandidatePool}=await import("../src/lib/leads/workflow/target-completion-policy");
+const {plannedCandidatePool,MAX_DISCOVERY_ROUNDS}=await import("../src/lib/leads/workflow/target-completion-policy");
 const {buildHybridSearchRoute,discoveryResultsPerRoute}=await import("../src/lib/leads/workflow/hybrid-search-policy");
 const {readSearchRateStatuses}=await import("../src/lib/billing/search-rate-repository");
 const userId="cbee9803-3c43-4609-9228-66086b207012";
@@ -289,6 +289,9 @@ try{
   console.log(JSON.stringify({mode:"read-only-prerequisite-preview",limitUsd:30,occupiedUsd:Number(budget.budget.occupied_micros)/1e6,
     remainingUsd:Number(budget.budget.remaining_micros)/1e6,frozen:budget.budget.frozen,
     firstRoundPoolForOneTarget:firstRoundPool,firstRoundRequestedResults,
+    discoveryActionCeiling:{rounds:MAX_DISCOVERY_ROUNDS,routeStepsPerRound:firstRoundRoute.length,
+      routeActionsAtMost:MAX_DISCOVERY_ROUNDS*firstRoundRoute.length,
+      semantics:"one scheduled route step per round, including conditional/skipped steps; provider retries and server-side tools are additional"},
     stages,searchRoute,supplementalEvidence,marketPlaybookWire,braveCoreWire,
     exaConditionalWire,tavilyEvidenceWires,
     checkedTariffsAvailable:stages.every(stage=>stage.tariff==="available")

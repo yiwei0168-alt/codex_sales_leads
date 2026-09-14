@@ -30,7 +30,7 @@ import {readCurrentRecoveryPublicVersions,revalidateSavedRecoveryResume} from ".
 import {isCurrentLeadScoringEvidence} from "@/lib/leads/evidence-snapshot";
 import { loadCachedLeadAssessments, saveCachedLeadAssessments, validCachedAssessment } from "./assessment-cache";
 import { loadCachedLeadPlaybook, saveCachedLeadPlaybook } from "./playbook-cache";
-import { nextNoFinalRoundCount, plannedCandidatePool, targetCompletionDecision,
+import { MAX_DISCOVERY_ROUNDS, nextNoFinalRoundCount, plannedCandidatePool, targetCompletionDecision,
   type TargetCompletionReason } from "./target-completion-policy";
 import type {
   CorrectedLeadWorkflowCandidate,
@@ -59,6 +59,7 @@ const WorkflowAnnotation = Annotation.Root({
   candidates: Annotation<LeadWorkflowCandidate[]>(),
   correctedCandidates: Annotation<CorrectedLeadWorkflowCandidate[]>(),
   assessments: Annotation<LeadCandidateAssessment[]>(),
+  primaryAssessments: Annotation<LeadCandidateAssessment[] | undefined>(),
   discoveryRound: Annotation<number | undefined>(),
   discoveredUniqueCount: Annotation<number | undefined>(),
   discoverySession: Annotation<DiscoverySessionSnapshot | undefined>(),
@@ -372,7 +373,8 @@ export function buildLeadWorkflowGraph(
         countryCode:state.plan.countryCode,countryName:state.plan.countryName,
         contracts:initialContracts,
       }) : new Map<string, LeadCandidateAssessment>();
-        const alreadyAssessed = new Map((state.assessments ?? []).map((item) => [item.candidateId, item]));
+        const alreadyAssessed = new Map((state.primaryAssessments ?? state.assessments ?? [])
+          .map((item) => [item.candidateId, item]));
         // A complete peer may have been checkpointed before a single-candidate repair.
         // Recompute the remaining request contracts after a hit; never reuse a changed batch contract.
         if(cached.size&&dependencies.loadAssessmentCache&&dependencies.qualificationAgent.cacheContracts){
@@ -464,14 +466,16 @@ export function buildLeadWorkflowGraph(
       const hasIncompleteProcessing = correctionIncomplete + scoringIncomplete > 0;
       const consecutiveNoFinalRounds = nextNoFinalRoundCount(state.consecutiveNoFinalRounds ?? 0,
         { finalEligibleAdded, completedFreshCalls, hadProviderFailureOrCircuit: unavailableCalls > 0 || hasIncompleteProcessing || pendingRoleCount > 0 });
-      const targetDecision = state.terminalRecoveryOnly ? {complete:true,reason:hasIncompleteProcessing?"processing-incomplete" as const
-        :pendingRoleCount>0?"role-unresolved" as const:acceptedCount>=state.plan.targetCount?"target-met" as const:"qualified-shortfall" as const}
+      const targetDecision = hasIncompleteProcessing ? {complete:true as const,reason:"processing-incomplete" as const}
+        : state.terminalRecoveryOnly ? {complete:true,
+          reason:pendingRoleCount>0?"role-unresolved" as const
+            :acceptedCount>=state.plan.targetCount?"target-met" as const:"qualified-shortfall" as const}
         : metricsAvailable ? targetCompletionDecision({ acceptedCount,
         targetCount: state.plan.targetCount, completedFreshCalls,
         hasIncompleteProcessing,
         hasPendingRoles: pendingRoleCount > 0,
         hadProviderFailureOrCircuit: unavailableCalls > 0,
-        consecutiveNoFinalRounds, round: Math.max(0, (state.discoveryRound ?? 1) - 1), maximumRounds: 5 })
+        consecutiveNoFinalRounds, round: Math.max(0, (state.discoveryRound ?? 1) - 1), maximumRounds: MAX_DISCOVERY_ROUNDS })
         : { complete: true as const, reason: hasIncompleteProcessing ? "processing-incomplete" as const
           : pendingRoleCount > 0 ? "role-unresolved" as const : undefined };
       const metric = { ...completedStageMetric({ stage: "score_candidates", startedAt,
@@ -482,28 +486,36 @@ export function buildLeadWorkflowGraph(
           outOfRoleNotScored: state.correctedCandidates.length - inScopeCandidates.length,
           correctionIncomplete, scoringIncomplete, pendingRoleCount,
           requestPreparations:evaluated.usage.flatMap(usage=>usage.requestPreparation?[usage.requestPreparation]:[]),
-          acceptedCount, finalEligibleAdded, consecutiveNoFinalRounds,
-          targetShouldContinue: !targetDecision.complete, targetCompletionReason: targetDecision.reason } }),
+          preReviewAcceptedCount: acceptedCount, preReviewEligibleAdded: finalEligibleAdded,
+          preReviewNoFinalRounds: consecutiveNoFinalRounds,
+          preReviewTargetShouldContinue: !targetDecision.complete,
+          preReviewTargetCompletionReason: targetDecision.reason } }),
       status: missing.length === 0 ? "cache-hit" as const : "completed" as const };
-      return { phase: "scoring" as const, assessments, processingRecoveryAuthorized: false,
+      return { phase: "scoring" as const, assessments, primaryAssessments: assessments,
+        processingRecoveryAuthorized: false,
         scoreRecoveryCheckpointAt: undefined,
         warnings:[...state.warnings,...(cachePersistenceFailed?[cacheContractUnavailable
           ?"评分结果缺少可复用请求契约；已完成评分保留，后续批次暂停并等待检查点恢复。"
           :"评分缓存写入失败；本次已完成评分保留，不因缓存故障重放模型调用。"]:[])],
-        acceptedCandidateCount: acceptedCount, consecutiveNoFinalRounds,
+        consecutiveNoFinalRounds: state.consecutiveNoFinalRounds ?? 0,
         targetShouldContinue: !targetDecision.complete, targetCompletionReason: targetDecision.reason,
         modelUsage: [...(state.modelUsage ?? []), ...evaluated.usage], stageMetrics: [...(state.stageMetrics ?? []), metric] };
     })
     .addNode("recover_incomplete_processing", async (state) => {
       if (!state.processingRecoveryAuthorized) throw new WorkflowProcessingIncompleteError();
-      return { ...processingRecoveryWork(state), processingRecoveryAuthorized: false };
+      const recovered = processingRecoveryWork(state);
+      const completedIds = new Set(recovered.assessments.map(assessment => assessment.candidateId));
+      return { ...recovered, primaryAssessments: (state.primaryAssessments ?? state.assessments)
+        .filter(assessment => completedIds.has(assessment.candidateId)),
+        processingRecoveryAuthorized: false };
     })
     .addNode("review_assessment_anomalies", async (state) => {
       const startedAt = Date.now();
       await phase(dependencies, state, "reviewing-scores");
       if (!state.playbook) throw new Error("Market Playbook is missing before assessment review");
+      const primaryAssessments = state.primaryAssessments ?? state.assessments;
       const reviewed = await dependencies.assessmentReviewAgent.review(
-        state.correctedCandidates, state.assessments, state.playbook, state.plan,
+        state.correctedCandidates, primaryAssessments, state.playbook, state.plan,
         productReviewCheckpoint({userId:state.userId,workspaceId:state.workspaceId,
           countryCode:state.plan.countryCode}),
       );
@@ -515,14 +527,43 @@ export function buildLeadWorkflowGraph(
         latencyMs: 0, fallbackUsed: false, accountCashCostUsd: usage.usage.accountCashCostUsd,
       }));
       const valid = reviewed.reviews.filter((review) => review.required&&review.status !== "review-failed").length;
+      const acceptedCount = reviewed.assessments.filter(item => item.eligible
+        && item.eligibilityStatus === "eligible" && item.scoringStatus === "completed").length;
+      const latestScore = [...(state.stageMetrics ?? [])].reverse().find(item => item.stage === "score_candidates");
+      const discoveryMetric = [...(state.stageMetrics ?? [])].reverse().find(item => item.stage === "discover_candidates");
+      const metricsAvailable = Boolean(discoveryMetric?.metadata && "completedCalls" in discoveryMetric.metadata);
+      const completedFreshCalls = metricsAvailable ? Number(discoveryMetric?.metadata.completedFreshCalls ?? 0) : 0;
+      const unavailableCalls = metricsAvailable ? Number(discoveryMetric?.metadata.unavailableCalls ?? 0) : 0;
+      const correctionIncomplete = Number(latestScore?.metadata.correctionIncomplete ?? 0);
+      const scoringIncomplete = Math.max(0, primaryAssessments.length - reviewed.assessments.filter(item =>
+        item.scoringStatus === "completed").length);
+      const pendingRoleCount = Number(latestScore?.metadata.pendingRoleCount ?? 0);
+      const hasIncompleteProcessing = correctionIncomplete + scoringIncomplete > 0;
+      const finalEligibleAdded = Math.max(0, acceptedCount - (state.acceptedCandidateCount ?? 0));
+      const consecutiveNoFinalRounds = nextNoFinalRoundCount(state.consecutiveNoFinalRounds ?? 0,
+        { finalEligibleAdded, completedFreshCalls,
+          hadProviderFailureOrCircuit: unavailableCalls > 0 || hasIncompleteProcessing || pendingRoleCount > 0 });
+      const targetDecision = hasIncompleteProcessing ? { complete: true as const, reason: "processing-incomplete" as const }
+        : state.terminalRecoveryOnly ? { complete: true as const,
+          reason: pendingRoleCount > 0 ? "role-unresolved" as const
+            : acceptedCount >= state.plan.targetCount ? "target-met" as const : "qualified-shortfall" as const }
+        : metricsAvailable ? targetCompletionDecision({ acceptedCount, targetCount: state.plan.targetCount,
+          completedFreshCalls, hasIncompleteProcessing, hasPendingRoles: pendingRoleCount > 0,
+          hadProviderFailureOrCircuit: unavailableCalls > 0, consecutiveNoFinalRounds,
+          round: Math.max(0, (state.discoveryRound ?? 1) - 1), maximumRounds: MAX_DISCOVERY_ROUNDS })
+        : { complete: true as const, reason: pendingRoleCount > 0 ? "role-unresolved" as const : undefined };
       const metric = completedStageMetric({ stage: "review_assessment_anomalies", startedAt,
-        input: state.assessments, output: reviewed.reviews, inputItems: state.assessments.length,
+        input: primaryAssessments, output: reviewed.reviews, inputItems: primaryAssessments.length,
         outputItems: reviewed.reviews.length, generatedArtifacts: reviewed.reviews.filter((review) => review.required).length,
         validArtifacts: valid, downstreamUsedArtifacts: valid,
         metadata:{skippedNotRequired:reviewed.reviews.filter(review=>!review.required).length,
           reusedSecondaryResponses:reviewed.cacheHits?.secondary??0,reusedJudgeResponses:reviewed.cacheHits?.judge??0,
-          usageBoundary:"validated-review-forwarded-not-user-adoption"} });
+          acceptedCount, finalEligibleAdded, consecutiveNoFinalRounds,
+          targetShouldContinue: !targetDecision.complete, targetCompletionReason: targetDecision.reason,
+          scoringIncomplete, usageBoundary:"validated-review-forwarded-not-user-adoption"} });
       return { phase: "reviewing-scores" as const, assessments: reviewed.assessments,
+        acceptedCandidateCount: acceptedCount, consecutiveNoFinalRounds,
+        targetShouldContinue: !targetDecision.complete, targetCompletionReason: targetDecision.reason,
         assessmentReviews: reviewed.reviews, modelUsage: [...(state.modelUsage ?? []), ...reviewUsage],
         stageMetrics: [...(state.stageMetrics ?? []), metric], warnings: [...state.warnings, ...reviewed.warnings] };
     })
@@ -589,15 +630,19 @@ export function buildLeadWorkflowGraph(
     .addEdge("correct_candidates", "route_candidates")
     .addEdge("route_candidates", "score_candidates")
     .addConditionalEdges("score_candidates", (state) => state.targetCompletionReason === "processing-incomplete"
-      ? "recover_incomplete_processing" : state.targetShouldContinue ? "discover_candidates" : "review_assessment_anomalies", {
+      ? "recover_incomplete_processing" : "review_assessment_anomalies", {
       recover_incomplete_processing: "recover_incomplete_processing",
-      discover_candidates: "discover_candidates",
       review_assessment_anomalies: "review_assessment_anomalies",
     })
     .addConditionalEdges("recover_incomplete_processing", state => state.candidates.length ? "correct_candidates" : "score_candidates", {
       correct_candidates: "correct_candidates", score_candidates: "score_candidates",
     })
-    .addEdge("review_assessment_anomalies", "assemble_handoff_briefs")
+    .addConditionalEdges("review_assessment_anomalies", state => state.targetCompletionReason === "processing-incomplete"
+      ? "recover_incomplete_processing" : state.targetShouldContinue ? "discover_candidates" : "assemble_handoff_briefs", {
+      recover_incomplete_processing: "recover_incomplete_processing",
+      discover_candidates: "discover_candidates",
+      assemble_handoff_briefs: "assemble_handoff_briefs",
+    })
     .addEdge("assemble_handoff_briefs", "persist_results")
     .addEdge("persist_results", END);
   return graph.compile(checkpointer ? { checkpointer } : undefined);

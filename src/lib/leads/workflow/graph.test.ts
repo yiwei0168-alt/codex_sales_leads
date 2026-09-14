@@ -5,7 +5,7 @@ import {leadEvidenceContentHash} from "@/lib/leads/evidence-snapshot";
 import { resultPersistenceFingerprint } from "./persistence-identity";
 import {completedStageMetric} from "./workflow-telemetry";
 import {companyCostKey} from "@/lib/billing/company-cost-context";
-import { processingRecoveryWork } from "./processing-recovery";
+import { processingRecoveryWork, WorkflowProcessingIncompleteError } from "./processing-recovery";
 import {revalidateSavedRecoveryResume} from "./recovery-resume-revalidation";
 import { snapshotDiscoverySession } from "./discovery-session";
 import { createHybridDiscoverySession } from "./hybrid-discovery-executor";
@@ -142,10 +142,10 @@ function dependencies(events: string[], context = ragContext): LeadWorkflowDepen
     collectEvidence: vi.fn(async () => { events.push("evidence"); return { candidates: [candidate], creditsUsed: 2, warnings: [] }; }),
     correctionAgent: { correct: vi.fn(async () => { events.push("correct"); return { candidates: [correctedCandidate], creditsUsed: 1, warnings: [] }; }) },
     qualificationAgent: { evaluate: vi.fn(async () => { events.push("score"); return [assessment]; }) },
-    assessmentReviewAgent: { review: vi.fn(async () => { events.push("review"); return { assessments: [assessment],
-      reviews: [{ candidateId: assessment.candidateId, required: false, triggers: [], status: "not-required" as const,
-        primaryModel: assessment.model, primaryScore: assessment.totalScore, finalScore: assessment.totalScore,
-        materialDisagreements: [], rationale: "No trigger", warnings: [] }], warnings: [] }; }) },
+    assessmentReviewAgent: { review: vi.fn(async (_candidates, assessments: LeadCandidateAssessment[]) => { events.push("review"); return { assessments,
+      reviews: assessments.map(item => ({ candidateId: item.candidateId, required: false, triggers: [], status: "not-required" as const,
+        primaryModel: item.model, primaryScore: item.totalScore, finalScore: item.totalScore,
+        materialDisagreements: [], rationale: "No trigger", warnings: [] })), warnings: [] }; }) },
     handoffAssembler: { assemble: vi.fn(() => { events.push("handoff"); return []; }) },
     persist: vi.fn(async () => { events.push("persist"); return result; }),
   };
@@ -646,6 +646,71 @@ describe("LangGraph lead workflow", () => {
     expect(deps.persist).toHaveBeenCalledWith(expect.objectContaining({
       processedCompanyKeys:["a".repeat(64),"b".repeat(64),"c".repeat(64)] }));
     expect(state.targetCompletionReason).toBe("target-met");
+  });
+  it("continues discovery when final review removes the only qualified lead", async () => {
+    const deps = dependencies([]);
+    const second = { ...candidate, candidateId: "lead-second", companyName: "Second GmbH",
+      domain: "second.de", officialWebsiteUrl: "https://second.de/" };
+    const secondCorrected = { ...correctedCandidate, ...second,
+      correction: { ...correctedCandidate.correction, originalCompanyName: second.companyName,
+        originalDomain: second.domain, originalOfficialWebsiteUrl: second.officialWebsiteUrl } };
+    deps.discover = vi.fn()
+      .mockResolvedValueOnce({ runId: "run-1", candidates: [candidate], creditsUsed: 0,
+        warnings: [], callMetrics: [discoveryMetric(1)] })
+      .mockResolvedValueOnce({ runId: "run-1", candidates: [second], creditsUsed: 0,
+        warnings: [], callMetrics: [discoveryMetric(1)] });
+    deps.collectEvidence = vi.fn(async (items: LeadWorkflowCandidate[]) => ({ candidates: items, creditsUsed: 0, warnings: [] }));
+    deps.correctionAgent.correct = vi.fn(async (items: LeadWorkflowCandidate[]) => ({ candidates: items.map(item =>
+      item.candidateId === candidate.candidateId ? correctedCandidate : secondCorrected), creditsUsed: 0, warnings: [] }));
+    deps.qualificationAgent.evaluate = vi.fn(async (items: CorrectedLeadWorkflowCandidate[]) => items.map(item =>
+      ({ ...assessment, candidateId: item.candidateId })));
+    const reviewedInputs: LeadCandidateAssessment[][] = [];
+    deps.assessmentReviewAgent.review = vi.fn(async (_items, assessments: LeadCandidateAssessment[]) => {
+      reviewedInputs.push(assessments);
+      return { assessments: assessments.map(item => item.candidateId === candidate.candidateId
+        ? { ...item, eligible: false, eligibilityStatus: "ineligible-for-current-task" as const } : item),
+        reviews: assessments.map(item => ({ candidateId: item.candidateId, required: true,
+          triggers: ["test"], status: "judge-resolved" as const, primaryModel: item.model,
+          primaryScore: item.totalScore, finalScore: item.totalScore, materialDisagreements: [],
+          rationale: "Synthetic review", warnings: [] })), warnings: [] };
+    });
+    const state = await buildLeadWorkflowGraph(deps).invoke({ userId: "u", actionId: "a", graphThreadId: "review-yield",
+      workspaceId: "w", plan: { ...plan, targetCount: 1 }, phase: "queued", ragContext: [], candidates: [],
+      correctedCandidates: [], assessments: [], assessmentReviews: [], handoffs: [], creditsUsed: 0,
+      modelUsage: [], stageMetrics: [], warnings: [] }, { recursionLimit: 50 });
+    expect(deps.discover).toHaveBeenCalledTimes(2);
+    expect(deps.qualificationAgent.evaluate).toHaveBeenCalledTimes(2);
+    expect(reviewedInputs).toHaveLength(2);
+    expect(reviewedInputs[1][0].eligible).toBe(true); // Reuse the original paid score, not the prior review decision.
+    expect(state.acceptedCandidateCount).toBe(1);
+    expect(state.targetCompletionReason).toBe("target-met");
+    expect(deps.persist).toHaveBeenCalledWith(expect.objectContaining({
+      assessments: [expect.objectContaining({ candidateId: candidate.candidateId, eligible: false }),
+        expect.objectContaining({ candidateId: second.candidateId, eligible: true })] }));
+  });
+  it("pauses without another search when review requires targeted research", async () => {
+    const deps = dependencies([]);
+    deps.discover = vi.fn(async () => ({ runId: "run-1", candidates: [candidate], creditsUsed: 0,
+      warnings: [], callMetrics: [discoveryMetric(1)] }));
+    deps.assessmentReviewAgent.review = vi.fn(async () => ({
+      assessments: [{ ...assessment, scoringStatus: "retry-required" as const }],
+      reviews: [{ candidateId: candidate.candidateId, required: true, triggers: ["test"],
+        status: "targeted-research-required" as const, primaryModel: assessment.model,
+        primaryScore: assessment.totalScore, finalScore: assessment.totalScore,
+        materialDisagreements: [], rationale: "More evidence needed", warnings: [] }], warnings: [] }));
+    const graph = buildLeadWorkflowGraph(deps, new MemorySaver());
+    const config = { configurable: { thread_id: "review-research" } };
+    await expect(graph.invoke({ userId: "u", actionId: "a", graphThreadId: "review-research",
+      workspaceId: "w", plan: { ...plan, targetCount: 1 }, phase: "queued", ragContext: [],
+      candidates: [], correctedCandidates: [], assessments: [], assessmentReviews: [], handoffs: [],
+      creditsUsed: 0, modelUsage: [], stageMetrics: [], warnings: [] }, config))
+      .rejects.toThrow(WorkflowProcessingIncompleteError);
+    const snapshot = await graph.getState(config);
+    expect(snapshot.next).toEqual(["recover_incomplete_processing"]);
+    expect(snapshot.values.targetCompletionReason).toBe("processing-incomplete");
+    expect(snapshot.values.acceptedCandidateCount).toBe(0);
+    expect(deps.discover).toHaveBeenCalledTimes(1);
+    expect(deps.persist).not.toHaveBeenCalled();
   });
   it("rechecks the remaining exact contract after a partial checkpoint hit without scoring again",async()=>{
     const deps=dependencies([]);

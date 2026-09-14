@@ -1,4 +1,5 @@
 # PRD v0.3 Acceptance Report
+Stage 176 O03: search continuation now evaluates the final post-review qualified count. A review downgrade can continue within the existing five-round and health limits; targeted research remains incomplete. Synthetic graph tests pass; real-market yield and A11 remain unverified. [Evidence](O03_POST_REVIEW_TARGET_COMPLETION_2026-09-14.md).
 
 阶段175 / A11：S01合成市场计划请求的两个字段未见于 OpenRouter OpenAI端点公开参数清单；预检区分公开元数据缺口与实际拒绝，继续阻止把单次合同当真实闭环验收。无路由/费率变更、0付费。[证据](S01_PUBLIC_ENDPOINT_PARAMETER_GAP_2026-09-14.md)。
 

@@ -1,4 +1,5 @@
 # LangChain / LangGraph 销售线索工作流
+2026-09-14 stage 176: score_candidates keeps primary scores separately; review_assessment_anomalies sets the final eligible count, no-final streak and next edge before handoff or another discovery round. Reviewed retry-required pauses recovery. The unchanged five-round ceiling is shared with the read-only preflight; no new paid run. [Evidence](O03_POST_REVIEW_TARGET_COMPLETION_2026-09-14.md).
 
 2026-09-14 / 阶段175 A11：市场计划的实际合成SDK请求与S01合同一致，但 OpenRouter OpenAI标准端点公开参数清单未列其中的 `max_completion_tokens`、`temperature`；预检显式标记该元数据缺口和实际端点未验证，不能把无付费合成通过当供应商成功。原路由、输出上限及预算门禁不变。[证据](S01_PUBLIC_ENDPOINT_PARAMETER_GAP_2026-09-14.md)。
 

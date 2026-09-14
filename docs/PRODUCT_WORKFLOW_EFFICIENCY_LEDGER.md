@@ -1,4 +1,5 @@
 # 产品工作流效率台账
+2026-09-14 stage 176 O03 efficiency ledger: synthetic two-round input primary assessment volume 1 then 2; valid reviewed output 0 then 1 eligible (2 unique companies, 1 final downstream-used). First company's review downgrade is the explicit discard reason. Model tokens/API credits and cash are 0 in the synthetic test; live cost and latency remain unknown, and no paid retries occurred. Final utilization is 1/2 unique candidates in this fixture, not a market estimate. Opportunity: reuse original score and exact review checkpoint across rounds while stopping on final eligibility. The read-only 5x4 action ceiling does not price conditional calls or retries. [Evidence](O03_POST_REVIEW_TARGET_COMPLETION_2026-09-14.md).
 
 阶段175 / 2026-09-14：公开OpenRouter目录/端点响应输入4（Sol及Terra各2）、有效审计4，合成市场计划请求1/字段比较有效1、用于准入诊断1；真实业务下游使用0、用户采用未知。匿名官方GET4次，真实模型/搜索/SMTP、token/付费API credits/现金/付费重试均0；审计约2秒、只读预检约8秒，供应商延迟未知。公开元数据未列2项请求字段，不能计为服务商拒绝或有效付费输出。优化机会是澄清OpenAI端点参数映射，再在整次门禁下验证真实响应，不改S01已确认合同。[证据](S01_PUBLIC_ENDPOINT_PARAMETER_GAP_2026-09-14.md)。
 

@@ -1,4 +1,5 @@
 # Hybrid Lead Search Workflow
+2026-09-14 stage 176 O03: target completion is now based on qualified post-review assessments, so a review downgrade re-enters the existing bounded route when no incomplete processing or stopping condition applies. Five rounds x four scheduled steps is at most 20 route actions, not a total API-call or USD bound. [Evidence](O03_POST_REVIEW_TARGET_COMPLETION_2026-09-14.md).
 
 2026-09-14 stage 121: Search runs, queries, results, provider calls and occurrences now use workspace-owner RLS. The discovery writer requires an owned workflow context before any search-artifact write. A local synthetic failed-provider observation was persisted through the real writer; another application user could not read or update the resulting artifacts. Zero candidates remains an explicit partial outcome and does not imply search exhaustion. [SQL acceptance](ZERO_RESULT_GRAPH_TENANT_ACCEPTANCE_2026-09-14.md).
 
