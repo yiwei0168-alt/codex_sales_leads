@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+阶段144 / B07、B25、B26、O01/O05：初始证据为空的合成候选经现行 `collectLeadEvidence` 处理模拟搜索与提取，各1次，形成稳定官方证据供现行校正、评分 Agent 引用；正结果入产品 SQL 并在生产 Chrome 双视口刷新一致。真实搜索、模型语义、可信费用与 A11 未验收。[证据](CURRENT_EVIDENCE_COLLECTOR_POSITIVE_GRAPH_ACCEPTANCE_2026-09-14.md)。
+
 阶段143 / B07、B25、B26、O01/O05：现行校正 Agent 对本轮证据形成6条支持事实及 Distributor 主角色，未触发补证搜索；现行评分 Agent 引用校正事实，合成任务经 SQL 保存1家并在本地生产双视口刷新一致。真实模型判断、搜索、账单及 A11 完整闭环未验收。[证据](CURRENT_CORRECTION_AGENT_POSITIVE_GRAPH_ACCEPTANCE_2026-09-14.md)。
 
 阶段142 / B07、B25、B26、O05：两轮降级计划的合成正结果图改用现行`LeadQualificationAgent`及实际DeepSeek请求序列化处理模拟结构响应；五门禁、无规模事实8/15上限、7条本轮引用、SQL评分缓存与最终保存1家核对通过，生产任务双视口刷新一致。语义响应仍为夹具，真实模型/账单和A11未完成。[证据](CURRENT_SCORE_AGENT_POSITIVE_GRAPH_ACCEPTANCE_2026-09-14.md)。

@@ -1,5 +1,7 @@
 # 当前唯一验收矩阵（更新至 2026-09-14）
 
+阶段144 [现行补证正结果接线](CURRENT_EVIDENCE_COLLECTOR_POSITIVE_GRAPH_ACCEPTANCE_2026-09-14.md)：空证据候选经现行补证函数处理模拟Tavily搜索/提取各1次，现行校正与评分Agent引用本轮证据，SQL保存1家且生产Chrome双视口通过。真实供应商、模型语义、可信账单及A11全链未验收。
+
 阶段143 [当前校正Agent正结果接线](CURRENT_CORRECTION_AGENT_POSITIVE_GRAPH_ACCEPTANCE_2026-09-14.md)：现行校正Agent基于本轮证据形成Distributor主角色与6条支持事实，补证调用0；现行评分Agent引用校正事实，SQL保存1家，生产Chrome双视口通过。校正/评分响应仍为合成，真实模型语义、可信账单和A11全链未验收。
 
 阶段142 [当前评分Agent正结果接线](CURRENT_SCORE_AGENT_POSITIVE_GRAPH_ACCEPTANCE_2026-09-14.md)：隔离两轮降级任务经现行评分Agent实际请求准备、五门禁/8分规模上限/本轮引用及SQL精确缓存后保存1家，生产Chrome双视口通过。评分响应和其余业务阶段仍是夹具，O05真实语义与A11付费闭环未验收。

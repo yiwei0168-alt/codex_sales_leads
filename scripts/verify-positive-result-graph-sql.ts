@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import {randomBytes,randomUUID} from "node:crypto";
+import {createHash,randomBytes,randomUUID} from "node:crypto";
 import nextEnv from "@next/env";
 import {Pool} from "pg";
 import {PostgresSaver} from "@langchain/langgraph-checkpoint-postgres";
@@ -13,6 +13,7 @@ import {hashClientAddress} from "../src/lib/auth/session";
 import {processAssistantMessage} from "../src/lib/assistant/service";
 import type {LeadSearchPlan} from "../src/lib/assistant/types";
 import {leadEvidenceContentHash} from "../src/lib/leads/evidence-snapshot";
+import {collectLeadEvidence} from "../src/lib/leads/workflow/discovery";
 import {loadCachedLeadAssessments,saveCachedLeadAssessments} from "../src/lib/leads/workflow/assessment-cache";
 import {buildLeadWorkflowGraph,type LeadWorkflowDependencies} from "../src/lib/leads/workflow/graph";
 import {LeadEvidenceCorrectionAgent} from "../src/lib/leads/workflow/evidence-correction-agent";
@@ -26,16 +27,19 @@ import type {DiscoveryResult} from "../src/lib/leads/workflow/discovery";
 import type {CorrectedLeadWorkflowCandidate,LeadAssessmentReview} from "../src/lib/leads/workflow/types";
 import type {AiProvider,StructuredAiRequest,StructuredAiResponse} from "../src/providers/contracts";
 import {DeepSeekProvider} from "../src/providers/deepseek";
+import {TavilySearchProvider} from "../src/providers/tavily";
 import {ragContext,playbook as fixturePlaybook,candidate as fixtureCandidate,
   correctedCandidate as fixtureCorrected,assessment as fixtureAssessment,plan as fixturePlan} from "./workflow-recovery-fixtures";
 
 nextEnv.loadEnvConfig(process.cwd());
 const modes=new Set(process.argv.slice(2));
-if(modes.size!==process.argv.length-2||[...modes].some(mode=>!["--pause-resume","--assistant-fallback","--actual-score-agent","--actual-correction-agent"].includes(mode)))
+if(modes.size!==process.argv.length-2||[...modes].some(mode=>!["--pause-resume","--assistant-fallback","--actual-score-agent","--actual-correction-agent","--actual-evidence-collector"].includes(mode)))
   throw new Error("Unknown or repeated verification mode");
 const pauseResume=modes.has("--pause-resume"),assistantFallback=modes.has("--assistant-fallback"),
-  actualScoreAgent=modes.has("--actual-score-agent"),actualCorrectionAgent=modes.has("--actual-correction-agent");
+  actualScoreAgent=modes.has("--actual-score-agent"),actualCorrectionAgent=modes.has("--actual-correction-agent"),
+  actualEvidenceCollector=modes.has("--actual-evidence-collector");
 if(actualCorrectionAgent&&!actualScoreAgent)throw new Error("Current correction requires current scoring in this fixture");
+if(actualEvidenceCollector&&!actualCorrectionAgent)throw new Error("Current evidence collection requires current correction in this fixture");
 const app=process.env.DATABASE_URL,migration=process.env.DATABASE_MIGRATION_URL;
 if(!app||!migration)throw new Error("Both database connections required");
 const appUrl=new URL(app),migrationUrl=new URL(migration);
@@ -48,17 +52,19 @@ if(httpBase&&(httpBase.protocol!=="http:"||!["localhost","127.0.0.1"].includes(h
   throw new Error("HTTP fixture requires a local server");
 const userId=randomUUID(),otherUserId=randomUUID(),workspaceId=randomUUID(),conversationId=randomUUID();
 let actionId:string=randomUUID();
-const runId=randomUUID(),domain=`positive-graph-${randomUUID()}.fixture.invalid`;
+const runId=randomUUID(),domain=`positive-graph-${randomUUID()}.co`;
 const password=randomBytes(32).toString("base64url"),fixtureAddress=`positive-graph-${userId}`;
 const companyKey=companyCostKey(domain,"CO");
 let plan:LeadSearchPlan={...fixturePlan,countryCode:"CO",countryName:"Colombia",targetCount:1,roles:["Distributor"],
   queryLanguage:"es",userRequest:"Synthetic positive-result graph wiring check"};
 const evidenceText="Synthetic official company page: Positive Graph Fixture is a Colombian networking distributor. It resells Wi-Fi routers and PoE switches to business resellers and system integrators in Colombia, purchases inventory from manufacturers, and accepts vendor supply proposals.";
-const evidence={...fixtureCandidate.evidence[0],url:`https://${domain}/`,title:"Positive graph fixture",
+const evidenceUrl=`https://${domain}/`;
+const evidence={...fixtureCandidate.evidence[0],id:`evidence-${createHash("sha256").update(evidenceUrl).digest("hex").slice(0,16)}`,
+  url:evidenceUrl,title:"Positive graph fixture",
   excerpt:evidenceText,capturedAt:new Date().toISOString(),evidenceRunId:runId,
   freshnessStatus:"fresh" as const,contentHash:leadEvidenceContentHash(evidenceText)};
 const candidate={...fixtureCandidate,candidateId:`fixture-${randomUUID()}`,companyName:"Positive Graph Fixture",
-  domain,officialWebsiteUrl:`https://${domain}/`,evidenceSnapshotRunId:runId,evidence:[evidence]};
+  domain,officialWebsiteUrl:evidenceUrl,evidenceSnapshotRunId:runId,evidence:actualEvidenceCollector?[]:[evidence]};
 const corrected={...candidate,correction:{...fixtureCorrected.correction,
   originalCompanyName:candidate.companyName,originalDomain:domain,originalOfficialWebsiteUrl:candidate.officialWebsiteUrl,
   reliedEvidenceIds:[evidence.id],findings:[...fixtureCorrected.correction.findings,
@@ -79,6 +85,26 @@ const wire=new DeepSeekProvider({apiKey:"synthetic-never-sent",maxAttempts:1,
 const scoreRequests:StructuredAiRequest<unknown>[]=[];
 const correctionRequests:StructuredAiRequest<unknown>[]=[];
 let supplementalCalls=0;
+let syntheticTavilySearches=0,syntheticTavilyExtracts=0;
+const originalTavilySearch=TavilySearchProvider.prototype.search;
+const originalTavilyExtract=TavilySearchProvider.prototype.extract;
+if(actualEvidenceCollector){
+  TavilySearchProvider.prototype.search=async input=>{
+    syntheticTavilySearches++;
+    assert.ok(input.query.includes(`site:${domain}`));
+    assert.deepEqual(input.includeDomains,[domain]);
+    assert.equal(input.searchDepth,"basic");
+    assert.equal(input.includeRawContent,false);
+    return {query:input.query,results:[{title:evidence.title,url:evidenceUrl,
+      content:evidenceText,score:1}],creditsUsed:0,attempts:1,retries:0,latencyMs:0};
+  };
+  TavilySearchProvider.prototype.extract=async urls=>{
+    syntheticTavilyExtracts++;
+    assert.deepEqual(urls,[evidenceUrl]);
+    return {results:[{url:evidenceUrl,rawContent:evidenceText}],failedUrls:[],
+      creditsUsed:0,attempts:1,retries:0,latencyMs:0};
+  };
+}
 const correctionProvider:AiProvider={
   id:"synthetic-correction-wire",
   requestBytes:request=>wire.requestBytes(request),
@@ -213,7 +239,11 @@ try{
       marketHypothesis:"Synthetic Colombian positive-result wiring"};},
     discover:async()=>{counters.discover++;return {runId,candidates:[candidate],processedCompanyKeys:[companyKey],
       creditsUsed:0,warnings:[],callMetrics:[callMetric]};},
-    collectEvidence:async()=>{counters.evidence++;return {candidates:[candidate],creditsUsed:0,warnings:[]};},
+    collectEvidence:actualEvidenceCollector?async(items,selectedPlan)=>{
+      counters.evidence++;
+      return collectLeadEvidence(items,selectedPlan,{allowReusableEvidence:false,persistEvidence:false,
+        concurrency:1,maximumAttempts:1});
+    }:async()=>{counters.evidence++;return {candidates:[candidate],creditsUsed:0,warnings:[]};},
     correctionAgent:actualCorrectionAgent?{correct:async(...args)=>{
       counters.correct++;
       const result=await correctionAgent.correct(...args);
@@ -246,7 +276,7 @@ try{
     assert.throws(()=>checkpointInvocation(checkpoint,otherUserId,actionId),/ownership/);
     assert.throws(()=>checkpointInvocation(checkpoint,userId,randomUUID()),/ownership/);
     assert.equal(checkpoint.values.correctedCandidates[0].candidateId,candidate.candidateId);
-    assert.deepEqual(checkpoint.values.correctedCandidates[0].evidence,candidate.evidence);
+    assert.deepEqual(checkpoint.values.correctedCandidates[0].evidence.map((item:{id:string})=>item.id),[evidence.id]);
     assert.equal(checkpoint.values.creditsUsed,0);
     assert.deepEqual(counters,{rag:1,playbook:1,discover:1,evidence:1,correct:1,score:0,review:0});
     assert.equal((await tenantQuery(userId,
@@ -260,6 +290,14 @@ try{
   assert.deepEqual(counters,{rag:1,playbook:1,discover:1,evidence:1,correct:1,score:1,review:1});
   assert.equal(scoreRequests.length,actualScoreAgent?1:0);
   assert.equal(correctionRequests.length,actualCorrectionAgent?1:0);
+  assert.equal(syntheticTavilySearches,actualEvidenceCollector?1:0);
+  assert.equal(syntheticTavilyExtracts,actualEvidenceCollector?1:0);
+  if(actualEvidenceCollector){
+    assert.equal(state.candidates[0].evidence.length,1);
+    assert.equal(state.candidates[0].evidence[0].provider,"tavily");
+    assert.equal(state.candidates[0].evidence[0].contentHash,leadEvidenceContentHash(evidenceText));
+    assert.equal(state.candidates[0].evidence[0].evidenceRunId,runId);
+  }
   assert.equal(supplementalCalls,0);
   assert.equal(state.correctedCandidates[0].correction.primaryRole,"Distributor");
   if(actualCorrectionAgent){
@@ -348,12 +386,15 @@ try{
     }finally{await browser.close();}
   }
   console.log(JSON.stringify({positiveGraphSql:"passed",pauseResume,assistantFallback,actualScoreAgent,
-    actualCorrectionAgent,syntheticCorrectionRequests:correctionRequests.length,
+    actualCorrectionAgent,actualEvidenceCollector,syntheticTavilySearches,syntheticTavilyExtracts,
+    syntheticCorrectionRequests:correctionRequests.length,
     syntheticScoringRequests:scoreRequests.length,target:1,accepted:1,stopReason:"target-met",counters,
     handoffs:state.handoffs.length,companyRows:companies.length,assessmentRows:assessmentRows.length,
     completionReceipts:receipts.length,httpViewports,syntheticReservedMicros:7,allocatedMicros:7,actualPaidCalls:0,
     latencyMs:Date.now()-startedAt}));
 }finally{
+  TavilySearchProvider.prototype.search=originalTavilySearch;
+  TavilySearchProvider.prototype.extract=originalTavilyExtract;
   if(created){
     const client=await admin.connect();
     try{

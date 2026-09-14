@@ -1,5 +1,7 @@
 # LangChain / LangGraph 销售线索工作流
 
+2026-09-14 / 阶段144：正结果图由现行 `collectLeadEvidence` 对空证据候选执行限定公司域名的基础搜索、同域筛选、模拟提取及稳定证据哈希，现行校正/评分 Agent 依次引用该证据和事实；评分前检查点恢复后产品 SQL 及生产双视口保存1家。Tavily 方法已在隔离脚本中拦截，真实搜索与 A11 费用闭环仍未验证。[证据](CURRENT_EVIDENCE_COLLECTOR_POSITIVE_GRAPH_ACCEPTANCE_2026-09-14.md)。
+
 2026-09-14 / 阶段143：隔离正结果图在校正节点调用现行 `LeadEvidenceCorrectionAgent`，基于本轮官方夹具证据完成主角色和6条事实，补证调用0；评分节点由现行 `LeadQualificationAgent` 引用这些校正事实完成模拟评分，之后交接、产品 SQL 与本地生产双视口各见1家。暂停恢复不重跑已完成前置节点，真实提供方语义和 A11 费用闭环仍未验证。[证据](CURRENT_CORRECTION_AGENT_POSITIVE_GRAPH_ACCEPTANCE_2026-09-14.md)。
 
 2026-09-14 / 阶段142：两轮自然语言降级正结果任务在评分前检查点恢复后，由当前`LeadQualificationAgent`对合成模拟提供方响应执行完整请求准备、资格门禁、确定性评分和精确SQL缓存，再经图交接/产品SQL/生产双视口保存1家。模拟响应不证明真实模型语义或A11账单。[证据](CURRENT_SCORE_AGENT_POSITIVE_GRAPH_ACCEPTANCE_2026-09-14.md)。
