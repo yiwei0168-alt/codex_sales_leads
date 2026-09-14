@@ -442,6 +442,50 @@ describe("LeadQualificationAgent", () => {
     expect(JSON.stringify(large)).toBe(original);
   });
 
+  it("combines supported excerpt folding with exact tables for a larger singleton",async()=>{
+    class ContractProvider extends FakeProvider {
+      private readonly wire=new DeepSeekProvider({apiKey:"fixture",maxAttempts:1,
+        fetchImplementation:async()=>{throw new Error("Synthetic scoring must not use transport");}});
+      requestBytes(request:StructuredAiRequest<unknown>){return this.wire.requestBytes(request);}
+      cacheIdentity(request:StructuredAiRequest<unknown>){return this.wire.cacheIdentity(request);}
+    }
+    const provider=new ContractProvider();
+    const large=incompressibleCandidate(110);
+    large.correction.findings.find(item=>item.evidenceIds.includes("unique-25"))!.status="conflicting";
+    const original=JSON.stringify(large);
+    const result=await new LeadQualificationAgent(provider).evaluate([large],playbook,"DE","Germany","new-market");
+    expect(result[0].scoringStatus).toBe("completed");
+    expect(provider.calls).toHaveLength(1);
+    const sent=provider.calls[0];
+    expect(sent.preparation?.encoding).toContain("supported-excerpt-fold-v1+exact-field-table-v1");
+    expect(sent.preparation?.omittedEvidenceExcerpts).toBeGreaterThan(0);
+    expect(provider.requestBytes(sent)).toBeLessThanOrEqual(61_440);
+    expect(sent.preparation?.preparedMaximumWireBytes).toBe(provider.requestBytes(sent));
+    expect(sent.evidenceIds).toEqual(large.evidence.map(item=>item.id));
+    const input=sent.input as {sharedPhraseDictionary?:Record<string,string>;candidates:Array<{
+      evidenceTable:{columns:string[];rows:unknown[][]};findingsTable:{columns:string[];rows:unknown[][]}}>};
+    const expand=(value:unknown)=>typeof value==="string"
+      ?Object.entries(input.sharedPhraseDictionary??{}).reduce((text,[marker,phrase])=>
+        text.replaceAll(marker,phrase),value):value;
+    const decode=(table:{columns:string[];rows:unknown[][]})=>table.rows.map(row=>
+      Object.fromEntries(table.columns.map((column,index)=>[column,expand(row[index])])));
+    const evidence=decode(input.candidates[0].evidenceTable);
+    expect(decode(input.candidates[0].findingsTable)).toEqual(large.correction.findings);
+    expect(evidence.map(item=>item.evidenceId)).toEqual(large.evidence.map(item=>item.id));
+    expect(evidence.map(item=>item.url)).toEqual(large.evidence.map(item=>item.url));
+    expect(evidence.find(item=>item.evidenceId==="unique-25")?.excerpt)
+      .toBe(large.evidence.find(item=>item.id==="unique-25")?.excerpt);
+    expect(evidence.filter(item=>item.excerptFolded).every(item=>
+      !large.correction.findings.some(finding=>finding.status!=="supported"
+        &&finding.evidenceIds.includes(item.evidenceId as string)))).toBe(true);
+    expect(JSON.stringify(large)).toBe(original);
+    const stillLarge=incompressibleCandidate(125);
+    stillLarge.correction.findings.find(item=>item.evidenceIds.includes("unique-25"))!.status="conflicting";
+    const pending=await new LeadQualificationAgent(provider).evaluate([stillLarge],playbook,"DE","Germany","new-market");
+    expect(pending[0].scoringStatus).toBe("retry-required");
+    expect(provider.calls).toHaveLength(1);
+  });
+
   it("does not fold unresolved source prose merely to force an oversized score",async()=>{
     const provider=new CacheableFakeProvider();
     const large=incompressibleCandidate(55);

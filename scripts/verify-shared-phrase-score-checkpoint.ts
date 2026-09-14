@@ -22,12 +22,15 @@ const threadId = process.argv[3] ?? `verify-phrase-score:${randomUUID()}`;
 if (!/^verify-phrase-score:[a-f0-9-]{36}$/.test(threadId)) throw new Error("Invalid isolated verification thread");
 if (mode && !["seed", "resume", "sql", "sql-resume"].includes(mode)) throw new Error("Invalid verification phase");
 const foldedVariant = process.env.P06_SYNTHETIC_FOLD_VARIANT === "1";
-const expectedEncoding = foldedVariant ? "supported-excerpt-fold-v1" : "exact-shared-phrase-v1";
+const foldedTableVariant = foldedVariant && process.env.P06_SYNTHETIC_FOLD_COUNT === "110";
+const expectedEncoding = foldedTableVariant ? "supported-excerpt-fold-v1+exact-field-table-v1"
+  : foldedVariant ? "supported-excerpt-fold-v1" : "exact-shared-phrase-v1";
 function assertEncoding(value: string | undefined): void {
-  if (foldedVariant) assert.equal(value, expectedEncoding);
+  if (foldedTableVariant) assert.ok(value?.startsWith(expectedEncoding));
+  else if (foldedVariant) assert.equal(value, expectedEncoding);
   else assert.match(value ?? "", /exact-shared-phrase-v1/);
 }
-const extraCount = foldedVariant ? 55 : 100;
+const extraCount = foldedTableVariant ? 110 : foldedVariant ? 55 : 100;
 const expectedEvidenceCount = extraCount + 1;
 const expectedFindingCount = extraCount + correctedCandidate.correction.findings.length
   + (foldedVariant ? 0 : 4);
@@ -72,14 +75,24 @@ const provider: AiProvider = {
     if (foldedVariant) {
       assert.ok((request.preparation?.omittedEvidenceExcerpts ?? 0) > 0);
       assert.deepEqual(request.evidenceIds, corrected.evidence.map(item => item.id));
-      const input = request.input as { candidates: Array<{ findings: typeof corrected.correction.findings;
-        evidence: Array<{ evidenceId: string; url: string; excerpt: string; excerptFolded?: boolean }> }> };
-      assert.deepEqual(input.candidates[0].findings, corrected.correction.findings);
-      assert.deepEqual(input.candidates[0].evidence.map(item => item.evidenceId), corrected.evidence.map(item => item.id));
-      assert.deepEqual(input.candidates[0].evidence.map(item => item.url), corrected.evidence.map(item => item.url));
-      assert.equal(input.candidates[0].evidence.find(item => item.evidenceId === "unique-25")?.excerpt,
+      const input = request.input as { sharedPhraseDictionary?:Record<string,string>;
+        candidates: Array<{ findings?: typeof corrected.correction.findings;
+          evidence?: Array<{ evidenceId: string; url: string; excerpt: string; excerptFolded?: boolean }>;
+          evidenceTable?:{columns:string[];rows:unknown[][]};
+          findingsTable?:{columns:string[];rows:unknown[][]} }> };
+      const expand=(value:unknown)=>typeof value==="string"
+        ?Object.entries(input.sharedPhraseDictionary??{}).reduce((text,[marker,phrase])=>
+          text.replaceAll(marker,phrase),value):value;
+      const decode=(table:{columns:string[];rows:unknown[][]})=>table.rows.map(row=>
+        Object.fromEntries(table.columns.map((column,index)=>[column,expand(row[index])])));
+      const evidence=foldedTableVariant ? decode(input.candidates[0].evidenceTable!) : input.candidates[0].evidence!;
+      const findings=foldedTableVariant ? decode(input.candidates[0].findingsTable!) : input.candidates[0].findings!;
+      assert.deepEqual(findings, corrected.correction.findings);
+      assert.deepEqual(evidence.map(item => item.evidenceId), corrected.evidence.map(item => item.id));
+      assert.deepEqual(evidence.map(item => item.url), corrected.evidence.map(item => item.url));
+      assert.equal(evidence.find(item => item.evidenceId === "unique-25")?.excerpt,
         corrected.evidence.find(item => item.id === "unique-25")?.excerpt);
-      assert.ok(input.candidates[0].evidence.some(item => item.excerptFolded));
+      assert.ok(evidence.some(item => item.excerptFolded));
     }
     const dimensionRationales = Object.entries(assessment.dimensions).map(([dimension, score]) => ({
       dimension, score, reason: "Synthetic cited scoring rationale.",

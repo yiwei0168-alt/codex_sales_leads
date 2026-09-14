@@ -219,7 +219,21 @@ export function compactLeadSingleton<T extends StructuredAiRequest<unknown>>(req
   const phrased = compactSharedPhrases(smallest, requestBytes, limit);
   if (requestBytes(phrased) < requestBytes(smallest)) smallest = phrased;
   if(requestBytes(smallest)<=limit)return finish(smallest);
-  const folded=foldSupportedExcerpts(request,requestBytes,limit);
+  let folded=foldSupportedExcerpts(request,requestBytes,limit);
+  if(folded!==request&&requestBytes(folded)>limit){
+    const foldedInput=folded.input as {candidates:CandidateInput[];instructions:string[]};
+    const foldedCandidate=foldedInput.candidates[0];
+    const uniform={...folded,input:{...foldedInput,candidates:[{...foldedCandidate,
+      evidence:foldedCandidate.evidence?.map(item=>({...item,excerptFolded:item.excerptFolded===true}))}]}} as T;
+    const tabled=compactFieldTables(uniform);
+    const phrased=compactSharedPhrases(tabled,requestBytes,limit);
+    const best=[folded,tabled,phrased].sort((left,right)=>requestBytes(left)-requestBytes(right))[0];
+    if(best!==folded)folded={...best,preparation:{...folded.preparation,
+      encoding:["supported-excerpt-fold-v1",
+        (best.input as Record<string,unknown>).candidateTableEncoding,
+        (best.input as Record<string,unknown>).sharedPhraseEncoding].filter(Boolean).join("+"),
+      preparedMaximumWireBytes:requestBytes(best)}};
+  }
   if(requestBytes(folded)<requestBytes(smallest))smallest=folded;
   return smallest===folded?folded:finish(smallest);
 }
