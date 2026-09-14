@@ -332,6 +332,13 @@ try{
     allSearchRouteBoundsPresent:searchRoute.every(route=>route.tariffStatus==="static-bound-present"),
     actualRequestContractsChecked:false,
     checkedSingleCallBoundsFit:stages.every(stage=>stage.tariff==="available"&&stage.fitsCurrentRemainingBudget),
+    progressiveAdmission:{rule:"A25",wholeRunBoundRequiredBeforeStarting:false,
+      perRequestQuoteAndAtomicReservationRequired:true,cumulativeLimitUsd:30,
+      unknownSingleCallOrExpiredFxStopsAtThatStep:true,
+      requiredStageTariffHolds:stages.filter(stage=>!stage.conditional&&stage.tariff!=="available")
+        .map(stage=>({stage:stage.stage,tariff:stage.tariff})),
+      // Exact bytes, later conditional branches and the actual next request are checked at transport time.
+      previewProvesCompleteRun:false},
     phasedScoring:{conditional:true,plannedPhaseCountBound:null,totalPhaseAndFinalBoundUsd:null,
       proEscalationConditional:true,
       fourPhaseSyntheticFixtureOnly:{phaseCalls:4,finalScoreCalls:1,conditionalProScoreCalls:1,
@@ -342,6 +349,6 @@ try{
           :fourPhaseWithPlaybook<=Number(budget.budget.remaining_micros)/1e6,
         fitsCurrentRemainingBudgetWithPro:fourPhaseProWithPlaybook===null?null
           :fourPhaseProWithPlaybook<=Number(budget.budget.remaining_micros)/1e6}},
-    totalRunBoundUsd:null,limitations:"Lists configured minimal-plan discovery, active basic Extract and conditional review tariffs; captures synthetic playbook, Brave, Exa and Tavily Search wires. Provider over-delivery is capped before downstream candidate processing, but these accepted item slots are not unique companies. Real market requests and Extract response, remaining fallback/search/model contracts, conditional Pro escalation, phased scoring call count and total-run bound remain unverified",
+    totalRunBoundUsd:null,limitations:"A25 permits progressive single-request reservations under the unchanged USD30 cap; unknown single-call cost, expired FX or exhausted budget pauses at that step. This read-only preview is not an exact request check or a promise of completion. It lists configured minimal-plan discovery, active basic Extract and conditional review tariffs; captures synthetic playbook, Brave, Exa and Tavily Search wires. Provider over-delivery is capped before downstream candidate processing, but these accepted item slots are not unique companies. Real market requests and Extract response, remaining fallback/search/model contracts, conditional Pro escalation, phased scoring call count and total-run bound remain unverified",
     providerCalls:0,accountsModified:0,jobsClaimed:0},null,2));
 }finally{await getPool().end();}
