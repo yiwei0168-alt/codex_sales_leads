@@ -7,8 +7,21 @@ import {LeadRequestTooLargeError,leadRequestByteLimit} from "@/providers/lead-re
 import type {CorrectedLeadWorkflowCandidate,LeadMarketPlaybook} from "./types";
 import {qualificationPhaseOutputJsonSchema} from "./qualification-phase-output";
 import {foldOversizedQualificationPhase} from "./qualification-phase-excerpt-fold";
+import type {QualificationSingletonUnit} from "./qualification-singleton-chunks";
 
 export const QUALIFICATION_FACT_PHASE_VERSION="qualification-fact-phase-v1";
+
+/** Retains the exact original oversized unit so recovery can plan chunks without guessing from a byte error. */
+export class OversizedQualificationFactUnitError extends LeadRequestTooLargeError {
+  readonly unit:QualificationSingletonUnit;
+  readonly sourceFingerprint:string;
+  constructor(bytes:number,limit:number,unit:QualificationSingletonUnit,sourceFingerprint:string){
+    super(bytes,limit);
+    this.name="OversizedQualificationFactUnitError";
+    this.unit=unit;
+    this.sourceFingerprint=sourceFingerprint;
+  }
+}
 
 export function qualificationPhaseSourceFingerprint(options:{candidate:CorrectedLeadWorkflowCandidate;
   playbook:LeadMarketPlaybook;countryCode:string;countryName:string;objective:string;modelVersion:string}):string{
@@ -35,6 +48,33 @@ export function planQualificationFactPhases(options:{candidate:CorrectedLeadWork
       evidenceIds:[item.id]}))];
   const sourceOnly=evidence.filter(item=>!linked.has(item.id));
   const sourceFingerprint=qualificationPhaseSourceFingerprint(options);
+  const oversizedError=(unit:typeof units[number],request:StructuredAiRequest<unknown>,
+    bytes:number,limit:number)=>{
+    if(unit.kind==="source"){
+      const source=sourceOnly[unit.index];
+      if(source?.excerpt)return new OversizedQualificationFactUnitError(bytes,limit,
+        {kind:"evidence",id:source.id,text:source.excerpt,evidenceIds:[source.id]},sourceFingerprint);
+    }else{
+      const finding=findings[unit.index];
+      const related=evidence.filter(item=>finding.evidenceIds.includes(item.id));
+      const visible=(request.input as {candidate?:{evidence?:Array<{evidenceId:string;excerpt:string}>}}|null)
+        ?.candidate?.evidence??[];
+      const largest=related.reduce<typeof related[number]|null>((best,item)=>{
+        const length=(source:typeof item)=>Buffer.byteLength(visible.find(row=>row.evidenceId===source.id)
+          ?.excerpt??"","utf8");
+        return !best||length(item)>length(best)?item:best;
+      },null);
+      if(largest?.excerpt&&Buffer.byteLength(visible.find(row=>row.evidenceId===largest.id)
+        ?.excerpt??"","utf8")>
+        Buffer.byteLength(finding.statement,"utf8"))
+        return new OversizedQualificationFactUnitError(bytes,limit,
+          {kind:"evidence",id:largest.id,text:largest.excerpt,evidenceIds:[largest.id]},sourceFingerprint);
+      if(finding.statement)return new OversizedQualificationFactUnitError(bytes,limit,
+        {kind:"finding",id:finding.findingId,text:finding.statement,
+          evidenceIds:[...finding.evidenceIds]},sourceFingerprint);
+    }
+    return new LeadRequestTooLargeError(bytes,limit);
+  };
   const build=(chosen:typeof units,index:number):StructuredAiRequest<unknown>=>{
     const factIndexes=new Set(chosen.filter(item=>item.kind==="finding").map(item=>item.index));
     const sourceIndexes=new Set(chosen.filter(item=>item.kind==="source").map(item=>item.index));
@@ -66,12 +106,12 @@ export function planQualificationFactPhases(options:{candidate:CorrectedLeadWork
     const limit=Math.min(leadRequestByteLimit(trial)!,57_344);
     const bytes=requestBytes(trial);
     if(bytes<=limit){pending.push(unit);continue;}
-    if(!pending.length)throw new LeadRequestTooLargeError(bytes,limit);
+    if(!pending.length)throw oversizedError(unit,trial,bytes,limit);
     phases.push(build(pending,phases.length));
     pending=[unit];
     const single=build(pending,phases.length);
     const singleBytes=requestBytes(single);
-    if(singleBytes>limit)throw new LeadRequestTooLargeError(singleBytes,limit);
+    if(singleBytes>limit)throw oversizedError(unit,single,singleBytes,limit);
   }
   if(pending.length)phases.push(build(pending,phases.length));
   return {sourceFingerprint,phases};

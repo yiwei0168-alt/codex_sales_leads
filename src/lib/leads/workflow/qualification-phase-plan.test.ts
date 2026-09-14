@@ -7,7 +7,8 @@ import {DeepSeekProvider} from "@/providers/deepseek";
 import {LeadRequestTooLargeError} from "@/providers/lead-request-bounds";
 import {correctedCandidate,playbook} from "../../../../scripts/workflow-recovery-fixtures";
 
-import {planQualificationFactPhases,QUALIFICATION_FACT_PHASE_VERSION} from "./qualification-phase-plan";
+import {OversizedQualificationFactUnitError,planQualificationFactPhases,
+  QUALIFICATION_FACT_PHASE_VERSION} from "./qualification-phase-plan";
 
 function fixture(count:number){
   const baseExcerpt=correctedCandidate.evidence[0].excerpt;
@@ -80,6 +81,48 @@ describe("qualification fact phase plan",()=>{
     expect(()=>planQualificationFactPhases({candidate,playbook,countryCode:"DE",countryName:"Germany",
       objective:"new-market",modelVersion:"deepseek-v4-pro",requestBytes:request=>wire.requestBytes(request)}))
       .toThrow(LeadRequestTooLargeError);
+  });
+
+  it("identifies the original long source or finding and its citation closure for chunk recovery",()=>{
+    const source=fixture(1);
+    source.evidence[1].excerpt="source "+"x".repeat(100_000);
+    source.evidence[1].contentHash=leadEvidenceContentHash(source.evidence[1].excerpt);
+    let sourceFailure:unknown;
+    try{planQualificationFactPhases({candidate:source,playbook,countryCode:"DE",countryName:"Germany",
+      objective:"new-market",modelVersion:"deepseek-v4-pro",requestBytes:request=>wire.requestBytes(request)});}
+    catch(error){sourceFailure=error;}
+    expect(sourceFailure).toBeInstanceOf(OversizedQualificationFactUnitError);
+    const sourceUnit=(sourceFailure as OversizedQualificationFactUnitError).unit;
+    expect(sourceUnit).toEqual({kind:"evidence",id:"phase-source-0",text:source.evidence[1].excerpt,
+      evidenceIds:["phase-source-0"]});
+    expect((sourceFailure as OversizedQualificationFactUnitError).sourceFingerprint)
+      .toMatch(/^[a-f0-9]{64}$/);
+
+    const finding=fixture(1);
+    finding.correction.findings[1].statement="claim "+"y".repeat(100_000);
+    let findingFailure:unknown;
+    try{planQualificationFactPhases({candidate:finding,playbook,countryCode:"DE",countryName:"Germany",
+      objective:"new-market",modelVersion:"deepseek-v4-pro",requestBytes:request=>wire.requestBytes(request)});}
+    catch(error){findingFailure=error;}
+    expect(findingFailure).toBeInstanceOf(OversizedQualificationFactUnitError);
+    expect((findingFailure as OversizedQualificationFactUnitError).unit).toEqual({
+      kind:"finding",id:"phase-finding-0",text:finding.correction.findings[1].statement,
+      evidenceIds:["phase-source-0"],
+    });
+
+    const foldedAndCritical=fixture(1);
+    foldedAndCritical.correction.findings[1].kind="product-family";
+    foldedAndCritical.correction.findings[1].statement="claim "+"z".repeat(100_000);
+    foldedAndCritical.evidence[1].excerpt="source "+"x".repeat(120_000);
+    foldedAndCritical.evidence[1].contentHash=leadEvidenceContentHash(foldedAndCritical.evidence[1].excerpt);
+    let mixedFailure:unknown;
+    try{planQualificationFactPhases({candidate:foldedAndCritical,playbook,countryCode:"DE",
+      countryName:"Germany",objective:"new-market",modelVersion:"deepseek-v4-pro",
+      requestBytes:request=>wire.requestBytes(request)});}
+    catch(error){mixedFailure=error;}
+    expect(mixedFailure).toBeInstanceOf(OversizedQualificationFactUnitError);
+    expect((mixedFailure as OversizedQualificationFactUnitError).unit.kind).toBe("finding");
+    expect((mixedFailure as OversizedQualificationFactUnitError).unit.id).toBe("phase-finding-0");
   });
 
   it("folds only a supported noncritical oversized excerpt while retaining exact fact and source identity",()=>{
