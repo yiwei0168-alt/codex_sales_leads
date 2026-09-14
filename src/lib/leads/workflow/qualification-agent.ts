@@ -19,6 +19,7 @@ import { ACTIVE_LEAD_COST_QUALITY_POLICY } from "./cost-quality-policy";
 import { buildModelEvidencePacket } from "./evidence-packet";
 import { roleScoringAnchors } from "./role-scoring-anchors";
 import {assembleQualificationPhaseSynthesis} from "./qualification-phase-synthesis";
+import {compactQualificationPhaseReferences} from "./qualification-phase-reference-compaction";
 import type {QualificationPhaseOutput} from "./qualification-phase-output";
 import {planQualificationFactPhases} from "./qualification-phase-plan";
 import {productQualificationPhaseCheckpoint} from "./qualification-phase-checkpoint";
@@ -46,6 +47,7 @@ interface LeadAssessmentRequest {
   phaseScreening?: {
     version:string;sourceFingerprint:string;
     factColumns:string[];factRows:unknown[][];sourceColumns:string[];sourceRows:unknown[][];
+    sourceReferenceEncoding?:string;
   };
   market: { countryCode: string; countryName: string; objective: string };
   cudyFitBrief: {
@@ -659,7 +661,7 @@ export class LeadQualificationAgent {
         eligibilityGates: ["correctedIdentityUsable", "companyExists", "targetCountryPresence", "networkingRelevant", "independentProspect"],
       },
     };
-    return compactLeadSingleton({
+    const request=compactLeadSingleton({
       task: "lead-qualification" as const,
       modelVersion,
       promptVersion: this.promptVersion,
@@ -672,6 +674,9 @@ export class LeadQualificationAgent {
       dataClassification: (playbook.cooperationPathMemory?.length
         ? "private-workspace" : "public") as "private-workspace" | "public",
     }, this.provider.requestBytes?.bind(this.provider));
+    return this.provider.requestBytes
+      ?compactQualificationPhaseReferences(request,this.provider.requestBytes.bind(this.provider))
+      :request;
   }
 
   private async invokeBatch(candidates: CorrectedLeadWorkflowCandidate[], playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string, modelVersion: string,

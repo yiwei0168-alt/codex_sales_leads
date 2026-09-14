@@ -6,12 +6,14 @@ import {companyCostKey} from "@/lib/billing/company-cost-context";
 
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "@/providers/contracts";
 import {DeepSeekProvider} from "@/providers/deepseek";
+import {OpenAiCompatibleProvider} from "@/providers/openai-compatible";
 import { leadEvidenceContentHash } from "@/lib/leads/evidence-snapshot";
 
 import { enforceAssessmentEvidenceCaps, LeadQualificationAgent } from "./qualification-agent";
 import {assessmentDependencyFingerprint,validCachedAssessment} from "./assessment-cache";
 import { roleScoringAnchors } from "./role-scoring-anchors";
 import {validateQualificationPhaseOutput,type QualificationPhaseOutput} from "./qualification-phase-output";
+import {planQualificationFactPhases} from "./qualification-phase-plan";
 import type {productQualificationPhaseCheckpoint} from "./qualification-phase-checkpoint";
 import type {productQualificationFinalCheckpoint} from "./qualification-final-checkpoint";
 import { CHANNEL_ROLE_FAMILIES } from "./types";
@@ -139,6 +141,43 @@ function incompressibleCandidate(count=150):CorrectedLeadWorkflowCandidate{
 }
 
 describe("LeadQualificationAgent", () => {
+  it("keeps 155 facts and 151 sources inside the actual compatible final wire without model calls",()=>{
+    const primary=new DeepSeekProvider({apiKey:"fixture-never-sent",maxAttempts:1,
+      fetchImplementation:async()=>{throw new Error("No provider transport is allowed");}});
+    const fallback=new OpenAiCompatibleProvider({id:"fixture-compatible",apiKey:"fixture-never-sent",
+      baseUrl:"https://example.invalid/v1",maxAttempts:1,
+      fetchImplementation:async()=>{throw new Error("No provider transport is allowed");}});
+    const compatibleRequest=(request:StructuredAiRequest<unknown>)=>({...request,
+      modelVersion:"openai/gpt-4o-mini"});
+    const requestBytes=(request:StructuredAiRequest<unknown>)=>Math.max(primary.requestBytes(request),
+      fallback.requestBytes(compatibleRequest(request)));
+    const provider:AiProvider={id:"fixture-bounded",requestBytes,
+      execute:async()=>{throw new Error("No provider transport is allowed");}};
+    const large=incompressibleCandidate(150),agent=new LeadQualificationAgent(provider,
+      {includeCooperationPaths:true,batchSize:1,concurrency:1});
+    const plan=planQualificationFactPhases({candidate:large,playbook,countryCode:"DE",
+      countryName:"Germany",objective:"new-market",modelVersion:"deepseek-v4-flash",requestBytes});
+    const outputs=plan.phases.map(request=>{
+      const input=request.input as {candidate:{findings:Array<{findingId:string;evidenceIds:string[]}>};
+        unlinkedEvidenceIds:string[]};
+      return {facts:input.candidate.findings.map(item=>({findingId:item.findingId,
+        materiality:"material" as const,summary:`Screened ${item.findingId} ${"context ".repeat(2)}`,
+        evidenceIds:item.evidenceIds})),
+        sources:input.unlinkedEvidenceIds.map(id=>({evidenceId:id,materiality:"context" as const,
+          summary:`Screened ${id} ${"context ".repeat(2)}`}))};
+    });
+    const final=agent.planPhasedFinalRequest(large,playbook,"DE","Germany","new-market",outputs);
+    expect(final.synthesis.facts).toHaveLength(large.correction.findings.length);
+    expect(final.synthesis.sources).toHaveLength(large.evidence.length);
+    expect(fallback.requestBytes(compatibleRequest(final.request))).toBeLessThanOrEqual(61_440);
+    expect(fallback.requestBytes({...final.request,modelVersion:"openai/gpt-4o"}))
+      .toBeLessThanOrEqual(61_440);
+    expect(primary.requestBytes(final.request)).toBeLessThanOrEqual(61_440);
+    expect(final.request.preparation?.originalMaximumWireBytes).toBeGreaterThan(61_440);
+    expect((final.request.input as {phaseScreening:{sourceReferenceEncoding?:string}})
+      .phaseScreening.sourceReferenceEncoding).toBe("source-row-index-v1");
+  });
+
   it("saves every oversized fact phase before a bounded final score and derives its durable cache contract",async()=>{
     class PhaseProvider extends FakeProvider {
       private readonly wire=new DeepSeekProvider({apiKey:"fixture-never-sent",maxAttempts:1,
