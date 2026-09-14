@@ -1,5 +1,7 @@
 # 当前唯一验收矩阵（更新至 2026-09-14）
 
+阶段145 [当前全量回归与P06边界](CURRENT_REGRESSION_AND_P06_BOUNDARY_2026-09-14.md)：984项/203文件、生产构建、18项双视口浏览器、lint 0错误/11既有警告及依赖审计0漏洞通过。P06任意大不可压缩单项分阶段完成仍缺；整次预检 `totalRunBoundUsd=null`，真实业务闭环与整体验收未通过。
+
 阶段144 [现行补证正结果接线](CURRENT_EVIDENCE_COLLECTOR_POSITIVE_GRAPH_ACCEPTANCE_2026-09-14.md)：空证据候选经现行补证函数处理模拟Tavily搜索/提取各1次，现行校正与评分Agent引用本轮证据，SQL保存1家且生产Chrome双视口通过。真实供应商、模型语义、可信账单及A11全链未验收。
 
 阶段143 [当前校正Agent正结果接线](CURRENT_CORRECTION_AGENT_POSITIVE_GRAPH_ACCEPTANCE_2026-09-14.md)：现行校正Agent基于本轮证据形成Distributor主角色与6条支持事实，补证调用0；现行评分Agent引用校正事实，SQL保存1家，生产Chrome双视口通过。校正/评分响应仍为合成，真实模型语义、可信账单和A11全链未验收。

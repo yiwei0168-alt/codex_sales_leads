@@ -1,5 +1,7 @@
 # LangChain / LangGraph 销售线索工作流
 
+2026-09-14 / 阶段145：全量无付费回归复核现行图和页面；P06对不可压缩超界单公司仍在评分前生成技术待恢复结果，同批可请求公司可继续，尚无保留全部事实/引用的分阶段最终综合。只读预检因汇率与条件费率缺口仍无整次费用上界，不启动真实任务。[边界核查](CURRENT_REGRESSION_AND_P06_BOUNDARY_2026-09-14.md)。
+
 2026-09-14 / 阶段144：正结果图由现行 `collectLeadEvidence` 对空证据候选执行限定公司域名的基础搜索、同域筛选、模拟提取及稳定证据哈希，现行校正/评分 Agent 依次引用该证据和事实；评分前检查点恢复后产品 SQL 及生产双视口保存1家。Tavily 方法已在隔离脚本中拦截，真实搜索与 A11 费用闭环仍未验证。[证据](CURRENT_EVIDENCE_COLLECTOR_POSITIVE_GRAPH_ACCEPTANCE_2026-09-14.md)。
 
 2026-09-14 / 阶段143：隔离正结果图在校正节点调用现行 `LeadEvidenceCorrectionAgent`，基于本轮官方夹具证据完成主角色和6条事实，补证调用0；评分节点由现行 `LeadQualificationAgent` 引用这些校正事实完成模拟评分，之后交接、产品 SQL 与本地生产双视口各见1家。暂停恢复不重跑已完成前置节点，真实提供方语义和 A11 费用闭环仍未验证。[证据](CURRENT_CORRECTION_AGENT_POSITIVE_GRAPH_ACCEPTANCE_2026-09-14.md)。
