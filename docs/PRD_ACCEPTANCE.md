@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+阶段143 / B07、B25、B26、O01/O05：现行校正 Agent 对本轮证据形成6条支持事实及 Distributor 主角色，未触发补证搜索；现行评分 Agent 引用校正事实，合成任务经 SQL 保存1家并在本地生产双视口刷新一致。真实模型判断、搜索、账单及 A11 完整闭环未验收。[证据](CURRENT_CORRECTION_AGENT_POSITIVE_GRAPH_ACCEPTANCE_2026-09-14.md)。
+
 阶段142 / B07、B25、B26、O05：两轮降级计划的合成正结果图改用现行`LeadQualificationAgent`及实际DeepSeek请求序列化处理模拟结构响应；五门禁、无规模事实8/15上限、7条本轮引用、SQL评分缓存与最终保存1家核对通过，生产任务双视口刷新一致。语义响应仍为夹具，真实模型/账单和A11未完成。[证据](CURRENT_SCORE_AGENT_POSITIVE_GRAPH_ACCEPTANCE_2026-09-14.md)。
 
 阶段141 / A09–A13：实际对话服务以确定性降级处理两轮“2家→1家”哥伦比亚Distributor输入，取消旧提案、确认新提案；合成图暂停恢复后真实SQL保存1家公司，生产Chrome双视口刷新达标，夹具清理完整。意图与业务阶段均未调用真实模型/搜索，不能据此宣称A11实际业务闭环。[证据](ASSISTANT_FALLBACK_POSITIVE_GRAPH_ACCEPTANCE_2026-09-14.md)。

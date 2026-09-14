@@ -15,6 +15,7 @@ import type {LeadSearchPlan} from "../src/lib/assistant/types";
 import {leadEvidenceContentHash} from "../src/lib/leads/evidence-snapshot";
 import {loadCachedLeadAssessments,saveCachedLeadAssessments} from "../src/lib/leads/workflow/assessment-cache";
 import {buildLeadWorkflowGraph,type LeadWorkflowDependencies} from "../src/lib/leads/workflow/graph";
+import {LeadEvidenceCorrectionAgent} from "../src/lib/leads/workflow/evidence-correction-agent";
 import {LeadHandoffAssembler} from "../src/lib/leads/workflow/handoff-assembler";
 import {LeadQualificationAgent} from "../src/lib/leads/workflow/qualification-agent";
 import {confirmAndQueueLeadWorkflow,claimLeadWorkflowByAction} from "../src/lib/leads/workflow/jobs";
@@ -22,7 +23,7 @@ import {completeWorkflowJob} from "../src/lib/leads/workflow/job-completion";
 import {persistLeadWorkflowResult,updateWorkflowPhase} from "../src/lib/leads/workflow/persistence";
 import {checkpointInvocation,WorkflowPausedError} from "../src/lib/leads/workflow/pause";
 import type {DiscoveryResult} from "../src/lib/leads/workflow/discovery";
-import type {LeadAssessmentReview} from "../src/lib/leads/workflow/types";
+import type {CorrectedLeadWorkflowCandidate,LeadAssessmentReview} from "../src/lib/leads/workflow/types";
 import type {AiProvider,StructuredAiRequest,StructuredAiResponse} from "../src/providers/contracts";
 import {DeepSeekProvider} from "../src/providers/deepseek";
 import {ragContext,playbook as fixturePlaybook,candidate as fixtureCandidate,
@@ -30,10 +31,11 @@ import {ragContext,playbook as fixturePlaybook,candidate as fixtureCandidate,
 
 nextEnv.loadEnvConfig(process.cwd());
 const modes=new Set(process.argv.slice(2));
-if(modes.size!==process.argv.length-2||[...modes].some(mode=>!["--pause-resume","--assistant-fallback","--actual-score-agent"].includes(mode)))
+if(modes.size!==process.argv.length-2||[...modes].some(mode=>!["--pause-resume","--assistant-fallback","--actual-score-agent","--actual-correction-agent"].includes(mode)))
   throw new Error("Unknown or repeated verification mode");
 const pauseResume=modes.has("--pause-resume"),assistantFallback=modes.has("--assistant-fallback"),
-  actualScoreAgent=modes.has("--actual-score-agent");
+  actualScoreAgent=modes.has("--actual-score-agent"),actualCorrectionAgent=modes.has("--actual-correction-agent");
+if(actualCorrectionAgent&&!actualScoreAgent)throw new Error("Current correction requires current scoring in this fixture");
 const app=process.env.DATABASE_URL,migration=process.env.DATABASE_MIGRATION_URL;
 if(!app||!migration)throw new Error("Both database connections required");
 const appUrl=new URL(app),migrationUrl=new URL(migration);
@@ -68,12 +70,49 @@ const corrected={...candidate,correction:{...fixtureCorrected.correction,
       statement:"Synthetic fixture distributes Wi-Fi routers and PoE switches.",roles:[]},
     {...fixtureCorrected.correction.findings[0],findingId:"finding-procurement",kind:"commercial-action" as const,
       statement:"Synthetic fixture purchases manufacturer inventory and accepts vendor proposals.",roles:[]}]}};
+let currentCorrected:CorrectedLeadWorkflowCandidate=corrected;
 const assessment={...fixtureAssessment,candidateId:candidate.candidateId,
   evidenceIds:[evidence.id],cooperationPaths:fixtureAssessment.cooperationPaths.map(path=>({...path,
     evidenceIds:[evidence.id]}))};
 const wire=new DeepSeekProvider({apiKey:"synthetic-never-sent",maxAttempts:1,
   fetchImplementation:async()=>{throw new Error("External scoring transport is forbidden");}});
 const scoreRequests:StructuredAiRequest<unknown>[]=[];
+const correctionRequests:StructuredAiRequest<unknown>[]=[];
+let supplementalCalls=0;
+const correctionProvider:AiProvider={
+  id:"synthetic-correction-wire",
+  requestBytes:request=>wire.requestBytes(request),
+  cacheIdentity:request=>wire.cacheIdentity(request),
+  execute:async <I,O>(request:StructuredAiRequest<I>):Promise<StructuredAiResponse<O>>=>{
+    correctionRequests.push(request as StructuredAiRequest<unknown>);
+    assert.equal(request.task,"lead-evidence-correction");
+    assert.ok(request.evidenceIds.includes(evidence.id));
+    assert.ok(wire.requestBytes(request)<=61_440);
+    return {output:{corrections:[{candidateId:candidate.candidateId,resolvedCompanyName:candidate.companyName,
+      resolvedOfficialWebsiteUrl:candidate.officialWebsiteUrl,roles:["Distributor"],
+      primaryBusinessRole:"Distributor",primaryBusinessRoleReason:"Official distributor activity is primary.",
+      officialWebsiteEvidenceId:evidence.id,evidenceIds:[evidence.id],findings:[
+        {kind:"identity",statement:"The official domain belongs to Positive Graph Fixture.",status:"supported",
+          roles:[],evidenceIds:[evidence.id],confidence:95,notes:[]},
+        {kind:"country-presence",statement:"The company operates in Colombia.",status:"supported",
+          roles:[],evidenceIds:[evidence.id],confidence:90,notes:[]},
+        {kind:"active-networking",statement:"The company distributes Wi-Fi routers and PoE switches.",status:"supported",
+          roles:[],evidenceIds:[evidence.id],confidence:90,notes:[]},
+        {kind:"role",statement:"The company is a networking distributor.",status:"supported",
+          roles:["Distributor"],evidenceIds:[evidence.id],confidence:90,notes:[]},
+        {kind:"product-family",statement:"The company resells routers and switches.",status:"supported",
+          roles:[],evidenceIds:[evidence.id],confidence:85,notes:[]},
+        {kind:"commercial-action",statement:"The company purchases inventory and accepts vendor proposals.",status:"supported",
+          roles:[],evidenceIds:[evidence.id],confidence:85,notes:[]},
+      ],reasons:["Synthetic official evidence supports distribution."],confidence:90,
+      escalation:{required:false,expectedTotalScoreChange:0,criticalStateChanges:[],
+        higherCapabilityCanResolve:false,reason:""},warnings:[]}] } as O,
+      modelVersion:request.modelVersion,promptVersion:request.promptVersion,latencyMs:0,warnings:[]};
+  },
+};
+const correctionAgent=new LeadEvidenceCorrectionAgent(correctionProvider,{
+  search:async()=>{supplementalCalls++;throw new Error("Unexpected supplemental search");},
+},{allowReusableCorrections:false,persistCorrections:false,batchSize:1,concurrency:1});
 const scoreProvider:AiProvider={
   id:"synthetic-score-wire",
   requestBytes:request=>wire.requestBytes(request),
@@ -83,9 +122,13 @@ const scoreProvider:AiProvider={
     assert.equal(request.task,"lead-qualification");
     assert.ok(request.evidenceIds.includes(evidence.id));
     assert.ok(wire.requestBytes(request)<=61_440);
+    const productFinding=currentCorrected.correction.findings.find(finding=>finding.kind==="product-family")?.findingId;
+    const roleFinding=currentCorrected.correction.findings.find(finding=>finding.kind==="role")?.findingId;
+    assert.ok(productFinding&&roleFinding);
     const modelAssessment={...assessment,
+      cooperationPaths:assessment.cooperationPaths.map(path=>({...path,findingIds:[roleFinding]})),
       dimensionRationales:Object.entries(assessment.dimensions).map(([dimension,score])=>({dimension,score,
-        reason:"Synthetic current-run company fact supports this dimension.",findingIds:["finding-product"],
+        reason:"Synthetic current-run company fact supports this dimension.",findingIds:[productFinding],
         evidenceIds:[evidence.id],confidence:85})),
       escalation:{required:false,expectedTotalScoreChange:0,criticalStateChanges:[],
         higherCapabilityCanResolve:false,reason:""}};
@@ -171,7 +214,12 @@ try{
     discover:async()=>{counters.discover++;return {runId,candidates:[candidate],processedCompanyKeys:[companyKey],
       creditsUsed:0,warnings:[],callMetrics:[callMetric]};},
     collectEvidence:async()=>{counters.evidence++;return {candidates:[candidate],creditsUsed:0,warnings:[]};},
-    correctionAgent:{correct:async()=>{counters.correct++;return {candidates:[corrected],creditsUsed:0,warnings:[]};}},
+    correctionAgent:actualCorrectionAgent?{correct:async(...args)=>{
+      counters.correct++;
+      const result=await correctionAgent.correct(...args);
+      currentCorrected=result.candidates[0];
+      return result;
+    }}:{correct:async()=>{counters.correct++;return {candidates:[corrected],creditsUsed:0,warnings:[]};}},
     qualificationAgent:actualScoreAgent?{
       evaluate:async(...args)=>{counters.score++;return scoreAgent.evaluate(...args);},
       evaluateWithUsage:async(...args)=>{counters.score++;return scoreAgent.evaluateWithUsage(...args);},
@@ -211,6 +259,19 @@ try{
   assert.equal(state.result?.accepted,1);assert.equal(state.result?.targetCompletionReason,"target-met");
   assert.deepEqual(counters,{rag:1,playbook:1,discover:1,evidence:1,correct:1,score:1,review:1});
   assert.equal(scoreRequests.length,actualScoreAgent?1:0);
+  assert.equal(correctionRequests.length,actualCorrectionAgent?1:0);
+  assert.equal(supplementalCalls,0);
+  assert.equal(state.correctedCandidates[0].correction.primaryRole,"Distributor");
+  if(actualCorrectionAgent){
+    const checked=state.correctedCandidates[0];
+    assert.equal(checked.correction.completionStatus,"completed");
+    assert.equal(checked.correction.primaryFamily,"distribution");
+    assert.deepEqual(checked.correction.resolvedRoles,["Distributor"]);
+    assert.deepEqual(checked.correction.reliedEvidenceIds,[evidence.id]);
+    assert.equal(checked.correction.findings.filter(finding=>finding.status==="supported").length,6);
+    assert.equal(checked.domain,domain);
+    assert.equal(correctionRequests[0].dataClassification,"public");
+  }
   if(actualScoreAgent){
     const scored=state.assessments[0];
     assert.equal(scored.scoringStatus,"completed");assert.equal(scored.eligibilityStatus,"eligible");
@@ -287,6 +348,7 @@ try{
     }finally{await browser.close();}
   }
   console.log(JSON.stringify({positiveGraphSql:"passed",pauseResume,assistantFallback,actualScoreAgent,
+    actualCorrectionAgent,syntheticCorrectionRequests:correctionRequests.length,
     syntheticScoringRequests:scoreRequests.length,target:1,accepted:1,stopReason:"target-met",counters,
     handoffs:state.handoffs.length,companyRows:companies.length,assessmentRows:assessmentRows.length,
     completionReceipts:receipts.length,httpViewports,syntheticReservedMicros:7,allocatedMicros:7,actualPaidCalls:0,
