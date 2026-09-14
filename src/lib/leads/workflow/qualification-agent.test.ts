@@ -7,6 +7,7 @@ import {companyCostKey} from "@/lib/billing/company-cost-context";
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "@/providers/contracts";
 import {DeepSeekProvider} from "@/providers/deepseek";
 import {OpenAiCompatibleProvider} from "@/providers/openai-compatible";
+import {ResilientAiProvider} from "@/providers/resilient-ai";
 import { leadEvidenceContentHash } from "@/lib/leads/evidence-snapshot";
 
 import { enforceAssessmentEvidenceCaps, LeadQualificationAgent } from "./qualification-agent";
@@ -146,13 +147,21 @@ describe("LeadQualificationAgent", () => {
       fetchImplementation:async()=>{throw new Error("No provider transport is allowed");}});
     const fallback=new OpenAiCompatibleProvider({id:"fixture-compatible",apiKey:"fixture-never-sent",
       baseUrl:"https://example.invalid/v1",maxAttempts:1,
+      extraBody:{provider:{require_parameters:true,data_collection:"deny"}},
+      fetchImplementation:async()=>{throw new Error("No provider transport is allowed");}});
+    const openRouterDeepSeek=new OpenAiCompatibleProvider({id:"fixture-deepseek-compatible",
+      apiKey:"fixture-never-sent",baseUrl:"https://example.invalid/v1",maxAttempts:1,
+      extraBody:{provider:{require_parameters:true,data_collection:"deny"},
+        reasoning:{effort:"none"}},
       fetchImplementation:async()=>{throw new Error("No provider transport is allowed");}});
     const compatibleRequest=(request:StructuredAiRequest<unknown>)=>({...request,
       modelVersion:"openai/gpt-4o-mini"});
-    const requestBytes=(request:StructuredAiRequest<unknown>)=>Math.max(primary.requestBytes(request),
-      fallback.requestBytes(compatibleRequest(request)));
-    const provider:AiProvider={id:"fixture-bounded",requestBytes,
-      execute:async()=>{throw new Error("No provider transport is allowed");}};
+    const provider=new ResilientAiProvider(primary,{fallbacks:[
+      {provider:openRouterDeepSeek,routineModel:"deepseek/deepseek-v4-flash",
+        escalationModel:"deepseek/deepseek-v4-pro",approvedDataClassifications:["public"]},
+      {provider:fallback,routineModel:"openai/gpt-4o-mini",escalationModel:"openai/gpt-4o",
+        approvedDataClassifications:["public"]}]});
+    const requestBytes=provider.requestBytes.bind(provider);
     const large=incompressibleCandidate(150),agent=new LeadQualificationAgent(provider,
       {includeCooperationPaths:true,batchSize:1,concurrency:1});
     const plan=planQualificationFactPhases({candidate:large,playbook,countryCode:"DE",
@@ -172,7 +181,10 @@ describe("LeadQualificationAgent", () => {
     expect(fallback.requestBytes(compatibleRequest(final.request))).toBeLessThanOrEqual(61_440);
     expect(fallback.requestBytes({...final.request,modelVersion:"openai/gpt-4o"}))
       .toBeLessThanOrEqual(61_440);
+    expect(openRouterDeepSeek.requestBytes({...final.request,
+      modelVersion:"deepseek/deepseek-v4-flash"})).toBeLessThanOrEqual(61_440);
     expect(primary.requestBytes(final.request)).toBeLessThanOrEqual(61_440);
+    expect(provider.requestBytes(final.request)).toBeLessThanOrEqual(61_440);
     expect(final.request.preparation?.originalMaximumWireBytes).toBeGreaterThan(61_440);
     expect((final.request.input as {phaseScreening:{sourceReferenceEncoding?:string}})
       .phaseScreening.sourceReferenceEncoding).toBe("source-row-index-v1");
