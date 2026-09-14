@@ -8,7 +8,8 @@ import { Pool } from "pg";
 import { getPool } from "../src/lib/rag/db";
 import { databaseConnectionString, databaseSslConfiguration } from "../src/lib/rag/database-ssl";
 import { leadEvidenceContentHash } from "../src/lib/leads/evidence-snapshot";
-import { assessmentDependencyFingerprint } from "../src/lib/leads/workflow/assessment-cache";
+import { assessmentDependencyFingerprint, loadCachedLeadAssessments,
+  saveCachedLeadAssessments } from "../src/lib/leads/workflow/assessment-cache";
 import { buildLeadWorkflowGraph, type LeadWorkflowDependencies } from "../src/lib/leads/workflow/graph";
 import { LeadQualificationAgent } from "../src/lib/leads/workflow/qualification-agent";
 import { checkpointInvocation, WorkflowPausedError } from "../src/lib/leads/workflow/pause";
@@ -22,25 +23,30 @@ const threadId = process.argv[3] ?? `verify-phrase-score:${randomUUID()}`;
 if (!/^verify-phrase-score:[a-f0-9-]{36}$/.test(threadId)) throw new Error("Invalid isolated verification thread");
 if (mode && !["seed", "resume", "sql", "sql-resume"].includes(mode)) throw new Error("Invalid verification phase");
 const foldedVariant = process.env.P06_SYNTHETIC_FOLD_VARIANT === "1";
+const phasedVariant = process.env.P06_SYNTHETIC_PHASED_VARIANT === "1";
+if (foldedVariant && phasedVariant) throw new Error("Choose one synthetic scoring variant");
+if (phasedVariant && mode !== "sql" && mode !== "sql-resume")
+  throw new Error("The phased scoring variant requires the isolated product SQL mode");
 const foldedTableVariant = foldedVariant && process.env.P06_SYNTHETIC_FOLD_COUNT === "110";
-const expectedEncoding = foldedTableVariant ? "supported-excerpt-fold-v1+exact-field-table-v1"
+const expectedEncoding = phasedVariant ? "fact-phase-synthesis-v1"
+  : foldedTableVariant ? "supported-excerpt-fold-v1+exact-field-table-v1"
   : foldedVariant ? "supported-excerpt-fold-v1" : "exact-shared-phrase-v1";
 function assertEncoding(value: string | undefined): void {
   if (foldedTableVariant) assert.ok(value?.startsWith(expectedEncoding));
   else if (foldedVariant) assert.equal(value, expectedEncoding);
   else assert.match(value ?? "", /exact-shared-phrase-v1/);
 }
-const extraCount = foldedTableVariant ? 110 : foldedVariant ? 55 : 100;
+const extraCount = phasedVariant ? 150 : foldedTableVariant ? 110 : foldedVariant ? 55 : 100;
 const expectedEvidenceCount = extraCount + 1;
 const expectedFindingCount = extraCount + correctedCandidate.correction.findings.length
-  + (foldedVariant ? 0 : 4);
+  + (foldedVariant || phasedVariant ? 0 : 4);
 const saver = new PostgresSaver(getPool(), undefined, { schema: "langgraph" });
 const config = { configurable: { thread_id: threadId } };
 const runId = "synthetic-phrase-score-run";
 const originalEvidence = { ...candidate.evidence[0], evidenceRunId: runId, freshnessStatus: "fresh" as const,
   contentHash: leadEvidenceContentHash(candidate.evidence[0].excerpt) };
 const extraEvidence = Array.from({ length: extraCount }, (_, index) => {
-  const excerpt = foldedVariant
+  const excerpt = foldedVariant || phasedVariant
     ? Array.from({ length: 9 }, (_, part) => createHash("sha256")
       .update(`independent-${index}-${part}`).digest("hex")).join(" ")
     : `Evidence ${index}: ${`independent networking fact ${index} `.repeat(7).trim()}`;
@@ -48,30 +54,50 @@ const extraEvidence = Array.from({ length: extraCount }, (_, index) => {
     title: `Unique source ${index}`, excerpt, contentHash: leadEvidenceContentHash(excerpt) };
 });
 const extraFindings = extraEvidence.map((item, index) => ({ ...correctedCandidate.correction.findings[0],
-  findingId: `unique-finding-${index}`, statement: foldedVariant
+  findingId: `unique-finding-${index}`, statement: foldedVariant || phasedVariant
     ? `Fact ${index + 5}: ${createHash("sha256").update(`finding-${index + 5}`).digest("hex")}`
     : `Distinct product and customer fact ${index}: ${item.excerpt.slice(0, 90)}`,
-  status: index === 25 && foldedVariant ? "conflicting" as const : "supported" as const,
+  status: index === 25 && (foldedVariant || phasedVariant) ? "conflicting" as const : "supported" as const,
   evidenceIds: [item.id] }));
 const corrected = { ...correctedCandidate, evidenceSnapshotRunId: runId,
   evidence: [originalEvidence, ...extraEvidence], correction: { ...correctedCandidate.correction,
     findings: [...correctedCandidate.correction.findings,
-      ...Array.from({ length: foldedVariant ? 0 : 4 }, (_, index) => ({ ...correctedCandidate.correction.findings[0],
+      ...Array.from({ length: foldedVariant || phasedVariant ? 0 : 4 }, (_, index) => ({ ...correctedCandidate.correction.findings[0],
         findingId: `base-finding-${index}` })), ...extraFindings] } };
 const fullPlan = { ...plan, targetCount: 1 };
 const wire = new DeepSeekProvider({ apiKey: "fixture-never-sent", maxAttempts: 1,
   fetchImplementation: async () => { throw new Error("External transport is forbidden"); } });
 const calls: StructuredAiRequest<unknown>[] = [];
 const provider: AiProvider = {
-  id: "synthetic-score",
+  id: phasedVariant ? "deepseek" : "synthetic-score",
   requestBytes: request => wire.requestBytes(request),
   cacheIdentity: request => wire.cacheIdentity(request),
+  paidRequestFingerprint: request => wire.paidRequestFingerprint(request),
   execute: async <I, O>(request: StructuredAiRequest<I>): Promise<StructuredAiResponse<O>> => {
     calls.push(request as StructuredAiRequest<unknown>);
     assert.ok(mode === "resume" || mode === "sql-resume");
-    assertEncoding(request.preparation?.encoding);
-    assert.ok(wire.requestBytes(request) <= 61_440);
-    assert.equal(request.preparation?.preparedMaximumWireBytes, wire.requestBytes(request));
+    if (phasedVariant && request.promptVersion === "qualification-fact-phase-v1") {
+      assert.ok(wire.requestBytes(request) <= 61_440);
+      const input = request.input as { candidate: {findings:Array<{findingId:string;evidenceIds:string[]}>};
+        unlinkedEvidenceIds:string[] };
+      return { output: { facts: input.candidate.findings.map(item => ({ findingId:item.findingId,
+        materiality:"material",summary:"Verified",evidenceIds:item.evidenceIds })),
+        sources: input.unlinkedEvidenceIds.map(evidenceId => ({ evidenceId,materiality:"context",
+          summary:"Context" })) } as O,
+        modelVersion:request.modelVersion,promptVersion:request.promptVersion,latencyMs:0,warnings:[],
+        actualProviderId:"deepseek" };
+    }
+    if (phasedVariant) {
+      const screening=(request.input as {phaseScreening?:{factRows:unknown[][];sourceRows:unknown[][]}}).phaseScreening;
+      assert.ok(screening);
+      assert.equal(screening.factRows.length, expectedFindingCount);
+      assert.equal(screening.sourceRows.length, expectedEvidenceCount);
+      assert.ok(calls.length > 1);
+    } else {
+      assertEncoding(request.preparation?.encoding);
+      assert.ok(wire.requestBytes(request) <= 61_440);
+      assert.equal(request.preparation?.preparedMaximumWireBytes, wire.requestBytes(request));
+    }
     if (foldedVariant) {
       assert.ok((request.preparation?.omittedEvidenceExcerpts ?? 0) > 0);
       assert.deepEqual(request.evidenceIds, corrected.evidence.map(item => item.id));
@@ -101,18 +127,23 @@ const provider: AiProvider = {
     return { output: { assessments: [{ ...assessment, dimensionRationales,
       escalation: { required: false, expectedTotalScoreChange: 0, criticalStateChanges: [],
         higherCapabilityCanResolve: false, reason: "" } }] } as O,
-      modelVersion: request.modelVersion, promptVersion: request.promptVersion, latencyMs: 0, warnings: [] };
+      modelVersion: request.modelVersion, promptVersion: request.promptVersion, latencyMs: 0, warnings: [],
+      actualProviderId:phasedVariant?"deepseek":undefined };
   },
 };
-const agent = new LeadQualificationAgent(provider, { batchSize: 1, concurrency: 1 });
+const agent = new LeadQualificationAgent(provider, { batchSize: 1, concurrency: 1,
+  ...(phasedVariant?{routineModel:"deepseek-v4-pro",escalationModel:"deepseek-v4-pro"}:{}) });
 const expectedContract = agent.cacheContracts([corrected], playbook, fullPlan.countryCode,
   fullPlan.countryName, fullPlan.objective);
-assert.notDeepEqual(expectedContract, agent.cacheContracts([corrected], playbook, "MX", "Mexico", fullPlan.objective));
+if (phasedVariant) assert.equal(expectedContract.size,0);
+if (!phasedVariant) assert.notDeepEqual(expectedContract,
+  agent.cacheContracts([corrected], playbook, "MX", "Mexico", fullPlan.objective));
 const changedExcerpt = `${corrected.evidence[0].excerpt} Changed fact.`;
 const changedEvidence = [{ ...corrected.evidence[0], excerpt: changedExcerpt,
   contentHash: leadEvidenceContentHash(changedExcerpt) }, ...corrected.evidence.slice(1)];
-assert.notDeepEqual(expectedContract, agent.cacheContracts([{ ...corrected, evidence: changedEvidence }],
-  playbook, fullPlan.countryCode, fullPlan.countryName, fullPlan.objective));
+if (!phasedVariant) assert.notDeepEqual(expectedContract,
+  agent.cacheContracts([{ ...corrected, evidence: changedEvidence }],
+    playbook, fullPlan.countryCode, fullPlan.countryName, fullPlan.objective));
 if (foldedVariant) {
   const source = corrected.evidence.find(item => item.id === "unique-0");
   assert.ok(source);
@@ -141,7 +172,11 @@ const deps: LeadWorkflowDependencies = {
     },
     cacheContracts: (...args) => agent.cacheContracts(...args),
     completedCacheContracts: value => agent.completedCacheContracts(value),
+    ...(phasedVariant?{phasedCacheContracts:(...args:Parameters<LeadQualificationAgent["phasedCacheContracts"]>)=>
+      agent.phasedCacheContracts(...args)}:{}),
   },
+  ...(phasedVariant && (mode === "sql" || mode === "sql-resume")
+    ? {loadAssessmentCache:loadCachedLeadAssessments,saveAssessmentCache:saveCachedLeadAssessments}:{}),
   assessmentReviewAgent: { review: async (_items, assessments) => ({ assessments, reviews: [], warnings: [] }) },
   handoffAssembler: { assemble: () => [] },
   updatePhase: async (_user, _action, phase) => {
@@ -152,7 +187,7 @@ const deps: LeadWorkflowDependencies = {
     assert.equal(input.candidates[0].evidence.length, expectedEvidenceCount);
     assert.equal(input.candidates[0].correction.findings.length, expectedFindingCount);
     assert.equal(input.creditsUsed, 13);
-    assertEncoding(input.modelUsage.at(-1)?.requestPreparation?.encoding);
+    if (!phasedVariant) assertEncoding(input.modelUsage.at(-1)?.requestPreparation?.encoding);
     assert.equal(input.assessments.length, 1);
     assert.equal(input.assessments[0].scoringStatus, "completed");
     const accepted = input.assessments.filter(item => item.eligible && item.eligibilityStatus === "eligible").length;
@@ -229,7 +264,10 @@ async function verifyProductSql(): Promise<void> {
       { encoding: "utf8", windowsHide: true, timeout: 60000, env: process.env });
     if (child.status !== 0) throw new Error(`Product SQL resume failed: ${child.stderr}`);
     const resumed = JSON.parse(child.stdout.trim()) as { sqlResumed: boolean; fakeModelCalls: number; accepted: number };
-    assert.deepEqual(resumed, { sqlResumed: true, fakeModelCalls: 1, accepted: 0 });
+    assert.equal(resumed.sqlResumed, true);
+    assert.equal(resumed.accepted, 0);
+    if (phasedVariant) assert.ok(resumed.fakeModelCalls >= 3);
+    else assert.equal(resumed.fakeModelCalls, 1);
     const completed = await graph.getState(config);
     assert.equal(completed.values.result?.accepted, 0);
     assert.equal(completed.values.assessments[0].scoringStatus, "completed");
@@ -262,14 +300,33 @@ async function verifyProductSql(): Promise<void> {
       scoreMetrics[0].downstream_used_artifacts], [1, 1, 1]);
     const preparations = scoreMetrics[0].metadata.requestPreparations as Array<{
       encoding:string; omittedEvidenceExcerpts?:number}>;
-    assert.equal(preparations.length, 1);
-    assertEncoding(preparations[0].encoding);
+    if (!phasedVariant) {
+      assert.equal(preparations.length, 1);
+      assertEncoding(preparations[0].encoding);
+    }
     if (foldedVariant) assert.ok((preparations[0].omittedEvidenceExcerpts ?? 0) > 0);
     const usageRows = await tenantQuery<{stage:string;account_cash_cost_usd:string|null}>(userId,
       "select stage,account_cash_cost_usd::text from workflow_model_usage where lead_run_id=$1", [runId]);
-    assert.equal(usageRows.length, 1);
-    assert.equal(usageRows[0].stage, "qualification");
-    assert.equal(usageRows[0].account_cash_cost_usd, null);
+    assert.equal(usageRows.length, resumed.fakeModelCalls);
+    assert.ok(usageRows.every(row => row.stage === "qualification"
+      && row.account_cash_cost_usd === null));
+    if (phasedVariant) {
+      const phases = await tenantQuery<{n:number}>(userId,
+        "select count(*)::int as n from lead_qualification_phase_checkpoint where action_id=$1",[actionId]);
+      assert.equal(phases[0].n,resumed.fakeModelCalls-1);
+      const contracts=await agent.phasedCacheContracts([sqlCorrected],playbook,
+        fullPlan.countryCode,fullPlan.countryName,fullPlan.objective,
+        {userId,workspaceId,actionId});
+      assert.match(contracts.get(sqlCorrected.candidateId)??"",/^[a-f0-9]{64}$/);
+      const reused=await loadCachedLeadAssessments({userId,workspaceId,candidates:[sqlCorrected],
+        playbook,objective:fullPlan.objective,countryCode:fullPlan.countryCode,
+        countryName:fullPlan.countryName,contracts});
+      assert.equal(reused.get(sqlCorrected.candidateId)?.scoringStatus,"completed");
+      const foreign=await loadCachedLeadAssessments({userId:otherUserId,workspaceId,
+        candidates:[sqlCorrected],playbook,objective:fullPlan.objective,
+        countryCode:fullPlan.countryCode,countryName:fullPlan.countryName,contracts});
+      assert.equal(foreign.size,0);
+    }
     assert.equal((await tenantQuery(userId,
       "select company_id from workspace_company_market where workspace_id=$1", [workspaceId])).length, 0);
     assert.equal((await tenantQuery(otherUserId,
@@ -278,7 +335,7 @@ async function verifyProductSql(): Promise<void> {
       "select id from paid_call_reservation where operation_id=$1", [actionId])).length, 0);
     console.log(JSON.stringify({ crossProcessProductSql: true, scored: 1, accepted: 0,
       encoding: expectedEncoding, evidenceSnapshots: expectedEvidenceCount,
-      savedFacts: expectedFindingCount, scoreMetric: 1, modelUsage: 1,
+      savedFacts: expectedFindingCount, scoreMetric: 1, modelUsage: usageRows.length,
       otherUserVisibleAssessments: 0,
       fakeModelCalls: resumed.fakeModelCalls, paidProviderCalls: 0 }));
   } finally {
@@ -344,10 +401,13 @@ try {
     });
     assert.equal(result.result?.accepted, 0);
     assert.equal(result.assessments[0].scoringStatus, "completed");
-    assert.deepEqual(agent.completedCacheContracts(result.assessments),
+    if (!phasedVariant) assert.deepEqual(agent.completedCacheContracts(result.assessments),
       agent.cacheContracts(snapshot.values.correctedCandidates, playbook,
         fullPlan.countryCode, fullPlan.countryName, fullPlan.objective));
-    assert.equal(calls.length, 1);
+    else assert.match(agent.completedCacheContracts(result.assessments)
+      .get(result.assessments[0].candidateId)??"",/^[a-f0-9]{64}$/);
+    if (phasedVariant) assert.ok(calls.length >= 3);
+    else assert.equal(calls.length,1);
     console.log(JSON.stringify({ sqlResumed: true, fakeModelCalls: calls.length, accepted: result.result.accepted }));
   } else {
     const graph = buildLeadWorkflowGraph(deps, saver);
