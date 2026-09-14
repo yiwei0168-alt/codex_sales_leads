@@ -8,6 +8,8 @@ import type {CorrectedLeadWorkflowCandidate,LeadMarketPlaybook} from "./types";
 import {qualificationPhaseOutputJsonSchema} from "./qualification-phase-output";
 import {foldOversizedQualificationPhase} from "./qualification-phase-excerpt-fold";
 import type {QualificationSingletonUnit} from "./qualification-singleton-chunks";
+import {qualificationSingletonPresentations,
+  type QualificationSingletonScreening} from "./qualification-singleton-presentation";
 
 export const QUALIFICATION_FACT_PHASE_VERSION="qualification-fact-phase-v1";
 
@@ -24,20 +26,30 @@ export class OversizedQualificationFactUnitError extends LeadRequestTooLargeErro
 }
 
 export function qualificationPhaseSourceFingerprint(options:{candidate:CorrectedLeadWorkflowCandidate;
-  playbook:LeadMarketPlaybook;countryCode:string;countryName:string;objective:string;modelVersion:string}):string{
-  const {candidate,playbook,countryCode,countryName,objective,modelVersion}=options;
+  playbook:LeadMarketPlaybook;countryCode:string;countryName:string;objective:string;modelVersion:string;
+  singletonScreenings?:readonly QualificationSingletonScreening[]}):string{
+  const {candidate,playbook,countryCode,countryName,objective,modelVersion,singletonScreenings}=options;
   const evidence=candidate.evidence.filter(item=>isCurrentLeadScoringEvidence(item,candidate.evidenceSnapshotRunId));
   return createHash("sha256").update(JSON.stringify({version:QUALIFICATION_FACT_PHASE_VERSION,
     candidateId:candidate.candidateId,countryCode,countryName,objective,modelVersion,playbook,
     candidate:{companyName:candidate.companyName,domain:candidate.domain,
-      correction:candidate.correction,evidence}})).digest("hex");
+      correction:candidate.correction,evidence},
+    ...(singletonScreenings?.length?{singletonScreenings:[...singletonScreenings]
+      .sort((left,right)=>`${left.unitKind}:${left.unitId}`.localeCompare(`${right.unitKind}:${right.unitId}`))}:{})
+  })).digest("hex");
 }
 
 /** Plans bounded fact-screening inputs; callers must persist and validate outputs before final scoring. */
 export function planQualificationFactPhases(options:{candidate:CorrectedLeadWorkflowCandidate;
   playbook:LeadMarketPlaybook;countryCode:string;countryName:string;objective:string;modelVersion:string;
-  requestBytes:(request:StructuredAiRequest<unknown>)=>number}){
-  const {candidate,playbook,countryCode,countryName,objective,modelVersion,requestBytes}=options;
+  requestBytes:(request:StructuredAiRequest<unknown>)=>number;
+  singletonScreenings?:readonly QualificationSingletonScreening[]}){
+  const {candidate,playbook,countryCode,countryName,objective,modelVersion,requestBytes,
+    singletonScreenings=[]}=options;
+  const originalSourceFingerprint=qualificationPhaseSourceFingerprint({candidate,playbook,countryCode,
+    countryName,objective,modelVersion});
+  const presentations=qualificationSingletonPresentations(candidate,singletonScreenings,
+    originalSourceFingerprint);
   const evidence=candidate.evidence.filter(item=>isCurrentLeadScoringEvidence(item,candidate.evidenceSnapshotRunId));
   const byId=new Map(evidence.map(item=>[item.id,item]));
   const findings=candidate.correction.findings.map(item=>({...item,
@@ -78,22 +90,29 @@ export function planQualificationFactPhases(options:{candidate:CorrectedLeadWork
   const build=(chosen:typeof units,index:number):StructuredAiRequest<unknown>=>{
     const factIndexes=new Set(chosen.filter(item=>item.kind==="finding").map(item=>item.index));
     const sourceIndexes=new Set(chosen.filter(item=>item.kind==="source").map(item=>item.index));
-    const selectedFindings=findings.filter((_,position)=>factIndexes.has(position));
+    const selectedFindings=findings.filter((_,position)=>factIndexes.has(position))
+      .map(item=>({...item,statement:presentations.get(`finding:${item.findingId}`)??item.statement}));
     const selectedSources=sourceOnly.filter((_,position)=>sourceIndexes.has(position));
     const ids=new Set([...selectedFindings.flatMap(item=>item.evidenceIds),...selectedSources.map(item=>item.id)]);
     const selectedEvidence=evidence.filter(item=>ids.has(item.id));
+    const selectedDerived=[...presentations.keys()].filter(key=>
+      key.startsWith("finding:")?selectedFindings.some(item=>key===`finding:${item.findingId}`)
+        :selectedEvidence.some(item=>key===`evidence:${item.id}`));
     const request={task:"lead-qualification",modelVersion,promptVersion:QUALIFICATION_FACT_PHASE_VERSION,
       input:{phaseIndex:index,sourceFingerprint,unlinkedEvidenceIds:selectedSources.map(item=>item.id),
+        ...(selectedDerived.length?{derivedSingletonUnits:selectedDerived}:{}),
         market:{countryCode,countryName,objective},
         candidate:{candidateId:candidate.candidateId,companyName:candidate.companyName,domain:candidate.domain,
           primaryRole:candidate.correction.primaryRole,resolvedRoles:candidate.correction.resolvedRoles,
           findings:selectedFindings,evidence:selectedEvidence.map(item=>({evidenceId:item.id,
-            sourceType:item.sourceType,url:item.url,title:item.title,excerpt:item.excerpt}))},
+            sourceType:item.sourceType,url:item.url,title:item.title,
+            excerpt:presentations.get(`evidence:${item.id}`)??item.excerpt}))},
         playbook:{marketHypothesis:playbook.marketHypothesis,productAngles:playbook.productAngles,
           preferredCompanyTraits:playbook.preferredCompanyTraits},
         instructions:["This is a bounded evidence-screening phase, not a final eligibility or score decision.",
           "Return exactly one fact record for each supplied findingId and one source record for each supplied unlinked evidenceId. Preserve uncertainty, disagreement and negative evidence; never turn missing information into rejection.",
-          "Use only supplied source text. Keep a concise, evidence-linked summary of every supplied finding and unlinked source. Do not infer omitted facts or create new evidence IDs. Final scoring will consider all validated phases together."]},
+          "Use only supplied source text. Keep a concise, evidence-linked summary of every supplied finding and unlinked source. Do not infer omitted facts or create new evidence IDs. Final scoring will consider all validated phases together.",
+          ...(selectedDerived.length?["derivedSingletonUnits identifies complete ordered chunk screenings of original long text. Their segment summaries are derived interpretations, not new source evidence or independent corroboration. Preserve aggregate uncertainty and original evidence IDs; do not upgrade an eligibility gate from a chunk summary alone."]:[])]},
       evidenceIds:selectedEvidence.map(item=>item.id),outputSchema:qualificationPhaseOutputJsonSchema,
       dataClassification:playbook.cooperationPathMemory?.length?"private-workspace":"public"} as StructuredAiRequest<unknown>;
     return foldOversizedQualificationPhase(request,requestBytes);

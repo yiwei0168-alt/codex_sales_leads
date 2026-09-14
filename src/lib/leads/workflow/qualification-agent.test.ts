@@ -17,6 +17,8 @@ import {validateQualificationPhaseOutput,type QualificationPhaseOutput} from "./
 import {planQualificationFactPhases} from "./qualification-phase-plan";
 import type {productQualificationPhaseCheckpoint} from "./qualification-phase-checkpoint";
 import type {productQualificationFinalCheckpoint} from "./qualification-final-checkpoint";
+import type {productQualificationSingletonChunkCheckpoint} from "./qualification-singleton-checkpoint";
+import {validateQualificationSingletonChunkOutput} from "./qualification-singleton-chunks";
 import { CHANNEL_ROLE_FAMILIES } from "./types";
 import type { CorrectedLeadWorkflowCandidate, LeadMarketPlaybook } from "./types";
 
@@ -671,6 +673,136 @@ describe("LeadQualificationAgent", () => {
     expect(provider.calls).toHaveLength(0);
     expect(JSON.stringify(large)).toBe(original);
   });
+
+  it("resumes an oversized critical finding at saved chunks and then reaches the bounded final score",async()=>{
+    class ChunkProvider extends FakeProvider {
+      private readonly wire=new DeepSeekProvider({apiKey:"fixture-never-sent",maxAttempts:1,
+        fetchImplementation:async()=>{throw new Error("Synthetic chunk test must not use transport");}});
+      failChunkAt=0;chunkAttempts=0;finalTooLarge=false;uncertainChunk=false;
+      requestBytes(request:StructuredAiRequest<unknown>){
+        if(this.finalTooLarge&&(request.input as {phaseScreening?:unknown}|null)?.phaseScreening)
+          return 1_000_000;
+        return this.wire.requestBytes(request);
+      }
+      cacheIdentity(request:StructuredAiRequest<unknown>){return this.wire.cacheIdentity(request);}
+      paidRequestFingerprint(request:StructuredAiRequest<unknown>){return this.wire.paidRequestFingerprint(request);}
+      override async execute<I,O>(request:StructuredAiRequest<I>):Promise<StructuredAiResponse<O>>{
+        if(request.promptVersion==="qualification-singleton-chunk-v1"){
+          this.chunkAttempts++;
+          if(this.chunkAttempts===this.failChunkAt)throw new BudgetDeniedError("budget-exhausted");
+          this.calls.push(request as StructuredAiRequest<unknown>);
+          const input=request.input as {unitKind:"finding"|"evidence";unitId:string;chunkIndex:number;
+            evidenceIds:string[]};
+          return {output:{unitKind:input.unitKind,unitId:input.unitId,chunkIndex:input.chunkIndex,
+            materiality:this.uncertainChunk?"uncertain":"material",
+            summary:`Segment ${input.chunkIndex} screened for role review`,
+            citedEvidenceIds:input.evidenceIds} as O,modelVersion:request.modelVersion,
+            promptVersion:request.promptVersion,actualProviderId:"fake",latencyMs:5,warnings:[]};
+        }
+        if(request.promptVersion==="qualification-fact-phase-v1"){
+          this.calls.push(request as StructuredAiRequest<unknown>);
+          const input=request.input as {candidate:{findings:Array<{findingId:string;evidenceIds:string[]}>};
+            unlinkedEvidenceIds:string[]};
+          return {output:{facts:input.candidate.findings.map(item=>({findingId:item.findingId,
+            materiality:"uncertain",summary:"Role remains uncertain",evidenceIds:item.evidenceIds})),
+            sources:input.unlinkedEvidenceIds.map(evidenceId=>({evidenceId,materiality:"uncertain",
+              summary:"Source needs review"}))} as O,modelVersion:request.modelVersion,
+            promptVersion:request.promptVersion,actualProviderId:"fake",latencyMs:5,warnings:[]};
+        }
+        return {...await super.execute<I,O>(request),actualProviderId:"fake"};
+      }
+    }
+    const long=structuredClone(candidate);
+    long.correction.findings.find(item=>item.findingId==="finding-role")!.statement=
+      Array.from({length:2_000},(_,index)=>createHash("sha256").update(`long-role-${index}`)
+        .digest("hex")).join("");
+    const original=JSON.stringify(long);
+    const provider=new ChunkProvider();
+    const chunks=new Map<string,StructuredAiResponse<unknown>>();
+    const phases=new Map<string,StructuredAiResponse<unknown>>();
+    const finals=new Map<string,StructuredAiResponse<unknown>>();
+    const key=(contract:string,paid:string)=>`${contract}:${paid}`;
+    const chunkFactory=(()=>({
+      load:async(_request:StructuredAiRequest<unknown>,contract:string,paid:string)=>
+        chunks.get(key(contract,paid))??null,
+      assertNoOtherCompleted:async()=>{},
+      save:async(request:StructuredAiRequest<unknown>,contract:string,paid:string,
+        response:StructuredAiResponse<unknown>)=>{validateQualificationSingletonChunkOutput(request,response.output);
+        chunks.set(key(contract,paid),response);},
+    })) as typeof productQualificationSingletonChunkCheckpoint;
+    const phaseFactory=(()=>({
+      load:async(_request:StructuredAiRequest<unknown>,contract:string,paid:string)=>
+        phases.get(key(contract,paid))??null,
+      assertNoOtherCompleted:async()=>{},
+      save:async(request:StructuredAiRequest<unknown>,contract:string,paid:string,
+        response:StructuredAiResponse<unknown>)=>{validateQualificationPhaseOutput(request,response.output);
+        phases.set(key(contract,paid),response);},
+    })) as typeof productQualificationPhaseCheckpoint;
+    const finalFactory=(()=>({
+      load:async(_request:StructuredAiRequest<unknown>,contract:string,paid:string)=>
+        finals.get(key(contract,paid))??null,
+      assertNoOtherCompleted:async()=>{},
+      save:async(_request:StructuredAiRequest<unknown>,contract:string,paid:string,
+        response:StructuredAiResponse<unknown>)=>{finals.set(key(contract,paid),response);},
+    })) as typeof productQualificationFinalCheckpoint;
+    const agent=new LeadQualificationAgent(provider,{batchSize:1,concurrency:1,
+      routineModel:"deepseek-v4-pro",escalationModel:"deepseek-v4-pro",
+      singletonChunkCheckpointFactory:chunkFactory,phaseCheckpointFactory:phaseFactory,
+      finalCheckpointFactory:finalFactory});
+    const scope={userId:"fixture-owner",workspaceId:"fixture-workspace",actionId:"fixture-action"};
+    provider.failChunkAt=2;
+    await expect(agent.evaluateWithUsage([long],playbook,"DE","Germany","new-market",
+      undefined,scope)).rejects.toThrow(BudgetDeniedError);
+    expect(chunks.size).toBe(1);
+    const firstChunk=provider.calls[0];
+    expect(firstChunk.promptVersion).toBe("qualification-singleton-chunk-v1");
+    expect((await agent.phasedCacheContracts([long],playbook,"DE","Germany","new-market",scope))
+      .has(long.candidateId)).toBe(false);
+    expect(provider.calls).toHaveLength(1);
+    provider.failChunkAt=0;
+    const completed=await agent.evaluateWithUsage([long],playbook,"DE","Germany",
+      "new-market",undefined,scope);
+    expect(completed.assessments[0].scoringStatus).toBe("completed");
+    expect(chunks.size).toBeGreaterThan(1);
+    expect(phases.size).toBeGreaterThan(0);
+    expect(finals.size).toBe(1);
+    expect((await agent.phasedCacheContracts([long],playbook,"DE","Germany","new-market",scope))
+      .get(long.candidateId)).toBe(agent.completedCacheContracts(completed.assessments)
+        .get(long.candidateId));
+    expect(provider.calls.filter(item=>provider.cacheIdentity(item)===provider.cacheIdentity(firstChunk)))
+      .toHaveLength(1);
+    expect(provider.calls.at(-1)?.promptVersion).toBe("lead-value-v7-role-anchors-five-paths");
+    const callCount=provider.calls.length;
+    const reused=await agent.evaluateWithUsage([long],playbook,"DE","Germany",
+      "new-market",undefined,scope);
+    expect(reused.assessments[0].scoringStatus).toBe("completed");
+    expect(reused.usage).toHaveLength(0);
+    expect(provider.calls).toHaveLength(callCount);
+    expect(JSON.stringify(long)).toBe(original);
+    const preflightProvider=new ChunkProvider();preflightProvider.finalTooLarge=true;
+    const preflightAgent=new LeadQualificationAgent(preflightProvider,{batchSize:1,concurrency:1,
+      routineModel:"deepseek-v4-pro",escalationModel:"deepseek-v4-pro",
+      singletonChunkCheckpointFactory:chunkFactory,phaseCheckpointFactory:phaseFactory,
+      finalCheckpointFactory:finalFactory});
+    const held=await preflightAgent.evaluateWithUsage([long],playbook,"DE","Germany",
+      "new-market",undefined,{...scope,actionId:"fixture-final-too-large"});
+    expect(held.assessments[0].scoringStatus).toBe("retry-required");
+    expect(held.assessments[0].warnings.join(" ")).toContain("no chunk request was sent");
+    expect(preflightProvider.calls).toHaveLength(0);
+    chunks.clear();phases.clear();finals.clear();
+    const uncertainProvider=new ChunkProvider();uncertainProvider.uncertainChunk=true;
+    const uncertainAgent=new LeadQualificationAgent(uncertainProvider,{batchSize:1,concurrency:1,
+      routineModel:"deepseek-v4-pro",escalationModel:"deepseek-v4-pro",
+      singletonChunkCheckpointFactory:chunkFactory,phaseCheckpointFactory:phaseFactory,
+      finalCheckpointFactory:finalFactory});
+    const uncertain=await uncertainAgent.evaluateWithUsage([long],playbook,"DE","Germany",
+      "new-market",undefined,{...scope,actionId:"fixture-uncertain-critical"});
+    expect(uncertain.assessments[0].scoringStatus).toBe("retry-required");
+    expect(uncertain.assessments[0].warnings.join(" ")).toContain("remain uncertain");
+    expect(chunks.size).toBeGreaterThan(0);
+    expect(phases.size).toBe(0);
+    expect(finals.size).toBe(0);
+  },15_000);
 
   it("folds only supported-fact source prose while retaining every finding and citation for a large singleton",async()=>{
     class ContractProvider extends FakeProvider {

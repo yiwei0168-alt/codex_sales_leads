@@ -4,6 +4,8 @@ import type {CorrectedLeadWorkflowCandidate,LeadMarketPlaybook} from "./types";
 import {qualificationPhaseSourceFingerprint,QUALIFICATION_FACT_PHASE_VERSION,
   type planQualificationFactPhases} from "./qualification-phase-plan";
 import {validateQualificationPhaseOutput,type QualificationPhaseOutput} from "./qualification-phase-output";
+import {qualificationSingletonPresentations,
+  type QualificationSingletonScreening} from "./qualification-singleton-presentation";
 
 type PhasePlan=ReturnType<typeof planQualificationFactPhases>;
 export const QUALIFICATION_PHASE_SYNTHESIS_VERSION="qualification-phase-synthesis-v1";
@@ -11,10 +13,16 @@ export const QUALIFICATION_PHASE_SYNTHESIS_VERSION="qualification-phase-synthesi
 /** Keeps original corrected facts and citation identities beside bounded phase interpretations. */
 export function assembleQualificationPhaseSynthesis(options:{candidate:CorrectedLeadWorkflowCandidate;
   playbook:LeadMarketPlaybook;countryCode:string;countryName:string;objective:string;modelVersion:string;
-  plan:PhasePlan;outputs:QualificationPhaseOutput[]}){
-  const {candidate,playbook,countryCode,countryName,objective,modelVersion,plan,outputs}=options;
+  plan:PhasePlan;outputs:QualificationPhaseOutput[];
+  singletonScreenings?:readonly QualificationSingletonScreening[]}){
+  const {candidate,playbook,countryCode,countryName,objective,modelVersion,plan,outputs,
+    singletonScreenings=[]}=options;
+  const originalSourceFingerprint=qualificationPhaseSourceFingerprint({candidate,playbook,countryCode,
+    countryName,objective,modelVersion});
+  const presentations=qualificationSingletonPresentations(candidate,singletonScreenings,
+    originalSourceFingerprint);
   const expectedFingerprint=qualificationPhaseSourceFingerprint({candidate,playbook,countryCode,countryName,
-    objective,modelVersion});
+    objective,modelVersion,singletonScreenings});
   if(plan.sourceFingerprint!==expectedFingerprint||plan.phases.length===0||outputs.length!==plan.phases.length)
     throw new Error("Qualification phase synthesis source or output count differs");
   const currentEvidence=candidate.evidence.filter(item=>isCurrentLeadScoringEvidence(item,candidate.evidenceSnapshotRunId));
@@ -66,9 +74,16 @@ export function assembleQualificationPhaseSynthesis(options:{candidate:Corrected
     throw new Error("Qualification phase unlinked source coverage differs");
   return {version:QUALIFICATION_PHASE_SYNTHESIS_VERSION,sourceFingerprint:expectedFingerprint,
     candidateId:candidate.candidateId,foldedEvidenceIds:[...foldedEvidenceIds],
+    chunkedFindingIds:candidate.correction.findings.filter(item=>presentations.has(`finding:${item.findingId}`))
+      .map(item=>item.findingId),
+    chunkedEvidenceIds:currentEvidence.filter(item=>presentations.has(`evidence:${item.id}`))
+      .map(item=>item.id),
+    chunkedUnitHashes:Object.fromEntries(singletonScreenings.map(item=>[
+      `${item.unitKind}:${item.unitId}`,item.contentSha256])),
     facts:candidate.correction.findings.map(item=>{
       const screening=seenFacts.get(item.findingId)!;
-      return {findingId:item.findingId,kind:item.kind,statement:item.statement,status:item.status,
+      return {findingId:item.findingId,kind:item.kind,
+        statement:presentations.get(`finding:${item.findingId}`)??item.statement,status:item.status,
         roles:item.roles,evidenceIds:item.evidenceIds.filter(id=>evidenceById.has(id)),
         sourceTypes:item.sourceTypes,confidence:item.confidence,notes:item.notes,
         screeningMateriality:screening.materiality,screeningSummary:screening.summary,

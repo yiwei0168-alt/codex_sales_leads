@@ -21,7 +21,11 @@ import { roleScoringAnchors } from "./role-scoring-anchors";
 import {assembleQualificationPhaseSynthesis} from "./qualification-phase-synthesis";
 import {compactQualificationPhaseReferences} from "./qualification-phase-reference-compaction";
 import type {QualificationPhaseOutput} from "./qualification-phase-output";
-import {planQualificationFactPhases} from "./qualification-phase-plan";
+import {OversizedQualificationFactUnitError,planQualificationFactPhases,
+  qualificationPhaseSourceFingerprint} from "./qualification-phase-plan";
+import {assembleQualificationSingletonChunks,planQualificationSingletonChunks} from "./qualification-singleton-chunks";
+import type {QualificationSingletonScreening} from "./qualification-singleton-presentation";
+import {productQualificationSingletonChunkCheckpoint} from "./qualification-singleton-checkpoint";
 import {productQualificationPhaseCheckpoint} from "./qualification-phase-checkpoint";
 import {productQualificationFinalCheckpoint} from "./qualification-final-checkpoint";
 import { leadAssessmentBatchSchema, leadAssessmentModelSchema, leadAssessmentScoreOnlyBatchSchema,
@@ -49,6 +53,9 @@ interface LeadAssessmentRequest {
     factColumns:string[];factRows:unknown[][];sourceColumns:string[];sourceRows:unknown[][];
     sourceReferenceEncoding?:string;
     foldedEvidenceIds?:readonly string[];
+    chunkedFindingIds?:readonly string[];
+    chunkedEvidenceIds?:readonly string[];
+    chunkedUnitHashes?:Record<string,string>;
   };
   market: { countryCode: string; countryName: string; objective: string };
   cudyFitBrief: {
@@ -83,6 +90,7 @@ interface LeadQualificationAgentOptions {
   includeCooperationPaths?: boolean;
   phaseCheckpointFactory?: typeof productQualificationPhaseCheckpoint;
   finalCheckpointFactory?: typeof productQualificationFinalCheckpoint;
+  singletonChunkCheckpointFactory?: typeof productQualificationSingletonChunkCheckpoint;
 }
 
 export interface QualificationPhaseScope {userId:string;workspaceId:string;actionId:string}
@@ -408,6 +416,7 @@ export class LeadQualificationAgent {
   private readonly includeCooperationPaths: boolean;
   private readonly phaseCheckpointFactory:typeof productQualificationPhaseCheckpoint;
   private readonly finalCheckpointFactory:typeof productQualificationFinalCheckpoint;
+  private readonly singletonChunkCheckpointFactory:typeof productQualificationSingletonChunkCheckpoint;
 
   constructor(private readonly provider: AiProvider = createLeadAiProvider(), options: LeadQualificationAgentOptions = {}) {
     this.routineModel = options.routineModel ?? process.env.DEEPSEEK_MODEL?.trim() ?? "deepseek-v4-flash";
@@ -419,6 +428,8 @@ export class LeadQualificationAgent {
     this.includeCooperationPaths = options.includeCooperationPaths ?? true;
     this.phaseCheckpointFactory=options.phaseCheckpointFactory??productQualificationPhaseCheckpoint;
     this.finalCheckpointFactory=options.finalCheckpointFactory??productQualificationFinalCheckpoint;
+    this.singletonChunkCheckpointFactory=options.singletonChunkCheckpointFactory
+      ??productQualificationSingletonChunkCheckpoint;
   }
 
   private get promptVersion(): string {
@@ -465,12 +476,14 @@ export class LeadQualificationAgent {
   /** Pure preflight: no phase or final provider request is sent. */
   planPhasedFinalRequest(candidate:CorrectedLeadWorkflowCandidate,playbook:LeadMarketPlaybook,
     countryCode:string,countryName:string,objective:string,
-    outputs:QualificationPhaseOutput[],finalModel=this.routineModel){
+    outputs:QualificationPhaseOutput[],finalModel=this.routineModel,
+    singletonScreenings:readonly QualificationSingletonScreening[]=[]){
     if(!this.provider.requestBytes)throw new Error("Phase scoring requires an exact provider byte contract");
     const plan=planQualificationFactPhases({candidate,playbook,countryCode,countryName,objective,
-      modelVersion:this.routineModel,requestBytes:request=>this.provider.requestBytes!(request)});
+      modelVersion:this.routineModel,requestBytes:request=>this.provider.requestBytes!(request),
+      singletonScreenings});
     const synthesis=assembleQualificationPhaseSynthesis({candidate,playbook,countryCode,countryName,objective,
-      modelVersion:this.routineModel,plan,outputs});
+      modelVersion:this.routineModel,plan,outputs,singletonScreenings});
     const request=this.request([candidate],playbook,countryCode,countryName,objective,
       finalModel,synthesis);
     const bytes=this.provider.requestBytes(request),limit=leadRequestByteLimit(request);
@@ -503,10 +516,140 @@ export class LeadQualificationAgent {
   }
 
   private phasePlan(candidate:CorrectedLeadWorkflowCandidate,playbook:LeadMarketPlaybook,
-    countryCode:string,countryName:string,objective:string){
+    countryCode:string,countryName:string,objective:string,
+    singletonScreenings:readonly QualificationSingletonScreening[]=[]){
     if(!this.provider.requestBytes)throw new Error("Phase scoring requires an exact provider byte contract");
     return planQualificationFactPhases({candidate,playbook,countryCode,countryName,objective,
-      modelVersion:this.routineModel,requestBytes:request=>this.provider.requestBytes!(request)});
+      modelVersion:this.routineModel,requestBytes:request=>this.provider.requestBytes!(request),
+      singletonScreenings});
+  }
+
+  /** Proves a worst-case chunk/phase/final wire path before buying any segment. */
+  private planChunkedRecovery(candidate:CorrectedLeadWorkflowCandidate,playbook:LeadMarketPlaybook,
+    countryCode:string,countryName:string,objective:string,scope:QualificationPhaseScope){
+    if(!this.provider.requestBytes)throw new Error("Chunk recovery requires an exact provider byte contract");
+    const base=qualificationPhaseSourceFingerprint({candidate,playbook,countryCode,countryName,objective,
+      modelVersion:this.routineModel});
+    const planned:Array<{unit:OversizedQualificationFactUnitError["unit"];
+      plan:ReturnType<typeof planQualificationSingletonChunks>}>=[];
+    const worst:QualificationSingletonScreening[]=[];
+    // JSON escaping can use six wire bytes per permitted summary code unit.
+    const worstSummary=String.fromCharCode(0).repeat(240);
+    const seen=new Set<string>();
+    let phase:ReturnType<typeof planQualificationFactPhases>;
+    for(;;){
+      try{phase=this.phasePlan(candidate,playbook,countryCode,countryName,objective,worst);break;}
+      catch(error){
+        if(!(error instanceof OversizedQualificationFactUnitError))throw error;
+        const unit=error.unit,key=`${unit.kind}:${unit.id}`;
+        if(seen.has(key))throw error;
+        seen.add(key);
+        const plan=planQualificationSingletonChunks({candidateId:candidate.candidateId,countryCode,
+          countryName,objective,sourceFingerprint:base,modelVersion:this.routineModel,
+          dataClassification:playbook.cooperationPathMemory?.length?"private-workspace":"public",
+          tenantScope:playbook.cooperationPathMemory?.length?scope.workspaceId:undefined,
+          unit,requestBytes:request=>this.provider.requestBytes!(request)});
+        for(const request of plan.requests)this.assertBoundedRoutes(request,57_344);
+        planned.push({unit,plan});
+        worst.push(assembleQualificationSingletonChunks({plan,unit,
+          outputs:plan.requests.map((_,chunkIndex)=>({unitKind:unit.kind,unitId:unit.id,
+            chunkIndex,materiality:"uncertain",summary:worstSummary,
+            citedEvidenceIds:[...unit.evidenceIds]}))}));
+      }
+    }
+    for(const request of phase.phases)this.assertBoundedRoutes(request,57_344);
+    const outputs:QualificationPhaseOutput[]=phase.phases.map(request=>{
+      const input=request.input as {candidate:{findings:Array<{findingId:string;evidenceIds:string[]}>};
+        unlinkedEvidenceIds:string[]};
+      return {facts:input.candidate.findings.map(item=>({findingId:item.findingId,
+        materiality:"uncertain",summary:worstSummary,evidenceIds:[...item.evidenceIds]})),
+      sources:input.unlinkedEvidenceIds.map(evidenceId=>({evidenceId,materiality:"uncertain",
+        summary:worstSummary}))};
+    });
+    const routine=this.planPhasedFinalRequest(candidate,playbook,countryCode,countryName,
+      objective,outputs,this.routineModel,worst);
+    this.assertBoundedRoutes(routine.request);
+    if(this.routineModel!==this.escalationModel){
+      const pro=this.planPhasedFinalRequest(candidate,playbook,countryCode,countryName,
+        objective,outputs,this.escalationModel,worst);
+      this.assertBoundedRoutes(pro.request);
+    }
+    return planned;
+  }
+
+  private assertBoundedRoutes(request:StructuredAiRequest<unknown>,ceiling?:number){
+    for(const route of this.executionRoutes(request)){
+      const limit=Math.min(leadRequestByteLimit(route.request)??Number.POSITIVE_INFINITY,
+        ceiling??Number.POSITIVE_INFINITY);
+      const bytes=this.provider.requestBytes!(route.request);
+      if(bytes>limit)throw new LeadRequestTooLargeError(bytes,limit);
+    }
+  }
+
+  private async evaluateChunkedPhased(candidate:CorrectedLeadWorkflowCandidate,playbook:LeadMarketPlaybook,
+    countryCode:string,countryName:string,objective:string,scope:QualificationPhaseScope,
+    usageRecords:WorkflowModelUsage[]):Promise<LeadCandidateAssessment>{
+    let planned:ReturnType<LeadQualificationAgent["planChunkedRecovery"]>;
+    try{planned=this.planChunkedRecovery(candidate,playbook,countryCode,countryName,objective,scope);}
+    catch(error){if(error instanceof LeadRequestTooLargeError)return failedAssessment(candidate,
+      `Complete chunk and final-score preflight exceeds the approved byte limit (${error.message}); no chunk request was sent.`,
+      this.promptVersion);throw error;}
+    const screenings:QualificationSingletonScreening[]=[];
+    for(const {unit,plan} of planned){
+      const outputs:unknown[]=[];
+      for(const request of plan.requests){
+        const routes=this.executionRoutes(request);
+        let response:StructuredAiResponse<unknown>|null=null;
+        for(const route of routes){
+          const checkpoint=this.singletonChunkCheckpointFactory({...scope,countryCode,
+            expectedProviderId:route.providerId,requestedModelVersion:request.modelVersion});
+          response=await checkpoint.load(route.request,route.cacheIdentity,route.paidRequestFingerprint);
+          if(response)break;
+        }
+        if(!response){
+          const guard=this.singletonChunkCheckpointFactory({...scope,countryCode,
+            expectedProviderId:routes[0].providerId,requestedModelVersion:request.modelVersion});
+          await guard.assertNoOtherCompleted?.(request,routes.map(route=>({contract:route.cacheIdentity,
+            paidFingerprint:route.paidRequestFingerprint})));
+          const fresh=await withCompanyCostAttribution([candidate],countryCode,()=>this.provider.execute(
+            request,AbortSignal.timeout(120_000)));
+          const completedRoute=this.routeForResponse(routes,fresh);
+          const checkpoint=this.singletonChunkCheckpointFactory({...scope,countryCode,
+            expectedProviderId:completedRoute.providerId,requestedModelVersion:request.modelVersion});
+          await checkpoint.save(completedRoute.request,completedRoute.cacheIdentity,
+            completedRoute.paidRequestFingerprint,fresh);
+          response=await checkpoint.load(completedRoute.request,completedRoute.cacheIdentity,
+            completedRoute.paidRequestFingerprint);
+          if(!response)throw new Error("Completed qualification singleton chunk could not be read");
+          usageRecords.push({stage:"qualification",requestedModel:fresh.requestedModelVersion??request.modelVersion,
+            actualModel:fresh.modelVersion,providerId:fresh.actualProviderId,
+            promptTokens:fresh.usage?.promptTokens??0,completionTokens:fresh.usage?.completionTokens??0,
+            reasoningTokens:fresh.usage?.reasoningTokens??0,totalTokens:fresh.usage?.totalTokens??0,
+            latencyMs:fresh.latencyMs,
+            fallbackUsed:Boolean(fresh.requestedModelVersion&&(fresh.requestedModelVersion!==fresh.modelVersion
+              ||fresh.actualProviderId!==routes[0].providerId)),
+            attempts:fresh.attempts,retries:fresh.retries,
+            accountCashCostUsd:fresh.usage?.accountCashCostUsd,
+            batchValidation:{inputItems:1,validOutputItems:1,rejectedOutputItems:0,
+              missingOutputItems:0,complete:true}});
+        }
+        outputs.push(response.output);
+      }
+      screenings.push(assembleQualificationSingletonChunks({plan,unit,outputs}));
+    }
+    const criticalKinds=new Set(["identity","country-presence","role"]);
+    const unresolvedCritical=screenings.filter(item=>item.materiality==="uncertain"
+      &&(item.unitKind==="finding"
+        ?candidate.correction.findings.some(finding=>finding.findingId===item.unitId
+          &&criticalKinds.has(finding.kind))
+        :candidate.correction.findings.some(finding=>criticalKinds.has(finding.kind)
+          &&finding.evidenceIds.includes(item.unitId))));
+    if(unresolvedCritical.length)return failedAssessment(candidate,
+      `Complete chunk screenings for critical facts remain uncertain (${unresolvedCritical.map(item=>
+        `${item.unitKind}:${item.unitId}`).join(", ")}); completed paid chunks are saved for review, not treated as a negative or a supported eligibility gate.`,
+      this.promptVersion);
+    return this.evaluatePhased(candidate,playbook,countryCode,countryName,objective,
+      scope,usageRecords,screenings);
   }
 
   async phasedCacheContracts(candidates:CorrectedLeadWorkflowCandidate[],playbook:LeadMarketPlaybook,
@@ -517,7 +660,34 @@ export class LeadQualificationAgent {
     for(const candidate of candidates){
       if(!oversized.has(candidate.candidateId))continue;
       let plan:ReturnType<typeof planQualificationFactPhases>;
-      try{plan=this.phasePlan(candidate,playbook,countryCode,countryName,objective);}
+      const singletonScreenings:QualificationSingletonScreening[]=[];
+      try{
+        try{plan=this.phasePlan(candidate,playbook,countryCode,countryName,objective);}
+        catch(error){
+          if(!(error instanceof OversizedQualificationFactUnitError))throw error;
+          const chunkPlans=this.planChunkedRecovery(candidate,playbook,countryCode,countryName,
+            objective,scope);
+          for(const {unit,plan:chunkPlan} of chunkPlans){
+            const chunkOutputs:unknown[]=[];
+            for(const request of chunkPlan.requests){
+              let hit:StructuredAiResponse<unknown>|null=null;
+              for(const route of this.executionRoutes(request)){
+                const checkpoint=this.singletonChunkCheckpointFactory({...scope,countryCode,
+                  expectedProviderId:route.providerId,requestedModelVersion:request.modelVersion});
+                hit=await checkpoint.load(route.request,route.cacheIdentity,route.paidRequestFingerprint);
+                if(hit)break;
+              }
+              if(!hit)break;
+              chunkOutputs.push(hit.output);
+            }
+            if(chunkOutputs.length!==chunkPlan.requests.length)break;
+            singletonScreenings.push(assembleQualificationSingletonChunks({plan:chunkPlan,unit,
+              outputs:chunkOutputs}));
+          }
+          if(singletonScreenings.length!==chunkPlans.length)continue;
+          plan=this.phasePlan(candidate,playbook,countryCode,countryName,objective,singletonScreenings);
+        }
+      }
       catch(error){if(error instanceof LeadRequestTooLargeError)continue;throw error;}
       const outputs:QualificationPhaseOutput[]=[];
       for(const request of plan.phases){
@@ -533,7 +703,8 @@ export class LeadQualificationAgent {
       }
       if(outputs.length!==plan.phases.length)continue;
       try{
-        const final=this.planPhasedFinalRequest(candidate,playbook,countryCode,countryName,objective,outputs);
+        const final=this.planPhasedFinalRequest(candidate,playbook,countryCode,countryName,objective,
+          outputs,this.routineModel,singletonScreenings);
         let contract=this.provider.cacheIdentity(final.request);
         for(const route of this.executionRoutes(final.request)){
           const finalCheckpoint=this.finalCheckpointFactory({...scope,countryCode,
@@ -545,7 +716,7 @@ export class LeadQualificationAgent {
         if(this.routineModel!==this.escalationModel){
           try{
             const pro=this.planPhasedFinalRequest(candidate,playbook,countryCode,countryName,
-              objective,outputs,this.escalationModel);
+              objective,outputs,this.escalationModel,singletonScreenings);
             for(const route of this.executionRoutes(pro.request)){
               const finalCheckpoint=this.finalCheckpointFactory({...scope,countryCode,
                 expectedProviderId:route.providerId,requestedModelVersion:pro.request.modelVersion});
@@ -581,8 +752,10 @@ export class LeadQualificationAgent {
       instructions: [
         `Act as an independent role-aware sales-lead qualification${this.includeCooperationPaths ? " and cooperation-path" : ""} agent. Ignore provider scores, discovery order and the original search lane.`,
         "Assess only supplied current-run evidence. Never invent company facts, roles, scale, product fit, relationships, paths or evidence IDs.",
-        ...(synthesis?["The phaseScreening factRows and sourceRows use the matching Columns arrays. Each fact retains its corrected status, original citation IDs and screened summary; critical or non-supported corrected statements are also retained verbatim. Every current source retains its ID and type; source URLs were available in the bounded phases and remain linked by ID outside this final prompt. Phase summaries are bounded interpretations, not raw quotations or independent corroboration. Preserve uncertain, conflicting and negative findings; missing raw excerpts after phase screening are not negative evidence."]:[]),
+        ...(synthesis?["The phaseScreening factRows and sourceRows use the matching Columns arrays. Each fact retains its corrected status, original citation IDs and screened summary; critical or non-supported corrected statements are retained verbatim unless explicitly identified as a complete chunk screening. Every current source retains its ID and type; source URLs were available in the bounded phases and remain linked by ID outside this final prompt. Phase summaries are bounded interpretations, not raw quotations or independent corroboration. Preserve uncertain, conflicting and negative findings; missing raw excerpts after phase screening are not negative evidence."]:[]),
         ...(synthesis?.foldedEvidenceIds.length?["foldedEvidenceIds lists sources whose long, supported noncritical excerpts had their middle omitted in a fact phase. Do not treat omitted text or phase summaries as independent corroboration or upgrade an eligibility gate from them."]:[]),
+        ...(synthesis&&(synthesis.chunkedFindingIds.length||synthesis.chunkedEvidenceIds.length)
+          ?["chunkedFindingIds and chunkedEvidenceIds identify original long texts represented by complete ordered chunk screenings. Their SHA-256 markers and segment summaries preserve provenance but are derived interpretations, not new source facts. An uncertain segment keeps the whole unit uncertain; do not upgrade identity, country, role or another eligibility gate from a chunk interpretation alone."]:[]),
         "Treat old-run or discovery-only material as a search lead, never as scoring evidence unless it was freshly acquired or revalidated into this run.",
         "Every gate is supported, not-supported, unknown or conflicting. Failed acquisition and missing evidence are unknown, never a negative fact.",
         "The targetCountryPresence gate must follow the supplied correction-stage country-presence finding for this exact candidate and target market; never infer it from an unrelated page or from operations in a different country.",
@@ -602,6 +775,10 @@ export class LeadQualificationAgent {
       ],
       ...(synthesis?{phaseScreening:{version:synthesis.version,sourceFingerprint:synthesis.sourceFingerprint,
         ...(synthesis.foldedEvidenceIds.length?{foldedEvidenceIds:synthesis.foldedEvidenceIds}:{}),
+        ...(synthesis.chunkedFindingIds.length?{chunkedFindingIds:synthesis.chunkedFindingIds}:{}),
+        ...(synthesis.chunkedEvidenceIds.length?{chunkedEvidenceIds:synthesis.chunkedEvidenceIds}:{}),
+        ...(Object.keys(synthesis.chunkedUnitHashes).length
+          ?{chunkedUnitHashes:synthesis.chunkedUnitHashes}:{}),
         factColumns:["findingId","kind","status","retainedCorrectedStatement","evidenceIds",
           "phaseMateriality","phaseSummary","phaseCitedEvidenceIds"],
         factRows:synthesis.facts.map(item=>[item.findingId,item.kind,item.status,
@@ -742,13 +919,16 @@ export class LeadQualificationAgent {
 
   private async evaluatePhased(candidate:CorrectedLeadWorkflowCandidate,playbook:LeadMarketPlaybook,
     countryCode:string,countryName:string,objective:string,scope:QualificationPhaseScope,
-    usageRecords:WorkflowModelUsage[]):Promise<LeadCandidateAssessment>{
+    usageRecords:WorkflowModelUsage[],
+    singletonScreenings:readonly QualificationSingletonScreening[]=[]):Promise<LeadCandidateAssessment>{
     if(!this.provider.cacheIdentity||!this.provider.paidRequestFingerprint||!this.provider.requestBytes)
       return failedAssessment(candidate,"Phased scoring has no exact primary request/paid replay contract; no request was sent.",this.promptVersion);
     let plan:ReturnType<typeof planQualificationFactPhases>;
-    try{plan=this.phasePlan(candidate,playbook,countryCode,countryName,objective);}
-    catch(error){if(error instanceof LeadRequestTooLargeError)return failedAssessment(candidate,
-      `A single fact phase exceeds the approved byte limit (${error.message}); no request was sent.`,this.promptVersion);
+    try{plan=this.phasePlan(candidate,playbook,countryCode,countryName,objective,singletonScreenings);}
+    catch(error){if(error instanceof OversizedQualificationFactUnitError&&!singletonScreenings.length)
+      return this.evaluateChunkedPhased(candidate,playbook,countryCode,countryName,objective,scope,usageRecords);
+      if(error instanceof LeadRequestTooLargeError)return failedAssessment(candidate,
+        `A single fact phase exceeds the approved byte limit (${error.message}); no request was sent.`,this.promptVersion);
       throw error;}
     if(!plan.phases.length)return failedAssessment(candidate,"No bounded fact phase can be planned; no request was sent.",this.promptVersion);
     const outputs:QualificationPhaseOutput[]=[];
@@ -792,7 +972,8 @@ export class LeadQualificationAgent {
         validOutputItems:completed.output.facts.length+completed.output.sources.length,complete:true};
     }
     let final:ReturnType<LeadQualificationAgent["planPhasedFinalRequest"]>;
-    try{final=this.planPhasedFinalRequest(candidate,playbook,countryCode,countryName,objective,outputs);}
+    try{final=this.planPhasedFinalRequest(candidate,playbook,countryCode,countryName,objective,outputs,
+      this.routineModel,singletonScreenings);}
     catch(error){if(error instanceof LeadRequestTooLargeError)return failedAssessment(candidate,
       `Phase summaries exceed the final approved score request limit (${error.message}); original evidence remains pending.`,this.promptVersion);
       throw error;}
@@ -806,7 +987,7 @@ export class LeadQualificationAgent {
     if(requiresEscalation(candidate,normalized,value)&&this.routineModel!==this.escalationModel){
       let pro:ReturnType<LeadQualificationAgent["planPhasedFinalRequest"]>;
       try{pro=this.planPhasedFinalRequest(candidate,playbook,countryCode,countryName,
-        objective,outputs,this.escalationModel);}
+        objective,outputs,this.escalationModel,singletonScreenings);}
       catch(error){if(error instanceof LeadRequestTooLargeError)return failedAssessment(candidate,
         `The Pro score request exceeds its approved byte limit (${error.message}); the routine response remains saved.`,
         this.promptVersion);throw error;}

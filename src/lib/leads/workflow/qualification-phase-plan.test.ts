@@ -8,7 +8,10 @@ import {LeadRequestTooLargeError} from "@/providers/lead-request-bounds";
 import {correctedCandidate,playbook} from "../../../../scripts/workflow-recovery-fixtures";
 
 import {OversizedQualificationFactUnitError,planQualificationFactPhases,
-  QUALIFICATION_FACT_PHASE_VERSION} from "./qualification-phase-plan";
+  qualificationPhaseSourceFingerprint,QUALIFICATION_FACT_PHASE_VERSION} from "./qualification-phase-plan";
+import {assembleQualificationPhaseSynthesis} from "./qualification-phase-synthesis";
+import {assembleQualificationSingletonChunks,planQualificationSingletonChunks} from "./qualification-singleton-chunks";
+import {LeadQualificationAgent} from "./qualification-agent";
 
 function fixture(count:number){
   const baseExcerpt=correctedCandidate.evidence[0].excerpt;
@@ -123,6 +126,108 @@ describe("qualification fact phase plan",()=>{
     expect(mixedFailure).toBeInstanceOf(OversizedQualificationFactUnitError);
     expect((mixedFailure as OversizedQualificationFactUnitError).unit.kind).toBe("finding");
     expect((mixedFailure as OversizedQualificationFactUnitError).unit.id).toBe("phase-finding-0");
+  });
+
+  it("presents complete long-source chunk screenings without changing the original evidence snapshot",()=>{
+    const candidate=fixture(1);
+    candidate.evidence[1].excerpt="original "+"x".repeat(100_000);
+    candidate.evidence[1].contentHash=leadEvidenceContentHash(candidate.evidence[1].excerpt);
+    const original=JSON.stringify(candidate);
+    const base=qualificationPhaseSourceFingerprint({candidate,playbook,countryCode:"DE",
+      countryName:"Germany",objective:"new-market",modelVersion:"deepseek-v4-pro"});
+    const unit={kind:"evidence" as const,id:candidate.evidence[1].id,
+      text:candidate.evidence[1].excerpt,evidenceIds:[candidate.evidence[1].id]};
+    const chunkPlan=planQualificationSingletonChunks({candidateId:candidate.candidateId,
+      countryCode:"DE",countryName:"Germany",objective:"new-market",sourceFingerprint:base,
+      modelVersion:"deepseek-v4-pro",dataClassification:"public",unit,
+      requestBytes:request=>wire.requestBytes(request)});
+    const screening=assembleQualificationSingletonChunks({plan:chunkPlan,unit,
+      outputs:chunkPlan.requests.map((_,chunkIndex)=>({unitKind:"evidence",unitId:unit.id,
+        chunkIndex,materiality:"uncertain",summary:`Segment ${chunkIndex} needs context`,
+        citedEvidenceIds:[unit.id]}))});
+    const phase=planQualificationFactPhases({candidate,playbook,countryCode:"DE",countryName:"Germany",
+      objective:"new-market",modelVersion:"deepseek-v4-pro",singletonScreenings:[screening],
+      requestBytes:request=>wire.requestBytes(request)});
+    expect(phase.phases.length).toBeGreaterThan(0);
+    expect(phase.phases.every(request=>wire.requestBytes(request)<=57_344)).toBe(true);
+    const derived=phase.phases.map(request=>request.input as {derivedSingletonUnits?:string[];
+      candidate:{evidence:Array<{evidenceId:string;excerpt:string}>}})
+      .find(input=>input.derivedSingletonUnits?.includes(`evidence:${unit.id}`));
+    const excerpt=derived?.candidate.evidence.find(item=>item.evidenceId===unit.id)?.excerpt;
+    expect(excerpt).toContain(screening.contentSha256);
+    expect(excerpt).toContain("These are interpretations, not new source facts");
+    expect(excerpt).not.toContain("x".repeat(1_000));
+    const outputs=phase.phases.map(request=>{
+      const input=request.input as {candidate:{findings:Array<{findingId:string;evidenceIds:string[]}>};
+        unlinkedEvidenceIds:string[]};
+      return {facts:input.candidate.findings.map(item=>({findingId:item.findingId,
+        materiality:"uncertain" as const,summary:"Original evidence remains uncertain",
+        evidenceIds:item.evidenceIds})),
+      sources:input.unlinkedEvidenceIds.map(evidenceId=>({evidenceId,
+        materiality:"uncertain" as const,summary:"Original evidence remains uncertain"}))};
+    });
+    const synthesis=assembleQualificationPhaseSynthesis({candidate,playbook,countryCode:"DE",
+      countryName:"Germany",objective:"new-market",modelVersion:"deepseek-v4-pro",plan:phase,
+      outputs,singletonScreenings:[screening]});
+    expect(synthesis.chunkedEvidenceIds).toEqual([unit.id]);
+    expect(synthesis.sourceFingerprint).toBe(phase.sourceFingerprint);
+    const final=new LeadQualificationAgent(wire,{routineModel:"deepseek-v4-pro",
+      escalationModel:"deepseek-v4-pro"}).planPhasedFinalRequest(candidate,playbook,"DE",
+      "Germany","new-market",outputs,"deepseek-v4-pro",[screening]);
+    expect((final.request.input as {phaseScreening:{chunkedUnitHashes:Record<string,string>}})
+      .phaseScreening.chunkedUnitHashes[`evidence:${unit.id}`]).toBe(screening.contentSha256);
+    expect(JSON.stringify(candidate)).toBe(original);
+    const changed=structuredClone(candidate);
+    changed.evidence[1].excerpt+=" changed";
+    changed.evidence[1].contentHash=leadEvidenceContentHash(changed.evidence[1].excerpt);
+    expect(qualificationPhaseSourceFingerprint({candidate:changed,playbook,countryCode:"DE",
+      countryName:"Germany",objective:"new-market",modelVersion:"deepseek-v4-pro"}))
+      .not.toBe(base);
+    expect(()=>planQualificationFactPhases({candidate:changed,playbook,countryCode:"DE",
+      countryName:"Germany",objective:"new-market",modelVersion:"deepseek-v4-pro",
+      singletonScreenings:[screening],requestBytes:request=>wire.requestBytes(request)}))
+      .toThrow("screening identity or coverage differs");
+  });
+
+  it("passes a complete long critical finding screening to a bounded final score request",()=>{
+    const candidate=fixture(1);
+    candidate.correction.findings[1].kind="role";
+    candidate.correction.findings[1].statement="critical "+"z".repeat(100_000);
+    const original=JSON.stringify(candidate);
+    const base=qualificationPhaseSourceFingerprint({candidate,playbook,countryCode:"DE",
+      countryName:"Germany",objective:"new-market",modelVersion:"deepseek-v4-pro"});
+    const finding=candidate.correction.findings[1];
+    const unit={kind:"finding" as const,id:finding.findingId,text:finding.statement,
+      evidenceIds:[...finding.evidenceIds]};
+    const chunks=planQualificationSingletonChunks({candidateId:candidate.candidateId,
+      countryCode:"DE",countryName:"Germany",objective:"new-market",sourceFingerprint:base,
+      modelVersion:"deepseek-v4-pro",dataClassification:"public",unit,
+      requestBytes:request=>wire.requestBytes(request)});
+    const screening=assembleQualificationSingletonChunks({plan:chunks,unit,
+      outputs:chunks.requests.map((_,chunkIndex)=>({unitKind:"finding",unitId:unit.id,chunkIndex,
+        materiality:"uncertain",summary:`Segment ${chunkIndex} leaves role uncertain`,
+        citedEvidenceIds:[...unit.evidenceIds]}))});
+    const phase=planQualificationFactPhases({candidate,playbook,countryCode:"DE",countryName:"Germany",
+      objective:"new-market",modelVersion:"deepseek-v4-pro",singletonScreenings:[screening],
+      requestBytes:request=>wire.requestBytes(request)});
+    const outputs=phase.phases.map(request=>{
+      const input=request.input as {candidate:{findings:Array<{findingId:string;evidenceIds:string[]}>};
+        unlinkedEvidenceIds:string[]};
+      return {facts:input.candidate.findings.map(item=>({findingId:item.findingId,
+        materiality:"uncertain" as const,summary:"Critical role needs review",evidenceIds:item.evidenceIds})),
+      sources:input.unlinkedEvidenceIds.map(evidenceId=>({evidenceId,
+        materiality:"uncertain" as const,summary:"Source needs review"}))};
+    });
+    const agent=new LeadQualificationAgent(wire,{routineModel:"deepseek-v4-pro",
+      escalationModel:"deepseek-v4-pro"});
+    const final=agent.planPhasedFinalRequest(candidate,playbook,"DE","Germany","new-market",
+      outputs,"deepseek-v4-pro",[screening]);
+    expect(final.synthesis.chunkedFindingIds).toEqual([unit.id]);
+    expect(final.synthesis.facts.find(item=>item.findingId===unit.id)?.statement)
+      .toContain(screening.contentSha256);
+    expect(wire.requestBytes(final.request)).toBeLessThanOrEqual(61_440);
+    expect(JSON.stringify(final.request.input)).not.toContain("z".repeat(1_000));
+    expect(JSON.stringify(candidate)).toBe(original);
   });
 
   it("folds only a supported noncritical oversized excerpt while retaining exact fact and source identity",()=>{
