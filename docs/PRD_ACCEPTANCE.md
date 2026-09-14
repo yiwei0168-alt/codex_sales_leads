@@ -365,3 +365,4 @@ npm test
 npm run build
 ```
 2026-09-14 stage 204 / A11: read-only minimal-run preflight identifies 12 requested results per route step and 240 requested slots over the current five-round/four-step ceiling. Brave/Exa may pass excess returned items downstream; actual item and full-run USD ceilings remain unknown. The route, paid admission and acceptance status did not change. [Evidence](A11_REQUESTED_RESULT_SLOTS_PREFLIGHT_2026-09-14.md).
+2026-09-14 stage 206 / A11: credential-free official OpenRouter catalog and endpoint rechecks found unchanged Terra review and Sol judge public-price projections. Proposed single-call conservative ceilings are USD11.019202 and USD27.736500, respectively; neither tariff was admitted. The Sol judge candidate alone exceeds the USD17.675596 remaining allowance. Full-run cost remains unknown and live A11 is held. [Evidence](A11_REVIEW_PUBLIC_BOUND_RECHECK_2026-09-14.md).
