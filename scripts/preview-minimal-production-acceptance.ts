@@ -342,6 +342,6 @@ try{
           :fourPhaseWithPlaybook<=Number(budget.budget.remaining_micros)/1e6,
         fitsCurrentRemainingBudgetWithPro:fourPhaseProWithPlaybook===null?null
           :fourPhaseProWithPlaybook<=Number(budget.budget.remaining_micros)/1e6}},
-    totalRunBoundUsd:null,limitations:"Lists configured minimal-plan discovery, evidence Extract and conditional review routes; captures synthetic playbook, Brave, Exa and Tavily Search wires. Provider over-delivery is capped before downstream candidate processing, but these accepted item slots are not unique companies. Real market requests, Extract tariff and response, remaining fallback/search/model contracts, conditional Pro escalation, phased scoring call count and total-run bound remain unverified",
+    totalRunBoundUsd:null,limitations:"Lists configured minimal-plan discovery, active basic Extract and conditional review tariffs; captures synthetic playbook, Brave, Exa and Tavily Search wires. Provider over-delivery is capped before downstream candidate processing, but these accepted item slots are not unique companies. Real market requests and Extract response, remaining fallback/search/model contracts, conditional Pro escalation, phased scoring call count and total-run bound remain unverified",
     providerCalls:0,accountsModified:0,jobsClaimed:0},null,2));
 }finally{await getPool().end();}
